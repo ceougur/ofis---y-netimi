@@ -1,0 +1,98 @@
+TAP version 13
+# Subtest: gg243 dar kontrol ek 3: Ters Kaydet iade faturası O1 ile ertelenir; banka açıklaması numaraya döner
+    # Subtest: Ters Kaydet: iade faturası numarasız bekler, açıklama '(gönderilecek)'; Tümünü Gönder sonrası ikisi de numaraya döner, eski tarihli önce
+    not ok 1 - Ters Kaydet: iade faturası numarasız bekler, açıklama '(gönderilecek)'; Tümünü Gönder sonrası ikisi de numaraya döner, eski tarihli önce
+      ---
+      duration_ms: 43.21185
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-ek.test.mjs:44:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        O1: seride eski tarihli bekleyen varken numara verilmedi
+        + actual - expected
+        
+          [
+        +   'TEA2026000000001',
+        +   'none'
+        -   '',
+        -   'waiting'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: ''
+        1: 'waiting'
+      actual:
+        0: 'TEA2026000000001'
+        1: 'none'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-ek.test.mjs:51:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - gg243 dar kontrol ek 3: Ters Kaydet iade faturası O1 ile ertelenir; banka açıklaması numaraya döner
+  ---
+  duration_ms: 846.899968
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-ek.test.mjs:15:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: gg243 dar kontrol ek 5: test yardımcısının edocStatusPollMs seçeneği yapılandırmaya ulaşır
+    # Subtest: startTestServer({ edocStatusPollMs: [5, 5] }) → app.config.edocStatusPollMs = [5, 5]; verilmezse tanımsız (üretim 1 sn + 2 sn)
+    not ok 1 - startTestServer({ edocStatusPollMs: [5, 5] }) → app.config.edocStatusPollMs = [5, 5]; verilmezse tanımsız (üretim 1 sn + 2 sn)
+      ---
+      duration_ms: 620.69617
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-ek.test.mjs:74:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + undefined
+        - [
+        -   5,
+        -   5
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 5
+        1: 5
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-ek.test.mjs:78:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - gg243 dar kontrol ek 5: test yardımcısının edocStatusPollMs seçeneği yapılandırmaya ulaşır
+  ---
+  duration_ms: 620.922469
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-ek.test.mjs:73:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 2
+# suites 2
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2028.626302

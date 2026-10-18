@@ -1,0 +1,310 @@
+■ A Ortak çekirdek sözleşmesi (HOF.formModal / HOF.modal / HOF.swap)
+  ✓ A1 temiz form Esc ile sorusuz kapanır
+  ✓ A2 çekirdek: Esc kaydedilmemiş değişikliği sordu
+  ✓ A2 çekirdek: "Forma Dön" sonrası form açık, değerler yerinde ({"ad":"Kaybolmasın Adı","tur":"b","onay":true,"not":"Birinci satır"})
+  ✓ A2 çekirdek: × kaydedilmemiş değişikliği sordu
+  ✓ A2 çekirdek: "Forma Dön" sonrası form açık, değerler yerinde ({"ad":"Kaybolmasın Adı","tur":"b","onay":true,"not":"Birinci satır"})
+  ✓ A2 çekirdek: dışarı tıklama kaydedilmemiş değişikliği sordu
+  ✓ A2 çekirdek: "Forma Dön" sonrası form açık, değerler yerinde ({"ad":"Kaybolmasın Adı","tur":"b","onay":true,"not":"Birinci satır"})
+  ✓ A3 Ctrl+Enter kaydetti: {"ad":"Kaybolmasın Adı","tur":"b","onay":true,"not":"Birinci satır\nİkinci satır"}
+  ✓ A4 "Kaydetmeden Kapat" kaydetmeden kapatır
+  ✓ A5 yeniden çizim: dokunulan korunur, programın yazdığı gösterilir {"unvan":"Yeni Unvan","adres":"Eski Adres","fiyat":"117,60"}
+  ✓ A6 pencere kaydedilmemiş sayılıyor
+  ✓ A7 Kaydet sonrası kayıtlı değer çizilir, soru kalkar (Kaydedilen Unvan)
+  ✓ A8 kaydedilmiş pencere Esc ile sorusuz kapanır
+
+■ B Bildirimler: yığılma (A6), süre (B5 / A11), fare üstünde (C8)
+  ✓ B1 aynı bildirim yığılmadı: [{"text":"Bu carinin 1 taksit kartı var. Önce kartları silin.","count":"×4"}]
+  ✓ B2 süre metin uzunluğuna göre: {"short":3600,"error":7000,"long":23500}
+  ✓ B3 uzun hata iletisi 6 sn sonra hâlâ okunuyor (önce 3,6–5,2 sn)
+  ✓ B4 fare üstündeyken bildirim kapanmadı (süre 3,6 sn)
+  ✓ B6 bildirim altındaki öğeye tıklamayı engellemez (tıklanan: BUTTON)
+  ✓ B5 fare ayrılınca kalan süre sonunda kapandı
+
+■ C Tarayıcının Geri tuşu ve F5 (C10)
+  ✓ C1 Geri: cari kartından listeye döndü, program açık
+  ✓ C2 Geri: pencere kapandı, programdan çıkılmadı
+  ✓ C3 Geri: dolu formda kaydedilmemiş değişikliği sordu
+  ✓ C4 Forma Dön: değer yerinde, program açık
+  ✓ C5 F5: tarayıcı ayrılmayı sordu, form kaldı (beforeunload)
+  ✓ C6 programın yenilemesi dolu formda sorusuz yenilendi (soru yok)
+  ✓ C7 yenilemeden sonra pencere kapatmak sayfayı değiştirmedi
+
+■ D Gerçek formlar
+  ✓ D1 Yeni Cari: + Alan Ekle ve Tür değişiminden sonra değerler yerinde {"name":"Form İzolasyon Ltd. Şti.","phone":"0533 765 43 21","email":"bilgi@izolasyon.com.tr","address":"Atatürk Cad. No 5 Çankaya","type":"supplier"}
+  ✓ D1 Yeni Cari: Esc kaydedilmemiş değişikliği sordu
+  ✓ D1 Yeni Cari: "Forma Dön" sonrası form açık, değerler yerinde ({"name":"Form İzolasyon Ltd. Şti.","phone":"0533 765 43 21","email":"bilgi@izolasyon.com.tr","address":"Atatürk Cad. No 5 Çankaya","type":"s)
+  ✓ D1 Yeni Cari: × kaydedilmemiş değişikliği sordu
+  ✓ D1 Yeni Cari: "Forma Dön" sonrası form açık, değerler yerinde ({"name":"Form İzolasyon Ltd. Şti.","phone":"0533 765 43 21","email":"bilgi@izolasyon.com.tr","address":"Atatürk Cad. No 5 Çankaya","type":"s)
+  ✓ D1 Yeni Cari: dışarı tıklama kaydedilmemiş değişikliği sordu
+  ✓ D1 Yeni Cari: "Forma Dön" sonrası form açık, değerler yerinde ({"name":"Form İzolasyon Ltd. Şti.","phone":"0533 765 43 21","email":"bilgi@izolasyon.com.tr","address":"Atatürk Cad. No 5 Çankaya","type":"s)
+  ✓ D1 kaydedilen = girilen ({"name":"Form İzolasyon Ltd. Şti.","phone":"0533 765 43 21","email":"bilgi@izolasyon.com.tr","type":"supplier"})
+  ✓ D2 Cariyi Düzenle: başka oturumun değişikliği açık formu ezmedi {"phone":"0544 000 11 22","note":"Ekrandan yazılan not","email":""}
+  ✓ D2 Cariyi Düzenle: Esc kaydedilmemiş değişikliği sordu
+  ✓ D2 Cariyi Düzenle: "Forma Dön" sonrası form açık, değerler yerinde ({"phone":"0544 000 11 22","note":"Ekrandan yazılan not"})
+  ✓ D2 Cariyi Düzenle: × kaydedilmemiş değişikliği sordu
+  ✓ D2 Cariyi Düzenle: "Forma Dön" sonrası form açık, değerler yerinde ({"phone":"0544 000 11 22","note":"Ekrandan yazılan not"})
+  ✓ D2 Cariyi Düzenle: dışarı tıklama kaydedilmemiş değişikliği sordu
+  ✓ D2 Cariyi Düzenle: "Forma Dön" sonrası form açık, değerler yerinde ({"phone":"0544 000 11 22","note":"Ekrandan yazılan not"})
+  ✓ D2 kaydedilen = girilen (0544 000 11 22 · Ekrandan yazılan not)
+  ✓ D3 Cari Tahsilat: Esc kaydedilmemiş değişikliği sordu
+  ✓ D3 Cari Tahsilat: "Forma Dön" sonrası form açık, değerler yerinde ({"amount":"1.250,50"})
+  ✓ D3 Cari Tahsilat: × kaydedilmemiş değişikliği sordu
+  ✓ D3 Cari Tahsilat: "Forma Dön" sonrası form açık, değerler yerinde ({"amount":"1.250,50"})
+  ✓ D3 Cari Tahsilat: dışarı tıklama kaydedilmemiş değişikliği sordu
+  ✓ D3 Cari Tahsilat: "Forma Dön" sonrası form açık, değerler yerinde ({"amount":"1.250,50"})
+  ✓ D3 kayıttan sonra odak kaybolmadı (A10): BUTTON
+  ✓ D3 tahsilat kaydedildi (1.250,50) — 1 hareket
+  ✓ D4 Not Ekle: Esc kaydedilmemiş değişikliği sordu
+  ✓ D4 Not Ekle: "Forma Dön" sonrası form açık, değerler yerinde ({"note":"Form izolasyonu notu"})
+  ✓ D4 Not Ekle: × kaydedilmemiş değişikliği sordu
+  ✓ D4 Not Ekle: "Forma Dön" sonrası form açık, değerler yerinde ({"note":"Form izolasyonu notu"})
+  ✓ D4 Not Ekle: dışarı tıklama kaydedilmemiş değişikliği sordu
+  ✓ D4 Not Ekle: "Forma Dön" sonrası form açık, değerler yerinde ({"note":"Form izolasyonu notu"})
+  ✓ D4 Not Ekle Ctrl+Enter ile kaydedildi (İşlem Geçmişi'nde)
+  ✓ D4b Yeni Kayıt: Esc kaydedilmemiş değişikliği sordu
+  ✓ D4b Yeni Kayıt: "Forma Dön" sonrası form açık, değerler yerinde ({"c1":"İzolasyon Borçlu"})
+  ✓ D4b Yeni Kayıt: × kaydedilmemiş değişikliği sordu
+  ✓ D4b Yeni Kayıt: "Forma Dön" sonrası form açık, değerler yerinde ({"c1":"İzolasyon Borçlu"})
+  ✓ D4b Yeni Kayıt: dışarı tıklama kaydedilmemiş değişikliği sordu
+  ✓ D4b Yeni Kayıt: "Forma Dön" sonrası form açık, değerler yerinde ({"c1":"İzolasyon Borçlu"})
+  ✓ D5 cari önerisinde Aşağı ok + Enter ikinci satırı seçti (Akın Tekstil)
+  ✓ D5 açık stok listesinde Esc yalnız listeyi kapattı (form açık)
+  ✓ D5 stok önerisinde ok tuşlarıyla "Vida 48" seçildi (liste: VD-4 Vida 4 | VD-48 Vida 48)
+  ✓ D5 + Kalem Ekle sonrası değerler yerinde {"acc":"Akın Tekstil","n0":"Vida 48","q0":"3","p0":"15","n1":"Montaj Hizmeti","p1":"40"}
+  ✓ D5 Satış Faturası: Esc kaydedilmemiş değişikliği sordu
+  ✓ D5 Satış Faturası: "Forma Dön" sonrası form açık, değerler yerinde ({"acc":"Akın Tekstil","n0":"Vida 48","q0":"3","p0":"15","n1":"Montaj Hizmeti","p1":"40"})
+  ✓ D5 Satış Faturası: × kaydedilmemiş değişikliği sordu
+  ✓ D5 Satış Faturası: "Forma Dön" sonrası form açık, değerler yerinde ({"acc":"Akın Tekstil","n0":"Vida 48","q0":"3","p0":"15","n1":"Montaj Hizmeti","p1":"40"})
+  ✓ D5 Satış Faturası: dışarı tıklama kaydedilmemiş değişikliği sordu
+  ✓ D5 Satış Faturası: "Forma Dön" sonrası form açık, değerler yerinde ({"acc":"Akın Tekstil","n0":"Vida 48","q0":"3","p0":"15","n1":"Montaj Hizmeti","p1":"40"})
+  ✓ D5 kaydedilen = girilen (Akın Tekstil · Vida 48×3@15, Montaj Hizmeti×1@40)
+  ✓ D5 kaydedince form kapsamı kalktı (kart görünümü)
+  ✓ D5 kaydedilmiş faturanın kartı Esc ile sorusuz kapanır
+  ✓ D6 Satıştan İade: Esc kaydedilmemiş değişikliği sordu
+  ✓ D6 Satıştan İade: "Forma Dön" sonrası form açık, değerler yerinde ({"q0":"1"})
+  ✓ D6 Satıştan İade: × kaydedilmemiş değişikliği sordu
+  ✓ D6 Satıştan İade: "Forma Dön" sonrası form açık, değerler yerinde ({"q0":"1"})
+  ✓ D6 Satıştan İade: dışarı tıklama kaydedilmemiş değişikliği sordu
+  ✓ D6 Satıştan İade: "Forma Dön" sonrası form açık, değerler yerinde ({"q0":"1"})
+  ✓ D7 açık tedarikçi listesinde Esc yalnız listeyi kapattı
+  ✓ D7 Alış Faturası: Esc kaydedilmemiş değişikliği sordu
+  ✓ D7 Alış Faturası: "Forma Dön" sonrası form açık, değerler yerinde ({"acc":"Toptan","n0":"Çimento Torbası","p0":"320"})
+  ✓ D7 Alış Faturası: × kaydedilmemiş değişikliği sordu
+  ✓ D7 Alış Faturası: "Forma Dön" sonrası form açık, değerler yerinde ({"acc":"Toptan","n0":"Çimento Torbası","p0":"320"})
+  ✓ D7 Alış Faturası: dışarı tıklama kaydedilmemiş değişikliği sordu
+  ✓ D7 Alış Faturası: "Forma Dön" sonrası form açık, değerler yerinde ({"acc":"Toptan","n0":"Çimento Torbası","p0":"320"})
+  ✓ D8 Logo Seç sonrası kaydedilmemiş alanlar yerinde (D1)
+  ✓ D8 Kaşe / İmza Seç sonrası alanlar yerinde (D1)
+  ✓ D8 Kaşe / İmzayı Kaldır sonrası alanlar yerinde, kaşe kalktı
+  ✓ D8 Fatura Ayarları: Esc kaydedilmemiş değişikliği sordu
+  ✓ D8 Fatura Ayarları: "Forma Dön" sonrası form açık, değerler yerinde ({"name":"Izole Firma A.Ş.","address":"Kızılay Mah. 12. Sok. No 3","city":"Ankara","phone":"0312 555 44 33","iban":"TR33000610051978645784132)
+  ✓ D8 Fatura Ayarları: × kaydedilmemiş değişikliği sordu
+  ✓ D8 Fatura Ayarları: "Forma Dön" sonrası form açık, değerler yerinde ({"name":"Izole Firma A.Ş.","address":"Kızılay Mah. 12. Sok. No 3","city":"Ankara","phone":"0312 555 44 33","iban":"TR33000610051978645784132)
+  ✓ D8 Fatura Ayarları: dışarı tıklama kaydedilmemiş değişikliği sordu
+  ✓ D8 Fatura Ayarları: "Forma Dön" sonrası form açık, değerler yerinde ({"name":"Izole Firma A.Ş.","address":"Kızılay Mah. 12. Sok. No 3","city":"Ankara","phone":"0312 555 44 33","iban":"TR33000610051978645784132)
+  ✓ D8 kaydedilen = girilen (logo var, kaşe yok)
+  ✓ D8 kaydedilmiş ayarlar Esc ile sorusuz kapanır
+  ✓ D9 sekme değişiminden sonra değerler yerinde {"user":"izolasyon-kullanici","url":"https://ornek.invalid/servis"}
+  ✓ D9 Entegratör Ayarları: Esc kaydedilmemiş değişikliği sordu
+  ✓ D9 Entegratör Ayarları: "Forma Dön" sonrası form açık, değerler yerinde ({"user":"izolasyon-kullanici","url":"https://ornek.invalid/servis"})
+  ✓ D9 Entegratör Ayarları: × kaydedilmemiş değişikliği sordu
+  ✓ D9 Entegratör Ayarları: "Forma Dön" sonrası form açık, değerler yerinde ({"user":"izolasyon-kullanici","url":"https://ornek.invalid/servis"})
+  ✓ D9 Entegratör Ayarları: dışarı tıklama kaydedilmemiş değişikliği sordu
+  ✓ D9 Entegratör Ayarları: "Forma Dön" sonrası form açık, değerler yerinde ({"user":"izolasyon-kullanici","url":"https://ornek.invalid/servis"})
+  ✓ D10 Yeni Ürün: Esc kaydedilmemiş değişikliği sordu
+  ✓ D10 Yeni Ürün: "Forma Dön" sonrası form açık, değerler yerinde ({"code":"IZL-01","name":"İzolasyon Bandı","salePrice":"75"})
+  ✓ D10 Yeni Ürün: × kaydedilmemiş değişikliği sordu
+  ✓ D10 Yeni Ürün: "Forma Dön" sonrası form açık, değerler yerinde ({"code":"IZL-01","name":"İzolasyon Bandı","salePrice":"75"})
+  ✓ D10 Yeni Ürün: dışarı tıklama kaydedilmemiş değişikliği sordu
+  ✓ D10 Yeni Ürün: "Forma Dön" sonrası form açık, değerler yerinde ({"code":"IZL-01","name":"İzolasyon Bandı","salePrice":"75"})
+  ✓ D10 kaydedilen = girilen ({"name":"İzolasyon Bandı","code":"IZL-01","price":75})
+  ✓ D11 Kasa Tahsilat: Esc kaydedilmemiş değişikliği sordu
+  ✓ D11 Kasa Tahsilat: "Forma Dön" sonrası form açık, değerler yerinde ({"amount":"640"})
+  ✓ D11 Kasa Tahsilat: × kaydedilmemiş değişikliği sordu
+  ✓ D11 Kasa Tahsilat: "Forma Dön" sonrası form açık, değerler yerinde ({"amount":"640"})
+  ✓ D11 Kasa Tahsilat: dışarı tıklama kaydedilmemiş değişikliği sordu
+  ✓ D11 Kasa Tahsilat: "Forma Dön" sonrası form açık, değerler yerinde ({"amount":"640"})
+  ✓ D11 kaydedilen = girilen ({"amount":640})
+  ✓ D12 Yeni Banka Hesabı: Esc kaydedilmemiş değişikliği sordu
+  ✓ D12 Yeni Banka Hesabı: "Forma Dön" sonrası form açık, değerler yerinde ({"bankName":"Ziraat Bankası","name":"İzolasyon TL Hesabı"})
+  ✓ D12 Yeni Banka Hesabı: × kaydedilmemiş değişikliği sordu
+  ✓ D12 Yeni Banka Hesabı: "Forma Dön" sonrası form açık, değerler yerinde ({"bankName":"Ziraat Bankası","name":"İzolasyon TL Hesabı"})
+  ✓ D12 Yeni Banka Hesabı: dışarı tıklama kaydedilmemiş değişikliği sordu
+  ✓ D12 Yeni Banka Hesabı: "Forma Dön" sonrası form açık, değerler yerinde ({"bankName":"Ziraat Bankası","name":"İzolasyon TL Hesabı"})
+  ✓ D12 kaydedilen = girilen ({"bank":"Ziraat Bankası","name":"İzolasyon TL Hesabı"})
+  ✓ D13 Banka Masrafı: Esc kaydedilmemiş değişikliği sordu
+  ✓ D13 Banka Masrafı: "Forma Dön" sonrası form açık, değerler yerinde ({"amount":"17,50","description":"İzolasyon masrafı"})
+  ✓ D13 Banka Masrafı: × kaydedilmemiş değişikliği sordu
+  ✓ D13 Banka Masrafı: "Forma Dön" sonrası form açık, değerler yerinde ({"amount":"17,50","description":"İzolasyon masrafı"})
+  ✓ D13 Banka Masrafı: dışarı tıklama kaydedilmemiş değişikliği sordu
+  ✓ D13 Banka Masrafı: "Forma Dön" sonrası form açık, değerler yerinde ({"amount":"17,50","description":"İzolasyon masrafı"})
+  ✓ D13 kaydedilen = girilen (17,50 → {"minor":1750})
+  ✓ D14 Bankalar Arası Transfer: Esc kaydedilmemiş değişikliği sordu
+  ✓ D14 Bankalar Arası Transfer: "Forma Dön" sonrası form açık, değerler yerinde ({"amount":"250","description":"İzolasyon transferi"})
+  ✓ D14 Bankalar Arası Transfer: × kaydedilmemiş değişikliği sordu
+  ✓ D14 Bankalar Arası Transfer: "Forma Dön" sonrası form açık, değerler yerinde ({"amount":"250","description":"İzolasyon transferi"})
+  ✓ D14 Bankalar Arası Transfer: dışarı tıklama kaydedilmemiş değişikliği sordu
+  ✓ D14 Bankalar Arası Transfer: "Forma Dön" sonrası form açık, değerler yerinde ({"amount":"250","description":"İzolasyon transferi"})
+  ✓ D15 Çek / Senet: Esc kaydedilmemiş değişikliği sordu
+  ✓ D15 Çek / Senet: "Forma Dön" sonrası form açık, değerler yerinde ({"amount":"4.500","serial":"IZL-777","bank":"Halkbank Kızılay"})
+  ✓ D15 Çek / Senet: × kaydedilmemiş değişikliği sordu
+  ✓ D15 Çek / Senet: "Forma Dön" sonrası form açık, değerler yerinde ({"amount":"4.500","serial":"IZL-777","bank":"Halkbank Kızılay"})
+  ✓ D15 Çek / Senet: dışarı tıklama kaydedilmemiş değişikliği sordu
+  ✓ D15 Çek / Senet: "Forma Dön" sonrası form açık, değerler yerinde ({"amount":"4.500","serial":"IZL-777","bank":"Halkbank Kızılay"})
+  ✓ D15 kaydedilen = girilen ({"amount":4500,"bank":"Halkbank Kızılay"})
+  ✓ D16 Yeni Taksit Kartı: Esc kaydedilmemiş değişikliği sordu
+  ✓ D16 Yeni Taksit Kartı: "Forma Dön" sonrası form açık, değerler yerinde ({"name":"İzolasyon Taksitli","total":"12.000","count":"6"})
+  ✓ D16 Yeni Taksit Kartı: × kaydedilmemiş değişikliği sordu
+  ✓ D16 Yeni Taksit Kartı: "Forma Dön" sonrası form açık, değerler yerinde ({"name":"İzolasyon Taksitli","total":"12.000","count":"6"})
+  ✓ D16 Yeni Taksit Kartı: dışarı tıklama kaydedilmemiş değişikliği sordu
+  ✓ D16 Yeni Taksit Kartı: "Forma Dön" sonrası form açık, değerler yerinde ({"name":"İzolasyon Taksitli","total":"12.000","count":"6"})
+  ✓ D16 kaydedilen = girilen ({"name":"İzolasyon Taksitli","total":12000,"items":6})
+  ✓ D17 rol değişiminden (yetki ızgarası yeniden çizildi) sonra değerler yerinde {"name":"İzolasyon Personeli","username":"izolasyon1"}
+  ✓ D17 Yeni Kullanıcı: Esc kaydedilmemiş değişikliği sordu
+  ✓ D17 Yeni Kullanıcı: "Forma Dön" sonrası form açık, değerler yerinde ({"name":"İzolasyon Personeli","username":"izolasyon1"})
+  ✓ D17 Yeni Kullanıcı: × kaydedilmemiş değişikliği sordu
+  ✓ D17 Yeni Kullanıcı: "Forma Dön" sonrası form açık, değerler yerinde ({"name":"İzolasyon Personeli","username":"izolasyon1"})
+  ✓ D17 Yeni Kullanıcı: dışarı tıklama kaydedilmemiş değişikliği sordu
+  ✓ D17 Yeni Kullanıcı: "Forma Dön" sonrası form açık, değerler yerinde ({"name":"İzolasyon Personeli","username":"izolasyon1"})
+  ✓ D17 kaydedilen = girilen ({"username":"izolasyon1","name":"İzolasyon Personeli","role":"muhasebe"})
+  ✓ D18 Şirketin Adı ve Kodu: Esc kaydedilmemiş değişikliği sordu
+  ✓ D18 Şirketin Adı ve Kodu: "Forma Dön" sonrası form açık, değerler yerinde ({"name":"İzolasyon Şirketi"})
+  ✓ D18 Şirketin Adı ve Kodu: × kaydedilmemiş değişikliği sordu
+  ✓ D18 Şirketin Adı ve Kodu: "Forma Dön" sonrası form açık, değerler yerinde ({"name":"İzolasyon Şirketi"})
+  ✓ D18 Şirketin Adı ve Kodu: dışarı tıklama kaydedilmemiş değişikliği sordu
+  ✓ D18 Şirketin Adı ve Kodu: "Forma Dön" sonrası form açık, değerler yerinde ({"name":"İzolasyon Şirketi"})
+  ✓ D18 kaydedilen = girilen (şirket adı)
+
+■ E Dışa Aktar menüsü alttaki lisans şeridinin üstünde (run.mjs ara sıra kırmızısı, zorla)
+  ✓ E1 (768) ön koşul oluştu: "Excel Dosyası (.xlsx)" öğesinin ortası lisans şeridinin içinde ({"height":768,"centerCovered":true,"onItem":true,"onBar":false,"hit":"B.","item":[228,443,540,500],"bar":[222,437,546,843],"z":["99965","99960"]})
+  ✓ E2 (768) öğenin ortasında üstte menü öğesi var, şerit değil (B.; z 99965 / 99960)
+  ✓ E3 (768) şerit öğenin üstündeyken öğenin ortasına tıklama Excel'i indirdi (ornek-dosyalar - Aktif.xlsx)
+  ✓ E1 (900) ön koşul oluştu: "Excel Dosyası (.xlsx)" öğesinin ortası lisans şeridinin içinde ({"height":900,"centerCovered":true,"onItem":true,"onBar":false,"hit":"B.","item":[228,509,540,566],"bar":[222,503,546,909],"z":["99965","99960"]})
+  ✓ E2 (900) öğenin ortasında üstte menü öğesi var, şerit değil (B.; z 99965 / 99960)
+  ✓ E3 (900) şerit öğenin üstündeyken öğenin ortasına tıklama Excel'i indirdi (ornek-dosyalar - Aktif.xlsx)
+
+■ Kaynaktaki form / pencere açan çağrılar: 134 · ekrandan açılan: 19 · bu senaryoda açılmayan: 115
+  Açılmayanlar ortak çekirdekten (HOF.formModal / HOF.modal: kaydedilmemiş değişiklik sorusu, açık listede Esc, Ctrl+Enter, Geri tuşu, F5) korunur;
+  ekrandan ayrıca denenmediler (F = form penceresi, P = pencere):
+  F admin.js:373 roleEditor · role ? `Rolü düzenle · ${role.label}` : "Yeni Rol"
+  P admin.js:411 viewRole · `${role.label} · Yetkiler`
+  F admin.js:483 deleteUser · `${user.name} silinsin mi?`
+  F admin.js:522 restoreUser · `${name} geri alınıyor`
+  F admin.js:609 restoreUser · "Parola Sıfırla"
+  F admin.js:761 takeBackup · "Yedek Al"
+  F admin.js:800 restoreBackup · `Yedekten Geri Yükle · ${item.company}`
+  F admin.js:1437 separateCompany · `Şirketi Ayır · ${item.code} · ${item.name}`
+  F admin.js:1525 newCompany · "Yeni Şirket"
+  F admin.js:1559 resetCompany · `Şirket Verisini Sıfırla · ${item.code} · ${item.name}`
+  F admin.js:1578 deleteCompany · `Şirketi Sil · ${item.code} · ${item.name}`
+  F hof-accounts.js:649 wireTaxFields · "Posta Kutusu Seçin"
+  F hof-accounts.js:990 doubtfulTakeForm · "Şüpheli Alacağa Al"
+  F hof-accounts.js:1011 doubtfulProvisionForm · "Karşılık Ayır"
+  F hof-accounts.js:1030 doubtfulWriteOffForm · "Değersiz Alacak Yaz"
+  F hof-accounts.js:1055 doubtfulReleaseForm · "Şüpheliden Çıkar"
+  P hof-accounts.js:1121 collect · "Tahsilat",       // 2.4.3 (keşif A1/A21): aynı adlı cariler karışmasın — Cari N
+  F hof-accounts.js:1196 bulkPlanForm · "Seçilenlere Taksit Planı"
+  F hof-accounts.js:1334 mappingForm · "Excel’den Cari Yükle: Kolonları Eşle"
+  P hof-alerts.js:572 openPanel · "Bildirimler"
+  P hof-auth.js:174 printKey · used ? "Yeni Kurtarma Anahtarınız" : "Kurtarma Anahtarınız"
+  P hof-auth.js:212 printKey · forced ? "Parolanızı Yenileyin" : "Parola Değiştir"
+  F hof-bank-pos.js:303 posForm · edit ? "POS'u Düzenle" : inline ? "POS Tanımla" : "POS Ekle"
+  P hof-bank-pos.js:374 ratesForm · "Komisyon Oranları"
+  F hof-bank-pos.js:378 ratesForm · "Komisyon Oranları"
+  F hof-bank-pos.js:435 movePending · "Bekleyenleri Yeni Hesaba Taşı"
+  F hof-bank-pos.js:686 refundSale · "POS İadesi"
+  F hof-bank-pos.js:709 confirmDay · "Bankaya Geçişi Onayla"
+  F hof-bank.js:988 cardForm · edit ? "Kredi Kartını Düzenle" : inline ? "Kredi Kartı Tanımla" : "Kredi Kartı E
+  F hof-bank.js:1081 openingForm · correct ? "Açılışı Düzelt" : "Açılış Bakiyesi Gir"
+  F hof-bank.js:1182 reclassForm · mode === "bank" ? "Bankaya Geçmiş Say" : "Kart Borcuna Aktar"
+  P hof-bank.js:1222 openSubTrial · "Alt Hesap Mizanı"
+  P hof-bank.js:1256 openWizard · "Kurulum Sihirbazı"
+  F hof-bank.js:2338 reverseForm · "Ters Kaydet"
+  F hof-bank.js:2353 infoForm · "Açıklamayı Düzelt"
+  F hof-bank.js:2375 planRunForm · "Planlı İşlemi Gerçekleştir"
+  F hof-bank.js:2808 flagDefine · ?
+  P hof-cheques.js:45 open · moduleName()
+  F hof-cheques.js:332 actionForm · `${text.title} · ${cheque.instrumentLabel}${cheque.serialNo ? ` No ${cheque.seri
+  F hof-cheques.js:472 depositForm · titleOf("Bankaya Tahsile Ver", cheque)
+  F hof-cheques.js:492 withdrawForm · titleOf("Bankadan Geri Al", cheque)
+  F hof-cheques.js:564 importFlow · "Çek / Senet Portföyü: Kolonları Eşle"
+  F hof-choices.js:121 openMenu · `${label} Düzenle`
+  F hof-colops.js:124 addColumn · "Sütun Ekle"
+  F hof-columns.js:98 openEditor · "Kolon Adlarını Değiştir"
+  P hof-columns.js:196 showFixed · "Kolon adları düzeltildi"
+  F hof-companies.js:66 openNew · "Yeni Şirket"
+  P hof-documents.js:249 openAdd · "Belge Ekle"
+  P hof-documents.js:334 preview · viewable[index].name
+  P hof-documents.js:484 gallery · "Belgeler"
+  P hof-free.js:281 openCreate · blankOnly ? "Boş Sayfa" : "Yeni Sayfa"
+  F hof-free.js:1767 renameSheet · "Sayfanın Adını Değiştir"
+  P hof-free.js:1811 openHelp · "Formüller ve Kısayollar"
+  P hof-insight.js:623 openKpi · `${title}: En Yüksek ${number(result.items.length)} Kayıt`
+  P hof-insight.js:632 openKpi · ?
+  P hof-insight.js:649 openKpi · `${title}: Bu Ay`
+  P hof-insight.js:657 openKpi · ?
+  P hof-insight.js:696 openScopeReport · keys.length > 1 ? "Özet Kartları Raporu" : `${scopeName(keys[0])} Özeti`
+  P hof-insight.js:735 openQuality · `Veri Sağlığı: ${levelText} (%${quality.score})`
+  F hof-insight.js:865 sectorForm · editing ? "Sektörü Düzenle" : "Kendi Sektörünüzü Oluşturun"
+  P hof-insight.js:929 pickSector · ?
+  P hof-insight.js:1095 runAnalysis · "Verinizi tanıyoruz"
+  F hof-invoices.js:1934 grossFromNet · "Netten Brüte"
+  F hof-invoices.js:2280 payForm · sale ? "Tahsilat Ekle" : "Ödeme Yap"
+  F hof-invoices.js:2326 offsetForm · "Mahsup Et"
+  F hof-invoices.js:2357 repeatForm · "Faturayı Tekrarla"
+  F hof-invoices.js:2388 cancelForm · `${docTitle(doc)} İptal Edilsin mi?`
+  F hof-invoices.js:2415 localCancelForm · `${docTitle(doc)} Yalnız Programda İptal Edilsin mi?`
+  F hof-invoices.js:2509 deleteForm · `${docTitle(doc)} Silinsin mi?`
+  F hof-invoices.js:2534 bulkDelete · `${docs.length.toLocaleString("tr-TR")} Belge Silinsin mi?`
+  F hof-invoices.js:2554 bulkCancel · `${docs.length.toLocaleString("tr-TR")} Belge İptal Edilsin mi?`
+  P hof-invoices.js:2939 showViewPreview · "e-Belge Görünümü Önizlemesi"
+  P hof-license.js:72 explain · status.title
+  F hof-license.js:97 askContact · "DestekOfis'i kullanmaya devam ettiğiniz için teşekkürler"
+  P hof-overview.js:410 openReports · "Raporlar"
+  P hof-plan-transfer.js:182 showResult · "Aktarım tamamlandı"
+  P hof-plan-transfer.js:302 open · "Tablodan Taksit Kartına Aktar"
+  F hof-plans.js:718 distributePlan · "Otomatik Dağıt"
+  F hof-plans.js:738 editItem · item ? `${item.seq}. taksiti düzelt` : "Taksit Ekle"
+  F hof-plans.js:772 editEntry · entry ? (incoming ? "Tahsilatı Düzelt" : "Ödemeyi Düzelt") : incoming ? "Tahsila
+  P hof-plans.js:886 openGroups · "Gruplar ve Alt Gruplar"
+  F hof-plans.js:935 openGroups · target.parent ? "Alt Grubun Adı" : "Grubun Adı"
+  P hof-plans.js:988 chooseSheet · ?
+  F hof-plans.js:1069 importFromExcel · "Hangi sayfa?"
+  F hof-plans.js:1082 mappingForm · "Excel’den Yükle: Kolonları Eşle"
+  P hof-plans.js:1129 pickAccounts · "Cari Seç · Toplu Taksitlendir"
+  P hof-sessions.js:148 openNew · excel ? "Excel'den Yeni Sayfa" : "Google Sheets'ten Yeni Sayfa"
+  F hof-sessions.js:378 section · "Sayfanın Adı"
+  P hof-sources.js:95 firstImport · `Yeni veri: ${staged.label}`
+  P hof-sources.js:145 progress · ?
+  P hof-sources.js:243 decide · `Yeni veri: ${staged.label}`
+  P hof-sources.js:468 openDataSettings · "Veri ve Eşitleme"
+  P hof-sources.js:601 openMissing · "Sheet'te Artık Olmayan Kayıtlar"
+  F hof-stock.js:341 editMove · move ? (back ? "İadeyi Düzelt" : incoming ? "Girişi Düzelt" : "Çıkışı Düzelt") :
+  F hof-stock.js:477 importFromExcel · "Ürünleri Yükle: Kolonları Eşle"
+  F hof-table.js:213 editCell · `${shownName} Düzenle`
+  F hof-table.js:265 editCase · `${HOF.vocab.Record} Bilgilerini Düzenle`
+  P hof-table.js:327 newRecord · "Önce bir veri kaynağı gerekli"
+  F hof-tabs.js:75 openEditor · "Sekmeyi Düzenle"
+  P hof-whatsapp.js:80 open · kind === "statement" ? "WhatsApp ile Ekstre Gönder" : "WhatsApp ile Mesaj Gönder
+  P hof-whatsapp.js:294 forAccount · "WhatsApp"
+  F hof-workspace.js:40 paymentForm · "Tahsilat İşle"
+  P hof-workspace.js:91 openPlanCollect · "Tahsilat"
+  F hof-workspace.js:232 onCasePlanClick · "Telefon"
+  F hof-workspace.js:282 onCasePlanClick · "Haciz Kaydı"
+  F hof-workspace.js:305 onCasePlanClick · "Görev Ata"
+  F hof-workspace.js:344 editPayment · "Tahsilatı Düzelt"
+  F hof-workspace.js:441 transferForm · TRANSFER_TITLE[direction] || "Transfer"
+  F hof-workspace.js:544 cashOpeningForm · current ? "Kasa Açılış Bakiyesini Düzelt" : "Kasa Açılış Bakiyesi"
+  P hof-workspace.js:761 openTasks · "Görevler"
+  P hof-workspace.js:810 openReports · "Personel Performans Özeti"
+  P hof-workspace.js:829 openLiens · "Yaklaşan Haciz Düşümleri"
+  F hof-workspace.js:836 openProfile · "Profilim"
+  F hof-workspace.js:925 openSideEditor · "Operasyon Merkezini Düzenle"
+  F hof-workspace.js:1109 editHistoryItem · `${HISTORY_LABEL[item.type]} Düzelt`
+  ✓ envanter 134 çağrı, ekrandan açılan 19 çağrı / 20 form
+  ✓ sayfa hatası yok
+
+Ekrandan denenen formlar (20): Çekirdek (HOF.formModal / HOF.modal / HOF.swap) · Yeni Cari (hof-accounts editAccount) · Cariyi Düzenle (hof-accounts editAccount) · Cari Tahsilat / Ödeme (hof-accounts editEntry) · Not Ekle (hof-workspace note) · Yeni Kayıt Oluştur (hof-table) · Satış Faturası (hof-invoices startForm) · Satıştan İade (hof-invoices startReturn) · Alış Faturası (hof-invoices startForm) · Fatura Ayarları (hof-invoices renderSettings) · Entegratör Ayarları (hof-invoices showIntegrator) · Stok Kartı / Yeni Ürün (hof-stock editItem) · Kasa Tahsilat / Ödeme (hof-workspace editCashEntry) · Banka Hesabı (hof-bank accountForm) · Banka Masrafı (hof-bank voucherForm fee) · Bankalar Arası Transfer (hof-bank voucherForm transfer) · Çek / Senet (hof-cheques chequeForm) · Taksit Kartı (hof-plans editPlan) · Yeni Kullanıcı (admin newUser) · Şirketin Adı ve Kodu (admin editCompany)
+
+178 geçti, 0 kaldı

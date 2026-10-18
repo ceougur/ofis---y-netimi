@@ -6,8 +6,9 @@
 //   4 B2  Çok kalemli faturada kısmi iade ekrandan: ikinci kalemin miktarı 0 → yalnız birinci kalem iade edilir.
 //   5 B7  Kesimi kesin reddedilecek belgede (kimliksiz alıcı, e-Arşiv) numaralı onay penceresi açılmaz; neden yazılır, belge yazılmaz.
 //   6 B6  Posta Kutusu Seçin penceresi Esc ile kapanınca etiket yazılmaz; ileti "seçilmedi", çift nokta yok.
-//   7 H1  EDM'ye ulaşılamazken Kaydet ve Gönder: bildirim numara + Gönderilecekler der; belge Gönderilecekler'de "Gönderilmedi" rozetiyle; bağlantı
-//         düzelince Tümünü Gönder aynı numarayla bir kez gönderir.
+//   7 H1  EDM'ye ulaşılamazken Kaydet ve Gönder: dar kontrol 2.4.3 (kâhin BEKLENEN-AG, beklenti BİLEREK değişti) — numara VERİLMEZ; bildirim
+//         "numarasız Gönderilecekler'e eklendi" der; belge Gönderilecekler'de "Gönderilecek" rozetiyle; bağlantı düzelince Tümünü Gönder numara
+//         verip bir kez gönderir.
 //   8 B3  Taslaklar → Seçilenleri Kaydet: onay e-Belgeyi söyler; belge numarasız Gönderilecekler'e düşer.
 // Çıkış: "N geçti, M kaldı".
 import { mkdtempSync, rmSync } from "node:fs";
@@ -275,22 +276,23 @@ try {
     const unsentId = lastId();
     const unsent = row(unsentId);
     const h1 = (await toasts(page)).join(" | ");
-    ok(/^TEA/.test(unsent.number) && unsent.eStatus === "none", `numara aldı, gönderilmedi (${unsent.number} ${unsent.eStatus})`);
-    ok(h1.includes(unsent.number) && /Gönderilecekler/.test(h1), `bildirim numara ve Gönderilecekler der: ${h1.slice(0, 200)}`);
+    ok(unsent.number === "" && unsent.eStatus === "waiting", `numara verilmedi, Gönderilecekler'de (${unsent.number || "numarasız"} ${unsent.eStatus})`);
+    ok(h1.includes("EDM'ye ulaşılamadı; belge numarasız Gönderilecekler'e eklendi, bağlantı gelince Tümünü Gönder ile gönderin."), `bildirim numarasız Gönderilecekler der: ${h1.slice(0, 200)}`);
     await shot(page, "fatura-243-7-h1");
     await closeAll(page);
     await integrator(edm.url);
     await page.evaluate(() => window.HOF.invoices.open({ tab: "pending" }));
     await page.waitForSelector(`${pageInv} [data-act="send-pending"]`);
     const pendingRow = await textOf(page, `${pageInv} tr[data-inv="${unsentId}"]`);
-    ok(/Gönderilmedi/.test(pendingRow), `belge Gönderilecekler'de "Gönderilmedi" rozetiyle (${pendingRow.slice(0, 120)})`);
+    ok(/Gönderilecek/.test(pendingRow), `belge Gönderilecekler'de "Gönderilecek" rozetiyle (${pendingRow.slice(0, 120)})`);
     ok(/Tümünü Gönder \(1\)/.test(await textOf(page, `${pageInv} [data-act="send-pending"]`)), "düğme 1 belge");
     await page.click(`${pageInv} [data-act="send-pending"]`);
     await page.waitForSelector(`${dialog} [data-answer="yes"]`);
     await page.click(`${dialog} [data-answer="yes"]`);
     await page.waitForTimeout(2500);
-    ok(["processing", "sent"].includes(row(unsentId).eStatus) && row(unsentId).number === unsent.number, `bağlantı düzelince aynı numarayla gönderildi (${row(unsentId).eStatus})`);
-    ok(edm.state.sent.filter(item => item.id === unsent.number).length === 1, "EDM'ye bir kez");
+    const sentNo = row(unsentId).number;
+    ok(["processing", "sent"].includes(row(unsentId).eStatus) && /^TEA/.test(sentNo), `bağlantı düzelince numara alıp gönderildi (${sentNo} ${row(unsentId).eStatus})`);
+    ok(edm.state.sent.filter(item => item.id === sentNo).length === 1, "EDM'ye bir kez");
   });
 
   await step("\n■ 8 B3 Seçilenleri Kaydet → Gönderilecekler (numarasız)", async () => {

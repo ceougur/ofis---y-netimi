@@ -1,0 +1,269 @@
+TAP version 13
+# Subtest: gg243 dar kontrol ek 3: Ters Kaydet iade faturası O1 ile ertelenir; banka açıklaması numaraya döner
+    # Subtest: Ters Kaydet: iade faturası numarasız bekler, açıklama '(gönderilecek)'; Tümünü Gönder sonrası ikisi de numaraya döner, eski tarihli önce
+    ok 1 - Ters Kaydet: iade faturası numarasız bekler, açıklama '(gönderilecek)'; Tümünü Gönder sonrası ikisi de numaraya döner, eski tarihli önce
+      ---
+      duration_ms: 213.358005
+      type: 'test'
+      ...
+    1..1
+ok 1 - gg243 dar kontrol ek 3: Ters Kaydet iade faturası O1 ile ertelenir; banka açıklaması numaraya döner
+  ---
+  duration_ms: 1001.631251
+  type: 'suite'
+  ...
+# Subtest: gg243 dar kontrol ek 5: test yardımcısının edocStatusPollMs seçeneği yapılandırmaya ulaşır
+    # Subtest: startTestServer({ edocStatusPollMs: [5, 5] }) → app.config.edocStatusPollMs = [5, 5]; verilmezse tanımsız (üretim 1 sn + 2 sn)
+    ok 1 - startTestServer({ edocStatusPollMs: [5, 5] }) → app.config.edocStatusPollMs = [5, 5]; verilmezse tanımsız (üretim 1 sn + 2 sn)
+      ---
+      duration_ms: 527.153168
+      type: 'test'
+      ...
+    1..1
+ok 2 - gg243 dar kontrol ek 5: test yardımcısının edocStatusPollMs seçeneği yapılandırmaya ulaşır
+  ---
+  duration_ms: 527.64623
+  type: 'suite'
+  ...
+# Subtest: gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği
+    # Subtest: Y1: Tümünü Gönder bir istekte en çok 20 belgeyi dener; kalan sayısı döner, yinelenince hepsi eskiden yeniye gider
+    ok 1 - Y1: Tümünü Gönder bir istekte en çok 20 belgeyi dener; kalan sayısı döner, yinelenince hepsi eskiden yeniye gider
+      ---
+      duration_ms: 4124.082709
+      type: 'test'
+      ...
+    # Subtest: Y1: süre bütçesi dolunca istek erken döner (en az bir belge); kalanlar sonraki isteklerde
+    ok 2 - Y1: süre bütçesi dolunca istek erken döner (en az bir belge); kalanlar sonraki isteklerde
+      ---
+      duration_ms: 3176.750564
+      type: 'test'
+      ...
+    # Subtest: O1 (kaydet-ve-gonder): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+    ok 3 - O1 (kaydet-ve-gonder): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+      ---
+      duration_ms: 478.26482
+      type: 'test'
+      ...
+    # Subtest: O1 (duz-kaydet): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+    ok 4 - O1 (duz-kaydet): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+      ---
+      duration_ms: 436.83696
+      type: 'test'
+      ...
+    # Subtest: O1 (kartta-gonder): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+    ok 5 - O1 (kartta-gonder): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+      ---
+      duration_ms: 430.30895
+      type: 'test'
+      ...
+    # Subtest: O1 (taslaktan Kaydet ve Gönder, Seçilenleri Kaydet — hemen gönderim açık): aynı kural; belge numarasız Gönderilecekler'de
+    ok 6 - O1 (taslaktan Kaydet ve Gönder, Seçilenleri Kaydet — hemen gönderim açık): aynı kural; belge numarasız Gönderilecekler'de
+      ---
+      duration_ms: 636.06321
+      type: 'test'
+      ...
+    # Subtest: O1 komşu: aynı günlü eski bekleyen ve KALICI engelli eski bekleyen numara vermeyi durdurmaz
+    ok 7 - O1 komşu: aynı günlü eski bekleyen ve KALICI engelli eski bekleyen numara vermeyi durdurmaz
+      ---
+      duration_ms: 594.556873
+      type: 'test'
+      ...
+    # Subtest: O1 yarış (tohum 1): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+    ok 8 - O1 yarış (tohum 1): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+      ---
+      duration_ms: 2968.039432
+      type: 'test'
+      ...
+    # Subtest: O1 yarış (tohum 2): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+    ok 9 - O1 yarış (tohum 2): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+      ---
+      duration_ms: 3427.733792
+      type: 'test'
+      ...
+    # Subtest: O1 yarış (tohum 3): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+    ok 10 - O1 yarış (tohum 3): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+      ---
+      duration_ms: 3486.77874
+      type: 'test'
+      ...
+    # Subtest: O2: Tümünü Gönder sürerken Listeden Silinen belge e-Belge olarak gönderilmez; Müşteri Fişi kalır (kartından yine gönderilebilir)
+    ok 11 - O2: Tümünü Gönder sürerken Listeden Silinen belge e-Belge olarak gönderilmez; Müşteri Fişi kalır (kartından yine gönderilebilir)
+      ---
+      duration_ms: 2458.507303
+      type: 'test'
+      ...
+    # Subtest: O3: alıcısı e-Fatura mükellefi olan numarasız e-Arşiv KALICI sayılır — seriyi bekletmez; kartta gönderilemez ve nedeni yazar
+    ok 12 - O3: alıcısı e-Fatura mükellefi olan numarasız e-Arşiv KALICI sayılır — seriyi bekletmez; kartta gönderilemez ve nedeni yazar
+      ---
+      duration_ms: 799.78864
+      type: 'test'
+      ...
+    # Subtest: D2 (all): eşzamanlı Tümünü Gönder — başka oturumda gönderilen belge hata sayılmaz, iletisi ezilmez
+    ok 13 - D2 (all): eşzamanlı Tümünü Gönder — başka oturumda gönderilen belge hata sayılmaz, iletisi ezilmez
+      ---
+      duration_ms: 1917.207648
+      type: 'test'
+      ...
+    # Subtest: D2 (ids): eşzamanlı Tümünü Gönder — başka oturumda gönderilen belge hata sayılmaz, iletisi ezilmez
+    ok 14 - D2 (ids): eşzamanlı Tümünü Gönder — başka oturumda gönderilen belge hata sayılmaz, iletisi ezilmez
+      ---
+      duration_ms: 2025.927037
+      type: 'test'
+      ...
+    # Subtest: D4: numarasız bekleyenin tarihi Düzenle ile serinin son numaralı belgesine kadar ileri alınır; ondan eskiye alınamaz
+    ok 15 - D4: numarasız bekleyenin tarihi Düzenle ile serinin son numaralı belgesine kadar ileri alınır; ondan eskiye alınamaz
+      ---
+      duration_ms: 824.156798
+      type: 'test'
+      ...
+    # Subtest: D4 yarışı (r12): tur sürerken öndeki numarasız belgenin tarihi ileri alınır — arkadaki eski bekleyenler kalıcı engele düşmez
+    ok 16 - D4 yarışı (r12): tur sürerken öndeki numarasız belgenin tarihi ileri alınır — arkadaki eski bekleyenler kalıcı engele düşmez
+      ---
+      duration_ms: 2733.945297
+      type: 'test'
+      ...
+    # Subtest: Ek 1 (tur): yanlış parolada Tümünü Gönder ilk girişte durur; HİÇBİR belge numara almaz; parola düzelince hepsi sırayla gider
+    not ok 17 - Ek 1 (tur): yanlış parolada Tümünü Gönder ilk girişte durur; HİÇBİR belge numara almaz; parola düzelince hepsi sırayla gider
+      ---
+      duration_ms: 612.795205
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-mutasyon-6a1a4ef/E1b-numara-oncesi-erisim-yok/test/gg243-dar-kontrol-gonderim.test.mjs:381:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        hiçbir belge numara almadı
+        + actual - expected
+        
+          [
+        +   'TEA2026000000001',
+            '',
+            '',
+            '',
+        -   ''
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: ''
+        1: ''
+        2: ''
+        3: ''
+      actual:
+        0: 'TEA2026000000001'
+        1: ''
+        2: ''
+        3: ''
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-mutasyon-6a1a4ef/E1b-numara-oncesi-erisim-yok/test/gg243-dar-kontrol-gonderim.test.mjs:394:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Ek 1 (kartta e-Belge Gönder ve Kaydet ve Gönder): yanlış parolada numara verilmez; iletiler girişin reddedildiğini söyler
+    not ok 18 - Ek 1 (kartta e-Belge Gönder ve Kaydet ve Gönder): yanlış parolada numara verilmez; iletiler girişin reddedildiğini söyler
+      ---
+      duration_ms: 569.344846
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-mutasyon-6a1a4ef/E1b-numara-oncesi-erisim-yok/test/gg243-dar-kontrol-gonderim.test.mjs:405:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'integrator-rejected'
+        - 'integrator-login'
+                      ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'integrator-login'
+      actual: 'integrator-rejected'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-mutasyon-6a1a4ef/E1b-numara-oncesi-erisim-yok/test/gg243-dar-kontrol-gonderim.test.mjs:413:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Ek 2 (O3 kenar): belgedeki alıcı numarası carinin şimdiki numarasından farklı ve mükellef — kartta da kalıcı engel; yeni belgeyi bekletmez
+    ok 19 - Ek 2 (O3 kenar): belgedeki alıcı numarası carinin şimdiki numarasından farklı ve mükellef — kartta da kalıcı engel; yeni belgeyi bekletmez
+      ---
+      duration_ms: 555.250253
+      type: 'test'
+      ...
+    # Subtest: Ek 6 (kâhin hedefli-ag-yokken-numara): oturum önbellekteyken ağ kesilir — Kaydet ve Gönder numara vermez; ileti; bağlantı gelince sırayla gider
+    not ok 20 - Ek 6 (kâhin hedefli-ag-yokken-numara): oturum önbellekteyken ağ kesilir — Kaydet ve Gönder numara vermez; ileti; bağlantı gelince sırayla gider
+      ---
+      duration_ms: 506.87149
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-mutasyon-6a1a4ef/E1b-numara-oncesi-erisim-yok/test/gg243-dar-kontrol-gonderim.test.mjs:455:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   'TEA2026000000002',
+            '',
+        -   ''
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: ''
+        1: ''
+      actual:
+        0: 'TEA2026000000002'
+        1: ''
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-mutasyon-6a1a4ef/E1b-numara-oncesi-erisim-yok/test/gg243-dar-kontrol-gonderim.test.mjs:475:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Ek 7 (kâhin kucuk-esz-gonderiliyor-hata): iki oturum aynı anda Tümünü Gönder — öbür oturumda gönderilen belge ikinci yanıtta hata değil
+    ok 21 - Ek 7 (kâhin kucuk-esz-gonderiliyor-hata): iki oturum aynı anda Tümünü Gönder — öbür oturumda gönderilen belge ikinci yanıtta hata değil
+      ---
+      duration_ms: 1173.103806
+      type: 'test'
+      ...
+    # Subtest: Ek 8 (kâhin kucuk-fis-sira): Listeden Sil, FIS serisinin son fişinden eski tarihli belgeye fiş numarası vermez (reddeder); aynı/yeni tarih serbest
+    ok 22 - Ek 8 (kâhin kucuk-fis-sira): Listeden Sil, FIS serisinin son fişinden eski tarihli belgeye fiş numarası vermez (reddeder); aynı/yeni tarih serbest
+      ---
+      duration_ms: 496.037038
+      type: 'test'
+      ...
+    # Subtest: Ek 9 (kâhin kucuk-o1-pk-yok-bekletir, I19): PK'sız eski e-Fatura yeni e-Faturayı bekletir (doğru) — her gönderilmeyen sonucun kodu ve iletisi dolu
+    ok 23 - Ek 9 (kâhin kucuk-o1-pk-yok-bekletir, I19): PK'sız eski e-Fatura yeni e-Faturayı bekletir (doğru) — her gönderilmeyen sonucun kodu ve iletisi dolu
+      ---
+      duration_ms: 484.314517
+      type: 'test'
+      ...
+    # Subtest: BİLGİ: bağlantı yokken Tümünü Gönder ilk 'EDM'ye ulaşılamadı'da durur, kalanlara numara verilmez; bağlantı gelince hepsi gider
+    ok 24 - BİLGİ: bağlantı yokken Tümünü Gönder ilk 'EDM'ye ulaşılamadı'da durur, kalanlara numara verilmez; bağlantı gelince hepsi gider
+      ---
+      duration_ms: 846.747479
+      type: 'test'
+      ...
+    1..24
+not ok 3 - gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği
+  ---
+  duration_ms: 36255.417432
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-mutasyon-6a1a4ef/E1b-numara-oncesi-erisim-yok/test/gg243-dar-kontrol-gonderim.test.mjs:100:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 26
+# suites 3
+# pass 23
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 38911.978954

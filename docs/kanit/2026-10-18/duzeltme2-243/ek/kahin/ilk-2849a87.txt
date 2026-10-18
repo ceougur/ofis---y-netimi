@@ -1,0 +1,17 @@
+[hedefli-ag] adım 10 · fark 2 · ihlal 0 · saf model son fark 0 · çatal seçimi 0 · 2.1 sn
+    fark:numara      BEKLENEN-AG                              2
+[hedefli-o2] adım 6 · fark 0 · ihlal 0 · saf model son fark 0 · çatal seçimi 1 · 2.4 sn
+[kucuk-duzenle-ileri-tarih] adım 3 · fark 0 · ihlal 0 · saf model son fark 0 · çatal seçimi 0 · 1.5 sn
+[kucuk-esz-gonderiliyor-hata] adım 2 · fark 0 · ihlal 1 · saf model son fark 0 · çatal seçimi 0 · 1.5 sn
+    I15              BASKA-ESZ                                1
+[kucuk-fis-sira] adım 7 · fark 0 · ihlal 1 · saf model son fark 0 · çatal seçimi 1 · 1.7 sn
+    I2               BASKA-FIS-SIRA                           1
+[kucuk-o1-pk-yok-bekletir] adım 14 · fark 0 · ihlal 1 · saf model son fark 0 · çatal seçimi 2 · 2.2 sn
+    I19              BEKLENEN-I19                             1
+[kucuk-o1-zincir] adım 5 · fark 0 · ihlal 0 · saf model son fark 0 · çatal seçimi 1 · 1.6 sn
+[kucuk-o3-alici-mukellef-bekletir] adım 4 · fark 0 · ihlal 0 · saf model son fark 0 · çatal seçimi 1 · 1.5 sn
+[kucuk-tutma-yok] adım 2 · fark 0 · ihlal 0 · saf model son fark 0 · çatal seçimi 0 · 1.5 sn
+# tests 9
+# pass 5
+# fail 4
+# kahin fark 2 ihlal 3

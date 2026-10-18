@@ -1,0 +1,50 @@
+■ 0 B1 Tümünü Gönder tarih sırasıyla (bugün henüz TEA numarası verilmeden; liste yeniden eskiye)
+  ✓ düğme 3 belge
+  ✓ eski önce numaralandı, üçü de gönderildi: TEA2026629491858, TEA2026629491859, TEA2026629491860
+
+■ 1 H8 Stok kartında KDV Oranı → faturada kalemin KDV'si
+  ✓ kartın KDV Oranı alanı %10 gösterir
+  ✓ ekrandan %1 kaydedildi
+  ✓ ürün seçilince kalemin KDV'si %1 (karttan)
+
+■ 2 B8 eksi stok uyarısı kayıttan önce; B11 uzun ad ipucu
+  ✓ satır uyarısı: Stokta 5 Adet; bu miktar stoğu -3 Adet (eksi) yapar. Kaydederken sorulur.
+  ✓ miktar düzelince uyarı kalkar
+  ✓ uzun adın tamamı ipucunda
+
+■ 3 B12 fiyatsız kalemde 400 yok; B13 yeni kartta odak Miktar, sayı kutusu harf almaz
+  ✓ odak Miktar'da (qty)
+  ✓ Miktar kutusu harfi almadı
+  ✓ fiyatsız kalemde hesap 400'ü yok (0)
+  ✓ toplam kutusu fiyat ister
+
+■ 4 B2 çok kalemli faturada kısmi iade ekrandan
+  ✓ iade onayı soruldu (miktarı 0 olan kalem engel olmadı)
+  ✓ iade yazıldı (sale_return)
+  ✓ yalnız birinci kalem iade edildi ([{"name":"Defter Kareli","qty":2}])
+  ✓ iade tutarı 2 × 35 + %1 = 70,70 (70.7)
+
+■ 5 B7 reddedilecek belgede numaralı onay açılmaz
+  ✓ numaralı onay penceresi açılmadı
+  ✓ neden yazıldı: Fatura kaydedilemez: Cari (alıcı): e-Arşiv için VKN ya da TCKN zorunludur (kimliği bilinmeyen nihai tüketicide 11111111111). Cari (alıcı): i
+  ✓ belge yazılmadı
+
+■ 6 B6 Posta Kutusu Seçin → Esc: etiket yazılmaz
+  ✓ Esc sonrası posta kutusu boş kaldı
+  ✓ ileti "seçilmedi" (Fatura kaydedilemez: Cari (alıcı): e-Arşiv için VKN ya da TCKN zorunludur (kimliği bilinmeyen nihai tüketicide 11111111111). Cari (alıcı): il zorunludur (adres))
+  ✓ çift nokta yok
+
+■ 7 H1 EDM'ye ulaşılamazken Kaydet ve Gönder
+  ✓ numara verilmedi, Gönderilecekler'de (numarasız waiting)
+  ✓ bildirim numarasız Gönderilecekler der: e-Fatura mükellefi: ÇOKLU A.Ş. Posta kutusu seçilmedi; etiket boş kaldı. e-Fatura kesmeden önce Mükellef Sorgula ile posta kutusunu seçin. | Satış Faturası Gönderilecek kaydedildi. | EDM'ye ulaşılamad
+  ✓ belge Gönderilecekler'de "Gönderilecek" rozetiyle (18.10.202615:11 GönderilecekSatış Faturası Zeynep ŞahinHizmet Satışı AçıkGönderilecekTest ₺360,00 ₺360,00)
+  ✓ düğme 1 belge
+  ✓ bağlantı düzelince numara alıp gönderildi (TEA2026629491862 sent)
+  ✓ EDM'ye bir kez
+
+■ 8 B3 Seçilenleri Kaydet → Gönderilecekler (numarasız)
+  ✓ onay e-Belgeyi söyler: × ONAY 1 Taslak Kesilsin mi? Seçili taslaklar tarih sırasıyla kaydedilir (toplam ₺300,00). Her belgede stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. Stoku eksiye düşüren ya da kili
+  ✓ numarasız bekliyor ({"number":"","status":"issued","eStatus":"waiting","profile":"EARSIVFATURA","kind":"sale","payable":300})
+  ✓ sayfa hatası yok
+
+31 geçti, 0 kaldı
