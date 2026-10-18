@@ -1,6 +1,8 @@
 // Karşılaştırıcı: kahin.py beklenenleri ↔ programın API'den okunan değerleri (kuruş). Okunamayan değer (null) fark sayılır (ders 4).
 const tl = v => (v === null || v === undefined ? "okunamadı" : (v / 100).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
 
+const ZORUNLU = ["153", "190", "191", "193", "360", "391", "500", "689"];
+
 export function karsilastir(beklenen, program) {
   const denetimler = [];
   const ekle = (ad, b, p, bicim = tl) => denetimler.push({ ad, beklenen: b, program: p, ok: p !== null && p !== undefined && b === p, bicim });
@@ -12,7 +14,8 @@ export function karsilastir(beklenen, program) {
     }
     ekle(`mizan ${k} borç = alacak`, true, program.kontroller[`${k}:dengeli`], String);
     const b = beklenen.kontroller[k];
-    for (const hesap of [...new Set([...Object.keys(b), ...Object.keys(p)])].sort()) ekle(`mizan ${k} ${hesap}`, b[hesap] || 0, p[hesap] || 0);
+    // Vergi, stok ve açılış hesapları sıfır olsa da her noktada denetlenir (MM3/MM4: "sıfırlandı" iddiası ayrıca görünsün).
+    for (const hesap of [...new Set([...ZORUNLU, ...Object.keys(b), ...Object.keys(p)])].sort()) ekle(`mizan ${k} ${hesap}`, b[hesap] || 0, p[hesap] || 0);
   }
   const son = program.son || {};
   for (const [ad, v] of Object.entries(beklenen.cari)) ekle(`cari ${ad}`, v, son.cari ? (son.cari[ad] ?? null) : null);

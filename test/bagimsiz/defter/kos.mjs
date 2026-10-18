@@ -28,10 +28,16 @@ const PYTHON = process.env.PYTHON || (process.platform === "win32" ? "python" : 
  *   kdv_mahsup         : { tarih, ay: "YYYY-AA" }   (o ayın KDV Mahsup fişi; yanıttaki kimlik ids[olay.id]'e yazılır)
  *   kdv_mahsup_geri_al : { tarih, mahsup: <kdv_mahsup olayının id'si> }  (ids[olay.mahsup] = programdaki kimlik)
  */
+// Uç adları ana oturumdan (18.10.2026, birleşim bef55ea; yalnız çağrı biçimi — beklenenler kahin.py'nin kendi kurallarından).
 export const UCLAR = {
-  vergi_odeme: null,
-  kdv_mahsup: null,
-  kdv_mahsup_geri_al: null,
+  vergi_odeme: {
+    method: "POST",
+    url: "/api/workspace/tax/payments",
+    govde: (o, ids) => ({ way: o.yol === "banka" ? "bank" : "cash", ...(o.yol === "banka" ? { accountId: ids.B } : {}), date: o.tarih, taxType: { kdv: "kdv", muhtasar: "muhtasar", diger: "other" }[o.vergiTuru], amount: String(o.tutar), ...(o.gecikmeZammi ? { lateAmount: String(o.gecikmeZammi) } : {}), description: o.aciklama || o.id }),
+    kimlik: d => d?.card?.id || d?.id,
+  },
+  kdv_mahsup: { method: "POST", url: "/api/workspace/tax/vat-offset", govde: o => ({ month: o.ay, note: o.id }), kimlik: d => d?.offset?.id },
+  kdv_mahsup_geri_al: { method: "POST", url: (o, ids) => `/api/workspace/tax/vat-offset/${encodeURIComponent(ids[o.mahsup])}/reverse`, govde: () => ({}), kimlik: () => null },
 };
 
 const senaryo = JSON.parse(readFileSync(path.join(HERE, "senaryo.json"), "utf8"));
