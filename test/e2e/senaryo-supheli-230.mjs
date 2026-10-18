@@ -126,6 +126,7 @@ const rcPreview = page =>
     const main = document.querySelector(`${selector} [data-rc-main]`);
     const text = node => node.textContent.replace(/\s+/g, " ").trim();
     return {
+      busy: main?.getAttribute("aria-busy") === "true",
       heads: [...(main?.querySelectorAll("thead th") || [])].map(text),
       rows: [...(main?.querySelectorAll("tbody tr") || [])].map(row => [...row.querySelectorAll("td")].map(text)).filter(cells => cells.length > 1),
       footer: main?.querySelector("tfoot tr") ? [...main.querySelectorAll("tfoot td")].map(text) : null,
@@ -135,7 +136,7 @@ const rcPreview = page =>
 const waitRc = async (page, check, ms = 8000) => {
   const deadline = Date.now() + ms;
   let last = await rcPreview(page);
-  while (!check(last) && Date.now() < deadline) {
+  while ((last.busy || !check(last)) && Date.now() < deadline) {
     await page.waitForTimeout(250);
     last = await rcPreview(page);
   }

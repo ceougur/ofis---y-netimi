@@ -52,7 +52,15 @@ const STAMP = /\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}(:\d{2})?/g;
 const OLD_ALL = "Tüm hareketler";
 const NEW_ALL = "Tüm Zamanlar";
 const normAll = value => value.split(OLD_ALL).join("ALL-AD").split("Tüm zamanlar").join("ALL-AD").split(NEW_ALL).join("ALL-AD");
-const norm649 = value => JSON.parse(normAll(normDocumentNames(JSON.stringify(value).split(OLD_649).join("649-AD").split(NEW_649).join("649-AD"))));
+// 2.4.3 (C14, bilerek): "Banka ve POS Hareketleri" raporu Kasa grubundan Banka grubuna taşındı; satırlar ve sayılar değişmez — iki taraf aynı belirtece.
+const normGroup = value => {
+  if (Array.isArray(value)) return value.map(normGroup);
+  if (!value || typeof value !== "object") return value;
+  const out = Object.fromEntries(Object.entries(value).map(([key, item]) => [key, normGroup(item)]));
+  if (out.id === "banka-pos-hareketleri" && (out.group === "Kasa" || out.group === "Banka")) out.group = "GRUP-BANKA-POS";
+  return out;
+};
+const norm649 = value => normGroup(JSON.parse(normAll(normDocumentNames(JSON.stringify(value).split(OLD_649).join("649-AD").split(NEW_649).join("649-AD")))));
 const textNorm = value => normAll(normDocumentNames(value.replace(STAMP, "TARİH SAAT").split(OLD_649).join("649-AD").split(NEW_649).join("649-AD")));
 /** Yeni tarafın Ana Defter / Mutabakat Testi / Hesap Planı Mizanı / Defter Mutabakatı JSON'u eski düzende (121 → 101, 321 → 103; eski adlar). */
 // Kaç yanıtta senet hesabı katlandı / kaç dosya ekranla karşılaştırıldı (günlüğe yazılır: katlamanın gerçekten çalıştığının kanıtı).

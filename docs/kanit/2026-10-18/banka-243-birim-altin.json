@@ -1,0 +1,32 @@
+{
+  "ad": "banka-243-birim-altin",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/banka-210-altin.test.mjs",
+  "commit": "2edd59d5f5698b32e2faa9269245f5be6a800a1a",
+  "dal": "worktree-agent-a3eea4bb8d8a5d46c",
+  "kirli": 10,
+  "izlenmeyen": 34,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-18T00:57:32.849Z",
+  "sure_sn": 18.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-18/banka-243-birim-altin.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a3eea4bb8d8a5d46c",
+  "ham_cikti_sha256": "fa39f7aa9ecb83a17525c2d35b2ac5fa370927d8b4ce6995f232109ac98ae5c2",
+  "ham_cikti_bayt": 1395
+}

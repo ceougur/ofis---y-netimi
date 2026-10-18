@@ -1,0 +1,31 @@
+TAP version 13
+# K1 zincir: durumu değişen belge 12; karşılaştırılan yanıt 550; senet katlaması (2.2.0 İz 4.2) 0 yanıt, ekranla karşılaştırılan dosya 0
+# Subtest: altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir
+    # Subtest: zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket)
+    ok 1 - zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket)
+      ---
+      duration_ms: 13112.832006
+      type: 'test'
+      ...
+# K1 motor: durumu değişen belge 8; karşılaştırılan yanıt 154; senet katlaması (2.2.0 İz 4.2, toplam) 8 yanıt, ekranla karşılaştırılan dosya 8
+    # Subtest: v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)
+    ok 2 - v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)
+      ---
+      duration_ms: 5325.926931
+      type: 'test'
+      ...
+    1..2
+ok 1 - altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir
+  ---
+  duration_ms: 18439.879386
+  type: 'suite'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 18879.520911

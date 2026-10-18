@@ -1,0 +1,43 @@
+{
+  "ad": "banka-243-t1-senaryo-banka-210-temel",
+  "komut": "npm run test:senaryo-banka-210-temel",
+  "commit": "2edd59d5f5698b32e2faa9269245f5be6a800a1a",
+  "dal": "worktree-agent-a3eea4bb8d8a5d46c",
+  "kirli": 9,
+  "izlenmeyen": 26,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-17T23:48:23.492Z",
+  "sure_sn": 62.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 80,
+    "gecen": 79,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Banka raporları: Banka Bakiye Raporu, Banka Hareket Raporu, Banka Masraf Raporu, Alt Hesap Mizanı, Tahsildeki Çek ve Senetler, POS Ödeme Takvimi, Faturası Beklenen Komisyonlar, POS Satış Raporu, POS Komisyon Raporu, Günlük Banka Raporu, Aylık Banka Raporu, Banka Bazında Bakiye, Para Birimi Bazında B",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-banka-210-temel: 79 geçti, 1 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a3eea4bb8d8a5d46c/test/e2e/artifacts/senaryo-banka-210-temel",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-17/banka-243-t1-senaryo-banka-210-temel.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a3eea4bb8d8a5d46c",
+  "ham_cikti_sha256": "723997c0099d39b4b4380b3f312616a76c2703c12b721bbcd6a0293731c1d927",
+  "ham_cikti_bayt": 12997
+}
