@@ -66,3 +66,15 @@ iddiası EDM'de var · I18 sonda (ağ var + Tümünü Gönder) program ↔ EDM t
   kaydıyla yeniden koşulunca programın numarayı KORUDUĞU görüldü (fark aynı turdaki O1 bekletmesinin ardılıydı). Çatal geri alındı, K14 katı.
 - 18.10: "tur sürerken sil" silme-kabul dünyası yalnız belge turun ilk sırasında değilse üretiliyordu; turda hiç gönderim olmayınca (belge engelli)
   silme turdan sonra işlenir — dünya her durumda üretilir, belge gittiyse elenir.
+- 18.10 (4986b6f): tohum 4/5 × 300'deki sınıfsız farkların kökü kâhindeydi: (a) silinecek belge programda hiç oluşmamışken koşucu
+  "tur sürerken sil" adımını tümüyle atlıyordu (model turu koşuyordu) → koşucu artık turu yine koşar; (b) eşzamanlı turda tek atımlık
+  arıza iki oturumdan hangisinin önce gönderdiğine göre herhangi bir belgeye düşebilir → K19'a çatal (arıza k. gönderime); (c) O1
+  bekletmesi arızayı modelde ve programda farklı belgelere düşürüyordu → "O1-ARDIL"/"ARDIL-ARIZA-KAYDI" sınıfı; (d) FIS sıra-tarih bozulduktan
+  sonraki kâğıt kaydı farkı "FIS-SIRA-ARDIL". Hiçbiri kuralı gevşetmedi; değişmezler aynen.
+
+## Sınıflar (fark.py; farkın görünen biçiminden ve modelin adım öncesi durumundan, beklenen değer üretmeden)
+BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor) · BEKLENEN-O1-ZINCIR / TUTMA-YOK (eski gönderilebilir bekleyen varken yeni
+belge numaralandı; eski belge kalıcı tarih engeline düşer) · BEKLENEN-O2 (tur sürerken Listeden Sil kabul edildi, belge yine gitti) ·
+BEKLENEN-O3 (alıcısı mükellef çıkan bekleyen e-Arşiv seriyi bekletiyor) · BEKLENEN-AG (ağ yokken numara) · BASKA-ESZ (eşzamanlı turda
+"gönderiliyor" hata olarak döndü) · BASKA-FIS-SIRA (Listeden Sil eski tarihli belgeye FIS numarası verdi) · BASKA-DUZENLE-SIRA (numarasız
+bekleyenin tarihi sıra-tarihi bozmadan değiştirilemiyor) · *-ARDIL (aynı adımdaki asıl farkın sonucu) · BASKA (sınıfsız: önce incelenir).
