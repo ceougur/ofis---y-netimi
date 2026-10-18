@@ -444,3 +444,6 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   KARAR (kullanıcı, 18.10.2026 ~17:20 UTC): KÖ1 "Nihai Tüketici" hızlı seçeneği → 2.4.3; KÖ2 "Listeden Sil" adı → "Müşteri Fişi Olarak Bırak" (onay metni
   açık; kılavuz/testler güncellenir) → 2.4.3; KÖ3 "Başlarken" kontrol listesi → 2.4.4 (yeni özellik). KÖ4 (e-Fatura işareti elle kaldırılınca bilgi iletisi)
   UX5 ile birlikte yapılır.
+- UI/UX A PAKETİ (dal uiux-a-243, 5 commit; ana oturum birim eski 7/9 kırmızı → 9/9): UX1, UX4, UX5(cari)/KÖ4, UX7, UX8, UX10(çekirdek), UX11, UX13, UX19
+  (ad "Tahsilat / Ödeme" — yalnız nakit para çekirdeğine dokunurdu), UX21, UX22, UI1, UI3b/c, UI6–UI10, UI11 (fatura dışı); 24 madde B paketine (fatura ekranı).
+  KARAR (kullanıcı, 18.10.2026 ~18:30 UTC: "önerin gibi yap"): UI11 dışa aktarım düğmeleri bütün modüllerde tek ad ("PDF" / "Excel", aynı görünüm) → B paketi.
