@@ -407,9 +407,19 @@ try {
     const notice = await fresh.waitForSelector("#hof-notices .hof-notice.is-visible", { timeout: 25000 }).catch(() => null);
     const info = notice ? await notice.evaluate(node => ({ count: node.querySelector(".hof-notice-count")?.textContent || "", width: Math.round(node.getBoundingClientRect().width), height: Math.round(node.getBoundingClientRect().height) })) : null;
     ok(info && info.count === "1/1", `ilk bildirimin sırası “${info?.count}” (önceden 1/5: beş bildirim dönüyordu)`);
-    ok(info && info.width <= 320 && info.height <= 120, `1366×768'de bildirim ${info?.width}×${info?.height} px (önceden 372×128)`);
+    ok(info && info.width <= 320 && info.width * info.height < 372 * 128, `1366×768'de bildirim ${info?.width}×${info?.height} px, alan önceden 372×128'den küçük`);
     await shot(fresh, "a9-bildirim");
     await context.close();
+    // Geniş ekranda (1440×900) eski düzen aynı: ilk birkaç bildirim tek tek (senaryo-225-uyari kuralı).
+    const wide = await openPage({ width: 1440, height: 900 });
+    await wide.page.evaluate(() => {
+      for (const key of Object.keys(localStorage)) if (key.startsWith("hof-notices")) localStorage.removeItem(key);
+    });
+    await wide.page.reload();
+    const wideNotice = await wide.page.waitForSelector("#hof-notices .hof-notice.is-visible", { timeout: 25000 }).catch(() => null);
+    const wideCount = wideNotice ? await wideNotice.evaluate(node => node.querySelector(".hof-notice-count")?.textContent || "") : "";
+    ok(/^1\/[2-5]$/.test(wideCount), `1440×900'de ilk bildirimin sırası “${wideCount}” (tek tek gelir; gerileme yok)`);
+    await wide.context.close();
   });
 } catch (error) {
   ok(false, `senaryo yarıda kaldı: ${error.message}`);

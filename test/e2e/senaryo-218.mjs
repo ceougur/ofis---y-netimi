@@ -115,6 +115,7 @@ for (const set of DATASETS) {
     ok(!(await page.$("#hof-case-plan .hof-case-account, #hof-case-plan [data-open-account]")), "detay kartında CARİ kutusu / Cari Kartı pili yok");
 
     // 4) Cari penceresi: "Tablodan Al" yok; + Yeni Cari'de ad yazılınca tablodaki aynı adlı kayıt "Tablodaki Kayıt" alanına önerilir.
+    //    2.4.3 (keşif A1, bilerek): öneri kendiliğinden SEÇİLMEZ; "Bu Kayda Bağla" ile kullanıcı bağlar (önce alan boş kalır).
     await page.click('#hof-sidecard [data-action="accounts"]');
     await page.waitForSelector(`${modal} .hof-accounts-modal [data-act="new"]`, { timeout: 10000 });
     ok(!(await page.$(`${modal} .hof-accounts-modal [data-act="fromTable"]`)), "Cari penceresinde \"Tablodan Al\" düğmesi yok");
@@ -122,9 +123,12 @@ for (const set of DATASETS) {
     await page.waitForFunction(() => Boolean([...document.querySelectorAll(".hof-modal-backdrop.is-visible")].at(-1)?.querySelector('input[name="name"]')), null, { timeout: 10000 });
     await page.evaluate(() => { [...document.querySelectorAll(".hof-modal-backdrop.is-visible")].at(-1).querySelector('input[name="name"]').focus(); });
     await page.keyboard.type(set.expect, { delay: 20 });
-    await page.waitForFunction(key => [...document.querySelectorAll(".hof-modal-backdrop.is-visible")].at(-1)?.querySelector('.hof-case-picker input[name="caseKey"]')?.value === key, newKey, { timeout: 8000 }).catch(() => null);
+    await page.waitForFunction(key => [...document.querySelectorAll(".hof-modal-backdrop.is-visible")].at(-1)?.querySelector(`[data-case-suggest-link="${CSS.escape(key)}"]`), newKey, { timeout: 8000 }).catch(() => null);
+    const offered = await page.evaluate(() => { const box = [...document.querySelectorAll(".hof-modal-backdrop.is-visible")].at(-1); return { caseKey: box.querySelector('.hof-case-picker input[name="caseKey"]')?.value || "", offer: box.querySelector("[data-case-suggest]")?.textContent || "" }; });
+    ok(offered.caseKey === "" && /Bu Kayda Bağla/.test(offered.offer), `+ Yeni Cari: ad yazılınca tablodaki kayıt önerildi, kendiliğinden seçilmedi (“${offered.offer.slice(0, 60)}”)`);
+    await page.evaluate(key => [...document.querySelectorAll(".hof-modal-backdrop.is-visible")].at(-1).querySelector(`[data-case-suggest-link="${CSS.escape(key)}"]`)?.click(), newKey);
     const picker = await page.evaluate(() => { const box = [...document.querySelectorAll(".hof-modal-backdrop.is-visible")].at(-1); return { caseKey: box.querySelector('.hof-case-picker input[name="caseKey"]')?.value || "", note: box.querySelector(".hof-case-picker small")?.textContent || "" }; });
-    ok(picker.caseKey === newKey, `+ Yeni Cari: ad yazılınca tablodaki kayıt önerildi (${picker.caseKey || "—"} · ${picker.note.slice(0, 50)})`);
+    ok(picker.caseKey === newKey, `"Bu Kayda Bağla" ile kayıt seçildi (${picker.caseKey || "—"} · ${picker.note.slice(0, 50)})`);
     await page.evaluate(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible")].at(-1).querySelector('.hof-form button[type="submit"]').click());
     await page.waitForFunction(name => (document.body.innerText || "").includes(name), set.expect, { timeout: 10000 }).catch(() => null);
     await page.waitForTimeout(600);

@@ -1,0 +1,292 @@
+TAP version 13
+# Subtest: 2.4.3 keşif A: kayda bağlı cari geçmişi, Sil engeli, ekstre TOPLAM, hareket adları
+    # Subtest: A2 kayıt önce → cari bağlı → kayıttan tahsilat: geçmişte ve Toplam Tahsilat'ta; bağsız aynı adlı carinin tahsilatı girmez
+    not ok 1 - A2 kayıt önce → cari bağlı → kayıttan tahsilat: geçmişte ve Toplam Tahsilat'ta; bağsız aynı adlı carinin tahsilatı girmez
+      ---
+      duration_ms: 151.092398
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/cari243-eski-4d546e9/test/cari-243.test.mjs:47:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yalnız bağlı carinin tahsilat/ödemesi (borç satırı ve ikizinki yok)
+        + actual - expected
+        
+        + []
+        - [
+        -   [
+        -     'in',
+        -     750
+        -   ],
+        -   [
+        -     'out',
+        -     50
+        -   ]
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'in'
+          1: 750
+        1:
+          0: 'out'
+          1: 50
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/cari243-eski-4d546e9/test/cari-243.test.mjs:59:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: A2 cari önce (tahsilat bağdan ÖNCE girilmiş) → sonra kayda bağlanır: geçmişte görünür; bağ kalkınca düşer
+    not ok 2 - A2 cari önce (tahsilat bağdan ÖNCE girilmiş) → sonra kayda bağlanır: geçmişte görünür; bağ kalkınca düşer
+      ---
+      duration_ms: 36.773833
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/cari243-eski-4d546e9/test/cari-243.test.mjs:69:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   300
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 300
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/cari243-eski-4d546e9/test/cari-243.test.mjs:77:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: A2 taksit önce: kayda ve cariye bağlı taksit kartının tahsilatı bir kez (plan-entry), cari tahsilatı ayrıca
+    not ok 3 - A2 taksit önce: kayda ve cariye bağlı taksit kartının tahsilatı bir kez (plan-entry), cari tahsilatı ayrıca
+      ---
+      duration_ms: 70.659394
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/cari243-eski-4d546e9/test/cari-243.test.mjs:85:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   150
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 150
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/cari243-eski-4d546e9/test/cari-243.test.mjs:93:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: A2 "Kayıt Kartından Tahsilatlar": kayıt tahsilatları + kayda bağlı carilerin tahsilatları (Cari No ile); bağsız cari girmez
+    not ok 4 - A2 "Kayıt Kartından Tahsilatlar": kayıt tahsilatları + kayda bağlı carilerin tahsilatları (Cari No ile); bağsız cari girmez
+      ---
+      duration_ms: 5.685849
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/cari243-eski-4d546e9/test/cari-243.test.mjs:97:3'
+      failureType: 'testCodeFailure'
+      error: 'bağlı cari tahsilatı Cari No ile'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/cari243-eski-4d546e9/test/cari-243.test.mjs:102:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: A5 silinemeyen caride kart deleteBlock taşır, silme ucuyla aynı neden; engel kalkınca silinir
+    not ok 5 - A5 silinemeyen caride kart deleteBlock taşır, silme ucuyla aynı neden; engel kalkınca silinir
+      ---
+      duration_ms: 19.52453
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/cari243-eski-4d546e9/test/cari-243.test.mjs:111:3'
+      failureType: 'testCodeFailure'
+      error: 'The "string" argument must be of type string. Received type undefined (undefined)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/cari243-eski-4d546e9/test/cari-243.test.mjs:115:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: A22 cari ekstre PDF'inde TOPLAM satırı = satırların toplamı; A15 hareket türü adları
+    not ok 6 - A22 cari ekstre PDF'inde TOPLAM satırı = satırların toplamı; A15 hareket türü adları
+      ---
+      duration_ms: 91.390608
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/cari243-eski-4d546e9/test/cari-243.test.mjs:139:3'
+      failureType: 'testCodeFailure'
+      error: 'TOPLAM satırı var'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/cari243-eski-4d546e9/test/cari-243.test.mjs:150:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 1 - 2.4.3 keşif A: kayda bağlı cari geçmişi, Sil engeli, ekstre TOPLAM, hareket adları
+  ---
+  duration_ms: 702.558042
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/cari243-eski-4d546e9/test/cari-243.test.mjs:22:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 79.629846
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    not ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 12.188017
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/cari243-eski-4d546e9/test/yazim-duzeni-243.test.mjs:152:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Hareket türü ve varsayılan adlar başlık yazımıyla yazılmalı:
+        server/lib/accounts.mjs: “Taksit tahsilatı” → “Taksit Tahsilatı”
+        server/lib/accounts.mjs: “Karşılıksız çek / senet (taksit)” → “Karşılıksız Çek / Senet (taksit)”
+        server/lib/accounts.mjs: “Taksit iadesi” → “Taksit İadesi”
+        server/lib/cash-report.mjs: “Cari tahsilat” → “Cari Tahsilat”
+        server/lib/cash-report.mjs: “Cariye ödeme” → “Cariye Ödeme”
+        server/lib/cash-report.mjs: “Taksit tahsilatı” → “Taksit Tahsilatı”
+        server/lib/cash-report.mjs: “Taksit ödemesi/iadesi” → “Taksit Ödemesi/iadesi”
+        server/lib/plan-report.mjs: “Taksit tahsilatı” → “Taksit Tahsilatı”
+        server/lib/plan-report.mjs: “Ödeme / iade” → “Ödeme / İade”
+        server/routes/accounts.mjs: “Cari tahsilat” → “Cari Tahsilat”
+        server/routes/accounts.mjs: “Cariye ödeme” → “Cariye Ödeme”
+        client/assets/hof-workspace.js: “Cari tahsilat” → “Cari Tahsilat”
+        client/assets/hof-workspace.js: “Cariye ödeme” → “Cariye Ödeme”
+        client/assets/hof-workspace.js: “Taksit tahsilatı” → “Taksit Tahsilatı”
+        client/assets/hof-workspace.js: “Taksit ödemesi/iadesi” → “Taksit Ödemesi/iadesi”
+        server/lib/dataset.mjs: “Çalışma verisi” → “Çalışma Verisi”
+        server/lib/client-state.mjs: “Çalışma verisi” → “Çalışma Verisi”
+        client/assets/hof-sources.js: “Çalışma verisi” → “Çalışma Verisi”
+        server/routes/report-center.mjs: “Kayıt tahsilatı” → “Kayıt Tahsilatı”
+        server/routes/report-center.mjs: “Çek / senet” → “Çek / Senet”
+        client/admin.html (marka alt başlığı): “Yönetim paneli”
+        + actual - expected
+        
+        + [
+        +   'server/lib/accounts.mjs: “Taksit tahsilatı” → “Taksit Tahsilatı”',
+        +   'server/lib/accounts.mjs: “Karşılıksız çek / senet (taksit)” → “Karşılıksız Çek / Senet (taksit)”',
+        +   'server/lib/accounts.mjs: “Taksit iadesi” → “Taksit İadesi”',
+        +   'server/lib/cash-report.mjs: “Cari tahsilat” → “Cari Tahsilat”',
+        +   'server/lib/cash-report.mjs: “Cariye ödeme” → “Cariye Ödeme”',
+        +   'server/lib/cash-report.mjs: “Taksit tahsilatı” → “Taksit Tahsilatı”',
+        +   'server/lib/cash-report.mjs: “Taksit ödemesi/iadesi” → “Taksit Ödemesi/iadesi”',
+        +   'server/lib/plan-report.mjs: “Taksit tahsilatı” → “Taksit Tahsilatı”',
+        +   'server/lib/plan-report.mjs: “Ödeme / iade” → “Ödeme / İade”',
+        +   'server/routes/accounts.mjs: “Cari tahsilat” → “Cari Tahsilat”',
+        +   'server/routes/accounts.mjs: “Cariye ödeme” → “Cariye Ödeme”',
+        +   'client/assets/hof-workspace.js: “Cari tahsilat” → “Cari Tahsilat”',
+        +   'client/assets/hof-workspace.js: “Cariye ödeme” → “Cariye Ödeme”',
+        +   'client/assets/hof-workspace.js: “Taksit tahsilatı” → “Taksit Tahsilatı”',
+        +   'client/assets/hof-workspace.js: “Taksit ödemesi/iadesi” → “Taksit Ödemesi/iadesi”',
+        +   'server/lib/dataset.mjs: “Çalışma verisi” → “Çalışma Verisi”',
+        +   'server/lib/client-state.mjs: “Çalışma verisi” → “Çalışma Verisi”',
+        +   'client/assets/hof-sources.js: “Çalışma verisi” → “Çalışma Verisi”',
+        +   'server/routes/report-center.mjs: “Kayıt tahsilatı” → “Kayıt Tahsilatı”',
+        +   'server/routes/report-center.mjs: “Çek / senet” → “Çek / Senet”',
+        +   'client/admin.html (marka alt başlığı): “Yönetim paneli”'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'server/lib/accounts.mjs: “Taksit tahsilatı” → “Taksit Tahsilatı”'
+        1: 'server/lib/accounts.mjs: “Karşılıksız çek / senet (taksit)” → “Karşılıksız Çek / Senet (taksit)”'
+        2: 'server/lib/accounts.mjs: “Taksit iadesi” → “Taksit İadesi”'
+        3: 'server/lib/cash-report.mjs: “Cari tahsilat” → “Cari Tahsilat”'
+        4: 'server/lib/cash-report.mjs: “Cariye ödeme” → “Cariye Ödeme”'
+        5: 'server/lib/cash-report.mjs: “Taksit tahsilatı” → “Taksit Tahsilatı”'
+        6: 'server/lib/cash-report.mjs: “Taksit ödemesi/iadesi” → “Taksit Ödemesi/iadesi”'
+        7: 'server/lib/plan-report.mjs: “Taksit tahsilatı” → “Taksit Tahsilatı”'
+        8: 'server/lib/plan-report.mjs: “Ödeme / iade” → “Ödeme / İade”'
+        9: 'server/routes/accounts.mjs: “Cari tahsilat” → “Cari Tahsilat”'
+        10: 'server/routes/accounts.mjs: “Cariye ödeme” → “Cariye Ödeme”'
+        11: 'client/assets/hof-workspace.js: “Cari tahsilat” → “Cari Tahsilat”'
+        12: 'client/assets/hof-workspace.js: “Cariye ödeme” → “Cariye Ödeme”'
+        13: 'client/assets/hof-workspace.js: “Taksit tahsilatı” → “Taksit Tahsilatı”'
+        14: 'client/assets/hof-workspace.js: “Taksit ödemesi/iadesi” → “Taksit Ödemesi/iadesi”'
+        15: 'server/lib/dataset.mjs: “Çalışma verisi” → “Çalışma Verisi”'
+        16: 'server/lib/client-state.mjs: “Çalışma verisi” → “Çalışma Verisi”'
+        17: 'client/assets/hof-sources.js: “Çalışma verisi” → “Çalışma Verisi”'
+        18: 'server/routes/report-center.mjs: “Kayıt tahsilatı” → “Kayıt Tahsilatı”'
+        19: 'server/routes/report-center.mjs: “Çek / senet” → “Çek / Senet”'
+        20: 'client/admin.html (marka alt başlığı): “Yönetim paneli”'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/cari243-eski-4d546e9/test/yazim-duzeni-243.test.mjs:173:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 3 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 31.167937
+      type: 'test'
+      ...
+    1..3
+not ok 2 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 124.758117
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/cari243-eski-4d546e9/test/yazim-duzeni-243.test.mjs:143:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 9
+# suites 2
+# pass 2
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1092.440466

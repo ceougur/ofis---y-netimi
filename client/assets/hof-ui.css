@@ -4923,8 +4923,8 @@ body.hof-notice-open .hof-toasts { bottom: calc(18px + var(--hof-notice-space, 1
 @media (prefers-reduced-motion: reduce) {
   .hof-notice { transition: none; }
 }
-/* 2.4.3 (keşif A9): dizüstü ekranlarda (≤ 1499 px genişlik ya da ≤ 860 px yükseklik) bildirim daha küçük: açıklama satırı gizli, dar ve
-   alçak — detay kartının alt kısmını daha az örter (1366×768'de 372×128 px idi). Açıklama zil listesinde ve düğme title'ında durur. */
+/* 2.4.3 (keşif A9): dizüstü ekranlarda (≤ 1499 px genişlik ya da ≤ 860 px yükseklik) bildirim daha küçük: dar ve
+   alçak — detay kartının alt kısmını daha az örter (1366×768'de 372×128 px idi). "Gerçekleştirildi" açıklaması küçük yazıyla kalır. */
 @media (max-width: 1499px), (max-height: 860px) {
   .hof-notices { width: min(312px, calc(100vw - 36px)); right: 14px; bottom: 14px; }
   .hof-notice { gap: 9px; padding: 10px 10px 12px 11px; border-radius: 12px; }
@@ -4932,7 +4932,7 @@ body.hof-notice-open .hof-toasts { bottom: calc(18px + var(--hof-notice-space, 1
   .hof-notice-title { font-size: 13px; }
   .hof-notice-text { font-size: 11.5px; line-height: 1.35; }
   .hof-notice-actions { margin-top: 6px; }
-  .hof-notice-hint { display: none; }
+  .hof-notice-hint { margin-top: 4px; font-size: 10.5px; line-height: 1.3; }
 }
 @media (max-width: 560px) {
   .hof-notices { right: 10px; bottom: 10px; width: calc(100vw - 20px); }

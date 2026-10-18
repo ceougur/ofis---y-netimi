@@ -11,7 +11,7 @@
  * "Gerçekleştirildi · 15.10.2026") ve uyarı bir daha gelmez; her ay tekrarlayan ödeme gününde ayar hücresine
  * dokunulmaz, yalnızca o ayın kalemi kapanır; görevde görev tamamlanır. Hepsi "Geri al" ile geri alınır.
  * Tahsilat girilene (ya da kalem kapatılana), son tarih geçene ya da görev tamamlanana kadar
- * her 3 saatte bir yeniden gösterilir; bir turda çoksa ilkinden sonra "… daha" özeti gelir (2.4.3). Üst çubuktaki zil düğmesi tüm listeyi açar ve sayıyı rozetle gösterir. */
+ * her 3 saatte bir yeniden gösterilir; bir turda çoksa ilk birkaçından (dar ekranda ilkinden; 2.4.3) sonra "… daha" özeti gelir. Üst çubuktaki zil düğmesi tüm listeyi açar ve sayıyı rozetle gösterir. */
 (() => {
   "use strict";
   const HOF = window.HOF;
@@ -19,9 +19,11 @@
   const SHOW_MS = 20_000;
   const GAP_MS = 10_000; // iki bildirim arasında
   const LEAVE_MS = 260;
-  // 2.4.3 (keşif A9): turda yalnız en öncelikli bildirim tek başına gelir, kalanı tek özetle ("n bildirim daha var" · Tümünü Gör);
-  // önceden 5 bildirim 20 sn arayla sırayla dönüyor, 1366×768 ekranda dakikalarca detay kartını örtüyordu.
-  const FIRST_BATCH = 1;
+  // Turda ilk 5 bildirim tek tek, kalanı özetle (v2.0.2; senaryo-225-uyari). 2.4.3 (keşif A9): dar ekranda (genişlik < 1440 ya da yükseklik < 800;
+  // ör. 1366×768 dizüstü) bildirim detay kartının alt kısmını örtüyor ve 5 bildirim 20 sn arayla dakikalarca dönüyordu — orada turda yalnız en
+  // öncelikli bildirim tek başına gelir, kalanı tek özetle ("n bildirim daha var" · Tümünü Gör). Geniş ekranda davranış aynı.
+  const WIDE_BATCH = 5;
+  const firstBatch = () => (window.innerWidth < 1440 || window.innerHeight < 800 ? 1 : WIDE_BATCH);
   const TASK_AHEAD_DAYS = 7;
   const REPEAT_MS = 3 * 60 * 60 * 1000;
 
@@ -502,7 +504,7 @@
       if (urgent.length) schedule();
       return;
     }
-    const room = Math.max(0, FIRST_BATCH - shownThisLoad);
+    const room = Math.max(0, firstBatch() - shownThisLoad);
     const batch = candidates.slice(0, room);
     const rest = candidates.slice(room);
     const total = batch.length;

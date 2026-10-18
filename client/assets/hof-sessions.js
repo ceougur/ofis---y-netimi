@@ -454,7 +454,13 @@
 
   HOF.whenReady(() => {
     holdPlace();
-    load().catch(() => {});
+    load().catch(() => {
+      // Liste okunamadıysa yer tutucu boş bant olarak kalmaz.
+      if (state || !placeholder) return;
+      placeholder = false;
+      node?.remove();
+      node = null;
+    });
     HOF.onDom(place);
     revealPending();
   });
