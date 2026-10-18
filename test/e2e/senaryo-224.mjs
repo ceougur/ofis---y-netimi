@@ -516,7 +516,10 @@ try {
         const node = [...document.querySelectorAll(".hof-toast-error")].at(-1);
         if (!node) return { found: false };
         const r = node.getBoundingClientRect();
+        // 2.4.3: bildirim tıklamayı geçirir (pointer-events: none); üstte mi (görünür mü) ölçmek için bu an isabet testine açılır.
+        node.style.pointerEvents = "auto";
         const hit = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+        node.style.pointerEvents = "";
         return { found: true, onTop: Boolean(hit && node.contains(hit)), cover: hit ? `${hit.tagName.toLowerCase()}.${[...hit.classList].join(".")}` : "" };
       });
       ok(onTop.found && onTop.onTop, `ret bildirimi pencerenin üstünde, okunur (${onTop.onTop ? "en üstte" : `üstünü örten: ${onTop.cover || "bildirim yok"}`})`);
