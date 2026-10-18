@@ -352,8 +352,10 @@ try {
 
   console.log("I) UI1 / UI10 / UI3c / UI11: kontrast ve yerleşim");
   await part("I", async () => {
+    // CI #836: pencere içeriği gelmeden ölçülürse liste boş kalır — önce açık pencereler kapanır, ölçülecek öğeler pencerede beklenir.
+    await closeAll(page);
     await page.click('#hof-sidecard [data-action="accounts"]');
-    await page.waitForSelector(".hof-whatsapp");
+    for (const sel of [".hof-whatsapp", ".hof-table th", ".hof-eyebrow"]) await page.waitForSelector(`.hof-modal-backdrop.is-visible ${sel}`, { timeout: 15000 });
     const wa = await contrastOf(page, ".hof-modal-backdrop.is-visible .hof-whatsapp");
     ok(wa.length && wa.every(item => item.ratio >= 4.5), `WhatsApp düğmeleri ≥ 4,5:1 (${JSON.stringify(wa)})`);
     const th = await contrastOf(page, ".hof-modal-backdrop.is-visible .hof-table th");
