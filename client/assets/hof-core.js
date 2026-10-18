@@ -678,21 +678,34 @@
   // A6: aynı tür ve metindeki bildirim ekranda zaten varsa yenisi eklenmez; var olanın süresi baştan başlar ve sayacı artar (×2, ×3…).
   const READ_CHARS_PER_SECOND = 15;
   // Fare bildirimin üstünde mi: bildirim tıklamayı engellemediği için (altındaki sekme / düğme tıklanabilir) mouseenter gelmez; konum izlenir.
+  // 2.4.3 (CI #837 B4, test/e2e/form-izolasyon-b4-yaris.mjs): bildirim fare DURURKEN de kayar (sağ alttaki açılır bildirim açılınca / kapanınca
+  // kutu ~150 px oynar, pencere açılınca üst ortaya geçer); mousemove gelmez. Bu yüzden (1) kapanma anında fare bildirimin üstündeyse kapanmaz,
+  // (2) fare üstündeyken konum yarım saniyede bir yeniden ölçülür: bildirim fareden uzaklaştıysa bekleme biter.
   let hoverFrame = 0;
+  let hoverRecheck = 0;
   let pointer = null;
+  const pointerOver = item => {
+    if (!pointer) return false;
+    const box = item.getBoundingClientRect();
+    return pointer.x >= box.left && pointer.x <= box.right && pointer.y >= box.top && pointer.y <= box.bottom;
+  };
   const checkToastHover = () => {
     hoverFrame = 0;
+    clearTimeout(hoverRecheck);
+    hoverRecheck = 0;
     const host = document.getElementById("hof-toasts");
     if (!host || !pointer) return;
+    let anyOver = false;
     for (const item of host.children) {
       if (!item.hofHover) continue;
-      const box = item.getBoundingClientRect();
-      const over = pointer.x >= box.left && pointer.x <= box.right && pointer.y >= box.top && pointer.y <= box.bottom;
+      const over = pointerOver(item);
+      if (over) anyOver = true;
       if (over !== Boolean(item.hofOver)) {
         item.hofOver = over;
         item.hofHover(over);
       }
     }
+    if (anyOver) hoverRecheck = setTimeout(checkToastHover, 500);
   };
   document.addEventListener(
     "mousemove",
@@ -800,6 +813,14 @@
     let repeats = 1;
     const leave = () => {
       timer = 0;
+      // Fare dururken bildirim altına kaymış olabilir (mousemove gelmedi): kapanma anında konum yeniden ölçülür.
+      if (pointerOver(node)) {
+        node.hofOver = true;
+        remaining = 0;
+        hold();
+        checkToastHover();
+        return;
+      }
       node.hofLeaving = true;
       node.classList.remove("is-visible");
       setTimeout(() => node.remove(), 250);
@@ -822,7 +843,7 @@
       remaining = Math.max(2000, remaining);
       run();
     };
-    // Bildirim tıklamayı geçirir (CSS pointer-events: none); fare üstünde mi, konumdan izlenir (watchToastHover).
+    // Bildirim tıklamayı geçirir (CSS pointer-events: none); fare üstünde mi, konumdan izlenir (checkToastHover).
     node.hofHover = over => (over ? hold() : release());
     node.addEventListener("focusin", hold);
     node.addEventListener("focusout", event => {

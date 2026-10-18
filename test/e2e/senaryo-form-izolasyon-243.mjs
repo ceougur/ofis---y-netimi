@@ -287,16 +287,35 @@ try {
     }, longText);
     await sleep(6000);
     ok((await toastTexts(page)).includes(longText), "B3 uzun hata iletisi 6 sn sonra hâlâ okunuyor (önce 3,6–5,2 sn)");
+    // CI #837 (dd3fa08) B4 ara sıra kırmızı — test yarışı (test/e2e/form-izolasyon-b4-yaris.mjs): kutu ölçüldükten sonra sağ alttaki açılır
+    // bildirim (bölüm A'daki pencereler kapanınca sırası gelir) açılıp/kapanınca bildirimler kutusu ~150 px kayıyor, fare bildirimin DIŞINA
+    // konuyordu. Ön koşul belirlenir: açılır bildirimler kullanıcı ayarıyla kapatılır ("Sağ altta açılır bildirim göster"), açık olan × ile
+    // kapanır, kutunun geçişleri bitene dek beklenir; fare konduktan sonra bildirimin İÇİNDE olduğu ölçülür (bekleme süresi uzatılmadı).
+    const quietAlerts = mute => page.evaluate(on => {
+      localStorage.setItem(`hof-notices-off:${window.HOF.user?.id || "?"}`, JSON.stringify(on));
+      if (on) document.querySelectorAll("#hof-notices .hof-notice-close").forEach(button => button.click());
+    }, mute);
+    const settled = () => page.waitForFunction(() => !document.querySelector("#hof-notices .hof-notice") && !document.body.classList.contains("hof-notice-open") && (document.getElementById("hof-toasts")?.getAnimations({ subtree: true }).length ?? 0) === 0, null, { timeout: 5000 }).then(() => true, () => false);
+    const noticeBefore = await page.evaluate(() => ({ open: document.querySelectorAll("#hof-notices .hof-notice").length, shifted: document.body.classList.contains("hof-notice-open") }));
+    console.log(`  · B4 öncesi açılır bildirim: ${noticeBefore.open} (kutu kaymış: ${noticeBefore.shifted})`);
+    await quietAlerts(true);
+    const quiet = await settled();
     await page.evaluate(() => {
       document.querySelectorAll(".hof-toast").forEach(node => node.remove());
       window.HOF.toast("Fare testi.", { type: "info" });
     });
-    await sleep(300);
+    await settled();
     const toastBox = await page.locator(".hof-toast").first().boundingBox();
+    const pointAt = [toastBox.x + 30, toastBox.y + toastBox.height / 2];
+    const pointerInside = () => page.evaluate(([x, y]) => {
+      const box = document.querySelector(".hof-toast")?.getBoundingClientRect();
+      return Boolean(box) && x >= box.left && x <= box.right && y >= box.top && y <= box.bottom;
+    }, pointAt);
     // Bildirim tıklamayı geçirir; fare onun üstüne gerçek fare hareketiyle getirilir (metnin üstü, Kapat düğmesi değil).
-    await page.mouse.move(toastBox.x + 30, toastBox.y + toastBox.height / 2, { steps: 4 });
+    await page.mouse.move(pointAt[0], pointAt[1], { steps: 4 });
+    const placed = quiet && (await pointerInside());
     await sleep(4800);
-    ok((await toastTexts(page)).includes("Fare testi."), "B4 fare üstündeyken bildirim kapanmadı (süre 3,6 sn)");
+    ok(placed && (await toastTexts(page)).includes("Fare testi."), `B4 fare üstündeyken bildirim kapanmadı (süre 3,6 sn; ön koşul: açılır bildirim yok ${quiet}, fare bildirimin içinde ${placed})`);
     const passes = await page.evaluate(([x, y]) => {
       const hit = document.elementFromPoint(x, y);
       return !hit?.closest(".hof-toast") ? `${hit?.tagName || "?"}` : "";
@@ -305,6 +324,10 @@ try {
     await page.mouse.move(5, 5, { steps: 4 });
     await sleep(4600);
     ok(!(await toastTexts(page)).includes("Fare testi."), "B5 fare ayrılınca kalan süre sonunda kapandı");
+    await page.evaluate(() => {
+      localStorage.setItem(`hof-notices-off:${window.HOF.user?.id || "?"}`, "false");
+      window.HOF.alerts?.enqueue?.();
+    });
 
     // ======================================================================================================================================
   });
