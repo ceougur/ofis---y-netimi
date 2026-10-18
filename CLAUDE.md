@@ -450,3 +450,6 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - KARAR (kullanıcı, 18.10.2026 ~19:10 UTC: "uygula"; token tasarrufu): (1) DAR KONTROL 3 kapsamı = e-Belge numara/gönderim akışı (sunucu + ekrandaki
   Tümünü Gönder döngüsü) + Vergi Ödemesi / KDV Mahsup kayıtları + stok açılışının deftere girmesi; genel UI/UX değişiklikleri dışarıda (ajan testleri +
   tam e2e sınar). (2) 30 dk denetim raporu değişiklik yoksa TEK SATIR; kırmızı/yeni bulgu/karar gerekince ayrıntılı. Kalan iş tahmini ~20 sa, ~3,5–5 M token.
+- KARAR (kullanıcı, 18.10.2026 ~19:30 UTC; B paketi kapsamı): 2.4.3'te → UX2, UX3, UX5 (fatura), UX6, UX28, UI4, UI2, UX12, UX24, UX23, UX14, UX26, KÖ1, KÖ2.
+  2.4.4'e ERTELENDİ → UI11 (düğme adlarının birleştirilmesi + fatura penceresi çift başlık), UI5, UI9 (fatura), UI3a, UX15, UX16, UX17, UX18, UX20, UX25,
+  UX27, UX9, UX10 (fatura). Ertelenenler iş listesinde "2.4.4", sürüm notunda ve teslimde BİLİNEN SINIRLAR'da yazılır.
