@@ -1,0 +1,38 @@
+{
+ "ad": "hedefli-ag",
+ "tohum": 0,
+ "islem": 10,
+ "bugun": "2026-06-17",
+ "farkSayisi": 2,
+ "ihlalSayisi": 0,
+ "safModelSonFark": 0,
+ "farklar": [
+  {
+   "belge": "B3",
+   "alan": "numara",
+   "model": "",
+   "program": "TEA2026000000002",
+   "adim": 4,
+   "islem": "kaydet",
+   "sinif": "BEKLENEN-AG (ağ yokken numara verildi)"
+  },
+  {
+   "belge": "B4",
+   "alan": "numara",
+   "model": "",
+   "program": "TEF2026000000002",
+   "adim": 5,
+   "islem": "kaydet",
+   "sinif": "BEKLENEN-AG (ağ yokken numara verildi)"
+  }
+ ],
+ "ihlaller": [],
+ "catalSecimleri": [],
+ "eStatusDegerleri": {
+  "sent": 22,
+  "none": 11,
+  "waiting": 4
+ },
+ "kucultulmus": null,
+ "sure": 2.1
+}

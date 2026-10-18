@@ -1,0 +1,55 @@
+{
+ "ad": "kucuk-tutma-yok",
+ "tohum": 3,
+ "islem": 2,
+ "bugun": "2026-12-27",
+ "farkSayisi": 4,
+ "ihlalSayisi": 0,
+ "safModelSonFark": 4,
+ "farklar": [
+  {
+   "belge": "B6",
+   "alan": "numara",
+   "model": "",
+   "program": "TEF2026000000001",
+   "adim": 2,
+   "islem": "kaydet",
+   "sinif": "TUTMA-YOK (eski gönderilebilir bekleyen B5 varken yeni belge numaralandı)"
+  },
+  {
+   "belge": "B6",
+   "alan": "edm",
+   "model": false,
+   "program": true,
+   "adim": 2,
+   "islem": "kaydet",
+   "sinif": "TUTMA-YOK (eski gönderilebilir bekleyen B5 varken yeni belge numaralandı)"
+  },
+  {
+   "belge": "B6",
+   "alan": "gonderildi",
+   "model": false,
+   "program": true,
+   "adim": 2,
+   "islem": "kaydet",
+   "sinif": "TUTMA-YOK (eski gönderilebilir bekleyen B5 varken yeni belge numaralandı)"
+  },
+  {
+   "belge": "B6",
+   "alan": "bekleyen",
+   "model": true,
+   "program": false,
+   "adim": 2,
+   "islem": "kaydet",
+   "sinif": "TUTMA-YOK (eski gönderilebilir bekleyen B5 varken yeni belge numaralandı)"
+  }
+ ],
+ "ihlaller": [],
+ "catalSecimleri": [],
+ "eStatusDegerleri": {
+  "waiting": 2,
+  "sent": 1
+ },
+ "kucultulmus": null,
+ "sure": 1.5
+}

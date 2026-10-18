@@ -1,0 +1,28 @@
+{
+ "ad": "kucuk-esz-gonderiliyor-hata",
+ "tohum": 2,
+ "islem": 2,
+ "bugun": "2026-06-17",
+ "farkSayisi": 0,
+ "ihlalSayisi": 1,
+ "safModelSonFark": 0,
+ "farklar": [],
+ "ihlaller": [
+  {
+   "adim": 2,
+   "islem": "esz_tumunu_gonder",
+   "kod": "I15",
+   "ileti": "B3: eşzamanlı turda gönderilen belge için hata yanıtı (einvoice-sending)",
+   "yineleme": 0,
+   "belge": "B3",
+   "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"
+  }
+ ],
+ "catalSecimleri": [],
+ "eStatusDegerleri": {
+  "waiting": 1,
+  "sent": 1
+ },
+ "kucultulmus": null,
+ "sure": 1.5
+}

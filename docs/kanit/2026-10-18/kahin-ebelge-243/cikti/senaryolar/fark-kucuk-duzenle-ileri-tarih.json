@@ -1,0 +1,29 @@
+{
+ "ad": "kucuk-duzenle-ileri-tarih",
+ "tohum": 0,
+ "islem": 3,
+ "bugun": "2026-06-17",
+ "farkSayisi": 1,
+ "ihlalSayisi": 0,
+ "safModelSonFark": 0,
+ "farklar": [
+  {
+   "belge": "B3",
+   "alan": "yanit",
+   "model": "2xx",
+   "program": 400,
+   "kod": "chronology",
+   "adim": 3,
+   "islem": "duzenle_tarih",
+   "sinif": "BASKA-DUZENLE-SIRA (numarasız bekleyenin tarihi sıra-tarihi bozmadan değiştirilemiyor)"
+  }
+ ],
+ "ihlaller": [],
+ "catalSecimleri": [],
+ "eStatusDegerleri": {
+  "waiting": 3,
+  "sent": 2
+ },
+ "kucultulmus": null,
+ "sure": 1.5
+}

@@ -1,0 +1,27 @@
+{
+ "dil": "destekofis-ebelge/1",
+ "ad": "ebelge-t2-i100-1-kucuk",
+ "tohum": 2,
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi"
+ },
+ "adimlar": [
+  {
+   "islem": "kaydet",
+   "belge": "B3",
+   "cari": "K2",
+   "tarih": "2026-06-17",
+   "gonder": "sonra",
+   "no": 1
+  },
+  {
+   "islem": "esz_tumunu_gonder",
+   "no": 2
+  }
+ ]
+}

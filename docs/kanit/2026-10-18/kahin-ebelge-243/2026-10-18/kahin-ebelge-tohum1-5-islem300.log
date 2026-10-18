@@ -1,0 +1,99 @@
+
+> destekofis@2.4.3 test:kahin-ebelge
+> python3 test/bagimsiz/ebelge/fark.py --tohumlar 1-5 --islem 300 --cikti docs/kanit/2026-10-18/kahin-ebelge-243/cikti/tohum1-5-islem300
+
+[ebelge-t1-i300] adım 300 · fark 58 · ihlal 13 · saf model son fark 54 · çatal seçimi 93 · 23.7 sn
+    I15              BASKA-ESZ                                6
+    I2               BASKA-FIS-SIRA                           6
+    I8               BEKLENEN-O2                              1
+    fark:bekleyen    BEKLENEN-O1                              9
+    fark:bekleyen    BEKLENEN-O1-ARDIL                        1
+    fark:bekleyen    BEKLENEN-O1-ZINCIR                       3
+    fark:edm         BEKLENEN-O1                              9
+    fark:edm         BEKLENEN-O1-ARDIL                        1
+    fark:edm         BEKLENEN-O1-ZINCIR                       3
+    fark:gonderildi  BEKLENEN-O1                              9
+    fark:gonderildi  BEKLENEN-O1-ARDIL                        1
+    fark:gonderildi  BEKLENEN-O1-ZINCIR                       3
+    fark:numara      BEKLENEN-AG                              1
+    fark:numara      BEKLENEN-O1                              11
+    fark:numara      BEKLENEN-O1-ZINCIR                       3
+    fark:var         BASKA-FIS-SIRA-ARDIL                     1
+    fark:yanit       BASKA-DUZENLE-SIRA                       1
+    fark:yanit       BASKA-FIS-SIRA-ARDIL                     1
+    fark:yanit       BEKLENEN-O2                              1
+[ebelge-t2-i300] adım 300 · fark 8 · ihlal 9 · saf model son fark 66 · çatal seçimi 85 · 22.4 sn
+    I15              BASKA-ESZ                                4
+    I2               BASKA-FIS-SIRA                           5
+    fark:bekleyen    BEKLENEN-O1-ZINCIR                       1
+    fark:edm         BEKLENEN-O1-ZINCIR                       1
+    fark:gonderildi  BEKLENEN-O1-ZINCIR                       1
+    fark:numara      BEKLENEN-AG                              2
+    fark:numara      BEKLENEN-O1-ZINCIR                       1
+    fark:numara      TUTMA-YOK                                1
+    fark:yanit       BASKA-DUZENLE-SIRA                       1
+[ebelge-t3-i300] adım 300 · fark 20 · ihlal 9 · saf model son fark 68 · çatal seçimi 96 · 23.4 sn
+    I15              BASKA-ESZ                                3
+    I2               BASKA-FIS-SIRA                           4
+    I8               BEKLENEN-O2                              2
+    fark:bekleyen    BEKLENEN-O1                              1
+    fark:bekleyen    BEKLENEN-O1-ZINCIR                       1
+    fark:bekleyen    TUTMA-YOK                                1
+    fark:edm         BEKLENEN-O1                              1
+    fark:edm         BEKLENEN-O1-ZINCIR                       2
+    fark:edm         TUTMA-YOK                                1
+    fark:gonderildi  BEKLENEN-O1                              1
+    fark:gonderildi  BEKLENEN-O1-ZINCIR                       1
+    fark:gonderildi  TUTMA-YOK                                1
+    fark:numara      BEKLENEN-AG                              1
+    fark:numara      BEKLENEN-O1                              1
+    fark:numara      BEKLENEN-O1-ZINCIR                       3
+    fark:numara      TUTMA-YOK                                1
+    fark:yanit       BASKA-DUZENLE-SIRA                       2
+    fark:yanit       BEKLENEN-O2                              2
+[ebelge-t4-i300] adım 300 · fark 25 · ihlal 9 · saf model son fark 99 · çatal seçimi 82 · 23.1 sn
+    I15              BASKA-ESZ                                3
+    I2               BASKA-FIS-SIRA                           5
+    I8               BEKLENEN-O2                              1
+    fark:bekleyen    BEKLENEN-O1-ARDIL                        1
+    fark:bekleyen    BEKLENEN-O1-ZINCIR                       3
+    fark:bekleyen    TUTMA-YOK                                1
+    fark:edm         BEKLENEN-O1-ARDIL                        1
+    fark:edm         BEKLENEN-O1-ZINCIR                       3
+    fark:edm         TUTMA-YOK                                1
+    fark:gonderildi  BEKLENEN-O1-ARDIL                        1
+    fark:gonderildi  BEKLENEN-O1-ZINCIR                       3
+    fark:gonderildi  TUTMA-YOK                                1
+    fark:numara      BEKLENEN-O1                              1
+    fark:numara      BEKLENEN-O1-ZINCIR                       3
+    fark:numara      TUTMA-YOK                                2
+    fark:var         BASKA-FIS-SIRA-ARDIL                     1
+    fark:yanit       BASKA-DUZENLE-SIRA                       1
+    fark:yanit       BASKA-FIS-SIRA-ARDIL                     1
+    fark:yanit       BEKLENEN-O2                              1
+[ebelge-t5-i300] adım 300 · fark 51 · ihlal 10 · saf model son fark 69 · çatal seçimi 79 · 23.2 sn
+    I15              BASKA-ESZ                                6
+    I2               BASKA-FIS-SIRA                           3
+    I8               BEKLENEN-O2                              1
+    fark:bekleyen    BEKLENEN-O1                              7
+    fark:bekleyen    BEKLENEN-O1-ARDIL                        1
+    fark:bekleyen    BEKLENEN-O1-ZINCIR                       3
+    fark:bekleyen    BEKLENEN-O3                              1
+    fark:edm         BEKLENEN-O1                              7
+    fark:edm         BEKLENEN-O1-ARDIL                        1
+    fark:edm         BEKLENEN-O1-ZINCIR                       3
+    fark:edm         BEKLENEN-O3                              1
+    fark:gonderildi  BEKLENEN-O1                              7
+    fark:gonderildi  BEKLENEN-O1-ARDIL                        1
+    fark:gonderildi  BEKLENEN-O1-ZINCIR                       3
+    fark:gonderildi  BEKLENEN-O3                              1
+    fark:numara      BEKLENEN-AG                              1
+    fark:numara      BEKLENEN-O1                              7
+    fark:numara      BEKLENEN-O1-ZINCIR                       4
+    fark:numara      BEKLENEN-O3                              1
+    fark:yanit       BASKA-DUZENLE-SIRA                       1
+    fark:yanit       BEKLENEN-O2                              1
+# tests 5
+# pass 0
+# fail 5
+# kahin fark 162 ihlal 50

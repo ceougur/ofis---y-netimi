@@ -1,0 +1,173 @@
+{
+ "dil": "destekofis-ebelge/1",
+ "ad": "ebelge-t1-i100-4-kucuk",
+ "tohum": 1,
+ "bugun": "2026-12-27",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi"
+ },
+ "adimlar": [
+  {
+   "islem": "gun_ilerlet",
+   "gun": 1,
+   "no": 1
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B3",
+   "cari": "K5",
+   "tarih": "2026-12-28",
+   "gonder": "sonra",
+   "no": 2
+  },
+  {
+   "islem": "kart_gonder",
+   "belge": "B2",
+   "no": 3
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B6",
+   "cari": "K2",
+   "tarih": "2026-12-28",
+   "gonder": "simdi",
+   "no": 4
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 1,
+   "no": 5
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B7",
+   "cari": "K1",
+   "tarih": "2026-12-29",
+   "no": 6
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 1,
+   "no": 7
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B17",
+   "cari": "K2",
+   "tarih": "2026-12-29",
+   "no": 8
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 9
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B18",
+   "cari": "K2",
+   "tarih": "2026-12-30",
+   "gonder": "sonra",
+   "no": 10
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B19",
+   "cari": "K1",
+   "tarih": "2026-12-27",
+   "no": 11
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B20",
+   "cari": "K1",
+   "tarih": "2026-12-30",
+   "gonder": "simdi",
+   "no": 12
+  },
+  {
+   "islem": "durum_sorgula",
+   "belge": "B6",
+   "no": 13
+  },
+  {
+   "islem": "duzenle_tarih",
+   "belge": "B17",
+   "tarih": "2026-12-25",
+   "no": 14
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B21",
+   "cari": "K3",
+   "tarih": "2026-12-29",
+   "gonder": "sonra",
+   "no": 15
+  },
+  {
+   "islem": "esz_tumunu_gonder",
+   "no": 16
+  },
+  {
+   "islem": "ariza",
+   "tur": "kopma_once",
+   "no": 17
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B22",
+   "cari": "K2",
+   "tarih": "2026-12-30",
+   "gonder": "sonra",
+   "no": 18
+  },
+  {
+   "islem": "kart_gonder",
+   "belge": "B8",
+   "no": 19
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 1,
+   "no": 20
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 21
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B23",
+   "cari": "K1",
+   "tarih": "2026-12-31",
+   "gonder": "sonra",
+   "no": 22
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B24",
+   "cari": "K1",
+   "tarih": "2026-12-28",
+   "gonder": "simdi",
+   "no": 23
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B25",
+   "cari": "K3",
+   "tarih": "2026-12-19",
+   "gonder": "sonra",
+   "no": 24
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 25
+  }
+ ]
+}

@@ -1,0 +1,69 @@
+{
+ "ad": "kucuk-o1-pk-yok-bekletir",
+ "tohum": 1,
+ "islem": 14,
+ "bugun": "2026-12-27",
+ "farkSayisi": 4,
+ "ihlalSayisi": 0,
+ "safModelSonFark": 4,
+ "farklar": [
+  {
+   "belge": "B18",
+   "alan": "numara",
+   "model": "TEF2026000000002",
+   "program": "",
+   "adim": 14,
+   "islem": "esz_tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B21:pk-yok)"
+  },
+  {
+   "belge": "B18",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 14,
+   "islem": "esz_tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B21:pk-yok)"
+  },
+  {
+   "belge": "B18",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 14,
+   "islem": "esz_tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B21:pk-yok)"
+  },
+  {
+   "belge": "B18",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 14,
+   "islem": "esz_tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B21:pk-yok)"
+  }
+ ],
+ "ihlaller": [],
+ "catalSecimleri": [
+  {
+   "adim": 12,
+   "aday": 2,
+   "secilen": [
+    "B17: numaralı belgenin tarih düzenlemesi reddedildi"
+   ]
+  },
+  {
+   "adim": 13,
+   "aday": 2,
+   "secilen": []
+  }
+ ],
+ "eStatusDegerleri": {
+  "none": 23,
+  "waiting": 13,
+  "sent": 14
+ },
+ "kucultulmus": null,
+ "sure": 1.9
+}

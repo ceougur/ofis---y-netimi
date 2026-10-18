@@ -1,0 +1,61 @@
+{
+ "ad": "kucuk-o1-zincir",
+ "tohum": 1,
+ "islem": 5,
+ "bugun": "2026-12-27",
+ "farkSayisi": 4,
+ "ihlalSayisi": 0,
+ "safModelSonFark": 4,
+ "farklar": [
+  {
+   "belge": "B24",
+   "alan": "numara",
+   "model": "",
+   "program": "TEA2026000000001",
+   "adim": 5,
+   "islem": "kaydet",
+   "sinif": "BEKLENEN-O1-ZINCIR (eski bekleyen B15 kendisi engelli B8 arkasında; yeni belge numaralandı → B15 kalıcı tarih engeline düştü)"
+  },
+  {
+   "belge": "B24",
+   "alan": "edm",
+   "model": false,
+   "program": true,
+   "adim": 5,
+   "islem": "kaydet",
+   "sinif": "BEKLENEN-O1-ZINCIR (eski bekleyen B15 kendisi engelli B8 arkasında; yeni belge numaralandı → B15 kalıcı tarih engeline düştü)"
+  },
+  {
+   "belge": "B24",
+   "alan": "gonderildi",
+   "model": false,
+   "program": true,
+   "adim": 5,
+   "islem": "kaydet",
+   "sinif": "BEKLENEN-O1-ZINCIR (eski bekleyen B15 kendisi engelli B8 arkasında; yeni belge numaralandı → B15 kalıcı tarih engeline düştü)"
+  },
+  {
+   "belge": "B24",
+   "alan": "bekleyen",
+   "model": true,
+   "program": false,
+   "adim": 5,
+   "islem": "kaydet",
+   "sinif": "BEKLENEN-O1-ZINCIR (eski bekleyen B15 kendisi engelli B8 arkasında; yeni belge numaralandı → B15 kalıcı tarih engeline düştü)"
+  }
+ ],
+ "ihlaller": [],
+ "catalSecimleri": [
+  {
+   "adim": 1,
+   "aday": 2,
+   "secilen": []
+  }
+ ],
+ "eStatusDegerleri": {
+  "waiting": 9,
+  "sent": 1
+ },
+ "kucultulmus": null,
+ "sure": 1.4
+}

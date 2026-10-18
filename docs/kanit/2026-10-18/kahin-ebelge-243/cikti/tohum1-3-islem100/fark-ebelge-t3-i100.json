@@ -1,0 +1,962 @@
+{
+ "ad": "ebelge-t3-i100",
+ "tohum": 3,
+ "islem": 100,
+ "bugun": "2026-12-27",
+ "farkSayisi": 6,
+ "ihlalSayisi": 4,
+ "safModelSonFark": 10,
+ "farklar": [
+  {
+   "belge": "B6",
+   "alan": "numara",
+   "model": "",
+   "program": "TEF2026000000002",
+   "adim": 12,
+   "islem": "kaydet",
+   "sinif": "TUTMA-YOK (eski gönderilebilir bekleyen B5 varken yeni belge numaralandı)"
+  },
+  {
+   "belge": "B6",
+   "alan": "edm",
+   "model": false,
+   "program": true,
+   "adim": 12,
+   "islem": "kaydet",
+   "sinif": "TUTMA-YOK (eski gönderilebilir bekleyen B5 varken yeni belge numaralandı)"
+  },
+  {
+   "belge": "B6",
+   "alan": "gonderildi",
+   "model": false,
+   "program": true,
+   "adim": 12,
+   "islem": "kaydet",
+   "sinif": "TUTMA-YOK (eski gönderilebilir bekleyen B5 varken yeni belge numaralandı)"
+  },
+  {
+   "belge": "B6",
+   "alan": "bekleyen",
+   "model": true,
+   "program": false,
+   "adim": 12,
+   "islem": "kaydet",
+   "sinif": "TUTMA-YOK (eski gönderilebilir bekleyen B5 varken yeni belge numaralandı)"
+  },
+  {
+   "belge": "B37",
+   "alan": "yanit",
+   "model": "4xx",
+   "program": 200,
+   "kod": "",
+   "adim": 73,
+   "islem": "tur_sirasinda_sil",
+   "sinif": "BEKLENEN-O2 (tur sürerken Listeden Sil kabul edildi, belge yine gitti)"
+  },
+  {
+   "belge": "B39",
+   "alan": "yanit",
+   "model": "2xx",
+   "program": 400,
+   "kod": "chronology",
+   "adim": 90,
+   "islem": "duzenle_tarih",
+   "sinif": "BASKA-DUZENLE-SIRA (numarasız bekleyenin tarihi sıra-tarihi bozmadan değiştirilemiyor)"
+  }
+ ],
+ "ihlaller": [
+  {
+   "adim": 41,
+   "islem": "esz_tumunu_gonder",
+   "kod": "I15",
+   "ileti": "B21: eşzamanlı turda gönderilen belge için hata yanıtı (einvoice-sending)",
+   "yineleme": 0,
+   "belge": "B21",
+   "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"
+  },
+  {
+   "adim": 73,
+   "islem": "tur_sirasinda_sil",
+   "kod": "I8",
+   "ileti": "B37: tur sürerken Listeden Sil kabul edildi ama belge EDM'ye gitti",
+   "yineleme": 0,
+   "belge": "B37",
+   "sinif": "BEKLENEN-O2 (tur sürerken Listeden Sil)"
+  },
+  {
+   "adim": 85,
+   "islem": "tur_sirasinda_sil",
+   "kod": "I2",
+   "ileti": "FIS2027: 3 (B22, 2027-01-06) önceki 2 (B26, 2027-01-08) belgesinden eski tarihli",
+   "yineleme": 15,
+   "seri": "FIS2027",
+   "belge": "B22",
+   "sinif": "BASKA-FIS-SIRA (Listeden Sil eski tarihli belgeye FIS numarası verdi)"
+  },
+  {
+   "adim": 91,
+   "islem": "esz_tumunu_gonder",
+   "kod": "I15",
+   "ileti": "B41: eşzamanlı turda gönderilen belge için hata yanıtı (einvoice-sending)",
+   "yineleme": 0,
+   "belge": "B41",
+   "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"
+  }
+ ],
+ "catalSecimleri": [
+  {
+   "adim": 18,
+   "aday": 2,
+   "secilen": [
+    "B8: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 20,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 22,
+   "aday": 2,
+   "secilen": [
+    "B4: numaralı belgenin tarih düzenlemesi reddedildi"
+   ]
+  },
+  {
+   "adim": 26,
+   "aday": 2,
+   "secilen": [
+    "B11: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 27,
+   "aday": 3,
+   "secilen": [
+    "B12: kopma_once, edm=False, program=False"
+   ]
+  },
+  {
+   "adim": 29,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 33,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 36,
+   "aday": 2,
+   "secilen": [
+    "B17: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 38,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 39,
+   "aday": 2,
+   "secilen": [
+    "B20: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 42,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 43,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 45,
+   "aday": 2,
+   "secilen": [
+    "B19: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 46,
+   "aday": 2,
+   "secilen": [
+    "B25: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 48,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 51,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 55,
+   "aday": 2,
+   "secilen": [
+    "B28: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 57,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 59,
+   "aday": 2,
+   "secilen": [
+    "B31: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 64,
+   "aday": 2,
+   "secilen": [
+    "B9: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 67,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 70,
+   "aday": 2,
+   "secilen": [
+    "B36: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 72,
+   "aday": 2,
+   "secilen": [
+    "B38: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 73,
+   "aday": 3,
+   "secilen": [
+    "B37: tur sırasında silme reddedildi"
+   ]
+  },
+  {
+   "adim": 76,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 79,
+   "aday": 3,
+   "secilen": [
+    "B26: tur sırasında silindi",
+    "B26: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 80,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 82,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 85,
+   "aday": 9,
+   "secilen": [
+    "B22: tur sırasında silindi",
+    "B41: kopma_once, edm=False, program=False",
+    "B22: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 87,
+   "aday": 12,
+   "secilen": [
+    "B41: geçici hata, numara korundu, gitmedi"
+   ]
+  },
+  {
+   "adim": 88,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 89,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 92,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 94,
+   "aday": 2,
+   "secilen": [
+    "B45: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  }
+ ],
+ "eStatusDegerleri": {
+  "waiting": 726,
+  "sent": 826,
+  "none": 110,
+  "processing": 97,
+  "withdrawn": 142,
+  "error": 4
+ },
+ "kucultulmus": [
+  {
+   "imza": "fark:numara",
+   "sinif": "TUTMA-YOK",
+   "kosu": 7,
+   "adimlar": [
+    {
+     "islem": "kaydet",
+     "belge": "B5",
+     "cari": "K2",
+     "tarih": "2026-12-26",
+     "gonder": "sonra",
+     "no": 1
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B6",
+     "cari": "K2",
+     "tarih": "2026-12-27",
+     "gonder": "simdi",
+     "no": 2
+    }
+   ],
+   "sorunlar": [
+    {
+     "belge": "B6",
+     "alan": "numara",
+     "model": "",
+     "program": "TEF2026000000001",
+     "adim": 2,
+     "islem": "kaydet",
+     "sinif": "TUTMA-YOK (eski gönderilebilir bekleyen B5 varken yeni belge numaralandı)"
+    }
+   ]
+  },
+  {
+   "imza": "ihlal:I15",
+   "sinif": "BASKA-ESZ",
+   "kosu": 33,
+   "adimlar": [
+    {
+     "islem": "gun_ilerlet",
+     "gun": 9,
+     "no": 1
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B21",
+     "cari": "K5",
+     "tarih": "2026-12-30",
+     "gonder": "sonra",
+     "no": 2
+    },
+    {
+     "islem": "esz_tumunu_gonder",
+     "no": 3
+    }
+   ],
+   "sorunlar": [
+    {
+     "adim": 3,
+     "islem": "esz_tumunu_gonder",
+     "kod": "I15",
+     "ileti": "B21: eşzamanlı turda gönderilen belge için hata yanıtı (einvoice-sending)",
+     "yineleme": 0,
+     "belge": "B21",
+     "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"
+    }
+   ]
+  },
+  {
+   "imza": "fark:yanit",
+   "sinif": "BEKLENEN-O2",
+   "kosu": 40,
+   "adimlar": [
+    {
+     "islem": "gun_ilerlet",
+     "gun": 1,
+     "no": 1
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B10",
+     "cari": "K2",
+     "tarih": "2026-12-29",
+     "gonder": "sonra",
+     "no": 2
+    },
+    {
+     "islem": "gun_ilerlet",
+     "gun": 9,
+     "no": 3
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B11",
+     "cari": "K3",
+     "tarih": "2027-01-06",
+     "gonder": "simdi",
+     "no": 4
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B12",
+     "cari": "K2",
+     "tarih": "2027-01-05",
+     "gonder": "simdi",
+     "no": 5
+    },
+    {
+     "islem": "listeden_sil",
+     "belge": "B11",
+     "no": 6
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B13",
+     "cari": "K2",
+     "tarih": "2027-01-03",
+     "gonder": "sonra",
+     "no": 7
+    },
+    {
+     "islem": "gun_ilerlet",
+     "gun": 1,
+     "no": 8
+    },
+    {
+     "islem": "gun_ilerlet",
+     "gun": 1,
+     "no": 9
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B17",
+     "cari": "K1",
+     "tarih": "2027-01-05",
+     "gonder": "simdi",
+     "no": 10
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B18",
+     "cari": "K2",
+     "tarih": "2027-01-08",
+     "gonder": "simdi",
+     "no": 11
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B19",
+     "cari": "K2",
+     "tarih": "2027-01-07",
+     "gonder": "sonra",
+     "no": 12
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B27",
+     "cari": "K3",
+     "tarih": "2027-01-06",
+     "gonder": "sonra",
+     "no": 13
+    },
+    {
+     "islem": "esz_tumunu_gonder",
+     "no": 14
+    },
+    {
+     "islem": "esz_tumunu_gonder",
+     "no": 15
+    },
+    {
+     "islem": "gun_ilerlet",
+     "gun": 1,
+     "no": 16
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B34",
+     "cari": "K2",
+     "tarih": "2027-01-09",
+     "gonder": "sonra",
+     "no": 17
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B35",
+     "cari": "K5",
+     "tarih": "2027-01-09",
+     "gonder": "simdi",
+     "no": 18
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B36",
+     "cari": "K1",
+     "tarih": "2027-01-07",
+     "gonder": "simdi",
+     "no": 19
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B37",
+     "cari": "K1",
+     "tarih": "2027-01-09",
+     "gonder": "sonra",
+     "no": 20
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B38",
+     "cari": "K1",
+     "tarih": "2027-01-06",
+     "gonder": "simdi",
+     "no": 21
+    },
+    {
+     "islem": "tur_sirasinda_sil",
+     "belge": "B37",
+     "no": 22
+    }
+   ],
+   "sorunlar": [
+    {
+     "belge": "B37",
+     "alan": "yanit",
+     "model": "4xx",
+     "program": 200,
+     "kod": "",
+     "adim": 22,
+     "islem": "tur_sirasinda_sil",
+     "sinif": "BEKLENEN-O2 (tur sürerken Listeden Sil kabul edildi, belge yine gitti)"
+    }
+   ]
+  },
+  {
+   "imza": "ihlal:I2",
+   "sinif": "BASKA-FIS-SIRA",
+   "kosu": 40,
+   "adimlar": [
+    {
+     "islem": "duzenle_tarih",
+     "belge": "B4",
+     "tarih": "2026-12-22",
+     "no": 1
+    },
+    {
+     "islem": "gun_ilerlet",
+     "gun": 1,
+     "no": 2
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B10",
+     "cari": "K2",
+     "tarih": "2026-12-29",
+     "gonder": "sonra",
+     "no": 3
+    },
+    {
+     "islem": "gun_ilerlet",
+     "gun": 9,
+     "no": 4
+    },
+    {
+     "islem": "gun_ilerlet",
+     "gun": 1,
+     "no": 5
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B14",
+     "cari": "K5",
+     "tarih": "2027-01-07",
+     "gonder": "simdi",
+     "no": 6
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B16",
+     "cari": "K2",
+     "tarih": "2027-01-05",
+     "gonder": "simdi",
+     "no": 7
+    },
+    {
+     "islem": "gun_ilerlet",
+     "gun": 1,
+     "no": 8
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B17",
+     "cari": "K1",
+     "tarih": "2027-01-05",
+     "gonder": "simdi",
+     "no": 9
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B18",
+     "cari": "K2",
+     "tarih": "2027-01-08",
+     "gonder": "simdi",
+     "no": 10
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B19",
+     "cari": "K2",
+     "tarih": "2027-01-07",
+     "gonder": "sonra",
+     "no": 11
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B20",
+     "cari": "K2",
+     "tarih": "2027-01-06",
+     "gonder": "simdi",
+     "no": 12
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B21",
+     "cari": "K5",
+     "tarih": "2026-12-30",
+     "gonder": "sonra",
+     "no": 13
+    },
+    {
+     "islem": "esz_tumunu_gonder",
+     "no": 14
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B22",
+     "cari": "K1",
+     "tarih": "2027-01-06",
+     "gonder": "sonra",
+     "no": 15
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B23",
+     "cari": "K3",
+     "tarih": "2027-01-01",
+     "gonder": "sonra",
+     "no": 16
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B24",
+     "cari": "K1",
+     "tarih": "2026-12-30",
+     "gonder": "sonra",
+     "no": 17
+    },
+    {
+     "islem": "listeden_sil",
+     "belge": "B19",
+     "no": 18
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B25",
+     "cari": "K1",
+     "tarih": "2027-01-06",
+     "gonder": "simdi",
+     "no": 19
+    },
+    {
+     "islem": "ag",
+     "durum": "yok",
+     "no": 20
+    },
+    {
+     "islem": "ag",
+     "durum": "var",
+     "no": 21
+    },
+    {
+     "islem": "tur_sirasinda_sil",
+     "belge": "B22",
+     "no": 22
+    }
+   ],
+   "sorunlar": [
+    {
+     "adim": 22,
+     "islem": "tur_sirasinda_sil",
+     "kod": "I2",
+     "ileti": "FIS2027: 2 (B22, 2027-01-06) önceki 1 (B19, 2027-01-07) belgesinden eski tarihli",
+     "yineleme": 0,
+     "seri": "FIS2027",
+     "belge": "B22",
+     "sinif": "BASKA-FIS-SIRA (Listeden Sil eski tarihli belgeye FIS numarası verdi)"
+    }
+   ]
+  },
+  {
+   "imza": "fark:yanit",
+   "sinif": "BASKA-DUZENLE-SIRA",
+   "kosu": 40,
+   "adimlar": [
+    {
+     "islem": "gun_ilerlet",
+     "gun": 1,
+     "no": 1
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B10",
+     "cari": "K2",
+     "tarih": "2026-12-29",
+     "gonder": "sonra",
+     "no": 2
+    },
+    {
+     "islem": "gun_ilerlet",
+     "gun": 9,
+     "no": 3
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B11",
+     "cari": "K3",
+     "tarih": "2027-01-06",
+     "gonder": "simdi",
+     "no": 4
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B12",
+     "cari": "K2",
+     "tarih": "2027-01-05",
+     "gonder": "simdi",
+     "no": 5
+    },
+    {
+     "islem": "listeden_sil",
+     "belge": "B11",
+     "no": 6
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B13",
+     "cari": "K2",
+     "tarih": "2027-01-03",
+     "gonder": "sonra",
+     "no": 7
+    },
+    {
+     "islem": "gun_ilerlet",
+     "gun": 1,
+     "no": 8
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B14",
+     "cari": "K5",
+     "tarih": "2027-01-07",
+     "gonder": "simdi",
+     "no": 9
+    },
+    {
+     "islem": "tumunu_gonder",
+     "kapsam": "hepsi",
+     "no": 10
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B15",
+     "cari": "K1",
+     "tarih": "2027-01-04",
+     "gonder": "sonra",
+     "no": 11
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B16",
+     "cari": "K2",
+     "tarih": "2027-01-05",
+     "gonder": "simdi",
+     "no": 12
+    },
+    {
+     "islem": "gun_ilerlet",
+     "gun": 1,
+     "no": 13
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B17",
+     "cari": "K1",
+     "tarih": "2027-01-05",
+     "gonder": "simdi",
+     "no": 14
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B18",
+     "cari": "K2",
+     "tarih": "2027-01-08",
+     "gonder": "simdi",
+     "no": 15
+    },
+    {
+     "islem": "esz_tumunu_gonder",
+     "no": 16
+    },
+    {
+     "islem": "gun_ilerlet",
+     "gun": 1,
+     "no": 17
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B28",
+     "cari": "K3",
+     "tarih": "2026-12-28",
+     "gonder": "simdi",
+     "no": 18
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B33",
+     "cari": "K1",
+     "tarih": "2027-01-05",
+     "gonder": "sonra",
+     "no": 19
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B34",
+     "cari": "K2",
+     "tarih": "2027-01-09",
+     "gonder": "sonra",
+     "no": 20
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B35",
+     "cari": "K5",
+     "tarih": "2027-01-09",
+     "gonder": "simdi",
+     "no": 21
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B36",
+     "cari": "K1",
+     "tarih": "2027-01-07",
+     "gonder": "simdi",
+     "no": 22
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B37",
+     "cari": "K1",
+     "tarih": "2027-01-09",
+     "gonder": "sonra",
+     "no": 23
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B38",
+     "cari": "K1",
+     "tarih": "2027-01-06",
+     "gonder": "simdi",
+     "no": 24
+    },
+    {
+     "islem": "tur_sirasinda_sil",
+     "belge": "B37",
+     "no": 25
+    },
+    {
+     "islem": "duzenle_tur",
+     "belge": "B14",
+     "profil": "TEMELFATURA",
+     "no": 26
+    },
+    {
+     "islem": "kart_gonder",
+     "belge": "B29",
+     "no": 27
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B39",
+     "cari": "K1",
+     "tarih": "2027-01-08",
+     "gonder": "sonra",
+     "no": 28
+    },
+    {
+     "islem": "kart_gonder",
+     "belge": "B8",
+     "no": 29
+    },
+    {
+     "islem": "gun_ilerlet",
+     "gun": 1,
+     "no": 30
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B43",
+     "cari": "K1",
+     "tarih": "2027-01-07",
+     "gonder": "sonra",
+     "no": 31
+    },
+    {
+     "islem": "duzenle_tarih",
+     "belge": "B39",
+     "tarih": "2027-01-10",
+     "no": 32
+    }
+   ],
+   "sorunlar": [
+    {
+     "belge": "B39",
+     "alan": "yanit",
+     "model": "2xx",
+     "program": 400,
+     "kod": "chronology",
+     "adim": 32,
+     "islem": "duzenle_tarih",
+     "sinif": "BASKA-DUZENLE-SIRA (numarasız bekleyenin tarihi sıra-tarihi bozmadan değiştirilemiyor)"
+    }
+   ]
+  }
+ ],
+ "sure": 489.2
+}
