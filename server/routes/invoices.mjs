@@ -2478,7 +2478,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     }
     const doc = documentInput(body, { mode: "issue" });
     assertAliasBeforeNumber(doc, body);
-    const contactSince = Date.now();
+    const contactSince = Date.now(); // saat: gerçek (süre ölçümü / entegratör erişim tazeliği)
     await assertArchiveBuyerBeforeNumber(user, doc, body);
     const loginHold = await sendLoginBlock(doc, body, contactSince);
     const payment = paymentInput(body, doc, user);
@@ -2510,7 +2510,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const merged = { kind: existing.kind, scenario: existing.scenario, accountId: existing.accountId, originalId: existing.originalId, lines, buyer: parseJson(existing.partyJson, {}), payment: parseJson(existing.paymentJson, {}), ...body };
     const doc = documentInput(merged, { mode: "issue", existing });
     assertAliasBeforeNumber(doc, body);
-    const contactSince = Date.now();
+    const contactSince = Date.now(); // saat: gerçek (süre ölçümü / entegratör erişim tazeliği)
     const known = access?.hold && sendWouldContact(doc, body) ? access.hold : "";
     if (!known) await assertArchiveBuyerBeforeNumber(user, doc, body);
     const loginHold = known || (await sendLoginBlock(doc, body, contactSince));
@@ -3148,7 +3148,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (!edocEnabled || body?.eSend === "later" || !doc.meta?.own || !doc.meta?.send || doc.profile === "KAGIT") return false;
     return body?.eSend === "now" || settings().integrator?.autoSend === true;
   }
-  async function sendLoginBlock(doc, body, since = Date.now()) {
+  async function sendLoginBlock(doc, body, since = Date.now()) { // saat: gerçek (süre ölçümü / entegratör erişim tazeliği)
     if (!sendWouldContact(doc, body)) return "";
     const s = settings();
     let link;
@@ -3276,7 +3276,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       release();
     }
   }
-  async function sendInvoiceOnce(user, id, { draft = false, listedOnly = false, contactSince = Date.now() } = {}) {
+  async function sendInvoiceOnce(user, id, { draft = false, listedOnly = false, contactSince = Date.now() } = {}) { // saat: gerçek (süre ölçümü / entegratör erişim tazeliği)
     requireEdoc();
     // Dar kontrol 2.4.3: ağa çıkmadan bilinen sonuçlar önce söylenir (mükellef sorgusu ve numara harcanmaz) — D2: başka oturumda gönderilmiş;
     // O2: Tümünü Gönder sürerken Listeden Silinmiş; O3: alıcı e-Fatura mükellefi (kalıcı); O1: seride daha eski tarihli gönderilebilir bekleyen var.
@@ -3563,16 +3563,16 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
           : reason === "order"
             ? `Gönderilmedi, sırasını koruyarak bekliyor: aynı serideki daha eski tarihli belge (${blocker.accountName}, ${dayText(blocker.issueDate)}) de sırasını bekliyor. Önce daha eski tarihli belgeler gönderilmeli; Tümünü Gönder'e yeniden basın.`
             : `Gönderilmedi, sırasını koruyarak bekliyor: aynı serideki daha eski tarihli belge (${blocker.accountName}, ${dayText(blocker.issueDate)}) gönderilemedi. O belge gönderilmeden bu belge numara alırsa eski belge e-Belge olamaz; önce onu düzeltip yeniden gönderin.`;
-    const started = Date.now();
+    const started = Date.now(); // saat: gerçek (süre ölçümü / entegratör erişim tazeliği)
     let attempted = 0;
     let reached = 0;
     let stopped = null;
     // Dar kontrol 2.4.3 (kâhin BASKA-ESZ): belge öbür oturumda gönderiliyorsa (einvoice-sending) o gönderimin bitmesi beklenir (en çok süre
     // bütçesi kadar): gittiyse "başka oturumda gönderildi" (hata değil, ok), gitmediyse (öbür oturumda düştü) bu oturum bir kez dener.
     const releasedWithin = async (invoiceId, ms) => {
-      const until = Date.now() + ms;
+      const until = Date.now() + ms; // saat: gerçek (süre ölçümü / entegratör erişim tazeliği)
       while (busy.has(invoiceId)) {
-        if (Date.now() >= until) return false;
+        if (Date.now() >= until) return false; // saat: gerçek (süre ölçümü / entegratör erişim tazeliği)
         await new Promise(resolve => setTimeout(resolve, 100));
       }
       return true;
@@ -3583,7 +3583,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     };
     for (const id of order) {
       // Y1: parça sınırı (deneme sayısı) ya da süre bütçesi — her istekte en az bir belge denenir (ilerleme).
-      if (all && (attempted >= SEND_CHUNK || (attempted > 0 && Date.now() - started >= SEND_BUDGET_MS))) break;
+      if (all && (attempted >= SEND_CHUNK || (attempted > 0 && Date.now() - started >= SEND_BUDGET_MS))) break; // saat: gerçek (süre ölçümü / entegratör erişim tazeliği)
       if (all && stopped) break;
       reached += 1;
       if (stopped) {
