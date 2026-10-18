@@ -1,0 +1,412 @@
+TAP version 13
+# Subtest: gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği
+    # Subtest: Y1: Tümünü Gönder bir istekte en çok 20 belgeyi dener; kalan sayısı döner, yinelenince hepsi eskiden yeniye gider
+    not ok 1 - Y1: Tümünü Gönder bir istekte en çok 20 belgeyi dener; kalan sayısı döner, yinelenince hepsi eskiden yeniye gider
+      ---
+      duration_ms: 4196.165371
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:103:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bir istekte en çok 20 (gelen 45)
+        
+        45 !== 20
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 20
+      actual: 45
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:110:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Y1: süre bütçesi dolunca istek erken döner (en az bir belge); kalanlar sonraki isteklerde
+    not ok 2 - Y1: süre bütçesi dolunca istek erken döner (en az bir belge); kalanlar sonraki isteklerde
+      ---
+      duration_ms: 3103.043628
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:121:3'
+      failureType: 'testCodeFailure'
+      error: 'bütçe dolunca durdu (gönderilen 12, 2414 ms)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:129:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: O1 (kaydet-ve-gonder): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+    not ok 3 - O1 (kaydet-ve-gonder): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+      ---
+      duration_ms: 526.276336
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:138:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":true,"status":"sent","message":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.","reference":"TEA2026000000001","uuid":"61e94507-c180-453d-81a4-778ef8044472"}
+        + actual - expected
+        
+        + undefined
+        - 'einvoice-order'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'einvoice-order'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:155:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: O1 (duz-kaydet): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+    not ok 4 - O1 (duz-kaydet): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+      ---
+      duration_ms: 447.793308
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:138:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + undefined
+        - 'einvoice-order'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'einvoice-order'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:155:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: O1 (kartta-gonder): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+    not ok 5 - O1 (kartta-gonder): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+      ---
+      duration_ms: 515.506276
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:138:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"id":"invoice-11595f32-6b03-4411-8cd3-59dcddfe0a0c","kind":"sale","kindLabel":"Satış Faturası","scenario":"service_sale","scenarioLabel":"Hizmet Satışı","status":"issued","statusLabel":"Kaydedildi","number":"TEA2026000000001","displayNo":"TEA2026000000001","ettn":"f0257911-2c84-4d3f-878e-f146bf0325
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:149:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: O1 (taslaktan Kaydet ve Gönder, Seçilenleri Kaydet — hemen gönderim açık): aynı kural; belge numarasız Gönderilecekler'de
+    not ok 6 - O1 (taslaktan Kaydet ve Gönder, Seçilenleri Kaydet — hemen gönderim açık): aynı kural; belge numarasız Gönderilecekler'de
+      ---
+      duration_ms: 535.269371
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:173:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":true,"status":"sent","message":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.","reference":"TEA2026000000001","uuid":"8a5b20f2-9319-4761-88b5-6f065df34234"}
+        + actual - expected
+        
+        + undefined
+        - 'einvoice-order'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'einvoice-order'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:181:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: O1 komşu: aynı günlü eski bekleyen ve KALICI engelli eski bekleyen numara vermeyi durdurmaz
+    ok 7 - O1 komşu: aynı günlü eski bekleyen ve KALICI engelli eski bekleyen numara vermeyi durdurmaz
+      ---
+      duration_ms: 614.377398
+      type: 'test'
+      ...
+    # Subtest: O1 yarış (tohum 1): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+    not ok 8 - O1 yarış (tohum 1): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+      ---
+      duration_ms: 1903.009736
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:215:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kalıcı engele düşen yok: 2026-06-09 TEA serisinde son gönderilen belge TEA2026000000005 17.06.2026 tarihli; bu belge (09.06.2026) daha eski tarihli olduğu için e-Belge olarak gönderilemez. Listeden Sil ile Müşteri Fişi olarak bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.
+        + actual - expected
+        
+        + 'TEA serisinde son gönderilen belge TEA2026000000005 17.06.2026 tarihli; bu belge (09.06.2026) daha eski tarihli olduğu için e-Belge olarak gönderilemez. Listeden Sil ile Müşteri Fişi olarak bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.'
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: 'TEA serisinde son gönderilen belge TEA2026000000005 17.06.2026 tarihli; bu belge (09.06.2026) daha eski tarihli olduğu için e-Belge olarak gönderilemez. Listeden Sil ile Müşteri Fişi olarak bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:234:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: O1 yarış (tohum 2): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+    not ok 9 - O1 yarış (tohum 2): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+      ---
+      duration_ms: 2217.561468
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:215:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kalıcı engele düşen yok: 2026-06-09 TEA serisinde son gönderilen belge TEA2026000000005 17.06.2026 tarihli; bu belge (09.06.2026) daha eski tarihli olduğu için e-Belge olarak gönderilemez. Listeden Sil ile Müşteri Fişi olarak bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.
+        + actual - expected
+        
+        + 'TEA serisinde son gönderilen belge TEA2026000000005 17.06.2026 tarihli; bu belge (09.06.2026) daha eski tarihli olduğu için e-Belge olarak gönderilemez. Listeden Sil ile Müşteri Fişi olarak bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.'
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: 'TEA serisinde son gönderilen belge TEA2026000000005 17.06.2026 tarihli; bu belge (09.06.2026) daha eski tarihli olduğu için e-Belge olarak gönderilemez. Listeden Sil ile Müşteri Fişi olarak bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:234:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: O1 yarış (tohum 3): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+    not ok 10 - O1 yarış (tohum 3): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+      ---
+      duration_ms: 2100.462618
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:215:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kalıcı engele düşen yok: 2026-06-09 TEA serisinde son gönderilen belge TEA2026000000005 17.06.2026 tarihli; bu belge (09.06.2026) daha eski tarihli olduğu için e-Belge olarak gönderilemez. Listeden Sil ile Müşteri Fişi olarak bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.
+        + actual - expected
+        
+        + 'TEA serisinde son gönderilen belge TEA2026000000005 17.06.2026 tarihli; bu belge (09.06.2026) daha eski tarihli olduğu için e-Belge olarak gönderilemez. Listeden Sil ile Müşteri Fişi olarak bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.'
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: 'TEA serisinde son gönderilen belge TEA2026000000005 17.06.2026 tarihli; bu belge (09.06.2026) daha eski tarihli olduğu için e-Belge olarak gönderilemez. Listeden Sil ile Müşteri Fişi olarak bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:234:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: O2: Tümünü Gönder sürerken Listeden Silinen belge e-Belge olarak gönderilmez; Müşteri Fişi kalır (kartından yine gönderilebilir)
+    not ok 11 - O2: Tümünü Gönder sürerken Listeden Silinen belge e-Belge olarak gönderilmez; Müşteri Fişi kalır (kartından yine gönderilebilir)
+      ---
+      duration_ms: 2301.684362
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:241:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"id":"invoice-73b44833-0d67-4269-bff3-ac8adc7203b9","ok":true,"number":"TEA2026000000008","status":"sent"}
+        
+        true !== false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:257:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: O3: alıcısı e-Fatura mükellefi olan numarasız e-Arşiv KALICI sayılır — seriyi bekletmez; kartta gönderilemez ve nedeni yazar
+    not ok 12 - O3: alıcısı e-Fatura mükellefi olan numarasız e-Arşiv KALICI sayılır — seriyi bekletmez; kartta gönderilemez ve nedeni yazar
+      ---
+      duration_ms: 668.080426
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:273:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kalıcı
+        + actual - expected
+        
+        + undefined
+        - true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:287:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: D2 (all): eşzamanlı Tümünü Gönder — başka oturumda gönderilen belge hata sayılmaz, iletisi ezilmez
+    not ok 13 - D2 (all): eşzamanlı Tümünü Gönder — başka oturumda gönderilen belge hata sayılmaz, iletisi ezilmez
+      ---
+      duration_ms: 1588.53266
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:303:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        hata değil, "başka oturumda gönderildi": {"id":"invoice-8630eae9-1cce-4099-9352-711fe87d1539","ok":false,"code":"einvoice-already-sent","message":"Bu belge zaten entegratöre iletildi (durum: Gönderildi). Sonucu Durum Sorgula ile alın."}
+        + actual - expected
+        
+        + undefined
+        - true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:317:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: D2 (ids): eşzamanlı Tümünü Gönder — başka oturumda gönderilen belge hata sayılmaz, iletisi ezilmez
+    not ok 14 - D2 (ids): eşzamanlı Tümünü Gönder — başka oturumda gönderilen belge hata sayılmaz, iletisi ezilmez
+      ---
+      duration_ms: 1779.298818
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:303:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        hata değil, "başka oturumda gönderildi": {"id":"invoice-44065695-9dae-4d3b-b207-babb645acd73","ok":false,"code":"einvoice-already-sent","message":"Bu belge zaten entegratöre iletildi (durum: Gönderildi). Sonucu Durum Sorgula ile alın."}
+        + actual - expected
+        
+        + undefined
+        - true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:317:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: D4: numarasız bekleyenin tarihi Düzenle ile serinin son numaralı belgesine kadar ileri alınır; ondan eskiye alınamaz
+    not ok 15 - D4: numarasız bekleyenin tarihi Düzenle ile serinin son numaralı belgesine kadar ileri alınır; ondan eskiye alınamaz
+      ---
+      duration_ms: 654.234987
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:330:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /^TEA serisinde son gönderilen belge TEA\d+ .+ tarihli; numarası gönderimde verilecek bu belge ondan eski tarihli olamaz \(numara ve tarih sırası\)\.$/. Input:
+        
+        'Sonraki belge TEA2026000000001 12.06.2026 tarihli; bu belge ondan yeni tarihli olamaz (numara ve tarih sırası).'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Sonraki belge TEA2026000000001 12.06.2026 tarihli; bu belge ondan yeni tarihli olamaz (numara ve tarih sırası).'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:341:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: D4 yarışı (r12): tur sürerken öndeki numarasız belgenin tarihi ileri alınır — arkadaki eski bekleyenler kalıcı engele düşmez
+    not ok 16 - D4 yarışı (r12): tur sürerken öndeki numarasız belgenin tarihi ileri alınır — arkadaki eski bekleyenler kalıcı engele düşmez
+      ---
+      duration_ms: 946.142173
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:349:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ön koşul: tur sürerken tarih ileri alındı ({"ok":false,"error":"Sonraki belge TEA2026000000001 08.06.2026 tarihli; bu belge ondan yeni tarihli olamaz (numara ve tarih sırası).","code":"chronology","field":"issueDate"})
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:360:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: BİLGİ: bağlantı yokken Tümünü Gönder ilk 'EDM'ye ulaşılamadı'da durur, kalanlara numara verilmez; bağlantı gelince hepsi gider
+    not ok 17 - BİLGİ: bağlantı yokken Tümünü Gönder ilk 'EDM'ye ulaşılamadı'da durur, kalanlara numara verilmez; bağlantı gelince hepsi gider
+      ---
+      duration_ms: 926.568327
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:371:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + undefined
+        - {
+        -   code: 'integrator-unreachable',
+        -   message: "EDM'ye ulaşılamadı; bağlantı gelince yeniden deneyin."
+        - }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        code: 'integrator-unreachable'
+        message: "EDM'ye ulaşılamadı; bağlantı gelince yeniden deneyin."
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:381:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..17
+not ok 1 - gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği
+  ---
+  duration_ms: 25504.852858
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-gonderim.test.mjs:97:1'
+  failureType: 'subtestsFailed'
+  error: '16 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Error: Test "D4 yarışı (r12): tur sürerken öndeki numarasız belgenin tarihi ileri alınır — arkadaki eski bekleyenler kalıcı engele düşmez" at test/gg243-dar-kontrol-gonderim.test.mjs:349:3 generated asynchronous activity after the test ended. This activity created the error "TypeError: fetch failed" and would have caused the test to fail, but instead triggered an unhandledRejection event.
+1..1
+# tests 17
+# suites 1
+# pass 1
+# fail 16
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 26163.329932
