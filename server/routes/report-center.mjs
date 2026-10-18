@@ -616,8 +616,11 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
       build(query) {
         const range = rangeOf(query, "thisYear");
         const rows = [];
+        // MM8 (2.4.3): özetteki madde sayısı gerçek madde (fiş) sayısıdır — önceden satır / 2 ("Madde 2,5": üç satırlı POS gün sonu maddesi yarım sayılıyordu).
+        let entries = 0;
         for (const entry of ledger().build()) {
           if ((range.from && entry.date < range.from) || (range.to && entry.date > range.to)) continue;
+          entries += 1;
           // Alt hesap (102.01, 101.02 …) varsa o yazılır (doğrulama T3: Bankaya Tahsile Ver maddesi "101 / 101" görünüyordu; evrakın 101.01'den
           // 101.02'ye geçtiği okunamıyordu). Ana hesap kodu alt hesabın başındadır (Hesap Planı Mizanı ana hesapla toplar).
           for (const line of entry.lines) rows.push([dayText(entry.date), entry.source, entry.text || "", line.sub || line.account, money(line.debit / 100), money(line.credit / 100)].map((cell, index) => (index >= 4 && cell === money(0) ? "" : cell)));
@@ -627,7 +630,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
           headers: ["Tarih", "İşlem", "Açıklama", "Hesap", "Borç", "Alacak"],
           types: ["", "", "", "", "money", "money"],
           rows,
-          summary: [["Madde", String(rows.length / 2)]],
+          summary: [["Madde", String(entries)], ["Satır", String(rows.length)]],
         };
       },
     },
