@@ -566,6 +566,9 @@ describe("rapor merkezi: programdaki her bilgi ön izleme, PDF ve Excel olarak a
     assert.ok(table.headers.includes("AD SOYAD"));
     assert.equal((await admin.get("/api/workspace/report-center/yok")).status, 404);
     const staff = await createUser(server, admin, { username: "raporsuz", role: "muhasebe" });
+    // 2.4.3 H9 (bilerek güncellendi): muhasebe Finans Raporları'nı varsayılan olarak görür; finans raporu kapısını sınamak için bu kişiden kaldırılır.
+    const staffId = (await admin.get("/api/admin/users")).data.data.find(user => user.username === "raporsuz").id;
+    assert.equal((await admin.patch(`/api/admin/users/${staffId}`, { grants: { remove: ["overview.view"] } })).status, 200);
     // v2.1.0 Aşama 14 (bilerek güncellendi): muhasebe Banka Raporları yetkisiyle (bank.reports, plan §9.1) yalnız Banka grubunu görür; finans
     // raporları (overview.view) kapalı kalır.
     const staffCatalog = (await staff.get("/api/workspace/report-center")).data.data;
@@ -574,11 +577,11 @@ describe("rapor merkezi: programdaki her bilgi ön izleme, PDF ve Excel olarak a
     assert.deepEqual(staffCatalog.reports.filter(report => report.group === "Cari").map(report => report.id), ["supheli-alacaklar"], "Cari grubunda yalnız Şüpheli Alacaklar");
     assert.equal((await staff.get("/api/workspace/report-center/kasa-hareketleri")).status, 403, "finans raporu kapalı");
     const users = (await admin.get("/api/admin/users")).data.data;
-    await admin.patch(`/api/admin/users/${users.find(user => user.username === "raporsuz").id}`, { grants: { remove: ["bank.reports"] } });
+    await admin.patch(`/api/admin/users/${users.find(user => user.username === "raporsuz").id}`, { grants: { remove: ["overview.view", "bank.reports"] } });
     // 2.3.0 İz 1.7 (bilerek güncellendi): Şüpheli Alacak İşlemleri kaldığı sürece katalog yalnız Şüpheli Alacaklar ile açık; o da kalkınca kapalı.
     const narrowed = (await staff.get("/api/workspace/report-center")).data.data;
     assert.deepEqual(narrowed.reports.map(report => report.id), ["supheli-alacaklar"], "Banka Raporları kalkınca yalnız Şüpheli Alacaklar");
-    await admin.patch(`/api/admin/users/${users.find(user => user.username === "raporsuz").id}`, { grants: { remove: ["bank.reports", "accounts.doubtful"] } });
+    await admin.patch(`/api/admin/users/${users.find(user => user.username === "raporsuz").id}`, { grants: { remove: ["overview.view", "bank.reports", "accounts.doubtful"] } });
     assert.equal((await staff.get("/api/workspace/report-center")).status, 403, "Şüpheli Alacak İşlemleri de kaldırılınca rapor merkezi kapalı");
   });
 });
