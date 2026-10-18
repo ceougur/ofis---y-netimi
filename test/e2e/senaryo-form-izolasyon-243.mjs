@@ -344,6 +344,14 @@ try {
     ok(reloaded && !scriptDialogs.length, `C6 programın yenilemesi dolu formda sorusuz yenilendi (${scriptDialogs.join(",") || "soru yok"})`);
     await page.waitForFunction(() => Boolean(window.HOF?.invoices?.open && window.HOF?.accounts?.open) && document.querySelectorAll(".dynamic-table tbody tr").length > 2, null, { timeout: 30000 });
     await sleep(1500);
+    // C7: yenilemeden sonra (geçmişte eski belgenin pencere kaydı kalır) pencere açıp kapatmak belgeyi değiştirmez.
+    await page.evaluate(() => {
+      window.__ayniBelge = true;
+      window.HOF.formModal({ title: "Yenileme Sonrası", fields: [{ name: "x", label: "X" }], onSubmit: () => {} });
+    });
+    await page.keyboard.press("Escape");
+    await sleep(1500);
+    ok((await page.evaluate(() => window.__ayniBelge === true).catch(() => false)) && page.url() === appUrl, "C7 yenilemeden sonra pencere kapatmak sayfayı değiştirmedi");
     await closeClean(page);
 
     // ======================================================================================================================================

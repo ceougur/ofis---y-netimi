@@ -775,7 +775,6 @@
         if (top) (top.dialog.querySelector("[autofocus]") || focusablesOf(top.dialog)[0])?.focus({ preventScroll: true });
       };
       for (const wait of [60, 250, 700, 1500]) setTimeout(guard, wait);
-      if (!openModals.length) dropHistoryGuard();
       if (onClose) onClose(result);
     };
     // Kullanıcının kapatması (Kapat düğmesi, Esc, dışına tıklama, Geri tuşu): beforeClose ya da ortak "kaydedilmemiş" sorusu.
@@ -889,55 +888,52 @@
   HOF.hasDirtyModal = () => openModals.some(item => item.isDirty());
 
   // ---------- Tarayıcının Geri tuşu ve sayfayı yenileme (2.4.3, keşif C10) ----------
-  // Pencere açılınca geçmişe tek bir "pencere" kaydı eklenir; Geri tuşu programdan çıkmak yerine önce açık pencereyi (içinde "← Liste"
-  // varsa önce kartı) kapatır. Son pencere kapanınca kayıt geri alınır. Adres değişmez (React yönlendiricisi aynı adresi görür).
-  // Kayıt bu belgeye özgü işaret taşır: sayfa yenilenince (F5, programın yenilemesi) geçmişte eski belgenin işareti kalır; ona güvenilip
-  // history.back() denirse tarayıcı ÖNCEKİ belgeye döner, program yeniden yüklenir (run.mjs'te Excel indirmesi bu yüzden gelmedi).
+  // İlk pencere açılınca geçmişe tek bir "pencere" kaydı eklenir (adres değişmez; React yönlendiricisi aynı adresi görür). Geri tuşu bu kaydı
+  // tüketir: pencere açıksa kayıt yeniden kurulur ve en üstteki pencere geri gider (içinde "← Liste" varsa önce karttan listeye, yoksa pencere
+  // kapanır — kaydedilmemiş değişiklik varsa sorar). Pencere açık değilken Geri'ye basılırsa geri gitme olduğu gibi sürdürülür.
+  // Program kendisi hiç history.back() demez: pencere kapanınca kayıt yerinde kalır, sonraki pencere aynı kaydı kullanır. (İlk sürümde son
+  // pencere kapanınca history.back() deniyordu; Chromium kullanıcı etkileşimsiz eklenen kayıtları atlayabildiği ve yenilemeden kalan kayıtlar
+  // karıştığı için bu geri gitme bazen önceki belgeye kadar uzanıp programı yeniden yüklüyordu — run.mjs "Excel'e aktarılır" adımı.)
+  // Kayıt bu belgeye özgü işaret taşır: sayfa yenilenince eski belgenin işareti geçmişte kalır, ona güvenilmez.
   const HISTORY_MARK = `hof-${Math.random().toString(36).slice(2, 10)}`;
   const guardActive = () => history.state?.hofModal === HISTORY_MARK;
-  let historyGuard = false;
-  let ignorePops = 0;
+  let guardOnTop = false;
+  let forwarding = false;
   function armHistoryGuard() {
     if (guardActive()) {
-      historyGuard = true;
+      guardOnTop = true;
       return;
     }
     try {
       history.pushState({ ...(history.state && typeof history.state === "object" ? history.state : {}), hofModal: HISTORY_MARK }, "");
-      historyGuard = true;
+      guardOnTop = true;
     } catch {
       /* geçmiş yazılamıyorsa (ör. sandbox) Geri tuşu eskisi gibi çalışır */
     }
   }
-  function dropHistoryGuard() {
-    if (!historyGuard) return;
-    historyGuard = false;
-    if (!guardActive()) return;
-    ignorePops += 1;
-    try {
-      history.back();
-    } catch {
-      ignorePops -= 1;
-    }
-  }
   window.addEventListener("popstate", () => {
-    if (ignorePops) {
-      ignorePops -= 1;
-      // Geri alınan kayıt beklenirken yeni pencere açıldıysa kayıt yeniden kurulur.
-      if (openModals.length && !guardActive()) {
-        historyGuard = false;
-        armHistoryGuard();
+    const wasGuard = guardOnTop;
+    guardOnTop = guardActive();
+    if (forwarding) {
+      forwarding = false;
+      return;
+    }
+    if (openModals.length) {
+      if (guardOnTop) return;
+      // Kayıt tüketildi: yeniden kur (pencere kapanmazsa sonraki Geri de yakalanır), sonra en üstteki pencereyi geri götür.
+      armHistoryGuard();
+      openModals[openModals.length - 1].back();
+      return;
+    }
+    // Pencere yokken Geri: yalnız bizim kaydımız tüketildiyse kullanıcının istediği geri gitme bir adım daha sürdürülür.
+    if (wasGuard && !guardOnTop) {
+      forwarding = true;
+      try {
+        history.back();
+      } catch {
+        forwarding = false;
       }
-      return;
     }
-    if (!openModals.length) {
-      historyGuard = false;
-      return;
-    }
-    // Kayıt tüketildi: yeniden kur (pencere kapanmazsa sonraki Geri de yakalanır), sonra en üstteki pencereyi geri götür.
-    historyGuard = false;
-    armHistoryGuard();
-    openModals[openModals.length - 1].back();
   });
   // ---------- Öneri listelerinde klavye (2.4.3, keşif B10) ----------
   // Cari seçici, tablodaki kayıt seçici ve fatura kalemi (stok) önerilerinde Aşağı / Yukarı ok satırı işaretler, Enter işaretli satırı
