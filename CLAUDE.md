@@ -420,3 +420,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   KARAR (kullanıcı, 18.10.2026 ~12:40 UTC: "önerini yap"): tek tur, DÖRT bağımsız ajan — kâhin modelini yazan (koşuları GitHub'da, ücretsiz) + UZMAN UI +
   UZMAN UX + UZMAN MALİ MÜŞAVİR (bu oturumda, para yok, kullanım limitinden); yargıç/eleştirmen rolü her uzmanda (önce hata ara, sonra kendi bulgusunu
   çürütmeye çalış); ayrı yargıç ajanı yok, süzgeç ana oturumun yeniden üretmesi (ders 6); ikinci tur yalnız yeniden üretilmiş bulgu varsa, dar kapsamlı.
+- KÂHİN (18.10.2026, dal kahin-243; kodu görmeden, GİB + ürün kararlarından): model 44/44, mutasyon 20/20; d64ebf8'de dar kontrol bulgularının HEPSİNİ
+  kendiliğinden yakaladı + 3 yeni (BASKA-ESZ: eşzamanlı turda einvoice-sending hata sayılıyor; BASKA-FIS-SIRA: Listeden Sil eski tarihli belgeye sıradaki FIS
+  numarasını veriyor; düzenle-ileri-tarih = D4). Düzeltilmiş 2849a87'de 9 senaryonun 5'i yeşil; kalan 4 (ağ yokken Kaydet ve Gönder numarası, BASKA-ESZ,
+  FIS sırası, PK'sız eski belge sonucunda kod boş) düzeltme ajanında. BAŞ MİMAR KARARI: posta kutusu seçilmemiş belge GEÇİCİ engeldir (kullanıcı tek adımla
+  düzeltir) → daha eski PK'sız belge seriyi BEKLETİR, sonucu dolu kod + nedenle döner; kalıcı yalnız chronology ve buyer-is-efatura. Kâhin K9 buna göre
+  güncellenir (kaynak gösterilerek). Uzun Doğrulama'ya kâhin işi eklendi (tohum 1–5 × 300, GitHub, ücretsiz).
