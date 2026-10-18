@@ -103,10 +103,16 @@
   };
   HOF.keepFocus = (root, render) => {
     const active = document.activeElement;
-    const inside = root && active && active !== document.body && root.contains(active) && /^(INPUT|TEXTAREA|SELECT)$/.test(active.tagName);
-    const text = inside && active.tagName !== "SELECT" && (active.tagName === "TEXTAREA" || TEXT_INPUT.test(active.type || ""));
+    const field = root && active && active !== document.body && root.contains(active) && /^(INPUT|TEXTAREA|SELECT)$/.test(active.tagName);
+    // 2.4.3 (A10): odaktaki düğme de (ör. formu açan "+ Tahsilat") yeniden çizimde aynı anahtarlı düğmeye geçer; odak boşa düşmez.
+    const button = !field && root && active && active !== document.body && root.contains(active) && active.tagName === "BUTTON";
+    const inside = field || button;
+    const text = field && active.tagName !== "SELECT" && (active.tagName === "TEXTAREA" || TEXT_INPUT.test(active.type || ""));
     const snap = inside ? { key: HOF.focusKey(active), text, value: active.value, start: text ? active.selectionStart : null, end: text ? active.selectionEnd : null, scroll: root.scrollTop } : null;
+    // 2.4.3 (kullanıcı kararı, form durumu izole): yeniden çizim kullanıcının yazdığı (kaydedilmemiş) değerleri ezmez.
+    const drafts = root ? draftSnapshot(root) : [];
     const out = render();
+    if (drafts.length) draftRestore(root, drafts);
     if (!snap?.key) {
       // Pencere "Yükleniyor…" ile açıldıysa odak kapatma düğmesinde kalmıştır; içerik gelince ilk arama kutusuna geçer.
       const now = document.activeElement;
@@ -115,6 +121,11 @@
     }
     const next = root.querySelector(snap.key);
     if (!next || next.disabled) return out;
+    if (button) {
+      next.focus({ preventScroll: true });
+      if (snap.scroll) root.scrollTop = snap.scroll;
+      return out;
+    }
     // Yazarken gelen (eski) yanıt kutudaki metni geri almasın.
     if (snap.text && next.value !== snap.value) next.value = snap.value;
     next.focus({ preventScroll: true });
@@ -125,6 +136,85 @@
     return out;
   };
   HOF.swap = (root, html) => HOF.keepFocus(root, () => { root.innerHTML = html; });
+
+  // ---------- Form taslağı (2.4.3, kullanıcı kararı 17.10.2026: "Form state yönetimini izole hale getir; dosya/resim yükleme formun
+  // genel state'ini re-render etmesin ve kaydedilmemiş verileri ezmesin") ----------
+  // Kullanıcının kendi eliyle (klavye, fare; isTrusted) değiştirdiği alanlar "dokunulmuş" sayılır. Kurallar:
+  //  - HOF.swap / HOF.keepFocus ile yeniden çizilen bir kapsayıcıda dokunulmuş ve kayıtlı değerinden farklı alanlar yeni çizimde AYNI
+  //    anahtarlı alana geri yazılır — yeter ki program o alanın kayıtlı (çizilen) değerini değiştirmemiş olsun (ör. "Net'ten Brüt" fiyatı
+  //    kendisi yazar; o alan geri alınmaz). Kayıtlı veri ekrana yalnız Kaydet'ten sonra (HOF.markClean) ya da kullanıcı açıkça
+  //    yenileyince basılır;
+  //  - süzgeç, arama ve seçim kutuları taslak sayılmaz (pencereyi kapatırken "kaydedilmemiş" diye sorulmaz).
+  const touched = new WeakSet();
+  const NOT_DRAFT = "input[type=search], input[type=file], input[type=button], input[type=submit], input[type=reset], input[type=hidden], input[type=image], [data-filter], [data-q], [data-rc-search], [data-range], [data-param], [data-preset], [data-pos-filter], [data-mv], [data-inbox-from], [data-inbox-to], [data-pick], [data-pick-all], [data-sel], [data-sel-all], [data-select], [data-select-all], [data-nodirty], .hof-autofill-trap";
+  const NOT_DRAFT_SCOPE = ".hof-plans-filters, .hof-bank-filters, .hof-bank-filter, .hof-bank-toolbar, .hof-rep-filters, .hof-report-filters, .hof-report-toolbar, .hof-picker-search, .hof-chat-search, [data-nodirty]";
+  HOF.isDraftField = node => Boolean(node && node.nodeType === 1 && /^(INPUT|TEXTAREA|SELECT)$/.test(node.tagName) && !node.matches(NOT_DRAFT) && !node.closest(NOT_DRAFT_SCOPE));
+  const isToggle = node => node.type === "checkbox" || node.type === "radio";
+  const savedValueOf = node => {
+    if (isToggle(node)) return node.defaultChecked;
+    if (node.tagName === "SELECT") return ([...node.options].find(option => option.defaultSelected) || node.options[0])?.value ?? "";
+    return node.defaultValue;
+  };
+  const valueOf = node => (isToggle(node) ? node.checked : node.value);
+  const changedField = node => valueOf(node) !== savedValueOf(node);
+  // Alanın yeniden çizimde de aynı kalan anahtarı: name, aria-label ve data-* nitelikleri (rastgele kimlik değil).
+  const draftKey = node => {
+    const parts = [];
+    for (const attr of node.attributes) {
+      if (attr.name === "name" || attr.name === "aria-label" || attr.name === "type" || (attr.name.startsWith("data-") && !attr.name.startsWith("data-hof"))) parts.push(`[${attr.name}="${CSS.escape(attr.value)}"]`);
+    }
+    if (isToggle(node) && !parts.some(part => part.startsWith("[value=")) && node.hasAttribute("value")) parts.push(`[value="${CSS.escape(node.getAttribute("value"))}"]`);
+    return parts.length > (parts.some(part => part.startsWith("[type=")) ? 1 : 0) ? `${node.tagName.toLowerCase()}${parts.join("")}` : "";
+  };
+  function draftSnapshot(root) {
+    const out = [];
+    for (const node of root.querySelectorAll("input, textarea, select")) {
+      if (!touched.has(node) || !HOF.isDraftField(node) || !changedField(node)) continue;
+      const key = draftKey(node);
+      if (!key) continue;
+      const all = [...root.querySelectorAll(key)];
+      out.push({ key, index: all.indexOf(node), count: all.length, value: valueOf(node), saved: savedValueOf(node) });
+    }
+    return out;
+  }
+  function draftRestore(root, drafts) {
+    for (const draft of drafts) {
+      const all = root.querySelectorAll(draft.key);
+      // Satır eklendi/silindiyse (sayı değişti) hangi alanın hangisi olduğu bilinemez: o anahtara dokunulmaz (formun kendi durumu çizer).
+      if (all.length !== draft.count) continue;
+      const node = all[draft.index];
+      if (!node || !HOF.isDraftField(node) || node.disabled || savedValueOf(node) !== draft.saved) continue;
+      if (isToggle(node)) node.checked = draft.value;
+      else if (node.tagName === "SELECT" && ![...node.options].some(option => option.value === draft.value)) continue;
+      else node.value = draft.value;
+      touched.add(node);
+    }
+  }
+  // Kaydedilen formun dokunulmuş işaretleri kalkar: sonraki yeniden çizim kayıtlı (sunucudan dönen) değeri gösterir, pencere kapanırken sorulmaz.
+  HOF.markClean = root => {
+    if (!root) return;
+    for (const node of root.querySelectorAll("input, textarea, select")) touched.delete(node);
+    const dialog = root.closest?.(".hof-modal") || root.querySelector?.(".hof-modal");
+    openModals.find(item => item.dialog === dialog)?.clean();
+  };
+  HOF.isTouched = node => touched.has(node);
+  // Başarılı yazma (Kaydet, "Kaydet ve Yeni", Taslak Olarak Kaydet…) taslağı kapatır: o pencerede dokunulmuş işaretleri kalkar — sonraki yeniden
+  // çizim (ör. Kurulum Sihirbazı'nda "Kaydet ve Yeni Hesap" boş formu) kayıtlı / boş değeri gösterir, eski yazılanı geri getirmez (senaryo-banka-210
+  // adım 2 ilk denemede yakaladı). Sorgu niteliğindeki yazmalar (hesapla, mükellef sorgula, önizle, bağlantıyı dene) kaydedilmemiş sayılmayı
+  // kaldırmaz; yalnız geri yazım işaretlerini kaldırır (yeniden çizimde programın yazdığı değer görünür).
+  const QUERY_WRITE = /\/(calc|check-user|preview|view-preview|test|aliases|search|check)(\?|$)/;
+  function writeOrigin() {
+    const active = document.activeElement;
+    return active?.closest?.(".hof-modal") || (lastPressed?.isConnected ? lastPressed.closest?.(".hof-modal") : null) || null;
+  }
+  // Formla ilgisiz arka plan yazmaları (ekran durumu, sohbet okundu bilgisi) taslağa dokunmaz.
+  const UNRELATED_WRITE = /^\/api\/(workspace\/client-state|chat\/|auth\/)/;
+  function noteWrite(dialog, path) {
+    const clean = String(path || "").split("?")[0];
+    const modal = openModals.find(item => item.dialog === dialog);
+    if (!modal || UNRELATED_WRITE.test(clean)) return;
+    modal.wrote(QUERY_WRITE.test(clean));
+  }
 
   // ---------- Oturum ve yetki ----------
   HOF.user = null;
@@ -211,6 +301,9 @@
   // açmaz (server/lib/idempotency.mjs). LAN'da (http://192.168…) crypto.randomUUID yoktur; getRandomValues her yerde var.
   HOF.requestId = () => Array.from(crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, "0")).join("");
   const sendApi = async (path, { method = "GET", body, signal, timeoutMs = 30000, requestId = "" } = {}) => {
+    // 2.4.3: yazma isteğini başlatan pencere (odaktaki ya da son basılan öğenin penceresi); başarılı yazmadan sonra o pencerenin taslağı
+    // "kaydedildi" sayılır (noteWrite).
+    const origin = method !== "GET" ? writeOrigin() : null;
     const init = { method, credentials: "same-origin", headers: { accept: "application/json" }, cache: "no-store" };
     if (requestId) init.headers["x-hof-request"] = requestId;
     if (body !== undefined) {
@@ -251,7 +344,10 @@
       else if (payload.code === "bank-account-required") HOF.emit("bank-choices-stale", payload);
       throw error;
     }
-    if (method !== "GET") noteLedgerChange(path);
+    if (method !== "GET") {
+      noteLedgerChange(path);
+      if (origin) noteWrite(origin, path);
+    }
     return payload.data === undefined ? payload : payload.data;
   };
 
@@ -508,8 +604,54 @@
     }
     return host;
   };
+  // 2.4.3 (keşif A11 / B5 / C8): süre metnin uzunluğuna göre (okuma hızı ~15 harf/sn); hata bildirimi en az 7 sn; en çok 30 sn.
+  // Fare üstündeyken ya da odaktayken kapanmaz, ayrılınca kalan süre (en az 2 sn) sürer.
+  // A6: aynı tür ve metindeki bildirim ekranda zaten varsa yenisi eklenmez; var olanın süresi baştan başlar ve sayacı artar (×2, ×3…).
+  const READ_CHARS_PER_SECOND = 15;
+  // Fare bildirimin üstünde mi: bildirim tıklamayı engellemediği için (altındaki sekme / düğme tıklanabilir) mouseenter gelmez; konum izlenir.
+  let hoverFrame = 0;
+  let pointer = null;
+  const checkToastHover = () => {
+    hoverFrame = 0;
+    const host = document.getElementById("hof-toasts");
+    if (!host || !pointer) return;
+    for (const item of host.children) {
+      if (!item.hofHover) continue;
+      const box = item.getBoundingClientRect();
+      const over = pointer.x >= box.left && pointer.x <= box.right && pointer.y >= box.top && pointer.y <= box.bottom;
+      if (over !== Boolean(item.hofOver)) {
+        item.hofOver = over;
+        item.hofHover(over);
+      }
+    }
+  };
+  document.addEventListener(
+    "mousemove",
+    event => {
+      pointer = { x: event.clientX, y: event.clientY };
+      if (!hoverFrame) hoverFrame = requestAnimationFrame(checkToastHover);
+    },
+    { passive: true, capture: true },
+  );
+  document.addEventListener("mouseleave", () => {
+    pointer = { x: -1, y: -1 };
+    checkToastHover();
+  });
+  HOF.toastDuration = (message, { type = "info", timeout = 3600, action = false } = {}) => {
+    const reading = 1500 + Math.ceil((String(message ?? "").length / READ_CHARS_PER_SECOND) * 1000);
+    return Math.min(30000, Math.max(Number(timeout) || 0, type === "error" ? 7000 : 0, action ? 7000 : 0, reading));
+  };
   HOF.toast = (message, { type = "info", action, timeout = 3600 } = {}) => {
+    const host = toastHost();
+    const sameKey = `${type}\u0001${String(message)}`;
+    const duration = HOF.toastDuration(message, { type, timeout, action: Boolean(action) });
+    const twin = !action && [...host.children].find(item => item.hofKey === sameKey && !item.hofLeaving);
+    if (twin) {
+      twin.hofRepeat(duration);
+      return twin;
+    }
     const node = HOF.el("div", { class: `hof-toast hof-toast-${type}` });
+    node.hofKey = sameKey;
     const text = HOF.el("span", { class: "hof-toast-text", text: String(message) });
     node.appendChild(text);
     if (action) {
@@ -523,28 +665,100 @@
     const close = HOF.el("button", { type: "button", class: "hof-toast-close", "aria-label": "Bildirimi kapat", text: "×" });
     close.onclick = () => node.remove();
     node.appendChild(close);
-    const host = toastHost();
     host.appendChild(node);
     // En fazla 4 bildirim görünür; eskisi kapanır.
     while (host.children.length > 4) host.firstElementChild.remove();
     requestAnimationFrame(() => node.classList.add("is-visible"));
-    setTimeout(() => {
+    let remaining = duration;
+    let startedAt = 0;
+    let timer = 0;
+    let held = false;
+    let repeats = 1;
+    const leave = () => {
+      timer = 0;
+      node.hofLeaving = true;
       node.classList.remove("is-visible");
       setTimeout(() => node.remove(), 250);
-    }, action ? Math.max(timeout, 7000) : timeout);
+    };
+    const run = () => {
+      clearTimeout(timer);
+      startedAt = Date.now();
+      timer = setTimeout(leave, remaining);
+    };
+    const hold = () => {
+      if (held) return;
+      held = true;
+      if (timer) remaining = Math.max(2000, remaining - (Date.now() - startedAt));
+      clearTimeout(timer);
+      timer = 0;
+    };
+    const release = () => {
+      if (!held || node.hofLeaving) return;
+      held = false;
+      remaining = Math.max(2000, remaining);
+      run();
+    };
+    // Bildirim tıklamayı geçirir (CSS pointer-events: none); fare üstünde mi, konumdan izlenir (watchToastHover).
+    node.hofHover = over => (over ? hold() : release());
+    node.addEventListener("focusin", hold);
+    node.addEventListener("focusout", event => {
+      if (!node.contains(event.relatedTarget)) release();
+    });
+    node.hofRepeat = next => {
+      repeats += 1;
+      let count = node.querySelector(".hof-toast-count");
+      if (!count) {
+        count = HOF.el("span", { class: "hof-toast-count", "aria-label": "Tekrar sayısı" });
+        node.insertBefore(count, text.nextSibling);
+      }
+      count.textContent = `×${repeats}`;
+      remaining = Math.max(next, remaining);
+      if (!held) {
+        remaining = next;
+        run();
+      }
+      // Tekrar eden bildirim en alta (en yeni yerine) taşınmaz; yerinde kısa bir vurgu alır.
+      node.classList.remove("is-repeat");
+      void node.offsetWidth;
+      node.classList.add("is-repeat");
+    };
+    run();
     return node;
   };
   // v2.0.26 (2. gözden geçirme İ6): eksi bakiye sorusunda "Vazgeç" bir hata değil, kullanıcının kararı: bilgi bildirimi.
   // Yargıç (2.1.0): banka sorularındaki "Vazgeç" de (bank-negative-cancelled, bank-similar-cancelled) kullanıcının kararıdır: bilgi bildirimi.
   HOF.userCancelled = error => /-cancelled$/.test(String(error?.data?.code || ""));
-  HOF.toastError = error => (HOF.userCancelled(error) ? HOF.toast(error.message, { type: "info" }) : HOF.toast((error && error.message) || String(error), { type: "error", timeout: 5200 }));
+  HOF.toastError = error => (HOF.userCancelled(error) ? HOF.toast(error.message, { type: "info" }) : HOF.toast((error && error.message) || String(error), { type: "error", timeout: 7000 }));
 
   // ---------- Pencereler ----------
   const openModals = [];
   let lastPressed = null;
   document.addEventListener("pointerdown", event => { lastPressed = event.target?.closest?.("button, a, [tabindex]") || null; }, true);
-  // beforeClose (v2.1.0 GG2): kullanıcı kapatırken (Kapat, Esc, dışına tıklama) çağrılır; false ya da false'a çözülen söz kapanmayı durdurur
-  // (ör. kaydedilmemiş değişiklik sorusu). Programın kendi close() çağrısı sorusuz kapatır.
+  // 2.4.3 (form durumu izole): kullanıcının kendi değiştirdiği alan "dokunulmuş" sayılır ve penceresini "kaydedilmemiş" yapar.
+  // Kapsam: alanın en yakın [data-hof-form] öğesi (pencere içi formlar: fatura formu, Fatura Ayarları — kapsam öğesi ekrandan kalkınca,
+  // ör. kaydedip karta geçince, kirlilik de kalkar), yoksa <form> (form pencereleri; kapanana kadar), yoksa alanın kendisi (ekranda ve
+  // değeri kayıtlı değerinden farklı oldukça).
+  const noteTouched = event => {
+    if (!event.isTrusted) return;
+    const node = event.target;
+    if (!HOF.isDraftField(node)) return;
+    touched.add(node);
+    const dialog = node.closest(".hof-modal");
+    if (dialog) openModals.find(item => item.dialog === dialog)?.touch(node);
+  };
+  document.addEventListener("input", noteTouched, true);
+  document.addEventListener("change", noteTouched, true);
+  // Pencere içindeki açık öneri listesi (cari, stok, tablodaki kayıt): Esc önce yalnız listeyi kapatır (keşif B4).
+  const POPUP_LISTS = ".hof-case-picker-list:not([hidden]), .hof-inv-item-hits:not([hidden]), .hof-free-suggest:not([hidden])";
+  const closePopups = dialog => {
+    const open = [...dialog.querySelectorAll(POPUP_LISTS)].filter(list => list.getClientRects().length && list.children.length);
+    for (const list of open) list.hidden = true;
+    return open.length > 0;
+  };
+  HOF.closeQuestion = () => HOF.confirm({ title: "Kaydedilmemiş Değişiklik", message: "Kaydedilmemiş değişiklikler kaybolacak. Kapatılsın mı?", confirmLabel: "Kaydetmeden Kapat", cancelLabel: "Forma Dön", danger: true });
+  // beforeClose (v2.1.0 GG2): kullanıcı kapatırken (Kapat, Esc, dışına tıklama, tarayıcının Geri tuşu) çağrılır; false ya da false'a çözülen
+  // söz kapanmayı durdurur. Verilmezse (2.4.3) pencerede kaydedilmemiş değişiklik varsa ortak soru sorulur. Programın kendi close() çağrısı
+  // (Kaydet'ten sonra, Vazgeç düğmesi) sorusuz kapatır.
   HOF.modal = ({ title, eyebrow = "DESTEKOFİS", body = "", size = "", dismissible = true, onOpen, onClose, beforeClose = null } = {}) => {
     // v2.0.14: açan öğe. Tıklama odak vermemişse (ör. panel mousedown'ı yutuyor) son basılan düğme alınır; pencere
     // açıkken o düğme yeniden kurulmuş olabilir (canlı yenileme) — kapanınca odak aynı anahtarlı yeni düğmeye döner, boşa
@@ -565,6 +779,13 @@
     const dialog = node.querySelector(".hof-modal");
     let closed = false;
     let asking = false;
+    const scopes = new Set();
+    const focusBack = () => {
+      const back = previousFocus && previousFocus.isConnected ? previousFocus : previousKey ? document.querySelector(previousKey) : null;
+      if (!back || !back.focus || back === document.body) return false;
+      back.focus({ preventScroll: true });
+      return document.activeElement === back;
+    };
     const finish = result => {
       if (closed) return;
       closed = true;
@@ -572,15 +793,24 @@
       document.removeEventListener("keydown", onKey, true);
       openModals.splice(openModals.indexOf(api), 1);
       setTimeout(() => node.remove(), 160);
-      const back = previousFocus && previousFocus.isConnected ? previousFocus : previousKey ? document.querySelector(previousKey) : null;
-      if (back && back.focus && back !== document.body) back.focus({ preventScroll: true });
+      focusBack();
+      // A10: Kaydet'ten sonra açan pencere kendini yeniden çizer (açan düğme yenisiyle değişir); odak boşa (body) düştüyse aynı anahtarlı
+      // düğmeye, o da yoksa açık kalan üst pencereye döner. Bu arada başka bir pencere açıldıysa ya da odak başka yerdeyse dokunulmaz.
+      const guard = () => {
+        const now = document.activeElement;
+        if (now && now !== document.body && now.isConnected) return;
+        if (focusBack()) return;
+        const top = openModals[openModals.length - 1];
+        if (top) (top.dialog.querySelector("[autofocus]") || focusablesOf(top.dialog)[0])?.focus({ preventScroll: true });
+      };
+      for (const wait of [60, 250, 700, 1500]) setTimeout(guard, wait);
       if (onClose) onClose(result);
     };
-    // Kullanıcının kapatması (Kapat düğmesi, Esc, dışına tıklama): beforeClose sorabilir.
+    // Kullanıcının kapatması (Kapat düğmesi, Esc, dışına tıklama, Geri tuşu): beforeClose ya da ortak "kaydedilmemiş" sorusu.
     const userClose = () => {
       if (closed || asking) return;
-      if (!beforeClose) return finish();
-      const answer = beforeClose();
+      const guard = beforeClose || (() => (api.isDirty() ? HOF.closeQuestion() : true));
+      const answer = guard();
       if (answer === false) return;
       if (answer && typeof answer.then === "function") {
         asking = true;
@@ -595,12 +825,26 @@
       finish();
     };
     const close = result => finish(result);
-    const focusables = () => [...dialog.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')].filter(item => !item.disabled && item.offsetParent !== null);
+    const focusables = () => focusablesOf(dialog);
     const onKey = event => {
       if (openModals[openModals.length - 1] !== api) return;
       if (event.key === "Escape" && dismissible) {
         event.preventDefault();
+        // Açık öneri listesi varsa Esc yalnız onu kapatır; pencere açık kalır.
+        if (closePopups(dialog)) {
+          event.stopPropagation();
+          return;
+        }
         userClose();
+      } else if (event.key === "Enter" && (event.ctrlKey || event.metaKey) && !event.altKey) {
+        // A16: Ctrl+Enter formu kaydeder (Not Ekle ve çok satırlı not alanları dahil; Enter metin alanında yeni satırdır).
+        const form = event.target?.closest?.("form");
+        if (!form || !dialog.contains(form)) return;
+        event.preventDefault();
+        event.stopPropagation();
+        const submit = form.querySelector('button[type="submit"]:not([disabled])');
+        if (submit) form.requestSubmit(submit);
+        else if (!form.querySelector('button[type="submit"]')) form.requestSubmit();
       } else if (event.key === "Tab") {
         const items = focusables();
         if (!items.length) return;
@@ -615,7 +859,41 @@
         }
       }
     };
-    const api = { node, dialog, close };
+    const api = {
+      node,
+      dialog,
+      close,
+      // Kullanıcının kapatması gibi (sorabilir): Esc / × / dışına tıklama / Geri tuşu.
+      dismiss: userClose,
+      touch(field) {
+        const scoped = field.closest("[data-hof-form]");
+        if (scoped && dialog.contains(scoped)) scopes.add(`attr:${scoped.getAttribute("data-hof-form")}`);
+        else if (field.closest("form") && dialog.contains(field.closest("form"))) scopes.add("form");
+      },
+      isDirty() {
+        for (const scope of [...scopes]) {
+          const alive = scope === "form" ? dialog.querySelector("form") : dialog.querySelector(`[data-hof-form="${CSS.escape(scope.slice(5))}"]`);
+          if (alive) return true;
+          scopes.delete(scope);
+        }
+        return [...dialog.querySelectorAll("input, textarea, select")].some(field => touched.has(field) && HOF.isDraftField(field) && changedField(field));
+      },
+      clean() {
+        scopes.clear();
+        for (const field of dialog.querySelectorAll("input, textarea, select")) touched.delete(field);
+      },
+      wrote(query) {
+        for (const field of dialog.querySelectorAll("input, textarea, select")) touched.delete(field);
+        if (!query) scopes.clear();
+      },
+      // Tarayıcının Geri tuşu: pencere içinde "← Liste" gibi bir geri düğmesi görünürse önce o (kart → liste), yoksa pencere kapanır.
+      back() {
+        if (!dismissible) return;
+        const step = [...dialog.querySelectorAll(".hof-plan-back")].find(button => !button.disabled && button.getClientRects().length);
+        if (step) step.click();
+        else userClose();
+      },
+    };
     openModals.push(api);
     document.addEventListener("keydown", onKey, true);
     if (dismissible) {
@@ -626,13 +904,126 @@
     }
     document.body.appendChild(node);
     requestAnimationFrame(() => node.classList.add("is-visible"));
+    if (dismissible) armHistoryGuard();
     if (onOpen) onOpen(api);
     // Odak hemen (eşzamanlı) verilir; gecikmeli odak, hızlı yazan kullanıcının metnini başka alana kaydırabiliyordu.
     const target = dialog.querySelector("[autofocus]") || dialog.querySelector("input, textarea, select") || focusables()[0];
     if (target) target.focus({ preventScroll: true });
     return api;
   };
+  const focusablesOf = dialog => [...dialog.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')].filter(item => !item.disabled && item.offsetParent !== null);
   HOF.hasOpenModal = () => openModals.length > 0;
+  // Açık pencerelerden biri kaydedilmemiş değişiklik taşıyor mu (F5 / sekmeyi kapatma sorusu, testler).
+  HOF.hasDirtyModal = () => openModals.some(item => item.isDirty());
+
+  // ---------- Tarayıcının Geri tuşu ve sayfayı yenileme (2.4.3, keşif C10) ----------
+  // İlk pencere açılınca geçmişe tek bir "pencere" kaydı eklenir (adres değişmez; React yönlendiricisi aynı adresi görür). Geri tuşu bu kaydı
+  // tüketir: pencere açıksa kayıt yeniden kurulur ve en üstteki pencere geri gider (içinde "← Liste" varsa önce karttan listeye, yoksa pencere
+  // kapanır — kaydedilmemiş değişiklik varsa sorar). Pencere açık değilken Geri'ye basılırsa geri gitme olduğu gibi sürdürülür.
+  // Program kendisi hiç history.back() demez: pencere kapanınca kayıt yerinde kalır, sonraki pencere aynı kaydı kullanır. (İlk sürümde son
+  // pencere kapanınca history.back() deniyordu; Chromium kullanıcı etkileşimsiz eklenen kayıtları atlayabildiği ve yenilemeden kalan kayıtlar
+  // karıştığı için bu geri gitme bazen önceki belgeye kadar uzanıp programı yeniden yüklüyordu — run.mjs "Excel'e aktarılır" adımı.)
+  // Kayıt bu belgeye özgü işaret taşır: sayfa yenilenince eski belgenin işareti geçmişte kalır, ona güvenilmez.
+  const HISTORY_MARK = `hof-${Math.random().toString(36).slice(2, 10)}`;
+  const guardActive = () => history.state?.hofModal === HISTORY_MARK;
+  let guardOnTop = false;
+  let forwarding = false;
+  function armHistoryGuard() {
+    if (guardActive()) {
+      guardOnTop = true;
+      return;
+    }
+    try {
+      history.pushState({ ...(history.state && typeof history.state === "object" ? history.state : {}), hofModal: HISTORY_MARK }, "");
+      guardOnTop = true;
+    } catch {
+      /* geçmiş yazılamıyorsa (ör. sandbox) Geri tuşu eskisi gibi çalışır */
+    }
+  }
+  window.addEventListener("popstate", () => {
+    const wasGuard = guardOnTop;
+    guardOnTop = guardActive();
+    if (forwarding) {
+      forwarding = false;
+      return;
+    }
+    if (openModals.length) {
+      if (guardOnTop) return;
+      // Kayıt tüketildi: yeniden kur (pencere kapanmazsa sonraki Geri de yakalanır), sonra en üstteki pencereyi geri götür.
+      armHistoryGuard();
+      openModals[openModals.length - 1].back();
+      return;
+    }
+    // Pencere yokken Geri: yalnız bizim kaydımız tüketildiyse kullanıcının istediği geri gitme bir adım daha sürdürülür.
+    if (wasGuard && !guardOnTop) {
+      forwarding = true;
+      try {
+        history.back();
+      } catch {
+        forwarding = false;
+      }
+    }
+  });
+  // ---------- Öneri listelerinde klavye (2.4.3, keşif B10) ----------
+  // Cari seçici, tablodaki kayıt seçici ve fatura kalemi (stok) önerilerinde Aşağı / Yukarı ok satırı işaretler, Enter işaretli satırı
+  // seçer (işaret yoksa her seçicinin kendi Enter kuralı: tam eşleşen ya da ilk satır), Esc listeyi kapatır (pencereyi değil).
+  const SUGGEST_ITEMS = "li[data-id], li[data-key], li[data-item], li[data-new-item]";
+  const suggestListOf = input => {
+    if (!input || input.tagName !== "INPUT") return null;
+    let list = input.closest(".hof-case-picker")?.querySelector(".hof-case-picker-list") || null;
+    if (!list && input.dataset.l !== undefined && (input.dataset.f === "name" || input.dataset.f === "code")) list = input.closest(".hof-modal")?.querySelector(`.hof-inv-item-hits[data-hits="${CSS.escape(input.dataset.l)}"]`) || null;
+    return list && !list.hidden && list.querySelector(SUGGEST_ITEMS) ? list : null;
+  };
+  HOF.pickSuggestion = item => {
+    const list = item.parentElement;
+    item.dispatchEvent(new MouseEvent("mousedown", { bubbles: true, cancelable: true }));
+    // Cari / kayıt seçici mousedown'da seçer ve listeyi boşaltır; stok önerisi tıklamayla seçilir.
+    if (item.isConnected && list && !list.hidden) item.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+  };
+  document.addEventListener(
+    "keydown",
+    event => {
+      if (!["ArrowDown", "ArrowUp", "Enter"].includes(event.key) || event.altKey || event.ctrlKey || event.metaKey || event.isComposing) return;
+      const list = suggestListOf(event.target);
+      if (!list) return;
+      const items = [...list.querySelectorAll(SUGGEST_ITEMS)];
+      const current = items.findIndex(item => item.classList.contains("is-active"));
+      if (event.key === "Enter") {
+        if (current < 0) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        HOF.pickSuggestion(items[current]);
+        return;
+      }
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const next = current < 0 ? (event.key === "ArrowDown" ? 0 : items.length - 1) : (current + (event.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
+      items.forEach((item, index) => {
+        item.classList.toggle("is-active", index === next);
+        item.setAttribute("aria-selected", String(index === next));
+      });
+      items[next].scrollIntoView({ block: "nearest" });
+    },
+    true,
+  );
+
+  // F5 / sekmeyi kapatma: açık bir formda kaydedilmemiş değişiklik varsa tarayıcının "Siteden ayrılınsın mı?" sorusu.
+  // Programın kendi yenilemesi / yönlendirmesi (şirket değişti, yeni şirket açıldı, oturum düştü, güncelleme…) sorulmaz: Chromium'un Navigation
+  // API'si betikten başlayan belge değişikliğini (userInitiated false) beforeunload'dan ÖNCE bildirir. F5, sekmeyi kapatma ve adres çubuğu
+  // bu olayı üretmez; onlar sorulur. (Navigation API olmayan tarayıcıda programın yenilemesi de sorar — bilinen sınır.)
+  let scriptLeaving = 0;
+  window.navigation?.addEventListener?.("navigate", event => {
+    if (event.userInitiated || event.destination?.sameDocument) return;
+    clearTimeout(scriptLeaving);
+    scriptLeaving = setTimeout(() => {
+      scriptLeaving = 0;
+    }, 3000);
+  });
+  window.addEventListener("beforeunload", event => {
+    if (scriptLeaving || !HOF.hasDirtyModal()) return;
+    event.preventDefault();
+    event.returnValue = "";
+  });
 
   /** Yerel takvimle bugün (YYYY-AA-GG); toISOString gece yarısından sonra dünü verir. */
   HOF.localToday = () => {

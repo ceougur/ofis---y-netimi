@@ -19,6 +19,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { buildXlsx } from "../../server/lib/xlsx-write.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-216");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -84,7 +85,7 @@ const money = text => Number(String(text).replace(/[^\d,-]/g, "").replace(",", "
 const admin = await newPage();
 const closeAll = async () => {
   for (let i = 0; i < 8 && (await admin.$(modal)); i += 1) {
-    await admin.keyboard.press("Escape");
+    await escClose(admin);
     await admin.waitForTimeout(250);
   }
 };
@@ -136,7 +137,7 @@ try {
     await admin.waitForSelector(`${modal} .hof-mapping`, { timeout: 30000 });
     await Promise.all([admin.waitForEvent("load", { timeout: 30000 }), admin.click(`${modal} [data-mode="replace"]`)]);
     await admin.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 }).catch(() => null);
-    await admin.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]").catch(() => admin.keyboard.press("Escape"));
+    await admin.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]").catch(() => escClose(admin));
     await admin.goto(`${BASE}/`, { waitUntil: "load" });
     await admin.waitForSelector("#hof-sidecard [data-action=invoices]", { timeout: 20000 });
     ids.supplier = (await call(admin, "/api/workspace/accounts", { name: "Toptan Kırtasiye A.Ş.", type: "supplier", taxNo: "1234567890", taxOffice: "Kavaklıdere" })).data.id;
@@ -311,7 +312,7 @@ try {
       await admin.click(`${modal} [data-entry="${kind}"]`);
       await admin.waitForSelector(`${modal} select[name="method"]`);
       const list = await admin.$$eval(`${modal} select[name="method"] option`, nodes => nodes.map(node => node.textContent.trim()));
-      await admin.keyboard.press("Escape");
+      await escClose(admin);
       await admin.waitForTimeout(300);
       return list;
     };
@@ -382,7 +383,7 @@ try {
         await admin.click(`${modal} [data-act="${act}"]`);
         await admin.waitForSelector(`${modal} select[name="method"]`);
         const list = await admin.$$eval(`${modal} select[name="method"] option`, nodes => nodes.map(node => node.textContent.trim()));
-        await admin.keyboard.press("Escape");
+        await escClose(admin);
         await admin.waitForTimeout(300);
         return list;
       };
@@ -402,7 +403,7 @@ try {
       const value = await admin.inputValue(`${modal} input[name="methodLabel"]`);
       const readonly = await admin.$eval(`${modal} input[name="methodLabel"]`, node => node.readOnly);
       ok(!(await admin.$(`${modal} select[name="method"]`)), `Kasa ${kind} formunda yol seçici yok`);
-      await admin.keyboard.press("Escape");
+      await escClose(admin);
       await admin.waitForTimeout(300);
       return { value, readonly };
     };
@@ -420,7 +421,7 @@ try {
       await admin.click(`${modal} [data-move="${kind}"]`);
       await admin.waitForSelector(`${modal} select[name="pay"]`);
       const list = await admin.$$eval(`${modal} select[name="pay"] option`, nodes => nodes.map(node => node.textContent.trim()));
-      await admin.keyboard.press("Escape");
+      await escClose(admin);
       await admin.waitForTimeout(300);
       return list;
     };

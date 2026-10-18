@@ -13,6 +13,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { buildXlsx } from "../../server/lib/xlsx-write.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-iz1-sayfa");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -85,7 +86,7 @@ const closeModals = async page => {
   for (let i = 0; i < 5 && (await page.$(modal)); i += 1) {
     const button = (await page.$(`${modal} [data-done]`)) || (await page.$(`${modal} [data-keep]`)) || (await page.$(`${modal} [data-general]`));
     if (button) await button.click();
-    else await page.keyboard.press("Escape");
+    else await escClose(page);
     await page.waitForTimeout(500);
   }
 };

@@ -12,6 +12,7 @@ import { chromium } from "playwright";
 import { CURRENT, bootVersion } from "../guvenilirlik/surumler.mjs";
 import { OUR_VKN, startMockEdm } from "../einvoice-mock.mjs";
 import { ADMIN_PASSWORD } from "../helpers.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const root = mkdtempSync(path.join(tmpdir(), "senaryo-ebelge-242-"));
 const shots = process.env.EKRAN_DIR || root;
@@ -79,7 +80,7 @@ async function confirmSave(page) {
 }
 const closeAll = async page => {
   for (let index = 0; index < 5 && (await page.$(modal)); index += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await page.waitForTimeout(250);
     const yes = await page.$(`${modal} [data-answer="yes"]`);
     if (yes) await yes.click();

@@ -20,6 +20,7 @@ import path from "node:path";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { createClient, installPageClock } from "../helpers.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const PASS = "Prova-Admin-2026!";
 const NOW = "2026-10-08T12:00:00+03:00";
@@ -83,7 +84,7 @@ const top = `${modal}:last-of-type`;
 const textOf = selector => page.$eval(selector, node => node.textContent.replace(/\s+/g, " ").trim()).catch(() => "");
 const closeAll = async () => {
   for (let index = 0; index < 8 && (await page.$(modal)); index += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await pause(250);
   }
 };

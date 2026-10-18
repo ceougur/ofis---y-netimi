@@ -1,0 +1,29 @@
+
+> destekofis@2.4.3 test:senaryo-k8-230
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-k8-230.mjs
+
+
+■ 1 Yönetici, ödenmiş kart: + Tahsilat → Kart Ödendi onayı → Vazgeç → Fazlasını Avans Yaz
+  ✓ + Tahsilat açık, ipucu avans der: "Kart ödendi; girilen tutar avans (fazla tahsilat) olur, kaydederken onay sorulur"
+  ✓ yöneticide Tahsilat Kapalı yazısı yok
+  ✓ pencere açıklaması: "Bu kart ödendi (kalan 0,00 ₺). Girilen tutar fazla tahsilat (avans) olarak karta ve cariye alacak yazılır; kaydederken onay sorulur."
+  ✓ onay penceresi: Kart Ödendi — "Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta …"
+  ✓ onay düğmesi: Fazlasını Avans Yaz
+  ✓ Vazgeç → formda: "Kaydedilmedi: kart ödendi. Kalan kadar yazın ya da fazlasını avans olarak kaydedin."
+  ✓ kart değişmedi (1 hareket)
+  ✓ avans yazıldı; KPI: "₺1.000,00Toplam Tutar₺1.100,00Tahsil Edilen · %100₺0,00Kalan · fazla ₺100,00₺0,00Geciken · 0 taksit"
+
+■ 2 Yönetici, kalanı 700 olan kart: 800 → Kalanı Aşan Tutar → Vazgeç; 700 → kaydedilir
+  ✓ önerilen tutar kalan: 700,00
+  ✓ onay: Kalanı Aşan Tutar — "Tutar kartın kalanını aşıyor: kalan 700,00 TL, girilen 800,00 TL, fazlası 100,00 TL; yeni tahsilat yazılmaz. Kalan kadar"
+  ✓ Vazgeç → formda: "Kaydedilmedi: tutar kartın kalanını aşıyor. Kalan kadar yazın ya da fazlasını avans olarak kaydedin."
+  ✓ 700 kaydedildi, kalan 0, fazla yok; KPI: "₺1.000,00Toplam Tutar₺1.000,00Tahsil Edilen · %100₺0,00Kalan₺0,00Geciken · 0 taksit"
+
+■ 3 Personel: ödenmiş kartta + Tahsilat pasif ve nedeni yazılı; açık kartta düğme açık
+  ✓ ön koşul: plans.collect true, plans.manage false
+  ✓ + Tahsilat pasif; ipucu: "Kart ödendi; yeni tahsilat yazılmaz. Fazla alınan para için yöneticinize başvurun (avans)."
+  ✓ neden kartta yazılı: "Tahsilat Kapalı: Kart ödendi; yeni tahsilat yazılmaz. Fazla alınan para için yöneticinize başvurun (avans)."
+  ✓ kalanı olan kartta düğme açık, Tahsilat Kapalı yazısı yok
+  ✓ sayfa hatası yok
+
+✓ senaryo-k8-230: 17 geçti, 0 kaldı

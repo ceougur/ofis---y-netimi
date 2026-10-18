@@ -10,6 +10,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { okulServisiXlsx } from "../fixtures/okul-servisi-ornek.mjs";
+import { escClose } from "./esc-kapat.mjs";
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo");
 fs.mkdirSync(OUT, { recursive: true });
 const PASS = "Prova-Admin-2026!";
@@ -34,7 +35,7 @@ const ok = (cond, msg) => { results.push({ ok: Boolean(cond), msg }); console.lo
 const api = async (url, body, method = body ? "POST" : "GET") => page.evaluate(async ([url, body, method]) => { const r = await fetch(url, { method, headers: { "content-type": "application/json" }, body: body ? JSON.stringify(body) : undefined }); const j = await r.json(); return { status: r.status, ...j }; }, [url, body, method]);
 const money = v => new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
 const text = sel => page.$eval(sel, node => node.innerText.replace(/\s+/g, " ").trim());
-const closeTop = async () => { await page.keyboard.press("Escape"); await page.waitForTimeout(300); };
+const closeTop = async () => { await escClose(page); await page.waitForTimeout(300); };
 const step = async (title, fn) => { console.log(`\n■ ${title}`); await fn(); };
 
 try {

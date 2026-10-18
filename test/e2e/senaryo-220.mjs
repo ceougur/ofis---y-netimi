@@ -14,6 +14,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { buildXlsx } from "../../server/lib/xlsx-write.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-220");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -74,7 +75,7 @@ const top = `${modal}:last-of-type`;
 const call = (url, body) => page.evaluate(async ([url, body]) => (await (await fetch(url, { method: body ? "POST" : "GET", headers: { "content-type": "application/json" }, body: body ? JSON.stringify(body) : undefined })).json()).data, [url, body]);
 const closeAll = async () => {
   for (let i = 0; i < 6 && (await page.$(modal)); i += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await page.waitForTimeout(250);
   }
 };
@@ -116,7 +117,7 @@ try {
   await page.waitForSelector(`${modal} .hof-mapping`, { timeout: 30000 });
   await Promise.all([page.waitForEvent("load", { timeout: 30000 }), page.click(`${modal} [data-mode="replace"]`)]);
   await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
-  await page.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]").catch(() => page.keyboard.press("Escape"));
+  await page.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]").catch(() => escClose(page));
   await page.goto(`${BASE}/`, { waitUntil: "load" });
   await page.waitForSelector(".dynamic-table tbody tr", { timeout: 20000 });
   await page.evaluate(() => localStorage.clear());

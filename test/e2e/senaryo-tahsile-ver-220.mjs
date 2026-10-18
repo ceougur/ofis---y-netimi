@@ -30,6 +30,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { createClient, installPageClock } from "../helpers.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-tahsile-ver-220");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -67,7 +68,7 @@ const FORM = `${top} .hof-form`;
 const pause = ms => page.waitForTimeout(ms);
 const closeAll = async () => {
   for (let index = 0; index < 8 && (await page.$(modal)); index += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await pause(300);
     const leave = await page.$(`${top} [data-answer="yes"]`);
     if (leave && /Kaydetmeden|Çık/.test((await leave.textContent()) || "")) await leave.click();

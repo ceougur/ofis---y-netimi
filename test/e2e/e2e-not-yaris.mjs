@@ -26,6 +26,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const TRIALS = Number(process.env.TRIALS || 6);
 const MODE = process.env.MODE || "forced";
@@ -74,13 +75,13 @@ try {
   await Promise.all([page.waitForEvent("load", { timeout: 30000 }), page.click('.hof-modal-backdrop.is-visible [data-mode="replace"]')]);
   // Yükleme sonrası analiz penceresi (senaryo-214 kalıbı): kapat, sayfayı yeniden aç.
   await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 }).catch(() => {});
-  await page.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]", { timeout: 3000 }).catch(() => page.keyboard.press("Escape"));
+  await page.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]", { timeout: 3000 }).catch(() => escClose(page));
   await page.waitForTimeout(1200);
   await page.goto(`${BASE}/`, { waitUntil: "load" });
   await page.waitForSelector(".sidebar #hof-sidecard", { timeout: 15000 });
   await page.waitForFunction(() => document.querySelectorAll(".dynamic-table tbody tr").length > 2, null, { timeout: 15000 });
   for (let i = 0; i < 5 && (await page.$(".hof-modal-backdrop.is-visible")); i += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await page.waitForTimeout(400);
   }
   const open = await page.$$eval(".hof-modal-backdrop.is-visible .hof-modal-title", nodes => nodes.map(node => node.textContent));

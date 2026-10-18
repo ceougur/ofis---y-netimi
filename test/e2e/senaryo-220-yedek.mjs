@@ -12,6 +12,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { titleCase } from "../../server/lib/text-case.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-220-yedek");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -180,7 +181,7 @@ try {
   const refusal = await page.textContent(`${modal} .hof-form-error`).catch(() => "");
   ok(/“002 · Şirket 2” şirketine ait; “001 · Şirket 1” şirketine geri yüklenemez/.test(refusal), `ret: ${refusal}`);
   await shot("yanlis-sirket-reddi");
-  await page.keyboard.press("Escape");
+  await escClose(page);
   rmSync(path.join(one, stray));
   ok(!existsSync(path.join(root, "data", "geri-yukleme.json")) && (await accountsIn("sirket-001")) === 3, "001'e hiçbir şey yüklenmedi");
 

@@ -460,10 +460,16 @@ body:has(.hof-modal-backdrop.is-visible) .hof-toasts {
   box-shadow: 0 14px 40px rgba(20, 48, 36, 0.16);
   color: var(--do-ink);
   font: 600 13px/1.4 var(--do-font);
-  pointer-events: auto;
+  /* 2.4.3: bildirim artık okuma süresince (uzun hata iletisinde 20 sn'ye kadar) ekranda kalır; altındaki düğmeye / sekmeye tıklamayı
+     engellemez (tıklama geçer), yalnız kendi düğmeleri (Kapat, Geri Al…) tıklanır. Fare üstündeyken bekletme hof-core.js'te konumla izlenir. */
+  pointer-events: none;
   opacity: 0;
   transform: translateY(8px);
   transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.hof-toast button,
+.hof-toast a {
+  pointer-events: auto;
 }
 .hof-toast.is-visible {
   opacity: 1;
@@ -3555,7 +3561,10 @@ html.hof-no-haciz .filter-strip { display: none !important; }
 /* ---------- Dışa aktar menüsü (v2.0.1) ---------- */
 .hof-export-menu {
   position: fixed;
-  z-index: 80;
+  /* 2.4.3: kullanıcının açtığı menü alttaki sabit lisans şeridinin (99960) ve ödeme kartının üstünde, bildirimlerin (99975) ve pencerelerin
+     (99980) altında. Önce 80'di: menü sayfanın altına düşünce "Excel Dosyası (.xlsx)" şeridin arkasında kalıyor, tıklanamıyordu (run.mjs
+     "Excel'e aktarılır" adımının ara sıra kırmızısı). */
+  z-index: 99965;
   width: min(330px, calc(100vw - 24px));
   padding: 8px;
   border: 1px solid var(--do-border);
@@ -10831,3 +10840,30 @@ input[type="search"]::-webkit-search-cancel-button {
 
 /* 2.4.2: tarayıcının parola yöneticisine görünmeyen gizli yazılı alan (hof-core.js quietAutofill) */
 .hof-secret { -webkit-text-security: disc; text-security: disc; }
+
+/* 2.4.3 (keşif B10): öneri listesinde klavyeyle işaretlenen satır (Aşağı / Yukarı ok) */
+.hof-case-picker-list li.is-active,
+.hof-inv-item-hits li.is-active {
+  background: var(--do-accent-soft);
+  outline: 2px solid var(--do-accent);
+  outline-offset: -2px;
+}
+/* 2.4.3 (keşif A6): aynı bildirim yığılmaz; tekrar sayısı ve kısa vurgu */
+.hof-toast-count {
+  flex: none;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+  font: 800 11px var(--do-font);
+}
+.hof-toast.is-repeat { animation: hof-toast-repeat 0.45s ease; }
+@keyframes hof-toast-repeat {
+  0% { transform: translateX(0); }
+  30% { transform: translateX(-4px); }
+  60% { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hof-toast.is-repeat { animation: none; }
+}

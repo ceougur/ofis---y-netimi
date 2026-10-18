@@ -17,6 +17,7 @@ import path from "node:path";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { createClient, installPageClock } from "../helpers.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const PASS = "Prova-Admin-2026!";
 const NOW = "2026-10-08T12:00:00+03:00";
@@ -177,7 +178,7 @@ for (const kind of ["K1", "K2", "K3", "K4"]) {
       console.log(`  ${kind}#${attempt}: form kapandıktan 800 ms sonra düğme ${at800.pressed} (kılavuz betiği bu durumda basılı değilse tıklıyordu); 3,5 sn sonra ${after.pressed}; yeni planlı işlem listede: ${visible}`);
       ok(at800.pressed === "true" && after.pressed === "true" && visible, `${kind}#${attempt}: kayıttan sonra kendiliğinden Planlı İşlemler (düğme basılı) ve yeni işlem listede`);
     }
-    await page.keyboard.press("Escape").catch(() => null);
+    await escClose(page).catch(() => null);
     await page.waitForTimeout(300);
   }
 }

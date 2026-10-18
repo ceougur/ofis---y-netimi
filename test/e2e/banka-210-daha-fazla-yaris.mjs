@@ -21,6 +21,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { chromium } from "playwright";
+import { escClose } from "./esc-kapat.mjs";
 
 const ROOT = process.env.DEPO ? path.resolve(process.env.DEPO) : path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const { createApp } = await import(pathToFileURL(path.join(ROOT, "server", "app.mjs")).href);
@@ -140,7 +141,7 @@ const settle = async () => {
 };
 const openBank = async () => {
   for (let i = 0; i < 6 && (await page.$(MODAL)); i += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await pause(200);
   }
   await page.click('#hof-sidecard [data-action="bank"]');
@@ -177,7 +178,7 @@ const saveFee = async (mark, held) => {
 const closeForm = async () => {
   const yes = await page.waitForSelector(`${MODAL}:last-of-type [data-answer="yes"]`, { timeout: 800 }).catch(() => null);
   if (yes) await yes.click();
-  if (await page.$("form.hof-bank-voucher")) await page.keyboard.press("Escape");
+  if (await page.$("form.hof-bank-voucher")) await escClose(page);
   await page.waitForSelector("form.hof-bank-voucher", { state: "detached", timeout: 5000 }).catch(() => null);
   return !(await page.$("form.hof-bank-voucher"));
 };
@@ -248,7 +249,7 @@ const shownCari = () => page.$$eval(CARI_ROWS, list => list.map(row => row.datas
 async function variantE(round) {
   console.log(`\n■ E${round} — Cari: Daha Fazla tutulurken başka oturum ilk sayfadan bir cariyi siler (H4 komşusu)`);
   for (let i = 0; i < 6 && (await page.$(MODAL)); i += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await pause(200);
   }
   await page.click('#hof-sidecard [data-action="accounts"]');

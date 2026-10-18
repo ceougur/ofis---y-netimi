@@ -50,6 +50,7 @@
     "test:senaryo-entegrator-240": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-entegrator-240.mjs",
     "test:senaryo-ebelge-242": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-ebelge-242.mjs",
     "test:senaryo-ebelge-243": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-ebelge-243.mjs",
+    "test:senaryo-form-izolasyon-243": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-form-izolasyon-243.mjs",
     "test:banka-210-kart-onbellek": "node --disable-warning=ExperimentalWarning test/e2e/banka-210-kart-onbellek-yaris.mjs",
     "test:banka-210-daha-fazla": "node --disable-warning=ExperimentalWarning test/e2e/banka-210-daha-fazla-yaris.mjs",
     "test:banka-230-hareket-yaris": "node --disable-warning=ExperimentalWarning test/e2e/banka-230-hareket-yaris.mjs",

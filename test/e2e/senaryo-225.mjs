@@ -14,6 +14,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-225");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -243,7 +244,7 @@ try {
     ok(state.password === "" && state.focused, `${label}: parola boş ve odakta`);
     ok(state.trap && state.trapBeforePassword && !state.trapVisible, `${label}: parolanın hemen önünde görünmeyen kullanıcı adı alanı`);
     if (code === "001" && label.startsWith("Verisini")) await shot("e-sifirla-onay");
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await page.waitForTimeout(300);
   }
 
@@ -260,7 +261,7 @@ try {
   ok(!(await page.$("#hof-company [data-new]")), "sol üst seçicide “+ Yeni Şirket” yok");
   ok(!/\+ Yeni Şirket/.test(await page.$eval("#hof-company .hof-session-menu", node => node.textContent)), "menüde “+ Yeni Şirket” yazısı da yok");
   await shot("a-secici-sinirda");
-  await page.keyboard.press("Escape");
+  await escClose(page);
   const two = (await api("/api/companies")).data.companies.find(entry => entry.code === "002");
   ok((await api(`/api/companies/${two.id}`, { confirm: "002", password: PASS }, "DELETE")).status === 200, "002 silindi");
   await page.goto(`${BASE}/admin.html#companies`, { waitUntil: "load" });

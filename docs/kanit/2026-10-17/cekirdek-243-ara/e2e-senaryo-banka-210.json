@@ -1,0 +1,43 @@
+{
+  "ad": "cekirdek-243/e2e-senaryo-banka-210",
+  "komut": "npm run test:senaryo-banka-210",
+  "commit": "86e0280247acfc8b31df0babfbbf10d521831436",
+  "dal": "worktree-agent-a34eec2f4fcc3bf36",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-17T23:43:22.555Z",
+  "sure_sn": 272.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 422,
+    "gecen": 420,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "form yeni hesap için boşaldı",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "beklenmeyen hata: page.waitForFunction: Timeout 8000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-17/cekirdek-243/e2e-senaryo-banka-210.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a34eec2f4fcc3bf36",
+  "ham_cikti_sha256": "9856d56b2e35161bb669b85a251badb353fa89fd8d7816f2f3d9017ecaa8cf65",
+  "ham_cikti_bayt": 48026
+}

@@ -451,6 +451,8 @@
           hits = [];
         }
         if (own !== ticket) return;
+        // 2.4.3: yanıt geldiğinde kutudan çıkılmışsa liste açılmaz (açık kalan eski liste Esc'i yutardı).
+        if (document.activeElement !== input) return;
         list.innerHTML = hits.length
           ? hits.map(item => `<li role="option" data-id="${esc(item.id)}"><b>${esc(item.name)}${item.refNo ? ` · No ${esc(item.refNo)}` : ""}${prefer ? ` <span class="hof-plan-badge is-${item.type === "supplier" ? "soon" : item.type === "other" ? "muted" : "info"}">${esc(TYPES[item.type] || "")}</span>` : ""}</b><small>${esc([TYPES[item.type], item.groupName, item.phone].filter(Boolean).join(" · "))} · bakiye ${esc(money(item.balance))}</small></li>`).join("")
           : `<li class="is-empty">${input.value.trim() ? "Bu adla cari yok" : "Henüz cari yok"}${canNew ? ' — <button type="button" class="hof-link-button" data-acc-new>+ Yeni Cari</button>' : ""}</li>`;
@@ -752,7 +754,8 @@
           hint.addEventListener("click", event => {
             const id = event.target.closest("[data-open-existing]")?.dataset.openExisting;
             if (!id) return;
-            dialog.closest(".hof-modal-backdrop")?.querySelector("[data-cancel], .hof-modal-close")?.click();
+            // Kullanıcı mevcut cariyi açmayı seçti: form sorusuz kapanır (Vazgeç; × kaydedilmemiş değişikliği sorardı — 2.4.3).
+            (dialog.querySelector("[data-cancel]") || dialog.closest(".hof-modal-backdrop")?.querySelector(".hof-modal-close"))?.click();
             open(id);
           });
           if (nameInput.value.trim()) check();

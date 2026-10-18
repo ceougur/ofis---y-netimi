@@ -113,9 +113,16 @@
     if (side) return showPick(side, account);
     showList();
   }
+  // 2.4.3 (form durumu izole): pencere içindeki form (fatura formu, Fatura Ayarları) kendi kapsamıdır; içinde kaydedilmemiş değişiklik
+  // varken Esc / × / dışına tıklama sorar. Kapsam her formda yenidir; kaydedip karta / listeye geçince kalkar.
+  let formScope = 0;
   const setMode = mode => {
     view.mode = mode;
     modal?.dialog.classList.toggle("is-form", mode === "form");
+    const root = body();
+    if (!root) return;
+    if (mode === "form" || mode === "settings") root.setAttribute("data-hof-form", `${mode}-${++formScope}`);
+    else root.removeAttribute("data-hof-form");
   };
   function showList() {
     setMode("list");
@@ -877,6 +884,9 @@
       const form = view.form;
       const line = form?.lines[index];
       if (!list || !line) return;
+      // 2.4.3: yanıt geldiğinde kullanıcı kutudan çıkmışsa (Tab, başka alana tıklama) liste açılmaz; açık kalan eski liste Esc'i ve
+      // tıklamaları yutuyordu (Esc önce bu listeyi kapatır).
+      if (document.activeElement !== body()?.querySelector(`[data-l="${index}"][data-f="${anchor}"]`)) return;
       const exactName = items.some(item => item.name.toLocaleLowerCase("tr-TR") === line.name.trim().toLocaleLowerCase("tr-TR"));
       const canCreate = offersNewItem(form) && anchor === "name" && line.name.trim() && !exactName && HOF.can("stock.manage");
       const rows = items.map(item => `<li data-item="${esc(item.id)}" data-l="${index}" class="${item.exact ? "is-exact" : ""}"><b>${item.code ? `<span class="hof-inv-hit-code">${esc(item.code)}</span> ` : ""}${esc(item.name)}</b><small>${item.kind === "service" ? "Hizmet" : item.available !== null ? `${item.available < 0 ? '<span class="hof-inv-warn">' : ""}Stokta ${esc(String(item.available).replace(".", ","))} ${esc(item.unit)}${item.available < 0 ? "</span>" : ""}` : esc(item.unit)} · ${form.side === "sale" ? `Satış ${esc(money(item.salePrice))}` : `Maliyet ${esc(money(item.unitPrice))}`}</small></li>`);
@@ -2564,11 +2574,11 @@
         ${input("seller.email", "E-Posta", seller.email, 'maxlength="160" type="email"')}
         ${input("seller.website", "Web Sitesi", seller.website, 'maxlength="200"')}
         <div class="hof-field hof-inv-wide hof-inv-logo"><span>Logo (PDF'te Sol Üstte, e-Belgede Ortada)</span>
-          <div class="hof-inv-logo-row"><div class="hof-inv-logo-box" data-logo-preview>${logoNow() ? `<img src="${esc(logoNow())}" alt="Logo">` : '<small>Logo yok</small>'}</div>
-          <div class="hof-inv-logo-tools"><label class="hof-button hof-button-small hof-button-ghost">Logo Seç<input type="file" accept="image/*" data-logo-file hidden></label>${logoNow() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="logo-clear">Logoyu Kaldır</button>' : ""}<small>PNG ya da JPEG seçin; program JPEG'e çevirip küçültür (en çok 150 KB). Kaydedince bundan sonraki PDF'lere basılır.</small></div></div></div>
+          <div class="hof-inv-logo-row"><div class="hof-inv-logo-box" data-logo-preview>${imageBoxHtml("logo")}</div>
+          <div class="hof-inv-logo-tools"><label class="hof-button hof-button-small hof-button-ghost">Logo Seç<input type="file" accept="image/*" data-logo-file hidden></label><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="logo-clear" ${logoNow() ? "" : "hidden"}>Logoyu Kaldır</button><small>PNG ya da JPEG seçin; program JPEG'e çevirip küçültür (en çok 150 KB). Kaydedince bundan sonraki PDF'lere basılır.</small></div></div></div>
         <div class="hof-field hof-inv-wide hof-inv-logo" data-stamp-field><span>Kaşe / İmza (e-Arşiv Faturasına Basılır)</span>
-          <div class="hof-inv-logo-row"><div class="hof-inv-logo-box" data-stamp-preview>${stampNow() ? `<img src="${esc(stampNow())}" alt="Kaşe / İmza">` : '<small>Kaşe / imza yok</small>'}</div>
-          <div class="hof-inv-logo-tools"><label class="hof-button hof-button-small hof-button-ghost">Kaşe / İmza Seç<input type="file" accept="image/*" data-stamp-file hidden></label>${stampNow() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="stamp-clear">Kaşe / İmzayı Kaldır</button>' : ""}<small>Kaşe üzerine atılmış imzanın taranmış ya da çekilmiş resmini seçin (beyaz zemin önerilir). e-Belgede GİB logosunun altına, PDF'te Düzenleyen kutusuna basılır; e-Faturada da istenirse Entegratör Ayarları → Görünüm.</small></div></div></div>
+          <div class="hof-inv-logo-row"><div class="hof-inv-logo-box" data-stamp-preview>${imageBoxHtml("stamp")}</div>
+          <div class="hof-inv-logo-tools"><label class="hof-button hof-button-small hof-button-ghost">Kaşe / İmza Seç<input type="file" accept="image/*" data-stamp-file hidden></label><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="stamp-clear" ${stampNow() ? "" : "hidden"}>Kaşe / İmzayı Kaldır</button><small>Kaşe üzerine atılmış imzanın taranmış ya da çekilmiş resmini seçin (beyaz zemin önerilir). e-Belgede GİB logosunun altına, PDF'te Düzenleyen kutusuna basılır; e-Faturada da istenirse Entegratör Ayarları → Görünüm.</small></div></div></div>
       </div></section>
       <section class="hof-inv-settings" data-inv-banks="${bankState.active ? "accounts" : "legacy"}"><h4>Banka Hesapları <small>(belgenin altına basılır)</small></h4>${bankState.active
         ? `<p class="hof-muted">Banka modülü etkin: belgeye yalnız Banka → Hesaplar'da hesap kartında <b>IBAN Faturada Gösterilsin</b> işaretli etkin TL hesaplar basılır (en çok 4; sırası hesap sırası). Buradaki eski liste artık düzenlenmez.</p>
@@ -2606,30 +2616,32 @@
   // Logo: view.logo tanımsızsa değişmedi; "" kaldırıldı; data URL yeni seçildi (kaydedilince sunucuya gider).
   const logoNow = () => (view.logo === undefined ? view.settings?.seller?.logo || "" : view.logo);
   const stampNow = () => (view.stamp === undefined ? view.settings?.seller?.stamp || "" : view.stamp);
-  async function pickStamp(input) {
+  const IMAGE_BOXES = { logo: { now: logoNow, alt: "Logo", empty: "Logo yok" }, stamp: { now: stampNow, alt: "Kaşe / İmza", empty: "Kaşe / imza yok" } };
+  const imageBoxHtml = kind => (IMAGE_BOXES[kind].now() ? `<img src="${esc(IMAGE_BOXES[kind].now())}" alt="${IMAGE_BOXES[kind].alt}">` : `<small>${IMAGE_BOXES[kind].empty}</small>`);
+  // D1 (kullanıcının bulgusu, 17.10.2026; kullanıcı kararı "form durumu izole"): Logo / Kaşe seçmek ya da kaldırmak yalnız kendi önizleme
+  // kutusunu ve "Kaldır" düğmesini günceller. Önceden bütün Fatura Ayarları formu kayıtlı ayarlardan yeniden çiziliyor, kaydedilmemiş unvan,
+  // adres, IBAN ve varsayılanlar sessizce eski değerine dönüyordu.
+  function paintImageBox(kind) {
+    const root = body();
+    const box = root?.querySelector(`[data-${kind}-preview]`);
+    if (box) box.innerHTML = imageBoxHtml(kind);
+    const clear = root?.querySelector(`[data-act="${kind}-clear"]`);
+    if (clear) clear.hidden = !IMAGE_BOXES[kind].now();
+  }
+  async function pickImage(input, kind, readyText) {
     const file = input.files?.[0];
     input.value = "";
     if (!file) return;
     try {
-      view.stamp = await imageToJpeg(file, { maxSide: 600, maxBytes: 150 * 1024 });
-      renderSettings();
-      HOF.toast("Kaşe / imza hazır; Ayarları Kaydet ile saklanır.", { type: "info" });
+      view[kind] = await imageToJpeg(file, { maxSide: 600, maxBytes: 150 * 1024 });
+      paintImageBox(kind);
+      HOF.toast(readyText, { type: "info" });
     } catch (error) {
       HOF.toast(error.message || "Görsel okunamadı.", { type: "error" });
     }
   }
-  async function pickLogo(input) {
-    const file = input.files?.[0];
-    input.value = "";
-    if (!file) return;
-    try {
-      view.logo = await imageToJpeg(file, { maxSide: 600, maxBytes: 150 * 1024 });
-      renderSettings();
-      HOF.toast("Logo hazır; Ayarları Kaydet ile saklanır.", { type: "info" });
-    } catch (error) {
-      HOF.toast(error.message || "Görsel okunamadı.", { type: "error" });
-    }
-  }
+  const pickStamp = input => pickImage(input, "stamp", "Kaşe / imza hazır; Ayarları Kaydet ile saklanır.");
+  const pickLogo = input => pickImage(input, "logo", "Logo hazır; Ayarları Kaydet ile saklanır.");
   // Her görsel (PNG, JPEG, WebP…) beyaz zemine çizilip JPEG'e çevrilir; boyut ve kalite sınır altına inene kadar düşer.
   async function imageToJpeg(file, { maxSide, maxBytes }) {
     const bitmap = await new Promise((resolve, reject) => {
@@ -2697,13 +2709,10 @@
   }
   async function settingsAction(act) {
     const error = body()?.querySelector("[data-form-error]");
-    if (act === "logo-clear") {
-      view.logo = "";
-      return renderSettings();
-    }
-    if (act === "stamp-clear") {
-      view.stamp = "";
-      return renderSettings();
+    if (act === "logo-clear" || act === "stamp-clear") {
+      const kind = act === "logo-clear" ? "logo" : "stamp";
+      view[kind] = "";
+      return paintImageBox(kind);
     }
     if (act === "save-settings") {
       if (error) error.textContent = "";
@@ -2714,6 +2723,8 @@
         view.stamp = undefined;
         await loadMeta(true);
         HOF.toast("Fatura ayarları kaydedildi.", { type: "success" });
+        // Kaydedildi: form kayıtlı (sunucudan dönen) değerlerle çizilir, pencere artık "kaydedilmemiş" sayılmaz.
+        HOF.markClean(body());
         renderSettings();
       } catch (failure) {
         if (error) error.textContent = failure.message;
@@ -2770,7 +2781,8 @@
       return HOF.toastError(error);
     }
     const state = { tab: "connection", settings: s, aliases: null };
-    const modalApi = HOF.modal({ title: "e-Dönüşüm ve Entegrasyon Ayarları", eyebrow: "FATURA", size: "wide", body: '<div data-integ-root></div>' });
+    // 2.4.3: pencere kendi form kapsamıdır (sekme değişse de yazılanlar "kaydedilmemiş" sayılır; Esc / × / dışarı tıklama sorar).
+    const modalApi = HOF.modal({ title: "e-Dönüşüm ve Entegrasyon Ayarları", eyebrow: "FATURA", size: "wide", body: '<div data-integ-root data-hof-form="integrator"></div>' });
     const root = modalApi.dialog.querySelector("[data-integ-root]");
     const aliasOptions = (list, current) => {
       const values = [...new Set([current, ...(list || [])].filter(Boolean))];
@@ -2927,6 +2939,7 @@
           delete draft.password;
           await loadMeta(true);
           HOF.toast("Entegratör ayarları kaydedildi.", { type: "success" });
+          HOF.markClean(root);
           render();
           restore();
         } catch (failure) {

@@ -17,6 +17,7 @@ import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { sectorTemplate } from "../../server/lib/insight/templates.mjs";
 import { createZip, readZip } from "../../server/lib/zip.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-taslak");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -190,7 +191,7 @@ try {
     const table = await page.$eval(`${modal} .hof-rep-vade tbody`, node => node.innerText);
     ok(/Mehmet Demir/.test(table) && /Ali Çelik/.test(table) && !/Elif Şahin/.test(table), "Raporlar › Vade takip ekranında ödemeyenler var, ayrılan yok");
     await shot("taslak-vade-takip");
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await page.waitForTimeout(300);
   });
 

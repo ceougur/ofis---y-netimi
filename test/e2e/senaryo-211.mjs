@@ -18,6 +18,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { okulServisiXlsx } from "../fixtures/okul-servisi-ornek.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-211");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -80,7 +81,7 @@ const today = () => {
 };
 const tl = value => `₺${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)}`;
 const closeTop = async page => {
-  await page.keyboard.press("Escape");
+  await escClose(page);
   await page.waitForTimeout(250);
 };
 

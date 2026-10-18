@@ -21,6 +21,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { createClient, installPageClock } from "../helpers.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-banka-220");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -55,7 +56,7 @@ const bankWin = ".hof-bank-modal";
 const pause = ms => page.waitForTimeout(ms);
 const closeAll = async () => {
   for (let index = 0; index < 8 && (await page.$(modal)); index += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await pause(300);
     // Kaydedilmemiş değişiklik sorusu çıkarsa kapat.
     const leave = await page.$(`${top} [data-answer="yes"]`);
