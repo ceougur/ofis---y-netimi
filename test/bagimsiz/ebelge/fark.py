@@ -17,7 +17,7 @@ Ne yapar:
        listeden silinmiş belge (Tümünü Gönder turunda) gönderilmez · I9 gönderilmiş belge değişmez (tarih, tür, numara, cari) ·
        I10 program "gönderildi" diyorsa EDM kabul etmiştir · I11 e-Fatura alıcı posta kutusuyla gider · I12 numara yılı = belge yılı ·
        I13 numara benzersiz · I14 kişi carisi mükellef işaretlenmez · I15 eşzamanlı turda gönderilen belge için "hata" yanıtı yok ·
-       I16 tur yanıtındaki "gönderildi" iddiası EDM'de var · I18 sonda (ağ var + Tümünü Gönder sonrası) program ↔ EDM tutarlı ·
+       I16 tur yanıtındaki "gönderildi" iddiası EDM'de var · I19 tur sonucunda gönderilmeyen belgenin kodu ve iletisi dolu · I18 sonda (ağ var + Tümünü Gönder sonrası) program ↔ EDM tutarlı ·
        I0 sahte EDM'nin kendi sözleşme ihlalleri.
   4. MODEL FARKI (adım adım, "kilit adım"): model her adımdan önce programın gözlenen durumuna eşitlenir (numara, gönderim, iptal,
      liste, cari işareti, bekleyen arıza), adımı kendi kurallarıyla uygular; olası dünyalardan (çatal) gözleme en yakını seçilir ve kalan
@@ -281,6 +281,9 @@ class Degismez:
                     continue
                 if s.get("ok") and s.get("numara") and self.kabul_id.get(g[ad]["ettn"]) != s["numara"]:
                     ek("I16", f"{ad}: tur yanıtı {s['numara']} gönderildi diyor, EDM'de yok", belge=ad)
+                if not s.get("ok") and (not s.get("kod") or not s.get("ileti", "x")):
+                    # I19 (baş mimar kararı 18.10.2026): tur sonucunda gönderilmeyen belgenin kodu ve iletisi dolu (neden yazılır).
+                    ek("I19", f"{ad}: tur sonucu ok:false ama kod/ileti boş (kod '{s.get('kod', '')}')", belge=ad)
                 if adim["islem"] == "esz_tumunu_gonder" and not s.get("ok") and g[ad]["ettn"] in self.kabul_id and gonderildi_mi(g[ad]["eStatus"]) is True:
                     ek("I15", f"{ad}: eşzamanlı turda gönderilen belge için hata yanıtı ({s.get('kod')})", belge=ad)
         # durum güncelle
@@ -413,6 +416,8 @@ def _engelli_eski(once, b):
         if once.seri_yil(x) != once.seri_yil(b) or x["tarih"] >= b["tarih"]:
             continue
         e = once.engel(x) or ("tarih-sirasi" if once.tarih_engeli(x) else None)
+        if e == "pk-yok" and not once.tarih_engeli(x):
+            continue  # K9 (18.10 kararı): PK'sız belge geçici engel — bekletmesi doğru
         if e:
             xs.append((x["ad"], e))
     return xs
@@ -462,6 +467,8 @@ def siniflandir(senaryo, p, fark):
         return "BEKLENEN-O2 (tur sürerken Listeden Sil)"
     if fark.get("kod") == "I2" and fark.get("islem") in ("listeden_sil", "tur_sirasinda_sil") and "FIS" in fark.get("ileti", ""):
         return "BASKA-FIS-SIRA (Listeden Sil eski tarihli belgeye FIS numarası verdi)"
+    if fark.get("kod") == "I19":
+        return "BEKLENEN-I19 (bekletilen/gönderilmeyen belgenin tur sonucu kodsuz ya da iletisiz)"
     if fark.get("kod") == "I15":
         return "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"
     if fark.get("alan") == "numara" and fark.get("model") == "" and fark.get("program") and onceki and onceki.get("ag") == "yok" and kayit.get("ag") == "yok":

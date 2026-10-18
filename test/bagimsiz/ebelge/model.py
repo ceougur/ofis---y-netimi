@@ -135,13 +135,18 @@ class Dunya:
         st = self.son_tarih(seri, yil)
         return st is not None and b["tarih"] < st
 
+    def gecici_engelli(self, b):
+        """K9: kullanıcının belge üzerinde tek adımla düzeltebildiği engel (posta kutusu seçimi) — tarih sırasına sığıyorsa."""
+        return self.engel(b) == "pk-yok" and not self.tarih_engeli(b)
+
     def ozce_gonderilebilir(self, b):
         """Numarasız bekleyen belge kendi başına gönderilebilir mi (engelsiz, tarih sırasına sığıyor)?"""
         return self.engel(b) is None and not self.tarih_engeli(b)
 
     def tutan(self, b):
         """K8 (CLAUDE.md 2.4.3): daha eski tarihli, gönderilebilir, numarasız bekleyen belge varken yeni belgeye numara verilmez.
-        Kalıcı engelli (K2/K3/K6) ve listeden silinmiş belge seriyi BEKLETMEZ (K9)."""
+        K9 (baş mimar kararı 18.10.2026): KALICI engelli (K3 alıcı mükellef, K6 tarih sırası) ve listeden silinmiş belge seriyi
+        BEKLETMEZ; GEÇİCİ engelli (K2 posta kutusu seçilmemiş — kullanıcı belge üzerinde tek adımla düzeltir) belge BEKLETİR."""
         seri, yil = self.seri_yil(b)
         for x in self.belgeler.values():
             if x is b or x["var"] is not True or x["tur"] != b["tur"]:
@@ -150,7 +155,7 @@ class Dunya:
                 continue
             if x["numara"] != "" or x["iptal"] or x["silindi"] or x["prog"] is not False:
                 continue
-            if x["tarih"] < b["tarih"] and self.ozce_gonderilebilir(x):
+            if x["tarih"] < b["tarih"] and (self.ozce_gonderilebilir(x) or self.gecici_engelli(x)):
                 return x["ad"]
         return None
 

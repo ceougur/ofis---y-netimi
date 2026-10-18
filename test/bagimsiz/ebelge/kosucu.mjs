@@ -240,7 +240,7 @@ try {
       // Silinecek belge programda yok (kaydı reddedilmişti): yalnız tur koşar (model de öyle yapar).
       const tur = await api.post("/api/workspace/invoices/send-pending", { all: true });
       kayit.yanit = { atlandi: "belge yok; yalnız tur" };
-      kayit.ek = { tur: ozet(tur), sonuclar: (tur.data?.results || []).map(x => ({ ad: idAd[x.id] || x.id, ok: x.ok, numara: x.number || "", durum: x.status || "", kod: x.code || x.error || "" })) };
+      kayit.ek = { tur: ozet(tur), sonuclar: (tur.data?.results || []).map(x => ({ ad: idAd[x.id] || x.id, ok: x.ok, numara: x.number || "", durum: x.status || "", kod: x.code || x.error || "", ileti: x.message || "" })) };
     } else if (adim.belge && !id && i !== "tumunu_gonder") {
       kayit.yanit = { atlandi: "belge yok" };
     } else if (i === "kart_gonder") {
@@ -249,13 +249,13 @@ try {
       const body = adim.kapsam === "secili" ? { ids: adim.belgeler.map(ad => belgeId[ad]).filter(Boolean) } : { all: true };
       const r = await api.post("/api/workspace/invoices/send-pending", body);
       kayit.yanit = ozet(r);
-      kayit.ek = { sonuclar: (r.data?.results || []).map(x => ({ ad: idAd[x.id] || x.id, ok: x.ok, numara: x.number || "", durum: x.status || "", kod: x.code || x.error || "" })) };
+      kayit.ek = { sonuclar: (r.data?.results || []).map(x => ({ ad: idAd[x.id] || x.id, ok: x.ok, numara: x.number || "", durum: x.status || "", kod: x.code || x.error || "", ileti: x.message || "" })) };
     } else if (i === "esz_tumunu_gonder") {
       const [a, b] = await Promise.all([api.post("/api/workspace/invoices/send-pending", { all: true }), api2.post("/api/workspace/invoices/send-pending", { all: true })]);
       kayit.yanit = ozet(a);
       kayit.ek = {
         ikinci: ozet(b),
-        sonuclar: [a, b].map(r => (r.data?.results || []).map(x => ({ ad: idAd[x.id] || x.id, ok: x.ok, numara: x.number || "", durum: x.status || "", kod: x.code || x.error || "" }))),
+        sonuclar: [a, b].map(r => (r.data?.results || []).map(x => ({ ad: idAd[x.id] || x.id, ok: x.ok, numara: x.number || "", durum: x.status || "", kod: x.code || x.error || "", ileti: x.message || "" }))),
       };
     } else if (i === "tur_sirasinda_sil") {
       // Tur yavaşlatılır (her SendInvoice 250 ms); ilk SendInvoice vekile ulaşınca ikinci oturum belgeyi Listeden Siler.
@@ -272,7 +272,7 @@ try {
       } else await silindi;
       vekil.gecikme = 0;
       kayit.yanit = silme;
-      kayit.ek = { tur: ozet(tur), sonuclar: (tur.data?.results || []).map(x => ({ ad: idAd[x.id] || x.id, ok: x.ok, numara: x.number || "", durum: x.status || "", kod: x.code || x.error || "" })) };
+      kayit.ek = { tur: ozet(tur), sonuclar: (tur.data?.results || []).map(x => ({ ad: idAd[x.id] || x.id, ok: x.ok, numara: x.number || "", durum: x.status || "", kod: x.code || x.error || "", ileti: x.message || "" })) };
     } else if (i === "listeden_sil") {
       kayit.yanit = ozet(await api.post(`/api/workspace/invoices/${id}/withdraw`, {}));
     } else if (i === "iptal") {

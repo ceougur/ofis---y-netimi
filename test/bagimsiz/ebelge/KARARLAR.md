@@ -21,7 +21,7 @@ Belirsiz kalan yerde sıra: plan/mevzuat → en yaygın muhasebe programlarını
 | K6 | Aynı seri+yılda numara sırası tarih sırasını bozamaz (daha büyük numara daha eski tarihli olamaz). Kâğıt seride de. | VUK sıra-tarih uyumu; FATURA-ISTEKLER satır 77 "VUK sıra-tarih uyumu"; satır 17 "seri kronolojisi" |
 | K7 | Gönderilecekler = gönderilmemiş, iptal edilmemiş, listeden silinmemiş e-Belge (numaralı ama gitmemiş belge de dahil). | FATURA-ISTEKLER satır 44, 122–123; CLAUDE.md 2.4.3 (H1, B3: bekleyen belgelerin görünürlüğü) |
 | K8 | Daha eski tarihli, gönderilebilir, numarasız bekleyen belge varken (aynı seri+yıl) yeni belgeye numara verilmez; yeni belge Gönderilecekler'de numarasız kalır. Aynı tarih bekletmez (aynı günde sıra bozulmaz). Seçili turda seçilmeyen eski belge de bekletir. | CLAUDE.md (görev metnindeki 2.4.3 kararları); K6'nın sonucu: eski belge aksi hâlde kalıcı olarak gönderilemez |
-| K9 | Kalıcı engelli (K2, K3, K6) ya da listeden silinmiş belge seriyi BEKLETMEZ. | CLAUDE.md 2.4.3 "kalıcı engelli belge seriyi bekletmez" |
+| K9 | KALICI engelli (K3 alıcı mükellef, K6 tarih sırası) ya da listeden silinmiş belge seriyi BEKLETMEZ. GEÇİCİ engelli belge — posta kutusu seçilmemiş e-Fatura (K2), tarih sırasına sığıyorsa — aynı seri+yıldaki daha yeni belgeleri BEKLETİR (yeni belge numara almaz; GİB sıra kuralı korunur). Bekletilen belgenin tur sonucu ok:false olabilir ama kodu ve iletisi dolu olmalı (I19). | CLAUDE.md 2.4.3 "kalıcı engelli belge seriyi bekletmez"; baş mimar kararı 18.10.2026 — geçici/kalıcı ayrımı: kullanıcının belge üzerinde tek adımla düzeltebildiği engel geçicidir (Posta Kutusu Seçin) |
 | K10 | Tümünü Gönder bütün Gönderilecekler'i eskiden yeniye (tarih, aynı tarihte yazım sırası) gönderir; seçili gönderimde yalnız seçilenler (aynı sırayla). | CLAUDE.md 2.4.3 (B1); ders 31 (aynı tarih → yazım sırası) |
 | K11 | EDM'de zaten olan belgenin yeniden gönderimi ("zaten gönderildi") hata değildir; belge aynı numarayla "gönderildi" olur. | CLAUDE.md 2.4.3 "'zaten gönderildi' eşzamanlı durumda hata değildir"; FATURA-ISTEKLER satır 109–110 |
 | K12 | Ağ yokken (bağlantı kurulamıyor, istek EDM'ye kesin ulaşmadı) numara verilmez; tur durur, kalanlara numara verilmez. | CLAUDE.md 2.4.3 "ağ yokken tur durur, kalanlara numara verilmez"; FATURA-ISTEKLER satır 122 "resmî numara gönderim anında verilir (GİB serisinde boşluk kalmasın)" |
@@ -50,7 +50,7 @@ programdaki numara · I5 e-Belge numarası değişmez · I6 EDM'ye giden her kim
 gitmez · I8 iptal belge hiç, listeden silinmiş belge turda gönderilmez; tur sürerken kabul edilen silme → belge gitmez · I9 gönderilmiş belgenin tarih/
 tür/cari alanı değişmez · I10 program "gönderildi" ⇒ EDM kabul etmiş · I11 e-Fatura posta kutusuyla gider · I12 numara yılı = belge yılı · I13 numara
 benzersiz · I14 kişi (TCKN) carisi mükellef işaretlenmez · I15 eşzamanlı turda gönderilen belge için hata yanıtı yok · I16 tur yanıtındaki "gönderildi"
-iddiası EDM'de var · I18 sonda (ağ var + Tümünü Gönder) program ↔ EDM tutarlı · I0 sahte EDM'nin kendi sözleşme ihlalleri.
+iddiası EDM'de var · I19 tur sonucunda gönderilmeyen belgenin kodu ve iletisi dolu (baş mimar kararı 18.10.2026) · I18 sonda (ağ var + Tümünü Gönder) program ↔ EDM tutarlı · I0 sahte EDM'nin kendi sözleşme ihlalleri.
 
 ## Kara kutu yoklamasından alınan ORTAM bilgisi (kural değil)
 - Program gönderimde alıcıyı EDM'de sorgular (CheckUser) ve gerçekte mükellef çıkan işaretsiz cariyi kendisi işaretler (PK'sıyla). Model bunu
@@ -73,7 +73,7 @@ iddiası EDM'de var · I18 sonda (ağ var + Tümünü Gönder) program ↔ EDM t
   sonraki kâğıt kaydı farkı "FIS-SIRA-ARDIL". Hiçbiri kuralı gevşetmedi; değişmezler aynen.
 
 ## Sınıflar (fark.py; farkın görünen biçiminden ve modelin adım öncesi durumundan, beklenen değer üretmeden)
-BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor) · BEKLENEN-O1-ZINCIR / TUTMA-YOK (eski gönderilebilir bekleyen varken yeni
+BEKLENEN-O1 (eski KALICI engelli bekleyen — K3/K6 — seriyi bekletiyor; 18.10 kararından sonra PK'sız eski belgenin bekletmesi doğru) · BEKLENEN-I19 (bekletilen belgenin tur sonucu kodsuz/iletisiz) · BEKLENEN-O1-ZINCIR / TUTMA-YOK (eski gönderilebilir bekleyen varken yeni
 belge numaralandı; eski belge kalıcı tarih engeline düşer) · BEKLENEN-O2 (tur sürerken Listeden Sil kabul edildi, belge yine gitti) ·
 BEKLENEN-O3 (alıcısı mükellef çıkan bekleyen e-Arşiv seriyi bekletiyor) · BEKLENEN-AG (ağ yokken numara) · BASKA-ESZ (eşzamanlı turda
 "gönderiliyor" hata olarak döndü) · BASKA-FIS-SIRA (Listeden Sil eski tarihli belgeye FIS numarası verdi) · BASKA-DUZENLE-SIRA (numarasız

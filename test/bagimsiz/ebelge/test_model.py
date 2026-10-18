@@ -106,12 +106,21 @@ class Bekletme(unittest.TestCase):
         d, _ = kos([K("B1", "K1", "2026-12-31"), {"islem": "gun_ilerlet", "gun": 2}, K("B2", "K1", "2027-01-02", "simdi")], bugun="2026-12-31")
         self.assertEqual(no(d, "B2"), "TEA2027000000001")
 
-    def test_pk_yok_engelli_bekletmez_K2_K9(self):
+    def test_pk_yok_gecici_engel_bekletir_K2_K9(self):
+        # baş mimar kararı 18.10.2026: posta kutusu seçilmemiş e-Fatura GEÇİCİ engeldir, aynı serideki yeni belgeyi bekletir.
         d, _ = kos([K("B1", "K3", "2026-06-15"), K("B2", "K2", "2026-06-17", "simdi")])
-        self.assertEqual(no(d, "B2"), "TEF2026000000001")
+        self.assertEqual(no(d, "B2"), "")
+        self.assertTrue(d.bekleyen(d.belgeler["B2"]))
         d, _ = kos([K("B1", "K3", "2026-06-15"), K("B2", "K2", "2026-06-17"), T])
-        self.assertEqual((no(d, "B1"), no(d, "B2")), ("", "TEF2026000000001"))
-        self.assertFalse(d.belgeler["B1"]["edm"])
+        self.assertEqual((no(d, "B1"), no(d, "B2")), ("", ""))
+        self.assertFalse(d.belgeler["B1"]["edm"] or d.belgeler["B2"]["edm"])
+        # başka seriyi (e-Arşiv) bekletmez; aynı tarihli belgeyi bekletmez
+        d, _ = kos([K("B1", "K3", "2026-06-15"), K("B2", "K1", "2026-06-17", "simdi"), K("B3", "K2", "2026-06-15", "simdi")])
+        self.assertEqual((no(d, "B2"), no(d, "B3")), ("TEA2026000000001", "TEF2026000000001"))
+
+    def test_pk_yok_tarih_engelliyse_bekletmez_K6_K9(self):
+        d, _ = kos([K("B1", "K2", "2026-06-16", "simdi"), K("B2", "K3", "2026-06-15"), K("B3", "K2", "2026-06-17", "simdi")])
+        self.assertEqual((no(d, "B2"), no(d, "B3")), ("", "TEF2026000000002"))
 
     def test_alici_mukellef_eArsiv_bekletmez_gitmez_K3_K9(self):
         d, _ = kos([K("B1", "K4", "2026-06-15"), K("B2", "K1", "2026-06-17", "simdi"), T])
@@ -366,6 +375,14 @@ class DegismezDenetimi(unittest.TestCase):
         k = self.kayit({"B1": ("TEA2026000000001", "2026-06-16", "EARSIVFATURA", "sent", "issued")}, kabul=kab, cariler=car,
                        ek={"sonuclar": [[{"ad": "B1", "ok": True, "numara": "TEA2026000000001"}], [{"ad": "B1", "ok": False, "numara": "", "kod": "x"}]]})
         self.assertTrue({"I14", "I15"} <= self.kodlar({"no": 1, "islem": "esz_tumunu_gonder"}, k))
+
+    def test_tur_sonucu_kodsuz_I19(self):
+        k = self.kayit({"B1": ("", "2026-06-16", "TEMELFATURA", "waiting", "issued")},
+                       ek={"sonuclar": [{"ad": "B1", "ok": False, "numara": "", "kod": "", "ileti": ""}]})
+        self.assertIn("I19", self.kodlar({"no": 1, "islem": "tumunu_gonder"}, k))
+        k = self.kayit({"B1": ("", "2026-06-16", "TEMELFATURA", "waiting", "issued")},
+                       ek={"sonuclar": [{"ad": "B1", "ok": False, "numara": "", "kod": "series-waiting", "ileti": "Daha eski belge bekliyor"}]})
+        self.assertNotIn("I19", self.kodlar({"no": 2, "islem": "tumunu_gonder"}, k))
 
     def test_sonda_tutarsizlik_I18(self):
         k = self.kayit({"B1": ("TEA2026000000001", "2026-06-16", "EARSIVFATURA", "waiting", "issued")},
