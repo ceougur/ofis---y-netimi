@@ -426,3 +426,12 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   FIS sırası, PK'sız eski belge sonucunda kod boş) düzeltme ajanında. BAŞ MİMAR KARARI: posta kutusu seçilmemiş belge GEÇİCİ engeldir (kullanıcı tek adımla
   düzeltir) → daha eski PK'sız belge seriyi BEKLETİR, sonucu dolu kod + nedenle döner; kalıcı yalnız chronology ve buyer-is-efatura. Kâhin K9 buna göre
   güncellenir (kaynak gösterilerek). Uzun Doğrulama'ya kâhin işi eklendi (tohum 1–5 × 300, GitHub, ücretsiz).
+- SON ADAY BAĞIMSIZ TURU (18.10.2026, 5966ac3): DAR KONTROL 2 → bu turun düzeltmelerinin gerilemeleri B1 (reddedilen belgeler Tümünü Gönder'i kilitliyor),
+  B2 (tek bağlantı kopması turu durduruyor), B3 (her gönderimde fazladan EDM girişi, ~%80 yavaş), B4 (büyük veride Kaydet ve Gönder 144 → 2.621 ms) — ana
+  oturum B1–B3'ü yeniden üretti — + öncesinden B5 (Kes, Sonra Gönder eski tarihle), B6 (WSDL yedeği 12 saat önbellek), B7 (ileti). MALİ MÜŞAVİR (kâhin mizanı
+  22/24 hesap kuruşu kuruşuna) → MM1 kâğıt asıllı iade çıkmazı, MM2 Ticari profilde IADE (GİB reddeder), MM3 360/KDV kapatılamıyor, MM4 stok açılışı Ana
+  Defter'de yok (153/500 −5.000), MM5 yaşlandırma faturasız borcu görmüyor (840 vs 7.840) — ana oturum beşini yeniden üretti — + MM6–MM9 düşük + görüşler G1–G5.
+  e-Belge çekirdeği (B1–B7 + MM2) düzeltme ajanında (dal duzeltme3-243). UI ve UX uzmanlarının raporu bekleniyor.
+  KARAR (kullanıcı, 18.10.2026 ~16:30 UTC): MM3 → 2.4.3'e EKLE: "Vergi Ödemesi" (B 360 / A 102|100) + ay sonu "KDV Mahsup" fişi (391/191 → 360 ya da 190);
+  para çekirdeği: kâhin + mutasyon + dar kontrol. MM1 → "İade Edilen Belge No (e-Belge Referansı)" alanı + 16 karaktere tamamlanmış değer önerisi, kullanıcı
+  onaylar; asıl kayda dokunulmaz; uyarı form açılırken; teslimden önce gerçek EDM test ortamında kabulü denenir (reddedilirse yalnız ileti düzeltilir).
