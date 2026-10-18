@@ -16,7 +16,7 @@
 // Oturum: EDM belgesine göre Logout, aynı kullanıcının başka yerlerdeki (EDM portalı, başka kurulum) oturumlarını da
 // kapatır. Bu yüzden program çıkış yapmaz; oturumu bellekte tutar, "Aktif session bulunamadı" (10011) gelince yeniden
 // giriş yapıp isteği bir kez tekrarlar.
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { hostname } from "node:os";
 import { readZip } from "../zip.mjs";
 import { IntegratorError } from "./integrator-error.mjs";
@@ -35,14 +35,26 @@ const APP = "DestekOfis";
 const SAFE_OPERATIONS = new Set(["Login", "CheckUser", "GetInvoiceStatus", "GetInvoice", "MarkInvoice"]);
 // Kopan bağlantı sınıfı (Node fetch / undici): ECONNRESET, EPIPE, UND_ERR_SOCKET ("other side closed"), "socket hang up".
 const connectionReset = error => /ECONNRESET|EPIPE|UND_ERR_SOCKET/.test(`${error?.cause?.code || ""} ${error?.code || ""}`) || /other side closed|socket hang up/i.test(`${error?.cause?.message || ""} ${error?.message || ""}`);
+// Dar kontrol 2 (2.4.3, B2): bağlantı HİÇ KURULAMADI (istek EDM'ye kesin ulaşmadı) sınıfı — ad çözülemedi, bağlantı reddedildi, ağ/ana makine
+// yok, bağlanma zaman aşımı, TLS kurulamadı. Yalnız bunlar (ve yan etkisiz işlemin yinelemeden sonra da düşmesi) "integrator-unreachable"dır;
+// istek gönderildikten sonraki kopma / yanıt zaman aşımı "integrator-uncertain" (EDM işlemiş olabilir; belge belirsiz yoluyla işlenir, tur sürer).
+const NOT_CONNECTED = /^(ECONNREFUSED|ENOTFOUND|EAI_AGAIN|EAI_NONAME|EAI_FAIL|EHOSTUNREACH|EHOSTDOWN|ENETUNREACH|ENETDOWN|EADDRNOTAVAIL|UND_ERR_CONNECT_TIMEOUT|EPROTO|ERR_TLS_\w+|ERR_SSL_\w+|CERT_\w+|UNABLE_TO_\w+|DEPTH_ZERO_SELF_SIGNED_CERT|SELF_SIGNED_CERT_IN_CHAIN|ERR_INVALID_URL)$/;
+const notConnected = error => {
+  const codes = [error?.cause?.code, error?.code, error?.cause?.cause?.code].filter(Boolean).map(String);
+  return codes.some(code => NOT_CONNECTED.test(code));
+};
 const CONTRACT_TTL = 12 * 60 * 60 * 1000;
+// Dar kontrol 2 (2.4.3, B6): WSDL okunamadıysa varsayılan sözleşme en çok 1 dk tutulur (ağ yoksa hiç tutulmaz); önceden 12 saat.
+const CONTRACT_FAIL_TTL = 60 * 1000;
 const SESSION_TTL = 20 * 60 * 1000;
 const sessions = new Map();
 const contracts = new Map();
 // Dar kontrol 2.4.3 (kâhin BEKLENEN-AG): EDM'den son yanıt alınan an (oturum anahtarı başına). Önbellekteki oturum ağın hâlâ açık olduğunu
 // göstermez; numara vermeden önceki denetim (ensureSession) son yanıt eskiyse EDM'ye gerçekten ulaşır.
+// Dar kontrol 2 (2.4.3, B3): geçerli oturum + son 5 dk içinde EDM'den yanıt = erişim kanıtı; numara vermeden önce yeniden giriş yapılmaz. Bağlantı
+// hatası (ulaşılamadı / koptu) kanıtı siler: sonraki denetim EDM'ye gerçekten ulaşır.
 const contacts = new Map();
-const CONTACT_FRESH_MS = 30_000;
+const CONTACT_FRESH_MS = 5 * 60 * 1000;
 
 // EDM belge durumları (docs: e-Fatura / e-Arşiv Durumları) → program durumu + Türkçe açıklama.
 const EDM_STATES = Object.freeze({
@@ -111,7 +123,8 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
   const base = String(baseUrl || "").trim().replace(/\/+$/, "").replace(/\?.*$/, "");
   if (!/^https:\/\//i.test(base) && !/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\//i.test(`${base}/`)) throw new IntegratorError("EDM servis adresi https:// ile başlamalı.", { code: "integrator-url", status: 400 });
   if (!username || !password) throw new IntegratorError("EDM web servis kullanıcı adı ve parolası girilmemiş (Fatura → Entegratör Ayarları).", { code: "integrator-credentials", status: 400 });
-  const sessionKey = `${base}|${username}`;
+  // Aynı kimlik bilgisi: parola değişince eski oturum erişim kanıtı sayılmaz (anahtarda parolanın özeti; parola bellekte de açık tutulmaz).
+  const sessionKey = `${base}|${username}|${createHash("sha256").update(String(password)).digest("hex").slice(0, 16)}`;
 
   async function http(url, { method = "GET", headers = {}, body } = {}, wait = timeoutMs, { retry = false } = {}) {
     const controller = new AbortController();
@@ -130,7 +143,13 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
       }
       return { status: response.status, ok: response.ok, text: await response.text() };
     } catch (error) {
-      throw new IntegratorError(error?.name === "AbortError" ? "EDM yanıt vermedi (zaman aşımı). İnternet bağlantısını ve servis adresini kontrol edin; birazdan yeniden deneyin." : `EDM'ye bağlanılamadı: ${error?.cause?.code || error?.message || error}`, { code: "integrator-unreachable" });
+      contacts.delete(sessionKey);
+      const timeout = error?.name === "AbortError";
+      // B2: yan etkisiz işlem (retry) yinelemeden sonra da düştüyse EDM şu an kullanılamıyor (yan etkisi yok → ulaşılamadı). Yan etkili işlemde
+      // (gönderim, taslak, iptal) yalnız bağlantının hiç kurulamadığı kesinse "ulaşılamadı"; değilse "belirsiz".
+      const definite = retry || notConnected(error);
+      if (definite) throw new IntegratorError(timeout ? "EDM yanıt vermedi (zaman aşımı). İnternet bağlantısını ve servis adresini kontrol edin; birazdan yeniden deneyin." : `EDM'ye bağlanılamadı: ${error?.cause?.code || error?.message || error}`, { code: "integrator-unreachable" });
+      throw new IntegratorError(timeout ? "EDM yanıt vermedi (zaman aşımı); istek EDM'ye ulaşmış olabilir." : `EDM ile bağlantı istek gönderildikten sonra koptu (${error?.cause?.code || error?.code || error?.message || error}); istek EDM'ye ulaşmış olabilir.`, { code: "integrator-uncertain" });
     } finally {
       clearTimeout(timer);
     }
@@ -162,7 +181,10 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
       }
       entry = { contract: readWsdl(text), source: "wsdl", error: "", at: Date.now() };
     } catch (error) {
-      entry = { contract: null, source: "default", error: error instanceof IntegratorError ? error.message : `WSDL okunamadı: ${error?.message || error}`, at: Date.now() };
+      entry = { contract: null, source: "default", error: error instanceof IntegratorError ? error.message : `WSDL okunamadı: ${error?.message || error}`, at: Date.now() - CONTRACT_TTL + CONTRACT_FAIL_TTL };
+      // B6: bağlantı hatası (ağ yok) önbelleğe yazılmaz — ağ gelince ilk çağrı sözleşmeyi yeniden okur (önceden 12 saat varsayılan sözleşmeyle
+      // gidiliyordu). WSDL adresi yanıt verip okunamadıysa (HTTP hatası, bozuk belge) 1 dk tutulur: her çağrıda yeniden istenmez.
+      if (error instanceof IntegratorError && error.code === "integrator-unreachable") return entry;
     }
     contracts.set(base, entry);
     return entry;
@@ -272,11 +294,12 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
     endpoint: base,
     contractReport,
     // Dar kontrol 2.4.3 (ek 1): oturum (geçerli önbellekte yoksa giriş). Numara ancak giriş başarılıysa verilir.
-    // Önbellekteki oturum geçerli VE EDM'den `since` anından sonra yanıt alındıysa (ör. aynı istekteki mükellef sorgusu) ağa çıkılmaz; değilse
-    // yeniden giriş yapılır (erişim + hesap denetimi). since verilmezse son 30 sn.
-    async ensureSession({ since = Date.now() - CONTACT_FRESH_MS } = {}) {
+    // Dar kontrol 2 (B3): önbellekteki oturum geçerli (aynı adres, kullanıcı adı ve parola) VE EDM'den son 5 dk içinde yanıt alındıysa (ve o
+    // zamandan beri bağlantı hatası olmadıysa) ağa çıkılmaz; değilse yeniden giriş yapılır (erişim + hesap denetimi). Önceden her çağıran
+    // `since: şimdi` veriyordu: her tekil gönderimde fazladan giriş.
+    async ensureSession() {
       const cached = sessions.get(sessionKey);
-      if (cached && Date.now() - cached.at < SESSION_TTL && (contacts.get(sessionKey) || 0) >= since) return;
+      if (cached && Date.now() - cached.at < SESSION_TTL && Date.now() - (contacts.get(sessionKey) || 0) < CONTACT_FRESH_MS) return;
       sessions.delete(sessionKey);
       await login();
     },
