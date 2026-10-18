@@ -3645,12 +3645,13 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const byId = new Map();
     if (all) {
       const unsent = unsentSql();
-      const rows = store.all(`SELECT ${SEND_COLS} FROM invoices i WHERE ${unsent.sql}`, ...unsent.args).sort(sendOrder);
+      // B4: alıcı bilgisi (buyerBlockOf) aynı sorguda okunur — istek başına satır sayısı kadar ek sorgu yok (tur 20'lik parçalarla ilerler).
+      const rows = store.all(`SELECT ${SEND_COLS}, i.party_json AS partyJson, a.id AS accountFound, a.tax_no AS accountTaxNo, a.e_invoice AS accountEInvoice FROM invoices i LEFT JOIN accounts a ON a.id = i.account_id WHERE ${unsent.sql}`, ...unsent.args).sort(sendOrder);
       const sendable = [];
       const passed = [];
       for (const row of rows) {
         const block = sendBlockOf(row, lastOf);
-        const buyer = block ? "" : buyerBlockOf(row);
+        const buyer = block ? "" : buyerBlockOf(row, row);
         if (block || buyer) results.push({ id: row.id, ok: false, permanent: true, code: block ? "chronology" : "buyer-is-efatura", message: block || buyer });
         else if (cursor && sendOrder(row, cursor) <= 0) passed.push(row);
         else sendable.push(row.id);
