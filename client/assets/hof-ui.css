@@ -3555,7 +3555,10 @@ html.hof-no-haciz .filter-strip { display: none !important; }
 /* ---------- Dışa aktar menüsü (v2.0.1) ---------- */
 .hof-export-menu {
   position: fixed;
-  z-index: 80;
+  /* 2.4.3: kullanıcının açtığı menü alttaki sabit lisans şeridinin (99960) ve ödeme kartının üstünde, bildirimlerin (99975) ve pencerelerin
+     (99980) altında. Önce 80'di: menü sayfanın altına düşünce "Excel Dosyası (.xlsx)" şeridin arkasında kalıyor, tıklanamıyordu (run.mjs
+     "Excel'e aktarılır" adımının ara sıra kırmızısı). */
+  z-index: 99965;
   width: min(330px, calc(100vw - 24px));
   padding: 8px;
   border: 1px solid var(--do-border);
