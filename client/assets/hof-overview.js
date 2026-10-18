@@ -297,7 +297,8 @@
   const SOURCE_LABELS = { plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa", bank: "Planlı Banka İşlemi", table: "Tablo", promise: "Ödeme Sözü", deadline: "Son Tarih" };
   // Satırın kaynak adı (süzgeç seçeneği değil): eski sürümden kalan, hesaba atanmamış ileri tarihli havale / POS (sunucu SOURCE_TEXT.legacy ile aynı
   // ad; PDF ve Excel de böyle yazar). Kasa süzgeciyle gelir; önceden "Kasa" yazıyordu (2.1.0 temel sürüm, küçük düzeltmeler).
-  const ROW_LABELS = { ...SOURCE_LABELS, legacy: "Hesabı Atanmamış (ileri tarihli)" };
+  // MM5 (2.4.3): faturasız cari alacağı (carinin bakiyesinden açık taksit ve vadeli fatura düşülünce kalan) Nakit Akışı'nda gecikmiş giriştir.
+  const ROW_LABELS = { ...SOURCE_LABELS, legacy: "Hesabı Atanmamış (ileri tarihli)", unbilled: "Faturasız Cari Alacağı" };
   const SOURCE_HINTS = {
     plan: "Taksit kartlarının kalan taksitleri",
     cheque: "Portföydeki alınan ve ödenecek verilen çekler",

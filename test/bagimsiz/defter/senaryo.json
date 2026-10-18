@@ -1,0 +1,106 @@
+{
+  "aciklama": "Küçük ticari işletme, Eylül–Kasım 2026. İş olayları dilidir: kos.mjs bunları programın API'sine çevirir, kahin.py programı görmeden aynı olaylardan elle TDHP yevmiyesi kurar. Tutarlar TL (iki ondalık), tarihler sahte saate göre sabittir.",
+  "simdi": "2026-11-27T17:00:00+03:00",
+  "bugun": "2026-11-27",
+  "olaylar": [
+    { "id": "M1", "tur": "cari", "ad": "Alfa Ticaret A.Ş.", "tip": "customer", "vkn": "9876543217" },
+    { "id": "M2", "tur": "cari", "ad": "Ahmet Yılmaz", "tip": "customer", "kisi": ["Ahmet", "Yılmaz"], "tckn": "10000000146" },
+    { "id": "M3", "tur": "cari", "ad": "Beta Yapı Ltd. Şti.", "tip": "customer" },
+    { "id": "M4", "tur": "cari", "ad": "Eski Müşteri Ltd.", "tip": "customer" },
+    { "id": "M5", "tur": "cari", "ad": "Çekli Müşteri Ltd.", "tip": "customer" },
+    { "id": "T1", "tur": "cari", "ad": "Tedarik Toptan A.Ş.", "tip": "supplier" },
+    { "id": "T2", "tur": "cari", "ad": "Kırtasiye Ali Veli", "tip": "supplier" },
+    { "id": "T3", "tur": "cari", "ad": "Pırıl Temizlik Ltd. Şti.", "tip": "supplier" },
+    { "id": "T4", "tur": "cari", "ad": "Mehmet Kiraya Veren", "tip": "supplier" },
+
+    { "id": "P1", "tur": "urun", "ad": "Defter A4", "kod": "P1", "birim": "Adet", "alis": 50, "satis": 100, "kdv": 20, "acilisMiktar": 100, "acilisTarih": "2026-09-01" },
+    { "id": "P2", "tur": "urun", "ad": "Un", "kod": "P2", "birim": "Kg", "alis": 8, "satis": 10, "kdv": 1 },
+    { "id": "P3", "tur": "urun", "ad": "Gıda Kolisi", "kod": "P3", "birim": "Adet", "alis": 20, "satis": 30, "kdv": 10 },
+
+    { "id": "KASA0", "tur": "kasa_acilis", "tarih": "2026-09-01", "tutar": 10000 },
+    { "id": "B", "tur": "banka_hesap", "tarih": "2026-09-01", "ad": "Ana TL Hesabı", "acilis": 50000 },
+    { "id": "K", "tur": "kart_hesap", "tarih": "2026-09-01", "ad": "Şirket Kartı", "limit": 50000 },
+    { "id": "POS", "tur": "pos", "tarih": "2026-09-01", "banka": "B", "oran": 2.5 },
+    { "id": "M1A", "tur": "cari_acilis", "tarih": "2026-09-01", "cari": "M1", "yon": "borc", "tutar": 5000 },
+    { "id": "T1A", "tur": "cari_acilis", "tarih": "2026-09-01", "cari": "T1", "yon": "alacak", "tutar": 8000 },
+    { "id": "M5A", "tur": "cari_acilis", "tarih": "2026-09-01", "cari": "M5", "yon": "borc", "tutar": 2000 },
+    { "id": "M4A", "tur": "cari_acilis", "tarih": "2026-01-02", "cari": "M4", "yon": "borc", "tutar": 5000, "not": "Açılış bakiyesi (2025 devri)" },
+
+    { "id": "F1", "tur": "fatura", "fatura": "alis", "tarih": "2026-09-02", "cari": "T1", "no": "TDK2026000000101", "kalemler": [
+      { "urun": "P1", "miktar": 200, "fiyat": 50, "kdv": 20 },
+      { "urun": "P2", "miktar": 500, "fiyat": 8, "kdv": 1 },
+      { "urun": "P3", "miktar": 100, "fiyat": 20, "kdv": 10 } ], "odeme": { "acik": true } },
+    { "id": "F2", "tur": "fatura", "fatura": "alis", "tarih": "2026-09-03", "cari": "T2", "no": "A 004512", "kalemler": [
+      { "ad": "Kırtasiye Malzemesi", "miktar": 1, "fiyat": 1000, "kdv": 20, "gider": "office" } ], "odeme": { "nakit": 1200 } },
+    { "id": "F3", "tur": "fatura", "fatura": "alis", "tarih": "2026-09-04", "cari": "T3", "no": "PRL2026000000033", "kalemler": [
+      { "ad": "Temizlik Hizmeti", "miktar": 1, "fiyat": 2000, "kdv": 20, "tevkifat": "612", "gider": "cleaning" } ], "odeme": { "acik": true } },
+    { "id": "F12", "tur": "fatura", "fatura": "alis", "tarih": "2026-09-01", "cari": "T4", "no": "KIRA-09", "stopaj": 20, "kalemler": [
+      { "ad": "Eylül Kirası", "miktar": 1, "fiyat": 10000, "kdv": 0, "gider": "rent" } ], "odeme": { "acik": true } },
+    { "id": "F4", "tur": "fatura", "fatura": "satis", "tarih": "2026-09-05", "cari": "M1", "kalemler": [
+      { "urun": "P1", "miktar": 30, "fiyat": 100, "isk": 10, "kdv": 20 },
+      { "urun": "P3", "miktar": 20, "fiyat": 30, "kdv": 10 } ], "odeme": { "acik": true } },
+    { "id": "F5", "tur": "fatura", "fatura": "satis", "tarih": "2026-09-06", "cari": "M2", "kdvDahil": true, "kalemler": [
+      { "urun": "P2", "miktar": 100, "fiyat": 10.1, "kdv": 1 },
+      { "urun": "P1", "miktar": 5, "fiyat": 120, "kdv": 20 } ], "odeme": { "nakit": 1610 } },
+    { "id": "F6", "tur": "fatura", "fatura": "satis", "tarih": "2026-09-07", "cari": "M1", "kalemler": [
+      { "ad": "Nakliye Hizmeti", "miktar": 1, "fiyat": 5000, "kdv": 20, "tevkifat": "624" } ], "odeme": { "acik": true } },
+    { "id": "F7", "tur": "fatura", "fatura": "satis", "tarih": "2026-09-07", "cari": "M3", "kalemler": [
+      { "ad": "Montaj Hizmeti", "miktar": 1, "fiyat": 2500, "kdv": 20 } ], "odeme": { "acik": true } },
+    { "id": "F8", "tur": "fatura", "fatura": "satis_iade", "tarih": "2026-09-08", "cari": "M1", "asil": "F4", "no": "ALF2026000000007", "kalemler": [
+      { "satir": 0, "miktar": 10 }, { "satir": 1, "miktar": 5 } ] },
+    { "id": "F9", "tur": "fatura", "fatura": "alis_iade", "tarih": "2026-09-09", "cari": "T1", "asil": "F1", "kalemler": [
+      { "satir": 1, "miktar": 50 }, { "satir": 2, "miktar": 10 } ] },
+    { "id": "F11", "tur": "fatura", "fatura": "satis", "tarih": "2026-09-11", "cari": "M2", "kdvDahil": true, "kalemler": [
+      { "urun": "P1", "miktar": 2, "fiyat": 120, "kdv": 20 } ], "odeme": { "acik": true } },
+    { "id": "F11X", "tur": "iptal", "tarih": "2026-09-11", "fatura": "F11" },
+
+    { "id": "TH1", "tur": "tahsilat", "tarih": "2026-09-12", "cari": "M1", "tutar": 2000, "yol": "nakit" },
+    { "id": "TH2", "tur": "tahsilat", "tarih": "2026-09-13", "cari": "M1", "tutar": 3000, "yol": "havale" },
+    { "id": "TH3", "tur": "tahsilat", "tarih": "2026-09-14", "cari": "M1", "tutar": 1000, "yol": "pos" },
+    { "id": "OD1", "tur": "odeme", "tarih": "2026-09-15", "cari": "T1", "tutar": 1500, "yol": "kart" },
+    { "id": "OD2", "tur": "odeme", "tarih": "2026-09-15", "cari": "T1", "tutar": 5000, "yol": "havale" },
+    { "id": "OD3", "tur": "odeme", "tarih": "2026-09-15", "cari": "T4", "tutar": 8000, "yol": "havale" },
+
+    { "id": "C1", "tur": "cek", "tarih": "2026-09-16", "yon": "alinan", "evrak": "cek", "cari": "M1", "tutar": 4000, "no": "C-1001", "vade": "2026-10-15" },
+    { "id": "S1", "tur": "cek", "tarih": "2026-09-16", "yon": "alinan", "evrak": "senet", "cari": "M1", "tutar": 2000, "no": "S-1", "vade": "2026-11-30" },
+    { "id": "C1R", "tur": "ciro", "tarih": "2026-09-17", "cek": "C1", "cari": "T1" },
+    { "id": "C2", "tur": "cek", "tarih": "2026-09-18", "yon": "alinan", "evrak": "cek", "cari": "M3", "tutar": 3000, "no": "C-2002", "vade": "2026-09-24" },
+    { "id": "C2T", "tur": "tahsile_ver", "tarih": "2026-09-19", "cek": "C2" },
+    { "id": "C2K", "tur": "karsiliksiz", "tarih": "2026-09-25", "cek": "C2" },
+    { "id": "C3", "tur": "cek", "tarih": "2026-09-18", "yon": "verilen", "evrak": "cek", "cari": "T1", "tutar": 2000, "no": "K-501", "vade": "2026-10-20" },
+    { "id": "C5", "tur": "cek", "tarih": "2026-09-02", "yon": "alinan", "evrak": "cek", "cari": "M5", "tutar": 2000, "no": "C-9", "vade": "2026-09-10" },
+    { "id": "C5K", "tur": "karsiliksiz", "tarih": "2026-09-11", "cek": "C5" },
+    { "id": "SUP", "tur": "supheli", "tarih": "2026-09-26", "cari": "M3", "tutar": 3000, "cek": "C2" },
+    { "id": "KRS", "tur": "karsilik", "tarih": "2026-09-29", "supheli": "SUP", "tutar": 3000 },
+
+    { "id": "BM1", "tur": "masraf", "tarih": "2026-09-20", "tutar": 52.5, "bsmvOran": 5 },
+    { "id": "BF1", "tur": "faiz_gelir", "tarih": "2026-09-30", "brut": 1000, "stopajOran": 15 },
+    { "id": "BF2", "tur": "faiz_gider", "tarih": "2026-09-30", "tutar": 200, "vergi": 10 },
+    { "id": "VR1", "tur": "virman", "tarih": "2026-09-21", "tutar": 5000 },
+    { "id": "KG1", "tur": "kasa_gider", "tarih": "2026-09-22", "tutar": 300 },
+
+    { "id": "F13", "tur": "fatura", "fatura": "satis", "tarih": "2026-09-23", "cari": "M2", "kdvDahil": true, "kalemler": [
+      { "urun": "P1", "miktar": 10, "fiyat": 120, "kdv": 20 } ], "odeme": { "taksit": { "sayi": 3, "ilkVade": "2026-09-30" } } },
+    { "id": "TK1", "tur": "taksit_tahsil", "tarih": "2026-09-30", "fatura": "F13", "tutar": 400, "yol": "nakit" },
+    { "id": "F14", "tur": "fatura", "fatura": "satis", "tarih": "2026-09-24", "cari": "M2", "eksiStok": true, "kalemler": [
+      { "urun": "P2", "miktar": 400, "fiyat": 10, "kdv": 1 } ], "odeme": { "havale": 4040 } },
+
+    { "id": "K_EYLUL", "tur": "kontrol", "tarih": "2026-09-30" },
+    { "id": "MH09", "tur": "kdv_mahsup", "tarih": "2026-09-30", "ay": "2026-09" },
+    { "id": "K_EYLUL_MAHSUP", "tur": "kontrol", "tarih": "2026-09-30" },
+
+    { "id": "F21", "tur": "fatura", "fatura": "satis", "tarih": "2026-10-05", "cari": "M1", "kalemler": [
+      { "ad": "Proje Hizmeti", "miktar": 1, "fiyat": 50000, "kdv": 20 } ], "odeme": { "acik": true } },
+    { "id": "F22", "tur": "fatura", "fatura": "alis", "tarih": "2026-10-06", "cari": "T1", "no": "TDK2026000000188", "kalemler": [
+      { "urun": "P1", "miktar": 100, "fiyat": 50, "kdv": 20 } ], "odeme": { "acik": true } },
+    { "id": "VO1", "tur": "vergi_odeme", "tarih": "2026-10-28", "vergiTuru": "muhtasar", "tutar": 2000, "gecikmeZammi": 12.5, "yol": "banka", "aciklama": "Eylül muhtasar (kira stopajı), 2 gün gecikmeli" },
+    { "id": "VO2", "tur": "vergi_odeme", "tarih": "2026-10-26", "vergiTuru": "kdv", "tutar": 360, "yol": "kasa", "aciklama": "Eylül KDV-2 (tevkifat)" },
+    { "id": "K_EKIM_ONCE", "tur": "kontrol", "tarih": "2026-10-31" },
+    { "id": "MH10A", "tur": "kdv_mahsup", "tarih": "2026-10-31", "ay": "2026-10" },
+    { "id": "MH10AX", "tur": "kdv_mahsup_geri_al", "tarih": "2026-10-31", "mahsup": "MH10A" },
+    { "id": "K_GERI_ALINDI", "tur": "kontrol", "tarih": "2026-10-31" },
+    { "id": "MH10", "tur": "kdv_mahsup", "tarih": "2026-10-31", "ay": "2026-10" },
+    { "id": "VO3", "tur": "vergi_odeme", "tarih": "2026-11-26", "vergiTuru": "kdv", "tutar": 8239, "yol": "banka", "aciklama": "Ekim KDV-1" },
+    { "id": "K_SON", "tur": "kontrol", "tarih": "2026-11-27" }
+  ]
+}

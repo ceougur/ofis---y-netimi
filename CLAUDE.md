@@ -199,6 +199,12 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
     Kapat") her yanıtı nedeniyle günlüğe yazar ve beklenen "soru var/yok" bildirilir; yanıtlanan her soru meşru mu yanlış mı sınıflanır. (18.10: 2.4.3
     çekirdeğinde escClose 46 e2e'de soruyu sessizce geçiyordu; kaydedilmiş/temiz formda çıkan yanlış soru yeşil testlerin arkasında kalırdı.)
 
+35. PAKET TAM TESTİ BİTMEDEN BİRLEŞMEZ. Düzeltme paketi ana dala ancak kendi tam `npm test`'i (+ değiştirdiği davranışa dokunan bütün e2e'ler) yeşil
+    görüldükten sonra alınır; "CI zaten koşar" denip birleştirilmez. (18.10: UI/UX A paketi tam test koşmadan birleşti → CI #834 4 kırmızı (cari-243,
+    banka-210-altin), #835 e2e form-izolasyon D2 kırmızı — hepsi UX1/UI7/UI9'un bilinçli değişikliğine uymayan eski beklentiler; ürün hatası değil.)
+36. AJAN BAŞKASININ SÜRECİNİ ÖLDÜRMEZ. Paylaşılan makinede `pkill -f <desen>` / `killall` kullanılmaz; yalnız kendi başlattığı pid'ler (çalışma dizini ile
+    doğrulanarak) durdurulur. (18.10: A paketi ajanı `pkill -f "test/e2e/"` ile kendi kabuğunu ve olası başka ajan koşularını kesti.)
+
 ### Verimlilik (kullanıcı, 12.10.2026: "geçmişte yaptığın hatalardan aldığın dersleri göz önüne al; gereksiz zaman ve kullanım limitimi
 harcayacak işlemlerden uzak dur!")
 - Dersler 1–24 her işte uygulanır; ama kanıt için GEREKEN kadar koşulur, fazlası değil: geliştirme sırasında yalnız değişen alanın testleri;
@@ -453,3 +459,6 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - KARAR (kullanıcı, 18.10.2026 ~19:30 UTC; B paketi kapsamı): 2.4.3'te → UX2, UX3, UX5 (fatura), UX6, UX28, UI4, UI2, UX12, UX24, UX23, UX14, UX26, KÖ1, KÖ2.
   2.4.4'e ERTELENDİ → UI11 (düğme adlarının birleştirilmesi + fatura penceresi çift başlık), UI5, UI9 (fatura), UI3a, UX15, UX16, UX17, UX18, UX20, UX25,
   UX27, UX9, UX10 (fatura). Ertelenenler iş listesinde "2.4.4", sürüm notunda ve teslimde BİLİNEN SINIRLAR'da yazılır.
+- KARAR (kullanıcı önerisi, 18.10.2026 ~21:45 UTC; baş mimar anayasaya uygun buldu): son aday Uzun Doğrulama'da (GitHub) koşarken AYNI commit'te gerçek EDM test
+  ortamı denemesi (MM1 dahil) ve imzalı paket + kurulum hazırlanır; TESLİM ancak Uzun Doğrulama yeşil okunduktan sonra. Ön koşul: sürüm belgeleri ve kılavuz
+  PDF son adaydan ÖNCE biter (paketin içinde). Uzun Doğrulama kırmızı çıkıp kod değişirse paket ve etkilenen EDM adımı yeni commit'te yeniden yapılır.

@@ -1,0 +1,169 @@
+TAP version 13
+# (node:1770) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.3 MM4 — stok açılışı Ana Defter'de (B 153 / A 500)
+    # Subtest: ürün kartında açılış: 100 × 50 = 5.000 → mizan 153 = 5.000, 500 = −5.000; yevmiyede tek madde; Mutabakat Testi stock:opening tamam
+    not ok 1 - ürün kartında açılış: 100 × 50 = 5.000 → mizan 153 = 5.000, 500 = −5.000; yevmiyede tek madde; Mutabakat Testi stock:opening tamam
+      ---
+      duration_ms: 52.211833
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-stok-acilis.test.mjs:25:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        0 !== 5000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 5000
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-stok-acilis.test.mjs:28:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: İlk Alım (Kasa'dan peşin) açılış değildir: 153 yalnız alım kadar artar, 500 değişmez
+    not ok 2 - İlk Alım (Kasa'dan peşin) açılış değildir: 153 yalnız alım kadar artar, 500 değişmez
+      ---
+      duration_ms: 66.084274
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-stok-acilis.test.mjs:40:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        200 !== 5200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 5200
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-stok-acilis.test.mjs:43:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Excel'den ürün: miktar açılıştır (Çay 850 + Şeker 100); miktarsız satır ve hizmet açılış yazmaz
+    not ok 3 - Excel'den ürün: miktar açılıştır (Çay 850 + Şeker 100); miktarsız satır ve hizmet açılış yazmaz
+      ---
+      duration_ms: 53.244699
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-stok-acilis.test.mjs:49:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        200 !== 6150
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 6150
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-stok-acilis.test.mjs:55:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: açılış hareketi düzeltilir (100 → 80) ve silinir: 153 / 500 izler; Çöp Kutusu'ndan geri yükleme açılışı geri getirir
+    not ok 4 - açılış hareketi düzeltilir (100 → 80) ve silinir: 153 / 500 izler; Çöp Kutusu'ndan geri yükleme açılışı geri getirir
+      ---
+      duration_ms: 51.072876
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-stok-acilis.test.mjs:62:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        200 !== 5150
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 5150
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-stok-acilis.test.mjs:69:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: açılış hareketi peşine çevrilirse açılış olmaktan çıkar (Kasa alımı olur, 500 düşer); ürün silinse de açılış defterde kalır
+    not ok 5 - açılış hareketi peşine çevrilirse açılış olmaktan çıkar (Kasa alımı olur, 500 düşer); ürün silinse de açılış defterde kalır
+      ---
+      duration_ms: 36.885803
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-stok-acilis.test.mjs:88:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        153 aynı (açılış yerine peşin alım)
+        
+        300 !== 5150
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 5150
+      actual: 300
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-stok-acilis.test.mjs:94:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kapanmış dönemdeki açılış hareketi düzeltilemez; kilit sonrası mizan ve Mutabakat Testi aynı
+    ok 6 - kapanmış dönemdeki açılış hareketi düzeltilemez; kilit sonrası mizan ve Mutabakat Testi aynı
+      ---
+      duration_ms: 82.551004
+      type: 'test'
+      ...
+    # Subtest: Stok Hareketleri raporu açılışı 'Açılış Stoku' ve değeriyle gösterir: raporun açılış toplamı = yevmiyedeki 153 açılışı
+    not ok 7 - Stok Hareketleri raporu açılışı 'Açılış Stoku' ve değeriyle gösterir: raporun açılış toplamı = yevmiyedeki 153 açılışı
+      ---
+      duration_ms: 17.744267
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-stok-acilis.test.mjs:121:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        P1 80 × 50 + Çay 10 × 85 (Şeker artık açılış değil)
+        
+        0 !== 485000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 485000
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-stok-acilis.test.mjs:128:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..7
+not ok 1 - 2.4.3 MM4 — stok açılışı Ana Defter'de (B 153 / A 500)
+  ---
+  duration_ms: 968.078653
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-eski-78fdd05/test/defter-243-stok-acilis.test.mjs:15:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 7
+# suites 1
+# pass 1
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1537.395822

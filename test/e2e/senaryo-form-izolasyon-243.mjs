@@ -407,10 +407,18 @@ try {
     const editVals = await valuesOf(topDialog(page), { phone: 'input[name="phone"]', note: 'textarea[name="note"]', email: 'input[name="email"]' });
     ok(editVals.phone === "0544 000 11 22" && editVals.note === "Ekrandan yazılan not", `D2 Cariyi Düzenle: başka oturumun değişikliği açık formu ezmedi ${JSON.stringify(editVals)}`);
     await guard(page, "D2 Cariyi Düzenle", { phone: 'input[name="phone"]', note: 'textarea[name="note"]' });
+    // 2.4.3 UX1 (bilerek): form açıkken kayıt başka oturumda değiştiyse ilk Kaydet 409 (account-stale) alır; form güncel hâli yükler, kullanıcının
+    // değiştirdiği alanlar yerinde kalır, öbür alanlar (başka oturumun e-postası) güncel değeri alır; ikinci Kaydet yazar.
+    await submit(page);
+    await sleep(1500);
+    const staleText = await page.evaluate(() => document.body.innerText);
+    ok(/başka biri tarafından değiştirildi/.test(staleText), "D2 eşzamanlı kayıt uyarısı göründü (UX1)");
+    const afterStale = await valuesOf(topDialog(page), { phone: 'input[name="phone"]', note: 'textarea[name="note"]', email: 'input[name="email"]' });
+    ok(afterStale.phone === "0544 000 11 22" && afterStale.note === "Ekrandan yazılan not" && afterStale.email === "baska@oturum.com", `D2 uyarıdan sonra yazılanlar yerinde, öbür alan güncel ${JSON.stringify(afterStale)}`);
     await submit(page);
     await sleep(1500);
     const akinNow = await must("cari oku", admin.get(`/api/workspace/accounts/${akin.id}`));
-    ok(akinNow.phone === "0544 000 11 22" && akinNow.note === "Ekrandan yazılan not", `D2 kaydedilen = girilen (${akinNow.phone} · ${akinNow.note})`);
+    ok(akinNow.phone === "0544 000 11 22" && akinNow.note === "Ekrandan yazılan not" && akinNow.email === "baska@oturum.com", `D2 kaydedilen = girilen + öbür oturumun alanı korundu (${akinNow.phone} · ${akinNow.note} · ${akinNow.email})`);
     covered.push("Cariyi Düzenle (hof-accounts editAccount)");
 
   });

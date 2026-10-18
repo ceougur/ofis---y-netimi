@@ -73,6 +73,9 @@ export const PERMISSIONS = Object.freeze({
   "invoices.view": ["admin", "avukat", "muhasebe"],
   "invoices.manage": ["admin", "avukat", "muhasebe"],
   "invoices.settings": ["admin", "muhasebe"],
+  // 2.4.3 MM3 (uzman mali müşavir; kullanıcı kararı 18.10.2026 "muhasebe + yönetici, personel değil"): Vergi Ödemesi (360'ı kapatan ödeme; bankadan ya
+  // da Kasa'dan) ve ay sonu KDV Mahsup Fişi. Bankadan ödemede ayrıca bank.move, Kasa'dan ödemede cash.manage istenir (routes/tax.mjs).
+  "tax.manage": ["admin", "muhasebe"],
   // Finans raporları (v2.0.7'de "ANLIK DURUM ve raporlar"): Raporlar penceresi — mizan, cari ekstre, nakit akış, tüm
   // raporlar. v2.0.10'dan beri ana ekrandaki ANLIK DURUM kartını AÇMAZ (overview.card); kişiye verilebilir.
   // 2.4.3 (kullanıcı kararı 18.10.2026): muhasebe varsayılan olarak görür; yönetici kişiden kaldırabilir.
@@ -200,6 +203,7 @@ export const PERMISSION_GROUPS = Object.freeze([
       ["invoices.view", "Faturaları Görme", "Satış, alış ve iade faturaları; PDF ve e-Belge (UBL-TR XML)."],
       ["invoices.manage", "Fatura Kesme ve İptal", "Fatura keser, iade alır/verir, iptal eder; stok, cari, Kasa, taksit ve çek/senede yazar."],
       ["invoices.settings", "Fatura Ayarları", "Firma bilgisi, seri ve numaralar, e-Fatura / e-Arşiv, entegratör ve varsayılanlar."],
+      ["tax.manage", "Vergi Ödemesi ve KDV Mahsubu", "Ödenecek vergiyi (KDV, muhtasar, diğer) bankadan ya da Kasa'dan öder; ay sonu KDV mahsup fişini oluşturur ve geri alır."],
     ],
   },
   {

@@ -1,0 +1,7 @@
+Bağımsız kâhin (uzman mali müşavirin elle yazdığı TDHP yevmiyesi; programın kodundan değil) — 2.4.3 defter düzeltmeleri, 18.10.2026.
+Kaynak: scratchpad/uzman-mm-243-betikler (ay.mjs, oku.mjs, kahin.py; denetçinin). Bu kopyada yalnız ROOT (güncel kod: defter-243 çalışma kopyası)
+ve çıktı klasörü değişti (ders 25: başka ajanın klasörü kullanılmaz). Komutlar (HUKUK_LICENSE_URL=http://127.0.0.1:9):
+  node ay.mjs                         # Eylül 2026 sıfırdan, programın API'siyle (F10 kâğıt asıllı iade 400: MM1, ayrı iş)
+  node oku.mjs ./veri ./prog.json     # mizan ve raporlar
+  python3 -I kahin.py ./prog.json     # → kahin-karsilastirma.txt: 24 hesabın HEPSİ fark 0 (153 = 20.400, 500 = −62.000; eski kodda 15.400 / −57.000)
+  node ek-vergi.mjs                   # MM3: Eylül KDV mahsubu (devreden 761 = denetçinin hesabı) ve 360'ın ödenmesi (2.000 + 360 → 0) → ek-vergi-sonuc.json

@@ -424,7 +424,7 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
             const method = methodInput(row.method);
             shared = bank.eventFor("cash_entries", { kind: row.kind, date: row.date, method, transfer_id: row.transferId || "", event_id: row.eventId || shared });
             store.run(
-              "INSERT INTO cash_entries (id, kind, amount, date, description, method, transfer_id, fin_ref, event_id, is_opening, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+              "INSERT INTO cash_entries (id, kind, amount, date, description, method, transfer_id, fin_ref, event_id, is_opening, tax_json, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
               row.id,
               row.kind,
               money(row.amount),
@@ -435,6 +435,8 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
               keep(row.finRef, method, row.date),
               shared,
               restoreOpening && row.id === item.ref ? 1 : 0,
+              // 2.4.3 MM3: Kasa'dan Vergi Ödemesi geri gelince vergi ayrıntısı da gelir (yevmiye B 360 · B 689 / A 100 aynı).
+              row.id === item.ref && row.kind === "out" && typeof row.taxJson === "string" ? row.taxJson : "",
               row.createdBy || user.id,
               row.createdAt || now(),
               user.id,

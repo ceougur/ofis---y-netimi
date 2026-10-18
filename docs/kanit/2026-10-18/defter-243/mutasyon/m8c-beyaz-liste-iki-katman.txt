@@ -1,0 +1,135 @@
+TAP version 13
+# (node:24340) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.3 MM3 — Vergi Ödemesi ve KDV Mahsup Fişi
+    # Subtest: başlangıç (kâhin): 391 = −3.400, 191 = 2.200, 360 = −2.360
+    ok 1 - başlangıç (kâhin): 391 = −3.400, 191 = 2.200, 360 = −2.360
+      ---
+      duration_ms: 8.078726
+      type: 'test'
+      ...
+    # Subtest: KDV Mahsup Fişi Eylül: ön izleme B 391 2.000 / A 191 1.200 / A 360 800; oluşturulunca Eylül sonu 391 = 191 = 0; aynı ay ikinci kez 409
+    ok 2 - KDV Mahsup Fişi Eylül: ön izleme B 391 2.000 / A 191 1.200 / A 360 800; oluşturulunca Eylül sonu 391 = 191 = 0; aynı ay ikinci kez 409
+      ---
+      duration_ms: 45.342576
+      type: 'test'
+      ...
+    # Subtest: Ekim: indirilecek fazla → B 391 400 / A 191 1.000 / B 190 600 (devreden); Kasım: devreden kullanılır → B 391 1.000 / A 190 600 / A 360 400
+    ok 3 - Ekim: indirilecek fazla → B 391 400 / A 191 1.000 / B 190 600 (devreden); Kasım: devreden kullanılır → B 391 1.000 / A 190 600 / A 360 400
+      ---
+      duration_ms: 47.336888
+      type: 'test'
+      ...
+    # Subtest: sıra: Aralık bitmeden mahsup yok; önceki aya yeni mahsup ve sondan olmayan geri alma 409
+    ok 4 - sıra: Aralık bitmeden mahsup yok; önceki aya yeni mahsup ve sondan olmayan geri alma 409
+      ---
+      duration_ms: 13.124016
+      type: 'test'
+      ...
+    # Subtest: Vergi Ödemesi bankadan (KDV 800) ve Kasa'dan (Muhtasar 2.000 + gecikme 50): 360 düşer, 689 = 50, 100 / 102 azalır; Banka Fişi tax_payment
+    ok 5 - Vergi Ödemesi bankadan (KDV 800) ve Kasa'dan (Muhtasar 2.000 + gecikme 50): 360 düşer, 689 = 50, 100 / 102 azalır; Banka Fişi tax_payment
+      ---
+      duration_ms: 94.329924
+      type: 'test'
+      ...
+    # Subtest: 360 bakiyesini aşan ödeme uyarı verir (409 tax-exceeds); Yine de Kaydet (exceedOk) geçer; Ters Kaydet 360'ı geri getirir; Düzelt 409
+    ok 6 - 360 bakiyesini aşan ödeme uyarı verir (409 tax-exceeds); Yine de Kaydet (exceedOk) geçer; Ters Kaydet 360'ı geri getirir; Düzelt 409
+      ---
+      duration_ms: 83.589651
+      type: 'test'
+      ...
+    # Subtest: plan §3.11 aynen: Diğer Gider satırına 360 yazılamaz (400 bank-gl-forbidden); Kasa'daki vergi satırı Kasa'dan düzeltilmez (409); silinir ve geri gelir
+    not ok 7 - plan §3.11 aynen: Diğer Gider satırına 360 yazılamaz (400 bank-gl-forbidden); Kasa'daki vergi satırı Kasa'dan düzeltilmez (409); silinir ve geri gelir
+      ---
+      duration_ms: 22.141051
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-mutasyon-a6b3e99/test/defter-243-vergi.test.mjs:135:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Diğer Gider 360: 200 {"id":"ev-0mve4t5x30000-ff47a772-e182-4c34","no":"BNK-2026-000006","type":"other_out","typeLabel":"Diğer Gider","status":"active","statusLabel":"Etkin","date":"2026-11-27","valueDate":"","direction":"out","tryMinor":10000,"amountMinor":10000,"currency":"TRY","method":"bank","description":"","reference":"","channel":"","origin":"manual","internal":false,"account":{"id":"bacc-d433f04d-b02e-406c-9886 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-mutasyon-a6b3e99/test/banka-210-hesap-ortak.mjs:57:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-mutasyon-a6b3e99/test/defter-243-vergi.test.mjs:136:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: mahsuptan sonra o aya KDV'li kayıt gelince uyarı (liste ve KDV Özeti); geri al + yeniden yap düzeltir; geri alma ters kayıttır
+    not ok 8 - mahsuptan sonra o aya KDV'li kayıt gelince uyarı (liste ve KDV Özeti); geri al + yeniden yap düzeltir; geri alma ters kayıttır
+      ---
+      duration_ms: 49.772352
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-mutasyon-a6b3e99/test/defter-243-vergi.test.mjs:152:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        760 − 100
+        
+        -560 !== -660
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: -660
+      actual: -560
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-mutasyon-a6b3e99/test/defter-243-vergi.test.mjs:170:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: dönem kilidi: Eylül kilitliyken Eylül mahsubu geri alınamaz ve Eylül'e yeni mahsup yazılamaz; kilit açılınca geri alınır
+    not ok 9 - dönem kilidi: Eylül kilitliyken Eylül mahsubu geri alınamaz ve Eylül'e yeni mahsup yazılamaz; kilit açılınca geri alınır
+      ---
+      duration_ms: 120.06337
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-mutasyon-a6b3e99/test/defter-243-vergi.test.mjs:174:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        mahsuplar geri alındı; ödemeler (KDV 800, muhtasar 2.000) kalır
+        
+        540 !== 440
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 440
+      actual: 540
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-mutasyon-a6b3e99/test/defter-243-vergi.test.mjs:195:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yetki: personel 403 (vergi, ödeme, mahsup); muhasebe yapar; Rapor Merkezi KDV Özeti'nde düğme yalnız yetkiliye
+    ok 10 - yetki: personel 403 (vergi, ödeme, mahsup); muhasebe yapar; Rapor Merkezi KDV Özeti'nde düğme yalnız yetkiliye
+      ---
+      duration_ms: 396.445911
+      type: 'test'
+      ...
+    1..10
+not ok 1 - 2.4.3 MM3 — Vergi Ödemesi ve KDV Mahsup Fişi
+  ---
+  duration_ms: 1682.461599
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243-mutasyon-a6b3e99/test/defter-243-vergi.test.mjs:25:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 10
+# suites 1
+# pass 7
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2128.461872

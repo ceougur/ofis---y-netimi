@@ -822,6 +822,8 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
         party: party(row),
         phone: row.accountPhone,
         ref: { type: "cheque", id: row.id },
+        // MM6 (2.4.3): verilen evrakın Çek Hesabı / ödeme hesabı (Banka Nakit Akış Raporu vadesinde o hesaptan çıkış sayar).
+        ...(row.direction === "out" && row.bankAccountId ? { bankAccountId: row.bankAccountId } : {}),
         ...(deposit ? { dueDate: row.dueDate, bankAccountId: deposit.bankAccountId } : {}),
       };
     });

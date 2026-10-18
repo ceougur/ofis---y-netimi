@@ -1,0 +1,32 @@
+{
+  "ad": "defter-243/e2e-hiz-243-arka-plan",
+  "komut": "npm run test:hiz-243-arka-plan",
+  "commit": "8d633be60b25b5a10ed8ed34b8ac82475c5e28f1",
+  "dal": "defter-243",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-18T19:57:54.820Z",
+  "sure_sn": 13,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 13,
+    "gecen": 13,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-18/defter-243/e2e-hiz-243-arka-plan.log",
+  "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/defter-243",
+  "ham_cikti_sha256": "ea97b6c0eefc2569818c0aa171643d1f12d0b4a7ede7f03e7b58380c4d0b536b",
+  "ham_cikti_bayt": 1202
+}
