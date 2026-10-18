@@ -195,7 +195,8 @@ try {
   await screen("Banka — Hesap Detayı", async () => { await openWindow("bank"); await bankTab("accounts"); await clickFirstRow(); });
   await screen("Banka — yeni hesap formu", async () => { await openWindow("bank"); await bankTab("accounts"); await clickButton(/Yeni Hesap/); });
   await screen("Banka — Ayarlar (Gelişmiş)", async () => { await openWindow("bank"); await bankTab("settings"); await page.click(`${modal} [data-act="advanced"]`); await page.waitForTimeout(400); });
-  await screen("Banka — Hesabı Atanmamış Eski Hareketler", async () => { await openWindow("bank"); await page.click(`${modal} [data-bank-unassigned] [data-act="legacy"]`); await page.waitForTimeout(900); });
+  // 2.4.3 (C11): pencere son sekmeyi hatırlar → Genel Bakış açıkça seçilir.
+  await screen("Banka — Hesabı Atanmamış Eski Hareketler", async () => { await openWindow("bank"); await bankTab("overview"); await page.click(`${modal} [data-bank-unassigned] [data-act="legacy"]`); await page.waitForTimeout(900); });
   // Banka — Hareketler (v2.1.0 Aşama 4, plan §8.6): liste, İşlem Kartı (etkin ve ters kaydedilmiş: pasif düğme nedeni), masraf ve faiz
   // formları, Planlı İşlemler.
   const fee = (await call("/api/workspace/bank/vouchers", { type: "fee", accountId: bankAccount.id, amount: "10,50", feeType: "eft", tax: "bsmv_incl", date: TODAY })).data;
@@ -207,7 +208,8 @@ try {
   await screen("Banka — faiz formu", async () => { await openWindow("bank"); await bankTab("movements"); await clickButton(/\+ Faiz/); });
   await screen("Banka — Planlı İşlemler", async () => { await openWindow("bank"); await bankTab("movements"); await page.click(`${modal} [data-act="mv-planned"]`); await page.waitForSelector(`${modal} .hof-bank-plans tbody tr[data-plan]`, { timeout: 8000 }); });
   await call(`/api/workspace/bank/events/${fee.id}/reverse`, {});
-  await screen("Banka — ters kaydedilmiş İşlem Kartı (pasif düğme nedeni)", async () => { await openWindow("bank"); await bankTab("movements"); await page.click(`${modal} .hof-bank-moves tbody tr[data-event="${fee.id}"]`); await page.waitForSelector(`${modal} [data-bank-event-blocks]`, { timeout: 8000 }); });
+  // 2.4.3 (C11): Hareketler'in Planlı görünümü oturumda kalır → liste görünümüne dönülür.
+  await screen("Banka — ters kaydedilmiş İşlem Kartı (pasif düğme nedeni)", async () => { await openWindow("bank"); await bankTab("movements"); if (await page.$(`${modal} [data-act="mv-planned"][aria-pressed="true"]`)) { await page.click(`${modal} [data-act="mv-planned"]`); await page.waitForTimeout(700); } await page.click(`${modal} .hof-bank-moves tbody tr[data-event="${fee.id}"]`); await page.waitForSelector(`${modal} [data-bank-event-blocks]`, { timeout: 8000 }); });
   const openCenter = async () => { await openWindow("analytics"); await page.click(`${modal} .hof-rep-tab[data-tab="all"]`); await page.waitForSelector(`${modal} .hof-rc-item`, { timeout: 15000 }); await page.waitForTimeout(500); };
   await screen("Raporlar — Vade Takip (ilk sekme)", async () => { await openWindow("analytics"); await page.waitForTimeout(1200); });
   await screen("Raporlar — Rapor Merkezi", openCenter);
