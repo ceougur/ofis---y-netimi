@@ -170,6 +170,32 @@ describe("gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği", (
     });
   }
 
+  test("O1 (taslaktan Kaydet ve Gönder, Seçilenleri Kaydet — hemen gönderim açık): aynı kural; belge numarasız Gönderilecekler'de", async () => {
+    const ctx = await setup();
+    open.push(ctx);
+    const old = await ctx.sale(ctx.people[0], { issueDate: ctx.day(-3), eSend: "later" });
+    const d1 = await ctx.sale(ctx.people[1], { issueDate: ctx.day(0), status: "draft" });
+    const d2 = await ctx.sale(ctx.people[2], { issueDate: ctx.day(0), status: "draft" });
+    const issued = await ctx.api.post(`/api/workspace/invoices/${d1.id}/issue`, { eSend: "now" });
+    assert.equal(issued.status, 200, JSON.stringify(issued.data).slice(0, 300));
+    assert.equal(issued.data.autoSend?.code, "einvoice-order", JSON.stringify(issued.data.autoSend));
+    assert.equal(issued.data.number, "");
+    assert.equal((await ctx.api.put("/api/workspace/invoices/settings", { integrator: { autoSend: true } })).status, 200);
+    const bulk = await ctx.api.post("/api/workspace/invoices/bulk-issue", { ids: [d2.id] });
+    assert.equal(bulk.status, 200, JSON.stringify(bulk.data));
+    assert.equal(bulk.data.issued, 1);
+    assert.equal(bulk.data.results[0].autoSend?.code, "einvoice-order", JSON.stringify(bulk.data.results[0]));
+    for (const id of [d1.id, d2.id]) {
+      const c = await ctx.card(id);
+      assert.deepEqual([c.status, c.number, c.eStatus], ["issued", "", "waiting"]);
+    }
+    assert.equal((await ctx.card(old.id)).canSend, true);
+    await ctx.sendAll();
+    const cards = await Promise.all([old.id, d1.id, d2.id].map(id => ctx.card(id)));
+    assert.equal(ctx.seriesOk(cards).length, 3);
+    assert.equal(seqOf(cards[0].number), Math.min(...cards.map(c => seqOf(c.number))), "eski tarihli önce");
+  });
+
   test("O1 komşu: aynı günlü eski bekleyen ve KALICI engelli eski bekleyen numara vermeyi durdurmaz", async () => {
     const ctx = await setup();
     open.push(ctx);

@@ -3208,7 +3208,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (listedOnly && row.status === "issued" && row.eStatus === "withdrawn") throw new HttpError(409, WITHDRAWN_TEXT, { code: "einvoice-withdrawn" });
       const buyer = buyerBlockOf(row);
       if (buyer) throw new HttpError(409, buyer, { code: "buyer-is-efatura" });
-      if (row.status === "issued" && ["waiting", "withdrawn"].includes(row.eStatus) && !sendBlockOf(row)) {
+      // Tümünü Gönder (listedOnly) eskiden yeniye gider; O1 orada yalnız numberForSend'in işleminde denetlenir (her belgede bir sorgu: 10.000
+      // faturada ~12 ms, 50.000'de ~55 ms ölçüldü).
+      if (!listedOnly && row.status === "issued" && ["waiting", "withdrawn"].includes(row.eStatus) && !sendBlockOf(row)) {
         const profile = row.eStatus === "withdrawn" ? row.eProfile : row.profile;
         if (profile && profile !== "KAGIT") {
           const older = olderPending(seriesFor(row.kind, profile, settings()), Number(row.issueDate.slice(0, 4)), row.issueDate, row.id);
