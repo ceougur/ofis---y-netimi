@@ -435,3 +435,12 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   KARAR (kullanıcı, 18.10.2026 ~16:30 UTC): MM3 → 2.4.3'e EKLE: "Vergi Ödemesi" (B 360 / A 102|100) + ay sonu "KDV Mahsup" fişi (391/191 → 360 ya da 190);
   para çekirdeği: kâhin + mutasyon + dar kontrol. MM1 → "İade Edilen Belge No (e-Belge Referansı)" alanı + 16 karaktere tamamlanmış değer önerisi, kullanıcı
   onaylar; asıl kayda dokunulmaz; uyarı form açılırken; teslimden önce gerçek EDM test ortamında kabulü denenir (reddedilirse yalnız ileti düzeltilir).
+- UZMAN UI (5966ac3): YÜKSEK yok; ORTA UI1 WhatsApp düğmesi kontrast 1,98:1, UI2 fatura formunda bildirim alanları örtüyor + ileti 3 kopya, UI3 stok kodu/
+  barkod kesiliyor (kalem, PDF, liste), UI4 kodda Tab ürünü seçmiyor; DÜŞÜK UI5–UI11 (yazım düzeni kaçakları + yazım testinin kör noktası "e-…" ve React
+  paketi, kontrast, biçim tutarlılığı). UZMAN UX: YÜKSEK UX1 cari eşzamanlı düzenlemede kayıp güncelleme, UX2 tam iade Düzenle'de kaydedilemiyor, UX3 gece
+  yarısını geçen açık fatura penceresi dünün tarihiyle keser, UX4 onayda odak yıkıcı düğmede (Esc+Enter doldurulmuş faturayı siler) — ana oturum dördünü
+  koddan doğruladı; ORTA UX5–UX13, DÜŞÜK UX14–UX28. Tam listeler: scratchpad uzman-ui-243-betikler/BULGULAR.md, uzman-ux-243-betikler/BULGULAR.md (kanıtla
+  depoya alınacak).
+  KARAR (kullanıcı, 18.10.2026 ~17:20 UTC): KÖ1 "Nihai Tüketici" hızlı seçeneği → 2.4.3; KÖ2 "Listeden Sil" adı → "Müşteri Fişi Olarak Bırak" (onay metni
+  açık; kılavuz/testler güncellenir) → 2.4.3; KÖ3 "Başlarken" kontrol listesi → 2.4.4 (yeni özellik). KÖ4 (e-Fatura işareti elle kaldırılınca bilgi iletisi)
+  UX5 ile birlikte yapılır.
