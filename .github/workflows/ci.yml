@@ -10,6 +10,7 @@ on:
       - "docs/GECMIS-KARARLAR.md"
       - "docs/DURUM-VE-DEVAM.md"
       - "docs/2.3.0-IS-LISTESI.md"
+      - "docs/2.4.3-IS-LISTESI.md"
       - "docs/devir/**"
       - "docs/fatura/**"
       - "docs/pazarlama/**"
