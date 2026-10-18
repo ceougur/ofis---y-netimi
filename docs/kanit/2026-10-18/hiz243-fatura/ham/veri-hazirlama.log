@@ -1,0 +1,40 @@
+kilit bekleniyor 02:13:35
+kilit alındı 02:44:49
+  2025-10-19: 25 deneme, 19 200 · 3 sn
+  2025-11-18: 880 deneme, 864 200 · 21 sn
+  2025-12-18: 1716 deneme, 1700 200 · 41 sn
+  2026-01-17: 2586 deneme, 2570 200 · 66 sn
+  2026-02-16: 3435 deneme, 3419 200 · 93 sn
+  2026-03-18: 4291 deneme, 4275 200 · 122 sn
+  2026-04-17: 5160 deneme, 5144 200 · 158 sn
+  2026-05-17: 6017 deneme, 6001 200 · 196 sn
+  2026-06-16: 6893 deneme, 6877 200 · 239 sn
+  2026-07-16: 7756 deneme, 7740 200 · 290 sn
+  2026-08-15: 8567 deneme, 8551 200 · 344 sn
+  2026-09-14: 9417 deneme, 9401 200 · 404 sn
+  2026-10-14: 10309 deneme, 10293 200 · 474 sn
+{
+ "counts": {
+  "satış (stok)": 5146,
+  "satış (hizmet)": 1276,
+  "alış (gider)": 468,
+  "alış (stok)": 2032,
+  "satıştan iade": 730,
+  "iptal (alış)": 373,
+  "alıştan iade (e-Belge)": 348,
+  "iptal (e-Arşiv)": 3
+ },
+ "fails": {},
+ "invCount": {
+  "n": 10000,
+  "c": 376,
+  "e": 6767
+ },
+ "mutabakat": true,
+ "sure": {
+  "cariUrunSn": 2,
+  "faturaSn": 479,
+  "toplamSn": 484
+ }
+}
+veri çıkış 0 02:52:53

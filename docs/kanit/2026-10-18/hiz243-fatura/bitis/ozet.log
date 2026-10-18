@@ -1,0 +1,25 @@
+kilit bekleniyor 04:30:03
+kilit alındı 04:31:54; df 11G boş
+fark-10k çıkış 0 04:33:58
+hiz-243-arka-plan çıkış 0 04:34:14: ✓ hiz-243-arka-plan: 13 geçti, 0 kaldı [kanit] hiz243-e2e-hiz-243-arka-plan: GEÇTİ · çıkış 0 · 13/13 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d1624e +1 izlenmeyen · linux 6.18.44-fc-v139 x64 · Node v22.22.0 
+fatura-243-daha-fazla-yaris çıkış 0 04:35:00: ✓ fatura-243-daha-fazla-yaris: 9 geçti, 0 kaldı [kanit] hiz243-e2e-fatura-243-daha-fazla-yaris: GEÇTİ · çıkış 0 · 9/9 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d1624e +1 izlenmeyen · linux 6.18.44-fc-v139 x64 · Node v22.22.0 
+fatura-243-duzen-kaymasi çıkış 0 04:35:14: ✓ fatura-243-duzen-kaymasi: 7 geçti, 0 kaldı [kanit] hiz243-e2e-fatura-243-duzen-kaymasi: GEÇTİ · çıkış 0 · 7/7 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d1624e +1 izlenmeyen · linux 6.18.44-fc-v139 x64 · Node v22.22.0 
+senaryo-214 çıkış 0 04:36:10: [kanit] hiz243-e2e-senaryo-214: GEÇTİ · çıkış 0 · 48/48 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d1624e +1 izlenmeyen · linux 6.18.44-fc-v139 x64 · Node v22.22.0 
+senaryo-222 çıkış 0 04:37:51: Senaryo 2.0.22: 56 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-222 [kanit] hiz243-e2e-senaryo-222: GEÇTİ · çıkış 0 · 56/56 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d1624e +1 izlenmeyen · linux 6.18.44-fc-v139 x64 · Node v22.22.0 
+banka-230-hareket-yaris çıkış 0 04:38:25: ✓ banka-230-hareket-yaris: 37 geçti, 0 kaldı [kanit] hiz243-e2e-banka-230-hareket-yaris: GEÇTİ · çıkış 0 · 37/37 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d1624e +1 izlenmeyen · linux 6.18.44-fc-v139 x64 · Node v22.22.0 
+banka-210-kart-onbellek çıkış 0 04:39:35: ✓ banka-210-kart-onbellek-yaris: 49 geçti, 0 kaldı [kanit] hiz243-e2e-banka-210-kart-onbellek: GEÇTİ · çıkış 0 · 49/49 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d1624e +1 izlenmeyen · linux 6.18.44-fc-v139 x64 · Node v22.22.0 
+banka-210-daha-fazla çıkış 0 04:40:50: ✓ banka-210-daha-fazla-yaris: 31 geçti, 0 kaldı [kanit] hiz243-e2e-banka-210-daha-fazla: GEÇTİ · çıkış 0 · 31/31 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d1624e +1 izlenmeyen · linux 6.18.44-fc-v139 x64 · Node v22.22.0 
+acilis-yanit-yaris çıkış 0 04:41:38: TAMAM: 12 denetim geçti, 0 başarısız. [kanit] hiz243-e2e-acilis-yanit-yaris: GEÇTİ · çıkış 0 · 12/12 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d1624e +1 izlenmeyen · linux 6.18.44-fc-v139 x64 · Node v22.22.0 
+senaryo-rapor çıkış 0 04:42:05: [kanit] hiz243-e2e-senaryo-rapor: GEÇTİ · çıkış 0 · 82/82 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d1624e +1 izlenmeyen · linux 6.18.44-fc-v139 x64 · Node v22.22.0 
+senaryo-216 çıkış 0 04:43:29: [kanit] hiz243-e2e-senaryo-216: GEÇTİ · çıkış 0 · 54/54 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d1624e +1 izlenmeyen · linux 6.18.44-fc-v139 x64 · Node v22.22.0 
+senaryo-223 çıkış 0 04:44:47: TAMAM: 29 denetim geçti, 0 başarısız. [kanit] hiz243-e2e-senaryo-223: GEÇTİ · çıkış 0 · 29/29 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d1624e +1 izlenmeyen · linux 6.18.44-fc-v139 x64 · Node v22.22.0 
+senaryo-224 çıkış 0 04:45:55: TAMAM: 63 denetim geçti, 0 başarısız. [kanit] hiz243-e2e-senaryo-224: GEÇTİ · çıkış 0 · 63/63 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d1624e +1 izlenmeyen · linux 6.18.44-fc-v139 x64 · Node v22.22.0 
+senaryo-pos-220 çıkış 0 04:47:38: ✓ senaryo-pos-220: 113 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a477c416a56bc423c/test/e2e/artifacts/senaryo-pos-220 [kanit] hiz243-e2e-senaryo-pos-220: GEÇTİ · çıkış 0 · 113/113 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d1624e +1 izlenmeyen · linux 6.18.44-fc-v139 x64 · Node v22.22.0 
+senaryo-entegrator-240 çıkış 0 04:48:40: ✓ senaryo-entegrator-240: 73 geçti, 0 kaldı [kanit] hiz243-e2e-senaryo-entegrator-240: GEÇTİ · çıkış 0 · 73/73 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d1624e +1 izlenmeyen · linux 6.18.44-fc-v139 x64 · Node v22.22.0 
+senaryo-ebelge-242 çıkış 0 04:49:27: 21 geçti, 0 kaldı [kanit] hiz243-e2e-senaryo-ebelge-242: GEÇTİ · çıkış 0 · 21/21 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d1624e +1 izlenmeyen · linux 6.18.44-fc-v139 x64 · Node v22.22.0 
+senaryo-ebelge-243 çıkış 0 04:49:41: 18 geçti, 0 kaldı [kanit] hiz243-e2e-senaryo-ebelge-243: GEÇTİ · çıkış 0 · 18/18 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d1624e +1 izlenmeyen · linux 6.18.44-fc-v139 x64 · Node v22.22.0 
+e2e çıkış 0 04:52:06: [kanit] hiz243-e2e-e2e: GEÇTİ · çıkış 0 · 50/50 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d1624e +1 izlenmeyen · linux 6.18.44-fc-v139 x64 · Node v22.22.0 
+E2E BİTTİ 04:52:06
+npm test kilit bekleniyor 04:52:24
+npm test kilit alındı 04:54:57; df 11G boş
+npm test çıkış 0 05:13:21: # tests 2696 # pass 2696 # fail 0 # cancelled 0 # skipped 0  [kanit] hiz243-npm-test: GEÇTİ · çıkış 0 · 2696/2696 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d1624e +1 izlenmeyen · linux 6.18.44-fc-v139 x64 · Node v22.22.0

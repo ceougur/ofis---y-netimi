@@ -1,0 +1,32 @@
+{
+  "ad": "hiz243-e2e-banka-230-hareket-yaris",
+  "komut": "npm run -s test:banka-230-hareket-yaris",
+  "commit": "4d1624ed9c4a6bd1214c9db53aa71490151972ba",
+  "dal": "worktree-agent-a477c416a56bc423c",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-18T04:37:51.484Z",
+  "sure_sn": 33.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 37,
+    "gecen": 37,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-18/hiz243-e2e-banka-230-hareket-yaris.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a477c416a56bc423c",
+  "ham_cikti_sha256": "33f981b907dd6dcfc93084b421abb2f2df2d22108776f6987b4b090df8d11809",
+  "ham_cikti_bayt": 4843
+}

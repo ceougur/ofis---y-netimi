@@ -1,0 +1,41 @@
+KAÇTI     M6 liste: hafif satırda ödeme durumu yalnız durumdan (taslak/iptal ayrımı yok) ['# fail 0']
+YAKALANDI M7 liste: cari sıralamasında alıcı adı yerine cari kartı adı ['# fail 1']
+YAKALANDI M11 liste: hafif sorguda alıcı JSON'u yok (arama alıcı adını bulamaz) ['# fail 1']
+[
+ {
+  "mutasyon": "M6 liste: hafif satırda ödeme durumu yalnız durumdan (taslak/iptal ayrımı yok)",
+  "test": "test/fatura-liste-243-fark.test.mjs",
+  "cikis": 0,
+  "yakalandi": false,
+  "ozet": [
+   "# fail 0"
+  ],
+  "kirmizi": []
+ },
+ {
+  "mutasyon": "M7 liste: cari sıralamasında alıcı adı yerine cari kartı adı",
+  "test": "test/fatura-liste-243-fark.test.mjs",
+  "cikis": 1,
+  "yakalandi": true,
+  "ozet": [
+   "# fail 1"
+  ],
+  "kirmizi": [
+   "not ok 2 - her sekme × sıralama × ödeme durumu (ilk sayfa) ve tohumlu 400 süzgeç/arama/sayfa birleşimi: yanıt eski yolla bayt bayt aynı",
+   "not ok 1 - fatura listesi (2.4.3 H3): sayfalı uç = eski yol + dilim, bayt bayt"
+  ]
+ },
+ {
+  "mutasyon": "M11 liste: hafif sorguda alıcı JSON'u yok (arama alıcı adını bulamaz)",
+  "test": "test/fatura-liste-243-fark.test.mjs",
+  "cikis": 1,
+  "yakalandi": true,
+  "ozet": [
+   "# fail 1"
+  ],
+  "kirmizi": [
+   "not ok 2 - her sekme × sıralama × ödeme durumu (ilk sayfa) ve tohumlu 400 süzgeç/arama/sayfa birleşimi: yanıt eski yolla bayt bayt aynı",
+   "not ok 1 - fatura listesi (2.4.3 H3): sayfalı uç = eski yol + dilim, bayt bayt"
+  ]
+ }
+]
