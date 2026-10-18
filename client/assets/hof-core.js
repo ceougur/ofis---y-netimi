@@ -354,14 +354,20 @@
       init.body = typeof body === "string" ? body : JSON.stringify(body);
     }
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    // Dar kontrol 2.4.3 (Y1): zaman aşımı ayrı kodla işaretlenir (client-timeout) — uzun sunucu işinde ekran "hata" yerine "sunucuda sürüyor
+    // olabilir" diyebilsin.
+    let timedOut = false;
+    const timer = setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, timeoutMs);
     if (signal) signal.addEventListener("abort", () => controller.abort(), { once: true });
     init.signal = controller.signal;
     let response;
     try {
       response = await nativeFetch(HOF.apiUrl(path), init);
     } catch (error) {
-      throw new ApiError(error && error.name === "AbortError" ? "Sunucu zamanında yanıt vermedi." : "Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin.", 0);
+      throw new ApiError(error && error.name === "AbortError" ? "Sunucu zamanında yanıt vermedi." : "Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin.", 0, timedOut ? { code: "client-timeout" } : undefined);
     } finally {
       clearTimeout(timer);
     }
