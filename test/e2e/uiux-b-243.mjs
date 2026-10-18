@@ -66,7 +66,9 @@ const ok = (cond, what) => {
   return Boolean(cond);
 };
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-const TOP = ".hof-modal-backdrop.is-visible:last-of-type";
+// En üstteki açık pencere. ":last-of-type" bildirim kutusu (#hof-toasts, ilk bildirimde body'nin sonuna eklenen div) pencereden sonra doğunca
+// hiçbir öğeyle eşleşmiyordu (2.4.3 UI2: form hatası artık bildirim açmadığından kutu daha geç doğuyor) — kardeş sırasından bağımsız seçici.
+const TOP = ".hof-modal-backdrop.is-visible:not(:has(~ .hof-modal-backdrop.is-visible))";
 const INV = ".hof-invoices-modal";
 const toasts = page => page.$$eval(".hof-toast-text", nodes => nodes.map(node => node.textContent)).catch(() => []);
 const formError = page => page.$eval(`${INV} [data-form-error]`, node => node.textContent).catch(() => "");
@@ -210,7 +212,8 @@ try {
     await page.click(`${INV} [data-act="issue-later"]`);
     await page.waitForSelector(`${TOP} [data-answer="yes"]`);
     await page.click(`${TOP} [data-answer="yes"]`);
-    const stockQuestion = await page.waitForSelector(`${TOP} .hof-modal-title`, { timeout: 8000 }).then(handle => handle.textContent()).catch(() => "");
+    // Soru penceresi gelene kadar en üstteki pencere Fatura'dır; başlığında "Stok" geçen soru beklenir, adı birebir okunur.
+    const stockQuestion = await page.locator(".hof-modal-backdrop.is-visible .hof-modal-title", { hasText: /stok/i }).first().textContent({ timeout: 8000 }).catch(() => "");
     ok(stockQuestion === "Stok Eksiye Düşecek", `UX23: soru başlığı yazım düzeninde (${stockQuestion})`);
     await page.click(`${TOP} [data-answer="yes"]`);
     await page.waitForSelector(`${INV} [data-act="e-withdraw"]`, { timeout: 10000 });

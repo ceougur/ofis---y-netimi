@@ -55,7 +55,9 @@ const browser = await chromium.launch();
 const errors = [];
 const modal = ".hof-modal-backdrop.is-visible";
 const pageInv = `${modal} .hof-invoices-modal`;
-const dialog = ".hof-modal-backdrop.is-visible:last-of-type";
+// En üstteki açık pencere. ":last-of-type" bildirim kutusu (#hof-toasts, ilk bildirimde body'nin sonuna eklenen div) pencereden sonra doğunca
+// hiçbir öğeyle eşleşmiyordu (2.4.3 UI2: form hatası artık bildirim açmadığından kutu daha geç doğuyor) — kardeş sırasından bağımsız seçici.
+const dialog = ".hof-modal-backdrop.is-visible:not(:has(~ .hof-modal-backdrop.is-visible))";
 const textOf = (page, selector) => page.$eval(selector, node => node.textContent.replace(/\s+/g, " ").trim()).catch(() => "");
 const shot = (page, name) => page.screenshot({ path: path.join(shots, `${name}.png`) }).catch(() => null);
 const toasts = page => page.$$eval(".hof-toast-text", nodes => nodes.map(node => node.textContent)).catch(() => []);
