@@ -360,6 +360,12 @@ def karsilastir(senaryo, p):
         for x in yeni_ihlal:
             x["sinif"] = siniflandir(senaryo, p, x)
         ihlaller.extend(yeni_ihlal)
+        for x in f:
+            if x["alan"] == "yanit" and x["sinif"] == "BASKA":
+                if adim["islem"] == "tur_sirasinda_sil" and any(i["kod"] == "I8" for i in yeni_ihlal):
+                    x["sinif"] = "BEKLENEN-O2 (tur sürerken Listeden Sil kabul edildi, belge yine gitti)"
+                elif adim["islem"] == "duzenle_tarih" and x.get("kod") == "chronology" and x["model"] == "2xx":
+                    x["sinif"] = "BASKA-DUZENLE-SIRA (numarasız bekleyenin tarihi sıra-tarihi bozmadan değiştirilemiyor)"
         esitle(d, kayit, edm_kabul, senaryo_cari)
         d.notlar = []
         # saf model (eşitlemesiz; yalnız çatal seçimi gözleme göre)
@@ -544,7 +550,7 @@ def calistir(senaryo, klasor, kucult_mu, butce):
         json.dump(rapor, f, ensure_ascii=False, indent=1, default=lambda o: "?")
     ozet = {}
     for x in farklar + ihlaller:
-        k = (x.get("kod") or "fark:" + x.get("alan", "?"), x["sinif"].split(" (")[0])
+        k = (("fark:" + x["alan"]) if "alan" in x else x.get("kod", "?"), x["sinif"].split(" (")[0])
         ozet[k] = ozet.get(k, 0) + 1
     gunluk(f"[{senaryo['ad']}] adım {len(senaryo['adimlar'])} · fark {len(farklar)} · ihlal {len(ihlaller)} · saf model son fark {len(saf_fark)} · "
            f"çatal seçimi {len(secimler)} · {rapor['sure']} sn")

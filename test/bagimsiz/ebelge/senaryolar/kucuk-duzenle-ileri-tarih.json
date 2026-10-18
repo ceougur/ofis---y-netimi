@@ -1,0 +1,37 @@
+{
+ "dil": "destekofis-ebelge/1",
+ "ad": "kucuk-duzenle-ileri-tarih",
+ "tohum": 0,
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi"
+ },
+ "adimlar": [
+  {
+   "no": 1,
+   "islem": "kaydet",
+   "belge": "B3",
+   "cari": "K1",
+   "tarih": "2026-06-16",
+   "gonder": "sonra"
+  },
+  {
+   "no": 2,
+   "islem": "kaydet",
+   "belge": "B4",
+   "cari": "K5",
+   "tarih": "2026-06-16",
+   "gonder": "simdi"
+  },
+  {
+   "no": 3,
+   "islem": "duzenle_tarih",
+   "belge": "B3",
+   "tarih": "2026-06-17"
+  }
+ ]
+}
