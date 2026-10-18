@@ -62,10 +62,13 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
   const seller = incoming ? invoice.party : invoice.seller;
   const buyer = incoming ? invoice.seller : invoice.party;
   const withholding = (invoice.lines || []).some(item => item.withholdingCode);
+  // 2.4.3 (uzman UI3b): kod kolonu sabit 62pt'ydi; 13 haneli barkod (EAN-13) "8690123456…", "STK-2.0.26-0…" diye kesiliyordu. Genişlik en uzun koda
+  // göre (en az 62, en çok 120pt; ad kolonu kalan yeri alır); 120pt'yi aşan çok uzun kod yine "…" ile kısalır.
+  const codeWidth = Math.min(120, Math.max(62, ...(invoice.lines || []).map(item => Math.ceil(doc.measure(String(item.code || ""), "regular", 8)) + 8)));
   const cols = [
     { key: "seq", label: "Sıra", w: 26, align: "right" },
     // v2.0.16 (müşteri): Stok Kodu ayrı kolon (kalemlerden birinde kod varsa).
-    ...((invoice.lines || []).some(item => item.code) ? [{ key: "code", label: "Stok Kodu", w: 62 }] : []),
+    ...((invoice.lines || []).some(item => item.code) ? [{ key: "code", label: "Stok Kodu", w: codeWidth }] : []),
     { key: "name", label: "Mal / Hizmet", w: 0 },
     { key: "qty", label: "Miktar", w: 58, align: "right" },
     { key: "price", label: "Birim Fiyat", w: 66, align: "right" },

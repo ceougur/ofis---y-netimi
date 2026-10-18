@@ -753,6 +753,8 @@ try {
     d = topDialog(adminPage);
     await typeInto(adminPage, d.locator('input[name="name"]'), "İzolasyon Personeli");
     await typeInto(adminPage, d.locator('input[name="username"]'), "izolasyon1");
+    // 2.4.3 (uzman UX22): İlk Parola alanı boş gelir; parola yazılır.
+    await typeInto(adminPage, d.locator('input[name="password"]'), "Izolasyon-Parola-2026!");
     await d.locator('select[name="role"]').focus();
     await adminPage.keyboard.press("ArrowDown");
     await sleep(300);

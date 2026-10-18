@@ -1,0 +1,138 @@
+TAP version 13
+# (node:20854) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: uzman UI / UX A paketi — sunucu ve PDF (sahte EDM; ağa çıkmaz)
+    # Subtest: UX1: iki kişi aynı cariyi düzenler — ikinci kaydeden eski sürümle 409 alır, ilkinin telefonu silinmez
+    not ok 1 - UX1: iki kişi aynı cariyi düzenler — ikinci kaydeden eski sürümle 409 alır, ilkinin telefonu silinmez
+      ---
+      duration_ms: 86.898028
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-a-243/test/uiux-a-243.test.mjs:66:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        eski sürümle kayıt reddedilir (200 {"id":"account-279e976e-3c3b-40e7-b5c9-02daeefab2e3","refNo":"1","type":"customer","name":"Zeynep Kaya","phone":"","email":"zeynep@ornek.com","address":"","registeredOn":"2026-10-18","groupId":null,"s)
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-a-243/test/uiux-a-243.test.mjs:79:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: UX5 / KÖ4: işaret elle kaldırılmış çok posta kutulu mükellef — gönderimde işaret geri konur, seçilen posta kutusu silinmez
+    not ok 2 - UX5 / KÖ4: işaret elle kaldırılmış çok posta kutulu mükellef — gönderimde işaret geri konur, seçilen posta kutusu silinmez
+      ---
+      duration_ms: 108.969015
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-a-243/test/uiux-a-243.test.mjs:95:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        işaret geri kondu, kullanıcının seçtiği posta kutusu korundu
+        + actual - expected
+        
+          {
+        +   a: '',
+        -   a: 'urn:mail:defaultpk@coklu.com.tr',
+            e: 1
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        e: 1
+        a: 'urn:mail:defaultpk@coklu.com.tr'
+      actual:
+        e: 1
+        a: ''
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-a-243/test/uiux-a-243.test.mjs:108:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: UI3b: fatura PDF'inde 13 haneli barkod ve uzun stok kodu kesilmez
+    not ok 3 - UI3b: fatura PDF'inde 13 haneli barkod ve uzun stok kodu kesilmez
+      ---
+      duration_ms: 77.216332
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-a-243/test/uiux-a-243.test.mjs:111:3'
+      failureType: 'testCodeFailure'
+      error: `“8690123456789” PDF'te tam yazılı (kesilen: ["8690123456…"])`
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-a-243/test/uiux-a-243.test.mjs:120:38)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: UI7 / UI9: Kasa Dökümü PDF'inde göstergeler yazım düzeninde, hareket sayısı binlik ayraçlı
+    not ok 4 - UI7 / UI9: Kasa Dökümü PDF'inde göstergeler yazım düzeninde, hareket sayısı binlik ayraçlı
+      ---
+      duration_ms: 162.041413
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-a-243/test/uiux-a-243.test.mjs:124:3'
+      failureType: 'testCodeFailure'
+      error: '“Devreden Kasa” yazılı'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-a-243/test/uiux-a-243.test.mjs:130:123)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: UI8: Vade Takip PDF'inde gecikmiş kartları “Gecikmiş Tahsilat” / “Gecikmiş Ödeme”
+    not ok 5 - UI8: Vade Takip PDF'inde gecikmiş kartları “Gecikmiş Tahsilat” / “Gecikmiş Ödeme”
+      ---
+      duration_ms: 35.330802
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-a-243/test/uiux-a-243.test.mjs:136:3'
+      failureType: 'testCodeFailure'
+      error: 'küçük harfli “gecikmiş” kartı yok (["Vade Takip","18.10.2026 – 17.11.2026 · gecikmişler dahil","Oluşturma: 18.10.2026 17:45","Hazırlayan: Ofis yöneticisi","Kalem","2","Tahsil Edilecek","1.440,00 TL","gecikmiş","0,00 TL (0)","Ödenecek","0,00 TL","gecikmiş","0,00 TL (0)","Net (tahsil −","ödeme)","1.440,00 TL","Vade","Durum","Kimden / Kime","Kaynak","Açıklama","Tahsil Edilecek","Ödenecek","18.10.2026","Bugün","Barkod Müşteri","Fatura (vadeli)","Satış faturası · Fatura tarihi 18.10.2026","240,00 TL"])'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-a-243/test/uiux-a-243.test.mjs:142:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - uzman UI / UX A paketi — sunucu ve PDF (sahte EDM; ağa çıkmaz)
+  ---
+  duration_ms: 1194.775595
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-a-243/test/uiux-a-243.test.mjs:38:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1716.78442

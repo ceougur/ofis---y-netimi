@@ -155,7 +155,7 @@
       )
       .join("");
     HOF.swap(root, `<div class="hof-plan-head">
-        <div class="hof-plan-title"><h3>${esc(moduleName())}</h3><small>Alınan evrak portföye girer, tahsil edilince banka hesabına ya da Kasa'ya; verilen evrak ödenince bankadan ya da Kasa'dan çıkar.</small></div>
+        <div class="hof-plan-title"><small>Alınan evrak portföye girer, tahsil edilince banka hesabına ya da Kasa'ya; verilen evrak ödenince bankadan ya da Kasa'dan çıkar.</small></div>
         <div class="hof-plan-actions" role="toolbar" aria-label="Çek / senet işlemleri">
           ${canManage() ? `<button type="button" class="hof-button hof-button-small" data-act="new-in">+ Çek / Senet Al</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="new-out">+ Çek / Senet Ver</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import">Excel / Sheets’ten Yükle</button>` : ""}
           <span class="hof-rep-export"><a class="hof-rep-out is-pdf" href="/api/workspace/cheques/liste.pdf?${esc(listQuery())}" target="_blank" rel="noopener">Liste - PDF</a><a class="hof-rep-out is-xlsx" href="/api/workspace/cheques/export.xlsx?${esc(listQuery())}" download>Liste - Excel</a></span>
@@ -519,7 +519,7 @@
     }
   }
   async function remove(cheque) {
-    const ok = await HOF.confirm({ title: "Evrak silinsin mi?", message: "Cari/taksit kaydı birlikte kaldırılır. Yönetim → Silinenler'den geri yüklenebilir.", confirmLabel: "Sil", danger: true });
+    const ok = await HOF.confirm({ title: "Evrak silinsin mi?", message: `Cari/taksit kaydı birlikte kaldırılır. ${HOF.trashHint()}`, confirmLabel: "Sil", danger: true });
     if (!ok) return;
     try {
       await HOF.api(`/api/workspace/cheques/${encodeURIComponent(cheque.id)}`, { method: "DELETE" });

@@ -617,9 +617,11 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
   const vadeSummary = data => [
     ["Kalem", String(data.totals.count)],
     ["Tahsil Edilecek", tl(data.totals.in.total.amount)],
-    ["  gecikmiş", `${tl(data.totals.in.overdue.amount)} (${data.totals.in.overdue.count})`],
+    // 2.4.3 (uzman UI8): girintili "  gecikmiş" PDF özet kartında girintisiz, küçük harfle ve yan yana iki kez görünüyordu (hangisi tahsil,
+    // hangisi ödeme belli değildi); ekrandaki adla aynı.
+    ["Gecikmiş Tahsilat", `${tl(data.totals.in.overdue.amount)} (${data.totals.in.overdue.count})`],
     ["Ödenecek", tl(data.totals.out.total.amount)],
-    ["  gecikmiş", `${tl(data.totals.out.overdue.amount)} (${data.totals.out.overdue.count})`],
+    ["Gecikmiş Ödeme", `${tl(data.totals.out.overdue.amount)} (${data.totals.out.overdue.count})`],
     ["Net (tahsil − ödeme)", tl(data.totals.net)],
     ...(data.doubtful?.amount > 0.005 ? [["Şüpheli Alacak (vade takibinin dışında)", `${tl(data.doubtful.amount)} (${data.doubtful.accountCount} cari)`]] : []),
     ...(data.totals.noAmount ? [["Tutarsız Kalem (son tarih vb.)", String(data.totals.noAmount)]] : []),

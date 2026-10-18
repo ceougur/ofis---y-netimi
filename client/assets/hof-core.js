@@ -287,6 +287,10 @@
   HOF.methodLabel = (value, direction = "") => HOF.methodName(value, direction);
   HOF.methodField = (value = "cash", { incoming = true, name = "method" } = {}) => ({ name, label: incoming ? "Tahsilat Yolu" : "Ödeme Yolu", type: "select", value: value || "cash", options: HOF.payMethods(incoming ? "in" : "out") });
   HOF.can = permission => Boolean(HOF.user && HOF.user.permissions && HOF.user.permissions.includes(permission));
+  // 2.4.3 (uzman UX7): silinen kaydın geri yükleme yolu yetkiye göre söylenir. Silinenler yalnız Yönetim panelindedir ve panel yalnız yöneticiye
+  // açılır (admin.js, users.manage); muhasebe / personel / ikinci role "Yönetim → Silinenler'den geri yüklenebilir" denince gidemedikleri bir yere
+  // yönlendiriliyorlardı.
+  HOF.trashHint = () => (HOF.can("users.manage") ? "Yönetim → Silinenler’den geri yüklenebilir." : "Yöneticiniz Yönetim → Silinenler’den geri yükleyebilir.");
   HOF.sourceName = () => HOF.settings.sheetUrl || window.localStorage.getItem("hukuk-ofisi-sheet-url") || "Çalışma Tablosu";
 
   // ---------- API ----------
@@ -921,7 +925,9 @@
         if (now && now !== document.body && now.isConnected) return;
         if (focusBack()) return;
         const top = openModals[openModals.length - 1];
-        if (top) (top.dialog.querySelector("[autofocus]") || focusablesOf(top.dialog)[0])?.focus({ preventScroll: true });
+        // 2.4.3 (uzman UX4/UX10): üst pencerede odak × (Kapat) düğmesine değil ilk yazılabilir alana döner; × üstünde Enter pencereyi kapatıp
+        // (kaydedilmemiş formda) soruya, ikinci Enter veriyi silmeye götürüyordu.
+        if (top) focusStart(top.dialog)?.focus({ preventScroll: true });
       };
       for (const wait of [60, 250, 700, 1500]) setTimeout(guard, wait);
       if (onClose) onClose(result);
@@ -1032,6 +1038,18 @@
     return api;
   };
   const focusablesOf = dialog => [...dialog.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')].filter(item => !item.disabled && item.offsetParent !== null);
+  // Pencerenin başlangıç odağı (2.4.3, uzman UX4/UX10): görünür [autofocus], yoksa ilk yazılabilir alan, yoksa × dışındaki ilk odaklanabilir öğe,
+  // en son ×. Gizli alan (type=hidden, gizli bölüm) seçilmez — odak verilemeyip boşa (body) düşüyordu.
+  const visibleNode = node => Boolean(node) && !node.disabled && node.offsetParent !== null;
+  const focusStart = dialog => {
+    const auto = [...dialog.querySelectorAll("[autofocus]")].find(visibleNode);
+    if (auto) return auto;
+    const field = [...dialog.querySelectorAll(SAFE_FIELD)].find(visibleNode);
+    if (field) return field;
+    const items = focusablesOf(dialog);
+    return items.find(item => !item.matches(".hof-modal-close")) || items[0] || null;
+  };
+  HOF.focusStart = focusStart;
   HOF.hasOpenModal = () => openModals.length > 0;
   // Açık pencerelerden biri kaydedilmemiş değişiklik taşıyor mu (F5 / sekmeyi kapatma sorusu, testler).
   HOF.hasDirtyModal = () => openModals.some(item => item.isDirty());
@@ -1150,14 +1168,19 @@
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
   };
-  HOF.confirm = ({ title, message, confirmLabel = "Onayla", cancelLabel = "Vazgeç", danger = false }) =>
+  // 2.4.3 (uzman UX4): yıkıcı onaylarda (danger ya da silen / kapatan / iptal eden düğme adı) varsayılan odak GÜVENLİ düğmededir (Vazgeç,
+  // Forma Dön): yanlışlıkla Esc + Enter doldurulmuş formu kaydetmeden kapatmaz, Enter hareketi / belgeyi silmez (yaygın programların davranışı).
+  // Yıkıcı işlem bilerek seçilir: fareyle ya da Tab ile düğmeye geçip Enter. Yıkıcı olmayan onaylarda (Kaydet, Aktar, Başla) odak onay düğmesindedir.
+  const DESTRUCTIVE_LABEL = /(^|\s)(Sil|Kaldır|Kapat|Çık|Atla|İptal|Üzerine)(\s|$)/u;
+  HOF.confirm = ({ title, message, confirmLabel = "Onayla", cancelLabel = "Vazgeç", danger = false, safeFocus }) =>
     new Promise(resolve => {
       let answered = false;
+      const safe = safeFocus ?? (danger || DESTRUCTIVE_LABEL.test(String(confirmLabel)));
       const modal = HOF.modal({
         title,
         eyebrow: "ONAY",
         size: "small",
-        body: `<p class="hof-modal-text">${HOF.esc(message)}</p><div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-answer="no">${HOF.esc(cancelLabel)}</button><button type="button" class="hof-button ${danger ? "hof-button-danger" : ""}" data-answer="yes" autofocus>${HOF.esc(confirmLabel)}</button></div>`,
+        body: `<p class="hof-modal-text">${HOF.esc(message)}</p><div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-answer="no"${safe ? " autofocus" : ""}>${HOF.esc(cancelLabel)}</button><button type="button" class="hof-button ${danger ? "hof-button-danger" : ""}" data-answer="yes"${safe ? "" : " autofocus"}>${HOF.esc(confirmLabel)}</button></div>`,
         onClose: () => {
           if (!answered) resolve(false);
         },
@@ -1296,6 +1319,12 @@
             if (keepOpen !== true) modal.close(true);
           } catch (failure) {
             error.textContent = failure.message || "İşlem tamamlanamadı.";
+            // 2.4.3 (uzman UX10): sunucu hatalı alanı söylüyorsa (data.field: taxNo, iban, mersisNo…) odak o alana gider; düğmede kalmaz.
+            const wrong = failure?.data?.field ? form.querySelector(`[name="${CSS.escape(String(failure.data.field))}"]`) : null;
+            if (wrong && wrong.offsetParent !== null && !wrong.disabled) {
+              wrong.closest(".hof-field")?.scrollIntoView({ block: "center" });
+              wrong.focus({ preventScroll: true });
+            }
           } finally {
             button.disabled = false;
             button.classList.remove("is-busy");

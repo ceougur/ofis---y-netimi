@@ -481,7 +481,7 @@
         <div class="hof-plan-actions" role="toolbar" aria-label="Kart işlemleri">
           <span class="hof-plan-toolgroup">${collect && active ? payButton : ""}${manage && active ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="refund" title="Müşteriye yapılan ödeme ya da iade">− Ödeme / İade</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="addItem">+ Taksit</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="distribute" title="Toplam tutarı eşit taksitlere böler">Otomatik Dağıt</button>' : ""}</span>
           <span class="hof-plan-toolgroup">${outputButtons(cardPdfUrl(plan), "card", "Taksit Ekstresi - PDF")}${phone ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="whatsapp" data-wa="${esc(phone)}">WhatsApp</button>` : ""}</span>
-          ${manage ? `<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button>${active ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="close" title="Kart kapanır; uyarı vermez, listede Kapalı altında durur">Kapat</button>' : '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="reopen">Yeniden Aç</button>'}<button type="button" class="hof-button hof-button-small hof-button-ghost hof-button-danger-ghost" data-act="delete"${plan.deleteBlock ? ` disabled title="${esc(plan.deleteBlock)}"` : ""}>Sil</button></span>` : ""}
+          ${manage ? `<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button>${active ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="close" title="Kart kapanır; uyarı vermez, listede Kapalı altında durur">Kartı Kapat</button>' : '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="reopen">Yeniden Aç</button>'}<button type="button" class="hof-button hof-button-small hof-button-ghost hof-button-danger-ghost" data-act="delete"${plan.deleteBlock ? ` disabled title="${esc(plan.deleteBlock)}"` : ""}>Sil</button></span>` : ""}
         </div></div>
       ${(manage && plan.deleteBlock) || (collect && payBlock) ? `<ul class="hof-inv-blocks" data-plan-blocks>${manage && plan.deleteBlock ? `<li><b>Sil Kapalı:</b> ${esc(plan.deleteBlock)}</li>` : ""}${collect && payBlock ? `<li><b>Tahsilat Kapalı:</b> ${esc(payBlock)}</li>` : ""}</ul>` : ""}
       <section class="hof-plan-profile" aria-label="Kişi bilgileri">
@@ -833,7 +833,7 @@
   }
 
   async function deleteEntry(plan, entry) {
-    const ok = await HOF.confirm({ title: "Hareketi Sil", message: `${money(entry.amount)} tutarındaki ${entry.kind === "in" ? "tahsilat" : "ödeme"} silinecek; Kasa ve kart yeniden hesaplanır. Yönetim panelindeki Silinenler’den geri yüklenebilir.`, confirmLabel: "Sil", danger: true });
+    const ok = await HOF.confirm({ title: "Hareketi Sil", message: `${money(entry.amount)} tutarındaki ${entry.kind === "in" ? "tahsilat" : "ödeme"} silinecek; Kasa ve kart yeniden hesaplanır. ${HOF.trashHint()}`, confirmLabel: "Sil", danger: true });
     if (!ok) return;
     try {
       // Banka hesabına bağlı tahsilat silinince hesabın bakiyesi düşer: eksi bakiye sorusu (K7) "Yine de Kaydet" ile adrese eklenir.
@@ -857,7 +857,7 @@
   async function deletePlan(plan) {
     // Yargıç K1 (plan §3.8): banka bağlı tahsilatı olan kart silinmez; neden kartta yazılı, düğme pasif (sunucu da 409 plan-bank-linked).
     if (plan.deleteBlock) return HOF.toast(plan.deleteBlock, { type: "error", timeout: 8000 });
-    const ok = await HOF.confirm({ title: "Kartı Sil", message: `“${plan.name}” kartı taksitleri ve hareketleriyle silinecek; hareketleri Kasa’dan düşer. Yönetim panelindeki Silinenler’den geri yüklenebilir.`, confirmLabel: "Kartı Sil", danger: true });
+    const ok = await HOF.confirm({ title: "Kartı Sil", message: `“${plan.name}” kartı taksitleri ve hareketleriyle silinecek; hareketleri Kasa’dan düşer. ${HOF.trashHint()}`, confirmLabel: "Kartı Sil", danger: true });
     if (!ok) return;
     try {
       await HOF.api(`/api/workspace/plans/${encodeURIComponent(plan.id)}`, { method: "DELETE" });
@@ -871,6 +871,21 @@
     } catch (error) {
       HOF.toastError(error);
     }
+  }
+  // 2.4.3 (uzman UX8): kalanı olan kart tek tıkla kapanıyordu (uyarılar susar, kalan istenmez); düğme pencerenin "Kapat"ıyla da aynı addaydı.
+  // Kalan varken açıkça sorulur; kalansız (ödenmiş) kart sorusuz kapanır.
+  async function closePlan(plan) {
+    const left = Number(plan.totals?.remaining) || 0;
+    if (left > 0.004) {
+      const go = await HOF.confirm({
+        title: "Kartı Kapat",
+        message: `Kalan ${money(left)} açıkken “${plan.name}” kartı kapatılsın mı? Kapalı kart uyarı vermez, kalan tutar artık istenmez${plan.accountId ? " ve carinin borcundan düşülür" : ""}. Gerekirse kart “Yeniden Aç” ile açılır.`,
+        confirmLabel: "Kartı Kapat",
+        danger: true,
+      });
+      if (!go) return;
+    }
+    return setStatus(plan, "closed");
   }
   async function setStatus(plan, status) {
     try {
@@ -1344,7 +1359,7 @@
     if (act === "addItem") return editItem(plan, null);
     if (act === "distribute") return distributePlan(plan);
     if (act === "edit") return editPlan(plan);
-    if (act === "close") return setStatus(plan, "closed");
+    if (act === "close") return closePlan(plan);
     if (act === "reopen") return setStatus(plan, "active");
     if (act === "delete") return deletePlan(plan);
     if (act === "whatsapp") return window.open(`https://wa.me/${button.dataset.wa}`, "_blank", "noopener");

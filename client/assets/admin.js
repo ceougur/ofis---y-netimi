@@ -148,6 +148,21 @@
     if (!/\d/.test(value)) value = `${value.slice(0, -1)}7`;
     return `${value.slice(0, 4)}-${value.slice(4, 8)}-${value.slice(8)}`;
   };
+  // 2.4.3 (uzman UX22): parola alanı önceden doldurulmaz — dolu alana tıklayıp yazan yönetici üretilmiş parolanın SONUNA ekliyordu (kaydedilen
+  // parola "JNrA-DpdB-Y3atAyse-2026-Parola" oldu, kullanıcı giremedi). Alan boş gelir; "Parola Üret" güçlü bir parola yazar ve tamamını seçer
+  // (üstüne yazılırsa yerine geçer).
+  const wirePasswordMaker = dialog => {
+    const input = dialog.querySelector('input[name="password"]');
+    if (!input) return;
+    const button = HOF.el("button", { type: "button", class: "hof-button hof-button-small hof-button-ghost", "data-make-password": "" }, "Parola Üret");
+    input.after(button);
+    button.addEventListener("click", () => {
+      input.value = strongPassword();
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      input.focus();
+      input.select();
+    });
+  };
 
   // ---------- Kullanıcılar (v2.0.10: ✎ ad/kullanıcı adı, yetki paneli, özel roller, silme/geri alma) ----------
   let users = [];
@@ -157,7 +172,8 @@
     admin: "Her şey: veri yükleme, sektör ve başlıklar, kullanıcılar ve roller, yedek, sistem ve lisans. ANLIK DURUM kartı yalnız bu rolde.",
     avukat: "Tüm kayıt işlemleri ve silme, görev atama ve herkesin görevleri, Kasa, Cari, Taksit, Stok, Çek/Senet yönetimi, tablo ve personel raporları. Veri yükleyemez.",
     personel: "Yeni kayıt, düzeltme, not, telefon, tahsilat; kendi görevleri. Silme, görev atama, Kasa ve raporlar yok.",
-    muhasebe: "Personelin yaptıkları + Kasa, Cari, Taksit, Stok ve Çek/Senet yönetimi. Görev atama ve raporlar yok.",
+    // 2.4.3 (uzman UX11; kullanıcı kararı H9, 18.10.2026): Finans Raporları muhasebede varsayılan açık (permissions.mjs overview.view).
+    muhasebe: "Personelin yaptıkları + Kasa, Cari, Taksit, Stok, Çek/Senet, Banka ve Fatura yönetimi; Finans Raporları (mizan, cari ekstre, Rapor Merkezi, Vade Takip). Görev atama ve personel raporu yok.",
   };
   const PENCIL = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
   const LOCK = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
@@ -331,7 +347,6 @@
 
   // Yeni kullanıcı: rol seçilir; "Yetkileri özelleştir" açılırsa rolün yetkileri işaretli gelir, kişiye özel ayarlanır.
   function newUser() {
-    const password = strongPassword();
     let base = rolePermissions("personel");
     const gridHtml = key => (key === "admin" ? `<p class="adm-muted">Yönetici tüm yetkilere sahiptir; ayrıca ayarlanmaz.</p>${permGrid({ checked: new Set(), full: true })}` : permGrid({ checked: rolePermissions(key), base: rolePermissions(key) }));
     HOF.formModal({
@@ -342,12 +357,13 @@
         { name: "name", label: "Ad Soyad", required: true, autofocus: true, maxlength: 120 },
         { name: "username", label: "Kullanıcı Adı", required: true, maxlength: 60, help: "Harf, rakam, nokta, tire; en az 3 karakter. Girişte büyük/küçük harf fark etmez." },
         { name: "role", label: "Rol", type: "select", value: "personel", options: allRoles().map(role => ({ value: role.key, label: role.builtIn ? role.label : `${role.label} (ofisin rolü)` })) },
-        { name: "password", label: "İlk Parola", required: true, value: password, help: "Bu parolayı kullanıcıya iletin. İsterseniz değiştirebilirsiniz." },
+        { name: "password", label: "İlk Parola", required: true, value: "", help: "Kullanıcıya ileteceğiniz parolayı yazın ya da Parola Üret'e basın." },
         { name: "mustChangePassword", label: "Kullanıcı ilk girişte parolasını değiştirsin (önerilir)", type: "checkbox", value: true },
       ],
       extraHtml: `<details class="adm-perm-details"><summary>Yetkileri Özelleştir <small>isteğe bağlı · seçilen rolün yetkileri işaretli gelir; ekleyip kaldırabilirsiniz</small></summary><div class="adm-perm-panel is-embedded"><div class="adm-perm-foot is-top"><span class="adm-perm-summary" data-summary></span></div><div data-grid>${gridHtml("personel")}</div></div></details>`,
       submitLabel: "Kullanıcıyı Oluştur",
       onOpen: dialog => {
+        wirePasswordMaker(dialog);
         const panel = dialog.querySelector(".adm-perm-panel");
         wireGrid(panel, base);
         dialog.querySelector('select[name="role"]').addEventListener("change", event => {
@@ -605,13 +621,13 @@
         await HOF.api(`/api/admin/users/${encodeURIComponent(id)}`, { method: "PATCH", body: { active: activate } });
         HOF.toast(activate ? `${name} aktifleştirildi.` : `${name} pasifleştirildi.`, { type: "success" });
       } else if ("reset" in button.dataset) {
-        const password = strongPassword();
         HOF.formModal({
           title: "Parola Sıfırla",
           eyebrow: name,
           intro: "Kullanıcının tüm açık oturumları kapanır.",
+          onOpen: dialog => wirePasswordMaker(dialog),
           fields: [
-            { name: "password", label: "Yeni Geçici Parola", required: true, value: password },
+            { name: "password", label: "Yeni Geçici Parola", required: true, value: "", help: "Kullanıcıya ileteceğiniz parolayı yazın ya da Parola Üret'e basın." },
             { name: "mustChangePassword", label: "İlk girişte değiştirsin", type: "checkbox", value: true },
           ],
           submitLabel: "Parolayı Sıfırla",

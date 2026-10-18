@@ -109,7 +109,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 .hof-payment-pill-text { display:grid; min-width:0; gap:2px; }
 .hof-payment-pill-text b, .hof-payment-pill-text span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .hof-payment-pill-text b { color:#28553f; font-size:10px; }
-.hof-payment-pill-text span { color:#789086; font-size:9px; }
+/* 2.4.3 (uzman UI10): 9px #789086 (3,42:1) → 10px #5d7569 (5,0:1). */
+.hof-payment-pill-text span { color:#5d7569; font-size:10px; }
 .hof-payment-focus { background:#e3f4e6 !important; box-shadow:inset 3px 0 #4d9662, 0 0 0 2px #bde0c5; }
 .hof-payment-action-card { position:absolute; left:50%; top:calc(100% + 8px); z-index:20; width:min(300px,calc(100% - 24px)); transform:translateX(-50%); padding:14px; border:1px solid #cfe4d4; border-radius:14px; background:#fff; box-shadow:0 16px 38px rgba(25,68,43,.18); }
 .hof-payment-action-close { position:absolute; top:7px; right:8px; display:grid; width:22px; height:22px; place-items:center; border:0; border-radius:7px; background:transparent; color:#789287; cursor:pointer; font-size:18px; line-height:1; }
