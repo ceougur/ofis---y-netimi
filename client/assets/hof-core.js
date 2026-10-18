@@ -608,6 +608,35 @@
   // Fare üstündeyken ya da odaktayken kapanmaz, ayrılınca kalan süre (en az 2 sn) sürer.
   // A6: aynı tür ve metindeki bildirim ekranda zaten varsa yenisi eklenmez; var olanın süresi baştan başlar ve sayacı artar (×2, ×3…).
   const READ_CHARS_PER_SECOND = 15;
+  // Fare bildirimin üstünde mi: bildirim tıklamayı engellemediği için (altındaki sekme / düğme tıklanabilir) mouseenter gelmez; konum izlenir.
+  let hoverFrame = 0;
+  let pointer = null;
+  const checkToastHover = () => {
+    hoverFrame = 0;
+    const host = document.getElementById("hof-toasts");
+    if (!host || !pointer) return;
+    for (const item of host.children) {
+      if (!item.hofHover) continue;
+      const box = item.getBoundingClientRect();
+      const over = pointer.x >= box.left && pointer.x <= box.right && pointer.y >= box.top && pointer.y <= box.bottom;
+      if (over !== Boolean(item.hofOver)) {
+        item.hofOver = over;
+        item.hofHover(over);
+      }
+    }
+  };
+  document.addEventListener(
+    "mousemove",
+    event => {
+      pointer = { x: event.clientX, y: event.clientY };
+      if (!hoverFrame) hoverFrame = requestAnimationFrame(checkToastHover);
+    },
+    { passive: true, capture: true },
+  );
+  document.addEventListener("mouseleave", () => {
+    pointer = { x: -1, y: -1 };
+    checkToastHover();
+  });
   HOF.toastDuration = (message, { type = "info", timeout = 3600, action = false } = {}) => {
     const reading = 1500 + Math.ceil((String(message ?? "").length / READ_CHARS_PER_SECOND) * 1000);
     return Math.min(30000, Math.max(Number(timeout) || 0, type === "error" ? 7000 : 0, action ? 7000 : 0, reading));
@@ -669,8 +698,8 @@
       remaining = Math.max(2000, remaining);
       run();
     };
-    node.addEventListener("mouseenter", hold);
-    node.addEventListener("mouseleave", release);
+    // Bildirim tıklamayı geçirir (CSS pointer-events: none); fare üstünde mi, konumdan izlenir (watchToastHover).
+    node.hofHover = over => (over ? hold() : release());
     node.addEventListener("focusin", hold);
     node.addEventListener("focusout", event => {
       if (!node.contains(event.relatedTarget)) release();

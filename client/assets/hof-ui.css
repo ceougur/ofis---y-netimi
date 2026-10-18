@@ -460,10 +460,16 @@ body:has(.hof-modal-backdrop.is-visible) .hof-toasts {
   box-shadow: 0 14px 40px rgba(20, 48, 36, 0.16);
   color: var(--do-ink);
   font: 600 13px/1.4 var(--do-font);
-  pointer-events: auto;
+  /* 2.4.3: bildirim artık okuma süresince (uzun hata iletisinde 20 sn'ye kadar) ekranda kalır; altındaki düğmeye / sekmeye tıklamayı
+     engellemez (tıklama geçer), yalnız kendi düğmeleri (Kapat, Geri Al…) tıklanır. Fare üstündeyken bekletme hof-core.js'te konumla izlenir. */
+  pointer-events: none;
   opacity: 0;
   transform: translateY(8px);
   transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.hof-toast button,
+.hof-toast a {
+  pointer-events: auto;
 }
 .hof-toast.is-visible {
   opacity: 1;

@@ -291,10 +291,18 @@ try {
       document.querySelectorAll(".hof-toast").forEach(node => node.remove());
       window.HOF.toast("Fare testi.", { type: "info" });
     });
-    await page.hover(".hof-toast");
+    await sleep(300);
+    const toastBox = await page.locator(".hof-toast").first().boundingBox();
+    // Bildirim tıklamayı geçirir; fare onun üstüne gerçek fare hareketiyle getirilir (metnin üstü, Kapat düğmesi değil).
+    await page.mouse.move(toastBox.x + 30, toastBox.y + toastBox.height / 2, { steps: 4 });
     await sleep(4800);
     ok((await toastTexts(page)).includes("Fare testi."), "B4 fare üstündeyken bildirim kapanmadı (süre 3,6 sn)");
-    await page.mouse.move(5, 5);
+    const passes = await page.evaluate(([x, y]) => {
+      const hit = document.elementFromPoint(x, y);
+      return !hit?.closest(".hof-toast") ? `${hit?.tagName || "?"}` : "";
+    }, [toastBox.x + 30, toastBox.y + toastBox.height / 2]);
+    ok(Boolean(passes), `B6 bildirim altındaki öğeye tıklamayı engellemez (tıklanan: ${passes || "bildirim"})`);
+    await page.mouse.move(5, 5, { steps: 4 });
     await sleep(4600);
     ok(!(await toastTexts(page)).includes("Fare testi."), "B5 fare ayrılınca kalan süre sonunda kapandı");
 
