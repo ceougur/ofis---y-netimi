@@ -207,6 +207,12 @@ const LOCK_SQL = {
   doubtful_lock: { requires: ["doubtful_receivables"], since: "2.3.0", sql: "SELECT id, account_id, date, amount_minor, reason, cheque_id, CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END AS cancelled, event_id FROM doubtful_receivables WHERE date <= ?1 ORDER BY id" },
   doubtful_closed_lock: { requires: ["doubtful_receivables"], since: "2.3.0", sql: "SELECT id, status, closed_date, close_event_id FROM doubtful_receivables WHERE closed_date <> '' AND closed_date <= ?1 ORDER BY id" },
   doubtful_provisions_lock: { requires: ["doubtful_provisions"], since: "2.3.0", sql: "SELECT id, doubtful_id, date, amount_minor, CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END AS cancelled, event_id FROM doubtful_provisions WHERE date <= ?1 ORDER BY id" },
+  // 2.4.3 MM3: KDV mahsup fişi (ay sonu tarihli) ve geri alınması kapanmış dönemin 391 / 191 / 190 / 360'ını değiştirir; Kasa'dan vergi ödemesinin vergi
+  // ayrıntısı (tax_json: 360 / 689 / 770 ayrımı). Mahsubu ya da vergi ödemesi olmayan veride satır üretmez (iz 2.4.2 ile birebir).
+  vat_offsets_lock: { requires: ["vat_offsets"], since: "2.4.3", sql: "SELECT id, month, date, out_minor, in_minor, carry_in_minor, carry_out_minor, payable_minor, status FROM vat_offsets WHERE date <= ?1 ORDER BY id" },
+  // MM4: açılış stoku (B 153 / A 500) değeri miktar × birim fiyattır; kapanmış dönemdeki açılışın birim fiyatı ya da işareti değişirse mizan kayar.
+  stock_opening_lock: { requires: ["stock_moves.is_opening"], since: "2.4.3", sql: "SELECT id, qty, unit_price, is_opening FROM stock_moves WHERE is_opening = 1 AND date <= ?1 ORDER BY id" },
+  cash_tax_lock: { requires: ["cash_entries.tax_json"], since: "2.4.3", sql: "SELECT id, tax_json FROM cash_entries WHERE tax_json <> '' AND date <= ?1 ORDER BY id" },
 };
 
 /**

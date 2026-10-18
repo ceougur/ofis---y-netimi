@@ -11079,3 +11079,7 @@ input[type="search"]::-webkit-search-cancel-button {
 @media (prefers-reduced-motion: reduce) {
   .hof-toast.is-repeat { animation: none; }
 }
+
+/* 2.4.3 MM3: Vergi Ödemesi ve KDV Mahsup Fişi (hof-tax.js) */
+.hof-tax-warn { margin: 6px 0; color: var(--do-warn); font-weight: 700; }
+.hof-tax-h3 { margin: 18px 0 6px; font: 700 13px var(--do-font); }

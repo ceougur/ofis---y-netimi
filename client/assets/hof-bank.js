@@ -495,6 +495,8 @@
     if (HOF.can("bank.move") && a.currency === "TRY") {
       const why = a.status === "active" ? "" : "Hesap pasif; işlem girmek için önce Etkinleştir.";
       if (["demand", "commercial", "other"].includes(a.kind)) moveButtons.push(["v-fee", "+ Masraf", why, ""], ["v-interest", "+ Faiz", why], ["v-other", "+ Diğer İşlem", why]);
+      // 2.4.3 MM3: Vergi Ödemesi (B 360 / A 102; Vergi Ödemesi ve KDV Mahsubu yetkisi).
+      if (["demand", "commercial", "other"].includes(a.kind) && HOF.can("tax.manage")) moveButtons.push(["v-tax", "+ Vergi Ödemesi", why]);
       else if (a.kind === "time") moveButtons.push(["v-interest", "+ Faiz", why, ""]);
       else if (a.kind === "card") moveButtons.push(["v-card", "+ Kart Borcu Ödemesi", why, ""]);
       else if (a.kind === "loan" && HOF.can("bank.transfer")) moveButtons.push(["v-loan", "+ Kredi İşlemi", why, ""]);
@@ -1645,6 +1647,7 @@
       canMove ? `<button type="button" class="hof-button hof-button-small" data-act="v-fee">+ Masraf</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="v-interest">+ Faiz</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="v-other">+ Diğer İşlem</button>` : "",
       // Aşama 9: Bankalar Arası Transfer (Transfer Yapma yetkisi; en az iki transfer hesabı formda denetlenir).
       HOF.can("bank.transfer") ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="v-transfer">Transfer</button>' : "",
+      canMove && HOF.can("tax.manage") ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="v-tax">+ Vergi Ödemesi</button>' : "",
       canMove ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="plan-new">+ Planlı İşlem</button>' : "",
     ].join("");
     const filters = s.planned
@@ -2544,6 +2547,8 @@
           return voucherForm({ group: "other", accountId: contextAccount() });
         case "v-transfer":
           return voucherForm({ group: "transfer", accountId: contextAccount() });
+        case "v-tax":
+          return HOF.taxPayment?.({ way: "bank", accountId: contextAccount(), onDone: () => reload() });
         case "v-card":
           return voucherForm({ group: "other", type: "card_payment", counterId: view.accountId });
         case "v-loan":

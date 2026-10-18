@@ -144,7 +144,7 @@ export function footerRow({ headers = [], types = [], rows = [], footer, footerU
   return out;
 }
 
-export function registerReportCenter(router, { store, auth, audit, dataset, company = () => null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, overview = () => null, ledger = () => null, integrity = () => null, doubtful = () => null, money: moneyApi = null, bankAccounts = null, now: clock = systemClock, offload = null }) {
+export function registerReportCenter(router, { store, auth, audit, dataset, tax = () => null, company = () => null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, overview = () => null, ledger = () => null, integrity = () => null, doubtful = () => null, money: moneyApi = null, bankAccounts = null, now: clock = systemClock, offload = null }) {
   const today = () => isoDay(clock());
   const office = () => store.setting("office.name", "");
   // Rapor başlığındaki şirket (2.2.0 İz 1.1; 2.0.17 m2 kararı "rapor/PDF/Excel başlığında 001 · Unvan"): bu örneğin şirketinin kodu (kayıt defteri)
@@ -1896,9 +1896,11 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
       id: "kdv-ozeti",
       group: "Fatura",
       title: "KDV Özeti (Beyanname Hazırlığı)",
-      description: "Aylara ve oranlara göre hesaplanan KDV (satış), indirilecek KDV (alış), iadeler ve tevkifat; ödenecek ya da devreden KDV.",
+      description: "Aylara ve oranlara göre hesaplanan KDV (satış), indirilecek KDV (alış), iadeler ve tevkifat; ödenecek ya da devreden KDV. Ay sonu KDV Mahsup Fişi buradan oluşturulur.",
       params: ["range"],
       preset: "thisYear",
+      // 2.4.3 MM3: ekranda rapor başlığının yanında "KDV Mahsup Fişi Oluştur" (Vergi Ödemesi ve KDV Mahsubu yetkisi; yönetici ve muhasebe).
+      actions: [{ id: "vat-offset", label: "KDV Mahsup Fişi Oluştur", permission: "tax.manage" }],
       build(query) {
         const range = rangeOf(query, "thisYear");
         const list = store.all(
@@ -1928,6 +1930,13 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
             ["İndirilecek KDV (191)", money(roundMoney(heads.input))],
             ["Alıcı Olarak Kesilen Tevkifat (2 No.lu)", money(roundMoney(heads.withheld2))],
             [result >= 0 ? "Ödenecek KDV" : "Devreden KDV", money(Math.abs(result))],
+            // 2.4.3 MM3: aralıktaki aylardan mahsup edilenler ve mahsuptan sonra KDV'li kaydı değişen aylar (geri alıp yeniden yapılır).
+            ...(() => {
+              const list = (tax()?.offsetList ? tax().offsetList() : []).filter(item => item.status === "active" && (!range.from || item.date >= range.from) && (!range.to || item.month <= range.to.slice(0, 7)));
+              if (!list.length) return [];
+              const stale = list.filter(item => item.stale);
+              return [["KDV Mahsup Fişi", list.map(item => item.label).join(", ")], ...(stale.length ? [["Mahsuptan Sonra Değişen Ay", `${stale.map(item => item.label).join(", ")} (mahsubu geri alıp yeniden yapın)`]] : [])];
+            })(),
           ],
         };
       },
@@ -2734,7 +2743,11 @@ export function registerReportCenter(router, { store, auth, audit, dataset, comp
     ok(res, {
       // emptyHint (2.3.0 İz 5.2): boş sonuçta raporun kendi ipucu ve bağı (ör. POS Ödeme Takvimi → Banka → Hareketler).
       // presets (2.4.3 C15): "future" → ekranın dönem düğmeleri ileriye dönük (Önümüzdeki 7/30/90 Gün, Bu Ay, Tüm Beklenenler).
-      reports: list.map(({ id, group, title, description, params, preset, presets, accountRequired, emptyHint }) => ({ id, group, title, description, params, preset: preset || "", ...(presets ? { presets } : {}), accountRequired: accountRequired === true, ...(emptyHint ? { emptyHint } : {}) })),
+      // actions (2.4.3 MM3): raporun yanındaki iş düğmeleri (ör. KDV Özeti → KDV Mahsup Fişi Oluştur) — yalnız yetkisi olana.
+      reports: list.map(({ id, group, title, description, params, preset, presets, accountRequired, emptyHint, actions }) => {
+        const own = (actions || []).filter(item => canUser(user, item.permission)).map(({ id: key, label }) => ({ id: key, label }));
+        return { id, group, title, description, params, preset: preset || "", ...(presets ? { presets } : {}), accountRequired: accountRequired === true, ...(emptyHint ? { emptyHint } : {}), ...(own.length ? { actions: own } : {}) };
+      }),
       ...(choices ? { choices } : {}),
       today: today(),
     });

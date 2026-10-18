@@ -326,6 +326,7 @@
         <span class="hof-rep-export ${ready ? "" : "is-disabled"}" role="group" aria-label="Dışa aktar">
           <a class="hof-rep-out is-pdf" href="${ready ? `/api/workspace/report-center/${esc(report.id)}/pdf?${esc(qs)}` : "#"}" target="_blank" rel="noopener" ${ready ? "" : 'aria-disabled="true" tabindex="-1"'}>PDF İndir</a>
           <a class="hof-rep-out is-xlsx" href="${ready ? `/api/workspace/report-center/${esc(report.id)}/xlsx?${esc(qs)}` : "#"}" download ${ready ? "" : 'aria-disabled="true" tabindex="-1"'}>Excel İndir</a>
+          ${(report.actions || []).map(action => `<button type="button" class="hof-button hof-button-small" data-rc-action="${esc(action.id)}">${esc(action.label)}</button>`).join("")}
         </span></header>
       ${report.params.length ? `<div class="hof-rc-params">${paramsHtml(report)}<button type="button" class="hof-button hof-button-small" data-rc-run>Ön İzle</button><span class="hof-rc-busy" data-rc-busy role="status" hidden>Güncelleniyor…</span></div>` : ""}
       <div class="hof-rc-result" data-rc-result>${table}</div>`;
@@ -417,6 +418,8 @@
       return HOF.toast("Önce cariyi seçin.", { type: "error" });
     }
     if (target.dataset.report) return select(target.dataset.report);
+    // 2.4.3 MM3: raporun iş düğmesi (sunucu katalogda yalnız yetkiliye verir) — KDV Özeti → KDV Mahsup Fişi Oluştur; pencere kapanınca rapor yenilenir.
+    if (target.dataset.rcAction === "vat-offset") return HOF.vatOffset?.({ onDone: () => run() });
     if (target.dataset.bankTab) return HOF.bank?.open ? HOF.bank.open({ tab: target.dataset.bankTab }) : null;
     if (target.dataset.preset) {
       Object.assign(center.params, { preset: target.dataset.preset }, presetRange(target.dataset.preset));

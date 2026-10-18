@@ -395,7 +395,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true }) : []) if (item.side === "sale") items.push({ accountId: item.accountId, date: item.dueDate, amount: item.open });
     const live = accounts().list({ id: "", role: "admin" }, { status: "all" }).accounts.map(account => ({ id: account.id, name: account.name, balance: account.balance }));
     return reconcileReceivables(store, { accounts: live, items, day })
-      .unbilled.map(item => ({ date: item.date, direction: "in", amount: item.amount, source: "unbilled", label: "Faturasız cari alacağı", party: item.name, ref: { type: "account", id: item.accountId } }));
+      .unbilled.map(item => ({ date: item.date, direction: "in", amount: item.amount, source: "unbilled", label: "Faturasız Cari Alacağı", party: item.name, ref: { type: "account", id: item.accountId } }));
   }
   // Nakit akış başlangıcı (v2.1.0, K10; plan §8.9 ve karar 32): "Bugünkü Nakit ve Banka" = Nakit Kasa (bugüne kadar) + Gerçek Banka (Σ 102,
   // hesaba atanmış). Hesabı Atanmamış Eski Hareketler (102.00 + 108.00) ayrı satırdır, başlangıca GİRMEZ. Değerler ANLIK DURUM'un Kasa ve Banka

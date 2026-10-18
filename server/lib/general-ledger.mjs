@@ -28,6 +28,8 @@ export const CHART = Object.freeze({
   128: DOUBTFUL_CHART[128],
   129: DOUBTFUL_CHART[129],
   153: "Ticari Mallar (Stok Alımları)",
+  // 2.4.3 MM3: KDV Mahsup Fişi'nin devreden KDV'si (indirilecek KDV hesaplanandan büyükse; sonraki ayın mahsubunda kullanılır).
+  190: "Devreden KDV",
   191: "İndirilecek KDV",
   193: "Peşin Ödenen Vergiler (Stopaj)",
   255: "Demirbaşlar",
@@ -55,7 +57,9 @@ export const CHART = Object.freeze({
   654: DOUBTFUL_CHART[654],
   656: "Kambiyo Zararları",
   659: "Diğer Olağan Gider ve Zararlar",
-  689: "Kapatılan Kartlardan Vazgeçilen Alacaklar",
+  // 2.4.3 MM3: Tekdüzen Hesap Planı adı. Kapatılan taksit kartlarının vazgeçilen kalanı ve vergi ödemesinin gecikme zammı / faizi (KKEG) buraya yazılır
+  // (önceki ad "Kapatılan Kartlardan Vazgeçilen Alacaklar"; tutarlar değişmez).
+  689: "Diğer Olağandışı Gider ve Zararlar",
   760: "Pazarlama, Satış ve Dağıtım Giderleri",
   770: "Genel Giderler ve Alış Faturaları",
   780: "Finansman Giderleri",
@@ -71,6 +75,36 @@ const cents = value => Math.round((Number(value) || 0) * 100);
  * (cash_entries.is_opening; Yargıç 2.2.0 Y2/Y3) tanınır.
  */
 const opening = note => /^açılış/i.test(String(note || "").trim());
+/** Kasa satırının vergi ödemesi ayrıntısı (MM3; cash_entries.tax_json): { type, taxMinor, lateMinor } ya da null. */
+export function taxOf(row) {
+  const raw = row?.taxJson ?? row?.tax_json;
+  if (!raw) return null;
+  try {
+    const value = JSON.parse(raw);
+    return value && typeof value === "object" ? { type: String(value.type || "other"), taxMinor: Math.max(0, Math.round(Number(value.taxMinor) || 0)), lateMinor: Math.max(0, Math.round(Number(value.lateMinor) || 0)) } : null;
+  } catch {
+    return null;
+  }
+}
+/**
+ * KDV Mahsup Fişi'nin satırları (MM3; kuruş): o = ayın 391 neti (alacak artı), i = ayın 191 neti (borç artı), p = kullanılan devreden (190), fark
+ * o − i − p artıysa A 360 (ödenecek), eksiyse B 190 (yeni devreden). İşaretli tutarlar ters tarafa yazılır (ör. iadesi satışından büyük ay). Denge: B = A.
+ */
+export function vatOffsetLines(row) {
+  const o = Math.round(Number(row.outMinor ?? row.out_minor) || 0);
+  const i = Math.round(Number(row.inMinor ?? row.in_minor) || 0);
+  const p = Math.round(Number(row.carryInMinor ?? row.carry_in_minor) || 0);
+  const payable = Math.round(Number(row.payableMinor ?? row.payable_minor) || 0);
+  const carry = Math.round(Number(row.carryOutMinor ?? row.carry_out_minor) || 0);
+  const lines = [
+    { account: "391", debit: Math.max(o, 0), credit: Math.max(-o, 0) },
+    { account: "191", debit: Math.max(-i, 0), credit: Math.max(i, 0) },
+    { account: "190", debit: carry, credit: 0 },
+    { account: "190", debit: 0, credit: p },
+    { account: "360", debit: 0, credit: payable },
+  ];
+  return lines.filter(line => line.debit > 0 || line.credit > 0);
+}
 /** Açılış stoku hareketinin değeri (TL, kuruşa yuvarlı): miktar × birim fiyat (MM4; yevmiye ve Mutabakat Testi aynı kural). */
 export const stockOpeningValue = row => roundMoney((Number(row.qty) || 0) * (Number(row.unitPrice) || 0));
 /** Hesabı atanmamış (fin_ref '') eski ve yeni banka/POS hareketlerinin alt hesapları (§3.11). */
@@ -167,6 +201,17 @@ export function journal(rows) {
     // değildir: B 100 / A 500, banka/cari/taksit açılışıyla aynı karşı hesap. Yargıç Y2/Y3: açıklaması "Açılış …" olan sıradan giriş 2.1.0'daki
     // gibi 649'da kalır (eski veride kilitli dönem değişmez).
     if (row.kind === "in" && Number(row.isOpening) === 1) post(`cash:${row.id}`, row.date, "Kasa açılışı", row.description, moneyOf(row), "500", row.amount);
+    // 2.4.3 MM3: Kasa'dan nakit Vergi Ödemesi — B 360 vergi · B 689 gecikme zammı / faizi (KKEG) / A 100 toplam (gider değil: 360'ı kapatır).
+    else if (row.kind === "out" && taxOf(row)) {
+      const tax = taxOf(row);
+      const money = moneyOf(row);
+      const lines = [
+        { account: "360", debit: tax.taxMinor, credit: 0 },
+        { account: "689", debit: tax.lateMinor, credit: 0 },
+        { account: money.account, debit: 0, credit: cents(row.amount), ...(money.sub ? { sub: money.sub } : {}) },
+      ].filter(line => line.debit > 0 || line.credit > 0);
+      out.push({ id: `cash:${row.id}`, date: row.date, source: "Vergi Ödemesi", text: row.description || "Vergi ödemesi", lines });
+    }
     else if (row.kind === "in") post(`cash:${row.id}`, row.date, "Kasa", row.description || "Kasaya giriş", moneyOf(row), "649", row.amount);
     else post(`cash:${row.id}`, row.date, "Kasa", row.description || "Kasadan ödeme", "770", moneyOf(row), row.amount);
   }
@@ -338,6 +383,15 @@ export function journal(rows) {
       .filter(line => Number(line.tryMinor) > 0)
       .map(line => ({ account: String(line.gl), debit: line.side === "D" ? Number(line.tryMinor) : 0, credit: line.side === "C" ? Number(line.tryMinor) : 0, ...(line.sub ? { sub: String(line.sub) } : {}) }));
     if (lines.length) out.push({ id: `bank:${eventId}`, date: item.date, source: "Banka fişi", text: item.text, lines });
+  }
+  // 2.4.3 MM3: KDV Mahsup Fişi (ay sonu tarihli; vat_offsets): ayın 391'i ve 191'i kapanır, fark 360'a (ödenecek) ya da 190'a (devreden); önceki
+  // devreden (190) kullanılır. Geri alınan fiş (reversed) ters kaydıyla AYNI GÜN yazılır (ay sonu mizanı sıfırlanır, iz görünür).
+  for (const row of rows.vatOffsets || []) {
+    const lines = vatOffsetLines(row);
+    if (!lines.length) continue;
+    const label = `KDV Mahsup Fişi · ${row.month}`;
+    out.push({ id: `vat-offset:${row.id}`, date: row.date, source: "KDV Mahsup Fişi", text: label, lines });
+    if (row.status === "reversed") out.push({ id: `vat-offset-reverse:${row.id}`, date: row.date, source: "KDV Mahsup Fişi (Ters Kayıt)", text: `${label} · Geri Alındı`, lines: lines.map(line => ({ ...line, debit: line.credit, credit: line.debit })) });
   }
   // 2.3.0 İz 1 (plan §3.11b; lib/doubtful-gl.mjs): şüpheli alacak kayıtları varsa carinin alacak satırları önce 128'den düşer (A 120 → A 128),
   // al / karşılık / 644 / çıkar maddeleri eklenir. Kayıt yoksa (ya da süzgeç yüklemediyse) yevmiye 2.2.0'dakiyle aynıdır.
