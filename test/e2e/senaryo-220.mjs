@@ -196,8 +196,12 @@ try {
   await shot("cari-tahsilat");
   await page.setViewportSize({ width: 1366, height: 768 });
   await page.waitForTimeout(400);
+  // 2.4.3 (C5, bilerek güncellendi): dizüstünde de TOPLAM ilk bakışta (pencere kaydırılmadan) görünür — başlık ve özet sıkılaştı, tablo kutusu
+  // kalan yere sığar (en az 160 px; önceden 280 px'ten az yer kalınca 50vh kalıyor, TOPLAM ancak kaydırınca görünüyordu).
+  view = await totalInView();
+  ok(view.inView && view.pane >= 160, `1366 × 768: TOPLAM pencere kaydırılmadan görünür (alt ${view.foot} ≤ ${view.bottom}); tablo kutusu ${view.pane} px (en az 160)`);
   view = await totalInView({ toTable: true });
-  ok(view.inView && view.pane >= 0.5 * 768 - 2, `1366 × 768: pencere tabloya kaydırılınca TOPLAM görünür (alt ${view.foot} ≤ ${view.bottom}); tablo kutusu ${view.pane} px (eskisinden kısa değil)`);
+  ok(view.inView, `1366 × 768: pencere tabloya kaydırılınca da TOPLAM görünür (alt ${view.foot} ≤ ${view.bottom})`);
   await shot("cari-tahsilat-1366");
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.waitForTimeout(400);

@@ -214,13 +214,17 @@ describe("Şüpheli Alacaklar — ekranın okuduğu veri (liste, kart, ANLIK DUR
   });
 
   it("yetki: muhasebe (Şüpheli Alacak İşlemleri var, finans raporları yok) raporu açar; personel 403; Alacak Yaşlandırma muhasebeye kapalı kalır", async () => {
+    // 2.4.3 H9 (bilerek güncellendi): muhasebe Finans Raporları'nı varsayılan olarak görür; "finans raporları yok" durumu kişiden kaldırılarak kurulur.
+    const usersList = (await ctx.api.client.get("/api/admin/users")).data.data;
+    const muhasebeId = (Array.isArray(usersList) ? usersList : usersList.users).find(user => user.username === "muhasebe1").id;
+    assert.equal((await ctx.api.client.patch(`/api/admin/users/${muhasebeId}`, { grants: { add: [], remove: ["overview.view"] } })).status, 200);
     const acc = await muhasebe.get(`${RC}/supheli-alacaklar?doubtfulStatus=all`);
     assert.equal(acc.status, 200, JSON.stringify(acc.data).slice(0, 200));
     assert.equal(acc.data.data.rows.length, 2);
     const catalog = await muhasebe.get(RC);
     assert.equal(catalog.status, 200);
     assert.ok(catalog.data.data.reports.some(item => item.id === "supheli-alacaklar"), "muhasebe kataloğunda");
-    assert.ok(!catalog.data.data.reports.some(item => item.id === "alacak-yaslandirma"), "finans raporu muhasebede yok (overview.view yalnız yönetici)");
+    assert.ok(!catalog.data.data.reports.some(item => item.id === "alacak-yaslandirma"), "finans raporu bu muhasebede yok (overview.view kişiden kaldırıldı)");
     const aging = await muhasebe.get(`${RC}/alacak-yaslandirma`);
     assert.equal(aging.status, 403);
     for (const tail of ["", "/pdf", "/xlsx"]) expectStatus(await personel.get(`${RC}/supheli-alacaklar${tail}`), 403, "", `personel rapor${tail}`);

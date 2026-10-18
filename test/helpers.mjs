@@ -26,6 +26,8 @@ export async function startTestServer(options = {}) {
     ...(options.edocEnabled ? { edocEnabled: true } : {}),
     ...(options.edocLive ? { edocLive: true } : {}),
     ...(options.esmmEnabled ? { esmmEnabled: true } : {}),
+    // 2.4.3 (H7): iptal öncesi "işleniyor" durumunun yeniden sorulma aralıkları (üretimde 1 sn + 2 sn); testler kısa verir.
+    ...(options.edocStatusPollMs ? { edocStatusPollMs: options.edocStatusPollMs } : {}),
     // 2.4.2: test serisi (TEF/TEA/TES) üretimde firmaya özgü rastgele büyük numaradan başlar (EDM test hesabı ortak). Eski testler numarayı
     // 1'den bekler; üretim davranışını deneyen test testSeriesStart: null verir (üretimdeki gibi rastgele).
     ...(options.testSeriesStart === null ? {} : { testSeriesStart: options.testSeriesStart || (() => 1) }),

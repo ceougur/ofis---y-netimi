@@ -17,6 +17,7 @@ import { methodInput } from "../lib/pay-method.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { unitLabel } from "../lib/units.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
+import { VAT_RATES } from "../lib/invoice-math.mjs";
 import { systemClock } from "../lib/clock.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -58,7 +59,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
   };
 
   // ---------- Okuma ----------
-  const ITEM_SQL = `SELECT i.id, i.kind, i.code, i.name, i.unit, i.category, i.min_qty AS minQty, i.unit_price AS unitPrice, i.sale_price AS salePrice, i.note, i.fields_json AS fieldsJson,
+  const ITEM_SQL = `SELECT i.id, i.kind, i.code, i.name, i.unit, i.category, i.min_qty AS minQty, i.unit_price AS unitPrice, i.sale_price AS salePrice, i.vat_rate AS vatRate, i.note, i.fields_json AS fieldsJson,
       i.created_by AS createdBy, i.created_at AS createdAt, i.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName
     FROM stock_items i LEFT JOIN users u ON u.id = i.created_by`;
   const parseFields = json => {
@@ -125,18 +126,20 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
       const own = moves.get(row.id) || [];
       const level = stockLevel(row, own);
       const service = row.kind === "service";
-      if (state === "low" && !level.low) continue;
-      if (state === "out" && (service || level.qty > 0)) continue;
+      // 2.4.3 (keşif B9): göstergeler ayrışık — her ürün tek göstergede: Kritik Seviyede (0 < miktar ≤ kritik), Tükenen (0), Eksi Stokta (< 0).
+      // Önceden eksi ürün üçünde birden sayılıyordu. Dikkat isteyen ürünlerin listesi (sol menü rozeti, bildirim: alerts) eskisi gibi hepsini kapsar.
+      if (state === "low" && level.state !== "low") continue;
+      if (state === "out" && (service || level.qty !== 0)) continue;
       if (state === "negative" && (service || level.qty >= 0)) continue;
       if (state === "service" && !service) continue;
       if (state === "product" && service) continue;
       totals.count += 1;
       if (service) totals.services += 1;
-      if (level.low) totals.low += 1;
-      if (!service && level.qty <= 0) totals.out += 1;
+      if (level.state === "low") totals.low += 1;
+      if (!service && level.qty === 0) totals.out += 1;
       if (!service && level.qty < 0) totals.negative += 1;
       totals.value = roundMoney(totals.value + level.value);
-      out.push({ id: row.id, kind: row.kind || "product", code: row.code, name: row.name, unit: unitLabel(row.unit), category: row.category, minQty: row.minQty, unitPrice: row.unitPrice, salePrice: row.salePrice || 0, note: row.note, ...level, lastMove: own.at(-1)?.date || "" });
+      out.push({ id: row.id, kind: row.kind || "product", code: row.code, name: row.name, unit: unitLabel(row.unit), category: row.category, minQty: row.minQty, unitPrice: row.unitPrice, salePrice: row.salePrice || 0, vatRate: row.vatRate ?? null, note: row.note, ...level, lastMove: own.at(-1)?.date || "" });
     }
     const byName = (a, b) => collator.compare(a.name, b.name);
     const compare = {
@@ -165,6 +168,16 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     auth.requirePermission(req, "stock.view");
     ok(res, alerts());
   });
+  // 2.4.3 (keşif B8): "Kritik stok" bildirimi kullanıcı başına günde bir kez. Önceden günü tarayıcı saklıyordu (localStorage): her yeni oturumda /
+  // başka bilgisayarda / tarayıcı verisi silinince yeniden çıkıyordu. İlk soran "göster" yanıtını alır, aynı gün sonrakiler almaz (sunucunun günü).
+  router.post("/api/workspace/stock/alerts/notified", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "stock.view");
+    const key = `stock.alertNotified.${user.id}`;
+    const day = today();
+    const show = store.setting(key, "") !== day;
+    if (show) store.setSetting(key, day, user.id);
+    ok(res, { show, day });
+  });
 
   // ---------- Ürün kartı ----------
   const itemInput = (body, previous = null) => {
@@ -182,8 +195,25 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
       unitPrice: priceOf(body.unitPrice),
       // v2.0.13: satış fiyatı (raf/etiket). Birim fiyat alış/maliyettir; çıkış formu satış fiyatıyla açılır.
       salePrice: priceOf(body.salePrice),
+      // 2.4.3 (H8): KDV oranı isteğe bağlı (boş = faturada formun varsayılanı). Düzenlemede gövde önceki kayıtla birleştirilir (PUT): alanı
+      // göndermeyen istemci (eski sürüm, kısmi düzenleme) oranı değiştirmez.
+      vatRate: vatRateOf(body.vatRate),
       note: limited(body.note, 1000, "Not"),
     };
+  };
+  function vatRateOf(value) {
+    if (value === undefined || value === null || String(value).trim() === "") return null;
+    const rate = Number(String(value).replace("%", "").replace(",", ".").trim());
+    if (!VAT_RATES.includes(rate)) throw new HttpError(400, `KDV oranı ${VAT_RATES.map(item => `%${item}`).join(", ")} olabilir (boş bırakılırsa faturada seçilir).`, { field: "vatRate" });
+    return rate;
+  }
+  // Excel hücresi: "%20", "20", "0,20" → 20; tanınmayan değer boş (null) kalır, satır yine aktarılır.
+  const vatCell = value => {
+    const raw = String(value ?? "").replace("%", "").replace(",", ".").trim();
+    if (!raw) return null;
+    let rate = Number(raw);
+    if (Number.isFinite(rate) && rate > 0 && rate < 1) rate = Math.round(rate * 100);
+    return VAT_RATES.includes(rate) ? rate : undefined;
   };
   // v2.0.16 (müşteri): Stok Kodu (barkod) tektir — faturada kodla ya da barkod okuyucuyla seçilen ürün tek olmalı.
   const assertCodeFree = (code, exceptId = "") => {
@@ -195,8 +225,8 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
   function insertItem(user, input, fields = []) {
     const id = newId("stock");
     store.run(
-      "INSERT INTO stock_items (id, kind, code, name, unit, category, min_qty, unit_price, sale_price, note, fields_json, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      id, input.kind || "product", input.code, input.name, input.unit, input.category, input.minQty, input.unitPrice, input.salePrice || 0, input.note, JSON.stringify(fields), user.id, now(), now(),
+      "INSERT INTO stock_items (id, kind, code, name, unit, category, min_qty, unit_price, sale_price, vat_rate, note, fields_json, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      id, input.kind || "product", input.code, input.name, input.unit, input.category, input.minQty, input.unitPrice, input.salePrice || 0, input.vatRate ?? null, input.note, JSON.stringify(fields), user.id, now(), now(),
     );
     return id;
   }
@@ -278,7 +308,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
       const input = itemInput({ ...previous, ...body }, previous);
       if (store.get("SELECT 1 AS found FROM stock_items WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE AND unit = ? COLLATE NOCASE AND id <> ?", input.name, input.unit, previous.id)) throw new HttpError(409, `“${input.name}” (${input.unit}) adlı başka bir ürün var.`);
       if (String(input.code).toLocaleLowerCase("tr-TR") !== String(previous.code || "").toLocaleLowerCase("tr-TR")) assertCodeFree(input.code, previous.id);
-      store.run("UPDATE stock_items SET kind = ?, code = ?, name = ?, unit = ?, category = ?, min_qty = ?, unit_price = ?, sale_price = ?, note = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.code, input.name, input.unit, input.category, input.minQty, input.unitPrice, input.salePrice, input.note, user.id, now(), previous.id);
+      store.run("UPDATE stock_items SET kind = ?, code = ?, name = ?, unit = ?, category = ?, min_qty = ?, unit_price = ?, sale_price = ?, vat_rate = ?, note = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.code, input.name, input.unit, input.category, input.minQty, input.unitPrice, input.salePrice, input.vatRate ?? null, input.note, user.id, now(), previous.id);
       audit(user, "stock.item.updated", previous.id, { previous: { name: previous.name, minQty: previous.minQty, unitPrice: previous.unitPrice }, ...input });
       return detail(previous.id, user);
     });
@@ -540,7 +570,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
       const found = Object.entries(roles).find(([, value]) => value === role);
       return found ? Number(found[0]) : -1;
     };
-    const col = Object.fromEntries(["code", "name", "unit", "category", "qty", "price", "salePrice", "min", "note", "kind"].map(role => [role, columnOf(role)]));
+    const col = Object.fromEntries(["code", "name", "unit", "category", "qty", "price", "salePrice", "vat", "min", "note", "kind"].map(role => [role, columnOf(role)]));
     const extraColumns = Object.entries(roles).filter(([, value]) => value === "extra").map(([index]) => Number(index)).filter(index => headers[index]);
     if (col.name < 0) throw new HttpError(400, "Ürün adı kolonunu seçin.");
     const mode = body.mode === "update" ? "update" : "skip";
@@ -555,7 +585,8 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
       return Number.isFinite(value) && value >= 0 ? Math.round(value * 10000) / 10000 : 0;
     };
     const rows = matrix.slice(headerAt + 1, headerAt + 1 + MAX_IMPORT);
-    const report = { created: 0, updated: 0, skipped: [], opening: 0, truncated: Math.max(0, matrix.length - headerAt - 1 - MAX_IMPORT) };
+    // skipped: aktarılmayan satırlar; notes: aktarılan ama bir alanı boş bırakılan satırlar (KDV oranı tanınmadı, Stok Kodu başka üründe).
+    const report = { created: 0, updated: 0, skipped: [], skippedTotal: 0, notes: [], vatUnknown: 0, codeCleared: 0, opening: 0, truncated: Math.max(0, matrix.length - headerAt - 1 - MAX_IMPORT) };
     let skippedTotal = 0;
     const skip = (index, reason) => {
       skippedTotal += 1;
@@ -568,7 +599,13 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
         const name = cell(row, col.name).slice(0, 160);
         if (!name) return skip(index, "Ürün adı boş");
         const kind = /^(hizmet|servis|işçilik|iscilik)/i.test(cell(row, col.kind)) ? "service" : "product";
-        const input = { kind, name, code: cell(row, col.code).slice(0, 60), unit: unitLabel(cell(row, col.unit) || defaultUnit), category: cell(row, col.category).slice(0, 80), minQty: number(row, col.min), unitPrice: money(row, col.price), salePrice: money(row, col.salePrice), note: cell(row, col.note).slice(0, 1000) };
+        const input = { kind, name, code: cell(row, col.code).slice(0, 60), unit: unitLabel(cell(row, col.unit) || defaultUnit), category: cell(row, col.category).slice(0, 80), minQty: number(row, col.min), unitPrice: money(row, col.price), salePrice: money(row, col.salePrice), vatRate: col.vat >= 0 ? vatCell(cell(row, col.vat)) : null, note: cell(row, col.note).slice(0, 1000) };
+        // Gözden geçirme 2.4.3 (5c): satır AKTARILIR, yalnız alan boş kalır — "atlandı" sayılmaz (notes; bildirim "N satırda KDV Oranı tanınmadı").
+        if (input.vatRate === undefined) {
+          input.vatRate = null;
+          report.vatUnknown = (report.vatUnknown || 0) + 1;
+          if (report.notes.length < 500) report.notes.push({ row: headerAt + index + 2, reason: `KDV oranı “${cell(row, col.vat)}” tanınmadı (%0, %1, %10, %20); boş bırakıldı` });
+        }
         const fields = extraColumns.map(column => ({ label: headers[column].slice(0, 80), value: cell(row, column).slice(0, 1000) })).filter(field => field.value);
         // İki ayrı indeksli arama (kodla, sonra ad + birimle): binlerce satırda da hızlı.
         // Kod tek başına kimlik sayılmaz (Excel'deki sıra numarası olabilir): aynı kod ancak ad da aynıysa aynı ürün.
@@ -577,13 +614,13 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
         // v2.0.16: Stok Kodu tektir; başka üründe kullanılan kod bu satıra yazılmaz (ürün yine aktarılır, rapora düşer).
         if (input.code && store.get("SELECT 1 AS found FROM stock_items WHERE deleted_at IS NULL AND code = ? COLLATE NOCASE AND id <> ?", input.code, existing?.id || "")) {
           report.codeCleared = (report.codeCleared || 0) + 1;
-          if (report.skipped.length < 500) report.skipped.push({ row: headerAt + index + 2, reason: `Stok Kodu “${input.code}” başka üründe; kod boş bırakıldı` });
+          if (report.notes.length < 500) report.notes.push({ row: headerAt + index + 2, reason: `Stok Kodu “${input.code}” başka üründe; kod boş bırakıldı` });
           input.code = "";
         }
         if (existing) {
           store.run(
-            "UPDATE stock_items SET code = CASE WHEN ? <> '' THEN ? ELSE code END, category = CASE WHEN ? <> '' THEN ? ELSE category END, min_qty = CASE WHEN ? > 0 THEN ? ELSE min_qty END, unit_price = CASE WHEN ? > 0 THEN ? ELSE unit_price END, sale_price = CASE WHEN ? > 0 THEN ? ELSE sale_price END, note = CASE WHEN ? <> '' THEN ? ELSE note END, updated_by = ?, updated_at = ? WHERE id = ?",
-            input.code, input.code, input.category, input.category, input.minQty, input.minQty, input.unitPrice, input.unitPrice, input.salePrice, input.salePrice, input.note, input.note, user.id, now(), existing.id,
+            "UPDATE stock_items SET code = CASE WHEN ? <> '' THEN ? ELSE code END, category = CASE WHEN ? <> '' THEN ? ELSE category END, min_qty = CASE WHEN ? > 0 THEN ? ELSE min_qty END, unit_price = CASE WHEN ? > 0 THEN ? ELSE unit_price END, sale_price = CASE WHEN ? > 0 THEN ? ELSE sale_price END, vat_rate = COALESCE(?, vat_rate), note = CASE WHEN ? <> '' THEN ? ELSE note END, updated_by = ?, updated_at = ? WHERE id = ?",
+            input.code, input.code, input.category, input.category, input.minQty, input.minQty, input.unitPrice, input.unitPrice, input.salePrice, input.salePrice, input.vatRate, input.note, input.note, user.id, now(), existing.id,
           );
           report.updated += 1;
           return;
@@ -596,8 +633,15 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
         }
         report.created += 1;
       });
-      audit(user, "stock.imported", "import", { created: report.created, updated: report.updated, skipped: report.skipped.length, file: limited(body.fileName, 200, "Dosya adı") });
+      audit(user, "stock.imported", "import", { created: report.created, updated: report.updated, skipped: report.skippedTotal, file: limited(body.fileName, 200, "Dosya adı") });
     });
+    // Bildirim metni tek yerde (ekran bunu gösterir): atlanan satır ile alanı boş bırakılan satır ayrı sayılır.
+    const n = value => value.toLocaleString("tr-TR");
+    const parts = [`${n(report.created)} ürün açıldı${report.opening ? `, ${n(report.opening)} ürüne açılış stoku yazıldı` : ""}${report.updated ? `, ${n(report.updated)} ürün güncellendi` : ""}.`];
+    if (report.skippedTotal) parts.push(`${n(report.skippedTotal)} satır atlandı (${[...new Set(report.skipped.map(item => item.reason))].join("; ")}).`);
+    if (report.vatUnknown) parts.push(`${n(report.vatUnknown)} satırda KDV Oranı tanınmadı, boş bırakıldı (faturada seçilir; %0, %1, %10, %20 olabilir).`);
+    if (report.codeCleared) parts.push(`${n(report.codeCleared)} satırda Stok Kodu başka üründe kullanıldığı için kod boş bırakıldı.`);
+    report.message = parts.join(" ");
     changed(user, {});
     ok(res, report);
   });
@@ -616,8 +660,8 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     },
     // v2.0.16 (müşteri): "Stoğa Mal Alışı"nda stokta olmayan ürün için kart, faturanın kaydıyla AYNI işlemde açılır.
     // Aynı ad ve birimde kart varsa o kullanılır (çift kart açılmaz).
-    createFor(user, { name, unit, code = "", salePrice = 0, unitPrice = 0, invoiceId = "" }) {
-      const input = itemInput({ name, unit, code, salePrice, unitPrice, kind: "product" });
+    createFor(user, { name, unit, code = "", salePrice = 0, unitPrice = 0, vatRate = null, invoiceId = "" }) {
+      const input = itemInput({ name, unit, code, salePrice, unitPrice, vatRate, kind: "product" });
       const existing = store.get("SELECT id FROM stock_items WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE AND unit = ? COLLATE NOCASE", input.name, input.unit);
       if (existing) return { id: existing.id, created: false };
       assertCodeFree(input.code);
@@ -660,9 +704,20 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     publish: (user, itemIds) => itemIds.forEach(itemId => changed(user, { itemId })),
   };
   // Sol menüdeki rozet: kritik seviyedeki ya da tükenen (kritik seviyesi tanımlı) ürün sayısı ve adları.
+  // 2.4.3 H2 (fatura yükte hız testi): rozet açık her pencereden, başkasının her kaydından sonra istenir (5 pencerede 10 dk'da 1.619 istek);
+  // her istek bütün stok hareketlerini okuyordu (20.000 hareket ~35 ms). Sonuç veri tabanına bir yazma olana kadar saklanır: total_changes()
+  // bu bağlantının her INSERT/UPDATE/DELETE'inde artar, data_version başka bir bağlantının kesinleşen yazmasında değişir (fatura listesindeki
+  // ödeme durumu önbelleğiyle aynı kural). Veri tabanı işleminin içinde (yazma henüz kesinleşmemiş, geri alınabilir) önbellek ne okunur ne yazılır.
+  let alertsCache = { key: "", value: null };
   function alerts() {
-    const data = list({ role: "admin" }, { state: "low" });
-    return data.items.map(item => ({ id: item.id, name: item.name, qty: item.qty, unit: item.unit, minQty: item.minQty }));
+    const inTx = store.inTransaction;
+    const key = `${store.get("SELECT total_changes() AS n").n}|${store.get("PRAGMA data_version").data_version}`;
+    if (!inTx && alertsCache.key === key && alertsCache.value) return alertsCache.value.map(item => ({ ...item }));
+    // 2.4.3 B9 (fatura paketi): göstergeler ayrışık (Kritik / Tükenen / Eksi); rozet dikkat isteyen hepsini (item.low) kapsar.
+    const data = list({ role: "admin" }, {});
+    const value = data.items.filter(item => item.low).map(item => ({ id: item.id, name: item.name, qty: item.qty, unit: item.unit, minQty: item.minQty }));
+    if (!inTx) alertsCache = { key, value: value.map(item => ({ ...item })) };
+    return value;
   }
   const deletedList = () =>
     store.all("SELECT i.id, i.name, i.unit, i.deleted_at AS deletedAt, COALESCE(u.display_name, '') AS actorName FROM stock_items i LEFT JOIN users u ON u.id = i.deleted_by WHERE i.deleted_at IS NOT NULL").map(item => ({

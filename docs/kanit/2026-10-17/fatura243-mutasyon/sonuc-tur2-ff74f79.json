@@ -1,0 +1,219 @@
+{
+ "root": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/fatura243-mutasyon-tur2",
+ "results": [
+  {
+   "id": "B1-sira",
+   "what": "Tümünü Gönder istemcinin sırasıyla (sıralama yok)",
+   "test": "test/ebelge-243-gonderim.test.mjs",
+   "exit": 1,
+   "tests": 7,
+   "pass": 5,
+   "fail": 2,
+   "caught": true,
+   "failedTests": [
+    "B1: Tümünü Gönder (liste sırası yeniden eskiye) belgeleri tarih + yazım sırasıyla numarala",
+    "B1 komşu: aynı serideki eski belge gönderilemezse daha yeni numarasız belge bu turda numar"
+   ]
+  },
+  {
+   "id": "B1-kronoloji",
+   "what": "eski numarasız belge düşünce yenisi bekletilmez",
+   "test": "test/ebelge-243-gonderim.test.mjs",
+   "exit": 1,
+   "tests": 7,
+   "pass": 6,
+   "fail": 1,
+   "caught": true,
+   "failedTests": [
+    "B1 komşu: aynı serideki eski belge gönderilemezse daha yeni numarasız belge bu turda numar"
+   ]
+  },
+  {
+   "id": "B3-toplu",
+   "what": "toplu kesimde otomatik gönderim kapalıyken bekletme yok",
+   "test": "test/ebelge-243-gonderim.test.mjs",
+   "exit": 1,
+   "tests": 7,
+   "pass": 6,
+   "fail": 1,
+   "caught": true,
+   "failedTests": [
+    "B3: Seçilenleri Kaydet (otomatik gönderim kapalı) e-Arşiv taslağını numarasız Gönderilecek"
+   ]
+  },
+  {
+   "id": "H1-liste",
+   "what": "Gönderilecekler yalnız 'waiting'",
+   "test": "test/ebelge-243-gonderim.test.mjs",
+   "exit": 1,
+   "tests": 7,
+   "pass": 5,
+   "fail": 2,
+   "caught": true,
+   "failedTests": [
+    "H1: EDM'ye ulaşılamazken Kaydet ve Gönder — numara verilir, neden belgede yazar, Gönderile",
+    "H4: yeniden kullanılan bağlantı koparsa yan etkisiz çağrı (mükellef sorgusu, durum) bir ke"
+   ]
+  },
+  {
+   "id": "H1-ileti",
+   "what": "gönderim hatası belgeye yazılmaz",
+   "test": "test/ebelge-243-gonderim.test.mjs",
+   "exit": 1,
+   "tests": 7,
+   "pass": 6,
+   "fail": 1,
+   "caught": true,
+   "failedTests": [
+    "H1: EDM'ye ulaşılamazken Kaydet ve Gönder — numara verilir, neden belgede yazar, Gönderile"
+   ]
+  },
+  {
+   "id": "H4-yineleme-yok",
+   "what": "kopan bağlantıda yan etkisiz çağrı yinelenmez",
+   "test": "test/ebelge-243-gonderim.test.mjs",
+   "exit": 1,
+   "tests": 7,
+   "pass": 6,
+   "fail": 1,
+   "caught": true,
+   "failedTests": [
+    "H4: yeniden kullanılan bağlantı koparsa yan etkisiz çağrı (mükellef sorgusu, durum) bir ke"
+   ]
+  },
+  {
+   "id": "H4-gonderim-yinelenir",
+   "what": "gönderim (yan etkili) de yinelenir",
+   "test": "test/ebelge-243-gonderim.test.mjs",
+   "exit": 1,
+   "tests": 7,
+   "pass": 6,
+   "fail": 1,
+   "caught": true,
+   "failedTests": [
+    "H4: yeniden kullanılan bağlantı koparsa yan etkisiz çağrı (mükellef sorgusu, durum) bir ke"
+   ]
+  },
+  {
+   "id": "H7-yoklama",
+   "what": "iptalde durum yeniden sorulmaz",
+   "test": "test/ebelge-243-gonderim.test.mjs",
+   "exit": 1,
+   "tests": 7,
+   "pass": 6,
+   "fail": 1,
+   "caught": true,
+   "failedTests": [
+    "H7: gönderilmiş e-Arşiv hemen İptal Et — durum kendiliğinden yeniden sorulur, iptal edilir"
+   ]
+  },
+  {
+   "id": "H7-yazim",
+   "what": "sorgulanan durum belgeye yazılmaz",
+   "test": "test/ebelge-243-gonderim.test.mjs",
+   "exit": 1,
+   "tests": 7,
+   "pass": 6,
+   "fail": 1,
+   "caught": true,
+   "failedTests": [
+    "H7: gönderilmiş e-Arşiv hemen İptal Et — durum kendiliğinden yeniden sorulur, iptal edilir"
+   ]
+  },
+  {
+   "id": "H8-koru",
+   "what": "düzenleme oranı yazmaz (NULL'a çeker)",
+   "test": "test/fatura-243-stok-kdv.test.mjs",
+   "exit": 1,
+   "tests": 5,
+   "pass": 4,
+   "fail": 1,
+   "caught": true,
+   "failedTests": [
+    "H8: kartta KDV oranı yazılır, faturanın ürün aramasında gelir; düzenlemede gövdede yoksa k"
+   ]
+  },
+  {
+   "id": "H8-arama",
+   "what": "fatura ürün araması oranı vermez",
+   "test": "test/fatura-243-stok-kdv.test.mjs",
+   "exit": 1,
+   "tests": 5,
+   "pass": 2,
+   "fail": 3,
+   "caught": true,
+   "failedTests": [
+    "H8: kartta KDV oranı yazılır, faturanın ürün aramasında gelir; düzenlemede gövdede yoksa k",
+    "H8: Excel / Sheets yüklemesi — KDV Oranı kolonu tanınır (%20, 1, 0,10); tanınmayan değer b",
+    "H8: faturadan açılan yeni stok kartı kalemin KDV oranını alır; eski veri (NULL) faturayı b"
+   ]
+  },
+  {
+   "id": "H8-excel-guncelle",
+   "what": "Excel güncellemede boş hücre oranı siler",
+   "test": "test/fatura-243-stok-kdv.test.mjs",
+   "exit": 1,
+   "tests": 5,
+   "pass": 4,
+   "fail": 1,
+   "caught": true,
+   "failedTests": [
+    "H8: Excel / Sheets yüklemesi — KDV Oranı kolonu tanınır (%20, 1, 0,10); tanınmayan değer b"
+   ]
+  },
+  {
+   "id": "H8-yeni-kart",
+   "what": "faturadan açılan kart oranı almaz",
+   "test": "test/fatura-243-stok-kdv.test.mjs",
+   "exit": 1,
+   "tests": 5,
+   "pass": 4,
+   "fail": 1,
+   "caught": true,
+   "failedTests": [
+    "H8: faturadan açılan yeni stok kartı kalemin KDV oranını alır; eski veri (NULL) faturayı b"
+   ]
+  },
+  {
+   "id": "B9-tukenen",
+   "what": "eksi ürün Tükenen'de de sayılır",
+   "test": "test/fatura-243-stok-kdv.test.mjs",
+   "exit": 1,
+   "tests": 5,
+   "pass": 4,
+   "fail": 1,
+   "caught": true,
+   "failedTests": [
+    "B9: göstergeler ayrışık (Kritik / Tükenen / Eksi Stokta); süzgeç satırları = gösterge; uya"
+   ]
+  },
+  {
+   "id": "B9-uyari",
+   "what": "uyarı listesi yalnız kritik seviyedekiler",
+   "test": "test/fatura-243-stok-kdv.test.mjs",
+   "exit": 1,
+   "tests": 5,
+   "pass": 4,
+   "fail": 1,
+   "caught": true,
+   "failedTests": [
+    "B9: göstergeler ayrışık (Kritik / Tükenen / Eksi Stokta); süzgeç satırları = gösterge; uya"
+   ]
+  },
+  {
+   "id": "B8-gunde-bir",
+   "what": "bildirim her istekte gösterilir",
+   "test": "test/fatura-243-stok-kdv.test.mjs",
+   "exit": 1,
+   "tests": 5,
+   "pass": 4,
+   "fail": 1,
+   "caught": true,
+   "failedTests": [
+    "B8: Kritik stok bildirimi kullanıcı başına günde bir kez (yeni oturum / başka kullanıcı / "
+   ]
+  }
+ ],
+ "caught": 16,
+ "total": 16
+}

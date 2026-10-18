@@ -1,0 +1,32 @@
+{
+  "ad": "fatura243-npm-test",
+  "komut": "npm test",
+  "commit": "6398001c78f9b38684765f1f5077c6f982136062",
+  "dal": "worktree-agent-afe4a76beaa9ff8d6",
+  "kirli": 0,
+  "izlenmeyen": 32,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-17T22:43:14.960Z",
+  "sure_sn": 1047.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2701,
+    "gecen": 2701,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-17/fatura243-npm-test.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-afe4a76beaa9ff8d6",
+  "ham_cikti_sha256": "dd12ba9879c3f964588c3d76e1ebee9e23b1db0d2164240e8703f118bac94cec",
+  "ham_cikti_bayt": 937770
+}

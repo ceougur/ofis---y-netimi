@@ -66,6 +66,9 @@ jobs:
       - run: npm run test:senaryo-ebelge-242
       - run: npm run test:senaryo-ebelge-243
       - run: npm run test:senaryo-form-izolasyon-243
+      - run: npm run test:senaryo-fatura-243
+      - run: npm run test:senaryo-cari-243
+      - run: npm run test:senaryo-banka-rapor-243
       - run: npm run test:banka-230-hareket-yaris
       - run: npm run test:banka-210-saat
       - run: npm run test:banka-210-kart-onbellek
@@ -73,6 +76,12 @@ jobs:
       - run: npm run test:acilis-yanit-yaris
       - run: npm run test:banka-210-ekran-aciklama
       - run: npm run test:guncelleme-gercek
+      - run: npm run test:hiz-243-arka-plan
+      - run: npm run test:fatura-243-daha-fazla-yaris
+      - run: npm run test:fatura-243-duzen-kaymasi
+      - run: npm run test:gg243-arka-plan-yazma
+      - run: npm run test:gg243-odak-dugme
+      - run: npm run test:gg243-kopyala
 
   windows:
     name: Windows kurulum paketi

@@ -457,6 +457,12 @@
           .then(mode => {
             const intro = dialog.querySelector(".hof-modal-text");
             if (intro && mode === "none") intro.textContent = transferIntro(toCash, false);
+            // 2.4.3 (keşif A7): hiç banka hesabı yokken aktarım kaydedilmez (önceden onaysız yazılıp "Hesabı Atanmamış Eski Hareketler"e düşüyor,
+            // hiçbir toplama girmiyordu). Form "Banka Hesabı Tanımla" yolunu gösterir (yetkisizde "tanımlı değil, yöneticinize başvurun").
+            if (mode === "define") {
+              if (intro) intro.textContent = `Banka hesabı tanımlı değil. ${toCash ? "Bankadan kasaya aktarım" : "Kasadan bankaya yatırma"} tanımlı bir banka hesabına yazılır; önce aşağıdan banka hesabını tanımlayın, form kapanmaz.`;
+              form.querySelector("[data-bank-define-box] .hof-bank-pick-note")?.remove();
+            }
           })
           .catch(() => null);
         form.addEventListener("change", event => {
@@ -464,8 +470,14 @@
           const intro = dialog.querySelector(".hof-modal-text");
           if (intro) intro.textContent = transferIntro(toCash, true, event.target.value === "none");
         });
+        // Tanımlanan hesap seçiciye gelince açıklama hesaplı metne döner.
+        form.addEventListener("hof-bank-defined", () => {
+          const intro = dialog.querySelector(".hof-modal-text");
+          if (intro) intro.textContent = transferIntro(toCash, true);
+        });
       },
-      onSubmit: async data => {
+      onSubmit: async (data, modal) => {
+        if (modal?.dialog?.querySelector("form [data-bank-define-box]")) throw new Error("Banka hesabı tanımlı değil. Önce “Banka Hesabı Tanımla” ile hesabı tanımlayın; aktarım o hesaba yazılır.");
         const send = flags => HOF.api("/api/workspace/cash/transfer", { method: "POST", body: { ...data, direction, ...flags }, requestId });
         const result = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
         HOF.toast(result?.replayed ? "Bu transfer zaten kaydedildi; ikinci kez yazılmadı." : toCash ? "Bankadan kasaya aktarım yazıldı." : "Kasadan bankaya yatırma yazıldı.", { type: result?.replayed ? "info" : "success" });
@@ -642,12 +654,12 @@
       }
       if (entry.source === "account" || entry.source === "stock") {
         const account = entry.source === "account";
-        const label = account ? `${entry.kind === "in" ? "Cari tahsilat" : "Cariye ödeme"} · ${entry.accountName}${entry.description ? ` · ${entry.description}` : ""}` : entry.description;
+        const label = account ? `${entry.kind === "in" ? "Cari Tahsilat" : "Cariye Ödeme"} · ${entry.accountName}${entry.description ? ` · ${entry.description}` : ""}` : entry.description;
         const open = account ? `<button type="button" class="hof-mini" data-account="${esc(entry.accountId)}" title="Cari kartını aç" aria-label="Cari kartını aç">↗</button>` : `<button type="button" class="hof-mini" data-stock="${esc(entry.itemId)}" title="Stok kartını aç" aria-label="Stok kartını aç">↗</button>`;
         return `<tr data-kind="${esc(entry.kind)}"><td>${esc(HOF.formatDate(entry.date))}</td><td><b>${esc(label)}</b><small>${account ? "Cari kartından" : "Stok hareketinden"} · ${esc(entry.actorName || "—")}${methodTag(entry)}</small></td><td class="num hof-cash-in">${entry.kind === "in" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num hof-cash-out">${entry.kind === "out" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num"><b>${esc(HOF.formatMoney(entry.balance))}</b></td><td class="hof-cash-actions">${open}</td></tr>`;
       }
       const title = payment ? entry.caseTitle || (String(entry.caseKey).startsWith("satir:") ? "" : entry.caseKey) : "";
-      const text = payment ? `Tahsilat${title ? ` · ${title}` : ""}${entry.description ? ` · ${entry.description}` : ""}` : plan ? `${entry.kind === "in" ? "Taksit tahsilatı" : "Taksit ödemesi/iadesi"} · ${entry.planName}${entry.description ? ` · ${entry.description}` : ""}` : entry.description;
+      const text = payment ? `Tahsilat${title ? ` · ${title}` : ""}${entry.description ? ` · ${entry.description}` : ""}` : plan ? `${entry.kind === "in" ? "Taksit Tahsilatı" : "Taksit Ödemesi / İadesi"} · ${entry.planName}${entry.description ? ` · ${entry.description}` : ""}` : entry.description;
       const origin = payment ? "Detay kartından" : plan ? "Taksit kartından" : entry.transferId ? (entry.kind === "in" ? "Bankadan kasaya aktarım" : "Kasadan bankaya yatırma") : entry.opening ? "Kasa açılışı (devreden nakit)" : entry.kind === "in" ? "Kasaya elle" : "Ödeme";
       // Taksit kartı hareketleri (v2.0.4) kartın kendisinden düzeltilir; buradan kart açılır.
       const actions = plan
@@ -1033,7 +1045,7 @@
   const badges = HOF.refresher(loadBadges, { delay: 600, gap: 3000 });
 
   // ---------- Detay paneli: işlem düğmeleri ve geçmiş ----------
-  const ACTIVITY_ICONS = { note: "✎", phone: "☎", payment: "₺", "plan-entry": "₺", lien: "⚖", task: "✓" };
+  const ACTIVITY_ICONS = { note: "✎", phone: "☎", payment: "₺", "plan-entry": "₺", "account-entry": "₺", lien: "⚖", task: "✓" };
   const describe = item => {
     if (item.type === "note") return esc(item.text);
     if (item.type === "phone") return `${esc(item.label)}: ${esc(item.phone)}`;
@@ -1043,6 +1055,8 @@
       return item.kind === "in"
         ? `${esc(HOF.formatMoney(item.amount))} ${item.opening ? "açılış (devir; Excel'de ödenmiş, Kasa'da yok)" : "taksit tahsilatı"}${item.itemSeq ? ` · ${esc(item.itemSeq)}. taksit` : ""}${item.note ? ` · ${esc(item.note)}` : ""}${item.receiptNo ? ` · Makbuz No ${esc(item.receiptNo)}` : ""} (${esc(HOF.formatDate(item.date))})`
         : `${esc(HOF.formatMoney(item.amount))} taksit ödemesi / iadesi${item.note ? ` · ${esc(item.note)}` : ""} (${esc(HOF.formatDate(item.date))})`;
+    // 2.4.3 (keşif A2): kayda bağlı carinin tahsilat / ödemesi (kayıt kartından girilen tahsilat cari defterine yazılır).
+    if (item.type === "account-entry") return `${esc(HOF.formatMoney(item.amount))} ${item.kind === "in" ? "cari tahsilatı" : "cariye ödeme"}${item.method && item.method !== "cash" ? ` (${esc(HOF.methodLabel(item.method, item.kind))})` : ""} · ${item.accountRefNo ? `No ${esc(item.accountRefNo)} ` : ""}${esc(item.accountName || "")}${item.note ? ` · ${esc(item.note)}` : ""}${item.receiptNo ? ` · Makbuz No ${esc(item.receiptNo)}` : ""} (${esc(HOF.formatDate(item.date))})`;
     if (item.type === "lien") return `${esc(item.title)} · düşüm ${esc(HOF.formatDate(item.expiresAt))}`;
     if (item.type === "task") return `${item.priority === "urgent" && item.status !== "completed" ? '<span class="hof-chip hof-chip-urgent">Acil</span> ' : item.priority === "high" && item.status !== "completed" ? '<span class="hof-chip hof-chip-high">Yüksek</span> ' : ""}Görev: ${esc(item.title)} → ${esc(item.assignee)}${item.status === "completed" ? " ✓" : ""}`;
     return "";
@@ -1126,6 +1140,7 @@
   function gotoActivityRecord(item) {
     if (item.type === "plan-entry") return item.planId && HOF.plans?.open ? HOF.plans.open(item.planId) : HOF.toast("Taksit kartı bulunamadı.", { type: "error" });
     if (item.type === "task") return openTasks(item.status === "completed" ? "completed" : HOF.can("tasks.viewAll") ? "open" : "mine", { focus: item.id });
+    if (item.type === "account-entry") return item.accountId && HOF.accounts?.open ? HOF.accounts.open(item.accountId) : HOF.toast("Cari bulunamadı.", { type: "error" });
     return null;
   }
 
@@ -1171,6 +1186,9 @@
         if (item.type === "plan-entry")
           return `<span class="hof-activity-tools">${item.kind === "in" && !item.opening ? `<a class="hof-mini hof-mini-text" href="/api/workspace/plans/${encodeURIComponent(item.planId)}/entries/${encodeURIComponent(item.id)}/makbuz.pdf" target="_blank" rel="noopener" title="Makbuz PDF">Makbuz</a>` : ""}${item.planId && HOF.can("plans.view") ? `<button type="button" class="hof-mini hof-mini-text" data-goto="${esc(item.id)}" title="Taksit kartını aç">Kayda Git</button>` : ""}</span>`;
         if (item.type === "task") return `<span class="hof-activity-tools"><button type="button" class="hof-mini hof-mini-text" data-goto="${esc(item.id)}" title="Görevler listesini aç">Kayda Git</button></span>`;
+        // Cari hareketi cari kartından düzeltilir: Makbuz + "Kayda Git" (cari kartı).
+        if (item.type === "account-entry")
+          return `<span class="hof-activity-tools"><a class="hof-mini hof-mini-text" href="/api/workspace/accounts/${encodeURIComponent(item.accountId)}/entries/${encodeURIComponent(item.id)}/makbuz.pdf" target="_blank" rel="noopener" title="Makbuz PDF">Makbuz</a>${HOF.accounts?.open ? `<button type="button" class="hof-mini hof-mini-text" data-goto="${esc(item.id)}" title="Cari kartını aç">Kayda Git</button>` : ""}</span>`;
         return "";
       };
       const edited = item => (item.updatedAt ? ` · düzeltildi${item.updatedByName ? ` (${esc(item.updatedByName)})` : ""}` : "");
@@ -1318,9 +1336,29 @@
       // hatırlatma yardımcıdır
     }
   }
+  // 2.4.3 (keşif A17): klavyeyle gezen kullanıcı için sayfanın en başında "Tabloya Atla" ve "Menüye Atla" (yalnız odaklanınca görünür);
+  // önceden Tab ana alanın üstünden başlıyor, sol menüye ve kayıt tablosuna onlarca duraktan sonra ulaşılıyordu.
+  function installSkipLinks() {
+    if (document.getElementById("hof-skip")) return;
+    const nav = HOF.el("nav", { id: "hof-skip", class: "hof-skip", "aria-label": "Hızlı Geçiş", "data-hof-ui": "" }, '<a href="#" data-skip="table">Tabloya Atla</a><a href="#" data-skip="menu">Menüye Atla</a>');
+    nav.addEventListener("click", event => {
+      const link = event.target.closest("[data-skip]");
+      if (!link) return;
+      event.preventDefault();
+      const target =
+        link.dataset.skip === "menu"
+          ? document.querySelector("#hof-sidecard [data-action]") || document.querySelector(".sidebar a, .sidebar button")
+          : document.querySelector(".cases-panel .search-field input") || document.querySelector(".dynamic-table tbody tr") || document.querySelector(".dynamic-table");
+      if (!target) return;
+      if (!target.matches("a, button, input, select, textarea, [tabindex]")) target.tabIndex = -1;
+      target.focus();
+    });
+    document.body.prepend(nav);
+  }
   HOF.whenReady(() => {
     loadUsers();
     setTimeout(() => nudgeRecovery(), 6000);
+    installSkipLinks();
     HOF.onDom(() => {
       installSidebar();
       installDetailActions();

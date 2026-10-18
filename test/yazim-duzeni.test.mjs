@@ -146,6 +146,31 @@ describe("yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük", () 
     const found = files.flatMap(file => violations(file));
     assert.deepEqual(found, [], `Yeni etiketler başlık yazımıyla yazılmalı:\n${found.join("\n")}`);
   });
+  // 2.4.3 (keşif A15): hareket türü adları (cari defteri, Kasa ekranı ve Kasa raporu "İşlem/Açıklama" kolonu, makbuz) ve programın varsayılan
+  // adları ("Çalışma Verisi" sayfa başlığı, yönetim paneli alt başlığı) da addır. Denetim yalnız bu adların üretildiği yerlere bakar: label/text
+  // atamasındaki koşullu iki metin ("A" : "B") ve varsayılan ad (|| "…"); cümle süzgeci (eligible) aynıdır.
+  it("hareket türü adları ve programın varsayılan adları kurala uyuyor", () => {
+    const SITES = [
+      ["server/lib/accounts.mjs", /\blabel:/],
+      ["server/lib/cash-report.mjs", /\btext: \[/],
+      ["server/lib/plan-report.mjs", /entry\.label \|\|/],
+      ["server/routes/accounts.mjs", /\blabel: entry\.kind/],
+      ["client/assets/hof-workspace.js", /const (label|text) = (account|payment)/],
+      ["server/lib/dataset.mjs", /const label = /],
+      ["server/lib/client-state.mjs", /activeSourceLabel:/],
+      ["client/assets/hof-sources.js", /\|\| "Çalışma/],
+    ];
+    const found = [];
+    for (const [file, site, values] of SITES) {
+      for (const line of read(file).split(/\r?\n/).filter(text => site.test(text))) {
+        const texts = [...line.matchAll(/\?\s*"([^"\n]{3,50})"\s*:\s*"([^"\n]{3,50})"/g)].flatMap(m => [m[1], m[2]]).concat([...line.matchAll(/\|\|\s*"([^"\n]{3,50})"/g)].map(m => m[1]));
+        if (values) texts.push(...[...line.matchAll(/:\s*"([^"\n]{3,50})"/g)].map(m => m[1]));
+        for (const text of texts) if (eligible(text)) found.push(`${file}: “${text}” → “${titleCase(text)}”`);
+      }
+    }
+    for (const m of read("client/admin.html").matchAll(/class="adm-brand"[\s\S]{0,300}?<small>([^<]{3,40})<\/small>/g)) if (eligible(m[1])) found.push(`client/admin.html (marka alt başlığı): “${m[1]}”`);
+    assert.deepEqual(found, [], `Hareket türü ve varsayılan adlar başlık yazımıyla yazılmalı:\n${found.join("\n")}`);
+  });
   it("rapor, PDF ve Excel başlıklarında kurala uymayan ad yok", () => {
     const files = readdirSync(new URL("server/routes/", ROOT)).map(name => `server/routes/${name}`);
     const found = files.flatMap(file => violations(file, { server: true }));

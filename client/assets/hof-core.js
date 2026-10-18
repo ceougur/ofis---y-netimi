@@ -93,13 +93,31 @@
   // data-pick…), name/id ya da aria-label ile yeniden bulunur. Kullanım: HOF.swap(root, html) ya da HOF.keepFocus(root, fn).
   const FOCUS_KEYS = ["data-filter", "data-q", "data-pick", "data-rc-search", "data-field", "data-range", "data-open-account", "data-open-plan", "data-case-action", "data-case-collect", "data-action", "data-act", "data-pulse", "data-pulse-go", "data-composer", "data-body", "data-current", "data-opt", "name", "id", "aria-label"];
   const TEXT_INPUT = /^(text|search|tel|email|url|number|password|date|datetime-local|month)?$/;
-  HOF.focusKey = node => {
+  // Birincil anahtar (eski davranış): ilk bulunan FOCUS_KEYS niteliği.
+  const primaryFocusKey = node => {
     if (!node || !node.getAttribute) return "";
     for (const key of FOCUS_KEYS) {
       const value = node.getAttribute(key);
       if (value !== null) return `${node.tagName.toLowerCase()}[${key}="${CSS.escape(value)}"]`;
     }
     return "";
+  };
+  // Gözden geçirme 2.4.3 (gg243 #4, A10 yan etkisi): anahtar yalnız data-act olduğunda satır düğmelerinde odak BAŞKA satırın aynı düğmesine geçiyordu
+  // (fatura 3 kalem: 3. kalemin ×'ine Enter → odak 1. kalemin ×'i, ikinci Enter 1. kalemi siliyordu). Anahtar artık satırı ayırt eden bütün data-*
+  // nitelikleriyle (data-l, data-plan, data-id …) eşleşir.
+  HOF.focusKey = node => {
+    const primary = primaryFocusKey(node);
+    if (!primary) return "";
+    const extras = [...node.attributes].filter(attr => attr.name.startsWith("data-") && !primary.includes(`[${attr.name}=`)).map(attr => `[${attr.name}="${CSS.escape(attr.value)}"]`);
+    return `${primary}${extras.join("")}`;
+  };
+  // Yeniden çizimde öğe tam anahtarla bulunamazsa (ör. değişken bir data-* değeri) birincil anahtara ancak öğe hem önceki hem yeni çizimde TEK ise
+  // dönülür; değilse odak hiçbir öğeye verilmez (başka satırın düğmesine asla).
+  const refind = (root, snap) => {
+    const exact = root.querySelector(snap.key);
+    if (exact || !snap.primary || snap.primary === snap.key || !snap.unique) return exact;
+    const loose = root.querySelectorAll(snap.primary);
+    return loose.length === 1 ? loose[0] : null;
   };
   HOF.keepFocus = (root, render) => {
     const active = document.activeElement;
@@ -108,7 +126,8 @@
     const button = !field && root && active && active !== document.body && root.contains(active) && active.tagName === "BUTTON";
     const inside = field || button;
     const text = field && active.tagName !== "SELECT" && (active.tagName === "TEXTAREA" || TEXT_INPUT.test(active.type || ""));
-    const snap = inside ? { key: HOF.focusKey(active), text, value: active.value, start: text ? active.selectionStart : null, end: text ? active.selectionEnd : null, scroll: root.scrollTop } : null;
+    const primary = inside ? primaryFocusKey(active) : "";
+    const snap = inside ? { key: HOF.focusKey(active), primary, unique: Boolean(primary) && root.querySelectorAll(primary).length === 1, text, value: active.value, start: text ? active.selectionStart : null, end: text ? active.selectionEnd : null, scroll: root.scrollTop } : null;
     // 2.4.3 (kullanıcı kararı, form durumu izole): yeniden çizim kullanıcının yazdığı (kaydedilmemiş) değerleri ezmez.
     const drafts = root ? draftSnapshot(root) : [];
     const out = render();
@@ -119,7 +138,7 @@
       if (now && now.matches?.(".hof-modal-close") && now.closest(".hof-modal")?.contains(root)) root.querySelector("[autofocus], input[type=search]")?.focus({ preventScroll: true });
       return out;
     }
-    const next = root.querySelector(snap.key);
+    const next = refind(root, snap);
     if (!next || next.disabled) return out;
     if (button) {
       next.focus({ preventScroll: true });
@@ -203,7 +222,31 @@
   // adım 2 ilk denemede yakaladı). Sorgu niteliğindeki yazmalar (hesapla, mükellef sorgula, önizle, bağlantıyı dene) kaydedilmemiş sayılmayı
   // kaldırmaz; yalnız geri yazım işaretlerini kaldırır (yeniden çizimde programın yazdığı değer görünür).
   const QUERY_WRITE = /\/(calc|check-user|preview|view-preview|test|aliases|search|check)(\?|$)/;
-  function writeOrigin() {
+  // Gözden geçirme 2.4.3 (gg243 #3): arka planda giden yazma (ör. kritik stok "bildirildi" POST'u) odaktaki formun kirli taslağını "kaydedildi"
+  // sayıyordu (odak formdaydı); Esc formu sorusuz kapatıyor, yazılanlar kayboluyordu. Artık taslağı yalnız KULLANICININ başlattığı yazma kapatır:
+  // background işaretli istek hiçbir pencereye yazılmaz; işaretsiz istek de ancak yakın zamanda bir "işlem hareketi" (düğme / bağlantı / seçim kutusu
+  // tıklaması, Enter, Boşluk, form gönderimi) olduysa sayılır — metin alanına tıklamak ya da yazmak işlem hareketi değildir (zamanlayıcıyla ya da
+  // başka pencereden gelen olayla giden yazma forma dokunmaz).
+  const COMMIT_WINDOW_MS = 15000;
+  let lastCommitAt = -Infinity;
+  const COMMIT_TARGET = 'button, a, [role="button"], [role="tab"], [role="menuitem"], select, input[type="checkbox"], input[type="radio"], input[type="submit"], input[type="button"], input[type="file"]';
+  const noteCommit = () => {
+    lastCommitAt = performance.now();
+  };
+  document.addEventListener("pointerdown", event => event.target?.closest?.(COMMIT_TARGET) && noteCommit(), true);
+  document.addEventListener("click", event => event.target?.closest?.(COMMIT_TARGET) && noteCommit(), true);
+  document.addEventListener("submit", noteCommit, true);
+  document.addEventListener("change", event => event.target?.matches?.('select, input[type="checkbox"], input[type="radio"], input[type="file"]') && noteCommit(), true);
+  // Enter (metin kutusunda formu gönderir; çok satırlı alanda yeni satırdır) ve Boşluk (yalnız düğme / seçim kutusu üstünde; yazıda boşluktur).
+  const TYPING = 'textarea, [contenteditable=""], [contenteditable="true"]';
+  const TEXT_FIELD = 'input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="file"])';
+  document.addEventListener("keydown", event => ((event.key === "Enter" && !event.target?.matches?.(TYPING)) || (event.key === " " && !event.target?.matches?.(`${TYPING}, ${TEXT_FIELD}`))) && noteCommit(), true);
+  HOF.__commitWindow = { ms: COMMIT_WINDOW_MS, since: () => performance.now() - lastCommitAt };
+  // Sorgu niteliğindeki yazma (hesapla / önizle: yazarken de gider) taslağı kapatmaz, yalnız geri yazım işaretlerini kaldırır — eski kural sürer
+  // (işlem hareketi aranmaz); arka plan isteği yine hiçbir pencereye yazılmaz.
+  function writeOrigin(background = false, path = "") {
+    if (background) return null;
+    if (!QUERY_WRITE.test(String(path || "").split("?")[0]) && performance.now() - lastCommitAt > COMMIT_WINDOW_MS) return null;
     const active = document.activeElement;
     return active?.closest?.(".hof-modal") || (lastPressed?.isConnected ? lastPressed.closest?.(".hof-modal") : null) || null;
   }
@@ -292,7 +335,7 @@
     if (!background) return sendApi(path, options);
     const release = await backgroundSlot();
     try {
-      return await sendApi(path, options);
+      return await sendApi(path, { ...options, background: true });
     } finally {
       release();
     }
@@ -300,10 +343,10 @@
   // İstek kimliği (v2.0.22): formun açıldığı anda üretilir, her gönderimde aynı gider; sunucu ikinci gönderimde yeni belge
   // açmaz (server/lib/idempotency.mjs). LAN'da (http://192.168…) crypto.randomUUID yoktur; getRandomValues her yerde var.
   HOF.requestId = () => Array.from(crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, "0")).join("");
-  const sendApi = async (path, { method = "GET", body, signal, timeoutMs = 30000, requestId = "" } = {}) => {
+  const sendApi = async (path, { method = "GET", body, signal, timeoutMs = 30000, requestId = "", background = false } = {}) => {
     // 2.4.3: yazma isteğini başlatan pencere (odaktaki ya da son basılan öğenin penceresi); başarılı yazmadan sonra o pencerenin taslağı
-    // "kaydedildi" sayılır (noteWrite).
-    const origin = method !== "GET" ? writeOrigin() : null;
+    // "kaydedildi" sayılır (noteWrite). Arka plan isteği ve kullanıcı hareketi olmadan giden yazma hiçbir pencereye yazılmaz (writeOrigin).
+    const origin = method !== "GET" ? writeOrigin(background, path) : null;
     const init = { method, credentials: "same-origin", headers: { accept: "application/json" }, cache: "no-store" };
     if (requestId) init.headers["x-hof-request"] = requestId;
     if (body !== undefined) {
@@ -403,8 +446,13 @@
     // pencereyi yeniler.
     [/^\/api\/workspace\/bank\b/, ["bank", "cash", "accounts", "invoices", "plans", "cheques"]],
   ];
+  // 2.4.3 H2 (fatura yükte hız testi): yalnız hesaplayan / ön izleyen POST istekleri (fatura toplamı, e-Belge görünüm ön izlemesi, Excel
+  // ön izlemeleri) hiçbir şey yazmaz. Önceden faturada her Tab / miktar değişikliğinde (POST /invoices/calc) "bu ekranda para/stok değişti"
+  // sayılıyor; kritik stok rozeti ve açık para pencereleri beklemeden yeniden isteniyordu (5 pencerede 10 dk'da 1.402 hesap → 1.619 rozet isteği).
+  const READ_ONLY_POSTS = [/^\/api\/workspace\/invoices\/(calc|view-preview)$/, /^\/api\/workspace\/[a-z-]+\/import\/preview$/];
   function noteLedgerChange(path) {
     const clean = String(path || "").split("?")[0];
+    if (READ_ONLY_POSTS.some(pattern => pattern.test(clean))) return;
     const hit = LEDGER_PATHS.find(([pattern]) => pattern.test(clean));
     if (hit) HOF.emit("ledger:changed", { kinds: hit[1], local: true, path: clean });
   }
@@ -641,6 +689,36 @@
     const reading = 1500 + Math.ceil((String(message ?? "").length / READ_CHARS_PER_SECOND) * 1000);
     return Math.min(30000, Math.max(Number(timeout) || 0, type === "error" ? 7000 : 0, action ? 7000 : 0, reading));
   };
+  // Panoya yazma: güvenli bağlamda (https / localhost) Pano API'si; personel bilgisayarı sunucuya http://<ip>:5123 ile bağlanır — orada
+  // navigator.clipboard yoktur → gizli metin kutusu + document.execCommand("copy"). İkisi de olmazsa false (çağıran metni seçili gösterir).
+  HOF.copyText = async text => {
+    try {
+      if (window.isSecureContext && navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch {
+      /* izin yok: yedek yola geçilir */
+    }
+    const active = document.activeElement;
+    const area = document.createElement("textarea");
+    area.value = text;
+    area.setAttribute("readonly", "");
+    area.style.cssText = "position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none";
+    document.body.appendChild(area);
+    let done = false;
+    try {
+      area.focus({ preventScroll: true });
+      area.select();
+      done = document.execCommand("copy") === true;
+    } catch {
+      done = false;
+    } finally {
+      area.remove();
+      if (active?.focus && active.isConnected) active.focus({ preventScroll: true });
+    }
+    return done;
+  };
   HOF.toast = (message, { type = "info", action, timeout = 3600 } = {}) => {
     const host = toastHost();
     const sameKey = `${type}\u0001${String(message)}`;
@@ -661,6 +739,31 @@
         action.onClick();
       };
       node.appendChild(button);
+    }
+    // Kullanıcı kararı 18.10.2026 ("evet kopyala düğmesi ekle"): bildirim tıklamayı geçirdiği için metni fareyle seçilemiyor; hata ve uyarı
+    // bildiriminde "Kopyala" düğmesi TAM metni (EDM kodu dahil, ×N sayacı hariç) panoya yazar.
+    if (["error", "warn", "warning"].includes(type)) {
+      const copy = HOF.el("button", { type: "button", class: "hof-toast-copy", "aria-label": "Bildirimi Kopyala", text: "Kopyala" });
+      copy.onclick = async () => {
+        const done = await HOF.copyText(String(message));
+        if (done) {
+          copy.textContent = "Kopyalandı";
+          setTimeout(() => {
+            if (copy.isConnected) copy.textContent = "Kopyala";
+          }, 1800);
+          return;
+        }
+        // Pano kapalı (güvenli olmayan bağlam, izin yok): metin seçili bir kutuda gösterilir; Ctrl+C ile kopyalanır.
+        let box = node.querySelector(".hof-toast-copybox");
+        if (!box) {
+          box = HOF.el("textarea", { class: "hof-toast-copybox", readonly: "readonly", rows: "3", "aria-label": "Bildirim Metni" });
+          box.value = String(message);
+          node.appendChild(box);
+        }
+        box.focus();
+        box.select();
+      };
+      node.appendChild(copy);
     }
     const close = HOF.el("button", { type: "button", class: "hof-toast-close", "aria-label": "Bildirimi kapat", text: "×" });
     close.onclick = () => node.remove();

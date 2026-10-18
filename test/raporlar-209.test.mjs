@@ -162,12 +162,13 @@ describe("Raporlar penceresi uçları (tam yığın)", () => {
     assert.equal((await promiseOf()).amount, 1200, "düzeltme ve tahsilat geri alınınca eski hâli");
   });
 
-  it("Vade takip yetkisi: personel ve muhasebe göremez; uzman görür; ANLIK DURUM verilen personel görür", async () => {
+  it("Vade takip yetkisi: personel göremez; muhasebe (2.4.3 H9: Finans Raporları varsayılan) görür; uzman görür; ANLIK DURUM verilen personel görür", async () => {
     const personel = await createUser(server, admin, { username: "per209" });
     const muhasebe = await createUser(server, admin, { username: "muh209", role: "muhasebe" });
     const uzman = await createUser(server, admin, { username: "uzm209", role: "avukat" });
     assert.equal((await personel.get("/api/workspace/overview/vade-takip")).status, 403);
-    assert.equal((await muhasebe.get("/api/workspace/overview/vade-takip")).status, 403);
+    // 2.4.3 H9 (bilerek güncellendi; kullanıcı kararı 18.10.2026): muhasebe Finans Raporları'nı varsayılan olarak görür.
+    assert.equal((await muhasebe.get("/api/workspace/overview/vade-takip")).status, 200);
     assert.equal((await personel.raw("GET", "/api/workspace/overview/vade-takip.pdf")).status, 403);
     const expert = await uzman.get("/api/workspace/overview/vade-takip?preset=open");
     assert.equal(expert.status, 200);

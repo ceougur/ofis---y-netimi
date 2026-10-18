@@ -189,10 +189,40 @@
   }
 
   let node = null;
+  // 2.4.3 (keşif A14): şerit sayfa listesi gelince çizilir; geç gelirse tabloyu ve detay kartını aşağı itiyordu (düzen kayması). Bu
+  // kullanıcıya son açılışta şerit göründüyse liste gelene kadar aynı yükseklikte boş bir yer tutucu durur (is-pending); liste gelince
+  // içi dolar. Hatırlanan bilgi yalnız bu tarayıcıda, kullanıcı başına (okunamazsa yer tutucu yok — eski davranış).
+  const seenKey = () => `hof-pages-seen:${HOF.user?.id || "?"}`;
+  const rememberSeen = shown => {
+    try {
+      if (shown) localStorage.setItem(seenKey(), "1");
+      else localStorage.removeItem(seenKey());
+    } catch {
+      // depolama kapalı: yer tutucu kullanılmaz
+    }
+  };
+  const seenBefore = () => {
+    try {
+      return localStorage.getItem(seenKey()) === "1";
+    } catch {
+      return false;
+    }
+  };
+  let placeholder = false;
   const visible = () => {
+    if (!state) return placeholder;
     const current = currentPage();
     return Boolean(state && current && (state.sessions.length > 1 || current.rowCount || current.recordCount || HOF.data?.freeTabs?.size));
   };
+  function holdPlace() {
+    if (state || node || !HOF.user || !seenBefore()) return;
+    placeholder = true;
+    node = HOF.el("section", { id: "hof-pages", class: "hof-pages is-pending", "aria-label": "Sayfalar", "aria-busy": "true" }, '<div class="hof-pages-head"><span>Sayfalar</span></div>');
+    node.addEventListener("click", onClick);
+    node.addEventListener("submit", onSubmit);
+    node.addEventListener("keydown", onKey);
+    place();
+  }
   // İçerik alanının en üstüne (sekme şeridinin üstüne) yerleşir; paket alanı yeniden çizerse DOM izleyicisi düğümü
   // yeniden yerleştirir; içerik yalnızca render() ile değişir.
   function place() {
@@ -213,6 +243,10 @@
   }
 
   function render() {
+    placeholder = false;
+    node?.classList.remove("is-pending");
+    node?.removeAttribute("aria-busy");
+    rememberSeen(visible());
     if (!visible()) {
       node?.remove();
       return;
@@ -419,7 +453,14 @@
   }
 
   HOF.whenReady(() => {
-    load().catch(() => {});
+    holdPlace();
+    load().catch(() => {
+      // Liste okunamadıysa yer tutucu boş bant olarak kalmaz.
+      if (state || !placeholder) return;
+      placeholder = false;
+      node?.remove();
+      node = null;
+    });
     HOF.onDom(place);
     revealPending();
   });

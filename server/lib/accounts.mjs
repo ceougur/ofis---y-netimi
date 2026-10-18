@@ -53,7 +53,7 @@ export function accountLedger(entries = [], plans = []) {
       at: entry.createdAt || "",
       // Çek/senetten gelen satır (v2.0.7): alınan/ciro/karşılıksız açıklamada yazar; etiket evrak olduğunu söyler.
       // v2.0.15: faturadan gelen borç/alacak "Fatura" olarak görünür (açıklamada fatura türü ve numarası yazar).
-      label: origin === "cheque" ? "Çek / senet" : origin === "invoice" && !meta.cash ? "Fatura" : origin === "pos-fee" ? (entry.kind === "in" ? "POS Komisyon İadesi" : entry.method === "bank" ? "POS Komisyon Tahsili" : "POS Komisyon Kesintisi") : origin === "doubtful" ? "Değersiz Alacak" : meta.label,
+      label: origin === "cheque" ? "Çek / Senet" : origin === "invoice" && !meta.cash ? "Fatura" : origin === "pos-fee" ? (entry.kind === "in" ? "POS Komisyon İadesi" : entry.method === "bank" ? "POS Komisyon Tahsili" : "POS Komisyon Kesintisi") : origin === "doubtful" ? "Değersiz Alacak" : meta.label,
       sourceId: entry.sourceId || "",
       // v2.0.17: cari kartından girilen tahsilat/ödemenin "Kapatılacak Fatura" bağı (boş = otomatik, en eski açık fatura).
       invoiceId: entry.invoiceId || "",
@@ -100,7 +100,7 @@ export function accountLedger(entries = [], plans = []) {
         at: entry.createdAt || "",
         // Açılış (devir, v2.0.8): Excel'de programa girmeden önce ödenmiş kısım; alacak tarafına yazılır, Kasa'da yoktur.
         // Çekli ters kayıt (doğrulama T11): taksite sayılmış evrak karşılıksız döndü — iade değil, tahsilatın geri alınması.
-        label: incoming ? `${entry.opening ? "Açılış (devir)" : "Taksit tahsilatı"}${entry.itemSeq ? ` · ${entry.itemSeq}. taksit` : ""}` : entry.chequeId ? "Karşılıksız çek / senet (taksit)" : "Taksit iadesi",
+        label: incoming ? `${entry.opening ? "Açılış (devir)" : "Taksit Tahsilatı"}${entry.itemSeq ? ` · ${entry.itemSeq}. taksit` : ""}` : entry.chequeId ? "Karşılıksız Çek / Senet (taksit)" : "Taksit İadesi",
         note: entry.note || "",
         receiptNo: entry.receiptNo || null,
         debit: incoming ? 0 : amount,
@@ -213,13 +213,15 @@ const STOCK_ROLE_TESTS = [
   ["min", t => /(kritik|minimum|min|asgari|alt limit|uyari)/.test(t)],
   // v2.0.13: satış fiyatı ayrı rol (alış/birim fiyat = maliyet); "satış fiyatı" başlığı birim fiyata düşmez.
   ["salePrice", t => /(satis fiyati|satis fiyat|satis|etiket fiyati|raf fiyati|perakende fiyat)/.test(t) && !/toplam/.test(t)],
+  // 2.4.3 (H8): KDV oranı kolonu ("KDV", "KDV Oranı", "KDV %"); "KDV Dahil Fiyat" gibi fiyat kolonları buraya düşmez.
+  ["vat", t => /(^| )(kdv|kdv orani|kdv oran|kdv yuzdesi|vat|vat rate)( |$)/.test(t) && !/(fiyat|tutar|toplam|dahil|haric|matrah)/.test(t)],
   ["price", t => /(fiyat|fiyati|birim fiyat|alis|alis fiyati|maliyet|tutar)/.test(t) && !/(toplam|satis)/.test(t)],
   ["qty", t => /(^| )(miktar|miktari|adet|adedi|stok|mevcut|kalan|sayi|sayisi|envanter)( |$)/.test(t) && !/(kod|kritik|min)/.test(t)],
   ["category", t => /(^| )(kategori|kategorisi|grup|grubu|cins|tur|turu|sinif|depo|raf)( |$)/.test(t)],
   ["note", t => /(^| )(not|notu|aciklama|bilgi)( |$)/.test(t)],
   ["name", t => /(^| )(urun|urun adi|urunun adi|malzeme|malzeme adi|stok adi|ad|adi|isim|cinsi|mal|mal adi|kalem)( |$)/.test(t)],
 ];
-export const STOCK_ROLES = Object.freeze(["kind", "code", "name", "unit", "category", "qty", "price", "salePrice", "min", "note", "extra"]);
+export const STOCK_ROLES = Object.freeze(["kind", "code", "name", "unit", "category", "qty", "price", "salePrice", "vat", "min", "note", "extra"]);
 
 function mapWith(tests, headers) {
   const roles = {};

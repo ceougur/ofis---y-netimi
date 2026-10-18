@@ -39,6 +39,8 @@ const tester = await must("cari", admin.post("/api/workspace/accounts", TESTER))
 const row = id => server.app.store.get("SELECT number, status, e_status AS eStatus, profile FROM invoices WHERE id = ?", id);
 const count = () => server.app.store.get("SELECT COUNT(*) AS n FROM invoices").n;
 const lastId = () => server.app.store.get("SELECT id FROM invoices ORDER BY rowid DESC LIMIT 1")?.id;
+// Ders 34: escClose günlüğüne o anki veri tabanı sayıları (soru çıktığında form gerçekten kaydedilmemiş mi).
+globalThis.__escKapatEk = () => ({ fatura: server.app.store.get("SELECT COUNT(*) AS n FROM invoices").n, cari: server.app.store.get("SELECT COUNT(*) AS n FROM accounts").n });
 const flagOf = () => Number(server.app.store.get("SELECT e_invoice AS f FROM accounts WHERE id = ?", tester.id)?.f);
 
 let passed = 0;
@@ -108,7 +110,9 @@ try {
   const confirm = await page.waitForSelector(`${dialog} [data-answer="yes"]`, { timeout: 4000 }).then(() => true).catch(() => false);
   if (confirm) await page.click(`${dialog} [data-answer="yes"]`);
   await page.waitForTimeout(1500);
-  const said = (await toasts(page)).join(" | ");
+  // 2.4.3 (keşif B7): onay penceresi artık açılmaz (engel onaydan önce söylenir); ileti bildirimde ve formun hata satırında (kalıcı).
+  const said = [...(await toasts(page)), await textOf(page, `${pageInv} [data-form-error]`)].join(" | ");
+  ok(!confirm, "numaralı onay penceresi açılmadı (engel önceden söylendi)");
   ok(count() === before, `belge yazılmadı (${before} → ${count()})`);
   ok(/numara harcanmadı/.test(said), `ileti: ${said.slice(0, 160)}`);
   ok(!edm.state.sent.length, "EDM'ye bir şey gitmedi");
@@ -128,6 +132,8 @@ try {
   await page.keyboard.press("Space");
   await page.waitForTimeout(200);
   ok(!(await page.$eval(`${dialog} input[name="eInvoice"]`, node => node.checked)), "boşluk tuşuyla da işaretlenmedi");
+  // Ders 34 (esc-sinif-243): engellenen tıklama / boşluk formu "kaydedilmemiş" yapmaz (değişiklik olayı yok) — Esc sorusuz kapanırdı.
+  ok(!(await page.evaluate(() => window.HOF.hasDirtyModal())), "engellenen tıklama ve boşluk formu kirletmedi (kapatırken soru çıkmaz)");
   // Gözden geçirme B6: işareti KALDIRMAK serbest (EDM'ye ulaşılamazken yanlış işaret kilitli kalmasın).
   await page.evaluate(selector => { document.querySelector(selector).checked = true; }, `${dialog} input[name="eInvoice"]`);
   await page.click(`${dialog} input[name="eInvoice"]`);

@@ -1,0 +1,32 @@
+{
+  "ad": "hiz243-e2e-senaryo-ebelge-242",
+  "komut": "npm run -s test:senaryo-ebelge-242",
+  "commit": "4d1624ed9c4a6bd1214c9db53aa71490151972ba",
+  "dal": "worktree-agent-a477c416a56bc423c",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-18T04:48:40.269Z",
+  "sure_sn": 46.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 21,
+    "gecen": 21,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-18/hiz243-e2e-senaryo-ebelge-242.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a477c416a56bc423c",
+  "ham_cikti_sha256": "a251cc376fa4208721ddd87f1f9b125838c15d0047e32233aae6a8f91ca19d50",
+  "ham_cikti_bayt": 2244
+}

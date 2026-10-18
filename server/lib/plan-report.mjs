@@ -193,7 +193,7 @@ export function receiptPdf(plan, entry, { officeName = "", userName = "", now = 
   if (where) row("Grup", where, { lines: 2 });
   if (plan.phone) row("Telefon", plan.phone);
   // Cari makbuzunda (v2.0.6) açıklama hareketin türünden gelir ("Cari tahsilat", "Cariye ödeme").
-  row("Açıklama", `${item ? `${item.seq}. taksit (vade ${dayText(item.dueDate)})` : entry.label || (incoming ? "Taksit tahsilatı" : "Ödeme / iade")}${entry.note ? ` · ${entry.note}` : ""}`, { lines: 2 });
+  row("Açıklama", `${item ? `${item.seq}. taksit (vade ${dayText(item.dueDate)})` : entry.label || (incoming ? "Taksit Tahsilatı" : "Ödeme / İade")}${entry.note ? ` · ${entry.note}` : ""}`, { lines: 2 });
   top += 2;
   // Tutar kutusu: rakamla ve yazıyla.
   const words = doc.wrap(`# ${amountInWords(entry.amount)} #`, W - P * 2 - 20, "regular", 8.5).slice(0, 2);

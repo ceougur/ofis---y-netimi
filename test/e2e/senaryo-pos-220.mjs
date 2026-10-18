@@ -110,10 +110,15 @@ const integrity = async label => {
   ok(result.ok !== false && bad.length === 0, `${label}: Mutabakat Testi tamam${bad.length ? ` — ${bad.map(item => item.code).join(", ")}` : ""}`);
 };
 const setClock = async iso => moveClock(app.config.now, page, `${iso}T10:00:00+03:00`);
+// 2.4.3 (C11, bilerek): Banka penceresi oturum içinde son sekmesiyle açılır; bu senaryonun adımları eski açılış gibi Genel Bakış'tan başlar.
 const openBank = async () => {
   if (!(await page.$(`${bankWin} [data-bank] .hof-bank-tabs`))) {
     await page.click('#hof-sidecard [data-action="bank"]');
     await page.waitForSelector(`${bankWin} [data-bank] .hof-bank-tabs`, { timeout: 15000 });
+    if (!(await page.$(`${bankWin} .hof-bank-tabs [data-tab="overview"][aria-selected="true"]`))) {
+      await page.click(`${bankWin} .hof-bank-tabs [data-tab="overview"]`);
+      await page.waitForTimeout(500);
+    }
   }
   await pause(500);
 };
@@ -622,6 +627,7 @@ try {
       const main = document.querySelector(`${selector} [data-rc-main]`);
       const text = node => node.textContent.replace(/\s+/g, " ").trim();
       return {
+        busy: main?.getAttribute("aria-busy") === "true",
         heads: [...(main?.querySelectorAll("thead th") || [])].map(text),
         rows: [...(main?.querySelectorAll("tbody tr") || [])].map(row => [...row.querySelectorAll("td")].map(text)).filter(cells => cells.length > 1),
         footer: main?.querySelector("tfoot tr") ? [...main.querySelectorAll("tfoot td")].map(text) : null,
@@ -632,7 +638,7 @@ try {
   const waitRc = async (check, ms = 8000) => {
     const deadline = Date.now() + ms;
     let last = await rcPreview();
-    while (!check(last) && Date.now() < deadline) {
+    while ((last.busy || !check(last)) && Date.now() < deadline) {
       await pause(250);
       last = await rcPreview();
     }

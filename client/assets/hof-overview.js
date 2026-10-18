@@ -152,7 +152,8 @@
       out.push({
         id: "payable",
         icon: ICONS.out,
-        label: "Toplam Borç / Ödemeler",
+        // 2.4.3 (keşif A13): "Toplam Borç / Ödemeler" 1280–1366 genişlikte kesiliyordu; "Toplam Alacak" ile eş kısa ad (ayrıntı title'da).
+        label: "Toplam Borç",
         value: moneyHtml(p.total, { compact: true }),
         sub: `Cari <b>${esc(shortMoney(p.accounts))}</b> · Çek <b>${esc(shortMoney(p.cheques))}</b>${p.chequesDue > 0.005 ? `<br><span class="hof-pulse-flag">${ICONS.warn}${esc(shortMoney(p.chequesDue))} çek 7 gün içinde</span>` : ""}`,
         title: `Tedarikçilere borcumuz (${money(p.accounts)}) + ödenecek verilen çek/senet (${money(p.cheques)}).`,

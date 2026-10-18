@@ -169,7 +169,7 @@ describe("Fatura modülü ↔ EDM (program uçları)", () => {
   before(async () => {
     resetEdmCaches();
     edm = await startMockEdm();
-    server = await startTestServer({ edocEnabled: true });
+    server = await startTestServer({ edocEnabled: true, edocStatusPollMs: [10, 10] });
     api = apiOf(server.client());
     assert.equal((await api.login("admin", ADMIN_PASSWORD)).status, 200);
   });
@@ -247,7 +247,9 @@ describe("Fatura modülü ↔ EDM (program uçları)", () => {
     assert.match(last.xml, /<cbc:DocumentTypeCode>SendingType<\/cbc:DocumentTypeCode>/);
     assert.match(last.xml, /<cbc:ID>ELEKTRONIK<\/cbc:ID>/);
     // Gerçek EDM test ortamı (16.10.2026): belge işlenirken (PROCESSING) iptal EDM'de reddedilir (11049). Program önce durumu sorar; işleniyorsa
-    // iptali göndermez, açık ileti verir, belge kesilmiş kalır.
+    // iptali göndermez, açık ileti verir, belge kesilmiş kalır. 2.4.3 (H7): durum birkaç saniye içinde kendiliğinden yeniden sorulur — burada belge
+    // uzun süre işleniyor (dört "GİB yanıtı bekleniyor"), üç sorgunun üçü de işleniyor der.
+    edm.state.statuses.set(issued.data.ettn, ["SEND - WAIT_GIB_RESPONSE", "SEND - WAIT_GIB_RESPONSE", "SEND - WAIT_GIB_RESPONSE", "SEND - WAIT_GIB_RESPONSE", "SEND - SUCCEED"]);
     const cancelsBefore = edm.state.calls.filter(call => call.op === "CancelInvoice").length;
     const early = await api.post(`/api/workspace/invoices/${issued.data.id}/cancel`, { reason: "Müşteri vazgeçti" });
     assert.equal(early.status, 409, JSON.stringify(early.data));

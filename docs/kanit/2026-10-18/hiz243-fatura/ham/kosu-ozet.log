@@ -1,0 +1,17 @@
+[once] kilit bekleniyor 02:53:04
+[once] kilit alındı 03:06:04; df 12G boş
+[once] Y çıkış 0 03:06:39
+[once] D1 çıkış 0 03:17:24
+[once] D2 çıkış 0 03:28:18
+[once] BİTTİ 03:28:18
+[sonra] kilit bekleniyor 03:42:51
+[sonra] kilit alındı 03:44:15; df 11G boş
+[sonra] Y çıkış 0 03:44:33
+[sonra] D1 çıkış 0 03:55:13
+[sonra] D2 çıkış 0 04:05:54
+[sonra] BİTTİ 04:05:54
+[cekirdek] kilit bekleniyor 04:06:04
+[cekirdek] kilit alındı 04:07:48; df 11G boş
+[cekirdek] D1 çıkış 0 04:18:17
+[cekirdek] D2 çıkış 0 04:29:03
+[cekirdek] BİTTİ 04:29:03

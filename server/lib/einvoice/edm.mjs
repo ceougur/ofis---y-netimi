@@ -30,6 +30,11 @@ export const EDM_URLS = Object.freeze({
 export const EDM_DEFAULT_NS = "http://schemas.i2i.com/ei/wsdl";
 export const EDM_OPERATIONS = Object.freeze(["Login", "SendInvoice", "LoadInvoice", "GetInvoiceStatus", "GetInvoice", "CheckUser", "CancelInvoice", "MarkInvoice"]);
 const APP = "DestekOfis";
+// Yan etkisiz EDM işlemleri: bağlantı koparsa bir kez yinelenebilir (aynı istek ikinci kez işlense de sonuç değişmez). SendInvoice, LoadInvoice ve
+// CancelInvoice burada YOK.
+const SAFE_OPERATIONS = new Set(["Login", "CheckUser", "GetInvoiceStatus", "GetInvoice", "MarkInvoice"]);
+// Kopan bağlantı sınıfı (Node fetch / undici): ECONNRESET, EPIPE, UND_ERR_SOCKET ("other side closed"), "socket hang up".
+const connectionReset = error => /ECONNRESET|EPIPE|UND_ERR_SOCKET/.test(`${error?.cause?.code || ""} ${error?.code || ""}`) || /other side closed|socket hang up/i.test(`${error?.cause?.message || ""} ${error?.message || ""}`);
 const CONTRACT_TTL = 12 * 60 * 60 * 1000;
 const SESSION_TTL = 20 * 60 * 1000;
 const sessions = new Map();
@@ -104,11 +109,21 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
   if (!username || !password) throw new IntegratorError("EDM web servis kullanıcı adı ve parolası girilmemiş (Fatura → Entegratör Ayarları).", { code: "integrator-credentials", status: 400 });
   const sessionKey = `${base}|${username}`;
 
-  async function http(url, { method = "GET", headers = {}, body } = {}, wait = timeoutMs) {
+  async function http(url, { method = "GET", headers = {}, body } = {}, wait = timeoutMs, { retry = false } = {}) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), wait);
     try {
-      const response = await fetchImpl(url, { method, headers, body, signal: controller.signal });
+      let response;
+      try {
+        response = await fetchImpl(url, { method, headers, body, signal: controller.signal });
+      } catch (error) {
+        // 2.4.3 (hız testi H4): yükte "EDM'ye bağlanılamadı: UND_ERR_SOCKET" — istemci, karşı tarafın boşta kapattığı keep-alive bağlantısını yeniden
+        // kullanmış (zorla üretme test/ebelge-243-baglanti.test.mjs). Yalnız YAN ETKİSİZ çağrı (giriş, sözleşme, mükellef sorgusu, durum, belge görüntüsü,
+        // okundu işareti) yeni bağlantıyla bir kez hemen yinelenir. Gönderim / taslak yükleme / iptal YİNELENMEZ: istek karşıya ulaşmış olabilir, belge
+        // "Sonucu Belirsiz" kalır ve önce durum sorulur (güncelleyicideki düzeltmenin aynı sınıfı: server/lib/updater.mjs request()).
+        if (!retry || controller.signal.aborted || !connectionReset(error)) throw error;
+        response = await fetchImpl(url, { method, headers, body, signal: controller.signal });
+      }
       return { status: response.status, ok: response.ok, text: await response.text() };
     } catch (error) {
       throw new IntegratorError(error?.name === "AbortError" ? "EDM yanıt vermedi (zaman aşımı). İnternet bağlantısını ve servis adresini kontrol edin; birazdan yeniden deneyin." : `EDM'ye bağlanılamadı: ${error?.cause?.code || error?.message || error}`, { code: "integrator-unreachable" });
@@ -124,8 +139,8 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
     if (cached && !refresh && Date.now() - cached.at < CONTRACT_TTL) return cached;
     let entry;
     try {
-      let response = await http(`${base}?singleWsdl`, {}, 20_000);
-      if (!response.ok || !/definitions/.test(response.text)) response = await http(`${base}?wsdl`, {}, 20_000);
+      let response = await http(`${base}?singleWsdl`, {}, 20_000, { retry: true });
+      if (!response.ok || !/definitions/.test(response.text)) response = await http(`${base}?wsdl`, {}, 20_000, { retry: true });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       let text = response.text;
       // ?wsdl şemaları ayrı adreslerden çeker (xsd:import schemaLocation): aynı sunucudan alınıp tek belgeye eklenir.
@@ -136,7 +151,7 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
         for (const location of imports) {
           const url = new URL(location, `${base}`);
           if (url.origin !== origin) continue;
-          const xsd = await http(url.href, {}, 20_000);
+          const xsd = await http(url.href, {}, 20_000, { retry: true });
           if (xsd.ok) parts.push(xsd.text.replace(/<\?xml[^>]*\?>/, ""));
         }
         text = text.replace(/<((\w+:)?types)\s*>([\s\S]*?)<\/\1>/, (_, tag, __, inner) => `<${tag}>${inner}${parts.join("")}</${tag}>`);
@@ -164,7 +179,7 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
     const action = contract?.operations?.[operation]?.action ?? "";
     const endpoint = endpointOf(contract);
     const request = soapRequest({ version: contract?.version || "1.1", action, body: renderTree(shaped.tree), addressing: contract?.addressing, to: endpoint });
-    const response = await http(endpoint, { method: "POST", headers: request.headers, body: request.xml }, wait);
+    const response = await http(endpoint, { method: "POST", headers: request.headers, body: request.xml }, wait, { retry: SAFE_OPERATIONS.has(operation) });
     let tree;
     try {
       tree = parseXml(response.text);
