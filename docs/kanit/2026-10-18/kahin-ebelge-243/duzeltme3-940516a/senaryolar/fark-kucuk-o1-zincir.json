@@ -1,0 +1,23 @@
+{
+ "ad": "kucuk-o1-zincir",
+ "tohum": 1,
+ "islem": 5,
+ "bugun": "2026-12-27",
+ "farkSayisi": 0,
+ "ihlalSayisi": 0,
+ "safModelSonFark": 0,
+ "farklar": [],
+ "ihlaller": [],
+ "catalSecimleri": [
+  {
+   "adim": 1,
+   "aday": 2,
+   "secilen": []
+  }
+ ],
+ "eStatusDegerleri": {
+  "waiting": 10
+ },
+ "kucultulmus": null,
+ "sure": 1.0
+}

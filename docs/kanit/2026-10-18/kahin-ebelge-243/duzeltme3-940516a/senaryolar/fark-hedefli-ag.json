@@ -1,0 +1,18 @@
+{
+ "ad": "hedefli-ag",
+ "tohum": 0,
+ "islem": 10,
+ "bugun": "2026-06-17",
+ "farkSayisi": 0,
+ "ihlalSayisi": 0,
+ "safModelSonFark": 0,
+ "farklar": [],
+ "ihlaller": [],
+ "catalSecimleri": [],
+ "eStatusDegerleri": {
+  "sent": 22,
+  "waiting": 15
+ },
+ "kucultulmus": null,
+ "sure": 1.4
+}

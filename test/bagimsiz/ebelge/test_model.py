@@ -409,6 +409,13 @@ class DegismezDenetimi(unittest.TestCase):
                        ek={"sonuclar": [[{"ad": "B1", "ok": True, "numara": "TEA2026000000001"}], [{"ad": "B1", "ok": False, "numara": "", "kod": "integrator-uncertain", "ileti": "belirsiz"}]]})
         self.assertNotIn("I15", self.kodlar({"no": 1, "islem": "esz_tumunu_gonder"}, k))
 
+    def test_esz_enjekte_arizali_belge_I15_disi(self):
+        kab = [{"id": "TEA2026000000001", "uuid": "u-B1", "earchive": "true", "vkn": "10000000146", "alias": ""}]
+        k = self.kayit({"B1": ("TEA2026000000001", "2026-06-16", "EARSIVFATURA", "sent", "issued")}, kabul=kab,
+                       ek={"sonuclar": [[{"ad": "B1", "ok": True, "numara": "TEA2026000000001"}], [{"ad": "B1", "ok": False, "numara": "", "kod": "integrator-rejected", "ileti": "x"}]]})
+        self.assertNotIn("I15", self.kodlar({"no": 1, "islem": "esz_tumunu_gonder"}, k, [{"id": "TEA2026000000001", "uuid": "u-B1", "ariza": "gecici_hata"}]))
+        self.assertIn("I15", self.kodlar({"no": 2, "islem": "esz_tumunu_gonder"}, k, [{"id": "TEA2026000000001", "uuid": "u-B1", "ariza": ""}]))
+
     def test_sonda_tutarsizlik_I18(self):
         k = self.kayit({"B1": ("TEA2026000000001", "2026-06-16", "EARSIVFATURA", "waiting", "issued")},
                        kabul=[{"id": "TEA2026000000001", "uuid": "u-B1", "earchive": "true", "vkn": "10000000146", "alias": ""}])

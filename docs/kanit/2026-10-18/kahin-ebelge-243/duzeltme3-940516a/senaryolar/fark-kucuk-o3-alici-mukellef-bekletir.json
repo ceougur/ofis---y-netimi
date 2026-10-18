@@ -1,0 +1,24 @@
+{
+ "ad": "kucuk-o3-alici-mukellef-bekletir",
+ "tohum": 1,
+ "islem": 4,
+ "bugun": "2026-12-27",
+ "farkSayisi": 0,
+ "ihlalSayisi": 0,
+ "safModelSonFark": 0,
+ "farklar": [],
+ "ihlaller": [],
+ "catalSecimleri": [
+  {
+   "adim": 2,
+   "aday": 2,
+   "secilen": []
+  }
+ ],
+ "eStatusDegerleri": {
+  "waiting": 4,
+  "sent": 1
+ },
+ "kucultulmus": null,
+ "sure": 1.0
+}

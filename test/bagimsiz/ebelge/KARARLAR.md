@@ -89,3 +89,6 @@ bekleyenin tarihi sıra-tarihi bozmadan değiştirilemiyor) · *-ARDIL (aynı ad
   18.10.2026, K14 ile tutarlılık.
 - Koşucu: Tümünü Gönder parça parça (istek başına ≤20 belge / ~10 sn; yanıt `remaining`, `attempted`, `cursor`); istemci gibi `after: cursor` ile
   kalan bitene ya da ilerleme durana kadar döngü (kara kutu yoklamasıyla öğrenildi; uygulama kodu okunmadı).
+- 18.10 kâhin düzeltmesi (ders 6): eşzamanlı turda kâhinin enjekte ettiği tek atımlık EDM hatası bir oturumun isteğine düşerse o oturumun
+  "integrator-rejected" sonucu gerçek EDM yanıtıdır; belgeyi öbür oturum gönderebilir. I15 o adımda arızanın düştüğü belgeyi istisna tutar
+  (duzeltme3 940516a tohum 4 adım 167'de görüldü; yeniden koşuda 0 ihlal).
