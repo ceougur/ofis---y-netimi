@@ -1,0 +1,15 @@
+A) fatura formu, 3 kalem, klavyeyle satır düğmeleri
+  ✓ 3. kalemin ⋯'ine Enter → odak aynı düğmede (line-more#2)
+  ✓ 3. kalemin ×'ine Enter → odak başka kalemin ×'inde değil (INPUT)
+  ✓ 3. kalem silindi (["Kalem 1","Kalem 2"])
+  ✓ ikinci Enter başka kalemi silmedi (["Kalem 1","Kalem 2"])
+B) Banka → Hareketler → Planlı İşlemler, 3. planın Atla düğmesine Enter
+  ✓ ön koşul: fatura penceresi kapandı
+  ✓ ön koşul: üç plan
+  ✓ ön koşul: 3. plan atlandı (bildirim)
+  ✓ odak başka planın düğmesinde değil (BODY)
+  ✓ ikinci Enter öbür planları atlatmadı (2026-10-20, 2026-10-21, 2026-11-22)
+  ✓ 3. plan atlandı (2026-11-22)
+  ✓ sayfa hatası yok
+
+✓ gg243-odak-dugme: 11 geçti, 0 kaldı

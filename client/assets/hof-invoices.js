@@ -274,7 +274,7 @@
         <div class="hof-plan-title"><h3>${esc(moduleName())}</h3><small>${edoc() ? "Satış, alış ve iade faturaları; e-Fatura ve e-Arşiv entegratör üzerinden gönderilir." : "Kaydedilen belgeler resmî hükmü olmayan <b>Müşteri Fişi</b> olarak basılır; e-Fatura / e-Arşiv bağlantısı kapalı."}</small></div>
         <div class="hof-plan-actions" role="toolbar" aria-label="Fatura işlemleri">
           ${canManage() ? '<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni Fatura</button>' : ""}
-          ${edoc() && canManage() && view.tab === "pending" && pendingTotal(data) ? `<button type="button" class="hof-button hof-button-small" data-act="send-pending" title="Gönderilecekler'in tamamı eski tarihliden başlayarak entegratöre gönderilir; numara gönderimde verilir">Tümünü Gönder (${pendingTotal(data).toLocaleString("tr-TR")})</button>` : ""}
+          ${edoc() && canManage() && view.tab === "pending" && (pendingTotal(data) || view.sendProgress) ? sendPendingButton(data) : ""}
           ${canSettings() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="settings">Fatura Ayarları</button>' : ""}${edoc() && canSettings() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="integrator">Entegratör Ayarları</button>' : ""}
           <span class="hof-rep-export"><a class="hof-rep-out is-pdf" href="/api/workspace/invoices/liste.pdf?${esc(listParams())}" target="_blank" rel="noopener">Liste - PDF</a><a class="hof-rep-out is-xlsx" href="/api/workspace/invoices/export.xlsx?${esc(listParams())}" download>Liste - Excel</a></span>
         </div></div>
@@ -1809,9 +1809,17 @@
       return scheduleCalc(0);
     }
     if (act === "line-remove") {
-      form.lines.splice(Number(target.dataset.l), 1);
+      const removed = Number(target.dataset.l);
+      form.lines.splice(removed, 1);
       if (!form.lines.length) form.lines.push(blankLine());
       renderLines();
+      // Dar kontrol 2.4.3 (D1, GG4 komşusu): silinen kalemin × düğmesinden sonra odak BAŞKA kalemin ×'ine geçmez (ilk/orta kalemde aynı data-l'li
+      // düğme bir sonraki kalemindir; ikinci Enter onu da siliyordu). Güvenli hedef: aynı konumdaki (yoksa son) kalemin ilk yazılabilir alanı,
+      // o da yoksa "+ Kalem Ekle".
+      const position = Math.min(removed, form.lines.length - 1);
+      const row = body()?.querySelector(`[data-lines] tr[data-line="${position}"]`);
+      const safe = row?.querySelector("input:not([readonly]):not([disabled]), select:not([disabled])") || body()?.querySelector('[data-act="add-line"]') || row?.querySelector("input");
+      safe?.focus({ preventScroll: true });
       return scheduleCalc(0);
     }
     if (act === "line-more") {
@@ -1878,8 +1886,17 @@
       return body()?.querySelector(`[data-pay="cheques"][data-i="${form.pay.cheques.length - 1}"][data-f="amount"]`)?.focus();
     }
     if (act === "pay-remove") {
-      form.pay[target.dataset.pay].splice(Number(target.dataset.i), 1);
-      return renderPay();
+      const group = target.dataset.pay;
+      const removed = Number(target.dataset.i);
+      form.pay[group].splice(removed, 1);
+      renderPay();
+      // Dar kontrol 2.4.3 (ek 4): silinen ödeme satırından sonra odak başka satırın ×'ine gitmez, kaybolmaz: aynı konumdaki (yoksa son) satırın
+      // tutarı, satır kalmadıysa ilk "+ …" ekleme düğmesi.
+      const left = form.pay[group].length;
+      const slot = body()?.querySelector("[data-pay]");
+      const safe = (left ? slot?.querySelector(`[data-pay="${group}"][data-i="${Math.min(removed, left - 1)}"][data-f="amount"]`) : null) || slot?.querySelector('[data-act="pay-add-cash"], [data-act="pay-add-cheque"]');
+      safe?.focus({ preventScroll: true });
+      return undefined;
     }
     if (act === "pay-endorse") {
       try {
@@ -2021,7 +2038,11 @@
         // 2.4.3 (hız testi H1): gönderilemeyen belgenin bildirimi numarayı, nedeni ve nerede beklediğini (Gönderilecekler) söyler; aynı neden kartta
         // (e-Belge satırı) ve Gönderilecekler'de kalıcı görünür. Süre eskisi gibi 8 sn (uzun bildirim pencere düğmelerinin üstünde kalıp tıklamayı
         // engelliyordu — senaryo-ebelge-242 adım 4); okuma süresine göre ayar ortak bildirim çekirdeğinin işi.
-        if (saved.autoSend) HOF.toast(saved.autoSend.ok ? saved.autoSend.message : `e-Belge gönderilemedi: ${saved.autoSend.message}`, { type: saved.autoSend.ok ? "success" : "error", timeout: 8000 });
+        // Dar kontrol 2.4.3 (O1): seride daha eski tarihli gönderilmemiş belge varken numara verilmedi — hata değil, belge Gönderilecekler'de bekler.
+        // Ek 1 / kâhin BEKLENEN-AG: giriş reddedildi ya da EDM'ye ulaşılamadı — belge numarasız Gönderilecekler'de; ileti tam (önek yok).
+        if (saved.autoSend?.code === "einvoice-order") HOF.toast(saved.autoSend.message, { type: "info", timeout: 12000 });
+        else if (saved.autoSend?.held) HOF.toast(saved.autoSend.message, { type: "error", timeout: 12000 });
+        else if (saved.autoSend) HOF.toast(saved.autoSend.ok ? saved.autoSend.message : `e-Belge gönderilemedi: ${saved.autoSend.message}`, { type: saved.autoSend.ok ? "success" : "error", timeout: 8000 });
       }
       view.form = null;
       HOF.emit("invoices-changed", saved);
@@ -2470,6 +2491,8 @@
     try {
       const result = await HOF.api("/api/workspace/invoices/bulk-issue", { method: "POST", body: { ids: docs.map(doc => doc.id) } });
       bulkOutcome(result, "kaydedildi", "kaydedilemedi");
+      // Dar kontrol 2.4.3: entegratör girişi reddedildi / EDM'ye ulaşılamadı — belgeler numarasız Gönderilecekler'de (tek ileti).
+      if (result.notice) HOF.toast(result.notice, { type: "error", timeout: 12000 });
     } catch (error) {
       HOF.toastError(error);
     }
@@ -2575,44 +2598,83 @@
   function pendingTotal(data) {
     return typeof data?.pendingTotal === "number" ? data.pendingTotal : data?.invoices?.length || 0;
   }
+  // Dar kontrol 2.4.3 (Y1): gönderim sürerken düğme ilerlemeyi gösterir ve basılamaz (ikinci tur açılmaz); liste yeniden çizilse de durum korunur.
+  function sendPendingButton(data) {
+    const progress = view.sendProgress;
+    if (progress) return `<button type="button" class="hof-button hof-button-small" data-act="send-pending" disabled aria-busy="true" data-send-progress>Gönderiliyor: ${progress.done.toLocaleString("tr-TR")} / ${progress.total.toLocaleString("tr-TR")}</button>`;
+    return `<button type="button" class="hof-button hof-button-small" data-act="send-pending" title="Gönderilecekler'in tamamı eski tarihliden başlayarak entegratöre gönderilir; numara gönderimde verilir">Tümünü Gönder (${pendingTotal(data).toLocaleString("tr-TR")})</button>`;
+  }
+  function showSendProgress() {
+    const button = body()?.querySelector('[data-act="send-pending"]');
+    if (!button || !view.sendProgress) return;
+    button.disabled = true;
+    button.setAttribute("aria-busy", "true");
+    button.dataset.sendProgress = "";
+    button.textContent = `Gönderiliyor: ${view.sendProgress.done.toLocaleString("tr-TR")} / ${view.sendProgress.total.toLocaleString("tr-TR")}`;
+  }
+  // İstek başına zaman aşımı: sunucu bir istekte en çok 20 belge ya da ~10 sn işler; tek belgenin entegratör çağrıları (giriş, mükellef sorgusu,
+  // gönderim) en kötü durumda bunu uzatabilir. Varsayılan 30 sn yetmez.
+  const SEND_PENDING_TIMEOUT_MS = 150000;
   async function sendPending() {
+    if (view.sendProgress) return;
     const total = pendingTotal(view.list);
     if (!total) return;
     const go = await HOF.confirm({ title: "Gönderilecekler Gönderilsin mi?", message: `Gönderilecekler'deki ${total.toLocaleString("tr-TR")} belge tarih sırasıyla (eski tarihli önce) entegratöre gönderilecek. Numarası olmayanlara e-Belge numarası gönderim sırasında verilir; sonucu belirsiz olanlar önce entegratöre sorulur, orada varsa yeniden gönderilmez.`, confirmLabel: "Tümünü Gönder" });
-    if (!go) return;
+    if (!go || view.sendProgress) return;
+    // Sunucu Gönderilecekler'in tamamını kendisi seçer ({ all: true }); bir istekte en çok 20 belge (ya da ~10 sn) gider, kalan varsa ve ilerleme
+    // oldukça istemci yineler.
+    const results = [];
+    const seen = new Set();
+    let sent = 0;
+    let remaining = 0;
+    let stopped = null;
+    view.sendProgress = { done: 0, total };
+    showSendProgress();
     try {
-      // Sunucu Gönderilecekler'in tamamını kendisi seçer ({ all: true }); bir turda en eski 200 belge gider, kalan varsa ve ilerleme oldukça sürer.
-      const results = [];
-      const seen = new Set();
-      let sent = 0;
-      let remaining = 0;
-      for (let turn = 0; turn < 1000; turn += 1) {
-        const result = await HOF.api("/api/workspace/invoices/send-pending", { method: "POST", body: { all: true } });
+      for (let turn = 0; turn < 100000; turn += 1) {
+        const timeoutMs = Number(HOF.invoices?.sendPendingTimeoutMs) > 0 ? Number(HOF.invoices.sendPendingTimeoutMs) : SEND_PENDING_TIMEOUT_MS;
+        const result = await HOF.api("/api/workspace/invoices/send-pending", { method: "POST", body: { all: true }, timeoutMs });
         sent += result.sent;
         remaining = result.remaining || 0;
-        // Kalıcı engelli belgeler her turda yeniden listelenir; bir kez sayılır.
+        stopped = result.stopped || null;
+        // Kalıcı engelli belgeler her istekte yeniden listelenir; bir kez sayılır.
         for (const item of result.results) {
           if (seen.has(item.id)) continue;
           seen.add(item.id);
           results.push(item);
         }
-        if (!remaining || !result.sent) break;
+        view.sendProgress = { done: Math.min(total, sent), total: Math.max(total, sent) };
+        showSendProgress();
+        if (stopped || !remaining || !result.sent) break;
       }
-      // 2.4.3 (keşif B1): gönderilemeyen ilk belgenin nedeni ve sırasını korumak için bekletilenlerin sayısı ayrı yazılır. Gözden geçirme (S3): başka
-      // oturumda gönderilen belgeler "gönderilemedi" sayılmaz; doğru nedeni söylenir.
-      const busy = results.filter(item => item.busy || (item.skipped && item.reason === "busy"));
-      const failed = results.filter(item => !item.ok && !item.skipped && !item.busy);
-      const held = results.filter(item => item.skipped && item.reason !== "busy");
-      const parts = [`${sent.toLocaleString("tr-TR")} belge gönderildi`];
-      if (failed.length) parts.push(`${failed.length.toLocaleString("tr-TR")} belge gönderilemedi: ${failed[0].message}`);
-      if (busy.length) parts.push(`${busy.length.toLocaleString("tr-TR")} belge başka oturumda gönderiliyor; gönderim bitince listeyi yenileyin`);
-      if (held.length) parts.push(`${held.length.toLocaleString("tr-TR")} belge sırasını korumak için bekletildi (önce eski tarihli belge gönderilmeli)`);
-      if (remaining) parts.push(`${remaining.toLocaleString("tr-TR")} belge daha bekliyor; Tümünü Gönder'e yeniden basın`);
-      const bad = failed.length || held.length || busy.length || remaining;
-      HOF.toast(`${parts.join("; ")}.`, { type: failed.length || held.length ? "error" : busy.length || remaining ? "info" : "success", timeout: bad ? 15000 : 6000 });
     } catch (error) {
-      HOF.toastError(error);
+      view.sendProgress = null;
+      // Y1: zaman aşımı hata değildir — sunucu gönderimi sürdürüyor olabilir; liste yenilenir, sonuç oradan okunur.
+      if (error?.data?.code === "client-timeout") HOF.toast(`${sent ? `${sent.toLocaleString("tr-TR")} belge gönderildi; ` : ""}gönderim sunucuda sürüyor olabilir. Liste yenilendi; bir süre sonra Gönderilecekler'e bakın, kalan belge olursa Tümünü Gönder'e yeniden basın.`, { type: "info", timeout: 15000 });
+      else HOF.toastError(error);
+      loadList();
+      return;
     }
+    view.sendProgress = null;
+    // 2.4.3 (keşif B1): gönderilemeyen ilk belgenin nedeni ve sırasını korumak için bekletilenlerin sayısı ayrı yazılır. Gözden geçirme (S3): başka
+    // oturumda gönderilen belgeler "gönderilemedi" sayılmaz; doğru nedeni söylenir. Dar kontrol (D2, O2, bilgi): başka oturumda gönderilmiş, tur
+    // sürerken listeden silinmiş ve bağlantı kesildiği için numara verilmeden bekleyen belgeler ayrı sayılır.
+    const busy = results.filter(item => item.busy || (item.skipped && item.reason === "busy"));
+    const done = results.filter(item => item.done);
+    const withdrawn = results.filter(item => item.skipped && item.reason === "withdrawn");
+    const waitingStop = results.filter(item => item.skipped && item.reason === "stopped");
+    const failed = results.filter(item => !item.ok && !item.skipped && !item.busy && !item.done);
+    const held = results.filter(item => item.skipped && !["busy", "withdrawn", "stopped"].includes(item.reason));
+    const parts = [`${sent.toLocaleString("tr-TR")} belge gönderildi`];
+    if (failed.length) parts.push(`${failed.length.toLocaleString("tr-TR")} belge gönderilemedi: ${failed[0].message}`);
+    if (stopped) parts.push(`${stopped.message} Kalan belgelere numara verilmedi; Gönderilecekler'de bekliyor`);
+    if (done.length) parts.push(`${done.length.toLocaleString("tr-TR")} belge başka oturumda gönderildi`);
+    if (busy.length) parts.push(`${busy.length.toLocaleString("tr-TR")} belge başka oturumda gönderiliyor; gönderim bitince listeyi yenileyin`);
+    if (withdrawn.length) parts.push(`${withdrawn.length.toLocaleString("tr-TR")} belge gönderim sırasında Listeden Silindi (gönderilmedi)`);
+    if (held.length) parts.push(`${held.length.toLocaleString("tr-TR")} belge sırasını korumak için bekletildi (önce eski tarihli belge gönderilmeli)`);
+    if (remaining && !stopped) parts.push(`${remaining.toLocaleString("tr-TR")} belge daha bekliyor; Tümünü Gönder'e yeniden basın`);
+    const bad = failed.length || held.length || busy.length || remaining || stopped || waitingStop.length;
+    HOF.toast(`${parts.join("; ")}.`, { type: failed.length || held.length || stopped ? "error" : busy.length || remaining || withdrawn.length ? "info" : "success", timeout: bad ? 15000 : 6000 });
     loadList();
   }
   // Portala taslak (İz 7.3, Entegratör Ayarları → Ek Seçenekler): ayar açıksa ilk düğme "Portala Taslak Yükle"; taslaktaki belge "Taslağı Gönder"
@@ -3232,7 +3294,8 @@
     view.tab = "all";
     return open({ account: account || {}, tab: "all" });
   };
-  HOF.invoices = { open, newFor, openDoc, forAccount, eUnitAsAdet: unit => Boolean(meta) && eUnitAsAdet(unit), edocEnabled: () => meta?.edocEnabled === true, autoCheckUser: () => meta?.edocEnabled === true && meta?.settings?.integrator?.autoCheckUser === true };
+  // sendPendingTimeoutMs: Tümünü Gönder isteğinin zaman aşımı (0 = 150 sn); ekran testi (gg243-tumunu-gonder) kısaltır.
+  HOF.invoices = { open, newFor, openDoc, forAccount, sendPendingTimeoutMs: 0, eUnitAsAdet: unit => Boolean(meta) && eUnitAsAdet(unit), edocEnabled: () => meta?.edocEnabled === true, autoCheckUser: () => meta?.edocEnabled === true && meta?.settings?.integrator?.autoCheckUser === true };
   // 2.3.0 İz 5.5 Hızlı Arama: sekmeler TABS'tan (purchase sekmesi "Alınan" — müşteri "alış f" yazar: Alış Faturaları eş adı), işlemler
   // yetkiye göre (Yeni Satış / Alış Faturası → senaryo seçimi; Yeni İade → İadeler sekmesi).
   HOF.search?.register(() => {

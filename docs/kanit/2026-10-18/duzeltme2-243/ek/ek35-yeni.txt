@@ -1,0 +1,36 @@
+TAP version 13
+# Subtest: gg243 dar kontrol ek 3: Ters Kaydet iade faturası O1 ile ertelenir; banka açıklaması numaraya döner
+    # Subtest: Ters Kaydet: iade faturası numarasız bekler, açıklama '(gönderilecek)'; Tümünü Gönder sonrası ikisi de numaraya döner, eski tarihli önce
+    ok 1 - Ters Kaydet: iade faturası numarasız bekler, açıklama '(gönderilecek)'; Tümünü Gönder sonrası ikisi de numaraya döner, eski tarihli önce
+      ---
+      duration_ms: 226.756829
+      type: 'test'
+      ...
+    1..1
+ok 1 - gg243 dar kontrol ek 3: Ters Kaydet iade faturası O1 ile ertelenir; banka açıklaması numaraya döner
+  ---
+  duration_ms: 963.513872
+  type: 'suite'
+  ...
+# Subtest: gg243 dar kontrol ek 5: test yardımcısının edocStatusPollMs seçeneği yapılandırmaya ulaşır
+    # Subtest: startTestServer({ edocStatusPollMs: [5, 5] }) → app.config.edocStatusPollMs = [5, 5]; verilmezse tanımsız (üretim 1 sn + 2 sn)
+    ok 1 - startTestServer({ edocStatusPollMs: [5, 5] }) → app.config.edocStatusPollMs = [5, 5]; verilmezse tanımsız (üretim 1 sn + 2 sn)
+      ---
+      duration_ms: 615.073997
+      type: 'test'
+      ...
+    1..1
+ok 2 - gg243 dar kontrol ek 5: test yardımcısının edocStatusPollMs seçeneği yapılandırmaya ulaşır
+  ---
+  duration_ms: 615.48443
+  type: 'suite'
+  ...
+1..2
+# tests 2
+# suites 2
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2110.518291

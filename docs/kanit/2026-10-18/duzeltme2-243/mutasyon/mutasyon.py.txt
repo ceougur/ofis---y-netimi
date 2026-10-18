@@ -1,0 +1,51 @@
+# Numara çekirdeği mutasyonları (dar kontrol 2.4.3). Her mutasyon temiz kopyada (git archive HEADREF) tek değişiklik; testler yakalamalı.
+import os, re, subprocess, sys, shutil
+S = "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad"
+REPO = "/home/user/ofis---y-netimi"
+BASE = f"{S}/duzeltme2-243-mutasyon-6a1a4ef"
+HEADREF = subprocess.run(["git", "-C", f"{S}/duzeltme2-243", "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+F = "server/routes/invoices.mjs"
+M = {
+  "M1-olderPending-hep-0": [("    return rows.filter(row => row.profile && row.profile !== \"KAGIT\" && seriesFor(row.kind, row.profile, s) === series && !sendBlockOf(row, lastOf) && !buyerBlockOf(row)).length;", "    return 0;")],
+  "M2-numberForSend-O1-yok": [("      const older = olderPending(series, year, row.issueDate, row.id);\n      if (older) throw", "      const older = 0;\n      if (older) throw"),
+                              ("          if (older) throw new HttpError(409, orderText(older, \"Belge Gönderilecekler'de bekliyor\"), { code: \"einvoice-order\", count: older });\n        }\n      }\n    }", "        }\n      }\n    }")],
+  "M3-kayitta-erteleme-yok": [("        orderHeld = deferable ? olderPending(series, year, doc.date, invoiceId) : 0;", "        orderHeld = 0;")],
+  "M4-O2-listedOnly-yok": [("      if (listedOnly && row.eStatus === \"withdrawn\") throw new HttpError(409, WITHDRAWN_TEXT, { code: \"einvoice-withdrawn\" });\n      const block", "      const block"),
+                           ("      if (listedOnly && row.status === \"issued\" && row.eStatus === \"withdrawn\") throw", "      if (false) throw")],
+  "M5-O3-kalici-degil": [("const PERMANENT_SEND_CODES = new Set([\"chronology\", \"buyer-is-efatura\"]);", "const PERMANENT_SEND_CODES = new Set([\"chronology\"]);"),
+                         ("    if (!account || Number(account.eInvoice) !== 1) return \"\";", "    if (true) return \"\";")],
+  "M6-O3-kart-engeli-yok": [("    if (!account || Number(account.eInvoice) !== 1) return \"\";", "    if (true) return \"\";")],
+  "M7-D2-done-yok": [("        if (code === \"einvoice-already-sent\") {\n          results.push", "        if (false) {\n          results.push"),
+                     ("const NOT_NOTED = new Set([\"einvoice-already-sent\", ", "const NOT_NOTED = new Set([")],
+  "M8-D4-eski-kural": [("    if (own && doc.date !== existing.issueDate && !(existing.seq > 0) && existing.eStatus === \"waiting\"", "    if (false && own && doc.date !== existing.issueDate && !(existing.seq > 0) && existing.eStatus === \"waiting\"")],
+  "M9-bilgi-durmaz": [("const TURN_STOP_CODES = new Set([\"integrator-unreachable\", \"integrator-url\", \"integrator-credentials\", \"integrator-login\"]);", "const TURN_STOP_CODES = new Set([]);")],
+  "M10-Y1-parca-200": [("  const SEND_CHUNK = 20;", "  const SEND_CHUNK = 200;")],
+  "M11-O1-ayni-gun-sayilir": [("i.e_status = 'waiting' AND i.issue_date < ? AND i.issue_date >= ?", "i.e_status = 'waiting' AND i.issue_date <= ? AND i.issue_date >= ?")],
+  "M12-O1-kalici-engelli-sayilir": [("seriesFor(row.kind, row.profile, s) === series && !sendBlockOf(row, lastOf) && !buyerBlockOf(row)).length;", "seriesFor(row.kind, row.profile, s) === series).length;")],
+  "M13-Y1-butce-yok": [("(attempted > 0 && Date.now() - started >= SEND_BUDGET_MS)", "(false)")],
+}
+only = sys.argv[1:] or list(M)
+for name in only:
+    work = f"{BASE}/{name}"
+    if os.path.exists(work): shutil.rmtree(work)
+    os.makedirs(work)
+    subprocess.run(f"git -C {REPO} archive {HEADREF} | tar -x -C {work}", shell=True, check=True)
+    os.symlink(f"{S}/birlesim2-243/node_modules", f"{work}/node_modules")
+    p = f"{work}/{F}"
+    src = open(p).read()
+    for old, new in M[name]:
+        assert src.count(old) == 1, (name, old[:80], src.count(old))
+        src = src.replace(old, new)
+    open(p, "w").write(src)
+    out = f"{BASE}/kanit/{name}.txt"
+    env = dict(os.environ, HUKUK_LICENSE_URL="http://127.0.0.1:9")
+    with open(out, "w") as fh:
+        code = subprocess.run(["node", "--disable-warning=ExperimentalWarning", "--test", "--test-concurrency=1", "test/gg243-dar-kontrol-gonderim.test.mjs"], cwd=work, stdout=fh, stderr=subprocess.STDOUT, env=env, timeout=1500).returncode
+    text = open(out).read()
+    nums = {k: re.search(rf"^# {k} (\d+)", text, re.M) for k in ["tests", "pass", "fail", "cancelled"]}
+    nums = {k: (v.group(1) if v else "?") for k, v in nums.items()}
+    red = [re.sub(r"^\s*not ok \d+ - ", "", l)[:70] for l in text.splitlines() if re.match(r"^    not ok", l)]
+    line = f"{name}: çıkış {code}; tests {nums['tests']} pass {nums['pass']} fail {nums['fail']} cancelled {nums['cancelled']}; kırmızı: {' | '.join(red)}"
+    print(line, flush=True)
+    with open(f"{BASE}/kanit/OZET.txt", "a") as fh: fh.write(line + "\n")
+    shutil.rmtree(work)

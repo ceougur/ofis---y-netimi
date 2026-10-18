@@ -139,11 +139,23 @@ describe("fatura listesi (2.4.3 H3): sayfalı uç = eski yol + dilim, bayt bayt"
           const doc = lines(true, int(1, 4));
           const payment = variant < 0.35 ? { rest: "open", dueDate: addDays(date, int(-5, 40)) } : variant < 0.55 ? { cash: [{ amount: int(1, 50), method: "cash" }], rest: "open" } : variant < 0.75 ? { cash: [{ amount: 100000, method: "cash" }], rest: "open" } : variant < 0.88 ? { rest: "installments", installments: { count: int(2, 4), firstDue: addDays(date, 15), everyMonths: 1 } } : { cheques: [{ instrument: pick(["cheque", "note"]), amount: int(20, 300), dueDate: addDays(date, int(10, 90)), serialNo: `F-${day}-${k}`, bank: "Ziraat" }], rest: "open" };
           const later = random() < 0.2;
-          const created = await api.post("/api/workspace/invoices", { kind: "sale", scenario: "goods_sale", accountId: who.id, issueDate: date, issueTime: time, lines: doc, payment, note: random() < 0.15 ? `Not ${pick(["sipariş", "Çınar", "acil", "ıslak imza"])} ${k}` : "", orderNo: random() < 0.1 ? `SP-${day}${k}` : "", force: true, cashForce: true, eSend: later ? "later" : "now" });
+          const created = await api.post("/api/workspace/invoices", { kind: "sale", scenario: "goods_sale", accountId: who.id, issueDate: date, issueTime: time, lines: doc, payment, note: random() < 0.15 ? `Not ${pick(["sipariş", "Çınar", "acil", "ıslak imza"])} ${k}` : "", orderNo: random() < 0.1 ? `SP-${day}${k}` : "", force: true, cashForce: true, ...(later ? { eSend: "later" } : {}) });
           if (created.status === 200) {
             made.sale += 1;
             if (later) made.waiting += 1;
             sales.push({ id: created.data.id, accountId: who.id, lineId: created.data.lines?.[0]?.id });
+            // Dar kontrol 2.4.3 (O1): seride daha eski tarihli bekleyen varken Kaydet numara vermez, belgeyi Gönderilecekler'e koyar. Bu veride
+            // entegratör hesabı geçersizdir; "Kaydet ve Gönder" (ek 1: giriş reddedilince numara verilmez) yerine düz Kaydet (numaralı, "Gönderilmedi")
+            // kullanılır. Tümünü Gönder bekleyeni eritemez: kullanıcı gibi bekleyenler eski tarihliden başlayarak Listeden Silinir (Müşteri Fişi;
+            // fiş serisi de numara–tarih sırasına uyar). Son 5 günde silinmez — sonda bekleyen belge kalsın.
+            if (created.data.autoSend?.code === "einvoice-order" && day > 5) {
+              const pending = await api.get("/api/workspace/invoices?tab=pending&limit=5000");
+              const waiting = pending.invoices.filter(row => row.eStatus === "waiting").sort((a, b) => `${a.issueDate} ${a.issueTime || ""} ${a.createdAt}`.localeCompare(`${b.issueDate} ${b.issueTime || ""} ${b.createdAt}`));
+              for (const item of waiting) {
+                const withdrawn = await api.post(`/api/workspace/invoices/${item.id}/withdraw`, {});
+                assert.equal(withdrawn.status, 200, JSON.stringify(withdrawn.data).slice(0, 300));
+              }
+            }
           }
         } else if (op < 0.65) {
           const sup = pick(suppliers);
@@ -159,6 +171,7 @@ describe("fatura listesi (2.4.3 H3): sayfalı uç = eski yol + dilim, bayt bayt"
           const orig = sales.splice(int(Math.max(0, sales.length - 40), sales.length - 1), 1)[0];
           const created = await api.post("/api/workspace/invoices", { kind: "sale_return", originalId: orig.id, issueDate: date, lines: [{ originLineId: orig.lineId, qty: 1 }], payment: {}, force: true, cashForce: true, eSend: "later" });
           if (created.status === 200) made.sale_return += 1;
+          else refuse("sale_return", created);
         } else if (op < 0.82 && purchases.length > 10) {
           const orig = purchases.splice(int(Math.max(0, purchases.length - 40), purchases.length - 1), 1)[0];
           const created = await api.post("/api/workspace/invoices", { kind: "purchase_return", originalId: orig.id, issueDate: date, lines: [{ originLineId: orig.lineId, qty: 1 }], payment: {}, force: true, cashForce: true, eSend: "later" });

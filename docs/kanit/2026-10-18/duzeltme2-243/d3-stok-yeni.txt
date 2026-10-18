@@ -1,0 +1,29 @@
+TAP version 13
+# Subtest: gg243 dar kontrol: Stok Excel — tanınmayan KDV yalnız aktarılan satırda sayılır, korunan oran 'boş bırakıldı' denmez
+    # Subtest: atla kipi: zaten var olan satırlar atlanır; 'KDV Oranı tanınmadı' sayılmaz
+    ok 1 - atla kipi: zaten var olan satırlar atlanır; 'KDV Oranı tanınmadı' sayılmaz
+      ---
+      duration_ms: 8.363891
+      type: 'test'
+      ...
+    # Subtest: güncelle kipi: kayıtlı KDV'si olan üründe 'korundu', olmayanda 'boş bırakıldı'; oranlar değişmez
+    ok 2 - güncelle kipi: kayıtlı KDV'si olan üründe 'korundu', olmayanda 'boş bırakıldı'; oranlar değişmez
+      ---
+      duration_ms: 28.998599
+      type: 'test'
+      ...
+    1..2
+ok 1 - gg243 dar kontrol: Stok Excel — tanınmayan KDV yalnız aktarılan satırda sayılır, korunan oran 'boş bırakıldı' denmez
+  ---
+  duration_ms: 538.871813
+  type: 'suite'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1124.109482

@@ -76,7 +76,9 @@ describe("gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel,
     for (const ctx of open) await ctx.close();
   });
 
-  test("S2: 203 bekleyen — Tümünü Gönder (all) hepsini eskiden yeniye gönderir; bir turda en eski 200, kalan sayısı söylenir; numara tarih sırasında", async () => {
+  // Dar kontrol 2.4.3 (Y1 — beklenti BİLEREK değişti): bir istek en çok 20 belgeyi dener (ya da 10 sn bütçe); önceden 200'dü. İstemci kalan bitene dek
+  // yineler (hof-invoices.js sendPending). Özellik aynı: en eskiler önce, kalan sayısı doğru, sonunda 203'ü de bir kez gider.
+  test("S2: 203 bekleyen — Tümünü Gönder (all) hepsini eskiden yeniye gönderir; bir istekte en eski 20, kalan sayısı söylenir; numara tarih sırasında", async () => {
     const ctx = await setup();
     open.push(ctx);
     const older = [];
@@ -91,12 +93,18 @@ describe("gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel,
     assert.equal(page.pendingTotal, 203, "Tümünü Gönder düğmesinin sayısı = Gönderilecekler toplamı (sekme sayısı)");
     const first = await ctx.api.post("/api/workspace/invoices/send-pending", { all: true });
     assert.equal(first.status, 200, JSON.stringify(first.data));
-    assert.equal(first.data.sent, 200, JSON.stringify(first.data).slice(0, 400));
-    assert.equal(first.data.remaining, 3, "bir turda en çok 200; kalan sayısı");
-    for (const id of older) assert.equal((await ctx.card(id)).eStatus !== "waiting", true, "en eski belgeler ilk turda gönderildi");
-    const second = await ctx.api.post("/api/workspace/invoices/send-pending", { all: true });
-    assert.equal(second.data.sent, 3, JSON.stringify(second.data));
-    assert.equal(second.data.remaining, 0);
+    assert.equal(first.data.sent, 20, JSON.stringify(first.data).slice(0, 400));
+    assert.equal(first.data.remaining, 183, "bir istekte en çok 20; kalan sayısı");
+    for (const id of older) assert.equal((await ctx.card(id)).eStatus !== "waiting", true, "en eski belgeler ilk istekte gönderildi");
+    let total = first.data.sent;
+    let last = first.data;
+    for (let turn = 0; turn < 20 && last.remaining; turn += 1) {
+      last = (await ctx.api.post("/api/workspace/invoices/send-pending", { all: true })).data;
+      assert.equal(last.remaining, Math.max(0, 203 - total - last.sent), "kalan sayısı her istekte doğru");
+      total += last.sent;
+    }
+    assert.equal(total, 203);
+    assert.equal(last.remaining, 0);
     assert.equal((await ctx.pendingTab()).tabCounts.pending, 0, "Gönderilecekler boşaldı");
     const docs = await Promise.all([...older, ...newer].map(ctx.card));
     for (const doc of docs) {
@@ -179,7 +187,10 @@ describe("gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel,
     assert.equal(byId[old.id].ok, false);
     assert.ok(!byId[old.id].skipped);
     assert.equal(byId[fresh.id].skipped, true, JSON.stringify(byId[fresh.id]));
-    assert.match(byId[fresh.id].message, /sırasını koruyarak/);
+    // Dar kontrol 2.4.3 (bilgi, r7 — beklenti BİLEREK değişti): bağlantı yokken tur ilk "EDM'ye ulaşılamadı"da durur; kalan belge "numara verilmedi"
+    // diye listelenir (önceden "sırasını koruyarak" bekletiliyordu; ikisinde de numara almaz).
+    assert.match(byId[fresh.id].message, /numara verilmedi.*EDM'ye ulaşılamadı/);
+    assert.equal(result.data.stopped?.code, "integrator-unreachable");
     assert.equal((await ctx.card(fresh.id)).number, "", "yeni belge numara almadı");
     const again = await ctx.api.post("/api/workspace/invoices/send-pending", { ids: [fresh.id, old.id] });
     assert.equal(again.data.sent, 2, JSON.stringify(again.data.results));
@@ -201,14 +212,17 @@ describe("gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel,
     }
     const byId = Object.fromEntries(result.data.results.map(item => [item.id, item]));
     assert.equal(byId[old.id].ok, false);
-    assert.equal(byId[fresh.id].skipped, true, JSON.stringify(result.data));
+    // Dar kontrol 2.4.3 (bilgi, r7 — beklenti BİLEREK değişti): tur durur; yeni belgeye hiç ulaşılmaz (kalan sayısında), numara almaz.
+    assert.equal(byId[fresh.id], undefined, JSON.stringify(result.data));
+    assert.equal(result.data.remaining, 1);
+    assert.equal(result.data.stopped?.code, "integrator-unreachable");
     assert.equal((await ctx.card(fresh.id)).number, "");
     const again = await ctx.api.post("/api/workspace/invoices/send-pending", { all: true });
     assert.equal(again.data.sent, 2, JSON.stringify(again.data.results));
   });
 
   for (const mode of ["ids", "all"]) {
-    test(`S3 (${mode}): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye neden 'başka oturumda gönderiliyor'`, async () => {
+    test(`S3 (${mode}): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye 'başka oturumda gönderildi' (hata değil)`, async () => {
       await s3(mode);
     });
   }
@@ -228,13 +242,17 @@ describe("gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel,
     assert.equal(ctx.sends() - before, 6, "EDM'ye toplam 6 gönderim");
     for (const doc of cards) assert.equal(ctx.sentCount(doc.ettn), 1, `${doc.number} bir kez`);
     assert.equal(a.data.sent + b.data.sent, 6);
-    const notSent = b.data.results.filter(item => !item.ok);
-    assert.ok(notSent.length > 0, `ön koşul: ikinci istek birincinin tuttuğu belgeye denk geldi (${JSON.stringify(b.data).slice(0, 300)})`);
-    // Ön koşul (ders 20): öbür oturumun numara vermeden tuttuğu belge yüzünden bekletilen (sırası korunan) belge var.
-    assert.ok(notSent.some(item => item.skipped), `ön koşul: bekletilen belge oluştu (${JSON.stringify(b.data.results.map(item => [item.ok, item.skipped || false]))})`);
-    for (const item of notSent) {
-      assert.match(item.message, /başka oturumda/, item.message);
-      assert.doesNotMatch(item.message, /gönderilemedi\./, item.message);
+    // Dar kontrol 2.4.3 (kâhin BASKA-ESZ — beklenti BİLEREK değişti): ikinci istek öbür oturumun gönderdiği belgede gönderimin bitmesini bekler;
+    // belge gittiyse "başka oturumda gönderildi" (ok, done; gönderilen sayısına girmez), hiçbir belge hata ya da bekletme olarak dönmez.
+    const others = b.data.results.filter(item => item.done);
+    assert.ok(others.length > 0, `ön koşul: ikinci istek birincinin tuttuğu belgeye denk geldi (${JSON.stringify(b.data).slice(0, 300)})`);
+    for (const item of others) {
+      assert.equal(item.ok, true);
+      assert.equal(item.message, "Bu belge başka oturumda gönderildi.");
+    }
+    for (const r of [a, b]) {
+      assert.equal(r.data.failed, 0, JSON.stringify(r.data.results.filter(item => !item.ok)));
+      assert.ok(r.data.results.every(item => item.ok), JSON.stringify(r.data.results.filter(item => !item.ok)));
     }
     const ordered = [...cards].sort((x, y) => x.issueDate.localeCompare(y.issueDate));
     for (let i = 1; i < ordered.length; i += 1) assert.ok(seqOf(ordered[i].number) > seqOf(ordered[i - 1].number) || ordered[i].issueDate === ordered[i - 1].issueDate, "numara tarih sırasında");
@@ -243,8 +261,9 @@ describe("gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel,
   test("5b: canlı ortamda test serili numaralı gönderilmemiş belge — rozet ve Gönderilecekler tutarlı; 'Test serisi canlıda gönderilmez; İptal Edin'", async () => {
     const ctx = await setup({ edocLive: true });
     open.push(ctx);
+    // Dar kontrol 2.4.3 (kâhin BEKLENEN-AG): ağ yokken Kaydet ve Gönder artık numara vermez; numaralı gönderilmemiş belge düz Kaydet ile oluşur.
     assert.equal((await ctx.integrator(DEAD)).status, 200);
-    const doc = await ctx.sale(ctx.people[0], { eSend: "now" });
+    const doc = await ctx.sale(ctx.people[0], {});
     assert.match(doc.number, /^TEA2026/, "ön koşul: test serisinden numara aldı, gönderilemedi");
     const inTest = await ctx.card(doc.id);
     assert.equal(inTest.eUnsent, true, "test ortamında Gönderilmedi");

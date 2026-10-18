@@ -1,0 +1,22 @@
+Dar kontrol 2.4.3 bulgularının düzeltmesi — kanıt özeti (dal duzeltme2-243; taban d64ebf8; düzeltme bf53782). Linux, Node v22.22.0.
+Eski kod AYRI kopyada: git archive d64ebf8 (duzeltme2-243-eski-d64ebf8); yeni test dosyası oraya kopyalanıp koşuldu (ders 23).
+Çıkış kodu dosyadan ayrı alındı (ders 2). Ekran testleri paylaşılan kilitle (flock e2e-243.lock), HUKUK_LICENSE_URL=http://127.0.0.1:9.
+
+BİRİM (node --test --test-concurrency=1)
+  test/gg243-dar-kontrol-gonderim.test.mjs  yeni bf53782: çıkış 0; tests 17 pass 17 fail 0     -> gonderim-yeni.txt
+                                            eski d64ebf8: çıkış 1; tests 17 pass 1 fail 16    -> gonderim-eski-d64ebf8.txt
+                                            (eskide geçen tek test "O1 komşu" gerileme korumasıdır)
+  test/gg243-dar-kontrol-stok.test.mjs      yeni: çıkış 0; 2/2      eski: çıkış 1; 0/2        -> d3-stok-*.txt
+  Komşu birim seti (45 dosya: ebelge|einvoice|fatura|invoice|gg243|stok|stock|ci-kapi|kanit-araci|yazim-duzeni|banka-210-gg2|
+  banka-210-arayuz|form-izolasyon|hiz-243-hesap-defter|liste-kapisi|static): çıkış 0; tests 457 pass 457 fail 0 cancelled 0 skipped 0
+                                                                                              -> komsu-birim-yeni.txt
+EKRAN (Chromium)
+  gg243-tumunu-gonder   yeni: çıkış 0; 17 geçti 0 kaldı    eski: çıkış 1; 6 geçti 11 kaldı ("Sunucu zamanında yanıt vermedi")
+  gg243-odak-kalem-sil  yeni: çıkış 0; 16 geçti 0 kaldı    eski: çıkış 1; 9 geçti 7 kaldı (ilk/orta kalemde ikinci Enter başka kalemi sildi)
+  Komşular (6a1a4ef'te, e2e/ilk-*): senaryo-ebelge-242 21/21, senaryo-ebelge-243 20/20, senaryo-entegrator-240 73/73,
+    senaryo-fatura-243 31/31, gg243-odak-dugme 11/11, gg243-arka-plan-yazma 13/13, senaryo-form-izolasyon-243 178/178,
+    fatura-243-daha-fazla-yaris 9/9 — hepsi çıkış 0.
+  bf53782'de yeniden (e2e/son-*): gg243-tumunu-gonder 17/17, senaryo-fatura-243 31/31, senaryo-215 73/73, gg243-odak-kalem-sil 16/16 — çıkış 0.
+MUTASYON (numara çekirdeği; mutasyon/mutasyon.py.txt; her biri temiz git archive kopyasında tek değişiklik): 13/13 yakalandı (mutasyon/OZET.txt).
+  D1 ekran: yalnız çekirdek kuralı (işleyicinin odak satırı silinmiş) -> 1 kırmızı (son kalemde odak BODY); yalnız işleyici -> 16/16.
+NOT: olderPending sorgu süresi ölçümü (10.000 fatura ~12 ms, 50.000 ~55 ms) ilk e2e koşusuyla AYNI ANDA yapıldı (ders 15): yaklaşık değerdir.

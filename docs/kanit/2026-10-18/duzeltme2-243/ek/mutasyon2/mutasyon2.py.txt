@@ -1,0 +1,51 @@
+# Numara çekirdeği mutasyonları — 2. tur (dar kontrol 2.4.3 + ek 1–9). Her mutasyon temiz kopyada (git archive HEAD) tek değişiklik.
+# Koşulan testler: test/gg243-dar-kontrol-gonderim.test.mjs + test/gg243-dar-kontrol-ek.test.mjs.
+import os, re, subprocess, sys, shutil
+S = "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad"
+REPO = "/home/user/ofis---y-netimi"
+BASE = f"{S}/duzeltme2-243-mutasyon-6a1a4ef"
+HEADREF = subprocess.run(["git", "-C", f"{S}/duzeltme2-243", "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+INV = "server/routes/invoices.mjs"
+EDM = "server/lib/einvoice/edm.mjs"
+M = {
+  "M1-olderPending-hep-0": [(INV, "    return rows.filter(row => row.profile && row.profile !== \"KAGIT\" && seriesFor(row.kind, row.profile, s) === series && !sendBlockOf(row, lastOf) && !buyerBlockOf(row)).length;", "    return 0;")],
+  "M3-kayitta-erteleme-yok": [(INV, "        orderHeld = deferable ? olderPending(series, year, doc.date, invoiceId) : 0;", "        orderHeld = 0;")],
+  "M4-O2-listedOnly-yok": [(INV, "      if (listedOnly && row.eStatus === \"withdrawn\") throw", "      if (false) throw"), (INV, "      if (listedOnly && row.status === \"issued\" && row.eStatus === \"withdrawn\") throw", "      if (false) throw")],
+  "M7-D2-done-yok": [(INV, "          if (code === \"einvoice-already-sent\") {", "          if (false) {")],
+  "M9-bilgi-durmaz": [(INV, "const TURN_STOP_CODES = new Set([\"integrator-unreachable\", \"integrator-url\", \"integrator-credentials\", \"integrator-login\"]);", "const TURN_STOP_CODES = new Set([]);")],
+  "M10-Y1-parca-200": [(INV, "  const SEND_CHUNK = 20;", "  const SEND_CHUNK = 200;")],
+  "E1a-giris-red-turu-durdurmaz": [(INV, "          if (loginRejected(error)) stopped = { code: \"integrator-login\", message: LOGIN_REJECTED_TEXT };", "          if (false) stopped = null;")],
+  "E1b-numara-oncesi-erisim-yok": [(INV, "            await link.ensureSession({ since: contactSince });", "            void contactSince;")],
+  "E1c-kayitta-erisim-denetimi-yok": [(INV, "      if (loginRejected(error)) return { code: \"integrator-login\",", "      if (false) return { code: \"integrator-login\","), (INV, "      if ((error?.extra?.code || error?.code) === \"integrator-unreachable\") return", "      if (false) return")],
+  "E2-kayit-defteri-yok": [(INV, "    return registryOf()[partyTaxNo] ? ", "    return false ? ")],
+  "E3-banka-aciklamasi-donmez": [(INV, "    store.run(\"UPDATE fin_events SET description = REPLACE(description, ?, ?) WHERE invoice_id = ? AND instr(description, ?) > 0\", PENDING_TAG, number, id, PENDING_TAG);", "")],
+  "E6-onbellekli-oturum-yeter": [(EDM, "      if (cached && Date.now() - cached.at < SESSION_TTL && (contacts.get(sessionKey) || 0) >= since) return;", "      if (cached && Date.now() - cached.at < SESSION_TTL) return;")],
+  "E7-mesgul-beklenmez": [(INV, "          if (code === \"einvoice-sending\" && !retried && (await releasedWithin(row.id, Math.max(2000, SEND_BUDGET_MS)))) {", "          if (false) {")],
+  "E8-fis-sirasi-yok": [(INV, "      if (last && last.issueDate > row.issueDate) throw new HttpError(409, `${series} serisinde son belge", "      if (false) throw new HttpError(409, `${series} serisinde son belge")],
+  "E9-bekletme-kodsuz": [(INV, "reason: blocker.reason, code: \"einvoice-held\", blockerCode", "reason: blocker.reason, code: \"\", blockerCode")],
+}
+only = sys.argv[1:] or list(M)
+for name in only:
+    work = f"{BASE}/{name}"
+    if os.path.exists(work): shutil.rmtree(work)
+    os.makedirs(work)
+    subprocess.run(f"git -C {REPO} archive {HEADREF} | tar -x -C {work}", shell=True, check=True)
+    os.symlink(f"{S}/birlesim2-243/node_modules", f"{work}/node_modules")
+    for f, old, new in M[name]:
+        p = f"{work}/{f}"
+        src = open(p).read()
+        assert src.count(old) == 1, (name, old[:80], src.count(old))
+        open(p, "w").write(src.replace(old, new))
+    out = f"{BASE}/kanit2/{name}.txt"
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    env = dict(os.environ, HUKUK_LICENSE_URL="http://127.0.0.1:9")
+    with open(out, "w") as fh:
+        code = subprocess.run(["node", "--disable-warning=ExperimentalWarning", "--test", "--test-concurrency=1", "test/gg243-dar-kontrol-gonderim.test.mjs", "test/gg243-dar-kontrol-ek.test.mjs"], cwd=work, stdout=fh, stderr=subprocess.STDOUT, env=env, timeout=2400).returncode
+    text = open(out).read()
+    nums = {k: re.search(rf"^# {k} (\d+)", text, re.M) for k in ["tests", "pass", "fail", "cancelled"]}
+    nums = {k: (v.group(1) if v else "?") for k, v in nums.items()}
+    red = [re.sub(r"^\s*not ok \d+ - ", "", l)[:60] for l in text.splitlines() if re.match(r"^    not ok", l)]
+    line = f"{name}: çıkış {code}; tests {nums['tests']} pass {nums['pass']} fail {nums['fail']} cancelled {nums['cancelled']}; kırmızı: {' | '.join(red)}"
+    print(line, flush=True)
+    with open(f"{BASE}/kanit2/OZET.txt", "a") as fh: fh.write(line + "\n")
+    shutil.rmtree(work)

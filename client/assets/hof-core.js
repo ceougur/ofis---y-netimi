@@ -119,6 +119,9 @@
     const loose = root.querySelectorAll(snap.primary);
     return loose.length === 1 ? loose[0] : null;
   };
+  // Satır silen düğmeler (fatura kalemi ×, ödeme satırı, mahsup, masraf, tablo satırı/kolonu).
+  const REMOVAL_BUTTON = '[data-act$="-remove"], [data-act="remove"], [data-act="delete-row"], [data-act="delete-col"]';
+  const SAFE_FIELD = "input:not([readonly]):not([disabled]):not([type=hidden]):not([type=checkbox]):not([type=radio]), select:not([disabled]), textarea:not([readonly]):not([disabled])";
   HOF.keepFocus = (root, render) => {
     const active = document.activeElement;
     const field = root && active && active !== document.body && root.contains(active) && /^(INPUT|TEXTAREA|SELECT)$/.test(active.tagName);
@@ -127,7 +130,7 @@
     const inside = field || button;
     const text = field && active.tagName !== "SELECT" && (active.tagName === "TEXTAREA" || TEXT_INPUT.test(active.type || ""));
     const primary = inside ? primaryFocusKey(active) : "";
-    const snap = inside ? { key: HOF.focusKey(active), primary, unique: Boolean(primary) && root.querySelectorAll(primary).length === 1, text, value: active.value, start: text ? active.selectionStart : null, end: text ? active.selectionEnd : null, scroll: root.scrollTop } : null;
+    const snap = inside ? { key: HOF.focusKey(active), primary, unique: Boolean(primary) && root.querySelectorAll(primary).length === 1, text, value: active.value, start: text ? active.selectionStart : null, end: text ? active.selectionEnd : null, scroll: root.scrollTop, removal: button && active.matches(REMOVAL_BUTTON) } : null;
     // 2.4.3 (kullanıcı kararı, form durumu izole): yeniden çizim kullanıcının yazdığı (kaydedilmemiş) değerleri ezmez.
     const drafts = root ? draftSnapshot(root) : [];
     const out = render();
@@ -141,6 +144,14 @@
     const next = refind(root, snap);
     if (!next || next.disabled) return out;
     if (button) {
+      // Dar kontrol 2.4.3 (D1): satır SİLEN düğme (×) yeniden çizimden sonra hiçbir zaman başka bir silme düğmesine odak vermez — aynı anahtarlı
+      // düğme artık bir sonraki satırındır (ikinci Enter onu da silerdi). Odak aynı konumdaki satırın ilk yazılabilir alanına gider; yoksa verilmez
+      // (çağıran kendi güvenli hedefini seçebilir).
+      if (snap.removal) {
+        const row = next.closest("tr, li, [data-line], [role=row]");
+        row?.querySelector(SAFE_FIELD)?.focus({ preventScroll: true });
+        return out;
+      }
       next.focus({ preventScroll: true });
       if (snap.scroll) root.scrollTop = snap.scroll;
       return out;
@@ -354,14 +365,20 @@
       init.body = typeof body === "string" ? body : JSON.stringify(body);
     }
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    // Dar kontrol 2.4.3 (Y1): zaman aşımı ayrı kodla işaretlenir (client-timeout) — uzun sunucu işinde ekran "hata" yerine "sunucuda sürüyor
+    // olabilir" diyebilsin.
+    let timedOut = false;
+    const timer = setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, timeoutMs);
     if (signal) signal.addEventListener("abort", () => controller.abort(), { once: true });
     init.signal = controller.signal;
     let response;
     try {
       response = await nativeFetch(HOF.apiUrl(path), init);
     } catch (error) {
-      throw new ApiError(error && error.name === "AbortError" ? "Sunucu zamanında yanıt vermedi." : "Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin.", 0);
+      throw new ApiError(error && error.name === "AbortError" ? "Sunucu zamanında yanıt vermedi." : "Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin.", 0, timedOut ? { code: "client-timeout" } : undefined);
     } finally {
       clearTimeout(timer);
     }
