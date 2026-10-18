@@ -72,7 +72,7 @@ def _bekleyen_silineni_de(self, b):
     return not b["prog"]
 
 
-ORJ = {"gecici_engelli": D.gecici_engelli, "tutan": D.tutan, "engel": D.engel, "sira_listesi": D.sira_listesi, "son": D.son, "tarih_engeli": D.tarih_engeli,
+ORJ = {"fis_engeli": D.fis_engeli, "gecici_engelli": D.gecici_engelli, "tutan": D.tutan, "engel": D.engel, "sira_listesi": D.sira_listesi, "son": D.son, "tarih_engeli": D.tarih_engeli,
        "seri_yil": D.seri_yil, "bekleyen": D.bekleyen, "uygula": M.uygula, "gonder": M.gonder, "numara": M.numara}
 
 
@@ -169,6 +169,7 @@ MUTANTLAR = [
     ("M1 bekletme yok (K8)", lambda: setattr(D, "tutan", lambda self, b: None)),
     ("M2 kalıcı engelli de bekletir (O1 benzeri, K9)", lambda: setattr(D, "tutan", _tutan_engelliler_de)),
     ("M2b PK'sız (geçici engel) bekletmez (K9, 18.10 kararı)", lambda: setattr(D, "gecici_engelli", lambda self, b: False)),
+    ("M21 Listeden Sil FIS sıra-tarih denetimi yok (K31)", lambda: setattr(D, "fis_engeli", lambda self, b: False)),
     ("M3 PK'sız e-Fatura engel sayılmaz (K2)", lambda: setattr(D, "engel", _engel_pk_yok_degil)),
     ("M4 mükellefe e-Arşiv engel sayılmaz (K3)", lambda: setattr(D, "engel", _engel_alici_efatura_degil)),
     ("M5 tarih engeli yok (K6)", lambda: setattr(D, "tarih_engeli", lambda self, b: False)),
@@ -191,7 +192,7 @@ MUTANTLAR = [
 
 
 def geri_al():
-    D.gecici_engelli = ORJ["gecici_engelli"]
+    D.gecici_engelli, D.fis_engeli = ORJ["gecici_engelli"], ORJ["fis_engeli"]
     D.tutan, D.engel, D.sira_listesi, D.son = ORJ["tutan"], ORJ["engel"], ORJ["sira_listesi"], ORJ["son"]
     D.tarih_engeli, D.seri_yil, D.bekleyen = ORJ["tarih_engeli"], ORJ["seri_yil"], ORJ["bekleyen"]
     M.uygula, M.gonder, M.numara = ORJ["uygula"], ORJ["gonder"], ORJ["numara"]

@@ -158,6 +158,19 @@ class Silme(unittest.TestCase):
         self.assertTrue(d.belgeler["B1"]["edm"])
         self.assertEqual(no(d, "B1"), "TEA2026000000001")
 
+    def test_listeden_sil_fis_sirasini_korur_K31(self):
+        kg = lambda ad, t: {"islem": "kagit_kaydet", "belge": ad, "cari": "K1", "tarih": t}  # noqa: E731
+        d, _ = kos([kg("B1", "2026-06-17"), K("B2", "K1", "2026-06-15"), {"islem": "listeden_sil", "belge": "B2"}, T])
+        self.assertEqual(d.belgeler["B2"]["silindi"], False)
+        self.assertEqual(no(d, "B2"), "TEA2026000000001")  # reddedilen silme sonrası Gönderilecekler'de kaldı ve gitti
+        d, _ = kos([kg("B1", "2026-06-17"), K("B2", "K1", "2026-06-15"), {"islem": "listeden_sil", "belge": "B2"}])
+        self.assertEqual((d.yanit, no(d, "B2"), d.bekleyen(d.belgeler["B2"])), ("4xx", "", True))
+        d, _ = kos([kg("B1", "2026-06-16"), K("B2", "K1", "2026-06-16"), {"islem": "listeden_sil", "belge": "B2"}])
+        self.assertEqual((d.yanit, d.belgeler["B2"]["silindi"]), ("2xx", True))  # aynı tarih sırayı bozmaz
+        _, adaylar = kos([kg("B1", "2026-06-17"), K("B2", "K1", "2026-06-15"), K("B3", "K1", "2026-06-16"),
+                          {"islem": "tur_sirasinda_sil", "belge": "B3"}])
+        self.assertTrue(all(a.yanit != "2xx" for a in adaylar))
+
     def test_gonderilmis_listeden_silinmez_K20(self):
         d, _ = kos([K("B1", "K1", "2026-06-17", "simdi"), {"islem": "listeden_sil", "belge": "B1"}])
         self.assertEqual(d.yanit, "4xx")

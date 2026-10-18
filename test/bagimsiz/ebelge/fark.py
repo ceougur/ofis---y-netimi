@@ -381,6 +381,10 @@ def karsilastir(senaryo, p):
                                   if o1 else f"ARDIL-ARIZA-KAYDI (arıza modelde {m_ad}, programda {sorted(prog_ariza)[0]} belgesine düştü)")
         if any(i["kod"] == "I2" and "FIS" in i["ileti"] for i in yeni_ihlal):
             dg.fis_sira_bozuk = True
+            if adim["islem"] in ("listeden_sil", "tur_sirasinda_sil"):
+                for x in f:
+                    if x["sinif"] == "BASKA":
+                        x["sinif"] = "BASKA-FIS-SIRA (Listeden Sil eski tarihli belgeye FIS numarası verdi; K31 reddi beklenir)"
         for x in f:
             if adim["islem"] == "kagit_kaydet" and x["alan"] == "var" and x["sinif"] == "BASKA" and dg.fis_sira_bozuk:
                 x["sinif"] = "BASKA-FIS-SIRA-ARDIL (FIS serisi önceden sıra-tarih bozuk; kâğıt kaydı son numaranın tarihine göre denetleniyor)"

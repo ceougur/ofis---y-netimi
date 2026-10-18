@@ -135,6 +135,12 @@ class Dunya:
         st = self.son_tarih(seri, yil)
         return st is not None and b["tarih"] < st
 
+    def fis_engeli(self, b):
+        """K31 (baş mimar kararı 18.10.2026): Listeden Sil belgeye FIS numarası verirken numara–tarih sırasını korur; belgenin tarihi
+        FIS serisinin (o yılın) son fişinden eskiyse Listeden Sil reddedilir."""
+        st = self.son_tarih("FIS", gun(b["tarih"]).year)
+        return st is not None and b["tarih"] < st
+
     def gecici_engelli(self, b):
         """K9: kullanıcının belge üzerinde tek adımla düzeltebildiği engel (posta kutusu seçimi) — tarih sırasına sığıyorsa."""
         return self.engel(b) == "pk-yok" and not self.tarih_engeli(b)
@@ -394,6 +400,8 @@ def uygula(d, adim):
             # silme ondan sonra gelir: o dünyada belge gitmiştir ve aday elenir (aşağıdaki koşul).
             for w in tur_gonder(d.kopya(f"{x}: tur sırasında silindi"), None, sil=(x, True)):
                 bb = w.belgeler[x]
+                if bb["numara"] == "" and w.fis_engeli(bb):
+                    continue  # K31: silme reddedilir (yalnız "reddedildi" dünyası kalır)
                 if not bb["prog"] and not bb["iptal"] and not bb["edm"]:
                     w.yanit = "2xx"
                     bb["silindi"] = True
@@ -421,6 +429,10 @@ def uygula(d, adim):
             k.belgeler[b["ad"]]["silindi"] = True
             k.yanit = "2xx"
             return [r, k]
+        if d.fis_engeli(b):
+            # K31: FIS serisinin son fişinden eski tarihli belge listeden silinmez (409 chronology); Gönderilecekler'de kalır.
+            d.yanit = "4xx"
+            return [d]
         d.belgeler[b["ad"]]["silindi"] = True
         d.yanit = "2xx"
         f = d.kopya(f"{b['ad']}: silinince FIS numarası aldı")

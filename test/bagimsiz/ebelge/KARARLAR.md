@@ -42,6 +42,7 @@ Belirsiz kalan yerde sıra: plan/mevzuat → en yaygın muhasebe programlarını
 | K27 | Numaralı belgede Düzenle belge türünü değiştiremez. | CLAUDE.md 2.4.3 karar (1) |
 | K28 | Durum Sorgula, EDM'deki belgeyi programda "gönderildi" yapar. | E-BELGE-EDM.md / FATURA-ISTEKLER (durum sorgulama) |
 | K29 | Serideki son numaralı belgeden eski tarihli yeni e-Belge hiç gönderilemez (K6); kaydı reddedilebilir ya da kalıcı engelli olarak tutulabilir — ÇATAL. | K6'nın sonucu; davranış yazılı değil |
+| K31 | Listeden Sil, belgeye Müşteri Fişi (FIS) serisinde numara verirken numara–tarih sırasını korur: belgenin tarihi o yılın FIS serisindeki son fişten eskiyse Listeden Sil REDDEDİLİR (409 chronology); belge Gönderilecekler'de kalır, numara verilmez. Aynı tarih reddedilmez. Tur sürerken silmede de geçerli. | Baş mimar kararı 18.10.2026 — programın kâğıt kayıt kuralıyla tutarlılık ("numara ve tarih sırası uyuşmalı") + VUK fatura/fiş seri-sıra-tarih düzeni |
 | K30 | Carinin işareti (Mükellef Sorgula ya da gönderimdeki sorgu) belge türüyle çelişirse numarasız belgenin düzenlemesi reddedilir. | GİB (mükellefe e-Arşiv kesilmez); CLAUDE.md 2.4.3 karar (4) |
 
 ## Değişmezler (fark.py; YALNIZ programın gözlenen durumu + sahte EDM kaydı üzerinde, modelden bağımsız)
@@ -76,5 +77,5 @@ iddiası EDM'de var · I19 tur sonucunda gönderilmeyen belgenin kodu ve iletisi
 BEKLENEN-O1 (eski KALICI engelli bekleyen — K3/K6 — seriyi bekletiyor; 18.10 kararından sonra PK'sız eski belgenin bekletmesi doğru) · BEKLENEN-I19 (bekletilen belgenin tur sonucu kodsuz/iletisiz) · BEKLENEN-O1-ZINCIR / TUTMA-YOK (eski gönderilebilir bekleyen varken yeni
 belge numaralandı; eski belge kalıcı tarih engeline düşer) · BEKLENEN-O2 (tur sürerken Listeden Sil kabul edildi, belge yine gitti) ·
 BEKLENEN-O3 (alıcısı mükellef çıkan bekleyen e-Arşiv seriyi bekletiyor) · BEKLENEN-AG (ağ yokken numara) · BASKA-ESZ (eşzamanlı turda
-"gönderiliyor" hata olarak döndü) · BASKA-FIS-SIRA (Listeden Sil eski tarihli belgeye FIS numarası verdi) · BASKA-DUZENLE-SIRA (numarasız
+"gönderiliyor" hata olarak döndü) · BASKA-FIS-SIRA (Listeden Sil eski tarihli belgeye FIS numarası verdi; 18.10'dan sonra K31 ile model de reddi bekler) · BASKA-DUZENLE-SIRA (numarasız
 bekleyenin tarihi sıra-tarihi bozmadan değiştirilemiyor) · *-ARDIL (aynı adımdaki asıl farkın sonucu) · BASKA (sınıfsız: önce incelenir).
