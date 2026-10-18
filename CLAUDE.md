@@ -388,3 +388,5 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   Takip) VARSAYILAN olarak görür (permissions.mjs overview.view += muhasebe); yönetici kişiden kaldırabilir (kişiye özel "remove"); özel roller kendi
   listesiyle kalır; ANLIK DURUM kartı yine yalnız yönetici. Güncellemeyle mevcut muhasebe kullanıcılarına da açılır (kaldırılmışlar kapalı kalır).
   Dal h9-243 127ab3c (test yetki-243-muhasebe-finans eski 0/2 → 2/2; finans kapısını sınayan 4 test kişiden kaldırarak sınamayı sürdürür).
+- KARAR (kullanıcı, 18.10.2026 ~08:00 UTC: "evet kopyala düğmesi ekle"): 2.4.3 çekirdeğinde bildirim tıklamayı geçirdiği için metni seçilemiyor → hata
+  ve uyarı bildirimlerine "Kopyala" düğmesi (tam metin panoya; güvenli olmayan http bağlamında yedek yol). Düzeltme ajanına (duzeltme-gg243) eklendi.
