@@ -72,10 +72,32 @@ export async function startMockEdm({ serveWsdl = true, contract = {} } = {}) {
   const state = { calls: [], sent: [], drafts: new Map(), cancelled: [], marked: [], sessions: new Set(), counter: 0, expireNext: false, statuses: new Map(), wsdlHits: 0, violations: [], usedIds: new Set() };
   const fault = (code, message) => `<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><s:Fault><faultcode>s:Client</faultcode><faultstring>${message}</faultstring><detail><RequestFault xmlns="${NS}"><ERROR_CODE>${code}</ERROR_CODE><ERROR_SHORT_DES>${message}</ERROR_SHORT_DES></RequestFault></detail></s:Fault></s:Body></s:Envelope>`;
   const okEnvelope = body => `<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body>${body}</s:Body></s:Envelope>`;
+  // resetOps (2.4.3, hız testi H4 zorla üretme — ders 20): bu kümedeki işlem keep-alive ile YENİDEN KULLANILAN bağlantıda gelirse sunucu isteği
+  // İŞLEMEDEN bağlantıyı koparır (boşta kalan bağlantıyı tam istemcinin yeniden kullandığı anda kapatan sunucu; istemcide UND_ERR_SOCKET / ECONNRESET).
+  // Kopan istek state.resets'e yazılır; işlenmediği için state.calls'a girmez. "WSDL" GET isteğidir. Testler state.resetOps'u (ve isteğe bağlı
+  // state.resetLimit: en çok kaç istek koparılsın) değiştirir.
+  state.resetOps = new Set();
+  state.resets = [];
+  const seen = new WeakMap();
   const server = createServer((req, res) => {
+    const use = (seen.get(req.socket) || 0) + 1;
+    seen.set(req.socket, use);
     let raw = "";
     req.on("data", chunk => (raw += chunk));
     req.on("end", () => {
+      if (use > 1 && state.resetOps.size) {
+        const op = req.method === "GET" ? "WSDL" : (/<(?:\w+:)?(\w+)Request[\s>]/.exec(raw.replace(/<(?:\w+:)?(Envelope|Header|Body)[\s>]/g, "")) || [])[1] || "";
+        if (state.resetOps.has(op)) {
+          state.resets.push(op);
+          // resetLimit: yalnız bu kadar istek koparılır, sonra resetOps boşalır (yinelenen isteğin hangi bağlantıya düştüğünden bağımsız sonuç).
+          if (Number.isFinite(state.resetLimit) && (state.resetLimit -= 1) <= 0) {
+            state.resetOps = new Set();
+            state.resetLimit = undefined;
+          }
+          req.socket.destroy();
+          return;
+        }
+      }
       if (req.method === "GET") {
         state.wsdlHits += 1;
         if (!serveWsdl) {

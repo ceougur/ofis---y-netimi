@@ -213,13 +213,15 @@ const STOCK_ROLE_TESTS = [
   ["min", t => /(kritik|minimum|min|asgari|alt limit|uyari)/.test(t)],
   // v2.0.13: satış fiyatı ayrı rol (alış/birim fiyat = maliyet); "satış fiyatı" başlığı birim fiyata düşmez.
   ["salePrice", t => /(satis fiyati|satis fiyat|satis|etiket fiyati|raf fiyati|perakende fiyat)/.test(t) && !/toplam/.test(t)],
+  // 2.4.3 (H8): KDV oranı kolonu ("KDV", "KDV Oranı", "KDV %"); "KDV Dahil Fiyat" gibi fiyat kolonları buraya düşmez.
+  ["vat", t => /(^| )(kdv|kdv orani|kdv oran|kdv yuzdesi|vat|vat rate)( |$)/.test(t) && !/(fiyat|tutar|toplam|dahil|haric|matrah)/.test(t)],
   ["price", t => /(fiyat|fiyati|birim fiyat|alis|alis fiyati|maliyet|tutar)/.test(t) && !/(toplam|satis)/.test(t)],
   ["qty", t => /(^| )(miktar|miktari|adet|adedi|stok|mevcut|kalan|sayi|sayisi|envanter)( |$)/.test(t) && !/(kod|kritik|min)/.test(t)],
   ["category", t => /(^| )(kategori|kategorisi|grup|grubu|cins|tur|turu|sinif|depo|raf)( |$)/.test(t)],
   ["note", t => /(^| )(not|notu|aciklama|bilgi)( |$)/.test(t)],
   ["name", t => /(^| )(urun|urun adi|urunun adi|malzeme|malzeme adi|stok adi|ad|adi|isim|cinsi|mal|mal adi|kalem)( |$)/.test(t)],
 ];
-export const STOCK_ROLES = Object.freeze(["kind", "code", "name", "unit", "category", "qty", "price", "salePrice", "min", "note", "extra"]);
+export const STOCK_ROLES = Object.freeze(["kind", "code", "name", "unit", "category", "qty", "price", "salePrice", "vat", "min", "note", "extra"]);
 
 function mapWith(tests, headers) {
   const roles = {};

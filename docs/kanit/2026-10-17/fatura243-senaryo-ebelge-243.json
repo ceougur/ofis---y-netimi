@@ -1,0 +1,32 @@
+{
+  "ad": "fatura243-senaryo-ebelge-243",
+  "komut": "npm run test:senaryo-ebelge-243",
+  "commit": "6398001c78f9b38684765f1f5077c6f982136062",
+  "dal": "worktree-agent-afe4a76beaa9ff8d6",
+  "kirli": 0,
+  "izlenmeyen": 30,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-17T22:31:12.099Z",
+  "sure_sn": 17.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 19,
+    "gecen": 19,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-17/fatura243-senaryo-ebelge-243.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-afe4a76beaa9ff8d6",
+  "ham_cikti_sha256": "d10206acde1ccdc7e4f6499d6ded45526afec78f9189f37f0e1041f118ff053a",
+  "ham_cikti_bayt": 1708
+}

@@ -1,0 +1,200 @@
+TAP version 13
+# Subtest: 2.4.3: e-Belge gönderim sırası, bekleyen belgelerin görünürlüğü, kopan bağlantı, iptalde durum
+    # Subtest: B1: Tümünü Gönder (liste sırası yeniden eskiye) belgeleri tarih + yazım sırasıyla numaralar; üçü de gönderilir
+    not ok 1 - B1: Tümünü Gönder (liste sırası yeniden eskiye) belgeleri tarih + yazım sırasıyla numaralar; üçü de gönderilir
+      ---
+      duration_ms: 171.252454
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/fatura243-eski-4d546e9/test/ebelge-243-gonderim.test.mjs:70:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        [{"id":"invoice-f51b2f93-6d02-4fe7-a391-38f55c46e43e","ok":true,"number":"TEA2026000000001","status":"sent"},{"id":"invoice-e25a4b3f-558b-4a58-8ffc-1643fa08d61b","ok":false,"message":"TEA serisinde son gönderilen belge TEA2026000000001 17.06.2026 tarihli; bu belge (16.06.2026) daha eski tarihli olduğu için e-Belge olarak gönderilemez. Belge Müşteri Fişi olarak kalabilir (Listeden Sil) ya da iptal edilip bugünün tarihiyle yeniden kesilir."},{"id":"invoice-80d42c20-f6f9-448f-bacb-4cef967ee0ab","ok":false,"message":"TEA serisinde son gönderilen belge TEA2026000000001 17.06.2026 tarihli; bu belge (15.06.2026) daha eski tarihli olduğu için e-Belge olarak gönderilemez. Belge Müşteri Fişi olarak kalabilir (Listeden Sil) ya da iptal edilip bugünün tarihiyle yeniden kesilir."}]
+        
+        1 !== 3
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 3
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/fatura243-eski-4d546e9/test/ebelge-243-gonderim.test.mjs:80:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: B1 komşu: aynı serideki eski belge gönderilemezse daha yeni numarasız belge bu turda numara almaz (kronoloji korunur)
+    not ok 2 - B1 komşu: aynı serideki eski belge gönderilemezse daha yeni numarasız belge bu turda numara almaz (kronoloji korunur)
+      ---
+      duration_ms: 93.357749
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/fatura243-eski-4d546e9/test/ebelge-243-gonderim.test.mjs:88:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        true !== false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/fatura243-eski-4d546e9/test/ebelge-243-gonderim.test.mjs:100:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B3: Seçilenleri Kaydet (otomatik gönderim kapalı) e-Arşiv taslağını numarasız Gönderilecekler'e koyar; açıkken gönderir
+    not ok 3 - B3: Seçilenleri Kaydet (otomatik gönderim kapalı) e-Arşiv taslağını numarasız Gönderilecekler'e koyar; açıkken gönderir
+      ---
+      duration_ms: 26.133348
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/fatura243-eski-4d546e9/test/ebelge-243-gonderim.test.mjs:112:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Kes, Sonra Gönder gibi bekler
+        
+        'none' !== 'waiting'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'waiting'
+      actual: 'none'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/fatura243-eski-4d546e9/test/ebelge-243-gonderim.test.mjs:120:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: H1: EDM'ye ulaşılamazken Kaydet ve Gönder — numara verilir, neden belgede yazar, Gönderilecekler'de görünür; bağlantı düzelince bir kez gönderilir
+    not ok 4 - H1: EDM'ye ulaşılamazken Kaydet ve Gönder — numara verilir, neden belgede yazar, Gönderilecekler'de görünür; bağlantı düzelince bir kez gönderilir
+      ---
+      duration_ms: 80.691684
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/fatura243-eski-4d546e9/test/ebelge-243-gonderim.test.mjs:138:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + undefined
+        - true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/fatura243-eski-4d546e9/test/ebelge-243-gonderim.test.mjs:153:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: H4: yeniden kullanılan bağlantı koparsa yan etkisiz çağrı (mükellef sorgusu, durum) bir kez yinelenir; gönderim yinelenmez, belirsiz kalır
+    not ok 5 - H4: yeniden kullanılan bağlantı koparsa yan etkisiz çağrı (mükellef sorgusu, durum) bir kez yinelenir; gönderim yinelenmez, belirsiz kalır
+      ---
+      duration_ms: 29.127324
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/fatura243-eski-4d546e9/test/ebelge-243-gonderim.test.mjs:184:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        0. sorgu: {"ok":false,"error":"EDM'ye bağlanılamadı: UND_ERR_SOCKET","code":"integrator-unreachable","detail":"","integratorCode":""}
+        
+        502 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 502
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/fatura243-eski-4d546e9/test/ebelge-243-gonderim.test.mjs:194:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: H7: gönderilmiş e-Arşiv hemen İptal Et — durum kendiliğinden yeniden sorulur, iptal edilir; uzun işlenmede açık ileti, iptal gönderilmez
+    not ok 6 - H7: gönderilmiş e-Arşiv hemen İptal Et — durum kendiliğinden yeniden sorulur, iptal edilir; uzun işlenmede açık ileti, iptal gönderilmez
+      ---
+      duration_ms: 81.858438
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/fatura243-eski-4d546e9/test/ebelge-243-gonderim.test.mjs:225:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"error":"e-Arşiv fatura EDM'de henüz işleniyor; iptal ancak işlem bitince yapılabilir. Birkaç dakika sonra Durum Sorgula ile bakıp yeniden deneyin.","code":"einvoice-processing"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/fatura243-eski-4d546e9/test/ebelge-243-gonderim.test.mjs:229:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: defter temiz (Mutabakat Testi)
+    ok 7 - defter temiz (Mutabakat Testi)
+      ---
+      duration_ms: 14.935698
+      type: 'test'
+      ...
+    1..7
+not ok 1 - 2.4.3: e-Belge gönderim sırası, bekleyen belgelerin görünürlüğü, kopan bağlantı, iptalde durum
+  ---
+  duration_ms: 1030.906596
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/fatura243-eski-4d546e9/test/ebelge-243-gonderim.test.mjs:21:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: göç v28: v2.4.2 verisi güncel kodla açılır (stok kartında KDV oranı)
+    # Subtest: eski veride oran boş; miktar, değer, faturalar aynı; düzenleme oranı korur; yazılan oran faturada gelir; Mutabakat Testi temiz
+    not ok 1 - eski veride oran boş; miktar, değer, faturalar aynı; düzenleme oranı korur; yazılan oran faturada gelir; Mutabakat Testi temiz
+      ---
+      duration_ms: 9.47345
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/fatura243-eski-4d546e9/test/goc-243-stok-kdv.test.mjs:20:3'
+      failureType: 'testCodeFailure'
+      error: 'v2.4.2 etiketi bu depoda yok (git fetch --tags gerekir).'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        checkoutTag (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/fatura243-eski-4d546e9/test/guvenilirlik/surumler.mjs:33:22)
+        bootVersion (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/fatura243-eski-4d546e9/test/guvenilirlik/surumler.mjs:68:18)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/fatura243-eski-4d546e9/test/goc-243-stok-kdv.test.mjs:21:23)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+      ...
+    1..1
+not ok 2 - göç v28: v2.4.2 verisi güncel kodla açılır (stok kartında KDV oranı)
+  ---
+  duration_ms: 13.397595
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/fatura243-eski-4d546e9/test/goc-243-stok-kdv.test.mjs:15:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 8
+# suites 2
+# pass 1
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2036.868975
