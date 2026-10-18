@@ -201,6 +201,8 @@ async function compareReports(app, label, today, firstDay, banks, { viaWorker: u
         if (typeof expected.subtitle === "string") expected.subtitle = expected.subtitle.split("Tüm hareketler").join("Tüm Zamanlar").split("Tüm zamanlar").join("Tüm Zamanlar");
         // 2.4.3 (C14, bilerek): Banka ve POS Hareketleri Kasa grubundan Banka grubuna taşındı; satırlar ve sayılar aynıdır.
         if (id === "banka-pos-hareketleri" && expected.group === "Kasa") expected.group = "Banka";
+        // 2.4.3 UX24 (bilerek): yanıtta "footers" (TOPLAM satırları); banka/Kasa raporlarında yön grubu yok → footers = [footer] ya da [].
+        expected.footers = expected.footer ? [expected.footer] : [];
       } catch (caught) {
         error = caught;
       }
