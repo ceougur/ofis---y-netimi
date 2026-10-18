@@ -70,6 +70,7 @@
     "test:gg243-kopyala": "node --disable-warning=ExperimentalWarning test/e2e/gg243-kopyala.mjs",
     "test:mutabakat": "node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs",
     "test:guvenilirlik": "node --disable-warning=ExperimentalWarning test/guvenilirlik/kos.mjs",
+    "test:kahin-ebelge": "python3 test/bagimsiz/ebelge/fark.py",
     "mutabakat": "node --disable-warning=ExperimentalWarning tools/mutabakat.mjs",
     "check": "node tools/check-syntax.mjs",
     "backup": "node --disable-warning=ExperimentalWarning tools/backup.mjs",
