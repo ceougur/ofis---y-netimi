@@ -472,6 +472,13 @@ def uygula(d, adim):
             r.yanit = "4xx"
             k = d.kopya(f"{b['ad']}: gönderilmiş belge programda iptal edildi")
             k.belgeler[b["ad"]]["iptal"] = True
+            if b["tur"] == "earsiv" and yas <= 8 and not d.ag:
+                # K23 ek (19.10.2026): 8 günlük sınırın içindeki gönderilmiş e-Arşiv K22 gereği entegratörde iptal edilir; ağ yoksa
+                # entegratöre ulaşılamaz → iptal yapılmaz, belge değişmez, yanıt ağ geçidi hatası 5xx (RFC 9110 §15.6.3). K23 kaynağı
+                # HTTP sınıfı vermez; "reddedildi = 4xx" modelin varsayımıydı (Uzun Doğrulama tohum 5 adım 294).
+                u = d.kopya(f"{b['ad']}: ağ yok, entegratöre ulaşılamadı; iptal yapılmadı")
+                u.yanit = "5xx"
+                return [r, k, u]
             return [r, k]
         # K24: gönderilmemiş belge iptal edilir; numara (varsa) korunur, artık gönderilmez.
         b["iptal"] = True

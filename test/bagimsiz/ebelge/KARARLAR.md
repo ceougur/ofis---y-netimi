@@ -35,7 +35,7 @@ Belirsiz kalan yerde sıra: plan/mevzuat → en yaygın muhasebe programlarını
 | K20 | Gönderilmiş / iptal / kâğıt belge listeden silinmez. | FATURA-ISTEKLER satır 44 (yalnız Gönderilecekler'den silinir) |
 | K21 | Numara almış ama gitmemiş belgenin Listeden Sil'i: reddedilir YA DA kabul (numara korunur) — ÇATAL. | Yazılı değil |
 | K22 | Gönderilmiş e-Arşiv 7 gün içinde (8 günlük sınırın içinde) iptal edilir, numara korunur. | FATURA-ISTEKLER satır 111, 133 ("e-Arşiv iptali 8 günle sınırlı"); "İptalde numara korunur" satır 119 |
-| K23 | Gönderilmiş e-Fatura, süresi geçmiş e-Arşiv ya da ağ yokken gönderilmiş belge iptali: reddedilir YA DA yalnız programda iptal — ÇATAL. | FATURA-ISTEKLER satır 112 (e-Fatura entegratörden iptal edilmez; alıcı reddi/iade), FATURA-KARSILASTIRMA satır 44 ("programda iptal önerisi") |
+| K23 | Gönderilmiş e-Fatura, süresi geçmiş e-Arşiv ya da ağ yokken gönderilmiş belge iptali: reddedilir YA DA yalnız programda iptal — ÇATAL. | FATURA-ISTEKLER satır 112 (e-Fatura entegratörden iptal edilmez; alıcı reddi/iade), FATURA-KARSILASTIRMA satır 44 ("programda iptal önerisi"); EK 19.10.2026: 8 günlük sınırın içindeki e-Arşivde ağ yoksa entegratöre ulaşılamaz (K22 ağa bağlı) → üçüncü dünya: iptal yapılmaz, yanıt 5xx (RFC 9110 §15.6.3) |
 | K24 | Gönderilmemiş belge iptal edilir; numarası (varsa) korunur, artık gönderilmez. | FATURA-ISTEKLER satır 119 |
 | K25 | Gönderilmiş ya da iptal belge düzenlenmez. | FATURA-ISTEKLER satır 119 "Kesilen belge düzeltilmez (yasal belge)"; GİB: gönderilmiş belge değiştirilemez |
 | K26 | Numaralı ama gitmemiş (ya da kâğıt) belgenin tarihi: reddedilir YA DA değişir — ÇATAL (değişirse K6 değişmezi denetler). | Yazılı değil |

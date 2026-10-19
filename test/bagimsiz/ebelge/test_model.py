@@ -202,6 +202,10 @@ class IptalDuzenle(unittest.TestCase):
         d, _ = kos([K("B1", "K1", "2026-06-17", "simdi"), {"islem": "iptal", "belge": "B1"}, K("B2", "K1", "2026-06-17", "simdi")])
         self.assertEqual(no(d, "B2"), "TEA2026000000002")
 
+    def test_gonderilmis_eArsiv_ag_yokken_iptal_5xx_K23(self):
+        _, adaylar = kos([K("B1", "K1", "2026-06-17", "simdi"), {"islem": "ag", "durum": "yok"}, {"islem": "iptal", "belge": "B1"}])
+        self.assertTrue(any(a.yanit == "5xx" and not a.belgeler["B1"]["iptal"] for a in adaylar))
+
     def test_gonderilmis_eFatura_iptali_catal_K23(self):
         _, adaylar = kos([K("B1", "K2", "2026-06-17", "simdi"), {"islem": "iptal", "belge": "B1"}])
         self.assertEqual(len(adaylar), 2)
