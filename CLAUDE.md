@@ -482,4 +482,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   (ad alanı/yapı e-Fatura servisiyle aynı aile; soap-contract.mjs yeniden kullanılır). Programda hazır: SMM kâğıt makbuz, ESMM profili, TES/ESM serileri, esmm
   ayarı (gizli). EKSİK: ESmmEDM bağdaştırıcısı + e-SMM belge XML'i (GİB e-SMM biçimi doğrulanacak) + gönderim/durum/iptal/resmî PDF akışı + test ortamında
   uçtan uca. Plan + karar kullanıcıda.
+- 2.4.3 YAYIMLANDI (19.10.2026): PR #33 → master 163dd5d; kullanıcı v2.4.3 yayınını açtı; 5 dosya bayt bayt aynı; güncelleyici 2.4.2/2.4.0/2.3.0/2.0.12 gözüyle
+  2.4.3 "available" (yedek yol), indirilen zip sha256 aynı; site kılavuz PR ceougur/destekofis#19 birleşti, sitedeki PDF 6687435d… doğrulandı. Yayın sonrası
+  "Sürüm yayımla" + master CI 163dd5d sonucu bir sonraki oturumda okunacak.
+- KARAR (kullanıcı, 19.10.2026 ~11:45 UTC: "perşembe yapalım, 2.4.4'ün kalan işleri ile beraber"; haftalık kullanım %91): 2.4.4 = e-SMM (4 madde: EDM ESmmEDM
+  bağdaştırıcısı, GİB e-SMM XML'i, numara/kopma/iptal kuralları + dar kontrol, test ortamı uçtan uca + kılavuz + açma) + 2.4.3'ten ertelenenler (UI11, UI5, UI9,
+  UI3a, UX9, UX10, UX15–UX18, UX20, UX25, UX27, KÖ3) + gg243-dar-kontrol-gonderim D2 ön koşulunu belirlenimci yap (ders 20) + e-Arşiv iptal 8. gün teyidi.
+  BAŞLANGIÇ: Perşembe 22.10.2026 02:00 sıfırlamasından SONRA; öncesinde para çekirdeğine dokunan iş başlatılmaz. Tahmin ~1,5–2 gün (e-SMM), ~1,5–3 M token.
 
