@@ -493,4 +493,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   Sorgula yalnız CheckUser çağırır (edm.mjs checkUser: unvan, PK etiketleri, tür) — adres / vergi dairesi GETİRMEZ, kontörlü sorgu YOK. EDM WSDL'inde GetCompany /
   GetCompanyBasic / GetTurmob var (hangisinin kontörlü olduğu ve döndürdüğü alanlar doğrulanmadı). KARAR (kullanıcı, 19.10.2026: "şu anki durum şimdilik yeterli, sonraki zamanlarda talebe
   göre bakarız"): kontörlü "Tüm Bilgileri Getir" YAPILMAZ, 2.4.4 kapsamında DEĞİL; müşteri talebi gelirse yeniden değerlendirilir.
+- KULLANICI SORUNU (19.10.2026, ekran): Mükellef Sorgula "Kullanıcı Bulunamadı (11010)" — neden: Entegratör Ayarları'nda Web Servis KULLANICI ADI alanına servis
+  ADRESİ (https://test.edmbilisim…) yazılmış. Parola "Kayıtlı": kayıtlı parola tasarım gereği gösterilmez (Göster yalnız o an yazılanı gösterir). 2.4.4 ADAYI
+  (küçük, kullanıcıya önerildi): kullanıcı adında http/https/“.svc” varsa kaydetmeden uyarı + baş/son boşluk kırpma; "Göster" yanında "kayıtlı parola gösterilmez,
+  değiştirmek için yenisini yazın" netliği.
 
