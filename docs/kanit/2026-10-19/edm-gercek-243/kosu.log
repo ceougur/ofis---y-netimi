@@ -1,0 +1,125 @@
+(node:10922) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+04:25:17 AYAR: {"status":200,"testNumbers":{"efatura":{"series":"TEF","year":2026,"seq":452697116,"number":"TEF2026452697116"},"earsiv":{"series":"TEA","year":2026,"seq":209571483,"number":"TEA2026209571483"}}}
+04:25:19 BAĞLANTI SINAMASI: {"status":200,"ok":true,"message":"EDM'ye giriş yapıldı; bağlantı çalışıyor. Servis sözleşmesi (WSDL) okundu: SOAP 1.1, 55 işlem."}
+04:25:20 MÜKELLEF SORGULA müşteri firma: {"status":200,"registered":true,"mailboxes":["urn:mail:avsaroglupk@kollektif.com","urn:mail:defaultpk@abctest.com.tr","urn:mail:defaultpk@edmbilisim.com.tr","urn:mail:defaultpk@yenibirfirmadaha.com.tr","urn:mail:defaultpk@yeniedmbilisim.com.tr","urn:mail:demopk@nobel.com.tr","urn:mail:demopk@nobel2.com.tr","urn:mail:imzatestpk@edmbilisim.com.tr","urn:mail:test1pk@etabilgisayar.com","urn:mail:test2pk@etabilgisayar.com","urn:mail:test3pk@etabilgisayar.com"],"kart":{"f":1,"alias":"urn:mail:avsaroglupk@kollektif.com"}}
+04:25:20 MÜKELLEF SORGULA tedarikçi: {"status":200,"registered":true,"mailboxes":["urn:mail:default123pk@izibiz.com.tr","urn:mail:default12pk@izibiz.com.tr","urn:mail:default4pk@izibiz.com.tr","urn:mail:default5pk@izibiz.com.tr","urn:mail:defaultpk@izibiz.com.tr","urn:mail:defaulttt123pk@izibiz.com.tr","urn:mail:maslakpk@izibiz.com.tr","urn:mail:umraniyepk@izibiz.com.tr"],"kart":{"f":1,"alias":"urn:mail:default123pk@izibiz.com.tr"}}
+04:25:21 MÜKELLEF SORGULA kâğıt tedarikçi (şahıs): {"status":200,"registered":false,"mailboxes":[],"kart":{"f":0,"alias":""}}
+
+■ 5) Tümünü Gönder: 7 numarasız bekleyen (Kes, Sonra Gönder), karışık tarih ve kayıt sırası
+04:25:21 5 KAYDET (Kes, Sonra Gönder) e-Arşiv 2026-10-18: {"status":200,"number":"","profile":"EARSIVFATURA","typeCode":"SATIS","eStatus":"waiting","issueDate":"2026-10-18"}
+04:25:21 5 KAYDET (Kes, Sonra Gönder) e-Fatura 2026-10-19: {"status":200,"number":"","profile":"TEMELFATURA","typeCode":"SATIS","eStatus":"waiting","issueDate":"2026-10-19"}
+04:25:21 5 KAYDET (Kes, Sonra Gönder) e-Arşiv 2026-10-17: {"status":200,"number":"","profile":"EARSIVFATURA","typeCode":"SATIS","eStatus":"waiting","issueDate":"2026-10-17"}
+04:25:21 5 KAYDET (Kes, Sonra Gönder) e-Fatura 2026-10-18: {"status":200,"number":"","profile":"TEMELFATURA","typeCode":"SATIS","eStatus":"waiting","issueDate":"2026-10-18"}
+04:25:21 5 KAYDET (Kes, Sonra Gönder) e-Arşiv 2026-10-19: {"status":200,"number":"","profile":"EARSIVFATURA","typeCode":"SATIS","eStatus":"waiting","issueDate":"2026-10-19"}
+04:25:21 5 KAYDET (Kes, Sonra Gönder) e-Fatura 2026-10-17: {"status":200,"number":"","profile":"TEMELFATURA","typeCode":"SATIS","eStatus":"waiting","issueDate":"2026-10-17"}
+04:25:21 5 KAYDET (Kes, Sonra Gönder) e-Arşiv 2026-10-17: {"status":200,"number":"","profile":"EARSIVFATURA","typeCode":"SATIS","eStatus":"waiting","issueDate":"2026-10-17"}
+  ✓ 5: 7 belge numarasız bekliyor
+04:25:33 5 TÜMÜNÜ GÖNDER istek 1: {"status":200,"sent":4,"failed":0,"skipped":0,"remaining":3,"results":[{"ok":true,"number":"TEA2026209571483"},{"ok":true,"number":"TEF2026452697116"},{"ok":true,"number":"TEA2026209571484"},{"ok":true,"number":"TEA2026209571485"}]}
+04:25:41 5 TÜMÜNÜ GÖNDER istek 2: {"status":200,"sent":3,"failed":0,"skipped":0,"remaining":0,"results":[{"ok":true,"number":"TEF2026452697117"},{"ok":true,"number":"TEF2026452697118"},{"ok":true,"number":"TEA2026209571486"}]}
+04:25:41 5 SERİ TEA: [{"number":"TEA2026209571483","tarih":"2026-10-17","kayitSirasi":2,"eStatus":"sent"},{"number":"TEA2026209571484","tarih":"2026-10-17","kayitSirasi":6,"eStatus":"sent"},{"number":"TEA2026209571485","tarih":"2026-10-18","kayitSirasi":0,"eStatus":"sent"},{"number":"TEA2026209571486","tarih":"2026-10-19","kayitSirasi":4,"eStatus":"sent"}]
+  ✓ 5 TEA: 4 belge, numaralar boşluksuz ardışık
+  ✓ 5 TEA: numara sırası = tarih sırası (aynı gün kayıt sırası)
+04:25:41 5 SERİ TEF: [{"number":"TEF2026452697116","tarih":"2026-10-17","kayitSirasi":5,"eStatus":"sent"},{"number":"TEF2026452697117","tarih":"2026-10-18","kayitSirasi":3,"eStatus":"sent"},{"number":"TEF2026452697118","tarih":"2026-10-19","kayitSirasi":1,"eStatus":"sent"}]
+  ✓ 5 TEF: 3 belge, numaralar boşluksuz ardışık
+  ✓ 5 TEF: numara sırası = tarih sırası (aynı gün kayıt sırası)
+  ✓ 5: 7 belgenin hepsi EDM'ye iletildi (gönderilen 7, hata 0)
+
+■ 1) e-Fatura (mükellef, PK seçili) Kaydet ve Gönder
+04:25:43 1 KAYDET VE GÖNDER: {"status":200,"number":"TEF2026452697119","profile":"TEMELFATURA","typeCode":"SATIS","eStatus":"sent","eMessage":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.","issueDate":"2026-10-19","autoSend":{"ok":true,"status":"sent","message":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.","reference":"TEF2026452697119","uuid":"a78e5fa2-114f-4d6e-991b-be2b15613325"}}
+  ✓ 1: e-Fatura TEF numarasıyla kaydedildi ve EDM'ye iletildi
+
+■ 2) e-Arşiv: kişi alıcı + Nihai Tüketici hızlı seçeneği (KÖ1)
+04:25:47 2a KAYDET VE GÖNDER kişi: {"status":200,"number":"TEA2026209571487","profile":"EARSIVFATURA","typeCode":"SATIS","eStatus":"sent","eMessage":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.","issueDate":"2026-10-19","autoSend":{"ok":true,"status":"sent","message":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.","reference":"TEA2026209571487","uuid":"4ebdddef-5bc8-4600-9a4b-ba5030b8d2ac"}}
+  ✓ 2a: kişiye e-Arşiv iletildi
+04:25:47 2b NİHAİ TÜKETİCİ: {"ilk":{"status":200,"id":"account-53072d72-6d2e-4bed-8c97-732cc3e36829","name":"Nihai Tüketici","created":true},"ikinci":{"status":200,"id":"account-53072d72-6d2e-4bed-8c97-732cc3e36829","name":"Nihai Tüketici","created":false},"kart":{"name":"Nihai Tüketici","taxNo":"11111111111","city":"İstanbul","district":"Kadıköy"},"adet":1}
+  ✓ 2b: Nihai Tüketici carisi bir kez açıldı, ikinci basışta aynı cari
+04:25:50 2b KAYDET VE GÖNDER Nihai Tüketici: {"status":200,"number":"TEA2026209571488","profile":"EARSIVFATURA","typeCode":"SATIS","eStatus":"sent","eMessage":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.","issueDate":"2026-10-19","autoSend":{"ok":true,"status":"sent","message":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.","reference":"TEA2026209571488","uuid":"e52076e2-08f4-4116-8dc2-30cef561533c"}}
+  ✓ 2b: Nihai Tüketici (11111111111) e-Arşiv iletildi
+04:25:50 2c Nihai Tüketici 36.000 TL (sınır üstü): {"status":400,"code":"einvoice-party","error":"Cari (alıcı): 30.000 TL üstü e-Arşiv faturada nihai tüketicinin gerçek TC kimlik numarası, adı soyadı ve adresi zorunludur (11111111111 yazılamaz). Cari (alıcı): adres zorunludur."}
+  ✓ 2c: 30.000 TL üstü Nihai Tüketici kaydedilmedi (gerçek kimlik istendi)
+
+■ 3) MM1: kâğıt numaralı ('A 004512') asıl faturanın iadesi
+04:25:50 3 e-Fatura (mükellef tedarikçi) ALIŞ: {"status":200,"number":"A 004512","profile":"KAGIT","typeCode":"SATIS","eStatus":"none","issueDate":"2026-10-09"}
+04:25:50 3 e-Fatura (mükellef tedarikçi) HESAP: {"status":200,"returnRef":{"needed":true,"original":"A 004512","suggested":"A000000000004512","value":""},"profile":"TEMELFATURA"}
+04:25:50 3 e-Fatura (mükellef tedarikçi) REFERANSSIZ KAYIT: {"status":400,"code":"einvoice-return-reference","field":"returnRef","error":"İade e-Belgesi asıl faturayı 16 karakterlik bir numarayla gösterir (GİB). Asıl faturanın numarası (A 004512) 16 karakter değil: İade Edilen Belge No (e-Belge Referansı) alanına 16 karakterlik değeri yazın (önerilen: A000000000004512). Asıl fatura kaydı değişmez; gerçek numarası belgenin açıklamasında yazar."}
+04:25:52 3 e-Fatura (mükellef tedarikçi) ÖNERİLEN REFERANSLA KAYDET VE GÖNDER: {"status":200,"number":"TEF2026452697120","profile":"TEMELFATURA","typeCode":"IADE","eStatus":"sent","eMessage":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.","issueDate":"2026-10-19","returnRef":"A000000000004512","autoSend":{"ok":true,"status":"sent","message":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.","reference":"TEF2026452697120","uuid":"866b9556-b7f2-4199-b648-daaf22e76267"}}
+04:25:52 3 e-Fatura (mükellef tedarikçi) UBL: {"ProfileID":"TEMELFATURA","InvoiceTypeCode":"IADE","BillingReference":"<cac:BillingReference><cac:InvoiceDocumentReference><cbc:ID>A000000000004512</cbc:ID><cbc:IssueDate>2026-10-09</cbc:IssueDate><cbc:DocumentTypeCode>IADE</cbc:DocumentTypeCode></cac:InvoiceDocumentReference></cac:BillingReference>","asilKayit":"A 004512"}
+  ✓ 3 e-Fatura (mükellef tedarikçi): öneri 16 karakter (A000000000004512)
+  ✓ 3 e-Fatura (mükellef tedarikçi): önerilen referansla iade EDM'ye iletildi
+04:25:52 3 e-Arşiv (mükellef olmayan şahıs) ALIŞ: {"status":200,"number":"KR-77/2026","profile":"KAGIT","typeCode":"SATIS","eStatus":"none","issueDate":"2026-10-09"}
+04:25:52 3 e-Arşiv (mükellef olmayan şahıs) HESAP: {"status":200,"returnRef":{"needed":true,"original":"KR-77/2026","suggested":"KR00000000772026","value":""},"profile":"EARSIVFATURA"}
+04:25:53 3 e-Arşiv (mükellef olmayan şahıs) REFERANSSIZ KAYIT: {"status":400,"code":"einvoice-return-reference","field":"returnRef","error":"İade e-Belgesi asıl faturayı 16 karakterlik bir numarayla gösterir (GİB). Asıl faturanın numarası (KR-77/2026) 16 karakter değil: İade Edilen Belge No (e-Belge Referansı) alanına 16 karakterlik değeri yazın (önerilen: KR00000000772026). Asıl fatura kaydı değişmez; gerçek numarası belgenin açıklamasında yazar."}
+04:25:56 3 e-Arşiv (mükellef olmayan şahıs) ÖNERİLEN REFERANSLA KAYDET VE GÖNDER: {"status":200,"number":"TEA2026209571489","profile":"EARSIVFATURA","typeCode":"IADE","eStatus":"sent","eMessage":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.","issueDate":"2026-10-19","returnRef":"KR00000000772026","autoSend":{"ok":true,"status":"sent","message":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.","reference":"TEA2026209571489","uuid":"f5d48bb3-2512-499d-b385-c34a9f430ec7"}}
+04:25:56 3 e-Arşiv (mükellef olmayan şahıs) UBL: {"ProfileID":"EARSIVFATURA","InvoiceTypeCode":"IADE","BillingReference":"<cac:BillingReference><cac:InvoiceDocumentReference><cbc:ID>KR00000000772026</cbc:ID><cbc:IssueDate>2026-10-09</cbc:IssueDate><cbc:DocumentTypeCode>IADE</cbc:DocumentTypeCode></cac:InvoiceDocumentReference></cac:BillingReference>","asilKayit":"KR-77/2026"}
+  ✓ 3 e-Arşiv (mükellef olmayan şahıs): öneri 16 karakter (KR00000000772026)
+  ✓ 3 e-Arşiv (mükellef olmayan şahıs): önerilen referansla iade EDM'ye iletildi
+
+■ 4) e-Fatura iadesi: Ticari profilli tedarikçi, iade TEMELFATURA (MM2)
+04:25:56 4 ALIŞ (Ticari): {"status":200,"number":"TBS2026000000123","profile":"TICARIFATURA","typeCode":"SATIS","eStatus":"none","issueDate":"2026-10-14"}
+04:25:56 4 HESAP: {"status":200,"returnRef":{"needed":false,"original":"TBS2026000000123","suggested":"TBS2026000000123","value":""},"profile":"TEMELFATURA"}
+04:25:58 4 KAYDET VE GÖNDER (Ticari istendi): {"status":200,"number":"TEF2026452697121","profile":"TEMELFATURA","typeCode":"IADE","eStatus":"sent","eMessage":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.","issueDate":"2026-10-19","autoSend":{"ok":true,"status":"sent","message":"e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır.","reference":"TEF2026452697121","uuid":"c1709bd8-502a-4ffe-ba50-2ab2b8f65bda"}}
+04:25:58 4 UBL: {"ProfileID":"TEMELFATURA","InvoiceTypeCode":"IADE","BillingReference":"<cac:BillingReference><cac:InvoiceDocumentReference><cbc:ID>TBS2026000000123</cbc:ID><cbc:IssueDate>2026-10-14</cbc:IssueDate><cbc:DocumentTypeCode>IADE</cbc:DocumentTypeCode></cac:InvoiceDocumentReference></cac:BillingReference>"}
+  ✓ 4: iade TEMELFATURA + IADE (Ticari istek Temel'e döndü)
+  ✓ 4: iade EDM'ye iletildi
+
+■ 6) Müşteri Fişi Olarak Bırak (KÖ2)
+04:25:58 6 KAYDET (Kes, Sonra Gönder): {"status":200,"number":"","profile":"EARSIVFATURA","typeCode":"SATIS","eStatus":"waiting","issueDate":"2026-10-19","canWithdraw":true}
+04:25:58 6 MÜŞTERİ FİŞİ OLARAK BIRAK: {"status":200,"number":"FIS2026000000001","profile":"KAGIT","typeCode":"SATIS","eStatus":"withdrawn","issueDate":"2026-10-19","canSend":true,"canRefresh":false,"canOfficial":false}
+04:25:58 6 DURUM SORGULA + DENETİM İZİ: {"eRefresh":{"status":409,"code":"einvoice-not-sent","error":"Kâğıt belgenin e-Belge durumu olmaz."},"olaylar":["invoice.created","invoice.withdrawn"],"ettnEdmde":{"eStatus":"withdrawn","eAt":""}}
+  ✓ 6: belge Müşteri Fişi oldu (FIS2026000000001)
+  ✓ 6: EDM'ye gönderim olayı yok, Durum Sorgula 409 (entegratöre gitmedi)
+
+■ Durum Sorgula (EDM) — son durum beklenir
+04:26:07 DURUM turu 1: TEA2026209571485=processing TEF2026452697118=processing TEA2026209571483=processing TEF2026452697117=processing TEA2026209571486=processing TEF2026452697116=processing TEA2026209571484=processing TEF2026452697119=processing TEA2026209571487=processing TEA2026209571488=processing TEF2026452697120=processing TEA2026209571489=processing TEF2026452697121=processing
+04:27:00 DURUM turu 2: TEA2026209571485=sent TEF2026452697118=processing TEA2026209571483=sent TEF2026452697117=processing TEA2026209571486=sent TEF2026452697116=processing TEA2026209571484=sent TEF2026452697119=processing TEA2026209571487=sent TEA2026209571488=sent TEF2026452697120=processing TEA2026209571489=sent TEF2026452697121=processing
+04:27:49 DURUM turu 3: TEA2026209571485=sent TEF2026452697118=processing TEA2026209571483=sent TEF2026452697117=processing TEA2026209571486=sent TEF2026452697116=processing TEA2026209571484=sent TEF2026452697119=processing TEA2026209571487=sent TEA2026209571488=sent TEF2026452697120=processing TEA2026209571489=sent TEF2026452697121=processing
+04:28:38 DURUM turu 4: TEA2026209571485=sent TEF2026452697118=processing TEA2026209571483=sent TEF2026452697117=processing TEA2026209571486=sent TEF2026452697116=processing TEA2026209571484=sent TEF2026452697119=processing TEA2026209571487=sent TEA2026209571488=sent TEF2026452697120=processing TEA2026209571489=sent TEF2026452697121=processing
+04:29:27 DURUM turu 5: TEA2026209571485=sent TEF2026452697118=processing TEA2026209571483=sent TEF2026452697117=processing TEA2026209571486=sent TEF2026452697116=processing TEA2026209571484=sent TEF2026452697119=processing TEA2026209571487=sent TEA2026209571488=sent TEF2026452697120=processing TEA2026209571489=sent TEF2026452697121=processing
+04:30:16 DURUM turu 6: TEA2026209571485=sent TEF2026452697118=processing TEA2026209571483=sent TEF2026452697117=processing TEA2026209571486=sent TEF2026452697116=processing TEA2026209571484=sent TEF2026452697119=processing TEA2026209571487=sent TEA2026209571488=sent TEF2026452697120=processing TEA2026209571489=sent TEF2026452697121=processing
+04:31:05 DURUM turu 7: TEA2026209571485=sent TEF2026452697118=processing TEA2026209571483=sent TEF2026452697117=processing TEA2026209571486=sent TEF2026452697116=processing TEA2026209571484=sent TEF2026452697119=processing TEA2026209571487=sent TEA2026209571488=sent TEF2026452697120=processing TEA2026209571489=sent TEF2026452697121=processing
+04:31:54 DURUM turu 8: TEA2026209571485=sent TEF2026452697118=processing TEA2026209571483=sent TEF2026452697117=processing TEA2026209571486=sent TEF2026452697116=processing TEA2026209571484=sent TEF2026452697119=processing TEA2026209571487=sent TEA2026209571488=sent TEF2026452697120=processing TEA2026209571489=sent TEF2026452697121=processing
+04:32:42 DURUM turu 9: TEA2026209571485=sent TEF2026452697118=sent TEA2026209571483=sent TEF2026452697117=sent TEA2026209571486=sent TEF2026452697116=sent TEA2026209571484=sent TEF2026452697119=sent TEA2026209571487=sent TEA2026209571488=sent TEF2026452697120=processing TEA2026209571489=sent TEF2026452697121=processing
+04:33:29 DURUM turu 10: TEA2026209571485=sent TEF2026452697118=sent TEA2026209571483=sent TEF2026452697117=sent TEA2026209571486=sent TEF2026452697116=sent TEA2026209571484=sent TEF2026452697119=sent TEA2026209571487=sent TEA2026209571488=sent TEF2026452697120=sent TEA2026209571489=sent TEF2026452697121=sent
+04:33:29 SON DURUM 5 e-Arşiv 2026-10-18: {"number":"TEA2026209571485","eStatus":"sent","eMessage":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED"}
+  ✓ 5 e-Arşiv 2026-10-18 TEA2026209571485: EDM son durum sent
+04:33:29 SON DURUM 5 e-Fatura 2026-10-19: {"number":"TEF2026452697118","eStatus":"sent","eMessage":"Alıcıya ulaştı. SUCCEED"}
+  ✓ 5 e-Fatura 2026-10-19 TEF2026452697118: EDM son durum sent
+04:33:29 SON DURUM 5 e-Arşiv 2026-10-17: {"number":"TEA2026209571483","eStatus":"sent","eMessage":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED"}
+  ✓ 5 e-Arşiv 2026-10-17 TEA2026209571483: EDM son durum sent
+04:33:29 SON DURUM 5 e-Fatura 2026-10-18: {"number":"TEF2026452697117","eStatus":"sent","eMessage":"Alıcıya ulaştı. SUCCEED"}
+  ✓ 5 e-Fatura 2026-10-18 TEF2026452697117: EDM son durum sent
+04:33:29 SON DURUM 5 e-Arşiv 2026-10-19: {"number":"TEA2026209571486","eStatus":"sent","eMessage":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED"}
+  ✓ 5 e-Arşiv 2026-10-19 TEA2026209571486: EDM son durum sent
+04:33:29 SON DURUM 5 e-Fatura 2026-10-17: {"number":"TEF2026452697116","eStatus":"sent","eMessage":"Alıcıya ulaştı. SUCCEED"}
+  ✓ 5 e-Fatura 2026-10-17 TEF2026452697116: EDM son durum sent
+04:33:29 SON DURUM 5 e-Arşiv 2026-10-17: {"number":"TEA2026209571484","eStatus":"sent","eMessage":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED"}
+  ✓ 5 e-Arşiv 2026-10-17 TEA2026209571484: EDM son durum sent
+04:33:29 SON DURUM 1 e-Fatura: {"number":"TEF2026452697119","eStatus":"sent","eMessage":"Alıcıya ulaştı. SUCCEED"}
+  ✓ 1 e-Fatura TEF2026452697119: EDM son durum sent
+04:33:29 SON DURUM 2a e-Arşiv kişi: {"number":"TEA2026209571487","eStatus":"sent","eMessage":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED"}
+  ✓ 2a e-Arşiv kişi TEA2026209571487: EDM son durum sent
+04:33:29 SON DURUM 2b e-Arşiv Nihai Tüketici: {"number":"TEA2026209571488","eStatus":"sent","eMessage":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED"}
+  ✓ 2b e-Arşiv Nihai Tüketici TEA2026209571488: EDM son durum sent
+04:33:29 SON DURUM 3 MM1 e-Fatura (mükellef tedarikçi): {"number":"TEF2026452697120","eStatus":"sent","eMessage":"Alıcıya ulaştı. SUCCEED"}
+  ✓ 3 MM1 e-Fatura (mükellef tedarikçi) TEF2026452697120: EDM son durum sent
+04:33:29 SON DURUM 3 MM1 e-Arşiv (mükellef olmayan şahıs): {"number":"TEA2026209571489","eStatus":"sent","eMessage":"e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED"}
+  ✓ 3 MM1 e-Arşiv (mükellef olmayan şahıs) TEA2026209571489: EDM son durum sent
+04:33:29 SON DURUM 4 e-Fatura iade: {"number":"TEF2026452697121","eStatus":"sent","eMessage":"Alıcıya ulaştı. SUCCEED"}
+  ✓ 4 e-Fatura iade TEF2026452697121: EDM son durum sent
+
+■ 7) Resmî PDF + karekod
+04:33:32 7 RESMÎ PDF 1 e-Fatura: {"status":200,"tip":"application/pdf","bayt":84206,"disposition":"attachment; filename=\"TEF2026452697119 Resmi Gorunum.pdf\"; filename*=UTF-8''TEF2026452697119%20Resmi%20Gorunum.pdf","onbellek":["e-belge-gorunum/a78e5fa2-114f-4d6e-991b-be2b15613325-sent.pdf"],"karekod":true,"sagUst":"0.80,0.10","farklar":[],"json":"{\"vkntckn\":\"3230512384\",\"avkntckn\":\"3230512384\",\"senaryo\":\"TEMELFATURA\",\"tip\":\"SATIS\",\"tarih\":\"2026-10-19\",\"no\":\"TEF2026452697119\",\"ettn\":\"a78e5fa2-114f-4d6e-991b-be2b15613325\",\"parabirimi\":\"TRY\",\"malhizmettoplam\":\"1250.00\",\"kdvmatrah(10)\":\"250.00\",\"hesaplanankdv(10)\":\"25.00\",\"kdvmatrah(20)\":\"1000.00\",\"hesaplanankdv(20)\":\"200.00\",\"vergidahil\":\"1475.00\",\"odenecek\":\"1475.00\"}"}
+  ✓ 7 1 e-Fatura TEF2026452697119: resmî PDF indi, karekod çözüldü, tutarlar ELLE hesapla aynı
+04:33:37 7 RESMÎ PDF 2a e-Arşiv kişi: {"status":200,"tip":"application/pdf","bayt":82889,"disposition":"attachment; filename=\"TEA2026209571487 Resmi Gorunum.pdf\"; filename*=UTF-8''TEA2026209571487%20Resmi%20Gorunum.pdf","onbellek":["e-belge-gorunum/4ebdddef-5bc8-4600-9a4b-ba5030b8d2ac-sent.pdf"],"karekod":true,"sagUst":"0.80,0.10","farklar":[],"json":"{\"vkntckn\":\"3230512384\",\"avkntckn\":\"10000000146\",\"senaryo\":\"EARSIVFATURA\",\"tip\":\"SATIS\",\"tarih\":\"2026-10-19\",\"no\":\"TEA2026209571487\",\"ettn\":\"4ebdddef-5bc8-4600-9a4b-ba5030b8d2ac\",\"parabirimi\":\"TRY\",\"malhizmettoplam\":\"300.00\",\"kdvmatrah(20)\":\"300.00\",\"hesaplanankdv(20)\":\"60.00\",\"vergidahil\":\"360.00\",\"odenecek\":\"360.00\"}"}
+  ✓ 7 2a e-Arşiv kişi TEA2026209571487: resmî PDF indi, karekod çözüldü, tutarlar ELLE hesapla aynı
+04:33:40 7 RESMÎ PDF 2b e-Arşiv Nihai Tüketici: {"status":200,"tip":"application/pdf","bayt":82327,"disposition":"attachment; filename=\"TEA2026209571488 Resmi Gorunum.pdf\"; filename*=UTF-8''TEA2026209571488%20Resmi%20Gorunum.pdf","onbellek":["e-belge-gorunum/e52076e2-08f4-4116-8dc2-30cef561533c-sent.pdf"],"karekod":true,"sagUst":"0.80,0.10","farklar":[],"json":"{\"vkntckn\":\"3230512384\",\"avkntckn\":\"11111111111\",\"senaryo\":\"EARSIVFATURA\",\"tip\":\"SATIS\",\"tarih\":\"2026-10-19\",\"no\":\"TEA2026209571488\",\"ettn\":\"e52076e2-08f4-4116-8dc2-30cef561533c\",\"parabirimi\":\"TRY\",\"malhizmettoplam\":\"150.00\",\"kdvmatrah(20)\":\"150.00\",\"hesaplanankdv(20)\":\"30.00\",\"vergidahil\":\"180.00\",\"odenecek\":\"180.00\"}"}
+  ✓ 7 2b e-Arşiv Nihai Tüketici TEA2026209571488: resmî PDF indi, karekod çözüldü, tutarlar ELLE hesapla aynı
+04:33:44 7 RESMÎ PDF 3 MM1 e-Fatura (mükellef tedarikçi): {"status":200,"tip":"application/pdf","bayt":80474,"disposition":"attachment; filename=\"TEF2026452697120 Resmi Gorunum.pdf\"; filename*=UTF-8''TEF2026452697120%20Resmi%20Gorunum.pdf","onbellek":["e-belge-gorunum/866b9556-b7f2-4199-b648-daaf22e76267-sent.pdf"],"karekod":true,"sagUst":"0.80,0.10","farklar":[],"json":"{\"vkntckn\":\"3230512384\",\"avkntckn\":\"4840847211\",\"senaryo\":\"TEMELFATURA\",\"tip\":\"IADE\",\"tarih\":\"2026-10-19\",\"no\":\"TEF2026452697120\",\"ettn\":\"866b9556-b7f2-4199-b648-daaf22e76267\",\"parabirimi\":\"TRY\",\"malhizmettoplam\":\"500.00\",\"kdvmatrah(20)\":\"500.00\",\"hesaplanankdv(20)\":\"100.00\",\"vergidahil\":\"600.00\",\"odenecek\":\"600.00\"}"}
+  ✓ 7 3 MM1 e-Fatura (mükellef tedarikçi) TEF2026452697120: resmî PDF indi, karekod çözüldü, no/ETTN/tarih aynı
+04:33:49 7 RESMÎ PDF 3 MM1 e-Arşiv (mükellef olmayan şahıs): {"status":200,"tip":"application/pdf","bayt":82425,"disposition":"attachment; filename=\"TEA2026209571489 Resmi Gorunum.pdf\"; filename*=UTF-8''TEA2026209571489%20Resmi%20Gorunum.pdf","onbellek":["e-belge-gorunum/f5d48bb3-2512-499d-b385-c34a9f430ec7-sent.pdf"],"karekod":true,"sagUst":"0.80,0.10","farklar":[],"json":"{\"vkntckn\":\"3230512384\",\"avkntckn\":\"10000000078\",\"senaryo\":\"EARSIVFATURA\",\"tip\":\"IADE\",\"tarih\":\"2026-10-19\",\"no\":\"TEA2026209571489\",\"ettn\":\"f5d48bb3-2512-499d-b385-c34a9f430ec7\",\"parabirimi\":\"TRY\",\"malhizmettoplam\":\"50.00\",\"kdvmatrah(20)\":\"50.00\",\"hesaplanankdv(20)\":\"10.00\",\"vergidahil\":\"60.00\",\"odenecek\":\"60.00\"}"}
+  ✓ 7 3 MM1 e-Arşiv (mükellef olmayan şahıs) TEA2026209571489: resmî PDF indi, karekod çözüldü, no/ETTN/tarih aynı
+04:33:53 7 RESMÎ PDF 4 e-Fatura iade: {"status":200,"tip":"application/pdf","bayt":80415,"disposition":"attachment; filename=\"TEF2026452697121 Resmi Gorunum.pdf\"; filename*=UTF-8''TEF2026452697121%20Resmi%20Gorunum.pdf","onbellek":["e-belge-gorunum/c1709bd8-502a-4ffe-ba50-2ab2b8f65bda-sent.pdf"],"karekod":true,"sagUst":"0.80,0.10","farklar":[],"json":"{\"vkntckn\":\"3230512384\",\"avkntckn\":\"4840847211\",\"senaryo\":\"TEMELFATURA\",\"tip\":\"IADE\",\"tarih\":\"2026-10-19\",\"no\":\"TEF2026452697121\",\"ettn\":\"c1709bd8-502a-4ffe-ba50-2ab2b8f65bda\",\"parabirimi\":\"TRY\",\"malhizmettoplam\":\"1000.00\",\"kdvmatrah(20)\":\"1000.00\",\"hesaplanankdv(20)\":\"200.00\",\"vergidahil\":\"1200.00\",\"odenecek\":\"1200.00\"}"}
+  ✓ 7 4 e-Fatura iade TEF2026452697121: resmî PDF indi, karekod çözüldü, tutarlar ELLE hesapla aynı
+04:33:53 SONUÇ: hepsi geçti
+cikis=0

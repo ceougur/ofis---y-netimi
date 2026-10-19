@@ -26,7 +26,20 @@
   const canManage = () => HOF.can("invoices.manage");
   const canSettings = () => HOF.can("invoices.settings");
   const edoc = () => meta?.edocEnabled === true;
-  const todayIso = () => meta?.today || HOF.office?.todayIso?.() || HOF.localToday();
+  // 2.4.3 (uzman UX3): meta (sunucunun bugünü) yalnız pencere açılışında yüklenir; pencere gece yarısını geçince yeni form DÜNÜN tarihini
+  // alıyordu (31.12 23:56'da açılan pencerede 01.01 00:01'de kesilen fatura 31.12 tarihli). Yerel gün meta yüklendiğinden beri değiştiyse
+  // sunucunun bugünü aynı gün farkıyla ilerletilir (sunucu–tarayıcı saat dilimi farkı korunur; tek makinede ikisi aynıdır).
+  let metaLocal = "";
+  const shiftIso = (iso, days) => {
+    const [y, m, d] = String(iso).split("-").map(Number);
+    return new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10);
+  };
+  const todayIso = () => {
+    const local = HOF.localToday();
+    if (!meta?.today) return HOF.office?.todayIso?.() || local;
+    if (!metaLocal || metaLocal === local) return meta.today;
+    return shiftIso(meta.today, Math.round((Date.parse(`${local}T00:00:00Z`) - Date.parse(`${metaLocal}T00:00:00Z`)) / 86400000));
+  };
   const body = () => modal?.dialog.querySelector("[data-invoices]");
   const office = () => HOF.office || {};
   const num = value => {
@@ -59,6 +72,7 @@
   async function loadMeta(force = false) {
     if (meta && !force) return meta;
     meta = await HOF.api("/api/workspace/invoices/meta");
+    metaLocal = HOF.localToday();
     return meta;
   }
 
@@ -113,9 +127,16 @@
     if (side) return showPick(side, account);
     showList();
   }
+  // 2.4.3 (form durumu izole): pencere içindeki form (fatura formu, Fatura Ayarları) kendi kapsamıdır; içinde kaydedilmemiş değişiklik
+  // varken Esc / × / dışına tıklama sorar. Kapsam her formda yenidir; kaydedip karta / listeye geçince kalkar.
+  let formScope = 0;
   const setMode = mode => {
     view.mode = mode;
     modal?.dialog.classList.toggle("is-form", mode === "form");
+    const root = body();
+    if (!root) return;
+    if (mode === "form" || mode === "settings") root.setAttribute("data-hof-form", `${mode}-${++formScope}`);
+    else root.removeAttribute("data-hof-form");
   };
   function showList() {
     setMode("list");
@@ -168,8 +189,30 @@
 
   // 2.1.0 (bağımsız inceleme H4): Daha Fazla ile arka plan yenilemesi çakışınca yanıt yalnız isteğin gittiği listeye eklenir (HOF.listGate
   // retry); arka plan yenilemesi Daha Fazla ile açılan satırları korur (önceden ilk 200'e dönüyordu).
+  // 2.4.3 H5 (fatura yükte hız testi): yükte başka personelin her kaydı açık listeyi arka planda yeniler (en sık 1,5 sn'de bir); her yenileme
+  // yazıldığında sürmekte olan "Daha Fazla"nın yanıtı eskir ve kapı onu yeniler — üç denemede de araya yenileme girince tıklama sessizce
+  // kayboluyordu (30 sn bekleme; test/e2e/fatura-243-daha-fazla-yaris.mjs ile zorla üretildi). Daha Fazla sürerken yeni arka plan yenilemesi
+  // başlatılmaz; bekletilir ve Daha Fazla bitince yapılır (değişiklik kaçmaz). O an zaten sürmekte olan yenileme yalnız ilk denemeyi eskitir.
+  let moreBusy = 0;
+  let refreshHeld = null;
   function loadList(more = false, options = {}) {
-    return HOF.listRetry(() => loadListOnce(more, options));
+    if (options.quiet && !more && moreBusy) {
+      if (!refreshHeld) {
+        let release;
+        refreshHeld = { promise: new Promise(resolve => (release = resolve)), release };
+      }
+      return refreshHeld.promise;
+    }
+    if (!more) return HOF.listRetry(() => loadListOnce(more, options));
+    moreBusy += 1;
+    return HOF.listRetry(() => loadListOnce(true, options)).finally(() => {
+      moreBusy -= 1;
+      const held = moreBusy ? null : refreshHeld;
+      if (!held) return;
+      refreshHeld = null;
+      // Bekletilen yenileme şimdi; yenileyicinin (HOF.refresher) beklediği söz onun bitişiyle (hatasıyla da) tamamlanır.
+      held.release(view.mode === "list" ? HOF.listRetry(() => loadListOnce(false, { quiet: true })) : null);
+    });
   }
   async function loadListOnce(more = false, { quiet = false } = {}) {
     // Sıra kuralları HOF.listGate'te (v2.0.22); arka plan yenilemesi en çok 2 bağlantılık arka plan kuyruğundan gider.
@@ -205,7 +248,8 @@
     if (doc.status === "draft") return '<span class="hof-inv-pill is-draft">Taslak</span>';
     if (doc.status === "cancelled") return '<span class="hof-inv-pill is-cancelled">İptal Edildi</span>';
     const pay = doc.payState ? `<span class="hof-inv-pill is-${esc(doc.payState)}">${esc(doc.payStateLabel)}</span>` : "";
-    const e = edoc() && (doc.profile !== "KAGIT" || doc.eStatus === "withdrawn") && doc.eStatus && doc.eStatus !== "none" ? `<span class="hof-inv-pill is-e-${esc(doc.eStatus)}" title="e-Belge durumu">${esc(doc.eStatusLabel)}</span>` : "";
+    // 2.4.3 (H1): numara almış, entegratöre ulaşmamış belge de rozetle görünür (Gönderilmedi / Sonucu Belirsiz).
+    const e = edoc() && (doc.profile !== "KAGIT" || doc.eStatus === "withdrawn") && ((doc.eStatus && doc.eStatus !== "none") || doc.eUnsent || doc.eTestLive) ? `<span class="hof-inv-pill is-e-${esc(doc.eStatus || "none")}" title="${doc.eTestLive ? "Test serisi canlıda gönderilmez; İptal Edin" : "e-Belge durumu"}">${esc(doc.eStatusLabel || "Gönderilmedi")}</span>` : "";
     // Entegratörün test ortamına giden belge (seri TEF / TEA / TES): yasal geçerliliği yok.
     const test = doc.eTest ? '<span class="hof-inv-pill is-e-test" title="Entegratörün test ortamında denenen belge; yasal geçerliliği yoktur">Test</span>' : "";
     return `${pay}${e}${test}`;
@@ -244,7 +288,7 @@
         <div class="hof-plan-title"><h3>${esc(moduleName())}</h3><small>${edoc() ? "Satış, alış ve iade faturaları; e-Fatura ve e-Arşiv entegratör üzerinden gönderilir." : "Kaydedilen belgeler resmî hükmü olmayan <b>Müşteri Fişi</b> olarak basılır; e-Fatura / e-Arşiv bağlantısı kapalı."}</small></div>
         <div class="hof-plan-actions" role="toolbar" aria-label="Fatura işlemleri">
           ${canManage() ? '<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni Fatura</button>' : ""}
-          ${edoc() && canManage() && view.tab === "pending" && data?.invoices?.length ? `<button type="button" class="hof-button hof-button-small" data-act="send-pending" title="Listedeki belgeler sırayla entegratöre gönderilir; numara gönderimde verilir">Tümünü Gönder (${data.invoices.length.toLocaleString("tr-TR")})</button>` : ""}
+          ${edoc() && canManage() && view.tab === "pending" && (pendingTotal(data) || view.sendProgress) ? sendPendingButton(data) : ""}
           ${canSettings() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="settings">Fatura Ayarları</button>' : ""}${edoc() && canSettings() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="integrator">Entegratör Ayarları</button>' : ""}
           <span class="hof-rep-export"><a class="hof-rep-out is-pdf" href="/api/workspace/invoices/liste.pdf?${esc(listParams())}" target="_blank" rel="noopener">Liste - PDF</a><a class="hof-rep-out is-xlsx" href="/api/workspace/invoices/export.xlsx?${esc(listParams())}" download>Liste - Excel</a></span>
         </div></div>
@@ -501,8 +545,13 @@
       profile: draft?.profile && draft.profile !== "KAGIT" ? draft.profile : "",
       currency: source?.currency || "TRY",
       rate: source && source.currency !== "TRY" ? amountText(source.rate) : "",
-      number: draft?.kind && !isOwn(draft.kind) ? draft.number || "" : "",
+      // 2.4.3 (uzman UX28): müşteri numarası vermediği iadede (programın iç numarası; sunucu internalNumber) kutuya iç numara gelmez; iç numara ayrıca yazar.
+      number: draft?.kind && !isOwn(draft.kind) ? (draft.kind === "sale_return" && draft.internalNumber ? "" : draft.number || "") : "",
+      internalNo: draft?.kind === "sale_return" && draft.internalNumber ? draft.number || "" : "",
       paperNo: draft?.paperNo || "",
+      // MM1: iade e-Belgesinin asıl fatura referansı (asıl numara 16 karakter değilse); kullanıcı yazdıysa öneri üstüne yazılmaz.
+      returnRef: draft?.returnRef || "",
+      returnRefTouched: Boolean(draft?.returnRef),
       orderNo: draft?.orderNo || "",
       orderDate: draft?.orderDate || "",
       despatchNo: draft?.despatchNo || "",
@@ -549,7 +598,8 @@
       // excludeReturn (v2.0.17): iade düzenlenirken asıl faturanın kalanı bu iadenin kendi miktarı hariç gelir.
       const original = doc || (await HOF.api(`/api/workspace/invoices/${encodeURIComponent(originalId)}${excludeReturn ? `?excludeReturn=${encodeURIComponent(excludeReturn)}` : ""}`));
       const left = new Map((original.returnable || []).map(item => [item.id, item.left]));
-      form.original = { id: original.id, number: original.displayNo || original.number, issueDate: original.issueDate, accountName: original.accountName, payableTotal: original.payableTotal, currency: original.currency };
+      form.original = { id: original.id, number: original.displayNo || original.number, rawNumber: original.number || "", issueDate: original.issueDate, accountName: original.accountName, payableTotal: original.payableTotal, currency: original.currency };
+      if (!form.returnRefTouched) form.returnRef = returnRefNeeded(form) ? returnRefSuggestion(form.original.rawNumber) : "";
       form.account = { id: original.accountId, name: original.accountName };
       form.currency = original.currency;
       form.rate = original.currency !== "TRY" ? amountText(original.rate) : "";
@@ -586,7 +636,9 @@
       form.kind === "purchase"
         ? `<label class="hof-field"><span>Tedarikçinin Fatura No <i aria-hidden="true">*</i></span><input data-f="number" maxlength="40" value="${esc(form.number)}" placeholder="Faturanın üstündeki No"></label>`
         : form.kind === "sale_return"
-          ? `<label class="hof-field"><span>Müşterinin İade Faturası No</span><input data-f="number" maxlength="40" value="${esc(form.number)}" placeholder="Yoksa boş bırakın"><small>Müşteri iade faturası kesmediyse boş bırakın; program iç numara verir.</small></label>`
+          ? form.internalNo
+            ? `<label class="hof-field"><span>Müşterinin İade Faturası No</span><input data-f="number" maxlength="40" value="" readonly placeholder="Müşteri numara vermedi" data-nodirty><small>Program iç numara verdi: ${esc(form.internalNo)} (düzenlemede değişmez).</small></label>`
+            : `<label class="hof-field"><span>Müşterinin İade Faturası No</span><input data-f="number" maxlength="40" value="${esc(form.number)}" placeholder="Yoksa boş bırakın"><small>Müşteri iade faturası kesmediyse boş bırakın; program iç numara verir.</small></label>`
           : "";
     HOF.swap(
       root,
@@ -639,6 +691,7 @@
     );
     if (!ret) mountAccountPicker();
     if (ret) renderReturn();
+    if (ret) syncReturnRef();
     renderLines();
     renderPay();
     renderTotals();
@@ -657,7 +710,37 @@
     });
     // v2.0.15 (QA A5): cari yoksa formdan ayrılmadan açılır; kaydedilince seçili gelir, fiyatlar ve toplamlar yenilenir.
     const canNew = HOF.accounts?.newFor && HOF.can("accounts.manage") && !isReturn(form.kind);
-    if (!canNew) return slot.replaceChildren(picker);
+    // 2.4.3 (KÖ1, kullanıcı kararı 18.10.2026): perakende satışta her seferinde cari aramak / açmak gerekmesin — "Nihai Tüketici" tek tıkla
+    // kimliği bilinmeyen alıcı carisini (TCKN 11111111111) seçer; cari yoksa ilk kullanımda açılır, sonra hep aynısı (çift açılmaz). e-Arşiv
+    // tutar sınırı aşılırsa belge kaydedilmeden uyarılır (sunucu denetimi, Toplamlar bölümünde ve kayıtta).
+    const retail = form.side === "sale" && !isReturn(form.kind) ? document.createElement("button") : null;
+    if (retail) {
+      retail.type = "button";
+      retail.className = "hof-button hof-button-small hof-button-ghost hof-inv-account-retail";
+      retail.dataset.act = "retail-account";
+      retail.textContent = "Nihai Tüketici";
+      retail.title = "Kimliği bilinmeyen perakende alıcı (TCKN 11111111111) seçilir";
+      retail.onclick = async () => {
+        retail.disabled = true;
+        try {
+          const account = await HOF.api("/api/workspace/invoices/retail-account", { method: "POST", body: {} });
+          if (view.form !== form) return;
+          applyPickedAccount(account);
+          mountAccountPicker();
+          HOF.toast(account.created ? `${account.name} carisi açıldı ve seçildi (kimliği bilinmeyen alıcı, TCKN 11111111111).` : `${account.name} seçildi (kimliği bilinmeyen alıcı).`, { type: "info" });
+        } catch (error) {
+          HOF.toastError(error);
+        } finally {
+          retail.disabled = false;
+        }
+      };
+    }
+    if (!canNew && !retail) return slot.replaceChildren(picker);
+    const row = document.createElement("div");
+    row.className = "hof-inv-account-row";
+    row.append(picker);
+    if (retail) row.append(retail);
+    if (!canNew) return slot.replaceChildren(row);
     const add = document.createElement("button");
     add.type = "button";
     add.className = "hof-button hof-button-small hof-button-ghost hof-inv-account-new";
@@ -669,9 +752,7 @@
       mountAccountPicker();
       HOF.toast(`${account.name} seçildi.`, { type: "info" });
     } });
-    const row = document.createElement("div");
-    row.className = "hof-inv-account-row";
-    row.append(picker, add);
+    row.insertBefore(add, retail);
     slot.replaceChildren(row);
   }
   function applyPickedAccount(account) {
@@ -679,12 +760,63 @@
     if (!form) return;
     form.account = account?.id ? { id: account.id, name: account.name } : null;
     form.profile = "";
+    clearFormError();
     form.portfolio = null;
     for (const line of form.lines) line.prices = null;
     refreshAllPrices();
     scheduleCalc(0);
   }
 
+  // MM1 (2.4.3, mali müşavir): kâğıt (16 karakter olmayan) numaralı asıl faturanın iadesi e-Belge olarak kesilebilsin. GİB iade e-Belgesinde asıl
+  // faturayı 16 karakterlik numarayla ister (yalnız uzunluk); asıl kaydın numarası değiştirilmez (VUK). Form açılırken uyarı ve önerilen değer
+  // görünür ("A 004512" → "A000000000004512"); kullanıcı düzeltebilir. Değer 16 karakter (harf/rakam) değilse Kaydet düğmeleri pasif, nedeni yazılı.
+  // Öneri kuralı sunucudakiyle aynı (invoices.mjs returnRefSuggestion).
+  const returnRefSuggestion = number => {
+    const alnum = String(number || "").toUpperCase().replace(/[^0-9A-Z]/g, "");
+    if (!alnum || alnum.length > 16) return "";
+    const prefix = /^[A-Z]*/.exec(alnum)[0];
+    return `${prefix}${alnum.slice(prefix.length).padStart(16 - prefix.length, "0")}`;
+  };
+  const returnRefValue = form => String(form.returnRef || "").replace(/\s+/g, "").toUpperCase();
+  const returnRefNeeded = form => Boolean(form && isReturn(form.kind) && form.original && meta?.kinds?.[form.kind]?.send && edoc() && (form.calc?.profile || form.profile || "") !== "KAGIT" && String(form.original.rawNumber ?? form.original.number ?? "").trim().length !== 16);
+  const returnRefBlock = form => {
+    if (!returnRefNeeded(form)) return "";
+    const value = returnRefValue(form);
+    if (/^[0-9A-Z]{16}$/.test(value)) return "";
+    return value.length === 16 ? "İade Edilen Belge No (e-Belge Referansı) yalnız harf ve rakam içermeli; kaydetmek için düzeltin." : `İade Edilen Belge No (e-Belge Referansı) 16 karakter olmalı (şu an ${value.length}); kaydetmek için düzeltin.`;
+  };
+  function returnRefField(form) {
+    if (!returnRefNeeded(form)) return "";
+    const original = String(form.original.rawNumber ?? form.original.number ?? "").trim();
+    return `<label class="hof-field hof-inv-return-ref"><span>İade Edilen Belge No (e-Belge Referansı)</span><input data-return-ref-input maxlength="20" autocomplete="off" spellcheck="false" value="${esc(form.returnRef)}" aria-describedby="hof-inv-return-ref-note"><small class="hof-inv-warn" id="hof-inv-return-ref-note" data-return-ref-note>Asıl faturanın numarası (${esc(original || "yok")}) 16 karakter değil; GİB, iade e-Belgesinde asıl faturayı 16 karakterlik numarayla ister. Önerilen değeri kontrol edin, gerekirse düzeltin. Asıl fatura kaydı değişmez; gerçek numara belgenin açıklamasında yazar.</small></label>`;
+  }
+  // Alan gerekli olup olmadığı değişince (belge türü hesaplamadan sonra belli olur) yeniden çizilir; yazarken çizilmez (odak korunur).
+  function syncReturnRef() {
+    const form = view.form;
+    if (!form) return;
+    const needed = returnRefNeeded(form);
+    const slot = body()?.querySelector("[data-return-ref]");
+    if (slot && slot.dataset.needed !== String(needed)) {
+      if (needed && !form.returnRefTouched && !form.returnRef) form.returnRef = returnRefSuggestion(form.original?.rawNumber ?? form.original?.number);
+      slot.dataset.needed = String(needed);
+      slot.innerHTML = returnRefField(form);
+    }
+    const block = returnRefBlock(form);
+    const actions = body()?.querySelector("[data-form-actions]");
+    if (!actions) return;
+    if (!form.busy) actions.querySelectorAll('[data-act="issue"], [data-act="issue-now"], [data-act="issue-later"]').forEach(button => (button.disabled = Boolean(block)));
+    let note = actions.querySelector("[data-return-ref-block]");
+    if (block && !note) {
+      note = document.createElement("small");
+      note.className = "hof-inv-warn";
+      note.dataset.returnRefBlock = "";
+      actions.prepend(note);
+    }
+    if (note) {
+      note.textContent = block;
+      note.hidden = !block;
+    }
+  }
   // İade edilecek faturayı bulan arama (en üstte).
   function renderReturn() {
     const form = view.form;
@@ -693,7 +825,7 @@
     const side = form.kind === "purchase_return" ? "purchase" : "sale";
     const hits = form.returnHits;
     slot.innerHTML = form.original
-      ? `<div class="hof-inv-return-chosen"><span>İade Edilen Fatura</span><b><a href="#" data-open-invoice="${esc(form.original.id)}">${esc(form.original.number)}</a></b><small>${esc(form.original.accountName)} · ${esc(HOF.formatDate(form.original.issueDate))} · ${esc(curMoney(form.original.payableTotal, form.original.currency))}</small>${form.id ? "" : '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="change-original">Başka Fatura Seç</button>'}</div>`
+      ? `<div class="hof-inv-return-chosen"><span>İade Edilen Fatura</span><b><a href="#" data-open-invoice="${esc(form.original.id)}">${esc(form.original.number)}</a></b><small>${esc(form.original.accountName)} · ${esc(HOF.formatDate(form.original.issueDate))} · ${esc(curMoney(form.original.payableTotal, form.original.currency))}</small>${form.id ? "" : '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="change-original">Başka Fatura Seç</button>'}</div><div data-return-ref>${returnRefField(form)}</div>`
       : `<label class="hof-field hof-inv-return-search"><span>İade Edilecek ${side === "purchase" ? "Alış" : "Satış"} Faturasını Bulun</span><input type="search" data-return-q value="${esc(form.returnQuery)}" placeholder="Fatura no, cari adı, ürün ya da VKN yazın…" autocomplete="off"><small>Yalnız iade edilebilir miktarı kalan kaydedilmiş faturalar listelenir.</small></label>
         <ul class="hof-inv-return-hits">${
           hits === null
@@ -766,7 +898,7 @@
     const cols = lineCols(form);
     const rows = form.lines
       .map((line, index) => {
-        const stockNote = line.newItem && !line.itemId ? `<span class="hof-inv-newitem"><b>Yeni Stok Kartı Açılacak</b> · Satış Fiyatı <input data-l="${index}" data-f="newSalePrice" inputmode="decimal" value="${esc(line.newSalePrice)}" placeholder="isteğe bağlı" aria-label="Yeni stok kartının satış fiyatı"> <button type="button" class="hof-link-button" data-act="new-item-cancel" data-l="${index}">Vazgeç</button></span>` : line.itemId ? `${line.itemKind === "service" ? "Hizmet Kartı" : line.available !== null && line.available !== undefined ? (line.available < 0 ? `<span class="hof-inv-warn">Stokta ${esc(String(line.available).replace(".", ","))} ${esc(line.unit)} (eksi)</span>` : `Stokta ${esc(String(line.available).replace(".", ","))} ${esc(line.unit)}`) : "Stok Kartı"}` : line.name ? (offersNewItem(form) ? '<span class="hof-inv-warn">Stok kartı yok: gider sayılır, stoğa girmez. Mal ise listeden “+ Yeni Stok Kartı”nı seçin.</span>' : form.kind === "purchase" ? "Stoksuz: gider / hizmet kalemi" : "Stoksuz: hizmet kalemi") : "";
+        const stockNote = stockNoteHtml(form, line, index);
         const more = `<div class="hof-inv-line-more" ${line.more ? "" : "hidden"}>
             <label><span>Açıklama</span><input data-l="${index}" data-f="description" maxlength="300" value="${esc(line.description)}" ${ret ? "readonly" : ""}></label>
             ${meta?.settings?.defaults?.itemTracking || line.serialNo || line.lotNo ? `<label><span>Seri No</span><input data-l="${index}" data-f="serialNo" maxlength="60" value="${esc(line.serialNo)}" ${ret ? "readonly" : ""} aria-label="${index + 1}. kalem Seri No"></label><label><span>Lot No</span><input data-l="${index}" data-f="lotNo" maxlength="60" value="${esc(line.lotNo)}" ${ret ? "readonly" : ""} aria-label="${index + 1}. kalem Lot No"></label>` : ""}
@@ -776,7 +908,7 @@
         return `<tr class="hof-inv-line" data-line="${index}">
           <td class="hof-inv-no">${index + 1}</td>
           <td class="hof-inv-code"><input data-l="${index}" data-f="code" value="${esc(line.code)}" maxlength="60" autocomplete="off" placeholder="Kod / Barkod" ${ret ? "readonly" : ""} aria-label="${index + 1}. kalem Stok Kodu"></td>
-          <td class="hof-inv-name"><div class="hof-inv-item"><input data-l="${index}" data-f="name" value="${esc(line.name)}" maxlength="200" autocomplete="off" placeholder="Ürün ya da hizmet adı…" ${ret ? "readonly" : ""} aria-label="${index + 1}. kalem adı"><ul class="hof-inv-item-hits" data-hits="${index}" hidden></ul></div><small>${stockNote}${ret ? ` · En çok ${esc(String(line.left).replace(".", ","))} ${esc(line.unit)}` : ""}</small>${more}</td>
+          <td class="hof-inv-name"><div class="hof-inv-item"><input data-l="${index}" data-f="name" value="${esc(line.name)}" title="${esc(line.name)}" maxlength="200" autocomplete="off" placeholder="Ürün ya da hizmet adı…" ${ret ? "readonly" : ""} aria-label="${index + 1}. kalem adı"><ul class="hof-inv-item-hits" data-hits="${index}" hidden></ul></div><small><span data-stock-note="${index}">${stockNote}</span>${ret ? ` · En çok ${esc(String(line.left).replace(".", ","))} ${esc(line.unit)} · 0 yazılırsa iade edilmez` : ""}</small>${more}</td>
           <td><input class="num" data-l="${index}" data-f="qty" inputmode="decimal" value="${esc(line.qty)}" aria-label="Miktar"></td>
           <td><input data-l="${index}" data-f="unit" value="${esc(line.unit)}" list="hof-inv-units" maxlength="20" ${ret || line.itemId ? "readonly" : ""} aria-label="Birim"></td>
           <td><input class="num" data-l="${index}" data-f="unitPrice" inputmode="decimal" value="${esc(line.unitPrice)}" placeholder="0,00" ${ret ? "readonly" : ""} aria-label="Birim fiyat"></td>
@@ -784,13 +916,33 @@
           <td><select data-l="${index}" data-f="vatRate" ${ret ? "disabled" : ""} aria-label="KDV oranı">${vatOptions(line.vatRate)}</select></td>
           ${expense ? `<td>${line.itemId ? '<small class="hof-muted">Stok</small>' : `<select data-l="${index}" data-f="expenseCode" aria-label="Gider türü">${(meta.expenses || []).map(item => `<option value="${esc(item.code)}" ${item.code === (line.expenseCode || "other") ? "selected" : ""}>${esc(item.label)}</option>`).join("")}</select>`}</td>` : ""}
           <td class="num" data-line-net>${line.net === null ? "—" : esc(curMoney(line.net, form.currency))}</td>
-          <td class="hof-inv-line-actions">${ret ? "" : `<button type="button" class="hof-mini" data-act="line-more" data-l="${index}" title="Açıklama, tevkifat, istisna" aria-label="Kalem ayrıntısı">⋯</button><button type="button" class="hof-mini hof-mini-danger" data-act="line-remove" data-l="${index}" title="Kalemi sil" aria-label="Kalemi sil">×</button>`}</td>
+          <td class="hof-inv-line-actions">${ret ? (form.lines.length > 1 ? `<button type="button" class="hof-mini hof-mini-danger" data-act="line-remove" data-l="${index}" title="Bu kalemi iade etme (iadeden çıkar)" aria-label="${index + 1}. kalemi iadeden çıkar">×</button>` : "") : `<button type="button" class="hof-mini" data-act="line-more" data-l="${index}" title="Açıklama, tevkifat, istisna" aria-label="Kalem ayrıntısı">⋯</button><button type="button" class="hof-mini hof-mini-danger" data-act="line-remove" data-l="${index}" title="Kalemi sil" aria-label="Kalemi sil">×</button>`}</td>
         </tr>
         <tr class="hof-inv-hint-row" data-hint="${index}" ${line.prices ? "" : "hidden"}><td></td><td colspan="${cols - 1}">${priceHint(line, index)}</td></tr>`;
       })
       .join("");
     HOF.swap(tbody, rows);
     updateUnitHint();
+  }
+  // Kalemin stok notu. 2.4.3 (keşif B8): miktar stoğu aşınca satırda kayıttan ÖNCE uyarılır (önceden yalnız "Stokta 29 Kutu" yazıyor, eksi stok
+  // ancak kaydederken ikinci soruyla öğreniliyordu). Düzenlemede (belgenin kendi miktarı stoktan zaten düşülmüş) uyarı verilmez.
+  const STOCK_OUT_KINDS = new Set(["sale", "purchase_return"]);
+  function stockNoteHtml(form, line, index) {
+    if (line.itemId && line.itemKind !== "service" && line.available !== null && line.available !== undefined && STOCK_OUT_KINDS.has(form.kind) && !form.modifyId) {
+      const qty = amountNum(line.qty);
+      const after = Math.round((line.available - qty) * 1000) / 1000;
+      // Stok zaten eksiyse eski gösterim ("Stokta −20 Adet (eksi)", senaryo-217) korunur, sonuna kayıttan sonraki miktar eklenir.
+      if (line.available < 0 && qty > 0) return `<span class="hof-inv-warn" data-stock-warn>Stokta ${esc(String(line.available).replace(".", ","))} ${esc(line.unit)} (eksi); bu miktarla ${esc(String(after).replace(".", ","))} ${esc(line.unit)} olur. Kaydederken sorulur.</span>`;
+      if (qty > 0 && after < 0) return `<span class="hof-inv-warn" data-stock-warn>Stokta ${esc(String(line.available).replace(".", ","))} ${esc(line.unit)}; bu miktar stoğu ${esc(String(after).replace(".", ","))} ${esc(line.unit)} (eksi) yapar. Kaydederken sorulur.</span>`;
+    }
+    return line.newItem && !line.itemId ? `<span class="hof-inv-newitem"><b>Yeni Stok Kartı Açılacak</b> · Satış Fiyatı <input data-l="${index}" data-f="newSalePrice" inputmode="decimal" value="${esc(line.newSalePrice)}" placeholder="isteğe bağlı" aria-label="Yeni stok kartının satış fiyatı"> <button type="button" class="hof-link-button" data-act="new-item-cancel" data-l="${index}">Vazgeç</button></span>` : line.itemId ? `${line.itemKind === "service" ? "Hizmet Kartı" : line.available !== null && line.available !== undefined ? (line.available < 0 ? `<span class="hof-inv-warn">Stokta ${esc(String(line.available).replace(".", ","))} ${esc(line.unit)} (eksi)</span>` : `Stokta ${esc(String(line.available).replace(".", ","))} ${esc(line.unit)}`) : "Stok Kartı"}` : line.name ? (offersNewItem(form) ? '<span class="hof-inv-warn">Stok kartı yok: gider sayılır, stoğa girmez. Mal ise listeden “+ Yeni Stok Kartı”nı seçin.</span>' : form.kind === "purchase" ? "Stoksuz: gider / hizmet kalemi" : "Stoksuz: hizmet kalemi") : "";
+  }
+  function syncStockNote(index) {
+    const form = view.form;
+    const slot = body()?.querySelector(`[data-stock-note="${index}"]`);
+    if (!form || !slot || !form.lines[index]) return;
+    const html = stockNoteHtml(form, form.lines[index], index);
+    if (slot.innerHTML !== html) slot.innerHTML = html;
   }
   // Son fiyat ipucu: bu cariye son satış/alış, başka carilere son fiyatlar, stok kartı (mevcut, maliyet, satış fiyatı).
   function priceHint(line, index) {
@@ -877,6 +1029,9 @@
       const form = view.form;
       const line = form?.lines[index];
       if (!list || !line) return;
+      // 2.4.3: yanıt geldiğinde kullanıcı kutudan çıkmışsa (Tab, başka alana tıklama) liste açılmaz; açık kalan eski liste Esc'i ve
+      // tıklamaları yutuyordu (Esc önce bu listeyi kapatır).
+      if (document.activeElement !== body()?.querySelector(`[data-l="${index}"][data-f="${anchor}"]`)) return;
       const exactName = items.some(item => item.name.toLocaleLowerCase("tr-TR") === line.name.trim().toLocaleLowerCase("tr-TR"));
       const canCreate = offersNewItem(form) && anchor === "name" && line.name.trim() && !exactName && HOF.can("stock.manage");
       const rows = items.map(item => `<li data-item="${esc(item.id)}" data-l="${index}" class="${item.exact ? "is-exact" : ""}"><b>${item.code ? `<span class="hof-inv-hit-code">${esc(item.code)}</span> ` : ""}${esc(item.name)}</b><small>${item.kind === "service" ? "Hizmet" : item.available !== null ? `${item.available < 0 ? '<span class="hof-inv-warn">' : ""}Stokta ${esc(String(item.available).replace(".", ","))} ${esc(item.unit)}${item.available < 0 ? "</span>" : ""}` : esc(item.unit)} · ${form.side === "sale" ? `Satış ${esc(money(item.salePrice))}` : `Maliyet ${esc(money(item.unitPrice))}`}</small></li>`);
@@ -889,7 +1044,7 @@
       placeHits(list);
     }, 180);
   }
-  function pickItem(index, itemId) {
+  function pickItem(index, itemId, { focus = true } = {}) {
     const form = view.form;
     const list = body()?.querySelector(`[data-hits="${index}"]`);
     const items = JSON.parse(list?.dataset.items || "[]");
@@ -902,15 +1057,17 @@
     itemTicket += 1;
     // Önce odaktaki kutudan çık: çıkarken tetiklenen "change" yazılan değeri ("fk-a4") satıra geri yazmasın; sonra
     // kartın adı ve Stok Kodu yazılır ve satır yeniden çizilir (odak korunması yazılan metni de geri getirmez).
-    document.activeElement?.blur?.();
-    Object.assign(line, { itemId: item.id, name: item.name, code: item.code || "", unit: item.unit || "Adet", itemKind: item.kind, available: item.available, newItem: false, newSalePrice: "" });
+    if (focus) document.activeElement?.blur?.();
+    Object.assign(line, { itemId: item.id, name: item.name, pickedName: item.name, code: item.code || "", unit: item.unit || "Adet", itemKind: item.kind, available: item.available, newItem: false, newSalePrice: "" });
+    // 2.4.3 (H8): stok kartında KDV oranı tanımlıysa kalemin KDV'si ondan gelir (kullanıcı değiştirebilir); tanımsızsa formun varsayılanı kalır.
+    if (item.vatRate !== null && item.vatRate !== undefined && item.vatRate !== "") line.vatRate = String(item.vatRate);
     const price = form.side === "sale" ? item.salePrice : item.unitPrice;
     if (price > 0 && !line.unitPrice) line.unitPrice = amountText(form.pricesIncludeVat ? Math.round(price * (1 + Number(line.vatRate || 0) / 100) * 100) / 100 : price);
     if (list) list.hidden = true;
     renderLines();
     loadPrices(index);
     scheduleCalc();
-    body()?.querySelector(`[data-l="${index}"][data-f="qty"]`)?.focus();
+    if (focus) body()?.querySelector(`[data-l="${index}"][data-f="qty"]`)?.focus();
   }
   // "+ Yeni Stok Kartı": kalem stoklu mal olur; kart, fatura (ya da taslak) kaydedilince aynı işlemde açılır.
   function markNewItem(index) {
@@ -920,7 +1077,8 @@
     hideHits();
     renderLines();
     scheduleCalc(0);
-    body()?.querySelector(`[data-l="${index}"][data-f="unit"]`)?.focus();
+    // 2.4.3 (keşif B13): stoktan seçilen kalemdeki gibi odak Miktar'da (önceden Birim'e atlıyordu; hızlı yazan miktarı Birim kutusuna yazıyordu).
+    body()?.querySelector(`[data-l="${index}"][data-f="qty"]`)?.focus();
   }
 
   // ---------- Ödeme ----------
@@ -1357,7 +1515,9 @@
       ${problems.length ? `<ul class="hof-inv-problems">${problems.map(item => `<li>${esc(item)}</li>`).join("")}</ul>` : ""}`;
   }
   const lineBody = line => ({ itemId: line.itemId, name: line.name.trim(), code: line.code, description: line.description, serialNo: line.serialNo || "", lotNo: line.lotNo || "", unit: line.unit, qty: line.qty, unitPrice: line.unitPrice || "0", discountRate: line.discountRate || "0", vatRate: line.vatRate, withholdingCode: line.withholdingCode, exemptionCode: line.exemptionCode, expenseCode: line.expenseCode, originLineId: line.originLineId, ...(line.newItem && !line.itemId ? { newItem: true, newSalePrice: line.newSalePrice || "0" } : {}) });
-  const usedLines = form => form.lines.filter(line => line.itemId || line.name.trim() || line.originLineId);
+  // 2.4.3 (keşif B2): çok kalemli faturanın kısmi iadesi — miktarı 0 ya da boş bırakılan iade satırı iade edilmez (gönderilmez); satır × ile de çıkarılır.
+  const skippedReturnLine = (form, line) => isReturn(form.kind) && Boolean(line.originLineId) && !(amountNum(line.qty) > 0);
+  const usedLines = form => form.lines.filter(line => (line.itemId || line.name.trim() || line.originLineId) && !skippedReturnLine(form, line));
   const docBody = form => ({
     kind: form.kind,
     scenario: form.scenario,
@@ -1373,6 +1533,7 @@
     ...(form.stoppageRate !== "" ? { stoppageRate: form.stoppageRate } : {}),
     number: form.number,
     paperNo: form.paperNo,
+    ...(isReturn(form.kind) ? { returnRef: returnRefNeeded(form) ? returnRefValue(form) : "" } : {}),
     orderNo: form.orderNo,
     orderDate: form.orderDate,
     despatchNo: form.despatchNo,
@@ -1437,9 +1598,20 @@
       refreshPayAfterCalc();
       return;
     }
+    // 2.4.3 (keşif B12): fiyatı yazılmamış kalemlerle hesap istenmez (sunucu "ödenecek tutar sıfırdan büyük olmalı" diye 400 döner, her tuşta
+    // tarayıcı konsoluna hata düşüyordu). İadede fiyat asıl faturadan gelir.
+    if (!isReturn(form.kind) && !usedLines(form).some(line => amountNum(line.unitPrice) > 0)) {
+      ++calcTicket;
+      form.calc = null;
+      form.calcError = "Birim fiyat yazılınca toplamlar hesaplanır.";
+      renderTotals();
+      refreshPayAfterCalc();
+      return;
+    }
     const ticket = ++calcTicket;
     try {
-      const calc = await HOF.api("/api/workspace/invoices/calc", { method: "POST", body: docBody(form) });
+      // 2.4.3 (uzman UX2): düzenlenen iadenin kimliği — sunucu iadenin kendi miktarını "önce iade edilen" saymaz (tam iade Düzenle'de kaydedilir).
+      const calc = await HOF.api("/api/workspace/invoices/calc", { method: "POST", body: { ...docBody(form), ...(isReturn(form.kind) && (form.modifyId || form.id) ? { existingId: form.modifyId || form.id } : {}) } });
       if (ticket !== calcTicket || view.form !== form) return;
       form.calc = calc;
       form.calcError = "";
@@ -1475,17 +1647,31 @@
     const actions = body()?.querySelector("[data-form-actions]");
     // Yalnız gönderilebilirlik değişince yeniden çizilir: her hesaplamada çizmek alandan düğmeye geçen tıklamayı ve klavye odağını düşürüyordu (gözden geçirme 2.4.2).
     if (actions && !form.busy && sendable(form) !== form.drawnSendable) actions.innerHTML = formActions(form);
+    syncReturnRef();
     updateUnitHint();
     field.querySelector("select").innerHTML = profiles.map(item => `<option value="${esc(item.id)}" ${item.id === form.calc.profile ? "selected" : ""}>${esc(item.label)}</option>`).join("");
     field.querySelector("[data-profile-note]").textContent = form.calc.profile === "EARSIVFATURA" ? "Alıcı e-Fatura mükellefi değil: e-Arşiv kesilir." : form.calc.profile === "TEMELFATURA" || form.calc.profile === "TICARIFATURA" ? "Alıcı e-Fatura mükellefi: e-Fatura kesilir." : "";
   }
 
   // ---------- Form olayları ----------
+  const NUMERIC_LINE_FIELDS = new Set(["qty", "unitPrice", "discountRate", "newSalePrice"]);
   const HEAD_FIELDS = new Set(["issueDate", "issueTime", "profile", "currency", "rate", "number", "paperNo", "orderNo", "orderDate", "despatchNo", "despatchDate", "discountRate", "stoppageRate", "note"]);
+  // 2.4.3 (uzman UX12): eski doğrulama iletisi ("Müşteriyi (cariyi) seçin.") kullanıcı formda bir alanı değiştirince temizlenir; yeniden
+  // kaydedince gerekiyorsa yine yazılır (önceden cari seçilip kalem değişse de kırmızı ileti kalıyor, form hâlâ hatalı sanılıyordu).
+  const clearFormError = () => {
+    const node = body()?.querySelector("[data-form-error]");
+    if (node?.textContent) node.textContent = "";
+  };
   function formInput(event) {
     const form = view.form;
     const target = event.target;
     if (!form) return;
+    clearFormError();
+    if (target.matches("[data-return-ref-input]")) {
+      form.returnRef = target.value;
+      form.returnRefTouched = true;
+      return syncReturnRef();
+    }
     if (target.matches("[data-return-q]")) {
       form.returnQuery = target.value;
       return searchReturnable(target.value.trim());
@@ -1494,8 +1680,24 @@
       const line = form.lines[Number(target.dataset.l)];
       if (!line) return;
       const field = target.dataset.f;
+      // 2.4.3 (keşif B13): sayı alanı harf kabul etmez (miktar, birim fiyat, iskonto, yeni kartın satış fiyatı): rakam, virgül ve nokta dışındaki
+      // karakter yazılırken düşer (önceden "Çuval" iskonto kutusuna yazılıp kayıtta reddediliyordu).
+      if (NUMERIC_LINE_FIELDS.has(field)) {
+        const clean = target.value.replace(/[^\d.,]/g, "");
+        if (clean !== target.value) {
+          const caret = Math.max(0, (target.selectionStart ?? clean.length) - (target.value.length - clean.length));
+          target.value = clean;
+          try {
+            target.setSelectionRange(caret, caret);
+          } catch {
+            // seçim desteklenmeyen kutu
+          }
+        }
+      }
       line[field] = target.type === "checkbox" ? target.checked : target.value;
       if (field === "unit") updateUnitHint();
+      if (field === "name") target.title = target.value;
+      if (field === "qty") syncStockNote(Number(target.dataset.l));
       if (field === "name") {
         if (line.itemId) {
           // Seçilen ürünün adı değiştirildi: kalem artık serbest (stoksuz) kalemdir.
@@ -1554,10 +1756,18 @@
     const form = view.form;
     const target = event.target;
     if (!form) return;
+    clearFormError();
     if (target.dataset.l !== undefined && target.dataset.f) {
       const line = form.lines[Number(target.dataset.l)];
       if (!line) return;
       line[target.dataset.f] = target.value;
+      // 2.4.3 (uzman UI4): Kod / Barkod yazıp Tab ile çıkınca da (yalnız Enter değil) tam eşleşen ürün seçilir — kalemin adı boşsa ya da ad
+      // önceki seçimden kaldıysa. Eşleşme yoksa satırda "Bu kodla ürün yok" yazar (önceden ad boş kalıyor, kayıtta "En az bir kalem yazın" deniyordu).
+      if (target.dataset.f === "code" && !isReturn(form.kind)) {
+        const code = target.value.trim();
+        if (code && !line.itemId && (!String(line.name || "").trim() || line.name === line.pickedName)) pickByCode(Number(target.dataset.l), code, { leave: true });
+        return scheduleCalc(0);
+      }
       if (target.dataset.f === "vatRate") {
         if (target.value !== "0") line.exemptionCode = "";
         else line.more = true;
@@ -1673,7 +1883,13 @@
     }
     if (event.key === "Enter" && target.closest?.("li[data-original]")) attachOriginal(target.closest("li[data-original]").dataset.original);
   }
-  async function pickByCode(index, code) {
+  // leave (UI4): kod kutusundan Tab / tıklamayla çıkıldı — liste açılmaz; eşleşme yoksa satırda not; odak kullanıcının gittiği yerde kalır (aynı
+  // kalemin ad kutusuna geçtiyse Enter'daki gibi Miktar'a). Enter ile aynı kod için süren arama tekrarlanmaz.
+  let codePick = "";
+  async function pickByCode(index, code, { leave = false } = {}) {
+    const key = `${index}|${code}`;
+    if (leave && codePick === key) return;
+    codePick = key;
     clearTimeout(itemTimer);
     const own = ++itemTicket;
     let items = [];
@@ -1681,14 +1897,23 @@
       items = (await HOF.api(`/api/workspace/invoices/items?q=${encodeURIComponent(code)}`)).items;
     } catch {
       items = [];
+    } finally {
+      if (codePick === key) codePick = "";
     }
     if (own !== itemTicket) return;
     const exact = items.find(item => item.exact);
     const list = body()?.querySelector(`[data-hits="${index}"]`);
     if (!list) return;
     list.dataset.items = JSON.stringify(items);
-    if (exact) return pickItem(index, exact.id);
-    searchItems(index, code, "code");
+    if (exact) {
+      if (!leave) return pickItem(index, exact.id);
+      const active = document.activeElement;
+      const onOwnName = active?.matches?.(`[data-l="${index}"][data-f="name"]`);
+      return pickItem(index, exact.id, { focus: Boolean(onOwnName || !active || active === document.body) });
+    }
+    if (!leave) return searchItems(index, code, "code");
+    const note = body()?.querySelector(`[data-stock-note="${index}"]`);
+    if (note && view.form?.lines[index]?.code?.trim() === code) note.innerHTML = '<span class="hof-inv-warn" data-code-miss>Bu kodla ürün yok; adı yazın ya da kodu düzeltin.</span>';
   }
   function addLine() {
     const form = view.form;
@@ -1724,9 +1949,17 @@
       return scheduleCalc(0);
     }
     if (act === "line-remove") {
-      form.lines.splice(Number(target.dataset.l), 1);
+      const removed = Number(target.dataset.l);
+      form.lines.splice(removed, 1);
       if (!form.lines.length) form.lines.push(blankLine());
       renderLines();
+      // Dar kontrol 2.4.3 (D1, GG4 komşusu): silinen kalemin × düğmesinden sonra odak BAŞKA kalemin ×'ine geçmez (ilk/orta kalemde aynı data-l'li
+      // düğme bir sonraki kalemindir; ikinci Enter onu da siliyordu). Güvenli hedef: aynı konumdaki (yoksa son) kalemin ilk yazılabilir alanı,
+      // o da yoksa "+ Kalem Ekle".
+      const position = Math.min(removed, form.lines.length - 1);
+      const row = body()?.querySelector(`[data-lines] tr[data-line="${position}"]`);
+      const safe = row?.querySelector("input:not([readonly]):not([disabled]), select:not([disabled])") || body()?.querySelector('[data-act="add-line"]') || row?.querySelector("input");
+      safe?.focus({ preventScroll: true });
       return scheduleCalc(0);
     }
     if (act === "line-more") {
@@ -1793,8 +2026,17 @@
       return body()?.querySelector(`[data-pay="cheques"][data-i="${form.pay.cheques.length - 1}"][data-f="amount"]`)?.focus();
     }
     if (act === "pay-remove") {
-      form.pay[target.dataset.pay].splice(Number(target.dataset.i), 1);
-      return renderPay();
+      const group = target.dataset.pay;
+      const removed = Number(target.dataset.i);
+      form.pay[group].splice(removed, 1);
+      renderPay();
+      // Dar kontrol 2.4.3 (ek 4): silinen ödeme satırından sonra odak başka satırın ×'ine gitmez, kaybolmaz: aynı konumdaki (yoksa son) satırın
+      // tutarı, satır kalmadıysa ilk "+ …" ekleme düğmesi.
+      const left = form.pay[group].length;
+      const slot = body()?.querySelector("[data-pay]");
+      const safe = (left ? slot?.querySelector(`[data-pay="${group}"][data-i="${Math.min(removed, left - 1)}"][data-f="amount"]`) : null) || slot?.querySelector('[data-act="pay-add-cash"], [data-act="pay-add-cheque"]');
+      safe?.focus({ preventScroll: true });
+      return undefined;
     }
     if (act === "pay-endorse") {
       try {
@@ -1857,8 +2099,14 @@
     const form = view.form;
     if (!form || form.busy) return;
     const error = body()?.querySelector("[data-form-error]");
+    // 2.4.3 (uzman UI2): formda görünen hata satırı varsa ayrıca bildirim çıkmaz (bildirim kalem alanlarını örtüyordu ve aynı ileti üç kez
+    // görünüyordu); satır görünür alana kaydırılır. Hata satırı yoksa (form çizilmemiş) bildirim verilir. Satır, alan değişince temizlenir (UX12).
     const fail = message => {
-      if (error) error.textContent = message;
+      if (error?.isConnected && error.getClientRects().length) {
+        error.textContent = message;
+        error.scrollIntoView?.({ block: "nearest" });
+        return;
+      }
       HOF.toast(message, { type: "error" });
     };
     if (error) error.textContent = "";
@@ -1875,8 +2123,9 @@
       if (view.form !== form) return;
     }
     if (isReturn(form.kind) && !form.original) return fail("İade edilecek faturayı üstteki arama kutusundan seçin.");
+    if (mode !== "draft" && returnRefBlock(form)) return fail(returnRefBlock(form));
     if (!form.account) return fail(`${form.side === "purchase" ? "Tedarikçiyi" : "Müşteriyi"} (cariyi) seçin.`);
-    if (!usedLines(form).length) return fail("En az bir kalem yazın.");
+    if (!usedLines(form).length) return fail(isReturn(form.kind) ? "İade edilecek en az bir kalemin miktarını yazın. İade etmeyeceğiniz kalemi × ile çıkarın ya da miktarını 0 yapın." : "En az bir kalem yazın.");
     // v2.0.23 (Bulgu 1): tutarı yazılmamış ya da geçersiz ödeme satırı sessizce atılmaz (önceden evrak kayıtta düşüyordu,
     // fatura "Açık" kaydediliyordu). Peşin satırında boş tutar olabilir (satır yok sayılır); evrak satırında tutar zorunlu.
     const amountOk = value => parseTl(value) > 0;
@@ -1900,6 +2149,10 @@
         const c = form.calc;
         if (!c) throw new Error(form.calcError || "Toplamlar hesaplanamadı; kalemleri kontrol edin.");
         if (eSend && !sendable(form)) eSend = "";
+        // 2.4.3 (keşif B7): kesimi kesin reddedecek sorun (alıcı/satıcı bilgisi eksik, posta kutusu seçilmemiş) varken "… numarasıyla kaydedilecek"
+        // onayı açılmaz; neden formda ve bildirimde yazar (önceden onaydan sonra reddediliyordu).
+        const blockers = [...(c.blockers || []), ...(!form.modifyId && eSend !== "later" && c.aliasBlock ? [c.aliasBlock] : [])];
+        if (blockers.length) return fail(`Fatura kaydedilemez: ${blockers.join(" ")}`);
         const who = form.account.name;
         const numberText = c.nextNumber && eSend !== "later" ? `${c.nextNumber} numarasıyla ` : "";
         // v2.0.16 (müşteri): "Stoğa Mal Alışı"nda stok kartı olmayan kalem gider sayılır — kayıttan önce açıkça söylenir.
@@ -1921,7 +2174,7 @@
         }
         const ok = await HOF.confirm({
           title: ISSUE_LABELS[form.kind] || "Kaydet",
-          message: `${who} için ${numberText}${kindLabel(form.kind).toLocaleLowerCase("tr-TR")} kaydedilecek: ${curMoney(c.totals.payable, c.currency)}. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. Yanlışsa sonradan kartındaki “Düzenle” ile düzeltilir.${sendText}${stocklessText}`,
+          message: `${who} için ${numberText}${kindLabel(form.kind).toLocaleLowerCase("tr-TR")} kaydedilecek: ${curMoney(c.totals.payable, c.currency)}. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. ${eSend === "now" ? "Gönderildikten sonra düzenlenemez; yanlışsa iptal ya da iade gerekir." : "Yanlışsa sonradan kartındaki “Düzenle” ile düzeltilir."}${sendText}${stocklessText}`,
           confirmLabel: eSend === "later" ? "Kaydet, Sonra Gönder" : eSend === "now" ? (meta?.settings?.draftUpload ? "Kaydet ve Taslak Yükle" : "Kaydet ve Gönder") : ISSUE_LABELS[form.kind] || "Kaydet",
         });
         if (!ok) return;
@@ -1929,7 +2182,14 @@
         saved = await withStockForce(force => (form.id ? HOF.api(`/api/workspace/invoices/${encodeURIComponent(form.id)}/issue`, { method: "POST", body: { ...payload, ...force, ...(eSend ? { eSend } : {}) } }) : HOF.api("/api/workspace/invoices", { method: "POST", body: { ...payload, ...force, ...(eSend ? { eSend } : {}) }, requestId: form.requestId })));
         if (saved.replayed) HOF.toast(`${kindLabel(saved.kind)} ${saved.displayNo || ""} zaten kaydedilmişti (önceki gönderim sunucuya ulaşmış); ikinci kez kaydedilmedi.`, { type: "info", timeout: 9000 });
         else HOF.toast(eSend === "later" ? `${kindLabel(saved.kind)} kaydedildi; Gönderilecekler'de bekliyor.` : `${kindLabel(saved.kind)} ${saved.displayNo || ""} kaydedildi.`, { type: "success" });
-        if (saved.autoSend) HOF.toast(saved.autoSend.ok ? saved.autoSend.message : `e-Belge gönderilemedi: ${saved.autoSend.message}`, { type: saved.autoSend.ok ? "success" : "error", timeout: 8000 });
+        // 2.4.3 (hız testi H1): gönderilemeyen belgenin bildirimi numarayı, nedeni ve nerede beklediğini (Gönderilecekler) söyler; aynı neden kartta
+        // (e-Belge satırı) ve Gönderilecekler'de kalıcı görünür. Süre eskisi gibi 8 sn (uzun bildirim pencere düğmelerinin üstünde kalıp tıklamayı
+        // engelliyordu — senaryo-ebelge-242 adım 4); okuma süresine göre ayar ortak bildirim çekirdeğinin işi.
+        // Dar kontrol 2.4.3 (O1): seride daha eski tarihli gönderilmemiş belge varken numara verilmedi — hata değil, belge Gönderilecekler'de bekler.
+        // Ek 1 / kâhin BEKLENEN-AG: giriş reddedildi ya da EDM'ye ulaşılamadı — belge numarasız Gönderilecekler'de; ileti tam (önek yok).
+        if (saved.autoSend?.code === "einvoice-order") HOF.toast(saved.autoSend.message, { type: "info", timeout: 12000 });
+        else if (saved.autoSend?.held) HOF.toast(saved.autoSend.message, { type: "error", timeout: 12000 });
+        else if (saved.autoSend) HOF.toast(saved.autoSend.ok ? saved.autoSend.message : `e-Belge gönderilemedi: ${saved.autoSend.message}`, { type: saved.autoSend.ok ? "success" : "error", timeout: 8000 });
       }
       view.form = null;
       HOF.emit("invoices-changed", saved);
@@ -1937,10 +2197,17 @@
     } catch (failure) {
       // Soruya "Vazgeç" kullanıcının kararıdır (kırmızı hata değil); banka sorusunda bilgi bildirimi (2.0.26 İ6 kalıbı).
       if (!HOF.userCancelled(failure)) fail(failure.message || "İşlem tamamlanamadı.");
+      // 2.4.3 (uzman UX5): sunucu carinin mükellefiyetini gönderimde düzeltti — açık form carinin güncel bilgisini yeniden çeker (belge türü
+      // e-Fatura, posta kutusu); kullanıcı yeniden kaydedince e-Fatura olarak kesilir (önceden form e-Arşiv'de kalıyordu, ikinci kayıt da düşüyordu).
+      if (failure?.data?.code === "buyer-is-efatura" && view.form === form) {
+        form.profile = "";
+        scheduleCalc(0);
+      }
       else if (failure.data.code !== "cash-negative-cancelled") HOF.toast(failure.message, { type: "info" });
     } finally {
       form.busy = false;
       body()?.querySelectorAll(".hof-actions .hof-button").forEach(button => (button.disabled = false));
+      if (view.form === form && isReturn(form.kind)) syncReturnRef();
     }
   }
   // Stok eksiye düşecekse sorulur; onaylanırsa aynı istek "force" ile yeniden gönderilir (Kasa eksi uyarısını HOF.api sorar).
@@ -1959,7 +2226,7 @@
       return await attempt({});
     } catch (error) {
       if (error?.data?.code !== "stock-negative") throw error;
-      const go = await HOF.confirm({ title: "Stok eksiye düşecek", message: `${error.message} Sayım farkı ya da henüz girilmemiş alış varsa ${verb === "save" ? "kaydedebilirsiniz" : "devam edebilirsiniz"}. ${ask}`, confirmLabel: yes, danger: true });
+      const go = await HOF.confirm({ title: "Stok Eksiye Düşecek", message: `${error.message} Sayım farkı ya da henüz girilmemiş alış varsa ${verb === "save" ? "kaydedebilirsiniz" : "devam edebilirsiniz"}. ${ask}`, confirmLabel: yes, danger: true });
       if (!go) throw new HOF.ApiError(`${no}: stok eksiye düşecekti.`, 409, { code: "cash-negative-cancelled" });
       return attempt({ force: true });
     }
@@ -2065,7 +2332,7 @@
     const email = String(party.email || "").trim();
     const eTools =
       edoc() && doc.status !== "draft" && (doc.profile !== "KAGIT" || doc.eStatus === "withdrawn") && meta.kinds[doc.kind]?.own
-        ? `<span class="hof-plan-toolgroup">${sendButtons(doc)}${doc.canWithdraw ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="e-withdraw" title="Belge gönderilmez, Müşteri Fişi olarak kalır; stok, cari ve Kasa etkileri değişmez">Listeden Sil</button>' : ""}${doc.canRefresh ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="e-refresh">Durum Sorgula</button>' : ""}${doc.canOfficial ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/${esc(doc.id)}/resmi.pdf?inline=1" target="_blank" rel="noopener" data-act="e-official" title="Entegratörün ürettiği, alıcının ve GİB'in gördüğü görüntü">Resmî Görüntü</a>` : ""}${doc.status === "issued" ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/${esc(doc.id)}/ubl.xml" download>XML İndir</a>` : ""}</span>`
+        ? `<span class="hof-plan-toolgroup">${sendButtons(doc)}${doc.canWithdraw ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="e-withdraw" title="e-Belge gönderilmez; belge fiş numarasıyla Müşteri Fişi olarak kalır; stok, cari ve Kasa etkileri geri alınmaz">Müşteri Fişi Olarak Bırak</button>' : ""}${doc.canRefresh ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="e-refresh">Durum Sorgula</button>' : ""}${doc.canOfficial ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/${esc(doc.id)}/resmi.pdf?inline=1" target="_blank" rel="noopener" data-act="e-official" title="Entegratörün ürettiği, alıcının ve GİB'in gördüğü görüntü">Resmî Görüntü</a>` : ""}${doc.status === "issued" ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/${esc(doc.id)}/ubl.xml" download>XML İndir</a>` : ""}</span>`
         : "";
     HOF.swap(
       root,
@@ -2103,7 +2370,7 @@
         ${fact("Vergi Dairesi", esc(party.taxOffice || ""))}
         ${fact("Adres", esc([party.address, party.district, party.city].filter(Boolean).join(", ")))}
         ${fact("Belge Türü", esc(doc.eStatus === "withdrawn" ? "Müşteri Fişi (e-Belge olarak gönderilmedi)" : profileText))}
-        ${fact("e-Belge", doc.sendBlock ? `<span class="hof-inv-warn">${esc(doc.sendBlock)}</span>` : doc.eStatus === "waiting" ? "Gönderilecekler'de: numara entegratöre gönderilirken verilir." : "")}
+        ${fact("e-Belge", doc.sendBlock ? `<span class="hof-inv-warn">${esc(doc.sendBlock)}</span>` : doc.eStatus === "waiting" ? "Gönderilecekler'de: numara entegratöre gönderilirken verilir." : edoc() && doc.eUnsent ? `<span class="hof-inv-warn">${doc.eStatusLabel === "Sonucu Belirsiz" ? "Son gönderimin sonucu belirsiz: önce Durum Sorgula'ya basın." : "Numara aldı ama entegratöre ulaşmadı; Gönderilecekler'de bekliyor. e-Belge Gönder ile ya da Gönderilecekler'den (Tümünü Gönder) gönderin."}</span>` : "")}
         ${fact("Para Birimi", cur !== "TRY" ? `${esc(cur)} · kur ${esc(String(doc.rate).replace(".", ","))}` : "")}
         ${fact("Asıl Fatura", doc.originalId ? `<a href="#" data-open-invoice="${esc(doc.originalId)}">${esc(doc.originalNumber || "")}</a> · ${esc(HOF.formatDate(doc.originalDate))}` : "")}
         ${fact("Sipariş", doc.orderNo ? `${esc(doc.orderNo)}${doc.orderDate ? ` · ${esc(HOF.formatDate(doc.orderDate))}` : ""}` : "")}
@@ -2352,11 +2619,13 @@
   }
   // Gönderilecekler'den silme: etkiler yerinde kalır; belge Müşteri Fişi numarası alır (sonra yine gönderilebilir).
   async function withdrawDoc(doc) {
-    const go = await HOF.confirm({ title: "Gönderilecekler'den Silinsin mi?", message: "Belge entegratöre gönderilmez ve Müşteri Fişi olarak kalır. Stok, cari, Kasa, taksit ve çek/senet kayıtları değişmez. Satışı geri almak için İptal Et kullanılır. İsterseniz belgeyi sonra yine e-Belge olarak gönderebilirsiniz.", confirmLabel: "Listeden Sil" });
+    // 2.4.3 (KÖ2, kullanıcı kararı 18.10.2026): "Listeden Sil" silme çağrıştırıyordu; belge silinmez, fiş numarasıyla Müşteri Fişi olarak kalır.
+    // Varsayılan odak Vazgeç'te (etkiler geri alınmaz; A paketi UX4 güvenli odak kuralı).
+    const go = await HOF.confirm({ title: "Müşteri Fişi Olarak Bırakılsın mı?", message: "e-Belge gönderilmez; belge fiş numarasıyla Müşteri Fişi olarak kalır. Stok, cari, Kasa, taksit ve çek/senet etkileri geri alınmaz (satışı geri almak için İptal Et kullanılır). İsterseniz belgeyi sonra yine e-Belge olarak gönderebilirsiniz.", confirmLabel: "Müşteri Fişi Olarak Bırak", safeFocus: true });
     if (!go) return;
     try {
       const saved = await HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}/withdraw`, { method: "POST", body: {} });
-      HOF.toast(`Belge listeden silindi; ${saved.number} numaralı Müşteri Fişi olarak kaldı.`, { type: "success" });
+      HOF.toast(`Belge e-Belge olarak gönderilmedi; ${saved.number} numaralı Müşteri Fişi olarak bırakıldı.`, { type: "success" });
       HOF.emit("invoices-changed", saved);
       showDoc(saved);
     } catch (error) {
@@ -2371,13 +2640,15 @@
     const total = docs.reduce((sum, doc) => sum + (Number(doc.tryPayable) || 0), 0);
     const go = await HOF.confirm({
       title: `${docs.length.toLocaleString("tr-TR")} Taslak Kesilsin mi?`,
-      message: `Seçili taslaklar tarih sırasıyla kaydedilir (toplam ${money(total)}). Her belgede stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. Stoku eksiye düşüren ya da kilitli dönemdeki taslak kaydedilmez, nedeni bildirilir.`,
+      message: `Seçili taslaklar tarih sırasıyla kaydedilir (toplam ${money(total)}). Her belgede stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. Stoku eksiye düşüren ya da kilitli dönemdeki taslak kaydedilmez, nedeni bildirilir.${edoc() ? (meta?.settings?.integrator?.autoSend ? " e-Belge olanlar kaydedilir kaydedilmez entegratöre gönderilir." : " e-Belge olanlar Gönderilecekler'de bekler; e-Belge numarası entegratöre gönderilirken verilir (Entegratör Ayarları'nda hemen gönderim açılabilir).") : ""}`,
       confirmLabel: "Seçilenleri Kaydet",
     });
     if (!go) return;
     try {
       const result = await HOF.api("/api/workspace/invoices/bulk-issue", { method: "POST", body: { ids: docs.map(doc => doc.id) } });
       bulkOutcome(result, "kaydedildi", "kaydedilemedi");
+      // Dar kontrol 2.4.3: entegratör girişi reddedildi / EDM'ye ulaşılamadı — belgeler numarasız Gönderilecekler'de (tek ileti).
+      if (result.notice) HOF.toast(result.notice, { type: "error", timeout: 12000 });
     } catch (error) {
       HOF.toastError(error);
     }
@@ -2479,18 +2750,108 @@
     const detail = failed.slice(0, 3).map(item => `${item.number || item.displayNo || item.accountName || item.id}: ${item.message}`).join(" · ");
     HOF.toast(`${done.toLocaleString("tr-TR")} belge ${doneWord}${failed.length ? `; ${failed.length.toLocaleString("tr-TR")} belge ${failWord}: ${detail}${failed.length > 3 ? " …" : ""}` : "."}`, { type: failed.length ? "error" : "success", timeout: failed.length ? 12000 : 5000 });
   }
+  // Gözden geçirme 2.4.3 (S2): Gönderilecekler'in tamamı (sayfadaki ≤200 satır değil); sunucunun verdiği toplam, yoksa listedeki sayı.
+  function pendingTotal(data) {
+    return typeof data?.pendingTotal === "number" ? data.pendingTotal : data?.invoices?.length || 0;
+  }
+  // Dar kontrol 2.4.3 (Y1): gönderim sürerken düğme ilerlemeyi gösterir ve basılamaz (ikinci tur açılmaz); liste yeniden çizilse de durum korunur.
+  function sendPendingButton(data) {
+    const progress = view.sendProgress;
+    if (progress) return `<button type="button" class="hof-button hof-button-small" data-act="send-pending" disabled aria-busy="true" data-send-progress>Gönderiliyor: ${progress.done.toLocaleString("tr-TR")} / ${progress.total.toLocaleString("tr-TR")}</button>`;
+    return `<button type="button" class="hof-button hof-button-small" data-act="send-pending" title="Gönderilecekler'in tamamı eski tarihliden başlayarak entegratöre gönderilir; numara gönderimde verilir">Tümünü Gönder (${pendingTotal(data).toLocaleString("tr-TR")})</button>`;
+  }
+  function showSendProgress() {
+    const button = body()?.querySelector('[data-act="send-pending"]');
+    if (!button || !view.sendProgress) return;
+    button.disabled = true;
+    button.setAttribute("aria-busy", "true");
+    button.dataset.sendProgress = "";
+    button.textContent = `Gönderiliyor: ${view.sendProgress.done.toLocaleString("tr-TR")} / ${view.sendProgress.total.toLocaleString("tr-TR")}`;
+  }
+  // İstek başına zaman aşımı: sunucu bir istekte en çok 20 belge ya da ~10 sn işler; tek belgenin entegratör çağrıları (giriş, mükellef sorgusu,
+  // gönderim) en kötü durumda bunu uzatabilir. Varsayılan 30 sn yetmez.
+  const SEND_PENDING_TIMEOUT_MS = 150000;
   async function sendPending() {
-    const ids = (view.list?.invoices || []).map(item => item.id);
-    if (!ids.length) return;
-    const go = await HOF.confirm({ title: "Gönderilecekler Gönderilsin mi?", message: `${ids.length.toLocaleString("tr-TR")} belge sırayla entegratöre gönderilecek; e-Belge numaraları gönderim sırasında verilir.`, confirmLabel: "Tümünü Gönder" });
-    if (!go) return;
+    if (view.sendProgress) return;
+    const total = pendingTotal(view.list);
+    if (!total) return;
+    const go = await HOF.confirm({ title: "Gönderilecekler Gönderilsin mi?", message: `Gönderilecekler'deki ${total.toLocaleString("tr-TR")} belge tarih sırasıyla (eski tarihli önce) entegratöre gönderilecek. Numarası olmayanlara e-Belge numarası gönderim sırasında verilir; sonucu belirsiz olanlar önce entegratöre sorulur, orada varsa yeniden gönderilmez.`, confirmLabel: "Tümünü Gönder" });
+    if (!go || view.sendProgress) return;
+    // Sunucu Gönderilecekler'in tamamını kendisi seçer ({ all: true }); bir istekte en çok 20 belge (ya da ~10 sn) gider, kalan varsa istemci
+    // yineler. Dar kontrol 2 (B1): tur bir imleçle ilerler — sunucunun döndürdüğü imleç (ulaşılan son belge) sonraki isteğe verilir; bir turda her
+    // belge en çok bir kez denenir. Döngü "gönderilen > 0" ile değil, imleç ilerledikçe ve kalan oldukça sürer (önceden kuyruğun başında
+    // reddedilen belgeler varken ilk istek 0 gönderip döngüyü bitiriyordu).
+    const results = [];
+    const seen = new Set();
+    let sent = 0;
+    let remaining = 0;
+    let stopped = null;
+    let cursor = null;
+    let rerun = false;
+    view.sendProgress = { done: 0, total };
+    showSendProgress();
     try {
-      const result = await HOF.api("/api/workspace/invoices/send-pending", { method: "POST", body: { ids } });
-      const failed = result.results.filter(item => !item.ok);
-      HOF.toast(`${result.sent.toLocaleString("tr-TR")} belge gönderildi${failed.length ? `; ${failed.length} belge gönderilemedi: ${failed[0].message}` : "."}`, { type: failed.length ? "error" : "success", timeout: 10000 });
+      for (let turn = 0; turn < 100000; turn += 1) {
+        const timeoutMs = Number(HOF.invoices?.sendPendingTimeoutMs) > 0 ? Number(HOF.invoices.sendPendingTimeoutMs) : SEND_PENDING_TIMEOUT_MS;
+        const result = await HOF.api("/api/workspace/invoices/send-pending", { method: "POST", body: cursor ? { all: true, after: cursor } : { all: true }, timeoutMs });
+        sent += result.sent;
+        remaining = result.remaining || 0;
+        stopped = result.stopped || null;
+        // Dar kontrol 3 (B-2): tur sürerken imleçten önce sıralanan (daha eski) belge kaydedildi — bu turda denenmedi; yeni basış en eskiden başlar.
+        rerun = rerun || Boolean(result.rerun);
+        const moved = Boolean(result.cursor) && JSON.stringify(result.cursor) !== JSON.stringify(cursor);
+        cursor = result.cursor || cursor;
+        // Kalıcı engelli belgeler her istekte yeniden listelenir; bir kez sayılır.
+        for (const item of result.results) {
+          if (seen.has(item.id)) continue;
+          seen.add(item.id);
+          results.push(item);
+        }
+        view.sendProgress = { done: Math.min(total, seen.size), total: Math.max(total, seen.size) };
+        showSendProgress();
+        if (stopped || !remaining || !moved) break;
+      }
     } catch (error) {
-      HOF.toastError(error);
+      view.sendProgress = null;
+      // Y1: zaman aşımı hata değildir — sunucu gönderimi sürdürüyor olabilir; liste yenilenir, sonuç oradan okunur.
+      if (error?.data?.code === "client-timeout") HOF.toast(`${sent ? `${sent.toLocaleString("tr-TR")} belge gönderildi; ` : ""}gönderim sunucuda sürüyor olabilir. Liste yenilendi; bir süre sonra Gönderilecekler'e bakın, kalan belge olursa Tümünü Gönder'e yeniden basın.`, { type: "info", timeout: 15000 });
+      else HOF.toastError(error);
+      loadList();
+      return;
     }
+    view.sendProgress = null;
+    // 2.4.3 (keşif B1): gönderilemeyen ilk belgenin nedeni ve sırasını korumak için bekletilenlerin sayısı ayrı yazılır. Gözden geçirme (S3): başka
+    // oturumda gönderilen belgeler "gönderilemedi" sayılmaz; doğru nedeni söylenir. Dar kontrol (D2, O2, bilgi): başka oturumda gönderilmiş, tur
+    // sürerken listeden silinmiş ve bağlantı kesildiği için numara verilmeden bekleyen belgeler ayrı sayılır.
+    const busy = results.filter(item => item.busy || (item.skipped && item.reason === "busy"));
+    const done = results.filter(item => item.done);
+    const withdrawn = results.filter(item => item.skipped && item.reason === "withdrawn");
+    const waitingStop = results.filter(item => item.skipped && item.reason === "stopped");
+    const failed = results.filter(item => !item.ok && !item.skipped && !item.busy && !item.done);
+    const held = results.filter(item => item.skipped && !["busy", "withdrawn", "stopped"].includes(item.reason));
+    const parts = [`${sent.toLocaleString("tr-TR")} belge gönderildi`];
+    // B1: gönderilemeyenler nedenleriyle (aynı nedenden kaç belge; en çok üç neden, kalanı belgelerin kartında).
+    if (failed.length) {
+      const reasons = new Map();
+      for (const item of failed) {
+        const key = item.code || item.message || "";
+        if (!reasons.has(key)) reasons.set(key, { count: 0, message: item.message || "Gönderilemedi." });
+        reasons.get(key).count += 1;
+      }
+      const listed = [...reasons.values()].slice(0, 3).map(reason => (reasons.size > 1 ? `${reason.count.toLocaleString("tr-TR")} belge: ${reason.message}` : reason.message));
+      const more = reasons.size > 3 ? ` (${(reasons.size - 3).toLocaleString("tr-TR")} başka neden; ayrıntı belgelerin kartında)` : "";
+      parts.push(`${failed.length.toLocaleString("tr-TR")} belge gönderilemedi: ${listed.join(" ")}${more}`);
+    }
+    // 2.4.3 (uzman UX14): durma nedeni gönderilemeyen belgenin nedeniyle aynıysa ("EDM'ye bağlanılamadı… ; EDM'ye ulaşılamadı…") bir kez yazılır.
+    if (stopped) parts.push(failed.length && failed.every(item => item.code === stopped.code) ? "Kalan belgelere numara verilmedi; Gönderilecekler'de bekliyor" : `${stopped.message} Kalan belgelere numara verilmedi; Gönderilecekler'de bekliyor`);
+    if (done.length) parts.push(`${done.length.toLocaleString("tr-TR")} belge başka oturumda gönderildi`);
+    if (busy.length) parts.push(`${busy.length.toLocaleString("tr-TR")} belge başka oturumda gönderiliyor; gönderim bitince listeyi yenileyin`);
+    if (withdrawn.length) parts.push(`${withdrawn.length.toLocaleString("tr-TR")} belge gönderim sırasında Müşteri Fişi olarak bırakıldı (gönderilmedi)`);
+    if (held.length) parts.push(`${held.length.toLocaleString("tr-TR")} belge sırasını korumak için bekletildi (önce eski tarihli belge gönderilmeli)`);
+    if (rerun && !stopped) parts.push("gönderim sürerken daha eski tarihli belge kaydedildi; o belge ve sonrakiler için Tümünü Gönder'e yeniden basın");
+    if (remaining && !stopped) parts.push(`${remaining.toLocaleString("tr-TR")} belge daha bekliyor; Tümünü Gönder'e yeniden basın`);
+    const bad = failed.length || held.length || busy.length || remaining || stopped || waitingStop.length;
+    HOF.toast(`${parts.join("; ")}.`, { type: failed.length || held.length || stopped ? "error" : busy.length || remaining || withdrawn.length ? "info" : "success", timeout: bad ? 15000 : 6000 });
     loadList();
   }
   // Portala taslak (İz 7.3, Entegratör Ayarları → Ek Seçenekler): ayar açıksa ilk düğme "Portala Taslak Yükle"; taslaktaki belge "Taslağı Gönder"
@@ -2543,7 +2904,7 @@
     const problems = s.problems?.KAGIT || [];
     HOF.swap(
       root,
-      `<div class="hof-plan-head"><div class="hof-plan-headline"><button type="button" class="hof-plan-back" data-act="back" title="Listeye dön">← Liste</button>
+      `<div class="hof-plan-head"><div class="hof-plan-headline"><button type="button" class="hof-plan-back" data-act="back" data-esc-back title="Listeye dön (Esc)">← Liste</button>
         <div class="hof-plan-title"><h3>Fatura Ayarları</h3><small>Belgenin üstünde yazan firma bilgisi, numara serileri ve varsayılanlar. Değişiklik bundan sonra kaydedilen belgelere uygulanır.</small></div></div></div>
       ${problems.length ? `<ul class="hof-inv-problems">${problems.map(item => `<li>${esc(item)}</li>`).join("")}</ul>` : ""}
       <section class="hof-inv-settings"><h4>Firma Bilgisi</h4><div class="hof-inv-head">
@@ -2564,11 +2925,11 @@
         ${input("seller.email", "E-Posta", seller.email, 'maxlength="160" type="email"')}
         ${input("seller.website", "Web Sitesi", seller.website, 'maxlength="200"')}
         <div class="hof-field hof-inv-wide hof-inv-logo"><span>Logo (PDF'te Sol Üstte, e-Belgede Ortada)</span>
-          <div class="hof-inv-logo-row"><div class="hof-inv-logo-box" data-logo-preview>${logoNow() ? `<img src="${esc(logoNow())}" alt="Logo">` : '<small>Logo yok</small>'}</div>
-          <div class="hof-inv-logo-tools"><label class="hof-button hof-button-small hof-button-ghost">Logo Seç<input type="file" accept="image/*" data-logo-file hidden></label>${logoNow() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="logo-clear">Logoyu Kaldır</button>' : ""}<small>PNG ya da JPEG seçin; program JPEG'e çevirip küçültür (en çok 150 KB). Kaydedince bundan sonraki PDF'lere basılır.</small></div></div></div>
+          <div class="hof-inv-logo-row"><div class="hof-inv-logo-box" data-logo-preview>${imageBoxHtml("logo")}</div>
+          <div class="hof-inv-logo-tools"><label class="hof-button hof-button-small hof-button-ghost">Logo Seç<input type="file" accept="image/*" data-logo-file hidden></label><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="logo-clear" ${logoNow() ? "" : "hidden"}>Logoyu Kaldır</button><small>PNG ya da JPEG seçin; program JPEG'e çevirip küçültür (en çok 150 KB). Kaydedince bundan sonraki PDF'lere basılır.</small></div></div></div>
         <div class="hof-field hof-inv-wide hof-inv-logo" data-stamp-field><span>Kaşe / İmza (e-Arşiv Faturasına Basılır)</span>
-          <div class="hof-inv-logo-row"><div class="hof-inv-logo-box" data-stamp-preview>${stampNow() ? `<img src="${esc(stampNow())}" alt="Kaşe / İmza">` : '<small>Kaşe / imza yok</small>'}</div>
-          <div class="hof-inv-logo-tools"><label class="hof-button hof-button-small hof-button-ghost">Kaşe / İmza Seç<input type="file" accept="image/*" data-stamp-file hidden></label>${stampNow() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="stamp-clear">Kaşe / İmzayı Kaldır</button>' : ""}<small>Kaşe üzerine atılmış imzanın taranmış ya da çekilmiş resmini seçin (beyaz zemin önerilir). e-Belgede GİB logosunun altına, PDF'te Düzenleyen kutusuna basılır; e-Faturada da istenirse Entegratör Ayarları → Görünüm.</small></div></div></div>
+          <div class="hof-inv-logo-row"><div class="hof-inv-logo-box" data-stamp-preview>${imageBoxHtml("stamp")}</div>
+          <div class="hof-inv-logo-tools"><label class="hof-button hof-button-small hof-button-ghost">Kaşe / İmza Seç<input type="file" accept="image/*" data-stamp-file hidden></label><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="stamp-clear" ${stampNow() ? "" : "hidden"}>Kaşe / İmzayı Kaldır</button><small>Kaşe üzerine atılmış imzanın taranmış ya da çekilmiş resmini seçin (beyaz zemin önerilir). e-Belgede GİB logosunun altına, PDF'te Düzenleyen kutusuna basılır; e-Faturada da istenirse Entegratör Ayarları → Görünüm.</small></div></div></div>
       </div></section>
       <section class="hof-inv-settings" data-inv-banks="${bankState.active ? "accounts" : "legacy"}"><h4>Banka Hesapları <small>(belgenin altına basılır)</small></h4>${bankState.active
         ? `<p class="hof-muted">Banka modülü etkin: belgeye yalnız Banka → Hesaplar'da hesap kartında <b>IBAN Faturada Gösterilsin</b> işaretli etkin TL hesaplar basılır (en çok 4; sırası hesap sırası). Buradaki eski liste artık düzenlenmez.</p>
@@ -2606,30 +2967,32 @@
   // Logo: view.logo tanımsızsa değişmedi; "" kaldırıldı; data URL yeni seçildi (kaydedilince sunucuya gider).
   const logoNow = () => (view.logo === undefined ? view.settings?.seller?.logo || "" : view.logo);
   const stampNow = () => (view.stamp === undefined ? view.settings?.seller?.stamp || "" : view.stamp);
-  async function pickStamp(input) {
+  const IMAGE_BOXES = { logo: { now: logoNow, alt: "Logo", empty: "Logo yok" }, stamp: { now: stampNow, alt: "Kaşe / İmza", empty: "Kaşe / imza yok" } };
+  const imageBoxHtml = kind => (IMAGE_BOXES[kind].now() ? `<img src="${esc(IMAGE_BOXES[kind].now())}" alt="${IMAGE_BOXES[kind].alt}">` : `<small>${IMAGE_BOXES[kind].empty}</small>`);
+  // D1 (kullanıcının bulgusu, 17.10.2026; kullanıcı kararı "form durumu izole"): Logo / Kaşe seçmek ya da kaldırmak yalnız kendi önizleme
+  // kutusunu ve "Kaldır" düğmesini günceller. Önceden bütün Fatura Ayarları formu kayıtlı ayarlardan yeniden çiziliyor, kaydedilmemiş unvan,
+  // adres, IBAN ve varsayılanlar sessizce eski değerine dönüyordu.
+  function paintImageBox(kind) {
+    const root = body();
+    const box = root?.querySelector(`[data-${kind}-preview]`);
+    if (box) box.innerHTML = imageBoxHtml(kind);
+    const clear = root?.querySelector(`[data-act="${kind}-clear"]`);
+    if (clear) clear.hidden = !IMAGE_BOXES[kind].now();
+  }
+  async function pickImage(input, kind, readyText) {
     const file = input.files?.[0];
     input.value = "";
     if (!file) return;
     try {
-      view.stamp = await imageToJpeg(file, { maxSide: 600, maxBytes: 150 * 1024 });
-      renderSettings();
-      HOF.toast("Kaşe / imza hazır; Ayarları Kaydet ile saklanır.", { type: "info" });
+      view[kind] = await imageToJpeg(file, { maxSide: 600, maxBytes: 150 * 1024 });
+      paintImageBox(kind);
+      HOF.toast(readyText, { type: "info" });
     } catch (error) {
       HOF.toast(error.message || "Görsel okunamadı.", { type: "error" });
     }
   }
-  async function pickLogo(input) {
-    const file = input.files?.[0];
-    input.value = "";
-    if (!file) return;
-    try {
-      view.logo = await imageToJpeg(file, { maxSide: 600, maxBytes: 150 * 1024 });
-      renderSettings();
-      HOF.toast("Logo hazır; Ayarları Kaydet ile saklanır.", { type: "info" });
-    } catch (error) {
-      HOF.toast(error.message || "Görsel okunamadı.", { type: "error" });
-    }
-  }
+  const pickStamp = input => pickImage(input, "stamp", "Kaşe / imza hazır; Ayarları Kaydet ile saklanır.");
+  const pickLogo = input => pickImage(input, "logo", "Logo hazır; Ayarları Kaydet ile saklanır.");
   // Her görsel (PNG, JPEG, WebP…) beyaz zemine çizilip JPEG'e çevrilir; boyut ve kalite sınır altına inene kadar düşer.
   async function imageToJpeg(file, { maxSide, maxBytes }) {
     const bitmap = await new Promise((resolve, reject) => {
@@ -2697,13 +3060,10 @@
   }
   async function settingsAction(act) {
     const error = body()?.querySelector("[data-form-error]");
-    if (act === "logo-clear") {
-      view.logo = "";
-      return renderSettings();
-    }
-    if (act === "stamp-clear") {
-      view.stamp = "";
-      return renderSettings();
+    if (act === "logo-clear" || act === "stamp-clear") {
+      const kind = act === "logo-clear" ? "logo" : "stamp";
+      view[kind] = "";
+      return paintImageBox(kind);
     }
     if (act === "save-settings") {
       if (error) error.textContent = "";
@@ -2714,6 +3074,8 @@
         view.stamp = undefined;
         await loadMeta(true);
         HOF.toast("Fatura ayarları kaydedildi.", { type: "success" });
+        // Kaydedildi: form kayıtlı (sunucudan dönen) değerlerle çizilir, pencere artık "kaydedilmemiş" sayılmaz.
+        HOF.markClean(body());
         renderSettings();
       } catch (failure) {
         if (error) error.textContent = failure.message;
@@ -2770,7 +3132,8 @@
       return HOF.toastError(error);
     }
     const state = { tab: "connection", settings: s, aliases: null };
-    const modalApi = HOF.modal({ title: "e-Dönüşüm ve Entegrasyon Ayarları", eyebrow: "FATURA", size: "wide", body: '<div data-integ-root></div>' });
+    // 2.4.3: pencere kendi form kapsamıdır (sekme değişse de yazılanlar "kaydedilmemiş" sayılır; Esc / × / dışarı tıklama sorar).
+    const modalApi = HOF.modal({ title: "e-Dönüşüm ve Entegrasyon Ayarları", eyebrow: "FATURA", size: "wide", body: '<div data-integ-root data-hof-form="integrator"></div>' });
     const root = modalApi.dialog.querySelector("[data-integ-root]");
     const aliasOptions = (list, current) => {
       const values = [...new Set([current, ...(list || [])].filter(Boolean))];
@@ -2927,6 +3290,7 @@
           delete draft.password;
           await loadMeta(true);
           HOF.toast("Entegratör ayarları kaydedildi.", { type: "success" });
+          HOF.markClean(root);
           render();
           restore();
         } catch (failure) {
@@ -3107,7 +3471,8 @@
     view.tab = "all";
     return open({ account: account || {}, tab: "all" });
   };
-  HOF.invoices = { open, newFor, openDoc, forAccount, eUnitAsAdet: unit => Boolean(meta) && eUnitAsAdet(unit), edocEnabled: () => meta?.edocEnabled === true, autoCheckUser: () => meta?.edocEnabled === true && meta?.settings?.integrator?.autoCheckUser === true };
+  // sendPendingTimeoutMs: Tümünü Gönder isteğinin zaman aşımı (0 = 150 sn); ekran testi (gg243-tumunu-gonder) kısaltır.
+  HOF.invoices = { open, newFor, openDoc, forAccount, sendPendingTimeoutMs: 0, eUnitAsAdet: unit => Boolean(meta) && eUnitAsAdet(unit), edocEnabled: () => meta?.edocEnabled === true, autoCheckUser: () => meta?.edocEnabled === true && meta?.settings?.integrator?.autoCheckUser === true };
   // 2.3.0 İz 5.5 Hızlı Arama: sekmeler TABS'tan (purchase sekmesi "Alınan" — müşteri "alış f" yazar: Alış Faturaları eş adı), işlemler
   // yetkiye göre (Yeni Satış / Alış Faturası → senaryo seçimi; Yeni İade → İadeler sekmesi).
   HOF.search?.register(() => {

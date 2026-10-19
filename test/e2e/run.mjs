@@ -14,6 +14,7 @@ import { createReferenceLicenseService } from "../../tools/lib/license-service.m
 import { relativeFixture } from "../fixtures/goreli-tarih.mjs";
 import { okulServisiXlsx } from "../fixtures/okul-servisi-ornek.mjs";
 import { acilirListelerXlsx } from "../fixtures/acilir-listeler.mjs";
+import { escClose } from "./esc-kapat.mjs";
 // Tarihe bağlı olmasın (CLAUDE.md): ilk vade bugünden ileri.
 const isoAhead = days => {
   const d = new Date();
@@ -214,7 +215,7 @@ try {
     const report = await admin.$$eval(".hof-scope-report", nodes => nodes.map(node => node.innerText.replace(/\s+/g, " ")));
     expect(report.length === 2 && report[0].includes("Aktif") && report[0].includes("Tutar Toplamı: Tutar") && report[0].includes("Durum Dağılımı: Dosyanın son durumu"), `rapor: ${report}`);
     expect(report[1].includes("Kapanan") && report[1].includes("dağılım için az"), `kapanan sekmesi raporu: ${report[1]}`);
-    await admin.keyboard.press("Escape");
+    await escClose(admin);
     await admin.waitForFunction(() => !document.querySelector(".hof-scope-report"));
     expect(await admin.$(".hof-analysis-result"), "analiz sonucu açık kalmalı");
   });
@@ -234,7 +235,7 @@ try {
     await admin.keyboard.press("ArrowDown");
     const active = await admin.$eval(".hof-picker-option.is-active", node => node.dataset.id);
     expect(active, "klavyeyle etkin seçenek");
-    await admin.keyboard.press("Escape");
+    await escClose(admin);
     await admin.waitForFunction(() => !document.querySelector(".hof-picker"));
     expect(await admin.$(".hof-analysis-result"), "analiz sonucu açık kalmalı");
   });
@@ -306,14 +307,14 @@ try {
     await admin.click(".hof-explain summary");
     const explain = await admin.$eval(".hof-explain", node => node.innerText.replace(/\s+/g, " "));
     expect(explain.includes("“TUTAR” kolonundaki 26 tutar toplandı") && explain.includes("Para birimi hücrelerde yazılı: TL") && explain.includes("%100'ü kesin okundu"), `açıklama: ${explain}`);
-    await admin.keyboard.press("Escape");
+    await escClose(admin);
     await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"));
     // Kartlarda yer olmayan durum kartı raporda; toplam kartı sekmenin raporunu açar.
     await admin.click('#hof-summary [data-kpi="total"]');
     await admin.waitForSelector(".hof-modal-backdrop.is-visible .hof-scope-report");
     const report = await admin.$eval(".hof-scope-report", node => node.innerText.replace(/\s+/g, " "));
     expect(report.includes("26 kayıt") && report.includes("yalnızca raporda"), `sekme raporu: ${report}`);
-    await admin.keyboard.press("Escape");
+    await escClose(admin);
     await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"));
   });
 
@@ -478,7 +479,7 @@ try {
     const phoneModal = await admin.$eval(".hof-modal-backdrop.is-visible .hof-modal", node => ({ text: node.innerText.replace(/\s+/g, " "), tel: node.querySelector('a[href^="tel:"]')?.getAttribute("href") || "", submit: node.querySelector('button[type="submit"]')?.textContent || "" }));
     expect(/Yeni numara ekle/i.test(phoneModal.submit), `telefon penceresi: ${phoneModal.text.slice(0, 160)}`);
     expect(!phoneModal.tel || /^tel:\+90\d{10}$/.test(phoneModal.tel), `arama bağlantısı: ${phoneModal.tel}`);
-    await admin.keyboard.press("Escape");
+    await escClose(admin);
     await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 5000 });
     await admin.screenshot({ path: path.join(artifacts, "04-detay-gecmis.png") });
   });
@@ -599,6 +600,10 @@ try {
     await admin.click(".hof-plans-table tbody tr[data-plan]");
     await admin.waitForSelector('.hof-plans [data-act="close"]', { timeout: 10000 });
     await admin.click('.hof-plans [data-act="close"]');
+    // 2.4.3 (uzman UX8): kalanı olan kart sorulmadan kapanmaz; soru beklenir (ders 34: sessizce geçilmez) ve bilerek "Kartı Kapat" denir.
+    const closeAsk = await admin.waitForSelector('.hof-modal-backdrop.is-visible:last-of-type [data-answer="yes"]', { timeout: 5000 }).catch(() => null);
+    expect(closeAsk && /Kartı Kapat/.test(await closeAsk.textContent()), "kalanı olan kart kapatılırken onay soruldu");
+    await closeAsk.click();
     await admin.waitForSelector('.hof-plans [data-act="reopen"]', { timeout: 10000 });
     await admin.click('.hof-plans [data-close]');
     await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop") && ![...document.querySelectorAll(".hof-payment-pill")].some(pill => pill.textContent.includes("taksit")), null, { timeout: 10000 });
@@ -658,6 +663,10 @@ try {
     await admin.click("#hof-case-plan [data-open-plan]");
     await admin.waitForSelector('.hof-plans [data-act="close"]', { timeout: 10000 });
     await admin.click('.hof-plans [data-act="close"]');
+    // 2.4.3 (uzman UX8): kalanı olan kart sorulmadan kapanmaz; soru beklenir (ders 34: sessizce geçilmez) ve bilerek "Kartı Kapat" denir.
+    const closeAsk = await admin.waitForSelector('.hof-modal-backdrop.is-visible:last-of-type [data-answer="yes"]', { timeout: 5000 }).catch(() => null);
+    expect(closeAsk && /Kartı Kapat/.test(await closeAsk.textContent()), "kalanı olan kart kapatılırken onay soruldu");
+    await closeAsk.click();
     await admin.waitForSelector('.hof-plans [data-act="reopen"]', { timeout: 10000 });
     await admin.click(".hof-plans [data-close]");
     // Kart kapanınca taksit bölümü kalkar (2.0.18: detay kartında cari kutusu yok, bölüm gizlenir).
@@ -778,7 +787,7 @@ try {
     await admin.selectOption('.hof-modal-backdrop.is-visible form select[name="method"]', "cash");
     await admin.click('.hof-modal-backdrop.is-visible form button[type="submit"]');
     await admin.waitForFunction(() => document.querySelector(".hof-chq-history")?.textContent.includes("Tahsil Edildi"), null, { timeout: 10000 });
-    await admin.keyboard.press("Escape");
+    await escClose(admin);
     await admin.waitForFunction(previous => document.querySelector('#hof-pulse [data-pulse-go="cash"] .hof-pulse-value')?.textContent.replace(/\s+/g, "") !== previous, cashShown, { timeout: 10000 });
     const after = await overview();
     expect(Math.abs(after.cash.balance - before.cash.balance - 1750) < 0.005, `Kasa 1.750 arttı: ${before.cash.balance} → ${after.cash.balance}`);
@@ -791,7 +800,8 @@ try {
     await admin.click('.hof-rep [data-tab="flow"]');
     await admin.waitForSelector(".hof-rep [data-chart] svg .hof-chart-line", { state: "attached", timeout: 10000 });
     const ticks = await admin.$$eval(".hof-rep [data-chart] .hof-chart-tick", nodes => nodes.map(node => node.textContent));
-    expect(ticks.some(text => text === "0 ₺"), `eksen sıfırı içerir: ${ticks.join(" | ")}`);
+    // 2.4.3 (uzman UI9): eksen tutarları simge başta ("₺0", "₺10 B"); önceden "0 ₺", "10 B ₺".
+    expect(ticks.some(text => text === "₺0"), `eksen sıfırı içerir: ${ticks.join(" | ")}`);
     await admin.screenshot({ path: path.join(artifacts, "04e-nakit-akisi.png") });
     // v2.0.9: rapor merkezi aynı pencerenin "Tüm raporlar" sekmesidir.
     await admin.click('.hof-rep [data-tab="all"]');
@@ -808,7 +818,7 @@ try {
     expect(files[0].status === 200 && files[0].head === "%PDF", `PDF: ${JSON.stringify(files[0])}`);
     expect(files[1].status === 200 && files[1].head.startsWith("PK"), `Excel: ${JSON.stringify(files[1])}`);
     await admin.screenshot({ path: path.join(artifacts, "04f-rapor-merkezi.png") });
-    await admin.keyboard.press("Escape");
+    await escClose(admin);
     await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop.is-visible"), null, { timeout: 5000 });
     // Küçült: tek satırlık şerit; sayfa yenilense de öyle kalır; Rapor Al yerinde.
     await admin.click("#hof-pulse [data-pulse='toggle']");
@@ -1138,7 +1148,7 @@ try {
   });
 
   await step("oturum kapanınca giriş ekranı ofis adıyla gelir", async () => {
-    await staff.keyboard.press("Escape");
+    await escClose(staff);
     await staff.click('#hof-sidecard [data-action="logout"]');
     await staff.waitForSelector("#hof-auth", { timeout: 10000 });
     await staff.waitForFunction(() => document.querySelector("#hof-auth .hof-auth-brand span")?.textContent === "Deneme Hukuk Bürosu");
@@ -1294,7 +1304,7 @@ try {
       await page.waitForSelector(".hof-alert-list");
       const panel = await page.$eval(".hof-alert-list", node => node.innerText.replace(/\s+/g, " "));
       expect(panel.includes("Tahsilat alınmadı") && panel.includes("34 SRV 101") && panel.includes("Muayene"), `zil listesi: ${panel.slice(0, 400)}`);
-      await page.keyboard.press("Escape");
+      await escClose(page);
 
       // Kasa: tarih aralığı seçilir, PDF iner.
       await page.evaluate(() => HOF.workspace.openCash());
@@ -1312,7 +1322,7 @@ try {
       const pdfPath = path.join(schoolRoot, "kasa.pdf");
       await download.saveAs(pdfPath);
       expect(readFileSync(pdfPath).subarray(0, 8).toString("latin1") === "%PDF-1.7", "PDF dosyası");
-      await page.keyboard.press("Escape");
+      await escClose(page);
       await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 8000 });
 
       // v2.0.8: Taksitler → Tablodan aktar. Ay kolonlu öğrenci tablosu (aylık ücret + ödenen) gerçek taksitlerle karta;
@@ -1355,7 +1365,7 @@ try {
       const dues = (await page.evaluate(() => fetch("/api/workspace/dues").then(response => response.json()))).data;
       expect(!dues.items.some(item => item.source !== "plan" && item.tab === "Öğrenciler"), "takvimde tablodan gelen öğrenci kalemi kalmadı (çift sayım yok)");
       expect(dues.items.some(item => item.source === "plan"), "takvim kartların taksitlerini gösteriyor");
-      await page.keyboard.press("Escape");
+      await escClose(page);
     } finally {
       await context.close();
       await schoolApp.close();
@@ -1490,7 +1500,7 @@ try {
       await page.waitForFunction(() => !/hazırlanıyor/.test(document.querySelector(".hof-modal-backdrop.is-visible .hof-fixes")?.textContent || ""), null, { timeout: 10000 });
       const health = await page.$eval(".hof-modal-backdrop.is-visible .hof-modal", node => node.innerText.replace(/\s+/g, " "));
       expect(/Toplu düzeltmeler/i.test(health) && /Veri sağlığı/i.test(health), `veri sağlığı penceresi: ${health.slice(0, 200)}`);
-      await page.keyboard.press("Escape");
+      await escClose(page);
       await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 5000 });
 
       // v2.0.9: Raporlar — sol menüden açılan pencere ANLIK DURUM'daki Rapor Al ile aynıdır (Cari ekstre, Vade takip, Nakit
@@ -1512,7 +1522,7 @@ try {
       await page.waitForFunction(() => /Gecikmiş|Kalem/.test(document.querySelector(".hof-modal-backdrop.is-visible .hof-report-summary")?.textContent || ""), null, { timeout: 15000 });
       const [reportDownload] = await Promise.all([page.waitForEvent("download", { timeout: 20000 }), page.click('.hof-modal-backdrop.is-visible [data-export="xlsx"]')]);
       expect(/\.xlsx$/i.test(reportDownload.suggestedFilename()) || (await reportDownload.path()), `rapor Excel indirildi: ${reportDownload.suggestedFilename()}`);
-      await page.keyboard.press("Escape");
+      await escClose(page);
       await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 5000 });
 
       // Belge: PDF ve ekran görüntüsü eklenir, liste eskiden yeniye, resim programda önizlenir.
@@ -1530,7 +1540,7 @@ try {
       await page.click('#hof-documents li[data-kind="image"] .hof-mini[data-doc-view]');
       await page.waitForSelector(".hof-doc-viewer img");
       expect(await page.$eval(".hof-doc-viewer img", node => node.complete && node.naturalWidth === 1), "resim önizlemesi yüklenmeli");
-      await page.keyboard.press("Escape");
+      await escClose(page);
       await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 5000 });
       // v2.0.2: birden çok belgede ad belge kartını açar; belgeler yan yana, seçilenler .zip olarak iner.
       await page.click('#hof-documents li[data-kind="pdf"] .hof-doc-name');
@@ -1543,7 +1553,7 @@ try {
       expect(archive.url().includes("/documents/archive?ids="), `toplu indirme: ${archive.url()}`);
       const zipped = readZip(readFileSync(await archive.path())).filter(entry => !entry.directory).map(entry => entry.name).sort();
       expect(zipped.join("|") === "Ekran görüntüsü.png|Sözleşme.pdf", `.zip içeriği: ${zipped}`);
-      await page.keyboard.press("Escape");
+      await escClose(page);
       await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 5000 });
 
       // Kolon adı: detay kartındaki kalemle; tablo başlığı ve kart değişir, veri asıl adla çalışır.
@@ -1667,7 +1677,7 @@ try {
       await page.keyboard.type("+");
       await page.click("#hof-free .hof-free-grid tbody tr:nth-child(2) td:nth-child(5)");
       expect((await page.$eval(".hof-free-editor", node => node.value)) === "=D1+D2", "tıklanan hücreler formüle eklenmeli");
-      await page.keyboard.press("Escape");
+      await escClose(page);
 
       // Σ Alt toplam
       await page.click('#hof-free [data-act="total-row"]');

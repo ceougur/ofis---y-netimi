@@ -1,0 +1,13 @@
+■ 1 Posta kutusu seçilmemiş e-Fatura carisi: form uyarır, Kaydet ve Gönder numara harcamaz
+  ✓ formda uyarı: Alıcının e-Fatura posta kutusu (PK) seçilmemiş; belge gönderilemez. Cari kartında Mükellef Sorgula'ya basın: alıcı mükel…
+  ✓ numaralı onay penceresi açılmadı (engel önceden söylendi)
+  ✓ belge yazılmadı (0 → 0)
+  ✓ ileti: Fatura kaydedilemez: Alıcının e-Fatura posta kutusu (PK) seçilmemiş; fatura kaydedilmedi, numara harcanmadı. Cari kartında Mükellef Sorgula'ya basın: alıcı müke
+  ✓ EDM'ye bir şey gitmedi
+
+■ 2 Cari kartında e-Fatura işareti elle değişmez
+  ✓ kutu metni: e-Fatura mükellefi (Mükellef Sorgula belirler: işaretliyse e-Fatura, değilse e-Arşiv kesilir)
+  ✗ beklenmeyen hata: page.$eval: Failed to find element matching selector ".hof-modal-backdrop.is-visible:last-of-type input[name="eInvoice"]"
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-b-243/test/e2e/senaryo-ebelge-243.mjs:128:29
+
+6 geçti, 1 kaldı

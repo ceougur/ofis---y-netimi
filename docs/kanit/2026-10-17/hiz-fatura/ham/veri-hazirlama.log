@@ -1,0 +1,37 @@
+  2025-10-18: 25 deneme, 19 200 · 3 sn
+  2025-11-17: 880 deneme, 864 200 · 22 sn
+  2025-12-17: 1716 deneme, 1700 200 · 45 sn
+  2026-01-16: 2586 deneme, 2570 200 · 71 sn
+  2026-02-15: 3435 deneme, 3419 200 · 100 sn
+  2026-03-17: 4291 deneme, 4275 200 · 135 sn
+  2026-04-16: 5160 deneme, 5144 200 · 174 sn
+  2026-05-16: 6017 deneme, 6001 200 · 214 sn
+  2026-06-15: 6893 deneme, 6877 200 · 262 sn
+  2026-07-15: 7756 deneme, 7740 200 · 316 sn
+  2026-08-14: 8567 deneme, 8551 200 · 370 sn
+  2026-09-13: 9417 deneme, 9401 200 · 429 sn
+  2026-10-13: 10309 deneme, 10293 200 · 502 sn
+{
+ "counts": {
+  "satış (stok)": 5146,
+  "satış (hizmet)": 1276,
+  "alış (gider)": 468,
+  "alış (stok)": 2032,
+  "satıştan iade": 730,
+  "iptal (alış)": 373,
+  "alıştan iade (e-Belge)": 348,
+  "iptal (e-Arşiv)": 3
+ },
+ "fails": {},
+ "invCount": {
+  "n": 10000,
+  "c": 376,
+  "e": 6767
+ },
+ "mutabakat": true,
+ "sure": {
+  "cariUrunSn": 2,
+  "faturaSn": 507,
+  "toplamSn": 512
+ }
+}

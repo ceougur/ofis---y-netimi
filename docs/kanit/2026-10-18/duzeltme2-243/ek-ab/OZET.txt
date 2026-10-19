@@ -1,0 +1,8 @@
+Dar kontrol 2.4.3 — ek (a) ve (b). Çıkış kodu dosyadan ayrı; ekran testleri flock; HUKUK_LICENSE_URL=127.0.0.1:9.
+(a) Seçilenleri Kaydet (hemen gönderim açık) + yanlış parola, 4 taslak (2 perakende, 2 TCKN'li): aynı istekteki giriş denemesi
+    yeni: 1 (test 1/1) · eski d64ebf8: 6 · bf53782: 6 · 8f6466e: 6 (hepsi kırmızı) — a-toplu-giris-*.txt
+(b) Ters Kaydet iade faturası açıklaması, Banka İşlem Kartı açıkken: yeni 11/11 (başka oturum ve aynı sayfa); bf53782: 4 kırmızı (sunucuda açıklama
+    dönmüyordu); d64ebf8: ön koşul oluşmaz (erteleme yoktu). Ekran önbelleğinde ayrıca eksik bulunmadı (açık kart iki yolla da kendiliğinden
+    tazelendi; istemci kodu değişmedi) — gerileme nöbeti.
+Komşu birim (ebelge|einvoice|fatura|invoice|gg243|ci-kapi|kanit-araci|banka-210-gg2|static): 394/394, çıkış 0.
+Ekran: senaryo-fatura-243 31/31, senaryo-ebelge-243 20/20, senaryo-ebelge-242 21/21.

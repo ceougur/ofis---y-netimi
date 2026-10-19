@@ -21,7 +21,7 @@
 import { copyMismatchSql } from "./event-copy.mjs";
 import { NON_MONEY_TYPES, isBankVoucherType } from "./event-types.mjs";
 import { MODULE_TABLES, MONEY_SOURCES, isMoneyRow, moneyWhere } from "./money-lines.mjs";
-import { FORBIDDEN_GL, MONEY_ROLES, ROLE_GL, UNASSIGNED_SUB } from "./voucher.mjs";
+import { MONEY_ROLES, ROLE_TYPES, UNASSIGNED_SUB, glAllowed } from "./voucher.mjs";
 
 // Hesap türü → ana hesap (Aşama 3, §3.5): 102 ailesi, kredi 300, kurumsal kart 309.
 export const KIND_GL = Object.freeze({ demand: "102", commercial: "102", time: "102", fx: "102", other: "102", loan: "300", card: "309" });
@@ -272,8 +272,8 @@ export function createBankChecks({ store, money }) {
         }
       }
       for (const line of lines) {
-        const allowed = ROLE_GL[line.role];
-        if (!allowed || FORBIDDEN_GL.has(String(line.gl)) || !allowed.includes(String(line.gl))) {
+        // MM3 (2.4.3): Vergi Ödemesi rolleri (360 / 689) yalnız tax_payment fişinde ve ters kaydında (glAllowed; Diğer Gider'e 360 yine yasak).
+        if (!glAllowed(line.role, line.gl, head.type) || (ROLE_TYPES[line.role] && !ROLE_TYPES[line.role].has(head.type))) {
           fail(`${line.role} satırı ${line.gl} hesabına yazılamaz`);
           continue;
         }

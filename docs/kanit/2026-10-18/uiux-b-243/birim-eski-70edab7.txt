@@ -1,0 +1,132 @@
+TAP version 13
+# Subtest: uiux-b-243 sunucu
+    # Subtest: UX2: tam iade Düzenle'de ön hesap ve kayıt geçer; kısmi iade ve öbür iadenin miktarı korunur; başka faturanın iadesi kimliği sayılmaz
+    not ok 1 - UX2: tam iade Düzenle'de ön hesap ve kayıt geçer; kısmi iade ve öbür iadenin miktarı korunur; başka faturanın iadesi kimliği sayılmaz
+      ---
+      duration_ms: 454.860716
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-b-243-eski-70edab7/test/uiux-b-243.test.mjs:54:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        düzenlenen iadenin ön hesabı: {"ok":false,"error":"1. kalem (Kurulum): en çok 0 Adet iade edilebilir (faturada 2, önce iade edilen 2).","code":"return-exceeds","field":"qty"}
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-b-243-eski-70edab7/test/uiux-b-243.test.mjs:66:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: UX5: çok posta kutulu alıcıda gönderimde işaret geri konurken seçili kutu korunur ve ileti bunu söyler; listede olmayan etiket silinir
+    not ok 2 - UX5: çok posta kutulu alıcıda gönderimde işaret geri konurken seçili kutu korunur ve ileti bunu söyler; listede olmayan etiket silinir
+      ---
+      duration_ms: 295.701559
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-b-243-eski-70edab7/test/uiux-b-243.test.mjs:89:3'
+      failureType: 'testCodeFailure'
+      error: 'Alıcı (2223334447) e-Fatura mükellefi; ona e-Arşiv fatura kesilemez (GİB). Cari kartı e-Fatura mükellefi olarak işaretlendi. Alıcının 2 posta kutusu var: cari kartında Mükellef Sorgula ile doğru posta kutusunu seçin. Fatura kaydedilmedi, numara harcanmadı; yeniden kaydedin: e-Fatura olarak kesilir.'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Alıcı (2223334447) e-Fatura mükellefi; ona e-Arşiv fatura kesilemez (GİB). Cari kartı e-Fatura mükellefi olarak işaretlendi. Alıcının 2 posta kutusu var: cari kartında Mükellef Sorgula ile doğru posta kutusunu seçin. Fatura kaydedilmedi, numara harcanmadı; yeniden kaydedin: e-Fatura olarak kesilir.'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-b-243-eski-70edab7/test/uiux-b-243.test.mjs:100:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: UX14: bağlantı hatası iletisinde teknik kod yok; kod detail'de
+    not ok 3 - UX14: bağlantı hatası iletisinde teknik kod yok; kod detail'de
+      ---
+      duration_ms: 10.151318
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-b-243-eski-70edab7/test/uiux-b-243.test.mjs:118:3'
+      failureType: 'testCodeFailure'
+      error: "EDM ile bağlantı istek gönderildikten sonra koptu (UND_ERR_SOCKET); istek EDM'ye ulaşmış olabilir."
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: "EDM ile bağlantı istek gönderildikten sonra koptu (UND_ERR_SOCKET); istek EDM'ye ulaşmış olabilir."
+      operator: 'doesNotMatch'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-b-243-eski-70edab7/test/uiux-b-243.test.mjs:137:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: KÖ1: Nihai Tüketici carisi ilk kullanımda açılır, sonra aynısı döner (çift açılmaz, eşzamanlı da); sınır üstü e-Arşiv engellenir
+    not ok 4 - KÖ1: Nihai Tüketici carisi ilk kullanımda açılır, sonra aynısı döner (çift açılmaz, eşzamanlı da); sınır üstü e-Arşiv engellenir
+      ---
+      duration_ms: 275.190948
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-b-243-eski-70edab7/test/uiux-b-243.test.mjs:145:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        405 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 405
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-b-243-eski-70edab7/test/uiux-b-243.test.mjs:150:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: KÖ2: Gönderilecekler'den fişe çevirme iletileri 'Müşteri Fişi olarak bırak' der
+    not ok 5 - KÖ2: Gönderilecekler'den fişe çevirme iletileri 'Müşteri Fişi olarak bırak' der
+      ---
+      duration_ms: 314.292101
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-b-243-eski-70edab7/test/uiux-b-243.test.mjs:178:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + "Yalnız Gönderilecekler'deki belge listeden silinir."
+        - "Yalnız Gönderilecekler'deki belge Müşteri Fişi olarak bırakılır."
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: "Yalnız Gönderilecekler'deki belge Müşteri Fişi olarak bırakılır."
+      actual: "Yalnız Gönderilecekler'deki belge listeden silinir."
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-b-243-eski-70edab7/test/uiux-b-243.test.mjs:187:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - uiux-b-243 sunucu
+  ---
+  duration_ms: 1411.954605
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/uiux-b-243-eski-70edab7/test/uiux-b-243.test.mjs:48:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1890.318709

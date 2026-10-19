@@ -1,0 +1,56 @@
+
+> destekofis@2.4.3 test:senaryo-212
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-212.mjs
+
+
+■ Kurulum: yönetici girer, Excel (Kayıt Tarihi kolonlu) yüklenir; Mart, Şubat ve Haziran'da kaydolmuş cariler
+✓ cari: Yasemin Taşkıran (kayıt 2026-03-05)
+✓ cari: Kerem Aydın (kayıt 2026-02-10)
+✓ cari: Selin Yurt (kayıt 2026-06-21)
+✓ cari: Deniz Ak (kayıt 2026-05-15)
+
+■ 1. Taksitler → + Yeni Kart → cari seçilir: Kayıt Tarihi ve Grup cariden gelir; İlk Vade, Taksit Sayısı'nın yanında
+✓ cari seçilmeden: bugün
+✓ yardım metni: Kayıt Tarihi * Kişinin kayıt tarihi: cari seçilince carinin tarihi gelir; carisi yoksa bugün.
+✓ İlk Vade, Taksit Sayısı ile aynı satırda; tutarın hemen altında, grubun üstünde
+✓ cari seçilince Kayıt Tarihi carinin tarihi: 2026-03-05
+✓ grup cariden: 34 SRV 202
+✓ kaydedilen kartta Kayıt Tarihi: 05.03.2026
+
+■ 2. Ad yazılınca aynı adlı cari önerilir: tarih yine cariden; elle değiştirilen tarih korunur
+✓ ad yazıldı → cari önerildi → Kayıt Tarihi 15.05.2026
+page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#hof-sidecard [data-action="plans"]')[22m
+[2m    - locator resolved to <button type="button" data-action="plans" class="hof-side-item" data-requires="plans.view">…</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <div data-hof-ui="" class="hof-modal-backdrop is-visible">…</div> intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <div data-hof-ui="" class="hof-modal-backdrop is-visible">…</div> intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    39 × waiting for element to be visible, enabled and stable[22m
+[2m       - element is visible, enabled and stable[22m
+[2m       - scrolling into view if needed[22m
+[2m       - done scrolling[22m
+[2m       - <div data-hof-ui="" class="hof-modal-backdrop is-visible">…</div> intercepts pointer events[22m
+[2m     - retrying click action[22m
+[2m       - waiting 500ms[22m
+
+    at openNewCard (/home/user/ofis---y-netimi/.claude/worktrees/agent-a34eec2f4fcc3bf36/test/e2e/senaryo-212.mjs:92:15)
+    at /home/user/ofis---y-netimi/.claude/worktrees/agent-a34eec2f4fcc3bf36/test/e2e/senaryo-212.mjs:153:11
+    at async step (/home/user/ofis---y-netimi/.claude/worktrees/agent-a34eec2f4fcc3bf36/test/e2e/senaryo-212.mjs:56:3)
+    at async file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a34eec2f4fcc3bf36/test/e2e/senaryo-212.mjs:147:3 {
+  name: 'TimeoutError'
+}
+
+11/11 denetim geçti. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-a34eec2f4fcc3bf36/test/e2e/artifacts/senaryo-212

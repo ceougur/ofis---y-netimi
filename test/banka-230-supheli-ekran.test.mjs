@@ -214,26 +214,33 @@ describe("Şüpheli Alacaklar — ekranın okuduğu veri (liste, kart, ANLIK DUR
   });
 
   it("yetki: muhasebe (Şüpheli Alacak İşlemleri var, finans raporları yok) raporu açar; personel 403; Alacak Yaşlandırma muhasebeye kapalı kalır", async () => {
+    // 2.4.3 H9 (bilerek güncellendi): muhasebe Finans Raporları'nı varsayılan olarak görür; "finans raporları yok" durumu kişiden kaldırılarak kurulur.
+    const usersList = (await ctx.api.client.get("/api/admin/users")).data.data;
+    const muhasebeId = (Array.isArray(usersList) ? usersList : usersList.users).find(user => user.username === "muhasebe1").id;
+    assert.equal((await ctx.api.client.patch(`/api/admin/users/${muhasebeId}`, { grants: { add: [], remove: ["overview.view"] } })).status, 200);
     const acc = await muhasebe.get(`${RC}/supheli-alacaklar?doubtfulStatus=all`);
     assert.equal(acc.status, 200, JSON.stringify(acc.data).slice(0, 200));
     assert.equal(acc.data.data.rows.length, 2);
     const catalog = await muhasebe.get(RC);
     assert.equal(catalog.status, 200);
     assert.ok(catalog.data.data.reports.some(item => item.id === "supheli-alacaklar"), "muhasebe kataloğunda");
-    assert.ok(!catalog.data.data.reports.some(item => item.id === "alacak-yaslandirma"), "finans raporu muhasebede yok (overview.view yalnız yönetici)");
+    assert.ok(!catalog.data.data.reports.some(item => item.id === "alacak-yaslandirma"), "finans raporu bu muhasebede yok (overview.view kişiden kaldırıldı)");
     const aging = await muhasebe.get(`${RC}/alacak-yaslandirma`);
     assert.equal(aging.status, 403);
     for (const tail of ["", "/pdf", "/xlsx"]) expectStatus(await personel.get(`${RC}/supheli-alacaklar${tail}`), 403, "", `personel rapor${tail}`);
   });
 
-  it("Alacak Yaşlandırma: 'Şüpheli Alacak (dilimlere dahil)' kolonu ABC 1.000 (Toplam'a ikinci kez girmez: vade kalemi yok → Toplam 0), XYZ satırı yok; özette aynı ad (karar 15.10.2026)", async () => {
+  it("Alacak Yaşlandırma: 'Şüpheli Alacak (dilimlere dahil)' kolonu ABC 1.000 (dilimlere dahil: Toplam = carinin bakiyesi, şüpheli ikinci kez girmez), XYZ satırı yok; özette aynı ad (karar 15.10.2026)", async () => {
     const report = await must("yaşlandırma", ctx.api.get(`${RC}/alacak-yaslandirma`));
     const sup = col(report, "Şüpheli Alacak (dilimlere dahil)");
     const total = col(report, "Toplam");
     const row = report.rows.find(cells => cells[0] === "ABC Ltd.");
     assert.ok(row, "ABC satırı (yalnız şüphelisi olan cari de listelenir)");
     assert.equal(moneyOf(row[sup]), 1000);
-    assert.equal(moneyOf(row[total]), 0, "şüpheli Toplam'a girmez");
+    // MM5 (2.4.3, bilerek güncellendi; kullanıcı kararı 18.10.2026): carinin dilimleri = borç bakiyesi (şüpheli dahil, bir kez); önceden Toplam 0.
+    const abc = (await must("cari listesi", ctx.api.get("/api/workspace/accounts?status=all"))).accounts.find(item => item.name === "ABC Ltd.");
+    assert.equal(moneyOf(row[total]), abc.balance, "Toplam = carinin borç bakiyesi (şüpheli dilimlerde, ikinci kez girmez)");
+    assert.ok(abc.balance >= 1000);
     assert.ok(!report.rows.some(cells => cells[0] === "XYZ A.Ş."), "kapanan kayıt satır açmaz");
     assert.equal(moneyOf(Object.fromEntries(report.summary)["Şüpheli Alacak (dilimlere dahil)"]), 1000);
     assert.equal(moneyOf(report.footer[sup]), 1000, "TOPLAM şüpheli");

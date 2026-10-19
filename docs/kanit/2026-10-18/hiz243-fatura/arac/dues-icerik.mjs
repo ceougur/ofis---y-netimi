@@ -1,0 +1,32 @@
+// Takvim (dues) yanıtının içeriği: hangi alan / kaynak kaç bayt (10.000 faturalı veri kopyasında, yeni kodla).
+import { cpSync, rmSync } from "node:fs";
+import { fork } from "node:child_process";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+const HERE = path.dirname(fileURLToPath(import.meta.url));
+const KOK = process.env.KLASOR;
+const kod = process.env.HIZ_KOD;
+const work = path.join(KOK, "calisma-dues");
+rmSync(work, { recursive: true, force: true });
+cpSync(path.join(KOK, "veri"), work, { recursive: true });
+const child = fork(path.join(HERE, "hiz.mjs"), [], { env: { ...process.env, HIZ_SUNUCU: JSON.stringify({ dataDir: path.join(work, "data") }), HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, stdio: ["ignore", "inherit", "inherit", "ipc"], execArgv: ["--disable-warning=ExperimentalWarning"] });
+const port = await new Promise(r => child.on("message", m => m.cmd === "ready" && r(m.port)));
+const { createClient } = await import(`${kod}/test/helpers.mjs`);
+const api = createClient(`http://127.0.0.1:${port}`);
+await api.login("ekran01", "Hiz-Fatura-Personel-1!");
+const data = (await api.get("/api/workspace/dues")).data.data;
+const size = v => JSON.stringify(v ?? null).length;
+const out = { toplam: size(data), alanlar: Object.fromEntries(Object.keys(data).map(k => [k, size(data[k])])), kalemSayisi: data.items.length };
+const bySource = {};
+for (const item of data.items) { const k = `${item.source}/${item.state}`; bySource[k] ||= { n: 0, bayt: 0 }; bySource[k].n += 1; bySource[k].bayt += size(item); }
+out.kalemKaynak = bySource;
+out.ornek = data.items.slice(0, 2);
+const keys = {};
+for (const item of data.items) for (const [k, v] of Object.entries(item)) keys[k] = (keys[k] || 0) + size(v) + k.length + 3;
+out.kalemAlanBayt = Object.fromEntries(Object.entries(keys).sort((a, b) => b[1] - a[1]).slice(0, 15));
+out.sourcesOrnek = JSON.stringify(data.sources).slice(0, 300);
+out.dormantOrnek = JSON.stringify(data.dormant).slice(0, 300);
+console.log(JSON.stringify(out, null, 1));
+child.send({ cmd: "close" });
+await new Promise(r => child.on("exit", r));
+rmSync(work, { recursive: true, force: true });

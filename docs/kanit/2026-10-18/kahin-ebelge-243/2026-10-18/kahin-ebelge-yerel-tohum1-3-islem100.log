@@ -1,0 +1,707 @@
+
+> destekofis@2.4.3 test:kahin-ebelge
+> python3 test/bagimsiz/ebelge/fark.py --tohumlar 1-3 --islem 100 --kucult --butce 40 --cikti docs/kanit/2026-10-18/kahin-ebelge-243/cikti/tohum1-3-islem100
+
+[ebelge-t1-i100] ihlal:I2 / BASKA-FIS-SIRA: ilk adım 35; küçültülüyor (bütçe 40)
+  küçültme 1/40: 35 → 18 adım -
+  küçültme 2/40: 35 → 18 adım -
+  küçültme 3/40: 35 → 34 adım -
+  küçültme 4/40: 35 → 27 adım -
+  küçültme 5/40: 35 → 27 adım TUTTU
+  küçültme 6/40: 27 → 19 adım -
+  küçültme 7/40: 27 → 19 adım -
+  küçültme 8/40: 27 → 24 adım -
+  küçültme 9/40: 27 → 19 adım -
+  küçültme 10/40: 27 → 19 adım -
+  küçültme 11/40: 27 → 19 adım -
+  küçültme 12/40: 27 → 24 adım -
+  küçültme 13/40: 27 → 23 adım TUTTU
+  küçültme 14/40: 23 → 19 adım -
+  küçültme 15/40: 23 → 19 adım TUTTU
+  küçültme 16/40: 19 → 15 adım -
+  küçültme 17/40: 19 → 15 adım -
+  küçültme 18/40: 19 → 15 adım TUTTU
+  küçültme 19/40: 15 → 12 adım -
+  küçültme 20/40: 15 → 11 adım -
+  küçültme 21/40: 15 → 11 adım -
+  küçültme 22/40: 15 → 11 adım -
+  küçültme 23/40: 15 → 12 adım -
+  küçültme 24/40: 15 → 13 adım TUTTU
+  küçültme 25/40: 13 → 11 adım -
+  küçültme 26/40: 13 → 11 adım -
+  küçültme 27/40: 13 → 11 adım -
+  küçültme 28/40: 13 → 11 adım -
+  küçültme 29/40: 13 → 11 adım TUTTU
+  küçültme 30/40: 11 → 9 adım TUTTU
+  küçültme 31/40: 9 → 8 adım -
+  küçültme 32/40: 9 → 7 adım -
+  küçültme 33/40: 9 → 7 adım -
+  küçültme 34/40: 9 → 7 adım TUTTU
+  küçültme 35/40: 7 → 5 adım -
+  küçültme 36/40: 7 → 6 adım -
+  küçültme 37/40: 7 → 5 adım -
+  küçültme 38/40: 7 → 5 adım -
+  küçültme 39/40: 7 → 5 adım -
+  küçültme 40/40: 7 → 6 adım -
+[ebelge-t1-i100] fark:numara / BEKLENEN-O1: ilk adım 53; küçültülüyor (bütçe 40)
+  küçültme 1/40: 53 → 27 adım -
+  küçültme 2/40: 53 → 27 adım -
+  küçültme 3/40: 53 → 52 adım -
+  küçültme 4/40: 53 → 40 adım -
+  küçültme 5/40: 53 → 40 adım -
+  küçültme 6/40: 53 → 40 adım TUTTU
+  küçültme 7/40: 40 → 27 adım -
+  küçültme 8/40: 40 → 39 adım -
+  küçültme 9/40: 40 → 27 adım -
+  küçültme 10/40: 40 → 27 adım -
+  küçültme 11/40: 40 → 27 adım -
+  küçültme 12/40: 40 → 39 adım -
+  küçültme 13/40: 40 → 34 adım TUTTU
+  küçültme 14/40: 34 → 28 adım -
+  küçültme 15/40: 34 → 28 adım TUTTU
+  küçültme 16/40: 28 → 22 adım TUTTU
+  küçültme 17/40: 22 → 16 adım -
+  küçültme 18/40: 22 → 16 adım -
+  küçültme 19/40: 22 → 18 adım -
+  küçültme 20/40: 22 → 16 adım -
+  küçültme 21/40: 22 → 16 adım -
+  küçültme 22/40: 22 → 16 adım -
+  küçültme 23/40: 22 → 18 adım -
+  küçültme 24/40: 22 → 19 adım -
+  küçültme 25/40: 22 → 19 adım TUTTU
+  küçültme 26/40: 19 → 16 adım -
+  küçültme 27/40: 19 → 16 adım TUTTU
+  küçültme 28/40: 16 → 13 adım -
+  küçültme 29/40: 16 → 13 adım -
+  küçültme 30/40: 16 → 13 adım -
+  küçültme 31/40: 16 → 15 adım -
+  küçültme 32/40: 16 → 13 adım -
+  küçültme 33/40: 16 → 13 adım -
+  küçültme 34/40: 16 → 13 adım -
+  küçültme 35/40: 16 → 13 adım -
+  küçültme 36/40: 16 → 13 adım -
+  küçültme 37/40: 16 → 15 adım -
+  küçültme 38/40: 16 → 15 adım TUTTU
+  küçültme 39/40: 15 → 14 adım -
+  küçültme 40/40: 15 → 14 adım TUTTU
+[ebelge-t1-i100] ihlal:I15 / BASKA-ESZ: ilk adım 53; küçültülüyor (bütçe 40)
+  küçültme 1/40: 53 → 27 adım -
+  küçültme 2/40: 53 → 27 adım TUTTU
+  küçültme 3/40: 27 → 26 adım -
+  küçültme 4/40: 27 → 1 adım -
+  küçültme 5/40: 27 → 26 adım -
+  küçültme 6/40: 27 → 14 adım -
+  küçültme 7/40: 27 → 14 adım -
+  küçültme 8/40: 27 → 26 adım -
+  küçültme 9/40: 27 → 21 adım TUTTU
+  küçültme 10/40: 21 → 15 adım -
+  küçültme 11/40: 21 → 15 adım TUTTU
+  küçültme 12/40: 15 → 9 adım -
+  küçültme 13/40: 15 → 12 adım -
+  küçültme 14/40: 15 → 9 adım -
+  küçültme 15/40: 15 → 9 adım -
+  küçültme 16/40: 15 → 12 adım -
+  küçültme 17/40: 15 → 12 adım -
+  küçültme 18/40: 15 → 12 adım TUTTU
+  küçültme 19/40: 12 → 9 adım TUTTU
+  küçültme 20/40: 9 → 6 adım TUTTU
+  küçültme 21/40: 6 → 3 adım -
+  küçültme 22/40: 6 → 3 adım -
+  küçültme 23/40: 6 → 3 adım -
+  küçültme 24/40: 6 → 5 adım TUTTU
+  küçültme 25/40: 5 → 4 adım -
+  küçültme 26/40: 5 → 4 adım -
+  küçültme 27/40: 5 → 4 adım TUTTU
+  küçültme 28/40: 4 → 3 adım TUTTU
+  küçültme 29/40: 3 → 2 adım -
+  küçültme 30/40: 3 → 2 adım -
+  küçültme 31/40: 3 → 2 adım -
+  küçültme 32/40: 3 → 2 adım -
+[ebelge-t1-i100] fark:gonderildi / BEKLENEN-O1-ARDIL: ilk adım 62; küçültülüyor (bütçe 40)
+  küçültme 1/40: 62 → 31 adım -
+  küçültme 2/40: 62 → 31 adım -
+  küçültme 3/40: 62 → 47 adım -
+  küçültme 4/40: 62 → 47 adım -
+  küçültme 5/40: 62 → 47 adım -
+  küçültme 6/40: 62 → 47 adım -
+  küçültme 7/40: 62 → 60 adım -
+  küçültme 8/40: 62 → 55 adım TUTTU
+  küçültme 9/40: 55 → 48 adım -
+  küçültme 10/40: 55 → 48 adım TUTTU
+  küçültme 11/40: 48 → 41 adım -
+  küçültme 12/40: 48 → 41 adım TUTTU
+  küçültme 13/40: 41 → 34 adım TUTTU
+  küçültme 14/40: 34 → 27 adım -
+  küçültme 15/40: 34 → 27 adım -
+  küçültme 16/40: 34 → 28 adım -
+  küçültme 17/40: 34 → 27 adım -
+  küçültme 18/40: 34 → 27 adım -
+  küçültme 19/40: 34 → 27 adım -
+  küçültme 20/40: 34 → 27 adım -
+  küçültme 21/40: 34 → 28 adım -
+  küçültme 22/40: 34 → 31 adım -
+  küçültme 23/40: 34 → 31 adım TUTTU
+  küçültme 24/40: 31 → 28 adım TUTTU
+  küçültme 25/40: 28 → 25 adım -
+  küçültme 26/40: 28 → 25 adım TUTTU
+  küçültme 27/40: 25 → 22 adım -
+  küçültme 28/40: 25 → 22 adım -
+  küçültme 29/40: 25 → 22 adım -
+  küçültme 30/40: 25 → 22 adım -
+  küçültme 31/40: 25 → 22 adım -
+  küçültme 32/40: 25 → 22 adım -
+  küçültme 33/40: 25 → 24 adım -
+  küçültme 34/40: 25 → 22 adım -
+  küçültme 35/40: 25 → 22 adım -
+  küçültme 36/40: 25 → 22 adım -
+  küçültme 37/40: 25 → 22 adım -
+  küçültme 38/40: 25 → 22 adım -
+  küçültme 39/40: 25 → 22 adım -
+  küçültme 40/40: 25 → 22 adım -
+[ebelge-t1-i100] fark:numara / BEKLENEN-O1-ZINCIR: ilk adım 80; küçültülüyor (bütçe 40)
+  küçültme 1/40: 80 → 40 adım -
+  küçültme 2/40: 80 → 40 adım -
+  küçültme 3/40: 80 → 60 adım TUTTU
+  küçültme 4/40: 60 → 40 adım -
+  küçültme 5/40: 60 → 40 adım -
+  küçültme 6/40: 60 → 40 adım TUTTU
+  küçültme 7/40: 40 → 20 adım -
+  küçültme 8/40: 40 → 20 adım -
+  küçültme 9/40: 40 → 30 adım -
+  küçültme 10/40: 40 → 30 adım TUTTU
+  küçültme 11/40: 30 → 20 adım -
+  küçültme 12/40: 30 → 20 adım -
+  küçültme 13/40: 30 → 20 adım -
+  küçültme 14/40: 30 → 20 adım -
+  küçültme 15/40: 30 → 20 adım -
+  küçültme 16/40: 30 → 25 adım TUTTU
+  küçültme 17/40: 25 → 20 adım -
+  küçültme 18/40: 25 → 20 adım -
+  küçültme 19/40: 25 → 20 adım TUTTU
+  küçültme 20/40: 20 → 15 adım TUTTU
+  küçültme 21/40: 15 → 10 adım -
+  küçültme 22/40: 15 → 10 adım -
+  küçültme 23/40: 15 → 10 adım -
+  küçültme 24/40: 15 → 10 adım -
+  küçültme 25/40: 15 → 13 adım -
+  küçültme 26/40: 15 → 13 adım TUTTU
+  küçültme 27/40: 13 → 11 adım TUTTU
+  küçültme 28/40: 11 → 9 adım -
+  küçültme 29/40: 11 → 9 adım TUTTU
+  küçültme 30/40: 9 → 7 adım -
+  küçültme 31/40: 9 → 7 adım TUTTU
+  küçültme 32/40: 7 → 6 adım -
+  küçültme 33/40: 7 → 5 adım -
+  küçültme 34/40: 7 → 5 adım -
+  küçültme 35/40: 7 → 5 adım -
+  küçültme 36/40: 7 → 6 adım -
+  küçültme 37/40: 7 → 6 adım TUTTU
+  küçültme 38/40: 6 → 5 adım -
+  küçültme 39/40: 6 → 5 adım -
+  küçültme 40/40: 6 → 5 adım TUTTU
+[ebelge-t1-i100] adım 100 · fark 45 · ihlal 3 · saf model son fark 11 · çatal seçimi 26 · 536.7 sn
+    I15              BASKA-ESZ                                1
+    I2               BASKA-FIS-SIRA                           2
+    fark:bekleyen    BEKLENEN-O1                              9
+    fark:bekleyen    BEKLENEN-O1-ARDIL                        1
+    fark:bekleyen    BEKLENEN-O1-ZINCIR                       1
+    fark:edm         BEKLENEN-O1                              9
+    fark:edm         BEKLENEN-O1-ARDIL                        1
+    fark:edm         BEKLENEN-O1-ZINCIR                       1
+    fark:gonderildi  BEKLENEN-O1                              9
+    fark:gonderildi  BEKLENEN-O1-ARDIL                        1
+    fark:gonderildi  BEKLENEN-O1-ZINCIR                       1
+    fark:numara      BEKLENEN-O1                              11
+    fark:numara      BEKLENEN-O1-ZINCIR                       1
+    KÜÇÜLTÜLMÜŞ ihlal:I2 / BASKA-FIS-SIRA (7 adım, 40 koşu):
+      {"islem": "kaydet", "belge": "B2", "cari": "K2", "tarih": "2026-12-27", "gonder": "sonra", "no": 1}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 2}
+      {"islem": "ariza", "tur": "kopma_once", "no": 3}
+      {"islem": "kaydet", "belge": "B5", "cari": "K2", "tarih": "2026-12-25", "gonder": "sonra", "no": 4}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 5}
+      {"islem": "kagit_kaydet", "belge": "B7", "cari": "K1", "tarih": "2026-12-29", "no": 6}
+      {"islem": "listeden_sil", "belge": "B5", "no": 7}
+      → {"adim": 7, "islem": "listeden_sil", "kod": "I2", "ileti": "FIS2026: 2 (B5, 2026-12-25) önceki 1 (B7, 2026-12-29) belgesinden eski tarihli", "yineleme": 0, "seri": "FIS2026", "belge": "B5", "sinif": "BASKA-FIS-SIRA (Listeden Sil eski tarihli belgeye FIS numarası verdi)"}
+    KÜÇÜLTÜLMÜŞ fark:numara / BEKLENEN-O1 (14 adım, 40 koşu):
+      {"islem": "gun_ilerlet", "gun": 1, "no": 1}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 2}
+      {"islem": "kagit_kaydet", "belge": "B7", "cari": "K1", "tarih": "2026-12-29", "no": 3}
+      {"islem": "kaydet", "belge": "B13", "cari": "K2", "tarih": "2026-12-29", "gonder": "sonra", "no": 4}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 5}
+      {"islem": "kagit_kaydet", "belge": "B17", "cari": "K2", "tarih": "2026-12-29", "no": 6}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 7}
+      {"islem": "kaydet", "belge": "B18", "cari": "K2", "tarih": "2026-12-30", "gonder": "sonra", "no": 8}
+      {"islem": "kagit_kaydet", "belge": "B19", "cari": "K1", "tarih": "2026-12-27", "no": 9}
+      {"islem": "kaydet", "belge": "B20", "cari": "K1", "tarih": "2026-12-30", "gonder": "simdi", "no": 10}
+      {"islem": "durum_sorgula", "belge": "B6", "no": 11}
+      {"islem": "duzenle_tarih", "belge": "B17", "tarih": "2026-12-25", "no": 12}
+      {"islem": "kaydet", "belge": "B21", "cari": "K3", "tarih": "2026-12-29", "gonder": "sonra", "no": 13}
+      {"islem": "esz_tumunu_gonder", "no": 14}
+      → {"belge": "B18", "alan": "numara", "model": "TEF2026000000002", "program": "", "adim": 14, "islem": "esz_tumunu_gonder", "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B21:pk-yok)"}
+    KÜÇÜLTÜLMÜŞ ihlal:I15 / BASKA-ESZ (3 adım, 32 koşu):
+      {"islem": "gun_ilerlet", "gun": 1, "no": 1}
+      {"islem": "kaydet", "belge": "B3", "cari": "K5", "tarih": "2026-12-28", "gonder": "sonra", "no": 2}
+      {"islem": "esz_tumunu_gonder", "no": 3}
+      → {"adim": 3, "islem": "esz_tumunu_gonder", "kod": "I15", "ileti": "B3: eşzamanlı turda gönderilen belge için hata yanıtı (einvoice-sending)", "yineleme": 0, "belge": "B3", "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"}
+    KÜÇÜLTÜLMÜŞ fark:gonderildi / BEKLENEN-O1-ARDIL (25 adım, 40 koşu):
+      {"islem": "gun_ilerlet", "gun": 1, "no": 1}
+      {"islem": "kaydet", "belge": "B3", "cari": "K5", "tarih": "2026-12-28", "gonder": "sonra", "no": 2}
+      {"islem": "kart_gonder", "belge": "B2", "no": 3}
+      {"islem": "kaydet", "belge": "B6", "cari": "K2", "tarih": "2026-12-28", "gonder": "simdi", "no": 4}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 5}
+      {"islem": "kagit_kaydet", "belge": "B7", "cari": "K1", "tarih": "2026-12-29", "no": 6}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 7}
+      {"islem": "kagit_kaydet", "belge": "B17", "cari": "K2", "tarih": "2026-12-29", "no": 8}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 9}
+      {"islem": "kaydet", "belge": "B18", "cari": "K2", "tarih": "2026-12-30", "gonder": "sonra", "no": 10}
+      {"islem": "kagit_kaydet", "belge": "B19", "cari": "K1", "tarih": "2026-12-27", "no": 11}
+      {"islem": "kaydet", "belge": "B20", "cari": "K1", "tarih": "2026-12-30", "gonder": "simdi", "no": 12}
+      {"islem": "durum_sorgula", "belge": "B6", "no": 13}
+      {"islem": "duzenle_tarih", "belge": "B17", "tarih": "2026-12-25", "no": 14}
+      {"islem": "kaydet", "belge": "B21", "cari": "K3", "tarih": "2026-12-29", "gonder": "sonra", "no": 15}
+      {"islem": "esz_tumunu_gonder", "no": 16}
+      {"islem": "ariza", "tur": "kopma_once", "no": 17}
+      {"islem": "kaydet", "belge": "B22", "cari": "K2", "tarih": "2026-12-30", "gonder": "sonra", "no": 18}
+      {"islem": "kart_gonder", "belge": "B8", "no": 19}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 20}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 21}
+      {"islem": "kaydet", "belge": "B23", "cari": "K1", "tarih": "2026-12-31", "gonder": "sonra", "no": 22}
+      {"islem": "kaydet", "belge": "B24", "cari": "K1", "tarih": "2026-12-28", "gonder": "simdi", "no": 23}
+      {"islem": "kaydet", "belge": "B25", "cari": "K3", "tarih": "2026-12-19", "gonder": "sonra", "no": 24}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 25}
+      → {"belge": "B23", "alan": "gonderildi", "model": true, "program": false, "adim": 25, "islem": "tumunu_gonder", "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"}
+    KÜÇÜLTÜLMÜŞ fark:numara / BEKLENEN-O1-ZINCIR (5 adım, 40 koşu):
+      {"islem": "kaydet", "belge": "B8", "cari": "K4", "tarih": "2026-12-26", "gonder": "sonra", "no": 1}
+      {"islem": "kaydet", "belge": "B15", "cari": "K1", "tarih": "2026-12-27", "gonder": "sonra", "no": 2}
+      {"islem": "kart_gonder", "belge": "B8", "no": 3}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 4}
+      {"islem": "kaydet", "belge": "B24", "cari": "K1", "tarih": "2026-12-28", "gonder": "simdi", "no": 5}
+      → {"belge": "B24", "alan": "numara", "model": "", "program": "TEA2026000000001", "adim": 5, "islem": "kaydet", "sinif": "BEKLENEN-O1-ZINCIR (eski bekleyen B15 kendisi engelli B8 arkasında; yeni belge numaralandı → B15 kalıcı tarih engeline düştü)"}
+[ebelge-t2-i100] ihlal:I15 / BASKA-ESZ: ilk adım 13; küçültülüyor (bütçe 40)
+  küçültme 1/40: 13 → 7 adım TUTTU
+  küçültme 2/40: 7 → 1 adım -
+  küçültme 3/40: 7 → 6 adım -
+  küçültme 4/40: 7 → 1 adım -
+  küçültme 5/40: 7 → 6 adım -
+  küçültme 6/40: 7 → 4 adım TUTTU
+  küçültme 7/40: 4 → 1 adım -
+  küçültme 8/40: 4 → 3 adım -
+  küçültme 9/40: 4 → 1 adım -
+  küçültme 10/40: 4 → 3 adım -
+  küçültme 11/40: 4 → 3 adım -
+  küçültme 12/40: 4 → 3 adım TUTTU
+  küçültme 13/40: 3 → 2 adım TUTTU
+  küçültme 14/40: 2 → 1 adım -
+  küçültme 15/40: 2 → 1 adım -
+  küçültme 16/40: 2 → 1 adım -
+[ebelge-t2-i100] fark:numara / TUTMA-YOK: ilk adım 47; küçültülüyor (bütçe 40)
+  küçültme 1/40: 47 → 24 adım -
+  küçültme 2/40: 47 → 24 adım -
+  küçültme 3/40: 47 → 46 adım -
+  küçültme 4/40: 47 → 36 adım TUTTU
+  küçültme 5/40: 36 → 25 adım -
+  küçültme 6/40: 36 → 25 adım TUTTU
+  küçültme 7/40: 25 → 14 adım -
+  küçültme 8/40: 25 → 22 adım -
+  küçültme 9/40: 25 → 14 adım -
+  küçültme 10/40: 25 → 14 adım -
+  küçültme 11/40: 25 → 22 adım -
+  küçültme 12/40: 25 → 20 adım TUTTU
+  küçültme 13/40: 20 → 15 adım -
+  küçültme 14/40: 20 → 15 adım -
+  küçültme 15/40: 20 → 15 adım TUTTU
+  küçültme 16/40: 15 → 10 adım -
+  küçültme 17/40: 15 → 10 adım -
+  küçültme 18/40: 15 → 10 adım -
+  küçültme 19/40: 15 → 10 adım -
+  küçültme 20/40: 15 → 13 adım TUTTU
+  küçültme 21/40: 13 → 11 adım -
+  küçültme 22/40: 13 → 11 adım -
+  küçültme 23/40: 13 → 11 adım -
+  küçültme 24/40: 13 → 11 adım -
+  küçültme 25/40: 13 → 11 adım TUTTU
+  küçültme 26/40: 11 → 9 adım -
+  küçültme 27/40: 11 → 10 adım -
+  küçültme 28/40: 11 → 9 adım -
+  küçültme 29/40: 11 → 9 adım -
+  küçültme 30/40: 11 → 9 adım -
+  küçültme 31/40: 11 → 9 adım -
+  küçültme 32/40: 11 → 9 adım -
+  küçültme 33/40: 11 → 10 adım -
+  küçültme 34/40: 11 → 10 adım -
+  küçültme 35/40: 11 → 10 adım TUTTU
+  küçültme 36/40: 10 → 9 adım TUTTU
+  küçültme 37/40: 9 → 8 adım TUTTU
+  küçültme 38/40: 8 → 7 adım TUTTU
+  küçültme 39/40: 7 → 6 adım -
+  küçültme 40/40: 7 → 6 adım -
+[ebelge-t2-i100] ihlal:I2 / BASKA-FIS-SIRA: ilk adım 93; küçültülüyor (bütçe 40)
+  küçültme 1/40: 93 → 47 adım -
+  küçültme 2/40: 93 → 47 adım -
+  küçültme 3/40: 93 → 92 adım -
+  küçültme 4/40: 93 → 70 adım -
+  küçültme 5/40: 93 → 70 adım -
+  küçültme 6/40: 93 → 70 adım -
+  küçültme 7/40: 93 → 70 adım -
+  küçültme 8/40: 93 → 92 adım -
+  küçültme 9/40: 93 → 82 adım TUTTU
+  küçültme 10/40: 82 → 71 adım -
+  küçültme 11/40: 82 → 71 adım -
+  küçültme 12/40: 82 → 71 adım -
+  küçültme 13/40: 82 → 71 adım -
+  küçültme 14/40: 82 → 71 adım TUTTU
+  küçültme 15/40: 71 → 60 adım TUTTU
+  küçültme 16/40: 60 → 49 adım -
+  küçültme 17/40: 60 → 55 adım -
+  küçültme 18/40: 60 → 49 adım -
+  küçültme 19/40: 60 → 49 adım -
+  küçültme 20/40: 60 → 49 adım -
+  küçültme 21/40: 60 → 49 adım -
+  küçültme 22/40: 60 → 49 adım -
+  küçültme 23/40: 60 → 55 adım -
+  küçültme 24/40: 60 → 55 adım TUTTU
+  küçültme 25/40: 55 → 50 adım -
+  küçültme 26/40: 55 → 50 adım -
+  küçültme 27/40: 55 → 50 adım TUTTU
+  küçültme 28/40: 50 → 45 adım -
+  küçültme 29/40: 50 → 45 adım TUTTU
+  küçültme 30/40: 45 → 40 adım -
+  küçültme 31/40: 45 → 40 adım -
+  küçültme 32/40: 45 → 40 adım -
+  küçültme 33/40: 45 → 40 adım TUTTU
+  küçültme 34/40: 40 → 35 adım -
+  küçültme 35/40: 40 → 35 adım -
+  küçültme 36/40: 40 → 35 adım -
+  küçültme 37/40: 40 → 35 adım -
+  küçültme 38/40: 40 → 35 adım -
+  küçültme 39/40: 40 → 35 adım -
+  küçültme 40/40: 40 → 35 adım -
+[ebelge-t2-i100] adım 100 · fark 1 · ihlal 4 · saf model son fark 14 · çatal seçimi 34 · 291.3 sn
+    I15              BASKA-ESZ                                3
+    I2               BASKA-FIS-SIRA                           1
+    fark:numara      TUTMA-YOK                                1
+    KÜÇÜLTÜLMÜŞ ihlal:I15 / BASKA-ESZ (2 adım, 16 koşu):
+      {"islem": "kaydet", "belge": "B3", "cari": "K2", "tarih": "2026-06-17", "gonder": "sonra", "no": 1}
+      {"islem": "esz_tumunu_gonder", "no": 2}
+      → {"adim": 2, "islem": "esz_tumunu_gonder", "kod": "I15", "ileti": "B3: eşzamanlı turda gönderilen belge için hata yanıtı (einvoice-sending)", "yineleme": 0, "belge": "B3", "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"}
+    KÜÇÜLTÜLMÜŞ fark:numara / TUTMA-YOK (7 adım, 40 koşu):
+      {"islem": "gun_ilerlet", "gun": 3, "no": 1}
+      {"islem": "kaydet", "belge": "B9", "cari": "K1", "tarih": "2026-06-20", "gonder": "sonra", "no": 2}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 3}
+      {"islem": "duzenle_tarih", "belge": "B1", "tarih": "2026-06-21", "no": 4}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 5}
+      {"islem": "ariza", "tur": "kopma_once", "no": 6}
+      {"islem": "kaydet", "belge": "B14", "cari": "K5", "tarih": "2026-06-22", "gonder": "simdi", "no": 7}
+      → {"belge": "B14", "alan": "numara", "model": "", "program": "TEA2026000000001", "adim": 7, "islem": "kaydet", "sinif": "TUTMA-YOK (eski gönderilebilir bekleyen B9 varken yeni belge numaralandı)"}
+    KÜÇÜLTÜLMÜŞ ihlal:I2 / BASKA-FIS-SIRA (40 adım, 40 koşu):
+      {"islem": "iptal", "belge": "B4", "no": 1}
+      {"islem": "kaydet", "belge": "B6", "cari": "K2", "tarih": "2026-06-14", "gonder": "simdi", "no": 2}
+      {"islem": "gun_ilerlet", "gun": 3, "no": 3}
+      {"islem": "ag", "durum": "yok", "no": 4}
+      {"islem": "listeden_sil", "belge": "B2", "no": 5}
+      {"islem": "ag", "durum": "var", "no": 6}
+      {"islem": "gun_ilerlet", "gun": 2, "no": 7}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 8}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 9}
+      {"islem": "listeden_sil", "belge": "B2", "no": 10}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 11}
+      {"islem": "esz_tumunu_gonder", "no": 12}
+      {"islem": "kaydet", "belge": "B8", "cari": "K2", "tarih": "2026-06-18", "gonder": "simdi", "no": 13}
+      {"islem": "kaydet", "belge": "B9", "cari": "K1", "tarih": "2026-06-20", "gonder": "sonra", "no": 14}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 15}
+      {"islem": "kaydet", "belge": "B12", "cari": "K3", "tarih": "2026-06-19", "gonder": "simdi", "no": 16}
+      {"islem": "iptal", "belge": "B4", "no": 17}
+      {"islem": "kaydet", "belge": "B13", "cari": "K2", "tarih": "2026-06-23", "gonder": "sonra", "no": 18}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 19}
+      {"islem": "ariza", "tur": "kopma_once", "no": 20}
+      {"islem": "kaydet", "belge": "B14", "cari": "K5", "tarih": "2026-06-22", "gonder": "simdi", "no": 21}
+      {"islem": "kaydet", "belge": "B15", "cari": "K1", "tarih": "2026-06-24", "gonder": "sonra", "no": 22}
+      {"islem": "kaydet", "belge": "B16", "cari": "K4", "tarih": "2026-06-24", "gonder": "sonra", "no": 23}
+      {"islem": "iptal", "belge": "B8", "no": 24}
+      {"islem": "kaydet", "belge": "B17", "cari": "K1", "tarih": "2026-06-24", "gonder": "sonra", "no": 25}
+      {"islem": "listeden_sil", "belge": "B16", "no": 26}
+      {"islem": "kart_gonder", "belge": "B1", "no": 27}
+      {"islem": "kaydet", "belge": "B18", "cari": "K2", "tarih": "2026-06-24", "gonder": "sonra", "no": 28}
+      {"islem": "kaydet", "belge": "B19", "cari": "K1", "tarih": "2026-06-20", "gonder": "simdi", "no": 29}
+      {"islem": "ariza", "tur": "kopma_sonra", "no": 30}
+      {"islem": "kaydet", "belge": "B35", "cari": "K5", "tarih": "2026-06-21", "gonder": "sonra", "no": 31}
+      {"islem": "duzenle_tur", "belge": "B9", "profil": "TEMELFATURA", "no": 32}
+      {"islem": "kart_gonder", "belge": "B35", "no": 33}
+      {"islem": "tumunu_gonder", "kapsam": "secili", "belgeler": ["B24", "B27", "B6"], "no": 34}
+      {"islem": "kaydet", "belge": "B36", "cari": "K4", "tarih": "2026-06-26", "gonder": "sonra", "no": 35}
+      {"islem": "iptal", "belge": "B23", "no": 36}
+      {"islem": "duzenle_tarih", "belge": "B7", "tarih": "2026-06-13", "no": 37}
+      {"islem": "duzenle_tarih", "belge": "B14", "tarih": "2026-06-25", "no": 38}
+      {"islem": "kaydet", "belge": "B37", "cari": "K2", "tarih": "2026-06-25", "gonder": "simdi", "no": 39}
+      {"islem": "tur_sirasinda_sil", "belge": "B35", "no": 40}
+      → {"adim": 40, "islem": "tur_sirasinda_sil", "kod": "I2", "ileti": "FIS2026: 2 (B35, 2026-06-21) önceki 1 (B16, 2026-06-24) belgesinden eski tarihli", "yineleme": 0, "seri": "FIS2026", "belge": "B35", "sinif": "BASKA-FIS-SIRA (Listeden Sil eski tarihli belgeye FIS numarası verdi)"}
+[ebelge-t3-i100] fark:numara / TUTMA-YOK: ilk adım 12; küçültülüyor (bütçe 40)
+  küçültme 1/40: 12 → 6 adım TUTTU
+  küçültme 2/40: 6 → 3 adım TUTTU
+  küçültme 3/40: 3 → 2 adım TUTTU
+  küçültme 4/40: 2 → 1 adım -
+  küçültme 5/40: 2 → 1 adım -
+  küçültme 6/40: 2 → 1 adım -
+  küçültme 7/40: 2 → 1 adım -
+[ebelge-t3-i100] ihlal:I15 / BASKA-ESZ: ilk adım 41; küçültülüyor (bütçe 40)
+  küçültme 1/40: 41 → 21 adım TUTTU
+  küçültme 2/40: 21 → 1 adım -
+  küçültme 3/40: 21 → 20 adım -
+  küçültme 4/40: 21 → 1 adım -
+  küçültme 5/40: 21 → 20 adım -
+  küçültme 6/40: 21 → 11 adım -
+  küçültme 7/40: 21 → 11 adım -
+  küçültme 8/40: 21 → 20 adım -
+  küçültme 9/40: 21 → 16 adım -
+  küçültme 10/40: 21 → 16 adım TUTTU
+  küçültme 11/40: 16 → 11 adım TUTTU
+  küçültme 12/40: 11 → 6 adım -
+  küçültme 13/40: 11 → 10 adım -
+  küçültme 14/40: 11 → 6 adım -
+  küçültme 15/40: 11 → 6 adım -
+  küçültme 16/40: 11 → 10 adım -
+  küçültme 17/40: 11 → 9 adım TUTTU
+  küçültme 18/40: 9 → 7 adım TUTTU
+  küçültme 19/40: 7 → 5 adım -
+  küçültme 20/40: 7 → 5 adım TUTTU
+  küçültme 21/40: 5 → 3 adım -
+  küçültme 22/40: 5 → 4 adım -
+  küçültme 23/40: 5 → 3 adım -
+  küçültme 24/40: 5 → 3 adım -
+  küçültme 25/40: 5 → 4 adım -
+  küçültme 26/40: 5 → 4 adım -
+  küçültme 27/40: 5 → 4 adım TUTTU
+  küçültme 28/40: 4 → 3 adım TUTTU
+  küçültme 29/40: 3 → 2 adım -
+  küçültme 30/40: 3 → 2 adım -
+  küçültme 31/40: 3 → 2 adım -
+  küçültme 32/40: 3 → 2 adım -
+  küçültme 33/40: 3 → 2 adım -
+[ebelge-t3-i100] fark:yanit / BEKLENEN-O2: ilk adım 73; küçültülüyor (bütçe 40)
+  küçültme 1/40: 73 → 37 adım -
+  küçültme 2/40: 73 → 37 adım -
+  küçültme 3/40: 73 → 72 adım -
+  küçültme 4/40: 73 → 55 adım TUTTU
+  küçültme 5/40: 55 → 37 adım -
+  küçültme 6/40: 55 → 37 adım -
+  küçültme 7/40: 55 → 37 adım -
+  küçültme 8/40: 55 → 54 adım -
+  küçültme 9/40: 55 → 37 adım -
+  küçültme 10/40: 55 → 37 adım -
+  küçültme 11/40: 55 → 37 adım -
+  küçültme 12/40: 55 → 54 adım -
+  küçültme 13/40: 55 → 46 adım -
+  küçültme 14/40: 55 → 46 adım -
+  küçültme 15/40: 55 → 46 adım -
+  küçültme 16/40: 55 → 46 adım -
+  küçültme 17/40: 55 → 46 adım TUTTU
+  küçültme 18/40: 46 → 37 adım -
+  küçültme 19/40: 46 → 45 adım -
+  küçültme 20/40: 46 → 37 adım -
+  küçültme 21/40: 46 → 37 adım -
+  küçültme 22/40: 46 → 37 adım -
+  küçültme 23/40: 46 → 37 adım -
+  küçültme 24/40: 46 → 37 adım -
+  küçültme 25/40: 46 → 45 adım -
+  küçültme 26/40: 46 → 42 adım TUTTU
+  küçültme 27/40: 42 → 38 adım -
+  küçültme 28/40: 42 → 38 adım -
+  küçültme 29/40: 42 → 38 adım TUTTU
+  küçültme 30/40: 38 → 34 adım -
+  küçültme 31/40: 38 → 34 adım TUTTU
+  küçültme 32/40: 34 → 30 adım TUTTU
+  küçültme 33/40: 30 → 26 adım TUTTU
+  küçültme 34/40: 26 → 22 adım -
+  küçültme 35/40: 26 → 22 adım TUTTU
+  küçültme 36/40: 22 → 18 adım -
+  küçültme 37/40: 22 → 20 adım -
+  küçültme 38/40: 22 → 18 adım -
+  küçültme 39/40: 22 → 18 adım -
+  küçültme 40/40: 22 → 18 adım -
+[ebelge-t3-i100] ihlal:I2 / BASKA-FIS-SIRA: ilk adım 85; küçültülüyor (bütçe 40)
+  küçültme 1/40: 85 → 43 adım -
+  küçültme 2/40: 85 → 43 adım -
+  küçültme 3/40: 85 → 84 adım -
+  küçültme 4/40: 85 → 64 adım TUTTU
+  küçültme 5/40: 64 → 43 adım -
+  küçültme 6/40: 64 → 43 adım -
+  küçültme 7/40: 64 → 43 adım TUTTU
+  küçültme 8/40: 43 → 42 adım -
+  küçültme 9/40: 43 → 22 adım -
+  küçültme 10/40: 43 → 22 adım -
+  küçültme 11/40: 43 → 42 adım -
+  küçültme 12/40: 43 → 33 adım -
+  küçültme 13/40: 43 → 33 adım -
+  küçültme 14/40: 43 → 33 adım -
+  küçültme 15/40: 43 → 33 adım TUTTU
+  küçültme 16/40: 33 → 30 adım -
+  küçültme 17/40: 33 → 23 adım -
+  küçültme 18/40: 33 → 23 adım -
+  küçültme 19/40: 33 → 23 adım -
+  küçültme 20/40: 33 → 30 adım -
+  küçültme 21/40: 33 → 28 adım -
+  küçültme 22/40: 33 → 28 adım -
+  küçültme 23/40: 33 → 28 adım -
+  küçültme 24/40: 33 → 28 adım -
+  küçültme 25/40: 33 → 28 adım -
+  küçültme 26/40: 33 → 28 adım TUTTU
+  küçültme 27/40: 28 → 25 adım -
+  küçültme 28/40: 28 → 23 adım -
+  küçültme 29/40: 28 → 23 adım -
+  küçültme 30/40: 28 → 23 adım -
+  küçültme 31/40: 28 → 23 adım -
+  küçültme 32/40: 28 → 23 adım -
+  küçültme 33/40: 28 → 25 adım -
+  küçültme 34/40: 28 → 26 adım -
+  küçültme 35/40: 28 → 26 adım -
+  küçültme 36/40: 28 → 26 adım TUTTU
+  küçültme 37/40: 26 → 24 adım TUTTU
+  küçültme 38/40: 24 → 22 adım -
+  küçültme 39/40: 24 → 22 adım TUTTU
+  küçültme 40/40: 22 → 20 adım -
+[ebelge-t3-i100] fark:yanit / BASKA-DUZENLE-SIRA: ilk adım 90; küçültülüyor (bütçe 40)
+  küçültme 1/40: 90 → 45 adım -
+  küçültme 2/40: 90 → 45 adım -
+  küçültme 3/40: 90 → 68 adım TUTTU
+  küçültme 4/40: 68 → 46 adım -
+  küçültme 5/40: 68 → 46 adım -
+  küçültme 6/40: 68 → 46 adım -
+  küçültme 7/40: 68 → 66 adım -
+  küçültme 8/40: 68 → 46 adım -
+  küçültme 9/40: 68 → 46 adım -
+  küçültme 10/40: 68 → 46 adım -
+  küçültme 11/40: 68 → 66 adım -
+  küçültme 12/40: 68 → 57 adım -
+  küçültme 13/40: 68 → 57 adım -
+  küçültme 14/40: 68 → 57 adım -
+  küçültme 15/40: 68 → 57 adım TUTTU
+  küçültme 16/40: 57 → 46 adım -
+  küçültme 17/40: 57 → 46 adım -
+  küçültme 18/40: 57 → 55 adım -
+  küçültme 19/40: 57 → 46 adım -
+  küçültme 20/40: 57 → 46 adım -
+  küçültme 21/40: 57 → 46 adım -
+  küçültme 22/40: 57 → 46 adım -
+  küçültme 23/40: 57 → 46 adım -
+  küçültme 24/40: 57 → 55 adım -
+  küçültme 25/40: 57 → 52 adım -
+  küçültme 26/40: 57 → 52 adım -
+  küçültme 27/40: 57 → 52 adım -
+  küçültme 28/40: 57 → 52 adım TUTTU
+  küçültme 29/40: 52 → 47 adım TUTTU
+  küçültme 30/40: 47 → 42 adım TUTTU
+  küçültme 31/40: 42 → 37 adım -
+  küçültme 32/40: 42 → 37 adım -
+  küçültme 33/40: 42 → 37 adım -
+  küçültme 34/40: 42 → 37 adım TUTTU
+  küçültme 35/40: 37 → 32 adım TUTTU
+  küçültme 36/40: 32 → 30 adım -
+  küçültme 37/40: 32 → 27 adım -
+  küçültme 38/40: 32 → 27 adım -
+  küçültme 39/40: 32 → 27 adım -
+  küçültme 40/40: 32 → 27 adım -
+[ebelge-t3-i100] adım 100 · fark 6 · ihlal 4 · saf model son fark 10 · çatal seçimi 34 · 489.2 sn
+    I15              BASKA-ESZ                                2
+    I2               BASKA-FIS-SIRA                           1
+    I8               BEKLENEN-O2                              1
+    fark:bekleyen    TUTMA-YOK                                1
+    fark:edm         TUTMA-YOK                                1
+    fark:gonderildi  TUTMA-YOK                                1
+    fark:numara      TUTMA-YOK                                1
+    fark:yanit       BASKA-DUZENLE-SIRA                       1
+    fark:yanit       BEKLENEN-O2                              1
+    KÜÇÜLTÜLMÜŞ fark:numara / TUTMA-YOK (2 adım, 7 koşu):
+      {"islem": "kaydet", "belge": "B5", "cari": "K2", "tarih": "2026-12-26", "gonder": "sonra", "no": 1}
+      {"islem": "kaydet", "belge": "B6", "cari": "K2", "tarih": "2026-12-27", "gonder": "simdi", "no": 2}
+      → {"belge": "B6", "alan": "numara", "model": "", "program": "TEF2026000000001", "adim": 2, "islem": "kaydet", "sinif": "TUTMA-YOK (eski gönderilebilir bekleyen B5 varken yeni belge numaralandı)"}
+    KÜÇÜLTÜLMÜŞ ihlal:I15 / BASKA-ESZ (3 adım, 33 koşu):
+      {"islem": "gun_ilerlet", "gun": 9, "no": 1}
+      {"islem": "kaydet", "belge": "B21", "cari": "K5", "tarih": "2026-12-30", "gonder": "sonra", "no": 2}
+      {"islem": "esz_tumunu_gonder", "no": 3}
+      → {"adim": 3, "islem": "esz_tumunu_gonder", "kod": "I15", "ileti": "B21: eşzamanlı turda gönderilen belge için hata yanıtı (einvoice-sending)", "yineleme": 0, "belge": "B21", "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"}
+    KÜÇÜLTÜLMÜŞ fark:yanit / BEKLENEN-O2 (22 adım, 40 koşu):
+      {"islem": "gun_ilerlet", "gun": 1, "no": 1}
+      {"islem": "kaydet", "belge": "B10", "cari": "K2", "tarih": "2026-12-29", "gonder": "sonra", "no": 2}
+      {"islem": "gun_ilerlet", "gun": 9, "no": 3}
+      {"islem": "kaydet", "belge": "B11", "cari": "K3", "tarih": "2027-01-06", "gonder": "simdi", "no": 4}
+      {"islem": "kaydet", "belge": "B12", "cari": "K2", "tarih": "2027-01-05", "gonder": "simdi", "no": 5}
+      {"islem": "listeden_sil", "belge": "B11", "no": 6}
+      {"islem": "kaydet", "belge": "B13", "cari": "K2", "tarih": "2027-01-03", "gonder": "sonra", "no": 7}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 8}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 9}
+      {"islem": "kaydet", "belge": "B17", "cari": "K1", "tarih": "2027-01-05", "gonder": "simdi", "no": 10}
+      {"islem": "kaydet", "belge": "B18", "cari": "K2", "tarih": "2027-01-08", "gonder": "simdi", "no": 11}
+      {"islem": "kaydet", "belge": "B19", "cari": "K2", "tarih": "2027-01-07", "gonder": "sonra", "no": 12}
+      {"islem": "kaydet", "belge": "B27", "cari": "K3", "tarih": "2027-01-06", "gonder": "sonra", "no": 13}
+      {"islem": "esz_tumunu_gonder", "no": 14}
+      {"islem": "esz_tumunu_gonder", "no": 15}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 16}
+      {"islem": "kaydet", "belge": "B34", "cari": "K2", "tarih": "2027-01-09", "gonder": "sonra", "no": 17}
+      {"islem": "kaydet", "belge": "B35", "cari": "K5", "tarih": "2027-01-09", "gonder": "simdi", "no": 18}
+      {"islem": "kaydet", "belge": "B36", "cari": "K1", "tarih": "2027-01-07", "gonder": "simdi", "no": 19}
+      {"islem": "kaydet", "belge": "B37", "cari": "K1", "tarih": "2027-01-09", "gonder": "sonra", "no": 20}
+      {"islem": "kaydet", "belge": "B38", "cari": "K1", "tarih": "2027-01-06", "gonder": "simdi", "no": 21}
+      {"islem": "tur_sirasinda_sil", "belge": "B37", "no": 22}
+      → {"belge": "B37", "alan": "yanit", "model": "4xx", "program": 200, "kod": "", "adim": 22, "islem": "tur_sirasinda_sil", "sinif": "BEKLENEN-O2 (tur sürerken Listeden Sil kabul edildi, belge yine gitti)"}
+    KÜÇÜLTÜLMÜŞ ihlal:I2 / BASKA-FIS-SIRA (22 adım, 40 koşu):
+      {"islem": "duzenle_tarih", "belge": "B4", "tarih": "2026-12-22", "no": 1}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 2}
+      {"islem": "kaydet", "belge": "B10", "cari": "K2", "tarih": "2026-12-29", "gonder": "sonra", "no": 3}
+      {"islem": "gun_ilerlet", "gun": 9, "no": 4}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 5}
+      {"islem": "kaydet", "belge": "B14", "cari": "K5", "tarih": "2027-01-07", "gonder": "simdi", "no": 6}
+      {"islem": "kaydet", "belge": "B16", "cari": "K2", "tarih": "2027-01-05", "gonder": "simdi", "no": 7}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 8}
+      {"islem": "kaydet", "belge": "B17", "cari": "K1", "tarih": "2027-01-05", "gonder": "simdi", "no": 9}
+      {"islem": "kaydet", "belge": "B18", "cari": "K2", "tarih": "2027-01-08", "gonder": "simdi", "no": 10}
+      {"islem": "kaydet", "belge": "B19", "cari": "K2", "tarih": "2027-01-07", "gonder": "sonra", "no": 11}
+      {"islem": "kaydet", "belge": "B20", "cari": "K2", "tarih": "2027-01-06", "gonder": "simdi", "no": 12}
+      {"islem": "kaydet", "belge": "B21", "cari": "K5", "tarih": "2026-12-30", "gonder": "sonra", "no": 13}
+      {"islem": "esz_tumunu_gonder", "no": 14}
+      {"islem": "kaydet", "belge": "B22", "cari": "K1", "tarih": "2027-01-06", "gonder": "sonra", "no": 15}
+      {"islem": "kaydet", "belge": "B23", "cari": "K3", "tarih": "2027-01-01", "gonder": "sonra", "no": 16}
+      {"islem": "kaydet", "belge": "B24", "cari": "K1", "tarih": "2026-12-30", "gonder": "sonra", "no": 17}
+      {"islem": "listeden_sil", "belge": "B19", "no": 18}
+      {"islem": "kaydet", "belge": "B25", "cari": "K1", "tarih": "2027-01-06", "gonder": "simdi", "no": 19}
+      {"islem": "ag", "durum": "yok", "no": 20}
+      {"islem": "ag", "durum": "var", "no": 21}
+      {"islem": "tur_sirasinda_sil", "belge": "B22", "no": 22}
+      → {"adim": 22, "islem": "tur_sirasinda_sil", "kod": "I2", "ileti": "FIS2027: 2 (B22, 2027-01-06) önceki 1 (B19, 2027-01-07) belgesinden eski tarihli", "yineleme": 0, "seri": "FIS2027", "belge": "B22", "sinif": "BASKA-FIS-SIRA (Listeden Sil eski tarihli belgeye FIS numarası verdi)"}
+    KÜÇÜLTÜLMÜŞ fark:yanit / BASKA-DUZENLE-SIRA (32 adım, 40 koşu):
+      {"islem": "gun_ilerlet", "gun": 1, "no": 1}
+      {"islem": "kaydet", "belge": "B10", "cari": "K2", "tarih": "2026-12-29", "gonder": "sonra", "no": 2}
+      {"islem": "gun_ilerlet", "gun": 9, "no": 3}
+      {"islem": "kaydet", "belge": "B11", "cari": "K3", "tarih": "2027-01-06", "gonder": "simdi", "no": 4}
+      {"islem": "kaydet", "belge": "B12", "cari": "K2", "tarih": "2027-01-05", "gonder": "simdi", "no": 5}
+      {"islem": "listeden_sil", "belge": "B11", "no": 6}
+      {"islem": "kaydet", "belge": "B13", "cari": "K2", "tarih": "2027-01-03", "gonder": "sonra", "no": 7}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 8}
+      {"islem": "kaydet", "belge": "B14", "cari": "K5", "tarih": "2027-01-07", "gonder": "simdi", "no": 9}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 10}
+      {"islem": "kaydet", "belge": "B15", "cari": "K1", "tarih": "2027-01-04", "gonder": "sonra", "no": 11}
+      {"islem": "kaydet", "belge": "B16", "cari": "K2", "tarih": "2027-01-05", "gonder": "simdi", "no": 12}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 13}
+      {"islem": "kaydet", "belge": "B17", "cari": "K1", "tarih": "2027-01-05", "gonder": "simdi", "no": 14}
+      {"islem": "kaydet", "belge": "B18", "cari": "K2", "tarih": "2027-01-08", "gonder": "simdi", "no": 15}
+      {"islem": "esz_tumunu_gonder", "no": 16}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 17}
+      {"islem": "kaydet", "belge": "B28", "cari": "K3", "tarih": "2026-12-28", "gonder": "simdi", "no": 18}
+      {"islem": "kaydet", "belge": "B33", "cari": "K1", "tarih": "2027-01-05", "gonder": "sonra", "no": 19}
+      {"islem": "kaydet", "belge": "B34", "cari": "K2", "tarih": "2027-01-09", "gonder": "sonra", "no": 20}
+      {"islem": "kaydet", "belge": "B35", "cari": "K5", "tarih": "2027-01-09", "gonder": "simdi", "no": 21}
+      {"islem": "kaydet", "belge": "B36", "cari": "K1", "tarih": "2027-01-07", "gonder": "simdi", "no": 22}
+      {"islem": "kaydet", "belge": "B37", "cari": "K1", "tarih": "2027-01-09", "gonder": "sonra", "no": 23}
+      {"islem": "kaydet", "belge": "B38", "cari": "K1", "tarih": "2027-01-06", "gonder": "simdi", "no": 24}
+      {"islem": "tur_sirasinda_sil", "belge": "B37", "no": 25}
+      {"islem": "duzenle_tur", "belge": "B14", "profil": "TEMELFATURA", "no": 26}
+      {"islem": "kart_gonder", "belge": "B29", "no": 27}
+      {"islem": "kaydet", "belge": "B39", "cari": "K1", "tarih": "2027-01-08", "gonder": "sonra", "no": 28}
+      {"islem": "kart_gonder", "belge": "B8", "no": 29}
+      {"islem": "gun_ilerlet", "gun": 1, "no": 30}
+      {"islem": "kaydet", "belge": "B43", "cari": "K1", "tarih": "2027-01-07", "gonder": "sonra", "no": 31}
+      {"islem": "duzenle_tarih", "belge": "B39", "tarih": "2027-01-10", "no": 32}
+      → {"belge": "B39", "alan": "yanit", "model": "2xx", "program": 400, "kod": "chronology", "adim": 32, "islem": "duzenle_tarih", "sinif": "BASKA-DUZENLE-SIRA (numarasız bekleyenin tarihi sıra-tarihi bozmadan değiştirilemiyor)"}
+# tests 3
+# pass 0
+# fail 3
+# kahin fark 52 ihlal 11

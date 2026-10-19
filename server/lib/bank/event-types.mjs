@@ -20,6 +20,9 @@ export const EVENT_TYPES = new Set([
   // 2.3.0 İz 1 (plan §3.11b; lib/bank/doubtful.mjs): Şüpheli Alacağa Al / Şüpheliden Çıkar / Karşılık Ayır / Değersiz Alacak Yaz başlıkları (para
   // satırı yok; yevmiye Ana Defter'in kuralıyla türetilir).
   "doubtful_take", "doubtful_release", "doubtful_provision", "doubtful_writeoff",
+  // 2.4.3 MM3 (uzman mali müşavir; kullanıcı kararı 18.10.2026): Vergi Ödemesi — bankadan ödenen vergi (B 360 · B 689 gecikme / A 102.k). Kasa'dan
+  // nakit ödeme Kasa satırıdır (cash_out). KDV Mahsup Fişi (B 391 / A 191 …) para satırı değildir, işlem başlığı almaz (vat_offsets).
+  "tax_payment",
 ]);
 
 // İç hareket (§3.4 internal): şirketin kendi hesapları arasında para geçişi (Kasa ↔ Banka, bankalar arası, kredi kullanımı/geri ödemesi,
@@ -64,7 +67,7 @@ export const VOUCHER_TYPES = Object.freeze(["fee", "interest_in", "interest_out"
 const VOUCHER_SET = new Set(VOUCHER_TYPES);
 export const isVoucherType = type => VOUCHER_SET.has(type);
 /** Banka Fişi (satırları bank_lines'ta, Ters Kaydet / Düzelt ile değişen): Banka Fişi türleri + Bankalar Arası Transfer (Aşama 9; ayrı uçtan). */
-export const isBankVoucherType = type => VOUCHER_SET.has(type) || type === "transfer";
+export const isBankVoucherType = type => VOUCHER_SET.has(type) || type === "transfer" || type === "tax_payment";
 
 /** İşlem türünün adı (ekranda, İşlem Kartı'nda, Hareketler'de; başlık yazımı). Yöne bağlı türlerde yön verilir. */
 const TYPE_LABELS = Object.freeze({
@@ -106,6 +109,7 @@ const TYPE_LABELS = Object.freeze({
   doubtful_release: "Şüpheliden Çıkar",
   doubtful_provision: "Karşılık Ayır",
   doubtful_writeoff: "Değersiz Alacak Yaz",
+  tax_payment: "Vergi Ödemesi",
 });
 export function typeLabel(type, direction = "") {
   if (type === "invoice_cash") return direction === "out" ? "Fatura Ödemesi" : "Fatura Tahsilatı";
@@ -135,6 +139,7 @@ export const TYPE_GROUPS = Object.freeze({
   cash: ["cash_transfer"],
   transfer: ["transfer"],
   legacy: ["carry_close", "legacy_reclass"],
+  tax: ["tax_payment"],
 });
 
 /** Süzgeç türlerinin adları (Hareketler → İşlem Türü; başlık yazımı). Liste 2.1.0'da kaydı olabilen türlerdir (yarım özellik görünmez, §12.1). */
@@ -155,4 +160,5 @@ export const GROUP_LABELS = Object.freeze({
   cash: "Kasa ile Banka Arası",
   transfer: "Bankalar Arası Transfer",
   legacy: "Kurulum ve Aktarım",
+  tax: "Vergi Ödemesi",
 });

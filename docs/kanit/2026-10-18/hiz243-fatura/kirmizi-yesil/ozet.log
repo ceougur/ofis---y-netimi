@@ -1,0 +1,19 @@
+kilit bekleniyor 03:00:10
+kilit alındı 03:29:20; df 11G boş
+hiz-243-arka-plan eski çıkış 1 03:29:35: ✗ hiz-243-arka-plan: 10 geçti, 3 kaldı
+hiz-243-arka-plan yeni çıkış 0 03:29:50: ✓ hiz-243-arka-plan: 13 geçti, 0 kaldı
+fatura-243-daha-fazla-yaris eski çıkış 1 03:32:15: ✗ fatura-243-daha-fazla-yaris: 1 geçti, 8 kaldı
+fatura-243-daha-fazla-yaris yeni çıkış 0 03:33:00: ✓ fatura-243-daha-fazla-yaris: 9 geçti, 0 kaldı
+BİTTİ 03:33:00
+H6 kilit alındı 03:34:54
+duzen-kaymasi hiz243-eski-4d546e9 çıkış 1 03:35:44: ✗ fatura-243-duzen-kaymasi: 1 geçti, 1 kaldı
+duzen-kaymasi hiz243-sonra-a4735d0 çıkış 1 03:36:35: ✗ fatura-243-duzen-kaymasi: 1 geçti, 1 kaldı
+H6 BİTTİ 03:36:35
+H6 kilit alındı 03:37:33
+duzen-kaymasi hiz243-eski-4d546e9 çıkış 1 03:37:47: ✗ fatura-243-duzen-kaymasi: 3 geçti, 4 kaldı
+duzen-kaymasi hiz243-sonra-a4735d0 çıkış 1 03:38:00: ✗ fatura-243-duzen-kaymasi: 3 geçti, 4 kaldı
+H6 BİTTİ 03:38:00
+H6 kilit alındı 03:39:48
+duzen-kaymasi hiz243-eski-4d546e9 çıkış 1 03:40:02: ✗ fatura-243-duzen-kaymasi: 3 geçti, 4 kaldı
+duzen-kaymasi yeni çıkış 0 03:40:15: ✓ fatura-243-duzen-kaymasi: 7 geçti, 0 kaldı
+H6 BİTTİ 03:40:15

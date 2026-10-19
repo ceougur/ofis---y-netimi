@@ -1,0 +1,7 @@
+A) başka oturum Tümünü Gönder (canlı olay)
+  ✗ ön koşul: iade faturası numarasız, açıklama "(gönderilecek)" (TEA2026000000001; Ters Kayıt · BNK-2026-000003 · İade Faturası TEA2026000000001)
+B) aynı sayfa Tümünü Gönder (bu ekranın yazımı)
+  ✗ ön koşul: iade faturası numarasız, açıklama "(gönderilecek)" (TEF2026000000001; Ters Kayıt · BNK-2026-000005 · İade Faturası TEF2026000000001)
+  ✓ sayfa hatası yok
+
+✗ gg243-banka-kart-aciklama: 1 geçti, 2 kaldı

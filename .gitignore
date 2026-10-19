@@ -34,3 +34,4 @@ __pycache__/
 test/bagimsiz/cikti/ham/
 # Bağımsız kâhinin çalışma çıktıları (iş sürerken): yok sayılır; iş bitince son özetler kanıt olarak açıkça eklenir (git add -f).
 test/bagimsiz/cikti/
+test/bagimsiz/ebelge/cikti/

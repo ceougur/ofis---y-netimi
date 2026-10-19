@@ -56,6 +56,19 @@ export function legacyBankPos(report) {
   const footer = report.footer ? report.footer.map((cell, index) => (index === inIndex ? tlOf(rows.reduce((sum, row) => sum + minorOf(row[inIndex]), 0)) : index === outIndex ? tlOf(rows.reduce((sum, row) => sum + minorOf(row[outIndex]), 0)) : cell)) : report.footer;
   return { ...report, rows, summary, footer };
 }
+// 2.4.3 MM9 (uzman mali müşavir; kullanıcı kararı 18.10.2026, bilerek değişen görünüm): Cari Listesi özetinin adları — "Toplam Borç (Anlaşılan)" →
+// "Toplam Borç", "Toplam Alacak (Ödenen)" → "Toplam Alacak", "Borçlular" → "Müşteri Alacakları (Borçlu Cariler)", "Alacaklılar" → "Tedarikçi Borçları
+// (Alacaklı Cariler)", adsız "Kalan (Borçlu|Alacaklı)" → işaretli "Net Bakiye (Müşteri Alacakları − Tedarikçi Borçları)". Tutarlar aynı; ters dönüşüm
+// eski sırayı ve adları kurar (Kalan = |net|, yönü net'in işareti).
+export function legacyAccountList(report) {
+  const NET = "Net Bakiye (Müşteri Alacakları − Tedarikçi Borçları)";
+  if (!report?.summary?.some(([key]) => key === NET)) return report;
+  const get = key => report.summary.find(([name]) => name === key)?.[1];
+  const net = minorOf(get(NET));
+  const side = net > 0 ? "Borçlu" : net < 0 ? "Alacaklı" : "Kapalı";
+  const summary = [["Cari", get("Cari")], ["Toplam Borç (Anlaşılan)", get("Toplam Borç")], ["Toplam Alacak (Ödenen)", get("Toplam Alacak")], [`Kalan (${side})`, tlOf(Math.abs(net))], ["Borçlular", get("Müşteri Alacakları (Borçlu Cariler)")], ["Alacaklılar", get("Tedarikçi Borçları (Alacaklı Cariler)")], ["Geciken Taksit", get("Geciken Taksit")]];
+  return { ...report, summary };
+}
 /** ANLIK DURUM'un 2.0.26 biçimindeki "Banka / POS" kutusu (aynı satırlardan) ve K10 alanları. */
 export async function legacyBankBox(api, overview) {
   const bank = overview?.cash?.bank;
@@ -134,6 +147,9 @@ const foldGateCode = code => (/^gl:\d+$/.test(code) ? `gl:${foldCode(code.slice(
 export function normDocumentNames(text) {
   let out = String(text);
   for (const [code, { legacy, current }] of Object.entries(DOCUMENT_NAMES)) out = out.split(legacy).join(`${code}-AD`).split(current).join(`${code}-AD`);
+  // 2.4.3 MM3 (bilerek): 689'un adı Tekdüzen adı "Diğer Olağandışı Gider ve Zararlar" (önceden "Kapatılan Kartlardan Vazgeçilen Alacaklar"; gecikme
+  // zammı da 689'a yazılır). Tutar ve kod değişmez — iki ad aynı belirtece.
+  out = out.split("Kapatılan Kartlardan Vazgeçilen Alacaklar").join("689-AD").split("Diğer Olağandışı Gider ve Zararlar").join("689-AD");
   return out;
 }
 /** Mizan hesapları (TL): 121 → 101, 321 → 103 katlanır; ad eski ad. Dönüş aynı biçim (TL), kod sırasıyla. */
@@ -225,11 +241,13 @@ export async function ledgerFacts(api) {
     // 2.1.0 Aşama 4 (plan §3.11, bilerek): 649'un adı "Diğer Olağan Gelirler (Kasaya Elle)" → "Diğer Olağan Gelir ve Kârlar" (Banka Fişi
     // de 649'a yazar). Ad sürümden bağımsız olgu değildir: yeni ad eski ada çevrilir (fikstürlerdeki "öncesi" olguları 2.0.26 adıyla saklı);
     // hesap kodu, tutarlar ve satır sırası birebir karşılaştırılır.
-    const legacy = id === "banka-pos-hareketleri" ? legacyBankPos(report) : report;
+    const legacy = id === "banka-pos-hareketleri" ? legacyBankPos(report) : id === "cari-listesi" ? legacyAccountList(report) : report;
     // 2.2.0 İz 4.2: senet hesapları (121 / 321) eski düzene katlanır, 101 / 103 adları eski adlar (yukarıda, DOCUMENT_FOLD). TOPLAM satırı (Devir, Borç,
     // Alacak) katlamayla değişmez; satır sayısı (total) katlanmış satırlarındır.
     const folded = id === "hesap-mizani" ? foldDocumentRows(id, report.rows) : null;
-    const rows = folded ? folded.map(row => (String(row[0]) === "649" && row[1] === "Diğer Olağan Gelir ve Kârlar" ? [row[0], "Diğer Olağan Gelirler (Kasaya Elle)", ...row.slice(2)] : row)) : legacy.rows;
+    // 2.4.3 MM3 (bilerek): 689'un adı Tekdüzen Hesap Planı adı "Diğer Olağandışı Gider ve Zararlar" (önceden "Kapatılan Kartlardan Vazgeçilen Alacaklar").
+    const LEGACY_NAMES = { 649: ["Diğer Olağan Gelir ve Kârlar", "Diğer Olağan Gelirler (Kasaya Elle)"], 689: ["Diğer Olağandışı Gider ve Zararlar", "Kapatılan Kartlardan Vazgeçilen Alacaklar"] };
+    const rows = folded ? folded.map(row => (LEGACY_NAMES[String(row[0])]?.[0] === row[1] ? [row[0], LEGACY_NAMES[String(row[0])][1], ...row.slice(2)] : row)) : legacy.rows;
     reports[id] = { total: folded ? folded.length : legacy.total, rows: digest(rows), footer: legacy.footer, summary: legacy.summary };
   }
   const { at, ...overviewLive } = overview;

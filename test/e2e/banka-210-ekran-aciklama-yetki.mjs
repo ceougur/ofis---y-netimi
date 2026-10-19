@@ -11,6 +11,7 @@ import path from "node:path";
 import { chromium } from "playwright";
 import { CURRENT, bootVersion, tagsAvailable } from "../guvenilirlik/surumler.mjs";
 import { ADMIN_PASSWORD, installPageClock } from "../helpers.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OLD = "v2.0.23";
 const PASS = "Kasa-Rapor-2026!";
@@ -88,7 +89,7 @@ async function login(username, password) {
 const textOf = (page, selector) => page.$eval(selector, node => node.textContent.replace(/\s+/g, " ").trim()).catch(() => "");
 const closeAll = async page => {
   for (let index = 0; index < 8 && (await page.$(modal)); index += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await page.waitForTimeout(250);
   }
 };

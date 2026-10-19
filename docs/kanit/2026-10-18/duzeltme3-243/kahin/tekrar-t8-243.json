@@ -1,0 +1,58 @@
+{
+ "ad": "ebelge-t8-i200-1-kucuk",
+ "tohum": 8,
+ "islem": 10,
+ "bugun": "2026-12-27",
+ "farkSayisi": 1,
+ "ihlalSayisi": 1,
+ "safModelSonFark": 0,
+ "farklar": [
+  {
+   "belge": "B28",
+   "alan": "numara",
+   "model": "TEA2026000000001",
+   "program": "",
+   "adim": 9,
+   "islem": "kaydet",
+   "sinif": "BEKLENEN-O3 (alıcısı mükellef çıkan bekleyen e-Arşiv seriyi bekletiyor)"
+  }
+ ],
+ "ihlaller": [
+  {
+   "adim": 10,
+   "islem": "esz_tumunu_gonder",
+   "kod": "I15",
+   "ileti": "B28: eşzamanlı turda gönderilen belge için hata yanıtı (integrator-uncertain)",
+   "yineleme": 0,
+   "belge": "B28",
+   "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"
+  }
+ ],
+ "catalSecimleri": [
+  {
+   "adim": 3,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 9,
+   "aday": 3,
+   "secilen": [
+    "B28: kopma_sonra, edm=False, program=False"
+   ]
+  },
+  {
+   "adim": 10,
+   "aday": 4,
+   "secilen": [
+    "B28: kopma_sonra, edm=True, program=True"
+   ]
+  }
+ ],
+ "eStatusDegerleri": {
+  "waiting": 11,
+  "processing": 1
+ },
+ "kucultulmus": null,
+ "sure": 2.3
+}

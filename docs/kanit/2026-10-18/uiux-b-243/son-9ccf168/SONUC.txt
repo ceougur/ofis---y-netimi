@@ -1,0 +1,8 @@
+npm-test exit 0
+uiux-b-243 exit 0
+senaryo-ebelge-243 exit 0
+senaryo-fatura-243 exit 0
+senaryo-entegrator-240 exit 0
+gg243-tumunu-gonder exit 0
+senaryo-215 exit 0
+BITTI

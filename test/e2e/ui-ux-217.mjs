@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { buildXlsx } from "../../server/lib/xlsx-write.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "ui-ux-217");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -39,7 +40,7 @@ const findings = []; // { screen, check, ok, detail }
 let shotNo = 0;
 const shot = async name => { shotNo += 1; const file = `${String(shotNo).padStart(2, "0")}-${name}.png`; await page.screenshot({ path: path.join(OUT, file) }); return file; };
 const closeAll = async () => {
-  for (let i = 0; i < 8 && (await page.$(modal)); i += 1) { await page.keyboard.press("Escape"); await page.waitForTimeout(250); }
+  for (let i = 0; i < 8 && (await page.$(modal)); i += 1) { await escClose(page); await page.waitForTimeout(250); }
   for (let i = 0; i < 4 && (await page.$(modal)); i += 1) { await page.locator(`${modal} .hof-modal-close`).last().click({ timeout: 2000 }).catch(() => null); await page.waitForTimeout(250); }
   if (await page.$(modal)) await page.evaluate(() => document.querySelectorAll(".hof-modal-backdrop").forEach(node => node.remove()));
   await page.evaluate(() => { document.getElementById("hof-chat")?.setAttribute("hidden", ""); document.querySelector("#hof-pages .hof-pages-menu")?.setAttribute("hidden", ""); document.querySelectorAll(".hof-session-menu").forEach(m => m.setAttribute("hidden", "")); });
@@ -127,7 +128,7 @@ try {
   await page.waitForSelector(`${modal} .hof-mapping`, { timeout: 30000 });
   await Promise.all([page.waitForEvent("load", { timeout: 30000 }), page.click(`${modal} [data-mode="replace"]`)]);
   await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 }).catch(() => null);
-  await page.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]").catch(() => page.keyboard.press("Escape"));
+  await page.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]").catch(() => escClose(page));
   await page.goto(`${BASE}/`, { waitUntil: "load" });
   await page.waitForSelector("#hof-sidecard [data-action=invoices]", { timeout: 20000 });
   const sup = (await call("/api/workspace/accounts", { name: "Akçansa Bayi", type: "supplier" })).data.id;
@@ -157,12 +158,12 @@ try {
   }));
   findings.push({ screen: "Ana ekran", check: "Şeritler yer kavgası yapmıyor (3 sn: ≤ 4 DOM değişimi, takvim şeridi aynı düğüm)", ok: churn.count <= 4 && churn.sameBand, detail: `${churn.count} değişim · ${churn.order}` });
   await screen("Şirket seçici menüsü", async () => { await page.click("#hof-company [data-toggle]"); await page.waitForSelector("#hof-company .hof-session-menu:not([hidden])"); });
-  await page.keyboard.press("Escape");
+  await escClose(page);
   await screen("+ Sayfa menüsü", async () => { await page.click("#hof-pages [data-add]"); await page.waitForSelector("#hof-pages .hof-pages-menu:not([hidden])"); });
-  await page.keyboard.press("Escape");
+  await escClose(page);
   await screen("Zil — bildirim listesi", async () => { await page.click(".topbar .top-actions > .icon-button"); await page.waitForSelector(modal, { timeout: 8000 }); });
   await screen("Tahsilat Takvimi pil kartı", async () => { await page.hover(".hof-payment-promises-viewport"); await page.$eval(".hof-payment-promises .hof-payment-pill:not([aria-hidden])", node => node.click()); await page.waitForSelector(".hof-payment-action-card", { timeout: 5000 }); });
-  await page.keyboard.press("Escape");
+  await escClose(page);
   await screen("Detay kartı (tablodaki kayıt)", async () => { await page.click(".dynamic-table tbody tr"); await page.waitForTimeout(800); });
   await screen("Görevler", async () => openWindow("tasks"));
   await screen("Mesajlar", async () => { await page.click('#hof-sidecard [data-action="messages"]'); await page.waitForSelector("#hof-chat:not([hidden])", { timeout: 8000 }); await page.waitForTimeout(600); });
@@ -194,7 +195,8 @@ try {
   await screen("Banka — Hesap Detayı", async () => { await openWindow("bank"); await bankTab("accounts"); await clickFirstRow(); });
   await screen("Banka — yeni hesap formu", async () => { await openWindow("bank"); await bankTab("accounts"); await clickButton(/Yeni Hesap/); });
   await screen("Banka — Ayarlar (Gelişmiş)", async () => { await openWindow("bank"); await bankTab("settings"); await page.click(`${modal} [data-act="advanced"]`); await page.waitForTimeout(400); });
-  await screen("Banka — Hesabı Atanmamış Eski Hareketler", async () => { await openWindow("bank"); await page.click(`${modal} [data-bank-unassigned] [data-act="legacy"]`); await page.waitForTimeout(900); });
+  // 2.4.3 (C11): pencere son sekmeyi hatırlar → Genel Bakış açıkça seçilir.
+  await screen("Banka — Hesabı Atanmamış Eski Hareketler", async () => { await openWindow("bank"); await bankTab("overview"); await page.click(`${modal} [data-bank-unassigned] [data-act="legacy"]`); await page.waitForTimeout(900); });
   // Banka — Hareketler (v2.1.0 Aşama 4, plan §8.6): liste, İşlem Kartı (etkin ve ters kaydedilmiş: pasif düğme nedeni), masraf ve faiz
   // formları, Planlı İşlemler.
   const fee = (await call("/api/workspace/bank/vouchers", { type: "fee", accountId: bankAccount.id, amount: "10,50", feeType: "eft", tax: "bsmv_incl", date: TODAY })).data;
@@ -206,7 +208,8 @@ try {
   await screen("Banka — faiz formu", async () => { await openWindow("bank"); await bankTab("movements"); await clickButton(/\+ Faiz/); });
   await screen("Banka — Planlı İşlemler", async () => { await openWindow("bank"); await bankTab("movements"); await page.click(`${modal} [data-act="mv-planned"]`); await page.waitForSelector(`${modal} .hof-bank-plans tbody tr[data-plan]`, { timeout: 8000 }); });
   await call(`/api/workspace/bank/events/${fee.id}/reverse`, {});
-  await screen("Banka — ters kaydedilmiş İşlem Kartı (pasif düğme nedeni)", async () => { await openWindow("bank"); await bankTab("movements"); await page.click(`${modal} .hof-bank-moves tbody tr[data-event="${fee.id}"]`); await page.waitForSelector(`${modal} [data-bank-event-blocks]`, { timeout: 8000 }); });
+  // 2.4.3 (C11): Hareketler'in Planlı görünümü oturumda kalır → liste görünümüne dönülür.
+  await screen("Banka — ters kaydedilmiş İşlem Kartı (pasif düğme nedeni)", async () => { await openWindow("bank"); await bankTab("movements"); if (await page.$(`${modal} [data-act="mv-planned"][aria-pressed="true"]`)) { await page.click(`${modal} [data-act="mv-planned"]`); await page.waitForTimeout(700); } await page.click(`${modal} .hof-bank-moves tbody tr[data-event="${fee.id}"]`); await page.waitForSelector(`${modal} [data-bank-event-blocks]`, { timeout: 8000 }); });
   const openCenter = async () => { await openWindow("analytics"); await page.click(`${modal} .hof-rep-tab[data-tab="all"]`); await page.waitForSelector(`${modal} .hof-rc-item`, { timeout: 15000 }); await page.waitForTimeout(500); };
   await screen("Raporlar — Vade Takip (ilk sekme)", async () => { await openWindow("analytics"); await page.waitForTimeout(1200); });
   await screen("Raporlar — Rapor Merkezi", openCenter);

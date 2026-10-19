@@ -26,6 +26,10 @@ export async function startTestServer(options = {}) {
     ...(options.edocEnabled ? { edocEnabled: true } : {}),
     ...(options.edocLive ? { edocLive: true } : {}),
     ...(options.esmmEnabled ? { esmmEnabled: true } : {}),
+    // 2.4.3 (H7): iptal öncesi "işleniyor" durumunun yeniden sorulma aralıkları (üretimde 1 sn + 2 sn); testler kısa verir.
+    ...(options.edocStatusPollMs ? { edocStatusPollMs: options.edocStatusPollMs } : {}),
+    // Dar kontrol 2.4.3 (Y1): Tümünü Gönder'in istek başına süre bütçesi (üretimde 10 sn).
+    ...(options.edocSendBudgetMs ? { edocSendBudgetMs: options.edocSendBudgetMs } : {}),
     // 2.4.2: test serisi (TEF/TEA/TES) üretimde firmaya özgü rastgele büyük numaradan başlar (EDM test hesabı ortak). Eski testler numarayı
     // 1'den bekler; üretim davranışını deneyen test testSeriesStart: null verir (üretimdeki gibi rastgele).
     ...(options.testSeriesStart === null ? {} : { testSeriesStart: options.testSeriesStart || (() => 1) }),
@@ -66,9 +70,25 @@ export async function startTestServer(options = {}) {
     client: () => createClient(base),
     async close() {
       await app.close();
-      rmSync(root, { recursive: true, force: true });
+      removeTestDir(root);
     },
   };
+}
+
+// Uzun Doğrulama run 39045380135 (2.4.3, Windows, mutabakat tohum 1): 5.000 işlemin hepsi tutarlıydı, ama sunucu kapandıktan hemen sonra geçici
+// klasörü silmek EPERM verdi (Windows dosyayı bir an daha tutuyor) ve koşu kırmızıya döndü. Temizlik hatası asıl sonucu ezmez (ders 21): önce
+// yeniden denenir (rmSync EPERM/EBUSY'de bekleyip yineler); Windows'ta yine silinemezse klasör uyarıyla bırakılır. Başka platformda hata yükselir.
+export function removeTestDir(dir, { rm = rmSync, platform = process.platform, warn = console.warn } = {}) {
+  try {
+    rm(dir, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
+  } catch (error) {
+    if (platform === "win32" && ["EPERM", "EBUSY", "ENOTEMPTY"].includes(error?.code)) {
+      warn(`[test] geçici klasör silinemedi (${error.code}), bırakıldı: ${dir}`);
+      return false;
+    }
+    throw error;
+  }
+  return true;
 }
 
 export function createClient(base) {

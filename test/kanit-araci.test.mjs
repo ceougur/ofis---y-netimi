@@ -3,7 +3,7 @@
 // üretildi. Bu test aracın o yanlışları yapmadığını sınar (CLAUDE.md → "Geçmiş test hatalarından dersler" 2, 4, 16).
 import { strict as assert } from "node:assert";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { describe, it } from "node:test";
@@ -133,6 +133,29 @@ describe("kanıt aracı: gerçek koşu kaydı", () => {
       const record = recordOf(dir, "dusen");
       assert.equal(record.hukum, "BAŞARISIZ");
       assert.equal(record.cikis_kodu, 3);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("kapı kanıt klasöründeki kayıt olmayan JSON'u (kâhin fark/ham çıktısı) yok sayar, çökmez (Uzun Doğrulama 19.10.2026)", () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), "kanit-"));
+    try {
+      assert.equal(runTool(dir, "kahin-ornek", "console.log('# tests 1'); console.log('# pass 1'); console.log('# fail 0')").status, 0);
+      const extra = path.join(dir, "kahin-ebelge");
+      mkdirSync(path.join(extra, "ham"), { recursive: true });
+      writeFileSync(path.join(extra, "fark-ebelge-t1-i300.json"), JSON.stringify({ ad: "ebelge-t1-i300", tohum: 1, farkSayisi: 0 }));
+      writeFileSync(path.join(extra, "ham", "adimlar.json"), JSON.stringify([{ islem: "kaydet" }]));
+      // Kapının yalnız kayıt okumasını sına: kayıt temiz ağaçta koşmuş sayılır (yerel geliştirme ağacı kirli olabilir).
+      const day = readdirSync(dir).find(name => /^\d{4}-/.test(name));
+      const file = path.join(dir, day, "kahin-ornek.json");
+      const record = { ...JSON.parse(readFileSync(file, "utf8")), kirli: 0, izlenmeyen: 0 };
+      writeFileSync(file, JSON.stringify(record));
+      const sha = record.commit || "";
+      const result = spawnSync(process.execPath, [TOOL, "kapi", dir, "--commit", sha, "--beklenen", "kahin-ornek"], { env: { ...process.env, NEEDS_JSON: "{}" }, encoding: "utf8" });
+      assert.equal(result.status, 0, result.stdout + result.stderr);
+      assert.match(result.stdout, /\| kahin-ornek \| GEÇTİ/);
+      assert.doesNotMatch(result.stdout, /ebelge-t1-i300/);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

@@ -1,0 +1,89 @@
+[cpu-yavaslat] Chromium CPU yavaşlatması ×6
+DestekOfis e2e — http://127.0.0.1:45169
+  ✓ giriş ekranı açılır, hatalı parola reddedilir (1094 ms)
+  ✓ yönetici giriş yapar, uygulama ve operasyon kartı yüklenir (1504 ms)
+  ✓ ücretsiz deneme program açılınca kendiliğinden başlar; lisans ekranı sadeleşir (2007 ms)
+  ✓ veri yokken ortada 'başlayalım' kartı; paketin yükleme düğmeleri gizli (219 ms)
+[cpu-yavaslat] Chromium CPU yavaşlatması ×6
+  ✓ Excel başlangıç kartından yüklenir ve ofisin kalıcı verisi olur (3195 ms)
+  ✓ akıllı analiz ekranı adım adım açılır; sektör önerisi kanıtıyla gelir, kendiliğinden uygulanmaz (3643 ms)
+  ✓ sektör seçici: kelimeyle aranır, klavyeyle gezilir, Esc ile kapanır (1596 ms)
+  ✓ öneri onaylanınca görünüm sektör diline geçer; göstergeler kolon adlarıyla (1121 ms)
+  ✓ kolon genişliği başlığın kenarından sürüklenir, hatırlanır; çift tık otomatik genişliğe döndürür (1559 ms)
+  ✓ akıllı özet kartı tıklanınca kayıt listesi açılır; kayda gidilir ve satır belirginleşir (1739 ms)
+  ✓ kartın 'Nasıl hesaplandı?' açıklaması ve dağılımdan kayıt listesi (1877 ms)
+  ✓ başlık kalemle değiştirilir, kalıcıdır ve varsayılana döndürülebilir; ana ekranda 'Dosya özeti' bloğu yok (v2.0.10) (5748 ms)
+  ✓ satırlar sunucu kimliği taşır, sayfalama 20 satır gösterir (1145 ms)
+  ✓ sekmeler kendi kolonlarıyla; arama tüm sekmeleri sayar, Enter başka sekmedeki kayda gider (3595 ms)
+  ✓ hücre düzenlenir; tablo yenilenir ve seçim korunur (3099 ms)
+  ✓ satır silinir ve geri alınır (2219 ms)
+  ✓ yeni kayıt açık sekmenin kolonlarıyla oluşturulur, o sekmede en üste gelir ve seçilir (1412 ms)
+  ✓ dosyaya not eklenir; işlem geçmişinde işlemi yapanla görünür (2844 ms)
+  ✓ tahsilat işlenir (en altta), düzeltilir ve silinir; kasaya düşer, kasadan ödeme girilir (7080 ms)
+  ✓ taksitler (v2.0.4): kart açılır, taksitler dağıtılır, tahsilat kalanı düşürür ve kasaya iner (9585 ms)
+  ✓ taksit kartı tablodaki kayda bağlanır; kişinin kartından taksit tahsilatı taksitten düşer ve Kasa'ya tek kayıt iner (v2.0.6) (8098 ms)
+  ✓ Cari (2.0.18): Tablodan Al yok; cariler Excel yükleme ucuyla açılır (kayda bağ yok), cari tahsilatı Kasa'ya düşer; taksitli caride tahsilat taksite yazılır (3785 ms)
+  ✓ Stok (v2.0.6): ürün açılır, çıkışla kritik seviyeye iner (rozet), Kasa'dan ödenen giriş Kasa'ya gider olarak düşer (7351 ms)
+  ✓ ANLIK DURUM (v2.0.7): kart canlı; arayüzden tahsil edilen çek Kasa'yı anında değiştirir; Rapor Al, nakit akışı grafiği, rapor merkezi PDF/Excel; kart küçülür ve öyle kalır (9954 ms)
+  ✓ detaydaki 'Notu Kaydet' merkezi sunucuya yazılır (1005 ms)
+  ✓ tahsilat takvimi şeridi ödeme sözlerini gösterir; söz 'ödendi say' ile kapanır (444 ms)
+  ✓ yönetici personel hesabı oluşturur (yönetim paneli) (1090 ms)
+  ✓ yönetim panelinde yedek alınır ve geçmiş listelenir (635 ms)
+  ✓ yönetim panelinde ofis adı kaydedilir, bağlantı adresleri listelenir (553 ms)
+  ✓ yeni personel ilk girişte parolasını değiştirmek zorunda (2588 ms)
+  ✓ personel aynı merkezi tabloyu ve notları görür (477 ms)
+  ✓ operasyon merkezi düğme adları köşedeki kalemle değişir; tüm bilgisayarlara yansır, personel kalemi görmez (3784 ms)
+  ✓ personel kaynak menülerini göremez, satır silemez (693 ms)
+  ✓ ANLIK DURUM kartı yalnız yöneticide (v2.0.10); yetki panelinden 'Finans raporları' verilince personelde Raporlar sayfa yenilenmeden açılır, kart açılmaz; geri alınınca kapanır (2681 ms)
+  ✓ yönetici görev atar, personel sayfayı yenilemeden rozet ve bildirim alır, tamamlar (3121 ms)
+  ✓ sohbet: özel mesaj anında gelir, okundu görünür, dosya numarası dosyayı açar (5287 ms)
+  ✓ alt tablolu Excel 'yerine koy' ile yüklenir; sekme içindeki tablolar kendi kolonlarıyla bölüm olur (9935 ms)
+  ✓ yeni ay dosyası 'devamı olarak' eklenir: yeniler eklenir, değişen güncellenir, olmayan korunur (2463 ms)
+  ✓ farklı konudaki Excel yeni sayfada açılır; adı şeritte değişir, sayfalar arasında geçilir, diğer kullanıcının ekranı değişmez (9413 ms)
+  ✓ oturum kapanınca giriş ekranı ofis adıyla gelir (541 ms)
+[cpu-yavaslat] Chromium CPU yavaşlatması ×6
+  ✓ v1.0.0 tarayıcısındaki kaynak ve notlar ilk girişte ofise taşınır (3116 ms)
+[cpu-yavaslat] Chromium CPU yavaşlatması ×6
+  ✓ hukuk dışı veri: klinik tablosu Klinik önerir; seçilince dil 'hasta'ya döner, haciz gizlenir (9636 ms)
+[cpu-yavaslat] Chromium CPU yavaşlatması ×6
+  ✓ okul servisi: sektör tanınır; ödenmeyen aylar şeritte ve sağ alt bildirimde; pilden tahsilat girilince pil kaybolur; belge son günleri zilde; kasa aralığı PDF iner (22967 ms)
+[cpu-yavaslat] Chromium CPU yavaşlatması ×6
+  ✓ Excel açılır listeleri tarayıcıda okunur; kartta ▾ ile seçilir; gizli liste sayfası sekme olmaz; kendi sektörü oluşturulur (10829 ms)
+[cpu-yavaslat] Chromium CPU yavaşlatması ×6
+  ✓ formüllü Excel: detay kartında taksit girilince Kalan ve Durum yeniden hesaplanır (10070 ms)
+[AKD gezinti] http://127.0.0.1:44275/
+[AKD konsol] error Failed to load resource: the server responded with a status of 401 (Unauthorized)
+[AKD konsol] info Autofocus processing was blocked because a document already has a focused element.
+[AKD gezinti] http://127.0.0.1:44275/
+[AKD gezinti] http://127.0.0.1:44275/
+[AKD konsol] info Autofocus processing was blocked because a document already has a focused element.
+[AKD gezinti] http://127.0.0.1:44275/
+[cpu-yavaslat] Chromium CPU yavaşlatması ×6
+[AKD gezinti] http://127.0.0.1:44275/
+[AKD download] blob:http://127.0.0.1:44275/648886ce-5adb-43cd-a691-463cc93d7e94
+[AKD download] http://127.0.0.1:44275/api/workspace/documents/doc-adf5affc-2eb1-488d-8c5f-aad1ec5d4043/fi
+[AKD download] http://127.0.0.1:44275/api/workspace/cases/M-102/documents/archive?ids=doc-adf5affc-2eb1-4
+[AKD konsol] info Autofocus processing was blocked because a document already has a focused element.
+[AKD] dışa aktarma öncesi {"modals":0,"toasts":["Yönetici parolanızı unutursanız programa kurtarma anahtarıyla girersiniz. Henüz oluşturmadınız.","1 başlık güncellendi; tüm bilgisayarlarda görünür."],"state":{"hofModal":"hof-m89zmk1n"},"len":4,"menu":true}
+[AKD] indirme yok {"toasts":[],"url":"http://127.0.0.1:44275/","menu":true,"busy":"hof-toolbar-export"}
+  ✗ akıllı denetim öneriyle düzeltir; belge eklenir ve önizlenir; kolon adlandırılır; Excel'e aktarılır
+    page.waitForEvent: Timeout 15000ms exceeded while waiting for event "download"
+=========================== logs ===========================
+waiting for event "download"
+============================================================
+    at /home/user/ofis---y-netimi/.claude/worktrees/agent-a34eec2f4fcc3bf36/test/e2e/zz-gecici-run-debug.mjs:1580:50
+    at async step (/home/user/ofis---y-netimi/.claude/worktrees/agent-a34eec2f4fcc3bf36/test/e2e/zz-gecici-run-debug.mjs:63:5)
+    at async file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a34eec2f4fcc3bf36/test/e2e/zz-gecici-run-debug.mjs:1455:3
+    sayfa 0: {"url":"http://127.0.0.1:45169/","auth":false,"modals":[],"splash":false,"root":2,"badge":"","user":"Ofis yöneticisi","tasks":{"ok":true,"data":[]}}
+    sayfa 1: {"url":"http://127.0.0.1:45169/","auth":true,"authError":"","modals":[],"splash":false,"root":0,"tasks":null}
+
+Konsol kayıtları:
+[yönetici] console: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:45169/api/auth/me
+[yönetici] console: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:45169/api/auth/login
+[yönetici] console: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:45169/api/auth/me
+[yönetici] console: Failed to load resource: the server responded with a status of 409 (Conflict) http://127.0.0.1:45169/api/workspace/payments/payment-8935b64f-8aa9-4a40-a88c-6106aebae3e8?hofCompany=sirket-001&hofPage=dataset%3A%2F%2Fofis
+[yönetici] console: Failed to load resource: the server responded with a status of 400 (Bad Request) http://127.0.0.1:45169/api/workspace/plans?hofCompany=sirket-001&hofPage=dataset%3A%2F%2Fofis
+[personel] console: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:45169/api/auth/me
+[personel] console: Failed to load resource: the server responded with a status of 403 (Forbidden) http://127.0.0.1:45169/api/workspace/overview?hofCompany=sirket-001&hofPage=dataset%3A%2F%2Fofis
+[personel] console: Failed to load resource: the server responded with a status of 403 (Forbidden) http://127.0.0.1:45169/api/workspace/overview?hofCompany=sirket-001&hofPage=dataset%3A%2F%2Fofis
+[personel] console: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:45169/api/auth/me

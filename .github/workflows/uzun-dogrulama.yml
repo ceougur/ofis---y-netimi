@@ -9,7 +9,7 @@ name: Uzun Doğrulama
 # Her koşu kanıt aracıyla (çıkış kodu + sayılar + başarısız testler); sonda "Uzun Doğrulama Kapısı" bütün kayıtları ister.
 # Maliyet ve sınır (kullanıcı, 10.10.2026: "maliyet çıksın istemiyorum"): depo herkese açık → standart koşucular ücretsiz (faturalanan
 # süre 0, GitHub'dan okundu). Depo özel yapılırsa dakikalar ücretli kotadan düşer — o zaman bu işler HİÇ başlamaz (if: private değil). Hesabın aynı anda koşabilen iş sınırı (Free: 20)
-# normal CI ile paylaşılır; uzun koşular normal CI'yi bekletmesin diye her matris en çok 6 iş + 1 uzun koşu (toplam 13; CI'ye 7 yuva kalır).
+# normal CI ile paylaşılır; uzun koşular normal CI'yi bekletmesin diye her matris en çok 6 iş + 1 uzun koşu + 1 kâhin işi (toplam 14; CI'ye 6 yuva kalır).
 on:
   push:
     branches: ["**"]
@@ -120,11 +120,37 @@ jobs:
           path: kanit-cikti/
           if-no-files-found: warn
 
+  kahin_ebelge:
+    # 2.4.3 bağımsız kâhin (CLAUDE.md KANIT KURALI 2, ders 5): e-Belge numara/gönderim durum makinesi — temiz oda Python modeli
+    # (test/bagimsiz/ebelge/) ↔ programın HTTP API'si (sahte EDM + arıza vekili; ağa çıkmaz). Tek iş, tohum 1–5 × 300 işlem döngüyle
+    # (matris değil: eşzamanlı iş sınırına yalnız 1 iş ekler). Fark/ihlal varsa küçültülmüş dizi kanıt çıktısındadır.
+    if: (!github.event.repository.private) && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[uzun-dogrulama]'))
+    name: Kâhin e-Belge (tohum 1–5 × 300 işlem)
+    runs-on: ubuntu-latest
+    timeout-minutes: 345
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Kâhin modelinin birim testleri ve mutasyon (testin dişi)
+        run: python3 test/bagimsiz/ebelge/test_model.py && python3 test/bagimsiz/ebelge/mutasyon.py
+      - name: Kâhin e-Belge (kanıt kaydıyla)
+        run: node tools/kanit.mjs kos kahin-ebelge-tohum1-5-islem300 --sure 330 -- npm run test:kahin-ebelge -- --tohumlar 1-5 --islem 300 --kucult --butce 25 --cikti kanit-cikti/kahin-ebelge
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kanit-kahin-ebelge
+          path: kanit-cikti/
+          if-no-files-found: warn
+
   kapi:
     if: always() && (!github.event.repository.private) && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[uzun-dogrulama]'))
     name: Uzun Doğrulama Kapısı
     runs-on: ubuntu-latest
-    needs: [mutabakat, mutabakat_uzun, guvenilirlik]
+    needs: [mutabakat, mutabakat_uzun, guvenilirlik, kahin_ebelge]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -140,4 +166,4 @@ jobs:
           NEEDS_JSON: ${{ toJSON(needs) }}
         run: >-
           node tools/kanit.mjs kapi kanit --commit "$GITHUB_SHA"
-          --beklenen mutabakat-uzun-10000,mutabakat-ubuntu-latest-tohum1,mutabakat-ubuntu-latest-tohum2,mutabakat-ubuntu-latest-tohum3,mutabakat-ubuntu-latest-tohum4,mutabakat-ubuntu-latest-tohum5,mutabakat-ubuntu-latest-tohum6,mutabakat-ubuntu-latest-tohum7,mutabakat-ubuntu-latest-tohum8,mutabakat-ubuntu-latest-tohum9,mutabakat-ubuntu-latest-tohum10,mutabakat-windows-latest-tohum1,guvenilirlik-ubuntu-latest-bos-tohum1,guvenilirlik-ubuntu-latest-bos-tohum2,guvenilirlik-ubuntu-latest-bos-tohum3,guvenilirlik-ubuntu-latest-bos-tohum4,guvenilirlik-ubuntu-latest-bos-tohum5,guvenilirlik-ubuntu-latest-surum-2.0.19-zincir-tohum1,guvenilirlik-ubuntu-latest-surum-2.0.19-zincir-tohum2,guvenilirlik-ubuntu-latest-surum-2.0.19-zincir-tohum3,guvenilirlik-ubuntu-latest-surum-2.0.19-zincir-tohum4,guvenilirlik-ubuntu-latest-surum-2.0.19-zincir-tohum5,guvenilirlik-windows-latest-bos-tohum1
+          --beklenen kahin-ebelge-tohum1-5-islem300,mutabakat-uzun-10000,mutabakat-ubuntu-latest-tohum1,mutabakat-ubuntu-latest-tohum2,mutabakat-ubuntu-latest-tohum3,mutabakat-ubuntu-latest-tohum4,mutabakat-ubuntu-latest-tohum5,mutabakat-ubuntu-latest-tohum6,mutabakat-ubuntu-latest-tohum7,mutabakat-ubuntu-latest-tohum8,mutabakat-ubuntu-latest-tohum9,mutabakat-ubuntu-latest-tohum10,mutabakat-windows-latest-tohum1,guvenilirlik-ubuntu-latest-bos-tohum1,guvenilirlik-ubuntu-latest-bos-tohum2,guvenilirlik-ubuntu-latest-bos-tohum3,guvenilirlik-ubuntu-latest-bos-tohum4,guvenilirlik-ubuntu-latest-bos-tohum5,guvenilirlik-ubuntu-latest-surum-2.0.19-zincir-tohum1,guvenilirlik-ubuntu-latest-surum-2.0.19-zincir-tohum2,guvenilirlik-ubuntu-latest-surum-2.0.19-zincir-tohum3,guvenilirlik-ubuntu-latest-surum-2.0.19-zincir-tohum4,guvenilirlik-ubuntu-latest-surum-2.0.19-zincir-tohum5,guvenilirlik-windows-latest-bos-tohum1

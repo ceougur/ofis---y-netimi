@@ -1,0 +1,213 @@
+■ A Ortak çekirdek sözleşmesi (HOF.formModal / HOF.modal / HOF.swap)
+  ✓ A1 temiz form Esc ile sorusuz kapanır
+  ✗ A2 çekirdek: Esc kaydedilmemiş değişikliği sordu
+  ✗ A2 çekirdek: "Forma Dön" sonrası form açık, değerler yerinde ({"ad":"(yok)","tur":"(yok)","onay":"(yok)","not":"(yok)"})
+  ✗ Bölüm A: beklenmeyen hata: locator.click: Timeout 12000ms exceeded.
+
+■ B Bildirimler: yığılma (A6), süre (B5 / A11), fare üstünde (C8)
+  ✗ B1 aynı bildirim yığılmadı: [{"text":"Bu carinin 1 taksit kartı var. Önce kartları silin.","count":""},{"text":"Bu carinin 1 taksit kartı var. Önce kartları silin.","count":""},{"text":"Bu carinin 1 taksit kartı var. Önce kartları silin.","count":""},{"text":"Bu carinin 1 taksit kartı var. Önce kartları silin.","count":""}]
+  ✗ Bölüm B: beklenmeyen hata: page.evaluate: TypeError: window.HOF.toastDuration is not a function
+
+■ C Tarayıcının Geri tuşu ve F5 (C10)
+  ✗ C1 Geri: cari kartından listeye döndü, program açık
+  ✗ C2 Geri: pencere kapandı, programdan çıkılmadı
+  ✗ Bölüm C: beklenmeyen hata: page.evaluate: TypeError: Cannot read properties of undefined (reading 'accounts')
+  · Bölüm C sonrası program sayfası kapanmıştı; yeniden açıldı
+
+■ D Gerçek formlar
+  ✓ D1 Yeni Cari: + Alan Ekle ve Tür değişiminden sonra değerler yerinde {"name":"Form İzolasyon Ltd. Şti.","phone":"0533 765 43 21","email":"bilgi@izolasyon.com.tr","address":"Atatürk Cad. No 5 Çankaya","type":"supplier"}
+  ✗ D1 Yeni Cari: Esc kaydedilmemiş değişikliği sordu
+  ✗ D1 Yeni Cari: "Forma Dön" sonrası form açık, değerler yerinde ({"name":"(yok)","phone":"(yok)","email":"(yok)","address":"(yok)","type":"(yok)"})
+  ✗ D1 Yeni Cari: × kaydedilmemiş değişikliği sordu
+  ✗ D1 Yeni Cari: "Forma Dön" sonrası form açık, değerler yerinde ({"name":"(yok)","phone":"(yok)","email":"(yok)","address":"(yok)","type":"(yok)"})
+  ✗ D1: beklenmeyen hata: locator.boundingBox: Timeout 12000ms exceeded.
+  ✓ D2 Cariyi Düzenle: başka oturumun değişikliği açık formu ezmedi {"phone":"0544 000 11 22","note":"Ekrandan yazılan not","email":""}
+  ✗ D2 Cariyi Düzenle: Esc kaydedilmemiş değişikliği sordu
+  ✗ D2 Cariyi Düzenle: "Forma Dön" sonrası form açık, değerler yerinde ({"phone":"(yok)","note":"(yok)"})
+  ✗ D2 Cariyi Düzenle: × kaydedilmemiş değişikliği sordu
+  ✗ D2 Cariyi Düzenle: "Forma Dön" sonrası form açık, değerler yerinde ({"phone":"(yok)","note":"(yok)"})
+  ✗ D2: beklenmeyen hata: locator.boundingBox: Timeout 12000ms exceeded.
+  ✗ D3 Cari Tahsilat: Esc kaydedilmemiş değişikliği sordu
+  ✗ D3 Cari Tahsilat: "Forma Dön" sonrası form açık, değerler yerinde ({"amount":"(yok)"})
+  ✗ D3 Cari Tahsilat: × kaydedilmemiş değişikliği sordu
+  ✗ D3 Cari Tahsilat: "Forma Dön" sonrası form açık, değerler yerinde ({"amount":"(yok)"})
+  ✗ D3: beklenmeyen hata: locator.boundingBox: Timeout 12000ms exceeded.
+  ✗ D4 Not Ekle: Esc kaydedilmemiş değişikliği sordu
+  ✗ D4 Not Ekle: "Forma Dön" sonrası form açık, değerler yerinde ({"note":"(yok)"})
+  ✗ D4: beklenmeyen hata: locator.click: Timeout 12000ms exceeded.
+  ✗ D5 cari önerisinde Aşağı ok + Enter ikinci satırı seçti (Akın Ticaret)
+  ✗ D5 açık stok listesinde Esc yalnız listeyi kapattı (form açık)
+  ✗ D5: beklenmeyen hata: page.waitForSelector: Timeout 12000ms exceeded.
+  ✗ D6: beklenmeyen hata: Cannot read properties of null (reading 'id')
+  ✗ D7 açık tedarikçi listesinde Esc yalnız listeyi kapattı
+  ✗ D7: beklenmeyen hata: locator.click: Timeout 12000ms exceeded.
+  ✗ D8 Logo Seç sonrası kaydedilmemiş alanlar yerinde (D1)
+  ✗ D8 Kaşe / İmza Seç sonrası alanlar yerinde (D1)
+  ✗ D8 Kaşe / İmzayı Kaldır sonrası alanlar yerinde, kaşe kalktı
+  ✗ D8 Fatura Ayarları: Esc kaydedilmemiş değişikliği sordu
+  ✗ D8 Fatura Ayarları: "Forma Dön" sonrası form açık, değerler yerinde ({"name":"(yok)","address":"(yok)","city":"(yok)","phone":"(yok)","iban":"(yok)","bank":"(yok)","footer":"(yok)","dueDays":"(yok)","track":"()
+  ✗ D8: beklenmeyen hata: locator.click: Timeout 12000ms exceeded.
+  ✓ D9 sekme değişiminden sonra değerler yerinde {"user":"izolasyon-kullanici","url":"https://ornek.invalid/servis"}
+  ✗ D9 Entegratör Ayarları: Esc kaydedilmemiş değişikliği sordu
+  ✗ D9 Entegratör Ayarları: "Forma Dön" sonrası form açık, değerler yerinde ({"user":"(yok)","url":"(yok)"})
+  ✗ D9 Entegratör Ayarları: × kaydedilmemiş değişikliği sordu
+  ✗ D9 Entegratör Ayarları: "Forma Dön" sonrası form açık, değerler yerinde ({"user":"(yok)","url":"(yok)"})
+  ✗ D9: beklenmeyen hata: locator.boundingBox: Timeout 12000ms exceeded.
+  ✗ D10 Yeni Ürün: Esc kaydedilmemiş değişikliği sordu
+  ✗ D10 Yeni Ürün: "Forma Dön" sonrası form açık, değerler yerinde ({"code":"(yok)","name":"(yok)","salePrice":"(yok)"})
+  ✗ D10 Yeni Ürün: × kaydedilmemiş değişikliği sordu
+  ✗ D10 Yeni Ürün: "Forma Dön" sonrası form açık, değerler yerinde ({"code":"(yok)","name":"(yok)","salePrice":"(yok)"})
+  ✗ D10: beklenmeyen hata: locator.boundingBox: Timeout 12000ms exceeded.
+  ✗ D11 Kasa Tahsilat: Esc kaydedilmemiş değişikliği sordu
+  ✗ D11 Kasa Tahsilat: "Forma Dön" sonrası form açık, değerler yerinde ({"amount":"(yok)"})
+  ✗ D11 Kasa Tahsilat: × kaydedilmemiş değişikliği sordu
+  ✗ D11 Kasa Tahsilat: "Forma Dön" sonrası form açık, değerler yerinde ({"amount":"(yok)"})
+  ✗ D11: beklenmeyen hata: locator.boundingBox: Timeout 12000ms exceeded.
+  ✗ D12 Yeni Banka Hesabı: Esc kaydedilmemiş değişikliği sordu
+  ✗ D12 Yeni Banka Hesabı: "Forma Dön" sonrası form açık, değerler yerinde ({"bankName":"(yok)","name":"(yok)"})
+  ✗ D12 Yeni Banka Hesabı: × kaydedilmemiş değişikliği sordu
+  ✗ D12 Yeni Banka Hesabı: "Forma Dön" sonrası form açık, değerler yerinde ({"bankName":"(yok)","name":"(yok)"})
+  ✗ D12: beklenmeyen hata: locator.boundingBox: Timeout 12000ms exceeded.
+  ✗ D15 Çek / Senet: Esc kaydedilmemiş değişikliği sordu
+  ✗ D15 Çek / Senet: "Forma Dön" sonrası form açık, değerler yerinde ({"amount":"(yok)","serial":"(yok)","bank":"(yok)"})
+  ✗ D15: beklenmeyen hata: locator.click: Timeout 12000ms exceeded.
+  ✗ D16 Yeni Taksit Kartı: Esc kaydedilmemiş değişikliği sordu
+  ✗ D16 Yeni Taksit Kartı: "Forma Dön" sonrası form açık, değerler yerinde ({"name":"(yok)","total":"(yok)","count":"(yok)"})
+  ✗ D16 Yeni Taksit Kartı: × kaydedilmemiş değişikliği sordu
+  ✗ D16 Yeni Taksit Kartı: "Forma Dön" sonrası form açık, değerler yerinde ({"name":"(yok)","total":"(yok)","count":"(yok)"})
+  ✗ D16: beklenmeyen hata: locator.boundingBox: Timeout 12000ms exceeded.
+  ✓ D17 rol değişiminden (yetki ızgarası yeniden çizildi) sonra değerler yerinde {"name":"İzolasyon Personeli","username":"izolasyon1"}
+  ✗ D17 Yeni Kullanıcı: Esc kaydedilmemiş değişikliği sordu
+  ✗ D17 Yeni Kullanıcı: "Forma Dön" sonrası form açık, değerler yerinde ({"name":"(yok)","username":"(yok)"})
+  ✗ D17: beklenmeyen hata: locator.click: Timeout 12000ms exceeded.
+
+■ E Dışa Aktar menüsü alttaki lisans şeridinin üstünde (run.mjs ara sıra kırmızısı, zorla)
+  ✓ E1 ön koşul oluştu: "Excel Dosyası (.xlsx)" öğesi lisans şeridiyle çakışıyor ({"overlap":true,"centerCovered":false,"onItem":false,"hit":"ASIDE.hof-license-bar","item":[691,748],"bar":[743,884]})
+  ✗ E2 çakışan bölgede üstte menü öğesi var, şerit değil (ASIDE.hof-license-bar)
+  ✓ E3 şerit varken Excel indirildi (ornek-dosyalar - Aktif.xlsx; öğenin ortası şeridin altında: hayır)
+
+■ Kaynaktaki form / pencere açan çağrılar: 134 · ekrandan açılan: 19 · bu senaryoda açılmayan: 115
+  Açılmayanlar ortak çekirdekten (HOF.formModal / HOF.modal: kaydedilmemiş değişiklik sorusu, açık listede Esc, Ctrl+Enter, Geri tuşu, F5) korunur;
+  ekrandan ayrıca denenmediler (F = form penceresi, P = pencere):
+  F admin.js:373 roleEditor · role ? `Rolü düzenle · ${role.label}` : "Yeni Rol"
+  P admin.js:411 viewRole · `${role.label} · Yetkiler`
+  F admin.js:483 deleteUser · `${user.name} silinsin mi?`
+  F admin.js:522 restoreUser · `${name} geri alınıyor`
+  F admin.js:609 restoreUser · "Parola Sıfırla"
+  F admin.js:761 takeBackup · "Yedek Al"
+  F admin.js:800 restoreBackup · `Yedekten Geri Yükle · ${item.company}`
+  F admin.js:1437 separateCompany · `Şirketi Ayır · ${item.code} · ${item.name}`
+  F admin.js:1525 newCompany · "Yeni Şirket"
+  F admin.js:1559 resetCompany · `Şirket Verisini Sıfırla · ${item.code} · ${item.name}`
+  F admin.js:1578 deleteCompany · `Şirketi Sil · ${item.code} · ${item.name}`
+  F hof-accounts.js:639 wireTaxFields · "Posta Kutusu Seçin"
+  F hof-accounts.js:947 doubtfulTakeForm · "Şüpheli Alacağa Al"
+  F hof-accounts.js:968 doubtfulProvisionForm · "Karşılık Ayır"
+  F hof-accounts.js:987 doubtfulWriteOffForm · "Değersiz Alacak Yaz"
+  F hof-accounts.js:1012 doubtfulReleaseForm · "Şüpheliden Çıkar"
+  P hof-accounts.js:1078 collect · "Tahsilat"
+  F hof-accounts.js:1150 bulkPlanForm · "Seçilenlere Taksit Planı"
+  F hof-accounts.js:1288 mappingForm · "Excel’den Cari Yükle: Kolonları Eşle"
+  P hof-alerts.js:567 openPanel · "Bildirimler"
+  P hof-auth.js:174 printKey · used ? "Yeni Kurtarma Anahtarınız" : "Kurtarma Anahtarınız"
+  P hof-auth.js:212 printKey · forced ? "Parolanızı Yenileyin" : "Parola Değiştir"
+  F hof-bank-pos.js:303 posForm · edit ? "POS'u Düzenle" : inline ? "POS Tanımla" : "POS Ekle"
+  P hof-bank-pos.js:374 ratesForm · "Komisyon Oranları"
+  F hof-bank-pos.js:378 ratesForm · "Komisyon Oranları"
+  F hof-bank-pos.js:435 movePending · "Bekleyenleri Yeni Hesaba Taşı"
+  F hof-bank-pos.js:686 refundSale · "POS İadesi"
+  F hof-bank-pos.js:709 confirmDay · "Bankaya Geçişi Onayla"
+  F hof-bank.js:976 cardForm · edit ? "Kredi Kartını Düzenle" : inline ? "Kredi Kartı Tanımla" : "Kredi Kartı E
+  F hof-bank.js:1069 openingForm · correct ? "Açılışı Düzelt" : "Açılış Bakiyesi Gir"
+  F hof-bank.js:1170 reclassForm · mode === "bank" ? "Bankaya Geçmiş Say" : "Kart Borcuna Aktar"
+  P hof-bank.js:1210 openSubTrial · "Alt Hesap Mizanı"
+  P hof-bank.js:1244 openWizard · "Kurulum Sihirbazı"
+  F hof-bank.js:2258 reverseForm · "Ters Kaydet"
+  F hof-bank.js:2273 infoForm · "Açıklamayı Düzelt"
+  F hof-bank.js:2295 planRunForm · "Planlı İşlemi Gerçekleştir"
+  F hof-bank.js:2706 flagDefine · ?
+  P hof-cheques.js:45 open · moduleName()
+  F hof-cheques.js:332 actionForm · `${text.title} · ${cheque.instrumentLabel}${cheque.serialNo ? ` No ${cheque.seri
+  F hof-cheques.js:472 depositForm · titleOf("Bankaya Tahsile Ver", cheque)
+  F hof-cheques.js:492 withdrawForm · titleOf("Bankadan Geri Al", cheque)
+  F hof-cheques.js:564 importFlow · "Çek / Senet Portföyü: Kolonları Eşle"
+  F hof-choices.js:121 openMenu · `${label} Düzenle`
+  F hof-colops.js:124 addColumn · "Sütun Ekle"
+  F hof-columns.js:98 openEditor · "Kolon Adlarını Değiştir"
+  P hof-columns.js:196 showFixed · "Kolon adları düzeltildi"
+  F hof-companies.js:66 openNew · "Yeni Şirket"
+  P hof-documents.js:249 openAdd · "Belge Ekle"
+  P hof-documents.js:334 preview · viewable[index].name
+  P hof-documents.js:484 gallery · "Belgeler"
+  P hof-free.js:281 openCreate · blankOnly ? "Boş Sayfa" : "Yeni Sayfa"
+  F hof-free.js:1767 renameSheet · "Sayfanın Adını Değiştir"
+  P hof-free.js:1811 openHelp · "Formüller ve Kısayollar"
+  P hof-insight.js:623 openKpi · `${title}: En Yüksek ${number(result.items.length)} Kayıt`
+  P hof-insight.js:632 openKpi · ?
+  P hof-insight.js:649 openKpi · `${title}: Bu Ay`
+  P hof-insight.js:657 openKpi · ?
+  P hof-insight.js:696 openScopeReport · keys.length > 1 ? "Özet Kartları Raporu" : `${scopeName(keys[0])} Özeti`
+  P hof-insight.js:735 openQuality · `Veri Sağlığı: ${levelText} (%${quality.score})`
+  F hof-insight.js:865 sectorForm · editing ? "Sektörü Düzenle" : "Kendi Sektörünüzü Oluşturun"
+  P hof-insight.js:929 pickSector · ?
+  P hof-insight.js:1095 runAnalysis · "Verinizi tanıyoruz"
+  F hof-invoices.js:1832 grossFromNet · "Netten Brüte"
+  F hof-invoices.js:2167 payForm · sale ? "Tahsilat Ekle" : "Ödeme Yap"
+  F hof-invoices.js:2213 offsetForm · "Mahsup Et"
+  F hof-invoices.js:2244 repeatForm · "Faturayı Tekrarla"
+  F hof-invoices.js:2275 cancelForm · `${docTitle(doc)} İptal Edilsin mi?`
+  F hof-invoices.js:2302 localCancelForm · `${docTitle(doc)} Yalnız Programda İptal Edilsin mi?`
+  F hof-invoices.js:2396 deleteForm · `${docTitle(doc)} Silinsin mi?`
+  F hof-invoices.js:2421 bulkDelete · `${docs.length.toLocaleString("tr-TR")} Belge Silinsin mi?`
+  F hof-invoices.js:2441 bulkCancel · `${docs.length.toLocaleString("tr-TR")} Belge İptal Edilsin mi?`
+  P hof-invoices.js:2756 showViewPreview · "e-Belge Görünümü Önizlemesi"
+  P hof-license.js:72 explain · status.title
+  F hof-license.js:97 askContact · "DestekOfis'i kullanmaya devam ettiğiniz için teşekkürler"
+  P hof-overview.js:409 openReports · "Raporlar"
+  P hof-plan-transfer.js:182 showResult · "Aktarım tamamlandı"
+  P hof-plan-transfer.js:302 open · "Tablodan Taksit Kartına Aktar"
+  F hof-plans.js:718 distributePlan · "Otomatik Dağıt"
+  F hof-plans.js:738 editItem · item ? `${item.seq}. taksiti düzelt` : "Taksit Ekle"
+  F hof-plans.js:772 editEntry · entry ? (incoming ? "Tahsilatı Düzelt" : "Ödemeyi Düzelt") : incoming ? "Tahsila
+  P hof-plans.js:886 openGroups · "Gruplar ve Alt Gruplar"
+  F hof-plans.js:935 openGroups · target.parent ? "Alt Grubun Adı" : "Grubun Adı"
+  P hof-plans.js:988 chooseSheet · ?
+  F hof-plans.js:1069 importFromExcel · "Hangi sayfa?"
+  F hof-plans.js:1082 mappingForm · "Excel’den Yükle: Kolonları Eşle"
+  P hof-plans.js:1129 pickAccounts · "Cari Seç · Toplu Taksitlendir"
+  P hof-sessions.js:148 openNew · excel ? "Excel'den Yeni Sayfa" : "Google Sheets'ten Yeni Sayfa"
+  F hof-sessions.js:344 section · "Sayfanın Adı"
+  P hof-sources.js:95 firstImport · `Yeni veri: ${staged.label}`
+  P hof-sources.js:145 progress · ?
+  P hof-sources.js:243 decide · `Yeni veri: ${staged.label}`
+  P hof-sources.js:468 openDataSettings · "Veri ve Eşitleme"
+  P hof-sources.js:601 openMissing · "Sheet'te Artık Olmayan Kayıtlar"
+  F hof-stock.js:339 editMove · move ? (back ? "İadeyi Düzelt" : incoming ? "Girişi Düzelt" : "Çıkışı Düzelt") :
+  F hof-stock.js:475 importFromExcel · "Ürünleri Yükle: Kolonları Eşle"
+  F hof-table.js:213 editCell · `${shownName} Düzenle`
+  F hof-table.js:265 editCase · `${HOF.vocab.Record} Bilgilerini Düzenle`
+  P hof-table.js:327 newRecord · "Önce bir veri kaynağı gerekli"
+  F hof-tabs.js:75 openEditor · "Sekmeyi Düzenle"
+  P hof-whatsapp.js:80 open · kind === "statement" ? "WhatsApp ile Ekstre Gönder" : "WhatsApp ile Mesaj Gönder
+  P hof-whatsapp.js:294 forAccount · "WhatsApp"
+  F hof-workspace.js:40 paymentForm · "Tahsilat İşle"
+  P hof-workspace.js:91 openPlanCollect · "Tahsilat"
+  F hof-workspace.js:232 onCasePlanClick · "Telefon"
+  F hof-workspace.js:282 onCasePlanClick · "Haciz Kaydı"
+  F hof-workspace.js:305 onCasePlanClick · "Görev Ata"
+  F hof-workspace.js:344 editPayment · "Tahsilatı Düzelt"
+  F hof-workspace.js:441 transferForm · TRANSFER_TITLE[direction] || "Transfer"
+  F hof-workspace.js:532 cashOpeningForm · current ? "Kasa Açılış Bakiyesini Düzelt" : "Kasa Açılış Bakiyesi"
+  P hof-workspace.js:749 openTasks · "Görevler"
+  P hof-workspace.js:798 openReports · "Personel Performans Özeti"
+  P hof-workspace.js:817 openLiens · "Yaklaşan Haciz Düşümleri"
+  F hof-workspace.js:824 openProfile · "Profilim"
+  F hof-workspace.js:913 openSideEditor · "Operasyon Merkezini Düzenle"
+  F hof-workspace.js:1095 editHistoryItem · `${HISTORY_LABEL[item.type]} Düzelt`
+  ✗ envanter 134 çağrı, ekrandan açılan 19 çağrı / 0 form
+  ✓ sayfa hatası yok
+
+Ekrandan denenen formlar (0): 
+
+8 geçti, 71 kaldı
+cikis=1

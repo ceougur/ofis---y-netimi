@@ -1,0 +1,29 @@
+■ 1 Posta kutusu seçilmemiş e-Fatura carisi: form uyarır, Kaydet ve Gönder numara harcamaz
+  ✓ formda uyarı: Alıcının e-Fatura posta kutusu (PK) seçilmemiş; belge gönderilemez. Cari kartında Mükellef Sorgula'ya basın: alıcı mükel…
+  ✓ numaralı onay penceresi açılmadı (engel önceden söylendi)
+  ✓ belge yazılmadı (0 → 0)
+  ✓ ileti: Fatura kaydedilemez: Alıcının e-Fatura posta kutusu (PK) seçilmemiş; fatura kaydedilmedi, numara harcanmadı. Cari kartında Mükellef Sorgula'ya basın: alıcı müke
+  ✓ EDM'ye bir şey gitmedi
+
+■ 2 Cari kartında e-Fatura işareti elle değişmez
+  ✓ kutu metni: e-Fatura mükellefi (Mükellef Sorgula belirler: işaretliyse e-Fatura, değilse e-Arşiv kesilir)
+  ✓ tıklayınca işaretlenmedi
+  ✓ yol gösteren ileti çıktı
+  ✓ boşluk tuşuyla da işaretlenmedi
+  ✓ engellenen tıklama ve boşluk formu kirletmedi (kapatırken soru çıkmaz)
+  ✓ işaretli kutu elle kaldırılabilir
+
+■ 3 Mükellef Sorgula işareti kaldırır → aynı fatura e-Arşiv (TEA)
+  ✓ sahte EDM: 12345678950 mükellef değil
+  ✓ cari kartında işaret kalktı
+  ✓ uyarı kalktı
+  ✓ e-Arşiv kaydedildi (TEA2026820618007)
+  ✓ EDM'ye gitti (TEA2026820618007)
+
+■ 4 Numara almış e-Fatura Düzenle'de e-Arşive çevrilemez
+  ✓ e-Fatura numarası TEF2026210914786 (issued)
+  ✓ Düzenle reddedildi (409): {"ok":false,"error":"TEF2026210914787 e-Fatura (Temel) olarak numara aldı; belge türü düzenlemede değişmez (numara serisi belge türüne bağlıdır). Belgeyi İptal 
+  ✓ belge değişmedi (TEF2026210914787 TEMELFATURA)
+  ✓ sayfa hatası yok
+
+20 geçti, 0 kaldı

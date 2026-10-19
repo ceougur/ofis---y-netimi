@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { buildXlsx } from "../../server/lib/xlsx-write.mjs";
+import { escClose } from "./esc-kapat.mjs";
 // Tarihe bağlı olmasın (CLAUDE.md): ilk vade bugünden ileri.
 const isoAhead = days => {
   const d = new Date();
@@ -79,7 +80,7 @@ const today = () => {
 };
 const tl = value => `₺${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)}`;
 const closeTop = async page => {
-  await page.keyboard.press("Escape");
+  await escClose(page);
   await page.waitForTimeout(250);
 };
 
@@ -112,7 +113,7 @@ try {
     await admin.waitForSelector(`${modal} .hof-mapping`, { timeout: 30000 });
     await Promise.all([admin.waitForEvent("load", { timeout: 30000 }), admin.click(`${modal} [data-mode="replace"]`)]);
     await admin.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
-    await admin.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]").catch(() => admin.keyboard.press("Escape"));
+    await admin.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]").catch(() => escClose(admin));
     await admin.waitForTimeout(1200);
     await admin.goto(`${BASE}/`, { waitUntil: "load" });
     await admin.waitForSelector(".dynamic-table tbody tr", { timeout: 20000 });

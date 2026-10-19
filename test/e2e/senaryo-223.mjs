@@ -12,6 +12,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { createClient } from "../helpers.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-223");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -72,7 +73,7 @@ const must = async (label, promise) => {
 };
 const closeAll = async () => {
   for (let i = 0; i < 6 && (await page.$(modal)); i += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await page.waitForTimeout(250);
     const yes = await page.$(`${modal} [data-answer="yes"]`);
     if (yes) await yes.click();
@@ -371,8 +372,9 @@ try {
     const scopeCard = await page.$eval(`${main} .hof-rc-scope`, n => n.innerText).catch(() => "");
     const card = await summary();
     await shot("bulgu4-yol-pos");
-    ok(/^Banka \(Havale \/ EFT\)/.test(scopeBank) && bank["Dönem Giriş"] === "300,00 TL", `Banka: ${scopeBank} · giriş ${bank["Dönem Giriş"]}`);
-    ok(/^POS \/ Kredi Kartı/.test(scopeCard) && card["Dönem Giriş"] === "700,00 TL", `POS: ${scopeCard} · giriş ${card["Dönem Giriş"]}`);
+    // 2.4.3 (C9, bilerek güncellendi): Rapor Merkezi ekranında tutar "₺300,00" (öbür pencerelerle aynı); PDF/Excel "300,00 TL" kalır.
+    ok(/^Banka \(Havale \/ EFT\)/.test(scopeBank) && bank["Dönem Giriş"] === "₺300,00", `Banka: ${scopeBank} · giriş ${bank["Dönem Giriş"]}`);
+    ok(/^POS \/ Kredi Kartı/.test(scopeCard) && card["Dönem Giriş"] === "₺700,00", `POS: ${scopeCard} · giriş ${card["Dönem Giriş"]}`);
   });
   ok(!errors.length, `sayfa hatası yok${errors.length ? `: ${errors.join(" | ")}` : ""}`);
 } catch (error) {

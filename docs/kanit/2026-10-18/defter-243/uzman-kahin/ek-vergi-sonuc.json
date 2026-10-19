@@ -1,0 +1,795 @@
+{
+ "once": {
+  "100": 7510,
+  "101": 0,
+  "102": 50602.5,
+  "103": -2000,
+  "108": 0,
+  "120": 2255,
+  "121": 2000,
+  "128": 3000,
+  "129": -3000,
+  "153": 20400,
+  "191": 2816,
+  "193": 150,
+  "309": -1500,
+  "320": -15156,
+  "360": -2360,
+  "391": -2055,
+  "500": -62000,
+  "600": -17300,
+  "610": 1050,
+  "642": -1000,
+  "653": 25,
+  "654": 3000,
+  "770": 13352.5,
+  "780": 210
+ },
+ "onizleme": {
+  "month": "2026-09",
+  "date": "2026-09-30",
+  "outMinor": 205500,
+  "inMinor": 281600,
+  "carryInMinor": 0,
+  "carryOutMinor": 76100,
+  "payableMinor": 0,
+  "label": "Eylül 2026",
+  "lines": [
+   {
+    "account": "391",
+    "name": "Hesaplanan KDV",
+    "debitMinor": 205500,
+    "creditMinor": 0
+   },
+   {
+    "account": "191",
+    "name": "İndirilecek KDV",
+    "debitMinor": 0,
+    "creditMinor": 281600
+   },
+   {
+    "account": "190",
+    "name": "Devreden KDV",
+    "debitMinor": 76100,
+    "creditMinor": 0
+   }
+  ],
+  "result": "carry",
+  "blocks": [],
+  "warnings": [],
+  "allowed": true
+ },
+ "mahsup": 200,
+ "eylulSonu": {
+  "100": 7510,
+  "101": 0,
+  "102": 50602.5,
+  "103": -2000,
+  "108": 0,
+  "120": 2255,
+  "121": 2000,
+  "128": 3000,
+  "129": -3000,
+  "153": 20400,
+  "190": 761,
+  "191": 0,
+  "193": 150,
+  "309": -1500,
+  "320": -15156,
+  "360": -2360,
+  "391": 0,
+  "500": -62000,
+  "600": -17300,
+  "610": 1050,
+  "642": -1000,
+  "653": 25,
+  "654": 3000,
+  "770": 13352.5,
+  "780": 210
+ },
+ "muhtasar": 200,
+ "kdv2": 200,
+ "son": {
+  "100": 7510,
+  "101": 0,
+  "102": 48242.5,
+  "103": -2000,
+  "108": 0,
+  "120": 2255,
+  "121": 2000,
+  "128": 3000,
+  "129": -3000,
+  "153": 20400,
+  "190": 761,
+  "191": 0,
+  "193": 150,
+  "309": -1500,
+  "320": -15156,
+  "360": 0,
+  "391": 0,
+  "500": -62000,
+  "600": -17300,
+  "610": 1050,
+  "642": -1000,
+  "653": 25,
+  "654": 3000,
+  "770": 13352.5,
+  "780": 210
+ },
+ "mutabakat": {
+  "ok": true,
+  "checks": [
+   {
+    "code": "balance",
+    "name": "Çift yönlü kayıt (borç = alacak)",
+    "ok": true,
+    "difference": 0
+   },
+   {
+    "code": "gl:100",
+    "name": "100 Kasa (Nakit)",
+    "ok": true,
+    "difference": 0,
+    "ledger": 7510,
+    "subledger": 7510
+   },
+   {
+    "code": "gl:101",
+    "name": "101 Alınan Çekler",
+    "ok": true,
+    "difference": 0,
+    "ledger": 0,
+    "subledger": 0
+   },
+   {
+    "code": "gl:102",
+    "name": "102 Bankalar (Havale / EFT)",
+    "ok": true,
+    "difference": 0,
+    "ledger": 48242.5,
+    "subledger": 48242.5
+   },
+   {
+    "code": "gl:103",
+    "name": "103 Verilen Çekler ve Ödeme Emirleri (−)",
+    "ok": true,
+    "difference": 0,
+    "ledger": -2000,
+    "subledger": -2000
+   },
+   {
+    "code": "gl:108",
+    "name": "108 Kredi Kartı Tahsilatları (POS)",
+    "ok": true,
+    "difference": 0,
+    "ledger": 0,
+    "subledger": 0
+   },
+   {
+    "code": "gl:120",
+    "name": "120 Alıcılar (Müşteri Carileri)",
+    "ok": true,
+    "difference": 0,
+    "ledger": 2255,
+    "subledger": 2255
+   },
+   {
+    "code": "gl:121",
+    "name": "121 Alacak Senetleri",
+    "ok": true,
+    "difference": 0,
+    "ledger": 2000,
+    "subledger": 2000
+   },
+   {
+    "code": "gl:127",
+    "name": "127 Carisiz Taksit Kartları",
+    "ok": true,
+    "difference": 0,
+    "ledger": 0,
+    "subledger": 0
+   },
+   {
+    "code": "gl:128",
+    "name": "128 Şüpheli Ticari Alacaklar",
+    "ok": true,
+    "difference": 0,
+    "ledger": 3000,
+    "subledger": 3000
+   },
+   {
+    "code": "gl:129",
+    "name": "129 Şüpheli Ticari Alacaklar Karşılığı (−)",
+    "ok": true,
+    "difference": 0,
+    "ledger": -3000,
+    "subledger": -3000
+   },
+   {
+    "code": "gl:190",
+    "name": "190 Devreden KDV",
+    "ok": true,
+    "difference": 0,
+    "ledger": 761,
+    "subledger": 761
+   },
+   {
+    "code": "gl:191",
+    "name": "191 İndirilecek KDV",
+    "ok": true,
+    "difference": 0,
+    "ledger": 0,
+    "subledger": 0
+   },
+   {
+    "code": "gl:193",
+    "name": "193 Peşin Ödenen Vergiler (Stopaj)",
+    "ok": true,
+    "difference": 0,
+    "ledger": 150,
+    "subledger": 150
+   },
+   {
+    "code": "gl:309",
+    "name": "309 Diğer Mali Borçlar (Kredi Kartları)",
+    "ok": true,
+    "difference": 0,
+    "ledger": -1500,
+    "subledger": -1500
+   },
+   {
+    "code": "gl:320",
+    "name": "320 Satıcılar (Tedarikçi Carileri)",
+    "ok": true,
+    "difference": 0,
+    "ledger": -15156,
+    "subledger": -15156
+   },
+   {
+    "code": "gl:321",
+    "name": "321 Borç Senetleri",
+    "ok": true,
+    "difference": 0,
+    "ledger": 0,
+    "subledger": 0
+   },
+   {
+    "code": "gl:336",
+    "name": "336 Diğer Cariler (Personel vb.)",
+    "ok": true,
+    "difference": 0,
+    "ledger": 0,
+    "subledger": 0
+   },
+   {
+    "code": "gl:360",
+    "name": "360 Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj)",
+    "ok": true,
+    "difference": 0,
+    "ledger": 0,
+    "subledger": 0
+   },
+   {
+    "code": "gl:391",
+    "name": "391 Hesaplanan KDV",
+    "ok": true,
+    "difference": 0,
+    "ledger": 0,
+    "subledger": 0
+   },
+   {
+    "code": "party:accounts",
+    "name": "Cari bazında mutabakat (her cari ayrı)",
+    "ok": true,
+    "count": 0,
+    "difference": 0,
+    "sample": []
+   },
+   {
+    "code": "party:plans",
+    "name": "Carisiz taksit kartları (kart bazında)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "doubtful:balance",
+    "name": "Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "doubtful:records",
+    "name": "Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "plans:totals",
+    "name": "Taksit kartları (tutar, tahsilat, kalan)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "stock:qty",
+    "name": "Stok miktarı (girişler − çıkışlar)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "stock:opening",
+    "name": "Açılış Stoku ↔ Ana Defter (B 153 / A 500)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "cents:payments",
+    "name": "Kuruş ve işaret (Kayıt Tahsilatları)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "cents:cash_entries",
+    "name": "Kuruş ve işaret (Kasa Hareketleri)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "cents:account_entries",
+    "name": "Kuruş ve işaret (Cari Hareketleri)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "cents:plans",
+    "name": "Kuruş ve işaret (Taksit Kartları)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "cents:plan_items",
+    "name": "Kuruş ve işaret (Taksitler)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "cents:plan_entries",
+    "name": "Kuruş ve işaret (Taksit Tahsilatları)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "cents:stock_moves",
+    "name": "Kuruş ve işaret (Stok Hareketleri)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "cents:cheques",
+    "name": "Kuruş ve işaret (Çek/Senet)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "cents:cheque_events",
+    "name": "Kuruş ve işaret (Çek/Senet Hareketleri)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "cents:invoices",
+    "name": "Kuruş ve işaret (Faturalar)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "cents:invoices",
+    "name": "Kuruş ve işaret (Faturalar)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "cents:invoices",
+    "name": "Kuruş ve işaret (Faturalar)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "cents:invoices",
+    "name": "Kuruş ve işaret (Faturalar)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "cents:invoices",
+    "name": "Kuruş ve işaret (Faturalar)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "cents:invoices",
+    "name": "Kuruş ve işaret (Faturalar)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "cents:invoice_lines",
+    "name": "Kuruş ve işaret (Fatura Kalemleri)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "cents:invoice_lines",
+    "name": "Kuruş ve işaret (Fatura Kalemleri)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "stock:account",
+    "name": "Stok ↔ cari bağı (açık hesap)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "stock:orphan",
+    "name": "Stok hareketi silinmiş cari satırı",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "stock:qty",
+    "name": "Stok miktarı (sıfırdan büyük)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "cheque:account",
+    "name": "Çek/senet ↔ cari bağı",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "invoice:lines",
+    "name": "Fatura toplamı = kalemlerin toplamı",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "invoice:try",
+    "name": "Fatura TL karşılığı (matrah + KDV − tevkifat − stopaj)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "invoice:account",
+    "name": "Fatura ↔ cari bağı",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "invoice:orphan",
+    "name": "Faturası olmayan cari satırı",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "invoice:offset",
+    "name": "Fatura kapama bağı ve mahsup fişleri",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "invoice:stock",
+    "name": "Fatura ↔ stok bağı",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "invoice:cheque",
+    "name": "Fatura ↔ çek/senet bağı",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "invoice:plan",
+    "name": "Fatura ↔ taksit kartı bağı",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "invoice:returns",
+    "name": "İade miktarı ≤ faturadaki miktar",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "dates:format:payments",
+    "name": "Tarihsiz ya da geçersiz tarihli hareket (Kayıt Tahsilatları)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "dates:future:payments",
+    "name": "İleri tarihli hareket (Kayıt Tahsilatları)",
+    "ok": true,
+    "count": 0,
+    "gateCount": 0
+   },
+   {
+    "code": "dates:format:cash_entries",
+    "name": "Tarihsiz ya da geçersiz tarihli hareket (Kasa Hareketleri)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "dates:future:cash_entries",
+    "name": "İleri tarihli hareket (Kasa Hareketleri)",
+    "ok": true,
+    "count": 0,
+    "gateCount": 0
+   },
+   {
+    "code": "dates:format:account_entries",
+    "name": "Tarihsiz ya da geçersiz tarihli hareket (Cari Hareketleri)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "dates:future:account_entries",
+    "name": "İleri tarihli hareket (Cari Hareketleri)",
+    "ok": true,
+    "count": 0,
+    "gateCount": 0
+   },
+   {
+    "code": "dates:format:stock_moves",
+    "name": "Tarihsiz ya da geçersiz tarihli hareket (Stok Hareketleri)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "dates:future:stock_moves",
+    "name": "İleri tarihli hareket (Stok Hareketleri)",
+    "ok": true,
+    "count": 0,
+    "gateCount": 0
+   },
+   {
+    "code": "dates:format:plan_entries",
+    "name": "Tarihsiz ya da geçersiz tarihli hareket (Taksit Tahsilatları)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "dates:future:plan_entries",
+    "name": "İleri tarihli hareket (Taksit Tahsilatları)",
+    "ok": true,
+    "count": 0,
+    "gateCount": 0
+   },
+   {
+    "code": "dates:format:cheque_events",
+    "name": "Tarihsiz ya da geçersiz tarihli hareket (Çek/Senet Hareketleri)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "dates:future:cheque_events",
+    "name": "İleri tarihli hareket (Çek/Senet Hareketleri)",
+    "ok": true,
+    "count": 0,
+    "gateCount": 0
+   },
+   {
+    "code": "dates:format:fin_events",
+    "name": "Tarihsiz ya da geçersiz tarihli hareket (Finansal İşlemler)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "dates:future:fin_events",
+    "name": "İleri tarihli hareket (Finansal İşlemler)",
+    "ok": true,
+    "count": 0,
+    "gateCount": 0
+   },
+   {
+    "code": "money:method",
+    "name": "Tanınmayan ödeme yolu (nakit, havale/EFT, POS/kredi kartı dışında)",
+    "ok": true,
+    "count": 0,
+    "gateCount": 0,
+    "sample": []
+   },
+   {
+    "code": "dates:due-before-start",
+    "name": "Kayıt Tarihi'nden önceki taksit vadesi",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "bank:sub:102.01",
+    "name": "Alt Hesap Mutabakatı (102.01 ZIR-TL · Ana TL Hesabı)",
+    "ok": true,
+    "difference": 0,
+    "ledger": 48242.5,
+    "subledger": 48242.5
+   },
+   {
+    "code": "bank:sub:108.01",
+    "name": "Alt Hesap Mutabakatı (108.01 POS-01 · Ziraat POS)",
+    "ok": true,
+    "difference": 0,
+    "ledger": 0,
+    "subledger": 0
+   },
+   {
+    "code": "bank:sub:309.01",
+    "name": "Alt Hesap Mutabakatı (309.01 GAR-KART · Şirket Kartı)",
+    "ok": true,
+    "difference": 0,
+    "ledger": -1500,
+    "subledger": -1500
+   },
+   {
+    "code": "bank:sub",
+    "name": "Alt Hesap Toplamı (102, 108, 300, 309 = Σ alt hesaplar)",
+    "ok": true,
+    "count": 0,
+    "difference": 0,
+    "sample": []
+   },
+   {
+    "code": "bank:event",
+    "name": "İşlem Başlığı (kopya = satır)",
+    "ok": true,
+    "count": 0
+   },
+   {
+    "code": "bank:opening",
+    "name": "Açılış Kuralı",
+    "ok": true,
+    "count": 0
+   },
+   {
+    "code": "bank:voucher",
+    "name": "Banka Fişi Dengesi",
+    "ok": true,
+    "count": 0
+   },
+   {
+    "code": "bank:transfer",
+    "name": "Transfer ve Kasa ile Banka İkizi",
+    "ok": true,
+    "count": 0
+   },
+   {
+    "code": "bank:carry",
+    "name": "Devir Kapanışı Sırası",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "bank:ref",
+    "name": "Hesap Bağı ve Yol",
+    "ok": true,
+    "count": 0
+   },
+   {
+    "code": "pos:terminal:108.01",
+    "name": "POS Bekleyen Mutabakatı (108.01 POS-01 · Ziraat POS)",
+    "ok": true,
+    "difference": 0,
+    "ledger": 0,
+    "subledger": 0
+   },
+   {
+    "code": "pos:source",
+    "name": "POS ile Tahsilat Satırı",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "pos:refund",
+    "name": "POS İadesi ≤ Satış",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "pos:schedule",
+    "name": "POS Valör Takvimi",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "bank:party",
+    "name": "POS Kesintisi ile Sağlayıcı",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "cheque:collections",
+    "name": "Tahsildeki Çek ve Senetler (101.02 + 121.02 = bankaya tahsile verilen evrak)",
+    "ok": true,
+    "count": 0,
+    "difference": 0,
+    "ledger": 0,
+    "subledger": 0,
+    "sample": []
+   },
+   {
+    "code": "money:report",
+    "name": "Rapor = Özet (satır toplamı = özet, yol ve hesap bazında)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "bank:pool",
+    "name": "Devir Kapanışı ve Eski Bakiye Aktarımı (fiş = eski hareketler)",
+    "ok": true,
+    "count": 0,
+    "sample": []
+   },
+   {
+    "code": "money:event",
+    "name": "İşlem Başlığı Olmayan Para Satırı (v20'den sonra)",
+    "ok": true,
+    "count": 0,
+    "gateCount": 0,
+    "sample": []
+   }
+  ],
+  "failures": [],
+  "durationMs": 16,
+  "log": []
+ }
+}

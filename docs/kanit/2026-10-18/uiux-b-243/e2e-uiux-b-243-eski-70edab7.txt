@@ -1,0 +1,48 @@
+A) UX2 + UX28: tam iade Düzenle'de kaydedilir; müşteri no kutusunda iç numara yok
+  ✗ UX28: "Müşterinin İade Faturası No" kutusu boş ("IAD2026000000001")
+  ✗ UX28: iç numara açıklamada (Müşteri iade faturası kesmediyse boş bırakın; program iç numara verir.)
+  ✗ UX2: "Değişiklikleri Kaydet" onayı açıldı (form hatası: 1. kalem (Kurulum): en çok 0 Adet iade edilebilir (faturada 2, önce iade edilen 2).)
+  ✗ UX2: 'en çok 0 Adet iade edilebilir' hatası yok
+  ✗ UX2: veri tabanında not yazıldı, numara aynı ({"note":"","number":"IAD2026000000001","status":"issued"})
+  ✓ UX2: iade miktarı 2 kaldı (2)
+B) UX6: Kaydet ve Gönder onayı gönderilen belgeyi Düzenle'ye yönlendirmez
+  ✗ onayda doğru yol (Ayşe Kaya için TEA2026427007831 numarasıyla satış faturası kaydedilecek: ₺1.200,00. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. Yanlışsa s…)
+  ✗ onay 'Düzenle ile düzeltilir' demiyor
+  ✓ Vazgeç: belge kaydedilmedi (veri tabanı)
+  ✓ komşu: Kaydet, Sonra Gönder onayında Düzenle yolu yerinde
+C) UI2 + UX12: form hatası tek kopya (bildirim yok); alan değişince temizlenir
+  ✓ formda hata satırı (Müşteriyi (cariyi) seçin.)
+  ✗ aynı ileti ayrıca bildirim olarak çıkmadı (["Müşteriyi (cariyi) seçin."])
+  ✗ UX12: kalem değişince eski ileti temizlendi
+  ✓ ön koşul: ileti yeniden çıktı
+  ✗ UX12: cari seçilince eski ileti temizlendi
+D) UI4 + UX23: kod yazıp Tab → ürün seçilir; eksi stok sorusu başlığı
+  ✗ Tab ile ürün seçildi ({"name":"","price":""})
+  ✗ fiyat stok kartından geldi ()
+  ✗ odak Miktar'da (INPUT[f=name]|)
+  ✗ D bölümü yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.
+E) UI4: eşleşmeyen kod → satırda "Bu kodla ürün yok"
+  ✗ satırda not ()
+  ✓ ad boş kaldı (yanlış ürün seçilmedi)
+G) KÖ1: "Nihai Tüketici" tek cari; sınır üstü engel
+  ✗ Nihai Tüketici düğmesi cari seçicinin yanında
+  ✗ G bölümü yarıda kaldı: page.click: Timeout 15000ms exceeded.
+H) UX5: sunucu mükellefiyeti gönderimde düzeltince açık form e-Fatura'ya döner, seçili kutu korunur
+  ✓ ön koşul: form e-Arşiv numarası gösteriyor (Kaydedilince Verilecek NoTEA2026427007831)
+  ✗ ileti korunan kutuyu söylüyor (Alıcı (2223334447) e-Fatura mükellefi; ona e-Arşiv fatura kesilemez (GİB). Cari kartı e-Fatura mükellefi olarak işaretlendi. Alıcının 2 posta kutusu var: cari kartında Mükellef Sorgula ile doğru posta kutusunu seçin. Fat)
+  ✗ açık form yeniden hesaplandı: e-Fatura numarası (Kaydedilince Verilecek NoTEA2026427007831)
+  ✓ cari işaretli, kutu korundu ({"e":1,"alias":"urn:mail:defaultpk@coklu.com.tr"})
+  ✗ H bölümü yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.
+I) UX26: Fatura Ayarları'nda Esc listeye döner (pencere kapanmaz); değişiklik varsa sorar
+  ✗ Esc: ayarlardan listeye döndü, pencere açık ({"open":false,"h3":"","list":false})
+  ✗ I bölümü yarıda kaldı: page.click: Timeout 15000ms exceeded.
+J) UX14: Tümünü Gönder iletisinde teknik kod ve tekrarlanan neden yok
+  ✓ sonuç bildirimi geldi (Yönetici parolanızı unutursanız programa kurtarma anahtarıyla girersiniz. Henüz oluşturmadınız. | 0 belge gönderildi; 1 belge gönderilemedi: Alıcının e-Fatura mükellefiyeti entegratöre sorulamadı (EDM'ye bağlanılamadı: ECONNREFUSED). Belge numara verilmeden Gö)
+  ✗ bildirimde teknik kod yok
+  ✗ aynı neden iki kez yazılmadı
+K) UX3: gece yarısını geçen açık pencerede yeni fatura bugünün tarihini alır (31.12 → 01.01)
+  ✗ yeni formun tarihi 01.01.2027 ({"value":"2026-12-31","max":"2026-12-31"})
+  ✗ tarih sınırı da bugün (2026-12-31)
+  ✓ sayfa hatası yok
+
+✗ uiux-b-243: 10 geçti, 26 kaldı

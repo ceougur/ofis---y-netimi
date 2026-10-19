@@ -164,7 +164,8 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
     (ör. `<iz>-eski-<commit>`) açılır, başka ajanın klasörü kullanılmaz. (12.10: İz 1 ajanının eski kod kopyasının üzerine başka ajan yazdı;
     kırmızı kanıtlar benzersiz klasörde yeniden alındı.)
 26. BELGEYİ TEK TEK GÖNDERME. Her push 6 işlik CI başlatır; belge değişiklikleri biriktirilip kodla birlikte gönderilir. (12.10: 14 belge
-    push'u CI kuyruğunu 35+ dk tıkadı.)
+    push'u CI kuyruğunu 35+ dk tıkadı.) (17.10: yine ihlal — 25 dk'da 6 belge push'u; BELGE_YOLLARI dışındaki iş listesi / aday bulgu / kanıt
+    belgeleri tam CI başlattı (#821–#823, 18 iş) ve Uzun Doğrulama'yla kuyruk paylaştı. Yalnız belge değişikliği kodla birlikte gönderilir.)
 
 27. KAYNAK TARAYAN TEST CRLF'Yİ BİLİR. Windows'ta git dosyaları CRLF ile çıkarır; satır bölme `/\r?\n/`, `.` "\r"yi kapsamaz. (12.10: e908e38
     "Kurumsal Kart" metin denetimi Linux'ta yeşil, Windows'ta yorumları ayıklayamayıp kırmızı; yerel koşu görmedi.)
@@ -189,6 +190,20 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
     para çekirdeğine giren her değişiklik (düzeltme dahil) dar kapsamlı bir kontrol turu görür; kâhin ve motor yeni kuralı aynı elden aldıysa
     kâhin sayılmaz (ders 5). (15.10: 469d547 turundan sonra dört değişiklik girdi; kullanıcı sorunca başlatılan kontrol turu K1 YÜKSEK buldu —
     "mevcut borcu taksitlendir" kartı yeni satış sayılıp taksiti 128'den düşmüyordu; kâhin dili ve motor aynı eksik kuralı taşıyordu.)
+
+33. DOSYA ADI WINDOWS'TA AÇILMALI. Depoya giren dosya adında < > : " | ? * ya da sonda boşluk/nokta olmaz (npm betik adı "test:…" dosya adına
+    konmaz, "_" ile). Windows'ta git checkout düşer, CI'nin Windows işleri hiç başlamaz. Denetim test/platform-tasinabilirlik.test.mjs (5. kalıp).
+    (17.10: taban kanıtı "ilk-test:banka-210-….txt" → CI #825 221482c Windows 22+24 kırmızı; Linux'ta görünmedi.)
+
+34. TESTİ GEÇİREN YARDIMCI ÜRÜN DAVRANIŞINI GİZLEMEZ. Soru/onay penceresini kendiliğinden yanıtlayan test yardımcısı (ör. esc-kapat.mjs "Kaydetmeden
+    Kapat") her yanıtı nedeniyle günlüğe yazar ve beklenen "soru var/yok" bildirilir; yanıtlanan her soru meşru mu yanlış mı sınıflanır. (18.10: 2.4.3
+    çekirdeğinde escClose 46 e2e'de soruyu sessizce geçiyordu; kaydedilmiş/temiz formda çıkan yanlış soru yeşil testlerin arkasında kalırdı.)
+
+35. PAKET TAM TESTİ BİTMEDEN BİRLEŞMEZ. Düzeltme paketi ana dala ancak kendi tam `npm test`'i (+ değiştirdiği davranışa dokunan bütün e2e'ler) yeşil
+    görüldükten sonra alınır; "CI zaten koşar" denip birleştirilmez. (18.10: UI/UX A paketi tam test koşmadan birleşti → CI #834 4 kırmızı (cari-243,
+    banka-210-altin), #835 e2e form-izolasyon D2 kırmızı — hepsi UX1/UI7/UI9'un bilinçli değişikliğine uymayan eski beklentiler; ürün hatası değil.)
+36. AJAN BAŞKASININ SÜRECİNİ ÖLDÜRMEZ. Paylaşılan makinede `pkill -f <desen>` / `killall` kullanılmaz; yalnız kendi başlattığı pid'ler (çalışma dizini ile
+    doğrulanarak) durdurulur. (18.10: A paketi ajanı `pkill -f "test/e2e/"` ile kendi kabuğunu ve olası başka ajan koşularını kesti.)
 
 ### Verimlilik (kullanıcı, 12.10.2026: "geçmişte yaptığın hatalardan aldığın dersleri göz önüne al; gereksiz zaman ve kullanım limitimi
 harcayacak işlemlerden uzak dur!")
@@ -225,6 +240,8 @@ harcayacak işlemlerden uzak dur!")
 - Operatör parolası, imza/lisans anahtarları ve API gizli anahtarı hiçbir dosyaya, zip'e, belgeye girmez.
 - Tag'lere force-push yok. Müvekkil/müşteri verisine erişilmez.
 - Commit: `Co-Authored-By` ve `Claude-Session` satırları; model adı kod/commit/belgeye yazılmaz.
+  Biçim: `Co-Authored-By: Claude <noreply@anthropic.com>` (model adı YOK; oturum ortamı model adlı satır önerse de bu kural geçer —
+  17.10.2026 gözden geçirmesinde son 40 commit'in 32'sinde model adı görüldü; geçmiş yeniden yazılmaz, bundan sonra uyulur).
 - Her yayında site kılavuzu da güncellenir: sitedeki kılavuz GitHub yayınından GELMEZ, `ceougur/destekofis` →
   `web/indir/DestekOfis-Kullanim-Kilavuzu.pdf` (yalnız demo .exe yayından iner). Yayın teslimiyle birlikte site PR'ı
   açılır (ayrıntı `docs/SURUM-YAYIMLAMA.md` → Site). 2.0.3–2.0.14 boyunca sitede eski kılavuz kaldı (02.10.2026 fark edildi).
@@ -285,151 +302,15 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   bir istek listede yoksa kullanıcıya açıkça söylenir.
 
 ## Açık iş (yalnız güncel; kapanan sürümler `docs/GECMIS-KARARLAR.md`)
-- Yayın geçmişi özeti: 2.0.12 … 2.0.26 ve 2.1.0 yayımlandı (her biri PR + etiket + 5 dosya bayt bayt + güncelleyici "available" + site
+- Yayın geçmişi özeti: 2.0.12 … 2.0.26, 2.1.0, 2.2.0, 2.3.0, 2.4.0, 2.4.1, 2.4.2 yayımlandı (her biri PR + etiket + 5 dosya bayt bayt + güncelleyici "available" + site
   kılavuz PR'ı); ayrıntı arşivde. Kâhin bilinen sınıfları: KDV-DAHIL-ISKONTO (program doğru), KASA-ACILIS-649 (İz 1.3 ile kapanacak).
 - PLANLI TEST (kullanıcı, ertelendi; 16.10.2026'da yine ertelendi: "cuma testini pazara ertele"): Pazar 18.10.2026 09:00 TR (trig_0144BJLRwsZFizXTTYrJVszA): 2.0.24 DENENMEYEN/BİLİNEN SINIRLAR
   (`docs/2.0.24-KANIT.md`) + ölçek/yük (30 kullanıcı, 1.000.000 satır; sunucu + ARAYÜZDEN, tablo iki sütun).
 - 2.1.0 kapsam ölçümü (satır/dal/arayüz) — yayından sonra yapılacak iş (kullanıcı 11.10.2026).
-- 2.2.0 SÜRÜM NOTU (kullanıcı, 12.10.2026): "bitişte sürüm notunda iyileştirmeler ve POS entegrasyonu yazması yeterli, kılavuza eklerken
-  hap bilgi olarak ekle" → CHANGELOG ve GitHub yayın metni yalnız "İyileştirmeler ve POS entegrasyonu"; kılavuza yalnız kısa nasıl-yapılır.
-- 2.1.0 YAYIMLANDI (11.10.2026 18:45 UTC; PR ceougur/ofis---y-netimi#27 → `master` = 7c6405f, `v2.1.0`; önceki oturumda bayt bayt
-  denetlendi; 12.10.2026 GitHub'dan yeniden okundu: 5 dosya yerinde, kılavuz PDF b326df68…, paket sha256 d341941a…; release.yml ayrıca
-  DestekOfis-Kurulum-2.1.0.exe + .sha256 ekledi). Site kılavuz PR'ı ceougur/destekofis#12 BİRLEŞTİ (11.10.2026). 2.1.0 KAPANDI.
-  Yeni oturum dalı `claude/hopeful-goodall-6nmtcj` (master'dan). Sırada (kullanıcı seçer): 2.1.0 kapsam ölçümü; 2.1.1 (Rapor Merkezi Excel
-  şirket başlığı, K6 Kasa açılışı, iki pencerede "sayfa silindi"); ertelenenler (döviz, Bankaya Tahsile Ver, K8, bankalı iade/iptal,
-  kalan banka raporları) → 2.2.0 POS → 2.3.0 ekstre; Cuma 16.10.2026 planlı test.
-- MÜŞTERİ SORUSU (12.10.2026, ekran: Banka → Hesaplar, Durum kolonunda "Etkin · Doğrulanmadı"): "doğrulanmadı ne demek?" KODDAN
-  (hof-bank.js:392): hesabın açılış bakiyesi bankadan teyit edilip "Bakiye Doğrulandı" işaretlenmemiş; işaretlenmeden o hesapta eksi
-  bakiye denetimi çalışmaz (hof-bank.js:788). Yol: hesaba tıkla → Açılışı Düzelt → "Bu tutar bankadaki gerçek bakiyedir" işaretle.
-  ÖNERİ (2.1.1, karar kullanıcıda): etiket tek başına anlaşılmıyor → "Açılış Bakiyesi Doğrulanmadı" + üzerine gelince/yanında kısa neden.
-- MÜŞTERİ İSTEĞİ (12.10.2026, ekran: Yeni Banka Hesabı, Hesap Türü listesi "Kurumsal Kredi Kartı" seçili): "kredi kartlarını bankaya
-  bağlamak gerekiyor; Yapı Kredi tanımında 'kredi kartı kullan' seçeneği olsun, World kartı oraya girelim; ödemede tanımlı kartlar gelsin;
-  Yapı Krediyi iki kere mi kaydedeceğiz?" KODDAN (2.1.0): her kurumsal kart AYRI hesap kaydı (accounts.mjs ACCOUNT_KINDS.card, 309.NN); banka
-  adı serbest metin, Vadesiz hesapla BAĞ YOK; ödeme yollarında "Kredi Kartı" seçilince kart hesapları gelir (module-ref.mjs:58); kart borcu
-  Banka Fişi "Kart Borcu Ödemesi"nde ödeyen hesap her seferinde seçilir. Yani bugün de "Yapı Kredi · World" kart kaydı açılır, Vadesiz'i
-  ikinci kez açmak gerekmez; ama ekranda bu anlaşılmıyor. ÖNERİ (karar kullanıcıda): hesap kartında "+ Kredi Kartı Ekle" (banka adı dolu
-  gelir, kart adı ör. World, son 4 hane, limit, hesap kesim/son ödeme günü, "Kart Borcunu Ödeyen Hesap" = bu Vadesiz); Hesaplar listesinde
-  kartlar bankasının altında girintili; Kart Borcu Ödemesi'nde bağlı hesap öndolu; Yeni Banka Hesabı listesinden "Kurumsal Kredi Kartı"
-  kalkar (yalnız bankanın içinden). Şema: bank_accounts.parent_id (göçle boş; eski kartlar ad eşleşmesiyle önerilir, kendiliğinden bağlanmaz).
-  NOT (kullanıcı, 12.10.2026): Yapı Kredi/World yalnız ÖRNEK — her banka, her kart, bir bankada birden çok kart; kod bankaya özel olmaz.
-- KARAR (kullanıcı, 12.10.2026: "düzeltmelerle birlikte POS'u da yapalım; müşterinin taleplerini halen dinliyorum"): sıradaki sürüm =
-  2.1.1 düzeltmeleri ("Doğrulanmadı" etiketi, kredi kartını bankanın içinden ekleme, Rapor Merkezi Excel şirket başlığı, K6 Kasa açılışı,
-  iki pencerede "sayfa silindi") + POS MODÜLÜ (plan `docs/BANKA-MODULU-PLAN.md` 2.2.0 aşaması: satış faturası/cari/taksit tahsilatında
-  "Kredi Kartı" = POS → POS hesabı seçimi, komisyon + KDV/BSMV, valör, blokeli/teminatlı, POS iadesinde komisyon, raporlar). Sürüm no
-  paketlemede (POS yeni modül → 2.2.0 önerilir). BAŞLAMADAN ÖNCE: kullanıcı müşteri taleplerini topluyor → hepsi gelince listeye eklenir,
-  sonra iş planı kullanıcıya sunulur. Her yeni talep AYNI ANDA buraya yazılır.
-  MÜŞTERİ (aynı gün, madde 6 — POS kararının içinde): müşteriden kartla tahsilatta firmanın HANGİ BANKANIN POS'u ise o seçilir. Uygulama:
-  banka hesabı kartında "POS Kullan" işareti (Kredi Kartı/Çek/Senet Kullan gibi) → altına POS cihazı/üye işyeri eklenir (ad, üye işyeri no,
-  komisyon oranı, valör günü, parayı yatırdığı hesap = bu hesap, blokeli mi); satış faturası/cari/taksit tahsilatında yol "POS" seçilince
-  yalnız tanımlı POS'lar gelir (tekse kendiliğinden, çoksa seçim, yoksa "POS Tanımla"); bakiye/valör o bankanın hesabına yazılır.
-  KARAR (kullanıcı, aynı gün): "Tanımla" kuralı POS'ta da aynı — "POS Tanımla" düğmesi bütün tahsilat formlarında (satış faturası, cari
-  tahsilatı, taksit tahsilatı), form kapanmadan pencere açılır, kaydedince seçili gelir; yetkisi olmayana düğme yerine "POS tanımlı değil,
-  yöneticinize başvurun". Tek kural: Kart / POS / Banka Hesabı / Çek Hesabı seçicisinin hepsinde tanımla düğmesi + yetkisizde yazı.
-- İSTEK (kullanıcı, 12.10.2026; sıradaki sürüme): ALIŞ FATURASI ödeme yolu "Kredi Kartı" → tanımlı tek kurumsal kart varsa KENDİLİĞİNDEN
-  gelir (bugün de öyle: "… kurumsal kartına yazılır"); birden çoksa kullanıcı SEÇER (bugün de öyle); HİÇ YOKSA formda "Kredi Kartı Tanımla"
-  düğmesi → kart tanımlama penceresi (form kapanmadan, girilenler kaybolmadan) → kaydedince yeni kart ödeme satırında seçili gelir, işleme
-  devam. KODDAN (hof-invoices.js:946): bugün kart yoksa hücre GİZLİ, hiçbir şey görünmüyor (açık bu). Aynı düğme aynı kalıptaki öbür
-  ödeme formlarına da (cari ödemesi, stok alımı; havale için "Banka Hesabı Tanımla") — öneri. Yetki: hesap tanımlama yetkisi yoksa düğme
-  yerine "Kart tanımlı değil; yöneticinize başvurun" yazısı. Kart bankanın içinden ekleme maddesiyle aynı pencere (banka seçilir).
-- KARAR (kullanıcı, 12.10.2026: "önerilerin uygun") → alış faturası "Kredi Kartı Tanımla" + aynı düğme cari ödemesi/stok alımında, havalede
-  "Banka Hesabı Tanımla", yetkisizde düğme yerine yazı: YAPILACAK (sıradaki sürüm).
-  İSTEK (kullanıcı, aynı gün): banka hesabı tanımında "Kredi Kartı Kullan" gibi "ÇEK KULLAN" ve "SENET KULLAN" seçenekleri; çek
-  işlemlerinde yalnız "Çek Kullan" işaretli bankalar gelir. KODDAN (hof-cheques.js:219): bugün çek/senet formunda "Banka / Şube" SERBEST
-  METİN, hesap bağı yok; verilen çek ödenirken yol + hesap ayrıca seçiliyor (hof-cheques.js:318). ÖNERİM: banka hesabı kartında üç işaret
-  (Kredi Kartı Kullan → altına kart eklenir; Çek Kullan; Senet Kullan; varsayılan kapalı, eski hesaplarda kapalı). Verilen ÇEK formunda
-  "Banka / Şube" metni yerine "Çek Hesabı" seçici (yalnız Çek Kullan işaretli etkin TL hesaplar; tekse kendiliğinden, yoksa "Banka Hesabı
-  Tanımla"); çek ödendiğinde para o hesaptan çıkar (hesap öndolu). SENET: kendi senedimiz bankaya bağlı değildir → "Senet Kullan" işaretli
-  hesaplar (a) verilen senedin ÖDENECEĞİ hesap önerisi, (b) alınan senedi/çeki BANKAYA TAHSİLE VER (ertelenen iş) için seçilir. Alınan
-  (müşteri) çekinde "Banka / Şube" müşterinin bankasıdır, serbest metin KALIR. Eski çeklerin metni korunur. Yapı Kredi vb. yalnız örnek.
-- MÜŞTERİ İSTEĞİ (12.10.2026, ekran: Kasa → "Bankadan Kasaya Aktar", Çekilen Banka Hesabı "Yapı Kredi · TL (YAP-TL)"): "banka bakiyesini
-  gösterse iyi olur". ÖNERİ: hesap seçicisinde her hesabın yanında güncel bakiye ("Yapı Kredi · TL (YAP-TL) — Bakiye: 18.160,00 ₺"), seçilen
-  hesabın altında "Bakiye: … · Aktarımdan sonra: …" (tutar yazıldıkça güncellenir; eksiye düşecekse kırmızı + K7 kuralı); bakiye seçilen
-  TARİHTEKİ bakiye (ileri/geri tarih). Aynı gösterim "Kasadan Bankaya Yatır"da Nakit Kasa bakiyesiyle ve öbür banka hesap seçicilerinde
-  (cari tahsilat/ödeme, fatura peşini, transfer, çek ödemesi) — öneri. Yetki: banka bakiyesini görme yetkisi olmayana bakiye gösterilmez.
-- MÜŞTERİ İSTEĞİ (12.10.2026, ekran: Yeni Alış Faturası · Stoğa Mal Alışı, ÖDEME bölümü "Peşin Ödeme (₺) · Ödeme Yolu Havale/EFT ·
-  Banka Hesabı", düğmeler "+ Peşin Ödeme / Tamamı Peşin / + Çek / Senet / Portföyden Ciro Et"): "peşin ödemede herkesin aklına nakit
-  gelir; nakit, havale/EFT, kredi kartı gibi değiştirelim". Daha önce listede YOKTU (yeni madde). KODDAN: hof-invoices.js:898 cashWord
-  "Peşin Ödeme"/"Peşin Tahsilat", :920 "Tamamı Peşin". ÖNERİ: "+ Peşin Ödeme" yerine yola göre düğmeler "+ Nakit", "+ Havale / EFT",
-  "+ Kredi Kartı" (satışta "+ POS"), "+ Çek / Senet", "Portföyden Ciro Et"; her satırın başlığı yolun adı ("Nakit · Tutar", "Havale / EFT ·
-  Tutar · Banka Hesabı", "Kredi Kartı · Tutar · Kurumsal Kart"); "Tamamı Peşin" → "Kalanın Tamamını Öde" (satışta "… Tahsil Et"), tıklanınca
-  yol sorulur; bölüm başlığı "Ödeme" kalır. İadelerde ("Müşteriye İade Ödemesi" / "Tedarikçiden İade Tahsilatı") aynı düzen. Veri/kayıt
-  biçimi DEĞİŞMEZ (yalnız etiket ve düğme); senaryo testleri metne bağlıysa güncellenir; kılavuz Fatura bölümü ve ekran görüntüsü yenilenir.
-- BAŞLADI (kullanıcı, 12.10.2026: "bunları yapmaya başla, müşteri başka talepler iletirse eklerim"): iş listesi `docs/2.2.0-IS-LISTESI.md`
-  (İz 1 küçük düzeltmeler · İz 2 banka hesabı/kart/çek/seçiciler · İz 3 POS Aşama 10–11 · İz 4 Bankaya Tahsile Ver). Dal
-  `claude/hopeful-goodall-6nmtcj`. Ajanlar worktree'de; ana oturum kırmızı/yeşili ayrı kopyada yeniden koşar, CI'yi kendisi okur.
-  KARAR (kullanıcı, aynı gün: "konuştuğumuz müşteri taleplerindeki önerilerini de uygula"): bu konuşmadaki BÜTÜN önerilerim uygulanır
-  (Doğrulanmadı metni + neden, kart bankanın içinden, Tanımla düğmesi + yetkisiz yazısı bütün seçicilerde, Çek/Senet/POS Kullan, Çek Hesabı,
-  seçicilerde bakiye, ödeme düğmeleri yola göre, POS bankaya bağlı + POS Tanımla, BANKAYA TAHSİLE VER bu sürüme alındı — İz 4).
-  SORU (kullanıcı: "çekte de bankaya tahsile ver olmalı mı?") → evet (101.01 → 101.02 → 102; senette de). NOT verdim: program senetleri
-  çekle birlikte 101/103'te tutuyor, Tekdüzen'de senet 121/321. KARAR (kullanıcı: "muhasebe mantığı gereği ise onu da uygula") → İz 4.2,
-  plan eki §3.11a (alınan senet 121.01/121.02, verilen senet 321); 4.1 birleştikten sonra; kâhin plandan güncellenir.
-  KARAR (kullanıcı, aynı gün: "şüpheli alacaklar ve çeki tahsile ver de olsun"): çeki tahsile ver zaten İz 4.1; ŞÜPHELİ ALACAKLAR → İz 4.3,
-  plan eki §3.11b (yaygın uygulama: karşılıksız evrak cariye döner; "Şüpheli Alacağa Al" 120→128, Karşılık Ayır 654/129, tahsilde 644,
-  Değersiz Alacak Yaz; rapor + rozet + mizan). 4.2'den sonra.
-  KARAR (kullanıcı, aynı gün: "kart ifadesi 'Kredi Kartı' olsun, programda"): görünen metinde "Kurumsal Kart"/"Kurumsal Kredi Kartı" →
-  "Kredi Kartı" (İz 2.9; banka ekranları ajanına iletildi); satışta kartla tahsilat "POS" kalır; kod/API adları değişmez.
-  İSTEK (kullanıcı, aynı gün): "yapılacak işlemleri madde madde sırala, bittikçe üzerini çizerek yeniden ver; testlerin doğru yapıldığını,
-  düşen test olup olmadığını bildirimden ayrı olarak 30 dk'da bir denetle" → liste `docs/2.2.0-IS-LISTESI.md`; her madde bitince liste
-  ~~üstü çizili~~ yeniden verilir; 30 dk denetimi send_later (trig_01AhNXBCD6wK8CVPyWgEDpbA, her seferinde yeniden kurulur), betik
-  scratchpad/denetim.sh (worktree commit'leri + kanit ozet çıkış kodu + ana dal CI). Teslim bitince ya da kullanıcı "durdur" deyince durur.
-- KARAR (kullanıcı, 12.10.2026 ~15:15 UTC; ekran: haftalık kullanım %80, sıfırlanma Perşembe 02:00): "şüpheli ticari alacaklar işini erteleyelim,
-  iz 4.2 bitince bitiş turuna başlayalım; yayından sonra limit kalırsa şüpheli alacakları yaparız" → İz 4.3 ERTELENDİ (yayından sonra, limit
-  varsa); 4.2'nin kontrol turu koşulmadı (birinci tur bulguları düşüktü, düzeltildi; bitişteki yargıç + eleştirmen kapsar). Bitiş turu kullanım
-  sınırına göre sade: yargıç + eleştirmen birer ajan; uzun koşular GitHub'da (yerel kullanım harcamaz).
-- KARAR (kullanıcı, 12.10.2026 ~18:45 UTC): ölçek 20 kullanıcıda Banka → Hareketler ekrandan kaydedilen masrafı 30 sn'de göstermiyor (iki koşu,
-  2.1.0'da yoktu; 10 kullanıcıda yok; para doğru) → "Bilinen sınır, yayından sonra". 2.2.0 KANIT'ta BİLİNEN SINIR; yayından sonra İz 4.3 ile
-  birlikte kök neden + düzeltme (ölçek aracı tools/olcek-210.mjs, kayıt docs/kanit/2026-10-12/son-aday-220/olcek-*).
-- KARAR (kullanıcı, 12.10.2026 ~19:30 UTC, bilgisayar başında değil): "işlemler bitince paketi, GitHub'a yüklenecek dosyaları teslim et,
-  birleştirmeyi yap; geldiğimde 'geldim' derim, verdiğin linkten imzalı sürüm dosyalarını GitHub'a yükleriz"; "hata olursa düzelt ve işlemlere
-  devam et" → 2.2.0: uzun koşu sonucu → son commit + CI yeşil → imzalı paket + kurulum → 5 dosya + arşiv teslim → PR → CI/kapı yeşil →
-  BİRLEŞTİRME (bu sürüm için kullanıcı izni) → yayın bağlantısı hazır. Hata çıkarsa kural aynı: yeniden üret, kırmızı test, en küçük düzeltme,
-  ilgili testler + CI yeşil, sonra devam; yapılanlar teslimde ayrıca yazılır. Yayını açmak/yüklemek kullanıcıda.
-- 2.2.0 TESLİM + BİRLEŞTİRME (13.10.2026 ~04:3x UTC): son aday c629758 (CI #660 push + #661 PR YEŞİL; Uzun Doğrulama 23/23) → PR
-  ceougur/ofis---y-netimi#28 squash → `master` = b24e0c2 (ağaç c629758 ile AYNI). İmzalı paket destekofis-guncelleme-2.2.0.zip 2afaecfb…,
-  bildirge json 4d6aa76f… (anahtar destekofis-2026-1; 2.1.0/2.0.26/2.0.19/1.7.0 "uygun", kurcalanmış bildirge reddedildi; zip = HEAD 241/241),
-  kılavuz PDF 07435148… (DEĞİŞTİ → yayından sonra site PR'ı), kurulum .exe 7e8424bd… (35,4 MB, simgeli; 30 MiB gönderim sınırını aştığı için
-  İKİ PARÇA gönderildi: `copy /b …parca0 + …parca1 DestekOfis-Kurulum.exe`). Arşiv 4 parça (1 belge+kanıt, 2–4 git bundle parçaları; birleştirilip
-  klonlandı). SIRADA: kullanıcı "geldim" → yayın açar (tag v2.2.0 → master, başlık "DestekOfis 2.2.0", not "İyileştirmeler ve POS entegrasyonu",
-  5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı (ceougur/destekofis web/indir/). Sonra (limit varsa):
-  İz 4.3 Şüpheli Alacaklar, ölçek-20 kök neden, 2.1.0/2.2.0 kapsam ölçümü; Cuma 16.10 planlı test.
-  YAYIMLANDI (13.10.2026 ~05:29 UTC; `v2.2.0` = b24e0c2; yayımdan önce kullanıcının ekranındaki 5 ad/boyut teslimle karşılaştırıldı): yayındaki
-  5 dosya + latest/ (json, zip, pdf, exe) teslimle bayt bayt aynı, exe .sha256 OK; gerçek eski güncelleyiciler (v2.1.0, 2.0.26, 2.0.19, 2.0.17
-  API + yedek yol; 2.0.4, 1.7.0 API — yedek yol 2.0.17'den beri) canlı GitHub'da 2.2.0'ı "available" gördü, indirilen paket 2afaecfb… eşleşti;
-  2.2.0 → "up-to-date". NOT: deneme betiği `HUKUK_BOOTSTRAP_VERSION=2` (gerçek kurulumun bootstrap.mjs değeri) vermeyince "incompatible" çıkar
-  — ürün değil test ortamı (ders 14). Site kılavuz PR'ı ceougur/destekofis#13 BİRLEŞTİ (kullanıcı "birleştir", main 831d903; main PDF 07435148… doğrulandı; canlı site ağ politikasıyla okunamadı). release.yml
-  koşu 38351603781 sürümlü exe ekleyecek.
-- KUSUR (13.10.2026, baş mimar fark etti): yayımlanan 2.2.0 kılavuz PDF'inin kapağında "Sürüm 2.1.0" yazıyor (kaynak
-  docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html:14 elle; içerik 2.2.0 — POS/Tahsile Ver var). pdf-denetle sürüm etiketini denetlemiyor.
-  KARAR (kullanıcı, 13.10.2026: "kılavuzda gördüğün sorunları düzelt") → DÜZELTİLDİ: kapak + dip not 2.2.0; test/kilavuz-surum.test.mjs (kaynak
-  HTML sürümü = package.json; eski hâlde 2/2 kırmızı) + pdf-denetle "PDF kapağı ve dip notu program sürümü" (eski PDF'te kırmızı, yeni 39/39);
-  PDF metin farkı yalnız bu iki satır; yeni PDF sha256 21b262c1…. Yayındaki kılavuz kullanıcı tarafından değiştirildi (v2.2.0 + latest 21b262c1… doğrulandı; öbür 4 dosya bayt bayt aynı); site PR ceougur/destekofis#14 BİRLEŞTİ (de0153e, main PDF doğrulandı);
-  programın içindeki kopya (client/kilavuz) bir sonraki sürümle gider (2.2.0 kurulumlarında kapak 2.1.0 kalır).
-- İSTEK (kullanıcı, 13.10.2026): satışa yardım eden arkadaş için müşterilere paylaşılacak TANITIM/REKLAM METNİ → `docs/pazarlama/TANITIM-METNI.md`
-  (kısa WhatsApp + uzun; iddialar 2.2.0 kılavuzundan doğrulandı; e-Fatura, bulut, 2+ şirket VAAT EDİLMEZ). Site metni (ceougur/destekofis
-  web/index.html) eski: "oturum", sektör vurgusu; banka/POS/çek/mizan yok — güncelleme önerisi verildi.
-  İSTEK (kullanıcı, aynı gün): kısa metne LOGO → logolu görsel `docs/pazarlama/DestekOfis-Tanitim.png` (1080×1350; marka işareti
-  client/assets/brand/destekofis-mark.svg, Manrope/DM Sans); iletişim: 0536 771 50 55 · https://destek-ofis.vercel.app/ (kullanıcı verdi).
-- AÇIK (13.10.2026): WINDOWS NODE 22 GÜNCELLEYİCİ ARA SIRA KIRMIZI — iki ayrı test, aynı gün, yalnız Windows Node 22: (a) CI 60ed59d
-  test/updater.test.mjs:151 ikinci check() "error" (2316/2317); (b) CI #690 a53a4bc (yalnız kanıt dosyası değişti) test/guncelleme-hazir-geri-cekilen
-  (2): 9.0.1 kuruldu, 9.0.2 etkinleşmedi ama geçmişte "prepared-withdrawn" kaydı YOK (2321/2322) — aday: saveState'in writeJsonAtomic'i Windows'ta
-  (okuyucu dosyayı açıkken rename EPERM) 12 denemede de yazamayıp yalnız uyarı yazması (updater.mjs:106) → geçmiş olayı sessizce kaybolur.
-  Linux'ta üretilemedi (ders 18). İki teste de teşhis eklendi (gelen neden / geçmiş + açılış günlüğü satırları mesaja yazılır). Yeniden görülünce
-  günlükle kök neden + zorla üretme (ders 20); saveState yazamazsa olay kaybı ürün hatasıdır (yeniden deneme / kuyruk gerekir). Ürün etkisi: elle
-  denetim 3 deneme, otomatik denetim saatte bir; geçmiş kaydı bilgi amaçlı.
-  (a) KAPANDI (15.10.2026; üçüncü görülüş CI 037fcc7 Windows Node 22, aynı kodla sonraki koşu yeşil): KÖK NEDEN keep-alive yarışı — sunucu boşta kalan
-  bağlantıyı tam istemci yeniden kullanırken kapatıyor (Windows ECONNRESET, Linux undici UND_ERR_SOCKET "other side closed"); Windows'ta stage() yavaş
-  olduğu için ikinci denetim 5 sn boşta kalma sınırına denk geliyor. Zorla üretme (ders 20) `test/guncelleme-230-baglanti-sifirlama.test.mjs`
-  (mock GitHub `resetOnReuse`: yeniden kullanılan bağlantıdaki ikinci isteği koparır; eski kodda 3/6 denetim "error", yeni 6/6). Düzeltme updater.mjs
-  request(): yalnız kopan bağlantı sınıfında istek yeni bağlantıyla bir kez hemen yinelenir. (b) KÖK NEDEN BULUNDU (15.10.2026 ~23:00 UTC; CI #744/#745 cd63cf6 Windows 22+24 üç kez): saveState DEĞİL — test yayın listesini değiştirip servisi
-  durdururken periyodik denetim (600 ms) araya giriyor; ürün geri çekilen 9.0.2'yi 9.0.1 ile değiştiriyor ama çalışma anı yolunda "prepared-withdrawn" kaydı
-  yoktu. ÜRÜN düzeltmesi update-orchestrator withdrawPreparedIfGone; testler "açılışta" senaryolarında yayını servis durduktan sonra değiştirir; zorla üretme
-  (2b) eski kodda 0/1. (d) zipHits 2 de aynı yarış (çalışırken başlayan indirme kesilip açılışta yinelenir). Ders 18: Windows'ta iki yeşil koşu sonra KAPANDI.
-  PAKET: ürün kodu değiştiği için 2.3.0 paketi/kurulumu/arşivi son commit'ten YENİDEN üretilip gönderilir (d7e66bd paketi geçersiz).
-- KAPANDI (13.10.2026 akşam): CI #684 bc36256 senaryo-pos-220 "Ürün B 15/3/6/5" — KÖK NEDEN testin ürün seçici yarışı (ders 20 ile zorla üretildi:
-  son arama yanıtı 1,5 sn gecikince + tuş aralığı 260 ms → ara arama [Ürün A, Ürün B] listeler, test ilk satıra basar → Ürün A satılır; tutar/cari/
-  banka doğru, yalnız stok). Düzeltme: pos-220 kimlikle seçer + "Stokta" bağ denetimi + gelen değer mesajda + `POS220_YARIS=1` zorla kipi;
-  215/216/217/222 `li[data-item]:has-text(ad)`. ÜRÜN düzeltmesi (küçük): pickItem geç gelen arama yanıtını iptal eder (liste seçimden sonra
-  yeniden açılmıyor). Kanıt docs/kanit/2026-10-13/pos220-yaris-*.
+- ARŞİV (17.10.2026, anayasa "kısa tutulur" gözden geçirmesi): 2.1.0–2.4.2 kapanan maddeleri ve eski kararlar `docs/GECMIS-KARARLAR.md`
+  "Arşiv 17.10.2026" bölümüne AYNEN taşındı. O maddelerden AÇIK kalanlar: e-SMM gönderimi (kullanıcı EDM'den servis adresi/belge/test yetkisi
+  ister; şimdilik gizli, config.esmmEnabled); Edge'in kaydetme önerisi (2.4.2) kullanıcının makinesinde doğrulanacak; canlı açılırken EDM birim
+  kodu kabulü canlıda yinelenir; döviz (§3.12) ertelendi, fxEnabled kapalı; release.yml sürümlü exe koşuları (2.4.1 run 39010296441) okunacak.
 - MÜŞTERİ İSTEĞİ (13.10.2026, emlakçı; ekran: kayıt detay kartı → Belgeler, resim satırında Görüntüle/Yazdır/İndir/Sil): "WhatsApp'tan Paylaş"
   simgesi → karttaki resimler + detay kartındaki bilgiler müşteriye gönderilsin. Soru: yapılabilir mi, maliyet, iş yükü, süre. KODDAN: WhatsApp
   bugün wa.me ile YALNIZ METİN açar (hof-whatsapp.js:13; dosya eki resmî yolla ancak Meta Business API — Pro, ileride); personel bilgisayarı
@@ -448,189 +329,13 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   `docs/devir/DestekOfis-Devir-Plani.png/.pdf`. KARAR BEKLENİYOR (kullanıcı: "arkadaş düşünüp kararı iletecek; bizim yöntem mi Wolvox yöntemi mi
   karar verilince ona göre yaparız"). Hatırlatıcı 22.10.2026 Perşembe 09:00 TR (trig_01NEGfcTp7hAnHG1tgw6mFAv). Kullanım sınırı (13.10 %83):
   para çekirdeğine dokunan iş Perşembe 02:00 sıfırlamasından önce başlatılmaz.
-- FATURA / e-BELGE (EDM) (kullanıcı, 13.10.2026): EDM'den API belgeleri + test/canlı adresleri geldi → BÜTÜN BİLGİ `docs/fatura/E-BELGE-EDM.md`
-  ("fatura modülünü yap" denince oradan başlanır). Plan: XML uygunluğu (şema/şematron, ağsız) → EDM test ortamı → kullanıcı "entegre et" → açma.
-  Test kimlik bilgisi depoya YAZILMAZ. Bu ortam test.edmbilisim.com.tr'ye bağlanamıyor (ağ politikası) → izin ya da GitHub Actions; karar kullanıcıda.
 - SIRA (kullanıcı, 13.10.2026): Perşembe (sıfırlamadan sonra) → (1) banka kalan işleri — ŞÜPHELİ ALACAKLAR (İz 4.3, plan §3.11b) DAHİL
   (kullanıcı: "banka kalan işlerine say") + ölçek-20 kök neden ve öbür ertelenen banka maddeleri → (2) fatura/e-Belge (EDM) → (3) devir modülü.
   WhatsApp paylaşımı (emlakçı isteği) ŞİMDİLİK BEKLER (kullanıcı: "şimdilik kalsın").
   2.3.0 BANKA EKSTRESİ (ekstre yükleme + eşleştirme) LİSTEDEN ÇIKTI (kullanıcı, 13.10.2026: "müşteri portföyüm pek ilgilenmez, sonra ihtiyaç
   duyulursa yaparız") — plan bölümü yerinde kalır, ihtiyaç olursa açılır.
-- BAŞLADI (kullanıcı, 13.10.2026 ~21:00 TR: "fable'a geçtim, başla"): model Fable 5.1 (ayrı haftalık sınır, %0 → Perşembe beklenmedi). İş listesi
-  `docs/2.3.0-IS-LISTESI.md` (İz 0 açık kırmızılar · İz 1 Şüpheli Alacaklar · İz 2 ölçek-20 kök neden · İz 3 K8 taksit, bankalı iade/iptal §4.6, §8.10
-  kalan raporlar, fatura ayarları banka · İz 4 döviz §3.12 — kapsam kararı kullanıcıda). Ajanlar worktree'de (İz 1, İz 2, İz 3.1 paralel); ana oturum
-  kırmızı/yeşili ayrı kopyada yeniden koşar, CI'yi kendisi okur. Sürüm no paketlemede (2.3.0 önerilir).
-  DURUM (13.10 ~22:30 UTC): İz 3.1 K8 birleşti (972daa3) ve ana oturum doğruladı (eski kopya 0/16 kırmızı, yeni 16/16, komşu 71/71, e2e k8-230
-  17/17, banka-210 408/408; CI okunacak). İz 2 kök neden: ürün DEĞİL, ölçek aracının soru-bekleme adımı (d0a442a; zorla üretme CI'de) — 20 kullanıcı tam
-  koşusu son adayda. İz 1 çekirdek ajan worktree'sinde commit (217410f), ajan sürüyor. İz 3.2+3.4 ve 3.3 ajanları başlatıldı; 3.1b kâhin K8 İz 1.8 ile.
-  KARAR (kullanıcı, 13.10.2026 ~23:30 UTC: "1"): DÖVİZ (İz 4, plan §3.12) ERTELENDİ — 2.3.0 dövizsiz çıkar (Şüpheli Alacaklar + K8 + bankalı
-  iade/iptal + kalan raporlar + düzeltmeler); döviz isteyen müşteri çıkınca yapılır; `fxEnabled` kapalı sürer. İz 1 çekirdek birleşti (5de225f), ana
-  oturum doğruladı (86b061b kanıt); 1.6/1.7 ekran+rapor+e2e ve 1.8 kâhin sürüm 4 (+K8) ajanları başladı.
-  DURDURULDU (kullanıcı, 13.10.2026 ~20:00 UTC: "perşembe gününe göre ayarla ve işlemleri durdur"): dört ajan (İz 3.2+3.4, 3.3, 1.6/1.7, kâhin 4)
-  erken aşamada durduruldu, yarım işler `docs/2.3.0-WIP-13.10/*.patch` + OKU-BENI; CI beklemeleri kesildi (91bd774, 5de225f, 86b061b CI'si
-  PERŞEMBE ilk iş `node tools/kanit.mjs ci <sha>` ile okunur — ders 21; 3.1 K8 ve 1.1–1.5 ancak o zaman üstü çizilir). Hatırlatıcı Perşembe
-  15.10.2026 09:00 TR. Devam sırası: CI oku → yamaları uygula/ajanları yeniden başlat (3.2+3.4, 3.3, 1.6/1.7, kâhin 4) → bitiş turu.
-- 15.10.2026 "başla": CI dördü yeşil → 3.1 ve 1.1–1.5 kapandı (012c8d3); dört ajan yamalarla yeniden başlatıldı.
-- MÜŞTERİ TALEPLERİ TURU (kullanıcı, 15.10.2026: "düzeltme ve ekleme taleplerini tek tek atıyorum; hepsini atınca planlamaya alıp başlarsın") —
-  liste tamamlanana kadar YALNIZ KAYDEDİLİR, iş başlatılmaz; hepsi gelince plan sunulur:
-  1. (ekran: Banka → Hareketler listesi, süzgeçler + tablo) "buraya PDF koysak iyi olur" → Hareketler listesinin seçili süzgeçlerle PDF (ve Excel) çıktısı.
-     KODDAN: hof-bank.js Hareketler sekmesinde PDF/Excel düğmesi YOK; aynı veri Rapor Merkezi "Banka Hareket Raporu" (banka-hareket) ile PDF/Excel
-     alınabiliyor ama ekranda bağ yok. Öneri: sekmeye "PDF" + "Excel" düğmeleri (aynı süzgeçlerle, rapor altyapısı; TOPLAM satırı; yetki bank.reports
-     yoksa bank.view ile yalnız kendi gördüğü liste).
-  2. (ekran: Rapor Merkezi → POS Ödeme Takvimi, Başlangıç 01.10.2026 işaretli) "tüm raporlarda / POS Ödeme Takvimi'nde Başlangıç ilk açılışta 1976
-     geliyor; Tüm Zamanları Göster deyince de 1976'ya atıyor ve boş geliyor". KODDAN: `finance-report.mjs:172` presetRange("all") = bugün − 50 yıl
-     (→ 1976) — Tüm Zamanlar'da Başlangıç alanı bu tarihi gösteriyor; vade raporları (POS Ödeme Takvimi, çek/senet) ilk açılışta "all" ile açılıyor
-     (hof-report-center.js:162). Boşluk: takvim yalnız BANKAYA GEÇMEMİŞ kalemleri gösterir; ekranda bekleyen yoksa boş (14.10 valörü geçmiş 495 TL
-     Hareketler'de) — ama kullanıcı boşluğu 1976'ya bağlıyor, ekran anlatmıyor. Öneri: Tüm Zamanlar'da Başlangıç alanı BOŞ ("başlangıç yok") ve
-     dönem metni "Tüm Zamanlar"; takvim boşken "Bekleyen POS kalemi yok; geçenler Banka → Hareketler'de" ipucu + bağ; bütün raporlarda 1976 görünmez.
-  3. YENİ RAPOR: "POS Komisyon (Provizyon Kesintisi) Raporu" — aylık/yıllık/tarih aralığına göre POS başına kesilen komisyon (brüt, komisyon, BSMV/KDV,
-     net; iade komisyonu ayrı; TOPLAM; PDF/Excel; her süzgeç). KODDAN: Rapor Merkezi'nde bugün yalnız banka-pos-hareketleri ve pos-odeme-takvimi var;
-     plan §8.10'daki "POS Satış Raporu / POS Komisyon Raporu" (kip ve vergi ayrımıyla; İptal İadeleri ayrı satır) henüz yok → İz 3.3 kapsamına eklenir
-     (ajana iletilir).
-  4. (ekran: Rapor Merkezi sol liste: Kasa, Ana Defter, Banka, …) "rapor sıralamasını programa uygun yapalım: önce Cari, sonra Kasa, Stok, Fatura,
-     Çek/Senet, Taksit, Banka". KODDAN: sıra tanım sırasıyla geliyor (report-center.mjs grupları: Kasa, Ana Defter, Banka, Cari, Fatura, Taksit,
-     Çek / Senet, Stok, Kayıtlar, Ofis). YENİ SIRA: Cari · Kasa · Stok · Fatura · Çek / Senet · Taksit · Banka · Ana Defter · Kayıtlar · Ofis (son üçü
-     kullanıcı saymadı, sona). Grup sırası tek listede (sunucu) tanımlanır; senaryo-211/rapor e2e beklentileri güncellenir ve koşulur (ders 28).
-  5. "Sol sabit menünün üstüne ARAMA penceresi: 'Alış f' yazınca alış faturasıyla ilgili modüller, 'cari h' yazınca Cari Hareket Raporu, 'çek'
-     yazınca çekle ilgili şeyler gelsin". KODDAN: bugün genel arama/komut paleti YOK (yalnız sayfa içi aramalar). Öneri: menü üstünde "Ara" kutusu
-     (+ Ctrl+K): sayfalar/sekmeler, işlemler ("Yeni Alış Faturası", "Şüpheli Alacağa Al"…), bütün raporlar ve ayar bölümleri tek dizinden; sözcük
-     başı eşleşme ("alış f" → Alış Faturaları, Yeni Alış Faturası, Alış Faturası Raporu), Türkçe harf duyarsız (ı/i, ş/s); sonuç yalnız yetkisi
-     olanlar; Enter ile açılır; dizin sunucudan değil istemcideki menü/rapor tanımlarından (rapor listesi API'den). Cari/kayıt adı araması bu
-     kutuya girmez (ayrı, sonra).
-  6. (ekran: kayıt detay kartı → işlem geçmişi "Araç haczi · düşüm 14.10.2027") "işlem geçmişindeki kayıtları düzeltebilmeli ve X ile silebilmeliyiz;
-     3'ten fazlaysa 'daha fazla göster'". KODDAN (hof-workspace.js ~1008): geçmiş türleri not / telefon / tahsilat / taksit hareketi / haciz / görev;
-     yalnız TAHSİLATTA düzelt/sil var; not, telefon ve haciz için sunucuda yalnız POST (workspace.mjs:346, 359, 486), düzelt/sil ucu YOK; liste
-     sınırsız uzuyor. Plan: her satırda Düzelt + X (not/telefon/haciz: yeni PUT/DELETE + audit + Silinenler; taksit hareketi ve görev kendi
-     modülünden — satırda "Kayda Git"); ilk 3 satır + "Daha Fazla Göster (n)". Yetki: kayıt düzenleme yetkisi.
-  KARAR (kullanıcı, 15.10.2026: "bu son müşteri talebiydi; hepsini pakete ekle, işlem bitince yükleyelim, canlıya alalım") → 1–6 2.3.0 kapsamına
-  (İz 5, `docs/2.3.0-IS-LISTESI.md`); 2.3.0 bitince teslim düzeniyle yayın (kullanıcı yükler).
-- KARAR (kullanıcı, 15.10.2026 ~19:30 UTC): kılavuzda hap bilgi "Ticari Şüpheli Alacaklar" başlığında (9. Cari altındaki bölüm başlığı
-  "Şüpheli Alacak" → "Ticari Şüpheli Alacaklar"; içerik zaten hap bilgi); 2.3.0 SÜRÜM NOTU = "İyileştirmeler ve Ticari Şüpheli Alacaklar
-  Eklentisi" (CHANGELOG başlığı + GitHub yayın metni; güncelleyici notu CHANGELOG gövdesinden). Rapor adı "Şüpheli Alacaklar" (program) değişmedi.
-- OPERATÖR MERKEZİ "SÜRÜM 9.0.0" (kullanıcı sorusu, 15.10.2026): yayımlanmış 9.0.0 yok; lisans.installations'ta 3 kayıt (30.09 7b44b046…, 12.10 38efc2d5…,
-  15.10 07:04 UTC db54a00b…), hepsi Microsoft Azure = GitHub Actions; makeVersion ile 9.0.0 olarak paketlenen GERÇEK program CI'de açılıp kendiliğinden
-  deneme başlatmış (ders 30). Etki: yalnız operatör listesinde sahte "Adı yazılmamış ofis" satırları ve servis istekleri; müşteriye etkisi yok. Adsız 2.2.0
-  kayıtları (88.225…, 178.233…, 88.241…) Türkiye adresleri = GERÇEK demo kullanıcıları. Düzeltme: testlere ölü adres + tarama testi. Sahte 3 kaydın
-  silinmesi (installations + events) kullanıcı kararı; silinmedi. KARAR (kullanıcı, 15.10.2026): "zararsızsa dursun, tekrarı olmasın; basit işler için kod
-  tabanına dokunmayalım" → 3 kayıt DURUR (silinmez); önlem yalnız testlerde (210ac8e; ürün kodu değişmedi); operatör verisine dokunulmaz.
-- KONTROL TURU 2 (15.10.2026 ~16:45 UTC; kullanıcı "yargıç/eleştirmen geride mi kaldı?"): 469d547 sonrası 12 dosya; K1 YÜKSEK kapsayan kart
-  taksiti (düzeltildi), K2 geri yükleme çakışması açık 409, K3 düzeltmede yanlış 409 (düzeltildi) — test supheli-230-kontrol2 0/3 → 3/3; K4–K7
-  BİLGİ (KANIT'a). YENİ SON ADAY = 91e6dea; Uzun Doğrulama #225 (6312e8b) iptal, 91e6dea'da yeniden (~16:58 UTC). Ders 32.
-- UZUN DOĞRULAMA #230 (91e6dea) 23/23 + kapı YEŞİL (15.10.2026 20:02 UTC; KANIT satırı dolduruldu, B.1 kapandı). Ürün kodu 91e6dea; üstüne yalnız belge/kılavuz/CHANGELOG/pdf-uret (6f0d309) ve kanıt. SIRADA: imzalı paket (release.mjs --anahtar yüklenen pem) + build:windows → 5 dosya + arşiv teslim → PR → kullanıcı "birleştir" → yayın (kullanıcı) → bayt bayt + güncelleyici "available" → site kılavuz PR'ı (yeni PDF: "Ticari Şüpheli Alacaklar").
 - TESLİM BİÇİMİ (kullanıcı, 15.10.2026 ~20:20 UTC, 2.3.0 için teyit): GitHub'a yüklenecek İMZALI 5 dosya AYRI AYRI verilir; birleştirmeleri (PR → master) ben yaparım, dosyaları kullanıcı yükler. Kurulum .exe 30 MB'ı aşarsa İKİ PARÇA (parca0 + parca1) + "BIRLESTIR.md" (copy /b komutu + beklenen sha256) verilir.
-- 2.3.0 TESLİM (15.10.2026 ~21:20 UTC): paketlenen commit d7e66bd (ürün kodu 91e6dea); imzalı zip 2de92b82…, bildirge cd356847…, kılavuz PDF 879d1df4…, kurulum exe 6f0c61a6… (37,2 MB → iki parça + BIRLESTIR.md); arşiv 4 zip (1 belge+kanıt, 2–4 bundle parçaları; birleştirilip klonlandı). Dosyalar kullanıcıya gönderildi; PR açıldı (ceougur/ofis---y-netimi, master). SIRADA: PR CI + kapı yeşil → squash birleştirme (kullanıcı izni: "sen birleştirmeleri yapınca ben yüklerim") → kullanıcı yayın açar (v2.3.0, 5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı (ceougur/destekofis web/indir/). Sonra: İz 4.3? (yok — bitti), ölçek-30/1M planlı test Cuma 16.10, güncelleyici (b) saveState yarışı, kapsam ölçümü.
 - AÇIK (15.10.2026 21:58 UTC): CI #742 aed598e Windows Node 24 guncelleme-gercek S2 kırmızı (PR koşusu #743 aynı commit yeşil). Mekanizma: testin etkinlik pingi bir önceki isteği bekliyordu, takılan tek istek 4 sn boşluk açtı, sunucu haklı olarak kurdu (ürün doğru). Düzeltme test yardımcısında (zamanlayıcılı + zaman aşımlı pingler + istatistik; zorla üretme GUNCELLEME_S2_ZORLA_BOSLUK=1). İsteğin CI'de neden takıldığı (ağ/yük/ürün) yeni tanılamayla bir sonraki görülüşte okunur; ders 18 gereği Windows'ta iki yeşil koşu görülmeden kapanmaz.
-- 2.3.0 BİRLEŞTİ (15.10.2026 23:46 UTC): PR ceougur/ofis---y-netimi#29 squash → `master` = ec1ef3f (ağaç 7888371 ile AYNI; CI #746 push + #747 PR yeşil, Windows 22+24 ikisinde de → güncelleyici (b) ve (d) kırmızıları KAPANDI). İmzalı paket 7888371'den: zip 3cf3b956…, bildirge b38ffd12…, kılavuz PDF 879d1df4…, kurulum exe 2aa3d03f… (iki parça + BIRLESTIR.md); arşiv 4 zip. Dosyalar kullanıcıya YENİDEN gönderildi (d7e66bd paketi geçersiz). SIRADA: kullanıcı yayın açar (v2.3.0 → master, "DestekOfis 2.3.0", not "İyileştirmeler ve Ticari Şüpheli Alacaklar Eklentisi", 5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı (ceougur/destekofis web/indir/, PDF 879d1df4…). Sonra: ölçek-30/1M planlı test Cuma 16.10, kapsam ölçümü, K4/K5 2.3.1 adayları, S2 ping tanılamasının CI'de okunması.
-- 2.3.0 YAYIMLANDI (16.10.2026 ~00:30 UTC; `v2.3.0` = ec1ef3f; yayımdan önce kullanıcının ekranındaki 5 ad/boyut teslimle karşılaştırıldı): yayındaki 5 dosya + latest/ teslimle bayt bayt aynı, exe .sha256 OK; gerçek eski güncelleyiciler (v2.2.0, v2.1.0 kodu) canlı GitHub'da 2.3.0'ı "available" gördü, 2.3.0 → "up-to-date". Kurulum parçaları için BIRLESTIR.bat (çift tık: copy /b + certutil sha256) verildi — bundan sonra her teslimde parçalarla birlikte. Site kılavuz PR'ı ceougur/destekofis (dal main'den yeniden başlatıldı; PDF 879d1df4…) ceougur/destekofis#15 BİRLEŞTİ (kullanıcı "birleştir", 16.10 ~00:45 UTC; main 462df1c, main PDF 879d1df4… doğrulandı). 2.3.0 KAPANDI; sonra: ölçek-30/1M planlı test Cuma 16.10, kapsam ölçümü, K4/K5 2.3.1 adayları, S2 ping tanılaması.
-- SIRADAKİ İŞ (kullanıcı, 16.10.2026: "K4 ve K5 ile birlikte fatura modülü… oradan devam edeceğiz"): `docs/fatura/E-BELGE-EDM.md` + K4/K5 (2.3.1
-  adayları, `docs/2.3.0-KANIT.md`). Adım 1 (XML uygunluğu) başladı: GİB paketleri yeniden indirildi (sha256 12901476…/97a6f705… eşleşti), OASIS
-  UBL 2.1 XSD (60b80d76…), EDM örnekleri açıldı; GİB şematronu XPath 2.0 (matches) → Saxon gerekir; SchXslt bu ortamdan indirilemiyor (GitHub 403,
-  Maven'de yok) → araç seçimi sürüyor (SaxonJS/xmllint-wasm devDependency, lisans test için uygun).
-  TASLAK (kullanıcı, aynı gün; ekran görüntüsü, yalnız görsel): Fatura sayfasında "Entegratör Ayarları" düğmesi → "e-Dönüşüm ve Entegrasyon Ayarları"
-  kartı (sekmeler Entegrasyon Bilgileri / Firma / Etiket Tanımları / Otomatik Seriler; Entegratör, Ortam, Kullanıcı Adı, Parola, GB, PK, üç
-  onay kutusu, Bağlantıyı Test Et, Kaydet, Durum satırı). KODDAN: arka uç hazır (Fatura Ayarları → "e-Belge Bağlantısı", edocEnabled kapalıyken
-  gizli; parola secret-box ile şifreli, istemciye dönmez; senderAlias, autoSend, series, seller). Değerlendirme kullanıcıya verildi (GB/PK etiketleri
-  taslakta ters; Canlı Ortam "entegre et"e kadar seçilemez; otomatik gönder varsayılan kapalı ve düğme "Kaydet ve Gönder" olur; firma/seri tek
-  kaynak; yazım düzeni). ONAYLANDI (kullanıcı, aynı gün: "düzeltilmesi gerekenler uygun, kullanacağın gerekli araçları edin"; test şifresini
-  "buraya yazayım" dedi → dosya olarak yüklemesi istendi). İş listesi `docs/2.4.0-IS-LISTESI.md`. İz 1 (XML uygunluğu) BİTTİ: kâhin aracı
-  tools/ebelge (xmllint-wasm + SaxonJS + SchXslt, Java yok), test ebelge-uygunluk 53/53, eski kodda 45/52 kırmızı; üç kusur düzeltildi (boş imza
-  yuvası, istisna 308 → 304 — GİB'de 13/a = 304, iade referansı DocumentTypeCode IADE + 16 hane ön denetimi).
-  İz 3 K4/K5 BİTTİ (8bc680b): iptal penceresi + bildirim + işlem kaydı; çakışma iletisi tarih/tutarla, "TL". İz 2 Entegratör Ayarları kartı
-  BİTTİ (b5b45ad): 3 sekme, GB/PK EDM'den, Canlı Ortam kilidi (ekran + sunucu + bağlantı katmanı; yalnız config.edocLive), Durum satırı,
-  e2e senaryo-entegrator-240 CI'de. Ayrıca e2e tarih tuzağı (ders 13) düzeltildi (0d83358). İz 4 EDM TEST ORTAMI YAPILDI (16.10.2026; kullanıcı
-  test kimliğini dosya olarak yükledi — uploads/…edm-test..txt; depoya/kanıta girmedi, taranarak denetlendi): gerçek serviste e-Arşiv gönder/iptal ve
-  e-Fatura alıcıya ulaştı; 4 kusur düzeltildi (CheckUser DOCUMENT_TYPE, "erreceipt", çoklu PK seçimi, işlenirken iptal). Bu ortamda Node fetch için
-  NODE_USE_ENV_PROXY=1 + NODE_EXTRA_CA_CERTS gerekir. KARAR (kullanıcı, 16.10.2026: "yap"): VEKİL SUNUCU desteği bu sürüme — program Windows
-  makine geneli (WinHTTP) ayarını kendiliğinden kullanır + Entegratör Ayarları'nda elle "Vekil Sunucu" alanı; güncelleme, lisans, E-Tablolar, EDM aynı
-  yoldan (server/lib/net-proxy.mjs). Not: hizmet "NT SERVICE\DestekOfis" hesabıyla çalışır, kullanıcının tarayıcı vekil ayarını görmez → WinHTTP. YAPILDI (İz 5, `docs/2.4.0-IS-LISTESI.md`): ayar Yönetim → Sistem → Ağ Bağlantısı'nda (makine geneli; e-Belge kapalıyken de görünür),
-  Entegratör kartında yol satırı; testler Linux + Windows (CI'de gerçek netsh winhttp). BİLİNEN SINIR: PAC/WPAD ve NTLM vekil yok; gerçek ofis vekilinde denenmedi.
-- KARŞILAŞTIRMA (kullanıcı, 16.10.2026; Wolvox "e-Fatura/e-İrsaliye Ayarları" ekranları — "fikir vermesi için; EDM tek seçenek, ona takılma"): koddan
-  değerlendirme verildi, KARAR BEKLENİYOR. Bizde VAR: senaryo varsayılanı, gönderim tipi (ELEKTRONIK/KAGIT), GB/PK, not → Note, yazıyla tutar
-  (amountInWords), vade (PaymentDueDate), IBAN (PaymentMeans), sipariş/irsaliye no referansı, stok kodu, otomatik gönder, e-Arşiv e-postası, bağlantı testi.
-  EKSİK (öneri sırası): (1) e-Belge görüntü tasarımı (XSLT: logo, banka, alt not — "e-Fatura Script") — bugün EDM'nin varsayılan görüntüsü;
-  (2) gönderilen belgenin RESMÎ görüntüsünü (EDM GetInvoice PDF) faturanın Belgeler'ine ekleme — bugün yalnız kendi PDF'imiz; (3) şahıs firmasında
-  (TCKN) ticari unvan e-Belgeye girmiyor (ubl-tr.mjs: person → PartyName yazılmıyor) — küçük düzeltme; (4) cari bakiyesini nota ekle (seçenek);
-  (5) peşin/kapalı faturada ödeme şekli kodu (nakit 10, kart 48) — bugün banka varsa 42, yoksa 1; (6) EDM portalına taslak yükleme (seçenek);
-  (7) opsiyonel alanlar (seri/lot, garanti, kalem açıklaması → AdditionalItemProperty). Kapsam dışı: e-İrsaliye, e-Müstahsil, ÖTV, IMEI/tıbbi cihaz,
-  ayrı SMTP (EDM e-Arşiv e-postasını kendisi gönderir), portal kullanıcısı (web servis yeterli).
-  KARAR (kullanıcı, 16.10.2026: "önerini yap") → 1, 2, 3 YAPILDI (İz 6, `docs/2.4.0-IS-LISTESI.md`; gerçek EDM test ortamında EDM belgeyi
-  bizim şablonla çizdi — kanıt docs/kanit/2026-10-16/edm-gorunum); 4–7 bekler. Resmî PDF veri tabanına değil veri klasörüne (yedek şişmesin).
-  CI #761 d133455 YEŞİL (4 platform + e2e + kapı). İSTEK (kullanıcı, aynı gün): kendi şirketinin faturasında kullanmak için DestekOfis logosu →
-  `docs/pazarlama/DestekOfis-Logo-Fatura-Yatay.jpg` (1000×300) ve `-Kare.jpg` (600×600); marka işareti + Manrope; program ikisini de kabul etti.
-  KARAR (kullanıcı, aynı gün: "kalan 4 madde … isteğe bağlı olarak olsun") → cari bakiyesini nota ekleme, ödeme şekli kodu, EDM portalına taslak
-  yükleme, kalemde Seri No / Lot No alanları YAPILDI; dördü de ayardan açılır, varsayılan KAPALI (İz 7, `docs/2.4.0-IS-LISTESI.md`; gerçek EDM test
-  ortamında taslak + dört seçenek uçtan uca denendi, docs/kanit/2026-10-16/edm-taslak). Göç v27 (invoice_lines serial_no, lot_no; yalnız ekleyici).
-- KARAR (kullanıcı, 16.10.2026: "entegre et ama müşteriler şimdilik sadece test linki girip deneme yapabilsin, ben de öyle yapacağım; sorunsuzca
-  'canlıyı da aç' dersem o kısmı da aktif edersin") → 2.4.0'da e-Belge AÇIK (edocEnabled), CANLI ORTAM KİLİTLİ (edocLive kapalı; ekran + sunucu +
-  bağlantı katmanı zaten kilitli). "Canlıyı da aç" denince yalnız edocLive açılır (ayrı sürüm). Baş mimar uyarısı verildi (test belgesi gerçek
-  deftere yazılır, numara serisi tüketilir, belgede "test" işareti yok). KARAR (kullanıcı: "önerilerin mantıklı, yapalım") → YAPILDI (İz 8):
-  test belgeleri TEF/TEA/TES serisi + "Test" rozeti/PDF/görünüm şeridi + kartta test hesabı ve "ikinci şirkette deneyin" notu; gerçek EDM'de doğrulandı.
-- İSTEK (kullanıcı, 16.10.2026, örnek FIRAT e-Faturası: "kırmızı maliye logosu, karekod çıkması çok mu zor, yapamaz mıyız?"; sabahki EDM varsayılan görünümünde
-  GİB logosu var) → KAREKOD ZORUNLU (GİB Karekod Standardı Kılavuzu V.1.2, Kasım 2023, sha256 0db9831a…: 509 VUK GT "bulunması gereken bilgi", belgenin
-  SAĞ ÜST köşesi, JSON içerik). Görünüm şablonumuzda ve EDM varsayılanında karekod YOK → canlıdan önce ŞART; İz 6'daki "karekod bilinen sınır" değerlendirmesi
-  yanlıştı. YAPILACAK (İz 9, 2.4.0): sunucuda üretilen karekod (GİB JSON) şablona + programın e-Belge PDF'ine; GİB logosu (GİB örnek şablonundaki resmî görsel)
-  "e-FATURA" başlığının üstüne; bağımsız çözücüyle kâhin, gerçek EDM'de resmî PDF. Ayrıca: EDM istemcisinde belge türü (ProfileID) ↔ gönderim kanalı
-  uyuşmazlığı reddedilir (sabahki deneme betiği e-Arşiv belgesini e-Fatura kanalından göndermişti → GİB SEND-FAILED; program yolunda olmaz).
-  İSTEK (kullanıcının yardımcısı, aynı gün): kaşe üzerine imzanın resmi e-Arşivde GİB logosunun altında çıksın (e-Faturada zorunlu değil) → Fatura
-  Ayarları'nda Logo'nun yanında "Kaşe / İmza". İSTEK (kullanıcı): "şirket logosu, GİB logosu, kaşe ortada alt alta"; "e-Faturada da ortada olsa logolar".
-  YAPILDI (İz 9, `docs/2.4.0-IS-LISTESI.md`): karekod sağ üstte (şablon + programın PDF'i), ortada firma logosu → GİB logosu → başlık → kaşe; kaşe
-  varsayılan yalnız e-Arşivde (Görünüm'den e-Faturada da); EDM kanal güvencesi. Gerçek EDM'de resmî PDF karekodu bağımsız çözücüyle doğrulandı.
-- KARAR (kullanıcı, 16.10.2026, "kâhin-yargıç-eleştirmenden geçiyor mu?" sorusuna verdiğim cevaba "önerin uygun"): 2.4.0'ın yargıç + eleştirmen turu bitişe
-  bırakılmaz, İz 9 commit'inden HEMEN SONRA koşar (birer ajan; kapsam 7888371..HEAD = 2.3.0 sonrası her şey; öncelik canlı kilidi/test serisi, karekod,
-  şablona giren alanlar (logo/kaşe/alt not), gönder/iptal/taslak, K4, göç v27). Bulgu → yeniden üret → kırmızı test → düzelt → dar kontrol turu (ders 32).
-  Uzun Doğrulama son adayda GitHub'da bir kez.
-  SONUÇ (16.10.2026): yargıç 1 YÜKSEK + 3 ORTA, eleştirmen 2 YÜKSEK + 2 ORTA (+ düşükler); hepsi ana oturumda yeniden üretildi ve DÜZELTİLDİ — canlı
-  kilidi Servis Adresi'nden delinebiliyordu (iki ajan ayrı ayrı buldu), portaldan gönderilmiş taslak düzenlenebiliyordu, belirsiz gönderimden sonra
-  silme numara çakıştırıyordu, karışık istisnalı belge GİB'den düşüyordu… Ayrıntı `docs/2.4.0-IS-LISTESI.md` "Bitiş turu". DAR KONTROL TURU (2467be8): K1 withdrawn belge, K2 "Hata"dan yeniden gönderimde belirsizlik, K3 tevkifat + istisna karışık → DÜZELTİLDİ (16/16, eski 3 kırmızı). KARAR (kullanıcı: "Yetkiliye onaylı iptal") → YAPILDI: belirsiz / portal taslağı belgede Fatura Ayarları yetkilisine "Yalnız Programda İptal Et" (onay kutusu + işlem kaydı).
-- İSTEK (kullanıcı, 16.10.2026): "test faturaları arayüzden de kesilebiliyor mu, sen koddan mı gönderdin?" → API'den (ekranın çağırdığı uçlar) gönderilmişti;
-  "kapat" → tarayıcıyla ekrandan gerçek EDM'ye gönderildi; BULGU: sorgusuz mükellefe e-Arşiv → EDM reddi + numara kaybı → DÜZELTİLDİ (mükellef sorgusu
-  numaradan önce, posta kutusu denetimi). İSTEK (aynı gün): "fatura, e-Arşiv, kesme ve iptal durumlarını gerçek kullanıcı gibi test edelim, hataya yer
-  bırakma" → YAPILDI: arayüzden gerçek EDM'de kesme (5) + iptal (4) matrisi, 25/26; bulunan 2 kusur düzeltildi (Ticari durum "RECEIVE -" eşlemesi; iptal edilmiş kartta "Tahsil Edilecek" başlığı) — `docs/2.4.0-IS-LISTESI.md`.
-- İSTEK (kullanıcı, 16.10.2026: "edm test linkinden son haliyle 3-4 çeşit test faturaları kes, ben de portaldan kontrol edeyim") → YAPILDI: son kodla
-  (bitiş turu düzeltmeleri dahil) EDM test ortamına 4 belge — TEF2026481687272 Temel (%20+%10, 470,00), TEF2026481687273 Ticari (1.200,00), TEA2026481687272
-  e-Arşiv kişiye (900,00), TEF2026481687274 İstisna 301+%20 (740,00); hepsi GİB'den geçti; resmî PDF karekodları jsQR ile çözüldü, tutarlar elle hesapla
-  aynı (docs/kanit/2026-10-16/edm-son-hal). PDF'ler kullanıcıya gönderildi; kullanıcı portaldan kontrol ediyor.
-- İSTEK (kullanıcı, 16.10.2026: "müşteri DESTEK OFİS şeklinde 5 kullanıcı ile 30 tane e-fatura, e-arşiv karışık kesmeye zorlar mısın") → firma DESTEK OFİS,
-  5 kullanıcı (3 Muhasebe + 2 Avukat) ayrı tarayıcı oturumlarında AYNI ANDA ekrandan 30 belge (15 e-Fatura Temel/Ticari + 15 e-Arşiv; Kaydet ve Gönder /
-  Sonra Gönder karışık) gerçek EDM test ortamına; denetim: numara benzersiz/boşluksuz, tek gönderim, son durum, bakiye, defter (kanıt docs/kanit/2026-10-16/edm-stres).
-  SORU (aynı gün, TEF2026347991651 Ticari, portal "Kabul/Red yanıtı bekleniyor"): kabul/red Giden'den değil Gelen Fatura'dan verilir (kendine gönderim).
-- İSTEK (kullanıcı, 16.10.2026: "çok kullanıcılı yüklü testler yap, müşteriler / kesen şirket / kalemler / sektörler farklı olsun"; "sunucunun testler
-  sonrası doğru yedeklemeyi aldığını da kontrol et"; "iade temel… deniyor muyuz") → gerçek EDM'de 2 şirket (001 DESTEK OFİS hizmet, 002 ATLAS YAPI stok) ×
-  5 kullanıcı, 64 belge (+ Alıştan İade TEMEL/IADE) + yedek tatbikatı (otomatik + elle + geri yükleme). Gerçek EDM birim kodu kusurunu buldu (Çuval SA vb.
-  reddedildi) → düzeltildi. KARAR (kullanıcı: "en uygun haliyle yap"): birimler programda KALIR; e-Belgede Adet + kalem notu, formda/stok kartında ipucu,
-  kılavuzda hap bilgi. Canlı açılırken birim sorgusu canlı ortamda yinelenir. Ayrıntı docs/2.4.0-IS-LISTESI.md "Dar kontrol turu 4".
-- İSTEK (kullanıcı, 16.10.2026, "başla"): EDM test ortamı için 5 senaryo örnek UBL-TR XML/JSON + kontrol listesi + yanıt/UUID doğrulama kodu (1 perakende
-  %1/%10/%20 + satır ve genel iskonto, 2 hizmet stopaj/tevkifat e-Arşiv, 3 tevkifatlı e-Fatura 5/10 ve 9/10, 4 USD dövizli, 5 hatalı VKN/eksik alan SOAP
-  Fault). Koddan: satışta gelir vergisi STOPAJI YOK (yalnız SMM/alış; e-SMM kapsam dışı) → 2'de KDV tevkifatlı hizmet e-Arşiv; döviz VAR (fxEnabled banka
-  modülü içindir — önceki "döviz kapalı" sözüm yanlıştı). Çıktı docs/fatura/ornek. AYRICA: büyük yük/stres testi planı (20 kullanıcı, dakikada 100–1.000,
-  oturum düşmesi, 5 MB XML…) için süre/maliyet verildi (~5–6,5 sa + düzeltmeler; 0 TL); karar ("A A A" önerisi) BEKLENİYOR.
-- İSTEK (kullanıcı, 16.10.2026 ~17:40 UTC): "kalan işleri ve zaman maliyetini yaz; her 30 dk bir rapor ver" → 30 dk raporu send_later ile (her raporda
-  yeniden kurulur); 2.4.0 yayımlanıp site PR'ı birleşince ya da kullanıcı "durdur" deyince durur. 2.4.0 son aday 77ba737 (CI #778 yeşil), Uzun Doğrulama
-  34761ca run 38933795436 17:36 UTC başladı. Stres testi (100/500/1000 dk) bitti: tavan ~320/dk, 1.599/1.600, kanıt docs/kanit/2026-10-16/edm-hiz.
-- KARAR (kullanıcı, 16.10.2026 ~17:45 UTC: "hem testi hem canlıyı aç, hafta sonu fatura kesecek kimse yok, ben hafta sonu testler yapınca zaten düzeltilecek
-  kısım olursa yaparız. buna göre üret zipi") → 2.4.0'da CANLI ORTAM AÇIK: server/server.mjs `edocLive: true` (kilit altyapısı yerinde; testler varsayılan
-  kilitli). Baş mimar uyarısı verildi: canlı hiç denenmedi (canlı kimlik yok), canlı belge yasaldır, seri TEF/TEA olamaz, ilk belge küçük tutarla kendi firmasına.
-  Ekran notu + kılavuz "Canlıya geçiş" hap bilgisi; sürüm notu "İyileştirmeler ve e-Fatura / e-Arşiv Entegrasyonu"; e2e entegrator-240 §14 canlı kip 69/69.
-  Uzun Doğrulama (34761ca) bitince son commit CI yeşil → imzalı paket + kurulum → 5 dosya + arşiv teslim.
-  İSTEK (kullanıcı, aynı gün, EDM görünümü ekran görüntüsü: "alttaki kesilen kişiyi buraya alsak… senin kararın nedir"; "bunu da taşıyalım" e-Arşiv) →
-  YAPILDI: SAYIN bloğu üst bölümün sol sütununda satıcının altında (GİB örnek düzeni); e-Fatura + e-Arşiv tek şablon; kanıt docs/kanit/2026-10-16/gorunum-alici.
-  SORU (kullanıcı, aynı gün): "canlı kesilince kırmızı test ortamı yazısı olmayacak doğru mu" → EVET (şerit yalnız TEF/TEA/TES serisinde; canlı seri bunlar olamaz);
-  test eklendi (edoc-uretim: canlı görünüm + PDF'te TEST yok; mutasyon 0/1 kırmızı, b02a171).
-  ELEŞTİRİ (kullanıcı, aynı gün: "anayasamızdaki kör noktamı bulma ilkeni sorguluyorum") → baş mimar kör noktaları bildirdi: (1) GitHub'a yayın = OTOMATİK
-  GÜNCELLEMEYLE BÜTÜN müşterilere gider; canlı hafta sonu denenmeden yayımlanırsa deneme müşteride olur → öneri: hafta sonu kurulum .exe ile kendi makinede dene,
-  yayın sonra; (2) canlı adres https://portal2.edmbilisim.com.tr/EFaturaEDM/EFaturaEDM.svc (EDM belgesinden) test adresinden farklı sürüm yolu ("EFaturaEDM21ea"
-  ↔ "EFaturaEDM"); bu ortamdan erişilemiyor (ağ izni yok), WSDL/sözleşme aynılığı doğrulanmadı → EDM'ye sorulmalı ya da ilk canlı Bağlantıyı Test Et ile görülür;
-  (3) birim kodu kabulü yalnız test ortamında ölçüldü. Karar kullanıcıda.
-  KARAR (kullanıcı, aynı gün: "canlıda da müşterilere ben EDM üyeliği alıp kuracağım için henüz müşteri keser riski yok") → (1) kapandı: canlı EDM
-  kimliği olmadan canlıya belge gidemez; yayın normal akışla (teslim → PR → yayın). (2)–(3) kullanıcının ilk canlı kurulumunda Bağlantıyı Test Et + ilk belgeyle görülür.
-  (2) KAPANDI (kullanıcı ağ iznini açtı, "yaptım, dene"): canlı adres erişilebilir, SSL geçerli; WSDL + 7 şema test 21ea ile adres dışında AYNI; programın
-  istemcisiyle bilerek yanlış giriş → canlı ve test aynı "Kullanıcı Bulunamadı!" (EDM 11010). Gerçek giriş canlı üyelikle. Kanıt docs/kanit/2026-10-16/canli-erisim.
-  İSTEK (kullanıcı, aynı gün: "kartı kullandın mı… onu da dene, test portalına karekodlu son halini dener misin") → YAPILDI: (a) kartla EKRANDAN Canlı Ortam +
-  bilerek yanlış kullanıcı → Durum "Bağlantı kurulamadı… Kullanıcı Bulunamadı! (EDM 11010)", adres boşken canlı adres (canli-kart); (b) canlı AÇIK üretim
-  ayarıyla (edocLive) test ortamına 4 belge TEF2026250609970–72 + TEA2026250609970: GİB'den geçti, TEF/TEA + TEST şeridi, yeni SAYIN düzeni EDM resmî PDF'inde,
-  karekod jsQR ile çözüldü, ödenecek 470/1200/900/740 (edm-son-hal-2).
-  KARAR (kullanıcı, aynı gün: "bilgi eklentisini 2.4.1'e bırakalım") → 2.4.1 ADAYI: canlıda "Kullanıcı Bulunamadı!" (EDM 11010) iletisine yönlendirme
-  ("Canlı Ortam için EDM'nin canlı kullanıcı adı ve parolasını girin"; testte test hesabı). 2.4.0'a girmez.
 - FİYAT (kullanıcı, 16.10.2026; soru "yıllık 15 bin öder mi?" → değerlendirme verildi; Wolvox Standart 50 bin TL tek seferlik): KARAR "SINIRSIZ 40 bin TL";
   devir, döviz, mobilden uzaktan bağlanma ve WhatsApp otomatik toplu gönderim yapıldıkça dahil. Baş mimar uyarıları verildi: "sınırsız"ın sözleşmede tanımı
   (süre / kullanıcı / güncelleme); tek seferlikte sürekli giderler (mevzuat güncellemesi, destek, uzaktan bağlanma sunucusu, WhatsApp Meta mesaj ücreti, EDM
@@ -638,114 +343,133 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   güncelleme/destek süresi ve WhatsApp/uzaktan bağlanma giderlerinin kime ait olduğu.
   FİKİR (kullanıcı, aynı gün; "bunlar sadece fikir şimdilik"): Pro yerine TEK PAKET (bütün özellikler); WhatsApp kontörünü müşteri öder; uzaktan bağlanma için
   Tailscale benzeri çözüm (net değil); ömür boyu kullanım, güncelleme yalnız ZORUNLU hallerde ve 2 YILLA sınırlı. Karar değil — uygulanmaz, kod değişmez.
-- 2.4.0 UZUN DOĞRULAMA run 38933795436 23/23 + kapı YEŞİL (16.10.2026 ~19:40 UTC); 6 CI yeşil. İmzalı paket 652bdc7: zip c226ed33…, kurulum exe 8aefa8fb… (35,5 MB,
-  simgeli); paket denetimi 4/4 (imza, sha/boyut, kurcalanmış ret, zip = HEAD 251/251). SIRADA: teslim (5 dosya + arşiv) → PR → kullanıcı "birleştir" → yayın.
-  TESLİM EDİLDİ (16.10.2026 ~19:45 UTC): 5 dosya (exe iki parça + BIRLESTIR.bat/.md; bildirge json 60b6bd7b…, kılavuz PDF ca4b478d…) + arşiv 6 zip
-  (1 belge+kanıt, 2–6 bundle parçaları; birleştirilip klonlandı, a11b0a7). PR açıldı.
-  PR ceougur/ofis---y-netimi#30; master çakışması "ours" birleştirmesiyle giderildi (515222c, ağaç aynı). KARAR (kullanıcı, 16.10.2026 ~19:50 UTC: "CI yeşil
-  olunca birleştir") → PR CI + kapı yeşil olunca squash birleştirme; sonra kullanıcı yayını açar (bağlantı verildi).
-  BİRLEŞTİ (16.10.2026 20:24 UTC): PR #30 squash → `master` = 5b45c5d (ağaç 4b4eca1 ile AYNI; uygulama dosyaları paket 652bdc7 ile aynı; head CI + kapı yeşil).
-  SIRADA: kullanıcı yayın açar (v2.4.0 → master, 5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı (PDF ca4b478d…).
-  YAYIMLANDI (16.10.2026 20:36 UTC; `v2.4.0` = 5b45c5d; yayımdan önce kullanıcının ekranındaki 5 ad/boyut teslimle karşılaştırıldı): yayındaki 5 dosya +
-  latest/ teslimle bayt bayt aynı, exe .sha256 OK, latest = v2.4.0; gerçek eski güncelleyiciler (v2.3.0, v2.2.0, v2.1.0 kodu) canlı GitHub'da 2.4.0'ı
-  "available" gördü, 2.4.0 → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#16 açıldı (PDF ca4b478d…; kullanıcı "birleştir" bekleniyor).
-  release.yml "Sürüm yayımla" master CI'yi bekliyor (sürümlü exe ekleyecek).
-  Site kılavuz PR'ı ceougur/destekofis#16 BİRLEŞTİ (kullanıcı "kılavuza hap bilgiyi koyduysan birleştir"; PDF'te e-Fatura denemesi, Canlıya geçiş, ölçü birimi,
-  görünüm maddeleri doğrulandı; main c8a7706, main PDF ca4b478d… doğrulandı). 30 dk raporu DURDU (site PR birleşti). 2.4.0 KAPANDI; açık: master 5b45c5d CI +
-  release.yml sonucu okunacak. Sonra: Pazar 18.10 planlı test, 2.4.1 adayı (canlı giriş iletisi), fiyat/lisans kararları, devir modülü kararı (22.10).
-- İSTEK (kullanıcı, 16.10.2026 ~20:45 UTC): "maliyeti olmayacak şekilde 4-5 saat sürecek; gerçek kullanıcılı, EDM test entegratörüne gönderilecek, sonra sonuçlar
-  incelenecek; çeşitli sektör/ürün/vergi oranı; e-Arşiv + e-SMM + e-Fatura; logolu, kaşeli, karekodlu; dişli test" → BAŞLADI: betik + bağımsız Python kâhin
-  + diş kanıtı (bozulmuş girdiyle kırmızı) docs/kanit/2026-10-16/edm-dayaniklilik (ajan yazıyor, yalnız sahte EDM'yle ayıklıyor); gerçek EDM koşusunu ana oturum
-  başlatır (270 dk, 2 şirket × 5 kullanıcı, ekrandan). BULGU (YÜKSEK, ana oturum yeniden üretti): e-SMM EDM'ye GÖNDERİLEMİYOR — "e-SMM kullanıcısıyım"
-  işaretlenince serbest meslek makbuzu TES/ESM serisinden numara alıyor (ProfileID ESMM) ama Gönder → 409 "Bu belge gönderilemez."; kartta işaret açık
-  (hof-invoices.js:2804). Canlıda avukat müşteri işaretlerse numara harcanır, belge GİB'e gitmez. KARAR BEKLENİYOR: 2.4.1'de işareti gizle (hızlı) ve/veya
-  EDM e-SMM servisini bağla (EDM paketi E-SMM klasörü; ayrı API).
-  KARAR (kullanıcı, 16.10.2026 ~21:00 UTC, bir süre ekran başında değil): "dayanıklılık testlerini yap, 30 dk bir kontrol et, düzeltme gerektiren bulgular
-  olursa uygula ve e-SMM gizli yaparak test sonucu ile zipi teslim et" → 2.4.1: e-SMM işareti gizli + sunucu reddeder (config.esmmEnabled, varsayılan kapalı;
-  eski "esmm: true" kayıtta makbuz kâğıt kalır); dayanıklılık koşusu son kodla; bulgu → yeniden üret → kırmızı test → düzelt; teslim: 5 dosya + arşiv +
-  test sonucu. Birleştirme/yayın kullanıcı dönünce. e-SMM gönderimi için EDM'den servis adresi + doküman + test yetkisi istenecek (metin kullanıcıya verildi).
-  DURUM (16.10.2026 22:20 UTC): e-SMM gizli birleşti (465cc33; test 0/3 → 3/3, e2e 71/71); dayanıklılık betiği + kâhin + diş kanıtı ce6777f (sahte EDM 68/69;
-  tek ✗ KDV yuvarlama KURAL FARKI: kâhin oran başına, program satır başına; 17/174 belge 1 kuruş, satır kuralıyla 174/174 aynı — hüküm: açıklanan fark).
-  GERÇEK EDM KOŞUSU 22:14 UTC başladı (SURE_DK=270, 10 kullanıcı, TOHUM=1; günlük scratchpad/dayaniklilik-gercek/kosu.log; çıktı oraya, özet sonra depoya).
-  Koşu sürerken server/ ve client/ DEĞİŞTİRİLMEZ. Ajan gözlemleri (BİLGİ): iptal edilmiş belgenin XML'i inmiyor (409), iptal PDF'inde karekod yok,
-  PUT settings kısmi "start" haritası öbür serilerin başlangıcını sıfırlar (yalnız API; ekran tam harita gönderir).
-  DURUM (17.10.2026 ~03:30 UTC): dayanıklılık A (tohum 2) 465 belge 69/70, B (tohum 3) 472 belge 63/70 — kalan 7'nin kök nedeni: EDM geçici 11059 ret (1 belge;
-  koşudan sonra yeniden gönderildi → "Alıcıya ulaştı"), EDM 20005 resmî PDF (sonra indi), test aracının karekod çözücüsü 300 dpi istedi, KDV/tevkifat kalem başına
-  yuvarlama kural farkı; ürün kusuru YOK. 2.4.1'e kullanıcının bıraktığı canlı giriş iletisi de girdi (fa01323; gerçek canlı adreste doğrulandı). KANIT
-  `docs/2.4.1-KANIT.md`. Sırada: tam npm test + bağımsız gözden geçirme → son aday [uzun-dogrulama] → CI + Uzun yeşil → imzalı paket + kurulum → teslim. Birleştirme/yayın kullanıcı dönünce.
-  2.4.1 TESLİM EDİLDİ (17.10.2026 ~05:50 UTC): paketlenen 40cb354 (ürün kodu cd15bf7; CI #798 YEŞİL; Uzun Doğrulama run 38999890454 23/23 + kapı YEŞİL;
-  tam npm test 2664/2664). Kapsam: e-SMM gizli, canlı giriş yönlendirmesi, gözden geçirme G1–G4 + dar kontrol B1–B3 (kontrol-241). İmzalı zip 1deabc76…,
-  bildirge f4819baf…, kılavuz PDF 1ed34558… (DEĞİŞTİ → yayından sonra site PR'ı), kurulum exe 860bb8f2… (iki parça + BIRLESTIR.bat/.md); arşiv 6 zip. PR açıldı
-  (master; master 5b45c5d ağacı 4b4eca1 ile aynı → "ours" birleştirmesi). SIRADA: kullanıcı döner → "birleştir" → PR CI + kapı yeşil → squash → yayın (v2.4.1,
-  "DestekOfis 2.4.1", not "İyileştirmeler", 5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı. e-SMM: kullanıcı EDM'den servis/belge/yetki ister.
-  BİRLEŞTİ (kullanıcı, 17.10.2026: "geldim, githuba yüklemek için link ver, sende birleştir"): PR ceougur/ofis---y-netimi#31 squash → `master` = 34ed6cc
-  (ağaç e188256 ile AYNI; uygulama dosyaları paket 40cb354 ile aynı; PR CI #800 + push #799 yeşil). Yayın bağlantısı verildi. SIRADA: kullanıcı v2.4.1'i açar
-  (5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı (PDF 1ed34558…). Dal master'dan yeniden başlatıldı.
-  YAYIMLANDI (kullanıcı "yayımladım", 17.10.2026 06:32 UTC; `v2.4.1` = 34ed6cc; yayımdan önce kullanıcının ekranındaki 5 ad/boyut teslimle karşılaştırıldı):
-  yayındaki 5 dosya + latest/ teslimle bayt bayt aynı, exe .sha256 OK, latest = v2.4.1; gerçek eski güncelleyiciler (v2.4.0, v2.3.0, v2.2.0, v2.1.0 kodu) canlı
-  GitHub'da 2.4.1'i "available" gördü, 2.4.1 → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#17 BİRLEŞTİ (kullanıcı "birleştir"; main cccfb25, main PDF 1ed34558… doğrulandı). 2.4.1 KAPANDI;
-  açık: release.yml run 39010296441 (sürümlü exe) sonucu okunacak. Sonra: Pazar 18.10 planlı test, e-SMM (EDM'den servis/belge/yetki), fiyat/lisans, devir (22.10).
-- SORU (kullanıcı, 17.10.2026; bir videodan "canlıya çıkmadan 5 kontrol": hız sınırı, ortam değişkeni doğrulama, merkezi hata yönetimi, havuz + sağlık ucu,
-  geri dönüş/yedek — "bizde karşılığı var mı?") → koddan cevap verildi: giriş/sohbet hız sınırı VAR (auth.mjs:17, chat.mjs:155), genel API sınırı YOK (yerel ağda
-  yeterli; uzaktan bağlanma ile ZORUNLU); zorunlu gizli anahtar yok, varsayılan parola ilk girişte değişir; merkezi hata VAR (app.mjs:515 genel ileti) ama
-  "şirket açılamadı" 503 iletisi ham hata metni içerebilir (app.mjs:497); /api/health VAR ama veri tabanına dokunmuyor (açık); güncellemede deneme kipi +
-  kendiliğinden önceki sürüme dönüş + 6 saatte bir yedek/30 kopya/geri yükleme VAR. ÖNERİ 2.4.2 (KARAR BEKLENİYOR): (1) sağlık ucu her şirket dosyasına
-  küçük okuma (dönüşü de tetikler) ~½ gün, (2) 503 iletisini sadeleştir, (3) hatalı ortam değeri açılışta uyarı; (4) genel hız sınırı uzaktan bağlanma işine bağlanır.
-  KARAR (kullanıcı, 17.10.2026: "bunu istemiyorum şimdilik") → 2.4.2 önerisi YAPILMAZ (kayıtta kalır).
-- İSTEK (kullanıcı, 17.10.2026): "web sitesinde ya da hem web sitesi GitHub'ında hem program GitHub'ında açık API, unutulmuş şifre, sızıntı var mı — maliyetsiz
-  test yap" → BAŞLADI: iki deponun bütün git geçmişi (gitleaks + kendi desen taraması + bilinen gizlilerin parmak izi), GitHub gizli tarama, yayın dosyaları,
-  canlı uçlara yalnız OKUMA denemesi (yetkisiz istek reddediliyor mu). Değişiklik yapılmaz; bulgu → kullanıcıya rapor + öneri.
-  SONUÇ (17.10.2026; kullanıcı ek: "web sitesinin kodunu da okut"): SIZINTI YOK — gitleaks (iki depo, bütün geçmiş): site 0, program 20 (hepsi yanlış alarm:
-  senaryo adı, açık keyId, test parolası); özel anahtar/JWT/service_role/sb_secret 0; imza anahtarı ve EDM test hesabı parmak izi 0; yayındaki güncelleme
-  zip'i 251 dosya temiz. Site kodu okundu: gizliler Vercel ortamında, Supabase tabloları RLS + revoke, 3 RPC API sırrı ister (SHA-256), operatör parolası
-  bcrypt, IP başına 5/15 dk kilit, oturum HttpOnly+SameSite=Strict+köken+özel başlık, panelde her değer esc() + CSP. İş akışları: imza anahtarı yalnız
-  etiket push'unda, CI pull_request (fork'a sır yok). DÜŞÜK: operatör girişinde genel 100 hata/15 dk kilidi kötüye kullanılıp operatör kilitlenebilir;
-  varsayılan yönetici parolası açık depoda (ilk girişte değişir). DENENMEYEN: canlı uçlar (destek-ofis.vercel.app ağ kuralıyla kapalı; Vercel bağlantısı
-  projeye yetkisiz 403), Supabase doğrudan (adres depoda yok), kurulum .exe içi (sıkıştırılmış).
-  CANLI (kullanıcı ağ iznini açtı, aynı gün): /.env, /.git/config, /supabase/lisans.sql, /vercel.json, /api/_lib/* → 404; /api/operator başlıksız/yabancı
-  köken 403, oturumsuz/sahte çerez 401, bilinmeyen işlem 400, GET 405; lisans check bozuk/SQL denemesi 400, bilinmeyen lisans 409; /api/lisans/v1/durum
-  yalnız keyId + signer/db (gizli yok); canlı sayfalarda anahtar/Supabase adresi yok (gitleaks 0); /admin CSP + DENY + HSTS + noindex. Operatör girişi
-  denenmedi (sahte "hatalı giriş" kaydı düşmesin). Sonuç: canlıda da açık yok.
-- SORU (kullanıcı, 17.10.2026; ekran: Entegratör Ayarları — EDM, Test Ortamı, kullanıcı adı/parola girili, Servis Adresi test adresi, GB/PK "Önce Etiketleri
-  Getir"): "test denemelerine başlayacağım, ayarlar doğru mu?" → doğru; sıra: Kaydet → Bağlantıyı Test Et → Etiketleri Getir + GB/PK seç + Kaydet; Firma VKN =
-  EDM test hesabının VKN'si; Servis Adresi boş da olabilir (canlıya geçerken boşalt); denemeyi ikinci şirkette yap.
-- KUSUR (kullanıcı denemesi, 17.10.2026; ekran: onay "FIS2026000000001 … Kaydet ve Gönder … entegratöre gönderilir"): belge türü KAGIT (FIS serisi) olduğu hâlde
-  form "Kaydet ve Gönder" düğmesini ve "entegratöre gönderilir" metnini gösteriyor (hof-invoices.js:1849 sendable: calc.profile yoksa "" ≠ KAGIT → true). Olası
-  neden kullanıcıda Fatura Ayarları "e-Fatura mükellefiyim / e-Arşiv kullanıcısıyım" kapalı (invoices.mjs:1109 → KAGIT). Kullanıcıya yol verildi. 2.4.2 ADAYI:
-  KAGIT'ta düğme "Kaydet", metin kâğıt belge; entegratör bağlıyken işaretler kapalıysa kartta uyarı. Yeniden üretilip kırmızı testle düzeltilecek (karar kullanıcıda).
-- KUSUR (kullanıcı denemesi, 17.10.2026; ekran: TEA2026000000001 "Hata" — EDM 11048 "Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız";
-  İptal Et → EDM 11017 "Fatura bulunamadı"): (a) test serisi TEF/TEA 000000001'den başlıyor, EDM test hesabı ORTAK → numara çakışır (bizim denemelerde başlangıç
-  API'den rastgele verilmişti; ekranda test serisi "Sıradaki No" alanı yok — invoices.mjs testNumbers yalnız gösterir) → her müşterinin ilk test faturası düşer;
-  (b) eStatus "error" + EDM'de yok (11017) belge ne iptal (remote iptal 11017) ne silinebiliyor; canLocalCancel "error"ı kapsamıyor (invoices.mjs:920).
-  ÖNERİ 2.4.2 (KARAR BEKLENİYOR): test serisi firmaya özgü büyük başlangıç + elle Sıradaki No; "error"da Yalnız Programda İptal Et (11017'de); 11048'e açık ileti;
-  + KAGIT'ta "Kaydet ve Gönder" kusuru. Kullanıcıya: test gönderimini düzeltmeye kadar beklet.
-- 2.4.2 BAŞLADI (kullanıcı "BAŞLA", 17.10.2026): test serisi firmaya özgü rastgele büyük başlangıç (TEF/TEA/TES; kullanıcı: "e-Faturada, e-SMM'de de"),
-  "Hata"daki belge İptal Et (EDM 11017 → programda), 11048 iletisi, kâğıt belgede "Kaydet ve Gönder" yok, Otomatik Seriler'de Test Ortamında Sıradaki No;
-  gözden geçirme G1–G5 + kontrol turu K1 düzeltildi (docs/2.4.2-DEGISIKLIKLER.md). İSTEK (kullanıcı, aynı gün; ekran Yeni Cari → Edge "Adres kaydedilsin mi?"):
-  "adres, numara, şifre doldururken Google 'kaydet' diyor, kafa karıştırıyor" → giriş dışı formlarda autocomplete off + parola alanları gizli yazılı metin
-  (hof-core.js); Edge'in gerçekten dinlediği kullanıcının bilgisayarında doğrulanır. Dinlemezse öneri: başlatıcı ayrı tarayıcı profiliyle (öneriler kapalı)
-  açar — kurulum değişikliği, gerçek Windows'ta denenmeli; karar kullanıcıda.
-- KARAR (kullanıcı, 17.10.2026: "uzun doğrulamayı koş, kurala uyalım") → 2.4.2 son adayında Uzun Doğrulama GitHub'da bir kez; sonra imzalı paket + teslim + PR.
-  İSTEK (aynı gün: "30 dk'da bir kontrol et") → send_later ile 30 dk denetimi (her seferinde yeniden kurulur); 2.4.2 teslim edilince ya da kullanıcı "durdur" deyince durur.
-  2.4.2 TESLİM EDİLDİ (17.10.2026 ~13:15 UTC): Uzun Doğrulama run 39025035201 24/24 YEŞİL; paketlenen e780aea (CI #810 YEŞİL; tam npm test 2674/2674;
-  yerel 33/33 e2e). İmzalı zip cd7846f5…, bildirge c50504dc…, kılavuz PDF 2f5fc5cd… (DEĞİŞTİ → yayından sonra site PR'ı), kurulum exe b93579ca… (iki parça +
-  BIRLESTIR.bat/.md); arşiv 5 zip (bundle birleştirilip klonlandı, f8db38c). PR ceougur/ofis---y-netimi#32 açıldı (master; master 34ed6cc dalın atası).
-  30 dk denetimi DURDU (teslim). SIRADA: kullanıcı "birleştir" → PR CI + kapı yeşil → squash → yayın (v2.4.2, "DestekOfis 2.4.2", not "İyileştirmeler",
-  5 dosya) → "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı (PDF 2f5fc5cd…).
-- SON ADAY (eski) 6312e8b (15.10.2026 ~16:10 UTC): CI YEŞİL (2464/2464 × 4 platform + e2e + kapı). Uzun Doğrulama #199/#213 kırmızısı (7 tohum)
-  iki kök nedenle kapandı: (1) aynı gün değersiz/tahsilat sırası UUID'ye göreydi → sınıf sırası al → karşılık → değersiz → tahsilat → çıkar (4d4da18, ders 31);
-  (2) kaydı silme başka kaydın çıkarma başlığını bozunca kapı genel 409 diyordu → açık 409 doubtful-delete-conflict (91bee2f). Motor öngörüleri ürüne
-  eşitlendi (615a7b4, 6312e8b; ürün doğruydu). Yerelde tohum 1,3,4,6,7,8,9,10 × 5.000 GEÇTİ. Uzun Doğrulama 6312e8b'de GitHub'da koşuyor (~14:55 UTC
-  başladı); yeşil → KANIT satırı doldurulur → imzalı paket → teslim → PR (kullanıcı: "kuralımıza göre bekleyelim").
-- DURDURULDU (kullanıcı, 15.10.2026 06:55 UTC: "5 saatlik kullanım limitim %99, 11:10'da yenilenecek, uygun yerde dur"): karar ajanı
-  (644 plan metni / tahsilatta "Normal Cari Hesaba İşle" seçimi / yaşlandırma "Vade Gecikme (Gün)") durduruldu; yarım işi worktree dalı
-  `worktree-agent-ae29a6d1c9c3d14a0` commit 4c725a7 (WIP, 34 dosya; test KOŞULMADI, birleştirilmedi). Dal HEAD d274311; CI 469d547/6a599ba/
-  d274311 SÜRÜYOR (okunmadı — ders 21, devamda ilk iş). Uzun Doğrulama #199 (43322ab) kuyrukta; para çekirdeği sonra değiştiği için son adayda
-  yeniden koşulur. DEVAM (11:15 TR hatırlatıcısı): CI oku → ajanı 4c725a7'den sürdür (kalan: model_b, kart tarih, taksit fişi, supheli_turet,
-  testler, kılavuz) → birleştir + ayrı kopyada doğrula → KANIT belgesi → son CI + Uzun Doğrulama → imzalı paket → teslim → PR.
-- KARAR (kullanıcı, 15.10.2026, bitiş turu — eleştirmen/yargıç soruları; baş mali müşavir denetimiyle UYGUN): (1) 644 kuralı = UYGULANAN KURAL
-  (K6: karşılık ≤ kalan; tahsilatta yalnız aşan kısım 644'e; tam tahsil/kapanışta kalan karşılığın tamamı 644) — plan §3.11b/3 metni buna göre
-  düzeltilir, kâhin plandan. (2) Tahsilatta KULLANICI SEÇİMİ, varsayılan "Şüpheli Alacaktan Düş"; cari tahsilat formunda "Normal Cari Hesaba İşle"
-  kutusu; fatura peşini ve faturaya bağlı (Kapatılacak Fatura) tahsilat KENDİLİĞİNDEN normal (yeni satışın parası) — yargıç #3. (3) Alacak Yaşlandırma
-  raporuna "Vade Gecikme (Gün)" (carinin en eski açık kaleminin gecikmesi) ve vade dilimi; "Şüpheli Alacak" kolonu kalır, başlığında "(dilimlere
-  dahil)". Uygulama: yargıç düzeltmeleri birleşince aynı dosyalarda (doubtful-gl, hof-accounts, report-center) ayrı ajan; 2.3.0'a girer.
+- KUSUR (kullanıcı denemesi, 17.10.2026; ekran: TEF2026358238234 TESTER, TCKN 12345678950, Belge Türü e-Fatura (Temel), gönderimde "posta kutusu" uyarısı):
+  TCKN EDM'de mükellef DEĞİL (CheckUser false) ama cari kartında "e-Fatura mükellefi" işaretli → belge TEF ile e-Fatura oldu, PK yok → 409 buyer-alias. Sahte
+  EDM'de yeniden üretildi (scratchpad/tester-repro): (a) işaret kaldırılınca Düzenle 400 profile-not-allowed — çıkmaz yol; (b) Düzenle'de belge türü e-Arşiv
+  seçilirse 200 ve belge TEF numarasıyla EARSIVFATURA olur (e-Fatura serisi numarası e-Arşiv belgesinde) — KUSUR. Kullanıcıya yol: İptal Et (EDM'ye gitmedi)
+  → cari Mükellef Sorgula (işaret kalkar) → Kopyala → TEA e-Arşiv olarak Kaydet ve Gönder. 2.4.3 ADAYI (karar kullanıcıda): numaralı belgede Düzenle belge
+  türünü (profil/seri) değiştiremez, ileti "iptal edip yeniden kesin"; formda cari seçilince e-Fatura mükellefi ama PK seçilmemişse kaydetmeden uyarı
+  ("Mükellef Sorgula"); buyer-alias iletisi carinin mükellef olmadığı durumda doğru yolu söylesin. TEF2026358238233 (TEST BILISIM) EDM'de SEND - SUCCEED (17:21 TR).
+  TEA2026732297197 (TESTER e-Arşiv) EDM'de SEND - SUCCEED (17:29 TR); iki belgenin resmî PDF karekodu çözüldü (senaryo/tutar programla aynı). GÖRÜNÜM: nakit
+  ödenen belgede "Ödeme Şekli: Havale / EFT" — Ek Seçenekler "Ödeme şeklini yaz" kapalıyken IBAN varsa 42 yazılıyor; kullanıcı seçeneği açtı.
+  KARAR (kullanıcı, 17.10.2026: "önerilerin mantıklı") → 2.4.3 BAŞLADI: (1) numaralı belgede Düzenle belge türünü değiştiremez ("iptal edip yeniden
+  kesin"); (2) e-Fatura carisinde posta kutusu seçilmemişse formda kaydetmeden uyarı + "Kaydet ve Gönder" numara harcamadan durur; buyer-alias
+  iletisi mükellef olmayan cari yolunu da söyler; (3) "Ödeme şeklini yaz" varsayılan AÇIK.
+  KARAR (kullanıcı, aynı gün: "anayasamıza göre sen karar ver", cari kartı "e-Fatura mükellefi (bu cariye e-Fatura kesilir)" kafa karıştırıyor) → (4) işareti
+  yalnız Mükellef Sorgula koyar/kaldırır, metin "işaretliyse e-Fatura, değilse e-Arşiv kesilir". YAPILDI (kod + test, docs/2.4.3-DEGISIKLIKLER.md): ebelge-243
+  9/9 (eski b340bf6 kopyasında 7/9 kırmızı), e2e senaryo-ebelge-243 17/17 (eskide 8 kırmızı, TESTER aynen), komşu e-Belge/fatura 233/233.
+  DURAKLATILDI (kullanıcı, 17.10.2026 ~14:55 UTC: "akşam yardımcımla test edeceğiz, iki iş olmasın; planlayarak durdur, devam ya da düzeltilecekler
+  olursa söylerim"): tam npm test yarıda durduruldu (sonuç YOK), 30 dk raporu silindi. DEVAMDA: yardımcının bulguları eklenir → tam npm test +
+  e2e entegrator-240/ebelge-242/243 → sürüm 2.4.3 (package.json/lock, kılavuz kapak/dip + hap bilgi: kutu Mükellef Sorgula ile, PK uyarısı, ödeme
+  şekli) → CHANGELOG "İyileştirmeler" → KANIT → CI → bağımsız gözden geçirme → Uzun Doğrulama → imzalı paket → teslim → PR.
+  DEVAM (kullanıcı, 17.10.2026: "yardımcımın işi çıkmış, kalan adımlara devam"): sürüm 2.4.3 + kılavuz (3021d00); bağımsız gözden geçirme B1–B7 → B1–B4,
+  B6 düzeltildi (0352efd); tam npm test 2685/2685; gerçek EDM kanıtı; son aday 3e65842 [uzun-dogrulama] CI #819 YEŞİL. Uzun Doğrulama run 39045380135: 22/24
+  yeşil; "Mutabakat (windows, tohum 1)" 5.000 işlem TUTARLI ama test yardımcısının temizliği EPERM → kırmızı (+ kapı). Düzeltme yalnız test yardımcısında
+  (4d546e9, test-temizlik-243; CI #820 YEŞİL); imzalı paket 4d546e9'dan (zip f4fe08b3…, kurulum 59069744…; denetim 4/4). KARAR (kullanıcı, 17.10.2026 ~18:45 UTC:
+  "hatasız doğru düzgün olsun, gerektiği kadar bekleyelim") → Uzun Doğrulama PAKETLENEN commit 4d546e9'da baştan (run 39059370080, workflow_dispatch);
+  yeşil → teslim + PR. (3e65842'deki kırmızı işin yeniden koşusu da sürüyor; yalnız ek bilgi.)
+- İSTEK (kullanıcı, 17.10.2026 ~18:50 UTC: "maliyetsiz olarak benim bugün karşılaştığım gibi UI sorunları ve mantık hatalarını, iyileştirmeleri gerçek kullanıcı
+  gibi test et: sayfa yapısı, tıklamada ekran yanıp sönmesi, veri giriş satırları hizalı mı, uyarılar makul sürede gidiyor mu, kullanımda sürtünme, genel program
+  testlerinde bakılan şeyler") → BAŞLADI: yerelde 2.4.3 (4d546e9) gerçek verili, tarayıcıyla (Playwright) keşif testi — alanlara bölünmüş ajanlar (yalnız bulgu;
+  ürün kodu DEĞİŞMEZ, 2.4.3 paketine dokunulmaz); ana oturum bulguları yeniden üretip kullanıcıya rapor eder; düzeltme kullanıcı kararıyla ayrı sürüm (2.4.4).
+- İSTEK (kullanıcı, 17.10.2026 ~19:00 UTC: "fatura modülünde bir de yükte hız testi yaptır, maliyetsiz") → PLAN: yerelde 2.4.3 (4d546e9), sahte EDM (ağa
+  çıkmaz, 0 TL): 5/10/20 eşzamanlı kullanıcı fatura kes + gönder + iptal + liste/arama/rapor; 10.000+ faturalı veriyle; ölçüm p50/p95/p99, saniyede işlem, hata,
+  numara benzersiz/boşluksuz, bakiye/stok/defter tutarlılığı, ekranda fatura listesi/form açılış süresi. Ders 15 gereği keşif testleri (A/B/C) BİTİNCE tek
+  başına koşulur. Önceki ölçüm: gerçek EDM gönderim tavanı ~320/dk (docs/kanit/2026-10-16/edm-hiz) — bu kez programın kendi hızı.
+- KARAR (kullanıcı, 17.10.2026 ~19:50 UTC: "diğer testler de bitince yeni bulgular çıkarsa, şu an bulunan ve bulunacak tüm bulguları düzelterek zipi
+  kusursuz olarak teslim et") → keşif bulgularının (docs/2.4.4-ADAY-BULGULAR.md; 50 bulgu) ve fatura hız testi bulgularının HEPSİ 2.4.3'e girer (2.4.3 henüz
+  teslim edilmedi; ayrı 2.4.4 yok). Sıra: hız testi biter (ders 15: ölçüm sürerken bu makinede test koşulmaz) → alan başına düzeltme ajanları (worktree; her
+  bulgu için kırmızı test → düzeltme → komşular) → ana oturum birleştirir, ayrı kopyada kırmızı/yeşil yeniden koşar → tam npm test + BÜTÜN e2e (ortak arayüz
+  değişir) → keşif senaryolarının yeniden koşusu (bulgular kapandı mı) → bağımsız gözden geçirme + dar kontrol → son aday CI → Uzun Doğrulama → paket → teslim.
+- KARAR (kullanıcı, 17.10.2026 ~19:55 UTC; baş mimar da uygun buldu): "Form state yönetimini izole hale getir; dosya/resim yükleme formun genel state'ini
+  re-render etmesin ve kaydedilmemiş verileri ezmesin; sonra tüm formlar için regresyon testi yaz ve çalıştığından emin ol" (kaynak: kullanıcının D1 bulgusu,
+  Fatura Ayarları logo/kaşe seçimi kaydedilmemiş alanları siliyor). Uygulama (ortak çekirdek paketinin 1. maddesi): hof-core merkezî taslak koruma (yeniden
+  çizimde dokunulmuş alanlar korunur), dosya/resim seçimi yalnız kendi bölümünü günceller, kayıtlı veri yalnız Kaydet sonrası ekrana basar; REGRESYON: bütün
+  formlar e2e (doldur → her iç yeniden çizim tetikleyicisi → değerler yerinde) + kaynak tarama testi (dosya seçiminden tüm form yeniden çizimi yasak);
+  eski kodda kırmızı, CI Linux+Windows yeşil.
+- KARAR (kullanıcı, 17.10.2026 ~20:10 UTC; baş mimar 2.4.3'ü bugünkü hâliyle teslim + bulgular 2.4.4 önerdi): "gerileme olacaksa zaten 2.4.4 ayrı versende
+  olacak. gerileme olmayacak şekilde yap herşeyi" → BÜTÜN bulgular + form izolasyonu 2.4.3'te KALIR. GERİLEME GÜVENCESİ: (1) değişiklikten ÖNCE taban:
+  4d546e9'da bütün e2e (CI dışı dahil) + keşif senaryoları + tam npm test sonuçları kayda alınır; (2) her bulgu eski kodda kırmızı test → en küçük düzeltme →
+  komşu testler; (3) ortak çekirdek (form izolasyonu, kapatma onayı, bildirim, klavye) ÖNCE ve TEK BAŞINA birleşir, bütün e2e + CI yeşil olmadan alan
+  düzeltmeleri birleşmez; (4) alan paketleri sırayla birleşir, her birleşmede değişen alan + bütün e2e; (5) numara/iade/toplu gönderim para-numara
+  çekirdeği → mutasyon + dar kontrol turu (ders 32); (6) bitişte tabanla fark: önceden yeşil olan her test ve senaryo yine yeşil, keşif bulguları kapalı,
+  bağımsız gözden geçirme yalnız gerileme arar; (7) son aday CI + Uzun Doğrulama + gerçek EDM test ortamında e-Belge akışı yeniden.
+- KARAR (kullanıcı, 18.10.2026 ~06:25 UTC, H9 sorusuna "a) evet görsün"): Muhasebe rolü Finans Raporları'nı (mizan, ekstre, Rapor Merkezi, Vade
+  Takip) VARSAYILAN olarak görür (permissions.mjs overview.view += muhasebe); yönetici kişiden kaldırabilir (kişiye özel "remove"); özel roller kendi
+  listesiyle kalır; ANLIK DURUM kartı yine yalnız yönetici. Güncellemeyle mevcut muhasebe kullanıcılarına da açılır (kaldırılmışlar kapalı kalır).
+  Dal h9-243 127ab3c (test yetki-243-muhasebe-finans eski 0/2 → 2/2; finans kapısını sınayan 4 test kişiden kaldırarak sınamayı sürdürür).
+- KARAR (kullanıcı, 18.10.2026 ~08:00 UTC: "evet kopyala düğmesi ekle"): 2.4.3 çekirdeğinde bildirim tıklamayı geçirdiği için metni seçilemiyor → hata
+  ve uyarı bildirimlerine "Kopyala" düğmesi (tam metin panoya; güvenli olmayan http bağlamında yedek yol). Düzeltme ajanına (duzeltme-gg243) eklendi.
+- İSTEK (kullanıcı, 18.10.2026 ~08:25 UTC, ikinci kez: "anayasamızı ve derslerimizi gözden geçir yeniden") → SONUÇ: (1) ders 26 yine ihlal — iş listesi
+  (docs/2.4.3-IS-LISTESI.md) BELGE_YOLLARI dışında, her güncellemesi tam CI başlattı (f6c032a, 8811afb, 5f50a2e) → önlem: iş listesi kodla birlikte
+  gönderilir; kalıcı çözüm olarak docs/*-IS-LISTESI.md BELGE_YOLLARI'na eklenecek (kanit.mjs + ci.yml + kanit-araci testi; sonraki kod push'unda).
+  (2) ders 34 eklendi: esc-kapat.mjs soruyu sessizce geçiyordu (yanlış soruları gizler) → düzeltme ajanına günlük + sınıflama + beklenti verildi.
+  (3) KANIT 4: yeni e2e'lerin eski kodda kırmızısı yalnız ajan raporundan → form-izolasyon-243 ana oturumca eski/yeni kodda yeniden koşuluyor.
+  (4) ders 9: çekirdek 134 form çağrısının 115'i ekrandan ayrıca açılmadı (ortak çekirdekle korunuyor) → DENENMEYEN'e adıyla yazılacak; keşif
+  yeniden koşusu bu formlardan Excel eşleme, geri yükleme, toplu işlem, POS, çek işlemlerini kapsayacak. (5) ders 14/18: Geri tuşu, F5 sorusu, Navigation
+  API, Kopyala (http) gerçek Windows + Edge uygulama penceresinde denenmedi → teslimde kısa elle kabul listesi (KANIT 5) verilecek.
+  (6) çekirdeğin ana dal CI'si (37b64e8) kırmızı (form-izolasyon E1 ön koşulu CI yerleşiminde kurulamadı) — birleşim (birlesim2-243) bu düzelip CI
+  yeşil olmadan ana dala alınmaz.
+- DAR KONTROL TURU (18.10.2026, d64ebf8; ders 32): numara/gönderim düzeltmelerinde YÜKSEK Y1 (Tümünü Gönder istemcide 30 sn zaman aşımı; gerçek EDM
+  hızında GG1 turları işlemez — ana oturum yeniden üretti: 30 sn'de hata, sunucu arkada 170/170), ORTA O1 (Kaydet ve Gönder / Kaydet / kartta Gönder eski
+  numarasız bekleyeni kalıcı kronoloji engeline düşürür — ana oturum yeniden üretti, 3 yolun 3'ü), O2 (tur sürerken Listeden Silinen belge e-Belge gider),
+  O3 (buyer-is-efatura seriyi bekletir), DÜŞÜK D1–D4 + ağ yokken turun numara vermesi. O1–O3/D4 2.4.3 ÖNCESİNDEN de var. Hepsi 2.4.3'te düzeltiliyor
+  (dal duzeltme2-243); bitince ayrı kopyada kırmızı/yeşil + yeni dar kontrol.
+- İSTEK (kullanıcı, 18.10.2026 ~12:20 UTC: "son uzun koşu başlamadan son adayı, bağımsız kahin, yargıç, eleştirmenden geçir (uzman ui, uzman ux ve uzman mali
+  müşavir gözüyle sadece koddan değil gerçek kullanıcı olarak da yapılsın bağımsız bu işlem) anayasamız ve derslerimize göz at") → PLAN: duzeltme2 birleşip CI
+  yeşil olunca SON ADAY → Uzun Doğrulama'dan ÖNCE bağımsız tur: (a) KÂHİN: plandan/mevzuattan, kodu görmeden yazılmış Python temiz oda modeli (mevcut kâhin
+  sürümü + 2.4.3 değişen kurallar: numara/kronoloji, iade, KDV) programla kara kutu karşılaştırma (ders 5); (b) YARGIÇ + ELEŞTİRMEN, üç uzman gözü — UZMAN UI
+  (görsel düzen, hizalama, yanıp sönme, dar ekran), UZMAN UX (iş akışı sürtünmesi, klavye, ileti açıklığı, geri alma), UZMAN MALİ MÜŞAVİR (TDHP/VUK/GİB
+  e-Belge kuralları, mizan/ekstre/KDV/iade/çek-senet doğruluğu); her biri hem KODDAN hem GERÇEK KULLANICI olarak tarayıcıda sıfırdan iş akışı (kişi → cari →
+  fatura → tahsilat → kasa/banka → rapor) yürütür; birbirinin ve düzeltme ajanlarının raporunu GÖRMEZ (ders 16); bulgu ancak ana oturum yeniden üretince
+  sayılır (ders 6); düzeltme → dar kontrol (ders 32) → sonra Uzun Doğrulama.
+  KARAR (kullanıcı, 18.10.2026 ~12:40 UTC: "önerini yap"): tek tur, DÖRT bağımsız ajan — kâhin modelini yazan (koşuları GitHub'da, ücretsiz) + UZMAN UI +
+  UZMAN UX + UZMAN MALİ MÜŞAVİR (bu oturumda, para yok, kullanım limitinden); yargıç/eleştirmen rolü her uzmanda (önce hata ara, sonra kendi bulgusunu
+  çürütmeye çalış); ayrı yargıç ajanı yok, süzgeç ana oturumun yeniden üretmesi (ders 6); ikinci tur yalnız yeniden üretilmiş bulgu varsa, dar kapsamlı.
+- KÂHİN (18.10.2026, dal kahin-243; kodu görmeden, GİB + ürün kararlarından): model 44/44, mutasyon 20/20; d64ebf8'de dar kontrol bulgularının HEPSİNİ
+  kendiliğinden yakaladı + 3 yeni (BASKA-ESZ: eşzamanlı turda einvoice-sending hata sayılıyor; BASKA-FIS-SIRA: Listeden Sil eski tarihli belgeye sıradaki FIS
+  numarasını veriyor; düzenle-ileri-tarih = D4). Düzeltilmiş 2849a87'de 9 senaryonun 5'i yeşil; kalan 4 (ağ yokken Kaydet ve Gönder numarası, BASKA-ESZ,
+  FIS sırası, PK'sız eski belge sonucunda kod boş) düzeltme ajanında. BAŞ MİMAR KARARI: posta kutusu seçilmemiş belge GEÇİCİ engeldir (kullanıcı tek adımla
+  düzeltir) → daha eski PK'sız belge seriyi BEKLETİR, sonucu dolu kod + nedenle döner; kalıcı yalnız chronology ve buyer-is-efatura. Kâhin K9 buna göre
+  güncellenir (kaynak gösterilerek). Uzun Doğrulama'ya kâhin işi eklendi (tohum 1–5 × 300, GitHub, ücretsiz).
+- SON ADAY BAĞIMSIZ TURU (18.10.2026, 5966ac3): DAR KONTROL 2 → bu turun düzeltmelerinin gerilemeleri B1 (reddedilen belgeler Tümünü Gönder'i kilitliyor),
+  B2 (tek bağlantı kopması turu durduruyor), B3 (her gönderimde fazladan EDM girişi, ~%80 yavaş), B4 (büyük veride Kaydet ve Gönder 144 → 2.621 ms) — ana
+  oturum B1–B3'ü yeniden üretti — + öncesinden B5 (Kes, Sonra Gönder eski tarihle), B6 (WSDL yedeği 12 saat önbellek), B7 (ileti). MALİ MÜŞAVİR (kâhin mizanı
+  22/24 hesap kuruşu kuruşuna) → MM1 kâğıt asıllı iade çıkmazı, MM2 Ticari profilde IADE (GİB reddeder), MM3 360/KDV kapatılamıyor, MM4 stok açılışı Ana
+  Defter'de yok (153/500 −5.000), MM5 yaşlandırma faturasız borcu görmüyor (840 vs 7.840) — ana oturum beşini yeniden üretti — + MM6–MM9 düşük + görüşler G1–G5.
+  e-Belge çekirdeği (B1–B7 + MM2) düzeltme ajanında (dal duzeltme3-243). UI ve UX uzmanlarının raporu bekleniyor.
+  KARAR (kullanıcı, 18.10.2026 ~16:30 UTC): MM3 → 2.4.3'e EKLE: "Vergi Ödemesi" (B 360 / A 102|100) + ay sonu "KDV Mahsup" fişi (391/191 → 360 ya da 190);
+  para çekirdeği: kâhin + mutasyon + dar kontrol. MM1 → "İade Edilen Belge No (e-Belge Referansı)" alanı + 16 karaktere tamamlanmış değer önerisi, kullanıcı
+  onaylar; asıl kayda dokunulmaz; uyarı form açılırken; teslimden önce gerçek EDM test ortamında kabulü denenir (reddedilirse yalnız ileti düzeltilir).
+- UZMAN UI (5966ac3): YÜKSEK yok; ORTA UI1 WhatsApp düğmesi kontrast 1,98:1, UI2 fatura formunda bildirim alanları örtüyor + ileti 3 kopya, UI3 stok kodu/
+  barkod kesiliyor (kalem, PDF, liste), UI4 kodda Tab ürünü seçmiyor; DÜŞÜK UI5–UI11 (yazım düzeni kaçakları + yazım testinin kör noktası "e-…" ve React
+  paketi, kontrast, biçim tutarlılığı). UZMAN UX: YÜKSEK UX1 cari eşzamanlı düzenlemede kayıp güncelleme, UX2 tam iade Düzenle'de kaydedilemiyor, UX3 gece
+  yarısını geçen açık fatura penceresi dünün tarihiyle keser, UX4 onayda odak yıkıcı düğmede (Esc+Enter doldurulmuş faturayı siler) — ana oturum dördünü
+  koddan doğruladı; ORTA UX5–UX13, DÜŞÜK UX14–UX28. Tam listeler: scratchpad uzman-ui-243-betikler/BULGULAR.md, uzman-ux-243-betikler/BULGULAR.md (kanıtla
+  depoya alınacak).
+  KARAR (kullanıcı, 18.10.2026 ~17:20 UTC): KÖ1 "Nihai Tüketici" hızlı seçeneği → 2.4.3; KÖ2 "Listeden Sil" adı → "Müşteri Fişi Olarak Bırak" (onay metni
+  açık; kılavuz/testler güncellenir) → 2.4.3; KÖ3 "Başlarken" kontrol listesi → 2.4.4 (yeni özellik). KÖ4 (e-Fatura işareti elle kaldırılınca bilgi iletisi)
+  UX5 ile birlikte yapılır.
+- UI/UX A PAKETİ (dal uiux-a-243, 5 commit; ana oturum birim eski 7/9 kırmızı → 9/9): UX1, UX4, UX5(cari)/KÖ4, UX7, UX8, UX10(çekirdek), UX11, UX13, UX19
+  (ad "Tahsilat / Ödeme" — yalnız nakit para çekirdeğine dokunurdu), UX21, UX22, UI1, UI3b/c, UI6–UI10, UI11 (fatura dışı); 24 madde B paketine (fatura ekranı).
+  KARAR (kullanıcı, 18.10.2026 ~18:30 UTC: "önerin gibi yap"): UI11 dışa aktarım düğmeleri bütün modüllerde tek ad ("PDF" / "Excel", aynı görünüm) → B paketi.
+- KARAR (kullanıcı, 18.10.2026 ~19:10 UTC: "uygula"; token tasarrufu): (1) DAR KONTROL 3 kapsamı = e-Belge numara/gönderim akışı (sunucu + ekrandaki
+  Tümünü Gönder döngüsü) + Vergi Ödemesi / KDV Mahsup kayıtları + stok açılışının deftere girmesi; genel UI/UX değişiklikleri dışarıda (ajan testleri +
+  tam e2e sınar). (2) 30 dk denetim raporu değişiklik yoksa TEK SATIR; kırmızı/yeni bulgu/karar gerekince ayrıntılı. Kalan iş tahmini ~20 sa, ~3,5–5 M token.
+- KARAR (kullanıcı, 18.10.2026 ~19:30 UTC; B paketi kapsamı): 2.4.3'te → UX2, UX3, UX5 (fatura), UX6, UX28, UI4, UI2, UX12, UX24, UX23, UX14, UX26, KÖ1, KÖ2.
+  2.4.4'e ERTELENDİ → UI11 (düğme adlarının birleştirilmesi + fatura penceresi çift başlık), UI5, UI9 (fatura), UI3a, UX15, UX16, UX17, UX18, UX20, UX25,
+  UX27, UX9, UX10 (fatura). Ertelenenler iş listesinde "2.4.4", sürüm notunda ve teslimde BİLİNEN SINIRLAR'da yazılır.
+- KARAR (kullanıcı önerisi, 18.10.2026 ~21:45 UTC; baş mimar anayasaya uygun buldu): son aday Uzun Doğrulama'da (GitHub) koşarken AYNI commit'te gerçek EDM test
+  ortamı denemesi (MM1 dahil) ve imzalı paket + kurulum hazırlanır; TESLİM ancak Uzun Doğrulama yeşil okunduktan sonra. Ön koşul: sürüm belgeleri ve kılavuz
+  PDF son adaydan ÖNCE biter (paketin içinde). Uzun Doğrulama kırmızı çıkıp kod değişirse paket ve etkilenen EDM adımı yeni commit'te yeniden yapılır.
+- DAR KONTROL 3 (19.10.2026, fc42855): B-1 ORTA gerileme (vekil sunucu kapalıyken numara veriliyordu; B3 oturum önbelleği kaynaklı), B-2 DÜŞÜK (tur sürerken
+  imleç öncesi belge), B-3 DÜŞÜK (stok açılışı Düzenle gidiş-dönüşü), kâhin eşitleme hatası — ana oturum B-1/B-2/B-3'ü yeniden üretti; düzeltme bbb6d3c (eski 5/16 →
+  16/16; kâhin 9–12 fark 0; defter kâhini 147/147). Vergi Ödemesi/KDV Mahsup ve KÖ1 sorunsuz. Görüş: silinen üründe açılış 153'te kalır (bilinçli).
+- SON ADAY (19.10.2026): 3673956 CI #841 YEŞİL; Uzun Doğrulama run 39200937044: 24/24 iş YEŞİL, "Uzun Doğrulama Kapısı" ARAÇ HATASIYLA çöktü (kâhin --cikti JSON'ları
+  kayıt sanıldı; ürün değil) → düzeltme b68aafe (kanit.mjs readRecords; test eski araçta kırmızı → 48/48). KARAR (kullanıcı, 19.10.2026 ~07:00 UTC, "uygun"):
+  b68aafe CI yeşil olunca TESLİM (5 dosya + arşiv) şimdi; aynı anda b68aafe'de Uzun Doğrulama baştan; kullanıcı GitHub YAYININI kapı yeşil bildirilene kadar AÇMAZ
+  (kapı kırmızıysa yayın açılmaz). Gerçek EDM 05e64d0'da 7/7 (ürün kodu 3673956/b68aafe ile aynı).
+  SONUÇ (19.10.2026 ~10:30 UTC): Uzun Doğrulama b68aafe run 39212127100 KAPI YEŞİL (24/24; tohum 2 koşucu kopması → tek yeniden koşu GEÇTİ); CI #842 b68aafe
+  yeniden koşuda YEŞİL (D2 ön koşul zamanlaması — 2.4.4: belirlenimci yap); PR ceougur/ofis---y-netimi#33 CI YEŞİL. Kullanıcıya "yayını açabilirsiniz" bildirildi.
+  KALAN: kullanıcı "birleştir" → PR birleşir; kullanıcı yayın açar (v2.4.3, 5 dosya) → "yayımladım" → yayındaki dosyalar bayt bayt + güncelleyici "available"
+  → site PR'ı (ceougur/destekofis web/indir kılavuz).

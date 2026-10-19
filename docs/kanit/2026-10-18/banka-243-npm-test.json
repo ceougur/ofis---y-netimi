@@ -1,0 +1,43 @@
+{
+  "ad": "banka-243-npm-test",
+  "komut": "npm test",
+  "commit": "2edd59d5f5698b32e2faa9269245f5be6a800a1a",
+  "dal": "worktree-agent-a3eea4bb8d8a5d46c",
+  "kirli": 9,
+  "izlenmeyen": 33,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-18T00:39:02.293Z",
+  "sure_sn": 1071.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2691,
+    "gecen": 2689,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir › zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket)",
+      "konum": "test/banka-210-altin.test.mjs:376:3",
+      "hata": "48 fark: · zincir · 001 · admin · json /api/workspace/report-center/banka-pos-hareketleri: Expected values to be strictly deep-equal: · + actual - expected"
+    },
+    {
+      "ad": "altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir › v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)",
+      "konum": "test/banka-210-altin.test.mjs:399:3",
+      "hata": "12 fark: · motor · 001 · admin · json /api/workspace/report-center/banka-pos-hareketleri: Expected values to be strictly deep-equal: · + actual - expected"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-18/banka-243-npm-test.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a3eea4bb8d8a5d46c",
+  "ham_cikti_sha256": "f524d6a7b3b899938dcc024e3f66cc01717037c856d34c5c08d2c99a726f6e6c",
+  "ham_cikti_bayt": 1022235
+}

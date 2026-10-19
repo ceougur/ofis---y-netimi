@@ -1,0 +1,63 @@
+
+> destekofis@2.4.3 test:senaryo-ebelge-242
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-ebelge-242.mjs
+
+■ 1 İşaretler kapalı: kâğıt belge, “Kaydet ve Gönder” yok
+  ✓ kâğıt belgede “Kaydet ve Gönder” / “Kaydet, Sonra Gönder” yok
+  ✓ “Kaydet” düğmesi var
+  ✓ onay: “Faturayı Kaydet” · × ONAY Faturayı Kaydet Ayşe Demir için FIS2026000000001 numarasıyla satış faturası kaydedi…
+  ✓ kâğıt belge kaydedildi, EDM'ye gitmedi (FIS2026000000001)
+
+■ 2 İşaretler açık: e-Arşiv, test numarası 1'den başlamaz
+  ✓ e-Arşivde “Kaydet ve Gönder” görünür
+  ✓ onaydaki numara TEA2026733187140 (1'den değil)
+  ✓ EDM'ye bu numarayla gitti (TEA2026733187140)
+
+■ 2b Fiyatı değiştirip HEMEN düğmeye basmak (gözden geçirme 2.4.2: düğmeler her hesaplamada yeniden çizilip tıklama kayboluyordu)
+  ✓ deneme 1: onay penceresi açıldı (tıklama kaybolmadı)
+  ✓ deneme 2: onay penceresi açıldı (tıklama kaybolmadı)
+  ✓ deneme 3: onay penceresi açıldı (tıklama kaybolmadı)
+  ✓ hesaplamadan sonra klavye odağı düğmede kalır (issue-now)
+
+■ 3 Numara EDM'de başkasınca kullanılmış (11048): ileti + İptal Et
+  ✓ Hata + ileti: l edip yeniden kesin; yeni belge bir sonraki numarayı alır (gerekirse Entegratör Ayarları → Otomatik Seriler'den sıradaki test numarasını ileri alın).
+  ✓ İptal Et çalıştı (cancelled; EDM belgeyi kabul etmemişti (EDM'de yok); yalnız programda iptal edildi.)
+
+■ 5 Test belgeleri kesildikten sonra Fatura Ayarları kaydedilir (kontrol turu K1: tam başlangıç haritası 400 alıyordu)
+  ✓ Fatura Ayarları kaydedildi (Vade Günü 15)
+  ✓ test başlangıcı değişmedi (TEA2026733187142)
+
+■ 4 Otomatik Seriler: Test Ortamında Sıradaki No
+  ✗ beklenmeyen hata: page.click: Timeout 10000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible [data-integ-tab="series"]')[22m
+[2m    - locator resolved to <button role="tab" type="button" class="hof-rep-chip " aria-selected="false" data-integ-tab="series">Otomatik Seriler</button>[22m
+[2m  - attempting click action[22m
+[2m    - waiting for element to be visible, enabled and stable[22m
+[2m    - element is not stable[22m
+[2m  - retrying click action[22m
+[2m    - waiting for element to be visible, enabled and stable[22m
+[2m    - element is visible, enabled and stable[22m
+[2m    - scrolling into view if needed[22m
+[2m    - done scrolling[22m
+[2m    - <span data-hof-ui="" class="hof-toast-text">e-Belge gönderilemedi: EDM isteği reddetti: UUID=…</span> from <div role="status" data-hof-ui="" id="hof-toasts" class="hof-toasts" aria-live="polite">…</div> subtree intercepts pointer events[22m
+[2m  - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <span data-hof-ui="" class="hof-toast-text">e-Belge gönderilemedi: EDM isteği reddetti: UUID=…</span> from <div role="status" data-hof-ui="" id="hof-toasts" class="hof-toasts" aria-live="polite">…</div> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    18 × waiting for element to be visible, enabled and stable[22m
+[2m       - element is visible, enabled and stable[22m
+[2m       - scrolling into view if needed[22m
+[2m       - done scrolling[22m
+[2m       - <span data-hof-ui="" class="hof-toast-text">e-Belge gönderilemedi: EDM isteği reddetti: UUID=…</span> from <div role="status" data-hof-ui="" id="hof-toasts" class="hof-toasts" aria-live="polite">…</div> subtree intercepts pointer events[22m
+[2m     - retrying click action[22m
+[2m       - waiting 500ms[22m
+
+    at /home/user/ofis---y-netimi/.claude/worktrees/agent-a34eec2f4fcc3bf36/test/e2e/senaryo-ebelge-242.mjs:195:14
+
+15 geçti, 1 kaldı

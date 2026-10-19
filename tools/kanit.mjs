@@ -294,7 +294,7 @@ const CI_WORKFLOW = ".github/workflows/ci.yml";
 // Yalnız belge (kullanıcı kararı 13.10.2026: "sadece doküman/plan değiştiğinde CI testleri koşmasın, sadece gerçek kod değiştiğinde çalışsın").
 // ci.yml'deki push "paths-ignore" listesiyle AYNI olmalı (test/kanit-araci.test.mjs denetler). Yalnız hiçbir testin ya da aracın okumadığı
 // belgeler: plan/kanıt/kılavuz belgelerini testler okuduğu için onlar listede YOK. PR koşusu (master'a) her zaman tamdır.
-export const BELGE_YOLLARI = ["CLAUDE.md", "docs/GECMIS-KARARLAR.md", "docs/DURUM-VE-DEVAM.md", "docs/2.3.0-IS-LISTESI.md", "docs/devir/**", "docs/fatura/**", "docs/pazarlama/**"];
+export const BELGE_YOLLARI = ["CLAUDE.md", "docs/GECMIS-KARARLAR.md", "docs/DURUM-VE-DEVAM.md", "docs/2.3.0-IS-LISTESI.md", "docs/2.4.3-IS-LISTESI.md", "docs/devir/**", "docs/fatura/**", "docs/pazarlama/**"];
 export const yalnizBelge = files => files.length > 0 && files.every(file => BELGE_YOLLARI.some(pattern => (pattern.endsWith("/**") ? file.startsWith(pattern.slice(0, -2)) : file === pattern)));
 const changedFiles = (gitFn, sha) => {
   const out = gitFn("diff-tree", "--no-commit-id", "--name-only", "-r", "--root", sha);
@@ -414,7 +414,12 @@ function readRecords(dir) {
     for (const name of readdirSync(folder, { withFileTypes: true })) {
       const full = path.join(folder, name.name);
       if (name.isDirectory()) walk(full);
-      else if (name.name.endsWith(".json")) out.push(JSON.parse(readFileSync(full, "utf8")));
+      else if (name.name.endsWith(".json")) {
+        // Yalnız `kos` kaydı (ad + hukum) sayılır; aynı klasöre düşen başka JSON (kâhin fark/ham çıktısı) kayıt değildir.
+        // Beklenen kayıtların hepsi --beklenen ile ayrıca aranır, yok sayılan dosya eksik kaydı gizleyemez (Uzun Doğrulama 19.10.2026).
+        const data = JSON.parse(readFileSync(full, "utf8"));
+        if (data && typeof data.ad === "string" && typeof data.hukum === "string") out.push(data);
+      }
     }
   };
   try {

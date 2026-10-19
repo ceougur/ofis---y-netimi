@@ -82,6 +82,8 @@
   const FIELD_OF_CODE = { "date-future": "openingDate", "date-invalid": "openingDate", "date-missing": "openingDate", "period-locked": "openingDate", "bank-opening-after-first": "openingDate", "rate-invalid": "openingRate" };
 
   let modal = null;
+  // 2.4.3 (C11): pencere kapanırken açık olan sekme (oturum içinde; sayfa yenilenince Genel Bakış).
+  let lastTab = "overview";
   // Eklenen bölümlerin yükleyicileri (HOF.bank.addReloadHook): pencere her yenilendiğinde aynı kapıdan, çizimden önce.
   const reloadHooks = new Set();
   let wizard = null;
@@ -132,8 +134,9 @@
   function open({ tab = "", accountId = "", legacy = false } = {}) {
     if (!HOF.can("bank.view")) return HOF.toast("Banka penceresi Banka Görüntüleme yetkisi olan hesaplara açıktır.", { type: "error" });
     if (!modal) {
-      // Pencere her açılışta Genel Bakış'la başlar (ya da istenen sekme/hesapla); son sekme hatırlanmaz.
-      view.tab = "overview";
+      // 2.4.3 (C11): pencere yeniden açılınca son sekme ve Hareketler'in süzgeci (oturum içinde; sayfa yenilenince baştan) hatırlanır — Rapor
+      // Merkezi'nin son dönemi hatırlaması gibi. Önceden her açılış Genel Bakış'la ve "Tüm Hesaplar"la başlıyordu. İstenen sekme/hesap önceliklidir.
+      view.tab = tabList().some(([id]) => id === lastTab) ? lastTab : "overview";
       view.mode = "tab";
       modal = HOF.modal({
         title: moduleName(),
@@ -144,6 +147,11 @@
         beforeClose: () => (view.dirty && view.tab === "settings" ? HOF.confirm({ title: "Kaydedilmemiş Değişiklik", message: "Banka ayarlarında kaydedilmemiş değişiklik var. Kaydetmeden çıkılsın mı?", confirmLabel: "Kaydetmeden Çık", danger: true }) : true),
         onClose: () => {
           modal = null;
+          // İşlem Kartı ya da Hesap Detayı açıkken kapanırsa geldiği sekme hatırlanır.
+          if (view.mode === "tab") lastTab = view.tab;
+          else if (view.mode === "event" && tabList().some(([id]) => id === view.eventBack)) lastTab = view.eventBack;
+          else if (view.mode === "account") lastTab = "accounts";
+          clearTimeout(dateTimer);
           // Gelişmiş Ayarlar her açılışta kapalı gelir (GG2 düşük bulgu).
           view.advanced = false;
           view.mode = "tab";
@@ -153,8 +161,8 @@
           view.event = null;
           view.dirty = false;
           view.selected = new Set();
-          // Pencere her açılışta baştan (son sekme hatırlanmaz): Hareketler'in süzgeçleri ve Planlı görünümü de.
-          Object.assign(moves, { filter: newMoves("main").filter, planned: false, rows: [], plans: [], loaded: false, cursor: null, hasMore: false, error: "" });
+          // 2.4.3 (C11): Hareketler'in süzgeci ve Planlı görünümü kalır (oturum içinde); liste yeniden açılışta sunucudan taze yüklenir.
+          Object.assign(moves, { rows: [], plans: [], loaded: false, cursor: null, hasMore: false, error: "" });
         },
       });
       modal.dialog.classList.add("hof-bank-modal");
@@ -162,6 +170,10 @@
       modal.dialog.addEventListener("change", onChange);
       modal.dialog.addEventListener("input", onInput);
       modal.dialog.addEventListener("keydown", onKey);
+      // 2.4.3 (C7): tarih süzgecinden çıkınca beklemeden uygulanır.
+      modal.dialog.addEventListener("focusout", event => {
+        if (event.target.matches?.('input[type="date"][data-mv]')) applyFilters();
+      });
     }
     if (tab) setTab(tab, { load: false });
     if (accountId) {
@@ -483,6 +495,8 @@
     if (HOF.can("bank.move") && a.currency === "TRY") {
       const why = a.status === "active" ? "" : "Hesap pasif; işlem girmek için önce Etkinleştir.";
       if (["demand", "commercial", "other"].includes(a.kind)) moveButtons.push(["v-fee", "+ Masraf", why, ""], ["v-interest", "+ Faiz", why], ["v-other", "+ Diğer İşlem", why]);
+      // 2.4.3 MM3: Vergi Ödemesi (B 360 / A 102; Vergi Ödemesi ve KDV Mahsubu yetkisi).
+      if (["demand", "commercial", "other"].includes(a.kind) && HOF.can("tax.manage")) moveButtons.push(["v-tax", "+ Vergi Ödemesi", why]);
       else if (a.kind === "time") moveButtons.push(["v-interest", "+ Faiz", why, ""]);
       else if (a.kind === "card") moveButtons.push(["v-card", "+ Kart Borcu Ödemesi", why, ""]);
       else if (a.kind === "loan" && HOF.can("bank.transfer")) moveButtons.push(["v-loan", "+ Kredi İşlemi", why, ""]);
@@ -1633,6 +1647,7 @@
       canMove ? `<button type="button" class="hof-button hof-button-small" data-act="v-fee">+ Masraf</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="v-interest">+ Faiz</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="v-other">+ Diğer İşlem</button>` : "",
       // Aşama 9: Bankalar Arası Transfer (Transfer Yapma yetkisi; en az iki transfer hesabı formda denetlenir).
       HOF.can("bank.transfer") ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="v-transfer">Transfer</button>' : "",
+      canMove && HOF.can("tax.manage") ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="v-tax">+ Vergi Ödemesi</button>' : "",
       canMove ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="plan-new">+ Planlı İşlem</button>' : "",
     ].join("");
     const filters = s.planned
@@ -1667,17 +1682,25 @@
       <a class="hof-rep-out is-xlsx" href="${esc(`${BASE}/movements.xlsx${qs ? `?${qs}` : ""}`)}" download title="Süzgeçteki hareketleri Excel olarak indir">Excel İndir</a></span>`;
   }
   let searchTimer = 0;
+  // 2.4.3 (C7): tarih alanı klavyeyle yazılırken her geçerli ara değerde (yıl "0002", "0020", "0202") change verir; önceden her hanede istek
+  // gidiyordu (ikisi 400). Artık yalnız makul tarih (yıl 1900–2999) süzer ve son tuştan 700 ms sonra; Enter ya da alandan çıkınca hemen.
+  let dateTimer = 0;
+  const DATE_FILTERS = new Set(["from", "to"]);
+  const plausibleDate = value => /^(19|2\d)\d{2}-\d{2}-\d{2}$/.test(value);
   /**
    * Süzgeç değişti: ekrandaki bütün süzgeç alanları birlikte okunur (bekleyen arama yazısı da kaybolmaz), liste baştan yüklenir (imleç
    * bırakılır; HOF.listGate eski yanıtı yok sayar). Hiçbir değer değişmediyse yeniden yüklenmez.
    */
   function applyFilters() {
     clearTimeout(searchTimer);
+    clearTimeout(dateTimer);
     let changed = false;
     for (const node of root()?.querySelectorAll("[data-mv-filters] [data-mv]") || []) {
       const key = node.dataset.mv;
       const clean = String(node.value ?? "").trim();
       if (!Object.hasOwn(moves.filter, key) || moves.filter[key] === clean) continue;
+      // Yazımı süren (yarım) tarih süzgece girmez; boş tarih (temizlendi) girer.
+      if (DATE_FILTERS.has(key) && clean && !plausibleDate(clean)) continue;
       moves.filter[key] = clean;
       changed = true;
     }
@@ -2153,12 +2176,58 @@
       }
       preview();
     };
+    // 2.4.3 (C3): hesapların bakiye satırı (öbür seçicilerdeki "Bakiye (gün) · İşlemden Sonra"; HOF.bank.balanceLine, K7 kuralı ekranda). Etki
+    // önizlemeyle aynı hesaptan: masrafta Bankadan Çıkan, transferde gönderenden tutar + ücret çıkar ve alıcıya tutar girer, kart borcu ödemesinde
+    // kart borcu azalır. Düzelt'te yalnız bakiye (eski işlem bakiyede; fark sunucuda), Planlı İşlem'de satır yok (bakiye değişmez).
+    // Bakiye yalnız Banka Görüntüleme yetkisine gelir (choices.balances); gelmezse satır yok.
+    let balanceData = null;
+    let effect = {};
+    const BALANCE_FIELDS = ["accountId", "toAccountId", "cardAccountId"];
+    const syncBalanceLines = () => {
+      for (const name of ["accountId", "toAccountId", "cardAccountId", "loanAccountId"]) {
+        const select = field(name);
+        if (select) select.title = select.selectedOptions?.[0]?.textContent.trim() || "";
+      }
+      for (const name of BALANCE_FIELDS) {
+        const box = field(name)?.closest(".hof-field");
+        const slot = box?.nextElementSibling?.matches?.("[data-balance-slot]") ? box.nextElementSibling : null;
+        if (!slot) continue;
+        const visible = Boolean(balanceData?.balances) && !box.hidden && mode !== "plan";
+        slot.hidden = !visible;
+        swapLine(slot, "[data-bank-balance]", visible ? balanceLine(balanceData, field(name).value, mode === "correct" ? { only: true } : { change: effect[name] || 0 }) : "");
+      }
+    };
+    // 2.4.3 (C12): hesap seçicileri satırın tamamını kaplar (uzun banka ve hesap adı kesilmez; "Türkiye Vakıflar Bankası T.A.O. · Kurumsal …").
+    for (const name of ["accountId", "toAccountId", "cardAccountId", "loanAccountId"]) field(name)?.closest(".hof-field")?.classList.add("hof-bank-wide-field");
+    if (mode !== "plan") {
+      for (const name of BALANCE_FIELDS) field(name)?.closest(".hof-field")?.insertAdjacentHTML("afterend", `<div class="hof-bank-balance-slot" data-balance-slot="${name}" hidden></div>`);
+      choices(true, field("date")?.value || "")
+        .then(data => {
+          if (!form.isConnected) return;
+          balanceData = data;
+          syncBalanceLines();
+        })
+        .catch(() => null);
+      let balanceSeq = 0;
+      field("date")?.addEventListener("change", async () => {
+        if (!balanceData?.balances) return;
+        const seq = (balanceSeq += 1);
+        const fresh = await balances(field("date")?.value || "");
+        if (seq !== balanceSeq || !form.isConnected || !fresh.balances) return;
+        balanceData = { ...balanceData, balances: fresh.balances };
+        syncBalanceLines();
+      });
+    }
     const preview = () => {
       const node = form.querySelector("[data-voucher-preview]");
       if (!node) return;
+      effect = {};
       const kind = typeNow();
       const amount = previewMinor(field("amount")?.value);
-      if (amount === null) return (node.textContent = "");
+      if (amount === null) {
+        syncBalanceLines();
+        return (node.textContent = "");
+      }
       const tax = field("tax")?.value || defaultTax;
       const parts = [];
       if (kind === "transfer") {
@@ -2175,8 +2244,9 @@
         parts.push(`Alıcıya Giren ${fmt(amount)}`);
         if (feeTotal) parts.push(`Ücret ${fmt(feeTotal)}${taxMinor ? ` (${fmt(base)} + BSMV ${fmt(taxMinor)})` : ""}`);
         parts.push(`Gönderenden Çıkan ${fmt(amount + feeTotal)}`);
+        effect = { accountId: -(amount + feeTotal), toAccountId: amount };
         node.textContent = parts.join(" · ");
-        return;
+        return syncBalanceLines();
       }
       if (kind === "fee") {
         const feeType = (meta.feeTypes || []).find(item => item.key === field("feeType")?.value);
@@ -2188,22 +2258,35 @@
           base = mulDiv(amount, 1_000_000, 1_000_000 + ppm);
           taxMinor = amount - base;
         } else if (tax.endsWith("_excl")) taxMinor = mulDiv(amount, ppm, 1_000_000);
+        effect = { accountId: -(base + taxMinor) };
         if (isVat(tax)) parts.push(`Matrah ${fmt(base)}`, `KDV ${fmt(taxMinor)}`, `Bankadan Çıkan ${fmt(base + taxMinor)}`, "Hizmet ve Gider Alışı faturası kaydedilir");
         else parts.push(`Gider ${fmt(base)}`, ...(taxMinor ? [`BSMV ${fmt(taxMinor)}`] : []), `Bankadan Çıkan ${fmt(base + taxMinor)}`, `Hesap ${glLabel(gl)}`);
       } else if (kind === "interest_in") {
         const ppm = previewPpm(field("stoppageRate")?.value) ?? 0;
         const stoppage = mulDiv(amount, ppm, 1_000_000);
+        effect = { accountId: amount - stoppage };
         parts.push(`Bankaya Giren (Net) ${fmt(amount - stoppage)}`, `Stopaj ${fmt(stoppage)} (193)`, `Faiz Geliri ${fmt(amount)}`);
       } else if (kind === "interest_out") {
         const extra = previewMinor(field("taxAmount")?.value) || 0;
+        effect = { accountId: -(amount + extra) };
         parts.push(`Bankadan Çıkan ${fmt(amount + extra)}`, `Faiz ${fmt(amount)}`, ...(extra ? [`BSMV / KKDF ${fmt(extra)}`] : []));
       } else if (kind === "loan_repay") {
         const interest = previewMinor(field("interestAmount")?.value) || 0;
+        effect = { accountId: -(amount + interest) };
         parts.push(`Bankadan Çıkan ${fmt(amount + interest)}`, `Anapara ${fmt(amount)}`, ...(interest ? [`Faiz ${fmt(interest)}`] : []));
-      } else if (kind === "card_payment") parts.push(`Bankadan Çıkan ${fmt(amount)}`, "Kart borcu azalır");
-      else if (kind === "loan_draw") parts.push(`Bankaya Giren ${fmt(amount)}`, "Kredi borcu artar");
-      else parts.push(`${kind === "other_in" ? "Bankaya Giren" : "Bankadan Çıkan"} ${fmt(amount)}`, `Hesap ${glLabel(field("gl")?.value || "")}`);
+      } else if (kind === "card_payment") {
+        // Kart hesabının bakiyesi borçtur (eksi): ödeme borcu azaltır (+).
+        effect = { accountId: -amount, cardAccountId: amount };
+        parts.push(`Bankadan Çıkan ${fmt(amount)}`, "Kart borcu azalır");
+      } else if (kind === "loan_draw") {
+        effect = { accountId: amount };
+        parts.push(`Bankaya Giren ${fmt(amount)}`, "Kredi borcu artar");
+      } else {
+        effect = { accountId: kind === "other_in" ? amount : -amount };
+        parts.push(`${kind === "other_in" ? "Bankaya Giren" : "Bankadan Çıkan"} ${fmt(amount)}`, `Hesap ${glLabel(field("gl")?.value || "")}`);
+      }
       node.textContent = parts.join(" · ");
+      syncBalanceLines();
     };
     // Vergi kipi BSMV ↔ KDV değişince oran o kipin varsayılanına döner (Düzelt'te BSMV %5'in KDV'ye taşınmaması için).
     let lastVat = isVat(field("tax")?.value || defaultTax);
@@ -2426,10 +2509,17 @@
           box.querySelector("[data-fee]:last-of-type [data-fee-name]")?.focus();
           return;
         }
-        case "fee-remove":
-          act.closest("[data-fee]")?.remove();
+        case "fee-remove": {
+          // Dar kontrol 2.4.3 (ek 4): kaldırılan türden sonra odak kaybolmaz ve başka türün ×'ine gitmez: sonraki (yoksa önceki) türün adı,
+          // tür kalmadıysa "+ Tür Ekle".
+          const row = act.closest("[data-fee]");
+          const box = act.closest(".hof-bank-fees");
+          const nextRow = row?.nextElementSibling?.matches?.("[data-fee]") ? row.nextElementSibling : row?.previousElementSibling?.matches?.("[data-fee]") ? row.previousElementSibling : null;
+          row?.remove();
           view.dirty = true;
+          (nextRow?.querySelector("[data-fee-name]") || box?.querySelector('[data-act="fee-add"]'))?.focus({ preventScroll: true });
           return;
+        }
         // ----- Aşama 4: Hareketler, İşlem Kartı, fiş formları, Planlı İşlemler -----
         case "mv-more":
           return loadMoves(act.dataset.movesKey === "account" ? accountMoves : moves, { more: true });
@@ -2457,6 +2547,8 @@
           return voucherForm({ group: "other", accountId: contextAccount() });
         case "v-transfer":
           return voucherForm({ group: "transfer", accountId: contextAccount() });
+        case "v-tax":
+          return HOF.taxPayment?.({ way: "bank", accountId: contextAccount(), onDone: () => reload() });
         case "v-card":
           return voucherForm({ group: "other", type: "card_payment", counterId: view.accountId });
         case "v-loan":
@@ -2509,6 +2601,11 @@
   }
   function onChange(event) {
     const target = event.target;
+    if (target.matches('input[type="date"][data-mv]')) {
+      clearTimeout(dateTimer);
+      if (!target.value || plausibleDate(target.value)) dateTimer = setTimeout(applyFilters, 700);
+      return;
+    }
     if (target.matches("[data-mv]")) return applyFilters();
     if (target.matches("[data-pick]")) {
       if (target.checked) view.selected.add(target.dataset.pick);
@@ -2542,6 +2639,16 @@
     const form = root()?.querySelector("[data-settings]");
     if (form && !form.querySelector(".hof-bank-dirty") && HOF.can("bank.settings")) form.insertAdjacentHTML("beforeend", '<p class="hof-bank-dirty">Kaydedilmemiş değişiklik var.</p>');
   }
+  // 2.4.3 (C12): seçicide kesilen uzun ad (hesap, kart, POS) üzerine gelince ya da odaklanınca ipucunda tam görünür (bütün banka seçicileri).
+  const fullTitle = event => {
+    const select = event.target?.closest?.("select");
+    if (!select || !select.closest(".hof-bank-form, .hof-bank-pick, [data-pos-pick], [data-cheque-pick], .hof-bank-modal, .hof-bank-balance-slot")) return;
+    const text = select.selectedOptions?.[0]?.textContent.trim() || "";
+    if (select.title !== text) select.title = text;
+  };
+  document.addEventListener("mouseover", fullTitle);
+  document.addEventListener("focusin", fullTitle);
+  document.addEventListener("change", fullTitle);
   document.addEventListener("submit", event => {
     const form = event.target.closest?.("[data-settings]");
     if (!form || !modal?.dialog.contains(form)) return;

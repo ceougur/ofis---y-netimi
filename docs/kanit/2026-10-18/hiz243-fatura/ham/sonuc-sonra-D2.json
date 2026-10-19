@@ -1,0 +1,1529 @@
+{
+ "duzey": "sonra-D2",
+ "ekran": 8,
+ "api": 2,
+ "sureSn": 627,
+ "tohum": 11,
+ "sunucuAcilisMs": 1227,
+ "makine": {
+  "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+  "cekirdek": 4,
+  "bellekGB": 17,
+  "node": "v22.22.0"
+ },
+ "veri": {
+  "faturaOnce": 10000,
+  "cari": 300,
+  "urun": 200
+ },
+ "ekranOlcum": {
+  "Liste açılışı (menü → satırlar)": {
+   "n": 90,
+   "p50": 1594,
+   "p95": 2678,
+   "p99": 3253,
+   "max": 3253,
+   "durum": {
+    "200": 90
+   }
+  },
+  "Yeni Fatura tık → senaryo ekranı": {
+   "n": 80,
+   "p50": 579,
+   "p95": 2126,
+   "p99": 4194,
+   "max": 4194,
+   "durum": {
+    "200": 80
+   }
+  },
+  "Gönderilecekler sekmesi": {
+   "n": 12,
+   "p50": 492,
+   "p95": 3427,
+   "p99": 3427,
+   "max": 3427,
+   "durum": {
+    "200": 12
+   }
+  },
+  "Form açılışı (senaryo tık → form hazır)": {
+   "n": 80,
+   "p50": 425,
+   "p95": 854,
+   "p99": 970,
+   "max": 970,
+   "durum": {
+    "200": 80
+   }
+  },
+  "Raporlar açılışı": {
+   "n": 18,
+   "p50": 3249,
+   "p95": 6705,
+   "p99": 6705,
+   "max": 6705,
+   "durum": {
+    "200": 18
+   }
+  },
+  "Cari arama (son tuş → liste)": {
+   "n": 80,
+   "p50": 844,
+   "p95": 1875,
+   "p99": 2372,
+   "max": 2372,
+   "durum": {
+    "200": 80
+   }
+  },
+  "Rapor açılışı (Satış Faturaları, Bu Yıl)": {
+   "n": 18,
+   "p50": 1705,
+   "p95": 2996,
+   "p99": 2996,
+   "max": 2996,
+   "durum": {
+    "200": 18
+   }
+  },
+  "Tümünü Gönder → yanıt": {
+   "n": 8,
+   "p50": 1969,
+   "p95": 11618,
+   "p99": 11618,
+   "max": 11618,
+   "durum": {
+    "200": 8
+   }
+  },
+  "Ürün arama (son tuş → liste)": {
+   "n": 303,
+   "p50": 842,
+   "p95": 1968,
+   "p99": 2385,
+   "max": 2919,
+   "durum": {
+    "200": 303
+   }
+  },
+  "Toplam güncellenmesi (Tab → Genel Toplam)": {
+   "n": 303,
+   "p50": 539,
+   "p95": 1647,
+   "p99": 2091,
+   "max": 2474,
+   "durum": {
+    "200": 303
+   }
+  },
+  "Kaydet tık → onay sorusu": {
+   "n": 95,
+   "p50": 1496,
+   "p95": 2670,
+   "p99": 3177,
+   "max": 3177,
+   "durum": {
+    "200": 95
+   }
+  },
+  "Kaydet, Sonra Gönder → kart": {
+   "n": 19,
+   "p50": 949,
+   "p95": 1896,
+   "p99": 1896,
+   "max": 1896,
+   "durum": {
+    "200": 18,
+    "400 einvoice-party": 1
+   }
+  },
+  "PDF açılışı (indirme tamam)": {
+   "n": 26,
+   "p50": 624,
+   "p95": 1915,
+   "p99": 2281,
+   "max": 2281,
+   "durum": {
+    "200": 26
+   }
+  },
+  "Kaydet ve Gönder → kart": {
+   "n": 48,
+   "p50": 2289,
+   "p95": 5325,
+   "p99": 7732,
+   "max": 7732,
+   "durum": {
+    "200": 48
+   }
+  },
+  "Fatura kartı açılışı": {
+   "n": 21,
+   "p50": 1499,
+   "p95": 3010,
+   "p99": 3875,
+   "max": 3875,
+   "durum": {
+    "200": 21
+   }
+  },
+  "İade tık → iade formu hazır": {
+   "n": 15,
+   "p50": 1319,
+   "p95": 3847,
+   "p99": 3847,
+   "max": 3847,
+   "durum": {
+    "200": 15
+   }
+  },
+  "İade Kaydet → kart": {
+   "n": 15,
+   "p50": 1209,
+   "p95": 2383,
+   "p99": 2383,
+   "max": 2383,
+   "durum": {
+    "200": 15
+   }
+  },
+  "Durum Sorgula → kart": {
+   "n": 6,
+   "p50": 1280,
+   "p95": 3466,
+   "p99": 3466,
+   "max": 3466,
+   "durum": {
+    "200": 6
+   }
+  },
+  "İptal Et → kart (İptal Edildi)": {
+   "n": 6,
+   "p50": 2907,
+   "p95": 6252,
+   "p99": 6252,
+   "max": 6252,
+   "durum": {
+    "200": 5,
+    "502 integrator-unreachable": 1
+   }
+  },
+  "Alış Kaydet → kart": {
+   "n": 13,
+   "p50": 892,
+   "p95": 2182,
+   "p99": 2182,
+   "max": 2182,
+   "durum": {
+    "200": 13
+   }
+  },
+  "Liste arama (Enter → sonuç)": {
+   "n": 19,
+   "p50": 1116,
+   "p95": 2229,
+   "p99": 2229,
+   "max": 2229,
+   "durum": {
+    "200": 19
+   }
+  },
+  "Liste aramayı temizle (Enter → 200 satır)": {
+   "n": 19,
+   "p50": 1140,
+   "p95": 2443,
+   "p99": 2443,
+   "max": 2443,
+   "durum": {
+    "200": 19
+   }
+  },
+  "Daha Fazla Göster (sayfa çevirme)": {
+   "n": 32,
+   "p50": 2340,
+   "p95": 4543,
+   "p99": 6202,
+   "max": 6202,
+   "durum": {
+    "200": 32
+   }
+  }
+ },
+ "apiOlcum": {
+  "Alış faturası": {
+   "n": 64,
+   "p50": 550,
+   "p95": 1395,
+   "p99": 2592,
+   "max": 2592,
+   "durum": {
+    "200": 64
+   }
+  },
+  "Liste açılışı (200 satır)": {
+   "n": 79,
+   "p50": 652,
+   "p95": 2127,
+   "p99": 2649,
+   "max": 2649,
+   "durum": {
+    "200": 79
+   }
+  },
+  "Liste arama": {
+   "n": 46,
+   "p50": 728,
+   "p95": 1809,
+   "p99": 2583,
+   "max": 2583,
+   "durum": {
+    "200": 46
+   }
+  },
+  "Liste sayfa çevirme": {
+   "n": 32,
+   "p50": 597,
+   "p95": 1748,
+   "p99": 1834,
+   "max": 1834,
+   "durum": {
+    "200": 32
+   }
+  },
+  "Satış (Kaydet, Sonra Gönder)": {
+   "n": 26,
+   "p50": 584,
+   "p95": 1400,
+   "p99": 1460,
+   "max": 1460,
+   "durum": {
+    "200": 26
+   }
+  },
+  "e-Belge Gönder (kart)": {
+   "n": 26,
+   "p50": 2008,
+   "p95": 4999,
+   "p99": 5773,
+   "max": 5773,
+   "durum": {
+    "200": 26
+   }
+  },
+  "Cari arama (form)": {
+   "n": 31,
+   "p50": 474,
+   "p95": 1334,
+   "p99": 1553,
+   "max": 1553,
+   "durum": {
+    "200": 31
+   }
+  },
+  "Ürün arama (form)": {
+   "n": 31,
+   "p50": 212,
+   "p95": 993,
+   "p99": 1310,
+   "max": 1310,
+   "durum": {
+    "200": 31
+   }
+  },
+  "Satış (Kaydet ve Gönder)": {
+   "n": 127,
+   "p50": 1963,
+   "p95": 5625,
+   "p99": 6380,
+   "max": 9476,
+   "durum": {
+    "200": 127
+   }
+  },
+  "Satıştan iade": {
+   "n": 21,
+   "p50": 363,
+   "p95": 1163,
+   "p99": 1405,
+   "max": 1405,
+   "durum": {
+    "200": 21
+   }
+  },
+  "Gönderilecekler listesi": {
+   "n": 28,
+   "p50": 553,
+   "p95": 1065,
+   "p99": 1268,
+   "max": 1268,
+   "durum": {
+    "200": 28
+   }
+  },
+  "Durum Sorgula": {
+   "n": 44,
+   "p50": 481,
+   "p95": 2065,
+   "p99": 5126,
+   "max": 5126,
+   "durum": {
+    "200": 44
+   }
+  },
+  "İptal (e-Arşiv)": {
+   "n": 22,
+   "p50": 824,
+   "p95": 3688,
+   "p99": 4426,
+   "max": 4426,
+   "durum": {
+    "200": 22
+   }
+  },
+  "Rapor (Satış Faturaları)": {
+   "n": 14,
+   "p50": 978,
+   "p95": 2378,
+   "p99": 2378,
+   "max": 2378,
+   "durum": {
+    "200": 14
+   }
+  },
+  "Fatura kartı": {
+   "n": 16,
+   "p50": 545,
+   "p95": 1550,
+   "p99": 1550,
+   "max": 1550,
+   "durum": {
+    "200": 16
+   }
+  },
+  "PDF": {
+   "n": 16,
+   "p50": 320,
+   "p95": 1350,
+   "p99": 1350,
+   "max": 1350,
+   "durum": {
+    "200": 16
+   }
+  }
+ },
+ "ag": {
+  "GET /api/workspace/stock/alerts": {
+   "n": 2264,
+   "p50": 508,
+   "p95": 1496,
+   "p99": 1942,
+   "max": 3161
+  },
+  "POST /api/workspace/invoices/calc": {
+   "n": 1468,
+   "p50": 549,
+   "p95": 1692,
+   "p99": 2174,
+   "max": 3285
+  },
+  "GET /api/workspace/invoices": {
+   "n": 1363,
+   "p50": 737,
+   "p95": 1670,
+   "p99": 2228,
+   "max": 2753
+  },
+  "GET /api/workspace/dues": {
+   "n": 1288,
+   "p50": 757,
+   "p95": 1754,
+   "p99": 2266,
+   "max": 4287
+  },
+  "GET /api/workspace/tasks": {
+   "n": 659,
+   "p50": 480,
+   "p95": 1317,
+   "p99": 2169,
+   "max": 4339
+  },
+  "GET /api/workspace/liens": {
+   "n": 651,
+   "p50": 397,
+   "p95": 1237,
+   "p99": 1576,
+   "max": 2180
+  },
+  "GET /api/workspace/plans": {
+   "n": 651,
+   "p50": 296,
+   "p95": 1170,
+   "p99": 1614,
+   "max": 2157
+  },
+  "GET /api/workspace/cheques": {
+   "n": 651,
+   "p50": 407,
+   "p95": 1283,
+   "p99": 1608,
+   "max": 1992
+  },
+  "GET /api/workspace/bank/badge": {
+   "n": 651,
+   "p50": 738,
+   "p95": 1462,
+   "p99": 1769,
+   "max": 2281
+  },
+  "GET /api/workspace/invoices/last-prices": {
+   "n": 606,
+   "p50": 556,
+   "p95": 1769,
+   "p99": 2184,
+   "max": 2848
+  },
+  "GET /api/workspace/invoices/:id": {
+   "n": 349,
+   "p50": 657,
+   "p95": 1701,
+   "p99": 1933,
+   "max": 2332
+  },
+  "GET /api/workspace/invoices/items": {
+   "n": 304,
+   "p50": 549,
+   "p95": 1669,
+   "p99": 2195,
+   "max": 2713
+  },
+  "GET /api/workspace/invoices/meta": {
+   "n": 119,
+   "p50": 602,
+   "p95": 2084,
+   "p99": 2343,
+   "max": 2708
+  },
+  "GET /api/chat": {
+   "n": 117,
+   "p50": 639,
+   "p95": 2098,
+   "p99": 2626,
+   "max": 3102
+  },
+  "GET /api/workspace/bank/choices": {
+   "n": 95,
+   "p50": 764,
+   "p95": 1836,
+   "p99": 2298,
+   "max": 2298
+  },
+  "POST /api/workspace/invoices": {
+   "n": 95,
+   "p50": 851,
+   "p95": 4393,
+   "p99": 7203,
+   "max": 7203
+  },
+  "GET /api/workspace/client-state": {
+   "n": 88,
+   "p50": 785,
+   "p95": 1872,
+   "p99": 2633,
+   "max": 2633
+  },
+  "GET /api/workspace/case-notes": {
+   "n": 88,
+   "p50": 539,
+   "p95": 1502,
+   "p99": 2053,
+   "max": 2053
+  },
+  "GET /api/workspace/accounts/search": {
+   "n": 81,
+   "p50": 624,
+   "p95": 1602,
+   "p99": 1738,
+   "max": 1738
+  },
+  "GET /api/workspace/report-center/fatura-satis": {
+   "n": 57,
+   "p50": 1173,
+   "p95": 2317,
+   "p99": 2360,
+   "max": 2360
+  },
+  "GET /api/workspace/overview/mizan": {
+   "n": 26,
+   "p50": 884,
+   "p95": 1725,
+   "p99": 2314,
+   "max": 2314
+  },
+  "GET /api/workspace/invoices/:id/fatura.pdf": {
+   "n": 26,
+   "p50": 614,
+   "p95": 1913,
+   "p99": 2278,
+   "max": 2278
+  },
+  "GET /api/workspace/report-center": {
+   "n": 18,
+   "p50": 424,
+   "p95": 2943,
+   "p99": 2943,
+   "max": 2943
+  },
+  "GET /api/auth/me": {
+   "n": 16,
+   "p50": 11,
+   "p95": 92,
+   "p99": 92,
+   "max": 92
+  },
+  "GET /api/trpc/sheets.getRows": {
+   "n": 16,
+   "p50": 844,
+   "p95": 1751,
+   "p99": 1751,
+   "max": 1751
+  },
+  "GET /api/workspace/invoices/returnable": {
+   "n": 15,
+   "p50": 512,
+   "p95": 1407,
+   "p99": 1407,
+   "max": 1407
+  },
+  "GET /api/workspace/report-center/mizan": {
+   "n": 12,
+   "p50": 606,
+   "p95": 1783,
+   "p99": 1783,
+   "max": 1783
+  },
+  "GET /api/events": {
+   "n": 9,
+   "p50": 326547,
+   "p95": 347358,
+   "p99": 347358,
+   "max": 347358
+  },
+  "GET /api/public/info": {
+   "n": 8,
+   "p50": 19,
+   "p95": 36,
+   "p99": 36,
+   "max": 36
+  },
+  "POST /api/auth/login": {
+   "n": 8,
+   "p50": 48,
+   "p95": 66,
+   "p99": 66,
+   "max": 66
+  },
+  "GET /api/workspace/users": {
+   "n": 8,
+   "p50": 5,
+   "p95": 10,
+   "p99": 10,
+   "max": 10
+  },
+  "GET /api/workspace/dataset": {
+   "n": 8,
+   "p50": 8,
+   "p95": 13,
+   "p99": 13,
+   "max": 13
+  },
+  "GET /api/companies": {
+   "n": 8,
+   "p50": 10,
+   "p95": 14,
+   "p99": 14,
+   "max": 14
+  },
+  "GET /api/workspace/sessions": {
+   "n": 8,
+   "p50": 11,
+   "p95": 62,
+   "p99": 62,
+   "max": 62
+  },
+  "GET /api/workspace/alerts/dismissed": {
+   "n": 8,
+   "p50": 12,
+   "p95": 62,
+   "p99": 62,
+   "max": 62
+  },
+  "POST /api/workspace/invoices/send-pending": {
+   "n": 8,
+   "p50": 1211,
+   "p95": 11084,
+   "p99": 11084,
+   "max": 11084
+  },
+  "POST /api/workspace/invoices/:id/e-refresh": {
+   "n": 6,
+   "p50": 939,
+   "p95": 2614,
+   "p99": 2614,
+   "max": 2614
+  },
+  "POST /api/workspace/invoices/:id/cancel": {
+   "n": 6,
+   "p50": 2552,
+   "p95": 5858,
+   "p99": 5858,
+   "max": 5858
+  }
+ },
+ "agBayt": {
+  "GET /api/workspace/dues": 3386209596,
+  "GET /api/workspace/invoices": 199536172,
+  "GET /api/workspace/report-center/fatura-satis": 2558289,
+  "POST /api/workspace/invoices/calc": 2272811,
+  "GET /api/workspace/invoices/:id": 2259807,
+  "GET /api/events": 2222972,
+  "GET /api/workspace/overview/mizan": 2150530,
+  "GET /api/workspace/invoices/:id/fatura.pdf": 1131886,
+  "GET /api/workspace/cheques": 1080660,
+  "GET /api/workspace/invoices/meta": 1021853,
+  "GET /api/workspace/invoices/last-prices": 695923,
+  "POST /api/workspace/invoices": 599789,
+  "GET /api/workspace/invoices/returnable": 449549,
+  "GET /api/workspace/report-center": 402678,
+  "GET /api/chat": 399287,
+  "GET /api/workspace/report-center/mizan": 291423,
+  "GET /api/workspace/plans": 100905,
+  "GET /api/workspace/invoices/items": 75858,
+  "GET /api/workspace/stock/alerts": 72448,
+  "GET /api/workspace/bank/choices": 57760,
+  "POST /api/workspace/invoices/:id/e-refresh": 44522,
+  "GET /api/workspace/liens": 41664,
+  "POST /api/workspace/invoices/:id/cancel": 34784,
+  "GET /api/workspace/accounts/search": 32920,
+  "GET /api/auth/me": 31872,
+  "POST /api/auth/login": 29416,
+  "GET /api/workspace/bank/badge": 26691,
+  "GET /api/workspace/client-state": 25256,
+  "GET /api/workspace/tasks": 21088,
+  "GET /api/workspace/users": 20376,
+  "GET /api/workspace/case-notes": 7216,
+  "GET /api/trpc/sheets.getRows": 2608,
+  "POST /api/workspace/invoices/send-pending": 2512,
+  "GET /api/workspace/sessions": 2048,
+  "GET /api/companies": 1768,
+  "GET /api/workspace/dataset": 1464,
+  "GET /api/public/info": 1032,
+  "GET /api/workspace/alerts/dismissed": 320
+ },
+ "belgeSaniyede": 0.53,
+ "belgeDakikada": 31.8,
+ "belge": 332,
+ "belgeKaynak": {
+  "api": 238,
+  "ekran": 94
+ },
+ "bekleyenGonderim": 1,
+ "eDagilim": {
+  "purchase/KAGIT/issued/none": 77,
+  "sale/TEMELFATURA/issued/sent": 90,
+  "sale/EARSIVFATURA/cancelled/cancelled": 27,
+  "sale_return/KAGIT/issued/none": 36,
+  "sale/EARSIVFATURA/issued/sent": 98,
+  "sale/EARSIVFATURA/issued/processing": 1,
+  "sale/EARSIVFATURA/issued/none": 2,
+  "sale/EARSIVFATURA/issued/waiting": 1
+ },
+ "sunucu": {
+  "ornek": [
+   {
+    "t": 1792295740859,
+    "cpuPct": 106.8096095662888,
+    "rssMB": 612.835328,
+    "loop": {
+     "p50": 10.174463,
+     "p95": 983.564287,
+     "p99": 1275.068415,
+     "max": 1963.982847,
+     "mean": 182.07587388235294
+    },
+    "load1": 2.75,
+    "memAvailMB": 12957
+   },
+   {
+    "t": 1792295755640,
+    "cpuPct": 81.65244274858992,
+    "rssMB": 670.76096,
+    "loop": {
+     "p50": 10.117119,
+     "p95": 87.883775,
+     "p99": 576.716799,
+     "max": 714.080255,
+     "mean": 33.40217069268292
+    },
+    "load1": 3.06,
+    "memAvailMB": 12652
+   },
+   {
+    "t": 1792295770790,
+    "cpuPct": 85.62796633670652,
+    "rssMB": 662.71232,
+    "loop": {
+     "p50": 10.125311,
+     "p95": 170.655743,
+     "p99": 628.097023,
+     "max": 1306.525695,
+     "mean": 42.089728
+    },
+    "load1": 3.26,
+    "memAvailMB": 12463
+   },
+   {
+    "t": 1792295785715,
+    "cpuPct": 107.26156373797822,
+    "rssMB": 667.725824,
+    "loop": {
+     "p50": 11.583487,
+     "p95": 834.666495,
+     "p99": 890.241023,
+     "max": 1062.207487,
+     "mean": 247.3542713962264
+    },
+    "load1": 3.36,
+    "memAvailMB": 12349
+   },
+   {
+    "t": 1792295800098,
+    "cpuPct": 82.55542787643239,
+    "rssMB": 674.021376,
+    "loop": {
+     "p50": 10.125311,
+     "p95": 219.545599,
+     "p99": 646.447103,
+     "max": 822.607871,
+     "mean": 41.4205455147929
+    },
+    "load1": 3.99,
+    "memAvailMB": 12038
+   },
+   {
+    "t": 1792295815099,
+    "cpuPct": 93.76823331436914,
+    "rssMB": 680.108032,
+    "loop": {
+     "p50": 10.125311,
+     "p95": 542.638079,
+     "p99": 785.383423,
+     "max": 1308.622847,
+     "mean": 70.67532075471698
+    },
+    "load1": 3.77,
+    "memAvailMB": 11901
+   },
+   {
+    "t": 1792295830129,
+    "cpuPct": 93.2931020127586,
+    "rssMB": 688.017408,
+    "loop": {
+     "p50": 10.125311,
+     "p95": 483.655679,
+     "p99": 873.988095,
+     "max": 1145.044991,
+     "mean": 63.649861423728815
+    },
+    "load1": 4.31,
+    "memAvailMB": 11670
+   },
+   {
+    "t": 1792295846843,
+    "cpuPct": 103.73604985769842,
+    "rssMB": 681.705472,
+    "loop": {
+     "p50": 10.469375,
+     "p95": 716.701695,
+     "p99": 1131.413503,
+     "max": 1488.977919,
+     "mean": 187.43560425316457
+    },
+    "load1": 3.8,
+    "memAvailMB": 11540
+   },
+   {
+    "t": 1792295860386,
+    "cpuPct": 97.3129777107953,
+    "rssMB": 688.443392,
+    "loop": {
+     "p50": 10.125311,
+     "p95": 739.246079,
+     "p99": 830.996479,
+     "max": 855.638015,
+     "mean": 118.14089076363636
+    },
+    "load1": 3.47,
+    "memAvailMB": 11330
+   },
+   {
+    "t": 1792295875175,
+    "cpuPct": 95.67989705578455,
+    "rssMB": 689.573888,
+    "loop": {
+     "p50": 10.141695,
+     "p95": 531.365887,
+     "p99": 848.822271,
+     "max": 943.718399,
+     "mean": 78.50457526011562
+    },
+    "load1": 3.23,
+    "memAvailMB": 11217
+   },
+   {
+    "t": 1792295890550,
+    "cpuPct": 103.50571018224912,
+    "rssMB": 684.539904,
+    "loop": {
+     "p50": 15.704063,
+     "p95": 825.753599,
+     "p99": 1081.081855,
+     "max": 1121.976319,
+     "mean": 167.0743096263736
+    },
+    "load1": 3.23,
+    "memAvailMB": 11159
+   },
+   {
+    "t": 1792295905108,
+    "cpuPct": 86.15640784661352,
+    "rssMB": 720.068608,
+    "loop": {
+     "p50": 10.125311,
+     "p95": 149.028863,
+     "p99": 770.179071,
+     "max": 1644.167167,
+     "mean": 48.30698405442177
+    },
+    "load1": 4.11,
+    "memAvailMB": 11087
+   },
+   {
+    "t": 1792295920441,
+    "cpuPct": 88.05725949408605,
+    "rssMB": 718.147584,
+    "loop": {
+     "p50": 10.125311,
+     "p95": 241.696767,
+     "p99": 753.926143,
+     "max": 1107.296255,
+     "mean": 49.38186487741935
+    },
+    "load1": 4.72,
+    "memAvailMB": 11087
+   },
+   {
+    "t": 1792295936251,
+    "cpuPct": 105.25489226564872,
+    "rssMB": 706.383872,
+    "loop": {
+     "p50": 17.563647,
+     "p95": 1534.066687,
+     "p99": 1930.428415,
+     "max": 1930.428415,
+     "mean": 406.82069794594594
+    },
+    "load1": 4.6,
+    "memAvailMB": 11234
+   },
+   {
+    "t": 1792295950107,
+    "cpuPct": 91.1020991876381,
+    "rssMB": 711.647232,
+    "loop": {
+     "p50": 10.141695,
+     "p95": 355.991551,
+     "p99": 1438.646271,
+     "max": 1779.433471,
+     "mean": 73.81702711351352
+    },
+    "load1": 5.53,
+    "memAvailMB": 11129
+   },
+   {
+    "t": 1792295965691,
+    "cpuPct": 102.39115850917118,
+    "rssMB": 709.439488,
+    "loop": {
+     "p50": 109.707263,
+     "p95": 1112.539135,
+     "p99": 1387.266047,
+     "max": 1387.266047,
+     "mean": 333.6493857391304
+    },
+    "load1": 4.68,
+    "memAvailMB": 11169
+   },
+   {
+    "t": 1792295981225,
+    "cpuPct": 100.9859957092822,
+    "rssMB": 712.634368,
+    "loop": {
+     "p50": 10.256383,
+     "p95": 655.884287,
+     "p99": 1028.128767,
+     "max": 1540.358143,
+     "mean": 121.09960533333333
+    },
+    "load1": 4.46,
+    "memAvailMB": 11098
+   },
+   {
+    "t": 1792295996008,
+    "cpuPct": 103.65617829618301,
+    "rssMB": 714.52672,
+    "loop": {
+     "p50": 10.133503,
+     "p95": 1055.916031,
+     "p99": 1768.947711,
+     "max": 1999.634431,
+     "mean": 178.6665472
+    },
+    "load1": 4.53,
+    "memAvailMB": 11121
+   },
+   {
+    "t": 1792296011566,
+    "cpuPct": 106.29918187995295,
+    "rssMB": 716.816384,
+    "loop": {
+     "p50": 719.323135,
+     "p95": 1389.363199,
+     "p99": 1437.597695,
+     "max": 1437.597695,
+     "mean": 704.6690133333334
+    },
+    "load1": 4.58,
+    "memAvailMB": 11046
+   },
+   {
+    "t": 1792296025475,
+    "cpuPct": 98.3035251923327,
+    "rssMB": 715.534336,
+    "loop": {
+     "p50": 10.133503,
+     "p95": 689.438719,
+     "p99": 1140.850687,
+     "max": 1437.597695,
+     "mean": 115.29279301818181
+    },
+    "load1": 4.25,
+    "memAvailMB": 10979
+   },
+   {
+    "t": 1792296040408,
+    "cpuPct": 90.34120017684427,
+    "rssMB": 718.589952,
+    "loop": {
+     "p50": 10.133503,
+     "p95": 397.410303,
+     "p99": 794.820607,
+     "max": 972.029951,
+     "mean": 58.34752
+    },
+    "load1": 4.61,
+    "memAvailMB": 10953
+   },
+   {
+    "t": 1792296055550,
+    "cpuPct": 103.47398196706843,
+    "rssMB": 717.492224,
+    "loop": {
+     "p50": 208.666623,
+     "p95": 990.904319,
+     "p99": 1148.190719,
+     "max": 1148.190719,
+     "mean": 343.43181736585365
+    },
+    "load1": 6.16,
+    "memAvailMB": 10838
+   },
+   {
+    "t": 1792296071414,
+    "cpuPct": 103.48500867760524,
+    "rssMB": 724.688896,
+    "loop": {
+     "p50": 700.448767,
+     "p95": 1306.525695,
+     "p99": 1832.910847,
+     "max": 1832.910847,
+     "mean": 784.7644728888888
+    },
+    "load1": 6.34,
+    "memAvailMB": 10820
+   },
+   {
+    "t": 1792296086246,
+    "cpuPct": 104.79094933428881,
+    "rssMB": 733.417472,
+    "loop": {
+     "p50": 1130.364927,
+     "p95": 2057.306111,
+     "p99": 2155.872255,
+     "max": 2155.872255,
+     "mean": 1222.9136756363637
+    },
+    "load1": 5.62,
+    "memAvailMB": 10706
+   },
+   {
+    "t": 1792296100520,
+    "cpuPct": 102.0160445984586,
+    "rssMB": 735.309824,
+    "loop": {
+     "p50": 10.854399,
+     "p95": 1013.972991,
+     "p99": 1178.599423,
+     "max": 1337.982975,
+     "mean": 231.828344754717
+    },
+    "load1": 5.43,
+    "memAvailMB": 10695
+   },
+   {
+    "t": 1792296116367,
+    "cpuPct": 99.12376180856903,
+    "rssMB": 739.172352,
+    "loop": {
+     "p50": 10.133503,
+     "p95": 656.408575,
+     "p99": 1041.235967,
+     "max": 1076.887551,
+     "mean": 122.73932590163935
+    },
+    "load1": 5.19,
+    "memAvailMB": 10600
+   },
+   {
+    "t": 1792296130915,
+    "cpuPct": 103.96829029485409,
+    "rssMB": 747.462656,
+    "loop": {
+     "p50": 956.825599,
+     "p95": 1296.039935,
+     "p99": 1391.460351,
+     "max": 1391.460351,
+     "mean": 881.4526463999999
+    },
+    "load1": 4.92,
+    "memAvailMB": 10653
+   },
+   {
+    "t": 1792296145109,
+    "cpuPct": 95.12059789972037,
+    "rssMB": 736.4608,
+    "loop": {
+     "p50": 10.141695,
+     "p95": 581.959679,
+     "p99": 1062.207487,
+     "max": 1202.716671,
+     "mean": 94.81306226573427
+    },
+    "load1": 5.46,
+    "memAvailMB": 10436
+   },
+   {
+    "t": 1792296161349,
+    "cpuPct": 93.07164608365798,
+    "rssMB": 741.101568,
+    "loop": {
+     "p50": 10.133503,
+     "p95": 501.219327,
+     "p99": 944.242687,
+     "max": 1632.632831,
+     "mean": 71.31731259813084
+    },
+    "load1": 4.91,
+    "memAvailMB": 10613
+   },
+   {
+    "t": 1792296175407,
+    "cpuPct": 106.82248635342326,
+    "rssMB": 745.869312,
+    "loop": {
+     "p50": 504.889343,
+     "p95": 1112.539135,
+     "p99": 1143.996415,
+     "max": 1143.996415,
+     "mean": 472.1843931428571
+    },
+    "load1": 4.92,
+    "memAvailMB": 10603
+   },
+   {
+    "t": 1792296191203,
+    "cpuPct": 101.7371440091543,
+    "rssMB": 750.87872,
+    "loop": {
+     "p50": 10.149887,
+     "p95": 953.679871,
+     "p99": 1211.105279,
+     "max": 1307.574271,
+     "mean": 152.93796352
+    },
+    "load1": 4.41,
+    "memAvailMB": 10512
+   },
+   {
+    "t": 1792296205828,
+    "cpuPct": 103.5236356256463,
+    "rssMB": 744.484864,
+    "loop": {
+     "p50": 55.902207,
+     "p95": 1096.810495,
+     "p99": 1178.599423,
+     "max": 1178.599423,
+     "mean": 288.18619370212764
+    },
+    "load1": 5.13,
+    "memAvailMB": 10343
+   },
+   {
+    "t": 1792296222081,
+    "cpuPct": 106.79304895146878,
+    "rssMB": 750.206976,
+    "loop": {
+     "p50": 749.731839,
+     "p95": 1639.972863,
+     "p99": 1751.121919,
+     "max": 1751.121919,
+     "mean": 871.9324501333333
+    },
+    "load1": 5.53,
+    "memAvailMB": 10372
+   },
+   {
+    "t": 1792296235446,
+    "cpuPct": 101.0007260744793,
+    "rssMB": 750.931968,
+    "loop": {
+     "p50": 413.663231,
+     "p95": 883.949567,
+     "p99": 1022.361599,
+     "max": 1022.361599,
+     "mean": 404.4739925333334
+    },
+    "load1": 5.84,
+    "memAvailMB": 10268
+   },
+   {
+    "t": 1792296251469,
+    "cpuPct": 96.82471130739727,
+    "rssMB": 748.261376,
+    "loop": {
+     "p50": 10.149887,
+     "p95": 565.182463,
+     "p99": 873.463807,
+     "max": 1012.400127,
+     "mean": 91.127296
+    },
+    "load1": 5.06,
+    "memAvailMB": 10226
+   },
+   {
+    "t": 1792296266421,
+    "cpuPct": 105.91119161977387,
+    "rssMB": 755.621888,
+    "loop": {
+     "p50": 790.626303,
+     "p95": 1499.463679,
+     "p99": 1515.192319,
+     "max": 1515.192319,
+     "mean": 752.412672
+    },
+    "load1": 5.44,
+    "memAvailMB": 10438
+   },
+   {
+    "t": 1792296281043,
+    "cpuPct": 105.80510787725817,
+    "rssMB": 755.388416,
+    "loop": {
+     "p50": 897.581055,
+     "p95": 1549.795327,
+     "p99": 1594.884095,
+     "max": 1594.884095,
+     "mean": 888.5720405333333
+    },
+    "load1": 6.17,
+    "memAvailMB": 10400
+   },
+   {
+    "t": 1792296296122,
+    "cpuPct": 101.59513261532543,
+    "rssMB": 750.051328,
+    "loop": {
+     "p50": 10.133503,
+     "p95": 748.158975,
+     "p99": 1029.177343,
+     "max": 1064.304639,
+     "mean": 153.24037991489362
+    },
+    "load1": 5.33,
+    "memAvailMB": 10357
+   },
+   {
+    "t": 1792296310266,
+    "cpuPct": 90.33360080119199,
+    "rssMB": 754.64704,
+    "loop": {
+     "p50": 10.125311,
+     "p95": 362.283007,
+     "p99": 763.887615,
+     "max": 1023.410175,
+     "mean": 55.57305764102564
+    },
+    "load1": 5.82,
+    "memAvailMB": 10286
+   },
+   {
+    "t": 1792296326735,
+    "cpuPct": 101.03331371730484,
+    "rssMB": 755.089408,
+    "loop": {
+     "p50": 29.573119,
+     "p95": 726.138879,
+     "p99": 1328.545791,
+     "max": 1577.058303,
+     "mean": 204.52470568421055
+    },
+    "load1": 6.7,
+    "memAvailMB": 10322
+   },
+   {
+    "t": 1792296340402,
+    "cpuPct": 81.64736681127667,
+    "rssMB": 756.178944,
+    "loop": {
+     "p50": 10.117119,
+     "p95": 18.300927,
+     "p99": 1062.207487,
+     "max": 1405.091839,
+     "mean": 39.2308807066246
+    },
+    "load1": 6.11,
+    "memAvailMB": 10382
+   }
+  ],
+  "cpuOrt": 98,
+  "cpuMax": 107,
+  "rssMax": 756,
+  "donguP99Max": 2156,
+  "donguMax": 2156,
+  "load1Max": 6.7
+ },
+ "tarayici": {
+  "ekran01": {
+   "longSum": 9822,
+   "longN": 111,
+   "longMax": 339,
+   "cls": 0.9030055566523466,
+   "clsBy": {
+    "p @ -": 0.00003254695939429012,
+    "div.hof-inv-add @ .hof-modal": 0.16997497213648832,
+    "div.hof-toast @ -": 0.015453532235939645,
+    "td @ .hof-modal": 0.012676843713831019,
+    "td.num @ .hof-modal": 0.0004243389113940329,
+    "section.hof-modal @ .hof-modal": 0.0884765625,
+    "label.hof-field @ .hof-modal": 0.4353248674557533,
+    "div.hof-actions @ .hof-modal": 0.038785821759259265,
+    "details.hof-inv-more-head @ .hof-modal": 0.1169492529933181,
+    "div.hof-inv-bottom @ .hof-modal": 0.02490681798696845
+   }
+  },
+  "ekran02": {
+   "longSum": 13334,
+   "longN": 139,
+   "longMax": 288,
+   "cls": 1.3776679924607766,
+   "clsBy": {
+    "p @ -": 0.00003254695939429012,
+    "div.hof-inv-bottom @ .hof-modal": 0.19243360768175582,
+    "div.hof-inv-add @ .hof-modal": 0.06943976498199587,
+    "div.hof-toast @ -": 0.018544238683127573,
+    "label.hof-field @ .hof-modal": 0.8181828489368999,
+    "div.hof-actions @ .hof-modal": 0.0417925379372428,
+    "details.hof-inv-more-head @ .hof-modal": 0.15223037715540336,
+    "?": 0.006027680255486968,
+    "div.hof-toasts @ -": 0.05915692006387175,
+    "td @ .hof-modal": 0.01982746980559842
+   }
+  },
+  "ekran03": {
+   "longSum": 18507,
+   "longN": 184,
+   "longMax": 431,
+   "cls": 1.5320678667065866,
+   "clsBy": {
+    "p @ -": 0.00003254695939429012,
+    "details.hof-inv-more-head @ .hof-modal": 0.08785536114728011,
+    "section.hof-modal @ .hof-modal": 0.4376193576388888,
+    "div.hof-inv-bottom @ .hof-modal": 0.01629647526577503,
+    "div.hof-inv-add @ .hof-modal": 0.04573136466906721,
+    "div.hof-toast @ -": 0.012362825788751716,
+    "td @ .hof-modal": 0.03143126118559242,
+    "div.hof-toasts @ -": 0.002631075317215363,
+    "label.hof-field @ .hof-modal": 0.8977689551417556,
+    "td.num @ .hof-modal": 0.00033864359286586937
+   }
+  },
+  "ekran04": {
+   "longSum": 7241,
+   "longN": 103,
+   "longMax": 218,
+   "cls": 1.9411553779340411,
+   "clsBy": {
+    "section.hof-modal @ .hof-modal": 0.4376193576388888,
+    "details.hof-inv-more-head @ .hof-modal": 0.23999708553361304,
+    "div.hof-inv-add @ .hof-modal": 0.1601634177209255,
+    "div.hof-toasts @ -": 0.12563108121141975,
+    "label.hof-field @ .hof-modal": 0.8632403626492975,
+    "td @ .hof-modal": 0.017403001372411908,
+    "div.hof-actions @ .hof-modal": 0.061018949331275725,
+    "td.num @ .hof-modal": 0.0007424716274434157,
+    "?": 0.0000014467592592592592,
+    "div.hof-toast @ -": 0.015453532235939645,
+    "div.hof-inv-bottom @ .hof-modal": 0.01988467185356653
+   }
+  },
+  "ekran05": {
+   "longSum": 6976,
+   "longN": 99,
+   "longMax": 192,
+   "cls": 1.9724939387484994,
+   "clsBy": {
+    "p @ -": 0.00003254695939429012,
+    "div.hof-inv-bottom @ .hof-modal": 0.07432434413580247,
+    "td @ .hof-modal": 0.003405302841542352,
+    "div.hof-inv-add @ .hof-modal": 0.23046536029663928,
+    "label.hof-field @ .hof-modal": 0.8189782683865687,
+    "div.hof-toast @ -": 0.015453532235939645,
+    "details.hof-inv-more-head @ .hof-modal": 0.35727750771604944,
+    "td.num @ .hof-modal": 0.00046552417896412036,
+    "div.hof-actions @ .hof-modal": 0.02010312714334705,
+    "section.hof-modal @ .hof-modal": 0.45011935763888883,
+    "div.hof-toasts @ -": 0.0018690672153635118
+   }
+  },
+  "ekran06": {
+   "longSum": 10820,
+   "longN": 121,
+   "longMax": 296,
+   "cls": 1.5093866085350756,
+   "clsBy": {
+    "p @ -": 0.00003254695939429012,
+    "div.hof-inv-bottom @ .hof-modal": 0.1725615435313786,
+    "td @ .hof-modal": 0.0012215778450252917,
+    "div.hof-inv-add @ .hof-modal": 0.1108995906207133,
+    "div.hof-actions @ .hof-modal": 0.040117817644032924,
+    "div.hof-toast @ -": 0.0193725083590535,
+    "div.hof-toasts @ -": 0.07658540836119684,
+    "?": 0.025212106695816187,
+    "td.num @ .hof-modal": 0.0013785314991640947,
+    "section.hof-modal @ .hof-modal": 0.5260959201388888,
+    "label.hof-field @ .hof-modal": 0.47739010399921766,
+    "details.hof-inv-more-head @ .hof-modal": 0.05851895288119426
+   }
+  },
+  "ekran07": {
+   "longSum": 13446,
+   "longN": 134,
+   "longMax": 432,
+   "cls": 0.8374385332272376,
+   "clsBy": {
+    "p @ -": 0.00003254695939429012,
+    "div.sidebar-bottom @ -": 0.0005200135030864198,
+    "div.hof-inv-bottom @ .hof-modal": 0.17261491448045269,
+    "td @ .hof-modal": 0.0037098084249614204,
+    "div.hof-inv-add @ .hof-modal": 0.12442433020404664,
+    "div.hof-toast @ -": 0.018544238683127573,
+    "div.hof-actions @ .hof-modal": 0.020058908822016462,
+    "?": 0.0000018620327503429356,
+    "td.num @ .hof-modal": 0.0005851245016718108,
+    "label.hof-field @ .hof-modal": 0.4090914244684499,
+    "details.hof-inv-more-head @ .hof-modal": 0.08785536114728011
+   }
+  },
+  "ekran08": {
+   "longSum": 12565,
+   "longN": 137,
+   "longMax": 386,
+   "cls": 1.4112660204559035,
+   "clsBy": {
+    "p @ -": 0.00003254695939429012,
+    "div.hof-inv-bottom @ .hof-modal": 0.05599279835390947,
+    "td @ .hof-modal": 0.0007313853825070732,
+    "div.hof-inv-add @ .hof-modal": 0.14143125643004115,
+    "td.num @ .hof-modal": 0.012828152093246312,
+    "div.hof-toasts @ -": 0.07485485066229425,
+    "div.hof-toast @ -": 0.006181412894375858,
+    "label.hof-field @ .hof-modal": 0.47369880383652424,
+    "section.hof-modal @ .hof-modal": 0.5385959201388888,
+    "?": 0.010895389124657064,
+    "details.hof-inv-more-head @ .hof-modal": 0.07593645682629244,
+    "div.hof-actions @ .hof-modal": 0.02008704775377229
+   }
+  }
+ },
+ "issues": {
+  "karakterKaybi": [],
+  "ekranHata": [
+   "ekran01 Tümünü Gönder: 1 gönderilemedi: Bu belge zaten entegratöre iletildi (durum: Gönderildi). Sonucu Durum Sorgula ile alın.",
+   "ekran04 [kaydet Kaydet, Sonra Gönder]: Kaydet, Sonra Gönder: hata Cari (alıcı): 30.000 TL üstü e-Arşiv faturada nihai tüketicinin gerçek TC kimlik numarası, adı soyadı ve adresi zorunludur (11111111111 yazılamaz). · ekran {\"ara\":null,\"satir\":0,\"not\":\"\",\"sekme\":\"\"}",
+   "ekran02 iptal TEA2026400002983: 502 {\"ok\":false,\"error\":\"EDM'ye bağlanılamadı: UND_ERR_SOCKET\",\"code\":\"integrator-unreachable\",\"detail\":\"\",\"integratorCode\":\"\"}"
+  ],
+  "sayfaHata": [],
+  "apiHata": []
+ },
+ "checks": [
+  {
+   "ok": true,
+   "what": "cari bakiyeleri: program farkı = bağımsız defter (178 cari değişti; uyuşmayan 0)"
+  },
+  {
+   "ok": true,
+   "what": "stok miktarları: program farkı = bağımsız defter (198 ürün; uyuşmayan 0)"
+  },
+  {
+   "ok": true,
+   "what": "Kasa (100): program farkı 350607.46 = defter 350607.46"
+  },
+  {
+   "ok": true,
+   "what": "fatura tutarı: kâhin = program (332 belge; uyuşmayan 0)"
+  },
+  {
+   "ok": true,
+   "what": "Mutabakat Testi (ledger/integrity) temiz"
+  },
+  {
+   "ok": true,
+   "what": "çift fatura yok: koşuda yazılan 332 belge = 200 dönen kayıt 332"
+  },
+  {
+   "ok": true,
+   "what": "numaralar: 6 seri/yıl, 7754 numaralı belge — benzersiz + boşluksuz + tarih sırası (sorun yok)"
+  },
+  {
+   "ok": true,
+   "what": "kendi numaramızla yinelenen belge yok (0)"
+  },
+  {
+   "ok": true,
+   "what": "sahte EDM: koşuda 216 gönderim, yinelenen numara 0"
+  }
+ ],
+ "gecti": 9,
+ "kaldi": 0,
+ "girisBitti": 1792295724657
+}

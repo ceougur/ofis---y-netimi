@@ -179,7 +179,7 @@
     HOF.swap(root, `<div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Durum">${STATES.map(item => `<button type="button" data-state="${item.id}" aria-pressed="${String(item.id === view.state)}">${item.label}${data && item.id !== "all" ? ` <b>${item.id === "low" ? data.totals.low : item.id === "negative" && data.totals.negative ? data.totals.negative : ""}</b>` : ""}</button>`).join("")}</div>
       <div class="hof-cash-add">${manage ? '<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni Ürün</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import" title="Excel dosyasından ya da Google Sheets’ten ürünleri ve mevcut miktarları tek seferde aç">Excel / Sheets’ten Yükle</button>' : ""}</div></div>
       <div class="hof-plans-filters"><input type="search" data-filter="q" value="${esc(view.q)}" placeholder="Ürün adı, Stok Kodu (barkod), kategori ara…" aria-label="Ara"><select data-filter="category" aria-label="Kategori"><option value="">Tüm Kategoriler</option>${(data?.categories || []).map(name => `<option value="${esc(name)}" ${name === view.category ? "selected" : ""}>${esc(name)}</option>`).join("")}</select><select data-filter="sort" aria-label="Sıralama">${SORTS.map(([id, label]) => `<option value="${id}" ${id === view.sort ? "selected" : ""}>${label}</option>`).join("")}</select>${office().outputButtons ? office().outputButtons(listPdfUrl(), "list").replace(/<\/span>$/, `<a class="hof-button hof-button-small hof-button-ghost" href="${esc(listXlsxUrl())}" title="Stok durumunu Excel olarak indir">Excel</a></span>`) : ""}</div>
-      <div class="hof-kpis hof-plans-kpis">${data ? `<div><strong>${data.totals.count.toLocaleString("tr-TR")}</strong><span>Ürün</span></div><div class="${data.totals.low ? "is-late" : ""}"><strong>${data.totals.low}</strong><span>Kritik Seviyede</span></div><div class="${data.totals.out ? "is-late" : ""}"><strong>${data.totals.out}</strong><span>Tükenen</span></div><div class="${data.totals.negative ? "is-late" : ""}"><strong>${data.totals.negative || 0}</strong><span>Eksi Stokta</span></div><div class="hof-cash-balance"><strong>${esc(money(data.totals.value))}</strong><span>Stok Değeri</span></div>` : ""}</div>
+      <div class="hof-kpis hof-plans-kpis hof-stock-kpis">${data ? `<div><strong>${data.totals.count.toLocaleString("tr-TR")}</strong><span>Ürün</span></div><div class="${data.totals.low ? "is-late" : ""}"><strong>${data.totals.low}</strong><span>Kritik Seviyede</span></div><div class="${data.totals.out ? "is-late" : ""}"><strong>${data.totals.out}</strong><span>Tükenen</span></div><div class="${data.totals.negative ? "is-late" : ""}"><strong>${data.totals.negative || 0}</strong><span>Eksi Stokta</span></div><div class="hof-cash-balance"><strong>${esc(money(data.totals.value))}</strong><span>Stok Değeri</span></div>` : ""}</div>
       <div class="hof-cash-list hof-plans-list">${
         !data
           ? HOF.listPending(view.listError)
@@ -232,6 +232,8 @@
         { name: "unitPrice", label: "Alış Fiyatı (₺)", inputmode: "decimal", value: item?.unitPrice ? office().amountText?.(item.unitPrice) || item.unitPrice : "", placeholder: "Son alış fiyatı (maliyet, stok değeri)" },
         // v2.0.13: satış fiyatı ayrı; çıkış (satış) formu bu fiyatla açılır.
         { name: "salePrice", label: "Satış Fiyatı (₺)", inputmode: "decimal", value: item?.salePrice ? office().amountText?.(item.salePrice) || item.salePrice : "", placeholder: "Raf/etiket fiyatı (satışta önerilir)" },
+        // 2.4.3 (fatura hız testi H8): faturada bu ürün seçilince kalemin KDV oranı buradan gelir (kalemde değiştirilebilir); boşsa formun varsayılanı.
+        { name: "vatRate", label: "KDV Oranı", type: "select", value: item?.vatRate === null || item?.vatRate === undefined ? "" : String(item.vatRate), options: [{ value: "", label: "— Faturada Seçilir —" }, ...[0, 1, 10, 20].map(rate => ({ value: String(rate), label: `%${rate}` }))], help: "Faturada bu ürün seçilince kalemin KDV oranı buradan gelir; kalemde değiştirilebilir." },
         // İlk miktar (v2.0.8): stoğa girer. Kasa'ya kendiliğinden gider yazılmaz; "Kasa'ya yansıt" işaretlenirse
         // miktar × birim fiyat Kasa'dan "Stok ödemesi" olarak düşer (kullanıcı kararı).
         ...(item
@@ -429,7 +431,7 @@
     });
   }
   async function deleteMove(item, move) {
-    const ok = await HOF.confirm({ title: "Hareketi Sil", message: `${move.kind === "in" ? "Giriş" : "Çıkış"} (${qtyText(move.qty)} ${item.unit}) silinecek; mevcut miktar${move.pay === "cash" ? ", Kasa" : move.pay === "account" ? " ve cari bakiyesi" : ""} yeniden hesaplanır. Yönetim → Silinenler’den geri yüklenebilir.`, confirmLabel: "Sil", danger: true });
+    const ok = await HOF.confirm({ title: "Hareketi Sil", message: `${move.kind === "in" ? "Giriş" : "Çıkış"} (${qtyText(move.qty)} ${item.unit}) silinecek; mevcut miktar${move.pay === "cash" ? ", Kasa" : move.pay === "account" ? " ve cari bakiyesi" : ""} yeniden hesaplanır. ${HOF.trashHint()}`, confirmLabel: "Sil", danger: true });
     if (!ok) return;
     try {
       const path = `/api/workspace/stock/${encodeURIComponent(item.id)}/moves/${encodeURIComponent(move.id)}`;
@@ -442,7 +444,7 @@
     }
   }
   async function deleteItem(item) {
-    const ok = await HOF.confirm({ title: "Ürünü Sil", message: `“${item.name}” silinecek. Ödenmiş/tahsil edilmiş tutarlar Kasa’da ve caride kalır. Yönetim → Silinenler’den geri yüklenebilir.`, confirmLabel: "Sil", danger: true });
+    const ok = await HOF.confirm({ title: "Ürünü Sil", message: `“${item.name}” silinecek. Ödenmiş/tahsil edilmiş tutarlar Kasa’da ve caride kalır. ${HOF.trashHint()}`, confirmLabel: "Sil", danger: true });
     if (!ok) return;
     try {
       await HOF.api(`/api/workspace/stock/${encodeURIComponent(item.id)}`, { method: "DELETE" });
@@ -465,7 +467,7 @@
   }
 
   // ---------- Excel'den yükleme ----------
-  const ROLE_OPTIONS = [["", "— Kullanma —"], ["extra", "Ek Bilgi (kartta saklanır)"], ["name", "Ürün Adı *"], ["code", "Stok Kodu"], ["unit", "Birim"], ["category", "Kategori"], ["qty", "Mevcut Miktar (açılış stoku)"], ["price", "Alış Fiyatı (birim fiyat)"], ["salePrice", "Satış Fiyatı"], ["min", "Kritik Seviye"], ["note", "Not"]];
+  const ROLE_OPTIONS = [["", "— Kullanma —"], ["extra", "Ek Bilgi (kartta saklanır)"], ["name", "Ürün Adı *"], ["code", "Stok Kodu"], ["unit", "Birim"], ["category", "Kategori"], ["qty", "Mevcut Miktar (açılış stoku)"], ["price", "Alış Fiyatı (birim fiyat)"], ["salePrice", "Satış Fiyatı"], ["vat", "KDV Oranı"], ["min", "Kritik Seviye"], ["note", "Not"]];
   async function importFromExcel() {
     const source = await office().chooseSheet?.({ title: "Ürünleri Toplu Yükle", eyebrow: moduleName().toLocaleUpperCase("tr-TR"), hint: "Binlerce kalem tek seferde açılır; miktar kolonu açılış stoku olur. Kolonları bir sonraki adımda eşlersiniz." });
     if (!source) return;
@@ -501,8 +503,8 @@
             loadList();
           }
           refreshAlerts();
-          const skipped = result.skipped.length ? ` ${result.skippedTotal || result.skipped.length} satır atlandı (${[...new Set(result.skipped.map(item => item.reason))].join("; ")}).` : "";
-          HOF.toast(`${result.created} ürün açıldı${result.opening ? `, ${result.opening} ürüne açılış stoku yazıldı` : ""}${result.updated ? `, ${result.updated} ürün güncellendi` : ""}.${skipped}`, { type: result.created || result.updated ? "success" : "error", timeout: 9000 });
+          // Gözden geçirme 2.4.3 (5c): metin sunucudan (atlanan satır ile alanı boş bırakılan satır ayrı sayılır).
+          HOF.toast(result.message, { type: result.created || result.updated ? "success" : "error", timeout: 9000 });
         },
       });
     } catch (error) {
@@ -524,19 +526,28 @@
     const badge = document.querySelector('[data-badge="stock"]');
     if (badge) badge.textContent = alerts.length ? String(alerts.length) : "";
     if (!alerts.length) return;
-    const today = new Date().toISOString().slice(0, 10);
+    // 2.4.3 (keşif B8): gün kullanıcı başına sunucuda tutulur (yeni oturum / başka bilgisayar bildirimi yinelemez); tarayıcıdaki kayıt yalnız aynı
+    // gün sunucuya yeniden sormamak içindir (yerel gün, UTC değil).
+    const today = HOF.localToday ? HOF.localToday() : new Date().toISOString().slice(0, 10);
     let shown = "";
     try {
       shown = localStorage.getItem(ALERT_DAY) || "";
     } catch {
-      shown = today;
+      shown = "";
     }
     if (shown === today) return;
+    let show = false;
+    try {
+      ({ show } = await HOF.api("/api/workspace/stock/alerts/notified", { method: "POST", body: {}, background: true }));
+    } catch {
+      return;
+    }
     try {
       localStorage.setItem(ALERT_DAY, today);
     } catch {
-      // saklanamazsa her açılışta bir kez gösterilir
+      // saklanamazsa sunucu yine günde bir kez "göster" der
     }
+    if (!show) return;
     const names = alerts.slice(0, 4).map(item => `${item.name} (${qtyText(item.qty)} ${item.unit})`).join(", ");
     HOF.toast(`Kritik stok: ${names}${alerts.length > 4 ? ` ve ${alerts.length - 4} ürün daha` : ""}.`, { type: "error", timeout: 12000, action: { label: moduleName(), onClick: () => open() } });
   }

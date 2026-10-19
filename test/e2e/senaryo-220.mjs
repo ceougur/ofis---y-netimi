@@ -14,6 +14,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { buildXlsx } from "../../server/lib/xlsx-write.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-220");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -74,7 +75,7 @@ const top = `${modal}:last-of-type`;
 const call = (url, body) => page.evaluate(async ([url, body]) => (await (await fetch(url, { method: body ? "POST" : "GET", headers: { "content-type": "application/json" }, body: body ? JSON.stringify(body) : undefined })).json()).data, [url, body]);
 const closeAll = async () => {
   for (let i = 0; i < 6 && (await page.$(modal)); i += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await page.waitForTimeout(250);
   }
 };
@@ -116,7 +117,7 @@ try {
   await page.waitForSelector(`${modal} .hof-mapping`, { timeout: 30000 });
   await Promise.all([page.waitForEvent("load", { timeout: 30000 }), page.click(`${modal} [data-mode="replace"]`)]);
   await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
-  await page.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]").catch(() => page.keyboard.press("Escape"));
+  await page.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]").catch(() => escClose(page));
   await page.goto(`${BASE}/`, { waitUntil: "load" });
   await page.waitForSelector(".dynamic-table tbody tr", { timeout: 20000 });
   await page.evaluate(() => localStorage.clear());
@@ -146,12 +147,15 @@ try {
   ok(mizan.foot[1]?.startsWith("TOPLAM") && money(mizan.foot[4]) === 100000 && money(mizan.foot[5]) === 15000 && money(mizan.foot[6]) === 85000 && mizan.foot[7] === "Borçlu", `Mizan TOPLAM: ${mizan.foot.filter(Boolean).join(" · ")}`);
   await shot("mizan-toplam");
 
-  console.log("\n■ Cari Listesi ve Bakiyeler: anlaşılan / ödenen / kalan kartları ve TOPLAM satırı");
+  console.log("\n■ Cari Listesi ve Bakiyeler: toplam borç / toplam alacak / müşteri alacakları / net kartları ve TOPLAM satırı");
   await openCenterReport("cari-listesi");
   let state = await centerState();
-  ok(money(state.cards["Toplam Borç (Anlaşılan)"]) === 100000, `Toplam Borç (Anlaşılan) ${state.cards["Toplam Borç (Anlaşılan)"]}`);
-  ok(money(state.cards["Toplam Alacak (Ödenen)"]) === 15000, `Toplam Alacak (Ödenen) ${state.cards["Toplam Alacak (Ödenen)"]}`);
-  ok(money(state.cards["Kalan (Borçlu)"]) === 85000, `Kalan (Borçlu) ${state.cards["Kalan (Borçlu)"]}`);
+  // MM9 (2.4.3, bilerek güncellendi): kart adları ticari işletmeye uygun — Toplam Borç, Toplam Alacak, Müşteri Alacakları, Tedarikçi Borçları, Net Bakiye.
+  const NET = "Net Bakiye (Müşteri Alacakları − Tedarikçi Borçları)";
+  ok(money(state.cards["Toplam Borç"]) === 100000, `Toplam Borç ${state.cards["Toplam Borç"]}`);
+  ok(money(state.cards["Toplam Alacak"]) === 15000, `Toplam Alacak ${state.cards["Toplam Alacak"]}`);
+  ok(money(state.cards["Müşteri Alacakları (Borçlu Cariler)"]) === 85000, `Müşteri Alacakları ${state.cards["Müşteri Alacakları (Borçlu Cariler)"]}`);
+  ok(money(state.cards[NET]) === 85000, `${NET} ${state.cards[NET]}`);
   ok(state.footLabel === "TOPLAM" && money(state.foot["Borç"]) === 100000 && money(state.foot["Alacak"]) === 15000 && money(state.foot["Bakiye"]) === 85000 && state.foot["Durum"] === "Borçlu", `TOPLAM satırı: Borç ${state.foot["Borç"]} · Alacak ${state.foot["Alacak"]} · Bakiye ${state.foot["Bakiye"]} ${state.foot["Durum"]}`);
   const phone = await lastModal(box => {
     const cell = box.querySelector("[data-rc-main] tbody td.is-nowrap");
@@ -195,8 +199,12 @@ try {
   await shot("cari-tahsilat");
   await page.setViewportSize({ width: 1366, height: 768 });
   await page.waitForTimeout(400);
+  // 2.4.3 (C5, bilerek güncellendi): dizüstünde de TOPLAM ilk bakışta (pencere kaydırılmadan) görünür — başlık ve özet sıkılaştı, tablo kutusu
+  // kalan yere sığar (en az 160 px; önceden 280 px'ten az yer kalınca 50vh kalıyor, TOPLAM ancak kaydırınca görünüyordu).
+  view = await totalInView();
+  ok(view.inView && view.pane >= 160, `1366 × 768: TOPLAM pencere kaydırılmadan görünür (alt ${view.foot} ≤ ${view.bottom}); tablo kutusu ${view.pane} px (en az 160)`);
   view = await totalInView({ toTable: true });
-  ok(view.inView && view.pane >= 0.5 * 768 - 2, `1366 × 768: pencere tabloya kaydırılınca TOPLAM görünür (alt ${view.foot} ≤ ${view.bottom}); tablo kutusu ${view.pane} px (eskisinden kısa değil)`);
+  ok(view.inView, `1366 × 768: pencere tabloya kaydırılınca da TOPLAM görünür (alt ${view.foot} ≤ ${view.bottom})`);
   await shot("cari-tahsilat-1366");
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.waitForTimeout(400);

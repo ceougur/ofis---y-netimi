@@ -18,6 +18,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { createClient } from "../helpers.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-224");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -84,7 +85,7 @@ const moneyOf = text => {
 const tl = n => `${Number(n).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const closeAll = async () => {
   for (let i = 0; i < 8 && (await page.$(modal)); i += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await page.waitForTimeout(250);
     const yes = await page.$(`${modal} [data-answer="yes"]`);
     if (yes) await yes.click();
@@ -515,7 +516,10 @@ try {
         const node = [...document.querySelectorAll(".hof-toast-error")].at(-1);
         if (!node) return { found: false };
         const r = node.getBoundingClientRect();
+        // 2.4.3: bildirim tıklamayı geçirir (pointer-events: none); üstte mi (görünür mü) ölçmek için bu an isabet testine açılır.
+        node.style.pointerEvents = "auto";
         const hit = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+        node.style.pointerEvents = "";
         return { found: true, onTop: Boolean(hit && node.contains(hit)), cover: hit ? `${hit.tagName.toLowerCase()}.${[...hit.classList].join(".")}` : "" };
       });
       ok(onTop.found && onTop.onTop, `ret bildirimi pencerenin üstünde, okunur (${onTop.onTop ? "en üstte" : `üstünü örten: ${onTop.cover || "bildirim yok"}`})`);

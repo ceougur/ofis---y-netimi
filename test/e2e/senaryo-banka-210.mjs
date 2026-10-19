@@ -56,6 +56,7 @@ import { createApp } from "../../server/app.mjs";
 import { createClient, installPageClock } from "../helpers.mjs";
 import { pdfText, xlsxSheets } from "../banka-210-ortak.mjs";
 import { fetchCutWatch } from "./tarayici-kesme.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-banka-210");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -199,7 +200,7 @@ const must = async (label, promise) => {
 const textOf = (page, selector) => page.$eval(selector, node => node.textContent.replace(/\s+/g, " ").trim()).catch(() => "");
 const has = (text, needle) => String(text).includes(needle);
 const closeTop = async page => {
-  await page.keyboard.press("Escape");
+  await escClose(page);
   await page.waitForTimeout(300);
 };
 const answerYes = async page => {
@@ -207,9 +208,14 @@ const answerYes = async page => {
   await page.click(`${top} [data-answer="yes"]`);
   await page.waitForTimeout(400);
 };
+// 2.4.3 (C11, bilerek): Banka penceresi oturum içinde son sekmesiyle açılır; bu senaryonun adımları eski açılış gibi Genel Bakış'tan başlar.
 const openBank = async page => {
   await page.click('#hof-sidecard [data-action="bank"]');
   await page.waitForSelector(`${bankWin} [data-bank] .hof-bank-tabs`, { timeout: 15000 });
+  if (!(await page.$(`${bankWin} .hof-bank-tabs [data-tab="overview"][aria-selected="true"]`))) {
+    await page.click(`${bankWin} .hof-bank-tabs [data-tab="overview"]`);
+    await page.waitForTimeout(500);
+  }
   await page.waitForTimeout(500);
 };
 const tab = async (page, id) => {
@@ -1470,6 +1476,7 @@ try {
     await admin.click(`${bankWin} [data-act="advanced"]`);
     await admin.waitForTimeout(300);
     await admin.selectOption(`${bankWin} [data-set="similar.enabled"]`, "false");
+    // Bu adım sorunun kendisini sınar: Esc'e doğrudan basılır (escClose soruyu onaylardı).
     await admin.keyboard.press("Escape");
     await admin.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-modal-title")].some(node => node.textContent.trim() === "Kaydedilmemiş Değişiklik"), null, { timeout: 8000 });
     await shot(admin, "gg2-ayarlar-kaydedilmemis");
@@ -1795,10 +1802,12 @@ try {
     ok(cash + z + g === 170000, `Kasa + Banka ${cash + z + g} (= 150.000 + 20.000)`);
     // Bağımsız mizan modeli (kabul 16 sonu; plan §12.5'in 2.1.0 karşılığı): 100 10.000 · 102.01 90.000 · 102.02 70.000 · 120 0 · 391 −3.333,33 ·
     // 500 −150.000 · 600 −16.666,67.
-    const want = { 100: 1_000_000, 102: 16_000_000, 120: 0, 391: -333_333, 500: -15_000_000, 600: -1_666_667 };
+    // 2.4.3 MM4 (bilerek güncellendi; kullanıcı kararı 18.10.2026, plan §12.5 sayısının yerine): Ürün A'nın açılış stoku (10 Adet × 10.000 = 100.000)
+    // Ana Defter'e açılış fişi olarak girer (B 153 / A 500) → 500 −250.000, 153 100.000 (aralıklı envanter: satış 153'ü azaltmaz). Öbür hesaplar aynı.
+    const want = { 100: 1_000_000, 102: 16_000_000, 120: 0, 153: 10_000_000, 391: -333_333, 500: -25_000_000, 600: -1_666_667 };
     const got = await trial();
     const off = Object.entries(want).filter(([code, minor]) => (got[code] || 0) !== minor);
-    ok(!off.length, off.length ? `mizan modelden farklı: ${off.map(([code, minor]) => `${code} program ${(got[code] || 0) / 100} / model ${minor / 100}`).join("; ")}` : "mizan bağımsız modelle aynı (100, 102, 120, 391, 500, 600)");
+    ok(!off.length, off.length ? `mizan modelden farklı: ${off.map(([code, minor]) => `${code} program ${(got[code] || 0) / 100} / model ${minor / 100}`).join("; ")}` : "mizan bağımsız modelle aynı (100, 102, 120, 153, 391, 500, 600)");
     const subs = await subTrial();
     ok(subs[kabul.ziraat.glSub] === 9_000_000 && subs[kabul.garanti.glSub] === 7_000_000, `alt hesaplar ${kabul.ziraat.glSub} ${subs[kabul.ziraat.glSub] / 100}, ${kabul.garanti.glSub} ${subs[kabul.garanti.glSub] / 100}`);
     await tab(admin, "overview");
@@ -2342,8 +2351,12 @@ try {
   const preview = page =>
     page.evaluate(selector => {
       const main = document.querySelector(`${selector} [data-rc-main]`);
-      const text = node => node.textContent.replace(/\s+/g, " ").trim();
+      // 2.4.3 (C9, bilerek): ekranda tutar "₺87.984,25" (öbür pencerelerle aynı); bu senaryonun beklentileri sunucunun ve PDF/Excel'in
+      // "87.984,25 TL" biçiminde yazılı — ekran metni karşılaştırmadan önce o biçime çevrilir (ekran biçiminin kendisi senaryo-banka-rapor-243'te).
+      const fileForm = value => value.replace(/([-−]?)₺(\d{1,3}(?:\.\d{3})*,\d{2})/g, "$1$2 TL");
+      const text = node => fileForm(node.textContent.replace(/\s+/g, " ").trim());
       return {
+        busy: main?.getAttribute("aria-busy") === "true",
         title: main?.querySelector("h3") ? text(main.querySelector("h3")) : "",
         heads: [...(main?.querySelectorAll("thead th") || [])].map(text),
         rows: [...(main?.querySelectorAll("tbody tr") || [])].map(row => [...row.querySelectorAll("td")].map(text)),
@@ -2355,7 +2368,7 @@ try {
   const waitPreview = async (page, check, ms = 8000) => {
     const deadline = Date.now() + ms;
     let last = await preview(page);
-    while (!check(last) && Date.now() < deadline) {
+    while ((last.busy || !check(last)) && Date.now() < deadline) {
       await page.waitForTimeout(250);
       last = await preview(page);
     }
@@ -2423,7 +2436,7 @@ try {
     ok(groups.some(group => group.endsWith("Banka")), `Banka grubu: ${groups.join(", ")}`);
     const items = await admin.$$eval(`${modal} .hof-rc-group`, nodes => nodes.filter(node => node.querySelector("p").textContent.trim().endsWith("Banka")).flatMap(node => [...node.querySelectorAll("[data-report]")].map(item => item.textContent.trim())));
     // 2.3.0 (bilerek güncellendi): §8.10 kalan raporlar (İz 3.3) ve POS Satış / Komisyon (İz 5.3); grup sırası İz 5.4 (Cari önce, Banka Taksit'ten sonra).
-    ok(items.join("|") === "Banka Bakiye Raporu|Banka Hareket Raporu|Banka Masraf Raporu|Alt Hesap Mizanı|Tahsildeki Çek ve Senetler|POS Ödeme Takvimi|Faturası Beklenen Komisyonlar|POS Satış Raporu|POS Komisyon Raporu|Günlük Banka Raporu|Aylık Banka Raporu|Banka Bazında Bakiye|Para Birimi Bazında Bakiye|Bankalar Arası Transfer Raporu|Kasa ve Banka Transfer Raporu|Cari ve Banka Hareketleri|Fatura ve Banka Hareketleri|Taksit ve Banka Hareketleri|Banka Nakit Akış Raporu", `Banka raporları (2.3.0): ${items.join(", ")}`);
+    ok(items.join("|") === "Banka Bakiye Raporu|Banka Hareket Raporu|Banka Masraf Raporu|Alt Hesap Mizanı|Tahsildeki Çek ve Senetler|POS Ödeme Takvimi|Faturası Beklenen Komisyonlar|POS Satış Raporu|POS Komisyon Raporu|Günlük Banka Raporu|Aylık Banka Raporu|Banka Bazında Bakiye|Para Birimi Bazında Bakiye|Bankalar Arası Transfer Raporu|Kasa ve Banka Transfer Raporu|Cari ve Banka Hareketleri|Fatura ve Banka Hareketleri|Taksit ve Banka Hareketleri|Banka ve POS Hareketleri|Banka Nakit Akış Raporu", `Banka raporları (2.3.0; 2.4.3 C14 Banka ve POS Hareketleri): ${items.join(", ")}`);
     const groupNames = groups.map(group => group.replace(/^[^\p{L}]+/u, "").trim());
     ok(groupNames.join("|") === "Cari|Kasa|Stok|Fatura|Çek / Senet|Taksit|Banka|Ana Defter|Kayıtlar|Ofis".split("|").filter(name => groupNames.includes(name)).join("|"), `grup sırası (İz 5.4): ${groupNames.join(" · ")}`);
     await admin.click(`${modal} [data-rc-list] [data-report="banka-bakiye"]`);
@@ -2614,7 +2627,7 @@ try {
     await admin.waitForTimeout(600);
   });
 
-  await step("49. Yetki: muhasebe Raporlar'da yalnız Banka grubunu görür (Finans Raporları yok); personelde Banka raporu 403", async () => {
+  await step("49. Yetki: muhasebe Raporlar'da Finans Raporları (2.4.3 H9: varsayılan) ve Banka grubunu görür; personelde Banka raporu 403", async () => {
     const muhasebe = await newPage();
     current = muhasebe;
     await login(muhasebe, "muhasebe1", USER_PASS);
@@ -2626,7 +2639,9 @@ try {
     // Birleşme (İz 3.3 + 1.7 + 5.4): raporlar Cari grubu önce; Cari grubunda yalnız Şüpheli Alacaklar, geri kalan her şey Banka grubu (katalogdan grup adıyla okunur).
     const byGroup = await muhasebe.$$eval(`${modal} .hof-rc-group`, nodes => nodes.map(node => [node.querySelector("p")?.textContent.trim() || "", [...node.querySelectorAll("[data-report]")].map(item => item.dataset.report)]));
     const cariReports = (byGroup.find(([name]) => name.endsWith("Cari")) || ["", []])[1];
-    ok(groups.length === 2 && groups[0].endsWith("Cari") && groups[1].endsWith("Banka") && cariReports.join(",") === "supheli-alacaklar", `muhasebenin Tüm Raporlar'ı: ${groups.join(", ")} · Cari: ${cariReports.join(", ")}`);
+    // 2.4.3 H9 (bilerek güncellendi; kullanıcı kararı 18.10.2026): muhasebe Finans Raporları'nı varsayılan olarak görür — Cari grubu tam (mizan dahil),
+    // Kasa ve Banka grupları da listelenir. Banka grubu kapısının (bank.reports) ayrı sınaması birim testlerde (banka-210-raporlar R6, rapor-230-iz5).
+    ok(groups[0].endsWith("Cari") && groups.some(name => name.endsWith("Kasa")) && groups.some(name => name.endsWith("Banka")) && cariReports.includes("supheli-alacaklar") && cariReports.includes("mizan"), `muhasebenin Tüm Raporlar'ı: ${groups.join(", ")} · Cari: ${cariReports.join(", ")}`);
     await muhasebe.click(`${modal} [data-rc-list] [data-report="banka-bakiye"]`);
     const data = await waitPreview(muhasebe, view => view.rows.length > 0);
     ok(data.title === "Banka Bakiye Raporu" && data.rows.length > 0, "muhasebe Banka Bakiye Raporu'nu açar");

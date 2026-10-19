@@ -1,0 +1,18 @@
+A) B1 — kuyruğun başında 20 reddedilen belge + 30 yeni: Tümünü Gönder bir basışta 30'u gönderir
+  ✓ ön koşul: 20 belge numaralı ve Hata'da
+  ✓ düğme 50 belge (Tümünü Gönder (50))
+  ✗ bitiş bildirimi gönderilen + gönderilemeyen (nedeniyle): hof-toast hof-toast-error is-visible|0 belge gönderildi; 20 belge gönderilemedi: EDM isteği reddetti: Alici bilgisi GIB dogrulamasindan gecmedi (EDM hata kodu 10012); 30 belge daha bekliyor; Tümünü Gönder'e yeniden basın.
+  ✗ 30 yeni belgenin hepsi gönderildi
+  ✓ reddedilen her belge turda bir kez denendi (20)
+  ✓ numara sırası = tarih sırası
+  ✗ her yeni belge EDM'ye bir kez
+B) MM1 — kâğıt alış faturasının iadesi: e-Belge referansı form açılırken önerilir, onaylanınca iade gönderilir
+✗ beklenmeyen hata: page.waitForSelector: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible .hof-invoices-modal [data-return-ref-input]') to be visible[22m
+
+    at /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme3-243/test/e2e/gg243-dar2-ekran.mjs:132:14
+  ekran görüntüsü: /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme3-243/test/e2e/artifacts/gg243-dar2-ekran-hata.png
+  ✓ sayfa hatası yok
+
+✗ gg243-dar2-ekran: 5 geçti, 4 kaldı

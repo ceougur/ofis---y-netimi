@@ -1,5 +1,6 @@
 // Tahsilat takvimi ve son tarihi yaklaşan işler (v2.0.1). Kayan ödeme şeridi ve sağ alt bildirimler bunu kullanır.
 // Sonuç; veri, tahsilatlar, elle kapatılan kalemler ve gün değişene kadar oturum başına önbellektedir.
+import { createHash } from "node:crypto";
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { computeDeadlines, computeDues, DUE_WINDOW } from "../lib/insight/dues.mjs";
 import { canUser } from "../lib/permissions.mjs";
@@ -98,17 +99,25 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
       }
     }
     const result = { items: [...items, ...planItems, ...chequeItems, ...invoiceItems, ...bankItems, ...foreignItems], deadlines: [...deadlines, ...foreignDeadlines], sources, dormant, today: local, generatedAt: now.toISOString() };
+    // 2.4.3 H2: içeriğin sürümü (üretim anı hariç her alan). Ekran elindeki sürümü gönderir; içerik değişmediyse büyük yanıt (10.000
+    // faturalı veride 2,8 MB) yeniden gönderilmez. Başka personelin her kaydında anahtar değişir ama takvimin içeriği çoğu kez değişmez.
+    const { generatedAt: _, ...content } = result;
+    result.version = createHash("sha256").update(JSON.stringify(content)).digest("base64url").slice(0, 22);
     cache.set(session, { key, result });
     return result;
   }
 
-  router.get("/api/workspace/dues", async ({ req, res }) => {
+  router.get("/api/workspace/dues", async ({ req, res, url }) => {
     const user = auth.requireUser(req);
     const data = await compute();
     // Çek/senet kalemleri yalnız çekleri görebilenlere (kasa yetkisi olanlar) gider.
     // Fatura kalemleri yalnız faturaları görebilenlere.
     // Planlı banka işlemleri yalnız banka rakamını görebilene (bank.view ∨ overview.view; routes/overview.mjs canSeeBank ile aynı kural).
-    ok(res, { ...data, items: data.items.filter(item => (item.source !== "cheque" || canUser(user, "cheques.view")) && (item.source !== "invoice" || canUser(user, "invoices.view")) && (item.source !== "bank" || canUser(user, "bank.view") || canUser(user, "overview.view"))) });
+    const see = { cheque: canUser(user, "cheques.view"), invoice: canUser(user, "invoices.view"), bank: canUser(user, "bank.view") || canUser(user, "overview.view") };
+    // 2.4.3 H2: sürüm, kişinin görebildiği kalem türlerini de taşır (yetkisi değişen kişi takvimi yeniden alır).
+    const version = `${data.version}.${Number(see.cheque)}${Number(see.invoice)}${Number(see.bank)}`;
+    if (url.searchParams.get("since") === version) return ok(res, { unchanged: true, version, today: data.today });
+    ok(res, { ...data, items: data.items.filter(item => (item.source !== "cheque" || see.cheque) && (item.source !== "invoice" || see.invoice) && (item.source !== "bank" || see.bank)), version });
   });
 
   // "Ödendi say" / "İptal": kalem, tahsilat girilmeden kapatılır (veri değişmez; kim, ne zaman kaydedilir).

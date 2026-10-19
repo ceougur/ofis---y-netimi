@@ -1,0 +1,41 @@
+{
+ "dil": "destekofis-ebelge/1",
+ "ad": "kucuk-o3-alici-mukellef-bekletir",
+ "tohum": 1,
+ "bugun": "2026-12-27",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi"
+ },
+ "adimlar": [
+  {
+   "islem": "gun_ilerlet",
+   "gun": 1,
+   "no": 1
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B8",
+   "cari": "K4",
+   "tarih": "2026-12-26",
+   "gonder": "sonra",
+   "no": 2
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B10",
+   "cari": "K1",
+   "tarih": "2026-12-28",
+   "gonder": "sonra",
+   "no": 3
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 4
+  }
+ ]
+}

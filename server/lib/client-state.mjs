@@ -38,7 +38,7 @@ export function createClientState({ store, audit }) {
         sheetUrl: info.hasData ? info.key || DATASET_KEY : "",
         syncMinutes: store.setting(KEYS.syncMinutes.setting, "5"),
         aiMapping: store.setting(KEYS.aiMapping.setting, ""),
-        activeSourceLabel: info.hasData ? info.label || "Çalışma verisi" : "",
+        activeSourceLabel: info.hasData ? info.label || "Çalışma Verisi" : "",
         linkedSheetUrl: info.linkedUrl || "",
       },
     };

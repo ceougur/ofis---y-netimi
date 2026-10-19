@@ -1,0 +1,32 @@
+{
+  "ad": "cekirdek-243/e2e-senaryo-220",
+  "komut": "npm run test:senaryo-220",
+  "commit": "86e0280247acfc8b31df0babfbbf10d521831436",
+  "dal": "worktree-agent-a34eec2f4fcc3bf36",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-17T23:02:15.721Z",
+  "sure_sn": 71.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 23,
+    "gecen": 23,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-17/cekirdek-243/e2e-senaryo-220.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a34eec2f4fcc3bf36",
+  "ham_cikti_sha256": "6db823299908634b9b27300056769ffdd48c62dd59438175098e0fc3cfc0943e",
+  "ham_cikti_bayt": 2413
+}

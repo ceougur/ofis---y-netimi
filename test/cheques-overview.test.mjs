@@ -429,7 +429,12 @@ describe("ANLIK DURUM: karttaki rakamlar ekranlarla birebir aynı (rastgele 400 
       const allMoney = (await admin.get("/api/workspace/cash?method=all")).data.data;
       const noncash = (await admin.get("/api/workspace/cash?method=noncash")).data.data;
       const unassignedToday = noncash.entries.filter(entry => entry.date <= TODAY).reduce((sum, entry) => sum + (entry.kind === "in" ? entry.amount : -entry.amount), 0);
-      near(flow.closing, allMoney.totals.balance - unassignedToday + planRemaining + portfolio.summary.in.open.amount - portfolio.summary.out.open.amount, `${label}: nakit akışı sonu`);
+      // MM5 (2.4.3, bilerek güncellendi): faturasız cari alacağı da beklenen giriştir — her borçlu carinin bakiyesinin açık taksitlerini aşan kısmı
+      // (bağımsız formül: Σ max(0, bakiye − carinin açık taksit kalanı); bu testte fatura yok).
+      const planOf = new Map();
+      for (const plan of openPlans.plans || []) if (plan.accountId) planOf.set(plan.accountId, (planOf.get(plan.accountId) || 0) + Math.max(0, plan.totals?.remaining ?? 0));
+      const unbilled = list.accounts.reduce((sum, account) => sum + Math.max(0, Math.round(account.balance * 100) - Math.round((planOf.get(account.id) || 0) * 100)), 0) / 100;
+      near(flow.closing, allMoney.totals.balance - unassignedToday + planRemaining + unbilled + portfolio.summary.in.open.amount - portfolio.summary.out.open.amount, `${label}: nakit akışı sonu`);
       near(flow.cashToday, cashToday, `${label}: nakit akışı başlangıcı = Nakit Kasa (bugüne kadar; banka hesabı yok, Gerçek Banka 0)`);
     };
     for (let step = 1; step <= 400; step += 1) {
@@ -566,6 +571,9 @@ describe("rapor merkezi: programdaki her bilgi ön izleme, PDF ve Excel olarak a
     assert.ok(table.headers.includes("AD SOYAD"));
     assert.equal((await admin.get("/api/workspace/report-center/yok")).status, 404);
     const staff = await createUser(server, admin, { username: "raporsuz", role: "muhasebe" });
+    // 2.4.3 H9 (bilerek güncellendi): muhasebe Finans Raporları'nı varsayılan olarak görür; finans raporu kapısını sınamak için bu kişiden kaldırılır.
+    const staffId = (await admin.get("/api/admin/users")).data.data.find(user => user.username === "raporsuz").id;
+    assert.equal((await admin.patch(`/api/admin/users/${staffId}`, { grants: { remove: ["overview.view"] } })).status, 200);
     // v2.1.0 Aşama 14 (bilerek güncellendi): muhasebe Banka Raporları yetkisiyle (bank.reports, plan §9.1) yalnız Banka grubunu görür; finans
     // raporları (overview.view) kapalı kalır.
     const staffCatalog = (await staff.get("/api/workspace/report-center")).data.data;
@@ -574,11 +582,11 @@ describe("rapor merkezi: programdaki her bilgi ön izleme, PDF ve Excel olarak a
     assert.deepEqual(staffCatalog.reports.filter(report => report.group === "Cari").map(report => report.id), ["supheli-alacaklar"], "Cari grubunda yalnız Şüpheli Alacaklar");
     assert.equal((await staff.get("/api/workspace/report-center/kasa-hareketleri")).status, 403, "finans raporu kapalı");
     const users = (await admin.get("/api/admin/users")).data.data;
-    await admin.patch(`/api/admin/users/${users.find(user => user.username === "raporsuz").id}`, { grants: { remove: ["bank.reports"] } });
+    await admin.patch(`/api/admin/users/${users.find(user => user.username === "raporsuz").id}`, { grants: { remove: ["overview.view", "bank.reports"] } });
     // 2.3.0 İz 1.7 (bilerek güncellendi): Şüpheli Alacak İşlemleri kaldığı sürece katalog yalnız Şüpheli Alacaklar ile açık; o da kalkınca kapalı.
     const narrowed = (await staff.get("/api/workspace/report-center")).data.data;
     assert.deepEqual(narrowed.reports.map(report => report.id), ["supheli-alacaklar"], "Banka Raporları kalkınca yalnız Şüpheli Alacaklar");
-    await admin.patch(`/api/admin/users/${users.find(user => user.username === "raporsuz").id}`, { grants: { remove: ["bank.reports", "accounts.doubtful"] } });
+    await admin.patch(`/api/admin/users/${users.find(user => user.username === "raporsuz").id}`, { grants: { remove: ["overview.view", "bank.reports", "accounts.doubtful"] } });
     assert.equal((await staff.get("/api/workspace/report-center")).status, 403, "Şüpheli Alacak İşlemleri de kaldırılınca rapor merkezi kapalı");
   });
 });

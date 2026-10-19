@@ -1,0 +1,8 @@
+[ebelge-t1-i100] adım 100 · fark 0 · ihlal 0 · saf model son fark 0 · çatal seçimi 25 · 7.8 sn
+[ebelge-t2-i100] adım 100 · fark 0 · ihlal 0 · saf model son fark 0 · çatal seçimi 24 · 9.4 sn
+[ebelge-t3-i100] adım 100 · fark 0 · ihlal 0 · saf model son fark 4 · çatal seçimi 32 · 6.8 sn
+# tests 3
+# pass 3
+# fail 0
+# kahin fark 0 ihlal 0
+tohum cikis=0

@@ -1,0 +1,31 @@
+{
+  "ad": "cekirdek-243/tekrar-e2e-2",
+  "komut": "npm run test:e2e",
+  "commit": "c18508e522a9e6cf6392d6d2ada9c015a16a2ad1",
+  "dal": "worktree-agent-a34eec2f4fcc3bf36",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-18T00:41:06.452Z",
+  "sure_sn": 153.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": null,
+  "hukum": "BAŞARISIZ",
+  "neden": "özet satırı tanınmadı",
+  "basarisiz_testler": [
+    {
+      "ad": "akıllı denetim öneriyle düzeltir; belge eklenir ve önizlenir; kolon adlandırılır; Excel'e aktarılır",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-18/cekirdek-243/tekrar-e2e-2.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a34eec2f4fcc3bf36",
+  "ham_cikti_sha256": "aacd2cc9e49526ef741c95a8df13ecc956af451802429833c958c45385d3ca8d",
+  "ham_cikti_bayt": 7525
+}

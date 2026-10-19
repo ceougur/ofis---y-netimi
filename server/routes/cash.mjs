@@ -444,6 +444,11 @@ export function registerCashRoutes(router, context) {
   router.put("/api/workspace/cash/:id", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "cash.manage");
     const previous = existing(params.id);
+    // 2.4.3 MM3: Kasa'dan Vergi Ödemesi (B 360 · B 689 / A 100) Kasa'dan düzeltilmez — vergi ve gecikme ayrımı tutarla birlikte değişirdi. Silinir
+    // (Silinenler'den geri gelir) ve Vergi Ödemesi'nden doğru tutarla yeniden girilir.
+    if (store.get("SELECT 1 AS found FROM pragma_table_info('cash_entries') WHERE name = 'tax_json'") && store.get("SELECT tax_json AS t FROM cash_entries WHERE id = ?", previous.id)?.t) {
+      throw new HttpError(409, "Bu hareket bir Vergi Ödemesi; Kasa'dan düzeltilmez. Silip Vergi Ödemesi'nden doğru tutarla yeniden girin.", { code: "cash-tax-payment" });
+    }
     context.period?.assertOpen(previous.date, "Bu kasa hareketi");
     const body = await readJson(req);
     // Eski (2.0.16 öncesi) nakit dışı Kasa kaydının yolu değiştirilmez; transferde yön (kind) de sabittir.
@@ -506,7 +511,7 @@ export function registerCashRoutes(router, context) {
     guardChange(previous, null, url.searchParams.get("cashForce") === "1", "Bu Kasa hareketi silinince");
     const twin = twinOf(previous);
     if (twin) guardChange(twin, null, url.searchParams.get("cashForce") === "1", "Bu transferin öbür tarafı silinince");
-    const full = store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, event_id AS eventId, fin_ref AS finRef, is_opening AS isOpening, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", previous.id);
+    const full = store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, event_id AS eventId, fin_ref AS finRef, is_opening AS isOpening, tax_json AS taxJson, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", previous.id);
     const twinFull = twin ? store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", twin.id) : null;
     // v2.1.0 Aşama 6: kasadan bankaya yatırmanın silinmesi banka hesabını azaltır (K7).
     const bankLeg = [full, twinFull].find(item => item?.method === "bank" && item.finRef);

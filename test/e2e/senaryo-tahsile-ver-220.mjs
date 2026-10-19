@@ -30,6 +30,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { createClient, installPageClock } from "../helpers.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-tahsile-ver-220");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -67,7 +68,7 @@ const FORM = `${top} .hof-form`;
 const pause = ms => page.waitForTimeout(ms);
 const closeAll = async () => {
   for (let index = 0; index < 8 && (await page.$(modal)); index += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await pause(300);
     const leave = await page.$(`${top} [data-answer="yes"]`);
     if (leave && /Kaydetmeden|Çık/.test((await leave.textContent()) || "")) await leave.click();
@@ -190,6 +191,7 @@ const rcPreview = () =>
     const main = document.querySelector(`${selector} [data-rc-main]`);
     const text = node => node.textContent.replace(/\s+/g, " ").trim();
     return {
+      busy: main?.getAttribute("aria-busy") === "true",
       heads: [...(main?.querySelectorAll("thead th") || [])].map(text),
       rows: [...(main?.querySelectorAll("tbody tr") || [])].map(row => [...row.querySelectorAll("td")].map(text)).filter(cells => cells.length > 1),
       footer: main?.querySelector("tfoot tr") ? [...main.querySelectorAll("tfoot td")].map(text) : null,
@@ -199,7 +201,7 @@ const rcPreview = () =>
 const waitRc = async (check, ms = 8000) => {
   const deadline = Date.now() + ms;
   let last = await rcPreview();
-  while (!check(last) && Date.now() < deadline) {
+  while ((last.busy || !check(last)) && Date.now() < deadline) {
     await pause(250);
     last = await rcPreview();
   }

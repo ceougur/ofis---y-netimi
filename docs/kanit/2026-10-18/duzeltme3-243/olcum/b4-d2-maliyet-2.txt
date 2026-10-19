@@ -1,0 +1,24 @@
+== duzeltme3-243 N=1500 R=5000 (17:45:33)
+kayıt defteri 5000: 55108 ms
+1500 bekleyen kaydı: 127685 ms
+Gönderilecekler listesi: p50=97.5 ms max=139.9 ms
+Tümünü Gönder ilk 3 istek (süre/gönderilen): 4156ms/20 4422ms/20 4334ms/20
+Kaydet ve Gönder (bugün): p50=114.9 ms max=141.6 ms
+başka istemcinin basit isteği (kayıt sürerken): n=4 p50=4 ms max=6 ms
+çıkış=0
+== duzeltme3-243-eski-d64ebf8 N=1500 R=5000 (17:48:50)
+kayıt defteri 5000: 9915 ms
+1500 bekleyen kaydı: 118037 ms
+Gönderilecekler listesi: p50=88.5 ms max=116.6 ms
+Tümünü Gönder ilk 3 istek (süre/gönderilen): 40026ms/200 39076ms/200 37302ms/200
+Kaydet ve Gönder (bugün): p50=120.6 ms max=124.7 ms
+başka istemcinin basit isteği (kayıt sürerken): n=4 p50=22 ms max=25 ms
+çıkış=0
+== duzeltme3-243 N=1500 R=0 (17:52:57)
+kayıt defteri 0: 0 ms
+1500 bekleyen kaydı: 108786 ms
+Gönderilecekler listesi: p50=81.8 ms max=97.2 ms
+Tümünü Gönder ilk 3 istek (süre/gönderilen): 4144ms/20 3745ms/20 3792ms/20
+Kaydet ve Gönder (bugün): p50=98.9 ms max=102.0 ms
+başka istemcinin basit isteği (kayıt sürerken): n=4 p50=4 ms max=5 ms
+çıkış=0

@@ -1,0 +1,18 @@
+{
+ "ad": "kucuk-duzenle-ileri-tarih",
+ "tohum": 0,
+ "islem": 3,
+ "bugun": "2026-06-17",
+ "farkSayisi": 0,
+ "ihlalSayisi": 0,
+ "safModelSonFark": 0,
+ "farklar": [],
+ "ihlaller": [],
+ "catalSecimleri": [],
+ "eStatusDegerleri": {
+  "waiting": 3,
+  "sent": 2
+ },
+ "kucultulmus": null,
+ "sure": 1.5
+}

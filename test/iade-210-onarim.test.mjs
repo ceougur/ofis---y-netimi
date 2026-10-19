@@ -79,8 +79,10 @@ describe("2.1.0 Canlı Hata 2 — v2.0.26 verisinde yanlış büyümüş taksit 
   test("raporlar onarılan kartla: Alacak Yaşlandırma, ANLIK DURUM Geciken Alacak, Geciken Taksitler, cari kartı", async () => {
     const aging = await must("Alacak Yaşlandırma", api.get("/api/workspace/report-center/alacak-yaslandirma"));
     const row = name => money((aging.rows || []).find(r => r[0] === name)?.at(-1));
-    assert.deepEqual([row(cases.C.name), row(cases.B.name), row(cases.J.name), row(cases.D.name), row(cases.E.name), row(cases.KILIT.name)], [0, 0, 0, 1000, 500, 500]);
-    // Gecikmiş: D (1.000, vade T−20), E (500, T−20), KILIT (500, T−40). C'nin 500'ü (T−20) v2.0.26'da gecikmiş görünüyordu.
+    // 2.4.3 MM5 (bilerek): Alacak Yaşlandırma carinin dilimlerini borç bakiyesine eşitler (taksit kartı bakiyeyi aşarsa fazlası en eski kalemden
+    // düşer). KILIT'in carisi C gibi kapalı (doğrusu 0); kilitli dönem yüzünden onarılamayan kartı 500 kalsa da yaşlandırmada alacak 0 (önceden 500).
+    assert.deepEqual([row(cases.C.name), row(cases.B.name), row(cases.J.name), row(cases.D.name), row(cases.E.name), row(cases.KILIT.name)], [0, 0, 0, 1000, 500, 0]);
+    // Gecikmiş (ANLIK DURUM, taksit kartından): D (1.000, vade T−20), E (500, T−20), KILIT (500, T−40; kilitli kart). C'nin 500'ü (T−20) v2.0.26'da gecikmiş görünüyordu.
     const overview = await must("ANLIK DURUM", api.get("/api/workspace/overview"));
     assert.equal(overview.receivable.overdue, 2000);
     const late = await must("Geciken Taksitler", api.get("/api/workspace/report-center/geciken-taksitler"));

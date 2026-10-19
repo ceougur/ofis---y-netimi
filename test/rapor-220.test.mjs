@@ -99,9 +99,12 @@ describe("Kullanıcının senaryosu: 10 müşteri × 10.000, ilk taksitler öden
 
     const list = unwrap(await admin.get("/api/workspace/report-center/cari-listesi"));
     const summary = Object.fromEntries(list.summary);
-    assert.equal(tl(summary["Toplam Borç (Anlaşılan)"]), 100000);
-    assert.equal(tl(summary["Toplam Alacak (Ödenen)"]), 10000);
-    assert.equal(tl(summary["Kalan (Borçlu)"]), 90000);
+    // MM9 (2.4.3, bilerek güncellendi): adlar "Toplam Borç", "Toplam Alacak" ve "Net Bakiye (Müşteri Alacakları − Tedarikçi Borçları)"; tutarlar aynı.
+    assert.equal(tl(summary["Toplam Borç"]), 100000);
+    assert.equal(tl(summary["Toplam Alacak"]), 10000);
+    assert.equal(tl(summary["Net Bakiye (Müşteri Alacakları − Tedarikçi Borçları)"]), 90000);
+    assert.equal(tl(summary["Müşteri Alacakları (Borçlu Cariler)"]), 90000);
+    assert.equal(tl(summary["Tedarikçi Borçları (Alacaklı Cariler)"]), 0);
     const col = (report, header) => report.footer[report.headers.indexOf(header)];
     assert.equal(tl(col(list, "Borç")), 100000);
     assert.equal(tl(col(list, "Alacak")), 10000);

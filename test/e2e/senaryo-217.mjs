@@ -20,6 +20,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { buildXlsx } from "../../server/lib/xlsx-write.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-217");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -32,6 +33,8 @@ writeFileSync(excel, buildXlsx([{ name: "Müşteriler", columns: COLS, rows: [{ 
 const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f93" } });
 const { port } = await app.listen(0, "127.0.0.1");
 const BASE = `http://127.0.0.1:${port}`;
+// Ders 34: escClose günlüğüne o anki veri tabanı sayıları (soru çıktığında form gerçekten kaydedilmemiş mi).
+globalThis.__escKapatEk = () => ({ fatura: app.store.get("SELECT COUNT(*) AS n FROM invoices").n, cari: app.store.get("SELECT COUNT(*) AS n FROM accounts").n });
 const browser = await chromium.launch();
 const errors = [];
 const newPage = async () => {
@@ -85,7 +88,7 @@ const money = text => Number(String(text).replace(/[^\d,-]/g, "").replace(",", "
 const admin = await newPage();
 const closeAll = async () => {
   for (let i = 0; i < 8 && (await admin.$(modal)); i += 1) {
-    await admin.keyboard.press("Escape");
+    await escClose(admin);
     await admin.waitForTimeout(250);
   }
 };
@@ -137,7 +140,7 @@ try {
     await admin.waitForSelector(`${modal} .hof-mapping`, { timeout: 30000 });
     await Promise.all([admin.waitForEvent("load", { timeout: 30000 }), admin.click(`${modal} [data-mode="replace"]`)]);
     await admin.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 }).catch(() => null);
-    await admin.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]").catch(() => admin.keyboard.press("Escape"));
+    await admin.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]").catch(() => escClose(admin));
     await admin.goto(`${BASE}/`, { waitUntil: "load" });
     await admin.waitForSelector("#hof-sidecard [data-action=invoices]", { timeout: 20000 });
     ids.party = (await call(admin, "/api/workspace/accounts", { name: "Mehmet Eren Demir", type: "customer", phone: "0532 444 55 66" })).data.id;
@@ -400,7 +403,7 @@ try {
     const menuItems = await admin.$$eval("#hof-pages .hof-pages-menu [data-add-source] b", nodes => nodes.map(node => node.textContent));
     ok(menuItems.join("|") === "Excel'den Aktar|Google Sheets'ten Aktar|Boş Sayfa", `+ Sayfa menüsü: ${menuItems.join(" / ")}`);
     await shot(admin, "sayfa-seridi-menu");
-    await admin.keyboard.press("Escape");
+    await escClose(admin);
     const cashBefore = (await call(admin, "/api/workspace/cash")).data.totals.balance;
     const accountsBefore = (await call(admin, "/api/workspace/accounts")).data.accounts.length;
     // Yeni şirket seçiciden açılır ve seçilir; ekran o şirketle yeniden gelir.
@@ -423,7 +426,7 @@ try {
     await admin.waitForSelector("#hof-company .hof-session-menu:not([hidden])");
     ok(!(await admin.$("#hof-company [data-new]")), "2 şirketle seçicide + Yeni Şirket yok");
     await shot(admin, "sirket-siniri-secici");
-    await admin.keyboard.press("Escape");
+    await escClose(admin);
     // Sol alttaki senkron kartında şirket satırı.
     const line = await admin.$eval(".sync-card .hof-company-line", node => node.textContent).catch(() => "");
     ok(/^002 · /.test(line), `senkron kartında şirket satırı “${line}”`);

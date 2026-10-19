@@ -1,0 +1,68 @@
+TAP version 13
+# Subtest: gg243 dar kontrol: Stok Excel — tanınmayan KDV yalnız aktarılan satırda sayılır, korunan oran 'boş bırakıldı' denmez
+    # Subtest: atla kipi: zaten var olan satırlar atlanır; 'KDV Oranı tanınmadı' sayılmaz
+    not ok 1 - atla kipi: zaten var olan satırlar atlanır; 'KDV Oranı tanınmadı' sayılmaz
+      ---
+      duration_ms: 9.866662
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-stok.test.mjs:43:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        atlanan satır KDV sayımına girmez (0 ürün açıldı. 3 satır atlandı (Bu ürün zaten var). 2 satırda KDV Oranı tanınmadı, boş bırakıldı (faturada seçilir; %0, %1, %10, %20 olabilir).)
+        
+        2 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 2
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-stok.test.mjs:47:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: güncelle kipi: kayıtlı KDV'si olan üründe 'korundu', olmayanda 'boş bırakıldı'; oranlar değişmez
+    not ok 2 - güncelle kipi: kayıtlı KDV'si olan üründe 'korundu', olmayanda 'boş bırakıldı'; oranlar değişmez
+      ---
+      duration_ms: 22.926432
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-stok.test.mjs:53:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Somun: kayıtlı %10 korundu (0 ürün açıldı, 3 ürün güncellendi. 2 satırda KDV Oranı tanınmadı, boş bırakıldı (faturada seçilir; %0, %1, %10, %20 olabilir).)
+        
+        undefined !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-stok.test.mjs:57:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - gg243 dar kontrol: Stok Excel — tanınmayan KDV yalnız aktarılan satırda sayılır, korunan oran 'boş bırakıldı' denmez
+  ---
+  duration_ms: 626.052596
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme2-243-eski-d64ebf8/test/gg243-dar-kontrol-stok.test.mjs:12:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1189.830858

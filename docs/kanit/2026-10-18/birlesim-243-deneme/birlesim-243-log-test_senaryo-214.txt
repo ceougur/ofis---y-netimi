@@ -1,0 +1,70 @@
+
+■ Kurulum: yönetici girer, Excel yüklenir; cariler, taksit kartları, ürünler ve evrak açılır
+✓ cari: Fırat Otomotiv İnşaat
+✓ cari: Fırat Otomotiv Gıda
+✓ cari: Fırat Otomotiv Ticaret
+✓ cari: Cumhur Bozkaya
+✓ taksit kartı: Fırat Otomotiv İnşaat
+✓ taksit kartı: Fırat Otomotiv Gıda
+✓ taksit kartı: Cumhur Bozkaya
+✓ ürün: Fırça
+✓ ürün: Fırın Eldiveni
+✓ ürün: Zımba Teli
+✓ çek: Fırat Otomotiv İnşaat
+✓ çek: Cumhur Bozkaya
+✓ kayda bağlı cari: Ada Yılmaz
+
+■ 1. Cari arama kutusu: harf harf yazarken odak düşmez; yazarken başka kullanıcı cari açsa da düşmez
+✓ Cari → Ara: "fırat" kesintisiz yazıldı (odak, değer ve imleç her harfte yerinde)
+✓ liste süzüldü: 3 Fırat
+✓ Cari → Ara (canlı yenileme sırasında): "fırat" kesintisiz yazıldı (odak, değer ve imleç her harfte yerinde)
+✓ canlı yenilemeden sonra da 3 Fırat
+✓ yazdıktan sonra gelen canlı yenileme: odak ve "fırat" yerinde (odak=true, değer="fırat")
+
+■ 2. Taksitler ve Stok arama kutuları
+✓ Taksitler → Ara: "fırat" kesintisiz yazıldı (odak, değer ve imleç her harfte yerinde)
+✓ 2 Fırat kartı listelendi
+✓ Stok → Ara: "fır" kesintisiz yazıldı (odak, değer ve imleç her harfte yerinde)
+✓ 2 ürün (Fırça, Fırın Eldiveni)
+
+■ 3. Çek / Senet: yazıp Enter ile süzünce odak kutuda kalır
+✓ Çek / Senet → Ara: "cumhur" kesintisiz yazıldı (odak, değer ve imleç her harfte yerinde)
+✓ Enter'dan sonra odak kutuda, değer "cumhur" (odak=true)
+✓ 1 evrak süzüldü
+✓ canlı yenileme Çek / Senet aramasını bozmadı
+
+■ 4. Raporlar: Cari Ekstre araması (Enter) ve Tüm Raporlar araması
+✓ Raporlar → Cari Ekstre → Cari Ara: "fırat" kesintisiz yazıldı (odak, değer ve imleç her harfte yerinde)
+✓ Enter ile rapor yenilendi; odak arama kutusunda (odak=true, değer="fırat")
+✓ mizan süzüldü: 2 Fırat satırı (hareketsiz üçüncü cari gizli)
+✓ Raporlar → Tüm Raporlar → Rapor Ara: "kasa" kesintisiz yazıldı (odak, değer ve imleç her harfte yerinde)
+✓ rapor listesi süzüldü
+
+■ 5. Sohbet kişi arama ve toplu taksitlendirme cari seçici
+✓ Sohbet → Kişi Ara: "ofis" kesintisiz yazıldı (odak, değer ve imleç her harfte yerinde)
+✓ Taksitler → Cari Seç → Ara: "fırat" kesintisiz yazıldı (odak, değer ve imleç her harfte yerinde)
+✓ seçici listesi süzüldü
+
+■ 6. Ana tablo arama kutusu
+✓ Ana tablo → Ara: "ada" kesintisiz yazıldı (odak, değer ve imleç her harfte yerinde)
+✓ tablo 1 kayda süzüldü (Ada Yılmaz)
+
+■ 7. Detay panelinde CARİ pili yok (2.0.18); Taksit Kartını Aç: açılır, kapanınca odak düğmeye döner
+✓ detay kartında CARİ kutusu / Cari Kartı pili yok
+✓ Ada'ya taksit kartı açıldı
+✓ Taksit Kartını Aç çalışıyor
+✓ kapanınca odak Taksit Kartını Aç düğmesine döndü (odak: button.hof-button.hof-button-small.hof-button-ghost)
+
+■ 8. Pencere odağı: ilk alana odak, Tab kapanı, bildirim odağı çalmaz, kapanınca odak açan düğmeye döner
+✓ Cari penceresi açılınca odak arama kutusunda
+✓ bildirim (toast) odağı çalmadı
+✓ Shift+Tab pencere içinde kalır (Tab kapanı)
+✓ kapanınca odak sol menüdeki Cari düğmesine döndü (odak: button.hof-side-item)
+✓ Yeni Cari formu → Ad Soyad (canlı yenileme sırasında): "deneme" kesintisiz yazıldı (odak, değer ve imleç her harfte yerinde)
+
+■ 9. Sohbet yazma kutusu: yazarken başka kullanıcıdan mesaj gelse de odak ve metin korunur
+✓ Ofis Geneli sohbeti var
+✓ Sohbet → mesaj yazma (gelen mesaj sırasında): "merhaba" kesintisiz yazıldı (odak, değer ve imleç her harfte yerinde)
+✓ gelen mesaj iş parçacığına düştü (yazma kutusu bozulmadan)
+
+48 / 48 kontrol geçti.

@@ -1,0 +1,9 @@
+M1 geçmişe cari satırı girmez: çıkış 1, kırmızı test 4 -> YAKALANDI
+M2 cari tahsilatı toplama girmez: çıkış 1, kırmızı test 4 -> YAKALANDI
+M3 ödeme işareti ters: çıkış 1, kırmızı test 1 -> YAKALANDI
+M4 bağ kaynağı denetlenmez (bağsız cari de girer): çıkış 1, kırmızı test 2 -> YAKALANDI
+M5 rapor bağlı cariyi almaz: çıkış 1, kırmızı test 1 -> YAKALANDI
+M6 rapor bağsız cariyi de alır: çıkış 1, kırmızı test 1 -> YAKALANDI
+M7 deleteBlock kartta boş: çıkış 1, kırmızı test 1 -> YAKALANDI
+M8 TOPLAM satırı yok: çıkış 1, kırmızı test 1 -> YAKALANDI
+M9 TOPLAM alacak = borç: çıkış 1, kırmızı test 1 -> YAKALANDI

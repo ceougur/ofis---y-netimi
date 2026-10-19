@@ -1,0 +1,650 @@
+{
+ "ad": "ebelge-t2-i100",
+ "tohum": 2,
+ "islem": 100,
+ "bugun": "2026-06-17",
+ "farkSayisi": 1,
+ "ihlalSayisi": 4,
+ "safModelSonFark": 14,
+ "farklar": [
+  {
+   "belge": "B14",
+   "alan": "numara",
+   "model": "",
+   "program": "TEA2026000000003",
+   "adim": 47,
+   "islem": "kaydet",
+   "sinif": "TUTMA-YOK (eski gönderilebilir bekleyen B9 varken yeni belge numaralandı)"
+  }
+ ],
+ "ihlaller": [
+  {
+   "adim": 13,
+   "islem": "esz_tumunu_gonder",
+   "kod": "I15",
+   "ileti": "B3: eşzamanlı turda gönderilen belge için hata yanıtı (einvoice-sending)",
+   "yineleme": 0,
+   "belge": "B3",
+   "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"
+  },
+  {
+   "adim": 72,
+   "islem": "esz_tumunu_gonder",
+   "kod": "I15",
+   "ileti": "B28: eşzamanlı turda gönderilen belge için hata yanıtı (einvoice-sending)",
+   "yineleme": 0,
+   "belge": "B28",
+   "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"
+  },
+  {
+   "adim": 72,
+   "islem": "esz_tumunu_gonder",
+   "kod": "I15",
+   "ileti": "B11: eşzamanlı turda gönderilen belge için hata yanıtı (einvoice-sending)",
+   "yineleme": 0,
+   "belge": "B11",
+   "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"
+  },
+  {
+   "adim": 93,
+   "islem": "tur_sirasinda_sil",
+   "kod": "I2",
+   "ileti": "FIS2026: 5 (B35, 2026-06-21) önceki 4 (B26, 2026-06-24) belgesinden eski tarihli",
+   "yineleme": 7,
+   "seri": "FIS2026",
+   "belge": "B35",
+   "sinif": "BASKA-FIS-SIRA (Listeden Sil eski tarihli belgeye FIS numarası verdi)"
+  }
+ ],
+ "catalSecimleri": [
+  {
+   "adim": 1,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 2,
+   "aday": 2,
+   "secilen": [
+    "B2: Kaydet ve Gönder reddedildi (alici-efatura)"
+   ]
+  },
+  {
+   "adim": 6,
+   "aday": 3,
+   "secilen": [
+    "B1: tur sırasında silindi",
+    "B1: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 8,
+   "aday": 2,
+   "secilen": [
+    "B1: gönderilemedi, liste dışında kaldı"
+   ]
+  },
+  {
+   "adim": 17,
+   "aday": 2,
+   "secilen": [
+    "B4: gönderilmiş belgenin iptali reddedildi"
+   ]
+  },
+  {
+   "adim": 18,
+   "aday": 2,
+   "secilen": [
+    "B6: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 28,
+   "aday": 2,
+   "secilen": [
+    "B3: gönderilmiş belgenin iptali reddedildi"
+   ]
+  },
+  {
+   "adim": 37,
+   "aday": 2,
+   "secilen": [
+    "B1: numaralı belgenin tarih düzenlemesi reddedildi"
+   ]
+  },
+  {
+   "adim": 40,
+   "aday": 3,
+   "secilen": [
+    "B11: geçici hata, numara korundu, gitmedi"
+   ]
+  },
+  {
+   "adim": 41,
+   "aday": 2,
+   "secilen": [
+    "B5: numaralı belgenin tarih düzenlemesi reddedildi"
+   ]
+  },
+  {
+   "adim": 42,
+   "aday": 2,
+   "secilen": [
+    "B12: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 43,
+   "aday": 2,
+   "secilen": [
+    "B4: gönderilmiş belgenin iptali reddedildi"
+   ]
+  },
+  {
+   "adim": 50,
+   "aday": 2,
+   "secilen": [
+    "B8: gönderilmiş belgenin iptali reddedildi"
+   ]
+  },
+  {
+   "adim": 52,
+   "aday": 2,
+   "secilen": [
+    "B16: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 53,
+   "aday": 2,
+   "secilen": [
+    "B1: gönderilemedi, liste dışında kaldı"
+   ]
+  },
+  {
+   "adim": 55,
+   "aday": 2,
+   "secilen": [
+    "B19: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 60,
+   "aday": 3,
+   "secilen": [
+    "B11: geçici hata, numara korundu, gitmedi"
+   ]
+  },
+  {
+   "adim": 62,
+   "aday": 2,
+   "secilen": [
+    "B23: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 63,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 65,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 68,
+   "aday": 2,
+   "secilen": [
+    "B27: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 73,
+   "aday": 2,
+   "secilen": [
+    "B24: tarih sırasına uymayan düzenleme reddedildi"
+   ]
+  },
+  {
+   "adim": 75,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 77,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 80,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 81,
+   "aday": 3,
+   "secilen": [
+    "B33: kopma_sonra, edm=True, program=False"
+   ]
+  },
+  {
+   "adim": 83,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 84,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 92,
+   "aday": 2,
+   "secilen": [
+    "B37: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 93,
+   "aday": 3,
+   "secilen": [
+    "B35: tur sırasında silindi",
+    "B35: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 94,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 96,
+   "aday": 2,
+   "secilen": [
+    "B39: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 97,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 98,
+   "aday": 2,
+   "secilen": [
+    "B41: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  }
+ ],
+ "eStatusDegerleri": {
+  "waiting": 380,
+  "withdrawn": 168,
+  "sent": 792,
+  "none": 162,
+  "error": 36,
+  "processing": 83
+ },
+ "kucultulmus": [
+  {
+   "imza": "ihlal:I15",
+   "sinif": "BASKA-ESZ",
+   "kosu": 16,
+   "adimlar": [
+    {
+     "islem": "kaydet",
+     "belge": "B3",
+     "cari": "K2",
+     "tarih": "2026-06-17",
+     "gonder": "sonra",
+     "no": 1
+    },
+    {
+     "islem": "esz_tumunu_gonder",
+     "no": 2
+    }
+   ],
+   "sorunlar": [
+    {
+     "adim": 2,
+     "islem": "esz_tumunu_gonder",
+     "kod": "I15",
+     "ileti": "B3: eşzamanlı turda gönderilen belge için hata yanıtı (einvoice-sending)",
+     "yineleme": 0,
+     "belge": "B3",
+     "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"
+    }
+   ]
+  },
+  {
+   "imza": "fark:numara",
+   "sinif": "TUTMA-YOK",
+   "kosu": 40,
+   "adimlar": [
+    {
+     "islem": "gun_ilerlet",
+     "gun": 3,
+     "no": 1
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B9",
+     "cari": "K1",
+     "tarih": "2026-06-20",
+     "gonder": "sonra",
+     "no": 2
+    },
+    {
+     "islem": "gun_ilerlet",
+     "gun": 1,
+     "no": 3
+    },
+    {
+     "islem": "duzenle_tarih",
+     "belge": "B1",
+     "tarih": "2026-06-21",
+     "no": 4
+    },
+    {
+     "islem": "gun_ilerlet",
+     "gun": 1,
+     "no": 5
+    },
+    {
+     "islem": "ariza",
+     "tur": "kopma_once",
+     "no": 6
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B14",
+     "cari": "K5",
+     "tarih": "2026-06-22",
+     "gonder": "simdi",
+     "no": 7
+    }
+   ],
+   "sorunlar": [
+    {
+     "belge": "B14",
+     "alan": "numara",
+     "model": "",
+     "program": "TEA2026000000001",
+     "adim": 7,
+     "islem": "kaydet",
+     "sinif": "TUTMA-YOK (eski gönderilebilir bekleyen B9 varken yeni belge numaralandı)"
+    }
+   ]
+  },
+  {
+   "imza": "ihlal:I2",
+   "sinif": "BASKA-FIS-SIRA",
+   "kosu": 40,
+   "adimlar": [
+    {
+     "islem": "iptal",
+     "belge": "B4",
+     "no": 1
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B6",
+     "cari": "K2",
+     "tarih": "2026-06-14",
+     "gonder": "simdi",
+     "no": 2
+    },
+    {
+     "islem": "gun_ilerlet",
+     "gun": 3,
+     "no": 3
+    },
+    {
+     "islem": "ag",
+     "durum": "yok",
+     "no": 4
+    },
+    {
+     "islem": "listeden_sil",
+     "belge": "B2",
+     "no": 5
+    },
+    {
+     "islem": "ag",
+     "durum": "var",
+     "no": 6
+    },
+    {
+     "islem": "gun_ilerlet",
+     "gun": 2,
+     "no": 7
+    },
+    {
+     "islem": "tumunu_gonder",
+     "kapsam": "hepsi",
+     "no": 8
+    },
+    {
+     "islem": "tumunu_gonder",
+     "kapsam": "hepsi",
+     "no": 9
+    },
+    {
+     "islem": "listeden_sil",
+     "belge": "B2",
+     "no": 10
+    },
+    {
+     "islem": "tumunu_gonder",
+     "kapsam": "hepsi",
+     "no": 11
+    },
+    {
+     "islem": "esz_tumunu_gonder",
+     "no": 12
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B8",
+     "cari": "K2",
+     "tarih": "2026-06-18",
+     "gonder": "simdi",
+     "no": 13
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B9",
+     "cari": "K1",
+     "tarih": "2026-06-20",
+     "gonder": "sonra",
+     "no": 14
+    },
+    {
+     "islem": "gun_ilerlet",
+     "gun": 1,
+     "no": 15
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B12",
+     "cari": "K3",
+     "tarih": "2026-06-19",
+     "gonder": "simdi",
+     "no": 16
+    },
+    {
+     "islem": "iptal",
+     "belge": "B4",
+     "no": 17
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B13",
+     "cari": "K2",
+     "tarih": "2026-06-23",
+     "gonder": "sonra",
+     "no": 18
+    },
+    {
+     "islem": "gun_ilerlet",
+     "gun": 1,
+     "no": 19
+    },
+    {
+     "islem": "ariza",
+     "tur": "kopma_once",
+     "no": 20
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B14",
+     "cari": "K5",
+     "tarih": "2026-06-22",
+     "gonder": "simdi",
+     "no": 21
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B15",
+     "cari": "K1",
+     "tarih": "2026-06-24",
+     "gonder": "sonra",
+     "no": 22
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B16",
+     "cari": "K4",
+     "tarih": "2026-06-24",
+     "gonder": "sonra",
+     "no": 23
+    },
+    {
+     "islem": "iptal",
+     "belge": "B8",
+     "no": 24
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B17",
+     "cari": "K1",
+     "tarih": "2026-06-24",
+     "gonder": "sonra",
+     "no": 25
+    },
+    {
+     "islem": "listeden_sil",
+     "belge": "B16",
+     "no": 26
+    },
+    {
+     "islem": "kart_gonder",
+     "belge": "B1",
+     "no": 27
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B18",
+     "cari": "K2",
+     "tarih": "2026-06-24",
+     "gonder": "sonra",
+     "no": 28
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B19",
+     "cari": "K1",
+     "tarih": "2026-06-20",
+     "gonder": "simdi",
+     "no": 29
+    },
+    {
+     "islem": "ariza",
+     "tur": "kopma_sonra",
+     "no": 30
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B35",
+     "cari": "K5",
+     "tarih": "2026-06-21",
+     "gonder": "sonra",
+     "no": 31
+    },
+    {
+     "islem": "duzenle_tur",
+     "belge": "B9",
+     "profil": "TEMELFATURA",
+     "no": 32
+    },
+    {
+     "islem": "kart_gonder",
+     "belge": "B35",
+     "no": 33
+    },
+    {
+     "islem": "tumunu_gonder",
+     "kapsam": "secili",
+     "belgeler": [
+      "B24",
+      "B27",
+      "B6"
+     ],
+     "no": 34
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B36",
+     "cari": "K4",
+     "tarih": "2026-06-26",
+     "gonder": "sonra",
+     "no": 35
+    },
+    {
+     "islem": "iptal",
+     "belge": "B23",
+     "no": 36
+    },
+    {
+     "islem": "duzenle_tarih",
+     "belge": "B7",
+     "tarih": "2026-06-13",
+     "no": 37
+    },
+    {
+     "islem": "duzenle_tarih",
+     "belge": "B14",
+     "tarih": "2026-06-25",
+     "no": 38
+    },
+    {
+     "islem": "kaydet",
+     "belge": "B37",
+     "cari": "K2",
+     "tarih": "2026-06-25",
+     "gonder": "simdi",
+     "no": 39
+    },
+    {
+     "islem": "tur_sirasinda_sil",
+     "belge": "B35",
+     "no": 40
+    }
+   ],
+   "sorunlar": [
+    {
+     "adim": 40,
+     "islem": "tur_sirasinda_sil",
+     "kod": "I2",
+     "ileti": "FIS2026: 2 (B35, 2026-06-21) önceki 1 (B16, 2026-06-24) belgesinden eski tarihli",
+     "yineleme": 0,
+     "seri": "FIS2026",
+     "belge": "B35",
+     "sinif": "BASKA-FIS-SIRA (Listeden Sil eski tarihli belgeye FIS numarası verdi)"
+    }
+   ]
+  }
+ ],
+ "sure": 291.3
+}

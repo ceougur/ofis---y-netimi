@@ -1,0 +1,25 @@
+temel (bozulmamış model): 46 test, 0 kırmızı
+M1 bekletme yok (K8)                                           ÖLDÜ       (5/46 test kırmızı: test_gecici_hata_numara_birakilirsa_eski_bekletir_K13_K8, test_kartta_gonder_eski_bekleyen_varken_numarasiz_K8, test_kaydet_ve_gonder_eski_bekleyen_varken_numarasiz_K8 …)
+M2 kalıcı engelli de bekletir (O1 benzeri, K9)                 ÖLDÜ       (3/46 test kırmızı: test_alici_mukellef_eArsiv_bekletmez_gitmez_K3_K9, test_pk_yok_tarih_engelliyse_bekletmez_K6_K9, test_eski_tarihli_bekleyen_gonderilemez_ve_bekletmez_K6_K9)
+M2b PK'sız (geçici engel) bekletmez (K9, 18.10 kararı)         ÖLDÜ       (1/46 test kırmızı: test_pk_yok_gecici_engel_bekletir_K2_K9)
+M3 PK'sız e-Fatura engel sayılmaz (K2)                         ÖLDÜ       (1/46 test kırmızı: test_pk_yok_gecici_engel_bekletir_K2_K9)
+M4 mükellefe e-Arşiv engel sayılmaz (K3)                       ÖLDÜ       (1/46 test kırmızı: test_alici_mukellef_eArsiv_bekletmez_gitmez_K3_K9)
+M5 tarih engeli yok (K6)                                       ÖLDÜ       (4/46 test kırmızı: test_pk_yok_tarih_engelliyse_bekletmez_K6_K9, test_rastgele_senaryolarda_degismezler, test_eski_tarihli_bekleyen_gonderilemez_ve_bekletmez_K6_K9 …)
+M6 tur yeniden eskiye (K10)                                    ÖLDÜ       (3/46 test kırmızı: test_ayni_tarihte_yazim_sirasi_K10, test_iki_seri_ayri_K4, test_tumunu_gonder_eskiden_yeniye_K10)
+M7 seri boşluklu (K5)                                          ÖLDÜ       (10/46 test kırmızı: test_gecici_hata_numara_korunursa_ayni_numarayla_gider_K13, test_pk_yok_tarih_engelliyse_bekletmez_K6_K9, test_gonderilmis_eArsiv_8_gun_icinde_iptal_numara_korunur_K22 …)
+M8 yıl ayrımı yok (K5)                                         ÖLDÜ       (3/46 test kırmızı: test_onceki_yil_bekletmez_K8, test_yil_basinda_sira_1den_K5, test_rastgele_senaryolarda_degismezler)
+M9 silinen de bekleyen sayılır (K7)                            ÖLDÜ       (2/46 test kırmızı: test_rastgele_senaryolarda_degismezler, test_listeden_silinen_turda_gitmez_kartta_gider_K7_K18)
+M10 iptal işlenmez (K24)                                       ÖLDÜ       (3/46 test kırmızı: test_gonderilmis_eArsiv_8_gun_icinde_iptal_numara_korunur_K22, test_gonderilmis_eFatura_iptali_catal_K23, test_iptal_edilen_numara_almaz_gitmez_K24)
+M11 Listeden Sil işlenmez (K7)                                 ÖLDÜ       (3/46 test kırmızı: test_listeden_silinen_bekletmez_K9, test_gonderilmis_listeden_silinmez_K20, test_listeden_silinen_turda_gitmez_kartta_gider_K7_K18)
+M12 gönderilmiş belge düzenlenir (K25)                         ÖLDÜ       (2/46 test kırmızı: test_gonderilmis_belge_duzenlenmez_K25_K27, test_rastgele_senaryolarda_degismezler)
+M13 ileri tarih kabul (K16)                                    ÖLDÜ       (1/46 test kırmızı: test_ileri_tarih_reddedilir_K16)
+M14 Durum Sorgula işlemez (K28)                                ÖLDÜ       (1/46 test kırmızı: test_durum_sorgula_K28)
+M15 seçili tur hepsini gönderir (K10)                          ÖLDÜ       (1/46 test kırmızı: test_secili_turda_secilmeyen_eski_bekletir_K8)
+M16 ağ yokken de numara/gönderim (K12)                         ÖLDÜ       (1/46 test kırmızı: test_ag_yokken_numara_yok_tur_durur_K12)
+M17 kopmada numara bırakılır (K14)                             ÖLDÜ       (3/46 test kırmızı: test_gecici_hata_catallari_K13, test_kopma_sonra_zaten_gonderildi_hata_degil_K11_K14, test_kopmada_edm_varsa_numara_birakilmaz_K14)
+M18 engelli belge de gönderilir (K2/K3)                        ÖLDÜ       (3/46 test kırmızı: test_alici_mukellef_eArsiv_bekletmez_gitmez_K3_K9, test_pk_yok_gecici_engel_bekletir_K2_K9, test_rastgele_senaryolarda_degismezler)
+M19 'zaten gönderildi' yeni numarayla yeniden gönderilir (K11) ÖLDÜ       (1/46 test kırmızı: test_kopma_sonra_zaten_gonderildi_hata_degil_K11_K14)
+M20 numara biçimi 8 hane sıra (K5)                             ÖLDÜ       (25/46 test kırmızı: test_ag_yokken_numara_yok_tur_durur_K12, test_gecici_hata_catallari_K13, test_gecici_hata_numara_korunursa_ayni_numarayla_gider_K13 …)
+# tests 21
+# pass 21
+# fail 0

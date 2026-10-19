@@ -16,6 +16,7 @@ import path from "node:path";
 import { chromium } from "playwright";
 import { CURRENT, bootVersion } from "../guvenilirlik/surumler.mjs";
 import { ADMIN_PASSWORD, installPageClock } from "../helpers.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const PASS = "Personel-2026!";
 const pad = n => String(n).padStart(2, "0");
@@ -75,7 +76,7 @@ const num = text => Number(String(text || "").replace(/[^\d,-]/g, "").replace(/\
 const kurus = value => Math.round(Number(value) * 100);
 const closeAll = async page => {
   for (let index = 0; index < 8 && (await page.$(modal)); index += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await page.waitForTimeout(250);
   }
 };
@@ -126,6 +127,7 @@ const rcPreview = page =>
     const main = document.querySelector(`${selector} [data-rc-main]`);
     const text = node => node.textContent.replace(/\s+/g, " ").trim();
     return {
+      busy: main?.getAttribute("aria-busy") === "true",
       heads: [...(main?.querySelectorAll("thead th") || [])].map(text),
       rows: [...(main?.querySelectorAll("tbody tr") || [])].map(row => [...row.querySelectorAll("td")].map(text)).filter(cells => cells.length > 1),
       footer: main?.querySelector("tfoot tr") ? [...main.querySelectorAll("tfoot td")].map(text) : null,
@@ -135,7 +137,7 @@ const rcPreview = page =>
 const waitRc = async (page, check, ms = 8000) => {
   const deadline = Date.now() + ms;
   let last = await rcPreview(page);
-  while (!check(last) && Date.now() < deadline) {
+  while ((last.busy || !check(last)) && Date.now() < deadline) {
     await page.waitForTimeout(250);
     last = await rcPreview(page);
   }
@@ -314,7 +316,9 @@ try {
   // Karar 15.10.2026: "Vade Gecikme (Gün)" kolonu ve "Şüpheli Alacak (dilimlere dahil)" başlığı.
   rc = await waitRc(page, view => /Alacak Yaşlandırma/.test(view.text) && view.heads.includes("Şüpheli Alacak (dilimlere dahil)") && view.heads.includes("Vade Gecikme (Gün)"));
   const agingRow = rc.rows.find(cells => cells[0] === "İcralık Müşteri");
-  ok(agingRow && kurus(num(agingRow[rc.heads.indexOf("Şüpheli Alacak (dilimlere dahil)")])) === 200000 && kurus(num(agingRow[rc.heads.indexOf("Toplam")])) === 0 && agingRow[rc.heads.indexOf("Vade Gecikme (Gün)")] === "", `Alacak Yaşlandırma: Şüpheli Alacak (dilimlere dahil) 2.000, Toplam 0, Vade Gecikme boş (${agingRow?.join(" | ")})`);
+  // 2.4.3 MM5 (bilerek güncellendi; kullanıcı kararı 18.10.2026): şüphelinin altındaki faturasız borç hareket tarihiyle dilime girer — kolon adı "dilimlere
+  // dahil" artık doğru; Toplam carinin borç bakiyesi (2.000; şüpheli ikinci kez eklenmez). Borç bugün tarihli: Vadesi Gelmemiş, Vade Gecikme boş.
+  ok(agingRow && kurus(num(agingRow[rc.heads.indexOf("Şüpheli Alacak (dilimlere dahil)")])) === 200000 && kurus(num(agingRow[rc.heads.indexOf("Faturasız Alacak (dilimlere dahil)")])) === 200000 && kurus(num(agingRow[rc.heads.indexOf("Toplam")])) === 200000 && agingRow[rc.heads.indexOf("Vade Gecikme (Gün)")] === "", `Alacak Yaşlandırma: Şüpheli Alacak (dilimlere dahil) 2.000, Faturasız 2.000, Toplam 2.000, Vade Gecikme boş (${agingRow?.join(" | ")})`);
 
   await page.click(`${modal} [data-rc-list] [data-report="hesap-mizani"]`);
   rc = await waitRc(page, view => /Hesap Planı Mizanı/.test(view.text) && view.rows.some(cells => cells[0] === "128"));

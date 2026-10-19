@@ -1255,6 +1255,55 @@ export const MIGRATIONS = [
       });
     },
   },
+  {
+    version: 28,
+    name: "v2.4.3 stok kartında KDV oranı (isteğe bağlı)",
+    up(store) {
+      // Fatura hız testi H8 (17.10.2026): KDV oranı stok kartında yoktu, her kalemde elle seçiliyordu. Faturada ürün seçilince kalemin KDV'si karttan
+      // önerilir (kullanıcı değiştirebilir). YALNIZ EKLEYİCİ: varsayılan NULL = tanımsız (bugünkü davranış: formun varsayılan oranı); eski sürüm aynı
+      // dosyayı okur, kolonu görmez; mutabakat kapısı stock_items'ın yalnız kind / deleted_at'ine bakar (para alanı değil).
+      store.raw("migration.v28", () => addColumn(store, "stock_items", "vat_rate", "REAL"));
+    },
+  },
+  {
+    version: 29,
+    name: "v2.4.3 iade e-Belgesinde asıl faturanın e-Belge referansı",
+    up(store) {
+      // Dar kontrol 2 (MM1, mali müşavir): kâğıt (16 karakter olmayan) numaralı asıl faturanın iadesi e-Belge olarak kesilemiyordu (GİB şematronu
+      // BillingReference/ID uzunluğu 16). İade formunda "İade Edilen Belge No (e-Belge Referansı)": asıl numara 16 karakter değilse tamamlanmış değer
+      // önerilir, kullanıcı onaylar; asıl kayıt değişmez. YALNIZ EKLEYİCİ: varsayılan boş = asıl faturanın numarası (bugünkü davranış); eski sürüm aynı
+      // dosyayı okur, kolonu görmez; mutabakat kapısı ve kilit izi invoices'ın bu kolonunu okumaz (para alanı değil).
+      store.raw("migration.v29", () => {
+        if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'invoices'")) addColumn(store, "invoices", "return_ref", "TEXT NOT NULL DEFAULT ''");
+      });
+    },
+  },
+  {
+    version: 30,
+    name: "v2.4.3 defter: stok açılışı işareti (B 153 / A 500), Kasa'dan vergi ödemesi, KDV mahsup fişi",
+    up(store) {
+      // Uzman mali müşavir MM4 (kullanıcı kararı 18.10.2026): ürün kartındaki açılış stoku ve Excel'den ürün yüklemedeki miktar (elde olan stok; para
+      // yazılmaz) Ana Defter'e açılış fişi olarak girer: B 153 / A 500 (miktar × birim fiyat) — Kasa, banka, cari ve taksit açılışlarıyla aynı karşı hesap.
+      // Açılış İŞARETTEN tanınır (Kasa açılışı göç 22 gibi; Yargıç 2.2.0 Y2/Y3: metinden değil). Kullanıcı kararı gereği ESKİ verideki açılışlar da
+      // mizana gelir: programın kendi yazdığı açılış hareketleri (giriş, yalnız miktar, faturasız, iadesiz; açıklaması programın yazdığı "Açılış stoku" ya
+      // da "Açılış stoku (Excel)") bir kez işaretlenir. Kilit izi (LOCK_SQL stock_moves) kolonu okumaz: iz değişmez; kapanmış dönemin mizanında 153 / 500
+      // açılış kadar değişir (bilinçli, kullanıcı kararı). Eski sürüm (2.4.2) kolonu görmez; açtığı yeni açılış işaretsiz kalır.
+      store.raw("migration.v30", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'stock_moves'")) return;
+        addColumn(store, "stock_moves", "is_opening", "INTEGER NOT NULL DEFAULT 0");
+        const invoiceCol = store.all("PRAGMA table_info(stock_moves)").some(column => column.name === "invoice_id") ? "AND invoice_id = ''" : "";
+        const reasonCol = store.all("PRAGMA table_info(stock_moves)").some(column => column.name === "reason") ? "AND reason = ''" : "";
+        store.run(`UPDATE stock_moves SET is_opening = 1 WHERE kind = 'in' AND pay = 'none' ${invoiceCol} ${reasonCol} AND note IN ('Açılış stoku', 'Açılış stoku (Excel)')`);
+      });
+      // MM3 (kullanıcı kararı 18.10.2026): Vergi Ödemesi ve KDV Mahsup Fişi. YALNIZ EKLEYİCİ: Kasa'dan nakit vergi ödemesinin satırı (cash_entries)
+      // vergi türünü ve gecikme zammını taşır (tax_json; boş = sıradan Kasa çıkışı, 770 — eski satırlar değişmez). KDV mahsup fişleri ayrı tabloda
+      // (para satırı değil; yevmiye B 391 / A 191 / A 190 / A 360 ya da B 190 — lib/general-ledger.mjs). Eski sürüm kolonu ve tabloyu görmez.
+      store.raw("migration.v30.tax", () => {
+        if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cash_entries'")) addColumn(store, "cash_entries", "tax_json", "TEXT NOT NULL DEFAULT ''");
+        store.exec(VAT_OFFSETS_SCHEMA_V29);
+      });
+    },
+  },
 ];
 
 // 2.3.0 İz 1: şüpheli alacak kaydı (cari, tarih, tutar, neden, karşılıksız evrak; open → released | cancelled; İşlem No'lu başlık) ve karşılık
@@ -1277,6 +1326,19 @@ const DOUBTFUL_SCHEMA_V23 = `
     created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
   ) STRICT;
   CREATE INDEX IF NOT EXISTS idx_doubtful_provisions_record ON doubtful_provisions(doubtful_id, date);
+`;
+
+// 2.4.3 MM3: KDV mahsup fişi (ay başına en çok bir etkin). Tutarlar kuruş; out = ayın 391 (hesaplanan, alacak neti), in = ayın 191 (indirilecek, borç neti),
+// carry_in = kullanılan önceki devreden (190), carry_out = yeni devreden (190), payable = ödenecek KDV (360). Geri alma: status 'reversed' (yevmiyede ters kayıt).
+const VAT_OFFSETS_SCHEMA_V29 = `
+  CREATE TABLE IF NOT EXISTS vat_offsets (
+    id TEXT PRIMARY KEY, month TEXT NOT NULL, date TEXT NOT NULL,
+    out_minor INTEGER NOT NULL DEFAULT 0, in_minor INTEGER NOT NULL DEFAULT 0, carry_in_minor INTEGER NOT NULL DEFAULT 0,
+    carry_out_minor INTEGER NOT NULL DEFAULT 0, payable_minor INTEGER NOT NULL DEFAULT 0,
+    status TEXT NOT NULL DEFAULT 'active', note TEXT NOT NULL DEFAULT '',
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL, reversed_by TEXT, reversed_at TEXT
+  ) STRICT;
+  CREATE INDEX IF NOT EXISTS idx_vat_offsets_month ON vat_offsets(month, status);
 `;
 
 function widenIntegrityLog(store) {

@@ -1,0 +1,19 @@
+Dar kontrol 2.4.3 — ek maddeler (1–9) kanıt özeti. Dal duzeltme2-243; kod 675aadd (+ senaryo-fatura-243 beklenti güncellemesi). Linux, Node v22.22.0.
+Eski kod AYRI kopyalarda: d64ebf8 (taban) ve bf53782 (ilk düzeltme turu); çıkış kodu dosyadan ayrı alındı; ekran testleri flock ile, HUKUK_LICENSE_URL=127.0.0.1:9.
+
+BİRİM (yeni / d64ebf8 / bf53782)
+  Ek 1–2 (gg243-dar-kontrol-gonderim, "Ek " 3 test)   yeni 3/3 · eski 0/3 · 0/3      -> ek12-*.txt
+  Ek 3, 5 (gg243-dar-kontrol-ek, 2 test)              yeni 2/2 · eski 0/2 · 0/2      -> ek35-*.txt (bf53782'de açıklama "(gönderilecek)" kaldı)
+  Ek 6–9 (gg243-dar-kontrol-gonderim, "Ek [6-9]" 4)   yeni 4/4 · eski 0/4 · 0/4      -> ek69-*.txt
+  Komşu birim seti (50 dosya): çıkış 0; tests 495 pass 495 fail 0 cancelled 0 skipped 0  -> komsu-birim-son.txt
+EKRAN
+  gg243-odak-silme-diger: yeni 61/61; eski d64ebf8 6 kırmızı (ödeme satırı ve masraf türünde odak BODY); serbest sayfa: gerileme nöbeti (eskide de yeşil).
+  Son koşu (e2e/, 675aadd): senaryo-ebelge-242 21/21, senaryo-ebelge-243 20/20, senaryo-entegrator-240 73/73, senaryo-fatura-243 31/31 (H1 adımı
+  beklentisi bilerek güncellendikten sonra; önce 27/31 — e2e/senaryo-fatura-243.txt), gg243-odak-dugme 11/11, gg243-arka-plan-yazma 13/13,
+  senaryo-form-izolasyon-243 178/178, fatura-243-daha-fazla-yaris 9/9, senaryo-215 73/73, gg243-tumunu-gonder 17/17, gg243-odak-kalem-sil 16/16,
+  gg243-odak-silme-diger 61/61, senaryo-banka-210 424/424, senaryo-banka-210b 90/90, senaryo-banka-220 76/76, senaryo-tahsile-ver-220 140/140,
+  banka-210-kart-onbellek 49/49.
+MUTASYON 2. tur (mutasyon2/): 15/15 yakalandı.
+KÂHİN (kahin-243 ce69448; klasör kopyalanıp koşuldu, depoya alınmadı): 2849a87'de 9 senaryodan 5 yeşil (fark 2, ihlal 3); 675aadd'de 8/9 yeşil,
+  ihlal 0. Kalan: kucuk-fis-sira — model Listeden Sil için 2xx bekliyor; program baş mimar kararıyla (Ek 8) 409 chronology veriyor. Kâhin
+  modelinde (model.py listeden_sil, K20/K21) FIS sıra kuralı yok; kâhin tarafında güncellenmeli.

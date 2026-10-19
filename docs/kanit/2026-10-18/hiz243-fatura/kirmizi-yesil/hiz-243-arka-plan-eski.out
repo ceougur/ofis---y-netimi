@@ -1,0 +1,21 @@
+1) ilk açılış: takvim tamamı gelir, şeritte açık faturanın kalemi
+  ✓ şeritte 1 kalem (1)
+  ✗ ilk yanıt tam ve sürümlü (516 bayt, sürüm yok)
+2) başka oturum takvimi DEĞİŞTİRMEYEN kayıt (peşin ödenmiş satış)
+  ✓ ekran takvimi yeniledi (604 ms)
+  ✗ istek elindeki sürümle gitti (since=yok)
+  ✗ yanıt "değişmedi" ve küçük (516 bayt, değişmedi=false)
+  ✓ şerit yerinde, yeniden çizilmedi (işaret ilk, 1 kalem)
+3) başka oturum takvimi DEĞİŞTİREN kayıt (vadesi yarın açık satış)
+  ✓ yeni kalem şeritte belirdi (3247 ms; 2 kalem)
+  ✓ yanıt tam takvim (899 bayt)
+4) tahsilatla kapanan kalem şeritten düşer
+  ✓ kapanan kalem düştü (4019 ms; 1 kalem)
+5) kritik stok rozeti (sunucu önbelleği güncelliği bozmaz)
+  ✓ başta rozet boş ("")
+  ✓ rozet 1 oldu (1247 ms; "1")
+  ✓ kritik seviye 1 olunca rozet boşaldı (2964 ms; "")
+  ✓ sayfa hatası yok
+takvim istekleri: 5 (sürümlü 0, değişmedi 0, toplam 2963 bayt)
+
+✗ hiz-243-arka-plan: 10 geçti, 3 kaldı

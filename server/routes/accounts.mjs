@@ -124,6 +124,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       // 2.3.0 İz 1 (plan §3.11b/5 "cari kartında Şüpheli Alacak bilgisi"): açık şüpheli, karşılık, tahsil edilen, değersiz yazılan (kuruş).
       doubtful: doubtfulSummary,
       canDoubtful: manage && canUser(user, "accounts.doubtful"),
+      // 2.4.3 (keşif A5): silinemeyen caride Sil pasif, nedeni kartta yazılı (silme ucuyla aynı denetim).
+      deleteBlock: manage ? deleteBlock(account)?.message || "" : "",
     };
   }
 
@@ -498,6 +500,11 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const previous = accountRow(params.id);
     const body = await readJson(req);
     const result = store.tx(() => {
+      // 2.4.3 (uzman UX1): iyimser eşzamanlılık (çek: routes/cheques.mjs "cheque-stale"; tablo hücresi: workspace.mjs). Form, açıldığı andaki
+      // sürümü (updatedAt) gönderir; arada başka biri (ya da gönderimde mükellefiyeti düzelten sunucu) kaydettiyse 409 — ikinci kaydeden ilkinin
+      // değişikliğini sessizce silmez. Sürüm göndermeyen çağrılar (Pasife Al / Aktif Et, eski istemci) eskisi gibi yazar.
+      const current = store.get("SELECT updated_at AS updatedAt FROM accounts WHERE id = ?", previous.id);
+      if (body.updatedAt && current && body.updatedAt !== current.updatedAt) throw new HttpError(409, "Bu cari siz düzenlerken başka biri tarafından değiştirildi.", { code: "account-stale", updatedAt: current.updatedAt });
       const wantedRef = limited(body.refNo, 30, "Cari No");
       if (wantedRef && wantedRef !== previous.refNo && store.get("SELECT 1 AS found FROM accounts WHERE deleted_at IS NULL AND ref_no = ? AND id <> ?", wantedRef, previous.id)) throw new HttpError(409, `${wantedRef} numarası başka bir caride kullanılıyor.`);
       // Görünen grup adları birleştirilmez: grup boşaltılınca eski adla yeniden açılmasın.
@@ -530,27 +537,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   router.delete("/api/workspace/accounts/:id", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "accounts.manage");
     const account = accountRow(params.id);
-    const planCount = plans()?.countForAccount ? plans().countForAccount(account.id) : 0;
-    if (planCount) throw new HttpError(409, `Bu carinin ${planCount} taksit kartı var. Önce kartları silin ya da başka cariye taşıyın; kapatılan kartlar da sayılır.`);
-    const stockLinked = store.get(
-      "SELECT COUNT(*) AS n FROM account_entries e JOIN stock_moves m ON m.id = e.source_id JOIN stock_items i ON i.id = m.item_id WHERE e.account_id = ? AND e.source = 'stock' AND i.deleted_at IS NULL",
-      account.id,
-    ).n;
-    if (stockLinked) throw new HttpError(409, `Bu cariye yazılmış ${stockLinked} stok hareketi var. Önce stok hareketlerini düzeltin.`);
-    const chequeLinked = cheques()?.countForAccount ? cheques().countForAccount(account.id) : 0;
-    if (chequeLinked) throw new HttpError(409, `Bu cariye bağlı ${chequeLinked} çek/senet var. Önce Çek/Senet'ten evrakı silin ya da başka cariye taşıyın.`);
-    // v2.0.15: faturası olan cari silinmez (fatura yasal belgedir; Logo/Netsis'teki gibi hareketli cari silinemez).
-    const invoiceCount = store.get("SELECT COUNT(*) AS n FROM sqlite_master WHERE type = 'table' AND name = 'invoices'").n ? store.get("SELECT COUNT(*) AS n FROM invoices WHERE account_id = ? AND status = 'issued'", account.id).n : 0;
-    if (invoiceCount) throw new HttpError(409, `Bu carinin ${invoiceCount} faturası var; faturası olan cari silinemez. Cariyi pasife alın.`, { code: "account-has-invoices" });
-    // v2.1.0 Aşama 5 (plan §3.8 "Cari kartı"): banka hesabına bağlı hareketi olan cari silinmez (silinirse hareket banka hesabından düşer,
-    // banka bakiyesi bankadakinden ayrılırdı). Pasife Al önerilir.
-    const bankLinked = store.get("SELECT COUNT(*) AS n FROM account_entries WHERE account_id = ? AND fin_ref <> ''", account.id).n;
-    if (bankLinked) throw new HttpError(409, `Bu carinin banka hesabına bağlı ${bankLinked} hareketi var; cari silinirse banka hesabının bakiyesi değişirdi. Cariyi pasife alın (hareketleri korunur).`, { code: "account-bank-linked", count: bankLinked });
-    // 2.3.0 İz 1 (plan §3.11b): şüpheli alacak kaydı olan cari silinmez (kayıt ve 128 satırları defterden düşerdi).
-    doubtful()?.assertNone?.(account.id, "silinemez");
-    // v2.0.26 (A3): kapanmış dönemde hareketi olan cari silinmez (silinen carinin satırları defterden düşer). Silinen carinin
-    // tahsilat/ödemeleri Kasa'dan ve bankadan düşer: eksi bakiye denetimi (Uyar/Engelle) toplam etkiyle sorar.
-    assertUnlocked(account.id, "silinemez");
+    // 2.4.3 (keşif A5): silme engelleri tek yerde (deleteBlock) — cari kartı Sil düğmesini aynı nedenle pasif gösterir.
+    const block = deleteBlock(account);
+    if (block) throw new HttpError(block.status || 409, block.message, block.extra);
+    // Silinen carinin tahsilat/ödemeleri Kasa'dan ve bankadan düşer: eksi bakiye denetimi (Uyar/Engelle) toplam etkiyle sorar.
     cash?.guardRemove?.(store.all("SELECT kind, amount, method, date FROM account_entries WHERE account_id = ? AND kind IN ('in', 'out') AND source = ''", account.id), url.searchParams.get("cashForce") === "1", "Bu cari silinince tahsilat ve ödemeleriyle birlikte");
     store.tx(() => {
       // Yumuşak silme: hareketleri yerinde durur (Kasa'dan düşer); yönetim panelindeki Silinenler'den geri gelir.
@@ -578,6 +568,39 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       accountId, lock,
     );
     return hit ? lock : "";
+  }
+  /**
+   * 2.4.3 (keşif A5): cari silinemiyorsa nedeni ({ message, extra }), silinebiliyorsa null. Silme ucu bununla 409 verir; cari kartı (detail)
+   * aynı nedeni deleteBlock olarak taşır, Sil düğmesi pasif ve nedeni görünür yazılır (fatura kartındaki kural). Sıra eski denetim sırasıdır.
+   */
+  function deleteBlock(account) {
+    const planCount = plans()?.countForAccount ? plans().countForAccount(account.id) : 0;
+    if (planCount) return { message: `Bu carinin ${planCount} taksit kartı var. Önce kartları silin ya da başka cariye taşıyın; kapatılan kartlar da sayılır.` };
+    const stockLinked = store.get(
+      "SELECT COUNT(*) AS n FROM account_entries e JOIN stock_moves m ON m.id = e.source_id JOIN stock_items i ON i.id = m.item_id WHERE e.account_id = ? AND e.source = 'stock' AND i.deleted_at IS NULL",
+      account.id,
+    ).n;
+    if (stockLinked) return { message: `Bu cariye yazılmış ${stockLinked} stok hareketi var. Önce stok hareketlerini düzeltin.` };
+    const chequeLinked = cheques()?.countForAccount ? cheques().countForAccount(account.id) : 0;
+    if (chequeLinked) return { message: `Bu cariye bağlı ${chequeLinked} çek/senet var. Önce Çek/Senet'ten evrakı silin ya da başka cariye taşıyın.` };
+    // v2.0.15: faturası olan cari silinmez (fatura yasal belgedir; Logo/Netsis'teki gibi hareketli cari silinemez).
+    const invoiceCount = store.get("SELECT COUNT(*) AS n FROM sqlite_master WHERE type = 'table' AND name = 'invoices'").n ? store.get("SELECT COUNT(*) AS n FROM invoices WHERE account_id = ? AND status = 'issued'", account.id).n : 0;
+    if (invoiceCount) return { message: `Bu carinin ${invoiceCount} faturası var; faturası olan cari silinemez. Cariyi pasife alın.`, extra: { code: "account-has-invoices" } };
+    // v2.1.0 Aşama 5 (plan §3.8 "Cari kartı"): banka hesabına bağlı hareketi olan cari silinmez (silinirse hareket banka hesabından düşer,
+    // banka bakiyesi bankadakinden ayrılırdı). Pasife Al önerilir.
+    const bankLinked = store.get("SELECT COUNT(*) AS n FROM account_entries WHERE account_id = ? AND fin_ref <> ''", account.id).n;
+    if (bankLinked) return { message: `Bu carinin banka hesabına bağlı ${bankLinked} hareketi var; cari silinirse banka hesabının bakiyesi değişirdi. Cariyi pasife alın (hareketleri korunur).`, extra: { code: "account-bank-linked", count: bankLinked } };
+    // 2.3.0 İz 1 (plan §3.11b): şüpheli alacak kaydı olan cari silinmez (kayıt ve 128 satırları defterden düşerdi).
+    // v2.0.26 (A3): kapanmış dönemde hareketi olan cari silinmez (silinen carinin satırları defterden düşer).
+    for (const check of [() => doubtful()?.assertNone?.(account.id, "silinemez"), () => assertUnlocked(account.id, "silinemez")]) {
+      try {
+        check();
+      } catch (error) {
+        if (error instanceof HttpError) return { message: error.message, extra: error.extra, status: error.status };
+        throw error;
+      }
+    }
+    return null;
   }
   function assertUnlocked(accountId, what) {
     const lock = lockedSince(accountId);
@@ -868,7 +891,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       headers: ["Tarih", "İşlem", "Açıklama", "Borç", "Alacak", "Bakiye"],
       types: ["text", "text", "text", "money", "money", "money"],
       rows: account.ledger.map(line => [dayText(line.date), `${line.label}${line.receiptNo ? ` · Makbuz ${line.receiptNo}` : ""}`, line.note || "", line.debit ? tl(line.debit) : "", line.credit ? tl(line.credit) : "", `${tl(Math.abs(line.balance))} ${sideText(line.balance)}`.trim()]),
-      summary: [["Borç Toplamı", tl(t.debit)], ["Alacak Toplamı", tl(t.credit)], ["Bakiye", `${tl(Math.abs(t.balance))} ${sideText(t.balance)}`.trim()], ...(t.planRemaining ? [["Taksitlerden Kalan", tl(t.planRemaining)]] : []), ...(t.overdueCount ? [["Geciken", `${tl(t.overdue)} · ${t.overdueCount} taksit`]] : [])],
+      // 2.4.3 (keşif A22; kalıcı karar "her raporda alt TOPLAM satırı"): satırların borç/alacak toplamı ve son bakiye (ekrandaki kart tablosuyla aynı).
+      footer: account.ledger.length ? ["", "TOPLAM", "", tl(roundMoney(account.ledger.reduce((sum, line) => sum + line.debit, 0))), tl(roundMoney(account.ledger.reduce((sum, line) => sum + line.credit, 0))), `${tl(Math.abs(t.balance))} ${sideText(t.balance)}`.trim()] : null,
+      summary: [["Borç Toplamı", tl(t.debit)], ["Alacak Toplamı", tl(t.credit)], ["Bakiye", `${tl(Math.abs(t.balance))} ${sideText(t.balance)}`.trim()], ...(t.planRemaining ? [["Taksitlerden Kalan (bakiyeye dahil)", tl(t.planRemaining)]] : []), ...(t.overdueCount ? [["Geciken", `${tl(t.overdue)} · ${t.overdueCount} taksit`]] : [])],
       officeName: office(),
       userName: user.display_name || user.username || "",
       brand: office(),
@@ -883,7 +908,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     if (!entry || !["in", "out"].includes(entry.kind)) throw new HttpError(404, "Makbuz yalnız tahsilat ve ödemeler için alınır.");
     const pdf = receiptPdf(
       { name: account.name, refNo: account.refNo, refLabel: "Cari No", phone: account.phone, groupName: account.groupName, subgroupName: account.subgroupName, items: [], balanceOnly: true, totals: { total: account.totals.debit, paid: account.totals.collected, remaining: account.totals.balance } },
-      { ...entry, label: entry.kind === "in" ? "Cari tahsilat" : "Cariye ödeme" },
+      { ...entry, label: entry.kind === "in" ? "Cari Tahsilat" : "Cariye Ödeme" },
       { officeName: office(), userName: user.display_name || user.username || "", now: clock() },
     );
     sendBuffer(res, pdf, { type: "application/pdf", name: `Makbuz ${entry.receiptNo ? `No ${entry.receiptNo} ` : ""}${account.name} ${dayText(entry.date)}.pdf`, inline: url.searchParams.get("download") !== "1" });
@@ -1333,9 +1358,12 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // e-Faturanın satıcısı için cari: önce VKN/TCKN ile aranır (kişi bir kez girilir), yoksa vergi bilgileriyle açılır.
   const taxIdentity = {
     findByTaxNo: taxNo => (taxNo ? store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND tax_no = ? ORDER BY created_at LIMIT 1", String(taxNo).replace(/\s+/g, ""))?.id || "" : ""),
-    setEInvoice(user, accountId, { registered, alias = "", title = "" }) {
+    setEInvoice(user, accountId, { registered, alias = "", aliases = null, title = "" }) {
       const row = accountRow(accountId);
-      store.run("UPDATE accounts SET e_invoice = ?, e_alias = ?, updated_by = ?, updated_at = ? WHERE id = ?", registered ? 1 : 0, registered ? String(alias).slice(0, 160) : "", user.id, now(), row.id);
+      // 2.4.3 (uzman UX5): mükellefin birden çok posta kutusu varken (alias boş gelir) kullanıcının daha önce Mükellef Sorgula ile SEÇTİĞİ etiket
+      // silinmez; liste verilmişse etiket listede olmalıdır (başka mükellefin etiketi kalmaz). Önceden işaret geri konurken etiket boşalıyordu.
+      const keep = registered && !alias && row.eAlias && (!Array.isArray(aliases) || aliases.includes(row.eAlias)) ? row.eAlias : "";
+      store.run("UPDATE accounts SET e_invoice = ?, e_alias = ?, updated_by = ?, updated_at = ? WHERE id = ?", registered ? 1 : 0, registered ? String(alias || keep).slice(0, 160) : "", user.id, now(), row.id);
       audit(user, "account.einvoice.checked", row.id, { registered, alias, title });
       touched(user, row);
       return accountRow(row.id);

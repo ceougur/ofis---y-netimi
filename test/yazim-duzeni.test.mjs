@@ -44,6 +44,10 @@ const SENTENCES = new Set([
     "Bu tutar bankadaki gerçek bakiyedir (Bakiye Doğrulandı)",
     "Açılış bakiyesi bankadaki gerçek bakiyedir (Bakiye Doğrulandı)",
     "IBAN faturada gösterilsin",
+    // Fatura Ayarları onay kutuları (e-dönüşüm kullanıcılığı): cümle ("… mükellefiyim"). 2.4.3'ten beri "e-…" ile başlayan metinler de denetleniyor.
+    "e-Fatura mükellefiyim",
+    "e-Arşiv kullanıcısıyım",
+    "e-SMM kullanıcısıyım",
     "Excel/Sheets tablolarınızdaki",
     "Eşleşen kayıt yok",
     "Geçiş dönemi doldu",
@@ -68,7 +72,6 @@ const SENTENCES = new Set([
     "Ofis hesabınızla giriş yapın",
     "Programın kurulu olduğu",
     "Resimli kullanım kılavuzunu açın",
-    "Stok eksiye düşecek",
     "Yeni sürümü kendiliğinden kur (sunucu açılışında, 15 dakika boşta kalınca ya da mesai dışında; kapalıyken yalnız haber verilir)",
     "Sunucuya bağlanılamadı",
     "Süre dolunca veriler kaybolmaz:",
@@ -96,7 +99,9 @@ const SENTENCES = new Set([
 
 function eligible(text) {
   const s = text.trim();
-  if (!s || SENTENCES.has(s) || /[$`<>{}\\]/.test(s) || !/^[+−↶←→↑·✓✎⤓↗#0-9A-ZÇĞİÖŞÜ]/.test(s)) return false;
+  // 2.4.3 (uzman UI7): GİB'in resmî adıyla küçük "e-" ile başlayan adlar ("e-Fatura posta kutusu etiketi", "e-Fatura senaryosu") da denetlenir;
+  // önceden büyük harfle başlamayan her metin cümle sayılıp atlanıyordu.
+  if (!s || SENTENCES.has(s) || /[$`<>{}\\]/.test(s) || !/^(?:[+−↶←→↑·✓✎⤓↗#0-9A-ZÇĞİÖŞÜ]|e-[A-ZÇĞİÖŞÜ])/.test(s)) return false;
   const words = s.split(/\s+/);
   if (words.length < 2 || words.length > 7) return false;
   // "Evet, Uygula" gibi onay düğmeleri cümle sayılmaz; virgülden sonrası da başlık yazımıyla denetlenir.
@@ -145,6 +150,49 @@ describe("yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük", () 
     const files = [...readdirSync(new URL("client/assets/", ROOT)).filter(name => /^hof-.*\.js$|^admin\.js$/.test(name)).map(name => `client/assets/${name}`), "client/admin.html"];
     const found = files.flatMap(file => violations(file));
     assert.deepEqual(found, [], `Yeni etiketler başlık yazımıyla yazılmalı:\n${found.join("\n")}`);
+  });
+  // 2.4.3 (keşif A15): hareket türü adları (cari defteri, Kasa ekranı ve Kasa raporu "İşlem/Açıklama" kolonu, makbuz) ve programın varsayılan
+  // adları ("Çalışma Verisi" sayfa başlığı, yönetim paneli alt başlığı) da addır. Denetim yalnız bu adların üretildiği yerlere bakar: label/text
+  // atamasındaki koşullu iki metin ("A" : "B") ve varsayılan ad (|| "…"); cümle süzgeci (eligible) aynıdır.
+  it("hareket türü adları ve programın varsayılan adları kurala uyuyor", () => {
+    const SITES = [
+      ["server/lib/accounts.mjs", /\blabel:/],
+      ["server/lib/cash-report.mjs", /\btext: \[/],
+      ["server/lib/plan-report.mjs", /entry\.label \|\|/],
+      ["server/routes/accounts.mjs", /\blabel: entry\.kind/],
+      ["client/assets/hof-workspace.js", /const (label|text) = (account|payment)/],
+      ["server/lib/dataset.mjs", /const label = /],
+      ["server/lib/client-state.mjs", /activeSourceLabel:/],
+      ["client/assets/hof-sources.js", /\|\| "Çalışma/],
+    ];
+    const found = [];
+    for (const [file, site, values] of SITES) {
+      for (const line of read(file).split(/\r?\n/).filter(text => site.test(text))) {
+        const texts = [...line.matchAll(/\?\s*"([^"\n]{3,50})"\s*:\s*"([^"\n]{3,50})"/g)].flatMap(m => [m[1], m[2]]).concat([...line.matchAll(/\|\|\s*"([^"\n]{3,50})"/g)].map(m => m[1]));
+        if (values) texts.push(...[...line.matchAll(/:\s*"([^"\n]{3,50})"/g)].map(m => m[1]));
+        for (const text of texts) if (eligible(text)) found.push(`${file}: “${text}” → “${titleCase(text)}”`);
+      }
+    }
+    for (const m of read("client/admin.html").matchAll(/class="adm-brand"[\s\S]{0,300}?<small>([^<]{3,40})<\/small>/g)) if (eligible(m[1])) found.push(`client/admin.html (marka alt başlığı): “${m[1]}”`);
+    assert.deepEqual(found, [], `Hareket türü ve varsayılan adlar başlık yazımıyla yazılmalı:\n${found.join("\n")}`);
+  });
+  // 2.4.3 (uzman UI7): derlenmiş React paketi (client/assets/app-*.js; kaynak kodu yok, tools/patch-bundle.mjs) taranmıyordu; Ayarlar panelindeki
+  // "Sheet sekmeleri / kategoriler", "Sheet bağlantısı", "Excel / CSV yükle", "Senkronizasyon sıklığı" kaçıyordu. Paketteki alan etiketi, başlık ve
+  // kategori başlığı (label, h1–h6, th, summary, legend; category-heading) da denetlenir.
+  it("derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor", () => {
+    const bundles = readdirSync(new URL("client/assets/", ROOT)).filter(name => /^app-[0-9a-f]{10}\.js$/.test(name));
+    assert.ok(bundles.length >= 1, "arayüz paketi bulunamadı");
+    const found = [];
+    for (const name of bundles) {
+      const src = read(`client/assets/${name}`);
+      const texts = [
+        ...[...src.matchAll(/x\.jsxs?\("(?:label|h[1-6]|th|summary|legend)",\{[^{}]*?children:"([^"\n]{3,60})"\}/g)].map(m => m[1]),
+        ...[...src.matchAll(/className:"category-heading",children:\[[\s\S]{0,300}?children:"([^"\n]{3,60})"/g)].map(m => m[1]),
+      ];
+      assert.ok(texts.length >= 4, `${name}: paket etiketleri okunamadı (desen eşleşmedi; okunamayan veri boş sayılmaz)`);
+      for (const text of texts) if (eligible(text)) found.push(`client/assets/${name}: “${text}” → “${titleCase(text)}”`);
+    }
+    assert.deepEqual(found, [], `Paket etiketleri başlık yazımıyla yazılmalı:\n${found.join("\n")}`);
   });
   it("rapor, PDF ve Excel başlıklarında kurala uymayan ad yok", () => {
     const files = readdirSync(new URL("server/routes/", ROOT)).map(name => `server/routes/${name}`);

@@ -1,0 +1,42 @@
+{
+ "ad": "kucuk-o1-pk-yok-bekletir",
+ "tohum": 1,
+ "islem": 14,
+ "bugun": "2026-12-27",
+ "farkSayisi": 0,
+ "ihlalSayisi": 1,
+ "safModelSonFark": 0,
+ "farklar": [],
+ "ihlaller": [
+  {
+   "adim": 14,
+   "islem": "esz_tumunu_gonder",
+   "kod": "I19",
+   "ileti": "B18: tur sonucu ok:false ama kod/ileti boş (kod '')",
+   "yineleme": 1,
+   "belge": "B18",
+   "sinif": "BEKLENEN-I19 (bekletilen/gönderilmeyen belgenin tur sonucu kodsuz ya da iletisiz)"
+  }
+ ],
+ "catalSecimleri": [
+  {
+   "adim": 12,
+   "aday": 2,
+   "secilen": [
+    "B17: numaralı belgenin tarih düzenlemesi reddedildi"
+   ]
+  },
+  {
+   "adim": 13,
+   "aday": 2,
+   "secilen": []
+  }
+ ],
+ "eStatusDegerleri": {
+  "none": 23,
+  "waiting": 13,
+  "sent": 14
+ },
+ "kucultulmus": null,
+ "sure": 1.9
+}

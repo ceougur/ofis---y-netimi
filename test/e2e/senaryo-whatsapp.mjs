@@ -12,6 +12,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { buildXlsx } from "../../server/lib/xlsx-write.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-whatsapp");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -89,7 +90,7 @@ const headCount = (head, label) => num((head.match(new RegExp(`([\\d.]+) ${label
 const waSent = () => admin.evaluate(() => window.__wa.slice());
 const closeAll = async () => {
   for (let i = 0; i < 6 && (await admin.$(modal)); i += 1) {
-    await admin.keyboard.press("Escape");
+    await escClose(admin);
     await admin.waitForTimeout(250);
   }
 };
@@ -130,7 +131,7 @@ try {
     await admin.waitForSelector(`${modal} .hof-mapping`, { timeout: 30000 });
     await Promise.all([admin.waitForEvent("load", { timeout: 30000 }), admin.click(`${modal} [data-mode="replace"]`)]);
     await admin.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
-    await admin.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]").catch(() => admin.keyboard.press("Escape"));
+    await admin.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]").catch(() => escClose(admin));
     await admin.goto(`${BASE}/`, { waitUntil: "load" });
     await admin.waitForSelector(".dynamic-table tbody tr", { timeout: 20000 });
     await closeAll();

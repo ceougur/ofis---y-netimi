@@ -1,0 +1,162 @@
+{
+ "dil": "destekofis-ebelge/1",
+ "ad": "ebelge-t3-i100-3-kucuk",
+ "tohum": 3,
+ "bugun": "2026-12-27",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi"
+ },
+ "adimlar": [
+  {
+   "islem": "gun_ilerlet",
+   "gun": 1,
+   "no": 1
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B10",
+   "cari": "K2",
+   "tarih": "2026-12-29",
+   "gonder": "sonra",
+   "no": 2
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 9,
+   "no": 3
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B11",
+   "cari": "K3",
+   "tarih": "2027-01-06",
+   "gonder": "simdi",
+   "no": 4
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B12",
+   "cari": "K2",
+   "tarih": "2027-01-05",
+   "gonder": "simdi",
+   "no": 5
+  },
+  {
+   "islem": "listeden_sil",
+   "belge": "B11",
+   "no": 6
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B13",
+   "cari": "K2",
+   "tarih": "2027-01-03",
+   "gonder": "sonra",
+   "no": 7
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 1,
+   "no": 8
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 1,
+   "no": 9
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B17",
+   "cari": "K1",
+   "tarih": "2027-01-05",
+   "gonder": "simdi",
+   "no": 10
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B18",
+   "cari": "K2",
+   "tarih": "2027-01-08",
+   "gonder": "simdi",
+   "no": 11
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B19",
+   "cari": "K2",
+   "tarih": "2027-01-07",
+   "gonder": "sonra",
+   "no": 12
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B27",
+   "cari": "K3",
+   "tarih": "2027-01-06",
+   "gonder": "sonra",
+   "no": 13
+  },
+  {
+   "islem": "esz_tumunu_gonder",
+   "no": 14
+  },
+  {
+   "islem": "esz_tumunu_gonder",
+   "no": 15
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 1,
+   "no": 16
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B34",
+   "cari": "K2",
+   "tarih": "2027-01-09",
+   "gonder": "sonra",
+   "no": 17
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B35",
+   "cari": "K5",
+   "tarih": "2027-01-09",
+   "gonder": "simdi",
+   "no": 18
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B36",
+   "cari": "K1",
+   "tarih": "2027-01-07",
+   "gonder": "simdi",
+   "no": 19
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B37",
+   "cari": "K1",
+   "tarih": "2027-01-09",
+   "gonder": "sonra",
+   "no": 20
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B38",
+   "cari": "K1",
+   "tarih": "2027-01-06",
+   "gonder": "simdi",
+   "no": 21
+  },
+  {
+   "islem": "tur_sirasinda_sil",
+   "belge": "B37",
+   "no": 22
+  }
+ ]
+}

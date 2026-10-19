@@ -1,0 +1,175 @@
+{
+ "ad": "ebelge-t1-i100",
+ "tohum": 1,
+ "islem": 100,
+ "bugun": "2026-12-27",
+ "farkSayisi": 0,
+ "ihlalSayisi": 0,
+ "safModelSonFark": 0,
+ "farklar": [],
+ "ihlaller": [],
+ "catalSecimleri": [
+  {
+   "adim": 4,
+   "aday": 3,
+   "secilen": [
+    "B1: geçici hata, numara korundu, gitmedi"
+   ]
+  },
+  {
+   "adim": 17,
+   "aday": 2,
+   "secilen": [
+    "B2: gönderilmiş belge programda iptal edildi"
+   ]
+  },
+  {
+   "adim": 22,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 24,
+   "aday": 3,
+   "secilen": [
+    "B6: kopma_once, edm=False, program=False"
+   ]
+  },
+  {
+   "adim": 27,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 34,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 38,
+   "aday": 2,
+   "secilen": [
+    "B12: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 41,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 42,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 43,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 46,
+   "aday": 3,
+   "secilen": [
+    "B13: kopma_sonra, edm=True, program=False"
+   ]
+  },
+  {
+   "adim": 51,
+   "aday": 2,
+   "secilen": [
+    "B17: numaralı belgenin tarih düzenlemesi reddedildi"
+   ]
+  },
+  {
+   "adim": 52,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 60,
+   "aday": 2,
+   "secilen": [
+    "B24: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 61,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 62,
+   "aday": 3,
+   "secilen": [
+    "B23: kopma_once, edm=False, program=False"
+   ]
+  },
+  {
+   "adim": 66,
+   "aday": 2,
+   "secilen": [
+    "B28: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 67,
+   "aday": 2,
+   "secilen": [
+    "B29: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 70,
+   "aday": 2,
+   "secilen": [
+    "B26: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 73,
+   "aday": 2,
+   "secilen": [
+    "B26: gönderilemedi, liste dışında kaldı"
+   ]
+  },
+  {
+   "adim": 74,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 75,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 88,
+   "aday": 2,
+   "secilen": [
+    "B41: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 90,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 97,
+   "aday": 2,
+   "secilen": []
+  }
+ ],
+ "eStatusDegerleri": {
+  "waiting": 926,
+  "error": 1,
+  "sent": 369,
+  "cancelled": 102,
+  "processing": 241,
+  "none": 178,
+  "withdrawn": 32
+ },
+ "kucultulmus": null,
+ "sure": 7.8
+}

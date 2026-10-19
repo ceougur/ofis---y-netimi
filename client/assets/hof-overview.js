@@ -21,13 +21,18 @@
   // ---------- Biçim ----------
   const money = value => HOF.formatMoney(value);
   // Büyük rakamda kuruş küçük ve soluk yazılır (okunur ve şık): ₺184.250<small>,00</small>.
-  const COMPACT_MONEY = new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", notation: "compact", maximumFractionDigits: 1 });
   const SHORT_MONEY = new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", maximumFractionDigits: 0 });
   const COMPACT_NUMBER = new Intl.NumberFormat("tr-TR", { notation: "compact", maximumFractionDigits: 1 });
+  // 2.4.3 (uzman UI9): kısaltılmış tutar da simge başta yazılır ("₺22,6 Mn"); Intl'in para biçimi simgeyi sona koyuyordu ("22,6 Mn ₺"), yanındaki
+  // kartlar "₺5.183.913,09" idi.
+  const compactMoney = value => {
+    const number = Number(value) || 0;
+    return `${number < 0 ? "-" : ""}₺${COMPACT_NUMBER.format(Math.abs(number))}`;
+  };
   const moneyHtml = (value, { compact = false } = {}) => {
     const number = Number(value) || 0;
     if (compact && Math.abs(number) >= 10_000_000) {
-      const text = COMPACT_MONEY.format(number);
+      const text = compactMoney(number);
       return `<span class="hof-num">${esc(text)}</span>`;
     }
     const text = money(number);
@@ -152,7 +157,8 @@
       out.push({
         id: "payable",
         icon: ICONS.out,
-        label: "Toplam Borç / Ödemeler",
+        // 2.4.3 (keşif A13): "Toplam Borç / Ödemeler" 1280–1366 genişlikte kesiliyordu; "Toplam Alacak" ile eş kısa ad (ayrıntı title'da).
+        label: "Toplam Borç",
         value: moneyHtml(p.total, { compact: true }),
         sub: `Cari <b>${esc(shortMoney(p.accounts))}</b> · Çek <b>${esc(shortMoney(p.cheques))}</b>${p.chequesDue > 0.005 ? `<br><span class="hof-pulse-flag">${ICONS.warn}${esc(shortMoney(p.chequesDue))} çek 7 gün içinde</span>` : ""}`,
         title: `Tedarikçilere borcumuz (${money(p.accounts)}) + ödenecek verilen çek/senet (${money(p.cheques)}).`,
@@ -291,7 +297,8 @@
   const SOURCE_LABELS = { plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa", bank: "Planlı Banka İşlemi", table: "Tablo", promise: "Ödeme Sözü", deadline: "Son Tarih" };
   // Satırın kaynak adı (süzgeç seçeneği değil): eski sürümden kalan, hesaba atanmamış ileri tarihli havale / POS (sunucu SOURCE_TEXT.legacy ile aynı
   // ad; PDF ve Excel de böyle yazar). Kasa süzgeciyle gelir; önceden "Kasa" yazıyordu (2.1.0 temel sürüm, küçük düzeltmeler).
-  const ROW_LABELS = { ...SOURCE_LABELS, legacy: "Hesabı Atanmamış (ileri tarihli)" };
+  // MM5 (2.4.3): faturasız cari alacağı (carinin bakiyesinden açık taksit ve vadeli fatura düşülünce kalan) Nakit Akışı'nda gecikmiş giriştir.
+  const ROW_LABELS = { ...SOURCE_LABELS, legacy: "Hesabı Atanmamış (ileri tarihli)", unbilled: "Faturasız Cari Alacağı" };
   const SOURCE_HINTS = {
     plan: "Taksit kartlarının kalan taksitleri",
     cheque: "Portföydeki alınan ve ödenecek verilen çekler",
@@ -546,7 +553,7 @@
   function flowView(s) {
     const params = { from: s.from, to: s.to, overdue: s.overdue ? "1" : "", table: s.table ? "" : "0", group: s.group };
     const filters = `<div class="hof-rep-bar">${rangeBar(s, PRESETS_FUTURE)}${exportButtons(`/api/workspace/overview/nakit-akisi.pdf?${query(params)}`, `/api/workspace/overview/nakit-akisi.xlsx?${query(params)}`)}</div>
-      <div class="hof-rep-filters"><select data-field="group" aria-label="Tablo görünümü"><option value="" ${!s.group ? "selected" : ""}>Hareket Hareket</option><option value="day" ${s.group === "day" ? "selected" : ""}>Günlük Toplamlar</option><option value="week" ${s.group === "week" ? "selected" : ""}>Haftalık Toplamlar</option><option value="month" ${s.group === "month" ? "selected" : ""}>Aylık Toplamlar</option></select>
+      <div class="hof-rep-filters"><select data-field="group" aria-label="Tablo görünümü"><option value="" ${!s.group ? "selected" : ""}>Tek Tek Hareketler</option><option value="day" ${s.group === "day" ? "selected" : ""}>Günlük Toplamlar</option><option value="week" ${s.group === "week" ? "selected" : ""}>Haftalık Toplamlar</option><option value="month" ${s.group === "month" ? "selected" : ""}>Aylık Toplamlar</option></select>
         <label class="hof-rep-check"><input type="checkbox" data-field="table" ${s.table ? "checked" : ""}> Tablodaki ödeme günlerini ekle</label>
         <label class="hof-rep-check"><input type="checkbox" data-field="overdue" ${s.overdue ? "checked" : ""}> Vadesi geçmiş (kapanmamış) kalemleri başlangıca ekle</label><span class="hof-rep-hint">Kaynaklar: açık taksitler, portföydeki ve ödenecek çek/senet, Kasa'ya ileri tarihli girilen hareketler${s.table ? ", Excel/Sheets tablolarındaki ödeme günleri ve ödeme sözleri" : ""}.</span></div>`;
     if (!s.data) return `${filters}<p class="hof-empty">Projeksiyon hazırlanıyor…</p>`;
@@ -615,11 +622,10 @@
     const area = `${path}V${base.toFixed(1)}H${x(points[0].date).toFixed(1)}Z`;
     const ticks = [];
     for (let value = lo; value <= hi + step / 2; value += step) ticks.push(Math.round(value / step) * step);
-    const compact = value => COMPACT_NUMBER.format(value);
     const mid = new Date((t0 + t1) / 2).toISOString().slice(0, 10);
     const low = d.lowest;
     figure.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Tahmini nakit ve banka ${HOF.formatDate(d.from)} – ${HOF.formatDate(end)}; en düşük ${money(low.balance)} (${HOF.formatDate(low.date)})">
-        ${ticks.map(value => `<line x1="${pad.l}" x2="${W - pad.r}" y1="${y(value).toFixed(1)}" y2="${y(value).toFixed(1)}" class="${value === 0 ? "hof-chart-zero" : "hof-chart-grid"}"/><text x="${pad.l - 8}" y="${(y(value) + 3.5).toFixed(1)}" class="hof-chart-tick" text-anchor="end">${value === 0 ? "0" : esc(compact(value))} ₺</text>`).join("")}
+        ${ticks.map(value => `<line x1="${pad.l}" x2="${W - pad.r}" y1="${y(value).toFixed(1)}" y2="${y(value).toFixed(1)}" class="${value === 0 ? "hof-chart-zero" : "hof-chart-grid"}"/><text x="${pad.l - 8}" y="${(y(value) + 3.5).toFixed(1)}" class="hof-chart-tick" text-anchor="end">${value === 0 ? "₺0" : esc(compactMoney(value))}</text>`).join("")}
         <path d="${area}" class="hof-chart-area"/>
         <path d="${path}" class="hof-chart-line"/>
         <circle cx="${x(low.date).toFixed(1)}" cy="${y(low.balance).toFixed(1)}" r="4.5" class="hof-chart-low ${low.balance < 0 ? "is-bad" : ""}"/>

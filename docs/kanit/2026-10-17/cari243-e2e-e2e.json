@@ -1,0 +1,31 @@
+{
+  "ad": "cari243-e2e-e2e",
+  "komut": "npm run test:e2e",
+  "commit": "e54b7901262566cd41547a031f6a45e315c75969",
+  "dal": "worktree-agent-abcf4d3fd9efc13ab",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-17T23:07:18.619Z",
+  "sure_sn": 88.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": null,
+  "hukum": "BAŞARISIZ",
+  "neden": "özet satırı tanınmadı",
+  "basarisiz_testler": [
+    {
+      "ad": "okul servisi: sektör tanınır; ödenmeyen aylar şeritte ve sağ alt bildirimde; pilden tahsilat girilince pil kaybolur; belge son günleri zilde; kasa aralığı PDF iner",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-17/cari243-e2e-e2e.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-abcf4d3fd9efc13ab",
+  "ham_cikti_sha256": "186980d46bbb80c6e70e0fe510c2dbafa348e5b25f9d5de7fc5a08faa10340f1",
+  "ham_cikti_bayt": 7234
+}

@@ -32,7 +32,7 @@ import { ACCOUNT_KINDS } from "./accounts.mjs";
 import { bankPassiveError, negativeConfirmed } from "./module-ref.mjs";
 import { GROUP_LABELS, VOUCHER_TYPES, isVoucherType, typeLabel } from "./event-types.mjs";
 import { CHART } from "../general-ledger.mjs";
-import { ROLE_GL, assertLines, cardPaymentLines, feeLines, feeSplit, interestInLines, interestOutLines, loanDrawLines, loanRepayLines, otherLines, roleOfAccount, transferLines } from "./voucher.mjs";
+import { ROLE_GL, TAX_TYPES, assertLines, cardPaymentLines, feeLines, feeSplit, interestInLines, interestOutLines, loanDrawLines, loanRepayLines, otherLines, roleOfAccount, taxPaymentLines, transferLines } from "./voucher.mjs";
 import { minorPlain } from "./movements.mjs";
 import { FEE_GL } from "./settings.mjs";
 
@@ -475,6 +475,53 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
     return { ...movements.card(id), ...(result?.replayed ? { replayed: true } : {}) };
   }
 
+  // ---------- MM3 (2.4.3): Vergi Ödemesi (bankadan) ----------
+  /**
+   * Vergi Ödemesi'nin tanımı (doğrulanmış; yazım yok): B 360 vergi · B 689 gecikme zammı / faizi (isteğe bağlı) / A 102.k toplam. Hesap Vadesiz, Ticari
+   * ya da Diğer TL hesap; tarih hareket tarihi kuralıyla (ileri tarih ve kilitli dönem 400/409); hesabın açılışından önce olamaz.
+   */
+  function taxSpec(body = {}) {
+    if (!body || typeof body !== "object" || Array.isArray(body)) throw bad(400, "Vergi ödemesi bilgisi okunamadı.", "tax-payment");
+    const taxType = text(body.taxType);
+    if (!Object.hasOwn(TAX_TYPES, taxType)) throw bad(400, "Vergi türünü seçin: KDV, Muhtasar ve Stopaj ya da Diğer Vergi.", "tax-type", { field: "taxType" });
+    const account = accountFor(body.accountId, { kinds: BANK_KINDS, purpose: "vergi ödemesi Vadesiz, Ticari ya da Diğer TL hesaptan yapılır" });
+    const date = period.movementDate(body, { field: "date", label: "Ödeme Tarihi" });
+    if (date < account.opening_date) throw bad(409, `Ödeme tarihi (${dayText(date)}) ${labelOf(account)} hesabının açılışından (${dayText(account.opening_date)}) önce olamaz.`, "bank-before-opening", { field: "date", accountId: account.id });
+    const taxMinor = amountOf(body.amount, "Vergi Tutarı");
+    const lateMinor = optionalAmount(body.lateAmount, "Gecikme Zammı / Faizi");
+    const lines = taxPaymentLines({ account: shape(account), taxMinor, lateMinor, taxType });
+    assertLines(lines, { type: "tax_payment" });
+    return { type: "tax_payment", account, date, taxType, taxMinor, lateMinor, lines, description: limited(body.description, 500, "Açıklama"), reference: limited(body.reference, 100, "Referans") };
+  }
+  /**
+   * POST /tax/payments (yol "bank"): Vergi Ödemesi fişi bank.post içinde; K7 eksi bakiye (hesap bazında) Banka Fişi gibi. check(spec): rotanın 360 bakiye
+   * uyarısı (yazımdan önce, işlemin içinde). Ters Kaydet Banka Hareketleri'ndeki her fiş gibi (Düzelt yok: ters kaydedip yeniden girilir).
+   */
+  function taxPayment(user, body = {}, { requestId = "", check = null } = {}) {
+    let date = "";
+    let before = null;
+    const settled = new Map();
+    const auditEntry = { type: "tax.payment.created", entityId: "", payload: {} };
+    const result = bank.post({
+      user, module: "bank", op: "create", requestId, scope: "tax.payment.create", body, similarOk: body?.similarOk === true,
+      write: () => {
+        const spec = taxSpec(body);
+        check?.(spec);
+        date = spec.date;
+        before = balancesOf([spec.account.id]);
+        const event = bank.voucher({ type: "tax_payment", date: spec.date, bankRef: spec.account.id, description: spec.description || `Vergi Ödemesi · ${TAX_TYPES[spec.taxType]}`, reference: spec.reference }, spec.lines);
+        auditEntry.entityId = event.id;
+        Object.assign(auditEntry.payload, { no: event.no, way: "bank", taxType: spec.taxType, date: spec.date, accountId: spec.account.id, taxMinor: spec.taxMinor, lateMinor: spec.lateMinor });
+        return { id: event.id };
+      },
+      guard: (_, ctx) => guardNegative(before, { date, force: negativeConfirmed(body), ctx, settled, action: "tax_payment" }),
+      audit: auditEntry,
+    });
+    primeTotals(settled, result);
+    const id = result?.replayed ? result.refId : result.id;
+    return { ...movements.card(id), ...(result?.replayed ? { replayed: true } : {}) };
+  }
+
   /** Olayın önceki hâli (bank.post prev: eşleşme 409'u ve çapraz yetki; işlem geçmişinin "previous"ı). */
   function prevOf(event) {
     const list = [{ event_id: event.id, fin_ref: event.bank_ref, no: event.no, type: event.type, date: event.date, status: event.status, tryMinor: event.try_minor }];
@@ -498,7 +545,7 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
         // tahsilatı yazılır, başlık satırsız ters kayıtla (iade faturasına bağlı) "ters kaydedildi" olur. Kapanmış dönem değişmez.
         const date = today();
         const back = invoices().issueBankFeeReturn(user, { invoiceId: event.invoice_id, date, bankAccountId: event.bank_ref, note: reason || `Banka'dan Ters Kaydet · ${event.no}` });
-        const reversal = bank.reverse(event.id, { date, description: `Ters Kayıt · ${event.no} · İade Faturası ${back.number}`, returnInvoiceId: back.id });
+        const reversal = bank.reverse(event.id, { date, description: `Ters Kayıt · ${event.no} · İade Faturası ${back.number || "(gönderilecek)"}`, returnInvoiceId: back.id });
         return { id: reversal.id, reversalId: reversal.id, cancelled: false };
       }
       invoices().cancel(user, event.invoice_id, { reason: reason || `Banka'dan Ters Kaydet · ${event.no}`, fromBank: true });
@@ -572,6 +619,8 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
         assertReversible(current);
         assertActiveRefs(current);
         if (given(body?.type) && text(body.type) !== current.type) throw bad(400, "Düzelt'te işlemin türü değişmez. Başka türde işlem için Ters Kaydet ile iptal edip yeni işlem girin.", "bank-correct-type", { field: "type" });
+        // MM3 (2.4.3): Vergi Ödemesi düzeltilmez — Ters Kaydet ile geri alınır, doğru tutarla Vergi Ödemesi'nden yeniden girilir.
+        if (current.type === "tax_payment") throw bad(409, "Vergi Ödemesi düzeltilmez. Ters Kaydet ile geri alıp doğru tutarla Vergi Ödemesi'nden yeniden girin.", "tax-payment-correct");
         const card = movements.cardOf(current);
         const lock = period.lockedUntil();
         const fallbackDate = lock && current.date <= lock ? today() : current.date;
@@ -965,5 +1014,5 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
   }
 
   // negative (Aşama 5–6): K7'nin aynı kuralı modül yazımlarında (cari havale, Kasa ↔ Banka transferi; lib/bank/module-ref.mjs).
-  return { negative: { balancesOf, guardNegative, primeTotals }, meta, specOf, needsInvoice, create, reverse, correct, info, listPlans, createPlan, executePlan, skipPlan, cancelPlan, dueCount, planRow, mustPlan, planFlows, planDueItems, plansFingerprint, cardDueFlows };
+  return { negative: { balancesOf, guardNegative, primeTotals }, meta, specOf, needsInvoice, create, reverse, correct, taxPayment, info, listPlans, createPlan, executePlan, skipPlan, cancelPlan, dueCount, planRow, mustPlan, planFlows, planDueItems, plansFingerprint, cardDueFlows };
 }

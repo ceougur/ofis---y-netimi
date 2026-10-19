@@ -1,0 +1,25 @@
+A) B1 — kuyruğun başında 20 reddedilen belge + 30 yeni: Tümünü Gönder bir basışta 30'u gönderir
+  ✓ ön koşul: 20 belge numaralı ve Hata'da
+  ✓ düğme 50 belge (Tümünü Gönder (50))
+  ✓ bitiş bildirimi gönderilen + gönderilemeyen (nedeniyle): hof-toast hof-toast-error is-visible|30 belge gönderildi; 20 belge gönderilemedi: EDM isteği reddetti: Alici bilgisi GIB dogrulamasindan gecmedi (EDM hata kodu 10012).
+  ✓ 30 yeni belgenin hepsi gönderildi
+  ✓ reddedilen her belge turda bir kez denendi (20)
+  ✓ numara sırası = tarih sırası
+  ✓ her yeni belge EDM'ye bir kez
+B) MM1 — kâğıt alış faturasının iadesi: e-Belge referansı form açılırken önerilir, onaylanınca iade gönderilir
+  ✓ alan önerilen değerle açıldı (A000000000004512)
+  ✓ uyarı form açılırken görünür (Asıl faturanın numarası (A 004512) 16 karakter değil; GİB, iade e-Belgesinde asıl faturayı 16 karakterlik numarayla ister. Önerilen değeri kontrol edin, gerekirse düzeltin. Asıl fatura kaydı değişmez; gerçek numara belgenin açıklamasında yazar.)
+  ✓ 'asıl faturanın numarasını düzeltin' yazmıyor
+  ✓ geçerli öneriyle Kaydet ve Gönder etkin
+  ✓ 16 karakter değilken Kaydet ve Gönder pasif
+  ✓ Kaydet, Sonra Gönder de pasif
+  ✓ pasif düğmenin nedeni yazılı (İade Edilen Belge No (e-Belge Referansı) 16 karakter olmalı (şu an 8); kaydetmek için düzeltin.)
+  ✓ düzeltilince Kaydet ve Gönder etkin
+  ✓ neden yazısı kalktı
+  ✓ iade kaydedildi
+  ✓ veri tabanı: {"id":"invoice-4492fc91-e9ef-4f36-80b3-2928102af4c3","number":"TEA2026000000051","returnRef":"A000000000004512","eStatus":"sent","profile":"EARSIVFATURA"}
+  ✓ EDM'ye giden UBL: referans + gerçek numara açıklamada
+  ✓ asıl kayıt değişmedi
+  ✓ sayfa hatası yok
+
+✓ gg243-dar2-ekran: 21 geçti, 0 kaldı

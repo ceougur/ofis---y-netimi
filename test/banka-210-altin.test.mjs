@@ -35,6 +35,7 @@ import { foldDocumentRows, foldIntegrityChecks, foldReconciliation, foldTrialAcc
 import { invoiceStates, k1Check } from "./guvenilirlik/kapama-k1-fark.mjs";
 import { settleInvoices as settleK1Oncesi } from "./guvenilirlik/kapama-k1-oncesi.mjs";
 import { LATEST_VERSION } from "../server/lib/migrations.mjs";
+import { projection } from "../server/lib/finance-report.mjs";
 
 const OLD = "v2.0.26";
 const skip = tagsAvailable([OLD]) ? false : `${OLD} etiketi bu depoda yok (git fetch --tags)`;
@@ -51,8 +52,27 @@ const STAMP = /\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}(:\d{2})?/g;
 // sayılar ve satırlar değişmez — iki taraf aynı belirtece.
 const OLD_ALL = "Tüm hareketler";
 const NEW_ALL = "Tüm Zamanlar";
-const normAll = value => value.split(OLD_ALL).join("ALL-AD").split("Tüm zamanlar").join("ALL-AD").split(NEW_ALL).join("ALL-AD");
-const norm649 = value => JSON.parse(normAll(normDocumentNames(JSON.stringify(value).split(OLD_649).join("649-AD").split(NEW_649).join("649-AD"))));
+// 2.4.3 (keşif A15, bilerek): hareket türü adları başlık yazımıyla ("Cari tahsilat" → "Cari Tahsilat", "Taksit tahsilatı" → "Taksit Tahsilatı" …;
+// Kasa Dökümü PDF'i, cari defteri). Sayılar ve satırlar değişmez — iki taraf aynı belirtece.
+const MOVE_NAMES = [
+  ["Cari tahsilat", "Cari Tahsilat", "CARI-TAHSILAT-AD"],
+  ["Cariye ödeme", "Cariye Ödeme", "CARIYE-ODEME-AD"],
+  ["Taksit ödemesi/iadesi", "Taksit Ödemesi / İadesi", "TAKSIT-ODEME-IADE-AD"],
+  ["Taksit tahsilatı", "Taksit Tahsilatı", "TAKSIT-TAHSILAT-AD"],
+  ["Taksit iadesi", "Taksit İadesi", "TAKSIT-IADE-AD"],
+  ["Karşılıksız çek / senet (taksit)", "Karşılıksız Çek / Senet (taksit)", "KARSILIKSIZ-TAKSIT-AD"],
+];
+const normMoves = value => MOVE_NAMES.reduce((text, [before, after, token]) => text.split(before).join(token).split(after).join(token), value);
+const normAll = value => normMoves(value.split(OLD_ALL).join("ALL-AD").split("Tüm zamanlar").join("ALL-AD").split(NEW_ALL).join("ALL-AD"));
+// 2.4.3 (C14, bilerek): "Banka ve POS Hareketleri" raporu Kasa grubundan Banka grubuna taşındı; satırlar ve sayılar değişmez — iki taraf aynı belirtece.
+const normGroup = value => {
+  if (Array.isArray(value)) return value.map(normGroup);
+  if (!value || typeof value !== "object") return value;
+  const out = Object.fromEntries(Object.entries(value).map(([key, item]) => [key, normGroup(item)]));
+  if (out.id === "banka-pos-hareketleri" && (out.group === "Kasa" || out.group === "Banka")) out.group = "GRUP-BANKA-POS";
+  return out;
+};
+const norm649 = value => normGroup(JSON.parse(normAll(normDocumentNames(JSON.stringify(value).split(OLD_649).join("649-AD").split(NEW_649).join("649-AD")))));
 const textNorm = value => normAll(normDocumentNames(value.replace(STAMP, "TARİH SAAT").split(OLD_649).join("649-AD").split(NEW_649).join("649-AD")));
 /** Yeni tarafın Ana Defter / Mutabakat Testi / Hesap Planı Mizanı / Defter Mutabakatı JSON'u eski düzende (121 → 101, 321 → 103; eski adlar). */
 // Kaç yanıtta senet hesabı katlandı / kaç dosya ekranla karşılaştırıldı (günlüğe yazılır: katlamanın gerçekten çalıştığının kanıtı).
@@ -114,6 +134,8 @@ function requests() {
 // (Gerçek Banka + Hesabı Atanmamış = eski Banka / POS) ayrıca denetlenir. İç hareketi olan Banka ve POS Hareketleri dönemlerinin PDF/Excel'i
 // eski dosyayla değil, aynı dönemin ekranıyla karşılaştırılır (özet ve açıklama biçimi bilerek değişti).
 const k10Problems = [];
+const unbilledTally = { count: 0 }; // 2.4.3 MM5: normalleştirmede çıkarılan faturasız cari alacağı kalemi sayısı (günlüğe yazılır)
+const roundCents = value => Math.round((Number(value) || 0) * 100) / 100;
 // company: yeni taraf PDF'inin şirket satırındaki unvan (2.2.0 İz 1.1); eski taraf aynı satırı (varsa) atar.
 async function fetchOne(api, request, side = "eski", company = null) {
   if (request.kind === "json") {
@@ -129,6 +151,28 @@ async function fetchOne(api, request, side = "eski", company = null) {
     // 2.3.0 İz 3.3 (plan §8.9, eşleme 301; bilerek): Vade Takip'e "bank" kaynağı (planlı banka işlemleri) geldi; eski veride planlı işlem yok, satırlar aynı.
     if (side === "yeni" && response.status === 200 && request.url.split("?")[0] === "/api/workspace/overview/vade-takip" && Array.isArray(data.allowed)) {
       data = { ...data, allowed: data.allowed.filter(item => item !== "bank"), sources: Array.isArray(data.sources) ? data.sources.filter(item => item !== "bank") : data.sources };
+    }
+    // 2.4.3 UX24 (bilerek): Rapor Merkezi yanıtında "footers" (yönü karışık raporda birden çok TOPLAM satırı). Tek TOPLAM'lı raporda footers = [footer]
+    // (burada denetlenir); alan atılır, footer 2.0.26 ile birebir karşılaştırılır. Çok satırlı TOPLAM test/defter-243-ux24-toplam.test.mjs'te.
+    if (side === "yeni" && response.status === 200 && request.url.includes("/report-center/") && data && typeof data === "object" && "footers" in data) {
+      const { footers, ...rest } = data;
+      if (response.data.footer && JSON.stringify(response.data.footers) !== JSON.stringify([response.data.footer])) k10Problems.push(`UX24: ${request.url} footers ≠ [footer]`);
+      data = rest;
+    }
+    // 2.4.3 MM5 (bilerek): Nakit Akışı faturasız cari alacağını (kaynak "unbilled") hareket tarihinde beklenen giriş sayar; 2.0.26'da yoktu. Satırlar
+    // ve gecikmişlerden bu kalemler çıkarılıp akış aynı işlevle (finance-report projection) yeniden kurulur; kalan her şey birebir karşılaştırılır.
+    if (side === "yeni" && response.status === 200 && request.url.split("?")[0] === "/api/workspace/overview/nakit-akisi" && Array.isArray(data.rows)) {
+      const unbilled = [...data.rows, ...(data.overdue || [])].filter(item => item.source === "unbilled");
+      if (unbilled.length) {
+        unbilledTally.count += unbilled.length;
+        const flows = [...data.rows.map(({ balance, ...item }) => item), ...(data.overdue || [])].filter(item => item.source !== "unbilled");
+        const carried = roundCents((data.carried?.in || 0) - (data.carried?.out || 0));
+        const again = projection({ today: data.today, from: data.from, to: data.to, cashToday: roundCents(data.cashToday + carried), flows, includeOverdue: data.includeOverdue });
+        if (data.periods) k10Problems.push(`MM5: ${request.url} gruplu akış normalleştirilemedi`);
+        // Ekran yanıtı en çok 5.000 satır taşır (rowTotal: bütün satırlar); kesilmiş yanıt yeniden kurulamaz.
+        if (data.rowTotal !== data.rows.length) k10Problems.push(`MM5: ${request.url} kesilmiş satırlar (${data.rows.length}/${data.rowTotal}) normalleştirilemedi`);
+        data = { ...data, ...again, from: data.from, cashToday: data.cashToday, carried: data.carried, rowTotal: again.rows.length };
+      }
     }
     // 2.1.0 temel sürüm (K10, plan §8.9, bilerek): Nakit Akış başlangıcı Nakit + Gerçek Banka; 2.0.26 karşılığına aynı satırlardan çevrilir.
     if (side === "yeni" && response.status === 200 && request.url.split("?")[0] === "/api/workspace/overview/nakit-akisi") {
@@ -157,6 +201,12 @@ async function fetchOne(api, request, side = "eski", company = null) {
     // 2.1.0 Aşama 14: altıdan çok özet kutusu iki sıraya dizilir (Banka ve POS Hareketleri'nde 7–8 kutu; tek sırada tutar kesiliyordu) →
     // tablo sayfalara başka yerden bölünür ve uzun özet başlığı satır kırmaz. Bu raporda sayfa başlıkları (şirket · rapor, "Sayfa n / m", alt
     // başlık, kolon başlıkları) atılır ve satır kırılımı boşluğa indirgenir; sözcükler ve sıraları birebir karşılaştırılır.
+    // 2.4.3 (uzman UI7/UI9; bilerek): Kasa Dökümü PDF'inin gösterge/satır adları yazım düzeninde ve hareket sayısı binlik ayraçlı. Eski taraf aynı
+    // biçime çevrilir; tutarlar, satırlar ve sıraları birebir karşılaştırılır.
+    if (request.url.includes("/cash.pdf") && side !== "yeni") {
+      for (const [from, to] of [["Devreden kasa", "Devreden Kasa"], ["Dönem tahsilatı", "Dönem Tahsilatı"], ["Dönem ödemesi", "Dönem Ödemesi"], ["Dönem sonu kasa", "Dönem Sonu Kasa"], ["Dönem toplamı", "Dönem Toplamı"], ["Kasa dökümü", "Kasa Dökümü"]]) text = text.split(from).join(to);
+      text = text.replace(/(\d+) hareket · fark/g, (_, count) => `${Number(count).toLocaleString("tr-TR")} hareket · fark`);
+    }
     if (request.url.includes("/banka-pos-hareketleri/")) return { status: 200, body: textNorm(withoutPageHeads(text).replace(/\s+/g, " ")), company: label };
     return { status: 200, body: textNorm(request.url.includes("/hesap-mizani/") ? text.replace(/\s+/g, " ") : text), company: label };
   }
@@ -388,7 +438,7 @@ describe("altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS,
       }
       assert.ok(companies.length >= 4, `şirketler: ${JSON.stringify(companies)}`);
       const { problems, compared, k1Changed } = await sideBySide(fixture.dataDir, fixture.backupDir, "zincir", companies);
-      console.log(`K1 zincir: durumu değişen belge ${k1Changed}; karşılaştırılan yanıt ${compared}; senet katlaması (2.2.0 İz 4.2) ${documentTally.folded} yanıt, ekranla karşılaştırılan dosya ${documentTally.selfChecked}`);
+      console.log(`K1 zincir: durumu değişen belge ${k1Changed}; karşılaştırılan yanıt ${compared}; senet katlaması (2.2.0 İz 4.2) ${documentTally.folded} yanıt, ekranla karşılaştırılan dosya ${documentTally.selfChecked}; Nakit Akışı faturasız kalem (2.4.3 MM5) ${unbilledTally.count}`);
       assert.ok(compared >= 280, `karşılaştırılan yanıt sayısı ${compared}`);
       assert.deepEqual(problems, [], `${problems.length} fark:\n${problems.slice(0, 8).join("\n\n")}`);
     } finally {
@@ -438,7 +488,7 @@ describe("altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS,
         await old.close();
       }
       const { problems, compared, k1Changed } = await sideBySide(dataDir, backupDir, "motor", [{ id: "sirket-001", code: "001" }]);
-      console.log(`K1 motor: durumu değişen belge ${k1Changed}; karşılaştırılan yanıt ${compared}; senet katlaması (2.2.0 İz 4.2, toplam) ${documentTally.folded} yanıt, ekranla karşılaştırılan dosya ${documentTally.selfChecked}`);
+      console.log(`K1 motor: durumu değişen belge ${k1Changed}; karşılaştırılan yanıt ${compared}; senet katlaması (2.2.0 İz 4.2, toplam) ${documentTally.folded} yanıt, ekranla karşılaştırılan dosya ${documentTally.selfChecked}; Nakit Akışı faturasız kalem (2.4.3 MM5) ${unbilledTally.count}`);
       assert.ok(compared >= 75, `karşılaştırılan yanıt sayısı ${compared}`);
       assert.deepEqual(problems, [], `${problems.length} fark:\n${problems.slice(0, 8).join("\n\n")}`);
     } finally {

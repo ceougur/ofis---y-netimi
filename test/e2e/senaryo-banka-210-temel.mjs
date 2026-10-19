@@ -32,6 +32,7 @@ import { createApp } from "../../server/app.mjs";
 import { createClient, installPageClock, moveClock } from "../helpers.mjs";
 import { checkoutTag, tagCommit } from "../guvenilirlik/surumler.mjs";
 import { fetchCutWatch } from "./tarayici-kesme.mjs";
+import { escClose } from "./esc-kapat.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-banka-210-temel");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -67,7 +68,7 @@ const bankWin = ".hof-bank-modal";
 const pause = ms => page.waitForTimeout(ms);
 const closeAll = async () => {
   for (let index = 0; index < 6 && (await page.$(modal)); index += 1) {
-    await page.keyboard.press("Escape");
+    await escClose(page);
     await pause(300);
   }
 };
@@ -96,9 +97,14 @@ const visibleText = selector => page.$$eval(selector, nodes => nodes.filter(node
 // 2.2.0 (İz 4.1 ekranı): Bankaya Tahsile Ver ve Tahsildeki Çek ve Senetler artık ertelenen değil (geldi; senaryo-tahsile-ver-220).
 const LATER = [/Ekstre Yükle/, /Ekstre ve Mutabakat/, /Mutabakat Yap/, /Eşleşmeyen/, /Güncel Kurla/, /Döviz Al/, /Döviz Sat/, /Kur Değerleme/, /Değerleme Kuru/, /Kambiyo/, /Sanal POS Bağlantısı/, /Açık Bankacılık/i, /Bağdaştırıcılar/, /Elle Banka Fişi/, /Kanal Alanı/, /Avans/];
 const laterIn = text => LATER.filter(pattern => pattern.test(text)).map(pattern => pattern.source);
+// 2.4.3 (C11, bilerek): Banka penceresi oturum içinde son sekmesiyle açılır; bu senaryonun adımları eski açılış gibi Genel Bakış'tan başlar.
 const openBank = async () => {
   await page.click('#hof-sidecard [data-action="bank"]');
   await page.waitForSelector(`${bankWin} [data-bank] .hof-bank-tabs`, { timeout: 15000 });
+  if (!(await page.$(`${bankWin} .hof-bank-tabs [data-tab="overview"][aria-selected="true"]`))) {
+    await page.click(`${bankWin} .hof-bank-tabs [data-tab="overview"]`);
+    await page.waitForTimeout(500);
+  }
   await pause(600);
 };
 const tab = async id => {
@@ -484,7 +490,7 @@ try {
       const voucherTypes = await optionsOf('form.hof-bank-voucher select[name="type"]');
       ok(!voucherTypes.some(label => /Döviz|Değerleme|POS|Tahsile/.test(label)), `Planlı İşlem türleri: ${voucherTypes.join(", ")}`);
       await shot("planli-islem-formu");
-      await page.keyboard.press("Escape");
+      await escClose(page);
       await pause(400);
     }
     await page.click(`${bankWin} [data-act="v-other"]`).catch(() => null);
@@ -492,7 +498,7 @@ try {
       const formText = await visibleText("form.hof-bank-voucher .hof-field");
       ok(!laterIn(formText).length && !/\b646\b|\b656\b/.test(formText), `Diğer İşlem formunda Kambiyo/Elle Banka Fişi yok${laterIn(formText).length ? `: ${laterIn(formText).join(", ")}` : ""}`);
       await shot("diger-islem-formu");
-      await page.keyboard.press("Escape");
+      await escClose(page);
       await pause(400);
     }
     await closeAll();
@@ -543,7 +549,9 @@ try {
     // 2.3.0 (bilerek güncellendi; İz 3.3 + 5.3 birleşince): §8.10'un kalan raporları ve POS Satış/Komisyon geldi.
     const expected = ["Banka Bakiye Raporu", "Banka Hareket Raporu", "Banka Masraf Raporu", "Alt Hesap Mizanı", "Tahsildeki Çek ve Senetler", "POS Ödeme Takvimi", "Faturası Beklenen Komisyonlar",
       "POS Satış Raporu", "POS Komisyon Raporu", "Günlük Banka Raporu", "Aylık Banka Raporu", "Banka Bazında Bakiye", "Para Birimi Bazında Bakiye", "Bankalar Arası Transfer Raporu",
-      "Kasa ve Banka Transfer Raporu", "Cari ve Banka Hareketleri", "Fatura ve Banka Hareketleri", "Taksit ve Banka Hareketleri", "Banka Nakit Akış Raporu"];
+      "Kasa ve Banka Transfer Raporu", "Cari ve Banka Hareketleri", "Fatura ve Banka Hareketleri", "Taksit ve Banka Hareketleri",
+      // 2.4.3 (C14, bilerek güncellendi): Banka ve POS Hareketleri Kasa grubundan Banka grubuna taşındı.
+      "Banka ve POS Hareketleri", "Banka Nakit Akış Raporu"];
     ok(items.join("|") === expected.join("|"), `Banka raporları: ${items.join(", ")}`);
     const all = await page.$$eval(`${modal} [data-rc-list] [data-report]`, nodes => nodes.map(node => node.textContent.trim()));
     const later = all.filter(title => /POS Bekleyen|POS Valör|Banka Mutabakat Raporu|Kur Değerleme/.test(title));

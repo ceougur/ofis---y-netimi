@@ -1,0 +1,59 @@
+
+> destekofis@2.4.3 test:senaryo-iz32-230
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-iz32-230.mjs
+
+
+■ 1 Fatura Ayarları → Banka Hesapları: banka hesabı yokken eski liste düzenlenir (4 satır; A ve B dolu)
+  ✓ bölüm eski liste kipinde
+  ✓ 4 düzenlenebilir satır; ilk ikisi A ve B: TR380001000000000001111111 | TR050006200000000002222222 |  | 
+  ✓ hesap yokken Banka → Hesaplar düğmesi yok
+
+■ 2 İlk hesap (Ziraat, IBAN A, IBAN Faturada Gösterilsin) + POS + kredi kartı → Fatura Ayarları: salt okunur liste yalnız A; B öneride; Kaydet eski listeyi değiştirmez
+  ✓ bölüm hesap kipinde (salt okunur)
+  ✓ eski listenin giriş kutuları yok
+  ✓ basılacak hesap yalnız Ziraat / A: Ziraat Bankası · Ana TL Hesabı · TR38 0001 0000 0000 0001 1111 11
+  ✓ B eski listede hesap olarak açılmamış önerisinde (A değil)
+  ✓ Banka → Hesaplar düğmesi
+  ✓ Ayarları Kaydet eski listeyi değiştirmedi: TR380001000000000001111111,TR050006200000000002222222
+  ✓ sunucu: etkin, 1 hesap, 1 öneri
+  ✓ belgeye yalnız A basılır: TR380001000000000001111111
+
+■ 3 POS'lu faturada İptal Et → POS İşlemi seçimi (Kayıt Hatası → void, iade yok); nakit faturada alan yok; Sil penceresinde alan var
+  ✓ nakit faturada POS İşlemi alanı yok
+  ✓ Sil penceresinde POS İşlemi alanı
+  ✓ seçenekler: Müşteriye İade Edildi / Kayıt Hatası (POS işlemi hiç olmadı)
+  ✓ varsayılan Müşteriye İade Edildi
+  ✓ POS satışı void (Kayıt Hatası): void
+  ✓ iade kaydı yok
+  ✓ belge İptal Edildi
+  ✓ Kayıt Hatası iptali: Mutabakat Testi tamam
+
+■ 4 Cari Tahsilat formu: Kredi Kartı yolunda "Kredi Kartına İade" kutusu → POS alanı yerine kart seçicisi; tedarikçiden 240 iade → karta bağlı, POS yok, kart borcu 600 → 360
+  ✓ kart borcu 600
+  ✓ Nakit yolunda kutu görünmez
+  ✓ Kredi Kartı yolunda Kredi Kartına İade kutusu görünür
+  ✓ işaretsiz: kart seçicisi gizli (POS alanı açık)
+  ✓ işaretli: POS alanı gizli
+  ✓ işaretli: kart seçicisi görünür
+  ✓ açıklama Kredi Kartına İade'ye göre
+  ✓ satır karta bağlı: [{"kind":"in","amount":240,"method":"card","finRef":"bacc-06c8d26e-3201-45ac-b097-88ea9b4effbc","eventId":"ev-0mvdf66tv0000-9dae4556-ee8a-4edc"}]
+  ✓ POS satışı oluşmadı
+  ✓ kart borcu 360
+  ✓ işaretsiz kart tahsilatı POS satışı (CARI77)
+  ✓ Kredi Kartına İade: Mutabakat Testi tamam
+
+■ 5 Toplu kesim: Taslaklar'da 3 taslak seç → Seçilenleri Kaydet → 3 belge kaydedildi
+  ✓ Seçilenleri Kaydet düğmesi
+  ✓ 3 taslak kaydedildi: 3
+  ✓ toplu kesim: Mutabakat Testi tamam
+
+■ 6 Toplu iptal: 2 POS'lu belge seç → Seçilenleri İptal Et → POS İşlemi (2 belgede) → Müşteriye İade Edildi → provizyon içinde void
+  ✓ toplu pencerede alan: “POS İşlemi (2 belgede POS tahsilatı var)”
+  ✓ iki satış void (Müşteriye İade Edildi, provizyon içinde): void,void
+  ✓ İptal İadesi oluşmadı (komisyon yok)
+  ✓ iki belge İptal Edildi
+  ✓ toplu iptal: Mutabakat Testi tamam
+  ✓ ekranlarda yazım düzeni (her sözcüğün ilk harfi büyük)
+  ✓ sayfa hatası yok
+
+✓ senaryo-iz32-230: 41 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a34eec2f4fcc3bf36/test/e2e/artifacts/senaryo-iz32-230

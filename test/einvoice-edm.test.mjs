@@ -169,7 +169,7 @@ describe("Fatura modülü ↔ EDM (program uçları)", () => {
   before(async () => {
     resetEdmCaches();
     edm = await startMockEdm();
-    server = await startTestServer({ edocEnabled: true });
+    server = await startTestServer({ edocEnabled: true, edocStatusPollMs: [10, 10] });
     api = apiOf(server.client());
     assert.equal((await api.login("admin", ADMIN_PASSWORD)).status, 200);
   });
@@ -247,7 +247,9 @@ describe("Fatura modülü ↔ EDM (program uçları)", () => {
     assert.match(last.xml, /<cbc:DocumentTypeCode>SendingType<\/cbc:DocumentTypeCode>/);
     assert.match(last.xml, /<cbc:ID>ELEKTRONIK<\/cbc:ID>/);
     // Gerçek EDM test ortamı (16.10.2026): belge işlenirken (PROCESSING) iptal EDM'de reddedilir (11049). Program önce durumu sorar; işleniyorsa
-    // iptali göndermez, açık ileti verir, belge kesilmiş kalır.
+    // iptali göndermez, açık ileti verir, belge kesilmiş kalır. 2.4.3 (H7): durum birkaç saniye içinde kendiliğinden yeniden sorulur — burada belge
+    // uzun süre işleniyor (dört "GİB yanıtı bekleniyor"), üç sorgunun üçü de işleniyor der.
+    edm.state.statuses.set(issued.data.ettn, ["SEND - WAIT_GIB_RESPONSE", "SEND - WAIT_GIB_RESPONSE", "SEND - WAIT_GIB_RESPONSE", "SEND - WAIT_GIB_RESPONSE", "SEND - SUCCEED"]);
     const cancelsBefore = edm.state.calls.filter(call => call.op === "CancelInvoice").length;
     const early = await api.post(`/api/workspace/invoices/${issued.data.id}/cancel`, { reason: "Müşteri vazgeçti" });
     assert.equal(early.status, 409, JSON.stringify(early.data));
@@ -316,12 +318,21 @@ describe("Fatura modülü ↔ EDM (program uçları)", () => {
     assert.equal(sent.data.paperNo, withdrawn.data.number, "fiş numarası izi kalır");
     assert.equal(sent.data.eStatus, "sent");
   });
-  test("Sonra gönderilecek belge serideki son gönderilenden eski tarihliyse gönderilmez (tarih sırası); listeden silinebilir", async () => {
+  test("Sonra gönderilecek belge serideki son gönderilenden eski tarihliyse gönderilmez (tarih sırası); Müşteri Fişi olarak bırakılabilir", async () => {
     const yesterday = new Date(Date.now() - 86_400_000);
     const day = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, "0")}-${String(yesterday.getDate()).padStart(2, "0")}`;
     if (day.slice(0, 4) !== String(new Date().getFullYear())) return; // yılbaşında seri yeniden başlar
-    const old = await api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: buyerId, issueDate: day, lines: [{ name: "Eski", qty: 1, unitPrice: 100, vatRate: 20 }], payment: { rest: "open" }, eSend: "later" });
-    assert.equal(old.status, 200, JSON.stringify(old.data));
+    const body = { scenario: "service_sale", accountId: buyerId, issueDate: day, lines: [{ name: "Eski", qty: 1, unitPrice: 100, vatRate: 20 }], payment: { rest: "open" }, eSend: "later" };
+    // Dar kontrol 2 (2.4.3, B5): serinin son gönderilenden eski tarihli "Kes, Sonra Gönder" kayıtta reddedilir (D4 kuralı).
+    const refused = await api.post("/api/workspace/invoices", body);
+    assert.equal(refused.status, 400, JSON.stringify(refused.data));
+    assert.equal(refused.data.code, "chronology");
+    // Kalıcı kronoloji engelli bekleyen artık yalnız eski sürüm verisinde (ya da mükellef kayıt defterinden düşen alıcıda) oluşur: belge bugünle
+    // kaydedilir, tarihi eski sürümün yazdığı gibi geriye çekilir; gönderim yine kronolojiyle durur.
+    const saved = await api.post("/api/workspace/invoices", { ...body, issueDate: undefined });
+    assert.equal(saved.status, 200, JSON.stringify(saved.data));
+    server.app.store.run("UPDATE invoices SET issue_date = ? WHERE id = ?", day, saved.data.id);
+    const old = await api.get(`/api/workspace/invoices/${saved.data.id}`);
     assert.equal(old.data.canSend, false);
     assert.match(old.data.sendBlock, /daha eski tarihli/);
     const sent = await api.post(`/api/workspace/invoices/${old.data.id}/send`, {});

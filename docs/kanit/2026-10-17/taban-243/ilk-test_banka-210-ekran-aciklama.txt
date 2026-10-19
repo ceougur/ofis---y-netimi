@@ -1,0 +1,3 @@
+✗ v2.0.23 etiketi yok (git fetch --tags); test koşulamadı
+
+✗ banka-210-ekran-aciklama-yetki: 0 geçti, 1 kaldı

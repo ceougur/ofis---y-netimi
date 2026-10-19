@@ -1,0 +1,48 @@
+test:e2e	0	151s	  ✓ deneme süresi dolunca program durur: şerit, açıklama, yazma engeli; lisans anahtarıyla kaldığı yerden devam eder (3423 ms)   ✓ tarayıcı konsol
+test:senaryo	0	65s	✓ Kasa bakiyesi 4.500,00 → 3.300,00 ✓ konsolda hata yok 
+test:senaryo-rapor	0	28s	✓ yetki verilen personelde tarayıcı hatası yok ✓ tarayıcı hatası yok 
+test:senaryo-taslak	0	14s	✓ taslak indirmek mevcut veriye dokunmaz ✓ tarayıcı hatası yok 
+test:senaryo-210	0	34s	✓ m16: eski oturumlar kapandı ✓ tarayıcı hatası yok 
+test:senaryo-211	0	81s	✓ m7: gezilen tüm ekranlarda başlık, düğme, sekme, kolon ve gösterge adları başlık yazımıyla ✓ hiçbir ekranda tarayıcı hatası yok 
+test:senaryo-212	0	26s	✓ karttan açılan carinin kayıt tarihi: 2026-01-14 ✓ hiçbir ekranda tarayıcı hatası yok 
+test:senaryo-213	0	48s	✓ kaydedildi: {"cash":"block","bank":"off","card":"off"} ✓ hiçbir ekranda tarayıcı hatası yok 
+test:senaryo-214	0	56s	✓ Sohbet → mesaj yazma (gelen mesaj sırasında): "merhaba" kesintisiz yazıldı (odak, değer ve imleç her harfte yerinde) ✓ gelen mesaj iş parçacığ
+test:senaryo-215	0	90s	✓ kaşe / imza ayarı kaydedildi ✓ satış PDF'inde logo görseli gömülü 
+test:senaryo-216	0	90s	✓ Ürün Bazında Satış raporunda Stok Kodu kolonu (Stok Kodu; 1 satır) ✓ stok raporunda Stok Kodu kolonu (Stok Kodu) 
+test:senaryo-217	0	72s	✓ sıfırlama sonrası 002 Kasa 0 ✓ 001 verisi aynı (Kasa 19000, 2 cari) 
+test:senaryo-218	0	96s	  ✓ cari Tablodaki Kayıt alanıyla kayda bağlı (2026/2)   ✓ "2026/2" adıyla cari yok 
+test:senaryo-219	0	56s	  ✓ portföyde 2 evrak   ✓ sayfada JavaScript hatası yok 
+test:senaryo-220	0	54s	  ✓ şirket kutusu: "ŞİRKET 001 · Şirket 1" (sayı rozeti yok)   ✓ sayfada JavaScript hatası yok 
+test:senaryo-220-yedek	0	8s	  ✓ Yönetim sayfası kaldırılan Drive uçlarını çağırmaz — Yedek Al, Geri Yükle, Şirketler boyunca (0 istek)   ✓ sayfada JavaScript hatası yok 
+test:senaryo-221	0	6s	  ✓ Yönetim'den kaydedilen unvan 001'e yazıldı (seçim 002 iken): 001 “Ana Unvan”, 002 “Gayri Resmî”   ✓ sayfada JavaScript hatası yok 
+test:senaryo-222	0	101s	  ✓ mutabakat 62/62   ✓ sayfada JavaScript hatası yok 
+test:senaryo-223	0	79s	  ✓ POS: POS / Kredi Kartı · 01.01.2026 – 31.12.2026 · giriş 700,00 TL   ✓ sayfa hatası yok 
+test:senaryo-224	0	68s	  ✓ ana defter ↔ Kasa/Cari/Stok/Taksit/Çek tutarlı   ✓ sayfa hatası yok 
+test:senaryo-225	0	30s	  ✓ tek şirketle seçicide “+ Yeni Şirket” geri geldi   ✓ sayfa hatası yok 
+test:senaryo-225-uyari	0	135s	# pass 36 # fail 0 
+test:senaryo-226	0	14s	  ✓ sarı uyarı, kırmızı hata değil (adm-muted adm-warn-text)   ✓ sayfa hatası yok 
+test:senaryo-iz1-sayfa	0	21s	  ✓ B yerinde, şerit tek sayfa (1)   ✓ sayfa hatası yok 
+test:senaryo-iz1-kasa-acilis	0	17s	  ✓ sıradan Kasa satırında ✎ var   ✓ sayfa hatası yok 
+test:senaryo-banka-210	0	292s	  ✓ Ürün A 9 (beklenen 9)   ✓ kabul 16 sonu mutabakat ok 
+test:senaryo-banka-210b	0	91s	  ✓ sayfa hatası yok ✓ senaryo-banka-210b: 90 geçti, 0 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratc
+test:senaryo-banka-210-temel	1	31s	  ✓ sayfa hatası yok ✗ senaryo-banka-210-temel: 49 geçti, 1 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/s
+test:senaryo-banka-210-eski-satir	1	22s	  ✓ sayfa hatası yok ✗ senaryo-banka-210-eski-satir: 24 geçti, 1 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff431
+test:senaryo-banka-220	0	76s	  ✓ sayfa hatası yok ✓ senaryo-banka-220: 76 geçti, 0 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratch
+test:senaryo-pos-220	0	104s	  ✓ sayfa hatası yok ✓ senaryo-pos-220: 113 geçti, 0 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchp
+test:senaryo-tahsile-ver-220	0	76s	  ✓ sayfa hatası yok ✓ senaryo-tahsile-ver-220: 140 geçti, 0 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/
+test:senaryo-k8-230	0	12s	  ✓ sayfa hatası yok ✓ senaryo-k8-230: 17 geçti, 0 kaldı 
+test:senaryo-iz32-230	0	32s	  ✓ sayfa hatası yok ✓ senaryo-iz32-230: 41 geçti, 0 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchp
+test:senaryo-supheli-230	0	39s	  ✓ sayfa hatası yok ✓ senaryo-supheli-230: 67 geçti, 0 kaldı 
+test:senaryo-iz5-230	0	36s	  ✓ Kayda Git → “Görevler” penceresi   ✓ sayfa hatası yok 
+test:senaryo-entegrator-240	0	63s	  ✓ sahte EDM sözleşme ihlali yok ✓ senaryo-entegrator-240: 73 geçti, 0 kaldı 
+test:senaryo-ebelge-242	0	48s	  ✓ giriş formu olduğu gibi (tarayıcı giriş parolasını hatırlayabilir): {"type":"password","autocomplete":"current-password"}   ✓ sayfa hatası yok 
+test:senaryo-ebelge-243	0	15s	  ✓ belge değişmedi (TEF2026871879830 TEMELFATURA)   ✓ sayfa hatası yok 
+test:banka-210-kart-onbellek	0	74s	  ✓ sayfa hatası yok ✓ banka-210-kart-onbellek-yaris: 49 geçti, 0 kaldı 
+test:banka-210-daha-fazla	0	77s	  ✓ sayfa hatası yok ✓ banka-210-daha-fazla-yaris: 31 geçti, 0 kaldı 
+test:banka-230-hareket-yaris	0	35s	  ✓ sayfa hatası yok ✓ banka-230-hareket-yaris: 37 geçti, 0 kaldı 
+test:acilis-yanit-yaris	0	49s	✓ deneme 5 (hedef client-state, gövde +2500 ms): düşen istek GET /api/workspace/client-state?hofCompany=sirket-001 200 — sayfa betiği (fetch), açılı�
+test:banka-210-ekran-aciklama	1	0s	✗ v2.0.23 etiketi yok (git fetch --tags); test koşulamadı ✗ banka-210-ekran-aciklama-yetki: 0 geçti, 1 kaldı 
+test:banka-210-saat	0	6s	  ✓ mutabakat ok   ✓ sayfa hatası yok 
+test:senaryo-whatsapp	0	152s	✓ tercih hatırlanır (kapalı) ✓ hiçbir ekranda tarayıcı hatası yok 
+test:guncelleme-gercek	0	239s	  ✓ Yönetim → Sistem: '9.0.1 sürümüne güncellendi'   ✓ sayfa hatası yok 
+BITTI

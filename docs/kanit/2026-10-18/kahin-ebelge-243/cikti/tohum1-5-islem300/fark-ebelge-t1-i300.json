@@ -1,0 +1,1248 @@
+{
+ "ad": "ebelge-t1-i300",
+ "tohum": 1,
+ "islem": 300,
+ "bugun": "2026-12-27",
+ "farkSayisi": 58,
+ "ihlalSayisi": 13,
+ "safModelSonFark": 54,
+ "farklar": [
+  {
+   "belge": "B18",
+   "alan": "numara",
+   "model": "TEF2026000000005",
+   "program": "",
+   "adim": 53,
+   "islem": "esz_tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok)"
+  },
+  {
+   "belge": "B18",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 53,
+   "islem": "esz_tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok)"
+  },
+  {
+   "belge": "B18",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 53,
+   "islem": "esz_tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok)"
+  },
+  {
+   "belge": "B18",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 53,
+   "islem": "esz_tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok)"
+  },
+  {
+   "belge": "B18",
+   "alan": "numara",
+   "model": "TEF2026000000005",
+   "program": "",
+   "adim": 58,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok)"
+  },
+  {
+   "belge": "B22",
+   "alan": "numara",
+   "model": "TEF2026000000006",
+   "program": "",
+   "adim": 58,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok)"
+  },
+  {
+   "belge": "B22",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 58,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok)"
+  },
+  {
+   "belge": "B22",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 58,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok)"
+  },
+  {
+   "belge": "B22",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 58,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok)"
+  },
+  {
+   "belge": "B18",
+   "alan": "numara",
+   "model": "TEF2026000000005",
+   "program": "",
+   "adim": 62,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B22",
+   "alan": "numara",
+   "model": "TEF2026000000006",
+   "program": "",
+   "adim": 62,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B22",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 62,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B22",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 62,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B22",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 62,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B23",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 62,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B23",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 62,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B23",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 62,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1-ARDIL (aynı adımda O1/O3 farkı; tur sırası ondan kaydı)"
+  },
+  {
+   "belge": "B18",
+   "alan": "numara",
+   "model": "TEF2026000000005",
+   "program": "",
+   "adim": 65,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B18",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 65,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B18",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 65,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B18",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 65,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B22",
+   "alan": "numara",
+   "model": "TEF2026000000006",
+   "program": "",
+   "adim": 65,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B22",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 65,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B22",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 65,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B22",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 65,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B18",
+   "alan": "numara",
+   "model": "TEF2026000000005",
+   "program": "",
+   "adim": 73,
+   "islem": "tur_sirasinda_sil",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B18",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 73,
+   "islem": "tur_sirasinda_sil",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B18",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 73,
+   "islem": "tur_sirasinda_sil",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B18",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 73,
+   "islem": "tur_sirasinda_sil",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B22",
+   "alan": "numara",
+   "model": "TEF2026000000006",
+   "program": "",
+   "adim": 73,
+   "islem": "tur_sirasinda_sil",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B22",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 73,
+   "islem": "tur_sirasinda_sil",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B22",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 73,
+   "islem": "tur_sirasinda_sil",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B22",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 73,
+   "islem": "tur_sirasinda_sil",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B18",
+   "alan": "numara",
+   "model": "TEF2026000000005",
+   "program": "",
+   "adim": 74,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B18",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 74,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B18",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 74,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B18",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 74,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B22",
+   "alan": "numara",
+   "model": "TEF2026000000006",
+   "program": "",
+   "adim": 74,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B22",
+   "alan": "edm",
+   "model": true,
+   "program": false,
+   "adim": 74,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B22",
+   "alan": "gonderildi",
+   "model": true,
+   "program": false,
+   "adim": 74,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B22",
+   "alan": "bekleyen",
+   "model": false,
+   "program": true,
+   "adim": 74,
+   "islem": "tumunu_gonder",
+   "sinif": "BEKLENEN-O1 (eski kalıcı engelli bekleyen seriyi bekletiyor: B11:pk-yok,B21:pk-yok,B25:pk-yok)"
+  },
+  {
+   "belge": "B35",
+   "alan": "numara",
+   "model": "",
+   "program": "TEF2026000000005",
+   "adim": 80,
+   "islem": "kaydet",
+   "sinif": "BEKLENEN-O1-ZINCIR (eski bekleyen B18 kendisi engelli B11 arkasında; yeni belge numaralandı → B18 kalıcı tarih engeline düştü)"
+  },
+  {
+   "belge": "B35",
+   "alan": "edm",
+   "model": false,
+   "program": true,
+   "adim": 80,
+   "islem": "kaydet",
+   "sinif": "BEKLENEN-O1-ZINCIR (eski bekleyen B18 kendisi engelli B11 arkasında; yeni belge numaralandı → B18 kalıcı tarih engeline düştü)"
+  },
+  {
+   "belge": "B35",
+   "alan": "gonderildi",
+   "model": false,
+   "program": true,
+   "adim": 80,
+   "islem": "kaydet",
+   "sinif": "BEKLENEN-O1-ZINCIR (eski bekleyen B18 kendisi engelli B11 arkasında; yeni belge numaralandı → B18 kalıcı tarih engeline düştü)"
+  },
+  {
+   "belge": "B35",
+   "alan": "bekleyen",
+   "model": true,
+   "program": false,
+   "adim": 80,
+   "islem": "kaydet",
+   "sinif": "BEKLENEN-O1-ZINCIR (eski bekleyen B18 kendisi engelli B11 arkasında; yeni belge numaralandı → B18 kalıcı tarih engeline düştü)"
+  },
+  {
+   "belge": "B46",
+   "alan": "yanit",
+   "model": "2xx",
+   "program": 400,
+   "kod": "chronology",
+   "adim": 120,
+   "islem": "duzenle_tarih",
+   "sinif": "BASKA-DUZENLE-SIRA (numarasız bekleyenin tarihi sıra-tarihi bozmadan değiştirilemiyor)"
+  },
+  {
+   "belge": "B52",
+   "alan": "var",
+   "model": false,
+   "program": true,
+   "adim": 124,
+   "islem": "kagit_kaydet",
+   "sinif": "BASKA-FIS-SIRA-ARDIL (FIS serisi önceden sıra-tarih bozuk; kâğıt kaydı son numaranın tarihine göre denetleniyor)"
+  },
+  {
+   "belge": "B52",
+   "alan": "yanit",
+   "model": "4xx",
+   "program": 200,
+   "kod": "",
+   "adim": 124,
+   "islem": "kagit_kaydet",
+   "sinif": "BASKA-FIS-SIRA-ARDIL (FIS serisi önceden sıra-tarih bozuk; kâğıt kaydı son numaranın tarihine göre denetleniyor)"
+  },
+  {
+   "belge": "B65",
+   "alan": "numara",
+   "model": "",
+   "program": "TEA2027000000002",
+   "adim": 151,
+   "islem": "kaydet",
+   "sinif": "BEKLENEN-AG (ağ yokken numara verildi)"
+  },
+  {
+   "belge": "B69",
+   "alan": "yanit",
+   "model": "4xx",
+   "program": 200,
+   "kod": "",
+   "adim": 169,
+   "islem": "tur_sirasinda_sil",
+   "sinif": "BEKLENEN-O2 (tur sürerken Listeden Sil kabul edildi, belge yine gitti)"
+  },
+  {
+   "belge": "B86",
+   "alan": "numara",
+   "model": "",
+   "program": "TEF2027000000008",
+   "adim": 196,
+   "islem": "kaydet",
+   "sinif": "BEKLENEN-O1-ZINCIR (eski bekleyen B82 kendisi engelli B60 arkasında; yeni belge numaralandı → B82 kalıcı tarih engeline düştü)"
+  },
+  {
+   "belge": "B86",
+   "alan": "edm",
+   "model": false,
+   "program": true,
+   "adim": 196,
+   "islem": "kaydet",
+   "sinif": "BEKLENEN-O1-ZINCIR (eski bekleyen B82 kendisi engelli B60 arkasında; yeni belge numaralandı → B82 kalıcı tarih engeline düştü)"
+  },
+  {
+   "belge": "B86",
+   "alan": "gonderildi",
+   "model": false,
+   "program": true,
+   "adim": 196,
+   "islem": "kaydet",
+   "sinif": "BEKLENEN-O1-ZINCIR (eski bekleyen B82 kendisi engelli B60 arkasında; yeni belge numaralandı → B82 kalıcı tarih engeline düştü)"
+  },
+  {
+   "belge": "B86",
+   "alan": "bekleyen",
+   "model": true,
+   "program": false,
+   "adim": 196,
+   "islem": "kaydet",
+   "sinif": "BEKLENEN-O1-ZINCIR (eski bekleyen B82 kendisi engelli B60 arkasında; yeni belge numaralandı → B82 kalıcı tarih engeline düştü)"
+  },
+  {
+   "belge": "B91",
+   "alan": "numara",
+   "model": "",
+   "program": "TEA2027000000008",
+   "adim": 206,
+   "islem": "kaydet",
+   "sinif": "BEKLENEN-O1-ZINCIR (eski bekleyen B90 kendisi engelli B72 arkasında; yeni belge numaralandı → B90 kalıcı tarih engeline düştü)"
+  },
+  {
+   "belge": "B91",
+   "alan": "edm",
+   "model": false,
+   "program": true,
+   "adim": 206,
+   "islem": "kaydet",
+   "sinif": "BEKLENEN-O1-ZINCIR (eski bekleyen B90 kendisi engelli B72 arkasında; yeni belge numaralandı → B90 kalıcı tarih engeline düştü)"
+  },
+  {
+   "belge": "B91",
+   "alan": "gonderildi",
+   "model": false,
+   "program": true,
+   "adim": 206,
+   "islem": "kaydet",
+   "sinif": "BEKLENEN-O1-ZINCIR (eski bekleyen B90 kendisi engelli B72 arkasında; yeni belge numaralandı → B90 kalıcı tarih engeline düştü)"
+  },
+  {
+   "belge": "B91",
+   "alan": "bekleyen",
+   "model": true,
+   "program": false,
+   "adim": 206,
+   "islem": "kaydet",
+   "sinif": "BEKLENEN-O1-ZINCIR (eski bekleyen B90 kendisi engelli B72 arkasında; yeni belge numaralandı → B90 kalıcı tarih engeline düştü)"
+  }
+ ],
+ "ihlaller": [
+  {
+   "adim": 35,
+   "islem": "listeden_sil",
+   "kod": "I2",
+   "ileti": "FIS2026: 2 (B5, 2026-12-25) önceki 1 (B7, 2026-12-29) belgesinden eski tarihli",
+   "yineleme": 265,
+   "seri": "FIS2026",
+   "belge": "B5",
+   "sinif": "BASKA-FIS-SIRA (Listeden Sil eski tarihli belgeye FIS numarası verdi)"
+  },
+  {
+   "adim": 53,
+   "islem": "esz_tumunu_gonder",
+   "kod": "I15",
+   "ileti": "B13: eşzamanlı turda gönderilen belge için hata yanıtı (einvoice-sending)",
+   "yineleme": 0,
+   "belge": "B13",
+   "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"
+  },
+  {
+   "adim": 71,
+   "islem": "listeden_sil",
+   "kod": "I2",
+   "ileti": "FIS2026: 4 (B16, 2026-12-13) önceki 3 (B17, 2026-12-29) belgesinden eski tarihli",
+   "yineleme": 229,
+   "seri": "FIS2026",
+   "belge": "B16",
+   "sinif": "BASKA-FIS-SIRA (Listeden Sil eski tarihli belgeye FIS numarası verdi)"
+  },
+  {
+   "adim": 117,
+   "islem": "listeden_sil",
+   "kod": "I2",
+   "ileti": "FIS2026: 8 (B43, 2026-12-20) önceki 7 (B48, 2026-12-31) belgesinden eski tarihli",
+   "yineleme": 183,
+   "seri": "FIS2026",
+   "belge": "B43",
+   "sinif": "BASKA-FIS-SIRA (Listeden Sil eski tarihli belgeye FIS numarası verdi)"
+  },
+  {
+   "adim": 126,
+   "islem": "listeden_sil",
+   "kod": "I2",
+   "ileti": "FIS2026: 10 (B11, 2026-12-26) önceki 9 (B52, 2026-12-30) belgesinden eski tarihli",
+   "yineleme": 174,
+   "seri": "FIS2026",
+   "belge": "B11",
+   "sinif": "BASKA-FIS-SIRA (Listeden Sil eski tarihli belgeye FIS numarası verdi)"
+  },
+  {
+   "adim": 138,
+   "islem": "esz_tumunu_gonder",
+   "kod": "I15",
+   "ileti": "B56: eşzamanlı turda gönderilen belge için hata yanıtı (einvoice-sending)",
+   "yineleme": 0,
+   "belge": "B56",
+   "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"
+  },
+  {
+   "adim": 169,
+   "islem": "tur_sirasinda_sil",
+   "kod": "I8",
+   "ileti": "B69: tur sürerken Listeden Sil kabul edildi ama belge EDM'ye gitti",
+   "yineleme": 0,
+   "belge": "B69",
+   "sinif": "BEKLENEN-O2 (tur sürerken Listeden Sil)"
+  },
+  {
+   "adim": 175,
+   "islem": "tur_sirasinda_sil",
+   "kod": "I2",
+   "ileti": "FIS2026: 12 (B51, 2026-12-23) önceki 11 (B37, 2026-12-28) belgesinden eski tarihli",
+   "yineleme": 125,
+   "seri": "FIS2026",
+   "belge": "B51",
+   "sinif": "BASKA-FIS-SIRA (Listeden Sil eski tarihli belgeye FIS numarası verdi)"
+  },
+  {
+   "adim": 209,
+   "islem": "esz_tumunu_gonder",
+   "kod": "I15",
+   "ileti": "B88: eşzamanlı turda gönderilen belge için hata yanıtı (einvoice-already-sent)",
+   "yineleme": 0,
+   "belge": "B88",
+   "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"
+  },
+  {
+   "adim": 209,
+   "islem": "esz_tumunu_gonder",
+   "kod": "I15",
+   "ileti": "B89: eşzamanlı turda gönderilen belge için hata yanıtı (einvoice-sending)",
+   "yineleme": 0,
+   "belge": "B89",
+   "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"
+  },
+  {
+   "adim": 209,
+   "islem": "esz_tumunu_gonder",
+   "kod": "I15",
+   "ileti": "B87: eşzamanlı turda gönderilen belge için hata yanıtı (integrator-unreachable)",
+   "yineleme": 0,
+   "belge": "B87",
+   "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"
+  },
+  {
+   "adim": 235,
+   "islem": "listeden_sil",
+   "kod": "I2",
+   "ileti": "FIS2027: 3 (B63, 2027-01-05) önceki 2 (B64, 2027-01-07) belgesinden eski tarihli",
+   "yineleme": 65,
+   "seri": "FIS2027",
+   "belge": "B63",
+   "sinif": "BASKA-FIS-SIRA (Listeden Sil eski tarihli belgeye FIS numarası verdi)"
+  },
+  {
+   "adim": 277,
+   "islem": "esz_tumunu_gonder",
+   "kod": "I15",
+   "ileti": "B115: eşzamanlı turda gönderilen belge için hata yanıtı (einvoice-sending)",
+   "yineleme": 0,
+   "belge": "B115",
+   "sinif": "BASKA-ESZ (eşzamanlı turda 'gönderiliyor' hata olarak döndü)"
+  }
+ ],
+ "catalSecimleri": [
+  {
+   "adim": 4,
+   "aday": 3,
+   "secilen": [
+    "B1: geçici hata, numara korundu, gitmedi"
+   ]
+  },
+  {
+   "adim": 17,
+   "aday": 2,
+   "secilen": [
+    "B2: gönderilmiş belge programda iptal edildi"
+   ]
+  },
+  {
+   "adim": 22,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 24,
+   "aday": 3,
+   "secilen": [
+    "B6: kopma_once, edm=False, program=False"
+   ]
+  },
+  {
+   "adim": 27,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 34,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 35,
+   "aday": 2,
+   "secilen": [
+    "B5: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 38,
+   "aday": 2,
+   "secilen": [
+    "B12: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 41,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 42,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 43,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 46,
+   "aday": 3,
+   "secilen": [
+    "B13: kopma_sonra, edm=True, program=False"
+   ]
+  },
+  {
+   "adim": 51,
+   "aday": 2,
+   "secilen": [
+    "B17: numaralı belgenin tarih düzenlemesi reddedildi"
+   ]
+  },
+  {
+   "adim": 52,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 58,
+   "aday": 3,
+   "secilen": [
+    "B18: kopma_once, edm=False, program=False"
+   ]
+  },
+  {
+   "adim": 60,
+   "aday": 2,
+   "secilen": [
+    "B24: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 61,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 62,
+   "aday": 3,
+   "secilen": [
+    "B18: kopma_once, edm=False, program=False"
+   ]
+  },
+  {
+   "adim": 67,
+   "aday": 2,
+   "secilen": [
+    "B28: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 68,
+   "aday": 2,
+   "secilen": [
+    "B29: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 71,
+   "aday": 2,
+   "secilen": [
+    "B16: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 77,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 84,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 86,
+   "aday": 2,
+   "secilen": [
+    "B39: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 90,
+   "aday": 2,
+   "secilen": [
+    "B41: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 92,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 99,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 104,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 113,
+   "aday": 2,
+   "secilen": [
+    "B21: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 115,
+   "aday": 2,
+   "secilen": [
+    "B48: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 116,
+   "aday": 2,
+   "secilen": [
+    "B49: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 117,
+   "aday": 2,
+   "secilen": [
+    "B43: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 119,
+   "aday": 3,
+   "secilen": [
+    "B50: geçici hata, numara korundu, gitmedi"
+   ]
+  },
+  {
+   "adim": 122,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 126,
+   "aday": 2,
+   "secilen": [
+    "B11: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 132,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 133,
+   "aday": 2,
+   "secilen": [
+    "B55: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 136,
+   "aday": 3,
+   "secilen": [
+    "B56: kopma_once, edm=False, program=False"
+   ]
+  },
+  {
+   "adim": 137,
+   "aday": 2,
+   "secilen": [
+    "B57: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 139,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 142,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 143,
+   "aday": 2,
+   "secilen": [
+    "B61: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 146,
+   "aday": 2,
+   "secilen": [
+    "B62: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 147,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 153,
+   "aday": 2,
+   "secilen": [
+    "B37: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 154,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 155,
+   "aday": 2,
+   "secilen": [
+    "B67: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 156,
+   "aday": 2,
+   "secilen": [
+    "B11: gönderilemedi, liste dışında kaldı"
+   ]
+  },
+  {
+   "adim": 160,
+   "aday": 2,
+   "secilen": [
+    "B70: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 164,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 169,
+   "aday": 3,
+   "secilen": [
+    "B69: tur sırasında silme reddedildi"
+   ]
+  },
+  {
+   "adim": 175,
+   "aday": 3,
+   "secilen": [
+    "B51: tur sırasında silindi",
+    "B51: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 176,
+   "aday": 2,
+   "secilen": [
+    "B75: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 182,
+   "aday": 3,
+   "secilen": [
+    "B77: geçici hata, numara korundu, gitmedi"
+   ]
+  },
+  {
+   "adim": 187,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 188,
+   "aday": 2,
+   "secilen": [
+    "B81: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 191,
+   "aday": 2,
+   "secilen": [
+    "B84: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 193,
+   "aday": 2,
+   "secilen": [
+    "B34: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 204,
+   "aday": 3,
+   "secilen": [
+    "B89: kopma_once, edm=False, program=False"
+   ]
+  },
+  {
+   "adim": 209,
+   "aday": 26,
+   "secilen": [
+    "B89: kopma_sonra, edm=True, program=True"
+   ]
+  },
+  {
+   "adim": 210,
+   "aday": 2,
+   "secilen": [
+    "B92: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 211,
+   "aday": 2,
+   "secilen": [
+    "B93: Kaydet ve Gönder reddedildi (pk-yok)"
+   ]
+  },
+  {
+   "adim": 221,
+   "aday": 3,
+   "secilen": [
+    "B95: kopma_once, edm=False, program=False"
+   ]
+  },
+  {
+   "adim": 223,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 224,
+   "aday": 2,
+   "secilen": [
+    "B97: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 228,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 229,
+   "aday": 2,
+   "secilen": [
+    "B99: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 230,
+   "aday": 2,
+   "secilen": [
+    "B100: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 233,
+   "aday": 3,
+   "secilen": [
+    "B103: kopma_sonra, edm=True, program=False"
+   ]
+  },
+  {
+   "adim": 235,
+   "aday": 2,
+   "secilen": [
+    "B63: silinince FIS numarası aldı"
+   ]
+  },
+  {
+   "adim": 236,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 241,
+   "aday": 2,
+   "secilen": [
+    "B107: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 242,
+   "aday": 3,
+   "secilen": [
+    "B105: kopma_sonra, edm=True, program=False"
+   ]
+  },
+  {
+   "adim": 257,
+   "aday": 2,
+   "secilen": [
+    "B111: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 258,
+   "aday": 19,
+   "secilen": []
+  },
+  {
+   "adim": 261,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 262,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 265,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 270,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 271,
+   "aday": 2,
+   "secilen": [
+    "B40: gönderilmiş belgenin iptali reddedildi"
+   ]
+  },
+  {
+   "adim": 273,
+   "aday": 26,
+   "secilen": [
+    "B115: kopma_sonra, edm=True, program=False"
+   ]
+  },
+  {
+   "adim": 275,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 277,
+   "aday": 25,
+   "secilen": []
+  },
+  {
+   "adim": 278,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 280,
+   "aday": 2,
+   "secilen": [
+    "B120: Kaydet ve Gönder reddedildi (tarih-sirasi)"
+   ]
+  },
+  {
+   "adim": 281,
+   "aday": 25,
+   "secilen": []
+  },
+  {
+   "adim": 283,
+   "aday": 3,
+   "secilen": [
+    "B121: kopma_once, edm=False, program=False"
+   ]
+  },
+  {
+   "adim": 284,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 285,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 286,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 291,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 294,
+   "aday": 2,
+   "secilen": []
+  },
+  {
+   "adim": 297,
+   "aday": 2,
+   "secilen": []
+  }
+ ],
+ "eStatusDegerleri": {
+  "waiting": 5372,
+  "error": 22,
+  "sent": 5773,
+  "cancelled": 325,
+  "processing": 1602,
+  "none": 1494,
+  "withdrawn": 1857
+ },
+ "kucultulmus": null,
+ "sure": 23.7
+}

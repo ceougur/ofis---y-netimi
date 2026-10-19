@@ -2,6 +2,11 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.4.3 — İyileştirmeler
+
+- İyileştirmeler ve hata düzeltmeleri (e-Fatura / e-Arşiv gönderimi, formlar ve bildirimler, cari, banka ve raporlar).
+- Yeni: Vergi Ödemesi ve KDV Mahsup Fişi, faturada Nihai Tüketici; stok açılışı Ana Defter'de. Ayrıntı: docs/2.4.3-DEGISIKLIKLER.md.
+
 ## 2.4.2 — İyileştirmeler
 
 - İyileştirmeler ve hata düzeltmeleri (e-Fatura / e-Arşiv test ortamı). Ayrıntı: docs/2.4.2-DEGISIKLIKLER.md.
