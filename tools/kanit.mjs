@@ -414,7 +414,12 @@ function readRecords(dir) {
     for (const name of readdirSync(folder, { withFileTypes: true })) {
       const full = path.join(folder, name.name);
       if (name.isDirectory()) walk(full);
-      else if (name.name.endsWith(".json")) out.push(JSON.parse(readFileSync(full, "utf8")));
+      else if (name.name.endsWith(".json")) {
+        // Yalnız `kos` kaydı (ad + hukum) sayılır; aynı klasöre düşen başka JSON (kâhin fark/ham çıktısı) kayıt değildir.
+        // Beklenen kayıtların hepsi --beklenen ile ayrıca aranır, yok sayılan dosya eksik kaydı gizleyemez (Uzun Doğrulama 19.10.2026).
+        const data = JSON.parse(readFileSync(full, "utf8"));
+        if (data && typeof data.ad === "string" && typeof data.hukum === "string") out.push(data);
+      }
     }
   };
   try {
