@@ -489,4 +489,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   bağdaştırıcısı, GİB e-SMM XML'i, numara/kopma/iptal kuralları + dar kontrol, test ortamı uçtan uca + kılavuz + açma) + 2.4.3'ten ertelenenler (UI11, UI5, UI9,
   UI3a, UX9, UX10, UX15–UX18, UX20, UX25, UX27, KÖ3) + gg243-dar-kontrol-gonderim D2 ön koşulunu belirlenimci yap (ders 20) + e-Arşiv iptal 8. gün teyidi.
   BAŞLANGIÇ: Perşembe 22.10.2026 02:00 sıfırlamasından SONRA; öncesinde para çekirdeğine dokunan iş başlatılmaz. Tahmin ~1,5–2 gün (e-SMM), ~1,5–3 M token.
+- SORU (kullanıcının yardımcısı, 19.10.2026): "EDM'de tüm bilgileri getirmek 1 kontör; kontör düşmesin dersen yalnız ticari unvan + posta kutusu gelir". KODDAN: Mükellef
+  Sorgula yalnız CheckUser çağırır (edm.mjs checkUser: unvan, PK etiketleri, tür) — adres / vergi dairesi GETİRMEZ, kontörlü sorgu YOK. EDM WSDL'inde GetCompany /
+  GetCompanyBasic / GetTurmob var (hangisinin kontörlü olduğu ve döndürdüğü alanlar doğrulanmadı). 2.4.4 ADAYI (karar kullanıcıda): isteğe bağlı "Tüm Bilgileri Getir
+  (1 kontör)" — onaylı, ücreti yazan düğme; varsayılan ücretsiz sorgu.
 
