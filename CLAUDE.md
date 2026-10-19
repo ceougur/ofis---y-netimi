@@ -473,3 +473,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   yeniden koşuda YEŞİL (D2 ön koşul zamanlaması — 2.4.4: belirlenimci yap); PR ceougur/ofis---y-netimi#33 CI YEŞİL. Kullanıcıya "yayını açabilirsiniz" bildirildi.
   KALAN: kullanıcı "birleştir" → PR birleşir; kullanıcı yayın açar (v2.4.3, 5 dosya) → "yayımladım" → yayındaki dosyalar bayt bayt + güncelleyici "available"
   → site PR'ı (ceougur/destekofis web/indir kılavuz).
+- e-SMM YANITI (EDM, kullanıcının iletisi 19.10.2026): e-SMM uç noktaları e-Fatura/e-Arşiv'den FARKLI; AYNI test hesabıyla e-SMM uç noktalarında denenebilir.
+  Canlıda müşteri için ayrıca e-SMM siparişi + açılış işlemleri gerekir (ticari@edmbilisim.com.tr). Uç nokta adresleri EDM'nin Word belgesinde (e-postanın eki;
+  genel belge bağlantısı dosya.edmbilisim.com.tr owncloud). SIRADAKİ: kullanıcı Word belgesini oturuma YÜKLER → uç noktalar + şema okunur → e-SMM (config.esmmEnabled,
+  şimdilik gizli) test ortamında uçtan uca plan + kapsam/maliyet önerisi kullanıcıya; karar kullanıcıda (2.4.4 ya da ayrı sürüm). Kod henüz değişmedi.
+
