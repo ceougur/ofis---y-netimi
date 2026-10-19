@@ -469,4 +469,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   kayıt sanıldı; ürün değil) → düzeltme b68aafe (kanit.mjs readRecords; test eski araçta kırmızı → 48/48). KARAR (kullanıcı, 19.10.2026 ~07:00 UTC, "uygun"):
   b68aafe CI yeşil olunca TESLİM (5 dosya + arşiv) şimdi; aynı anda b68aafe'de Uzun Doğrulama baştan; kullanıcı GitHub YAYININI kapı yeşil bildirilene kadar AÇMAZ
   (kapı kırmızıysa yayın açılmaz). Gerçek EDM 05e64d0'da 7/7 (ürün kodu 3673956/b68aafe ile aynı).
-
+  SONUÇ (19.10.2026 ~10:30 UTC): Uzun Doğrulama b68aafe run 39212127100 KAPI YEŞİL (24/24; tohum 2 koşucu kopması → tek yeniden koşu GEÇTİ); CI #842 b68aafe
+  yeniden koşuda YEŞİL (D2 ön koşul zamanlaması — 2.4.4: belirlenimci yap); PR ceougur/ofis---y-netimi#33 CI YEŞİL. Kullanıcıya "yayını açabilirsiniz" bildirildi.
+  KALAN: kullanıcı "birleştir" → PR birleşir; kullanıcı yayın açar (v2.4.3, 5 dosya) → "yayımladım" → yayındaki dosyalar bayt bayt + güncelleyici "available"
+  → site PR'ı (ceougur/destekofis web/indir kılavuz).
