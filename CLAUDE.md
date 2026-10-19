@@ -465,3 +465,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - DAR KONTROL 3 (19.10.2026, fc42855): B-1 ORTA gerileme (vekil sunucu kapalıyken numara veriliyordu; B3 oturum önbelleği kaynaklı), B-2 DÜŞÜK (tur sürerken
   imleç öncesi belge), B-3 DÜŞÜK (stok açılışı Düzenle gidiş-dönüşü), kâhin eşitleme hatası — ana oturum B-1/B-2/B-3'ü yeniden üretti; düzeltme bbb6d3c (eski 5/16 →
   16/16; kâhin 9–12 fark 0; defter kâhini 147/147). Vergi Ödemesi/KDV Mahsup ve KÖ1 sorunsuz. Görüş: silinen üründe açılış 153'te kalır (bilinçli).
+- SON ADAY (19.10.2026): 3673956 CI #841 YEŞİL; Uzun Doğrulama run 39200937044: 24/24 iş YEŞİL, "Uzun Doğrulama Kapısı" ARAÇ HATASIYLA çöktü (kâhin --cikti JSON'ları
+  kayıt sanıldı; ürün değil) → düzeltme b68aafe (kanit.mjs readRecords; test eski araçta kırmızı → 48/48). KARAR (kullanıcı, 19.10.2026 ~07:00 UTC, "uygun"):
+  b68aafe CI yeşil olunca TESLİM (5 dosya + arşiv) şimdi; aynı anda b68aafe'de Uzun Doğrulama baştan; kullanıcı GitHub YAYININI kapı yeşil bildirilene kadar AÇMAZ
+  (kapı kırmızıysa yayın açılmaz). Gerçek EDM 05e64d0'da 7/7 (ürün kodu 3673956/b68aafe ile aynı).
+
