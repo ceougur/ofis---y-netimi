@@ -462,3 +462,6 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - KARAR (kullanıcı önerisi, 18.10.2026 ~21:45 UTC; baş mimar anayasaya uygun buldu): son aday Uzun Doğrulama'da (GitHub) koşarken AYNI commit'te gerçek EDM test
   ortamı denemesi (MM1 dahil) ve imzalı paket + kurulum hazırlanır; TESLİM ancak Uzun Doğrulama yeşil okunduktan sonra. Ön koşul: sürüm belgeleri ve kılavuz
   PDF son adaydan ÖNCE biter (paketin içinde). Uzun Doğrulama kırmızı çıkıp kod değişirse paket ve etkilenen EDM adımı yeni commit'te yeniden yapılır.
+- DAR KONTROL 3 (19.10.2026, fc42855): B-1 ORTA gerileme (vekil sunucu kapalıyken numara veriliyordu; B3 oturum önbelleği kaynaklı), B-2 DÜŞÜK (tur sürerken
+  imleç öncesi belge), B-3 DÜŞÜK (stok açılışı Düzenle gidiş-dönüşü), kâhin eşitleme hatası — ana oturum B-1/B-2/B-3'ü yeniden üretti; düzeltme bbb6d3c (eski 5/16 →
+  16/16; kâhin 9–12 fark 0; defter kâhini 147/147). Vergi Ödemesi/KDV Mahsup ve KÖ1 sorunsuz. Görüş: silinen üründe açılış 153'te kalır (bilinçli).
