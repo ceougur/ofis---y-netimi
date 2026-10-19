@@ -1,0 +1,32 @@
+{
+  "ad": "d4-komsu",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/accounts-stock.test.mjs test/banka-210-defter.test.mjs test/banka-210-fis-kapi.test.mjs test/banka-210-gg-kapi.test.mjs test/banka-210-kapi-kapsam.test.mjs test/banka-210-kapi-plan.test.mjs test/banka-210-kapi.test.mjs test/ci-kapi-listesi.test.mjs test/defter-213.test.mjs test/defter-243-kapi.test.mjs test/defter-243-raporlar.test.mjs test/defter-243-stok-acilis.test.mjs test/defter-243-ux24-toplam.test.mjs test/defter-243-vergi.test.mjs test/ebelge-240-birim.test.mjs test/ebelge-240-bitis-turu.test.mjs test/ebelge-240-ek-secenekler.test.mjs test/ebelge-240-gorunum.test.mjs test/ebelge-240-kontrol3.test.mjs test/ebelge-242-test-seri.test.mjs test/ebelge-243-gonderim.test.mjs test/ebelge-243.test.mjs test/ebelge-uygunluk.test.mjs test/einvoice-240-resmi-gorunum.test.mjs test/einvoice-240-taslak.test.mjs test/einvoice-edm.test.mjs test/eksi-stok-217.test.mjs test/fatura-215.test.mjs test/fatura-216.test.mjs test/fatura-217.test.mjs test/fatura-230-ayarlar-banka.test.mjs test/fatura-243-stok-kdv.test.mjs test/fatura-buyuk-tutar-210.test.mjs test/fatura-durum-222.test.mjs test/fatura-liste-243-fark.test.mjs test/fatura-model.test.mjs test/gg243-cekirdek-kaynak.test.mjs test/gg243-dar-kontrol-ek.test.mjs test/gg243-dar-kontrol-gonderim.test.mjs test/gg243-dar-kontrol-stok.test.mjs test/gg243-dar2-edm.test.mjs test/gg243-dar2-gonderim.test.mjs test/gg243-dar2-iade-sira.test.mjs test/gg243-dar2-olcek.test.mjs test/gg243-dar3-stok.test.mjs test/gg243-dar3.test.mjs test/gg243-gonderim.test.mjs test/gg243-stok-excel.test.mjs test/goc-243-iade-ref.test.mjs test/goc-243-stok-acilis.test.mjs test/goc-243-stok-kdv.test.mjs test/hiz-243-hesap-defter.test.mjs test/liste-kapisi-daha-fazla.test.mjs test/trash.test.mjs",
+  "commit": "d37839a215931e310bd5eac536efa7eed1ea0d2a",
+  "dal": "duzeltme4-243",
+  "kirli": 8,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-19T00:04:20.085Z",
+  "sure_sn": 312.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 470,
+    "gecen": 470,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-19/d4-komsu.log",
+  "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme4-243",
+  "ham_cikti_sha256": "7e8c058eb117c35774e8175dfd1157d85a3c7acfecce02f0bf2d9d01c4b6105b",
+  "ham_cikti_bayt": 163888
+}

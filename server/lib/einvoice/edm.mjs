@@ -39,9 +39,14 @@ const connectionReset = error => /ECONNRESET|EPIPE|UND_ERR_SOCKET/.test(`${error
 // yok, bağlanma zaman aşımı, TLS kurulamadı. Yalnız bunlar (ve yan etkisiz işlemin yinelemeden sonra da düşmesi) "integrator-unreachable"dır;
 // istek gönderildikten sonraki kopma / yanıt zaman aşımı "integrator-uncertain" (EDM işlemiş olabilir; belge belirsiz yoluyla işlenir, tur sürer).
 const NOT_CONNECTED = /^(ECONNREFUSED|ENOTFOUND|EAI_AGAIN|EAI_NONAME|EAI_FAIL|EHOSTUNREACH|EHOSTDOWN|ENETUNREACH|ENETDOWN|EADDRNOTAVAIL|UND_ERR_CONNECT_TIMEOUT|EPROTO|ERR_TLS_\w+|ERR_SSL_\w+|CERT_\w+|UNABLE_TO_\w+|DEPTH_ZERO_SELF_SIGNED_CERT|SELF_SIGNED_CERT_IN_CHAIN|ERR_INVALID_URL)$/;
+// Dar kontrol 3 (2.4.3, B-1): vekil sunucu hatası (lib/net-proxy.mjs ProxyError) — vekile bağlanılamadı (proxy-unreachable), vekil tüneli reddetti
+// (proxy-refused) ya da kimlik istedi (proxy-auth, 407): tünel/istek EDM'ye HİÇ iletilmedi → "kesin ulaşmadı". (Önceden bu kodlar tanınmıyor, belge
+// "belirsiz" sayılıp verilen numara geri bırakılmıyordu — kâhin K12.) proxy-request (tünel kurulduktan sonraki hata) ve proxy-redirects (yanıt geldi)
+// bu sınıfta DEĞİL: istek EDM'ye ulaşmış olabilir.
+const PROXY_NOT_CONNECTED = new Set(["proxy-unreachable", "proxy-refused", "proxy-auth"]);
 const notConnected = error => {
   const codes = [error?.cause?.code, error?.code, error?.cause?.cause?.code].filter(Boolean).map(String);
-  return codes.some(code => NOT_CONNECTED.test(code));
+  return codes.some(code => NOT_CONNECTED.test(code) || PROXY_NOT_CONNECTED.has(code));
 };
 const CONTRACT_TTL = 12 * 60 * 60 * 1000;
 // Dar kontrol 2 (2.4.3, B6): WSDL okunamadıysa varsayılan sözleşme en çok 1 dk tutulur (ağ yoksa hiç tutulmaz); önceden 12 saat.
@@ -152,8 +157,8 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
       // geçmişinde — invoice.e.send-failed kaydı) tanı için okunur.
       const detail = String(error?.cause?.code || error?.code || error?.message || error || "").slice(0, 200);
       // Vekil sunucu hatası programın kendi Türkçe iletisini taşır ("Vekil sunucuya bağlanılamadı (adres): KOD"); ileti korunur, sondaki kod atılır.
-      const proxy = [error, error?.cause].find(item => item?.code === "proxy-unreachable");
-      const proxyText = proxy ? String(proxy.message || "").replace(/:\s*[A-Z][A-Z0-9_]+$/, "").trim() : "";
+      const proxy = [error, error?.cause].find(item => PROXY_NOT_CONNECTED.has(item?.code));
+      const proxyText = proxy ? String(proxy.message || "").replace(/:\s*[A-Z][A-Z0-9_]+$/, "").trim().replace(/\.+$/, "") : "";
       if (definite) throw new IntegratorError(timeout ? "EDM yanıt vermedi (zaman aşımı). İnternet bağlantısını ve servis adresini kontrol edin; birazdan yeniden deneyin." : proxyText ? `EDM'ye bağlanılamadı: ${proxyText}. Ağ ayarındaki vekil sunucu adresini kontrol edin.` : "EDM'ye bağlanılamadı. İnternet bağlantısını ve servis adresini kontrol edin; birazdan yeniden deneyin.", { code: "integrator-unreachable", detail });
       throw new IntegratorError(timeout ? "EDM yanıt vermedi (zaman aşımı); istek EDM'ye ulaşmış olabilir." : "EDM ile bağlantı istek gönderildikten sonra koptu; istek EDM'ye ulaşmış olabilir.", { code: "integrator-uncertain", detail });
     } finally {

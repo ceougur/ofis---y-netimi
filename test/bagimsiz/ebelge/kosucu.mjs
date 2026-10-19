@@ -185,6 +185,9 @@ try {
     }
     return out;
   };
+  // Müşteri Fişi olarak bırakılan belgenin e-Belge profili (gönderilirse alacağı tür). API'de görünmez (liste ve kart KAGIT gösterir); yalnız
+  // gözlem için veri tabanından okunur, programa hiçbir şey yazılmaz — kâhin türü ondan okur (dar kontrol 3, 2.4.3).
+  const eProfilOku = async id => server.app.store.get("SELECT e_profile AS eProfile FROM invoices WHERE id = ?", id)?.eProfile || "";
   const gozle = async () => {
     const tum = new Map();
     for (const x of [...(await liste("all")), ...(await liste("cancelled"))]) tum.set(x.id, x);
@@ -194,7 +197,7 @@ try {
       const ad = idAd[id];
       if (!ad) continue;
       sonuc.eStatusDegerleri[x.eStatus ?? "null"] = (sonuc.eStatusDegerleri[x.eStatus ?? "null"] || 0) + 1;
-      belgeler[ad] = { id, ettn: x.ettn, numara: x.number || "", eStatus: x.eStatus ?? "", durum: x.status, tarih: x.issueDate, profil: x.profile || "", accountId: x.accountId, bekleyen: bekleyen.has(id) };
+      belgeler[ad] = { id, ettn: x.ettn, numara: x.number || "", eStatus: x.eStatus ?? "", durum: x.status, tarih: x.issueDate, profil: x.profile || "", eProfil: x.eStatus === "withdrawn" ? await eProfilOku(id) : "", accountId: x.accountId, bekleyen: bekleyen.has(id) };
     }
     const yabanci = [...tum.keys()].filter(id => !idAd[id]);
     return { belgeler, yabanci };

@@ -2787,6 +2787,7 @@
     let remaining = 0;
     let stopped = null;
     let cursor = null;
+    let rerun = false;
     view.sendProgress = { done: 0, total };
     showSendProgress();
     try {
@@ -2796,6 +2797,8 @@
         sent += result.sent;
         remaining = result.remaining || 0;
         stopped = result.stopped || null;
+        // Dar kontrol 3 (B-2): tur sürerken imleçten önce sıralanan (daha eski) belge kaydedildi — bu turda denenmedi; yeni basış en eskiden başlar.
+        rerun = rerun || Boolean(result.rerun);
         const moved = Boolean(result.cursor) && JSON.stringify(result.cursor) !== JSON.stringify(cursor);
         cursor = result.cursor || cursor;
         // Kalıcı engelli belgeler her istekte yeniden listelenir; bir kez sayılır.
@@ -2845,6 +2848,7 @@
     if (busy.length) parts.push(`${busy.length.toLocaleString("tr-TR")} belge başka oturumda gönderiliyor; gönderim bitince listeyi yenileyin`);
     if (withdrawn.length) parts.push(`${withdrawn.length.toLocaleString("tr-TR")} belge gönderim sırasında Müşteri Fişi olarak bırakıldı (gönderilmedi)`);
     if (held.length) parts.push(`${held.length.toLocaleString("tr-TR")} belge sırasını korumak için bekletildi (önce eski tarihli belge gönderilmeli)`);
+    if (rerun && !stopped) parts.push("gönderim sürerken daha eski tarihli belge kaydedildi; o belge ve sonrakiler için Tümünü Gönder'e yeniden basın");
     if (remaining && !stopped) parts.push(`${remaining.toLocaleString("tr-TR")} belge daha bekliyor; Tümünü Gönder'e yeniden basın`);
     const bad = failed.length || held.length || busy.length || remaining || stopped || waitingStop.length;
     HOF.toast(`${parts.join("; ")}.`, { type: failed.length || held.length || stopped ? "error" : busy.length || remaining || withdrawn.length ? "info" : "success", timeout: bad ? 15000 : 6000 });

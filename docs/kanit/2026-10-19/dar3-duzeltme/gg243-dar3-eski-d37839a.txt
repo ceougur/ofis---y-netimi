@@ -1,0 +1,122 @@
+TAP version 13
+# Subtest: gg243 dar kontrol 3: vekil sunucu hatası kesin ulaşmadı (B-1), imleçten önce kaydedilen belge (B-2)
+    # Subtest: B-1 birim: proxy-unreachable / proxy-refused / proxy-auth → integrator-unreachable (vekil iletisi, çift nokta yok); proxy-request belirsiz kalır
+    not ok 1 - B-1 birim: proxy-unreachable / proxy-refused / proxy-auth → integrator-unreachable (vekil iletisi, çift nokta yok); proxy-request belirsiz kalır
+      ---
+      duration_ms: 52.310723
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/gg243-dar3.test.mjs:82:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        proxy-unreachable: integrator-uncertain EDM ile bağlantı istek gönderildikten sonra koptu; istek EDM'ye ulaşmış olabilir.
+        + actual - expected
+        
+        + 'integrator-uncertain'
+        - 'integrator-unreachable'
+                        ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'integrator-unreachable'
+      actual: 'integrator-uncertain'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/gg243-dar3.test.mjs:112:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: B-1: taze oturum varken vekil kapalı → Kaydet ve Gönder numara VERMEZ (bırakır), ileti vekili söyler; üç vekil kodu için de
+    not ok 2 - B-1: taze oturum varken vekil kapalı → Kaydet ve Gönder numara VERMEZ (bırakır), ileti vekili söyler; üç vekil kodu için de
+      ---
+      duration_ms: 522.361193
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/gg243-dar3.test.mjs:130:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        proxy-unreachable: numara geri bırakıldı
+        + actual - expected
+        
+        + 'TEF2026000000003'
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: 'TEF2026000000003'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/gg243-dar3.test.mjs:146:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B-1: taze oturum varken vekil kapalı → Tümünü Gönder numara vermez, tur durur; vekil gelince sırayla gider
+    not ok 3 - B-1: taze oturum varken vekil kapalı → Tümünü Gönder numara vermez, tur durur; vekil gelince sırayla gider
+      ---
+      duration_ms: 465.798299
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/gg243-dar3.test.mjs:156:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"results":[{"id":"invoice-2a292761-167e-405f-a9d1-461ee1306216","ok":false,"code":"integrator-uncertain","message":"EDM ile bağlantı istek gönderildikten sonra koptu; istek EDM'ye ulaşmış olabilir."},{"id":"invoice-1aa58eb1-c4cf-4011-b5b4-aa4d68e2b333","ok":false,"code":"integrator-uncertain","message":"EDM ile bağlantı istek gönderildikten sonra koptu; istek EDM'ye ulaşmış olabilir."},{"id":"invoice-001e21de-6144-436e-bdbb-8ebfb5eb0c3f","ok":false,"code":"integrator-uncertain","message":"EDM ile bağlantı istek gönderildikten sonra koptu; istek EDM'ye ulaşmış olabilir."}],"sent":0,"failed":3,"skipped":0,"done":0,"remaining":0,"attempted":3,"cursor":{"issueDate":"2026-06-16","issueTime":"09:00","createdAt":"2026-06-17T09:00:00.324Z","rn":3}}
+        + actual - expected
+        
+        + undefined
+        - 'integrator-unreachable'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'integrator-unreachable'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/gg243-dar3.test.mjs:167:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B-2: tur sürerken imleçten önce kaydedilen belge sonrakileri doğru iletiyle bekletir (rerun); yeni basışta hepsi tarih sırasıyla gider
+    not ok 4 - B-2: tur sürerken imleçten önce kaydedilen belge sonrakileri doğru iletiyle bekletir (rerun); yeni basışta hepsi tarih sırasıyla gider
+      ---
+      duration_ms: 1300.459496
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/gg243-dar3.test.mjs:175:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tur yarım kaldı: istemciye bildirilir
+        + actual - expected
+        
+        + undefined
+        - true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/gg243-dar3.test.mjs:192:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 1 - gg243 dar kontrol 3: vekil sunucu hatası kesin ulaşmadı (B-1), imleçten önce kaydedilen belge (B-2)
+  ---
+  duration_ms: 2382.294445
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/gg243-dar3.test.mjs:76:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2758.688908

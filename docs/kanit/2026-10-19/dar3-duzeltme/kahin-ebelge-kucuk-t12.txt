@@ -1,0 +1,6 @@
+[ebelge-t12-i200-1-kucuk] adım 12 · fark 0 · ihlal 1 · saf model son fark 0 · çatal seçimi 2 · 1.3 sn
+    I18              BASKA                                    1
+# tests 1
+# pass 0
+# fail 1
+# kahin fark 0 ihlal 1

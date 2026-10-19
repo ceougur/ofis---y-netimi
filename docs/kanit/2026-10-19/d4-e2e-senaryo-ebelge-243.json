@@ -1,0 +1,32 @@
+{
+  "ad": "d4-e2e-senaryo-ebelge-243",
+  "komut": "npm run -s test:senaryo-ebelge-243",
+  "commit": "d37839a215931e310bd5eac536efa7eed1ea0d2a",
+  "dal": "duzeltme4-243",
+  "kirli": 8,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-19T00:10:37.582Z",
+  "sure_sn": 18.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 20,
+    "gecen": 20,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-19/d4-e2e-senaryo-ebelge-243.log",
+  "klasor": "/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/duzeltme4-243",
+  "ham_cikti_sha256": "d2d5b6a2192684db925a035e9549adc21f5a35f20c535de9f257caeb212a1477",
+  "ham_cikti_bayt": 1668
+}

@@ -5,7 +5,7 @@
 //   yok           : yalnız miktar (ofiste çay, şeker, yağ tüketimi)
 // Kritik seviyenin altına düşen ürün sol menüde rozet ve listede uyarı olarak görünür.
 import { randomUUID } from "node:crypto";
-import { mapStockHeaders, parseQty, roundQty, stockLevel } from "../lib/accounts.mjs";
+import { STOCK_OPENING_NOTES, mapStockHeaders, parseQty, roundQty, stockLevel } from "../lib/accounts.mjs";
 import { inferRolesByValues, findHeaderRow, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
@@ -334,7 +334,10 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
   // ---------- Hareketler ----------
   // MM4 (2.4.3, göç 29): açılış stoku (elde olan; para yazılmaz) işaretle tanınır — Ana Defter B 153 / A 500 (miktar × birim fiyat). Yalnız giriş, yalnız
   // miktar (pay 'none'), faturasız ve iadesiz hareket açılış olabilir; açılış hareketi peşin/açık hesaba çevrilirse işaret düşer (alım olur).
-  const openingFlag = move => (move.isOpening && move.kind === "in" && move.pay === "none" && !move.invoiceId && !move.reason ? 1 : 0);
+  // Dar kontrol 3 (2.4.3, B-3): tanım göç v30 ile AYNI — işaretli olarak açılmış ya da açıklaması programın açılış metni ("Açılış stoku", "Açılış stoku
+  // (Excel)") olan yalnız miktar girişi. Önceden yalnız önceki işarete bakılıyordu: açılış Düzenle ile peşine çevrilip (işaret düşer) yeniden "yalnız
+  // miktar"a çevrilince işaret geri gelmiyor, açılış 153/500'den sessizce düşüyordu (Mutabakat Testi görmüyordu: defter ile işaret kendi içinde tutarlı).
+  const openingFlag = move => ((move.isOpening || STOCK_OPENING_NOTES.includes(move.note)) && move.kind === "in" && move.pay === "none" && !move.invoiceId && !move.reason ? 1 : 0);
   function insertMove(user, itemId, move) {
     const id = newId("smove");
     const method = move.pay === "cash" ? methodInput(move.method) : "cash";

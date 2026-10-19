@@ -3670,11 +3670,17 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       }
       // İmleçten önceki, hâlâ numarasız bekleyen (bu turda gönderilemedi ya da sırası bekletildi) belge aynı serinin daha yeni belgelerini bu turda
       // da bekletir (sıra kuralı; turun ilk isteğindeki "held" ile aynı). En eski olan engeldir.
+      // Dar kontrol 3 (2.4.3, B-2): imleçten önce kalan belge bu turda hiç DENENMEMİŞ olabilir — tur sürerken kaydedildi (aynı gün daha erken saat) ya
+      // da tarihi geri alındı. Önceden hepsi "gönderilemedi; önce onu düzeltip yeniden gönderin" diye bildiriliyordu (yanlış neden). Bu turda yeniden
+      // denenmez (B1: turda her belge en çok bir kez; imleç durumsuzdur, denenmiş/denenmemiş ayrımı ancak belgenin kaydedilmiş gönderim hatasından
+      // okunur). Gönderim hatası yazılmamış (e_message boş) belge "sırada" sayılır: sonrakiler GİB kronolojisi için bekletilir, ileti "daha eski belge
+      // sırada; Tümünü Gönder'e yeniden basın" der ve yanıt turun yarım kaldığını bildirir (rerun) — yeni basış en eski belgeden başlar.
       if (passed.length) {
-        const names = new Map(store.all(`SELECT i.id, a.name AS accountName FROM invoices i LEFT JOIN accounts a ON a.id = i.account_id WHERE i.id IN (${passed.map(() => "?").join(", ")})`, ...passed.map(row => row.id)).map(row => [row.id, row.accountName || ""]));
+        const names = new Map(store.all(`SELECT i.id, a.name AS accountName, i.e_message AS eMessage FROM invoices i LEFT JOIN accounts a ON a.id = i.account_id WHERE i.id IN (${passed.map(() => "?").join(", ")})`, ...passed.map(row => row.id)).map(row => [row.id, row]));
         for (const row of passed) {
           const key = unnumberedSeries(row);
-          if (key && !held.has(key)) held.set(key, { issueDate: row.issueDate, accountName: names.get(row.id) || "", number: "", code: "", reason: "failed" });
+          const seen = names.get(row.id) || {};
+          if (key && !held.has(key)) held.set(key, { issueDate: row.issueDate, accountName: seen.accountName || "", number: "", code: "", reason: seen.eMessage ? "failed" : "queued" });
         }
       }
       order = sendable;
@@ -3711,6 +3717,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
           ? `Gönderilmedi, sırasını koruyarak bekliyor: aynı serideki daha eski tarihli belge (${blocker.accountName}, ${dayText(blocker.issueDate)}) Gönderilecekler'de ve bu gönderime dahil değil. Önce o gönderilmeli: Gönderilecekler'deki Tümünü Gönder eski tarihliden başlar.`
           : reason === "alias"
             ? `Gönderilmedi, sırasını koruyarak bekliyor: daha eski tarihli belgenin (${blocker.number || blocker.accountName}, ${dayText(blocker.issueDate)}) posta kutusu seçilmeli (Mükellef Sorgula / Posta Kutusu Seçin). O belge gönderilince bu belge de gönderilir.`
+          : reason === "queued"
+            ? `Gönderilmedi, sırasını koruyarak bekliyor: aynı serideki daha eski tarihli belge (${blocker.accountName}, ${dayText(blocker.issueDate)}) bu gönderim sürerken kaydedildi ya da tarihi değişti; bu turda denenmedi. Tümünü Gönder'e yeniden basın: gönderim en eski belgeden başlar.`
           : reason === "order"
             ? `Gönderilmedi, sırasını koruyarak bekliyor: aynı serideki daha eski tarihli belge (${blocker.accountName}, ${dayText(blocker.issueDate)}) de sırasını bekliyor. Önce daha eski tarihli belgeler gönderilmeli; Tümünü Gönder'e yeniden basın.`
             : `Gönderilmedi, sırasını koruyarak bekliyor: aynı serideki daha eski tarihli belge (${blocker.accountName}, ${dayText(blocker.issueDate)}) gönderilemedi. O belge gönderilmeden bu belge numara alırsa eski belge e-Belge olamaz; önce onu düzeltip yeniden gönderin.`;
@@ -3819,7 +3827,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     // B1: imleç — bu istekte ulaşılan son belgenin sıra anahtarı (ulaşılan yoksa gelen imleç aynen). attempted: entegratöre gönderimi denenen belge sayısı.
     const nextCursor = all ? (last ? { issueDate: last.issueDate || "", issueTime: last.issueTime || "", createdAt: last.createdAt || "", rn: Number(last.rn) } : cursor) : null;
     // "Başka oturumda gönderildi" (done) ve "gönderiliyor" (busy) bilgi sayılır: gönderilen ya da gönderilemeyen sayısına girmez.
-    ok(res, { results: sorted, sent: sorted.filter(item => item.ok && !item.done).length, failed: sorted.filter(item => !item.ok && !item.busy).length, skipped: sorted.filter(item => item.skipped).length, done: sorted.filter(item => item.done).length, remaining, attempted, ...(all ? { cursor: nextCursor } : {}), ...(stopped ? { stopped } : {}) });
+    ok(res, { results: sorted, sent: sorted.filter(item => item.ok && !item.done).length, failed: sorted.filter(item => !item.ok && !item.busy).length, skipped: sorted.filter(item => item.skipped).length, done: sorted.filter(item => item.done).length, remaining, attempted, ...(all ? { cursor: nextCursor } : {}), ...(sorted.some(item => item.skipped && item.reason === "queued") ? { rerun: true } : {}), ...(stopped ? { stopped } : {}) });
   });
   router.post("/api/workspace/invoices/:id/send", async ({ req, res, params }) => {
     const user = requireManage(req);

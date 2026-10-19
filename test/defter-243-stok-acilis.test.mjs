@@ -85,7 +85,9 @@ describe("2.4.3 MM4 — stok açılışı Ana Defter'de (B 153 / A 500)", () => 
     await integrityOk(api, "geri yükleme");
   });
 
-  it("açılış hareketi peşine çevrilirse açılış olmaktan çıkar (Kasa alımı olur, 500 düşer); ürün silinse de açılış defterde kalır", async () => {
+  // Dar kontrol 3 (B-3, bilerek güncellendi): yeniden "yalnız miktar"a çevrilen açılış hareketi göç v30'daki tanımla (açıklama "Açılış stoku (Excel)")
+  // yine açılıştır — önceden işaret geri gelmiyor, açılış 153/500'den sessizce düşüyordu.
+  it("açılış hareketi peşine çevrilirse açılış olmaktan çıkar (Kasa alımı olur, 500 düşer); yeniden yalnız miktara çevrilince yine açılıştır; ürün silinse de açılış defterde kalır", async () => {
     const list = await must("liste", api.get("/api/workspace/stock"));
     const sugar = list.items.find(item => item.name === "Şeker");
     const move = (await must("Şeker", api.get(`/api/workspace/stock/${sugar.id}`))).moves[0];
@@ -96,12 +98,13 @@ describe("2.4.3 MM4 — stok açılışı Ana Defter'de (B 153 / A 500)", () => 
     assert.equal(balance(rows, "100"), -300);
     await must("geri yalnız miktara", api.put(`/api/workspace/stock/${sugar.id}/moves/${move.id}`, { pay: "none", qty: "2,5", unitPrice: "40" }));
     rows = await trialBalances(api);
-    assert.equal(balance(rows, "500"), -4850, "işaret düşmüştü: yalnız miktar hareketi artık açılış değil");
-    assert.equal(balance(rows, "153"), 5050);
+    assert.equal(balance(rows, "500"), -4950, "yeniden yalnız miktar: açılış geri geldi (göç v30 tanımı)");
+    assert.equal(balance(rows, "153"), 5150);
+    assert.equal(balance(rows, "100"), -200, "Şeker peşin alımı geri alındı (yalnız P2 ilk alımı kalır)");
     const tea = list.items.find(item => item.name === "Çay");
     await must("ürünü sil", api.del(`/api/workspace/stock/${tea.id}`));
     rows = await trialBalances(api);
-    assert.equal(balance(rows, "153"), 5050, "silinen ürünün açılışı defterde kalır (dönem başı stok)");
+    assert.equal(balance(rows, "153"), 5150, "silinen ürünün açılışı defterde kalır (dönem başı stok)");
     await integrityOk(api, "ürün silme");
   });
 
@@ -125,7 +128,7 @@ describe("2.4.3 MM4 — stok açılışı Ana Defter'de (B 153 / A 500)", () => 
     const journal = await must("yevmiye", api.get(`${RC}/yevmiye?preset=all`));
     const ledger = journal.rows.filter(row => row[1] === "Stok açılışı" && row[3] === "153").reduce((sum, row) => sum + Number(row[4].replace(/[^\d,]/g, "").replace(",", ".")), 0);
     assert.equal(Math.round(total * 100), Math.round(ledger * 100));
-    assert.equal(Math.round(total * 100), 400000 + 85000, "P1 80 × 50 + Çay 10 × 85 (Şeker artık açılış değil)");
-    assert.ok(report.summary.some(([label, value]) => label === "Açılış Stoku Değeri" && value === "4.850,00 TL"), JSON.stringify(report.summary));
+    assert.equal(Math.round(total * 100), 400000 + 85000 + 10000, "P1 80 × 50 + Çay 10 × 85 + Şeker 2,5 × 40 (yeniden açılış)");
+    assert.ok(report.summary.some(([label, value]) => label === "Açılış Stoku Değeri" && value === "4.950,00 TL"), JSON.stringify(report.summary));
   });
 });

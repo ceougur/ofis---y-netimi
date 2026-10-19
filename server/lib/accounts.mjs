@@ -16,6 +16,9 @@ import { roundMoney } from "./money.mjs";
 
 const EPS = 0.005;
 const tlText = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)} TL`;
+// Dar kontrol 3 (2.4.3, B-3): programın açılış stoku hareketine yazdığı açıklamalar — göç v30 (lib/migrations.mjs) eski veride açılışı bunlardan tanır;
+// stok hareketi kaydı/düzenlemesi aynı tanımı kullanır (aynılık test/gg243-dar3-stok.test.mjs).
+export const STOCK_OPENING_NOTES = Object.freeze(["Açılış stoku", "Açılış stoku (Excel)"]);
 export const roundQty = value => Math.round((Number(value) || 0) * 1000) / 1000;
 
 // Kalıtımsız nesne (v2.0.22, gözden geçirme bulgusu 6): ACCOUNT_TYPES[girdi] denetiminde "constructor", "toString",

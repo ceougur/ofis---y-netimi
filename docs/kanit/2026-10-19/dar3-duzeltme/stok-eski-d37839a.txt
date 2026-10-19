@@ -1,0 +1,265 @@
+TAP version 13
+# Subtest: 2.4.3 MM4 — stok açılışı Ana Defter'de (B 153 / A 500)
+    # Subtest: ürün kartında açılış: 100 × 50 = 5.000 → mizan 153 = 5.000, 500 = −5.000; yevmiyede tek madde; Mutabakat Testi stock:opening tamam
+    ok 1 - ürün kartında açılış: 100 × 50 = 5.000 → mizan 153 = 5.000, 500 = −5.000; yevmiyede tek madde; Mutabakat Testi stock:opening tamam
+      ---
+      duration_ms: 37.762445
+      type: 'test'
+      ...
+    # Subtest: İlk Alım (Kasa'dan peşin) açılış değildir: 153 yalnız alım kadar artar, 500 değişmez
+    ok 2 - İlk Alım (Kasa'dan peşin) açılış değildir: 153 yalnız alım kadar artar, 500 değişmez
+      ---
+      duration_ms: 36.186874
+      type: 'test'
+      ...
+    # Subtest: Excel'den ürün: miktar açılıştır (Çay 850 + Şeker 100); miktarsız satır ve hizmet açılış yazmaz
+    ok 3 - Excel'den ürün: miktar açılıştır (Çay 850 + Şeker 100); miktarsız satır ve hizmet açılış yazmaz
+      ---
+      duration_ms: 47.832088
+      type: 'test'
+      ...
+    # Subtest: açılış hareketi düzeltilir (100 → 80) ve silinir: 153 / 500 izler; Çöp Kutusu'ndan geri yükleme açılışı geri getirir
+    ok 4 - açılış hareketi düzeltilir (100 → 80) ve silinir: 153 / 500 izler; Çöp Kutusu'ndan geri yükleme açılışı geri getirir
+      ---
+      duration_ms: 84.995007
+      type: 'test'
+      ...
+    # Subtest: açılış hareketi peşine çevrilirse açılış olmaktan çıkar (Kasa alımı olur, 500 düşer); yeniden yalnız miktara çevrilince yine açılıştır; ürün silinse de açılış defterde kalır
+    not ok 5 - açılış hareketi peşine çevrilirse açılış olmaktan çıkar (Kasa alımı olur, 500 düşer); yeniden yalnız miktara çevrilince yine açılıştır; ürün silinse de açılış defterde kalır
+      ---
+      duration_ms: 79.402431
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/defter-243-stok-acilis.yeni.test.mjs:90:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeniden yalnız miktar: açılış geri geldi (göç v30 tanımı)
+        
+        -4850 !== -4950
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: -4950
+      actual: -4850
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/defter-243-stok-acilis.yeni.test.mjs:101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kapanmış dönemdeki açılış hareketi düzeltilemez; kilit sonrası mizan ve Mutabakat Testi aynı
+    ok 6 - kapanmış dönemdeki açılış hareketi düzeltilemez; kilit sonrası mizan ve Mutabakat Testi aynı
+      ---
+      duration_ms: 59.879827
+      type: 'test'
+      ...
+    # Subtest: Stok Hareketleri raporu açılışı 'Açılış Stoku' ve değeriyle gösterir: raporun açılış toplamı = yevmiyedeki 153 açılışı
+    not ok 7 - Stok Hareketleri raporu açılışı 'Açılış Stoku' ve değeriyle gösterir: raporun açılış toplamı = yevmiyedeki 153 açılışı
+      ---
+      duration_ms: 7.001484
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/defter-243-stok-acilis.yeni.test.mjs:124:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        P1 80 × 50 + Çay 10 × 85 + Şeker 2,5 × 40 (yeniden açılış)
+        
+        485000 !== 495000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 495000
+      actual: 485000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/defter-243-stok-acilis.yeni.test.mjs:131:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..7
+not ok 1 - 2.4.3 MM4 — stok açılışı Ana Defter'de (B 153 / A 500)
+  ---
+  duration_ms: 648.260907
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/defter-243-stok-acilis.yeni.test.mjs:15:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: gg243 dar kontrol 3: stok açılışı Düzenle gidiş-dönüş (B-3)
+    # Subtest: açılış → peşin → yeniden yalnız miktar: açılış geri gelir (153 = 61,73, 500 = −61,73, Kasa 0); Mutabakat Testi tamam
+    not ok 1 - açılış → peşin → yeniden yalnız miktar: açılış geri gelir (153 = 61,73, 500 = −61,73, Kasa 0); Mutabakat Testi tamam
+      ---
+      duration_ms: 92.532627
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/gg243-dar3-stok.test.mjs:26:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yalnız miktar: yine açılış (göç v30 tanımı)
+        + actual - expected
+        
+          [
+        -   61.73,
+        -   -61.73,
+            0,
+        +   0,
+        +   0
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 61.73
+        1: -61.73
+        2: 0
+      actual:
+        0: 0
+        1: 0
+        2: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/gg243-dar3-stok.test.mjs:37:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Excel açılışı ("Açılış stoku (Excel)") da aynı: peşin → yalnız miktar dönüşünde açılış geri gelir
+    not ok 2 - Excel açılışı ("Açılış stoku (Excel)") da aynı: peşin → yalnız miktar dönüşünde açılış geri gelir
+      ---
+      duration_ms: 78.673264
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/gg243-dar3-stok.test.mjs:43:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        -   72.23,
+        -   -72.23,
+            0,
+        +   0,
+        +   0
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 72.23
+        1: -72.23
+        2: 0
+      actual:
+        0: 0
+        1: 0
+        2: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/gg243-dar3-stok.test.mjs:53:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: elle açılan sıradan stok girişi (açıklama başka) açılış değildir; açıklaması değişen açılış hareketi işaretini korur
+    not ok 3 - elle açılan sıradan stok girişi (açıklama başka) açılış değildir; açıklaması değişen açılış hareketi işaretini korur
+      ---
+      duration_ms: 34.221984
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/gg243-dar3-stok.test.mjs:57:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yalnız miktar sıradan giriş deftere yazmaz
+        + actual - expected
+        
+          [
+        +   0,
+        +   0
+        -   72.23,
+        -   -72.23
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 72.23
+        1: -72.23
+      actual:
+        0: 0
+        1: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/gg243-dar3-stok.test.mjs:61:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Mutabakat Testi stock:opening: açılış tanımına uyup işaretsiz kalan hareket sapmadır (eski adaylarda düşen açılış)
+    not ok 4 - Mutabakat Testi stock:opening: açılış tanımına uyup işaretsiz kalan hareket sapmadır (eski adaylarda düşen açılış)
+      ---
+      duration_ms: 20.147179
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/gg243-dar3-stok.test.mjs:70:3'
+      failureType: 'testCodeFailure'
+      error: 'yazım kapısı işaretsiz açılışı reddeder'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Para kaydı merkezi denetimden geçmedi: bank.post dışında para tablosunda düzeltme/silme (stock_moves). Hiçbir değişiklik yazılmadı.'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/gg243-dar3-stok.test.mjs:83:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: açılış açıklamaları göç v30'daki listeyle aynı (kaynak)
+    not ok 5 - açılış açıklamaları göç v30'daki listeyle aynı (kaynak)
+      ---
+      duration_ms: 1.906367
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/gg243-dar3-stok.test.mjs:93:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'Açılış stoku',
+        +   'Açılış stoku (Excel)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'Açılış stoku'
+        1: 'Açılış stoku (Excel)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/gg243-dar3-stok.test.mjs:96:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 2 - gg243 dar kontrol 3: stok açılışı Düzenle gidiş-dönüş (B-3)
+  ---
+  duration_ms: 605.519863
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/9cd0e60e-f0c5-5d7d-bc4f-899fff43162d/scratchpad/d4-eski-d37839a/test/gg243-dar3-stok.test.mjs:16:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 12
+# suites 2
+# pass 5
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 996.012807

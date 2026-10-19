@@ -1,0 +1,8 @@
+[ebelge-t9-i200] adım 200 · fark 0 · ihlal 0 · saf model son fark 14 · çatal seçimi 41 · 9.2 sn
+[ebelge-t10-i200] adım 200 · fark 0 · ihlal 0 · saf model son fark 7 · çatal seçimi 52 · 10.6 sn
+[ebelge-t11-i200] adım 200 · fark 0 · ihlal 0 · saf model son fark 29 · çatal seçimi 47 · 7.0 sn
+[ebelge-t12-i200] adım 200 · fark 0 · ihlal 0 · saf model son fark 9 · çatal seçimi 54 · 7.4 sn
+# tests 4
+# pass 4
+# fail 0
+# kahin fark 0 ihlal 0

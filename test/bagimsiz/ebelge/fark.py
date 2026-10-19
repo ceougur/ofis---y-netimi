@@ -99,7 +99,9 @@ def gonderildi_mi(e):
 
 
 def tur_bul(b):
-    p = b.get("profil") or ""
+    # Müşteri Fişi olarak bırakılan (withdrawn) belge KAGIT görünür ama e-Belge profiliyle (eProfil) sırada durur: tür ondan okunur
+    # (dar kontrol 3, 2.4.3 — eşitleme hatasıydı; modelin kuralı değişmedi).
+    p = (b.get("eProfil") or b.get("profil") or "") if b["eStatus"] == "withdrawn" else (b.get("profil") or "")
     if b["eStatus"] != "withdrawn" and b["numara"].startswith("FIS"):
         return "kagit"
     if p == "EARSIVFATURA":
