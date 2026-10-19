@@ -477,4 +477,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   Canlıda müşteri için ayrıca e-SMM siparişi + açılış işlemleri gerekir (ticari@edmbilisim.com.tr). Uç nokta adresleri EDM'nin Word belgesinde (e-postanın eki;
   genel belge bağlantısı dosya.edmbilisim.com.tr owncloud). SIRADAKİ: kullanıcı Word belgesini oturuma YÜKLER → uç noktalar + şema okunur → e-SMM (config.esmmEnabled,
   şimdilik gizli) test ortamında uçtan uca plan + kapsam/maliyet önerisi kullanıcıya; karar kullanıcıda (2.4.4 ya da ayrı sürüm). Kod henüz değişmedi.
+  BELGE OKUNDU (19.10.2026): e-SMM TEST https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc, CANLI https://portal2.edmbilisim.com.tr/EFaturaEDM/ESmmEDM.svc;
+  test WSDL erişilebilir (200): Login, SendSMM, LoadSMM, GetSMMStatus, GetSMM, CancelSMM, ArchiveSMM, EmailSMM, MarkSMM, GetSMMSerial, CheckUser, CheckCounter…
+  (ad alanı/yapı e-Fatura servisiyle aynı aile; soap-contract.mjs yeniden kullanılır). Programda hazır: SMM kâğıt makbuz, ESMM profili, TES/ESM serileri, esmm
+  ayarı (gizli). EKSİK: ESmmEDM bağdaştırıcısı + e-SMM belge XML'i (GİB e-SMM biçimi doğrulanacak) + gönderim/durum/iptal/resmî PDF akışı + test ortamında
+  uçtan uca. Plan + karar kullanıcıda.
 
