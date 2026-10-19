@@ -491,6 +491,6 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   BAŞLANGIÇ: Perşembe 22.10.2026 02:00 sıfırlamasından SONRA; öncesinde para çekirdeğine dokunan iş başlatılmaz. Tahmin ~1,5–2 gün (e-SMM), ~1,5–3 M token.
 - SORU (kullanıcının yardımcısı, 19.10.2026): "EDM'de tüm bilgileri getirmek 1 kontör; kontör düşmesin dersen yalnız ticari unvan + posta kutusu gelir". KODDAN: Mükellef
   Sorgula yalnız CheckUser çağırır (edm.mjs checkUser: unvan, PK etiketleri, tür) — adres / vergi dairesi GETİRMEZ, kontörlü sorgu YOK. EDM WSDL'inde GetCompany /
-  GetCompanyBasic / GetTurmob var (hangisinin kontörlü olduğu ve döndürdüğü alanlar doğrulanmadı). 2.4.4 ADAYI (karar kullanıcıda): isteğe bağlı "Tüm Bilgileri Getir
-  (1 kontör)" — onaylı, ücreti yazan düğme; varsayılan ücretsiz sorgu.
+  GetCompanyBasic / GetTurmob var (hangisinin kontörlü olduğu ve döndürdüğü alanlar doğrulanmadı). KARAR (kullanıcı, 19.10.2026: "şu anki durum şimdilik yeterli, sonraki zamanlarda talebe
+  göre bakarız"): kontörlü "Tüm Bilgileri Getir" YAPILMAZ, 2.4.4 kapsamında DEĞİL; müşteri talebi gelirse yeniden değerlendirilir.
 
