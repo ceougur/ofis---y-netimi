@@ -498,3 +498,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   (küçük, kullanıcıya önerildi): kullanıcı adında http/https/“.svc” varsa kaydetmeden uyarı + baş/son boşluk kırpma; "Göster" yanında "kayıtlı parola gösterilmez,
   değiştirmek için yenisini yazın" netliği.
 
+- MÜŞTERİ İSTEKLERİ → 2.4.4 (kullanıcı, 19.10.2026 ~23:05 TR: "müşterinin istekleri var sırayla yazacağım, bunları da 2.4.4 güncellemesine ekle"; ekran:
+  Fatura → Gönderilecekler, 2 belge seçili, seçim çubuğunda PDF/Excel/XML/İptal/Sil var, gönder YOK):
+  (1) "Seçilenleri Gönder" — seçim çubuğuna, seçilenlerden gönderilebilir (Gönderilecekler) olanların sayısıyla. KURAL (baş mimar): e-Belge numarası tarih
+  sırasıyla verilir (kronoloji); seçilmemiş DAHA ESKİ tarihli bekleyen belge varsa seçilen yenisi numara alamaz → düğme bunu gönderimden ÖNCE söyler
+  ("önce şu tarihli N belge gönderilmeli; onları da ekle / iptal") — sessiz atlama ya da yarım tur yok; Tümünü Gönder ile aynı sunucu yolu (seri kilidi,
+  sonucu belirsiz önce sorulur). Para-numara çekirdeği → kırmızı test + dar kontrol (ders 32).
