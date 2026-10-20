@@ -340,7 +340,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   UYGULAMA PLANI (kullanıcı, 20.10.2026: "2.4.4'ten sonrası için planlayalım, devir dosyası olarak tüm detayları ile yazalım; yeni sohbetten de
   bulup yapabil"): `docs/devir/DEVIR-PLANI.md` — TEK BAŞINA YETERLİ (karar özeti, akış, mimari "yerinde budama + arşiv kopyası", modül modül kesim
   tablosu, açılışlar, kapanış/açılış fişi, ön denetim, Geri Al, teknik ayrıntılar dosya:satır, Nasıl Bozulur, test/kanıt, aşamalar D0–D6, açık sorular §11).
-  2.4.4'ten SONRA, sürüm 2.5.0; başlamadan D0 (koda karşı yeniden doğrula) + §11 soruları ürün sahibine. Kullanım sınırı (13.10 %83):
+  2.4.4'ten SONRA, sürüm 2.5.0; başlamadan D0 (koda karşı yeniden doğrula). §11 KARARLARI VERİLDİ (kullanıcı, 20.10.2026: "en yaygın ve
+  uygun hali neyse öyle yapalım"): 590/591 aynen açılır (570/580 mali müşavirde); Borç ve Alacakları Aktar varsayılan + Sadece Bakiye seçeneği; bütün cari
+  kartlar kalır, minimum bakiye yok; stok ağırlıklı ortalama alış fiyatı (fark arşivde 153↔621); vergi karşılığı/yıl sonu düzeltmeleri programda yok. Kullanım sınırı (13.10 %83):
   para çekirdeğine dokunan iş Perşembe 02:00 sıfırlamasından önce başlatılmaz.
 - SIRA (kullanıcı, 13.10.2026): Perşembe (sıfırlamadan sonra) → (1) banka kalan işleri — ŞÜPHELİ ALACAKLAR (İz 4.3, plan §3.11b) DAHİL
   (kullanıcı: "banka kalan işlerine say") + ölçek-20 kök neden ve öbür ertelenen banka maddeleri → (2) fatura/e-Belge (EDM) → (3) devir modülü.

@@ -22,11 +22,11 @@ doğrulanır** (2.4.4 kodu değiştirmiş olabilir).
 | Devri Güncelle | İlk sürümde YOK (Wolvox'ta da yok) | Arkadaş yanıtı |
 | Devri Geri Al | VAR (zorunlu yedekle; yanlışlıkla devir için güvence) | Baş mimar |
 | Kapanış/açılış fişi | Program yapar: 6'lı hesaplar kapanır, yeni yıla yalnız bilanço hesapları geçer | Baş mimar |
-| Stok değeri | İlk sürümde programın bugünkü birim fiyatı (son alış). Ortalama maliyet ayrı iş, mali müşavir teyidiyle | Baş mimar |
+| Stok değeri | **Ağırlıklı ortalama alış fiyatı** (Wolvox varsayılanı, en yaygın); fark arşivde dönem sonu değerleme kaydıyla (§4.3) | Kullanıcı: "en yaygın", 20.10.2026 (§11) |
 | Kuruş toleransı | YOK. Kapanış = açılış kuruşu kuruşuna; fark = hata | Baş mimar (para kuruş tamsayı) |
 | Arşiv ve şirket sınırı | Arşiv "001 · 2026 (Arşiv)" görünür, 2 şirket sınırına SAYILMAZ | DEVIR-MODULU §5 |
 
-Ürün sahibine sorulacak (uygulamadan ÖNCE; §11): 500/570/580 sermaye ayrımı, "Sadece bakiyeyi aktar" seçeneği, minimum bakiye.
+Açık sorular KAPANDI (kullanıcı, 20.10.2026: "verilecek bu 5 kararı en yaygın ve uygun hali neyse öyle yapalım") — kararlar §11'de.
 
 ---
 
@@ -37,8 +37,8 @@ doğrulanır** (2.4.4 kodu değiştirmiş olabilir).
    seçilebilir; ileri tarih yok) · bilgi: "Bu tarihe kadarki kayıtlar 2026 arşivine, sonrası 2027'ye geçer."
 3. **Sihirbaz 2 — Ön Denetim** (§5; engel varsa İleri pasif, nedeni görünür yazı): bekleyen e-Belge, sonucu belirsiz gönderim, kesim
    öncesi tarihli taslak, banka/POS bekleyen işler, Mutabakat Testi.
-4. **Sihirbaz 3 — Seçenekler:** Cari bakiye tipi (◉ Borç ve alacakları aktar · ○ Sadece bakiyeyi aktar), stok değeri (◉ Kayıtlı birim
-   fiyat), minimum bakiye (§11'e göre).
+4. **Sihirbaz 3 — Seçenekler:** Cari bakiye tipi (◉ Borç ve alacakları aktar · ○ Sadece bakiyeyi aktar), stok değeri (◉ Ağırlıklı Ortalama
+   Alış Fiyatı — tek seçenek, bilgi olarak gösterilir). Minimum bakiye alanı YOK (§11.3).
 5. **Sihirbaz 4 — Ön İzleme:** aktarılacak sayılar (cari, açık fatura, taksit kartı, çek/senet, banka hesabı, stok kalemi) + tutarlar +
    kesimden sonra yeni yıla taşınacak hareket sayısı + tahmini süre.
 6. **Sihirbaz 5 — Onay:** zorunlu yedek bilgisi, onay kutusu şirket koduyla dolu gelir (Şirket Verisini Sıfırla düzeni), "Devri Başlat".
@@ -127,7 +127,7 @@ olabilir) önce sınıflanır. Hiçbir tablo "unutulmuş" kalmaz — denetim tes
 | Kasa | `cash_entries.is_opening` (cash-opening.mjs:16) | :203 B 100 / A 500 | Tutar = K'deki nakit; kural "bir kez, ilk hareketten önce" korunur (tarih K+1) |
 | Cari | `addEntry(... note: "Açılış bakiyesi")` (routes/accounts.mjs:491, :1187); notla tanınır (general-ledger.mjs:77) | :246–247 120/320/336 ↔ 500 | §4.2 formülüyle; "Borç ve alacakları aktar" → iki satır (borç toplamı, alacak toplamı), "Sadece bakiye" → tek satır. **Ayrı bir `is_opening` sütunu eklenir** (notla tanıma kırılgan; göç) |
 | Taksit | `plan_entries.opening` (göç 14) | :274–276 B 500 / A kontrol | K'ye kadar ödenen tek satır; Kasa'ya girmez (routes/plans.mjs:919) |
-| Stok | `stock_moves.is_opening` (göç 30), `openingFlag` routes/stock.mjs:340 | :295 B 153 / A 500, değer `stockOpeningValue` :109 | Miktar = `stockLevel` (lib/accounts.mjs:148) K'de; değer = kayıtlı birim fiyat |
+| Stok | `stock_moves.is_opening` (göç 30), `openingFlag` routes/stock.mjs:340 | :295 B 153 / A 500, değer `stockOpeningValue` :109 | Miktar = `stockLevel` (lib/accounts.mjs:148) K'de; değer = K'deki ağırlıklı ortalama alış fiyatı (§11.4) |
 | Banka | `fin_events.type='opening'` (`writeOpening` bank/accounts.mjs:464, `setOpening` :687) | bank_lines hesap kodu saklı | Hesap başına K bakiyesi; "Devir Kapanışı" `carry_close` (bank/accounts.mjs:1175) ile çakışma kuralları (module-ref.mjs:80, post.mjs:360) denenir |
 | Çek/Senet | Ayrı açılış işareti YOK; Excel "Açılış portföyü" (routes/cheques.mjs:697) karşı hesabı 602/770 (routes/ledger.mjs:186–195) | — | **Yeni**: `cheque_events` "devir" olay türü; açık evrakın K'deki durumu ve hesabı (101.01/101.02/103/121.01/121.02/321) açılışla gelir, karşı hesap 500. Kâhin ile (ders 5) |
 
@@ -150,10 +150,12 @@ olabilir) önce sınıflanır. Hiçbir tablo "unutulmuş" kalmaz — denetim tes
 - **Yeni tablo `ledger_vouchers` / `ledger_voucher_lines`** (hesap kodu, borç, alacak, tür `closing`|`opening`|`opening-diff`): defter
   bu satırları bank_lines gibi aynen alır.
 - **Arşivde kapanış fişi (K tarihli):** 6xx hesaplar → 690 Dönem Kârı/Zararı; 690 → 590 Dönem Net Kârı / 591 Dönem Net Zararı (vergi
-  karşılığı 691 kapsam dışı; mali müşavir yıl sonu kaydını kendisi yapar — §11).
+  karşılığı 691/370 ve öbür yıl sonu düzeltmeleri programda YOK — §11.5). Kapanıştan ÖNCE stok değerleme kaydı (§11.4): arşivdeki 153 bakiyesi
+  ile "K miktarı × ağırlıklı ortalama" farkı 153 ↔ 621 Satılan Malın Maliyeti (CHART'a eklenir) ile kaydedilir; 621 de 690'a kapanır.
 - **Yeni yılda açılış farkı fişi (K+1):** modül açılışları (§4.1) karşı hesap olarak 500 kullanır. Fiş, **arşivin K kapanış mizanındaki
   her bilanço hesabı (1xx–5xx)** ile yeni yıl açılış mizanını hesap hesap eşitleyecek fark satırlarını yazar: modül açılışının kapsamadığı
-  hesaplar (191, 391, 360, 193, 128/129, 159, 340… — ne çıkarsa) + 500'den 570/580/590'a sınıflama.
+  hesaplar (191, 391, 360, 193, 128/129, 159, 340… — ne çıkarsa) + 500 ile 590/591'in arşivdeki bakiyelerine eşitlenmesi. 590/591 yeni yılda AYNEN açılır; 570/580'e aktarım
+  (kâr dağıtımı/genel kurul) mali müşavirin işidir (§11.1).
 - **Değişmez (kâhinin ana denetimi):** her bilanço hesabı için `arşiv K kapanış bakiyesi = yeni yıl K+1 açılış bakiyesi`, kuruşu kuruşuna;
   arşivde 6xx toplamı kapanıştan sonra 0.
 - Mizan: `trialBalance` general-ledger.mjs:441, `reconcile` :478; beklenen bakiyeler `expected()` routes/ledger.mjs:204.
@@ -268,7 +270,7 @@ UYARIR (onayla geçilir, Devir Raporu'na yazılır):
 |---|---|---|
 | D0 | Bu planı koda karşı yeniden doğrula (2.4.4 sonrası), tablo sınıflamasını tamamla, §11 kararları | Güncel plan |
 | D1 | Kâhin modeli (ayrı ajan, kodu görmeden) + "Nasıl bozulur" testleri (kırmızı) | test/bagimsiz/devir, test/devir-*.test.mjs |
-| D2 | Göç + `ledger_vouchers` + CHART (690/590/591/570/580) + cari `is_opening` | Gerileme yok (tam npm test) |
+| D2 | Göç + `ledger_vouchers` + CHART (690/590/591/570/580/621) + cari `is_opening` | Gerileme yok (tam npm test) |
 | D3 | Saf hesap (`plan.mjs`) + Devir Raporu (`report.mjs`) | Ön izleme = kâhin |
 | D4 | Budama + açılışlar (`split.mjs`), arşiv (`archive.mjs`), yazma yasağı, kilit izi | Değişmezler yeşil |
 | D5 | Sihirbaz + arşiv görünümü + Geri Al (istemci) + kılavuz hap bilgisi | e2e yeşil |
@@ -278,12 +280,19 @@ Tahmin: ~4–6 iş günü, ~4–7 M token (para çekirdeği; kâhin ve mutasyon 
 
 ---
 
-## 11. Uygulamadan önce ürün sahibine / mali müşavire sorulacaklar
-1. **Sermaye ayrımı:** yeni yıl açılışında net varlık 500 Sermaye'de mi toplansın, yoksa önceki yıl kârı 570 / zararı 580'e mi ayrılsın?
-   (Öneri: 590/591 → 570/580, kalan 500; mali müşavir teyidi.)
-2. **"Sadece bakiyeyi aktar"** seçeneği olsun mu (Wolvox'ta var) — öneri: olsun, varsayılan "Borç ve alacakları aktar".
-3. **Minimum bakiye:** bakiyesi sıfır ve açık kalemi olmayan cari yeni yılda kalsın mı (öneri: kalır, pasife alınmaz — kayıt kimliği bağları
-   için), Wolvox'taki "Minimum Bakiye" alanı yalnız açılış satırı yazmamayı mı belirlesin?
-4. **Stok değeri:** ilk sürümde kayıtlı birim fiyat (son alış) — ortalama maliyet ne zaman?
-5. **Vergi karşılığı (691/370) ve yıl sonu düzeltme kayıtları** programda mı, mali müşavirde mi kalsın? (Öneri: mali müşavirde; program
-   kapanış fişini dönem kârı olarak yazar.)
+## 11. Kararlar (kullanıcı, 20.10.2026: "verilecek bu 5 kararı en yaygın ve uygun hali neyse öyle yapalım")
+Her biri yerli programların (Logo, Mikro, Netsis, Wolvox) yaygın uygulaması ve TDHP'ye göre baş mimarca seçildi.
+1. **Sermaye / dönem sonucu:** Arşivde 6xx → 690 → 590 (kâr) / 591 (zarar). Yeni yıl açılış fişi bilanço hesaplarını AYNEN taşır; 590/591 de
+   olduğu gibi açılır. 570 Geçmiş Yıllar Kârları / 580 Geçmiş Yıllar Zararları'na aktarım ve kâr dağıtımı mali müşavirin işidir (yaygın uygulama:
+   genel kurul / beyanname sonrası); program bunu YAPMAZ. Gerekçe: değişmez "her bilanço hesabı kapanış = açılış" kuruşu kuruşuna korunur.
+2. **Cari bakiye tipi:** iki seçenek — ◉ Borç ve Alacakları Aktar (VARSAYILAN, Wolvox varsayılanı) · ○ Sadece Bakiyeyi Aktar. İkisinde de kalan
+   bakiye aynı; fark ekstrede görünüşte (DEVIR-MODULU §5 örneği). Açık faturalar her iki seçenekte de tek tek gelir (§4.2).
+3. **Cari kartlar ve minimum bakiye:** BÜTÜN cari kartlar yeni yılda kalır (Wolvox "Cari Kartlarını Aktar" varsayılan işaretli; kimlik bağları
+   için de şart); bakiyesi 0 olan cariye açılış satırı yazılmaz. "Minimum Bakiye" alanı ilk sürümde YOK: altındaki bakiyeyi atlamak kapanış ≠
+   açılış farkı doğurur; küçük bakiyeler devirden önce Mahsup / Kapatma ile temizlenir.
+4. **Stok değeri:** Ağırlıklı Ortalama Alış Fiyatı (Wolvox devir ekranının varsayılanı, Türkiye'de en yaygın; VUK md. 274 maliyet bedeli,
+   ortalama maliyet yöntemi kabul görür). Hesap: K'ye kadarki alışların (açılış dahil) miktar ağırlıklı ortalaması; alışı olmayan üründe kayıtlı
+   birim fiyat. Arşivde fark 153 ↔ 621 değerleme kaydıyla kapanıştan önce yazılır (§4.3). Programın günlük stok değerlemesi (son alış) BU İŞTE
+   değişmez (ayrı iş). D0'da: alış hareketlerinde birim maliyetin (`unitCost`, routes/stock.mjs:692–701) güvenilir saklandığı doğrulanır.
+5. **Vergi karşılığı ve yıl sonu düzeltmeleri** (691/370, amortisman, reeskont, kur farkı, KKEG): program YAPMAZ — ön muhasebe programlarında
+   yaygın uygulama; mali müşavir resmî defterde yapar. 590/591 vergi ÖNCESİ dönem sonucudur; Devir Raporu bunu açıkça yazar.
