@@ -540,6 +540,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   EDM giriş arayüzüne bağlanacak kullanıcılar, doğru mu? beni hatırla kullanılacak?") → EVET: düğme Entegratör Ayarları'ndaki ORTAMA göre açar (Test → test portalı
   EFaturaUI21ea, Canlı → canlı portal); giriş Entegratör Ayarları'ndaki kullanıcı adı/şifre ile; Beni Hatırla kullanılır (ilk girişte bir kez). Canlı portal adresi
   (portal2.edmbilisim.com.tr → portal4.edmfatura.com/EFaturaUI/) ve canlıda portal girişi = web servis kullanıcısı olduğu EDM'den teyit edilecek.
+  CANLI ADRES (kullanıcı ekranı, 20.10.2026: edmbilisim.com.tr → Müşteri Girişi → "E-Fatura Portal Girişi"): https://portal4.edmbilisim.com.tr/EFaturaUI/
+  ("e-Fatura / e-Arşiv v2.1" — tek giriş iki belge türünü kapsar; Beni Hatırla var). e-Arşiv'in GELEN kutusu YOKTUR (alıcı mükellef değildir; e-posta/PDF
+  ile gelir); gelen kutusu yalnız e-Fatura. GİB e-Arşiv Portalı ayrı ve ücretsiz; EDM ile kesen müşteri onu kullanmaz.
   (3) Kayıt detay kartındaki "Tahsilat" düğmesi KALDIRILSIN (kullanıcı, 20.10.2026: "regresyon olma ihtimali varsa koda dokunmadan yalnız CSS ile").
   KODDAN: düğme hof-workspace.js:1212 data-case-action="payment" (yetki payments.create "Kayda Tahsilat Girme", tutar Kasa'ya düşer); CSS'te gizleme kuralı zaten
   var (hof-ui.css:2123, yalnız tahsilat modülü kapalıyken; modül, kayıtlarda tahsilat varsa profile.mjs kendiliğinden açar). PLAN: CSS'e koşulsuz gizleme;
