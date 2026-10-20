@@ -2,7 +2,7 @@
 
 Uygulama planı (20.10.2026): **`docs/devir/DEVIR-PLANI.md`** — yöntem kararı Wolvox yöntemi (§10); uygulama 2.4.4 sonrası.
 
-Durum: **KARAR BEKLENİYOR.** Yöntem seçilmedi: "bizim yöntem" ya da "Wolvox yöntemi". Satışa yardım eden arkadaş düşünüp kararını
+Durum (13.10.2026, ESKİ — 20.10.2026 Wolvox yöntemi seçildi, yukarıya bak): **KARAR BEKLENİYOR.** Yöntem seçilmedi: "bizim yöntem" ya da "Wolvox yöntemi". Satışa yardım eden arkadaş düşünüp kararını
 iletecek. Karar gelince plan bu dosyadan kesinleştirilir, sonra uygulanır.
 Hatırlatıcı: 22.10.2026 Perşembe 09:00 TR (trig_01NEGfcTp7hAnHG1tgw6mFAv) — yapıma başlama günü.
 Görsel özet (arkadaşa gönderilen): `DestekOfis-Devir-Plani.png` / `.pdf` (bu klasörde).
