@@ -521,3 +521,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   DOĞRULANMADI. ÖNERİ: başlatıcı portalı KALICI profilli ayrı tam ekran Edge uygulama penceresinde açar; ilk girişte kullanıcı adı/parola bir kez girilir
   (Edge kaydeder) + Beni Hatırla; sonraki açılışlarda doğrudan sayfa gelmesi beklenir — gerçek Windows + Edge'de denenir; giriş alanlarını doldurma ayrı
   karar (Turnstile yüzünden yine tek tıklama ister, parola istemciye çıkar).
+  (3) Kayıt detay kartındaki "Tahsilat" düğmesi KALDIRILSIN (kullanıcı, 20.10.2026: "regresyon olma ihtimali varsa koda dokunmadan yalnız CSS ile").
+  KODDAN: düğme hof-workspace.js:1212 data-case-action="payment" (yetki payments.create "Kayda Tahsilat Girme", tutar Kasa'ya düşer); CSS'te gizleme kuralı zaten
+  var (hof-ui.css:2123, yalnız tahsilat modülü kapalıyken; modül, kayıtlarda tahsilat varsa profile.mjs kendiliğinden açar). PLAN: CSS'e koşulsuz gizleme;
+  sunucu yolu, eski tahsilatların İşlem Geçmişi'nde görünmesi/düzeltilmesi/silinmesi ve kayda bağlı TAKSİT kutusundaki "+ Tahsilat" (doğru yol) DEĞİŞMEZ;
+  boş geçmiş metni ("not, telefon, tahsilat veya haciz") düğmeye uygun düzeltilir. Bu düğmeye tıklayan e2e'ler (run.mjs 488/622/645, senaryo-banka-210b:214,
+  senaryo-cari-243:173/206) ekrandan girilemeyeceği için tahsilatı API'den girer + yeni denetim "düğme görünmez" (eski kodda kırmızı); bütün e2e koşulur (ders 28).
+  Standart/Pro kuralı gereği bütün kurulumlara gider.
