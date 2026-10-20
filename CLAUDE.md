@@ -514,3 +514,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   istemciye çıkar (bugün tasarım gereği hiç çıkmaz) ve EDM sayfası değişince sessizce bozulur. ÖNERİ: EDM'ye "portala belirteçli giriş bağlantısı var mı,
   portal kullanıcısı web servis kullanıcısıyla aynı mı, test/canlı portal adresleri ve çerçeveye izin" sorulur; yanıta göre ya tam şifresiz giriş ya da
   "portalı tam ekran aç + kullanıcı adı dolu" (parola tarayıcının kendi kaydıyla). Gerçek Windows + Edge'de denenir (ders 18).
+  EK (kullanıcı, 20.10.2026: test portalı https://test.edmbilisim.com.tr/EFaturaUI21ea/ giriş bilgisi web servisle AYNI; "program kullanıcı adı/şifre alanını
+  doldurup giriş yapacak; beni hatırla açıksa doğrudan sayfa gelecek?"). SAYFADAN OKUNDU: X-Frame-Options SAMEORIGIN → program içine gömülemez (ayrı tam ekran
+  pencere şart); giriş formunda Cloudflare Turnstile (hfTurnstileToken) + "Giriş Yap" düğmesi doğrulama bitene kadar pasif → otomatik doldur + otomatik
+  tıkla insan doğrulamasına takılır, EDM'nin bot korumasını aşmaya çalışmak YAPILMAZ; "Beni Hatırla" kutusu var (rememberMe), kalıcı çerez davranışı
+  DOĞRULANMADI. ÖNERİ: başlatıcı portalı KALICI profilli ayrı tam ekran Edge uygulama penceresinde açar; ilk girişte kullanıcı adı/parola bir kez girilir
+  (Edge kaydeder) + Beni Hatırla; sonraki açılışlarda doğrudan sayfa gelmesi beklenir — gerçek Windows + Edge'de denenir; giriş alanlarını doldurma ayrı
+  karar (Turnstile yüzünden yine tek tıklama ister, parola istemciye çıkar).
