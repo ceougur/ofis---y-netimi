@@ -103,3 +103,20 @@ Karar ayrıca: yalnız Kip 1, yalnız Kip 2 ("Wolvox yöntemi") ya da ikisi bird
 - Arşiv yılın yedek/geri yükleme ve güncelleme (göç) davranışı; şirket sınırına sayılmaması.
 - Test: kural gereği eski sürümün gerçek verisiyle, aynı adlı iki cari, ay sonu/yıl dönümü, sahte saat (31.12 → 01.01), iki kişi aynı anda.
 - Kullanım limiti: para çekirdeğine dokunan iş; haftalık sınır sıfırlandıktan sonra başlanır.
+
+## 9. Arkadaşa sorulacaklar — "Wolvox'ta nasıl oluyor?" (20.10.2026)
+Kullanıcı: "arkadaşıma soracağım hususlar Wolvox'ta nasıl oluyor? O da onu biliyor, ona göre olsun ister." Değerlendirme (CLAUDE.md "DEVİR MODÜLÜ → BELGE")
+sonrası açık kalan noktalar; mümkünse her yanıt Wolvox ekran görüntüsüyle.
+- A. Zamanlama ve eski yıl: (1) Devir ne zaman yapılıyor (31.12 / Ocak / beyannameden sonra)? (2) Devirden sonra eski yıla (2026) kayıt girilebiliyor mu?
+  (3) Ocak'ta gelen Aralık tarihli fatura 2026'ya girilince 2027'nin açılışı nasıl düzeliyor — "devir güncelle / yeniden devir" var mı, yapılınca 2027'ye
+  girilmiş kayıtlara ne oluyor? (4) Devri geri alma var mı? (5) Eski yıl nasıl açılıyor (yıl seçimi / şirket listesi), salt okunur mu?
+  (6) Devir sırasında öbür kullanıcılar çalışabiliyor mu, ne kadar sürüyor?
+- B. Muhasebe: (7) 6'lı hesapların kapanışı (690 → 590/591) ve açılış fişi Wolvox'ta otomatik mi, muhasebeci mi yapıyor?
+- C. Cari ve fatura: (8) "Borç ve alacakları aktar"da açık faturalar yeni yıla tek tek mi geliyor, yalnız devir satırı mı? Yeni yılda eski yılın faturasına
+  tahsilat bağlanabiliyor mu? (9) Devir satırının vadesi ne oluyor (yaşlandırma/vade raporu)? (10) Minimum bakiye altı cariler: kart geliyor mu?
+- D. Stok: (11) Müşteriler gerçekte hangi fiyat seçeneğini kullanıyor; "kalan miktar" mı "kümülatif" mi?
+- E. Taksit, çek, banka: (12) Kısmen ödenmiş taksit nasıl geliyor? (13) Ciro edilmiş / bankada tahsildeki çek devirden sonra karşılıksız çıkarsa hangi
+  yılda işleniyor? (14) "Dönemsel valör yükü" ne işe yarıyor?
+- F. e-Belge: (15) Yeni yılda numara baştan mı; Ocak'ta eski yılın faturası iptal edilecekse nerede yapılıyor; Aralık tarihli gelen e-Fatura hangi yıla alınıyor?
+- G. Diğer: (16) Kullanıcılar, yetkiler, ayarlar, notlar, belgeler yeni yıla kopyalanıyor mu? (17) Devir sonunda kontrol raporu veriyor mu?
+  (18) Müşterilerin devirde en çok yaşadığı sorun / şikâyet ne? Kaçta kaçı devir yapıyor?
