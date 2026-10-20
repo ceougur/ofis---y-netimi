@@ -562,3 +562,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   kâğıt ya da elektronik iletilir. Sınır (GİB dosyası 30 bin / 5 bin TL; ikincil kaynak TÜRMOB: 2025 3 bin TL, 1.1.2026'dan itibaren tutara bakılmaksızın)
   — güncel tutar resmî Gazete metniyle DOĞRULANMADI. Program etkisi: "e-Arşiv kullanıcısıyım" işaretli ama "e-Fatura mükellefiyim" işaretsiz durum GİB portalı
   kullanan mükellef olabilir (EDM ile kesemez) → 2.4.4'te kutu açıklaması/uyarı değerlendirilir (karar kullanıcıda).
+  EK (kullanıcı, 20.10.2026: "e-Fatura mükellefi entegratörden, e-Arşiv mükellefi GİB'den keser; vergi kaydında e-Arşiv seçmiş olan programdan kesemez — teyit
+  gerekir") → 509 V.1 okundu: YÖNTEM belge türünden BAĞIMSIZ — her e-Belge (e-Fatura ve e-Arşiv) üç yoldan biriyle: GİB Portal, Özel Entegratör (EDM), Doğrudan
+  Entegrasyon; V.1.4 entegratörün mükellefi GİB'e yükleyip onay alması gerekir. Belirleyici olan belge türü değil KAYIT YÖNTEMİ: GİB Portal kullanıcısı EDM ile
+  kesemez (önce EDM sözleşmesi + GİB'de entegratör kaydı). İki yöntemin aynı anda kullanılıp kullanılamayacağı tebliğ metninde BULUNAMADI (EDM/mali müşavir).
+  2.4.4 ADAYI: kutu metinleri "EDM üzerinden e-Fatura / e-Arşiv kullanıcısıyım" + kısa açıklama (GİB Portal kullanıcısıysanız işaretlemeyin).
