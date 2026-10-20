@@ -504,3 +504,13 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   sırasıyla verilir (kronoloji); seçilmemiş DAHA ESKİ tarihli bekleyen belge varsa seçilen yenisi numara alamaz → düğme bunu gönderimden ÖNCE söyler
   ("önce şu tarihli N belge gönderilmeli; onları da ekle / iptal") — sessiz atlama ya da yarım tur yok; Tümünü Gönder ile aynı sunucu yolu (seri kilidi,
   sonucu belirsiz önce sorulur). Para-numara çekirdeği → kırmızı test + dar kontrol (ders 32).
+  (2) "E-Fatura Portal" düğmesi (Fatura üst satırı, Liste - Excel'in yanında): tıklayınca EDM portalı program içinde TAM EKRAN açılsın; kullanıcı adı/parola
+  Entegratör Ayarları'ndan alınıp şifre sormadan kullanıcının portal sayfası açılsın. KODDAN/AĞDAN (20.10.2026): EDM e-Fatura WSDL'inde (60 işlem) portala
+  oturumlu giriş/SSO/bağlantı üreten işlem YOK (Login yalnız web servis oturumu); canlı portal portal2.edmbilisim.com.tr → portal4.edmfatura.com/EFaturaUI/
+  (bu ortamdan erişilemedi; çerçeveye izin verip vermediği DOĞRULANMADI). BAŞ MİMAR UYARILARI: (a) portal girişi web servis kullanıcısıyla aynı mı — EDM'ye
+  sorulacak (çoğu entegratörde portal kullanıcısı ayrı); (b) program içinde çerçeve (iframe) çoğu portalda X-Frame-Options/çerez kuralıyla engellenir ve
+  program http://<ip>:5123'te çalışır → gerçekçi yol: başlatıcının ayrı tam ekran uygulama penceresi (Edge --app) portal adresiyle; (c) şifresiz giriş
+  ancak EDM'nin belirteçli (token/SSO) giriş bağlantısı varsa güvenli; yoksa parolayı EDM'nin giriş formuna betikle doldurmak gerekir → parola sunucudan
+  istemciye çıkar (bugün tasarım gereği hiç çıkmaz) ve EDM sayfası değişince sessizce bozulur. ÖNERİ: EDM'ye "portala belirteçli giriş bağlantısı var mı,
+  portal kullanıcısı web servis kullanıcısıyla aynı mı, test/canlı portal adresleri ve çerçeveye izin" sorulur; yanıta göre ya tam şifresiz giriş ya da
+  "portalı tam ekran aç + kullanıcı adı dolu" (parola tarayıcının kendi kaydıyla). Gerçek Windows + Edge'de denenir (ders 18).
