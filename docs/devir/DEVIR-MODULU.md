@@ -120,3 +120,15 @@ sonrası açık kalan noktalar; mümkünse her yanıt Wolvox ekran görüntüsü
 - F. e-Belge: (15) Yeni yılda numara baştan mı; Ocak'ta eski yılın faturası iptal edilecekse nerede yapılıyor; Aralık tarihli gelen e-Fatura hangi yıla alınıyor?
 - G. Diğer: (16) Kullanıcılar, yetkiler, ayarlar, notlar, belgeler yeni yıla kopyalanıyor mu? (17) Devir sonunda kontrol raporu veriyor mu?
   (18) Müşterilerin devirde en çok yaşadığı sorun / şikâyet ne? Kaçta kaçı devir yapıyor?
+
+## 10. Arkadaşın yanıtı (Ahmet Alanlı, 20.10.2026 12:07–12:08, kullanıcı iletti — aynen)
+"devirleri ocakta yapar çoğunluğu ama şubata sarkıtanda oluyor, devirden sonra eski yıla veri giremezler girselerde yeni yıla etki etmez girilmesi eski
+yıla doğru değil, devirden sonra genelde pek bi şikayet olmaz" · "devir yaparkan devir için son işlem tarihi oluyor şubat ayında yada ocak ortasında yapan
+şöyle yapıyor devir için son işlem tarihine atıyorum 31.12.2026 seçiyor ona göre yapıyor"
+
+Çıkarım (baş mimar): devir yeni yıl başında DEĞİL, Ocak–Şubat'ta, Aralık kayıtları tamamlandıktan sonra yapılır; o güne kadar herkes tek dosyada çalışır
+(Ocak kayıtları dahil). Devirde "Son İşlem Tarihi" (31.12.2026) KESİM tarihidir: o tarihe kadarki hareketler yeni yıla açılış/devir olarak, sonrası (Ocak–Şubat)
+hareket olarak yeni yıla geçer (ikinci kısım DOĞRULANACAK — tek soru). Devirden sonra eski yıl kilitlenir, "Devri Güncelle" ilk sürümde GEREKMEZ (Wolvox'ta da
+yok); "Devri Geri Al" + zorunlu yedek güvence olarak kalır. Bizdeki karşılığı: "Devir Yap" = dosyayı kesim tarihinden ikiye ayırma — eski yıl: 31.12'ye kadarki
+kayıtlar, salt okunur arşiv; yeni yıl: açılış fişleri (cari, açık fatura kalanları, taksit, çek/senet, kasa, banka, stok, mizan bilanço hesapları) + kesimden
+sonraki bütün hareketler aynen.
