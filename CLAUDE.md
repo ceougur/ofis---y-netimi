@@ -543,3 +543,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   boş geçmiş metni ("not, telefon, tahsilat veya haciz") düğmeye uygun düzeltilir. Bu düğmeye tıklayan e2e'ler (run.mjs 488/622/645, senaryo-banka-210b:214,
   senaryo-cari-243:173/206) ekrandan girilemeyeceği için tahsilatı API'den girer + yeni denetim "düğme görünmez" (eski kodda kırmızı); bütün e2e koşulur (ders 28).
   Standart/Pro kuralı gereği bütün kurulumlara gider.
+- SORU (kullanıcı, 20.10.2026: "demo olarak kaç kişi kullanıyor, operatör merkezinden bak") → Supabase lisans.installations SALT OKUNUR sorgu (veriye dokunulmadı):
+  9.0.0 hariç 13 kurulum; 4 lisanslı (ŞAHİN TURİZM, OFİS, AHMET ALANLI, UĞUR ÇETİN); lisanssız Türkiye adresli GERÇEK demo 5'i son 24 saatte etkin (hepsi 2.4.3;
+  178.233, 46.221, 88.225, 193.255, 88.241), 2'si Eylül'den beri görünmüyor (2.0.9, 2.0.0). Azure (GitHub Actions) adresli 2 kayıt: 2.0.12 (25–30.09) ve
+  YAYIMLANMAMIŞ "2.4.5" (ilk 15.10 10:04, SON 19.10 15:30 TR — ders 30 önlemi 210ac8e'den SONRA da görülüyor) → 2.4.4 ADAYI: hangi test/iş akışı gerçek
+  lisans servisine ulaşıyor, bulunup kapatılır (lisans-servisi-izolasyonu taraması genişletilir; release.yml/Uzun Doğrulama dahil). Kayıtlar silinmez (15.10 kararı).
