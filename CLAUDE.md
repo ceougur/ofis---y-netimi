@@ -567,3 +567,5 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   Entegrasyon; V.1.4 entegratörün mükellefi GİB'e yükleyip onay alması gerekir. Belirleyici olan belge türü değil KAYIT YÖNTEMİ: GİB Portal kullanıcısı EDM ile
   kesemez (önce EDM sözleşmesi + GİB'de entegratör kaydı). İki yöntemin aynı anda kullanılıp kullanılamayacağı tebliğ metninde BULUNAMADI (EDM/mali müşavir).
   2.4.4 ADAYI: kutu metinleri "EDM üzerinden e-Fatura / e-Arşiv kullanıcısıyım" + kısa açıklama (GİB Portal kullanıcısıysanız işaretlemeyin).
+  KARAR (kullanıcı, 20.10.2026: "teyit edilecek kısımlar önemsiz; böyle dursun, geri bildirim olursa kutuları netleştiririz") → kutular DEĞİŞMEZ, 2.4.4
+  kapsamında DEĞİL; müşteri geri bildirimi gelirse yeniden ele alınır. Teyit soruları (iki yöntem aynı anda, 2025/2026 tutar sınırı) kapatıldı.
