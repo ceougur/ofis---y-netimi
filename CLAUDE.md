@@ -327,7 +327,13 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - DEVİR MODÜLÜ (yıl sonu devri; 13.10.2026'da YENİ madde — önceden listede yoktu): BÜTÜN BİLGİ `docs/devir/DEVIR-MODULU.md` (Wolvox ekranlarının
   dökümü, satış arkadaşının anlatımı, diğer programlar, iki kipli öneri, bakiye tipi örneği, görüş soruları, mevcut altyapı, riskler) + tablo
   `docs/devir/DestekOfis-Devir-Plani.png/.pdf`. KARAR BEKLENİYOR (kullanıcı: "arkadaş düşünüp kararı iletecek; bizim yöntem mi Wolvox yöntemi mi
-  karar verilince ona göre yaparız"). Hatırlatıcı 22.10.2026 Perşembe 09:00 TR (trig_01NEGfcTp7hAnHG1tgw6mFAv). Kullanım sınırı (13.10 %83):
+  karar verilince ona göre yaparız"). Hatırlatıcı 22.10.2026 Perşembe 09:00 TR (trig_01NEGfcTp7hAnHG1tgw6mFAv).
+  BELGE (kullanıcı, 20.10.2026: "DestekOfis_Yil_Sonu_Devir_Modeli_Tamamlanmis_2.pdf — sadece değerlendirmeni istiyorum, programımıza uygun mu?"): Kip 1 varsayılan +
+  Kip 2 sihirbaz ÖZÜ UYGUN; değerlendirme verildi (kod değişmedi). Belgede eksik/yanlış: gelir-gider kapanışı (6xx→690→590/591) ve açılış bilançosu yok;
+  stok maliyeti programda SON ALIŞ (ortalama/FIFO motoru yok; LIFO TMS 2'de yok, VUK teyidi); Ocak'ta gelen Aralık faturaları/e-Arşiv iptali/KDV beyanı için
+  arşiv hemen salt okunur olamaz → "Devri Güncelle" (yeniden aktar, fark) Faz 3'e; kayıt/görev/belge/kullanıcı/ayar/e-Belge seri ve Gönderilecekler kapsam dışı
+  kalmış; Connection Manager zaten var (şirket = ayrı dosya, readOnly açılış); terminaller HTTP ile tek sunucuya bağlı → "database is locked" riski yok;
+  para kuruş tamsayı → kuruş toleransı KABUL EDİLMEZ (fark = hata); özel kip için sunucu tarafı yazma kilidi gerekir. Kullanım sınırı (13.10 %83):
   para çekirdeğine dokunan iş Perşembe 02:00 sıfırlamasından önce başlatılmaz.
 - SIRA (kullanıcı, 13.10.2026): Perşembe (sıfırlamadan sonra) → (1) banka kalan işleri — ŞÜPHELİ ALACAKLAR (İz 4.3, plan §3.11b) DAHİL
   (kullanıcı: "banka kalan işlerine say") + ölçek-20 kök neden ve öbür ertelenen banka maddeleri → (2) fatura/e-Belge (EDM) → (3) devir modülü.
