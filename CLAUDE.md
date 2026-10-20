@@ -555,3 +555,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   178.233, 46.221, 88.225, 193.255, 88.241), 2'si Eylül'den beri görünmüyor (2.0.9, 2.0.0). Azure (GitHub Actions) adresli 2 kayıt: 2.0.12 (25–30.09) ve
   YAYIMLANMAMIŞ "2.4.5" (ilk 15.10 10:04, SON 19.10 15:30 TR — ders 30 önlemi 210ac8e'den SONRA da görülüyor) → 2.4.4 ADAYI: hangi test/iş akışı gerçek
   lisans servisine ulaşıyor, bulunup kapatılır (lisans-servisi-izolasyonu taraması genişletilir; release.yml/Uzun Doğrulama dahil). Kayıtlar silinmez (15.10 kararı).
+- MEVZUAT (kullanıcı, 20.10.2026: "bunları maliye ve vergi kanunlarından, mevzuatlardan bul") → GİB ebelge.gib.gov.tr/dosyalar/509_SN_VUK_GT.pdf (509 s. VUK GT,
+  GİB'deki metin) okundu: IV.2.2 e-Arşiv'e İSTEĞE BAĞLI dahil olmanın şartı (a) e-Fatura uygulamasına dahil olmak; IV.2.4.1 e-Fatura'ya dahil olanlar e-Arşiv'e
+  de GEÇMEK ZORUNDA (faturalar e-Fatura ya da e-Arşiv); IV.1 (s.~483) e-Fatura'lılar arası fatura e-Fatura zorunlu; IV.2.4.3 e-Arşiv'e dahil olmayan mükellef
+  sınırı aşan faturayı "Başkanlıkça sunulan e-Belge düzenleme portali" (GİB e-Arşiv Portalı) üzerinden e-Arşiv düzenler; s.~640 e-Arşiv alıcıya talebine göre
+  kâğıt ya da elektronik iletilir. Sınır (GİB dosyası 30 bin / 5 bin TL; ikincil kaynak TÜRMOB: 2025 3 bin TL, 1.1.2026'dan itibaren tutara bakılmaksızın)
+  — güncel tutar resmî Gazete metniyle DOĞRULANMADI. Program etkisi: "e-Arşiv kullanıcısıyım" işaretli ama "e-Fatura mükellefiyim" işaretsiz durum GİB portalı
+  kullanan mükellef olabilir (EDM ile kesemez) → 2.4.4'te kutu açıklaması/uyarı değerlendirilir (karar kullanıcıda).
