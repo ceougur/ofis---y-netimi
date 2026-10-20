@@ -128,7 +128,7 @@ yıla doğru değil, devirden sonra genelde pek bi şikayet olmaz" · "devir yap
 
 Çıkarım (baş mimar): devir yeni yıl başında DEĞİL, Ocak–Şubat'ta, Aralık kayıtları tamamlandıktan sonra yapılır; o güne kadar herkes tek dosyada çalışır
 (Ocak kayıtları dahil). Devirde "Son İşlem Tarihi" (31.12.2026) KESİM tarihidir: o tarihe kadarki hareketler yeni yıla açılış/devir olarak, sonrası (Ocak–Şubat)
-hareket olarak yeni yıla geçer (ikinci kısım DOĞRULANACAK — tek soru). Devirden sonra eski yıl kilitlenir, "Devri Güncelle" ilk sürümde GEREKMEZ (Wolvox'ta da
+hareket olarak yeni yıla geçer (kullanıcı teyidi 20.10.2026: "son işlem tarihi 31.12.2026 seçiliyorsa sonraki işler de yeni yıla kalıyor otomatik olarak"). Devirden sonra eski yıl kilitlenir, "Devri Güncelle" ilk sürümde GEREKMEZ (Wolvox'ta da
 yok); "Devri Geri Al" + zorunlu yedek güvence olarak kalır. Bizdeki karşılığı: "Devir Yap" = dosyayı kesim tarihinden ikiye ayırma — eski yıl: 31.12'ye kadarki
 kayıtlar, salt okunur arşiv; yeni yıl: açılış fişleri (cari, açık fatura kalanları, taksit, çek/senet, kasa, banka, stok, mizan bilanço hesapları) + kesimden
 sonraki bütün hareketler aynen.
