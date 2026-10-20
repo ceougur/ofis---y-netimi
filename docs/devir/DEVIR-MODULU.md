@@ -1,5 +1,7 @@
 # Devir Modülü (Yıl Sonu Devri) — Bilgi Dosyası
 
+Uygulama planı (20.10.2026): **`docs/devir/DEVIR-PLANI.md`** — yöntem kararı Wolvox yöntemi (§10); uygulama 2.4.4 sonrası.
+
 Durum: **KARAR BEKLENİYOR.** Yöntem seçilmedi: "bizim yöntem" ya da "Wolvox yöntemi". Satışa yardım eden arkadaş düşünüp kararını
 iletecek. Karar gelince plan bu dosyadan kesinleştirilir, sonra uygulanır.
 Hatırlatıcı: 22.10.2026 Perşembe 09:00 TR (trig_01NEGfcTp7hAnHG1tgw6mFAv) — yapıma başlama günü.

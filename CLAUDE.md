@@ -336,7 +336,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   para kuruş tamsayı → kuruş toleransı KABUL EDİLMEZ (fark = hata); özel kip için sunucu tarafı yazma kilidi gerekir.
   ARKADAŞIN YANITI (20.10.2026, docs/devir/DEVIR-MODULU.md §10): devir Ocak–Şubat'ta, "Son İşlem Tarihi" 31.12 ile; devirden sonra eski yıla kayıt
   girilmez; şikâyet az. → Wolvox yöntemi: kesim tarihinde dosyayı ikiye ayır (eski yıl salt okunur; yeni yıl açılış + kesim sonrası hareketler); "Devri Güncelle"
-  ilk sürümde yok. Kesimden sonraki (Ocak–Şubat) kayıtlar yeni yıla hareket olarak geçer (kullanıcı teyidi, 20.10.2026). YÖNTEM KARARI: Wolvox yöntemi. Kullanım sınırı (13.10 %83):
+  ilk sürümde yok. Kesimden sonraki (Ocak–Şubat) kayıtlar yeni yıla hareket olarak geçer (kullanıcı teyidi, 20.10.2026). YÖNTEM KARARI: Wolvox yöntemi.
+  UYGULAMA PLANI (kullanıcı, 20.10.2026: "2.4.4'ten sonrası için planlayalım, devir dosyası olarak tüm detayları ile yazalım; yeni sohbetten de
+  bulup yapabil"): `docs/devir/DEVIR-PLANI.md` — TEK BAŞINA YETERLİ (karar özeti, akış, mimari "yerinde budama + arşiv kopyası", modül modül kesim
+  tablosu, açılışlar, kapanış/açılış fişi, ön denetim, Geri Al, teknik ayrıntılar dosya:satır, Nasıl Bozulur, test/kanıt, aşamalar D0–D6, açık sorular §11).
+  2.4.4'ten SONRA, sürüm 2.5.0; başlamadan D0 (koda karşı yeniden doğrula) + §11 soruları ürün sahibine. Kullanım sınırı (13.10 %83):
   para çekirdeğine dokunan iş Perşembe 02:00 sıfırlamasından önce başlatılmaz.
 - SIRA (kullanıcı, 13.10.2026): Perşembe (sıfırlamadan sonra) → (1) banka kalan işleri — ŞÜPHELİ ALACAKLAR (İz 4.3, plan §3.11b) DAHİL
   (kullanıcı: "banka kalan işlerine say") + ölçek-20 kök neden ve öbür ertelenen banka maddeleri → (2) fatura/e-Belge (EDM) → (3) devir modülü.
