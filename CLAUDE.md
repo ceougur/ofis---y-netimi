@@ -278,7 +278,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - Kasa penceresi YALNIZ NAKİT (2.0.17 m9); havale/POS/kart banka modülünde. Tahsilatta "POS", ödemede "Kredi Kartı" (görünen metinde
   "Kurumsal" yok — 12.10.2026); kayıtlı değer `card`.
 - Cari yalnız "+ Yeni Cari" ve "Excel / Sheets'ten Yükle" ile açılır; tablodan cari alma yolu ve detay kartındaki Cari kutusu KALDIRILDI
-  (2.0.18 nihai karar). Kayıttan taksit ve Taksit → Tablodan Aktar durur. Aynı Excel ikinci kez yüklenince telefonsuz/no'suz satır yeni cari
+  (2.0.18 nihai karar). Taksit → Tablodan Aktar durur (2.4.4'te kullanıcıya soruldu); KAYITTAN TAKSİT 2.4.4'te KALKAR (kullanıcı, 21.10.2026: taksit
+  cariden yapılır). Aynı Excel ikinci kez yüklenince telefonsuz/no'suz satır yeni cari
   açar — böyle kalır (2.0.19).
 - Eksi stok: program sorar, "izin ver" denince eksiye düşer; böyle kalır (02.10.2026). Eksi üründe "Eksi Stok −15 Adet" gösterimi.
 - Şirket = ayrı veri dosyası (`sirketler/<kod>/`), kod 001, 002…; EN FAZLA 2 şirket (Pro dahil; 3+ eski kurulumlar kalır); sınırda
@@ -379,9 +380,13 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   şüpheli alacak kuralı değişmez (BİLİNEN SINIR); para çekirdeği → kırmızı test + mutasyon + dar kontrol. (3) E7: Yol A — ayrı, ekran boyunda pencere
   (window.open), kullanıcının kalıcı Edge profili (Beni Hatırla + Edge parola kaydı); kurulum değişmez; adres sunucunun sabit listesinden ortama göre; Turnstile'a
   dokunulmaz, parola istemciye çıkmaz; ad yazım düzeniyle "e-Fatura Portalı"; e-SMM'ye portaldaki sarı "SMMM Portalı Girişi" ile geçilir. (4) E8: Tahsilat düğmesi
-  CSS ile gizlenir; 2.0.18 kalıcı kararı "kayıttan taksit durur" korunur → planı olmayan kayıtta kısa yol "Taksit Planı Oluştur" olarak kayıt kartına taşınır
-  (bugün yalnız gizlenecek Tahsilat penceresinde); cariye bağlı kayıtta tahsilat Cari'den; boş geçmiş metni, yetki açıklaması, rapor adı, kılavuz uyarlanır; zil/şerit
-  yolunun cari/taksit yönlendirmesini atlaması (DOĞRULANMADI) önce yeniden üretilir. (5) İPTAL SÜRESİ (GİB kaynağı: ebelge.gib.gov.tr/dosyalar/kilavuzlar/
+  CSS ile gizlenir. DÜZELTME (kullanıcı, 21.10.2026: "orta tablodaki Excel'deki kayıttan taksit olmasın, cariye kaydedip oradan yapsın; kasa hareketlerini,
+  fatura, rapor gibi kısımları bozar, muhasebe mantığını kaybeder") → KAYITTAN TAKSİT KALKAR (2.0.18 kalıcı kararı bu ölçüde değişti): "Taksit planı oluşturun"
+  kısa yolu karta TAŞINMAZ; taksit yalnız Cari'den / Taksitler'den (kart cariye bağlı; createFromPlan routes/accounts.mjs:1289). Eski kayda bağlı kartlar ve eski
+  kayıt tahsilatları olduğu gibi kalır (veri bozulmaz). Boş geçmiş metni, yetki açıklaması, rapor adı, kılavuz uyarlanır. KÖR NOKTA (kullanıcıya soruldu): zil ve
+  Ödeme Sözü şeridindeki "Tahsil Et" (hof-alerts.js:285, hof-promises.js:138 → HOF.workspace.payment) kayıttan tahsilatı cari dışı doğrudan Kasa'ya yazmayı
+  sürdürür — aynı muhasebe sorunu; öneri: bu iki yol da Cari'ye gider (kayıt cariye bağlıysa cari tahsilat formu; değilse "önce cari açın" + ad/telefonu dolu
+  "+ Yeni Cari"). "Taksit → Tablodan Aktar" (tablodaki ödeme planı → cariye bağlı kart) aynı ilkeye girer mi: soruldu. (5) İPTAL SÜRESİ (GİB kaynağı: ebelge.gib.gov.tr/dosyalar/kilavuzlar/
   e-Arsiv_Uygulamalari_Iptal_Ihtar_Itiraz_Bildirim_Kilavuzu_V.1.1.pdf §3: "e-Arşiv Fatura ve e-SMM belgelerinin iptal işlemlerinde 8 günlük sürenin tespiti e-belgenin
   alıcıya iletilme tarihinden itibaren başlar. İptal işlemi her durumda 8 günlük süre içinde yapılmalıdır"; dayanak TTK 21/2): e-Arşiv VE e-SMM 8 gün, İLETİM
   (gönderim) tarihinden; başlangıç günü sayılmaz, 8. gün dahil (TBK 92). Program bugün KESİM tarihinden sayıyor (invoices.mjs:2893; daha katı) → iletimden
