@@ -69,7 +69,7 @@ Kilit bulgular (her biri dosya:satır ile doğrulanacak, uygulamada kırmızı t
   (DOĞRULANMADI); yerel depo sığ + 0 etiket → yerel npm test eski sürüm testlerini atlar (CI eşdeğeri değil).
 YAPILMAYACAKLAR (kullanıcı kararı): kontörlü "Tüm Bilgileri Getir"; e-Fatura/e-Arşiv kutu metinlerinin değişmesi (geri bildirim gelirse); WhatsApp paylaşımı (bekler).
 Akış ve teslim: CLAUDE.md "Sürüm teslim düzeni" + `docs/SURUM-YAYIMLAMA.md` + 2.4.3 örneği (`docs/2.4.3-KANIT.md`, `docs/2.4.3-IS-LISTESI.md`).
-Önerilen sıra: iş listesi `docs/2.4.4-IS-LISTESI.md` aç (21.10'dan beri BELGE_YOLLARI'nda; tek başına gönderilir, CI koşmaz) → küçük maddeler (5, 8, 9) → 2.4.3 ertelenenleri → Seçilenleri Gönder →
+Önerilen sıra: iş listesi `docs/2.4.4-IS-LISTESI.md` (21.10 açıldı; 30 dk rapor düzeni orada; tek başına gönderilir, CI koşmaz) → küçük maddeler (5, 8, 9) → 2.4.3 ertelenenleri → Seçilenleri Gönder →
 e-SMM → Portal düğmesi (Windows elle kabul) → tam npm test + bütün e2e → bağımsız gözden geçirme + dar kontrol → CI → Uzun Doğrulama → gerçek EDM → paket → teslim → PR.
 
 ### 2. SONRA: DEVİR MODÜLÜ (sürüm 2.5.0)

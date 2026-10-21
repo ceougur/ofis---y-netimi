@@ -468,6 +468,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   DEĞER yazılmaz (KVKK).
 - MEVZUAT KARARI (kullanıcı, 20.10.2026): e-Fatura / e-Arşiv kutu metinleri DEĞİŞMEZ, 2.4.4'te değil; geri bildirim gelirse netleştirilir. 509 VUK GT okuma
   notları (IV.2.2, IV.2.4.1, V.1 kayıt yöntemi) arşivde (21.10).
+- RAPOR DÜZENİ (kullanıcı, 21.10.2026: "2.4.4'ü yaparken 30 dk'da kısa ara rapor ver, düşen test var mı, durmuş işlem var mı kontrol et; varsa gereğini yap;
+  yapılacak işleri maddele, iş bittikçe üstünü çiz ve bana göster"): liste `docs/2.4.4-IS-LISTESI.md` (biten madde üstü çizili, commit ile). Uygulama: "başla"
+  deyince oturum içi 30 dk'lık CronCreate işi (yalnız boşta çalışır; 7 günde kendiliğinden biter; 2.4.4 bitince silinir) + uzun turda her denetim noktasında
+  30 dk dolduysa rapor. Raporda: ne yapılıyor, düşen test (çıkış kodu + sayılar, CI), duran işlem (arka plan koşuları, ajanlar, CI); varsa önce gereği yapılır.
 - HAZIRLIK (21.10.2026, 2.4.4 öncesi denetim): (1) YAPILDI (21.10.2026, ERP yol haritası commit'i): docs/2.4.4-IS-LISTESI.md ve docs/erp/** BELGE_YOLLARI'nda (tools/kanit.mjs
   + ci.yml paths-ignore + test/kanit-araci.test.mjs; yeni iddia eski araçta kırmızı 47/48, yenide 51/51) → iş listesi tek başına gönderilebilir, CI koşmaz. (2) Kapsayıcı: node_modules YOK → `npm ci` (ders 29: bağ yok); depo SIĞ → teslimden önce `git fetch --unshallow`; Wine/mingw YOK →
   paketten önce kurulur; Go, Chromium, disk (30 GB boş) hazır. (3) İmza anahtarı ve EDM test hesabı bu oturuma verildi; yalnız oturumda durur, kapsayıcı
