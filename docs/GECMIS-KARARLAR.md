@@ -2016,3 +2016,194 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   kutusu; fatura peşini ve faturaya bağlı (Kapatılacak Fatura) tahsilat KENDİLİĞİNDEN normal (yeni satışın parası) — yargıç #3. (3) Alacak Yaşlandırma
   raporuna "Vade Gecikme (Gün)" (carinin en eski açık kaleminin gecikmesi) ve vade dilimi; "Şüpheli Alacak" kolonu kalır, başlığında "(dilimlere
   dahil)". Uygulama: yargıç düzeltmeleri birleşince aynı dosyalarda (doubtful-gl, hof-accounts, report-center) ayrı ajan; 2.3.0'a girer.
+
+## Arşiv 21.10.2026 (CLAUDE.md "Açık iş"ten AYNEN taşındı; kapanan 2.4.3 maddeleri, 2.3.0'da kapanan SIRA, uzun hâlleri ve uygulanmış kararlar)
+- MÜŞTERİ İSTEĞİ (13.10.2026, emlakçı; ekran: kayıt detay kartı → Belgeler, resim satırında Görüntüle/Yazdır/İndir/Sil): "WhatsApp'tan Paylaş"
+  simgesi → karttaki resimler + detay kartındaki bilgiler müşteriye gönderilsin. Soru: yapılabilir mi, maliyet, iş yükü, süre. KODDAN: WhatsApp
+  bugün wa.me ile YALNIZ METİN açar (hof-whatsapp.js:13; dosya eki resmî yolla ancak Meta Business API — Pro, ileride); personel bilgisayarı
+  sunucuya http://<ip>:5123 ile bağlanır (launcher/discovery.go) → güvenli bağlam değil: tarayıcının dosya paylaşımı (navigator.share) ve
+  panoya resim kopyalama orada KAPALI; launcher Edge/Chrome uygulama penceresini kendisi açar (platform_windows.go) → bayrakla açılabilir,
+  gerçek Windows'ta denenmeli (ders 18). ÖNERİ (karar kullanıcıda): Yol A ücretsiz — "WhatsApp'ta Paylaş" penceresi: alan seçimi + metin
+  ön izleme + resim seçimi → Windows Paylaş penceresi (WhatsApp masaüstü) ya da yedek "metni aç + resimleri panoya/indir, sohbete yapıştır";
+  Gönder'e kullanıcı basar; bütün sektörlere (Standart). Yol B Meta Business API (tam otomatik; Meta ücreti + işletme doğrulaması; Pro, ayrı iş).
+  DÜZELTME (kullanıcı, aynı gün): alıcı numarası karttan GELMEZ (karttaki numara genelde ev sahibinin) → alıcı alanı boş gelir, kullanıcı
+  müşteri numarasını yazar (öneri: son alıcılar + Cari'den seç). SORU: metin + resimler sohbete hazır yüklü gelebilir mi (API'siz)? CEVAP: numaraya
+  hem metin hem çok resim tek adımda yalnız API ile; API'siz en yakın: (1) Windows Paylaş → WhatsApp: metin + resimler hazır, kişi WhatsApp'ta
+  seçilir (yeni numara için önce wa.me ile sohbet açılır); (2) wa.me: numara + metin hazır, resim yapıştırılır; (3) öneri: bilgiler + resimler
+  tek "Portföy Sunumu" PDF/görsel → wa.me + tek dosya. Gerçek Windows + WhatsApp masaüstünde denenmeden söz verilmez.
+- DEVİR MODÜLÜ (yıl sonu devri; 13.10.2026'da YENİ madde — önceden listede yoktu): BÜTÜN BİLGİ `docs/devir/DEVIR-MODULU.md` (Wolvox ekranlarının
+  dökümü, satış arkadaşının anlatımı, diğer programlar, iki kipli öneri, bakiye tipi örneği, görüş soruları, mevcut altyapı, riskler) + tablo
+  `docs/devir/DestekOfis-Devir-Plani.png/.pdf`. KARAR BEKLENİYOR (kullanıcı: "arkadaş düşünüp kararı iletecek; bizim yöntem mi Wolvox yöntemi mi
+  karar verilince ona göre yaparız"). Hatırlatıcı 22.10.2026 Perşembe 09:00 TR (trig_01NEGfcTp7hAnHG1tgw6mFAv).
+  BELGE (kullanıcı, 20.10.2026: "DestekOfis_Yil_Sonu_Devir_Modeli_Tamamlanmis_2.pdf — sadece değerlendirmeni istiyorum, programımıza uygun mu?"): Kip 1 varsayılan +
+  Kip 2 sihirbaz ÖZÜ UYGUN; değerlendirme verildi (kod değişmedi). Belgede eksik/yanlış: gelir-gider kapanışı (6xx→690→590/591) ve açılış bilançosu yok;
+  stok maliyeti programda SON ALIŞ (ortalama/FIFO motoru yok; LIFO TMS 2'de yok, VUK teyidi); Ocak'ta gelen Aralık faturaları/e-Arşiv iptali/KDV beyanı için
+  arşiv hemen salt okunur olamaz → "Devri Güncelle" (yeniden aktar, fark) Faz 3'e; kayıt/görev/belge/kullanıcı/ayar/e-Belge seri ve Gönderilecekler kapsam dışı
+  kalmış; Connection Manager zaten var (şirket = ayrı dosya, readOnly açılış); terminaller HTTP ile tek sunucuya bağlı → "database is locked" riski yok;
+  para kuruş tamsayı → kuruş toleransı KABUL EDİLMEZ (fark = hata); özel kip için sunucu tarafı yazma kilidi gerekir.
+  ARKADAŞIN YANITI (20.10.2026, docs/devir/DEVIR-MODULU.md §10): devir Ocak–Şubat'ta, "Son İşlem Tarihi" 31.12 ile; devirden sonra eski yıla kayıt
+  girilmez; şikâyet az. → Wolvox yöntemi: kesim tarihinde dosyayı ikiye ayır (eski yıl salt okunur; yeni yıl açılış + kesim sonrası hareketler); "Devri Güncelle"
+  ilk sürümde yok. Kesimden sonraki (Ocak–Şubat) kayıtlar yeni yıla hareket olarak geçer (kullanıcı teyidi, 20.10.2026). YÖNTEM KARARI: Wolvox yöntemi.
+  UYGULAMA PLANI (kullanıcı, 20.10.2026: "2.4.4'ten sonrası için planlayalım, devir dosyası olarak tüm detayları ile yazalım; yeni sohbetten de
+  bulup yapabil"): `docs/devir/DEVIR-PLANI.md` — TEK BAŞINA YETERLİ (karar özeti, akış, mimari "yerinde budama + arşiv kopyası", modül modül kesim
+  tablosu, açılışlar, kapanış/açılış fişi, ön denetim, Geri Al, teknik ayrıntılar dosya:satır, Nasıl Bozulur, test/kanıt, aşamalar D0–D6, açık sorular §11).
+  2.4.4'ten SONRA, sürüm 2.5.0; başlamadan D0 (koda karşı yeniden doğrula). §11 KARARLARI VERİLDİ (kullanıcı, 20.10.2026: "en yaygın ve
+  uygun hali neyse öyle yapalım"): 590/591 aynen açılır (570/580 mali müşavirde); Borç ve Alacakları Aktar varsayılan + Sadece Bakiye seçeneği; bütün cari
+  kartlar kalır, minimum bakiye yok; stok ağırlıklı ortalama alış fiyatı (fark arşivde 153↔621); vergi karşılığı/yıl sonu düzeltmeleri programda yok. Kullanım sınırı (13.10 %83):
+  para çekirdeğine dokunan iş Perşembe 02:00 sıfırlamasından önce başlatılmaz.
+- SIRA (kullanıcı, 13.10.2026): Perşembe (sıfırlamadan sonra) → (1) banka kalan işleri — ŞÜPHELİ ALACAKLAR (İz 4.3, plan §3.11b) DAHİL
+  (kullanıcı: "banka kalan işlerine say") + ölçek-20 kök neden ve öbür ertelenen banka maddeleri → (2) fatura/e-Belge (EDM) → (3) devir modülü.
+  WhatsApp paylaşımı (emlakçı isteği) ŞİMDİLİK BEKLER (kullanıcı: "şimdilik kalsın").
+  2.3.0 BANKA EKSTRESİ (ekstre yükleme + eşleştirme) LİSTEDEN ÇIKTI (kullanıcı, 13.10.2026: "müşteri portföyüm pek ilgilenmez, sonra ihtiyaç
+  duyulursa yaparız") — plan bölümü yerinde kalır, ihtiyaç olursa açılır.
+- KUSUR (kullanıcı denemesi, 17.10.2026; ekran: TEF2026358238234 TESTER, TCKN 12345678950, Belge Türü e-Fatura (Temel), gönderimde "posta kutusu" uyarısı):
+  TCKN EDM'de mükellef DEĞİL (CheckUser false) ama cari kartında "e-Fatura mükellefi" işaretli → belge TEF ile e-Fatura oldu, PK yok → 409 buyer-alias. Sahte
+  EDM'de yeniden üretildi (scratchpad/tester-repro): (a) işaret kaldırılınca Düzenle 400 profile-not-allowed — çıkmaz yol; (b) Düzenle'de belge türü e-Arşiv
+  seçilirse 200 ve belge TEF numarasıyla EARSIVFATURA olur (e-Fatura serisi numarası e-Arşiv belgesinde) — KUSUR. Kullanıcıya yol: İptal Et (EDM'ye gitmedi)
+  → cari Mükellef Sorgula (işaret kalkar) → Kopyala → TEA e-Arşiv olarak Kaydet ve Gönder. 2.4.3 ADAYI (karar kullanıcıda): numaralı belgede Düzenle belge
+  türünü (profil/seri) değiştiremez, ileti "iptal edip yeniden kesin"; formda cari seçilince e-Fatura mükellefi ama PK seçilmemişse kaydetmeden uyarı
+  ("Mükellef Sorgula"); buyer-alias iletisi carinin mükellef olmadığı durumda doğru yolu söylesin. TEF2026358238233 (TEST BILISIM) EDM'de SEND - SUCCEED (17:21 TR).
+  TEA2026732297197 (TESTER e-Arşiv) EDM'de SEND - SUCCEED (17:29 TR); iki belgenin resmî PDF karekodu çözüldü (senaryo/tutar programla aynı). GÖRÜNÜM: nakit
+  ödenen belgede "Ödeme Şekli: Havale / EFT" — Ek Seçenekler "Ödeme şeklini yaz" kapalıyken IBAN varsa 42 yazılıyor; kullanıcı seçeneği açtı.
+  KARAR (kullanıcı, 17.10.2026: "önerilerin mantıklı") → 2.4.3 BAŞLADI: (1) numaralı belgede Düzenle belge türünü değiştiremez ("iptal edip yeniden
+  kesin"); (2) e-Fatura carisinde posta kutusu seçilmemişse formda kaydetmeden uyarı + "Kaydet ve Gönder" numara harcamadan durur; buyer-alias
+  iletisi mükellef olmayan cari yolunu da söyler; (3) "Ödeme şeklini yaz" varsayılan AÇIK.
+  KARAR (kullanıcı, aynı gün: "anayasamıza göre sen karar ver", cari kartı "e-Fatura mükellefi (bu cariye e-Fatura kesilir)" kafa karıştırıyor) → (4) işareti
+  yalnız Mükellef Sorgula koyar/kaldırır, metin "işaretliyse e-Fatura, değilse e-Arşiv kesilir". YAPILDI (kod + test, docs/2.4.3-DEGISIKLIKLER.md): ebelge-243
+  9/9 (eski b340bf6 kopyasında 7/9 kırmızı), e2e senaryo-ebelge-243 17/17 (eskide 8 kırmızı, TESTER aynen), komşu e-Belge/fatura 233/233.
+  DURAKLATILDI (kullanıcı, 17.10.2026 ~14:55 UTC: "akşam yardımcımla test edeceğiz, iki iş olmasın; planlayarak durdur, devam ya da düzeltilecekler
+  olursa söylerim"): tam npm test yarıda durduruldu (sonuç YOK), 30 dk raporu silindi. DEVAMDA: yardımcının bulguları eklenir → tam npm test +
+  e2e entegrator-240/ebelge-242/243 → sürüm 2.4.3 (package.json/lock, kılavuz kapak/dip + hap bilgi: kutu Mükellef Sorgula ile, PK uyarısı, ödeme
+  şekli) → CHANGELOG "İyileştirmeler" → KANIT → CI → bağımsız gözden geçirme → Uzun Doğrulama → imzalı paket → teslim → PR.
+  DEVAM (kullanıcı, 17.10.2026: "yardımcımın işi çıkmış, kalan adımlara devam"): sürüm 2.4.3 + kılavuz (3021d00); bağımsız gözden geçirme B1–B7 → B1–B4,
+  B6 düzeltildi (0352efd); tam npm test 2685/2685; gerçek EDM kanıtı; son aday 3e65842 [uzun-dogrulama] CI #819 YEŞİL. Uzun Doğrulama run 39045380135: 22/24
+  yeşil; "Mutabakat (windows, tohum 1)" 5.000 işlem TUTARLI ama test yardımcısının temizliği EPERM → kırmızı (+ kapı). Düzeltme yalnız test yardımcısında
+  (4d546e9, test-temizlik-243; CI #820 YEŞİL); imzalı paket 4d546e9'dan (zip f4fe08b3…, kurulum 59069744…; denetim 4/4). KARAR (kullanıcı, 17.10.2026 ~18:45 UTC:
+  "hatasız doğru düzgün olsun, gerektiği kadar bekleyelim") → Uzun Doğrulama PAKETLENEN commit 4d546e9'da baştan (run 39059370080, workflow_dispatch);
+  yeşil → teslim + PR. (3e65842'deki kırmızı işin yeniden koşusu da sürüyor; yalnız ek bilgi.)
+- İSTEK (kullanıcı, 17.10.2026 ~18:50 UTC: "maliyetsiz olarak benim bugün karşılaştığım gibi UI sorunları ve mantık hatalarını, iyileştirmeleri gerçek kullanıcı
+  gibi test et: sayfa yapısı, tıklamada ekran yanıp sönmesi, veri giriş satırları hizalı mı, uyarılar makul sürede gidiyor mu, kullanımda sürtünme, genel program
+  testlerinde bakılan şeyler") → BAŞLADI: yerelde 2.4.3 (4d546e9) gerçek verili, tarayıcıyla (Playwright) keşif testi — alanlara bölünmüş ajanlar (yalnız bulgu;
+  ürün kodu DEĞİŞMEZ, 2.4.3 paketine dokunulmaz); ana oturum bulguları yeniden üretip kullanıcıya rapor eder; düzeltme kullanıcı kararıyla ayrı sürüm (2.4.4).
+- İSTEK (kullanıcı, 17.10.2026 ~19:00 UTC: "fatura modülünde bir de yükte hız testi yaptır, maliyetsiz") → PLAN: yerelde 2.4.3 (4d546e9), sahte EDM (ağa
+  çıkmaz, 0 TL): 5/10/20 eşzamanlı kullanıcı fatura kes + gönder + iptal + liste/arama/rapor; 10.000+ faturalı veriyle; ölçüm p50/p95/p99, saniyede işlem, hata,
+  numara benzersiz/boşluksuz, bakiye/stok/defter tutarlılığı, ekranda fatura listesi/form açılış süresi. Ders 15 gereği keşif testleri (A/B/C) BİTİNCE tek
+  başına koşulur. Önceki ölçüm: gerçek EDM gönderim tavanı ~320/dk (docs/kanit/2026-10-16/edm-hiz) — bu kez programın kendi hızı.
+- KARAR (kullanıcı, 17.10.2026 ~19:50 UTC: "diğer testler de bitince yeni bulgular çıkarsa, şu an bulunan ve bulunacak tüm bulguları düzelterek zipi
+  kusursuz olarak teslim et") → keşif bulgularının (docs/2.4.4-ADAY-BULGULAR.md; 50 bulgu) ve fatura hız testi bulgularının HEPSİ 2.4.3'e girer (2.4.3 henüz
+  teslim edilmedi; ayrı 2.4.4 yok). Sıra: hız testi biter (ders 15: ölçüm sürerken bu makinede test koşulmaz) → alan başına düzeltme ajanları (worktree; her
+  bulgu için kırmızı test → düzeltme → komşular) → ana oturum birleştirir, ayrı kopyada kırmızı/yeşil yeniden koşar → tam npm test + BÜTÜN e2e (ortak arayüz
+  değişir) → keşif senaryolarının yeniden koşusu (bulgular kapandı mı) → bağımsız gözden geçirme + dar kontrol → son aday CI → Uzun Doğrulama → paket → teslim.
+- KARAR (kullanıcı, 17.10.2026 ~19:55 UTC; baş mimar da uygun buldu): "Form state yönetimini izole hale getir; dosya/resim yükleme formun genel state'ini
+  re-render etmesin ve kaydedilmemiş verileri ezmesin; sonra tüm formlar için regresyon testi yaz ve çalıştığından emin ol" (kaynak: kullanıcının D1 bulgusu,
+  Fatura Ayarları logo/kaşe seçimi kaydedilmemiş alanları siliyor). Uygulama (ortak çekirdek paketinin 1. maddesi): hof-core merkezî taslak koruma (yeniden
+  çizimde dokunulmuş alanlar korunur), dosya/resim seçimi yalnız kendi bölümünü günceller, kayıtlı veri yalnız Kaydet sonrası ekrana basar; REGRESYON: bütün
+  formlar e2e (doldur → her iç yeniden çizim tetikleyicisi → değerler yerinde) + kaynak tarama testi (dosya seçiminden tüm form yeniden çizimi yasak);
+  eski kodda kırmızı, CI Linux+Windows yeşil.
+- KARAR (kullanıcı, 17.10.2026 ~20:10 UTC; baş mimar 2.4.3'ü bugünkü hâliyle teslim + bulgular 2.4.4 önerdi): "gerileme olacaksa zaten 2.4.4 ayrı versende
+  olacak. gerileme olmayacak şekilde yap herşeyi" → BÜTÜN bulgular + form izolasyonu 2.4.3'te KALIR. GERİLEME GÜVENCESİ: (1) değişiklikten ÖNCE taban:
+  4d546e9'da bütün e2e (CI dışı dahil) + keşif senaryoları + tam npm test sonuçları kayda alınır; (2) her bulgu eski kodda kırmızı test → en küçük düzeltme →
+  komşu testler; (3) ortak çekirdek (form izolasyonu, kapatma onayı, bildirim, klavye) ÖNCE ve TEK BAŞINA birleşir, bütün e2e + CI yeşil olmadan alan
+  düzeltmeleri birleşmez; (4) alan paketleri sırayla birleşir, her birleşmede değişen alan + bütün e2e; (5) numara/iade/toplu gönderim para-numara
+  çekirdeği → mutasyon + dar kontrol turu (ders 32); (6) bitişte tabanla fark: önceden yeşil olan her test ve senaryo yine yeşil, keşif bulguları kapalı,
+  bağımsız gözden geçirme yalnız gerileme arar; (7) son aday CI + Uzun Doğrulama + gerçek EDM test ortamında e-Belge akışı yeniden.
+- KARAR (kullanıcı, 18.10.2026 ~06:25 UTC, H9 sorusuna "a) evet görsün"): Muhasebe rolü Finans Raporları'nı (mizan, ekstre, Rapor Merkezi, Vade
+  Takip) VARSAYILAN olarak görür (permissions.mjs overview.view += muhasebe); yönetici kişiden kaldırabilir (kişiye özel "remove"); özel roller kendi
+  listesiyle kalır; ANLIK DURUM kartı yine yalnız yönetici. Güncellemeyle mevcut muhasebe kullanıcılarına da açılır (kaldırılmışlar kapalı kalır).
+  Dal h9-243 127ab3c (test yetki-243-muhasebe-finans eski 0/2 → 2/2; finans kapısını sınayan 4 test kişiden kaldırarak sınamayı sürdürür).
+- KARAR (kullanıcı, 18.10.2026 ~08:00 UTC: "evet kopyala düğmesi ekle"): 2.4.3 çekirdeğinde bildirim tıklamayı geçirdiği için metni seçilemiyor → hata
+  ve uyarı bildirimlerine "Kopyala" düğmesi (tam metin panoya; güvenli olmayan http bağlamında yedek yol). Düzeltme ajanına (duzeltme-gg243) eklendi.
+- İSTEK (kullanıcı, 18.10.2026 ~08:25 UTC, ikinci kez: "anayasamızı ve derslerimizi gözden geçir yeniden") → SONUÇ: (1) ders 26 yine ihlal — iş listesi
+  (docs/2.4.3-IS-LISTESI.md) BELGE_YOLLARI dışında, her güncellemesi tam CI başlattı (f6c032a, 8811afb, 5f50a2e) → önlem: iş listesi kodla birlikte
+  gönderilir; kalıcı çözüm olarak docs/*-IS-LISTESI.md BELGE_YOLLARI'na eklenecek (kanit.mjs + ci.yml + kanit-araci testi; sonraki kod push'unda).
+  (2) ders 34 eklendi: esc-kapat.mjs soruyu sessizce geçiyordu (yanlış soruları gizler) → düzeltme ajanına günlük + sınıflama + beklenti verildi.
+  (3) KANIT 4: yeni e2e'lerin eski kodda kırmızısı yalnız ajan raporundan → form-izolasyon-243 ana oturumca eski/yeni kodda yeniden koşuluyor.
+  (4) ders 9: çekirdek 134 form çağrısının 115'i ekrandan ayrıca açılmadı (ortak çekirdekle korunuyor) → DENENMEYEN'e adıyla yazılacak; keşif
+  yeniden koşusu bu formlardan Excel eşleme, geri yükleme, toplu işlem, POS, çek işlemlerini kapsayacak. (5) ders 14/18: Geri tuşu, F5 sorusu, Navigation
+  API, Kopyala (http) gerçek Windows + Edge uygulama penceresinde denenmedi → teslimde kısa elle kabul listesi (KANIT 5) verilecek.
+  (6) çekirdeğin ana dal CI'si (37b64e8) kırmızı (form-izolasyon E1 ön koşulu CI yerleşiminde kurulamadı) — birleşim (birlesim2-243) bu düzelip CI
+  yeşil olmadan ana dala alınmaz.
+- DAR KONTROL TURU (18.10.2026, d64ebf8; ders 32): numara/gönderim düzeltmelerinde YÜKSEK Y1 (Tümünü Gönder istemcide 30 sn zaman aşımı; gerçek EDM
+  hızında GG1 turları işlemez — ana oturum yeniden üretti: 30 sn'de hata, sunucu arkada 170/170), ORTA O1 (Kaydet ve Gönder / Kaydet / kartta Gönder eski
+  numarasız bekleyeni kalıcı kronoloji engeline düşürür — ana oturum yeniden üretti, 3 yolun 3'ü), O2 (tur sürerken Listeden Silinen belge e-Belge gider),
+  O3 (buyer-is-efatura seriyi bekletir), DÜŞÜK D1–D4 + ağ yokken turun numara vermesi. O1–O3/D4 2.4.3 ÖNCESİNDEN de var. Hepsi 2.4.3'te düzeltiliyor
+  (dal duzeltme2-243); bitince ayrı kopyada kırmızı/yeşil + yeni dar kontrol.
+- İSTEK (kullanıcı, 18.10.2026 ~12:20 UTC: "son uzun koşu başlamadan son adayı, bağımsız kahin, yargıç, eleştirmenden geçir (uzman ui, uzman ux ve uzman mali
+  müşavir gözüyle sadece koddan değil gerçek kullanıcı olarak da yapılsın bağımsız bu işlem) anayasamız ve derslerimize göz at") → PLAN: duzeltme2 birleşip CI
+  yeşil olunca SON ADAY → Uzun Doğrulama'dan ÖNCE bağımsız tur: (a) KÂHİN: plandan/mevzuattan, kodu görmeden yazılmış Python temiz oda modeli (mevcut kâhin
+  sürümü + 2.4.3 değişen kurallar: numara/kronoloji, iade, KDV) programla kara kutu karşılaştırma (ders 5); (b) YARGIÇ + ELEŞTİRMEN, üç uzman gözü — UZMAN UI
+  (görsel düzen, hizalama, yanıp sönme, dar ekran), UZMAN UX (iş akışı sürtünmesi, klavye, ileti açıklığı, geri alma), UZMAN MALİ MÜŞAVİR (TDHP/VUK/GİB
+  e-Belge kuralları, mizan/ekstre/KDV/iade/çek-senet doğruluğu); her biri hem KODDAN hem GERÇEK KULLANICI olarak tarayıcıda sıfırdan iş akışı (kişi → cari →
+  fatura → tahsilat → kasa/banka → rapor) yürütür; birbirinin ve düzeltme ajanlarının raporunu GÖRMEZ (ders 16); bulgu ancak ana oturum yeniden üretince
+  sayılır (ders 6); düzeltme → dar kontrol (ders 32) → sonra Uzun Doğrulama.
+  KARAR (kullanıcı, 18.10.2026 ~12:40 UTC: "önerini yap"): tek tur, DÖRT bağımsız ajan — kâhin modelini yazan (koşuları GitHub'da, ücretsiz) + UZMAN UI +
+  UZMAN UX + UZMAN MALİ MÜŞAVİR (bu oturumda, para yok, kullanım limitinden); yargıç/eleştirmen rolü her uzmanda (önce hata ara, sonra kendi bulgusunu
+  çürütmeye çalış); ayrı yargıç ajanı yok, süzgeç ana oturumun yeniden üretmesi (ders 6); ikinci tur yalnız yeniden üretilmiş bulgu varsa, dar kapsamlı.
+- KÂHİN (18.10.2026, dal kahin-243; kodu görmeden, GİB + ürün kararlarından): model 44/44, mutasyon 20/20; d64ebf8'de dar kontrol bulgularının HEPSİNİ
+  kendiliğinden yakaladı + 3 yeni (BASKA-ESZ: eşzamanlı turda einvoice-sending hata sayılıyor; BASKA-FIS-SIRA: Listeden Sil eski tarihli belgeye sıradaki FIS
+  numarasını veriyor; düzenle-ileri-tarih = D4). Düzeltilmiş 2849a87'de 9 senaryonun 5'i yeşil; kalan 4 (ağ yokken Kaydet ve Gönder numarası, BASKA-ESZ,
+  FIS sırası, PK'sız eski belge sonucunda kod boş) düzeltme ajanında. BAŞ MİMAR KARARI: posta kutusu seçilmemiş belge GEÇİCİ engeldir (kullanıcı tek adımla
+  düzeltir) → daha eski PK'sız belge seriyi BEKLETİR, sonucu dolu kod + nedenle döner; kalıcı yalnız chronology ve buyer-is-efatura. Kâhin K9 buna göre
+  güncellenir (kaynak gösterilerek). Uzun Doğrulama'ya kâhin işi eklendi (tohum 1–5 × 300, GitHub, ücretsiz).
+- SON ADAY BAĞIMSIZ TURU (18.10.2026, 5966ac3): DAR KONTROL 2 → bu turun düzeltmelerinin gerilemeleri B1 (reddedilen belgeler Tümünü Gönder'i kilitliyor),
+  B2 (tek bağlantı kopması turu durduruyor), B3 (her gönderimde fazladan EDM girişi, ~%80 yavaş), B4 (büyük veride Kaydet ve Gönder 144 → 2.621 ms) — ana
+  oturum B1–B3'ü yeniden üretti — + öncesinden B5 (Kes, Sonra Gönder eski tarihle), B6 (WSDL yedeği 12 saat önbellek), B7 (ileti). MALİ MÜŞAVİR (kâhin mizanı
+  22/24 hesap kuruşu kuruşuna) → MM1 kâğıt asıllı iade çıkmazı, MM2 Ticari profilde IADE (GİB reddeder), MM3 360/KDV kapatılamıyor, MM4 stok açılışı Ana
+  Defter'de yok (153/500 −5.000), MM5 yaşlandırma faturasız borcu görmüyor (840 vs 7.840) — ana oturum beşini yeniden üretti — + MM6–MM9 düşük + görüşler G1–G5.
+  e-Belge çekirdeği (B1–B7 + MM2) düzeltme ajanında (dal duzeltme3-243). UI ve UX uzmanlarının raporu bekleniyor.
+  KARAR (kullanıcı, 18.10.2026 ~16:30 UTC): MM3 → 2.4.3'e EKLE: "Vergi Ödemesi" (B 360 / A 102|100) + ay sonu "KDV Mahsup" fişi (391/191 → 360 ya da 190);
+  para çekirdeği: kâhin + mutasyon + dar kontrol. MM1 → "İade Edilen Belge No (e-Belge Referansı)" alanı + 16 karaktere tamamlanmış değer önerisi, kullanıcı
+  onaylar; asıl kayda dokunulmaz; uyarı form açılırken; teslimden önce gerçek EDM test ortamında kabulü denenir (reddedilirse yalnız ileti düzeltilir).
+- UZMAN UI (5966ac3): YÜKSEK yok; ORTA UI1 WhatsApp düğmesi kontrast 1,98:1, UI2 fatura formunda bildirim alanları örtüyor + ileti 3 kopya, UI3 stok kodu/
+  barkod kesiliyor (kalem, PDF, liste), UI4 kodda Tab ürünü seçmiyor; DÜŞÜK UI5–UI11 (yazım düzeni kaçakları + yazım testinin kör noktası "e-…" ve React
+  paketi, kontrast, biçim tutarlılığı). UZMAN UX: YÜKSEK UX1 cari eşzamanlı düzenlemede kayıp güncelleme, UX2 tam iade Düzenle'de kaydedilemiyor, UX3 gece
+  yarısını geçen açık fatura penceresi dünün tarihiyle keser, UX4 onayda odak yıkıcı düğmede (Esc+Enter doldurulmuş faturayı siler) — ana oturum dördünü
+  koddan doğruladı; ORTA UX5–UX13, DÜŞÜK UX14–UX28. Tam listeler: scratchpad uzman-ui-243-betikler/BULGULAR.md, uzman-ux-243-betikler/BULGULAR.md (kanıtla
+  depoya alınacak).
+  KARAR (kullanıcı, 18.10.2026 ~17:20 UTC): KÖ1 "Nihai Tüketici" hızlı seçeneği → 2.4.3; KÖ2 "Listeden Sil" adı → "Müşteri Fişi Olarak Bırak" (onay metni
+  açık; kılavuz/testler güncellenir) → 2.4.3; KÖ3 "Başlarken" kontrol listesi → 2.4.4 (yeni özellik). KÖ4 (e-Fatura işareti elle kaldırılınca bilgi iletisi)
+  UX5 ile birlikte yapılır.
+- UI/UX A PAKETİ (dal uiux-a-243, 5 commit; ana oturum birim eski 7/9 kırmızı → 9/9): UX1, UX4, UX5(cari)/KÖ4, UX7, UX8, UX10(çekirdek), UX11, UX13, UX19
+  (ad "Tahsilat / Ödeme" — yalnız nakit para çekirdeğine dokunurdu), UX21, UX22, UI1, UI3b/c, UI6–UI10, UI11 (fatura dışı); 24 madde B paketine (fatura ekranı).
+  KARAR (kullanıcı, 18.10.2026 ~18:30 UTC: "önerin gibi yap"): UI11 dışa aktarım düğmeleri bütün modüllerde tek ad ("PDF" / "Excel", aynı görünüm) → B paketi.
+- KARAR (kullanıcı, 18.10.2026 ~19:10 UTC: "uygula"; token tasarrufu): (1) DAR KONTROL 3 kapsamı = e-Belge numara/gönderim akışı (sunucu + ekrandaki
+  Tümünü Gönder döngüsü) + Vergi Ödemesi / KDV Mahsup kayıtları + stok açılışının deftere girmesi; genel UI/UX değişiklikleri dışarıda (ajan testleri +
+  tam e2e sınar). (2) 30 dk denetim raporu değişiklik yoksa TEK SATIR; kırmızı/yeni bulgu/karar gerekince ayrıntılı. Kalan iş tahmini ~20 sa, ~3,5–5 M token.
+- KARAR (kullanıcı, 18.10.2026 ~19:30 UTC; B paketi kapsamı): 2.4.3'te → UX2, UX3, UX5 (fatura), UX6, UX28, UI4, UI2, UX12, UX24, UX23, UX14, UX26, KÖ1, KÖ2.
+  2.4.4'e ERTELENDİ → UI11 (düğme adlarının birleştirilmesi + fatura penceresi çift başlık), UI5, UI9 (fatura), UI3a, UX15, UX16, UX17, UX18, UX20, UX25,
+  UX27, UX9, UX10 (fatura). Ertelenenler iş listesinde "2.4.4", sürüm notunda ve teslimde BİLİNEN SINIRLAR'da yazılır.
+- KARAR (kullanıcı önerisi, 18.10.2026 ~21:45 UTC; baş mimar anayasaya uygun buldu): son aday Uzun Doğrulama'da (GitHub) koşarken AYNI commit'te gerçek EDM test
+  ortamı denemesi (MM1 dahil) ve imzalı paket + kurulum hazırlanır; TESLİM ancak Uzun Doğrulama yeşil okunduktan sonra. Ön koşul: sürüm belgeleri ve kılavuz
+  PDF son adaydan ÖNCE biter (paketin içinde). Uzun Doğrulama kırmızı çıkıp kod değişirse paket ve etkilenen EDM adımı yeni commit'te yeniden yapılır.
+- DAR KONTROL 3 (19.10.2026, fc42855): B-1 ORTA gerileme (vekil sunucu kapalıyken numara veriliyordu; B3 oturum önbelleği kaynaklı), B-2 DÜŞÜK (tur sürerken
+  imleç öncesi belge), B-3 DÜŞÜK (stok açılışı Düzenle gidiş-dönüşü), kâhin eşitleme hatası — ana oturum B-1/B-2/B-3'ü yeniden üretti; düzeltme bbb6d3c (eski 5/16 →
+  16/16; kâhin 9–12 fark 0; defter kâhini 147/147). Vergi Ödemesi/KDV Mahsup ve KÖ1 sorunsuz. Görüş: silinen üründe açılış 153'te kalır (bilinçli).
+- SON ADAY (19.10.2026): 3673956 CI #841 YEŞİL; Uzun Doğrulama run 39200937044: 24/24 iş YEŞİL, "Uzun Doğrulama Kapısı" ARAÇ HATASIYLA çöktü (kâhin --cikti JSON'ları
+  kayıt sanıldı; ürün değil) → düzeltme b68aafe (kanit.mjs readRecords; test eski araçta kırmızı → 48/48). KARAR (kullanıcı, 19.10.2026 ~07:00 UTC, "uygun"):
+  b68aafe CI yeşil olunca TESLİM (5 dosya + arşiv) şimdi; aynı anda b68aafe'de Uzun Doğrulama baştan; kullanıcı GitHub YAYININI kapı yeşil bildirilene kadar AÇMAZ
+  (kapı kırmızıysa yayın açılmaz). Gerçek EDM 05e64d0'da 7/7 (ürün kodu 3673956/b68aafe ile aynı).
+  SONUÇ (19.10.2026 ~10:30 UTC): Uzun Doğrulama b68aafe run 39212127100 KAPI YEŞİL (24/24; tohum 2 koşucu kopması → tek yeniden koşu GEÇTİ); CI #842 b68aafe
+  yeniden koşuda YEŞİL (D2 ön koşul zamanlaması — 2.4.4: belirlenimci yap); PR ceougur/ofis---y-netimi#33 CI YEŞİL. Kullanıcıya "yayını açabilirsiniz" bildirildi.
+  KALAN: kullanıcı "birleştir" → PR birleşir; kullanıcı yayın açar (v2.4.3, 5 dosya) → "yayımladım" → yayındaki dosyalar bayt bayt + güncelleyici "available"
+  → site PR'ı (ceougur/destekofis web/indir kılavuz).
+- 2.4.3 YAYIMLANDI (19.10.2026): PR #33 → master 163dd5d; kullanıcı v2.4.3 yayınını açtı; 5 dosya bayt bayt aynı; güncelleyici 2.4.2/2.4.0/2.3.0/2.0.12 gözüyle
+  2.4.3 "available" (yedek yol), indirilen zip sha256 aynı; site kılavuz PR ceougur/destekofis#19 birleşti, sitedeki PDF 6687435d… doğrulandı. Yayın sonrası
+  "Sürüm yayımla" + master CI 163dd5d sonucu bir sonraki oturumda okunacak.
+- SORU (kullanıcının yardımcısı, 19.10.2026): "EDM'de tüm bilgileri getirmek 1 kontör; kontör düşmesin dersen yalnız ticari unvan + posta kutusu gelir". KODDAN: Mükellef
+  Sorgula yalnız CheckUser çağırır (edm.mjs checkUser: unvan, PK etiketleri, tür) — adres / vergi dairesi GETİRMEZ, kontörlü sorgu YOK. EDM WSDL'inde GetCompany /
+  GetCompanyBasic / GetTurmob var (hangisinin kontörlü olduğu ve döndürdüğü alanlar doğrulanmadı). KARAR (kullanıcı, 19.10.2026: "şu anki durum şimdilik yeterli, sonraki zamanlarda talebe
+  göre bakarız"): kontörlü "Tüm Bilgileri Getir" YAPILMAZ, 2.4.4 kapsamında DEĞİL; müşteri talebi gelirse yeniden değerlendirilir.
+- MEVZUAT (kullanıcı, 20.10.2026: "bunları maliye ve vergi kanunlarından, mevzuatlardan bul") → GİB ebelge.gib.gov.tr/dosyalar/509_SN_VUK_GT.pdf (509 s. VUK GT,
+  GİB'deki metin) okundu: IV.2.2 e-Arşiv'e İSTEĞE BAĞLI dahil olmanın şartı (a) e-Fatura uygulamasına dahil olmak; IV.2.4.1 e-Fatura'ya dahil olanlar e-Arşiv'e
+  de GEÇMEK ZORUNDA (faturalar e-Fatura ya da e-Arşiv); IV.1 (s.~483) e-Fatura'lılar arası fatura e-Fatura zorunlu; IV.2.4.3 e-Arşiv'e dahil olmayan mükellef
+  sınırı aşan faturayı "Başkanlıkça sunulan e-Belge düzenleme portali" (GİB e-Arşiv Portalı) üzerinden e-Arşiv düzenler; s.~640 e-Arşiv alıcıya talebine göre
+  kâğıt ya da elektronik iletilir. Sınır (GİB dosyası 30 bin / 5 bin TL; ikincil kaynak TÜRMOB: 2025 3 bin TL, 1.1.2026'dan itibaren tutara bakılmaksızın)
+  — güncel tutar resmî Gazete metniyle DOĞRULANMADI. Program etkisi: "e-Arşiv kullanıcısıyım" işaretli ama "e-Fatura mükellefiyim" işaretsiz durum GİB portalı
+  kullanan mükellef olabilir (EDM ile kesemez) → 2.4.4'te kutu açıklaması/uyarı değerlendirilir (karar kullanıcıda).
+  EK (kullanıcı, 20.10.2026: "e-Fatura mükellefi entegratörden, e-Arşiv mükellefi GİB'den keser; vergi kaydında e-Arşiv seçmiş olan programdan kesemez — teyit
+  gerekir") → 509 V.1 okundu: YÖNTEM belge türünden BAĞIMSIZ — her e-Belge (e-Fatura ve e-Arşiv) üç yoldan biriyle: GİB Portal, Özel Entegratör (EDM), Doğrudan
+  Entegrasyon; V.1.4 entegratörün mükellefi GİB'e yükleyip onay alması gerekir. Belirleyici olan belge türü değil KAYIT YÖNTEMİ: GİB Portal kullanıcısı EDM ile
+  kesemez (önce EDM sözleşmesi + GİB'de entegratör kaydı). İki yöntemin aynı anda kullanılıp kullanılamayacağı tebliğ metninde BULUNAMADI (EDM/mali müşavir).
+  2.4.4 ADAYI: kutu metinleri "EDM üzerinden e-Fatura / e-Arşiv kullanıcısıyım" + kısa açıklama (GİB Portal kullanıcısıysanız işaretlemeyin).
+  KARAR (kullanıcı, 20.10.2026: "teyit edilecek kısımlar önemsiz; böyle dursun, geri bildirim olursa kutuları netleştiririz") → kutular DEĞİŞMEZ, 2.4.4
+  kapsamında DEĞİL; müşteri geri bildirimi gelirse yeniden ele alınır. Teyit soruları (iki yöntem aynı anda, 2025/2026 tutar sınırı) kapatıldı.
