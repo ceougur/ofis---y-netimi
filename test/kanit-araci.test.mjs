@@ -216,6 +216,7 @@ describe("yalnız belge değişen commit (ci.yml paths-ignore, kullanıcı karar
     assert.equal(yalnizBelge(["docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html"]), false);
     assert.equal(yalnizBelge([]), false);
     assert.equal(yalnizBelge(["docs/fatura/E-BELGE-EDM.md", "CLAUDE.md"]), true);
+    assert.equal(yalnizBelge(["docs/2.4.4-IS-LISTESI.md", "docs/erp/ERP-YOL-HARITASI.md"]), true);
   });
   it("ci.yml push paths-ignore listesi BELGE_YOLLARI ile aynı; pull_request süzgeçsiz", () => {
     const yml = readFileSync(path.join(ROOT, ".github", "workflows", "ci.yml"), "utf8");

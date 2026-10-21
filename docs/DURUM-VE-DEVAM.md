@@ -69,7 +69,7 @@ Kilit bulgular (her biri dosya:satır ile doğrulanacak, uygulamada kırmızı t
   (DOĞRULANMADI); yerel depo sığ + 0 etiket → yerel npm test eski sürüm testlerini atlar (CI eşdeğeri değil).
 YAPILMAYACAKLAR (kullanıcı kararı): kontörlü "Tüm Bilgileri Getir"; e-Fatura/e-Arşiv kutu metinlerinin değişmesi (geri bildirim gelirse); WhatsApp paylaşımı (bekler).
 Akış ve teslim: CLAUDE.md "Sürüm teslim düzeni" + `docs/SURUM-YAYIMLAMA.md` + 2.4.3 örneği (`docs/2.4.3-KANIT.md`, `docs/2.4.3-IS-LISTESI.md`).
-Önerilen sıra: iş listesi `docs/2.4.4-IS-LISTESI.md` aç (kodla birlikte gönder — ders 26) → küçük maddeler (5, 8, 9) → 2.4.3 ertelenenleri → Seçilenleri Gönder →
+Önerilen sıra: iş listesi `docs/2.4.4-IS-LISTESI.md` aç (21.10'dan beri BELGE_YOLLARI'nda; tek başına gönderilir, CI koşmaz) → küçük maddeler (5, 8, 9) → 2.4.3 ertelenenleri → Seçilenleri Gönder →
 e-SMM → Portal düğmesi (Windows elle kabul) → tam npm test + bütün e2e → bağımsız gözden geçirme + dar kontrol → CI → Uzun Doğrulama → gerçek EDM → paket → teslim → PR.
 
 ### 2. SONRA: DEVİR MODÜLÜ (sürüm 2.5.0)
@@ -82,6 +82,7 @@ assertChronology :1675 → :1678. KÖR NOKTA: cheque_events.kind CHECK kısıtl�
 
 ### 3. KALAN / BEKLEYEN (karar ya da dış bilgi bekliyor)
 - FİYAT kararı (güncelleme/destek süresi, WhatsApp/uzaktan bağlanma giderleri) — CLAUDE.md "FİYAT".
+- ERP YOL HARİTASI (kullanıcı, 21.10.2026; 2.5.0'dan sonra, adım adım): `docs/erp/ERP-YOL-HARITASI.md` — yalnız plan; kararlar belgede.
 - Döviz (§3.12, fxEnabled kapalı), WhatsApp paylaşımı (emlakçı), Meta WhatsApp API (Pro), 2.1.0 kapsam ölçümü, ölçek-30/1M planlı testi — CLAUDE.md "Açık iş".
 - EDM'ye sorulacak: canlıda portal girişi = web servis kullanıcısı mı (testte aynı).
 - Ticari öneri (kullanıcıya iletildi, karar yok): demolar iletişim bırakmıyor (5 aktif demonun hiçbirinde ofis adı yok) → deneme içinde "iletişim bilgisi bırakın".
@@ -778,7 +779,7 @@ DEĞİŞMEZLER:
   TEST: run.mjs: yeni 'düğme görünmez' denetimi (eski kopyada kırmızı, ders 7/23) | run.mjs, senaryo-banka-210b, senaryo-cari-243 değişen adımlarla koşulup yeşil görülür (ders 28) | Bütün CI e2e + CI dışı 13 betik + ui-ux-217 (ders 8/35) | Her API adımında yanıt kodu, gövde ve veri tabanı sayısı okunur (ders 3)
   RİSK: 'Taksit planı oluşturun' kısa yolu ve kayda bağlı cariye kayıttan tahsilat dalı karttan ulaşılamaz olur (ürün kaybı) | Canlı olay kendi oturumuna geliyor mu DOĞRULANMADI → refreshActivity açıkça çağrılmalı | 'Kayıt Kartından Tahsilatlar' raporunun adı/açıklaması ve kılavuzdaki iki cümle eskir | Boş geçmiş metni JS'te (hof-workspace.js:1178-1179); yalnız CSS ile düzelmez
 
-[H] para=False 0.3sa
+[H] para=False 0.3sa — YAPILDI 21.10.2026 (docs/erp/** ile birlikte; eski araçta 47/48, yenide 51/51)
   DOKUNMA: tools/kanit.mjs:297 BELGE_YOLLARI dizisi | .github/workflows/ci.yml:8-16 paths-ignore (yeni satır :13'ten sonra) | test/kanit-araci.test.mjs:214-226 (aynılık testi; isteğe bağlı yeni iddia :218) | CLAUDE.md 'Doğrulama kapısı → YALNIZ BELGE' paragrafı (belge)
   ÖNERİ: Aynı sırayla "docs/2.4.3-IS-LISTESI.md"den sonra "docs/2.4.4-IS-LISTESI.md" eklenir. kanit.mjs dizisine dizi öğesi olarak; ci.yml'e `      - "docs/2.4.4-IS-LISTESI.md"` olarak (çift tırnak, 6 boşluk). kanit-araci aynılığı zaten denetliyor; testin dişi için `assert.equal(yalnizBelge(["docs/2.4.4-IS-LISTESI.md"]), true)` eklenir. İlk kod push'uyla birlikte gönderilir (ders 26). Joker desteği istenirse yalnizBelge'ye ve paths-ignore'a birlikte eklenmeli.
   TEST: node --test test/kanit-araci.test.mjs test/ci-kapi-listesi.test.mjs | Yeni iddia eski araçta kırmızı | Push sonrası kanit.mjs ci <sha> --bekle
@@ -802,7 +803,7 @@ SÜRPRİZ:
 - Yerel depo sığ ve etiketsiz (0 etiket). Yerel npm test eski sürüm testlerini sessizce atlıyor (tagsAvailable), bu yüzden CI eşdeğeri sayılmaz.
 - release.yml test işi testleri kanıt aracı olmadan koşuyor (release.yml:39-92); hüküm yalnız çıkış koduyla veriliyor, kapı yayın aşamasında ci.yml'den okunuyor.
 - Windows'a özgü yeni testler (E7 Edge/başlatıcı) skip ile yazılırsa --atlanan-yok ve --ayni-sayi yüzünden Doğrulama Kapısı kırmızı olur; koşullu doğrulama gerekir.
-- yalnizBelge joker desteklemiyor (kanit.mjs:298); her sürümün iş listesi BELGE_YOLLARI'na elle ekleniyor. 18.10 önlemi 2.4.4 için uygulanmamıştı.
+- yalnizBelge joker desteklemiyor (kanit.mjs:298); her sürümün iş listesi BELGE_YOLLARI'na elle ekleniyor. 18.10 önlemi 2.4.4 için uygulanmamıştı → YAPILDI 21.10.2026 (+ docs/erp/**).
 SORU:
 - CI #842 b68aafe'de kırmızı olan iş hangisi (Linux mu Windows mu, hangi Node, D2 all mı ids mi)? Günlük okunmadı; mcp__github__get_job_logs ile okunmalı.
 - D2 düzeltmesinden önceki commit hangisi? Kırmızı kanıt için gerekli; origin/claude/hopeful-goodall-6nmtcj geçmişinde aranmalı (önce --unshallow).
@@ -2234,7 +2235,7 @@ Yeni denetim (eski kodda kırmızı — ders 7): run.mjs'de tahsilat modülü A�
 (klinikte Haciz). Eski kopyada (ders 23) kırmızı görülür. Beklentisi değişen her e2e koşulur (ders 28): run.mjs, senaryo-banka-210b, senaryo-cari-243 + bütün e2e (ders 35).
 Etkilenmeyen: senaryo-iz5-230, form-izolasyon-243, e2e-not-yaris (yalnız note/phone/task).
 
-###### 3.3 H — docs/2.4.4-IS-LISTESI.md'yi BELGE_YOLLARI'na ekleme (üç yer, aynı sıra)
+###### 3.3 H — docs/2.4.4-IS-LISTESI.md'yi BELGE_YOLLARI'na ekleme (üç yer, aynı sıra) — YAPILDI 21.10.2026 (docs/erp/** ile birlikte)
 1. `tools/kanit.mjs:297` → `"docs/2.4.3-IS-LISTESI.md",` ardına `"docs/2.4.4-IS-LISTESI.md",`.
 2. `.github/workflows/ci.yml:13` ardına `      - "docs/2.4.4-IS-LISTESI.md"` (6 boşluk, ÇİFT tırnak; sıra = BELGE_YOLLARI; ci.yml:6-7 yorum).
 3. `test/kanit-araci.test.mjs:220-226` liste aynılığını zaten denetler (değişiklik ZORUNLU değil); önerilen ek iddia :218 yanına
