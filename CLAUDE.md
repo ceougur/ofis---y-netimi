@@ -420,7 +420,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   görev performansı ("Personel Performans Özeti"); personel/özlük verisi programda YOK → yeni modül (tablo + göç + rota + ekran), para çekirdeğine dokunmaz
   (maaş yalnız bilgi; Kasa/Banka/defterde etkisi yok). BAŞ MİMAR UYARILARI: TC No, IBAN, maaş, adres KVKK kişisel verisi → yeni yetki (varsayılan yalnız
   yönetici), yedekte kalır, günlüğe/değişiklik geçmişine değer yazılmaz; Yaş elle yazılırsa eskir → Doğum Tarihi girilir, yaş hesaplanır; "Maaş Bordrosu"
-  (SGK/vergi hesabı) kapsam dışı. Kullanıcıya soruldu: görecek roller, görseldeki sekmelerin ilk sürüm kapsamı, Kullanılan İzinler biçimi (gün).
+  (SGK/vergi hesabı) kapsam dışı.
+  KARAR (kullanıcı, 21.10.2026: "önerilerin uygun, sadece personel özeti olan görünüm kart olsun, diğer sekmeler olmasın"): yalnız yönetici görür (yeni yetki;
+  yönetici başkasına verebilir); kartta YALNIZ Personel Özeti görünümü — Evrak Listesi, Maaş Bordrosu, CV, İletişim sekmeleri YOK; Doğum Tarihi girilir, Yaş
+  hesaplanır; "Kullanılan İzinler" gün sayısı.
 - MEVZUAT KARARI (kullanıcı, 20.10.2026): e-Fatura / e-Arşiv kutu metinleri DEĞİŞMEZ, 2.4.4'te değil; geri bildirim gelirse netleştirilir. 509 VUK GT okuma
   notları (IV.2.2, IV.2.4.1, V.1 kayıt yöntemi) arşivde (21.10).
 - HAZIRLIK (21.10.2026, 2.4.4 öncesi denetim): (1) docs/2.4.4-IS-LISTESI.md BELGE_YOLLARI'nda DEĞİL (18.10 önlemi uygulanmamış; liste yalnız 2.3.0/2.4.3 iş
