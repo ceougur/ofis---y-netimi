@@ -412,6 +412,15 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   178.233, 46.221, 88.225, 193.255, 88.241), 2'si Eylül'den beri görünmüyor (2.0.9, 2.0.0). Azure (GitHub Actions) adresli 2 kayıt: 2.0.12 (25–30.09) ve
   YAYIMLANMAMIŞ "2.4.5" (ilk 15.10 10:04, SON 19.10 15:30 TR — ders 30 önlemi 210ac8e'den SONRA da görülüyor) → 2.4.4 ADAYI: hangi test/iş akışı gerçek
   lisans servisine ulaşıyor, bulunup kapatılır (lisans-servisi-izolasyonu taraması genişletilir; release.yml/Uzun Doğrulama dahil). Kayıtlar silinmez (15.10 kararı).
+- İSTEK → 2.4.4 (kullanıcı, 21.10.2026; ekran: kendi tasarımı "Personel Raporu" kartı — Toplam Maaş / Kayıtlı Personel / Aktif Çalışan / Ayrılan Personel;
+  alanlar Ad Soyad, Yaş, TC No, Adres, Görevi, Maaş, Banka Adı, IBAN, İşe Giriş, İşten Ayrılış (iki kez), Kişisel E-Posta, Telefon, Öğrenim Durumu, Uzmanlık
+  Alanı, fotoğraf; sekmeler Personel Özeti / Evrak Listesi / Maaş Bordrosu / CV / İletişim): Personel Raporu penceresine ÇALIŞAN ÖZLÜK tablosu; "Çalışanlar" ve
+  "Ayrılanlar" sekmeleri; tablolarda arama (yazınca ilgili çalışan); kartlar görseldeki gibi; İşten Ayrılış Tarihi yazılınca kart KENDİLİĞİNDEN Ayrılanlar'a geçer;
+  ikinci "İşten Ayrılış Tarihi" alanı "Kullanılan İzinler" olur. KODDAN: bugünkü "Personel Raporu" (hof-workspace.js:879, :808 openReports) yalnız kullanıcıların
+  görev performansı ("Personel Performans Özeti"); personel/özlük verisi programda YOK → yeni modül (tablo + göç + rota + ekran), para çekirdeğine dokunmaz
+  (maaş yalnız bilgi; Kasa/Banka/defterde etkisi yok). BAŞ MİMAR UYARILARI: TC No, IBAN, maaş, adres KVKK kişisel verisi → yeni yetki (varsayılan yalnız
+  yönetici), yedekte kalır, günlüğe/değişiklik geçmişine değer yazılmaz; Yaş elle yazılırsa eskir → Doğum Tarihi girilir, yaş hesaplanır; "Maaş Bordrosu"
+  (SGK/vergi hesabı) kapsam dışı. Kullanıcıya soruldu: görecek roller, görseldeki sekmelerin ilk sürüm kapsamı, Kullanılan İzinler biçimi (gün).
 - MEVZUAT KARARI (kullanıcı, 20.10.2026): e-Fatura / e-Arşiv kutu metinleri DEĞİŞMEZ, 2.4.4'te değil; geri bildirim gelirse netleştirilir. 509 VUK GT okuma
   notları (IV.2.2, IV.2.4.1, V.1 kayıt yöntemi) arşivde (21.10).
 - HAZIRLIK (21.10.2026, 2.4.4 öncesi denetim): (1) docs/2.4.4-IS-LISTESI.md BELGE_YOLLARI'nda DEĞİL (18.10 önlemi uygulanmamış; liste yalnız 2.3.0/2.4.3 iş
