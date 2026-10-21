@@ -278,7 +278,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - Kasa penceresi YALNIZ NAKİT (2.0.17 m9); havale/POS/kart banka modülünde. Tahsilatta "POS", ödemede "Kredi Kartı" (görünen metinde
   "Kurumsal" yok — 12.10.2026); kayıtlı değer `card`.
 - Cari yalnız "+ Yeni Cari" ve "Excel / Sheets'ten Yükle" ile açılır; tablodan cari alma yolu ve detay kartındaki Cari kutusu KALDIRILDI
-  (2.0.18 nihai karar). Taksit → Tablodan Aktar durur (2.4.4'te kullanıcıya soruldu); KAYITTAN TAKSİT 2.4.4'te KALKAR (kullanıcı, 21.10.2026: taksit
+  (2.0.18 nihai karar). Taksit → Tablodan Aktar durur (21.10.2026 teyit; kart cariye bağlı); KAYITTAN TAKSİT 2.4.4'te KALKAR (kullanıcı, 21.10.2026: taksit
   cariden yapılır). Aynı Excel ikinci kez yüklenince telefonsuz/no'suz satır yeni cari
   açar — böyle kalır (2.0.19).
 - Eksi stok: program sorar, "izin ver" denince eksiye düşer; böyle kalır (02.10.2026). Eksi üründe "Eksi Stok −15 Adet" gösterimi.
@@ -386,7 +386,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   kayıt tahsilatları olduğu gibi kalır (veri bozulmaz). Boş geçmiş metni, yetki açıklaması, rapor adı, kılavuz uyarlanır. KÖR NOKTA (kullanıcıya soruldu): zil ve
   Ödeme Sözü şeridindeki "Tahsil Et" (hof-alerts.js:285, hof-promises.js:138 → HOF.workspace.payment) kayıttan tahsilatı cari dışı doğrudan Kasa'ya yazmayı
   sürdürür — aynı muhasebe sorunu; öneri: bu iki yol da Cari'ye gider (kayıt cariye bağlıysa cari tahsilat formu; değilse "önce cari açın" + ad/telefonu dolu
-  "+ Yeni Cari"). "Taksit → Tablodan Aktar" (tablodaki ödeme planı → cariye bağlı kart) aynı ilkeye girer mi: soruldu. (5) İPTAL SÜRESİ (GİB kaynağı: ebelge.gib.gov.tr/dosyalar/kilavuzlar/
+  "+ Yeni Cari"). "Taksit → Tablodan Aktar" (tablodaki ödeme planı → cariye bağlı kart) aynı ilkeye girer mi: soruldu.
+  KARAR (kullanıcı, 21.10.2026: "önerilerin uygun"): zil ve Ödeme Sözü şeridindeki "Tahsil Et" CARİ'ye gider (bağlı cari varsa cari tahsilat formu; yoksa
+  "önce cari açın" + ad/telefonu dolu "+ Yeni Cari"); kayıttan Kasa'ya doğrudan tahsilat ekrandan kalkar (sunucu ucu ve eski kayıtlar durur); para yoluna
+  dokunur → kırmızı test + komşu senaryolar + dar kontrol. "Taksit → Tablodan Aktar" KALIR (kart cariye bağlı). (5) İPTAL SÜRESİ (GİB kaynağı: ebelge.gib.gov.tr/dosyalar/kilavuzlar/
   e-Arsiv_Uygulamalari_Iptal_Ihtar_Itiraz_Bildirim_Kilavuzu_V.1.1.pdf §3: "e-Arşiv Fatura ve e-SMM belgelerinin iptal işlemlerinde 8 günlük sürenin tespiti e-belgenin
   alıcıya iletilme tarihinden itibaren başlar. İptal işlemi her durumda 8 günlük süre içinde yapılmalıdır"; dayanak TTK 21/2): e-Arşiv VE e-SMM 8 gün, İLETİM
   (gönderim) tarihinden; başlangıç günü sayılmaz, 8. gün dahil (TBK 92). Program bugün KESİM tarihinden sayıyor (invoices.mjs:2893; daha katı) → iletimden
