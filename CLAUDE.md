@@ -221,7 +221,9 @@ harcayacak işlemlerden uzak dur!")
   zaman verilir — basit arayüz ve küçük düzeltme → medium; birden fazla modülü etkileyen iş → high; e-SMM, EDM entegrasyonu ve kritik muhasebe işlemleri →
   xhigh; bağımsız doğrulama, para çekirdeği incelemesi (dar kontrol, kâhin) ve Uzun Doğrulama incelemesi → xhigh. İş kritik bir alana (para, defter, e-Belge
   numarası/gönderimi, EDM bağlantısı) GERÇEKTEN dokunuyorsa yüksek sınıf geçer; adında geçmesi yetmez. Fork ajan ana oturumun eforunu alır (efor yok
-  sayılır) → efor gereken işte fork kullanılmaz. Ana oturumun eforunu kullanıcı ayarlar. Sürüm maddelerinin sınıfı iş listesinde ([M]/[H]/[XH]).
+  sayılır) → efor gereken işte fork kullanılmaz. Ana oturumun eforunu kullanıcı ayarlar. Sürüm maddelerinin sınıfı iş listesinde ([M]/[H]/[XH]). DOĞRULANDI (21.10.2026, kullanıcı isteği): aynı
+  soru medium ve xhigh iki ajana verildi; oturum kaydında her ajanın turunda `"effort"` / `"perTurnEffort"` = verilen düzey (medium / xhigh). Küçük soruda
+  davranış farkı ölçülemedi (ikisi de doğru yanıt, ~85 bin token bağlam). Kuşku olursa aynı deneme tekrarlanır (kayıt: not defteri tasks/<ajan>.output).
 
 ## Dil (kullanıcı, 10.10.2026: "türkçe yaz", "türkçe yaz bildirimlerini")
 - Kullanıcıya giden HER yanıt, durum bildirimi ve liste Türkçe yazılır (İngilizce ara rapor yok).
@@ -319,8 +321,14 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   yalnız yönetici); hata/uyarı bildiriminde "Kopyala".
 
 ## Açık iş (yalnız güncel; kapanan sürümler `docs/GECMIS-KARARLAR.md`)
-- YENİ OTURUM (21.10.2026): önce `docs/DURUM-VE-DEVAM.md` → "DEVİR NOTU (21.10.2026)" — 2.4.4 kapsam tablosu, devir modülü (2.5.0) planı, kalan işler,
-  anayasa/ders yerleri, dal durumu (belgeler `origin/claude/hopeful-goodall-6nmtcj` dalında; master'da yok).
+- YENİ OTURUM / SIKIŞTIRMA SONRASI (21.10.2026): önce `docs/DURUM-VE-DEVAM.md` → "DEVİR NOTU (21.10.2026)" (2.4.4 kapsam tablosu, devir 2.5.0, kalan işler,
+  anayasa/ders yerleri) ve `docs/2.4.4-IS-LISTESI.md` (36 madde, efor sınıflı, TAM liste) DOSYADAN okunur; özetten anlatılmaz. DAL: bütün güncel belgeler
+  `claude/youthful-euler-fl8ks4` dalında (master'da yok); eski `claude/hopeful-goodall-6nmtcj` dalı ESKİ — oradan belge ALINMAZ (yenilerini ezer).
+- 2.4.4 "BAŞLA" KONTROL LİSTESİ (atlanmaz, sırayla): (1) yukarıdaki iki belge + bu Açık iş dosyadan okunur; (2) RAPOR DÜZENİ için CronCreate 30 dk işi
+  kurulur ("7,37 * * * *"; 2.4.4 bitince silinir); (3) iş listesi madde 1 (npm ci — bağ yok; git fetch --unshallow --tags; master CI 163dd5d + "Sürüm yayımla"
+  okunur); (4) yüklenen dosyalar yerinde mi (HAZIRLIK 3) — yoksa kullanıcıdan istenir; EDM test hesabı sohbette verildi, dosyaya YAZILMAZ, kaybolduysa
+  kullanıcıdan istenir; (5) her ajan AJAN EFORU kuralıyla (effort verilir, fork yok); (6) biten madde iş listesinde üstü çizilir + commit (yalnız belge, CI
+  koşmaz) ve 30 dk raporda gösterilir; (7) para çekirdeği maddelerinde kırmızı test + mutasyon + dar kontrol; her push'un CI'si ayrı okunur.
 - Yayın geçmişi özeti: 2.0.12 … 2.0.26, 2.1.0, 2.2.0, 2.3.0, 2.4.0, 2.4.1, 2.4.2, 2.4.3 yayımlandı (her biri PR + etiket + 5 dosya bayt bayt + güncelleyici "available" + site
   kılavuz PR'ı); ayrıntı arşivde. Kâhin bilinen sınıfları: KDV-DAHIL-ISKONTO (program doğru), KASA-ACILIS-649 (İz 1.3 ile kapanacak).
 - PLANLI TEST (kullanıcı, ertelendi; 16.10.2026'da yine ertelendi: "cuma testini pazara ertele"): Pazar 18.10.2026 09:00 TR (trig_0144BJLRwsZFizXTTYrJVszA): 2.0.24 DENENMEYEN/BİLİNEN SINIRLAR
@@ -377,7 +385,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - KARAR (kullanıcı, 19.10.2026 ~11:45 UTC: "perşembe yapalım, 2.4.4'ün kalan işleri ile beraber"; haftalık kullanım %91): 2.4.4 = e-SMM (4 madde: EDM ESmmEDM
   bağdaştırıcısı, GİB e-SMM XML'i, numara/kopma/iptal kuralları + dar kontrol, test ortamı uçtan uca + kılavuz + açma) + 2.4.3'ten ertelenenler (UI11, UI5, UI9,
   UI3a, UX9, UX10, UX15–UX18, UX20, UX25, UX27, KÖ3) + gg243-dar-kontrol-gonderim D2 ön koşulunu belirlenimci yap (ders 20) + e-Arşiv iptal 8. gün teyidi.
-  BAŞLANGIÇ: Perşembe 22.10.2026 02:00 sıfırlamasından SONRA; öncesinde para çekirdeğine dokunan iş başlatılmaz. Tahmin ~1,5–2 gün (e-SMM), ~1,5–3 M token.
+  BAŞLANGIÇ: kullanıcı "başla" deyince (ilk karar Perşembe 22.10.2026 02:00 idi; kısıt 21.10.2026'da KALKTI). Tahmin ~1,5–2 gün (e-SMM), ~1,5–3 M token.
   BÖLME YOK (kullanıcı, 21.10.2026: "bölme kararımız yoktu; e-SMM programda hazır, yalnız gösterilmiyordu") → e-SMM 2.4.4'te. 2.4.4 BAŞLANGICI: kullanıcı
   "başla" deyince (21.10.2026: "yarın ben başla dediğimde başlarsın").
   02:00 KISITI KALKTI (kullanıcı, 21.10.2026: "02.00 kısıtına takılma, ben başla dediğimde limit sıfırlanmış demektir").
@@ -483,4 +491,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - HAZIRLIK (21.10.2026, 2.4.4 öncesi denetim): (1) YAPILDI (21.10.2026, ERP yol haritası commit'i): docs/2.4.4-IS-LISTESI.md ve docs/erp/** BELGE_YOLLARI'nda (tools/kanit.mjs
   + ci.yml paths-ignore + test/kanit-araci.test.mjs; yeni iddia eski araçta kırmızı 47/48, yenide 51/51) → iş listesi tek başına gönderilebilir, CI koşmaz. (2) Kapsayıcı: node_modules YOK → `npm ci` (ders 29: bağ yok); depo SIĞ → teslimden önce `git fetch --unshallow`; Wine/mingw YOK →
   paketten önce kurulur; Go, Chromium, disk (30 GB boş) hazır. (3) İmza anahtarı ve EDM test hesabı bu oturuma verildi; yalnız oturumda durur, kapsayıcı
-  yenilenirse yeniden istenir; hiçbir dosyaya yazılmaz.
+  yenilenirse yeniden istenir; hiçbir dosyaya yazılmaz. YÜKLENENLER `/root/.claude/uploads/456ebc12-8183-520e-989e-af270fef8a58/`: imza anahtarı
+  (*imza-anahtari*.pem), EDM e-SMM Web API v4.4.1 + Request-Response (.docx), durum kodları (.xlsx), esmm-ubl-ornek-veri.xml, Ek_bilgi.txt, TesterCurrent.cs
+  (içindeki hesap bilgileri hiçbir yere kopyalanmaz), E-MM zip (e-Müstahsil, kapsam dışı). docx metinleri not defterinde (esmm-dok-v4/; kapsayıcıyla gider,
+  belgelerden yeniden çıkarılır).

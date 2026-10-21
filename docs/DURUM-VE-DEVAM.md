@@ -16,11 +16,11 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
    - "Verimlilik" (gereken kadar koş; uzun koşular yalnız son adayda, GitHub'da) · "Dil" (her şey Türkçe) · "Yazım düzeni" · "Güvenlik ve süreç"
      (commit satırları, model adı yasak) · "Sürüm teslim düzeni" (5 dosya + arşiv) · "Standart / Pro" · "Kalıcı ürün kararları"
    - "Açık iş" — bütün açık maddeler ve kullanıcı kararları (en sondaki maddeler en günceldir).
-2. DAL DURUMU: master'da OLMAYAN belge değişiklikleri `origin/claude/hopeful-goodall-6nmtcj` dalında (CLAUDE.md "Açık iş" ekleri, docs/devir/DEVIR-PLANI.md,
-   docs/devir/DEVIR-MODULU.md §9–§10, bu not). Yeni çalışma dalını master'dan açtıysan önce bunları al:
-   `git fetch origin claude/hopeful-goodall-6nmtcj && git checkout origin/claude/hopeful-goodall-6nmtcj -- CLAUDE.md docs/devir docs/DURUM-VE-DEVAM.md`
-   (bu dalın geri kalanı squash öncesi 2.4.3 geçmişidir; ürün kodu master ile aynı — `git diff origin/master origin/claude/hopeful-goodall-6nmtcj --stat`
-   yalnız bu belgeleri göstermeli; göstermiyorsa dur, kullanıcıya sor).
+2. DAL DURUMU (21.10.2026 akşam): bütün güncel belgeler `claude/youthful-euler-fl8ks4` dalında (master'da yok): CLAUDE.md, bu not, docs/devir/**, docs/erp/**,
+   docs/2.4.4-IS-LISTESI.md + araç değişikliği 51cc9d1 (BELGE_YOLLARI; CI #848 yeşil). Eski `claude/hopeful-goodall-6nmtcj` dalı ESKİ — oradan belge ALINMAZ
+   (yenilerini ezer). Yeni oturum başka daldaysa `git fetch origin claude/youthful-euler-fl8ks4` ve o daldan devam. Ürün kodu master 163dd5d ile aynı:
+   `git diff --stat origin/master origin/claude/youthful-euler-fl8ks4` yalnız belgeler + tools/kanit.mjs, .github/workflows/ci.yml, test/kanit-araci.test.mjs,
+   docs/kanit/2026-10-21 göstermeli (21.10 akşam: 14 dosya); başka bir şey görürsen dur, kullanıcıya sor.
 3. Kullanım sınırı: 02:00 kısıtı KALKTI (kullanıcı, 21.10.2026: "ben başla dediğimde limit sıfırlanmış demektir"). 2.4.4 kullanıcı "başla" deyince başlar.
 4. Kullanıcıdan istenecek dosyalar (sohbete yapıştırılmaz, oturuma YÜKLENİR; hiçbir dosyaya/zip'e/depoya girmez):
    imza anahtarı `*imza-anahtari*.pem` (paket için), EDM test hesabı bilgi dosyası (gerçek EDM denemeleri için).
@@ -28,6 +28,7 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
    (dosyaya yazılmaz). Kapsayıcı yenilenirse uploads ve not defteri gidebilir → kullanıcıdan yeniden istenir.
 
 ### 1. SIRADAKİ İŞ: 2.4.4 (kapsam = CLAUDE.md "Açık iş"; tek yerde özet)
+TAM VE GÜNCEL LİSTE: `docs/2.4.4-IS-LISTESI.md` (36 madde; efor sınıfı [M]/[H]/[XH]; 25–29 onaylı ek bulgular; 30 dk rapor düzeni). Aşağıdaki tablo özettir.
 | # | Madde | Kaynak (ayrıntı) |
 |---|---|---|
 | 1 | e-SMM (EDM ESmmEDM bağdaştırıcısı, GİB e-SMM XML'i, numara/kopma/iptal kuralları + dar kontrol, test ortamı uçtan uca + kılavuz + açma) | CLAUDE.md "e-SMM YANITI" + "BELGE OKUNDU" (uç noktalar, WSDL işlemleri); programda hazır olanlar aynı maddede; `config.esmmEnabled` |
