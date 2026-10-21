@@ -57,9 +57,10 @@ Neden bu sıra: defter bütün öbür adımların temelidir. Stok maliyeti hem b
 | E5 | 1 | Depo modülü: çoklu depo, transfer, depo bazlı stok ve sayım | E3 | Büyük |
 | E6 | 2 | Teklif → Sipariş → İrsaliye → Fatura; alış tarafı; rezervasyon; e-İrsaliye ayrı alt adım | E5 | Çok büyük |
 | E7 | 6 (kalanı) | Beyanname düzenleri, resmî defter dökümü; e-Defter yalnız talep olursa | E1, E4 | Büyük (e-Defter: Çok büyük) |
-| — | 5 | Şirket sınırı | Kullanıcı kararı (K3) | Teknik olarak küçük |
+| — | 5 | Şirket sınırı | KARAR: şimdilik 2 kalır (K3) | Teknik olarak küçük |
 
-Büyüklükler kabadır; D0'da netleşir. E5 ve E6'nın zamanı hedef müşteri kararına bağlıdır (K2).
+Büyüklükler kabadır; D0'da netleşir. Hedef müşteri herkes (K2 kararı): E5 ve E6 planda kalır; ERP modülleri şirket bazında açılıp kapanır
+(kör nokta 10).
 
 ## 4. Adımlar
 
@@ -196,6 +197,8 @@ YAPILACAK (sırayla; her biri ayrı karar):
 - Teknik olarak küçük: sabit, ileti metni ve dört test dosyası değişir (sirket-siniri-225, e2e/senaryo-225, e2e/senaryo-217, guvenilirlik/rastgele).
 - Ama bu bir mühendislik kararı değil. Kullanıcının 05.10.2026 kararını ("en fazla 2, Pro dahil") değiştirir ve fiyata bağlıdır. Seçenekler: herkese
   N şirket, ya da lisansla açılan şirket sayısı (lisans belirtecine alan eklenir; orta iş).
+- KARAR (kullanıcı, 21.10.2026: "şirket sınırı şimdilik 2 kalmaya devam etsin, müşteri geri dönüşüne göre karar veririz tekrar"): 2 kalır, kod
+  değişmez. Müşteri geri dönüşüyle yeniden karar verilir.
 
 ## 5. Kör noktalar (dış listede yok)
 
@@ -209,15 +212,18 @@ YAPILACAK (sırayla; her biri ayrı karar):
 7. Bordro ve SGK yok. Personel gideri tahakkuku ve MUHSGK yapılamaz. 2.4.4'teki Personel Özlük yalnız bilgi tutar (bordro kapsam dışı, kullanıcı
    21.10.2026).
 8. Hedef pazar. Depo, sipariş ve irsaliye ticaret ve dağıtım firmalarının ihtiyacı. Bugünkü müşteriler (ofis, emlak, turizm, serbest meslek)
-   çoğunlukla bunlara ihtiyaç duymaz. E5 ve E6'dan önce hedef müşteri kararlaştırılmalı (K2). E1–E4 bugünkü müşterilere ve mali müşavirlere de değer
-   katar.
+   çoğunlukla bunlara ihtiyaç duymaz. KARAR: hedef herkes (K2). E1–E4 bugünkü müşterilere ve mali müşavirlere de değer katar.
 9. Ölçek. ERP hacmi (stok satırı, sipariş, depo) için her adımda ölçüm bütçesi yeniden yazılır (Aşama 16 düzeni).
+10. Herkes için sade ekran. Ofis kullanıcısı depo ve sipariş ekranlarını görmemeli. ERP modülleri şirket bazında açılıp kapanır; varsayılanı sektöre
+    göre gelir. Örneği bugün var: sektöre göre modül düzeni (`server/lib/profile.mjs:194`: tahsilat, haciz). E5 ve E6 bu düzenle gelir.
 
 ## 6. Kullanıcı kararları (açık)
 
 - K1. Sıra. Öneri: E1 → E2 → E3 → E4 → E5 → E6 → E7.
-- K2. Hedef müşteri: bugünkü kitle mi (ofis, emlak, turizm, serbest meslek), ticaret/dağıtım mı, ikisi mi? E5 ve E6'nın zamanı buna bağlı.
-- K3. Şirket sınırı (madde 5): kalsın mı, herkese mi açılsın, lisansla mı? Fiyat kararıyla birlikte verilir (CLAUDE.md "FİYAT").
+- K2. KARAR (kullanıcı, 21.10.2026: "hedef müşteri herkes"): bugünkü kitle (ofis, emlak, turizm, serbest meslek) ve ticaret/dağıtım birlikte.
+  E5 ve E6 planda kalır; modüller şirket bazında açılır (kör nokta 10).
+- K3. KARAR (kullanıcı, 21.10.2026): şirket sınırı şimdilik 2 kalır; müşteri geri dönüşüne göre yeniden karar verilir (fiyat kararıyla birlikte,
+  CLAUDE.md "FİYAT").
 - K4. Pro'ya özel adım var mı? Varsayılan: hepsi herkese.
 - K5. Resmî defter kapsamı: yalnız aktarım ve döküm mü, e-Defter de mi?
 - K6. Döviz (§3.12, ertelendi): E4'ten önce mi, E4'ün içinde mi?
@@ -225,3 +231,4 @@ YAPILACAK (sırayla; her biri ayrı karar):
 ## 7. Değişiklik geçmişi
 
 - 21.10.2026: ilk sürüm (kullanıcı isteği; "Bugün kodda" 3f6abc8 kodundan).
+- 21.10.2026: K2 (hedef müşteri herkes) ve K3 (şirket sınırı şimdilik 2) kullanıcı kararları işlendi; kör nokta 10 eklendi.
