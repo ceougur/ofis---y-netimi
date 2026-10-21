@@ -369,6 +369,27 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   BAŞLANGIÇ: Perşembe 22.10.2026 02:00 sıfırlamasından SONRA; öncesinde para çekirdeğine dokunan iş başlatılmaz. Tahmin ~1,5–2 gün (e-SMM), ~1,5–3 M token.
   BÖLME YOK (kullanıcı, 21.10.2026: "bölme kararımız yoktu; e-SMM programda hazır, yalnız gösterilmiyordu") → e-SMM 2.4.4'te. 2.4.4 BAŞLANGICI: kullanıcı
   "başla" deyince (21.10.2026: "yarın ben başla dediğimde başlarsın").
+  02:00 KISITI KALKTI (kullanıcı, 21.10.2026: "02.00 kısıtına takılma, ben başla dediğimde limit sıfırlanmış demektir").
+  KARARLAR (kullanıcı, 21.10.2026: "ilk 5 maddeyi en yaygın ve doğru kullanılan bilgi ile yapalım"; baş mimar seçti):
+  (1) UI11 dışa aktarım: liste/rapor düğmeleri tek ad "PDF" / "Excel" (ne indirdiği pencere başlığında + düğme ipucunda); kart/belge çıktıları (Cari Ekstre,
+  Taksit Ekstresi, Stok Kartı, <Belge Türü>, Kasa Dökümü) 2.0.16 kararıyla adlı kalır; hepsi TEK görünüm (aynı simge/renk ailesi/yükseklik); fatura listesi çift
+  başlık kalkar. (2) UX18: faturadan Çek/Senet ile tahsilat BU faturayı kapatır (fatura bazlı kapama; bağ yalnız cheque_events.invoice_id, cheques.invoice_id boş
+  → fatura iptalinde evrak portföyde kalır, bağ düşer); taksitli faturaya ve başka cariye/ters yöne bağ yok (invoiceLink kuralı); karşılıksız dönünce fatura yeniden
+  açılır; carideki "+ Tahsilat" Çek/Senet yolunda seçili Kapatılacak Fatura artık KORUNUR (bugün sessizce düşüyor); yevmiye değişmez (B 101/121 / A 120);
+  şüpheli alacak kuralı değişmez (BİLİNEN SINIR); para çekirdeği → kırmızı test + mutasyon + dar kontrol. (3) E7: Yol A — ayrı, ekran boyunda pencere
+  (window.open), kullanıcının kalıcı Edge profili (Beni Hatırla + Edge parola kaydı); kurulum değişmez; adres sunucunun sabit listesinden ortama göre; Turnstile'a
+  dokunulmaz, parola istemciye çıkmaz; ad yazım düzeniyle "e-Fatura Portalı"; e-SMM'ye portaldaki sarı "SMMM Portalı Girişi" ile geçilir. (4) E8: Tahsilat düğmesi
+  CSS ile gizlenir; 2.0.18 kalıcı kararı "kayıttan taksit durur" korunur → planı olmayan kayıtta kısa yol "Taksit Planı Oluştur" olarak kayıt kartına taşınır
+  (bugün yalnız gizlenecek Tahsilat penceresinde); cariye bağlı kayıtta tahsilat Cari'den; boş geçmiş metni, yetki açıklaması, rapor adı, kılavuz uyarlanır; zil/şerit
+  yolunun cari/taksit yönlendirmesini atlaması (DOĞRULANMADI) önce yeniden üretilir. (5) İPTAL SÜRESİ (GİB kaynağı: ebelge.gib.gov.tr/dosyalar/kilavuzlar/
+  e-Arsiv_Uygulamalari_Iptal_Ihtar_Itiraz_Bildirim_Kilavuzu_V.1.1.pdf §3: "e-Arşiv Fatura ve e-SMM belgelerinin iptal işlemlerinde 8 günlük sürenin tespiti e-belgenin
+  alıcıya iletilme tarihinden itibaren başlar. İptal işlemi her durumda 8 günlük süre içinde yapılmalıdır"; dayanak TTK 21/2): e-Arşiv VE e-SMM 8 gün, İLETİM
+  (gönderim) tarihinden; başlangıç günü sayılmaz, 8. gün dahil (TBK 92). Program bugün KESİM tarihinden sayıyor (invoices.mjs:2893; daha katı) → iletimden
+  sayacak; ileti sınır günüyle; kılavuz kâhin kaynağı olarak depoya (sha256); kâhin K22 (≤7) GİB kaynağıyla ayrı elden düzeltilir (ders 5); localOnly yolu
+  gönderilmiş belgede süreyi atlamaz.
+  (6) EDM TEYİDİ GEREKMEZ (kullanıcı, 21.10.2026: "test ortamından kurup test edeceğiz; kullanıcı canlı için EDM'den üyelik alıp canlıdan önce deneme yapıp sonra
+  kullanacak"): canlı e-SMM adresi 19.10'da EDM Word belgesinden okunmuştu (portal2.edmbilisim.com.tr/EFaturaEDM/ESmmEDM.svc) ve e-Fatura adresiyle aynı
+  düzende → program e-SMM adresini Entegratör Ayarları'ndaki servis adresinden türetir; kılavuza "canlıda e-SMM için EDM'den ayrıca e-SMM siparişi" yazılır.
 - YAPILMAZ (19.10.2026): kontörlü "Tüm Bilgileri Getir" (Mükellef Sorgula yalnız CheckUser); müşteri talebi gelirse yeniden. Ayrıntı arşivde (21.10).
 - KULLANICI SORUNU (19.10.2026, ekran): Mükellef Sorgula "Kullanıcı Bulunamadı (11010)" — neden: Entegratör Ayarları'nda Web Servis KULLANICI ADI alanına servis
   ADRESİ (https://test.edmbilisim…) yazılmış. Parola "Kayıtlı": kayıtlı parola tasarım gereği gösterilmez (Göster yalnız o an yazılanı gösterir). 2.4.4 ADAYI
