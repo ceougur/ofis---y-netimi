@@ -37,6 +37,30 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
 | 7 | Müşteri isteği 2: "E-Fatura Portal" düğmesi — ortama göre (Test: https://test.edmbilisim.com.tr/EFaturaUI21ea/, Canlı: https://portal4.edmbilisim.com.tr/EFaturaUI/); başlatıcı ayrı tam ekran KALICI profilli Edge penceresi; Beni Hatırla; Turnstile aşılmaz; gerçek Windows'ta denenir | aynı madde (2) + EK + NETLEŞTİRME + CANLI ADRES |
 | 8 | Müşteri isteği 3: kayıt detay kartındaki "Tahsilat" düğmesini CSS ile gizle; 3 e2e tahsilatı API'den girer; "düğme görünmez" testi eski kodda kırmızı | aynı madde (3) |
 | 9 | Test izolasyonu kaçağı: Operatör Merkezi'nde yayımlanmamış "2.4.5" Azure kaydı 19.10'a kadar görüldü → hangi test/iş akışı gerçek lisans servisine ulaşıyor, bul ve kapat (ders 30) | CLAUDE.md "SORU (… demo olarak kaç kişi …)" |
+KODDAN HARİTA (21.10.2026; 9 okuyucu, salt okuma; ayrıntılı haritalar oturum not defterinde hakimiyet-244/*.md — kalıcı değil, gerekirse yeniden çıkarılır).
+Kilit bulgular (her biri dosya:satır ile doğrulanacak, uygulamada kırmızı test önce):
+- E1: e-SMM'yi yalnız bayrak açmaz — INVOICE_KINDS.smm.send=false (invoice-math.mjs:40) 11 gönderim kapısını kapatıyor (invoices.mjs:654, 992–1000, 1197,
+  1842, 1846, 2308, 3258, 3979) → tek yardımcı sendKind(kind, profile); üretim girişi server/server.mjs:8'e esmmEnabled; edm.mjs yalnız EFaturaEDM.svc, ad alanı
+  sabiti i2i (gerçek WSDL tempuri.org); e-SMM'de SMM ID/UUID ÇOCUK öğe (e-Fatura'da nitelik; shape nitelik denetlemez); ensureSession argümansız (:3272, :3438)
+  → e-SMM'de yanlış servise bakar; ESmmEDM WSDL'i depoda yok (alınıp sha256'lı saklanır); defter kaydı türe bağlı, e-SMM = kâğıt SMM (para çekirdeği değişmez);
+  stopaj programda belge düzeyinde, EDM/GİB satır düzeyinde → çok kalemde 1 kuruş ayrışma riski; canlı e-SMM adresi teyitsiz → ayrı canlı kilidi önerisi.
+- E3: D2 ürün hatası değil; test ürünün iki doğru yolundan (einvoice-sending→done / already-sent→done) yalnız birini ön koşul sayıyor; 100 ms yoklama yarışı.
+- E4: 8 gün kuralını sınayan test YOK; kâhin K22 (≤7) ile ağ-yok dalı (≤8) kendi içinde tutarsız; localOnly iptal yolu API'de 8 günü atlıyor.
+- E5: kullanıcı adı kırpma ve "kayıtlı parola gösterilmez" metni ZATEN var; eksik yalnız URL denetimi (değişmeyen eski kayıt ilgisiz ayarları kilitlememeli).
+- E6: {ids} yolu var ama parçasız/bütçesiz, eski bekleyeni gönderimden SONRA söylüyor → {all, only, after} + ön denetim (check) önerisi; kâhin koşucusu {ids}'e bağlı.
+- E7: başlatıcı kısa ömürlü, yerel ucu/protokolü yok, güncelleme paketine GİRMEZ (yalnız Kurulum.exe) → Yol A window.open (kurulum değişmez; DestekOfis zaten
+  varsayılan kalıcı Edge profilinde) önerisi; Yol B (destekofis:// + ayrı profil) her PC'de yönetici kurulumu ister.
+- E8: yalnız CSS ile kaybolanlar: "Taksit planı oluşturun" kısa yolu, cariye bağlı kayıtta karttan cari tahsilatı (2.4.3 A2); boş geçmiş metni JS'te (hof-workspace
+  .js:1178); izin açıklaması/rapor adı/kılavuz eskir; 6 e2e adımı. EK BULGU: zil/ödeme sözü şeridinden tahsilat taksit/cari yönlendirmesini atlıyor (DOĞRULANMADI).
+- E9 KÖK NEDEN (koddan; Operatör Merkezi ile eşleme DOĞRULANMADI): .github/workflows/windows.yml install-test gerçek paketi Windows SERVİSİ olarak kuruyor; servis
+  ortamı nssm AppEnvironmentExtra'dan (servis-kur.cmd:58) → HUKUK_LICENSE_URL yok; windows-kurulum.mjs:123–127 kurulu 2.4.3 + 2 = 2.4.5'i W3'te çalıştırıyor. İş her
+  master push'unda ve yayında koşuyor → düzeltme (hosts engeli + lisans nöbetçisi + taramanın .github/tools'a genişlemesi) 2.4.4 PR'ının İÇİNDE olmalı.
+- E2: UI9 Anlık Durum, UI3b PDF ve Çek çift başlık 2.4.3'te yapılmış; kalan fatura kısımları. UI11 "her yerde tek ad PDF" 2.0.16 müşteri kararıyla ÇELİŞİYOR
+  (düğme ne indirdiğini söyler) → karar kullanıcıda. UX18: A (yalnız istemci, FIFO) / B (faturaya bağlı, para çekirdeği + dar kontrol) → karar kullanıcıda.
+- Ek bulgular (2.4.4 adayı, karar kullanıcıda): salt okunur lisansta tax.manage WRITE_PERMISSIONS'ta yok (license.mjs:46–53); Netten Brüte kişi alıcıda %20
+  stopaj varsayıp brütü fazla yazıyor (hof-invoices.js:2081); cari "+ Tahsilat" Çek/Senet yolunda seçili Kapatılacak Fatura sessizce düşüyor (hof-accounts.js:982);
+  defter kâhini hiçbir CI/Uzun Doğrulama işinde değil; vekil sunucu parolası ag-ayari.json'da açık metin; 002 ekranına yetki/lisans olayları canlı ulaşmıyor
+  (DOĞRULANMADI); yerel depo sığ + 0 etiket → yerel npm test eski sürüm testlerini atlar (CI eşdeğeri değil).
 YAPILMAYACAKLAR (kullanıcı kararı): kontörlü "Tüm Bilgileri Getir"; e-Fatura/e-Arşiv kutu metinlerinin değişmesi (geri bildirim gelirse); WhatsApp paylaşımı (bekler).
 Akış ve teslim: CLAUDE.md "Sürüm teslim düzeni" + `docs/SURUM-YAYIMLAMA.md` + 2.4.3 örneği (`docs/2.4.3-KANIT.md`, `docs/2.4.3-IS-LISTESI.md`).
 Önerilen sıra: iş listesi `docs/2.4.4-IS-LISTESI.md` aç (kodla birlikte gönder — ders 26) → küçük maddeler (5, 8, 9) → 2.4.3 ertelenenleri → Seçilenleri Gönder →
@@ -46,7 +70,9 @@ e-SMM → Portal düğmesi (Windows elle kabul) → tam npm test + bütün e2e �
 TEK BAŞINA YETERLİ PLAN: `docs/devir/DEVIR-PLANI.md` (§0 kararlar, §2 mimari "yerinde budama + arşiv kopyası", §3 modül modül kesim tablosu, §4 açılışlar +
 kapanış/açılış fişi, §5 ön denetim, §6 Geri Al, §7 teknik ayrıntılar dosya:satır, §8 Nasıl Bozulur, §9 test/kanıt, §10 aşamalar D0–D6, §11 VERİLMİŞ kararlar).
 Arka plan: `docs/devir/DEVIR-MODULU.md` (Wolvox ekranları, §10 arkadaşın yanıtı). İlk adım D0: planı 2.4.4 sonrası koda karşı yeniden doğrula.
-Hatırlatıcı: Perşembe 22.10.2026 09:00 TR (trig_01NEGfcTp7hAnHG1tgw6mFAv) — karar zaten verildi (Wolvox yöntemi); hatırlatıcı gelirse bunu söyle.
+Hatırlatıcı: eski 22.10 (trig_01NEGfcTp7hAnHG1tgw6mFAv) KAPATILDI (21.10.2026); yenisi 29.10.2026 09:00 TR (trig_01DE8bFDurzMRT6thbptBrQM). Karar zaten verildi (Wolvox yöntemi).
+D0 ÖN BİLGİ (21.10 okuması): plan §7 kaymış referanslar — money-lines summary :739 → :505, period setLock :68 → :70, company-separate VACUUM INTO :36 → :57,
+assertChronology :1675 → :1678. KÖR NOKTA: cheque_events.kind CHECK kısıtlı (migrations.mjs:731) → "devir olay türü" yalnız ekleyici göçle eklenemez; D0'da yeni kolon / yeni tablo / işaretli receive-issue seçilir (account_entries.kind :604 ve invoices.kind :926 de CHECK'li).
 
 ### 3. KALAN / BEKLEYEN (karar ya da dış bilgi bekliyor)
 - FİYAT kararı (güncelleme/destek süresi, WhatsApp/uzaktan bağlanma giderleri) — CLAUDE.md "FİYAT".
