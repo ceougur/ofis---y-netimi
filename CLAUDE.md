@@ -472,6 +472,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   yapılacak işleri maddele, iş bittikçe üstünü çiz ve bana göster"): liste `docs/2.4.4-IS-LISTESI.md` (biten madde üstü çizili, commit ile). Uygulama: "başla"
   deyince oturum içi 30 dk'lık CronCreate işi (yalnız boşta çalışır; 7 günde kendiliğinden biter; 2.4.4 bitince silinir) + uzun turda her denetim noktasında
   30 dk dolduysa rapor. Raporda: ne yapılıyor, düşen test (çıkış kodu + sayılar, CI), duran işlem (arka plan koşuları, ajanlar, CI); varsa önce gereği yapılır.
+- EK BULGULAR → 2.4.4 (kullanıcı, 21.10.2026: "önerin uygun"; e için "küçük bir işse önce doğrula, sorun varsa 2.4.4'e girsin"): iş listesi 25–29 —
+  a) salt okunur lisansta tax.manage, b) Brütü Hesapla kişi alıcı, c) defter kâhini CI'da, d) vekil sunucu parolası açık metin, e) 002'ye yetki/lisans olayı canlı
+  ulaşmıyor: KODDAN DOĞRULANDI (app.mjs:182 şirket başına kanal, :441 çocuğa kanal verilmez, license.mjs:331) → 2.4.4'te kırmızı testle.
 - HAZIRLIK (21.10.2026, 2.4.4 öncesi denetim): (1) YAPILDI (21.10.2026, ERP yol haritası commit'i): docs/2.4.4-IS-LISTESI.md ve docs/erp/** BELGE_YOLLARI'nda (tools/kanit.mjs
   + ci.yml paths-ignore + test/kanit-araci.test.mjs; yeni iddia eski araçta kırmızı 47/48, yenide 51/51) → iş listesi tek başına gönderilebilir, CI koşmaz. (2) Kapsayıcı: node_modules YOK → `npm ci` (ders 29: bağ yok); depo SIĞ → teslimden önce `git fetch --unshallow`; Wine/mingw YOK →
   paketten önce kurulur; Go, Chromium, disk (30 GB boş) hazır. (3) İmza anahtarı ve EDM test hesabı bu oturuma verildi; yalnız oturumda durur, kapsayıcı
