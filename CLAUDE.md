@@ -302,6 +302,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   bir istek listede yoksa kullanıcıya açıkça söylenir.
 
 ## Açık iş (yalnız güncel; kapanan sürümler `docs/GECMIS-KARARLAR.md`)
+- YENİ OTURUM (21.10.2026): önce `docs/DURUM-VE-DEVAM.md` → "DEVİR NOTU (21.10.2026)" — 2.4.4 kapsam tablosu, devir modülü (2.5.0) planı, kalan işler,
+  anayasa/ders yerleri, dal durumu (belgeler `origin/claude/hopeful-goodall-6nmtcj` dalında; master'da yok).
 - Yayın geçmişi özeti: 2.0.12 … 2.0.26, 2.1.0, 2.2.0, 2.3.0, 2.4.0, 2.4.1, 2.4.2 yayımlandı (her biri PR + etiket + 5 dosya bayt bayt + güncelleyici "available" + site
   kılavuz PR'ı); ayrıntı arşivde. Kâhin bilinen sınıfları: KDV-DAHIL-ISKONTO (program doğru), KASA-ACILIS-649 (İz 1.3 ile kapanacak).
 - PLANLI TEST (kullanıcı, ertelendi; 16.10.2026'da yine ertelendi: "cuma testini pazara ertele"): Pazar 18.10.2026 09:00 TR (trig_0144BJLRwsZFizXTTYrJVszA): 2.0.24 DENENMEYEN/BİLİNEN SINIRLAR
@@ -327,7 +329,22 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - DEVİR MODÜLÜ (yıl sonu devri; 13.10.2026'da YENİ madde — önceden listede yoktu): BÜTÜN BİLGİ `docs/devir/DEVIR-MODULU.md` (Wolvox ekranlarının
   dökümü, satış arkadaşının anlatımı, diğer programlar, iki kipli öneri, bakiye tipi örneği, görüş soruları, mevcut altyapı, riskler) + tablo
   `docs/devir/DestekOfis-Devir-Plani.png/.pdf`. KARAR BEKLENİYOR (kullanıcı: "arkadaş düşünüp kararı iletecek; bizim yöntem mi Wolvox yöntemi mi
-  karar verilince ona göre yaparız"). Hatırlatıcı 22.10.2026 Perşembe 09:00 TR (trig_01NEGfcTp7hAnHG1tgw6mFAv). Kullanım sınırı (13.10 %83):
+  karar verilince ona göre yaparız"). Hatırlatıcı 22.10.2026 Perşembe 09:00 TR (trig_01NEGfcTp7hAnHG1tgw6mFAv).
+  BELGE (kullanıcı, 20.10.2026: "DestekOfis_Yil_Sonu_Devir_Modeli_Tamamlanmis_2.pdf — sadece değerlendirmeni istiyorum, programımıza uygun mu?"): Kip 1 varsayılan +
+  Kip 2 sihirbaz ÖZÜ UYGUN; değerlendirme verildi (kod değişmedi). Belgede eksik/yanlış: gelir-gider kapanışı (6xx→690→590/591) ve açılış bilançosu yok;
+  stok maliyeti programda SON ALIŞ (ortalama/FIFO motoru yok; LIFO TMS 2'de yok, VUK teyidi); Ocak'ta gelen Aralık faturaları/e-Arşiv iptali/KDV beyanı için
+  arşiv hemen salt okunur olamaz → "Devri Güncelle" (yeniden aktar, fark) Faz 3'e; kayıt/görev/belge/kullanıcı/ayar/e-Belge seri ve Gönderilecekler kapsam dışı
+  kalmış; Connection Manager zaten var (şirket = ayrı dosya, readOnly açılış); terminaller HTTP ile tek sunucuya bağlı → "database is locked" riski yok;
+  para kuruş tamsayı → kuruş toleransı KABUL EDİLMEZ (fark = hata); özel kip için sunucu tarafı yazma kilidi gerekir.
+  ARKADAŞIN YANITI (20.10.2026, docs/devir/DEVIR-MODULU.md §10): devir Ocak–Şubat'ta, "Son İşlem Tarihi" 31.12 ile; devirden sonra eski yıla kayıt
+  girilmez; şikâyet az. → Wolvox yöntemi: kesim tarihinde dosyayı ikiye ayır (eski yıl salt okunur; yeni yıl açılış + kesim sonrası hareketler); "Devri Güncelle"
+  ilk sürümde yok. Kesimden sonraki (Ocak–Şubat) kayıtlar yeni yıla hareket olarak geçer (kullanıcı teyidi, 20.10.2026). YÖNTEM KARARI: Wolvox yöntemi.
+  UYGULAMA PLANI (kullanıcı, 20.10.2026: "2.4.4'ten sonrası için planlayalım, devir dosyası olarak tüm detayları ile yazalım; yeni sohbetten de
+  bulup yapabil"): `docs/devir/DEVIR-PLANI.md` — TEK BAŞINA YETERLİ (karar özeti, akış, mimari "yerinde budama + arşiv kopyası", modül modül kesim
+  tablosu, açılışlar, kapanış/açılış fişi, ön denetim, Geri Al, teknik ayrıntılar dosya:satır, Nasıl Bozulur, test/kanıt, aşamalar D0–D6, açık sorular §11).
+  2.4.4'ten SONRA, sürüm 2.5.0; başlamadan D0 (koda karşı yeniden doğrula). §11 KARARLARI VERİLDİ (kullanıcı, 20.10.2026: "en yaygın ve
+  uygun hali neyse öyle yapalım"): 590/591 aynen açılır (570/580 mali müşavirde); Borç ve Alacakları Aktar varsayılan + Sadece Bakiye seçeneği; bütün cari
+  kartlar kalır, minimum bakiye yok; stok ağırlıklı ortalama alış fiyatı (fark arşivde 153↔621); vergi karşılığı/yıl sonu düzeltmeleri programda yok. Kullanım sınırı (13.10 %83):
   para çekirdeğine dokunan iş Perşembe 02:00 sıfırlamasından önce başlatılmaz.
 - SIRA (kullanıcı, 13.10.2026): Perşembe (sıfırlamadan sonra) → (1) banka kalan işleri — ŞÜPHELİ ALACAKLAR (İz 4.3, plan §3.11b) DAHİL
   (kullanıcı: "banka kalan işlerine say") + ölçek-20 kök neden ve öbür ertelenen banka maddeleri → (2) fatura/e-Belge (EDM) → (3) devir modülü.
@@ -473,3 +490,84 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   yeniden koşuda YEŞİL (D2 ön koşul zamanlaması — 2.4.4: belirlenimci yap); PR ceougur/ofis---y-netimi#33 CI YEŞİL. Kullanıcıya "yayını açabilirsiniz" bildirildi.
   KALAN: kullanıcı "birleştir" → PR birleşir; kullanıcı yayın açar (v2.4.3, 5 dosya) → "yayımladım" → yayındaki dosyalar bayt bayt + güncelleyici "available"
   → site PR'ı (ceougur/destekofis web/indir kılavuz).
+- e-SMM YANITI (EDM, kullanıcının iletisi 19.10.2026): e-SMM uç noktaları e-Fatura/e-Arşiv'den FARKLI; AYNI test hesabıyla e-SMM uç noktalarında denenebilir.
+  Canlıda müşteri için ayrıca e-SMM siparişi + açılış işlemleri gerekir (ticari@edmbilisim.com.tr). Uç nokta adresleri EDM'nin Word belgesinde (e-postanın eki;
+  genel belge bağlantısı dosya.edmbilisim.com.tr owncloud). SIRADAKİ: kullanıcı Word belgesini oturuma YÜKLER → uç noktalar + şema okunur → e-SMM (config.esmmEnabled,
+  şimdilik gizli) test ortamında uçtan uca plan + kapsam/maliyet önerisi kullanıcıya; karar kullanıcıda (2.4.4 ya da ayrı sürüm). Kod henüz değişmedi.
+  BELGE OKUNDU (19.10.2026): e-SMM TEST https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc, CANLI https://portal2.edmbilisim.com.tr/EFaturaEDM/ESmmEDM.svc;
+  test WSDL erişilebilir (200): Login, SendSMM, LoadSMM, GetSMMStatus, GetSMM, CancelSMM, ArchiveSMM, EmailSMM, MarkSMM, GetSMMSerial, CheckUser, CheckCounter…
+  (ad alanı/yapı e-Fatura servisiyle aynı aile; soap-contract.mjs yeniden kullanılır). Programda hazır: SMM kâğıt makbuz, ESMM profili, TES/ESM serileri, esmm
+  ayarı (gizli). EKSİK: ESmmEDM bağdaştırıcısı + e-SMM belge XML'i (GİB e-SMM biçimi doğrulanacak) + gönderim/durum/iptal/resmî PDF akışı + test ortamında
+  uçtan uca. Plan + karar kullanıcıda.
+- 2.4.3 YAYIMLANDI (19.10.2026): PR #33 → master 163dd5d; kullanıcı v2.4.3 yayınını açtı; 5 dosya bayt bayt aynı; güncelleyici 2.4.2/2.4.0/2.3.0/2.0.12 gözüyle
+  2.4.3 "available" (yedek yol), indirilen zip sha256 aynı; site kılavuz PR ceougur/destekofis#19 birleşti, sitedeki PDF 6687435d… doğrulandı. Yayın sonrası
+  "Sürüm yayımla" + master CI 163dd5d sonucu bir sonraki oturumda okunacak.
+- KARAR (kullanıcı, 19.10.2026 ~11:45 UTC: "perşembe yapalım, 2.4.4'ün kalan işleri ile beraber"; haftalık kullanım %91): 2.4.4 = e-SMM (4 madde: EDM ESmmEDM
+  bağdaştırıcısı, GİB e-SMM XML'i, numara/kopma/iptal kuralları + dar kontrol, test ortamı uçtan uca + kılavuz + açma) + 2.4.3'ten ertelenenler (UI11, UI5, UI9,
+  UI3a, UX9, UX10, UX15–UX18, UX20, UX25, UX27, KÖ3) + gg243-dar-kontrol-gonderim D2 ön koşulunu belirlenimci yap (ders 20) + e-Arşiv iptal 8. gün teyidi.
+  BAŞLANGIÇ: Perşembe 22.10.2026 02:00 sıfırlamasından SONRA; öncesinde para çekirdeğine dokunan iş başlatılmaz. Tahmin ~1,5–2 gün (e-SMM), ~1,5–3 M token.
+- SORU (kullanıcının yardımcısı, 19.10.2026): "EDM'de tüm bilgileri getirmek 1 kontör; kontör düşmesin dersen yalnız ticari unvan + posta kutusu gelir". KODDAN: Mükellef
+  Sorgula yalnız CheckUser çağırır (edm.mjs checkUser: unvan, PK etiketleri, tür) — adres / vergi dairesi GETİRMEZ, kontörlü sorgu YOK. EDM WSDL'inde GetCompany /
+  GetCompanyBasic / GetTurmob var (hangisinin kontörlü olduğu ve döndürdüğü alanlar doğrulanmadı). KARAR (kullanıcı, 19.10.2026: "şu anki durum şimdilik yeterli, sonraki zamanlarda talebe
+  göre bakarız"): kontörlü "Tüm Bilgileri Getir" YAPILMAZ, 2.4.4 kapsamında DEĞİL; müşteri talebi gelirse yeniden değerlendirilir.
+- KULLANICI SORUNU (19.10.2026, ekran): Mükellef Sorgula "Kullanıcı Bulunamadı (11010)" — neden: Entegratör Ayarları'nda Web Servis KULLANICI ADI alanına servis
+  ADRESİ (https://test.edmbilisim…) yazılmış. Parola "Kayıtlı": kayıtlı parola tasarım gereği gösterilmez (Göster yalnız o an yazılanı gösterir). 2.4.4 ADAYI
+  (küçük, kullanıcıya önerildi): kullanıcı adında http/https/“.svc” varsa kaydetmeden uyarı + baş/son boşluk kırpma; "Göster" yanında "kayıtlı parola gösterilmez,
+  değiştirmek için yenisini yazın" netliği.
+
+- MÜŞTERİ İSTEKLERİ → 2.4.4 (kullanıcı, 19.10.2026 ~23:05 TR: "müşterinin istekleri var sırayla yazacağım, bunları da 2.4.4 güncellemesine ekle"; ekran:
+  Fatura → Gönderilecekler, 2 belge seçili, seçim çubuğunda PDF/Excel/XML/İptal/Sil var, gönder YOK):
+  (1) "Seçilenleri Gönder" — seçim çubuğuna, seçilenlerden gönderilebilir (Gönderilecekler) olanların sayısıyla. KURAL (baş mimar): e-Belge numarası tarih
+  sırasıyla verilir (kronoloji); seçilmemiş DAHA ESKİ tarihli bekleyen belge varsa seçilen yenisi numara alamaz → düğme bunu gönderimden ÖNCE söyler
+  ("önce şu tarihli N belge gönderilmeli; onları da ekle / iptal") — sessiz atlama ya da yarım tur yok; Tümünü Gönder ile aynı sunucu yolu (seri kilidi,
+  sonucu belirsiz önce sorulur). Para-numara çekirdeği → kırmızı test + dar kontrol (ders 32).
+  (2) "E-Fatura Portal" düğmesi (Fatura üst satırı, Liste - Excel'in yanında): tıklayınca EDM portalı program içinde TAM EKRAN açılsın; kullanıcı adı/parola
+  Entegratör Ayarları'ndan alınıp şifre sormadan kullanıcının portal sayfası açılsın. KODDAN/AĞDAN (20.10.2026): EDM e-Fatura WSDL'inde (60 işlem) portala
+  oturumlu giriş/SSO/bağlantı üreten işlem YOK (Login yalnız web servis oturumu); canlı portal portal2.edmbilisim.com.tr → portal4.edmfatura.com/EFaturaUI/
+  (bu ortamdan erişilemedi; çerçeveye izin verip vermediği DOĞRULANMADI). BAŞ MİMAR UYARILARI: (a) portal girişi web servis kullanıcısıyla aynı mı — EDM'ye
+  sorulacak (çoğu entegratörde portal kullanıcısı ayrı); (b) program içinde çerçeve (iframe) çoğu portalda X-Frame-Options/çerez kuralıyla engellenir ve
+  program http://<ip>:5123'te çalışır → gerçekçi yol: başlatıcının ayrı tam ekran uygulama penceresi (Edge --app) portal adresiyle; (c) şifresiz giriş
+  ancak EDM'nin belirteçli (token/SSO) giriş bağlantısı varsa güvenli; yoksa parolayı EDM'nin giriş formuna betikle doldurmak gerekir → parola sunucudan
+  istemciye çıkar (bugün tasarım gereği hiç çıkmaz) ve EDM sayfası değişince sessizce bozulur. ÖNERİ: EDM'ye "portala belirteçli giriş bağlantısı var mı,
+  portal kullanıcısı web servis kullanıcısıyla aynı mı, test/canlı portal adresleri ve çerçeveye izin" sorulur; yanıta göre ya tam şifresiz giriş ya da
+  "portalı tam ekran aç + kullanıcı adı dolu" (parola tarayıcının kendi kaydıyla). Gerçek Windows + Edge'de denenir (ders 18).
+  EK (kullanıcı, 20.10.2026: test portalı https://test.edmbilisim.com.tr/EFaturaUI21ea/ giriş bilgisi web servisle AYNI; "program kullanıcı adı/şifre alanını
+  doldurup giriş yapacak; beni hatırla açıksa doğrudan sayfa gelecek?"). SAYFADAN OKUNDU: X-Frame-Options SAMEORIGIN → program içine gömülemez (ayrı tam ekran
+  pencere şart); giriş formunda Cloudflare Turnstile (hfTurnstileToken) + "Giriş Yap" düğmesi doğrulama bitene kadar pasif → otomatik doldur + otomatik
+  tıkla insan doğrulamasına takılır, EDM'nin bot korumasını aşmaya çalışmak YAPILMAZ; "Beni Hatırla" kutusu var (rememberMe), kalıcı çerez davranışı
+  DOĞRULANMADI. ÖNERİ: başlatıcı portalı KALICI profilli ayrı tam ekran Edge uygulama penceresinde açar; ilk girişte kullanıcı adı/parola bir kez girilir
+  (Edge kaydeder) + Beni Hatırla; sonraki açılışlarda doğrudan sayfa gelmesi beklenir — gerçek Windows + Edge'de denenir; giriş alanlarını doldurma ayrı
+  karar (Turnstile yüzünden yine tek tıklama ister, parola istemciye çıkar).
+  NETLEŞTİRME (kullanıcı, 20.10.2026: "test linki vermiştim, karışıklık olmasın; entegrasyon ayarına girilen canlı hesap linki + aynı kullanıcı adı/şifre ile
+  EDM giriş arayüzüne bağlanacak kullanıcılar, doğru mu? beni hatırla kullanılacak?") → EVET: düğme Entegratör Ayarları'ndaki ORTAMA göre açar (Test → test portalı
+  EFaturaUI21ea, Canlı → canlı portal); giriş Entegratör Ayarları'ndaki kullanıcı adı/şifre ile; Beni Hatırla kullanılır (ilk girişte bir kez). Canlı portal adresi
+  (portal2.edmbilisim.com.tr → portal4.edmfatura.com/EFaturaUI/) ve canlıda portal girişi = web servis kullanıcısı olduğu EDM'den teyit edilecek.
+  CANLI ADRES (kullanıcı ekranı, 20.10.2026: edmbilisim.com.tr → Müşteri Girişi → "E-Fatura Portal Girişi"): https://portal4.edmbilisim.com.tr/EFaturaUI/
+  ("e-Fatura / e-Arşiv v2.1" — tek giriş iki belge türünü kapsar; Beni Hatırla var). e-Arşiv'in GELEN kutusu YOKTUR (alıcı mükellef değildir; e-posta/PDF
+  ile gelir); gelen kutusu yalnız e-Fatura. GİB e-Arşiv Portalı ayrı ve ücretsiz; EDM ile kesen müşteri onu kullanmaz.
+  (3) Kayıt detay kartındaki "Tahsilat" düğmesi KALDIRILSIN (kullanıcı, 20.10.2026: "regresyon olma ihtimali varsa koda dokunmadan yalnız CSS ile").
+  KODDAN: düğme hof-workspace.js:1212 data-case-action="payment" (yetki payments.create "Kayda Tahsilat Girme", tutar Kasa'ya düşer); CSS'te gizleme kuralı zaten
+  var (hof-ui.css:2123, yalnız tahsilat modülü kapalıyken; modül, kayıtlarda tahsilat varsa profile.mjs kendiliğinden açar). PLAN: CSS'e koşulsuz gizleme;
+  sunucu yolu, eski tahsilatların İşlem Geçmişi'nde görünmesi/düzeltilmesi/silinmesi ve kayda bağlı TAKSİT kutusundaki "+ Tahsilat" (doğru yol) DEĞİŞMEZ;
+  boş geçmiş metni ("not, telefon, tahsilat veya haciz") düğmeye uygun düzeltilir. Bu düğmeye tıklayan e2e'ler (run.mjs 488/622/645, senaryo-banka-210b:214,
+  senaryo-cari-243:173/206) ekrandan girilemeyeceği için tahsilatı API'den girer + yeni denetim "düğme görünmez" (eski kodda kırmızı); bütün e2e koşulur (ders 28).
+  Standart/Pro kuralı gereği bütün kurulumlara gider.
+- SORU (kullanıcı, 20.10.2026: "demo olarak kaç kişi kullanıyor, operatör merkezinden bak") → Supabase lisans.installations SALT OKUNUR sorgu (veriye dokunulmadı):
+  9.0.0 hariç 13 kurulum; 4 lisanslı (ŞAHİN TURİZM, OFİS, AHMET ALANLI, UĞUR ÇETİN); lisanssız Türkiye adresli GERÇEK demo 5'i son 24 saatte etkin (hepsi 2.4.3;
+  178.233, 46.221, 88.225, 193.255, 88.241), 2'si Eylül'den beri görünmüyor (2.0.9, 2.0.0). Azure (GitHub Actions) adresli 2 kayıt: 2.0.12 (25–30.09) ve
+  YAYIMLANMAMIŞ "2.4.5" (ilk 15.10 10:04, SON 19.10 15:30 TR — ders 30 önlemi 210ac8e'den SONRA da görülüyor) → 2.4.4 ADAYI: hangi test/iş akışı gerçek
+  lisans servisine ulaşıyor, bulunup kapatılır (lisans-servisi-izolasyonu taraması genişletilir; release.yml/Uzun Doğrulama dahil). Kayıtlar silinmez (15.10 kararı).
+- MEVZUAT (kullanıcı, 20.10.2026: "bunları maliye ve vergi kanunlarından, mevzuatlardan bul") → GİB ebelge.gib.gov.tr/dosyalar/509_SN_VUK_GT.pdf (509 s. VUK GT,
+  GİB'deki metin) okundu: IV.2.2 e-Arşiv'e İSTEĞE BAĞLI dahil olmanın şartı (a) e-Fatura uygulamasına dahil olmak; IV.2.4.1 e-Fatura'ya dahil olanlar e-Arşiv'e
+  de GEÇMEK ZORUNDA (faturalar e-Fatura ya da e-Arşiv); IV.1 (s.~483) e-Fatura'lılar arası fatura e-Fatura zorunlu; IV.2.4.3 e-Arşiv'e dahil olmayan mükellef
+  sınırı aşan faturayı "Başkanlıkça sunulan e-Belge düzenleme portali" (GİB e-Arşiv Portalı) üzerinden e-Arşiv düzenler; s.~640 e-Arşiv alıcıya talebine göre
+  kâğıt ya da elektronik iletilir. Sınır (GİB dosyası 30 bin / 5 bin TL; ikincil kaynak TÜRMOB: 2025 3 bin TL, 1.1.2026'dan itibaren tutara bakılmaksızın)
+  — güncel tutar resmî Gazete metniyle DOĞRULANMADI. Program etkisi: "e-Arşiv kullanıcısıyım" işaretli ama "e-Fatura mükellefiyim" işaretsiz durum GİB portalı
+  kullanan mükellef olabilir (EDM ile kesemez) → 2.4.4'te kutu açıklaması/uyarı değerlendirilir (karar kullanıcıda).
+  EK (kullanıcı, 20.10.2026: "e-Fatura mükellefi entegratörden, e-Arşiv mükellefi GİB'den keser; vergi kaydında e-Arşiv seçmiş olan programdan kesemez — teyit
+  gerekir") → 509 V.1 okundu: YÖNTEM belge türünden BAĞIMSIZ — her e-Belge (e-Fatura ve e-Arşiv) üç yoldan biriyle: GİB Portal, Özel Entegratör (EDM), Doğrudan
+  Entegrasyon; V.1.4 entegratörün mükellefi GİB'e yükleyip onay alması gerekir. Belirleyici olan belge türü değil KAYIT YÖNTEMİ: GİB Portal kullanıcısı EDM ile
+  kesemez (önce EDM sözleşmesi + GİB'de entegratör kaydı). İki yöntemin aynı anda kullanılıp kullanılamayacağı tebliğ metninde BULUNAMADI (EDM/mali müşavir).
+  2.4.4 ADAYI: kutu metinleri "EDM üzerinden e-Fatura / e-Arşiv kullanıcısıyım" + kısa açıklama (GİB Portal kullanıcısıysanız işaretlemeyin).
+  KARAR (kullanıcı, 20.10.2026: "teyit edilecek kısımlar önemsiz; böyle dursun, geri bildirim olursa kutuları netleştiririz") → kutular DEĞİŞMEZ, 2.4.4
+  kapsamında DEĞİL; müşteri geri bildirimi gelirse yeniden ele alınır. Teyit soruları (iki yöntem aynı anda, 2025/2026 tutar sınırı) kapatıldı.

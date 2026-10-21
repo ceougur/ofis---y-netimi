@@ -1,5 +1,68 @@
 # DestekOfis — durum ve devam notu
 
+## DEVİR NOTU (21.10.2026) — YENİ OTURUM BURADAN BAŞLAR
+Önceki oturum: 2.4.3 YAYIMLANDI (v2.4.3, master 163dd5d, PR ceougur/ofis---y-netimi#33; site kılavuzu ceougur/destekofis#19). Kod o günden beri DEĞİŞMEDİ;
+yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
+
+### 0. İlk 10 dakika
+1. `CLAUDE.md` — anayasa + kurallar (oturum başında kendiliğinden yüklenir). Bölüm yerleri:
+   - "Proje Anayasası & Rol Dağılımı" (baş mimar sorumluluğu, kör nokta uyarısı) · "Kalite çıtası" · "Test kuralı" · "KANIT KURALI 1–5"
+   - "Doğrulama kapısı" (CI kapısı, YALNIZ BELGE yolları — CLAUDE.md, docs/DURUM-VE-DEVAM.md, docs/devir/** push'u CI başlatmaz)
+   - "Geçmiş test hatalarından dersler" 1–36 (yasak listesi; teslimde DENENEN/DENENMEYEN hangi maddelerin uygulandığını söyler)
+     Bu işlerde en sık gerekenler: 5 (kâhin bağımsız), 7 (eski kodda kırmızı), 13/22 (sahte saat, gece yarısı), 16 (ajan onayı kanıt değil),
+     17 (eski sürüm verisi), 18 (Windows gerçek koşu), 20 (ara sıra kırmızı zorla üret), 21 (her push'un CI'si), 23 (eski kod ayrı kopyada),
+     24 (disk), 26 (belgeyi tek tek gönderme), 28 (beklentisi değişen e2e koşulur), 30 (test gerçek lisans servisine ulaşmaz), 32 (para çekirdeği → dar kontrol),
+     35 (paket tam testi bitmeden birleşmez), 36 (pkill yok).
+   - "Verimlilik" (gereken kadar koş; uzun koşular yalnız son adayda, GitHub'da) · "Dil" (her şey Türkçe) · "Yazım düzeni" · "Güvenlik ve süreç"
+     (commit satırları, model adı yasak) · "Sürüm teslim düzeni" (5 dosya + arşiv) · "Standart / Pro" · "Kalıcı ürün kararları"
+   - "Açık iş" — bütün açık maddeler ve kullanıcı kararları (en sondaki maddeler en günceldir).
+2. DAL DURUMU: master'da OLMAYAN belge değişiklikleri `origin/claude/hopeful-goodall-6nmtcj` dalında (CLAUDE.md "Açık iş" ekleri, docs/devir/DEVIR-PLANI.md,
+   docs/devir/DEVIR-MODULU.md §9–§10, bu not). Yeni çalışma dalını master'dan açtıysan önce bunları al:
+   `git fetch origin claude/hopeful-goodall-6nmtcj && git checkout origin/claude/hopeful-goodall-6nmtcj -- CLAUDE.md docs/devir docs/DURUM-VE-DEVAM.md`
+   (bu dalın geri kalanı squash öncesi 2.4.3 geçmişidir; ürün kodu master ile aynı — `git diff origin/master origin/claude/hopeful-goodall-6nmtcj --stat`
+   yalnız bu belgeleri göstermeli; göstermiyorsa dur, kullanıcıya sor).
+3. Kullanım sınırı: para çekirdeğine dokunan iş Perşembe 22.10.2026 02:00 TR sıfırlamasından ÖNCE başlatılmaz (kullanıcı kararı).
+4. Kullanıcıdan istenecek dosyalar (sohbete yapıştırılmaz, oturuma YÜKLENİR; hiçbir dosyaya/zip'e/depoya girmez):
+   imza anahtarı `*imza-anahtari*.pem` (paket için), EDM test hesabı bilgi dosyası (gerçek EDM denemeleri için).
+
+### 1. SIRADAKİ İŞ: 2.4.4 (kapsam = CLAUDE.md "Açık iş"; tek yerde özet)
+| # | Madde | Kaynak (ayrıntı) |
+|---|---|---|
+| 1 | e-SMM (EDM ESmmEDM bağdaştırıcısı, GİB e-SMM XML'i, numara/kopma/iptal kuralları + dar kontrol, test ortamı uçtan uca + kılavuz + açma) | CLAUDE.md "e-SMM YANITI" + "BELGE OKUNDU" (uç noktalar, WSDL işlemleri); programda hazır olanlar aynı maddede; `config.esmmEnabled` |
+| 2 | 2.4.3'ten ertelenenler: UI11, UI5, UI9 (fatura), UI3a, UX9, UX10 (fatura), UX15–UX18, UX20, UX25, UX27, KÖ3 "Başlarken" | `docs/kanit/2026-10-18/uiux-a-243/uzman-ui-BULGULAR.md`, `.../uzman-ux-BULGULAR.md`; `docs/2.4.3-IS-LISTESI.md` madde 67f; `docs/2.4.3-DEGISIKLIKLER.md` (BİLİNEN SINIRLAR) |
+| 3 | gg243-dar-kontrol-gonderim D2 ön koşulunu belirlenimci yap (ders 20) | CLAUDE.md "SON ADAY (19.10.2026)" SONUÇ satırı (CI #842) |
+| 4 | e-Arşiv iptal 8. gün teyidi (mali müşavir) | CLAUDE.md 2.4.4 KARAR maddesi |
+| 5 | Entegratör kullanıcı adında http/https/.svc → kaydetmeden uyarı + kırpma; "kayıtlı parola gösterilmez" netliği | CLAUDE.md "KULLANICI SORUNU (19.10.2026)" |
+| 6 | Müşteri isteği 1: "Seçilenleri Gönder" (kronoloji kuralı, Tümünü Gönder ile aynı sunucu yolu; para-numara çekirdeği → kırmızı test + dar kontrol) | CLAUDE.md "MÜŞTERİ İSTEKLERİ → 2.4.4" (1) |
+| 7 | Müşteri isteği 2: "E-Fatura Portal" düğmesi — ortama göre (Test: https://test.edmbilisim.com.tr/EFaturaUI21ea/, Canlı: https://portal4.edmbilisim.com.tr/EFaturaUI/); başlatıcı ayrı tam ekran KALICI profilli Edge penceresi; Beni Hatırla; Turnstile aşılmaz; gerçek Windows'ta denenir | aynı madde (2) + EK + NETLEŞTİRME + CANLI ADRES |
+| 8 | Müşteri isteği 3: kayıt detay kartındaki "Tahsilat" düğmesini CSS ile gizle; 3 e2e tahsilatı API'den girer; "düğme görünmez" testi eski kodda kırmızı | aynı madde (3) |
+| 9 | Test izolasyonu kaçağı: Operatör Merkezi'nde yayımlanmamış "2.4.5" Azure kaydı 19.10'a kadar görüldü → hangi test/iş akışı gerçek lisans servisine ulaşıyor, bul ve kapat (ders 30) | CLAUDE.md "SORU (… demo olarak kaç kişi …)" |
+YAPILMAYACAKLAR (kullanıcı kararı): kontörlü "Tüm Bilgileri Getir"; e-Fatura/e-Arşiv kutu metinlerinin değişmesi (geri bildirim gelirse); WhatsApp paylaşımı (bekler).
+Akış ve teslim: CLAUDE.md "Sürüm teslim düzeni" + `docs/SURUM-YAYIMLAMA.md` + 2.4.3 örneği (`docs/2.4.3-KANIT.md`, `docs/2.4.3-IS-LISTESI.md`).
+Önerilen sıra: iş listesi `docs/2.4.4-IS-LISTESI.md` aç (kodla birlikte gönder — ders 26) → küçük maddeler (5, 8, 9) → 2.4.3 ertelenenleri → Seçilenleri Gönder →
+e-SMM → Portal düğmesi (Windows elle kabul) → tam npm test + bütün e2e → bağımsız gözden geçirme + dar kontrol → CI → Uzun Doğrulama → gerçek EDM → paket → teslim → PR.
+
+### 2. SONRA: DEVİR MODÜLÜ (sürüm 2.5.0)
+TEK BAŞINA YETERLİ PLAN: `docs/devir/DEVIR-PLANI.md` (§0 kararlar, §2 mimari "yerinde budama + arşiv kopyası", §3 modül modül kesim tablosu, §4 açılışlar +
+kapanış/açılış fişi, §5 ön denetim, §6 Geri Al, §7 teknik ayrıntılar dosya:satır, §8 Nasıl Bozulur, §9 test/kanıt, §10 aşamalar D0–D6, §11 VERİLMİŞ kararlar).
+Arka plan: `docs/devir/DEVIR-MODULU.md` (Wolvox ekranları, §10 arkadaşın yanıtı). İlk adım D0: planı 2.4.4 sonrası koda karşı yeniden doğrula.
+Hatırlatıcı: Perşembe 22.10.2026 09:00 TR (trig_01NEGfcTp7hAnHG1tgw6mFAv) — karar zaten verildi (Wolvox yöntemi); hatırlatıcı gelirse bunu söyle.
+
+### 3. KALAN / BEKLEYEN (karar ya da dış bilgi bekliyor)
+- FİYAT kararı (güncelleme/destek süresi, WhatsApp/uzaktan bağlanma giderleri) — CLAUDE.md "FİYAT".
+- Döviz (§3.12, fxEnabled kapalı), WhatsApp paylaşımı (emlakçı), Meta WhatsApp API (Pro), 2.1.0 kapsam ölçümü, ölçek-30/1M planlı testi — CLAUDE.md "Açık iş".
+- EDM'ye sorulacak: canlıda portal girişi = web servis kullanıcısı mı (testte aynı).
+- Ticari öneri (kullanıcıya iletildi, karar yok): demolar iletişim bırakmıyor (5 aktif demonun hiçbirinde ofis adı yok) → deneme içinde "iletişim bilgisi bırakın".
+
+### 4. Araçlar ve erişim (koddan)
+- Kanıt: `node tools/kanit.mjs kos <ad> -- <komut>`, `node tools/kanit.mjs ci <sha> --bekle <dk>`; CI günlüğü `mcp__github__get_job_logs`.
+- Operatör Merkezi verisi: Supabase projesi `lvzaeekyovhquljzesye`, şema `lisans` (installations, licenses, license_bindings, events…) — YALNIZ OKUMA; kayıtlar silinmez.
+- GİB mevzuatı: ebelge.gib.gov.tr bu ortamdan erişilebilir (509 tebliğ PDF); mevzuat.gov.tr / gib.gov.tr erişilemiyor.
+- Paket: `node tools/release.mjs --anahtar <yüklenen pem>`, `npm run build:windows` (yeni kapsayıcıda Wine kurulumu CLAUDE.md "Sürüm teslim düzeni").
+
+---
+
+
 Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncelleme: 02.10.2026 (2.0.16 hazırlanıyor — müşteri bildirimleri, bkz. Kalanlar; 2.0.15 yayımlandı — PR #15, `v2.0.15` = 85171ae: Fatura modülü, e-Belge altyapısı kapalı, kılavuzda Fatura; önceki: 2.0.14 yayımlandı — PR #14, `v2.0.14`: odak, Cari Kartı, WhatsApp Otomatik Sıra, damga düzeltmesi; 2.0.13 yayımlandı — PR #13, `v2.0.13`: WhatsApp toplu ekstre/mesaj, ödeme yolu, Ana Defter ve mutabakat kapısı, tarih/dönem kilidi/eksi bakiye kuralları; önceki: 2.0.12 hazırlandı: taksit kartının Kayıt Tarihi carinin tarihinden gelir, form düzeni; önceki: 2.0.11 yayımlandı — PR #11, `v2.0.11`, beş dosya bayt bayt doğrulandı: 8 düzeltme — Taksitler'den cari seçip toplu taksitlendirme, grup süzgecinde cari sayısı, Veri Sağlığı'nda Yok Say, başlıklarda her sözcüğün baş harfi büyük, stok birimleri tek yazım, açık pencereler canlı yenilenir, Ayarlar kullanıcı kartının altında, arama kutusu her yerinden yazar; önceki: 2.0.10 yayımlandı: 17 düzeltme — ayrıntılı yetkiler ve özel roller, kullanıcı silme/ad düzeltme, yönetici parolası kurtarma, "+ Sayfa"ya Excel/Sheets, anlık çek yenilemesi, Borçlu/Alacaklı dili ve renkleri, tek arama kutusu ; 2.0.9 yayımlı; önceki not: sürüm 2.0.2 denetimden geçti — `docs/DENETIM-2.0.2.md`; okuma motoru, analiz iş parçacığı, kanıtlı kolon kararları, kendi kendini onarma, şemaya esnek kolon eşleme, Veri Sağlık Kontrolü ve olay tabanlı uyarılar eklendi — `docs/MIMARI.md` → *2.0.2 eklemeleri*; yayın kullanıcı onayı bekliyor; 2.0.1 yayımlı).
 
 ## Nerede ne var
