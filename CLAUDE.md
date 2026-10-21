@@ -424,6 +424,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   KARAR (kullanıcı, 21.10.2026: "önerilerin uygun, sadece personel özeti olan görünüm kart olsun, diğer sekmeler olmasın"): yalnız yönetici görür (yeni yetki;
   yönetici başkasına verebilir); kartta YALNIZ Personel Özeti görünümü — Evrak Listesi, Maaş Bordrosu, CV, İletişim sekmeleri YOK; Doğum Tarihi girilir, Yaş
   hesaplanır; "Kullanılan İzinler" gün sayısı.
+  EK (kullanıcı, 21.10.2026): IBAN, maaş, adres gibi bütün alanlar istenildiği zaman düzeltilebilir/değiştirilebilir — yönetici ve yetki verdiği kullanıcı. Uygulama:
+  iki yetki (Personel Özlük Görüntüleme / Personel Özlük Düzenleme), varsayılan yalnız yönetici; Değişiklik Geçmişi'ne kim / ne zaman / hangi alan yazılır,
+  DEĞER yazılmaz (KVKK).
 - MEVZUAT KARARI (kullanıcı, 20.10.2026): e-Fatura / e-Arşiv kutu metinleri DEĞİŞMEZ, 2.4.4'te değil; geri bildirim gelirse netleştirilir. 509 VUK GT okuma
   notları (IV.2.2, IV.2.4.1, V.1 kayıt yöntemi) arşivde (21.10).
 - HAZIRLIK (21.10.2026, 2.4.4 öncesi denetim): (1) docs/2.4.4-IS-LISTESI.md BELGE_YOLLARI'nda DEĞİL (18.10 önlemi uygulanmamış; liste yalnız 2.3.0/2.4.3 iş
