@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/birlesik-personel-sonrasi-2",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/personel-ozluk-244.test.mjs test/license.test.mjs test/ci-kapi-listesi.test.mjs test/kanit-araci.test.mjs test/yazim-duzeni.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/sirket-canli-olay-244.test.mjs test/entegrator-kullanici-adi-244.test.mjs test/banka-210-gg-yetki.test.mjs test/banka-210-yetki-katalog.test.mjs test/banka-210-yetki-matrisi.test.mjs test/isgecmisi-230-geri-yukleme-yetki.test.mjs test/kullanici-yetki-210.test.mjs test/migrations.test.mjs test/vade-takip-kaynak-yetki-210.test.mjs test/yetki-243-muhasebe-finans.test.mjs test/yetki-gorunurluk.test.mjs",
+  "commit": "4cb0f806815949d2f0e7868f83268cd3e643566b",
+  "dal": "claude/youthful-euler-fl8ks4",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:28:15.897Z",
+  "sure_sn": 29.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 173,
+    "gecen": 173,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/birlesik-personel-sonrasi-2.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "759bc5b93330f08ac118dcc500b271e59f782d95467c6c191dac5846ed235b8e",
+  "ham_cikti_bayt": 54150
+}

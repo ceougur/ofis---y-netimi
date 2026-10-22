@@ -605,7 +605,7 @@ describe("lisans motoru — sunucu", () => {
   // 2.4.4 madde 25 (a): kataloğa yeni yazma yetkisi eklenip WRITE_PERMISSIONS unutulmasın (2.4.3 MM3 tax.manage böyle kaçtı; 2.1.0'da da
   // invoices.manage). Okuma ya da salt okunurda da açık kalan yönetim yetkileri AÇIK listeyle hariç tutulur; geri kalan her yetki yazmadır.
   it("katalogdaki her yazma yetkisi salt okunurda gizlenir (okuma/yönetim yetkileri açık listeyle hariç)", () => {
-    const NOT_WRITE = ["records.export", "cash.view", "plans.view", "accounts.view", "stock.view", "bank.view", "bank.reports", "cheques.view", "invoices.view", "overview.view", "overview.card", "tasks.viewAll", "reports.view", "audit.view", "users.manage", "system.manage", "license.manage"];
+    const NOT_WRITE = ["records.export", "cash.view", "plans.view", "accounts.view", "stock.view", "bank.view", "bank.reports", "cheques.view", "invoices.view", "overview.view", "overview.card", "tasks.viewAll", "reports.view", "staff.view", "audit.view", "users.manage", "system.manage", "license.manage"];
     for (const key of Object.keys(PERMISSIONS)) {
       if (NOT_WRITE.includes(key)) assert.ok(!WRITE_PERMISSIONS.includes(key), `${key} okuma/yönetim yetkisi, salt okunurda gizlenmez`);
       else assert.ok(WRITE_PERMISSIONS.includes(key), `${key} yazma yetkisi WRITE_PERMISSIONS'ta olmalı`);

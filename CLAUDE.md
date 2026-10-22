@@ -484,6 +484,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   EK (kullanıcı, 21.10.2026): IBAN, maaş, adres gibi bütün alanlar istenildiği zaman düzeltilebilir/değiştirilebilir — yönetici ve yetki verdiği kullanıcı. Uygulama:
   iki yetki (Personel Özlük Görüntüleme / Personel Özlük Düzenleme), varsayılan yalnız yönetici; Değişiklik Geçmişi'ne kim / ne zaman / hangi alan yazılır,
   DEĞER yazılmaz (KVKK).
+- SORU (22.10.2026, Personel Özlük yapılırken; kullanıcıya soruldu): ileri tarihli İşten Ayrılış Tarihi (ihbar süresindeki çalışan) bugün "yazılınca geçer" kararı gereği
+  hemen Ayrılanlar'a geçiyor ve Toplam Maaş'tan düşüyor. ÖNERİ: ayrılış günü gelene kadar Çalışanlar'da kalsın, yanında "Ayrılacak" notu. KARAR BEKLENİYOR.
 - MEVZUAT KARARI (kullanıcı, 20.10.2026): e-Fatura / e-Arşiv kutu metinleri DEĞİŞMEZ, 2.4.4'te değil; geri bildirim gelirse netleştirilir. 509 VUK GT okuma
   notları (IV.2.2, IV.2.4.1, V.1 kayıt yöntemi) arşivde (21.10).
 - RAPOR DÜZENİ (kullanıcı, 21.10.2026: "2.4.4'ü yaparken 30 dk'da kısa ara rapor ver, düşen test var mı, durmuş işlem var mı kontrol et; varsa gereğini yap;

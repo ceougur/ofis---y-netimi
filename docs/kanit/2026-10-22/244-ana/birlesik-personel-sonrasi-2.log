@@ -1,0 +1,1330 @@
+TAP version 13
+# Subtest: D5 — banka yetkileri eski sürümün rol/kişi kaydında kaybolmaz
+    # Subtest: 2.0.26'da rol açıklaması ve kişi adı düzeltilir → güncel kod açılınca banka yetkileri aynen geri gelir; işaret görünmez
+    ok 1 - 2.0.26'da rol açıklaması ve kişi adı düzeltilir → güncel kod açılınca banka yetkileri aynen geri gelir; işaret görünmez
+      ---
+      duration_ms: 1014.343925
+      type: 'test'
+      ...
+    # Subtest: güncel sürümde rol düzeltilir → banka yetkileri yeniden başlatmadan kalır; bankadan çıkış yetkisi kaldırılınca türetilen bank.move düşer
+    ok 2 - güncel sürümde rol düzeltilir → banka yetkileri yeniden başlatmadan kalır; bankadan çıkış yetkisi kaldırılınca türetilen bank.move düşer
+      ---
+      duration_ms: 370.134116
+      type: 'test'
+      ...
+    1..2
+ok 1 - D5 — banka yetkileri eski sürümün rol/kişi kaydında kaybolmaz
+  ---
+  duration_ms: 1385.444588
+  type: 'suite'
+  ...
+# Subtest: Aşama 3 — Banka ve POS yetki grubu
+    # Subtest: katalog: grup Taksitler'in ardından, 11 yetki, başlık yazımı; yerleşik roller §9.1
+    ok 1 - katalog: grup Taksitler'in ardından, 11 yetki, başlık yazımı; yerleşik roller §9.1
+      ---
+      duration_ms: 1.506381
+      type: 'test'
+      ...
+    # Subtest: salt okunurda gizlenen yazma yetkileri: banka yazma yetkileri ve invoices.manage / invoices.settings
+    ok 2 - salt okunurda gizlenen yazma yetkileri: banka yazma yetkileri ve invoices.manage / invoices.settings
+      ---
+      duration_ms: 0.114556
+      type: 'test'
+      ...
+    # Subtest: kişiye özel kaldırma rol matrisine geri düşmez (resolvePermissions)
+    ok 3 - kişiye özel kaldırma rol matrisine geri düşmez (resolvePermissions)
+      ---
+      duration_ms: 0.333211
+      type: 'test'
+      ...
+    1..3
+ok 2 - Aşama 3 — Banka ve POS yetki grubu
+  ---
+  duration_ms: 2.551043
+  type: 'suite'
+  ...
+# Subtest: Aşama 3 — yöneticinin bilinçli kararı yeniden başlatmada korunur
+    # Subtest: rol: banka yetkisi seçilmeden açılan rol ve bank.move'u kaldırılan rol yeniden başlatınca aynı kalır; işaret görünmez
+    ok 1 - rol: banka yetkisi seçilmeden açılan rol ve bank.move'u kaldırılan rol yeniden başlatınca aynı kalır; işaret görünmez
+      ---
+      duration_ms: 17.536706
+      type: 'test'
+      ...
+    # Subtest: kişi: muhasebeden bank.cancel kaldırılır → göç geri eklemez; banka bağlı satırı silemez (403)
+    ok 2 - kişi: muhasebeden bank.cancel kaldırılır → göç geri eklemez; banka bağlı satırı silemez (403)
+      ---
+      duration_ms: 84.677455
+      type: 'test'
+      ...
+    1..2
+ok 3 - Aşama 3 — yöneticinin bilinçli kararı yeniden başlatmada korunur
+  ---
+  duration_ms: 375.821897
+  type: 'suite'
+  ...
+# Subtest: Aşama 15 — yetki matrisi: banka uçları ve bankaya bağlı modül uçları × 6 rol
+    # Subtest: kapsam: server/routes/bank.mjs'teki her uç matriste (yeni uç → matrise eklenmeli)
+    ok 1 - kapsam: server/routes/bank.mjs'teki her uç matriste (yeni uç → matrise eklenmeli)
+      ---
+      duration_ms: 1.580765
+      type: 'test'
+      ...
+    # Subtest: banka uçları × yonetici
+    ok 2 - banka uçları × yonetici
+      ---
+      duration_ms: 631.23829
+      type: 'test'
+      ...
+    # Subtest: bankaya bağlı modül uçları × yonetici
+    ok 3 - bankaya bağlı modül uçları × yonetici
+      ---
+      duration_ms: 327.468844
+      type: 'test'
+      ...
+    # Subtest: banka uçları × avukat
+    ok 4 - banka uçları × avukat
+      ---
+      duration_ms: 566.190556
+      type: 'test'
+      ...
+    # Subtest: bankaya bağlı modül uçları × avukat
+    ok 5 - bankaya bağlı modül uçları × avukat
+      ---
+      duration_ms: 385.132338
+      type: 'test'
+      ...
+    # Subtest: banka uçları × muhasebe
+    ok 6 - banka uçları × muhasebe
+      ---
+      duration_ms: 670.491553
+      type: 'test'
+      ...
+    # Subtest: bankaya bağlı modül uçları × muhasebe
+    ok 7 - bankaya bağlı modül uçları × muhasebe
+      ---
+      duration_ms: 353.906405
+      type: 'test'
+      ...
+    # Subtest: banka uçları × personel
+    ok 8 - banka uçları × personel
+      ---
+      duration_ms: 608.091596
+      type: 'test'
+      ...
+    # Subtest: bankaya bağlı modül uçları × personel
+    ok 9 - bankaya bağlı modül uçları × personel
+      ---
+      duration_ms: 269.376338
+      type: 'test'
+      ...
+    # Subtest: banka uçları × ozel
+    ok 10 - banka uçları × ozel
+      ---
+      duration_ms: 598.166591
+      type: 'test'
+      ...
+    # Subtest: bankaya bağlı modül uçları × ozel
+    ok 11 - bankaya bağlı modül uçları × ozel
+      ---
+      duration_ms: 353.47386
+      type: 'test'
+      ...
+    # Subtest: banka uçları × kaldirilmis
+    ok 12 - banka uçları × kaldirilmis
+      ---
+      duration_ms: 692.873653
+      type: 'test'
+      ...
+    # Subtest: bankaya bağlı modül uçları × kaldirilmis
+    ok 13 - bankaya bağlı modül uçları × kaldirilmis
+      ---
+      duration_ms: 294.435531
+      type: 'test'
+      ...
+# [yetki-matrisi] hücre 354 (izinli 210, izinsiz 144) — 45 banka ucu durumu + 14 modül ucu × 6 rol
+    # Subtest: Y1: kendi girdiği havale tahsilatı (cari, kayıt, taksit): sil → bank.cancel; nakde çevir / başka hesaba taşı → bank.move; açıklama herkese açık
+    ok 14 - Y1: kendi girdiği havale tahsilatı (cari, kayıt, taksit): sil → bank.cancel; nakde çevir / başka hesaba taşı → bank.move; açıklama herkese açık
+      ---
+      duration_ms: 1948.555989
+      type: 'test'
+      ...
+    # Subtest: özet: matris hücre sayısı; Mutabakat Testi tutarlı
+    ok 15 - özet: matris hücre sayısı; Mutabakat Testi tutarlı
+      ---
+      duration_ms: 13.169764
+      type: 'test'
+      ...
+    1..15
+ok 4 - Aşama 15 — yetki matrisi: banka uçları ve bankaya bağlı modül uçları × 6 rol
+  ---
+  duration_ms: 8566.577367
+  type: 'suite'
+  ...
+# Subtest: Aşama 15 — Y3–Y6: eşzamanlılık (iki kullanıcı), ödeme yönünde istek kimliği, kredi/kart hesabından ödeme, şirket ayrımı
+    # Subtest: Y3: iki ayrı muhasebe kullanıcısı (iki oturum, iki bağlantı) aynı anda Engelle'deki Garanti'den XYZ ve KLM'ye 40.000 → biri 200, öbürü 409 cash-blocked
+    ok 1 - Y3: iki ayrı muhasebe kullanıcısı (iki oturum, iki bağlantı) aynı anda Engelle'deki Garanti'den XYZ ve KLM'ye 40.000 → biri 200, öbürü 409 cash-blocked
+      ---
+      duration_ms: 245.209266
+      type: 'test'
+      ...
+    # Subtest: Y4: ödeme yönünde aynı istek kimliği iki kez → tek satır, ikinci yanıt replayed (cari ödeme, alış faturası peşini, çek ödemesi)
+    ok 2 - Y4: ödeme yönünde aynı istek kimliği iki kez → tek satır, ikinci yanıt replayed (cari ödeme, alış faturası peşini, çek ödemesi)
+      ---
+      duration_ms: 107.549297
+      type: 'test'
+      ...
+    # Subtest: Y5: kredi, vadeli ve kurumsal kart hesabından cari ödemesi → 400 bank-account-invalid; hiçbir şey yazılmaz
+    ok 3 - Y5: kredi, vadeli ve kurumsal kart hesabından cari ödemesi → 400 bank-account-invalid; hiçbir şey yazılmaz
+      ---
+      duration_ms: 63.433366
+      type: 'test'
+      ...
+    # Subtest: Y6: ?hofCompany= — yetkisiz şirket 403; başka şirketin hesabı 404; 002'deki işlem 001'i değiştirmez
+    ok 4 - Y6: ?hofCompany= — yetkisiz şirket 403; başka şirketin hesabı 404; 002'deki işlem 001'i değiştirmez
+      ---
+      duration_ms: 230.258546
+      type: 'test'
+      ...
+    1..4
+ok 5 - Aşama 15 — Y3–Y6: eşzamanlılık (iki kullanıcı), ödeme yönünde istek kimliği, kredi/kart hesabından ödeme, şirket ayrımı
+  ---
+  duration_ms: 966.701759
+  type: 'suite'
+  ...
+# [yetki-matrisi] previous denetlenen banka audit türü: 3
+# Subtest: Aşama 15 — Y2: salt okunur lisansta bankaya bağlı modül havale uçları 403 LICENSE_READ_ONLY
+    # Subtest: veri girilmiş şirket salt okunur açılır: cari/kayıt/taksit/stok/çek/fatura/Kasa ↔ Banka/transfer yazımı 403; okuma 200; hiçbir şey değişmez
+    ok 1 - veri girilmiş şirket salt okunur açılır: cari/kayıt/taksit/stok/çek/fatura/Kasa ↔ Banka/transfer yazımı 403; okuma 200; hiçbir şey değişmez
+      ---
+      duration_ms: 468.491737
+      type: 'test'
+      ...
+    1..1
+ok 6 - Aşama 15 — Y2: salt okunur lisansta bankaya bağlı modül havale uçları 403 LICENSE_READ_ONLY
+  ---
+  duration_ms: 468.679015
+  type: 'suite'
+  ...
+# Subtest: Aşama 15 — Y7: previous alanı olmayan audit (statik tarama)
+    # Subtest: bank.post'a op 'update' | 'delete' | 'move' | 'restore' | 'assign' ile giden her çağrı prev taşır (bank.post prev'siz çağrıyı zaten reddeder; burada kaynakta)
+    ok 1 - bank.post'a op 'update' | 'delete' | 'move' | 'restore' | 'assign' ile giden her çağrı prev taşır (bank.post prev'siz çağrıyı zaten reddeder; burada kaynakta)
+      ---
+      duration_ms: 7.249769
+      type: 'test'
+      ...
+    # Subtest: banka rotalarındaki düzeltme/silme/ters kayıt audit kayıtları previous yazar (kaynak: lib/bank/*.mjs)
+    ok 2 - banka rotalarındaki düzeltme/silme/ters kayıt audit kayıtları previous yazar (kaynak: lib/bank/*.mjs)
+      ---
+      duration_ms: 1.376861
+      type: 'test'
+      ...
+    1..2
+ok 7 - Aşama 15 — Y7: previous alanı olmayan audit (statik tarama)
+  ---
+  duration_ms: 8.753977
+  type: 'suite'
+  ...
+# Subtest: Doğrulama Kapısı — beklenen liste ↔ CI adımları
+    # Subtest: ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+    ok 1 - ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+      ---
+      duration_ms: 1.485917
+      type: 'test'
+      ...
+    # Subtest: yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+    ok 2 - yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+      ---
+      duration_ms: 0.302192
+      type: 'test'
+      ...
+    1..2
+ok 8 - Doğrulama Kapısı — beklenen liste ↔ CI adımları
+  ---
+  duration_ms: 2.578698
+  type: 'suite'
+  ...
+# Subtest: Bağımsız kâhinler iş akışında koşar
+    # Subtest: her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+    ok 1 - her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+      ---
+      duration_ms: 0.731905
+      type: 'test'
+      ...
+    1..1
+ok 9 - Bağımsız kâhinler iş akışında koşar
+  ---
+  duration_ms: 0.833135
+  type: 'suite'
+  ...
+# Subtest: Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+    # Subtest: mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+    ok 1 - mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+      ---
+      duration_ms: 1.232409
+      type: 'test'
+      ...
+    1..1
+ok 10 - Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+  ---
+  duration_ms: 1.340304
+  type: 'suite'
+  ...
+# Subtest: Entegratör Ayarları: Web Servis Kullanıcı Adı alanına adres yazılamaz
+    # Subtest: adres yazılınca kayıt reddedilir, ne yapılacağı söylenir, kayıtlı ad değişmez
+    ok 1 - adres yazılınca kayıt reddedilir, ne yapılacağı söylenir, kayıtlı ad değişmez
+      ---
+      duration_ms: 22.85574
+      type: 'test'
+      ...
+    # Subtest: düz ad kabul edilir; baş/son boşluk kırpılır (mevcut davranışın kilidi)
+    ok 2 - düz ad kabul edilir; baş/son boşluk kırpılır (mevcut davranışın kilidi)
+      ---
+      duration_ms: 7.613533
+      type: 'test'
+      ...
+    # Subtest: eski sürümde adres olarak kaydedilmiş ad: ilgisiz ayarlar kilitlenmez; bağlantı ağa çıkmadan açıklamayla durur; düzeltilince çalışır
+    ok 3 - eski sürümde adres olarak kaydedilmiş ad: ilgisiz ayarlar kilitlenmez; bağlantı ağa çıkmadan açıklamayla durur; düzeltilince çalışır
+      ---
+      duration_ms: 72.930118
+      type: 'test'
+      ...
+    1..3
+ok 11 - Entegratör Ayarları: Web Servis Kullanıcı Adı alanına adres yazılamaz
+  ---
+  duration_ms: 453.301153
+  type: 'suite'
+  ...
+# Subtest: İşlem geçmişi geri yükleme yetkisi (records.edit)
+    # Subtest: records.edit yetkisi olmayan kullanıcı silinmiş notu geri yükleyemez (403); yönetici yükler
+    ok 1 - records.edit yetkisi olmayan kullanıcı silinmiş notu geri yükleyemez (403); yönetici yükler
+      ---
+      duration_ms: 38.483548
+      type: 'test'
+      ...
+    1..1
+ok 12 - İşlem geçmişi geri yükleme yetkisi (records.edit)
+  ---
+  duration_ms: 458.544146
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: özet satırları
+    # Subtest: node:test TAP ve spec biçimleri; son özet alınır
+    ok 1 - node:test TAP ve spec biçimleri; son özet alınır
+      ---
+      duration_ms: 1.975701
+      type: 'test'
+      ...
+    # Subtest: projedeki arayüz senaryosu biçimleri
+    ok 2 - projedeki arayüz senaryosu biçimleri
+      ---
+      duration_ms: 1.468069
+      type: 'test'
+      ...
+    # Subtest: mutabakat ve güvenilirlik koşucuları; yarıda kalan tohum iptal sayılır
+    ok 3 - mutabakat ve güvenilirlik koşucuları; yarıda kalan tohum iptal sayılır
+      ---
+      duration_ms: 0.351801
+      type: 'test'
+      ...
+    # Subtest: defter kâhini (test:kahin-defter): fark, atlanan/reddedilen olay ve yakalanmayan mutasyon başarısız sayılır
+    ok 4 - defter kâhini (test:kahin-defter): fark, atlanan/reddedilen olay ve yakalanmayan mutasyon başarısız sayılır
+      ---
+      duration_ms: 0.444879
+      type: 'test'
+      ...
+    # Subtest: tanınmayan ya da boş çıktı özet sayılmaz
+    ok 5 - tanınmayan ya da boş çıktı özet sayılmaz
+      ---
+      duration_ms: 0.183048
+      type: 'test'
+      ...
+    1..5
+ok 13 - kanıt aracı: özet satırları
+  ---
+  duration_ms: 6.796832
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: hüküm
+    # Subtest: GEÇTİ yalnız çıkış 0 + özet temiz + en az bir test
+    ok 1 - GEÇTİ yalnız çıkış 0 + özet temiz + en az bir test
+      ---
+      duration_ms: 0.132477
+      type: 'test'
+      ...
+    # Subtest: çıkış kodu ile özet çelişirse ÇELİŞKİ (geçmedi)
+    ok 2 - çıkış kodu ile özet çelişirse ÇELİŞKİ (geçmedi)
+      ---
+      duration_ms: 0.273703
+      type: 'test'
+      ...
+    # Subtest: başarısız, yarıda, başlatılamayan
+    ok 3 - başarısız, yarıda, başlatılamayan
+      ---
+      duration_ms: 0.236534
+      type: 'test'
+      ...
+    1..3
+ok 14 - kanıt aracı: hüküm
+  ---
+  duration_ms: 0.818133
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: komut kabuksuz çalışır (Windows'ta argüman bölünmez)
+    # Subtest: Linux/macOS: komut olduğu gibi
+    ok 1 - Linux/macOS: komut olduğu gibi
+      ---
+      duration_ms: 0.369099
+      type: 'test'
+      ...
+    # Subtest: Windows: node → bu Node; npm/npx → bu Node'un npm-cli.js/npx-cli.js'i; .cmd/.bat reddedilir
+    ok 2 - Windows: node → bu Node; npm/npx → bu Node'un npm-cli.js/npx-cli.js'i; .cmd/.bat reddedilir
+      ---
+      duration_ms: 0.834176
+      type: 'test'
+      ...
+    # Subtest: gerçek: bu platformda npm aracın içinden çalışır (çıkış 0; özet olmadığı için BELİRSİZ)
+    ok 3 - gerçek: bu platformda npm aracın içinden çalışır (çıkış 0; özet olmadığı için BELİRSİZ)
+      ---
+      duration_ms: 180.106059
+      type: 'test'
+      ...
+    1..3
+ok 15 - kanıt aracı: komut kabuksuz çalışır (Windows'ta argüman bölünmez)
+  ---
+  duration_ms: 181.687695
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: gerçek koşu kaydı
+    # Subtest: geçen komut: çıkış 0, kayıt GEÇTİ, ham çıktı ve sha256 yazılır
+    ok 1 - geçen komut: çıkış 0, kayıt GEÇTİ, ham çıktı ve sha256 yazılır
+      ---
+      duration_ms: 139.112555
+      type: 'test'
+      ...
+    # Subtest: özetinde başarısız olan ama 0 ile çıkan komut GEÇMEZ (çelişki), araç 1 döner
+    ok 2 - özetinde başarısız olan ama 0 ile çıkan komut GEÇMEZ (çelişki), araç 1 döner
+      ---
+      duration_ms: 106.82226
+      type: 'test'
+      ...
+    # Subtest: özetsiz 0 çıkış BELİRSİZ; 3 ile çıkan komut BAŞARISIZ ve gerçek kodu kaydedilir
+    ok 3 - özetsiz 0 çıkış BELİRSİZ; 3 ile çıkan komut BAŞARISIZ ve gerçek kodu kaydedilir
+      ---
+      duration_ms: 200.674766
+      type: 'test'
+      ...
+    # Subtest: kapı kanıt klasöründeki kayıt olmayan JSON'u (kâhin fark/ham çıktısı) yok sayar, çökmez (Uzun Doğrulama 19.10.2026)
+    ok 4 - kapı kanıt klasöründeki kayıt olmayan JSON'u (kâhin fark/ham çıktısı) yok sayar, çökmez (Uzun Doğrulama 19.10.2026)
+      ---
+      duration_ms: 131.92476
+      type: 'test'
+      ...
+    1..4
+ok 16 - kanıt aracı: gerçek koşu kaydı
+  ---
+  duration_ms: 578.776926
+  type: 'suite'
+  ...
+# Subtest: yalnız belge değişen commit (ci.yml paths-ignore, kullanıcı kararı 13.10.2026)
+    # Subtest: yalnız CLAUDE.md değişen commit: hüküm koşusu olan ata commit'ten (YEŞİL)
+    ok 1 - yalnız CLAUDE.md değişen commit: hüküm koşusu olan ata commit'ten (YEŞİL)
+      ---
+      duration_ms: 1.03957
+      type: 'test'
+      ...
+    # Subtest: ata commit kırmızıysa yalnız belge commit'i de KIRMIZI
+    ok 2 - ata commit kırmızıysa yalnız belge commit'i de KIRMIZI
+      ---
+      duration_ms: 0.246984
+      type: 'test'
+      ...
+    # Subtest: kod değişen commit'in koşusu yoksa ata kullanılmaz (BELİRSİZ)
+    ok 3 - kod değişen commit'in koşusu yoksa ata kullanılmaz (BELİRSİZ)
+      ---
+      duration_ms: 0.108037
+      type: 'test'
+      ...
+    # Subtest: testlerin okuduğu plan/kanıt belgesi yalnız belge sayılmaz
+    ok 4 - testlerin okuduğu plan/kanıt belgesi yalnız belge sayılmaz
+      ---
+      duration_ms: 0.171375
+      type: 'test'
+      ...
+    # Subtest: ci.yml push paths-ignore listesi BELGE_YOLLARI ile aynı; pull_request süzgeçsiz
+    ok 5 - ci.yml push paths-ignore listesi BELGE_YOLLARI ile aynı; pull_request süzgeçsiz
+      ---
+      duration_ms: 0.397763
+      type: 'test'
+      ...
+    1..5
+ok 17 - yalnız belge değişen commit (ci.yml paths-ignore, kullanıcı kararı 13.10.2026)
+  ---
+  duration_ms: 2.202753
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: CI okuma (yalnız ci.yml, kapı işi şart)
+    # Subtest: bütün işler başarılı ve kapı işi var → YEŞİL
+    ok 1 - bütün işler başarılı ve kapı işi var → YEŞİL
+      ---
+      duration_ms: 0.519366
+      type: 'test'
+      ...
+    # Subtest: Windows işi kırmızı → KIRMIZI (Linux yeşili yetmez)
+    ok 2 - Windows işi kırmızı → KIRMIZI (Linux yeşili yetmez)
+      ---
+      duration_ms: 0.262293
+      type: 'test'
+      ...
+    # Subtest: atlanan iş yeşil sayılmaz
+    ok 3 - atlanan iş yeşil sayılmaz
+      ---
+      duration_ms: 0.14988
+      type: 'test'
+      ...
+    # Subtest: kapı işi olmayan (eski) commit YEŞİL değil
+    ok 4 - kapı işi olmayan (eski) commit YEŞİL değil
+      ---
+      duration_ms: 0.10011
+      type: 'test'
+      ...
+    # Subtest: koşu sürüyorsa, listedeki işler yeşil olsa da BEKLİYOR
+    ok 5 - koşu sürüyorsa, listedeki işler yeşil olsa da BEKLİYOR
+      ---
+      duration_ms: 0.07894
+      type: 'test'
+      ...
+    # Subtest: aynı commit'in ikinci koşusu kırmızıysa YEŞİL değil
+    ok 6 - aynı commit'in ikinci koşusu kırmızıysa YEŞİL değil
+      ---
+      duration_ms: 0.076809
+      type: 'test'
+      ...
+    # Subtest: başka iş akışlarının koşuları (ör. yayın) hükme girmez
+    ok 7 - başka iş akışlarının koşuları (ör. yayın) hükme girmez
+      ---
+      duration_ms: 0.126527
+      type: 'test'
+      ...
+    # Subtest: GitHub okunamazsa ya da koşu yoksa BELİRSİZ (asla YEŞİL değil)
+    ok 8 - GitHub okunamazsa ya da koşu yoksa BELİRSİZ (asla YEŞİL değil)
+      ---
+      duration_ms: 0.125363
+      type: 'test'
+      ...
+    1..8
+ok 18 - doğrulama kapısı: CI okuma (yalnız ci.yml, kapı işi şart)
+  ---
+  duration_ms: 2.618797
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: CI'deki kapı işinin hükmü
+    # Subtest: dört platform + e2e, aynı sayı, bu commit → geçer
+    ok 1 - dört platform + e2e, aynı sayı, bu commit → geçer
+      ---
+      duration_ms: 0.467249
+      type: 'test'
+      ...
+    # Subtest: Windows kaydı yoksa geçmez
+    ok 2 - Windows kaydı yoksa geçmez
+      ---
+      duration_ms: 0.16028
+      type: 'test'
+      ...
+    # Subtest: çelişkili kayıt (çıkış 0, özette başarısız) geçmez
+    ok 3 - çelişkili kayıt (çıkış 0, özette başarısız) geçmez
+      ---
+      duration_ms: 0.17239
+      type: 'test'
+      ...
+    # Subtest: Windows Linux'tan az test koştuysa geçmez
+    ok 4 - Windows Linux'tan az test koştuysa geçmez
+      ---
+      duration_ms: 0.14553
+      type: 'test'
+      ...
+    # Subtest: atlanan test varsa geçmez (o platformda doğrulanmadı)
+    ok 5 - atlanan test varsa geçmez (o platformda doğrulanmadı)
+      ---
+      duration_ms: 0.142521
+      type: 'test'
+      ...
+    # Subtest: başka commit'te ya da değişmiş ağaçta koşan kayıt geçmez
+    ok 6 - başka commit'te ya da değişmiş ağaçta koşan kayıt geçmez
+      ---
+      duration_ms: 0.096296
+      type: 'test'
+      ...
+    # Subtest: işin kendisi kırmızıysa (needs) kayıtlar temiz olsa da geçmez
+    ok 7 - işin kendisi kırmızıysa (needs) kayıtlar temiz olsa da geçmez
+      ---
+      duration_ms: 0.095257
+      type: 'test'
+      ...
+    # Subtest: aynı adla iki kayıt (biri eski) geçmez
+    ok 8 - aynı adla iki kayıt (biri eski) geçmez
+      ---
+      duration_ms: 0.065251
+      type: 'test'
+      ...
+    1..8
+ok 19 - doğrulama kapısı: CI'deki kapı işinin hükmü
+  ---
+  duration_ms: 1.521344
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: Stop kancası ve imzalı paket kapısı
+    # Subtest: her şey yeşilse kanca durdurmaz
+    ok 1 - her şey yeşilse kanca durdurmaz
+      ---
+      duration_ms: 0.598368
+      type: 'test'
+      ...
+    # Subtest: CI sürerken/kırmızıyken kanca yanıtı BİR KEZ durdurur ve gerçek durumu verir
+    ok 2 - CI sürerken/kırmızıyken kanca yanıtı BİR KEZ durdurur ve gerçek durumu verir
+      ---
+      duration_ms: 0.246923
+      type: 'test'
+      ...
+    # Subtest: CI yeşil ama gönderilmemiş commit ya da değişmiş dosya varsa kanca durdurur
+    ok 3 - CI yeşil ama gönderilmemiş commit ya da değişmiş dosya varsa kanca durdurur
+      ---
+      duration_ms: 0.187132
+      type: 'test'
+      ...
+    # Subtest: imzalı paket kapısı: değişmiş/izlenmeyen dosya ya da yeşil olmayan CI → ret; temiz + YEŞİL → izin
+    ok 4 - imzalı paket kapısı: değişmiş/izlenmeyen dosya ya da yeşil olmayan CI → ret; temiz + YEŞİL → izin
+      ---
+      duration_ms: 0.281724
+      type: 'test'
+      ...
+    # Subtest: tools/release.mjs CI/git okunamayınca anahtarı okumadan reddeder (atlatma seçeneği yok)
+    ok 5 - tools/release.mjs CI/git okunamayınca anahtarı okumadan reddeder (atlatma seçeneği yok)
+      ---
+      duration_ms: 48.486351
+      type: 'test'
+      ...
+    1..5
+ok 20 - doğrulama kapısı: Stop kancası ve imzalı paket kapısı
+  ---
+  duration_ms: 49.93701
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: kanca komutu (Stop / SubagentStop)
+    # Subtest: kancayı tetikleyen klasör (ajanın worktree'si) git deposu değilse durdurur ve nedenini yazar; ikinci denemede bırakır
+    ok 1 - kancayı tetikleyen klasör (ajanın worktree'si) git deposu değilse durdurur ve nedenini yazar; ikinci denemede bırakır
+      ---
+      duration_ms: 99.104356
+      type: 'test'
+      ...
+    # Subtest: depodaki .claude/settings.json Stop ve SubagentStop kancasını bu komuta bağlar
+    ok 2 - depodaki .claude/settings.json Stop ve SubagentStop kancasını bu komuta bağlar
+      ---
+      duration_ms: 0.371903
+      type: 'test'
+      ...
+    1..2
+ok 21 - doğrulama kapısı: kanca komutu (Stop / SubagentStop)
+  ---
+  duration_ms: 99.586369
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: çağrıldığı klasörde koşar (başka worktree'den çağrılınca ana depo değil)
+    # Subtest: komut ve commit, aracın deposu değil çağrılan klasörün deposu
+    ok 1 - komut ve commit, aracın deposu değil çağrılan klasörün deposu
+      ---
+      duration_ms: 168.600641
+      type: 'test'
+      ...
+    1..1
+ok 22 - kanıt aracı: çağrıldığı klasörde koşar (başka worktree'den çağrılınca ana depo değil)
+  ---
+  duration_ms: 168.70911
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: başarısız testlerin adı, yeri ve hatası
+    # Subtest: gerçek node --test (tap): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+    ok 1 - gerçek node --test (tap): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+      ---
+      duration_ms: 134.431479
+      type: 'test'
+      ...
+    # Subtest: gerçek node --test (spec): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+    ok 2 - gerçek node --test (spec): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+      ---
+      duration_ms: 156.514495
+      type: 'test'
+      ...
+    # Subtest: Windows yolu kısaltılır; senaryo koşucusunun ✗ satırları; geçen koşuda liste boş
+    ok 3 - Windows yolu kısaltılır; senaryo koşucusunun ✗ satırları; geçen koşuda liste boş
+      ---
+      duration_ms: 1.310906
+      type: 'test'
+      ...
+    # Subtest: kapı özeti başarısız testleri adıyla yazar
+    ok 4 - kapı özeti başarısız testleri adıyla yazar
+      ---
+      duration_ms: 38.003024
+      type: 'test'
+      ...
+    1..4
+ok 23 - kanıt aracı: başarısız testlerin adı, yeri ve hatası
+  ---
+  duration_ms: 330.542498
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: ci --bekle push'tan hemen sonra koşunun oluşmasını bekler
+    # Subtest: sürüyor ya da henüz koşu yok → bekle; GitHub okunamadı, YEŞİL, KIRMIZI → bekleme
+    ok 1 - sürüyor ya da henüz koşu yok → bekle; GitHub okunamadı, YEŞİL, KIRMIZI → bekleme
+      ---
+      duration_ms: 0.190148
+      type: 'test'
+      ...
+    1..1
+ok 24 - kanıt aracı: ci --bekle push'tan hemen sonra koşunun oluşmasını bekler
+  ---
+  duration_ms: 0.247601
+  type: 'suite'
+  ...
+# Subtest: yetki modeli (birim)
+    # Subtest: havuz her yetkiyi bir kez, açıklamasıyla listeler
+    ok 1 - havuz her yetkiyi bir kez, açıklamasıyla listeler
+      ---
+      duration_ms: 1.030455
+      type: 'test'
+      ...
+    # Subtest: v2.0.7 dizi biçimi eklenen sayılır; yönetime özgü ve bilinmeyen yetkiler atılır
+    ok 2 - v2.0.7 dizi biçimi eklenen sayılır; yönetime özgü ve bilinmeyen yetkiler atılır
+      ---
+      duration_ms: 0.325288
+      type: 'test'
+      ...
+    # Subtest: yönetici her zaman tüm yetkilere sahip; kişiye özel ayar yöneticiye uygulanmaz
+    ok 3 - yönetici her zaman tüm yetkilere sahip; kişiye özel ayar yöneticiye uygulanmaz
+      ---
+      duration_ms: 0.171986
+      type: 'test'
+      ...
+    # Subtest: personel: rol + eklenen − kaldırılan; yönetime özgü yetki eklenemez
+    ok 4 - personel: rol + eklenen − kaldırılan; yönetime özgü yetki eklenemez
+      ---
+      duration_ms: 0.371464
+      type: 'test'
+      ...
+    1..4
+ok 25 - yetki modeli (birim)
+  ---
+  duration_ms: 2.627204
+  type: 'suite'
+  ...
+# Subtest: yetki havuzu ve kullanıcı yönetimi (API)
+    # Subtest: roller: 4 yerleşik rol ve gruplu havuz; yönetim yetkileri kilitli
+    ok 1 - roller: 4 yerleşik rol ve gruplu havuz; yönetim yetkileri kilitli
+      ---
+      duration_ms: 6.461099
+      type: 'test'
+      ...
+    # Subtest: özel rol: oluşturulur, yönetim yetkisi verilemez, ad çakışmaz; kullanıcıya atanınca yetkileri uygulanır
+    ok 2 - özel rol: oluşturulur, yönetim yetkisi verilemez, ad çakışmaz; kullanıcıya atanınca yetkileri uygulanır
+      ---
+      duration_ms: 133.67336
+      type: 'test'
+      ...
+    # Subtest: kişiye özel: rolden yetki kaldırılır ve yetki eklenir; sunucu her uçta uygular
+    ok 3 - kişiye özel: rolden yetki kaldırılır ve yetki eklenir; sunucu her uçta uygular
+      ---
+      duration_ms: 101.644031
+      type: 'test'
+      ...
+    # Subtest: ANLIK DURUM kartı yalnız yönetici; yeni kullanıcı formunda kişiye özel yetkiyle oluşturulur
+    ok 4 - ANLIK DURUM kartı yalnız yönetici; yeni kullanıcı formunda kişiye özel yetkiyle oluşturulur
+      ---
+      duration_ms: 88.658918
+      type: 'test'
+      ...
+    # Subtest: ✎ düzeltme: görünen ad ve kullanıcı adı değişir; yeni adla girilir, eski adla girilmez, oturum açık kalır
+    ok 5 - ✎ düzeltme: görünen ad ve kullanıcı adı değişir; yeni adla girilir, eski adla girilmez, oturum açık kalır
+      ---
+      duration_ms: 147.371297
+      type: 'test'
+      ...
+    # Subtest: silme: kendini ve son yöneticiyi silemez; açık görevde devir sorulur; geçmiş korunur; ad ve kullanıcı adı yeniden kullanılır; geri alınır
+    ok 6 - silme: kendini ve son yöneticiyi silemez; açık görevde devir sorulur; geçmiş korunur; ad ve kullanıcı adı yeniden kullanılır; geri alınır
+      ---
+      duration_ms: 394.490103
+      type: 'test'
+      ...
+    # Subtest: yetkisiz kullanıcı yönetim uçlarına erişemez
+    ok 7 - yetkisiz kullanıcı yönetim uçlarına erişemez
+      ---
+      duration_ms: 75.862763
+      type: 'test'
+      ...
+    # Subtest: Yönetim paneli yalnız yöneticide; işlem geçmişi yetkisi olan uzman denetim kaydını Raporlar'dan görür, finans raporlarını görmez
+    ok 8 - Yönetim paneli yalnız yöneticide; işlem geçmişi yetkisi olan uzman denetim kaydını Raporlar'dan görür, finans raporlarını görmez
+      ---
+      duration_ms: 169.903011
+      type: 'test'
+      ...
+    1..8
+ok 26 - yetki havuzu ve kullanıcı yönetimi (API)
+  ---
+  duration_ms: 1394.746831
+  type: 'suite'
+  ...
+# Subtest: v2.0.7 ek yetki kayıtları göçü
+    # Subtest: ['overview.view'] → { add: ['overview.view'] }: raporlar açık kalır, kart kapanır
+    ok 1 - ['overview.view'] → { add: ['overview.view'] }: raporlar açık kalır, kart kapanır
+      ---
+      duration_ms: 248.957193
+      type: 'test'
+      ...
+    1..1
+ok 27 - v2.0.7 ek yetki kayıtları göçü
+  ---
+  duration_ms: 262.608939
+  type: 'suite'
+  ...
+# Subtest: lisans belirteci
+    # Subtest: imzalı belirteci doğrular, değiştirilmiş veya tanınmayan anahtarla imzalanmışı reddeder
+    ok 1 - imzalı belirteci doğrular, değiştirilmiş veya tanınmayan anahtarla imzalanmışı reddeder
+      ---
+      duration_ms: 3.571354
+      type: 'test'
+      ...
+    # Subtest: biçim denetimi: deneme belirtecinin bitişi zorunlu, bilinmeyen tür ve durum reddedilir
+    ok 2 - biçim denetimi: deneme belirtecinin bitişi zorunlu, bilinmeyen tür ve durum reddedilir
+      ---
+      duration_ms: 0.703007
+      type: 'test'
+      ...
+    # Subtest: internetsiz etkinleştirme kodu zarfı taşır; bozuk kod anlaşılır hata verir
+    ok 3 - internetsiz etkinleştirme kodu zarfı taşır; bozuk kod anlaşılır hata verir
+      ---
+      duration_ms: 1.078547
+      type: 'test'
+      ...
+    # Subtest: kurulum kodu ve lisans anahtarı biçimleri
+    ok 4 - kurulum kodu ve lisans anahtarı biçimleri
+      ---
+      duration_ms: 0.477712
+      type: 'test'
+      ...
+    # Subtest: bilgisayar kimliği kalıcıdır; ham değer dışarı verilmez
+    ok 5 - bilgisayar kimliği kalıcıdır; ham değer dışarı verilmez
+      ---
+      duration_ms: 1.811291
+      type: 'test'
+      ...
+    1..5
+ok 28 - lisans belirteci
+  ---
+  duration_ms: 8.445257
+  type: 'suite'
+  ...
+# Subtest: lisans durumu (saf değerlendirme)
+    # Subtest: etkinleştirilmemiş kurulum salt okunurdur
+    ok 1 - etkinleştirilmemiş kurulum salt okunurdur
+      ---
+      duration_ms: 0.535468
+      type: 'test'
+      ...
+    # Subtest: deneme: kalan gün, son 7 günde uyarı, süre dolunca salt okunur
+    ok 2 - deneme: kalan gün, son 7 günde uyarı, süre dolunca salt okunur
+      ---
+      duration_ms: 3.858442
+      type: 'test'
+      ...
+    # Subtest: lisans: süresiz, bitişe yakın uyarı, engellenmiş lisans salt okunur
+    ok 3 - lisans: süresiz, bitişe yakın uyarı, engellenmiş lisans salt okunur
+      ---
+      duration_ms: 1.437975
+      type: 'test'
+      ...
+    # Subtest: 7 günden uzun internetsiz kalınca doğrulama ister; son 3 günde uyarır; internetsiz lisansta süre yok
+    ok 4 - 7 günden uzun internetsiz kalınca doğrulama ister; son 3 günde uyarır; internetsiz lisansta süre yok
+      ---
+      duration_ms: 1.073411
+      type: 'test'
+      ...
+    # Subtest: saat geri alınınca süre geri gelmez ve program salt okunur olur
+    ok 5 - saat geri alınınca süre geri gelmez ve program salt okunur olur
+      ---
+      duration_ms: 0.8085
+      type: 'test'
+      ...
+    # Subtest: geçiş dönemi 30 gün yazılabilir, sonra salt okunur; başka bilgisayarın lisansı sayılmaz
+    ok 6 - geçiş dönemi 30 gün yazılabilir, sonra salt okunur; başka bilgisayarın lisansı sayılmaz
+      ---
+      duration_ms: 0.271926
+      type: 'test'
+      ...
+    1..6
+ok 29 - lisans durumu (saf değerlendirme)
+  ---
+  duration_ms: 8.337248
+  type: 'suite'
+  ...
+# Subtest: lisans motoru — sunucu
+    # Subtest: yeni kurulum etkinleştirilmeden salt okunurdur; yönetim, yedek ve giriş çalışır
+    ok 1 - yeni kurulum etkinleştirilmeden salt okunurdur; yönetim, yedek ve giriş çalışır
+      ---
+      duration_ms: 457.427245
+      type: 'test'
+      ...
+    # Subtest: ücretsiz deneme 30 gün açar; süre dolunca durur, okuma ve yedek sürer
+    ok 2 - ücretsiz deneme 30 gün açar; süre dolunca durur, okuma ve yedek sürer
+      ---
+      duration_ms: 58.685561
+      type: 'test'
+      ...
+    # Subtest: aynı bilgisayara ikinci deneme verilmez (yeniden kurulum dahil)
+    ok 3 - aynı bilgisayara ikinci deneme verilmez (yeniden kurulum dahil)
+      ---
+      duration_ms: 238.201
+      type: 'test'
+      ...
+    # Subtest: lisans anahtarı bilgisayara bağlanır; başka bilgisayarda reddedilir; engellenince salt okunur
+    ok 4 - lisans anahtarı bilgisayara bağlanır; başka bilgisayarda reddedilir; engellenince salt okunur
+      ---
+      duration_ms: 247.696172
+      type: 'test'
+      ...
+    # Subtest: internetsiz 7 gün tolerans: servis yoksa uyarır, 7 gün sonra durur, bağlantı gelince açılır
+    ok 5 - internetsiz 7 gün tolerans: servis yoksa uyarır, 7 gün sonra durur, bağlantı gelince açılır
+      ---
+      duration_ms: 15.614539
+      type: 'test'
+      ...
+    # Subtest: saat geri alınırsa durur; servisin saati güvenilir zamandır
+    ok 6 - saat geri alınırsa durur; servisin saati güvenilir zamandır
+      ---
+      duration_ms: 6.131103
+      type: 'test'
+      ...
+    # Subtest: internetsiz etkinleştirme kodu: yalnızca kendi bilgisayarında, doğrulama gerektirmez
+    ok 7 - internetsiz etkinleştirme kodu: yalnızca kendi bilgisayarında, doğrulama gerektirmez
+      ---
+      duration_ms: 204.738167
+      type: 'test'
+      ...
+    # Subtest: ileri alınıp düzeltilen saat takılı kalmaz: daha yeni imzalı kod zamanı düzeltir, eski kod geri alamaz
+    ok 8 - ileri alınıp düzeltilen saat takılı kalmaz: daha yeni imzalı kod zamanı düzeltir, eski kod geri alamaz
+      ---
+      duration_ms: 204.690308
+      type: 'test'
+      ...
+    # Subtest: 2.0 öncesinden gelen kullanılmış kurulum 30 günlük geçiş döneminde yazılabilir
+    ok 9 - 2.0 öncesinden gelen kullanılmış kurulum 30 günlük geçiş döneminde yazılabilir
+      ---
+      duration_ms: 223.282088
+      type: 'test'
+      ...
+    # Subtest: yerel kayıt elle değiştirilirse en sıkı varsayım kullanılır
+    ok 10 - yerel kayıt elle değiştirilirse en sıkı varsayım kullanılır
+      ---
+      duration_ms: 298.561637
+      type: 'test'
+      ...
+    # Subtest: demo program açılınca kendiliğinden başlar; internet yoksa kendiliğinden yeniden dener
+    ok 11 - demo program açılınca kendiliğinden başlar; internet yoksa kendiliğinden yeniden dener
+      ---
+      duration_ms: 272.835685
+      type: 'test'
+      ...
+    # Subtest: geçiş dönemindeki (2.0 öncesi) kuruluma deneme kendiliğinden başlatılmaz
+    ok 12 - geçiş dönemindeki (2.0 öncesi) kuruluma deneme kendiliğinden başlatılmaz
+      ---
+      duration_ms: 347.460749
+      type: 'test'
+      ...
+    # Subtest: denemenin 3. gününde yöneticiden firma bilgisi istenir; gönderilince bir daha sorulmaz
+    ok 13 - denemenin 3. gününde yöneticiden firma bilgisi istenir; gönderilince bir daha sorulmaz
+      ---
+      duration_ms: 366.288085
+      type: 'test'
+      ...
+    # Subtest: deneme süresi güncellemede (aynı data klasörüyle yeniden açılış) ve yeniden kurulumda sıfırlanmaz; süre dolunca öyle kalır
+    ok 14 - deneme süresi güncellemede (aynı data klasörüyle yeniden açılış) ve yeniden kurulumda sıfırlanmaz; süre dolunca öyle kalır
+      ---
+      duration_ms: 635.792932
+      type: 'test'
+      ...
+    # Subtest: geçiş dönemi (2.0 öncesi kurulum) güncellemede sıfırlanmaz; bütünlük özeti bozulsa da başlangıç ileri alınmaz
+    ok 15 - geçiş dönemi (2.0 öncesi kurulum) güncellemede sıfırlanmaz; bütünlük özeti bozulsa da başlangıç ileri alınmaz
+      ---
+      duration_ms: 350.551672
+      type: 'test'
+      ...
+    # Subtest: lisans durumu bilgisayar kimliğinin kaynağını söyler (Windows/Linux kimliği ya da veri klasöründeki dosya)
+    ok 16 - lisans durumu bilgisayar kimliğinin kaynağını söyler (Windows/Linux kimliği ya da veri klasöründeki dosya)
+      ---
+      duration_ms: 225.950042
+      type: 'test'
+      ...
+    # Subtest: salt okunur modda yazma yetkileri gizlenir, okuma yetkileri kalır
+    ok 17 - salt okunur modda yazma yetkileri gizlenir, okuma yetkileri kalır
+      ---
+      duration_ms: 0.153003
+      type: 'test'
+      ...
+    # Subtest: katalogdaki her yazma yetkisi salt okunurda gizlenir (okuma/yönetim yetkileri açık listeyle hariç)
+    ok 18 - katalogdaki her yazma yetkisi salt okunurda gizlenir (okuma/yönetim yetkileri açık listeyle hariç)
+      ---
+      duration_ms: 0.213123
+      type: 'test'
+      ...
+    # Subtest: salt okunur lisansta Vergi Ödemesi / KDV Mahsubu yetkisi ekrana gitmez, yazım reddedilir, veri değişmez
+    ok 19 - salt okunur lisansta Vergi Ödemesi / KDV Mahsubu yetkisi ekrana gitmez, yazım reddedilir, veri değişmez
+      ---
+      duration_ms: 199.885637
+      type: 'test'
+      ...
+    1..19
+ok 30 - lisans motoru — sunucu
+  ---
+  duration_ms: 4443.207588
+  type: 'suite'
+  ...
+# Subtest: gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+ok 31 - gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+  ---
+  duration_ms: 3.511807
+  type: 'test'
+  ...
+# Subtest: aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+ok 32 - aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+  ---
+  duration_ms: 59.603455
+  type: 'test'
+  ...
+# Subtest: gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+ok 33 - gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+  ---
+  duration_ms: 1.642083
+  type: 'test'
+  ...
+# Subtest: iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+ok 34 - iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+  ---
+  duration_ms: 0.41887
+  type: 'test'
+  ...
+# Subtest: lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+ok 35 - lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+  ---
+  duration_ms: 0.595297
+  type: 'test'
+  ...
+# Subtest: v1.0.0 veritabanından yükseltme
+    # Subtest: şemayı son sürüme yükseltir ve öncesinde yedek alır
+    ok 1 - şemayı son sürüme yükseltir ve öncesinde yedek alır
+      ---
+      duration_ms: 1.528465
+      type: 'test'
+      ...
+    # Subtest: mevcut verileri korur
+    ok 2 - mevcut verileri korur
+      ---
+      duration_ms: 0.282804
+      type: 'test'
+      ...
+    # Subtest: tamamlanan görevlerde adı kullanıcı kimliğine çevirir
+    ok 3 - tamamlanan görevlerde adı kullanıcı kimliğine çevirir
+      ---
+      duration_ms: 0.15402
+      type: 'test'
+      ...
+    # Subtest: varsayılan parolalı yöneticiye zorunlu değişim işaretler, diğer kullanıcıya dokunmaz
+    ok 4 - varsayılan parolalı yöneticiye zorunlu değişim işaretler, diğer kullanıcıya dokunmaz
+      ---
+      duration_ms: 123.573418
+      type: 'test'
+      ...
+    # Subtest: ikinci açılışta göç tekrar çalışmaz
+    ok 5 - ikinci açılışta göç tekrar çalışmaz
+      ---
+      duration_ms: 184.269656
+      type: 'test'
+      ...
+    1..5
+ok 36 - v1.0.0 veritabanından yükseltme
+  ---
+  duration_ms: 523.184062
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 Personel Özlük: yetki kataloğu
+    # Subtest: staff.view / staff.manage varsayılan yalnız yönetici; kişiye ve özel role verilebilir; havuzda Personel Özlük grubunda
+    ok 1 - staff.view / staff.manage varsayılan yalnız yönetici; kişiye ve özel role verilebilir; havuzda Personel Özlük grubunda
+      ---
+      duration_ms: 6.082051
+      type: 'test'
+      ...
+    # Subtest: istemci: Personel Raporu düğmesi reports.staff ile; CSS gizleme kuralı reports.view ya da staff.view (CRLF'ye dayanıklı)
+    ok 2 - istemci: Personel Raporu düğmesi reports.staff ile; CSS gizleme kuralı reports.view ya da staff.view (CRLF'ye dayanıklı)
+      ---
+      duration_ms: 4.064729
+      type: 'test'
+      ...
+    1..2
+ok 37 - 2.4.4 Personel Özlük: yetki kataloğu
+  ---
+  duration_ms: 11.585412
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 Personel Özlük: API
+    # Subtest: boş veri: liste boş, kartların hepsi sıfır
+    ok 1 - boş veri: liste boş, kartların hepsi sıfır
+      ---
+      duration_ms: 16.707904
+      type: 'test'
+      ...
+    # Subtest: bütün alanlarla ekle: yaş doğum tarihinden (yarın doğum günü → 35), maaş kuruş, IBAN boşluksuz; listede fotoğraf yok, kartta var
+    ok 2 - bütün alanlarla ekle: yaş doğum tarihinden (yarın doğum günü → 35), maaş kuruş, IBAN boşluksuz; listede fotoğraf yok, kartta var
+      ---
+      duration_ms: 23.802024
+      type: 'test'
+      ...
+    # Subtest: doğrulama: TC, IBAN, tarih sırası, e-posta, öğrenim, izin günü — 400 ve hatalı alan; reddedilen istek kayıt yazmaz
+    ok 3 - doğrulama: TC, IBAN, tarih sırası, e-posta, öğrenim, izin günü — 400 ve hatalı alan; reddedilen istek kayıt yazmaz
+      ---
+      duration_ms: 48.499663
+      type: 'test'
+      ...
+    # Subtest: aynı adlı iki çalışan iki ayrı kart; aynı TC No ikinci kartta 409
+    ok 4 - aynı adlı iki çalışan iki ayrı kart; aynı TC No ikinci kartta 409
+      ---
+      duration_ms: 14.520085
+      type: 'test'
+      ...
+    # Subtest: İşten Ayrılış Tarihi yazılınca Ayrılanlar'a geçer, silinince döner; kartlar ve Toplam Maaş (yalnız aktif) sayılarla
+    ok 5 - İşten Ayrılış Tarihi yazılınca Ayrılanlar'a geçer, silinince döner; kartlar ve Toplam Maaş (yalnız aktif) sayılarla
+      ---
+      duration_ms: 26.008797
+      type: 'test'
+      ...
+    # Subtest: KVKK: işlem geçmişine yalnız alan ADLARI yazılır; ad, TC, IBAN, maaş, adres, e-posta, telefon değeri yok
+    ok 6 - KVKK: işlem geçmişine yalnız alan ADLARI yazılır; ad, TC, IBAN, maaş, adres, e-posta, telefon değeri yok
+      ---
+      duration_ms: 2.768634
+      type: 'test'
+      ...
+    # Subtest: maaş yalnız bilgi: Kasa, Banka, cari ve Ana Defter'de iz yok
+    ok 7 - maaş yalnız bilgi: Kasa, Banka, cari ve Ana Defter'de iz yok
+      ---
+      duration_ms: 3.809957
+      type: 'test'
+      ...
+    # Subtest: yetkisiz: personel ve muhasebe 403; görüntüleme verilince okur ama yazamaz; düzenleme de verilince yazar; kaldırılınca 403
+    ok 8 - yetkisiz: personel ve muhasebe 403; görüntüleme verilince okur ama yazamaz; düzenleme de verilince yazar; kaldırılınca 403
+      ---
+      duration_ms: 210.485999
+      type: 'test'
+      ...
+    # Subtest: 002 şirketi ayrı veri: 002'nin kartı 001'de görünmez, 001'inki 002'de görünmez
+    ok 9 - 002 şirketi ayrı veri: 002'nin kartı 001'de görünmez, 001'inki 002'de görünmez
+      ---
+      duration_ms: 116.808727
+      type: 'test'
+      ...
+    # Subtest: yedek tatbikatı (002): yedek → çalış → geri yükle → sayılar → yeniden çalış; Tüm Hareketleri Sil kartlara dokunmaz, Tümünü Sıfırla siler
+    ok 10 - yedek tatbikatı (002): yedek → çalış → geri yükle → sayılar → yeniden çalış; Tüm Hareketleri Sil kartlara dokunmaz, Tümünü Sıfırla siler
+      ---
+      duration_ms: 303.075941
+      type: 'test'
+      ...
+    1..10
+ok 38 - 2.4.4 Personel Özlük: API
+  ---
+  duration_ms: 1132.087746
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 Personel Özlük: göç v31 (yalnız ekleyici)
+    # Subtest: v30 veri dosyası v31'e geçer: staff_members STRICT olarak açılır, eski tablolar ve satırlar değişmez; ikinci açılış bir şey yapmaz
+    ok 1 - v30 veri dosyası v31'e geçer: staff_members STRICT olarak açılır, eski tablolar ve satırlar değişmez; ikinci açılış bir şey yapmaz
+      ---
+      duration_ms: 66.889026
+      type: 'test'
+      ...
+    1..1
+ok 39 - 2.4.4 Personel Özlük: göç v31 (yalnız ekleyici)
+  ---
+  duration_ms: 66.995586
+  type: 'suite'
+  ...
+# Subtest: Şirket kanalları: ortak olaylar 002 ekranına ulaşır, şirket verisi sızmaz
+    # Subtest: yönetici yetkiyi değiştirince 002 penceresi (personel) 'permissions' olayını alır; /api/auth/me 002'de yeni yetkiyi verir
+    ok 1 - yönetici yetkiyi değiştirince 002 penceresi (personel) 'permissions' olayını alır; /api/auth/me 002'de yeni yetkiyi verir
+      ---
+      duration_ms: 39.692502
+      type: 'test'
+      ...
+    # Subtest: yetki olayı yalnız ilgili kullanıcıya gider (002'de de): yöneticinin 002 akışı başkasının yetki olayını almaz
+    ok 2 - yetki olayı yalnız ilgili kullanıcıya gider (002'de de): yöneticinin 002 akışı başkasının yetki olayını almaz
+      ---
+      duration_ms: 338.629655
+      type: 'test'
+      ...
+    # Subtest: lisans değişikliği (Denetle) 002 penceresine 'license.changed' olarak ulaşır
+    ok 3 - lisans değişikliği (Denetle) 002 penceresine 'license.changed' olarak ulaşır
+      ---
+      duration_ms: 140.962075
+      type: 'test'
+      ...
+    # Subtest: kullanıcı adı değişikliği ('users') ve şirket listesi değişikliği ('companies') 002 penceresine ulaşır
+    ok 4 - kullanıcı adı değişikliği ('users') ve şirket listesi değişikliği ('companies') 002 penceresine ulaşır
+      ---
+      duration_ms: 66.774307
+      type: 'test'
+      ...
+    # Subtest: şirkete özgü veri olayı sızmaz: 001'de açılan cari 001 akışına gelir, 002 akışına gelmez (ve tersi)
+    ok 5 - şirkete özgü veri olayı sızmaz: 001'de açılan cari 001 akışına gelir, 002 akışına gelmez (ve tersi)
+      ---
+      duration_ms: 479.696414
+      type: 'test'
+      ...
+    # Subtest: geri yüklemede 002 örneği kapanıp yeniden açılır: eski köprü kalkar (dinleyici birikmez), yeni örnek ortak olayı yine alır
+    ok 6 - geri yüklemede 002 örneği kapanıp yeniden açılır: eski köprü kalkar (dinleyici birikmez), yeni örnek ortak olayı yine alır
+      ---
+      duration_ms: 166.064962
+      type: 'test'
+      ...
+    # Subtest: şirket erişimi kaldırılınca: kişinin 002 penceresi 'companies' olayını alır ve 002 canlı bağlantısı kapanır; 001 bağlantısı sürer
+    ok 7 - şirket erişimi kaldırılınca: kişinin 002 penceresi 'companies' olayını alır ve 002 canlı bağlantısı kapanır; 001 bağlantısı sürer
+      ---
+      duration_ms: 216.106032
+      type: 'test'
+      ...
+    # Subtest: hesap pasifleşince 002 canlı bağlantısı da hemen kapanır (ping turu beklenmez)
+    ok 8 - hesap pasifleşince 002 canlı bağlantısı da hemen kapanır (ping turu beklenmez)
+      ---
+      duration_ms: 6.220854
+      type: 'test'
+      ...
+    1..8
+ok 40 - Şirket kanalları: ortak olaylar 002 ekranına ulaşır, şirket verisi sızmaz
+  ---
+  duration_ms: 2075.410532
+  type: 'suite'
+  ...
+# Subtest: m2 Vade Takip kaynak adları: istemci sunucuyla aynı (fatura dahil)
+    # Subtest: sunucunun her kaynağının istemcide adı var; 'invoice' adı PDF/Excel'deki gibi
+    ok 1 - sunucunun her kaynağının istemcide adı var; 'invoice' adı PDF/Excel'deki gibi
+      ---
+      duration_ms: 1.408506
+      type: 'test'
+      ...
+    1..1
+ok 41 - m2 Vade Takip kaynak adları: istemci sunucuyla aynı (fatura dahil)
+  ---
+  duration_ms: 3.045478
+  type: 'suite'
+  ...
+# Subtest: m6 + m7 Nakit Akış PDF alt başlığı ve Vade Takip banka satırı yetkisi (gerçek v2.0.23 verisi)
+    # Subtest: ön koşul: yönetici Vade Takip'te nakit ve hesapsız eski banka satırını görür (bağımsız defter)
+    ok 1 - ön koşul: yönetici Vade Takip'te nakit ve hesapsız eski banka satırını görür (bağımsız defter)
+      ---
+      duration_ms: 7.417617
+      type: 'test'
+      ...
+    # Subtest: m7 API: banka yetkisiz kişi Kasa satırını görür, hesapsız eski banka satırını görmez (süzgeçli ve süzgeçsiz)
+    ok 2 - m7 API: banka yetkisiz kişi Kasa satırını görür, hesapsız eski banka satırını görmez (süzgeçli ve süzgeçsiz)
+      ---
+      duration_ms: 16.805679
+      type: 'test'
+      ...
+    # Subtest: m7 PDF ve Excel: banka yetkisiz kişinin dışa aktarımında da eski banka satırı yok
+    ok 3 - m7 PDF ve Excel: banka yetkisiz kişinin dışa aktarımında da eski banka satırı yok
+      ---
+      duration_ms: 31.546562
+      type: 'test'
+      ...
+    # Subtest: m7 aşırı düzeltme yok: banka yetkili avukat eski banka satırını görür; Nakit Akış ucu banka yetkisiz kişiye kapalı kalır
+    ok 4 - m7 aşırı düzeltme yok: banka yetkili avukat eski banka satırını görür; Nakit Akış ucu banka yetkisiz kişiye kapalı kalır
+      ---
+      duration_ms: 5.532401
+      type: 'test'
+      ...
+    # Subtest: m6 Nakit Akış PDF alt başlığı kesilmez (başlangıç tanımı tam)
+    ok 5 - m6 Nakit Akış PDF alt başlığı kesilmez (başlangıç tanımı tam)
+      ---
+      duration_ms: 37.596411
+      type: 'test'
+      ...
+    1..5
+ok 42 - m6 + m7 Nakit Akış PDF alt başlığı ve Vade Takip banka satırı yetkisi (gerçek v2.0.23 verisi)
+  ---
+  duration_ms: 914.744205
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 71.281415
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 5.072169
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.194991
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 4 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 32.499084
+      type: 'test'
+      ...
+    1..4
+ok 43 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 111.931044
+  type: 'suite'
+  ...
+# Subtest: 2.4.3 H9: Muhasebe Finans Raporları'nı varsayılan olarak görür
+    # Subtest: rol matrisi: muhasebe overview.view taşır; ANLIK DURUM kartı yalnız yöneticide; personel ve avukat değişmez
+    ok 1 - rol matrisi: muhasebe overview.view taşır; ANLIK DURUM kartı yalnız yöneticide; personel ve avukat değişmez
+      ---
+      duration_ms: 0.825765
+      type: 'test'
+      ...
+    # Subtest: ekrandan: muhasebe mizan, Vade Takip ve Rapor Merkezi'ni açar; yönetici kaldırınca 403; personel 403
+    ok 2 - ekrandan: muhasebe mizan, Vade Takip ve Rapor Merkezi'ni açar; yönetici kaldırınca 403; personel 403
+      ---
+      duration_ms: 199.292017
+      type: 'test'
+      ...
+    1..2
+ok 44 - 2.4.3 H9: Muhasebe Finans Raporları'nı varsayılan olarak görür
+  ---
+  duration_ms: 523.274092
+  type: 'suite'
+  ...
+# Subtest: yetkiye göre görünürlük
+    # Subtest: data-requires / requires ile kullanılan her yetkinin gizleme kuralı var
+    ok 1 - data-requires / requires ile kullanılan her yetkinin gizleme kuralı var
+      ---
+      duration_ms: 11.377586
+      type: 'test'
+      ...
+    1..1
+ok 45 - yetkiye göre görünürlük
+  ---
+  duration_ms: 12.089774
+  type: 'suite'
+  ...
+1..45
+# tests 173
+# suites 40
+# pass 173
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 29392.797935
