@@ -63,6 +63,15 @@
     return Number.isFinite(n) ? n : 0;
   };
   const amountText = value => (value === "" || value === null || value === undefined ? "" : String(value).replace(".", ","));
+  // 2.4.4 (uzman UI9): kalemin Birim Fiyat kutusu programın doldurduğu her yolda (ürün seçimi, fiyat ipucu, Düzenle / Kopyala, Netten Brüte)
+  // para biçiminde: "1.249,90" (binlik ayraç, en az 2, en çok 4 ondalık). Önceden "1249,9" yazıyor, hemen altındaki çip "₺1.249,90" diyordu.
+  // Okuma aynı: istemci parseTl, sunucu parseAmount "1.249,90"ı 1249,9 okur. Miktar ve öbür tutar kutuları değişmez.
+  const PRICE_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+  const priceText = value => {
+    if (value === "" || value === null || value === undefined) return "";
+    const n = typeof value === "number" ? value : parseTl(value);
+    return Number.isFinite(n) ? PRICE_FORMAT.format(n) : String(value);
+  };
   const curMoney = (value, currency = "TRY") => (currency === "TRY" ? money(value) : `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(value) || 0)} ${currency}`);
   const kindLabel = kind => meta?.kinds?.[kind]?.label || kind;
   const sideOf = kind => meta?.kinds?.[kind]?.side || (["purchase", "purchase_return"].includes(kind) ? "purchase" : "sale");
@@ -479,7 +488,7 @@
     lotNo: line.lotNo || "",
     unit: line.unit || "Adet",
     qty: amountText(line.qty ?? 1),
-    unitPrice: amountText(line.unitPrice ?? ""),
+    unitPrice: priceText(line.unitPrice ?? ""),
     discountRate: line.discountRate ? amountText(line.discountRate) : "",
     vatRate: String(line.vatRate ?? 20),
     withholdingCode: line.withholdingCode || "",
@@ -1062,7 +1071,7 @@
     // 2.4.3 (H8): stok kartında KDV oranı tanımlıysa kalemin KDV'si ondan gelir (kullanıcı değiştirebilir); tanımsızsa formun varsayılanı kalır.
     if (item.vatRate !== null && item.vatRate !== undefined && item.vatRate !== "") line.vatRate = String(item.vatRate);
     const price = form.side === "sale" ? item.salePrice : item.unitPrice;
-    if (price > 0 && !line.unitPrice) line.unitPrice = amountText(form.pricesIncludeVat ? Math.round(price * (1 + Number(line.vatRate || 0) / 100) * 100) / 100 : price);
+    if (price > 0 && !line.unitPrice) line.unitPrice = priceText(form.pricesIncludeVat ? Math.round(price * (1 + Number(line.vatRate || 0) / 100) * 100) / 100 : price);
     if (list) list.hidden = true;
     renderLines();
     loadPrices(index);
@@ -1934,7 +1943,7 @@
     if (target.dataset.applyPrice !== undefined) {
       const line = form.lines[Number(target.dataset.applyPrice)];
       if (line) {
-        line.unitPrice = amountText(Math.round(Number(target.dataset.price) * 10000) / 10000);
+        line.unitPrice = priceText(Math.round(Number(target.dataset.price) * 10000) / 10000);
         renderLines();
         scheduleCalc(0);
       }
@@ -2081,7 +2090,7 @@
         const rate = form.stoppageRate === "" ? meta.settings.defaults.stoppageRate : num(form.stoppageRate);
         const result = await HOF.api(`/api/workspace/invoices/gross-from-net?net=${encodeURIComponent(data.net)}&rate=${encodeURIComponent(rate)}`);
         const line = form.lines[0];
-        line.unitPrice = amountText(result.gross);
+        line.unitPrice = priceText(result.gross);
         if (!line.name) line.name = "Serbest meslek ücreti";
         line.qty = "1";
         renderLines();
