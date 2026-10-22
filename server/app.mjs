@@ -656,6 +656,9 @@ export function createApp(overrides = {}) {
       // 2.4.2 (gözden geçirme): faturalar silinince test serisinin (TEF/TEA/TES) başlangıcı da silinir — kalsaydı sıradaki numara EDM'nin ortak test
       // hesabına zaten gönderilmiş numaraya döner (11048); yeni rastgele başlangıç alınır. Firmanın kendi serisinin "Sıradaki No"su korunur.
       if (has("invoices")) {
+        // 2.4.4: seriden ayrılmış (bırakılıp e-Belge olarak gönderilmiş) kâğıt numaralarının kaydı faturalardan türer; faturalar silinince MAX(seq) gibi o da
+        // silinir (routes/invoices.mjs FLOOR_KEY).
+        store.run("DELETE FROM settings WHERE key = 'invoice.numberFloor'");
         let invoice = null;
         try {
           invoice = JSON.parse(store.setting("invoice.settings", "") || "null");

@@ -1739,10 +1739,38 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     store.setSetting(SETTINGS_KEY, JSON.stringify(raw));
     s.start = { ...(s.start || {}), [key]: seq };
   }
+  // 2.4.4 (karar 22.10.2026: verilmiş kâğıt / fiş numarası BİR DAHA KULLANILMAZ — belge numarası tekildir, seride boşluk kalabilir; VUK müteselsil sıra):
+  // "Müşteri Fişi / Kâğıt Makbuz Olarak Bırak" ile kâğıt serisinden (FIS / SMM) numara almış belge sonra e-Belge olarak gönderilince e-Belge serisine geçer
+  // (numberForSend); kâğıt numarası seriden AYRILIR ama verilmiştir (iz: Kâğıt Fatura No, işlem geçmişi "paperNumber"). MAX(seq) yalnız seride DURAN belgeleri
+  // görür — önceden boşalan numara sıradaki belgeye yeniden veriliyordu (aynı FIS/SMM numarası iki belgede). Seri + yıl başına seriden ayrılan EN BÜYÜK numara
+  // (sıra, numara, belge tarihi) burada tutulur: sıradaki numara ondan sonra gelir (nextNumber) ve numara–tarih sırasında serinin son verilmiş numarası sayılır
+  // (lastIssued: kayıt, bırakma, gönderim engeli, Düzenle). Kullanıcı ayarı DEĞİLDİR (Fatura Ayarları'ndaki "Sıradaki No" onu geri alamaz; ayar ekranının
+  // eski haritayla kaydı ezemez). Faturalar silinince (Şirket Verisini Sıfırla) MAX(seq) gibi o da silinir (app.mjs).
+  const FLOOR_KEY = "invoice.numberFloor";
+  const floorOf = (series, year) => {
+    const floor = parseJson(store.setting(FLOOR_KEY, "{}"), {})?.[`${series}${year}`];
+    return floor && Number(floor.seq) > 0 ? floor : null;
+  };
+  // İşlem içinde (numberForSend): seriden ayrılan numara kaydedilir; daha büyüğü zaten kayıtlıysa dokunulmaz.
+  function reserveNumber(series, year, seq, number, issueDate) {
+    const floors = parseJson(store.setting(FLOOR_KEY, "{}"), {}) || {};
+    const key = `${series}${year}`;
+    if (Number(floors[key]?.seq) >= seq) return;
+    floors[key] = { seq, number, issueDate };
+    store.setSetting(FLOOR_KEY, JSON.stringify(floors));
+  }
+  // Serinin son VERİLMİŞ numarası: seride duran son numaralı belge ya da seriden ayrılmış daha büyük numara (tarihi o belgenin tarihi). reserved: ileti
+  // "sonra e-Belge olarak gönderildi" der.
+  function lastIssued(series, year) {
+    const last = store.get("SELECT seq, number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0 ORDER BY seq DESC LIMIT 1", series, year) || null;
+    const floor = floorOf(series, year);
+    return floor && !(last && last.seq >= floor.seq) ? { seq: Number(floor.seq), number: floor.number, issueDate: floor.issueDate, reserved: true } : last;
+  }
+  const issuedText = last => `${last.number}${last.reserved ? " (belge sonra e-Belge olarak gönderildi; numara kullanılmış sayılır)" : ""}`;
   function nextNumber(series, year, s = settings()) {
     ensureTestStart(series, year, s);
     const max = store.get("SELECT COALESCE(MAX(seq), 0) AS n FROM invoices WHERE series = ? AND year = ? AND seq > 0", series, year).n;
-    const seq = Math.max(max + 1, Number(s.start?.[`${series}${year}`]) || 1);
+    const seq = Math.max(max + 1, Number(floorOf(series, year)?.seq || 0) + 1, Number(s.start?.[`${series}${year}`]) || 1);
     if (seq > 999_999_999) throw new HttpError(409, `${series} serisinde ${year} yılı için numara kalmadı.`);
     return { seq, number: `${series}${year}${String(seq).padStart(9, "0")}` };
   }
@@ -1764,11 +1792,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // denetlenir — form onaydan önce söyler, kural tek yerde kalır. Asıl güvence işlem içindeki denetimdir (iki kişi aynı anda kaydederse).
   // later: "Kes, Sonra Gönder" — numara gönderimde serinin SONUNA verilir; koşul aynı (serinin son numaralı belgesinden eski tarih olmaz), ileti farklı.
   function chronologyProblem(series, year, date, { later = false } = {}) {
-    const last = store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0 ORDER BY seq DESC LIMIT 1", series, year);
+    const last = lastIssued(series, year);
     if (!(last && last.issueDate > date)) return "";
     const head = later
-      ? `${series} serisinde son gönderilen belge ${last.number} ${dayText(last.issueDate)} tarihli; numarası gönderimde verilecek bu belge ondan eski tarihli olamaz (numara ve tarih sırası).`
-      : `${series} serisinde son belge ${last.number} ${dayText(last.issueDate)} tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı).`;
+      ? `${series} serisinde son gönderilen belge ${issuedText(last)} ${dayText(last.issueDate)} tarihli; numarası gönderimde verilecek bu belge ondan eski tarihli olamaz (numara ve tarih sırası).`
+      : `${series} serisinde son belge ${issuedText(last)} ${dayText(last.issueDate)} tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı).`;
     return `${head} Belge tarihini ${dayText(last.issueDate)} ya da sonrası yapın.`;
   }
   function assertChronology(series, year, date) {
@@ -1795,15 +1823,22 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // göre: serinin son numaralı belgesinden eski olamaz; ileri almak serbesttir. (Önceden seq = 0 için "sonraki belge" serinin İLK numaralısı
       // okunuyordu; kalıcı kronoloji engelli belgenin tarihi ileri alınamıyordu.)
       const series = seriesFor(existing.kind, doc.profile, settings());
-      const last = store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0 ORDER BY seq DESC LIMIT 1", series, Number(doc.date.slice(0, 4)));
-      return last && doc.date < last.issueDate ? `${series} serisinde son gönderilen belge ${last.number} ${dayText(last.issueDate)} tarihli; numarası gönderimde verilecek bu belge ondan eski tarihli olamaz (numara ve tarih sırası).` : "";
+      const last = lastIssued(series, Number(doc.date.slice(0, 4)));
+      return last && doc.date < last.issueDate ? `${series} serisinde son gönderilen belge ${issuedText(last)} ${dayText(last.issueDate)} tarihli; numarası gönderimde verilecek bu belge ondan eski tarihli olamaz (numara ve tarih sırası).` : "";
     }
     // Numara sırası ile tarih sırası uyuşmalı (VUK 231): yeni tarih, serideki önceki ve sonraki belgenin arasında kalmalı.
-    const prev = store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0 AND seq < ? ORDER BY seq DESC LIMIT 1", existing.series, existing.year, existing.seq);
-    const next = store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > ? ORDER BY seq LIMIT 1", existing.series, existing.year, existing.seq);
+    let prev = store.get("SELECT seq, number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0 AND seq < ? ORDER BY seq DESC LIMIT 1", existing.series, existing.year, existing.seq);
+    let next = store.get("SELECT seq, number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > ? ORDER BY seq LIMIT 1", existing.series, existing.year, existing.seq);
+    // Seriden ayrılmış en büyük numara (lastIssued) belgenin komşusuysa o da sırada yer tutar.
+    const floor = existing.seq > 0 ? floorOf(existing.series, existing.year) : null;
+    if (floor) {
+      const held = { seq: Number(floor.seq), number: floor.number, issueDate: floor.issueDate, reserved: true };
+      if (held.seq < existing.seq && !(prev && prev.seq >= held.seq)) prev = held;
+      if (held.seq > existing.seq && !(next && next.seq <= held.seq)) next = held;
+    }
     if (doc.date.slice(0, 4) !== String(existing.year)) return `Numara ${existing.year} yılına ait; tarih başka yıla alınamaz.`;
-    if (prev && doc.date < prev.issueDate) return `Önceki belge ${prev.number} ${dayText(prev.issueDate)} tarihli; bu belge ondan eski tarihli olamaz (numara ve tarih sırası).`;
-    if (next && doc.date > next.issueDate) return `Sonraki belge ${next.number} ${dayText(next.issueDate)} tarihli; bu belge ondan yeni tarihli olamaz (numara ve tarih sırası).`;
+    if (prev && doc.date < prev.issueDate) return `Önceki belge ${issuedText(prev)} ${dayText(prev.issueDate)} tarihli; bu belge ondan eski tarihli olamaz (numara ve tarih sırası).`;
+    if (next && doc.date > next.issueDate) return `Sonraki belge ${issuedText(next)} ${dayText(next.issueDate)} tarihli; bu belge ondan yeni tarihli olamaz (numara ve tarih sırası).`;
     return "";
   }
   // Dönem kilidi: kayıttaki denetimin KENDİSİ (period.assertOpen) çağrılır; yalnız iletisi alınır.
@@ -3384,14 +3419,15 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (!profile || profile === "KAGIT") return "";
     const series = seriesFor(row.kind, profile, settings());
     const year = Number(row.issueDate.slice(0, 4));
-    const read = () => store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0 ORDER BY seq DESC LIMIT 1", series, year) || null;
+    const read = () => lastIssued(series, year);
     const last = lastOf ? lastOf(`${series}|${year}`, read) : read();
     if (!(last && last.issueDate > row.issueDate)) return "";
     // Gözden geçirme 2.4.3 (S1): kalıcı engel — iletisi çıkış yollarını düğme adlarıyla söyler. Dar kontrol 2 (B7): yalnız gerçekten açık olan yol —
     // Listeden Sil yalnız Gönderilecekler'deki belgede ve Müşteri Fişi serisinin sırası (K31: son fişten eski tarihli belgeye fiş numarası verilmez)
     // izin veriyorsa önerilir; değilse yalnız İptal Et.
     const paper = paperSeriesOf(row.kind, settings());
-    const readPaper = () => store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0 ORDER BY seq DESC LIMIT 1", paper, year) || null;
+    // 2.4.4: kâğıt serisinin son VERİLMİŞ numarası (seriden ayrılmış numara dahil; lastIssued) — bırakma kaydındaki kuralla aynı.
+    const readPaper = () => lastIssued(paper, year);
     const lastPaper = row.eStatus === "waiting" ? (lastOf ? lastOf(`${paper}|${year}`, readPaper) : readPaper()) : null;
     const withdrawOpen = row.eStatus === "waiting" && !(lastPaper && lastPaper.issueDate > row.issueDate);
     const head = `${series} serisinde son gönderilen belge ${last.number} ${dayText(last.issueDate)} tarihli; bu belge (${dayText(row.issueDate)}) daha eski tarihli olduğu için e-Belge olarak gönderilemez.`;
@@ -3478,7 +3514,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // belgenin tarihinden başlar (çoğunlukla yakın bir gün; tarih dizini). Alıcı bilgisi aynı sorguda gelir; satır başına sorgu ve ayrıştırma yok.
   function olderPending(series, year, date, exceptId = "") {
     const s = settings();
-    const last = store.get("SELECT issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0 ORDER BY seq DESC LIMIT 1", series, year);
+    const last = lastIssued(series, year);
     const floor = last && last.issueDate > `${year}-01-01` ? last.issueDate : `${year}-01-01`;
     if (floor >= date) return 0;
     const rows = store.all(`SELECT i.id, i.kind, i.status, i.profile, i.e_status AS eStatus, i.issue_date AS issueDate, i.account_id AS accountId, i.party_json AS partyJson, a.id AS accountFound, a.tax_no AS accountTaxNo, a.e_invoice AS accountEInvoice FROM invoices i LEFT JOIN accounts a ON a.id = i.account_id WHERE i.issue_date >= ? AND i.issue_date < ? AND i.status = 'issued' AND i.e_status = 'waiting' AND i.profile <> 'KAGIT' AND i.id <> ?`, floor, date, exceptId || "");
@@ -3538,6 +3574,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const { seq, number } = nextNumber(series, year, s);
       // Listeden silinip Müşteri Fişi numarası almış belge: fiş numarası "Kâğıt Fatura No" alanında kalır (iz).
       const paperNo = row.eStatus === "withdrawn" && !row.paperNo ? row.number : row.paperNo;
+      // 2.4.4: kâğıt numarası seriden ayrılır ama kullanılmış sayılır (FLOOR_KEY) — aynı işlemde; sıradaki belge onu yeniden almaz.
+      const leaving = row.eStatus === "withdrawn" && row.seq > 0 && row.number ? row.number : "";
+      if (leaving) reserveNumber(row.series, row.year, row.seq, row.number, row.issueDate);
       store.run("UPDATE invoices SET profile = ?, series = ?, year = ?, seq = ?, number = ?, paper_no = ?, e_status = 'none', updated_by = ?, updated_at = ? WHERE id = ?", profile, series, year, seq, number, paperNo, user.id, now(), row.id);
       if (row.eStatus === "waiting") renumberNotes(row.id, number);
       else if (row.number) {
@@ -3545,7 +3584,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         for (const [table, where] of [["account_entries", "source = 'invoice' AND source_id = ?"], ["stock_moves", "invoice_id = ?"], ["plans", "invoice_id = ?"], ["cheques", "invoice_id = ?"]]) store.run(`UPDATE ${table} SET note = REPLACE(note, ?, ?) WHERE ${where}`, row.number, number, row.id);
         store.run("UPDATE fin_events SET description = REPLACE(description, ?, ?) WHERE invoice_id = ? AND instr(description, ?) > 0", row.number, number, row.id, row.number);
       }
-      audit(user, "invoice.numbered", row.id, { number, series, from: row.eStatus });
+      audit(user, "invoice.numbered", row.id, { number, series, from: row.eStatus, ...(leaving ? { paperNumber: leaving } : {}) });
       return number;
     });
   }
@@ -3795,8 +3834,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const year = Number(row.issueDate.slice(0, 4));
       // Dar kontrol 2.4.3 (kâhin BASKA-FIS-SIRA): Müşteri Fişi serisi de numara–tarih sırasına uyar (kâğıt kaydındaki kural, assertChronology):
       // belge serinin son fişinden eski tarihliyse fiş numarası verilmez.
-      const last = store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0 ORDER BY seq DESC LIMIT 1", series, year);
-      if (last && last.issueDate > row.issueDate) throw new HttpError(409, `${series} serisinde son belge ${last.number} ${dayText(last.issueDate)} tarihli; bu belge (${dayText(row.issueDate)}) ondan eski. Belgenin tarihini düzeltin ya da İptal Edin.`, { code: "chronology" });
+      // 2.4.4: son VERİLMİŞ numara (seriden ayrılmış numara dahil; lastIssued).
+      const last = lastIssued(series, year);
+      if (last && last.issueDate > row.issueDate) throw new HttpError(409, `${series} serisinde son belge ${issuedText(last)} ${dayText(last.issueDate)} tarihli; bu belge (${dayText(row.issueDate)}) ondan eski. Belgenin tarihini düzeltin ya da İptal Edin.`, { code: "chronology" });
       const { seq, number } = nextNumber(series, year, s);
       store.run("UPDATE invoices SET profile = 'KAGIT', series = ?, year = ?, seq = ?, number = ?, e_status = 'withdrawn', updated_by = ?, updated_at = ? WHERE id = ?", series, year, seq, number, user.id, now(), row.id);
       renumberNotes(row.id, number);

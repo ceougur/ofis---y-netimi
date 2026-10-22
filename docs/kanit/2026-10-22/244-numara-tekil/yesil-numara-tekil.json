@@ -1,0 +1,32 @@
+{
+  "ad": "yesil-numara-tekil",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/numara-tekil-244.test.mjs",
+  "commit": "7502485e5e1f37e21522c911e294ca616feac693",
+  "dal": "is/esmm-fis",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T11:52:06.589Z",
+  "sure_sn": 4.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 11,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/kb/2026-10-22/yesil-numara-tekil.log",
+  "klasor": "/home/user/wt/esmm-fis",
+  "ham_cikti_sha256": "b14e0fea8aab9923ce0895d1214a73f331bc4f128561d81fa4032569e4a911db",
+  "ham_cikti_bayt": 4814
+}

@@ -1,0 +1,43 @@
+{
+  "ad": "mutasyon-N8-ayrilis-kucuge-yazar",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/numara-tekil-244.test.mjs test/einvoice-edm.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T11:59:42.894Z",
+  "sure_sn": 8.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 42,
+    "gecen": 40,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Numara tekil: kopma, iki oturum, 002 şirketi, Şirket Verisini Sıfırla (T6, T7, T8, T9) › T1 sıra: büyük numara önce, küçüğü sonra ayrılırsa sıradaki numara yine en büyükten sonra gelir",
+      "konum": "test/numara-tekil-244.test.mjs:253:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'FIS2026000000003' (beklenen FIS2026000000004, gelen FIS2026000000003)"
+    },
+    {
+      "ad": "Numara tekil: kopma, iki oturum, 002 şirketi, Şirket Verisini Sıfırla (T6, T7, T8, T9) › T7 iki oturum aynı anda: bırakılmış belgeler gönderilirken başka belgeler bırakılır → her fiş numarası tek belgede",
+      "konum": "test/numara-tekil-244.test.mjs:266:3",
+      "hata": "tekrar eden fiş numarası: FIS2026000000003 · 15 !== 16 (beklenen 16, gelen 15)"
+    }
+  ],
+  "ham_cikti": "../mk/_m/2026-10-22/mutasyon-N8-ayrilis-kucuge-yazar.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon",
+  "ham_cikti_sha256": "5e55a4455ba9d471734f586d94676c806a7c4b115f9cd31e646acbc5eefb32d4",
+  "ham_cikti_bayt": 17230
+}

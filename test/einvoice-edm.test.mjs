@@ -318,7 +318,7 @@ describe("Fatura modülü ↔ EDM (program uçları)", () => {
     assert.equal(sent.data.paperNo, withdrawn.data.number, "fiş numarası izi kalır");
     assert.equal(sent.data.eStatus, "sent");
   });
-  test("Sonra gönderilecek belge serideki son gönderilenden eski tarihliyse gönderilmez (tarih sırası); Müşteri Fişi olarak bırakılabilir", async () => {
+  test("Sonra gönderilecek belge serideki son gönderilenden eski tarihliyse gönderilmez (tarih sırası); Müşteri Fişi serisi daha yeni numara vermişse bırakılamaz da", async () => {
     const yesterday = new Date(Date.now() - 86_400_000);
     const day = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, "0")}-${String(yesterday.getDate()).padStart(2, "0")}`;
     if (day.slice(0, 4) !== String(new Date().getFullYear())) return; // yılbaşında seri yeniden başlar
@@ -339,7 +339,14 @@ describe("Fatura modülü ↔ EDM (program uçları)", () => {
     assert.equal(sent.status, 409);
     assert.equal(sent.data.code, "chronology");
     assert.equal((await api.get(`/api/workspace/invoices/${old.data.id}`)).data.number, "", "numara yanmadı");
-    assert.equal((await api.post(`/api/workspace/invoices/${old.data.id}/withdraw`, {})).status, 200);
+    // 2.4.4 (karar 22.10.2026: verilmiş fiş numarası bir daha kullanılmaz): önceki testte bırakılıp e-Belge olarak gönderilen belgenin fiş numarası (bugün)
+    // Müşteri Fişi serisinin son verilen numarasıdır; dünkü belge ondan eski → fiş numarası verilmez, bırakma yolu önerilmez (önceden seride belge kalmadığı
+    // için aynı fiş numarası dünkü belgeye yeniden veriliyordu). Çıkış yolu İptal Et.
+    assert.doesNotMatch(old.data.sendBlock, /Müşteri Fişi Olarak Bırak/);
+    const left = await api.post(`/api/workspace/invoices/${old.data.id}/withdraw`, {});
+    assert.equal(left.status, 409, JSON.stringify(left.data));
+    assert.equal(left.data.code, "chronology");
+    assert.equal((await api.post(`/api/workspace/invoices/${old.data.id}/cancel`, { reason: "test: sıra" })).status, 200);
     const integrity = await api.get("/api/workspace/ledger/integrity");
     assert.equal(integrity.data.ok, true, JSON.stringify(integrity.data.failures));
   });
