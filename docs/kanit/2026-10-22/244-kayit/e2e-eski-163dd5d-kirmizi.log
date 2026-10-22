@@ -1,0 +1,44 @@
+
+■ S1 kayda bağlı carisi olan söz: şeritten Tahsilat Gir → carinin tahsilat formu; para cariye, Kasa'ya bir kez
+  ✓ şeritte Ali Veli · Ödeme sözü · 5.000,00
+  ✗ carinin tahsilat formu: “Tahsilat İşle” · “Ali Veli”
+  ✗ kayıt tahsilatı penceresi ve Taksit planı kısa yolu yok
+  ✓ tutar hazır: 5.000,00
+  ✓ açıklama takvim kaleminden: “Ödeme sözü · 16.10.2026”
+  ✓ pil kalktı (söz carinin tahsilatıyla kapandı)
+  ✗ carinin defterine 1 tahsilat, 5.000 (0 → 0)
+  ✗ kayıt tahsilatı yazılmadı (payments 0 → 1)
+  ✓ Kasa 5.000 arttı (0,00 → 5.000,00)
+
+■ S2 carisi olmayan kayıt: önce cari açın (ad, telefon kayıttan; kayda bağlı) → kaydedince tahsilat formu → para yeni cariye
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.
+
+■ S3 kartlı kişinin sözü: Taksite Yaz / Taksit Dışı seçimi → Taksite Yaz → taksit kartına; söz kalkar
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.
+
+■ S4 zil: Tahsilat Gir → aynı cari yolu; kısmi tahsilatta söz kalanla bekler
+  ✓ zilde Zeynep Şahin'in sözü “Tahsilat Gir” ile
+  ✗ carinin tahsilat formu: “Zeynep Şahin”
+  ✓ tutar hazır: 7.500,00
+  ✗ carinin defterine 2.500 (0 → 0)
+  ✓ söz 5.000 kalanla bekler (kısmen ödendi): {"amount":5000,"partial":true}
+
+■ S5 kayıttan taksit yok: tutarsız kalemde de "Tahsilat İşle" / "Taksit planı oluşturun" açılmaz; dolu Yeni Cari Esc ile sorusuz kapanır
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.
+
+■ S6 kayda bağlı kartı olup carisi kayda bağlı olmayan kayıt: taksit seçimi, "Plansız Tahsilat Kaydet" yok
+  ✓ kayda bağlı kartın taksitleri
+  ✗ “Plansız Tahsilat Kaydet” (Kasa'ya doğrudan) yok
+
+■ S7 personel: carisi olmayan kayıtta yol söylenir; form açılmaz, hiçbir şey yazılmaz
+  ✓ personelde Tahsilat Gir görünür (Cariden Tahsilat Girme yetkisi var)
+  ✗ yol söylendi: “”
+  ✗ form açılmadı
+  ✓ hiçbir şey yazılmadı
+
+■ S8 elle kâhin: Kasa = girilen tahsilatların toplamı; kayıt tahsilatı hiç yazılmadı
+  ✓ Kasa 0,00 + 7.500,00 = 7.500,00
+  ✗ payments 2
+  ✓ sayfa hatası yok ()
+
+13 geçti, 13 kaldı

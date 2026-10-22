@@ -1,16 +1,16 @@
 {
   "ad": "244-kayit/e2e-run",
   "komut": "npm run test:e2e",
-  "commit": "04803b115bd739243da1c7f0dff1f14bd8dac719",
+  "commit": "610e4ebde86bb28bf47d65fa7c5bbce391bf3242",
   "dal": "is/kayit",
-  "kirli": 16,
-  "izlenmeyen": 4,
-  "platform": "linux 6.18.44-fc-v139 x64",
+  "kirli": 3,
+  "izlenmeyen": 18,
+  "platform": "linux 6.18.44-fc-v140 x64",
   "node": "v22.22.0",
   "cpu": 4,
   "bellek_gb": 16,
-  "basladi": "2026-10-22T04:26:47.970Z",
-  "sure_sn": 141.3,
+  "basladi": "2026-10-22T05:25:44.267Z",
+  "sure_sn": 183.5,
   "cikis_kodu": 0,
   "sinyal": null,
   "zaman_asimi": false,
@@ -27,6 +27,6 @@
   "basarisiz_testler": [],
   "ham_cikti": "docs/kanit/2026-10-22/244-kayit/e2e-run.log",
   "klasor": "/home/user/wt/kayit",
-  "ham_cikti_sha256": "83d61108f694dcd06096dcd165a20e1c160232471cca1b0de28c246d48c96671",
-  "ham_cikti_bayt": 5633
+  "ham_cikti_sha256": "c199422279cebec18605b35cdbd3df1b3a1f899ceb108fbb459ad6d2483f8655",
+  "ham_cikti_bayt": 5639
 }
