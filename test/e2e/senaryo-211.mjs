@@ -488,6 +488,8 @@ try {
     await open("tasks", "Görevler");
     await open("newTask", "Görev Ata");
     await open("reports", "Personel Raporu");
+    // 2.4.4 (KÖ3): kullanıcı menüsündeki Başlarken penceresi (adım adları, durum ve düğmeler).
+    await open("gettingStarted", "Başlarken");
     await admin.click('#hof-sidecard [data-action="analytics"]');
     await admin.waitForSelector(".hof-rep-tab");
     for (const tab of await admin.$$eval(".hof-rep-tab", list => list.map(node => node.dataset.tab))) {

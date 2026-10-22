@@ -1,0 +1,32 @@
+{
+  "ad": "244-baslarken/yeni-senaryo-taslak",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-taslak.mjs",
+  "commit": "3b30e304ef7827488837080bcd210aed11160e18",
+  "dal": "is/baslarken",
+  "kirli": 8,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T05:05:10.357Z",
+  "sure_sn": 14.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 30,
+    "gecen": 30,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-baslarken/yeni-senaryo-taslak.log",
+  "klasor": "/home/user/wt/baslarken",
+  "ham_cikti_sha256": "d43ef1f2ff47c2081f3acc71720ebfd802ea3e96bc9fa45b3e896345806a53da",
+  "ham_cikti_bayt": 2380
+}

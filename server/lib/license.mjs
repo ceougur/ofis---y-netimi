@@ -62,6 +62,8 @@ const READ_ONLY_ALLOWED = [
   /^\/api\/admin\//,
   /^\/api\/chat\/conversations\/[^/]+\/read$/,
   /^\/api\/workspace\/insight\/intro$/,
+  // 2.4.4 (KÖ3): Başlarken listesini gizlemek / yeniden göstermek (görünüm tercihi; veri değiştirmez).
+  /^\/api\/workspace\/getting-started$/,
   // Oturumlar arasında geçiş veri değiştirmez (v2.0.1).
   /^\/api\/workspace\/sessions\/select$/,
 ];

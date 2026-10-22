@@ -1,0 +1,80 @@
+TAP version 13
+# Subtest: Başlarken: boş kurulum → adımlar ekrandaki yollarla tamamlanır → liste kendiliğinden kapanır
+    # Subtest: boş kurulumda yönetici listeyi görür: bütün adımlar eksik, kurulu sayılmaz
+    ok 1 - boş kurulumda yönetici listeyi görür: bütün adımlar eksik, kurulu sayılmaz
+      ---
+      duration_ms: 16.589458
+      type: 'test'
+      ...
+    # Subtest: her adım kendi verisiyle tamamlanır (yanıt + sayı her adımda okunur); yarım firma bilgisi tamam sayılmaz
+    ok 2 - her adım kendi verisiyle tamamlanır (yanıt + sayı her adımda okunur); yarım firma bilgisi tamam sayılmaz
+      ---
+      duration_ms: 148.435257
+      type: 'test'
+      ...
+    1..2
+ok 1 - Başlarken: boş kurulum → adımlar ekrandaki yollarla tamamlanır → liste kendiliğinden kapanır
+  ---
+  duration_ms: 582.054243
+  type: 'suite'
+  ...
+# Subtest: Başlarken: yetki, Gizle kalıcılığı (kişi + şirket), 002 bağımsızlığı
+    # Subtest: personel ve muhasebe listeyi ve adımlarını görmez; Gizle ucu 403
+    ok 1 - personel ve muhasebe listeyi ve adımlarını görmez; Gizle ucu 403
+      ---
+      duration_ms: 12.793516
+      type: 'test'
+      ...
+    # Subtest: Gizle kişiye ve şirkete özgüdür; yeniden açılır; sunucu yeniden okununca da kalır
+    ok 2 - Gizle kişiye ve şirkete özgüdür; yeniden açılır; sunucu yeniden okununca da kalır
+      ---
+      duration_ms: 33.719477
+      type: 'test'
+      ...
+    # Subtest: 002 kendi verisiyle hesaplanır: adı verilmiş şirkette Şirket Adı tamam, 001'in cari/banka verisi 002'ye geçmez
+    ok 3 - 002 kendi verisiyle hesaplanır: adı verilmiş şirkette Şirket Adı tamam, 001'in cari/banka verisi 002'ye geçmez
+      ---
+      duration_ms: 37.109684
+      type: 'test'
+      ...
+    1..3
+ok 2 - Başlarken: yetki, Gizle kalıcılığı (kişi + şirket), 002 bağımsızlığı
+  ---
+  duration_ms: 1040.62808
+  type: 'suite'
+  ...
+# Subtest: Başlarken: salt okunur lisans
+    # Subtest: Gizle / Göster görünüm tercihidir: salt okunur lisansta da yapılabilir (tanıtım kartını kapatmak gibi)
+    ok 1 - Gizle / Göster görünüm tercihidir: salt okunur lisansta da yapılabilir (tanıtım kartını kapatmak gibi)
+      ---
+      duration_ms: 0.325022
+      type: 'test'
+      ...
+    1..1
+ok 3 - Başlarken: salt okunur lisans
+  ---
+  duration_ms: 0.625214
+  type: 'suite'
+  ...
+# Subtest: Başlarken: 2.4.3'ten güncellenen (verisi dolu) kurulum listeyle karşılaşmaz
+    # Subtest: v2.4.3'ün gerçek koduyla üretilen 001 ve 002: ikisi de 'zaten kurulu', liste görünmez (adımlar eksik olsa da)
+    ok 1 - v2.4.3'ün gerçek koduyla üretilen 001 ve 002: ikisi de 'zaten kurulu', liste görünmez (adımlar eksik olsa da)
+      ---
+      duration_ms: 45.861212
+      type: 'test'
+      ...
+    1..1
+ok 4 - Başlarken: 2.4.3'ten güncellenen (verisi dolu) kurulum listeyle karşılaşmaz
+  ---
+  duration_ms: 181.902827
+  type: 'suite'
+  ...
+1..4
+# tests 7
+# suites 4
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2271.334201

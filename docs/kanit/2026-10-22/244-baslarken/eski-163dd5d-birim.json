@@ -1,0 +1,68 @@
+{
+  "ad": "244-baslarken/eski-163dd5d-birim",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/baslarken/baslarken-eski-163dd5d && node --disable-warning=ExperimentalWarning --test test/baslarken-244.test.mjs",
+  "commit": "3b30e304ef7827488837080bcd210aed11160e18",
+  "dal": "is/baslarken",
+  "kirli": 8,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T05:30:45.694Z",
+  "sure_sn": 2.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 0,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Başlarken: boş kurulum → adımlar ekrandaki yollarla tamamlanır → liste kendiliğinden kapanır › boş kurulumda yönetici listeyi görür: bütün adımlar eksik, kurulu sayılmaz",
+      "konum": "test/baslarken-244.test.mjs:35:3",
+      "hata": "{\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Başlarken: boş kurulum → adımlar ekrandaki yollarla tamamlanır → liste kendiliğinden kapanır › her adım kendi verisiyle tamamlanır (yanıt + sayı her adımda okunur); yarım firma bilgisi tamam sayılmaz",
+      "konum": "test/baslarken-244.test.mjs:48:3",
+      "hata": "{\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Başlarken: yetki, Gizle kalıcılığı (kişi + şirket), 002 bağımsızlığı › personel ve muhasebe listeyi ve adımlarını görmez; Gizle ucu 403",
+      "konum": "test/baslarken-244.test.mjs:104:3",
+      "hata": "{\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Başlarken: yetki, Gizle kalıcılığı (kişi + şirket), 002 bağımsızlığı › Gizle kişiye ve şirkete özgüdür; yeniden açılır; sunucu yeniden okununca da kalır",
+      "konum": "test/baslarken-244.test.mjs:115:3",
+      "hata": "{\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Başlarken: yetki, Gizle kalıcılığı (kişi + şirket), 002 bağımsızlığı › 002 kendi verisiyle hesaplanır: adı verilmiş şirkette Şirket Adı tamam, 001'in cari/banka verisi 002'ye geçmez",
+      "konum": "test/baslarken-244.test.mjs:128:3",
+      "hata": "{\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "Başlarken: salt okunur lisans › Gizle / Göster görünüm tercihidir: salt okunur lisansta da yapılabilir (tanıtım kartını kapatmak gibi)",
+      "konum": "test/baslarken-244.test.mjs:141:3",
+      "hata": "Expected values to be strictly equal: · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Başlarken: 2.4.3'ten güncellenen (verisi dolu) kurulum listeyle karşılaşmaz › v2.4.3'ün gerçek koduyla üretilen 001 ve 002: ikisi de 'zaten kurulu', liste görünmez (adımlar eksik olsa da)",
+      "konum": "test/baslarken-244.test.mjs:163:3",
+      "hata": "{\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-baslarken/eski-163dd5d-birim.log",
+  "klasor": "/home/user/wt/baslarken",
+  "ham_cikti_sha256": "6fcb280647d808c70e8f02af15296180f0496617b86cc57b9679c9cb92425ec3",
+  "ham_cikti_bayt": 11448
+}

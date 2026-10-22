@@ -9088,6 +9088,133 @@ button.hof-source-card:focus-visible {
   }
 }
 
+/* ---------- 2.4.4 (KÖ3): Başlarken — yöneticinin ilk adımlar listesi (açılış ekranında kartın üstünde; pencerede de) ---------- */
+#hof-start {
+  align-content: center;
+  gap: 18px;
+}
+.hof-gs {
+  width: min(760px, 100%);
+  box-sizing: border-box;
+  text-align: left;
+}
+#hof-start > .hof-gs {
+  padding: 20px clamp(18px, 3vw, 28px);
+  border: 1px solid var(--do-border);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: var(--do-shadow);
+}
+.hof-gs-head h3 {
+  margin: 0;
+  color: var(--do-ink);
+  font: 800 19px/1.25 var(--do-display);
+}
+.hof-gs-head small {
+  display: block;
+  margin-top: 3px;
+  color: var(--do-muted);
+  font: 500 13px/1.45 var(--do-font);
+}
+.hof-gs-progress {
+  margin: 10px 0 8px;
+  color: var(--do-ink-soft);
+  font: 700 12.5px/1.3 var(--do-font);
+}
+.hof-gs-steps {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hof-gs-step {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--do-border);
+  border-radius: 12px;
+  background: #fbfdfb;
+}
+.hof-gs-step.is-done {
+  background: var(--do-accent-soft);
+}
+.hof-gs-mark {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--do-border-strong);
+  border-radius: 50%;
+  box-sizing: border-box;
+  color: #fff;
+}
+.hof-gs-step.is-done .hof-gs-mark {
+  border-color: var(--do-accent);
+  background: var(--do-accent);
+}
+.hof-gs-text b {
+  display: block;
+  color: var(--do-ink);
+  font: 800 13.5px/1.3 var(--do-display);
+}
+.hof-gs-text small {
+  display: block;
+  color: var(--do-muted);
+  font: 500 12px/1.45 var(--do-font);
+}
+.hof-gs-side {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+.hof-gs-status {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #fbeed0;
+  color: #8a5d00;
+  font: 700 11.5px/1.5 var(--do-font);
+}
+.hof-gs-status.is-done {
+  background: #dcf2e4;
+  color: #1f6a43;
+}
+.hof-gs-noperm {
+  max-width: 220px;
+  color: var(--do-faint);
+  font-size: 11.5px;
+}
+.hof-gs-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+.hof-gs-note,
+.hof-gs-unknown {
+  margin: 10px 0 0;
+  color: var(--do-muted);
+  font-size: 12.5px;
+}
+.hof-gs-foot .hof-gs-note {
+  margin: 0;
+}
+@media (max-width: 640px) {
+  .hof-gs-step {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .hof-gs-side {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+}
+
 /* ---- Tek arama kutusu tasarımı (v2.0.10) ----
    Programdaki bütün arama kutuları (ana tablo, Cari, Taksit, Çek/Senet, Stok, Raporlar, sohbet, alan seçici) aynı
    görünür: dolgulu açık yeşil zemin, büyüteç simgesi, belirgin kenar; odakta beyaz zemin ve yeşil halka.
