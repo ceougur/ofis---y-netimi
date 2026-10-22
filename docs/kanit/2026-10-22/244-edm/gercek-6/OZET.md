@@ -1,0 +1,26 @@
+# EDM Test Ortamı — e-SMM uçtan uca (2.4.4 iş listesi 24)
+
+**Test portalı:** https://test.edmbilisim.com.tr/EFaturaUI21ea/ (Entegratör Ayarları'ndaki test kullanıcı adı ve parolasıyla) → e-Arşiv belgeleri portalın e-Arşiv bölümünde; e-SMM için portalda sarı "SMMM Portalı Girişi" düğmesi.
+**Kip:** gerçek EDM test ortamı (yasal geçerliliği olmayan test belgeleri).
+
+Commit e070d42 · başlangıç 22.10.2026 17:57:09 · bitiş 22.10.2026 17:58:50 (TR) · denetim 52/52 geçti · çıkış 0
+
+Adımlar: hazirlik geçti · a-baglanti geçti · hazirlik-cariler geçti · g-toplu-gonderim geçti · b-makbuz geçti · c-durum geçti · d-resmi-pdf geçti · e-iptal geçti · f-bulunamadi geçti · h-hata-kodlari bilgi
+
+Bilgi (denetim değil):
+- d-resmi-pdf: B1 TES2026119638722: resmî PDF'te düzenleyenin unvanı (DENEME TICARET LTD. STI.) YOK — e-SMM, VKN'li düzenleyen: EDM test ortamı şablonu unvanı basmaz (EDM yanıtı 22.10.2026); denetim değil
+- d-resmi-pdf: B2 TES2026119638723: resmî PDF'te düzenleyenin unvanı (DENEME TICARET LTD. STI.) YOK — e-SMM, VKN'li düzenleyen: EDM test ortamı şablonu unvanı basmaz (EDM yanıtı 22.10.2026); denetim değil
+- d-resmi-pdf: G1 TES2026119638719: resmî PDF'te düzenleyenin unvanı (DENEME TICARET LTD. STI.) YOK — e-SMM, VKN'li düzenleyen: EDM test ortamı şablonu unvanı basmaz (EDM yanıtı 22.10.2026); denetim değil
+
+| Kod | Belge Türü | Belge No | ETTN / UUID | Belge Tarihi | Gönderim (TR) | Alıcı | Brüt | Stopaj | KDV | Net Ödenecek | EDM Son Durum | İptal (TR) |
+|---|---|---|---|---|---|---|---:|---:|---:|---:|---|---|
+| G1 | e-SMM | TES2026119638719 | abe89e11-b006-4660-9417-ce2995e06078 | 20.10.2026 | 22.10.2026 17:57:16 | Deneme Müvekkil Danışmanlık A.Ş. | 500,00 | 100,00 | 100,00 | 500,00 | Kabul (iletildi) | — |
+| G2 | e-SMM | TES2026119638720 | 05c3d942-aaf8-4756-b4c3-a469bd5eb07a | 21.10.2026 | 22.10.2026 17:57:21 | Deneme Müvekkil Danışmanlık A.Ş. | 600,00 | 120,00 | 120,00 | 600,00 | Kabul (iletildi) | — |
+| G3 | e-Arşiv | TEA2026394979297 | b770f444-8bbe-4339-8d98-442aa6fa2d9d | 20.10.2026 | 22.10.2026 17:57:19 | Ahmet Yılmaz | 300,00 | — | 60,00 | 360,00 | Kabul (iletildi) | — |
+| G4 | e-Arşiv | TEA2026394979298 | 4beee12e-e275-4a25-a50e-82b0b436ead9 | 21.10.2026 | 22.10.2026 17:57:23 | Ahmet Yılmaz | 400,00 | — | 80,00 | 480,00 | Kabul (iletildi) | — |
+| G5 | e-SMM | TES2026119638721 | f55e2e7a-085a-471f-a5c5-27afd85bd11a | 21.10.2026 | 22.10.2026 17:57:25 | Deneme Müvekkil Danışmanlık A.Ş. | 700,00 | 140,00 | 140,00 | 700,00 | Kabul (iletildi) | — |
+| B1 | e-SMM | TES2026119638722 | 2b7f4ff4-2431-49fc-a446-a8816e085961 | 22.10.2026 | 22.10.2026 17:57:27 | Deneme Müvekkil Danışmanlık A.Ş. | 1.000,00 | 200,00 | 200,00 | 1.000,00 | İptal Edildi | 22.10.2026 17:58:47 |
+| B2 | e-SMM | TES2026119638723 | 180cd86e-5b1c-481f-8dd3-bd47c2a35254 | 22.10.2026 | 22.10.2026 17:57:29 | Deneme Müvekkil Danışmanlık A.Ş. | 200,06 | 40,01 | 40,02 | 200,07 | Kabul (iletildi) | — |
+
+Brüt: e-SMM'de brüt ücret, e-Arşiv'de KDV hariç tutar. Net Ödenecek: e-SMM'de brüt − stopaj + KDV (tahsil edilecek), e-Arşiv'de KDV dahil toplam.
+Bekçi: izin verilen dış istek 43, reddedilen 0. Kimlik bilgisi bu dosyalarda yoktur.
