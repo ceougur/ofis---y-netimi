@@ -266,7 +266,14 @@ async function measure({ version, dir, day, logLevel = "silent", login = true })
   resetEdmCaches();
   const edm = await startMockEdm();
   const started = performance.now();
-  const server = await bootVersion(current ? CURRENT : version, { dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, now: clock, logLevel, ...flags });
+  let server;
+  try {
+    server = await bootVersion(current ? CURRENT : version, { dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, now: clock, logLevel, ...flags });
+  } catch (error) {
+    // Açılamayan sürüm (ör. kilitli dosya): sahte EDM kapanmazsa süreç bitmez (22.10 kesinti koşusunda askıda kaldı).
+    await edm.close();
+    throw error;
+  }
   const bootMs = Math.round(performance.now() - started);
   const result = { version: current ? "2.4.4-aday" : version, commit: server.commit || gitHead(), day, bootMs, firstAccessMs: {}, companies: {}, files: {} };
   try {
