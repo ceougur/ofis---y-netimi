@@ -1,0 +1,38 @@
+{
+  "ad": "244-b4/senaryo-mutasyon",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/b4/b4-mutasyon && node --disable-warning=ExperimentalWarning test/e2e/senaryo-form-izolasyon-243.mjs",
+  "commit": "cf64b0981db76edd0b97a0a1fd4ef26c661dd9a5",
+  "dal": "is/b4",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T09:19:23.191Z",
+  "sure_sn": 244.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 180,
+    "gecen": 179,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "B4 fare üstündeyken bildirim kapanmadı (süre 3600 ms, 4829 ms sonra; ön koşul: açılır bildirim yok true, fare bildirimin içinde true; araya giren bildirim: yok)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-b4/senaryo-mutasyon.log",
+  "klasor": "/home/user/wt/b4",
+  "ham_cikti_sha256": "97c40b9c9bcf04b69aca2d73a2e1729e1dfee4718cb8abf1587c005e44985d3d",
+  "ham_cikti_bayt": 28478
+}
