@@ -1,0 +1,58 @@
+{
+  "ad": "244-e67/kirmizi-ad865f0-yevmiye-sira-244",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/yevmiye-sira-244.test.mjs",
+  "commit": "ad865f0b04a18da1016904e0b46ffae8d5a989a7",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T21:50:40.502Z",
+  "sure_sn": 1.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 0,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "MM8 Yevmiye aynı gün sırası: olay sınıfı → yazım sırası (kimlikten bağımsız) › Y1/Y2/Y3/Y6 birim: kimlikler ters çevrilse de sıra aynı ve kurala uygun (fatura önce, cari satırları yazım sırasıyla, ters kayıt asıl fişten sonra)",
+      "konum": "test/yevmiye-sira-244.test.mjs:41:3",
+      "hata": "artan kimlik: [\"Çek alındı\",\"Çek ciro edildi\",\"Cari ödeme\",\"Kasa giriş (önce yazıldı)\",\"Kasa çıkış (sonra yazıldı)\",\"FIS2026000000001\",\"KDV Mahsup Fişi · 2026-06 · Geri Alındı\",\"KDV Mahsup Fişi · 2026-06\"] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "MM8 Yevmiye aynı gün sırası: olay sınıfı → yazım sırası (kimlikten bağımsız) › Y4 birim: sınıf içi sıra toplamları değiştirmez — mizan ve cari bakiyeleri iki koşuda kuruşu kuruşuna aynı",
+      "konum": "test/yevmiye-sira-244.test.mjs:48:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "MM8 Yevmiye aynı gün sırası: olay sınıfı → yazım sırası (kimlikten bağımsız) › Y5 birim: yazım sırası taşımayan eski çağıranın satırları da belirlenimci (sınıf, sonra kimlik)",
+      "konum": "test/yevmiye-sira-244.test.mjs:61:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "MM8 Yevmiye aynı gün sırası: olay sınıfı → yazım sırası (kimlikten bağımsız) › Y6 birim: şüpheli alacak — aynı gün al → karşılık → tahsilat → çıkar (§4.15); tahsilat kimliği ne olursa olsun",
+      "konum": "test/yevmiye-sira-244.test.mjs:68:3",
+      "hata": "[\"Cari tahsilat\",\"Konusu Kalmayan Karşılık\",\"Karşılık Ayır\",\"Şüpheliden Çıkar\",\"Şüpheli Alacağa Al\"] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "MM8 Yevmiye Defteri raporu (program kendi yazdığı veriyle) › Y1/Y3 API: aynı gün yazılan 8 cari satırı Yevmiye Defteri'nde yazım sırasıyla; aynı günün faturası onlardan önce",
+      "konum": "test/yevmiye-sira-244.test.mjs:102:3",
+      "hata": "yazım sırası: [\"Sıra satırı 6\",\"Sıra satırı 5\",\"Sıra satırı 1\",\"Sıra satırı 4\",\"Sıra satırı 3\",\"Sıra satırı 7\",\"Sıra satırı 2\",\"Sıra satırı 8\"] · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/e67/docs/kanit/2026-10-22/244-e67/kirmizi-ad865f0-yevmiye-sira-244.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e67/e67-eski-ad865f0",
+  "ham_cikti_sha256": "c01187be75a2ee8051dd6cde9d347854e99facc30262af1133e2ada65016b3d6",
+  "ham_cikti_bayt": 12879
+}

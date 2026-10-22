@@ -1,0 +1,32 @@
+{
+  "ad": "244-e67/komsu-numara-iptal",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=2 test/numara-tekil-244.test.mjs test/goc-244-numara-tabani.test.mjs test/fatura-244-numara-tarih-onay.test.mjs test/einvoice-edm.test.mjs test/esmm-gonderim-244.test.mjs test/esmm-acik-244.test.mjs test/goc-244-esmm-gonderim.test.mjs test/ebelge-240-bitis-turu.test.mjs test/ebelge-243.test.mjs test/ebelge-243-gonderim.test.mjs test/ebelge-244-secilenleri-gonder.test.mjs test/trash.test.mjs test/geri-yukleme-uyari-244.test.mjs test/banka-210-gg-geri-yukle.test.mjs test/ebelge-242-test-seri.test.mjs test/supheli-240-k4-iptal.test.mjs test/ebelge-240-kontrol3.test.mjs test/ebelge-244-iptal-suresi.test.mjs",
+  "commit": "ad865f0b04a18da1016904e0b46ffae8d5a989a7",
+  "dal": "is/e67",
+  "kirli": 7,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T21:51:43.230Z",
+  "sure_sn": 57.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 213,
+    "gecen": 213,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-e67/komsu-numara-iptal.log",
+  "klasor": "/home/user/wt/e67",
+  "ham_cikti_sha256": "70bdff3961d40bdfb9634b17b89b564465135b9a8d426abfa0fc9ea2fc8dc068",
+  "ham_cikti_bayt": 80974
+}
