@@ -1,0 +1,163 @@
+// 2.4.4 madde 30: bir sürümün (eski ya da güncel) bir şirkette GÖSTERDİĞİ olgular — kullanıcının ekranda gördüğü uçlardan (arayüzün kullandığı
+// HTTP API) ve veri dosyasının kopyasından. Göçten ÖNCE eski sürümün kendi koduyla, SONRA güncel kodla, AYNI sabit sahte saatte okunur; fark
+// test/guvenilirlik/m30-fark.mjs'te sınıflanır (beklenen = eski sürümün kendi sayısı; fark testi, KANIT KURALI 2 "eski sürümün gerçek kodu").
+//
+// Tek tek: her cari (bakiye), mizan (her hesap), defter mutabakatı, Mutabakat Testi, Kasa (toplam, yol başına), her banka hesabı, her çek/senet
+// (durum), her fatura (durum, numara, ETTN, e-Belge durumu, ödeme durumu, açık), e-Belge kartlarının iptal/gönder/bırak düğmeleri, Gönderilecekler,
+// seri "sıradaki numara"lar, her taksit kartı, stok, ANLIK DURUM, rapor merkezinin bütün raporları (satır, TOPLAM, özet), tablo raporları (Tablodaki
+// Kişiler, Vade Takip, Nakit Akışı), tahsilat takvimi (ödeme sözü), KDV mahsup fişleri, kullanıcı yetkileri; dosyadan şema sürümü, tablo sayımları,
+// numara tabanı ayarı.
+import { createHash } from "node:crypto";
+import { copyFileSync, existsSync, mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
+
+export const cents = value => Math.round(Number(value || 0) * 100);
+export const digest = value => createHash("sha256").update(JSON.stringify(value)).digest("hex").slice(0, 24);
+const must = async (what, promise) => {
+  const res = await promise;
+  if (res.status !== 200) throw new Error(`${what}: ${res.status} ${JSON.stringify(res.data).slice(0, 300)}`);
+  return res.data;
+};
+const soft = async promise => {
+  const res = await promise;
+  return res.status === 200 ? res.data : { __status: res.status, __error: res.data?.error || res.data?.code || "" };
+};
+const pick = (obj, keys) => Object.fromEntries(keys.filter(key => obj && Object.hasOwn(obj, key)).map(key => [key, obj[key]]));
+
+/** Seçili şirketin olguları (api: şirket kapsamlı). */
+export async function companyFacts(api, { reportsFrom = "2000-01-01", reportsTo = "2099-12-31", detailCap = 2000 } = {}) {
+  const out = {};
+  // Cariler
+  const accounts = [];
+  for (let offset = 0; ; offset += 5000) {
+    const page = await must("cari listesi", api.get(`/api/workspace/accounts?status=all&limit=5000&offset=${offset}`));
+    accounts.push(...page.accounts);
+    if (!page.hasMore) break;
+  }
+  out.accounts = Object.fromEntries(accounts.map(a => [a.id, { ref: a.refNo, name: a.name, type: a.type, status: a.status, balance: cents(a.balance), caseKey: a.caseKey || "", eInvoice: a.eInvoice || 0, eAlias: a.eAlias || "" }]));
+  // Defter
+  const ledger = await must("Ana Defter", api.get("/api/workspace/ledger"));
+  out.trial = Object.fromEntries(ledger.trial.accounts.map(row => [String(row.code), { name: row.name, debit: cents(row.debit), credit: cents(row.credit), balance: cents(row.balance) }]));
+  out.trialTotals = { debit: cents(ledger.trial.totals.debit), credit: cents(ledger.trial.totals.credit), difference: cents(ledger.trial.totals.difference) };
+  out.reconciliation = Object.fromEntries(ledger.reconciliation.checks.map(row => [String(row.code), { ledger: cents(row.ledger), subledger: cents(row.subledger), ok: row.ok }]));
+  const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
+  out.integrity = { ok: integrity.ok ?? null, failures: (integrity.failures || []).map(item => `${item.code}|${cents(item.difference)}|${item.count ?? ""}`).sort(), checksOk: (integrity.checks || []).filter(item => item.ok).map(item => item.code).sort(), checksBad: (integrity.checks || []).filter(item => !item.ok).map(item => item.code).sort() };
+  const lock = await must("dönem kilidi", api.get("/api/workspace/ledger/lock"));
+  out.today = lock.today;
+  out.lockedUntil = lock.lockedUntil || "";
+  // Kasa
+  const cashAll = await must("Kasa (tüm yollar)", api.get("/api/workspace/cash?method=all"));
+  const cash = await must("Kasa", api.get("/api/workspace/cash"));
+  const cashRows = list => list.map(e => [e.source || "", e.id, e.kind, cents(e.amount), e.date, e.method].join("|")).sort();
+  out.cash = { totals: cashAll.totals, byMethod: cashAll.byMethod, allCount: cashAll.entries.length, allDigest: digest(cashRows(cashAll.entries)), window: cash.totals, windowCount: cash.entries.length, windowDigest: digest(cashRows(cash.entries)) };
+  // Banka
+  const banks = await soft(api.get("/api/workspace/bank/accounts"));
+  out.bank = banks.__status ? banks : { accounts: Object.fromEntries((banks.accounts || []).map(a => [a.id, { name: `${a.bankName} · ${a.name}`, balance: a.balanceMinor, status: a.status }])), totals: banks.totals };
+  const bsum = await soft(api.get("/api/workspace/bank/summary"));
+  out.bankSummary = bsum.__status ? bsum : digest(bsum);
+  // Çek / senet
+  const cheques = [];
+  for (let offset = 0; ; offset += 300) {
+    const page = await must("çek/senet", api.get(`/api/workspace/cheques?limit=300&offset=${offset}`));
+    cheques.push(...page.cheques);
+    if (!page.hasMore) break;
+  }
+  out.cheques = Object.fromEntries(cheques.map(c => [c.id, { serial: c.serialNo, direction: c.direction, instrument: c.instrument, status: c.status, amount: cents(c.amount), accountId: c.accountId || "", invoiceId: c.invoiceId || "", planId: c.planId || "", deposited: Boolean(c.deposit || c.collection || c.depositedAt) }]));
+  // Faturalar
+  const inv = await must("faturalar", api.get("/api/workspace/invoices?tab=all&limit=10000"));
+  out.invoiceTabs = inv.tabCounts || null;
+  out.invoices = Object.fromEntries(inv.invoices.map(d => [d.id, { kind: d.kind, status: d.status, number: d.number, displayNo: d.displayNo, ettn: d.ettn, issueDate: d.issueDate, accountId: d.accountId, profile: d.profile, eStatus: d.eStatus || "", eUnsent: d.eUnsent ?? null, payable: cents(d.payableTotal), payState: d.payState, paid: cents(d.paid), open: cents(d.open), planId: d.planId || "", originalId: d.originalId || "" }]));
+  const pending = await must("Gönderilecekler", api.get("/api/workspace/invoices?tab=pending&limit=1000"));
+  out.pending = pending.invoices.map(d => d.id).sort();
+  // e-Belge kartları: düğmeler ve iptal bilgisi (e-Belge profilli ya da bırakılmış belgeler).
+  out.edocCards = {};
+  const edocIds = inv.invoices.filter(d => d.profile !== "KAGIT" || d.eStatus).map(d => d.id).slice(0, detailCap);
+  for (const id of edocIds) {
+    const card = await must("fatura kartı", api.get(`/api/workspace/invoices/${id}`));
+    const flags = Object.fromEntries(Object.entries(card).filter(([key, v]) => /^can[A-Z]/.test(key) && typeof v === "boolean"));
+    out.edocCards[id] = { eStatus: card.eStatus || "", number: card.number, paperNo: card.paperNo || "", ...flags, cancelWindow: card.cancelWindow ?? null, cancelBlock: card.cancelBlock ?? null };
+  }
+  const settings = await must("Fatura Ayarları", api.get("/api/workspace/invoices/settings"));
+  out.series = settings.series;
+  out.nextNumbers = Object.fromEntries(Object.entries(settings.nextNumbers || {}).map(([key, v]) => [key, v?.number ?? v]));
+  // Taksit kartları
+  const plans = await must("taksit kartları", api.get("/api/workspace/plans"));
+  out.plans = Object.fromEntries(plans.plans.map(p => [p.id, { accountId: p.accountId || "", name: p.name, total: cents(p.total), paid: cents(p.paid), remaining: cents(p.remaining), overdue: cents(p.overdue), status: p.status || "", importId: p.importId || "", caseKey: p.caseKey || "" }]));
+  out.planTotals = Object.fromEntries(Object.entries(plans.totals || {}).map(([k, v]) => [k, typeof v === "number" && k !== "count" && k !== "overdueCount" ? cents(v) : v]));
+  // Stok
+  const stock = await must("stok", api.get("/api/workspace/stock?limit=5000"));
+  out.stock = Object.fromEntries((stock.items || stock.stock || []).map(s => [s.id, { code: s.code, qty: Number(s.qty) }]));
+  // ANLIK DURUM
+  const overview = await must("ANLIK DURUM", api.get("/api/workspace/overview"));
+  const { at, ...overviewStable } = overview;
+  out.overview = overviewStable;
+  // Rapor merkezi: bütün raporlar (cari seçimi isteyenler hariç).
+  const list = await must("rapor listesi", api.get("/api/workspace/report-center"));
+  out.reports = {};
+  for (const item of list.reports) {
+    if (item.accountRequired) continue;
+    const report = await soft(api.get(`/api/workspace/report-center/${item.id}?from=${reportsFrom}&to=${reportsTo}`));
+    if (report.__status) {
+      out.reports[item.id] = { title: item.title, error: report };
+      continue;
+    }
+    out.reports[item.id] = { title: report.title || item.title, headers: report.headers, total: report.total, footer: report.footer, summary: report.summary, rows: report.rows?.length <= 20000 ? report.rows : null, rowsDigest: digest(report.rows) };
+  }
+  // Tablo raporları (Tablodaki Kişiler = cari-ekstre, Vade Takip, Nakit Akışı) ve tahsilat takvimi.
+  out.tableReports = {};
+  for (const kind of ["cari-ekstre", "vade-takip", "nakit-akis"]) {
+    const r = await soft(api.get(`/api/workspace/reports/${kind}?from=${reportsFrom}&to=${reportsTo}&limit=20000`));
+    out.tableReports[kind] = r.__status ? r : { report: r.report, tabs: r.tabs, crossMatched: r.crossMatched };
+  }
+  const dues = await soft(api.get("/api/workspace/dues"));
+  out.dues = dues.__status ? dues : dues;
+  const vat = await soft(api.get("/api/workspace/tax/vat-offset"));
+  out.vatOffsets = vat.__status ? vat : (vat.offsets || []).map(o => pick(o, ["id", "month", "date", "outMinor", "inMinor", "carryInMinor", "carryOutMinor", "payableMinor", "status"]));
+  const dataset = await soft(api.get("/api/workspace/dataset"));
+  out.dataset = dataset.__status ? dataset : pick(dataset, ["hasData", "label", "rowCount", "tabs"]);
+  const doubtful = await soft(api.get("/api/workspace/doubtful"));
+  out.doubtful = doubtful.__status ? doubtful : digest(doubtful);
+  return out;
+}
+
+/** Kurulum geneli: şirketler, kullanıcılar (rol + etkin yetkiler), roller. */
+export async function installFacts(api) {
+  const companies = await must("şirketler", api.get("/api/companies"));
+  const users = await must("kullanıcılar", api.get("/api/admin/users"));
+  const roles = await soft(api.get("/api/admin/roles"));
+  const userList = Array.isArray(users) ? users : users.users || [];
+  return {
+    companies: companies.all.map(c => pick(c, ["id", "code", "name"])),
+    users: Object.fromEntries(userList.map(u => [u.username, { role: u.role, active: u.active ?? u.status ?? null, permissions: [...(u.permissions || u.effectivePermissions || [])].sort(), grants: u.grants || null }])),
+    roles: roles.__status ? roles : (Array.isArray(roles) ? roles : roles.roles || []).map(r => ({ id: r.id, name: r.name, permissions: [...(r.permissions || [])].sort() })),
+  };
+}
+
+/** Veri dosyasının KOPYASINDAN (canlı dosyaya bağlanılmaz): şema sürümü, tablo listesi ve satır sayıları, numara tabanı, yetki ayarı. */
+export function fileFacts(file) {
+  const dir = mkdtempSync(path.join(tmpdir(), "m30-olgu-"));
+  const copy = path.join(dir, "kopya.sqlite");
+  try {
+    copyFileSync(file, copy);
+    if (existsSync(`${file}-wal`)) copyFileSync(`${file}-wal`, `${copy}-wal`);
+    const db = new DatabaseSync(copy);
+    try {
+      const tables = db.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name").all().map(row => row.name);
+      const counts = Object.fromEntries(tables.map(name => [name, db.prepare(`SELECT COUNT(*) AS n FROM "${name}"`).get().n]));
+      const setting = key => {
+        try {
+          return db.prepare("SELECT value FROM settings WHERE key = ?").get(key)?.value ?? null;
+        } catch {
+          return null;
+        }
+      };
+      return { version: db.prepare("PRAGMA user_version").get().user_version, integrity: db.prepare("PRAGMA integrity_check").get().integrity_check, tables, counts, numberFloor: setting("invoice.numberFloor"), lockedUntil: setting("ledger.lockedUntil") };
+    } finally {
+      db.close();
+    }
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
