@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-e070d42-e2e-gg243-banka-kart-aciklama",
+  "komut": "npm run test:gg243-banka-kart-aciklama",
+  "commit": "e070d4247567174ee1bf1b5efe142dfafba6cdb8",
+  "dal": "aday6",
+  "kirli": 0,
+  "izlenmeyen": 114,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T16:58:11.215Z",
+  "sure_sn": 5.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 11,
+    "gecen": 11,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday-e070d42-e2e-gg243-banka-kart-aciklama.log",
+  "klasor": "/home/user/wt/aday6",
+  "ham_cikti_sha256": "ffb2a39c731366d6d9930776dc57e7c39a92cc5c4f6cde4d348924b90b692747",
+  "ham_cikti_bayt": 1207
+}
