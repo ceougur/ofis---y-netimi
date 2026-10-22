@@ -284,7 +284,7 @@
       ? HOF.cheques.open({ id: item.chequeId, action: item.direction === "out" ? "pay" : "collect" })
       : isPlan(item)
       ? HOF.plans.pay(item)
-      : HOF.workspace.payment({ key: item.caseKey, title: who(item), person: item.person || "", phone: item.phone || "", amount: item.amount, note: `${item.label} · ${item.dueText}` });
+      : HOF.workspace.payment({ key: item.caseKey, title: who(item), person: item.person || "", phone: item.phone || "", amount: item.amount, note: `${item.label} · ${item.dueText}`, debt: item.debt || null, debtColumn: item.debtColumn || "" });
 
   // ---------- Gerçekleştirildi (v2.0.2) ----------
   const DONE_TEXT = "Gerçekleştirildi";

@@ -1,0 +1,38 @@
+{
+  "ad": "244-kayit/k6-mutasyon-a5",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-k6-a5/test/tablodan-aktar-244.test.mjs /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-k6-a5/test/kayit-tahsilat-244.test.mjs",
+  "commit": "7d51d60f6298e3ac058b06db34ef2059c8cba896",
+  "dal": "is/kayit",
+  "kirli": 2,
+  "izlenmeyen": 10,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T08:08:26.594Z",
+  "sure_sn": 3.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 13,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 5a: Tablodan Aktar kayda bağlı carinin taksit dışı tahsilatlarını karta yazar; bakiye, Kasa ve banka aynı › A1–A7 aktar: kart 9.000 / ödenen 3.500 (1. taksit kapandı, 2.'nin 500'ü); cari bakiyesi, Kasa, banka hesabı ve işlem sayısı aynı",
+      "konum": "test/tablodan-aktar-244.test.mjs:115:3",
+      "hata": "işlem başlıkları (İşlem No) aynı · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kayit/k6-mutasyon-a5.log",
+  "klasor": "/home/user/wt/kayit",
+  "ham_cikti_sha256": "40df31f35f4bdb505815bcb076de9469f29f8cda0fd7274c52e6fa1c4d4e9765",
+  "ham_cikti_bayt": 8340
+}

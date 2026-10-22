@@ -1,0 +1,162 @@
+TAP version 13
+# (node:11023) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.4 E8: kaydın tahsilatı cariden; takvim kalemi carinin ve taksitin tahsilatıyla kapanır
+    # Subtest: T1 + T5 kayda bağlı carinin tahsilatı sözü kapatır (tam / kısmi / silinince döner); Kasa'ya bir kez, kayıt tahsilatına hiç yazılmaz
+    ok 1 - T1 + T5 kayda bağlı carinin tahsilatı sözü kapatır (tam / kısmi / silinince döner); Kasa'ya bir kez, kayıt tahsilatına hiç yazılmaz
+      ---
+      duration_ms: 242.060049
+      type: 'test'
+      ...
+    # Subtest: T2 bağsız aynı adlı carinin tahsilatı sayılmaz; bağlanınca kapanır, bağ kalkınca döner
+    ok 2 - T2 bağsız aynı adlı carinin tahsilatı sayılmaz; bağlanınca kapanır, bağ kalkınca döner
+      ---
+      duration_ms: 125.974602
+      type: 'test'
+      ...
+    # Subtest: T3 kartlı kişinin ödeme sözü taksit kartı tahsilatıyla (Taksite Yaz) kapanır
+    ok 3 - T3 kartlı kişinin ödeme sözü taksit kartı tahsilatıyla (Taksite Yaz) kapanır
+      ---
+      duration_ms: 114.071554
+      type: 'test'
+      ...
+    # Subtest: T4 Tablodaki Vadeler aynı kuralla; Tablodaki Kişiler kayda bağlı carinin tahsilatını alacak yazar
+    ok 4 - T4 Tablodaki Vadeler aynı kuralla; Tablodaki Kişiler kayda bağlı carinin tahsilatını alacak yazar
+      ---
+      duration_ms: 53.087424
+      type: 'test'
+      ...
+    1..4
+ok 1 - 2.4.4 E8: kaydın tahsilatı cariden; takvim kalemi carinin ve taksitin tahsilatıyla kapanır
+  ---
+  duration_ms: 1211.079927
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 E8: eski sürüm verisi (v2.4.3 gerçek kodu) yeni kodla aynı sayılar; eski kayıt tahsilatı ve kayda bağlı kart düzeltilir / silinir
+ok 2 - 2.4.4 E8: eski sürüm verisi (v2.4.3 gerçek kodu) yeni kodla aynı sayılar; eski kayıt tahsilatı ve kayda bağlı kart düzeltilir / silinir # SKIP v2.4.3 etiketi yok (git fetch --tags)
+  ---
+  duration_ms: 0.333061
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 5b: takvim kaleminin Kalan Borç'u 'Kalan' kolonundan, kolon adıyla
+    # Subtest: Alacak Tutarı + Kalan + Son Ödeme: Kalan Borç = Kalan; tek vadeli kalemin beklenen tutarı da kalan
+    ok 1 - Alacak Tutarı + Kalan + Son Ödeme: Kalan Borç = Kalan; tek vadeli kalemin beklenen tutarı da kalan
+      ---
+      duration_ms: 2.962902
+      type: 'test'
+      ...
+    1..1
+ok 3 - 2.4.4 5b: takvim kaleminin Kalan Borç'u 'Kalan' kolonundan, kolon adıyla
+  ---
+  duration_ms: 3.201001
+  type: 'suite'
+  ...
+# (node:11024) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.4 5a: Tablodan Aktar kayda bağlı carinin taksit dışı tahsilatlarını karta yazar; bakiye, Kasa ve banka aynı
+    # Subtest: A1–A6, A8 ön izleme: Elif 3.500 karta (1.000 + 2.500), 7.000 taksit dışı (kalanı aşar; iade düşüldü); Selin faturalı → taşınmaz; kapalıyken yazılmaz
+    not ok 1 - A1–A6, A8 ön izleme: Elif 3.500 karta (1.000 + 2.500), 7.000 taksit dışı (kalanı aşar; iade düşüldü); Selin faturalı → taşınmaz; kapalıyken yazılmaz
+      ---
+      duration_ms: 29.211109
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-k6-a3/test/tablodan-aktar-244.test.mjs:83:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Burak: iade düşülünce net 1.700; 300 + 1.000 sığar, 500 aşar → 1.300 ([{"level":"info","code":"account-in-move","text":"Kayda bağlı carinin taksit dışı 3 tahsilatı (₺1.800,00) en eskiden başlayarak karta yazılır (en eski açık taksite sayılır); cari bakiyesi ve Kasa değişmez."},{"level":"error","code":"cover-ambiguous","text":"Carinin kart dışında ₺100,00 borcu var, tablodaki kalan ₺6.000,00: aynı borç mu belli değil, kişi aktarılmaz. Aynı borçsa carinin borcunu ₺6.000,00 yapın (Açılış Bakiyesi ya da Borç Yaz); ayrı borçsa \"Carinin mevcut borcu varsa kartı o borçla aç\" seçeneğini kapatın."}])
+        
+        0 !== 1300
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1300
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-k6-a3/test/tablodan-aktar-244.test.mjs:96:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: A9 ön izlemeden sonra cariye tahsilat girilirse aktarım durur (409, hiçbir şey yazılmaz)
+    ok 2 - A9 ön izlemeden sonra cariye tahsilat girilirse aktarım durur (409, hiçbir şey yazılmaz)
+      ---
+      duration_ms: 110.859977
+      type: 'test'
+      ...
+    # Subtest: A1–A7 aktar: kart 9.000 / ödenen 3.500 (1. taksit kapandı, 2.'nin 500'ü); cari bakiyesi, Kasa, banka hesabı ve işlem sayısı aynı
+    ok 3 - A1–A7 aktar: kart 9.000 / ödenen 3.500 (1. taksit kapandı, 2.'nin 500'ü); cari bakiyesi, Kasa, banka hesabı ve işlem sayısı aynı
+      ---
+      duration_ms: 99.268871
+      type: 'test'
+      ...
+    # Subtest: A7 başka kartın tahsilatına dokunulmaz; A10 geri al: cari tahsilatları aynen döner, sayılar aynı
+    ok 4 - A7 başka kartın tahsilatına dokunulmaz; A10 geri al: cari tahsilatları aynen döner, sayılar aynı
+      ---
+      duration_ms: 119.711557
+      type: 'test'
+      ...
+    # Subtest: A11 kapatılmış dönemdeki cari tahsilatı taşınmaz
+    ok 5 - A11 kapatılmış dönemdeki cari tahsilatı taşınmaz
+      ---
+      duration_ms: 79.138212
+      type: 'test'
+      ...
+    1..5
+not ok 4 - 2.4.4 5a: Tablodan Aktar kayda bağlı carinin taksit dışı tahsilatlarını karta yazar; bakiye, Kasa ve banka aynı
+  ---
+  duration_ms: 1465.451023
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-k6-a3/test/tablodan-aktar-244.test.mjs:32:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.4 5b: Tablodan Aktar carinin mevcut borcunu ikinci kez yazmaz (açılış bakiyesi + kart = çift borç olmaz)
+    # Subtest: B1–B5 ön izleme: Elif mevcut borçla (2.000 karta), Selin aktarılmaz, Burak faturalı (yeni borç uyarısı); seçenek kapalıyken yeni borç uyarısı
+    ok 1 - B1–B5 ön izleme: Elif mevcut borçla (2.000 karta), Selin aktarılmaz, Burak faturalı (yeni borç uyarısı); seçenek kapalıyken yeni borç uyarısı
+      ---
+      duration_ms: 27.211811
+      type: 'test'
+      ...
+    # Subtest: B1–B2 aktar: Elif kartı 'Carinin Mevcut Borcu' (9.000, açılış satırı yok, 2.000 ödendi); carinin bakiyesi ve Kasa AYNI; Selin aktarılmadı
+    ok 2 - B1–B2 aktar: Elif kartı 'Carinin Mevcut Borcu' (9.000, açılış satırı yok, 2.000 ödendi); carinin bakiyesi ve Kasa AYNI; Selin aktarılmadı
+      ---
+      duration_ms: 63.93249
+      type: 'test'
+      ...
+    # Subtest: B6 geri al: kart kalkar, 2.000 carinin hesabına döner; bakiye ve Kasa aynı
+    ok 3 - B6 geri al: kart kalkar, 2.000 carinin hesabına döner; bakiye ve Kasa aynı
+      ---
+      duration_ms: 34.003698
+      type: 'test'
+      ...
+    1..3
+ok 5 - 2.4.4 5b: Tablodan Aktar carinin mevcut borcunu ikinci kez yazmaz (açılış bakiyesi + kart = çift borç olmaz)
+  ---
+  duration_ms: 596.042401
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 5b B7: Excel'de kısmen ödenmiş plan + açılış bakiyesi = kalan → kart ödenmemiş kısımla, açılış satırı yok, bakiye aynı
+    # Subtest: B7 Can Öztürk: kart 5.700 (Mevcut Borç), açılış satırı yok, bakiye 5.700
+    ok 1 - B7 Can Öztürk: kart 5.700 (Mevcut Borç), açılış satırı yok, bakiye 5.700
+      ---
+      duration_ms: 87.189368
+      type: 'test'
+      ...
+    1..1
+ok 6 - 2.4.4 5b B7: Excel'de kısmen ödenmiş plan + açılış bakiyesi = kalan → kart ödenmemiş kısımla, açılış satırı yok, bakiye aynı
+  ---
+  duration_ms: 492.303395
+  type: 'suite'
+  ...
+1..6
+# tests 14
+# suites 6
+# pass 13
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3023.810399

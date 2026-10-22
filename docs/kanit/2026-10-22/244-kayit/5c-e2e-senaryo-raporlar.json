@@ -1,0 +1,32 @@
+{
+  "ad": "244-kayit/5c-e2e-senaryo-raporlar",
+  "komut": "npm run test:senaryo-rapor",
+  "commit": "6aeb05c711d4824f67f20d939161ae459b2b867d",
+  "dal": "is/kayit",
+  "kirli": 1,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T05:50:13.344Z",
+  "sure_sn": 37.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 82,
+    "gecen": 82,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kayit/5c-e2e-senaryo-raporlar.log",
+  "klasor": "/home/user/wt/kayit",
+  "ham_cikti_sha256": "887d87003680e545a9e175a2e686d44764ba59e89ee0ec4b1a4f6084a11ba616",
+  "ham_cikti_bayt": 6317
+}

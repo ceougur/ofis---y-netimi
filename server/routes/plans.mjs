@@ -1486,16 +1486,22 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const lock = period?.lockedUntil?.() || "";
     return lock && start && start <= lock ? `Kartın Kayıt Tarihi (${dayText(start)}; ilk vade ya da kayıt günü) kapatılmış (kilitli) dönemde (${dayText(lock)} ve öncesi); kart açılmadı. Yönetici dönem kilidini açarsa yeniden aktarın.` : "";
   }
-  function createScheduled(user, input, { importId = "", items = [], openingDate = today(), openingNote = "Excel'de ödenmiş" } = {}) {
+  // 2.4.4 (5b) coversBalance: kayda bağlı carinin borcu (ör. "önce cari açın" formundaki Açılış Bakiyesi = kayıttaki Kalan Borç) zaten defterde;
+  // kart "Carinin Mevcut Borcu"nu taksitlendirir (covers_balance = 1: carinin defterine ikinci kez borç yazmaz; lib/accounts.mjs). Excel'de ödenmiş
+  // kısım carinin bakiyesindedir: açılış (devir) satırı yazılmaz, taksitler ödenmemiş kısımlarıyla kurulur (tamamı ödenmiş taksit kurulmaz).
+  function createScheduled(user, input, { importId = "", items: given = [], openingDate = today(), openingNote = "Excel'de ödenmiş", coversBalance = false } = {}) {
     const id = newId("plan");
+    const items = coversBalance
+      ? given.map(item => ({ ...item, amount: roundMoney((Number(item.amount) || 0) - Math.min(Number(item.paid) || 0, Number(item.amount) || 0)), paid: 0 })).filter(item => item.amount > 0.004)
+      : given;
     const total = roundMoney(items.reduce((sum, item) => sum + (Number(item.amount) || 0), 0));
     const registeredOn = scheduledStart(input.registeredOn, items);
     // Kart, taksitleri ve açılış kayıtları tek damga taşır: geri alma denetimi (plan-transfer.mjs) "created_at =
     // updated_at" ile kartın aktarımdan sonra dokunulmadığını anlar; iki ayrı now() milisaniye sınırında ayrışabiliyordu.
     const stamp = now();
     store.run(
-      "INSERT INTO plans (id, account_id, ref_no, registered_on, case_key, case_source, case_title, group_id, subgroup_id, name, note, phone, total, status, import_id, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?)",
-      id, input.accountId || "", input.refNo || nextRef(), registeredOn, input.caseKey || "", input.caseKey ? input.caseSource || currentSource() : "", input.caseKey ? input.caseTitle || input.name : "", input.groupId || null, input.subgroupId || null, String(input.name).slice(0, 160), String(input.note || "").slice(0, 1000), String(input.phone || "").slice(0, 60), total, importId, user.id, stamp, stamp,
+      "INSERT INTO plans (id, account_id, ref_no, registered_on, case_key, case_source, case_title, group_id, subgroup_id, name, note, phone, total, status, import_id, covers_balance, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?, ?)",
+      id, input.accountId || "", input.refNo || nextRef(), registeredOn, input.caseKey || "", input.caseKey ? input.caseSource || currentSource() : "", input.caseKey ? input.caseTitle || input.name : "", input.groupId || null, input.subgroupId || null, String(input.name).slice(0, 160), String(input.note || "").slice(0, 1000), String(input.phone || "").slice(0, 60), total, importId, coversBalance ? 1 : 0, user.id, stamp, stamp,
     );
     const openingIds = [];
     items.slice(0, MAX_ITEMS).forEach((item, index) => {
@@ -1511,29 +1517,36 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
         openingIds.push(entryId);
       }
     });
-    audit(user, "plan.created", id, { name: input.name, total, accountId: input.accountId || "", importId, items: items.length, opening: roundMoney(items.reduce((sum, item) => sum + Math.min(Number(item.paid) || 0, Number(item.amount) || 0), 0)) });
-    return { id, openingIds };
+    audit(user, "plan.created", id, { name: input.name, total, accountId: input.accountId || "", importId, items: items.length, opening: roundMoney(items.reduce((sum, item) => sum + Math.min(Number(item.paid) || 0, Number(item.amount) || 0), 0)), coversBalance });
+    return { id, openingIds, total };
   }
   // Programda kayıt kartından girilmiş tahsilatı karta taşır (Kasa toplamı değişmez: kayıt tahsilatı olarak çıkar, taksit
   // tahsilatı olarak aynı tarih ve tutarla girer; giren kişi ve giriş zamanı korunur). v2.0.26 (A2): ödeme yolu da korunur
   // (önceden kolon yazılmıyor, havale/POS tahsilatı karta nakit olarak geçiyordu). Tanınmayan yol hata verir (B7).
   // v2.1.0 (bank.post op 'move'): taşınan tahsilat kayıt tahsilatının işlem başlığını (event_id) taşır — İşlem No ve yol aynı, olayın
   // kopyasında kaynak tablo plan_entries olur. Olaysız eski tahsilat taşınırken olay alır. Çağıran bank.post işleminin içindedir.
-  function adoptPayment(user, planId, payment, itemId = null) {
+  function adoptPayment(user, planId, payment, itemId = null, fallbackNote = "Kayıt kartından tahsilat") {
     const entryId = newId("entry");
     const method = methodInput(payment.method);
     // GG2 (plan §3.5 K13/7): taşınan tahsilat banka hesabı bağını (fin_ref) taşır; önceden bağ düşüyor, tutar hesaptan Hesabı Atanmamış'a geçiyordu.
     const finRef = bank.keepRef(payment.fin_ref, { method, date: payment.date }).ref;
     store.run(
       "INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, opening, method, fin_ref, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, 'in', ?, ?, ?, NULL, 0, ?, ?, ?, ?, ?, ?, ?)",
-      entryId, planId, itemId, roundMoney(payment.amount), payment.date, String(payment.note || "Kayıt kartından tahsilat").slice(0, 300), method, finRef,
+      entryId, planId, itemId, roundMoney(payment.amount), payment.date, String(payment.note || fallbackNote).slice(0, 300), method, finRef,
       bank.eventFor("plan_entries", { kind: "in", date: payment.date, method, opening: 0, cheque_id: "", event_id: payment.event_id || "" }), payment.created_by || user.id, payment.created_at || now(), user.id, now(),
     );
     return entryId;
   }
+  // 2.4.4 (5a): kayda bağlı carinin TAKSİT DIŞI tahsilatı karta yazılır (Tablodan Aktar). Yeni para hareketi DEĞİL: aynı para hareketi cari
+  // satırından taksit tahsilatı satırına taşınır (bank.post op 'move'; çağıran cari satırını aynı işlemde siler). Tutar, tarih, yol, banka hesabı
+  // bağı, işlem başlığı (event_id → İşlem No), giren kişi ve giriş zamanı aynı kalır: carinin bakiyesi (cari 'in' alacağı → kartın 'plan-in'
+  // alacağı, aynı cari) ve Kasa / Banka değişmez; K11 (bir olay = bir etkin satır) bank.post'un sonunda denetlenir. Yazım, kayıt tahsilatı
+  // taşımasıyla AYNI ortak yazıcıdadır (adoptPayment, K6 izinli listede "yardimci"): para tablosuna ikinci bir ham yazım yeri açılmaz.
+  // Karttaki satıra makbuz numarası verilmez; geri alınınca carinin satırı numarasıyla döner.
+  const adoptAccountEntry = (user, planId, entry, itemId = null) => adoptPayment(user, planId, entry, itemId, "Cari tahsilatı");
   // Açık veri oturumunda kartı olan kayıtlar (silinmemiş kartlar): takvim bu kişilerin tablodaki ödeme kalemlerini
   // ikinci kez saymaz; aktarma "kartı var" der.
   const linkedCases = source => new Set(store.all("SELECT case_key AS k FROM plans WHERE deleted_at IS NULL AND case_key <> '' AND case_source = ?", source || "").map(row => row.k));
 
-  return { uncoveredDebt, assertRestorable, assertCloseOpen, assertRoom, closeDayOf, trimCovers, shrinkPlan, leftOf, signedLeftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, linkedCases };
+  return { uncoveredDebt, assertRestorable, assertCloseOpen, assertRoom, closeDayOf, trimCovers, shrinkPlan, leftOf, signedLeftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, adoptAccountEntry, linkedCases };
 }

@@ -45,12 +45,15 @@
     const phone = (row && plans.phoneOf ? plans.phoneOf(row) : "") || target?.phone || "";
     const caseTitle = row && plans.recordLabel ? plans.recordLabel(row) : selected.title || name;
     const registeredOn = row && plans.recordDay ? plans.recordDay(row) || "" : "";
+    // 2.4.4 (5b): Açılış Bakiyesi kayıttaki Kalan Borç ile dolu gelir (takvim kaleminin "Kalan Borç"u; değiştirilebilir, kaynağı alanın altında yazar).
+    // Sonra Tablodan Aktar bu borcu ikinci kez yazmaz (kart "Carinin Mevcut Borcu" olarak açılır; routes/plan-transfer.mjs).
+    const openingBalance = Number(target?.debt) > 0 ? Number(target.debt) : null;
     if (!HOF.accounts?.newFor || !HOF.can("accounts.manage")) {
       HOF.toast(`Tahsilat carinin hesabına yazılır; “${name || selected.title}” kaydının carisi yok. Cari açmak yönetici, uzman ve muhasebe yetkisidir: yöneticinizden bu kişiye cari açıp kayda bağlamasını isteyin.`, { type: "error" });
       return;
     }
     HOF.accounts.newFor(
-      { name, phone, caseKey: selected.key, caseTitle, registeredOn },
+      { name, phone, caseKey: selected.key, caseTitle, registeredOn, ...(openingBalance ? { openingBalance, openingSource: target?.debtColumn || "Kalan Borç" } : {}) },
       {
         intro: "Önce cari açın: tahsilat carinin hesabına yazılır, bu kaydın carisi yok. Ad, telefon ve Kayıt Tarihi kayıttan geldi; cari bu kayda bağlanır, kaydedince tahsilat formu açılır. Kişinin borcu varsa Açılış Bakiyesi'ne yazın (yoksa tahsilat carinin alacağı olur). Carisi zaten varsa yeni cari açmayın; o carinin kartında Tablodaki Kayıt alanından bu kayda bağlayın.",
         onSaved: account => {

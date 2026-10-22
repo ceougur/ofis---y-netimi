@@ -1,0 +1,32 @@
+{
+  "ad": "244-kayit/5b-yesil-son",
+  "komut": "node --test test/asama0-226.test.mjs test/banka-210-eslesmis.test.mjs test/banka-210-gg-olay.test.mjs test/banka-210-gg2-bag.test.mjs test/banka-210-post.test.mjs test/banka-210-sira.test.mjs test/duzeltmeler-212.test.mjs test/inceleme-226-2.test.mjs test/inceleme-226.test.mjs test/plan-transfer.test.mjs test/tablodan-aktar-244.test.mjs test/plans.test.mjs test/plan-case-link.test.mjs test/kayit-tahsilat-244.test.mjs test/dues.test.mjs test/cari-243.test.mjs test/rapor-tablodaki-kisiler-244.test.mjs test/reports.test.mjs test/raporlar-209.test.mjs test/uyari-ufku-225.test.mjs test/hiz-243-arka-plan.test.mjs test/yazim-duzeni.test.mjs test/bulgu-223.test.mjs test/schema-flex.test.mjs test/table-columns.test.mjs test/sirketler-217.test.mjs test/cheques-overview.test.mjs",
+  "commit": "f6d38288ccceaa9cc9148c778111a9e7a562c906",
+  "dal": "is/kayit",
+  "kirli": 11,
+  "izlenmeyen": 22,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T06:40:59.855Z",
+  "sure_sn": 50,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 396,
+    "gecen": 396,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kayit/5b-yesil-son.log",
+  "klasor": "/home/user/wt/kayit",
+  "ham_cikti_sha256": "5152d67fb255103d722dadba8368868cdded8e6257a1c472d20646115420f343",
+  "ham_cikti_bayt": 143228
+}

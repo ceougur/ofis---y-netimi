@@ -69,6 +69,7 @@ function monthHeader(column) {
 }
 const UNPAID_MARK = /^(0|0 00|yok|odenmedi|odemedi|odenmemis|borc|borclu|bekliyor|gecikti|gecikme|x|hayir|h)$/;
 const AMOUNT_DEBT = /\b(kalan|bakiye|borc\w*|alacak\w*|toplam borc)\b/;
+const AMOUNT_REMAINING = /\b(kalan|bakiye)\b/;
 // v2.0.2: şablon satırları ve öğrencinin (üyenin) hizmet dönemi.
 // Hizmetin başladığı / bittiği tarih: öncesindeki ve sonrasındaki boş aylar borç sayılmaz.
 const START_DATE = /\b(kayit tarihi|kayit|baslangic\w*|baslama\w*|giris tarihi|servise baslama|hizmet baslangic\w*)\b/;
@@ -177,7 +178,9 @@ function classifyColumns(rows, columns, analyses, now, forced = null) {
   };
   const own = moneyLike.find(column => AMOUNT_OWN.test(foldText(column)) && !due.some(item => item.column === column)) || null;
   // Kalan borç: tutar kolonu olarak tanınmış, ya da başlığı kalan/bakiye/borç olan ve tutar yazılmış (seyrek de olsa) kolon.
-  const debt = moneyLike.find(column => AMOUNT_DEBT.test(foldText(column))) || columns.find(column => AMOUNT_DEBT.test(foldText(column)) && rows.some(row => parseAmount(cell(row, column)) !== null)) || null;
+  // 2.4.4 (5b): "Kalan" / "Bakiye" kolonu varsa o (önceden ilk eşleşen alındığı için "Alacak Tutarı" + "Kalan" tablosunda toplam alacak "Kalan Borç"
+  // sayılıyordu; "önce cari açın" formundaki Açılış Bakiyesi bu tutardan dolar).
+  const debt = moneyLike.find(column => AMOUNT_REMAINING.test(foldText(column))) || moneyLike.find(column => AMOUNT_DEBT.test(foldText(column))) || columns.find(column => AMOUNT_DEBT.test(foldText(column)) && rows.some(row => parseAmount(cell(row, column)) !== null)) || null;
   // Tek vadeli tabloda ("Alacak / Son ödeme", "Tutar / Vade") kalemin tutarı, kendi tutar kolonu yoksa borç ya da
   // tablodaki tek tutar kolonudur; birden çok tutar kolonu varsa (borç, ödenen, kalan) yalnız kalan borç kullanılır.
   const single = due.filter(entry => entry.installment === null).length === 1 && !monthly.length && !recurring.length;
@@ -307,7 +310,7 @@ export function rowState(row, context) {
   const debtAmount = context.debt ? parseAmount(cell(row, context.debt)) : null;
   const paidOff = Boolean(context.debt && debtAmount === 0 && !isEmptyCell(cell(row, context.debt)));
   const phone = context.primary.phone ? String(cell(row, context.primary.phone) ?? "").trim() : "";
-  return { person, caseNo, phone, closed, inactive, paidOff, debt: debtAmount && debtAmount > 0 ? debtAmount : null };
+  return { person, caseNo, phone, closed, inactive, paidOff, debt: debtAmount && debtAmount > 0 ? debtAmount : null, debtColumn: debtAmount && debtAmount > 0 ? context.debt : "" };
 }
 
 // Takvim kaleminin kimliği ("Ödendi say" bu kimlikle saklanır; aktarma da aynı kimlikle okur).
@@ -357,7 +360,7 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
       if (!state || state.closed || state.inactive || state.paidOff) continue;
       const { person, caseNo } = state;
       // Kimlikte sekmenin asıl adı: sekme kalemle yeniden adlandırılınca kapatılan kalemler geri açılmaz (v2.0.2).
-      const base = { caseKey: row.__hofKey, tab, sheet: row.__hofSheet || tab, person, caseNo, phone: state.phone, debt: state.debt };
+      const base = { caseKey: row.__hofKey, tab, sheet: row.__hofSheet || tab, person, caseNo, phone: state.phone, debt: state.debt, debtColumn: state.debtColumn };
       for (const entry of due) {
         const read = readDue(cell(row, entry.column), now);
         if (!read || read.settled) continue;
@@ -474,6 +477,7 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
       fullAmount: item.amount,
       partial: item.amount !== null && (item.paid > 0.004 || Boolean(item.cellPaid)),
       debt: item.debt,
+      debtColumn: item.debtColumn || "",
       thisMonth: item.time >= monthStart && item.time <= monthEnd,
     });
   }

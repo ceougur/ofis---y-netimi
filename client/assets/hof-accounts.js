@@ -766,7 +766,10 @@
         ...(account
           ? []
           : [
-              { name: "openingBalance", label: "Açılış Bakiyesi (₺)", inputmode: "decimal", placeholder: "Örn. 1.500", help: "Önceki defterden devreden bakiye. Boş bırakılabilir." },
+              // 2.4.4 (5b): kayıttan açılan caride kayıttaki Kalan Borç ile dolu (değiştirilebilir); kaynağı alanın altında yazar.
+              Number(preset?.openingBalance) > 0
+                ? { name: "openingBalance", label: "Açılış Bakiyesi (₺)", inputmode: "decimal", value: office().amountText?.(preset.openingBalance) || String(preset.openingBalance), help: `Kayıttaki “${preset.openingSource || "Kalan Borç"}” kolonundan geldi; değiştirebilir ya da silebilirsiniz. Tablodan Aktar bu borcu ikinci kez yazmaz.` }
+                : { name: "openingBalance", label: "Açılış Bakiyesi (₺)", inputmode: "decimal", placeholder: "Örn. 1.500", help: "Önceki defterden devreden bakiye. Boş bırakılabilir." },
               { name: "openingSide", label: "Bakiye Yönü", type: "select", value: "auto", options: OPENING_SIDES, help: "Tedarikçi listesindeki bakiye çoğunlukla bizim borcumuzdur (Alacaklı)." },
             ]),
       ],

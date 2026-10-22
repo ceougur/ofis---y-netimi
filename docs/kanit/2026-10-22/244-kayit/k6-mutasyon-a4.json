@@ -1,0 +1,43 @@
+{
+  "ad": "244-kayit/k6-mutasyon-a4",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-k6-a4/test/tablodan-aktar-244.test.mjs /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-k6-a4/test/kayit-tahsilat-244.test.mjs",
+  "commit": "7d51d60f6298e3ac058b06db34ef2059c8cba896",
+  "dal": "is/kayit",
+  "kirli": 2,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T08:08:23.294Z",
+  "sure_sn": 2.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 12,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 5a: Tablodan Aktar kayda bağlı carinin taksit dışı tahsilatlarını karta yazar; bakiye, Kasa ve banka aynı › A7 başka kartın tahsilatına dokunulmaz; A10 geri al: cari tahsilatları aynen döner, sayılar aynı",
+      "konum": "test/tablodan-aktar-244.test.mjs:140:3",
+      "hata": "üç tahsilat yine carinin hesabında · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.4 5b: Tablodan Aktar carinin mevcut borcunu ikinci kez yazmaz (açılış bakiyesi + kart = çift borç olmaz) › B6 geri al: kart kalkar, 2.000 carinin hesabına döner; bakiye ve Kasa aynı",
+      "konum": "test/tablodan-aktar-244.test.mjs:260:3",
+      "hata": "Expected values to be strictly equal: · 9000 !== 7000 (beklenen 7000, gelen 9000)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kayit/k6-mutasyon-a4.log",
+  "klasor": "/home/user/wt/kayit",
+  "ham_cikti_sha256": "a90653fde54e31412c1918a2609c9c34b9b4abde0af9735d7df6bbdfdba55ae8",
+  "ham_cikti_bayt": 9154
+}
