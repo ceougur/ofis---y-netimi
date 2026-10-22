@@ -447,7 +447,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   hareketleri; MM3 Stopaj/Tevkifat Özeti satıştan iadeyi "bizim kestiğimiz" sayıyor → ters yön; MM8 yevmiye aynı gün sırası (ders 31). SONRAYA (2.4.5+): MM1 cari kartında
   "Stopaj Yapar", MM2 KDV mahsubu yapılmış ayda iptal uyarısı, MM5 aynı dosya no iki sekmede borç (kural kararı), MM9, MM12; 30.000 TL nihai tüketici engeli değişmez
   (mevzuat doğrulanamadı; kullanıcının mali müşavirine sorulur). ALT KARAR (21:28 UTC soruldu): bırakılan kâğıt makbuzun sonradan e-SMM olarak gönderilmesi kapansın
-  (öneri; müşteri fişi değişmez).
+  (öneri; müşteri fişi değişmez). → 5 dk YETKİSİYLE UYGULANDI (21:34 UTC): bırakılan kâğıt makbuz e-SMM'e gönderilmez (kalıcı engel, nedeni görünür).
+- CI #862 (50e3bd0 = aday 7) BÜTÜN İŞLER YEŞİL (22.10 ~21:40 UTC okundu): 7d, 24b, 30b, 30d, 30e, 30f çizildi; 30a (E2/U2 sürüyor) ve 30 (göç karşılaştırması
+  düzeltmelerden sonra yeniden, yargıç Y3) açık.
 - İSTEKLER (kullanıcı, 22.10.2026 ~14:00–14:50 UTC; hepsi yanıtlandı): "18 numarada portalda ben ne yapacağım" → elle kabul adımları iş listesi 18 (teslimde
   kurulumla); "kalan işler için zaman çizelgesi, aynı anda yapılanları tek süre say" → verildi (devam notu ZAMAN ÇİZELGESİ); "compact talimatı vereceğim, veri kaybı
   olmasın" → devam notu 00 + ajan kayıtları yazıldı ve gönderildi (f013e57); EDM test hesabı ~14:45 UTC yeniden verildi (yalnız oturumda; dosyaya yazılmadı).
