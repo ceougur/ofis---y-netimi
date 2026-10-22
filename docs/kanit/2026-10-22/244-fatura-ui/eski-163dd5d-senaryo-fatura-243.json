@@ -1,0 +1,108 @@
+{
+  "ad": "244-fatura-ui/eski-163dd5d-senaryo-fatura-243",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/fatura-ui/fatura-ui-eski-163dd5d/test/e2e/senaryo-fatura-243.mjs",
+  "commit": "4ef5ce22ff00d94278f01b13feb57da7c45a81cf",
+  "dal": "is/fatura-ui",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:12:03.303Z",
+  "sure_sn": 66.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 60,
+    "gecen": 45,
+    "basarisiz": 15,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 15 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "UX20 kayıt + gönderim sonucu tek bildirim (2: Satış Faturası Gönderilecek kaydedildi. | EDM'ye ulaşılamadı; belge numarasız Gönderilecekler'e eklendi, bağlantı gelince Tümünü Gönder ile gönderin.)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "UX20 bildirim durum adını numara gibi yazmaz (\"Gönderilecek kaydedildi\" yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "UI9 ürün seçilince Birim Fiyat \"1.249,90\" (1249,9)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "UI9 Tab ile girip çıkınca biçim bozulmaz",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "UI3a EAN-13 kutuda kesilmez (8690123456789 · görünen 100 / içerik 113)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "UI3a 14 karakterli kod kesilmez (STK-2.0.26-001 · 100 / 110)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "UI5 kart başta açıldı, başlık görünür (scrollTop 23, görünür true)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "UX17 ödenmiş faturanın üstü \"Genel Toplam\" (Tahsil Edilecek; açık 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "UX17 başlıkta \"Tahsil Edilecek\" yok",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "UX27 pasif Düzenle dolu değil, gri zemin (rgb(31, 106, 80) ↔ rgb(244, 249, 245))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "UX17 kısmi ödenmişte tutar + \"Kalan\" (Tahsil Edilecek₺600,00)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "UX16 yazılan ad yeni cari formunda (boş)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cari bir kez açıldı, müşteri ([])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "faturada yeni cari seçili ({\"name\":\"Yeni Müşteri A\",\"id\":\"\"})",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "UX25 e-SMM kapalıyken seçenek yok (Tüm Belge Türleri, Kâğıt Fatura, e-Arşiv Fatura, e-Fatura (Temel), e-Fatura (Ticari), e-SMM)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-fatura-ui/eski-163dd5d-senaryo-fatura-243.log",
+  "klasor": "/home/user/wt/fatura-ui",
+  "ham_cikti_sha256": "cdd2310809212eadf5195c6642d089802b1de540211dbe46f1874020822d4c55",
+  "ham_cikti_bayt": 5653
+}
