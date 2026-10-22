@@ -1,0 +1,232 @@
+fatal: not a git repository (or any of the parent directories): .git
+
+■ hazirlik) Kurulum: üretim bayrakları, sabit test adresi, sunucu
+  ✓ üretim girişi (server/server.mjs) e-Belgeyi ve e-SMM'yi açar: {"edocEnabled":true,"edocLive":true,"esmmEnabled":true}
+  ✓ programın test adresleri betiğin sabitleriyle aynı (https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc · https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc)
+  ✓ canlı adresler bekçide reddedilir (https://portal2.edmbilisim.com.tr/EFaturaEDM/EFaturaEDM.svc · https://portal2.edmbilisim.com.tr/EFaturaEDM/ESmmEDM.svc)
+  ✓ yönetici girişi
+
+■ a-baglanti) Entegratör Ayarları (Test Ortamı) + Bağlantıyı Test Et: e-Fatura ve e-SMM servisleri
+  ✓ ayarlar kaydedildi; e-SMM kullanıcısıyım işaretli (200)
+  ✓ ortam Test, programın gideceği adresler izinli: http://127.0.0.1:45341/EFaturaEDM21ea/EFaturaEDM.svc · http://127.0.0.1:45341/EFaturaEDM21ea/ESmmEDM.svc
+  ✓ Bağlantıyı Test Et: 200 EDM'ye giriş yapıldı; bağlantı çalışıyor. Servis sözleşmesi (WSDL) okundu: SOAP 1.1, 9 işlem. EDM e-SMM servisine giriş yapıldı; bağlantı çalışıyor. Servis sözleşmesi (WSDL) okundu: SOAP 1.1, 16 işlem.
+
+■ hazirlik-cariler) Cariler: e-SMM alıcısı şirket (EDM'de e-Fatura mükellefi OLMADIĞI sorgulanmış VKN) + e-Arşiv alıcısı kişi
+  ✓ e-SMM alıcısı VKN'si EDM'de mükellef değil (Mükellef Sorgula): 7193891859
+  ✓ cari Deneme Müvekkil Danışmanlık A.Ş.: 200
+  ✓ cari Ahmet Yılmaz: 200
+
+■ hazirlik-kullanicilar) Kullanıcılar: fatura yetkili 2 kullanıcı (Muhasebe rolü) + yetkisiz 1 kullanıcı (Personel); ikinci şirket alıcı (Ankara)
+  ✓ kullanıcı fatura1 (muhasebe) açıldı, giriş yaptı (200 / 200)
+  ✓ kullanıcı fatura2 (muhasebe) açıldı, giriş yaptı (200 / 200)
+  ✓ kullanıcı personel1 (personel) açıldı, giriş yaptı (200 / 200)
+  ✓ ikinci şirket alıcının VKN'si EDM'de mükellef değil (Mükellef Sorgula): 5371365696
+  ✓ cari Deneme Hukuk Danışmanlık Ltd. Şti.: 200
+
+■ ya-eszamanli-kayit) AYNI ANDA 31 istek, 3 oturumdan: 20 e-SMM Kaydet ve Gönder + 10 e-SMM Kes, Sonra Gönder + 1 yetkisiz (Personel)
+  i BİLGİ: soğuk başlangıç: programın EDM oturum ve sözleşme önbelleği boşaltıldı (sabah ilk gönderim / program yeniden açıldı); her istek kendi girişini dener
+  ✓ A01 (yonetici, VKN) HTTP 200 871 ms: Kaydet ve Gönder → TES2026770314396, e-Belge durumu sent (beklenen: EDM'ye iletildi)
+  ✓ A02 (fatura1, VKN) HTTP 200 1086 ms: Kaydet ve Gönder → TES2026770314395, e-Belge durumu sent (beklenen: EDM'ye iletildi)
+  ✓ A03 (fatura2, TCKN) HTTP 200 1172 ms: Kaydet ve Gönder → TES2026770314398, e-Belge durumu sent (beklenen: EDM'ye iletildi)
+  ✓ A04 (yonetici, VKN) HTTP 200 1052 ms: Kaydet ve Gönder → TES2026770314397, e-Belge durumu sent (beklenen: EDM'ye iletildi)
+  ✓ A05 (fatura1, VKN) HTTP 200 1239 ms: Kaydet ve Gönder → TES2026770314399, e-Belge durumu sent (beklenen: EDM'ye iletildi)
+  ✓ A06 (fatura2, TCKN) HTTP 200 1389 ms: Kaydet ve Gönder → TES2026770314400, e-Belge durumu sent (beklenen: EDM'ye iletildi)
+  ✓ A07 (yonetici, VKN) HTTP 200 791 ms: Kaydet ve Gönder → TES2026770314401, e-Belge durumu sent (beklenen: EDM'ye iletildi)
+  ✓ A08 (fatura1, VKN) HTTP 200 1478 ms: Kaydet ve Gönder → TES2026770314402, e-Belge durumu sent (beklenen: EDM'ye iletildi)
+  ✓ A09 (fatura2, TCKN) HTTP 200 1202 ms: Kaydet ve Gönder → TES2026770314403, e-Belge durumu sent (beklenen: EDM'ye iletildi)
+  ✓ A10 (yonetici, VKN) HTTP 200 1354 ms: Kaydet ve Gönder → TES2026770314404, e-Belge durumu sent (beklenen: EDM'ye iletildi)
+  ✓ A11 (fatura1, VKN) HTTP 200 1503 ms: Kaydet ve Gönder → TES2026770314405, e-Belge durumu sent (beklenen: EDM'ye iletildi)
+  ✓ A12 (fatura2, TCKN) HTTP 200 904 ms: Kaydet ve Gönder → TES2026770314406, e-Belge durumu sent (beklenen: EDM'ye iletildi)
+  ✓ A13 (yonetici, VKN) HTTP 200 1626 ms: Kaydet ve Gönder → TES2026770314407, e-Belge durumu sent (beklenen: EDM'ye iletildi)
+  ✓ A14 (fatura1, VKN) HTTP 200 1025 ms: Kaydet ve Gönder → TES2026770314408, e-Belge durumu sent (beklenen: EDM'ye iletildi)
+  ✓ A15 (fatura2, TCKN) HTTP 200 1320 ms: Kaydet ve Gönder → TES2026770314409, e-Belge durumu sent (beklenen: EDM'ye iletildi)
+  ✓ A16 (yonetici, VKN) HTTP 200 1474 ms: Kaydet ve Gönder → TES2026770314410, e-Belge durumu sent (beklenen: EDM'ye iletildi)
+  ✓ A17 (fatura1, VKN) HTTP 200 1619 ms: Kaydet ve Gönder → TES2026770314411, e-Belge durumu sent (beklenen: EDM'ye iletildi)
+  ✓ A18 (fatura2, TCKN) HTTP 200 1019 ms: Kaydet ve Gönder → TES2026770314412, e-Belge durumu sent (beklenen: EDM'ye iletildi)
+  ✓ A19 (yonetici, VKN) HTTP 200 1171 ms: Kaydet ve Gönder → TES2026770314413, e-Belge durumu sent (beklenen: EDM'ye iletildi)
+  ✓ A20 (fatura1, VKN) HTTP 200 1324 ms: Kaydet ve Gönder → TES2026770314414, e-Belge durumu sent (beklenen: EDM'ye iletildi)
+  ✓ B01 (fatura1, TCKN) HTTP 200 95 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)
+  ✓ B02 (fatura2, VKN) HTTP 200 116 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)
+  ✓ B03 (yonetici, VKN) HTTP 200 134 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)
+  ✓ B04 (fatura1, TCKN) HTTP 200 153 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)
+  ✓ B05 (fatura2, VKN) HTTP 200 175 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)
+  ✓ B06 (yonetici, VKN) HTTP 200 194 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)
+  ✓ B07 (fatura1, TCKN) HTTP 200 214 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)
+  ✓ B08 (fatura2, VKN) HTTP 200 238 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)
+  ✓ B09 (yonetici, VKN) HTTP 200 257 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)
+  ✓ B10 (fatura1, TCKN) HTTP 200 289 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)
+  ✓ yetkisiz kullanıcının (Personel) Kaydet ve Gönder'i 403 ile reddedildi, belge açılmadı, numara harcanmadı (0)
+  i BİLGİ: EDM e-SMM servisine Login: 20 (en çok eşzamanlı 20); SendSMM 20 (en çok eşzamanlı 20); sözleşme (WSDL) okuma 2
+  ✗ e-SMM servisine giriş tek uçuş (N4): soğuk başta tam 1 Login — Login 20, en çok eşzamanlı 20
+  i BİLGİ: süreler: Kaydet ve Gönder {"en":791,"medyan":1239,"enCok":1626} ms, Kes, Sonra Gönder {"en":95,"medyan":194,"enCok":289} ms; 30 sn'yi aşan Kaydet ve Gönder 0 (arayüzün kayıt zaman aşımı 30 sn: aşanlarda ekran "sunucuda sürüyor olabilir" derdi)
+  ✓ ön koşul (zorla): sahte EDM'de aynı anda işlenen SendSMM en çok 20 ≥ 10
+  i BİLGİ: ön koşul (zorla, soğuk): önbellek boşken aynı anda 20 SendSMM, sahte EDM'de en çok eşzamanlı Login 20
+
+■ yb-tumunu-gonder) İki kullanıcı (fatura1, fatura2) AYNI ANDA Tümünü Gönder + yönetici aynı anda A belgelerine Durum Sorgula
+  ✓ Gönderilecekler'de B'nin 10 belgesi (liste 10)
+  ✓ Tümünü Gönder istekleri: 2, hepsi HTTP 200, askı yok (200 200)
+  ✓ gönderim sürerken Durum Sorgula (A, 20 belge): hepsi HTTP 200, askı yok (200)
+  ✓ B01 (TCKN): Tümünü Gönder → TES2026770314415, e-Belge durumu sent (beklenen: iletildi)
+  ✓ B02 (VKN): Tümünü Gönder → TES2026770314416, e-Belge durumu sent (beklenen: iletildi)
+  ✓ B03 (VKN): Tümünü Gönder → TES2026770314417, e-Belge durumu sent (beklenen: iletildi)
+  ✓ B04 (TCKN): Tümünü Gönder → TES2026770314418, e-Belge durumu sent (beklenen: iletildi)
+  ✓ B05 (VKN): Tümünü Gönder → TES2026770314419, e-Belge durumu sent (beklenen: iletildi)
+  ✓ B06 (VKN): Tümünü Gönder → TES2026770314420, e-Belge durumu sent (beklenen: iletildi)
+  ✓ B07 (TCKN): Tümünü Gönder → TES2026770314421, e-Belge durumu sent (beklenen: iletildi)
+  ✓ B08 (VKN): Tümünü Gönder → TES2026770314422, e-Belge durumu sent (beklenen: iletildi)
+  ✓ B09 (VKN): Tümünü Gönder → TES2026770314423, e-Belge durumu sent (beklenen: iletildi)
+  ✓ B10 (TCKN): Tümünü Gönder → TES2026770314424, e-Belge durumu sent (beklenen: iletildi)
+  i BİLGİ: iki oturumun sonuçları: {"fatura1 gönderdi":10,"fatura2 başka oturumda gönderildi":10}; yeniden basış 0 (arayüz iletisi "kalan belge olursa Tümünü Gönder'e yeniden basın")
+  i BİLGİ: EDM: {"smm:SendSMM":{"sayi":10,"hata":0,"enCokEszamanli":1,"sureMs":{"en":303,"medyan":603,"enCok":903}},"smm:GetSMMStatus":{"sayi":20,"hata":0,"enCokEszamanli":1,"sureMs":{"en":21,"medyan":23,"enCok":38}}}
+
+■ yc-durum) Durum Sorgula: 30 belge, son duruma kadar
+13:53:07 durum turu 1: 20/30 son durumda
+13:53:07 durum turu 2: 30/30 son durumda
+  ✓ A01 TES2026770314396: EDM son durum sent (SEND - SUCCEED)
+  ✓ A02 TES2026770314395: EDM son durum sent (SEND - SUCCEED)
+  ✓ A03 TES2026770314398: EDM son durum sent (SEND - SUCCEED)
+  ✓ A04 TES2026770314397: EDM son durum sent (SEND - SUCCEED)
+  ✓ A05 TES2026770314399: EDM son durum sent (SEND - SUCCEED)
+  ✓ A06 TES2026770314400: EDM son durum sent (SEND - SUCCEED)
+  ✓ A07 TES2026770314401: EDM son durum sent (SEND - SUCCEED)
+  ✓ A08 TES2026770314402: EDM son durum sent (SEND - SUCCEED)
+  ✓ A09 TES2026770314403: EDM son durum sent (SEND - SUCCEED)
+  ✓ A10 TES2026770314404: EDM son durum sent (SEND - SUCCEED)
+  ✓ A11 TES2026770314405: EDM son durum sent (SEND - SUCCEED)
+  ✓ A12 TES2026770314406: EDM son durum sent (SEND - SUCCEED)
+  ✓ A13 TES2026770314407: EDM son durum sent (SEND - SUCCEED)
+  ✓ A14 TES2026770314408: EDM son durum sent (SEND - SUCCEED)
+  ✓ A15 TES2026770314409: EDM son durum sent (SEND - SUCCEED)
+  ✓ A16 TES2026770314410: EDM son durum sent (SEND - SUCCEED)
+  ✓ A17 TES2026770314411: EDM son durum sent (SEND - SUCCEED)
+  ✓ A18 TES2026770314412: EDM son durum sent (SEND - SUCCEED)
+  ✓ A19 TES2026770314413: EDM son durum sent (SEND - SUCCEED)
+  ✓ A20 TES2026770314414: EDM son durum sent (SEND - SUCCEED)
+  ✓ B01 TES2026770314415: EDM son durum sent (SEND - SUCCEED)
+  ✓ B02 TES2026770314416: EDM son durum sent (SEND - SUCCEED)
+  ✓ B03 TES2026770314417: EDM son durum sent (SEND - SUCCEED)
+  ✓ B04 TES2026770314418: EDM son durum sent (SEND - SUCCEED)
+  ✓ B05 TES2026770314419: EDM son durum sent (SEND - SUCCEED)
+  ✓ B06 TES2026770314420: EDM son durum sent (SEND - SUCCEED)
+  ✓ B07 TES2026770314421: EDM son durum sent (SEND - SUCCEED)
+  ✓ B08 TES2026770314422: EDM son durum sent (SEND - SUCCEED)
+  ✓ B09 TES2026770314423: EDM son durum sent (SEND - SUCCEED)
+  ✓ B10 TES2026770314424: EDM son durum sent (SEND - SUCCEED)
+
+■ yd-resmi-pdf) Resmî görüntü (GetSMM PDF): VKN'li bir A, TCKN'li bir A, bir B
+  ✓ A01 TES2026770314396 (VKN): PDF 64 bayt ≥ 10, indirme adı numarayı taşır
+  ✓ A03 TES2026770314398 (TCKN): PDF 64 bayt ≥ 10, indirme adı numarayı taşır
+  ✓ B01 TES2026770314415 (TCKN): PDF 64 bayt ≥ 10, indirme adı numarayı taşır
+
+■ ye-edm-okuyucu) BAĞIMSIZ OKUYUCU: her ETTN EDM'de (GetSMM, yalnız ETTN ile) aranır; EDM'nin kaydındaki numara = programın numarası; numaralı ama EDM'de olmayan belge yok
+  ✓ A01 TES2026770314396: EDM'de 1 kayıt, EDM'deki numara TES2026770314396 (SEND - SUCCEED)
+  ✓ A02 TES2026770314395: EDM'de 1 kayıt, EDM'deki numara TES2026770314395 (SEND - SUCCEED)
+  ✓ A03 TES2026770314398: EDM'de 1 kayıt, EDM'deki numara TES2026770314398 (SEND - SUCCEED)
+  ✓ A04 TES2026770314397: EDM'de 1 kayıt, EDM'deki numara TES2026770314397 (SEND - SUCCEED)
+  ✓ A05 TES2026770314399: EDM'de 1 kayıt, EDM'deki numara TES2026770314399 (SEND - SUCCEED)
+  ✓ A06 TES2026770314400: EDM'de 1 kayıt, EDM'deki numara TES2026770314400 (SEND - SUCCEED)
+  ✓ A07 TES2026770314401: EDM'de 1 kayıt, EDM'deki numara TES2026770314401 (SEND - SUCCEED)
+  ✓ A08 TES2026770314402: EDM'de 1 kayıt, EDM'deki numara TES2026770314402 (SEND - SUCCEED)
+  ✓ A09 TES2026770314403: EDM'de 1 kayıt, EDM'deki numara TES2026770314403 (SEND - SUCCEED)
+  ✓ A10 TES2026770314404: EDM'de 1 kayıt, EDM'deki numara TES2026770314404 (SEND - SUCCEED)
+  ✓ A11 TES2026770314405: EDM'de 1 kayıt, EDM'deki numara TES2026770314405 (SEND - SUCCEED)
+  ✓ A12 TES2026770314406: EDM'de 1 kayıt, EDM'deki numara TES2026770314406 (SEND - SUCCEED)
+  ✓ A13 TES2026770314407: EDM'de 1 kayıt, EDM'deki numara TES2026770314407 (SEND - SUCCEED)
+  ✓ A14 TES2026770314408: EDM'de 1 kayıt, EDM'deki numara TES2026770314408 (SEND - SUCCEED)
+  ✓ A15 TES2026770314409: EDM'de 1 kayıt, EDM'deki numara TES2026770314409 (SEND - SUCCEED)
+  ✓ A16 TES2026770314410: EDM'de 1 kayıt, EDM'deki numara TES2026770314410 (SEND - SUCCEED)
+  ✓ A17 TES2026770314411: EDM'de 1 kayıt, EDM'deki numara TES2026770314411 (SEND - SUCCEED)
+  ✓ A18 TES2026770314412: EDM'de 1 kayıt, EDM'deki numara TES2026770314412 (SEND - SUCCEED)
+  ✓ A19 TES2026770314413: EDM'de 1 kayıt, EDM'deki numara TES2026770314413 (SEND - SUCCEED)
+  ✓ A20 TES2026770314414: EDM'de 1 kayıt, EDM'deki numara TES2026770314414 (SEND - SUCCEED)
+  ✓ B01 TES2026770314415: EDM'de 1 kayıt, EDM'deki numara TES2026770314415 (SEND - SUCCEED)
+  ✓ B02 TES2026770314416: EDM'de 1 kayıt, EDM'deki numara TES2026770314416 (SEND - SUCCEED)
+  ✓ B03 TES2026770314417: EDM'de 1 kayıt, EDM'deki numara TES2026770314417 (SEND - SUCCEED)
+  ✓ B04 TES2026770314418: EDM'de 1 kayıt, EDM'deki numara TES2026770314418 (SEND - SUCCEED)
+  ✓ B05 TES2026770314419: EDM'de 1 kayıt, EDM'deki numara TES2026770314419 (SEND - SUCCEED)
+  ✓ B06 TES2026770314420: EDM'de 1 kayıt, EDM'deki numara TES2026770314420 (SEND - SUCCEED)
+  ✓ B07 TES2026770314421: EDM'de 1 kayıt, EDM'deki numara TES2026770314421 (SEND - SUCCEED)
+  ✓ B08 TES2026770314422: EDM'de 1 kayıt, EDM'deki numara TES2026770314422 (SEND - SUCCEED)
+  ✓ B09 TES2026770314423: EDM'de 1 kayıt, EDM'deki numara TES2026770314423 (SEND - SUCCEED)
+  ✓ B10 TES2026770314424: EDM'de 1 kayıt, EDM'deki numara TES2026770314424 (SEND - SUCCEED)
+  ✓ numaralı ama EDM'de olmayan belge: 0
+  i BİLGİ: okuyucu GetSMM biçimi: HEADER_ONLY Y
+
+■ yf-degismezler) Değişmezler: 30 belge, ETTN tekil, TES tekil + ardışık (seride boşluk yok), tarih, tek gönderim, 11048 yok, stopaj kuralı, UBL-TR XSD
+  ✓ veri tabanında işaretli notla TAM 30 belge (bulunan 30), hepsi yanıtlardaki kimliklerle aynı, kesilmiş e-SMM
+  ✓ ETTN'ler tekil (30/30) ve UUID biçiminde
+  ✓ TES numaraları tekil ve ardışık: TES2026770314395 … TES2026770314424 (tekrar 0, boşluk 0; önceki en büyük yok, sonra en büyük 770314424, aralıkta 30 belge)
+  ✓ belge tarihleri koşu günü (2026-10-22) ve numara sırasıyla tarih sırası tutarlı
+  i BİLGİ: aynı gün içinde saat ↔ numara ters komşu çifti: 0 (eşzamanlı kayıtta numara kayıt işleminin sırasıyla verilir, saat formun açıldığı/kaydın başladığı anı taşır; GİB sıra kuralı tarih düzeyindedir — denetim değil)
+  ✓ her belgede TAM bir gönderim kaydı (invoice.e.sent): uymayan 0
+  ✓ EDM "daha önce gönderdiğiniz SMM" (11048) görülmedi (0)
+  ✓ stopaj (talimat: VKN'li şirket %20, TCKN'li kişi stopajsız): uymayan 0
+  ✓ A01 TES2026770314396 (VKN'li alıcı) UBL'i OASIS UBL 2.1 + GİB UBL-TR 1.2.1 XSD'sine uygun
+  ✓ A03 TES2026770314398 (TCKN'li alıcı) UBL'i OASIS UBL 2.1 + GİB UBL-TR 1.2.1 XSD'sine uygun
+  ✓ sahte EDM sözleşme ihlali yok (0)
+  ✓ sahte EDM'nin defterinde numaralar tekil (30/30)
+
+■ h-hata-kodlari) Görülen ret / hata kodları (PACKAGE-FAIL, SEND-FAILED, EDM hata kodu, 11048)
+  · 0 kayıt; PACKAGE-FAIL görülmedi
+
+# EDM Test Ortamı — eşzamanlı e-SMM (2.4.4 iş listesi 24b) — KURU KOŞU
+
+**Test portalı:** https://test.edmbilisim.com.tr/EFaturaUI21ea/ (Entegratör Ayarları'ndaki test kullanıcı adı ve parolasıyla) → e-Arşiv belgeleri portalın e-Arşiv bölümünde; e-SMM için portalda sarı "SMMM Portalı Girişi" düğmesi.
+**KURU KOŞU:** sahte EDM (yerel, ağa çıkmadı) — aşağıdaki numaralar EDM'de YOKTUR; yalnız özetin biçimini gösterir.
+
+Commit okunamadı · başlangıç 22.10.2026 16:52:57 · bitiş 22.10.2026 16:53:09 (TR) · denetim 135/136 geçti · çıkış 1
+
+Adımlar: hazirlik geçti · a-baglanti geçti · hazirlik-cariler geçti · hazirlik-kullanicilar geçti · ya-eszamanli-kayit kaldı (1 kalan) · yb-tumunu-gonder geçti · yc-durum geçti · yd-resmi-pdf geçti · ye-edm-okuyucu geçti · yf-degismezler geçti · h-hata-kodlari bilgi
+
+Bilgi (denetim değil):
+- ya-eszamanli-kayit: soğuk başlangıç: programın EDM oturum ve sözleşme önbelleği boşaltıldı (sabah ilk gönderim / program yeniden açıldı); her istek kendi girişini dener
+- ya-eszamanli-kayit: EDM e-SMM servisine Login: 20 (en çok eşzamanlı 20); SendSMM 20 (en çok eşzamanlı 20); sözleşme (WSDL) okuma 2
+- ya-eszamanli-kayit: süreler: Kaydet ve Gönder {"en":791,"medyan":1239,"enCok":1626} ms, Kes, Sonra Gönder {"en":95,"medyan":194,"enCok":289} ms; 30 sn'yi aşan Kaydet ve Gönder 0 (arayüzün kayıt zaman aşımı 30 sn: aşanlarda ekran "sunucuda sürüyor olabilir" derdi)
+- ya-eszamanli-kayit: ön koşul (zorla, soğuk): önbellek boşken aynı anda 20 SendSMM, sahte EDM'de en çok eşzamanlı Login 20
+- yb-tumunu-gonder: iki oturumun sonuçları: {"fatura1 gönderdi":10,"fatura2 başka oturumda gönderildi":10}; yeniden basış 0 (arayüz iletisi "kalan belge olursa Tümünü Gönder'e yeniden basın")
+- yb-tumunu-gonder: EDM: {"smm:SendSMM":{"sayi":10,"hata":0,"enCokEszamanli":1,"sureMs":{"en":303,"medyan":603,"enCok":903}},"smm:GetSMMStatus":{"sayi":20,"hata":0,"enCokEszamanli":1,"sureMs":{"en":21,"medyan":23,"enCok":38}}}
+- ye-edm-okuyucu: okuyucu GetSMM biçimi: HEADER_ONLY Y
+- yf-degismezler: aynı gün içinde saat ↔ numara ters komşu çifti: 0 (eşzamanlı kayıtta numara kayıt işleminin sırasıyla verilir, saat formun açıldığı/kaydın başladığı anı taşır; GİB sıra kuralı tarih düzeyindedir — denetim değil)
+
+Eşzamanlılık: 20 Kaydet ve Gönder + 10 Kes, Sonra Gönder AYNI ANDA, 3 kullanıcı oturumundan (yönetici, fatura1, fatura2); B'yi fatura1 ve fatura2 AYNI ANDA Tümünü Gönder ile gönderdi. Soğuk başlangıç (programın EDM oturum önbelleği boştu). e-SMM servisine Login 20 (en çok eşzamanlı 20), SendSMM en çok eşzamanlı 20. Sahte EDM: zorla evet, arıza yok.
+
+Belgeler İPTAL EDİLMEDİ. Portalda Not alanında "Eşzamanlı deneme ESZ-05fd234a <kod>" yazar. Alıcılar test alıcısıdır (VKN'li iki şirket, TCKN'li kişi 10000000146), gerçek kişi değildir.
+
+| Kod | Aşama | Oturum | Belge No | ETTN / UUID | Belge Tarihi | Saat | Alıcı Türü | Alıcı | Brüt | Stopaj | KDV | Net Ödenecek | EDM Son Durum | EDM'deki No (Bağımsız Okuyucu) |
+|---|---|---|---|---|---|---|---|---|---:|---:|---:|---:|---|---|
+| A01 | A Kaydet ve Gönder | yonetici | TES2026770314396 | d496dfc5-601a-4d25-a5b9-b6462e6e701a | 22.10.2026 | 16:52 | VKN | Deneme Müvekkil Danışmanlık A.Ş. | 1.000,00 | 200,00 | 200,00 | 1.000,00 | Kabul (iletildi) | TES2026770314396 |
+| A02 | A Kaydet ve Gönder | fatura1 | TES2026770314395 | bd1d8a2c-644c-448c-9674-35d01820159c | 22.10.2026 | 16:52 | VKN | Deneme Hukuk Danışmanlık Ltd. Şti. | 2.500,50 | 500,10 | 500,10 | 2.500,50 | Kabul (iletildi) | TES2026770314395 |
+| A03 | A Kaydet ve Gönder | fatura2 | TES2026770314398 | 655ab155-6db8-45ad-b259-01ac5261e979 | 22.10.2026 | 16:52 | TCKN | Ahmet Yılmaz | 333,33 | 0,00 | 66,67 | 400,00 | Kabul (iletildi) | TES2026770314398 |
+| A04 | A Kaydet ve Gönder | yonetici | TES2026770314397 | 51807032-71fb-4583-9c04-c41667b7eae2 | 22.10.2026 | 16:52 | VKN | Deneme Müvekkil Danışmanlık A.Ş. | 200,06 | 40,01 | 40,02 | 200,07 | Kabul (iletildi) | TES2026770314397 |
+| A05 | A Kaydet ve Gönder | fatura1 | TES2026770314399 | a9aa53ec-f40e-4b6a-bc32-d49d9c8535b4 | 22.10.2026 | 16:52 | VKN | Deneme Hukuk Danışmanlık Ltd. Şti. | 1.234,56 | 246,91 | 246,91 | 1.234,56 | Kabul (iletildi) | TES2026770314399 |
+| A06 | A Kaydet ve Gönder | fatura2 | TES2026770314400 | bbc8f527-4e38-46f6-8c50-904aa9a97397 | 22.10.2026 | 16:52 | TCKN | Ahmet Yılmaz | 750,00 | 0,00 | 150,00 | 900,00 | Kabul (iletildi) | TES2026770314400 |
+| A07 | A Kaydet ve Gönder | yonetici | TES2026770314401 | cc1dd2f1-b36a-4102-a9bc-ca5364ba54ec | 22.10.2026 | 16:52 | VKN | Deneme Müvekkil Danışmanlık A.Ş. | 99,99 | 20,00 | 20,00 | 99,99 | Kabul (iletildi) | TES2026770314401 |
+| A08 | A Kaydet ve Gönder | fatura1 | TES2026770314402 | 5b99a3f5-8c45-491d-9287-6ac64cc0925f | 22.10.2026 | 16:52 | VKN | Deneme Hukuk Danışmanlık Ltd. Şti. | 4.200,10 | 840,02 | 840,02 | 4.200,10 | Kabul (iletildi) | TES2026770314402 |
+| A09 | A Kaydet ve Gönder | fatura2 | TES2026770314403 | 9921ae89-a15d-4614-a984-8361f3802068 | 22.10.2026 | 16:52 | TCKN | Ahmet Yılmaz | 15.000,00 | 0,00 | 3.000,00 | 18.000,00 | Kabul (iletildi) | TES2026770314403 |
+| A10 | A Kaydet ve Gönder | yonetici | TES2026770314404 | 53dba3ef-c6ec-4823-a8e1-4f8f5d4ad557 | 22.10.2026 | 16:52 | VKN | Deneme Müvekkil Danışmanlık A.Ş. | 812,47 | 162,49 | 162,49 | 812,47 | Kabul (iletildi) | TES2026770314404 |
+| A11 | A Kaydet ve Gönder | fatura1 | TES2026770314405 | f663f597-e7da-4fa0-9655-730721bccca9 | 22.10.2026 | 16:52 | VKN | Deneme Hukuk Danışmanlık Ltd. Şti. | 100,00 | 20,00 | 20,00 | 100,00 | Kabul (iletildi) | TES2026770314405 |
+| A12 | A Kaydet ve Gönder | fatura2 | TES2026770314406 | 541b84ed-41ef-45bd-b325-6666736a2c1a | 22.10.2026 | 16:52 | TCKN | Ahmet Yılmaz | 2.999,99 | 0,00 | 600,00 | 3.599,99 | Kabul (iletildi) | TES2026770314406 |
+| A13 | A Kaydet ve Gönder | yonetici | TES2026770314407 | 85bd0c78-5650-4b73-bf3d-a9f7842d2b3d | 22.10.2026 | 16:52 | VKN | Deneme Müvekkil Danışmanlık A.Ş. | 5.000,05 | 1.000,01 | 1.000,01 | 5.000,05 | Kabul (iletildi) | TES2026770314407 |
+| A14 | A Kaydet ve Gönder | fatura1 | TES2026770314408 | fe9ba84b-d846-4432-a138-e75ff0744321 | 22.10.2026 | 16:52 | VKN | Deneme Hukuk Danışmanlık Ltd. Şti. | 455,45 | 91,09 | 91,09 | 455,45 | Kabul (iletildi) | TES2026770314408 |
+| A15 | A Kaydet ve Gönder | fatura2 | TES2026770314409 | a1b009c8-821e-4239-8306-b9094cd41893 | 22.10.2026 | 16:52 | TCKN | Ahmet Yılmaz | 120,00 | 0,00 | 24,00 | 144,00 | Kabul (iletildi) | TES2026770314409 |
+| A16 | A Kaydet ve Gönder | yonetici | TES2026770314410 | c3edffdd-a91f-4eae-bbe5-748917e1a2db | 22.10.2026 | 16:52 | VKN | Deneme Müvekkil Danışmanlık A.Ş. | 7.777,77 | 1.555,55 | 1.555,55 | 7.777,77 | Kabul (iletildi) | TES2026770314410 |
+| A17 | A Kaydet ve Gönder | fatura1 | TES2026770314411 | e21b2911-ee21-43df-b6ef-bde4200a6bea | 22.10.2026 | 16:52 | VKN | Deneme Hukuk Danışmanlık Ltd. Şti. | 300,30 | 60,06 | 60,06 | 300,30 | Kabul (iletildi) | TES2026770314411 |
+| A18 | A Kaydet ve Gönder | fatura2 | TES2026770314412 | 11cd60b9-627b-4961-a6c7-8d3988941783 | 22.10.2026 | 16:52 | TCKN | Ahmet Yılmaz | 641,00 | 0,00 | 128,20 | 769,20 | Kabul (iletildi) | TES2026770314412 |
+| A19 | A Kaydet ve Gönder | yonetici | TES2026770314413 | e96404ab-deb8-4b36-a809-213b549243d1 | 22.10.2026 | 16:52 | VKN | Deneme Müvekkil Danışmanlık A.Ş. | 18,18 | 3,64 | 3,64 | 18,18 | Kabul (iletildi) | TES2026770314413 |
+| A20 | A Kaydet ve Gönder | fatura1 | TES2026770314414 | 665250d5-1a51-4d7b-87e7-438e76aa169c | 22.10.2026 | 16:52 | VKN | Deneme Hukuk Danışmanlık Ltd. Şti. | 1.999,95 | 399,99 | 399,99 | 1.999,95 | Kabul (iletildi) | TES2026770314414 |
+| B01 | B Kes, Sonra Gönder → Tümünü Gönder | fatura1 | TES2026770314415 | 03b967c2-a388-413d-a86a-ff64bd9e0308 | 22.10.2026 | 16:52 | TCKN | Ahmet Yılmaz | 450,00 | 0,00 | 90,00 | 540,00 | Kabul (iletildi) | TES2026770314415 |
+| B02 | B Kes, Sonra Gönder → Tümünü Gönder | fatura2 | TES2026770314416 | 481612cd-74eb-4a62-9fca-cee29962cb24 | 22.10.2026 | 16:52 | VKN | Deneme Müvekkil Danışmanlık A.Ş. | 1.250,75 | 250,15 | 250,15 | 1.250,75 | Kabul (iletildi) | TES2026770314416 |
+| B03 | B Kes, Sonra Gönder → Tümünü Gönder | yonetici | TES2026770314417 | ba1795c2-33dc-4769-a15d-7cfa506f14bb | 22.10.2026 | 16:52 | VKN | Deneme Hukuk Danışmanlık Ltd. Şti. | 88,88 | 17,78 | 17,78 | 88,88 | Kabul (iletildi) | TES2026770314417 |
+| B04 | B Kes, Sonra Gönder → Tümünü Gönder | fatura1 | TES2026770314418 | 6179ef95-4c8a-4b21-8e56-8c838ad16562 | 22.10.2026 | 16:52 | TCKN | Ahmet Yılmaz | 1.000,00 | 0,00 | 200,00 | 1.200,00 | Kabul (iletildi) | TES2026770314418 |
+| B05 | B Kes, Sonra Gönder → Tümünü Gönder | fatura2 | TES2026770314419 | 49ff840b-7055-4066-878b-d2ff7196df76 | 22.10.2026 | 16:52 | VKN | Deneme Müvekkil Danışmanlık A.Ş. | 3.333,33 | 666,67 | 666,67 | 3.333,33 | Kabul (iletildi) | TES2026770314419 |
+| B06 | B Kes, Sonra Gönder → Tümünü Gönder | yonetici | TES2026770314420 | 1b79116d-4ac9-486b-b754-5ac2bee5b8f1 | 22.10.2026 | 16:52 | VKN | Deneme Hukuk Danışmanlık Ltd. Şti. | 66,67 | 13,33 | 13,33 | 66,67 | Kabul (iletildi) | TES2026770314420 |
+| B07 | B Kes, Sonra Gönder → Tümünü Gönder | fatura1 | TES2026770314421 | d85de302-168c-40b5-91c9-d9eff3657536 | 22.10.2026 | 16:52 | TCKN | Ahmet Yılmaz | 9.999,99 | 0,00 | 2.000,00 | 11.999,99 | Kabul (iletildi) | TES2026770314421 |
+| B08 | B Kes, Sonra Gönder → Tümünü Gönder | fatura2 | TES2026770314422 | 35fce243-2b50-4078-a5f0-78c3e6aad0dd | 22.10.2026 | 16:52 | VKN | Deneme Müvekkil Danışmanlık A.Ş. | 205,05 | 41,01 | 41,01 | 205,05 | Kabul (iletildi) | TES2026770314422 |
+| B09 | B Kes, Sonra Gönder → Tümünü Gönder | yonetici | TES2026770314423 | 30dc5c02-4fcc-435b-9f8d-1549b1792815 | 22.10.2026 | 16:52 | VKN | Deneme Hukuk Danışmanlık Ltd. Şti. | 710,00 | 142,00 | 142,00 | 710,00 | Kabul (iletildi) | TES2026770314423 |
+| B10 | B Kes, Sonra Gönder → Tümünü Gönder | fatura1 | TES2026770314424 | 32f58a29-0cae-4358-985a-297b9880f855 | 22.10.2026 | 16:52 | TCKN | Ahmet Yılmaz | 1.010,00 | 0,00 | 202,00 | 1.212,00 | Kabul (iletildi) | TES2026770314424 |
+
+Brüt: e-SMM'de brüt ücret, e-Arşiv'de KDV hariç tutar. Net Ödenecek: e-SMM'de brüt − stopaj + KDV (tahsil edilecek), e-Arşiv'de KDV dahil toplam.
+Bekçi: izin verilen dış istek 0, reddedilen 0. Kimlik bilgisi bu dosyalarda yoktur.
+
+kimlik bilgisi taraması: 20 dosya, eşleşme 0
+SONUÇ: 135 geçti, 1 kaldı (çıkış 1)

@@ -97,3 +97,21 @@ ve e-SMM (aynı taşıma katmanı).
 | T8 | Bağlantıyı Test Et ile gönderim aynı anda: iki giriş | test() + gönderim aynı anda → Login 1 |
 | T9 | resetEdmCaches bekleyen girişi temizlemez (testler arası sızıntı) | resetEdmCaches sonrası yeni giriş |
 | T10 | Düzenekte (gerçek akış): eşzamanlı ikinci giriş EDM'ce reddedilir → belge Gönderilecekler'e | sahte EDM arızası `es-giris` → eski kodda belge Gönderilecekler'de, yenide 20/20 |
+
+### Sonuç (commit 51c3074; kanıtlar `n4-*`)
+
+| Koşu | Eski edm.mjs (0289fe3, ayrı kopya) | Yeni (51c3074) |
+|---|---|---|
+| test/edm-tek-ucus-giris-244.test.mjs (T1–T10, 11 test) | 2/11 — 9 kırmızı; nedenler iletiden: "Login sayısı 20; beklenen 1" (e-SMM, ensureSession, e-Fatura), T10 "reddedilen gönderim: 19 (… The caller was not authenticated by the service …)", T2 "Login sayısı 5", T5 "askıdaki giriş denemesi 5", T6 "düşen gönderim 19", T7 "Login 3", T8 "Login 2"; T4/T9 koruma testi (eskide de yeşil) | 11/11 |
+| düzenek `--kuru --eszamanli --zorla` | 135/136: "giriş tek uçuş (N4) … Login 20, en çok eşzamanlı 20" | 136/136, Login 1 |
+| düzenek `--ariza es-giris` (gerçek EDM'de görülen eşzamanlı giriş reddi) | 27/48, çıkış 2: A belgeleri "integrator-login … kullanıcı adı/parola … The caller was not authenticated", numarasız Gönderilecekler'de, betik durdu — gerçek koşunun aynısı | 136/136, 20/20 iletildi, EDM'ye çakışan giriş 0 |
+| düzenek `--zorla --ariza tek-oturum` | 116/136: 20 A belgesi "integrator-session" | 136/136, 20/20 |
+| düzenek `--kuru --eszamanli` (soğuk) | — | 135/135, Login 1 |
+
+Mutasyon (yeni kodda, ayrı kopya, birim testi): Ma tek uçuş kaldırıldı → 8 kırmızı (T1 ×3, T10, T2, T5, T6, T8) · Mb bekleyen kayıt silinmez → 4 (T2, T5, T6, T7) ·
+Mc sessionExpired'de koşulsuz sil → 1 (T7) · Md tek uçuş anahtarı yalnız adres → 1 (T4) · Me resetEdmCaches bekleyeni temizlemez → 1 (T9). Hepsi geri alındı.
+Komşular: düzenek testi 17/17; giriş/oturum/B3/ensureSession'a dokunan 41 test dosyası 426/426 (liste n4-komsu-birim.log); e2e gg244-esmm-gonder 34/34,
+gg244-secilenleri-gonder 44/44, senaryo-entegrator-240 81/81, gg243-tumunu-gonder 17/17.
+
+Kalan gözlemler (düzeltilmedi, karar ana oturumda): (1) soğuk başta sözleşme (WSDL) okuması da tek uçuş değil — gerçek koşuda 20 eşzamanlı WSDL GET (EDM reddetmedi);
+(2) EDM'nin WCF güvenlik reddi (EDM hata kodu yok) kullanıcıya "kullanıcı adı/parola" diye söyleniyor — tek uçuşla eşzamanlılık nedeni kalktı, ileti genel kaldı.
