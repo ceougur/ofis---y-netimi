@@ -1,0 +1,349 @@
+TAP version 13
+# Subtest: N4 tek uçuş giriş: soğuk önbellek, eşzamanlı çağrılar
+    # Subtest: T1 e-SMM: 20 eşzamanlı gönderim TEK giriş yapar, 20'si iletilir
+    not ok 1 - T1 e-SMM: 20 eşzamanlı gönderim TEK giriş yapar, 20'si iletilir
+      ---
+      duration_ms: 468.032148
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/test/edm-tek-ucus-giris-244.test.mjs:58:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        e-SMM servisine Login sayısı 20; beklenen 1 (tek uçuş)
+        
+        20 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 20
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/test/edm-tek-ucus-giris-244.test.mjs:63:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: T1 numara öncesi erişim denetimi (ensureSession) × 20 eşzamanlı: tek giriş, hepsi başarılı
+    not ok 2 - T1 numara öncesi erişim denetimi (ensureSession) × 20 eşzamanlı: tek giriş, hepsi başarılı
+      ---
+      duration_ms: 286.455814
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/test/edm-tek-ucus-giris-244.test.mjs:67:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Login sayısı 20; beklenen 1
+        
+        20 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 20
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/test/edm-tek-ucus-giris-244.test.mjs:70:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T1 e-Fatura (aynı taşıma katmanı): 20 eşzamanlı mükellef sorgusu tek giriş yapar
+    not ok 3 - T1 e-Fatura (aynı taşıma katmanı): 20 eşzamanlı mükellef sorgusu tek giriş yapar
+      ---
+      duration_ms: 246.459119
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/test/edm-tek-ucus-giris-244.test.mjs:72:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        e-Fatura servisine Login sayısı 20; beklenen 1
+        
+        20 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 20
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/test/edm-tek-ucus-giris-244.test.mjs:76:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T10 (gerçek EDM'de görülen): başka giriş sürerken gelen giriş reddedilir — tek uçuşla 20 gönderimin hiçbiri reddedilmez
+    not ok 4 - T10 (gerçek EDM'de görülen): başka giriş sürerken gelen giriş reddedilir — tek uçuşla 20 gönderimin hiçbiri reddedilmez
+      ---
+      duration_ms: 279.973392
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/test/edm-tek-ucus-giris-244.test.mjs:78:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        reddedilen gönderim: 19 (EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).)
+        + actual - expected
+        
+        + [
+        +   "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).",
+        +   "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).",
+        +   "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).",
+        +   "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).",
+        +   "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).",
+        +   "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).",
+        +   "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).",
+        +   "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).",
+        +   "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).",
+        +   "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).",
+        +   "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).",
+        +   "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).",
+        +   "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).",
+        +   "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).",
+        +   "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).",
+        +   "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).",
+        +   "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).",
+        +   "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).",
+        +   "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez)."
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez)."
+        1: "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez)."
+        2: "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez)."
+        3: "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez)."
+        4: "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez)."
+        5: "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez)."
+        6: "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez)."
+        7: "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez)."
+        8: "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez)."
+        9: "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez)."
+        10: "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez)."
+        11: "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez)."
+        12: "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez)."
+        13: "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez)."
+        14: "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez)."
+        15: "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez)."
+        16: "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez)."
+        17: "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez)."
+        18: "EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez)."
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/test/edm-tek-ucus-giris-244.test.mjs:85:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 1 - N4 tek uçuş giriş: soğuk önbellek, eşzamanlı çağrılar
+  ---
+  duration_ms: 1283.022608
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/test/edm-tek-ucus-giris-244.test.mjs:57:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: N4: başarısız, askıda ve farklı anahtarlı giriş
+    # Subtest: T2/T3 giriş reddedilince 5 bekleyenin HEPSİ aynı hatayı alır (tek Login, stage login); kayıt silinir, SONRAKİ çağrı yeniden dener
+    not ok 1 - T2/T3 giriş reddedilince 5 bekleyenin HEPSİ aynı hatayı alır (tek Login, stage login); kayıt silinir, SONRAKİ çağrı yeniden dener
+      ---
+      duration_ms: 186.807321
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/test/edm-tek-ucus-giris-244.test.mjs:91:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Login sayısı 5; beklenen 1
+        
+        5 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 5
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/test/edm-tek-ucus-giris-244.test.mjs:96:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T5 giriş askıda kalır: zaman aşımı BÜTÜN bekleyenlere döner (tek deneme), sonra yeni giriş başlar ve başarılı olur
+    not ok 2 - T5 giriş askıda kalır: zaman aşımı BÜTÜN bekleyenlere döner (tek deneme), sonra yeni giriş başlar ve başarılı olur
+      ---
+      duration_ms: 425.211466
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/test/edm-tek-ucus-giris-244.test.mjs:100:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        askıdaki giriş denemesi 5; beklenen 1 (bekleyenler aynı girişi bekledi)
+        
+        5 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 5
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/test/edm-tek-ucus-giris-244.test.mjs:113:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 (koruma) giriş sürerken parola değişir: yeni parolanın çağrısı eskisinin girişini BEKLEMEZ — iki ayrı giriş, her biri kendi sonucu
+    ok 3 - T4 (koruma) giriş sürerken parola değişir: yeni parolanın çağrısı eskisinin girişini BEKLEMEZ — iki ayrı giriş, her biri kendi sonucu
+      ---
+      duration_ms: 162.296564
+      type: 'test'
+      ...
+    1..3
+not ok 2 - N4: başarısız, askıda ve farklı anahtarlı giriş
+  ---
+  duration_ms: 775.357156
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/test/edm-tek-ucus-giris-244.test.mjs:90:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: N4: oturum düşünce yeniden giriş, Bağlantıyı Test Et, önbellek boşaltma
+    # Subtest: T6/T7 tek oturumlu EDM, oturum EDM'de düştü: 20 eşzamanlı gönderim TEK yeniden giriş yapar (daha yeni oturum girişsiz kullanılır), 20'si iletilir
+    not ok 1 - T6/T7 tek oturumlu EDM, oturum EDM'de düştü: 20 eşzamanlı gönderim TEK yeniden giriş yapar (daha yeni oturum girişsiz kullanılır), 20'si iletilir
+      ---
+      duration_ms: 405.205311
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/test/edm-tek-ucus-giris-244.test.mjs:131:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        düşen gönderim 19
+        + actual - expected
+        
+        + [
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'EDM oturumu sona ermiş.'
+        1: 'EDM oturumu sona ermiş.'
+        2: 'EDM oturumu sona ermiş.'
+        3: 'EDM oturumu sona ermiş.'
+        4: 'EDM oturumu sona ermiş.'
+        5: 'EDM oturumu sona ermiş.'
+        6: 'EDM oturumu sona ermiş.'
+        7: 'EDM oturumu sona ermiş.'
+        8: 'EDM oturumu sona ermiş.'
+        9: 'EDM oturumu sona ermiş.'
+        10: 'EDM oturumu sona ermiş.'
+        11: 'EDM oturumu sona ermiş.'
+        12: 'EDM oturumu sona ermiş.'
+        13: 'EDM oturumu sona ermiş.'
+        14: 'EDM oturumu sona ermiş.'
+        15: 'EDM oturumu sona ermiş.'
+        16: 'EDM oturumu sona ermiş.'
+        17: 'EDM oturumu sona ermiş.'
+        18: 'EDM oturumu sona ermiş.'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/test/edm-tek-ucus-giris-244.test.mjs:139:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T7 eski oturumla düşen istek, önbellekte DAHA YENİ geçerli oturum varken onu girişsiz kullanır (koşulsuz silip yeniden girmez)
+    not ok 2 - T7 eski oturumla düşen istek, önbellekte DAHA YENİ geçerli oturum varken onu girişsiz kullanır (koşulsuz silip yeniden girmez)
+      ---
+      duration_ms: 631.956837
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/test/edm-tek-ucus-giris-244.test.mjs:143:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Login sayısı 3; beklenen 2 (ilk giriş + Bağlantıyı Test Et; düşen istek yeni oturumu girişsiz kullandı)
+        
+        3 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 3
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/test/edm-tek-ucus-giris-244.test.mjs:159:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T8 Bağlantıyı Test Et ile gönderim aynı anda (soğuk): tek giriş, ikisi de başarılı
+    not ok 3 - T8 Bağlantıyı Test Et ile gönderim aynı anda (soğuk): tek giriş, ikisi de başarılı
+      ---
+      duration_ms: 316.409042
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/test/edm-tek-ucus-giris-244.test.mjs:161:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Login sayısı 2; beklenen 1
+        
+        2 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 2
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/test/edm-tek-ucus-giris-244.test.mjs:166:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T9 (koruma) resetEdmCaches bekleyen girişi de temizler: sonraki çağrı askıdaki girişi beklemez
+    ok 4 - T9 (koruma) resetEdmCaches bekleyen girişi de temizler: sonraki çağrı askıdaki girişi beklemez
+      ---
+      duration_ms: 3007.139703
+      type: 'test'
+      ...
+    1..4
+not ok 3 - N4: oturum düşünce yeniden giriş, Bağlantıyı Test Et, önbellek boşaltma
+  ---
+  duration_ms: 4361.480121
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/test/edm-tek-ucus-giris-244.test.mjs:130:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 11
+# suites 3
+# pass 2
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6589.902777

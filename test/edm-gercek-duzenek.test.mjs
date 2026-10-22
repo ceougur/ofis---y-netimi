@@ -21,7 +21,7 @@ import { fileURLToPath } from "node:url";
 import { after, describe, test } from "node:test";
 import { EDM_SMM_URLS, EDM_URLS, createEdmSmmClient, resetEdmCaches } from "../server/lib/einvoice/edm.mjs";
 import { startMockEdm } from "./einvoice-mock.mjs";
-import { TEST_URLS, bekciFetch, izinliAdres, maskeci, unvanDenetimi, uretimBayraklari } from "../tools/edm-gercek.mjs";
+import { TEST_URLS, ardisikNumara, bekciFetch, edmOkuyucu, izinliAdres, izleyiciFetch, maskeci, soapIslemi, unvanDenetimi, uretimBayraklari } from "../tools/edm-gercek.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const TOOL = path.join(ROOT, "tools", "edm-gercek.mjs");
@@ -223,5 +223,148 @@ describe("Kuru koşu (sahte EDM): betik uçtan uca", () => {
     assert.ok(!existsSync(path.join(empty, "yok")), "çıktı klasörü bile açılmadı");
     const noMode = runTool([], MOCK);
     assert.equal(noMode.status, 4, "kip (--gercek / --kuru) verilmeden koşmaz");
+  });
+});
+
+// 2.4.4 iş listesi 24b — --eszamanli: 20 e-SMM Kaydet ve Gönder + 10 Kes, Sonra Gönder AYNI ANDA (3 oturum), iki oturum aynı anda Tümünü Gönder,
+// bağımsız okuyucu. "Nasıl bozulur?" listesi: docs/kanit/2026-10-22/244-edm-eszamanli/NOT.md (N1–N16). Bu testler düzeneğin kendisini sınar: kuru koşu
+// geçer ve ön koşul (eşzamanlılık) gerçekten oluşur (ders 20); sahte EDM'ye enjekte edilen her hata düzeneği KIRMIZI yapar, neden iletiden okunur (ders 7/38).
+const failedChecks = dir =>
+  readdirSync(dir)
+    .filter(name => /^[a-z].*\.json$/.test(name) && !["ozet.json", "bekci.json", "kuru-edm-kaydi.json"].includes(name))
+    .flatMap(name => (json(dir, name).denetimler || []).filter(item => !item.gecti).map(item => `${name.replace(/\.json$/, "")}: ${item.denetim}`));
+
+describe("--eszamanli: yardımcılar", () => {
+  test("ardisikNumara boşluğu ve tekrarı bulur; soapIslemi işlem adını gövdeden okur", () => {
+    assert.deepEqual(ardisikNumara([5, 3, 4]), { tamam: true, en: 3, son: 5, tekrar: [], bosluk: [], boslukSayisi: 0 });
+    assert.equal(ardisikNumara([3, 5]).tamam, false);
+    assert.deepEqual(ardisikNumara([3, 5]).bosluk, [4]);
+    assert.deepEqual(ardisikNumara([3, 4, 4]).tekrar, [4]);
+    assert.equal(ardisikNumara([]).tamam, false, "boş dizi 'ardışık' sayılmaz (ders 4)");
+    assert.equal(soapIslemi("POST", '<s:Envelope><s:Body><tem:SendSMMRequest xmlns:tem="x">'), "SendSMM");
+    assert.equal(soapIslemi("POST", "<Envelope><Body><LoginRequest>"), "Login");
+    assert.equal(soapIslemi("GET", ""), "WSDL");
+  });
+  test("izleyici en çok eşzamanlı isteği ve işlem sayısını yazar, hatayı aynen yükseltir", async () => {
+    const kayit = {};
+    let release;
+    const gate = new Promise(resolve => (release = resolve));
+    const fetchImpl = izleyiciFetch(async (url, init) => {
+      if (/boom/.test(init.body)) throw new Error("ağ");
+      await gate;
+      return { ok: true };
+    }, kayit);
+    const body = "<Envelope><Body><SendSMMRequest>";
+    const calls = [1, 2, 3].map(() => fetchImpl("http://127.0.0.1:1/EFaturaEDM21ea/ESmmEDM.svc", { method: "POST", body }));
+    await new Promise(resolve => setImmediate(resolve));
+    release();
+    await Promise.all(calls);
+    await assert.rejects(fetchImpl("http://127.0.0.1:1/EFaturaEDM21ea/ESmmEDM.svc", { method: "POST", body: "<LoginRequest>boom" }), /ağ/);
+    assert.equal(kayit.islemler["smm:SendSMM"].sayi, 3);
+    assert.equal(kayit.islemler["smm:SendSMM"].enCokEszamanli, 3);
+    assert.equal(kayit.islemler["smm:Login"].hata, 1);
+  });
+  test("bağımsız okuyucu (programın EDM istemcisinden ayrı): kendi girişi, GetSMM YALNIZ ETTN ile, EDM'nin kaydındaki numarayı okur; olmayan ETTN 0 kayıt; yanlış parola giriş hatası", async () => {
+    const edm = await startMockEdm();
+    try {
+      const url = edm.url.replace(/EFaturaEDM\.svc$/, "ESmmEDM.svc");
+      const uuid = "8f0c2a3e-1111-4222-8333-944445555777";
+      // EDM'nin defteri: makbuz BAŞKA numarayla kayıtlı (çift kayıt arızasının sonucu) — okuyucu numarayı EDM'den okur, programdan almaz.
+      edm.state.smm.sent.push({ id: "TES2026000000099", uuid, xml: "", head: {} });
+      const reader = edmOkuyucu({ url, username: "edmkullanici", password: "Gizli-Parola-1", fetchImpl: globalThis.fetch });
+      await reader.login();
+      const found = await reader.lookup(uuid);
+      assert.equal(found.okundu, true);
+      assert.deepEqual(found.kayitlar.map(item => item.id), ["TES2026000000099"]);
+      const none = await reader.lookup("8f0c2a3e-1111-4222-8333-944445555778");
+      assert.deepEqual([none.okundu, none.kayitlar.length], [true, 0]);
+      const request = edm.state.smm.calls.filter(call => call.op === "GetSMM");
+      assert.equal(request.length, 2);
+      assert.deepEqual(edm.state.smm.violations, [], "okuyucunun istekleri gerçek WSDL sözleşmesine uyar (ad alanı, SOAPAction, REQUEST_HEADER ilk, niteliksiz)");
+      await assert.rejects(edmOkuyucu({ url, username: "edmkullanici", password: "Yanlis-9", fetchImpl: globalThis.fetch }).login(), /okuyucu girişi başarısız.*2001/);
+    } finally {
+      await edm.close();
+    }
+  });
+});
+
+describe("--eszamanli: kuru koşu (sahte EDM)", () => {
+  test("zorla araya girme: bütün adımlar geçer, ön koşul GERÇEKTEN oluştu (sahte EDM'de ≥ 10 SendSMM aynı anda, önbellek soğuk); giriş tek uçuş (Login 1, N4); 30 belge, TES ardışık; OZET tablosu; kimlik bilgisi yok", () => {
+    let out = tempDir();
+    let run = runTool(["--kuru", "--eszamanli", "--zorla", "--cikti", out], MOCK);
+    if (run.status === 4 && existsSync(path.join(out, "ozet.json")) && json(out, "ozet.json").gunDegisti) {
+      out = tempDir();
+      run = runTool(["--kuru", "--eszamanli", "--zorla", "--cikti", out], MOCK);
+    }
+    assert.equal(run.status, 0, `${run.stdout.slice(-3000)}\n${run.stderr.slice(-1500)}\n${failedChecks(out).join("\n")}`);
+    const summary = json(out, "ozet.json");
+    assert.deepEqual(summary.adimlar.map(item => item.adim), ["hazirlik", "a-baglanti", "hazirlik-cariler", "hazirlik-kullanicilar", "ya-eszamanli-kayit", "yb-tumunu-gonder", "yc-durum", "yd-resmi-pdf", "ye-edm-okuyucu", "yf-degismezler", "h-hata-kodlari"]);
+    assert.equal(summary.denetim.kalan, 0);
+    assert.equal(summary.belgeler.length, 30);
+    assert.deepEqual([...new Set(summary.belgeler.map(item => item.aliciTuru))].sort(), ["TCKN", "VKN"]);
+    for (const item of summary.belgeler) {
+      assert.match(item.no, /^TES\d{13}$/);
+      assert.equal(item.edmNo, item.no, `${item.kod}: bağımsız okuyucunun EDM'den okuduğu numara`);
+    }
+    const ya = json(out, "ya-eszamanli-kayit.json");
+    assert.ok(ya.kayit.sahteEdmEnCokEszamanli.SendSMM >= 10, JSON.stringify(ya.kayit.sahteEdmEnCokEszamanli));
+    // N4 (22.10.2026, gerçek EDM'de eşzamanlı girişin biri reddedildi): soğuk başta 20 istek aynı anda oturum ister, program TEK giriş yapar.
+    assert.equal(ya.kayit.izleme["smm:Login"].sayi, 1, `e-SMM Login ${ya.kayit.izleme["smm:Login"].sayi}; beklenen 1 (tek uçuş)`);
+    assert.equal(ya.kayit.sahteEdmEnCokEszamanli.Login, 1);
+    assert.equal(ya.kayit.yetkisiz.status, 403);
+    assert.equal(ya.kayit.istekler.filter(item => item.asama === "A" && item.autoSend?.ok).length, 20);
+    const edm = json(out, "kuru-edm-kaydi.json");
+    assert.equal(edm.smmGonderilen.length, 30);
+    assert.equal(new Set(edm.smmGonderilen).size, 30, "sahte EDM'ye her makbuz bir kez gitti");
+    assert.deepEqual(edm.ihlaller, []);
+    const ozet = readFileSync(path.join(out, "OZET.md"), "utf8");
+    assert.match(ozet, /\| Kod \| Aşama \| Oturum \| Belge No \| ETTN \/ UUID \| Belge Tarihi \| Saat \| Alıcı Türü \| Alıcı \| Brüt \| Stopaj \| KDV \| Net Ödenecek \| EDM Son Durum \| EDM'deki No \(Bağımsız Okuyucu\) \|/);
+    assert.match(ozet, /Belgeler İPTAL EDİLMEDİ/);
+    assert.equal((ozet.match(/^\| [AB]\d\d \|/gm) || []).length, 30);
+    for (const name of files(out)) {
+      const bytes = readFileSync(path.join(out, name));
+      for (const secret of Object.values(MOCK)) assert.ok(!bytes.includes(Buffer.from(secret)), `${name} kimlik bilgisi taşıyor`);
+    }
+    assert.match(run.stdout.trim().split(/\r?\n/).at(-1), /^SONUÇ: \d+ geçti, 0 kaldı \(çıkış 0\)$/);
+  });
+
+  test("N4 EDM davranışları (gerçek EDM'de görülen eşzamanlı giriş reddi; tek oturumlu EDM): tek uçuş girişle 20/20 iletilir, çakışan giriş yok, çıkış 0", () => {
+    for (const fault of ["es-giris", "tek-oturum"]) {
+      const out = tempDir();
+      const run = runTool(["--kuru", "--eszamanli", "--zorla", "--ariza", fault, "--cikti", out], MOCK);
+      assert.equal(run.status, 0, `${fault}: çıkış ${run.status}\n${failedChecks(out).join("\n")}`);
+      const ya = json(out, "ya-eszamanli-kayit.json");
+      assert.equal(ya.kayit.istekler.filter(item => item.asama === "A" && item.autoSend?.ok).length, 20, fault);
+      assert.equal(ya.kayit.izleme["smm:Login"].sayi, 1, `${fault}: Login ${ya.kayit.izleme["smm:Login"].sayi}`);
+      assert.equal(json(out, "kuru-edm-kaydi.json").smmEszamanliGirisReddi, 0, `${fault}: EDM'ye çakışan giriş gitmedi`);
+    }
+  });
+
+  test("testin dişi: sahte EDM'ye enjekte edilen her hata düzeneği KIRMIZI yapar, neden iletide (kayıp, çift kayıt, yanlış durum, askı)", () => {
+    const cases = [
+      ["kayip", [], [/ye-edm-okuyucu: A\d\d TES\d{13}: EDM'de 0 kayıt/, /numaralı ama EDM'de olmayan belge: 1 — A\d\d TES\d{13} programda sent/]],
+      ["cift", [], [/ye-edm-okuyucu: A\d\d (TES\d{13}): EDM'de 1 kayıt, EDM'deki numara (?!\1)TES\d{13}/, /sahte EDM'nin defterinde numaralar tekil \(29\/30\)/]],
+      ["durum", [], [/yc-durum: A\d\d TES\d{13}: EDM son durum error \(PACKAGE - FAIL\)/]],
+      ["aski", ["--zaman-asimi", "3000"], [/ya-eszamanli-kayit: A\d\d \(\w+, (VKN|TCKN)\) ASKIDA: 3 sn içinde yanıt yok/]],
+    ];
+    for (const [fault, extra, reasons] of cases) {
+      const out = tempDir();
+      const run = runTool(["--kuru", "--eszamanli", "--ariza", fault, ...extra, "--cikti", out], MOCK);
+      const failed = failedChecks(out);
+      assert.equal(run.status, 1, `${fault}: çıkış ${run.status}\n${failed.join("\n")}\n${run.stdout.slice(-1500)}`);
+      for (const reason of reasons) assert.ok(failed.some(item => reason.test(item)), `${fault}: beklenen neden ${reason} iletide yok:\n${failed.join("\n")}`);
+      if (fault === "aski") assert.equal(failed.length, 1, `askıda yalnız o istek kalır; belge yine izlenir ve öbür değişmezler geçer:\n${failed.join("\n")}`);
+    }
+  });
+
+  test("hata enjeksiyonu / zorla / kısa zaman aşımı gerçek kipte ya da --eszamanli'siz reddedilir; hiçbir istek yapılmaz, çıktı klasörü açılmaz (çıkış 4)", () => {
+    const empty = tempDir();
+    for (const args of [["--gercek", "--eszamanli", "--ariza", "kayip"], ["--gercek", "--eszamanli", "--zorla"], ["--gercek", "--eszamanli", "--zaman-asimi", "1000"], ["--kuru", "--ariza", "kayip"], ["--kuru", "--eszamanli", "--ariza", "bilinmeyen"], ["--kuru", "--sicak"]]) {
+      const target = path.join(empty, args.join("_").replace(/[^a-z0-9_]/gi, ""));
+      const run = runTool([...args, "--cikti", target], MOCK);
+      assert.equal(run.status, 4, `${args.join(" ")}: ${run.status} ${run.stderr}`);
+      assert.ok(!existsSync(target), `${args.join(" ")}: çıktı klasörü açılmadı`);
+      assert.match(run.stderr, /[hH]içbir istek yapılmadı/);
+    }
   });
 });

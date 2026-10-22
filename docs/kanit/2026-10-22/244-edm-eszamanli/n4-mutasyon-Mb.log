@@ -1,0 +1,211 @@
+TAP version 13
+# Subtest: N4 tek uçuş giriş: soğuk önbellek, eşzamanlı çağrılar
+    # Subtest: T1 e-SMM: 20 eşzamanlı gönderim TEK giriş yapar, 20'si iletilir
+    ok 1 - T1 e-SMM: 20 eşzamanlı gönderim TEK giriş yapar, 20'si iletilir
+      ---
+      duration_ms: 288.991713
+      type: 'test'
+      ...
+    # Subtest: T1 numara öncesi erişim denetimi (ensureSession) × 20 eşzamanlı: tek giriş, hepsi başarılı
+    ok 2 - T1 numara öncesi erişim denetimi (ensureSession) × 20 eşzamanlı: tek giriş, hepsi başarılı
+      ---
+      duration_ms: 211.085636
+      type: 'test'
+      ...
+    # Subtest: T1 e-Fatura (aynı taşıma katmanı): 20 eşzamanlı mükellef sorgusu tek giriş yapar
+    ok 3 - T1 e-Fatura (aynı taşıma katmanı): 20 eşzamanlı mükellef sorgusu tek giriş yapar
+      ---
+      duration_ms: 199.160767
+      type: 'test'
+      ...
+    # Subtest: T10 (gerçek EDM'de görülen): başka giriş sürerken gelen giriş reddedilir — tek uçuşla 20 gönderimin hiçbiri reddedilmez
+    ok 4 - T10 (gerçek EDM'de görülen): başka giriş sürerken gelen giriş reddedilir — tek uçuşla 20 gönderimin hiçbiri reddedilmez
+      ---
+      duration_ms: 225.443093
+      type: 'test'
+      ...
+    1..4
+ok 1 - N4 tek uçuş giriş: soğuk önbellek, eşzamanlı çağrılar
+  ---
+  duration_ms: 926.537749
+  type: 'suite'
+  ...
+# Subtest: N4: başarısız, askıda ve farklı anahtarlı giriş
+    # Subtest: T2/T3 giriş reddedilince 5 bekleyenin HEPSİ aynı hatayı alır (tek Login, stage login); kayıt silinir, SONRAKİ çağrı yeniden dener
+    not ok 1 - T2/T3 giriş reddedilince 5 bekleyenin HEPSİ aynı hatayı alır (tek Login, stage login); kayıt silinir, SONRAKİ çağrı yeniden dener
+      ---
+      duration_ms: 168.307101
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-mut-e80a7f5/test/edm-tek-ucus-giris-244.test.mjs:91:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        başarısız giriş kaydı silindi: sonraki çağrı yeniden giriş denedi
+        
+        1 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-mut-e80a7f5/test/edm-tek-ucus-giris-244.test.mjs:98:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T5 giriş askıda kalır: zaman aşımı BÜTÜN bekleyenlere döner (tek deneme), sonra yeni giriş başlar ve başarılı olur
+    not ok 2 - T5 giriş askıda kalır: zaman aşımı BÜTÜN bekleyenlere döner (tek deneme), sonra yeni giriş başlar ve başarılı olur
+      ---
+      duration_ms: 419.106277
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-mut-e80a7f5/test/edm-tek-ucus-giris-244.test.mjs:100:3'
+      failureType: 'testCodeFailure'
+      error: 'EDM yanıt vermedi (zaman aşımı). İnternet bağlantısını ve servis adresini kontrol edin; birazdan yeniden deneyin.'
+      code: 'integrator-unreachable'
+      stack: |-
+        http (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-mut-e80a7f5/server/lib/einvoice/edm.mjs:232:27)
+        async call (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-mut-e80a7f5/server/lib/einvoice/edm.mjs:289:22)
+        async login (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-mut-e80a7f5/server/lib/einvoice/edm.mjs:329:14)
+      ...
+    # Subtest: T4 (koruma) giriş sürerken parola değişir: yeni parolanın çağrısı eskisinin girişini BEKLEMEZ — iki ayrı giriş, her biri kendi sonucu
+    ok 3 - T4 (koruma) giriş sürerken parola değişir: yeni parolanın çağrısı eskisinin girişini BEKLEMEZ — iki ayrı giriş, her biri kendi sonucu
+      ---
+      duration_ms: 168.8852
+      type: 'test'
+      ...
+    1..3
+not ok 2 - N4: başarısız, askıda ve farklı anahtarlı giriş
+  ---
+  duration_ms: 757.606523
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-mut-e80a7f5/test/edm-tek-ucus-giris-244.test.mjs:90:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: N4: oturum düşünce yeniden giriş, Bağlantıyı Test Et, önbellek boşaltma
+    # Subtest: T6/T7 tek oturumlu EDM, oturum EDM'de düştü: 20 eşzamanlı gönderim TEK yeniden giriş yapar (daha yeni oturum girişsiz kullanılır), 20'si iletilir
+    not ok 1 - T6/T7 tek oturumlu EDM, oturum EDM'de düştü: 20 eşzamanlı gönderim TEK yeniden giriş yapar (daha yeni oturum girişsiz kullanılır), 20'si iletilir
+      ---
+      duration_ms: 233.08359
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-mut-e80a7f5/test/edm-tek-ucus-giris-244.test.mjs:131:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        düşen gönderim 20
+        + actual - expected
+        
+        + [
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.',
+        +   'EDM oturumu sona ermiş.'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'EDM oturumu sona ermiş.'
+        1: 'EDM oturumu sona ermiş.'
+        2: 'EDM oturumu sona ermiş.'
+        3: 'EDM oturumu sona ermiş.'
+        4: 'EDM oturumu sona ermiş.'
+        5: 'EDM oturumu sona ermiş.'
+        6: 'EDM oturumu sona ermiş.'
+        7: 'EDM oturumu sona ermiş.'
+        8: 'EDM oturumu sona ermiş.'
+        9: 'EDM oturumu sona ermiş.'
+        10: 'EDM oturumu sona ermiş.'
+        11: 'EDM oturumu sona ermiş.'
+        12: 'EDM oturumu sona ermiş.'
+        13: 'EDM oturumu sona ermiş.'
+        14: 'EDM oturumu sona ermiş.'
+        15: 'EDM oturumu sona ermiş.'
+        16: 'EDM oturumu sona ermiş.'
+        17: 'EDM oturumu sona ermiş.'
+        18: 'EDM oturumu sona ermiş.'
+        19: 'EDM oturumu sona ermiş.'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-mut-e80a7f5/test/edm-tek-ucus-giris-244.test.mjs:139:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T7 eski oturumla düşen istek, önbellekte DAHA YENİ geçerli oturum varken onu girişsiz kullanır (koşulsuz silip yeniden girmez)
+    not ok 2 - T7 eski oturumla düşen istek, önbellekte DAHA YENİ geçerli oturum varken onu girişsiz kullanır (koşulsuz silip yeniden girmez)
+      ---
+      duration_ms: 314.204139
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-mut-e80a7f5/test/edm-tek-ucus-giris-244.test.mjs:143:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Login sayısı 1; beklenen 2 (ilk giriş + Bağlantıyı Test Et; düşen istek yeni oturumu girişsiz kullandı)
+        
+        1 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-mut-e80a7f5/test/edm-tek-ucus-giris-244.test.mjs:159:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T8 Bağlantıyı Test Et ile gönderim aynı anda (soğuk): tek giriş, ikisi de başarılı
+    ok 3 - T8 Bağlantıyı Test Et ile gönderim aynı anda (soğuk): tek giriş, ikisi de başarılı
+      ---
+      duration_ms: 320.199013
+      type: 'test'
+      ...
+    # Subtest: T9 (koruma) resetEdmCaches bekleyen girişi de temizler: sonraki çağrı askıdaki girişi beklemez
+    ok 4 - T9 (koruma) resetEdmCaches bekleyen girişi de temizler: sonraki çağrı askıdaki girişi beklemez
+      ---
+      duration_ms: 3009.771255
+      type: 'test'
+      ...
+    1..4
+not ok 3 - N4: oturum düşünce yeniden giriş, Bağlantıyı Test Et, önbellek boşaltma
+  ---
+  duration_ms: 3877.924071
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-mut-e80a7f5/test/edm-tek-ucus-giris-244.test.mjs:130:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 11
+# suites 3
+# pass 7
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5702.578103

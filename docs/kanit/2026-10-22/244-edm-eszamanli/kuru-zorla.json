@@ -1,0 +1,32 @@
+{
+  "ad": "244-edm-eszamanli/kuru-zorla",
+  "komut": "node --disable-warning=ExperimentalWarning tools/edm-gercek.mjs --kuru --eszamanli --zorla --cikti docs/kanit/2026-10-22/244-edm-eszamanli/kuru-zorla",
+  "commit": "02a6acd2541f752d990e100039a1ebe1dea0afae",
+  "dal": "is/edm-eszamanli",
+  "kirli": 0,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T13:30:50.437Z",
+  "sure_sn": 11.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 136,
+    "gecen": 136,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-edm-eszamanli/kuru-zorla.log",
+  "klasor": "/home/user/wt/edm-eszamanli",
+  "ham_cikti_sha256": "9c8e3f3fa92dc8179b3be88ba2f7ed0b8803f3592205bfad0e7f7518db451ea7",
+  "ham_cikti_bayt": 26767
+}

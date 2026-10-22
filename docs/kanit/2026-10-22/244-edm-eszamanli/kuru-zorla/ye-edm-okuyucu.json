@@ -1,0 +1,610 @@
+{
+ "adim": "ye-edm-okuyucu",
+ "baslik": "BAĞIMSIZ OKUYUCU: her ETTN EDM'de (GetSMM, yalnız ETTN ile) aranır; EDM'nin kaydındaki numara = programın numarası; numaralı ama EDM'de olmayan belge yok",
+ "durum": "geçti",
+ "denetimler": [
+  {
+   "gecti": true,
+   "denetim": "A01 TES2026710723643: EDM'de 1 kayıt, EDM'deki numara TES2026710723643 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A02 TES2026710723642: EDM'de 1 kayıt, EDM'deki numara TES2026710723642 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A03 TES2026710723645: EDM'de 1 kayıt, EDM'deki numara TES2026710723645 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A04 TES2026710723644: EDM'de 1 kayıt, EDM'deki numara TES2026710723644 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A05 TES2026710723646: EDM'de 1 kayıt, EDM'deki numara TES2026710723646 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A06 TES2026710723647: EDM'de 1 kayıt, EDM'deki numara TES2026710723647 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A07 TES2026710723648: EDM'de 1 kayıt, EDM'deki numara TES2026710723648 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A08 TES2026710723649: EDM'de 1 kayıt, EDM'deki numara TES2026710723649 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A09 TES2026710723650: EDM'de 1 kayıt, EDM'deki numara TES2026710723650 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A10 TES2026710723651: EDM'de 1 kayıt, EDM'deki numara TES2026710723651 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A11 TES2026710723652: EDM'de 1 kayıt, EDM'deki numara TES2026710723652 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A12 TES2026710723653: EDM'de 1 kayıt, EDM'deki numara TES2026710723653 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A13 TES2026710723654: EDM'de 1 kayıt, EDM'deki numara TES2026710723654 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A14 TES2026710723655: EDM'de 1 kayıt, EDM'deki numara TES2026710723655 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A15 TES2026710723656: EDM'de 1 kayıt, EDM'deki numara TES2026710723656 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A16 TES2026710723657: EDM'de 1 kayıt, EDM'deki numara TES2026710723657 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A17 TES2026710723658: EDM'de 1 kayıt, EDM'deki numara TES2026710723658 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A18 TES2026710723659: EDM'de 1 kayıt, EDM'deki numara TES2026710723659 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A19 TES2026710723660: EDM'de 1 kayıt, EDM'deki numara TES2026710723660 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A20 TES2026710723661: EDM'de 1 kayıt, EDM'deki numara TES2026710723661 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B01 TES2026710723662: EDM'de 1 kayıt, EDM'deki numara TES2026710723662 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B02 TES2026710723663: EDM'de 1 kayıt, EDM'deki numara TES2026710723663 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B03 TES2026710723664: EDM'de 1 kayıt, EDM'deki numara TES2026710723664 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B04 TES2026710723665: EDM'de 1 kayıt, EDM'deki numara TES2026710723665 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B05 TES2026710723666: EDM'de 1 kayıt, EDM'deki numara TES2026710723666 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B06 TES2026710723667: EDM'de 1 kayıt, EDM'deki numara TES2026710723667 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B07 TES2026710723668: EDM'de 1 kayıt, EDM'deki numara TES2026710723668 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B08 TES2026710723669: EDM'de 1 kayıt, EDM'deki numara TES2026710723669 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B09 TES2026710723670: EDM'de 1 kayıt, EDM'deki numara TES2026710723670 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B10 TES2026710723671: EDM'de 1 kayıt, EDM'deki numara TES2026710723671 (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "numaralı ama EDM'de olmayan belge: 0"
+  }
+ ],
+ "kayit": {
+  "A01": {
+   "numara": "TES2026710723643",
+   "ettn": "23687220-c59e-4e65-b06c-2292f221a803",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723643",
+      "uuid": "23687220-c59e-4e65-b06c-2292f221a803",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "A02": {
+   "numara": "TES2026710723642",
+   "ettn": "dc8e8212-32eb-433b-9f6a-5c8668464a99",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723642",
+      "uuid": "dc8e8212-32eb-433b-9f6a-5c8668464a99",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "A03": {
+   "numara": "TES2026710723645",
+   "ettn": "f12e1a75-e893-4f80-9c14-d33841cc9058",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723645",
+      "uuid": "f12e1a75-e893-4f80-9c14-d33841cc9058",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "A04": {
+   "numara": "TES2026710723644",
+   "ettn": "fc5f3021-85b0-4644-afd5-dea14ac0fe27",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723644",
+      "uuid": "fc5f3021-85b0-4644-afd5-dea14ac0fe27",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "A05": {
+   "numara": "TES2026710723646",
+   "ettn": "e67f9b6e-0425-49c2-8188-52e811c1d85b",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723646",
+      "uuid": "e67f9b6e-0425-49c2-8188-52e811c1d85b",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "A06": {
+   "numara": "TES2026710723647",
+   "ettn": "9b4b8048-f253-44f3-8166-a69c9b0816db",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723647",
+      "uuid": "9b4b8048-f253-44f3-8166-a69c9b0816db",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "A07": {
+   "numara": "TES2026710723648",
+   "ettn": "92043680-0839-4e9d-9f02-6d75047e679d",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723648",
+      "uuid": "92043680-0839-4e9d-9f02-6d75047e679d",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "A08": {
+   "numara": "TES2026710723649",
+   "ettn": "52e59944-162f-46f3-b6d5-fbee6ba4f5e2",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723649",
+      "uuid": "52e59944-162f-46f3-b6d5-fbee6ba4f5e2",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "A09": {
+   "numara": "TES2026710723650",
+   "ettn": "ccf41baf-e1c0-47e9-8ae8-c0a992dcff57",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723650",
+      "uuid": "ccf41baf-e1c0-47e9-8ae8-c0a992dcff57",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "A10": {
+   "numara": "TES2026710723651",
+   "ettn": "5c7e05a0-970f-4c02-bcac-76b20918d60e",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723651",
+      "uuid": "5c7e05a0-970f-4c02-bcac-76b20918d60e",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "A11": {
+   "numara": "TES2026710723652",
+   "ettn": "89ead80e-eb95-497d-99f3-9d7423014e27",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723652",
+      "uuid": "89ead80e-eb95-497d-99f3-9d7423014e27",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "A12": {
+   "numara": "TES2026710723653",
+   "ettn": "f260ea71-6a32-4c70-8f81-d5f04411c25a",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723653",
+      "uuid": "f260ea71-6a32-4c70-8f81-d5f04411c25a",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "A13": {
+   "numara": "TES2026710723654",
+   "ettn": "6e405f28-c545-4a2b-b196-9720f537c3a3",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723654",
+      "uuid": "6e405f28-c545-4a2b-b196-9720f537c3a3",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "A14": {
+   "numara": "TES2026710723655",
+   "ettn": "197cc3f8-d925-4663-a60c-3af99f9fa789",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723655",
+      "uuid": "197cc3f8-d925-4663-a60c-3af99f9fa789",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "A15": {
+   "numara": "TES2026710723656",
+   "ettn": "d76c4cf5-a8b6-4919-b60d-1e2517b8a510",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723656",
+      "uuid": "d76c4cf5-a8b6-4919-b60d-1e2517b8a510",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "A16": {
+   "numara": "TES2026710723657",
+   "ettn": "e2b42841-e1e0-49e1-bd37-7c216ffd0e7d",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723657",
+      "uuid": "e2b42841-e1e0-49e1-bd37-7c216ffd0e7d",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "A17": {
+   "numara": "TES2026710723658",
+   "ettn": "d7588d8f-f4cd-49a7-a33b-4c772654ec69",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723658",
+      "uuid": "d7588d8f-f4cd-49a7-a33b-4c772654ec69",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "A18": {
+   "numara": "TES2026710723659",
+   "ettn": "27bfb3b4-0a58-4884-a18c-1ed8283dc0f9",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723659",
+      "uuid": "27bfb3b4-0a58-4884-a18c-1ed8283dc0f9",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "A19": {
+   "numara": "TES2026710723660",
+   "ettn": "988f1663-6102-45a8-ae72-86e6511884c9",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723660",
+      "uuid": "988f1663-6102-45a8-ae72-86e6511884c9",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "A20": {
+   "numara": "TES2026710723661",
+   "ettn": "09c4dc8c-5fe1-489f-8946-7a37954ba487",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723661",
+      "uuid": "09c4dc8c-5fe1-489f-8946-7a37954ba487",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "B01": {
+   "numara": "TES2026710723662",
+   "ettn": "5f724383-2d8e-4590-b34d-08ee420b1bb1",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723662",
+      "uuid": "5f724383-2d8e-4590-b34d-08ee420b1bb1",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "B02": {
+   "numara": "TES2026710723663",
+   "ettn": "46769e9d-4c42-49de-8a85-5805ab7cea6b",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723663",
+      "uuid": "46769e9d-4c42-49de-8a85-5805ab7cea6b",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "B03": {
+   "numara": "TES2026710723664",
+   "ettn": "4e464630-882a-4b74-a1d6-e1c37731aafe",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723664",
+      "uuid": "4e464630-882a-4b74-a1d6-e1c37731aafe",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "B04": {
+   "numara": "TES2026710723665",
+   "ettn": "2703e334-358c-45b9-a900-3c932193f704",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723665",
+      "uuid": "2703e334-358c-45b9-a900-3c932193f704",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "B05": {
+   "numara": "TES2026710723666",
+   "ettn": "288a9769-bfd4-4e09-9029-dec674f00757",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723666",
+      "uuid": "288a9769-bfd4-4e09-9029-dec674f00757",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "B06": {
+   "numara": "TES2026710723667",
+   "ettn": "6d2a1384-3191-4f20-b497-0e51261df59a",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723667",
+      "uuid": "6d2a1384-3191-4f20-b497-0e51261df59a",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "B07": {
+   "numara": "TES2026710723668",
+   "ettn": "4528c2ec-80ce-4993-ac18-c8ce965087b4",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723668",
+      "uuid": "4528c2ec-80ce-4993-ac18-c8ce965087b4",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "B08": {
+   "numara": "TES2026710723669",
+   "ettn": "0490ea78-734f-40af-b705-bf687296fb1a",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723669",
+      "uuid": "0490ea78-734f-40af-b705-bf687296fb1a",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "B09": {
+   "numara": "TES2026710723670",
+   "ettn": "b7d5ef92-0560-4db3-8373-b1de9dc43d8f",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723670",
+      "uuid": "b7d5ef92-0560-4db3-8373-b1de9dc43d8f",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "B10": {
+   "numara": "TES2026710723671",
+   "ettn": "025bcc69-f11a-4e59-957a-e6e720e59ade",
+   "edm": {
+    "okundu": true,
+    "kayitlar": [
+     {
+      "id": "TES2026710723671",
+      "uuid": "025bcc69-f11a-4e59-957a-e6e720e59ade",
+      "durum": "SEND - SUCCEED"
+     }
+    ],
+    "headerOnly": "Y"
+   }
+  },
+  "izleme": {
+   "smm:Login": {
+    "sayi": 1,
+    "hata": 0,
+    "enCokEszamanli": 1,
+    "sureMs": {
+     "en": 253,
+     "medyan": 253,
+     "enCok": 253
+    }
+   },
+   "smm:GetSMM": {
+    "sayi": 30,
+    "hata": 0,
+    "enCokEszamanli": 1,
+    "sureMs": {
+     "en": 1,
+     "medyan": 1,
+     "enCok": 5
+    }
+   }
+  }
+ },
+ "bilgiler": [
+  {
+   "bilgi": "okuyucu GetSMM biçimi: HEADER_ONLY Y"
+  }
+ ]
+}

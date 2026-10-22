@@ -1,0 +1,25 @@
+{
+ "adim": "hazirlik-cariler",
+ "baslik": "Cariler: e-SMM alıcısı şirket (EDM'de e-Fatura mükellefi OLMADIĞI sorgulanmış VKN) + e-Arşiv alıcısı kişi",
+ "durum": "geçti",
+ "denetimler": [
+  {
+   "gecti": true,
+   "denetim": "e-SMM alıcısı VKN'si EDM'de mükellef değil (Mükellef Sorgula): 4389085452"
+  },
+  {
+   "gecti": true,
+   "denetim": "cari Deneme Müvekkil Danışmanlık A.Ş.: 200"
+  },
+  {
+   "gecti": true,
+   "denetim": "cari Ahmet Yılmaz: 200"
+  }
+ ],
+ "kayit": {
+  "sorgu-1": {
+   "taxNo": "4389085452",
+   "registered": false
+  }
+ }
+}

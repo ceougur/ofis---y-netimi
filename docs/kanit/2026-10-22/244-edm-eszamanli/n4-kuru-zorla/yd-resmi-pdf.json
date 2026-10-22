@@ -1,0 +1,42 @@
+{
+ "adim": "yd-resmi-pdf",
+ "baslik": "Resmî görüntü (GetSMM PDF): VKN'li bir A, TCKN'li bir A, bir B",
+ "durum": "geçti",
+ "denetimler": [
+  {
+   "gecti": true,
+   "denetim": "A01 TES2026731128821 (VKN): PDF 64 bayt ≥ 10, indirme adı numarayı taşır"
+  },
+  {
+   "gecti": true,
+   "denetim": "A03 TES2026731128823 (TCKN): PDF 64 bayt ≥ 10, indirme adı numarayı taşır"
+  },
+  {
+   "gecti": true,
+   "denetim": "B01 TES2026731128841 (TCKN): PDF 64 bayt ≥ 10, indirme adı numarayı taşır"
+  }
+ ],
+ "kayit": {
+  "A01": {
+   "tur": "application/pdf",
+   "bayt": 64,
+   "ad": "attachment; filename=\"TES2026731128821 Resmi Gorunum.pdf\"; filename*=UTF-8''TES2026731128821%20Resmi%20Gorunum.pdf",
+   "dosya": "TES2026731128821-resmi.pdf",
+   "numaraMetinde": "okunamadı"
+  },
+  "A03": {
+   "tur": "application/pdf",
+   "bayt": 64,
+   "ad": "attachment; filename=\"TES2026731128823 Resmi Gorunum.pdf\"; filename*=UTF-8''TES2026731128823%20Resmi%20Gorunum.pdf",
+   "dosya": "TES2026731128823-resmi.pdf",
+   "numaraMetinde": "okunamadı"
+  },
+  "B01": {
+   "tur": "application/pdf",
+   "bayt": 64,
+   "ad": "attachment; filename=\"TES2026731128841 Resmi Gorunum.pdf\"; filename*=UTF-8''TES2026731128841%20Resmi%20Gorunum.pdf",
+   "dosya": "TES2026731128841-resmi.pdf",
+   "numaraMetinde": "okunamadı"
+  }
+ }
+}
