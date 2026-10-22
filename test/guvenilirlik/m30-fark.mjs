@@ -335,7 +335,9 @@ export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}
         const b = y[i];
         if (same(a, b)) continue;
         const restSame = same(a.filter((_, j) => j !== amountAt), b.filter((_, j) => j !== amountAt));
-        if (!restSame || !pairs.some(([t, k]) => a[amountAt] === t && b[amountAt] === k)) return false;
+        // Programda girilen tahsilat (P) kalemden düşülür: önce = max(0, T − P), sonra = max(0, K − P) — aynı kolon değişimi, tahsilatlı kalemde.
+        const shifted = ([t, k]) => (a[amountAt] === t && b[amountAt] === k) || (a[amountAt] > 0 && b[amountAt] === Math.max(0, k - (t - a[amountAt]))) || (a[amountAt] === 0 && b[amountAt] === 0);
+        if (!restSame || !pairs.some(shifted)) return false;
         moved += 1;
       }
       return moved > 0;
