@@ -520,6 +520,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   makbuzları e-SMM açılınca Gönderilecekler'de "Gönderilmedi" görünüyor ve ESKİ tarih + kendi numarasıyla gönderilebiliyor (geriye dönük e-belge riski). ÖNERİ: bu makbuzlar
   kalıcı engel ("e-SMM gönderimi açılmadan önce kesildi; İptal Et ile iptal edip bugünün tarihiyle yeniden kesin"); Tümünü/Seçilenleri Gönder onları atlar.
   KARAR (kullanıcı, 22.10.2026: "evet"): öneri AYNEN uygulanır (iş listesi 22a).
+  GERİ ALINDI (kullanıcı, 22.10.2026: "kimsenin o sürümde e-SMM kesmediğine eminim"): 22a İPTAL — böyle makbuz yok; koruma yazılmaz (gereksiz iş). Bilinen sınır olarak
+  teslim notunda kalır: 2.4.0'da kesilmiş numaralı ESMM makbuzu olsaydı e-SMM açılınca Gönderilecekler'de görünürdü.
 - SON ADAY BAĞIMSIZ TURU (kullanıcı, 22.10.2026: "2.4.4 son aday uzun test koşusuna başlamadan kâhin (uzman mali müşavir), yargıç, eleştirmen testlerinden geçecek mi,
   regresyon testleri yapılıyor mu?" → EVET; "ekle" → uzman UI + uzman UX de): iş listesi madde 30–31 (31a kâhin, 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol,
   31f uzman UI/UX) Uzun Doğrulama'dan ÖNCE.
