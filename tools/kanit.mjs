@@ -219,7 +219,9 @@ async function run(name, command, minutes) {
   if (!name || !command.length) throw new Error("kullanım: kos <ad> [--sure <dk>] -- <komut> [arg…]");
   const day = new Date().toISOString().slice(0, 10);
   const dir = path.join(KANIT, day);
-  mkdirSync(dir, { recursive: true });
+  // Ad alt klasör içerebilir (ör. 244-m30/test-senaryo): klasör komuttan ÖNCE açılır; yoksa komut bitince kayıt ENOENT ile yazılamıyor, sonuç
+  // kayboluyordu (22.10.2026, madde 30).
+  mkdirSync(path.dirname(path.join(dir, name)), { recursive: true });
   const env = environment();
   const started = new Date();
   const chunks = [];
