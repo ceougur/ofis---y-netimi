@@ -1,0 +1,93 @@
+{
+  "ad": "244-personel/birim-eski-163dd5d-kirmizi",
+  "komut": "node --test --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/personel/personel-eski-163dd5d/test/personel-ozluk-244.test.mjs",
+  "commit": "1f6ad99df7ef569af9ed772e1e8e053c216d565c",
+  "dal": "is/personel",
+  "kirli": 10,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:02:00.096Z",
+  "sure_sn": 1.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 1,
+    "basarisiz": 12,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 12 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 Personel Özlük: yetki kataloğu › staff.view / staff.manage varsayılan yalnız yönetici; kişiye ve özel role verilebilir; havuzda Personel Özlük grubunda",
+      "konum": "test/personel-ozluk-244.test.mjs:50:3",
+      "hata": "yönetici ikisine de sahip (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.4 Personel Özlük: yetki kataloğu › istemci: Personel Raporu düğmesi reports.staff ile; CSS gizleme kuralı reports.view ya da staff.view (CRLF'ye dayanıklı)",
+      "konum": "test/personel-ozluk-244.test.mjs:62:3",
+      "hata": "The input did not match the regular expression /html:not\\(\\.hof-can-reports-view\\):not\\(\\.hof-can-staff-view\\) \\[data-requires=\"reports\\.staff\"\\]/. Input: · '/* DestekOfis — eklenti arayüz katmanı (giriş, pencereler, bildirimler, operasyon paneli, tablo araçları). */\\n' + · '@font-face {\\n' + (beklenen , gelen |-)"
+    },
+    {
+      "ad": "2.4.4 Personel Özlük: API › boş veri: liste boş, kartların hepsi sıfır",
+      "konum": "test/personel-ozluk-244.test.mjs:86:3",
+      "hata": "beklenen 200: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.4 Personel Özlük: API › bütün alanlarla ekle: yaş doğum tarihinden (yarın doğum günü → 35), maaş kuruş, IBAN boşluksuz; listede fotoğraf yok, kartta var",
+      "konum": "test/personel-ozluk-244.test.mjs:93:3",
+      "hata": "beklenen 200: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.4 Personel Özlük: API › doğrulama: TC, IBAN, tarih sırası, e-posta, öğrenim, izin günü — 400 ve hatalı alan; reddedilen istek kayıt yazmaz",
+      "konum": "test/personel-ozluk-244.test.mjs:111:3",
+      "hata": "beklenen 200: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.4 Personel Özlük: API › aynı adlı iki çalışan iki ayrı kart; aynı TC No ikinci kartta 409",
+      "konum": "test/personel-ozluk-244.test.mjs:142:3",
+      "hata": "beklenen 200: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.4 Personel Özlük: API › İşten Ayrılış Tarihi yazılınca Ayrılanlar'a geçer, silinince döner; kartlar ve Toplam Maaş (yalnız aktif) sayılarla",
+      "konum": "test/personel-ozluk-244.test.mjs:155:3",
+      "hata": "beklenen 200: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.4 Personel Özlük: API › KVKK: işlem geçmişine yalnız alan ADLARI yazılır; ad, TC, IBAN, maaş, adres, e-posta, telefon değeri yok",
+      "konum": "test/personel-ozluk-244.test.mjs:187:3",
+      "hata": "The expression evaluated to a falsy value: · assert.ok(rows.some(row => row.type === \"staff.created\") && rows.some(row => row.type === \"staff.updated\") && rows.some(row => row.type === \"staff.deleted\")) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.4 Personel Özlük: API › yetkisiz: personel ve muhasebe 403; görüntüleme verilince okur ama yazamaz; düzenleme de verilince yazar; kaldırılınca 403",
+      "konum": "test/personel-ozluk-244.test.mjs:211:3",
+      "hata": "Expected values to be strictly equal: · 404 !== 403 (beklenen 403, gelen 404)"
+    },
+    {
+      "ad": "2.4.4 Personel Özlük: API › 002 şirketi ayrı veri: 002'nin kartı 001'de görünmez, 001'inki 002'de görünmez",
+      "konum": "test/personel-ozluk-244.test.mjs:244:3",
+      "hata": "beklenen 200: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.4 Personel Özlük: API › yedek tatbikatı (002): yedek → çalış → geri yükle → sayılar → yeniden çalış; Tüm Hareketleri Sil kartlara dokunmaz, Tümünü Sıfırla siler",
+      "konum": "test/personel-ozluk-244.test.mjs:255:3",
+      "hata": "beklenen 200: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.4 Personel Özlük: göç v31 (yalnız ekleyici) › v30 veri dosyası v31'e geçer: staff_members STRICT olarak açılır, eski tablolar ve satırlar değişmez; ikinci açılış bir şey yapmaz",
+      "konum": "test/personel-ozluk-244.test.mjs:278:3",
+      "hata": "The expression evaluated to a falsy value: · assert.ok(LATEST_VERSION >= 31) (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-personel/birim-eski-163dd5d-kirmizi.log",
+  "klasor": "/home/user/wt/personel",
+  "ham_cikti_sha256": "4665994ef13a66f596590f9d3994df571f44fc84171b21f0a743b9a26c870256",
+  "ham_cikti_bayt": 400144
+}

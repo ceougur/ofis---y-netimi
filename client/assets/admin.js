@@ -47,6 +47,10 @@
     "company.deleted": "Şirketi sildi",
     "company.access": "Şirket yetkisini değiştirdi",
     "company.reset": "Şirket verisini sıfırladı",
+    // 2.4.4 Personel Özlük (KVKK): yalnız değişen alanların adları gösterilir; değer işlem geçmişine yazılmaz.
+    "staff.created": "Personel kartı ekledi",
+    "staff.updated": "Personel kartını düzeltti",
+    "staff.deleted": "Personel kartını sildi",
     "case.document.created": "Belge ekledi",
     "case.document.deleted": "Belgeyi sildi",
     "case.document.restored": "Belgeyi geri yükledi",
@@ -886,6 +890,7 @@
     if (payload.recipient) parts.push(`Alıcı: ${payload.recipient}`);
     if (payload.key && event.type.startsWith("settings.")) parts.push(payload.key);
     if (payload.ip) parts.push(`IP ${payload.ip}`);
+    if (event.type.startsWith("staff.") && Array.isArray(payload.fields) && payload.fields.length) parts.push(`Alanlar: ${payload.fields.join(", ")}`);
     return parts.join(" · ");
   };
   async function loadAudit() {

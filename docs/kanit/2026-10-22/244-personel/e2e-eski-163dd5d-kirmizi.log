@@ -1,0 +1,110 @@
+
+■ 1. Boş veri: Personel Raporu → kartlar sıfır, boş liste ipucu, sekmeler
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-staff-modal [data-staff-kpis]') to be visible[22m
+
+    at openWindow (/home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:94:16)
+    at async file:///home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:112:5
+    at async step (/home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:65:5)
+    at async file:///home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:111:3
+
+■ 2. + Yeni Personel: bütün alanlar insan hızında + Tab, fotoğraf; kayıttan sonra veri tabanı birebir
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-staff-modal [data-staff-act="new"]')[22m
+
+    at /home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:128:16
+    at step (/home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:65:11)
+    at /home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:127:9
+
+■ 3. Aynı adlı iki çalışan iki ayrı satır; kartlar sayılarla
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-staff-modal [data-staff-act="new"]')[22m
+
+    at /home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:167:18
+    at step (/home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:65:11)
+    at /home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:165:9
+
+■ 4. Arama: ad, TC No, görev; uymayan arama ipucu; temizleyince hepsi
+  ✗ beklenmeyen hata: locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-staff-modal [data-q]')[22m
+
+    at typeInto (/home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:75:15)
+    at /home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:189:11
+    at step (/home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:65:11)
+    at /home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:187:9
+
+■ 5. Kart: yalnız Personel Özeti; Yaş 35; fotoğraf; Evrak/Bordro/CV/İletişim yok
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-staff-modal tr[data-staff-id]:has-text("Ayşe Yılmaz")')[22m
+
+    at /home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:206:16
+    at step (/home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:65:11)
+    at /home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:205:9
+
+■ 6. Düzenle → İşten Ayrılış Tarihi → Ayrılanlar'a geçer; kartlar ve Toplam Maaş; tarih silinince döner
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-staff-card-modal [data-staff-card-act="edit"]')[22m
+
+    at /home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:220:16
+    at step (/home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:65:11)
+    at /home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:219:9
+
+■ 7. Geçersiz TC No: ekranda hata, odak TC No alanında, kayıt yazılmaz
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-staff-modal [data-staff-act="new"]')[22m
+
+    at /home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:258:16
+    at step (/home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:65:11)
+    at /home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:257:9
+
+■ Performans Özeti sekmesi (yönetici: reports.view) eski özet ile
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-staff-modal [data-staff-tab="performance"]')[22m
+
+    at /home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:279:16
+    at step (/home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:65:11)
+    at /home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:278:9
+
+■ 8. Yetkisiz kullanıcı: düğme görünmez, API 403; görüntüleme verilince görür, düzenleyemez
+  ✓ personelde Personel Raporu düğmesi görünmez
+  ✗ API 403 (404)
+  ✗ beklenmeyen hata: Error: görüntüleme yetkisi: 400 {"ok":false,"error":"Verilebilecek yetki tanınmadı. Kullanıcı, sistem ve lisans yönetimi ile ANLIK DURUM kartı yalnız yönetici rolündedir."}
+    at must (file:///home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:50:33)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:300:5
+    at async step (file:///home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:65:5)
+    at async file:///home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:290:3
+
+■ 9. Değişiklik Geçmişi: alan adı var, değer yok
+  ✗ beklenmeyen hata: page.selectOption: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#adm-audit-type')[22m
+[2m    - locator resolved to <select id="adm-audit-type">…</select>[22m
+[2m  - attempting select option action[22m
+[2m    2 × waiting for element to be visible and enabled[22m
+[2m      - did not find some options[22m
+[2m    - retrying select option action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible and enabled[22m
+[2m      - did not find some options[22m
+[2m    - retrying select option action[22m
+[2m      - waiting 100ms[22m
+[2m    60 × waiting for element to be visible and enabled[22m
+[2m       - did not find some options[22m
+[2m     - retrying select option action[22m
+[2m       - waiting 500ms[22m
+
+    at /home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:321:16
+    at async step (/home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:65:5)
+    at async file:///home/user/wt/personel/test/e2e/senaryo-personel-244.mjs:318:3
+  ✓ sayfa hatası yok
+
+✗ senaryo-personel-244: 2 geçti, 11 kaldı · depo /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/personel/personel-eski-163dd5d · ekran görüntüleri /home/user/wt/personel/test/e2e/artifacts/senaryo-personel-244

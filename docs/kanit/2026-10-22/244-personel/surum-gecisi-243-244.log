@@ -1,0 +1,15 @@
+✓ 2.4.3 veri dosyası v30
+✓ 2.4.4 adayı v31'e geçirdi
+✓ eski cari duruyor
+✓ personel kartı eklendi
+✓ 2.4.3 v31 dosyayı açtı (göç yok)
+✓ 2.4.3'te cari okunur
+✓ 2.4.3'te personel ucu yok (404), veri dokunulmaz
+✓ kart dosyada korunur
+✓ 2.4.4'e dönünce kart yerinde
+# tests 9
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

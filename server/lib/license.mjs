@@ -50,6 +50,8 @@ export const WRITE_PERMISSIONS = Object.freeze([
   // görünüyordu) ve banka yazma yetkileri.
   "invoices.manage", "invoices.settings",
   "bank.accounts", "bank.move", "bank.cancel", "bank.transfer", "bank.pos", "bank.commission", "bank.statement", "bank.reconcile", "bank.settings",
+  // 2.4.4 Personel Özlük: kart ekleme/düzeltme/silme.
+  "staff.manage",
 ]);
 
 // Salt okunur modda da izin verilen değiştirici istekler: giriş/çıkış/parola, lisans işlemleri, yönetim (kullanıcılar,

@@ -65,6 +65,7 @@ import { registerTemplateRoutes } from "./routes/templates.mjs";
 import { registerLicenseRoutes } from "./routes/license.mjs";
 import { registerTrpcRoutes } from "./routes/trpc.mjs";
 import { registerWorkspaceRoutes } from "./routes/workspace.mjs";
+import { registerStaffRoutes } from "./routes/staff.mjs";
 import { ROOT_COMPANY_ID, createCompanyRegistry, mirrorUsers, usersFingerprint } from "./lib/companies.mjs";
 import { registerCompanyRoutes } from "./routes/companies.mjs";
 import { createBackup } from "./lib/backup.mjs";
@@ -349,6 +350,8 @@ export function createApp(overrides = {}) {
   context.tableReports = registerReportRoutes(router, context);
   // Sektöre uygun taslak Excel (v2.0.9): açılış ekranından indirilir.
   registerTemplateRoutes(router, context);
+  // Personel Özlük (2.4.4): Personel Raporu → Çalışanlar / Ayrılanlar; şirket kapsamlı (her şirketin kendi veri dosyası), para dışı.
+  registerStaffRoutes(router, context);
   registerLicenseRoutes(router, context);
   registerTrpcRoutes(router, context);
 
@@ -605,7 +608,9 @@ export function createApp(overrides = {}) {
     // 2.3.0 İz 1 (plan §3.11b/4 "Şirket Verisini Sıfırla listeleri"): şüpheli alacak kayıtları ve karşılıkları hareketle silinir.
     "doubtful_receivables", "doubtful_provisions"];
   const CARD_TABLES = ["accounts", "stock_items", "plan_groups", "dataset_rows", "dataset_imports", "records", "overrides", "deleted_records", "notes", "phones", "liens", "tasks", "case_notes", "case_documents", "source_snapshots", "free_cells", "free_rows", "free_history", "free_sheets", "messages",
-    "bank_accounts", "pos_terminals", "pos_rates"];
+    "bank_accounts", "pos_terminals", "pos_rates",
+    // 2.4.4 Personel Özlük: çalışan kartları kart verisidir — "Tümünü Sıfırla" siler, "Tüm Hareketleri Sil" dokunmaz.
+    "staff_members"];
   // v2.0.21 (rastgele sıra testi bulgusu): 001'in veri tabanı aynı zamanda ortak katmandır; kullanıcıların şirket seçimi ve
   // ŞİRKET YETKİLERİ (company.*) ile parola kurtarma anahtarı (auth.*) "Tümünü Sıfırla"da silinmez (geri yüklemedeki ortak
   // katman listesiyle aynı: company-backups.mjs COMMON_SETTINGS).

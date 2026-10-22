@@ -805,16 +805,18 @@
   // Eski "Mesajlar" penceresinin yerini sağdan açılan sohbet paneli aldı (hof-chat.js).
   const openMessages = () => HOF.chat?.open();
 
+  // Personel Performans Özeti (görev, not, telefon, tahsilat, işlem): reports.view. Personel Özlük yetkisi olan (staff.view) Personel Raporu'nu
+  // çalışan kartlarıyla açar (hof-staff.js); performans orada "Performans Özeti" sekmesidir.
+  async function performanceHtml() {
+    const result = await HOF.api("/api/workspace/reports");
+    const rows = result.report.map(item => `<tr><td>${esc(item.userName)}<br><small>${esc(item.roleLabel || HOF.roleLabels[item.role] || item.role)}</small></td><td class="num">${item.tasksCompleted}</td><td class="num">${item.notes}</td><td class="num">${item.calls}</td><td class="num">${esc(HOF.formatMoney(item.collections))}</td><td class="num">${item.dataEntries}</td></tr>`).join("");
+    return `<div class="hof-kpis"><div><strong>${result.totals.tasks}</strong><span>Toplam Görev</span></div><div><strong>${result.totals.completedTasks}</strong><span>Tamamlanan</span></div><div><strong>${result.totals.notes}</strong><span>Not</span></div><div><strong>${esc(HOF.formatMoney(result.totals.payments))}</strong><span>Tahsilat</span></div></div><div style="overflow:auto"><table class="hof-table"><thead><tr><th>Personel</th><th>Görev</th><th>Not</th><th>Telefon</th><th>Tahsilat</th><th>İşlem</th></tr></thead><tbody>${rows || '<tr><td colspan="6">Henüz işlem yok.</td></tr>'}</tbody></table></div><p class="hof-edit-meta">Oluşturulma: ${esc(HOF.formatDateTime(result.generatedAt))}</p>`;
+  }
+
   async function openReports() {
+    if (HOF.can("staff.view") && HOF.staff) return HOF.staff.open({ performance: HOF.can("reports.view") ? performanceHtml : null });
     try {
-      const result = await HOF.api("/api/workspace/reports");
-      const rows = result.report.map(item => `<tr><td>${esc(item.userName)}<br><small>${esc(item.roleLabel || HOF.roleLabels[item.role] || item.role)}</small></td><td class="num">${item.tasksCompleted}</td><td class="num">${item.notes}</td><td class="num">${item.calls}</td><td class="num">${esc(HOF.formatMoney(item.collections))}</td><td class="num">${item.dataEntries}</td></tr>`).join("");
-      HOF.modal({
-        title: "Personel Performans Özeti",
-        eyebrow: "RAPOR",
-        size: "wide",
-        body: `<div class="hof-kpis"><div><strong>${result.totals.tasks}</strong><span>Toplam Görev</span></div><div><strong>${result.totals.completedTasks}</strong><span>Tamamlanan</span></div><div><strong>${result.totals.notes}</strong><span>Not</span></div><div><strong>${esc(HOF.formatMoney(result.totals.payments))}</strong><span>Tahsilat</span></div></div><div style="overflow:auto"><table class="hof-table"><thead><tr><th>Personel</th><th>Görev</th><th>Not</th><th>Telefon</th><th>Tahsilat</th><th>İşlem</th></tr></thead><tbody>${rows || '<tr><td colspan="6">Henüz işlem yok.</td></tr>'}</tbody></table></div><p class="hof-edit-meta">Oluşturulma: ${esc(HOF.formatDateTime(result.generatedAt))}</p>`,
-      });
+      HOF.modal({ title: "Personel Performans Özeti", eyebrow: "RAPOR", size: "wide", body: await performanceHtml() });
     } catch (error) {
       HOF.toastError(error);
     }
@@ -876,7 +878,8 @@
     // Raporlar (v2.0.9): ANLIK DURUM'daki "Rapor Al" ile aynı pencere (Cari ekstre, Vade takip, Nakit akış, Çek/Senet,
     // modül raporları, Tablo raporları). Rapor yetkisi ya da kişiye verilen ANLIK DURUM yetkisiyle görünür.
     { action: "analytics", icon: "▤", key: "side.analytics", label: () => "Raporlar", requires: "reports.any" },
-    { action: "reports", icon: "↗", key: "side.reports", label: () => "Personel Raporu", requires: "reports.view" },
+    // Personel Raporu: performans özeti (reports.view) ya da Personel Özlük (staff.view, 2.4.4; varsayılan yalnız yönetici) yetkisiyle görünür.
+    { action: "reports", icon: "↗", key: "side.reports", label: () => "Personel Raporu", requires: "reports.staff" },
     { action: "guide", icon: "?", key: "side.guide", label: () => "Kullanım Kılavuzu" },
   ];
   const sideTitle = () => HOF.uiLabel?.("side.title", "OPERASYON MERKEZİ") || "OPERASYON MERKEZİ";
@@ -895,7 +898,7 @@
     ["license", "Lisans", "license.manage"],
   ];
   HOF.search?.register(() => [
-    ...SIDE_ITEMS.filter(item => (!item.module || HOF.modules[item.module]) && (!item.requires || HOF.can(item.requires))).map(item => ({
+    ...SIDE_ITEMS.filter(item => (!item.module || HOF.modules[item.module]) && (!item.requires || (item.requires === "reports.staff" ? HOF.can("reports.view") || HOF.can("staff.view") : HOF.can(item.requires)))).map(item => ({
       group: item.action === "newTask" ? "İşlem" : "Sayfa",
       label: sideLabel(item),
       path: item.action === "guide" ? "PDF" : "",
@@ -1371,5 +1374,5 @@
     });
     setInterval(() => badges(), 120_000);
   });
-  HOF.workspace = { openTasks, openMessages, openReports, openLiens, openCash, refreshBadges, refreshActivity, extractPhones, payment: target => actions.payment(target) };
+  HOF.workspace = { openTasks, openMessages, openReports, performanceHtml, openLiens, openCash, refreshBadges, refreshActivity, extractPhones, payment: target => actions.payment(target) };
 })();
