@@ -461,6 +461,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   yüklemeden sonra Fatura'da tek seferlik uyarı (yedekten sonra EDM'ye gönderilmiş e-Belge numarası ve verilmiş kâğıt/fiş numarası yeniden verilebilir; göndermeden
   önce Fatura Ayarları → Numaralar'dan sıradaki numarayı ileri alın) + 11048 iletisine (test ve canlı seri) geri yükleme olasılığı; numaralama mantığı DEĞİŞMEZ.
   EDM'den kendiliğinden eşitleme (GetInvoiceSerial / GetSMMSerial ya da belge listesi) 2.4.4 SONRASI ayrı iş.
+  TEYİT (kullanıcı, ~17:05 UTC: "hayır" + "2.4.4 e girsin" → soruldu, seçti: "Yalnız küçük güvence"): 2.4.4'e yalnız uyarı + 11048 iletisi (30b, ajan çalışıyor).
 - SON ADAY BAĞIMSIZ TURU (kullanıcı, 22.10.2026: "2.4.4 son aday uzun test koşusuna başlamadan kâhin (uzman mali müşavir), yargıç, eleştirmen testlerinden geçecek mi,
   regresyon testleri yapılıyor mu?" → EVET; "ekle" → uzman UI + uzman UX de): iş listesi madde 30–31 (31a kâhin, 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol,
   31f uzman UI/UX) Uzun Doğrulama'dan ÖNCE.
