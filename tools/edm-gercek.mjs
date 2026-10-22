@@ -105,6 +105,15 @@ export function maskeci(secrets) {
   };
 }
 
+/**
+ * Resmî PDF'te düzenleyenin unvanı denetim mi, bilgi mi? EDM Teknik Operasyon yanıtı (22.10.2026): tüzel kişide (VKN'li) unvan cac:PartyName'den alınır;
+ * test ortamının e-SMM görüntüsü canlıdan farklıdır (VKN'li düzenleyende unvan basılmaz, karekod yalnız ETTN), canlıda GİB standardındadır. Bu yüzden
+ * e-SMM'de VKN'li düzenleyende (test hesabı hep VKN'li) unvanın görünmemesi BİLGİ olarak kaydedilir, denetimi düşürmez; öbür durumlarda denetimdir.
+ */
+export function unvanDenetimi({ profile, taxNo }) {
+  return profile === "ESMM" && String(taxNo || "").replace(/\s+/g, "").length === 10 ? "bilgi" : "denetim";
+}
+
 /** server/server.mjs'teki üretim bayrakları (uygulamayı kuran çağrıya verilen ad: true/false çiftleri). */
 export function uretimBayraklari(source) {
   const stripped = source.replace(/\/\*[\s\S]*?\*\//g, "").split(/\r?\n/).map(line => line.replace(/^\s*\/\/.*$/, "")).join("\n");
@@ -209,6 +218,11 @@ export async function main(argv = process.argv.slice(2), env = process.env) {
     current.denetimler.push(item);
     console.log(`  ${cond ? "✓" : "✗"} ${what}`);
     return Boolean(cond);
+  };
+  // Bilgi: denetim sayılmaz (geçti/kaldı değil), adımın kaydında ve özette görünür.
+  const note = (what, data) => {
+    (current.bilgiler ||= []).push({ bilgi: what, ...(data === undefined ? {} : { veri: data }) });
+    console.log(`  i BİLGİ: ${what}`);
   };
   const finish = (status = null) => {
     current.durum = status || (current.denetimler.every(item => item.gecti) ? "geçti" : "kaldı");
@@ -485,8 +499,11 @@ export async function main(argv = process.argv.slice(2), env = process.env) {
         const count = needle => flat.split(needle).length - 1;
         const buyer = doc.profile === "ESMM" ? FIRM : PERSON;
         check(readable && count(SELLER.address) === 1 && count(buyer.address) === 1, `${key} ${doc.number}: resmî PDF'te satıcı ve alıcı adresi birer kez (satıcı ${count(SELLER.address)}, alıcı ${count(buyer.address)})`);
-        // Düzenleyenin unvanı resmî görüntüde (22.10.2026: VKN'li düzenleyende e-SMM görüntüsü unvanı basmıyordu — EDM yalnız Person'dan basar).
-        check(readable && count(SELLER.name) >= 1, `${key} ${doc.number}: resmî PDF'te düzenleyenin unvanı (${SELLER.name}) ${count(SELLER.name) >= 1 ? "var" : "YOK"}`);
+        // Düzenleyenin unvanı resmî görüntüde. e-SMM'de VKN'li düzenleyende BİLGİ (unvanDenetimi: EDM yanıtı 22.10.2026 — test ortamının e-SMM şablonu
+        // VKN'li düzenleyende unvanı basmaz; kural PartyName, canlıda GİB standardı); öbür belgelerde denetim.
+        const title = `${key} ${doc.number}: resmî PDF'te düzenleyenin unvanı (${SELLER.name}) ${count(SELLER.name) >= 1 ? "var" : readable ? "YOK" : "okunamadı"}`;
+        if (unvanDenetimi({ profile: doc.profile, taxNo: SELLER.taxNo }) === "bilgi") note(`${title} — e-SMM, VKN'li düzenleyen: EDM test ortamı şablonu unvanı basmaz (EDM yanıtı 22.10.2026); denetim değil`);
+        else check(readable && count(SELLER.name) >= 1, title);
       }
     }
     finish();
@@ -569,10 +586,11 @@ export async function main(argv = process.argv.slice(2), env = process.env) {
     const endedAt = new Date();
     const dayChanged = localDay(endedAt) !== startDay;
     if (dayChanged) exitCode = 4;
+    const notes = steps.flatMap(item => (item.bilgiler || []).map(entry => `${item.adim}: ${entry.bilgi}`));
     const failed = steps.reduce((sum, item) => sum + item.denetimler.filter(entry => !entry.gecti).length, 0);
     const total = steps.reduce((sum, item) => sum + item.denetimler.length, 0);
     if (!exitCode && failed) exitCode = 1;
-    const summary = { kip: args.mod, commit, baslangic: trTime(startedAt.toISOString()), bitis: trTime(endedAt.toISOString()), gunDegisti: dayChanged, durduruldu: stopped, denetim: { toplam: total, kalan: failed }, adimlar: steps.map(item => ({ adim: item.adim, durum: item.durum, kalan: item.denetimler.filter(entry => !entry.gecti).length })), belgeler: rows, bekci, cikis: exitCode };
+    const summary = { kip: args.mod, commit, baslangic: trTime(startedAt.toISOString()), bitis: trTime(endedAt.toISOString()), gunDegisti: dayChanged, durduruldu: stopped, denetim: { toplam: total, kalan: failed }, bilgi: notes, adimlar: steps.map(item => ({ adim: item.adim, durum: item.durum, kalan: item.denetimler.filter(entry => !entry.gecti).length })), belgeler: rows, bekci, cikis: exitCode };
     const lines = [
       `# EDM Test Ortamı — e-SMM uçtan uca (2.4.4 iş listesi 24)${args.mod === "kuru" ? " — KURU KOŞU" : ""}`,
       "",
@@ -583,6 +601,7 @@ export async function main(argv = process.argv.slice(2), env = process.env) {
       "",
       `Adımlar: ${summary.adimlar.map(item => `${item.adim} ${item.durum}${item.kalan ? ` (${item.kalan} kalan)` : ""}`).join(" · ")}`,
       "",
+      ...(notes.length ? ["Bilgi (denetim değil):", ...notes.map(item => `- ${item}`), ""] : []),
       "| Kod | Belge Türü | Belge No | ETTN / UUID | Belge Tarihi | Gönderim (TR) | Alıcı | Brüt | Stopaj | KDV | Net Ödenecek | EDM Son Durum | İptal (TR) |",
       "|---|---|---|---|---|---|---|---:|---:|---:|---:|---|---|",
       ...rows.map(item => `| ${item.kod} | ${item.tur} | ${item.no || "—"} | ${item.ettn || "—"} | ${item.tarih ? item.tarih.split("-").reverse().join(".") : "—"} | ${item.gonderim || "—"} | ${item.alici} | ${money(item.brut)} | ${item.stopaj === null ? "—" : money(item.stopaj)} | ${money(item.kdv)} | ${money(item.odenecek)} | ${item.edmDurum} | ${item.iptal || "—"} |`),

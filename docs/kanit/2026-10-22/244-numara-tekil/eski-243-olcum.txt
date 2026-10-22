@@ -1,0 +1,13 @@
+# komut (depo kökünden): HUKUK_LICENSE_URL=http://127.0.0.1:9 node docs/kanit/2026-10-22/244-numara-tekil/eski-243-olcum.mjs <geçici klasör>  (v2.4.3 = 163dd5d; güncel = 7502485 + bu değişiklikler; 2026-10-22T12:13:26Z)
+v2.4.3 A: bırakıldı FIS2026000000001 → gönderildi TEA2026398109244 (Kâğıt Fatura No FIS2026000000001)
+v2.4.3 B: bırakıldı FIS2026000000001 (seride kaldı)
+v2.4.3 C: bırakıldı FIS2026000000002 → gönderildi TEA2026398109245 (Kâğıt Fatura No FIS2026000000002)
+v2.4.3 sonu: tekrar eden fiş numaraları: ["FIS2026000000001"]
+güncel açılış: tekrar eden: ["FIS2026000000001"] · ayrılış kaydı: (yok)
+güncel Fatura Ayarları sıradaki fiş: FIS2026000000002
+güncel D bırakıldı: FIS2026000000002 · aynı numaralı belgeler: [{"number":"TEA2026398109245","paperNo":"FIS2026000000002"},{"number":"FIS2026000000002","paperNo":""}]
+güncel B (2.4.3'te tekrar verilmiş FIS) gönderildi: TEA2026398109246 Kâğıt Fatura No FIS2026000000001 · ayrılış kaydı: {"FIS2026":{"seq":1,"number":"FIS2026000000001","issueDate":"2026-06-17"}}
+güncel E bırakıldı: FIS2026000000003
+bütünlük: true · tekrar eden (son): ["FIS2026000000001","FIS2026000000002"]
+belgeler: [{"number":"TEA2026398109244","paperNo":"FIS2026000000001","profile":"EARSIVFATURA","e":"sent"},{"number":"TEA2026398109246","paperNo":"FIS2026000000001","profile":"EARSIVFATURA","e":"sent"},{"number":"TEA2026398109245","paperNo":"FIS2026000000002","profile":"EARSIVFATURA","e":"sent"},{"number":"FIS2026000000002","paperNo":"","profile":"KAGIT","e":"withdrawn"},{"number":"FIS2026000000003","paperNo":"","profile":"KAGIT","e":"withdrawn"}]
+# çıkış 0

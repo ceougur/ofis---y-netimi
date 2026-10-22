@@ -52,15 +52,10 @@ export function tradeNameOf(p) {
   return folded(name) === folded(`${p.firstName || ""} ${p.familyName || ""}`) ? "" : name;
 }
 
-// VKN'li e-SMM düzenleyeninin unvanı Person'a: son sözcük FamilyName, kalanı FirstName (tek sözcükte FamilyName "-").
-export function issuerPerson(name) {
-  const words = String(name || "").replace(/\s+/g, " ").trim().split(" ").filter(Boolean);
-  if (!words.length) return "";
-  const family = words.length > 1 ? words.pop() : "-";
-  return `<cac:Person>${tag("cbc:FirstName", words.join(" "))}${tag("cbc:FamilyName", family)}</cac:Person>`;
-}
-
-function party(p, { variant, esmm = false, issuer = false }) {
+// Taraf adı (EDM Teknik Operasyon yanıtı, 22.10.2026): tüzel kişide (VKN'li) unvan YALNIZ cac:PartyName'den alınır; şahısta (TCKN'li) ad ve soyad
+// cac:Person FirstName + FamilyName'den. e-SMM düzenleyeni de bu kurala uyar (f57245a / 32e59c0'daki "VKN'li e-SMM düzenleyeninde unvan Person'da" GERİ
+// ALINDI: EDM'nin test ortamı e-SMM şablonu VKN'li düzenleyende unvanı basmaz, canlıda karekod ve görüntü GİB standardında — EDM yanıtı).
+function party(p, { variant, esmm = false }) {
   const id = String(p.taxNo || "").replace(/\s+/g, "");
   const scheme = id.length === 11 ? "TCKN" : "VKN";
   const person = p.partyKind === "person" || id.length === 11;
@@ -99,10 +94,6 @@ function party(p, { variant, esmm = false, issuer = false }) {
     `<cac:PartyTaxScheme><cac:TaxScheme>${tag("cbc:Name", p.taxOffice || "-")}</cac:TaxScheme></cac:PartyTaxScheme>`,
     p.phone || p.email ? `<cac:Contact>${tag("cbc:Telephone", p.phone)}${tag("cbc:ElectronicMail", p.email)}</cac:Contact>` : "",
     person ? `<cac:Person>${tag("cbc:FirstName", p.firstName || p.name)}${tag("cbc:FamilyName", p.familyName || "-")}</cac:Person>` : "",
-    // e-SMM, VKN'li düzenleyen (ör. adi ortaklık): EDM'nin e-SMM görüntüsü düzenleyenin adını YALNIZ Person'dan basar (FirstName + " " + FamilyName;
-    // PartyName basılmaz) ve EDM'nin UBL-TR şeması FamilyName'i zorunlu tutar (11029) — 22.10.2026 gerçek EDM test ortamında denendi. Makbuzda
-    // düzenleyenin adı/unvanı bulunmalı (VUK 236): unvan son sözcüğünden bölünür, EDM boşlukla birleştirip unvanı aynen basar.
-    esmm && issuer && !person ? issuerPerson(p.name) : "",
     "</cac:Party>",
   ].join("");
 }
@@ -345,7 +336,7 @@ export function buildUbl(doc, { variant = "tr", earchiveEmail = true, xslt = "",
   const body = [
     ...head,
     ...references,
-    `<cac:AccountingSupplierParty>${party(seller || {}, { variant, esmm, issuer: true })}</cac:AccountingSupplierParty>`,
+    `<cac:AccountingSupplierParty>${party(seller || {}, { variant, esmm })}</cac:AccountingSupplierParty>`,
     `<cac:AccountingCustomerParty>${party(buyer || {}, { variant, esmm })}</cac:AccountingCustomerParty>`,
     payment,
     exchange,

@@ -1,0 +1,32 @@
+{
+  "ad": "komsu-numara-tabani",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/goc-244-numara-tabani.test.mjs test/numara-tekil-244.test.mjs test/migrations.test.mjs test/backup.test.mjs test/banka-210-goc.test.mjs test/banka-210-goc-zinciri.test.mjs test/banka-210-gg-geri-yukle.test.mjs test/banka-210-gg-eski.test.mjs test/guvenilirlik-221-goc.test.mjs test/guvenilirlik-221-tatbikat.test.mjs test/guvenilirlik-221-ariza.test.mjs test/goc-243-iade-ref.test.mjs test/goc-243-stok-acilis.test.mjs test/goc-243-stok-kdv.test.mjs test/goc-244-esmm-gonderim.test.mjs test/goc-244-iptal-suresi.test.mjs test/personel-ozluk-244.test.mjs test/yedek-220.test.mjs test/yedek-220-inceleme.test.mjs test/upgrade-identity.test.mjs test/update-flow.test.mjs test/sirketler-217.test.mjs test/asama0-226.test.mjs test/trash.test.mjs test/accounts-stock.test.mjs test/einvoice-edm.test.mjs test/esmm-gonderim-244.test.mjs test/ebelge-243-gonderim.test.mjs test/platform-tasinabilirlik.test.mjs test/lisans-servisi-izolasyonu.test.mjs",
+  "commit": "45fef3c4038fdfaaab6524c8c3e12549711d00e2",
+  "dal": "is/esmm-fis",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T12:29:31.935Z",
+  "sure_sn": 212.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 342,
+    "gecen": 342,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/kb/2026-10-22/komsu-numara-tabani.log",
+  "klasor": "/home/user/wt/esmm-fis",
+  "ham_cikti_sha256": "548f2e1b4970ec7219957187f3d49947dffd1d7e2931c170a7e4308205f57c12",
+  "ham_cikti_bayt": 127909
+}

@@ -1,0 +1,38 @@
+{
+  "ad": "mutasyon-N4-sifirlamada-iz-kalir",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/numara-tekil-244.test.mjs test/einvoice-edm.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T11:59:11.125Z",
+  "sure_sn": 8.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 42,
+    "gecen": 41,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Numara tekil: kopma, iki oturum, 002 şirketi, Şirket Verisini Sıfırla (T6, T7, T8, T9) › T9 Şirket Verisini Sıfırla (Tüm Hareketleri Sil): faturalarla birlikte ayrılış kaydı da silinir; seri MAX(seq) gibi baştan",
+      "konum": "test/numara-tekil-244.test.mjs:298:3",
+      "hata": "{\"series\":\"FIS\",\"year\":2026,\"seq\":16,\"number\":\"FIS2026000000016\"} · + actual - expected · + 'FIS2026000000016' (beklenen FIS2026000000001, gelen FIS2026000000016)"
+    }
+  ],
+  "ham_cikti": "../mk/_m/2026-10-22/mutasyon-N4-sifirlamada-iz-kalir.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon",
+  "ham_cikti_sha256": "e78b3699b1bf05221b582882c7c48d73b394aa4d6f78143c2c560541feebd452",
+  "ham_cikti_bayt": 16421
+}

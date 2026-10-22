@@ -1,0 +1,514 @@
+TAP version 13
+# (node:10553) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Kâhin aracı: GİB şematronu ve UBL 2.1 XSD bozuk belgeyi yakalar (aracın dişi)
+    # Subtest: bozulmamış belge iki denetimden de geçer ve şematron kural çalıştırır
+    ok 1 - bozulmamış belge iki denetimden de geçer ve şematron kural çalıştırır
+      ---
+      duration_ms: 1091.1839
+      type: 'test'
+      ...
+    # Subtest: şematron düşürür: CustomizationID TR1.0 (eski sürüm)
+    ok 2 - şematron düşürür: CustomizationID TR1.0 (eski sürüm)
+      ---
+      duration_ms: 82.010756
+      type: 'test'
+      ...
+    # Subtest: şematron düşürür: fatura numarası GİB biçiminde değil
+    ok 3 - şematron düşürür: fatura numarası GİB biçiminde değil
+      ---
+      duration_ms: 58.189647
+      type: 'test'
+      ...
+    # Subtest: şematron düşürür: döviz faturasında kur yok
+    ok 4 - şematron düşürür: döviz faturasında kur yok
+      ---
+      duration_ms: 115.638337
+      type: 'test'
+      ...
+    # Subtest: şematron düşürür: geçersiz profil
+    ok 5 - şematron düşürür: geçersiz profil
+      ---
+      duration_ms: 56.453403
+      type: 'test'
+      ...
+    # Subtest: XSD düşürür: boş IssueTime ve boş imza yuvası
+    ok 6 - XSD düşürür: boş IssueTime ve boş imza yuvası
+      ---
+      duration_ms: 759.249079
+      type: 'test'
+      ...
+    # Subtest: UBL-TR 1.2.1 XSD düşürür, OASIS geçirir: cac:Person'da FamilyName yok (EDM'nin 11029 ile reddettiği hâl)
+    not ok 7 - UBL-TR 1.2.1 XSD düşürür, OASIS geçirir: cac:Person'da FamilyName yok (EDM'nin 11029 ile reddettiği hâl)
+      ---
+      duration_ms: 1224.494486
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/esmm-fis-mut/test/ebelge-uygunluk.test.mjs:104:3'
+      failureType: 'testCodeFailure'
+      error: 'birleşik denetim de yakalar'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/esmm-fis-mut/test/ebelge-uygunluk.test.mjs:112:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: UBL-TR 1.2.1 XSD: imza yeri yalnız eklenir (belgenin başka yeri değişmez); UBL-TR'de zorunlu cac:Signature silinirse düşer
+    ok 8 - UBL-TR 1.2.1 XSD: imza yeri yalnız eklenir (belgenin başka yeri değişmez); UBL-TR'de zorunlu cac:Signature silinirse düşer
+      ---
+      duration_ms: 451.009385
+      type: 'test'
+      ...
+    # Subtest: e-Arşiv kipi: e-Fatura profili e-Arşiv kuralında, e-Arşiv profili e-Fatura kuralında düşer
+    ok 9 - e-Arşiv kipi: e-Fatura profili e-Arşiv kuralında, e-Arşiv profili e-Fatura kuralında düşer
+      ---
+      duration_ms: 308.936941
+      type: 'test'
+      ...
+    1..9
+not ok 1 - Kâhin aracı: GİB şematronu ve UBL 2.1 XSD bozuk belgeyi yakalar (aracın dişi)
+  ---
+  duration_ms: 4518.895648
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/esmm-fis-mut/test/ebelge-uygunluk.test.mjs:73:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar
+    # Subtest: Temel e-Fatura (hizmet)
+    ok 1 - Temel e-Fatura (hizmet)
+      ---
+      duration_ms: 2350.310174
+      type: 'test'
+      ...
+    # Subtest: Ticari e-Fatura
+    ok 2 - Ticari e-Fatura
+      ---
+      duration_ms: 2223.889341
+      type: 'test'
+      ...
+    # Subtest: e-Arşiv (kişi, e-postalı)
+    ok 3 - e-Arşiv (kişi, e-postalı)
+      ---
+      duration_ms: 3065.314681
+      type: 'test'
+      ...
+    # Subtest: e-Arşiv (firma, e-postasız → kâğıt gönderim)
+    ok 4 - e-Arşiv (firma, e-postasız → kâğıt gönderim)
+      ---
+      duration_ms: 2939.332023
+      type: 'test'
+      ...
+    # Subtest: çok KDV oranı, satır iskontosu, ondalık miktar ve birimler
+    ok 5 - çok KDV oranı, satır iskontosu, ondalık miktar ve birimler
+      ---
+      duration_ms: 2811.766638
+      type: 'test'
+      ...
+    # Subtest: KDV dahil fiyat ve iskonto
+    ok 6 - KDV dahil fiyat ve iskonto
+      ---
+      duration_ms: 2881.252789
+      type: 'test'
+      ...
+    # Subtest: %0 KDV, 351 (istisna olmayan)
+    ok 7 - %0 KDV, 351 (istisna olmayan)
+      ---
+      duration_ms: 2643.736367
+      type: 'test'
+      ...
+    # Subtest: döviz (USD, kur)
+    ok 8 - döviz (USD, kur)
+      ---
+      duration_ms: 2324.110821
+      type: 'test'
+      ...
+    # Subtest: fiyat farkı faturası
+    ok 9 - fiyat farkı faturası
+      ---
+      duration_ms: 2466.570831
+      type: 'test'
+      ...
+    # Subtest: istisna 301
+    ok 10 - istisna 301
+      ---
+      duration_ms: 2464.987291
+      type: 'test'
+      ...
+    # Subtest: istisna 302
+    ok 11 - istisna 302
+      ---
+      duration_ms: 2398.799817
+      type: 'test'
+      ...
+    # Subtest: istisna 304
+    ok 12 - istisna 304
+      ---
+      duration_ms: 2861.402029
+      type: 'test'
+      ...
+    # Subtest: istisna 350
+    ok 13 - istisna 350
+      ---
+      duration_ms: 2904.175728
+      type: 'test'
+      ...
+    # Subtest: tevkifat 601
+    ok 14 - tevkifat 601
+      ---
+      duration_ms: 3204.129153
+      type: 'test'
+      ...
+    # Subtest: tevkifat 602
+    ok 15 - tevkifat 602
+      ---
+      duration_ms: 3396.814661
+      type: 'test'
+      ...
+    # Subtest: tevkifat 603
+    ok 16 - tevkifat 603
+      ---
+      duration_ms: 2872.797101
+      type: 'test'
+      ...
+    # Subtest: tevkifat 604
+    ok 17 - tevkifat 604
+      ---
+      duration_ms: 2790.663705
+      type: 'test'
+      ...
+    # Subtest: tevkifat 605
+    ok 18 - tevkifat 605
+      ---
+      duration_ms: 2686.679745
+      type: 'test'
+      ...
+    # Subtest: tevkifat 606
+    ok 19 - tevkifat 606
+      ---
+      duration_ms: 2533.507691
+      type: 'test'
+      ...
+    # Subtest: tevkifat 607
+    ok 20 - tevkifat 607
+      ---
+      duration_ms: 2865.246079
+      type: 'test'
+      ...
+    # Subtest: tevkifat 608
+    ok 21 - tevkifat 608
+      ---
+      duration_ms: 2814.923552
+      type: 'test'
+      ...
+    # Subtest: tevkifat 609
+    ok 22 - tevkifat 609
+      ---
+      duration_ms: 2992.325553
+      type: 'test'
+      ...
+    # Subtest: tevkifat 610
+    ok 23 - tevkifat 610
+      ---
+      duration_ms: 2439.423596
+      type: 'test'
+      ...
+    # Subtest: tevkifat 611
+    ok 24 - tevkifat 611
+      ---
+      duration_ms: 2631.168274
+      type: 'test'
+      ...
+    # Subtest: tevkifat 612
+    ok 25 - tevkifat 612
+      ---
+      duration_ms: 2596.502876
+      type: 'test'
+      ...
+    # Subtest: tevkifat 613
+    ok 26 - tevkifat 613
+      ---
+      duration_ms: 2812.215637
+      type: 'test'
+      ...
+    # Subtest: tevkifat 614
+    ok 27 - tevkifat 614
+      ---
+      duration_ms: 2369.682991
+      type: 'test'
+      ...
+    # Subtest: tevkifat 615
+    ok 28 - tevkifat 615
+      ---
+      duration_ms: 2460.54228
+      type: 'test'
+      ...
+    # Subtest: tevkifat 616
+    ok 29 - tevkifat 616
+      ---
+      duration_ms: 2489.654421
+      type: 'test'
+      ...
+    # Subtest: tevkifat 617
+    ok 30 - tevkifat 617
+      ---
+      duration_ms: 2419.011149
+      type: 'test'
+      ...
+    # Subtest: tevkifat 618
+    ok 31 - tevkifat 618
+      ---
+      duration_ms: 2379.436391
+      type: 'test'
+      ...
+    # Subtest: tevkifat 619
+    ok 32 - tevkifat 619
+      ---
+      duration_ms: 2321.12015
+      type: 'test'
+      ...
+    # Subtest: tevkifat 620
+    ok 33 - tevkifat 620
+      ---
+      duration_ms: 2367.033173
+      type: 'test'
+      ...
+    # Subtest: tevkifat 621
+    ok 34 - tevkifat 621
+      ---
+      duration_ms: 2380.207517
+      type: 'test'
+      ...
+    # Subtest: tevkifat 622
+    ok 35 - tevkifat 622
+      ---
+      duration_ms: 2362.251999
+      type: 'test'
+      ...
+    # Subtest: tevkifat 623
+    ok 36 - tevkifat 623
+      ---
+      duration_ms: 2348.765231
+      type: 'test'
+      ...
+    # Subtest: tevkifat 624
+    ok 37 - tevkifat 624
+      ---
+      duration_ms: 2308.137061
+      type: 'test'
+      ...
+    # Subtest: tevkifat 625
+    ok 38 - tevkifat 625
+      ---
+      duration_ms: 2366.709193
+      type: 'test'
+      ...
+    # Subtest: tevkifat 626
+    ok 39 - tevkifat 626
+      ---
+      duration_ms: 2413.189307
+      type: 'test'
+      ...
+    # Subtest: tevkifat 627
+    ok 40 - tevkifat 627
+      ---
+      duration_ms: 2351.91253
+      type: 'test'
+      ...
+    # Subtest: alıştan iade (e-Fatura): asıl faturaya DocumentTypeCode IADE ile 16 haneli numarayla bağlanır
+    ok 41 - alıştan iade (e-Fatura): asıl faturaya DocumentTypeCode IADE ile 16 haneli numarayla bağlanır
+      ---
+      duration_ms: 634.925188
+      type: 'test'
+      ...
+    # Subtest: alıştan iade: asıl faturanın numarası 16 hane değilse e-Belge iadesi kaydedilmeden söylenir (entegratörde reddedilmez)
+    ok 42 - alıştan iade: asıl faturanın numarası 16 hane değilse e-Belge iadesi kaydedilmeden söylenir (entegratörde reddedilmez)
+      ---
+      duration_ms: 43.525721
+      type: 'test'
+      ...
+    # Subtest: eski kayıttaki 308 (2.3.0'a dek 13/a) GİB'in 13/a kodu 304 olarak yazılır ve kurallara uyar
+    ok 43 - eski kayıttaki 308 (2.3.0'a dek 13/a) GİB'in 13/a kodu 304 olarak yazılır ve kurallara uyar
+      ---
+      duration_ms: 438.702712
+      type: 'test'
+      ...
+    1..43
+ok 2 - Programın kaydettiği faturalar GİB UBL-TR kurallarına ve UBL 2.1 şemasına uyar
+  ---
+  duration_ms: 105434.026078
+  type: 'suite'
+  ...
+# Subtest: Programın kod tabloları GİB kod listesiyle aynı (UBL-TR_Codelist.xml)
+    # Subtest: her tevkifat kodu ve oranı GİB'in WithholdingTaxTypeWithPercent listesinde
+    ok 1 - her tevkifat kodu ve oranı GİB'in WithholdingTaxTypeWithPercent listesinde
+      ---
+      duration_ms: 0.600418
+      type: 'test'
+      ...
+    # Subtest: her KDV istisna kodu GİB'in TaxExemptionReasonCodeType listesinde
+    ok 2 - her KDV istisna kodu GİB'in TaxExemptionReasonCodeType listesinde
+      ---
+      duration_ms: 0.282042
+      type: 'test'
+      ...
+    1..2
+ok 3 - Programın kod tabloları GİB kod listesiyle aynı (UBL-TR_Codelist.xml)
+  ---
+  duration_ms: 1.040224
+  type: 'suite'
+  ...
+# Subtest: Kâhin dosyaları kaynaktaki baytlarıyla duruyor (KAYNAK.md sha256; Windows CRLF dönüşümü yok)
+    # Subtest: her dosyanın sha256'sı KAYNAK.md'deki değerle aynı
+    ok 1 - her dosyanın sha256'sı KAYNAK.md'deki değerle aynı
+      ---
+      duration_ms: 14.892021
+      type: 'test'
+      ...
+    1..1
+ok 4 - Kâhin dosyaları kaynaktaki baytlarıyla duruyor (KAYNAK.md sha256; Windows CRLF dönüşümü yok)
+  ---
+  duration_ms: 15.019112
+  type: 'suite'
+  ...
+# (node:10554) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: e-SMM UBL: GİB kuralından elle hesaplanan dip toplamlar (kâhin)
+    # Subtest: A — 1.000 TL brüt, stopaj %20, KDV %20: stopaj 200, net ücret 800, KDV 200, tahsil edilen KDV 200, net alınan 1.000
+    ok 1 - A — 1.000 TL brüt, stopaj %20, KDV %20: stopaj 200, net ücret 800, KDV 200, tahsil edilen KDV 200, net alınan 1.000
+      ---
+      duration_ms: 4.814291
+      type: 'test'
+      ...
+    # Subtest: B — 2 × 100,03: belge stopajı matrah × oran = 40,01 (kalem yuvarlamasıyla 40,02 DEĞİL); kalemlere 20,01 + 20,00; KDV kalem başına 20,01 + 20,01
+    ok 2 - B — 2 × 100,03: belge stopajı matrah × oran = 40,01 (kalem yuvarlamasıyla 40,02 DEĞİL); kalemlere 20,01 + 20,00; KDV kalem başına 20,01 + 20,01
+      ---
+      duration_ms: 0.898505
+      type: 'test'
+      ...
+    # Subtest: C — kişi alıcı, stopaj yok: 0003 satırı yazılmaz; net ücret = brüt 500, KDV 100, net alınan 600
+    ok 3 - C — kişi alıcı, stopaj yok: 0003 satırı yazılmaz; net ücret = brüt 500, KDV 100, net alınan 600
+      ---
+      duration_ms: 0.302491
+      type: 'test'
+      ...
+    # Subtest: D — KDV tevkifatı 5/10: tahsil edilen KDV 200 − 100 = 100; net alınan 800 + 100 = 900; tevkifat ayrı satırda
+    ok 4 - D — KDV tevkifatı 5/10: tahsil edilen KDV 200 − 100 = 100; net alınan 800 + 100 = 900; tevkifat ayrı satırda
+      ---
+      duration_ms: 0.234723
+      type: 'test'
+      ...
+    # Subtest: E — elle %15 stopaj, iki KDV oranı: stopaj (1.500 + 333,33) × %15 = 274,9995 → 275,00; KDV 300 + 33,33; net alınan 1.891,66
+    ok 5 - E — elle %15 stopaj, iki KDV oranı: stopaj (1.500 + 333,33) × %15 = 274,9995 → 275,00; KDV 300 + 33,33; net alınan 1.891,66
+      ---
+      duration_ms: 0.371972
+      type: 'test'
+      ...
+    1..5
+ok 5 - e-SMM UBL: GİB kuralından elle hesaplanan dip toplamlar (kâhin)
+  ---
+  duration_ms: 424.118343
+  type: 'suite'
+  ...
+# Subtest: e-SMM UBL: program tutarlarıyla aynı, yapı EDM'nin e-SMM örneğiyle aynı, UBL 2.1 şemasına uygun
+    # Subtest: XML tutarları programın kaydettiği makbuzla kuruşu kuruşuna aynı; kalem stopajları toplamı = belge stopajı; Σ kalem fiyatı = net alınan
+    ok 1 - XML tutarları programın kaydettiği makbuzla kuruşu kuruşuna aynı; kalem stopajları toplamı = belge stopajı; Σ kalem fiyatı = net alınan
+      ---
+      duration_ms: 1.221179
+      type: 'test'
+      ...
+    # Subtest: yapı: EDM e-SMM örneğindeki sıra ve öğeler (TaxTotal → 0003 sıra 1 + 0015 sıra 2; dip toplam dörtlüsü; kalemde NIU, vergi, ad, fiyat)
+    ok 2 - yapı: EDM e-SMM örneğindeki sıra ve öğeler (TaxTotal → 0003 sıra 1 + 0015 sıra 2; dip toplam dörtlüsü; kalemde NIU, vergi, ad, fiyat)
+      ---
+      duration_ms: 0.571344
+      type: 'test'
+      ...
+    # Subtest: taraf adresi YALNIZ BuildingName'de (EDM e-SMM örneği): GİB eArsivVeri.xsd adresinde caddeSokak zorunlu ilk öğe; StreetName ile şema hatası, ikisi birlikte adres iki kez
+    ok 3 - taraf adresi YALNIZ BuildingName'de (EDM e-SMM örneği): GİB eArsivVeri.xsd adresinde caddeSokak zorunlu ilk öğe; StreetName ile şema hatası, ikisi birlikte adres iki kez
+      ---
+      duration_ms: 0.727995
+      type: 'test'
+      ...
+    # Subtest: stopaj artık Not değil (vergi satırında); programın fatura görünüm şablonu ve karekod gömülmez; gönderim şekli alıcının e-postasına göre
+    ok 4 - stopaj artık Not değil (vergi satırında); programın fatura görünüm şablonu ve karekod gömülmez; gönderim şekli alıcının e-postasına göre
+      ---
+      duration_ms: 0.58777
+      type: 'test'
+      ...
+    # Subtest: UBL 2.1 XSD'sine (OASIS) ve GİB UBL-TR 1.2.1 XSD'sine (EDM e-SMM'yi bununla denetler; madde 24) uygun — GİB şematronu e-SMM'yi tanımlamaz (ESMM GİB UBL-TR profili değil)
+    ok 5 - UBL 2.1 XSD'sine (OASIS) ve GİB UBL-TR 1.2.1 XSD'sine (EDM e-SMM'yi bununla denetler; madde 24) uygun — GİB şematronu e-SMM'yi tanımlamaz (ESMM GİB UBL-TR profili değil)
+      ---
+      duration_ms: 3030.831786
+      type: 'test'
+      ...
+    1..5
+ok 6 - e-SMM UBL: program tutarlarıyla aynı, yapı EDM'nin e-SMM örneğiyle aynı, UBL 2.1 şemasına uygun
+  ---
+  duration_ms: 3034.800965
+  type: 'suite'
+  ...
+# Subtest: e-SMM dışı belgeler değişmedi
+    # Subtest: kâğıt SMM (e-SMM işareti kapalı): stopaj Not'ta, 0003 satırı yok, dip toplamlar e-Fatura anlamında
+    ok 1 - kâğıt SMM (e-SMM işareti kapalı): stopaj Not'ta, 0003 satırı yok, dip toplamlar e-Fatura anlamında
+      ---
+      duration_ms: 99.159091
+      type: 'test'
+      ...
+    1..1
+ok 7 - e-SMM dışı belgeler değişmedi
+  ---
+  duration_ms: 99.784132
+  type: 'suite'
+  ...
+# Subtest: e-SMM, VKN'li düzenleyen (ör. adi ortaklık)
+    # Subtest: unvan Person'da da (son sözcük FamilyName): EDM'nin e-SMM görüntüsü düzenleyenin adını yalnız Person'dan basar, FamilyName zorunlu (22.10.2026 gerçek EDM); VUK 236
+    ok 1 - unvan Person'da da (son sözcük FamilyName): EDM'nin e-SMM görüntüsü düzenleyenin adını yalnız Person'dan basar, FamilyName zorunlu (22.10.2026 gerçek EDM); VUK 236
+      ---
+      duration_ms: 745.203359
+      type: 'test'
+      ...
+    1..1
+ok 8 - e-SMM, VKN'li düzenleyen (ör. adi ortaklık)
+  ---
+  duration_ms: 745.462169
+  type: 'suite'
+  ...
+# Subtest: Stopajın kalemlere dağıtımı (en büyük kalan)
+    # Subtest: Σ pay = belge stopajı; her pay tam payın aşağı yuvarlaması ya da bir fazlası; aynı girdi aynı sonuç
+    ok 1 - Σ pay = belge stopajı; her pay tam payın aşağı yuvarlaması ya da bir fazlası; aynı girdi aynı sonuç
+      ---
+      duration_ms: 76.356366
+      type: 'test'
+      ...
+    # Subtest: kayıtlı tutarlar GİB kimliğini (Net Alınan = Net Ücret + Tahsil Edilen KDV) ya da kalem toplamlarını tutmazsa belge üretilmez
+    ok 2 - kayıtlı tutarlar GİB kimliğini (Net Alınan = Net Ücret + Tahsil Edilen KDV) ya da kalem toplamlarını tutmazsa belge üretilmez
+      ---
+      duration_ms: 0.878314
+      type: 'test'
+      ...
+    # Subtest: tutarsız girdide (kalan kuruş kalem sayısını aşar ya da eksi) belge üretilmez
+    ok 3 - tutarsız girdide (kalan kuruş kalem sayısını aşar ya da eksi) belge üretilmez
+      ---
+      duration_ms: 0.218044
+      type: 'test'
+      ...
+    1..3
+ok 9 - Stopajın kalemlere dağıtımı (en büyük kalan)
+  ---
+  duration_ms: 77.627106
+  type: 'suite'
+  ...
+1..9
+# tests 70
+# suites 9
+# pass 69
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 110789.309383
