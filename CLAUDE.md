@@ -457,6 +457,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   geri yüklemeden sonra, EDM 11048 reddinde ve Fatura Ayarları → Numaralar'dan elle; taban yalnız YÜKSELİR, kronoloji tabanı da EDM'nin son belge tarihi; e-Fatura,
   e-Arşiv, e-SMM (test serileri dahil); kâğıt/fiş numarası EDM'de olmadığından eşitlenmez (geri yükleme notunda söylenir). e-Belge numarası + EDM bağlantısı → [XH],
   kırmızı test + mutasyon + 31e dar kontrol + gerçek EDM test ortamında (salt okuma) deneme (ders 18).
+  KARAR DEĞİŞTİ (kullanıcı, 22.10.2026 ~17:00 UTC: "yedekten geri yükleyince aslında sık görülen bir durum değil, ilk önerin daha makul"): B2 = İLK ÖNERİ — geri
+  yüklemeden sonra Fatura'da tek seferlik uyarı (yedekten sonra EDM'ye gönderilmiş e-Belge numarası ve verilmiş kâğıt/fiş numarası yeniden verilebilir; göndermeden
+  önce Fatura Ayarları → Numaralar'dan sıradaki numarayı ileri alın) + 11048 iletisine (test ve canlı seri) geri yükleme olasılığı; numaralama mantığı DEĞİŞMEZ.
+  EDM'den kendiliğinden eşitleme (GetInvoiceSerial / GetSMMSerial ya da belge listesi) 2.4.4 SONRASI ayrı iş.
 - SON ADAY BAĞIMSIZ TURU (kullanıcı, 22.10.2026: "2.4.4 son aday uzun test koşusuna başlamadan kâhin (uzman mali müşavir), yargıç, eleştirmen testlerinden geçecek mi,
   regresyon testleri yapılıyor mu?" → EVET; "ekle" → uzman UI + uzman UX de): iş listesi madde 30–31 (31a kâhin, 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol,
   31f uzman UI/UX) Uzun Doğrulama'dan ÖNCE.
