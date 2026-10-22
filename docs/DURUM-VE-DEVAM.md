@@ -14,13 +14,13 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
   /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad (ajan-ortak.md = ajan kuralları; devam-ajanlar.md = ajan kimlikleri; kapsayıcıyla gider).
 - ÇALIŞMA DALINDA (yeşil CI): madde 1–4, 6, 7, 9, 10, 12-UX16, 13, 14, 19, 20, 21, 23, 25, 27, 28, 29 (CI #849–#857). Çalışma dalında ama CI #858 KIRMIZI (senaryo-222): 5, 16,
   18, 26, 23 eki → düzeltmesi 7c adayda.
-- ADAY 4 = /home/user/wt/aday4 (dal aday4) 9aa3469 = 2b71fea (aday 3 + 12 UX15 + 7b + 24 kod/düzenek + 24 adres/11017 47b55b5) + e2e portal-244 beklentisi (UI11 "Excel" adı).
-  KAPI @2b71fea: tam npm test 3094/3094 GEÇTİ; e2e 42/43 GEÇTİ, portal-244 kırmızısı eski beklenti (kanıt …-kirmizi-ui11-eski-beklenti) → 9aa3469; 2 sa sınırında kesildi;
-  kalan e2e'ler aday-kos-devam.sh ile sürüyor (12:25). Yeşilse çalışma dalına birleştir + push + CI (Windows sinyali aday 5'ten önce).
-- ADAY 5 = /home/user/wt/aday5 (dal aday5) 1fcfcf9 = aday 4 + 31a F1/F5/F4 (36830cd) + F2/F3/F6 (2c6b764) + 24 BuildingName/deneyler (7f8abd8) + kâhin e-Belge/2 (5c8f1a4) +
-  kâhin cari/tutar (bdbed0a) + I23 düzeltmesi (c1598c7; eski kodda 2 kırmızı, yenide 43/43; kâhin senaryoları 19/20 → 20/20) + CI kâhin adımları ve Uzun Doğrulama
-  kahin_cari/kahin_tutar (7a2141b; kapı testi 53/53). EKSİK: is/esmm-fis (e6a5a72 kâğıt/fiş numarası tekil — 12 test, eski kodda 12 kırmızı, mutasyon 8/8; 45fef3c VKN'li
-  düzenleyen yalnız PartyName, issuerPerson geri alındı) + tek seferlik eski veri taraması (esmm2 ajanı, 12:20'de başladı). Ajan bitince is/esmm-fis aday 5'e → aday-kos.sh aday5.
+- ADAY 4 ÇALIŞMA DALINDA (22.10 ~13:00): 2fb1d33 = birleştir aday 4 (4e19947; kapı npm test 3094/3094 + 64/64 e2e, kanıt aday-2b71fea-*); push edildi, CI
+  bekleniyor (`kanit.mjs ci 2fb1d33 --bekle`). Yeşilse iş listesinde 5, 5a–5c, 7b, 7c, 8, 11, 12 UX15, 15, 16, 17, 18 (madde 18 için ayrıca kullanıcının Windows + Edge
+  elle kabulü — GÖZDEN GEÇİRME 2), 22, 23 eki, 26 çizilir.
+- ADAY 5 = /home/user/wt/aday5 (dal aday5) 5ad1277 = aday 4 + 31a F1/F5/F4, F2/F3/F6, 24 BuildingName/deneyler, kâhin e-Belge/2 + cari/tutar, I23 (c1598c7), CI kâhin
+  adımları (7a2141b), e-SMM kaşe/logo cümlesi (d4c3b20, kullanıcı "ekle"), is/esmm-fis (5599e07: kâğıt/fiş numarası tekil, VKN'li düzenleyen PartyName, göç v32
+  tarama; çakışma chronologyProblem'de anlamca birleşti, dar test 116/116). Kâhin adımları 5ad1277'de: defter 147/147, cari 1364/1364, tutar 3472/3472, e-Belge model
+  82/82, mutasyon 36/36, senaryo 20/20. KAPI aday-kos.sh aday5 5ad1277 koşuyor (~13:05; 2 sa'te kesilirse aday-kos-devam.sh). Yeşilse çalışma dalına birleştir + push + CI.
 - SONRA: aday 4 ve aday 5 CI yeşilince iş listesinde 5, 5a–5c, 7b, 7c, 8, 11, 12 UX15, 15, 16, 17, 18, 22, 23 eki, 24, 26 çizilir → 30 (tam test + BÜTÜN e2e, CI dışı dahil;
   yedek tatbikatı; v2.4.3 → 2.4.4 göçü; ana oturumun kullanıcı gözüyle iş akışı) → 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol (11017, F2/F3, kâğıt
   numarası + tarama, UBL-TR, I23), 31f uzman UI/UX → 32 CI → 33 Uzun Doğrulama → 34–36 paket/teslim/PR. Sürüm notu cümleleri: UX18/F3 (karşılıksız evrak faturayı açar) ve
