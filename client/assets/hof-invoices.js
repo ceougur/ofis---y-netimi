@@ -369,6 +369,7 @@
           <span class="hof-rep-export" role="group" aria-label="Dışa aktar">${HOF.outputButton({ kind: "pdf", href: `/api/workspace/invoices/liste.pdf?${listParams()}`, what: "Fatura Listesi", attrs: 'target="_blank" rel="noopener"' })}${HOF.outputButton({ kind: "xlsx", href: `/api/workspace/invoices/export.xlsx?${listParams()}`, what: "Fatura Listesi", attrs: "download" })}</span>${portalButton()}
         </div></div>
       <div class="hof-inv-tabs" role="tablist" aria-label="Fatura listeleri">${tabs.map(([id, label]) => `<button type="button" role="tab" class="hof-rep-chip ${view.tab === id ? "is-on" : ""}" aria-selected="${view.tab === id}" data-tab="${id}">${label}${id !== "inbox" && counts[id] ? ` <b>${counts[id].toLocaleString("tr-TR")}</b>` : ""}</button>`).join("")}</div>
+      ${restoreBanner(data)}
       ${t ? `<div class="hof-rep-stats">${tile("Toplam (KDV Dahil)", t.payable, "", `${t.issued.toLocaleString("tr-TR")} belge`)}${tile("KDV", t.vat)}${tile("Açık Bakiye", t.open, t.open > 0 ? "is-receivable" : "")}${tile("Vadesi Geçmiş", t.overdue, t.overdue > 0 ? "is-payable" : "")}</div>` : ""}
       <div class="hof-plans-filters hof-chq-filters hof-inv-filters">
         <div class="hof-rep-presets" role="group" aria-label="Tarih">${PRESETS.map(([id, label]) => `<button type="button" class="hof-rep-chip ${view.preset === id && (id || (!view.from && !view.to)) ? "is-on" : ""}" data-preset="${id}">${label}</button>`).join("")}</div>
@@ -387,6 +388,29 @@
           : HOF.listPending(view.listError)
       }`,
     );
+  }
+  // 2.4.4 (madde 30b, kullanıcı kararı 22.10.2026): yedek geri yüklendikten sonra TEK SEFERLİK uyarı (yalnız geri yüklenen şirkette; sunucu
+  // restoreNotice). Numaralama değişmez; kullanıcı sıradaki numarayı elle ileri alır. Fatura Ayarları yetkisi olan kapatır, kapatılınca bir daha çıkmaz.
+  function restoreBanner(data) {
+    const notice = data?.restoreNotice;
+    if (!notice) return "";
+    const when = notice.backupAt ? ` (yedek tarihi: ${esc(HOF.formatDateTime(notice.backupAt))})` : "";
+    const textOf = notice.edoc
+      ? `Yedek geri yüklendi${when}. Yedekten sonra EDM'ye gönderilmiş e-Belge'ler ve verilmiş kâğıt/fiş numaraları programda yeniden verilebilir; EDM aynı numarayı reddeder. Göndermeden önce Fatura Ayarları → Numaralar'dan sıradaki numarayı EDM'deki ve elinizdeki son numaranın ilerisine alın.${notice.test ? " Test Ortamı'nda e-Belge numarası Entegratör Ayarları → Otomatik Seriler'den ileri alınır." : ""}`
+      : `Yedek geri yüklendi${when}. Yedekten sonra verilmiş kâğıt/fiş numaraları programda yeniden verilebilir. Yeni belge kaydetmeden önce Fatura Ayarları → Numaralar'dan sıradaki numarayı elinizdeki son numaranın ilerisine alın.`;
+    const tail = notice.canDismiss ? "" : " Sıradaki numarayı Fatura Ayarları yetkisi olan kullanıcı ileri alır ve bu uyarıyı kapatır.";
+    return `<div class="hof-inv-banner is-warn" data-restore-notice role="status"><span>${textOf}${tail}</span>${notice.canDismiss ? `<span class="hof-inv-banner-actions">${canSettings() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="settings">Fatura Ayarları</button>' : ""}<button type="button" class="hof-button hof-button-small" data-act="restore-notice-dismiss" data-at="${esc(notice.at)}">Uyarıyı Kapat</button></span>` : ""}</div>`;
+  }
+  async function dismissRestoreNotice(button) {
+    button.disabled = true;
+    try {
+      const result = await HOF.api("/api/workspace/invoices/restore-notice/dismiss", { method: "POST", body: { at: button.dataset.at || "" } });
+      if (view.list) view.list.restoreNotice = result.restoreNotice || null;
+      renderList();
+    } catch (error) {
+      button.disabled = false;
+      HOF.toast(error.message, { type: "error" });
+    }
   }
   // Seçili belgelerden listede o durumda olanlar (toplu kesme yalnız taslak, toplu iptal yalnız kesilmiş belge).
   const selectedBy = status => (view.list?.invoices || []).filter(doc => view.selected.has(doc.id) && doc.status === status);
@@ -481,6 +505,7 @@
     if (act === "settings") return showSettings();
     if (act === "integrator") return showIntegrator();
     if (act === "portal") return openPortal();
+    if (act === "restore-notice-dismiss") return dismissRestoreNotice(target);
     if (act === "more") return loadList(true);
     if (act === "retryList") {
       view.listError = "";

@@ -10120,6 +10120,10 @@ input[type="search"]::-webkit-search-cancel-button {
 .hof-inv-banner small { display: block; color: inherit; opacity: 0.8; }
 .hof-inv-banner.is-cancelled { background: var(--do-danger-soft); color: var(--do-danger); }
 .hof-inv-banner.is-ok { background: #e3f2e9; color: #2d6a4b; }
+/* 2.4.4 (madde 30b): yedek geri yüklendikten sonra Fatura'daki tek seferlik numara uyarısı. */
+.hof-inv-banner.is-warn { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; background: var(--do-warn-soft); color: var(--do-warn); }
+.hof-inv-banner.is-warn > span:first-child { flex: 1 1 320px; }
+.hof-inv-banner-actions { display: inline-flex; flex-wrap: wrap; gap: 6px; }
 .hof-inv-settings { margin: 14px 0; padding: 12px 14px; border: 1px solid var(--do-border); border-radius: 14px; background: #fbfdfb; }
 .hof-inv-settings h4 { margin: 0 0 8px; color: var(--do-ink-soft); font: 800 12px/1 var(--do-display); letter-spacing: 0.12em; text-transform: uppercase; }
 .hof-inv-settings h4 small { text-transform: none; letter-spacing: 0; color: var(--do-faint); font-weight: 600; }
