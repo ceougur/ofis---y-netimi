@@ -156,6 +156,8 @@ export function cariEkstre({ records, payments = [], filters = normalizeFilters(
       group.lines.push({ date, kind: "borc", description: [record.tab, record.id].filter(Boolean).join(" · "), session: record.sessionName, tab: record.tab, borc: debit, alacak: null, status: record.status, fields: record.fields, key: record.key });
     }
     for (const payment of paid.get(record.key) || []) {
+      // 2.4.4 (E8): kayda bağlı carinin tahsilatı yalnız bağın sayfasındaki kayda sayılır (kayıt tahsilatında sayfa yok; önceki gibi).
+      if (payment.session && record.session && payment.session !== record.session) continue;
       const at = parseIsoDay(payment.date);
       if (!inRange(at, filters)) continue;
       group.lines.push({ date: at, kind: "alacak", description: ["Tahsilat", payment.note].filter(Boolean).join(" · "), session: record.sessionName, tab: record.tab, borc: null, alacak: Number(payment.amount) || 0, status: "", fields: {}, key: record.key });

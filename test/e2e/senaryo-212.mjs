@@ -1,7 +1,7 @@
 // Gerçek kullanıcı senaryosu (v2.0.12): taksit kartının Kayıt Tarihi carinin kayıt tarihidir. Müşterinin şikâyeti
 // ("tahsilat girince kayıt tarihi değişiyor"): kart formu ve toplu taksitlendirme bugünü yazıyordu. Beş yol arayüzden:
 // tek kart (cari seçimi, ad önerisi, elle tarih), cari kartından "+ Taksit Planı", toplu taksitlendirme, tablodaki
-// kayıttan Tahsilat → "Taksit planı oluşturun". Çalıştırma: npm run test:senaryo-212 (artifacts/senaryo-212/).
+// kayıttan önce cari (2.4.4: kayıttan taksit kısa yolu kalktı) → cari kartından "+ Taksit Planı". Çalıştırma: npm run test:senaryo-212 (artifacts/senaryo-212/).
 import fs, { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -202,22 +202,31 @@ try {
     ok(accounts.every(item => ({ "Yasemin Taşkıran": "2026-03-05", "Kerem Aydın": "2026-02-10", "Selin Yurt": "2026-06-21", "Deniz Ak": "2026-05-15" })[item.name] === item.registeredOn), "carilerin kayıt tarihleri hiçbir adımda değişmedi");
   });
 
-  await step("5. Tablodaki kayıttan Tahsilat → \"Taksit planı oluşturun\": tarih tablodaki Kayıt Tarihi kolonundan", async () => {
-    const row = admin.locator(".dynamic-table tbody tr", { hasText: "Mert Çelik" }).first();
-    await row.evaluate(node => node.scrollIntoView({ block: "center" }));
-    await row.locator("td").first().click({ position: { x: 10, y: 8 } });
-    await admin.waitForTimeout(700);
-    await admin.locator(".detail-panel button", { hasText: /^Tahsilat$/ }).first().click();
-    await admin.waitForSelector(`${top} [data-new-plan]`);
-    await admin.click(`${top} [data-new-plan]`);
+  // 2.4.4 (E8; kullanıcı 21.10.2026 "orta tablodaki Excel'deki kayıttan taksit olmasın, cariye kaydedip oradan yapsın"): kayıttan Tahsilat ve "Taksit planı
+  // oluşturun" kısa yolu kalktı. Tablodaki kişiye tahsilat (zil / Tahsilat Takvimi) carisi yoksa önce cari açtırır; Kayıt Tarihi tablodan gelir, kart cari
+  // kartından "+ Taksit Planı" ile açılır ve carinin tarihini alır (kişi bir kez girilir).
+  await step("5. Tablodaki kayıttan: önce cari (Kayıt Tarihi tablodaki kolondan) → cari kartından \"+ Taksit Planı\": kart aynı tarihle", async () => {
+    const key = await admin.evaluate(() => (window.HOF.data?.rows || []).find(row => Object.values(row).includes("Mert Çelik"))?.__hofKey || "");
+    ok(Boolean(key), `Mert Çelik kaydı tabloda (${key})`);
+    await admin.evaluate(k => window.HOF.workspace.payment({ key: k, title: "Mert Çelik" }), key);
+    await admin.waitForSelector(`${top} input[name="registeredOn"]`);
+    ok((await admin.$eval(`${top} .hof-modal-title`, node => node.textContent.trim())) === "Yeni Cari" && !(await admin.$(`${modal} [data-new-plan]`)), "kayıttan taksit kısa yolu yok; önce cari açılır");
+    ok((await dayOf()) === "2026-01-14", `tablodaki Kayıt Tarihi (14.01.2026) Yeni Cari formuna geldi: ${await dayOf()}`);
+    await admin.click(`${top} button[type="submit"]`);
+    await admin.waitForFunction(() => document.querySelector(".hof-modal-backdrop.is-visible:last-of-type .hof-modal-title")?.textContent.trim() === "Tahsilat", null, { timeout: 8000 });
+    await closeTop(admin);
+    const mert = (await call(admin, "/api/workspace/accounts")).data.accounts.find(item => item.name === "Mert Çelik");
+    ok(mert?.registeredOn === "2026-01-14", `kayıttan açılan carinin kayıt tarihi: ${mert?.registeredOn}`);
+    await closeAll();
+    await admin.evaluate(id => window.HOF.accounts.open(id), mert.id);
+    await admin.waitForSelector(`${modal} [data-act="newPlan"]`);
+    await admin.click(`${modal} [data-act="newPlan"]`);
     await admin.waitForSelector(`${top} input[name="registeredOn"]`);
     await admin.waitForTimeout(500);
-    ok((await dayOf()) === "2026-01-14", `tablodaki Kayıt Tarihi (14.01.2026) forma geldi: ${await dayOf()}`);
-    await shot(admin, "kayittan-taksit-plani");
+    ok((await dayOf()) === "2026-01-14", `cariden açılan kart formunda carinin tarihi: ${await dayOf()}`);
+    await shot(admin, "kayittan-cari-taksit-plani");
     await saveCard("18000");
-    ok((await cardDay()) === "14.01.2026", "kart 14.01.2026 ile açıldı; yeni açılan cari de aynı tarihi taşır");
-    const mert = (await call(admin, "/api/workspace/accounts")).data.accounts.find(item => item.name === "Mert Çelik");
-    ok(mert?.registeredOn === "2026-01-14", `karttan açılan carinin kayıt tarihi: ${mert?.registeredOn}`);
+    ok((await cardDay()) === "14.01.2026", "kart 14.01.2026 ile açıldı");
     await closeAll();
   });
 

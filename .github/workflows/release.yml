@@ -69,6 +69,9 @@ jobs:
       - run: npm run test:senaryo-fatura-243
       - run: npm run test:senaryo-cari-243
       - run: npm run test:senaryo-personel-244
+      - run: npm run test:senaryo-portal-244
+      - run: npm run test:senaryo-kayit-tahsilat-244
+      - run: npm run test:senaryo-netten-brute-244
       - run: npm run test:senaryo-banka-rapor-243
       - run: npm run test:senaryo-defter-243
       - run: npm run test:banka-230-hareket-yaris
@@ -92,6 +95,7 @@ jobs:
       - run: npm run test:uiux-a-243
       - run: npm run test:uiux-b-243
       - run: npm run test:sirket-canli-yetki-244
+      - run: npm run test:baslarken-244
 
   windows:
     name: Windows kurulum paketi

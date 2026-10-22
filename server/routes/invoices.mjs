@@ -15,18 +15,18 @@ import { randomInt, randomUUID } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { parseQty } from "../lib/accounts.mjs";
-import { ADAPTERS, DEFAULT_ADAPTER, adapterInfo, connect, integratorUrl, testOnlyUrl } from "../lib/einvoice/adapters.mjs";
+import { ADAPTERS, DEFAULT_ADAPTER, adapterInfo, connect, integratorPortalUrl, integratorUrl, isPortalUrl, testOnlyUrl } from "../lib/einvoice/adapters.mjs";
 import { EDM_URLS } from "../lib/einvoice/edm.mjs";
 import { readUbl } from "../lib/einvoice/ubl-read.mjs";
 import { UNIT_CODE_KEYS, buildUbl, ublFileName } from "../lib/einvoice/ubl-tr.mjs";
 import { viewXslt } from "../lib/einvoice/gorunum.mjs";
 import { karekodOf } from "../lib/einvoice/karekod.mjs";
-import { NOT_SENT_CODES, TRANSMITTED, cancelDeadlineText, cancelLateText, cancelWindow, transmissionOf, windowLabel } from "../lib/einvoice/iptal-suresi.mjs";
+import { NOT_SENT_CODES, TRANSMITTED, attemptWindow, cancelDeadlineText, cancelLateText, cancelWindow, transmissionOf, windowLabel } from "../lib/einvoice/iptal-suresi.mjs";
 import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { bodyHash, createIdempotency } from "../lib/idempotency.mjs";
 import { invoicePdf } from "../lib/invoice-pdf.mjs";
 import { jpegInfo } from "../lib/pdf-write.mjs";
-import { CURRENCIES, EXEMPTIONS, EXPENSES, INVOICE_KINDS, InvoiceInputError, SCENARIOS, STOPPAGE_DEFAULT, VAT_RATES, WITHHOLDING, amountInWords, computeInvoice, exclusiveParts, grossFromNet, lineAccount, toTry, typeCode } from "../lib/invoice-math.mjs";
+import { CURRENCIES, EXEMPTIONS, EXPENSES, INVOICE_KINDS, InvoiceInputError, SCENARIOS, STOPPAGE_DEFAULT, VAT_RATES, WITHHOLDING, amountInWords, cents, computeInvoice, exclusiveParts, lineAccount, priceForNetFee, toTry, typeCode } from "../lib/invoice-math.mjs";
 import { CLOSER_MODES, PAY_STATES, settleInvoices } from "../lib/invoice-settle.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { METHODS, METHODS_IN, METHODS_OUT, methodLabel, methodInput } from "../lib/pay-method.mjs";
@@ -472,6 +472,17 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     return { ...s, integrator: { ...rest, hasPassword: Boolean(passwordSealed), url: integratorUrl(s.integrator), label: ADAPTERS[s.integrator.id]?.label || "", liveAllowed: edocLive, network: networkSummary() } };
   };
   const integratorSummary = s => ({ id: s.integrator.id, label: ADAPTERS[s.integrator.id]?.label || "", env: s.integrator.env, configured: Boolean(s.integrator.username && s.integrator.passwordSealed), autoSend: s.integrator.autoSend === true, autoCheckUser: s.integrator.autoCheckUser === true });
+  // e-Fatura Portalı düğmesi (2.4.4 E7): adres sunucunun sabit listesinden, Çalışma Ortamı'na göre (Test → test portalı, Canlı → canlı portal).
+  // Yetki: Fatura Kesme ve İptal (invoices.manage) — portalda yapılan işler (belge kesme/iptal, gelen faturaya yanıt) bu yetkinin programdaki
+  // karşılığı; Faturaları Görme yetkisi portal işlerini kapsamaz. Bağlantı (kullanıcı adı + parola) kayıtlı değilse portala girilecek hesap da
+  // yok. Engel varsa adres GÖNDERİLMEZ, yalnız nedeni gider (düğme pasif, nedeni görünür). Kullanıcı adı/parola hiçbir zaman gitmez.
+  const portalState = (s, user) => {
+    const url = integratorPortalUrl(s.integrator);
+    if (!url || !isPortalUrl(url)) return { url: "", block: "Bu entegratörün portal adresi programda tanımlı değil." };
+    if (!canUser(user, "invoices.manage")) return { url: "", block: "e-Fatura Portalı, Fatura Kesme ve İptal yetkisi ister; yöneticinize başvurun." };
+    if (!(s.integrator.username && s.integrator.passwordSealed)) return { url: "", block: "Önce Entegratör Ayarları'nda web servis kullanıcı adını ve parolasını kaydedin." };
+    return { url, env: s.integrator.env, block: "" };
+  };
   // Dar kontrol B2/B3: adres yazım varyantlarıyla (sonda "/", büyük harf, :443) karşılaştırılır — istemci (edm.mjs) sondaki "/"yi zaten atar.
   const sameUrl = (a, b) => {
     const norm = url => { try { const u = new URL(String(url).trim()); return `${u.protocol}//${u.host.toLowerCase()}${u.pathname.replace(/\/+$/, "")}`; } catch { return String(url).trim(); } };
@@ -2347,7 +2358,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       eStates: E_STATES,
       adapters: edocEnabled ? Object.entries(ADAPTERS).map(([id, value]) => adapterInfo(id, value)) : [],
       edocEnabled,
-      settings: { efatura: edocEnabled && s.efatura, earsiv: edocEnabled && s.earsiv, esmm: esmmEnabled && s.esmm, defaults: s.defaults, series: s.series, sellerReady: sellerProblems("KAGIT", s).length === 0 && Boolean(s.seller.name), sellerName: s.seller.name, integrator: edocEnabled ? integratorSummary(s) : null, draftUpload: edocEnabled && s.eOptions.draftUpload === true },
+      settings: { efatura: edocEnabled && s.efatura, earsiv: edocEnabled && s.earsiv, esmm: esmmEnabled && s.esmm, defaults: s.defaults, series: s.series, sellerReady: sellerProblems("KAGIT", s).length === 0 && Boolean(s.seller.name), sellerName: s.seller.name, integrator: edocEnabled ? { ...integratorSummary(s), portal: portalState(s, user) } : null, draftUpload: edocEnabled && s.eOptions.draftUpload === true },
       today: today(),
       repeated: repeated.length,
       lockedUntil: period?.lockedUntil?.() || "",
@@ -2520,9 +2531,31 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       aliasBlock: aliasMissing(doc) ? aliasBlockText() : "",
     });
   });
-  router.get("/api/workspace/invoices/gross-from-net", async ({ req, res, url }) => {
+  // SMM "Netten Brüte" (2.4.4 madde 26): istenen Net Ücretten (brüt − stopaj, KDV hariç; makbuzun tamamı) ilk kalemin birim fiyatı. Gövde formun
+  // ön hesap gövdesidir (calc ile aynı) + net. Belge kaydın KENDİ yolundan çözülür (documentInput → computeInvoice): stopaj oranı kayıtta hangisi
+  // uygulanacaksa o — kutu boşsa alıcıya göre (şirket alıcıda ayardaki oran, gerçek kişide 0; GVK md. 94), yazılmışsa yazılan —; KDV dahil fiyat,
+  // iskontolar ve öbür kalemler de hesaba girer. Önceden istemci kutu boşken her alıcıda ayardaki oranı (%20) gönderiyor, KDV dahil fiyatı ve
+  // iskontoyu bilmiyordu: gerçek kişi alıcıda brüt %25 fazla, "Fiyatlar KDV Dahil"de matrah KDV kadar eksik yazılıyordu.
+  router.post("/api/workspace/invoices/gross-from-net", async ({ req, res }) => {
     requireView(req);
-    ok(res, { gross: grossFromNet(parseAmount(url.searchParams.get("net")), Number(url.searchParams.get("rate") ?? STOPPAGE_DEFAULT)) });
+    const body = await readJson(req, { limit: 2_000_000 });
+    const target = numberOf(body.net, "Net ücret", "net", { min: 0, max: 1e12 });
+    if (!(target > 0)) fail400("Net ücreti sıfırdan büyük bir tutar olarak yazın.", "net");
+    const lines = Array.isArray(body.lines) && body.lines.length ? body.lines : [{}];
+    const first = { ...(lines[0] && typeof lines[0] === "object" ? lines[0] : {}), qty: 1, unitPrice: roundMoney(target) };
+    if (!text(first.name) && !text(first.itemId)) first.name = "Serbest meslek ücreti";
+    const doc = documentInput({ ...body, lines: [first, ...lines.slice(1)] }, { mode: "draft" });
+    if (doc.kind !== "smm") fail400("Netten Brüte yalnız serbest meslek makbuzunda kullanılır.", "kind");
+    let found;
+    try {
+      found = priceForNetFee(doc.lines, 0, cents(target), { pricesIncludeVat: doc.pricesIncludeVat, discountRate: doc.discountRate, stoppageRate: doc.stoppageRate });
+    } catch (error) {
+      if (error instanceof InvoiceInputError) fail400(error.message, error.field);
+      throw error;
+    }
+    if (!found) fail400("Öbür kalemlerin net ücreti yazdığınız tutarı aşıyor; tutarı büyütün ya da öbür kalemleri çıkarın.", "net");
+    const t = found.totals;
+    ok(res, { unitPrice: found.unitPrice, gross: c2(t.net), stoppageRate: doc.stoppageRate, stoppage: c2(t.stoppage), net: c2(t.net - t.stoppage), vat: c2(t.vat), withheld: c2(t.withheld), payable: c2(t.payable) });
   });
   router.post("/api/workspace/invoices", async ({ req, res }) => {
     const user = requireManage(req);
@@ -2889,6 +2922,29 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       release();
     }
   }
+  // Kullanıcı kararı 22.10.2026 (madde 23 ek): sonucu BELİRSİZ gönderimde "Yalnız Programda İptal", son gönderim girişiminden 8 gün geçtiyse önce EDM'ye
+  // sorar. EDM "bulunamadı" (11017) derse belge iletilmemiştir → iptal serbest (true döner). Belge EDM'de varsa durum belgeye yazılır ve iptal reddedilir
+  // (iletilmişse süre doldu). EDM'ye ulaşılamazsa ya da yanıt tanınmazsa iptal yapılmaz. e-SMM'de "bulunamadı" kodu doğrulanmadı (madde 24): e-SMM'de
+  // her hata "bilinmiyor" sayılır. 8 gün dolmadıysa sorulmaz (bugünkü K4 çıkış yolu aynen; false döner).
+  async function uncertainLocalCheck(user, row) {
+    const limit = edocEnabled ? attemptWindow({ profile: row.profile, issueDate: row.issueDate, transmittedAt: transmittedAtOf(row.id), today: today() }) : null;
+    if (!limit?.late) return false;
+    const since = `Son gönderim girişiminin (${dayText(limit.start)}) üzerinden ${limit.days} günden fazla geçti; belgenin EDM'de olup olmadığı sorulmadan yalnız programda iptal edilmez.`;
+    let remote;
+    try {
+      remote = await integrator().status({ invoice: detail(row.id, user) });
+    } catch (error) {
+      if (row.profile !== "ESMM" && remoteMissing(error)) return true;
+      const code = error?.extra?.code || error?.code || "";
+      const reason = String(error?.message || error).slice(0, 300);
+      if (["integrator-unreachable", "integrator-uncertain"].includes(code)) throw new HttpError(502, `${since} EDM'ye ulaşılamadı (${reason}). İptal yapılmadı; bağlantı kurulunca yeniden deneyin.`, { code: "einvoice-cancel-unreachable", lastDay: limit.lastDay });
+      throw new HttpError(409, `${since} EDM belgenin durumunu bildirmedi (${reason}). İptal yapılmadı; Durum Sorgula ile bakın ya da entegratörle görüşün.`, { code: "einvoice-cancel-unknown", lastDay: limit.lastDay });
+    }
+    setE(user, row.id, { status: remote.status, message: remote.message }, "invoice.e.status", { raw: remote.raw || "", during: "cancel" });
+    const found = cancelWindowOf(invoiceRow(row.id));
+    if (found?.late) throw new HttpError(409, `Belge EDM'de bulundu: alıcıya iletilmiş, GİB'de geçerli. ${cancelLateText(found)}`, { code: "einvoice-cancel-late", lastDay: found.lastDay, start: found.start, source: found.source });
+    throw new HttpError(409, `Belge EDM'de bulundu (durum: ${E_STATES[remote.status] || remote.status}); durum belgeye yazıldı, yalnız programda iptal edilmedi. Kartı yeniden açıp İptal Et ile deneyin.`, { code: "einvoice-found" });
+  }
   async function cancelInvoiceOnce(user, id, body) {
     const relinks = invoiceRow(id).status === "issued" ? doubtfulRelinks(id) : [];
     const notices = relinks.length ? [doubtfulRelinkText(relinks, { done: true })] : [];
@@ -2914,6 +2970,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (!canUser(user, "invoices.settings")) throw new HttpError(403, "Yalnız programda iptal, Fatura Ayarları yetkisi ister; yöneticinize başvurun.", { code: "FORBIDDEN", permission: "invoices.settings" });
       if (body.confirmLocal !== true) throw new HttpError(409, "Belgenin entegratörde olmadığını ya da entegratöre ulaşılamadığını onaylayın (onay kutusu).", { code: "einvoice-local-confirm" });
     }
+    const missingAtEdm = bypass && uncertainSend(head) ? await uncertainLocalCheck(user, head) : false;
     if (uncertainSend(head) && !localOnly) throw new HttpError(409, UNCERTAIN_TEXT, { code: "einvoice-uncertain" });
     if (!bypass) await confirmDraft(user, id);
     if (bypass) options.confirmExternal = true;
@@ -2966,8 +3023,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const row = cancel(user, existing.id, options);
     if (bypass) {
       store.tx(() => {
-        store.run("UPDATE invoices SET e_message = ? WHERE id = ?", "Yalnız programda iptal edildi (entegratöre iptal gönderilmedi). Entegratörde belge varsa orada ayrıca iptal edin.", existing.id);
-        audit(user, "invoice.e.local-cancel", existing.id, { number: existing.number, eStatus: head.eStatus || "none", adapter: head.eAdapter || "" });
+        store.run("UPDATE invoices SET e_message = ? WHERE id = ?", missingAtEdm ? "EDM'de bulunamadı (belge iletilmemiş); yalnız programda iptal edildi." : "Yalnız programda iptal edildi (entegratöre iptal gönderilmedi). Entegratörde belge varsa orada ayrıca iptal edin.", existing.id);
+        audit(user, "invoice.e.local-cancel", existing.id, { number: existing.number, eStatus: head.eStatus || "none", adapter: head.eAdapter || "", ...(missingAtEdm ? { reason: "integrator-missing" } : {}) });
       });
     }
     return { ...detail(row.id, user), notices };

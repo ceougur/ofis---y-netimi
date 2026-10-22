@@ -749,12 +749,14 @@
       title: account ? "Cariyi Düzenle" : "Yeni Cari",
       eyebrow: moduleName().toLocaleUpperCase("tr-TR"),
       size: "wide",
-      intro: account ? "" : "Kişinin ya da firmanın bilgileri. Taksit sorulmaz; taksit planı istenirse sonra karttan ya da listeden toplu açılır.",
+      // 2.4.4 (E8): zil / Tahsilat Takvimi'nden carisi olmayan kayda tahsilat girilirken "önce cari açın" açıklaması (options.intro) gelir.
+      intro: account ? "" : options.intro || "Kişinin ya da firmanın bilgileri. Taksit sorulmaz; taksit planı istenirse sonra karttan ya da listeden toplu açılır.",
       fields: [
         { name: "name", label: "Ad Soyad / Unvan", required: true, maxlength: 160, value: account?.name || preset?.name || "", autofocus: true },
         { name: "type", label: "Tür", type: "select", value: account?.type || preset?.type || "customer", options: Object.entries(TYPES).map(([value, text]) => ({ value, label: text })) },
         { name: "refNo", label: "Cari No", maxlength: 30, value: account?.refNo || "", placeholder: account ? "" : "Boş bırakılırsa sıradaki numara" },
-        { name: "registeredOn", label: "Kayıt Tarihi", type: "date", value: account?.registeredOn || office().todayIso?.() || "" },
+        // 2.4.4 (E8): kayıttan açılan caride Kayıt Tarihi tablodaki kayıttan (kişi bir kez girilir; önceden kayıttan taksit kısa yolu taşıyordu).
+        { name: "registeredOn", label: "Kayıt Tarihi", type: "date", value: account?.registeredOn || preset?.registeredOn || office().todayIso?.() || "" },
         { name: "phone", label: "Telefon", type: "tel", inputmode: "tel", maxlength: 60, value: account?.phone || preset?.phone || "", placeholder: "05xx xxx xx xx" },
         { name: "email", label: "E-Posta", type: "email", maxlength: 160, value: account?.email || "" },
         { name: "address", label: "Adres", type: "textarea", rows: 2, maxlength: 500, value: account?.address || "" },
@@ -920,7 +922,8 @@
       return [];
     }
   }
-  async function editEntry(account, { kind = "in", entry = null } = {}) {
+  // preset (2.4.4 E8; yalnız yeni tahsilat): zil / Tahsilat Takvimi kaleminden { amount, note } — tutar ve açıklama hazır gelir.
+  async function editEntry(account, { kind = "in", entry = null, preset = null } = {}) {
     const type = entry?.kind || kind;
     const invoiceOptions = type === "in" || type === "out" ? await openInvoiceOptions(account, type) : [];
     if (entry?.invoiceId && !invoiceOptions.some(option => option.value === entry.invoiceId)) invoiceOptions.unshift({ value: entry.invoiceId, label: "Bağlı Fatura (kapanmış)" });
@@ -933,7 +936,7 @@
       eyebrow: [account.refNo ? `No ${account.refNo}` : "", account.name, account.phone || ""].filter(Boolean).join(" · "),
       intro: ENTRY_HELP[type],
       fields: [
-        { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: entry ? office().amountText?.(entry.amount) || entry.amount : "", placeholder: "Örn. 1.250,00", autofocus: true },
+        { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: entry ? office().amountText?.(entry.amount) || entry.amount : Number(preset?.amount) > 0 ? office().amountText?.(preset.amount) || String(preset.amount) : "", placeholder: "Örn. 1.250,00", autofocus: true },
         // v2.0.13: tahsilat/ödeme yolu (Nakit, Havale / EFT, Kredi Kartı, Çek / Senet). Çek/senet seçilirse evrak formuna geçilir.
         ...(type === "in" || type === "out"
           ? [{ name: "method", label: type === "in" ? "Tahsilat Yolu" : "Ödeme Yolu", type: "select", value: entry?.method || "cash", options: [...HOF.payMethods(type === "in" ? "in" : "out"), ...(!entry && HOF.cheques?.newFor && HOF.can("cheques.manage") ? [{ value: "cheque", label: type === "in" ? "Çek / Senet (portföye alınır)" : "Çek / Senet (verilir)" }] : [])] }]
@@ -948,7 +951,7 @@
         ...(entry && (type === "debt" || type === "credit") ? [{ name: "kind", label: "Yön", type: "select", value: type, options: [{ value: "debt", label: "Borç (cari bize borçlanır)" }, { value: "credit", label: "Alacak (biz cariye borçlanırız)" }] }] : []),
         { name: "date", label: "Tarih", type: "date", max: "today", value: entry?.date || office().todayIso?.() || "" },
         ...(invoiceOptions.length ? [{ name: "invoiceId", label: "Kapatılacak Fatura", type: "select", value: entry?.invoiceId || "", options: [{ value: "", label: "Otomatik (En Eski Açık Fatura)" }, ...invoiceOptions], help: "Seçilen fatura bu kayıtla kapanır; fazlası en eski açık faturaya gider. Bakiye ve Kasa değişmez. Faturaya bağlı tahsilat şüpheli alacaktan düşmez (yeni satışın parası)." }] : []),
-        { name: "note", label: "Açıklama", maxlength: 300, value: entry?.note || "", placeholder: type === "in" ? "Ör. Eylül ödemesi" : type === "debt" ? "Ör. Eylül aidatı, 3 adet ürün" : "" },
+        { name: "note", label: "Açıklama", maxlength: 300, value: entry?.note || (!entry && preset?.note ? String(preset.note).slice(0, 300) : ""), placeholder: type === "in" ? "Ör. Eylül ödemesi" : type === "debt" ? "Ör. Eylül aidatı, 3 adet ürün" : "" },
       ],
       submitLabel: entry ? "Kaydet" : ENTRY_LABEL[type],
       onOpen: dialog => {
@@ -1194,9 +1197,10 @@
   }
   // Tahsilat: carinin açık taksit kartı varsa önce sorulur — taksite mi (taksitten düşer), taksit dışı mı (carinin
   // hesabına). Böylece taksitli kişinin parası yanlışlıkla taksit dışı yazılıp taksit "ödenmemiş" görünmez.
-  function collect(account) {
+  // preset (2.4.4 E8): zil / Tahsilat Takvimi'nden gelince { amount, note } taksit dışı tahsilat formuna gelir (taksite yazılırsa tutar kartın sıradaki taksitidir).
+  function collect(account, preset = null) {
     const open = account.plans.filter(plan => plan.status === "active" && plan.totals.remaining > 0.005);
-    if (!open.length || !HOF.plans?.collect) return editEntry(account, { kind: "in" });
+    if (!open.length || !HOF.plans?.collect) return editEntry(account, { kind: "in", preset });
     const chooser = HOF.modal({
       title: "Tahsilat",
       // 2.4.3 (keşif A1/A21): aynı adlı cariler karışmasın — Cari No ve telefon.
@@ -1210,7 +1214,7 @@
       const button = event.target.closest("[data-plan], [data-plain], [data-close]");
       if (!button) return;
       chooser.close();
-      if ("plain" in button.dataset) return editEntry(account, { kind: "in" });
+      if ("plain" in button.dataset) return editEntry(account, { kind: "in", preset });
       if (!button.dataset.plan) return;
       try {
         HOF.plans.collect(await HOF.api(`/api/workspace/plans/${encodeURIComponent(button.dataset.plan)}`));
@@ -1653,9 +1657,9 @@
     doubtfulFromCheque,
     forCase: key => HOF.api(`/api/workspace/cases/${encodeURIComponent(key)}/account`),
     newFor: (preset, options = {}) => (canManage() ? editAccount(null, preset, options) : HOF.toast("Cari açmak yönetici, uzman ve muhasebe yetkisidir.", { type: "error" })),
-    collect: async accountId => {
+    collect: async (accountId, preset = null) => {
       try {
-        collect(await HOF.api(`/api/workspace/accounts/${encodeURIComponent(accountId)}`));
+        collect(await HOF.api(`/api/workspace/accounts/${encodeURIComponent(accountId)}`), preset);
       } catch (error) {
         HOF.toastError(error);
       }

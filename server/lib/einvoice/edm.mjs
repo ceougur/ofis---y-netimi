@@ -35,6 +35,14 @@ export const EDM_URLS = Object.freeze({
   test: "https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc",
   live: "https://portal2.edmbilisim.com.tr/EFaturaEDM/EFaturaEDM.svc",
 });
+// EDM web portalı (e-Fatura / e-Arşiv arayüzü; 2.4.4 E7 "e-Fatura Portalı" düğmesi). SABİT liste: düğme yalnız bu iki adresten ortamınkini açar;
+// adres Servis Adresi'nden ya da istemciden alınmaz. Kaynak: test portalı kullanıcının verdiği adres (20.10.2026), canlı portal edmbilisim.com.tr →
+// Müşteri Girişi → "E-Fatura Portal Girişi" (kullanıcı ekranı, 20.10.2026). Giriş web servis kullanıcısıyla (kullanıcı teyidi); program giriş
+// yapmaz, parola istemciye çıkmaz, Turnstile'a dokunulmaz.
+export const EDM_PORTAL_URLS = Object.freeze({
+  test: "https://test.edmbilisim.com.tr/EFaturaUI21ea/",
+  live: "https://portal4.edmbilisim.com.tr/EFaturaUI/",
+});
 export const EDM_DEFAULT_NS = "http://schemas.i2i.com/ei/wsdl";
 export const EDM_OPERATIONS = Object.freeze(["Login", "SendInvoice", "LoadInvoice", "GetInvoiceStatus", "GetInvoice", "CheckUser", "CancelInvoice", "MarkInvoice"]);
 const APP = "DestekOfis";

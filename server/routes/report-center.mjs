@@ -2549,10 +2549,11 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
     {
       id: "kayit-tahsilatlari",
       group: "Kayıtlar",
-      title: "Kayıt Kartından Tahsilatlar",
+      title: "Kayıt Tahsilatları",
       // 2.4.3 (keşif A2): kayıt bir cariye bağlıysa kayıt kartından girilen tahsilat cari defterine yazılır; o carinin tahsilatları da burada
-      // (Kayıt kolonunda Cari No ile). Taksit tahsilatları Taksit Tahsilatları raporunda.
-      description: "Tablodaki kişilerin kartından girilen tahsilatlar; kayda bağlı carinin tahsilatları dahil (taksit hariç).",
+      // (Kayıt kolonunda Cari No ile). Taksit tahsilatları Taksit Tahsilatları raporunda. 2.4.4 (E8): kayıttan Kasa'ya doğrudan tahsilat ekrandan kalktı
+      // (zil ve Tahsilat Takvimi cariye yazar); rapor kimliği ve içeriği aynı — eski kayıt tahsilatları ve kayda bağlı carinin tahsilatları.
+      description: "Tablodaki kişilerin tahsilatları: kayda bağlı carinin tahsilatları ve eski sürümlerde kayıt kartından girilenler (taksit hariç).",
       params: ["range"],
       preset: "thisYear",
       build(query) {

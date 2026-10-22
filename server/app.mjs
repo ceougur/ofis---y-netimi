@@ -68,6 +68,7 @@ import { registerWorkspaceRoutes } from "./routes/workspace.mjs";
 import { registerStaffRoutes } from "./routes/staff.mjs";
 import { ROOT_COMPANY_ID, createCompanyRegistry, mirrorUsers, usersFingerprint } from "./lib/companies.mjs";
 import { registerCompanyRoutes } from "./routes/companies.mjs";
+import { registerGettingStartedRoutes } from "./routes/getting-started.mjs";
 import { createBackup } from "./lib/backup.mjs";
 import { applyStagedRestore, createCompanyBackups } from "./lib/company-backups.mjs";
 import { resolveDbPath } from "./lib/db-path.mjs";
@@ -367,6 +368,8 @@ export function createApp(overrides = {}) {
   // Personel Özlük (2.4.4): Personel Raporu → Çalışanlar / Ayrılanlar; şirket kapsamlı (her şirketin kendi veri dosyası), para dışı.
   registerStaffRoutes(router, context);
   registerLicenseRoutes(router, context);
+  // Başlarken (2.4.4, KÖ3): yöneticinin ilk adımlar listesi; şirket kapsamlı, yalnız okur (taban bir kez yazılır).
+  registerGettingStartedRoutes(router, context);
   registerTrpcRoutes(router, context);
 
   async function handle(req, res) {

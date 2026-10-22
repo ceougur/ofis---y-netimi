@@ -72,7 +72,7 @@ try {
 
   let pillAmount = 0;
   let pillName = "";
-  await step("Ön izleme kapatılır; önce şeritten bir tahsilat alınır (kayıt tahsilatı)", async () => {
+  await step("Ön izleme kapatılır; önce kayıt tahsilatı (eski sürüm verisi) girilir — şeritten Tahsilat Gir artık cariye gider", async () => {
     await page.click(".hof-transfer-modal [data-close]");
     await page.waitForFunction(() => !document.querySelector(".hof-transfer-modal"), null, { timeout: 5000 });
     await page.waitForSelector(".hof-payment-promises .hof-payment-pill", { timeout: 10000 });
@@ -80,12 +80,19 @@ try {
     const heading = await text(".hof-payment-promises-heading");
     ok(/2 gecikmiş/.test(heading) && /4 bugün\/bu ay/.test(heading), `şerit (aktarımdan önce, tablodan): ${heading}`);
     pillName = await page.$eval(".hof-payment-pill:not([aria-hidden])", node => node.querySelector("b").textContent);
+    const item = await page.evaluate(name => (window.HOF.dues.data().items || []).find(entry => entry.person === name && entry.source !== "plan") || null, pillName);
+    // 2.4.4 (E8): şeritten Tahsilat Gir kayıttan Kasa'ya doğrudan yazmaz; kaydın carisi yok → "önce cari açın" (dolu Yeni Cari). Burada açılmadan kapatılır.
     await page.$eval(".hof-payment-pill:not([aria-hidden])", node => node.click());
     await page.click('.hof-payment-action-card [data-act="pay"]');
-    await page.waitForSelector('.hof-modal-backdrop.is-visible input[name="amount"]');
-    const amount = await page.inputValue('.hof-modal input[name="amount"]');
-    pillAmount = Number(amount.replace(/\./g, "").replace(",", "."));
-    await page.click('.hof-modal button[type="submit"]');
+    await page.waitForSelector('.hof-modal-backdrop.is-visible input[name="name"]', { timeout: 8000 });
+    ok((await text(".hof-modal-backdrop.is-visible .hof-modal-title")) === "Yeni Cari" && !(await page.$(".hof-modal-backdrop.is-visible [data-new-plan]")), "şeritten Tahsilat Gir: kayıt tahsilatı penceresi yok, önce cari açılır");
+    await escClose(page, { expect: "soru-yok", step: "şerit tahsilatı → Yeni Cari" });
+    await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop.is-visible"), null, { timeout: 5000 });
+    // Eski sürümlerde kayıttan girilmiş tahsilat (sunucu ucu durur): Tablodan Aktar onu karta taşır.
+    pillAmount = item?.amount || 0;
+    const paid = await api(`/api/workspace/cases/${encodeURIComponent(item.caseKey)}/payments`, { amount: money(pillAmount), date: await page.evaluate(() => window.HOF.localToday()), method: "cash", note: `${item.label} · ${item.dueText}`, caseTitle: pillName });
+    ok(paid.status === 200, `kayıt tahsilatı (API): ${paid.status}`);
+    await page.evaluate(() => window.HOF.emit("payment-saved", {}));
     await page.waitForFunction(() => document.querySelectorAll(".hof-payment-pill:not([aria-hidden])").length === 5, null, { timeout: 10000 });
     ok(pillAmount > 0, `${pillName} için ${money(pillAmount)} ₺ kayıt tahsilatı girildi; pil kayboldu`);
   });

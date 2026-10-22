@@ -26,6 +26,70 @@
   const canManage = () => HOF.can("invoices.manage");
   const canSettings = () => HOF.can("invoices.settings");
   const edoc = () => meta?.edocEnabled === true;
+  // 2.4.4 E7 "e-Fatura Portalı": entegratörün web portalı ekran boyunda AYRI pencerede (kullanıcının kendi tarayıcı profili: "Beni Hatırla" ve
+  // tarayıcının parola kaydı kalıcıdır). Adres yalnız sunucudan gelir (meta.settings.integrator.portal; sabit liste, Çalışma Ortamı'na göre);
+  // istemci adres seçmez/yazmaz. Program portala giriş yapmaz: kullanıcı adı/parola istemciye gelmez, giriş sayfasındaki insan doğrulamasına
+  // (Turnstile) dokunulmaz. Çerçeve yok (portal X-Frame-Options SAMEORIGIN). Engel varsa düğme pasif, nedeni yanında yazar.
+  const PORTAL_WINDOW = "hof-edm-portal";
+  const portalInfo = () => meta?.settings?.integrator?.portal || null;
+  const portalUrlOk = url => /^https:\/\/[a-z0-9.-]+\.[a-z]{2,}\/\S*$/i.test(String(url || ""));
+  const portalButton = () => {
+    if (!edoc()) return "";
+    const portal = portalInfo();
+    if (portal?.url && portalUrlOk(portal.url)) return `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="portal" title="EDM portalı ekran boyunda ayrı pencerede açılır; ilk girişte kullanıcı adı ve parolanızı EDM'nin sayfasına bir kez yazın, Beni Hatırla'yı işaretleyin">e-Fatura Portalı</button>`;
+    const why = portal?.block || "e-Fatura Portalı şu an açılamıyor; sayfayı yenileyin.";
+    return `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="portal" disabled aria-describedby="hof-inv-portal-why">e-Fatura Portalı</button><small class="hof-inv-portal-why" id="hof-inv-portal-why" data-portal-why>${esc(why)}</small>`;
+  };
+  // Entegratör Ayarları kaydedilince (ortam / bağlantı değişir) arkadaki listenin düğmesi yerinde yenilenir; liste yeniden çizilmez.
+  function refreshPortalButton() {
+    const current = body()?.querySelector('.hof-plan-actions [data-act="portal"]');
+    if (!current) return;
+    current.parentElement.querySelector("[data-portal-why]")?.remove();
+    current.outerHTML = portalButton();
+  }
+  function portalBlocked(url) {
+    const modal = HOF.modal({
+      title: "e-Fatura Portalı Açılamadı",
+      eyebrow: "FATURA",
+      body: `<p>Tarayıcı açılır pencereyi engelledi. Portalı aşağıdaki bağlantıyla yeni sekmede açabilirsiniz; ayrı pencere için adres çubuğundaki engel simgesinden bu programa açılır pencere izni verin.</p><p><a class="hof-button" href="${esc(url)}" target="_blank" rel="noopener noreferrer" data-portal-link>e-Fatura Portalını Aç</a></p>`,
+    });
+    modal.dialog.querySelector("[data-portal-link]")?.addEventListener("click", () => modal.close());
+    return modal;
+  }
+  function openPortal() {
+    const portal = portalInfo();
+    const url = portal?.url || "";
+    if (!portalUrlOk(url)) return HOF.toast(portal?.block || "e-Fatura Portalı adresi alınamadı; sayfayı yenileyin.", { type: "error" });
+    const width = Math.round(Number(window.screen?.availWidth) || 1280);
+    const height = Math.round(Number(window.screen?.availHeight) || 800);
+    const features = `popup=yes,left=0,top=0,width=${width},height=${height}`;
+    let win = null;
+    try {
+      win = window.open("", PORTAL_WINDOW, features);
+    } catch {
+      win = null;
+    }
+    if (!win) return portalBlocked(url);
+    // Yeni (boş) pencere: önce opener bağı kesilir (portal sayfası programın penceresine erişemez), sonra portal adresi yüklenir. Program
+    // Cross-Origin-Opener-Policy: same-origin ile sunulduğundan tarayıcı da başka kaynaklı pencereyle bağı keser; açık portal penceresi adıyla
+    // bulunamaz → her tıklama yeni portal penceresi açar (BİLİNEN SINIR; oturum çerezi aynı profilde olduğundan yeniden giriş istenmez).
+    let blank = false;
+    try {
+      blank = win.location.href === "about:blank";
+    } catch {
+      blank = false;
+    }
+    if (blank) {
+      try {
+        win.opener = null;
+      } catch {}
+      win.location.replace(url);
+    }
+    try {
+      win.focus();
+    } catch {}
+    return win;
+  }
   // 2.4.3 (uzman UX3): meta (sunucunun bugünü) yalnız pencere açılışında yüklenir; pencere gece yarısını geçince yeni form DÜNÜN tarihini
   // alıyordu (31.12 23:56'da açılan pencerede 01.01 00:01'de kesilen fatura 31.12 tarihli). Yerel gün meta yüklendiğinden beri değiştiyse
   // sunucunun bugünü aynı gün farkıyla ilerletilir (sunucu–tarayıcı saat dilimi farkı korunur; tek makinede ikisi aynıdır).
@@ -302,7 +366,7 @@
           ${canManage() ? '<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni Fatura</button>' : ""}
           ${edoc() && canManage() && view.tab === "pending" && (pendingTotal(data) || view.sendProgress) ? sendPendingButton(data) : ""}
           ${canSettings() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="settings">Fatura Ayarları</button>' : ""}${edoc() && canSettings() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="integrator">Entegratör Ayarları</button>' : ""}
-          <span class="hof-rep-export"><a class="hof-rep-out is-pdf" href="/api/workspace/invoices/liste.pdf?${esc(listParams())}" target="_blank" rel="noopener">Liste - PDF</a><a class="hof-rep-out is-xlsx" href="/api/workspace/invoices/export.xlsx?${esc(listParams())}" download>Liste - Excel</a></span>
+          <span class="hof-rep-export"><a class="hof-rep-out is-pdf" href="/api/workspace/invoices/liste.pdf?${esc(listParams())}" target="_blank" rel="noopener">Liste - PDF</a><a class="hof-rep-out is-xlsx" href="/api/workspace/invoices/export.xlsx?${esc(listParams())}" download>Liste - Excel</a></span>${portalButton()}
         </div></div>
       <div class="hof-inv-tabs" role="tablist" aria-label="Fatura listeleri">${tabs.map(([id, label]) => `<button type="button" role="tab" class="hof-rep-chip ${view.tab === id ? "is-on" : ""}" aria-selected="${view.tab === id}" data-tab="${id}">${label}${id !== "inbox" && counts[id] ? ` <b>${counts[id].toLocaleString("tr-TR")}</b>` : ""}</button>`).join("")}</div>
       ${t ? `<div class="hof-rep-stats">${tile("Toplam (KDV Dahil)", t.payable, "", `${t.issued.toLocaleString("tr-TR")} belge`)}${tile("KDV", t.vat)}${tile("Açık Bakiye", t.open, t.open > 0 ? "is-receivable" : "")}${tile("Vadesi Geçmiş", t.overdue, t.overdue > 0 ? "is-payable" : "")}</div>` : ""}
@@ -413,6 +477,7 @@
     if (act === "send-pending") return sendPending();
     if (act === "settings") return showSettings();
     if (act === "integrator") return showIntegrator();
+    if (act === "portal") return openPortal();
     if (act === "more") return loadList(true);
     if (act === "retryList") {
       view.listError = "";
@@ -2085,21 +2150,26 @@
     if (act === "issue-now") return submitForm("issue", "now");
     if (act === "issue-later") return submitForm("issue", "later");
   }
-  // SMM: eline geçecek net tutardan brüt ücret (stopaj ve KDV'ye göre) — ilk kalemin birim fiyatına yazılır.
+  // SMM: eline geçecek net ücretten (brüt − stopaj, KDV hariç) brüt ücret — ilk kalemin birim fiyatına yazılır.
+  // 2.4.4 (madde 26): birim fiyatı sunucu kaydın kendi hesabıyla bulur (formun ön hesap gövdesi + net): stopaj oranı kayıtta uygulanacak oran
+  // (kutu boşsa alıcıya göre — önceden burada her alıcıya ayardaki %20 gidiyordu, gerçek kişide brüt %25 fazla çıkıyordu), KDV dahil fiyat, iskonto
+  // ve öbür kalemler dahil; kaydedilen makbuzun net ücreti yazılan tutara kuruşu kuruşuna eşittir.
   function grossFromNet() {
     const form = view.form;
     HOF.formModal({
       title: "Netten Brüte",
       eyebrow: "SERBEST MESLEK MAKBUZU",
-      intro: "Eline geçmesini istediğiniz net ücreti yazın; program stopaj oranına göre brüt ücreti bulur ve ilk kaleme yazar.",
+      intro: "Eline geçmesini istediğiniz net ücreti (brüt ücret − stopaj, KDV hariç) yazın; program brüt ücreti bulur ve ilk kaleme yazar. Stopaj % kutusu boşsa oran alıcıya göre belirlenir: şirket alıcıda ayarlardaki oran, gerçek kişi alıcıda stopaj yok. Başka kalemler de varsa tutar makbuzun tamamı içindir.",
       fields: [{ name: "net", label: "Net Ücret (₺)", required: true, inputmode: "decimal", autofocus: true }],
       submitLabel: "Brütü Hesapla",
       onSubmit: async data => {
-        const rate = form.stoppageRate === "" ? meta.settings.defaults.stoppageRate : num(form.stoppageRate);
-        const result = await HOF.api(`/api/workspace/invoices/gross-from-net?net=${encodeURIComponent(data.net)}&rate=${encodeURIComponent(rate)}`);
+        if (!form.account) throw new Error("Önce cariyi seçin: stopaj alıcıya göre belirlenir.");
+        const probe = { ...form, lines: form.lines.map((line, index) => (index === 0 ? { ...line, name: line.name.trim() || "Serbest meslek ücreti", qty: "1", unitPrice: "0" } : line)) };
+        const result = await HOF.api("/api/workspace/invoices/gross-from-net", { method: "POST", body: { ...docBody(probe), net: data.net } });
+        if (view.form !== form) return;
         const line = form.lines[0];
-        line.unitPrice = priceText(result.gross);
-        if (!line.name) line.name = "Serbest meslek ücreti";
+        line.unitPrice = priceText(result.unitPrice);
+        if (!line.name.trim()) line.name = "Serbest meslek ücreti";
         line.qty = "1";
         renderLines();
         scheduleCalc(0);
@@ -3346,6 +3416,7 @@
           state.settings = { ...state.settings, ...saved };
           delete draft.password;
           await loadMeta(true);
+          refreshPortalButton();
           HOF.toast("Entegratör ayarları kaydedildi.", { type: "success" });
           HOF.markClean(root);
           render();

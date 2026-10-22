@@ -1,0 +1,68 @@
+{
+  "ad": "244-kayit/mutasyon-m1-e2e",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-m1/test/e2e/senaryo-kayit-tahsilat-244.mjs",
+  "commit": "610e4ebde86bb28bf47d65fa7c5bbce391bf3242",
+  "dal": "is/kayit",
+  "kirli": 3,
+  "izlenmeyen": 14,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T05:11:55.651Z",
+  "sure_sn": 31.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 37,
+    "gecen": 30,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "carinin tahsilat formu: “Tahsilat” · “No 0 · Ali Veli”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "carinin defterine 1 tahsilat, 5.000 (0 → 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kayıt tahsilatı yazılmadı (payments 0 → 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "carinin tahsilat formu: “No 0 · Zeynep Şahin”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "carinin defterine 2.500 (0 → 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "payments 2",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kayit/mutasyon-m1-e2e.log",
+  "klasor": "/home/user/wt/kayit",
+  "ham_cikti_sha256": "6d5c247159caa1e8f41cb56ed4a734467febf9ca6bcc17b8bd423704e4b53712",
+  "ham_cikti_bayt": 3017
+}

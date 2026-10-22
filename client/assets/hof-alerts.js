@@ -274,7 +274,9 @@
   const isCheque = item => item?.source === "cheque";
   // Planlı banka işlemi (2.3.0 İz 3.3; plan §8.9 "Zil … planlı ödemeler"): deftere girmez; Banka → Hareketler → Planlı İşlemler'den Gerçekleştir.
   const isBank = item => item?.source === "bank";
-  const canPay = item => (isBank(item) ? HOF.can("bank.move") && Boolean(HOF.bank?.openPlans) : isCheque(item) ? HOF.can("cheques.manage") && Boolean(HOF.cheques) : isPlan(item) ? HOF.can("plans.collect") && Boolean(HOF.plans) : HOF.can("payments.create") && Boolean(HOF.workspace?.payment));
+  // 2.4.4 (E8): tablodaki kaydın kalemi kaydın CARİSİNE yazılır (carisi yoksa önce cari açılır; hof-workspace.js actions.payment); önceden kayıttan doğrudan
+  // Kasa'ya yazılıyordu. Öbür sayfanın kalemi (foreign) o sayfaya geçince girilir (Tahsilat Takvimi şeridindeki kuralla aynı; cari bağı sayfaya göredir).
+  const canPay = item => (isBank(item) ? HOF.can("bank.move") && Boolean(HOF.bank?.openPlans) : isCheque(item) ? HOF.can("cheques.manage") && Boolean(HOF.cheques) : isPlan(item) ? HOF.can("plans.collect") && Boolean(HOF.plans) : !item.foreign && (HOF.can("accounts.collect") || HOF.can("plans.collect")) && Boolean(HOF.workspace?.payment));
   const pay = item =>
     isBank(item)
       ? HOF.bank.openPlans()
@@ -282,7 +284,7 @@
       ? HOF.cheques.open({ id: item.chequeId, action: item.direction === "out" ? "pay" : "collect" })
       : isPlan(item)
       ? HOF.plans.pay(item)
-      : HOF.workspace.payment({ key: item.caseKey, title: who(item), amount: item.amount, note: `${item.label} · ${item.dueText}`, intro: `<b>${esc(item.label)}</b> · vade ${esc(item.dueText)}${item.amount ? ` · beklenen <b>${esc(money(item.amount))}</b>` : ""}.` });
+      : HOF.workspace.payment({ key: item.caseKey, title: who(item), person: item.person || "", phone: item.phone || "", amount: item.amount, note: `${item.label} · ${item.dueText}` });
 
   // ---------- Gerçekleştirildi (v2.0.2) ----------
   const DONE_TEXT = "Gerçekleştirildi";
