@@ -145,6 +145,9 @@ export function cariEkstre({ records, payments = [], filters = normalizeFilters(
     paid.get(payment.caseKey).push(payment);
   }
   const groups = new Map();
+  // 2.4.4 (5c): aynı kayıt anahtarı birden çok sekmede olabilir (İcra Takip + Ödeme Sözleri aynı dosya no); tahsilat anahtara bağlıdır ve rapora
+  // BİR KEZ, süzgeçte kalan ilk kaydın satırına yazılır. 2.4.3'e kadar anahtarın her sekmedeki satırına ayrı yazılıyor, alacak iki kez sayılıyordu.
+  const attached = new Set();
   for (const record of matched) {
     const key = record.cariKey || `k:${record.key}`;
     if (!groups.has(key)) groups.set(key, { key, cari: record.cari || record.id || record.key, sessions: new Set(), lines: [] });
@@ -155,7 +158,10 @@ export function cariEkstre({ records, payments = [], filters = normalizeFilters(
     if (debit !== null && inRange(date, filters) && (filters.minAmount === null || Math.abs(debit) >= filters.minAmount)) {
       group.lines.push({ date, kind: "borc", description: [record.tab, record.id].filter(Boolean).join(" · "), session: record.sessionName, tab: record.tab, borc: debit, alacak: null, status: record.status, fields: record.fields, key: record.key });
     }
-    for (const payment of paid.get(record.key) || []) {
+    const slot = `${record.session || ""}\u0000${record.key}`;
+    const own = attached.has(slot) ? [] : paid.get(record.key) || [];
+    attached.add(slot);
+    for (const payment of own) {
       // 2.4.4 (E8): kayda bağlı carinin tahsilatı yalnız bağın sayfasındaki kayda sayılır (kayıt tahsilatında sayfa yok; önceki gibi).
       if (payment.session && record.session && payment.session !== record.session) continue;
       const at = parseIsoDay(payment.date);
