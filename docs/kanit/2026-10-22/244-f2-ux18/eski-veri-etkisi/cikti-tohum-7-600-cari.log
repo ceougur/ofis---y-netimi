@@ -1,0 +1,63 @@
+{
+  "tohum": 7,
+  "cari": 600,
+  "uretilen": {
+    "satış faturası": 1581,
+    "satış faturası (kendi çekiyle)": 160,
+    "alış faturası": 23,
+    "bağsız nakit tahsilat": 258,
+    "bağsız alınan evrak": 291,
+    "karşılıksız bağsız evrak": 39,
+    "karşılıksız faturanın kendi evrakı": 50,
+    "ciro edilen bağsız evrak": 37,
+    "ciro edilmişken karşılıksız (bağsız)": 20
+  },
+  "faturaSayisi": 1764,
+  "mutabakat": {
+    "v2.4.3": true,
+    "2b71fea": true,
+    "guncel": true
+  },
+  "surumler": {
+    "2b71fea": {
+      "bakiyeDegisen": 0,
+      "acikDegisen": 46,
+      "odendidenAciga": 46,
+      "aciktanOdendiye": 0,
+      "sigmaAcikArtis": 133660,
+      "kategori": {
+        "bağsız karşılıksız": 0,
+        "kendi evrakı karşılıksız": 45,
+        "ikisi": 1,
+        "ciro edilen tedarikçi": 0,
+        "diğer": 0
+      },
+      "sigmaAcikEsitBakiye": {
+        "esit": 466,
+        "farkli": 53
+      }
+    },
+    "guncel": {
+      "bakiyeDegisen": 0,
+      "acikDegisen": 178,
+      "odendidenAciga": 132,
+      "aciktanOdendiye": 0,
+      "sigmaAcikArtis": 400710,
+      "kategori": {
+        "bağsız karşılıksız": 112,
+        "kendi evrakı karşılıksız": 57,
+        "ikisi": 3,
+        "ciro edilen tedarikçi": 6,
+        "diğer": 0
+      },
+      "sigmaAcikEsitBakiye": {
+        "esit": 519,
+        "farkli": 0
+      }
+    }
+  },
+  "v243SigmaAcikEsitBakiye": {
+    "esit": 422,
+    "farkli": 97
+  }
+}

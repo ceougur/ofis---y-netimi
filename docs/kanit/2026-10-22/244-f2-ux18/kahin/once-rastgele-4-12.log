@@ -1,0 +1,39 @@
+rastgele-ux18-4: 232/232 tuttu
+rastgele-ux18-5: 275/279 tuttu
+  ✗ [İNCELE AJAN] k6:fatura:F19:acik: program 63005 · kâhin 0 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bag-degisti,ux18-fazla))
+  ✗ [İNCELE AJAN] k6:fatura:F25:acik: program 0 · kâhin 63005 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bag-degisti,ux18-fazla))
+  ✗ [İNCELE AJAN] kson:fatura:F19:acik: program 63005 · kâhin 0 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bag-degisti,ux18-fazla))
+  ✗ [İNCELE AJAN] kson:fatura:F25:acik: program 0 · kâhin 63005 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bag-degisti,ux18-fazla))
+rastgele-ux18-6: 242/242 tuttu
+rastgele-ux18-7: 241/245 tuttu
+  ✗ [İNCELE AJAN] k6:fatura:F14:acik: program 75560 · kâhin 0 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bag-degisti,bagsiz-karsiliksiz,ux18-fazla))
+  ✗ [İNCELE AJAN] k6:fatura:F15:acik: program 0 · kâhin 85563 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bag-degisti,bagsiz-karsiliksiz,ux18-fazla))
+  ✗ [İNCELE AJAN] kson:fatura:F14:acik: program 75560 · kâhin 0 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bag-degisti,bagsiz-karsiliksiz,ux18-fazla))
+  ✗ [İNCELE AJAN] kson:fatura:F15:acik: program 0 · kâhin 85563 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bag-degisti,bagsiz-karsiliksiz,ux18-fazla))
+rastgele-ux18-8: 266/266 tuttu
+rastgele-ux18-9: 248/248 tuttu
+rastgele-ux18-10: 245/256 tuttu
+  ✗ [İNCELE AJAN] k4:fatura:F12:acik: program 45130 · kâhin 182761 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla))
+  ✗ [İNCELE AJAN] k4:fatura:F4:acik: program 137631 · kâhin 0 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla))
+  ✗ [İNCELE AJAN] k5:fatura:F12:acik: program 0 · kâhin 78811 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla))
+  ✗ [İNCELE AJAN] k5:fatura:F17:acik: program 0 · kâhin 4100 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla))
+  ✗ [İNCELE AJAN] k5:fatura:F4:acik: program 82911 · kâhin 0 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla))
+  ✗ [İNCELE AJAN] k6:fatura:F12:acik: program 0 · kâhin 47533 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla))
+  ✗ [İNCELE AJAN] k6:fatura:F17:acik: program 0 · kâhin 4100 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla))
+  ✗ [İNCELE AJAN] k6:fatura:F4:acik: program 51633 · kâhin 0 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla))
+  ✗ [İNCELE AJAN] kson:fatura:F12:acik: program 0 · kâhin 47533 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla))
+  ✗ [İNCELE AJAN] kson:fatura:F17:acik: program 0 · kâhin 4100 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla))
+  ✗ [İNCELE AJAN] kson:fatura:F4:acik: program 51633 · kâhin 0 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla))
+rastgele-ux18-11: 262/264 tuttu
+  ✗ [İNCELE AJAN] k3:fatura:F2:acik: program 2409 · kâhin 0 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bag-degisti,ux18-fazla))
+  ✗ [İNCELE AJAN] k3:fatura:F6:acik: program 84492 · kâhin 86901 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bag-degisti,ux18-fazla))
+rastgele-ux18-12: 243/249 tuttu
+  ✗ [İNCELE AJAN] k4:fatura:F13:acik: program 0 · kâhin 37636 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla))
+  ✗ [İNCELE AJAN] k4:fatura:F5:acik: program 37636 · kâhin 0 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla))
+  ✗ [İNCELE AJAN] k6:fatura:F11:acik: program 2400 · kâhin 0 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla))
+  ✗ [İNCELE AJAN] k6:fatura:F12:acik: program 16273 · kâhin 18673 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla))
+  ✗ [İNCELE AJAN] kson:fatura:F11:acik: program 2400 · kâhin 0 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla))
+  ✗ [İNCELE AJAN] kson:fatura:F12:acik: program 16273 · kâhin 18673 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla))
+
+ÖZET: 9 senaryo, 2281 denetim, 27 fark (BULGU 0), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-cari-YK1B0B
+2254/2281 denetim geçti

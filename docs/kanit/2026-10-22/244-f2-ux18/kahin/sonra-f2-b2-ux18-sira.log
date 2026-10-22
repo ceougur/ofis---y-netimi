@@ -1,0 +1,6 @@
+b2-ux18-sira: 74/76 tuttu
+  ✗ [İNCELE AJAN] k5:fatura:G1:acik: program 0 · kâhin 100000 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz))
+  ✗ [İNCELE AJAN] k5:fatura:G2:acik: program 50000 · kâhin 100000 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz))
+
+ÖZET: 1 senaryo, 76 denetim, 2 fark (BULGU 0), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-cari-mIKM8u
+74/76 denetim geçti
