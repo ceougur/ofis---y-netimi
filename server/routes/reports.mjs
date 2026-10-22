@@ -1,6 +1,7 @@
 // Dinamik raporlama uçları (v2.0.2). Rapor, seçilen oturumlardaki (varsayılan: hepsi) veriyi ortak omurgaya çevirip
 // süzgeçlerle üretir; JSON (ekran), .xlsx, .pdf ve yazdırma görünümü için düz tablo döner.
 import { HttpError, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
+import { caseCollections, caseCollectionsState } from "../lib/insight/case-collections.mjs";
 import { analyzeColumns } from "../lib/insight/columns.mjs";
 import { computeDeadlines, computeDues } from "../lib/insight/dues.mjs";
 import { cariEkstre, dayText, flattenTable, nakitAkis, normalizeFilters, normalizeRecords, REPORT_KINDS, vadeTakip } from "../lib/reports.mjs";
@@ -56,7 +57,8 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
         columnsBySession[session.key] = normalized.columns;
         for (const record of normalized.records) records.push(record);
         const keys = new Set(rows.map(row => row.__hofKey));
-        const payments = store.all("SELECT case_key AS caseKey, amount, date, note FROM payments").filter(item => keys.has(item.caseKey));
+        // 2.4.4 (E8): takvimle aynı küme — kayıt tahsilatı + kayda bağlı carinin ve taksit kartının tahsilatı (lib/insight/case-collections.mjs).
+        const payments = caseCollections(store, session.key, { plans: true }).filter(item => keys.has(item.caseKey));
         const settled = parseSettled(dataset.settingKey("dues.settled"));
         const dues = computeDues({ rows, tabs, payments, settled, now, forced, window: AHEAD });
         // Taksit kartı olan kişinin (v2.0.8) tablodaki ödeme kalemleri ikinci kez sayılmaz (takvimle aynı kural).
@@ -72,7 +74,7 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
   // (birleşik Vade takip ve Nakit akış her süzgeç değişiminde buradan okur).
   let cache = { key: "", value: null, pending: null };
   async function allCalendar(now = clock()) {
-    const key = [now.toDateString(), paymentsState(), plans?.fingerprint ? plans.fingerprint() : "", ...dataset.sessions().map(sessionState)].join("|");
+    const key = [now.toDateString(), paymentsState(), caseCollectionsState(store), plans?.fingerprint ? plans.fingerprint() : "", ...dataset.sessions().map(sessionState)].join("|");
     if (cache.key === key && cache.value) return cache.value;
     if (cache.key === key && cache.pending) return cache.pending;
     const pending = calendar(normalizeFilters({}), now);
@@ -88,7 +90,9 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
   }
   async function backbone(filters, now) {
     const data = filters.sessions.length ? await calendar(filters, now) : await allCalendar(now);
-    const payments = store.all("SELECT case_key AS caseKey, amount, date, note FROM payments");
+    // Tablodaki Kişiler ve Nakit Akışı: kaydın tahsilatı = kayıt tahsilatı (eski) + kayda bağlı carinin tahsilatı (2.4.3 A2 "Kayıt Tahsilatları" kuralı; 2.4.4
+    // E8: zil ve Tahsilat Takvimi'ndeki tahsilat artık cariye yazılır). Cari tahsilatı bağın veri oturumunu (session) taşır; yalnız o sayfanın kaydına sayılır.
+    const payments = [...store.all("SELECT case_key AS caseKey, amount, date, note FROM payments"), ...dataset.sessions().flatMap(item => caseCollections(store, item.key).filter(row => row.session))];
     // Nakit akışta taksit kartı hareketleri de kasa giriş/çıkışıdır (v2.0.4).
     const cashEntries = [...store.all("SELECT kind, amount, date FROM cash_entries"), ...(plans?.cashEntries ? plans.cashEntries().map(entry => ({ kind: entry.kind, amount: entry.amount, date: entry.date })) : [])];
     return { ...data, payments, cashEntries };

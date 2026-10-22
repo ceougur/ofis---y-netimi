@@ -137,7 +137,9 @@ export const PERMISSION_GROUPS = Object.freeze([
     id: "cash",
     label: "Tahsilat ve Kasa",
     items: [
-      ["payments.create", "Kayda Tahsilat Girme", "Kişi kartından tahsilat girer; tutar Kasa'ya düşer."],
+      // 2.4.4 (E8): kayıttan Kasa'ya doğrudan tahsilat ekrandan kalktı (tahsilat cariden ya da taksit kartından girilir); yetki eski kayıt tahsilatlarının
+      // düzeltilmesi ve silinmesi için durur (kimlik ve sunucu ucu aynı; özel rol ve kişi ayarları bozulmaz).
+      ["payments.create", "Kayıt Tahsilatını Düzeltme", "Eski sürümlerde kayıt kartından girilen tahsilatı düzeltir ve siler; yeni tahsilat cariden ya da taksit kartından girilir."],
       ["cash.view", "Kasa'yı Görme", "Kasa hareketleri, bakiye ve dökümü."],
       ["cash.manage", "Kasa Yönetimi", "Kasa'ya giriş/çıkış ekler; başkasının hareketini düzeltir, siler."],
     ],

@@ -625,8 +625,8 @@ try {
     }
     expect(await admin.evaluate(() => window.HOF.revealRecord("2026/101")), "kayıt tabloda açıldı");
     await admin.waitForFunction(() => window.HOF.selectedCase()?.key === "2026/101", null, { timeout: 8000 });
-    // 2.4.4 (E8): kayıt kartında Tahsilat düğmesi (ve onun penceresindeki "Taksit planı oluşturun" kısa yolu) görünmez. Kayda bağlı kart formu,
-    // kısa yolun açtığı biçimde (kayıt anahtarı + kayıttan ad/telefon) doğrudan açılır; kayıttan taksit konusu ayrı madde (2.4.4 iş listesi).
+    // 2.4.4 (E8): kayıt kartında Tahsilat düğmesi ve "Taksit planı oluşturun" kısa yolu yok (kayıttan taksit madde 5'te kalktı). Kayda bağlı kart
+    // (Taksitler formu, Tablodaki Kayıt alanı dolu; eski kayıttan açılmış kartlar da böyle) doğrudan açılır; kart yine cariye bağlanır.
     expect(!(await admin.isVisible('.hof-case-actions [data-case-action="payment"]')), "kayıt kartında Tahsilat düğmesi görünmez (E8)");
     await admin.evaluate(() => {
       const selected = window.HOF.selectedCase();
@@ -1298,16 +1298,24 @@ try {
       await page.screenshot({ path: path.join(artifacts, "10b-okul-servisi.png") });
       await page.evaluate(() => document.querySelectorAll(".hof-notice").forEach(node => node.remove()));
 
-      // Pilden tahsilat: tutar hazır gelir; kaydedince pil kaybolur.
+      // Pilden tahsilat (2.4.4 E8: kaydın CARİSİNE yazılır, kayıttan Kasa'ya doğrudan değil). Öğrencinin carisi yok → "önce cari açın": ad kayıttan, cari
+      // kayda bağlı açılır → kaydedince tahsilat formu (tutar hazır) → kaydedince pil kaybolur (takvim carinin tahsilatını sayar).
       const target = await page.$eval(".hof-payment-pill:not([aria-hidden])", node => node.querySelector("b").textContent);
+      const pillKey = await page.evaluate(name => (window.HOF.dues?.data?.()?.items || []).find(item => item.person === name)?.caseKey || "", target);
       const before = pills.length;
       await page.$eval(".hof-payment-pill:not([aria-hidden])", node => node.click());
       await page.click('.hof-payment-action-card [data-act="pay"]');
-      await page.waitForSelector('.hof-modal-backdrop.is-visible input[name="amount"]');
-      const amount = await page.inputValue('.hof-modal input[name="amount"]');
+      await page.waitForSelector('.hof-modal-backdrop.is-visible input[name="name"]');
+      const firstForm = await page.$eval(".hof-modal-backdrop.is-visible", node => ({ title: node.querySelector(".hof-modal-title")?.textContent.trim(), intro: node.querySelector(".hof-modal-text")?.textContent || "", name: node.querySelector('input[name="name"]').value }));
+      expect(firstForm.title === "Yeni Cari" && /Önce cari açın/.test(firstForm.intro) && firstForm.name === target, `carisi olmayan kayıtta önce cari açılır, ad kayıttan: ${JSON.stringify(firstForm).slice(0, 200)}`);
+      await page.click('.hof-modal-backdrop.is-visible button[type="submit"]');
+      await page.waitForFunction(() => document.querySelector(".hof-modal-backdrop.is-visible:last-of-type .hof-modal-title")?.textContent.trim() === "Tahsilat", null, { timeout: 10000 });
+      const amount = await page.inputValue('.hof-modal-backdrop.is-visible:last-of-type input[name="amount"]');
       expect(Number(amount.replace(/\./g, "").replace(",", ".")) > 0, `tutar hazır gelmeli: ${amount}`);
-      await page.click('.hof-modal button[type="submit"]');
+      await page.click('.hof-modal-backdrop.is-visible:last-of-type button[type="submit"]');
       await page.waitForFunction(count => document.querySelectorAll(".hof-payment-pill:not([aria-hidden])").length === count - 1, before, { timeout: 10000 });
+      const pillAccount = (await page.evaluate(key => fetch(`/api/workspace/cases/${encodeURIComponent(key)}/account`).then(response => response.json()), pillKey)).data?.account;
+      expect(pillAccount?.name === target, `tahsilat kayda bağlı yeni cariye yazıldı: ${JSON.stringify(pillAccount)?.slice(0, 160)}`);
 
       // Zil: belge son günleri (araç plakasıyla) ve alınmayan tahsilatlar gruplu listelenir.
       await page.click(".topbar .top-actions > .icon-button");
@@ -1336,7 +1344,11 @@ try {
       await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 8000 });
 
       // v2.0.8: Taksitler → Tablodan aktar. Ay kolonlu öğrenci tablosu (aylık ücret + ödenen) gerçek taksitlerle karta;
-      // pilden girilen tahsilat karta taşınır, Kasa değişmez; takvimde tablodan ikinci kez gelmez.
+      // eski sürümde kayıttan girilmiş tahsilat (2.4.4 E8'den beri ekranda yolu yok; sunucu ucu durur → API'den) karta taşınır, Kasa değişmez; takvimde
+      // tablodan ikinci kez gelmez. Pilden girilen (carinin) tahsilatı taksit dışı kalır, ön izleme bunu söyler.
+      const oldKey = await page.evaluate(name => (window.HOF.data?.rows || []).find(row => row.__sheet === "Öğrenciler" && !Object.values(row).includes(name))?.__hofKey || "", target);
+      const oldPay = await page.evaluate(key => fetch(`/api/workspace/cases/${encodeURIComponent(key)}/payments`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ amount: "500", method: "cash", date: window.HOF.localToday(), note: "Eski kayıt tahsilatı" }) }).then(response => response.status), oldKey);
+      expect(oldKey && oldPay === 200, `eski kayıt tahsilatı (API) ${oldKey}: ${oldPay}`);
       const cashBefore = (await page.evaluate(() => fetch("/api/workspace/cash?period=all").then(response => response.json()))).data.totals.balance;
       await page.click('#hof-sidecard [data-action="plans"]');
       await page.waitForSelector('.hof-plans [data-act="transfer"]', { timeout: 10000 });
@@ -1350,7 +1362,11 @@ try {
       const can = rowsShown.find(text => /Can Öztürk/.test(text)) || "";
       expect(/4 taksit/.test(can) && /15\.200,00/.test(can) && /9\.500,00/.test(can) && /5\.700,00/.test(can), `Can Öztürk satırı: ${can}`);
       const sumText = await page.$eval(".hof-transfer-sum", node => node.innerText.replace(/\s+/g, " "));
-      expect(/kayıt tahsilatı/.test(sumText), `pilden girilen tahsilat kayıt tahsilatı olarak sayılır: ${sumText}`);
+      expect(/kayıt tahsilatı ₺500,00/.test(sumText), `eski kayıt tahsilatı karta taşınacak olarak sayılır: ${sumText}`);
+      // Pilden carisine girilen tahsilat ön izlemede o kişinin bulgusu: "Carisinde taksit dışı … tahsilat var; karta sayılmaz" (ayrıntıda; programın ön izleme ucundan).
+      const preview = (await page.evaluate(() => fetch("/api/workspace/plans/from-table").then(response => response.json()))).data;
+      const pillRecord = (preview.records || []).find(record => record.key === pillKey);
+      expect(pillRecord?.account === "bound" && pillRecord.issues.some(issue => /taksit dışı/.test(issue.text) && issue.text.includes(amount)), `pilden carisine girilen ${amount} ön izlemede taksit dışı olarak söylenir: ${JSON.stringify(pillRecord?.issues || [])?.slice(0, 240)}`);
       await page.click(".hof-transfer-table tbody tr[data-key] [data-expand]");
       await page.waitForSelector(".hof-transfer-detail .hof-transfer-items", { timeout: 5000 });
       await page.screenshot({ path: path.join(artifacts, "10d-tablodan-aktar.png"), fullPage: true });
@@ -1369,7 +1385,8 @@ try {
       await page.waitForFunction(() => document.querySelectorAll(".hof-plans tr[data-plan]").length === 6, null, { timeout: 10000 });
       const cashAfter = (await page.evaluate(() => fetch("/api/workspace/cash?period=all").then(response => response.json()))).data;
       expect(cashAfter.totals.balance === cashBefore, `Kasa değişmedi: ${cashBefore} → ${cashAfter.totals.balance}`);
-      expect(cashAfter.entries.filter(entry => entry.source === "plan").length === 1 && !cashAfter.entries.some(entry => entry.source === "payment"), "tahsilat Kasa'da artık taksit tahsilatı olarak (tek kayıt)");
+      expect(cashAfter.entries.filter(entry => entry.source === "plan").length === 1 && !cashAfter.entries.some(entry => entry.source === "payment"), "eski kayıt tahsilatı Kasa'da artık taksit tahsilatı olarak (tek kayıt)");
+      expect(cashAfter.entries.filter(entry => entry.source === "account").length === 1, "pilden girilen tahsilat Kasa'da carinin tahsilatı olarak (tek kayıt)");
       const plansNow = (await page.evaluate(() => fetch("/api/workspace/plans?status=all").then(response => response.json()))).data;
       expect(plansNow.plans.length === 6 && plansNow.plans.every(plan => plan.caseKey && plan.accountId), "6 kart, hepsi kayda ve cariye bağlı");
       const dues = (await page.evaluate(() => fetch("/api/workspace/dues").then(response => response.json()))).data;

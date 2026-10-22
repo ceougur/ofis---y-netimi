@@ -1,0 +1,53 @@
+{
+  "ad": "244-kayit/mutasyon-m2-birim",
+  "komut": "env GIT_DIR=/home/user/ofis---y-netimi/.git node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-m2/test/kayit-tahsilat-244.test.mjs",
+  "commit": "04803b115bd739243da1c7f0dff1f14bd8dac719",
+  "dal": "is/kayit",
+  "kirli": 16,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:29:56.182Z",
+  "sure_sn": 1.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 1,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 E8: kaydın tahsilatı cariden; takvim kalemi carinin ve taksitin tahsilatıyla kapanır › T1 + T5 kayda bağlı carinin tahsilatı sözü kapatır (tam / kısmi / silinince döner); Kasa'ya bir kez, kayıt tahsilatına hiç yazılmaz",
+      "konum": "test/kayit-tahsilat-244.test.mjs:64:3",
+      "hata": "carinin 5.000 tahsilatı sözü kapattı · + actual - expected · + { (beklenen ~, gelen )"
+    },
+    {
+      "ad": "2.4.4 E8: kaydın tahsilatı cariden; takvim kalemi carinin ve taksitin tahsilatıyla kapanır › T2 bağsız aynı adlı carinin tahsilatı sayılmaz; bağlanınca kapanır, bağ kalkınca döner",
+      "konum": "test/kayit-tahsilat-244.test.mjs:87:3",
+      "hata": "cari kayda bağlanınca tahsilatı sözü kapattı · + actual - expected · + { (beklenen ~, gelen )"
+    },
+    {
+      "ad": "2.4.4 E8: kaydın tahsilatı cariden; takvim kalemi carinin ve taksitin tahsilatıyla kapanır › T4 Tablodaki Vadeler aynı kuralla; Tablodaki Kişiler kayda bağlı carinin tahsilatını alacak yazar",
+      "konum": "test/kayit-tahsilat-244.test.mjs:112:3",
+      "hata": "Tablodaki Kişiler: carinin 2.500 tahsilatı alacak (taksit hariç): [] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.4 E8: eski sürüm verisi (v2.4.3 gerçek kodu) yeni kodla aynı sayılar; eski kayıt tahsilatı ve kayda bağlı kart düzeltilir / silinir › T6 sayılar aynı; eski kayıt tahsilatı ve kart düzeltilir / silinir; sunucu ucu durur",
+      "konum": "test/kayit-tahsilat-244.test.mjs:169:3",
+      "hata": "yeni kod: Zeynep sözü 5.500 (kayda bağlı carinin 2.000'i sayılır) · 7500 !== 5500 (beklenen 5500, gelen 7500)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kayit/mutasyon-m2-birim.log",
+  "klasor": "/home/user/wt/kayit",
+  "ham_cikti_sha256": "fe0157449f2f92dbb269aa0632983d878cb6626ba2bb77cf03fab3161608246f",
+  "ham_cikti_bayt": 8961
+}
