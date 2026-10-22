@@ -268,10 +268,13 @@ describe("fatura listesi (2.4.3 H3): sayfalı uç = eski yol + dilim, bayt bayt"
     const diffs = [];
     for (const combo of combos) {
       const params = new URLSearchParams(Object.entries(combo).filter(([, value]) => value !== ""));
-      const response = await api.get(`/api/workspace/invoices?${params}`);
+      // 2.4.4 (madde 30b): yanıta eklenen geri yükleme uyarısı liste verisi değildir, eski yolda yoktur; ayrılır ve ayrıca denetlenir (bu veride geri
+      // yükleme olmadı → null). Kalan yanıt eski yolla bayt bayt aynı olmalı.
+      const { restoreNotice: notice, ...response } = await api.get(`/api/workspace/invoices?${params}`);
       const expected = oldPage(params, invoices.list(admin, invoices.listQuery(params)));
       compared += 1;
       rows += expected.invoices.length;
+      if (notice !== null) diffs.push({ params: params.toString(), yeni: `restoreNotice ${JSON.stringify(notice)}`, eski: "restoreNotice null" });
       if (JSON.stringify(response) !== JSON.stringify(expected)) diffs.push({ params: params.toString(), yeni: JSON.stringify(response).slice(0, 300), eski: JSON.stringify(expected).slice(0, 300) });
     }
     t.diagnostic(`fark testi: ${compared} birleşim, ${rows} satır karşılaştırıldı, ${diffs.length} farklı; veri ${all.total} belge ${JSON.stringify(made)}`);
@@ -332,9 +335,10 @@ describe("fatura listesi (2.4.3 H3): POS peşinli satışların posCash bayrağ�
       for (const tab of ["all", "sale", "cancelled"]) {
         for (const [offset, limit] of [[0, 200], [0, 1], [1, 2], [3, 4], [5, 5], [10, 3]]) {
           const params = new URLSearchParams({ tab, offset: String(offset), limit: String(limit) });
-          const response = unwrap(await ctx.api.get(`/api/workspace/invoices?${params}`));
+          const { restoreNotice: notice, ...response } = unwrap(await ctx.api.get(`/api/workspace/invoices?${params}`));
           const expected = oldPage(params, invoices.list(admin, invoices.listQuery(params)));
-          assert.equal(JSON.stringify(response), JSON.stringify(expected), `${params}: yanıt eski yolla aynı`);
+          assert.equal(notice, null, `${params}: geri yükleme olmadı, uyarı yok`);
+          assert.equal(JSON.stringify(response), JSON.stringify(expected), `${params}: yanıt eski yolla aynı (geri yükleme uyarısı ayrı)`);
           posRows += response.invoices.filter(row => row.posCash).length;
         }
       }
