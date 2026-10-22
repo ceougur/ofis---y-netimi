@@ -114,7 +114,9 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
 9. DEĞİŞEN KODUN BÜTÜN YOLLARI. Kod kaldırılınca/değişince o koda dokunan her arayüz yolu (toplu yükleme, Excel/Sheets, toplu
    işlem, geri yükleme) koşulur. (2.0.18 Tablodan Al kalkınca Excel cari yükleme ReferenceError → 2.0.19.)
 10. DÜZELTMENİN KOMŞULARI. Düzeltmeden sonra aynı formülü kullanan komşu senaryolar da denenir (2.0.24 G1: iade düzeltmesi
-    paralı iadede kartı küçültmeye başladı; Canlı Hata 2 de G1 düzeltmesinin gerilemesiydi).
+    paralı iadede kartı küçültmeye başladı; Canlı Hata 2 de G1 düzeltmesinin gerilemesiydi). (22.10.2026: madde 5b "Kalan" önceliğini ORTAK sütun
+    seçicisinde (dues.mjs classifyColumns) yaptı; ödeme sözü/vade/nakit akışı tutarları da Toplam Borç'tan Kalan Borç'a geçti, Tablodaki Kişiler eski
+    kuralda kaldı — komşular denenmemişti; v2.4.3 verisiyle göç karşılaştırması (madde 30) yakaladı. Ortak yardımcı değişince onu kullanan HER yol.)
 11. HER SÜZGEÇ, HER SEÇENEK. Rapor yalnız varsayılan süzgeçle açılmaz; her süzgeç seçeneği ve toplam = satırlar. (Banka ve POS
     "Yol" süzgeci 2.0.17'den 2.0.23'e hiç çalışmadı; senaryo yalnız varsayılanı açıyordu.)
 12. İNSAN HIZI VE KLAVYE. Form testleri gerçek tıklama + Tab + insan hızında yazımla da koşulur; "veri bozulmaz" iddiası kayıttan
@@ -439,6 +441,17 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   by the service.") → belge numarasız Gönderilecekler'de, betik durdu (B gönderilmedi). KARAR (baş mimar): EDM girişi tek uçuş (edm.mjs) + gerçek koşu 2 (iş listesi 24b).
   SONUÇ 2 (17:07 TR, N4 düzeltmeli): 136/136, 30/30 kabul (TES2026475826020–049), Login 1; kullanıcı portalda gördü (17:12 TR). DERS 18 (GÖZDEN GEÇİRME 3): gerçek
   yeşil iki koşuda görülmeden 24b çizilmez → koşu 3 + tam takım gercek-6 (aday 6 kodu, dal is/gercek6; 22.10 ~14:56 UTC başladı).
+- SORU (22.10.2026 ~16:50 UTC, madde 30 göç ajanı ae9ec21f91121d745 bulguları, yeniden üretildi; kullanıcıya baş mimar önerisiyle soruldu): B1 — madde 5b (7d51d60)
+  "Kalan/Bakiye" sütununu ortak seçicide (server/lib/insight/dues.mjs classifyColumns) öne aldı; yan etkiyle hem Toplam Borç hem Kalan Borç sütunu olan tablolarda
+  ödeme sözü, vade kalemi, zil, Tahsilat Takvimi, Vade Takip ve Nakit Akışı "Beklenen" tutarı Toplam'dan Kalan'a geçti (v2.4.3 163dd5d 11.500 → aday 6 7.600; 2.4.3
+  verisinde 001'de 965 kayıt, 19.634.400 → 14.700.500 TL, Beklenen −5.593.000 TL); Tablodaki Kişiler (server/lib/reports.mjs:64, ilk eşleşen sütun) Toplam'da
+  kaldı → aynı kişi iki yerde farklı tutar. ÖNERİ: Kalan Borç KALSIN (ödenmiş kısım tahsil edilecek görünmez; kodun kendi kuralı da "birden çok tutar sütunu varsa
+  yalnız kalan borç" diyordu, 2.4.3 sütun sırasına bağlı eksikti) + Tablodaki Kişiler de aynı kurala + sürüm notu cümlesi + kırmızı/yeşil test + 31e dar kontrol.
+  B2 — yedekten geri yüklemeden sonra, yedekten SONRA EDM'ye gitmiş e-Arşiv/e-SMM numarası ve verilmiş fiş numarası yeniden verilir; EDM 11048 ile reddeder
+  (mükerrer e-Belge oluşmaz; canlı seride ileti "Fatura Ayarları → Numaralar'dan sıradaki numarayı ileri alın" der, test serisinde yalnız "ortak test hesabı");
+  v2.4.3'te de aynı (gerileme değil). ÖNERİ: 2.4.4'te küçük güvence — geri yüklemeden sonra Fatura'da tek seferlik uyarı + 11048 iletisine geri yükleme
+  olasılığı; EDM'den son numarayı kendiliğinden sorma 2.4.4 sonrası ayrı iş. BİLİNEN SINIR (karar gerekmez): 2.4.3 verisinde iki belgeye verilmiş 16 + 6 fiş
+  numarası göçle düzelmez (v32 yalnız yeniden verilmesini önler).
 - SON ADAY BAĞIMSIZ TURU (kullanıcı, 22.10.2026: "2.4.4 son aday uzun test koşusuna başlamadan kâhin (uzman mali müşavir), yargıç, eleştirmen testlerinden geçecek mi,
   regresyon testleri yapılıyor mu?" → EVET; "ekle" → uzman UI + uzman UX de): iş listesi madde 30–31 (31a kâhin, 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol,
   31f uzman UI/UX) Uzun Doğrulama'dan ÖNCE.
