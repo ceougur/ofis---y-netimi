@@ -581,21 +581,23 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // istek (fatura kartı) aşağıdaki cari başına yoldan hesaplanır; iki yolun aynı sonucu verdiği testle denetlenir.
   let statesCache = { key: "", map: null };
   const BATCH_ACCOUNTS = 8;
-  // Çek/senet olaylarının kapama girdisi (iki yol da bu tek kuralla): satırın olay türü (chequeEvents) ve faturaya bağı (links).
-  // events: { chequeId, kind, invoiceId, own (cheques.invoice_id), effects } — olay sırasında (rowid). planned: taksitli faturalar.
+  // Çek/senet olaylarının kapama girdisi (iki yol da bu tek kuralla): satırın olay türü (chequeEvents), faturaya bağı (links) ve karşılıksızın ters
+  // çevirdiği satır (reversals). events: { chequeId, kind, invoiceId, own (cheques.invoice_id), effects } — olay sırasında (rowid). planned: taksitli faturalar.
   //   - Faturanın kendi evrakı (fatura kesilirken alınan/verilen; cheques.invoice_id = olay bağı) ve faturayla ciro: bağ her zaman (v2.0.15).
   //   - 2.4.4 UX18: "Kapatılacak Fatura" ile alınan/verilen evrak (yalnız olay bağı): cari kartından kurulan bağ gibi taksitli faturada yok sayılır
   //     (taksitli fatura kendi kartıyla kapanır; v2.0.23 Bulgu 2 — eski/bozuk veride de).
-  //   - Karşılıksız (bounce) satırı, ters çevirdiği satırın bağını alır: alındığı caride borç satırı alış satırının, ciro edilen caride alacak satırı
-  //     cironun bağını. Kapama bu satırı bağlı faturanın yükümlülüğü sayar → fatura yeniden açılır (lib/invoice-settle.mjs; taksitli faturada değil).
-  function chequeLinks(events, planned, links, chequeEvents) {
+  //   - Karşılıksız (bounce) satırı, alış/ciro satırını ters çevirir: alındığı caride borç satırı alış satırını, ciro edilen caride alacak satırı
+  //     ciroyu. Kapama bu çifti birlikte çıkarır → evrakın kapattığı fatura (bağlıysa bağlı fatura, bağsızsa en eski açık fatura) kendi tarihiyle
+  //     yeniden açılır, kalan ödemeler en eski açık faturadan yeniden dağılır (lib/invoice-settle.mjs; taksitli faturanın evrakında değil).
+  //     2.4.4: önce yalnız bağlı evrakta (31a F2); bağsız evrak da (31a F3, kullanıcı kararı 22.10.2026 "en yaygın uygulama").
+  function chequeLinks(events, planned, links, chequeEvents, reversals) {
     const byCheque = new Map();
     for (const event of events) {
       if (!byCheque.has(event.chequeId)) byCheque.set(event.chequeId, []);
       byCheque.get(event.chequeId).push(event);
     }
     for (const list of byCheque.values()) {
-      const reversed = new Map();
+      const linked = new Map();
       for (const event of list) {
         // İptal edilen faturanın evrakında olay etkileri geri alınmıştır ve alan nesne olarak işaretlenir ({ reverted }).
         const effects = parseJson(event.effects, []);
@@ -605,12 +607,12 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         for (const effect of lines) {
           chequeEvents.set(effect.id, event.kind);
           if (event.kind === "bounce") {
-            const from = reversed.get(effect.accountId || "");
-            if (from) links.set(effect.id, from);
+            const from = linked.get(effect.accountId || "");
+            if (from) reversals.set(effect.id, from);
             continue;
           }
           if (link) links.set(effect.id, link);
-          if (["receive", "issue", "endorse"].includes(event.kind)) reversed.set(effect.accountId || "", link);
+          if (["receive", "issue", "endorse"].includes(event.kind)) linked.set(effect.accountId || "", effect.id);
         }
       }
     }
@@ -662,10 +664,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     for (const [accountId, all] of invoicesOf) {
       const links = new Map(baseLinks.get(accountId) || []);
       const chequeEvents = new Map();
-      chequeLinks(eventsOf.get(accountId) || [], planned, links, chequeEvents);
+      const reversals = new Map();
+      chequeLinks(eventsOf.get(accountId) || [], planned, links, chequeEvents, reversals);
       const offsets = (offsetsOf.get(accountId) || []).map(({ accountId: _, ...offset }) => ({ ...offset, label: offsetLabel(offset) }));
       const invoices = all.map(({ accountId: _, ...item }) => (item.planId ? { ...item, planTotal: planTotals.get(item.planId) || 0, schedule: (scheduleOf.get(item.planId) || []).map(({ planId: __, ...row }) => row) } : item));
-      const states = settle({ lines: ledgers.get(accountId) || [], invoices, links, chequeEvents, offsets, today: day });
+      const states = settle({ lines: ledgers.get(accountId) || [], invoices, links, chequeEvents, reversals, offsets, today: day });
       for (const [id, state] of states) map.set(id, state);
     }
     if (!inTx) statesCache = { key, map };
@@ -701,8 +704,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       for (const entry of store.all("SELECT id, invoice_id AS invoiceId FROM account_entries WHERE account_id = ? AND source IN ('', 'bank') AND invoice_id <> ''", accountId)) if (!planned.has(entry.invoiceId)) links.set(entry.id, entry.invoiceId);
       // Çek/senet satırlarının olay türü (karşılıksız → yükümlülük yeniden açılır) ve faturaya bağı.
       const chequeEvents = new Map();
+      const reversals = new Map();
       // Bağlı fatura başka carinin olsa (bozuk veri) kapamada zaten yer almaz (yalnız bu carinin faturaları); taksitli olanlar bu carinin kümesinde.
-      chequeLinks(store.all("SELECT ev.cheque_id AS chequeId, ev.kind, ev.invoice_id AS invoiceId, ev.effects_json AS effects, c.invoice_id AS own FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id WHERE c.account_id = ? OR c.endorse_account_id = ? OR ev.account_id = ? ORDER BY ev.rowid", accountId, accountId, accountId), planned, links, chequeEvents);
+      chequeLinks(store.all("SELECT ev.cheque_id AS chequeId, ev.kind, ev.invoice_id AS invoiceId, ev.effects_json AS effects, c.invoice_id AS own FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id WHERE c.account_id = ? OR c.endorse_account_id = ? OR ev.account_id = ? ORDER BY ev.rowid", accountId, accountId, accountId), planned, links, chequeEvents, reversals);
       const offsets = store.all("SELECT id, invoice_id AS invoiceId, counter_type AS counterType, counter_id AS counterId, amount, date, note, created_at AS createdAt FROM invoice_offsets WHERE account_id = ? ORDER BY date, created_at", accountId).map(offset => ({ ...offset, label: offsetLabel(offset) }));
       const plansById = new Map();
       for (const invoice of all.filter(item => item.planId)) {
@@ -710,7 +714,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         const schedule = store.all("SELECT due_date AS dueDate, amount FROM plan_items WHERE plan_id = ? ORDER BY due_date", invoice.planId);
         plansById.set(invoice.id, { planTotal: Number(plan?.total) || 0, schedule });
       }
-      const states = settle({ lines: ledger, invoices: all.map(item => ({ ...item, ...(plansById.get(item.id) || {}) })), links, chequeEvents, offsets, today: day });
+      const states = settle({ lines: ledger, invoices: all.map(item => ({ ...item, ...(plansById.get(item.id) || {}) })), links, chequeEvents, reversals, offsets, today: day });
       for (const row of list) out.set(row.id, states.get(row.id) || { payable: row.tryPayable, paid: 0, open: row.tryPayable, state: "open", label: PAY_STATES.open });
     }
     return out;
@@ -844,8 +848,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (!existing.planId && text(body?.payment?.rest) === "installments") {
       const state = paymentStates([existing]).get(existing.id);
       const own = ownPaymentLines(existing.id);
-      // 2.4.4 UX18: karşılıksız evrakın eksi kapatanı (mode bounce) yabancı ödemeyi gizlemez; Kapatılacak Fatura ile bağlanmış evrak varken reddedilir.
-      const foreign = roundMoney((state?.closers || []).filter(item => !own.has(item.id) && item.mode !== "bounce").reduce((sum, item) => sum + (Number(item.amount) || 0), 0));
+      // 2.4.4 UX18: Kapatılacak Fatura ile bağlanmış evrak varken reddedilir (karşılıksız evrak kapatanlarda yoktur).
+      const foreign = roundMoney((state?.closers || []).filter(item => !own.has(item.id)).reduce((sum, item) => sum + (Number(item.amount) || 0), 0));
       const bonded = bondedCheques(existing.id);
       if (bonded) throw new HttpError(409, `Bu faturaya Kapatılacak Fatura olarak bağlanmış ${bonded} çek/senet var; sonradan taksitlendirilirse fatura ile kart ayrışır. Faturayı taksitlendirmeden kaydedin; kalanı için cari kartında + Taksit Planı → Borcun Kaynağı: Carinin Mevcut Borcu.`, { code: "invoice-paid-elsewhere" });
       if (foreign > 0.004 || (Number(state?.covered) || 0) > 0.004) {

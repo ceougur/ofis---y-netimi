@@ -7,8 +7,10 @@
 //      faturaya), cari kartından "Kapatılacak Fatura" seçilerek girilen tahsilat/ödeme, mahsup fişi. Bağlı ödeme faturadan
 //      fazlaysa artanı genel havuza düşer.
 //   2. Kalan ödemeler (bağsız tahsilat, artanlar) en eski yükümlülükten başlayarak dağıtılır (FIFO).
-//   2.4.4 UX18: faturaya bağlı evrak (faturayla ya da "Kapatılacak Fatura" ile alınan/verilen çek-senet, faturayla ciro) karşılıksız dönünce
-//   karşılıksız satırı bağlı faturanın yükümlülüğüdür: fatura yeniden açılır (taksitli faturada değil). Kapatanlar listesinde eksi kayıt ("Karşılıksız").
+//   2.4.4 UX18: karşılıksız dönen evrak — faturaya bağlı (faturayla ya da "Kapatılacak Fatura" ile alınan çek-senet, faturayla ciro) ya da bağsız —
+//   hiç alınmamış (ciro edilmemiş) gibidir: alış/ciro satırı ile karşılıksız satırı kapamadan birlikte çıkar, evrakın kapattığı faturalar KENDİ
+//   tarihleriyle yeniden açılır ve en eski borç sırasındaki yerini alır; kalan ödemeler yeniden dağılır (taksitli faturanın evrakında değil).
+//   Kapatanlar listesinde evrak görünmez (ödememiştir).
 //
 // v2.0.17 (müşteri: "hayalet kısmi ödeme"): ödeme YÖNE göre sayılır. Alacak tarafında (satış, SMM) yalnız ödeme
 // niteliğindeki alacak satırları kapatır: tahsilat (Kasa/banka/POS), alınan çek/senet, satıştan iade, taksit tahsilatı.
@@ -56,7 +58,7 @@ export const PAY_STATES = Object.freeze({
   draft: "Taslak",
   cancelled: "İptal",
 });
-export const CLOSER_MODES = Object.freeze({ linked: "Bağlı", auto: "Otomatik (en eski)", offset: "Mahsup", bounce: "Karşılıksız" });
+export const CLOSER_MODES = Object.freeze({ linked: "Bağlı", auto: "Otomatik (en eski)", offset: "Mahsup" });
 
 /**
  * Satırın kapamadaki rolü (yöne göre). Döndürülen nesnede yalnız geçerli roller true'dur:
@@ -119,19 +121,43 @@ export function classifyLine(line, { invoiceKind = "", chequeEvent = "" } = {}) 
 /**
  * @param {{ lines: Array<{ id, origin, kind, sourceId?, planId?, date, at?, label?, note?, method?, debit, credit }>,
  *           invoices: Array<{ id, kind, status, payable, originalId?, dueDate?, planId?, schedule?: Array<{ dueDate, amount }> }>,
- *           links?: Map<string, string>, chequeEvents?: Map<string, string>,
+ *           links?: Map<string, string>, chequeEvents?: Map<string, string>, reversals?: Map<string, string>,
  *           offsets?: Array<{ id, invoiceId, counterId, counterType: "invoice"|"entry", amount, date, note? }>, today: string }} input
  *   lines        : bir carinin defter satırları (accountLedger), tarih sırasında
  *   links        : defter satırı kimliği → fatura kimliği (peşin ödeme, çek/senet, ciro, seçilerek bağlanan tahsilat/ödeme)
  *   chequeEvents : çek/senet defter satırı kimliği → olay türü (receive/issue/endorse/bounce…)
+ *   reversals    : karşılıksız satırı kimliği → ters çevirdiği alış / ciro satırının kimliği (bağlı ve bağsız evrak; 2.4.4 UX18, 31a F2/F3)
  *   offsets      : mahsup fişleri (fatura ↔ karşı fatura ya da karşı cari satırı)
  * @returns {Map<string, { payable, paid, open, state, label, closers: Array<{ id, date, label, note, method, amount, mode }> }>}
  */
-export function settleInvoices({ lines, invoices, links = new Map(), chequeEvents = new Map(), offsets = [], today }) {
+export function settleInvoices({ lines, invoices, links = new Map(), chequeEvents = new Map(), reversals = new Map(), offsets = [], today }) {
   const out = new Map();
   const byId = new Map(invoices.map(invoice => [invoice.id, invoice]));
   const planOwner = new Map(invoices.filter(invoice => invoice.planId).map(invoice => [invoice.planId, invoice.id]));
-  const ordered = [...lines].sort((a, b) => (a.date === b.date ? String(a.at || "").localeCompare(String(b.at || "")) : a.date < b.date ? -1 : 1));
+  const sorted = [...lines].sort((a, b) => (a.date === b.date ? String(a.at || "").localeCompare(String(b.at || "")) : a.date < b.date ? -1 : 1));
+  // 2.4.4 UX18 (kullanıcı kararları 21–22.10.2026 "karşılıksız dönünce fatura yeniden açılır", F3 "en yaygın uygulama" — QuickBooks "Record bounced
+  // check", Xero, Sage: ödeme geri alınır, fatura ödenmemiş olur; 31a bağımsız kâhin F2/F3, PLAN §8.10 "Otomatik (En Eski)"): karşılıksız satırı ile
+  // ters çevirdiği alış / ciro satırı (reversals; routes/invoices.mjs chequeLinks) kapamadan birlikte çıkar — evrak hiç alınmamış (ciro edilmemiş)
+  // gibi: kapattığı faturalar (bağlıysa bağlı fatura, bağsızsa en eski açıklar) kendi borç satırıyla, kendi tarihiyle açılır; kalan ödemeler en eski
+  // açık borçtan yeniden dağılır (Σ açık fatura = bakiye; bakiye ve yevmiye değişmez). Önceki çözümler: 2.4.3'e kadar karşılıksız satırı faturasız
+  // yükümlülüktü (kapattığı faturalar kapalı kalıyordu — F3); 2.4.4 ilk hâli bağlı evrakta satırı faturaya ekliyordu (karşılıksız GÜNÜNE yazıldığı için
+  // bağsız tahsilat daha yeni faturayı kapatıyordu — F2). Taksitli faturanın evrakında (kendi evrakı) bugünkü gibi: taksitli fatura açığı = kartın
+  // kalanı değişmezi (taksite sayılan evrak zaten kart satırıdır). Yalnız tarafı ters (karşılıksız borç ↔ alış alacak) ve tutarı aynı çift.
+  const netted = new Map();
+  if (reversals.size) {
+    const lineById = new Map(lines.map(line => [line.id, line]));
+    for (const [bounceId, reversedId] of reversals) {
+      const bounce = lineById.get(bounceId);
+      const reversed = lineById.get(reversedId);
+      if (!bounce || !reversed || chequeEvents.get(bounceId) !== "bounce") continue;
+      if (byId.get(links.get(reversedId) || "")?.planId) continue;
+      if ((cents(bounce.debit) > 0) !== (cents(reversed.credit) > 0)) continue;
+      if ((cents(bounce.debit) || cents(bounce.credit)) !== (cents(reversed.debit) || cents(reversed.credit))) continue;
+      netted.set(bounceId, bounce);
+      netted.set(reversedId, bounce);
+    }
+  }
+  const ordered = netted.size ? sorted.filter(line => !netted.has(line.id)) : sorted;
   // v2.0.23: ayrı borç yazan (mevcut borcu taksitlendirmeyen) ve hiçbir faturanın kartı olmayan kartlar.
   const separatePlans = new Set(lines.filter(line => line.origin === "plan" && line.kind === "plan" && !line.covers && line.planId && !planOwner.has(line.planId)).map(line => line.planId));
   const kindOf = line => (line.origin === "invoice" ? byId.get(line.sourceId)?.kind || "" : "");
@@ -182,18 +208,6 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
     }
     return value;
   };
-  // 2.4.4 UX18 (kullanıcı kararı 21.10.2026: "karşılıksız dönünce fatura yeniden açılır"): faturaya bağlı evrakın karşılıksız satırı (links'te ters
-  // çevirdiği alış / ciro satırının bağı; routes/invoices.mjs chequeLinks) o faturanın yükümlülüğüdür. Faturaya bağlı ödemeler önce faturanın kendi
-  // satırını, sonra bu satırı kapatır: evrakın faturaya saydığı tutar geri açılır, faturayı aşıp başka borca giden kısmı oraya da geri döner (evrakın
-  // ödemesi önce kendi karşılıksızını kapatır). Yalnız kaydedilmiş, taksitsiz fatura ve satırın tarafındaki tür (alacakta satış/SMM, borçta alış);
-  // taksitli faturada satır önceki gibi bağsız yükümlülüktür (taksitli fatura açığı = kartın kalanı değişmezi).
-  const reopenedBy = (line, kinds) => {
-    if (line.origin !== "cheque" || chequeEvents.get(line.id) !== "bounce") return "";
-    const invoice = byId.get(links.get(line.id) || "");
-    return invoice && invoice.status === "issued" && !invoice.planId && kinds.has(invoice.kind) ? invoice.id : "";
-  };
-  // Karşılıksız satırının kapatanlar listesindeki eksi kaydı (Σ kapatan = ödenen; kart "Bu Faturayı Kapatanlar").
-  const reopenCloser = item => ({ id: item.line.id, date: item.line.date, label: item.line.label || "", note: item.line.note || "", method: "", amount: -roundMoney(cents(item.line.debit || item.line.credit) / 100), mode: "bounce" });
   // Bir tarafın (alacak / borç) kapaması. coverage: kart kimliği → (yükümlülük satırı → kapsanan kuruş).
   function runSide(side, sideLines, coverage, offsetList, track = true) {
     const kinds = side === "receivable" ? RECEIVABLE : PAYABLE;
@@ -239,12 +253,12 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
       if (role[dueKey]) {
         // Taksit iadesi (plan-out) kartın borcunu yeniden açar: faturanın kartıysa faturayı, Mevcut Borç kartıysa kapsadığını.
         const refund = line.origin === "plan" && line.kind === "plan-out";
-        const own = line.origin === "invoice" && kinds.has(kindOf(line)) ? line.sourceId : refund ? planOwner.get(line.planId) || "" : reopenedBy(line, kinds);
+        const own = line.origin === "invoice" && kinds.has(kindOf(line)) ? line.sourceId : refund ? planOwner.get(line.planId) || "" : "";
         const cover = refund && coverIds.has(line.planId) ? line.planId : "";
         // Taksitli fatura (kendi kartı var) yalnız bağlı ödemeyle kapanır; en eski borç sırasında atlanır.
         // R1 + K1: iadenin geri ödemesi (refundOf = iade belgesi) iade belgesinin kendi alacağıyla kapanır (adım R).
         const refundOf = line.origin === "invoice" && RETURNS.has(kindOf(line)) ? line.sourceId : "";
-        obligations.push({ invoiceId: own, lineId: line.id, line, bornAt: born, free: cover ? 0 : amount, covered: new Map(cover ? [[cover, amount]] : []), closers: [], planned: Boolean(own && byId.get(own)?.planId), refundOf, reopen: line.origin === "cheque" && Boolean(own) });
+        obligations.push({ invoiceId: own, lineId: line.id, line, bornAt: born, free: cover ? 0 : amount, covered: new Map(cover ? [[cover, amount]] : []), closers: [], planned: Boolean(own && byId.get(own)?.planId), refundOf });
       }
       // K1: iade belgesinin alacak satırı (returnId): önce kendi geri ödemesini, sonra asıl faturayı kapatır; artanı en eski borca, kalanı iade açığı.
       const returnId = role[payKey] && line.origin === "invoice" && RETURNS.has(kindOf(line)) ? line.sourceId : "";
@@ -386,7 +400,8 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
     .map(({ item }) => item);
   const coverage = new Map();
   for (const plan of coverPlans) {
-    const known = ordered.filter(line => facts(line).born <= plan.at);
+    // Karşılıksızı kartın açıldığı anda henüz olmayan evrak o an faturayı ödemiş sayılır (kapsam o günkü açık borçtur).
+    const known = sorted.filter(line => facts(line).born <= plan.at && !(netted.has(line.id) && facts(netted.get(line.id)).born <= plan.at));
     const knownOffsets = offsets.filter(offset => String(offset.createdAt || offset.date || "") <= plan.at);
     const parts = new Map();
     let rest = plan.total;
@@ -412,7 +427,7 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
       const coveredBy = {};
       for (const item of items) for (const [planId, value] of item.covered) if (value > 0) coveredBy[planId] = roundMoney((coveredBy[planId] || 0) + value / 100);
       // excess (v2.1.0): bağlı ödeme ve iadelerin faturayı aşan kısmı (açık 0 iken); imzalı açık = open − excess.
-      out.set(invoiceId, { payable: roundMoney(payable / 100), paid: roundMoney((payable - open) / 100), open: roundMoney(open / 100), excess: roundMoney((overpaid.get(invoiceId) || 0) / 100), covered: roundMoney(covered / 100), coveredBy, closers: items.flatMap(item => (item.reopen ? [reopenCloser(item), ...item.closers] : item.closers)) });
+      out.set(invoiceId, { payable: roundMoney(payable / 100), paid: roundMoney((payable - open) / 100), open: roundMoney(open / 100), excess: roundMoney((overpaid.get(invoiceId) || 0) / 100), covered: roundMoney(covered / 100), coveredBy, closers: items.flatMap(item => item.closers) });
     }
   }
   // K1: iade belgelerinin açığı. İadenin alacağından geri ödeme (adım R), asıl fatura (1) ve en eski borçlar (2) kapandıktan sonra kalan,

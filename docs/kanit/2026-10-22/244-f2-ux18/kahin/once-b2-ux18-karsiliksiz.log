@@ -1,0 +1,5 @@
+b2-ux18-karsiliksiz: 90/91 tuttu
+  ✗ [İNCELE YAYGIN] adim:bdm:durum: program "ok" · kâhin "ret" (B2.4 bağ kurulamaz → ret, hiçbir satır yazılmaz)
+
+ÖZET: 1 senaryo, 91 denetim, 1 fark (BULGU 0), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-cari-Vr4stx
+90/91 denetim geçti
