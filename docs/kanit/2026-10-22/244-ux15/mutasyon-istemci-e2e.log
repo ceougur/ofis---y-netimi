@@ -1,0 +1,8 @@
+C1 Toplamlar kutusu çakışmayı çizmez: çıkış 1, gg244-numara-tarih-onay: 32 geçti, 6 kaldı → YAKALANDI (Toplamlar kutusunda uyarı (Toplamlar Toplam₺100,00Ara Toplam₺100,00 KDV %20₺20; Toplamlar kutusunda bilgi (Toplamlar Toplam₺250,00Ara Toplam₺250,00 KDV %20₺50; uyarı Toplamlar kutusunda da; Düzenle kuralıyla uyarı (Toplamlar Toplam₺100,00Ara Toplam₺100,00 KDV %20₺20,0; çift numara uyarısı (Toplamlar)
+C2 Kaydet çakışmada da onay açar: çıkış 1, gg244-numara-tarih-onay: 29 geçti, 9 kaldı → YAKALANDI (Kaydet ve Gönder: numaralı onay açılmadı; Kaydet ve Gönder: neden form satırında (); Kes, Sonra Gönder: numaralı onay açılmadı; Kes, Sonra Gönder: neden form satırında (); Kaydet ve Gönder: onay açılmadı (Kaydet öncesi yeniden hesap çakışmayı gördü); neden form satırında (); Değişiklikleri Kaydet: o)
+C3 onay orderHold'u yok sayar (numara gösterir): çıkış 1, gg244-numara-tarih-onay: 37 geçti, 1 kaldı → YAKALANDI (onay numara göstermez, nedeni söyler (Ayşe Kaya için TEA2026000000003 numarası)
+C4 Düzenle'de kimlik gönderilmez (eski davranış): çıkış 1, gg244-numara-tarih-onay: 36 geçti, 2 kaldı → YAKALANDI (Düzenle kuralıyla uyarı (120,00 Yalnız Yüz Yirmi Türk Lirası TEA serisinde son; alışın Düzenle'sinde kendi numarası çakışma sayılmaz)
+C5 çakışmada sıradaki numara görünür: çıkış 1, gg244-numara-tarih-onay: 36 geçti, 2 kaldı → YAKALANDI ("Kaydedilince Verilecek No" gösterilmez (Kaydedilince Verilecek NoTEA202600000; sıradaki numara gösterilmez (Kaydedilince Verilecek NoTEA2026000000003))
+# tests 5
+# pass 5
+# fail 0

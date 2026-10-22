@@ -1,0 +1,14 @@
+S1 ön hesap çakışma döndürmez: çıkış 1, tests 12, fail 11 → YAKALANDI (1–2 sıra; 5 seri; 6 elle numara; 7 dönem kilidi; 9 Düzenle; 3 yıl dönümü; 10 002 şirketi; ayrışma; 5 Kes, Sonra Gönder ve Kaydet ve Gönder aynı koşulla reddedilir; ön hesap ikisinden önce söyler (e-Arşiv TEA); 8 daha eski bekleyen; 4 iki kullanıcı aynı anda)
+S2 çakışma blockers'a girmez (form onayı açar): çıkış 1, tests 12, fail 1 → YAKALANDI (1–2 sıra)
+S3 ön hesap seri yılını şaşırır: çıkış 1, tests 12, fail 9 → YAKALANDI (1–2 sıra; 5 seri; 7 dönem kilidi; 9 Düzenle; 3 yıl dönümü; 10 002 şirketi; ayrışma; 5 Kes, Sonra Gönder ve Kaydet ve Gönder aynı koşulla reddedilir; ön hesap ikisinden önce söyler (e-Arşiv TEA); 4 iki kullanıcı aynı anda)
+S4 ön hesap hep kâğıt serisine bakar: çıkış 1, tests 12, fail 5 → YAKALANDI (5 seri; ayrışma; 5 Kes, Sonra Gönder ve Kaydet ve Gönder aynı koşulla reddedilir; ön hesap ikisinden önce söyler (e-Arşiv TEA); 8 daha eski bekleyen; 4 iki kullanıcı aynı anda)
+S5 ön hesap dönem kilidini atlar (yeni belge): çıkış 1, tests 12, fail 2 → YAKALANDI (7 dönem kilidi; ayrışma)
+S6 ön hesap elle numara çakışmasını atlar: çıkış 1, tests 12, fail 3 → YAKALANDI (5 seri; 6 elle numara; ayrışma)
+S7 ön hesap Düzenle'de yeni belge kuralı: çıkış 1, tests 12, fail 3 → YAKALANDI (9 Düzenle; 3 yıl dönümü; 8 daha eski bekleyen)
+S8 ön hesap Düzenle'yi tanımaz: çıkış 1, tests 12, fail 5 → YAKALANDI (6 elle numara; 7 dönem kilidi; 9 Düzenle; 3 yıl dönümü; 8 daha eski bekleyen)
+S9 orderHold hesaplanmaz: çıkış 1, tests 12, fail 1 → YAKALANDI (8 daha eski bekleyen)
+S10 ortak kural: aynı gün de çakışma: çıkış 1, tests 12, fail 3 → YAKALANDI (1–2 sıra; ayrışma; 4 iki kullanıcı aynı anda)
+S11 ön hesapta kilit iletisi kayıttakinden farklı: çıkış 1, tests 12, fail 2 → YAKALANDI (7 dönem kilidi; ayrışma)
+# tests 11
+# pass 11
+# fail 0

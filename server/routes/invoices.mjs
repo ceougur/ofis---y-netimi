@@ -851,7 +851,6 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         throw new HttpError(409, `${foreign > 0.004 ? `Bu faturaya kendi ödemesi dışında ${tl(foreign)} ödeme sayılmış` : "Bu faturanın borcu bir taksit kartıyla taksitlendirilmiş"}; sonradan taksitlendirilirse fatura ile kart ayrışır. Faturayı taksitlendirmeden kaydedin; kalanı için cari kartında + Taksit Planı → Borcun Kaynağı: Carinin Mevcut Borcu.`, { code: "invoice-paid-elsewhere" });
       }
     }
-    const own = INVOICE_KINDS[existing.kind].own || existing.seq > 0;
     if (INVOICE_KINDS[existing.kind].return && text(body.originalId) && text(body.originalId) !== existing.originalId) fail400("İadenin asıl faturası düzenlemede değişmez; iptal edip yeni iade kaydedin.", "originalId", { code: "return-original-fixed" });
     const doc = documentInput({ ...body, kind: existing.kind }, { mode: "issue", existing });
     if (doc.kind !== existing.kind) fail400("Belgenin türü düzenlemede değişmez.", "kind");
@@ -863,21 +862,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const bonded = bondedCheques(existing.id);
       if (entries || bonded) fail400(`Bu faturaya cari kartından Kapatılacak Fatura olarak bağlanmış ${[entries ? `${entries} tahsilat/ödeme` : "", bonded ? `${bonded} çek/senet` : ""].filter(Boolean).join(" ve ")} var; cari değiştirilemez. Önce o kayıtlarda Kapatılacak Fatura'yı Otomatik yapın ya da faturayı iptal edip doğru cariye yeniden kaydedin.`, "accountId", { code: "invoice-bonded" });
     }
-    if (own && doc.date !== existing.issueDate && !(existing.seq > 0) && existing.eStatus === "waiting" && doc.profile !== "KAGIT") {
-      // Dar kontrol 2.4.3 (D4): numarasız bekleyen belge (Kes, Sonra Gönder) numarasını gönderimde serinin SONUNA alır. Tarih denetimi o konuma
-      // göre: serinin son numaralı belgesinden eski olamaz; ileri almak serbesttir. (Önceden seq = 0 için "sonraki belge" serinin İLK numaralısı
-      // okunuyordu; kalıcı kronoloji engelli belgenin tarihi ileri alınamıyordu.)
-      const series = seriesFor(existing.kind, doc.profile, settings());
-      const last = store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0 ORDER BY seq DESC LIMIT 1", series, Number(doc.date.slice(0, 4)));
-      if (last && doc.date < last.issueDate) fail400(`${series} serisinde son gönderilen belge ${last.number} ${dayText(last.issueDate)} tarihli; numarası gönderimde verilecek bu belge ondan eski tarihli olamaz (numara ve tarih sırası).`, "issueDate", { code: "chronology" });
-    } else if (own && doc.date !== existing.issueDate) {
-      // Numara sırası ile tarih sırası uyuşmalı (VUK 231): yeni tarih, serideki önceki ve sonraki belgenin arasında kalmalı.
-      const prev = store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0 AND seq < ? ORDER BY seq DESC LIMIT 1", existing.series, existing.year, existing.seq);
-      const next = store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > ? ORDER BY seq LIMIT 1", existing.series, existing.year, existing.seq);
-      if (doc.date.slice(0, 4) !== String(existing.year)) fail400(`Numara ${existing.year} yılına ait; tarih başka yıla alınamaz.`, "issueDate", { code: "chronology" });
-      if (prev && doc.date < prev.issueDate) fail400(`Önceki belge ${prev.number} ${dayText(prev.issueDate)} tarihli; bu belge ondan eski tarihli olamaz (numara ve tarih sırası).`, "issueDate", { code: "chronology" });
-      if (next && doc.date > next.issueDate) fail400(`Sonraki belge ${next.number} ${dayText(next.issueDate)} tarihli; bu belge ondan yeni tarihli olamaz (numara ve tarih sırası).`, "issueDate", { code: "chronology" });
-    }
+    // 2.4.4 (UX15): kural tek yerde (editChronologyProblem); formun ön hesabı (calc) aynı fonksiyonla onaydan önce söyler.
+    const chronology = editChronologyProblem(existing, doc);
+    if (chronology) fail400(chronology, "issueDate", { code: "chronology" });
     const force = forceOf(body);
     const before = linesOf(existing.id);
     const oldCash = store.all("SELECT kind, amount, method, date, event_id AS eventId, fin_ref AS finRef FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind IN ('in', 'out') ORDER BY rowid", existing.id);
@@ -1766,9 +1753,85 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   }
   // VUK md. 231 ve GİB: aynı seride numara sırası ile tarih sırası uyuşmalı — yeni fatura serinin son faturasından eski
   // tarihli olamaz (iptal edilmiş numara da sırada yer tutar).
-  function assertChronology(series, year, date) {
+  // 2.4.4 (UX15): numara / tarih çakışmaları kayıtta (writeIssued, editInvoice) ve formun ön hesabında (calc → numberingCheck) AYNI fonksiyonlarla
+  // denetlenir — form onaydan önce söyler, kural tek yerde kalır. Asıl güvence işlem içindeki denetimdir (iki kişi aynı anda kaydederse).
+  // later: "Kes, Sonra Gönder" — numara gönderimde serinin SONUNA verilir; koşul aynı (serinin son numaralı belgesinden eski tarih olmaz), ileti farklı.
+  function chronologyProblem(series, year, date, { later = false } = {}) {
     const last = store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0 ORDER BY seq DESC LIMIT 1", series, year);
-    if (last && last.issueDate > date) fail400(`${series} serisinde son belge ${last.number} ${dayText(last.issueDate)} tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı).`, "issueDate", { code: "chronology" });
+    if (!(last && last.issueDate > date)) return "";
+    const head = later
+      ? `${series} serisinde son gönderilen belge ${last.number} ${dayText(last.issueDate)} tarihli; numarası gönderimde verilecek bu belge ondan eski tarihli olamaz (numara ve tarih sırası).`
+      : `${series} serisinde son belge ${last.number} ${dayText(last.issueDate)} tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı).`;
+    return `${head} Belge tarihini ${dayText(last.issueDate)} ya da sonrası yapın.`;
+  }
+  function assertChronology(series, year, date) {
+    const problem = chronologyProblem(series, year, date);
+    if (problem) fail400(problem, "issueDate", { code: "chronology" });
+  }
+  // Yeni belgede numarayı program mı verir (kendi serimiz; müşterinin numara vermediği satıştan iade → iç seri) ve hangi seriden.
+  const ownNumbered = doc => Boolean(doc.meta.own || (doc.kind === "sale_return" && !doc.number));
+  const numberSeriesOf = doc => (doc.meta.own ? seriesFor(doc.kind, doc.profile, doc.settings) : doc.settings.series.internal);
+  // e-Belge numarası kayıtta ertelenebilir mi (O1: serinin daha eski numarasız bekleyeni varken numara verilmez).
+  const deferableDoc = doc => Boolean(edocEnabled && doc.meta.own && sendKind(doc.kind, doc.profile) && doc.profile !== "KAGIT");
+  // Elle yazılan numara (alış, müşterinin iade faturası): aynı caride aynı türde kayıtlı belge numarası.
+  function duplicateProblem(doc, invoiceId = "") {
+    if (!doc.number) return "";
+    const twin = store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE account_id = ? AND kind = ? AND number = ? AND status = 'issued' AND id <> ?", doc.account.id, doc.kind, doc.number, invoiceId || "");
+    return twin ? `${doc.number} numaralı ${doc.meta.label.toLocaleLowerCase("tr-TR")} bu caride ${dayText(twin.issueDate)} tarihiyle zaten kayıtlı.` : "";
+  }
+  // Düzenle'de tarih: numara, seri, yıl değişmez; yeni tarih numaranın serideki yerine uymalı.
+  function editChronologyProblem(existing, doc) {
+    const own = INVOICE_KINDS[existing.kind].own || existing.seq > 0;
+    if (!own || doc.date === existing.issueDate) return "";
+    if (!(existing.seq > 0) && existing.eStatus === "waiting" && doc.profile !== "KAGIT") {
+      // Dar kontrol 2.4.3 (D4): numarasız bekleyen belge (Kes, Sonra Gönder) numarasını gönderimde serinin SONUNA alır. Tarih denetimi o konuma
+      // göre: serinin son numaralı belgesinden eski olamaz; ileri almak serbesttir. (Önceden seq = 0 için "sonraki belge" serinin İLK numaralısı
+      // okunuyordu; kalıcı kronoloji engelli belgenin tarihi ileri alınamıyordu.)
+      const series = seriesFor(existing.kind, doc.profile, settings());
+      const last = store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0 ORDER BY seq DESC LIMIT 1", series, Number(doc.date.slice(0, 4)));
+      return last && doc.date < last.issueDate ? `${series} serisinde son gönderilen belge ${last.number} ${dayText(last.issueDate)} tarihli; numarası gönderimde verilecek bu belge ondan eski tarihli olamaz (numara ve tarih sırası).` : "";
+    }
+    // Numara sırası ile tarih sırası uyuşmalı (VUK 231): yeni tarih, serideki önceki ve sonraki belgenin arasında kalmalı.
+    const prev = store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0 AND seq < ? ORDER BY seq DESC LIMIT 1", existing.series, existing.year, existing.seq);
+    const next = store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > ? ORDER BY seq LIMIT 1", existing.series, existing.year, existing.seq);
+    if (doc.date.slice(0, 4) !== String(existing.year)) return `Numara ${existing.year} yılına ait; tarih başka yıla alınamaz.`;
+    if (prev && doc.date < prev.issueDate) return `Önceki belge ${prev.number} ${dayText(prev.issueDate)} tarihli; bu belge ondan eski tarihli olamaz (numara ve tarih sırası).`;
+    if (next && doc.date > next.issueDate) return `Sonraki belge ${next.number} ${dayText(next.issueDate)} tarihli; bu belge ondan yeni tarihli olamaz (numara ve tarih sırası).`;
+    return "";
+  }
+  // Dönem kilidi: kayıttaki denetimin KENDİSİ (period.assertOpen) çağrılır; yalnız iletisi alınır.
+  function lockProblem(date, what) {
+    try {
+      period?.assertOpen(date, what);
+      return "";
+    } catch (error) {
+      if (error?.extra?.code === "period-locked") return error.message;
+      throw error;
+    }
+  }
+  // Formun ön hesabı (calc): kaydet/gönder onayından ÖNCE, kaydetmeden ve ağa çıkmadan — writeIssued / editInvoice'ın sırası ve dallarıyla.
+  // problems: kaydı kesin reddedecek çakışmalar (dönem kilidi, numara/tarih sırası, elle numara çakışması).
+  // orderHold: numara kayıtta verilmeyecek (aynı seride daha eski tarihli gönderilmemiş belge var; belge numarasız Gönderilecekler'e girer).
+  function numberingCheck(doc, existing = null) {
+    const problems = [];
+    const push = text => text && problems.push(text);
+    if (existing) {
+      push(lockProblem(existing.issueDate, "Bu fatura"));
+      push(lockProblem(doc.date, "Fatura"));
+      if (INVOICE_KINDS[existing.kind].own || existing.seq > 0) push(editChronologyProblem(existing, doc));
+      else push(duplicateProblem(doc, existing.id));
+      return { problems, orderHold: null };
+    }
+    push(lockProblem(doc.date, "Fatura"));
+    if (!ownNumbered(doc)) {
+      push(duplicateProblem(doc));
+      return { problems, orderHold: null };
+    }
+    const series = numberSeriesOf(doc);
+    const year = Number(doc.date.slice(0, 4));
+    push(chronologyProblem(series, year, doc.date));
+    const count = !problems.length && deferableDoc(doc) ? olderPending(series, year, doc.date) : 0;
+    return { problems, orderHold: count ? { count, text: orderText(count, "Belge numarasız Gönderilecekler'e eklenecek") } : null };
   }
 
   // ---------- Kesme (tek işlem bloğu) ----------
@@ -1930,11 +1993,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const s = doc.settings;
     const meta = doc.meta;
     // "Kes, Sonra Gönder" (e-Belge): bütün etkiler şimdi işlenir; resmî numara entegratöre gönderilirken verilir.
-    let later = Boolean(!edit && defer && edocEnabled && meta.own && sendKind(doc.kind, doc.profile) && doc.profile !== "KAGIT");
+    let later = Boolean(!edit && defer && deferableDoc(doc));
     // Dar kontrol 2.4.3 (O1): numara kayıtta verilecekse (Kaydet ve Gönder, düz Kaydet, toplu kayıt, banka iade faturası) ve aynı seride daha eski
     // tarihli gönderilebilir numarasız bekleyen varsa yeni belge numara ALMAZ: kaydedilir, numarasız Gönderilecekler'e girer (yoksa eskiler kalıcı
     // kronoloji engeline düşerdi). Kural tek yerde (olderPending); gönderimdeki numara (numberForSend) aynı kuralı işlem içinde yeniden uygular.
-    const deferable = Boolean(!edit && edocEnabled && meta.own && sendKind(doc.kind, doc.profile) && doc.profile !== "KAGIT");
+    const deferable = Boolean(!edit && deferableDoc(doc));
     let orderHeld = 0;
     // e-Belge: alıcı ve satıcı bilgisi eksiksiz olmalı (GİB doğrulaması).
     const problems = issueBlockers(doc);
@@ -1964,17 +2027,17 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         ({ series, year, seq, number } = edit);
       } else if (edit) {
         if (!number) fail400(doc.kind === "purchase" ? "Tedarikçinin fatura numarasını yazın (faturanın üstündeki No)." : "Fatura numarasını yazın.", "number");
-        const twin = store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE account_id = ? AND kind = ? AND number = ? AND status = 'issued' AND id <> ?", doc.account.id, doc.kind, number, invoiceId);
-        if (twin) throw new HttpError(409, `${number} numaralı ${meta.label.toLocaleLowerCase("tr-TR")} bu caride ${dayText(twin.issueDate)} tarihiyle zaten kayıtlı.`, { code: "invoice-duplicate", field: "number" });
+        const twin = duplicateProblem(doc, invoiceId);
+        if (twin) throw new HttpError(409, twin, { code: "invoice-duplicate", field: "number" });
       } else if (later) {
-        series = seriesFor(doc.kind, doc.profile, s);
+        series = numberSeriesOf(doc);
         year = Number(doc.date.slice(0, 4));
         // Dar kontrol 2 (B5): numarasız kaydedilen belge (Kes, Sonra Gönder) numarasını gönderimde serinin SONUNA alır; serinin son numaralı
         // belgesinden eski tarihliyse doğar doğmaz kalıcı kronoloji engeline düşerdi. D4 (Düzenle'de tarih) ile aynı kural, kayıtta reddedilir.
-        const tail = store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0 ORDER BY seq DESC LIMIT 1", series, year);
-        if (tail && doc.date < tail.issueDate) fail400(`${series} serisinde son gönderilen belge ${tail.number} ${dayText(tail.issueDate)} tarihli; numarası gönderimde verilecek bu belge ondan eski tarihli olamaz (numara ve tarih sırası).`, "issueDate", { code: "chronology" });
-      } else if (meta.own || (doc.kind === "sale_return" && !number)) {
-        series = meta.own ? seriesFor(doc.kind, doc.profile, s) : s.series.internal;
+        const tail = chronologyProblem(series, year, doc.date, { later: true });
+        if (tail) fail400(tail, "issueDate", { code: "chronology" });
+      } else if (ownNumbered(doc)) {
+        series = numberSeriesOf(doc);
         year = Number(doc.date.slice(0, 4));
         assertChronology(series, year, doc.date);
         orderHeld = deferable ? olderPending(series, year, doc.date, invoiceId) : 0;
@@ -1982,8 +2045,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         else ({ seq, number } = nextNumber(series, year, s));
       } else {
         if (!number) fail400(doc.kind === "purchase" ? "Tedarikçinin fatura numarasını yazın (faturanın üstündeki No)." : "Fatura numarasını yazın.", "number");
-        const twin = store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE account_id = ? AND kind = ? AND number = ? AND status = 'issued' AND id <> ?", doc.account.id, doc.kind, number, invoiceId);
-        if (twin) throw new HttpError(409, `${number} numaralı ${meta.label.toLocaleLowerCase("tr-TR")} bu caride ${dayText(twin.issueDate)} tarihiyle zaten kayıtlı.`, { code: "invoice-duplicate", field: "number" });
+        const twin = duplicateProblem(doc, invoiceId);
+        if (twin) throw new HttpError(409, twin, { code: "invoice-duplicate", field: "number" });
       }
       const totals = doc.computed.totals;
       const money = doc.money;
@@ -2570,6 +2633,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const exceptReturnId = editedId && text(body.originalId) ? store.get("SELECT id FROM invoices WHERE id = ? AND original_id = ? AND kind IN ('sale_return', 'purchase_return')", editedId, text(body.originalId))?.id || "" : "";
     const doc = documentInput(body, { mode: "draft", exceptReturnId });
     const t = doc.computed.totals;
+    // 2.4.4 (UX15): numara / tarih çakışması (dönem kilidi, seri sırası, elle numara) onaydan ÖNCE — kayıttaki fonksiyonlarla, kaydetmeden, ağa
+    // çıkmadan. Düzenle'de (existingId kayıtlı belge) Düzenle kuralı; taslak ve yeni belge yeni belge kuralıyla.
+    const edited = editedId ? store.get("SELECT id FROM invoices WHERE id = ? AND status = 'issued' AND kind = ?", editedId, doc.kind) : null;
+    const numbering = numberingCheck(doc, edited ? invoiceRow(edited.id) : null);
     ok(res, {
       kind: doc.kind,
       profile: doc.profile,
@@ -2592,7 +2659,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       dueDays: Number(doc.account.dueDays) || Number(doc.settings.defaults.dueDays) || 0,
       nextNumber: doc.meta.own ? nextNumber(seriesFor(doc.kind, doc.profile, doc.settings), Number(doc.date.slice(0, 4)), doc.settings).number : "",
       // 2.4.3 (keşif B7): kesimi kesin reddedecek sorunlar (writeIssued'ın e-Belge denetiminin aynısı) — form, numaralı onay penceresini açmadan söyler.
-      blockers: issueBlockers(doc),
+      blockers: [...issueBlockers(doc), ...numbering.problems],
+      // UX15: formda gösterilecek çakışmalar (blockers'ın içinde de) ve numaranın kayıtta verilmeyeceği durum (O1: seride daha eski bekleyen).
+      numbering: numbering.problems,
+      orderHold: numbering.orderHold,
       // MM1: iade formunun e-Belge referansı alanı (asıl numara 16 karakter değilse gerekli; öneri sunucuda da aynı kuralla).
       ...(doc.meta.return && doc.meta.own && doc.original ? { returnRef: { needed: doc.profile !== "KAGIT" && String(doc.original.number || "").trim().length !== 16, original: doc.original.number || "", suggested: returnRefSuggestion(doc.original.number), value: doc.returnRef || "" } } : {}),
       // Posta kutusu seçilmemiş e-Fatura alıcısı: "Kaydet ve Gönder" / düz Kaydet numara harcamadan durur (Kaydet, Sonra Gönder serbest).

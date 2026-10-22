@@ -1,0 +1,88 @@
+{
+  "ad": "244-ux15/eski-3a2f46a-birim",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/fatura-244-numara-tarih-onay.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T06:17:35.533Z",
+  "sure_sn": 7.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 1,
+    "basarisiz": 11,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 11 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 UX15: numara / tarih çakışması kayıttan ÖNCE (ön hesap = kayıttaki denetim) › 1–2 sıra: geriye tarihli kâğıt fatura ön hesapta söylenir (ileti kayıttakiyle aynı, ne yapılacağını söyler); aynı gün serbest; sıradaki numara değişmez",
+      "konum": "test/fatura-244-numara-tarih-onay.test.mjs:77:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.4.4 UX15: numara / tarih çakışması kayıttan ÖNCE (ön hesap = kayıttaki denetim) › 5 seri: SMM kendi serisinde; alış (elle numara) seri sırasına bağlı değil; satıştan iade (numarasız → iç seri IAD; numaralı → elle) ve alıştan iade (kendi serimiz FIS)",
+      "konum": "test/fatura-244-numara-tarih-onay.test.mjs:101:3",
+      "hata": "SMM serisinde belge yok · undefined !== []"
+    },
+    {
+      "ad": "2.4.4 UX15: numara / tarih çakışması kayıttan ÖNCE (ön hesap = kayıttaki denetim) › 6 elle numara: aynı caride aynı numara söylenir (büyük/küçük harf aynı), başka caride serbest; Düzenle'de belgenin kendisi çakışma sayılmaz",
+      "konum": "test/fatura-244-numara-tarih-onay.test.mjs:155:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.4.4 UX15: numara / tarih çakışması kayıttan ÖNCE (ön hesap = kayıttaki denetim) › 7 dönem kilidi: kilitli güne yeni belge ve Düzenle'de kilitli güne taşıma ön hesapta söylenir; kilidin ertesi günü serbest",
+      "konum": "test/fatura-244-numara-tarih-onay.test.mjs:178:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.4.4 UX15: numara / tarih çakışması kayıttan ÖNCE (ön hesap = kayıttaki denetim) › 9 Düzenle: önceki / sonraki belge sınırı Düzenle kuralıyla (yeni belge kuralı yanlış uyarı vermez); 11 taslak kaydı engellenmez",
+      "konum": "test/fatura-244-numara-tarih-onay.test.mjs:207:3",
+      "hata": "tarih aynı · undefined !== []"
+    },
+    {
+      "ad": "2.4.4 UX15: numara / tarih çakışması kayıttan ÖNCE (ön hesap = kayıttaki denetim) › 3 yıl dönümü: seri yılı ayrı (31.12 belgesi 01.01 numaralısından sonra serbest); aynı yıl içinde engel; Düzenle'de başka yıla alınamaz",
+      "konum": "test/fatura-244-numara-tarih-onay.test.mjs:236:3",
+      "hata": "2026 serisinde son belge 30.12 · undefined !== []"
+    },
+    {
+      "ad": "2.4.4 UX15: numara / tarih çakışması kayıttan ÖNCE (ön hesap = kayıttaki denetim) › 10 002 şirketi: ön hesap seçili şirketin serisine ve kilidine bakar",
+      "konum": "test/fatura-244-numara-tarih-onay.test.mjs:256:3",
+      "hata": "002'de FIS serisinde belge yok (001'inki sayılmaz) · undefined !== []"
+    },
+    {
+      "ad": "2.4.4 UX15: numara / tarih çakışması kayıttan ÖNCE (ön hesap = kayıttaki denetim) › ayrışma: tohumlu rastgele sırada her adımda ön hesabın hükmü = kaydın sonucu (ileti aynı; kabulde numara)",
+      "konum": "test/fatura-244-numara-tarih-onay.test.mjs:278:3",
+      "hata": "Cannot read properties of undefined (reading 'length')"
+    },
+    {
+      "ad": "2.4.4 UX15: e-Belge (sahte EDM; ağa çıkmaz) › 5 Kes, Sonra Gönder ve Kaydet ve Gönder aynı koşulla reddedilir; ön hesap ikisinden önce söyler (e-Arşiv TEA)",
+      "konum": "test/fatura-244-numara-tarih-onay.test.mjs:318:3",
+      "hata": "Cannot read properties of undefined (reading 'length')"
+    },
+    {
+      "ad": "2.4.4 UX15: e-Belge (sahte EDM; ağa çıkmaz) › 8 daha eski bekleyen: numara kayıtta verilmeyecekse ön hesap söyler (orderHold) — kayıt da numarasız Gönderilecekler'e koyar",
+      "konum": "test/fatura-244-numara-tarih-onay.test.mjs:340:3",
+      "hata": "Expected values to be strictly deep-equal: · undefined !== []"
+    },
+    {
+      "ad": "2.4.4 UX15: e-Belge (sahte EDM; ağa çıkmaz) › 4 iki kullanıcı aynı anda: A formdayken (uyarı yok) B daha yeni tarihli e-Fatura kaydeder; A'nın Kaydet öncesi ön hesabı söyler, yarışta kayıt yine reddeder",
+      "konum": "test/fatura-244-numara-tarih-onay.test.mjs:368:3",
+      "hata": "A formu açarken çakışma yok · undefined !== []"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/ux15/docs/kanit/2026-10-22/244-ux15/eski-3a2f46a-birim.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ux15/ux15-eski-3a2f46a",
+  "ham_cikti_sha256": "62e257d9716bb84bb0771b7a3e69c354cdd5e51e7ce7e1082da8f36df967aaee",
+  "ham_cikti_bayt": 15862
+}

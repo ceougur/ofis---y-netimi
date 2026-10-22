@@ -1,0 +1,32 @@
+{
+  "ad": "244-ux15/e2e-senaryo-banka-210-eski-satir",
+  "komut": "npm run test:senaryo-banka-210-eski-satir",
+  "commit": "403a35003e2e4b4a01cfe16013c84c9b1c836083",
+  "dal": "is/ux15",
+  "kirli": 0,
+  "izlenmeyen": 26,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T09:14:52.912Z",
+  "sure_sn": 29.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 29,
+    "gecen": 29,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ux15/e2e-senaryo-banka-210-eski-satir.log",
+  "klasor": "/home/user/wt/ux15",
+  "ham_cikti_sha256": "4b9a8c29eea0cc1cb5728404c5224babf9efb9a85dd78b84322799c139e4b989",
+  "ham_cikti_bayt": 5191
+}

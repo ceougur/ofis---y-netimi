@@ -193,7 +193,8 @@ describe("gg243 dar kontrol 2: Kes, Sonra Gönder kronolojisi (B5) ve kronoloji 
     const old = await ctx.post("/api/workspace/invoices", { scenario: "service_sale", accountId: ctx.ids.ayse, issueDate: ctx.day(-5), lines: LINES, payment: { rest: "open" }, eSend: "later" });
     assert.equal(old.status, 400, JSON.stringify(old.data));
     assert.equal(old.data.code, "chronology");
-    assert.equal(old.data.error, "TEA serisinde son gönderilen belge TEA2026000000001 16.10.2026 tarihli; numarası gönderimde verilecek bu belge ondan eski tarihli olamaz (numara ve tarih sırası).");
+    // 2.4.4 (UX15): ileti ne yapılacağını da söyler (aynı ileti formun ön hesabında, kayıttan önce).
+    assert.equal(old.data.error, "TEA serisinde son gönderilen belge TEA2026000000001 16.10.2026 tarihli; numarası gönderimde verilecek bu belge ondan eski tarihli olamaz (numara ve tarih sırası). Belge tarihini 16.10.2026 ya da sonrası yapın.");
     assert.equal(ctx.count(), before, "kayıt açılmadı");
     for (const offset of [-2, -1]) await ctx.must(`Kes, Sonra Gönder ${offset}`, ctx.post("/api/workspace/invoices", { scenario: "service_sale", accountId: ctx.ids.ayse, issueDate: ctx.day(offset), lines: LINES, payment: { rest: "open" }, eSend: "later" }));
     // Başka seri (TEF) etkilenmez: TEF'de numara yok, eski tarih serbest.
