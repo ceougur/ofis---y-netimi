@@ -1,0 +1,332 @@
+TAP version 13
+# Subtest: 2.4.4 30a: Tablodaki Kişiler ve Tahsilat Takvimi aynı Kalan Borç kolonunu okur (birim)
+    # Subtest: N1 Toplam Borç önce: Tablodaki Kişiler borcu Kalan Borç hücresi (7.600, 6.000, 3.000), Toplam Borç değil
+    ok 1 - N1 Toplam Borç önce: Tablodaki Kişiler borcu Kalan Borç hücresi (7.600, 6.000, 3.000), Toplam Borç değil
+      ---
+      duration_ms: 19.00844
+      type: 'test'
+      ...
+    # Subtest: N1 Kalan Borç önce (kolon sırası ters): yine Kalan Borç
+    ok 2 - N1 Kalan Borç önce (kolon sırası ters): yine Kalan Borç
+      ---
+      duration_ms: 6.894774
+      type: 'test'
+      ...
+    # Subtest: N1 takvim (SABİTLER, 5b'den beri): söz kaleminin tutarı ve Kalan Borç'u Kalan Borç hücresi; iki kolon sırasında da
+    ok 3 - N1 takvim (SABİTLER, 5b'den beri): söz kaleminin tutarı ve Kalan Borç'u Kalan Borç hücresi; iki kolon sırasında da
+      ---
+      duration_ms: 14.818034
+      type: 'test'
+      ...
+    # Subtest: N2 yalnız Toplam Borç: iki yerde de Toplam Borç (geri dönüş değişmez)
+    ok 4 - N2 yalnız Toplam Borç: iki yerde de Toplam Borç (geri dönüş değişmez)
+      ---
+      duration_ms: 5.306309
+      type: 'test'
+      ...
+    # Subtest: N3 yalnız Kalan: Kalan
+    ok 5 - N3 yalnız Kalan: Kalan
+      ---
+      duration_ms: 4.005221
+      type: 'test'
+      ...
+    # Subtest: N4 'Bakiye' ve 'Kalan Tutar' Kalan sayılır (Toplam Borç önce olsa da); 'Ödenecek' sayılmaz (ilk eşleşen borç başlığı, önceki gibi)
+    ok 6 - N4 'Bakiye' ve 'Kalan Tutar' Kalan sayılır (Toplam Borç önce olsa da); 'Ödenecek' sayılmaz (ilk eşleşen borç başlığı, önceki gibi)
+      ---
+      duration_ms: 17.944311
+      type: 'test'
+      ...
+    # Subtest: N5 Toplam Borç + Ödenen, Kalan yok: Toplam Borç (program kalanı hesaplamaz — bilinen sınır)
+    ok 7 - N5 Toplam Borç + Ödenen, Kalan yok: Toplam Borç (program kalanı hesaplamaz — bilinen sınır)
+      ---
+      duration_ms: 1.630466
+      type: 'test'
+      ...
+    # Subtest: N6 Kalan Borç 0: Tablodaki Kişiler borcu 0 (Toplam değil), takvimde kalem yok (ödenmiş); Kalan boş: tutar kolonuna (Toplam Borç) düşer
+    ok 8 - N6 Kalan Borç 0: Tablodaki Kişiler borcu 0 (Toplam değil), takvimde kalem yok (ödenmiş); Kalan boş: tutar kolonuna (Toplam Borç) düşer
+      ---
+      duration_ms: 4.093659
+      type: 'test'
+      ...
+    # Subtest: N12 programın kendi şablonu (Alacak ve Tahsilat Yönetimi: Borç Tutarı + Kalan Borç): Tablodaki Kişiler ve takvim Kalan Borç
+    ok 9 - N12 programın kendi şablonu (Alacak ve Tahsilat Yönetimi: Borç Tutarı + Kalan Borç): Tablodaki Kişiler ve takvim Kalan Borç
+      ---
+      duration_ms: 17.053014
+      type: 'test'
+      ...
+    # Subtest: N11 tek yer: dues.mjs ve reports.mjs kalan kolonunu ortak yardımcıdan seçer
+    ok 10 - N11 tek yer: dues.mjs ve reports.mjs kalan kolonunu ortak yardımcıdan seçer
+      ---
+      duration_ms: 1.499637
+      type: 'test'
+      ...
+    1..10
+ok 1 - 2.4.4 30a: Tablodaki Kişiler ve Tahsilat Takvimi aynı Kalan Borç kolonunu okur (birim)
+  ---
+  duration_ms: 94.165794
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 30a: Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip, Nakit Akışı ve Excel aynı Kalan Borç'u gösterir (API)
+    # Subtest: Tablodaki Kişiler: her sekmede borç = o sekmenin Kalan Borç hücresi (Kalan yoksa Toplam Borç); toplam = satırlar
+    ok 1 - Tablodaki Kişiler: her sekmede borç = o sekmenin Kalan Borç hücresi (Kalan yoksa Toplam Borç); toplam = satırlar
+      ---
+      duration_ms: 40.165834
+      type: 'test'
+      ...
+    # Subtest: Tahsilat Takvimi, Vade Takip ve Nakit Akışı aynı tutarı gösterir (Borçlular sekmesi: Tülay 7.600, Ece 3.000; Mert ödenmiş)
+    not ok 2 - Tahsilat Takvimi, Vade Takip ve Nakit Akışı aynı tutarı gösterir (Borçlular sekmesi: Tülay 7.600, Ece 3.000; Mert ödenmiş)
+      ---
+      duration_ms: 89.939355
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-mutant-soz-borc/test/kalan-borc-ortak-30a.test.mjs:180:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Nakit Akışı Beklenen (Kalan Borç hücrelerinden) 20.100; görülen 19100
+        
+        19100 !== 20100
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 20100
+      actual: 19100
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-mutant-soz-borc/test/kalan-borc-ortak-30a.test.mjs:193:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Excel dışa aktarım: Tülay Öz (Borçlular) Borç hücresi 7.600
+    ok 3 - Excel dışa aktarım: Tülay Öz (Borçlular) Borç hücresi 7.600
+      ---
+      duration_ms: 44.122571
+      type: 'test'
+      ...
+    # Subtest: 5c: aynı dosya no iki sekmede — tahsilat bir kez; Borçlular satırı Kalan Borç (7.600)
+    ok 4 - 5c: aynı dosya no iki sekmede — tahsilat bir kez; Borçlular satırı Kalan Borç (7.600)
+      ---
+      duration_ms: 107.014924
+      type: 'test'
+      ...
+    1..4
+not ok 2 - 2.4.4 30a: Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip, Nakit Akışı ve Excel aynı Kalan Borç'u gösterir (API)
+  ---
+  duration_ms: 1074.118297
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-mutant-soz-borc/test/kalan-borc-ortak-30a.test.mjs:139:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 31d E2: satır düzeyi tek kural — Kalan boşsa o satırda Toplam Borç (birim)
+    # Subtest: B1 Kalan boş (t13): Tablodaki Kişiler ve takvim aynı — Tülay 11.500 (Toplam), Mert 6.000 (Kalan), Ece 4.000 (Toplam)
+    ok 1 - B1 Kalan boş (t13): Tablodaki Kişiler ve takvim aynı — Tülay 11.500 (Toplam), Mert 6.000 (Kalan), Ece 4.000 (Toplam)
+      ---
+      duration_ms: 29.568567
+      type: 'test'
+      ...
+    # Subtest: B2 Kalan hücresi sayı değil ('belirsiz'): o satırda Toplam Borç
+    ok 2 - B2 Kalan hücresi sayı değil ('belirsiz'): o satırda Toplam Borç
+      ---
+      duration_ms: 5.034519
+      type: 'test'
+      ...
+    # Subtest: B3 Kalan 0: borç 0 (Toplam'a düşülmez); takvimde kalem yok
+    ok 3 - B3 Kalan 0: borç 0 (Toplam'a düşülmez); takvimde kalem yok
+      ---
+      duration_ms: 6.49243
+      type: 'test'
+      ...
+    # Subtest: B4 bütün Kalan hücreleri dolu: Kalan (30a aynen); B5 yalnız Toplam: Toplam
+    ok 4 - B4 bütün Kalan hücreleri dolu: Kalan (30a aynen); B5 yalnız Toplam: Toplam
+      ---
+      duration_ms: 4.082994
+      type: 'test'
+      ...
+    1..4
+ok 3 - 31d E2: satır düzeyi tek kural — Kalan boşsa o satırda Toplam Borç (birim)
+  ---
+  duration_ms: 46.322481
+  type: 'suite'
+  ...
+# Subtest: 31d E3: gün / adet / sayı / ay / yıl / oran / yüzde / % başlıklı kolon borç tutarı değildir (birim)
+    # Subtest: B6 Tutar + Kalan Gün: borç Tutar (11.500 + 8.000 = 19.500), 'Kalan Gün' (5, 12) değil
+    ok 1 - B6 Tutar + Kalan Gün: borç Tutar (11.500 + 8.000 = 19.500), 'Kalan Gün' (5, 12) değil
+      ---
+      duration_ms: 3.531346
+      type: 'test'
+      ...
+    # Subtest: B6 her biçim (Türkçe büyük harf dahil): Toplam Borç + <kolon> → borç Toplam Borç
+    ok 2 - B6 her biçim (Türkçe büyük harf dahil): Toplam Borç + <kolon> → borç Toplam Borç
+      ---
+      duration_ms: 54.653922
+      type: 'test'
+      ...
+    # Subtest: B7 para başlıkları dışlanmaz: 'Aylık Taksit', 'Yıllık Ücret', 'Günlük Ücret' kalem tutarıdır (takvimde tutar; borç değil); 'Bakiye' kalan
+    not ok 3 - B7 para başlıkları dışlanmaz: 'Aylık Taksit', 'Yıllık Ücret', 'Günlük Ücret' kalem tutarıdır (takvimde tutar; borç değil); 'Bakiye' kalan
+      ---
+      duration_ms: 33.600062
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-mutant-soz-borc/test/kalan-borc-satir-31d.test.mjs:92:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        "Aylık Taksit" beklenen tahsilattır, borç satırı açmaz (31f U2): {"Mert Can":8000,"Tülay Öz":11500}
+        + actual - expected
+        
+        + {
+        +   'Mert Can': 8000,
+        +   'Tülay Öz': 11500
+        + }
+        - {}
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        Mert Can: 8000
+        Tülay Öz: 11500
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-mutant-soz-borc/test/kalan-borc-satir-31d.test.mjs:97:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B10 tek yer: dues.mjs ve reports.mjs satır borcunu ve kolon dışlamasını ortak yardımcıdan alır
+    ok 4 - B10 tek yer: dues.mjs ve reports.mjs satır borcunu ve kolon dışlamasını ortak yardımcıdan alır
+      ---
+      duration_ms: 25.701164
+      type: 'test'
+      ...
+    1..4
+not ok 4 - 31d E3: gün / adet / sayı / ay / yıl / oran / yüzde / % başlıklı kolon borç tutarı değildir (birim)
+  ---
+  duration_ms: 118.282397
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-mutant-soz-borc/test/kalan-borc-satir-31d.test.mjs:73:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 31d E2/E3: ekranların okuduğu uçlar aynı toplamı gösterir (API)
+    # Subtest: Sekme "Borçlular": Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip ve Nakit Akışı hepsi 21500
+    ok 1 - Sekme "Borçlular": Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip ve Nakit Akışı hepsi 21500
+      ---
+      duration_ms: 99.62826
+      type: 'test'
+      ...
+    # Subtest: Sekme "Kira": Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip ve Nakit Akışı hepsi 19500
+    ok 2 - Sekme "Kira": Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip ve Nakit Akışı hepsi 19500
+      ---
+      duration_ms: 58.563738
+      type: 'test'
+      ...
+    1..2
+ok 5 - 31d E2/E3: ekranların okuduğu uçlar aynı toplamı gösterir (API)
+  ---
+  duration_ms: 987.953511
+  type: 'suite'
+  ...
+# Subtest: 31f U2 / U8: programın örnek dosyası — borç yalnız dosyanın Kalan'ından (98.000), söz takvimde kalır
+    # Subtest: D1/D3/D8 Tablodaki Kişiler: toplam borç 98.000 (İcra Takip Kalan), Ali Veli 36.000, Mehmet Demir 0; söz / taksit / kira borç satırı açmaz
+    not ok 1 - D1/D3/D8 Tablodaki Kişiler: toplam borç 98.000 (İcra Takip Kalan), Ali Veli 36.000, Mehmet Demir 0; söz / taksit / kira borç satırı açmaz
+      ---
+      duration_ms: 142.498576
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-mutant-soz-borc/test/tablo-borc-dosya-u2.test.mjs:57:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        toplam borç 98.000 olmalı (yalnız İcra Takip'in Kalan'ı); görülen 143000
+        
+        143000 !== 98000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 98000
+      actual: 143000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-mutant-soz-borc/test/tablo-borc-dosya-u2.test.mjs:59:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: D2/D6 Tahsilat Takvimi: açık sözler yerinde (Ali Veli 5.000), 'Ödendi' sözler yok; söz kaleminin Kalan Borç'u İcra Takip'ten (36.000)
+    not ok 2 - D2/D6 Tahsilat Takvimi: açık sözler yerinde (Ali Veli 5.000), 'Ödendi' sözler yok; söz kaleminin Kalan Borç'u İcra Takip'ten (36.000)
+      ---
+      duration_ms: 43.897071
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-mutant-soz-borc/test/tablo-borc-dosya-u2.test.mjs:66:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        söz tutarı 5.000 (beklenen tahsilat)
+        
+        36000 !== 5000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 5000
+      actual: 36000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-mutant-soz-borc/test/tablo-borc-dosya-u2.test.mjs:70:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 6 - 31f U2 / U8: programın örnek dosyası — borç yalnız dosyanın Kalan'ından (98.000), söz takvimde kalır
+  ---
+  duration_ms: 983.214829
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-mutant-soz-borc/test/tablo-borc-dosya-u2.test.mjs:42:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 31b MM5: aynı dosya no iki sekmede — borç bir kez (Kişiler, Vade Takip, Nakit Akışı), tahsilat bir kez
+    # Subtest: Tablodaki Kişiler Deniz Ak: borç 12.000 bir kez, alacak 3.000, bakiye 9.000; Vade Takip ve Nakit Akışı Beklenen 18.000 (9.000 + 9.000)
+    ok 1 - Tablodaki Kişiler Deniz Ak: borç 12.000 bir kez, alacak 3.000, bakiye 9.000; Vade Takip ve Nakit Akışı Beklenen 18.000 (9.000 + 9.000)
+      ---
+      duration_ms: 27.150843
+      type: 'test'
+      ...
+    1..1
+ok 7 - 31b MM5: aynı dosya no iki sekmede — borç bir kez (Kişiler, Vade Takip, Nakit Akışı), tahsilat bir kez
+  ---
+  duration_ms: 619.931419
+  type: 'suite'
+  ...
+# Subtest: 31b MM5 / D5 / D7: iki sekmede farklı Kalan ve dosya no'suz satırlar (birim)
+    # Subtest: D5 farklı Kalan: ilk sekmenin Kalan'ı (12.000) geçerli, uyuşmazlık bildirilir; takvim aynı tutarı kullanır
+    ok 1 - D5 farklı Kalan: ilk sekmenin Kalan'ı (12.000) geçerli, uyuşmazlık bildirilir; takvim aynı tutarı kullanır
+      ---
+      duration_ms: 4.746853
+      type: 'test'
+      ...
+    # Subtest: D7 dosya no'suz satırlar ayrı kalır (aynı ad, iki sekme: iki ayrı borç)
+    ok 2 - D7 dosya no'suz satırlar ayrı kalır (aynı ad, iki sekme: iki ayrı borç)
+      ---
+      duration_ms: 2.110892
+      type: 'test'
+      ...
+    1..2
+ok 8 - 31b MM5 / D5 / D7: iki sekmede farklı Kalan ve dosya no'suz satırlar (birim)
+  ---
+  duration_ms: 7.237988
+  type: 'suite'
+  ...
+1..8
+# tests 29
+# suites 8
+# pass 25
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5524.525788
