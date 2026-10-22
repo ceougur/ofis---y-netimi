@@ -9,6 +9,9 @@
 //   3 İptal Et: pencere "e-SMM önce entegratörde (EDM) iptal edilir" der; onaylanınca EDM'de (CancelSMM) ve programda iptal.
 //   4 (madde 22 ek, kâhin bulgusu) Gönderilecekler'deki e-SMM kartında "Kâğıt Makbuz Olarak Bırak" (Müşteri Fişi değil); onay penceresi kâğıt makbuz der;
 //     makbuz kâğıt makbuz serisinden (SMM) numara alır, FIS'ten değil; kartta Belge Türü "Kâğıt Makbuz (e-SMM olarak gönderilmedi)".
+//   5 Fatura Ayarları Kaşe / İmza açıklaması e-SMM cümlesi. 6–7 ve 0/1/2 ek denetimleri (madde 30c gezinti bulguları): G1 kâğıda düşen belgenin nedeni formda
+//     (makbuz: e-SMM işareti; satış: e-Fatura / e-Arşiv işareti; Alış'ta, e-Arşiv'de, entegratörsüz firmada not yok); G2 Fatura Ayarları açıkken Entegratör
+//     Ayarları'nda e-SMM işareti değişince açıklama yenilenir, kaydedilmemiş alan durur; G3 makbuzun Kaydet ve Gönder onayı iade demez.
 // Her soru/onay yanıtı nedeniyle yazılır (ders 34). Eski kodda (7c36f87) form kâğıt makbuz gibi yalnız "Kaydet" gösterir → 1 kırmızı; DEPO=<eski kopya>.
 // Çıkış: "N geçti, M kaldı".
 import { mkdtempSync, rmSync } from "node:fs";
@@ -79,11 +82,11 @@ const closeAll = async page => {
     }
   }
 };
-async function newSmm(page) {
+async function newSmm(page, scenario = "smm") {
   await page.evaluate(() => window.HOF.invoices.open({ account: {} }));
   await page.waitForSelector(`${pageInv} [data-act="new"]`);
   await page.click(`${pageInv} [data-act="new"]`);
-  await page.click(`${pageInv} [data-scenario="smm"]`);
+  await page.click(`${pageInv} [data-scenario="${scenario}"]`);
   await page.waitForSelector(`${pageInv} [data-lines]`);
   await page.click(`${pageInv} [data-acc-query]`);
   await page.keyboard.type("Müvekkil", { delay: 60 });
@@ -98,6 +101,12 @@ async function newSmm(page) {
   await page.keyboard.press("Tab");
   await page.waitForTimeout(1500);
 }
+// 2.4.4 madde 30c G1: kâğıda düşen belgenin nedeni (formun [data-paper-note] satırı).
+const paperNote = page => page.$eval(`${pageInv} [data-paper-note]`, node => ({ hidden: node.hidden, text: node.textContent.replace(/\s+/g, " ").trim() })).catch(() => ({ hidden: true, text: "(satır yok)" }));
+const reloadPage = async page => {
+  await page.reload();
+  await page.waitForFunction(() => Boolean(window.HOF?.invoices?.open), null, { timeout: 20000 });
+};
 const errors = [];
 const browser = await chromium.launch();
 let page = null;
@@ -132,6 +141,9 @@ try {
     ok(!(await page.$(`${pageInv} [data-act="issue-later"]`)) && !(await page.$(`${pageInv} [data-act="issue-now"]`)), "Kaydet, Sonra Gönder ve Kaydet ve Gönder yok");
     const issue = await textOf(page, `${pageInv} [data-act="issue"]`);
     ok(Boolean(issue), `kayıt düğmesi: "${issue}"`);
+    // G1: entegratör kayıtlı, firma e-SMM kullanıcısı değil → formda kâğıt makbuzun nedeni yazar.
+    const paper = await paperNote(page);
+    ok(!paper.hidden && paper.text === "Kâğıt makbuz: firma e-SMM kullanıcısı olarak işaretli değil (Entegratör Ayarları → Firma / Etiket Tanımları).", `G1 kâğıt makbuzun nedeni formda: "${paper.text}" (gizli: ${paper.hidden})`);
     await shot(page, "esmm-244-0-kagit-form");
     const before = count();
     await page.click(`${pageInv} [data-act="issue"]`);
@@ -142,11 +154,11 @@ try {
     ok(/SMM2026\d{9} numarasıyla serbest meslek makbuzu kaydedilecek/.test(question) && !/e-SMM|gönder/i.test(question), "kayıt onayı kâğıt makbuz numarasını söyler, e-SMM / gönderim demez");
     await page.click(`${dialog} [data-answer="yes"]`);
     for (let index = 0; index < 40 && count() === before; index += 1) await page.waitForTimeout(250);
-    const paper = lastRow();
-    ok(count() === before + 1 && paper.kind === "smm" && paper.status === "issued", "makbuz kaydedildi (veri tabanı)");
-    ok(paper.profile === "KAGIT" && /^SMM2026\d{9}$/.test(paper.number || "") && paper.eStatus === "none", `kâğıt makbuz: ${paper.profile} ${paper.number} (e-Belge durumu ${paper.eStatus})`);
+    const paperRow = lastRow();
+    ok(count() === before + 1 && paperRow.kind === "smm" && paperRow.status === "issued", "makbuz kaydedildi (veri tabanı)");
+    ok(paperRow.profile === "KAGIT" && /^SMM2026\d{9}$/.test(paperRow.number || "") && paperRow.eStatus === "none", `kâğıt makbuz: ${paperRow.profile} ${paperRow.number} (e-Belge durumu ${paperRow.eStatus})`);
     const pending = unwrap(await api.get("/api/workspace/invoices?tab=pending"))?.invoices?.map(item => item.id) || [];
-    ok(!pending.includes(paper.id), "Gönderilecekler'de yok");
+    ok(!pending.includes(paperRow.id), "Gönderilecekler'de yok");
     ok(edm.state.smm.calls.length === 0 && !edm.state.calls.some(call => ["SendInvoice", "LoadInvoice"].includes(call.op)), "EDM'ye hiçbir gönderim yok");
     await closeAll(page);
     await must("e-SMM kullanıcısı", api.put("/api/workspace/invoices/settings", { esmm: true }));
@@ -158,6 +170,8 @@ try {
     await newSmm(page);
     const note = await textOf(page, `${pageInv} [data-profile-note]`);
     ok(/e-SMM kesilir/.test(note), `tür notu: "${note}"`);
+    const paper = await paperNote(page);
+    ok(paper.hidden, `G1 e-SMM formunda kâğıt nedeni satırı yok (gizli: ${paper.hidden}, "${paper.text}")`);
     ok(Boolean(await page.$(`${pageInv} [data-act="issue-later"]`)), "Kaydet, Sonra Gönder var");
     const now = await textOf(page, `${pageInv} [data-act="issue-now"]`);
     ok(now === "Kaydet ve Gönder", `Kaydet ve Gönder var (${now || "yok"})`);
@@ -182,7 +196,10 @@ try {
     const faturaSends = edm.state.calls.filter(call => call.op === "SendInvoice").length;
     await page.click(`${pageInv} [data-act="issue-now"]`);
     await page.waitForSelector(`${dialog} [data-answer="yes"]`);
-    console.log(`  · onay yanıtlandı (Kaydet ve Gönder, beklenen soru): ${(await textOf(page, `${dialog} .hof-modal-text`)).slice(0, 120)}`);
+    const question = await textOf(page, `${dialog} .hof-modal-text`);
+    console.log(`  · onay yanıtlandı (Kaydet ve Gönder, beklenen soru): ${question.slice(0, 120)}`);
+    // G3: makbuzda iade belgesi olmaz — onay yalnız iptali söyler (kartta "İade kapalı … yanlışsa iptal edin").
+    ok(/Gönderildikten sonra düzenlenemez; yanlışsa iptal gerekir/.test(question) && !/iade gerekir/.test(question), `G3 onay makbuzda iade demiyor: …${question.slice(question.indexOf("Gönderildikten"), question.indexOf("Gönderildikten") + 110)}`);
     await page.click(`${dialog} [data-answer="yes"]`);
     for (let index = 0; index < 60 && !(lastRow()?.eStatus === "sent"); index += 1) await page.waitForTimeout(250);
     await page.waitForSelector(`${pageInv} .hof-plan-title h3`, { timeout: 15000 });
@@ -257,6 +274,75 @@ try {
     ok(help.endsWith("Logo ve kaşe e-SMM'de yalnız programın PDF'ine basılır; resmî görüntüyü EDM çizer."), `Kaşe / İmza açıklaması: …${help.slice(-120)}`);
     await page.$eval(`${modal} [data-stamp-field]`, node => node.scrollIntoView({ block: "center" })).catch(() => null);
     await shot(page, "esmm-244-5-kase-aciklama");
+  });
+  // G2: Fatura Ayarları açıkken Entegratör Ayarları'nda e-SMM işareti değişince işarete bağlı açıklama yenilenir; kaydedilmemiş alan kaybolmaz.
+  await step("■ 6 Fatura Ayarları açıkken Entegratör Ayarları'nda e-SMM işareti değişir: Kaşe / İmza açıklaması yenilenir, yazılan alan durur", async () => {
+    const stampHelp = () => textOf(page, `${pageInv} [data-stamp-field] .hof-inv-logo-tools small`);
+    const ESMM_SENTENCE = "Logo ve kaşe e-SMM'de yalnız programın PDF'ine basılır; resmî görüntüyü EDM çizer.";
+    await page.evaluate(() => window.HOF.invoices.open({ account: {} }));
+    await page.waitForSelector(`${pageInv} [data-act="settings"]`);
+    await page.click(`${pageInv} [data-act="settings"]`);
+    await page.waitForSelector(`${pageInv} [data-stamp-field] .hof-inv-logo-tools small`);
+    ok((await stampHelp()).includes(ESMM_SENTENCE), "ön koşul: e-SMM kullanıcısında açıklama e-SMM cümlesini taşır");
+    await page.click(`${pageInv} [data-s="seller.phone"]`, { clickCount: 3 });
+    await page.keyboard.type("0312 555 00 00", { delay: 40 });
+    const toggle = async checked => {
+      await page.click(`${pageInv} [data-act="integrator"]`);
+      await page.waitForSelector(`${dialog} [data-integ-tab="firm"]`);
+      await page.click(`${dialog} [data-integ-tab="firm"]`);
+      await page.waitForSelector(`${dialog} [data-i="esmm"]`);
+      if ((await page.isChecked(`${dialog} [data-i="esmm"]`)) !== checked) await page.click(`${dialog} [data-i="esmm"]`);
+      await page.click(`${dialog} [data-integ-act="save"]`);
+      for (let index = 0; index < 40 && (unwrap(await api.get("/api/workspace/invoices/settings"))?.esmm === true) !== checked; index += 1) await page.waitForTimeout(250);
+      await page.waitForTimeout(500);
+      await page.click(`${dialog} [data-integ-act="close"]`);
+      await page.waitForTimeout(400);
+    };
+    await toggle(false);
+    ok(unwrap(await api.get("/api/workspace/invoices/settings"))?.esmm === false, "e-SMM işareti kaldırıldı (sunucu)");
+    const off = await stampHelp();
+    ok(!off.includes("e-SMM"), `işaret kalkınca açıklamada e-SMM cümlesi yok (pencere kapatılmadan): …${off.slice(-90)}`);
+    const phone = await page.inputValue(`${pageInv} [data-s="seller.phone"]`).catch(() => "");
+    ok(phone === "0312 555 00 00", `kaydedilmemiş Telefon alanı durdu ("${phone}")`);
+    await toggle(true);
+    const on = await stampHelp();
+    ok(on.endsWith(ESMM_SENTENCE), `işaret yeniden konunca açıklama e-SMM cümlesini taşır: …${on.slice(-90)}`);
+    ok((await page.inputValue(`${pageInv} [data-s="seller.phone"]`).catch(() => "")) === "0312 555 00 00", "Telefon alanı ikinci kayıttan sonra da durdu");
+    await shot(page, "esmm-244-6-ayarlar-yenilendi");
+  });
+  // G1: entegratör kayıtlıyken satış faturası kâğıda düşerse nedeni formda; alış faturasında ve entegratörü kayıtlı olmayan firmada not yok.
+  await step("■ 7 Satış faturası kâğıda düşünce nedeni formda (firma işareti); Alış'ta, e-Arşiv'de ve entegratörsüz firmada not yok", async () => {
+    await must("işaretler kapalı", api.put("/api/workspace/invoices/settings", { efatura: false, earsiv: false }));
+    await reloadPage(page);
+    await newSmm(page, "service_sale");
+    let paper = await paperNote(page);
+    ok(!paper.hidden && paper.text === "Kâğıt belge: firma e-Fatura / e-Arşiv kullanıcısı olarak işaretli değil (Entegratör Ayarları → Firma / Etiket Tanımları).", `satış, işaretler kapalı: "${paper.text}" (gizli: ${paper.hidden})`);
+    await shot(page, "esmm-244-7-satis-kagit-nedeni");
+    await closeAll(page);
+    await newSmm(page, "expense_purchase");
+    paper = await paperNote(page);
+    const purchaseCalc = await page.$eval(`${pageInv} [data-profile-field]`, node => !node.hidden).catch(() => false);
+    ok(purchaseCalc && paper.hidden, `Alış faturasında not yok (hesap yapıldı: ${purchaseCalc}; gizli: ${paper.hidden}, "${paper.text}")`);
+    await closeAll(page);
+    await must("yalnız e-Fatura", api.put("/api/workspace/invoices/settings", { efatura: true, earsiv: false }));
+    await reloadPage(page);
+    await newSmm(page, "service_sale");
+    paper = await paperNote(page);
+    ok(!paper.hidden && paper.text === "Kâğıt belge: alıcı e-Fatura mükellefi değil ve firma e-Arşiv kullanıcısı olarak işaretli değil (Entegratör Ayarları → Firma / Etiket Tanımları).", `satış, e-Fatura var e-Arşiv yok, alıcı mükellef değil: "${paper.text}"`);
+    await closeAll(page);
+    await must("e-Fatura + e-Arşiv", api.put("/api/workspace/invoices/settings", { efatura: true, earsiv: true }));
+    await reloadPage(page);
+    await newSmm(page, "service_sale");
+    paper = await paperNote(page);
+    const note = await textOf(page, `${pageInv} [data-profile-note]`);
+    ok(paper.hidden && /e-Arşiv kesilir/.test(note), `e-Arşiv'de not yok (gizli: ${paper.hidden}; tür notu "${note}")`);
+    await closeAll(page);
+    await must("işaretler kapalı, entegratör kullanıcısı yok", api.put("/api/workspace/invoices/settings", { efatura: false, earsiv: false, integrator: { username: "" } }));
+    await reloadPage(page);
+    await newSmm(page, "service_sale");
+    paper = await paperNote(page);
+    const next = await textOf(page, `${pageInv} [data-next]`);
+    ok(/FIS2026/.test(next) && paper.hidden, `entegratör kayıtlı değilken kâğıt belgede not yok (${next}; gizli: ${paper.hidden}, "${paper.text}")`);
   });
   ok(errors.length === 0, `sayfa hatası yok (${errors.join(" | ").slice(0, 200)})`);
 } catch (error) {

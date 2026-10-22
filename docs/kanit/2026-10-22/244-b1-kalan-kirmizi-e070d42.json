@@ -1,0 +1,78 @@
+{
+  "ad": "244-b1-kalan-kirmizi-e070d42",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/b1-kalan/b1-kalan-eski-e070d42/test/kalan-borc-ortak-30a.test.mjs",
+  "commit": "e070d4247567174ee1bf1b5efe142dfafba6cdb8",
+  "dal": "is/b1-kalan",
+  "kirli": 2,
+  "izlenmeyen": 10,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T17:01:56.869Z",
+  "sure_sn": 1.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 5,
+    "basarisiz": 9,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 9 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 30a: Tablodaki Kişiler ve Tahsilat Takvimi aynı Kalan Borç kolonunu okur (birim) › N1 Toplam Borç önce: Tablodaki Kişiler borcu Kalan Borç hücresi (7.600, 6.000, 3.000), Toplam Borç değil",
+      "konum": "test/kalan-borc-ortak-30a.test.mjs:43:3",
+      "hata": "Tablodaki Kişiler borç kolonu \"Kalan Borç\" olmalı; seçilen: \"Toplam Borç\" (ödenmiş kısım borç görünür) · + actual - expected · + 'Toplam Borç' (beklenen Kalan Borç, gelen Toplam Borç)"
+    },
+    {
+      "ad": "2.4.4 30a: Tablodaki Kişiler ve Tahsilat Takvimi aynı Kalan Borç kolonunu okur (birim) › N4 'Bakiye' ve 'Kalan Tutar' Kalan sayılır (Toplam Borç önce olsa da); 'Ödenecek' sayılmaz (ilk eşleşen borç başlığı, önceki gibi)",
+      "konum": "test/kalan-borc-ortak-30a.test.mjs:85:3",
+      "hata": "\"Bakiye\" kolonu borç olmalı; seçilen \"Toplam Borç\" · + actual - expected · + 'Toplam Borç' (beklenen Bakiye, gelen Toplam Borç)"
+    },
+    {
+      "ad": "2.4.4 30a: Tablodaki Kişiler ve Tahsilat Takvimi aynı Kalan Borç kolonunu okur (birim) › N6 Kalan Borç 0: Tablodaki Kişiler borcu 0 (Toplam değil), takvimde kalem yok (ödenmiş); Kalan boş: tutar kolonuna (Toplam Borç) düşer",
+      "konum": "test/kalan-borc-ortak-30a.test.mjs:104:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'Toplam Borç' (beklenen Kalan Borç, gelen Toplam Borç)"
+    },
+    {
+      "ad": "2.4.4 30a: Tablodaki Kişiler ve Tahsilat Takvimi aynı Kalan Borç kolonunu okur (birim) › N12 programın kendi şablonu (Alacak ve Tahsilat Yönetimi: Borç Tutarı + Kalan Borç): Tablodaki Kişiler ve takvim Kalan Borç",
+      "konum": "test/kalan-borc-ortak-30a.test.mjs:115:3",
+      "hata": "şablonda borç kolonu \"Kalan Borç\" olmalı; seçilen \"Borç Tutarı\" · + actual - expected · + 'Borç Tutarı' (beklenen Kalan Borç, gelen Borç Tutarı)"
+    },
+    {
+      "ad": "2.4.4 30a: Tablodaki Kişiler ve Tahsilat Takvimi aynı Kalan Borç kolonunu okur (birim) › N11 tek yer: dues.mjs ve reports.mjs kalan kolonunu ortak yardımcıdan seçer",
+      "konum": "test/kalan-borc-ortak-30a.test.mjs:128:3",
+      "hata": "server/lib/insight/dues.mjs ortak yardımcıyı içe almalı (beklenen , gelen |-)"
+    },
+    {
+      "ad": "2.4.4 30a: Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip, Nakit Akışı ve Excel aynı Kalan Borç'u gösterir (API) › Tablodaki Kişiler: her sekmede borç = o sekmenin Kalan Borç hücresi (Kalan yoksa Toplam Borç); toplam = satırlar",
+      "konum": "test/kalan-borc-ortak-30a.test.mjs:168:3",
+      "hata": "Tülay Öz (Borçlular) borç satırı Kalan Borç hücresi 7600 olmalı; görülen [11500] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.4 30a: Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip, Nakit Akışı ve Excel aynı Kalan Borç'u gösterir (API) › Tahsilat Takvimi, Vade Takip ve Nakit Akışı aynı tutarı gösterir (Borçlular sekmesi: Tülay 7.600, Ece 3.000; Mert ödenmiş)",
+      "konum": "test/kalan-borc-ortak-30a.test.mjs:179:3",
+      "hata": "aynı kişi Tablodaki Kişiler ve takvimde aynı Kalan Borç · 11500 !== 7600 (beklenen 7600, gelen 11500)"
+    },
+    {
+      "ad": "2.4.4 30a: Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip, Nakit Akışı ve Excel aynı Kalan Borç'u gösterir (API) › Excel dışa aktarım: Tülay Öz (Borçlular) Borç hücresi 7.600",
+      "konum": "test/kalan-borc-ortak-30a.test.mjs:197:3",
+      "hata": "Excel Borç hücresi: 11500 · 11500 !== 7600 (beklenen 7600, gelen 11500)"
+    },
+    {
+      "ad": "2.4.4 30a: Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip, Nakit Akışı ve Excel aynı Kalan Borç'u gösterir (API) › 5c: aynı dosya no iki sekmede — tahsilat bir kez; Borçlular satırı Kalan Borç (7.600)",
+      "konum": "test/kalan-borc-ortak-30a.test.mjs:208:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-b1-kalan-kirmizi-e070d42.log",
+  "klasor": "/home/user/wt/b1-kalan",
+  "ham_cikti_sha256": "d8ec4a80e39ed2ca8cb796487256284199e51b7372745afd3b7fc1bb8cef0193",
+  "ham_cikti_bayt": 46127
+}

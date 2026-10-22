@@ -7,6 +7,8 @@
 //     Göster" → geri gelir.
 //  D. Yetkisiz (personel): liste, menü girişi ve Hızlı Arama'da "Başlarken" yok.
 //  E. 2.4.3'ten gelen veri (v2.4.3'ün gerçek koduyla üretilmiş fikstür): liste çıkmaz; menüden açılan pencere "önceki sürümden kurulu" der.
+//  G5 (madde 30c): "Şirket Adını Yaz" açık şirketin "Şirketin Adı ve Kodu" penceresini doğrudan açar; kaydedince Başlarken'e dönülür ve adım Tamamlandı.
+//  G4 (madde 30c): koyu düğme tek ve sıradaki (ilk eksik, yetkili) adımda; adım tamamlanınca bir sonrakine geçer (158d9c0'da company + seller hep koyu).
 // 163dd5d'de kırmızı: #hof-getting-started yok. Çıkış: "N geçti, M kaldı".
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -55,6 +57,12 @@ const typeSlow = async (page, selector, value) => {
 const doneMap = page => page.$$eval(`${GS} [data-gs]`, nodes => Object.fromEntries(nodes.map(node => [node.dataset.gs, node.dataset.done === "1"]))).catch(() => null);
 const progress = page => page.getAttribute(`${GS} [data-gs-progress]`, "data-gs-progress").catch(() => null);
 const waitProgress = (page, value, timeout = 8000) => page.waitForFunction(([sel, v]) => document.querySelector(sel)?.dataset.gsProgress === v, [`${GS} [data-gs-progress]`, value], { timeout }).then(() => true, () => false);
+// 2.4.4 madde 30c G4: koyu (birincil) düğmeler — yalnız sıradaki (ilk eksik, yetkili) adımda bir tane olmalı.
+const primarySteps = page => page.$$eval(`${GS} [data-gs-step]`, nodes => nodes.filter(node => !node.classList.contains("hof-button-ghost")).map(node => node.dataset.gsStep)).catch(() => null);
+const checkPrimary = async (page, expected, when) => {
+  const list = await primarySteps(page);
+  ok(Array.isArray(list) && list.length === 1 && list[0] === expected, `G4 ${when}: koyu düğme tek ve “${expected}” adımında (koyu olanlar: ${list === null ? "okunamadı" : list.join(", ") || "yok"})`);
+};
 const stateOf = page => page.evaluate(() => window.HOF?.gettingStarted?.state?.() || null);
 // Liste yüklenene kadar bekle (ilk istek); null = okunmadı.
 const waitState = page => page.waitForFunction(() => window.HOF?.gettingStarted?.state?.() !== null, null, { timeout: 15000 }).then(() => stateOf(page), () => null);
@@ -110,6 +118,7 @@ try {
     const map = await doneMap(page);
     ok(map && Object.values(map).length === 5 && Object.values(map).every(done => !done), `bütün adımlar eksik (${JSON.stringify(map)})`);
     ok((await progress(page)) === "0/5", "ilerleme 0/5");
+    await checkPrimary(page, "company", "boş kurulum");
     ok((await page.textContent("#hof-start h2"))?.trim() === "Excelini yükle ya da Google Sheets linkini yapıştır, başlayalım", "açılış kartının başlığı değişmedi");
     ok(await page.isVisible("#hof-start .hof-drop"), "Excel yükleme alanı yerinde");
     ok(await page.$eval(GS, node => node.parentElement.id === "hof-start" && node.parentElement.firstElementChild === node), "liste açılış ekranının içinde, kartın üstünde");
@@ -119,20 +128,48 @@ try {
     await shot(page, "a-bos-kurulum");
   });
 
-  await step("B1. Şirket Adını Yazın → Şirketler → Adını / Kodunu Değiştir", async () => {
+  await step("B1. Şirket Adını Yazın → “Şirket Adını Yaz” açık şirketin ad penceresini doğrudan açar; kaydedince Başlarken'e dönülür", async () => {
+    // G5 (madde 30c): düğme adı "Şirket Adını Yaz" ("Şirket Aç" yeni şirket kurmak anlamına gelir); Şirketler listesinde ikinci tıklama gerekmez.
+    const label = (await page.textContent(`${GS} [data-gs-step="company"]`).catch(() => ""))?.trim();
+    ok(label === "Şirket Adını Yaz", `G5 düğme adı “Şirket Adını Yaz” (${label})`);
     await Promise.all([page.waitForURL(/admin\.html#companies/), page.click(`${GS} [data-gs-step="company"]`)]);
-    ok(/admin\.html#companies$/.test(page.url()), `kısa yol Yönetim → Şirketler'i açtı (${page.url().replace(server.base, "")})`);
-    await page.click('tr[data-company="sirket-001"] [data-c-edit]');
+    ok(/admin\.html#companies/.test(page.url()), `kısa yol Yönetim → Şirketler'e gitti (${page.url().replace(server.base, "")})`);
+    const direct = await page.waitForSelector(`${top} input[name="name"]`, { timeout: 8000 }).then(() => true, () => false);
+    const title = direct ? (await page.textContent(`${top} .hof-modal-title, ${top} h2`).catch(() => ""))?.trim() : "";
+    ok(direct && /Şirketin Adı ve Kodu/.test(title || ""), `G5 ad penceresi kendiliğinden açıldı (“${title || "açılmadı"}”)`);
+    ok(direct && (await page.inputValue(`${top} input[name="code"]`).catch(() => "")) === "001", "pencere AÇIK şirketin (001) bilgisiyle dolu");
+    if (!direct) await page.click('tr[data-company="sirket-001"] [data-c-edit]');
     await typeSlow(page, `${top} input[name="name"]`, "Mavi Muhasebe Ltd. Şti.");
     const saved = page.waitForResponse(res => /\/api\/companies\/sirket-001$/.test(new URL(res.url()).pathname) && res.request().method() === "PUT");
     await page.click(`${top} button[type="submit"]`);
     ok((await saved).status() === 200, "şirket adı kaydedildi (PUT 200)");
     const list = await must("şirketler", api.get("/api/companies"));
     ok(list.companies.find(item => item.id === "sirket-001")?.name === "Mavi Muhasebe Ltd. Şti.", "veri: 001 adı “Mavi Muhasebe Ltd. Şti.”");
-    await page.goto(`${server.base}/`);
-    await page.waitForSelector(GS);
+    const back = await page.waitForSelector(GS, { timeout: 8000 }).then(() => true, () => false);
+    ok(back && !/admin\.html/.test(page.url()), `G5 kaydedince ana ekrana (Başlarken) dönüldü (${page.url().replace(server.base, "")})`);
+    if (!back) {
+      await page.goto(`${server.base}/`);
+      await page.waitForSelector(GS);
+    }
     ok(await waitProgress(page, "1/5"), `ilerleme 1/5 (${await progress(page)})`);
     ok((await doneMap(page))?.company === true, "Şirket Adı “Tamamlandı”");
+    await checkPrimary(page, "seller", "Şirket Adı tamamlanınca");
+    // Yetkisi olmayan adımda düğme yerine not çıkar; koyu renk yetkisi olan ilk eksik adıma geçer. Listeyi görmek system.manage ister (Şirket Adı adımı
+    // hep yetkili); salt okunur lisansta düşen Fatura Ayarları yetkisi (invoices.settings) yokmuş gibi — sayfa içinde, sonra geri alınır.
+    await page.evaluate(() => {
+      window.__gsCan = window.HOF.can;
+      window.HOF.can = permission => (permission === "invoices.settings" ? false : window.__gsCan(permission));
+      return window.HOF.gettingStarted.refresh();
+    });
+    await page.waitForSelector(`${GS} [data-gs="seller"] .hof-gs-noperm`, { timeout: 5000 }).catch(() => null);
+    ok(Boolean(await page.$(`${GS} [data-gs="seller"] .hof-gs-noperm`)) && Boolean(await page.$(`${GS} [data-gs="invoiceSettings"] .hof-gs-noperm`)), "yetkisiz adımlarda (Firma Bilgileri, Fatura Ayarları) düğme yerine not");
+    await checkPrimary(page, "bank", "ilk eksik adımların yetkisi yokken");
+    await page.evaluate(() => {
+      window.HOF.can = window.__gsCan;
+      return window.HOF.gettingStarted.refresh();
+    });
+    await page.waitForSelector(`${GS} [data-gs-step="seller"]`, { timeout: 5000 }).catch(() => null);
+    await checkPrimary(page, "seller", "yetki geri gelince");
   });
 
   await step("B2. Firma Bilgilerini Girin → Fatura Ayarları (Tab ve insan hızında yazım)", async () => {
@@ -156,6 +193,7 @@ try {
     ok(await waitProgress(page, "3/5"), `pencere kapanınca liste kendiliğinden güncellendi: 3/5 (${await progress(page)})`);
     const map = await doneMap(page);
     ok(map?.seller === true && map?.invoiceSettings === true, "Firma Bilgileri ve Fatura Ayarları “Tamamlandı”");
+    await checkPrimary(page, "bank", "Firma Bilgileri ve Fatura Ayarları tamamlanınca");
     await shot(page, "b2-firma");
   });
 
@@ -180,6 +218,7 @@ try {
     await page.waitForTimeout(500);
     await closeAll(page);
     ok(await waitProgress(page, "4/5"), `liste güncellendi: 4/5 (${await progress(page)})`);
+    await checkPrimary(page, "account", "Banka hesabı açılınca");
   });
 
   await step("B4. İlk Cariyi Açın → + Yeni Cari; hepsi tamamlanınca liste kendiliğinden kalkar", async () => {

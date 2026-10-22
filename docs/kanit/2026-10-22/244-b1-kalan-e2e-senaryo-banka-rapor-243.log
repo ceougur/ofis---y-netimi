@@ -1,0 +1,62 @@
+
+■ C3. Masraf formu: seçilen hesabın bakiyesi ve İşlemden Sonra; Engelle hesabında eksiye düşerken kırmızı + kural
+  ✓ Masraf (Vakıf) satırı: “Bakiye (14.10.2026): ₺309.249,85 · İşlemden Sonra: ₺309.232,35” (beklenen bakiye ₺309.249,85, sonra ₺309.232,35)
+  ✓ Engelle hesabı (100 TL, masraf 150): kırmızı true, “Bakiye (14.10.2026): ₺100,00 · İşlemden Sonra: −₺50,00 Hesap eksiye düşüyor; bu hesapta eksi bakiyeye izin verilmiyor (Engelle), kaydedilmez.”
+
+■ C3. Transfer formu: gönderen ve alıcı hesabın bakiyesi ve İşlemden Sonra (ücretli transferde gönderenden tutar + ücret çıkar)
+  ✓ Gönderen (Ziraat): “Bakiye (14.10.2026): ₺275.659,45 · İşlemden Sonra: ₺274.414,39” (beklenen sonra ₺274.414,39)
+  ✓ Alıcı (Garanti): “Bakiye (14.10.2026): ₺399.556,65 · İşlemden Sonra: ₺400.791,21” (beklenen sonra ₺400.791,21)
+  ✓ kaydedildi: Ziraat 274414.39, Garanti 400791.21 (sunucu = ekrandaki İşlemden Sonra)
+
+■ C3. Bakiye görme yetkisi yokken (sunucu bakiye göndermez) Masraf formunda bakiye satırı yok
+  ✓ bakiyesiz yanıtta satır yok
+
+■ C7. Hareketler → Başlangıç'a klavyeyle tarih: ara değerlerle istek yok, 400 yok; geçerli tarihte tek istek ve doğru liste
+  ✓ alan değeri 2026-09-09
+  ✓ istekler: 2026-09-09 → 200
+  ✓ liste yalnız 09.09.2026 ve sonrası (2 satır; en eski 2026-09-11)
+
+■ C11. Banka penceresi kapatılıp açılınca son sekme (Hareketler) ve süzgeç (Ziraat, 09.09.2026) hatırlanır
+  ✓ yeniden açılış: sekme movements, Hesap Ziraat, Başlangıç 2026-09-09
+  ✓ Süzgeçleri Temizle görünür (süzgecin açık olduğu belli)
+
+■ C12. Uzun hesap adı Masraf ve Transfer seçicisinde kesilmez ya da tam adı ipucunda
+  ✓ Vakıf seçici: metin 476 px, alan 736 px, ipucu “Türkiye Vakıflar Bankası T.A.O. · Kurumsal Ticari Mevduat Hesabı (TUR-TL)”
+  ✓ tam ad alana sığıyor (476 ≤ 736)
+
+■ C14 / C15. Rapor Merkezi: Banka ve POS Hareketleri Banka grubunda; Banka Nakit Akış'ta ileriye dönük dönemler
+  ✓ Banka ve POS Hareketleri grubu: Banka
+  ✓ Nakit Akış dönemleri: Önümüzdeki 7 Gün, Önümüzdeki 30 Gün, Önümüzdeki 90 Gün, Bu Ay, Tüm Beklenenler
+  ✓ Önümüzdeki 30 Gün kapsamı: 14.10.2026 itibarıyla · 14.10.2026 – 13.11.2026 · Başlangıç: Gerçek Banka (hesabı atanmamış eski hareketler ve bekleyen POS girmez)
+
+■ C9. Rapor Merkezi ekranında tutar ₺ önde (Banka → Hesaplar ile aynı metin); PDF/Excel bağları değişmez
+  ✓ Banka Bakiye Raporu Ziraat Dönem Sonu “₺274.414,39” = ₺274.414,39
+  ✓ ekranda “… TL” biçimi yok (—)
+  ✓ Banka → Hesaplar satırında aynı metin (“₺274.414,39”): ZIR-TL Ziraat Bankası · Ana TL Hesabı Kızılay Şubesi Vadesiz TL TR34 0001 0000 0000 0001 2345 67 102.01 ₺274.414,39 Etkin Bakiye Doğrulandı
+
+■ C4. Süzgeç değişirken tablo kalkmaz (aria-busy), yükseklik çökmez; geç gelen eski yanıt yeni sonucu ezmez
+  ✓ yüklenirken tablo yerinde (tablo, tablo, tablo, tablo)
+  ✓ yükseklik çökmedi (önce 554, yüklenirken en az 554)
+  ✓ yüklenirken aria-busy (true, true, true, true)
+  ✓ gösterge: “Güncelleniyor…”
+  ✓ son seçim (Garanti) ekranda; geç gelen Ziraat yanıtı ezmedi: Garanti BBVA · Ana TL Hesabı
+  ✓ rapor değişince yer tutucu: yükseklik 554 → 536, aria-busy true
+  ✓ boş dönem: “Bu dönemde kayıt yok. Tüm Zamanları Göster”
+
+■ C5. 1366×768: Banka Hareket Raporu'nun ilk satırı ve TOPLAM'ı ilk bakışta (kaydırmadan) görünür
+  ✓ ilk satır alt kenarı 585, TOPLAM 692, görünen alan 750 (kaydırma 0)
+
+■ C6 / C12. 1920×1080 banka raporlarında yatay kaydırma yok, Bakiye görünür, Hesap en çok iki satır; 1280'de Hesaplar'ın Kod ve Tür hücresi tek satır
+  ✓ banka-hareket: kaydırma 1402/1402, son kolon “Bakiye” 1810 ≤ 1811, Hesap 2 satır
+  ✓ banka-bakiye: kaydırma 1402/1402, son kolon “Dönem Sonu” 1810 ≤ 1811, Hesap 1 satır
+  ✓ banka-masraf: kaydırma 1402/1402, son kolon “Açıklama” 1810 ≤ 1811, Hesap 0 satır
+  ✓ banka-gunluk: kaydırma 1402/1402, son kolon “Gün Sonu Bakiye” 1810 ≤ 1811, Hesap 0 satır
+  ✓ banka-aylik: kaydırma 1402/1402, son kolon “Ay Sonu Bakiye” 1810 ≤ 1811, Hesap 0 satır
+  ✓ cari-banka-hareketleri: kaydırma 1402/1402, son kolon “Giren” 1810 ≤ 1811, Hesap 2 satır
+  ✓ banka-pos-hareketleri: kaydırma 1402/1402, son kolon “Giren” 1810 ≤ 1811, Hesap 0 satır
+  ✓ kasa-banka-transfer: kaydırma 1402/1402, son kolon “Giren” 1810 ≤ 1811, Hesap 0 satır
+  ✓ bankalar-arasi-transfer: kaydırma 1402/1402, son kolon “Açıklama” 1810 ≤ 1811, Hesap 0 satır
+  ✓ 1280 Hesaplar Kod/Tür tek satır: 1/1 1/1 1/1 1/1 1/1
+  ✓ sayfa hatası yok
+
+✓ senaryo-banka-rapor-243: 38 geçti, 0 kaldı · depo /home/user/wt/b1-kalan · ekran görüntüleri /home/user/wt/b1-kalan/test/e2e/artifacts/senaryo-banka-rapor-243

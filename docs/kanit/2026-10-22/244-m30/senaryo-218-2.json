@@ -1,0 +1,32 @@
+{
+  "ad": "244-m30/senaryo-218-2",
+  "komut": "npm run test:senaryo-218",
+  "commit": "e070d4247567174ee1bf1b5efe142dfafba6cdb8",
+  "dal": "is/m30-e2e",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T15:25:14.649Z",
+  "sure_sn": 105.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 50,
+    "gecen": 50,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-m30/senaryo-218-2.log",
+  "klasor": "/home/user/wt/m30-e2e",
+  "ham_cikti_sha256": "3fa2fbc98483e3bc4c292feed84d810c88885456488c4093a40b3b684f1efa8a",
+  "ham_cikti_bayt": 4433
+}

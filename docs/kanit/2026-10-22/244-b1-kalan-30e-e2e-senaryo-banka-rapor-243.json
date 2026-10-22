@@ -1,0 +1,32 @@
+{
+  "ad": "244-b1-kalan-30e-e2e-senaryo-banka-rapor-243",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-rapor-243.mjs",
+  "commit": "7ecbbe63c40d5d60443a7c76260be4a49e822f4a",
+  "dal": "is/b1-kalan",
+  "kirli": 2,
+  "izlenmeyen": 19,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T18:43:51.981Z",
+  "sure_sn": 48.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 38,
+    "gecen": 38,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-b1-kalan-30e-e2e-senaryo-banka-rapor-243.log",
+  "klasor": "/home/user/wt/b1-kalan",
+  "ham_cikti_sha256": "d9c29f12caba9d15887733b240d01c8ba03fd9151809b1f618b664890d9812c7",
+  "ham_cikti_bayt": 5013
+}

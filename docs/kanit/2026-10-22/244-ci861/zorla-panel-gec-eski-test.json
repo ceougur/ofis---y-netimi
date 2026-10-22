@@ -1,0 +1,32 @@
+{
+  "ad": "244-ci861/zorla-panel-gec-eski-test",
+  "komut": "node --disable-warning=ExperimentalWarning --import /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ci861/panel-geciktir.mjs test/e2e/senaryo-personel-244.mjs",
+  "commit": "b4cf559f6be2d890b5c43ee9eacefddfb67b4eb2",
+  "dal": "claude/youthful-euler-fl8ks4",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T18:08:41.164Z",
+  "sure_sn": 36.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 63,
+    "gecen": 63,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ci861/zorla-panel-gec-eski-test.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "2938a9a044bae17428ee5f926582643678cb8ea2e30d20110b9e3864621836ab",
+  "ham_cikti_bayt": 4628
+}

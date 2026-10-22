@@ -1,0 +1,86 @@
+[16:27:14] ✓ kesinti yedek-yazildi: süreç öldü (SIGKILL), dosya tutarlı (şema 30, bütünlük ok, yarım işlem yok)
+[16:27:14] ✓ kesinti yedek-yazildi: yarım yedek ".yaziliyor" adıyla kalır, geçerli yedek sayılmaz
+[16:27:43] ✓ kesinti yedek-yazildi: yeniden açılınca 001 olguları göç ölçüsüyle aynı
+[16:27:43] ✓ kesinti yedek-yazildi: 001 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:27:43] ✓ kesinti yedek-yazildi: yeniden açılınca 002 olguları göç ölçüsüyle aynı
+[16:27:43] ✓ kesinti yedek-yazildi: 002 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:27:43] ✓ kesinti yedek-yazildi: yeniden açılış göçü tamamlar; yedek klasöründe 2 yeni dosya
+[16:27:43] ✓ kesinti v31-icinde: süreç öldü (SIGKILL), dosya tutarlı (şema 30, bütünlük ok, yarım işlem yok)
+[16:27:43] ✓ kesinti v31-icinde: göç öncesi yedek tamam (şema 30, bütünlük ok)
+[16:28:11] ✓ kesinti v31-icinde: yeniden açılınca 001 olguları göç ölçüsüyle aynı
+[16:28:11] ✓ kesinti v31-icinde: 001 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:28:11] ✓ kesinti v31-icinde: yeniden açılınca 002 olguları göç ölçüsüyle aynı
+[16:28:11] ✓ kesinti v31-icinde: 002 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:28:11] ✓ kesinti v31-icinde: yeniden açılış göçü tamamlar; yedek klasöründe 2 yeni dosya
+[16:28:12] ✓ kesinti v31-v32-arasi: süreç öldü (SIGKILL), dosya tutarlı (şema 31, bütünlük ok, yarım işlem yok)
+[16:28:12] ✓ kesinti v31-v32-arasi: göç öncesi yedek tamam (şema 30, bütünlük ok)
+[16:28:38] ✓ kesinti v31-v32-arasi: yeniden açılınca 001 olguları göç ölçüsüyle aynı
+[16:28:38] ✓ kesinti v31-v32-arasi: 001 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:28:38] ✓ kesinti v31-v32-arasi: yeniden açılınca 002 olguları göç ölçüsüyle aynı
+[16:28:38] ✓ kesinti v31-v32-arasi: 002 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:28:38] ✓ kesinti v31-v32-arasi: yeniden açılış göçü tamamlar; yedek klasöründe 2 yeni dosya
+[16:28:39] ✓ kesinti v32-icinde: süreç öldü (SIGKILL), dosya tutarlı (şema 31, bütünlük ok, yarım işlem yok)
+[16:28:39] ✓ kesinti v32-icinde: göç öncesi yedek tamam (şema 30, bütünlük ok)
+[16:29:04] ✓ kesinti v32-icinde: yeniden açılınca 001 olguları göç ölçüsüyle aynı
+[16:29:04] ✓ kesinti v32-icinde: 001 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:29:04] ✓ kesinti v32-icinde: yeniden açılınca 002 olguları göç ölçüsüyle aynı
+[16:29:04] ✓ kesinti v32-icinde: 002 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:29:04] ✓ kesinti v32-icinde: yeniden açılış göçü tamamlar; yedek klasöründe 2 yeni dosya
+[16:29:04] ✓ kesinti disk-dolu: göç öncesi yedek yazılamayınca göç YAPILMAZ (şema 30, yarım yedek silinir, hata bildirilir)
+[16:29:31] ✓ kesinti disk-dolu: yeniden açılınca 001 olguları göç ölçüsüyle aynı
+[16:29:31] ✓ kesinti disk-dolu: 001 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:29:31] ✓ kesinti disk-dolu: yeniden açılınca 002 olguları göç ölçüsüyle aynı
+[16:29:31] ✓ kesinti disk-dolu: 002 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:29:31] ✓ kesinti disk-dolu: yeniden açılış göçü tamamlar; yedek klasöründe 1 yeni dosya
+[16:29:31] ✓ gerçek süreç SIGKILL 60 ms (pid 9648, göç başlamadan): dosya tutarlı
+[16:29:57] ✓ gerçek süreç SIGKILL 60 ms: yeniden açılınca 001 olguları göç ölçüsüyle aynı
+[16:29:57] ✓ gerçek süreç SIGKILL 60 ms: 001 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:29:57] ✓ gerçek süreç SIGKILL 60 ms: yeniden açılınca 002 olguları göç ölçüsüyle aynı
+[16:29:57] ✓ gerçek süreç SIGKILL 60 ms: 002 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:29:57] ✓ gerçek süreç SIGKILL 120 ms (pid 9690, göç başlamadan): dosya tutarlı
+[16:30:23] ✓ gerçek süreç SIGKILL 120 ms: yeniden açılınca 001 olguları göç ölçüsüyle aynı
+[16:30:23] ✓ gerçek süreç SIGKILL 120 ms: 001 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:30:23] ✓ gerçek süreç SIGKILL 120 ms: yeniden açılınca 002 olguları göç ölçüsüyle aynı
+[16:30:23] ✓ gerçek süreç SIGKILL 120 ms: 002 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:30:23] ✓ gerçek süreç SIGKILL 200 ms (pid 9737, göç başlamadan): dosya tutarlı
+[16:30:50] ✓ gerçek süreç SIGKILL 200 ms: yeniden açılınca 001 olguları göç ölçüsüyle aynı
+[16:30:50] ✓ gerçek süreç SIGKILL 200 ms: 001 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:30:50] ✓ gerçek süreç SIGKILL 200 ms: yeniden açılınca 002 olguları göç ölçüsüyle aynı
+[16:30:50] ✓ gerçek süreç SIGKILL 200 ms: 002 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:30:50] ✓ gerçek süreç SIGKILL 300 ms (pid 9782, göç başlamadan): dosya tutarlı
+[16:31:17] ✓ gerçek süreç SIGKILL 300 ms: yeniden açılınca 001 olguları göç ölçüsüyle aynı
+[16:31:17] ✓ gerçek süreç SIGKILL 300 ms: 001 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:31:17] ✓ gerçek süreç SIGKILL 300 ms: yeniden açılınca 002 olguları göç ölçüsüyle aynı
+[16:31:17] ✓ gerçek süreç SIGKILL 300 ms: 002 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:31:18] ✓ gerçek süreç SIGKILL 450 ms (pid 9828, göç öncesi yedek yazılırken): dosya tutarlı
+[16:31:43] ✓ gerçek süreç SIGKILL 450 ms: yeniden açılınca 001 olguları göç ölçüsüyle aynı
+[16:31:43] ✓ gerçek süreç SIGKILL 450 ms: 001 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:31:43] ✓ gerçek süreç SIGKILL 450 ms: yeniden açılınca 002 olguları göç ölçüsüyle aynı
+[16:31:43] ✓ gerçek süreç SIGKILL 450 ms: 002 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:31:44] ✓ gerçek süreç SIGKILL 700 ms (pid 9870, göç bitmişti): dosya tutarlı
+[16:32:08] ✓ gerçek süreç SIGKILL 700 ms: yeniden açılınca 001 olguları göç ölçüsüyle aynı
+[16:32:08] ✓ gerçek süreç SIGKILL 700 ms: 001 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:32:08] ✓ gerçek süreç SIGKILL 700 ms: yeniden açılınca 002 olguları göç ölçüsüyle aynı
+[16:32:08] ✓ gerçek süreç SIGKILL 700 ms: 002 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:32:09] ✓ gerçek süreç SIGKILL 1000 ms (pid 9915, göç bitmişti): dosya tutarlı
+[16:32:34] ✓ gerçek süreç SIGKILL 1000 ms: yeniden açılınca 001 olguları göç ölçüsüyle aynı
+[16:32:34] ✓ gerçek süreç SIGKILL 1000 ms: 001 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:32:34] ✓ gerçek süreç SIGKILL 1000 ms: yeniden açılınca 002 olguları göç ölçüsüyle aynı
+[16:32:34] ✓ gerçek süreç SIGKILL 1000 ms: 002 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:32:36] ✓ gerçek süreç SIGKILL 1500 ms (pid 9957, göç bitmişti): dosya tutarlı
+[16:33:00] ✓ gerçek süreç SIGKILL 1500 ms: yeniden açılınca 001 olguları göç ölçüsüyle aynı
+[16:33:00] ✓ gerçek süreç SIGKILL 1500 ms: 001 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:33:00] ✓ gerçek süreç SIGKILL 1500 ms: yeniden açılınca 002 olguları göç ölçüsüyle aynı
+[16:33:00] ✓ gerçek süreç SIGKILL 1500 ms: 002 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:33:10] ✓ kilitli dosya (15000 ms yazma kilidi): 2.4.4 yarım göç bırakmaz (sonuç: açılmadı)
+[16:33:40] ✓ kilit kalktıktan sonra: yeniden açılınca 001 olguları göç ölçüsüyle aynı
+[16:33:40] ✓ kilit kalktıktan sonra: 001 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+[16:33:40] ✓ kilit kalktıktan sonra: yeniden açılınca 002 olguları göç ölçüsüyle aynı
+[16:33:40] ✓ kilit kalktıktan sonra: 002 şema 32, bütünlük ok, numara tabanı göçtekiyle aynı
+# kesinti / arıza denetimleri
+# tests 79
+# pass 79
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

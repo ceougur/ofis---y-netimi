@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-7-e2e-fatura-243-duzen-kaymasi",
+  "komut": "npm run test:fatura-243-duzen-kaymasi",
+  "commit": "489bfb77ad8b3536c2f109d28e1fd75b040f0402",
+  "dal": "aday7",
+  "kirli": 0,
+  "izlenmeyen": 96,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T20:33:19.632Z",
+  "sure_sn": 14.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 7,
+    "gecen": 7,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday-7-e2e-fatura-243-duzen-kaymasi.log",
+  "klasor": "/home/user/wt/aday7",
+  "ham_cikti_sha256": "d49a71fa5cc0d99f7133b60bbb14d663f705f586664c04d9a69598fa70fa434f",
+  "ham_cikti_bayt": 656
+}

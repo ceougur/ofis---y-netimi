@@ -1,0 +1,157 @@
+
+> destekofis@2.4.3 test:senaryo-pos-220
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-pos-220.mjs
+
+
+■ Ön koşul (API): stok, Ziraat 100.000 + Garanti 50.000, ABC, tahsilat, Kasa'ya 10.000, transfer → Ziraat 90.000
+  ✓ Ziraat 90.000, Garanti 70.000
+
+■ 17–19 Ziraat → Düzenle → "POS Kullan"; işaretsiz hesapta POS bölümü yok; API'den işaretsiz hesaba POS 400 pos-account-flag
+  ✓ işaretsizken POS'lar bölümü yok
+  ✓ işaretsiz hesaba POS: 400 pos-account-flag
+  ✓ Ziraat: POS Kullan işaretli (sunucu)
+  ✓ POS'lar bölümü: henüz POS yok
+
+■ 17–19 "+ POS Ekle": Ziraat Fiziki POS, Banka, BSMV Dahil, valör 2 iş günü, Tek Çekim %2,5 + 3 Taksit %3,5 (Tab ile) → 108.01
+  ✓ standart: Banka, BSMV Dahil
+  ✓ BSMV kipinde Sağlayıcı Carisi gizli
+  ✓ Ödeme Kuruluşu → KDV Hariç, Sağlayıcı Carisi görünür
+  ✓ Taksit Taksit (Her Ay), provizyon 0 (aynı gün)
+  ✓ ikinci oran satırı klavyeyle: 3 · 3,5
+  ✓ oransız satır: “2 Taksit satırının oranını girin (valör günü yazılı, oran boş).”, POS açılmadı
+  ✓ POS 108.01, Ziraat'e bağlı (1)
+  ✓ POS kuralları: bank|bsmv_incl|2|123456789|T001
+  ✓ oranlar: [[1,25000],[3,35000]]
+  ✓ hesap ayrıntısında POS satırı: “Ziraat Fiziki POS POS-01 Fiziki POS · Üye İşyeri 123456789 · Terminal T001 Banka · BSMV Dahil 2 İş Günü Tek Çekim %2,50 · 3 Taksit %3,50 ₺0,00 Etkin Düzenle · Oranlar · Pasife Al · Sil”
+
+■ 20–22 Satış Faturası Ürün B 10 × 1.000 "+ POS" Tek Çekim: önizleme 250 · 9.750 · valör 12.10; provizyon ve son 4 Tab ile → Ürün B 15, ABC 0, Ziraat 90.000, POS Bekleyen 10.000 / 9.750
+  ✓ tek POS: bilgi satırı
+  ✓ yalnız tanımlı taksitler: Tek Çekim,3 Taksit
+  ✓ önizleme: “Komisyon %2,50 (₺250,00) · Bankaya Geçecek ₺9.750,00 · Valör 12.10.2026”
+  ✓ fatura kaydedildi
+  ✓ POS satışı: provizyon PRV001, son 4 1234
+  ✓ Ürün B 15; ABC 0; Ziraat 90.000 (satış anında banka +0) — gelen: 15 / 0 / 9000000
+  ✓ POS Bekleyen 10000 brüt / 9750 net
+
+■ 21–22 Banka → POS: Ödeme Takvimi 12.10.2026 · ₺9.750,00; POS İşlemleri'nde faturanın satışı — İptal Et pasif, nedeni yazılı; Ayarlar'da POS
+  ✓ takvim: “VALÖR GÜNÜ POS TÜR KALEM BRÜT NET (BANKAYA GEÇECEK) DURUM 12.10.2026 Ziraat Fiziki POS POS 1 ₺10.000,00 ₺9.750,00 Bekliyor”
+  ✓ POS Bekleyen (Net) kutusu 9.750
+  ✓ valör gelmeden Şimdi Aktar pasif
+  ✓ Şimdi Aktar'ın nedeni yazılı
+  ✓ fatura peşinde İptal Et pasif
+  ✓ neden: “Faturadan iptal edilir: faturayı İptal Et → “Müşteriye İade Edildi”.”
+  ✓ Banka Ayarları: POS bölümü görünür
+  ✓ POS valör standardı İş Günü (business)
+
+■ 23–24 saat 12.10 → Şimdi Aktar → Ziraat 99.750; POS Bekleyen 0; 653 = 250; İşlem Kartı valör açıklaması; Hareketler POS süzgeci
+  ✓ valörü gelince Şimdi Aktar etkin
+  ✓ Valörü Gelmiş, Aktarılmadı bilgisi
+  ✓ Ziraat 99750 (beklenen 99.750)
+  ✓ POS Bekleyen 0
+  ✓ 653 = 250 (BSMV 11,90 dahil)
+  ✓ İşlem Kartı valör: “12.10.2026 (08.10 Perşembe + 2 iş günü)”
+  ✓ İşlem Kartı: provizyon PRV001
+  ✓ Hareketler POS süzgeci: 1 satır 12.10.2026 BNK-2026-000007 POS Valör Geçişi Ziraat Bankası · Ana TL Hesabı POS Gün Sonu · Ziraat Fiziki POS · Ref. 123456789 +₺9.750,00
+  ✓ 23–24: Mutabakat Testi tamam
+
+■ 25–26 12.10 Satış Faturası 12 × 1.000 "+ POS" 3 Taksit: önizleme 3.860 × 3 · İlk Valör 12.11.2026 → Ürün B 3; takvim 12.11 · 14.12 · 12.01.2027
+  ✓ önizleme: “Komisyon %3,50 (₺420,00) · Bankaya Geçecek ₺3.860,00 × 3 · İlk Valör 12.11.2026”
+  ✓ fatura kaydedildi
+  ✓ Ürün B 3 — gelen 3
+  ✓ takvim: [["2026-11-12",3860],["2026-12-14",3860],["2027-01-12",3860]]
+  ✓ bekleyen net 11580 (11.580), brüt 12000 (12.000)
+
+■ 27–28 13.10 Satıştan İade (asıl: adım 20) Ürün B 3 Adet = 3.000 "+ POS İadesi", Asıl POS İşlemi önerisi → Ürün B 6; ABC 0; iade valörü 15.10
+  ✓ düğme: “+ POS İadesi”
+  ✓ asıl işlem önerisi: ["Otomatik (aynı cari / faturadan)","BNK-2026-000006 · 08.10.2026 · ₺10.000,00 · Ziraat Fiziki POS","Kaynaksız (Eski Satış)"]
+  ✓ iade faturası kaydedildi
+  ✓ Ürün B 6; ABC 0 — gelen 6 / 0
+  ✓ iade: 3000, valör 2026-10-15
+  ✓ Σ iade 3.000 ≤ 10.000
+  ✓ 15.10 Ziraat 96750 (beklenen 96.750)
+  ✓ 27–28: Mutabakat Testi tamam
+
+■ Cari tahsilatı 500 POS (önizleme, provizyon, son 4) → POS İşlemleri → İptal Et (aynı gün, komisyonsuz void) → ABC bakiyesi geri döner
+  ✓ önizleme: “Komisyon %2,50 (₺12,50) · Bankaya Geçecek ₺487,50 · Valör 19.10.2026”
+  ✓ cari POS satışı (provizyon CARI77, son 4 9876)
+  ✓ ABC 500 alacaklandı
+  ✓ provizyon içinde İptal Et etkin
+  ✓ durum: void
+  ✓ ABC bakiyesi eski hâline döndü (cari tahsilatı silindi)
+  ✓ iptal edilen satış Etkin süzgecinde yok
+  ✓ bankaya geçmiş satışta İptal Et nedeni
+  ✓ cari void: Mutabakat Testi tamam
+
+■ Ziraat Fiziki POS → Pasife Al; yetkisiz (avukat) cari tahsilatında POS: "POS tanımlı değil, yöneticinize başvurun." (düğme yok)
+  ✓ POS pasif
+  ✓ kullanılmış POS'ta Sil'in nedeni yazılı
+  ✓ yetkisiz yazısı
+  ✓ POS Tanımla düğmesi yok
+
+■ Stok satışı (Ürün B 1 × 1.000) → POS: "POS Tanımla" → Vazgeç (form aynen) → tanımla (Ziraat Mobil POS) → seçili gelir → kaydet → satış yeni POS'ta
+  ✓ üstte POS Tanımla penceresi
+  ✓ Vazgeç: stok formu aynen
+  ✓ kaydedilen POS formda seçili (tek etkin POS)
+  ✓ tanımdan sonra miktar yerinde
+  ✓ stok satışı Ziraat Mobil POS'ta (108.02): 1000, valör 2026-10-16
+  ✓ Ürün B 5 — gelen 5
+
+■ İki etkin POS: Ziraat Fiziki POS → Etkinleştir; taksit tahsilatı (POS seçimi zorunlu, 3 Taksit önizleme) → seçilen POS'a
+  ✓ Ziraat Fiziki POS etkin
+  ✓ POS seçenekleri: POS Seçin | Ziraat Fiziki POS · Ziraat Bankası | Ziraat Mobil POS · Ziraat Bankası
+  ✓ önizleme: “Komisyon %3,50 (₺105,00) · Bankaya Geçecek ₺965,00 × 3 · İlk Valör 16.11.2026”
+  ✓ taksit tahsilatı Ziraat Fiziki POS'ta, 3 taksit; kalan 3000
+  ✓ iki POS: Mutabakat Testi tamam
+
+■ Bilinen hata (İz 3.6) ekrandan: fatura Düzenle'de yalnız provizyon (PRV001 → PRV009) değişince POS kaydı güncellenir
+  ✓ Düzenle: POS Taksit Sayısı 3 dolu geldi
+  ✓ düzenleme kaydedildi
+  ✓ POS kaydı: [["PRV009",3,true]]
+  ✓ provizyon düzeltmesi: Mutabakat Testi tamam
+
+■ Raporlar → POS Ödeme Takvimi: 7 satır, TOPLAM brüt 16.000 / net 15.455 = satırlar; her Tür ve POS seçeneği; PDF ve Excel TOPLAM
+  ✓ valör günleri: 16.10.2026, 12.11.2026, 16.11.2026, 14.12.2026, 15.12.2026, 12.01.2027, 15.01.2027
+  ✓ TOPLAM: TOPLAM |  |  |  | ₺16.000,00 | ₺15.455,00 | 
+  ✓ TOPLAM = satırların toplamı (brüt ve net)
+  ✓ PDF: başlık ve TOPLAM tutarları
+  ✓ Excel TOPLAM: TOPLAM |  |  |  | 16000 | 15455 | 
+  ✓ Tür “pos”: 7 satır, TOPLAM net 15455
+  ✓ Tür “blocked”: 0 satır, TOPLAM net 0
+  ✓ Tür “fee”: 0 satır, TOPLAM net 0
+  ✓ Tür “Tümü”: 7 satır, TOPLAM net 15455
+  ✓ POS seçenekleri: Tüm POS'lar | Ziraat Fiziki POS (POS-01) | Ziraat Mobil POS (POS-02)
+  ✓ POS “Ziraat Fiziki POS (POS-01)”: 6 satır, TOPLAM net 14475
+  ✓ POS “Ziraat Mobil POS (POS-02)”: 1 satır, TOPLAM net 980
+  ✓ POS “Tüm POS'lar”: 7 satır, TOPLAM net 15455
+  ✓ dönem thisMonth: 1 satır, TOPLAM net 980
+  ✓ dönem lastMonth: 0 satır, TOPLAM net 0
+  ✓ dönem last30: 0 satır, TOPLAM net 0
+  ✓ dönem thisYear: 5 satır, TOPLAM net 10630
+  ✓ dönem all: 7 satır, TOPLAM net 15455
+
+■ Raporlar → POS Satış Raporu ve POS Komisyon Raporu (İz 5.3): satırlar = POS işlemleri, TOPLAM = satırlar, iki raporun Net'i aynı; Tür ve Dönem süzgeçleri; PDF ve Excel
+  ✓ POS Satış: TOPLAM = satırlar (net 22205)
+  ✓ satırlar: 08.10.2026 | BNK-2026-000006 | Ziraat Fiziki POS | POS Satışı | ABC Ltd. | Tek Çekim | BSMV Dahil | ₺10.000,00 | ₺238,10 | ₺11,90 |  | ₺9.750,00 | Etkin
+12.10.2026 | BNK-2026-000008 | Ziraat Fiziki POS | POS Satışı | ABC Ltd. | 3 Taksit | BSMV Dahil | ₺12.000,00 | ₺400,00 | ₺20,00 |  | ₺11.580,00 | Etkin
+13.10.2026 | BNK-2026-000009 | Ziraat Fiziki POS | POS İadesi | ABC Ltd. | Tek Çekim | BSMV Dahil | -₺3.000,00 |  |  |  | -₺3.000,00 | Etkin
+15.10.2026 | BNK-2026-000012 | Ziraat Mobil POS | POS Satışı |  | Tek Çekim | BSMV Dahil | ₺1.000,00 | ₺19,05 | ₺0,95 |  | ₺980,00 | Etkin
+15.10.2026 | BNK-2026-000013 | Ziraat Fiziki POS | POS Satışı | ABC Ltd. | 3 Taksit | BSMV Dahil | ₺3.000,00 | ₺100,00 | ₺5,00 |  | ₺2.895,00 | Etkin
+  ✓ Tür süzgeci yalnız satışlar (4)
+  ✓ POS Satış PDF ve Excel
+  ✓ POS Komisyon: TOPLAM net 22205 = POS Satış net; oran toplanmaz
+  ✓ aylık dönem satırları: Ekim 2026, Ekim 2026, Ekim 2026
+  ✓ yıllık: 2026 | Ziraat Fiziki POS | POS Satışı | BSMV Dahil | 3 | ₺25.000,00 | ₺738,10 | ₺36,90 |  | ₺24.225,00 | %3,10 · 2026 | Ziraat Fiziki POS | POS İadesi | BSMV Dahil | 1 | -₺3.000,00 |  |  |  | -₺3.000,00 | %0,00 · 2026 | Ziraat Mobil POS | POS Satışı | BSMV Dahil | 1 | ₺1.000,00 | ₺19,05 | ₺0,95 |  | ₺980,00 | %2,00
+
+■ Raporlar → Banka Masraf Raporu: POS komisyonu 653 · matrah 238,10 + BSMV 11,90 = 250; Faturası Beklenen Komisyonlar boş (KDV'li POS yok)
+  ✓ POS komisyon satırı: 12.10.2026 | BNK-2026-000007 | Ziraat Bankası · Ana TL Hesabı | POS Komisyonu · Ziraat Fiziki POS | 653 Komisyon Giderleri | ₺238,10 | ₺11,90 | ₺0,00 | ₺250,00 |  | POS Gün Sonu · Ziraat Fiziki POS
+  ✓ TOPLAM: TOPLAM |  |  |  |  | ₺238,10 | ₺11,90 | ₺0,00 | ₺250,00 |  | 
+  ✓ Faturası Beklenen Komisyonlar: 0 satır (KDV'li POS yok)
+
+■ POS sekmesi: Onay Bekleyen ve Komisyon Faturaları boş durum metni; POS'lar listesi iki POS
+  ✓ Onay Bekleyen boş
+  ✓ Komisyon Faturaları: KDV'li POS yok
+  ✓ POS'lar: 2
+  ✓ POS ekranlarında yazım düzeni (her sözcüğün ilk harfi büyük)
+  ✓ sayfa hatası yok
+
+✓ senaryo-pos-220: 113 geçti, 0 kaldı · ekran görüntüleri /home/user/wt/aday7/test/e2e/artifacts/senaryo-pos-220

@@ -25,7 +25,7 @@
 //   yeni-gec    22.10 sırası (senaryo B4): ölçüm bildirimi → fare oraya → bildirim farenin ALTINDA açılır → fare içinde kıpırdar. ZORLA: kıpırdatma
 //               bildirimin süresi dolduktan 400 ms SONRA (ürünün "kapanma anında fare üstündeyse kapanmaz" yolu). Ön koşul: kıpırdatma anı > süre.
 //               Beklenen: yeşil. Mutasyonda (fare üstü hiç sayılmaz) kırmızı.
-//   yeni        22.10 sırası, zorlama yok. Beklenen: yeşil.
+//   yeni        22.10 sırası (senaryodaki gibi kurtarma hatırlatmasının "gösterildi" kaydıyla), zorlama yok. Beklenen: yeşil.
 //   kurtarma-eski / kurtarma-sira / kurtarma-yeni   KÖK NEDEN (22.10 senaryo kaydı: araya giren bildirim "Yönetici parolanızı unutursanız … Henüz oluşturmadınız.").
 //               Ürünün kurtarma anahtarı hatırlatması (hof-workspace.js nudgeRecovery) açılıştan 6 sn sonra (pencere açıksa 20 sn arayla) bir kez
 //               çıkar; bildirimler kutusunun altına eklenir, "Fare testi."ni yukarı iter, fare dışarıda kalır, ürün tasarımı gereği (fare uzaklaştı)
@@ -196,6 +196,11 @@ try {
         pass = arrived.inside && (await present(text));
       } else if (mode === "yeni-gec" || mode === "yeni") {
         // Senaryo B4'ün 22.10 sırası (test/e2e/senaryo-form-izolasyon-243.mjs ile aynı adımlar).
+        // 22.10.2026 (madde 30, m30-e2e): senaryo bölüm B başında kurtarma hatırlatmasının "gösterildi" kaydını koyar (senaryo-form-izolasyon-243.mjs
+        // "localStorage.setItem(`hof.recovery.nudge…`)"); bu kip koymuyordu → açılıştan ~6 sn sonra hatırlatma 2. denemeye denk gelip bildirimi kaydırıyordu
+        // (yeniden üretim: 10 denemede tek kırmızı = hatırlatmanın ekranda olduğu deneme; kayıt docs/kanit/2026-10-22/244-m30/yaris-b4-yeni-tani.log).
+        // Kaydı olmayan sıra kurtarma-sira kipinde (beklenen kırmızı) ayrıca sınanır.
+        await page.evaluate(() => localStorage.setItem(`hof.recovery.nudge.${window.HOF.user?.id || ""}`, String(Date.now())));
         await freshToast(text);
         await settle();
         const box = await page.locator(".hof-toast").first().boundingBox();
@@ -224,6 +229,9 @@ try {
         }, [point[0] + 2, point[1]]);
         pass = opened.inside && moved.inside && end;
         row.notes.push(Math.round(moved.elapsed));
+        // Tanı (22.10.2026, madde 30 m30-e2e): deneme içinde kurtarma hatırlatması denetlendi mi / ekrana çıktı mı (kırmızının nedeni kayıttan okunur).
+        const nudge = await page.evaluate(at => ({ reads: window.__nudgeReads.filter(t => t >= at - 200).map(t => Math.round(t - at)), shown: [...document.querySelectorAll(".hof-toast-text")].some(node => /kurtarma anahtarıyla/.test(node.textContent)) }), (await page.evaluate(() => window.__b4.at)));
+        console.log(`    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [${nudge.reads.join(",")}] · hatırlatma ekranda ${nudge.shown ? "EVET" : "hayır"}`);
       } else if (mode.startsWith("kurtarma-")) {
         await page.evaluate(() => {
           for (const key of Object.keys(localStorage)) if (key.startsWith("hof.recovery.nudge.")) localStorage.removeItem(key);

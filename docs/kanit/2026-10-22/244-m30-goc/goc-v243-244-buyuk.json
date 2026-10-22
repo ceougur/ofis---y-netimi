@@ -1,0 +1,32 @@
+{
+  "ad": "244-m30-goc/goc-v243-244-buyuk",
+  "komut": "node --disable-warning=ExperimentalWarning tools/m30-goc.mjs goc --kok /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/m30-goc/buyuk2",
+  "commit": "dbb5921d1ecda21eadec70fdb49b2b16ff22bff6",
+  "dal": "is/m30-goc",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T15:46:42.005Z",
+  "sure_sn": 27.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-m30-goc/goc-v243-244-buyuk.log",
+  "klasor": "/home/user/wt/m30-goc",
+  "ham_cikti_sha256": "eb89cc6f123d4fe428bfef58a19a59cf0a5e4c347204b4b1112a30249b35950a",
+  "ham_cikti_bayt": 1655
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "244-b2-uyari/komsu-birim",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/banka-210-gg-geri-yukle.test.mjs test/inceleme-221.test.mjs test/guvenilirlik-221-tatbikat.test.mjs test/guvenilirlik-221-ariza.test.mjs test/guvenilirlik-221-bulgular.test.mjs test/yedek-220-inceleme.test.mjs test/sheets-yedek.test.mjs test/ux18-cek-fatura-244.test.mjs test/banka-210-ariza.test.mjs test/banka-210-rapor-is-parcacigi-kapanis.test.mjs test/personel-ozluk-244.test.mjs test/sirket-canli-olay-244.test.mjs test/yazim-duzeni.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/kilavuz-surum.test.mjs test/banka-220-kredi-karti-metin.test.mjs test/esmm-gonderim-244.test.mjs test/numara-tekil-244.test.mjs test/gg243-gonderim.test.mjs",
+  "commit": "e070d4247567174ee1bf1b5efe142dfafba6cdb8",
+  "dal": "is/b2-uyari",
+  "kirli": 5,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T17:01:23.358Z",
+  "sure_sn": 50.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 168,
+    "gecen": 168,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-b2-uyari/komsu-birim.log",
+  "klasor": "/home/user/wt/b2-uyari",
+  "ham_cikti_sha256": "a1b6e3d6c8c07c86f34ae7a1a2f3171acdc9f43f116ca291184a1c0ea24e5f90",
+  "ham_cikti_bayt": 67612
+}

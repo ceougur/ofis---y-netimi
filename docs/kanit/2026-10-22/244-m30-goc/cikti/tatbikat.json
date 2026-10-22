@@ -1,0 +1,353 @@
+{
+ "day": "2026-10-22",
+ "checks": [
+  {
+   "name": "C3 001 2.4.3'ten kalan 3 bekleyen e-Belge 2.4.4'ten Tümünü Gönder ile gitti; numara sırası = tarih sırası",
+   "ok": true,
+   "detail": {
+    "pendingBefore": 3,
+    "pendingAfter": 0,
+    "turns": [
+     {
+      "ok": 3,
+      "failed": []
+     }
+    ],
+    "sent": 3,
+    "eStatus": {
+     "sent": 3
+    },
+    "orderBad": [],
+    "oldest": "2026-10-22"
+   }
+  },
+  {
+   "name": "C1 001 bırakılan fiş numarası verilmiş en büyükten sonra (A FIS2026000000254, B FIS2026000000255); gönderilen A'nın fişi Kâğıt Fatura No'da",
+   "ok": true,
+   "detail": {
+    "leftA": "FIS2026000000254",
+    "leftB": "FIS2026000000255",
+    "givenMax": 253,
+    "aPaperNo": "FIS2026000000254",
+    "aNumber": "TEA2026839210909",
+    "aEStatus": "sent",
+    "sentA": true
+   }
+  },
+  {
+   "name": "C2 001 e-SMM \"Kâğıt Makbuz Olarak Bırak\" SMM numarası verilmiş en büyükten sonra (SMM2026000000074)",
+   "ok": true,
+   "detail": {
+    "got": "SMM2026000000074",
+    "givenMax": 73
+   }
+  },
+  {
+   "name": "C3 001 e-Arşiv / e-SMM / e-Fatura gönderildi (sahte EDM)",
+   "ok": true,
+   "detail": {
+    "earsiv": [
+     "TEA2026839210908",
+     "sent"
+    ],
+    "esmm": [
+     "TES2026699481849",
+     "ESMM",
+     "sent"
+    ],
+    "efatura": [
+     "TEF2026883578758",
+     "sent"
+    ],
+    "smmSent": 1,
+    "violations": []
+   }
+  },
+  {
+   "name": "C5 001 çalışmadan sonra Mutabakat Testi'nde yeni sapma yok, mizan dengede",
+   "ok": true,
+   "detail": {
+    "newFailures": [],
+    "trialTotals": {
+     "debit": 5217291356,
+     "credit": 5217291356,
+     "difference": 0
+    },
+    "cashDelta": 350
+   }
+  },
+  {
+   "name": "C5 001 yeniden açılan faturaya 100 TL Kapatılacak Fatura'lı tahsilat açığı 100 TL azaltır",
+   "ok": true,
+   "detail": {
+    "invoice": "TEA2026839210905",
+    "before": 1368432,
+    "after": 1358432
+   }
+  },
+  {
+   "name": "C3 002 2.4.3'ten kalan 2 bekleyen e-Belge 2.4.4'ten Tümünü Gönder ile gitti; numara sırası = tarih sırası",
+   "ok": true,
+   "detail": {
+    "pendingBefore": 2,
+    "pendingAfter": 0,
+    "turns": [
+     {
+      "ok": 2,
+      "failed": []
+     }
+    ],
+    "sent": 2,
+    "eStatus": {
+     "sent": 2
+    },
+    "orderBad": [],
+    "oldest": "2026-10-22"
+   }
+  },
+  {
+   "name": "C1 002 bırakılan fiş numarası verilmiş en büyükten sonra (A FIS2026000000130, B FIS2026000000131); gönderilen A'nın fişi Kâğıt Fatura No'da",
+   "ok": true,
+   "detail": {
+    "leftA": "FIS2026000000130",
+    "leftB": "FIS2026000000131",
+    "givenMax": 129,
+    "aPaperNo": "FIS2026000000130",
+    "aNumber": "TEA2026130952889",
+    "aEStatus": "sent",
+    "sentA": true
+   }
+  },
+  {
+   "name": "C2 002 e-SMM \"Kâğıt Makbuz Olarak Bırak\" SMM numarası verilmiş en büyükten sonra (SMM2026000000090)",
+   "ok": true,
+   "detail": {
+    "got": "SMM2026000000090",
+    "givenMax": 89
+   }
+  },
+  {
+   "name": "C3 002 e-Arşiv / e-SMM / e-Fatura gönderildi (sahte EDM)",
+   "ok": true,
+   "detail": {
+    "earsiv": [
+     "TEA2026130952888",
+     "sent"
+    ],
+    "esmm": [
+     "TES2026208031079",
+     "ESMM",
+     "sent"
+    ],
+    "efatura": [
+     "TEF2026782032784",
+     "sent"
+    ],
+    "smmSent": 2,
+    "violations": []
+   }
+  },
+  {
+   "name": "C5 002 çalışmadan sonra Mutabakat Testi'nde yeni sapma yok, mizan dengede",
+   "ok": true,
+   "detail": {
+    "newFailures": [],
+    "trialTotals": {
+     "debit": 3714957588,
+     "credit": 3714957588,
+     "difference": 0
+    },
+    "cashDelta": 350
+   }
+  },
+  {
+   "name": "C5 002 yeniden açılan faturaya 100 TL Kapatılacak Fatura'lı tahsilat açığı 100 TL azaltır",
+   "ok": true,
+   "detail": {
+    "invoice": "FIS2026000000128",
+    "before": 1226940,
+    "after": 1216940
+   }
+  },
+  {
+   "name": "C4 2.4.4'te verilen kâğıt/fiş/SMM numaraları biçimde ve eski verilmişlerle çakışmıyor",
+   "ok": true,
+   "detail": {
+    "given": [
+     "FIS2026000000254",
+     "FIS2026000000255",
+     "SMM2026000000074",
+     "FIS2026000000130",
+     "FIS2026000000131",
+     "SMM2026000000090"
+    ]
+   }
+  },
+  {
+   "name": "C6 002 yedek → çalış → geri yükle: olgular yedek anıyla aynı",
+   "ok": true,
+   "detail": {
+    "diff": [],
+    "backup": "destekofis-002-2026-10-22T15-50-09-178Z-manuel.sqlite"
+   }
+  },
+  {
+   "name": "C7 002 geri yüklemesi 001'i değiştirmedi",
+   "ok": true,
+   "detail": {
+    "diff": []
+   }
+  },
+  {
+   "name": "C8 002 geri yüklemeden sonra numaralar yedek anının sırasından sürer, veride tekrar yok",
+   "ok": true,
+   "detail": {
+    "dup": [],
+    "w3Fis": "FIS2026000000132",
+    "momentNextPaper": "FIS2026000000132",
+    "w2Fis": "FIS2026000000132"
+   }
+  },
+  {
+   "name": "C8 002 GÖZLEM: ara dönemde EDM'ye gitmiş e-Arşiv numarası (TEA2026130952890) geri yüklemeden sonra yeniden verildi mi",
+   "ok": true,
+   "detail": {
+    "w2": [
+     "TEA2026130952890",
+     "sent"
+    ],
+    "w3": [
+     "TEA2026130952890",
+     "error",
+     "EDM isteği reddetti: UUID=16c4c7c3-df71-4615-a784-418106491323 ID=TEA2026130952890 için Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız (EDM hata kodu 11048) Bu numara EDM'de daha önce kullanılmış: test hesabı ortaktır, başka bir firma aynı numarayı kullanmış olabilir. Bu belgeyi İptal Et ile iptal edip yeniden kesin; yeni belge bir sonraki numarayı alır (gerekirse Entegratör Ayarları → Otomatik Seriler'den sıradaki test numarasını ileri alın)."
+    ],
+    "reused": true,
+    "edmHasBoth": 1
+   }
+  },
+  {
+   "name": "C6 001 geri yükleme (001: yeniden açılışta) uygulandı",
+   "ok": true,
+   "detail": {
+    "staged": {
+     "ok": true,
+     "name": "destekofis-001-2026-10-22T15-50-59-502Z-manuel.sqlite",
+     "safety": "destekofis-001-2026-10-22T15-51-21-711Z-geri-yukleme-oncesi-001.sqlite",
+     "by": "user-75a00c29-4787-4fb3-8bcd-109783a4ba82",
+     "byName": "Ofis yöneticisi",
+     "at": "2026-10-22T15:51:22.069Z"
+    }
+   }
+  },
+  {
+   "name": "C6 001 yedek → çalış → geri yükle: olgular yedek anıyla aynı",
+   "ok": true,
+   "detail": {
+    "diff": [],
+    "backup": "destekofis-001-2026-10-22T15-50-59-502Z-manuel.sqlite"
+   }
+  },
+  {
+   "name": "C7 001 geri yüklemesi 002'i değiştirmedi",
+   "ok": true,
+   "detail": {
+    "diff": []
+   }
+  },
+  {
+   "name": "C8 001 geri yüklemeden sonra numaralar yedek anının sırasından sürer, veride tekrar yok",
+   "ok": true,
+   "detail": {
+    "dup": [],
+    "w3Fis": "FIS2026000000256",
+    "momentNextPaper": "FIS2026000000256",
+    "w2Fis": "FIS2026000000256"
+   }
+  },
+  {
+   "name": "C8 001 GÖZLEM: ara dönemde EDM'ye gitmiş e-Arşiv numarası (TEA2026839210910) geri yüklemeden sonra yeniden verildi mi",
+   "ok": true,
+   "detail": {
+    "w2": [
+     "TEA2026839210910",
+     "sent"
+    ],
+    "w3": [
+     "TEA2026839210910",
+     "error",
+     "EDM isteği reddetti: UUID=05e29699-88c9-4526-9e2d-9c63a650c8e1 ID=TEA2026839210910 için Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız (EDM hata kodu 11048) Bu numara EDM'de daha önce kullanılmış: test hesabı ortaktır, başka bir firma aynı numarayı kullanmış olabilir. Bu belgeyi İptal Et ile iptal edip yeniden kesin; yeni belge bir sonraki numarayı alır (gerekirse Entegratör Ayarları → Otomatik Seriler'den sıradaki test numarasını ileri alın)."
+    ],
+    "reused": true,
+    "edmHasBoth": 1
+   }
+  },
+  {
+   "name": "C9 002 2.4.3 yedeği (destekofis-002-2026-10-22T15-41-29-434Z-manuel.sqlite) 2.4.4'e geri yüklendi: şema 32, numara tabanı göçtekiyle aynı",
+   "ok": true,
+   "detail": {
+    "version": 32,
+    "numberFloor": "{\"FIS2026\":{\"seq\":125,\"number\":\"FIS2026000000125\",\"issueDate\":\"2026-09-17\"}}",
+    "expected": "{\"FIS2026\":{\"seq\":125,\"number\":\"FIS2026000000125\",\"issueDate\":\"2026-09-17\"}}"
+   }
+  },
+  {
+   "name": "C9 002 geri yüklenen 2.4.3 yedeğinin olguları göç ölçüsüyle (aynı veri, göç açılışta) aynı",
+   "ok": true,
+   "detail": {
+    "diff": []
+   }
+  },
+  {
+   "name": "C7 002 2.4.3 yedeğinin geri yüklenmesi 001'i değiştirmedi",
+   "ok": true,
+   "detail": {
+    "diff": []
+   }
+  },
+  {
+   "name": "C9 001 2.4.3 yedeği (destekofis-001-2026-10-22T15-41-29-116Z-manuel.sqlite) 2.4.4'e geri yüklendi: şema 32, numara tabanı göçtekiyle aynı",
+   "ok": true,
+   "detail": {
+    "version": 32,
+    "numberFloor": "{\"FIS2026\":{\"seq\":253,\"number\":\"FIS2026000000253\",\"issueDate\":\"2026-10-21\"}}",
+    "expected": "{\"FIS2026\":{\"seq\":253,\"number\":\"FIS2026000000253\",\"issueDate\":\"2026-10-21\"}}"
+   }
+  },
+  {
+   "name": "C9 001 geri yüklenen 2.4.3 yedeğinin olguları göç ölçüsüyle (aynı veri, göç açılışta) aynı",
+   "ok": true,
+   "detail": {
+    "diff": []
+   }
+  },
+  {
+   "name": "C7 001 2.4.3 yedeğinin geri yüklenmesi 002'i değiştirmedi",
+   "ok": true,
+   "detail": {
+    "diff": []
+   }
+  }
+ ],
+ "edm": {
+  "sent": [
+   "TEA2026839210906",
+   "TEA2026839210907",
+   "TEF2026883578757",
+   "TEA2026839210908",
+   "TEA2026839210909",
+   "TEF2026883578758",
+   "TEA2026130952886",
+   "TEA2026130952887",
+   "TEA2026130952888",
+   "TEA2026130952889",
+   "TEF2026782032784",
+   "TEA2026130952890",
+   "TEA2026839210910"
+  ],
+  "smm": [
+   "TES2026699481849",
+   "TES2026208031079"
+  ],
+  "violations": []
+ }
+}

@@ -1,0 +1,43 @@
+{
+  "ad": "244-b2-uyari/mutasyon-M5-edoc-hep-acik",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/geri-yukleme-uyari-244.test.mjs",
+  "commit": "e070d4247567174ee1bf1b5efe142dfafba6cdb8",
+  "dal": "is/b2-uyari",
+  "kirli": 5,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T17:02:55.584Z",
+  "sure_sn": 6.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 9,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Geri yüklemeden sonra Fatura'da tek seferlik numara uyarısı; 11048 iletisi geri yüklemeyi söyler › N1/N6 002 geri yüklenince uyarı yalnız 002'de; e-Belge kullanmayan şirkette edoc=false (yalnız kâğıt/fiş cümlesi); 001'de yok",
+      "konum": "test/geri-yukleme-uyari-244.test.mjs:92:3",
+      "hata": "002 e-Belge kullanmıyor · true !== false (beklenen false, gelen true)"
+    },
+    {
+      "ad": "N3 eski sürümün (v2.4.3) yedeği geri yüklenince göçten sonra uyarı yazılır › güncellemeden sonra uyarı yok; v2.4.3 yedeği geri yüklenince var (edoc=false)",
+      "konum": "test/geri-yukleme-uyari-244.test.mjs:285:3",
+      "hata": "Expected values to be strictly equal: · true !== false (beklenen false, gelen true)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-b2-uyari/mutasyon-M5-edoc-hep-acik.log",
+  "klasor": "/home/user/wt/b2-uyari",
+  "ham_cikti_sha256": "278e756fd78e819c894b31bcde2c6cf34bb6cabf0ea93c9153669aa731335a94",
+  "ham_cikti_bayt": 6645
+}

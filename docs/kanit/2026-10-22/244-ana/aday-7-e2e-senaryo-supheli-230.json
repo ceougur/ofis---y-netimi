@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-7-e2e-senaryo-supheli-230",
+  "komut": "npm run test:senaryo-supheli-230",
+  "commit": "489bfb77ad8b3536c2f109d28e1fd75b040f0402",
+  "dal": "aday7",
+  "kirli": 0,
+  "izlenmeyen": 48,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T20:10:17.705Z",
+  "sure_sn": 42.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 67,
+    "gecen": 67,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday-7-e2e-senaryo-supheli-230.log",
+  "klasor": "/home/user/wt/aday7",
+  "ham_cikti_sha256": "a47b2ed8d1e2e93c6f76c5f85bcc94d5b8c14e271bba53d8bca9ed2778f6c0eb",
+  "ham_cikti_bayt": 6909
+}

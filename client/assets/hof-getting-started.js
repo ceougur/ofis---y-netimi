@@ -25,7 +25,7 @@
     account: "Müşteri ve tedarikçilerinizi tek tek ya da Excel / Sheets'ten yükleyin.",
   });
   const ACTION_LABELS = Object.freeze({
-    company: "Şirketleri Aç",
+    company: "Şirket Adını Yaz",
     seller: "Fatura Ayarlarını Aç",
     invoiceSettings: "Fatura Ayarlarını Aç",
     bank: "Banka Hesaplarını Aç",
@@ -75,7 +75,9 @@
     else HOF.toast("Fatura Ayarları açılamadı: fatura penceresinin üst satırındaki “Fatura Ayarları” düğmesini kullanın.", { type: "error" });
   }
   const ACTIONS = {
-    company: () => window.location.assign("/admin.html#companies"),
+    // 2.4.4 (madde 30c G5, kullanıcı "önerin uygun"): açık şirketin "Şirketin Adı ve Kodu" penceresi doğrudan açılır (admin.js #companies/rename);
+    // kaydedince ana ekrana dönülür, adım "Tamamlandı" görünür.
+    company: () => window.location.assign("/admin.html#companies/rename"),
     seller: openInvoiceSettings,
     invoiceSettings: openInvoiceSettings,
     bank: () => HOF.bank?.open?.({ tab: "accounts" }),
@@ -102,11 +104,15 @@
 
   // ---------- Görünüm ----------
   const CHECK = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.2 4.2L19 7"/></svg>';
-  function stepHtml(step) {
+  // 2.4.4 (madde 30c G4, kullanıcı "uygun"): yalnız sıradaki adımın düğmesi koyu (birincil) — ilk eksik ve yetkisi olan adım; öbür eksik adımlar beyaz.
+  // Yetkisi olmayan adımda düğme yerine not çıktığı için koyu renk yetkisi olan ilk eksik adıma geçer (önceden company/seller her zaman koyuydu).
+  const canStep = id => HOF.can(ACTION_PERMISSIONS[id]);
+  const primaryStepId = steps => steps.find(step => !step.done && canStep(step.id))?.id || "";
+  function stepHtml(step, primaryId = "") {
     const id = step.id;
-    const can = HOF.can(ACTION_PERMISSIONS[id]);
+    const can = canStep(id);
     const status = step.done ? '<span class="hof-gs-status is-done">Tamamlandı</span>' : '<span class="hof-gs-status">Eksik</span>';
-    const action = step.done ? "" : can ? `<button type="button" class="hof-button hof-button-small${id === "seller" || id === "company" ? "" : " hof-button-ghost"}" data-gs-step="${esc(id)}">${esc(ACTION_LABELS[id])}</button>` : '<small class="hof-gs-noperm">Bu adım için yetkiniz yok (salt okunur lisansta ayarlar değiştirilemez).</small>';
+    const action = step.done ? "" : can ? `<button type="button" class="hof-button hof-button-small${id === primaryId ? "" : " hof-button-ghost"}" data-gs-step="${esc(id)}">${esc(ACTION_LABELS[id])}</button>` : '<small class="hof-gs-noperm">Bu adım için yetkiniz yok (salt okunur lisansta ayarlar değiştirilemez).</small>';
     return `<li class="hof-gs-step${step.done ? " is-done" : ""}" data-gs="${esc(id)}" data-done="${step.done ? "1" : "0"}">
         <span class="hof-gs-mark" aria-hidden="true">${step.done ? CHECK : ""}</span>
         <span class="hof-gs-text"><b>${esc(STEP_TITLES[id] || id)}</b><small>${esc(STEP_HELP[id] || "")}</small></span>
@@ -117,6 +123,7 @@
     if (failed && !state) return '<p class="hof-gs-unknown" data-gs-unknown>Adımların durumu okunamadı (bilinmiyor). Pencereyi kapatıp yeniden açın.</p>';
     if (!state) return '<p class="hof-empty">Yükleniyor…</p>';
     const steps = state.steps || [];
+    const primary = primaryStepId(steps);
     const progress = `${steps.length} adımdan ${state.done} tanesi tamamlandı.`;
     const foot = inModal
       ? state.complete
@@ -128,7 +135,7 @@
             : '<div class="hof-gs-foot"><p class="hof-gs-note">Adımlar tamamlandıkça liste kendiliğinden güncellenir.</p><button type="button" class="hof-button hof-button-small hof-button-ghost" data-gs-hide>Gizle</button></div>'
       : '<div class="hof-gs-foot"><p class="hof-gs-note">Gizlerseniz kullanıcı menüsündeki “Başlarken”den yeniden açarsınız.</p><button type="button" class="hof-button hof-button-small hof-button-ghost" data-gs-hide>Gizle</button></div>';
     return `<p class="hof-gs-progress" data-gs-progress="${state.done}/${steps.length}">${esc(progress)}</p>
-      <ol class="hof-gs-steps">${steps.map(stepHtml).join("")}</ol>${foot}`;
+      <ol class="hof-gs-steps">${steps.map(step => stepHtml(step, primary)).join("")}</ol>${foot}`;
   }
   function wire(root) {
     if (!root || root.dataset.gsWired) return;

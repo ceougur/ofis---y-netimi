@@ -1,0 +1,170 @@
+
+> destekofis@2.4.3 test:senaryo-tahsile-ver-220
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-tahsile-ver-220.mjs
+
+
+■ Ön koşul (API): Ziraat · Çek Tahsil (Çek Kullan, 10.000), ABC borcu 10.000, çek C 1.500 portföyde
+  ✓ Ziraat 10.000
+  ✓ ABC borcu 8.500 (10.000 − C 1.500): 8500
+
+■ S0 çek A 5.000 ekrandan alınır (cari ABC; tutar, no, banka insan hızında; Tab) → kartta Bankaya Tahsile Ver; 101.01 6.500
+  ✓ Tab ile Banka / Şube'ye geçildi, yazıldı
+  ✓ sunucu: A 5.000, ABC, Portföyde (Portföyde)
+  ✓ kartta Bankaya Tahsile Ver düğmesi
+  ✓ portföydeki çekte Ciro Et açık
+  ✓ ABC 3.500: 3500
+  ✓ S0: Mutabakat Testi tamam
+  ✓ S0 · API Alt Hesap Mizanı: 121.01 0 (beklenen 0), 121.02 0 (beklenen 0)
+  ✓ S0 · API Alt Hesap Mizanı: 101.01 6500 (beklenen 6500), 101.02 0 (beklenen 0)
+  ✓ S0 · EKRAN Alt Hesap Mizanı: 101.01 6500 Borç, 101.02 0 
+  ✓ S0 · EKRAN Alt Hesap Mizanı: 121.01 yok, 121.02 yok (beklenen 0 / 0)
+  ✓ S0 · EKRAN Tahsildeki Çek ve Senetler: 0 satır, TOPLAM 0 = satırlar 0 = 101.02 0 + 121.02 0
+
+■ S1 A → Bankaya Tahsile Ver: tek uygun hesap (Ziraat) bilgi satırı + bakiye; açıklama yazılır → Bankada Tahsilde; Ciro Et / Sil pasif ve nedeni yazılı
+  ✓ tek hesap bilgi satırı (seçim yok): Ziraat Bankası · Çek Tahsil hesabına tahsile verilir. Bakiye (08.10.2026): ₺10.000,00
+  ✓ bakiye satırı: Ziraat Bankası · Çek Tahsil hesabına tahsile verilir. Bakiye (08.10.2026): ₺10.000,00
+  ✓ İşlem Tarihi bugün
+  ✓ kaydedildi
+  ✓ sunucu: Bankada Tahsilde, Ziraat (durum portfolio)
+  ✓ kart: Alınan Çek No TV-001 Bankada Tahsilde · Ziraat Bankası · 08.10.2026
+  ✓ Ciro Et pasif
+  ✓ Sil pasif
+  ✓ neden düğmelerin yanında görünür yazı: Ciro Et ve Sil kapalı: evrak Ziraat Bankası · Çek Tahsil hesabında tahsilde (08.10.2026). Tutar, cari, tarih ve vade değişmez; Düzenle'de yalnız no, banka ve açıklama düzeltilir. Önce Bankadan Geri Al'ın.
+  ✓ Bankadan Geri Al düğmesi
+  ✓ Tahsil Et ve Karşılıksız / İade açık
+  ✓ kartta tahsil bilgisi: Vade31.10.2026 23 gün kaldı Alış Tarihi05.10.2026 CariABC Ltd. Bankada TahsildeZiraat Bankası · Çek Tahsil · 08.10.2026 · BNK-2026-000002
+  ✓ Banka Tahsil Kayıtları
+  ✓ Düzenle'de tutar, vade, alış tarihi yok
+  ✓ API ciro: 409 cheque-deposited
+  ✓ Bankada Tahsilde süzgeci: [["cheque-4af227e1-d9b7-4109-a1fa-3ba528098b5e","Bankada Tahsilde · Ziraat Bankası · 08.10.2026"]]
+  ✓ Ziraat değişmedi (10.000)
+  ✓ S1: Mutabakat Testi tamam
+  ✓ S1 · API Alt Hesap Mizanı: 121.01 0 (beklenen 0), 121.02 0 (beklenen 0)
+  ✓ S1 · API Alt Hesap Mizanı: 101.01 1500 (beklenen 1500), 101.02 5000 (beklenen 5000)
+  ✓ S1 · EKRAN Alt Hesap Mizanı: 101.01 1500 Borç, 101.02 5000 Borç
+  ✓ S1 · EKRAN Alt Hesap Mizanı: 121.01 yok, 121.02 yok (beklenen 0 / 0)
+  ✓ S1 · EKRAN Tahsildeki Çek ve Senetler: 1 satır, TOPLAM 5000 = satırlar 5000 = 101.02 5000 + 121.02 0
+
+■ S2 Bankadan Geri Al → Portföyde; 101.01 6.500, 101.02 0
+  ✓ açıklama hesabı söyler
+  ✓ kaydedildi
+  ✓ sunucu: Portföyde
+  ✓ kart Portföyde, Ciro Et yeniden açık, neden yazısı yok
+  ✓ tahsil kaydı geçmişinde Bankadan Geri Alındı
+  ✓ S2: Mutabakat Testi tamam
+  ✓ S2 · API Alt Hesap Mizanı: 121.01 0 (beklenen 0), 121.02 0 (beklenen 0)
+  ✓ S2 · API Alt Hesap Mizanı: 101.01 6500 (beklenen 6500), 101.02 0 (beklenen 0)
+  ✓ S2 · EKRAN Alt Hesap Mizanı: 101.01 6500 Borç, 101.02 0 
+  ✓ S2 · EKRAN Alt Hesap Mizanı: 121.01 yok, 121.02 yok (beklenen 0 / 0)
+  ✓ S2 · EKRAN Tahsildeki Çek ve Senetler: 0 satır, TOPLAM 0 = satırlar 0 = 101.02 0 + 121.02 0
+
+■ S3 yeniden Bankaya Tahsile Ver → 101.01 1.500, 101.02 5.000
+  ✓ kaydedildi
+  ✓ sunucu: yeniden Bankada Tahsilde
+  ✓ S3: Mutabakat Testi tamam
+  ✓ S3 · API Alt Hesap Mizanı: 121.01 0 (beklenen 0), 121.02 0 (beklenen 0)
+  ✓ S3 · API Alt Hesap Mizanı: 101.01 1500 (beklenen 1500), 101.02 5000 (beklenen 5000)
+  ✓ S3 · EKRAN Alt Hesap Mizanı: 101.01 1500 Borç, 101.02 5000 Borç
+  ✓ S3 · EKRAN Alt Hesap Mizanı: 121.01 yok, 121.02 yok (beklenen 0 / 0)
+  ✓ S3 · EKRAN Tahsildeki Çek ve Senetler: 1 satır, TOPLAM 5000 = satırlar 5000 = 101.02 5000 + 121.02 0
+
+■ S4 Tahsil Et: yol Havale / EFT ve hesap Ziraat sabit (salt okunur, nedeni yazılı; nakit yok); İşlemden Sonra 15.000 → Ziraat 15.000
+  ✓ Tahsil Yolu: Havale / EFT · salt okunur true
+  ✓ Tahsil Edilen Hesap: Ziraat Bankası · Çek Tahsil · salt okunur true
+  ✓ yol ve hesap seçimi yok, nakit seçeneği yok
+  ✓ neden yazılı: Tahsil Edilen Hesap Evrak bu hesapta tahsilde; tahsil bu hesaba yazılır. Başka hesaba ya da elden (nakit) tahsil edildiyse önce Bankadan Geri Al'ın. Bakiye (08.10.2026): ₺10.000,00 · İşlemden Sonra: ₺15.000,00
+  ✓ bakiye satırı: Tahsil Edilen Hesap Evrak bu hesapta tahsilde; tahsil bu hesaba yazılır. Başka hesaba ya da elden (nakit) tahsil edildiyse önce Bankadan Geri Al'ın. Bakiye (08.10.2026): ₺10.000,00 · İşlemden Sonra: ₺15.000,00
+  ✓ kaydedildi
+  ✓ sunucu: Tahsil Edildi
+  ✓ Ziraat 15.000: 15000
+  ✓ S4: Mutabakat Testi tamam
+  ✓ S4 · API Alt Hesap Mizanı: 121.01 0 (beklenen 0), 121.02 0 (beklenen 0)
+  ✓ S4 · API Alt Hesap Mizanı: 101.01 1500 (beklenen 1500), 101.02 0 (beklenen 0)
+  ✓ S4 · EKRAN Alt Hesap Mizanı: 101.01 1500 Borç, 101.02 0 
+  ✓ S4 · EKRAN Alt Hesap Mizanı: 121.01 yok, 121.02 yok (beklenen 0 / 0)
+  ✓ S4 · EKRAN Tahsildeki Çek ve Senetler: 0 satır, TOPLAM 0 = satırlar 0 = 101.02 0 + 121.02 0
+
+■ S5 senet B 2.000 (API); Senet Kullan hesabı yok → yetkisiz (avukat) "Banka hesabı tanımlı değil, yöneticinize başvurun." (düğme yok)
+  ✓ ABC 1.500: 1500
+  ✓ senet için uygun hesap yok (Ziraat yalnız Çek Kullan)
+  ✓ yetkisiz yazısı
+  ✓ Banka Hesabı Tanımla düğmesi yok
+  ✓ kaydet: Evrakı bankaya tahsile vermek için önce “Senet Kullan” işaretli, etkin bir TL Vadesiz, Ticari ya da Diğer hesap tanımlayın (Banka → hesap → Düzenle'den “Senet Kullan”ı işaretleyin).
+  ✓ senet portföyde kaldı
+  ✓ S5: Mutabakat Testi tamam
+  ✓ S5 · API Alt Hesap Mizanı: 121.01 2000 (beklenen 2000), 121.02 0 (beklenen 0)
+  ✓ S5 · API Alt Hesap Mizanı: 101.01 1500 (beklenen 1500), 101.02 0 (beklenen 0)
+  ✓ S5 · EKRAN Alt Hesap Mizanı: 101.01 1500 Borç, 101.02 0 
+  ✓ S5 · EKRAN Alt Hesap Mizanı: 121.01 2000, 121.02 yok (beklenen 2000 / 0)
+  ✓ S5 · EKRAN Tahsildeki Çek ve Senetler: 0 satır, TOPLAM 0 = satırlar 0 = 101.02 0 + 121.02 0
+
+■ S6 yönetici: "Banka Hesabı Tanımla" (Vazgeç: form aynen) → "+ Yeni Banka Hesabı" Senet Kullan işaretli gelir → Garanti açılır, seçili gelir → tahsile ver
+  ✓ Banka Hesabı Tanımla düğmesi
+  ✓ üstte Banka Hesabı Tanımla penceresi
+  ✓ seçenekler: işaretsiz Ziraat ve + Yeni Banka Hesabı (Ziraat Bankası · Çek Tahsil (ZIR-TL) | + Yeni Banka Hesabı)
+  ✓ Vazgeç: tahsile verme formu aynen (açıklama duruyor)
+  ✓ hesap formunda Senet Kullan işaretli, Çek Kullan değil: {"note":true,"cheque":false}
+  ✓ sunucu: Garanti · Senet Tahsil, Senet Kullan ({"useNote":true,"useCheque":false})
+  ✓ yeni hesap formda seçili (tek hesap): Garanti BBVA · Senet Tahsil hesabına tahsile verilir. Bakiye (08.10.2026): ₺0,00
+  ✓ tahsile verme formu kapanmadı, açıklama kaybolmadı
+  ✓ kaydedildi
+  ✓ sunucu: senet Garanti'de tahsilde (Bankada Tahsilde · Garanti BBVA · 08.10.2026)
+  ✓ Garanti bakiyesi 0 (tahsile verme para hareketi değil)
+  ✓ S6: Mutabakat Testi tamam
+  ✓ S6 · API Alt Hesap Mizanı: 121.01 0 (beklenen 0), 121.02 2000 (beklenen 2000)
+  ✓ S6 · API Alt Hesap Mizanı: 101.01 1500 (beklenen 1500), 101.02 0 (beklenen 0)
+  ✓ S6 · EKRAN Alt Hesap Mizanı: 101.01 1500 Borç, 101.02 0 
+  ✓ S6 · EKRAN Alt Hesap Mizanı: 121.01 0, 121.02 2000 (beklenen 0 / 2000)
+  ✓ S6 · EKRAN Tahsildeki Çek ve Senetler: 1 satır, TOPLAM 2000 = satırlar 2000 = 101.02 0 + 121.02 2000
+
+■ S6 liste süzgeçleri (ders 11): her Durum seçeneğinin satırları ve toplamı; özet kutuları (Portföyde 1.500, Bankada Tahsilde 2.000)
+  ✓ Durum seçenekleri: open, overdue, soon, portfolio, deposited, , collected, endorsed, bounced, paid
+  ✓ "Portföyde" ve "Bankada Tahsilde" ayrı: Açık (portföyde / ödenecek) | Vadesi Geçmiş | 7 Gün İçinde | Portföyde | Bankada Tahsilde | Tüm Durumlar | Tahsil Edildi | Ciro Edildi | Karşılıksız / İade | Ödendi
+  ✓ Durum “Açık (portföyde / ödenecek)”: 2 satır, satırlar 3500, alt toplam 3500 (beklenen 2 satır, 3500)
+  ✓ Durum “Vadesi Geçmiş”: 0 satır, satırlar 0, alt toplam 0 (beklenen 0 satır, 0)
+  ✓ Durum “7 Gün İçinde”: 1 satır, satırlar 1500, alt toplam 1500 (beklenen 1 satır, 1500)
+  ✓ Durum “Portföyde”: 1 satır, satırlar 1500, alt toplam 1500 (beklenen 1 satır, 1500)
+  ✓ Durum “Bankada Tahsilde”: 1 satır, satırlar 2000, alt toplam 2000 (beklenen 1 satır, 2000)
+  ✓ Durum “Tüm Durumlar”: 3 satır, satırlar 8500, alt toplam 8500 (beklenen 3 satır, 8500)
+  ✓ Durum “Tahsil Edildi”: 1 satır, satırlar 5000, alt toplam 5000 (beklenen 1 satır, 5000)
+  ✓ Durum “Ciro Edildi”: 0 satır, satırlar 0, alt toplam 0 (beklenen 0 satır, 0)
+  ✓ Durum “Karşılıksız / İade”: 0 satır, satırlar 0, alt toplam 0 (beklenen 0 satır, 0)
+  ✓ Durum “Ödendi”: 0 satır, satırlar 0, alt toplam 0 (beklenen 0 satır, 0)
+  ✓ Portföyde (alınan): Portföyde (alınan) · ₺1.500,00 · 1 evrak
+  ✓ Bankada Tahsilde: Bankada Tahsilde · ₺2.000,00 · 1 evrak
+
+■ S7 senet B Karşılıksız / İade (bankadan döndü) → tahsil kaydı kapanır; ABC borcu 3.500 (cari borcu geri); 101.02 0
+  ✓ açıklama: bankadan karşılıksız döndü
+  ✓ kaydedildi
+  ✓ sunucu: Karşılıksız / İade, tahsil kaydı Karşılıksız Döndü
+  ✓ ABC borcu 3.500: 3500
+  ✓ Banka Tahsil Kayıtları: Karşılıksız Döndü
+  ✓ Garanti bakiyesi 0
+  ✓ Karşılıksız / İade süzgeci: 1 satır
+  ✓ S7: Mutabakat Testi tamam
+  ✓ S7 · API Alt Hesap Mizanı: 121.01 0 (beklenen 0), 121.02 0 (beklenen 0)
+  ✓ S7 · API Alt Hesap Mizanı: 101.01 1500 (beklenen 1500), 101.02 0 (beklenen 0)
+  ✓ S7 · EKRAN Alt Hesap Mizanı: 101.01 1500 Borç, 101.02 0 
+  ✓ S7 · EKRAN Alt Hesap Mizanı: 121.01 0, 121.02 0 (beklenen 0 / 0)
+  ✓ S7 · EKRAN Tahsildeki Çek ve Senetler: 0 satır, TOPLAM 0 = satırlar 0 = 101.02 0 + 121.02 0
+
+■ S8 çek C: Garanti'ye de Çek Kullan → seçimde iki hesap bakiyeleriyle (ön seçim yok, zorunlu); senet hesabı yalnız Senet Kullan'da
+  ✓ seçenekler bakiyeleriyle: Hesap Seçin | Ziraat Bankası · Çek Tahsil (ZIR-TL) — ₺15.000,00 | Garanti BBVA · Senet Tahsil (GAR-TL) — ₺0,00
+  ✓ ön seçim yok, seçim zorunlu
+  ✓ seçilen hesabın bakiye satırı
+  ✓ tarih 07.10: Hesap Seçin | Ziraat Bankası · Çek Tahsil (ZIR-TL) — ₺10.000,00 | Garanti BBVA · Senet Tahsil (GAR-TL) — ₺0,00; seçim Garanti'de kaldı
+  ✓ Vazgeç: C portföyde
+  ✓ senet seçicisi: yalnız Senet Kullan (Garanti)
+
+■ Son: Alt Hesap Mizanı dönem düğmeleri (ekran) — Bu Yıl / Bu Ay / Son 30 Gün / Tüm Zamanlar: çek 101.01 B 11.500 A 10.000, 101.02 B 10.000 A 10.000; senet 121.01 B 2.000 A 2.000, 121.02 B 2.000 A 2.000; Geçen Ay 101/121 satırı yok
+  ✓ thisYear: 101.01 B 11500 A 10000 = 1500 Borç; 101.02 B 10000 A 10000 = 0; 121.01 B 2000 A 2000; 121.02 B 2000 A 2000
+  ✓ thisMonth: 101.01 B 11500 A 10000 = 1500 Borç; 101.02 B 10000 A 10000 = 0; 121.01 B 2000 A 2000; 121.02 B 2000 A 2000
+  ✓ last30: 101.01 B 11500 A 10000 = 1500 Borç; 101.02 B 10000 A 10000 = 0; 121.01 B 2000 A 2000; 121.02 B 2000 A 2000
+  ✓ all: 101.01 B 11500 A 10000 = 1500 Borç; 101.02 B 10000 A 10000 = 0; 121.01 B 2000 A 2000; 121.02 B 2000 A 2000
+  ✓ lastMonth: 101 / 121 satırı yok
+  ✓ API Alt Hesap Mizanı: 101.01 B 11500 A 10000; 101.02 B 10000 A 10000; 121.01 B 2000 A 2000; 121.02 B 2000 A 2000
+  ✓ son: Mutabakat Testi tamam
+  ✓ Bankaya Tahsile Ver ekranlarında yazım düzeni (her sözcüğün ilk harfi büyük)
+  ✓ sayfa hatası yok
+
+✓ senaryo-tahsile-ver-220: 140 geçti, 0 kaldı · ekran görüntüleri /home/user/wt/aday7/test/e2e/artifacts/senaryo-tahsile-ver-220

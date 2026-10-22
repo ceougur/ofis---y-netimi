@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-7-e2e-gg243-arka-plan-yazma",
+  "komut": "npm run test:gg243-arka-plan-yazma",
+  "commit": "489bfb77ad8b3536c2f109d28e1fd75b040f0402",
+  "dal": "aday7",
+  "kirli": 0,
+  "izlenmeyen": 98,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T20:33:34.483Z",
+  "sure_sn": 30,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 13,
+    "gecen": 13,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday-7-e2e-gg243-arka-plan-yazma.log",
+  "klasor": "/home/user/wt/aday7",
+  "ham_cikti_sha256": "74e7e186562b637918c88fb0e6feec9c349450e8d573f70d652d754bbd69016e",
+  "ham_cikti_bayt": 1125
+}

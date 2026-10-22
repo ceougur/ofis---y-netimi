@@ -1,0 +1,73 @@
+{
+  "ad": "244-gezinti-g/kirmizi-158d9c0-baslarken-244-g5",
+  "komut": "node /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/gezinti-g/gezinti-g-eski-158d9c0/test/e2e/baslarken-244.mjs",
+  "commit": "158d9c0178695ab205f2022a7878d148d3a26809",
+  "dal": "is/gezinti-g",
+  "kirli": 5,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T17:40:54.345Z",
+  "sure_sn": 42.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 60,
+    "gecen": 52,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "G4 boş kurulum: koyu düğme tek ve “company” adımında (koyu olanlar: company, seller)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G5 düğme adı “Şirket Adını Yaz” (Şirketleri Aç)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G5 ad penceresi kendiliğinden açıldı (“açılmadı”)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "pencere AÇIK şirketin (001) bilgisiyle dolu",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G5 kaydedince ana ekrana (Başlarken) dönüldü (/admin.html#companies)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G4 ilk eksik adımların yetkisi yokken: koyu düğme tek ve “bank” adımında (koyu olanlar: yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G4 Firma Bilgileri ve Fatura Ayarları tamamlanınca: koyu düğme tek ve “bank” adımında (koyu olanlar: yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G4 Banka hesabı açılınca: koyu düğme tek ve “account” adımında (koyu olanlar: yok)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-gezinti-g/kirmizi-158d9c0-baslarken-244-g5.log",
+  "klasor": "/home/user/wt/gezinti-g",
+  "ham_cikti_sha256": "8cf7a5f953f40a67f5921157d21b4048a35d5f6ea61324d3dd5ae87d6baf95a5",
+  "ham_cikti_bayt": 4434
+}

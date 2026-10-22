@@ -1,0 +1,17 @@
+
+> destekofis@2.4.3 test:kahin-tutar
+> node --disable-warning=ExperimentalWarning test/bagimsiz/tutar/kos.mjs --tohum 1-3 --adet 50
+
+tutar tohum 1: 1116/1116 tuttu
+tutar tohum 2: 1094/1094 tuttu
+tutar tohum 3: 1262/1262 tuttu
+  mutasyon 1 (Gerçek kişi alıcıya da %20 stopaj (GVK 94/1 yok sayılır)): YAKALANDI
+  mutasyon 2 (Birden çok brüt aynı Net Ücreti verirse en BÜYÜĞÜ seçilir): YAKALANDI
+  mutasyon 3 (KDV dahil fiyatlı makbuzda Netten Brüte KDV hariç matrahı birim fiyat sanır): YAKALANDI
+  mutasyon 4 (Stopaj kalem kalem yuvarlanır (ÇATAL B tek dal sanılır)): YAKALANDI
+  mutasyon 5 (602 tevkifatı 5/10 sanılır): YAKALANDI
+  mutasyon 6 (XML TaxInclusiveAmount = Net Ücret + KDV sanılır (EDM 'Tahsil Edilen KDV' yerine)): YAKALANDI
+  mutasyon 7 (Ödenecek = Net Ücret + KDV (tevkifat düşülmez)): YAKALANDI
+
+ÖZET: 3 tohum × 50 satır, 3472 denetim, 0 fark (BULGU 0), 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-tutar-oGgPKN
+3472/3472 denetim geçti

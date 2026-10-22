@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-7-e2e-senaryo-fatura-243",
+  "komut": "npm run test:senaryo-fatura-243",
+  "commit": "489bfb77ad8b3536c2f109d28e1fd75b040f0402",
+  "dal": "aday7",
+  "kirli": 0,
+  "izlenmeyen": 60,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T20:18:08.097Z",
+  "sure_sn": 71.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 59,
+    "gecen": 59,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday-7-e2e-senaryo-fatura-243.log",
+  "klasor": "/home/user/wt/aday7",
+  "ham_cikti_sha256": "9589a96ab3d222707571e22d943892585b776c69c9a55acd1054f7204f079c13",
+  "ham_cikti_bayt": 5939
+}

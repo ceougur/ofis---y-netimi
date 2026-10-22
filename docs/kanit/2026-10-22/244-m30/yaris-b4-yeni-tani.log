@@ -1,0 +1,25 @@
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [] · hatırlatma ekranda hayır
+  yeni #1: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [401,407] · hatırlatma ekranda EVET
+  yeni #2: ön koşul OLUŞTU · KIRMIZI
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [] · hatırlatma ekranda hayır
+  yeni #3: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [] · hatırlatma ekranda hayır
+  yeni #4: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [] · hatırlatma ekranda hayır
+  yeni #5: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [] · hatırlatma ekranda hayır
+  yeni #6: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [] · hatırlatma ekranda hayır
+  yeni #7: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [] · hatırlatma ekranda hayır
+  yeni #8: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [] · hatırlatma ekranda hayır
+  yeni #9: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [] · hatırlatma ekranda hayır
+  yeni #10: ön koşul OLUŞTU · yeşil
+
+CPU=1 LEAD=0 TRIALS=10
+yeni: 10 deneme · ön koşul oluştu 10 · ön koşullu kırmızı 1 · ön koşulsuz kırmızı 0 · kıpırdatma anı (ms) 61/30/31/30/30/32/31/31/30/28
+  ✗ yeni: beklenen dışı sonuç
+0 denetim geçti, 1 başarısız

@@ -1,0 +1,32 @@
+{
+  "ad": "244-m30-goc/donus-buyuk",
+  "komut": "node --disable-warning=ExperimentalWarning tools/m30-goc.mjs donus --kok /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/m30-goc/buyuk2",
+  "commit": "a2f2134c1fa71aab4664dede0b4f7e4232e17a83",
+  "dal": "is/m30-goc",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T15:54:19.267Z",
+  "sure_sn": 55.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-m30-goc/donus-buyuk.log",
+  "klasor": "/home/user/wt/m30-goc",
+  "ham_cikti_sha256": "6631b2a4b65170122381809c9456aca2d5371c94b3f2e1a8589ffd738e421a89",
+  "ham_cikti_bayt": 579
+}

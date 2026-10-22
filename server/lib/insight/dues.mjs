@@ -11,6 +11,7 @@
 //    tahsilat kapatır). Vadesinden en çok 20 gün önce girilen tahsilat da sayılır.
 import { columnOrder as columnsOf } from "../sources.mjs";
 import { analyzeColumns, cell, primaryColumns } from "./columns.mjs";
+import { pickRemainingDebtColumn } from "./debt-column.mjs";
 import { embeddedDates, isBlankRecord, isEmptyCell, isFlaggedRow, isSequenceHeader, isTotalRow } from "./cells.mjs";
 import { dateMeaning, ordinalOf, subjectOf } from "./temporal.mjs";
 import { foldText, parseAmount, parseDate } from "./validators.mjs";
@@ -69,7 +70,6 @@ function monthHeader(column) {
 }
 const UNPAID_MARK = /^(0|0 00|yok|odenmedi|odemedi|odenmemis|borc|borclu|bekliyor|gecikti|gecikme|x|hayir|h)$/;
 const AMOUNT_DEBT = /\b(kalan|bakiye|borc\w*|alacak\w*|toplam borc)\b/;
-const AMOUNT_REMAINING = /\b(kalan|bakiye)\b/;
 // v2.0.2: şablon satırları ve öğrencinin (üyenin) hizmet dönemi.
 // Hizmetin başladığı / bittiği tarih: öncesindeki ve sonrasındaki boş aylar borç sayılmaz.
 const START_DATE = /\b(kayit tarihi|kayit|baslangic\w*|baslama\w*|giris tarihi|servise baslama|hizmet baslangic\w*)\b/;
@@ -178,9 +178,9 @@ function classifyColumns(rows, columns, analyses, now, forced = null) {
   };
   const own = moneyLike.find(column => AMOUNT_OWN.test(foldText(column)) && !due.some(item => item.column === column)) || null;
   // Kalan borç: tutar kolonu olarak tanınmış, ya da başlığı kalan/bakiye/borç olan ve tutar yazılmış (seyrek de olsa) kolon.
-  // 2.4.4 (5b): "Kalan" / "Bakiye" kolonu varsa o (önceden ilk eşleşen alındığı için "Alacak Tutarı" + "Kalan" tablosunda toplam alacak "Kalan Borç"
-  // sayılıyordu; "önce cari açın" formundaki Açılış Bakiyesi bu tutardan dolar).
-  const debt = moneyLike.find(column => AMOUNT_REMAINING.test(foldText(column))) || moneyLike.find(column => AMOUNT_DEBT.test(foldText(column))) || columns.find(column => AMOUNT_DEBT.test(foldText(column)) && rows.some(row => parseAmount(cell(row, column)) !== null)) || null;
+  // 2.4.4 (5b, 30a): "Kalan" / "Bakiye" kolonu varsa o (önceden ilk eşleşen alındığı için "Alacak Tutarı" + "Kalan" tablosunda toplam alacak "Kalan Borç"
+  // sayılıyordu; "önce cari açın" formundaki Açılış Bakiyesi bu tutardan dolar). Seçim Tablodaki Kişiler ile ORTAK yardımcıda (debt-column.mjs).
+  const debt = pickRemainingDebtColumn(moneyLike, AMOUNT_DEBT) || columns.find(column => AMOUNT_DEBT.test(foldText(column)) && rows.some(row => parseAmount(cell(row, column)) !== null)) || null;
   // Tek vadeli tabloda ("Alacak / Son ödeme", "Tutar / Vade") kalemin tutarı, kendi tutar kolonu yoksa borç ya da
   // tablodaki tek tutar kolonudur; birden çok tutar kolonu varsa (borç, ödenen, kalan) yalnız kalan borç kullanılır.
   const single = due.filter(entry => entry.installment === null).length === 1 && !monthly.length && !recurring.length;

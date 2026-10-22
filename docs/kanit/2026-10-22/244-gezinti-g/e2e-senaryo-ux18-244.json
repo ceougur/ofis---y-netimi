@@ -1,0 +1,32 @@
+{
+  "ad": "244-gezinti-g/e2e-senaryo-ux18-244",
+  "komut": "npm run test:senaryo-ux18-244",
+  "commit": "158d9c0178695ab205f2022a7878d148d3a26809",
+  "dal": "is/gezinti-g",
+  "kirli": 6,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T18:09:37.952Z",
+  "sure_sn": 16.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 27,
+    "gecen": 27,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-gezinti-g/e2e-senaryo-ux18-244.log",
+  "klasor": "/home/user/wt/gezinti-g",
+  "ham_cikti_sha256": "3ba588ae7cd4fd13fc921124bf5c1ae537bdbd4a605b4430928aaeae152fa036",
+  "ham_cikti_bayt": 3634
+}

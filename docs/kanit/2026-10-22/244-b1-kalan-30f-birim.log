@@ -1,0 +1,72 @@
+TAP version 13
+# Subtest: dışa aktarım düğmeleri (UI11)
+    # Subtest: eski düğme adları kalmadı (liste/rapor tek ad PDF / Excel)
+    ok 1 - eski düğme adları kalmadı (liste/rapor tek ad PDF / Excel)
+      ---
+      duration_ms: 11.025207
+      type: 'test'
+      ...
+    # Subtest: PDF / Excel bağlantıları ortak ailede (makbuz satırı ve kılavuz bağlantısı hariç)
+    ok 2 - PDF / Excel bağlantıları ortak ailede (makbuz satırı ve kılavuz bağlantısı hariç)
+      ---
+      duration_ms: 3.523765
+      type: 'test'
+      ...
+    # Subtest: Yazdır / dışa aktar / PDF düğmeleri elle yazılmıyor (HOF.outputButton)
+    ok 3 - Yazdır / dışa aktar / PDF düğmeleri elle yazılmıyor (HOF.outputButton)
+      ---
+      duration_ms: 3.199659
+      type: 'test'
+      ...
+    # Subtest: ortak yardımcı: tür sınıfı, simge, erişilebilir ad ve ipucu
+    ok 4 - ortak yardımcı: tür sınıfı, simge, erişilebilir ad ve ipucu
+      ---
+      duration_ms: 2.687968
+      type: 'test'
+      ...
+    1..4
+ok 1 - dışa aktarım düğmeleri (UI11)
+  ---
+  duration_ms: 22.483028
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 106.583052
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 6.835413
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 3.302946
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 4 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 37.124372
+      type: 'test'
+      ...
+    1..4
+ok 2 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 155.2707
+  type: 'suite'
+  ...
+1..2
+# tests 8
+# suites 2
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 390.481611
