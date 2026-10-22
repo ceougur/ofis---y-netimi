@@ -1,0 +1,32 @@
+{
+  "ad": "244-baslarken/yeni-e2e-run",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/run.mjs",
+  "commit": "3b30e304ef7827488837080bcd210aed11160e18",
+  "dal": "is/baslarken",
+  "kirli": 8,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T05:21:16.458Z",
+  "sure_sn": 168.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "e2e-run",
+    "toplam": 50,
+    "gecen": 50,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-baslarken/yeni-e2e-run.log",
+  "klasor": "/home/user/wt/baslarken",
+  "ham_cikti_sha256": "30f9f82f7ac57bbfee0e044f705f073119ebf75ffc40e2cc411eb01d52e153de",
+  "ham_cikti_bayt": 5546
+}

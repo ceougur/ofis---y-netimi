@@ -93,6 +93,7 @@ jobs:
       - run: npm run test:uiux-a-243
       - run: npm run test:uiux-b-243
       - run: npm run test:sirket-canli-yetki-244
+      - run: npm run test:baslarken-244
 
   windows:
     name: Windows kurulum paketi

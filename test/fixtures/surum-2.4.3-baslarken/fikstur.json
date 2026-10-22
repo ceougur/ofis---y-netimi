@@ -1,0 +1,49 @@
+{
+ "name": "surum-2.4.3-baslarken",
+ "cut": "v2.4.3",
+ "version": "v2.4.3",
+ "commit": "163dd5d6a687fda7ba31cda6f27bb1b2cd9c1a1d",
+ "registry": [
+  {
+   "id": "sirket-001",
+   "code": "001",
+   "name": "Şirket 1",
+   "dir": ""
+  },
+  {
+   "id": "sirket-8b41e591-553a-4751-95ef-fbc7595c5bbf",
+   "code": "002",
+   "name": "Eski İkinci Şirket A.Ş.",
+   "dir": "sirketler/002"
+  }
+ ],
+ "generator": {
+  "command": "node --disable-warning=ExperimentalWarning tools/baslarken-fikstur.mjs"
+ },
+ "files": [
+  {
+   "path": "veri/destekofis.sqlite",
+   "sha256": "0bcfb44ab130dcb6a972fa48a48d1a3790d1a4e2b71f57bd23ba8f3d0fc8397d",
+   "size": 1306624,
+   "mtimeMs": 1792643627737
+  },
+  {
+   "path": "veri/sirketler.json",
+   "sha256": "9027d433f266904f6f1fe4e1a69e174bb8ca64fd358342ffc6a7871a30485a29",
+   "size": 473,
+   "mtimeMs": 1792643627400
+  },
+  {
+   "path": "veri/sirketler.yedek.json",
+   "sha256": "9027d433f266904f6f1fe4e1a69e174bb8ca64fd358342ffc6a7871a30485a29",
+   "size": 473,
+   "mtimeMs": 1792643627400
+  },
+  {
+   "path": "veri/sirketler/002/destekofis.sqlite",
+   "sha256": "363fed4ec2d2651fa0086a2d3c64c270f4be274611f0fa6f46a4d70ad557538d",
+   "size": 1232896,
+   "mtimeMs": 1792643627729
+  }
+ ]
+}

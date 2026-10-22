@@ -1,0 +1,93 @@
+{
+  "ad": "244-baslarken/eski-163dd5d-e2e",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/baslarken/baslarken-eski-163dd5d && node --disable-warning=ExperimentalWarning test/e2e/baslarken-244.mjs",
+  "commit": "3b30e304ef7827488837080bcd210aed11160e18",
+  "dal": "is/baslarken",
+  "kirli": 8,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T05:33:53.175Z",
+  "sure_sn": 166.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 17,
+    "gecen": 5,
+    "basarisiz": 12,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 12 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Başlarken listesi açılış ekranında görünür",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım hata verdi: page.textContent: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım hata verdi: page.waitForURL: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım hata verdi: page.click: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım hata verdi: page.click: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım hata verdi: page.click: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "002'de liste görünür (001 tamamlandığı hâlde)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "002: 1/5 (yalnız Şirket Adı; null)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım hata verdi: page.click: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım hata verdi: page.evaluate: ApiError: Endpoint bulunamadı.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "001 “zaten kurulu” (null)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım hata verdi: page.click: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-baslarken/eski-163dd5d-e2e.log",
+  "klasor": "/home/user/wt/baslarken",
+  "ham_cikti_sha256": "0b29c58a5e5e5a3647fa7a6393bda0f4cfe3c9b4c6b6a09d655326d4e66d2248",
+  "ham_cikti_bayt": 1608
+}
