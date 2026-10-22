@@ -396,4 +396,20 @@ describe("2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji",
     assert.equal(sent.status, 200, JSON.stringify(sent.data));
     assert.deepEqual(sent.results.map(item => [item.id, item.ok]), [[fresh.id, true]]);
   });
+  test("S12: liste satırı kalıcı engelli bekleyeni işaretler (eBlocked) — 'Seçilenleri Gönder (N)' sayısına girmez; sayfalı liste ve dışa aktarım aynı", async () => {
+    const ctx = await setup();
+    open.push(ctx);
+    const sentToday = await ctx.sale(ctx.people[0], { issueDate: ctx.day(0), eSend: "now" });
+    assert.equal(sentToday.autoSend?.ok, true, JSON.stringify(sentToday.autoSend));
+    const blocked = await ctx.sale(ctx.people[1], { issueDate: ctx.day(0), eSend: "later" });
+    ctx.server.app.store.run("UPDATE invoices SET issue_date = ? WHERE id = ?", ctx.day(-1), blocked.id);
+    const free = await ctx.sale(ctx.people[2], { issueDate: ctx.day(0), eSend: "later" });
+    assert.ok((await ctx.card(blocked.id)).sendBlock, "ön koşul: kalıcı engelli");
+    const rows = Object.fromEntries((await ctx.pendingTab()).invoices.map(row => [row.id, row]));
+    assert.equal(rows[blocked.id]?.eBlocked, true, JSON.stringify(rows[blocked.id]));
+    assert.equal(rows[free.id]?.eBlocked, false);
+    const all = Object.fromEntries((await ctx.api.get("/api/workspace/invoices?tab=all")).data.invoices.map(row => [row.id, row]));
+    assert.equal(all[sentToday.id]?.eBlocked, false, "gönderilmiş belge engelli sayılmaz");
+    assert.equal(all[blocked.id]?.eBlocked, true);
+  });
 });

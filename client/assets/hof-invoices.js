@@ -2765,14 +2765,18 @@
   }
   // 2.4.4 (E6, müşteri isteği "seçilenlerden gönderilebilir (Gönderilecekler) olanların sayısıyla"): seçimde Gönderilecekler'de olan belgeler —
   // sunucunun kuralı (unsentSql): numarasız bekleyen ya da numaralı gitmemiş kendi e-Belgemiz. Kâğıt, gönderilmiş, iptal, taslak ve Müşteri Fişi
-  // olarak bırakılan sayılmaz. Kalıcı engelli bekleyen (Tümünü Gönder'in sayısındaki gibi) sayılır; ön denetim onu ayrıca söyler, gönderilmez.
-  const selectedPending = () => (view.list?.invoices || []).filter(doc => view.selected.has(doc.id) && doc.status === "issued" && (doc.eStatus === "waiting" || doc.eUnsent));
+  // olarak bırakılan sayılmaz. Kalıcı engelli bekleyen (eBlocked: seride daha yeni numara / alıcı e-Fatura mükellefi) gönderilemez: sayıya girmez,
+  // gönderilmez, onay penceresinde ayrıca söylenir. Seçimde bekleyen var ama hepsi kalıcı engelliyse düğme pasif ve nedeni yanında yazılı.
+  const selectedWaiting = () => (view.list?.invoices || []).filter(doc => view.selected.has(doc.id) && doc.status === "issued" && (doc.eStatus === "waiting" || doc.eUnsent));
+  const selectedPending = () => selectedWaiting().filter(doc => !doc.eBlocked);
+  const selectedBlocked = () => selectedWaiting().filter(doc => doc.eBlocked);
   function sendSelectedButton() {
     if (!edoc() || !canManage()) return "";
     const progress = view.sendProgress;
     if (progress?.mode === "only") return `<button type="button" class="hof-button hof-button-small" data-act="send-selected" disabled aria-busy="true" data-send-progress>Gönderiliyor: ${progress.done.toLocaleString("tr-TR")} / ${progress.total.toLocaleString("tr-TR")}</button>`;
+    if (!selectedWaiting().length) return "";
     const count = selectedPending().length;
-    if (!count) return "";
+    if (!count) return `<button type="button" class="hof-button hof-button-small" data-act="send-selected" disabled>Seçilenleri Gönder (0)</button><small class="hof-inv-warn" data-send-selected-why>Seçilen bekleyen belgeler kalıcı engelli; e-Belge olarak gönderilemez (nedeni belgenin kartında).</small>`;
     return `<button type="button" class="hof-button hof-button-small" data-act="send-selected"${progress ? " disabled" : ""} title="Seçilen belgeler eski tarihliden başlayarak entegratöre gönderilir; numara gönderimde verilir">Seçilenleri Gönder (${count.toLocaleString("tr-TR")})</button>`;
   }
   function showSendProgress() {
@@ -2814,6 +2818,7 @@
     if (view.sendProgress) return;
     const docs = selectedPending();
     if (!docs.length) return;
+    const blocked = selectedBlocked().map(doc => doc.id);
     const chosen = docs.map(doc => doc.id);
     let check;
     try {
@@ -2838,12 +2843,12 @@
         loadList();
         return;
       }
-      const go = await HOF.confirm({ title: `${total.toLocaleString("tr-TR")} Belge Gönderilsin mi?`, message: `Seçilen ${total.toLocaleString("tr-TR")} belge tarih sırasıyla (eski tarihli önce) entegratöre gönderilecek. Numarası olmayanlara e-Belge numarası gönderim sırasında verilir; sonucu belirsiz olanlar önce entegratöre sorulur, orada varsa yeniden gönderilmez.${check.permanent ? ` ${Number(check.permanent).toLocaleString("tr-TR")} seçili belge kalıcı engelli olduğu için gönderilmez.` : ""}`, confirmLabel: "Seçilenleri Gönder" });
+      const go = await HOF.confirm({ title: `${total.toLocaleString("tr-TR")} Belge Gönderilsin mi?`, message: `Seçilen ${total.toLocaleString("tr-TR")} belge tarih sırasıyla (eski tarihli önce) entegratöre gönderilecek. Numarası olmayanlara e-Belge numarası gönderim sırasında verilir; sonucu belirsiz olanlar önce entegratöre sorulur, orada varsa yeniden gönderilmez.${blocked.length + (Number(check.permanent) || 0) ? ` ${(blocked.length + (Number(check.permanent) || 0)).toLocaleString("tr-TR")} seçili belge kalıcı engelli olduğu için gönderilmez.` : ""}`, confirmLabel: "Seçilenleri Gönder" });
       if (!go || view.sendProgress) return;
     }
     // Ön denetimle gönderim arasında başka oturum daha eski tarihli belge kaydettiyse sunucu ilk istekte yine sorar (409); soru yinelenir.
     for (let ask = 0; ; ask += 1) {
-      const older = await runSend({ only }, total, "only");
+      const older = await runSend({ only }, total, "only", blocked);
       if (!older) return;
       if (ask >= 2) {
         HOF.toast(`Gönderilmedi: gönderim hazırlanırken daha eski tarihli belgeler kaydedilmeye devam ediyor (${Number(older.count).toLocaleString("tr-TR")} belge). Hiçbir belgeye numara verilmedi; biraz sonra yeniden deneyin ya da Tümünü Gönder'i kullanın.`, { type: "info", timeout: 10000 });
@@ -2862,7 +2867,7 @@
   // turda her belge en çok bir kez denenir. Döngü "gönderilen > 0" ile değil, imleç ilerledikçe ve kalan oldukça sürer (önceden kuyruğun başında
   // reddedilen belgeler varken ilk istek 0 gönderip döngüyü bitiriyordu). Dönüş: Seçilenleri Gönder'in ilk isteği 409 einvoice-selection-older ile
   // döndüyse (hiçbir belge gönderilmeden) sunucunun eski belge bilgisi; değilse boş.
-  async function runSend(base, total, mode) {
+  async function runSend(base, total, mode, keep = []) {
     const again = mode === "only" ? "Seçilenleri Gönder" : "Tümünü Gönder";
     const listed = new Set((view.list?.invoices || []).map(doc => doc.id));
     const tab = view.tab;
@@ -2952,7 +2957,8 @@
     HOF.toast(`${parts.join("; ")}.`, { type: failed.length || held.length || stopped ? "error" : busy.length || remaining || withdrawn.length || notPending.length ? "info" : "success", timeout: bad ? 15000 : 6000 });
     // Seçilenleri Gönder: gönderilemeyenler (listede görünenler) seçili kalır, gidenler seçimden düşer (toplu işlemlerin kuralı, bulkOutcome). Gönderim
     // sürerken sekme değiştiyse (seçim zaten temizlendi) yeni sekmede görünmeyen belgeler seçilmez.
-    if (mode === "only" && view.tab === tab) view.selected = new Set(results.filter(item => !item.ok && listed.has(item.id) && item.reason !== "not-pending").map(item => item.id));
+    // Gönderilmeyen kalıcı engelli seçili belgeler (keep) de seçili kalır.
+    if (mode === "only" && view.tab === tab) view.selected = new Set([...results.filter(item => !item.ok && listed.has(item.id) && item.reason !== "not-pending").map(item => item.id), ...keep.filter(id => listed.has(id))]);
     loadList();
     return null;
   }

@@ -1145,10 +1145,16 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     // Sayfalı istekte ödeme durumu süzgeci, sıralama ve toplamlar hafif satırla (leanRow: shape() ile aynı değerler) yapılır; tam şekil
     // yalnız sayfadaki satırlar için kurulur (aşağıda). Sayfasız istek (PDF / Excel) eski yoldan: önce bütün satırlar şekillenir.
     let shaped;
+    // 2.4.4 (E6, müşteri isteği "seçilenlerden gönderilebilir olanların sayısıyla"): numarasız bekleyenin KALICI gönderim engeli (seride daha yeni
+    // numara / alıcı e-Fatura mükellefi) listede işaretlenir; ekranda "Seçilenleri Gönder (N)" sayısına girmez. Yalnız bekleyen satırlarda; seri
+    // başına son numara bir kez okunur (lastOf).
+    const lastCache = new Map();
+    const lastOf = (key, read) => (lastCache.has(key) ? lastCache.get(key) : lastCache.set(key, read()).get(key));
+    const eBlocked = row => edocEnabled && row.status === "issued" && row.eStatus === "waiting" && Boolean(sendBlockOf(row, lastOf) || buyerBlockOf(row));
     if (page) shaped = rows.map(row => leanRow(row, states.get(row.id), query.sort === "party"));
     else {
       const posCash = posCashSet(rows.filter(row => row.status === "issued").map(row => row.id));
-      shaped = rows.map(row => ({ ...shape(row, states.get(row.id)), posCash: posCash.has(row.id) }));
+      shaped = rows.map(row => ({ ...shape(row, states.get(row.id)), posCash: posCash.has(row.id), eBlocked: eBlocked(row) }));
     }
     if (query.pay) shaped = shaped.filter(row => (query.pay === "open" ? ["open", "partial", "overdue", "installment"].includes(row.payState) : query.pay === "unpaid" ? row.payState === "open" : row.payState === query.pay));
     const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
@@ -1164,7 +1170,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const chosen = shaped.slice(page.offset, page.offset + page.limit);
       const full = new Map(store.all(`${INVOICE_SQL} WHERE i.id IN (SELECT value FROM json_each(?))`, JSON.stringify(chosen.map(item => item.id))).map(row => [row.id, row]));
       const posCash = posCashSet(chosen.filter(item => item.status === "issued").map(item => item.id));
-      invoices = chosen.map(item => ({ ...shape(full.get(item.id), states.get(item.id)), posCash: posCash.has(item.id) }));
+      invoices = chosen.map(item => ({ ...shape(full.get(item.id), states.get(item.id)), posCash: posCash.has(item.id), eBlocked: eBlocked(full.get(item.id)) }));
     }
     // Toplamlar yalnız kesilmiş faturalardan (taslak ve iptal hariç); iade faturaları ters işaretle.
     const totals = { count: shaped.length, issued: 0, sale: 0, purchase: 0, net: 0, vat: 0, payable: 0, open: 0, overdue: 0 };

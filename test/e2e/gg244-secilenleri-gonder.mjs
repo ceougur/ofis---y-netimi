@@ -5,8 +5,8 @@
 //   A. 2 eski seçilmemiş + 3 yeni seçili: düğme (3); basınca soru; Vazgeç → EDM'ye 0 gönderim, numara yok, bilgi bildirimi; yeniden bas → Ekle → 5 belge
 //      gider, numara = tarih sırası, her biri bir kez; gönderim sürerken Tümünü Gönder de basılamaz, ilerleme Seçilenleri Gönder'de.
 //   B. Eski belge yokken soru yok: "N Belge Gönderilsin mi?" → yalnız seçilenler gider; seçilmeyen bekler.
-//   C. Sayı yalnız Gönderilecekler'dekileri sayar: Tüm sekmesinde gönderilmiş ve iptal edilmiş belge seçilse de (2: bekleyen + kalıcı engelli bekleyen);
-//      onayda kalıcı engelli "gönderilmez" diye söylenir, yalnız bekleyen gider.
+//   C. Sayı yalnız gönderilebilirleri sayar: Tüm sekmesinde gönderilmiş, iptal edilmiş ve kalıcı engelli bekleyen seçilse de (1); onayda kalıcı engelli
+//      "gönderilmez" diye söylenir, yalnız bekleyen gider; kalan seçim yalnız kalıcı engelliyse düğme pasif (0) ve nedeni yanında yazılı.
 //   D. Onay penceresi açıkken başka oturum daha eski tarihli belge kaydeder (e-Fatura serisi): sunucu gönderimden önce yine sorar (409) — Vazgeç → 0
 //      gönderim; yeniden → Ekle → TEF sırası = tarih sırası.
 // Eski kodda (163dd5d) düğme yoktur → A kırmızı; DEPO=<eski kopya> ile koşulur. Her soru/onay yanıtı nedeniyle yazılır (ders 34). Çıkış: "N geçti, M kaldı".
@@ -179,7 +179,7 @@ try {
   ok(sends() - before === 2, `EDM'ye 2 gönderim (${sends() - before})`);
   ok(row(next[2].id).eStatus === "waiting" && !row(next[2].id).number, "seçilmeyen belge Gönderilecekler'de bekliyor");
 
-  console.log("C) sayı yalnız Gönderilecekler'dekileri sayar (gönderilmiş, iptal sayılmaz); kalıcı engelli onayda söylenir, gönderilmez");
+  console.log("C) sayı yalnız gönderilebilirleri sayar (gönderilmiş, iptal, kalıcı engelli sayılmaz); kalıcı engelli onayda söylenir; yalnız engelli kalınca düğme pasif + neden");
   await clearToasts();
   const cancelled = await sale(0, 0);
   await must("iptal", api.post(`/api/workspace/invoices/${cancelled.id}/cancel`, { reason: "Deneme" }));
@@ -188,7 +188,7 @@ try {
   await openTab("all");
   for (const id of [fresh[2].id, cancelled.id, blocked.id, next[2].id]) await check(id);
   await page.waitForSelector(selButton);
-  ok(/^Seçilenleri Gönder \(2\)$/.test((await page.textContent(selButton)).trim()), `4 seçili, Gönderilecekler'de 2 (${(await page.textContent(selButton)).trim()})`);
+  ok(/^Seçilenleri Gönder \(1\)$/.test((await page.textContent(selButton)).trim()), `4 seçili (gönderilmiş, iptal, kalıcı engelli, bekleyen) → gönderilebilir 1 (${(await page.textContent(selButton)).trim()})`);
   before = sends();
   await page.click(selButton);
   const permanentText = await answer("^1 Belge Gönderilsin mi\\?$", true, "kalıcı engelli seçili belge gönderilmez, onayda söylenir");
@@ -198,9 +198,11 @@ try {
   ok(row(blocked.id).eStatus === "waiting" && !row(blocked.id).number, "kalıcı engelli belge numara almadı");
   ok(/^TEA2026/.test(row(next[2].id).number), "bekleyen belge gönderildi");
   const summary = (await toasts()).find(item => /belge gönderildi/.test(item)) || "";
-  ok(/1 belge gönderildi; 1 belge gönderilemedi: TEA serisinde son gönderilen belge/.test(summary), `özet kalıcı engelin nedenini söyler (${summary.slice(0, 260)})`);
-  await page.waitForFunction(sel => /^Seçilenleri Gönder \(1\)$/.test(document.querySelector(sel)?.textContent.trim() || ""), selButton, { timeout: 10000 }).catch(() => null);
-  ok(/^Seçilenleri Gönder \(1\)$/.test(((await page.textContent(selButton).catch(() => "")) || "").trim()), "gönderilemeyen belge seçili kalır (giden düştü)");
+  ok(/hof-toast-success[^|]*\|1 belge gönderildi\.$/.test(summary), `özet "1 belge gönderildi." — kalıcı engelli gönderime girmedi (${summary.slice(0, 260)})`);
+  await page.waitForFunction(sel => document.querySelector(sel)?.disabled === true, selButton, { timeout: 10000 }).catch(() => null);
+  const idle = await page.$eval(selButton, node => ({ text: node.textContent.trim(), disabled: node.disabled, why: node.parentElement.querySelector("[data-send-selected-why]")?.textContent || "" })).catch(() => null);
+  ok(idle && idle.disabled && /^Seçilenleri Gönder \(0\)$/.test(idle.text), `yalnız kalıcı engelli seçili kaldı: düğme pasif (0) (${JSON.stringify(idle)})`);
+  ok(idle && /kalıcı engelli; e-Belge olarak gönderilemez/.test(idle.why), `pasif düğmenin nedeni görünür yazı (${idle?.why})`);
 
   console.log("D) onay penceresi açıkken başka oturum daha eski belge kaydeder → gönderim yine ÖNCE sorulur (409); Vazgeç → hiçbir şey; yeniden → Ekle");
   await clearToasts();
