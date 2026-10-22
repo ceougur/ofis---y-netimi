@@ -462,6 +462,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   önce Fatura Ayarları → Numaralar'dan sıradaki numarayı ileri alın) + 11048 iletisine (test ve canlı seri) geri yükleme olasılığı; numaralama mantığı DEĞİŞMEZ.
   EDM'den kendiliğinden eşitleme (GetInvoiceSerial / GetSMMSerial ya da belge listesi) 2.4.4 SONRASI ayrı iş.
   TEYİT (kullanıcı, ~17:05 UTC: "hayır" + "2.4.4 e girsin" → soruldu, seçti: "Yalnız küçük güvence"): 2.4.4'e yalnız uyarı + 11048 iletisi (30b, ajan çalışıyor).
+- SORU (kullanıcı, 22.10.2026 ~17:20 UTC; gezinti ekranı "Başlarken"): "bu ekran eski kullanıcılar sürümü güncelleyince gelecek mi? istenir açılacak bir yer var mı" →
+  YANIT (koddan, server/lib/getting-started.mjs + client/assets/hof-getting-started.js): kendiliğinden GELMEZ — 2.4.4 şirketin veri dosyasını ilk açtığında iş verisi ya da
+  kaydedilmiş Fatura Ayarları varsa şirket "zaten kurulu" sayılır, liste hiç çıkmaz; yalnız boş şirkette, yalnız yöneticiye, açılış ekranında (pencere açılmaz).
+  Elle: kullanıcı menüsü → "Başlarken" ve Hızlı Arama (Ctrl+K) "Başlarken" (yalnız yönetici); adım durumu veriden; "Gizle" kişi + şirket başına.
 - SON ADAY BAĞIMSIZ TURU (kullanıcı, 22.10.2026: "2.4.4 son aday uzun test koşusuna başlamadan kâhin (uzman mali müşavir), yargıç, eleştirmen testlerinden geçecek mi,
   regresyon testleri yapılıyor mu?" → EVET; "ekle" → uzman UI + uzman UX de): iş listesi madde 30–31 (31a kâhin, 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol,
   31f uzman UI/UX) Uzun Doğrulama'dan ÖNCE.
