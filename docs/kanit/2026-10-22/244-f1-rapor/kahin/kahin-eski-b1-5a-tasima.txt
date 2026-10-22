@@ -1,0 +1,7 @@
+b1-5a-tasima: 127/130 tuttu
+  ✗ [BULGU KULLANICI] k1:rapor:K-1:alacak: program 0 · kâhin 350000 (B1.8 5c tahsilat bir kez)
+  ✗ [BULGU KULLANICI] k1:rapor:K-2:alacak: program 420000 · kâhin 520000 (B1.8 5c tahsilat bir kez)
+  ✗ [BULGU KULLANICI] k1:rapor:K-3:alacak: program 150000 · kâhin 450000 (B1.8 5c tahsilat bir kez)
+
+ÖZET: 1 senaryo, 130 denetim, 3 fark (BULGU 3), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-cari-afIfBI
+127/130 denetim geçti

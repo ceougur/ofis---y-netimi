@@ -1,0 +1,4 @@
+b1-5b-borc: 146/146 tuttu
+
+ÖZET: 1 senaryo, 146 denetim, 0 fark (BULGU 0), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-cari-1NOneT
+146/146 denetim geçti

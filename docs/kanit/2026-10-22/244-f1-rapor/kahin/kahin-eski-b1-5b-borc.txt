@@ -1,0 +1,6 @@
+b1-5b-borc: 144/146 tuttu
+  ✗ [İNCELE YAYGIN] k1:rapor:K-5:ad: program "okunamadı" · kâhin "Eren Taş" (B1.8b Tablodaki Kişiler kişiyi adıyla gösterir)
+  ✗ [BULGU KULLANICI] k1:rapor:K-5:alacak: program 0 · kâhin 50000 (B1.8 5c tahsilat bir kez)
+
+ÖZET: 1 senaryo, 146 denetim, 2 fark (BULGU 1), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-cari-lgKawN
+144/146 denetim geçti

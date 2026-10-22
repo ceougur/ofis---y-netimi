@@ -1,0 +1,4 @@
+b1-5a-tasima: 130/130 tuttu
+
+ÖZET: 1 senaryo, 130 denetim, 0 fark (BULGU 0), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-cari-j6nO4O
+130/130 denetim geçti
