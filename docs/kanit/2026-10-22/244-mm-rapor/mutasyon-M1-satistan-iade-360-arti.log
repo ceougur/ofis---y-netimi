@@ -1,0 +1,165 @@
+TAP version 13
+# Subtest: 2.4.4 MM3 — Stopaj ve Tevkifat Özeti: iade asıl belgenin tarafında eksi; defter ve KDV Özeti ile aynı
+    # Subtest: Eylül (yalnız asıl belgeler): taraflar ve özet
+    ok 1 - Eylül (yalnız asıl belgeler): taraflar ve özet
+      ---
+      duration_ms: 10.006169
+      type: 'test'
+      ...
+    # Subtest: Ekim: satıştan iade karşı tarafın kestiğinde (193) EKSİ, alıştan iade bizim kestiğimizde (360) EKSİ; tevkifatsız ve iptal edilen iade yok
+    not ok 2 - Ekim: satıştan iade karşı tarafın kestiğinde (193) EKSİ, alıştan iade bizim kestiğimizde (360) EKSİ; tevkifatsız ve iptal edilen iade yok
+      ---
+      duration_ms: 6.191002
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-rapor/mm-rapor-mutasyon/test/stopaj-tevkifat-iade-244.test.mjs:125:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kısmi iade
+        + actual - expected
+        
+          {
+        +   net: 5000,
+        +   side: 'Bizim kestiğimiz (360)',
+        -   net: -5000,
+        -   side: 'Bizden kesilen (193)',
+            stoppage: 0,
+        +   withheld: 900
+        -   withheld: -900
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        side: 'Bizden kesilen (193)'
+        net: -5000
+        stoppage: 0
+        withheld: -900
+      actual:
+        side: 'Bizim kestiğimiz (360)'
+        net: 5000
+        stoppage: 0
+        withheld: 900
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-rapor/mm-rapor-mutasyon/test/stopaj-tevkifat-iade-244.test.mjs:128:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Bu Yıl: özet ve her tarafın TOPLAM satırı (elle hesap)
+    not ok 3 - Bu Yıl: özet ve her tarafın TOPLAM satırı (elle hesap)
+      ---
+      duration_ms: 7.09398
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-rapor/mm-rapor-mutasyon/test/stopaj-tevkifat-iade-244.test.mjs:142:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        1.800 − 900; satıştan iadeler 360'a yazılmaz
+        
+        3600 !== 900
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 900
+      actual: 3600
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-rapor/mm-rapor-mutasyon/test/stopaj-tevkifat-iade-244.test.mjs:146:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: defter (193 / 360 hareketi) ve KDV Özeti ile aynı sayı: Eylül, Ekim, Bu Yıl
+    not ok 4 - defter (193 / 360 hareketi) ve KDV Özeti ile aynı sayı: Eylül, Ekim, Bu Yıl
+      ---
+      duration_ms: 22.45589
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-rapor/mm-rapor-mutasyon/test/stopaj-tevkifat-iade-244.test.mjs:153:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ekim: Bizim Ödeyeceğimiz Stopaj + Tevkifat = 360 alacak − borç
+        
+        -200 !== -2900
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: -2900
+      actual: -200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-rapor/mm-rapor-mutasyon/test/stopaj-tevkifat-iade-244.test.mjs:160:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: her süzgeç (Bu Yıl, Bu Ay, Geçen Ay, Son 30 Gün, Tüm Zamanlar, özel aralık) × ekran/PDF/Excel: TOPLAM = satırlar
+    ok 5 - her süzgeç (Bu Yıl, Bu Ay, Geçen Ay, Son 30 Gün, Tüm Zamanlar, özel aralık) × ekran/PDF/Excel: TOPLAM = satırlar
+      ---
+      duration_ms: 158.2779
+      type: 'test'
+      ...
+    # Subtest: 002 şirketi: tevkifatlı satış ve tam iadesi 193 tarafında +1.800 / −1.800; 001 raporuna karışmaz
+    not ok 6 - 002 şirketi: tevkifatlı satış ve tam iadesi 193 tarafında +1.800 / −1.800; 001 raporuna karışmaz
+      ---
+      duration_ms: 4.350288
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-rapor/mm-rapor-mutasyon/test/stopaj-tevkifat-iade-244.test.mjs:210:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   net: 10000,
+        +   side: 'Bizim kestiğimiz (360)',
+        -   net: -10000,
+        -   side: 'Bizden kesilen (193)',
+            stoppage: 0,
+        +   withheld: 1800
+        -   withheld: -1800
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        side: 'Bizden kesilen (193)'
+        net: -10000
+        stoppage: 0
+        withheld: -1800
+      actual:
+        side: 'Bizim kestiğimiz (360)'
+        net: 10000
+        stoppage: 0
+        withheld: 1800
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-rapor/mm-rapor-mutasyon/test/stopaj-tevkifat-iade-244.test.mjs:214:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yetkisiz kullanıcı (personel): rapor 403
+    ok 7 - yetkisiz kullanıcı (personel): rapor 403
+      ---
+      duration_ms: 112.515564
+      type: 'test'
+      ...
+    1..7
+not ok 1 - 2.4.4 MM3 — Stopaj ve Tevkifat Özeti: iade asıl belgenin tarafında eksi; defter ve KDV Özeti ile aynı
+  ---
+  duration_ms: 1550.194459
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-rapor/mm-rapor-mutasyon/test/stopaj-tevkifat-iade-244.test.mjs:64:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 7
+# suites 1
+# pass 3
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1976.249304

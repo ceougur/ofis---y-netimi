@@ -1,0 +1,32 @@
+{
+  "ad": "244-mm-rapor/kahin-defter",
+  "komut": "npm run test:kahin-defter",
+  "commit": "ad865f0b04a18da1016904e0b46ffae8d5a989a7",
+  "dal": "is/mm-rapor",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T21:44:59.764Z",
+  "sure_sn": 3.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "kahin-defter",
+    "toplam": 147,
+    "gecen": 147,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-mm-rapor/kahin-defter.log",
+  "klasor": "/home/user/wt/mm-rapor",
+  "ham_cikti_sha256": "971137ae6a79f876a1db3b6a4df15d40f7530275e0a3cda7584ac8397379d3ce",
+  "ham_cikti_bayt": 1295
+}
