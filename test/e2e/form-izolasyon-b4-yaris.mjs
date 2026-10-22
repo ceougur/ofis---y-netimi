@@ -17,8 +17,18 @@
 //               tutulur (kullanıcı ayarı "Sağ altta açılır bildirim göster"), kutu durgunlaşana dek beklenir, fare konur, farenin bildirimin
 //               içinde olduğu ölçülür. Ön koşul (yarış fırsatı): deneme başında ekranda açılır bildirim vardı.
 //
+//   (22.10.2026, 2.4.4 madde 7b — B4 yine ara sıra kırmızı, ön koşullar "true true"; ders 20)
+//   gec-fare    18.10 düzeltmesinin (2.4.3 / 163dd5d) sırası: bildirim → durgunlaşma → kutu ölçülür → fare. Bildirimin 3,6 sn'si bildirim çıktığı
+//               anda başlar; ZORLA: fare, süre dolduktan (bildirim kapanmaya başladıktan, ekrandan silinmeden 250 ms önce) sonra varır — makine
+//               yüklüyken ölçüm + fare hareketinin 3,6 sn'yi aşması. Ön koşul: fare vardığında bildirim kapanıyordu (hofLeaving) ve ekrandaydı.
+//               Beklenen: kırmızı (TEST yarışı; fare "bildirimin içinde" ölçülür ama bildirim zaten kapanıyordur).
+//   yeni-gec    22.10 sırası (senaryo B4): ölçüm bildirimi → fare oraya → bildirim farenin ALTINDA açılır → fare içinde kıpırdar. ZORLA: kıpırdatma
+//               bildirimin süresi dolduktan 400 ms SONRA (ürünün "kapanma anında fare üstündeyse kapanmaz" yolu). Ön koşul: kıpırdatma anı > süre.
+//               Beklenen: yeşil. Mutasyonda (fare üstü hiç sayılmaz) kırmızı.
+//   yeni        22.10 sırası, zorlama yok. Beklenen: yeşil.
+//
 //   node --disable-warning=ExperimentalWarning test/e2e/form-izolasyon-b4-yaris.mjs
-//   MODE=eski-test|altina|uzaklas|yeni-test|hepsi (varsayılan hepsi)  TRIALS (varsayılan 10)  CPU (varsayılan 1)  LEAD (varsayılan 0 ms)
+//   MODE=eski-test|altina|uzaklas|yeni-test|gec-fare|yeni-gec|yeni|hepsi (varsayılan hepsi; virgülle birden çok)  TRIALS (varsayılan 10)  CPU (varsayılan 1)  LEAD (varsayılan 0 ms)
 // Çıkış: her mod için "deneme / ön koşul oluştu / kırmızı"; beklenen dışı sonuç varsa çıkış kodu 1.
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -30,7 +40,9 @@ import { ADMIN_PASSWORD } from "../helpers.mjs";
 const TRIALS = Number(process.env.TRIALS || 10);
 const CPU = Number(process.env.CPU || 1);
 const LEAD = Number(process.env.LEAD || 0);
-const MODES = (process.env.MODE || "hepsi") === "hepsi" ? ["eski-test", "altina", "uzaklas", "yeni-test"] : [process.env.MODE];
+const MODES = (process.env.MODE || "hepsi") === "hepsi" ? ["eski-test", "altina", "uzaklas", "yeni-test", "gec-fare", "yeni-gec", "yeni"] : process.env.MODE.split(",");
+// Beklenen sonuç: ön koşul oluşunca kırmızı olması gereken modlar (TEST yarışının kanıtı); öbürlerinde kırmızı = beklenmeyen.
+const RED_EXPECTED = new Set(["eski-test", "gec-fare"]);
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const root = mkdtempSync(path.join(tmpdir(), "form-izolasyon-b4-yaris-"));
 const iso = days => {
@@ -98,6 +110,12 @@ try {
       await settle();
       let pre = false;
       let pass = false;
+      if (["gec-fare", "yeni-gec", "yeni"].includes(mode)) {
+        // Senaryodaki gibi açılır bildirimler kapalı (kutu kaymaz); bu modlar yalnız zamanlamayı sınar.
+        await quietAlerts(true);
+        await page.waitForFunction(() => !document.querySelector("#hof-notices .hof-notice") && !document.body.classList.contains("hof-notice-open"), null, { timeout: 5000 }).catch(() => null);
+        await settle();
+      }
       if (mode === "eski-test") {
         await freshToast(text);
         await sleep(300);
@@ -137,6 +155,56 @@ try {
         pre = !(await inside(point));
         await sleep(4800); // kalan süre en az 2 sn; 3,6 sn'lik bildirimin süresi çoktan doldu
         pass = !(await present(text));
+      } else if (mode === "gec-fare") {
+        const created = await page.evaluate(t => {
+          document.querySelectorAll(".hof-toast").forEach(node => node.remove());
+          window.HOF.toast(t, { type: "info" });
+          return { at: performance.now(), duration: window.HOF.toastDuration(t, { type: "info" }) };
+        }, text);
+        await settle();
+        const box = await page.locator(".hof-toast").first().boundingBox();
+        const point = [box.x + 30, box.y + box.height / 2];
+        // ZORLA: fare bildirimin süresi dolduktan 40 ms sonra yola çıkar (bildirim kapanıyor, 250 ms daha ekranda).
+        await page.waitForFunction(({ at, duration }) => performance.now() - at >= duration + 40, created, { timeout: 15000 });
+        await page.mouse.move(point[0], point[1], { steps: 4 });
+        const arrived = await page.evaluate(([px, py]) => {
+          const node = document.querySelector(".hof-toast");
+          const b = node?.getBoundingClientRect();
+          return { leaving: Boolean(node?.hofLeaving), inside: Boolean(b) && px >= b.left && px <= b.right && py >= b.top && py <= b.bottom };
+        }, point);
+        pre = arrived.leaving && arrived.inside; // eski senaryonun "fare bildirimin içinde true" ölçümü + bildirim zaten kapanıyor
+        await sleep(4800);
+        pass = arrived.inside && (await present(text));
+      } else if (mode === "yeni-gec" || mode === "yeni") {
+        // Senaryo B4'ün 22.10 sırası (test/e2e/senaryo-form-izolasyon-243.mjs ile aynı adımlar).
+        await freshToast(text);
+        await settle();
+        const box = await page.locator(".hof-toast").first().boundingBox();
+        const point = [box.x + 30, box.y + box.height / 2];
+        await page.evaluate(() => document.querySelectorAll(".hof-toast").forEach(node => node.remove()));
+        await page.mouse.move(point[0], point[1], { steps: 4 });
+        const opened = await page.evaluate(([t, [px, py]]) => {
+          const node = window.HOF.toast(t, { type: "info" });
+          const b = node.getBoundingClientRect();
+          window.__b4 = { node, at: performance.now() };
+          return { duration: window.HOF.toastDuration(t, { type: "info" }), inside: px >= b.left && px <= b.right && py >= b.top && py <= b.bottom };
+        }, [text, point]);
+        if (mode === "yeni-gec") await page.waitForFunction(ms => performance.now() - window.__b4.at >= ms, opened.duration + 400, { timeout: 15000 });
+        await page.mouse.move(point[0] + 2, point[1], { steps: 2 });
+        const moved = await page.evaluate(([px, py]) => {
+          const { node, at } = window.__b4;
+          const b = node.getBoundingClientRect();
+          return { elapsed: performance.now() - at, live: node.isConnected && !node.hofLeaving, inside: node.isConnected && px >= b.left && px <= b.right && py >= b.top && py <= b.bottom };
+        }, [point[0] + 2, point[1]]);
+        pre = opened.inside && moved.inside && (mode === "yeni" || moved.elapsed > opened.duration);
+        await sleep(4800);
+        const end = await page.evaluate(([px, py]) => {
+          const { node } = window.__b4;
+          const b = node.getBoundingClientRect();
+          return node.isConnected && !node.hofLeaving && px >= b.left && px <= b.right && py >= b.top && py <= b.bottom;
+        }, [point[0] + 2, point[1]]);
+        pass = opened.inside && moved.inside && end;
+        row.notes.push(Math.round(moved.elapsed));
       } else {
         // yeni-test: gerçek döngü açıkken senaryonun düzeltilmiş adımı.
         // Ön koşul: ekranda gerçek açılır bildirim var (kapanınca / yenisi gelince bildirimler kutusu kayar). "Görüldü" kaydı silinir, döngü
@@ -178,9 +246,13 @@ try {
 
 console.log(`\nCPU=${CPU} LEAD=${LEAD} TRIALS=${TRIALS}`);
 for (const row of results) {
-  console.log(`${row.mode}: ${row.trials} deneme · ön koşul oluştu ${row.pre} · ön koşullu kırmızı ${row.red} · ön koşulsuz kırmızı ${row.redNoPre}`);
-  // Ön koşulsuz kırmızı her modda beklenmez; eski-test'te ön koşullu kırmızı TEST yarışının kanıtıdır (beklenen), öbürlerinde ürün hatası.
+  const late = row.notes.length ? ` · kıpırdatma anı (ms) ${row.notes.join("/")}` : "";
+  console.log(`${row.mode}: ${row.trials} deneme · ön koşul oluştu ${row.pre} · ön koşullu kırmızı ${row.red} · ön koşulsuz kırmızı ${row.redNoPre}${late}`);
+  // Ön koşulsuz kırmızı her modda beklenmez; eski-test / gec-fare'de ön koşullu kırmızı TEST yarışının kanıtıdır (beklenen), öbürlerinde ürün hatası.
+  // Zorlama modlarında ön koşul her denemede oluşmalı (oluşmayan deneme sayılmaz → beklenmeyen).
   if (row.redNoPre) unexpected += 1;
-  if (row.mode !== "eski-test" && row.red) unexpected += 1;
+  if (!RED_EXPECTED.has(row.mode) && row.red) unexpected += 1;
+  if (row.mode === "gec-fare" && row.red !== row.pre) unexpected += 1;
+  if (["gec-fare", "yeni-gec", "yeni"].includes(row.mode) && row.pre !== row.trials) unexpected += 1;
 }
 process.exitCode = unexpected ? 1 : 0;
