@@ -498,6 +498,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   hemen Ayrılanlar'a geçiyor ve Toplam Maaş'tan düşüyor. ÖNERİ: ayrılış günü gelene kadar Çalışanlar'da kalsın, yanında "Ayrılacak" notu.
   KARAR (kullanıcı, 22.10.2026: "önerini uygula işten ayrılış tarihi ile alakalı olarak"): ileri tarihli ayrılış → ayrılış gününe kadar Çalışanlar'da + "Ayrılacak" notu,
   Toplam Maaş'ta sayılır; ayrılış günü gelince (bugün ≥ tarih) kendiliğinden Ayrılanlar'a geçer.
+- SORU (22.10.2026, madde 23 iptal süresi; kullanıcıya soruldu): sonucu BELİRSİZ gönderimde (EDM'ye ulaştı mı bilinmiyor) "Yalnız Programda İptal" bugün süreye
+  bakmıyor (2.4.3 çıkış yolu). ÖNERİ: 8 gün geçtiyse yalnız-programda iptalden önce EDM durum sorgusu zorunlu; EDM "bulunamadı" derse (iletilmemiş) iptal serbest,
+  "var" derse süre dolmuş sayılır ve iptal reddedilir (GİB'de geçerli belge programda iptal görünmesin). KARAR BEKLENİYOR.
 - MEVZUAT KARARI (kullanıcı, 20.10.2026): e-Fatura / e-Arşiv kutu metinleri DEĞİŞMEZ, 2.4.4'te değil; geri bildirim gelirse netleştirilir. 509 VUK GT okuma
   notları (IV.2.2, IV.2.4.1, V.1 kayıt yöntemi) arşivde (21.10).
 - RAPOR DÜZENİ (kullanıcı, 21.10.2026: "2.4.4'ü yaparken 30 dk'da kısa ara rapor ver, düşen test var mı, durmuş işlem var mı kontrol et; varsa gereğini yap;
