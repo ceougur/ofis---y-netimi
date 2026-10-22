@@ -316,11 +316,92 @@ describe("e-SMM: numara, seri ve kronoloji (N4, N5, N14)", () => {
     assert.equal(sent.data.profile, "ESMM");
     assert.match(sent.data.number, /^TES2026\d{9}$/);
     assert.equal(Number(sent.data.number.slice(7)), Number(ctx.lastSent.slice(7)) + 1, "serinin sıradaki numarası");
-    assert.equal(sent.data.paperNo, withdrawn.number, "fiş numarası Kâğıt Fatura No alanında");
+    assert.equal(sent.data.paperNo, withdrawn.number, "kâğıt makbuz numarası Kâğıt Fatura No alanında");
+    assert.match(withdrawn.number, /^SMM2026\d{9}$/, "bırakılan makbuz kâğıt makbuz serisinden (kâhin bulgusu, 22 ek)");
     const now = ctx.ops();
     assert.deepEqual(now.fatura.slice(before.fatura.length), []);
     assert.deepEqual(now.smm.slice(before.smm.length).filter(op => op === "SendSMM"), ["SendSMM"]);
     assert.equal(ctx.edm.state.smm.sent.at(-1).id, sent.data.number);
+  });
+});
+
+// Kâhin bulgusu (madde 22 ek, 22.10.2026; ana oturum koddan doğruladı): e-SMM makbuzu "Müşteri Fişi Olarak Bırak"ılınca Müşteri Fişi (FIS) serisinden numara
+// alıyordu. Serbest meslek makbuzu e-Belge olarak gönderilmezse KÂĞIT makbuzdur: numarası kâğıt makbuz serisinden (Fatura Ayarları → Serbest Meslek Makbuzu
+// Serisi, SMM), numara–tarih sırası o seride; ekranda "Kâğıt Makbuz Olarak Bırak". Fatura türlerinde Müşteri Fişi aynen kalır.
+// "Nasıl bozulur?": FIS'ten numara; kâğıt makbuz serisinde eski tarihli makbuz numara alır; yeniden gönderimde KAGIT kalır ya da e-Fatura servisine gider;
+// gönderilemeyen makbuzun iletisi Müşteri Fişi / FIS serisine bakar; satış faturası etkilenir.
+describe("e-SMM: Kâğıt Makbuz Olarak Bırak — kâğıt makbuz serisi (SMM), fatura Müşteri Fişi (FIS) kalır", () => {
+  let ctx;
+  before(async () => {
+    ctx = await boot();
+  });
+  after(async () => {
+    await ctx?.close();
+  });
+
+  test("bırakılan e-SMM makbuzu kâğıt makbuz serisinden (SMM) numara alır, FIS serisinden değil; satış faturası Müşteri Fişi (FIS) kalır", async () => {
+    const makbuz = (await ctx.smm({ issueDate: day(0), eSend: "later" })).data;
+    assert.equal(makbuz.profile, "ESMM");
+    const res = await ctx.api.post(`/api/workspace/invoices/${makbuz.id}/withdraw`, {});
+    assert.equal(res.status, 200, JSON.stringify(res.data));
+    assert.match(res.data.number, /^SMM2026\d{9}$/, `kâğıt makbuz serisi: ${res.data.number}`);
+    assert.equal(res.data.profile, "KAGIT");
+    assert.equal(res.data.eStatus, "withdrawn");
+    assert.equal(ctx.server.app.store.get("SELECT COUNT(*) AS n FROM invoices WHERE series = 'FIS'").n, 0, "Müşteri Fişi serisine numara verilmedi");
+    const sale = (await ctx.sale({ issueDate: day(0), eSend: "later" })).data;
+    const fis = await ctx.api.post(`/api/workspace/invoices/${sale.id}/withdraw`, {});
+    assert.equal(fis.status, 200, JSON.stringify(fis.data));
+    assert.match(fis.data.number, /^FIS2026\d{9}$/, "fatura Müşteri Fişi serisinden (eski davranış)");
+    ctx.first = res.data;
+    ctx.fis = fis.data;
+  });
+
+  test("kâğıt makbuz serisinde numara–tarih sırası: serinin son makbuzundan eski tarihli makbuz bırakılamaz (FIS'te fiş olsa da)", async () => {
+    const older = (await ctx.smm({ issueDate: day(-1), eSend: "later" })).data;
+    const res = await ctx.api.post(`/api/workspace/invoices/${older.id}/withdraw`, {});
+    assert.equal(res.status, 409, JSON.stringify(res.data));
+    assert.equal(res.data.code, "chronology");
+    assert.match(res.data.error, /SMM serisinde son belge SMM2026\d{9}/);
+    const card = await ctx.card(older.id);
+    assert.equal(card.eStatus, "waiting", "Gönderilecekler'de kaldı");
+    assert.equal(card.number, "");
+    // Sonraki adımlar için: bekleyen eski makbuz İptal Edilir (yoksa O1 gereği yeni makbuzlar numara almadan bekler).
+    const cancelled = await ctx.api.post(`/api/workspace/invoices/${older.id}/cancel`, { reason: "test: sıra" });
+    assert.equal(cancelled.status, 200, JSON.stringify(cancelled.data));
+  });
+
+  test("gönderilemeyen makbuzun iletisi kâğıt makbuz yolunu söyler (Müşteri Fişi değil) ve kâğıt makbuz serisinin sırasına bakar", async () => {
+    const sent = (await ctx.smm({ issueDate: day(0), eSend: "now" })).data;
+    assert.equal(sent.eStatus, "sent", sent.eMessage);
+    const waiting = (await ctx.smm({ issueDate: day(0), eSend: "later" })).data;
+    // Ön koşul (yarış / eski veri benzetimi): bekleyen makbuzun tarihi TES serisinin son makbuzundan eski; kâğıt makbuz serisinin (SMM) son makbuzu ondan
+    // YENİ, Müşteri Fişi serisinin (FIS) son fişi ondan ESKİ — hangi serinin sırasına bakıldığı ayrışır.
+    ctx.server.app.store.run("UPDATE invoices SET issue_date = ? WHERE id = ?", day(-3), waiting.id);
+    ctx.server.app.store.run("UPDATE invoices SET issue_date = ? WHERE id = ?", day(-5), ctx.fis.id);
+    let card = await ctx.card(waiting.id);
+    assert.match(card.sendBlock, /TES serisinde son gönderilen belge/);
+    assert.doesNotMatch(card.sendBlock, /Müşteri Fişi/);
+    assert.doesNotMatch(card.sendBlock, /Kâğıt Makbuz Olarak Bırak/, "kâğıt makbuz serisinin son makbuzu (bugün) daha yeni: bırakma yolu önerilmez");
+    // Kâğıt makbuz serisinin sonundan eski değilse (tarih = son kâğıt makbuz günü) bırakma yolu adıyla önerilir.
+    ctx.server.app.store.run("UPDATE invoices SET issue_date = ? WHERE id = ?", day(0), waiting.id);
+    ctx.server.app.store.run("UPDATE invoices SET issue_date = ? WHERE id = ?", day(1), sent.id);
+    card = await ctx.card(waiting.id);
+    assert.match(card.sendBlock, /“Kâğıt Makbuz Olarak Bırak” ile kâğıt makbuz numarasıyla bırakın/);
+    ctx.server.app.store.run("UPDATE invoices SET issue_date = ? WHERE id = ?", day(0), sent.id);
+  });
+
+  test("kâğıt makbuz olarak bırakılan makbuz yeniden gönderilince ESMM profiliyle e-SMM servisinden, TES serisinden gider; kâğıt makbuz numarası iz olarak kalır", async () => {
+    const before = ctx.ops();
+    const sent = await ctx.api.post(`/api/workspace/invoices/${ctx.first.id}/send`, {});
+    assert.equal(sent.status, 200, JSON.stringify(sent.data));
+    assert.equal(sent.data.profile, "ESMM");
+    assert.match(sent.data.number, /^TES2026\d{9}$/);
+    assert.equal(sent.data.paperNo, ctx.first.number, "kâğıt makbuz numarası Kâğıt Fatura No alanında");
+    const now = ctx.ops();
+    assert.deepEqual(now.fatura.slice(before.fatura.length), [], "e-Fatura servisine istek yok");
+    assert.deepEqual(now.smm.slice(before.smm.length).filter(op => op === "SendSMM"), ["SendSMM"]);
+    assert.equal(ctx.edm.state.smm.sent.at(-1).id, sent.data.number);
+    assert.match(ctx.edm.state.smm.sent.at(-1).xml, /<cbc:ProfileID>ESMM<\/cbc:ProfileID>/);
   });
 });
 

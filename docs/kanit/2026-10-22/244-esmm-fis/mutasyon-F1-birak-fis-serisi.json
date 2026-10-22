@@ -1,0 +1,58 @@
+{
+  "ad": "244-esmm-fis/mutasyon-F1-birak-fis-serisi",
+  "komut": "node --test test/esmm-gonderim-244.test.mjs",
+  "commit": "60a411ff74689ddcabee53d2d7ddde170ab9e4c2",
+  "dal": "HEAD",
+  "kirli": 8,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T11:09:51.356Z",
+  "sure_sn": 5.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 23,
+    "gecen": 18,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "e-SMM: numara, seri ve kronoloji (N4, N5, N14) › N14: Müşteri Fişi Olarak Bırakılmış makbuz yeniden gönderilince e-SMM servisinden, TES serisinden numarayla gider (fiş numarası iz olarak kalır)",
+      "konum": "test/esmm-gonderim-244.test.mjs:306:3",
+      "hata": "bırakılan makbuz kâğıt makbuz serisinden (kâhin bulgusu, 22 ek) (beklenen , gelen FIS2026000000002)"
+    },
+    {
+      "ad": "e-SMM: Kâğıt Makbuz Olarak Bırak — kâğıt makbuz serisi (SMM), fatura Müşteri Fişi (FIS) kalır › bırakılan e-SMM makbuzu kâğıt makbuz serisinden (SMM) numara alır, FIS serisinden değil; satış faturası Müşteri Fişi (FIS) kalır",
+      "konum": "test/esmm-gonderim-244.test.mjs:342:3",
+      "hata": "kâğıt makbuz serisi: FIS2026000000001 (beklenen , gelen FIS2026000000001)"
+    },
+    {
+      "ad": "e-SMM: Kâğıt Makbuz Olarak Bırak — kâğıt makbuz serisi (SMM), fatura Müşteri Fişi (FIS) kalır › kâğıt makbuz serisinde numara–tarih sırası: serinin son makbuzundan eski tarihli makbuz bırakılamaz (FIS'te fiş olsa da)",
+      "konum": "test/esmm-gonderim-244.test.mjs:359:3",
+      "hata": "The input did not match the regular expression /SMM serisinde son belge SMM2026\\d{9}/. Input: · 'FIS serisinde son belge FIS2026000000001 17.06.2026 tarihli; bu belge (16.06.2026) ondan eski. Belgenin tarihini düzeltin ya da İptal Edin.' (beklenen , gelen FIS serisinde son belge FIS2026000000001 17.06.2026 tarihli; bu belge (16.06.2026) ondan eski. Belgenin tarihini düzeltin ya da İptal Edin.)"
+    },
+    {
+      "ad": "e-SMM: Kâğıt Makbuz Olarak Bırak — kâğıt makbuz serisi (SMM), fatura Müşteri Fişi (FIS) kalır › gönderilemeyen makbuzun iletisi kâğıt makbuz yolunu söyler (Müşteri Fişi değil) ve kâğıt makbuz serisinin sırasına bakar",
+      "konum": "test/esmm-gonderim-244.test.mjs:373:3",
+      "hata": "Expected values to be strictly equal: · 'waiting' !== 'sent' (beklenen sent, gelen waiting)"
+    },
+    {
+      "ad": "e-SMM: Kâğıt Makbuz Olarak Bırak — kâğıt makbuz serisi (SMM), fatura Müşteri Fişi (FIS) kalır › kâğıt makbuz olarak bırakılan makbuz yeniden gönderilince ESMM profiliyle e-SMM servisinden, TES serisinden gider; kâğıt makbuz numarası iz olarak kalır",
+      "konum": "test/esmm-gonderim-244.test.mjs:393:3",
+      "hata": "Cannot read properties of undefined (reading 'id')"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/esmm-fis/docs/kanit/2026-10-22/244-esmm-fis/mutasyon-F1-birak-fis-serisi.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/esmm-fis-mut",
+  "ham_cikti_sha256": "347c5c3582fda2f0c29db4a5a92a2458466339b4f9d5743afe2a2384ddc83f7f",
+  "ham_cikti_bayt": 16276
+}

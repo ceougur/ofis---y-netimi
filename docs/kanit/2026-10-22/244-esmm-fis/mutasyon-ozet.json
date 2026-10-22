@@ -1,0 +1,44 @@
+[
+  {
+    "mutasyon": "F1-birak-fis-serisi",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm-fis/mutasyon-F1-birak-fis-serisi: BAŞARISIZ (çıkış 1; 5 başarısız, 0 iptal) · çıkış 1 · 18/23 geçti, 5 başarısız, 0 iptal, 0 atlanan · commit 60a411f +8 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "F2-engel-iletisi-fis-serisi",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm-fis/mutasyon-F2-engel-iletisi-fis-serisi: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 22/23 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 60a411f +8 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "F3-engel-iletisi-musteri-fisi-adi",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm-fis/mutasyon-F3-engel-iletisi-musteri-fisi-adi: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 21/23 geçti, 2 başarısız, 0 iptal, 0 atlanan · commit 60a411f +8 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "X1-ubltr-yerine-oasis",
+    "dosya": "tools/ebelge/dogrula.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm-fis/mutasyon-X1-ubltr-yerine-oasis: BAŞARISIZ (çıkış 1; 3 başarısız, 0 iptal) · çıkış 1 · 67/70 geçti, 3 başarısız, 0 iptal, 0 atlanan · commit 60a411f +8 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "X2-birlesik-denetim-yalniz-oasis",
+    "dosya": "tools/ebelge/dogrula.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm-fis/mutasyon-X2-birlesik-denetim-yalniz-oasis: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 69/70 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 60a411f +8 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "X3-imza-yeri-her-yere",
+    "dosya": "tools/ebelge/dogrula.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm-fis/mutasyon-X3-imza-yeri-her-yere: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 69/70 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 60a411f +8 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  }
+]

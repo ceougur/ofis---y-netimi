@@ -14,7 +14,7 @@ import { computeInvoice } from "../server/lib/invoice-math.mjs";
 import { children, find, parseXml, textOf } from "../server/lib/einvoice/xml-lite.mjs";
 // Ad alanıyla içe aktarılır: eski kodda (dışa aktarım yokken) dosyanın bütünü değil yalnız dağıtım testleri düşer — kırmızı kanıt testlerin kendisinden.
 import * as ubl from "../server/lib/einvoice/ubl-tr.mjs";
-import { xsdErrors } from "../tools/ebelge/dogrula.mjs";
+import { oasisXsdErrors, ublTrXsdErrors, xsdErrors } from "../tools/ebelge/dogrula.mjs";
 import { ADMIN_PASSWORD, startTestServer } from "./helpers.mjs";
 
 const unwrap = response => ({ ...response, data: response.data && typeof response.data === "object" && "ok" in response.data ? (response.data.ok ? response.data.data : response.data) : response.data });
@@ -183,8 +183,11 @@ describe("e-SMM UBL: program tutarlarıyla aynı, yapı EDM'nin e-SMM örneğiyl
     assert.equal(sending("A"), "ELEKTRONIK", "alıcının e-postası var");
     assert.equal(sending("C"), "KAGIT", "alıcının e-postası yok");
   });
-  test("UBL 2.1 XSD'sine (OASIS; tools/ebelge/sema) uygun — GİB şematronu e-SMM'yi tanımlamaz (ESMM GİB UBL-TR profili değil)", async () => {
-    for (const [key, { xml }] of Object.entries(docs)) assert.deepEqual(await xsdErrors(xml), [], key);
+  test("UBL 2.1 XSD'sine (OASIS) ve GİB UBL-TR 1.2.1 XSD'sine (EDM e-SMM'yi bununla denetler; madde 24) uygun — GİB şematronu e-SMM'yi tanımlamaz (ESMM GİB UBL-TR profili değil)", async () => {
+    for (const [key, { xml }] of Object.entries(docs)) {
+      assert.deepEqual(await oasisXsdErrors(xml), [], `${key} OASIS`);
+      assert.deepEqual(await ublTrXsdErrors(xml), [], `${key} UBL-TR 1.2.1`);
+    }
   });
 });
 
@@ -216,7 +219,12 @@ describe("e-SMM, VKN'li düzenleyen (ör. adi ortaklık)", () => {
       // EDM görüntüsü FirstName + " " + FamilyName basar; EDM'nin UBL-TR şeması FamilyName'i zorunlu tutar (11029, 22.10.2026).
       assert.equal(`${textOf(find(supplier, "Person/FirstName"))} ${textOf(find(supplier, "Person/FamilyName"))}`, firm.name, "unvan Person'da (ad + soyad = unvan)");
       assert.ok(!find(find(tree, "AccountingCustomerParty/Party"), "Person"), "VKN'li alıcıya Person eklenmez (adı PartyName'den basılır)");
-      assert.deepEqual(await xsdErrors(xml), [], "UBL 2.1 XSD");
+      assert.deepEqual(await xsdErrors(xml), [], "UBL 2.1 + UBL-TR 1.2.1 XSD");
+      // f57245a hâli (Person'da yalnız FirstName): OASIS geçirir, UBL-TR (EDM'nin 11029'u) düşürür — denetimin dişi.
+      const firstOnly = xml.replace(/(<cac:AccountingSupplierParty>[\s\S]*?<cac:Person>[\s\S]*?)<cbc:FamilyName>[^<]*<\/cbc:FamilyName>/, "$1");
+      assert.notEqual(firstOnly, xml);
+      assert.deepEqual(await oasisXsdErrors(firstOnly), []);
+      assert.ok((await ublTrXsdErrors(firstOnly)).some(error => /FamilyName/.test(error)), "UBL-TR: FamilyName zorunlu");
     } finally {
       delete docs.V;
       const back = await api.put("/api/workspace/invoices/settings", { seller: SELLER, efatura: true, earsiv: true, esmm: true });

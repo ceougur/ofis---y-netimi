@@ -1,5 +1,7 @@
 // e-Belge uygunluk denetimi (programdan BAĞIMSIZ kâhin): bir UBL-TR faturasını
-//   1) OASIS UBL 2.1 XSD'sine (tools/ebelge/sema/ubl-2.1, xmllint-wasm = libxml2) ve
+//   1) OASIS UBL 2.1 XSD'sine (tools/ebelge/sema/ubl-2.1, xmllint-wasm = libxml2),
+//   1b) GİB'in UBL-TR 1.2.1 XSD'sine (tools/ebelge/sema/ubl-tr-1.2.1, UBLTR_1.2.1_Paketi/xsdrt — OASIS şemasının GİB'in kısıtladığı hâli: ör.
+//       cac:Person'da FirstName ve FamilyName ZORUNLU; 2.4.4 madde 24'te EDM e-SMM'yi bu şemayla reddetti, OASIS şeması geçirmişti) ve
 //   2) GİB'in resmî UBL-TR şematronuna (tools/ebelge/sema/gib, e-FaturaPaketi; SchXslt 1.9.5 + SaxonJS)
 // karşı denetler. Kural dosyalarına dokunulmaz; yalnız iki mekanik uyarlama yapılır (KAYNAK.md → "Uyarlamalar"):
 //   - kök öğeye queryBinding="xslt2" (dosya sorgu dilini yazmıyor, kurallar XPath 2.0 matches() kullanıyor),
@@ -22,6 +24,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 export const SEMA = join(HERE, "sema");
 const GIB = join(SEMA, "gib");
 const UBL = join(SEMA, "ubl-2.1");
+const UBL_TR = join(SEMA, "ubl-tr-1.2.1");
 const SCHXSLT = join(SEMA, "schxslt-1.9.5", "2.0", "pipeline-for-svrl.xsl");
 const TYPES = { efatura: "efatura", earsiv: "earchive" };
 
@@ -123,20 +126,39 @@ export function renderView(xml, xslt = embeddedXslt(xml)) {
   return SaxonJS.transform({ stylesheetInternal: viewCache.get(key), sourceText: xml, destination: "serialized" }, "sync").principalResult;
 }
 
-let xsdFiles;
-/** OASIS UBL 2.1 XSD: [hata iletisi] — boş dizi = şemaya uygun. */
-export async function xsdErrors(xml) {
+const xsdFiles = new Map();
+async function schemaErrors(root, xml) {
   const { validateXML } = await import("xmllint-wasm");
-  if (!xsdFiles) {
-    const all = walk(UBL).filter(file => file.endsWith(".xsd"));
-    const main = join(UBL, "maindoc", "UBL-Invoice-2.1.xsd");
-    xsdFiles = {
+  if (!xsdFiles.has(root)) {
+    const all = walk(root).filter(file => file.endsWith(".xsd"));
+    const main = join(root, "maindoc", "UBL-Invoice-2.1.xsd");
+    xsdFiles.set(root, {
       schema: [{ fileName: "UBL-Invoice-2.1.xsd", contents: readFileSync(main, "utf8") }],
-      preload: all.filter(file => file !== main).map(file => ({ fileName: relative(join(UBL, "maindoc"), file).replaceAll("\\", "/"), contents: readFileSync(file, "utf8") })),
-    };
+      preload: all.filter(file => file !== main).map(file => ({ fileName: relative(join(root, "maindoc"), file).replaceAll("\\", "/"), contents: readFileSync(file, "utf8") })),
+    });
   }
-  const result = await validateXML({ xml: [{ fileName: "fatura.xml", contents: xml }], ...xsdFiles });
+  const result = await validateXML({ xml: [{ fileName: "fatura.xml", contents: xml }], ...xsdFiles.get(root) });
   return result.valid ? [] : result.errors.map(error => (error.rawMessage || error.message || String(error)).trim());
+}
+/** OASIS UBL 2.1 XSD: [hata iletisi] — boş dizi = şemaya uygun. */
+export const oasisXsdErrors = xml => schemaErrors(UBL, xml);
+// UBL-TR şeması İMZALI belgeyi tanımlar: ext:UBLExtensions (içinde entegratörün / GİB'in mali mührü) zorunlu. Program imzasız belge üretir, mührü entegratör
+// (EDM) ekler. Doğrulamadan önce — belgede yoksa — kök öğenin ilk çocuğu olarak İMZA YERİ eklenir: ExtensionContent'te şemasız ad alanında boş bir yer
+// tutucu (xsd:any processContents="lax" → içerik denetlenmez). Belgenin başka hiçbir yeri değişmez (KAYNAK.md → "Uyarlamalar" 4).
+const EXT_NS = "urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2";
+export function withSignatureSlot(xml) {
+  if (/<(\w+:)?UBLExtensions[\s>]/.test(xml)) return xml;
+  const root = /<((\w+:)?Invoice)\b[^>]*>/.exec(xml);
+  if (!root) return xml;
+  const slot = `<ext:UBLExtensions xmlns:ext="${EXT_NS}"><ext:UBLExtension><ext:ExtensionContent><imza:MaliMuhurYeri xmlns:imza="urn:destekofis:dogrulama:imza-yeri"/></ext:ExtensionContent></ext:UBLExtension></ext:UBLExtensions>`;
+  const at = root.index + root[0].length;
+  return `${xml.slice(0, at)}${slot}${xml.slice(at)}`;
+}
+/** GİB UBL-TR 1.2.1 XSD (imza yeri eklenerek): [hata iletisi] — boş dizi = şemaya uygun. */
+export const ublTrXsdErrors = xml => schemaErrors(UBL_TR, withSignatureSlot(xml));
+/** İki şema birden (OASIS UBL 2.1 + GİB UBL-TR 1.2.1); UBL-TR iletileri "UBL-TR 1.2.1:" önekiyle. Boş dizi = ikisine de uygun. */
+export async function xsdErrors(xml) {
+  return [...(await oasisXsdErrors(xml)), ...(await ublTrXsdErrors(xml)).map(error => `UBL-TR 1.2.1: ${error}`)];
 }
 
 /** İkisi birden. */

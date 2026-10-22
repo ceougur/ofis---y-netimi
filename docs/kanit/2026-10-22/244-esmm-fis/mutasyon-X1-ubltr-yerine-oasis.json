@@ -1,0 +1,48 @@
+{
+  "ad": "244-esmm-fis/mutasyon-X1-ubltr-yerine-oasis",
+  "komut": "node --test test/esmm-ubl.test.mjs test/ebelge-uygunluk.test.mjs",
+  "commit": "60a411ff74689ddcabee53d2d7ddde170ab9e4c2",
+  "dal": "HEAD",
+  "kirli": 8,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T11:10:07.729Z",
+  "sure_sn": 126,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 70,
+    "gecen": 67,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Kâhin aracı: GİB şematronu ve UBL 2.1 XSD bozuk belgeyi yakalar (aracın dişi) › UBL-TR 1.2.1 XSD düşürür, OASIS geçirir: cac:Person'da FamilyName yok (EDM'nin 11029 ile reddettiği hâl)",
+      "konum": "test/ebelge-uygunluk.test.mjs:104:3",
+      "hata": "UBL-TR'de zorunlu (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Kâhin aracı: GİB şematronu ve UBL 2.1 XSD bozuk belgeyi yakalar (aracın dişi) › UBL-TR 1.2.1 XSD: imza yeri yalnız eklenir (belgenin başka yeri değişmez); UBL-TR'de zorunlu cac:Signature silinirse düşer",
+      "konum": "test/ebelge-uygunluk.test.mjs:114:3",
+      "hata": "UBL-TR'de cac:Signature zorunlu (beklenen true, gelen false)"
+    },
+    {
+      "ad": "e-SMM, VKN'li düzenleyen (ör. adi ortaklık) › unvan Person'da da (son sözcük FamilyName): EDM'nin e-SMM görüntüsü düzenleyenin adını yalnız Person'dan basar, FamilyName zorunlu (22.10.2026 gerçek EDM); VUK 236",
+      "konum": "test/esmm-ubl.test.mjs:209:3",
+      "hata": "UBL-TR: FamilyName zorunlu (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/esmm-fis/docs/kanit/2026-10-22/244-esmm-fis/mutasyon-X1-ubltr-yerine-oasis.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/esmm-fis-mut",
+  "ham_cikti_sha256": "db69bf06078ed54668361761755fd49c0d5702dbdd67256c8d6b06af8a56b5c2",
+  "ham_cikti_bayt": 19911
+}

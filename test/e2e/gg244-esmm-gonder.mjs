@@ -7,6 +7,8 @@
 //   2 Kaydet ve Gönder (insan hızında yazım + Tab): makbuz TES numarasıyla e-SMM servisine gider (e-Fatura servisine gönderim yok); kartta Durum Sorgula ve
 //     Resmî Görüntü var, Portala Taslak Yükle yok.
 //   3 İptal Et: pencere "e-SMM önce entegratörde (EDM) iptal edilir" der; onaylanınca EDM'de (CancelSMM) ve programda iptal.
+//   4 (madde 22 ek, kâhin bulgusu) Gönderilecekler'deki e-SMM kartında "Kâğıt Makbuz Olarak Bırak" (Müşteri Fişi değil); onay penceresi kâğıt makbuz der;
+//     makbuz kâğıt makbuz serisinden (SMM) numara alır, FIS'ten değil; kartta Belge Türü "Kâğıt Makbuz (e-SMM olarak gönderilmedi)".
 // Her soru/onay yanıtı nedeniyle yazılır (ders 34). Eski kodda (7c36f87) form kâğıt makbuz gibi yalnız "Kaydet" gösterir → 1 kırmızı; DEPO=<eski kopya>.
 // Çıkış: "N geçti, M kaldı".
 import { mkdtempSync, rmSync } from "node:fs";
@@ -220,6 +222,30 @@ try {
     ok(row.status === "cancelled" && row.eStatus === "cancelled", `programda ve EDM'de iptal (${row.status} / ${row.eStatus})`);
     ok(edm.state.smm.cancelled.length === 1 && edm.state.smm.cancelled[0] === saved.ettn.toLowerCase(), "EDM'ye CancelSMM bir kez");
     ok(!edm.state.calls.some(call => call.op === "CancelInvoice"), "e-Fatura servisine iptal yok");
+  });
+  await step("■ 4 Gönderilecekler'deki e-SMM: \"Kâğıt Makbuz Olarak Bırak\" — kâğıt makbuz serisinden (SMM) numara, Müşteri Fişi (FIS) değil", async () => {
+    await closeAll(page);
+    const waiting = await must("bekleyen e-SMM", api.post("/api/workspace/invoices", { scenario: "smm", accountId: app.store.get("SELECT id FROM accounts ORDER BY rowid DESC LIMIT 1").id, lines: [{ name: "Danışmanlık Ücreti", qty: 1, unitPrice: 750, vatRate: 20 }], payment: { rest: "open" }, eSend: "later" }));
+    ok(waiting.profile === "ESMM" && waiting.eStatus === "waiting", `ön koşul: numarasız bekleyen e-SMM (${waiting.profile} ${waiting.eStatus})`);
+    await page.evaluate(id => window.HOF.invoices.openDoc(id), waiting.id);
+    await page.waitForSelector(`${modal} [data-act="e-withdraw"]`);
+    const label = await textOf(page, `${modal} [data-act="e-withdraw"]`);
+    ok(label === "Kâğıt Makbuz Olarak Bırak", `düğme: "${label}"`);
+    await page.click(`${modal} [data-act="e-withdraw"]`);
+    await page.waitForSelector(`${dialog} [data-answer="yes"]`);
+    const title = await textOf(page, `${dialog} .hof-modal-title, ${dialog} h2`);
+    const message = await textOf(page, `${dialog} .hof-modal-text`);
+    console.log(`  · onay yanıtlandı (Kâğıt Makbuz Olarak Bırak, beklenen soru): "${title}" — ${message.slice(0, 100)}`);
+    ok(/Kâğıt Makbuz Olarak Bırakılsın mı\?/.test(title) && /kâğıt makbuz/.test(message) && !/Müşteri Fişi/.test(`${title} ${message}`), "onay penceresi kâğıt makbuz der (Müşteri Fişi değil)");
+    await page.click(`${dialog} [data-answer="yes"]`);
+    for (let index = 0; index < 40 && app.store.get("SELECT e_status AS s FROM invoices WHERE id = ?", waiting.id).s !== "withdrawn"; index += 1) await page.waitForTimeout(250);
+    const row = app.store.get("SELECT profile, number, e_status AS eStatus FROM invoices WHERE id = ?", waiting.id);
+    ok(row.eStatus === "withdrawn" && row.profile === "KAGIT" && /^SMM2026\d{9}$/.test(row.number || ""), `kâğıt makbuz serisinden numara: ${row.number} (${row.profile} / ${row.eStatus})`);
+    ok(app.store.get("SELECT COUNT(*) AS n FROM invoices WHERE series = 'FIS'").n === 0, "Müşteri Fişi (FIS) serisine numara verilmedi");
+    await page.waitForTimeout(600);
+    const card = await textOf(page, modal);
+    ok(card.includes("Kâğıt Makbuz (e-SMM olarak gönderilmedi)") && !card.includes("Müşteri Fişi (e-Belge olarak gönderilmedi)"), "kartta Belge Türü kâğıt makbuz");
+    await shot(page, "esmm-244-4-kagit-makbuz");
   });
   ok(errors.length === 0, `sayfa hatası yok (${errors.join(" | ").slice(0, 200)})`);
 } catch (error) {
