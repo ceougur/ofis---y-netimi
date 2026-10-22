@@ -2258,10 +2258,15 @@
     }
   }
   function showDoc(doc) {
+    // 2.4.4 (uzman UI5): formdan / listeden ya da başka belgeden karta geçince pencere başa kayar — belge no ve durum (başlık) görünür.
+    // Önceden pencere formun kaydırma konumunda kalıyor (uzun formda en alttaki "Kaydet ve Gönder"), kartın başlığı ekranın üstünde kalıyordu.
+    // Aynı kartın arka plan yenilemesi (loadDoc quiet) konumu değiştirmez.
+    const fresh = view.mode !== "card" || view.id !== doc.id;
     view.doc = doc;
     view.id = doc.id;
     setMode("card");
     renderCard();
+    if (fresh && modal?.dialog) modal.dialog.scrollTop = 0;
   }
   const pdfUrl = doc => `/api/workspace/invoices/${encodeURIComponent(doc.id)}/fatura.pdf`;
   // v2.0.17 (müşteri: "hayalet kısmi ödeme"): her ödenen kuruşun kaynağı kartta görünür — tarih, tür, tutar ve nasıl
