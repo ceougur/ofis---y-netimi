@@ -1,0 +1,15 @@
+✖ E1: gönderim EDM'ye ulaştı, yanıt gelmeden program kesildi (SIGKILL) → yeniden açılışta Sonucu Belirsiz; Gönder önce durumu sorar (7234.729204ms)
+✖ U birim: 11048 iletisinin gösterdiği belge ve iletim günü (1.530436ms)
+ℹ tests 16
+ℹ suites 6
+ℹ pass 14
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13155.114526
+✖ failing tests:
+✖ K2 e-SMM (Kes, Sonra Gönder → Gönder): Sonucu Belirsiz; Sil / Düzenle / İptal Et 409; Gönder makbuzu ikinci kez göndermez; iletim günü gönderim izinden (1282.970828ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+✖ U2 iletim günü: gönderim izi yalnız ardından sonuç kaydı gelmediyse girişimdir (kesinti); sonuç gelince sonucun kuralı (0.802446ms)
+  AssertionError [ERR_ASSERTION]: kesinti: iz girişimdir

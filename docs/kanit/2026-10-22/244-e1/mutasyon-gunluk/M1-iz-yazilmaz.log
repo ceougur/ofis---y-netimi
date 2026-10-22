@@ -1,0 +1,26 @@
+✖ E1: gönderim EDM'ye ulaştı, yanıt gelmeden program kesildi (SIGKILL) → yeniden açılışta Sonucu Belirsiz; Gönder önce durumu sorar (6329.440584ms)
+✖ E1: iz yalnız belge entegratörde oluşabilecekse kalır (B4, B5) (1346.706992ms)
+ℹ Error: Test "K9 (B5) gönderim sürerken Durum Sorgula 409 'gönderiliyor' (izi silmez); gönderim bitince iz sonuca döner" at test/ebelge-244-gonderim-izi.test.mjs:465:3 generated asynchronous activity after the test ended. This activity created the error "TypeError: fetch failed" and would have caused the test to fail, but instead triggered an unhandledRejection event.
+ℹ tests 16
+ℹ suites 6
+ℹ pass 9
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11768.072503
+✖ failing tests:
+✖ K2 e-SMM (Kes, Sonra Gönder → Gönder): Sonucu Belirsiz; Sil / Düzenle / İptal Et 409; Gönder makbuzu ikinci kez göndermez; iletim günü gönderim izinden (1139.923649ms)
+  AssertionError [ERR_ASSERTION]: e-SMM: entegratör izi (e_adapter) — kesintide kalmalı
+✖ K3 e-Arşiv (Kaydet ve Gönder — numara kayıtta): Sonucu Belirsiz; Durum Sorgula gönderildi der; sonra Sil 409 (gönderildi) (1064.359722ms)
+  AssertionError [ERR_ASSERTION]: e-Arşiv: entegratör izi (e_adapter) — kesintide kalmalı
+✖ K4 e-Fatura (Temel Fatura, Kes, Sonra Gönder → Gönder): Sonucu Belirsiz; Düzenle 409; Gönder ikinci kez göndermez (954.376711ms)
+  AssertionError [ERR_ASSERTION]: e-Fatura: entegratör izi (e_adapter) — kesintide kalmalı
+✖ K5 (B2b) istek EDM'ye ULAŞMADAN kesinti: Sonucu Belirsiz → Durum Sorgula 'bulunamadı' izi temizler (Gönderilmedi, Sil açık) → Gönder aynı numarayla (981.527343ms)
+  AssertionError [ERR_ASSERTION]: ulaşmayan e-SMM: entegratör izi (e_adapter) — kesintide kalmalı
+✖ K6 (B6) Tümünü Gönder ortasında kesinti: 1. gitti, 2. yolda, 3. bekliyor → yeniden Tümünü Gönder 2.'yi tanır (ikinci kez göndermez), 3.'ye sıradaki numara (1219.060002ms)
+  AssertionError [ERR_ASSERTION]: yoldaki 2.: entegratör izi (e_adapter) — kesintide kalmalı
+✖ K7 (B4) hiç gitmeyen istek (oturum iki kez reddedildi → integrator-session): iz geri alınır — Gönderilmedi, Sil açık, Sonucu Belirsiz değil (448.402075ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+✖ K9 (B5) gönderim sürerken Durum Sorgula 409 'gönderiliyor' (izi silmez); gönderim bitince iz sonuca döner (463.573835ms)
+  AssertionError [ERR_ASSERTION]: gönderim sürerken iz var

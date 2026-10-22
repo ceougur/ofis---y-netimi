@@ -1,0 +1,12 @@
+✖ E4: iptal EDM'de tamamlandı, yanıt gelmeden program kesildi (2443.358667ms)
+ℹ tests 16
+ℹ suites 6
+ℹ pass 15
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15164.527846
+✖ failing tests:
+✖ K10 süre dolduktan sonra (10 gün): iptal izi olan makbuzda İptal Et açık, önce EDM'ye sorar → EDM'de iptal → programda iptal; izsiz makbuzda kural aynen (süre doldu, EDM'ye sorulmaz) (1195.47387ms)
+  AssertionError [ERR_ASSERTION]: İptal Et açık (önce EDM'ye sorar)

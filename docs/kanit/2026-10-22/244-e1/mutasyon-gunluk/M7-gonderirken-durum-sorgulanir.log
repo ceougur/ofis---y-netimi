@@ -1,0 +1,13 @@
+✖ E1: iz yalnız belge entegratörde oluşabilecekse kalır (B4, B5) (1245.443501ms)
+ℹ Error: Test "K9 (B5) gönderim sürerken Durum Sorgula 409 'gönderiliyor' (izi silmez); gönderim bitince iz sonuca döner" at test/ebelge-244-gonderim-izi.test.mjs:465:3 generated asynchronous activity after the test ended. This activity created the error "TypeError: fetch failed" and would have caused the test to fail, but instead triggered an unhandledRejection event.
+ℹ tests 16
+ℹ suites 6
+ℹ pass 15
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12533.359021
+✖ failing tests:
+✖ K9 (B5) gönderim sürerken Durum Sorgula 409 'gönderiliyor' (izi silmez); gönderim bitince iz sonuca döner (393.034879ms)
+  AssertionError [ERR_ASSERTION]: {"id":"invoice-b7f3ab83-c092-469e-8c5e-a5d29b2846ff","kind":"smm","kindLabel":"Serbest Meslek Makbuzu","scenario":"smm","scenarioLabel":"Serbest Meslek Makbuzu","status":"issued","statusLabel":"Kayded

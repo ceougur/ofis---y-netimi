@@ -1,0 +1,30 @@
+✖ Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz) (5426.954951ms)
+✖ E1: iz yalnız belge entegratörde oluşabilecekse kalır (B4, B5) (1541.588237ms)
+✖ e-SMM açık: makbuz ESmmEDM.svc'den gider; e-Arşiv e-Fatura servisinden (N2, N3, N10, N13, N15) (1398.201395ms)
+✖ e-SMM: kopma, belirsiz gönderim, başka numara, iki oturum, iptal süresi (N6, N7, N8, N9, N10) (1652.238306ms)
+ℹ tests 67
+ℹ suites 18
+ℹ pass 58
+ℹ fail 9
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 37145.451113
+✖ failing tests:
+✖ Y3/S1: yanıtı kaybolan gönderim belirsizdir — silinmez, düzenlenmez; yeniden Gönder ikinci kez göndermez, durumu alır (64.009912ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+✖ Y3: belirsiz gönderimde belge EDM'ye ulaşmadıysa Durum Sorgula belirsizliği kaldırır (EDM 11017 'Fatura bulunamadı') (75.256706ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"error":"Bu belge henüz entegratöre gönderilmedi.","code":"einvoice-not-sent"}
+✖ Kontrol K2: 'Hata'daki belgenin yeniden gönderiminde yanıt kaybolursa da belirsiz — ikinci kez gönderilmez (107.229026ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+✖ Çıkış yolu (kullanıcı kararı): entegratöre ulaşılamıyorsa belirsiz / taslak belge yalnız programda iptal edilir — yetki + onay + işlem kaydı (58.061853ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+✖ K9 (B5) gönderim sürerken Durum Sorgula 409 'gönderiliyor' (izi silmez); gönderim bitince iz sonuca döner (534.528048ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+✖ N2: Kaydet ve Gönder — makbuz ESMM + TES numarası; giriş ve gönderim e-SMM servisine, e-Fatura servisine HİÇBİR istek yok; EDM'deki makbuz aynı numara/ETTN (139.347383ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+✖ N10: Durum Sorgula, Resmî Görüntü ve İptal Et e-SMM servisinden (GetSMMStatus, GetSMM, CancelSMM); e-Fatura servisine istek yok; makbuz programda iptal (0.578628ms)
+✖ N7: EDM makbuzu aldı, yanıt gelmeden bağlantı koptu → Sonucu Belirsiz (numara korunur, iptal kapalı); yeniden Gönder önce GetSMMStatus sorar, makbuz ikinci kez GİTMEZ (78.878191ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+✖ N7: belirsiz makbuz EDM'de YOKSA (11017 "SMM bulunamadı" — gerçek EDM test ortamında doğrulandı, madde 24, 22.10.2026) Durum Sorgula temizler; Gönder aynı numarayla BİR kez gönderir (e-Arşiv ile aynı) (79.149853ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"pending":true,"number":"TES2026000000004","code":"integrator-uncertain","message":"EDM ile bağlantı istek gönderildikten sonra koptu; istek EDM'ye ulaşmış olabilir. Belge TES2026000000004 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."}

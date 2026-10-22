@@ -1,0 +1,6 @@
+1 e-SMM {"id":"invoice-61c7fc24-f967-4152-a3cf-422f7d46b841","no":"TES2026699277122","profil":"ESMM","e":"sent","adapter":"edm","durum":"issued","tarih":"2026-06-17","mesaj":"e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."}
+2 EDM iptal kaydı: ["99ec75d2-45f8-49a5-b534-3e096b1bdbae"]
+3 yeniden açılınca kart: {"id":"invoice-61c7fc24-f967-4152-a3cf-422f7d46b841","no":"TES2026699277122","profil":"ESMM","e":"sent","adapter":"edm","durum":"issued","tarih":"2026-06-17","mesaj":"e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."}
+4 yeniden İptal Et: 200 "cancelled" 
+5 kart: {"id":"invoice-61c7fc24-f967-4152-a3cf-422f7d46b841","no":"TES2026699277122","profil":"ESMM","e":"cancelled","adapter":"edm","durum":"cancelled","tarih":"2026-06-17","mesaj":"e-SMM EDM'de iptal edildi. BASARIYLA TAMAMLANDI"}
+8 EDM: ["Login","SendSMM","GetSMMStatus","GetSMMStatus","CancelSMM","Login","GetSMMStatus"]

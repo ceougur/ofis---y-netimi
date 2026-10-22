@@ -1,0 +1,12 @@
+✖ E1: iz yalnız belge entegratörde oluşabilecekse kalır (B4, B5) (1267.706259ms)
+ℹ tests 16
+ℹ suites 6
+ℹ pass 15
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12603.054056
+✖ failing tests:
+✖ K7 (B4) hiç gitmeyen istek (oturum iki kez reddedildi → integrator-session): iz geri alınır — Gönderilmedi, Sil açık, Sonucu Belirsiz değil (416.061394ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:

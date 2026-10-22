@@ -1,0 +1,32 @@
+{
+  "ad": "244-e1/komsu-birim-2",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=2 test/efatura-portali-244.test.mjs test/entegrator-kullanici-adi-244.test.mjs test/fatura-244-numara-tarih-onay.test.mjs test/fatura-liste-243-fark.test.mjs test/goc-243-iade-ref.test.mjs test/karekod.test.mjs test/uiux-244-ux9.test.mjs test/uiux-a-243.test.mjs test/vekil-sunucu-uygulama.test.mjs test/isgecmisi-230.test.mjs test/trash.test.mjs test/documents.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs test/ebelge-244-iptal-suresi.test.mjs test/goc-244-iptal-suresi.test.mjs",
+  "commit": "ad865f0b04a18da1016904e0b46ffae8d5a989a7",
+  "dal": "is/e1",
+  "kirli": 4,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T21:58:03.461Z",
+  "sure_sn": 64.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 117,
+    "gecen": 117,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-e1/komsu-birim-2.log",
+  "klasor": "/home/user/wt/e1",
+  "ham_cikti_sha256": "e86b4fbfa47ff26fd3f1b1dbfa508d1e40f626326570874aca093a105d51e0d3",
+  "ham_cikti_bayt": 40426
+}

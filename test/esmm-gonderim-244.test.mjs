@@ -124,9 +124,9 @@ describe("e-SMM açık: makbuz ESmmEDM.svc'den gider; e-Arşiv e-Fatura servisin
     assert.equal(doc.canDraft, false, "e-SMM'de portala taslak yok");
     assert.equal(doc.canRefresh, true);
     assert.equal(doc.canOfficial, true);
-    // Gönderim kaydı (iptal süresinin başlangıcı; madde 23) e-SMM'de de yazılır.
+    // Gönderim kaydı (iptal süresinin başlangıcı; madde 23) e-SMM'de de yazılır. 2.4.4 (31d E1): ağa çıkmadan önce gönderim izi (invoice.e.sending), sonra sonuç.
     const trail = ctx.server.app.store.all("SELECT type FROM audit_events WHERE entity_id = ? AND type LIKE 'invoice.e.%' ORDER BY rowid", doc.id).map(row => row.type);
-    assert.deepEqual(trail, ["invoice.e.sent"]);
+    assert.deepEqual(trail, ["invoice.e.sending", "invoice.e.sent"]);
     // Toplu XML (Seçilenleri XML İndir): e-SMM makbuzu e-Belgedir, girer.
     const zip = await ctx.api.raw("GET", `/api/workspace/invoices/ubl.zip?ids=${doc.id}`);
     assert.equal(zip.status, 200, zip.buffer.toString("utf8").slice(0, 300));

@@ -1,0 +1,97 @@
+
+> destekofis@2.4.3 test:kahin-ebelge
+> python3 test/bagimsiz/ebelge/fark.py --tohumlar 1-3 --islem 120 --kucult --butce 25 --ux15 acik
+
+[ebelge-t1-i120] adım 120 · fark 0 · ihlal 0 · saf model son fark 0 · çatal seçimi 17 · İNCELE 0 · okunamayan UBL 0 · 6.2 sn
+[ebelge-t2-i120] fark:yanit / BASKA: ilk adım 10; küçültülüyor (bütçe 25)
+  küçültme 1/25: 10 → 5 adım -
+  küçültme 2/25: 10 → 5 adım -
+  küçültme 3/25: 10 → 8 adım -
+  küçültme 4/25: 10 → 8 adım -
+  küçültme 5/25: 10 → 8 adım -
+  küçültme 6/25: 10 → 8 adım TUTTU
+  küçültme 7/25: 8 → 6 adım -
+  küçültme 8/25: 8 → 6 adım -
+  küçültme 9/25: 8 → 6 adım -
+  küçültme 10/25: 8 → 6 adım -
+  küçültme 11/25: 8 → 6 adım -
+  küçültme 12/25: 8 → 7 adım -
+  küçültme 13/25: 8 → 7 adım -
+  küçültme 14/25: 8 → 7 adım -
+  küçültme 15/25: 8 → 7 adım -
+  küçültme 16/25: 8 → 7 adım -
+  küçültme 17/25: 8 → 7 adım TUTTU
+  küçültme 18/25: 7 → 6 adım TUTTU
+  küçültme 19/25: 6 → 5 adım -
+  küçültme 20/25: 6 → 5 adım -
+  küçültme 21/25: 6 → 5 adım -
+  küçültme 22/25: 6 → 5 adım -
+  küçültme 23/25: 6 → 5 adım -
+  küçültme 24/25: 6 → 5 adım -
+  küçültme 25/25: 6 → 5 adım -
+[ebelge-t2-i120] fark:numara / TUTMA-YOK: ilk adım 45; küçültülüyor (bütçe 25)
+  küçültme 1/25: 45 → 23 adım -
+  küçültme 2/25: 45 → 23 adım -
+  küçültme 3/25: 45 → 44 adım -
+  küçültme 4/25: 45 → 34 adım -
+  küçültme 5/25: 45 → 34 adım -
+  küçültme 6/25: 45 → 34 adım TUTTU
+  küçültme 7/25: 34 → 23 adım -
+  küçültme 8/25: 34 → 33 adım -
+  küçültme 9/25: 34 → 23 adım -
+  küçültme 10/25: 34 → 23 adım -
+  küçültme 11/25: 34 → 23 adım -
+  küçültme 12/25: 34 → 33 adım -
+  küçültme 13/25: 34 → 29 adım -
+  küçültme 14/25: 34 → 29 adım TUTTU
+  küçültme 15/25: 29 → 24 adım TUTTU
+  küçültme 16/25: 24 → 19 adım -
+  küçültme 17/25: 24 → 19 adım TUTTU
+  küçültme 18/25: 19 → 14 adım -
+  küçültme 19/25: 19 → 15 adım -
+  küçültme 20/25: 19 → 14 adım -
+  küçültme 21/25: 19 → 14 adım -
+  küçültme 22/25: 19 → 14 adım -
+  küçültme 23/25: 19 → 15 adım -
+  küçültme 24/25: 19 → 17 adım -
+  küçültme 25/25: 19 → 17 adım -
+[ebelge-t2-i120] adım 120 · fark 4 · ihlal 2 · saf model son fark 9 · çatal seçimi 14 · İNCELE 0 · okunamayan UBL 0 · 90.4 sn
+    I1               BASKA                                    2
+    fark:numara      BASKA                                    1
+    fark:numara      TUTMA-YOK                                1
+    fark:var         BASKA                                    1
+    fark:yanit       BASKA                                    1
+    KÜÇÜLTÜLMÜŞ fark:yanit / BASKA (6 adım, 25 koşu):
+      {"islem": "kaydet", "belge": "B1", "cari": "K5", "tarih": "2026-06-11", "gonder": "sonra", "no": 1}
+      {"islem": "kaydet", "belge": "B2", "cari": "K1", "tarih": "2026-06-16", "gonder": "simdi", "no": 2}
+      {"islem": "listeden_sil", "belge": "B2", "no": 3}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 4}
+      {"islem": "kart_gonder", "belge": "B2", "no": 5}
+      {"islem": "kagit_kaydet", "belge": "B6", "cari": "K2", "tarih": "2026-06-14", "no": 6}
+      → {"belge": "B6", "alan": "yanit", "model": "2xx", "program": 400, "kod": "chronology", "adim": 6, "islem": "kagit_kaydet", "sinif": "BASKA"}
+    KÜÇÜLTÜLMÜŞ fark:numara / TUTMA-YOK (19 adım, 25 koşu):
+      {"islem": "kaydet", "belge": "B1", "cari": "K5", "tarih": "2026-06-11", "gonder": "sonra", "no": 1}
+      {"islem": "kaydet", "belge": "B2", "cari": "K1", "tarih": "2026-06-16", "gonder": "simdi", "no": 2}
+      {"islem": "listeden_sil", "belge": "B2", "no": 3}
+      {"islem": "tumunu_gonder", "kapsam": "hepsi", "no": 4}
+      {"islem": "kart_gonder", "belge": "B2", "no": 5}
+      {"islem": "ag", "durum": "yok", "no": 6}
+      {"islem": "kart_gonder", "belge": "B4", "no": 7}
+      {"islem": "kaydet", "belge": "B7", "cari": "K1", "tarih": "2026-06-17", "gonder": "sonra", "belge_turu": "esmm", "tutar": "buyuk", "no": 8}
+      {"islem": "ag", "durum": "var", "no": 9}
+      {"islem": "gun_ilerlet", "gun": 8, "no": 10}
+      {"islem": "iptal", "belge": "B4", "yerel": true, "no": 11}
+      {"islem": "kaydet", "belge": "B15", "cari": "K2", "tarih": "2026-06-25", "gonder": "sonra", "no": 12}
+      {"islem": "gun_ilerlet", "gun": 8, "no": 13}
+      {"islem": "kart_gonder", "belge": "B10", "no": 14}
+      {"islem": "kaydet", "belge": "B16", "cari": "K2", "tarih": "2026-07-03", "gonder": "simdi", "no": 15}
+      {"islem": "kaydet", "belge": "B17", "cari": "K2", "tarih": "2026-07-03", "gonder": "sonra", "no": 16}
+      {"islem": "kart_gonder", "belge": "B9", "no": 17}
+      {"islem": "kaydet", "belge": "B18", "cari": "K1", "tarih": "2026-07-04", "gonder": "sonra", "no": 18}
+      {"islem": "listeden_sil", "belge": "B16", "no": 19}
+      → {"belge": "B16", "alan": "numara", "model": "", "program": "FIS2026000000002", "adim": 19, "islem": "listeden_sil", "sinif": "TUTMA-YOK (eski gönderilebilir bekleyen B15 varken yeni belge numaralandı)"}
+[ebelge-t3-i120] adım 120 · fark 0 · ihlal 0 · saf model son fark 5 · çatal seçimi 10 · İNCELE 0 · okunamayan UBL 0 · 5.8 sn
+# tests 3
+# pass 2
+# fail 1
+# kahin fark 4 ihlal 2
