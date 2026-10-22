@@ -20,11 +20,11 @@
 // (ESmmEDM.svc) gider; adres Servis Adresi'nden türetilir (edm.mjs esmmUrlOf). e-SMM istemcisi ilk e-SMM işleminde kurulur: türetilemeyen adres
 // e-Fatura işlemlerini bozmaz. e-SMM'de portala taslak (loadDraft/sendDraft) YOK (2.4.4 kapsamı) → açık hata, ağa çıkılmaz.
 import { HttpError } from "../http.mjs";
-import { EDM_URLS, createEdmClient, createEdmSmmClient, esmmUrlOf } from "./edm.mjs";
+import { EDM_PORTAL_URLS, EDM_URLS, createEdmClient, createEdmSmmClient, esmmUrlOf } from "./edm.mjs";
 import { IntegratorError } from "./integrator-error.mjs";
 
 export const ADAPTERS = Object.freeze({
-  edm: { label: "EDM Bilişim", protocol: "soap", implemented: true, urls: EDM_URLS },
+  edm: { label: "EDM Bilişim", protocol: "soap", implemented: true, urls: EDM_URLS, portalUrls: EDM_PORTAL_URLS },
 });
 export const DEFAULT_ADAPTER = "edm";
 
@@ -43,6 +43,15 @@ const toHttp = error => {
 };
 
 export const integratorUrl = integrator => String(integrator?.baseUrl || "").trim() || (integrator?.env === "live" ? EDM_URLS.live : EDM_URLS.test);
+// Entegratörün web portalı (2.4.4 E7): ortamın adresi YALNIZ entegratörün sabit portal listesinden; bilinmeyen entegratör ya da ortam → "" (hiçbir
+// adres açılmaz). Servis Adresi (baseUrl) portalı DEĞİŞTİRMEZ.
+export const integratorPortalUrl = integrator => {
+  const urls = ADAPTERS[integrator?.id]?.portalUrls;
+  const env = integrator?.env;
+  if (!urls || (env !== "test" && env !== "live")) return "";
+  return Object.hasOwn(urls, env) ? urls[env] : "";
+};
+export const isPortalUrl = url => Object.values(ADAPTERS).some(adapter => Object.values(adapter.portalUrls || {}).includes(url));
 // e-SMM servis adresi: Entegratör Ayarları'ndaki (ya da ortamın) e-Fatura adresinden türetilir; canlı kilidi ve ortam ↔ adres denetimi e-Fatura
 // adresine uygulandığı için türetilen adres aynı ortamdadır (test → test, canlı → canlı).
 export const integratorSmmUrl = integrator => esmmUrlOf(integratorUrl(integrator));

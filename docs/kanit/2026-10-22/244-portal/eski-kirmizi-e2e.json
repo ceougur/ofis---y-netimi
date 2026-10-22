@@ -1,0 +1,78 @@
+{
+  "ad": "244-portal/eski-kirmizi-e2e",
+  "komut": "npm run test:senaryo-portal-244",
+  "commit": "da8bcf6e3a9a818c24afee89f061785eab90eb41",
+  "dal": "is/portal",
+  "kirli": 9,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:58:49.310Z",
+  "sure_sn": 76.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 16,
+    "gecen": 8,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "“e-Fatura Portalı” düğmesi Fatura üst satırında (null)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "liste yeniden açılmadan etkin (null)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "beklenmeyen hata: browserContext.waitForEvent: Timeout 10000ms exceeded while waiting for event \"page\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "beklenmeyen hata: browserContext.waitForEvent: Timeout 10000ms exceeded while waiting for event \"page\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "beklenmeyen hata: browserContext.waitForEvent: Timeout 10000ms exceeded while waiting for event \"page\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "beklenmeyen hata: page.click: Timeout 30000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "portal-avukat: etkin (null)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "portal-goren: pasif, neden “undefined”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-portal-244: 8 geçti, 8 kaldı · depo /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/portal/portal-eski-163dd5d · ekran görüntüleri /home/user/wt/portal/test/e2e/artifacts/senaryo-portal-244",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-portal/eski-kirmizi-e2e.log",
+  "klasor": "/home/user/wt/portal",
+  "ham_cikti_sha256": "99aacad277dbfa03cacb28ce56787efcbeeedf8880e356e8473fa3dc00e8ba99",
+  "ham_cikti_bayt": 2895
+}
