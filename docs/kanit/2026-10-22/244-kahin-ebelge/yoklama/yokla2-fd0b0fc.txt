@@ -1,0 +1,26 @@
+== earsiv kopma sonra kayit: {"status":200,"number":"TEA2026000000001","eStatus":"none","status2":"issued"}
+== earsiv kopma sonra kart: {"status":"issued","number":"TEA2026000000001","ettn":"35cd060d-2669-44db-bb34-77280d8d5156","eStatus":"none","eStatusLabel":"Sonucu Belirsiz","eUnsent":true,"eTestLive":false,"eTest":true,"eMessage":"EDM ile bağlantı istek gönderildikten sonra koptu; istek EDM'ye ulaşmış olabilir.","eAt":"2026-06-17T10:00:00.000Z","eAdapter":"edm"}
+== pending: [{"number":"TEA2026000000001","eStatus":"none","eBlocked":false}]
+== earsiv kopma once kayit: {"status":200,"number":"","eStatus":"waiting","status2":"issued"}
+== earsiv kopma once kart: {"status":"issued","number":"","ettn":"84fe33c8-7e8d-4b8f-8493-c0eebff1b642","eStatus":"waiting","eStatusLabel":"Gönderilecek","eUnsent":false,"eTestLive":false,"eTest":true,"eMessage":"EDM'ye bağlanılamadı. İnternet bağlantısını ve servis adresini kontrol edin; birazdan yeniden deneyin. Belge EDM'ye ulaşmadı; numara verilmedi, Gönderilecekler'de bekliyor.","eAt":"","eAdapter":""}
+== esmm kopma sonra kayit: {"status":200,"number":"TES2026000000001","eStatus":"none","status2":"issued"}
+== esmm kart: {"status":"issued","number":"TES2026000000001","ettn":"e7cd2000-8c40-4733-9753-ed4c34da4961","eStatus":"none","eStatusLabel":"Sonucu Belirsiz","eUnsent":true,"eTestLive":false,"eTest":true,"eMessage":"EDM ile bağlantı istek gönderildikten sonra koptu; istek EDM'ye ulaşmış olabilir.","eAt":"2026-06-17T10:00:00.000Z","eAdapter":"edm"}
+== earsiv belirsiz iptal normal g0: {"status":409,"code":"einvoice-uncertain","error":"Son e-Belge gönderiminin sonucu belirsiz (entegratöre bağlantı koptu; belge ulaşmış olabilir). Önce Durum Sorgula: belge entegratörde yoksa yeniden gönderilir ya da değiştirilir.","extra":{}}
+== earsiv belirsiz(EDM var) localOnly g9: {"status":409,"code":"einvoice-cancel-late","error":"Belge EDM'de bulundu: alıcıya iletilmiş, GİB'de geçerli. e-Arşiv faturanın iptal süresi doldu: alıcıya iletildiği 17.06.2026 gününden sonraki 8 gün içinde (en geç 25.06.2026) iptal edilebilirdi. İade faturası kesin; gerekirse doğrusunu yeniden kesin.","extra":{"lastDay":"2026-06-25","start":"2026-06-17","source":"iletim"}}
+== esmm belirsiz(EDM var) localOnly g9: {"status":409,"code":"einvoice-cancel-late","error":"Belge EDM'de bulundu: alıcıya iletilmiş, GİB'de geçerli. e-SMM'nin iptal süresi doldu: alıcıya iletildiği 17.06.2026 gününden sonraki 8 gün içinde (en geç 25.06.2026) iptal edilebilirdi. Makbuz geçerli kalır; düzeltme için mali müşavirinize danışın.","extra":{"lastDay":"2026-06-25","start":"2026-06-17","source":"iletim"}}
+== a2 kart g9: {"status":"issued","number":"","ettn":"84fe33c8-7e8d-4b8f-8493-c0eebff1b642","eStatus":"waiting","eStatusLabel":"Gönderilecek","eUnsent":false,"eTestLive":false,"eTest":true,"eMessage":"EDM'ye bağlanılamadı. İnternet bağlantısını ve servis adresini kontrol edin; birazdan yeniden deneyin. Belge EDM'ye ulaşmadı; numara verilmedi, Gönderilecekler'de bekliyor.","eAt":"","eAdapter":""}
+== earsiv a2 iptal normal g9: {"status":200,"number":"","eStatus":"waiting","status2":"cancelled"}
+== edm iptal: []
+== a3: {"status":200,"number":"TEA2026000000002","eStatus":"sent","status2":"issued"}
+== a3 iptal iletim+8 (kesim+13): {"status":200,"number":"TEA2026000000002","eStatus":"cancelled","status2":"cancelled"}
+== only [b1, iptal b2]: {"status":200}
+== only [] : {"status":400,"code":"einvoice-selection-empty","error":"Gönderilecek belge seçilmedi.","extra":{}}
+== ilsiz cari: {"status":200,"status2":"active"}
+== ilsiz kes sonra: {"status":400,"code":"einvoice-party","error":"Cari (alıcı): il zorunludur (adres).","extra":{"field":"party","problems":["Cari (alıcı): il zorunludur (adres)."]}}
+== ilsiz kes simdi: {"status":400,"code":"einvoice-party","error":"Cari (alıcı): il zorunludur (adres).","extra":{"field":"party","problems":["Cari (alıcı): il zorunludur (adres)."]}}
+== ilsiz calc: ["Cari (alıcı): il zorunludur (adres)."]
+== vdsiz cari: {"status":200,"status2":"active"}
+== vdsiz kes simdi: {"status":400,"code":"einvoice-party","error":"Cari (alıcı): e-Fatura'da tüzel alıcının vergi dairesi zorunludur.","extra":{"field":"party","problems":["Cari (alıcı): e-Fatura'da tüzel alıcının vergi dairesi zorunludur."]}}
+== nihai cari: {"status":200,"status2":"active"}
+== nihai kes 600: {"status":400,"code":"einvoice-party","error":"Cari (alıcı): il zorunludur (adres).","extra":{"field":"party","problems":["Cari (alıcı): il zorunludur (adres)."]}}
+== nihai kes 36000: {"status":400,"code":"einvoice-party","error":"Cari (alıcı): il zorunludur (adres). Cari (alıcı): 30.000 TL üstü e-Arşiv faturada nihai tüketicinin gerçek TC kimlik numarası, adı soyadı ve adresi zorunludur (11111111111 yazılamaz). Cari (alıcı): adres zorunludur.","extra":{"field":"party","problems":["Cari (alıcı): il zorunludur (adres).","Cari (alıcı): 30.000 TL üstü e-Arşiv faturada nihai tüketicinin gerçek TC kimlik numarası, adı soyadı ve adresi zorunludur (11111111111 yazılamaz).","Cari (alıcı): adres zorunludur."]}}

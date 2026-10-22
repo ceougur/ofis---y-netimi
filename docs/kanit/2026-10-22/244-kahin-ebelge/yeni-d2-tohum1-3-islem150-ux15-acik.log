@@ -1,0 +1,10 @@
+[ebelge-t1-i150] adım 150 · fark 0 · ihlal 5 · saf model son fark 0 · çatal seçimi 22 · İNCELE 0 · okunamayan UBL 0 · 7.6 sn
+    I23              UX15-YOK-I23                             5
+[ebelge-t2-i150] adım 150 · fark 0 · ihlal 11 · saf model son fark 11 · çatal seçimi 17 · İNCELE 0 · okunamayan UBL 0 · 9.0 sn
+    I23              UX15-YOK-I23                             11
+[ebelge-t3-i150] adım 150 · fark 0 · ihlal 15 · saf model son fark 5 · çatal seçimi 19 · İNCELE 0 · okunamayan UBL 0 · 7.7 sn
+    I23              UX15-YOK-I23                             15
+# tests 3
+# pass 0
+# fail 3
+# kahin fark 0 ihlal 31

@@ -1,0 +1,82 @@
+{
+ "dil": "destekofis-ebelge/2",
+ "ad": "hedefli-244-k36-alici",
+ "aciklama": "K36: il yok (e-Arşiv, e-SMM), vergi dairesi yok (e-Fatura VKN), Nihai Tüketici 48.000 TL e-Arşiv → kesilemez, numara harcanmaz; Nihai Tüketici 600 TL gider",
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi",
+  "K6": "ilsiz_kisi",
+  "K7": "vdsiz_mukellef",
+  "K8": "nihai"
+ },
+ "adimlar": [
+  {
+   "islem": "kaydet",
+   "belge": "B1",
+   "cari": "K6",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 1
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B2",
+   "cari": "K6",
+   "tarih": "2026-06-17",
+   "gonder": "sonra",
+   "no": 2
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B3",
+   "cari": "K6",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "belge_turu": "esmm",
+   "no": 3
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B4",
+   "cari": "K7",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 4
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B5",
+   "cari": "K8",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "tutar": "buyuk",
+   "no": 5
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B6",
+   "cari": "K8",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 6
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B7",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "tutar": "buyuk",
+   "no": 7
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 8
+  }
+ ]
+}

@@ -1,0 +1,67 @@
+{
+ "dil": "destekofis-ebelge/2",
+ "ad": "hedefli-244-k33-esmm",
+ "aciklama": "K33 + K34: e-SMM'de Seçilenleri Gönder — eski makbuz sorulur; e-Arşiv eski belgesi e-SMM seçimini bekletmez",
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi",
+  "K6": "ilsiz_kisi",
+  "K7": "vdsiz_mukellef",
+  "K8": "nihai"
+ },
+ "adimlar": [
+  {
+   "islem": "kaydet",
+   "belge": "B1",
+   "cari": "K1",
+   "tarih": "2026-06-15",
+   "gonder": "sonra",
+   "belge_turu": "esmm",
+   "no": 1
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B2",
+   "cari": "K5",
+   "tarih": "2026-06-14",
+   "gonder": "sonra",
+   "no": 2
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B3",
+   "cari": "K2",
+   "tarih": "2026-06-17",
+   "gonder": "sonra",
+   "belge_turu": "esmm",
+   "no": 3
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "secili",
+   "belgeler": [
+    "B3"
+   ],
+   "eski": "vazgec",
+   "no": 4
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "secili",
+   "belgeler": [
+    "B3"
+   ],
+   "eski": "ekle",
+   "no": 5
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 6
+  }
+ ]
+}

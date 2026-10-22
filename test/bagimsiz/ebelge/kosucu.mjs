@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// e-Belge kâhini — program tarafı koşucu (dil "destekofis-ebelge/1"; test/bagimsiz/ebelge/model.py ile aynı senaryo).
+// e-Belge kâhini — program tarafı koşucu (dil "destekofis-ebelge/2" ve /1; test/bagimsiz/ebelge/model.py ile aynı senaryo).
 //
 //   node test/bagimsiz/ebelge/kosucu.mjs <senaryo.json> --cikti <dosya>
 //
@@ -7,6 +7,10 @@
 // HUKUK_LICENSE_URL=http://127.0.0.1:9 — gerçek lisans servisine ulaşmaz, ders 30). Entegratör adresi sahte EDM'nin (test/einvoice-mock.mjs)
 // ÖNÜNDEKİ bir vekildir: vekil arıza enjekte eder (ağ yok = bağlantı reddi; tek atımlık geçici hata 500; kopma önce/sonra) ve her
 // SendInvoice denemesini (kimlik, ETTN, adım) yazar. Ağa ÇIKILMAZ (fetchImpl yalnız 127.0.0.1).
+// /2 (2.4.4): e-SMM makbuzu (program e-SMM adresini e-Fatura adresinden türetir: …/ESmmEDM.svc — vekil aynı yolu yakalar; SendSMM denemeleri de yazılır),
+// Seçilenleri Gönder (send-pending { only }; ilk istek 409 einvoice-selection-older + olderIds — kara kutu yoklamasıyla öğrenildi, KARARLAR.md), Yalnız
+// Programda İptal (cancel { localOnly, confirmLocal }), kayıttan önce ön hesap (POST invoices/calc: blockers, partyProblems) ve EDM'ye giden UBL'deki
+// alıcı alanları (il, vergi dairesi, kimlik, ödenecek) GÖZLENİR. Beklenen değer yine HESAPLANMAZ.
 // Her adımı programın HTTP API'siyle uygular, sonra programın KENDİ liste uçlarından (Tümü, İptal Edilenler, Gönderilecekler) belge
 // durumunu OKUR ve sahte EDM'nin kabul ettiği belgeleri (EDM gerçeği) ekler. Beklenen değer HESAPLAMAZ (temiz oda: model.py'yi okumaz).
 // Çıkış: 0 koşu tamam · 1 koşucu hatası (kanıt sayılmaz) · 2 kullanım hatası.
@@ -23,13 +27,16 @@ if (!senaryoYolu || args.indexOf("--cikti") < 0) {
   process.exit(2);
 }
 const senaryo = JSON.parse(readFileSync(senaryoYolu, "utf8"));
-if (senaryo.dil !== "destekofis-ebelge/1") {
+if (!["destekofis-ebelge/1", "destekofis-ebelge/2"].includes(senaryo.dil)) {
   console.error(`dil ${senaryo.dil}`);
   process.exit(2);
 }
 
 const NS = "urn:edm:test";
 const LINES = [{ name: "Danışmanlık", qty: 1, unitPrice: 500, vatRate: 20 }];
+// /2 tutar: "olagan" 500 + %20 = 600 TL, "buyuk" 40.000 + %20 = 48.000 TL (nihai tüketici sınırından uzak; sınır denenmez — KARARLAR.md K36).
+const SATIRLAR = { olagan: LINES, buyuk: [{ name: "Danışmanlık", qty: 1, unitPrice: 40000, vatRate: 20 }] };
+const smmMi = senaryo.adimlar.some(a => a.belge_turu === "esmm");
 const SELLER = { name: "Deneme Ofis Ltd.", taxNo: OUR_VKN, taxOffice: "Çankaya", address: "Atatürk Blv. 1", district: "Çankaya", city: "Ankara", email: "bilgi@deneme.com.tr" };
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -50,19 +57,35 @@ async function startProxy(target) {
       try {
         const body = Buffer.concat(chunks);
         const s = body.toString("utf8");
-        const send = /<(?:\w+:)?SendInvoiceRequest[\s>]/.test(s);
+        const smm = /<(?:\w+:)?SendSMMRequest[\s>]/.test(s);
+        const send = smm || /<(?:\w+:)?SendInvoiceRequest[\s>]/.test(s);
         let ariza = null;
         if (send) {
-          const inv = /<(?:\w+:)?INVOICE\b([^>]*)>/.exec(s);
-          const attr = name => (inv ? (new RegExp(`\\b${name}="([^"]*)"`).exec(inv[1]) || [])[1] : undefined) || "";
+          let id = "";
+          let uuid = "";
+          if (smm) {
+            // e-SMM: SMM öğesinde ID/UUID ÇOCUK öğedir (sahte servisin sözleşmesi, test/esmm-mock.mjs başlığı).
+            const blok = (/<(?:\w+:)?SMM\b[^>]*>([\s\S]*?)<\/(?:\w+:)?SMM>/.exec(s) || [])[1] || "";
+            id = ((/<(?:\w+:)?ID>([^<]*)</.exec(blok) || [])[1] || "").trim();
+            uuid = ((/<(?:\w+:)?UUID>([^<]*)</.exec(blok) || [])[1] || "").trim().toLowerCase();
+          } else {
+            const inv = /<(?:\w+:)?INVOICE\b([^>]*)>/.exec(s);
+            const attr = name => (inv ? (new RegExp(`\\b${name}="([^"]*)"`).exec(inv[1]) || [])[1] : undefined) || "";
+            id = attr("ID");
+            uuid = attr("UUID").toLowerCase();
+          }
           ariza = st.ariza;
           st.ariza = null;
-          st.denemeler.push({ adim: st.adim, id: attr("ID"), uuid: attr("UUID"), ariza: ariza || "" });
+          st.denemeler.push({ adim: st.adim, id, uuid, ariza: ariza || "", servis: smm ? "smm" : "efatura" });
           if (st.onSend) {
             const f = st.onSend;
             st.onSend = null;
             f();
           }
+        }
+        if (ariza === "gecici_hata" && smm) {
+          res.writeHead(500, { "content-type": "text/xml" }).end(`<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><s:Fault><faultcode>s:Server</faultcode><faultstring>Geçici sistem hatası</faultstring><detail><RequestFault xmlns="http://tempuri.org/"><INTL_TXN_ID xmlns="">0</INTL_TXN_ID><ERROR_CODE xmlns="">11999</ERROR_CODE><ERROR_SHORT_DES xmlns="">Geçici sistem hatası</ERROR_SHORT_DES></RequestFault></detail></s:Fault></s:Body></s:Envelope>`);
+          return;
         }
         if (ariza === "gecici_hata") {
           res.writeHead(500, { "content-type": "text/xml" }).end(`<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><s:Fault><faultcode>s:Server</faultcode><faultstring>Geçici sistem hatası</faultstring><detail><RequestFault xmlns="${NS}"><ERROR_CODE>11999</ERROR_CODE><ERROR_SHORT_DES>Geçici sistem hatası</ERROR_SHORT_DES></RequestFault></detail></s:Fault></s:Body></s:Envelope>`);
@@ -127,6 +150,7 @@ const fetchImpl = async (input, init) => {
 };
 const server = await startTestServer({
   edocEnabled: true,
+  ...(smmMi ? { esmmEnabled: true } : {}),
   fetchImpl,
   now: { time: `${senaryo.bugun}T10:00:00`, fixed: true },
   edocStatusPollMs: [5, 5],
@@ -148,7 +172,7 @@ const sonuc = { dil: senaryo.dil, senaryo: senaryo.ad, tohum: senaryo.tohum, kur
 try {
   const api = await oturum();
   const api2 = await oturum();
-  const ayar = await api.put("/api/workspace/invoices/settings", { seller: SELLER, efatura: true, earsiv: true, integrator: { env: "test", baseUrl: vekil.url, username: "edmkullanici", password: "Gizli-Parola-1", senderAlias: "urn:mail:defaultgb@deneme.com.tr" } });
+  const ayar = await api.put("/api/workspace/invoices/settings", { seller: SELLER, efatura: true, earsiv: true, ...(smmMi ? { esmm: true } : {}), integrator: { env: "test", baseUrl: vekil.url, username: "edmkullanici", password: "Gizli-Parola-1", senderAlias: "urn:mail:defaultgb@deneme.com.tr" } });
   if (ayar.status !== 200) throw new Error(`ayar ${ayar.status} ${JSON.stringify(ayar.data)}`);
   // Cariler (kurulum doğrulanır: işaret ve PK istenen gibi mi).
   const firm = (name, taxNo, extra) => ({ name, type: "customer", taxNo, taxOffice: "Kavaklıdere", address: "Cinnah Cd. 10", district: "Çankaya", city: "Ankara", ...extra });
@@ -158,6 +182,10 @@ try {
     mukellef: () => firm("Alıcı Ticaret A.Ş.", BUYER_VKN, { eInvoice: true, eAlias: "urn:mail:defaultpk@alici.com.tr" }),
     mukellef_pksiz: () => firm("Çoklu A.Ş.", MULTI_VKN, { eInvoice: true, eAlias: "" }),
     gizli_mukellef: () => firm("Gizli Mükellef A.Ş.", BUYER_VKN, { eInvoice: false, eAlias: "" }),
+    // /2 (K36): il yok · vergi dairesi yok · Nihai Tüketici (11111111111; il var, adres yok)
+    ilsiz_kisi: () => ({ name: "İlsiz Kişi", type: "customer", partyKind: "person", firstName: "İlsiz", familyName: "Kişi", taxNo: "12345678950", address: "Bir Sk. 1" }),
+    vdsiz_mukellef: () => ({ name: "Vergi Dairesiz A.Ş.", type: "customer", partyKind: "company", taxNo: BUYER_VKN, address: "Cinnah Cd. 10", district: "Çankaya", city: "Ankara", eInvoice: true, eAlias: "urn:mail:defaultpk@alici.com.tr" }),
+    nihai: () => ({ name: "Nihai Tüketici", type: "customer", partyKind: "person", firstName: "Nihai", familyName: "Tüketici", taxNo: "11111111111", city: "Ankara" }),
   };
   const cariId = {};
   let kisiNo = 0;
@@ -165,7 +193,7 @@ try {
     const govde = tur === "kisi" ? tanim.kisi(kisiNo++) : tanim[tur]();
     const r = await api.post("/api/workspace/accounts", { ...govde, similarOk: true });
     if (r.status !== 200) throw new Error(`cari ${k} ${r.status} ${JSON.stringify(r.data)}`);
-    const beklenen = { kisi: [0, ""], mukellef: [1, "urn:mail:defaultpk@alici.com.tr"], mukellef_pksiz: [1, ""], gizli_mukellef: [0, ""] }[tur];
+    const beklenen = { kisi: [0, ""], mukellef: [1, "urn:mail:defaultpk@alici.com.tr"], mukellef_pksiz: [1, ""], gizli_mukellef: [0, ""], ilsiz_kisi: [0, ""], vdsiz_mukellef: [1, "urn:mail:defaultpk@alici.com.tr"], nihai: [0, ""] }[tur];
     if (Number(r.data.eInvoice) !== beklenen[0] || r.data.eAlias !== beklenen[1]) throw new Error(`cari ${k} kurulumu istenen gibi değil: ${r.data.eInvoice} ${r.data.eAlias}`);
     cariId[k] = r.data.id;
     sonuc.kurulum[k] = { tur, id: r.data.id, eInvoice: r.data.eInvoice, eAlias: r.data.eAlias };
@@ -197,7 +225,7 @@ try {
       const ad = idAd[id];
       if (!ad) continue;
       sonuc.eStatusDegerleri[x.eStatus ?? "null"] = (sonuc.eStatusDegerleri[x.eStatus ?? "null"] || 0) + 1;
-      belgeler[ad] = { id, ettn: x.ettn, numara: x.number || "", eStatus: x.eStatus ?? "", durum: x.status, tarih: x.issueDate, profil: x.profile || "", eProfil: x.eStatus === "withdrawn" ? await eProfilOku(id) : "", accountId: x.accountId, bekleyen: bekleyen.has(id) };
+      belgeler[ad] = { id, ettn: String(x.ettn || "").toLowerCase(), numara: x.number || "", eStatus: x.eStatus ?? "", durum: x.status, tarih: x.issueDate, profil: x.profile || "", eProfil: x.eStatus === "withdrawn" ? await eProfilOku(id) : "", accountId: x.accountId, bekleyen: bekleyen.has(id), eUnsent: x.eUnsent ?? null, eBlocked: x.eBlocked ?? null };
     }
     const yabanci = [...tum.keys()].filter(id => !idAd[id]);
     return { belgeler, yabanci };
@@ -234,13 +262,30 @@ try {
     return { status: y.status, data: y.status === 200 ? { ...y.data, results, parca } : y.data };
   };
   const ozet = r => ({ status: r.status, kod: r.data?.error?.code || r.data?.code || r.data?.error || "", veri: JSON.stringify(r.data).slice(0, 400) });
-  const govde = (ad, extra = {}) => ({ kind: "sale", scenario: "service_sale", accountId: cariId[belgeCari[ad]], lines: LINES, payment: { rest: "open" }, ...extra });
+  const belgeSenaryo = {}; // ad → "smm" | "service_sale"
+  const belgeSatir = {}; // ad → satırlar
+  const govde = (ad, extra = {}) => ({ kind: "sale", scenario: belgeSenaryo[ad] || "service_sale", accountId: cariId[belgeCari[ad]], lines: belgeSatir[ad] || LINES, payment: { rest: "open" }, ...extra });
+  const sonuclarOf = r => (r.data?.results || []).map(x => ({ ad: idAd[x.id] || x.id, ok: x.ok, numara: x.number || "", durum: x.status || "", kod: x.code || x.error || "", ileti: x.message || "" }));
+  // UBL'den alıcı alanları (gözlem; K36 değişmezi fark.py'de): il, vergi dairesi, kimlik, ödenecek. Okunamayan alan null (ders 4: "bilinmiyor").
+  const aliciOku = xml => {
+    if (!xml) return null;
+    const blok = (/<cac:AccountingCustomerParty>([\s\S]*?)<\/cac:AccountingCustomerParty>/.exec(xml) || [])[1];
+    if (!blok) return null;
+    const ilk = re => { const m = re.exec(blok); return m ? m[1].trim() : ""; };
+    const pts = (/<cac:PartyTaxScheme>([\s\S]*?)<\/cac:PartyTaxScheme>/.exec(blok) || [])[1] || "";
+    const kimlik = /<cbc:ID schemeID="(TCKN|VKN)"[^>]*>([^<]*)</.exec(blok);
+    const odenecek = /<cac:LegalMonetaryTotal>[\s\S]*?<cbc:PayableAmount[^>]*>([^<]*)</.exec(xml);
+    return { il: ilk(/<cac:PostalAddress>[\s\S]*?<cbc:CityName>([^<]*)</), vd: ((/<cbc:Name>([^<]*)</.exec(pts) || [])[1] || "").trim(), kimlikTur: kimlik ? kimlik[1] : "", kimlik: kimlik ? kimlik[2].trim() : "", odenecek: odenecek ? Number(odenecek[1]) : null };
+  };
 
   for (const adim of senaryo.adimlar) {
     vekil.adim = adim.no;
     const kayitOncesi = edm.state.sent.length;
     const cagriOncesi = edm.state.calls.length;
     const iptalOncesi = edm.state.cancelled.length;
+    const smmKayitOncesi = edm.state.smm.sent.length;
+    const smmCagriOncesi = edm.state.smm.calls.length;
+    const smmIptalOncesi = edm.state.smm.cancelled.length;
     const kayit = { no: adim.no, islem: adim.islem, yanit: null, ek: null };
     const id = adim.belge ? belgeId[adim.belge] : undefined;
     const i = adim.islem;
@@ -250,8 +295,15 @@ try {
         const kapat = await api.put("/api/workspace/invoices/settings", { efatura: false, earsiv: false });
         if (kapat.status !== 200) throw new Error(`e-dönüşüm kapatılamadı ${kapat.status}`);
       }
-      const body = { scenario: "service_sale", accountId: cariId[adim.cari], lines: LINES, payment: { rest: "open" }, issueDate: adim.tarih };
-      if (i === "kaydet") body.eSend = adim.gonder === "simdi" ? "now" : "later";
+      belgeSenaryo[adim.belge] = adim.belge_turu === "esmm" ? "smm" : "service_sale";
+      belgeSatir[adim.belge] = SATIRLAR[adim.tutar || "olagan"];
+      const body = { scenario: belgeSenaryo[adim.belge], accountId: cariId[adim.cari], lines: belgeSatir[adim.belge], payment: { rest: "open" }, issueDate: adim.tarih };
+      if (i === "kaydet") {
+        body.eSend = adim.gonder === "simdi" ? "now" : "later";
+        // Ön hesap (POST invoices/calc — UX9 testinin ÇAĞRI satırından + kara kutu yoklamasından): kayıttan ÖNCE ne dediği gözlenir (K37 değişmezi).
+        const c = await api.post("/api/workspace/invoices/calc", { kind: "sale", scenario: body.scenario, accountId: body.accountId, issueDate: body.issueDate, issueTime: "10:00", lines: body.lines });
+        kayit.onHesap = { status: c.status, blockers: (c.data?.blockers || []).map(x => (typeof x === "string" ? x : x?.message || JSON.stringify(x))), partyProblems: c.data?.partyProblems || [], aliasBlock: c.data?.aliasBlock || "", nextNumber: c.data?.nextNumber || "" };
+      }
       const r = await api.post("/api/workspace/invoices", body);
       kayit.yanit = ozet(r);
       if (r.status === 200 && r.data?.id) {
@@ -272,18 +324,25 @@ try {
     } else if (i === "kart_gonder") {
       kayit.yanit = ozet(await api.post(`/api/workspace/invoices/${id}/send`, {}));
     } else if (i === "tumunu_gonder" && adim.kapsam === "secili" && adim.eski !== undefined) {
-      // BAĞLANTI (2.4.4, E6 "Seçilenleri Gönder"; YALNIZ çağrı biçimi — kural/beklenen değer YOK, model bu adımı henüz bilmez): adımda "eski"
-      // alanı varsa ekranın yeni yolu sürülür: send-pending { only: [kimlikler] }. Seçilmemiş daha eski bekleyen varsa ilk istek gönderimsiz 409
-      // einvoice-selection-older (+ olderIds) döner; "eski": "ekle" → { only: seçili ∪ olderIds } ile tur, başka değer → vazgeçilir (istek yok).
-      // Gözlem kayda yazılır (ek.soru). "eski" alanı olmayan seçili adım eski { ids } yolunu sürer (aşağıda). Kuralı kodu görmeyen ayrı el yazar.
+      // K33 Seçilenleri Gönder (/2): send-pending { only: [kimlikler] } (istek biçimi test/ebelge-244-secilenleri-gonder.test.mjs ÇAĞRI satırından; yanıt
+      // kara kutu yoklamasından: 409 einvoice-selection-older + count + olderIds). Soru gelirse "eski": "ekle" → { only: seçili ∪ olderIds }, "vazgec" →
+      // istek yok. İlk istekte EDM denemesi ve numara değişimi ayrıca gözlenir (K33: soru gönderimden ÖNCE). Beklenen değer yok — model.py verir.
       const ids = adim.belgeler.map(ad => belgeId[ad]).filter(Boolean);
       if (!ids.length) kayit.yanit = { atlandi: "seçili belge programda yok" };
       else {
+        const denemeOncesi = vekil.denemeler.length;
+        const numaraOncesi = Object.fromEntries(Object.entries((await gozle()).belgeler).map(([ad, b]) => [ad, b.numara]));
         let r = await turGonder(api, { only: ids });
         const soru = r.status === 409 && r.data?.code === "einvoice-selection-older" ? { sayi: r.data.count, eskiler: (r.data.olderIds || []).map(x => idAd[x] || x) } : null;
+        if (soru) {
+          const sonra = (await gozle()).belgeler;
+          soru.ilkIstekDeneme = vekil.denemeler.length - denemeOncesi;
+          soru.ilkIstekNumaraDegisen = Object.keys(sonra).filter(ad => (sonra[ad].numara || "") !== (numaraOncesi[ad] || ""));
+        }
+        const ilk = ozet(r);
         if (soru && adim.eski === "ekle") r = await turGonder(api, { only: [...ids, ...(r.data.olderIds || [])] });
         kayit.yanit = ozet(r);
-        kayit.ek = { soru, sonuclar: (r.data?.results || []).map(x => ({ ad: idAd[x.id] || x.id, ok: x.ok, numara: x.number || "", durum: x.status || "", kod: x.code || x.error || "", ileti: x.message || "" })) };
+        kayit.ek = { soru, ilk, sonuclar: sonuclarOf(r) };
       }
     } else if (i === "tumunu_gonder") {
       const body = adim.kapsam === "secili" ? { ids: adim.belgeler.map(ad => belgeId[ad]).filter(Boolean) } : { all: true };
@@ -316,7 +375,9 @@ try {
     } else if (i === "listeden_sil") {
       kayit.yanit = ozet(await api.post(`/api/workspace/invoices/${id}/withdraw`, {}));
     } else if (i === "iptal") {
-      kayit.yanit = ozet(await api.post(`/api/workspace/invoices/${id}/cancel`, { reason: "Kâhin iptali" }));
+      // /2 "yerel": Yalnız Programda İptal (cancel { localOnly, confirmLocal } — test/ebelge-244-iptal-suresi.test.mjs ÇAĞRI satırından).
+      const body = adim.yerel ? { reason: "Kâhin iptali", localOnly: true, confirmLocal: true } : { reason: "Kâhin iptali" };
+      kayit.yanit = ozet(await api.post(`/api/workspace/invoices/${id}/cancel`, body));
     } else if (i === "duzenle_tarih") {
       kayit.yanit = ozet(await api.post(`/api/workspace/invoices/${id}/edit`, govde(adim.belge, { issueDate: adim.tarih })));
     } else if (i === "duzenle_tur") {
@@ -336,9 +397,14 @@ try {
     kayit.gozlem = g.belgeler;
     if (g.yabanci.length) kayit.yabanci = g.yabanci;
     kayit.edm = {
-      kabul: edm.state.sent.slice(kayitOncesi).map(x => ({ id: x.id, uuid: x.uuid, earchive: String(x.earchive || ""), vkn: x.receiver?.vkn || "", alias: x.receiver?.alias || "" })),
-      iptal: edm.state.cancelled.slice(iptalOncesi),
-      cagrilar: edm.state.calls.slice(cagriOncesi).map(c => c.op),
+      kabul: [
+        ...edm.state.sent.slice(kayitOncesi).map(x => ({ id: x.id, uuid: String(x.uuid || "").toLowerCase(), earchive: String(x.earchive || ""), vkn: x.receiver?.vkn || "", alias: x.receiver?.alias || "", servis: "efatura", alici: aliciOku(x.xml) })),
+        // e-SMM servisinin kabul ettikleri (earchive "smm": e-Arşiv/e-Fatura ayrımı uygulanmaz)
+        ...edm.state.smm.sent.slice(smmKayitOncesi).map(x => ({ id: x.id, uuid: String(x.uuid || "").toLowerCase(), earchive: "smm", vkn: "", alias: "", servis: "smm", alici: aliciOku(x.xml) })),
+      ],
+      iptal: [...edm.state.cancelled.slice(iptalOncesi).map(u => String(u).toLowerCase()), ...edm.state.smm.cancelled.slice(smmIptalOncesi).map(u => String(u).toLowerCase())],
+      iptalServis: [...edm.state.cancelled.slice(iptalOncesi).map(() => "efatura"), ...edm.state.smm.cancelled.slice(smmIptalOncesi).map(() => "smm")],
+      cagrilar: [...edm.state.calls.slice(cagriOncesi).map(c => c.op), ...edm.state.smm.calls.slice(smmCagriOncesi).map(c => `smm:${c.op}`)],
     };
     kayit.bugun = new Date(server.clock.ms()).toISOString().slice(0, 10);
     kayit.arizaBekliyor = vekil.ariza || "";
@@ -352,7 +418,7 @@ try {
     sonuc.adimlar.push(kayit);
   }
   sonuc.denemeler = vekil.denemeler;
-  sonuc.ihlalEdm = edm.state.violations;
+  sonuc.ihlalEdm = [...edm.state.violations, ...edm.state.smm.violations.map(v => `e-SMM: ${v}`)];
 } catch (error) {
   sonuc.hata = String(error?.stack || error);
   cikis = 1;
