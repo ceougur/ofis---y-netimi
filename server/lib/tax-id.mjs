@@ -43,15 +43,19 @@ export function classifyTaxId(value, options = {}) {
 
 /**
  * e-Belge için taraf denetimi. party: { name, taxNo, taxOffice, mersisNo, partyKind ('company' | 'person'), city, district,
- * address, country }. profile: 'EFATURA' | 'EARSIV' | 'KAGIT'. role: 'buyer' | 'seller'. Dönüş: sorun listesi (boşsa geçerli).
+ * address, country }. profile: 'EFATURA' | 'EARSIV' | 'ESMM' | 'KAGIT' (ESMM: e-Arşiv'in taraf kuralları, iletide "e-SMM" — 2.4.4 MM11).
+ * role: 'buyer' | 'seller'. Dönüş: sorun listesi (boşsa geçerli).
  */
 // e-Arşiv'de kimliği bilinmeyen nihai tüketiciye (11111111111) kesilebilecek en yüksek tutar (KDV dahil, 2026: 30.000 TL);
 // üstünde alıcının gerçek TCKN'si, adı soyadı ve adresi zorunludur (GİB e-Arşiv uygulaması).
 export const ANONYMOUS_LIMIT = 30_000;
 // 2.4.4 (uzman UX9): her sorun hangi cari alanından doğduğunu da söyler (field: cari kartındaki alan adı) — fatura formu "Cariyi Düzenle" ile
 // o alanları zorunlu işaretleyip ilkine odaklanır. Kural ve metinler TEK yerde (partyProblems = partyIssues'un metinleri; gönderim denetimi aynı).
-export function partyIssues(party, { profile = "KAGIT", role = "buyer", payable = 0 } = {}) {
+export function partyIssues(party, { profile: given = "KAGIT", role = "buyer", payable = 0 } = {}) {
   const who = role === "seller" ? "Firma bilgisi (satıcı)" : "Cari (alıcı)";
+  // e-SMM (GİB e-Arşiv raporu kapsamında) e-Arşiv'in kurallarıyla denetlenir; iletide belgenin kendi adı yazar ("e-Arşiv için" değil).
+  const profile = given === "ESMM" ? "EARSIV" : given;
+  const docName = given === "ESMM" ? "e-SMM" : profile === "EFATURA" ? "e-Fatura" : "e-Arşiv";
   const issues = [];
   const add = (field, text) => issues.push({ field, text });
   const id = classifyTaxId(party.taxNo, { allowAnonymous: role === "buyer" && profile === "EARSIV" });
@@ -60,11 +64,11 @@ export function partyIssues(party, { profile = "KAGIT", role = "buyer", payable 
   if (party.partyKind === "person" && party.taxNo && id.kind === "vkn") add("taxNo", `${who}: gerçek kişide TC kimlik numarası (TCKN, 11 hane) yazılır.`);
   if (party.mersisNo && !isValidMersis(party.mersisNo)) add("mersisNo", `${who}: MERSİS numarası 16 haneli olmalı.`);
   if (profile === "KAGIT") return issues;
-  if (!party.taxNo) add("taxNo", `${who}: e-${profile === "EFATURA" ? "Fatura" : "Arşiv"} için VKN ya da TCKN zorunludur${role === "buyer" && profile === "EARSIV" ? " (kimliği bilinmeyen nihai tüketicide 11111111111)" : ""}.`);
+  if (!party.taxNo) add("taxNo", `${who}: ${docName} için VKN ya da TCKN zorunludur${role === "buyer" && profile === "EARSIV" ? " (kimliği bilinmeyen nihai tüketicide 11111111111)" : ""}.`);
   if (!String(party.name || "").trim()) add("name", `${who}: unvan / ad soyad zorunludur.`);
   if (!String(party.city || "").trim()) add("city", `${who}: il zorunludur (adres).`);
   if (role === "seller" && !String(party.taxOffice || "").trim()) add("taxOffice", `${who}: vergi dairesi zorunludur.`);
-  if (role === "buyer" && profile === "EARSIV" && id.value === ANONYMOUS_TCKN && Number(payable) > ANONYMOUS_LIMIT) add("taxNo", `${who}: ${ANONYMOUS_LIMIT.toLocaleString("tr-TR")} TL üstü e-Arşiv faturada nihai tüketicinin gerçek TC kimlik numarası, adı soyadı ve adresi zorunludur (11111111111 yazılamaz).`);
+  if (role === "buyer" && profile === "EARSIV" && id.value === ANONYMOUS_TCKN && Number(payable) > ANONYMOUS_LIMIT) add("taxNo", `${who}: ${ANONYMOUS_LIMIT.toLocaleString("tr-TR")} TL üstü ${given === "ESMM" ? "e-SMM makbuzunda" : "e-Arşiv faturada"} nihai tüketicinin gerçek TC kimlik numarası, adı soyadı ve adresi zorunludur (11111111111 yazılamaz).`);
   if (role === "buyer" && profile === "EARSIV" && id.value === ANONYMOUS_TCKN && Number(payable) > ANONYMOUS_LIMIT && !String(party.address || "").trim()) add("address", `${who}: adres zorunludur.`);
   if (role === "buyer" && profile === "EFATURA" && id.kind === "vkn" && !String(party.taxOffice || "").trim()) add("taxOffice", `${who}: e-Fatura'da tüzel alıcının vergi dairesi zorunludur.`);
   return issues;

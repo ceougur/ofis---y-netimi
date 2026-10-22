@@ -740,6 +740,7 @@
     const ret = isReturn(form.kind);
     const sc = meta.scenarios[form.scenario];
     const own = isOwn(form.kind);
+    const smmForm = form.kind === "smm";
     const currencies = meta.currencies.map(item => `<option value="${esc(item.code)}" ${item.code === form.currency ? "selected" : ""}>${esc(item.code)} · ${esc(item.label)}</option>`).join("");
     const numberField =
       form.kind === "purchase"
@@ -767,13 +768,19 @@
         ${numberField}
       </section>
       <p class="hof-muted hof-inv-paper-note" data-paper-note hidden></p>
-      <details class="hof-inv-more-head" ${form.orderNo || form.despatchNo || form.paperNo ? "open" : ""}><summary>Sipariş, İrsaliye ve Kâğıt Fatura No</summary>
+      <p class="hof-muted hof-inv-paper-note" data-kind-note hidden></p>
+      <details class="hof-inv-more-head" ${form.orderNo || form.despatchNo || form.paperNo ? "open" : ""}><summary>${smmForm ? "Sipariş ve Kâğıt Makbuz No" : "Sipariş, İrsaliye ve Kâğıt Fatura No"}</summary>
         <div class="hof-inv-head">
           <label class="hof-field"><span>Sipariş No</span><input data-f="orderNo" maxlength="60" value="${esc(form.orderNo)}"></label>
           <label class="hof-field"><span>Sipariş Tarihi</span><input type="date" data-f="orderDate" value="${esc(form.orderDate)}"></label>
-          <label class="hof-field"><span>İrsaliye No</span><input data-f="despatchNo" maxlength="60" value="${esc(form.despatchNo)}"></label>
-          <label class="hof-field"><span>İrsaliye Tarihi</span><input type="date" data-f="despatchDate" value="${esc(form.despatchDate)}"></label>
-          ${own ? `<label class="hof-field"><span>Kâğıt Fatura No</span><input data-f="paperNo" maxlength="40" value="${esc(form.paperNo)}"><small>Elle kesilen matbu faturanın seri ve numarası (varsa); fiş onunla eşleşir.</small></label>` : ""}
+          ${
+            // Makbuzda irsaliye yoktur (hizmet; MM7). Eski makbuzda yazılmışsa alan görünür kalır (değer kaybolmasın).
+            smmForm && !form.despatchNo && !form.despatchDate
+              ? ""
+              : `<label class="hof-field"><span>İrsaliye No</span><input data-f="despatchNo" maxlength="60" value="${esc(form.despatchNo)}"></label>
+          <label class="hof-field"><span>İrsaliye Tarihi</span><input type="date" data-f="despatchDate" value="${esc(form.despatchDate)}"></label>`
+          }
+          ${own ? (smmForm ? `<label class="hof-field"><span>Kâğıt Makbuz No</span><input data-f="paperNo" maxlength="40" value="${esc(form.paperNo)}"><small>Elle düzenlenen matbu serbest meslek makbuzunun seri ve numarası (varsa).</small></label>` : `<label class="hof-field"><span>Kâğıt Fatura No</span><input data-f="paperNo" maxlength="40" value="${esc(form.paperNo)}"><small>Elle kesilen matbu faturanın seri ve numarası (varsa); fiş onunla eşleşir.</small></label>`) : ""}
         </div>
       </details>
       <section class="hof-inv-lines-wrap">
@@ -782,11 +789,11 @@
             ${ret ? "" : `<label class="hof-rep-check"><input type="checkbox" data-f="pricesIncludeVat" ${form.pricesIncludeVat ? "checked" : ""}> Fiyatlar KDV Dahil</label>`}
             ${ret ? "" : `<label class="hof-inv-mini"><span>Genel İskonto %</span><input data-f="discountRate" inputmode="decimal" value="${esc(form.discountRate)}" placeholder="0"></label>`}
             ${ret ? "" : `<label class="hof-inv-mini" title="Seçilen oran bütün kalemlere yazılır; sonra kalemde tek tek değiştirilebilir. Yeni eklenen kalem de bu oranı alır."><span>Tüm Kalemlere KDV</span><select data-f="allVat" aria-label="Tüm kalemlere KDV oranı"><option value="">Seçin</option>${vatOptions("-")}</select></label>`}
-            ${["smm", "purchase"].includes(form.kind) ? `<label class="hof-inv-mini"><span>Stopaj %</span><input data-f="stoppageRate" inputmode="decimal" value="${esc(form.stoppageRate)}" placeholder="${form.kind === "smm" ? "otomatik" : "0"}"></label>` : ""}
+            ${["smm", "purchase"].includes(form.kind) ? `<label class="hof-inv-mini"${form.kind === "smm" ? ` title="${esc(STOPPAGE_HINT)}"` : ""}><span>Stopaj %</span><input data-f="stoppageRate" inputmode="decimal" value="${esc(form.stoppageRate)}" placeholder="${form.kind === "smm" ? "otomatik" : "0"}"></label>` : ""}
             ${form.kind === "smm" ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="gross-from-net" title="Eline geçecek net tutardan brüt ücreti hesaplar">Netten Brüte</button>' : ""}
           </span>
         </div>
-        <div class="hof-rep-table hof-inv-lines-scroll"><table class="hof-table hof-inv-lines"><thead><tr><th>#</th><th>Stok Kodu</th><th>Ürün / Hizmet</th><th class="num">Miktar</th><th>Birim</th><th class="num">Birim Fiyat</th><th class="num">İsk. %</th><th>KDV</th>${hasExpenseCol(form) ? "<th>Gider Türü</th>" : ""}<th class="num">Tutar</th><th></th></tr></thead><tbody data-lines></tbody></table></div>
+        <div class="hof-rep-table hof-inv-lines-scroll"><table class="hof-table hof-inv-lines"><thead><tr><th>#</th><th>Stok Kodu</th><th>${form.kind === "smm" ? "Hizmet" : "Ürün / Hizmet"}</th><th class="num">Miktar</th><th>Birim</th><th class="num">Birim Fiyat</th><th class="num">İsk. %</th><th>KDV</th>${hasExpenseCol(form) ? "<th>Gider Türü</th>" : ""}<th class="num">${form.kind === "smm" ? "Brüt Ücret" : "Tutar"}</th><th></th></tr></thead><tbody data-lines></tbody></table></div>
         <p class="hof-muted hof-inv-unit-hint" data-unit-hint hidden></p>
         ${ret ? "" : `<div class="hof-inv-add"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="add-line">+ Kalem Ekle</button><small>${offersNewItem(form) ? "Stok Kodu ya da ürün adı yazın; stokta yoksa listeden “+ Yeni Stok Kartı” ile kart açılır (fatura kaydedilince)." : form.kind === "purchase" ? "Stok Kodu ya da ad yazın; stokta olmayan ad gider kalemi olur." : "Stok Kodu (barkod) ya da ürün adı yazın; stoktaki ürünler listelenir. Listede olmayan ad hizmet kalemi olur."}</small></div>`}
         <datalist id="hof-inv-units">${(meta.units || []).map(unit => `<option value="${esc(unit)}"></option>`).join("")}</datalist>
@@ -1039,6 +1046,28 @@
     const off = discountNet ?? discount ?? 0;
     if (off > 0) return [["Toplam", baseNet ?? base], ["İskonto", -off], ["Ara Toplam", net]];
     return [["Toplam", includeVat ? base : (baseNet ?? base)], ["Ara Toplam", net]];
+  }
+  // 2.4.4 (mali müşavir MM7/MM11): serbest meslek makbuzunun toplamları fatura dilinde değil, GİB e-SMM görünümündeki adlar ve sırayla (GİB Karekod Standardı
+  // V1.2 §2.4: brutucret, gvstopaj, netucret, kdvtutari, kdvtevkifat, tahsilkdv, tahsilat): Brüt Ücret − Gelir Vergisi Stopajı = Net Ücret; KDV − KDV
+  // Tevkifatı = Tahsil Edilen KDV; Net Ücret + Tahsil Edilen KDV = Tahsil Edilen (Net Alınan). Tutarlar aynı (sunucunun hesabı); "Genel Toplam" (Vergiler
+  // Dahil Toplam) makbuzda yoktur. Form (ön hesap), kart ve PDF (invoice-pdf.mjs receiptRows) aynı satırları gösterir.
+  const kurus = value => Math.round((Number(value) || 0) * 100);
+  // 2.4.4 (mali müşavir MM1, yalnız metin; varsayılan hesap DEĞİŞMEZ): gerçek kişi alıcı da vergi kesintisi sorumlusu olabilir — basit usul dışındaki
+  // tacir ve serbest meslek erbabı (GVK 94/1) brüt ücretten %20 stopaj keser (94/2-b). Program kimlik türünden bunu çıkaramaz; oran elle girilir.
+  const STOPPAGE_PERSON_HINT = "Gerçek kişi alıcıda stopaj varsayılan olarak uygulanmaz; alıcı tacir ya da serbest meslek erbabıysa (GVK 94) stopaj oranını girin.";
+  const STOPPAGE_HINT = `Boş bırakılırsa oran alıcıya göre belirlenir: şirket alıcıda ayarlardaki oran. ${STOPPAGE_PERSON_HINT}`;
+  function receiptRows({ baseNet, discountNet, net, stoppage, stoppageRate, byRate, vat, withheld, payable }) {
+    return [
+      discountNet > 0 ? ["Hizmet Toplamı", baseNet] : null,
+      discountNet > 0 ? ["İskonto", -discountNet] : null,
+      ["Brüt Ücret", net],
+      stoppage > 0 ? [`Gelir Vergisi Stopajı %${String(stoppageRate).replace(".", ",")}`, -stoppage] : null,
+      ["Net Ücret", (kurus(net) - kurus(stoppage)) / 100],
+      ...(byRate || []).map(item => [`KDV %${item.rate}`, item.vat]),
+      withheld > 0 ? ["KDV Tevkifatı", -withheld] : null,
+      withheld > 0 ? ["Tahsil Edilen KDV", (kurus(vat) - kurus(withheld)) / 100] : null,
+      ["Tahsil Edilen (Net Alınan)", payable],
+    ].filter(Boolean);
   }
   // ---------- Kalemler ----------
   const vatOptions = value => (meta.vatRates || [0, 1, 10, 20]).map(rate => `<option value="${rate}" ${String(rate) === String(value) ? "selected" : ""}>%${rate}</option>`).join("");
@@ -1672,14 +1701,19 @@
     const row = (label, value, cls = "") => `<div class="${cls}"><dt>${label}</dt><dd>${esc(curMoney(value, cur))}</dd></div>`;
     // 2.4.4 (UX15): numara / tarih çakışması (dönem kilidi, seri sırası, elle numara) ve numaranın kayıtta verilmeyeceği durum onaydan önce görünür.
     const problems = [...(c.partyProblems || []), ...(c.sellerProblems || []), ...(c.warnings || []), ...(c.numbering || []), ...(c.orderHold ? [c.orderHold.text] : [])];
+    const receipt = form.kind === "smm" ? receiptRows({ ...t, stoppageRate: c.stoppageRate }) : null;
     slot.innerHTML = `<h4>Toplamlar</h4>
       <dl class="hof-inv-totals">
-        ${totalRows({ includeVat: form.pricesIncludeVat, base: t.base, baseNet: t.baseNet, discountNet: t.discountNet, discount: t.discount, net: t.net }).map(([label, value]) => row(label, value)).join("")}
+        ${
+          receipt
+            ? receipt.map(([label, value], index) => row(esc(label), value, index === receipt.length - 1 ? "is-total" : "")).join("")
+            : `${totalRows({ includeVat: form.pricesIncludeVat, base: t.base, baseNet: t.baseNet, discountNet: t.discountNet, discount: t.discount, net: t.net }).map(([label, value]) => row(label, value)).join("")}
         ${t.byRate.map(item => row(`KDV %${item.rate}`, item.vat)).join("")}
         ${t.withheld > 0 ? row("KDV Tevkifatı", -t.withheld) : ""}
         ${t.stoppage > 0 ? row(`Gelir Vergisi Stopajı %${esc(String(c.stoppageRate))}`, -t.stoppage) : ""}
         ${row("Genel Toplam", t.gross, "is-total")}
-        ${t.payable !== t.gross ? row(form.side === "sale" ? "Tahsil Edilecek" : "Ödenecek", t.payable, "is-payable") : ""}
+        ${t.payable !== t.gross ? row(form.side === "sale" ? "Tahsil Edilecek" : "Ödenecek", t.payable, "is-payable") : ""}`
+        }
         ${cur !== "TRY" ? `<div><dt>TL Karşılığı</dt><dd>${esc(money(c.try.payable))}</dd></div>` : ""}
       </dl>
       <p class="hof-inv-words">${esc(c.amountInWords || "")}</p>
@@ -1855,12 +1889,42 @@
     if (!st.earsiv && !form.calc.party?.eInvoice) return `Kâğıt belge: alıcı e-Fatura mükellefi değil ve firma e-Arşiv kullanıcısı olarak işaretli değil${where}`;
     return "";
   }
+  // 2.4.4 (uzman UX U6): tek seçenekte Belge Türü alanı gizlidir; türün notu o alanın İÇİNDE kalıyordu (e-Arşiv ve e-SMM formunda tür hiç görünmüyordu).
+  // Alan gizliyken tür, kâğıt notunun yerinde tek satır olarak yazar ([data-kind-note]); kâğıt nedeni (G1) varsa yalnız o görünür — iki not aynı anda
+  // çıkmaz. Alan görünürken (iki seçenek: Temel / Ticari) not alanın altında kalır.
+  const KIND_NOTES = {
+    EARSIVFATURA: "Belge Türü: e-Arşiv Fatura (alıcı e-Fatura mükellefi değil).",
+    TEMELFATURA: "Belge Türü: e-Fatura (alıcı e-Fatura mükellefi).",
+    TICARIFATURA: "Belge Türü: e-Fatura (alıcı e-Fatura mükellefi).",
+    ESMM: "Belge Türü: e-SMM (makbuz EDM'ye gönderilir).",
+  };
+  function kindNote(form) {
+    if (!edoc() || !form?.calc || !isOwn(form.kind) || (form.calc.profiles || []).length >= 2) return "";
+    return KIND_NOTES[form.calc.profile] || "";
+  }
   function renderPaperNote() {
     const node = body()?.querySelector("[data-paper-note]");
     if (!node) return;
     const reason = view.form?.calc ? paperReason(view.form) : "";
     node.textContent = reason;
     node.hidden = !reason;
+    const kind = body()?.querySelector("[data-kind-note]");
+    if (!kind) return;
+    const text = reason ? "" : kindNote(view.form);
+    kind.textContent = text;
+    kind.hidden = !text;
+  }
+  // Onay penceresinde belgenin türü adıyla (U6): e-Fatura / e-Arşiv Fatura / e-SMM; kâğıtta Kâğıt Makbuz / Kâğıt Belge; e-Belge bağlantısı kapalıyken
+  // Müşteri Fişi (kartın Belge Türü satırıyla aynı adlar). Karşı tarafın belgesinde (Alış, Satıştan İade) yazılmaz.
+  function docTypeName(form) {
+    if (!isOwn(form.kind) || !form.calc) return "";
+    const profile = form.calc.profile;
+    if (profile === "ESMM") return "e-SMM";
+    if (profile === "EARSIVFATURA") return "e-Arşiv Fatura";
+    if (profile === "TEMELFATURA") return "e-Fatura, Temel";
+    if (profile === "TICARIFATURA") return "e-Fatura, Ticari";
+    if (!edoc()) return "Müşteri Fişi";
+    return form.kind === "smm" ? "Kâğıt Makbuz" : "Kâğıt Belge";
   }
   // Belge türü (e-Belge açıksa): GİB kuralına göre izin verilenler; tek seçenekse gizli.
   function renderProfile() {
@@ -2306,7 +2370,7 @@
     HOF.formModal({
       title: "Netten Brüte",
       eyebrow: "SERBEST MESLEK MAKBUZU",
-      intro: "Eline geçmesini istediğiniz net ücreti (brüt ücret − stopaj, KDV hariç) yazın; program brüt ücreti bulur ve ilk kaleme yazar. Stopaj % kutusu boşsa oran alıcıya göre belirlenir: şirket alıcıda ayarlardaki oran, gerçek kişi alıcıda stopaj yok. Başka kalemler de varsa tutar makbuzun tamamı içindir.",
+      intro: `Eline geçmesini istediğiniz net ücreti (brüt ücret − stopaj, KDV hariç) yazın; program brüt ücreti bulur ve ilk kaleme yazar. Stopaj % kutusu boşsa oran alıcıya göre belirlenir: şirket alıcıda ayarlardaki oran. ${STOPPAGE_PERSON_HINT} Başka kalemler de varsa tutar makbuzun tamamı içindir.`,
       fields: [{ name: "net", label: "Net Ücret (₺)", required: true, inputmode: "decimal", autofocus: true }],
       submitLabel: "Brütü Hesapla",
       onSubmit: async data => {
@@ -2413,7 +2477,7 @@
         }
         const ok = await HOF.confirm({
           title: ISSUE_LABELS[form.kind] || "Kaydet",
-          message: `${who} için ${numberText}${kindLabel(form.kind).toLocaleLowerCase("tr-TR")} kaydedilecek: ${curMoney(c.totals.payable, c.currency)}. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. ${eSend === "now" && !held ? (form.kind === "smm" ? "Gönderildikten sonra düzenlenemez; yanlışsa iptal gerekir (makbuzdan iade belgesi olmaz)." : "Gönderildikten sonra düzenlenemez; yanlışsa iptal ya da iade gerekir.") : "Yanlışsa sonradan kartındaki “Düzenle” ile düzeltilir."}${sendText}${stocklessText}`,
+          message: `${who} için ${numberText}${kindLabel(form.kind).toLocaleLowerCase("tr-TR")}${docTypeName(form) ? ` (${docTypeName(form)})` : ""} kaydedilecek: ${curMoney(c.totals.payable, c.currency)}. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. ${eSend === "now" && !held ? (form.kind === "smm" ? "Gönderildikten sonra düzenlenemez; yanlışsa iptal gerekir (makbuzdan iade belgesi olmaz)." : "Gönderildikten sonra düzenlenemez; yanlışsa iptal ya da iade gerekir.") : "Yanlışsa sonradan kartındaki “Düzenle” ile düzeltilir."}${sendText}${stocklessText}`,
           confirmLabel: eSend === "later" ? "Kaydet, Sonra Gönder" : eSend === "now" ? (draftUploadFor(form) ? "Kaydet ve Taslak Yükle" : "Kaydet ve Gönder") : ISSUE_LABELS[form.kind] || "Kaydet",
         });
         if (!ok) return;
@@ -2553,7 +2617,8 @@
   function headAmountLabel(doc) {
     if (doc.status === "cancelled") return "Belge Tutarı (İptal Edildi)";
     if (isReturn(doc.kind)) return "İade Tutarı";
-    if (isClosed(doc)) return Math.abs((doc.payableTotal || 0) - (doc.grossTotal || 0)) > 0.004 ? "Kesinti Sonrası Toplam" : "Genel Toplam";
+    // Makbuz (MM7): kapanmış makbuzun tutarı tahsil edilendir (GİB e-SMM "Tahsil Edilen"); "Genel Toplam" makbuzda yoktur.
+    if (isClosed(doc)) return doc.kind === "smm" ? "Tahsil Edilen (Net Alınan)" : Math.abs((doc.payableTotal || 0) - (doc.grossTotal || 0)) > 0.004 ? "Kesinti Sonrası Toplam" : "Genel Toplam";
     return sideOf(doc.kind) === "sale" ? "Tahsil Edilecek" : "Ödenecek";
   }
   const headRest = doc => (doc.status === "issued" && !isReturn(doc.kind) && doc.open > 0.004 && doc.paid > 0.004 ? `<small class="hof-inv-head-rest">Kalan ${esc(money(doc.open))}</small>` : "");
@@ -2573,7 +2638,7 @@
     const lineRows = doc.lines
       .map((line, index) => `<tr><td>${index + 1}</td>${hasCodes ? `<td class="hof-inv-doc-code">${esc(line.code || "")}</td>` : ""}<td><b>${esc(line.name)}</b>${line.description ? `<small>${esc(line.description)}</small>` : ""}${line.serialNo || line.lotNo ? `<small>${esc([line.serialNo ? `Seri No: ${line.serialNo}` : "", line.lotNo ? `Lot No: ${line.lotNo}` : ""].filter(Boolean).join(" · "))}</small>` : ""}${line.expenseLabel ? `<small>${esc(line.expenseLabel)}</small>` : ""}${line.withholdingCode ? `<small>Tevkifat ${esc(line.withholdingCode)} (${line.withholdingNum}/${line.withholdingDen})</small>` : ""}</td><td class="num">${esc(String(line.qty).replace(".", ","))} ${esc(line.unit)}${line.returned ? `<small>${esc(String(line.returned).replace(".", ","))} iade</small>` : ""}</td><td class="num">${esc(curMoney(line.unitPrice, cur))}</td><td class="num">${line.discountRate ? `%${esc(String(line.discountRate).replace(".", ","))}` : ""}</td><td class="num">%${esc(String(line.vatRate))}</td><td class="num"><b>${esc(curMoney(line.net, cur))}</b></td></tr>`)
       .join("");
-    const totals = [
+    const totals = doc.kind === "smm" ? receiptRows({ baseNet: doc.baseNetTotal ?? doc.baseTotal, discountNet: doc.discountNetTotal ?? doc.discountTotal, net: doc.netTotal, stoppage: doc.stoppageTotal, stoppageRate: doc.stoppageRate, byRate: doc.byRate, vat: doc.vatTotal, withheld: doc.withheldTotal, payable: doc.payableTotal }) : [
       ...totalRows({ includeVat: doc.pricesIncludeVat, base: doc.baseTotal, baseNet: doc.baseNetTotal, discountNet: doc.discountNetTotal, discount: doc.discountTotal, net: doc.netTotal }),
       ...(doc.byRate || []).map(item => [`KDV %${item.rate}`, item.vat]),
       doc.withheldTotal > 0 ? ["KDV Tevkifatı", -doc.withheldTotal] : null,
@@ -2609,7 +2674,7 @@
             ? doc.originalId
               ? `<button type="button" class="hof-inv-big-pill" data-open-invoice="${esc(doc.originalId)}"><b>Asıl Fatura</b><small>${esc(doc.originalNumber || "")}</small></button>`
               : ""
-            : `<button type="button" class="hof-inv-big-pill" data-act="return" ${doc.canReturn ? "" : "disabled"} title="${doc.canReturn ? "Bu faturadan iade oluştur" : doc.status === "issued" ? "İade edilebilecek kalem kalmadı" : "Yalnız kaydedilmiş faturadan iade oluşturulur"}"><b>İade</b><small>${doc.returns?.length ? `${doc.returns.length} iade` : doc.canReturn ? "Bu Faturadan İade Oluştur" : "İade Yok"}</small></button>`
+            : `<button type="button" class="hof-inv-big-pill" data-act="return" ${doc.canReturn ? "" : "disabled"} title="${doc.canReturn ? "Bu faturadan iade oluştur" : doc.kind === "smm" && doc.returnBlock ? esc(doc.returnBlock) : doc.status === "issued" ? "İade edilebilecek kalem kalmadı" : "Yalnız kaydedilmiş faturadan iade oluşturulur"}"><b>İade</b><small>${doc.returns?.length ? `${doc.returns.length} iade` : doc.canReturn ? "Bu Faturadan İade Oluştur" : "İade Yok"}</small></button>`
         }
       </div>
       <div class="hof-chq-actions" role="toolbar" aria-label="Belge işlemleri">
@@ -2637,11 +2702,11 @@
         ${fact("Asıl Fatura", doc.originalId ? `<a href="#" data-open-invoice="${esc(doc.originalId)}">${esc(doc.originalNumber || "")}</a> · ${esc(HOF.formatDate(doc.originalDate))}` : "")}
         ${fact("Sipariş", doc.orderNo ? `${esc(doc.orderNo)}${doc.orderDate ? ` · ${esc(HOF.formatDate(doc.orderDate))}` : ""}` : "")}
         ${fact("İrsaliye", doc.despatchNo ? `${esc(doc.despatchNo)}${doc.despatchDate ? ` · ${esc(HOF.formatDate(doc.despatchDate))}` : ""}` : "")}
-        ${fact("Kâğıt Fatura No", esc(doc.paperNo || ""))}
+        ${fact(doc.kind === "smm" ? "Kâğıt Makbuz No" : "Kâğıt Fatura No", esc(doc.paperNo || ""))}
         ${fact("ETTN", edoc() && doc.profile !== "KAGIT" ? `<small>${esc(doc.ettn)}</small>` : "")}
         ${fact("Kaydeden", esc(doc.actorName || ""))}
       </dl>
-      <div class="hof-rep-table"><table class="hof-table hof-inv-doc-lines"><thead><tr><th>#</th>${hasCodes ? "<th>Stok Kodu</th>" : ""}<th>Ürün / Hizmet</th><th class="num">Miktar</th><th class="num">Birim Fiyat</th><th class="num">İsk.</th><th class="num">KDV</th><th class="num">Tutar</th></tr></thead><tbody>${lineRows}</tbody></table></div>
+      <div class="hof-rep-table"><table class="hof-table hof-inv-doc-lines"><thead><tr><th>#</th>${hasCodes ? "<th>Stok Kodu</th>" : ""}<th>${doc.kind === "smm" ? "Hizmet" : "Ürün / Hizmet"}</th><th class="num">Miktar</th><th class="num">Birim Fiyat</th><th class="num">İsk.</th><th class="num">KDV</th><th class="num">${doc.kind === "smm" ? "Brüt Ücret" : "Tutar"}</th></tr></thead><tbody>${lineRows}</tbody></table></div>
       <div class="hof-inv-bottom">
         <section class="hof-inv-pay"><h4>Ödeme</h4>${payments ? `<ul class="hof-inv-paylist">${payments}</ul>` : '<p class="hof-muted">Peşin ödeme yok.</p>'}${closersHtml(doc)}${doc.status === "issued" ? `<p class="hof-inv-rest">${restText(doc)}</p>` : ""}${returns ? `<h4>İadeler</h4><ul class="hof-inv-paylist">${returns}</ul>` : ""}</section>
         <section class="hof-inv-sum"><h4>Toplamlar</h4><dl class="hof-inv-totals">${totals.map(([label, value], index) => `<div class="${index === totals.length - 1 ? "is-total" : ""}"><dt>${esc(label)}</dt><dd>${esc(curMoney(value, cur))}</dd></div>`).join("")}${cur !== "TRY" ? `<div><dt>TL Karşılığı</dt><dd>${esc(money(doc.tryPayable))}</dd></div>` : ""}</dl><p class="hof-inv-words">${esc(doc.amountInWords || "")}</p></section>
@@ -2894,9 +2959,14 @@
   // Olarak Bırak"), fatura türleri Müşteri Fişi serisinden ("Müşteri Fişi Olarak Bırak"). Sunucu seriyi türe göre seçer (paperSeriesOf).
   const paperOf = kind =>
     kind === "smm"
-      ? { button: "Kâğıt Makbuz Olarak Bırak", title: "Kâğıt Makbuz Olarak Bırakılsın mı?", kindText: "Kâğıt Makbuz (e-SMM olarak gönderilmedi)", hint: "e-SMM gönderilmez; makbuz kâğıt makbuz numarasıyla kalır; cari ve Kasa etkileri geri alınmaz", message: "e-SMM gönderilmez; makbuz kâğıt makbuz serisinden numara alır ve kâğıt makbuz olarak kalır. Cari, Kasa, taksit ve çek/senet etkileri geri alınmaz (makbuzu geri almak için İptal Et kullanılır). İsterseniz makbuzu sonra yine e-SMM olarak gönderebilirsiniz.", done: number => `Makbuz e-SMM olarak gönderilmedi; ${number} numaralı kâğıt makbuz olarak bırakıldı.` }
+      ? // 2.4.4 (mali müşavir MM4): e-SMM kullanıcısı makbuzu e-SMM olarak düzenlemek zorundadır (509 sıra no.lu VUK Genel Tebliği IV.4.4–IV.4.6); kâğıt makbuz
+        // yalnız V.7 hâllerinde (GİB, entegratör ya da kendi sistemindeki arıza, kesinti, bakım; mali mühür / e-imza arızası — ispatlanmak kaydıyla), matbu
+        // makbuzla düzenlenir; "mükelleften kaynaklanan diğer nedenler" sayılmaz. Kâğıt makbuz düzenlenince aynı tahsilat için ikinci belge olmasın diye
+        // bırakılan makbuz sonradan e-SMM olarak gönderilmez (alt karar, 22.10.2026; sunucu paperReceiptBlockOf).
+        { button: "Kâğıt Makbuz Olarak Bırak", title: "Kâğıt Makbuz Olarak Bırakılsın mı?", kindText: "Kâğıt Makbuz (e-SMM olarak gönderilmedi)", hint: "Yalnız arıza ya da bakım hâlinde: e-SMM gönderilmez; makbuz kâğıt makbuz numarasıyla kalır; cari ve Kasa etkileri geri alınmaz", message: "e-SMM gönderilmez; makbuz kâğıt makbuz serisinden numara alır ve kâğıt makbuz olarak kalır. e-SMM kullanıcısı kâğıt makbuzu yalnız GİB'in, entegratörün ya da kendi sisteminin arızası, kesintisi veya bakımı ya da mali mühür (e-imza) arızası hâlinde, matbu makbuzla düzenleyebilir (509 sıra no.lu VUK Genel Tebliği IV.4.4–IV.4.6 ve V.7); bu hâller dışında makbuz e-SMM olarak düzenlenir. Bırakılan makbuz sonradan e-SMM olarak gönderilemez. Cari, Kasa, taksit ve çek/senet etkileri geri alınmaz (makbuzu geri almak için İptal Et kullanılır).", done: number => `Makbuz e-SMM olarak gönderilmedi; ${number} numaralı kâğıt makbuz olarak bırakıldı.` }
       : { button: "Müşteri Fişi Olarak Bırak", title: "Müşteri Fişi Olarak Bırakılsın mı?", kindText: "Müşteri Fişi (e-Belge olarak gönderilmedi)", hint: "e-Belge gönderilmez; belge fiş numarasıyla Müşteri Fişi olarak kalır; stok, cari ve Kasa etkileri geri alınmaz", message: "e-Belge gönderilmez; belge fiş numarasıyla Müşteri Fişi olarak kalır. Stok, cari, Kasa, taksit ve çek/senet etkileri geri alınmaz (satışı geri almak için İptal Et kullanılır). İsterseniz belgeyi sonra yine e-Belge olarak gönderebilirsiniz.", done: number => `Belge e-Belge olarak gönderilmedi; ${number} numaralı Müşteri Fişi olarak bırakıldı.` };
-  // Gönderilecekler'den silme: etkiler yerinde kalır; belge Müşteri Fişi (makbuzda kâğıt makbuz) numarası alır (sonra yine gönderilebilir).
+  // Gönderilecekler'den silme: etkiler yerinde kalır; belge Müşteri Fişi (makbuzda kâğıt makbuz) numarası alır. Müşteri Fişi sonra yine e-Belge olarak
+  // gönderilebilir; kâğıt makbuz gönderilmez (MM4 alt kararı).
   async function withdrawDoc(doc) {
     // 2.4.3 (KÖ2, kullanıcı kararı 18.10.2026): "Listeden Sil" silme çağrıştırıyordu; belge silinmez, fiş numarasıyla Müşteri Fişi olarak kalır.
     // Varsayılan odak Vazgeç'te (etkiler geri alınmaz; A paketi UX4 güvenli odak kuralı).

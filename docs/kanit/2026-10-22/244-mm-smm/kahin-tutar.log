@@ -1,0 +1,38 @@
+
+> destekofis@2.4.3 test:kahin-tutar
+> node --disable-warning=ExperimentalWarning test/bagimsiz/tutar/kos.mjs --tohum 1-3 --adet 50
+
+tutar tohum 1: 1104/1116 tuttu
+  ✗ [İNCELE CATAL] c08:gfn:birimFiyat: program 42496 · kâhin 42495 (B3.3 ilk kalemin birim fiyatı)
+  ✗ [İNCELE CATAL] c08:kayit:brut: program 62502 · kâhin 62501 (B3.3 en küçük brüt (uzlaşım) — ÇATAL: kalem kalem stopajla 62502)
+  ✗ [İNCELE CATAL] c08:kayit:stopaj: program 12501 · kâhin 12500 (B3.6 stopaj = yuvarla(brüt × oran) — ÇATAL: kalem kalem 12501)
+  ✗ [İNCELE CATAL] s030:gfn:birimFiyat: program 2407459 · kâhin 2407460 (B3.3 ilk kalemin birim fiyatı (KDV dahil: matrah + yuvarla(matrah × KDV)))
+  ✗ [İNCELE CATAL] s030:kayit:brut: program 2459058 · kâhin 2459059 (B3.3 en küçük brüt (uzlaşım) — ÇATAL: kalem kalem stopajla 2459058)
+  ✗ [İNCELE CATAL] s030:kayit:stopaj: program 368858 · kâhin 368859 (B3.6 stopaj = yuvarla(brüt × oran) — ÇATAL: kalem kalem 368858)
+  ✗ [İNCELE CATAL] s034:gfn:birimFiyat: program 99867174 · kâhin 99867175 (B3.3 ilk kalemin birim fiyatı)
+  ✗ [İNCELE CATAL] s034:kayit:brut: program 100381378 · kâhin 100381379 (B3.3 en küçük brüt (uzlaşım) — ÇATAL: kalem kalem stopajla 100381378)
+  ✗ [İNCELE CATAL] s034:kayit:stopaj: program 10038137 · kâhin 10038138 (B3.6 stopaj = yuvarla(brüt × oran) — ÇATAL: kalem kalem 10038137)
+  ✗ [İNCELE CATAL] s041:gfn:birimFiyat: program 11311295 · kâhin 11311296 (B3.3 ilk kalemin birim fiyatı (KDV dahil: matrah + yuvarla(matrah × KDV)))
+  ✗ [İNCELE CATAL] s041:kayit:brut: program 11312374 · kâhin 11312375 (B3.3 en küçük brüt (uzlaşım) — ÇATAL: kalem kalem stopajla 11312374)
+  ✗ [İNCELE CATAL] s041:kayit:stopaj: program 2262474 · kâhin 2262475 (B3.6 stopaj = yuvarla(brüt × oran) — ÇATAL: kalem kalem 2262474)
+tutar tohum 2: 1091/1094 tuttu
+  ✗ [İNCELE CATAL] c08:gfn:birimFiyat: program 42496 · kâhin 42495 (B3.3 ilk kalemin birim fiyatı)
+  ✗ [İNCELE CATAL] c08:kayit:brut: program 62502 · kâhin 62501 (B3.3 en küçük brüt (uzlaşım) — ÇATAL: kalem kalem stopajla 62502)
+  ✗ [İNCELE CATAL] c08:kayit:stopaj: program 12501 · kâhin 12500 (B3.6 stopaj = yuvarla(brüt × oran) — ÇATAL: kalem kalem 12501)
+tutar tohum 3: 1256/1262 tuttu
+  ✗ [İNCELE CATAL] c08:gfn:birimFiyat: program 42496 · kâhin 42495 (B3.3 ilk kalemin birim fiyatı)
+  ✗ [İNCELE CATAL] c08:kayit:brut: program 62502 · kâhin 62501 (B3.3 en küçük brüt (uzlaşım) — ÇATAL: kalem kalem stopajla 62502)
+  ✗ [İNCELE CATAL] c08:kayit:stopaj: program 12501 · kâhin 12500 (B3.6 stopaj = yuvarla(brüt × oran) — ÇATAL: kalem kalem 12501)
+  ✗ [İNCELE CATAL] s004:gfn:birimFiyat: program 35730840716 · kâhin 35730840717 (B3.3 ilk kalemin birim fiyatı)
+  ✗ [İNCELE CATAL] s004:kayit:brut: program 35731503629 · kâhin 35731503630 (B3.3 en küçük brüt (uzlaşım) — ÇATAL: kalem kalem stopajla 35731503629)
+  ✗ [İNCELE CATAL] s004:kayit:stopaj: program 7146300725 · kâhin 7146300726 (B3.6 stopaj = yuvarla(brüt × oran) — ÇATAL: kalem kalem 7146300725)
+  mutasyon 1 (Gerçek kişi alıcıya da %20 stopaj (GVK 94/1 yok sayılır)): YAKALANDI
+  mutasyon 2 (Birden çok brüt aynı Net Ücreti verirse en BÜYÜĞÜ seçilir): YAKALANDI
+  mutasyon 3 (KDV dahil fiyatlı makbuzda Netten Brüte KDV hariç matrahı birim fiyat sanır): YAKALANDI
+  mutasyon 4 (Stopaj kalem kalem yuvarlanır (ÇATAL B tek dal sanılır)): YAKALANDI
+  mutasyon 5 (602 tevkifatı 5/10 sanılır): YAKALANDI
+  mutasyon 6 (XML TaxInclusiveAmount = Net Ücret + KDV sanılır (EDM 'Tahsil Edilen KDV' yerine)): YAKALANDI
+  mutasyon 7 (Ödenecek = Net Ücret + KDV (tevkifat düşülmez)): YAKALANDI
+
+ÖZET: 3 tohum × 50 satır, 3472 denetim, 21 fark (BULGU 0), 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-tutar-ygCcvf
+3451/3472 denetim geçti

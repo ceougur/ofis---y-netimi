@@ -17,8 +17,9 @@
 // Belge düzeyi
 //   genel iskonto      : her kalemin (kalem iskontosundan sonra kalan) tutarına aynı oran zincirleme uygulanır; KDV
 //                        iskontolu matrahtan hesaplanır (VUK / KDV Kanunu md. 24: iskonto matrahtan düşer).
-//   stopaj (SMM)       = matrah (brüt ücret) × gelir vergisi stopaj oranı; alıcı keser, vergi dairesine öder
-//                        (GVK md. 94). Ödenecek = brüt + KDV − KDV tevkifatı − stopaj.
+//   stopaj (SMM)       = kalem matrahı (brüt ücret) × gelir vergisi stopaj oranı, KALEM BAŞINA yuvarlanır (KDV gibi); belge stopajı
+//                        kalemlerin toplamı (2.4.4 MM10). Alıcı keser, vergi dairesine öder (GVK md. 94). Ödenecek = brüt + KDV − KDV
+//                        tevkifatı − stopaj.
 //   döviz              : tutarlar belgenin para biriminde hesaplanır; deftere (cari, Kasa, Ana Defter) TL karşılığı yazılır
 //                        (matrah, KDV, tevkifat, stopaj ayrı ayrı kurla çevrilir; ödenecek bunlardan türetilir — böylece
 //                        TL yevmiye maddesi kuruşu kuruşuna denk kalır).
@@ -274,8 +275,14 @@ export function computeInvoice(lines, { pricesIncludeVat = false, discountRate =
     }
   }
   const net = sum("net");
-  // Stopaj belge toplamından hesaplanır (makbuzda tek satır: "Gelir Vergisi Stopajı %20").
-  const stoppageTotal = stoppage > 0 ? mulDiv(net, Math.round(stoppage * 100), 10000) : 0;
+  // 2.4.4 (mali müşavir MM10, 31a F7 çatalı): stopaj KDV ile AYNI kuralla — kalem başına yuvarlanır, belge stopajı kalemlerin toplamıdır. Önceden belge
+  // toplamından tek kez yuvarlanıyordu: aynı matrah ve aynı oranla KDV 40,02, stopaj 40,01 (2 × 100,03). Kaynak: GİB UBL-TR'de her vergi kalem düzeyinde
+  // (InvoiceLine/TaxTotal/TaxSubtotal; e-SMM'de 0003 GV stopajı da) hesaplanır, belge alt toplamı kalemlerin toplamıdır — programın KDV ve tevkifat kuralı;
+  // GİB e-SMM portalı da kalem bazında (Brüt Ücret, GV Stopajı, Net Ücret… her hizmet satırında) hesaplar. UBL'deki kalem payları (ubl-tr.mjs stoppageShares)
+  // bu kuralda kalem stopajlarının kendisidir; eski (belge düzeyinde yuvarlanmış) kayıtlarda kayıtlı toplamı dağıtır.
+  const stoppageBp = stoppage > 0 ? Math.round(stoppage * 100) : 0;
+  for (const line of out) line.stoppage = stoppageBp > 0 ? mulDiv(line.net, stoppageBp, 10000) : 0;
+  const stoppageTotal = sum("stoppage");
   const totals = {
     base: sum("base"),
     discount: sum("discount"),
@@ -326,7 +333,7 @@ export function toTry(totals, rate = 1) {
 /**
  * SMM "Netten Brüte" (2.4.4 madde 26): makbuzun Net Ücreti (brüt ücret − gelir vergisi stopajı; KDV hariç) `targetNet` (kuruş) olacak şekilde
  * `index`. kalemin birim fiyatı (miktar 1). Hesap computeInvoice'un KENDİSİYLE yapılır — kayıtta ne hesaplanacaksa o: stopaj oranı, KDV dahil
- * fiyat, kalem ve genel iskonto, öbür kalemler ve belge düzeyinde stopaj yuvarlaması. (Önceki grossFromNet brüt = net ÷ (1 − oran) idi: KDV dahil
+ * fiyat, kalem ve genel iskonto, öbür kalemler ve kalem başına stopaj yuvarlaması. (Önceki grossFromNet brüt = net ÷ (1 − oran) idi: KDV dahil
  * fiyatı, iskontoyu, öbür kalemleri bilmiyordu.) Fiyat kuruş adımıyla aranır: Net Ücret fiyatla azalmaz ve her kuruşta en çok 1 kuruş artar
  * (stopaj ≤ %40, iskonto < %100) → öbür kalemlerin Net Ücreti hedefi aşmıyorsa hedefe tam eşit fiyat vardır. Birden çok fiyat aynı Net Ücreti
  * veriyorsa en küçüğü; KDV dahil fiyatta KDV'si matrah × oran (GİB: kalem KDV'si matrahtan) olan en küçüğü. Dönüş { unitPrice (TL), totals, lines }
