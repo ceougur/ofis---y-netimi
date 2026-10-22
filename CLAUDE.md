@@ -571,8 +571,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - SORU (kullanıcı, 22.10.2026 ~12:15 UTC: "e-SMM kesen kullanıcının kaşe imzası ve logosu e-fatura yapılırken eklenen yerden mi eklenecek?") → YANIT (koddan): evet,
   Fatura Ayarları → Firma Bilgisi (Logo, Kaşe / İmza); programın PDF'inde e-SMM'de de basılır (invoice-pdf.mjs: kaşe e-Fatura dışında basılır); RESMÎ e-SMM görüntüsünde
   (EDM'nin) basılmaz (invoices.mjs ublFor: ESMM'ye görünüm şablonu gömülmez; EDM gömüleni 11032 ile reddetti, TEMPLATE_CONTENT'i kullanmadı); e-SMM'de ıslak imza/kaşe
-  gerekmez (mali mühür). ÖNERİ (yanıt bekleniyor): Ayarlar'daki Kaşe / İmza açıklamasına ve kılavuza tek cümle ("e-SMM'de yalnız programın PDF'ine basılır; resmî
-  görüntüyü EDM çizer").
+  gerekmez (mali mühür). ÖNERİ: Ayarlar'daki Kaşe / İmza açıklamasına ve kılavuza tek cümle ("e-SMM'de yalnız programın PDF'ine basılır; resmî görüntüyü EDM
+  çizer"). KARAR (kullanıcı, 22.10.2026: "ekle"): aday 5'te — Fatura Ayarları açıklaması (yalnız e-SMM kullanıcısında) "Logo ve kaşe e-SMM'de yalnız programın PDF'ine
+  basılır; resmî görüntüyü EDM çizer."; kılavuzun e-SMM maddesine aynı cümle + "Test Ortamı'ndaki görüntü canlıdakinden farklı olabilir"; e2e gg244-esmm-gonder ■ 4.
 - SORU (kullanıcı, 22.10.2026 ~12:20 UTC; ekran: çalıştığı kurumun e-SMM'si — kurum ve müşteri bilgisi YAZILMAZ): "logo imzayı EDM mi imzalamış?" → YANIT: hayır; imza ve logo
   düzenleyenin yüklediği resim (gerçek imza XML'deki mali mühür/e-imza); daha önce yüklenen aynı tür makbuzun PDF üreticisi wkhtmltopdf + GİB standart e-SMM görünümü
   (EDM test PDF'leri IronPdf + EDM tasarımı) → başka sistem; canlı EDM'de e-SMM görünümüne logo/kaşe eklenip eklenemediği EDM'ye sorulacak (soru metni kullanıcıya verildi).

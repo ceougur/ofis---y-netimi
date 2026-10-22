@@ -6,7 +6,7 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
 
 ### 00. 2.4.4 SÜRÜYOR — DEVAM NOTU (22.10.2026 ~12:30 UTC; sıkıştırmadan sonra yazıldı — ÖNCE BUNU OKU)
 - Durum tablosu: `docs/2.4.4-IS-LISTESI.md` (biten üstü çizili + "Teslim notları" — her maddenin sınırı ve KÂHİN KURALI orada). Kararlar ve kullanıcı soruları: CLAUDE.md
-  Açık iş (22.10 satırları; YANIT BEKLEYEN tek öneri: e-SMM kaşe/logo açıklama cümlesi). Ders 19 notu: Bash aracında `set -e` ETKİSİZ → `&&` / `|| exit 1`.
+  Açık iş (22.10 satırları; yanıt bekleyen öneri yok — e-SMM kaşe/logo cümlesi kullanıcı "ekle" dedi, aday 5'te). Ders 19 notu: Bash aracında `set -e` ETKİSİZ → `&&` / `|| exit 1`.
 - ÇALIŞMA DÜZENİ: iş grubu = /home/user/wt/<ad> worktree (dal is/<ad>); ajan commit eder; ana oturum BİRLEŞTİRME ADAYINDA (/home/user/wt/aday<n>, dal aday<n>) `--no-ff`
   birleştirir → kapı `<not defteri>/aday-kos.sh <worktree> <etiket>` (tam npm test, geçmezse durur; sonra ci.yml'nin 64 e2e'si flock ile; arka plan görevi 2 sa'te kesilir →
   `<not defteri>/aday-kos-devam.sh <worktree> <etiket>` kanıtı olmayanları sürdürür, GEÇTİ'yi atlar, BAŞARISIZ'ı yeniden koşmaz) → yeşilse çalışma dalına `git merge --no-ff
