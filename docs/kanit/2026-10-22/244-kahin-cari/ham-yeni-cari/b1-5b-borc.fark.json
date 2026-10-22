@@ -1,0 +1,22 @@
+{
+ "toplam": 146,
+ "farklar": [
+  {
+   "anahtar": "k1:rapor:K-5:ad",
+   "beklenen": "Eren Taş",
+   "program": "okunamadı",
+   "etiket": "YAYGIN",
+   "kural": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k1:rapor:K-5:alacak",
+   "beklenen": 50000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B1.8 5c tahsilat bir kez",
+   "sinif": "BULGU"
+  }
+ ],
+ "hatalar": []
+}

@@ -1,0 +1,486 @@
+{
+ "toplam": 113,
+ "farklar": [
+  {
+   "anahtar": "adim:a1:kapsanan",
+   "beklenen": 3,
+   "program": "okunamadı",
+   "etiket": "AJAN",
+   "kural": "B1 aktarım özeti",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "adim:a1:tasinanAdet",
+   "beklenen": 3,
+   "program": "okunamadı",
+   "etiket": "AJAN",
+   "kural": "B1 aktarım özeti",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "adim:a1:tasinanTutar",
+   "beklenen": 240000,
+   "program": null,
+   "etiket": "AJAN",
+   "kural": "B1 aktarım özeti",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k1:rapor:2026/77:alacak",
+   "beklenen": 35000,
+   "program": 20000,
+   "etiket": "KULLANICI",
+   "kural": "B1.8 5c tahsilat bir kez",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k1:rapor:K-1:ad",
+   "beklenen": "Elif Kaya",
+   "program": "satir:18f6814be644c238",
+   "etiket": "YAYGIN",
+   "kural": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k1:rapor:K-1:alacak",
+   "beklenen": 50000,
+   "program": 0,
+   "etiket": "YAYGIN",
+   "kural": "B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k1:rapor:K-2:ad",
+   "beklenen": "Elif Kaya",
+   "program": "satir:63549357cf76c513",
+   "etiket": "YAYGIN",
+   "kural": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k1:rapor:K-2:alacak",
+   "beklenen": 70000,
+   "program": 0,
+   "etiket": "YAYGIN",
+   "kural": "B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k1:rapor:K-3:ad",
+   "beklenen": "Tuna Sarı",
+   "program": "satir:4ef4ee65a7cc6498",
+   "etiket": "YAYGIN",
+   "kural": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k1:rapor:K-3:alacak",
+   "beklenen": 120000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B1.8 5c tahsilat bir kez",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:cari:ELIF1:bakiye",
+   "beklenen": 250000,
+   "program": 550000,
+   "etiket": "PLAN",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:cari:ELIF1:taksitDisi",
+   "beklenen": 0,
+   "program": 50000,
+   "etiket": "KULLANICI",
+   "kural": "B1.2 taksit dışı kalan tahsilatlar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:cari:ELIF2:bakiye",
+   "beklenen": 230000,
+   "program": 530000,
+   "etiket": "PLAN",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:cari:ELIF2:taksitDisi",
+   "beklenen": 0,
+   "program": 70000,
+   "etiket": "KULLANICI",
+   "kural": "B1.2 taksit dışı kalan tahsilatlar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:cari:TUNA:bakiye",
+   "beklenen": 280000,
+   "program": 680000,
+   "etiket": "PLAN",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:cari:TUNA:taksitDisi",
+   "beklenen": 0,
+   "program": 120000,
+   "etiket": "KULLANICI",
+   "kural": "B1.2 taksit dışı kalan tahsilatlar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:kart:K-1:kalan",
+   "beklenen": 250000,
+   "program": 300000,
+   "etiket": "KULLANICI",
+   "kural": "B1.2",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:kart:K-1:mevcutBorc",
+   "beklenen": true,
+   "program": false,
+   "etiket": "AJAN",
+   "kural": "B1.4 mevcut borcu taksitlendir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k2:kart:K-1:odenen",
+   "beklenen": 50000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B1.2 taşınan tahsilatlar karta",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:kart:K-1:taksit1:odenen",
+   "beklenen": 50000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B1.2 en eski açık taksitten başlayarak",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:kart:K-2:kalan",
+   "beklenen": 230000,
+   "program": 300000,
+   "etiket": "KULLANICI",
+   "kural": "B1.2",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:kart:K-2:mevcutBorc",
+   "beklenen": true,
+   "program": false,
+   "etiket": "AJAN",
+   "kural": "B1.4 mevcut borcu taksitlendir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k2:kart:K-2:odenen",
+   "beklenen": 70000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B1.2 taşınan tahsilatlar karta",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:kart:K-2:taksit1:odenen",
+   "beklenen": 70000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B1.2 en eski açık taksitten başlayarak",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:kart:K-3:kalan",
+   "beklenen": 280000,
+   "program": 400000,
+   "etiket": "KULLANICI",
+   "kural": "B1.2",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:kart:K-3:mevcutBorc",
+   "beklenen": true,
+   "program": false,
+   "etiket": "AJAN",
+   "kural": "B1.4 mevcut borcu taksitlendir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k2:kart:K-3:odenen",
+   "beklenen": 120000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B1.2 taşınan tahsilatlar karta",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:kart:K-3:taksit1:odenen",
+   "beklenen": 120000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B1.2 en eski açık taksitten başlayarak",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:rapor:2026/77:alacak",
+   "beklenen": 35000,
+   "program": 20000,
+   "etiket": "KULLANICI",
+   "kural": "B1.8 5c tahsilat bir kez",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:rapor:K-1:ad",
+   "beklenen": "Elif Kaya",
+   "program": "satir:18f6814be644c238",
+   "etiket": "YAYGIN",
+   "kural": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k2:rapor:K-1:alacak",
+   "beklenen": 50000,
+   "program": 0,
+   "etiket": "YAYGIN",
+   "kural": "B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k2:rapor:K-2:ad",
+   "beklenen": "Elif Kaya",
+   "program": "satir:63549357cf76c513",
+   "etiket": "YAYGIN",
+   "kural": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k2:rapor:K-2:alacak",
+   "beklenen": 70000,
+   "program": 0,
+   "etiket": "YAYGIN",
+   "kural": "B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k2:rapor:K-3:ad",
+   "beklenen": "Tuna Sarı",
+   "program": "satir:4ef4ee65a7cc6498",
+   "etiket": "YAYGIN",
+   "kural": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k2:rapor:K-3:alacak",
+   "beklenen": 120000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B1.8 5c tahsilat bir kez",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:cari:ELIF1:bakiye",
+   "beklenen": 250000,
+   "program": 550000,
+   "etiket": "PLAN",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:cari:ELIF1:taksitDisi",
+   "beklenen": 0,
+   "program": 50000,
+   "etiket": "KULLANICI",
+   "kural": "B1.2 taksit dışı kalan tahsilatlar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:cari:ELIF2:bakiye",
+   "beklenen": 230000,
+   "program": 530000,
+   "etiket": "PLAN",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:cari:ELIF2:taksitDisi",
+   "beklenen": 0,
+   "program": 70000,
+   "etiket": "KULLANICI",
+   "kural": "B1.2 taksit dışı kalan tahsilatlar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:cari:TUNA:bakiye",
+   "beklenen": 250000,
+   "program": 650000,
+   "etiket": "PLAN",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:cari:TUNA:taksitDisi",
+   "beklenen": 0,
+   "program": 120000,
+   "etiket": "KULLANICI",
+   "kural": "B1.2 taksit dışı kalan tahsilatlar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:kart:K-1:kalan",
+   "beklenen": 250000,
+   "program": 300000,
+   "etiket": "KULLANICI",
+   "kural": "B1.2",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:kart:K-1:mevcutBorc",
+   "beklenen": true,
+   "program": false,
+   "etiket": "AJAN",
+   "kural": "B1.4 mevcut borcu taksitlendir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k3:kart:K-1:odenen",
+   "beklenen": 50000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B1.2 taşınan tahsilatlar karta",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:kart:K-1:taksit1:odenen",
+   "beklenen": 50000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B1.2 en eski açık taksitten başlayarak",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:kart:K-2:kalan",
+   "beklenen": 230000,
+   "program": 300000,
+   "etiket": "KULLANICI",
+   "kural": "B1.2",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:kart:K-2:mevcutBorc",
+   "beklenen": true,
+   "program": false,
+   "etiket": "AJAN",
+   "kural": "B1.4 mevcut borcu taksitlendir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k3:kart:K-2:odenen",
+   "beklenen": 70000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B1.2 taşınan tahsilatlar karta",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:kart:K-2:taksit1:odenen",
+   "beklenen": 70000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B1.2 en eski açık taksitten başlayarak",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:kart:K-3:kalan",
+   "beklenen": 250000,
+   "program": 370000,
+   "etiket": "KULLANICI",
+   "kural": "B1.2",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:kart:K-3:mevcutBorc",
+   "beklenen": true,
+   "program": false,
+   "etiket": "AJAN",
+   "kural": "B1.4 mevcut borcu taksitlendir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k3:kart:K-3:odenen",
+   "beklenen": 150000,
+   "program": 30000,
+   "etiket": "KULLANICI",
+   "kural": "B1.2 taşınan tahsilatlar karta",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:kart:K-3:taksit1:odenen",
+   "beklenen": 150000,
+   "program": 30000,
+   "etiket": "KULLANICI",
+   "kural": "B1.2 en eski açık taksitten başlayarak",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:rapor:2026/77:alacak",
+   "beklenen": 35000,
+   "program": 20000,
+   "etiket": "KULLANICI",
+   "kural": "B1.8 5c tahsilat bir kez",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:rapor:K-1:ad",
+   "beklenen": "Elif Kaya",
+   "program": "satir:18f6814be644c238",
+   "etiket": "YAYGIN",
+   "kural": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k3:rapor:K-1:alacak",
+   "beklenen": 50000,
+   "program": 0,
+   "etiket": "YAYGIN",
+   "kural": "B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k3:rapor:K-2:ad",
+   "beklenen": "Elif Kaya",
+   "program": "satir:63549357cf76c513",
+   "etiket": "YAYGIN",
+   "kural": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k3:rapor:K-2:alacak",
+   "beklenen": 70000,
+   "program": 0,
+   "etiket": "YAYGIN",
+   "kural": "B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k3:rapor:K-3:ad",
+   "beklenen": "Tuna Sarı",
+   "program": "satir:4ef4ee65a7cc6498",
+   "etiket": "YAYGIN",
+   "kural": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k3:rapor:K-3:alacak",
+   "beklenen": 150000,
+   "program": 0,
+   "etiket": "YAYGIN",
+   "kural": "B1.8 5c tahsilat bir kez",
+   "sinif": "İNCELE"
+  }
+ ],
+ "hatalar": []
+}

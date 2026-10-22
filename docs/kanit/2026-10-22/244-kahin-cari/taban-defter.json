@@ -1,0 +1,32 @@
+{
+  "ad": "244-kahin-cari/taban-defter",
+  "komut": "npm run test:kahin-defter",
+  "commit": "fd0b0fc6ebac15c9ebde3715179f88b0a9e774f3",
+  "dal": "is/kahin-cari",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T09:46:24.601Z",
+  "sure_sn": 4.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "kahin-defter",
+    "toplam": 147,
+    "gecen": 147,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kahin-cari/taban-defter.log",
+  "klasor": "/home/user/wt/kahin-cari",
+  "ham_cikti_sha256": "6d748438762abde9f5b50104049549409b46ce7f506c6bcf230a0dd23c810339",
+  "ham_cikti_bayt": 1295
+}

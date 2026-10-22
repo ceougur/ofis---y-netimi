@@ -1,0 +1,142 @@
+{
+ "toplam": 91,
+ "farklar": [
+  {
+   "anahtar": "adim:bdm:durum",
+   "beklenen": "ret",
+   "program": "ok",
+   "etiket": "YAYGIN",
+   "kural": "B2.4 bağ kurulamaz → ret, hiçbir satır yazılmaz",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k2:fatura:W:acik",
+   "beklenen": 20000,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k2:fatura:X:acik",
+   "beklenen": 50000,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k3:fatura:W:acik",
+   "beklenen": 20000,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k3:fatura:X:acik",
+   "beklenen": 50000,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k4:fatura:K:acik",
+   "beklenen": 60000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k4:fatura:L:acik",
+   "beklenen": 25000,
+   "program": 15000,
+   "etiket": "KULLANICI",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k4:fatura:W:acik",
+   "beklenen": 20000,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k4:fatura:X:acik",
+   "beklenen": 50000,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k5:fatura:K:acik",
+   "beklenen": 60000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k5:fatura:L:acik",
+   "beklenen": 25000,
+   "program": 15000,
+   "etiket": "KULLANICI",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k5:fatura:W:acik",
+   "beklenen": 20000,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k5:fatura:X:acik",
+   "beklenen": 50000,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k6:fatura:K:acik",
+   "beklenen": 60000,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: kendi-evrak-iptal)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k6:fatura:L:acik",
+   "beklenen": 25000,
+   "program": 15000,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: kendi-evrak-iptal)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k6:fatura:W:acik",
+   "beklenen": 20000,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k6:fatura:X:acik",
+   "beklenen": 50000,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)",
+   "sinif": "İNCELE"
+  }
+ ],
+ "hatalar": []
+}

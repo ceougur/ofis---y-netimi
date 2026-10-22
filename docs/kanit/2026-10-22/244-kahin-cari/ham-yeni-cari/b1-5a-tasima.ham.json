@@ -1,0 +1,402 @@
+{
+ "k0:rapor": [
+  {
+   "cari": "Burak Koç",
+   "debit": 4000,
+   "credit": 4500,
+   "lines": [
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h7",
+     "borc": null,
+     "alacak": 3000,
+     "key": "K-3"
+    },
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h6",
+     "borc": null,
+     "alacak": 1500,
+     "key": "K-3"
+    },
+    {
+     "kind": "borc",
+     "d": "Taksitler · K-3",
+     "borc": 4000,
+     "alacak": null,
+     "key": "K-3"
+    }
+   ]
+  },
+  {
+   "cari": "Elif Aydın",
+   "debit": 9000,
+   "credit": 3500,
+   "lines": [
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h1",
+     "borc": null,
+     "alacak": 2500,
+     "key": "K-1"
+    },
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h2",
+     "borc": null,
+     "alacak": 1000,
+     "key": "K-1"
+    },
+    {
+     "kind": "borc",
+     "d": "Taksitler · K-1",
+     "borc": 9000,
+     "alacak": null,
+     "key": "K-1"
+    }
+   ]
+  },
+  {
+   "cari": "Mert Can",
+   "debit": 2000.5,
+   "credit": 0,
+   "lines": [
+    {
+     "kind": "borc",
+     "d": "Taksitler · K-4",
+     "borc": 2000.5,
+     "alacak": null,
+     "key": "K-4"
+    }
+   ]
+  },
+  {
+   "cari": "Selin Arslan",
+   "debit": 4500,
+   "credit": 5200,
+   "lines": [
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h3",
+     "borc": null,
+     "alacak": 1000,
+     "key": "K-2"
+    },
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h4",
+     "borc": null,
+     "alacak": 4000,
+     "key": "K-2"
+    },
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h5",
+     "borc": null,
+     "alacak": 200,
+     "key": "K-2"
+    },
+    {
+     "kind": "borc",
+     "d": "Taksitler · K-2",
+     "borc": 4500,
+     "alacak": null,
+     "key": "K-2"
+    }
+   ]
+  }
+ ],
+ "k1:rapor": [
+  {
+   "cari": "Burak Koç",
+   "debit": 4000,
+   "credit": 1500,
+   "lines": [
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h6",
+     "borc": null,
+     "alacak": 1500,
+     "key": "K-3"
+    },
+    {
+     "kind": "borc",
+     "d": "Taksitler · K-3",
+     "borc": 4000,
+     "alacak": null,
+     "key": "K-3"
+    }
+   ]
+  },
+  {
+   "cari": "Elif Aydın",
+   "debit": 9000,
+   "credit": 0,
+   "lines": [
+    {
+     "kind": "borc",
+     "d": "Taksitler · K-1",
+     "borc": 9000,
+     "alacak": null,
+     "key": "K-1"
+    }
+   ]
+  },
+  {
+   "cari": "Mert Can",
+   "debit": 2000.5,
+   "credit": 0,
+   "lines": [
+    {
+     "kind": "borc",
+     "d": "Taksitler · K-4",
+     "borc": 2000.5,
+     "alacak": null,
+     "key": "K-4"
+    }
+   ]
+  },
+  {
+   "cari": "Selin Arslan",
+   "debit": 4500,
+   "credit": 4200,
+   "lines": [
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h4",
+     "borc": null,
+     "alacak": 4000,
+     "key": "K-2"
+    },
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h5",
+     "borc": null,
+     "alacak": 200,
+     "key": "K-2"
+    },
+    {
+     "kind": "borc",
+     "d": "Taksitler · K-2",
+     "borc": 4500,
+     "alacak": null,
+     "key": "K-2"
+    }
+   ]
+  }
+ ],
+ "k2:rapor": [
+  {
+   "cari": "Burak Koç",
+   "debit": 4000,
+   "credit": 4500,
+   "lines": [
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h7",
+     "borc": null,
+     "alacak": 3000,
+     "key": "K-3"
+    },
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h6",
+     "borc": null,
+     "alacak": 1500,
+     "key": "K-3"
+    },
+    {
+     "kind": "borc",
+     "d": "Taksitler · K-3",
+     "borc": 4000,
+     "alacak": null,
+     "key": "K-3"
+    }
+   ]
+  },
+  {
+   "cari": "Elif Aydın",
+   "debit": 9000,
+   "credit": 3500,
+   "lines": [
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h1",
+     "borc": null,
+     "alacak": 2500,
+     "key": "K-1"
+    },
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h2",
+     "borc": null,
+     "alacak": 1000,
+     "key": "K-1"
+    },
+    {
+     "kind": "borc",
+     "d": "Taksitler · K-1",
+     "borc": 9000,
+     "alacak": null,
+     "key": "K-1"
+    }
+   ]
+  },
+  {
+   "cari": "Mert Can",
+   "debit": 2000.5,
+   "credit": 0,
+   "lines": [
+    {
+     "kind": "borc",
+     "d": "Taksitler · K-4",
+     "borc": 2000.5,
+     "alacak": null,
+     "key": "K-4"
+    }
+   ]
+  },
+  {
+   "cari": "Selin Arslan",
+   "debit": 4500,
+   "credit": 5200,
+   "lines": [
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h3",
+     "borc": null,
+     "alacak": 1000,
+     "key": "K-2"
+    },
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h4",
+     "borc": null,
+     "alacak": 4000,
+     "key": "K-2"
+    },
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h5",
+     "borc": null,
+     "alacak": 200,
+     "key": "K-2"
+    },
+    {
+     "kind": "borc",
+     "d": "Taksitler · K-2",
+     "borc": 4500,
+     "alacak": null,
+     "key": "K-2"
+    }
+   ]
+  }
+ ],
+ "k3:rapor": [
+  {
+   "cari": "Burak Koç",
+   "debit": 4000,
+   "credit": 4500,
+   "lines": [
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h7",
+     "borc": null,
+     "alacak": 3000,
+     "key": "K-3"
+    },
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h6",
+     "borc": null,
+     "alacak": 1500,
+     "key": "K-3"
+    },
+    {
+     "kind": "borc",
+     "d": "Taksitler · K-3",
+     "borc": 4000,
+     "alacak": null,
+     "key": "K-3"
+    }
+   ]
+  },
+  {
+   "cari": "Elif Aydın",
+   "debit": 9000,
+   "credit": 3500,
+   "lines": [
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h1",
+     "borc": null,
+     "alacak": 2500,
+     "key": "K-1"
+    },
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h2",
+     "borc": null,
+     "alacak": 1000,
+     "key": "K-1"
+    },
+    {
+     "kind": "borc",
+     "d": "Taksitler · K-1",
+     "borc": 9000,
+     "alacak": null,
+     "key": "K-1"
+    }
+   ]
+  },
+  {
+   "cari": "Mert Can",
+   "debit": 2000.5,
+   "credit": 0,
+   "lines": [
+    {
+     "kind": "borc",
+     "d": "Taksitler · K-4",
+     "borc": 2000.5,
+     "alacak": null,
+     "key": "K-4"
+    }
+   ]
+  },
+  {
+   "cari": "Selin Arslan",
+   "debit": 4500,
+   "credit": 5200,
+   "lines": [
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h3",
+     "borc": null,
+     "alacak": 1000,
+     "key": "K-2"
+    },
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h4",
+     "borc": null,
+     "alacak": 4000,
+     "key": "K-2"
+    },
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h5",
+     "borc": null,
+     "alacak": 200,
+     "key": "K-2"
+    },
+    {
+     "kind": "borc",
+     "d": "Taksitler · K-2",
+     "borc": 4500,
+     "alacak": null,
+     "key": "K-2"
+    }
+   ]
+  }
+ ]
+}

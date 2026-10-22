@@ -1,0 +1,14 @@
+{
+ "toplam": 52,
+ "farklar": [
+  {
+   "anahtar": "k2:rapor:K-1:alacak",
+   "beklenen": 100000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B1.8 5c tahsilat bir kez",
+   "sinif": "BULGU"
+  }
+ ],
+ "hatalar": []
+}
