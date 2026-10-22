@@ -1,0 +1,58 @@
+{
+ "adim": "a-baglanti",
+ "baslik": "Entegratör Ayarları (Test Ortamı) + Bağlantıyı Test Et: e-Fatura ve e-SMM servisleri",
+ "durum": "geçti",
+ "denetimler": [
+  {
+   "gecti": true,
+   "denetim": "ayarlar kaydedildi; e-SMM kullanıcısıyım işaretli (200)",
+   "veri": {
+    "testNumbers": {
+     "efatura": {
+      "series": "TEF",
+      "year": 2026,
+      "seq": 553602238,
+      "number": "TEF2026553602238"
+     },
+     "earsiv": {
+      "series": "TEA",
+      "year": 2026,
+      "seq": 560394035,
+      "number": "TEA2026560394035"
+     },
+     "esmm": {
+      "series": "TES",
+      "year": 2026,
+      "seq": 589829651,
+      "number": "TES2026589829651"
+     }
+    }
+   }
+  },
+  {
+   "gecti": true,
+   "denetim": "ortam Test, programın gideceği adresler izinli: https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc · https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc"
+  },
+  {
+   "gecti": true,
+   "denetim": "Bağlantıyı Test Et: 200 EDM'ye giriş yapıldı; bağlantı çalışıyor. Servis sözleşmesi (WSDL) okundu: SOAP 1.1, 55 işlem. EDM e-SMM servisine giriş yapıldı; bağlantı çalışıyor. Servis sözleşmesi (WSDL) okundu: SOAP 1.1, 16 işlem."
+  }
+ ],
+ "kayit": {
+  "yanit": {
+   "ok": true,
+   "message": "EDM'ye giriş yapıldı; bağlantı çalışıyor. Servis sözleşmesi (WSDL) okundu: SOAP 1.1, 55 işlem. EDM e-SMM servisine giriş yapıldı; bağlantı çalışıyor. Servis sözleşmesi (WSDL) okundu: SOAP 1.1, 16 işlem.",
+   "smmContract": {
+    "source": "wsdl",
+    "namespace": "http://tempuri.org/",
+    "operations": 16,
+    "missing": []
+   }
+  },
+  "sonTest": {
+   "ok": true,
+   "message": "EDM'ye giriş yapıldı; bağlantı çalışıyor. Servis sözleşmesi (WSDL) okundu: SOAP 1.1, 55 işlem. EDM e-SMM servisine giriş yapıldı; bağlantı çalışıyor. Servis sözleşmesi (WSDL) okundu: SOAP 1.1, 16 işlem.",
+   "at": "2026-10-22T10:39:34.345Z"
+  }
+ }
+}

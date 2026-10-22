@@ -1,0 +1,103 @@
+
+■ hazirlik) Kurulum: üretim bayrakları, sabit test adresi, sunucu
+  ✓ üretim girişi (server/server.mjs) e-Belgeyi ve e-SMM'yi açar: {"edocEnabled":true,"edocLive":true,"esmmEnabled":true}
+  ✓ programın test adresleri betiğin sabitleriyle aynı (https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc · https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc)
+  ✓ canlı adresler bekçide reddedilir (https://portal2.edmbilisim.com.tr/EFaturaEDM/EFaturaEDM.svc · https://portal2.edmbilisim.com.tr/EFaturaEDM/ESmmEDM.svc)
+  ✓ yönetici girişi
+
+■ a-baglanti) Entegratör Ayarları (Test Ortamı) + Bağlantıyı Test Et: e-Fatura ve e-SMM servisleri
+  ✓ ayarlar kaydedildi; e-SMM kullanıcısıyım işaretli (200)
+  ✓ ortam Test, programın gideceği adresler izinli: https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc · https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc
+  ✓ Bağlantıyı Test Et: 200 EDM'ye giriş yapıldı; bağlantı çalışıyor. Servis sözleşmesi (WSDL) okundu: SOAP 1.1, 55 işlem. EDM e-SMM servisine giriş yapıldı; bağlantı çalışıyor. Servis sözleşmesi (WSDL) okundu: SOAP 1.1, 16 işlem.
+
+■ hazirlik-cariler) Cariler: e-SMM alıcısı şirket (EDM'de e-Fatura mükellefi OLMADIĞI sorgulanmış VKN) + e-Arşiv alıcısı kişi
+  ✓ e-SMM alıcısı VKN'si EDM'de mükellef değil (Mükellef Sorgula): 8661313204
+  ✓ cari Deneme Müvekkil Danışmanlık A.Ş.: 200
+  ✓ cari Ahmet Yılmaz: 200
+
+■ g-toplu-gonderim) Kes, Sonra Gönder: 3 e-SMM + 2 e-Arşiv (−2 / −1 gün) → Seçilenleri Gönder (ön denetim, eski tarihli seçilmemiş belge) → Tümünü Gönder
+  ✓ G1 e-SMM 2026-10-20 500 TL: kaydedildi, numarasız Gönderilecekler'de (ESMM)
+  ✓ G2 e-SMM 2026-10-21 600 TL: kaydedildi, numarasız Gönderilecekler'de (ESMM)
+  ✓ G3 e-Arşiv 2026-10-20 300 TL: kaydedildi, numarasız Gönderilecekler'de (EARSIVFATURA)
+  ✓ G4 e-Arşiv 2026-10-21 400 TL: kaydedildi, numarasız Gönderilecekler'de (EARSIVFATURA)
+  ✓ G5 e-SMM 2026-10-21 700 TL: kaydedildi, numarasız Gönderilecekler'de (ESMM)
+  ✓ Gönderilecekler'de 5 belge (5)
+  ✓ Seçilenleri Gönder ön denetimi: G2 seçiliyken daha eski G1 söylenir (sayı 1)
+  ✓ yalnız G2 gönderilmek istenince 409 einvoice-selection-older; G2'ye numara verilmedi (409 einvoice-selection-older)
+  ✓ Seçilenleri Gönder (G1, G2, G3): üçü numara aldı ve EDM'ye iletildi
+  ✓ Tümünü Gönder (G4, G5): bekleyen kalmadı, 5 belgenin hepsi iletildi
+  ✓ TES: 3 belge, numaralar ardışık ve tarih sırasıyla (G1 2026-10-20, G2 2026-10-21, G5 2026-10-21)
+  ✓ TEA: 2 belge, numaralar ardışık ve tarih sırasıyla (G3 2026-10-20, G4 2026-10-21)
+
+■ b-makbuz) e-SMM Kaydet ve Gönder: tek kalem (1 × 1.000 TL) ve çok kalem (2 × 100,03 TL), KDV %20, stopaj (alıcı şirket)
+  ✓ B1 (tek kalem): TES2026155510668 EDM'ye iletildi (sent)
+  ✓ B1 UBL: numara, ETTN ve ProfileID ESMM belgeyle aynı
+  ✓ B1 UBL tutarları programın tutarlarıyla tutarlı (brüt 1000, stopaj 200 = satırlar 200, ödenecek 1000)
+  ✓ B2 (çok kalem 2 × 100,03): TES2026155510669 EDM'ye iletildi (sent)
+  ✓ B2 UBL: numara, ETTN ve ProfileID ESMM belgeyle aynı
+  ✓ B2 UBL tutarları programın tutarlarıyla tutarlı (brüt 200.06, stopaj 40.01 = satırlar 20.01 + 20, ödenecek 200.07)
+
+■ c-durum) Durum Sorgula: bütün gönderilen belgeler son duruma kadar
+10:41:58 durum turu 1: G1=processing (PACKAGE - PROCESSING) G2=processing (PACKAGE - PROCESSING) G3=processing (PACKAGE - PROCESSING) G4=processing (PACKAGE - PROCESSING) G5=processing (PACKAGE - PROCESSING) B1=processing (PACKAGE - PROCESSING) B2=processing (PACKAGE - PROCESSING)
+10:42:33 durum turu 2: G1=sent (SEND - SUCCEED) G2=sent (SEND - SUCCEED) G3=sent (SEND - SUCCEED) G4=sent (SEND - SUCCEED) G5=sent (SEND - SUCCEED) B1=sent (SEND - SUCCEED) B2=sent (SEND - SUCCEED)
+  ✓ G1 e-SMM TES2026155510665: EDM son durum sent (SEND - SUCCEED)
+  ✓ G2 e-SMM TES2026155510666: EDM son durum sent (SEND - SUCCEED)
+  ✓ G3 e-Arşiv TEA2026778201412: EDM son durum sent (SEND - SUCCEED)
+  ✓ G4 e-Arşiv TEA2026778201413: EDM son durum sent (SEND - SUCCEED)
+  ✓ G5 e-SMM TES2026155510667: EDM son durum sent (SEND - SUCCEED)
+  ✓ B1 e-SMM TES2026155510668: EDM son durum sent (SEND - SUCCEED)
+  ✓ B2 e-SMM TES2026155510669: EDM son durum sent (SEND - SUCCEED)
+
+■ d-resmi-pdf) Resmî görüntü: e-SMM GetSMM PDF (B1, B2, G1) ve karşılaştırma için e-Arşiv (G3)
+  ✓ B1 TES2026155510668: PDF (93234 bayt ≥ 5000), indirme adı numarayı taşır
+  ✓ B1 TES2026155510668: PDF metninde belge numarası (ETTN var)
+  ✓ B1 TES2026155510668: resmî PDF'te satıcı ve alıcı adresi birer kez (satıcı 1, alıcı 1)
+  ✓ B1 TES2026155510668: resmî PDF'te düzenleyenin unvanı (DENEME TICARET LTD. STI.) var
+  ✓ B2 TES2026155510669: PDF (93579 bayt ≥ 5000), indirme adı numarayı taşır
+  ✓ B2 TES2026155510669: PDF metninde belge numarası (ETTN var)
+  ✓ B2 TES2026155510669: resmî PDF'te satıcı ve alıcı adresi birer kez (satıcı 1, alıcı 1)
+  ✓ B2 TES2026155510669: resmî PDF'te düzenleyenin unvanı (DENEME TICARET LTD. STI.) var
+  ✓ G1 TES2026155510665: PDF (93888 bayt ≥ 5000), indirme adı numarayı taşır
+  ✓ G1 TES2026155510665: PDF metninde belge numarası (ETTN var)
+  ✓ G1 TES2026155510665: resmî PDF'te satıcı ve alıcı adresi birer kez (satıcı 1, alıcı 1)
+  ✓ G1 TES2026155510665: resmî PDF'te düzenleyenin unvanı (DENEME TICARET LTD. STI.) var
+  ✓ G3 TEA2026778201412: PDF (84244 bayt ≥ 5000), indirme adı numarayı taşır
+  ✓ G3 TEA2026778201412: PDF metninde belge numarası (ETTN var)
+  ✓ G3 TEA2026778201412: resmî PDF'te satıcı ve alıcı adresi birer kez (satıcı 1, alıcı 1)
+  ✓ G3 TEA2026778201412: resmî PDF'te düzenleyenin unvanı (DENEME TICARET LTD. STI.) var
+
+■ e-iptal) İptal (8 gün içinde): B1 önce EDM'de (CancelSMM) sonra programda; ardından EDM durumu
+  ✓ iptal süresi dolmadı (son gün 2026-10-30)
+  ✓ B1 TES2026155510668: EDM'de ve programda iptal (200 ; vt cancelled/cancelled)
+  ✓ iptal sonrası EDM durumu: cancelled CANCELLED - SUCCEED
+
+■ f-bulunamadi) EDM'de OLMAYAN makbuz: durum / iptal / görüntü — EDM'nin 'bulunamadı' kodu (madde 22 MISSING_CODES); e-Arşiv karşılığı
+  ✓ e-SMM 'bulunamadı' kodu okundu: 11017 — EDM isteği reddetti: SMM bulunamadı (EDM hata kodu 11017)
+
+■ h-hata-kodlari) Görülen ret / hata kodları (PACKAGE-FAIL, SEND-FAILED, EDM hata kodu)
+  · 4 kayıt; PACKAGE-FAIL görülmedi
+
+# EDM Test Ortamı — e-SMM uçtan uca (2.4.4 iş listesi 24)
+
+**Test portalı:** https://test.edmbilisim.com.tr/EFaturaUI21ea/ (Entegratör Ayarları'ndaki test kullanıcı adı ve parolasıyla) → e-Arşiv belgeleri portalın e-Arşiv bölümünde; e-SMM için portalda sarı "SMMM Portalı Girişi" düğmesi.
+**Kip:** gerçek EDM test ortamı (yasal geçerliliği olmayan test belgeleri).
+
+Commit 32e59c0 · başlangıç 22.10.2026 13:41:33 · bitiş 22.10.2026 13:42:44 (TR) · denetim 55/55 geçti · çıkış 0
+
+Adımlar: hazirlik geçti · a-baglanti geçti · hazirlik-cariler geçti · g-toplu-gonderim geçti · b-makbuz geçti · c-durum geçti · d-resmi-pdf geçti · e-iptal geçti · f-bulunamadi geçti · h-hata-kodlari bilgi
+
+| Kod | Belge Türü | Belge No | ETTN / UUID | Belge Tarihi | Gönderim (TR) | Alıcı | Brüt | Stopaj | KDV | Net Ödenecek | EDM Son Durum | İptal (TR) |
+|---|---|---|---|---|---|---|---:|---:|---:|---:|---|---|
+| G1 | e-SMM | TES2026155510665 | a59508d1-2311-4f12-825a-730f65e881b3 | 20.10.2026 | 22.10.2026 13:41:40 | Deneme Müvekkil Danışmanlık A.Ş. | 500,00 | 100,00 | 100,00 | 500,00 | Kabul (iletildi) | — |
+| G2 | e-SMM | TES2026155510666 | 7b5beee5-f19f-4ad1-ae96-8afef6460bc8 | 21.10.2026 | 22.10.2026 13:41:45 | Deneme Müvekkil Danışmanlık A.Ş. | 600,00 | 120,00 | 120,00 | 600,00 | Kabul (iletildi) | — |
+| G3 | e-Arşiv | TEA2026778201412 | 4924647a-7d3a-4045-b4c8-7d4f4c189b57 | 20.10.2026 | 22.10.2026 13:41:43 | Ahmet Yılmaz | 300,00 | — | 60,00 | 360,00 | Kabul (iletildi) | — |
+| G4 | e-Arşiv | TEA2026778201413 | 5f709034-4584-430e-bbab-6511f000ac08 | 21.10.2026 | 22.10.2026 13:41:48 | Ahmet Yılmaz | 400,00 | — | 80,00 | 480,00 | Kabul (iletildi) | — |
+| G5 | e-SMM | TES2026155510667 | 99b6f5b3-b7f6-4151-8704-1eef41365f4c | 21.10.2026 | 22.10.2026 13:41:50 | Deneme Müvekkil Danışmanlık A.Ş. | 700,00 | 140,00 | 140,00 | 700,00 | Kabul (iletildi) | — |
+| B1 | e-SMM | TES2026155510668 | e1dc872c-e382-40a6-b9b2-8f721037d200 | 22.10.2026 | 22.10.2026 13:41:52 | Deneme Müvekkil Danışmanlık A.Ş. | 1.000,00 | 200,00 | 200,00 | 1.000,00 | İptal Edildi | 22.10.2026 13:42:41 |
+| B2 | e-SMM | TES2026155510669 | 100406cd-ab1a-4119-af87-0067d6a796bd | 22.10.2026 | 22.10.2026 13:41:54 | Deneme Müvekkil Danışmanlık A.Ş. | 200,06 | 40,01 | 40,02 | 200,07 | Kabul (iletildi) | — |
+
+Brüt: e-SMM'de brüt ücret, e-Arşiv'de KDV hariç tutar. Net Ödenecek: e-SMM'de brüt − stopaj + KDV (tahsil edilecek), e-Arşiv'de KDV dahil toplam.
+Bekçi: izin verilen dış istek 39, reddedilen 0. Kimlik bilgisi bu dosyalarda yoktur.
+
+kimlik bilgisi taraması: 19 dosya, eşleşme 0
+SONUÇ: 55 geçti, 0 kaldı (çıkış 0)
