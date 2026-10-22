@@ -1,0 +1,32 @@
+{
+  "ad": "244-iptal/yeni-davranis-yesil",
+  "komut": "node --test test/zz-gecici-iptal-davranis.test.mjs",
+  "commit": "b54ed6bf5e7fd954e76463cea8577d9866d44de8",
+  "dal": "is/iptal",
+  "kirli": 8,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T05:01:49.055Z",
+  "sure_sn": 2.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 12,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-iptal/yeni-davranis-yesil.log",
+  "klasor": "/home/user/wt/iptal",
+  "ham_cikti_sha256": "490704df3010da53c00ff4458a0a452d89fb8337a3cb0bf1d1bae98ea3821680",
+  "ham_cikti_bayt": 4406
+}

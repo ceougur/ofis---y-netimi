@@ -1,0 +1,83 @@
+{
+  "ad": "244-iptal/mutasyon-P4",
+  "komut": "node --test test/ebelge-244-iptal-suresi.test.mjs",
+  "commit": "b54ed6bf5e7fd954e76463cea8577d9866d44de8",
+  "dal": "is/iptal",
+  "kirli": 7,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:51:07.518Z",
+  "sure_sn": 2.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 7,
+    "basarisiz": 10,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 10 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "iptal süresi kuralı (lib/einvoice/iptal-suresi.mjs, saf) › 8 gün iletimden; başlangıç günü sayılmaz, 8. gün dahil",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:74:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "iptal süresi kuralı (lib/einvoice/iptal-suresi.mjs, saf) › e-SMM aynı kural; e-Fatura, kâğıt, taslak, Hata, belirsiz ve gönderilmemiş belge kural dışı",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:87:3",
+      "hata": "The input did not match the regular expression /^e-SMM'nin iptal süresi doldu: alıcıya iletildiği 14\\.10\\.2026 gününden sonraki 8 gün içinde \\(en geç 22\\.10\\.2026\\)/. Input: · \"e-SMM'nin iptal süresi doldu: alıcıya iletildiği 11.10.2026 gününden sonraki 8 gün içinde (en geç 19.10.2026) iptal edilebilirdi. Makbuz geçerli kalır; düzeltme için mali müşavirinize danışın.\" (beklenen , gelen e-SMM'nin iptal süresi doldu: alıcıya iletildiği 11.10.2026 gününden sonraki 8 gün içinde (en geç 19.10.2026) iptal edilebilirdi. Makbuz geçerli kalır; düzeltme için mali müşavirinize danışın.)"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › gün sınırı programın yerel günüdür: 23:59'da gönderilen belgenin son günü 8 gün sonra, 00:00 geçince 9. gün; 00:30'da gönderilen o gün sayılır",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:152:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + '2026-06-16' (beklenen 2026-06-17, gelen 2026-06-16)"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › iletimden 8. gün iptal edilir (kesimden 11. gün): EDM'de ve programda",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:176:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › iletimden 9. gün reddedilir: ileti son günü yazar, belge ve EDM değişmez, kartta neden görünür",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:195:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › sonucu belirsiz gönderim (EDM işledi, yanıt koptu): süre girişim gününden, Durum Sorgula gününden değil",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:239:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › EDM reddetti (Hata) → yeniden gönderim: süre yeniden gönderim gününden",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:258:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + '2026-06-17' (beklenen 2026-06-20, gelen 2026-06-17)"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › EDM'ye ulaşmamış girişim (bulunamadı) → yeniden gönderim: süre yeniden gönderim gününden",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:294:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + '2026-06-17' (beklenen 2026-06-20, gelen 2026-06-17)"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › portal taslağı portaldan gönderildi: süre taslak yükleme gününden (gönderim ondan önce olamaz)",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:311:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "iptal süresi: e-SMM (gönderim kapısı madde 22'de açılır; kural şimdiden e-SMM'yi kapsar) › iletilmiş e-SMM 9. gün reddedilir (e-SMM iletisiyle); süre içinde kartta son gün; iletim izi gönderim girişiminden",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:387:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-iptal/mutasyon-P4.log",
+  "klasor": "/home/user/wt/iptal",
+  "ham_cikti_sha256": "f64d35c058af200198973f095480f4db9b3b49a055ac8e6e037a2602ab1d763a",
+  "ham_cikti_bayt": 17445
+}

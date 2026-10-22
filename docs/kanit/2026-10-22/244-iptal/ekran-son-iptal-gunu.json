@@ -1,0 +1,32 @@
+{
+  "ad": "244-iptal/ekran-son-iptal-gunu",
+  "komut": "node docs/kanit/2026-10-22/244-iptal/betikler/ekran.mjs docs/kanit/2026-10-22/244-iptal/ekran",
+  "commit": "b54ed6bf5e7fd954e76463cea8577d9866d44de8",
+  "dal": "is/iptal",
+  "kirli": 8,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T05:12:27.661Z",
+  "sure_sn": 4.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 7,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-iptal/ekran-son-iptal-gunu.log",
+  "klasor": "/home/user/wt/iptal",
+  "ham_cikti_sha256": "2b184b60edc23be48995a177361af93373f807da54ef8df6ef1bf45a8a00131b",
+  "ham_cikti_bayt": 769
+}

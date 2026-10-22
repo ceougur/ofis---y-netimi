@@ -1,0 +1,73 @@
+{
+  "ad": "244-iptal/mutasyon-P3",
+  "komut": "node --test test/ebelge-244-iptal-suresi.test.mjs",
+  "commit": "b54ed6bf5e7fd954e76463cea8577d9866d44de8",
+  "dal": "is/iptal",
+  "kirli": 7,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:51:04.664Z",
+  "sure_sn": 2.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 9,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "iptal süresi kuralı (lib/einvoice/iptal-suresi.mjs, saf) › 8 gün iletimden; başlangıç günü sayılmaz, 8. gün dahil",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:74:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "iptal süresi kuralı (lib/einvoice/iptal-suresi.mjs, saf) › ay sonu ve yıl dönümü takvim günüyle",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:95:3",
+      "hata": "Expected values to be strictly equal: · true !== false (beklenen false, gelen true)"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › gün sınırı programın yerel günüdür: 23:59'da gönderilen belgenin son günü 8 gün sonra, 00:00 geçince 9. gün; 00:30'da gönderilen o gün sayılır",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:152:3",
+      "hata": "Expected values to be strictly equal: · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › iletimden 8. gün iptal edilir (kesimden 11. gün): EDM'de ve programda",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:176:3",
+      "hata": "{\"ok\":false,\"error\":\"e-Arşiv faturanın iptal süresi doldu: alıcıya iletildiği 20.06.2026 gününden sonraki 8 gün içinde (en geç 28.06.2026) iptal edilebilirdi. İade faturası kesin; gerekirse doğrusunu yeniden kesin.\",\"code\":\"einvoice-cancel-late\",\"lastDay\":\"2026-06-28\",\"start\":\"2026-06-20\",\"source\":\"iletim\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › yalnız programda iptal (localOnly) süresi dolmuş gönderilmiş belgede de reddedilir; süre içinde çıkış yolu sürer",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:219:3",
+      "hata": "{\"ok\":false,\"error\":\"e-Arşiv faturanın iptal süresi doldu: alıcıya iletildiği 17.06.2026 gününden sonraki 8 gün içinde (en geç 25.06.2026) iptal edilebilirdi. İade faturası kesin; gerekirse doğrusunu yeniden kesin.\",\"code\":\"einvoice-cancel-late\",\"lastDay\":\"2026-06-25\",\"start\":\"2026-06-17\",\"source\":\"iletim\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › EDM reddetti (Hata) → yeniden gönderim: süre yeniden gönderim gününden",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:258:3",
+      "hata": "{\"ok\":false,\"error\":\"e-Arşiv faturanın iptal süresi doldu: alıcıya iletildiği 20.06.2026 gününden sonraki 8 gün içinde (en geç 28.06.2026) iptal edilebilirdi. İade faturası kesin; gerekirse doğrusunu yeniden kesin.\",\"code\":\"einvoice-cancel-late\",\"lastDay\":\"2026-06-28\",\"start\":\"2026-06-20\",\"source\":\"iletim\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › EDM'ye ulaşmamış girişim (bulunamadı) → yeniden gönderim: süre yeniden gönderim gününden",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:294:3",
+      "hata": "Expected values to be strictly equal: · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › ay sonu ve yıl dönümü: 28.12 iletim → 05.01 iptal edilir, 06.01 reddedilir",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:351:3",
+      "hata": "Expected values to be strictly equal: · 409 !== 200 (beklenen 200, gelen 409)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-iptal/mutasyon-P3.log",
+  "klasor": "/home/user/wt/iptal",
+  "ham_cikti_sha256": "62da0a803a41f735dd06c3d8bd42a560044ddb89f9bd4cd7e229a3ee179d9691",
+  "ham_cikti_bayt": 13583
+}

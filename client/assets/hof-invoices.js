@@ -2408,6 +2408,7 @@
         ${fact("Adres", esc([party.address, party.district, party.city].filter(Boolean).join(", ")))}
         ${fact("Belge Türü", esc(doc.eStatus === "withdrawn" ? "Müşteri Fişi (e-Belge olarak gönderilmedi)" : profileText))}
         ${fact("e-Belge", doc.sendBlock ? `<span class="hof-inv-warn">${esc(doc.sendBlock)}</span>` : doc.eStatus === "waiting" ? "Gönderilecekler'de: numara entegratöre gönderilirken verilir." : edoc() && doc.eUnsent ? `<span class="hof-inv-warn">${doc.eStatusLabel === "Sonucu Belirsiz" ? "Son gönderimin sonucu belirsiz: önce Durum Sorgula'ya basın." : "Numara aldı ama entegratöre ulaşmadı; Gönderilecekler'de bekliyor. e-Belge Gönder ile ya da Gönderilecekler'den (Tümünü Gönder) gönderin."}</span>` : "")}
+        ${fact("Son İptal Günü", doc.status === "issued" && doc.cancelWindow ? (doc.cancelWindow.late ? `<span class="hof-inv-warn">Süre Doldu (en geç ${esc(HOF.formatDate(doc.cancelWindow.lastDay))})</span>` : esc(doc.cancelDeadline || "")) : "")}
         ${fact("Para Birimi", cur !== "TRY" ? `${esc(cur)} · kur ${esc(String(doc.rate).replace(".", ","))}` : "")}
         ${fact("Asıl Fatura", doc.originalId ? `<a href="#" data-open-invoice="${esc(doc.originalId)}">${esc(doc.originalNumber || "")}</a> · ${esc(HOF.formatDate(doc.originalDate))}` : "")}
         ${fact("Sipariş", doc.orderNo ? `${esc(doc.orderNo)}${doc.orderDate ? ` · ${esc(HOF.formatDate(doc.orderDate))}` : ""}` : "")}
