@@ -1,0 +1,70 @@
+A) 2 eski seçilmemiş + 3 yeni seçili — soru gönderimden ÖNCE; Vazgeç → hiçbir şey; Ekle → 5 belge sırayla
+  ✓ seçim yokken Seçilenleri Gönder görünmez
+  ✓ düğme seçilen 3 belge (Seçilenleri Gönder (3))
+    [soru] "Önce Daha Eski Tarihli Belgeler Gönderilmeli" → Enter (kullanıcı Enter'a basar: odak Vazgeç'te, hiçbir belge gitmemeli)
+  ✓ soru başlığı "Önce Daha Eski Tarihli Belgeler Gönderilmeli" (Önce Daha Eski Tarihli Belgeler Gönderilmeli)
+  ✗ varsayılan odak Vazgeç düğmesinde (yes)
+  ✓ soru eski belge sayısını söyler (Seçilen 3 belgeyle aynı seride, seçilmemiş ve daha eski tarihli 2 belge Gönderilecekler'de bekliyor (Perakende 1 12.06.2026, Perakende 2 13.06.2026). e-Belge numarası tarih sırasıyla verilir: seçilenl)
+  ✓ soru eski belgelerin carisini ve tarihini söyler (Seçilen 3 belgeyle aynı seride, seçilmemiş ve daha eski tarihli 2 belge Gönderilecekler'de bekliyor (Perakende 1 12.06.2026, Perakende 2 13.06.2026). e-Belge numarası tarih sırasıyla verilir: seçilenler önce numara alırsa bu belgeler e-Belge olarak gönderileme)
+  ✓ Vazgeç: EDM'ye gönderim yok (0)
+  ✗ Vazgeç: yalnız ön denetim isteği (2)
+  ✗ Vazgeç: hiçbir belge numara almadı
+  ✗ Vazgeç bildirimi ()
+  ✗ seçim korunur
+✗ beklenmeyen hata: page.click: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible .hof-invoices-modal [data-act="send-selected"]')[22m
+[2m    - locator resolved to <button disabled type="button" aria-busy="true" data-send-progress="" data-act="send-selected" class="hof-button hof-button-small">Gönderiliyor: 0 / 5</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is not enabled[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is not enabled[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    3 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is not enabled[22m
+[2m    - retrying click action[22m
+[2m      - waiting 500ms[22m
+[2m    - waiting for element to be visible, enabled and stable[22m
+[2m  - element was detached from the DOM, retrying[22m
+[2m    - locator resolved to <button disabled type="button" aria-busy="true" data-send-progress="" data-act="send-selected" class="hof-button hof-button-small">Gönderiliyor: 0 / 5</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is not enabled[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is not enabled[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is not enabled[22m
+[2m    - retrying click action[22m
+[2m      - waiting 500ms[22m
+[2m    - waiting for element to be visible, enabled and stable[22m
+[2m  - element was detached from the DOM, retrying[22m
+[2m    - locator resolved to <button disabled type="button" aria-busy="true" data-send-progress="" data-act="send-selected" class="hof-button hof-button-small">Gönderiliyor: 0 / 5</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is not enabled[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is not enabled[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    - waiting for element to be visible, enabled and stable[22m
+[2m    - element is not enabled[22m
+[2m  - retrying click action[22m
+[2m    - waiting 500ms[22m
+[2m    - waiting for element to be visible, enabled and stable[22m
+[2m  - element was detached from the DOM, retrying[22m
+
+    at /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ui-son/ui-son-eski-9950526/test/e2e/gg244-secilenleri-gonder.mjs:147:14
+  ekran görüntüsü: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ui-son/ui-son-eski-9950526/test/e2e/artifacts/gg244-secilenleri-gonder-hata.png
+  ✓ sayfa hatası yok
+
+✗ gg244-secilenleri-gonder: 7 geçti, 6 kaldı

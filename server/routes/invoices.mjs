@@ -877,6 +877,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const fee = row.status === "issued" ? bankFeeOf(row.id) : null;
     if (fee) return bankFeeText(fee);
     if (activeReturns) return `Bu faturanın ${activeReturns} iade faturası var; düzenlenmez. Önce iadeleri iptal edin.`;
+    // Kâğıt makbuz olarak bırakılmış e-SMM (MM4 alt kararı): e-SMM kullanıcısı kâğıt makbuz düzenlemez (profileFor kuralı; kayıt 400 dönüyordu) —
+    // kartta Düzenle pasif, nedeni yazılı ("pasif düğmenin nedeni görünür yazı"). Kural değişmez; yalnız önceden söylenir.
+    if (row.kind === "smm" && row.eStatus === "withdrawn" && row.profile === "KAGIT" && esmmEnabled && settings().esmm) return "Bu makbuz kâğıt makbuz olarak bırakıldı; e-SMM kullanıcısı kâğıt serbest meslek makbuzu düzenlemez. Yanlışsa İptal Et ile iptal edip e-SMM olarak yeniden kesin.";
     // 2.4.4 (mali müşavir MM11): makbuzdan iade belgesi olmaz — gönderilmiş e-SMM yalnız İptal Et ile (iletimden 8 gün) düzeltilir.
     if (E_SENT.has(row.eStatus)) return row.kind === "smm" ? `Bu makbuz e-SMM olarak ${(E_STATES[row.eStatus] || "gönderildi").toLocaleLowerCase("tr-TR")}; düzenlenmez. Yanlışsa İptal Et ile iptal edip yeniden kesin (makbuzdan iade belgesi olmaz).` : `Bu belge e-Belge olarak ${(E_STATES[row.eStatus] || "gönderildi").toLocaleLowerCase("tr-TR")}; düzenlenmez. İptal ya da iade faturasıyla düzeltin.`;
     if (uncertainSend(row)) return UNCERTAIN_TEXT;
@@ -2770,6 +2773,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     // çıkmadan. Düzenle'de (existingId kayıtlı belge) Düzenle kuralı; taslak ve yeni belge yeni belge kuralıyla.
     const edited = editedId ? store.get("SELECT id FROM invoices WHERE id = ? AND status = 'issued' AND kind = ?", editedId, doc.kind) : null;
     const numbering = numberingCheck(doc, edited ? invoiceRow(edited.id) : null);
+    // Alıcı denetimi bir kez (partyProblems = partyIssues'un metinleri; kayıt ve gönderim denetimi aynı fonksiyondan).
+    const buyerIssues = doc.profile === "KAGIT" ? [] : partyIssues(doc.party, { profile: buyerProfileOf(doc.profile), role: "buyer", payable: c2(doc.money.payable) });
     ok(res, {
       kind: doc.kind,
       profile: doc.profile,
@@ -2784,9 +2789,12 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       try: { net: c2(doc.money.net), vat: c2(doc.money.vat), withheld: c2(doc.money.withheld), stoppage: c2(doc.money.stoppage), payable: c2(doc.money.payable) },
       amountInWords: amountInWords(c2(t.payable), doc.currency),
       party: doc.party,
-      partyProblems: doc.profile === "KAGIT" ? [] : partyProblems(doc.party, { profile: buyerProfileOf(doc.profile), role: "buyer", payable: c2(doc.money.payable) }),
+      partyProblems: buyerIssues.map(issue => issue.text),
       // 2.4.4 (uzman UX9): sorunların cari kartındaki alanları — fatura formu "Cariyi Düzenle"de bunları zorunlu işaretler (denetimin kendisi değişmez).
-      partyFields: doc.profile === "KAGIT" ? [] : [...new Set(partyIssues(doc.party, { profile: buyerProfileOf(doc.profile), role: "buyer", payable: c2(doc.money.payable) }).map(issue => issue.field))],
+      partyFields: [...new Set(buyerIssues.map(issue => issue.field))],
+      // 31f U5: sorunlardan biri kimliği bilinmeyen alıcının (11111111111) tutar sınırı mı — form "gerçek alıcı gerekir" ipucunu YALNIZ o zaman yazar;
+      // öbür eksiklerde (il, ad…) 11111111111'li caride de "Cariyi Düzenle" çıkar. Sınırın kendisi (ANONYMOUS_LIMIT) değişmez.
+      partyLimit: buyerIssues.some(issue => issue.limit),
       warnings: docWarnings(doc),
       sellerProblems: doc.profile === "KAGIT" || !doc.meta.own ? [] : sellerProblems(doc.profile, doc.settings),
       dueDays: Number(doc.account.dueDays) || Number(doc.settings.defaults.dueDays) || 0,

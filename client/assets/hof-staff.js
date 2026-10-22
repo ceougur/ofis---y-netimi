@@ -14,7 +14,8 @@
   const moneyInput = minor => (Number(minor) ? new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(minor) / 100) : "");
   const day = iso => (iso ? `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}` : "—");
   const ibanText = value => String(value || "").replace(/(.{4})/g, "$1 ").trim();
-  const fold = value => String(value ?? "").toLocaleLowerCase("tr-TR").replace(/\s+/g, " ").trim();
+  // 31f U10: Türkçe harf duyarsız arama ("ayse" → "Ayşe") — programın ortak katlaması.
+  const fold = value => HOF.fold(value);
   const digits = value => String(value ?? "").replace(/\D+/g, "");
   const canManage = () => HOF.can("staff.manage");
 
@@ -49,14 +50,19 @@
       .map(item => `<tr data-staff-id="${esc(item.id)}" tabindex="0" class="hof-staff-row"><td><b>${esc(item.fullName)}</b>${item.hasPhoto ? ' <small class="hof-staff-photo-mark" title="Fotoğraf var">▣</small>' : ""}${item.leaving ? ` <span class="hof-chip hof-chip-high" data-staff-leaving title="Ayrılış günü gelince Ayrılanlar'a geçer.">Ayrılacak · ${esc(day(item.leaveDate))}</span>` : ""}</td><td>${esc(item.position || "—")}</td><td class="num">${item.age ?? "—"}</td><td>${esc(item.phone || "—")}</td><td>${esc(day(item.hireDate))}</td>${left ? `<td>${esc(day(item.leaveDate))}</td>` : ""}<td class="num">${item.usedLeaveDays ? `${item.usedLeaveDays} Gün` : "—"}</td><td class="num">${item.salaryMinor ? esc(money(item.salaryMinor)) : "—"}</td></tr>`)
       .join("");
     const span = left ? 8 : 7;
-    const empty = !all.length
+    const empty = !all.length && !view.q
       ? left
         ? "Ayrılan personel yok. Bir çalışanın kartına İşten Ayrılış Tarihi yazılınca (ileri tarihliyse o gün gelince) burada görünür."
         : `Henüz çalışan kartı yok.${canManage() ? " + Yeni Personel ile ekleyin." : ""}`
       : "Aramaya uyan personel yok.";
+    // 31f U10: bu sekmede sonuç yokken öbür sekmede (Çalışanlar / Ayrılanlar) varsa söylenir ve oraya geçilir (arama korunur).
+    const otherTab = left ? "active" : "left";
+    const otherHits = view.q && !rows.length ? (view.data?.items || []).filter(item => item.status === otherTab && matches(item, view.q)).length : 0;
+    const otherName = otherTab === "left" ? "Ayrılanlar" : "Çalışanlar";
+    const otherHtml = otherHits ? ` <span data-staff-other>${esc(`${otherName}'da ${otherHits.toLocaleString("tr-TR")} sonuç var.`)} <button type="button" class="hof-link-button" data-staff-goto="${otherTab}">${esc(`${otherName}'a Geç`)}</button></span>` : "";
     const total = rows.reduce((sum, item) => sum + (Number(item.salaryMinor) || 0), 0);
     const foot = rows.length ? `<tfoot><tr class="hof-staff-total"><td colspan="${span - 1}"><b>TOPLAM</b> · ${rows.length.toLocaleString("tr-TR")} Personel</td><td class="num"><b>${esc(money(total))}</b></td></tr></tfoot>` : "";
-    return `<div class="hof-staff-table" style="overflow:auto"><table class="hof-table"><thead>${head}</thead><tbody>${body || `<tr><td colspan="${span}" class="hof-empty" data-staff-empty>${esc(empty)}</td></tr>`}</tbody>${foot}</table></div>`;
+    return `<div class="hof-staff-table" style="overflow:auto"><table class="hof-table"><thead>${head}</thead><tbody>${body || `<tr><td colspan="${span}" class="hof-empty" data-staff-empty>${esc(empty)}${otherHtml}</td></tr>`}</tbody>${foot}</table></div>`;
   }
 
   function toolbarHtml() {
@@ -115,13 +121,14 @@
       onOpen: modal => {
         modal.dialog.classList.add("hof-staff-modal");
         modal.dialog.addEventListener("click", event => {
-          const tab = event.target.closest("[data-staff-tab]");
+          const tab = event.target.closest("[data-staff-tab], [data-staff-goto]");
           if (tab) {
-            view.tab = tab.dataset.staffTab;
+            view.tab = tab.dataset.staffTab || tab.dataset.staffGoto;
             const content = modal.dialog.querySelector("[data-staff-content]");
             if (view.tab === "performance") content.innerHTML = "";
             else if (!content.querySelector("[data-q]")) content.innerHTML = "";
-            renderBody();
+            // "…'a Geç" düğmesi yeniden çizimle kalkar; odak arama kutusuna (BODY'ye düşmez).
+            renderBody().then(() => tab.dataset.staffGoto && modal.dialog.querySelector("[data-q]")?.focus());
             return;
           }
           if (event.target.closest('[data-staff-act="new"]')) return void openForm(null);

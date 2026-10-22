@@ -3,7 +3,7 @@
 // KURAL: seride daha yeni tarihli numaralı belge varken eski tarih, elle yazılan numaranın aynı caride kayıtlı olması ve dönem kilidi formun Toplamlar
 // kutusunda (ön hesap) görünür; Kaydet / Kaydet ve Gönder / Kes, Sonra Gönder numaralı onayı AÇMAZ, neden form satırında yazar; belge yazılmaz, EDM'ye
 // istek gitmez. Seride daha eski tarihli gönderilmemiş belge varken onay numara göstermez, belgenin numarasız Gönderilecekler'e gireceğini söyler.
-//   A. Geriye tarih (e-Arşiv TEA): uyarı + sıradaki numara gizli; Kaydet ve Gönder ve Kes, Sonra Gönder onay açmaz.
+//   A. Geriye tarih (e-Arşiv TEA): uyarı + sıradaki numara gizli; Kaydet ve Gönder ve Kes, Sonra Gönder onay açmaz; odak Tarih alanında (31f U7a).
 //   B. Tarih düzeltilince uyarı kalkar; onay "TEA…002 numarasıyla" der; kaydedilen numara o.
 //   C. Daha eski bekleyen varken (O1): onay numara göstermez, "numarasız Gönderilecekler'e eklenecek" der; belge numarasız kaydedilir.
 //   D. İki kullanıcı: form açıkken (uyarı yok) başka kullanıcı daha yeni tarihli e-Fatura kaydeder; Kaydet ve Gönder onaydan önce söyler.
@@ -193,6 +193,10 @@ try {
     ok(!shown, `${label}: numaralı onay açılmadı`);
     if (shown) await answer(false, "eski kod: onay çakışmayı söylemeden açıldı — kaydetme");
     ok((await formError()).includes(`Fatura kaydedilemez: ${expectA}`), `${label}: neden form satırında (${(await formError()).slice(0, 200)})`);
+    // 31f U7a: odak çakışmanın alanında (Tarih); önceden pasifleşen düğmeden BODY'ye düşüyordu.
+    await page.waitForTimeout(300);
+    const where = await page.evaluate(() => (document.activeElement === document.body ? "BODY" : document.activeElement?.dataset?.f || document.activeElement?.tagName || "yok"));
+    ok(where === "issueDate", `${label}: odak Tarih alanında (${where})`);
   }
   ok(count() === nA && sends() === sA, `belge yazılmadı, EDM'ye istek yok (${count() - nA}, ${sends() - sA})`);
 

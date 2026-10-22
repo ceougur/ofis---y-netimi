@@ -198,6 +198,9 @@ try {
   await page.click("[data-invoices] [data-restore-notice] [data-act=restore-notice-dismiss]");
   await page.waitForFunction(() => !document.querySelector("[data-invoices] [data-restore-notice]"), null, { timeout: 15000 }).catch(() => null);
   ok((await noticeText()) === "", "Uyarıyı Kapat → uyarı kalktı");
+  // 31f U7c: düğme yeniden çizimle kalkar; odak BODY'ye düşmez, listenin ilk işine ("+ Yeni Fatura") geçer.
+  const afterDismiss = await page.evaluate(() => (document.activeElement === document.body ? "BODY" : `${document.activeElement?.dataset?.act || document.activeElement?.tagName}|${(document.activeElement?.textContent || "").trim().slice(0, 30)}`));
+  ok(/^new\|\+ Yeni Fatura/.test(afterDismiss), `Uyarıyı Kapat → odak “+ Yeni Fatura”da (${afterDismiss})`);
   await shot("fatura-uyari-kapatildi-002");
   await escClose(page, { expect: "soru-yok", step: "Fatura kapat (002, kapatıldı)" });
   await openInvoices(second.id);

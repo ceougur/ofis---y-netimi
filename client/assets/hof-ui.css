@@ -225,6 +225,17 @@ html.hof-auth-required #root {
   height: 17px;
   accent-color: var(--do-accent);
 }
+/* 31f (G6): açıklamalı onay kutusu — açıklama kutunun hemen altında, kutunun metniyle hizalı. */
+.hof-check-field {
+  display: grid;
+  gap: 4px;
+}
+.hof-check-field small {
+  padding-left: 26px;
+  color: var(--do-faint);
+  font-size: 12px;
+  font-weight: 500;
+}
 .hof-password {
   position: relative;
   display: block;

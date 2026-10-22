@@ -75,5 +75,24 @@ describe("uiux-244 UX9 sunucu", () => {
     assert.deepEqual(earsiv.partyFields, ["city"], `ilsiz e-Arşiv: ${JSON.stringify(earsiv.partyProblems)}`);
     assert.deepEqual(earsiv.partyProblems, ["Cari (alıcı): il zorunludur (adres)."]);
     assert.deepEqual((await calc(tam.data.id)).partyFields, []);
+    assert.equal((await calc(ilsiz.data.id)).partyLimit, false, "tutar sınırı sorunu yok");
+    // 31f U5: 11111111111'li ama ili eksik cari, sınırın altında — sorun il, partyLimit false (form "Cariyi Düzenle" gösterir); sınır aşılınca true.
+    const anon = await api.post("/api/workspace/accounts", { name: "Eksik İl Danışmanlık", type: "customer", partyKind: "person", taxNo: "11111111111", address: "Gazi Cd. 7" });
+    assert.equal(anon.status, 200);
+    const small = await calc(anon.data.id);
+    assert.deepEqual(small.partyProblems, ["Cari (alıcı): il zorunludur (adres)."], "600 TL: asıl eksiklik il");
+    assert.equal(small.partyLimit, false, "600 TL: tutar sınırı sorunu değil");
+    assert.deepEqual(small.partyFields, ["city"]);
+    const big = await api.post("/api/workspace/invoices/calc", { kind: "sale", scenario: "service_sale", accountId: anon.data.id, issueDate: "2026-11-16", issueTime: "10:00", lines: [{ name: "Danışmanlık", qty: "1", unitPrice: "30000", vatRate: 20 }] });
+    assert.equal(big.status, 200);
+    assert.equal(big.data.partyLimit, true, "36.000 TL: tutar sınırı aşıldı");
+    assert.ok(big.data.partyProblems.some(item => /30\.000 TL üstü/.test(item)) && big.data.partyProblems.includes("Cari (alıcı): il zorunludur (adres)."), JSON.stringify(big.data.partyProblems));
+  });
+
+  test("partyIssues: tutar sınırından doğan sorunlar limit işaretli, öbürleri değil (31f U5)", () => {
+    const party = { name: "Nihai Tüketici", taxNo: "11111111111", partyKind: "person" };
+    const issues = taxId.partyIssues(party, { profile: "EARSIV", payable: 40_000 });
+    assert.deepEqual(issues.map(issue => [issue.field, Boolean(issue.limit)]), [["city", false], ["taxNo", true], ["address", true]]);
+    assert.ok(taxId.partyIssues(party, { profile: "EARSIV", payable: 600 }).every(issue => !issue.limit));
   });
 });

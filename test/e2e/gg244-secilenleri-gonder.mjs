@@ -2,7 +2,7 @@
 // çıkmaz; her gönderim 900 ms), sahte saat (ders 13).
 // KURAL: e-Belge numarası seri + yıl içinde tarih sırasıyla verilir; seçilmemiş daha eski tarihli bekleyen varken seçilen yenisi numara alamaz → düğme bunu
 // gönderimden ÖNCE sorar ("Önce Daha Eski Tarihli Belgeler Gönderilmeli": Onları da Ekle ve Gönder / Vazgeç); sessiz atlama ya da yarım tur yok.
-//   A. 2 eski seçilmemiş + 3 yeni seçili: düğme (3); basınca soru; Vazgeç → EDM'ye 0 gönderim, numara yok, bilgi bildirimi; yeniden bas → Ekle → 5 belge
+//   A. 2 eski seçilmemiş + 3 yeni seçili: düğme (3); basınca soru (varsayılan odak Vazgeç'te — 31f; Enter ile yanıtlanır); Vazgeç → EDM'ye 0 gönderim, numara yok, bilgi bildirimi; yeniden bas → Ekle → 5 belge
 //      gider, numara = tarih sırası, her biri bir kez; gönderim sürerken Tümünü Gönder de basılamaz, ilerleme Seçilenleri Gönder'de.
 //   B. Eski belge yokken soru yok: "N Belge Gönderilsin mi?" → yalnız seçilenler gider; seçilmeyen bekler.
 //   C. Sayı yalnız gönderilebilirleri sayar: Tüm sekmesinde gönderilmiş, iptal edilmiş ve kalıcı engelli bekleyen seçilse de (1); onayda kalıcı engelli
@@ -88,14 +88,20 @@ const clearToasts = () => page.evaluate(() => document.querySelectorAll(".hof-to
 const selButton = `${pageInv} [data-act="send-selected"]`;
 const allButton = `${pageInv} [data-act="send-pending"]`;
 // Ders 34: test her soruyu/onayı kendisi yanıtlar ve nedenini yazar; beklenen soru gelmezse kırmızı.
-const answer = async (expectTitle, yes, why) => {
+// enter: true — yanıt fareyle değil Enter ile (varsayılan odaktaki düğme; 31f: kapsam genişleten soruda odak Vazgeç'te olmalı).
+const answer = async (expectTitle, yes, why, { enter = false } = {}) => {
   const handle = await page.waitForSelector(`${dialog} [data-answer="yes"]`, { timeout: 8000 }).catch(() => null);
   if (!handle) return ok(false, `beklenen soru çıkmadı: "${expectTitle}"`) && null;
   const title = (await page.textContent(`${dialog} .hof-modal-title, ${dialog} h2`).catch(() => "")) || "";
   const text = (await page.textContent(`${dialog} .hof-modal-text`).catch(() => "")) || "";
-  console.log(`    [soru] "${title.trim()}" → ${yes ? "Evet" : "Vazgeç"} (${why})`);
+  console.log(`    [soru] "${title.trim()}" → ${enter ? "Enter" : yes ? "Evet" : "Vazgeç"} (${why})`);
   ok(new RegExp(expectTitle).test(title), `soru başlığı "${expectTitle}" (${title.trim()})`);
-  await page.click(`${dialog} [data-answer="${yes ? "yes" : "no"}"]`);
+  if (enter) {
+    await sleep(300);
+    const at = await page.evaluate(() => document.activeElement?.dataset?.answer || document.activeElement?.tagName || "yok");
+    ok(at === (yes ? "yes" : "no"), `varsayılan odak ${yes ? "onay" : "Vazgeç"} düğmesinde (${at})`);
+    await page.keyboard.press("Enter");
+  } else await page.click(`${dialog} [data-answer="${yes ? "yes" : "no"}"]`);
   return text;
 };
 const check = async id => {
@@ -126,7 +132,8 @@ try {
   let before = sends();
   let reqBefore = requests;
   await page.click(selButton);
-  const asked = await answer("Önce Daha Eski Tarihli Belgeler Gönderilmeli", false, "kullanıcı vazgeçer: hiçbir belge gitmemeli");
+  // 31f: soru kapsamı genişletir (seçilmemiş belgeler de gider) — Enter'a basan kullanıcı Vazgeç'i seçmiş olur.
+  const asked = await answer("Önce Daha Eski Tarihli Belgeler Gönderilmeli", false, "kullanıcı Enter'a basar: odak Vazgeç'te, hiçbir belge gitmemeli", { enter: true });
   ok(asked && /daha eski tarihli 2 belge Gönderilecekler'de bekliyor/.test(asked), `soru eski belge sayısını söyler (${String(asked).slice(0, 200)})`);
   ok(asked && /Perakende 1 12\.06\.2026, Perakende 2 13\.06\.2026/.test(asked), `soru eski belgelerin carisini ve tarihini söyler (${String(asked).slice(0, 260)})`);
   await sleep(500);

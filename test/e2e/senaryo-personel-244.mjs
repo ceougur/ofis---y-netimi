@@ -2,7 +2,8 @@
 //  1. Boş veri: Personel Raporu → kartlar 0, "Henüz çalışan kartı yok".
 //  2. "+ Yeni Personel": bütün alanlar + fotoğraf → kayıttan sonra veri tabanı (API) okunur, alanlar birebir (ders 12).
 //  3. Aynı adlı iki çalışan (Mehmet Kaya ×2) iki ayrı satır; kartlar Toplam Maaş / Kayıtlı / Aktif / Ayrılan sayılarla.
-//  4. Arama: ad (Türkçe küçük harf), TC No rakamları, görev; aramaya uymayan → "Aramaya uyan personel yok".
+//  4. Arama: ad (Türkçe küçük harf; "ayse"/"AYŞE" de — 31f U10), TC No rakamları, görev; aramaya uymayan → "Aramaya uyan personel yok".
+//     6'da: Çalışanlar'da sonuç yokken Ayrılanlar'daki sonuç söylenir ("Ayrılanlar'a Geç"; 31f U10).
 //  5. Kart: yalnız Personel Özeti (Evrak Listesi, Maaş Bordrosu, CV, İletişim YOK); Yaş Doğum Tarihi'nden (35).
 //  6. Düzenle → İşten Ayrılış Tarihi → kart Ayrılanlar'a geçer; kartlar ve Toplam Maaş (yalnız aktif) değişir; tarih silinince Çalışanlar'a döner.
 //  7. Geçersiz TC No ekranda hata + odak TC No alanında; kayıt yazılmaz.
@@ -197,6 +198,12 @@ try {
     const search = `${WIN} [data-q]`;
     await typeInto(search, "ayşe");
     ok((await rows()).length === 1 && (await rows())[0].startsWith("Ayşe Yılmaz"), "\"ayşe\" → Ayşe Yılmaz");
+    // 31f U10: Türkçe harf duyarsız (programın ortak katlaması HOF.fold). Sorgular yalnız adla eşleşir ("ayse" tek başına e-postadan da tutar — ders 38).
+    for (const query of ["ayse yilmaz", "AYSE YILMAZ", "yilmaz"]) {
+      await typeInto(search, query);
+      const found = await rows();
+      ok(found.length === 1 && found[0].startsWith("Ayşe Yılmaz"), `"${query}" → Ayşe Yılmaz (${found.join(" | ") || "sonuç yok"})`);
+    }
     await typeInto(search, "1000000014");
     ok((await rows()).length === 1, "TC No rakamlarıyla bulunur");
     await typeInto(search, "kurye");
@@ -247,6 +254,27 @@ try {
     ok(headers.includes("İşten Ayrılış Tarihi") && (await page.$eval(`${WIN} tbody tr[data-staff-id]`, node => node.textContent)).includes("30.09.2026"), "Ayrılanlar'da ayrılış tarihi kolonu 30.09.2026");
     ok(dbRows().find(row => row.full_name === "Ayşe Yılmaz").leave_date === "2026-09-30", "veri tabanında ayrılış tarihi");
     await shot("ayrilanlar");
+    // 31f U10: Çalışanlar'da arama sonuç vermezken Ayrılanlar'da varsa söylenir; düğmeyle oraya geçilir, arama korunur, odak arama kutusunda.
+    await page.click(`${WIN} [data-staff-tab="active"]`);
+    await page.waitForTimeout(300);
+    await typeInto(`${WIN} [data-q]`, "ayse");
+    const emptyText = await page.$eval(`${WIN} [data-staff-empty]`, node => node.textContent.replace(/\s+/g, " ").trim()).catch(() => "");
+    ok(/Aramaya uyan personel yok\./.test(emptyText) && /Ayrılanlar'da 1 sonuç var\./.test(emptyText), `Çalışanlar'da "ayse": öbür sekme söylenir (${emptyText})`);
+    const goto = await page.$(`${WIN} [data-staff-goto="left"]`);
+    ok(Boolean(goto) && (await goto.textContent()).trim() === "Ayrılanlar'a Geç", "\"Ayrılanlar'a Geç\" düğmesi");
+    if (goto) {
+      await goto.click();
+      await page.waitForTimeout(400);
+      const moved = await rows();
+      ok(moved.length === 1 && moved[0].startsWith("Ayşe Yılmaz") && (await page.$eval(`${WIN} [data-staff-tab="left"]`, node => node.getAttribute("aria-selected"))) === "true", `Ayrılanlar'a geçildi, Ayşe Yılmaz listede (${moved.join(" | ")})`);
+      ok((await page.$eval(`${WIN} [data-q]`, node => node.value)) === "ayse" && (await page.evaluate(() => document.activeElement?.hasAttribute("data-q"))), "arama korundu, odak arama kutusunda");
+    }
+    await typeInto(`${WIN} [data-q]`, "bulunmayan");
+    ok(!(await page.$(`${WIN} [data-staff-other]`)), "iki sekmede de sonuç yoksa öbür sekme ipucu yok");
+    await page.fill(`${WIN} [data-q]`, "");
+    await page.dispatchEvent(`${WIN} [data-q]`, "input");
+    if (!(await page.$eval(`${WIN} [data-staff-tab="left"]`, node => node.getAttribute("aria-selected") === "true"))) await page.click(`${WIN} [data-staff-tab="left"]`);
+    await page.waitForTimeout(300);
     await page.click(`${WIN} tr[data-staff-id]`);
     await page.waitForSelector('.hof-staff-card-modal [data-staff-card-act="edit"]');
     await page.click('.hof-staff-card-modal [data-staff-card-act="edit"]');

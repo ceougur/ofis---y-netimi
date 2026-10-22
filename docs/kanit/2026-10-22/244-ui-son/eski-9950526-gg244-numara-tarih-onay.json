@@ -1,0 +1,48 @@
+{
+  "ad": "244-ui-son/eski-9950526-gg244-numara-tarih-onay",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ui-son/ui-son-eski-9950526/test/e2e/gg244-numara-tarih-onay.mjs",
+  "commit": "99505264d4a99189642e711f12ba00cb8ea48b70",
+  "dal": "is/ui-son",
+  "kirli": 15,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T22:46:22.820Z",
+  "sure_sn": 53.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 40,
+    "gecen": 38,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Kaydet ve Gönder: odak Tarih alanında (BODY)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Kes, Sonra Gönder: odak Tarih alanında (BODY)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "gg244-numara-tarih-onay: 38 geçti, 2 kaldı",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ui-son/eski-9950526-gg244-numara-tarih-onay.log",
+  "klasor": "/home/user/wt/ui-son",
+  "ham_cikti_sha256": "4da04dc43c848e84b27c12e08ddbd2aecd060d9d935d80d2e91a0d58470470d4",
+  "ham_cikti_bayt": 5299
+}

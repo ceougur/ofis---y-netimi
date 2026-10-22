@@ -61,7 +61,8 @@ export function partyIssues(party, { profile: given = "KAGIT", role = "buyer", p
   const profile = given === "ESMM" ? "EARSIV" : given;
   const docName = given === "ESMM" ? "e-SMM" : profile === "EFATURA" ? "e-Fatura" : "e-Arşiv";
   const issues = [];
-  const add = (field, text) => issues.push({ field, text });
+  // limit: true — sorun alanın kendisinden değil, kimliği bilinmeyen alıcının (11111111111) tutar sınırından doğar (fatura formu ipucu buna göre: 31f U5).
+  const add = (field, text, limit = false) => issues.push(limit ? { field, text, limit } : { field, text });
   const id = classifyTaxId(party.taxNo, { allowAnonymous: role === "buyer" && profile === "EARSIV" });
   if (party.taxNo && !id.ok) add("taxNo", `${who}: vergi kimlik numarası geçersiz (${id.value.length === 10 ? "VKN denetim hanesi tutmuyor" : id.value.length === 11 ? "TCKN denetim hanesi tutmuyor" : "VKN 10, TCKN 11 hane olmalı"}).`);
   if (party.partyKind === "company" && party.taxNo && id.kind === "tckn" && id.value !== ANONYMOUS_TCKN) add("taxNo", `${who}: tüzel kişide vergi kimlik numarası (VKN, 10 hane) yazılır.`);
@@ -72,8 +73,8 @@ export function partyIssues(party, { profile: given = "KAGIT", role = "buyer", p
   if (!String(party.name || "").trim()) add("name", `${who}: unvan / ad soyad zorunludur.`);
   if (!String(party.city || "").trim()) add("city", `${who}: il zorunludur (adres).`);
   if (role === "seller" && !String(party.taxOffice || "").trim()) add("taxOffice", `${who}: vergi dairesi zorunludur.`);
-  if (role === "buyer" && profile === "EARSIV" && id.value === ANONYMOUS_TCKN && Number(payable) > ANONYMOUS_LIMIT) add("taxNo", `${who}: ${ANONYMOUS_LIMIT.toLocaleString("tr-TR")} TL üstü ${given === "ESMM" ? "e-SMM makbuzunda" : "e-Arşiv faturada"} nihai tüketicinin gerçek TC kimlik numarası, adı soyadı ve adresi zorunludur (11111111111 yazılamaz).`);
-  if (role === "buyer" && profile === "EARSIV" && id.value === ANONYMOUS_TCKN && Number(payable) > ANONYMOUS_LIMIT && !String(party.address || "").trim()) add("address", `${who}: adres zorunludur.`);
+  if (role === "buyer" && profile === "EARSIV" && id.value === ANONYMOUS_TCKN && Number(payable) > ANONYMOUS_LIMIT) add("taxNo", `${who}: ${ANONYMOUS_LIMIT.toLocaleString("tr-TR")} TL üstü ${given === "ESMM" ? "e-SMM makbuzunda" : "e-Arşiv faturada"} nihai tüketicinin gerçek TC kimlik numarası, adı soyadı ve adresi zorunludur (11111111111 yazılamaz).`, true);
+  if (role === "buyer" && profile === "EARSIV" && id.value === ANONYMOUS_TCKN && Number(payable) > ANONYMOUS_LIMIT && !String(party.address || "").trim()) add("address", `${who}: adres zorunludur.`, true);
   if (role === "buyer" && profile === "EFATURA" && id.kind === "vkn" && !String(party.taxOffice || "").trim()) add("taxOffice", `${who}: e-Fatura'da tüzel alıcının vergi dairesi zorunludur.`);
   return issues;
 }

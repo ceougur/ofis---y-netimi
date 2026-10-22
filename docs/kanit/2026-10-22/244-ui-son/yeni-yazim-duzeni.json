@@ -1,0 +1,32 @@
+{
+  "ad": "244-ui-son/yeni-yazim-duzeni",
+  "komut": "node --test test/yazim-duzeni.test.mjs",
+  "commit": "99505264d4a99189642e711f12ba00cb8ea48b70",
+  "dal": "is/ui-son",
+  "kirli": 15,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T22:39:19.330Z",
+  "sure_sn": 0.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ui-son/yeni-yazim-duzeni.log",
+  "klasor": "/home/user/wt/ui-son",
+  "ham_cikti_sha256": "ce2c9b920c6de63c6a1450da4513f25fb0fc35451550f2d34d4d947ae1d98804",
+  "ham_cikti_bayt": 1214
+}
