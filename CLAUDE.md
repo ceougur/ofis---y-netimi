@@ -428,6 +428,35 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   ücretsiz). Y16 — CLAUDE.md ölçek koşusu (10/20 kullanıcı, 100.000 satır) "temel sürümde"; iş listesinde yok → ÖNERİ 2.4.4 yama sürümü sayılır (2.1.0 ölçümleri
   geçerli), ölçek koşusu temel sürüm 2.5.0'da (Devir). Yargıcın öbür bulguları (Y1 tam test CI #862'den, Y2 CI dışı 14 senaryo son adayda koşuyor, Y3 göç karşılaştırması
   yeniden, Y4/Y7/Y8 31e kapsamı iş listesinde, Y6 kâhin kural kaynağı depoya, Y10–Y15 teslim notları/kılavuz/CHANGELOG) ana oturumda.
+  5 dk YETKİSİYLE UYGULANDI (21:12 UTC, yanıt yok): Y5 EVET (windows.yml PR'dan önce çalışma dalında elle iki koşu — iş listesi 32a); Y16 2.4.4 yama sürümü,
+  ölçek koşusu 2.5.0'da.
+- SORU (22.10.2026 ~21:14 UTC, 31d eleştirmen bulguları; ana oturum E1/E2/E5'i betikleriyle yeniden üretti; 5 dk kuralıyla kullanıcıya soruldu): E1 YÜKSEK —
+  gönderim EDM'ye ulaşıp yanıt gelmeden program kapanırsa belge "Gönderilmedi" görünür; Yeniden Gönder 11048 → Hata, Sil numarayı yeniden verir (EDM'deki geçerli
+  makbuz programdan düşer), Düzenle tutarı değiştirir (e-Arşiv'de 2.4.3'te de; e-SMM yolu yeni) → ÖNERİ 2.4.4'te: ağdan önce kalıcı "gönderim başladı" izi
+  (kesintide Sonucu Belirsiz; Sil/Düzenle kapalı, Durum Sorgula önerilir) + 11048'de dönen numara belgeninse önce Durum Sorgula; E4 (iptal yanıtı kaybolunca süre
+  dolduysa EDM'ye sormadan "süre doldu") aynı kalıpla. E6 — silinen kâğıt/fiş belgenin numarası yeniden veriliyor (Silinenler'den geri yüklenince iki belge aynı
+  numara; 2.4.3'te de) → ÖNERİ numara kullanılmış sayılır (22.10 "verilmiş fiş numarası bir daha kullanılmaz" kararıyla aynı). E7 — "Yalnız Programda İptal" EDM'nin
+  kabul ettiği belgede sunucudan 200 → ÖNERİ sunucu da K4'e göre yalnız belirsiz/portal taslağında izin verir. KARAR GEREKMEYEN düzeltmeler başladı: E2 (30a gerilemesi:
+  Kalan hücresi boş satırda raporlar ayrışıyor — satır kuralı tek yardımcıda, boşsa Toplam), E3 ("Kalan Gün" gibi gün/adet sütunu borç sayılmaz), E5 (Personel'de
+  iki kişi aynı kartı düzenleyince sessiz geri alma → 409 bayat yazım).
+  5 dk YETKİSİYLE UYGULANDI (21:20 UTC, yanıt yok): E1 (+E4) 2.4.4'te, E6 numara kullanılmış sayılır, E7 sunucu K4'e göre → ajanlar is/e1, is/e67.
+- SORU → 5 dk YETKİSİYLE UYGULANDI (22.10.2026 21:21 → 21:27 UTC; 31b mali müşavir: YÜKSEK yok, iki şirkette ~30 işlemin yevmiye/mizanı el hesabıyla kuruşu kuruşuna
+  tuttu): 2.4.4'te — MM4 bırakılan kâğıt makbuzun PDF'i "Müşteri Fişi" diyor → Serbest Meslek Makbuzu + onay metninde 509 V.7 koşulu (arıza/bakımda matbu), "sonra
+  yine e-SMM gönderebilirsiniz" kalkar; MM7/MM11 makbuz formu/PDF'i fatura dilinde → GİB e-SMM adları + Net Ücret; MM10 aynı matrah/oranda KDV 40,02 / stopaj 40,01
+  → tek yuvarlama kuralı; MM1 yalnız metin ("gerçek kişide stopaj varsayılan uygulanmaz; tacir/serbest meslekse girin"); MM6 Nakit Akışı Kasa giriş bütün nakit
+  hareketleri; MM3 Stopaj/Tevkifat Özeti satıştan iadeyi "bizim kestiğimiz" sayıyor → ters yön; MM8 yevmiye aynı gün sırası (ders 31). SONRAYA (2.4.5+): MM1 cari kartında
+  "Stopaj Yapar", MM2 KDV mahsubu yapılmış ayda iptal uyarısı, MM5 aynı dosya no iki sekmede borç (kural kararı), MM9, MM12; 30.000 TL nihai tüketici engeli değişmez
+  (mevzuat doğrulanamadı; kullanıcının mali müşavirine sorulur). ALT KARAR (21:28 UTC soruldu): bırakılan kâğıt makbuzun sonradan e-SMM olarak gönderilmesi kapansın
+  (öneri; müşteri fişi değişmez). → 5 dk YETKİSİYLE UYGULANDI (21:34 UTC): bırakılan kâğıt makbuz e-SMM'e gönderilmez (kalıcı engel, nedeni görünür).
+- CI #862 (50e3bd0 = aday 7) BÜTÜN İŞLER YEŞİL (22.10 ~21:40 UTC okundu): 7d, 24b, 30b, 30d, 30e, 30f çizildi; 30a (E2/U2 sürüyor) ve 30 (göç karşılaştırması
+  düzeltmelerden sonra yeniden, yargıç Y3) açık.
+- SORU → 5 dk YETKİSİYLE UYGULANDI (22.10.2026 21:34 → 21:41 UTC; 31f uzman UI/UX, ~95 adım, 111 ekran; U1'i ana oturum koddan doğruladı): (a) U2 (2.4.4 GERİLEMESİ,
+  31a F4 ile): Tablodaki Kişiler söz tutarını ve aynı dosya no'nun Kalan'ını ayrı borç sayıyor (kapalı dosya 15.000; toplam 98.000 → 198.500) + MM5 + U8 → borç DOSYA
+  NO başına tek kaynaktan (Kalan Borç), aynı dosya no farklı sekmede aynı kayıt, söz borç değil, 5b ön dolumu aynı kural (is/e23). (b) U1 YÜKSEK (2.4.3'te de): "Nihai
+  Tüketici" 11111111111'li EN ESKİ cariyi seçiyor (adı belli kişiye borç) → kendi işaretli carisi, adı belli caride 11111111111 uyarısı (is/u1). (c) 2.4.4'te U3 tablo
+  raporu çıktıları kendi adıyla + TOPLAM + bölünmeyen tutar + yerel tarih (is/mm-rapor), U4+U6 makbuz kartı "iade" metni + e-Arşiv/e-SMM tür notu görünür + onayda tür
+  adı (is/mm-smm), U5 600 TL'de yanlış "gerçek alıcı gerekir", U7 odak kayıpları, Personel Türkçe arama, Veriyi Sıfırla kırmızı, Seçilenleri Gönder güvenli odak,
+  UX17 kısmi ödenmişte kalan (ui-son, mm-smm'den sonra); SONRAYA dar pencereler, ad/yazım ayrıntıları, UI11 küçükleri.
 - İSTEKLER (kullanıcı, 22.10.2026 ~14:00–14:50 UTC; hepsi yanıtlandı): "18 numarada portalda ben ne yapacağım" → elle kabul adımları iş listesi 18 (teslimde
   kurulumla); "kalan işler için zaman çizelgesi, aynı anda yapılanları tek süre say" → verildi (devam notu ZAMAN ÇİZELGESİ); "compact talimatı vereceğim, veri kaybı
   olmasın" → devam notu 00 + ajan kayıtları yazıldı ve gönderildi (f013e57); EDM test hesabı ~14:45 UTC yeniden verildi (yalnız oturumda; dosyaya yazılmadı).
