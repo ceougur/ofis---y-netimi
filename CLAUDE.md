@@ -552,6 +552,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   DEVAM (22.10.2026): teknik@ otomatik yanıtı konu başında kayıtlı VKN/TCKN istedi; kullanıcının canlı EDM hesabı YOK → talep test portalından ("Destek Talebi
   Oluştur", test kullanıcısı adıyla) açıldı. Zip'teki belgeler (kullanıcı: "yeterli gelmiyor mu") entegrasyona yeterli, karekoda değil: örnek XML EDM'nin
   general-esmm.xslt şablonuna işaret ediyor; TEMPLATE_CONTENT iki biçimde denendi, kullanılmadı; kullanıcı portalda EDM şablonunu doğruladı.
+- KARAR (baş mimar, 22.10.2026; kullanıcının "en yaygın ve doğru uygulama" ilkesiyle — kullanıcıya bildirildi): (1) e-SMM makbuzu Gönderilecekler'den bırakılınca
+  KÂĞIT SMM serisinden numara alır, ekranda "Kâğıt Makbuz Olarak Bırak" (faturada "Müşteri Fişi Olarak Bırak" aynen) — kâhin bulgusu, is/esmm-fis 7502485; (2) verilmiş
+  kâğıt/fiş numarası (FIS, SMM) BİR DAHA KULLANILMAZ: bırakılan belge sonra e-Belge olarak gönderilse de numarası seride kullanılmış sayılır (bugün 2.4.3'ten beri
+  sıradaki bırakılan belge aynı numarayı alıyordu — esmm2 ajanının bulgusu); (3) e-Fatura/e-Arşiv/e-SMM XML'i GİB UBL-TR 1.2.1 XSD'siyle de denetlenir (EDM 11029'u
+  yerelde yakalamak için; şemalar tools/ebelge/sema/ubl-tr-1.2.1, sha256 KAYNAK.md).
 - SON ADAY BAĞIMSIZ TURU (kullanıcı, 22.10.2026: "2.4.4 son aday uzun test koşusuna başlamadan kâhin (uzman mali müşavir), yargıç, eleştirmen testlerinden geçecek mi,
   regresyon testleri yapılıyor mu?" → EVET; "ekle" → uzman UI + uzman UX de): iş listesi madde 30–31 (31a kâhin, 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol,
   31f uzman UI/UX) Uzun Doğrulama'dan ÖNCE.
