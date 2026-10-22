@@ -53,6 +53,9 @@ const must = async (label, promise) => {
   return unwrap(res);
 };
 const MODAL = ".hof-modal-backdrop.is-visible";
+// En üstteki görünür pencere: body'nin görünür pencere çocuklarının sonuncusu. `:last-of-type` kullanılmaz: pencereden sonra body'ye eklenen
+// herhangi bir div (bildirim kabı, Hızlı Arama paneli, açılır menü) onu boşa düşürür (CI #861; zorla üretme test/e2e/pencere-yaris-zorla.mjs).
+const TOP = `${MODAL}:nth-last-child(1 of ${MODAL})`;
 const WIN = ".hof-staff-modal";
 const FORM = ".hof-staff-form";
 let page = null;
@@ -93,7 +96,8 @@ const rows = async (target = page) => target.$$eval(`${WIN} [data-staff-list] tb
 const tabCount = async (tab, target = page) => (await target.$eval(`${WIN} [data-staff-tab="${tab}"]`, node => node.querySelector("b")?.textContent.trim() || "")) || "";
 const openWindow = async (target = page) => {
   await target.click('#hof-sidecard [data-action="reports"]');
-  await target.waitForSelector(`${WIN} [data-staff-kpis]`, { timeout: 15000 });
+  // Pencere görünür olana dek (is-visible bir kare sonra gelir; içerik ondan önce hazır olabilir).
+  await target.waitForSelector(`${MODAL} ${WIN} [data-staff-kpis]`, { timeout: 15000 });
   await target.waitForTimeout(300);
 };
 const closeTop = async (target = page) => {
@@ -128,8 +132,8 @@ try {
 
   await step("2. + Yeni Personel: bütün alanlar insan hızında + Tab, fotoğraf; kayıttan sonra veri tabanı birebir", async () => {
     await page.click(`${WIN} [data-staff-act="new"]`);
-    await page.waitForSelector(`${FORM} input[name="fullName"]`);
-    ok((await page.$eval(`${MODAL}:last-of-type .hof-modal-title`, node => node.textContent.trim())) === "Yeni Personel", "form başlığı Yeni Personel");
+    await page.waitForSelector(`${MODAL} ${FORM} input[name="fullName"]`);
+    ok((await page.$eval(`${TOP} .hof-modal-title`, node => node.textContent.trim())) === "Yeni Personel", "form başlığı Yeni Personel (en üstteki pencere)");
     await typeInto(`${FORM} input[name="fullName"]`, "Ayşe Yılmaz");
     await page.keyboard.press("Tab");
     await page.fill(`${FORM} input[name="birthDate"]`, "1990-10-23");
@@ -269,7 +273,10 @@ try {
     ok(dbRows().length === 3, "kayıt yazılmadı (3)");
     await shot("gecersiz-tc");
     await closeTop();
-    const leave = await page.$(`${MODAL}:last-of-type [data-answer="yes"]`);
+    // Soru BEKLENİR (ders 34): formda yazılmış, kaydedilmemiş ad ve TC var. En üstteki pencerede, görünür olana dek beklenir; çıkmazsa form açık kalır
+    // ve sonraki adımların tıklamalarını yutar.
+    const leave = await page.waitForSelector(`${TOP} [data-answer="yes"]`, { timeout: 8000 }).catch(() => null);
+    ok(Boolean(leave), "Kaydetmeden Kapat sorusu çıktı (formda kaydedilmemiş ad ve TC var)");
     if (leave) {
       console.log("  · Kaydetmeden Kapat sorusu yanıtlandı (meşru: formda yazılmış, kaydedilmemiş ad ve TC var)");
       await leave.click();
