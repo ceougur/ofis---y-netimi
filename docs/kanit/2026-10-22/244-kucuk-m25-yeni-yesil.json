@@ -1,0 +1,32 @@
+{
+  "ad": "244-kucuk-m25-yeni-yesil",
+  "komut": "node --test test/license.test.mjs test/banka-210-yetki-katalog.test.mjs",
+  "commit": "1f6ad99df7ef569af9ed772e1e8e053c216d565c",
+  "dal": "is/kucuk",
+  "kirli": 2,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T03:31:14.785Z",
+  "sure_sn": 4.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 35,
+    "gecen": 35,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kucuk-m25-yeni-yesil.log",
+  "klasor": "/home/user/wt/kucuk",
+  "ham_cikti_sha256": "dc21b7802037362e19997d4f6e23108ecd9faa10d737eec592632971cdc1a61c",
+  "ham_cikti_bayt": 10729
+}

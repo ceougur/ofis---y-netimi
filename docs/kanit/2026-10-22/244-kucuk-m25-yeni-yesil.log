@@ -1,0 +1,259 @@
+TAP version 13
+# (node:3758) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Aşama 3 — Banka ve POS yetki grubu
+    # Subtest: katalog: grup Taksitler'in ardından, 11 yetki, başlık yazımı; yerleşik roller §9.1
+    ok 1 - katalog: grup Taksitler'in ardından, 11 yetki, başlık yazımı; yerleşik roller §9.1
+      ---
+      duration_ms: 1.682432
+      type: 'test'
+      ...
+    # Subtest: salt okunurda gizlenen yazma yetkileri: banka yazma yetkileri ve invoices.manage / invoices.settings
+    ok 2 - salt okunurda gizlenen yazma yetkileri: banka yazma yetkileri ve invoices.manage / invoices.settings
+      ---
+      duration_ms: 0.126936
+      type: 'test'
+      ...
+    # Subtest: kişiye özel kaldırma rol matrisine geri düşmez (resolvePermissions)
+    ok 3 - kişiye özel kaldırma rol matrisine geri düşmez (resolvePermissions)
+      ---
+      duration_ms: 0.336255
+      type: 'test'
+      ...
+    1..3
+ok 1 - Aşama 3 — Banka ve POS yetki grubu
+  ---
+  duration_ms: 2.76028
+  type: 'suite'
+  ...
+# Subtest: Aşama 3 — yöneticinin bilinçli kararı yeniden başlatmada korunur
+    # Subtest: rol: banka yetkisi seçilmeden açılan rol ve bank.move'u kaldırılan rol yeniden başlatınca aynı kalır; işaret görünmez
+    ok 1 - rol: banka yetkisi seçilmeden açılan rol ve bank.move'u kaldırılan rol yeniden başlatınca aynı kalır; işaret görünmez
+      ---
+      duration_ms: 38.0041
+      type: 'test'
+      ...
+    # Subtest: kişi: muhasebeden bank.cancel kaldırılır → göç geri eklemez; banka bağlı satırı silemez (403)
+    ok 2 - kişi: muhasebeden bank.cancel kaldırılır → göç geri eklemez; banka bağlı satırı silemez (403)
+      ---
+      duration_ms: 100.92359
+      type: 'test'
+      ...
+    1..2
+ok 2 - Aşama 3 — yöneticinin bilinçli kararı yeniden başlatmada korunur
+  ---
+  duration_ms: 474.975936
+  type: 'suite'
+  ...
+# (node:3759) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: lisans belirteci
+    # Subtest: imzalı belirteci doğrular, değiştirilmiş veya tanınmayan anahtarla imzalanmışı reddeder
+    ok 1 - imzalı belirteci doğrular, değiştirilmiş veya tanınmayan anahtarla imzalanmışı reddeder
+      ---
+      duration_ms: 3.715873
+      type: 'test'
+      ...
+    # Subtest: biçim denetimi: deneme belirtecinin bitişi zorunlu, bilinmeyen tür ve durum reddedilir
+    ok 2 - biçim denetimi: deneme belirtecinin bitişi zorunlu, bilinmeyen tür ve durum reddedilir
+      ---
+      duration_ms: 0.573503
+      type: 'test'
+      ...
+    # Subtest: internetsiz etkinleştirme kodu zarfı taşır; bozuk kod anlaşılır hata verir
+    ok 3 - internetsiz etkinleştirme kodu zarfı taşır; bozuk kod anlaşılır hata verir
+      ---
+      duration_ms: 0.993527
+      type: 'test'
+      ...
+    # Subtest: kurulum kodu ve lisans anahtarı biçimleri
+    ok 4 - kurulum kodu ve lisans anahtarı biçimleri
+      ---
+      duration_ms: 0.567512
+      type: 'test'
+      ...
+    # Subtest: bilgisayar kimliği kalıcıdır; ham değer dışarı verilmez
+    ok 5 - bilgisayar kimliği kalıcıdır; ham değer dışarı verilmez
+      ---
+      duration_ms: 1.788781
+      type: 'test'
+      ...
+    1..5
+ok 3 - lisans belirteci
+  ---
+  duration_ms: 8.435077
+  type: 'suite'
+  ...
+# Subtest: lisans durumu (saf değerlendirme)
+    # Subtest: etkinleştirilmemiş kurulum salt okunurdur
+    ok 1 - etkinleştirilmemiş kurulum salt okunurdur
+      ---
+      duration_ms: 0.730388
+      type: 'test'
+      ...
+    # Subtest: deneme: kalan gün, son 7 günde uyarı, süre dolunca salt okunur
+    ok 2 - deneme: kalan gün, son 7 günde uyarı, süre dolunca salt okunur
+      ---
+      duration_ms: 11.387703
+      type: 'test'
+      ...
+    # Subtest: lisans: süresiz, bitişe yakın uyarı, engellenmiş lisans salt okunur
+    ok 3 - lisans: süresiz, bitişe yakın uyarı, engellenmiş lisans salt okunur
+      ---
+      duration_ms: 1.744866
+      type: 'test'
+      ...
+    # Subtest: 7 günden uzun internetsiz kalınca doğrulama ister; son 3 günde uyarır; internetsiz lisansta süre yok
+    ok 4 - 7 günden uzun internetsiz kalınca doğrulama ister; son 3 günde uyarır; internetsiz lisansta süre yok
+      ---
+      duration_ms: 1.160812
+      type: 'test'
+      ...
+    # Subtest: saat geri alınınca süre geri gelmez ve program salt okunur olur
+    ok 5 - saat geri alınınca süre geri gelmez ve program salt okunur olur
+      ---
+      duration_ms: 0.880176
+      type: 'test'
+      ...
+    # Subtest: geçiş dönemi 30 gün yazılabilir, sonra salt okunur; başka bilgisayarın lisansı sayılmaz
+    ok 6 - geçiş dönemi 30 gün yazılabilir, sonra salt okunur; başka bilgisayarın lisansı sayılmaz
+      ---
+      duration_ms: 0.270763
+      type: 'test'
+      ...
+    1..6
+ok 4 - lisans durumu (saf değerlendirme)
+  ---
+  duration_ms: 16.608835
+  type: 'suite'
+  ...
+# Subtest: lisans motoru — sunucu
+    # Subtest: yeni kurulum etkinleştirilmeden salt okunurdur; yönetim, yedek ve giriş çalışır
+    ok 1 - yeni kurulum etkinleştirilmeden salt okunurdur; yönetim, yedek ve giriş çalışır
+      ---
+      duration_ms: 435.261227
+      type: 'test'
+      ...
+    # Subtest: ücretsiz deneme 30 gün açar; süre dolunca durur, okuma ve yedek sürer
+    ok 2 - ücretsiz deneme 30 gün açar; süre dolunca durur, okuma ve yedek sürer
+      ---
+      duration_ms: 49.801765
+      type: 'test'
+      ...
+    # Subtest: aynı bilgisayara ikinci deneme verilmez (yeniden kurulum dahil)
+    ok 3 - aynı bilgisayara ikinci deneme verilmez (yeniden kurulum dahil)
+      ---
+      duration_ms: 231.715789
+      type: 'test'
+      ...
+    # Subtest: lisans anahtarı bilgisayara bağlanır; başka bilgisayarda reddedilir; engellenince salt okunur
+    ok 4 - lisans anahtarı bilgisayara bağlanır; başka bilgisayarda reddedilir; engellenince salt okunur
+      ---
+      duration_ms: 240.494632
+      type: 'test'
+      ...
+    # Subtest: internetsiz 7 gün tolerans: servis yoksa uyarır, 7 gün sonra durur, bağlantı gelince açılır
+    ok 5 - internetsiz 7 gün tolerans: servis yoksa uyarır, 7 gün sonra durur, bağlantı gelince açılır
+      ---
+      duration_ms: 16.352254
+      type: 'test'
+      ...
+    # Subtest: saat geri alınırsa durur; servisin saati güvenilir zamandır
+    ok 6 - saat geri alınırsa durur; servisin saati güvenilir zamandır
+      ---
+      duration_ms: 6.501579
+      type: 'test'
+      ...
+    # Subtest: internetsiz etkinleştirme kodu: yalnızca kendi bilgisayarında, doğrulama gerektirmez
+    ok 7 - internetsiz etkinleştirme kodu: yalnızca kendi bilgisayarında, doğrulama gerektirmez
+      ---
+      duration_ms: 227.770296
+      type: 'test'
+      ...
+    # Subtest: ileri alınıp düzeltilen saat takılı kalmaz: daha yeni imzalı kod zamanı düzeltir, eski kod geri alamaz
+    ok 8 - ileri alınıp düzeltilen saat takılı kalmaz: daha yeni imzalı kod zamanı düzeltir, eski kod geri alamaz
+      ---
+      duration_ms: 275.435088
+      type: 'test'
+      ...
+    # Subtest: 2.0 öncesinden gelen kullanılmış kurulum 30 günlük geçiş döneminde yazılabilir
+    ok 9 - 2.0 öncesinden gelen kullanılmış kurulum 30 günlük geçiş döneminde yazılabilir
+      ---
+      duration_ms: 311.874851
+      type: 'test'
+      ...
+    # Subtest: yerel kayıt elle değiştirilirse en sıkı varsayım kullanılır
+    ok 10 - yerel kayıt elle değiştirilirse en sıkı varsayım kullanılır
+      ---
+      duration_ms: 288.104432
+      type: 'test'
+      ...
+    # Subtest: demo program açılınca kendiliğinden başlar; internet yoksa kendiliğinden yeniden dener
+    ok 11 - demo program açılınca kendiliğinden başlar; internet yoksa kendiliğinden yeniden dener
+      ---
+      duration_ms: 278.496385
+      type: 'test'
+      ...
+    # Subtest: geçiş dönemindeki (2.0 öncesi) kuruluma deneme kendiliğinden başlatılmaz
+    ok 12 - geçiş dönemindeki (2.0 öncesi) kuruluma deneme kendiliğinden başlatılmaz
+      ---
+      duration_ms: 366.430441
+      type: 'test'
+      ...
+    # Subtest: denemenin 3. gününde yöneticiden firma bilgisi istenir; gönderilince bir daha sorulmaz
+    ok 13 - denemenin 3. gününde yöneticiden firma bilgisi istenir; gönderilince bir daha sorulmaz
+      ---
+      duration_ms: 296.42636
+      type: 'test'
+      ...
+    # Subtest: deneme süresi güncellemede (aynı data klasörüyle yeniden açılış) ve yeniden kurulumda sıfırlanmaz; süre dolunca öyle kalır
+    ok 14 - deneme süresi güncellemede (aynı data klasörüyle yeniden açılış) ve yeniden kurulumda sıfırlanmaz; süre dolunca öyle kalır
+      ---
+      duration_ms: 656.915888
+      type: 'test'
+      ...
+    # Subtest: geçiş dönemi (2.0 öncesi kurulum) güncellemede sıfırlanmaz; bütünlük özeti bozulsa da başlangıç ileri alınmaz
+    ok 15 - geçiş dönemi (2.0 öncesi kurulum) güncellemede sıfırlanmaz; bütünlük özeti bozulsa da başlangıç ileri alınmaz
+      ---
+      duration_ms: 359.350984
+      type: 'test'
+      ...
+    # Subtest: lisans durumu bilgisayar kimliğinin kaynağını söyler (Windows/Linux kimliği ya da veri klasöründeki dosya)
+    ok 16 - lisans durumu bilgisayar kimliğinin kaynağını söyler (Windows/Linux kimliği ya da veri klasöründeki dosya)
+      ---
+      duration_ms: 219.503382
+      type: 'test'
+      ...
+    # Subtest: salt okunur modda yazma yetkileri gizlenir, okuma yetkileri kalır
+    ok 17 - salt okunur modda yazma yetkileri gizlenir, okuma yetkileri kalır
+      ---
+      duration_ms: 0.244202
+      type: 'test'
+      ...
+    # Subtest: katalogdaki her yazma yetkisi salt okunurda gizlenir (okuma/yönetim yetkileri açık listeyle hariç)
+    ok 18 - katalogdaki her yazma yetkisi salt okunurda gizlenir (okuma/yönetim yetkileri açık listeyle hariç)
+      ---
+      duration_ms: 0.26648
+      type: 'test'
+      ...
+    # Subtest: salt okunur lisansta Vergi Ödemesi / KDV Mahsubu yetkisi ekrana gitmez, yazım reddedilir, veri değişmez
+    ok 19 - salt okunur lisansta Vergi Ödemesi / KDV Mahsubu yetkisi ekrana gitmez, yazım reddedilir, veri değişmez
+      ---
+      duration_ms: 217.359796
+      type: 'test'
+      ...
+    1..19
+ok 5 - lisans motoru — sunucu
+  ---
+  duration_ms: 4580.404465
+  type: 'suite'
+  ...
+1..5
+# tests 35
+# suites 5
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4890.212175

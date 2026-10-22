@@ -49,6 +49,10 @@ const validDate = value => {
   return Number.isFinite(time) && new Date(time).toISOString().slice(0, 10) === value;
 };
 const SETTINGS_KEY = "invoice.settings";
+// 2.4.4 (E5; kullanıcı sorunu 19.10.2026 "Kullanıcı Bulunamadı (11010)"): Web Servis Kullanıcı Adı alanına servis adresi yazılmış mı. İstemcide aynı
+// kural (hof-invoices.js integratorUsernameIsUrl) kaydetmeden önce uyarır; sunucu da reddeder (istemci atlanabilir).
+export const integratorUsernameIsUrl = value => /https?:\/\/|\.svc/i.test(String(value || ""));
+export const INTEGRATOR_USERNAME_URL_MESSAGE = "Web Servis Kullanıcı Adı alanına servis adresi yazılmış. Bu alana EDM'nin verdiği web servis kullanıcı adını yazın (adres değil); servis adresi gerekiyorsa Servis Adresi alanına yazılır, boş bırakılırsa seçilen ortamın adresi kullanılır.";
 export const PROFILES = Object.freeze({
   KAGIT: "Kâğıt Fatura",
   EARSIVFATURA: "e-Arşiv Fatura",
@@ -309,6 +313,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const mismatch = envUrlMismatch(env, baseUrl);
       if (mismatch) fail400(mismatch, "integrator.baseUrl", { code: "integrator-env-url" });
       const username = input.username === undefined ? prev.username : limited(input.username, 120, "Kullanıcı Adı");
+      // Yalnız ad DEĞİŞTİYSE reddedilir: eski sürümde adres olarak kaydedilmiş ad değişmeden gelirse ilgisiz ayarların (seri, görünüm, firma) kaydı
+      // kilitlenmez; o kurulum bağlantıda 409 integrator-username-url ile aynı açıklamayı görür.
+      if (username !== prev.username && integratorUsernameIsUrl(username)) fail400(INTEGRATOR_USERNAME_URL_MESSAGE, "integrator.username", { code: "integrator-username-url" });
       let passwordSealed = prev.passwordSealed;
       if (input.clearPassword === true) passwordSealed = "";
       else if (typeof input.password === "string" && input.password !== "") {
@@ -476,6 +483,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (!edocLive && !testOnlyUrl(cfg.baseUrl)) throw new HttpError(409, "Entegratör ayarındaki Servis Adresi test ortamının adresi değil; canlı ortam henüz açılmadı. Entegratör Ayarları'nda Servis Adresi'ni boşaltın.", { code: "integrator-live-locked" });
     const mismatch = envUrlMismatch(cfg.env, cfg.baseUrl);
     if (mismatch) throw new HttpError(409, mismatch, { code: "integrator-env-url" });
+    if (integratorUsernameIsUrl(cfg.username)) throw new HttpError(409, `Entegratör Ayarları'nda ${INTEGRATOR_USERNAME_URL_MESSAGE}`, { code: "integrator-username-url" });
     if (!cfg.username || !cfg.passwordSealed) throw new HttpError(409, `${ADAPTERS[cfg.id]?.label || "Entegratör"} web servis kullanıcı adı ve parolası girilmemiş. Fatura → Entegratör Ayarları'ndan girin.`, { code: "integrator-not-configured" });
     const password = secrets().open(cfg.passwordSealed);
     if (!password) throw new HttpError(409, "Kayıtlı entegratör parolası bu bilgisayarda açılamadı (veriler başka bilgisayardan taşınmış olabilir). Fatura → Entegratör Ayarları'nda parolayı yeniden girin.", { code: "integrator-password" });

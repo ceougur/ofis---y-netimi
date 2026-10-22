@@ -2123,6 +2123,12 @@ html.hof-no-haciz #hof-sidecard [data-action="liens"],
 html.hof-no-tahsilat [data-case-action="payment"] {
   display: none !important;
 }
+/* 2.4.4 (E8; kullanıcı 20.10.2026: "kayıt detay kartındaki Tahsilat düğmesi kaldırılsın; regresyon olma ihtimali varsa koda dokunmadan yalnız CSS ile"):
+   kayıttan doğrudan Kasa'ya tahsilat karttan kalkar; tahsilat Cari'den / kayda bağlı Taksit kutusundaki "+ Tahsilat" ile girilir. Sunucu yolu, eski
+   tahsilatların İşlem Geçmişi'nde görünmesi/düzeltilmesi/silinmesi değişmez. */
+.hof-case-actions [data-case-action="payment"] {
+  display: none !important;
+}
 
 /* ---------- 1.6.0: kalemle değiştirilen başlıklar ---------- */
 .hof-label-pencil {
@@ -11112,3 +11118,11 @@ input[type="search"]::-webkit-search-cancel-button {
 /* 2.4.3 MM3: Vergi Ödemesi ve KDV Mahsup Fişi (hof-tax.js) */
 .hof-tax-warn { margin: 6px 0; color: var(--do-warn); font-weight: 700; }
 .hof-tax-h3 { margin: 18px 0 6px; font: 700 13px var(--do-font); }
+/* 2.4.4 (E5): Web Servis Kullanıcı Adı alanına adres yazılınca görünen uyarı. */
+.hof-field small[data-integ-user-warn] {
+  color: var(--do-danger);
+  font-weight: 600;
+}
+.hof-field small[data-integ-user-warn][hidden] {
+  display: none;
+}

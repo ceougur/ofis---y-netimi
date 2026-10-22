@@ -1,0 +1,32 @@
+{
+  "ad": "244-kucuk-m4-senaryo-cari-243",
+  "komut": "npm run test:senaryo-cari-243",
+  "commit": "332cf511ad331937476bf8cd6edfdd3fc4d54afd",
+  "dal": "is/kucuk",
+  "kirli": 5,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T03:39:50.226Z",
+  "sure_sn": 51.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 48,
+    "gecen": 48,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kucuk-m4-senaryo-cari-243.log",
+  "klasor": "/home/user/wt/kucuk",
+  "ham_cikti_sha256": "cfb827c6befabf467972387c2d1161c0c5ebc71f0c1baf2b4a1b79a3dfba59a0",
+  "ham_cikti_bayt": 5532
+}

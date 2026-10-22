@@ -1,0 +1,31 @@
+DestekOfis e2e — http://127.0.0.1:44101
+  ✓ giriş ekranı açılır, hatalı parola reddedilir (852 ms)
+  ✓ yönetici giriş yapar, uygulama ve operasyon kartı yüklenir (638 ms)
+  ✓ ücretsiz deneme program açılınca kendiliğinden başlar; lisans ekranı sadeleşir (1967 ms)
+  ✓ veri yokken ortada 'başlayalım' kartı; paketin yükleme düğmeleri gizli (210 ms)
+  ✓ Excel başlangıç kartından yüklenir ve ofisin kalıcı verisi olur (1201 ms)
+  ✓ akıllı analiz ekranı adım adım açılır; sektör önerisi kanıtıyla gelir, kendiliğinden uygulanmaz (4053 ms)
+  ✓ sektör seçici: kelimeyle aranır, klavyeyle gezilir, Esc ile kapanır (559 ms)
+  ✓ öneri onaylanınca görünüm sektör diline geçer; göstergeler kolon adlarıyla (652 ms)
+  ✓ kolon genişliği başlığın kenarından sürüklenir, hatırlanır; çift tık otomatik genişliğe döndürür (780 ms)
+  ✓ akıllı özet kartı tıklanınca kayıt listesi açılır; kayda gidilir ve satır belirginleşir (792 ms)
+  ✓ kartın 'Nasıl hesaplandı?' açıklaması ve dağılımdan kayıt listesi (1492 ms)
+  ✓ başlık kalemle değiştirilir, kalıcıdır ve varsayılana döndürülebilir; ana ekranda 'Dosya özeti' bloğu yok (v2.0.10) (1644 ms)
+  ✓ satırlar sunucu kimliği taşır, sayfalama 20 satır gösterir (172 ms)
+  ✓ sekmeler kendi kolonlarıyla; arama tüm sekmeleri sayar, Enter başka sekmedeki kayda gider (1228 ms)
+  ✓ hücre düzenlenir; tablo yenilenir ve seçim korunur (1414 ms)
+  ✓ satır silinir ve geri alınır (909 ms)
+  ✓ yeni kayıt açık sekmenin kolonlarıyla oluşturulur, o sekmede en üste gelir ve seçilir (793 ms)
+  ✓ dosyaya not eklenir; işlem geçmişinde işlemi yapanla görünür (1710 ms)
+  ✗ tahsilat işlenir (en altta), düzeltilir ve silinir; kasaya düşer, kasadan ödeme girilir
+    Error: kayıt kartında Tahsilat düğmesi görünmez (E8)
+    at expect (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kucuk/kucuk-eski-163dd5d/test/e2e/run.mjs:88:25)
+    at file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kucuk/kucuk-eski-163dd5d/test/e2e/run.mjs:490:5
+    at async step (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kucuk/kucuk-eski-163dd5d/test/e2e/run.mjs:63:5)
+    at async file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kucuk/kucuk-eski-163dd5d/test/e2e/run.mjs:487:3
+    sayfa 0: {"url":"http://127.0.0.1:44101/","auth":false,"modals":[],"splash":false,"root":2,"badge":"","user":"Ofis yöneticisi","tasks":{"ok":true,"data":[]}}
+
+Konsol kayıtları:
+[yönetici] console: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:44101/api/auth/me
+[yönetici] console: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:44101/api/auth/login
+[yönetici] console: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:44101/api/auth/me
