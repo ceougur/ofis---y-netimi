@@ -1,0 +1,32 @@
+{
+  "ad": "244-b2-uyari/e2e-senaryo-224",
+  "komut": "npm run test:senaryo-224",
+  "commit": "e070d4247567174ee1bf1b5efe142dfafba6cdb8",
+  "dal": "is/b2-uyari",
+  "kirli": 6,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T17:36:24.239Z",
+  "sure_sn": 79.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 63,
+    "gecen": 63,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-b2-uyari/e2e-senaryo-224.log",
+  "klasor": "/home/user/wt/b2-uyari",
+  "ham_cikti_sha256": "36b341a4b0082899c4dfe3acafbacb959c00b08ee2301bd053663a574af732f5",
+  "ham_cikti_bayt": 6112
+}

@@ -1,0 +1,38 @@
+{
+  "ad": "244-b2-uyari/mutasyon-M8-11048-test-cumlesi-yok",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/geri-yukleme-uyari-244.test.mjs",
+  "commit": "e070d4247567174ee1bf1b5efe142dfafba6cdb8",
+  "dal": "is/b2-uyari",
+  "kirli": 5,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T17:03:13.002Z",
+  "sure_sn": 6.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 10,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Geri yüklemeden sonra Fatura'da tek seferlik numara uyarısı; 11048 iletisi geri yüklemeyi söyler › 11048 (test serisi): ileti test hesabının ortaklığını VE yedekten geri yükleme olasılığını söyler; İptal Et yolu durur",
+      "konum": "test/geri-yukleme-uyari-244.test.mjs:203:3",
+      "hata": "`ndermeye çalıştınız (EDM hata kodu 11048) Bu numara EDM'de daha önce kullanılmış: test hesabı ortaktır, başka bir firma aynı numarayı kullanmış olabilir. Bu belgeyi İptal Et ile iptal edip yeniden kesin; yeni belge bir sonraki numarayı alır (gerekirse Entegratör Ayarları → Otomatik Seriler'den sıradaki test numarasını ileri alın).\",\"code\":\"integrator-rejected\",\"detail\":\"\",\"integratorCode\":\"11048\"}` (beklenen , gelen `{\"ok\":false,\"error\":\"EDM isteği reddetti: UUID=2bd01737-e7f5-472e-972c-8993eb76d37a ID=TEA2026000000001 için Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız (EDM hata kodu 11048) Bu numara EDM'de daha önce kullanılmış: test hesabı ortaktır, başka bir firma aynı numarayı kullanmış olabilir. Bu belgeyi İptal Et ile iptal edip yeniden kesin; yeni belge bir sonraki numarayı alır (gerekirse Entegratör Ayarları → Otomatik Seriler'den sıradaki test numarasını ileri alın).\",\"code\":\"integrator-rejected\",\"detail\":\"\",\"integratorCode\":\"11048\"}`)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-b2-uyari/mutasyon-M8-11048-test-cumlesi-yok.log",
+  "klasor": "/home/user/wt/b2-uyari",
+  "ham_cikti_sha256": "9f001bdc7cbdcbc57b3686e6c2266cc34b25f2500990bb75b1b7a0d2c0373b7c",
+  "ham_cikti_bayt": 6494
+}

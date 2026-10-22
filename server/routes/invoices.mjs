@@ -41,6 +41,7 @@ import { UNITS, unitLabel } from "../lib/units.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { createZip } from "../lib/zip.mjs";
 import { systemClock } from "../lib/clock.mjs";
+import { RESTORE_NOTICE_KEY } from "../lib/company-backups.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const TIME = /^([01]\d|2[0-3]):[0-5]\d$/;
@@ -2566,7 +2567,34 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const limit = Math.min(5000, Math.max(1, Math.trunc(Number(url.searchParams.get("limit")) || 200)));
     const offset = Math.max(0, Math.trunc(Number(url.searchParams.get("offset")) || 0));
     const data = list(user, listQuery(url.searchParams), { offset, limit });
-    ok(res, { ...data, offset, limit, hasMore: offset + limit < data.total });
+    ok(res, { ...data, offset, limit, hasMore: offset + limit < data.total, restoreNotice: restoreNotice(user) });
+  });
+  // 2.4.4 (madde 30b, kullanıcı kararı 22.10.2026): yedek geri yüklendikten sonra Fatura'da TEK SEFERLİK uyarı (işaret geri yüklenen şirketin veri
+  // tabanında; lib/company-backups.mjs RESTORE_NOTICE_KEY). Numaralama değişmez. Liste her yenilemede okur: başka oturum kapatınca uyarı gider.
+  // edoc: şirket e-Belge kullanıyor mu (kullanmıyorsa uyarı yalnız kâğıt/fiş numaralarını söyler); canDismiss: sıradaki numarayı ileri alabilen
+  // (Fatura Ayarları yetkisi) kapatır.
+  function restoreNotice(user) {
+    const raw = parseJson(store.setting(RESTORE_NOTICE_KEY, ""), null);
+    if (!raw || typeof raw !== "object" || !raw.at) return null;
+    const s = settings();
+    const edoc = Boolean(edocEnabled && (s.efatura || s.earsiv || (esmmEnabled && s.esmm)));
+    return { at: String(raw.at), backupAt: String(raw.backupAt || ""), edoc, test: edoc && !liveEnv(s), canDismiss: canUser(user, "invoices.settings") };
+  }
+  router.post("/api/workspace/invoices/restore-notice/dismiss", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "invoices.settings");
+    const body = await readJson(req);
+    const at = text(body?.at);
+    let dismissed = false;
+    store.tx(() => {
+      const raw = parseJson(store.setting(RESTORE_NOTICE_KEY, ""), null);
+      // Ekrandaki uyarı kapatılır: arada yeni bir geri yükleme olduysa (işaret değişti) yenisi kalır.
+      if (!raw?.at || (at && at !== String(raw.at))) return;
+      store.run("DELETE FROM settings WHERE key = ?", RESTORE_NOTICE_KEY);
+      audit(user, "invoice.restore-notice.dismissed", "settings", { at: String(raw.at), backupAt: String(raw.backupAt || "") });
+      dismissed = true;
+    });
+    if (dismissed) publish(user, { kind: "invoices" });
+    ok(res, { dismissed, restoreNotice: restoreNotice(user) });
   });
   // ---------- Tekrarlayan fatura ----------
   const REPEAT_SQL = "SELECT id, template_id AS templateId, every_months AS everyMonths, next_date AS nextDate, until_date AS untilDate, active, made, last_invoice_id AS lastInvoiceId FROM invoice_repeats";
@@ -3798,12 +3826,13 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         // Kontrol turu K2: istek gitmiş olabilecek her hata (bağlantı, zaman aşımı, okunamayan yanıt) önceki durum ne olursa olsun (ör. "Hata"dan yeniden
         // gönderim) "belirsiz" yazılır. K5: isteğin hiç gitmediği bilinen hatalar (kanal, adres, kimlik, oturum) belirsiz sayılmaz, durum değişmez.
         // 2.4.2 (kullanıcı denemesi 17.10.2026): EDM "Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız" (11048) — numara EDM'de
-        // kullanılmış; test hesabı ortak olduğu için çoğunlukla başka firmanın numarası. İleti ne yapılacağını söyler.
+        // kullanılmış; test hesabı ortak olduğu için çoğunlukla başka firmanın numarası. İleti ne yapılacağını söyler. 2.4.4 (madde 30b): yedekten geri
+        // yüklemeden sonra numara yedekten sonra kendi gönderdiğimiz belgenin olabilir (numaralama EDM'den eşitlenmez) — ileti iki seride de bunu söyler.
         if (String(error?.extra?.integratorCode || error?.integratorCode || "") === "11048" && error instanceof Error) {
           const testDoc = TEST_SERIES_SET.has(String(doc.number || "").slice(0, 3));
           error.message = `${error.message} ${testDoc
-            ? "Bu numara EDM'de daha önce kullanılmış: test hesabı ortaktır, başka bir firma aynı numarayı kullanmış olabilir. Bu belgeyi İptal Et ile iptal edip yeniden kesin; yeni belge bir sonraki numarayı alır (gerekirse Entegratör Ayarları → Otomatik Seriler'den sıradaki test numarasını ileri alın)."
-            : "Bu numarayla EDM'ye daha önce belge gönderilmiş. Bu belgeyi İptal Et ile iptal edip yeniden kesin; gerekirse Fatura Ayarları → Numaralar'dan sıradaki numarayı ileri alın."}`;
+            ? "Bu numara EDM'de daha önce kullanılmış: test hesabı ortaktır, başka bir firma aynı numarayı kullanmış olabilir ya da yedekten geri yükleme yaptıysanız bu numarayla yedekten sonra siz göndermiş olabilirsiniz. Bu belgeyi İptal Et ile iptal edip yeniden kesin; yeni belge bir sonraki numarayı alır (gerekirse Entegratör Ayarları → Otomatik Seriler'den sıradaki test numarasını ileri alın)."
+            : "Bu numarayla EDM'ye daha önce belge gönderilmiş; yedekten geri yükleme yaptıysanız bu numarayla yedekten sonra siz göndermiş olabilirsiniz. Bu belgeyi İptal Et ile iptal edip yeniden kesin; gerekirse Fatura Ayarları → Numaralar'dan sıradaki numarayı EDM'deki son numaranın ilerisine alın."}`;
         }
         // Dar kontrol 2 (B3 + K12): erişim kanıtı önbellekteki oturumdan geldiği için ağ, numara verildikten sonra kopmuş olabilir. Bağlantı HİÇ
         // KURULAMADIYSA (integrator-unreachable; edm.mjs B2 sınıflaması) EDM belgeyi görmemiştir: numara bu istekte verildiyse ve serinin son numarasıysa
