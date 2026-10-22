@@ -56,6 +56,30 @@ describe("Doğrulama Kapısı — beklenen liste ↔ CI adımları", () => {
   });
 });
 
+// Bağımsız kâhinler (2.4.4, iş listesi 27): package.json'daki her test:kahin-* betiği bir iş akışında (CI ya da Uzun Doğrulama) kanıt aracıyla
+// koşar ve o iş akışının kapısı kaydı bekler; yoksa kâhin yalnız elle koşulur ve bozulduğu görülmez (defter kâhini 2.4.3'ten beri hiçbir işte değildi).
+describe("Bağımsız kâhinler iş akışında koşar", () => {
+  it("her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde", () => {
+    const pkg = JSON.parse(readFileSync(path.join(ROOT, "package.json"), "utf8"));
+    const scripts = Object.keys(pkg.scripts).filter(name => name.startsWith("test:kahin-"));
+    assert.ok(scripts.length >= 2, `kâhin betikleri (${scripts.join(", ")})`);
+    const flows = { "ci.yml": ci, "uzun-dogrulama.yml": readFileSync(path.join(ROOT, ".github", "workflows", "uzun-dogrulama.yml"), "utf8") };
+    const missing = [];
+    for (const script of scripts) {
+      const found = Object.entries(flows).find(([, text]) => new RegExp(`kanit\\.mjs kos (\\S+)(?: --sure \\d+)?(?: --)? npm run ${script.replace(/[-:]/g, "\\$&")}(?:\\s|$)`, "m").test(text));
+      if (!found) {
+        missing.push(`${script}: hiçbir iş akışında kanit.mjs kos ile koşmuyor`);
+        continue;
+      }
+      const [file, text] = found;
+      const name = text.match(new RegExp(`kanit\\.mjs kos (\\S+)(?: --sure \\d+)?(?: --)? npm run ${script.replace(/[-:]/g, "\\$&")}(?:\\s|$)`, "m"))[1];
+      const expected = text.match(/--beklenen (\S+)/)?.[1].split(",") || [];
+      if (!expected.includes(name)) missing.push(`${script}: ${file} kaydı "${name}" kapının --beklenen listesinde yok`);
+    }
+    assert.deepEqual(missing, []);
+  });
+});
+
 // Uzun Doğrulama iş akışı (10.10.2026): matris (os × taban × tohum + include) açılınca çıkan kayıt adları "Uzun Doğrulama Kapısı"nın
 // beklenen listesiyle aynı olmalı; yoksa bir tohum hiç koşmasa da kapı fark etmez.
 describe("Uzun Doğrulama Kapısı — beklenen liste ↔ matris", () => {

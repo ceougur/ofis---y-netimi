@@ -1,0 +1,43 @@
+{
+  "ad": "244-test-altyapi/izolasyon-eski-163dd5d-kirmizi",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/test-altyapi/test-altyapi-eski-163dd5d/test/lisans-servisi-izolasyonu.test.mjs",
+  "commit": "1f6ad99df7ef569af9ed772e1e8e053c216d565c",
+  "dal": "is/test-altyapi",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T03:36:43.242Z",
+  "sure_sn": 0.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 3,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz",
+      "konum": "test/lisans-servisi-izolasyonu.test.mjs:72:1",
+      "hata": "lisans uygulaması açık, zamanlayıcısı açık createApp çağrıları (startLicenseTimers: false ya da license: { enforce: false } verin) · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar",
+      "konum": "test/lisans-servisi-izolasyonu.test.mjs:114:1",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-test-altyapi/izolasyon-eski-163dd5d-kirmizi.log",
+  "klasor": "/home/user/wt/test-altyapi",
+  "ham_cikti_sha256": "a9c59cdd2a7642d339c1acbc3374c924e1e583f023977376c7123a5b0675db9b",
+  "ham_cikti_bayt": 5027
+}

@@ -1,0 +1,286 @@
+TAP version 13
+# Subtest: lisans belirteci
+    # Subtest: imzalı belirteci doğrular, değiştirilmiş veya tanınmayan anahtarla imzalanmışı reddeder
+    ok 1 - imzalı belirteci doğrular, değiştirilmiş veya tanınmayan anahtarla imzalanmışı reddeder
+      ---
+      duration_ms: 4.941333
+      type: 'test'
+      ...
+    # Subtest: biçim denetimi: deneme belirtecinin bitişi zorunlu, bilinmeyen tür ve durum reddedilir
+    ok 2 - biçim denetimi: deneme belirtecinin bitişi zorunlu, bilinmeyen tür ve durum reddedilir
+      ---
+      duration_ms: 1.13127
+      type: 'test'
+      ...
+    # Subtest: internetsiz etkinleştirme kodu zarfı taşır; bozuk kod anlaşılır hata verir
+    ok 3 - internetsiz etkinleştirme kodu zarfı taşır; bozuk kod anlaşılır hata verir
+      ---
+      duration_ms: 1.517485
+      type: 'test'
+      ...
+    # Subtest: kurulum kodu ve lisans anahtarı biçimleri
+    ok 4 - kurulum kodu ve lisans anahtarı biçimleri
+      ---
+      duration_ms: 0.769783
+      type: 'test'
+      ...
+    # Subtest: bilgisayar kimliği kalıcıdır; ham değer dışarı verilmez
+    ok 5 - bilgisayar kimliği kalıcıdır; ham değer dışarı verilmez
+      ---
+      duration_ms: 3.038733
+      type: 'test'
+      ...
+    1..5
+ok 1 - lisans belirteci
+  ---
+  duration_ms: 12.571962
+  type: 'suite'
+  ...
+# Subtest: lisans durumu (saf değerlendirme)
+    # Subtest: etkinleştirilmemiş kurulum salt okunurdur
+    ok 1 - etkinleştirilmemiş kurulum salt okunurdur
+      ---
+      duration_ms: 0.872991
+      type: 'test'
+      ...
+    # Subtest: deneme: kalan gün, son 7 günde uyarı, süre dolunca salt okunur
+    ok 2 - deneme: kalan gün, son 7 günde uyarı, süre dolunca salt okunur
+      ---
+      duration_ms: 5.106283
+      type: 'test'
+      ...
+    # Subtest: lisans: süresiz, bitişe yakın uyarı, engellenmiş lisans salt okunur
+    ok 3 - lisans: süresiz, bitişe yakın uyarı, engellenmiş lisans salt okunur
+      ---
+      duration_ms: 1.838302
+      type: 'test'
+      ...
+    # Subtest: 7 günden uzun internetsiz kalınca doğrulama ister; son 3 günde uyarır; internetsiz lisansta süre yok
+    ok 4 - 7 günden uzun internetsiz kalınca doğrulama ister; son 3 günde uyarır; internetsiz lisansta süre yok
+      ---
+      duration_ms: 1.645666
+      type: 'test'
+      ...
+    # Subtest: saat geri alınınca süre geri gelmez ve program salt okunur olur
+    ok 5 - saat geri alınınca süre geri gelmez ve program salt okunur olur
+      ---
+      duration_ms: 1.000482
+      type: 'test'
+      ...
+    # Subtest: geçiş dönemi 30 gün yazılabilir, sonra salt okunur; başka bilgisayarın lisansı sayılmaz
+    ok 6 - geçiş dönemi 30 gün yazılabilir, sonra salt okunur; başka bilgisayarın lisansı sayılmaz
+      ---
+      duration_ms: 0.347878
+      type: 'test'
+      ...
+    1..6
+ok 2 - lisans durumu (saf değerlendirme)
+  ---
+  duration_ms: 11.246029
+  type: 'suite'
+  ...
+# Subtest: lisans motoru — sunucu
+    # Subtest: yeni kurulum etkinleştirilmeden salt okunurdur; yönetim, yedek ve giriş çalışır
+    ok 1 - yeni kurulum etkinleştirilmeden salt okunurdur; yönetim, yedek ve giriş çalışır
+      ---
+      duration_ms: 493.546751
+      type: 'test'
+      ...
+    # Subtest: ücretsiz deneme 30 gün açar; süre dolunca durur, okuma ve yedek sürer
+    ok 2 - ücretsiz deneme 30 gün açar; süre dolunca durur, okuma ve yedek sürer
+      ---
+      duration_ms: 53.377502
+      type: 'test'
+      ...
+    # Subtest: aynı bilgisayara ikinci deneme verilmez (yeniden kurulum dahil)
+    ok 3 - aynı bilgisayara ikinci deneme verilmez (yeniden kurulum dahil)
+      ---
+      duration_ms: 235.524606
+      type: 'test'
+      ...
+    # Subtest: lisans anahtarı bilgisayara bağlanır; başka bilgisayarda reddedilir; engellenince salt okunur
+    ok 4 - lisans anahtarı bilgisayara bağlanır; başka bilgisayarda reddedilir; engellenince salt okunur
+      ---
+      duration_ms: 261.775979
+      type: 'test'
+      ...
+    # Subtest: internetsiz 7 gün tolerans: servis yoksa uyarır, 7 gün sonra durur, bağlantı gelince açılır
+    ok 5 - internetsiz 7 gün tolerans: servis yoksa uyarır, 7 gün sonra durur, bağlantı gelince açılır
+      ---
+      duration_ms: 15.822647
+      type: 'test'
+      ...
+    # Subtest: saat geri alınırsa durur; servisin saati güvenilir zamandır
+    ok 6 - saat geri alınırsa durur; servisin saati güvenilir zamandır
+      ---
+      duration_ms: 6.037822
+      type: 'test'
+      ...
+    # Subtest: internetsiz etkinleştirme kodu: yalnızca kendi bilgisayarında, doğrulama gerektirmez
+    ok 7 - internetsiz etkinleştirme kodu: yalnızca kendi bilgisayarında, doğrulama gerektirmez
+      ---
+      duration_ms: 220.130483
+      type: 'test'
+      ...
+    # Subtest: ileri alınıp düzeltilen saat takılı kalmaz: daha yeni imzalı kod zamanı düzeltir, eski kod geri alamaz
+    ok 8 - ileri alınıp düzeltilen saat takılı kalmaz: daha yeni imzalı kod zamanı düzeltir, eski kod geri alamaz
+      ---
+      duration_ms: 256.574773
+      type: 'test'
+      ...
+    # Subtest: 2.0 öncesinden gelen kullanılmış kurulum 30 günlük geçiş döneminde yazılabilir
+    ok 9 - 2.0 öncesinden gelen kullanılmış kurulum 30 günlük geçiş döneminde yazılabilir
+      ---
+      duration_ms: 250.826802
+      type: 'test'
+      ...
+    # Subtest: yerel kayıt elle değiştirilirse en sıkı varsayım kullanılır
+    ok 10 - yerel kayıt elle değiştirilirse en sıkı varsayım kullanılır
+      ---
+      duration_ms: 271.024968
+      type: 'test'
+      ...
+    # Subtest: demo program açılınca kendiliğinden başlar; internet yoksa kendiliğinden yeniden dener
+    ok 11 - demo program açılınca kendiliğinden başlar; internet yoksa kendiliğinden yeniden dener
+      ---
+      duration_ms: 270.756887
+      type: 'test'
+      ...
+    # Subtest: geçiş dönemindeki (2.0 öncesi) kuruluma deneme kendiliğinden başlatılmaz
+    ok 12 - geçiş dönemindeki (2.0 öncesi) kuruluma deneme kendiliğinden başlatılmaz
+      ---
+      duration_ms: 359.410661
+      type: 'test'
+      ...
+    # Subtest: denemenin 3. gününde yöneticiden firma bilgisi istenir; gönderilince bir daha sorulmaz
+    ok 13 - denemenin 3. gününde yöneticiden firma bilgisi istenir; gönderilince bir daha sorulmaz
+      ---
+      duration_ms: 317.924988
+      type: 'test'
+      ...
+    # Subtest: deneme süresi güncellemede (aynı data klasörüyle yeniden açılış) ve yeniden kurulumda sıfırlanmaz; süre dolunca öyle kalır
+    ok 14 - deneme süresi güncellemede (aynı data klasörüyle yeniden açılış) ve yeniden kurulumda sıfırlanmaz; süre dolunca öyle kalır
+      ---
+      duration_ms: 583.752288
+      type: 'test'
+      ...
+    # Subtest: geçiş dönemi (2.0 öncesi kurulum) güncellemede sıfırlanmaz; bütünlük özeti bozulsa da başlangıç ileri alınmaz
+    ok 15 - geçiş dönemi (2.0 öncesi kurulum) güncellemede sıfırlanmaz; bütünlük özeti bozulsa da başlangıç ileri alınmaz
+      ---
+      duration_ms: 312.707316
+      type: 'test'
+      ...
+    # Subtest: lisans durumu bilgisayar kimliğinin kaynağını söyler (Windows/Linux kimliği ya da veri klasöründeki dosya)
+    ok 16 - lisans durumu bilgisayar kimliğinin kaynağını söyler (Windows/Linux kimliği ya da veri klasöründeki dosya)
+      ---
+      duration_ms: 209.159321
+      type: 'test'
+      ...
+    # Subtest: salt okunur modda yazma yetkileri gizlenir, okuma yetkileri kalır
+    ok 17 - salt okunur modda yazma yetkileri gizlenir, okuma yetkileri kalır
+      ---
+      duration_ms: 0.201896
+      type: 'test'
+      ...
+    1..17
+ok 3 - lisans motoru — sunucu
+  ---
+  duration_ms: 4215.953366
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 0.603589
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 102.037025
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 83.145764
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 85.681845
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 168.867212
+      type: 'test'
+      ...
+    1..5
+ok 4 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 441.587375
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 18.714199
+      type: 'test'
+      ...
+    1..1
+ok 5 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 18.845837
+  type: 'suite'
+  ...
+# Subtest: otomatik güncelleme akışı
+    # Subtest: açılışta yeni sürüm indirilir, bakım sayfası gösterilir, yeni sürüme geçilir; veriler korunur
+    ok 1 - açılışta yeni sürüm indirilir, bakım sayfası gösterilir, yeni sürüme geçilir; veriler korunur
+      ---
+      duration_ms: 3469.28303
+      type: 'test'
+      ...
+    # Subtest: yeni sürüm açılamazsa veritabanı ve sürüm geri alınır; o sürüm bir daha denenmez
+    ok 2 - yeni sürüm açılamazsa veritabanı ve sürüm geri alınır; o sürüm bir daha denenmez
+      ---
+      duration_ms: 1927.882086
+      type: 'test'
+      ...
+    # Subtest: otomatik güncelleme kapalıyken yönetici panelinden denetlenip kurulabilir
+    ok 3 - otomatik güncelleme kapalıyken yönetici panelinden denetlenip kurulabilir
+      ---
+      duration_ms: 5096.393859
+      type: 'test'
+      ...
+    # Subtest: elektrik kesintisinden kalan onaylanmamış sürüm açılışta denenir, açılmazsa önceki sürüme dönülür
+    ok 4 - elektrik kesintisinden kalan onaylanmamış sürüm açılışta denenir, açılmazsa önceki sürüme dönülür
+      ---
+      duration_ms: 897.889316
+      type: 'test'
+      ...
+    # Subtest: güncelleme sunucusuna ulaşılamazsa uygulama normal açılır
+    ok 5 - güncelleme sunucusuna ulaşılamazsa uygulama normal açılır
+      ---
+      duration_ms: 830.315083
+      type: 'test'
+      ...
+    1..5
+ok 6 - otomatik güncelleme akışı
+  ---
+  duration_ms: 12223.413846
+  type: 'suite'
+  ...
+1..6
+# tests 39
+# suites 6
+# pass 39
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17979.735197
