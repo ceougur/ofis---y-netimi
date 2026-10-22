@@ -530,6 +530,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   sürüm notuna bir cümle. Alternatif: yalnız Kapatılacak Fatura bağlarına daralt.
   KARAR (kullanıcı, 22.10.2026: "önerini uygula"): kural uygulandığı hâliyle KALIR (faturanın kendi evrakı ve faturayla ciro dahil, taksitli hariç) + sürüm notuna cümle
   ("karşılıksız dönen evrakla ödenmiş görünen faturalar artık Açık görünür; cari bakiye değişmez").
+- İSTEK (kullanıcı, 22.10.2026: "test için kesip EDM'ye gönderdiğin e-SMM numaralarını bana verirsen EDM test portalına girip ben de görebilirim"): madde 24 gerçek EDM
+  koşusundan sonra kullanıcıya gönderilen her belgenin listesi verilir (tür, Belge No, ETTN, tarih, gönderim saati, alıcı, tutarlar, EDM durumu, iptal saati) — betik
+  docs/kanit/2026-10-22/244-edm/OZET.md üretir; kimlik bilgisi girmez.
 - SON ADAY BAĞIMSIZ TURU (kullanıcı, 22.10.2026: "2.4.4 son aday uzun test koşusuna başlamadan kâhin (uzman mali müşavir), yargıç, eleştirmen testlerinden geçecek mi,
   regresyon testleri yapılıyor mu?" → EVET; "ekle" → uzman UI + uzman UX de): iş listesi madde 30–31 (31a kâhin, 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol,
   31f uzman UI/UX) Uzun Doğrulama'dan ÖNCE.
