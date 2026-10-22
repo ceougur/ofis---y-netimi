@@ -1,0 +1,63 @@
+TAP version 13
+# Subtest: gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+not ok 1 - gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+  ---
+  duration_ms: 7.78109
+  type: 'test'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/test-altyapi/test-altyapi-mutasyon-tools/test/yeni-izolasyon.test.mjs:42:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    HUKUK_LICENSE_URL vermeyen başlatıcılar (gerçek lisans servisine deneme kaydı atar)
+    + actual - expected
+    
+    + [
+    +   'tools/sahte-baslatici.mjs'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'tools/sahte-baslatici.mjs'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/test-altyapi/test-altyapi-mutasyon-tools/test/yeni-izolasyon.test.mjs:46:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+ok 2 - aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+  ---
+  duration_ms: 68.189508
+  type: 'test'
+  ...
+# Subtest: gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+ok 3 - gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+  ---
+  duration_ms: 1.840242
+  type: 'test'
+  ...
+# Subtest: iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+ok 4 - iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+  ---
+  duration_ms: 1.015377
+  type: 'test'
+  ...
+# Subtest: lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+ok 5 - lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+  ---
+  duration_ms: 0.782074
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 4
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 249.710169

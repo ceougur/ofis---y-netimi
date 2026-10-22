@@ -60,7 +60,8 @@ async function check(source, work) {
     db.close();
   }
   const { createApp } = await import("../server/app.mjs");
-  const app = createApp({ dataDir: copyDir, backupDir: path.join(work, "backups"), log: quiet, integrityScan: false });
+  // Ders 30: mutabakat lisanstan bağımsızdır; kopya üzerinde açılan program lisans servisine kendiliğinden deneme atmaz.
+  const app = createApp({ dataDir: copyDir, backupDir: path.join(work, "backups"), log: quiet, integrityScan: false, startLicenseTimers: false });
   try {
     const result = app.integrity.run();
     const { trial } = app.ledger.check();

@@ -1,0 +1,32 @@
+{
+  "ad": "244-test-altyapi/izolasyon-ve-nobetci-yesil",
+  "komut": "node --test test/lisans-servisi-izolasyonu.test.mjs test/lisans-nobetci.test.mjs",
+  "commit": "1f6ad99df7ef569af9ed772e1e8e053c216d565c",
+  "dal": "is/test-altyapi",
+  "kirli": 4,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T03:37:05.613Z",
+  "sure_sn": 1.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 17,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-test-altyapi/izolasyon-ve-nobetci-yesil.log",
+  "klasor": "/home/user/wt/test-altyapi",
+  "ham_cikti_sha256": "d79eebb4b2ff2d11180256b970a7d79cfb9d12128f5eb6afb244a19cd5c6fb06",
+  "ham_cikti_bayt": 5573
+}
