@@ -16,7 +16,7 @@ const AHEAD = Object.freeze({ aheadDays: 366, promiseDays: 366 });
 const TITLES = { "cari-ekstre": "Cari Ekstre", "vade-takip": "Vade Takip", "nakit-akis": "Nakit Akış" };
 const ascii = value => String(value).replace(/[ıİşŞğĞçÇöÖüÜ]/g, char => ({ ı: "i", İ: "I", ş: "s", Ş: "S", ğ: "g", Ğ: "G", ç: "c", Ç: "C", ö: "o", Ö: "O", ü: "u", Ü: "U" })[char]);
 
-export function registerReportRoutes(router, { auth, store, dataset, profile, plans, now: clock = systemClock }) {
+export function registerReportRoutes(router, { auth, store, dataset, profile, plans, cash, now: clock = systemClock }) {
   const parseSettled = key => {
     try {
       const value = JSON.parse(store.setting(key, "{}") || "{}");
@@ -97,8 +97,11 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
     // taşıdığı cari tahsilatı ve karta doğrudan girilen tahsilat; önceden rapordan düşüyordu). Bir para hareketi tek satırdadır (K11): iki kez sayılmaz.
     // Cari / kart tahsilatı bağın veri oturumunu (session) taşır; yalnız o sayfanın kaydına sayılır.
     const payments = [...store.all("SELECT case_key AS caseKey, amount, date, note FROM payments"), ...dataset.sessions().flatMap(item => caseCollections(store, item.key, { plans: true }).filter(row => row.session))];
-    // Nakit akışta taksit kartı hareketleri de kasa giriş/çıkışıdır (v2.0.4).
-    const cashEntries = [...store.all("SELECT kind, amount, date FROM cash_entries"), ...(plans?.cashEntries ? plans.cashEntries().map(entry => ({ kind: entry.kind, amount: entry.amount, date: entry.date })) : [])];
+    // 2.4.4 (31b MM6): Kasa giriş/çıkış Kasa defterinin KENDİSİNDEN — Kasa raporuyla (Kasa Hareketleri, Aylık Kasa Özeti) aynı satırlar ve aynı kural:
+    // yalnız Nakit Kasa (2.0.17 m9), bütün kaynaklar (cari tahsilat/ödeme, fatura peşini, taksit kartı, kayıt tahsilatı, stok, çek/senet, elle, banka transferi);
+    // açılış/devir düzeltmesi (adjust) dönem giriş/çıkışı sayılmaz. Önceden yalnız elle Kasa (cash_entries, her yol) + taksit kartı okunuyordu; cari ve fatura
+    // nakit tahsilatı "Kasa giriş"te 0 görünüyordu (2.4.3'te de). Sekme / Sayfa süzgeci bunlara uygulanmaz (şirket geneli, 30e).
+    const cashEntries = cash.report({ id: "", role: "admin" }, "", "", "cash").entries.filter(entry => !entry.adjust).map(entry => ({ kind: entry.kind, amount: entry.amount, date: entry.date, source: entry.source }));
     return { ...data, payments, cashEntries };
   }
 
