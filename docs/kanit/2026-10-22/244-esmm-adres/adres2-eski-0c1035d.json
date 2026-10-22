@@ -1,0 +1,38 @@
+{
+  "ad": "244-esmm-adres/adres2-eski-0c1035d",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/esmm-ubl.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T10:29:02.517Z",
+  "sure_sn": 2.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 13,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "e-SMM UBL: program tutarlarıyla aynı, yapı EDM'nin e-SMM örneğiyle aynı, UBL 2.1 şemasına uygun › taraf adresi YALNIZ BuildingName'de (EDM e-SMM örneği): GİB eArsivVeri.xsd adresinde caddeSokak zorunlu ilk öğe; StreetName ile şema hatası, ikisi birlikte adres iki kez",
+      "konum": "test/esmm-ubl.test.mjs:161:3",
+      "hata": "A AccountingSupplierParty · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/wt/edm-gercek/docs/kanit/2026-10-22/244-esmm-adres/adres2-eski-0c1035d.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-adres-eski-0c1035d",
+  "ham_cikti_sha256": "305f68f519d54dca7c6b36c4c10c5c11751525d6d0fa434118cbb4a4dfd28a56",
+  "ham_cikti_bayt": 7428
+}

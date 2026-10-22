@@ -479,6 +479,13 @@ export async function main(argv = process.argv.slice(2), env = process.env) {
       const minimum = args.mod === "gercek" ? 5000 : 10;
       check(/application\/pdf/.test(info.tur || "") && r.buffer.subarray(0, 5).toString("latin1") === "%PDF-" && r.buffer.length >= minimum && String(info.ad || "").includes(doc.number), `${key} ${doc.number}: PDF (${info.bayt} bayt ≥ ${minimum}), indirme adı numarayı taşır`);
       if (args.mod === "gercek") check(readable && info.metin.numara, `${key} ${doc.number}: PDF metninde belge numarası (ETTN ${readable && info.metin.ettn ? "var" : "yok/okunamadı"})`);
+      if (args.mod === "gercek") {
+        // Resmî görüntüde taraf adresleri birer kez (22.10.2026: e-SMM'de StreetName + BuildingName birlikte verilince EDM adresi iki kez bastı).
+        const flat = readable ? text.replace(/\s+/g, " ") : "";
+        const count = needle => flat.split(needle).length - 1;
+        const buyer = doc.profile === "ESMM" ? FIRM : PERSON;
+        check(readable && count(SELLER.address) === 1 && count(buyer.address) === 1, `${key} ${doc.number}: resmî PDF'te satıcı ve alıcı adresi birer kez (satıcı ${count(SELLER.address)}, alıcı ${count(buyer.address)})`);
+      }
     }
     finish();
 

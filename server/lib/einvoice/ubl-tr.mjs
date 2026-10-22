@@ -58,8 +58,9 @@ function party(p, { variant, esmm = false }) {
   const person = p.partyKind === "person" || id.length === 11;
   const address = [
     "<cac:PostalAddress>",
-    tag("cbc:StreetName", p.address || "-"),
-    esmm ? tag("cbc:BuildingName", p.address || "-") : "",
+    // e-SMM: adres EDM'nin e-SMM örneğindeki gibi YALNIZ BuildingName'de (EDM GİB biçiminde caddeSokak'ı ondan doldurur; StreetName de verilirse
+    // resmî PDF'te adres iki kez yazılır — 22.10.2026 gerçek EDM: "Test Cd. 1 Test Cd. 1"). e-Fatura / e-Arşiv StreetName ile (EDM kabul ediyor).
+    esmm ? tag("cbc:BuildingName", p.address || "-") : tag("cbc:StreetName", p.address || "-"),
     tag("cbc:CitySubdivisionName", p.district || p.city || "-"),
     tag("cbc:CityName", p.city || "-"),
     tag("cbc:PostalZone", p.postalCode),
