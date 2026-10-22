@@ -1,0 +1,58 @@
+{
+  "ad": "244-e5/api-eski-ee047cb-kirmizi",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e5/e5-eski-ee047cb/test/personel-ozluk-244.test.mjs",
+  "commit": "ee047cb245ba5d15db4c04713198cc6d50a612bd",
+  "dal": "is/e5",
+  "kirli": 3,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T21:20:27.951Z",
+  "sure_sn": 3.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 15,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 Personel Özlük: iki kişi aynı kartı düzenler (E5, staff-stale) › donuk saatte: B (formu A'dan önce açtı) kaydedince 409 staff-stale; A'nın maaşı korunur; yeniden açınca B'nin kaydı geçer",
+      "konum": "test/personel-ozluk-244.test.mjs:384:3",
+      "hata": "B'nin bayat kaydı reddedilmeli: 200 {\"ok\":true,\"data\":{\"id\":\"staff-1e45f9fd-1e4f-49ce-bfd7-4567e1268df1\",\"fullName\":\"Ali Veli\",\"birthDate\":\"\",\"tcNo\":\"\",\"address\":\"\",\"position\":\"Kâtip\",\"bankName\":\"\",\"iban\":\"TR320010009999901234567890\",\"h · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.4.4 Personel Özlük: iki kişi aynı kartı düzenler (E5, staff-stale) › saat geri alınınca da sürüm ilerler: bayat kayıt yine 409",
+      "konum": "test/personel-ozluk-244.test.mjs:414:3",
+      "hata": "saat geri alındıktan sonra bayat kayıt: 200 · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.4.4 Personel Özlük: iki kişi aynı kartı düzenler (E5, staff-stale) › gövde okunurken gelen yazım görülür: B'nin yavaş gövdesi A'nın kaydından sonra biterse 409",
+      "konum": "test/personel-ozluk-244.test.mjs:429:3",
+      "hata": "gövde okunurken gelen yazım görülmeli: 200 {\"ok\":true,\"data\":{\"id\":\"staff-c1f9691b-bbff-484f-9b82-c4651f0a3072\",\"fullName\":\"Yavaş Gövde\",\"birthDate\":\"\",\"tcNo\":\"\",\"address\":\"\",\"position\":\"\",\"bankName\":\"\",\"iban\":\"TR320010009999901234567890\",\"hir · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.4.4 Personel Özlük: iki kişi aynı kartı düzenler (E5, staff-stale) › silinmiş karta yazım: 404 staff-missing, ileti ne olduğunu ve ne yapılacağını söyler, kart yeniden doğmaz",
+      "konum": "test/personel-ozluk-244.test.mjs:453:3",
+      "hata": "The input did not match the regular expression /siz düzenlerken silinmiş; değişiklikler kaydedilmedi\\. Pencereyi kapatın; kart gerekiyorsa Yeni Personel ile yeniden ekleyin\\./. Input: · 'Personel kartı bulunamadı. Silinmiş olabilir.' (beklenen , gelen Personel kartı bulunamadı. Silinmiş olabilir.)"
+    },
+    {
+      "ad": "2.4.4 Personel Özlük: iki kişi aynı kartı düzenler (E5, staff-stale) › 002 şirketinde aynı kural; sürüm göndermeyen kısmi çağrı yalnız gönderdiği alanı yazar",
+      "konum": "test/personel-ozluk-244.test.mjs:465:3",
+      "hata": "Expected values to be strictly equal: · 200 !== 409 (beklenen 409, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-e5/api-eski-ee047cb-kirmizi.log",
+  "klasor": "/home/user/wt/e5",
+  "ham_cikti_sha256": "cfff581075bfd322584c9bd6d207aa5c7ff0e0500383779e40f1d0f297011841",
+  "ham_cikti_bayt": 12551
+}
