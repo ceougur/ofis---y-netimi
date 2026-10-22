@@ -1,0 +1,72 @@
+{
+ "adim": "c-durum",
+ "baslik": "Durum Sorgula: bütün gönderilen belgeler son duruma kadar",
+ "durum": "geçti",
+ "denetimler": [
+  {
+   "gecti": true,
+   "denetim": "G1 e-SMM TES2026119638719: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G2 e-SMM TES2026119638720: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G3 e-Arşiv TEA2026394979297: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G4 e-Arşiv TEA2026394979298: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G5 e-SMM TES2026119638721: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B1 e-SMM TES2026119638722: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B2 e-SMM TES2026119638723: EDM son durum sent (SEND - SUCCEED)"
+  }
+ ],
+ "kayit": {
+  "G1": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "G2": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "G3": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED"
+  },
+  "G4": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED"
+  },
+  "G5": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "B1": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "B2": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  }
+ }
+}

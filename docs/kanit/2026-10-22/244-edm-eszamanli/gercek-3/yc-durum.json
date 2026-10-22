@@ -1,0 +1,279 @@
+{
+ "adim": "yc-durum",
+ "baslik": "Durum Sorgula: 30 belge, son duruma kadar",
+ "durum": "geçti",
+ "denetimler": [
+  {
+   "gecti": true,
+   "denetim": "A01 TES2026342600914: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A02 TES2026342600915: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A03 TES2026342600916: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A04 TES2026342600917: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A05 TES2026342600918: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A06 TES2026342600919: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A07 TES2026342600920: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A08 TES2026342600921: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A09 TES2026342600922: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A10 TES2026342600923: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A11 TES2026342600924: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A12 TES2026342600925: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A13 TES2026342600926: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A14 TES2026342600927: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A15 TES2026342600928: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A16 TES2026342600929: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A17 TES2026342600930: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A18 TES2026342600931: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A19 TES2026342600932: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A20 TES2026342600933: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B01 TES2026342600934: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B02 TES2026342600935: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B03 TES2026342600936: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B04 TES2026342600937: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B05 TES2026342600938: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B06 TES2026342600939: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B07 TES2026342600940: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B08 TES2026342600941: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B09 TES2026342600942: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B10 TES2026342600943: EDM son durum sent (SEND - SUCCEED)"
+  }
+ ],
+ "kayit": {
+  "A01": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "A02": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "A03": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "A04": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "A05": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "A06": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "A07": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "A08": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "A09": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "A10": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "A11": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "A12": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "A13": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "A14": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "A15": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "A16": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "A17": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "A18": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "A19": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "A20": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "B01": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "B02": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "B03": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "B04": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "B05": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "B06": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "B07": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "B08": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "B09": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  },
+  "B10": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED"
+  }
+ }
+}

@@ -1,0 +1,47 @@
+{
+ "adim": "hazirlik-kullanicilar",
+ "baslik": "Kullanıcılar: fatura yetkili 2 kullanıcı (Muhasebe rolü) + yetkisiz 1 kullanıcı (Personel); ikinci şirket alıcı (Ankara)",
+ "durum": "geçti",
+ "denetimler": [
+  {
+   "gecti": true,
+   "denetim": "kullanıcı fatura1 (muhasebe) açıldı, giriş yaptı (200 / 200)"
+  },
+  {
+   "gecti": true,
+   "denetim": "kullanıcı fatura2 (muhasebe) açıldı, giriş yaptı (200 / 200)"
+  },
+  {
+   "gecti": true,
+   "denetim": "kullanıcı personel1 (personel) açıldı, giriş yaptı (200 / 200)"
+  },
+  {
+   "gecti": true,
+   "denetim": "ikinci şirket alıcının VKN'si EDM'de mükellef değil (Mükellef Sorgula): 4791714970"
+  },
+  {
+   "gecti": true,
+   "denetim": "cari Deneme Hukuk Danışmanlık Ltd. Şti.: 200"
+  }
+ ],
+ "kayit": {
+  "sorgu-1": {
+   "taxNo": "4791714970",
+   "registered": false
+  },
+  "alicilar": [
+   {
+    "ad": "Şirket 1 (İstanbul)",
+    "tur": "VKN"
+   },
+   {
+    "ad": "Şirket 2 (Ankara)",
+    "tur": "VKN"
+   },
+   {
+    "ad": "Kişi (İstanbul)",
+    "tur": "TCKN"
+   }
+  ]
+ }
+}
