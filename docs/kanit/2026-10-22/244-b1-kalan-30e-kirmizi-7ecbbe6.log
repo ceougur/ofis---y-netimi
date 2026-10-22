@@ -1,0 +1,115 @@
+TAP version 13
+# Subtest: 2.4.4 30e: Nakit Akışı Sekme süzgeci (birim)
+    # Subtest: tek sekme: yalnız o sekmenin kalemleri + sekmesiz kalem; iki sekme; süzgeçsiz hepsi
+    not ok 1 - tek sekme: yalnız o sekmenin kalemleri + sekmesiz kalem; iki sekme; süzgeçsiz hepsi
+      ---
+      duration_ms: 5.328403
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/b1-kalan/b1-kalan-eski-7ecbbe6/test/nakit-akis-sekme-30e.test.mjs:38:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Sekme "Borçlular" seçiliyken Beklenen 7.600 + sekmesiz 400 = 8.000 olmalı; görülen 13500
+        
+        13500 !== 8000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 8000
+      actual: 13500
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/b1-kalan/b1-kalan-eski-7ecbbe6/test/nakit-akis-sekme-30e.test.mjs:39:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: Gerçekleşen tahsilat ve Kasa giriş/çıkış sekme süzgecinden bağımsız (sekme taşımaz; Sayfa süzgecindeki gibi)
+    ok 2 - Gerçekleşen tahsilat ve Kasa giriş/çıkış sekme süzgecinden bağımsız (sekme taşımaz; Sayfa süzgecindeki gibi)
+      ---
+      duration_ms: 1.896341
+      type: 'test'
+      ...
+    1..2
+not ok 1 - 2.4.4 30e: Nakit Akışı Sekme süzgeci (birim)
+  ---
+  duration_ms: 9.051671
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/b1-kalan/b1-kalan-eski-7ecbbe6/test/nakit-akis-sekme-30e.test.mjs:26:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.4 30e: Nakit Akışı Sekme süzgeci (API, ekranın ve Excel'in okuduğu uç)
+    # Subtest: her sekme seçeneği: Beklenen yalnız seçili sekmelerin kalemleri; süzgeçsiz toplam = sekmelerin toplamı; satırlar = toplam
+    not ok 1 - her sekme seçeneği: Beklenen yalnız seçili sekmelerin kalemleri; süzgeçsiz toplam = sekmelerin toplamı; satırlar = toplam
+      ---
+      duration_ms: 42.495325
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/b1-kalan/b1-kalan-eski-7ecbbe6/test/nakit-akis-sekme-30e.test.mjs:82:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Sekme "Borçlular" seçiliyken Beklenen 10600 olmalı (yalnız o sekmenin kalemleri); görülen 20100
+        
+        20100 !== 10600
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 10600
+      actual: 20100
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/b1-kalan/b1-kalan-eski-7ecbbe6/test/nakit-akis-sekme-30e.test.mjs:86:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Sayfa ve Sekme süzgeci birlikte; Excel dışa aktarım aynı süzgeçle 200
+    not ok 2 - Sayfa ve Sekme süzgeci birlikte; Excel dışa aktarım aynı süzgeçle 200
+      ---
+      duration_ms: 35.606048
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/b1-kalan/b1-kalan-eski-7ecbbe6/test/nakit-akis-sekme-30e.test.mjs:91:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Sayfa + Sekme "Senetler": 3.700; görülen 20100
+        
+        20100 !== 3700
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 3700
+      actual: 20100
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/b1-kalan/b1-kalan-eski-7ecbbe6/test/nakit-akis-sekme-30e.test.mjs:94:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - 2.4.4 30e: Nakit Akışı Sekme süzgeci (API, ekranın ve Excel'in okuduğu uç)
+  ---
+  duration_ms: 658.625216
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/b1-kalan/b1-kalan-eski-7ecbbe6/test/nakit-akis-sekme-30e.test.mjs:53:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 4
+# suites 2
+# pass 1
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1178.350863

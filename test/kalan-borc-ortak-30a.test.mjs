@@ -186,10 +186,12 @@ describe("2.4.4 30a: Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip, Nakit Ak�
     const vade = (await must("Vade Takip", api.get(`/api/workspace/reports/vade-takip?from=2000-01-01&to=2099-12-31&tabs=${encodeURIComponent("Borçlular")}`))).report;
     assert.deepEqual(vade.rows.map(row => [row.cari, row.amount]).sort(), [["Ece Ak", 3000], ["Tülay Öz", 7600]], "Vade Takip");
     assert.equal(vade.totals.amount, 10600, "Vade Takip toplamı 7.600 + 3.000");
-    // Nakit Akışı sunucuda Sekme süzgecini uygulamıyor (önceden var olan durum, ayrı bulgu) → bütün sekmelerin söz kalemleri, hücrelerden:
-    // Borçlular 7.600 + 3.000 (Mert 0, kalem yok) · Senetler 2.500 + 1.200 · Kira 3.000 + 1.800 · Ödeme Sözleri 1.000 = 20.100.
+    // Süzgeçsiz: bütün sekmelerin söz kalemleri, hücrelerden — Borçlular 7.600 + 3.000 (Mert 0, kalem yok) · Senetler 2.500 + 1.200 · Kira 3.000 + 1.800 ·
+    // Ödeme Sözleri 1.000 = 20.100. Sekme "Borçlular" (30e'den beri süzgeç uygulanır): 7.600 + 3.000 = 10.600.
     const akis = (await must("Nakit Akışı", api.get("/api/workspace/reports/nakit-akis?from=2000-01-01&to=2099-12-31"))).report;
     assert.equal(akis.totals.expected, 20100, `Nakit Akışı Beklenen (Kalan Borç hücrelerinden) 20.100; görülen ${akis.totals.expected}`);
+    const akisTab = (await must("Nakit Akışı sekme", api.get(`/api/workspace/reports/nakit-akis?from=2000-01-01&to=2099-12-31&tabs=${encodeURIComponent("Borçlular")}`))).report;
+    assert.equal(akisTab.totals.expected, 10600, `Nakit Akışı Beklenen (Borçlular) 10.600; görülen ${akisTab.totals.expected}`);
     const rep = await ekstre(`&tabs=${encodeURIComponent("Borçlular")}`);
     assert.equal(rep.groups.find(group => group.cari === "Tülay Öz").debit, of("Tülay Öz").debt, "aynı kişi Tablodaki Kişiler ve takvimde aynı Kalan Borç");
   });

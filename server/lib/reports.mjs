@@ -320,6 +320,9 @@ export function nakitAkis({ items = [], payments = [], cashEntries = [], filters
     const date = itemDate(item);
     if (date === null || !inRange(date, filters) || item.state === "paid" || item.settled) continue;
     if (filters.sessions.length && !filters.sessions.includes(item.session)) continue;
+    // 2.4.4 (30e): Sekme süzgeci Vade Takip ile aynı kuralla (sekmesi olmayan kalem geçer). 2.4.3'ten beri pencere Sekme'yi gönderiyor, burada yok sayılıyordu.
+    // Gerçekleşen tahsilat ve Kasa giriş/çıkış sekme taşımaz; Sayfa süzgecinde olduğu gibi süzülmez.
+    if (filters.tabs.length && item.tab && !filters.tabs.includes(item.tab)) continue;
     const amount = item.remaining ?? item.amount;
     if (amount === null || amount === undefined) continue;
     const bucket = ensure(bucketOf(date, granularity));
