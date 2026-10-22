@@ -13,10 +13,17 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
   Not defteri: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad (ajan-ortak.md = ajan kuralları; kapsayıcıyla gider).
 - ÇALIŞMA DALINDA (yeşil CI): madde 1–4, 6, 7, 9, 10, 12-UX16, 13, 14, 19, 20, 21, 23, 25, 27, 28, 29 (CI #849–#857). Çalışma dalında ama CI #858 KIRMIZI (senaryo-222): 5, 16, 18,
   26, 23 eki → düzeltmesi 7c aday 3'te.
-- ADAY 3 (fd0b0fc; kapı koşuyor, 09:10'da başladı): 22 esmm2 735da8f, 5a–5c kayit 8ea0406, 11 ux9 a61d561, 15 ux18 55584e6, 8 ui11 242029a, 7c s222 761dad7 (+ 17 secilen fdb1a18 esmm2
-  içinde). Kapı yeşilse: çalışma dalına birleştir, push, CI oku; 5/16/18/26/23-ek + aday 3 maddelerinin üstünü CI yeşilince çiz.
-- ADAY 4'e girecekler: 12 UX15 (is/ux15 3a58fda, bitti), 7b B4 (is/b4, ajan sürüyor), 24 e-SMM açma + gerçek EDM düzeneği (is/edm, fd0b0fc tabanlı, ajan sürüyor).
-- MADDE 24 GERÇEK EDM KOŞUSU ana oturumca: edm ajanının betiği (komut satırı raporunda), kimlik YALNIZ ortam değişkeniyle o komutta (EDM test hesabı sohbette — dosyaya YAZILMAZ;
+- ADAY 3 (fd0b0fc = 22 esmm2 735da8f, 5a–5c 8ea0406, 11 a61d561, 15 55584e6, 8 242029a, 7c 761dad7, 17 fdb1a18): tam npm test 3066/3066 GEÇTİ; e2e 5/63 geçtikten sonra
+  kapı DURDURULDU (10:05) — ADAY 4 aday 3'ü kapsıyor, e2e'ler bir kez aday 4'te koşar.
+- ADAY 4 = /home/user/wt/aday4 (dal aday4) 0c1035d = fd0b0fc + 12 UX15 (b6c9fae; çakışmalar anlamca: UX18 invoice-bonded korundu + editChronologyProblem; deferableDoc
+  sendKind ile; onayda !held + draftUploadFor) + 7b B4 (f1c8614, yalnız 2 test dosyası) + 24 kod/düzenek (a67cc5d: server.mjs esmmEnabled true, tools/edm-gercek.mjs).
+  Birleşim sonrası dar test 98/98 (275ff23). KAPI: aday-kos.sh (tam npm test + ci.yml'nin 64 e2e'si); arka plan görevi 2 sa'te kesilirse
+  <not defteri>/aday-kos-devam.sh <worktree> <etiket> kanıtı olmayan e2e'leri sürdürür (GEÇTİ'yi atlar, BAŞARISIZ'ı yeniden koşmaz). Yeşilse: kanıt commit + çalışma dalına
+  `git merge --no-ff aday4` + push + CI; 5/16/18/26/23-ek + aday 3–4 maddelerinin üstü CI yeşilince çizilir.
+- 31a BAĞIMSIZ KÂHİN ERKEN BAŞLADI (09:45): iki ajan (kahin-ebelge, kahin-cari; kimlikler not defteri devam-ajanlar.md), kural kaynağı <not defteri>/kahin-hazirlik/KURALLAR-244.md
+  (KÂHİN KURALI metinleri + CLAUDE.md kararları + GİB; etiket [KULLANICI]/[GİB] fark = BULGU, [AJAN] fark = İNCELE); taban fd0b0fc; son koşu ana oturumca son adayda.
+- MADDE 24 GERÇEK EDM KOŞUSU ana oturumca (10:15 başladı, /home/user/wt/edm-gercek = 0c1035d ayrık kopya; kuru koşu orada 43/43): `EDM_TEST_KULLANICI=… EDM_TEST_PAROLA=…
+  node tools/kanit.mjs kos 244-edm/gercek -- node … tools/edm-gercek.mjs --gercek` (çıkış 2 = giriş başarısız → YENİDEN DENENMEZ, kullanıcıya sorulur), kimlik YALNIZ ortam değişkeniyle o komutta (EDM test hesabı sohbette — dosyaya YAZILMAZ;
   kaybolduysa kullanıcıdan istenir; parolanın sonundaki nokta belirsiz — giriş başarısızsa YENİDEN DENEME, kullanıcıya sor, hesap kilitlenebilir). Koşudan sonra kullanıcıya OZET.md
   (gönderilen belge no + ETTN listesi; kullanıcı test portalında bakacak).
 - SONRA: 30 (tam test + BÜTÜN e2e, CI dışı dahil; yedek tatbikatı; v2.4.3 → 2.4.4 göçü; ana oturumun kullanıcı gözüyle iş akışı) → 31 bağımsız tur (31a kâhin — teslim notlarındaki
