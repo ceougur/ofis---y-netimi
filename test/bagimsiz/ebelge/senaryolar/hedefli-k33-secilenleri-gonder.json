@@ -1,0 +1,190 @@
+{
+ "dil": "destekofis-ebelge/1",
+ "ad": "hedefli-k33-secilenleri-gonder",
+ "tohum": 0,
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi"
+ },
+ "adimlar": [
+  {
+   "islem": "kaydet",
+   "belge": "B1",
+   "cari": "K1",
+   "tarih": "2026-06-14",
+   "gonder": "sonra",
+   "no": 1
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B2",
+   "cari": "K5",
+   "tarih": "2026-06-15",
+   "gonder": "sonra",
+   "no": 2
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B3",
+   "cari": "K2",
+   "tarih": "2026-06-13",
+   "gonder": "sonra",
+   "no": 3
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B4",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "sonra",
+   "no": 4
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B5",
+   "cari": "K5",
+   "tarih": "2026-06-17",
+   "gonder": "sonra",
+   "no": 5
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "secili",
+   "belgeler": [
+    "B4"
+   ],
+   "eski": "vazgec",
+   "no": 6
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "secili",
+   "belgeler": [
+    "B2",
+    "B4"
+   ],
+   "eski": "vazgec",
+   "no": 7
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "secili",
+   "belgeler": [
+    "B4"
+   ],
+   "eski": "ekle",
+   "no": 8
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "secili",
+   "belgeler": [
+    "B5"
+   ],
+   "eski": "vazgec",
+   "no": 9
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B6",
+   "cari": "K3",
+   "tarih": "2026-06-16",
+   "gonder": "sonra",
+   "no": 10
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B7",
+   "cari": "K2",
+   "tarih": "2026-06-17",
+   "gonder": "sonra",
+   "no": 11
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "secili",
+   "belgeler": [
+    "B7"
+   ],
+   "eski": "vazgec",
+   "no": 12
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "secili",
+   "belgeler": [
+    "B7"
+   ],
+   "eski": "ekle",
+   "no": 13
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B8",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "sonra",
+   "no": 14
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "secili",
+   "belgeler": [
+    "B8",
+    "B5",
+    "B6"
+   ],
+   "eski": "vazgec",
+   "no": 15
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B9",
+   "cari": "K4",
+   "tarih": "2026-06-17",
+   "gonder": "sonra",
+   "no": 16
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 1,
+   "no": 17
+  },
+  {
+   "islem": "kart_gonder",
+   "belge": "B9",
+   "no": 18
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B10",
+   "cari": "K1",
+   "tarih": "2026-06-18",
+   "gonder": "sonra",
+   "no": 19
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "secili",
+   "belgeler": [
+    "B10"
+   ],
+   "eski": "vazgec",
+   "no": 20
+  },
+  {
+   "islem": "ag",
+   "durum": "var",
+   "no": 21
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 22
+  }
+ ]
+}

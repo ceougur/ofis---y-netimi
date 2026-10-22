@@ -165,6 +165,30 @@ class Dunya:
                 return x["ad"]
         return None
 
+    def numara_alacak(self, b, bilinen=False):
+        """K33: seçili belge bu turda numara almaya aday mı — numarasız bekleyen, tarih sırasına sığıyor, kalıcı engelsiz (K2 posta kutusu
+        geçici engeldir, K9: numara sırasına girer). bilinen=True: K3 yalnız program cariyi mükellef olarak işaretlediyse kalıcı sayılır
+        (ön denetim entegratöre gitmeden yapılır; alıcının gerçekte mükellef olduğu henüz öğrenilmemiş olabilir — çatal, KARARLAR K33)."""
+        if b.get("var") is not True or b["tur"] == "kagit" or self.bekleyen(b) is not True or b["numara"] != "" or self.tarih_engeli(b):
+            return False
+        e = self.engel(b)
+        if bilinen and e == "alici-efatura" and not self.cariler[b["cari"]]["isaret"]:
+            e = None
+        return e in (None, "pk-yok")
+
+    def secim_eskileri(self, adlar, bilinen=False):
+        """K33 (müşteri isteği 19.10.2026, CLAUDE.md "MÜŞTERİ İSTEKLERİ → 2.4.4" (1)): Seçilenleri Gönder'de numara alacak her seçili belge için
+        aynı seri+yılda, SEÇİLMEMİŞ, daha eski tarihli (aynı gün değil), numarasız bekleyen ve seriyi bekleten (K8/K9: kendi başına
+        gönderilebilir ya da geçici engelli) belgeler — eskiden yeniye. Boş değilse gönderim BAŞLAMAZ: önce sorulur."""
+        aday = [b for b in self.belgeler.values() if b.get("ad") in adlar and self.numara_alacak(b, bilinen)]
+        sonuc = []
+        for x in sorted(self.belgeler.values(), key=lambda y: (y.get("tarih", ""), y.get("sira", 0))):
+            if x.get("var") is not True or x["ad"] in adlar or not self.numara_alacak(x, bilinen):
+                continue
+            if any(b["tur"] == x["tur"] and self.seri_yil(b) == self.seri_yil(x) and x["tarih"] < b["tarih"] for b in aday):
+                sonuc.append(x["ad"])
+        return sonuc
+
     def sira_listesi(self, adlar=None):
         """K10: Tümünü Gönder eskiden yeniye (tarih, sonra yazım sırası — ders 31)."""
         xs = [b for b in self.belgeler.values() if self.bekleyen(b) is True or (b["var"] is True and b["edm"] and not b["prog"] and not b["iptal"] and not b["silindi"])]
@@ -368,8 +392,32 @@ def uygula(d, adim):
             return sonuc
         return [w for w, _ in gonder(d, b["ad"])]
     if i == "tumunu_gonder":
-        adlar = None if adim.get("kapsam", "hepsi") == "hepsi" else set(adim["belgeler"])
-        return tur_gonder(d, adlar)
+        if adim.get("kapsam", "hepsi") == "hepsi":
+            return tur_gonder(d, None)
+        # K33 (müşteri isteği 19.10.2026): Seçilenleri Gönder — seçilmemiş daha eski tarihli bekleyen varken gönderim BAŞLAMAZ, gönderimden ÖNCE
+        # sorulur (yanıt 4xx: hiçbir belge numara almaz, EDM'ye gidilmez; sessiz atlama ya da yarım tur yok). Kullanıcı "onları da ekle" derse
+        # (adım alanı "eski": "ekle") seçim o belgelerle genişler ve tur K10 sırasıyla yürür; "vazgec" ise hiçbir şey olmaz. Eski belge yoksa
+        # yalnız seçilenler gider (K10). Çatal: alıcısı gerçekte mükellef olup program henüz öğrenmemiş e-Arşiv belge (K3) ön denetimde
+        # gönderilebilir sayılabilir (bilinen) ya da sayılmayabilir.
+        adlar = set(adim["belgeler"])
+        sonuc = []
+        for bilinen in (False, True):
+            w = d.kopya("K33: K3 yalnız işaretli caride bilinir" if bilinen else None)
+            eski = w.secim_eskileri(adlar, bilinen)
+            if bilinen and eski == d.secim_eskileri(adlar, False):
+                continue  # aynı dünya
+            if not eski:
+                for x in tur_gonder(w, adlar):
+                    x.yanit = "2xx"
+                    sonuc.append(x)
+            elif adim.get("eski") == "ekle":
+                for x in tur_gonder(w, adlar | set(eski)):
+                    x.yanit = "2xx"
+                    sonuc.append(x)
+            else:
+                w.yanit = "4xx"
+                sonuc.append(w)
+        return sonuc
     if i == "esz_tumunu_gonder":
         # K19: iki oturum aynı anda Tümünü Gönder: sonuç tek turla aynı; "zaten gönderildi" hata değildir.
         # K32 (baş mimar kararı 18.10.2026): bağlantı hiç kurulamadıysa program o istekte verdiği numarayı, serinin son numarasıysa geri

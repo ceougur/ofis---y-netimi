@@ -6,7 +6,8 @@
 
 Senaryo: 5 cari (iki kişi → e-Arşiv; işaretli mükellef + PK → e-Fatura; işaretli PK'sız → e-Fatura, gönderilemez; işaretsiz gerçek mükellef →
 e-Arşiv, gönderilemez), iki e-seri (TEF, TEA) + kâğıt (FIS). Başlangıç günü tohumdan: ay ortası, ay sonu, yıl dönümü (27.12 → ocak), şubat.
-İşlemler: kaydet (sonra/şimdi; geriye tarihli, bugün, ileri tarih reddi), kâğıt kaydet, kartta Gönder, Tümünü Gönder (hepsi / seçili),
+İşlemler: kaydet (sonra/şimdi; geriye tarihli, bugün, ileri tarih reddi), kâğıt kaydet, kartta Gönder, Tümünü Gönder (hepsi) / Seçilenleri Gönder
+(seçili; K33 ön sorusuna "onları da ekle" ya da "vazgeç"),
 iki oturum eşzamanlı Tümünü Gönder, tur sürerken Listeden Sil, Listeden Sil, İptal, Düzenle (tarih; numaralıda tür), EDM arızası (geçici
 hata, kopma önce/sonra), ağ yok/var, Durum Sorgula, gün ilerlet. Son iki adım her zaman: ağ var + Tümünü Gönder.
 Üreteç hedef seçerken modelin ilk dünyasına bakar (anlamlı hedefler için); beklenen değer YAZMAZ.
@@ -89,7 +90,9 @@ def uret(tohum, islem=100):
         elif secim == "secili":
             xs = belgeler(lambda b: b["tur"] != "kagit" and not b["prog"])
             if xs:
-                ekle({"islem": "tumunu_gonder", "kapsam": "secili", "belgeler": sorted({b["ad"] for b in r.sample(xs, min(len(xs), r.randint(1, 3)))})})
+                # K33: seçilmemiş eski bekleyen sorulursa kullanıcının yanıtı ("ekle" / "vazgec"); RNG akışını değiştirmemek için adım sırasından.
+                ekle({"islem": "tumunu_gonder", "kapsam": "secili", "belgeler": sorted({b["ad"] for b in r.sample(xs, min(len(xs), r.randint(1, 3)))}),
+                      "eski": "ekle" if len(senaryo["adimlar"]) % 2 == 0 else "vazgec"})
         elif secim == "esz":
             ekle({"islem": "esz_tumunu_gonder"})
         elif secim == "tur_sil":

@@ -2842,9 +2842,13 @@
       if (!go || view.sendProgress) return;
     }
     // Ön denetimle gönderim arasında başka oturum daha eski tarihli belge kaydettiyse sunucu ilk istekte yine sorar (409); soru yinelenir.
-    for (let ask = 0; ask < 3; ask += 1) {
+    for (let ask = 0; ; ask += 1) {
       const older = await runSend({ only }, total, "only");
       if (!older) return;
+      if (ask >= 2) {
+        HOF.toast(`Gönderilmedi: gönderim hazırlanırken daha eski tarihli belgeler kaydedilmeye devam ediyor (${Number(older.count).toLocaleString("tr-TR")} belge). Hiçbir belgeye numara verilmedi; biraz sonra yeniden deneyin ya da Tümünü Gönder'i kullanın.`, { type: "info", timeout: 10000 });
+        return;
+      }
       if (!(await olderQuestion(older, only.length)) || view.sendProgress) {
         HOF.toast(`Gönderilmedi: seçilmemiş daha eski tarihli ${Number(older.count).toLocaleString("tr-TR")} belge önce gönderilmeli. Hiçbir belgeye numara verilmedi.`, { type: "info", timeout: 8000 });
         return;
@@ -2861,6 +2865,7 @@
   async function runSend(base, total, mode) {
     const again = mode === "only" ? "Seçilenleri Gönder" : "Tümünü Gönder";
     const listed = new Set((view.list?.invoices || []).map(doc => doc.id));
+    const tab = view.tab;
     const results = [];
     const seen = new Set();
     let sent = 0;
@@ -2945,8 +2950,9 @@
     if (remaining && !stopped) parts.push(`${remaining.toLocaleString("tr-TR")} belge daha bekliyor; ${again}'e yeniden basın`);
     const bad = failed.length || held.length || busy.length || remaining || stopped || waitingStop.length;
     HOF.toast(`${parts.join("; ")}.`, { type: failed.length || held.length || stopped ? "error" : busy.length || remaining || withdrawn.length || notPending.length ? "info" : "success", timeout: bad ? 15000 : 6000 });
-    // Seçilenleri Gönder: gönderilemeyenler (listede görünenler) seçili kalır, gidenler seçimden düşer (toplu işlemlerin kuralı, bulkOutcome).
-    if (mode === "only") view.selected = new Set(results.filter(item => !item.ok && listed.has(item.id) && item.reason !== "not-pending").map(item => item.id));
+    // Seçilenleri Gönder: gönderilemeyenler (listede görünenler) seçili kalır, gidenler seçimden düşer (toplu işlemlerin kuralı, bulkOutcome). Gönderim
+    // sürerken sekme değiştiyse (seçim zaten temizlendi) yeni sekmede görünmeyen belgeler seçilmez.
+    if (mode === "only" && view.tab === tab) view.selected = new Set(results.filter(item => !item.ok && listed.has(item.id) && item.reason !== "not-pending").map(item => item.id));
     loadList();
     return null;
   }

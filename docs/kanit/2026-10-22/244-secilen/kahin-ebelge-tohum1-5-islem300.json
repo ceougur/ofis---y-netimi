@@ -1,0 +1,32 @@
+{
+  "ad": "244-secilen/kahin-ebelge-tohum1-5-islem300",
+  "komut": "python3 test/bagimsiz/ebelge/fark.py --tohumlar 1-5 --islem 300 --kucult --butce 25 --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/kahin-300",
+  "commit": "e83added2c7fd32e5797608869606d71f7c5707e",
+  "dal": "is/secilen",
+  "kirli": 6,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:43:46.339Z",
+  "sure_sn": 73.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 5,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-secilen/kahin-ebelge-tohum1-5-islem300.log",
+  "klasor": "/home/user/wt/secilen",
+  "ham_cikti_sha256": "d696aa5b6c6af99bd762c4caa61f9ab958f6cd7b96634cd9c632d986facc2a66",
+  "ham_cikti_bayt": 574
+}

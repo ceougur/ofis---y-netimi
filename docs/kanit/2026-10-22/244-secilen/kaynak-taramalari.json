@@ -1,0 +1,32 @@
+{
+  "ad": "244-secilen/kaynak-taramalari",
+  "komut": "node --test test/ci-kapi-listesi.test.mjs test/kanit-araci.test.mjs test/yazim-duzeni.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs",
+  "commit": "e83added2c7fd32e5797608869606d71f7c5707e",
+  "dal": "is/secilen",
+  "kirli": 8,
+  "izlenmeyen": 17,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:49:17.817Z",
+  "sure_sn": 2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 68,
+    "gecen": 68,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-secilen/kaynak-taramalari.log",
+  "klasor": "/home/user/wt/secilen",
+  "ham_cikti_sha256": "349872ac7fa7bee56338f55fe6e60faceb544d4900ec2fad6741f782a13231bc",
+  "ham_cikti_bayt": 20051
+}

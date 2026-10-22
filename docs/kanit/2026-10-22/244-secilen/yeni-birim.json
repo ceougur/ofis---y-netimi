@@ -1,0 +1,32 @@
+{
+  "ad": "244-secilen/yeni-birim",
+  "komut": "node --test test/ebelge-244-secilenleri-gonder.test.mjs",
+  "commit": "e83added2c7fd32e5797608869606d71f7c5707e",
+  "dal": "is/secilen",
+  "kirli": 6,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:43:59.750Z",
+  "sure_sn": 10.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 11,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-secilen/yeni-birim.log",
+  "klasor": "/home/user/wt/secilen",
+  "ham_cikti_sha256": "3e7366388fbc41a877d4ae498fbc9b25de77ef279e9e43cd5ca9e52e16680f67",
+  "ham_cikti_bayt": 4596
+}

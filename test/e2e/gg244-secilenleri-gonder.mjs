@@ -7,6 +7,8 @@
 //   B. Eski belge yokken soru yok: "N Belge Gönderilsin mi?" → yalnız seçilenler gider; seçilmeyen bekler.
 //   C. Sayı yalnız Gönderilecekler'dekileri sayar: Tüm sekmesinde gönderilmiş ve iptal edilmiş belge seçilse de (2: bekleyen + kalıcı engelli bekleyen);
 //      onayda kalıcı engelli "gönderilmez" diye söylenir, yalnız bekleyen gider.
+//   D. Onay penceresi açıkken başka oturum daha eski tarihli belge kaydeder (e-Fatura serisi): sunucu gönderimden önce yine sorar (409) — Vazgeç → 0
+//      gönderim; yeniden → Ekle → TEF sırası = tarih sırası.
 // Eski kodda (163dd5d) düğme yoktur → A kırmızı; DEPO=<eski kopya> ile koşulur. Her soru/onay yanıtı nedeniyle yazılır (ders 34). Çıkış: "N geçti, M kaldı".
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -17,7 +19,7 @@ import { chromium } from "playwright";
 const ROOT = process.env.DEPO ? path.resolve(process.env.DEPO) : path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const { createApp } = await import(pathToFileURL(path.join(ROOT, "server", "app.mjs")).href);
 const { createClient, installPageClock } = await import(pathToFileURL(path.join(ROOT, "test", "helpers.mjs")).href);
-const { OUR_VKN, startMockEdm } = await import(pathToFileURL(path.join(ROOT, "test", "einvoice-mock.mjs")).href);
+const { BUYER_VKN, OUR_VKN, startMockEdm } = await import(pathToFileURL(path.join(ROOT, "test", "einvoice-mock.mjs")).href);
 const { resetEdmCaches } = await import(pathToFileURL(path.join(ROOT, "server", "lib", "einvoice", "edm.mjs")).href);
 
 const PASS = "Prova-Admin-2026!";
@@ -197,6 +199,32 @@ try {
   ok(/^TEA2026/.test(row(next[2].id).number), "bekleyen belge gönderildi");
   const summary = (await toasts()).find(item => /belge gönderildi/.test(item)) || "";
   ok(/1 belge gönderildi; 1 belge gönderilemedi: TEA serisinde son gönderilen belge/.test(summary), `özet kalıcı engelin nedenini söyler (${summary.slice(0, 260)})`);
+
+  console.log("D) onay penceresi açıkken başka oturum daha eski belge kaydeder → gönderim yine ÖNCE sorulur (409); Vazgeç → hiçbir şey; yeniden → Ekle");
+  await clearToasts();
+  const firm = await must("e-Fatura carisi", api.post("/api/workspace/accounts", { name: "Alıcı Ticaret A.Ş.", type: "customer", taxNo: BUYER_VKN, taxOffice: "Kavaklıdere", address: "Cinnah Cd. 10", district: "Çankaya", city: "Ankara", eInvoice: true, eAlias: "urn:mail:defaultpk@alici.com.tr" }));
+  const efNew = await must("e-Fatura", api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: firm.id, issueDate: day(0), lines: [{ name: "Hizmet", qty: 1, unitPrice: 500, vatRate: 20 }], payment: { rest: "open" }, eSend: "later" }));
+  ok(efNew.profile === "TEMELFATURA", `ön koşul: e-Fatura (TEF) serisi (${efNew.profile})`);
+  await openTab("pending");
+  await check(efNew.id);
+  await page.waitForSelector(selButton);
+  before = sends();
+  await page.click(selButton);
+  await page.waitForSelector(`${dialog} [data-answer="yes"]`);
+  // Onay penceresi açıkken (ön denetim geçti) başka kullanıcı aynı seride daha eski tarihli belge kaydeder.
+  const efOld = await must("e-Fatura eski", api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: firm.id, issueDate: day(-2), lines: [{ name: "Hizmet", qty: 1, unitPrice: 400, vatRate: 20 }], payment: { rest: "open" }, eSend: "later" }));
+  await answer("^1 Belge Gönderilsin mi\\?$", true, "ön denetim geçmişti; bu arada eski belge kaydedildi");
+  const raced = await answer("Önce Daha Eski Tarihli Belgeler Gönderilmeli", false, "sunucu gönderimden önce yeniden sordu; kullanıcı vazgeçer");
+  ok(raced && /daha eski tarihli 1 belge/.test(raced), `yarışta soru yeniden çıktı (${String(raced).slice(0, 160)})`);
+  await sleep(500);
+  ok(sends() === before, `yarışta EDM'ye gönderim yok (${sends() - before})`);
+  ok(!row(efNew.id).number && !row(efOld.id).number, "yarışta hiçbir belge numara almadı");
+  await clearToasts();
+  await page.click(selButton);
+  await answer("Önce Daha Eski Tarihli Belgeler Gönderilmeli", true, "kullanıcı eskiyi de ekler");
+  await page.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => /belge gönderildi/.test(node.textContent)), null, { timeout: 30000 }).catch(() => null);
+  ok((await toasts()).some(item => /hof-toast-success[^|]*\|2 belge gönderildi\.$/.test(item)), `bitiş "2 belge gönderildi." (${(await toasts()).join(" ‖ ").slice(0, 300)})`);
+  ok(row(efOld.id).number === "TEF2026000000001" && row(efNew.id).number === "TEF2026000000002", `TEF sırası = tarih sırası (${row(efOld.id).number}, ${row(efNew.id).number})`);
 } catch (error) {
   failed += 1;
   console.log(`✗ beklenmeyen hata: ${error.stack || error.message}`);
