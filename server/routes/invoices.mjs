@@ -1760,14 +1760,12 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // tarihli olamaz (iptal edilmiş numara da sırada yer tutar).
   // 2.4.4 (UX15): numara / tarih çakışmaları kayıtta (writeIssued, editInvoice) ve formun ön hesabında (calc → numberingCheck) AYNI fonksiyonlarla
   // denetlenir — form onaydan önce söyler, kural tek yerde kalır. Asıl güvence işlem içindeki denetimdir (iki kişi aynı anda kaydederse).
-  // later: "Kes, Sonra Gönder" — numara gönderimde serinin SONUNA verilir; koşul aynı (serinin son numaralı belgesinden eski tarih olmaz), ileti farklı.
-  function chronologyProblem(series, year, date, { later = false } = {}) {
+  // "Kes, Sonra Gönder" de (numarası gönderimde serinin SONUNA verilir) aynı koşul ve AYNI ileti: ön hesap kullanıcının hangi düğmeye basacağını
+  // bilmez; ileti düğmeye göre değişince form ile kayıt farklı konuşuyordu (kâhin I23, 22.10.2026).
+  function chronologyProblem(series, year, date) {
     const last = store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0 ORDER BY seq DESC LIMIT 1", series, year);
     if (!(last && last.issueDate > date)) return "";
-    const head = later
-      ? `${series} serisinde son gönderilen belge ${last.number} ${dayText(last.issueDate)} tarihli; numarası gönderimde verilecek bu belge ondan eski tarihli olamaz (numara ve tarih sırası).`
-      : `${series} serisinde son belge ${last.number} ${dayText(last.issueDate)} tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı).`;
-    return `${head} Belge tarihini ${dayText(last.issueDate)} ya da sonrası yapın.`;
+    return `${series} serisinde son belge ${last.number} ${dayText(last.issueDate)} tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı). Belge tarihini ${dayText(last.issueDate)} ya da sonrası yapın.`;
   }
   function assertChronology(series, year, date) {
     const problem = chronologyProblem(series, year, date);
@@ -2038,9 +2036,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         series = numberSeriesOf(doc);
         year = Number(doc.date.slice(0, 4));
         // Dar kontrol 2 (B5): numarasız kaydedilen belge (Kes, Sonra Gönder) numarasını gönderimde serinin SONUNA alır; serinin son numaralı
-        // belgesinden eski tarihliyse doğar doğmaz kalıcı kronoloji engeline düşerdi. D4 (Düzenle'de tarih) ile aynı kural, kayıtta reddedilir.
-        const tail = chronologyProblem(series, year, doc.date, { later: true });
-        if (tail) fail400(tail, "issueDate", { code: "chronology" });
+        // belgesinden eski tarihliyse doğar doğmaz kalıcı kronoloji engeline düşerdi. D4 (Düzenle'de tarih) ile aynı kural, kayıtta reddedilir
+        // (ileti ön hesapla aynı — I23).
+        assertChronology(series, year, doc.date);
       } else if (ownNumbered(doc)) {
         series = numberSeriesOf(doc);
         year = Number(doc.date.slice(0, 4));

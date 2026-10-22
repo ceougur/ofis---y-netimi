@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday5-kahin-ebelge-senaryo",
+  "komut": "npm run test:kahin-ebelge -- --senaryo test/bagimsiz/ebelge/senaryolar --ux15 acik",
+  "commit": "712374732b4c6563f0f826596b1eba40153c5c35",
+  "dal": "aday5",
+  "kirli": 4,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T12:03:46.692Z",
+  "sure_sn": 30.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 19,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday5-kahin-ebelge-senaryo.log",
+  "klasor": "/home/user/wt/aday5",
+  "ham_cikti_sha256": "e9a7516e8ddce1dedaf3d63bd33f632ca38781a884328840def97281c2d58e4d",
+  "ham_cikti_bayt": 3085
+}
