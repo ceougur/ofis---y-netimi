@@ -552,6 +552,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   DEVAM (22.10.2026): teknik@ otomatik yanıtı konu başında kayıtlı VKN/TCKN istedi; kullanıcının canlı EDM hesabı YOK → talep test portalından ("Destek Talebi
   Oluştur", test kullanıcısı adıyla) açıldı. Zip'teki belgeler (kullanıcı: "yeterli gelmiyor mu") entegrasyona yeterli, karekoda değil: örnek XML EDM'nin
   general-esmm.xslt şablonuna işaret ediyor; TEMPLATE_CONTENT iki biçimde denendi, kullanılmadı; kullanıcı portalda EDM şablonunu doğruladı.
+  EDM YANITI (22.10.2026 14:43 TR, Teknik Operasyon Yöneticisi; kullanıcıya e-posta): (1) karekodlar GİB standardına uygun, CANLIDA e-SMM karekodu da uygun; (2) özel
+  XSLT desteği var, şablon dosyası .xslt uzantılı olmalı; (3) VKN'li mükellefte unvan cac:PartyName'den, şahısta FirstName + FamilyName'den. → TEMPLATE_CONTENT
+  "XSLT" türüyle de denendi (deney-template3), kullanılmadı (özel şablon büyük olasılıkla portala yüklenir). KARAR (baş mimar): EDM'nin canlı şablonuna güvenilir,
+  kendi e-SMM şablonu YAPILMAZ (gerekirse ayrı iş); VKN'li düzenleyende unvan yalnız PartyName'de (32e59c0 Person bölmesi geri alınır, esmm2 ajanı); test
+  ortamının e-SMM görüntüsü canlıdan farklı → BİLİNEN SINIR + kılavuza not; ilk canlı deneme makbuzunda karekod ve unvan okunur.
 - KARAR (baş mimar, 22.10.2026; kullanıcının "en yaygın ve doğru uygulama" ilkesiyle — kullanıcıya bildirildi): (1) e-SMM makbuzu Gönderilecekler'den bırakılınca
   KÂĞIT SMM serisinden numara alır, ekranda "Kâğıt Makbuz Olarak Bırak" (faturada "Müşteri Fişi Olarak Bırak" aynen) — kâhin bulgusu, is/esmm-fis 7502485; (2) verilmiş
   kâğıt/fiş numarası (FIS, SMM) BİR DAHA KULLANILMAZ: bırakılan belge sonra e-Belge olarak gönderilse de numarası seride kullanılmış sayılır (bugün 2.4.3'ten beri
