@@ -1,0 +1,38 @@
+{
+  "ad": "244-ux18/mutasyon-M8-karsiliksiz-taksitliyi-acar",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ux18/ux18-mut-M8-karsiliksiz-taksitliyi-acar/test/ux18-cek-fatura-244.test.mjs",
+  "commit": "6aeb05c711d4824f67f20d939161ae459b2b867d",
+  "dal": "is/ux18",
+  "kirli": 13,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T06:17:27.475Z",
+  "sure_sn": 5.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 13,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T3b faturayla alınan çek (faturanın kendi evrakı) karşılıksız dönünce de fatura açılır; taksitli faturada açık = kartın kalanı (değişmedi)",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:171:3",
+      "hata": "taksitli fatura: açık = kartın kalanı (karşılıksız serbest borç) · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ux18/mutasyon-M8-karsiliksiz-taksitliyi-acar.log",
+  "klasor": "/home/user/wt/ux18",
+  "ham_cikti_sha256": "296f14028248863a36d20e1e0ba408638f06687b26ad45a22481296e03c8a15f",
+  "ham_cikti_bayt": 7077
+}

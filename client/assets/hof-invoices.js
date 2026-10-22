@@ -2431,6 +2431,10 @@
       modal?.close();
       return HOF.plans.open(doc.plan.id);
     }
+    // 2.4.4 UX18 (kullanıcı kararı 21.10.2026): Çek / Senet de bu faturayı kapatır — evrak formu cari, tutar ve Kapatılacak Fatura (bu fatura) dolu
+    // açılır; bağ yalnız evrakın olayında (fatura iptal edilirse evrak portföyde kalır). Cari formundaki seçenekle aynı koşul (yetki).
+    const method = HOF.methodField("cash", { incoming: sale });
+    if (HOF.cheques?.newFor && HOF.can("cheques.manage")) method.options = [...method.options, { value: "cheque", label: sale ? "Çek / Senet (portföye alınır)" : "Çek / Senet (verilir)" }];
     HOF.formModal({
       title: sale ? "Tahsilat Ekle" : "Ödeme Yap",
       eyebrow: docTitle(doc),
@@ -2438,7 +2442,7 @@
       fields: [
         { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: amountText(doc.open), autofocus: true },
         { name: "date", label: "Tarih", type: "date", required: true, value: todayIso(), max: "today" },
-        HOF.methodField("cash", { incoming: sale }),
+        method,
         { name: "note", label: "Açıklama", maxlength: 300, value: `${doc.displayNo} ${sale ? "tahsilatı" : "ödemesi"}` },
       ],
       submitLabel: sale ? "Tahsilatı Kaydet" : "Ödemeyi Kaydet",
@@ -2454,6 +2458,11 @@
         Promise.resolve(picker).then(help).catch(() => null);
       },
       onSubmit: async data => {
+        if (data.method === "cheque") {
+          // Evrak formu bu formun yerine açılır (Kasa değişmez); kaydedilince fatura kartı kendiliğinden yenilenir (cheques değişikliği).
+          setTimeout(() => HOF.cheques.newFor({ direction: sale ? "in" : "out", account: { id: doc.accountId, name: doc.accountName }, amount: String(data.amount || "").trim(), invoiceId: doc.id, invoiceLabel: `${docTitle(doc)} · açık ${money(doc.open)}` }), 150);
+          return;
+        }
         const account = data.method === "bank" ? data.bankAccountId : data.method === "card" && !sale ? data.cardAccountId : "";
         const body = { kind: sale ? "in" : "out", amount: data.amount, date: data.date, method: data.method, invoiceId: doc.id, note: data.note, ...(account ? { bankAccountId: account } : {}) };
         const send = flags => HOF.api(`/api/workspace/accounts/${encodeURIComponent(doc.accountId)}/entries`, { method: "POST", body: { ...body, ...flags }, requestId });

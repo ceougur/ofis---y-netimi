@@ -544,6 +544,40 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // istek (fatura kartı) aşağıdaki cari başına yoldan hesaplanır; iki yolun aynı sonucu verdiği testle denetlenir.
   let statesCache = { key: "", map: null };
   const BATCH_ACCOUNTS = 8;
+  // Çek/senet olaylarının kapama girdisi (iki yol da bu tek kuralla): satırın olay türü (chequeEvents) ve faturaya bağı (links).
+  // events: { chequeId, kind, invoiceId, own (cheques.invoice_id), effects } — olay sırasında (rowid). planned: taksitli faturalar.
+  //   - Faturanın kendi evrakı (fatura kesilirken alınan/verilen; cheques.invoice_id = olay bağı) ve faturayla ciro: bağ her zaman (v2.0.15).
+  //   - 2.4.4 UX18: "Kapatılacak Fatura" ile alınan/verilen evrak (yalnız olay bağı): cari kartından kurulan bağ gibi taksitli faturada yok sayılır
+  //     (taksitli fatura kendi kartıyla kapanır; v2.0.23 Bulgu 2 — eski/bozuk veride de).
+  //   - Karşılıksız (bounce) satırı, ters çevirdiği satırın bağını alır: alındığı caride borç satırı alış satırının, ciro edilen caride alacak satırı
+  //     cironun bağını. Kapama bu satırı bağlı faturanın yükümlülüğü sayar → fatura yeniden açılır (lib/invoice-settle.mjs; taksitli faturada değil).
+  function chequeLinks(events, planned, links, chequeEvents) {
+    const byCheque = new Map();
+    for (const event of events) {
+      if (!byCheque.has(event.chequeId)) byCheque.set(event.chequeId, []);
+      byCheque.get(event.chequeId).push(event);
+    }
+    for (const list of byCheque.values()) {
+      const reversed = new Map();
+      for (const event of list) {
+        // İptal edilen faturanın evrakında olay etkileri geri alınmıştır ve alan nesne olarak işaretlenir ({ reverted }).
+        const effects = parseJson(event.effects, []);
+        const lines = (Array.isArray(effects) ? effects : []).filter(effect => effect?.table === "account_entries" && effect.id);
+        const own = event.kind === "endorse" || (Boolean(event.own) && event.own === event.invoiceId);
+        const link = event.invoiceId && (own || !planned.has(event.invoiceId)) ? event.invoiceId : "";
+        for (const effect of lines) {
+          chequeEvents.set(effect.id, event.kind);
+          if (event.kind === "bounce") {
+            const from = reversed.get(effect.accountId || "");
+            if (from) links.set(effect.id, from);
+            continue;
+          }
+          if (link) links.set(effect.id, link);
+          if (["receive", "issue", "endorse"].includes(event.kind)) reversed.set(effect.accountId || "", link);
+        }
+      }
+    }
+  }
   function allPaymentStates() {
     const day = today();
     // Veri tabanı işleminin içinde (yazmalar henüz kesinleşmemiş, geri alınabilir) önbellek ne okunur ne yazılır: geri
@@ -578,7 +612,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     }
     // Çek olayı, cari başına yolda olduğu gibi evrakın carisine, ciro edilen cariye ve olayın carisine sayılır.
     const eventsOf = new Map();
-    for (const event of store.all("SELECT ev.kind, ev.invoice_id AS invoiceId, ev.effects_json AS effects, c.account_id AS a1, c.endorse_account_id AS a2, ev.account_id AS a3 FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id ORDER BY ev.rowid")) {
+    for (const event of store.all("SELECT ev.cheque_id AS chequeId, ev.kind, ev.invoice_id AS invoiceId, ev.effects_json AS effects, c.invoice_id AS own, c.account_id AS a1, c.endorse_account_id AS a2, ev.account_id AS a3 FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id ORDER BY ev.rowid")) {
       for (const accountId of new Set([event.a1, event.a2, event.a3].filter(Boolean))) {
         if (!eventsOf.has(accountId)) eventsOf.set(accountId, []);
         eventsOf.get(accountId).push(event);
@@ -591,14 +625,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     for (const [accountId, all] of invoicesOf) {
       const links = new Map(baseLinks.get(accountId) || []);
       const chequeEvents = new Map();
-      for (const event of eventsOf.get(accountId) || []) {
-        const effects = parseJson(event.effects, []);
-        for (const effect of Array.isArray(effects) ? effects : []) {
-          if (effect?.table !== "account_entries" || !effect.id) continue;
-          chequeEvents.set(effect.id, event.kind);
-          if (event.invoiceId) links.set(effect.id, event.invoiceId);
-        }
-      }
+      chequeLinks(eventsOf.get(accountId) || [], planned, links, chequeEvents);
       const offsets = (offsetsOf.get(accountId) || []).map(({ accountId: _, ...offset }) => ({ ...offset, label: offsetLabel(offset) }));
       const invoices = all.map(({ accountId: _, ...item }) => (item.planId ? { ...item, planTotal: planTotals.get(item.planId) || 0, schedule: (scheduleOf.get(item.planId) || []).map(({ planId: __, ...row }) => row) } : item));
       const states = settle({ lines: ledgers.get(accountId) || [], invoices, links, chequeEvents, offsets, today: day });
@@ -637,15 +664,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       for (const entry of store.all("SELECT id, invoice_id AS invoiceId FROM account_entries WHERE account_id = ? AND source IN ('', 'bank') AND invoice_id <> ''", accountId)) if (!planned.has(entry.invoiceId)) links.set(entry.id, entry.invoiceId);
       // Çek/senet satırlarının olay türü (karşılıksız → yükümlülük yeniden açılır) ve faturaya bağı.
       const chequeEvents = new Map();
-      for (const event of store.all("SELECT ev.kind, ev.invoice_id AS invoiceId, ev.effects_json AS effects FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id WHERE c.account_id = ? OR c.endorse_account_id = ? OR ev.account_id = ?", accountId, accountId, accountId)) {
-        // İptal edilen faturanın evrakında olay etkileri geri alınmıştır ve alan nesne olarak işaretlenir ({ reverted }).
-        const effects = parseJson(event.effects, []);
-        for (const effect of Array.isArray(effects) ? effects : []) {
-          if (effect?.table !== "account_entries" || !effect.id) continue;
-          chequeEvents.set(effect.id, event.kind);
-          if (event.invoiceId) links.set(effect.id, event.invoiceId);
-        }
-      }
+      // Bağlı fatura başka carinin olsa (bozuk veri) kapamada zaten yer almaz (yalnız bu carinin faturaları); taksitli olanlar bu carinin kümesinde.
+      chequeLinks(store.all("SELECT ev.cheque_id AS chequeId, ev.kind, ev.invoice_id AS invoiceId, ev.effects_json AS effects, c.invoice_id AS own FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id WHERE c.account_id = ? OR c.endorse_account_id = ? OR ev.account_id = ? ORDER BY ev.rowid", accountId, accountId, accountId), planned, links, chequeEvents);
       const offsets = store.all("SELECT id, invoice_id AS invoiceId, counter_type AS counterType, counter_id AS counterId, amount, date, note, created_at AS createdAt FROM invoice_offsets WHERE account_id = ? ORDER BY date, created_at", accountId).map(offset => ({ ...offset, label: offsetLabel(offset) }));
       const plansById = new Map();
       for (const invoice of all.filter(item => item.planId)) {
@@ -738,6 +758,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // geri alınır, yenisi yazılır; asıl fatura ve cari değişmez, miktar asıl faturanın kalanını aşamaz, tarih asıl faturadan
   // önce olamaz (documentInput/linesInput denetler).
   // Faturanın kendi ödeme satırları: peşin tahsilat/ödeme ve formdan alınan/verilen çek-senedin cari satırları.
+  // 2.4.4 UX18: faturaya Kapatılacak Fatura ile bağlanmış (faturanın parçası olmayan, silinmemiş) evrak sayısı.
+  const bondedCheques = invoiceId => store.get("SELECT COUNT(*) AS n FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id WHERE ev.invoice_id = ? AND ev.kind IN ('receive', 'issue') AND c.invoice_id = '' AND c.deleted_at IS NULL", invoiceId).n;
+  // 2.4.4 UX18: "Kapatılacak Fatura" ile bağlanan evrak (yalnız olay bağı) burada da sayılır, ama sonradan taksitlendirmeyi bondedCheques zaten
+  // reddeder (editInvoice; silinmiş evrakın satırı yoktur) — kural tek yerde.
   function ownPaymentLines(invoiceId) {
     const ids = new Set(store.all("SELECT id FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind IN ('in', 'out')", invoiceId).map(row => row.id));
     for (const event of store.all("SELECT effects_json AS effects FROM cheque_events WHERE invoice_id = ?", invoiceId)) {
@@ -783,7 +807,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (!existing.planId && text(body?.payment?.rest) === "installments") {
       const state = paymentStates([existing]).get(existing.id);
       const own = ownPaymentLines(existing.id);
-      const foreign = roundMoney((state?.closers || []).filter(item => !own.has(item.id)).reduce((sum, item) => sum + (Number(item.amount) || 0), 0));
+      // 2.4.4 UX18: karşılıksız evrakın eksi kapatanı (mode bounce) yabancı ödemeyi gizlemez; Kapatılacak Fatura ile bağlanmış evrak varken reddedilir.
+      const foreign = roundMoney((state?.closers || []).filter(item => !own.has(item.id) && item.mode !== "bounce").reduce((sum, item) => sum + (Number(item.amount) || 0), 0));
+      const bonded = bondedCheques(existing.id);
+      if (bonded) throw new HttpError(409, `Bu faturaya Kapatılacak Fatura olarak bağlanmış ${bonded} çek/senet var; sonradan taksitlendirilirse fatura ile kart ayrışır. Faturayı taksitlendirmeden kaydedin; kalanı için cari kartında + Taksit Planı → Borcun Kaynağı: Carinin Mevcut Borcu.`, { code: "invoice-paid-elsewhere" });
       if (foreign > 0.004 || (Number(state?.covered) || 0) > 0.004) {
         throw new HttpError(409, `${foreign > 0.004 ? `Bu faturaya kendi ödemesi dışında ${tl(foreign)} ödeme sayılmış` : "Bu faturanın borcu bir taksit kartıyla taksitlendirilmiş"}; sonradan taksitlendirilirse fatura ile kart ayrışır. Faturayı taksitlendirmeden kaydedin; kalanı için cari kartında + Taksit Planı → Borcun Kaynağı: Carinin Mevcut Borcu.`, { code: "invoice-paid-elsewhere" });
       }
@@ -793,6 +820,13 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const doc = documentInput({ ...body, kind: existing.kind }, { mode: "issue", existing });
     if (doc.kind !== existing.kind) fail400("Belgenin türü düzenlemede değişmez.", "kind");
     if (doc.account?.id && doc.account.id !== existing.accountId && INVOICE_KINDS[existing.kind].return) fail400("İadenin carisi asıl faturadan gelir; değiştirilmez.", "accountId");
+    // 2.4.4 UX18: Kapatılacak Fatura bağı (cari kartından tahsilat/ödeme ya da çek/senet) carinin kendi faturasınadır; cari değişince bağ başka cariyi
+    // gösterirdi (kapı invoice:offset reddeder, ama nedeni söylemeden). Bağlıyken cari değiştirilmez.
+    if (doc.account?.id && doc.account.id !== existing.accountId) {
+      const entries = store.get("SELECT COUNT(*) AS n FROM account_entries WHERE invoice_id = ?", existing.id).n;
+      const bonded = bondedCheques(existing.id);
+      if (entries || bonded) fail400(`Bu faturaya cari kartından Kapatılacak Fatura olarak bağlanmış ${[entries ? `${entries} tahsilat/ödeme` : "", bonded ? `${bonded} çek/senet` : ""].filter(Boolean).join(" ve ")} var; cari değiştirilemez. Önce o kayıtlarda Kapatılacak Fatura'yı Otomatik yapın ya da faturayı iptal edip doğru cariye yeniden kaydedin.`, "accountId", { code: "invoice-bonded" });
+    }
     if (own && doc.date !== existing.issueDate && !(existing.seq > 0) && existing.eStatus === "waiting" && doc.profile !== "KAGIT") {
       // Dar kontrol 2.4.3 (D4): numarasız bekleyen belge (Kes, Sonra Gönder) numarasını gönderimde serinin SONUNA alır. Tarih denetimi o konuma
       // göre: serinin son numaralı belgesinden eski olamaz; ileri almak serbesttir. (Önceden seq = 0 için "sonraki belge" serinin İLK numaralısı
@@ -2216,7 +2250,15 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // (lib/doubtful-gl doubtfulSkipOf). Para kuralı aynı; değişiklik işlem kaydına yazılır, ekranda iptalden önce ve sonra söylenir.
       const relinked = doubtfulRelinks(invoice.id);
       store.run("UPDATE account_entries SET invoice_id = '' WHERE invoice_id = ?", invoice.id);
-      audit(user, "invoice.cancelled", invoice.id, { number: invoice.number, kind: invoice.kind, payable: invoice.tryPayable, reason, ...(relinked.length ? { doubtfulRelinked: relinked.map(entry => ({ id: entry.id, date: entry.date, amount: entry.amount })) } : {}) });
+      // 2.4.4 UX18 (kullanıcı kararı 21.10.2026): Kapatılacak Fatura ile bağlanan çek/senet faturanın parçası değildir — evrak portföyde (ve
+      // işlem geçmişiyle) kalır, yalnız bağ düşer; kapama yeniden hesaplanır (en eski açık faturaya). Faturanın kendi evrakı voidFor'la geri alındı.
+      const unbonded = store.all("SELECT ev.id, ev.cheque_id AS chequeId, c.account_id AS accountId FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id WHERE ev.invoice_id = ? AND ev.kind IN ('receive', 'issue') AND c.invoice_id <> ev.invoice_id", invoice.id);
+      for (const row of unbonded) {
+        store.run("UPDATE cheque_events SET invoice_id = '' WHERE id = ?", row.id);
+        touched.cheques.chequeIds.push(row.chequeId);
+        if (row.accountId) touched.cheques.accountIds.push(row.accountId);
+      }
+      audit(user, "invoice.cancelled", invoice.id, { number: invoice.number, kind: invoice.kind, payable: invoice.tryPayable, reason, ...(relinked.length ? { doubtfulRelinked: relinked.map(entry => ({ id: entry.id, date: entry.date, amount: entry.amount })) } : {}), ...(unbonded.length ? { chequesUnbonded: unbonded.map(row => row.chequeId) } : {}) });
       if (dryRun) throw DRY_RUN;
       return invoice;
       } });

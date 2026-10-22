@@ -950,7 +950,7 @@
         // v2.0.13: yanlış yönde yazılan borç/alacak düzeltilirken yön değiştirilebilir (açılış bakiyesi gibi).
         ...(entry && (type === "debt" || type === "credit") ? [{ name: "kind", label: "Yön", type: "select", value: type, options: [{ value: "debt", label: "Borç (cari bize borçlanır)" }, { value: "credit", label: "Alacak (biz cariye borçlanırız)" }] }] : []),
         { name: "date", label: "Tarih", type: "date", max: "today", value: entry?.date || office().todayIso?.() || "" },
-        ...(invoiceOptions.length ? [{ name: "invoiceId", label: "Kapatılacak Fatura", type: "select", value: entry?.invoiceId || "", options: [{ value: "", label: "Otomatik (En Eski Açık Fatura)" }, ...invoiceOptions], help: "Seçilen fatura bu kayıtla kapanır; fazlası en eski açık faturaya gider. Bakiye ve Kasa değişmez. Faturaya bağlı tahsilat şüpheli alacaktan düşmez (yeni satışın parası)." }] : []),
+        ...(invoiceOptions.length ? [{ name: "invoiceId", label: "Kapatılacak Fatura", type: "select", value: entry?.invoiceId || "", options: [{ value: "", label: "Otomatik (En Eski Açık Fatura)" }, ...invoiceOptions], help: "Seçilen fatura bu kayıtla kapanır; fazlası en eski açık faturaya gider. Bakiye ve Kasa değişmez. Faturaya bağlı tahsilat şüpheli alacaktan düşmez (yeni satışın parası); çek / senet evrakı ise şüpheli alacaktan düşer." }] : []),
         { name: "note", label: "Açıklama", maxlength: 300, value: entry?.note || (!entry && preset?.note ? String(preset.note).slice(0, 300) : ""), placeholder: type === "in" ? "Ör. Eylül ödemesi" : type === "debt" ? "Ör. Eylül aidatı, 3 adet ürün" : "" },
       ],
       submitLabel: entry ? "Kaydet" : ENTRY_LABEL[type],
@@ -984,7 +984,8 @@
       onSubmit: async data => {
         if (data.method === "cheque") {
           // Çekle/senetle tahsilat ya da ödeme: evrak portföye girer, carinin borcu evrakla düşer (Kasa değişmez).
-          setTimeout(() => HOF.cheques.newFor({ direction: type === "in" ? "in" : "out", account: { id: account.id, name: account.name }, amount: String(data.amount || "").trim() }), 150);
+          // 2.4.4 UX18 (kullanıcı kararı 21.10.2026): seçilen Kapatılacak Fatura evrak formuna taşınır (önceden sessizce düşüyor, evrak en eski faturayı kapatıyordu).
+          setTimeout(() => HOF.cheques.newFor({ direction: type === "in" ? "in" : "out", account: { id: account.id, name: account.name }, amount: String(data.amount || "").trim(), invoiceId: data.invoiceId || "" }), 150);
           return;
         }
         const url = `/api/workspace/accounts/${encodeURIComponent(account.id)}/entries${entry ? `/${encodeURIComponent(entry.id)}` : ""}`;
@@ -1655,6 +1656,8 @@
     bulkPlanForm,
     syncEntryHelp,
     doubtfulFromCheque,
+    // 2.4.4 UX18: çek/senet formunun "Kapatılacak Fatura" seçenekleri (cari formundakiyle aynı liste ve kural).
+    openInvoiceOptions,
     forCase: key => HOF.api(`/api/workspace/cases/${encodeURIComponent(key)}/account`),
     newFor: (preset, options = {}) => (canManage() ? editAccount(null, preset, options) : HOF.toast("Cari açmak yönetici, uzman ve muhasebe yetkisidir.", { type: "error" })),
     collect: async (accountId, preset = null) => {

@@ -119,6 +119,9 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     const depositable = manage && !cheque.deposited && cheque.direction === "in" && cheque.status === "portfolio";
     const bankActions = !manage ? [] : cheque.deposited ? [{ key: "bank-withdraw", label: BANK_ACTIONS["bank-withdraw"] }] : depositable ? [{ key: "bank-deposit", label: BANK_ACTIONS["bank-deposit"] }] : [];
     const last = history.at(-1);
+    // 2.4.4 UX18: evrakın kapattığı fatura (Kapatılacak Fatura bağı; faturayla kaydedilen evrakta invoiceId alanı ayrıca).
+    const bondId = bondOf(cheque, history[0]);
+    const bondRow = bondId ? store.get("SELECT id, number, kind, status FROM invoices WHERE id = ?", bondId) : null;
     const lock = period?.lockedUntil?.() || "";
     const coreLocked = Boolean(lock && cheque.issueDate && cheque.issueDate <= lock);
     const canEditCore = manage && history.length === 1 && !cheque.invoiceId && !coreLocked && !cheque.deposited;
@@ -148,6 +151,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       : "";
     return {
       ...cheque,
+      closesInvoice: bondRow ? { id: bondRow.id, number: bondRow.number || "", kind: bondRow.kind, status: bondRow.status } : null,
       events: history.map(({ effectsJson, ...event }) => ({ ...event, label: EVENT_LABELS[event.kind] || event.kind, fromLabel: STATUSES[event.fromStatus]?.label || "", toLabel: STATUSES[event.toStatus]?.label || "", ledger: effectsOf({ effectsJson }).length })),
       actions,
       // v2.0.15: faturayla alınan/verilen evrak ve faturayla yapılan ciro faturanın parçasıdır (fatura iptaliyle geri alınır).
@@ -430,7 +434,9 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     );
     if (twin) throw new HttpError(409, `${INSTRUMENTS[input.instrument]} No ${input.serialNo}${input.bank ? ` (${input.bank})` : ""} zaten kayıtlı.`, { code: "cheque-duplicate", id: twin.id });
   }
-  function insertCheque(user, input, { post = true, eventNote = "", invoiceId = "", effectNote = "" } = {}) {
+  // invoiceId: faturayla birlikte kaydedilen evrak (faturanın parçası; cheques.invoice_id + olay bağı). eventInvoiceId (2.4.4 UX18): yalnız olayın
+  // kapama bağı ("Kapatılacak Fatura"); evrak faturanın parçası olmaz (cheques.invoice_id boş kalır).
+  function insertCheque(user, input, { post = true, eventNote = "", invoiceId = "", eventInvoiceId = invoiceId, effectNote = "" } = {}) {
     const id = newId("cheque");
     const status = initialStatus(input.direction);
     const stamp = now();
@@ -441,9 +447,30 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     const cheque = { id, ...input, status };
     const kind = initialEvent(input.direction);
     const effects = post ? applyEffects(user, cheque, plannedEffects(cheque, kind, { date: input.issueDate, note: noteFor(cheque, kind, effectNote) })) : [];
-    writeEvent(user, cheque, { kind, date: input.issueDate, amount: input.amount, accountId: input.accountId, toStatus: status, note: eventNote, effects, invoiceId });
+    writeEvent(user, cheque, { kind, date: input.issueDate, amount: input.amount, accountId: input.accountId, toStatus: status, note: eventNote, effects, invoiceId: eventInvoiceId });
     return { id, effects };
   }
+  // ---------- 2.4.4 UX18: evrakın kapatacağı fatura ("Kapatılacak Fatura") ----------
+  // Kullanıcı kararı (21.10.2026): faturanın "Tahsilat Ekle / Ödeme Yap"ından ya da cari "+ Tahsilat / Ödeme"de Kapatılacak Fatura seçilerek alınan
+  // (verilen) çek/senet BU faturayı kapatır. Bağ YALNIZ alış/veriliş olayının invoice_id'sindedir (cheques.invoice_id boş): evrak faturanın parçası
+  // değildir — fatura iptal edilince evrak portföyde kalır, yalnız bağ düşer (routes/invoices.mjs cancel). Kural cari kartındaki Kapatılacak Fatura ile
+  // AYNI (accounts.invoiceLink): aynı cari, kaydedilmiş, taksitsiz, yön uyumlu (alınan evrak satış/SMM, verilen evrak alış faturası). Yevmiye
+  // değişmez (B 101/121 / A 120; verilende B 320 / A 103/321): bağ yalnız fatura kapamasını belirler. Karşılıksız dönen evrak bağlı faturayı yeniden
+  // açar (lib/invoice-settle.mjs). Şüpheli alacak kuralı değişmez: evrak satırı (alacak) şüpheliden düşer — BİLİNEN SINIR (doubtful-gl.mjs).
+  const BOND_EXTRA = { code: "cheque-invoice", field: "invoiceId" };
+  function invoiceBond(input, value, { posted = true } = {}) {
+    const id = limited(value ?? "", 120, "Kapatılacak fatura");
+    if (!id) return "";
+    if (input.planId) throw new HttpError(400, "Taksit kartına sayılan evrak faturaya bağlanmaz; Taksite Say'ı ya da Kapatılacak Fatura'yı seçin.", BOND_EXTRA);
+    if (!input.accountId) throw new HttpError(400, "Kapatılacak fatura için evrakın carisini seçin.", BOND_EXTRA);
+    if (!posted) throw new HttpError(409, "Cariye işlenmemiş (açılış portföyü) evrak faturayı kapatmaz.", BOND_EXTRA);
+    const link = accounts()?.invoiceLink;
+    if (!link) throw new HttpError(503, "Fatura bağı şu an denetlenemiyor; birazdan yeniden deneyin.", BOND_EXTRA);
+    return link(input.accountId, input.direction === "out" ? "out" : "in", id, "", { extra: BOND_EXTRA, planHint: "Evrakı taksit kartına sayın: evrak formunda Taksite Say'dan faturanın kartını seçin." });
+  }
+  // Evrakın bugünkü bağı: faturayla kaydedilen evrakta (cheques.invoice_id dolu) "" — onun bağı faturanın kendisidir.
+  const bondOf = (cheque, first) => (!cheque.invoiceId && first && (first.kind === "receive" || first.kind === "issue") ? first.invoiceId || "" : "");
+  const isPosted = first => effectsOf(first).length > 0 || !String(first?.note || "").startsWith("Açılış");
 
   // v2.0.26 (gözden geçirme G3): para alanları değeriyle karşılaştırılır. Form tutarı "2500,5" gönderir, kayıtta 2500.5 durur;
   // metin karşılaştırması bunu "tutar değişti" sayıyor, kilitli dönemdeki evrakta yalnız vade düzeltmesi 409 alıyor, açık dönemde
@@ -462,9 +489,10 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     const body = await readJson(req);
     const created = bank.post({ user, module: "cheque", op: "create", write: () => {
       const input = chequeAccountOf(coreInput(body, null, { dated: true }), body);
+      const bond = invoiceBond(input, body.invoiceId);
       if (body.allowDuplicate !== true) assertUnique(input);
-      const result = insertCheque(user, input);
-      audit(user, "cheque.created", result.id, { direction: input.direction, instrument: input.instrument, serialNo: input.serialNo, amount: input.amount, dueDate: input.dueDate, accountId: input.accountId, planId: input.planId, ...(input.bankAccountId ? { bankAccountId: input.bankAccountId } : {}) });
+      const result = insertCheque(user, input, { eventInvoiceId: bond });
+      audit(user, "cheque.created", result.id, { direction: input.direction, instrument: input.instrument, serialNo: input.serialNo, amount: input.amount, dueDate: input.dueDate, accountId: input.accountId, planId: input.planId, ...(input.bankAccountId ? { bankAccountId: input.bankAccountId } : {}), ...(bond ? { invoiceId: bond } : {}) });
       return result;
     } });
     changed(user, { chequeId: created.id, ...touchedBy(created.effects) });
@@ -489,23 +517,38 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       const input = chequeAccountOf(coreInput({ ...previous, ...body }, previous, { checkLinks: coreChange, dated: coreChange }), body, previous);
       if (coreChange) collections.assertIssueBeforeDeposits(previous, input.issueDate);
       if (body.allowDuplicate !== true) assertUnique(input, previous.id);
+      // 2.4.4 UX18: Kapatılacak Fatura gövdede yoksa eski bağ kalır; tutar, cari, tarih ya da taksit değişince yeni hâline göre yeniden denetlenir
+      // (cari değişip bağ geçersizleşirse sessizce düşmez: 404/409 alan invoiceId). Bağ yalnız tek olaylı, tahsilde olmayan, açık dönemdeki evrakta değişir.
+      const first = history[0];
+      const bond = bondOf(previous, first);
+      const asked = body.invoiceId === undefined || body.invoiceId === null ? bond : text(body.invoiceId);
+      if (asked !== bond) {
+        if (previous.invoiceId) throw new HttpError(409, `Bu evrak ${previous.invoiceNumber || "bir fatura"} ile kaydedildi; kapatacağı fatura değişmez.`, { code: "invoice-linked", invoiceId: previous.invoiceId, field: "invoiceId" });
+        if (history.length > 1) throw new HttpError(409, "Tahsil, ciro ya da ödeme yapılmış evrakın kapatacağı fatura değiştirilemez. Önce son işlemi geri alın.", BOND_EXTRA);
+        collections.assertNotDeposited(previous, "kapatacağı fatura değiştirilemez");
+        period?.assertOpen(previous.issueDate, "Bu çek/senet");
+      }
+      const nextBond = asked && (asked !== bond || coreChange) ? invoiceBond(input, asked, { posted: isPosted(first) }) : asked;
       if (coreChange) {
         // Tek olaylı (alındı/verildi) kayıt: eski defter etkileri geri alınır, yenileri yazılır (aynı işlem bloğunda).
-        const first = history[0];
         const oldEffects = effectsOf(first);
         revertEffects(oldEffects, user);
         const cheque = { ...previous, ...input };
         const kind = initialEvent(previous.direction);
         const posted = oldEffects.length > 0 || !first.note.startsWith("Açılış");
         const effects = posted ? applyEffects(user, cheque, plannedEffects(cheque, kind, { date: input.issueDate, note: noteFor(cheque, kind) })) : [];
-        store.run("UPDATE cheque_events SET date = ?, amount = ?, account_id = ?, effects_json = ? WHERE id = ?", input.issueDate, input.amount, input.accountId, JSON.stringify(effects), first.id);
+        // Faturayla kaydedilen evrakın bağı (cheques.invoice_id) faturanındır, değişmez; UX18 bağı (yalnız olay) yeni değeriyle.
+        store.run("UPDATE cheque_events SET date = ?, amount = ?, account_id = ?, effects_json = ?, invoice_id = ? WHERE id = ?", input.issueDate, input.amount, input.accountId, JSON.stringify(effects), previous.invoiceId || nextBond, first.id);
         touched = { accountIds: [...touchedBy(oldEffects).accountIds, ...touchedBy(effects).accountIds], planIds: [...touchedBy(oldEffects).planIds, ...touchedBy(effects).planIds] };
+      } else if (nextBond !== bond) {
+        store.run("UPDATE cheque_events SET invoice_id = ? WHERE id = ?", nextBond, first.id);
+        touched = { accountIds: [previous.accountId], planIds: [] };
       }
       store.run(
         "UPDATE cheques SET instrument = ?, serial_no = ?, bank = ?, drawer = ?, account_id = ?, plan_id = ?, amount = ?, issue_date = ?, due_date = ?, note = ?, bank_account_id = ?, status_date = CASE WHEN ? THEN ? ELSE status_date END, updated_by = ?, updated_at = ? WHERE id = ?",
         input.instrument, input.serialNo, input.bank, input.drawer, input.accountId, input.planId, input.amount, input.issueDate, input.dueDate, input.note, input.bankAccountId || "", history.length === 1 ? 1 : 0, input.issueDate, user.id, now(), previous.id,
       );
-      audit(user, "cheque.updated", previous.id, { previous: { amount: previous.amount, dueDate: previous.dueDate, accountId: previous.accountId, serialNo: previous.serialNo, bankAccountId: previous.bankAccountId || "", bank: previous.bank }, amount: input.amount, dueDate: input.dueDate, accountId: input.accountId, serialNo: input.serialNo, bankAccountId: input.bankAccountId || "", bank: input.bank });
+      audit(user, "cheque.updated", previous.id, { previous: { amount: previous.amount, dueDate: previous.dueDate, accountId: previous.accountId, serialNo: previous.serialNo, bankAccountId: previous.bankAccountId || "", bank: previous.bank }, amount: input.amount, dueDate: input.dueDate, accountId: input.accountId, serialNo: input.serialNo, bankAccountId: input.bankAccountId || "", bank: input.bank, ...(nextBond !== bond ? { invoiceId: nextBond, previousInvoiceId: bond } : {}) });
       return previous.id;
     } });
     changed(user, { chequeId: id, ...touched });
@@ -885,6 +928,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     const raw = store.get(`${CHEQUE_SQL.replace("AND a.deleted_at IS NULL", "")} WHERE c.id = ? AND c.deleted_at IS NOT NULL`, id);
     if (!raw) throw new HttpError(404, "Bu evrak zaten geri yüklenmiş.");
     let effects = [];
+    let dropped = null;
     // v2.0.26 (A6): kapanmış dönemde alınan/verilen evrak geri yüklenmez (silmedeki kuralın aynısı). Gözden geçirme G5: ileri
     // alış/veriliş tarihli eski evrak da (2.0.25 girebiliyordu) nedenli 400 alır; cari satırı yeni kimlikle ileri tarihe yazılırdı.
     period?.restoreDate(raw.issueDate, "Bu çek/senet");
@@ -893,7 +937,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       if (raw.serialNo && store.get("SELECT 1 AS found FROM cheques WHERE deleted_at IS NULL AND serial_no = ? AND direction = ? AND instrument = ? AND bank = ? COLLATE NOCASE", raw.serialNo, raw.direction, raw.instrument, raw.bank)) {
         throw new HttpError(409, `${INSTRUMENTS[raw.instrument]} No ${raw.serialNo} bu arada yeniden girilmiş; ikisi aynı anda duramaz.`);
       }
-      const first = store.get("SELECT id, kind, effects_json AS effectsJson FROM cheque_events WHERE cheque_id = ? ORDER BY created_at, rowid LIMIT 1", raw.id);
+      const first = store.get("SELECT id, kind, effects_json AS effectsJson, invoice_id AS invoiceId FROM cheque_events WHERE cheque_id = ? ORDER BY created_at, rowid LIMIT 1", raw.id);
       let reverted = false;
       try {
         reverted = Boolean(JSON.parse(first?.effectsJson || "{}")?.reverted);
@@ -903,12 +947,30 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       const cheque = { ...raw, planId: raw.planId && store.get("SELECT 1 AS found FROM plans WHERE id = ? AND deleted_at IS NULL", raw.planId) ? raw.planId : "" };
       const kind = initialEvent(raw.direction);
       effects = reverted ? applyEffects(user, cheque, plannedEffects(cheque, kind, { date: raw.issueDate, note: noteFor(cheque, kind) })) : [];
+      // 2.4.4 UX18: Kapatılacak Fatura bağı, fatura hâlâ aynı carinin kaydedilmiş taksitsiz faturasıysa korunur; değilse bağsız döner ve söylenir
+      // (cari hareketinin geri yüklenmesiyle aynı kural, routes/accounts.mjs restoreEntry).
+      const bond = bondOf(raw, first);
+      if (bond) {
+        let kept = "";
+        try {
+          kept = invoiceBond(cheque, bond, { posted: effects.length > 0 });
+        } catch {
+          kept = "";
+        }
+        if (!kept) {
+          dropped = store.get("SELECT number, status, plan_id AS planId FROM invoices WHERE id = ?", bond) || {};
+          store.run("UPDATE cheque_events SET invoice_id = '' WHERE id = ?", first.id);
+        }
+      }
       if (first) store.run("UPDATE cheque_events SET effects_json = ? WHERE id = ?", JSON.stringify(effects), first.id);
       store.run("UPDATE cheques SET deleted_at = NULL, deleted_by = NULL, plan_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", cheque.planId, user.id, now(), raw.id);
       audit(user, "cheque.restored", raw.id, { serialNo: raw.serialNo, amount: raw.amount });
     } });
     changed(user, { chequeId: raw.id, ...touchedBy(effects) });
-    return `${INSTRUMENTS[raw.instrument]}${raw.serialNo ? ` No ${raw.serialNo}` : ""} geri geldi.`;
+    const restored = `${INSTRUMENTS[raw.instrument]}${raw.serialNo ? ` No ${raw.serialNo}` : ""} geri geldi.`;
+    if (!dropped) return restored;
+    const why = !dropped.status ? "silindiği için" : dropped.status === "cancelled" ? "iptal edildiği için" : dropped.status !== "issued" ? "kaydedilmiş olmadığı için" : dropped.planId ? "taksitli olduğu (kendi taksit kartıyla kapandığı) için" : "artık bu evrakla kapatılamadığı için";
+    return `${restored} Kapatacağı ${dropped.number ? `${dropped.number} faturası` : "fatura"} ${why} faturaya bağlanmadı; otomatik kapamaya girer.`;
   }
 
   // v2.0.15: faturanın çek/senetle ödenen kısmı. Fatura ile aynı işlem bloğunda (store.tx) çağrılır:
