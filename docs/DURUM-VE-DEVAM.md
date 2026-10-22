@@ -24,6 +24,10 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
 - ADAY 6 = /home/user/wt/aday6 (dal aday6) e070d42 = aday 5 + is/edm-eszamanli (24b düzeneği, N4 tek uçuş giriş 51c3074, gerçek koşu 1 kanıtı). KAPI aday-kos.sh aday6
   e070d42 koşuyor (~13:55; aday 5 kapısıyla e2e'ler flock'la sırayla). Gerçek EDM koşusu 2 (soğuk, 30 belge, Login 1 beklenir) /home/user/wt/edm-eszamanli'de koşuyor
   (kanıt gercek-2/; bitince orada commit + aday 6'ya birleştir). Sıra: aday 5 yeşil → çalışma dalı + CI; aday 6 yeşil → çalışma dalı + CI.
+- ADAY 5 ÇALIŞMA DALINDA (22.10 14:25): 0c1ae0d = birleştir aday 5 (51f1835; kapı npm test 3132/3132 + 64/64 e2e + 6 kâhin); CI bekleniyor. Gerçek EDM koşusu 2: 30/30
+  kabul, Login 1 (is/edm-eszamanli 9c10448; aday 6'ya kapıdan sonra kanıt olarak birleştirilir).
+- MADDE 30 BAŞLADI (14:30, taban aday6 e070d42): ajanlar — CI dışı e2e (13 betik + betiksiz senaryolar; is/m30-e2e) ve göç/yedek tatbikatı/zincirleme göç + arıza (v2.4.3 gerçek
+  koduyla veri; is/m30-goc). Ana oturum: kullanıcı gözüyle iş akışı (iki şirket, ekran görüntüsü) aday 6 kapısından sonra. Ajan kimlikleri not defterinde devam-ajanlar.md.
 - SONRA: aday 4 ve aday 5 CI yeşilince iş listesinde 5, 5a–5c, 7b, 7c, 8, 11, 12 UX15, 15, 16, 17, 18, 22, 23 eki, 24, 26 çizilir → 30 (tam test + BÜTÜN e2e, CI dışı dahil;
   yedek tatbikatı; v2.4.3 → 2.4.4 göçü; ana oturumun kullanıcı gözüyle iş akışı) → 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol (11017, F2/F3, kâğıt
   numarası + tarama, UBL-TR, I23), 31f uzman UI/UX → 32 CI → 33 Uzun Doğrulama → 34–36 paket/teslim/PR. Sürüm notu cümleleri: UX18/F3 (karşılıksız evrak faturayı açar) ve
