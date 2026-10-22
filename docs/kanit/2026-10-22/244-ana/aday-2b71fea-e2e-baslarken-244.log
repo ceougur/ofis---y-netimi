@@ -1,0 +1,71 @@
+
+> destekofis@2.4.3 test:baslarken-244
+> node --disable-warning=ExperimentalWarning test/e2e/baslarken-244.mjs
+
+
+■ A. Boş kurulum: açılış ekranında Başlarken, 5 adım eksik; açılış kartı aynı
+  ✓ Başlarken listesi açılış ekranında görünür
+  ✓ başlık “Başlarken”
+  ✓ adımlar: Şirket Adını Yazın | Firma Bilgilerini Girin | Fatura Ayarlarını Kaydedin | İlk Banka Hesabını Açın | İlk Cariyi Açın
+  ✓ bütün adımlar eksik ({"company":false,"seller":false,"invoiceSettings":false,"bank":false,"account":false})
+  ✓ ilerleme 0/5
+  ✓ açılış kartının başlığı değişmedi
+  ✓ Excel yükleme alanı yerinde
+  ✓ liste açılış ekranının içinde, kartın üstünde
+  ✓ kullanıcı menüsünde “Başlarken” girişi var
+  ✓ yöneticinin Hızlı Arama'sında “Başlarken” var (Başlarken)
+
+■ B1. Şirket Adını Yazın → Şirketler → Adını / Kodunu Değiştir
+  ✓ kısa yol Yönetim → Şirketler'i açtı (/admin.html#companies)
+  ✓ şirket adı kaydedildi (PUT 200)
+  ✓ veri: 001 adı “Mavi Muhasebe Ltd. Şti.”
+  ✓ ilerleme 1/5 (1/5)
+  ✓ Şirket Adı “Tamamlandı”
+
+■ B2. Firma Bilgilerini Girin → Fatura Ayarları (Tab ve insan hızında yazım)
+  ✓ kısa yol Fatura Ayarları ekranını açtı
+  ✓ Fatura Ayarları kaydedildi (PUT 200)
+  ✓ veri: firma bilgisi kayıtlı (Mavi Muhasebe Ltd. Şti. · 4840847211 · Kadıköy · İstanbul)
+  ✓ pencere kapanınca liste kendiliğinden güncellendi: 3/5 (3/5)
+  ✓ Firma Bilgileri ve Fatura Ayarları “Tamamlandı”
+
+■ B3. İlk Banka Hesabını Açın → Banka → Kurulum Sihirbazı
+  ✓ Kurulum Sihirbazı hesap adımı açıldı
+  ✓ hesap kaydedildi (200)
+  ✓ veri: 1 banka hesabı (Ziraat Bankası)
+  ✓ liste güncellendi: 4/5 (4/5)
+
+■ B4. İlk Cariyi Açın → + Yeni Cari; hepsi tamamlanınca liste kendiliğinden kalkar
+  ✓ cari kaydedildi (POST 200)
+  ✓ veri: 1 cari (1)
+  ✓ bütün adımlar tamamlanınca liste açılış ekranından kendiliğinden kalktı
+  ✓ durum: 5/5, tamamlandı
+  ✓ yeniden yüklemede de liste çıkmıyor
+  ✓ kullanıcı menüsünden açılan pencere: “Bütün adımlar tamamlandı”
+  ✓ pencerede 5 adım “Tamamlandı”
+
+■ C. 002: kendi durumu; Gizle kalıcı; menüden “Açılış Ekranında Göster”
+  ✓ pencere 002'yi gösteriyor
+  ✓ 002'de liste görünür (001 tamamlandığı hâlde)
+  ✓ 002: 1/5 (yalnız Şirket Adı; 1/5)
+  ✓ Gizle → liste kalktı
+  ✓ yeniden yüklemede gizli kaldı
+  ✓ pencere gizli olduğunu söylüyor
+  ✓ “Açılış Ekranında Göster” → liste geri geldi
+
+■ D. Yetkisiz kullanıcı (personel): liste, menü girişi ve Hızlı Arama'da Başlarken yok
+  ✓ personelde liste yok
+  ✓ personelin menüsünde Başlarken yok
+  ✓ sunucu personele adım döndürmüyor
+  ✓ Hızlı Arama'da Başlarken yok (sonuçlar: boş)
+  ✓ personel sayfasında hata yok
+  ✓ yönetici sayfasında hata yok
+
+■ E. 2.4.3'ten gelen veri (v2.4.3'ün gerçek kodu): liste çıkmaz
+  ✓ 001 “zaten kurulu” ({"done":2,"established":true,"show":false})
+  ✓ açılış ekranı var, Başlarken listesi yok
+  ✓ menüden açılan pencere “önceki sürümden kurulu” der
+  ✓ 002 de “zaten kurulu”
+  ✓ sayfa hatası yok
+
+49 geçti, 0 kaldı

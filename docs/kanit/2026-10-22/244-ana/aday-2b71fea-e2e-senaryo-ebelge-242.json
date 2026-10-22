@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-2b71fea-e2e-senaryo-ebelge-242",
+  "komut": "npm run test:senaryo-ebelge-242",
+  "commit": "2b71feac5cce579d33b9c7d9ca5b2c0784286917",
+  "dal": "aday4",
+  "kirli": 0,
+  "izlenmeyen": 52,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T11:59:10.836Z",
+  "sure_sn": 52.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 21,
+    "gecen": 21,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday-2b71fea-e2e-senaryo-ebelge-242.log",
+  "klasor": "/home/user/wt/aday4",
+  "ham_cikti_sha256": "22ac6c1999d88b467f69648ec680411db3e9378958d13883550673a3c836b15b",
+  "ham_cikti_bayt": 2366
+}
