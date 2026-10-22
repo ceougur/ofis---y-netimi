@@ -1,0 +1,505 @@
+TAP version 13
+# (node:18874) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: iptal süresi kuralı (lib/einvoice/iptal-suresi.mjs, saf)
+    # Subtest: 8 gün iletimden; başlangıç günü sayılmaz, 8. gün dahil
+    not ok 1 - 8 gün iletimden; başlangıç günü sayılmaz, 8. gün dahil
+      ---
+      duration_ms: 2.294411
+      type: 'test'
+      location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:74:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        7 !== 8
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 8
+      actual: 7
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:75:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: iletim izi yoksa kesim günü (süre uzamaz); ileti kesim gününü ve nedenini söyler
+    not ok 2 - iletim izi yoksa kesim günü (süre uzamaz); ileti kesim gününü ve nedenini söyler
+      ---
+      duration_ms: 1.563702
+      type: 'test'
+      location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:81:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   lastDay: '2026-10-18',
+        -   lastDay: '2026-10-19',
+            late: true,
+            source: 'kesim',
+            start: '2026-10-11'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        start: '2026-10-11'
+        source: 'kesim'
+        lastDay: '2026-10-19'
+        late: true
+      actual:
+        start: '2026-10-11'
+        source: 'kesim'
+        lastDay: '2026-10-18'
+        late: true
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:83:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: e-SMM aynı kural; e-Fatura, kâğıt, taslak, Hata, belirsiz ve gönderilmemiş belge kural dışı
+    not ok 3 - e-SMM aynı kural; e-Fatura, kâğıt, taslak, Hata, belirsiz ve gönderilmemiş belge kural dışı
+      ---
+      duration_ms: 0.63381
+      type: 'test'
+      location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:87:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /^e-SMM'nin iptal süresi doldu: alıcıya iletildiği 14\.10\.2026 gününden sonraki 8 gün içinde \(en geç 22\.10\.2026\)/. Input:
+        
+        "e-SMM'nin iptal süresi doldu: alıcıya iletildiği 14.10.2026 gününden sonraki 7 gün içinde (en geç 21.10.2026) iptal edilebilirdi. Makbuz geçerli kalır; düzeltme için mali müşavirinize danışın."
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: "e-SMM'nin iptal süresi doldu: alıcıya iletildiği 14.10.2026 gününden sonraki 7 gün içinde (en geç 21.10.2026) iptal edilebilirdi. Makbuz geçerli kalır; düzeltme için mali müşavirinize danışın."
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:90:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ay sonu ve yıl dönümü takvim günüyle
+    not ok 4 - ay sonu ve yıl dönümü takvim günüyle
+      ---
+      duration_ms: 0.351995
+      type: 'test'
+      location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:95:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + '2026-02-07'
+        - '2026-02-08'
+                    ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '2026-02-08'
+      actual: '2026-02-07'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:96:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iletim anı: belgeyi EDM'ye ulaştırmış olabilecek SON girişim (durum sorgusu, hiç gitmemiş istek ve red girişim değildir)
+    ok 5 - iletim anı: belgeyi EDM'ye ulaştırmış olabilecek SON girişim (durum sorgusu, hiç gitmemiş istek ve red girişim değildir)
+      ---
+      duration_ms: 0.39138
+      type: 'test'
+      ...
+    1..5
+not ok 1 - iptal süresi kuralı (lib/einvoice/iptal-suresi.mjs, saf)
+  ---
+  duration_ms: 6.305983
+  type: 'suite'
+  location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:71:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: iptal süresi: program uçları (sahte EDM, sahte saat)
+    # Subtest: gün sınırı programın yerel günüdür: 23:59'da gönderilen belgenin son günü 8 gün sonra, 00:00 geçince 9. gün; 00:30'da gönderilen o gün sayılır
+    not ok 1 - gün sınırı programın yerel günüdür: 23:59'da gönderilen belgenin son günü 8 gün sonra, 00:00 geçince 9. gün; 00:30'da gönderilen o gün sayılır
+      ---
+      duration_ms: 190.324858
+      type: 'test'
+      location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:152:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + '2026-06-24'
+        - '2026-06-25'
+                    ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '2026-06-25'
+      actual: '2026-06-24'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:160:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iletimden 8. gün iptal edilir (kesimden 11. gün): EDM'de ve programda
+    not ok 2 - iletimden 8. gün iptal edilir (kesimden 11. gün): EDM'de ve programda
+      ---
+      duration_ms: 674.07413
+      type: 'test'
+      location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:176:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   lastDay: '2026-06-27',
+        -   lastDay: '2026-06-28',
+            late: false,
+            source: 'iletim',
+            start: '2026-06-20'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        start: '2026-06-20'
+        source: 'iletim'
+        lastDay: '2026-06-28'
+        late: false
+      actual:
+        start: '2026-06-20'
+        source: 'iletim'
+        lastDay: '2026-06-27'
+        late: false
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:183:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iletimden 9. gün reddedilir: ileti son günü yazar, belge ve EDM değişmez, kartta neden görünür
+    not ok 3 - iletimden 9. gün reddedilir: ileti son günü yazar, belge ve EDM değişmez, kartta neden görünür
+      ---
+      duration_ms: 80.139971
+      type: 'test'
+      location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:195:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   lastDay: '2026-06-27',
+        -   lastDay: '2026-06-28',
+            late: true,
+            source: 'iletim',
+            start: '2026-06-20'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        start: '2026-06-20'
+        source: 'iletim'
+        lastDay: '2026-06-28'
+        late: true
+      actual:
+        start: '2026-06-20'
+        source: 'iletim'
+        lastDay: '2026-06-27'
+        late: true
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:203:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yalnız programda iptal (localOnly) süresi dolmuş gönderilmiş belgede de reddedilir; süre içinde çıkış yolu sürer
+    not ok 4 - yalnız programda iptal (localOnly) süresi dolmuş gönderilmiş belgede de reddedilir; süre içinde çıkış yolu sürer
+      ---
+      duration_ms: 113.720913
+      type: 'test'
+      location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:219:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"error":"e-Arşiv faturanın iptal süresi doldu: alıcıya iletildiği 17.06.2026 gününden sonraki 7 gün içinde (en geç 24.06.2026) iptal edilebilirdi. İade faturası kesin; gerekirse doğrusunu yeniden kesin.","code":"einvoice-cancel-late","lastDay":"2026-06-24","start":"2026-06-17","source":"iletim"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:234:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: sonucu belirsiz gönderim (EDM işledi, yanıt koptu): süre girişim gününden, Durum Sorgula gününden değil
+    not ok 5 - sonucu belirsiz gönderim (EDM işledi, yanıt koptu): süre girişim gününden, Durum Sorgula gününden değil
+      ---
+      duration_ms: 97.704955
+      type: 'test'
+      location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:239:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   lastDay: '2026-06-26',
+        -   lastDay: '2026-06-27',
+            late: false,
+            source: 'iletim',
+            start: '2026-06-19'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        start: '2026-06-19'
+        source: 'iletim'
+        lastDay: '2026-06-27'
+        late: false
+      actual:
+        start: '2026-06-19'
+        source: 'iletim'
+        lastDay: '2026-06-26'
+        late: false
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:252:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: EDM reddetti (Hata) → yeniden gönderim: süre yeniden gönderim gününden
+    not ok 6 - EDM reddetti (Hata) → yeniden gönderim: süre yeniden gönderim gününden
+      ---
+      duration_ms: 119.730743
+      type: 'test'
+      location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:258:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"error":"e-Arşiv faturanın iptal süresi doldu: alıcıya iletildiği 20.06.2026 gününden sonraki 7 gün içinde (en geç 27.06.2026) iptal edilebilirdi. İade faturası kesin; gerekirse doğrusunu yeniden kesin.","code":"einvoice-cancel-late","lastDay":"2026-06-27","start":"2026-06-20","source":"iletim"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:271:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Hata görünen belge iptalde EDM'de oluşturulmuş çıkarsa süre ona da uygulanır (EDM'ye iptal gitmez)
+    ok 7 - Hata görünen belge iptalde EDM'de oluşturulmuş çıkarsa süre ona da uygulanır (EDM'ye iptal gitmez)
+      ---
+      duration_ms: 84.927704
+      type: 'test'
+      ...
+    # Subtest: EDM'ye ulaşmamış girişim (bulunamadı) → yeniden gönderim: süre yeniden gönderim gününden
+    not ok 8 - EDM'ye ulaşmamış girişim (bulunamadı) → yeniden gönderim: süre yeniden gönderim gününden
+      ---
+      duration_ms: 143.641944
+      type: 'test'
+      location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:294:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:308:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: portal taslağı portaldan gönderildi: süre taslak yükleme gününden (gönderim ondan önce olamaz)
+    not ok 9 - portal taslağı portaldan gönderildi: süre taslak yükleme gününden (gönderim ondan önce olamaz)
+      ---
+      duration_ms: 94.618158
+      type: 'test'
+      location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:311:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   lastDay: '2026-06-25',
+        -   lastDay: '2026-06-26',
+            late: false,
+            source: 'iletim',
+            start: '2026-06-18'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        start: '2026-06-18'
+        source: 'iletim'
+        lastDay: '2026-06-26'
+        late: false
+      actual:
+        start: '2026-06-18'
+        source: 'iletim'
+        lastDay: '2026-06-25'
+        late: false
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:324:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: e-Fatura kuralın dışında: süre bilgisi yok, bugünkü iptal yanıtı değişmez
+    ok 10 - e-Fatura kuralın dışında: süre bilgisi yok, bugünkü iptal yanıtı değişmez
+      ---
+      duration_ms: 75.515392
+      type: 'test'
+      ...
+    # Subtest: ay sonu ve yıl dönümü: 28.12 iletim → 05.01 iptal edilir, 06.01 reddedilir
+    not ok 11 - ay sonu ve yıl dönümü: 28.12 iletim → 05.01 iptal edilir, 06.01 reddedilir
+      ---
+      duration_ms: 100.748129
+      type: 'test'
+      location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:351:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + '2027-01-04'
+        - '2027-01-05'
+                    ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '2027-01-05'
+      actual: '2027-01-04'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:356:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..11
+not ok 2 - iptal süresi: program uçları (sahte EDM, sahte saat)
+  ---
+  duration_ms: 2548.860282
+  type: 'suite'
+  location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:111:1'
+  failureType: 'subtestsFailed'
+  error: '9 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: iptal süresi: e-SMM (gönderim kapısı madde 22'de açılır; kural şimdiden e-SMM'yi kapsar)
+    # Subtest: iletilmiş e-SMM 9. gün reddedilir (e-SMM iletisiyle); süre içinde kartta son gün; iletim izi gönderim girişiminden
+    not ok 1 - iletilmiş e-SMM 9. gün reddedilir (e-SMM iletisiyle); süre içinde kartta son gün; iletim izi gönderim girişiminden
+      ---
+      duration_ms: 93.854902
+      type: 'test'
+      location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:387:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   lastDay: '2026-06-26',
+        -   lastDay: '2026-06-27',
+            late: false,
+            source: 'iletim',
+            start: '2026-06-19'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        start: '2026-06-19'
+        source: 'iletim'
+        lastDay: '2026-06-27'
+        late: false
+      actual:
+        start: '2026-06-19'
+        source: 'iletim'
+        lastDay: '2026-06-26'
+        late: false
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:402:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 3 - iptal süresi: e-SMM (gönderim kapısı madde 22'de açılır; kural şimdiden e-SMM'yi kapsar)
+  ---
+  duration_ms: 1251.735274
+  type: 'suite'
+  location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:365:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 17
+# suites 3
+# pass 3
+# fail 14
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4233.072799

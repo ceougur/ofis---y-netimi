@@ -21,6 +21,7 @@ import { readUbl } from "../lib/einvoice/ubl-read.mjs";
 import { UNIT_CODE_KEYS, buildUbl, ublFileName } from "../lib/einvoice/ubl-tr.mjs";
 import { viewXslt } from "../lib/einvoice/gorunum.mjs";
 import { karekodOf } from "../lib/einvoice/karekod.mjs";
+import { NOT_SENT_CODES, TRANSMITTED, cancelDeadlineText, cancelLateText, cancelWindow, transmissionOf, windowLabel } from "../lib/einvoice/iptal-suresi.mjs";
 import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { bodyHash, createIdempotency } from "../lib/idempotency.mjs";
 import { invoicePdf } from "../lib/invoice-pdf.mjs";
@@ -157,6 +158,16 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // İş saati (v2.1.0): context.now (config.now); fatura saati de buradan.
   const now = () => clock().toISOString();
   const today = () => (period ? period.today() : isoDay(clock()));
+  // 2.4.4 madde 23 (kullanıcı kararı 21.10.2026): e-Arşiv ve e-SMM iptal süresi — kural lib/einvoice/iptal-suresi.mjs'te TEK yerde. İletim anı belgenin
+  // İşlem Geçmişi'ndeki gönderim girişimlerinden okunur (2.4.3 verisi de aynı kayıtları taşır); yazım sırasıyla (rowid; sahte saat geri alınsa da).
+  const E_ATTEMPTS = ["invoice.e.sent", "invoice.e.draft", "invoice.e.send-failed"];
+  const transmittedAtOf = id =>
+    transmissionOf(store.all(`SELECT type, payload_json AS payload, created_at AS at FROM audit_events WHERE entity_id = ? AND type IN (${E_ATTEMPTS.map(() => "?").join(", ")}) ORDER BY rowid`, id, ...E_ATTEMPTS).map(row => ({ ...row, payload: parseJson(row.payload, {}) })));
+  // eStatus: iptal sırasında entegratörden okunan yeni durum (ör. "Hata" sanılan belge EDM'de oluşturulmuş çıktıysa süre ona da uygulanır).
+  const cancelWindowOf = (row, eStatus = row.eStatus) =>
+    edocEnabled && row.status === "issued" && windowLabel(row.profile) && TRANSMITTED.has(eStatus)
+      ? cancelWindow({ profile: row.profile, eStatus, issueDate: row.issueDate, transmittedAt: transmittedAtOf(row.id), today: today() })
+      : null;
   const nowTime = () => {
     const d = clock();
     return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
@@ -938,6 +949,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const kind = INVOICE_KINDS[row.kind];
     const activeReturns = returns.filter(item => item.status === "issued").length;
     const bankFee = row.status === "issued" ? bankFeeOf(row.id) : null;
+    const cancelLimit = cancelWindowOf(row);
     const returnable = lines.map(line => ({ id: line.id, left: Math.max(0, Math.round((line.qty - (returned.get(line.id) || 0)) * 1000) / 1000) }));
     return {
       ...shape(row, state),
@@ -987,12 +999,15 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // v2.0.17 (müşteri): her belge silinebilir — taslak, kaydedilmiş (etkiler iptaldeki gibi geri alınır), iptal edilmiş.
       canDelete: manage && !deleteBlock(row, activeReturns, plan),
       deleteBlock: manage ? deleteBlock(row, activeReturns, plan) : "",
-      canCancel: manage && row.status === "issued" && activeReturns === 0 && !bankFee && !uncertainSend(row),
+      canCancel: manage && row.status === "issued" && activeReturns === 0 && !bankFee && !uncertainSend(row) && !cancelLimit?.late,
+      // 2.4.4 madde 23: iletilmiş e-Arşiv / e-SMM'nin son iptal günü (süre içindeyse kartta "Son İptal Günü"; dolduysa cancelBlock nedeni yazar).
+      cancelWindow: cancelLimit ? { start: cancelLimit.start, source: cancelLimit.source, lastDay: cancelLimit.lastDay, late: cancelLimit.late } : null,
+      cancelDeadline: cancelLimit && !cancelLimit.late ? cancelDeadlineText(cancelLimit) : "",
       // Yalnız programda iptal (entegratöre ulaşılamıyorsa; belirsiz gönderim ya da portal taslağı): Fatura Ayarları yetkisi.
       canLocalCancel: edocEnabled && manage && canUser(user, "invoices.settings") && row.status === "issued" && activeReturns === 0 && !bankFee && (uncertainSend(row) || row.eStatus === "draft"),
       // K4: iptal penceresinde söylenir (şüpheli carinin "Normal Cariye İşlendi" tahsilatı iptalle şüpheliden düşmeye başlar).
       cancelNotice: manage && row.status === "issued" ? doubtfulRelinkText(doubtfulRelinks(row.id)) : "",
-      cancelBlock: row.status === "issued" && bankFee ? bankFeeText(bankFee) : row.status === "issued" && activeReturns ? `Bu faturanın ${activeReturns} iade faturası var; önce iadeleri iptal edin.` : "",
+      cancelBlock: row.status === "issued" && bankFee ? bankFeeText(bankFee) : row.status === "issued" && activeReturns ? `Bu faturanın ${activeReturns} iade faturası var; önce iadeleri iptal edin.` : cancelLimit?.late ? cancelLateText(cancelLimit) : "",
       canReturn: manage && row.status === "issued" && !kind?.return && row.kind !== "smm" && returnable.some(item => item.left > 0) && !bankFee,
       // v2.0.17: pasif düğmenin nedeni ekranda yazılı (yalnız title değil).
       returnBlock: row.status !== "issued" ? "" : bankFee ? bankFeeText(bankFee) : kind?.return ? "" : row.kind === "smm" ? "Serbest meslek makbuzundan iade belgesi olmaz; yanlışsa iptal edin." : returnable.some(item => item.left > 0) ? "" : "İade edilebilecek kalem kalmadı; faturanın tamamı iade edildi.",
@@ -2883,8 +2898,16 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const head = invoiceRow(id);
     const localOnly = body.localOnly === true;
     const stuck = head.status === "issued" && (uncertainSend(head) || head.eStatus === "draft");
-    // e-Arşiv: entegratörde de iptal edilir (EDM: taslak, hatalı ya da başarıyla oluşturulmuş e-Arşiv iptal edilebilir).
-    const remoteEligible = row => edocEnabled && row.status === "issued" && row.profile === "EARSIVFATURA" && ["draft", "processing", "sent", "accepted", "error"].includes(row.eStatus);
+    // e-Arşiv: entegratörde de iptal edilir (EDM: taslak, hatalı ya da başarıyla oluşturulmuş e-Arşiv iptal edilebilir). e-SMM (2.4.4): e-SMM gönderimi
+    // açıkken aynı yoldan (adapters.mjs cancel → CancelSMM); kapalıyken makbuz entegratöre hiç gitmemiştir.
+    const remoteEligible = row => edocEnabled && row.status === "issued" && (row.profile === "EARSIVFATURA" || (row.profile === "ESMM" && esmmEnabled)) && ["draft", "processing", "sent", "accepted", "error"].includes(row.eStatus);
+    // 2.4.4 madde 23: iletilmiş e-Arşiv / e-SMM iletimden sonraki 8 gün dolunca HİÇBİR yoldan iptal edilmez — "yalnız programda iptal" de (programda
+    // iptal edilen belge yasal olarak geçerli kalırdı). Taslak, Hata ve sonucu belirsiz belge iletilmiş sayılmaz (K4 çıkış yolu sürer).
+    const assertWindow = (row, eStatus = row.eStatus) => {
+      const limit = cancelWindowOf(row, eStatus);
+      if (limit?.late) throw new HttpError(409, cancelLateText(limit), { code: "einvoice-cancel-late", lastDay: limit.lastDay, start: limit.start, source: limit.source });
+    };
+    assertWindow(head);
     // Dar kontrol turu 3 (B3): entegratörü atlayan her "yalnız programda" iptal (belirsiz / taslak ya da EDM'de iptal edilecek e-Arşiv) aynı kapıdan geçer.
     const bypass = localOnly && (stuck || remoteEligible(head));
     if (bypass) {
@@ -2897,9 +2920,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const existing = invoiceRow(id);
     // Önce programdaki iptal denenir (iade, kilitli dönem, tahsil edilmiş çek, stok…); geçerse entegratör, sonra program.
     const remote = remoteEligible(existing) && !localOnly;
-    // 8 gün kuralı GİB'e raporlanmış e-Arşiv içindir; portaldaki taslak (İz 7.3) GİB'e gitmedi, her zaman iptal edilir.
-    // "Hata"daki belge GİB'e raporlanmadı (gözden geçirme 2.4.2): 8 gün kuralı uygulanmaz; EDM'de yoksa yalnız programda iptal edilir.
-    if (remote && existing.eStatus !== "draft" && existing.eStatus !== "error" && daysBetween(existing.issueDate, today()) > 8) throw new HttpError(409, `e-Arşiv fatura kesildikten 8 gün sonra iptal edilemez (${dayText(existing.issueDate)} tarihli). İade faturası kesin; gerekirse doğrusunu yeniden kesin.`, { code: "einvoice-cancel-late" });
+    // 8 gün kuralı alıcıya iletilmiş e-Arşiv / e-SMM içindir (iletim gününden; lib/einvoice/iptal-suresi.mjs); portaldaki taslak (İz 7.3) ve "Hata"daki
+    // belge (gözden geçirme 2.4.2) iletilmedi, süreye girmez. Yalnız programda iptalde de aynı kapı (assertWindow head; burada güncel satırla).
+    assertWindow(existing);
     if (remote) {
       cancel(user, existing.id, { ...options, confirmExternal: true, dryRun: true });
       const doc = detail(existing.id, user);
@@ -2914,6 +2937,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         current = (await integrator().status({ invoice: doc }).catch(() => null)) || current;
       }
       if (current?.status && current.status !== existing.eStatus) setE(user, existing.id, { status: current.status, message: current.message }, "invoice.e.status", { raw: current.raw || "", during: "cancel" });
+      // Taslak / Hata sanılan belge EDM'de oluşturulmuş çıktıysa süre ona da uygulanır.
+      if (current?.status) assertWindow(existing, current.status);
       if (current?.status === "processing") {
         throw new HttpError(409, "e-Arşiv fatura EDM'de henüz işleniyor; iptal ancak işlem bitince yapılabilir. Birkaç dakika sonra Durum Sorgula ile bakıp yeniden deneyin.", { code: "einvoice-processing" });
       }
@@ -3526,7 +3551,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         // KURULAMADIYSA (integrator-unreachable; edm.mjs B2 sınıflaması) EDM belgeyi görmemiştir: numara bu istekte verildiyse ve serinin son numarasıysa
         // geri bırakılır (seride boşluk kalmaz), belge numarasız Gönderilecekler'e döner — ağ yokken numara verilmez kuralı korunur.
         if (code === "integrator-unreachable" && releasable && releaseNumber(user, doc.id, doc.number, error)) throw error;
-        const notSent = ["integrator-channel", "integrator-url", "integrator-credentials", "integrator-login", "integrator-session"].includes(code);
+        const notSent = NOT_SENT_CODES.has(code);
         if (notSent) setE(user, doc.id, { status: doc.eStatus || "none", message: error?.message || String(error) }, draft ? "invoice.e.draft-failed" : "invoice.e.send-failed", { adapter: link.id, code });
         else setE(user, doc.id, { status: rejected ? "error" : "none", adapter: link.id, message: error?.message || String(error) }, draft ? "invoice.e.draft-failed" : "invoice.e.send-failed", { adapter: link.id, code });
         throw error;
