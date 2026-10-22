@@ -1,0 +1,5 @@
+stage 200 {"stageId":"stage-1207d16c-589c-4aa7-bffb-a24a1f914d83","kind":"excel","label":"borclular.xlsx","url":null,"rowCount":3,
+commit 200
+Tablodaki Kişiler: 200 [["Ece Ak",4000],["Mert Can",6000],["Tülay Öz",11500]] toplam 21500
+Nakit Akış: 200 {"expected":21500,"collected":0,"cashIn":0,"cashOut":0,"net":0}
+Tahsilat Takvimi: 200 [["Ece Ak",4000,4000],["Mert Can",6000,6000],["Tülay Öz",11500,11500]]

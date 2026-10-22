@@ -1,0 +1,53 @@
+{
+  "ad": "244-e23-u2-mutasyon-soz-borc",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-mutant-soz-borc/test/tablo-borc-dosya-u2.test.mjs /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-mutant-soz-borc/test/kalan-borc-satir-31d.test.mjs /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-mutant-soz-borc/test/kalan-borc-ortak-30a.test.mjs",
+  "commit": "ee047cb245ba5d15db4c04713198cc6d50a612bd",
+  "dal": "is/e23",
+  "kirli": 7,
+  "izlenmeyen": 54,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T21:51:52.119Z",
+  "sure_sn": 5.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 29,
+    "gecen": 25,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 30a: Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip, Nakit Akışı ve Excel aynı Kalan Borç'u gösterir (API) › Tahsilat Takvimi, Vade Takip ve Nakit Akışı aynı tutarı gösterir (Borçlular sekmesi: Tülay 7.600, Ece 3.000; Mert ödenmiş)",
+      "konum": "test/kalan-borc-ortak-30a.test.mjs:180:3",
+      "hata": "Nakit Akışı Beklenen (Kalan Borç hücrelerinden) 20.100; görülen 19100 · 19100 !== 20100 (beklenen 20100, gelen 19100)"
+    },
+    {
+      "ad": "31d E3: gün / adet / sayı / ay / yıl / oran / yüzde / % başlıklı kolon borç tutarı değildir (birim) › B7 para başlıkları dışlanmaz: 'Aylık Taksit', 'Yıllık Ücret', 'Günlük Ücret' kalem tutarıdır (takvimde tutar; borç değil); 'Bakiye' kalan",
+      "konum": "test/kalan-borc-satir-31d.test.mjs:92:3",
+      "hata": "\"Aylık Taksit\" beklenen tahsilattır, borç satırı açmaz (31f U2): {\"Mert Can\":8000,\"Tülay Öz\":11500} · + actual - expected · + { (beklenen , gelen )"
+    },
+    {
+      "ad": "31f U2 / U8: programın örnek dosyası — borç yalnız dosyanın Kalan'ından (98.000), söz takvimde kalır › D1/D3/D8 Tablodaki Kişiler: toplam borç 98.000 (İcra Takip Kalan), Ali Veli 36.000, Mehmet Demir 0; söz / taksit / kira borç satırı açmaz",
+      "konum": "test/tablo-borc-dosya-u2.test.mjs:57:3",
+      "hata": "toplam borç 98.000 olmalı (yalnız İcra Takip'in Kalan'ı); görülen 143000 · 143000 !== 98000 (beklenen 98000, gelen 143000)"
+    },
+    {
+      "ad": "31f U2 / U8: programın örnek dosyası — borç yalnız dosyanın Kalan'ından (98.000), söz takvimde kalır › D2/D6 Tahsilat Takvimi: açık sözler yerinde (Ali Veli 5.000), 'Ödendi' sözler yok; söz kaleminin Kalan Borç'u İcra Takip'ten (36.000)",
+      "konum": "test/tablo-borc-dosya-u2.test.mjs:66:3",
+      "hata": "söz tutarı 5.000 (beklenen tahsilat) · 36000 !== 5000 (beklenen 5000, gelen 36000)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-e23-u2-mutasyon-soz-borc.log",
+  "klasor": "/home/user/wt/e23",
+  "ham_cikti_sha256": "29dcf0e4554594592d5e9fb629bf8c156bd2298a546ef4e62e0f58412b774a81",
+  "ham_cikti_bayt": 15721
+}

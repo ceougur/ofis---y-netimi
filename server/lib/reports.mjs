@@ -13,12 +13,11 @@
 // tablo biçimi (kolonlar + satırlar) da döner; PDF/Excel/yazdırma o tabloyu kullanır.
 import { primaryColumns } from "./insight/columns.mjs";
 import { isFlaggedRow, isTotalRow } from "./insight/cells.mjs";
-import { pickRemainingDebtColumn } from "./insight/debt-column.mjs";
+import { amountCandidates, chooseDebt, debtPlan, isNotAmountHeader, rowDebt } from "./insight/debt-column.mjs";
 import { foldText, parseAmount, parseDate } from "./insight/validators.mjs";
 
 const DAY = 86_400_000;
 const BACKBONE = ["cari", "id", "amount", "debt", "deadline", "status", "phone"];
-const DEBT_HEADER = /\b(kalan|bakiye|borc|kalan borc|kalan tutar|odenecek)\b/;
 const MONEY_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export const REPORT_KINDS = ["cari-ekstre", "vade-takip", "nakit-akis"];
@@ -61,17 +60,20 @@ const itemDate = item => {
 function recordLayout(analyses) {
   const primary = primaryColumns(analyses);
   const byColumn = new Map(analyses.map(item => [item.column, item]));
-  const moneyColumns = analyses.filter(item => item.role === "money").map(item => item.column);
-  // 2.4.4 (30a): "Kalan" / "Bakiye" kolonu her zaman önce (Tahsilat Takvimi ile aynı ortak kural); yoksa ilk eşleşen borç başlığı (önceki gibi). 2.4.3'te
-  // "Toplam Borç" + "Kalan Borç" tablosunda ilk eşleşen Toplam Borç alınıyor, ödenmiş kısım da borç görünüyordu.
-  const debtColumn = pickRemainingDebtColumn(moneyColumns, DEBT_HEADER);
-  const amountColumn = primary.money && primary.money !== debtColumn ? primary.money : moneyColumns.find(column => column !== debtColumn) || primary.money || null;
-  const backbone = new Set([primary.person, primary.id, amountColumn, debtColumn, primary.deadline, primary.status, primary.phone].filter(Boolean));
+  // Borç düzeni Tahsilat Takvimi ile ORTAK (debt-column.mjs): Kalan / Bakiye → borç / alacak başlıklı → sekmenin tek tutarı (söz / taksit / kira tutarı
+  // değilse). 30a: Kalan her zaman önce; 31d E3: gün / adet / oran kolonu tutar değil; 31f U2: söz tutarı borç değil (2.4.4 aday 6'da her sekmenin tutar
+  // kolonu — "Söz Tutarı", "Kira bedeli", taksit "Toplam" — borç sayılıyordu; kapanmış dosya söz yüzünden borçlu görünüyordu).
+  const moneyColumns = amountCandidates(analyses);
+  const plan = debtPlan(moneyColumns);
+  const debtColumn = plan.column;
+  const money = primary.money && !isNotAmountHeader(primary.money) ? primary.money : null;
+  const amountColumn = money && money !== debtColumn ? money : moneyColumns.find(column => column !== debtColumn) || money || null;
+  const backbone = new Set([primary.person, primary.id, amountColumn, plan.remaining, plan.total, primary.deadline, primary.status, primary.phone].filter(Boolean));
   const columns = { cari: primary.person, id: primary.id, amount: amountColumn, debt: debtColumn, deadline: primary.deadline, status: primary.status, phone: primary.phone };
-  return { primary, byColumn, debtColumn, amountColumn, backbone, columns };
+  return { primary, byColumn, debtColumn, plan, amountColumn, backbone, columns };
 }
 
-function recordOf(row, { primary, byColumn, debtColumn, amountColumn, backbone }, { session, sessionName, tabs }) {
+function recordOf(row, { primary, byColumn, plan, amountColumn, backbone }, { session, sessionName, tabs }) {
   if (!row || !row.__hofKey || isTotalRow(row) || isFlaggedRow(row) || String(row.__hofKey).startsWith("free:")) return null;
   const cari = String(row[primary.person] ?? "").trim();
   const phone = primary.phone ? String(row[primary.phone] ?? "").trim() : "";
@@ -94,7 +96,8 @@ function recordOf(row, { primary, byColumn, debtColumn, amountColumn, backbone }
     cariKey: cariKeyOf(cari, phone),
     id: primary.id ? String(row[primary.id] ?? "").trim() : "",
     amount: amountColumn ? parseAmount(row[amountColumn]) : null,
-    debt: debtColumn ? parseAmount(row[debtColumn]) : null,
+    // 31d E2: satır borcu takvimle AYNI fonksiyonla (Kalan sayıysa o, 0 dahil; boş / sayı değilse Toplam Borç).
+    ...(debt => ({ debt: debt.amount, debtTier: debt.tier, debtColumn: debt.column }))(rowDebt(plan, column => parseAmount(row[column]))),
     deadline: dayOf(deadlineDate),
     deadlineText: primary.deadline ? String(row[primary.deadline] ?? "").trim() : "",
     status: primary.status ? String(row[primary.status] ?? "").trim() : "",
@@ -186,12 +189,24 @@ export function cariEkstre({ records, payments = [], filters = normalizeFilters(
   // 2.4.4 (5c): aynı kayıt anahtarı birden çok sekmede olabilir (İcra Takip + Ödeme Sözleri aynı dosya no); tahsilat anahtara bağlıdır ve rapora
   // BİR KEZ, süzgeçte kalan ilk kaydın satırına yazılır. 2.4.3'e kadar anahtarın her sekmedeki satırına ayrı yazılıyor, alacak iki kez sayılıyordu.
   const attached = new Set();
+  // 31b MM5 / 31f U2: borç da kayıt anahtarı (dosya no) başına BİR KEZ, Tahsilat Takvimi ile aynı kuralla (debt-column.mjs chooseDebt: Kalan > borç
+  // başlıklı > tek tutar; aynı öncelikte ilk sekme). Söz / taksit / kira tutarı borç değildir (debtPlan). Seçim bütün kayıtlardan (süzgeçten bağımsız).
+  const debtOwner = new Map();
+  const conflicts = [];
+  for (const record of records) {
+    if (record.debt === null || record.debt === undefined) continue;
+    const slot = `${record.session || ""}\u0000${record.key}`;
+    const current = debtOwner.get(slot);
+    const chosen = chooseDebt(current ? { amount: current.debt, tier: current.debtTier, record: current } : null, { amount: record.debt, tier: record.debtTier, record });
+    if (chosen.conflict) conflicts.push({ key: record.key, cari: current.cari || record.cari, kept: { tab: current.tab, column: current.debtColumn, amount: current.debt }, other: { tab: record.tab, column: record.debtColumn, amount: record.debt } });
+    debtOwner.set(slot, chosen.debt.record);
+  }
   for (const record of matched) {
     const key = groupKeyOf(record);
     if (!groups.has(key)) groups.set(key, { key, cari: record.cari || record.id || record.key, sessions: new Set(), lines: [] });
     const group = groups.get(key);
     group.sessions.add(record.sessionName || record.session);
-    const debit = record.debt ?? record.amount;
+    const debit = debtOwner.get(`${record.session || ""}\u0000${record.key}`) === record ? record.debt : null;
     const date = record.deadline;
     if (debit !== null && inRange(date, filters) && (filters.minAmount === null || Math.abs(debit) >= filters.minAmount)) {
       group.lines.push({ date, kind: "borc", description: [record.tab, record.id].filter(Boolean).join(" · "), session: record.sessionName, tab: record.tab, borc: debit, alacak: null, status: record.status, fields: record.fields, key: record.key });
@@ -234,7 +249,7 @@ export function cariEkstre({ records, payments = [], filters = normalizeFilters(
     ],
     rows: out.flatMap(group => group.lines.map(line => ({ cari: group.cari, date: line.date, description: line.description, session: line.session, borc: line.borc, alacak: line.alacak, bakiye: line.bakiye, status: line.status, ...Object.fromEntries(columns.map(column => [`f:${column}`, line.fields[column] || ""])) }))),
   };
-  return { kind: "cari-ekstre", generatedAt: now.toISOString(), groups: out, totals: { debit: totalDebit, credit: totalCredit, balance: totalDebit - totalCredit, caris: out.length, crossMatched: out.filter(group => group.crossMatched).length }, table };
+  return { kind: "cari-ekstre", generatedAt: now.toISOString(), groups: out, conflicts, totals: { debit: totalDebit, credit: totalCredit, balance: totalDebit - totalCredit, caris: out.length, crossMatched: out.filter(group => group.crossMatched).length }, table };
 }
 
 // ---------- Vade takip ----------

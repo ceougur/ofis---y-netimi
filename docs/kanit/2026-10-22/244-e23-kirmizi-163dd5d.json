@@ -1,0 +1,78 @@
+{
+  "ad": "244-e23-kirmizi-163dd5d",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-eski-163dd5d-31d/test/kalan-borc-satir-31d.test.mjs",
+  "commit": "ee047cb245ba5d15db4c04713198cc6d50a612bd",
+  "dal": "is/e23",
+  "kirli": 7,
+  "izlenmeyen": 56,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T21:52:59.886Z",
+  "sure_sn": 1.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 10,
+    "gecen": 1,
+    "basarisiz": 9,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 9 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "31d E2: satır düzeyi tek kural — Kalan boşsa o satırda Toplam Borç (birim) › B1 Kalan boş (t13): Tablodaki Kişiler ve takvim aynı — Tülay 11.500 (Toplam), Mert 6.000 (Kalan), Ece 4.000 (Toplam)",
+      "konum": "test/kalan-borc-satir-31d.test.mjs:42:3",
+      "hata": "Tablodaki Kişiler borçları · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "31d E2: satır düzeyi tek kural — Kalan boşsa o satırda Toplam Borç (birim) › B3 Kalan 0: borç 0 (Toplam'a düşülmez); takvimde kalem yok",
+      "konum": "test/kalan-borc-satir-31d.test.mjs:57:3",
+      "hata": "Kalan 0 → 0 · 11500 !== 0 (beklenen 0, gelen 11500)"
+    },
+    {
+      "ad": "31d E2: satır düzeyi tek kural — Kalan boşsa o satırda Toplam Borç (birim) › B4 bütün Kalan hücreleri dolu: Kalan (30a aynen); B5 yalnız Toplam: Toplam",
+      "konum": "test/kalan-borc-satir-31d.test.mjs:64:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "31d E3: gün / adet / sayı / ay / yıl / oran / yüzde / % başlıklı kolon borç tutarı değildir (birim) › B6 Tutar + Kalan Gün: borç Tutar (11.500 + 8.000 = 19.500), 'Kalan Gün' (5, 12) değil",
+      "konum": "test/kalan-borc-satir-31d.test.mjs:74:3",
+      "hata": "Tablodaki Kişiler toplam borç 19.500 olmalı ('Kalan Gün' tutar değil); görülen 17 · 17 !== 19500 (beklenen 19500, gelen 17)"
+    },
+    {
+      "ad": "31d E3: gün / adet / sayı / ay / yıl / oran / yüzde / % başlıklı kolon borç tutarı değildir (birim) › B6 her biçim (Türkçe büyük harf dahil): Toplam Borç + <kolon> → borç Toplam Borç",
+      "konum": "test/kalan-borc-satir-31d.test.mjs:83:3",
+      "hata": "\"Kalan Gün\": takvim [11500,11500,null] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "31d E3: gün / adet / sayı / ay / yıl / oran / yüzde / % başlıklı kolon borç tutarı değildir (birim) › B7 para başlıkları dışlanmaz: 'Aylık Taksit', 'Yıllık Ücret', 'Günlük Ücret' kalem tutarıdır (takvimde tutar; borç değil); 'Bakiye' kalan",
+      "konum": "test/kalan-borc-satir-31d.test.mjs:92:3",
+      "hata": "\"Yıllık Ücret\" beklenen tahsilattır, borç satırı açmaz (31f U2): {\"Mert Can\":8000,\"Tülay Öz\":11500} · + actual - expected · + { (beklenen , gelen )"
+    },
+    {
+      "ad": "31d E3: gün / adet / sayı / ay / yıl / oran / yüzde / % başlıklı kolon borç tutarı değildir (birim) › B10 tek yer: dues.mjs ve reports.mjs satır borcunu ve kolon dışlamasını ortak yardımcıdan alır",
+      "konum": "test/kalan-borc-satir-31d.test.mjs:103:3",
+      "hata": "server/lib/insight/dues.mjs satır borcunu rowDebt ile okumalı (beklenen , gelen |-)"
+    },
+    {
+      "ad": "31d E2/E3: ekranların okuduğu uçlar aynı toplamı gösterir (API) › Sekme \"Borçlular\": Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip ve Nakit Akışı hepsi 21500",
+      "konum": "test/kalan-borc-satir-31d.test.mjs:135:5",
+      "hata": "\"Borçlular\" ekranları 21500 olmalı (tablo hücrelerinden) · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "31d E2/E3: ekranların okuduğu uçlar aynı toplamı gösterir (API) › Sekme \"Kira\": Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip ve Nakit Akışı hepsi 19500",
+      "konum": "test/kalan-borc-satir-31d.test.mjs:135:5",
+      "hata": "\"Kira\" ekranları 19500 olmalı (tablo hücrelerinden) · + actual - expected · { (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-e23-kirmizi-163dd5d.log",
+  "klasor": "/home/user/wt/e23",
+  "ham_cikti_sha256": "38bc53797ca5f7f53e8ae4c39e95beaf4ff656a14e13bfbe14bafcacece6ec2f",
+  "ham_cikti_bayt": 46699
+}

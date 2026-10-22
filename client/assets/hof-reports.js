@@ -73,6 +73,14 @@
     return card("Beklenen tahsilat", money(report.totals.expected)) + card("Gerçekleşen tahsilat", money(report.totals.collected)) + card("Kasa giriş", money(report.totals.cashIn)) + card("Kasa çıkış", money(report.totals.cashOut)) + card("Net", money(report.totals.net));
   }
 
+  // 2.4.4 (31b MM5): aynı dosya no birden çok sekmede farklı kalan borç taşıyorsa borç bir kez, ilk sekmeden sayılır; kullanıcıya hangisinin alındığı söylenir.
+  function conflictHtml(report) {
+    const list = report.kind === "cari-ekstre" ? report.conflicts || [] : [];
+    if (!list.length) return "";
+    const items = list.slice(0, 5).map(item => `${esc(item.cari || item.key)}: ${esc(item.kept.tab)} ${esc(money(item.kept.amount))} alındı (${esc(item.other.tab)} ${esc(money(item.other.amount))})`).join("; ");
+    return `<p class="hof-modal-text hof-report-note" data-debt-conflicts>Aynı dosya numarası farklı sekmelerde farklı kalan borç taşıyor; borç bir kez, ilk sekmeden sayıldı. ${items}${list.length > 5 ? ` ve ${list.length - 5} kayıt daha` : ""}.</p>`;
+  }
+
   async function load() {
     if (!host || !host.isConnected) return;
     const dialog = host;
@@ -84,7 +92,7 @@
       const data = await HOF.api(`/api/workspace/reports/${state.kind}?${query(forKind(state.filters))}`, { timeoutMs: 120_000 });
       state.data = data;
       renderFilters(dialog, data);
-      body.innerHTML = `<div class="hof-report-summary">${summaryHtml(data.report)}</div>${tableHtml(data.report.table)}`;
+      body.innerHTML = `<div class="hof-report-summary">${summaryHtml(data.report)}</div>${conflictHtml(data.report)}${tableHtml(data.report.table)}`;
       dialog.querySelector("[data-report-meta]").textContent = `${number(data.report.table.rows.length)} satır · ${data.sessions.length > 1 && !state.filters.sessions ? `${data.sessions.length} oturum birleşik` : data.sessions.map(item => item.name).join(", ")}${data.report.table.columns.some(column => column.dynamic) ? ` · ${data.report.table.columns.filter(column => column.dynamic).length} özel alan kolonu` : ""}`;
     } catch (error) {
       body.innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;

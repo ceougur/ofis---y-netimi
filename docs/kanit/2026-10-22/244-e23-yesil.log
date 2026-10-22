@@ -1,0 +1,297 @@
+TAP version 13
+# Subtest: 2.4.4 30a: Tablodaki Kişiler ve Tahsilat Takvimi aynı Kalan Borç kolonunu okur (birim)
+    # Subtest: N1 Toplam Borç önce: Tablodaki Kişiler borcu Kalan Borç hücresi (7.600, 6.000, 3.000), Toplam Borç değil
+    ok 1 - N1 Toplam Borç önce: Tablodaki Kişiler borcu Kalan Borç hücresi (7.600, 6.000, 3.000), Toplam Borç değil
+      ---
+      duration_ms: 17.436394
+      type: 'test'
+      ...
+    # Subtest: N1 Kalan Borç önce (kolon sırası ters): yine Kalan Borç
+    ok 2 - N1 Kalan Borç önce (kolon sırası ters): yine Kalan Borç
+      ---
+      duration_ms: 5.609003
+      type: 'test'
+      ...
+    # Subtest: N1 takvim (SABİTLER, 5b'den beri): söz kaleminin tutarı ve Kalan Borç'u Kalan Borç hücresi; iki kolon sırasında da
+    ok 3 - N1 takvim (SABİTLER, 5b'den beri): söz kaleminin tutarı ve Kalan Borç'u Kalan Borç hücresi; iki kolon sırasında da
+      ---
+      duration_ms: 9.76011
+      type: 'test'
+      ...
+    # Subtest: N2 yalnız Toplam Borç: iki yerde de Toplam Borç (geri dönüş değişmez)
+    ok 4 - N2 yalnız Toplam Borç: iki yerde de Toplam Borç (geri dönüş değişmez)
+      ---
+      duration_ms: 3.364065
+      type: 'test'
+      ...
+    # Subtest: N3 yalnız Kalan: Kalan
+    ok 5 - N3 yalnız Kalan: Kalan
+      ---
+      duration_ms: 3.914043
+      type: 'test'
+      ...
+    # Subtest: N4 'Bakiye' ve 'Kalan Tutar' Kalan sayılır (Toplam Borç önce olsa da); 'Ödenecek' sayılmaz (ilk eşleşen borç başlığı, önceki gibi)
+    ok 6 - N4 'Bakiye' ve 'Kalan Tutar' Kalan sayılır (Toplam Borç önce olsa da); 'Ödenecek' sayılmaz (ilk eşleşen borç başlığı, önceki gibi)
+      ---
+      duration_ms: 9.26863
+      type: 'test'
+      ...
+    # Subtest: N5 Toplam Borç + Ödenen, Kalan yok: Toplam Borç (program kalanı hesaplamaz — bilinen sınır)
+    ok 7 - N5 Toplam Borç + Ödenen, Kalan yok: Toplam Borç (program kalanı hesaplamaz — bilinen sınır)
+      ---
+      duration_ms: 1.62582
+      type: 'test'
+      ...
+    # Subtest: N6 Kalan Borç 0: Tablodaki Kişiler borcu 0 (Toplam değil), takvimde kalem yok (ödenmiş); Kalan boş: tutar kolonuna (Toplam Borç) düşer
+    ok 8 - N6 Kalan Borç 0: Tablodaki Kişiler borcu 0 (Toplam değil), takvimde kalem yok (ödenmiş); Kalan boş: tutar kolonuna (Toplam Borç) düşer
+      ---
+      duration_ms: 7.944218
+      type: 'test'
+      ...
+    # Subtest: N12 programın kendi şablonu (Alacak ve Tahsilat Yönetimi: Borç Tutarı + Kalan Borç): Tablodaki Kişiler ve takvim Kalan Borç
+    ok 9 - N12 programın kendi şablonu (Alacak ve Tahsilat Yönetimi: Borç Tutarı + Kalan Borç): Tablodaki Kişiler ve takvim Kalan Borç
+      ---
+      duration_ms: 12.777265
+      type: 'test'
+      ...
+    # Subtest: N11 tek yer: dues.mjs ve reports.mjs kalan kolonunu ortak yardımcıdan seçer
+    ok 10 - N11 tek yer: dues.mjs ve reports.mjs kalan kolonunu ortak yardımcıdan seçer
+      ---
+      duration_ms: 1.440783
+      type: 'test'
+      ...
+    1..10
+ok 1 - 2.4.4 30a: Tablodaki Kişiler ve Tahsilat Takvimi aynı Kalan Borç kolonunu okur (birim)
+  ---
+  duration_ms: 74.977777
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 30a: Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip, Nakit Akışı ve Excel aynı Kalan Borç'u gösterir (API)
+    # Subtest: Tablodaki Kişiler: her sekmede borç = o sekmenin Kalan Borç hücresi (Kalan yoksa Toplam Borç); toplam = satırlar
+    ok 1 - Tablodaki Kişiler: her sekmede borç = o sekmenin Kalan Borç hücresi (Kalan yoksa Toplam Borç); toplam = satırlar
+      ---
+      duration_ms: 61.97613
+      type: 'test'
+      ...
+    # Subtest: Tahsilat Takvimi, Vade Takip ve Nakit Akışı aynı tutarı gösterir (Borçlular sekmesi: Tülay 7.600, Ece 3.000; Mert ödenmiş)
+    ok 2 - Tahsilat Takvimi, Vade Takip ve Nakit Akışı aynı tutarı gösterir (Borçlular sekmesi: Tülay 7.600, Ece 3.000; Mert ödenmiş)
+      ---
+      duration_ms: 80.743482
+      type: 'test'
+      ...
+    # Subtest: Excel dışa aktarım: Tülay Öz (Borçlular) Borç hücresi 7.600
+    ok 3 - Excel dışa aktarım: Tülay Öz (Borçlular) Borç hücresi 7.600
+      ---
+      duration_ms: 17.541247
+      type: 'test'
+      ...
+    # Subtest: 5c: aynı dosya no iki sekmede — tahsilat bir kez; Borçlular satırı Kalan Borç (7.600)
+    ok 4 - 5c: aynı dosya no iki sekmede — tahsilat bir kez; Borçlular satırı Kalan Borç (7.600)
+      ---
+      duration_ms: 75.084534
+      type: 'test'
+      ...
+    1..4
+ok 2 - 2.4.4 30a: Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip, Nakit Akışı ve Excel aynı Kalan Borç'u gösterir (API)
+  ---
+  duration_ms: 858.904967
+  type: 'suite'
+  ...
+# Subtest: 31d E2: satır düzeyi tek kural — Kalan boşsa o satırda Toplam Borç (birim)
+    # Subtest: B1 Kalan boş (t13): Tablodaki Kişiler ve takvim aynı — Tülay 11.500 (Toplam), Mert 6.000 (Kalan), Ece 4.000 (Toplam)
+    ok 1 - B1 Kalan boş (t13): Tablodaki Kişiler ve takvim aynı — Tülay 11.500 (Toplam), Mert 6.000 (Kalan), Ece 4.000 (Toplam)
+      ---
+      duration_ms: 28.53138
+      type: 'test'
+      ...
+    # Subtest: B2 Kalan hücresi sayı değil ('belirsiz'): o satırda Toplam Borç
+    ok 2 - B2 Kalan hücresi sayı değil ('belirsiz'): o satırda Toplam Borç
+      ---
+      duration_ms: 4.085846
+      type: 'test'
+      ...
+    # Subtest: B3 Kalan 0: borç 0 (Toplam'a düşülmez); takvimde kalem yok
+    ok 3 - B3 Kalan 0: borç 0 (Toplam'a düşülmez); takvimde kalem yok
+      ---
+      duration_ms: 6.077509
+      type: 'test'
+      ...
+    # Subtest: B4 bütün Kalan hücreleri dolu: Kalan (30a aynen); B5 yalnız Toplam: Toplam
+    ok 4 - B4 bütün Kalan hücreleri dolu: Kalan (30a aynen); B5 yalnız Toplam: Toplam
+      ---
+      duration_ms: 4.16261
+      type: 'test'
+      ...
+    1..4
+ok 3 - 31d E2: satır düzeyi tek kural — Kalan boşsa o satırda Toplam Borç (birim)
+  ---
+  duration_ms: 43.98417
+  type: 'suite'
+  ...
+# Subtest: 31d E3: gün / adet / sayı / ay / yıl / oran / yüzde / % başlıklı kolon borç tutarı değildir (birim)
+    # Subtest: B6 Tutar + Kalan Gün: borç Tutar (11.500 + 8.000 = 19.500), 'Kalan Gün' (5, 12) değil
+    ok 1 - B6 Tutar + Kalan Gün: borç Tutar (11.500 + 8.000 = 19.500), 'Kalan Gün' (5, 12) değil
+      ---
+      duration_ms: 3.385946
+      type: 'test'
+      ...
+    # Subtest: B6 her biçim (Türkçe büyük harf dahil): Toplam Borç + <kolon> → borç Toplam Borç
+    ok 2 - B6 her biçim (Türkçe büyük harf dahil): Toplam Borç + <kolon> → borç Toplam Borç
+      ---
+      duration_ms: 37.959078
+      type: 'test'
+      ...
+    # Subtest: B7 para başlıkları dışlanmaz: 'Aylık Taksit', 'Yıllık Ücret', 'Günlük Ücret' kalem tutarıdır (takvimde tutar; borç değil); 'Bakiye' kalan
+    ok 3 - B7 para başlıkları dışlanmaz: 'Aylık Taksit', 'Yıllık Ücret', 'Günlük Ücret' kalem tutarıdır (takvimde tutar; borç değil); 'Bakiye' kalan
+      ---
+      duration_ms: 16.062747
+      type: 'test'
+      ...
+    # Subtest: B10 tek yer: dues.mjs ve reports.mjs satır borcunu ve kolon dışlamasını ortak yardımcıdan alır
+    ok 4 - B10 tek yer: dues.mjs ve reports.mjs satır borcunu ve kolon dışlamasını ortak yardımcıdan alır
+      ---
+      duration_ms: 4.629425
+      type: 'test'
+      ...
+    1..4
+ok 4 - 31d E3: gün / adet / sayı / ay / yıl / oran / yüzde / % başlıklı kolon borç tutarı değildir (birim)
+  ---
+  duration_ms: 62.627502
+  type: 'suite'
+  ...
+# Subtest: 31d E2/E3: ekranların okuduğu uçlar aynı toplamı gösterir (API)
+    # Subtest: Sekme "Borçlular": Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip ve Nakit Akışı hepsi 21500
+    ok 1 - Sekme "Borçlular": Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip ve Nakit Akışı hepsi 21500
+      ---
+      duration_ms: 127.355292
+      type: 'test'
+      ...
+    # Subtest: Sekme "Kira": Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip ve Nakit Akışı hepsi 19500
+    ok 2 - Sekme "Kira": Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip ve Nakit Akışı hepsi 19500
+      ---
+      duration_ms: 28.810599
+      type: 'test'
+      ...
+    1..2
+ok 5 - 31d E2/E3: ekranların okuduğu uçlar aynı toplamı gösterir (API)
+  ---
+  duration_ms: 915.307283
+  type: 'suite'
+  ...
+# Subtest: 31b MM6: Tablodaki Nakit Akışı Kasa giriş/çıkış = Kasa raporu (bütün nakit kaynaklar)
+    # Subtest: Kasa giriş 4.150 / çıkış 550 (girilen tutarlardan) ve Kasa raporuyla aynı; her Sekme / Sayfa seçeneğinde aynı
+    ok 1 - Kasa giriş 4.150 / çıkış 550 (girilen tutarlardan) ve Kasa raporuyla aynı; her Sekme / Sayfa seçeneğinde aynı
+      ---
+      duration_ms: 150.686411
+      type: 'test'
+      ...
+    1..1
+ok 6 - 31b MM6: Tablodaki Nakit Akışı Kasa giriş/çıkış = Kasa raporu (bütün nakit kaynaklar)
+  ---
+  duration_ms: 1344.943469
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 30e: Nakit Akışı Sekme süzgeci (birim)
+    # Subtest: tek sekme: yalnız o sekmenin kalemleri + sekmesiz kalem; iki sekme; süzgeçsiz hepsi
+    ok 1 - tek sekme: yalnız o sekmenin kalemleri + sekmesiz kalem; iki sekme; süzgeçsiz hepsi
+      ---
+      duration_ms: 2.10001
+      type: 'test'
+      ...
+    # Subtest: Gerçekleşen tahsilat ve Kasa giriş/çıkış sekme süzgecinden bağımsız (sekme taşımaz; Sayfa süzgecindeki gibi)
+    ok 2 - Gerçekleşen tahsilat ve Kasa giriş/çıkış sekme süzgecinden bağımsız (sekme taşımaz; Sayfa süzgecindeki gibi)
+      ---
+      duration_ms: 1.174359
+      type: 'test'
+      ...
+    1..2
+ok 7 - 2.4.4 30e: Nakit Akışı Sekme süzgeci (birim)
+  ---
+  duration_ms: 4.265305
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 30e: Nakit Akışı Sekme süzgeci (API, ekranın ve Excel'in okuduğu uç)
+    # Subtest: her sekme seçeneği: Beklenen yalnız seçili sekmelerin kalemleri; süzgeçsiz toplam = sekmelerin toplamı; satırlar = toplam
+    ok 1 - her sekme seçeneği: Beklenen yalnız seçili sekmelerin kalemleri; süzgeçsiz toplam = sekmelerin toplamı; satırlar = toplam
+      ---
+      duration_ms: 129.571441
+      type: 'test'
+      ...
+    # Subtest: Sayfa ve Sekme süzgeci birlikte; Excel dışa aktarım aynı süzgeçle 200
+    ok 2 - Sayfa ve Sekme süzgeci birlikte; Excel dışa aktarım aynı süzgeçle 200
+      ---
+      duration_ms: 191.497075
+      type: 'test'
+      ...
+    1..2
+ok 8 - 2.4.4 30e: Nakit Akışı Sekme süzgeci (API, ekranın ve Excel'in okuduğu uç)
+  ---
+  duration_ms: 1192.278656
+  type: 'suite'
+  ...
+# Subtest: 31f U2 / U8: programın örnek dosyası — borç yalnız dosyanın Kalan'ından (98.000), söz takvimde kalır
+    # Subtest: D1/D3/D8 Tablodaki Kişiler: toplam borç 98.000 (İcra Takip Kalan), Ali Veli 36.000, Mehmet Demir 0; söz / taksit / kira borç satırı açmaz
+    ok 1 - D1/D3/D8 Tablodaki Kişiler: toplam borç 98.000 (İcra Takip Kalan), Ali Veli 36.000, Mehmet Demir 0; söz / taksit / kira borç satırı açmaz
+      ---
+      duration_ms: 222.637766
+      type: 'test'
+      ...
+    # Subtest: D2/D6 Tahsilat Takvimi: açık sözler yerinde (Ali Veli 5.000), 'Ödendi' sözler yok; söz kaleminin Kalan Borç'u İcra Takip'ten (36.000)
+    ok 2 - D2/D6 Tahsilat Takvimi: açık sözler yerinde (Ali Veli 5.000), 'Ödendi' sözler yok; söz kaleminin Kalan Borç'u İcra Takip'ten (36.000)
+      ---
+      duration_ms: 47.98151
+      type: 'test'
+      ...
+    1..2
+ok 9 - 31f U2 / U8: programın örnek dosyası — borç yalnız dosyanın Kalan'ından (98.000), söz takvimde kalır
+  ---
+  duration_ms: 1387.735623
+  type: 'suite'
+  ...
+# Subtest: 31b MM5: aynı dosya no iki sekmede — borç bir kez (Kişiler, Vade Takip, Nakit Akışı), tahsilat bir kez
+    # Subtest: Tablodaki Kişiler Deniz Ak: borç 12.000 bir kez, alacak 3.000, bakiye 9.000; Vade Takip ve Nakit Akışı Beklenen 18.000 (9.000 + 9.000)
+    ok 1 - Tablodaki Kişiler Deniz Ak: borç 12.000 bir kez, alacak 3.000, bakiye 9.000; Vade Takip ve Nakit Akışı Beklenen 18.000 (9.000 + 9.000)
+      ---
+      duration_ms: 76.035546
+      type: 'test'
+      ...
+    1..1
+ok 10 - 31b MM5: aynı dosya no iki sekmede — borç bir kez (Kişiler, Vade Takip, Nakit Akışı), tahsilat bir kez
+  ---
+  duration_ms: 861.885304
+  type: 'suite'
+  ...
+# Subtest: 31b MM5 / D5 / D7: iki sekmede farklı Kalan ve dosya no'suz satırlar (birim)
+    # Subtest: D5 farklı Kalan: ilk sekmenin Kalan'ı (12.000) geçerli, uyuşmazlık bildirilir; takvim aynı tutarı kullanır
+    ok 1 - D5 farklı Kalan: ilk sekmenin Kalan'ı (12.000) geçerli, uyuşmazlık bildirilir; takvim aynı tutarı kullanır
+      ---
+      duration_ms: 4.589801
+      type: 'test'
+      ...
+    # Subtest: D4 aynı dosya iki sekmede FARKLI vadeyle: borçtan gelen kalem tutarı bir kez (en erken vade), takvim toplamı 12.000 + 9.000
+    ok 2 - D4 aynı dosya iki sekmede FARKLI vadeyle: borçtan gelen kalem tutarı bir kez (en erken vade), takvim toplamı 12.000 + 9.000
+      ---
+      duration_ms: 6.211951
+      type: 'test'
+      ...
+    # Subtest: D7 dosya no'suz satırlar ayrı kalır (aynı ad, iki sekme: iki ayrı borç)
+    ok 3 - D7 dosya no'suz satırlar ayrı kalır (aynı ad, iki sekme: iki ayrı borç)
+      ---
+      duration_ms: 1.711473
+      type: 'test'
+      ...
+    1..3
+ok 11 - 31b MM5 / D5 / D7: iki sekmede farklı Kalan ve dosya no'suz satırlar (birim)
+  ---
+  duration_ms: 12.922002
+  type: 'suite'
+  ...
+1..11
+# tests 35
+# suites 11
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9337.615689

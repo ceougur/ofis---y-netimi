@@ -1,0 +1,38 @@
+{
+  "ad": "244-e23-u2-mutasyon-takvim-birlestirme",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-mutant-takvim-birlestirme/test/tablo-borc-dosya-u2.test.mjs /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-mutant-takvim-birlestirme/test/kalan-borc-satir-31d.test.mjs /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-mutant-takvim-birlestirme/test/kalan-borc-ortak-30a.test.mjs",
+  "commit": "ee047cb245ba5d15db4c04713198cc6d50a612bd",
+  "dal": "is/e23",
+  "kirli": 7,
+  "izlenmeyen": 56,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T21:52:21.454Z",
+  "sure_sn": 5.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 30,
+    "gecen": 29,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "31b MM5 / D5 / D7: iki sekmede farklı Kalan ve dosya no'suz satırlar (birim) › D4 aynı dosya iki sekmede FARKLI vadeyle: borçtan gelen kalem tutarı bir kez (en erken vade), takvim toplamı 12.000 + 9.000",
+      "konum": "test/tablo-borc-dosya-u2.test.mjs:135:3",
+      "hata": "Deniz'in borcu takvimde bir kez (en erken vadeli kalem) olmalı; görülen [[\"Alacaklar\",\"2026-10-24\",12000],[\"Takip\",\"2026-10-27\",12000]] · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-e23-u2-mutasyon-takvim-birlestirme.log",
+  "klasor": "/home/user/wt/e23",
+  "ham_cikti_sha256": "6b1d3f67d97bc04da9b86b436bdebbb5af034f75b547534abe3a7e795a3e2653",
+  "ham_cikti_bayt": 13268
+}
