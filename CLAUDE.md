@@ -411,6 +411,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   uygulanır ve burada "5 dk yetkisiyle uygulandı" diye yazılır; kullanıcı dönünce özetlenir. YORUM (baş mimar): anayasanın kullanıcıya bıraktığı adımlar (PR →
   master "birleştir", yayın açma, müşteri/kimlik bilgisi isteme) bu yetkiye girmez, yine kullanıcıyı bekler. İLK UYGULAMA: ders 26 açıklaması (GÖZDEN GEÇİRME 4 (1),
   ~18:00'den beri yanıtsız) önerildiği gibi eklendi.
+- SORU → 5 dk YETKİSİYLE UYGULANDI (22.10.2026 18:50 → 18:56 UTC; 30e ajanının kapsam dışı bulgusu, ana oturum koddan doğruladı — server/lib/reports.mjs nakitAkis yalnız
+  tarih, Sayfa ve Sekme; client/assets/hof-reports.js süzgeç formu bütün rapor türlerinde aynı): Tablodaki Nakit Akışı "Kişi / Kimlik", "Durum", "En Az Tutar"
+  süzgeçlerini gösteriyor ama uygulamıyor (2.4.3'te de; ders 11). ÖNERİ (en yaygın: nakit akışı şirket düzeyinde rapor; kişi bazı Vade Takip / Cari Ekstre'de):
+  Nakit Akışı'nda bu üç alan gizlenir, Sayfa/Sekme kalır. Alternatif (yalnız Beklenen'e uygula; Gerçekleşen ve Kasa şirket geneli kalırdı) seçilmedi. Yanıt
+  gelmedi → önerilen uygulandı: iş listesi 30f (30a ajanı, is/b1-kalan). Kullanıcı dönünce özetlenir; isterse alternatif yapılır.
 - İSTEKLER (kullanıcı, 22.10.2026 ~14:00–14:50 UTC; hepsi yanıtlandı): "18 numarada portalda ben ne yapacağım" → elle kabul adımları iş listesi 18 (teslimde
   kurulumla); "kalan işler için zaman çizelgesi, aynı anda yapılanları tek süre say" → verildi (devam notu ZAMAN ÇİZELGESİ); "compact talimatı vereceğim, veri kaybı
   olmasın" → devam notu 00 + ajan kayıtları yazıldı ve gönderildi (f013e57); EDM test hesabı ~14:45 UTC yeniden verildi (yalnız oturumda; dosyaya yazılmadı).
