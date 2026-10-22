@@ -212,6 +212,9 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
 37. ADAYIN E2E LİSTESİ TAHMİNLE SEÇİLMEZ. Birleştirme adayında (ders 35) "dokunulan" e2e'ler tahminle seçilirse genel davranışı ölçen senaryolar (yenileme/istek
     sayısı, odak, bildirim) dışarıda kalır; adayda ci.yml'nin BÜTÜN e2e listesi koşulur (CI dışı senaryolar madde 30'da). (22.10.2026: aday 2'de 9 e2e seçildi, senaryo-222
     "toplam istek ≤ 50" seçilmedi → CI #858 f6e265b e2e KIRMIZI 55/50; aday 2'deki bir paket arka plan yenilemesini artırmıştı.)
+38. KIRMIZININ NEDENİ OKUNUR. Kırmızı kanıt (ders 7) ancak başarısız denetimin iletisinde beklenen neden (iddia edilen davranışın yokluğu) görülünce sayılır;
+    test yanlış öğeyi okuyorsa eski kodda da kırmızıdır ama kanıt değildir; yeni kodda yeşil görülmeden kırmızı tek başına sayılmaz. (22.10: Fatura Ayarları kaşe
+    açıklaması e2e'si `[data-stamp-field] small` ile önizleme kutusundaki "Kaşe / imza yok" yazısını okudu; eski kodda "kırmızı", yeni kodda da kırmızı çıkınca görüldü.)
 ### Verimlilik (kullanıcı, 12.10.2026: "geçmişte yaptığın hatalardan aldığın dersleri göz önüne al; gereksiz zaman ve kullanım limitimi
 harcayacak işlemlerden uzak dur!")
 - Dersler 1–24 her işte uygulanır; ama kanıt için GEREKEN kadar koşulur, fazlası değil: geliştirme sırasında yalnız değişen alanın testleri;
@@ -347,6 +350,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   (4) TEST KURALI "Nasıl bozulur? listesi önce yazılır" brief'lerde yoktu → eklendi. (5) DERS 19: birleştirme + push zincirinde `;` kullanıldı → `set -euo pipefail`.
   (6) Bir birleştirme commit'i (6ee24d3, sunucu ajanı) Co-Authored-By/Claude-Session satırsız (geçmiş yeniden yazılmaz). (7) KALİTE ÇITASI: ana oturum kullanıcı
   gözüyle günlük iş akışını baştan sona henüz yürütmedi → madde 30'da (kişi → cari → fatura/e-Belge → tahsilat → kasa/banka → rapor, iki şirket) ekran görüntüsüyle.
+- GÖZDEN GEÇİRME 2 (kullanıcı, 22.10.2026 ~12:45 UTC: "anayasamızı ve derslere göz gezdir"): (1) ders 38 eklendi (kaşe e2e'sinde kırmızı yanlış nedenle;
+  seçici düzeltildi, geçerli kırmızı + yeşil alındı); (2) ders 21: yalnız-belge push 3099efa'nın CI hükmü okunmamıştı → okundu (ata f6e265b, bilinen senaryo-222
+  kırmızısı, düzeltmesi aday 4'te); (3) Verimlilik: arka plan koşularına birkaç kez elle bakıldı → bundan sonra bildirim beklenir; (4) ders 18: madde 18 e-Fatura
+  Portalı'nın "gerçek Windows + Edge" denemesi bu kapsayıcıda yapılamaz → madde 18 CI yeşili + kullanıcının kendi Windows'unda kısa elle kabul adımıyla çizilir
+  (teslimde verilir; 2.4.2 Edge kaydetme önerisi de); (5) ders 32: I23 düzeltmesi ve v32 numara taraması e-Belge numarasına dokunur → 31e dar kontrolde.
 - 2.4.4 "BAŞLA" KONTROL LİSTESİ (atlanmaz, sırayla): (1) yukarıdaki iki belge + bu Açık iş dosyadan okunur; (2) RAPOR DÜZENİ için CronCreate 30 dk işi
   kurulur ("7,37 * * * *"; 2.4.4 bitince silinir); (3) iş listesi madde 1 (npm ci — bağ yok; git fetch --unshallow --tags; master CI 163dd5d + "Sürüm yayımla"
   okunur); (4) yüklenen dosyalar yerinde mi (HAZIRLIK 3) — yoksa kullanıcıdan istenir; EDM test hesabı sohbette verildi, dosyaya YAZILMAZ, kaybolduysa
