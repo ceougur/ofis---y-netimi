@@ -1,0 +1,32 @@
+{
+  "ad": "244-b1-kalan-30f-yesil-senaryo-raporlar",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-raporlar.mjs",
+  "commit": "b1ca995f4fd41dfc09aaae38e7e37856a1aba374",
+  "dal": "is/b1-kalan",
+  "kirli": 2,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T19:01:46.685Z",
+  "sure_sn": 38.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 89,
+    "gecen": 89,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-b1-kalan-30f-yesil-senaryo-raporlar.log",
+  "klasor": "/home/user/wt/b1-kalan",
+  "ham_cikti_sha256": "b9e12b31ada4a20b3f7ebbd3afb25b26edc63a78f7ea5e16a254f7b8b3856a56",
+  "ham_cikti_bayt": 7556
+}
