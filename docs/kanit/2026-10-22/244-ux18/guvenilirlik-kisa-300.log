@@ -1,0 +1,14 @@
+  100 işlem · 3 şirket · 12 yedek · 7 geri yükleme · 10.7 sn
+  200 işlem · 6 şirket · 28 yedek · 12 geri yükleme · 31.0 sn
+  300 işlem · 5 şirket · 57 yedek · 18 geri yükleme · 53.3 sn
+
+✓ Tohum 3 · taban bos: 300 işlem, 301 değişmez kural turu, 57 yedek, 18 geri yükleme, 10 yanlış şirkete deneme (hepsi 409), 6 yeniden başlatma · 53.5 sn
+  İşlem türleri: account 38, rename 8, cash 12, bankModule 16, restart 4, backupAll 9, create 19, entry 37, select 22, wrongRestore 10, bankModuleOther 15, recode 12, bankVoucher 9, bankCard 20, bankCard:kart-ac 7, bankCard:pos-hesapli-400 1, remove 5, bankReverse 6, backupOne 18, restore 16, bankCard:pos 1, bankAccount 7, reset 3, bankCard:borc-odeme 3, restoreRoot 2, bankTransfer 9, bankCard:alis 2, bankWrongCompany 3, bankCard:borc-odeme-eksi 1, bankCard:cari-secimsiz 2, bankCard:yanlis-sirket-404 1, bankCard:cari 1, bankCard:stok 1
+  Son durum: 001 · Eğitim Kurumları <Merkez> (18 cari) | 022 · mavi gıda (2 cari) | 003 · Resmi Şirket (2 cari) | 035 · Ünal & Öztürk Hukuk (0 cari) | 059 · Çağ/Öz: Ltd* (0 cari)
+  100 işlem · 4 şirket · 21 yedek · 9 geri yükleme · 21.9 sn
+  200 işlem · 6 şirket · 36 yedek · 14 geri yükleme · 49.3 sn
+  300 işlem · 5 şirket · 65 yedek · 20 geri yükleme · 78.5 sn
+
+✓ Tohum 3 · taban surum-2.0.19-zincir: 300 işlem, 301 değişmez kural turu, 65 yedek, 20 geri yükleme, 9 yanlış şirkete deneme (hepsi 409), 6 yeniden başlatma · 78.9 sn
+  İşlem türleri: account 40, rename 7, cash 12, bankModule 15, restart 4, backupAll 10, create 21, entry 33, select 22, wrongRestore 9, bankModuleOther 18, recode 11, bankVoucher 11, bankCard 20, bankCard:kart-ac 9, remove 7, bankReverse 5, backupOne 17, restore 18, bankAccount 6, bankCard:borc-odeme 3, restoreRoot 2, bankTransfer 9, bankCard:alis 2, bankWrongCompany 1, bankCard:cari 2, bankCard:cari-secimsiz 2, bankCard:yanlis-sirket-404 1, reset 2, bankCard:stok 1
+  Son durum: 001 · Eğitim Kurumları <Merkez> (172 cari) | 022 · mavi gıda (0 cari) | 035 · Resmi Şirket (2 cari) | 005 · Ünal & Öztürk Hukuk (0 cari) | 008 · Çağ/Öz: Ltd* (0 cari)
