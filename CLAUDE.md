@@ -439,6 +439,15 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   kabul ettiği belgede sunucudan 200 → ÖNERİ sunucu da K4'e göre yalnız belirsiz/portal taslağında izin verir. KARAR GEREKMEYEN düzeltmeler başladı: E2 (30a gerilemesi:
   Kalan hücresi boş satırda raporlar ayrışıyor — satır kuralı tek yardımcıda, boşsa Toplam), E3 ("Kalan Gün" gibi gün/adet sütunu borç sayılmaz), E5 (Personel'de
   iki kişi aynı kartı düzenleyince sessiz geri alma → 409 bayat yazım).
+  5 dk YETKİSİYLE UYGULANDI (21:20 UTC, yanıt yok): E1 (+E4) 2.4.4'te, E6 numara kullanılmış sayılır, E7 sunucu K4'e göre → ajanlar is/e1, is/e67.
+- SORU → 5 dk YETKİSİYLE UYGULANDI (22.10.2026 21:21 → 21:27 UTC; 31b mali müşavir: YÜKSEK yok, iki şirkette ~30 işlemin yevmiye/mizanı el hesabıyla kuruşu kuruşuna
+  tuttu): 2.4.4'te — MM4 bırakılan kâğıt makbuzun PDF'i "Müşteri Fişi" diyor → Serbest Meslek Makbuzu + onay metninde 509 V.7 koşulu (arıza/bakımda matbu), "sonra
+  yine e-SMM gönderebilirsiniz" kalkar; MM7/MM11 makbuz formu/PDF'i fatura dilinde → GİB e-SMM adları + Net Ücret; MM10 aynı matrah/oranda KDV 40,02 / stopaj 40,01
+  → tek yuvarlama kuralı; MM1 yalnız metin ("gerçek kişide stopaj varsayılan uygulanmaz; tacir/serbest meslekse girin"); MM6 Nakit Akışı Kasa giriş bütün nakit
+  hareketleri; MM3 Stopaj/Tevkifat Özeti satıştan iadeyi "bizim kestiğimiz" sayıyor → ters yön; MM8 yevmiye aynı gün sırası (ders 31). SONRAYA (2.4.5+): MM1 cari kartında
+  "Stopaj Yapar", MM2 KDV mahsubu yapılmış ayda iptal uyarısı, MM5 aynı dosya no iki sekmede borç (kural kararı), MM9, MM12; 30.000 TL nihai tüketici engeli değişmez
+  (mevzuat doğrulanamadı; kullanıcının mali müşavirine sorulur). ALT KARAR (21:28 UTC soruldu): bırakılan kâğıt makbuzun sonradan e-SMM olarak gönderilmesi kapansın
+  (öneri; müşteri fişi değişmez).
 - İSTEKLER (kullanıcı, 22.10.2026 ~14:00–14:50 UTC; hepsi yanıtlandı): "18 numarada portalda ben ne yapacağım" → elle kabul adımları iş listesi 18 (teslimde
   kurulumla); "kalan işler için zaman çizelgesi, aynı anda yapılanları tek süre say" → verildi (devam notu ZAMAN ÇİZELGESİ); "compact talimatı vereceğim, veri kaybı
   olmasın" → devam notu 00 + ajan kayıtları yazıldı ve gönderildi (f013e57); EDM test hesabı ~14:45 UTC yeniden verildi (yalnız oturumda; dosyaya yazılmadı).
