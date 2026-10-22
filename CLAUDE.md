@@ -452,6 +452,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   v2.4.3'te de aynı (gerileme değil). ÖNERİ: 2.4.4'te küçük güvence — geri yüklemeden sonra Fatura'da tek seferlik uyarı + 11048 iletisine geri yükleme
   olasılığı; EDM'den son numarayı kendiliğinden sorma 2.4.4 sonrası ayrı iş. BİLİNEN SINIR (karar gerekmez): 2.4.3 verisinde iki belgeye verilmiş 16 + 6 fiş
   numarası göçle düzelmez (v32 yalnız yeniden verilmesini önler).
+  KARAR (kullanıcı, 22.10.2026 ~16:55 UTC: "1. önerin uygun ama 2. önerinde programın edm den otomatik kendi sorup ayarlaması daha kaliteli ve sağlam iş olur"):
+  B1 öneri AYNEN (iş listesi 30a). B2 TAM ÇÖZÜM 2.4.4'te (iş listesi 30b): program serinin EDM'deki son numarasını (ve tarihini) KENDİSİ sorar ve seriyi ayarlar —
+  geri yüklemeden sonra, EDM 11048 reddinde ve Fatura Ayarları → Numaralar'dan elle; taban yalnız YÜKSELİR, kronoloji tabanı da EDM'nin son belge tarihi; e-Fatura,
+  e-Arşiv, e-SMM (test serileri dahil); kâğıt/fiş numarası EDM'de olmadığından eşitlenmez (geri yükleme notunda söylenir). e-Belge numarası + EDM bağlantısı → [XH],
+  kırmızı test + mutasyon + 31e dar kontrol + gerçek EDM test ortamında (salt okuma) deneme (ders 18).
 - SON ADAY BAĞIMSIZ TURU (kullanıcı, 22.10.2026: "2.4.4 son aday uzun test koşusuna başlamadan kâhin (uzman mali müşavir), yargıç, eleştirmen testlerinden geçecek mi,
   regresyon testleri yapılıyor mu?" → EVET; "ekle" → uzman UI + uzman UX de): iş listesi madde 30–31 (31a kâhin, 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol,
   31f uzman UI/UX) Uzun Doğrulama'dan ÖNCE.
