@@ -1,0 +1,32 @@
+{
+  "ad": "244-b4/senaryo-normal-4",
+  "komut": "bash -c node --disable-warning=ExperimentalWarning test/e2e/senaryo-form-izolasyon-243.mjs",
+  "commit": "cf64b0981db76edd0b97a0a1fd4ef26c661dd9a5",
+  "dal": "is/b4",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T09:43:55.537Z",
+  "sure_sn": 241.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 180,
+    "gecen": 180,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-b4/senaryo-normal-4.log",
+  "klasor": "/home/user/wt/b4",
+  "ham_cikti_sha256": "19d0c8b8a4987fb5765687cb5c6dc1ecebd1a13ce1d546b0e2cb8f0095b4e1fe",
+  "ham_cikti_bayt": 28290
+}
