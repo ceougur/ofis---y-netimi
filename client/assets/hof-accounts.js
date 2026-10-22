@@ -473,7 +473,19 @@
       }
       search();
     });
-    input.addEventListener("focus", search);
+    // 2.4.4 (uzman UX10): program odağı verirken (form açılışı, doğrulama hatası) öneri listesi açılmaz — liste kalem alanlarını örtmesin;
+    // kullanıcı yazınca ya da kutuya kendisi geçince açılır.
+    let quiet = false;
+    input.addEventListener("focus", () => (quiet ? null : search()));
+    field.focusQuiet = () => {
+      quiet = true;
+      try {
+        input.focus({ preventScroll: true });
+      } finally {
+        quiet = false;
+      }
+      return document.activeElement === input;
+    };
     input.addEventListener("blur", () => setTimeout(hide, 160));
     input.addEventListener("keydown", event => {
       if (event.key === "Escape") hide();
@@ -739,8 +751,21 @@
       node.value = edited ? typed : next;
     }
   }
+  // 2.4.4 (uzman UX9): çağıranın istediği alanlar zorunlu işaretlenir ve ilki odak alır (fatura formu: e-Belgenin eksik bıraktığı il,
+  // vergi dairesi…); badges: alan → yanında görünen kısa not (zorunlu yapmadan, ör. faturadan yeni caride "e-Belge İçin Zorunlu").
+  const markFields = (list, { require = [], badges = {} } = {}) => {
+    const wanted = new Set(require);
+    const first = list.find(field => wanted.has(field.name))?.name || "";
+    return list.map(field => ({
+      ...field,
+      ...(wanted.has(field.name) ? { required: true } : {}),
+      ...(first ? { autofocus: field.name === first } : {}),
+      ...(badges[field.name] && !wanted.has(field.name) ? { badge: badges[field.name] } : {}),
+    }));
+  };
   // options.onSaved(result): başka ekrandan (ör. fatura formu "+ Yeni Cari") açıldığında kayıt sonrası Cari penceresi
-  // açılmaz; sonuç çağırana verilir.
+  // açılmaz; sonuç çağırana verilir. options.require / options.badges: markFields; options.intro / options.savedMessage: formun üstündeki
+  // açıklama ve kayıt bildirimi (fatura formundan "Cariyi Düzenle": cari kartının güncellendiği ve kesilmiş belgelerin değişmediği söylenir).
   async function editAccount(account, preset = null, options = {}) {
     const groups = await groupsNow();
     const link = { caseKey: account?.caseKey || preset?.caseKey || "", caseSource: account?.caseSource || "", caseTitle: account?.caseTitle || preset?.caseTitle || "" };
@@ -749,9 +774,10 @@
       title: account ? "Cariyi Düzenle" : "Yeni Cari",
       eyebrow: moduleName().toLocaleUpperCase("tr-TR"),
       size: "wide",
-      // 2.4.4 (E8): zil / Tahsilat Takvimi'nden carisi olmayan kayda tahsilat girilirken "önce cari açın" açıklaması (options.intro) gelir.
-      intro: account ? "" : options.intro || "Kişinin ya da firmanın bilgileri. Taksit sorulmaz; taksit planı istenirse sonra karttan ya da listeden toplu açılır.",
-      fields: [
+      // 2.4.4 (E8): zil / Tahsilat Takvimi'nden carisi olmayan kayda tahsilat girilirken "önce cari açın" açıklaması (options.intro) gelir;
+      // 2.4.4 (UX9): fatura formundan düzenlemede de eksik alan notu options.intro ile gelir.
+      intro: options.intro || (account ? "" : "Kişinin ya da firmanın bilgileri. Taksit sorulmaz; taksit planı istenirse sonra karttan ya da listeden toplu açılır."),
+      fields: markFields([
         { name: "name", label: "Ad Soyad / Unvan", required: true, maxlength: 160, value: account?.name || preset?.name || "", autofocus: true },
         { name: "type", label: "Tür", type: "select", value: account?.type || preset?.type || "customer", options: Object.entries(TYPES).map(([value, text]) => ({ value, label: text })) },
         { name: "refNo", label: "Cari No", maxlength: 30, value: account?.refNo || "", placeholder: account ? "" : "Boş bırakılırsa sıradaki numara" },
@@ -772,12 +798,14 @@
                 : { name: "openingBalance", label: "Açılış Bakiyesi (₺)", inputmode: "decimal", placeholder: "Örn. 1.500", help: "Önceki defterden devreden bakiye. Boş bırakılabilir." },
               { name: "openingSide", label: "Bakiye Yönü", type: "select", value: "auto", options: OPENING_SIDES, help: "Tedarikçi listesindeki bakiye çoğunlukla bizim borcumuzdur (Alacaklı)." },
             ]),
-      ],
+      ], options),
       submitLabel: account ? "Kaydet" : "Cariyi Aç",
       onOpen: dialog => {
         dialog.classList.add("hof-plan-form", "hof-acc-form");
         office().wireGroupFields?.(dialog, groups);
         wireTaxFields(dialog);
+        // UX9: odak verilen zorunlu alan (ör. İl) formun aşağısında kalıyordu (odak kaydırmasız) — alan görünür yere getirilir.
+        if (options.require?.length) requestAnimationFrame(() => dialog.querySelector("[autofocus]")?.closest(".hof-field")?.scrollIntoView({ block: "center" }));
         if (HOF.plans?.casePicker) {
           const casePicker = HOF.el("div", { class: "hof-field hof-case-picker" }, HOF.plans.casePicker.html(link));
           dialog.querySelector('textarea[name="address"]').closest(".hof-field").after(casePicker);
@@ -898,7 +926,7 @@
           if (view.id === fresh.id) applyAccount(fresh);
           throw new Error("Bu cari siz düzenlerken başka biri tarafından değiştirildi; güncel hâli yüklendi. Değiştirdiğiniz alanlar formda duruyor; kontrol edip yeniden kaydedin.");
         }
-        HOF.toast(account ? "Cari güncellendi." : "Cari açıldı.", { type: "success" });
+        HOF.toast(options.savedMessage || (account ? "Cari güncellendi." : "Cari açıldı."), { type: "success", ...(options.savedMessage ? { timeout: 8000 } : {}) });
         if (typeof options.onSaved === "function") {
           HOF.emit("accounts-changed", { accountId: result.id });
           options.onSaved(result);
@@ -1660,6 +1688,15 @@
     doubtfulFromCheque,
     forCase: key => HOF.api(`/api/workspace/cases/${encodeURIComponent(key)}/account`),
     newFor: (preset, options = {}) => (canManage() ? editAccount(null, preset, options) : HOF.toast("Cari açmak yönetici, uzman ve muhasebe yetkisidir.", { type: "error" })),
+    // 2.4.4 (uzman UX9): başka ekrandan (fatura formu) cariyi düzenleme — güncel hâl sunucudan okunur (sürüm denetimi UX1 bununla çalışır).
+    editFor: async (accountId, options = {}) => {
+      if (!canManage()) return HOF.toast("Cari düzenlemek yönetici, uzman ve muhasebe yetkisidir.", { type: "error" });
+      try {
+        return await editAccount(await HOF.api(`/api/workspace/accounts/${encodeURIComponent(accountId)}`), null, options);
+      } catch (error) {
+        HOF.toastError(error);
+      }
+    },
     collect: async (accountId, preset = null) => {
       try {
         collect(await HOF.api(`/api/workspace/accounts/${encodeURIComponent(accountId)}`), preset);

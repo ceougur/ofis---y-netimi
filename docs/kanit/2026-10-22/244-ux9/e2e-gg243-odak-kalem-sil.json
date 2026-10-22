@@ -1,0 +1,32 @@
+{
+  "ad": "244-ux9/e2e-gg243-odak-kalem-sil",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/gg243-odak-kalem-sil.mjs",
+  "commit": "2308258bb929f89e766aa807c5dc6d7b2e41a4f6",
+  "dal": "is/ux9",
+  "kirli": 8,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T06:38:51.009Z",
+  "sure_sn": 7.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 16,
+    "gecen": 16,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ux9/e2e-gg243-odak-kalem-sil.log",
+  "klasor": "/home/user/wt/ux9",
+  "ham_cikti_sha256": "e7ec2bd04d9e71f3c8b8464bcf36d4ff9ca62fb7fea172760767b3e2779c89eb",
+  "ham_cikti_bayt": 1086
+}

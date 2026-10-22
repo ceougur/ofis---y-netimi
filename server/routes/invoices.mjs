@@ -36,7 +36,7 @@ import { canUser } from "../lib/permissions.mjs";
 import { createSecretBox } from "../lib/secret-box.mjs";
 import { addMonths, dayText, isoDay } from "../lib/plans.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
-import { ANONYMOUS_TCKN, classifyTaxId, isValidIban, isValidMersis, normalizeIban, partyProblems, splitPersonName } from "../lib/tax-id.mjs";
+import { ANONYMOUS_TCKN, classifyTaxId, isValidIban, isValidMersis, normalizeIban, partyIssues, partyProblems, splitPersonName } from "../lib/tax-id.mjs";
 import { UNITS, unitLabel } from "../lib/units.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { createZip } from "../lib/zip.mjs";
@@ -2543,6 +2543,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       amountInWords: amountInWords(c2(t.payable), doc.currency),
       party: doc.party,
       partyProblems: doc.profile === "KAGIT" ? [] : partyProblems(doc.party, { profile: doc.profile === "EARSIVFATURA" || doc.profile === "ESMM" ? "EARSIV" : "EFATURA", role: "buyer", payable: c2(doc.money.payable) }),
+      // 2.4.4 (uzman UX9): sorunların cari kartındaki alanları — fatura formu "Cariyi Düzenle"de bunları zorunlu işaretler (denetimin kendisi değişmez).
+      partyFields: doc.profile === "KAGIT" ? [] : [...new Set(partyIssues(doc.party, { profile: doc.profile === "EARSIVFATURA" || doc.profile === "ESMM" ? "EARSIV" : "EFATURA", role: "buyer", payable: c2(doc.money.payable) }).map(issue => issue.field))],
       warnings: docWarnings(doc),
       sellerProblems: doc.profile === "KAGIT" || !doc.meta.own ? [] : sellerProblems(doc.profile, doc.settings),
       dueDays: Number(doc.account.dueDays) || Number(doc.settings.defaults.dueDays) || 0,

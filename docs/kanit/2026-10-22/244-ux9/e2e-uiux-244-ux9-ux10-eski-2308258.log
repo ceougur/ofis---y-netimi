@@ -1,0 +1,40 @@
+A) UX9: ili eksik e-Arşiv alıcısı — faturadan 'Cariyi Düzenle', il yazılır, cari kartı güncellenir, fatura kesilir
+  ✓ Toplamlar'da "il zorunludur" (Cari (alıcı): il zorunludur (adres).)
+  ✗ Toplamlar'da 'Cariyi Düzenle' düğmesi var
+B) UX9: e-Fatura tüzel alıcıda vergi dairesi — Vazgeç formu bozmaz; ikinci denemede yazılır
+  ✓ Toplamlar'da vergi dairesi sorunu (Cari (alıcı): e-Fatura'da tüzel alıcının vergi dairesi zorunludur.)
+  ✗ 'Cariyi Düzenle' var
+C) UX9: aynı cariyi başkası değiştirirse (UX1) fatura eski bilgiyle kalmaz; ikinci Kaydet iki değişikliği de korur
+  ✗ 'Cariyi Düzenle' var
+D) UX9: Nihai Tüketici (paylaşılan 11111111111 carisi) faturadan düzenlenmez; gerçek cari seçme yolu yazılır
+  ✓ tutar sınırı sorunu (Cari (alıcı): 30.000 TL üstü e-Arşiv faturada nihai tüketicinin gerçek TC kimlik numarası, adı soyadı ve adresi zorunludur (11111111111 yazılamaz). | Cari (alıc)
+  ✓ Nihai Tüketici'de 'Cariyi Düzenle' YOK
+  ✗ yol yazılı ()
+E) UX9: cari düzenleme yetkisi olmayan kullanıcıda düğme yok (sorun yine görünür)
+  ✓ sorun görünür
+  ✓ yetkisiz: 'Cariyi Düzenle' yok
+  ✗ yetkisize ne yapacağı yazılı ()
+F) UX10: '+ Yeni Fatura' senaryo ekranında odak senaryo kartında; Enter formu açar, odak cari kutusunda (liste açılmadan)
+  ✗ senaryo ekranında odak bir senaryo kartında (BODY)
+  ✗ Hizmet Satışı formunda odak cari kutusunda (BODY)
+  ✓ açılışta cari öneri listesi açılmadı (kalem alanlarını örtmez)
+  ✓ "Müşteriyi (cariyi) seçin." (Müşteriyi (cariyi) seçin.)
+  ✗ hata sonrası odak cari kutusunda (BUTTON[]|Kaydet ve Gönder)
+  ✗ yazınca cari listesi açılıyor
+G) UX10: faturadan '+ Yeni Cari' kaydedilince odak ilk boş kalem adında
+  ✗ odak ilk kalem adında (INPUT[acc-query]|)
+  ✓ VERİ TABANI: yeni cari ili ile açıldı
+  ✗ klavyeyle yazılan kalem adına girdi
+H) UX10: iade formu açılınca odak iade edilecek fatura arama kutusunda; asıl fatura seçilince ilk kalemin miktarında
+  ✗ iade formunda odak arama kutusunda (BUTTON[×]|×)
+  ✓ asıl fatura listede
+  ✗ asıl fatura seçilince odak ilk kalemin miktarında (BODY)
+I) UX10: doğrulama hatasında odak hatalı alana (boş kalem; sunucunun 'N. kalem' hatası)
+  ✓ "En az bir kalem yazın." (En az bir kalem yazın.)
+  ✗ odak ilk kalem adında (BUTTON[]|Kaydet ve Gönder)
+  ✓ sunucu kalem hatası formda (1. kalem: miktar sıfırdan büyük olmalı.)
+  ✗ odak hatalı kalemin (2. satır) miktarında (BODY)
+  ✓ aynı ileti ayrıca bildirim olarak çıkmadı (UI2; 0 bildirim)
+  ✗ sayfa hatası yok: Cannot read properties of undefined (reading 'code')
+
+✗ uiux-244-ux9-ux10: 13 geçti, 16 kaldı
