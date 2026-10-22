@@ -6357,6 +6357,16 @@ body.hof-dense .dynamic-table th {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
+/* 2.4.4 U3: alt TOPLAM satırı (Rapor Merkezi'nin TOPLAM'ı gibi): kaydırınca tablonun altında kalır. */
+.hof-report-table tfoot td {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  border-top: 2px solid var(--do-ink);
+  background: #eef6f1;
+  color: var(--do-ink);
+  font-weight: 800;
+}
 .hof-state {
   padding: 1px 8px;
   border-radius: 999px;

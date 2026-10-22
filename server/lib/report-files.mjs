@@ -30,6 +30,9 @@ export function reportPdf(data, { now, companyLabel = "", userName = "", brand =
     rows: clipped ? data.rows.slice(0, pdfRows) : data.rows,
     footer: data.footer,
     footers: data.footers || null,
+    // 2.4.4 U3: sayfaya sığmazsa bırakılabilir kolonlar (tablo raporlarının özel alan kolonları) ve alt başlıktaki notu.
+    optional: data.optional || null,
+    optionalNote: data.optionalNote,
     summary: data.summary || [],
     officeName: companyLabel,
     userName,

@@ -1,0 +1,53 @@
+{
+  "ad": "244-mm-rapor/u3-ekran-tablo-raporlari",
+  "komut": "node /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-rapor/ekran-tablo.mjs",
+  "commit": "0f610f9508dab20e28357ee59f50e0d26c381cdd",
+  "dal": "is/mm-rapor",
+  "kirli": 5,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T21:59:53.664Z",
+  "sure_sn": 8.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 16,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Tablodaki Kişiler: PDF dosya adı \"download\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Tablodaki Kişiler: XLSX dosya adı \"download\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Tablodaki Nakit Akışı: PDF dosya adı \"download\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Tablodaki Nakit Akışı: XLSX dosya adı \"download\"",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-mm-rapor/u3-ekran-tablo-raporlari.log",
+  "klasor": "/home/user/wt/mm-rapor",
+  "ham_cikti_sha256": "1a094635e3abf1f3d7f46f4118cdc7001f9f2a1843a7d72b718847e92a342189",
+  "ham_cikti_bayt": 2575
+}
