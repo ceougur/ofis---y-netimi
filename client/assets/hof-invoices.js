@@ -2194,16 +2194,20 @@
         if (!ok) return;
         // v2.0.22 (madde 5): formun istek kimliğiyle — yanıt gecikip yeniden Kaydet'e basılırsa sunucu ikinci fatura açmaz.
         saved = await withStockForce(force => (form.id ? HOF.api(`/api/workspace/invoices/${encodeURIComponent(form.id)}/issue`, { method: "POST", body: { ...payload, ...force, ...(eSend ? { eSend } : {}) } }) : HOF.api("/api/workspace/invoices", { method: "POST", body: { ...payload, ...force, ...(eSend ? { eSend } : {}) }, requestId: form.requestId })));
-        if (saved.replayed) HOF.toast(`${kindLabel(saved.kind)} ${saved.displayNo || ""} zaten kaydedilmişti (önceki gönderim sunucuya ulaşmış); ikinci kez kaydedilmedi.`, { type: "info", timeout: 9000 });
-        else HOF.toast(eSend === "later" ? `${kindLabel(saved.kind)} kaydedildi; Gönderilecekler'de bekliyor.` : `${kindLabel(saved.kind)} ${saved.displayNo || ""} kaydedildi.`, { type: "success" });
+        // 2.4.4 (uzman UX20): kayıt + e-Belge gönderim sonucu TEK bildirimde (önceden aynı anda başarı ve hata bildirimi çıkıyordu); numara yalnız
+        // belge numara aldıysa yazılır (numarasız bekleyende durum adı "Gönderilecek" numara gibi yazılıyordu: "Satış Faturası Gönderilecek kaydedildi.").
+        const sent = saved.autoSend;
+        const named = `${kindLabel(saved.kind)}${saved.number ? ` ${saved.number}` : ""}`;
+        const lead = saved.replayed ? `${named} zaten kaydedilmişti (önceki gönderim sunucuya ulaşmış); ikinci kez kaydedilmedi.` : eSend === "later" ? `${kindLabel(saved.kind)} kaydedildi; Gönderilecekler'de bekliyor.` : `${named} kaydedildi.`;
+        const sendNote = !sent ? "" : sent.ok || sent.held || sent.code === "einvoice-order" ? sent.message : `e-Belge gönderilemedi: ${sent.message}`;
+        const type = !sent ? (saved.replayed ? "info" : "success") : sent.ok ? "success" : sent.code === "einvoice-order" ? "info" : "error";
+        const timeout = sent && !sent.ok && (sent.held || sent.code === "einvoice-order") ? 12000 : sent ? 8000 : saved.replayed ? 9000 : undefined;
+        HOF.toast(sendNote ? `${lead} ${sendNote}` : lead, { type, ...(timeout ? { timeout } : {}) });
         // 2.4.3 (hız testi H1): gönderilemeyen belgenin bildirimi numarayı, nedeni ve nerede beklediğini (Gönderilecekler) söyler; aynı neden kartta
         // (e-Belge satırı) ve Gönderilecekler'de kalıcı görünür. Süre eskisi gibi 8 sn (uzun bildirim pencere düğmelerinin üstünde kalıp tıklamayı
         // engelliyordu — senaryo-ebelge-242 adım 4); okuma süresine göre ayar ortak bildirim çekirdeğinin işi.
         // Dar kontrol 2.4.3 (O1): seride daha eski tarihli gönderilmemiş belge varken numara verilmedi — hata değil, belge Gönderilecekler'de bekler.
         // Ek 1 / kâhin BEKLENEN-AG: giriş reddedildi ya da EDM'ye ulaşılamadı — belge numarasız Gönderilecekler'de; ileti tam (önek yok).
-        if (saved.autoSend?.code === "einvoice-order") HOF.toast(saved.autoSend.message, { type: "info", timeout: 12000 });
-        else if (saved.autoSend?.held) HOF.toast(saved.autoSend.message, { type: "error", timeout: 12000 });
-        else if (saved.autoSend) HOF.toast(saved.autoSend.ok ? saved.autoSend.message : `e-Belge gönderilemedi: ${saved.autoSend.message}`, { type: saved.autoSend.ok ? "success" : "error", timeout: 8000 });
       }
       view.form = null;
       HOF.emit("invoices-changed", saved);
@@ -2315,6 +2319,17 @@
     const hint = doc.planId ? " Taksitli fatura kendi taksit kartıyla kapanır; tahsilat taksit kartından girilir." : sideOf(doc.kind) === "sale" ? " Aynı cariye kesilen alış faturası ve Alacak Yaz satırı kendiliğinden ödeme sayılmaz; karşılıklı kapama için Mahsup Et." : " Aynı cariye kesilen satış faturası ve Borç Yaz satırı kendiliğinden ödeme sayılmaz; karşılıklı kapama için Mahsup Et.";
     return `<div class="hof-inv-closers"><h5>Bu Faturayı Kapatanlar</h5>${rows.length ? `<ul>${rows.join("")}</ul>` : `<p class="hof-muted">Henüz kapatan yok.${hint}</p>`}${canOffset ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="offset">Mahsup Et</button>' : ""}</div>`;
   }
+  // 2.4.4 (uzman UX17): kartın üstündeki tutarın adı belgenin durumuna göre. Kapanmış (ödenmiş / mahsup edilmiş) faturada "Tahsil Edilecek"
+  // yazmaz: "Genel Toplam" (tevkifat / stopaj kesintisi varsa "Kesinti Sonrası Toplam"); kısmen ödenmişte altında "Kalan". Tutar değişmez
+  // (belgenin ödenecek toplamı); Toplamlar bölümündeki "Tahsil Edilecek" satırı mali terimdir, dokunulmaz.
+  const isClosed = doc => doc.status === "issued" && !(doc.open > 0.004);
+  function headAmountLabel(doc) {
+    if (doc.status === "cancelled") return "Belge Tutarı (İptal Edildi)";
+    if (isReturn(doc.kind)) return "İade Tutarı";
+    if (isClosed(doc)) return Math.abs((doc.payableTotal || 0) - (doc.grossTotal || 0)) > 0.004 ? "Kesinti Sonrası Toplam" : "Genel Toplam";
+    return sideOf(doc.kind) === "sale" ? "Tahsil Edilecek" : "Ödenecek";
+  }
+  const headRest = doc => (doc.status === "issued" && !isReturn(doc.kind) && doc.open > 0.004 && doc.paid > 0.004 ? `<small class="hof-inv-head-rest">Kalan ${esc(money(doc.open))}</small>` : "");
   function renderCard() {
     const root = body();
     const doc = view.doc;
@@ -2358,7 +2373,7 @@
       `<div class="hof-plan-head">
         <div class="hof-plan-headline"><button type="button" class="hof-plan-back" data-act="back" title="Listeye dön">← Liste</button>
           <div class="hof-plan-title"><h3>${esc(docTitle(doc))} ${statusPill(doc)}</h3><small>${esc(doc.accountName)} · ${esc(HOF.formatDate(doc.issueDate))} ${esc(doc.issueTime || "")}${doc.scenarioLabel ? ` · ${esc(doc.scenarioLabel)}` : ""}</small></div></div>
-        <div class="hof-chq-amount"><span>${doc.status === "cancelled" ? "Belge Tutarı (İptal Edildi)" : sideOf(doc.kind) === "sale" ? (ret ? "İade Tutarı" : "Tahsil Edilecek") : ret ? "İade Tutarı" : "Ödenecek"}</span><strong>${esc(curMoney(doc.payableTotal, cur))}</strong>${cur !== "TRY" ? `<small>${esc(money(doc.tryPayable))}</small>` : ""}</div>
+        <div class="hof-chq-amount"><span>${esc(headAmountLabel(doc))}</span><strong>${esc(curMoney(doc.payableTotal, cur))}</strong>${cur !== "TRY" ? `<small>${esc(money(doc.tryPayable))}</small>` : ""}${headRest(doc)}</div>
       </div>
       <div class="hof-inv-pills" role="group" aria-label="Bağlı kartlar">
         <button type="button" class="hof-inv-big-pill" data-open-account="${esc(doc.accountId)}"><b>Cari Kartı</b><small>${esc(doc.accountName)}</small></button>
