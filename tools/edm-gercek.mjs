@@ -485,6 +485,8 @@ export async function main(argv = process.argv.slice(2), env = process.env) {
         const count = needle => flat.split(needle).length - 1;
         const buyer = doc.profile === "ESMM" ? FIRM : PERSON;
         check(readable && count(SELLER.address) === 1 && count(buyer.address) === 1, `${key} ${doc.number}: resmî PDF'te satıcı ve alıcı adresi birer kez (satıcı ${count(SELLER.address)}, alıcı ${count(buyer.address)})`);
+        // Düzenleyenin unvanı resmî görüntüde (22.10.2026: VKN'li düzenleyende e-SMM görüntüsü unvanı basmıyordu — EDM yalnız Person'dan basar).
+        check(readable && count(SELLER.name) >= 1, `${key} ${doc.number}: resmî PDF'te düzenleyenin unvanı (${SELLER.name}) ${count(SELLER.name) >= 1 ? "var" : "YOK"}`);
       }
     }
     finish();

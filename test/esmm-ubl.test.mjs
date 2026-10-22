@@ -202,6 +202,28 @@ describe("e-SMM dışı belgeler değişmedi", () => {
   });
 });
 
+describe("e-SMM, VKN'li düzenleyen (ör. adi ortaklık)", () => {
+  test("unvan Person/FirstName'de de: EDM'nin e-SMM görüntüsü düzenleyenin adını yalnız Person'dan basar (22.10.2026 gerçek EDM denemesi); VUK 236", async () => {
+    // Gerçek EDM test ortamı: PartyName'li, Person'sız VKN düzenleyende resmî PDF'te unvan YOKTU; Person eklenince basıldı. Alıcının unvanı PartyName'den basılır.
+    const firm = { name: "Deneme ve Ortakları Avukatlık Ortaklığı", taxNo: "1234567890", taxOffice: "Kadıköy", address: "Moda Cd. 1", district: "Kadıköy", city: "İstanbul", email: "ortaklik@deneme.com.tr" };
+    const on = await api.put("/api/workspace/invoices/settings", { seller: firm, efatura: true, earsiv: true, esmm: true });
+    assert.equal(on.status, 200, JSON.stringify(on.data));
+    try {
+      const { doc, xml, tree } = await smm("V", accounts.firm, [{ name: "Avukatlık Ücreti", qty: 1, unitPrice: 1000, vatRate: 20 }]);
+      assert.equal(doc.profile, "ESMM");
+      const supplier = find(tree, "AccountingSupplierParty/Party");
+      assert.equal(textOf(find(supplier, "PartyName/Name")), firm.name, "PartyName korunur");
+      assert.equal(textOf(find(supplier, "Person/FirstName")), firm.name, "unvan Person/FirstName'de");
+      assert.ok(!find(find(tree, "AccountingCustomerParty/Party"), "Person"), "VKN'li alıcıya Person eklenmez (adı PartyName'den basılır)");
+      assert.deepEqual(await xsdErrors(xml), [], "UBL 2.1 XSD");
+    } finally {
+      delete docs.V;
+      const back = await api.put("/api/workspace/invoices/settings", { seller: SELLER, efatura: true, earsiv: true, esmm: true });
+      assert.equal(back.status, 200, JSON.stringify(back.data));
+    }
+  });
+});
+
 describe("Stopajın kalemlere dağıtımı (en büyük kalan)", () => {
   test("Σ pay = belge stopajı; her pay tam payın aşağı yuvarlaması ya da bir fazlası; aynı girdi aynı sonuç", () => {
     let seed = 20261022;

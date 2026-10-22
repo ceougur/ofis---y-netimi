@@ -52,7 +52,7 @@ export function tradeNameOf(p) {
   return folded(name) === folded(`${p.firstName || ""} ${p.familyName || ""}`) ? "" : name;
 }
 
-function party(p, { variant, esmm = false }) {
+function party(p, { variant, esmm = false, issuer = false }) {
   const id = String(p.taxNo || "").replace(/\s+/g, "");
   const scheme = id.length === 11 ? "TCKN" : "VKN";
   const person = p.partyKind === "person" || id.length === 11;
@@ -91,6 +91,9 @@ function party(p, { variant, esmm = false }) {
     `<cac:PartyTaxScheme><cac:TaxScheme>${tag("cbc:Name", p.taxOffice || "-")}</cac:TaxScheme></cac:PartyTaxScheme>`,
     p.phone || p.email ? `<cac:Contact>${tag("cbc:Telephone", p.phone)}${tag("cbc:ElectronicMail", p.email)}</cac:Contact>` : "",
     person ? `<cac:Person>${tag("cbc:FirstName", p.firstName || p.name)}${tag("cbc:FamilyName", p.familyName || "-")}</cac:Person>` : "",
+    // e-SMM, VKN'li düzenleyen (ör. adi ortaklık): EDM'nin e-SMM görüntüsü düzenleyenin adını YALNIZ Person'dan basar (PartyName basılmaz) — 22.10.2026
+    // gerçek EDM test ortamında denendi; makbuzda düzenleyenin adı/unvanı bulunmalı (VUK 236). Unvan FirstName'e yazılır.
+    esmm && issuer && !person ? `<cac:Person>${tag("cbc:FirstName", p.name)}</cac:Person>` : "",
     "</cac:Party>",
   ].join("");
 }
@@ -333,7 +336,7 @@ export function buildUbl(doc, { variant = "tr", earchiveEmail = true, xslt = "",
   const body = [
     ...head,
     ...references,
-    `<cac:AccountingSupplierParty>${party(seller || {}, { variant, esmm })}</cac:AccountingSupplierParty>`,
+    `<cac:AccountingSupplierParty>${party(seller || {}, { variant, esmm, issuer: true })}</cac:AccountingSupplierParty>`,
     `<cac:AccountingCustomerParty>${party(buyer || {}, { variant, esmm })}</cac:AccountingCustomerParty>`,
     payment,
     exchange,
