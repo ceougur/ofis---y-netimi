@@ -19,3 +19,11 @@ Komutlar `node tools/kanit.mjs kos 244-iptal/<ad> -- …` ile (çıkış kodu + 
 - KÂHİN: bu işte kâhin YOK (ders 5: kodu yazan el kâhin yazmaz). Kâhin, `kaynak/KAYNAK.md`'deki kuraldan ayrı bir ajan tarafından yazılır.
 - `ekran/`: `betikler/ekran.mjs` (Chromium, sahte EDM + sahte saat) — 5. gün "Son İptal Günü 28.06.2026 (alıcıya iletildiği 20.06.2026 gününden sonraki 8 gün)",
   12. gün "İptal Et kapalı: e-Arşiv faturanın iptal süresi doldu: …" + pasif düğme.
+
+## Ek (kullanıcı kararı 22.10.2026, "önerin uygun"): sonucu belirsiz gönderimde "Yalnız Programda İptal"
+Son gönderim girişiminden 8 gün geçtiyse önce EDM durum sorgusu: "bulunamadı" (11017; yalnız e-Arşiv) → iptal serbest; belge EDM'de var → durum belgeye
+yazılır, iptal reddedilir (iletilmişse süre doldu, `einvoice-cancel-late`; değilse `einvoice-found`); EDM'ye ulaşılamaz → 502 `einvoice-cancel-unreachable`;
+e-SMM'de her hata (11017 dahil) bilinmiyor → 409 `einvoice-cancel-unknown`. 8 gün dolmadıysa sorulmaz (bugünkü yol).
+- `belirsiz-eski-6bde995-kirmizi`: 6bde995 ayrı kopyasında 25 testin 6'sı kırmızı (yeni 8 testin "8 gün dolmadıysa" ikisi eski kodda da yeşil — bilerek).
+- `belirsiz-yeni-yesil`, `belirsiz-yeni-yesil-tz-istanbul`: 26/26. `mutasyon-belirsiz-Q1…Q7` + `mutasyon-belirsiz-ozet.txt` (`betikler/mutasyon-belirsiz.json`): 7/7.
+- `belirsiz-ebelge-ilgili`, `belirsiz-e2e-senaryo-ebelge-243`, `-242`, `-entegrator-240`.

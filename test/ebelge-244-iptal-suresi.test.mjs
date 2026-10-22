@@ -4,13 +4,16 @@
 // Sahte saat (config.now; ders 13): günler yerel saatle kurulur (program "bugün"ü yerel gündür); gün sınırı, ay sonu ve yıl dönümü ayrıca.
 // Eski kodda (b54ed6b = 163dd5d'nin iptal kodu) kırmızı: süre kesim gününden sayılıyordu, localOnly süreyi atlıyordu, kartta süre bilgisi yoktu.
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { createServer } from "node:http";
+import { join } from "node:path";
 import { after, before, describe, test } from "node:test";
 import { resetEdmCaches } from "../server/lib/einvoice/edm.mjs";
 import { CANCEL_WINDOW_DAYS, cancelLateText, cancelWindow, transmissionOf } from "../server/lib/einvoice/iptal-suresi.mjs";
 import { isoDay } from "../server/lib/plans.mjs";
 import { BUYER_VKN, NS, OUR_VKN, startMockEdm } from "./einvoice-mock.mjs";
 import { ADMIN_PASSWORD, startTestServer } from "./helpers.mjs";
+import { SEMA } from "../tools/ebelge/dogrula.mjs";
 
 const unwrap = response => ({ ...response, data: response.data && typeof response.data === "object" && "ok" in response.data ? (response.data.ok ? response.data.data : response.data) : response.data });
 const apiOf = client => ({
@@ -29,13 +32,14 @@ const tr = iso => `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}`;
 // gecici_hata: EDM reddeder 500).
 async function startProxy(target) {
   const hedef = new URL(target);
-  const st = { ariza: null, sockets: new Set() };
+  const st = { ariza: null, kapali: false, sockets: new Set() };
   const server = createServer((req, res) => {
     const chunks = [];
     req.on("data", chunk => chunks.push(chunk));
     req.on("end", async () => {
       try {
         const body = Buffer.concat(chunks);
+        if (st.kapali) return req.socket.destroy();
         const send = /<(?:\w+:)?SendInvoiceRequest[\s>]/.test(body.toString("utf8"));
         const ariza = send ? st.ariza : null;
         if (send) st.ariza = null;
@@ -347,6 +351,92 @@ describe("iptal süresi: program uçları (sahte EDM, sahte saat)", () => {
     assert.equal(refused.status, 409);
     assert.notEqual(refused.data.code, "einvoice-cancel-late");
   });
+  // Kullanıcı kararı 22.10.2026 (madde 23 ek): sonucu BELİRSİZ gönderimde "Yalnız Programda İptal", son gönderim girişiminden 8 gün geçtiyse önce EDM'ye
+  // sorar: "bulunamadı" → iptal serbest; "var" → reddedilir (iletilmişse süre doldu); ulaşılamaz → iptal yok. 8 gün dolmadıysa sorulmaz.
+  const statusCalls = () => edm.state.calls.filter(call => call.op === "GetInvoiceStatus").length;
+  const uncertainDoc = async (ariza, sendDay) => {
+    setDay(0);
+    const doc = await issue();
+    setDay(sendDay);
+    vekil.ariza = ariza;
+    const sent = await api.post(`/api/workspace/invoices/${doc.id}/send`, {});
+    assert.notEqual(sent.status, 200, "yanıt koptu");
+    const card = await detail(doc.id);
+    assert.equal(card.eStatus || "none", "none");
+    assert.ok(card.eAdapter, "sonucu belirsiz");
+    assert.equal(card.canLocalCancel, true);
+    return { ...doc, ettn: card.ettn };
+  };
+  const localCancel = id => api.post(`/api/workspace/invoices/${id}/cancel`, { reason: "EDM'ye ulaşılamıyor", localOnly: true, confirmLocal: true });
+
+  test("belirsiz + yalnız programda iptal: girişimden 8 gün dolmadıysa EDM'ye sorulmaz (bugünkü yol)", async () => {
+    const doc = await uncertainDoc("kopma_once", 2);
+    setDay(10, 23, 59, 0);
+    const before = statusCalls();
+    const done = await localCancel(doc.id);
+    assert.equal(done.status, 200, JSON.stringify(done.data));
+    assert.equal(done.data.status, "cancelled");
+    assert.equal(statusCalls(), before, "durum sorulmadı");
+  });
+
+  test("belirsiz + yalnız programda iptal, 8 gün geçti: EDM \"bulunamadı\" → belge iletilmemiş, iptal serbest", async () => {
+    const doc = await uncertainDoc("kopma_once", 1);
+    setDay(10);
+    const before = statusCalls();
+    const done = await localCancel(doc.id);
+    assert.equal(done.status, 200, JSON.stringify(done.data));
+    assert.equal(done.data.status, "cancelled");
+    assert.equal(statusCalls(), before + 1, "önce EDM'ye soruldu");
+    assert.match(done.data.eMessage, /EDM'de bulunamadı \(belge iletilmemiş\); yalnız programda iptal edildi/);
+    const trail = server.app.store.get("SELECT payload_json AS p FROM audit_events WHERE type = 'invoice.e.local-cancel' AND entity_id = ?", doc.id);
+    assert.equal(JSON.parse(trail.p).reason, "integrator-missing");
+  });
+
+  test("belirsiz + yalnız programda iptal, 8 gün geçti: belge EDM'de VAR → süre doldu, reddedilir; durum belgeye yazılır, EDM'ye iptal gitmez", async () => {
+    const doc = await uncertainDoc("kopma_sonra", 1);
+    setDay(10);
+    const before = cancels();
+    const refused = await localCancel(doc.id);
+    assert.equal(refused.status, 409, JSON.stringify(refused.data));
+    assert.equal(refused.data.code, "einvoice-cancel-late");
+    assert.equal(refused.data.error, `Belge EDM'de bulundu: alıcıya iletilmiş, GİB'de geçerli. e-Arşiv faturanın iptal süresi doldu: alıcıya iletildiği ${tr(day(D, 1))} gününden sonraki 8 gün içinde (en geç ${tr(day(D, 9))}) iptal edilebilirdi. İade faturası kesin; gerekirse doğrusunu yeniden kesin.`);
+    assert.equal(cancels(), before);
+    const card = await detail(doc.id);
+    assert.equal(card.status, "issued");
+    assert.ok(["processing", "sent"].includes(card.eStatus), card.eStatus);
+    assert.equal(card.canCancel, false);
+  });
+
+  test("belirsiz + yalnız programda iptal, 8 gün geçti: EDM'de var ama Hata → durum yazılır, bu istekte iptal yok", async () => {
+    const doc = await uncertainDoc("kopma_sonra", 1);
+    edm.state.statuses.set(doc.ettn, ["SEND - FAILED"]);
+    setDay(10);
+    const refused = await localCancel(doc.id);
+    assert.equal(refused.status, 409, JSON.stringify(refused.data));
+    assert.equal(refused.data.code, "einvoice-found");
+    const card = await detail(doc.id);
+    assert.equal(card.status, "issued");
+    assert.equal(card.eStatus, "error");
+  });
+
+  test("belirsiz + yalnız programda iptal, 8 gün geçti: EDM'ye ulaşılamıyor → iptal yapılmaz, belge belirsiz kalır", async () => {
+    const doc = await uncertainDoc("kopma_once", 1);
+    setDay(10);
+    vekil.kapali = true;
+    try {
+      const refused = await localCancel(doc.id);
+      assert.equal(refused.status, 502, JSON.stringify(refused.data));
+      assert.equal(refused.data.code, "einvoice-cancel-unreachable");
+      assert.match(refused.data.error, /EDM'ye ulaşılamadı .*İptal yapılmadı; bağlantı kurulunca yeniden deneyin\./);
+    } finally {
+      vekil.kapali = false;
+    }
+    const card = await detail(doc.id);
+    assert.equal(card.status, "issued");
+    assert.equal(card.eStatus || "none", "none");
+    assert.ok(card.eAdapter, "hâlâ belirsiz");
+  });
+
   // Saat ileri alınır (geri alınmaz: ileri tarihli hareket kapısı); bu yüzden en sonda.
   test("ay sonu ve yıl dönümü: 28.12 iletim → 05.01 iptal edilir, 06.01 reddedilir", async () => {
     const Y = new Date(2026, 11, 28);
@@ -403,5 +493,83 @@ describe("iptal süresi: e-SMM (gönderim kapısı madde 22'de açılır; kural 
     assert.equal(card.canCancel, true);
     server.clock.set(at(D, 11));
     assert.equal((await api.post(`/api/workspace/invoices/${b.id}/cancel`, { reason: "geç" })).data.code, "einvoice-cancel-late");
+  });
+});
+
+describe("belirsiz e-SMM + yalnız programda iptal (kullanıcı kararı 22.10.2026): e-SMM'de \"bulunamadı\" kodu doğrulanmadı → her hata bilinmiyor", () => {
+  const WSDL = { smm: readFileSync(join(SEMA, "edm", "ESmmEDM-test-singleWsdl.xml"), "utf8"), efatura: readFileSync(join(SEMA, "edm", "EFaturaEDM-test-singleWsdl.xml"), "utf8") };
+  const TEMPURI = "http://tempuri.org/";
+  let server;
+  let api;
+  let personId;
+  let reply = () => "";
+  const calls = [];
+  // ESmmEDM.svc sahte yanıtı: GET → EDM'nin gerçek WSDL'i; POST → Login oturumu, GetSMMStatus → reply().
+  const fetchImpl = async (url, { method = "GET", headers = {}, body } = {}) => {
+    const service = /ESmmEDM\.svc/i.test(url) ? "smm" : "efatura";
+    if (method === "GET") return new Response(WSDL[service], { status: 200, headers: { "content-type": "text/xml" } });
+    const op = String(headers.SOAPAction ?? headers.soapaction ?? "").replace(/"/g, "").split("/").pop().replace(/Request$/, "");
+    calls.push(op);
+    const inner = op === "Login" ? `<SESSION_ID xmlns="">S-${service}</SESSION_ID>` : reply(String(body));
+    return new Response(`<?xml version="1.0"?><s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><${op}Response xmlns="${TEMPURI}">${inner}</${op}Response></s:Body></s:Envelope>`, { status: 200, headers: { "content-type": "text/xml" } });
+  };
+  const D = new Date(2026, 5, 17);
+  before(async () => {
+    resetEdmCaches();
+    server = await startTestServer({ edocEnabled: true, esmmEnabled: true, fetchImpl, now: { time: at(D, 0), fixed: true } });
+    api = apiOf(server.client());
+    assert.equal((await api.login("admin", ADMIN_PASSWORD)).status, 200);
+    const saved = await api.put("/api/workspace/invoices/settings", { seller: SELLER, efatura: true, earsiv: true, esmm: true, integrator: { env: "test", username: "edmkullanici", password: "Gizli-Parola-1", senderAlias: "urn:mail:defaultgb@deneme.com.tr" } });
+    assert.equal(saved.status, 200, JSON.stringify(saved.data));
+    const person = await api.post("/api/workspace/accounts", { name: "Mehmet Kaya", type: "customer", taxNo: "10000000146", city: "İzmir" });
+    personId = person.data.id || person.data.account?.id;
+  });
+  after(async () => {
+    await server?.close();
+  });
+  // Belirsiz e-SMM gönderimi (madde 22'nin gönderim yolu bu kaydı setE ile yazar; burada aynı durum ve iz elle — yol denetimi, kâhin değil).
+  const uncertainSmm = async attemptDay => {
+    server.clock.set(at(D, 0));
+    const made = await api.post("/api/workspace/invoices", { scenario: "smm", accountId: personId, lines: [{ name: "Danışmanlık", qty: 1, unitPrice: 1000, vatRate: 20 }], payment: { rest: "open" } });
+    assert.equal(made.status, 200, JSON.stringify(made.data));
+    assert.equal(made.data.profile, "ESMM");
+    server.app.store.run("UPDATE invoices SET e_status = 'none', e_adapter = 'edm' WHERE id = ?", made.data.id);
+    server.app.store.run("INSERT INTO audit_events (id, type, entity_id, actor_id, actor_name, payload_json, created_at) VALUES (?, 'invoice.e.send-failed', ?, 'system', 'Sistem', ?, ?)", `event-belirsiz-${made.data.id}`, made.data.id, JSON.stringify({ status: "none", adapter: "edm", code: "integrator-uncertain" }), new Date(at(D, attemptDay)).toISOString());
+    const card = (await api.get(`/api/workspace/invoices/${made.data.id}`)).data;
+    assert.equal(card.canLocalCancel, true, "belirsiz");
+    return card;
+  };
+  const localCancel = id => api.post(`/api/workspace/invoices/${id}/cancel`, { reason: "EDM'ye ulaşılamıyor", localOnly: true, confirmLocal: true });
+  const fault = code => `<s:Fault xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><faultcode>s:Client</faultcode><faultstring>Hata</faultstring><detail><RequestFault xmlns="${TEMPURI}"><INTL_TXN_ID xmlns="">0</INTL_TXN_ID><ERROR_CODE xmlns="">${code}</ERROR_CODE><ERROR_SHORT_DES xmlns="">Fatura bulunamadı</ERROR_SHORT_DES></RequestFault></detail></s:Fault>`;
+  const statusOf = (card, status) => `<SMM_STATUS TRXID="0" xmlns=""><ID>${card.number}</ID><UUID>${card.ettn}</UUID><HEADER><SMM_DATE>2026-06-17</SMM_DATE><STATUS>${status}</STATUS><EARCHIVE_REPORT_SENDDATE>0001-01-01</EARCHIVE_REPORT_SENDDATE><CANCEL_EARCHIVE_REPORT_SENDDATE>0001-01-01</CANCEL_EARCHIVE_REPORT_SENDDATE></HEADER><STATUS>${status}</STATUS><STATUS_DESCRIPTION>${status}</STATUS_DESCRIPTION></SMM_STATUS>`;
+
+  test("8 gün geçti, EDM 11017 (e-Arşiv'de \"bulunamadı\") döndü: e-SMM'de bilinmiyor sayılır, iptal YOK", async () => {
+    const card = await uncertainSmm(1);
+    reply = () => fault(11017);
+    server.clock.set(at(D, 10));
+    const refused = await localCancel(card.id);
+    assert.equal(refused.status, 409, JSON.stringify(refused.data));
+    assert.equal(refused.data.code, "einvoice-cancel-unknown");
+    assert.match(refused.data.error, /EDM belgenin durumunu bildirmedi .*İptal yapılmadı/);
+    assert.ok(calls.includes("GetSMMStatus"), "e-SMM servisine soruldu");
+    assert.equal((await api.get(`/api/workspace/invoices/${card.id}`)).data.status, "issued");
+  });
+  test("8 gün geçti, e-SMM EDM'de oluşturulmuş: süre doldu, reddedilir", async () => {
+    const card = await uncertainSmm(1);
+    reply = () => statusOf(card, "SEND - SUCCEED");
+    server.clock.set(at(D, 10));
+    const refused = await localCancel(card.id);
+    assert.equal(refused.status, 409, JSON.stringify(refused.data));
+    assert.equal(refused.data.code, "einvoice-cancel-late");
+    assert.match(refused.data.error, /^Belge EDM'de bulundu: alıcıya iletilmiş, GİB'de geçerli\. e-SMM'nin iptal süresi doldu/);
+  });
+  test("8 gün dolmadıysa e-SMM'de de sorulmaz (bugünkü yol)", async () => {
+    const card = await uncertainSmm(2);
+    const before = calls.length;
+    server.clock.set(at(D, 10));
+    const done = await localCancel(card.id);
+    assert.equal(done.status, 200, JSON.stringify(done.data));
+    assert.equal(done.data.status, "cancelled");
+    assert.equal(calls.length, before, "EDM'ye istek yok");
   });
 });

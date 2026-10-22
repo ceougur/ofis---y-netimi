@@ -1,0 +1,32 @@
+{
+  "ad": "244-iptal/belirsiz-ebelge-ilgili",
+  "komut": "node --test --test-concurrency=2 test/banka-230-46-iade-iptal.test.mjs test/ebelge-240-birim.test.mjs test/ebelge-240-bitis-turu.test.mjs test/ebelge-240-ek-secenekler.test.mjs test/ebelge-240-gorunum.test.mjs test/ebelge-240-kontrol3.test.mjs test/ebelge-242-test-seri.test.mjs test/ebelge-243-gonderim.test.mjs test/ebelge-243.test.mjs test/ebelge-244-iptal-suresi.test.mjs test/ebelge-uygunluk.test.mjs test/edm-gercek-sozlesme.test.mjs test/edm-giris-241.test.mjs test/edoc-uretim.test.mjs test/einvoice-240-resmi-gorunum.test.mjs test/einvoice-240-taslak.test.mjs test/einvoice-edm.test.mjs test/esmm-edm.test.mjs test/esmm-gizli-241.test.mjs test/esmm-ubl.test.mjs test/fatura-215.test.mjs test/fatura-216.test.mjs test/fatura-217.test.mjs test/fatura-230-ayarlar-banka.test.mjs test/fatura-243-stok-kdv.test.mjs test/fatura-buyuk-tutar-210.test.mjs test/fatura-durum-222.test.mjs test/fatura-liste-243-fark.test.mjs test/fatura-model.test.mjs test/gg243-cekirdek-kaynak.test.mjs test/gg243-dar-kontrol-ek.test.mjs test/gg243-dar-kontrol-gonderim.test.mjs test/gg243-dar-kontrol-stok.test.mjs test/gg243-dar2-edm.test.mjs test/gg243-dar2-gonderim.test.mjs test/gg243-dar2-iade-sira.test.mjs test/gg243-dar2-olcek.test.mjs test/gg243-dar3-stok.test.mjs test/gg243-dar3.test.mjs test/gg243-gonderim.test.mjs test/gg243-stok-excel.test.mjs test/goc-243-iade-ref.test.mjs test/iade-210-fazla-tahsilat.test.mjs test/iade-210-onarim.test.mjs test/iade-210.test.mjs test/iade-224.test.mjs test/iade-kapama-k1.test.mjs test/kontrol-241.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/uiux-a-243.test.mjs test/uiux-b-243.test.mjs test/yazim-duzeni.test.mjs test/goc-244-iptal-suresi.test.mjs",
+  "commit": "6bde995fbe723c97c3cb6197b00c0ab39561078b",
+  "dal": "is/iptal-2",
+  "kirli": 3,
+  "izlenmeyen": 22,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T05:40:33.584Z",
+  "sure_sn": 239.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 487,
+    "gecen": 487,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-iptal/belirsiz-ebelge-ilgili.log",
+  "klasor": "/home/user/wt/iptal",
+  "ham_cikti_sha256": "e7ab457ebc0bf16f1cafc0723adfa28ca509370ad2ef86ad79a1d620bd363ccd",
+  "ham_cikti_bayt": 180484
+}

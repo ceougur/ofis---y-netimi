@@ -1,0 +1,43 @@
+{
+  "ad": "244-iptal/mutasyon-belirsiz-Q7",
+  "komut": "node --test test/ebelge-244-iptal-suresi.test.mjs",
+  "commit": "6bde995fbe723c97c3cb6197b00c0ab39561078b",
+  "dal": "is/iptal-2",
+  "kirli": 3,
+  "izlenmeyen": 20,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T05:40:16.893Z",
+  "sure_sn": 3.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 25,
+    "gecen": 23,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › belirsiz + yalnız programda iptal, 8 gün geçti: belge EDM'de VAR → süre doldu, reddedilir; durum belgeye yazılır, EDM'ye iptal gitmez",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:395:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'e-Arşiv faturanın iptal süresi doldu: alıcıya iletildiği 18.06.2026 gününden sonraki 8 gün içinde (en geç 26.06.2026) iptal edilebilirdi. İade faturası kesin; gerekirse doğrusunu yeniden kesin.' (beklenen Belge EDM'de bulundu: alıcıya iletilmiş, GİB'de geçerli. e-Arşiv faturanın iptal süresi doldu: alıcıya iletildiği 18.06.2026 gününden sonraki 8 gün içinde (en geç 26.06.2026) iptal edilebilirdi. İade faturası kesin; gerekirse doğrusunu yeniden kesin., gelen e-Arşiv faturanın iptal süresi doldu: alıcıya iletildiği 18.06.2026 gününden sonraki 8 gün içinde (en geç 26.06.2026) iptal edilebilirdi. İade faturası kesin; gerekirse doğrusunu yeniden kesin.)"
+    },
+    {
+      "ad": "belirsiz e-SMM + yalnız programda iptal (kullanıcı kararı 22.10.2026): e-SMM'de \"bulunamadı\" kodu doğrulanmadı → her hata bilinmiyor › 8 gün geçti, e-SMM EDM'de oluşturulmuş: süre doldu, reddedilir",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:557:3",
+      "hata": "The input did not match the regular expression /^Belge EDM'de bulundu: alıcıya iletilmiş, GİB'de geçerli\\. e-SMM'nin iptal süresi doldu/. Input: · \"e-SMM'nin iptal süresi doldu: alıcıya iletildiği 18.06.2026 gününden sonraki 8 gün içinde (en geç 26.06.2026) iptal edilebilirdi. Makbuz geçerli kalır; düzeltme için mali müşavirinize danışın.\" (beklenen , gelen e-SMM'nin iptal süresi doldu: alıcıya iletildiği 18.06.2026 gününden sonraki 8 gün içinde (en geç 26.06.2026) iptal edilebilirdi. Makbuz geçerli kalır; düzeltme için mali müşavirinize danışın.)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-iptal/mutasyon-belirsiz-Q7.log",
+  "klasor": "/home/user/wt/iptal",
+  "ham_cikti_sha256": "03f6e5e3643c45cb12096967b1a3cd101179e8aaf8b0e975c2bfb661427c8753",
+  "ham_cikti_bayt": 11883
+}
