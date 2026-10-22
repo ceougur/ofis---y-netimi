@@ -1,0 +1,32 @@
+{
+  "ad": "244-b1-kalan-komsu-birim",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/asama0-226.test.mjs test/banka-210-eslesmis.test.mjs test/banka-210-gg-olay.test.mjs test/banka-210-gg2-bag.test.mjs test/banka-210-gg2-fis.test.mjs test/banka-210-post.test.mjs test/banka-210-saat.test.mjs test/banka-210-sira.test.mjs test/banka-220-tahsile-ver-dogrulama.test.mjs test/banka-220-tahsile-ver-tur2.test.mjs test/bulgu-223.test.mjs test/cheques-overview.test.mjs test/dues.test.mjs test/duzeltmeler-212.test.mjs test/hakem-k8-kredi.test.mjs test/hiz-243-arka-plan.test.mjs test/inceleme-226-2.test.mjs test/inceleme-226.test.mjs test/kalan-borc-ortak-30a.test.mjs test/kayit-tahsilat-244.test.mjs test/plan-case-link.test.mjs test/plan-transfer.test.mjs test/plans.test.mjs test/rapor-tablodaki-kisiler-244.test.mjs test/rapor-tablodaki-kisiler-f1.test.mjs test/raporlar-209.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-230-banka.test.mjs test/reports.test.mjs test/schema-flex.test.mjs test/sirketler-217.test.mjs test/table-columns.test.mjs test/tablodan-aktar-244.test.mjs test/temporal.test.mjs test/uyari-ufku-225.test.mjs test/columns.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "e070d4247567174ee1bf1b5efe142dfafba6cdb8",
+  "dal": "is/b1-kalan",
+  "kirli": 2,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T16:58:06.517Z",
+  "sure_sn": 144.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 617,
+    "gecen": 617,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-b1-kalan-komsu-birim.log",
+  "klasor": "/home/user/wt/b1-kalan",
+  "ham_cikti_sha256": "535c166d087fcacab99b6fbf4c7b95d72578b35de90e3a95764d9ab71d328d2a",
+  "ham_cikti_bayt": 211166
+}
