@@ -457,6 +457,13 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   raporu çıktıları kendi adıyla + TOPLAM + bölünmeyen tutar + yerel tarih (is/mm-rapor), U4+U6 makbuz kartı "iade" metni + e-Arşiv/e-SMM tür notu görünür + onayda tür
   adı (is/mm-smm), U5 600 TL'de yanlış "gerçek alıcı gerekir", U7 odak kayıpları, Personel Türkçe arama, Veriyi Sıfırla kırmızı, Seçilenleri Gönder güvenli odak,
   UX17 kısmi ödenmişte kalan (ui-son, mm-smm'den sonra); SONRAYA dar pencereler, ad/yazım ayrıntıları, UI11 küçükleri.
+- SORU → 5 dk YETKİSİYLE UYGULANDI (22.10.2026 23:22 → 23:28 UTC; e23 ajanı U2 kuralını genişletmişti: tek tutar sütunu taksit/kira/aidat/ücret/"Ödenecek" ise borç
+  sayılmıyordu → okul servisi "Aylık Ücret" tablosu Tablodaki Kişiler'de boş, "Ödenecek" borç değil; 2.4.3'te ikisi de borçtu) → DARALTILDI: yalnız Ödeme Sözü tutarı borç
+  dışı; öbür tek tutarlı tablolar 2.4.3'teki gibi borç (Türkçede "Ödenecek" çoğu zaman kalan borç; müşteri tabloları sessizce boş görünmesin). Kalan Borç önceliği,
+  Kalan boşsa Toplam, gün/adet dışlama, dosya no başına tek kayıt, MM6 aynen. KARARLAR (baş mimar): MM8 yevmiye aynı gün sırası belge → tahsilat/ödeme (yaygın düzen);
+  MM10 GERİ ALINDI (plan modeli + kâhin: KDV kalem, stopaj belge düzeyinde; çok kalemli makbuzda ≤ 1 kuruş fark — BİLİNEN SINIR/açıklama); makbuzda kronoloji engeli
+  "Kâğıt Makbuz Olarak Bırak" önermez (V.7); "Şirketi Sil" de kırmızı (G6 kalıbı); kısmi makbuzda "Makbuz Tutarı (Net)" etiketi (mali müşavirce teyit — teslim notu);
+  birden çok TOPLAM satırlı raporda yapışkan satırların üst üste binmesi (2.4.3'ten) SONRAYA.
 - İSTEKLER (kullanıcı, 22.10.2026 ~14:00–14:50 UTC; hepsi yanıtlandı): "18 numarada portalda ben ne yapacağım" → elle kabul adımları iş listesi 18 (teslimde
   kurulumla); "kalan işler için zaman çizelgesi, aynı anda yapılanları tek süre say" → verildi (devam notu ZAMAN ÇİZELGESİ); "compact talimatı vereceğim, veri kaybı
   olmasın" → devam notu 00 + ajan kayıtları yazıldı ve gönderildi (f013e57); EDM test hesabı ~14:45 UTC yeniden verildi (yalnız oturumda; dosyaya yazılmadı).
