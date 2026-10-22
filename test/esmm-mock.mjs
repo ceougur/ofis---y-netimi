@@ -27,12 +27,15 @@ export function smmState() {
   //   sendCount: kaçıncı SendSMM; singleSession: Login öbür oturumları düşürür (EDM'nin bu davranışı DOĞRULANMADI — keşif);
   //   hata enjeksiyonu (testin dişi, ders 7) — k: kaçıncı SendSMM: dropSend (kabul edilir, KAYDA GEÇMEZ: sessiz kayıp), misrecordSend (yanıtta doğru
   //   numara, kayıtta bir önceki makbuzun numarası: çift kayıt), statusAfterSend ({ k: "PACKAGE - FAIL" }: yanlış son durum), holdSend ({ k, ms }:
-  //   yanıt ms bekletilir: askı).
-  return { calls: [], sent: [], cancelled: [], statuses: new Map(), sessions: new Set(), counter: 0, violations: [], usedIds: new Set(), pdfRequests: 0, renumber: null, cutAfter: new Set(), faults: new Map(), delay: null, inflight: {}, maxInflight: {}, sendCount: 0, singleSession: false, dropSend: 0, misrecordSend: 0, statusAfterSend: {}, holdSend: null };
+  //   yanıt ms bekletilir: askı); rejectConcurrentLogin: başka Login sürerken gelen Login WCF güvenlik reddiyle düşer — gerçek EDM test ortamında GÖRÜLDÜ
+  //   (22.10.2026, 20 eşzamanlı girişten biri: "The caller was not authenticated by the service.", EDM hata kodu YOK; docs/kanit/2026-10-22/244-edm-eszamanli).
+  return { calls: [], sent: [], cancelled: [], statuses: new Map(), sessions: new Set(), counter: 0, violations: [], usedIds: new Set(), pdfRequests: 0, renumber: null, cutAfter: new Set(), faults: new Map(), delay: null, inflight: {}, maxInflight: {}, sendCount: 0, singleSession: false, dropSend: 0, misrecordSend: 0, statusAfterSend: {}, holdSend: null, rejectConcurrentLogin: false, concurrentLoginRejected: 0 };
 }
 
 const fault = (code, message) => `<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><s:Fault><faultcode>s:Client</faultcode><faultstring>${message}</faultstring><detail><RequestFault xmlns="${SMM_NS}"><INTL_TXN_ID xmlns="">0</INTL_TXN_ID><ERROR_CODE xmlns="">${code}</ERROR_CODE><ERROR_SHORT_DES xmlns="">${message}</ERROR_SHORT_DES></RequestFault></detail></s:Fault></s:Body></s:Envelope>`;
 const envelope = (op, inner) => `<?xml version="1.0"?><s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><${op}Response xmlns="${SMM_NS}">${inner}</${op}Response></s:Body></s:Envelope>`;
+// WCF güvenlik reddi (gerçek EDM'de görülen biçim: EDM'nin RequestFault/ERROR_CODE'u yok, yalnız faultstring).
+const wcfSecurityFault = message => `<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><s:Fault><faultcode xmlns:a="http://schemas.microsoft.com/ws/2005/05/addressing/none">a:InvalidSecurity</faultcode><faultstring xml:lang="tr-TR">${message}</faultstring></s:Fault></s:Body></s:Envelope>`;
 const RETURN = `<REQUEST_RETURN xmlns=""><INTL_TXN_ID>1</INTL_TXN_ID><RETURN_CODE>0</RETURN_CODE></REQUEST_RETURN>`;
 const head = (status = "PACKAGE - PROCESSING") => `<HEADER><SMM_DATE>2026-06-17</SMM_DATE><STATUS>${status}</STATUS><EARCHIVE_REPORT_SENDDATE>0001-01-01</EARCHIVE_REPORT_SENDDATE><CANCEL_EARCHIVE_REPORT_SENDDATE>0001-01-01</CANCEL_EARCHIVE_REPORT_SENDDATE></HEADER>`;
 
@@ -63,6 +66,10 @@ export function smmReply(state, { body, action, credentials }) {
   }
   if (op === "Login") {
     if (textOf(child(request, "USER_NAME")) !== credentials.username || textOf(child(request, "PASSWORD")) !== credentials.password) return { status: 500, xml: fault(2001, "Kullanıcı adı veya şifre hatalı") };
+    if (state.rejectConcurrentLogin && (state.inflight.Login || 0) > 1) {
+      state.concurrentLoginRejected += 1;
+      return { status: 500, xml: wcfSecurityFault("The caller was not authenticated by the service.") };
+    }
     state.counter += 1;
     const id = `SMM-S-${state.counter}`;
     if (state.singleSession) state.sessions.clear();

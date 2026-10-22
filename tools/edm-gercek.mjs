@@ -45,8 +45,10 @@
 //       günü, her belgede tek gönderim olayı, 11048 yok, stopaj VKN → %20 / TCKN → 0 (talimat), bir VKN'li + bir TCKN'li UBL GİB UBL-TR 1.2.1 XSD'sine uygun.
 //       BİLGİ: Login sayısı ve en çok eşzamanlı Login, en çok eşzamanlı SendSMM, istek süreleri (30 sn'yi aşan = arayüz zaman aşımı sınırı).
 //   Belgeler İPTAL EDİLMEZ (kullanıcı EDM test portalında görecek). Çıktı: docs/kanit/<gün>/244-edm-eszamanli/{gercek|kuru}/.
-//   Yalnız kuru kipte (sahte EDM): --zorla (sahte EDM SendSMM / Login yanıtlarını geciktirir; ön koşul denetimi: en çok eşzamanlı SendSMM ≥ 10, soğuk başta
-//   eşzamanlı Login ≥ 2) · --ariza kayip|cift|durum|aski|tek-oturum (testin dişi: düzenek KIRMIZI vermeli; tek-oturum keşiftir) · --zaman-asimi <ms>.
+//   Yalnız kuru kipte (sahte EDM): --zorla (sahte EDM SendSMM / Login yanıtlarını geciktirir; ön koşul denetimi: en çok eşzamanlı SendSMM ≥ 10) · --ariza
+//   kayip|cift|durum|aski (testin dişi: düzenek KIRMIZI vermeli) | tek-oturum|es-giris (EDM davranışı: Login öbür oturumları düşürür / başka giriş sürerken
+//   gelen giriş reddedilir — gerçek EDM'de görüldü; tek uçuş girişle (N4) program geçmeli) · --zaman-asimi <ms>.
+//   N4 (22.10.2026): programın girişi tek uçuştur — ya'da denetim: aynı anda en çok 1 Login, soğuk başta tam 1.
 //     EDM_TEST_KULLANICI=… EDM_TEST_PAROLA=… node --disable-warning=ExperimentalWarning tools/edm-gercek.mjs --gercek --eszamanli [--sicak] [--cikti <klasör>]
 import { execFileSync } from "node:child_process";
 import { randomBytes, randomUUID } from "node:crypto";
@@ -78,7 +80,7 @@ const PORTAL_NOTE = 'e-Arşiv belgeleri portalın e-Arşiv bölümünde; e-SMM i
 const FIRM2 = { name: "Deneme Hukuk Danışmanlık Ltd. Şti.", type: "customer", taxOffice: "Çankaya", address: "Atatürk Bulvarı 77", district: "Çankaya", city: "Ankara", email: "fatura@example.org" };
 const ESZ_A = [1000, 2500.5, 333.33, [100.03, 100.03], 1234.56, 750, 99.99, 4200.1, 15000, 812.47, [60.6, 39.4], 2999.99, 5000.05, 455.45, 120, 7777.77, 300.3, [640.01, 0.99], 18.18, 1999.95];
 const ESZ_B = [450, 1250.75, 88.88, [500.5, 499.5], 3333.33, 66.67, 9999.99, 205.05, 710, 1.01e3];
-export const ESZ_ARIZALAR = Object.freeze(["kayip", "cift", "durum", "aski", "tek-oturum"]);
+export const ESZ_ARIZALAR = Object.freeze(["kayip", "cift", "durum", "aski", "tek-oturum", "es-giris"]);
 const SEND_PENDING_URL = "/api/workspace/invoices/send-pending";
 
 // ---------- Adres denetimi (bekçi) ----------
@@ -516,6 +518,11 @@ export async function main(argv = process.argv.slice(2), env = process.env) {
       if (args.ariza === "durum") smm.statusAfterSend = { [k]: "PACKAGE - FAIL" };
       if (args.ariza === "aski") smm.holdSend = { k, ms: timeoutMs + 3000 };
       if (args.ariza === "tek-oturum") smm.singleSession = true;
+      // es-giris: gerçek EDM'de görülen davranış (başka giriş sürerken gelen giriş WCF reddi); girişler çakışsın diye Login yanıtı gecikir.
+      if (args.ariza === "es-giris") {
+        smm.rejectConcurrentLogin = true;
+        if (!args.zorla) smm.delay = op => (op === "Login" ? 250 : 0);
+      }
       current.kayit.sahteEdm = { zorla: args.zorla, ariza: args.ariza || "yok", k };
     }
     const preMax = store.get("SELECT MAX(seq) AS n FROM invoices WHERE series = 'TES' AND year = ? AND seq > 0", year)?.n ?? null;
@@ -575,14 +582,17 @@ export async function main(argv = process.argv.slice(2), env = process.env) {
     current.kayit.izleme = iz;
     current.kayit.istekler = esz.istekler;
     note(`EDM e-SMM servisine Login: ${iz["smm:Login"]?.sayi || 0} (en çok eşzamanlı ${iz["smm:Login"]?.enCokEszamanli || 0}); SendSMM ${iz["smm:SendSMM"]?.sayi || 0} (en çok eşzamanlı ${iz["smm:SendSMM"]?.enCokEszamanli || 0}); sözleşme (WSDL) okuma ${(iz["smm:WSDL"]?.sayi || 0) + (iz["fatura:WSDL"]?.sayi || 0)}`, { izleme: iz });
-    if ((iz["smm:Login"]?.enCokEszamanli || 0) > 1) note(`BULGU ADAYI (N4): ${iz["smm:Login"].enCokEszamanli} Login AYNI ANDA — programın giriş denetimi tek uçuş değil (oturum önbelleği boşken her istek kendi girişini yapar)`);
+    // N4 (baş mimar kararı 22.10.2026, gerçek EDM'de eşzamanlı girişin biri reddedildi): giriş TEK UÇUŞ — aynı anda en çok bir Login; soğuk başta tam bir.
+    const logins = iz["smm:Login"] || { sayi: 0, enCokEszamanli: 0 };
+    check(logins.enCokEszamanli <= 1 && (!cold || logins.sayi === 1), `e-SMM servisine giriş tek uçuş (N4): ${cold ? "soğuk başta tam 1 Login" : "sıcak başta en çok 1 Login aynı anda"} — Login ${logins.sayi}, en çok eşzamanlı ${logins.enCokEszamanli}`);
     note(`süreler: Kaydet ve Gönder ${JSON.stringify(current.kayit.sureler.kaydetVeGonder)} ms, Kes, Sonra Gönder ${JSON.stringify(current.kayit.sureler.kesSonraGonder)} ms; 30 sn'yi aşan Kaydet ve Gönder ${current.kayit.sureler.otuzSnUstu} (arayüzün kayıt zaman aşımı 30 sn: aşanlarda ekran "sunucuda sürüyor olabilir" derdi)`);
     if (mock && args.zorla) {
       const max = mock.state.smm.maxInflight;
       current.kayit.sahteEdmEnCokEszamanli = { ...max };
       // Ders 20: yeşil yalnız ön koşul GERÇEKTEN oluşunca — sahte EDM'de en az 10 SendSMM aynı anda işlendi; soğuk başta en az 2 Login aynı anda.
       check((max.SendSMM || 0) >= 10, `ön koşul (zorla): sahte EDM'de aynı anda işlenen SendSMM en çok ${max.SendSMM || 0} ≥ 10`);
-      if (cold) check((max.Login || 0) >= 2, `ön koşul (zorla, soğuk): sahte EDM'de aynı anda Login en çok ${max.Login || 0} ≥ 2`);
+      // Soğuk başta 20 istek aynı anda oturum ister: ≥ 10 SendSMM aynı anda işlendiyse en az 10 çağıran aynı (tek) girişi paylaştı — N4'ün ön koşulu.
+      if (cold) note(`ön koşul (zorla, soğuk): önbellek boşken aynı anda ${max.SendSMM || 0} SendSMM, sahte EDM'de en çok eşzamanlı Login ${max.Login || 0}`);
     }
     finish();
     // Güvence: eşzamanlı istekte giriş REDDEDİLDİYSE (kullanıcı adı/parola, hesap kilidi, hız sınırı) EDM'ye başka istek yapılmaz (hesap kilitlenmesin).
@@ -1172,7 +1182,7 @@ export async function main(argv = process.argv.slice(2), env = process.env) {
       write("ozet.json", summary);
       writeFileSync(path.join(OUT, "OZET.md"), mask(lines.join("\n")));
       write("bekci.json", bekci);
-      if (mock) write("kuru-edm-kaydi.json", { fatura: mock.state.calls.map(call => call.op), smm: mock.state.smm.calls.map(call => call.op), smmGonderilen: mock.state.smm.sent.map(item => item.id), smmIptal: mock.state.smm.cancelled.length, smmEnCokEszamanli: mock.state.smm.maxInflight, ihlaller: [...mock.state.violations, ...mock.state.smm.violations] });
+      if (mock) write("kuru-edm-kaydi.json", { fatura: mock.state.calls.map(call => call.op), smm: mock.state.smm.calls.map(call => call.op), smmGonderilen: mock.state.smm.sent.map(item => item.id), smmIptal: mock.state.smm.cancelled.length, smmEnCokEszamanli: mock.state.smm.maxInflight, smmEszamanliGirisReddi: mock.state.smm.concurrentLoginRejected, ihlaller: [...mock.state.violations, ...mock.state.smm.violations] });
       console.log(`\n${lines.join("\n")}`);
     } catch (error) {
       console.log(`özet yazılamadı: ${error.message}`);

@@ -74,3 +74,26 @@ GÖRÜLMEDİ (kuru, zorla dahil).
 - Aynı gün içinde saat ↔ numara ters komşu: BİLGİ (saat dakika çözünürlüğünde; GİB sıra kuralı tarih düzeyinde) — denetim değil.
 - Kâhin: tutarlar karşılaştırılmadı (yalnız talimattaki stopaj kuralı: VKN %20, TCKN 0); TES ardışıklığı ve EDM numarası kuraldan.
 - Mutasyon kopyalarında node_modules çalışma ağacına bağlandı (genel klasöre değil, npm ci koşulmadı; ders 29).
+
+## N4 düzeltmesi — tek uçuş giriş (baş mimar kararı 22.10.2026, gerçek koşudan sonra)
+
+Gerçek EDM (ana oturum, 16:41 TR, 0289fe3, soğuk): Login 20 (en çok 18 aynı anda); A03'ün girişini EDM "The caller was not authenticated by the service." ile
+reddetti (aynı kimlikle 19 giriş başarılı → kimlik yanlış değil, eşzamanlı giriş). Kural: `server/lib/einvoice/edm.mjs` edmTransport'ta oturum anahtarı başına TEK
+UÇUŞ giriş (withSession, ensureSession, test aynı bekleyen girişi bekler; bitince kayıt silinir; başarısızlık bütün bekleyenlere aynı hata — B3: numara ancak giriş
+başarılıysa); sessionExpired yeniden denemesinde önbellek YALNIZ hata veren oturumu tutuyorsa silinir, daha yeni geçerli oturum varsa girişsiz o kullanılır. e-Fatura
+ve e-SMM (aynı taşıma katmanı).
+
+### Nasıl bozulur? (ÖNCE yazıldı; testler buradan)
+
+| # | Bozulma | Test |
+|---|---|---|
+| T1 | Soğuk önbellekte 20 eşzamanlı çağrı hâlâ 20 giriş yapar (tek uçuş yok / yalnız bir yolda var) | 20 eşzamanlı gönderim, ensureSession ve e-Fatura mükellef sorgusu → Login 1 |
+| T2 | Bekleyen giriş başarısız olunca kayıt kalır: sonraki her çağrı eski reddi alır, hiç yeniden denenmez | 5 eşzamanlı çağrı reddedilir (tek Login), SONRAKİ çağrı yeniden giriş yapar |
+| T3 | Başarısızlık bekleyenlerden birine ulaşmaz (asılı kalır) ya da birinde başarı sayılır (B3: numara verilir) | 5 bekleyenin hepsi aynı kodla reddedilir; düzenekte numara verilmez |
+| T4 | Giriş sürerken parola değişir → yeni parolanın çağrısı eski parolanın girişini bekler (yanlış hesapla oturum) | farklı anahtar: iki ayrı giriş, her biri kendi kimliğiyle |
+| T5 | Giriş askıda kalır → bekleyenler sonsuza dek bekler | zaman aşımı bütün bekleyenlere döner; kayıt silinir, sonraki çağrı yeni giriş |
+| T6 | Tek oturumlu EDM: yeniden giriş öbür oturumu düşürür, eşzamanlı yeniden girişler birbirini düşürür (zincir) | oturum EDM'de düşmüşken 20 eşzamanlı gönderim → yeniden giriş 1, 20/20 iletildi |
+| T7 | sessionExpired'de önbellek koşulsuz silinir → başka çağıranın yeni oturumu silinip gereksiz giriş | önbellekte daha yeni oturum varken giriş yapılmaz |
+| T8 | Bağlantıyı Test Et ile gönderim aynı anda: iki giriş | test() + gönderim aynı anda → Login 1 |
+| T9 | resetEdmCaches bekleyen girişi temizlemez (testler arası sızıntı) | resetEdmCaches sonrası yeni giriş |
+| T10 | Düzenekte (gerçek akış): eşzamanlı ikinci giriş EDM'ce reddedilir → belge Gönderilecekler'e | sahte EDM arızası `es-giris` → eski kodda belge Gönderilecekler'de, yenide 20/20 |

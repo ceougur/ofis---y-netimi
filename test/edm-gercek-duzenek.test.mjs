@@ -289,7 +289,7 @@ describe("--eszamanli: yardımcılar", () => {
 });
 
 describe("--eszamanli: kuru koşu (sahte EDM)", () => {
-  test("zorla araya girme: bütün adımlar geçer, ön koşul GERÇEKTEN oluştu (sahte EDM'de ≥ 10 SendSMM ve soğuk başta ≥ 2 Login aynı anda); 30 belge, TES ardışık; OZET tablosu; kimlik bilgisi yok", () => {
+  test("zorla araya girme: bütün adımlar geçer, ön koşul GERÇEKTEN oluştu (sahte EDM'de ≥ 10 SendSMM aynı anda, önbellek soğuk); giriş tek uçuş (Login 1, N4); 30 belge, TES ardışık; OZET tablosu; kimlik bilgisi yok", () => {
     let out = tempDir();
     let run = runTool(["--kuru", "--eszamanli", "--zorla", "--cikti", out], MOCK);
     if (run.status === 4 && existsSync(path.join(out, "ozet.json")) && json(out, "ozet.json").gunDegisti) {
@@ -308,7 +308,9 @@ describe("--eszamanli: kuru koşu (sahte EDM)", () => {
     }
     const ya = json(out, "ya-eszamanli-kayit.json");
     assert.ok(ya.kayit.sahteEdmEnCokEszamanli.SendSMM >= 10, JSON.stringify(ya.kayit.sahteEdmEnCokEszamanli));
-    assert.ok(ya.kayit.sahteEdmEnCokEszamanli.Login >= 2, "soğuk başta Login'ler aynı anda (ön koşul)");
+    // N4 (22.10.2026, gerçek EDM'de eşzamanlı girişin biri reddedildi): soğuk başta 20 istek aynı anda oturum ister, program TEK giriş yapar.
+    assert.equal(ya.kayit.izleme["smm:Login"].sayi, 1, `e-SMM Login ${ya.kayit.izleme["smm:Login"].sayi}; beklenen 1 (tek uçuş)`);
+    assert.equal(ya.kayit.sahteEdmEnCokEszamanli.Login, 1);
     assert.equal(ya.kayit.yetkisiz.status, 403);
     assert.equal(ya.kayit.istekler.filter(item => item.asama === "A" && item.autoSend?.ok).length, 20);
     const edm = json(out, "kuru-edm-kaydi.json");
@@ -324,6 +326,18 @@ describe("--eszamanli: kuru koşu (sahte EDM)", () => {
       for (const secret of Object.values(MOCK)) assert.ok(!bytes.includes(Buffer.from(secret)), `${name} kimlik bilgisi taşıyor`);
     }
     assert.match(run.stdout.trim().split(/\r?\n/).at(-1), /^SONUÇ: \d+ geçti, 0 kaldı \(çıkış 0\)$/);
+  });
+
+  test("N4 EDM davranışları (gerçek EDM'de görülen eşzamanlı giriş reddi; tek oturumlu EDM): tek uçuş girişle 20/20 iletilir, çakışan giriş yok, çıkış 0", () => {
+    for (const fault of ["es-giris", "tek-oturum"]) {
+      const out = tempDir();
+      const run = runTool(["--kuru", "--eszamanli", "--zorla", "--ariza", fault, "--cikti", out], MOCK);
+      assert.equal(run.status, 0, `${fault}: çıkış ${run.status}\n${failedChecks(out).join("\n")}`);
+      const ya = json(out, "ya-eszamanli-kayit.json");
+      assert.equal(ya.kayit.istekler.filter(item => item.asama === "A" && item.autoSend?.ok).length, 20, fault);
+      assert.equal(ya.kayit.izleme["smm:Login"].sayi, 1, `${fault}: Login ${ya.kayit.izleme["smm:Login"].sayi}`);
+      assert.equal(json(out, "kuru-edm-kaydi.json").smmEszamanliGirisReddi, 0, `${fault}: EDM'ye çakışan giriş gitmedi`);
+    }
   });
 
   test("testin dişi: sahte EDM'ye enjekte edilen her hata düzeneği KIRMIZI yapar, neden iletide (kayıp, çift kayıt, yanlış durum, askı)", () => {
