@@ -1,0 +1,93 @@
+{
+ "adim": "b-makbuz",
+ "baslik": "e-SMM Kaydet ve Gönder: tek kalem (1 × 1.000 TL) ve çok kalem (2 × 100,03 TL), KDV %20, stopaj (alıcı şirket)",
+ "durum": "geçti",
+ "denetimler": [
+  {
+   "gecti": true,
+   "denetim": "B1 (tek kalem): TES2026634450826 EDM'ye iletildi (sent)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B1 UBL: numara, ETTN ve ProfileID ESMM belgeyle aynı"
+  },
+  {
+   "gecti": true,
+   "denetim": "B1 UBL tutarları programın tutarlarıyla tutarlı (brüt 1000, stopaj 200 = satırlar 200, ödenecek 1000)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B2 (çok kalem 2 × 100,03): TES2026634450827 EDM'ye iletildi (sent)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B2 UBL: numara, ETTN ve ProfileID ESMM belgeyle aynı"
+  },
+  {
+   "gecti": true,
+   "denetim": "B2 UBL tutarları programın tutarlarıyla tutarlı (brüt 200.06, stopaj 40.01 = satırlar 20.01 + 20, ödenecek 200.07)"
+  }
+ ],
+ "kayit": {
+  "B1": {
+   "number": "TES2026634450826",
+   "ettn": "279cbae6-c52a-4102-9d72-207b9ddea176",
+   "profile": "ESMM",
+   "eStatus": "sent",
+   "eMessage": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün.",
+   "autoSend": {
+    "ok": true,
+    "status": "sent",
+    "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün.",
+    "reference": "TES2026634450826",
+    "uuid": "279cbae6-c52a-4102-9d72-207b9ddea176",
+    "edmStatus": "PACKAGE - PROCESSING"
+   },
+   "brut": 1000,
+   "stopaj": 200,
+   "kdv": 200,
+   "odenecek": 1000,
+   "ubl": {
+    "lineExtension": 1000,
+    "taxExclusive": 800,
+    "taxInclusive": 200,
+    "payable": 1000,
+    "stopajBelge": 200,
+    "stopajSatirlar": [
+     200
+    ]
+   }
+  },
+  "B2": {
+   "number": "TES2026634450827",
+   "ettn": "df6366c1-0eef-4afa-8ca7-da90f74030cf",
+   "profile": "ESMM",
+   "eStatus": "sent",
+   "eMessage": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün.",
+   "autoSend": {
+    "ok": true,
+    "status": "sent",
+    "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün.",
+    "reference": "TES2026634450827",
+    "uuid": "df6366c1-0eef-4afa-8ca7-da90f74030cf",
+    "edmStatus": "PACKAGE - PROCESSING"
+   },
+   "brut": 200.06,
+   "stopaj": 40.01,
+   "kdv": 40.02,
+   "odenecek": 200.07,
+   "ubl": {
+    "lineExtension": 200.06,
+    "taxExclusive": 160.05,
+    "taxInclusive": 40.02,
+    "payable": 200.07,
+    "stopajBelge": 40.01,
+    "stopajSatirlar": [
+     20.01,
+     20
+    ]
+   }
+  },
+  "kahin": "kâhin verilmedi: tutarlar yalnız kaydedildi (beklenen sayılar kodu görmeyen elden gelir, ders 5)"
+ }
+}
