@@ -741,6 +741,7 @@
         <label class="hof-field" data-rate-field ${form.currency === "TRY" ? "hidden" : ""}><span>Kur (1 ${esc(form.currency)} = ? TL) <i aria-hidden="true">*</i></span><input data-f="rate" inputmode="decimal" value="${esc(form.rate)}" ${ret ? "readonly" : ""} placeholder="ör. 34,25"></label>
         ${numberField}
       </section>
+      <p class="hof-muted hof-inv-paper-note" data-paper-note hidden></p>
       <details class="hof-inv-more-head" ${form.orderNo || form.despatchNo || form.paperNo ? "open" : ""}><summary>Sipariş, İrsaliye ve Kâğıt Fatura No</summary>
         <div class="hof-inv-head">
           <label class="hof-field"><span>Sipariş No</span><input data-f="orderNo" maxlength="60" value="${esc(form.orderNo)}"></label>
@@ -1767,6 +1768,7 @@
     if (!form.account || !usedLines(form).length) {
       form.calc = null;
       form.calcError = "";
+      renderPaperNote();
       renderTotals();
       refreshPayAfterCalc();
       return;
@@ -1777,6 +1779,7 @@
       ++calcTicket;
       form.calc = null;
       form.calcError = "Birim fiyat yazılınca toplamlar hesaplanır.";
+      renderPaperNote();
       renderTotals();
       refreshPayAfterCalc();
       return;
@@ -1814,10 +1817,31 @@
       refreshPayAfterCalc();
     }
   }
+  // 2.4.4 (madde 30c G1; kalıcı karar "pasif düğmenin nedeni görünür yazı"): entegratör bağlantısı kayıtlıyken kendi kestiğimiz belge kâğıda düşerse
+  // nedeni formda yazılır. Koşul sunucunun allowedProfiles kuralının aynısı (invoices.mjs): satış / Alıştan İade e-Fatura işareti yoksa kâğıt; işaret
+  // varken alıcı mükellef değilse ve e-Arşiv işareti yoksa kâğıt; makbuz e-SMM açıkken (kinds.smm.send) işaret yoksa kâğıt. Karşı tarafın belgesi
+  // (Alış, Satıştan İade) ve entegratörü kayıtlı olmayan firma not görmez.
+  function paperReason(form) {
+    const st = meta?.settings || {};
+    if (!edoc() || !st.integrator?.configured || form?.calc?.profile !== "KAGIT" || !isOwn(form.kind)) return "";
+    const where = " (Entegratör Ayarları → Firma / Etiket Tanımları).";
+    if (form.kind === "smm") return meta?.kinds?.smm?.send && !st.esmm ? `Kâğıt makbuz: firma e-SMM kullanıcısı olarak işaretli değil${where}` : "";
+    if (!st.efatura) return st.earsiv ? `Kâğıt belge: firma e-Fatura mükellefi olarak işaretli değil; e-Arşiv de bu işaretle kesilir${where}` : `Kâğıt belge: firma e-Fatura / e-Arşiv kullanıcısı olarak işaretli değil${where}`;
+    if (!st.earsiv && !form.calc.party?.eInvoice) return `Kâğıt belge: alıcı e-Fatura mükellefi değil ve firma e-Arşiv kullanıcısı olarak işaretli değil${where}`;
+    return "";
+  }
+  function renderPaperNote() {
+    const node = body()?.querySelector("[data-paper-note]");
+    if (!node) return;
+    const reason = view.form?.calc ? paperReason(view.form) : "";
+    node.textContent = reason;
+    node.hidden = !reason;
+  }
   // Belge türü (e-Belge açıksa): GİB kuralına göre izin verilenler; tek seçenekse gizli.
   function renderProfile() {
     const form = view.form;
     const field = body()?.querySelector("[data-profile-field]");
+    renderPaperNote();
     if (!field || !form?.calc) return;
     const profiles = form.calc.profiles || [];
     field.hidden = !edoc() || profiles.length < 2;
@@ -2364,7 +2388,7 @@
         }
         const ok = await HOF.confirm({
           title: ISSUE_LABELS[form.kind] || "Kaydet",
-          message: `${who} için ${numberText}${kindLabel(form.kind).toLocaleLowerCase("tr-TR")} kaydedilecek: ${curMoney(c.totals.payable, c.currency)}. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. ${eSend === "now" && !held ? "Gönderildikten sonra düzenlenemez; yanlışsa iptal ya da iade gerekir." : "Yanlışsa sonradan kartındaki “Düzenle” ile düzeltilir."}${sendText}${stocklessText}`,
+          message: `${who} için ${numberText}${kindLabel(form.kind).toLocaleLowerCase("tr-TR")} kaydedilecek: ${curMoney(c.totals.payable, c.currency)}. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. ${eSend === "now" && !held ? (form.kind === "smm" ? "Gönderildikten sonra düzenlenemez; yanlışsa iptal gerekir (makbuzdan iade belgesi olmaz)." : "Gönderildikten sonra düzenlenemez; yanlışsa iptal ya da iade gerekir.") : "Yanlışsa sonradan kartındaki “Düzenle” ile düzeltilir."}${sendText}${stocklessText}`,
           confirmLabel: eSend === "later" ? "Kaydet, Sonra Gönder" : eSend === "now" ? (draftUploadFor(form) ? "Kaydet ve Taslak Yükle" : "Kaydet ve Gönder") : ISSUE_LABELS[form.kind] || "Kaydet",
         });
         if (!ok) return;
@@ -3215,6 +3239,16 @@
 
   // ---------- Fatura Ayarları ----------
   const SERIES_LABELS = { paper: "Belge Serisi (Fiş ve Kâğıt Belge)", smm: "Serbest Meslek Makbuzu Serisi", internal: "İç İade Serisi", efatura: "e-Fatura Serisi", earsiv: "e-Arşiv Serisi", esmm: "e-SMM Serisi" };
+  // Fatura Ayarları'nda Entegratör Ayarları'ndaki işarete bağlı metin (2.4.4 madde 30c G2): Entegratör Ayarları kaydedilince açık Fatura Ayarları
+  // formu yeniden çizilmeden (kaydedilmemiş alanlar kaybolmasın) yalnız bu metin yenilenir.
+  const stampEsmmText = s => (s?.edocEnabled && s.esmm === true ? " Logo ve kaşe e-SMM'de yalnız programın PDF'ine basılır; resmî görüntüyü EDM çizer." : "");
+  function syncSettingsFlags(saved) {
+    if (!view.settings || !saved) return;
+    for (const key of ["efatura", "earsiv", "esmm", "integrator"]) if (saved[key] !== undefined) view.settings[key] = saved[key];
+    if (view.mode !== "settings") return;
+    const node = body()?.querySelector("[data-stamp-esmm-note]");
+    if (node) node.textContent = stampEsmmText(view.settings);
+  }
   async function showSettings() {
     view.logo = undefined;
     view.stamp = undefined;
@@ -3267,7 +3301,7 @@
           <div class="hof-inv-logo-tools"><label class="hof-button hof-button-small hof-button-ghost">Logo Seç<input type="file" accept="image/*" data-logo-file hidden></label><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="logo-clear" ${logoNow() ? "" : "hidden"}>Logoyu Kaldır</button><small>PNG ya da JPEG seçin; program JPEG'e çevirip küçültür (en çok 150 KB). Kaydedince bundan sonraki PDF'lere basılır.</small></div></div></div>
         <div class="hof-field hof-inv-wide hof-inv-logo" data-stamp-field><span>Kaşe / İmza (e-Arşiv Faturasına Basılır)</span>
           <div class="hof-inv-logo-row"><div class="hof-inv-logo-box" data-stamp-preview>${imageBoxHtml("stamp")}</div>
-          <div class="hof-inv-logo-tools"><label class="hof-button hof-button-small hof-button-ghost">Kaşe / İmza Seç<input type="file" accept="image/*" data-stamp-file hidden></label><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="stamp-clear" ${stampNow() ? "" : "hidden"}>Kaşe / İmzayı Kaldır</button><small>Kaşe üzerine atılmış imzanın taranmış ya da çekilmiş resmini seçin (beyaz zemin önerilir). e-Belgede GİB logosunun altına, PDF'te Düzenleyen kutusuna basılır; e-Faturada da istenirse Entegratör Ayarları → Görünüm.${s.edocEnabled && s.esmm === true ? " Logo ve kaşe e-SMM'de yalnız programın PDF'ine basılır; resmî görüntüyü EDM çizer." : ""}</small></div></div></div>
+          <div class="hof-inv-logo-tools"><label class="hof-button hof-button-small hof-button-ghost">Kaşe / İmza Seç<input type="file" accept="image/*" data-stamp-file hidden></label><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="stamp-clear" ${stampNow() ? "" : "hidden"}>Kaşe / İmzayı Kaldır</button><small>Kaşe üzerine atılmış imzanın taranmış ya da çekilmiş resmini seçin (beyaz zemin önerilir). e-Belgede GİB logosunun altına, PDF'te Düzenleyen kutusuna basılır; e-Faturada da istenirse Entegratör Ayarları → Görünüm.<span data-stamp-esmm-note>${esc(stampEsmmText(s))}</span></small></div></div></div>
       </div></section>
       <section class="hof-inv-settings" data-inv-banks="${bankState.active ? "accounts" : "legacy"}"><h4>Banka Hesapları <small>(belgenin altına basılır)</small></h4>${bankState.active
         ? `<p class="hof-muted">Banka modülü etkin: belgeye yalnız Banka → Hesaplar'da hesap kartında <b>IBAN Faturada Gösterilsin</b> işaretli etkin TL hesaplar basılır (en çok 4; sırası hesap sırası). Buradaki eski liste artık düzenlenmez.</p>
@@ -3645,6 +3679,7 @@
           const saved = await HOF.api("/api/workspace/invoices/settings", { method: "PUT", body: payload() });
           state.settings = { ...state.settings, ...saved };
           delete draft.password;
+          syncSettingsFlags(saved);
           await loadMeta(true);
           refreshPortalButton();
           HOF.toast("Entegratör ayarları kaydedildi.", { type: "success" });

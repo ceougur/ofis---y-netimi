@@ -243,6 +243,16 @@ try {
     ok(state.confirm === code, `${label}: onay kutusu “${state.confirm}” (beklenen ${code})`);
     ok(state.password === "" && state.focused, `${label}: parola boş ve odakta`);
     ok(state.trap && state.trapBeforePassword && !state.trapVisible, `${label}: parolanın hemen önünde görünmeyen kullanıcı adı alanı`);
+    if (label.startsWith("Verisini")) {
+      // G6 (madde 30c): kutu yalnız tahsilat makbuzu sayacını siler; fatura/fiş numaralarının baştan başladığı açıklamada yazar. Varsayılan işaretli kalır.
+      const reset = await page.evaluate(() => {
+        const dialog = document.querySelector(".hof-modal-backdrop.is-visible");
+        const box = dialog.querySelector('input[name="resetNumbers"]');
+        return { label: box?.closest("label")?.textContent.replace(/\s+/g, " ").trim() || "", checked: Boolean(box?.checked), text: dialog.textContent.replace(/\s+/g, " ") };
+      });
+      ok(reset.label === "Tahsilat Makbuzu Numaraları da Sıfırlansın" && reset.checked, `${label}: G6 kutu adı “${reset.label}” (işaretli: ${reset.checked})`);
+      ok(reset.text.includes("Fatura ve fiş numaraları seride baştan başlar; e-Belge gönderdiyseniz yeniden göndermeden önce Fatura Ayarları → Numaralar'dan sıradaki numarayı ileri alın."), `${label}: G6 açıklama fatura ve fiş numaralarının baştan başladığını söyler`);
+    }
     if (code === "001" && label.startsWith("Verisini")) await shot("e-sifirla-onay");
     await escClose(page);
     await page.waitForTimeout(300);

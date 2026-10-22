@@ -1,0 +1,32 @@
+{
+  "ad": "244-gezinti-g/yesil-senaryo-225",
+  "komut": "node test/e2e/senaryo-225.mjs",
+  "commit": "158d9c0178695ab205f2022a7878d148d3a26809",
+  "dal": "is/gezinti-g",
+  "kirli": 6,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T17:43:44.204Z",
+  "sure_sn": 34.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 50,
+    "gecen": 50,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-gezinti-g/yesil-senaryo-225.log",
+  "klasor": "/home/user/wt/gezinti-g",
+  "ham_cikti_sha256": "fedc5a92cf5b98b5f768469ea9cbc23c8b879865aa570bc83217f9fedab45d32",
+  "ham_cikti_bayt": 4529
+}

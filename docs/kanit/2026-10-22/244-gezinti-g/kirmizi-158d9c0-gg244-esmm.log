@@ -1,0 +1,64 @@
+(node:7105) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+■ 0 e-SMM açık kurulum, e-SMM kullanıcısı OLMAYAN firma: makbuz formu kâğıt (tür notu ve gönderim düğmesi yok); kayıt SMM serisi, Gönderilecekler'e düşmez
+  ✓ tür notu e-SMM demiyor ("")
+  ✓ Kaydet, Sonra Gönder ve Kaydet ve Gönder yok
+  ✓ kayıt düğmesi: "Makbuzu Kaydet"
+  ✗ G1 kâğıt makbuzun nedeni formda: "(satır yok)" (gizli: true)
+  · onay yanıtlandı (Makbuzu Kaydet, beklenen soru): Müvekkil Ticaret A.Ş. için SMM2026000000001 numarasıyla serbest meslek makbuzu kaydedilecek: ₺1.000,00. Stok, cari, Kasa, çek/senet ve taksi
+  ✓ kayıt onayı kâğıt makbuz numarasını söyler, e-SMM / gönderim demez
+  ✓ makbuz kaydedildi (veri tabanı)
+  ✓ kâğıt makbuz: KAGIT SMM2026000000001 (e-Belge durumu none)
+  ✓ Gönderilecekler'de yok
+  ✓ EDM'ye hiçbir gönderim yok
+■ 1 e-SMM kullanıcısı firmada makbuz formu: tür notu ve gönderim düğmeleri; taslak ayarı açıkken de "Kaydet ve Gönder"
+  ✓ tür notu: "e-SMM kesilir: makbuz EDM'ye gönderilir."
+  ✓ G1 e-SMM formunda kâğıt nedeni satırı yok (gizli: true, "(satır yok)")
+  ✓ Kaydet, Sonra Gönder var
+  ✓ Kaydet ve Gönder var (Kaydet ve Gönder)
+  ✓ taslak ayarı açıkken e-SMM düğmesi "Kaydet ve Gönder" (Kaydet ve Gönder)
+■ 2 Kaydet ve Gönder: TES numarası, e-SMM servisine gider; kartta Durum Sorgula ve Resmî Görüntü, taslak düğmesi yok
+  · onay yanıtlandı (Kaydet ve Gönder, beklenen soru): Müvekkil Ticaret A.Ş. için TES2026000000001 numarasıyla serbest meslek makbuzu kaydedilecek: ₺1.000,00. Stok, cari, Kasa
+  ✗ G3 onay makbuzda iade demiyor: …Gönderildikten sonra düzenlenemez; yanlışsa iptal ya da iade gerekir. Belge kaydedilir kaydedilmez entegratöre
+  ✓ makbuz kaydedildi (veri tabanı)
+  ✓ ESMM + TES numarası (ESMM TES2026000000001)
+  ✓ gönderildi (sent; e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün.)
+  ✓ EDM e-SMM servisinde aynı numara
+  ✓ e-Fatura servisine gönderim yok
+  ✓ e-SMM sözleşmesine uygun ()
+  ✓ kartta Durum Sorgula var
+  ✓ kartta Resmî Görüntü var
+  ✓ Portala Taslak Yükle yok
+  ✓ Durum Sorgula e-SMM servisine (GetSMMStatus)
+■ 3 İptal Et: pencere e-SMM'nin önce entegratörde iptal edileceğini söyler; EDM'de ve programda iptal
+  ✓ iptal penceresi: …ra korunur; belge "İptal Edildi" olarak kalır. e-SMM önce entegratörde (EDM) iptal edilir.
+  · iptal penceresi onaylandı (İptal Et, beklenen pencere)
+  ✓ programda ve EDM'de iptal (cancelled / cancelled)
+  ✓ EDM'ye CancelSMM bir kez
+  ✓ e-Fatura servisine iptal yok
+■ 4 Gönderilecekler'deki e-SMM: "Kâğıt Makbuz Olarak Bırak" — kâğıt makbuz serisinden (SMM) numara, Müşteri Fişi (FIS) değil
+  ✓ ön koşul: numarasız bekleyen e-SMM (ESMM waiting)
+  ✓ düğme: "Kâğıt Makbuz Olarak Bırak"
+  · onay yanıtlandı (Kâğıt Makbuz Olarak Bırak, beklenen soru): "Kâğıt Makbuz Olarak Bırakılsın mı?" — e-SMM gönderilmez; makbuz kâğıt makbuz serisinden numara alır ve kâğıt makbuz olarak kalır. Cari, Ka
+  ✓ onay penceresi kâğıt makbuz der (Müşteri Fişi değil)
+  ✓ kâğıt makbuz serisinden numara: SMM2026000000002 (KAGIT / withdrawn)
+  ✓ Müşteri Fişi (FIS) serisine numara verilmedi
+  ✓ kartta Belge Türü kâğıt makbuz
+■ 5 Fatura Ayarları: e-SMM kullanıcısında Kaşe / İmza açıklaması logo ve kaşenin e-SMM'de yalnız programın PDF'ine basıldığını söyler
+  ✓ Kaşe / İmza açıklaması: …enirse Entegratör Ayarları → Görünüm. Logo ve kaşe e-SMM'de yalnız programın PDF'ine basılır; resmî görüntüyü EDM çizer.
+■ 6 Fatura Ayarları açıkken Entegratör Ayarları'nda e-SMM işareti değişir: Kaşe / İmza açıklaması yenilenir, yazılan alan durur
+  ✓ ön koşul: e-SMM kullanıcısında açıklama e-SMM cümlesini taşır
+  ✓ e-SMM işareti kaldırıldı (sunucu)
+  ✗ işaret kalkınca açıklamada e-SMM cümlesi yok (pencere kapatılmadan): …örünüm. Logo ve kaşe e-SMM'de yalnız programın PDF'ine basılır; resmî görüntüyü EDM çizer.
+  ✓ kaydedilmemiş Telefon alanı durdu ("0312 555 00 00")
+  ✓ işaret yeniden konunca açıklama e-SMM cümlesini taşır: …örünüm. Logo ve kaşe e-SMM'de yalnız programın PDF'ine basılır; resmî görüntüyü EDM çizer.
+  ✓ Telefon alanı ikinci kayıttan sonra da durdu
+■ 7 Satış faturası kâğıda düşünce nedeni formda (firma işareti); Alış'ta, e-Arşiv'de ve entegratörsüz firmada not yok
+  ✗ satış, işaretler kapalı: "(satır yok)" (gizli: true)
+  ✓ Alış faturasında not yok (hesap yapıldı: true; gizli: true, "(satır yok)")
+  ✗ satış, e-Fatura var e-Arşiv yok, alıcı mükellef değil: "(satır yok)"
+  ✓ e-Arşiv'de not yok (gizli: true; tür notu "Alıcı e-Fatura mükellefi değil: e-Arşiv kesilir.")
+  ✓ entegratör kayıtlı değilken kâğıt belgede not yok (Kaydedilince Verilecek NoFIS2026000000001; gizli: true, "(satır yok)")
+  ✓ sayfa hatası yok ()
+
+43 geçti, 5 kaldı
