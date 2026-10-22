@@ -203,7 +203,7 @@ describe("e-SMM dışı belgeler değişmedi", () => {
 });
 
 describe("e-SMM, VKN'li düzenleyen (ör. adi ortaklık)", () => {
-  test("unvan Person/FirstName'de de: EDM'nin e-SMM görüntüsü düzenleyenin adını yalnız Person'dan basar (22.10.2026 gerçek EDM denemesi); VUK 236", async () => {
+  test("unvan Person'da da (son sözcük FamilyName): EDM'nin e-SMM görüntüsü düzenleyenin adını yalnız Person'dan basar, FamilyName zorunlu (22.10.2026 gerçek EDM); VUK 236", async () => {
     // Gerçek EDM test ortamı: PartyName'li, Person'sız VKN düzenleyende resmî PDF'te unvan YOKTU; Person eklenince basıldı. Alıcının unvanı PartyName'den basılır.
     const firm = { name: "Deneme ve Ortakları Avukatlık Ortaklığı", taxNo: "1234567890", taxOffice: "Kadıköy", address: "Moda Cd. 1", district: "Kadıköy", city: "İstanbul", email: "ortaklik@deneme.com.tr" };
     const on = await api.put("/api/workspace/invoices/settings", { seller: firm, efatura: true, earsiv: true, esmm: true });
@@ -213,7 +213,8 @@ describe("e-SMM, VKN'li düzenleyen (ör. adi ortaklık)", () => {
       assert.equal(doc.profile, "ESMM");
       const supplier = find(tree, "AccountingSupplierParty/Party");
       assert.equal(textOf(find(supplier, "PartyName/Name")), firm.name, "PartyName korunur");
-      assert.equal(textOf(find(supplier, "Person/FirstName")), firm.name, "unvan Person/FirstName'de");
+      // EDM görüntüsü FirstName + " " + FamilyName basar; EDM'nin UBL-TR şeması FamilyName'i zorunlu tutar (11029, 22.10.2026).
+      assert.equal(`${textOf(find(supplier, "Person/FirstName"))} ${textOf(find(supplier, "Person/FamilyName"))}`, firm.name, "unvan Person'da (ad + soyad = unvan)");
       assert.ok(!find(find(tree, "AccountingCustomerParty/Party"), "Person"), "VKN'li alıcıya Person eklenmez (adı PartyName'den basılır)");
       assert.deepEqual(await xsdErrors(xml), [], "UBL 2.1 XSD");
     } finally {

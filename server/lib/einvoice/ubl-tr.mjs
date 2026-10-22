@@ -52,6 +52,14 @@ export function tradeNameOf(p) {
   return folded(name) === folded(`${p.firstName || ""} ${p.familyName || ""}`) ? "" : name;
 }
 
+// VKN'li e-SMM düzenleyeninin unvanı Person'a: son sözcük FamilyName, kalanı FirstName (tek sözcükte FamilyName "-").
+export function issuerPerson(name) {
+  const words = String(name || "").replace(/\s+/g, " ").trim().split(" ").filter(Boolean);
+  if (!words.length) return "";
+  const family = words.length > 1 ? words.pop() : "-";
+  return `<cac:Person>${tag("cbc:FirstName", words.join(" "))}${tag("cbc:FamilyName", family)}</cac:Person>`;
+}
+
 function party(p, { variant, esmm = false, issuer = false }) {
   const id = String(p.taxNo || "").replace(/\s+/g, "");
   const scheme = id.length === 11 ? "TCKN" : "VKN";
@@ -91,9 +99,10 @@ function party(p, { variant, esmm = false, issuer = false }) {
     `<cac:PartyTaxScheme><cac:TaxScheme>${tag("cbc:Name", p.taxOffice || "-")}</cac:TaxScheme></cac:PartyTaxScheme>`,
     p.phone || p.email ? `<cac:Contact>${tag("cbc:Telephone", p.phone)}${tag("cbc:ElectronicMail", p.email)}</cac:Contact>` : "",
     person ? `<cac:Person>${tag("cbc:FirstName", p.firstName || p.name)}${tag("cbc:FamilyName", p.familyName || "-")}</cac:Person>` : "",
-    // e-SMM, VKN'li düzenleyen (ör. adi ortaklık): EDM'nin e-SMM görüntüsü düzenleyenin adını YALNIZ Person'dan basar (PartyName basılmaz) — 22.10.2026
-    // gerçek EDM test ortamında denendi; makbuzda düzenleyenin adı/unvanı bulunmalı (VUK 236). Unvan FirstName'e yazılır.
-    esmm && issuer && !person ? `<cac:Person>${tag("cbc:FirstName", p.name)}</cac:Person>` : "",
+    // e-SMM, VKN'li düzenleyen (ör. adi ortaklık): EDM'nin e-SMM görüntüsü düzenleyenin adını YALNIZ Person'dan basar (FirstName + " " + FamilyName;
+    // PartyName basılmaz) ve EDM'nin UBL-TR şeması FamilyName'i zorunlu tutar (11029) — 22.10.2026 gerçek EDM test ortamında denendi. Makbuzda
+    // düzenleyenin adı/unvanı bulunmalı (VUK 236): unvan son sözcüğünden bölünür, EDM boşlukla birleştirip unvanı aynen basar.
+    esmm && issuer && !person ? issuerPerson(p.name) : "",
     "</cac:Party>",
   ].join("");
 }
