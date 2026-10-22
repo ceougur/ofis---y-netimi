@@ -534,6 +534,16 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - İSTEK (kullanıcı, 22.10.2026: "test için kesip EDM'ye gönderdiğin e-SMM numaralarını bana verirsen EDM test portalına girip ben de görebilirim"): madde 24 gerçek EDM
   koşusundan sonra kullanıcıya gönderilen her belgenin listesi verilir (tür, Belge No, ETTN, tarih, gönderim saati, alıcı, tutarlar, EDM durumu, iptal saati) — betik
   docs/kanit/2026-10-22/244-edm/OZET.md üretir; kimlik bilgisi girmez.
+- SORU (kullanıcı, 22.10.2026, EDM test portalı ekranlarıyla): "bunlar bizim mi" → HAYIR (QZA/QZY serili, 1 TL, "İzole TEST sözleşme denemesi" — depoda/kanıtta yok;
+  EDM test hesabı VKN 3230512384 ORTAK, başka firmaların denemeleri de görünür). "Kestiğimiz e-SMM'lerin karekodları doğru hesabı veriyor mu?" → HAYIR: e-SMM görüntüsünü
+  ve karekodunu EDM'nin şablonu çizer, karekod YALNIZ ETTN içerir; GİB Karekod Standardı V1.2 §2.4 e-SMM'de vkntckn, avkntckn, tarih, no, ettn, parabirimi, brutucret,
+  tahsilkdv, kdvtevkifat, gvstopaj, kdvtutari, netucret, tahsilat ister. Programın şablonu e-SMM'ye gömülemiyor (EDM 11032, deney). e-Arşiv/e-Fatura karekodu programın,
+  standarda uygun (22.10: 300/60/360 doğru). → EDM'ye soru metni kullanıcıya verildi (canlıda uygun mu, test ortamı düzelecek mi, özel şablon desteği, VKN'li
+  düzenleyende unvan). Aynı ekranlardan: resmî PDF'te adres iki kez (düzeltildi 959b667), VKN'li düzenleyende unvan yok (düzeltildi 32e59c0, EDM yalnız Person'dan basar).
+  Portal kullanıcı adı/parolası kullanıcı tarafından teyit edildi (web servisle aynı; dosyaya YAZILMAZ).
+- SORU (22.10.2026, madde 31a kâhin F3; kullanıcıya soruldu): Kapatılacak Fatura SEÇİLMEDEN alınan (bağsız) çek/senet karşılıksız dönünce, onun kapattığı faturalar
+  da yeniden açılsın mı? Bugün açılmıyor (bakiye artıyor, açık faturalar toplamı bakiyeyle ayrışıyor: G1 0, G2 500, bakiye 2.000). ÖNERİ: evet (bağlı evrak için
+  verilen kararla aynı mantık: karşılıksız evrakla ödenmiş fatura ödenmemiştir; Σ açık = cari bakiye korunur).
 - SON ADAY BAĞIMSIZ TURU (kullanıcı, 22.10.2026: "2.4.4 son aday uzun test koşusuna başlamadan kâhin (uzman mali müşavir), yargıç, eleştirmen testlerinden geçecek mi,
   regresyon testleri yapılıyor mu?" → EVET; "ekle" → uzman UI + uzman UX de): iş listesi madde 30–31 (31a kâhin, 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol,
   31f uzman UI/UX) Uzun Doğrulama'dan ÖNCE.
