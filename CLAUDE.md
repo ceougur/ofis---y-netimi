@@ -423,6 +423,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - GÖZLEM (kullanıcı, 22.10.2026 ~19:25 UTC: "devam eden G1G3 arayüzü düzeltmeleri işi görünüyor") → işi bitmişti (f3c3f08 denetlendi, aday 7'de); ajanın e2e özetini izleyen
   `tail -f` iş bitince kapanmadığından görev açık görünüyordu → görev durduruldu (TaskStop), süreç kapandı. Ajan kurallarına (ajan-ortak.md, inceleme-ortak.md) eklendi:
   izleme komutu ilk eşleşmede kendiliğinden biter (`grep -m1`).
+- SORU (22.10.2026 ~21:06 UTC, 31c yargıç bulguları; 5 dk kuralıyla kullanıcıya soruldu): Y5 — windows.yml (gerçek Windows) yalnız master push'ta/elle koşar; 2.4.4'ün
+  Windows'a özgü değişiklikleri (madde 6 hosts engeli, lisans nöbetçisi) gerçek Windows'ta hiç koşmadı → ÖNERİ PR'dan önce çalışma dalında elle iki koşu (ders 18,
+  ücretsiz). Y16 — CLAUDE.md ölçek koşusu (10/20 kullanıcı, 100.000 satır) "temel sürümde"; iş listesinde yok → ÖNERİ 2.4.4 yama sürümü sayılır (2.1.0 ölçümleri
+  geçerli), ölçek koşusu temel sürüm 2.5.0'da (Devir). Yargıcın öbür bulguları (Y1 tam test CI #862'den, Y2 CI dışı 14 senaryo son adayda koşuyor, Y3 göç karşılaştırması
+  yeniden, Y4/Y7/Y8 31e kapsamı iş listesinde, Y6 kâhin kural kaynağı depoya, Y10–Y15 teslim notları/kılavuz/CHANGELOG) ana oturumda.
 - İSTEKLER (kullanıcı, 22.10.2026 ~14:00–14:50 UTC; hepsi yanıtlandı): "18 numarada portalda ben ne yapacağım" → elle kabul adımları iş listesi 18 (teslimde
   kurulumla); "kalan işler için zaman çizelgesi, aynı anda yapılanları tek süre say" → verildi (devam notu ZAMAN ÇİZELGESİ); "compact talimatı vereceğim, veri kaybı
   olmasın" → devam notu 00 + ajan kayıtları yazıldı ve gönderildi (f013e57); EDM test hesabı ~14:45 UTC yeniden verildi (yalnız oturumda; dosyaya yazılmadı).
