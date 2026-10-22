@@ -755,12 +755,17 @@
     add.className = "hof-button hof-button-small hof-button-ghost hof-inv-account-new";
     add.textContent = "+ Yeni Cari";
     add.title = form.side === "purchase" ? "Tedarikçi kartı aç" : "Müşteri kartı aç";
-    add.onclick = () => HOF.accounts.newFor({ type: form.side === "purchase" ? "supplier" : "customer" }, { onSaved: account => {
-      if (view.form !== form) return;
-      applyPickedAccount(account);
-      mountAccountPicker();
-      HOF.toast(`${account.name} seçildi.`, { type: "info" });
-    } });
+    // 2.4.4 (uzman UX16): seçicide yazılan ad yeni cari formuna taşınır (genel seçicideki "+ Yeni Cari" gibi); seçili carinin adı taşınmaz.
+    add.onclick = () => {
+      const typed = picker.querySelector("[data-acc-query]")?.value.trim() || "";
+      const name = typed && typed !== form.account?.name ? typed : undefined;
+      HOF.accounts.newFor({ type: form.side === "purchase" ? "supplier" : "customer", name }, { onSaved: account => {
+        if (view.form !== form) return;
+        applyPickedAccount(account);
+        mountAccountPicker();
+        HOF.toast(`${account.name} seçildi.`, { type: "info" });
+      } });
+    };
     row.insertBefore(add, retail);
     slot.replaceChildren(row);
   }
