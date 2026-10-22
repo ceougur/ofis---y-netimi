@@ -1,0 +1,281 @@
+{
+ "k1:rapor": [
+  {
+   "cari": "Deniz Beş",
+   "debit": 8000,
+   "credit": 350,
+   "lines": [
+    {
+     "kind": "alacak",
+     "d": "Tahsilat",
+     "borc": null,
+     "alacak": 100,
+     "key": "2026/77"
+    },
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h1",
+     "borc": null,
+     "alacak": 250,
+     "key": "2026/77"
+    },
+    {
+     "kind": "borc",
+     "d": "İcra Takip · 2026/77",
+     "borc": 8000,
+     "alacak": null,
+     "key": "2026/77"
+    }
+   ]
+  },
+  {
+   "cari": "Okan Yedi",
+   "debit": 5000,
+   "credit": 0,
+   "lines": [
+    {
+     "kind": "borc",
+     "d": "İcra Takip · 2026/78",
+     "borc": 5000,
+     "alacak": null,
+     "key": "2026/78"
+    }
+   ]
+  },
+  {
+   "cari": "satir:18f6814be644c238",
+   "debit": 3000,
+   "credit": 500,
+   "lines": [
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h2",
+     "borc": null,
+     "alacak": 500,
+     "key": "satir:18f6814be644c238"
+    },
+    {
+     "kind": "borc",
+     "d": "Taksitler",
+     "borc": 3000,
+     "alacak": null,
+     "key": "satir:18f6814be644c238"
+    }
+   ]
+  },
+  {
+   "cari": "satir:4ef4ee65a7cc6498",
+   "debit": 4000,
+   "credit": 1200,
+   "lines": [
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h4",
+     "borc": null,
+     "alacak": 1200,
+     "key": "satir:4ef4ee65a7cc6498"
+    },
+    {
+     "kind": "borc",
+     "d": "Taksitler",
+     "borc": 4000,
+     "alacak": null,
+     "key": "satir:4ef4ee65a7cc6498"
+    }
+   ]
+  },
+  {
+   "cari": "satir:63549357cf76c513",
+   "debit": 3000,
+   "credit": 700,
+   "lines": [
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h3",
+     "borc": null,
+     "alacak": 700,
+     "key": "satir:63549357cf76c513"
+    },
+    {
+     "kind": "borc",
+     "d": "Taksitler",
+     "borc": 3000,
+     "alacak": null,
+     "key": "satir:63549357cf76c513"
+    }
+   ]
+  }
+ ],
+ "k2:rapor": [
+  {
+   "cari": "Deniz Beş",
+   "debit": 8000,
+   "credit": 350,
+   "lines": [
+    {
+     "kind": "alacak",
+     "d": "Tahsilat",
+     "borc": null,
+     "alacak": 100,
+     "key": "2026/77"
+    },
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h1",
+     "borc": null,
+     "alacak": 250,
+     "key": "2026/77"
+    },
+    {
+     "kind": "borc",
+     "d": "İcra Takip · 2026/77",
+     "borc": 8000,
+     "alacak": null,
+     "key": "2026/77"
+    }
+   ]
+  },
+  {
+   "cari": "Okan Yedi",
+   "debit": 5000,
+   "credit": 0,
+   "lines": [
+    {
+     "kind": "borc",
+     "d": "İcra Takip · 2026/78",
+     "borc": 5000,
+     "alacak": null,
+     "key": "2026/78"
+    }
+   ]
+  },
+  {
+   "cari": "satir:18f6814be644c238",
+   "debit": 3000,
+   "credit": 0,
+   "lines": [
+    {
+     "kind": "borc",
+     "d": "Taksitler",
+     "borc": 3000,
+     "alacak": null,
+     "key": "satir:18f6814be644c238"
+    }
+   ]
+  },
+  {
+   "cari": "satir:4ef4ee65a7cc6498",
+   "debit": 4000,
+   "credit": 0,
+   "lines": [
+    {
+     "kind": "borc",
+     "d": "Taksitler",
+     "borc": 4000,
+     "alacak": null,
+     "key": "satir:4ef4ee65a7cc6498"
+    }
+   ]
+  },
+  {
+   "cari": "satir:63549357cf76c513",
+   "debit": 3000,
+   "credit": 0,
+   "lines": [
+    {
+     "kind": "borc",
+     "d": "Taksitler",
+     "borc": 3000,
+     "alacak": null,
+     "key": "satir:63549357cf76c513"
+    }
+   ]
+  }
+ ],
+ "k3:rapor": [
+  {
+   "cari": "Deniz Beş",
+   "debit": 8000,
+   "credit": 350,
+   "lines": [
+    {
+     "kind": "alacak",
+     "d": "Tahsilat",
+     "borc": null,
+     "alacak": 100,
+     "key": "2026/77"
+    },
+    {
+     "kind": "alacak",
+     "d": "Tahsilat · h1",
+     "borc": null,
+     "alacak": 250,
+     "key": "2026/77"
+    },
+    {
+     "kind": "borc",
+     "d": "İcra Takip · 2026/77",
+     "borc": 8000,
+     "alacak": null,
+     "key": "2026/77"
+    }
+   ]
+  },
+  {
+   "cari": "Okan Yedi",
+   "debit": 5000,
+   "credit": 0,
+   "lines": [
+    {
+     "kind": "borc",
+     "d": "İcra Takip · 2026/78",
+     "borc": 5000,
+     "alacak": null,
+     "key": "2026/78"
+    }
+   ]
+  },
+  {
+   "cari": "satir:18f6814be644c238",
+   "debit": 3000,
+   "credit": 0,
+   "lines": [
+    {
+     "kind": "borc",
+     "d": "Taksitler",
+     "borc": 3000,
+     "alacak": null,
+     "key": "satir:18f6814be644c238"
+    }
+   ]
+  },
+  {
+   "cari": "satir:4ef4ee65a7cc6498",
+   "debit": 4000,
+   "credit": 0,
+   "lines": [
+    {
+     "kind": "borc",
+     "d": "Taksitler",
+     "borc": 4000,
+     "alacak": null,
+     "key": "satir:4ef4ee65a7cc6498"
+    }
+   ]
+  },
+  {
+   "cari": "satir:63549357cf76c513",
+   "debit": 3000,
+   "credit": 0,
+   "lines": [
+    {
+     "kind": "borc",
+     "d": "Taksitler",
+     "borc": 3000,
+     "alacak": null,
+     "key": "satir:63549357cf76c513"
+    }
+   ]
+  }
+ ]
+}

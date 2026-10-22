@@ -1,0 +1,544 @@
+{
+ "dil": "destekofis-cari/1",
+ "ad": "rastgele-ux18-1",
+ "aciklama": "uretici.py --tohum 1 --islem 60",
+ "dayanak": "KARARLAR.md B2; ders 17",
+ "bugun": "2026-06-30",
+ "adimlar": [
+  {
+   "id": "c-a",
+   "islem": "cari_ac",
+   "ad": "A",
+   "isim": "Rastgele Alfa 1"
+  },
+  {
+   "id": "c-b",
+   "islem": "cari_ac",
+   "ad": "B",
+   "isim": "Rastgele Beta 1"
+  },
+  {
+   "id": "c-c",
+   "islem": "cari_ac",
+   "ad": "C",
+   "isim": "Rastgele Gama 1"
+  },
+  {
+   "id": "c-t",
+   "islem": "cari_ac",
+   "ad": "T",
+   "isim": "Rastgele Tedarik 1",
+   "tur": "tedarikci"
+  },
+  {
+   "id": "s000",
+   "islem": "fatura",
+   "ad": "F1",
+   "cari": "C",
+   "tutar": "331,86",
+   "tarih": "2026-03-02",
+   "evrak": {
+    "ad": "E1",
+    "tur": "senet",
+    "tutar": "309,50"
+   }
+  },
+  {
+   "id": "s001",
+   "islem": "fatura",
+   "ad": "F2",
+   "cari": "A",
+   "tutar": "4684,55",
+   "tarih": "2026-03-03"
+  },
+  {
+   "id": "s002",
+   "islem": "tahsilat",
+   "cari": "C",
+   "tutar": "1199,38",
+   "tarih": "2026-03-03"
+  },
+  {
+   "id": "s003",
+   "islem": "tahsil",
+   "evrak": "E1",
+   "tarih": "2026-03-05"
+  },
+  {
+   "id": "s004",
+   "islem": "evrak",
+   "ad": "E2",
+   "cari": "A",
+   "tur": "cek",
+   "tutar": "1998,61",
+   "tarih": "2026-03-05",
+   "fatura": "F2"
+  },
+  {
+   "id": "s005",
+   "islem": "fatura",
+   "ad": "F3",
+   "cari": "C",
+   "tutar": "4924,93",
+   "tarih": "2026-03-05"
+  },
+  {
+   "id": "s006",
+   "islem": "tahsilat",
+   "cari": "A",
+   "tutar": "1519,30",
+   "tarih": "2026-03-06",
+   "fatura": "F2"
+  },
+  {
+   "id": "s007",
+   "islem": "fatura",
+   "ad": "F4",
+   "cari": "B",
+   "tutar": "36,00",
+   "tarih": "2026-03-06"
+  },
+  {
+   "id": "s008",
+   "islem": "karsiliksiz",
+   "evrak": "E2",
+   "tarih": "2026-03-07"
+  },
+  {
+   "id": "s009",
+   "islem": "fatura",
+   "ad": "F5",
+   "cari": "C",
+   "tutar": "3081,61",
+   "tarih": "2026-03-09"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  },
+  {
+   "id": "s010",
+   "islem": "evrak",
+   "ad": "E3",
+   "cari": "B",
+   "tur": "cek",
+   "tutar": "2517,78",
+   "tarih": "2026-03-11",
+   "fatura": "F4"
+  },
+  {
+   "id": "s011",
+   "islem": "fatura",
+   "ad": "F6",
+   "cari": "C",
+   "tutar": "4629,05",
+   "tarih": "2026-03-12",
+   "evrak": {
+    "ad": "E4",
+    "tur": "cek",
+    "tutar": "4081,29"
+   }
+  },
+  {
+   "id": "s012",
+   "islem": "tahsil",
+   "evrak": "E4",
+   "tarih": "2026-03-12"
+  },
+  {
+   "id": "s013",
+   "islem": "fatura",
+   "ad": "F7",
+   "cari": "C",
+   "tutar": "1618,58",
+   "tarih": "2026-03-13"
+  },
+  {
+   "id": "s014",
+   "islem": "fatura",
+   "ad": "F8",
+   "cari": "C",
+   "tutar": "1,00",
+   "tarih": "2026-03-13"
+  },
+  {
+   "id": "s015",
+   "islem": "tahsilat",
+   "cari": "A",
+   "tutar": "1802,64",
+   "tarih": "2026-03-15"
+  },
+  {
+   "id": "s016",
+   "islem": "evrak",
+   "ad": "E5",
+   "cari": "B",
+   "tur": "senet",
+   "tutar": "3456,19",
+   "tarih": "2026-03-17",
+   "fatura": "F4"
+  },
+  {
+   "id": "s017",
+   "islem": "evrak",
+   "ad": "E6",
+   "cari": "C",
+   "tur": "cek",
+   "tutar": "2719,37",
+   "tarih": "2026-03-18"
+  },
+  {
+   "id": "s018",
+   "islem": "evrak_sil",
+   "evrak": "E5"
+  },
+  {
+   "id": "s019",
+   "islem": "evrak",
+   "ad": "E7",
+   "cari": "C",
+   "tur": "senet",
+   "tutar": "2542,41",
+   "tarih": "2026-03-19"
+  },
+  {
+   "id": "k2",
+   "islem": "kontrol"
+  },
+  {
+   "id": "s020",
+   "islem": "fatura",
+   "ad": "F9",
+   "cari": "B",
+   "tutar": "3269,88",
+   "tarih": "2026-03-20"
+  },
+  {
+   "id": "s021",
+   "islem": "tahsilat",
+   "cari": "A",
+   "tutar": "240,13",
+   "tarih": "2026-03-20",
+   "fatura": "F2"
+  },
+  {
+   "id": "s022",
+   "islem": "fatura",
+   "ad": "F10",
+   "cari": "B",
+   "tutar": "44,00",
+   "tarih": "2026-03-22"
+  },
+  {
+   "id": "s023",
+   "islem": "karsiliksiz",
+   "evrak": "E6",
+   "tarih": "2026-03-23"
+  },
+  {
+   "id": "s024",
+   "islem": "fatura",
+   "ad": "F11",
+   "cari": "B",
+   "tutar": "968,88",
+   "tarih": "2026-03-23"
+  },
+  {
+   "id": "s025",
+   "islem": "fatura",
+   "ad": "F12",
+   "cari": "A",
+   "tutar": "3443,77",
+   "tarih": "2026-03-23"
+  },
+  {
+   "id": "s026",
+   "islem": "karsiliksiz",
+   "evrak": "E7",
+   "tarih": "2026-03-24"
+  },
+  {
+   "id": "s027",
+   "islem": "fatura",
+   "ad": "F13",
+   "cari": "A",
+   "tutar": "1801,10",
+   "tarih": "2026-03-25"
+  },
+  {
+   "id": "s028",
+   "islem": "fatura",
+   "ad": "F14",
+   "cari": "A",
+   "tutar": "47,00",
+   "tarih": "2026-03-26"
+  },
+  {
+   "id": "s029",
+   "islem": "fatura",
+   "ad": "F15",
+   "cari": "A",
+   "tutar": "26,00",
+   "tarih": "2026-03-27"
+  },
+  {
+   "id": "k3",
+   "islem": "kontrol"
+  },
+  {
+   "id": "s030",
+   "islem": "karsiliksiz",
+   "evrak": "E3",
+   "tarih": "2026-03-27"
+  },
+  {
+   "id": "s031",
+   "islem": "fatura_iptal",
+   "fatura": "F15",
+   "tarih": "2026-03-29"
+  },
+  {
+   "id": "s032",
+   "islem": "evrak",
+   "ad": "E8",
+   "cari": "C",
+   "tur": "senet",
+   "tutar": "3538,44",
+   "tarih": "2026-03-29",
+   "fatura": "F5"
+  },
+  {
+   "id": "s033",
+   "islem": "karsiliksiz",
+   "evrak": "E8",
+   "tarih": "2026-03-30"
+  },
+  {
+   "id": "s034",
+   "islem": "fatura",
+   "ad": "F16",
+   "cari": "A",
+   "tutar": "1628,19",
+   "tarih": "2026-03-30"
+  },
+  {
+   "id": "s035",
+   "islem": "fatura",
+   "ad": "F17",
+   "cari": "C",
+   "tutar": "1,00",
+   "tarih": "2026-03-31"
+  },
+  {
+   "id": "s036",
+   "islem": "tahsilat",
+   "cari": "C",
+   "tutar": "2667,97",
+   "tarih": "2026-03-31"
+  },
+  {
+   "id": "s037",
+   "islem": "fatura",
+   "ad": "F18",
+   "cari": "B",
+   "tutar": "1079,78",
+   "tarih": "2026-03-31"
+  },
+  {
+   "id": "s038",
+   "islem": "evrak_geri_yukle",
+   "evrak": "E5"
+  },
+  {
+   "id": "s039",
+   "islem": "evrak",
+   "ad": "E9",
+   "cari": "C",
+   "tur": "senet",
+   "tutar": "3209,32",
+   "tarih": "2026-04-02"
+  },
+  {
+   "id": "k4",
+   "islem": "kontrol"
+  },
+  {
+   "id": "s040",
+   "islem": "fatura",
+   "ad": "F19",
+   "cari": "A",
+   "tutar": "21,00",
+   "tarih": "2026-04-03"
+  },
+  {
+   "id": "s041",
+   "islem": "tahsilat",
+   "cari": "B",
+   "tutar": "717,79",
+   "tarih": "2026-04-03",
+   "fatura": "F18"
+  },
+  {
+   "id": "s042",
+   "islem": "evrak",
+   "ad": "E10",
+   "cari": "C",
+   "tur": "cek",
+   "tutar": "342,48",
+   "tarih": "2026-04-04"
+  },
+  {
+   "id": "s043",
+   "islem": "fatura",
+   "ad": "F20",
+   "cari": "A",
+   "tutar": "1117,56",
+   "tarih": "2026-04-04"
+  },
+  {
+   "id": "s044",
+   "islem": "ciro",
+   "evrak": "E9",
+   "cari": "T",
+   "tarih": "2026-04-06"
+  },
+  {
+   "id": "s045",
+   "islem": "fatura",
+   "ad": "F21",
+   "cari": "B",
+   "tutar": "4548,77",
+   "tarih": "2026-04-07"
+  },
+  {
+   "id": "s046",
+   "islem": "tahsilat",
+   "cari": "A",
+   "tutar": "2131,75",
+   "tarih": "2026-04-09"
+  },
+  {
+   "id": "s047",
+   "islem": "ciro",
+   "evrak": "E5",
+   "cari": "T",
+   "tarih": "2026-04-09"
+  },
+  {
+   "id": "s048",
+   "islem": "fatura",
+   "ad": "F22",
+   "cari": "B",
+   "tutar": "4100,42",
+   "tarih": "2026-04-09",
+   "evrak": {
+    "ad": "E11",
+    "tur": "cek",
+    "tutar": "2967,30"
+   }
+  },
+  {
+   "id": "s049",
+   "islem": "tahsilat",
+   "cari": "B",
+   "tutar": "1549,55",
+   "tarih": "2026-04-09"
+  },
+  {
+   "id": "k5",
+   "islem": "kontrol"
+  },
+  {
+   "id": "s050",
+   "islem": "evrak_sil",
+   "evrak": "E10"
+  },
+  {
+   "id": "s051",
+   "islem": "karsiliksiz",
+   "evrak": "E11",
+   "tarih": "2026-04-12"
+  },
+  {
+   "id": "s052",
+   "islem": "evrak",
+   "ad": "E12",
+   "cari": "C",
+   "tur": "cek",
+   "tutar": "2168,12",
+   "tarih": "2026-04-12",
+   "fatura": "F17"
+  },
+  {
+   "id": "s053",
+   "islem": "fatura",
+   "ad": "F23",
+   "cari": "A",
+   "tutar": "38,00",
+   "tarih": "2026-04-12",
+   "evrak": {
+    "ad": "E13",
+    "tur": "cek",
+    "tutar": "27,89"
+   }
+  },
+  {
+   "id": "s054",
+   "islem": "karsiliksiz",
+   "evrak": "E12",
+   "tarih": "2026-04-12"
+  },
+  {
+   "id": "s055",
+   "islem": "karsiliksiz",
+   "evrak": "E13",
+   "tarih": "2026-04-13"
+  },
+  {
+   "id": "s056",
+   "islem": "evrak",
+   "ad": "E14",
+   "cari": "B",
+   "tur": "senet",
+   "tutar": "524,97",
+   "tarih": "2026-04-15",
+   "fatura": "F10"
+  },
+  {
+   "id": "s057",
+   "islem": "fatura",
+   "ad": "F24",
+   "cari": "A",
+   "tutar": "3809,86",
+   "tarih": "2026-04-15"
+  },
+  {
+   "id": "s058",
+   "islem": "fatura",
+   "ad": "F25",
+   "cari": "B",
+   "tutar": "3154,31",
+   "tarih": "2026-04-16",
+   "evrak": {
+    "ad": "E15",
+    "tur": "cek",
+    "tutar": "2846,43"
+   }
+  },
+  {
+   "id": "s059",
+   "islem": "tahsilat",
+   "cari": "C",
+   "tutar": "960,62",
+   "tarih": "2026-04-17"
+  },
+  {
+   "id": "k6",
+   "islem": "kontrol"
+  },
+  {
+   "id": "kson",
+   "islem": "kontrol"
+  }
+ ]
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "244-kahin-cari/taban-senaryo-kabul",
+  "komut": "python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/senaryolar/kabul-1-16.json",
+  "commit": "fd0b0fc6ebac15c9ebde3715179f88b0a9e774f3",
+  "dal": "is/kahin-cari",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T09:47:33.931Z",
+  "sure_sn": 1.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 182,
+    "gecen": 182,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kahin-cari/taban-senaryo-kabul.log",
+  "klasor": "/home/user/wt/kahin-cari",
+  "ham_cikti_sha256": "291932e584ffd5b9d888f23ecf85ceaac653c8c91469df71c596a14024edf657",
+  "ham_cikti_bayt": 171
+}

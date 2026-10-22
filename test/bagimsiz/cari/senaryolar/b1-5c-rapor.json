@@ -1,0 +1,200 @@
+{
+ "dil": "destekofis-cari/1",
+ "ad": "b1-5c-rapor",
+ "aciklama": "5c: aynı dosya no iki sekmede (İcra Takip + Ödeme Sözleri) — tahsilat bir kez; aktarımdan sonra karta taşınan tahsilat da bir kez; aynı adlı iki kişi",
+ "dayanak": "KURALLAR-244 B1 (KULLANICI 22.10 (c); AJAN 5c); CLAUDE.md test kuralı 'aynı adlı iki kişi'",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "İcra Takip",
+     "tur": "icra",
+     "kayitlar": [
+      {
+       "no": "2026/77",
+       "isim": "Deniz Beş",
+       "tel": "0532 800 00 77",
+       "alacak": "10000",
+       "kalan": "8000"
+      },
+      {
+       "no": "2026/78",
+       "isim": "Okan Yedi",
+       "tel": "0532 800 00 78",
+       "alacak": "5000",
+       "kalan": "5000"
+      }
+     ]
+    },
+    {
+     "ad": "Ödeme Sözleri",
+     "tur": "soz",
+     "kayitlar": [
+      {
+       "no": "2026/77",
+       "isim": "Deniz Beş",
+       "tarih": "2026-06-20",
+       "tutar": "1000"
+      }
+     ]
+    },
+    {
+     "ad": "Taksitler",
+     "tur": "taksit",
+     "kayitlar": [
+      {
+       "no": "K-1",
+       "isim": "Elif Kaya",
+       "tel": "0532 800 01 01",
+       "taksitler": [
+        [
+         "2026-06-01",
+         "1500"
+        ],
+        [
+         "2026-07-01",
+         "1500"
+        ]
+       ]
+      },
+      {
+       "no": "K-2",
+       "isim": "Elif Kaya",
+       "tel": "0532 800 01 02",
+       "taksitler": [
+        [
+         "2026-06-01",
+         "1500"
+        ],
+        [
+         "2026-07-01",
+         "1500"
+        ]
+       ]
+      },
+      {
+       "no": "K-3",
+       "isim": "Tuna Sarı",
+       "tel": "0532 800 01 03",
+       "taksitler": [
+        [
+         "2026-06-01",
+         "2000"
+        ],
+        [
+         "2026-07-01",
+         "2000"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "p1",
+   "islem": "kayit_tahsilat",
+   "kayit": "2026/77",
+   "tutar": "100",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "c1",
+   "islem": "cari_ac",
+   "ad": "DENIZ",
+   "isim": "Deniz Beş",
+   "tel": "0532 800 00 77",
+   "kayit": "2026/77"
+  },
+  {
+   "id": "h1",
+   "islem": "tahsilat",
+   "cari": "DENIZ",
+   "tutar": "250",
+   "tarih": "2026-06-11"
+  },
+  {
+   "id": "c2",
+   "islem": "cari_ac",
+   "ad": "ELIF1",
+   "isim": "Elif Kaya",
+   "tel": "0532 800 01 01",
+   "kayit": "K-1",
+   "acilis": "3000",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "h2",
+   "islem": "tahsilat",
+   "cari": "ELIF1",
+   "tutar": "500",
+   "tarih": "2026-06-02"
+  },
+  {
+   "id": "c3",
+   "islem": "cari_ac",
+   "ad": "ELIF2",
+   "isim": "Elif Kaya",
+   "tel": "0532 800 01 02",
+   "kayit": "K-2",
+   "acilis": "3000",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "h3",
+   "islem": "tahsilat",
+   "cari": "ELIF2",
+   "tutar": "700",
+   "tarih": "2026-06-03"
+  },
+  {
+   "id": "c4",
+   "islem": "cari_ac",
+   "ad": "TUNA",
+   "isim": "Tuna Sarı",
+   "tel": "0532 800 01 03",
+   "kayit": "K-3",
+   "acilis": "4000",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "h4",
+   "islem": "tahsilat",
+   "cari": "TUNA",
+   "tutar": "1200",
+   "tarih": "2026-06-04"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  },
+  {
+   "id": "a1",
+   "islem": "aktar",
+   "ad": "AK1",
+   "kayitlar": [
+    "K-1",
+    "K-2",
+    "K-3"
+   ]
+  },
+  {
+   "id": "k2",
+   "islem": "kontrol"
+  },
+  {
+   "id": "kt1",
+   "islem": "kart_tahsilat",
+   "kayit": "K-3",
+   "tutar": "300",
+   "tarih": "2026-06-14"
+  },
+  {
+   "id": "k3",
+   "islem": "kontrol"
+  }
+ ]
+}

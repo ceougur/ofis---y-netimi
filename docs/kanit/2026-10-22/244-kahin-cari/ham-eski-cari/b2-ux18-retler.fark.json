@@ -1,0 +1,246 @@
+{
+ "toplam": 79,
+ "farklar": [
+  {
+   "anahtar": "adim:r1:durum",
+   "beklenen": "ret",
+   "program": "ok",
+   "etiket": "KULLANICI",
+   "kural": "B2.4 bağ kurulamaz → ret, hiçbir satır yazılmaz",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "adim:r1:http",
+   "beklenen": 409,
+   "program": 200,
+   "etiket": "AJAN",
+   "kural": "B2.4",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "adim:r2:durum",
+   "beklenen": "ret",
+   "program": "ok",
+   "etiket": "KULLANICI",
+   "kural": "B2.4 bağ kurulamaz → ret, hiçbir satır yazılmaz",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "adim:r2:http",
+   "beklenen": 404,
+   "program": 200,
+   "etiket": "AJAN",
+   "kural": "B2.4",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "adim:r3:durum",
+   "beklenen": "ret",
+   "program": "ok",
+   "etiket": "KULLANICI",
+   "kural": "B2.4 bağ kurulamaz → ret, hiçbir satır yazılmaz",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "adim:r3:http",
+   "beklenen": 409,
+   "program": 200,
+   "etiket": "AJAN",
+   "kural": "B2.4",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "adim:r4:durum",
+   "beklenen": "ret",
+   "program": "ok",
+   "etiket": "KULLANICI",
+   "kural": "B2.4 bağ kurulamaz → ret, hiçbir satır yazılmaz",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "adim:r4:http",
+   "beklenen": 409,
+   "program": 200,
+   "etiket": "AJAN",
+   "kural": "B2.4",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "adim:r5:durum",
+   "beklenen": "ret",
+   "program": "ok",
+   "etiket": "AJAN",
+   "kural": "B2.4 bağ kurulamaz → ret, hiçbir satır yazılmaz",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "adim:r5:http",
+   "beklenen": 409,
+   "program": 200,
+   "etiket": "AJAN",
+   "kural": "B2.4",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "adim:r6:durum",
+   "beklenen": "ret",
+   "program": "ok",
+   "etiket": "AJAN",
+   "kural": "B2.4 bağ kurulamaz → ret, hiçbir satır yazılmaz",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "adim:r6:http",
+   "beklenen": 409,
+   "program": 200,
+   "etiket": "AJAN",
+   "kural": "B2.4",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "adim:r9:durum",
+   "beklenen": "ret",
+   "program": "ok",
+   "etiket": "KULLANICI",
+   "kural": "B2.4 bağ kurulamaz → ret, hiçbir satır yazılmaz",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "adim:r9:http",
+   "beklenen": 409,
+   "program": 200,
+   "etiket": "AJAN",
+   "kural": "B2.4",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k2:cari:A:bakiye",
+   "beklenen": 170000,
+   "program": 140000,
+   "etiket": "PLAN",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:cari:B:bakiye",
+   "beklenen": 0,
+   "program": -15000,
+   "etiket": "PLAN",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:cari:T:bakiye",
+   "beklenen": -50000,
+   "program": -60000,
+   "etiket": "PLAN",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:fatura:X:acik",
+   "beklenen": 80000,
+   "program": 50000,
+   "etiket": "KULLANICI",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:mizan:101",
+   "beklenen": 0,
+   "program": 50000,
+   "etiket": "PLAN",
+   "kural": "B2.6 §3.11a yevmiye",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:mizan:120",
+   "beklenen": 170000,
+   "program": 125000,
+   "etiket": "PLAN",
+   "kural": "B2.6 §3.11a yevmiye",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:mizan:121",
+   "beklenen": 0,
+   "program": 5000,
+   "etiket": "PLAN",
+   "kural": "B2.6 §3.11a yevmiye",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:mizan:320",
+   "beklenen": -50000,
+   "program": -60000,
+   "etiket": "PLAN",
+   "kural": "B2.6 §3.11a yevmiye",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:cari:A:bakiye",
+   "beklenen": 140000,
+   "program": 110000,
+   "etiket": "PLAN",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:cari:B:bakiye",
+   "beklenen": 0,
+   "program": -15000,
+   "etiket": "PLAN",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:cari:T:bakiye",
+   "beklenen": -50000,
+   "program": -60000,
+   "etiket": "PLAN",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:fatura:X:acik",
+   "beklenen": 50000,
+   "program": 20000,
+   "etiket": "KULLANICI",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:mizan:101",
+   "beklenen": 30000,
+   "program": 80000,
+   "etiket": "PLAN",
+   "kural": "B2.6 §3.11a yevmiye",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:mizan:120",
+   "beklenen": 140000,
+   "program": 95000,
+   "etiket": "PLAN",
+   "kural": "B2.6 §3.11a yevmiye",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:mizan:121",
+   "beklenen": 0,
+   "program": 5000,
+   "etiket": "PLAN",
+   "kural": "B2.6 §3.11a yevmiye",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:mizan:320",
+   "beklenen": -50000,
+   "program": -60000,
+   "etiket": "PLAN",
+   "kural": "B2.6 §3.11a yevmiye",
+   "sinif": "BULGU"
+  }
+ ],
+ "hatalar": []
+}

@@ -1,0 +1,68 @@
+{
+ "ozet": [
+  {
+   "ad": "b1-5a-bayat-ve-yeniden",
+   "toplam": 52,
+   "fark": 1,
+   "bulgu": 1
+  },
+  {
+   "ad": "b1-5a-tasima",
+   "toplam": 130,
+   "fark": 3,
+   "bulgu": 3
+  },
+  {
+   "ad": "b1-5b-borc",
+   "toplam": 146,
+   "fark": 2,
+   "bulgu": 1
+  },
+  {
+   "ad": "b1-5c-rapor",
+   "toplam": 113,
+   "fark": 15,
+   "bulgu": 1
+  },
+  {
+   "ad": "b2-ux18-karsiliksiz",
+   "toplam": 91,
+   "fark": 1,
+   "bulgu": 0
+  },
+  {
+   "ad": "b2-ux18-retler",
+   "toplam": 79,
+   "fark": 0,
+   "bulgu": 0
+  },
+  {
+   "ad": "b2-ux18-sira",
+   "toplam": 76,
+   "fark": 8,
+   "bulgu": 6
+  },
+  {
+   "ad": "b2-ux18-temel",
+   "toplam": 162,
+   "fark": 0,
+   "bulgu": 0
+  },
+  {
+   "ad": "rastgele-ux18-1",
+   "toplam": 259,
+   "fark": 18,
+   "bulgu": 0
+  },
+  {
+   "ad": "rastgele-ux18-2",
+   "toplam": 256,
+   "fark": 4,
+   "bulgu": 0
+  }
+ ],
+ "genelToplam": 1364,
+ "genelFark": 52,
+ "okumaHatasi": 0,
+ "kacan": 0
+}

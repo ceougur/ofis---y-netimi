@@ -1,0 +1,210 @@
+{
+ "dil": "destekofis-cari/1",
+ "ad": "b1-5a-tasima",
+ "aciklama": "5a: kayda bağlı carinin taksit dışı tahsilatları tarih sırasıyla bütün olarak karta (en eski taksitten); sığmayanda durulur; bakiye/Kasa aynı; geri al iade eder",
+ "dayanak": "KURALLAR-244 B1 (KULLANICI 22.10 (a), (1); AJAN 5a)",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Taksitler",
+     "tur": "taksit",
+     "kayitlar": [
+      {
+       "no": "K-1",
+       "isim": "Elif Aydın",
+       "tel": "0532 600 10 10",
+       "taksitler": [
+        [
+         "2026-05-15",
+         "3000"
+        ],
+        [
+         "2026-06-15",
+         "3000"
+        ],
+        [
+         "2026-07-15",
+         "3000"
+        ]
+       ]
+      },
+      {
+       "no": "K-2",
+       "isim": "Selin Arslan",
+       "tel": "0532 600 20 20",
+       "taksitler": [
+        [
+         "2026-05-20",
+         "1500"
+        ],
+        [
+         "2026-06-20",
+         "1500"
+        ],
+        [
+         "2026-07-20",
+         "1500"
+        ]
+       ]
+      },
+      {
+       "no": "K-3",
+       "isim": "Burak Koç",
+       "tel": "0532 600 30 30",
+       "taksitler": [
+        [
+         "2026-05-25",
+         "2000"
+        ],
+        [
+         "2026-06-25",
+         "2000"
+        ]
+       ]
+      },
+      {
+       "no": "K-4",
+       "isim": "Mert Can",
+       "tel": "0532 600 40 40",
+       "taksitler": [
+        [
+         "2026-06-01",
+         "1000"
+        ],
+        [
+         "2026-07-01",
+         "1000,50"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "c1",
+   "islem": "cari_ac",
+   "ad": "ELIF",
+   "isim": "Elif Aydın",
+   "tel": "0532 600 10 10",
+   "kayit": "K-1",
+   "acilis": "9000",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "h1",
+   "islem": "tahsilat",
+   "cari": "ELIF",
+   "tutar": "2500",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "h2",
+   "islem": "tahsilat",
+   "cari": "ELIF",
+   "tutar": "1000",
+   "tarih": "2026-06-05"
+  },
+  {
+   "id": "c2",
+   "islem": "cari_ac",
+   "ad": "SELIN",
+   "isim": "Selin Arslan",
+   "tel": "0532 600 20 20",
+   "kayit": "K-2",
+   "acilis": "9000",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "h3",
+   "islem": "tahsilat",
+   "cari": "SELIN",
+   "tutar": "1000",
+   "tarih": "2026-05-20"
+  },
+  {
+   "id": "h4",
+   "islem": "tahsilat",
+   "cari": "SELIN",
+   "tutar": "4000",
+   "tarih": "2026-06-02"
+  },
+  {
+   "id": "h5",
+   "islem": "tahsilat",
+   "cari": "SELIN",
+   "tutar": "200",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "c3",
+   "islem": "cari_ac",
+   "ad": "BURAK",
+   "isim": "Burak Koç",
+   "tel": "0532 600 30 30",
+   "kayit": "K-3",
+   "acilis": "6000",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "h6",
+   "islem": "tahsilat",
+   "cari": "BURAK",
+   "tutar": "1500",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "h7",
+   "islem": "tahsilat",
+   "cari": "BURAK",
+   "tutar": "3000",
+   "tarih": "2026-05-10"
+  },
+  {
+   "id": "k0",
+   "islem": "kontrol"
+  },
+  {
+   "id": "a1",
+   "islem": "aktar",
+   "ad": "AK1",
+   "kayitlar": [
+    "K-1",
+    "K-2",
+    "K-3",
+    "K-4"
+   ]
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  },
+  {
+   "id": "g1",
+   "islem": "geri_al",
+   "aktar": "AK1"
+  },
+  {
+   "id": "k2",
+   "islem": "kontrol"
+  },
+  {
+   "id": "a2",
+   "islem": "aktar",
+   "ad": "AK2",
+   "kayitlar": [
+    "K-1",
+    "K-3"
+   ],
+   "hesapIci": false
+  },
+  {
+   "id": "k3",
+   "islem": "kontrol"
+  }
+ ]
+}

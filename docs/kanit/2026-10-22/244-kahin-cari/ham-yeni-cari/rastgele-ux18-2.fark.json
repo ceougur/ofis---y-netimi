@@ -1,0 +1,38 @@
+{
+ "toplam": 256,
+ "farklar": [
+  {
+   "anahtar": "k6:fatura:F20:acik",
+   "beklenen": 0,
+   "program": 146422,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k6:fatura:F21:acik",
+   "beklenen": 146422,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "kson:fatura:F20:acik",
+   "beklenen": 0,
+   "program": 146422,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "kson:fatura:F21:acik",
+   "beklenen": 146422,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)",
+   "sinif": "İNCELE"
+  }
+ ],
+ "hatalar": []
+}

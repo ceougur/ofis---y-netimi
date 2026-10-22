@@ -1,0 +1,14 @@
+{
+ "toplam": 91,
+ "farklar": [
+  {
+   "anahtar": "adim:bdm:durum",
+   "beklenen": "ret",
+   "program": "ok",
+   "etiket": "YAYGIN",
+   "kural": "B2.4 bağ kurulamaz → ret, hiçbir satır yazılmaz",
+   "sinif": "İNCELE"
+  }
+ ],
+ "hatalar": []
+}

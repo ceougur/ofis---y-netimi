@@ -1,0 +1,192 @@
+{
+ "dil": "destekofis-cari/1",
+ "ad": "b2-ux18-retler",
+ "aciklama": "UX18: bağ kurulamayan durumlar reddedilir ve hiçbir satır yazılmaz (taksitli, başka cari, ters yön, iade, taslak, iptal, carisiz)",
+ "dayanak": "KURALLAR-244 B2 (KULLANICI KARARLAR (2) 'taksitli faturaya ve başka cariye/ters yöne bağ yok'; AJAN 15 kodlar)",
+ "bugun": "2026-06-20",
+ "adimlar": [
+  {
+   "id": "c1",
+   "islem": "cari_ac",
+   "ad": "A",
+   "isim": "RT Alfa"
+  },
+  {
+   "id": "c2",
+   "islem": "cari_ac",
+   "ad": "B",
+   "isim": "RT Beta"
+  },
+  {
+   "id": "c3",
+   "islem": "cari_ac",
+   "ad": "T",
+   "isim": "RT Tedarik",
+   "tur": "tedarikci"
+  },
+  {
+   "id": "f1",
+   "islem": "fatura",
+   "ad": "X",
+   "cari": "A",
+   "tutar": "800",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "f2",
+   "islem": "fatura",
+   "ad": "TK",
+   "cari": "A",
+   "tutar": "900",
+   "tarih": "2026-06-02",
+   "taksit": {
+    "sayi": 3,
+    "ilkVade": "2026-07-01"
+   }
+  },
+  {
+   "id": "f3",
+   "islem": "fatura",
+   "ad": "P",
+   "cari": "T",
+   "tutar": "500",
+   "tarih": "2026-06-03",
+   "tur": "alis"
+  },
+  {
+   "id": "f4",
+   "islem": "fatura",
+   "ad": "U",
+   "cari": "B",
+   "tutar": "200",
+   "tarih": "2026-06-04"
+  },
+  {
+   "id": "i1",
+   "islem": "iade",
+   "ad": "RU",
+   "fatura": "U",
+   "tarih": "2026-06-05"
+  },
+  {
+   "id": "f5",
+   "islem": "fatura",
+   "ad": "D",
+   "cari": "A",
+   "tutar": "300",
+   "tarih": "2026-06-06",
+   "taslak": true
+  },
+  {
+   "id": "f6",
+   "islem": "fatura",
+   "ad": "Y",
+   "cari": "A",
+   "tutar": "400",
+   "tarih": "2026-06-07"
+  },
+  {
+   "id": "fi",
+   "islem": "fatura_iptal",
+   "fatura": "Y"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  },
+  {
+   "id": "r1",
+   "islem": "evrak",
+   "ad": "R1",
+   "cari": "A",
+   "tur": "cek",
+   "tutar": "100",
+   "tarih": "2026-06-10",
+   "fatura": "TK"
+  },
+  {
+   "id": "r2",
+   "islem": "evrak",
+   "ad": "R2",
+   "cari": "B",
+   "tur": "cek",
+   "tutar": "100",
+   "tarih": "2026-06-10",
+   "fatura": "X"
+  },
+  {
+   "id": "r3",
+   "islem": "evrak",
+   "ad": "R3",
+   "cari": "T",
+   "tur": "cek",
+   "tutar": "100",
+   "tarih": "2026-06-10",
+   "fatura": "P"
+  },
+  {
+   "id": "r4",
+   "islem": "evrak",
+   "ad": "R4",
+   "cari": "B",
+   "tur": "senet",
+   "tutar": "50",
+   "tarih": "2026-06-10",
+   "fatura": "RU"
+  },
+  {
+   "id": "r5",
+   "islem": "evrak",
+   "ad": "R5",
+   "cari": "A",
+   "tur": "cek",
+   "tutar": "100",
+   "tarih": "2026-06-10",
+   "fatura": "D"
+  },
+  {
+   "id": "r6",
+   "islem": "evrak",
+   "ad": "R6",
+   "cari": "A",
+   "tur": "cek",
+   "tutar": "100",
+   "tarih": "2026-06-10",
+   "fatura": "Y"
+  },
+  {
+   "id": "r7",
+   "islem": "evrak",
+   "ad": "R7",
+   "cari": null,
+   "tur": "cek",
+   "tutar": "100",
+   "tarih": "2026-06-10",
+   "fatura": "X"
+  },
+  {
+   "id": "k2",
+   "islem": "kontrol"
+  },
+  {
+   "id": "e8",
+   "islem": "evrak",
+   "ad": "E8",
+   "cari": "A",
+   "tur": "cek",
+   "tutar": "300",
+   "tarih": "2026-06-11",
+   "fatura": "X"
+  },
+  {
+   "id": "r9",
+   "islem": "bag_degistir",
+   "evrak": "E8",
+   "fatura": "TK"
+  },
+  {
+   "id": "k3",
+   "islem": "kontrol"
+  }
+ ]
+}
