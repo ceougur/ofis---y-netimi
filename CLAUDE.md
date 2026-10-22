@@ -466,6 +466,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   YANIT (koddan, server/lib/getting-started.mjs + client/assets/hof-getting-started.js): kendiliğinden GELMEZ — 2.4.4 şirketin veri dosyasını ilk açtığında iş verisi ya da
   kaydedilmiş Fatura Ayarları varsa şirket "zaten kurulu" sayılır, liste hiç çıkmaz; yalnız boş şirkette, yalnız yöneticiye, açılış ekranında (pencere açılmaz).
   Elle: kullanıcı menüsü → "Başlarken" ve Hızlı Arama (Ctrl+K) "Başlarken" (yalnız yönetici); adım durumu veriden; "Gizle" kişi + şirket başına.
+- SORU (kullanıcı, 22.10.2026 ~17:30 UTC: "butonların bazıları neden koyu yeşil bazıları beyaz") → YANIT (koddan, hof-getting-started.js:109): renk durumdan bağımsız
+  sabit (company + seller hep koyu). ÖNERİ yalnız İLK EKSİK adım koyu. KARAR (kullanıcı: "uygun") → G4, 30d ajanına eklendi. AYNI İLETİDE: "şirketleri aç değil de şirket
+  aç yazması gerekmez mi" → baş mimar görüşü soruldu: "Şirket Aç" Türkçede yeni şirket açmak/kurmak anlamına gelir (Şirketler'de "+ Yeni Şirket" ve 2 şirket
+  sınırı var) → ÖNERİ "Şirket Adını Yaz" + doğrudan ad değiştirme penceresi; karar bekleniyor.
 - SON ADAY BAĞIMSIZ TURU (kullanıcı, 22.10.2026: "2.4.4 son aday uzun test koşusuna başlamadan kâhin (uzman mali müşavir), yargıç, eleştirmen testlerinden geçecek mi,
   regresyon testleri yapılıyor mu?" → EVET; "ekle" → uzman UI + uzman UX de): iş listesi madde 30–31 (31a kâhin, 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol,
   31f uzman UI/UX) Uzun Doğrulama'dan ÖNCE.
