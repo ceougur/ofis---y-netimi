@@ -14,9 +14,10 @@ import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import http from "node:http";
 import https from "node:https";
-import { dirname } from "node:path";
+import { dirname, join } from "node:path";
 import { Readable } from "node:stream";
 import tls from "node:tls";
+import { createSecretBox } from "./secret-box.mjs";
 
 const ALWAYS_DIRECT = ["localhost", "127.0.0.1", "::1"];
 export const NETWORK_MODES = Object.freeze({ auto: "Otomatik (Windows ayarı)", manual: "Elle", none: "Vekil Sunucu Kullanma" });
@@ -109,20 +110,78 @@ export function readWindowsProxy({ platform = process.platform, run = execFileSy
 }
 
 export const DEFAULT_NETWORK = Object.freeze({ mode: "auto", proxy: "", bypass: "" });
-export function readNetworkSettings(file) {
-  if (!file || !existsSync(file)) return { ...DEFAULT_NETWORK };
+
+// 2.4.4 (iş listesi 28): vekil parolası ayar dosyasında AÇIK METİN tutulmaz. Dosyada "proxy" parolasız adrestir (http://kullanici@sunucu:port),
+// parola "passwordSealed" alanında AES-256-GCM ile mühürlüdür (lib/secret-box.mjs — Entegratör parolasıyla aynı yöntem). Anahtar ayar
+// dosyasının yanında ayrı dosyadır (ag-ayari.key): servis yöneticisi (güncelleyici) ve bütün şirketler aynı dosyayı ve aynı anahtarı okur.
+// Bellekteki ayar (readNetworkSettings) önceki gibi parolalı tam adres taşır; ekrana, API yanıtına ve günlüğe çıkmaz (splitProxy/describeNetwork).
+// Eski (2.4.3 ve öncesi) açık metin dosya aynen okunur; ilk kayıtta ya da servis yöneticisinin açılışında (migrateNetworkSettings) mühürlenir.
+export const NETWORK_KEY_FILE = "ag-ayari.key";
+const boxes = new Map();
+const keyDirOf = file => dirname(String(file));
+const boxFor = file => {
+  const dir = keyDirOf(file);
+  if (!boxes.has(dir)) boxes.set(dir, createSecretBox(dir, { fileName: NETWORK_KEY_FILE }));
+  return boxes.get(dir);
+};
+/** Tek adresli vekil metninden parolayı ayırır: { proxy: parolasız adres, password: (yüzde kodlu) parola }. Protokol listesi olduğu gibi kalır. */
+function detachPassword(text) {
+  const raw = String(text || "");
+  const base = normalizeProxy(raw);
+  if (!base || base.http !== base.https) return { proxy: raw, password: "" };
+  const url = new URL(base.https);
+  if (!url.password) return { proxy: raw, password: "" };
+  const password = url.password;
+  url.password = "";
+  return { proxy: url.href.replace(/\/$/, ""), password };
+}
+function attachPassword(text, password) {
+  if (!password) return text;
+  const base = normalizeProxy(text);
+  if (!base || base.http !== base.https) return text;
+  const url = new URL(base.https);
+  if (!url.username) return text;
+  url.password = password;
+  return url.href.replace(/\/$/, "");
+}
+// Anahtar dosyası yoksa (dosya başka bilgisayardan taşınmış) okuma yeni anahtar ÜRETMEZ: parola boş kalır, ayarın geri kalanı (Elle, adres) bozulmaz;
+// vekil 407 derse ileti "kullanıcı adı ve parolayı yazın" der.
+function openSealed(file, sealed) {
+  if (!sealed || !existsSync(join(keyDirOf(file), NETWORK_KEY_FILE))) return "";
   try {
-    const raw = JSON.parse(readFileSync(file, "utf8"));
-    return { mode: NETWORK_MODES[raw.mode] ? raw.mode : "auto", proxy: String(raw.proxy || ""), bypass: String(raw.bypass || "") };
+    return boxFor(file).open(sealed);
   } catch {
-    return { ...DEFAULT_NETWORK };
+    return "";
   }
+}
+function readRawNetwork(file) {
+  if (!file || !existsSync(file)) return null;
+  try {
+    return JSON.parse(readFileSync(file, "utf8"));
+  } catch {
+    return null;
+  }
+}
+export function readNetworkSettings(file) {
+  const raw = readRawNetwork(file);
+  if (!raw || typeof raw !== "object") return { ...DEFAULT_NETWORK };
+  const proxy = attachPassword(String(raw.proxy || ""), openSealed(file, String(raw.passwordSealed || "")));
+  return { mode: NETWORK_MODES[raw.mode] ? raw.mode : "auto", proxy, bypass: String(raw.bypass || "") };
 }
 export function writeNetworkSettings(file, settings) {
   mkdirSync(dirname(file), { recursive: true });
+  const { proxy, password } = detachPassword(settings.proxy || "");
+  const passwordSealed = password ? boxFor(file).seal(password) : "";
   const temp = `${file}.${process.pid}.tmp`;
-  writeFileSync(temp, `${JSON.stringify({ mode: settings.mode, proxy: settings.proxy || "", bypass: settings.bypass || "" }, null, 2)}\n`);
+  writeFileSync(temp, `${JSON.stringify({ mode: settings.mode, proxy, ...(passwordSealed ? { passwordSealed } : {}), bypass: settings.bypass || "" }, null, 2)}\n`);
   renameSync(temp, file);
+}
+/** Eski biçimli (parolası açık metin) ayar dosyasını mühürlü biçime çevirir; çevirdiyse true. Ayarın anlamı değişmez. */
+export function migrateNetworkSettings(file) {
+  const raw = readRawNetwork(file);
+  if (!raw || typeof raw !== "object" || !detachPassword(raw.proxy).password) return false;
+  writeNetworkSettings(file, readNetworkSettings(file));
+  return true;
 }
 
 /**

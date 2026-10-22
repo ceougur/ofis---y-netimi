@@ -1,0 +1,164 @@
+TAP version 13
+# Subtest: Vekil parolası şifreli saklanır
+    # Subtest: kaydedilen dosyada parola açık metin yok; mühürlü alan var; okununca parolalı adres geri gelir
+    ok 1 - kaydedilen dosyada parola açık metin yok; mühürlü alan var; okununca parolalı adres geri gelir
+      ---
+      duration_ms: 6.21032
+      type: 'test'
+      ...
+    # Subtest: Vekil Sunucu Kullanma / Otomatik seçilse de saklanan adresin parolası açık metin yazılmaz
+    ok 2 - Vekil Sunucu Kullanma / Otomatik seçilse de saklanan adresin parolası açık metin yazılmaz
+      ---
+      duration_ms: 2.354353
+      type: 'test'
+      ...
+    # Subtest: göç: 2.4.3 biçimli açık metin dosya aynen okunur; ilk kayıtta mühürlenir, ayar bozulmaz
+    ok 3 - göç: 2.4.3 biçimli açık metin dosya aynen okunur; ilk kayıtta mühürlenir, ayar bozulmaz
+      ---
+      duration_ms: 2.203307
+      type: 'test'
+      ...
+    # Subtest: göç: migrateNetworkSettings eski dosyayı mühürler (servis yöneticisinin açılışı); parolasız ya da zaten mühürlü dosyaya dokunmaz
+    ok 4 - göç: migrateNetworkSettings eski dosyayı mühürler (servis yöneticisinin açılışı); parolasız ya da zaten mühürlü dosyaya dokunmaz
+      ---
+      duration_ms: 2.829184
+      type: 'test'
+      ...
+    # Subtest: anahtar kaybolursa (dosya başka bilgisayara taşınmış) Elle ayarı ve adres bozulmaz, yalnız parola yeniden girilir; okuma anahtar üretmez
+    ok 5 - anahtar kaybolursa (dosya başka bilgisayara taşınmış) Elle ayarı ve adres bozulmaz, yalnız parola yeniden girilir; okuma anahtar üretmez
+      ---
+      duration_ms: 1.885812
+      type: 'test'
+      ...
+    # Subtest: servis yöneticisi açılışta eski dosyayı mühürler (kaynak denetimi)
+    ok 6 - servis yöneticisi açılışta eski dosyayı mühürler (kaynak denetimi)
+      ---
+      duration_ms: 0.355744
+      type: 'test'
+      ...
+    1..6
+ok 1 - Vekil parolası şifreli saklanır
+  ---
+  duration_ms: 16.974772
+  type: 'suite'
+  ...
+# Subtest: Mühürlü parola vekil kimlik doğrulamasında kullanılır
+    # Subtest: mühürlü dosyayla (ve eski açık metin dosyayla) istek vekilden kimlikli geçer
+    ok 1 - mühürlü dosyayla (ve eski açık metin dosyayla) istek vekilden kimlikli geçer
+      ---
+      duration_ms: 25.955348
+      type: 'test'
+      ...
+    1..1
+ok 2 - Mühürlü parola vekil kimlik doğrulamasında kullanılır
+  ---
+  duration_ms: 37.109292
+  type: 'suite'
+  ...
+# Subtest: Vekil sunucu ayarının çözümü
+    # Subtest: Windows WinHTTP ikili ayarı okunur; doğrudan bağlantı bayrağında vekil yok
+    ok 1 - Windows WinHTTP ikili ayarı okunur; doğrudan bağlantı bayrağında vekil yok
+      ---
+      duration_ms: 2.006674
+      type: 'test'
+      ...
+    # Subtest: adres biçimleri: düz, şemalı, kimlikli, WinHTTP protokol listesi; SOCKS ve bozuk adres yok sayılır
+    ok 2 - adres biçimleri: düz, şemalı, kimlikli, WinHTTP protokol listesi; SOCKS ve bozuk adres yok sayılır
+      ---
+      duration_ms: 0.810156
+      type: 'test'
+      ...
+    # Subtest: yerel adresler her zaman doğrudan; <local>, *.alan, önek ve tam ad kuralları
+    ok 3 - yerel adresler her zaman doğrudan; <local>, *.alan, önek ve tam ad kuralları
+      ---
+      duration_ms: 0.404359
+      type: 'test'
+      ...
+    # Subtest: sıra: program ayarı (elle / kullanma) > ortam değişkeni > Windows > doğrudan
+    ok 4 - sıra: program ayarı (elle / kullanma) > ortam değişkeni > Windows > doğrudan
+      ---
+      duration_ms: 2.733139
+      type: 'test'
+      ...
+    # Subtest: Windows: netsh winhttp ile kurulan makine geneli vekil kayıt defterinden okunur
+    ok 5 - Windows: netsh winhttp ile kurulan makine geneli vekil kayıt defterinden okunur
+      ---
+      duration_ms: 0.413098
+      type: 'test'
+      ...
+    # Subtest: Windows kayıt defteri dakikada bir okunur (her istekte değil)
+    ok 6 - Windows kayıt defteri dakikada bir okunur (her istekte değil)
+      ---
+      duration_ms: 0.529765
+      type: 'test'
+      ...
+    1..6
+ok 3 - Vekil sunucu ayarının çözümü
+  ---
+  duration_ms: 7.984878
+  type: 'suite'
+  ...
+# Subtest: Vekil sunucu üzerinden istek (sahte vekil + TLS tüneli)
+    # Subtest: HTTPS: CONNECT tüneli + TLS; yöntem, yol, gövde ve çoklu başlık geçer; vekil yalnız ana bilgisayar:port görür
+    ok 1 - HTTPS: CONNECT tüneli + TLS; yöntem, yol, gövde ve çoklu başlık geçer; vekil yalnız ana bilgisayar:port görür
+      ---
+      duration_ms: 28.807975
+      type: 'test'
+      ...
+    # Subtest: HTTPS yönlendirme vekil üzerinden izlenir
+    ok 2 - HTTPS yönlendirme vekil üzerinden izlenir
+      ---
+      duration_ms: 20.361248
+      type: 'test'
+      ...
+    # Subtest: HTTP: istek tam adresle vekile gider
+    ok 3 - HTTP: istek tam adresle vekile gider
+      ---
+      duration_ms: 6.057683
+      type: 'test'
+      ...
+    # Subtest: kimliksiz vekil 407 → açık Türkçe ileti (HTTPS ve HTTP)
+    ok 4 - kimliksiz vekil 407 → açık Türkçe ileti (HTTPS ve HTTP)
+      ---
+      duration_ms: 4.78495
+      type: 'test'
+      ...
+    # Subtest: vekil reddederse (403) ve vekile ulaşılamazsa açık ileti
+    ok 5 - vekil reddederse (403) ve vekile ulaşılamazsa açık ileti
+      ---
+      duration_ms: 3.018175
+      type: 'test'
+      ...
+    # Subtest: yerel adres ve bypass listesindeki ad vekile hiç gitmez
+    ok 6 - yerel adres ve bypass listesindeki ad vekile hiç gitmez
+      ---
+      duration_ms: 15.619723
+      type: 'test'
+      ...
+    # Subtest: vekil ayarı yoksa istek doğrudan gider (davranış değişmez)
+    ok 7 - vekil ayarı yoksa istek doğrudan gider (davranış değişmez)
+      ---
+      duration_ms: 2.306654
+      type: 'test'
+      ...
+    # Subtest: iptal sinyali: tünel kurulurken iptal edilen istek AbortError ile düşer
+    ok 8 - iptal sinyali: tünel kurulurken iptal edilen istek AbortError ile düşer
+      ---
+      duration_ms: 0.610773
+      type: 'test'
+      ...
+    1..8
+ok 4 - Vekil sunucu üzerinden istek (sahte vekil + TLS tüneli)
+  ---
+  duration_ms: 108.355225
+  type: 'suite'
+  ...
+1..4
+# tests 21
+# suites 4
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 215.43891
