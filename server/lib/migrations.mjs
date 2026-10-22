@@ -1314,7 +1314,57 @@ export const MIGRATIONS = [
       store.exec(STAFF_SCHEMA_V31);
     },
   },
+  {
+    version: 32,
+    name: "v2.4.4 seriden ayrılmış kâğıt / fiş numaraları (bir kez tarama)",
+    up(store, { now = systemClock } = {}) {
+      // Karar 22.10.2026 (verilmiş kâğıt / fiş numarası bir daha kullanılmaz; routes/invoices.mjs numberFloor). Para tablosu DEĞİL: yalnız bir ayar satırı
+      // yazılır (invoice.numberFloor); faturalar, kilit izi ve mutabakat kapısı değişmez. Eski sürüm (2.4.3) ayarı okumaz. Geri yüklenen eski yedekte de
+      // koşar (company-backups.mjs geri yüklemede göçleri uygular); işaret veri tabanının şema sürümüdür (PRAGMA user_version).
+      store.raw("migration.v32", () => scanPaperFloors(store, { now }));
+    },
+  },
 ];
+
+// 2.4.4 (karar 22.10.2026): 2.4.0–2.4.3'te "Müşteri Fişi Olarak Bırak" ile Müşteri Fişi serisinden numara alıp sonra e-Belge olarak gönderilen belgenin
+// numarası seriden ayrılınca hiçbir yere kaydedilmiyordu (seride duran belgelerin MAX(seq)'i görmez) → güncellemeden sonra ilk bırakmada / kâğıt kayıtta
+// yeniden verilirdi. Bir kezlik tarama: firmanın kâğıt serilerine (Fatura Ayarları → Kâğıt Fatura / Müşteri Fişi ve Serbest Meslek Makbuzu serisi; ayar
+// yoksa FIS / SMM) ait, programın biçimindeki (seri + yıl + 9 hane) numaralardan o seride DURMAYAN (taşınmış) belgelerde kalanlar:
+//   - Kâğıt Fatura No (numberForSend fiş numarasını, alan boşsa, buraya taşır);
+//   - işlem geçmişi "invoice.withdrawn" (alan önceden doluysa numara yalnız orada; 2.4.0'dan beri yazılır) — belge hâlâ varsa ve artık o numarada değilse.
+// Seri + yıl başına en büyük sıra (numarası, o belgenin tarihi) routes/invoices.mjs'in numberFloor kaydına yazılır; kayıt yalnız YÜKSELİR (idempotent:
+// ikinci tarama bir şey değiştirmez). Biçim dışı ("EL-55", eksik hane) ya da başka seriye ait (e-Belge serisi, eski kâğıt serisi) elle yazılmış numara sayılmaz.
+const FLOOR_KEY = "invoice.numberFloor"; // routes/invoices.mjs FLOOR_KEY ile aynı
+const PROGRAM_NUMBER = /^([A-Z0-9]{3})(\d{4})(\d{9})$/;
+export function scanPaperFloors(store, { now = systemClock } = {}) {
+  const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
+  if (!has("invoices") || !has("settings")) return { raised: [] };
+  const settings = parseJson(store.get("SELECT value FROM settings WHERE key = 'invoice.settings'")?.value, {}) || {};
+  const paper = new Set([settings.series?.paper || "FIS", settings.series?.smm || "SMM"]);
+  const best = new Map();
+  const consider = (value, row) => {
+    const match = PROGRAM_NUMBER.exec(String(value || "").trim());
+    if (!match || !paper.has(match[1]) || row.series === match[1]) return; // biçim dışı, başka seri ya da belge o seride duruyor (MAX(seq) sayar)
+    const seq = Number(match[3]);
+    if (!(seq > 0)) return;
+    const key = `${match[1]}${Number(match[2])}`;
+    if (!(best.get(key)?.seq >= seq)) best.set(key, { seq, number: match[0], issueDate: row.issueDate });
+  };
+  for (const row of store.all("SELECT series, number, paper_no AS paperNo, issue_date AS issueDate FROM invoices WHERE paper_no <> ''")) consider(row.paperNo, row);
+  if (has("audit_events")) {
+    const trail = store.all("SELECT a.payload_json AS payload, i.series, i.number, i.issue_date AS issueDate FROM audit_events a JOIN invoices i ON i.id = a.entity_id WHERE a.type = 'invoice.withdrawn'");
+    for (const row of trail) {
+      const number = parseJson(row.payload, {})?.number;
+      if (number && number !== row.number) consider(number, row);
+    }
+  }
+  const floors = parseJson(store.get("SELECT value FROM settings WHERE key = ?", FLOOR_KEY)?.value, {}) || {};
+  const raised = [...best].filter(([key, entry]) => !(Number(floors[key]?.seq) >= entry.seq)).map(([key]) => key);
+  if (!raised.length) return { raised };
+  for (const key of raised) floors[key] = best.get(key);
+  store.run("INSERT INTO settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, NULL) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at", FLOOR_KEY, JSON.stringify(floors), now().toISOString());
+  return { raised };
+}
 
 // 2.4.4 Personel Özlük: tarihler YYYY-AA-GG ('' = yazılmadı); maaş kuruş; fotoğraf JPEG data URL (en çok 120 KB; '' = yok). İşten ayrılış tarihi
 // yazılıysa kart Ayrılanlar'dadır.

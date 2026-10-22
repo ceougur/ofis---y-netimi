@@ -24,8 +24,8 @@ yalnız en büyük ayrılan numara), O1 (olderPending). İleti: "… (belge sonr
 | komsu-numara-tekil | 28 dosya 390/391: tek kırmızı einvoice-edm "Müşteri Fişi olarak bırakılabilir" — eski kodun numara TEKRARINA dayanıyordu; beklenti yeni kurala güncellendi (ders 28: koşuldu, 30/30) |
 | komsu-son (son hâl; iki iş birlikte) | 35 dosya 490/490: numara-tekil 12/12, einvoice-edm, e-Belge/e-SMM/fatura/sıfırlama/şirket komşuları, esmm-ubl, edm-gercek-duzenek, ebelge-uygunluk, platform, lisans izolasyonu, yazım düzeni |
 | e2e-gg244-esmm-gonder / e2e-uiux-b-243 / e2e-senaryo-215 (flock) | 33/33 · 51/51 · 73/73 (bırakma ekrandan; senaryo-215 CI dışı, elle koşuldu) |
-| eski-243-olcum.txt (v2.4.3 gerçek kodu → güncel) | 2.4.3'te tekrar verilmiş FIS…001 olduğu gibi kalır; güncellemeden ÖNCE ayrılmış en büyük numara (FIS…002) kayıtlı olmadığı için güncellemeden sonra ilk bırakmada BİR KEZ daha verilir; sonra kural işler; bütünlük tamam. Göç yok (karar). |
+| eski-243-olcum.txt (v2.4.3 gerçek kodu → güncel) | 2.4.3'te tekrar verilmiş FIS…001 olduğu gibi kalır; güncellemeden ÖNCE ayrılmış en büyük numara (FIS…002) kayıtlı olmadığı için güncellemeden sonra ilk bırakmada BİR KEZ daha verilir; sonra kural işler; bütünlük tamam. (Ölçüm anı: göç yok. Sonradan karar: v32 bir kezlik tarama bu sınırı kapattı — 244-numara-tabani.) |
 | kahin-ebelge-yeni / -taban-7502485 | 20 senaryo: fark 0, ihlal 1 (I23 hedefli-244-k37-ux15: ön hesap "son belge" ↔ kayıt "son gönderilen belge" iletisi) — tabanda da aynı, bu değişiklikten değil |
 
-**Bilinen sınırlar:** (1) eski veri (yukarıda); (2) Düzenle'de yalnız en büyük ayrılan numara komşu sayılır — ortadaki ayrılmış numaralar silinmiş belge
+**Bilinen sınırlar:** (1) eski veri — v32 taramasıyla kapandı (244-numara-tabani); (2) Düzenle'de yalnız en büyük ayrılan numara komşu sayılır — ortadaki ayrılmış numaralar silinmiş belge
 gibi boşluktur; (3) silinen (iz bırakmayan) son belgenin numarası 2.0.17 tasarımıyla yeniden verilir — bu karar onu değiştirmez.
