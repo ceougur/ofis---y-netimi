@@ -1,0 +1,49 @@
+# gg243 D2 yarış denemesi: 10 deneme, SendInvoice gecikmesi 150 ms, dosya test/gg243-dar-kontrol-gonderim.test.mjs, çalışma klasörü /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/d2/d2-eski-163dd5d
+deneme 1/10: çıkış 1, geciktirilen SendInvoice 12 → ön koşul OLUŞTU; D2 (all) KALDI, D2 (ids) KALDI
+    error: 'ön koşul: bir istek öbürünün gönderdiği belgeye denk geldi: ["OK","OK","OK","OK","OK","OK","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending"]'
+    error: 'ön koşul: bir istek öbürünün gönderdiği belgeye denk geldi: ["OK","OK","OK","OK","OK","OK","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending"]'
+    error: '2 subtests failed'
+deneme 2/10: çıkış 1, geciktirilen SendInvoice 12 → ön koşul OLUŞTU; D2 (all) KALDI, D2 (ids) KALDI
+    error: 'ön koşul: bir istek öbürünün gönderdiği belgeye denk geldi: ["OK","OK","OK","OK","OK","OK","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending"]'
+    error: 'ön koşul: bir istek öbürünün gönderdiği belgeye denk geldi: ["OK","OK","OK","OK","OK","OK","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending"]'
+    error: '2 subtests failed'
+deneme 3/10: çıkış 1, geciktirilen SendInvoice 12 → ön koşul OLUŞTU; D2 (all) KALDI, D2 (ids) KALDI
+    error: 'ön koşul: bir istek öbürünün gönderdiği belgeye denk geldi: ["OK","OK","OK","OK","OK","OK","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending"]'
+    error: 'ön koşul: bir istek öbürünün gönderdiği belgeye denk geldi: ["OK","OK","OK","OK","OK","OK","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending"]'
+    error: '2 subtests failed'
+deneme 4/10: çıkış 1, geciktirilen SendInvoice 12 → ön koşul OLUŞTU; D2 (all) KALDI, D2 (ids) KALDI
+    error: 'ön koşul: bir istek öbürünün gönderdiği belgeye denk geldi: ["OK","OK","OK","OK","OK","OK","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending"]'
+    error: 'ön koşul: bir istek öbürünün gönderdiği belgeye denk geldi: ["OK","OK","OK","OK","OK","OK","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending"]'
+    error: '2 subtests failed'
+deneme 5/10: çıkış 1, geciktirilen SendInvoice 12 → ön koşul OLUŞTU; D2 (all) KALDI, D2 (ids) KALDI
+    error: 'ön koşul: bir istek öbürünün gönderdiği belgeye denk geldi: ["OK","OK","OK","OK","OK","OK","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending"]'
+    error: 'ön koşul: bir istek öbürünün gönderdiği belgeye denk geldi: ["OK","OK","OK","OK","OK","OK","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending"]'
+    error: '2 subtests failed'
+deneme 6/10: çıkış 1, geciktirilen SendInvoice 12 → ön koşul OLUŞTU; D2 (all) KALDI, D2 (ids) KALDI
+    error: 'ön koşul: bir istek öbürünün gönderdiği belgeye denk geldi: ["OK","OK","OK","OK","OK","OK","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending"]'
+    error: 'ön koşul: bir istek öbürünün gönderdiği belgeye denk geldi: ["OK","OK","OK","OK","OK","OK","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending"]'
+    error: '2 subtests failed'
+deneme 7/10: çıkış 1, geciktirilen SendInvoice 12 → ön koşul OLUŞTU; D2 (all) KALDI, D2 (ids) KALDI
+    error: 'ön koşul: bir istek öbürünün gönderdiği belgeye denk geldi: ["OK","OK","OK","OK","OK","OK","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending"]'
+    error: 'ön koşul: bir istek öbürünün gönderdiği belgeye denk geldi: ["OK","OK","OK","OK","OK","OK","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending"]'
+    error: '2 subtests failed'
+deneme 8/10: çıkış 1, geciktirilen SendInvoice 12 → ön koşul OLUŞTU; D2 (all) KALDI, D2 (ids) KALDI
+    error: 'ön koşul: bir istek öbürünün gönderdiği belgeye denk geldi: ["OK","OK","OK","OK","OK","OK","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending"]'
+    error: 'ön koşul: bir istek öbürünün gönderdiği belgeye denk geldi: ["OK","OK","OK","OK","OK","OK","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending"]'
+    error: '2 subtests failed'
+deneme 9/10: çıkış 1, geciktirilen SendInvoice 12 → ön koşul OLUŞTU; D2 (all) KALDI, D2 (ids) KALDI
+    error: 'ön koşul: bir istek öbürünün gönderdiği belgeye denk geldi: ["OK","OK","OK","OK","OK","OK","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending"]'
+    error: 'ön koşul: bir istek öbürünün gönderdiği belgeye denk geldi: ["OK","OK","OK","OK","OK","OK","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending"]'
+    error: '2 subtests failed'
+deneme 10/10: çıkış 1, geciktirilen SendInvoice 12 → ön koşul OLUŞTU; D2 (all) KALDI, D2 (ids) KALDI
+    error: 'ön koşul: bir istek öbürünün gönderdiği belgeye denk geldi: ["OK","OK","OK","OK","OK","OK","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending"]'
+    error: 'ön koşul: bir istek öbürünün gönderdiği belgeye denk geldi: ["OK","OK","OK","OK","OK","OK","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending","einvoice-sending"]'
+    error: '2 subtests failed'
+# ön koşul oluşan deneme 10/10
+# geçersiz deneme 0
+# tests 20
+# pass 0
+# fail 20
+# cancelled 0
+# skipped 0
+# todo 0

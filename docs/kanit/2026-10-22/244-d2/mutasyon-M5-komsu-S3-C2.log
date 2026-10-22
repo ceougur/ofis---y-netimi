@@ -1,0 +1,76 @@
+TAP version 13
+# Subtest: Dar kontrol turu 3 bulguları (sahte EDM; ağa çıkmaz)
+    # Subtest: C2: gönderim sürerken iptal reddedilir (gönderim ↔ iptal tek kilit)
+    ok 1 - C2: gönderim sürerken iptal reddedilir (gönderim ↔ iptal tek kilit)
+      ---
+      duration_ms: 193.867057
+      type: 'test'
+      ...
+    1..1
+ok 1 - Dar kontrol turu 3 bulguları (sahte EDM; ağa çıkmaz)
+  ---
+  duration_ms: 661.099276
+  type: 'suite'
+  ...
+# Subtest: gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel, eşzamanlı gönderim, canlıda test serisi
+    # Subtest: S3 (ids): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye 'başka oturumda gönderildi' (hata değil)
+    not ok 1 - S3 (ids): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye 'başka oturumda gönderildi' (hata değil)
+      ---
+      duration_ms: 3472.586216
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/d2/d2-mutasyon/test/gg243-gonderim.test.mjs:227:5'
+      failureType: 'testCodeFailure'
+      error: 'ön koşul: ikinci istek birincinin tuttuğu belgeye denk geldi ({"results":[{"id":"invoice-afff77e4-4821-44bb-928c-16b4c6a3301c","ok":false,"code":"einvoice-sending","busy":true,"message":"Bu belge şu anda başka oturumda gönderiliyor; gönderim bitince listeyi yenileyin."},{"id":"invoice-700ec7dc-0e46-42d7-8fe3-253127b19c30","ok":true,"number":"TEA2026000000002",)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        s3 (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/d2/d2-mutasyon/test/gg243-gonderim.test.mjs:250:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/d2/d2-mutasyon/test/gg243-gonderim.test.mjs:228:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 5)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: S3 (all): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye 'başka oturumda gönderildi' (hata değil)
+    not ok 2 - S3 (all): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye 'başka oturumda gönderildi' (hata değil)
+      ---
+      duration_ms: 3146.032058
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/d2/d2-mutasyon/test/gg243-gonderim.test.mjs:227:5'
+      failureType: 'testCodeFailure'
+      error: 'ön koşul: ikinci istek birincinin tuttuğu belgeye denk geldi ({"results":[{"id":"invoice-aaaa6d8a-3675-4531-ba15-8fcfc8be1940","ok":false,"code":"einvoice-sending","busy":true,"message":"Bu belge şu anda başka oturumda gönderiliyor; gönderim bitince listeyi yenileyin."},{"id":"invoice-74066e1a-354d-4066-9d4a-a4c96ac6a4c7","ok":true,"number":"TEA2026000000002",)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        s3 (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/d2/d2-mutasyon/test/gg243-gonderim.test.mjs:250:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/d2/d2-mutasyon/test/gg243-gonderim.test.mjs:228:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel, eşzamanlı gönderim, canlıda test serisi
+  ---
+  duration_ms: 6659.213769
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/d2/d2-mutasyon/test/gg243-gonderim.test.mjs:73:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 3
+# suites 2
+# pass 1
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7001.995479

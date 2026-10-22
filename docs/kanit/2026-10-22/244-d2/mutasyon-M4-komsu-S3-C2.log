@@ -1,0 +1,107 @@
+TAP version 13
+# Subtest: Dar kontrol turu 3 bulguları (sahte EDM; ağa çıkmaz)
+    # Subtest: C2: gönderim sürerken iptal reddedilir (gönderim ↔ iptal tek kilit)
+    not ok 1 - C2: gönderim sürerken iptal reddedilir (gönderim ↔ iptal tek kilit)
+      ---
+      duration_ms: 199.461101
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/d2/d2-mutasyon/test/ebelge-240-kontrol3.test.mjs:244:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"id":"invoice-db91e04c-7a1e-4df0-9a6f-108da3e36e29","kind":"sale","kindLabel":"Satış Faturası","scenario":"service_sale","scenarioLabel":"Hizmet Satışı","status":"cancelled","statusLabel":"İptal Edildi","number":"TEA2026000000001","displayNo":"TEA2026000000001","internalNumber":false,"ettn":"f4b5e2d9-a08d-4a63-9b40-2839de61cd7f","issueDate":"2026-10-22","issueTime":"04:17","accountId":"account-0aeefa8a-2eda-4039-b08c-dea7f06ebac4","accountName":"Ayşe Demir","accountRef":"2","accountPhone":"","profile":"EARSIVFATURA","profileLabel":"e-Arşiv Fatura","typeCode":"SATIS","currency":"TRY","rate":1,"netTotal":1000,"vatTotal":200,"withheldTotal":0,"stoppageTotal":0,"payableTotal":1200,"tryNet":1000,"tryVat":200,"tryPayable":1200,"dueDate":"2026-10-22","planId":"","originalId":"","originalNumber":"","originalDate":"","note":"","eStatus":"none","eStatusLabel":"Gönderilmedi","eUnsent":false,"eTestLive":false,"eTest":true,"actorName":"Ofis yöneticisi","createdAt":"2026-10-22T04:17:31.109Z","payState":"cancelled","payStateLabel":"İptal","paid":0,"open":0,"closers":[],"party":{"id":"account-0aeefa8a-2eda-4039-b08c-dea7f06ebac4","name":"Ayşe Demir","partyKind":"person","firstName":"Ayşe","familyName":"Demir","taxNo":"10000000078","taxOffice":"","mersisNo":"","tradeRegistry":"","address":"Karşıyaka 9","district":"Karşıyaka","city":"İzmir","postalCode":"","country":"Türkiye","phone":"","email":"ayse@example.com","website":"","iban":"","eInvoice":false,"eAlias":""},"seller":{"name":"Deneme Ofis Ltd.","partyKind":"company","firstName":"","familyName":"","taxNo":"1234567890","taxOffice":"Çankaya","mersisNo":"","tradeRegistry":"","address":"Atatürk Blv. 1","district":"Çankaya","city":"Ankara","postalCode":"","country":"Türkiye","phone":"","email":"bilgi@deneme.com.tr","website":"","banks":[]},"pricesIncludeVat":false,"discountRate":0,"stoppageRate":0,"baseTotal":1000,"discountTotal":0,"baseNetTotal":1000,"discountNetTotal":0,"goodsNet":0,"serviceNet":1000,"grossTotal":1200,"tryWithheld":0,"tryStoppage":0,"gl":[{"account":"600","net":100000}],"orderNo":"","orderDate":"","despatchNo":"","despatchDate":"","paperNo":"","returnRef":"","payment":{"cash":[],"cheques":[],"endorse":[],"mode":"open","installments":null,"rest":1200},"eMessage":"","eAt":"","eAdapter":"","cancelledAt":"2026-10-22T04:17:31.273Z","cancelReason":"yarış","amountInWords":"Yalnız Bin İki Yüz Türk Lirası","byRate":[{"rate":20,"net":1000,"vat":200,"withheld":0}],"lines":[{"id":"iline-b252d521-f0c2-4133-b2d9-6f89b7c469f3","invoiceId":"invoice-db91e04c-7a1e-4df0-9a6f-108da3e36e29","seq":1,"itemId":"","goods":false,"code":"","name":"Danışmanlık","description":"","unit":"Adet","qty":1,"unitPrice":1000,"discountRate":0,"base":1000,"discount":0,"net":1000,"vatRate":20,"vat":200,"withholdingCode":"","withholdingNum":0,"withholdingDen":0,"withheld":0,"exemptionCode":"","gross":1200,"payable":1200,"glAccount":"600","expenseCode":"","unitCost":0,"originLineId":"","moveId":"","serialNo":"","lotNo":"","returned":0,"expenseLabel":""}],"returnable":[{"id":"iline-b252d521-f0c2-4133-b2d9-6f89b7c469f3","left":1}],"returns":[],"cheques":[],"plan":null,"payments":[],"posCash":false,"canManage":true,"canEdit":false,"canModify":false,"modifyBlock":"","canIssue":false,"canDelete":true,"deleteBlock":"","canCancel":false,"canLocalCancel":false,"cancelNotice":"","cancelBlock":"","canReturn":false,"returnBlock":"","repeat":null,"canRepeat":false,"canSend":false,"canWithdraw":false,"sendBlock":"","canRefresh":false,"canDraft":false,"draftStale":false,"canOfficial":false,"edocEnabled":true,"notices":[]}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/d2/d2-mutasyon/test/ebelge-240-kontrol3.test.mjs:255:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 9)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - Dar kontrol turu 3 bulguları (sahte EDM; ağa çıkmaz)
+  ---
+  duration_ms: 623.86516
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/d2/d2-mutasyon/test/ebelge-240-kontrol3.test.mjs:32:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel, eşzamanlı gönderim, canlıda test serisi
+    # Subtest: S3 (ids): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye 'başka oturumda gönderildi' (hata değil)
+    not ok 1 - S3 (ids): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye 'başka oturumda gönderildi' (hata değil)
+      ---
+      duration_ms: 3908.540501
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/d2/d2-mutasyon/test/gg243-gonderim.test.mjs:227:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        EDM'ye toplam 6 gönderim
+        
+        12 !== 6
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 6
+      actual: 12
+      operator: 'strictEqual'
+      stack: |-
+        s3 (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/d2/d2-mutasyon/test/gg243-gonderim.test.mjs:244:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/d2/d2-mutasyon/test/gg243-gonderim.test.mjs:228:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 5)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: S3 (all): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye 'başka oturumda gönderildi' (hata değil)
+    not ok 2 - S3 (all): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye 'başka oturumda gönderildi' (hata değil)
+      ---
+      duration_ms: 3662.455107
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/d2/d2-mutasyon/test/gg243-gonderim.test.mjs:227:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        EDM'ye toplam 6 gönderim
+        
+        12 !== 6
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 6
+      actual: 12
+      operator: 'strictEqual'
+      stack: |-
+        s3 (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/d2/d2-mutasyon/test/gg243-gonderim.test.mjs:244:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/d2/d2-mutasyon/test/gg243-gonderim.test.mjs:228:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel, eşzamanlı gönderim, canlıda test serisi
+  ---
+  duration_ms: 7621.382733
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/d2/d2-mutasyon/test/gg243-gonderim.test.mjs:73:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 3
+# suites 2
+# pass 0
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7938.676518

@@ -1,0 +1,38 @@
+{
+  "ad": "244-d2/mutasyon-M4-belge-kilidi-yok",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-name-pattern ^(D2 \\(|Ek 7 ) test/gg243-dar-kontrol-gonderim.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:22:31.081Z",
+  "sure_sn": 2.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 2,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği › Ek 7 (kâhin kucuk-esz-gonderiliyor-hata): iki oturum aynı anda Tümünü Gönder — öbür oturumda gönderilen belge ikinci yanıtta hata değil",
+      "konum": "test/gg243-dar-kontrol-gonderim.test.mjs:595:3",
+      "hata": "hata değil: {\"id\":\"invoice-c08af471-ec71-4db7-be94-3b67fd186f3c\",\"ok\":false,\"code\":\"integrator-rejected\",\"message\":\"EDM isteği reddetti: UUID=5b774707-bad2-48de-94cf-2cc410c7c298 ID=TEA2026000000001 için Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız (EDM hata kodu 11048) Bu numara EDM'de daha önce kullanılmış: test hesabı ortaktır, başka bir firma aynı numarayı kullanmış olabilir. Bu belgeyi İptal Et ile iptal edip yeniden kesin; yeni belge bir sonraki numarayı alır (gerekirse Entegratör Ayarları → Otomatik Seriler'den sıradaki test numarasını ileri alın).\"} · false !== true (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/d2/docs/kanit/2026-10-22/244-d2/mutasyon-M4-belge-kilidi-yok.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/d2/d2-mutasyon",
+  "ham_cikti_sha256": "9ed25e77f009f73ddf31b20b73de80577d30f3b871f9dff8bf8de631165dfb6e",
+  "ham_cikti_bayt": 3029
+}
