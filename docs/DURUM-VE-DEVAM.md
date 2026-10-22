@@ -4,37 +4,40 @@
 Önceki oturum: 2.4.3 YAYIMLANDI (v2.4.3, master 163dd5d, PR ceougur/ofis---y-netimi#33; site kılavuzu ceougur/destekofis#19). Kod o günden beri DEĞİŞMEDİ;
 yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
 
-### 00. 2.4.4 SÜRÜYOR — DEVAM NOTU (22.10.2026 ~12:30 UTC; sıkıştırmadan sonra yazıldı — ÖNCE BUNU OKU)
-- Durum tablosu: `docs/2.4.4-IS-LISTESI.md` (biten üstü çizili + "Teslim notları" — her maddenin sınırı ve KÂHİN KURALI orada). Kararlar ve kullanıcı soruları: CLAUDE.md
-  Açık iş (22.10 satırları; yanıt bekleyen öneri yok — e-SMM kaşe/logo cümlesi kullanıcı "ekle" dedi, aday 5'te). Ders 19 notu: Bash aracında `set -e` ETKİSİZ → `&&` / `|| exit 1`.
+### 00. 2.4.4 SÜRÜYOR — DEVAM NOTU (22.10.2026 14:40 UTC; kullanıcının /compact talimatından ÖNCE yazıldı — ÖNCE BUNU OKU)
+- KAYNAKLAR: durum tablosu `docs/2.4.4-IS-LISTESI.md` (biten üstü çizili + "Teslim notları": her maddenin sınırı, KÂHİN KURALI, koşu sonuçları); kararlar ve kullanıcı
+  soruları CLAUDE.md Açık iş (22.10 satırları; YANIT BEKLEYEN SORU YOK). Ajan kimlikleri ve görevleri: <not defteri>/devam-ajanlar.md. Not defteri:
+  /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad (ajan-ortak.md = ajan kuralları; aday-kos.sh / aday-kos-devam.sh = aday kapısı). Ders 19 notu:
+  Bash aracında `set -e` ETKİSİZ → `&&` / `|| exit 1`. Ders 38 YENİ (kırmızının nedeni iletiden okunur).
 - ÇALIŞMA DÜZENİ: iş grubu = /home/user/wt/<ad> worktree (dal is/<ad>); ajan commit eder; ana oturum BİRLEŞTİRME ADAYINDA (/home/user/wt/aday<n>, dal aday<n>) `--no-ff`
   birleştirir → kapı `<not defteri>/aday-kos.sh <worktree> <etiket>` (tam npm test, geçmezse durur; sonra ci.yml'nin 64 e2e'si flock ile; arka plan görevi 2 sa'te kesilir →
-  `<not defteri>/aday-kos-devam.sh <worktree> <etiket>` kanıtı olmayanları sürdürür, GEÇTİ'yi atlar, BAŞARISIZ'ı yeniden koşmaz) → yeşilse çalışma dalına `git merge --no-ff
-  aday<n>` + push + `kanit.mjs ci <sha> --bekle`. Liste çakışmaları `<not defteri>/liste-birlesim.py <dosyalar>`; kod çakışması ELLE ve anlamca. Not defteri:
-  /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad (ajan-ortak.md = ajan kuralları; devam-ajanlar.md = ajan kimlikleri; kapsayıcıyla gider).
-- ÇALIŞMA DALINDA (yeşil CI): madde 1–4, 6, 7, 9, 10, 12-UX16, 13, 14, 19, 20, 21, 23, 25, 27, 28, 29 (CI #849–#857). Çalışma dalında ama CI #858 KIRMIZI (senaryo-222): 5, 16,
-  18, 26, 23 eki → düzeltmesi 7c adayda.
-- ADAY 4 ÇALIŞMA DALINDA (22.10 ~13:00): 2fb1d33 = birleştir aday 4 (4e19947; kapı npm test 3094/3094 + 64/64 e2e, kanıt aday-2b71fea-*); push edildi; CI #859
-  BÜTÜN İŞLER YEŞİL (Linux/Windows × Node 22/24, e2e, Doğrulama Kapısı, paket) → iş listesinde 5, 5a–5c, 7b, 7c, 8, 11, 12 UX15, 15, 16, 17, 22, 23 eki, 26 ÇİZİLDİ;
-  18 çizilmedi (kullanıcının Windows + Edge elle kabulü — GÖZDEN GEÇİRME 2).
-- ADAY 5 = /home/user/wt/aday5 (dal aday5) 5ad1277 = aday 4 + 31a F1/F5/F4, F2/F3/F6, 24 BuildingName/deneyler, kâhin e-Belge/2 + cari/tutar, I23 (c1598c7), CI kâhin
-  adımları (7a2141b), e-SMM kaşe/logo cümlesi (d4c3b20, kullanıcı "ekle"), is/esmm-fis (5599e07: kâğıt/fiş numarası tekil, VKN'li düzenleyen PartyName, göç v32
-  tarama; çakışma chronologyProblem'de anlamca birleşti, dar test 116/116). Kâhin adımları 5ad1277'de: defter 147/147, cari 1364/1364, tutar 3472/3472, e-Belge model
-  82/82, mutasyon 36/36, senaryo 20/20. KAPI aday-kos.sh aday5 5ad1277 koşuyor (~13:05; 2 sa'te kesilirse aday-kos-devam.sh). Yeşilse çalışma dalına birleştir + push + CI.
-- ADAY 6 = /home/user/wt/aday6 (dal aday6) e070d42 = aday 5 + is/edm-eszamanli (24b düzeneği, N4 tek uçuş giriş 51c3074, gerçek koşu 1 kanıtı). KAPI aday-kos.sh aday6
-  e070d42 koşuyor (~13:55; aday 5 kapısıyla e2e'ler flock'la sırayla). Gerçek EDM koşusu 2 (soğuk, 30 belge, Login 1 beklenir) /home/user/wt/edm-eszamanli'de koşuyor
-  (kanıt gercek-2/; bitince orada commit + aday 6'ya birleştir). Sıra: aday 5 yeşil → çalışma dalı + CI; aday 6 yeşil → çalışma dalı + CI.
-- ADAY 5 ÇALIŞMA DALINDA (22.10 14:25): 0c1ae0d = birleştir aday 5 (51f1835; kapı npm test 3132/3132 + 64/64 e2e + 6 kâhin); CI bekleniyor. Gerçek EDM koşusu 2: 30/30
-  kabul, Login 1 (is/edm-eszamanli 9c10448; aday 6'ya kapıdan sonra kanıt olarak birleştirilir).
-- MADDE 30 BAŞLADI (14:30, taban aday6 e070d42): ajanlar — CI dışı e2e (13 betik + betiksiz senaryolar; is/m30-e2e) ve göç/yedek tatbikatı/zincirleme göç + arıza (v2.4.3 gerçek
-  koduyla veri; is/m30-goc). Ana oturum: kullanıcı gözüyle iş akışı (iki şirket, ekran görüntüsü) aday 6 kapısından sonra. Ajan kimlikleri not defterinde devam-ajanlar.md.
-- SONRA: aday 4 ve aday 5 CI yeşilince iş listesinde 5, 5a–5c, 7b, 7c, 8, 11, 12 UX15, 15, 16, 17, 18, 22, 23 eki, 24, 26 çizilir → 30 (tam test + BÜTÜN e2e, CI dışı dahil;
-  yedek tatbikatı; v2.4.3 → 2.4.4 göçü; ana oturumun kullanıcı gözüyle iş akışı) → 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol (11017, F2/F3, kâğıt
-  numarası + tarama, UBL-TR, I23), 31f uzman UI/UX → 32 CI → 33 Uzun Doğrulama → 34–36 paket/teslim/PR. Sürüm notu cümleleri: UX18/F3 (karşılıksız evrak faturayı açar) ve
-  "test ortamındaki e-SMM görüntüsü canlıdan farklı olabilir" (kılavuza da).
-- MADDE 24 GERÇEK EDM: kimlik YALNIZ ortam değişkeniyle o komutta (EDM test hesabı sohbette — dosyaya YAZILMAZ; kaybolduysa kullanıcıdan istenir; giriş başarısızsa YENİDEN
-  DENENMEZ, kullanıcıya sorulur — hesap kilitlenebilir). Gönderilen belgelerin listesi docs/kanit/2026-10-22/244-edm/OZET.md (kullanıcıya verildi).
-- 30 dk RAPOR işi: CronCreate 615db56b ("7,37 * * * *"; kapsayıcı yeniden başlarsa silinir → yeniden kur; 2.4.4 bitince silinir).
+  `<not defteri>/aday-kos-devam.sh <worktree> <etiket>` kanıtı olmayanları sürdürür, GEÇTİ'yi atlar, BAŞARISIZ'ı yeniden koşmaz; bilinen nedenli kırmızının kanıtı
+  "-kirmizi-<neden>" diye yeniden adlandırılıp düzeltmeden sonra yeniden koşulur) → kanıt commit (aday dalında) → çalışma dalına `git merge --no-ff aday<n>` + push +
+  `node tools/kanit.mjs ci <sha> --bekle 120` (arka planda). Kâhin adımları (kahin-defter/cari/tutar/ebelge-model/mutasyon/senaryo) kapı betiğinde YOK → adayda elle kanit kos.
+- ÇALIŞMA DALI (claude/youthful-euler-fl8ks4) kod durumu: aday 4 = 2fb1d33 (CI #859 BÜTÜN İŞLER YEŞİL); aday 5 = 0c1ae0d (kapı npm test 3132/3132 + 64/64 e2e + 6 kâhin
+  yeşil) → CI #860 SÜRÜYOR (arka plan görevi `kanit.mjs ci 0c1ae0d --bekle 120`). #860 YEŞİLSE iş listesinde 24 (gerçek EDM uçtan uca: gercek-5 55/55 + düzeltmeler + kılavuz
+  + açma) çizilir; 31a "son koşu" son adayın CI'sinde (kâhinler CI'da). KIRMIZIYSA: başarısız testin adı kısa günlükte, kök neden (ders 6/20/38).
+- ADAY 6 = /home/user/wt/aday6 (dal aday6) e070d42 = aday 5 (5ad1277) + is/edm-eszamanli b4f8709 (24b düzeneği tools/edm-gercek.mjs --eszamanli; N4 tek uçuş EDM girişi
+  51c3074; gerçek koşu 1 kanıtı). KAPI SÜRÜYOR: `aday-kos.sh /home/user/wt/aday6 e070d42` (~14:08 UTC başladı; npm test sürüyor; 2 sa sınırında ~16:08 UTC kesilirse
+  `aday-kos-devam.sh /home/user/wt/aday6 e070d42`). YEŞİLSE: aday6'da kanıt commit → `git merge --no-ff is/edm-eszamanli` (yalnız kanıt: 9c10448 gerçek koşu 2) → kâhin
+  adımları elle (değişen dosya yalnız edm.mjs/araçlar; yine de koşulur) → çalışma dalına birleştir + push + CI → CI yeşilse 24b çizilir.
+- 24b GERÇEK EDM (kullanıcı isteği, tamam): koşu 1 (16:41 TR) 19/20 kabul, N4 bulundu; koşu 2 (17:07 TR, düzeltmeli) 136/136, 30/30 kabul (TES2026475826020–049), Login 1;
+  kullanıcı portalda gördü (ekran 17:12 TR); OZET.md kullanıcıya verildi. Test şablonunda VKN'li düzenleyen unvanı yok (UBL'de PartyName VAR — doğrulandı) → BİLİNEN SINIR.
+- MADDE 30 SÜRÜYOR (taban aday6 e070d42; ajanlar KOD DEĞİŞTİRMEZ, ürün bulgusunu raporlar): (a) CI dışı e2e — ajan a570ddc1eeb09d60d, /home/user/wt/m30-e2e (is/m30-e2e),
+  13 betik (test:senaryo, -rapor, -taslak, 210–218, whatsapp) + betiksiz senaryolar; eski beklentiyi kararla düzeltir. (b) göç + yedek tatbikatı + zincirleme göç + arıza —
+  ajan ae9ec21f91121d745 (xhigh), /home/user/wt/m30-goc (is/m30-goc), veri v2.4.3 gerçek koduyla. RAPOR GELİNCE: özet kanıtı denetle (ders 16), test düzeltmelerini sonraki
+  adaya (aday 7 = çalışma dalı + is/m30-e2e + is/m30-goc araçları) al, ürün bulgularını yeniden üret ve karar ver. (c) ANA OTURUM: kullanıcı gözüyle günlük iş akışı (kişi →
+  cari → fatura/e-Belge → tahsilat → kasa/banka → rapor, iki şirket, ekran görüntüsü) aday 6 kapısından SONRA.
+- SONRA: 31 bağımsız tur (31b mali müşavir, 31c yargıç, 31d eleştirmen, 31f uzman UI/UX aynı anda; ajanlar kod değiştirmez) → bulgu düzeltmeleri + 31e dar kontrol (para
+  çekirdeği: 5, 5a, 15, 17, 22, 26 + 11017, F2/F3, kâğıt numarası + v32, UBL-TR, I23, EDM tek uçuş giriş) → 32 CI → 33 Uzun Doğrulama (GitHub) ∥ 34 imzalı paket (Wine kur) →
+  35 teslim (5 dosya ayrı + arşiv zip; DENENEN/DENENMEYEN/BİLİNEN SINIRLAR) → 36 PR + kullanıcı (madde 18 Windows + Edge elle kabulü, "birleştir", yayın). Sürüm notu
+  cümleleri: UX18/F3 ("karşılıksız dönen evrakla ödenmiş görünen faturalar Açık görünür; cari bakiye değişmez"), e-SMM test görüntüsü canlıdan farklı olabilir (kılavuzda var).
+- ZAMAN ÇİZELGESİ (kullanıcıya verildi 22.10 17:35 TR; paralel işler tek süre): F1 ~19:45 (aday 6 kapısı, aday 5 CI, madde 30 ajanları) · F2 ~21:15 (aday 6 → dal + CI ∥ iş akışı)
+  · F3 ~23:15 (madde 30 düzeltmeleri + aday kapısı) · F4 ~02:15 (31 dört ajan) · F5 ~05:15 (31 düzeltmeleri + 31e + kapı + 32) · F6 ~10:15 (33 Uzun Doğrulama ∥ 34 paket) ·
+  F7 ~11:30 (inceleme + 35 teslim) · F8 kullanıcı. Toplam ~18 sa (bulgusuz ~14 sa).
+- MADDE 18: CI yeşil; kullanıcının Windows + Edge elle kabulü bekleniyor (adımlar iş listesinde; teslimde kurulumla). Madde 24/24b gerçek EDM: kimlik YALNIZ ortam değişkeniyle
+  o komutta (EDM test hesabı sohbette — dosyaya YAZILMAZ; kaybolduysa kullanıcıdan istenir; giriş başarısızsa YENİDEN DENENMEZ).
+- 30 dk RAPOR işi: CronCreate 615db56b ("7,37 * * * *"; oturum içi; kapsayıcı yeniden başlarsa yeniden kur; 2.4.4 bitince silinir).
 
 ### 0. İlk 10 dakika
 1. `CLAUDE.md` — anayasa + kurallar (oturum başında kendiliğinden yüklenir). Bölüm yerleri:
