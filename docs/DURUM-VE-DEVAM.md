@@ -17,6 +17,11 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
 - ÇALIŞMA DALI (claude/youthful-euler-fl8ks4) kod durumu: aday 4 = 2fb1d33 (CI #859 BÜTÜN İŞLER YEŞİL); aday 5 = 0c1ae0d (kapı npm test 3132/3132 + 64/64 e2e + 6 kâhin
   yeşil) → CI #860 BÜTÜN İŞLER YEŞİL (22.10 ~15:35 UTC okundu; madde 24 çizildi). #860 YEŞİLSE iş listesinde 24 (gerçek EDM uçtan uca: gercek-5 55/55 + düzeltmeler + kılavuz
   + açma) çizilir; 31a "son koşu" son adayın CI'sinde (kâhinler CI'da). KIRMIZIYSA: başarısız testin adı kısa günlükte, kök neden (ders 6/20/38).
+- GÜNCEL (22.10 ~17:20 UTC): ADAY 6 ÇALIŞMA DALINDA — 9f64a1f (aday6 e579b28: kapı npm test 3150/3150 + 64/64 e2e + 6 kâhin yeşil + gerçek EDM koşu 2/3 + gercek-6
+  kanıtı) + 158d9c0 (gezinti kanıtı); CI bekleme arka planda (`kanit ci 158d9c0 --bekle 110`; yeşilse 24b çizilir). MADDE 30 ajanları BİTTİ (m30-e2e 51bae84, m30-goc
+  b2949f2; B1/B2 kullanıcı kararı Açık iş'te). SÜRENLER: 30a (is/b1-kalan, high), 30b (is/b2-uyari, high), 30d (is/gezinti-g, medium). Araç düzeltmesi is/kanit-alt
+  cf323d9. SONRAKİ: ADAY 7 = çalışma dalı + is/m30-e2e + is/m30-goc + is/kanit-alt + is/b1-kalan + is/b2-uyari + is/gezinti-g → kapı (aday-kos.sh) + kâhinler →
+  çalışma dalı + CI → 31 (31b/31c/31d/31f aynı anda, ajanlar kod değiştirmez) → 31e dar kontrol (para çekirdeği + 30a) → 32 → 33 ∥ 34 → 35 → 36.
 - ADAY 6 = /home/user/wt/aday6 (dal aday6) e070d42 = aday 5 (5ad1277) + is/edm-eszamanli b4f8709 (24b düzeneği tools/edm-gercek.mjs --eszamanli; N4 tek uçuş EDM girişi
   51c3074; gerçek koşu 1 kanıtı). KAPI SÜRÜYOR: `aday-kos.sh /home/user/wt/aday6 e070d42` (~14:08 UTC başladı; npm test sürüyor; 2 sa sınırında ~16:08 UTC kesilirse
   `aday-kos-devam.sh /home/user/wt/aday6 e070d42`). YEŞİLSE: aday6'da kanıt commit → `git merge --no-ff is/edm-eszamanli` (yalnız kanıt: 9c10448 gerçek koşu 2) → kâhin
