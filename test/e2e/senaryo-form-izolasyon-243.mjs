@@ -272,6 +272,12 @@ try {
   });
   await part("Bölüm B", async () => {
     console.log("\n■ B Bildirimler: yığılma (A6), süre (B5 / A11), fare üstünde (C8)");
+    // 22.10.2026 (2.4.4 madde 7b) B4'ün ara sıra kırmızısının KÖK NEDENİ (kayıttan okundu; test/e2e/form-izolasyon-b4-yaris.mjs MODE=kurtarma-eski):
+    // ürünün "kurtarma anahtarı oluşturun" hatırlatması (hof-workspace.js nudgeRecovery) açılıştan 6 sn sonra, pencere açıksa 20 sn arayla yeniden
+    // bakar; bölüm A'nın pencereleri kapanınca ilk denetimde bir kez çıkar. B4'ün bekleme penceresine denk gelirse "Fare testi."ni yukarı iter (fare
+    // dışarıda kalır → ürün tasarımı gereği sakladığı kalan süre sonunda kapanır). Ön koşul belirlenir: hatırlatma bu yönetici için "gösterildi" sayılır (ürünün kendi
+    // 3 günlük kaydı); bölüm B'nin bildirim denetimlerine başka bildirim karışmaz.
+    await page.evaluate(() => localStorage.setItem(`hof.recovery.nudge.${window.HOF.user?.id || ""}`, String(Date.now())));
     await page.evaluate(() => {
       document.querySelectorAll(".hof-toast").forEach(node => node.remove());
       for (let i = 0; i < 4; i += 1) window.HOF.toast("Bu carinin 1 taksit kartı var. Önce kartları silin.", { type: "error" });
@@ -300,9 +306,10 @@ try {
     console.log(`  · B4 öncesi açılır bildirim: ${noticeBefore.open} (kutu kaymış: ${noticeBefore.shifted})`);
     await quietAlerts(true);
     const quiet = await settled();
-    // 22.10.2026 (2.4.4 madde 7b) B4 yine ara sıra kırmızı (ön koşullar "true true") — TEST yarışı (test/e2e/form-izolasyon-b4-yaris.mjs MODE=gec-fare):
-    // bildirimin 3,6 sn'si bildirim çıktığı anda başlıyordu; ölçüm + fare hareketi makine yüklüyken bu süreyi aşınca bildirim fare varmadan
-    // kapanmaya başlamıştı (kapanırken 250 ms ekranda kalır → "fare içinde" ölçülüyordu). Sıra artık süreye bağlı değil: bildirimin yeri önce
+    // 22.10.2026 (2.4.4 madde 7b) B4 yine ara sıra kırmızı (ön koşullar "true true"); kök neden araya giren kurtarma hatırlatması (bölüm B başı).
+    // İkinci zamanlama açığı da kapatıldı (zorla: test/e2e/form-izolasyon-b4-yaris.mjs MODE=gec-fare): bildirimin 3,6 sn'si bildirim çıktığı anda
+    // başlıyordu; ölçüm + fare hareketi makine yüklüyken bu süreyi aşarsa bildirim fare varmadan kapanmaya başlamış olur (kapanırken 250 ms ekranda
+    // kalır → "fare içinde" ölçülür). Sıra artık süreye bağlı değil: bildirimin yeri önce
     // bir ölçüm bildirimiyle ölçülür, fare oraya konur, bildirim farenin ALTINDA açılır (ürün: kapanma anında fare üstündeyse kapanmaz), sonra
     // fare bildirimin içinde kıpırdatılır (ürün: fare hareketiyle bekletme). Fare ne zaman gelirse gelsin bildirim farenin altındadır.
     // Zorla üretme: FORM_IZOLASYON_B4_ZORLA_GEC=1 kıpırdatmayı bildirimin süresi dolduktan SONRAYA atar (ön koşul ölçülür, yazılır).
