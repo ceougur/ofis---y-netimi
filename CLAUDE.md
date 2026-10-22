@@ -170,6 +170,8 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
 26. BELGEYİ TEK TEK GÖNDERME. Her push 6 işlik CI başlatır; belge değişiklikleri biriktirilip kodla birlikte gönderilir. (12.10: 14 belge
     push'u CI kuyruğunu 35+ dk tıkadı.) (17.10: yine ihlal — 25 dk'da 6 belge push'u; BELGE_YOLLARI dışındaki iş listesi / aday bulgu / kanıt
     belgeleri tam CI başlattı (#821–#823, 18 iş) ve Uzun Doğrulama'yla kuyruk paylaştı. Yalnız belge değişikliği kodla birlikte gönderilir.)
+    AÇIKLAMA (22.10.2026, kullanıcının 5 dk yetkisiyle önerilen uygulandı — GÖZDEN GEÇİRME 4 (1)): BELGE_YOLLARI içindeki belge (CLAUDE.md, iş listesi, devam notu…) tek
+    başına gönderilebilir, CI başlatmaz (13.10 kararı); dışındaki (docs/kanit, testin okuduğu plan/kılavuz belgesi) kodla birlikte gönderilir.
 
 27. KAYNAK TARAYAN TEST CRLF'Yİ BİLİR. Windows'ta git dosyaları CRLF ile çıkarır; satır bölme `/\r?\n/`, `.` "\r"yi kapsamaz. (12.10: e908e38
     "Kurumsal Kart" metin denetimi Linux'ta yeşil, Windows'ta yorumları ayıklayamayıp kırmızı; yerel koşu görmedi.)
@@ -404,6 +406,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   dosyada/geçmişte yok; ajan eforları kurala uygun (30a high, 30b high, 30d medium); ajan raporları ham kanıttan denetlendi (m30-e2e, m30-goc, 30b; kırmızı nedenleri
   iletide — ders 16/38); disk 18 GB; kullanıcının her sorusu/kararı Açık iş'te; ders 18 ikinci gerçek EDM yeşili alındı; kalite çıtası gezintisi yapıldı.
   İSTEK (~17:50 UTC: "diğer çalışan ajanlar durdu, sorun mu var?") → hayır: 30a/30d e2e'lerini ortak kilit sırasıyla bekliyor (ders 15); 30b bitti.
+- YETKİ (kullanıcı, 22.10.2026 ~18:40 UTC: "bir süre ekran başında olmayacağım, benim kararım gereken bir konu da 5 dk cevap vermezsem soruna; en yaygın kullanılan
+  öneriye göre yap"): karar gereken soru iletide sorulur (bekletmeyen; 5 dk sonrasına kendine hatırlatma), 5 dk içinde yanıt yoksa en yaygın / önerilen seçenek
+  uygulanır ve burada "5 dk yetkisiyle uygulandı" diye yazılır; kullanıcı dönünce özetlenir. YORUM (baş mimar): anayasanın kullanıcıya bıraktığı adımlar (PR →
+  master "birleştir", yayın açma, müşteri/kimlik bilgisi isteme) bu yetkiye girmez, yine kullanıcıyı bekler. İLK UYGULAMA: ders 26 açıklaması (GÖZDEN GEÇİRME 4 (1),
+  ~18:00'den beri yanıtsız) önerildiği gibi eklendi.
 - İSTEKLER (kullanıcı, 22.10.2026 ~14:00–14:50 UTC; hepsi yanıtlandı): "18 numarada portalda ben ne yapacağım" → elle kabul adımları iş listesi 18 (teslimde
   kurulumla); "kalan işler için zaman çizelgesi, aynı anda yapılanları tek süre say" → verildi (devam notu ZAMAN ÇİZELGESİ); "compact talimatı vereceğim, veri kaybı
   olmasın" → devam notu 00 + ajan kayıtları yazıldı ve gönderildi (f013e57); EDM test hesabı ~14:45 UTC yeniden verildi (yalnız oturumda; dosyaya yazılmadı).
