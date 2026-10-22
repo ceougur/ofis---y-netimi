@@ -1,0 +1,43 @@
+{
+  "ad": "244-ux9/birim-eski-2308258",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ux9/ux9-eski-2308258/test/uiux-244-ux9.test.mjs",
+  "commit": "2308258bb929f89e766aa807c5dc6d7b2e41a4f6",
+  "dal": "is/ux9",
+  "kirli": 8,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T06:02:16.551Z",
+  "sure_sn": 1.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "uiux-244 UX9 sunucu › partyIssues: her sorun cari formundaki bir alanı söyler; metinler partyProblems ile aynı",
+      "konum": "test/uiux-244-ux9.test.mjs:19:3",
+      "hata": "partyIssues dışa açık · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "uiux-244 UX9 sunucu › ön hesap partyFields döner: e-Arşiv ilsiz alıcıda ['city'], kâğıt belgede [], sorunsuz alıcıda []",
+      "konum": "test/uiux-244-ux9.test.mjs:47:3",
+      "hata": "ilsiz e-Arşiv: [\"Cari (alıcı): il zorunludur (adres).\"] · + actual - expected · + undefined"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ux9/birim-eski-2308258.log",
+  "klasor": "/home/user/wt/ux9",
+  "ham_cikti_sha256": "1ef143fb7ced771b311f98882aee506267a652073d2d161c2067957a07f544a7",
+  "ham_cikti_bayt": 3256
+}

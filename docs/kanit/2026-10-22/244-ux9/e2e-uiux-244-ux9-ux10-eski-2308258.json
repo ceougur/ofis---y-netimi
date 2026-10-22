@@ -1,0 +1,118 @@
+{
+  "ad": "244-ux9/e2e-uiux-244-ux9-ux10-eski-2308258",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/uiux-244-ux9-ux10.mjs",
+  "commit": "2308258bb929f89e766aa807c5dc6d7b2e41a4f6",
+  "dal": "is/ux9",
+  "kirli": 8,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T07:16:11.122Z",
+  "sure_sn": 46.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 29,
+    "gecen": 13,
+    "basarisiz": 16,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 16 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Toplamlar'da 'Cariyi Düzenle' düğmesi var",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "'Cariyi Düzenle' var",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "'Cariyi Düzenle' var",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yol yazılı ()",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yetkisize ne yapacağı yazılı ()",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo ekranında odak bir senaryo kartında (BODY)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Hizmet Satışı formunda odak cari kutusunda (BODY)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "hata sonrası odak cari kutusunda (BUTTON[]|Kaydet ve Gönder)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yazınca cari listesi açılıyor",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "odak ilk kalem adında (INPUT[acc-query]|)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "klavyeyle yazılan kalem adına girdi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "iade formunda odak arama kutusunda (BUTTON[×]|×)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "asıl fatura seçilince odak ilk kalemin miktarında (BODY)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "odak ilk kalem adında (BUTTON[]|Kaydet ve Gönder)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "odak hatalı kalemin (2. satır) miktarında (BODY)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "sayfa hatası yok: Cannot read properties of undefined (reading 'code')",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "uiux-244-ux9-ux10: 13 geçti, 16 kaldı",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ux9/e2e-uiux-244-ux9-ux10-eski-2308258.log",
+  "klasor": "/home/user/wt/ux9",
+  "ham_cikti_sha256": "a5601fe2111c7d0d8fa64aed0fbd36a673ff1be4b71473ebe8e07b877f8539e6",
+  "ham_cikti_bayt": 2762
+}

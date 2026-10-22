@@ -359,6 +359,8 @@
         <div class="hof-plan-title"><h3>Yeni Fatura: Ne Yapacaksınız?</h3><small>${view.pickAccount ? `Cari: <b>${esc(view.pickAccount.name)}</b> · ` : ""}Senaryoyu seçin; form ona göre açılır (stok, cari, KDV ve ödeme kuralları senaryodan gelir).</small></div></div></div>
       <div class="hof-inv-pick">${side !== "purchase" ? group("sale", "Satış") : ""}${side !== "sale" ? group("purchase", "Alış") : ""}</div>`,
     );
+    // 2.4.4 (uzman UX10): odak varsayılan senaryoda (yoksa ilk kartta) — klavyeyle ok/Tab + Enter (önceden odak sayfanın başındaydı).
+    (root.querySelector(".hof-inv-scenario.is-default") || root.querySelector(".hof-inv-scenario"))?.focus({ preventScroll: true });
   }
 
   // ---------- Olaylar (liste) ----------
@@ -584,6 +586,8 @@
       modifyNumber: modify?.number || "",
       // 2.7: Düzenle'de kaydedilmiş peşin satırların hesaplardaki etkisi (bakiyede zaten var).
       payOriginal: modify ? payOriginalOf(modify) : null,
+      // 2.4.4 (uzman UX10): ilk çizimde odak formun başlangıç alanına (focusFormStart); sonraki yeniden çizimler odağı oynatmaz.
+      focusOnDraw: true,
     };
     view.form = form;
     setMode("form");
@@ -623,6 +627,8 @@
         .map(line => ({ ...lineFrom(line), originLineId: line.id, left: left.get(line.id) ?? 0, qty: keepLines && previous.has(line.id) ? previous.get(line.id) : amountText(left.get(line.id) ?? 0) }));
       if (keepLines && previous.size) form.lines = form.lines.filter(line => previous.has(line.originLineId));
       form.returnHits = null;
+      // Asıl fatura seçildi: arama kutusu yeniden çizimde kalkar, odak ilk iade kaleminin miktarına geçer (UX10).
+      form.focusOnDraw = true;
       renderForm();
       if (!form.lines.length) HOF.toast("Bu faturanın iade edilebilecek kalemi kalmamış.", { type: "error" });
     } catch (error) {
@@ -708,6 +714,56 @@
     renderPay();
     renderTotals();
     scheduleCalc(0);
+    if (form.focusOnDraw) {
+      form.focusOnDraw = false;
+      focusFormStart(form);
+    }
+  }
+  // 2.4.4 (uzman UX10): formun başlangıç odağı — iadede asıl fatura aranır (seçildiyse ilk kalemin miktarı); cari yoksa cari kutusu (öneri
+  // listesi açılmadan); cari varsa ilk boş kalemin adı. Odak verilemezse (alan yok) eski davranış sürer.
+  const focusNode = node => {
+    if (!node || node.disabled || !node.getClientRects().length) return false;
+    node.focus({ preventScroll: true });
+    return document.activeElement === node;
+  };
+  const focusAccount = () => {
+    const picker = body()?.querySelector("[data-account-slot] .hof-acc-picker");
+    return picker?.focusQuiet ? picker.focusQuiet() : focusNode(picker?.querySelector("[data-acc-query]"));
+  };
+  const lineInput = (index, field) => body()?.querySelector(`[data-l="${index}"][data-f="${field}"]`);
+  const firstEmptyLine = form => Math.max(0, form.lines.findIndex(line => !line.itemId && !line.name.trim() && !line.originLineId));
+  function focusFormStart(form) {
+    if (view.form !== form) return false;
+    if (isReturn(form.kind)) return form.original ? focusNode(lineInput(0, "qty")) : focusNode(body()?.querySelector("[data-return-q]"));
+    if (!form.account) return focusAccount();
+    return focusNode(lineInput(firstEmptyLine(form), "name"));
+  }
+  // Cari seçildikten / açıldıktan / düzeltildikten sonra: ilk boş kalemin adı; kalemler doluysa kaydetme düğmesi (Enter ile kaydet).
+  function focusAfterAccount(form) {
+    if (view.form !== form) return;
+    const empty = form.lines.findIndex(line => !line.itemId && !line.name.trim() && !line.originLineId);
+    if (empty >= 0 && focusNode(lineInput(empty, "name"))) return;
+    focusNode(body()?.querySelector('[data-form-actions] [data-act="issue-now"], [data-form-actions] [data-act="issue"]'));
+  }
+  // Sunucunun ya da formun hatası bir alanı söylüyorsa (data.field) odak o alana: kalem hatasında ("N. kalem: …") o kalemin alanı (N, boş
+  // satırlar sayılmadan gönderilen kalemlerin sırası). Bilinmeyen alanda odak değişmez.
+  const HEAD_FOCUS = new Set(["issueDate", "issueTime", "profile", "currency", "rate", "number", "paperNo", "orderNo", "orderDate", "despatchNo", "despatchDate", "stoppageRate", "note"]);
+  const LINE_FOCUS = new Set(["qty", "unitPrice", "discountRate", "vatRate", "name", "code", "unit", "lines", "withholdingCode", "exemptionCode", "expenseCode"]);
+  function focusFailure(form, data, message = "") {
+    const field = String(data?.field || "");
+    if (!field || view.form !== form) return false;
+    if (field === "accountId") return isReturn(form.kind) ? focusNode(body()?.querySelector("[data-return-q]")) : focusAccount();
+    if (field === "originalId") return focusNode(body()?.querySelector("[data-return-q]"));
+    const at = /^(\d+)\. kalem/.exec(String(message || ""));
+    if (at && LINE_FOCUS.has(field)) {
+      const line = usedLines(form)[Number(at[1]) - 1];
+      const index = line ? form.lines.indexOf(line) : -1;
+      if (index < 0) return false;
+      return focusNode(lineInput(index, field === "lines" ? (isReturn(form.kind) ? "qty" : "name") : field)) || focusNode(lineInput(index, isReturn(form.kind) ? "qty" : "name"));
+    }
+    if (field === "lines") return focusNode(lineInput(firstEmptyLine(form), isReturn(form.kind) ? "qty" : "name"));
+    if (HEAD_FOCUS.has(field) || field === "discountRate") return focusNode(body()?.querySelector(`[data-f="${field}"]:not([data-l])`));
+    return false;
   }
   function mountAccountPicker() {
     const form = view.form;
@@ -739,6 +795,7 @@
           if (view.form !== form) return;
           applyPickedAccount(account);
           mountAccountPicker();
+          focusAfterAccount(form);
           HOF.toast(account.created ? `${account.name} carisi açıldı ve seçildi (kimliği bilinmeyen alıcı, TCKN 11111111111).` : `${account.name} seçildi (kimliği bilinmeyen alıcı).`, { type: "info" });
         } catch (error) {
           HOF.toastError(error);
@@ -762,11 +819,15 @@
     add.onclick = () => {
       const typed = picker.querySelector("[data-acc-query]")?.value.trim() || "";
       const name = typed && typed !== form.account?.name ? typed : undefined;
-      HOF.accounts.newFor({ type: form.side === "purchase" ? "supplier" : "customer", name }, { onSaved: account => {
+      // 2.4.4 (uzman UX9): e-Belge kesilecekse il ve (e-Fatura'da şirkette) vergi dairesi yanında not — zorunlu yapılmaz (kâğıt belgede
+      // gerekmez); eksikse faturada sorun ve "Cariyi Düzenle" görünür. UX10: kayıttan sonra odak ilk boş kalem adında (pencere kapanınca).
+      const badges = sendable(form) ? { city: "e-Belge İçin Zorunlu", taxOffice: "e-Fatura'da Şirkette Zorunlu" } : {};
+      HOF.accounts.newFor({ type: form.side === "purchase" ? "supplier" : "customer", name }, { badges, onSaved: account => {
         if (view.form !== form) return;
         applyPickedAccount(account);
         mountAccountPicker();
         HOF.toast(`${account.name} seçildi.`, { type: "info" });
+        setTimeout(() => focusAfterAccount(form), 0);
       } });
     };
     row.insertBefore(add, retail);
@@ -1529,7 +1590,35 @@
         ${cur !== "TRY" ? `<div><dt>TL Karşılığı</dt><dd>${esc(money(c.try.payable))}</dd></div>` : ""}
       </dl>
       <p class="hof-inv-words">${esc(c.amountInWords || "")}</p>
-      ${problems.length ? `<ul class="hof-inv-problems">${problems.map(item => `<li>${esc(item)}</li>`).join("")}</ul>` : ""}`;
+      ${problems.length ? `<ul class="hof-inv-problems">${problems.map(item => `<li>${esc(item)}</li>`).join("")}</ul>` : ""}
+      ${partyFix(form, c)}`;
+  }
+  // 2.4.4 (uzman UX9): alıcının e-Belge bilgisi eksik/hatalıysa (il, vergi dairesi, VKN…) cari formdan ayrılmadan düzeltilir. Kural (en yaygın
+  // muhasebe programlarındaki gibi): faturanın alıcı bilgisi cari kartından gelir; düzeltme CARİ KARTINA yazılır (bu ve sonraki faturalar onunla
+  // kesilir) — bildirimde söylenir. Kesilmiş belgenin alıcı bilgisi kayıt anında donmuştur (party_json), değişmez. Denetim sunucuda kalır.
+  // Nihai Tüketici (paylaşılan 11111111111 carisi) düzenlenmez: tutar sınırı aşılınca gerçek alıcının carisi seçilir ya da açılır.
+  function partyFix(form, c) {
+    if (!form.account?.id || !(c.partyProblems || []).length) return "";
+    if (String(c.party?.taxNo || "") === "11111111111") return '<p class="hof-muted hof-inv-party-hint" data-party-hint>Bu tutarda gerçek alıcı gerekir: müşterinin kendi carisini seçin ya da “+ Yeni Cari” ile TC kimlik numarası, adı soyadı ve adresiyle açın.</p>';
+    if (!HOF.accounts?.editFor || !HOF.can("accounts.manage")) return '<p class="hof-muted hof-inv-party-hint" data-party-hint>Cari kartını düzenleme yetkiniz yok; eksik bilgiyi cari kartına yetkili bir kullanıcı (yönetici) yazmalı.</p>';
+    return '<div class="hof-inv-party-fix"><button type="button" class="hof-button hof-button-small" data-act="edit-account">Cariyi Düzenle</button><small>Eksik bilgi cari kartına yazılır; bu ve sonraki faturalar onunla kesilir.</small></div>';
+  }
+  function editPartyFromForm(form) {
+    if (!form.account?.id || !HOF.accounts?.editFor) return;
+    HOF.accounts.editFor(form.account.id, {
+      require: form.calc?.partyFields || [],
+      intro: "Faturanın e-Belge olarak kesilmesi için eksik ya da hatalı bilgiler zorunlu işaretli. Kaydedince cari kartı güncellenir; bu ve sonraki faturalar yeni bilgiyle kesilir, daha önce kesilmiş belgeler değişmez.",
+      savedMessage: "Cari kartı güncellendi; fatura yeni bilgiyle hesaplanıyor. Daha önce kesilmiş belgelerin alıcı bilgisi değişmez.",
+      onSaved: account => {
+        if (view.form !== form) return;
+        applyPickedAccount(account);
+        if (isReturn(form.kind)) {
+          const link = body()?.querySelector("[data-account-slot] [data-open-account]");
+          if (link) link.textContent = account.name;
+        } else mountAccountPicker();
+        setTimeout(() => focusAfterAccount(form), 0);
+      },
+    });
   }
   const lineBody = line => ({ itemId: line.itemId, name: line.name.trim(), code: line.code, description: line.description, serialNo: line.serialNo || "", lotNo: line.lotNo || "", unit: line.unit, qty: line.qty, unitPrice: line.unitPrice || "0", discountRate: line.discountRate || "0", vatRate: line.vatRate, withholdingCode: line.withholdingCode, exemptionCode: line.exemptionCode, expenseCode: line.expenseCode, originLineId: line.originLineId, ...(line.newItem && !line.itemId ? { newItem: true, newSalePrice: line.newSalePrice || "0" } : {}) });
   // 2.4.3 (keşif B2): çok kalemli faturanın kısmi iadesi — miktarı 0 ya da boş bırakılan iade satırı iade edilmez (gönderilmez); satır × ile de çıkarılır.
@@ -1632,6 +1721,7 @@
       if (ticket !== calcTicket || view.form !== form) return;
       form.calc = calc;
       form.calcError = "";
+      form.calcFailure = null;
       const used = usedLines(form);
       form.lines.forEach(line => (line.net = null));
       used.forEach((line, index) => (line.net = calc.lines[index]?.net ?? null));
@@ -1649,6 +1739,8 @@
       if (ticket !== calcTicket || view.form !== form) return;
       form.calc = null;
       form.calcError = error.message;
+      // 2.4.4 (UX10): hesap hatasının alanı (data.field) Kaydet'te odak için saklanır.
+      form.calcFailure = error?.data || null;
       renderTotals();
       refreshPayAfterCalc();
     }
@@ -1959,6 +2051,7 @@
     }
     const act = target.dataset.act;
     if (act === "add-line") return addLine();
+    if (act === "edit-account") return editPartyFromForm(form);
     if (act === "new-item-cancel") {
       const line = form.lines[Number(target.dataset.l)];
       if (line) line.newItem = false;
@@ -2118,14 +2211,15 @@
     const error = body()?.querySelector("[data-form-error]");
     // 2.4.3 (uzman UI2): formda görünen hata satırı varsa ayrıca bildirim çıkmaz (bildirim kalem alanlarını örtüyordu ve aynı ileti üç kez
     // görünüyordu); satır görünür alana kaydırılır. Hata satırı yoksa (form çizilmemiş) bildirim verilir. Satır, alan değişince temizlenir (UX12).
-    const fail = message => {
+    // 2.4.4 (uzman UX10): focus — hatalı alana odak (işlev; önceden odak tıklanan düğmede kalıyordu). Alan odak alırsa ileti yine görünür kalır.
+    const fail = (message, focus = null) => {
       if (error?.isConnected && error.getClientRects().length) {
         error.textContent = message;
         error.scrollIntoView?.({ block: "nearest" });
-        return;
-      }
-      HOF.toast(message, { type: "error" });
+      } else HOF.toast(message, { type: "error" });
+      if (focus) focus();
     };
+    const firstLineFocus = () => focusNode(lineInput(firstEmptyLine(form), isReturn(form.kind) ? "qty" : "name"));
     if (error) error.textContent = "";
     // v2.0.23 (2. gözden geçirme): yük, bekleyen hesap ve "Tamamı Peşin" bitmeden kuruluyordu (sunucu yavaşken ekranda peşin
     // görünen fatura 0 peşinle kaydedildi). Önce ikisi biter, kayıt ekranda görünenle yapılır.
@@ -2139,17 +2233,17 @@
       }
       if (view.form !== form) return;
     }
-    if (isReturn(form.kind) && !form.original) return fail("İade edilecek faturayı üstteki arama kutusundan seçin.");
-    if (mode !== "draft" && returnRefBlock(form)) return fail(returnRefBlock(form));
-    if (!form.account) return fail(`${form.side === "purchase" ? "Tedarikçiyi" : "Müşteriyi"} (cariyi) seçin.`);
-    if (!usedLines(form).length) return fail(isReturn(form.kind) ? "İade edilecek en az bir kalemin miktarını yazın. İade etmeyeceğiniz kalemi × ile çıkarın ya da miktarını 0 yapın." : "En az bir kalem yazın.");
+    if (isReturn(form.kind) && !form.original) return fail("İade edilecek faturayı üstteki arama kutusundan seçin.", () => focusNode(body()?.querySelector("[data-return-q]")));
+    if (mode !== "draft" && returnRefBlock(form)) return fail(returnRefBlock(form), () => focusNode(body()?.querySelector("[data-return-ref-input]")));
+    if (!form.account) return fail(`${form.side === "purchase" ? "Tedarikçiyi" : "Müşteriyi"} (cariyi) seçin.`, focusAccount);
+    if (!usedLines(form).length) return fail(isReturn(form.kind) ? "İade edilecek en az bir kalemin miktarını yazın. İade etmeyeceğiniz kalemi × ile çıkarın ya da miktarını 0 yapın." : "En az bir kalem yazın.", firstLineFocus);
     // v2.0.23 (Bulgu 1): tutarı yazılmamış ya da geçersiz ödeme satırı sessizce atılmaz (önceden evrak kayıtta düşüyordu,
     // fatura "Açık" kaydediliyordu). Peşin satırında boş tutar olabilir (satır yok sayılır); evrak satırında tutar zorunlu.
     const amountOk = value => parseTl(value) > 0;
     const badCash = form.pay.cash.findIndex(item => String(item.amount ?? "").trim() && !amountOk(item.amount));
-    if (badCash >= 0) return fail(`${badCash + 1}. ödeme satırındaki (${methodLabel(form.pay.cash[badCash].method, form.kind)}) tutar geçerli değil ("${String(form.pay.cash[badCash].amount).trim()}"). Tutarı düzeltin ya da satırı × ile silin.`);
+    if (badCash >= 0) return fail(`${badCash + 1}. ödeme satırındaki (${methodLabel(form.pay.cash[badCash].method, form.kind)}) tutar geçerli değil ("${String(form.pay.cash[badCash].amount).trim()}"). Tutarı düzeltin ya da satırı × ile silin.`, () => focusNode(body()?.querySelector(`[data-pay="cash"][data-i="${badCash}"][data-f="amount"]`)));
     const badCheque = form.pay.cheques.findIndex(item => !amountOk(item.amount));
-    if (badCheque >= 0) return fail(`${badCheque + 1}. evrakın (${form.pay.cheques[badCheque].instrument === "note" ? "senet" : "çek"}) tutarı ${String(form.pay.cheques[badCheque].amount ?? "").trim() ? `geçerli değil ("${String(form.pay.cheques[badCheque].amount).trim()}")` : "yazılmadı"}. Tutarı yazın ya da satırı × ile silin.`);
+    if (badCheque >= 0) return fail(`${badCheque + 1}. evrakın (${form.pay.cheques[badCheque].instrument === "note" ? "senet" : "çek"}) tutarı ${String(form.pay.cheques[badCheque].amount ?? "").trim() ? `geçerli değil ("${String(form.pay.cheques[badCheque].amount).trim()}")` : "yazılmadı"}. Tutarı yazın ya da satırı × ile silin.`, () => focusNode(body()?.querySelector(`[data-pay="cheques"][data-i="${badCheque}"][data-f="amount"]`)));
     const payload = { ...docBody(form), payment: payBody(form) };
     form.busy = true;
     body()?.querySelectorAll(".hof-actions .hof-button").forEach(button => (button.disabled = true));
@@ -2164,12 +2258,12 @@
         calcPending = false;
         await runCalc();
         const c = form.calc;
-        if (!c) throw new Error(form.calcError || "Toplamlar hesaplanamadı; kalemleri kontrol edin.");
+        if (!c) throw Object.assign(new Error(form.calcError || "Toplamlar hesaplanamadı; kalemleri kontrol edin."), { data: form.calcFailure || {} });
         if (eSend && !sendable(form)) eSend = "";
         // 2.4.3 (keşif B7): kesimi kesin reddedecek sorun (alıcı/satıcı bilgisi eksik, posta kutusu seçilmemiş) varken "… numarasıyla kaydedilecek"
         // onayı açılmaz; neden formda ve bildirimde yazar (önceden onaydan sonra reddediliyordu).
         const blockers = [...(c.blockers || []), ...(!form.modifyId && eSend !== "later" && c.aliasBlock ? [c.aliasBlock] : [])];
-        if (blockers.length) return fail(`Fatura kaydedilemez: ${blockers.join(" ")}`);
+        if (blockers.length) return fail(`Fatura kaydedilemez: ${blockers.join(" ")}`, () => focusNode(body()?.querySelector('[data-totals] [data-act="edit-account"]')));
         const who = form.account.name;
         const numberText = c.nextNumber && eSend !== "later" ? `${c.nextNumber} numarasıyla ` : "";
         // v2.0.16 (müşteri): "Stoğa Mal Alışı"nda stok kartı olmayan kalem gider sayılır — kayıttan önce açıkça söylenir.
@@ -2217,14 +2311,16 @@
       showDoc(saved);
     } catch (failure) {
       // Soruya "Vazgeç" kullanıcının kararıdır (kırmızı hata değil); banka sorusunda bilgi bildirimi (2.0.26 İ6 kalıbı).
-      if (!HOF.userCancelled(failure)) fail(failure.message || "İşlem tamamlanamadı.");
+      // 2.4.4 (UX10 sırasında bulundu): "else if" 2.1.0'da userCancelled dalına aitti; 2.4.3 UX5 eklemesi araya girince her hata ayrıca bilgi
+      // bildirimi de açıyordu (UI2: ileti iki kez) ve verisiz hatada (ör. hesap hatası) failure.data okunurken sayfa hatası çıkıyordu.
+      if (!HOF.userCancelled(failure)) fail(failure.message || "İşlem tamamlanamadı.", () => focusFailure(form, failure?.data, failure?.message));
+      else if (failure?.data?.code !== "cash-negative-cancelled") HOF.toast(failure.message, { type: "info" });
       // 2.4.3 (uzman UX5): sunucu carinin mükellefiyetini gönderimde düzeltti — açık form carinin güncel bilgisini yeniden çeker (belge türü
       // e-Fatura, posta kutusu); kullanıcı yeniden kaydedince e-Fatura olarak kesilir (önceden form e-Arşiv'de kalıyordu, ikinci kayıt da düşüyordu).
       if (failure?.data?.code === "buyer-is-efatura" && view.form === form) {
         form.profile = "";
         scheduleCalc(0);
       }
-      else if (failure.data.code !== "cash-negative-cancelled") HOF.toast(failure.message, { type: "info" });
     } finally {
       form.busy = false;
       body()?.querySelectorAll(".hof-actions .hof-button").forEach(button => (button.disabled = false));

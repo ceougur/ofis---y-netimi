@@ -1,0 +1,81 @@
+TAP version 13
+# (node:26652) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: uiux-244 UX9 sunucu
+    # Subtest: partyIssues: her sorun cari formundaki bir alanı söyler; metinler partyProblems ile aynı
+    not ok 1 - partyIssues: her sorun cari formundaki bir alanı söyler; metinler partyProblems ile aynı
+      ---
+      duration_ms: 1.83741
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ux9/ux9-eski-2308258/test/uiux-244-ux9.test.mjs:19:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        partyIssues dışa açık
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ux9/ux9-eski-2308258/test/uiux-244-ux9.test.mjs:20:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: ön hesap partyFields döner: e-Arşiv ilsiz alıcıda ['city'], kâğıt belgede [], sorunsuz alıcıda []
+    not ok 2 - ön hesap partyFields döner: e-Arşiv ilsiz alıcıda ['city'], kâğıt belgede [], sorunsuz alıcıda []
+      ---
+      duration_ms: 734.352526
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ux9/ux9-eski-2308258/test/uiux-244-ux9.test.mjs:47:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ilsiz e-Arşiv: ["Cari (alıcı): il zorunludur (adres)."]
+        + actual - expected
+        
+        + undefined
+        - [
+        -   'city'
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'city'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ux9/ux9-eski-2308258/test/uiux-244-ux9.test.mjs:75:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - uiux-244 UX9 sunucu
+  ---
+  duration_ms: 777.385291
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ux9/ux9-eski-2308258/test/uiux-244-ux9.test.mjs:18:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1249.787301

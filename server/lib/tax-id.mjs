@@ -48,23 +48,29 @@ export function classifyTaxId(value, options = {}) {
 // e-Arşiv'de kimliği bilinmeyen nihai tüketiciye (11111111111) kesilebilecek en yüksek tutar (KDV dahil, 2026: 30.000 TL);
 // üstünde alıcının gerçek TCKN'si, adı soyadı ve adresi zorunludur (GİB e-Arşiv uygulaması).
 export const ANONYMOUS_LIMIT = 30_000;
-export function partyProblems(party, { profile = "KAGIT", role = "buyer", payable = 0 } = {}) {
+// 2.4.4 (uzman UX9): her sorun hangi cari alanından doğduğunu da söyler (field: cari kartındaki alan adı) — fatura formu "Cariyi Düzenle" ile
+// o alanları zorunlu işaretleyip ilkine odaklanır. Kural ve metinler TEK yerde (partyProblems = partyIssues'un metinleri; gönderim denetimi aynı).
+export function partyIssues(party, { profile = "KAGIT", role = "buyer", payable = 0 } = {}) {
   const who = role === "seller" ? "Firma bilgisi (satıcı)" : "Cari (alıcı)";
-  const problems = [];
+  const issues = [];
+  const add = (field, text) => issues.push({ field, text });
   const id = classifyTaxId(party.taxNo, { allowAnonymous: role === "buyer" && profile === "EARSIV" });
-  if (party.taxNo && !id.ok) problems.push(`${who}: vergi kimlik numarası geçersiz (${id.value.length === 10 ? "VKN denetim hanesi tutmuyor" : id.value.length === 11 ? "TCKN denetim hanesi tutmuyor" : "VKN 10, TCKN 11 hane olmalı"}).`);
-  if (party.partyKind === "company" && party.taxNo && id.kind === "tckn" && id.value !== ANONYMOUS_TCKN) problems.push(`${who}: tüzel kişide vergi kimlik numarası (VKN, 10 hane) yazılır.`);
-  if (party.partyKind === "person" && party.taxNo && id.kind === "vkn") problems.push(`${who}: gerçek kişide TC kimlik numarası (TCKN, 11 hane) yazılır.`);
-  if (party.mersisNo && !isValidMersis(party.mersisNo)) problems.push(`${who}: MERSİS numarası 16 haneli olmalı.`);
-  if (profile === "KAGIT") return problems;
-  if (!party.taxNo) problems.push(`${who}: e-${profile === "EFATURA" ? "Fatura" : "Arşiv"} için VKN ya da TCKN zorunludur${role === "buyer" && profile === "EARSIV" ? " (kimliği bilinmeyen nihai tüketicide 11111111111)" : ""}.`);
-  if (!String(party.name || "").trim()) problems.push(`${who}: unvan / ad soyad zorunludur.`);
-  if (!String(party.city || "").trim()) problems.push(`${who}: il zorunludur (adres).`);
-  if (role === "seller" && !String(party.taxOffice || "").trim()) problems.push(`${who}: vergi dairesi zorunludur.`);
-  if (role === "buyer" && profile === "EARSIV" && id.value === ANONYMOUS_TCKN && Number(payable) > ANONYMOUS_LIMIT) problems.push(`${who}: ${ANONYMOUS_LIMIT.toLocaleString("tr-TR")} TL üstü e-Arşiv faturada nihai tüketicinin gerçek TC kimlik numarası, adı soyadı ve adresi zorunludur (11111111111 yazılamaz).`);
-  if (role === "buyer" && profile === "EARSIV" && id.value === ANONYMOUS_TCKN && Number(payable) > ANONYMOUS_LIMIT && !String(party.address || "").trim()) problems.push(`${who}: adres zorunludur.`);
-  if (role === "buyer" && profile === "EFATURA" && id.kind === "vkn" && !String(party.taxOffice || "").trim()) problems.push(`${who}: e-Fatura'da tüzel alıcının vergi dairesi zorunludur.`);
-  return problems;
+  if (party.taxNo && !id.ok) add("taxNo", `${who}: vergi kimlik numarası geçersiz (${id.value.length === 10 ? "VKN denetim hanesi tutmuyor" : id.value.length === 11 ? "TCKN denetim hanesi tutmuyor" : "VKN 10, TCKN 11 hane olmalı"}).`);
+  if (party.partyKind === "company" && party.taxNo && id.kind === "tckn" && id.value !== ANONYMOUS_TCKN) add("taxNo", `${who}: tüzel kişide vergi kimlik numarası (VKN, 10 hane) yazılır.`);
+  if (party.partyKind === "person" && party.taxNo && id.kind === "vkn") add("taxNo", `${who}: gerçek kişide TC kimlik numarası (TCKN, 11 hane) yazılır.`);
+  if (party.mersisNo && !isValidMersis(party.mersisNo)) add("mersisNo", `${who}: MERSİS numarası 16 haneli olmalı.`);
+  if (profile === "KAGIT") return issues;
+  if (!party.taxNo) add("taxNo", `${who}: e-${profile === "EFATURA" ? "Fatura" : "Arşiv"} için VKN ya da TCKN zorunludur${role === "buyer" && profile === "EARSIV" ? " (kimliği bilinmeyen nihai tüketicide 11111111111)" : ""}.`);
+  if (!String(party.name || "").trim()) add("name", `${who}: unvan / ad soyad zorunludur.`);
+  if (!String(party.city || "").trim()) add("city", `${who}: il zorunludur (adres).`);
+  if (role === "seller" && !String(party.taxOffice || "").trim()) add("taxOffice", `${who}: vergi dairesi zorunludur.`);
+  if (role === "buyer" && profile === "EARSIV" && id.value === ANONYMOUS_TCKN && Number(payable) > ANONYMOUS_LIMIT) add("taxNo", `${who}: ${ANONYMOUS_LIMIT.toLocaleString("tr-TR")} TL üstü e-Arşiv faturada nihai tüketicinin gerçek TC kimlik numarası, adı soyadı ve adresi zorunludur (11111111111 yazılamaz).`);
+  if (role === "buyer" && profile === "EARSIV" && id.value === ANONYMOUS_TCKN && Number(payable) > ANONYMOUS_LIMIT && !String(party.address || "").trim()) add("address", `${who}: adres zorunludur.`);
+  if (role === "buyer" && profile === "EFATURA" && id.kind === "vkn" && !String(party.taxOffice || "").trim()) add("taxOffice", `${who}: e-Fatura'da tüzel alıcının vergi dairesi zorunludur.`);
+  return issues;
+}
+export function partyProblems(party, options = {}) {
+  return partyIssues(party, options).map(issue => issue.text);
 }
 
 // IBAN (ISO 13616): ülke kodu + 2 denetim hanesi + hesap; mod 97 = 1. Türkiye'de 26 karakter (TR + 24 hane).

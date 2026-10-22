@@ -1,0 +1,32 @@
+{
+  "ad": "244-ux9/birim-yeni",
+  "komut": "node --test test/uiux-244-ux9.test.mjs",
+  "commit": "2308258bb929f89e766aa807c5dc6d7b2e41a4f6",
+  "dal": "is/ux9",
+  "kirli": 8,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T06:02:07.502Z",
+  "sure_sn": 1.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ux9/birim-yeni.log",
+  "klasor": "/home/user/wt/ux9",
+  "ham_cikti_sha256": "499cdae53b5d1d5835dadec56476b9e63e43544a290713840403264f68d2e139",
+  "ham_cikti_bayt": 1176
+}
