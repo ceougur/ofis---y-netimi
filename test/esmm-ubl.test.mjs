@@ -206,8 +206,9 @@ describe("e-SMM dışı belgeler değişmedi", () => {
 });
 
 describe("e-SMM, VKN'li düzenleyen (ör. adi ortaklık)", () => {
-  test("unvan Person'da da (son sözcük FamilyName): EDM'nin e-SMM görüntüsü düzenleyenin adını yalnız Person'dan basar, FamilyName zorunlu (22.10.2026 gerçek EDM); VUK 236", async () => {
-    // Gerçek EDM test ortamı: PartyName'li, Person'sız VKN düzenleyende resmî PDF'te unvan YOKTU; Person eklenince basıldı. Alıcının unvanı PartyName'den basılır.
+  test("unvan yalnız PartyName'de, Person YOK (EDM Teknik Operasyon yanıtı 22.10.2026: tüzel kişide unvan cac:PartyName'den, şahısta ad-soyad Person'dan); TCKN'li düzenleyende Person aynen", async () => {
+    // f57245a / 32e59c0 VKN'li e-SMM düzenleyeninin unvanını Person'a da yazıyordu (test ortamının e-SMM görüntüsü unvanı basmadığı için); EDM'nin resmî
+    // yanıtı: kural PartyName, test ortamı şablonu canlıdan farklı (canlıda karekod ve görüntü GİB standardında) → geri alındı.
     const firm = { name: "Deneme ve Ortakları Avukatlık Ortaklığı", taxNo: "1234567890", taxOffice: "Kadıköy", address: "Moda Cd. 1", district: "Kadıköy", city: "İstanbul", email: "ortaklik@deneme.com.tr" };
     const on = await api.put("/api/workspace/invoices/settings", { seller: firm, efatura: true, earsiv: true, esmm: true });
     assert.equal(on.status, 200, JSON.stringify(on.data));
@@ -215,20 +216,26 @@ describe("e-SMM, VKN'li düzenleyen (ör. adi ortaklık)", () => {
       const { doc, xml, tree } = await smm("V", accounts.firm, [{ name: "Avukatlık Ücreti", qty: 1, unitPrice: 1000, vatRate: 20 }]);
       assert.equal(doc.profile, "ESMM");
       const supplier = find(tree, "AccountingSupplierParty/Party");
-      assert.equal(textOf(find(supplier, "PartyName/Name")), firm.name, "PartyName korunur");
-      // EDM görüntüsü FirstName + " " + FamilyName basar; EDM'nin UBL-TR şeması FamilyName'i zorunlu tutar (11029, 22.10.2026).
-      assert.equal(`${textOf(find(supplier, "Person/FirstName"))} ${textOf(find(supplier, "Person/FamilyName"))}`, firm.name, "unvan Person'da (ad + soyad = unvan)");
-      assert.ok(!find(find(tree, "AccountingCustomerParty/Party"), "Person"), "VKN'li alıcıya Person eklenmez (adı PartyName'den basılır)");
+      assert.equal(textOf(find(supplier, "PartyIdentification/ID")), firm.taxNo);
+      assert.equal(textOf(find(supplier, "PartyName/Name")), firm.name, "unvan PartyName'de");
+      assert.ok(!find(supplier, "Person"), "VKN'li düzenleyende Person yok (unvan Person'a bölünmez)");
+      assert.ok(!find(find(tree, "AccountingCustomerParty/Party"), "Person"), "VKN'li alıcıda Person yok (adı PartyName'den)");
       assert.deepEqual(await xsdErrors(xml), [], "UBL 2.1 + UBL-TR 1.2.1 XSD");
-      // f57245a hâli (Person'da yalnız FirstName): OASIS geçirir, UBL-TR (EDM'nin 11029'u) düşürür — denetimin dişi.
-      const firstOnly = xml.replace(/(<cac:AccountingSupplierParty>[\s\S]*?<cac:Person>[\s\S]*?)<cbc:FamilyName>[^<]*<\/cbc:FamilyName>/, "$1");
-      assert.notEqual(firstOnly, xml);
-      assert.deepEqual(await oasisXsdErrors(firstOnly), []);
-      assert.ok((await ublTrXsdErrors(firstOnly)).some(error => /FamilyName/.test(error)), "UBL-TR: FamilyName zorunlu");
     } finally {
       delete docs.V;
       const back = await api.put("/api/workspace/invoices/settings", { seller: SELLER, efatura: true, earsiv: true, esmm: true });
       assert.equal(back.status, 200, JSON.stringify(back.data));
+    }
+    // TCKN'li (şahıs) düzenleyen: ad ve soyad Person'da; cari adı ad-soyaddan farklıysa ticari unvan PartyName'de de (tradeNameOf, değişmedi).
+    const { xml, tree } = await smm("T", accounts.firm, [{ name: "Avukatlık Ücreti", qty: 1, unitPrice: 1000, vatRate: 20 }]);
+    try {
+      const supplier = find(tree, "AccountingSupplierParty/Party");
+      assert.equal(textOf(find(supplier, "Person/FirstName")), SELLER.firstName);
+      assert.equal(textOf(find(supplier, "Person/FamilyName")), SELLER.familyName);
+      assert.equal(textOf(find(supplier, "PartyName/Name")), SELLER.name, "ticari unvan");
+      assert.deepEqual(await xsdErrors(xml), [], "UBL 2.1 + UBL-TR 1.2.1 XSD");
+    } finally {
+      delete docs.T;
     }
   });
 });
