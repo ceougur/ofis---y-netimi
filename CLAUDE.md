@@ -525,7 +525,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - SORU (22.10.2026, madde 15 UX18; kullanıcıya baş mimar önerisiyle soruldu): "karşılıksız dönünce fatura yeniden açılır" kuralı tutarlılık için faturanın KENDİ evrakına
   (fatura kesilirken alınan çek) ve faturayla ciroya da uygulandı (taksitli hariç) → güncellemeden sonra eski verideki karşılıksız evraklı faturalar "Ödendi"den "Açık"a
   döner; cari bakiye DEĞİŞMEZ (tutar "Faturasız Cari Alacağı"ndan faturaya geçer). ÖNERİ: kalsın (muhasebece doğru: karşılıksız evrakla ödenmiş fatura ödenmemiştir) +
-  sürüm notuna bir cümle. Alternatif: yalnız Kapatılacak Fatura bağlarına daralt. KARAR BEKLENİYOR.
+  sürüm notuna bir cümle. Alternatif: yalnız Kapatılacak Fatura bağlarına daralt.
+  KARAR (kullanıcı, 22.10.2026: "önerini uygula"): kural uygulandığı hâliyle KALIR (faturanın kendi evrakı ve faturayla ciro dahil, taksitli hariç) + sürüm notuna cümle
+  ("karşılıksız dönen evrakla ödenmiş görünen faturalar artık Açık görünür; cari bakiye değişmez").
 - SON ADAY BAĞIMSIZ TURU (kullanıcı, 22.10.2026: "2.4.4 son aday uzun test koşusuna başlamadan kâhin (uzman mali müşavir), yargıç, eleştirmen testlerinden geçecek mi,
   regresyon testleri yapılıyor mu?" → EVET; "ekle" → uzman UI + uzman UX de): iş listesi madde 30–31 (31a kâhin, 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol,
   31f uzman UI/UX) Uzun Doğrulama'dan ÖNCE.
