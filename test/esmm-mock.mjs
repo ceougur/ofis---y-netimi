@@ -22,11 +22,20 @@ export function smmState() {
   // sent: EDM'nin kabul ettiği makbuzlar ({ id, uuid, xml, head, sender, receiver }); statuses: UUID → durum sırası (son durum kalır).
   // renumber: (gönderilen ID) => EDM'nin yanıtta döndürdüğü ID (program farkı görmeli); cutAfter: işlem adları — istek İŞLENİR, sonra bağlantı
   // koparılır (EDM aldı, yanıt gelmedi); faults: işlem → [kod, ileti] (bir kez).
-  return { calls: [], sent: [], cancelled: [], statuses: new Map(), sessions: new Set(), counter: 0, violations: [], usedIds: new Set(), pdfRequests: 0, renumber: null, cutAfter: new Set(), faults: new Map() };
+  // Eşzamanlılık düzeneği (tools/edm-gercek.mjs --eszamanli, 2.4.4 iş listesi 24b; varsayılanları davranışı DEĞİŞTİRMEZ):
+  //   delay: (işlem adı) => ms — yanıt geciktirilir (zorla araya girme, ders 20); inflight / maxInflight: işlem başına o an / en çok eşzamanlı istek;
+  //   sendCount: kaçıncı SendSMM; singleSession: Login öbür oturumları düşürür (EDM'nin bu davranışı DOĞRULANMADI — keşif);
+  //   hata enjeksiyonu (testin dişi, ders 7) — k: kaçıncı SendSMM: dropSend (kabul edilir, KAYDA GEÇMEZ: sessiz kayıp), misrecordSend (yanıtta doğru
+  //   numara, kayıtta bir önceki makbuzun numarası: çift kayıt), statusAfterSend ({ k: "PACKAGE - FAIL" }: yanlış son durum), holdSend ({ k, ms }:
+  //   yanıt ms bekletilir: askı); rejectConcurrentLogin: başka Login sürerken gelen Login WCF güvenlik reddiyle düşer — gerçek EDM test ortamında GÖRÜLDÜ
+  //   (22.10.2026, 20 eşzamanlı girişten biri: "The caller was not authenticated by the service.", EDM hata kodu YOK; docs/kanit/2026-10-22/244-edm-eszamanli).
+  return { calls: [], sent: [], cancelled: [], statuses: new Map(), sessions: new Set(), counter: 0, violations: [], usedIds: new Set(), pdfRequests: 0, renumber: null, cutAfter: new Set(), faults: new Map(), delay: null, inflight: {}, maxInflight: {}, sendCount: 0, singleSession: false, dropSend: 0, misrecordSend: 0, statusAfterSend: {}, holdSend: null, rejectConcurrentLogin: false, concurrentLoginRejected: 0 };
 }
 
 const fault = (code, message) => `<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><s:Fault><faultcode>s:Client</faultcode><faultstring>${message}</faultstring><detail><RequestFault xmlns="${SMM_NS}"><INTL_TXN_ID xmlns="">0</INTL_TXN_ID><ERROR_CODE xmlns="">${code}</ERROR_CODE><ERROR_SHORT_DES xmlns="">${message}</ERROR_SHORT_DES></RequestFault></detail></s:Fault></s:Body></s:Envelope>`;
 const envelope = (op, inner) => `<?xml version="1.0"?><s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><${op}Response xmlns="${SMM_NS}">${inner}</${op}Response></s:Body></s:Envelope>`;
+// WCF güvenlik reddi (gerçek EDM'de görülen biçim: EDM'nin RequestFault/ERROR_CODE'u yok, yalnız faultstring).
+const wcfSecurityFault = message => `<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><s:Fault><faultcode xmlns:a="http://schemas.microsoft.com/ws/2005/05/addressing/none">a:InvalidSecurity</faultcode><faultstring xml:lang="tr-TR">${message}</faultstring></s:Fault></s:Body></s:Envelope>`;
 const RETURN = `<REQUEST_RETURN xmlns=""><INTL_TXN_ID>1</INTL_TXN_ID><RETURN_CODE>0</RETURN_CODE></REQUEST_RETURN>`;
 const head = (status = "PACKAGE - PROCESSING") => `<HEADER><SMM_DATE>2026-06-17</SMM_DATE><STATUS>${status}</STATUS><EARCHIVE_REPORT_SENDDATE>0001-01-01</EARCHIVE_REPORT_SENDDATE><CANCEL_EARCHIVE_REPORT_SENDDATE>0001-01-01</CANCEL_EARCHIVE_REPORT_SENDDATE></HEADER>`;
 
@@ -57,8 +66,13 @@ export function smmReply(state, { body, action, credentials }) {
   }
   if (op === "Login") {
     if (textOf(child(request, "USER_NAME")) !== credentials.username || textOf(child(request, "PASSWORD")) !== credentials.password) return { status: 500, xml: fault(2001, "Kullanıcı adı veya şifre hatalı") };
+    if (state.rejectConcurrentLogin && (state.inflight.Login || 0) > 1) {
+      state.concurrentLoginRejected += 1;
+      return { status: 500, xml: wcfSecurityFault("The caller was not authenticated by the service.") };
+    }
     state.counter += 1;
     const id = `SMM-S-${state.counter}`;
+    if (state.singleSession) state.sessions.clear();
     state.sessions.add(id);
     return { status: 200, xml: envelope(op, `${RETURN}<SESSION_ID xmlns="">${id}</SESSION_ID>`) };
   }
@@ -72,11 +86,17 @@ export function smmReply(state, { body, action, credentials }) {
     const xml = Buffer.from(textOf(child(smm.node, "CONTENT")), "base64").toString("utf8");
     if (!/<cbc:ProfileID>ESMM<\/cbc:ProfileID>/.test(xml)) state.violations.push("SendSMM: içerik ProfileID ESMM değil");
     if (state.usedIds.has(smm.id) || state.sent.some(item => item.id === smm.id)) return { status: 500, xml: fault(11048, `UUID=${smm.uuid} ID=${smm.id} için Daha önce gönderdiğiniz bir SMM'yi tekrar göndermeye çalıştınız`) };
+    state.sendCount += 1;
+    const k = state.sendCount;
     const fields = Object.fromEntries((child(smm.node, "HEADER")?.children || []).map(item => [item.name, textOf(item)]));
-    state.sent.push({ id: smm.id, uuid: smm.uuid, xml, head: fields, sender: child(request, "SENDER")?.attrs, receiver: child(request, "RECEIVER")?.attrs });
-    state.statuses.set(smm.uuid, ["PACKAGE - PROCESSING", "SEND - SUCCEED"]);
+    // Hata enjeksiyonu (yalnız eşzamanlılık düzeneğinin dişi testinde): kayıp / çift kayıt / yanlış durum / askı.
+    if (state.dropSend !== k) {
+      const recordedId = state.misrecordSend === k && state.sent.length ? state.sent.at(-1).id : smm.id;
+      state.sent.push({ id: recordedId, uuid: smm.uuid, xml, head: fields, sender: child(request, "SENDER")?.attrs, receiver: child(request, "RECEIVER")?.attrs });
+      state.statuses.set(smm.uuid, state.statusAfterSend?.[k] ? [state.statusAfterSend[k]] : ["PACKAGE - PROCESSING", "SEND - SUCCEED"]);
+    }
     const answered = state.renumber ? state.renumber(smm.id) : smm.id;
-    return { status: 200, cut, xml: envelope(op, `${RETURN}<SMM TRXID="8563409" xmlns=""><ID>${answered}</ID><UUID>${smm.uuid}</UUID>${head()}</SMM>`) };
+    return { status: 200, cut, hold: state.holdSend?.k === k ? state.holdSend.ms : 0, xml: envelope(op, `${RETURN}<SMM TRXID="8563409" xmlns=""><ID>${answered}</ID><UUID>${smm.uuid}</UUID>${head()}</SMM>`) };
   }
   if (op === "GetSMMStatus") {
     const smm = smmOf(request);

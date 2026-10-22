@@ -83,6 +83,12 @@ const CONTRACT_TTL = 12 * 60 * 60 * 1000;
 const CONTRACT_FAIL_TTL = 60 * 1000;
 const SESSION_TTL = 20 * 60 * 1000;
 const sessions = new Map();
+// 2.4.4 (iş listesi 24b, N4 — gerçek EDM test ortamı 22.10.2026, docs/kanit/2026-10-22/244-edm-eszamanli): oturum önbelleği boşken 20 eşzamanlı gönderim 20 ayrı
+// giriş yaptı (en çok 18 aynı anda) ve EDM birini "The caller was not authenticated by the service." ile reddetti — aynı kimlikle 19 giriş başarılıyken belge
+// "kullanıcı adı/parola" iletisiyle Gönderilecekler'e düştü. TEK UÇUŞ: oturum anahtarı başına en çok bir giriş sürer; o sırada gelen her çağıran (oturum
+// isteyen işlem, numara öncesi erişim denetimi, Bağlantıyı Test Et) aynı girişi bekler. Giriş bitince (başarılı ya da değil) kayıt silinir: başarısızlık bütün
+// bekleyenlere aynı hatayla döner (numara ancak giriş başarılıysa verilir — B3), sonraki çağrı yeniden dener.
+const logins = new Map();
 const contracts = new Map();
 // Dar kontrol 2.4.3 (kâhin BEKLENEN-AG): EDM'den son yanıt alınan an (oturum anahtarı başına). Önbellekteki oturum ağın hâlâ açık olduğunu
 // göstermez; numara vermeden önceki denetim (ensureSession) son yanıt eskiyse EDM'ye gerçekten ulaşır.
@@ -332,15 +338,31 @@ function edmTransport({ baseUrl, username, password, env = "", fetchImpl = (...a
     sessions.set(sessionKey, { id: session, at: Date.now() });
     return session;
   }
+  // Tek uçuş giriş (N4): bu anahtarın süren girişi varsa onu bekler, yoksa başlatır.
+  function sharedLogin() {
+    const pending = logins.get(sessionKey);
+    if (pending) return pending;
+    const started = login().finally(() => {
+      if (logins.get(sessionKey) === started) logins.delete(sessionKey);
+    });
+    logins.set(sessionKey, started);
+    return started;
+  }
   async function withSession(work) {
     const cached = sessions.get(sessionKey);
-    let session = cached && Date.now() - cached.at < SESSION_TTL ? cached.id : await login();
+    let session = cached && Date.now() - cached.at < SESSION_TTL ? cached.id : await sharedLogin();
     try {
       return await work(session);
     } catch (error) {
       if (!error?.sessionExpired) throw error;
-      sessions.delete(sessionKey);
-      session = await login();
+      // N4: önbellek YALNIZ hata veren oturumu tutuyorsa silinip yeniden girilir; başka çağıranın daha yeni geçerli oturumu varsa girişsiz o kullanılır (tek
+      // oturumlu EDM'de eşzamanlı yeniden girişler birbirini düşürmesin). Süren giriş varsa onu bekler.
+      const now = sessions.get(sessionKey);
+      if (now && now.id !== session && Date.now() - now.at < SESSION_TTL) session = now.id;
+      else {
+        if (now?.id === session) sessions.delete(sessionKey);
+        session = await sharedLogin();
+      }
       return work(session);
     }
   }
@@ -355,8 +377,9 @@ function edmTransport({ baseUrl, username, password, env = "", fetchImpl = (...a
   async function ensureSession() {
     const cached = sessions.get(sessionKey);
     if (cached && Date.now() - cached.at < SESSION_TTL && Date.now() - (contacts.get(sessionKey) || 0) < CONTACT_FRESH_MS) return;
-    sessions.delete(sessionKey);
-    await login();
+    // N4: süren giriş varsa (erişim + hesap denetimini o yapıyor) beklenir; yoksa önbellek atılıp tek uçuş giriş.
+    if (!logins.has(sessionKey)) sessions.delete(sessionKey);
+    await sharedLogin();
   }
   // Sözleşme raporu: hangi işlemler var, hangileri eksik (operations: programın bu serviste kullandığı işlemler).
   async function contractReport({ refresh = false, operations = [] } = {}) {
@@ -377,8 +400,9 @@ function edmTransport({ baseUrl, username, password, env = "", fetchImpl = (...a
   }
   // Bağlantı testi: sözleşme yeniden okunur, oturum önbelleği atılıp gerçek giriş yapılır.
   async function test(report, intro = "EDM'ye giriş yapıldı; bağlantı çalışıyor.") {
-    sessions.delete(sessionKey);
-    await login();
+    // N4: o sırada süren giriş varsa (ör. aynı anda gönderim) gerçek giriştir, beklenir; ikinci giriş yapılmaz.
+    if (!logins.has(sessionKey)) sessions.delete(sessionKey);
+    await sharedLogin();
     const parts = [intro];
     parts.push(report.source === "wsdl" ? `Servis sözleşmesi (WSDL) okundu: SOAP ${report.soap}, ${report.operations.length} işlem.` : `Servis sözleşmesi okunamadı (${report.error}); varsayılan sözleşmeyle çalışılıyor.`);
     if (report.missing.length) parts.push(`Sözleşmede bulunmayan işlemler: ${report.missing.join(", ")}.`);
@@ -642,6 +666,7 @@ export function createEdmSmmClient(options) {
 /** Testler için: bellekteki oturum ve sözleşme önbelleğini boşaltır. */
 export function resetEdmCaches() {
   sessions.clear();
+  logins.clear();
   contracts.clear();
   contacts.clear();
 }

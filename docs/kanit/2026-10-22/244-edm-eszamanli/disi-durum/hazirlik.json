@@ -1,0 +1,34 @@
+{
+ "adim": "hazirlik",
+ "baslik": "Kurulum: üretim bayrakları, sabit test adresi, sunucu",
+ "durum": "geçti",
+ "denetimler": [
+  {
+   "gecti": true,
+   "denetim": "üretim girişi (server/server.mjs) e-Belgeyi ve e-SMM'yi açar: {\"edocEnabled\":true,\"edocLive\":true,\"esmmEnabled\":true}"
+  },
+  {
+   "gecti": true,
+   "denetim": "programın test adresleri betiğin sabitleriyle aynı (https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc · https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc)"
+  },
+  {
+   "gecti": true,
+   "denetim": "canlı adresler bekçide reddedilir (https://portal2.edmbilisim.com.tr/EFaturaEDM/EFaturaEDM.svc · https://portal2.edmbilisim.com.tr/EFaturaEDM/ESmmEDM.svc)"
+  },
+  {
+   "gecti": true,
+   "denetim": "yönetici girişi"
+  }
+ ],
+ "kayit": {
+  "kip": "kuru",
+  "commit": "02a6acd",
+  "bayraklar": {
+   "edocEnabled": true,
+   "edocLive": true,
+   "esmmEnabled": true
+  },
+  "testAdresi": "sahte EDM (yerel)",
+  "gun": "2026-10-22"
+ }
+}

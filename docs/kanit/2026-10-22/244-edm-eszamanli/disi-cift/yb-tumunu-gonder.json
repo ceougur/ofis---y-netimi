@@ -1,0 +1,450 @@
+{
+ "adim": "yb-tumunu-gonder",
+ "baslik": "İki kullanıcı (fatura1, fatura2) AYNI ANDA Tümünü Gönder + yönetici aynı anda A belgelerine Durum Sorgula",
+ "durum": "geçti",
+ "denetimler": [
+  {
+   "gecti": true,
+   "denetim": "Gönderilecekler'de B'nin 10 belgesi (liste 10)"
+  },
+  {
+   "gecti": true,
+   "denetim": "Tümünü Gönder istekleri: 2, hepsi HTTP 200, askı yok (200 200)"
+  },
+  {
+   "gecti": true,
+   "denetim": "gönderim sürerken Durum Sorgula (A, 20 belge): hepsi HTTP 200, askı yok (200)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B01 (TCKN): Tümünü Gönder → TES2026444338984, e-Belge durumu sent (beklenen: iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B02 (VKN): Tümünü Gönder → TES2026444338985, e-Belge durumu sent (beklenen: iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B03 (VKN): Tümünü Gönder → TES2026444338986, e-Belge durumu sent (beklenen: iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B04 (TCKN): Tümünü Gönder → TES2026444338987, e-Belge durumu sent (beklenen: iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B05 (VKN): Tümünü Gönder → TES2026444338988, e-Belge durumu sent (beklenen: iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B06 (VKN): Tümünü Gönder → TES2026444338989, e-Belge durumu sent (beklenen: iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B07 (TCKN): Tümünü Gönder → TES2026444338990, e-Belge durumu sent (beklenen: iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B08 (VKN): Tümünü Gönder → TES2026444338991, e-Belge durumu sent (beklenen: iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B09 (VKN): Tümünü Gönder → TES2026444338992, e-Belge durumu sent (beklenen: iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B10 (TCKN): Tümünü Gönder → TES2026444338993, e-Belge durumu sent (beklenen: iletildi)"
+  }
+ ],
+ "kayit": {
+  "fatura1": {
+   "istekler": [
+    {
+     "status": 200,
+     "sureMs": 241,
+     "askida": false,
+     "sent": 10,
+     "failed": 0,
+     "skipped": 0,
+     "done": 0,
+     "remaining": 0,
+     "stopped": null
+    }
+   ],
+   "sonuclar": {
+    "invoice-6c3e9108-7b23-4806-8233-8119e786355a": {
+     "ok": true,
+     "done": false,
+     "busy": false,
+     "skipped": false,
+     "reason": "",
+     "code": "",
+     "number": "TES2026444338984",
+     "message": ""
+    },
+    "invoice-14d41cd9-f963-4a33-a948-d45e75b9c9c2": {
+     "ok": true,
+     "done": false,
+     "busy": false,
+     "skipped": false,
+     "reason": "",
+     "code": "",
+     "number": "TES2026444338985",
+     "message": ""
+    },
+    "invoice-dcdadfa9-cc39-4bdc-a8e6-a6c10d3decd7": {
+     "ok": true,
+     "done": false,
+     "busy": false,
+     "skipped": false,
+     "reason": "",
+     "code": "",
+     "number": "TES2026444338986",
+     "message": ""
+    },
+    "invoice-c7d47aaf-9862-4c56-ab91-09f859e13d8d": {
+     "ok": true,
+     "done": false,
+     "busy": false,
+     "skipped": false,
+     "reason": "",
+     "code": "",
+     "number": "TES2026444338987",
+     "message": ""
+    },
+    "invoice-46b43925-3537-4113-9836-63485718e917": {
+     "ok": true,
+     "done": false,
+     "busy": false,
+     "skipped": false,
+     "reason": "",
+     "code": "",
+     "number": "TES2026444338988",
+     "message": ""
+    },
+    "invoice-b9203f34-838c-4efe-8296-4c2d38fb3dc7": {
+     "ok": true,
+     "done": false,
+     "busy": false,
+     "skipped": false,
+     "reason": "",
+     "code": "",
+     "number": "TES2026444338989",
+     "message": ""
+    },
+    "invoice-3686f0aa-4a55-4211-ac1b-7e89322a8183": {
+     "ok": true,
+     "done": false,
+     "busy": false,
+     "skipped": false,
+     "reason": "",
+     "code": "",
+     "number": "TES2026444338990",
+     "message": ""
+    },
+    "invoice-646e6604-47c0-4e59-9492-10e56faad0d2": {
+     "ok": true,
+     "done": false,
+     "busy": false,
+     "skipped": false,
+     "reason": "",
+     "code": "",
+     "number": "TES2026444338991",
+     "message": ""
+    },
+    "invoice-193617f3-0c00-4db4-a404-552109da824e": {
+     "ok": true,
+     "done": false,
+     "busy": false,
+     "skipped": false,
+     "reason": "",
+     "code": "",
+     "number": "TES2026444338992",
+     "message": ""
+    },
+    "invoice-d121dd1a-af81-485a-bfa5-5745f774dae7": {
+     "ok": true,
+     "done": false,
+     "busy": false,
+     "skipped": false,
+     "reason": "",
+     "code": "",
+     "number": "TES2026444338993",
+     "message": ""
+    }
+   },
+   "rerun": false,
+   "stopped": null
+  },
+  "fatura2": {
+   "istekler": [
+    {
+     "status": 200,
+     "sureMs": 337,
+     "askida": false,
+     "sent": 0,
+     "failed": 0,
+     "skipped": 0,
+     "done": 10,
+     "remaining": 0,
+     "stopped": null
+    }
+   ],
+   "sonuclar": {
+    "invoice-6c3e9108-7b23-4806-8233-8119e786355a": {
+     "ok": true,
+     "done": true,
+     "busy": false,
+     "skipped": false,
+     "reason": "",
+     "code": "einvoice-sending",
+     "number": "TES2026444338984",
+     "message": "Bu belge başka oturumda gönderildi."
+    },
+    "invoice-14d41cd9-f963-4a33-a948-d45e75b9c9c2": {
+     "ok": true,
+     "done": true,
+     "busy": false,
+     "skipped": false,
+     "reason": "",
+     "code": "einvoice-already-sent",
+     "number": "TES2026444338985",
+     "message": "Bu belge başka oturumda gönderildi."
+    },
+    "invoice-dcdadfa9-cc39-4bdc-a8e6-a6c10d3decd7": {
+     "ok": true,
+     "done": true,
+     "busy": false,
+     "skipped": false,
+     "reason": "",
+     "code": "einvoice-already-sent",
+     "number": "TES2026444338986",
+     "message": "Bu belge başka oturumda gönderildi."
+    },
+    "invoice-c7d47aaf-9862-4c56-ab91-09f859e13d8d": {
+     "ok": true,
+     "done": true,
+     "busy": false,
+     "skipped": false,
+     "reason": "",
+     "code": "einvoice-already-sent",
+     "number": "TES2026444338987",
+     "message": "Bu belge başka oturumda gönderildi."
+    },
+    "invoice-46b43925-3537-4113-9836-63485718e917": {
+     "ok": true,
+     "done": true,
+     "busy": false,
+     "skipped": false,
+     "reason": "",
+     "code": "einvoice-already-sent",
+     "number": "TES2026444338988",
+     "message": "Bu belge başka oturumda gönderildi."
+    },
+    "invoice-b9203f34-838c-4efe-8296-4c2d38fb3dc7": {
+     "ok": true,
+     "done": true,
+     "busy": false,
+     "skipped": false,
+     "reason": "",
+     "code": "einvoice-sending",
+     "number": "TES2026444338989",
+     "message": "Bu belge başka oturumda gönderildi."
+    },
+    "invoice-3686f0aa-4a55-4211-ac1b-7e89322a8183": {
+     "ok": true,
+     "done": true,
+     "busy": false,
+     "skipped": false,
+     "reason": "",
+     "code": "einvoice-already-sent",
+     "number": "TES2026444338990",
+     "message": "Bu belge başka oturumda gönderildi."
+    },
+    "invoice-646e6604-47c0-4e59-9492-10e56faad0d2": {
+     "ok": true,
+     "done": true,
+     "busy": false,
+     "skipped": false,
+     "reason": "",
+     "code": "einvoice-already-sent",
+     "number": "TES2026444338991",
+     "message": "Bu belge başka oturumda gönderildi."
+    },
+    "invoice-193617f3-0c00-4db4-a404-552109da824e": {
+     "ok": true,
+     "done": true,
+     "busy": false,
+     "skipped": false,
+     "reason": "",
+     "code": "einvoice-already-sent",
+     "number": "TES2026444338992",
+     "message": "Bu belge başka oturumda gönderildi."
+    },
+    "invoice-d121dd1a-af81-485a-bfa5-5745f774dae7": {
+     "ok": true,
+     "done": true,
+     "busy": false,
+     "skipped": false,
+     "reason": "",
+     "code": "einvoice-sending",
+     "number": "TES2026444338993",
+     "message": "Bu belge başka oturumda gönderildi."
+    }
+   },
+   "rerun": false,
+   "stopped": null
+  },
+  "durumSorgula": [
+   {
+    "kod": "A01",
+    "status": 200,
+    "askida": false,
+    "sureMs": 35,
+    "eStatus": "processing"
+   },
+   {
+    "kod": "A02",
+    "status": 200,
+    "askida": false,
+    "sureMs": 46,
+    "eStatus": "processing"
+   },
+   {
+    "kod": "A03",
+    "status": 200,
+    "askida": false,
+    "sureMs": 49,
+    "eStatus": "processing"
+   },
+   {
+    "kod": "A04",
+    "status": 200,
+    "askida": false,
+    "sureMs": 46,
+    "eStatus": "processing"
+   },
+   {
+    "kod": "A05",
+    "status": 200,
+    "askida": false,
+    "sureMs": 50,
+    "eStatus": "processing"
+   },
+   {
+    "kod": "A06",
+    "status": 200,
+    "askida": false,
+    "sureMs": 20,
+    "eStatus": "processing"
+   },
+   {
+    "kod": "A07",
+    "status": 200,
+    "askida": false,
+    "sureMs": 11,
+    "eStatus": "processing"
+   },
+   {
+    "kod": "A08",
+    "status": 200,
+    "askida": false,
+    "sureMs": 10,
+    "eStatus": "processing"
+   },
+   {
+    "kod": "A09",
+    "status": 200,
+    "askida": false,
+    "sureMs": 11,
+    "eStatus": "processing"
+   },
+   {
+    "kod": "A10",
+    "status": 200,
+    "askida": false,
+    "sureMs": 9,
+    "eStatus": "processing"
+   },
+   {
+    "kod": "A11",
+    "status": 200,
+    "askida": false,
+    "sureMs": 9,
+    "eStatus": "processing"
+   },
+   {
+    "kod": "A12",
+    "status": 200,
+    "askida": false,
+    "sureMs": 11,
+    "eStatus": "processing"
+   },
+   {
+    "kod": "A13",
+    "status": 200,
+    "askida": false,
+    "sureMs": 10,
+    "eStatus": "processing"
+   },
+   {
+    "kod": "A14",
+    "status": 200,
+    "askida": false,
+    "sureMs": 10,
+    "eStatus": "processing"
+   },
+   {
+    "kod": "A15",
+    "status": 200,
+    "askida": false,
+    "sureMs": 13,
+    "eStatus": "processing"
+   },
+   {
+    "kod": "A16",
+    "status": 200,
+    "askida": false,
+    "sureMs": 10,
+    "eStatus": "processing"
+   },
+   {
+    "kod": "A17",
+    "status": 200,
+    "askida": false,
+    "sureMs": 11,
+    "eStatus": "processing"
+   },
+   {
+    "kod": "A18",
+    "status": 200,
+    "askida": false,
+    "sureMs": 10,
+    "eStatus": "processing"
+   },
+   {
+    "kod": "A19",
+    "status": 200,
+    "askida": false,
+    "sureMs": 9,
+    "eStatus": "processing"
+   },
+   {
+    "kod": "A20",
+    "status": 200,
+    "askida": false,
+    "sureMs": 10,
+    "eStatus": "processing"
+   }
+  ],
+  "yenidenBasis": []
+ },
+ "bilgiler": [
+  {
+   "bilgi": "iki oturumun sonuçları: {\"fatura1 gönderdi\":10,\"fatura2 başka oturumda gönderildi\":10}; yeniden basış 0 (arayüz iletisi \"kalan belge olursa Tümünü Gönder'e yeniden basın\")"
+  },
+  {
+   "bilgi": "EDM: {\"smm:SendSMM\":{\"sayi\":10,\"hata\":0,\"enCokEszamanli\":1,\"sureMs\":{\"en\":6,\"medyan\":8,\"enCok\":13}},\"smm:GetSMMStatus\":{\"sayi\":20,\"hata\":0,\"enCokEszamanli\":1,\"sureMs\":{\"en\":1,\"medyan\":2,\"enCok\":22}}}"
+  }
+ ]
+}

@@ -1,0 +1,93 @@
+{
+ "adim": "yf-degismezler",
+ "baslik": "Değişmezler: 30 belge, ETTN tekil, TES tekil + ardışık (seride boşluk yok), tarih, tek gönderim, 11048 yok, stopaj kuralı, UBL-TR XSD",
+ "durum": "geçti",
+ "denetimler": [
+  {
+   "gecti": true,
+   "denetim": "veri tabanında işaretli notla TAM 30 belge (bulunan 30), hepsi yanıtlardaki kimliklerle aynı, kesilmiş e-SMM"
+  },
+  {
+   "gecti": true,
+   "denetim": "ETTN'ler tekil (30/30) ve UUID biçiminde"
+  },
+  {
+   "gecti": true,
+   "denetim": "TES numaraları tekil ve ardışık: TES2026475826020 … TES2026475826049 (tekrar 0, boşluk 0; önceki en büyük yok, sonra en büyük 475826049, aralıkta 30 belge)"
+  },
+  {
+   "gecti": true,
+   "denetim": "belge tarihleri koşu günü (2026-10-22) ve numara sırasıyla tarih sırası tutarlı"
+  },
+  {
+   "gecti": true,
+   "denetim": "her belgede TAM bir gönderim kaydı (invoice.e.sent): uymayan 0"
+  },
+  {
+   "gecti": true,
+   "denetim": "EDM \"daha önce gönderdiğiniz SMM\" (11048) görülmedi (0)"
+  },
+  {
+   "gecti": true,
+   "denetim": "stopaj (talimat: VKN'li şirket %20, TCKN'li kişi stopajsız): uymayan 0"
+  },
+  {
+   "gecti": true,
+   "denetim": "A01 TES2026475826020 (VKN'li alıcı) UBL'i OASIS UBL 2.1 + GİB UBL-TR 1.2.1 XSD'sine uygun"
+  },
+  {
+   "gecti": true,
+   "denetim": "A03 TES2026475826022 (TCKN'li alıcı) UBL'i OASIS UBL 2.1 + GİB UBL-TR 1.2.1 XSD'sine uygun"
+  }
+ ],
+ "kayit": {
+  "numaralar": {
+   "tamam": true,
+   "en": 475826020,
+   "son": 475826049,
+   "tekrar": [],
+   "bosluk": [],
+   "boslukSayisi": 0,
+   "oncekiEnBuyuk": null,
+   "sonrakiEnBuyuk": 475826049,
+   "araliktakiBelge": 30,
+   "numaralar": [
+    "TES2026475826020",
+    "TES2026475826021",
+    "TES2026475826022",
+    "TES2026475826023",
+    "TES2026475826024",
+    "TES2026475826025",
+    "TES2026475826026",
+    "TES2026475826027",
+    "TES2026475826028",
+    "TES2026475826029",
+    "TES2026475826030",
+    "TES2026475826031",
+    "TES2026475826032",
+    "TES2026475826033",
+    "TES2026475826034",
+    "TES2026475826035",
+    "TES2026475826036",
+    "TES2026475826037",
+    "TES2026475826038",
+    "TES2026475826039",
+    "TES2026475826040",
+    "TES2026475826041",
+    "TES2026475826042",
+    "TES2026475826043",
+    "TES2026475826044",
+    "TES2026475826045",
+    "TES2026475826046",
+    "TES2026475826047",
+    "TES2026475826048",
+    "TES2026475826049"
+   ]
+  }
+ },
+ "bilgiler": [
+  {
+   "bilgi": "aynı gün içinde saat ↔ numara ters komşu çifti: 0 (eşzamanlı kayıtta numara kayıt işleminin sırasıyla verilir, saat formun açıldığı/kaydın başladığı anı taşır; GİB sıra kuralı tarih düzeyindedir — denetim değil)"
+  }
+ ]
+}

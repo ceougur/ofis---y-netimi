@@ -1,0 +1,32 @@
+{
+  "ad": "244-edm-eszamanli/gercek-2",
+  "komut": "node --disable-warning=ExperimentalWarning tools/edm-gercek.mjs --gercek --eszamanli --cikti docs/kanit/2026-10-22/244-edm-eszamanli/gercek-2",
+  "commit": "b4f87093884ec628806e03d96ea488b05c1cd2ba",
+  "dal": "is/edm-eszamanli",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T14:07:20.638Z",
+  "sure_sn": 115.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 136,
+    "gecen": 136,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-edm-eszamanli/gercek-2.log",
+  "klasor": "/home/user/wt/edm-eszamanli",
+  "ham_cikti_sha256": "f8b977838d7c8f6fcf3f476c6477cf2255b2b1fa0721cfa4ef4fc04456996b38",
+  "ham_cikti_bayt": 26408
+}

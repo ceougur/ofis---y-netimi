@@ -1,0 +1,73 @@
+{
+  "ad": "244-edm-eszamanli/n4-mutasyon-Ma",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-mut-e80a7f5/test/edm-tek-ucus-giris-244.test.mjs",
+  "commit": "51c307434772ed89b056eddd6f56cb2338142ffa",
+  "dal": "is/edm-eszamanli",
+  "kirli": 0,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T13:54:54.576Z",
+  "sure_sn": 6.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 3,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "N4 tek uçuş giriş: soğuk önbellek, eşzamanlı çağrılar › T1 e-SMM: 20 eşzamanlı gönderim TEK giriş yapar, 20'si iletilir",
+      "konum": "test/edm-tek-ucus-giris-244.test.mjs:58:3",
+      "hata": "e-SMM servisine Login sayısı 20; beklenen 1 (tek uçuş) · 20 !== 1 (beklenen 1, gelen 20)"
+    },
+    {
+      "ad": "N4 tek uçuş giriş: soğuk önbellek, eşzamanlı çağrılar › T1 numara öncesi erişim denetimi (ensureSession) × 20 eşzamanlı: tek giriş, hepsi başarılı",
+      "konum": "test/edm-tek-ucus-giris-244.test.mjs:67:3",
+      "hata": "Login sayısı 20; beklenen 1 · 20 !== 1 (beklenen 1, gelen 20)"
+    },
+    {
+      "ad": "N4 tek uçuş giriş: soğuk önbellek, eşzamanlı çağrılar › T1 e-Fatura (aynı taşıma katmanı): 20 eşzamanlı mükellef sorgusu tek giriş yapar",
+      "konum": "test/edm-tek-ucus-giris-244.test.mjs:72:3",
+      "hata": "e-Fatura servisine Login sayısı 20; beklenen 1 · 20 !== 1 (beklenen 1, gelen 20)"
+    },
+    {
+      "ad": "N4 tek uçuş giriş: soğuk önbellek, eşzamanlı çağrılar › T10 (gerçek EDM'de görülen): başka giriş sürerken gelen giriş reddedilir — tek uçuşla 20 gönderimin hiçbiri reddedilmez",
+      "konum": "test/edm-tek-ucus-giris-244.test.mjs:78:3",
+      "hata": "reddedilen gönderim: 19 (EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).) · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "N4: başarısız, askıda ve farklı anahtarlı giriş › T2/T3 giriş reddedilince 5 bekleyenin HEPSİ aynı hatayı alır (tek Login, stage login); kayıt silinir, SONRAKİ çağrı yeniden dener",
+      "konum": "test/edm-tek-ucus-giris-244.test.mjs:91:3",
+      "hata": "Login sayısı 5; beklenen 1 · 5 !== 1 (beklenen 1, gelen 5)"
+    },
+    {
+      "ad": "N4: başarısız, askıda ve farklı anahtarlı giriş › T5 giriş askıda kalır: zaman aşımı BÜTÜN bekleyenlere döner (tek deneme), sonra yeni giriş başlar ve başarılı olur",
+      "konum": "test/edm-tek-ucus-giris-244.test.mjs:100:3",
+      "hata": "askıdaki giriş denemesi 5; beklenen 1 (bekleyenler aynı girişi bekledi) · 5 !== 1 (beklenen 1, gelen 5)"
+    },
+    {
+      "ad": "N4: oturum düşünce yeniden giriş, Bağlantıyı Test Et, önbellek boşaltma › T6/T7 tek oturumlu EDM, oturum EDM'de düştü: 20 eşzamanlı gönderim TEK yeniden giriş yapar (daha yeni oturum girişsiz kullanılır), 20'si iletilir",
+      "konum": "test/edm-tek-ucus-giris-244.test.mjs:131:3",
+      "hata": "düşen gönderim 18 · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "N4: oturum düşünce yeniden giriş, Bağlantıyı Test Et, önbellek boşaltma › T8 Bağlantıyı Test Et ile gönderim aynı anda (soğuk): tek giriş, ikisi de başarılı",
+      "konum": "test/edm-tek-ucus-giris-244.test.mjs:161:3",
+      "hata": "Login sayısı 2; beklenen 1 · 2 !== 1 (beklenen 1, gelen 2)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-edm-eszamanli/n4-mutasyon-Ma.log",
+  "klasor": "/home/user/wt/edm-eszamanli",
+  "ham_cikti_sha256": "0970bf4ac39bc5ac4a08cc843d4118a9e731374fa4b3f5bf332497b1dd669e48",
+  "ham_cikti_bayt": 21288
+}

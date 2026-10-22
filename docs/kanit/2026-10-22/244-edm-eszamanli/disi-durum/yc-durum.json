@@ -1,0 +1,279 @@
+{
+ "adim": "yc-durum",
+ "baslik": "Durum Sorgula: 30 belge, son duruma kadar",
+ "durum": "kaldı",
+ "denetimler": [
+  {
+   "gecti": false,
+   "denetim": "A01 TES2026474777241: EDM son durum error (PACKAGE - FAIL)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A02 TES2026474777240: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A03 TES2026474777243: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A04 TES2026474777242: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A05 TES2026474777244: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A06 TES2026474777245: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A07 TES2026474777246: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A08 TES2026474777247: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A09 TES2026474777248: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A10 TES2026474777249: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A11 TES2026474777250: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A12 TES2026474777251: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A13 TES2026474777252: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A14 TES2026474777253: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A15 TES2026474777254: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A16 TES2026474777255: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A17 TES2026474777256: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A18 TES2026474777257: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A19 TES2026474777258: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A20 TES2026474777259: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B01 TES2026474777260: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B02 TES2026474777261: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B03 TES2026474777262: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B04 TES2026474777263: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B05 TES2026474777264: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B06 TES2026474777265: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B07 TES2026474777266: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B08 TES2026474777267: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B09 TES2026474777268: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B10 TES2026474777269: EDM son durum sent (SEND - SUCCEED)"
+  }
+ ],
+ "kayit": {
+  "A01": {
+   "eStatus": "error",
+   "raw": "PACKAGE - FAIL",
+   "message": "Paketleme hatası: EDM'nin yönergesine göre makbuz iptal edilip yeniden gönderilir — İptal Et ile iptal edin, Kopyala ile yeniden kesin (yeni numara alır). BASARIYLA TAMAMLANDI"
+  },
+  "A02": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "A03": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "A04": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "A05": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "A06": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "A07": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "A08": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "A09": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "A10": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "A11": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "A12": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "A13": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "A14": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "A15": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "A16": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "A17": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "A18": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "A19": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "A20": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "B01": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "B02": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "B03": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "B04": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "B05": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "B06": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "B07": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "B08": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "B09": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  },
+  "B10": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. BASARIYLA TAMAMLANDI"
+  }
+ }
+}
