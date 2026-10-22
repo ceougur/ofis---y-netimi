@@ -203,7 +203,37 @@ try {
     // Veri güncel: Müşteri 02'nin bakiyesi listede −100 (10 × 10 TL tahsilat, borcu yoktu → alacaklı 100).
     const row = await admin.$eval(`${modal} tr[data-account="${ids.customers[1]}"]`, node => node.innerText.replace(/\s+/g, " ")).catch(() => "");
     ok(/100,00/.test(row), `listede Müşteri 02 güncel: ${row.slice(0, 120)}`);
+    // 2.4.4 (iş listesi 7c, CI #858): Başlarken (açılış ekranındaki ilk adımlar listesi) her olayda ayrı istek gönderiyordu (10 kayıtta 10).
+    // Cari penceresi listenin üstündeyken liste ekranda değil: okunmaz, pencere kapanınca bir kez yenilenir.
+    ok((c["/api/workspace/getting-started"] || 0) <= 1, `Başlarken ${c["/api/workspace/getting-started"] || 0} kez (üstünde Cari penceresi; 2.4.4 adayında 10 kez)`);
     await shot("cari-listesi-guncel");
+  });
+
+  await step("2.4.4 (7c): başka personel 10 parasal kayıt girerken açılış ekranındaki Başlarken listesi yenilemeleri birleştirir", async () => {
+    const colleague = createClient(BASE);
+    ok((await colleague.login("muhasebe2", STAFF)).status === 200, "ikinci personel girdi (ayrı oturum)");
+    await closeAll();
+    const listed = await admin.waitForSelector("#hof-getting-started", { timeout: 8000 }).then(() => true, () => false);
+    ok(listed, "Başlarken listesi açılış ekranında (pencere yok) — ölçümün ön koşulu");
+    await admin.waitForTimeout(2500);
+    const log = counter(admin);
+    try {
+      for (let i = 0; i < 10; i += 1) {
+        const r = await colleague.post(`/api/workspace/accounts/${ids.customers[10]}/entries`, { kind: "in", amount: 10, date: TODAY, method: "cash", note: `başlarken ${i}` });
+        if (r.status !== 200) ok(false, `personel kaydı ${i}: ${r.status}`);
+        await admin.waitForTimeout(1000);
+      }
+      await admin.waitForTimeout(5000);
+    } finally {
+      log.stop();
+      // Sonraki adım (Cari araması) Cari penceresini açık bekler: bu adım kırılsa da pencere yeniden açılır.
+      await admin.click("#hof-sidecard [data-action=accounts]");
+      await admin.waitForSelector(`${modal} tr[data-account]`);
+    }
+    const n = log.counts["/api/workspace/getting-started"] || 0;
+    console.log(`    istekler: ${JSON.stringify(log.counts)}`);
+    // HOF.refresher (gap 3 sn) ~15 sn'lik pencerede en çok ~6 yenileme; her olayda bir istek (10) birleştirme yok demektir.
+    ok(n >= 1 && n <= 6, `Başlarken ${n} kez yenilendi (10 kayıt; en az 1 — liste güncel kalır, en çok 6 — birleştirilir)`);
   });
 
   await step("Madde 1/2: başka personel kayıt girerken Cari aramasında yazılan metin ve sonuç doğru", async () => {
