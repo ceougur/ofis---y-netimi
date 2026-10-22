@@ -1,0 +1,63 @@
+{
+  "ad": "244-esmm2/eski-7c36f87-e2e-gg244-esmm-gonder",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/gg244-esmm-gonder.mjs",
+  "commit": "7c36f8718bd81220e70c1441f641fa8035c11f85",
+  "dal": "is/esmm2",
+  "kirli": 7,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T07:45:57.019Z",
+  "sure_sn": 35.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 7,
+    "gecen": 1,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "tür notu: \"\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Kaydet, Sonra Gönder var",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Kaydet ve Gönder var (yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "taslak ayarı açıkken e-SMM düğmesi \"Kaydet ve Gönder\" ()",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım tamamlanamadı: page.click: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım tamamlanamadı: 2. adımın makbuzu yok",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-esmm2/eski-7c36f87-e2e-gg244-esmm-gonder.log",
+  "klasor": "/home/user/wt/esmm2",
+  "ham_cikti_sha256": "df9e8f9931dfe549b07f516b479d4088704d4a50478f161bb1f49ad8b2247bb9",
+  "ham_cikti_bayt": 688
+}

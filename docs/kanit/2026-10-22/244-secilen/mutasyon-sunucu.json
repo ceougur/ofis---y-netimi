@@ -1,0 +1,32 @@
+{
+  "ad": "244-secilen/mutasyon-sunucu",
+  "komut": "python3 docs/kanit/2026-10-22/244-secilen/mutasyon-sunucu.py /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-mutasyon",
+  "commit": "f7edff3b52952b68d93e66a84d8b56d886a75edc",
+  "dal": "is/secilen",
+  "kirli": 21,
+  "izlenmeyen": 14,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T05:17:10.992Z",
+  "sure_sn": 101.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 9,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-secilen/mutasyon-sunucu.log",
+  "klasor": "/home/user/wt/secilen",
+  "ham_cikti_sha256": "4340c58f690eb2087bb00cc9eb7f975256b2345a2baa5a6be049a2bce35b4286",
+  "ham_cikti_bayt": 884
+}

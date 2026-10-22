@@ -1,0 +1,38 @@
+{
+  "ad": "244-secilen/sayi-eski-3a2f46a-birim",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-3a2f46a/test/ebelge-244-secilenleri-gonder.test.mjs",
+  "commit": "3a2f46a1bf40e3c25f393d0aac678e91a45273b8",
+  "dal": "is/secilen",
+  "kirli": 4,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T06:03:01.399Z",
+  "sure_sn": 13.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 11,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji › S12: liste satırı kalıcı engelli bekleyeni işaretler (eBlocked) — 'Seçilenleri Gönder (N)' sayısına girmez; sayfalı liste ve dışa aktarım aynı",
+      "konum": "test/ebelge-244-secilenleri-gonder.test.mjs:399:3",
+      "hata": "{\"id\":\"invoice-c5de81ee-e78c-4d02-b40b-4338c431b467\",\"kind\":\"sale\",\"kindLabel\":\"Satış Faturası\",\"scenario\":\"service_sale\",\"scenarioLabel\":\"Hizmet Satışı\",\"status\":\"issued\",\"statusLabel\":\"Kaydedildi\",\"number\":\"\",\"displayNo\":\"Gönderilecek\",\"internalNumber\":false,\"ettn\":\"06446662-3cce-4c22-bc6e-47bcf379c25b\",\"issueDate\":\"2026-06-16\",\"issueTime\":\"09:00\",\"accountId\":\"account-4bdf8d60-0260-4ce3-9f01-f7a65f3ed65f\",\"accountName\":\"Mehmet Demir\",\"accountRef\":\"2\",\"accountPhone\":\"\",\"profile\":\"EARSIVFATURA\",\"profileLabel\":\"e-Arşiv Fatura\",\"typeCode\":\"SATIS\",\"currency\":\"TRY\",\"rate\":1,\"netTotal\":500,\"vatTotal\":100,\"withheldTotal\":0,\"stoppageTotal\":0,\"payableTotal\":600,\"tryNet\":500,\"tryVat\":100,\"tryPayable\":600,\"dueDate\":\"2026-06-17\",\"planId\":\"\",\"originalId\":\"\",\"originalNumber\":\"\",\"originalDate\":\"\",\"note\":\"\",\"eStatus\":\"waiting\",\"eStatusLabel\":\"Gönderilecek\",\"eUnsent\":false,\"eTestLive\":false,\"eTest\":true,\"actorName\":\"Ofis yöneticisi\",\"createdAt\":\"2026-06-17T09:00:00.512Z\",\"payState\":\"open\",\"payStateLabel\":\"Açık\",\"paid\":0,\"open\":600,\"closers\":[],\"posCash\":false} · + actual - expected · + undefined"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-secilen/sayi-eski-3a2f46a-birim.log",
+  "klasor": "/home/user/wt/secilen",
+  "ham_cikti_sha256": "00274dd01ff0c853f7e2c19c4f629fa096246f825be5593946f055341fd605d0",
+  "ham_cikti_bayt": 7278
+}

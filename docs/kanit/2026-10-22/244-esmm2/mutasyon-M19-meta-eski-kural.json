@@ -1,0 +1,38 @@
+{
+  "ad": "244-esmm2/mutasyon-M19-meta-eski-kural",
+  "komut": "node --test test/esmm-gonderim-244.test.mjs",
+  "commit": "7c36f8718bd81220e70c1441f641fa8035c11f85",
+  "dal": "HEAD",
+  "kirli": 7,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T07:06:17.815Z",
+  "sure_sn": 4.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 19,
+    "gecen": 18,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "e-SMM açık: makbuz ESmmEDM.svc'den gider; e-Arşiv e-Fatura servisinden (N2, N3, N10, N13, N15) › N13: portala taslak ayarı açıkken de makbuz doğrudan gönderilir (taslak yolu yok); /e-draft ağa çıkmadan reddedilir, belge belirsize düşmez",
+      "konum": "test/esmm-gonderim-244.test.mjs:196:3",
+      "hata": "meta: serbest meslek makbuzu e-SMM açıkken gönderilir · false !== true (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/esmm2/docs/kanit/2026-10-22/244-esmm2/mutasyon-M19-meta-eski-kural.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm2/esmm2-mut",
+  "ham_cikti_sha256": "5cd81274577447146c41d82196b90b573b079b6f135a1a9654cc55ff0db2fb3d",
+  "ham_cikti_bayt": 10466
+}

@@ -1,0 +1,163 @@
+[
+  {
+    "mutasyon": "M01-bayrak-yok",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M01-bayrak-yok: BAŞARISIZ (çıkış 1; 3 başarısız, 0 iptal) · çıkış 1 · 17/20 geçti, 3 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M02-profil-yok",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 0,
+    "yakalandi": false,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M02-profil-yok: GEÇTİ · çıkış 0 · 20/20 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M03-bagdastirici-servis",
+    "dosya": "server/lib/einvoice/adapters.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M03-bagdastirici-servis: BAŞARISIZ (çıkış 1; 14 başarısız, 0 iptal) · çıkış 1 · 5/19 geçti, 14 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +8 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M04a-gonderim-girisi-yanlis-servis",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M04a-gonderim-girisi-yanlis-servis: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 18/19 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M04b-kayit-girisi-yanlis-servis",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M04b-kayit-girisi-yanlis-servis: BAŞARISIZ (çıkış 1; 4 başarısız, 0 iptal) · çıkış 1 · 15/19 geçti, 4 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M05-esmm-bulunamadi-guven",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M05-esmm-bulunamadi-guven: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 18/19 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M06-numara-farki-sessiz",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M06-numara-farki-sessiz: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 18/19 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M07-gonderilecekler-sql",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M07-gonderilecekler-sql: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 19/20 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M08a-taslak-dugmesi",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M08a-taslak-dugmesi: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 18/19 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M08b-taslak-once",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M08b-taslak-once: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 18/19 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M09-e-draft-korumasi",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M09-e-draft-korumasi: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 18/19 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M10-tur-durmaz",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M10-tur-durmaz: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 18/19 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M11-baglanti-testi-esmm-yok",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M11-baglanti-testi-esmm-yok: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 18/19 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M12-sonra-gonder-eski-kural",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M12-sonra-gonder-eski-kural: BAŞARISIZ (çıkış 1; 6 başarısız, 0 iptal) · çıkış 1 · 13/19 geçti, 6 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M13-gonderilmedi-iletisi",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M13-gonderilmedi-iletisi: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 18/19 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M14-iptal-esmm-uzak-degil",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M14-iptal-esmm-uzak-degil: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 18/19 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M15-durum-resmi-eski-kural",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M15-durum-resmi-eski-kural: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 17/19 geçti, 2 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M16-gonder-dugmesi-eski-kural",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M16-gonder-dugmesi-eski-kural: BAŞARISIZ (çıkış 1; 13 başarısız, 0 iptal) · çıkış 1 · 6/19 geçti, 13 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M17-kayitta-giris-denetimi-yok",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M17-kayitta-giris-denetimi-yok: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 18/19 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M18-toplu-xml-eski-kural",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M18-toplu-xml-eski-kural: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 17/19 geçti, 2 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M19-meta-eski-kural",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M19-meta-eski-kural: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 18/19 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M20-resmi-goruntu-eski-kural",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M20-resmi-goruntu-eski-kural: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 17/19 geçti, 2 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  },
+  {
+    "mutasyon": "M21-o1-eski-kural",
+    "dosya": "server/routes/invoices.mjs",
+    "cikis": 1,
+    "yakalandi": true,
+    "ozet": "[kanit] 244-esmm2/mutasyon-M21-o1-eski-kural: BAŞARISIZ (çıkış 1; 3 başarısız, 0 iptal) · çıkış 1 · 16/19 geçti, 3 başarısız, 0 iptal, 0 atlanan · commit 7c36f87 +7 değişmiş dosya +4 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+  }
+]

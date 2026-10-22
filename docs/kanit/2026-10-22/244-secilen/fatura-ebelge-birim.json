@@ -1,0 +1,32 @@
+{
+  "ad": "244-secilen/fatura-ebelge-birim",
+  "komut": "node --test --test-concurrency=2 test/ebelge-240-birim.test.mjs test/ebelge-240-bitis-turu.test.mjs test/ebelge-240-ek-secenekler.test.mjs test/ebelge-240-gorunum.test.mjs test/ebelge-240-kontrol3.test.mjs test/ebelge-242-test-seri.test.mjs test/ebelge-243-gonderim.test.mjs test/ebelge-243.test.mjs test/ebelge-244-secilenleri-gonder.test.mjs test/ebelge-uygunluk.test.mjs test/edm-gercek-sozlesme.test.mjs test/edm-giris-241.test.mjs test/einvoice-240-resmi-gorunum.test.mjs test/einvoice-240-taslak.test.mjs test/einvoice-edm.test.mjs test/fatura-215.test.mjs test/fatura-216.test.mjs test/fatura-217.test.mjs test/fatura-230-ayarlar-banka.test.mjs test/fatura-243-stok-kdv.test.mjs test/fatura-buyuk-tutar-210.test.mjs test/fatura-durum-222.test.mjs test/fatura-liste-243-fark.test.mjs test/fatura-model.test.mjs test/gg243-cekirdek-kaynak.test.mjs test/gg243-dar-kontrol-ek.test.mjs test/gg243-dar-kontrol-gonderim.test.mjs test/gg243-dar-kontrol-stok.test.mjs test/gg243-dar2-edm.test.mjs test/gg243-dar2-gonderim.test.mjs test/gg243-dar2-iade-sira.test.mjs test/gg243-dar2-olcek.test.mjs test/gg243-dar3-stok.test.mjs test/gg243-dar3.test.mjs test/gg243-gonderim.test.mjs test/gg243-stok-excel.test.mjs",
+  "commit": "3a2f46a1bf40e3c25f393d0aac678e91a45273b8",
+  "dal": "is/secilen",
+  "kirli": 6,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T06:06:58.526Z",
+  "sure_sn": 357.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 334,
+    "gecen": 334,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-secilen/fatura-ebelge-birim.log",
+  "klasor": "/home/user/wt/secilen",
+  "ham_cikti_sha256": "8e2b633c287152a950e400ffb0226c5b3c2b8f27a43a793544937e574556aa6a",
+  "ham_cikti_bayt": 121310
+}

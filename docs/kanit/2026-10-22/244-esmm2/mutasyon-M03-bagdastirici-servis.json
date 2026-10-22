@@ -1,0 +1,103 @@
+{
+  "ad": "244-esmm2/mutasyon-M03-bagdastirici-servis",
+  "komut": "node --test test/esmm-gonderim-244.test.mjs",
+  "commit": "7c36f8718bd81220e70c1441f641fa8035c11f85",
+  "dal": "HEAD",
+  "kirli": 8,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T07:04:47.949Z",
+  "sure_sn": 4.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 19,
+    "gecen": 5,
+    "basarisiz": 14,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 14 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "e-SMM açık: makbuz ESmmEDM.svc'den gider; e-Arşiv e-Fatura servisinden (N2, N3, N10, N13, N15) › N2: Kaydet ve Gönder — makbuz ESMM + TES numarası; giriş ve gönderim e-SMM servisine, e-Fatura servisine HİÇBİR istek yok; EDM'deki makbuz aynı numara/ETTN",
+      "konum": "test/esmm-gonderim-244.test.mjs:105:3",
+      "hata": "{\"ok\":false,\"pending\":true,\"number\":\"TES2026000000001\",\"code\":\"integrator-channel\",\"message\":\"e-SMM (ProfileID ESMM) e-Fatura servisinden gönderilmez; belge gönderilmedi. Belge TES2026000000001 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin.\"} · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "e-SMM açık: makbuz ESmmEDM.svc'den gider; e-Arşiv e-Fatura servisinden (N2, N3, N10, N13, N15) › N2: e-SMM girişi reddedilirken (e-Fatura oturumu taze) numara VERİLMEZ — erişim/giriş denetimi belgenin servisinde (Kaydet ve Gönder ve Tümünü Gönder)",
+      "konum": "test/esmm-gonderim-244.test.mjs:137:3",
+      "hata": "numara verilmedi: {\"ok\":false,\"pending\":true,\"number\":\"TES2026000000002\",\"code\":\"integrator-channel\",\"message\":\"e-SMM (ProfileID ESMM) e-Fatura servisinden gönderilmez; belge gönderilmedi. Belge TES2026000000002 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin.\"} · + actual - expected · + 'TES2026000000002' (beklenen , gelen TES2026000000002)"
+    },
+    {
+      "ad": "e-SMM açık: makbuz ESmmEDM.svc'den gider; e-Arşiv e-Fatura servisinden (N2, N3, N10, N13, N15) › N10: Durum Sorgula, Resmî Görüntü ve İptal Et e-SMM servisinden (GetSMMStatus, GetSMM, CancelSMM); e-Fatura servisine istek yok; makbuz programda iptal",
+      "konum": "test/esmm-gonderim-244.test.mjs:159:3",
+      "hata": "Cannot read properties of undefined (reading 'id')"
+    },
+    {
+      "ad": "e-SMM açık: makbuz ESmmEDM.svc'den gider; e-Arşiv e-Fatura servisinden (N2, N3, N10, N13, N15) › N13: portala taslak ayarı açıkken de makbuz doğrudan gönderilir (taslak yolu yok); /e-draft ağa çıkmadan reddedilir, belge belirsize düşmez",
+      "konum": "test/esmm-gonderim-244.test.mjs:196:3",
+      "hata": "taslak değil, gönderildi: e-SMM (ProfileID ESMM) e-Fatura servisinden gönderilmez; belge gönderilmedi. · 'none' !== 'sent' (beklenen sent, gelen none)"
+    },
+    {
+      "ad": "e-SMM açık: makbuz ESmmEDM.svc'den gider; e-Arşiv e-Fatura servisinden (N2, N3, N10, N13, N15) › N15: Bağlantıyı Test Et e-SMM kullanıcısında e-SMM servisini de dener; e-SMM girişi düşerse sonuç başarısız ve nedeni söylenir",
+      "konum": "test/esmm-gonderim-244.test.mjs:224:3",
+      "hata": "{\"ok\":false,\"error\":\"e-Fatura / e-Arşiv bağlantısı çalışıyor; e-SMM servisi çalışmıyor: EDM isteği reddetti: Kullanıcı adı veya şifre hatalı (EDM hata kodu 2001). Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).\",\"code\":\"integrator-rejected\",\"detail\":\"\",\"integratorCode\":\"2001\",\"stage\":\"login\"} · 502 !== 200 (beklenen 200, gelen 502)"
+    },
+    {
+      "ad": "e-SMM: numara, seri ve kronoloji (N4, N5, N14) › N4/N5: Kes, Sonra Gönder → numarasız bekler; kayıtta O1 (daha eski bekleyen makbuz varken yenisi numara almaz); Tümünü Gönder tarih sırasıyla TES, e-Arşiv TEA ayrı sayar",
+      "konum": "test/esmm-gonderim-244.test.mjs:248:3",
+      "hata": "[{\"id\":\"invoice-273c66fa-e23a-40ff-bf50-6354b94f046e\",\"ok\":false,\"code\":\"integrator-channel\",\"message\":\"e-SMM (ProfileID ESMM) e-Fatura servisinden gönderilmez; belge gönderilmedi.\"},{\"id\":\"invoice-4b21ad8b-7cbb-4644-922c-ed9be3bba8ff\",\"ok\":true,\"number\":\"TEA2026000000001\",\"status\":\"sent\"},{\"id\":\"invoice-040ae1a5-1e51-40fd-99a8-b80d858b61f0\",\"ok\":false,\"code\":\"integrator-channel\",\"message\":\"e-SMM (ProfileID ESMM) e-Fatura servisinden gönderilmez; belge gönderilmedi.\"},{\"id\":\"invoice-b65295d8-5f2f-431d-b485-0f36d0f64dfb\",\"ok\":false,\"code\":\"integrator-channel\",\"message\":\"e-SMM (ProfileID ESMM) e-Fatura servisinden gönderilmez; belge gönderilmedi.\"}] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "e-SMM: numara, seri ve kronoloji (N4, N5, N14) › N14: Müşteri Fişi Olarak Bırakılmış makbuz yeniden gönderilince e-SMM servisinden, TES serisinden numarayla gider (fiş numarası iz olarak kalır)",
+      "konum": "test/esmm-gonderim-244.test.mjs:306:3",
+      "hata": "{\"ok\":false,\"error\":\"e-SMM (ProfileID ESMM) e-Fatura servisinden gönderilmez; belge gönderilmedi.\",\"code\":\"integrator-channel\",\"detail\":\"\",\"integratorCode\":\"\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "e-SMM: kopma, belirsiz gönderim, başka numara, iki oturum, iptal süresi (N6, N7, N8, N9, N10) › N8: bağlantı hiç kurulamadı (gönderim isteği EDM'ye ulaşmadı) → kayıtta verilen numara geri bırakılır, makbuz numarasız Gönderilecekler'de; sonra aynı numarayla gider",
+      "konum": "test/esmm-gonderim-244.test.mjs:336:3",
+      "hata": "e-SMM (ProfileID ESMM) e-Fatura servisinden gönderilmez; belge gönderilmedi. · 'none' !== 'sent' (beklenen sent, gelen none)"
+    },
+    {
+      "ad": "e-SMM: kopma, belirsiz gönderim, başka numara, iki oturum, iptal süresi (N6, N7, N8, N9, N10) › N7: EDM makbuzu aldı, yanıt gelmeden bağlantı koptu → Sonucu Belirsiz (numara korunur, iptal kapalı); yeniden Gönder önce GetSMMStatus sorar, makbuz ikinci kez GİTMEZ",
+      "konum": "test/esmm-gonderim-244.test.mjs:353:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'Gönderilmedi' (beklenen Sonucu Belirsiz, gelen Gönderilmedi)"
+    },
+    {
+      "ad": "e-SMM: kopma, belirsiz gönderim, başka numara, iki oturum, iptal süresi (N6, N7, N8, N9, N10) › N7: belirsiz makbuz EDM'de YOKSA bile e-SMM'de doğrulanmamış 'bulunamadı' koduna güvenilmez — Durum Sorgula temizlemez, Gönder ikinci kez göndermez (madde 24'e dek)",
+      "konum": "test/esmm-gonderim-244.test.mjs:371:3",
+      "hata": "{\"ok\":false,\"pending\":true,\"number\":\"TES2026000000003\",\"code\":\"integrator-channel\",\"message\":\"e-SMM (ProfileID ESMM) e-Fatura servisinden gönderilmez; belge gönderilmedi. Belge TES2026000000003 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin.\"} · + actual - expected · + 'Gönderilmedi' (beklenen Sonucu Belirsiz, gelen Gönderilmedi)"
+    },
+    {
+      "ad": "e-SMM: kopma, belirsiz gönderim, başka numara, iki oturum, iptal süresi (N6, N7, N8, N9, N10) › N9: EDM makbuzu başka numarayla kaydederse sessizce 'gönderildi' denmez — hata, ileti farkı söyler; durum yazılır (iptal açık); Tümünü Gönder durur, kalan makbuza numara verilmez",
+      "konum": "test/esmm-gonderim-244.test.mjs:388:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'integrator-channel' (beklenen integrator-reference, gelen integrator-channel)"
+    },
+    {
+      "ad": "e-SMM: kopma, belirsiz gönderim, başka numara, iki oturum, iptal süresi (N6, N7, N8, N9, N10) › N6: iki oturum aynı makbuzu aynı anda gönderir → EDM'ye bir kez gider",
+      "konum": "test/esmm-gonderim-244.test.mjs:416:3",
+      "hata": "{\"ok\":false,\"error\":\"e-SMM (ProfileID ESMM) e-Fatura servisinden gönderilmez; belge gönderilmedi.\",\"code\":\"integrator-channel\",\"detail\":\"\",\"integratorCode\":\"\"} | {\"ok\":false,\"error\":\"e-SMM (ProfileID ESMM) e-Fatura servisinden gönderilmez; belge gönderilmedi.\",\"code\":\"integrator-channel\",\"detail\":\"\",\"integratorCode\":\"\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "e-SMM: kopma, belirsiz gönderim, başka numara, iki oturum, iptal süresi (N6, N7, N8, N9, N10) › N10: iletimden 8 gün sonra (9. gün) gönderilmiş e-SMM iptal edilmez; EDM'ye iptal isteği gitmez",
+      "konum": "test/esmm-gonderim-244.test.mjs:428:3",
+      "hata": "e-SMM (ProfileID ESMM) e-Fatura servisinden gönderilmez; belge gönderilmedi. · 'none' !== 'sent' (beklenen sent, gelen none)"
+    },
+    {
+      "ad": "e-SMM: 002 şirketi kendi ayarıyla ve servisinden gönderir (N11) › 002'nin makbuzu 002'nin entegratör ayarıyla e-SMM servisine gider; 001'in Gönderilecekler'i ve numarası etkilenmez",
+      "konum": "test/esmm-gonderim-244.test.mjs:454:3",
+      "hata": "e-SMM (ProfileID ESMM) e-Fatura servisinden gönderilmez; belge gönderilmedi. · 'none' !== 'sent' (beklenen sent, gelen none)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/esmm2/docs/kanit/2026-10-22/244-esmm2/mutasyon-M03-bagdastirici-servis.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm2/esmm2-mut",
+  "ham_cikti_sha256": "08422a6a110715e56c186160486e5d1e43beafeb601775a457dbeb78d1858342",
+  "ham_cikti_bayt": 25264
+}
