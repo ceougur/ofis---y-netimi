@@ -450,6 +450,13 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   (öneri; müşteri fişi değişmez). → 5 dk YETKİSİYLE UYGULANDI (21:34 UTC): bırakılan kâğıt makbuz e-SMM'e gönderilmez (kalıcı engel, nedeni görünür).
 - CI #862 (50e3bd0 = aday 7) BÜTÜN İŞLER YEŞİL (22.10 ~21:40 UTC okundu): 7d, 24b, 30b, 30d, 30e, 30f çizildi; 30a (E2/U2 sürüyor) ve 30 (göç karşılaştırması
   düzeltmelerden sonra yeniden, yargıç Y3) açık.
+- SORU → 5 dk YETKİSİYLE UYGULANDI (22.10.2026 21:34 → 21:41 UTC; 31f uzman UI/UX, ~95 adım, 111 ekran; U1'i ana oturum koddan doğruladı): (a) U2 (2.4.4 GERİLEMESİ,
+  31a F4 ile): Tablodaki Kişiler söz tutarını ve aynı dosya no'nun Kalan'ını ayrı borç sayıyor (kapalı dosya 15.000; toplam 98.000 → 198.500) + MM5 + U8 → borç DOSYA
+  NO başına tek kaynaktan (Kalan Borç), aynı dosya no farklı sekmede aynı kayıt, söz borç değil, 5b ön dolumu aynı kural (is/e23). (b) U1 YÜKSEK (2.4.3'te de): "Nihai
+  Tüketici" 11111111111'li EN ESKİ cariyi seçiyor (adı belli kişiye borç) → kendi işaretli carisi, adı belli caride 11111111111 uyarısı (is/u1). (c) 2.4.4'te U3 tablo
+  raporu çıktıları kendi adıyla + TOPLAM + bölünmeyen tutar + yerel tarih (is/mm-rapor), U4+U6 makbuz kartı "iade" metni + e-Arşiv/e-SMM tür notu görünür + onayda tür
+  adı (is/mm-smm), U5 600 TL'de yanlış "gerçek alıcı gerekir", U7 odak kayıpları, Personel Türkçe arama, Veriyi Sıfırla kırmızı, Seçilenleri Gönder güvenli odak,
+  UX17 kısmi ödenmişte kalan (ui-son, mm-smm'den sonra); SONRAYA dar pencereler, ad/yazım ayrıntıları, UI11 küçükleri.
 - İSTEKLER (kullanıcı, 22.10.2026 ~14:00–14:50 UTC; hepsi yanıtlandı): "18 numarada portalda ben ne yapacağım" → elle kabul adımları iş listesi 18 (teslimde
   kurulumla); "kalan işler için zaman çizelgesi, aynı anda yapılanları tek süre say" → verildi (devam notu ZAMAN ÇİZELGESİ); "compact talimatı vereceğim, veri kaybı
   olmasın" → devam notu 00 + ajan kayıtları yazıldı ve gönderildi (f013e57); EDM test hesabı ~14:45 UTC yeniden verildi (yalnız oturumda; dosyaya yazılmadı).
