@@ -1501,7 +1501,8 @@
     const t = c.totals;
     const cur = c.currency;
     const row = (label, value, cls = "") => `<div class="${cls}"><dt>${label}</dt><dd>${esc(curMoney(value, cur))}</dd></div>`;
-    const problems = [...(c.partyProblems || []), ...(c.sellerProblems || []), ...(c.warnings || [])];
+    // 2.4.4 (UX15): numara / tarih çakışması (dönem kilidi, seri sırası, elle numara) ve numaranın kayıtta verilmeyeceği durum onaydan önce görünür.
+    const problems = [...(c.partyProblems || []), ...(c.sellerProblems || []), ...(c.warnings || []), ...(c.numbering || []), ...(c.orderHold ? [c.orderHold.text] : [])];
     slot.innerHTML = `<h4>Toplamlar</h4>
       <dl class="hof-inv-totals">
         ${totalRows({ includeVat: form.pricesIncludeVat, base: t.base, baseNet: t.baseNet, discountNet: t.discountNet, discount: t.discount, net: t.net }).map(([label, value]) => row(label, value)).join("")}
@@ -1612,7 +1613,8 @@
     const ticket = ++calcTicket;
     try {
       // 2.4.3 (uzman UX2): düzenlenen iadenin kimliği — sunucu iadenin kendi miktarını "önce iade edilen" saymaz (tam iade Düzenle'de kaydedilir).
-      const calc = await HOF.api("/api/workspace/invoices/calc", { method: "POST", body: { ...docBody(form), ...(isReturn(form.kind) && (form.modifyId || form.id) ? { existingId: form.modifyId || form.id } : {}) } });
+      // 2.4.4 (UX15): Düzenle'de her belgenin kimliği — sunucu numara/tarih çakışmasını Düzenle kuralıyla söyler.
+      const calc = await HOF.api("/api/workspace/invoices/calc", { method: "POST", body: { ...docBody(form), ...(form.modifyId || (isReturn(form.kind) && form.id) ? { existingId: form.modifyId || form.id } : {}) } });
       if (ticket !== calcTicket || view.form !== form) return;
       form.calc = calc;
       form.calcError = "";
@@ -1628,7 +1630,8 @@
       refreshPayAfterCalc();
       const next = body()?.querySelector("[data-next]");
       // 2.1.0 (D2): Düzenle numarayı değiştirmez — formda belgenin kendi numarası (önceden sıradaki numara "Kaydedilince Verilecek No" diye görünüyordu).
-      if (next) next.innerHTML = form.modifyId ? (form.modifyNumber ? `<span>Belge No</span><b>${esc(form.modifyNumber)}</b>` : "") : calc.nextNumber ? `<span>Kaydedilince Verilecek No</span><b>${esc(calc.nextNumber)}</b>` : "";
+      // 2.4.4 (UX15): çakışma varken (kaydedilemez) ya da numara kayıtta verilmeyecekken (orderHold) sıradaki numara gösterilmez.
+      if (next) next.innerHTML = form.modifyId ? (form.modifyNumber ? `<span>Belge No</span><b>${esc(form.modifyNumber)}</b>` : "") : calc.nextNumber && !(calc.numbering || []).length && !calc.orderHold ? `<span>Kaydedilince Verilecek No</span><b>${esc(calc.nextNumber)}</b>` : "";
     } catch (error) {
       if (ticket !== calcTicket || view.form !== form) return;
       form.calc = null;
@@ -2155,11 +2158,13 @@
         const blockers = [...(c.blockers || []), ...(!form.modifyId && eSend !== "later" && c.aliasBlock ? [c.aliasBlock] : [])];
         if (blockers.length) return fail(`Fatura kaydedilemez: ${blockers.join(" ")}`);
         const who = form.account.name;
-        const numberText = c.nextNumber && eSend !== "later" ? `${c.nextNumber} numarasıyla ` : "";
+        // 2.4.4 (UX15): seride daha eski tarihli gönderilmemiş belge varken numara kayıtta verilmez (sunucu O1) — onay numara göstermez, nedeni söyler.
+        const held = eSend !== "later" && !form.modifyId ? c.orderHold : null;
+        const numberText = c.nextNumber && eSend !== "later" && !held ? `${c.nextNumber} numarasıyla ` : "";
         // v2.0.16 (müşteri): "Stoğa Mal Alışı"nda stok kartı olmayan kalem gider sayılır — kayıttan önce açıkça söylenir.
         const stockless = offersNewItem(form) ? usedLines(form).filter(line => !line.itemId && !line.newItem) : [];
         const stocklessText = stockless.length ? ` DİKKAT: ${stockless.map(line => `“${line.name.trim()}”`).join(", ")} stok kartı olmadan GİDER olarak kaydedilir, stoğa girmez. Mal ise Vazgeç'e basıp ürün adı kutusundaki listeden “+ Yeni Stok Kartı”nı seçin.` : "";
-        const sendText = eSend === "later" ? " Belge Gönderilecekler'de bekler; e-Belge numarası entegratöre gönderilirken verilir." : eSend === "now" ? " Belge kaydedilir kaydedilmez entegratöre (e-Belge) gönderilir." : "";
+        const sendText = held ? ` ${held.text}` : eSend === "later" ? " Belge Gönderilecekler'de bekler; e-Belge numarası entegratöre gönderilirken verilir." : eSend === "now" ? " Belge kaydedilir kaydedilmez entegratöre (e-Belge) gönderilir." : "";
         if (form.modifyId) {
           const sure = await HOF.confirm({
             title: "Değişiklikler Kaydedilsin mi?",
@@ -2175,7 +2180,7 @@
         }
         const ok = await HOF.confirm({
           title: ISSUE_LABELS[form.kind] || "Kaydet",
-          message: `${who} için ${numberText}${kindLabel(form.kind).toLocaleLowerCase("tr-TR")} kaydedilecek: ${curMoney(c.totals.payable, c.currency)}. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. ${eSend === "now" ? "Gönderildikten sonra düzenlenemez; yanlışsa iptal ya da iade gerekir." : "Yanlışsa sonradan kartındaki “Düzenle” ile düzeltilir."}${sendText}${stocklessText}`,
+          message: `${who} için ${numberText}${kindLabel(form.kind).toLocaleLowerCase("tr-TR")} kaydedilecek: ${curMoney(c.totals.payable, c.currency)}. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. ${eSend === "now" && !held ? "Gönderildikten sonra düzenlenemez; yanlışsa iptal ya da iade gerekir." : "Yanlışsa sonradan kartındaki “Düzenle” ile düzeltilir."}${sendText}${stocklessText}`,
           confirmLabel: eSend === "later" ? "Kaydet, Sonra Gönder" : eSend === "now" ? (meta?.settings?.draftUpload ? "Kaydet ve Taslak Yükle" : "Kaydet ve Gönder") : ISSUE_LABELS[form.kind] || "Kaydet",
         });
         if (!ok) return;
