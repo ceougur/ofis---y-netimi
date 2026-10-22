@@ -391,6 +391,19 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   disk 12 → 20 GB boş (bitmiş ajanların not defteri kopyaları tam yolla silindi — ders 24/36). (7) DERS 21: f013e57 / af751c5 (yalnız belge) hükmü ata 0c1ae0d'nin
   CI #860'ından okunur (sürüyor). (8) YORUM (kullanıcıya bildirildi): "giriş başarısızsa yeniden denenmez" yanlış kimlik / hesap kilitlenmesi içindir; koşu 1'de aynı
   kimlikle 19 giriş kabul edildi, 1'i eşzamanlılıktan reddedildi → koşu 2 ve 3 yeni planlı koşu sayıldı; betik giriş reddinde yine hemen durur (çıkış 2).
+- GÖZDEN GEÇİRME 4 (kullanıcı, 22.10.2026 ~18:00 UTC: "anayasamıza ve derslere gözat tekrar"; GG3'ten beri): (1) DERS 26 METNİ ↔ UYGULAMA: çalışma dalına 13 yalnız-belge
+  push (hepsi BELGE_YOLLARI; 13.10 kararıyla CI başlatmaz, Stop kancası gönderilmemiş commit'te durur); ders 26 "yalnız belge değişikliği kodla birlikte gönderilir" der →
+  kullanıcıya soruldu: ders 26'ya "BELGE_YOLLARI içindeki belge tek başına gönderilebilir; dışındaki (kanıt, testin okuduğu belge) kodla birlikte" açıklaması. (2) DERS 21/1:
+  CI #861 (158d9c0, aday 6 birleşimi) e2e KIRMIZI — senaryo-personel-244 12/23 (yerel kapıda 64/64 geçmişti); aday kök neden: testin `.hof-modal-backdrop.is-visible:last-of-type`
+  seçicisi body'ye pencereden sonra eklenen bir div ile boşa düşer, açık kalan form sonraki tıklamaları yutar (zincirleme 11 kırmızı); yerelde yavaşlatılmış + tanılı koşu
+  sürüyor (ders 20/38), Windows işleri okunacak; çalışma dalının hükmü bu arada KIRMIZI. Kök neden doğrulanınca ders 39 adayı (konuma bağlı seçici). (3) VERİMLİLİK: CI
+  günlüğü iki kez büyük kuyrukla okundu (çoğu aynı satırlar) → bir kez, dar; tanı eki ilk koşuda kendi hatasıyla düştü (playwright yolu) → bir koşu boşa. (4) KOddan/EKRANDAN
+  DOĞRULA: gezintide bir gözlem ("resmî unvan yalnız bildirimde") ekranın düğmeleri okunmadan söylendi, aynı adımda düzeltildi ("Unvanı Bununla Değiştir" var); sürücünün
+  alan kayması ürün bulgusu sanılmadan ayıklandı → gezinti bulgusu ekranın tamamı (düğmeler dahil) okunduktan sonra yazılır. (5) ZAMAN: yeni maddeler (30a, 30b, 30d G1–G6)
+  ve CI #861 → aday 7 kapısı ~1,5–2 sa kayar (kullanıcıya bildirildi). (6) TEMİZ: 27 commit (bütün dallar) model adsız, satırlar tam; uzakta yalnız çalışma dalı; parola
+  dosyada/geçmişte yok; ajan eforları kurala uygun (30a high, 30b high, 30d medium); ajan raporları ham kanıttan denetlendi (m30-e2e, m30-goc, 30b; kırmızı nedenleri
+  iletide — ders 16/38); disk 18 GB; kullanıcının her sorusu/kararı Açık iş'te; ders 18 ikinci gerçek EDM yeşili alındı; kalite çıtası gezintisi yapıldı.
+  İSTEK (~17:50 UTC: "diğer çalışan ajanlar durdu, sorun mu var?") → hayır: 30a/30d e2e'lerini ortak kilit sırasıyla bekliyor (ders 15); 30b bitti.
 - İSTEKLER (kullanıcı, 22.10.2026 ~14:00–14:50 UTC; hepsi yanıtlandı): "18 numarada portalda ben ne yapacağım" → elle kabul adımları iş listesi 18 (teslimde
   kurulumla); "kalan işler için zaman çizelgesi, aynı anda yapılanları tek süre say" → verildi (devam notu ZAMAN ÇİZELGESİ); "compact talimatı vereceğim, veri kaybı
   olmasın" → devam notu 00 + ajan kayıtları yazıldı ve gönderildi (f013e57); EDM test hesabı ~14:45 UTC yeniden verildi (yalnız oturumda; dosyaya yazılmadı).
