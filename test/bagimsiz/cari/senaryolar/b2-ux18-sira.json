@@ -1,0 +1,111 @@
+{
+ "dil": "destekofis-cari/1",
+ "ad": "b2-ux18-sira",
+ "aciklama": "UX18 en küçük örnekler: (1) bağlı evrak karşılıksız döndükten sonra gelen bağsız tahsilat EN ESKİ açık faturayı kapatır; (2) bağsız evrak karşılıksız dönünce kapattığı faturalar açılır (Σ açık = cari bakiye)",
+ "dayanak": "PLAN §8.10 'Otomatik (En Eski)', §4.3/2 FIFO; KULLANICI 22.10 madde 15 kararı; AJAN 15 değişmez",
+ "bugun": "2026-06-20",
+ "adimlar": [
+  {
+   "id": "c1",
+   "islem": "cari_ac",
+   "ad": "A",
+   "isim": "Sıra Alfa"
+  },
+  {
+   "id": "c2",
+   "islem": "cari_ac",
+   "ad": "B",
+   "isim": "Sıra Beta"
+  },
+  {
+   "id": "f1",
+   "islem": "fatura",
+   "ad": "F1",
+   "cari": "A",
+   "tutar": "1000",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "f2",
+   "islem": "fatura",
+   "ad": "F2",
+   "cari": "A",
+   "tutar": "1000",
+   "tarih": "2026-06-02"
+  },
+  {
+   "id": "f3",
+   "islem": "fatura",
+   "ad": "G1",
+   "cari": "B",
+   "tutar": "1000",
+   "tarih": "2026-06-03"
+  },
+  {
+   "id": "f4",
+   "islem": "fatura",
+   "ad": "G2",
+   "cari": "B",
+   "tutar": "1000",
+   "tarih": "2026-06-04"
+  },
+  {
+   "id": "e1",
+   "islem": "evrak",
+   "ad": "E1",
+   "cari": "A",
+   "tur": "cek",
+   "tutar": "1000",
+   "tarih": "2026-06-05",
+   "fatura": "F1"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  },
+  {
+   "id": "e1k",
+   "islem": "karsiliksiz",
+   "evrak": "E1",
+   "tarih": "2026-06-06"
+  },
+  {
+   "id": "k2",
+   "islem": "kontrol"
+  },
+  {
+   "id": "h1",
+   "islem": "tahsilat",
+   "cari": "A",
+   "tutar": "1000",
+   "tarih": "2026-06-07"
+  },
+  {
+   "id": "k3",
+   "islem": "kontrol"
+  },
+  {
+   "id": "e2",
+   "islem": "evrak",
+   "ad": "E2",
+   "cari": "B",
+   "tur": "cek",
+   "tutar": "1500",
+   "tarih": "2026-06-08"
+  },
+  {
+   "id": "k4",
+   "islem": "kontrol"
+  },
+  {
+   "id": "e2k",
+   "islem": "karsiliksiz",
+   "evrak": "E2",
+   "tarih": "2026-06-09"
+  },
+  {
+   "id": "k5",
+   "islem": "kontrol"
+  }
+ ]
+}
