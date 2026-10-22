@@ -46,12 +46,12 @@
     const rows = all.filter(item => matches(item, view.q));
     const head = `<tr><th>Ad Soyad</th><th>Görevi</th><th class="num">Yaş</th><th>Telefon</th><th>İşe Giriş Tarihi</th>${left ? "<th>İşten Ayrılış Tarihi</th>" : ""}<th class="num">Kullanılan İzinler</th><th class="num">Maaş</th></tr>`;
     const body = rows
-      .map(item => `<tr data-staff-id="${esc(item.id)}" tabindex="0" class="hof-staff-row"><td><b>${esc(item.fullName)}</b>${item.hasPhoto ? ' <small class="hof-staff-photo-mark" title="Fotoğraf var">▣</small>' : ""}</td><td>${esc(item.position || "—")}</td><td class="num">${item.age ?? "—"}</td><td>${esc(item.phone || "—")}</td><td>${esc(day(item.hireDate))}</td>${left ? `<td>${esc(day(item.leaveDate))}</td>` : ""}<td class="num">${item.usedLeaveDays ? `${item.usedLeaveDays} Gün` : "—"}</td><td class="num">${item.salaryMinor ? esc(money(item.salaryMinor)) : "—"}</td></tr>`)
+      .map(item => `<tr data-staff-id="${esc(item.id)}" tabindex="0" class="hof-staff-row"><td><b>${esc(item.fullName)}</b>${item.hasPhoto ? ' <small class="hof-staff-photo-mark" title="Fotoğraf var">▣</small>' : ""}${item.leaving ? ` <span class="hof-chip hof-chip-high" data-staff-leaving title="Ayrılış günü gelince Ayrılanlar'a geçer.">Ayrılacak · ${esc(day(item.leaveDate))}</span>` : ""}</td><td>${esc(item.position || "—")}</td><td class="num">${item.age ?? "—"}</td><td>${esc(item.phone || "—")}</td><td>${esc(day(item.hireDate))}</td>${left ? `<td>${esc(day(item.leaveDate))}</td>` : ""}<td class="num">${item.usedLeaveDays ? `${item.usedLeaveDays} Gün` : "—"}</td><td class="num">${item.salaryMinor ? esc(money(item.salaryMinor)) : "—"}</td></tr>`)
       .join("");
     const span = left ? 8 : 7;
     const empty = !all.length
       ? left
-        ? "Ayrılan personel yok. Bir çalışanın kartına İşten Ayrılış Tarihi yazılınca burada görünür."
+        ? "Ayrılan personel yok. Bir çalışanın kartına İşten Ayrılış Tarihi yazılınca (ileri tarihliyse o gün gelince) burada görünür."
         : `Henüz çalışan kartı yok.${canManage() ? " + Yeni Personel ile ekleyin." : ""}`
       : "Aramaya uyan personel yok.";
     const total = rows.reduce((sum, item) => sum + (Number(item.salaryMinor) || 0), 0);
@@ -149,7 +149,8 @@
   // ---------- Çalışan kartı: yalnız Personel Özeti ----------
   function summaryHtml(item) {
     const row = (label, value, key) => `<div class="hof-staff-field" data-field="${key}"><dt>${esc(label)}</dt><dd>${value ? esc(value) : "—"}</dd></div>`;
-    const status = item.status === "left" ? `<span class="hof-chip hof-chip-urgent">Ayrıldı · ${esc(day(item.leaveDate))}</span>` : '<span class="hof-chip hof-chip-accent">Aktif Çalışan</span>';
+    // Durum sunucudan (routes/staff.mjs staffStatus): ileri tarihli ayrılışta çalışan "Ayrılacak" işaretiyle Çalışanlar'dadır.
+    const status = item.status === "left" ? `<span class="hof-chip hof-chip-urgent">Ayrıldı · ${esc(day(item.leaveDate))}</span>` : item.leaving ? `<span class="hof-chip hof-chip-high" data-staff-leaving>Ayrılacak · ${esc(day(item.leaveDate))}</span>` : '<span class="hof-chip hof-chip-accent">Aktif Çalışan</span>';
     const photo = item.photo ? `<img class="hof-staff-photo" src="${esc(item.photo)}" alt="${esc(item.fullName)} fotoğrafı">` : `<div class="hof-staff-photo is-empty" aria-hidden="true">${esc((item.fullName || "?").trim().charAt(0).toLocaleUpperCase("tr-TR"))}</div>`;
     return `<div class="hof-staff-card" data-staff-card="${esc(item.id)}">
       <header class="hof-staff-card-head">${photo}<div><h3>${esc(item.fullName)}</h3><p>${esc(item.position || "Görevi yazılmadı")}</p>${status}</div></header>
@@ -255,7 +256,7 @@
       { name: "bankName", label: "Banka Adı", value: item?.bankName || "", maxlength: 120 },
       { name: "iban", label: "IBAN", value: ibanText(item?.iban), maxlength: 34, placeholder: "TR00 0000 0000 0000 0000 0000 00" },
       { name: "hireDate", label: "İşe Giriş Tarihi", type: "date", value: item?.hireDate || "" },
-      { name: "leaveDate", label: "İşten Ayrılış Tarihi", type: "date", value: item?.leaveDate || "", help: "Yazılınca kart Ayrılanlar'a geçer; silinince Çalışanlar'a döner." },
+      { name: "leaveDate", label: "İşten Ayrılış Tarihi", type: "date", value: item?.leaveDate || "", help: "Bugün ya da geçmiş tarih yazılınca kart Ayrılanlar'a geçer; ileri tarihte o güne kadar Çalışanlar'da \"Ayrılacak\" görünür; silinince Çalışanlar'a döner." },
       { name: "usedLeaveDays", label: "Kullanılan İzinler", value: item?.usedLeaveDays ? String(item.usedLeaveDays) : "", inputmode: "numeric", placeholder: "Gün", help: "Kullanılan izin gün sayısı." },
       { name: "email", label: "Kişisel E-Posta", type: "email", value: item?.email || "", maxlength: 200 },
       { name: "phone", label: "Telefon", type: "tel", value: item?.phone || "", maxlength: 40 },
@@ -296,8 +297,9 @@
       onSubmit: async data => {
         const body = { ...data, photo };
         const saved = editing ? await HOF.api(`${STAFF}/${encodeURIComponent(item.id)}`, { method: "PUT", body }) : await HOF.api(STAFF, { method: "POST", body });
-        const moved = editing ? saved.moved : saved.status === "left" ? "left" : "";
+        const moved = editing ? saved.moved : saved.status === "left" ? "left" : saved.leaving ? "leaving" : "";
         if (moved === "left") HOF.toast(`${saved.fullName} Ayrılanlar'a geçti.`, { type: "success" });
+        else if (moved === "leaving") HOF.toast(`${saved.fullName} ${day(saved.leaveDate)} tarihine kadar Çalışanlar'da kalır ("Ayrılacak"); o gün Ayrılanlar'a geçer.`, { type: "success" });
         else if (moved === "active") HOF.toast(`${saved.fullName} Çalışanlar'a döndü.`, { type: "success" });
         else HOF.toast(editing ? (saved.changed?.length ? "Personel kartı güncellendi." : "Değişiklik yok.") : "Personel kartı eklendi.", { type: "success" });
         await load({ quiet: true });
@@ -307,6 +309,10 @@
 
   HOF.whenReady?.(() => {
     // Başka bilgisayarda yapılan değişiklik (yalnız yetkililere, değersiz olay): açık pencere listeyi yeniden okur.
+    // Gün dönümü (sunucunun alerts.refresh olayı): ayrılış günü gelen çalışan açık pencerede de Ayrılanlar'a geçsin.
+    HOF.on("live:alerts.refresh", () => {
+      if (view.modal) load({ quiet: true });
+    });
     HOF.on("live:workspace.changed", change => {
       if (change?.kind === "staff" && view.modal) load({ quiet: true });
     });

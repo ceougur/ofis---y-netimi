@@ -1,0 +1,517 @@
+TAP version 13
+# Subtest: Doğrulama Kapısı — beklenen liste ↔ CI adımları
+    # Subtest: ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+    ok 1 - ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+      ---
+      duration_ms: 2.129708
+      type: 'test'
+      ...
+    # Subtest: yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+    ok 2 - yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+      ---
+      duration_ms: 0.454268
+      type: 'test'
+      ...
+    1..2
+ok 1 - Doğrulama Kapısı — beklenen liste ↔ CI adımları
+  ---
+  duration_ms: 3.986394
+  type: 'suite'
+  ...
+# Subtest: Bağımsız kâhinler iş akışında koşar
+    # Subtest: her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+    ok 1 - her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+      ---
+      duration_ms: 1.251296
+      type: 'test'
+      ...
+    1..1
+ok 2 - Bağımsız kâhinler iş akışında koşar
+  ---
+  duration_ms: 1.446775
+  type: 'suite'
+  ...
+# Subtest: Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+    # Subtest: mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+    ok 1 - mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+      ---
+      duration_ms: 2.436042
+      type: 'test'
+      ...
+    1..1
+ok 3 - Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+  ---
+  duration_ms: 2.566941
+  type: 'suite'
+  ...
+# Subtest: Kullanım kılavuzu sürümü
+    # Subtest: kapakta “Sürüm <program sürümü>” yazar
+    ok 1 - kapakta “Sürüm <program sürümü>” yazar
+      ---
+      duration_ms: 1.627124
+      type: 'test'
+      ...
+    # Subtest: dip notta “DestekOfis <program sürümü> · Kısa Kullanım Kılavuzu” yazar
+    ok 2 - dip notta “DestekOfis <program sürümü> · Kısa Kullanım Kılavuzu” yazar
+      ---
+      duration_ms: 0.338496
+      type: 'test'
+      ...
+    1..2
+ok 4 - Kullanım kılavuzu sürümü
+  ---
+  duration_ms: 4.352592
+  type: 'suite'
+  ...
+# Subtest: lisans belirteci
+    # Subtest: imzalı belirteci doğrular, değiştirilmiş veya tanınmayan anahtarla imzalanmışı reddeder
+    ok 1 - imzalı belirteci doğrular, değiştirilmiş veya tanınmayan anahtarla imzalanmışı reddeder
+      ---
+      duration_ms: 11.258868
+      type: 'test'
+      ...
+    # Subtest: biçim denetimi: deneme belirtecinin bitişi zorunlu, bilinmeyen tür ve durum reddedilir
+    ok 2 - biçim denetimi: deneme belirtecinin bitişi zorunlu, bilinmeyen tür ve durum reddedilir
+      ---
+      duration_ms: 1.440161
+      type: 'test'
+      ...
+    # Subtest: internetsiz etkinleştirme kodu zarfı taşır; bozuk kod anlaşılır hata verir
+    ok 3 - internetsiz etkinleştirme kodu zarfı taşır; bozuk kod anlaşılır hata verir
+      ---
+      duration_ms: 1.966834
+      type: 'test'
+      ...
+    # Subtest: kurulum kodu ve lisans anahtarı biçimleri
+    ok 4 - kurulum kodu ve lisans anahtarı biçimleri
+      ---
+      duration_ms: 0.660859
+      type: 'test'
+      ...
+    # Subtest: bilgisayar kimliği kalıcıdır; ham değer dışarı verilmez
+    ok 5 - bilgisayar kimliği kalıcıdır; ham değer dışarı verilmez
+      ---
+      duration_ms: 2.508225
+      type: 'test'
+      ...
+    1..5
+ok 5 - lisans belirteci
+  ---
+  duration_ms: 19.237748
+  type: 'suite'
+  ...
+# Subtest: lisans durumu (saf değerlendirme)
+    # Subtest: etkinleştirilmemiş kurulum salt okunurdur
+    ok 1 - etkinleştirilmemiş kurulum salt okunurdur
+      ---
+      duration_ms: 0.770304
+      type: 'test'
+      ...
+    # Subtest: deneme: kalan gün, son 7 günde uyarı, süre dolunca salt okunur
+    ok 2 - deneme: kalan gün, son 7 günde uyarı, süre dolunca salt okunur
+      ---
+      duration_ms: 6.215368
+      type: 'test'
+      ...
+    # Subtest: lisans: süresiz, bitişe yakın uyarı, engellenmiş lisans salt okunur
+    ok 3 - lisans: süresiz, bitişe yakın uyarı, engellenmiş lisans salt okunur
+      ---
+      duration_ms: 2.345169
+      type: 'test'
+      ...
+    # Subtest: 7 günden uzun internetsiz kalınca doğrulama ister; son 3 günde uyarır; internetsiz lisansta süre yok
+    ok 4 - 7 günden uzun internetsiz kalınca doğrulama ister; son 3 günde uyarır; internetsiz lisansta süre yok
+      ---
+      duration_ms: 1.374368
+      type: 'test'
+      ...
+    # Subtest: saat geri alınınca süre geri gelmez ve program salt okunur olur
+    ok 5 - saat geri alınınca süre geri gelmez ve program salt okunur olur
+      ---
+      duration_ms: 3.084132
+      type: 'test'
+      ...
+    # Subtest: geçiş dönemi 30 gün yazılabilir, sonra salt okunur; başka bilgisayarın lisansı sayılmaz
+    ok 6 - geçiş dönemi 30 gün yazılabilir, sonra salt okunur; başka bilgisayarın lisansı sayılmaz
+      ---
+      duration_ms: 0.413786
+      type: 'test'
+      ...
+    1..6
+ok 6 - lisans durumu (saf değerlendirme)
+  ---
+  duration_ms: 14.683167
+  type: 'suite'
+  ...
+# Subtest: lisans motoru — sunucu
+    # Subtest: yeni kurulum etkinleştirilmeden salt okunurdur; yönetim, yedek ve giriş çalışır
+    ok 1 - yeni kurulum etkinleştirilmeden salt okunurdur; yönetim, yedek ve giriş çalışır
+      ---
+      duration_ms: 836.00133
+      type: 'test'
+      ...
+    # Subtest: ücretsiz deneme 30 gün açar; süre dolunca durur, okuma ve yedek sürer
+    ok 2 - ücretsiz deneme 30 gün açar; süre dolunca durur, okuma ve yedek sürer
+      ---
+      duration_ms: 90.360971
+      type: 'test'
+      ...
+    # Subtest: aynı bilgisayara ikinci deneme verilmez (yeniden kurulum dahil)
+    ok 3 - aynı bilgisayara ikinci deneme verilmez (yeniden kurulum dahil)
+      ---
+      duration_ms: 346.114824
+      type: 'test'
+      ...
+    # Subtest: lisans anahtarı bilgisayara bağlanır; başka bilgisayarda reddedilir; engellenince salt okunur
+    ok 4 - lisans anahtarı bilgisayara bağlanır; başka bilgisayarda reddedilir; engellenince salt okunur
+      ---
+      duration_ms: 349.360737
+      type: 'test'
+      ...
+    # Subtest: internetsiz 7 gün tolerans: servis yoksa uyarır, 7 gün sonra durur, bağlantı gelince açılır
+    ok 5 - internetsiz 7 gün tolerans: servis yoksa uyarır, 7 gün sonra durur, bağlantı gelince açılır
+      ---
+      duration_ms: 36.875406
+      type: 'test'
+      ...
+    # Subtest: saat geri alınırsa durur; servisin saati güvenilir zamandır
+    ok 6 - saat geri alınırsa durur; servisin saati güvenilir zamandır
+      ---
+      duration_ms: 12.040696
+      type: 'test'
+      ...
+    # Subtest: internetsiz etkinleştirme kodu: yalnızca kendi bilgisayarında, doğrulama gerektirmez
+    ok 7 - internetsiz etkinleştirme kodu: yalnızca kendi bilgisayarında, doğrulama gerektirmez
+      ---
+      duration_ms: 310.652593
+      type: 'test'
+      ...
+    # Subtest: ileri alınıp düzeltilen saat takılı kalmaz: daha yeni imzalı kod zamanı düzeltir, eski kod geri alamaz
+    ok 8 - ileri alınıp düzeltilen saat takılı kalmaz: daha yeni imzalı kod zamanı düzeltir, eski kod geri alamaz
+      ---
+      duration_ms: 305.188457
+      type: 'test'
+      ...
+    # Subtest: 2.0 öncesinden gelen kullanılmış kurulum 30 günlük geçiş döneminde yazılabilir
+    ok 9 - 2.0 öncesinden gelen kullanılmış kurulum 30 günlük geçiş döneminde yazılabilir
+      ---
+      duration_ms: 334.175247
+      type: 'test'
+      ...
+    # Subtest: yerel kayıt elle değiştirilirse en sıkı varsayım kullanılır
+    ok 10 - yerel kayıt elle değiştirilirse en sıkı varsayım kullanılır
+      ---
+      duration_ms: 375.065923
+      type: 'test'
+      ...
+    # Subtest: demo program açılınca kendiliğinden başlar; internet yoksa kendiliğinden yeniden dener
+    ok 11 - demo program açılınca kendiliğinden başlar; internet yoksa kendiliğinden yeniden dener
+      ---
+      duration_ms: 355.131666
+      type: 'test'
+      ...
+    # Subtest: geçiş dönemindeki (2.0 öncesi) kuruluma deneme kendiliğinden başlatılmaz
+    ok 12 - geçiş dönemindeki (2.0 öncesi) kuruluma deneme kendiliğinden başlatılmaz
+      ---
+      duration_ms: 394.089308
+      type: 'test'
+      ...
+    # Subtest: denemenin 3. gününde yöneticiden firma bilgisi istenir; gönderilince bir daha sorulmaz
+    ok 13 - denemenin 3. gününde yöneticiden firma bilgisi istenir; gönderilince bir daha sorulmaz
+      ---
+      duration_ms: 378.36238
+      type: 'test'
+      ...
+    # Subtest: deneme süresi güncellemede (aynı data klasörüyle yeniden açılış) ve yeniden kurulumda sıfırlanmaz; süre dolunca öyle kalır
+    ok 14 - deneme süresi güncellemede (aynı data klasörüyle yeniden açılış) ve yeniden kurulumda sıfırlanmaz; süre dolunca öyle kalır
+      ---
+      duration_ms: 759.05796
+      type: 'test'
+      ...
+    # Subtest: geçiş dönemi (2.0 öncesi kurulum) güncellemede sıfırlanmaz; bütünlük özeti bozulsa da başlangıç ileri alınmaz
+    ok 15 - geçiş dönemi (2.0 öncesi kurulum) güncellemede sıfırlanmaz; bütünlük özeti bozulsa da başlangıç ileri alınmaz
+      ---
+      duration_ms: 455.104425
+      type: 'test'
+      ...
+    # Subtest: lisans durumu bilgisayar kimliğinin kaynağını söyler (Windows/Linux kimliği ya da veri klasöründeki dosya)
+    ok 16 - lisans durumu bilgisayar kimliğinin kaynağını söyler (Windows/Linux kimliği ya da veri klasöründeki dosya)
+      ---
+      duration_ms: 323.211847
+      type: 'test'
+      ...
+    # Subtest: salt okunur modda yazma yetkileri gizlenir, okuma yetkileri kalır
+    ok 17 - salt okunur modda yazma yetkileri gizlenir, okuma yetkileri kalır
+      ---
+      duration_ms: 0.384689
+      type: 'test'
+      ...
+    # Subtest: katalogdaki her yazma yetkisi salt okunurda gizlenir (okuma/yönetim yetkileri açık listeyle hariç)
+    ok 18 - katalogdaki her yazma yetkisi salt okunurda gizlenir (okuma/yönetim yetkileri açık listeyle hariç)
+      ---
+      duration_ms: 0.447007
+      type: 'test'
+      ...
+    # Subtest: salt okunur lisansta Vergi Ödemesi / KDV Mahsubu yetkisi ekrana gitmez, yazım reddedilir, veri değişmez
+    ok 19 - salt okunur lisansta Vergi Ödemesi / KDV Mahsubu yetkisi ekrana gitmez, yazım reddedilir, veri değişmez
+      ---
+      duration_ms: 318.126682
+      type: 'test'
+      ...
+    1..19
+ok 7 - lisans motoru — sunucu
+  ---
+  duration_ms: 6107.451043
+  type: 'suite'
+  ...
+# Subtest: gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+ok 8 - gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+  ---
+  duration_ms: 4.399297
+  type: 'test'
+  ...
+# Subtest: aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+ok 9 - aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+  ---
+  duration_ms: 94.491446
+  type: 'test'
+  ...
+# Subtest: gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+ok 10 - gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+  ---
+  duration_ms: 2.324223
+  type: 'test'
+  ...
+# Subtest: iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+ok 11 - iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+  ---
+  duration_ms: 0.511097
+  type: 'test'
+  ...
+# Subtest: lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+ok 12 - lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+  ---
+  duration_ms: 0.888201
+  type: 'test'
+  ...
+# Subtest: 2.4.4 Personel Özlük: yetki kataloğu
+    # Subtest: staff.view / staff.manage varsayılan yalnız yönetici; kişiye ve özel role verilebilir; havuzda Personel Özlük grubunda
+    ok 1 - staff.view / staff.manage varsayılan yalnız yönetici; kişiye ve özel role verilebilir; havuzda Personel Özlük grubunda
+      ---
+      duration_ms: 1.97578
+      type: 'test'
+      ...
+    # Subtest: istemci: Personel Raporu düğmesi reports.staff ile; CSS gizleme kuralı reports.view ya da staff.view (CRLF'ye dayanıklı)
+    ok 2 - istemci: Personel Raporu düğmesi reports.staff ile; CSS gizleme kuralı reports.view ya da staff.view (CRLF'ye dayanıklı)
+      ---
+      duration_ms: 5.058891
+      type: 'test'
+      ...
+    1..2
+ok 13 - 2.4.4 Personel Özlük: yetki kataloğu
+  ---
+  duration_ms: 8.004747
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 Personel Özlük: API
+    # Subtest: boş veri: liste boş, kartların hepsi sıfır
+    ok 1 - boş veri: liste boş, kartların hepsi sıfır
+      ---
+      duration_ms: 18.856673
+      type: 'test'
+      ...
+    # Subtest: bütün alanlarla ekle: yaş doğum tarihinden (yarın doğum günü → 35), maaş kuruş, IBAN boşluksuz; listede fotoğraf yok, kartta var
+    ok 2 - bütün alanlarla ekle: yaş doğum tarihinden (yarın doğum günü → 35), maaş kuruş, IBAN boşluksuz; listede fotoğraf yok, kartta var
+      ---
+      duration_ms: 59.147559
+      type: 'test'
+      ...
+    # Subtest: doğrulama: TC, IBAN, tarih sırası, e-posta, öğrenim, izin günü — 400 ve hatalı alan; reddedilen istek kayıt yazmaz
+    ok 3 - doğrulama: TC, IBAN, tarih sırası, e-posta, öğrenim, izin günü — 400 ve hatalı alan; reddedilen istek kayıt yazmaz
+      ---
+      duration_ms: 104.988478
+      type: 'test'
+      ...
+    # Subtest: aynı adlı iki çalışan iki ayrı kart; aynı TC No ikinci kartta 409
+    ok 4 - aynı adlı iki çalışan iki ayrı kart; aynı TC No ikinci kartta 409
+      ---
+      duration_ms: 17.214813
+      type: 'test'
+      ...
+    # Subtest: İşten Ayrılış Tarihi yazılınca Ayrılanlar'a geçer, silinince döner; kartlar ve Toplam Maaş (yalnız aktif) sayılarla
+    ok 5 - İşten Ayrılış Tarihi yazılınca Ayrılanlar'a geçer, silinince döner; kartlar ve Toplam Maaş (yalnız aktif) sayılarla
+      ---
+      duration_ms: 97.613378
+      type: 'test'
+      ...
+    # Subtest: KVKK: işlem geçmişine yalnız alan ADLARI yazılır; ad, TC, IBAN, maaş, adres, e-posta, telefon değeri yok
+    ok 6 - KVKK: işlem geçmişine yalnız alan ADLARI yazılır; ad, TC, IBAN, maaş, adres, e-posta, telefon değeri yok
+      ---
+      duration_ms: 3.950546
+      type: 'test'
+      ...
+    # Subtest: maaş yalnız bilgi: Kasa, Banka, cari ve Ana Defter'de iz yok
+    ok 7 - maaş yalnız bilgi: Kasa, Banka, cari ve Ana Defter'de iz yok
+      ---
+      duration_ms: 6.212533
+      type: 'test'
+      ...
+    # Subtest: yetkisiz: personel ve muhasebe 403; görüntüleme verilince okur ama yazamaz; düzenleme de verilince yazar; kaldırılınca 403
+    ok 8 - yetkisiz: personel ve muhasebe 403; görüntüleme verilince okur ama yazamaz; düzenleme de verilince yazar; kaldırılınca 403
+      ---
+      duration_ms: 459.744453
+      type: 'test'
+      ...
+    # Subtest: 002 şirketi ayrı veri: 002'nin kartı 001'de görünmez, 001'inki 002'de görünmez
+    ok 9 - 002 şirketi ayrı veri: 002'nin kartı 001'de görünmez, 001'inki 002'de görünmez
+      ---
+      duration_ms: 171.05972
+      type: 'test'
+      ...
+    # Subtest: yedek tatbikatı (002): yedek → çalış → geri yükle → sayılar → yeniden çalış; Tüm Hareketleri Sil kartlara dokunmaz, Tümünü Sıfırla siler
+    ok 10 - yedek tatbikatı (002): yedek → çalış → geri yükle → sayılar → yeniden çalış; Tüm Hareketleri Sil kartlara dokunmaz, Tümünü Sıfırla siler
+      ---
+      duration_ms: 424.556746
+      type: 'test'
+      ...
+    1..10
+ok 14 - 2.4.4 Personel Özlük: API
+  ---
+  duration_ms: 1835.857315
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 Personel Özlük: göç v31 (yalnız ekleyici)
+    # Subtest: v30 veri dosyası v31'e geçer: staff_members STRICT olarak açılır, eski tablolar ve satırlar değişmez; ikinci açılış bir şey yapmaz
+    ok 1 - v30 veri dosyası v31'e geçer: staff_members STRICT olarak açılır, eski tablolar ve satırlar değişmez; ikinci açılış bir şey yapmaz
+      ---
+      duration_ms: 114.516303
+      type: 'test'
+      ...
+    1..1
+ok 15 - 2.4.4 Personel Özlük: göç v31 (yalnız ekleyici)
+  ---
+  duration_ms: 114.735715
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 Personel Özlük: ileri tarihli İşten Ayrılış Tarihi (Ayrılacak)
+    # Subtest: kural tek yerde: dün / bugün → Ayrılanlar; yarın / ileri tarih → Çalışanlar + Ayrılacak; tarih yok → Çalışanlar
+    ok 1 - kural tek yerde: dün / bugün → Ayrılanlar; yarın / ileri tarih → Çalışanlar + Ayrılacak; tarih yok → Çalışanlar
+      ---
+      duration_ms: 0.266638
+      type: 'test'
+      ...
+    # Subtest: API + sahte saat: yarın ayrılacak çalışan bugün sayılır, gün ilerleyince kendiliğinden Ayrılanlar'a geçer
+    ok 2 - API + sahte saat: yarın ayrılacak çalışan bugün sayılır, gün ilerleyince kendiliğinden Ayrılanlar'a geçer
+      ---
+      duration_ms: 445.581392
+      type: 'test'
+      ...
+    1..2
+ok 16 - 2.4.4 Personel Özlük: ileri tarihli İşten Ayrılış Tarihi (Ayrılacak)
+  ---
+  duration_ms: 446.18664
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 0.832195
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 143.743195
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 137.171821
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 129.814783
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 396.781052
+      type: 'test'
+      ...
+    1..5
+ok 17 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 809.699543
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 34.40742
+      type: 'test'
+      ...
+    1..1
+ok 18 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 34.644337
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 133.347007
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 10.090133
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 3.26339
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 4 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 63.044981
+      type: 'test'
+      ...
+    1..4
+ok 19 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 211.188919
+  type: 'suite'
+  ...
+# Subtest: yetkiye göre görünürlük
+    # Subtest: data-requires / requires ile kullanılan her yetkinin gizleme kuralı var
+    ok 1 - data-requires / requires ile kullanılan her yetkinin gizleme kuralı var
+      ---
+      duration_ms: 17.291827
+      type: 'test'
+      ...
+    1..1
+ok 20 - yetkiye göre görünürlük
+  ---
+  duration_ms: 18.401896
+  type: 'suite'
+  ...
+1..20
+# tests 67
+# suites 15
+# pass 67
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6623.919575

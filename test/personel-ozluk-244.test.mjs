@@ -14,6 +14,7 @@ import { after, before, describe, it } from "node:test";
 import { ADMIN_PASSWORD, createUser, loginAdmin, startTestServer } from "./helpers.mjs";
 import { ADMIN_ONLY, PERMISSION_GROUPS, can, isGrantable, resolvePermissions } from "../server/lib/permissions.mjs";
 import { WRITE_PERMISSIONS } from "../server/lib/license.mjs";
+import { staffStatus } from "../server/routes/staff.mjs";
 import { DatabaseSync } from "node:sqlite";
 import { createStore } from "../server/lib/db.mjs";
 import { LATEST_VERSION, MIGRATIONS, runMigrations } from "../server/lib/migrations.mjs";
@@ -295,5 +296,59 @@ describe("2.4.4 Personel Özlük: göç v31 (yalnız ekleyici)", () => {
     assert.throws(() => store.run("INSERT INTO staff_members (id, full_name, salary_minor, created_by, created_at) VALUES ('x', 'Eksi', -1, 'u', 'z')"), /CHECK/i, "eksi maaş veri tabanında da reddedilir");
     assert.deepEqual(runMigrations(store, {}).applied, [], "ikinci açılışta göç yok");
     db.close();
+  });
+});
+
+// Kullanıcı kararı 22.10.2026 ("önerini uygula işten ayrılış tarihi ile alakalı olarak"): İLERİ tarihli İşten Ayrılış Tarihi'nde çalışan ayrılış gününe
+// kadar Çalışanlar'da "Ayrılacak" kalır, Toplam Maaş ve Aktif Çalışan'da sayılır; bugün ≥ tarih olunca kendiliğinden Ayrılanlar'a geçer. Kâhin karar metni:
+// dün ve bugün → Ayrılan; yarın ve ileri tarih → Aktif + Ayrılacak. Gün sahte saatle (config.now) ilerletilir (ders 13/22).
+describe("2.4.4 Personel Özlük: ileri tarihli İşten Ayrılış Tarihi (Ayrılacak)", () => {
+  it("kural tek yerde: dün / bugün → Ayrılanlar; yarın / ileri tarih → Çalışanlar + Ayrılacak; tarih yok → Çalışanlar", () => {
+    const today = "2026-10-22";
+    assert.deepEqual(staffStatus("", today), { status: "active", leaving: false });
+    assert.deepEqual(staffStatus("2026-10-21", today), { status: "left", leaving: false });
+    assert.deepEqual(staffStatus("2026-10-22", today), { status: "left", leaving: false }, "ayrılış günü gelince Ayrılanlar'a");
+    assert.deepEqual(staffStatus("2026-10-23", today), { status: "active", leaving: true });
+    assert.deepEqual(staffStatus("2027-01-01", "2026-12-31"), { status: "active", leaving: true }, "yıl dönümü");
+    assert.deepEqual(staffStatus("2027-01-01", "2027-01-01"), { status: "left", leaving: false });
+  });
+
+  it("API + sahte saat: yarın ayrılacak çalışan bugün sayılır, gün ilerleyince kendiliğinden Ayrılanlar'a geçer", async () => {
+    const server = await startTestServer({ now: NOW });
+    try {
+      const admin = await loginAdmin(server);
+      const add = async (fullName, leaveDate, salary) => data(await admin.post(BASE, { fullName, hireDate: "2024-01-01", leaveDate, salary }));
+      const dun = await add("Dün Ayrılan", "2026-10-21", "10.000");
+      const bugun = await add("Bugün Ayrılan", "2026-10-22", "11.000");
+      const yarin = await add("Yarın Ayrılacak", "2026-10-23", "12.000");
+      const ileri = await add("Yılbaşı Ayrılacak", "2027-01-01", "13.000");
+      const kalan = await add("Kalan Çalışan", "", "14.000");
+      assert.deepEqual([dun, bugun, yarin, ileri, kalan].map(item => [item.status, item.leaving]), [["left", false], ["left", false], ["active", true], ["active", true], ["active", false]]);
+      const byName = list => Object.fromEntries(list.items.map(item => [item.fullName, `${item.status}${item.leaving ? "+leaving" : ""}`]));
+      let list = data(await admin.get(BASE));
+      assert.deepEqual(list.totals, { registered: 5, active: 3, left: 2, salaryMinor: 1_200_000 + 1_300_000 + 1_400_000 }, "Ayrılacak çalışan Aktif Çalışan ve Toplam Maaş'ta");
+      // Düzenlemede ileri tarih: "Ayrılacak olarak işaretlendi"; geçmiş tarihe çekilince Ayrılanlar'a geçer; silinince döner.
+      const marked = data(await admin.put(`${BASE}/${kalan.id}`, { leaveDate: "2026-11-30" }));
+      assert.equal(marked.moved, "leaving");
+      assert.equal(marked.status, "active");
+      assert.equal(data(await admin.put(`${BASE}/${kalan.id}`, { leaveDate: "2026-10-01" })).moved, "left");
+      assert.equal(data(await admin.put(`${BASE}/${kalan.id}`, { leaveDate: "" })).moved, "active");
+      // Gün ilerler (sunucunun bugünü 23.10): yarın ayrılacak olan kendiliğinden Ayrılanlar'da; yılbaşı ayrılacak olan hâlâ Çalışanlar'da.
+      server.clock.set("2026-10-23T10:00:00+03:00");
+      list = data(await admin.get(BASE));
+      assert.equal(list.today, "2026-10-23");
+      assert.deepEqual(byName(list), { "Dün Ayrılan": "left", "Bugün Ayrılan": "left", "Yarın Ayrılacak": "left", "Yılbaşı Ayrılacak": "active+leaving", "Kalan Çalışan": "active" });
+      assert.deepEqual(list.totals, { registered: 5, active: 2, left: 3, salaryMinor: 1_300_000 + 1_400_000 });
+      assert.equal(data(await admin.get(`${BASE}/${yarin.id}`)).status, "left", "kart da aynı kuralla");
+      server.clock.set("2026-12-31T23:00:00+03:00");
+      assert.equal(byName(data(await admin.get(BASE)))["Yılbaşı Ayrılacak"], "active+leaving", "yılın son günü hâlâ çalışıyor");
+      server.clock.set("2027-01-01T10:00:00+03:00");
+      list = data(await admin.get(BASE));
+      assert.equal(byName(list)["Yılbaşı Ayrılacak"], "left", "yılbaşında Ayrılanlar'da");
+      assert.deepEqual(list.totals, { registered: 5, active: 1, left: 4, salaryMinor: 1_400_000 });
+      assert.equal(server.app.store.get("SELECT COUNT(*) AS n FROM staff_members WHERE leave_date = '2027-01-01'").n, 1, "veri değişmedi; durum tarihten türetilir");
+    } finally {
+      await server.close();
+    }
   });
 });

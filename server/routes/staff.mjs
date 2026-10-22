@@ -57,6 +57,17 @@ function dateInput(value, field) {
   return raw;
 }
 
+/**
+ * Çalışanın durumu TEK YERDE (kullanıcı kararı 22.10.2026): İşten Ayrılış Tarihi yoksa ya da İLERİ tarihliyse (bugün < tarih) çalışan Çalışanlar'dadır
+ * — ileri tarihliyse "Ayrılacak" (leaving) işaretiyle, Toplam Maaş ve Aktif Çalışan'da sayılır; ayrılış günü gelince (bugün ≥ tarih) kendiliğinden
+ * Ayrılanlar'a geçer. today: programın bugünü (config.now → now.today(), sunucunun yerel günü; Türkiye kurulumunda Türkiye saati).
+ */
+export function staffStatus(leaveDate, today) {
+  if (!leaveDate) return { status: "active", leaving: false };
+  if (today && leaveDate > today) return { status: "active", leaving: true };
+  return { status: "left", leaving: false };
+}
+
 /** Doğum tarihinden bugünkü yaş (tam yıl). today: "YYYY-AA-GG". */
 export function ageOf(birthDate, today) {
   if (!birthDate || !today) return null;
@@ -145,7 +156,7 @@ export function registerStaffRoutes(router, { auth, store, audit, events, access
       salaryMinor: row.salary_minor,
       salary: undefined,
       age: ageOf(row.birth_date, day),
-      status: row.leave_date ? "left" : "active",
+      ...staffStatus(row.leave_date, day),
       hasPhoto: Boolean(row.photo),
       createdAt: row.created_at,
       updatedAt: row.updated_at || row.created_at,
@@ -226,7 +237,12 @@ export function registerStaffRoutes(router, { auth, store, audit, events, access
       changed(user);
     }
     const next = find(row.id);
-    ok(res, { ...publicOf(next, today(), { photo: true }), changed: changedKeys.map(key => STAFF_FIELDS[key]), moved: Boolean(previous.leaveDate) !== Boolean(values.leaveDate) ? (values.leaveDate ? "left" : "active") : "" });
+    const day = today();
+    const before = staffStatus(previous.leaveDate, day);
+    const after = publicOf(next, day, { photo: true });
+    // moved: kayıtla durum değiştiyse "left" (Ayrılanlar'a geçti), "active" (Çalışanlar'a döndü), "leaving" (Ayrılacak olarak işaretlendi).
+    const moved = before.status !== after.status ? after.status : after.leaving && !before.leaving ? "leaving" : "";
+    ok(res, { ...after, changed: changedKeys.map(key => STAFF_FIELDS[key]), moved });
   });
 
   router.delete(`${BASE}/:id`, async ({ req, res, params }) => {

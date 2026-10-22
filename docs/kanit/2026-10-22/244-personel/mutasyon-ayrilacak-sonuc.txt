@@ -1,0 +1,6 @@
+M9 ayrılış günü hâlâ çalışıyor (>=): çıkış 1 # fail 2 -> YAKALANDI
+M10 ileri tarih de hemen ayrılır (eski davranış): çıkış 1 # fail 2 -> YAKALANDI
+M11 Ayrılacak'ın maaşı Toplam Maaş'a girmez: çıkış 1 # fail 1 -> YAKALANDI
+M12 'Ayrılacak olarak işaretlendi' bildirilmez: çıkış 1 # fail 1 -> YAKALANDI
+M13 bugün yerine sabit saat (gün ilerlemez): çıkış 1 # fail 1 -> YAKALANDI
+geri alınmış kod: çıkış 0 ['# fail 0']

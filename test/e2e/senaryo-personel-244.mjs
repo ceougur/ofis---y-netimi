@@ -9,6 +9,8 @@
 //  8. Yetkisiz: personel kullanıcısı Personel Raporu'nu görmez, API 403; yönetici "Personel Özlük Görüntüleme" verince görür ama
 //     "+ Yeni Personel" ve "Düzenle" yok; Performans Özeti sekmesi yok (reports.view yok).
 //  9. Değişiklik Geçmişi'nde alan adı var, değer (TC, IBAN, maaş) yok.
+// 10. İleri tarihli ayrılış (kullanıcı kararı 22.10.2026): yarın ayrılacak çalışan Çalışanlar'da "Ayrılacak · tarih" notuyla kalır, Aktif Çalışan ve Toplam
+//     Maaş'ta sayılır; sahte saat ertesi güne ilerletilince (sunucu + tarayıcı) kendiliğinden Ayrılanlar'a geçer.
 // Kırmızı kanıt: DEPO=<eski kopya> ile aynı senaryo eski kodda koşulur (ürün DEPO'dan yüklenir).
 // Çalıştırma: npm run test:senaryo-personel-244 (ekran görüntüleri test/e2e/artifacts/senaryo-personel-244/).
 import fs, { mkdtempSync } from "node:fs";
@@ -20,7 +22,7 @@ import { chromium } from "playwright";
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = process.env.DEPO ? path.resolve(process.env.DEPO) : path.resolve(HERE, "..", "..");
 const { createApp } = await import(pathToFileURL(path.join(ROOT, "server", "app.mjs")).href);
-const { createClient, installPageClock } = await import(pathToFileURL(path.join(HERE, "..", "helpers.mjs")).href);
+const { createClient, installPageClock, moveClock } = await import(pathToFileURL(path.join(HERE, "..", "helpers.mjs")).href);
 
 const OUT = path.join(HERE, "artifacts", "senaryo-personel-244");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -324,6 +326,41 @@ try {
     ok(/Personel kartını düzeltti/.test(text) && /Alanlar: İşten Ayrılış Tarihi/.test(text) && /Personel kartı ekledi/.test(text), "işlem türü ve alan adları görünür");
     ok(!/10000000146|TR33|45\.000|Ayşe|Mehmet|Atatürk|ornek\.com/.test(text), "TC, IBAN, maaş, ad, adres, e-posta değeri YOK");
     await shot("degisiklik-gecmisi");
+  });
+
+  await step("10. İleri tarihli ayrılış: bugün Ayrılacak notuyla Çalışanlar'da ve sayılır; ertesi gün kendiliğinden Ayrılanlar'a geçer", async () => {
+    await page.goto(`${BASE}/`, { waitUntil: "load" });
+    await page.waitForSelector("#hof-sidecard", { timeout: 30000 });
+    await page.waitForTimeout(600);
+    await openWindow();
+    await page.click(`${WIN} tr[data-staff-id]:has-text("Kurye")`);
+    await page.waitForSelector(`${MODAL} .hof-staff-card-modal [data-staff-card-act="edit"]`, { state: "visible" });
+    await page.click('.hof-staff-card-modal [data-staff-card-act="edit"]');
+    await page.waitForSelector(`${FORM} input[name="leaveDate"]`);
+    await page.fill(`${FORM} input[name="leaveDate"]`, "2026-10-23");
+    await page.click(`${FORM} button[type="submit"]`);
+    await page.waitForFunction(() => !document.querySelector(".hof-staff-form"), null, { timeout: 10000 });
+    await page.waitForTimeout(500);
+    const toast = await page.$$eval(".hof-toasts *", nodes => nodes.map(node => node.textContent).join(" "));
+    ok(/Mehmet Kaya 23\.10\.2026 tarihine kadar Çalışanlar'da kalır/.test(toast), "bildirim: o tarihe kadar Çalışanlar'da kalır");
+    const list = await rows();
+    ok(list.length === 3 && list.some(name => /Mehmet Kaya.*Ayrılacak · 23\.10\.2026/.test(name)), `Çalışanlar'da 3 satır, Mehmet Kaya "Ayrılacak · 23.10.2026" (${list.join(" | ")})`);
+    let k = await kpis();
+    ok(k.active === "3" && k.left === "0" && k.salary === money(9_000_050), `kartlar: ${JSON.stringify(k)} (Ayrılacak sayılır)`);
+    ok(dbRows().find(row => row.position === "Kurye").leave_date === "2026-10-23", "veri tabanında ayrılış tarihi 2026-10-23");
+    await shot("ayrilacak");
+    await closeTop();
+    await moveClock(app.config.now, page, "2026-10-23T10:00:00+03:00");
+    await openWindow();
+    k = await kpis();
+    ok(k.active === "2" && k.left === "1" && k.salary === money(7_000_050), `ertesi gün kartlar: ${JSON.stringify(k)}`);
+    ok(!(await rows()).some(name => name.includes("Ayrılacak")), "Çalışanlar'da Ayrılacak kalmadı");
+    await page.click(`${WIN} [data-staff-tab="left"]`);
+    await page.waitForTimeout(300);
+    const left = await rows();
+    ok(left.length === 1 && left[0].startsWith("Mehmet Kaya"), `Ayrılanlar'da Mehmet Kaya (${left.join(" | ")})`);
+    await shot("ertesi-gun-ayrilanlar");
+    await closeTop();
   });
 } catch (error) {
   failed += 1;
