@@ -326,6 +326,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   `claude/youthful-euler-fl8ks4` dalında (master'da yok); eski `claude/hopeful-goodall-6nmtcj` dalı ESKİ — oradan belge ALINMAZ (yenilerini ezer).
 - 2.4.4 BAŞLADI (kullanıcı "başla", 22.10.2026 03:25 UTC); 30 dk rapor işi CronCreate fc078609 (oturum içi; 2.4.4 bitince silinir). Çalışma düzeni: her iş
   grubu ayrı git worktree'de (/home/user/wt/<ad>, dal is/<ad>), ajan commit eder, ana oturum youthful-euler dalına birleştirir, testler + push + CI.
+  DALGA 1 (22.10 ~03:35 UTC; ajan kuralları not defteri ajan-ortak.md — kapsayıcıyla gider): kucuk [M] 3,25,4 · test-altyapi [H] 6,27 · d2 [XH] 7 · esmm [XH]
+  20,21 · sunucu [H] 28,29 · personel [H] 19. SONRAKİLER: kayit [XH] 5 (4'ten sonra) · fatura-ui [M] 9,10,13,14,UX16 · UI11 [H] 8 · UX9/UX10 [H] 11 · UX15 [XH] ·
+  UX18 [XH] 15 · KÖ3 [H] 16 · E6 [XH] 17 · E7 [H] 18 · brüt [XH] 26 · esmm-2 [XH] 22,23 · esmm-3 [XH] 24 (gerçek EDM). Biten dalga birleştirilince iş listesinde üstü çizilir.
 - 2.4.4 "BAŞLA" KONTROL LİSTESİ (atlanmaz, sırayla): (1) yukarıdaki iki belge + bu Açık iş dosyadan okunur; (2) RAPOR DÜZENİ için CronCreate 30 dk işi
   kurulur ("7,37 * * * *"; 2.4.4 bitince silinir); (3) iş listesi madde 1 (npm ci — bağ yok; git fetch --unshallow --tags; master CI 163dd5d + "Sürüm yayımla"
   okunur); (4) yüklenen dosyalar yerinde mi (HAZIRLIK 3) — yoksa kullanıcıdan istenir; EDM test hesabı sohbette verildi, dosyaya YAZILMAZ, kaybolduysa
