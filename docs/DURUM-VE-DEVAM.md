@@ -4,6 +4,25 @@
 Önceki oturum: 2.4.3 YAYIMLANDI (v2.4.3, master 163dd5d, PR ceougur/ofis---y-netimi#33; site kılavuzu ceougur/destekofis#19). Kod o günden beri DEĞİŞMEDİ;
 yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
 
+### 00. 2.4.4 SÜRÜYOR — DEVAM NOTU (22.10.2026 ~09:30 UTC; sıkıştırmadan önce yazıldı — ÖNCE BUNU OKU)
+- Durum tablosu: `docs/2.4.4-IS-LISTESI.md` (biten üstü çizili + "Teslim notları" — her maddenin sınırı ve KÂHİN KURALI orada). Kararlar: CLAUDE.md Açık iş (22.10 SORU/KARAR
+  satırlarının hepsi yanıtlandı; açık karar yok). Ders 37 yeni (aday e2e listesi tahminle seçilmez); ders 19 notu: Bash aracında `set -e` ETKİSİZ → `&&` / `|| exit 1`.
+- ÇALIŞMA DÜZENİ: iş grubu = /home/user/wt/<ad> worktree (dal is/<ad>); ajan commit eder; ana oturum BİRLEŞTİRME ADAYINDA (/home/user/wt/aday, dal `aday`) birleştirir →
+  kapı betiği `<not defteri>/aday-kos.sh <worktree> <etiket>` (tam npm test, geçmezse durur; sonra ci.yml'nin 63 e2e'si flock ile) → yeşilse çalışma dalına `git merge --no-ff aday`
+  + push + `kanit.mjs ci <sha> --bekle`. Liste çakışmaları (ci.yml --beklenen, release.yml, package.json) `<not defteri>/liste-birlesim.py <dosyalar>`; kod çakışması ELLE ve anlamca.
+  Not defteri: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad (ajan-ortak.md = ajan kuralları; kapsayıcıyla gider).
+- ÇALIŞMA DALINDA (yeşil CI): madde 1–4, 6, 7, 9, 10, 12-UX16, 13, 14, 19, 20, 21, 23, 25, 27, 28, 29 (CI #849–#857). Çalışma dalında ama CI #858 KIRMIZI (senaryo-222): 5, 16, 18,
+  26, 23 eki → düzeltmesi 7c aday 3'te.
+- ADAY 3 (fd0b0fc; kapı koşuyor, 09:10'da başladı): 22 esmm2 735da8f, 5a–5c kayit 8ea0406, 11 ux9 a61d561, 15 ux18 55584e6, 8 ui11 242029a, 7c s222 761dad7 (+ 17 secilen fdb1a18 esmm2
+  içinde). Kapı yeşilse: çalışma dalına birleştir, push, CI oku; 5/16/18/26/23-ek + aday 3 maddelerinin üstünü CI yeşilince çiz.
+- ADAY 4'e girecekler: 12 UX15 (is/ux15 3a58fda, bitti), 7b B4 (is/b4, ajan sürüyor), 24 e-SMM açma + gerçek EDM düzeneği (is/edm, fd0b0fc tabanlı, ajan sürüyor).
+- MADDE 24 GERÇEK EDM KOŞUSU ana oturumca: edm ajanının betiği (komut satırı raporunda), kimlik YALNIZ ortam değişkeniyle o komutta (EDM test hesabı sohbette — dosyaya YAZILMAZ;
+  kaybolduysa kullanıcıdan istenir; parolanın sonundaki nokta belirsiz — giriş başarısızsa YENİDEN DENEME, kullanıcıya sor, hesap kilitlenebilir). Koşudan sonra kullanıcıya OZET.md
+  (gönderilen belge no + ETTN listesi; kullanıcı test portalında bakacak).
+- SONRA: 30 (tam test + BÜTÜN e2e, CI dışı dahil; yedek tatbikatı; v2.4.3 → 2.4.4 göçü; ana oturumun kullanıcı gözüyle iş akışı) → 31 bağımsız tur (31a kâhin — teslim notlarındaki
+  KÂHİN KURALI satırlarından, kodu görmeden; 31b mali müşavir; 31c yargıç; 31d eleştirmen; 31e dar kontrol; 31f uzman UI/UX) → 32 CI → 33 Uzun Doğrulama → 34–36 paket/teslim/PR.
+- 30 dk RAPOR işi: CronCreate 615db56b ("7,37 * * * *"; kapsayıcı yeniden başlarsa silinir → yeniden kur). Ajan kimlikleri not defterinde devam-ajanlar.md.
+
 ### 0. İlk 10 dakika
 1. `CLAUDE.md` — anayasa + kurallar (oturum başında kendiliğinden yüklenir). Bölüm yerleri:
    - "Proje Anayasası & Rol Dağılımı" (baş mimar sorumluluğu, kör nokta uyarısı) · "Kalite çıtası" · "Test kuralı" · "KANIT KURALI 1–5"
