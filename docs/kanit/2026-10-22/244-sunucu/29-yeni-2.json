@@ -1,0 +1,32 @@
+{
+  "ad": "244-sunucu/29-yeni-2",
+  "komut": "node --test test/sirket-canli-olay-244.test.mjs",
+  "commit": "741caf9bb967e57188e4daa48f9d607e0411fd4c",
+  "dal": "is/sunucu",
+  "kirli": 2,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T03:40:36.205Z",
+  "sure_sn": 2.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-sunucu/29-yeni-2.log",
+  "klasor": "/home/user/wt/sunucu",
+  "ham_cikti_sha256": "12ab78d6828e82d20d288bea0feaac0d776f3d4c8c7d01b5d4f7331db67dbd78",
+  "ham_cikti_bayt": 2494
+}

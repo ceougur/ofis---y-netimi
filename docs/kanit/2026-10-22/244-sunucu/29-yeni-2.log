@@ -1,0 +1,55 @@
+TAP version 13
+# (node:15463) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Şirket kanalları: ortak olaylar 002 ekranına ulaşır, şirket verisi sızmaz
+    # Subtest: yönetici yetkiyi değiştirince 002 penceresi (personel) 'permissions' olayını alır; /api/auth/me 002'de yeni yetkiyi verir
+    ok 1 - yönetici yetkiyi değiştirince 002 penceresi (personel) 'permissions' olayını alır; /api/auth/me 002'de yeni yetkiyi verir
+      ---
+      duration_ms: 43.204561
+      type: 'test'
+      ...
+    # Subtest: yetki olayı yalnız ilgili kullanıcıya gider (002'de de): yöneticinin 002 akışı başkasının yetki olayını almaz
+    ok 2 - yetki olayı yalnız ilgili kullanıcıya gider (002'de de): yöneticinin 002 akışı başkasının yetki olayını almaz
+      ---
+      duration_ms: 333.485293
+      type: 'test'
+      ...
+    # Subtest: lisans değişikliği (Denetle) 002 penceresine 'license.changed' olarak ulaşır
+    ok 3 - lisans değişikliği (Denetle) 002 penceresine 'license.changed' olarak ulaşır
+      ---
+      duration_ms: 37.045525
+      type: 'test'
+      ...
+    # Subtest: kullanıcı adı değişikliği ('users') ve şirket listesi değişikliği ('companies') 002 penceresine ulaşır
+    ok 4 - kullanıcı adı değişikliği ('users') ve şirket listesi değişikliği ('companies') 002 penceresine ulaşır
+      ---
+      duration_ms: 56.51636
+      type: 'test'
+      ...
+    # Subtest: şirkete özgü veri olayı sızmaz: 001'de açılan cari 001 akışına gelir, 002 akışına gelmez (ve tersi)
+    ok 5 - şirkete özgü veri olayı sızmaz: 001'de açılan cari 001 akışına gelir, 002 akışına gelmez (ve tersi)
+      ---
+      duration_ms: 482.534227
+      type: 'test'
+      ...
+    # Subtest: geri yüklemede 002 örneği kapanıp yeniden açılır: eski köprü kalkar (dinleyici birikmez), yeni örnek ortak olayı yine alır
+    ok 6 - geri yüklemede 002 örneği kapanıp yeniden açılır: eski köprü kalkar (dinleyici birikmez), yeni örnek ortak olayı yine alır
+      ---
+      duration_ms: 206.42349
+      type: 'test'
+      ...
+    1..6
+ok 1 - Şirket kanalları: ortak olaylar 002 ekranına ulaşır, şirket verisi sızmaz
+  ---
+  duration_ms: 1996.005315
+  type: 'suite'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2328.686071

@@ -8,7 +8,7 @@ import { createAuth } from "./lib/auth.mjs";
 import { createRecovery } from "./lib/recovery.mjs";
 import { createChat } from "./lib/chat.mjs";
 import { createChatArchive } from "./lib/chat-archive.mjs";
-import { createEventHub } from "./lib/events.mjs";
+import { createEventHub, isSharedEvent } from "./lib/events.mjs";
 import { runDueBackups, startBackupScheduler } from "./lib/backup.mjs";
 import { createClientState } from "./lib/client-state.mjs";
 import { DEFAULT_ADMIN_PASSWORD, loadConfig } from "./lib/config.mjs";
@@ -180,6 +180,10 @@ export function createApp(overrides = {}) {
   const supervisorLink = hub ? hub.supervisorLink : overrides.supervisorLink ?? (config.supervised ? createSupervisorLink(process) : null);
   // Canlı olay kanalı: oturumu kapanan (çıkış, parola değişikliği, pasifleştirme) bağlantılar ping turunda düşer.
   const events = createEventHub({ log, pingMs: config.eventsPingMs, maxAgeMs: config.eventsMaxAgeMs, isValid: client => auth.sessionAlive(client.tokenHash) });
+  // 2.4.4 (iş listesi 29): yönetim olayları (yetki, kullanıcı, şirket listesi, lisans) ortak katmanın kanalına yayınlanır; 002'yi gösteren
+  // pencere 002'nin kanalına bağlıdır → bu olaylar şirket kanalına aynı hedefle (users/except) iletilir. Şirkete özgü veri olayları
+  // (cari, kasa, fatura, sıfırlama…) iletilmez: her şirket kendi verisinin olayını kendi kanalında yayınlar.
+  const unbridgeHubEvents = hub?.events ? hub.events.tap((event, data, target) => isSharedEvent(event, data) && events.publish(event, data, target)) : null;
   const chat = createChat({ store, events, audit, roles: access });
   // 30 günden eski sohbet mesajları veri klasöründeki mesaj-arsivi/ klasörüne taşınır (v2.0.2).
   const chatArchive = createChatArchive({ store, dir: path.join(config.dataDir, "mesaj-arsivi"), log });
@@ -438,7 +442,7 @@ export function createApp(overrides = {}) {
         scheduleBackups: false,
         // Şirketler aynı iş saatini paylaşır (sahte saatte de: hub'ın saati ilerleyince 002'nin de ilerler).
         now: config.now,
-        hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor, withCompanyDb, busyCompanies, backups, requestRestart, closeCompany },
+        hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor, withCompanyDb, busyCompanies, backups, requestRestart, closeCompany, events },
       });
       child.usersStamp = usersFingerprint(store);
       children.set(company.id, child);
@@ -738,6 +742,7 @@ export function createApp(overrides = {}) {
       dataset.stop();
       documents.stop();
       if (!hub) license.stop();
+      unbridgeHubEvents?.();
       events.stop();
       await new Promise(resolve => {
         server.close(() => resolve());

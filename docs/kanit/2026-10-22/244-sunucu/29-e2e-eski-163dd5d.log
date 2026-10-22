@@ -1,0 +1,12 @@
+
+■ 002 penceresi açık; yönetici Kasa yetkisini kaldırır, sonra geri verir
+  ✓ pencere 002'yi gösteriyor (sirket-2b632643-7346-4737-a2b6-009d3867068c)
+  ✓ Kasa düğmesi görünür (yetki var)
+  ✓ canlı bağlantı kuruldu
+  ✗ yetki kaldırılınca 002 ekranında Kasa düğmesi kendiliğinden kalktı
+  ✗ “Yöneticiniz yetkilerinizi güncelledi” bildirimi göründü
+  ✓ sayfa yeniden yüklenmedi (canlı güncelleme)
+  ✗ yetki geri verilince Kasa düğmesi geri geldi (önce kalkmış olmalı)
+  ✓ sayfa hatası yok
+
+✗ sirket-canli-yetki-244: 5 geçti, 3 kaldı
