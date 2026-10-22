@@ -368,21 +368,25 @@ describe("e-SMM: kopma, belirsiz gönderim, başka numara, iki oturum, iptal sü
     assert.ok(["processing", "sent"].includes(card.eStatus), card.eStatus);
   });
 
-  test("N7: belirsiz makbuz EDM'de YOKSA bile e-SMM'de doğrulanmamış 'bulunamadı' koduna güvenilmez — Durum Sorgula temizlemez, Gönder ikinci kez göndermez (madde 24'e dek)", async () => {
+  test("N7: belirsiz makbuz EDM'de YOKSA (11017 \"SMM bulunamadı\" — gerçek EDM test ortamında doğrulandı, madde 24, 22.10.2026) Durum Sorgula temizler; Gönder aynı numarayla BİR kez gönderir (e-Arşiv ile aynı)", async () => {
     ctx.faults.push({ op: "SendSMM", code: "UND_ERR_SOCKET", smm: true });
     const res = (await ctx.smm({ eSend: "now" })).data;
     let card = await ctx.card(res.id);
     assert.equal(card.eStatusLabel, "Sonucu Belirsiz", JSON.stringify(res.autoSend));
     assert.equal(ctx.edm.state.smm.sent.filter(item => item.uuid === card.ettn.toLowerCase()).length, 0, "EDM'ye ulaşmadı (ön koşul)");
+    const number = card.number;
+    assert.ok(number, "numara verilmişti (gönderim girişimi)");
     const refresh = await ctx.api.post(`/api/workspace/invoices/${res.id}/e-refresh`, {});
-    assert.ok(refresh.status >= 400, `temizlenmedi: ${JSON.stringify(refresh.data)}`);
+    assert.equal(refresh.status, 200, JSON.stringify(refresh.data));
+    assert.equal(refresh.data.statusResult?.status, "none", "EDM'de yok: belirsizlik kalktı");
     card = await ctx.card(res.id);
-    assert.equal(card.eStatusLabel, "Sonucu Belirsiz", "hâlâ belirsiz");
+    assert.notEqual(card.eStatusLabel, "Sonucu Belirsiz");
     const sendsBefore = ctx.edm.state.smm.calls.filter(call => call.op === "SendSMM").length;
     const again = await ctx.api.post(`/api/workspace/invoices/${res.id}/send`, {});
-    assert.ok(again.status >= 400, JSON.stringify(again.data));
-    assert.equal(ctx.edm.state.smm.calls.filter(call => call.op === "SendSMM").length, sendsBefore, "yeniden gönderilmedi");
-    assert.equal((await ctx.card(res.id)).eStatusLabel, "Sonucu Belirsiz");
+    assert.equal(again.status, 200, JSON.stringify(again.data));
+    assert.equal(ctx.edm.state.smm.calls.filter(call => call.op === "SendSMM").length, sendsBefore + 1, "bir kez gönderildi");
+    assert.equal(ctx.edm.state.smm.sent.filter(item => item.uuid === card.ettn.toLowerCase()).length, 1, "EDM'de tek makbuz");
+    assert.equal((await ctx.card(res.id)).number, number, "aynı numarayla");
   });
 
   test("N9: EDM makbuzu başka numarayla kaydederse sessizce 'gönderildi' denmez — hata, ileti farkı söyler; durum yazılır (iptal açık); Tümünü Gönder durur, kalan makbuza numara verilmez", async () => {

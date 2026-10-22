@@ -74,11 +74,11 @@ const uncertainSend = row => (row.eStatus || "none") === "none" && Boolean(row.e
 const UNCERTAIN_TEXT = "Son e-Belge gönderiminin sonucu belirsiz (entegratöre bağlantı koptu; belge ulaşmış olabilir). Önce Durum Sorgula: belge entegratörde yoksa yeniden gönderilir ya da değiştirilir.";
 // EDM: hiç gönderilmemiş belgenin durumu sorulunca "Fatura bulunamadı" (hata kodu 11017) — gerçek test ortamında görüldü (16.10.2026,
 // docs/kanit/2026-10-16/edm-bilinmeyen).
-// 2.4.4 madde 22: "belge entegratörde YOK" kodları servis (profil) başınadır, TEK yerde. e-SMM servisinin (ESmmEDM.svc) bu kodu DOĞRULANMADI (madde 24,
-// gerçek test hesabı): doğrulanana dek e-SMM'de hiçbir hata "entegratörde yok" sayılmaz — belirsiz e-SMM gönderimi Durum Sorgula'dan temizlenmez,
-// yeniden gönderilmez, "Hata"daki e-SMM yalnız programda iptal edilmez (EDM'de belge varken numara ikinci kez kullanılmasın / geçerli belge programda
-// iptal görünmesin). Doğrulanınca kod buraya yazılır.
-const MISSING_CODES = Object.freeze({ default: new Set(["11017"]), ESMM: new Set() });
+// 2.4.4 madde 22: "belge entegratörde YOK" kodları servis (profil) başınadır, TEK yerde. e-SMM servisi (ESmmEDM.svc) de aynı kodu verir — gerçek EDM
+// test ortamında DOĞRULANDI (madde 24, 22.10.2026, docs/kanit/2026-10-22/244-edm/gercek-2/f-bulunamadi.json): olmayan makbuz için GetSMMStatus ve CancelSMM
+// "SMM bulunamadı (EDM hata kodu 11017)". Belirsiz e-SMM gönderimi bu yüzden e-Arşiv gibi Durum Sorgula'dan temizlenir, aynı numarayla yeniden gönderilir,
+// 8 gün geçmişse yalnız programda iptal EDM'de yoksa serbesttir.
+const MISSING_CODES = Object.freeze({ default: new Set(["11017"]), ESMM: new Set(["11017"]) });
 const remoteMissing = (error, profile = "") => (MISSING_CODES[profile] || MISSING_CODES.default).has(String(error?.extra?.integratorCode || error?.integratorCode || ""));
 const E_VIEWABLE = new Set(["processing", "sent", "accepted", "rejected", "cancelled"]);
 // Resmî görüntü önbelleğe yalnız son hâlinde alınır (işlenirken entegratörün görüntüsü değişebilir).
@@ -3063,8 +3063,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   }
   // Kullanıcı kararı 22.10.2026 (madde 23 ek): sonucu BELİRSİZ gönderimde "Yalnız Programda İptal", son gönderim girişiminden 8 gün geçtiyse önce EDM'ye
   // sorar. EDM "bulunamadı" (11017) derse belge iletilmemiştir → iptal serbest (true döner). Belge EDM'de varsa durum belgeye yazılır ve iptal reddedilir
-  // (iletilmişse süre doldu). EDM'ye ulaşılamazsa ya da yanıt tanınmazsa iptal yapılmaz. e-SMM'de "bulunamadı" kodu doğrulanmadı (madde 24): e-SMM'de
-  // her hata "bilinmiyor" sayılır. 8 gün dolmadıysa sorulmaz (bugünkü K4 çıkış yolu aynen; false döner).
+  // (iletilmişse süre doldu). EDM'ye ulaşılamazsa ya da yanıt tanınmazsa iptal yapılmaz. e-SMM'de de "bulunamadı" 11017 (madde 24'te gerçek EDM'de doğrulandı).
+  // 8 gün dolmadıysa sorulmaz (bugünkü K4 çıkış yolu aynen; false döner).
   async function uncertainLocalCheck(user, row) {
     const limit = edocEnabled ? attemptWindow({ profile: row.profile, issueDate: row.issueDate, transmittedAt: transmittedAtOf(row.id), today: today() }) : null;
     if (!limit?.late) return false;

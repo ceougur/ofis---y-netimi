@@ -496,7 +496,7 @@ describe("iptal süresi: e-SMM (gönderim kapısı madde 22'de açılır; kural 
   });
 });
 
-describe("belirsiz e-SMM + yalnız programda iptal (kullanıcı kararı 22.10.2026): e-SMM'de \"bulunamadı\" kodu doğrulanmadı → her hata bilinmiyor", () => {
+describe("belirsiz e-SMM + yalnız programda iptal (kullanıcı kararı 22.10.2026): e-SMM'de de \"bulunamadı\" 11017 (madde 24'te gerçek EDM'de doğrulandı)", () => {
   const WSDL = { smm: readFileSync(join(SEMA, "edm", "ESmmEDM-test-singleWsdl.xml"), "utf8"), efatura: readFileSync(join(SEMA, "edm", "EFaturaEDM-test-singleWsdl.xml"), "utf8") };
   const TEMPURI = "http://tempuri.org/";
   let server;
@@ -543,16 +543,15 @@ describe("belirsiz e-SMM + yalnız programda iptal (kullanıcı kararı 22.10.20
   const fault = code => `<s:Fault xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><faultcode>s:Client</faultcode><faultstring>Hata</faultstring><detail><RequestFault xmlns="${TEMPURI}"><INTL_TXN_ID xmlns="">0</INTL_TXN_ID><ERROR_CODE xmlns="">${code}</ERROR_CODE><ERROR_SHORT_DES xmlns="">Fatura bulunamadı</ERROR_SHORT_DES></RequestFault></detail></s:Fault>`;
   const statusOf = (card, status) => `<SMM_STATUS TRXID="0" xmlns=""><ID>${card.number}</ID><UUID>${card.ettn}</UUID><HEADER><SMM_DATE>2026-06-17</SMM_DATE><STATUS>${status}</STATUS><EARCHIVE_REPORT_SENDDATE>0001-01-01</EARCHIVE_REPORT_SENDDATE><CANCEL_EARCHIVE_REPORT_SENDDATE>0001-01-01</CANCEL_EARCHIVE_REPORT_SENDDATE></HEADER><STATUS>${status}</STATUS><STATUS_DESCRIPTION>${status}</STATUS_DESCRIPTION></SMM_STATUS>`;
 
-  test("8 gün geçti, EDM 11017 (e-Arşiv'de \"bulunamadı\") döndü: e-SMM'de bilinmiyor sayılır, iptal YOK", async () => {
+  test("8 gün geçti, EDM 11017 (\"SMM bulunamadı\" — gerçek EDM test ortamında doğrulandı, madde 24, 22.10.2026) döndü: e-SMM'de de belge iletilmemiş, iptal serbest", async () => {
     const card = await uncertainSmm(1);
     reply = () => fault(11017);
     server.clock.set(at(D, 10));
-    const refused = await localCancel(card.id);
-    assert.equal(refused.status, 409, JSON.stringify(refused.data));
-    assert.equal(refused.data.code, "einvoice-cancel-unknown");
-    assert.match(refused.data.error, /EDM belgenin durumunu bildirmedi .*İptal yapılmadı/);
+    const done = await localCancel(card.id);
+    assert.equal(done.status, 200, JSON.stringify(done.data));
+    assert.equal(done.data.status, "cancelled");
     assert.ok(calls.includes("GetSMMStatus"), "e-SMM servisine soruldu");
-    assert.equal((await api.get(`/api/workspace/invoices/${card.id}`)).data.status, "issued");
+    assert.match(done.data.eMessage, /EDM'de bulunamadı \(belge iletilmemiş\); yalnız programda iptal edildi/);
   });
   test("8 gün geçti, e-SMM EDM'de oluşturulmuş: süre doldu, reddedilir", async () => {
     const card = await uncertainSmm(1);
