@@ -52,14 +52,23 @@ export function tradeNameOf(p) {
   return folded(name) === folded(`${p.firstName || ""} ${p.familyName || ""}`) ? "" : name;
 }
 
-function party(p, { variant, esmm = false }) {
+// VKN'li e-SMM düzenleyeninin unvanı Person'a: son sözcük FamilyName, kalanı FirstName (tek sözcükte FamilyName "-").
+export function issuerPerson(name) {
+  const words = String(name || "").replace(/\s+/g, " ").trim().split(" ").filter(Boolean);
+  if (!words.length) return "";
+  const family = words.length > 1 ? words.pop() : "-";
+  return `<cac:Person>${tag("cbc:FirstName", words.join(" "))}${tag("cbc:FamilyName", family)}</cac:Person>`;
+}
+
+function party(p, { variant, esmm = false, issuer = false }) {
   const id = String(p.taxNo || "").replace(/\s+/g, "");
   const scheme = id.length === 11 ? "TCKN" : "VKN";
   const person = p.partyKind === "person" || id.length === 11;
   const address = [
     "<cac:PostalAddress>",
-    tag("cbc:StreetName", p.address || "-"),
-    esmm ? tag("cbc:BuildingName", p.address || "-") : "",
+    // e-SMM: adres EDM'nin e-SMM örneğindeki gibi YALNIZ BuildingName'de (EDM GİB biçiminde caddeSokak'ı ondan doldurur; StreetName de verilirse
+    // resmî PDF'te adres iki kez yazılır — 22.10.2026 gerçek EDM: "Test Cd. 1 Test Cd. 1"). e-Fatura / e-Arşiv StreetName ile (EDM kabul ediyor).
+    esmm ? tag("cbc:BuildingName", p.address || "-") : tag("cbc:StreetName", p.address || "-"),
     tag("cbc:CitySubdivisionName", p.district || p.city || "-"),
     tag("cbc:CityName", p.city || "-"),
     tag("cbc:PostalZone", p.postalCode),
@@ -90,6 +99,10 @@ function party(p, { variant, esmm = false }) {
     `<cac:PartyTaxScheme><cac:TaxScheme>${tag("cbc:Name", p.taxOffice || "-")}</cac:TaxScheme></cac:PartyTaxScheme>`,
     p.phone || p.email ? `<cac:Contact>${tag("cbc:Telephone", p.phone)}${tag("cbc:ElectronicMail", p.email)}</cac:Contact>` : "",
     person ? `<cac:Person>${tag("cbc:FirstName", p.firstName || p.name)}${tag("cbc:FamilyName", p.familyName || "-")}</cac:Person>` : "",
+    // e-SMM, VKN'li düzenleyen (ör. adi ortaklık): EDM'nin e-SMM görüntüsü düzenleyenin adını YALNIZ Person'dan basar (FirstName + " " + FamilyName;
+    // PartyName basılmaz) ve EDM'nin UBL-TR şeması FamilyName'i zorunlu tutar (11029) — 22.10.2026 gerçek EDM test ortamında denendi. Makbuzda
+    // düzenleyenin adı/unvanı bulunmalı (VUK 236): unvan son sözcüğünden bölünür, EDM boşlukla birleştirip unvanı aynen basar.
+    esmm && issuer && !person ? issuerPerson(p.name) : "",
     "</cac:Party>",
   ].join("");
 }
@@ -332,7 +345,7 @@ export function buildUbl(doc, { variant = "tr", earchiveEmail = true, xslt = "",
   const body = [
     ...head,
     ...references,
-    `<cac:AccountingSupplierParty>${party(seller || {}, { variant, esmm })}</cac:AccountingSupplierParty>`,
+    `<cac:AccountingSupplierParty>${party(seller || {}, { variant, esmm, issuer: true })}</cac:AccountingSupplierParty>`,
     `<cac:AccountingCustomerParty>${party(buyer || {}, { variant, esmm })}</cac:AccountingCustomerParty>`,
     payment,
     exchange,

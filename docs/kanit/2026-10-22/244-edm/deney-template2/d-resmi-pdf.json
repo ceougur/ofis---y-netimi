@@ -1,0 +1,146 @@
+{
+ "adim": "d-resmi-pdf",
+ "baslik": "Resmî görüntü: e-SMM GetSMM PDF (B1, B2, G1) ve karşılaştırma için e-Arşiv (G3)",
+ "durum": "geçti",
+ "denetimler": [
+  {
+   "gecti": true,
+   "denetim": "B1 TES2026634450826: PDF (93257 bayt ≥ 5000), indirme adı numarayı taşır"
+  },
+  {
+   "gecti": true,
+   "denetim": "B1 TES2026634450826: PDF metninde belge numarası (ETTN var)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B1 TES2026634450826: resmî PDF'te satıcı ve alıcı adresi birer kez (satıcı 1, alıcı 1)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B1 TES2026634450826: resmî PDF'te düzenleyenin unvanı (DENEME TICARET LTD. STI.) var"
+  },
+  {
+   "gecti": true,
+   "denetim": "B2 TES2026634450827: PDF (93596 bayt ≥ 5000), indirme adı numarayı taşır"
+  },
+  {
+   "gecti": true,
+   "denetim": "B2 TES2026634450827: PDF metninde belge numarası (ETTN var)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B2 TES2026634450827: resmî PDF'te satıcı ve alıcı adresi birer kez (satıcı 1, alıcı 1)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B2 TES2026634450827: resmî PDF'te düzenleyenin unvanı (DENEME TICARET LTD. STI.) var"
+  },
+  {
+   "gecti": true,
+   "denetim": "G1 TES2026634450823: PDF (93906 bayt ≥ 5000), indirme adı numarayı taşır"
+  },
+  {
+   "gecti": true,
+   "denetim": "G1 TES2026634450823: PDF metninde belge numarası (ETTN var)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G1 TES2026634450823: resmî PDF'te satıcı ve alıcı adresi birer kez (satıcı 1, alıcı 1)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G1 TES2026634450823: resmî PDF'te düzenleyenin unvanı (DENEME TICARET LTD. STI.) var"
+  },
+  {
+   "gecti": true,
+   "denetim": "G3 TEA2026321242097: PDF (84028 bayt ≥ 5000), indirme adı numarayı taşır"
+  },
+  {
+   "gecti": true,
+   "denetim": "G3 TEA2026321242097: PDF metninde belge numarası (ETTN var)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G3 TEA2026321242097: resmî PDF'te satıcı ve alıcı adresi birer kez (satıcı 1, alıcı 1)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G3 TEA2026321242097: resmî PDF'te düzenleyenin unvanı (DENEME TICARET LTD. STI.) var"
+  }
+ ],
+ "kayit": {
+  "B1": {
+   "status": 200,
+   "tur": "application/pdf",
+   "bayt": 93257,
+   "ad": "attachment; filename=\"TES2026634450826 Resmi Gorunum.pdf\"; filename*=UTF-8''TES2026634450826%20Resmi%20Gorunum.pdf",
+   "dosya": "TES2026634450826-resmi.pdf",
+   "metin": {
+    "numara": true,
+    "ettn": true,
+    "tutarlar": [
+     "20,00",
+     "1.000,00",
+     "200,00",
+     "800,00"
+    ]
+   }
+  },
+  "B2": {
+   "status": 200,
+   "tur": "application/pdf",
+   "bayt": 93596,
+   "ad": "attachment; filename=\"TES2026634450827 Resmi Gorunum.pdf\"; filename*=UTF-8''TES2026634450827%20Resmi%20Gorunum.pdf",
+   "dosya": "TES2026634450827-resmi.pdf",
+   "metin": {
+    "numara": true,
+    "ettn": true,
+    "tutarlar": [
+     "100,03",
+     "20,00",
+     "80,02",
+     "80,03",
+     "100,04",
+     "200,06",
+     "40,01",
+     "160,05",
+     "40,02",
+     "200,07"
+    ]
+   }
+  },
+  "G1": {
+   "status": 200,
+   "tur": "application/pdf",
+   "bayt": 93906,
+   "ad": "attachment; filename=\"TES2026634450823 Resmi Gorunum.pdf\"; filename*=UTF-8''TES2026634450823%20Resmi%20Gorunum.pdf",
+   "dosya": "TES2026634450823-resmi.pdf",
+   "metin": {
+    "numara": true,
+    "ettn": true,
+    "tutarlar": [
+     "20,00",
+     "500,00",
+     "100,00",
+     "400,00"
+    ]
+   }
+  },
+  "G3": {
+   "status": 200,
+   "tur": "application/pdf",
+   "bayt": 84028,
+   "ad": "attachment; filename=\"TEA2026321242097 Resmi Gorunum.pdf\"; filename*=UTF-8''TEA2026321242097%20Resmi%20Gorunum.pdf",
+   "dosya": "TEA2026321242097-resmi.pdf",
+   "metin": {
+    "numara": true,
+    "ettn": true,
+    "tutarlar": [
+     "300,00",
+     "60,00",
+     "360,00"
+    ]
+   }
+  }
+ }
+}

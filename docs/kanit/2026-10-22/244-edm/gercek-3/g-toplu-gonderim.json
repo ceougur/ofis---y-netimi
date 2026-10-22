@@ -1,0 +1,183 @@
+{
+ "adim": "g-toplu-gonderim",
+ "baslik": "Kes, Sonra Gönder: 3 e-SMM + 2 e-Arşiv (−2 / −1 gün) → Seçilenleri Gönder (ön denetim, eski tarihli seçilmemiş belge) → Tümünü Gönder",
+ "durum": "geçti",
+ "denetimler": [
+  {
+   "gecti": true,
+   "denetim": "G1 e-SMM 2026-10-20 500 TL: kaydedildi, numarasız Gönderilecekler'de (ESMM)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G2 e-SMM 2026-10-21 600 TL: kaydedildi, numarasız Gönderilecekler'de (ESMM)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G3 e-Arşiv 2026-10-20 300 TL: kaydedildi, numarasız Gönderilecekler'de (EARSIVFATURA)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G4 e-Arşiv 2026-10-21 400 TL: kaydedildi, numarasız Gönderilecekler'de (EARSIVFATURA)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G5 e-SMM 2026-10-21 700 TL: kaydedildi, numarasız Gönderilecekler'de (ESMM)"
+  },
+  {
+   "gecti": true,
+   "denetim": "Gönderilecekler'de 5 belge (5)"
+  },
+  {
+   "gecti": true,
+   "denetim": "Seçilenleri Gönder ön denetimi: G2 seçiliyken daha eski G1 söylenir (sayı 1)"
+  },
+  {
+   "gecti": true,
+   "denetim": "yalnız G2 gönderilmek istenince 409 einvoice-selection-older; G2'ye numara verilmedi (409 einvoice-selection-older)"
+  },
+  {
+   "gecti": true,
+   "denetim": "Seçilenleri Gönder (G1, G2, G3): üçü numara aldı ve EDM'ye iletildi",
+   "veri": [
+    {
+     "number": "TES2026482135493",
+     "eStatus": "sent",
+     "eMessage": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    },
+    {
+     "number": "TES2026482135494",
+     "eStatus": "sent",
+     "eMessage": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    },
+    {
+     "number": "TEA2026721667485",
+     "eStatus": "sent",
+     "eMessage": "e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   ]
+  },
+  {
+   "gecti": true,
+   "denetim": "Tümünü Gönder (G4, G5): bekleyen kalmadı, 5 belgenin hepsi iletildi",
+   "veri": [
+    {
+     "key": "G1",
+     "number": "TES2026482135493",
+     "eStatus": "sent",
+     "eMessage": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    },
+    {
+     "key": "G2",
+     "number": "TES2026482135494",
+     "eStatus": "sent",
+     "eMessage": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    },
+    {
+     "key": "G3",
+     "number": "TEA2026721667485",
+     "eStatus": "sent",
+     "eMessage": "e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    },
+    {
+     "key": "G4",
+     "number": "TEA2026721667486",
+     "eStatus": "sent",
+     "eMessage": "e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    },
+    {
+     "key": "G5",
+     "number": "TES2026482135495",
+     "eStatus": "sent",
+     "eMessage": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   ]
+  },
+  {
+   "gecti": true,
+   "denetim": "TES: 3 belge, numaralar ardışık ve tarih sırasıyla (G1 2026-10-20, G2 2026-10-21, G5 2026-10-21)"
+  },
+  {
+   "gecti": true,
+   "denetim": "TEA: 2 belge, numaralar ardışık ve tarih sırasıyla (G3 2026-10-20, G4 2026-10-21)"
+  }
+ ],
+ "kayit": {
+  "onDenetim": {
+   "count": 1,
+   "olderIds": [
+    "invoice-fa392ac9-bba7-4004-8df8-3c4676f7f586"
+   ],
+   "sendable": 1
+  },
+  "eskiBekleyenRet": {
+   "status": 409,
+   "code": "einvoice-selection-older",
+   "integratorCode": "",
+   "stage": "",
+   "error": "Seçilenlerle aynı seride, seçilmemiş ve daha eski tarihli 1 belge Gönderilecekler'de bekliyor (en eskisi: Deneme Müvekkil Danışmanlık A.Ş., 20.10.2026). e-Belge numarası tarih sırasıyla verilir: önce onlar gönderilmeli. Onları da seçime ekleyip gönderin ya da Tümünü Gönder'i kullanın; hiçbir belge gönderilmedi."
+  },
+  "secilenleriGonder": [
+   {
+    "ok": true,
+    "code": "",
+    "number": "TES2026482135493",
+    "message": ""
+   },
+   {
+    "ok": true,
+    "code": "",
+    "number": "TEA2026721667485",
+    "message": ""
+   },
+   {
+    "ok": true,
+    "code": "",
+    "number": "TES2026482135494",
+    "message": ""
+   }
+  ],
+  "tumunuGonder": [
+   {
+    "ok": true,
+    "code": "",
+    "number": "TEA2026721667486",
+    "message": ""
+   },
+   {
+    "ok": true,
+    "code": "",
+    "number": "TES2026482135495",
+    "message": ""
+   }
+  ],
+  "seriTES": [
+   {
+    "key": "G1",
+    "number": "TES2026482135493",
+    "tarih": "2026-10-20"
+   },
+   {
+    "key": "G2",
+    "number": "TES2026482135494",
+    "tarih": "2026-10-21"
+   },
+   {
+    "key": "G5",
+    "number": "TES2026482135495",
+    "tarih": "2026-10-21"
+   }
+  ],
+  "seriTEA": [
+   {
+    "key": "G3",
+    "number": "TEA2026721667485",
+    "tarih": "2026-10-20"
+   },
+   {
+    "key": "G4",
+    "number": "TEA2026721667486",
+    "tarih": "2026-10-21"
+   }
+  ]
+ }
+}

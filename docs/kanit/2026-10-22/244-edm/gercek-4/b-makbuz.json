@@ -1,0 +1,54 @@
+{
+ "adim": "b-makbuz",
+ "baslik": "e-SMM Kaydet ve Gönder: tek kalem (1 × 1.000 TL) ve çok kalem (2 × 100,03 TL), KDV %20, stopaj (alıcı şirket)",
+ "durum": "kaldı",
+ "denetimler": [
+  {
+   "gecti": false,
+   "denetim": "B1 (tek kalem): TES2026282855498 EDM'ye iletildi (error)"
+  },
+  {
+   "gecti": false,
+   "denetim": "B2 (çok kalem 2 × 100,03): TES2026282855499 EDM'ye iletildi (error)"
+  }
+ ],
+ "kayit": {
+  "B1": {
+   "number": "TES2026282855498",
+   "ettn": "ac6d24dd-0c10-48e7-a0c7-c4fc45d837fa",
+   "profile": "ESMM",
+   "eStatus": "error",
+   "eMessage": "EDM isteği reddetti: Ubl yapısı hatalı (Schema hatası) : Şema Hatası:<br/>Results from XML Schema validation:\r\n  Error: The element 'Person'  has incomplete content. List of possible elements expected: 'FamilyName'.\r\n  At: (Line: 91, Column: 815) (EDM hata kodu 11029)",
+   "autoSend": {
+    "ok": false,
+    "pending": true,
+    "number": "TES2026282855498",
+    "code": "integrator-rejected",
+    "message": "EDM isteği reddetti: Ubl yapısı hatalı (Schema hatası) : Şema Hatası:<br/>Results from XML Schema validation:\r\n  Error: The element 'Person'  has incomplete content. List of possible elements expected: 'FamilyName'.\r\n  At: (Line: 91, Column: 815) (EDM hata kodu 11029) Belge TES2026282855498 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   "brut": 1000,
+   "stopaj": 200,
+   "kdv": 200,
+   "odenecek": 1000
+  },
+  "B2": {
+   "number": "TES2026282855499",
+   "ettn": "08ea5f90-c705-4598-89ba-0d50f5c7c267",
+   "profile": "ESMM",
+   "eStatus": "error",
+   "eMessage": "EDM isteği reddetti: Ubl yapısı hatalı (Schema hatası) : Şema Hatası:<br/>Results from XML Schema validation:\r\n  Error: The element 'Person'  has incomplete content. List of possible elements expected: 'FamilyName'.\r\n  At: (Line: 91, Column: 815) (EDM hata kodu 11029)",
+   "autoSend": {
+    "ok": false,
+    "pending": true,
+    "number": "TES2026282855499",
+    "code": "integrator-rejected",
+    "message": "EDM isteği reddetti: Ubl yapısı hatalı (Schema hatası) : Şema Hatası:<br/>Results from XML Schema validation:\r\n  Error: The element 'Person'  has incomplete content. List of possible elements expected: 'FamilyName'.\r\n  At: (Line: 91, Column: 815) (EDM hata kodu 11029) Belge TES2026282855499 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   "brut": 200.06,
+   "stopaj": 40.01,
+   "kdv": 40.02,
+   "odenecek": 200.07
+  },
+  "kahin": "kâhin verilmedi: tutarlar yalnız kaydedildi (beklenen sayılar kodu görmeyen elden gelir, ders 5)"
+ }
+}

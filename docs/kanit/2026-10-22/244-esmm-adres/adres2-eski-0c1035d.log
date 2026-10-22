@@ -1,0 +1,156 @@
+TAP version 13
+# Subtest: e-SMM UBL: GİB kuralından elle hesaplanan dip toplamlar (kâhin)
+    # Subtest: A — 1.000 TL brüt, stopaj %20, KDV %20: stopaj 200, net ücret 800, KDV 200, tahsil edilen KDV 200, net alınan 1.000
+    ok 1 - A — 1.000 TL brüt, stopaj %20, KDV %20: stopaj 200, net ücret 800, KDV 200, tahsil edilen KDV 200, net alınan 1.000
+      ---
+      duration_ms: 2.274308
+      type: 'test'
+      ...
+    # Subtest: B — 2 × 100,03: belge stopajı matrah × oran = 40,01 (kalem yuvarlamasıyla 40,02 DEĞİL); kalemlere 20,01 + 20,00; KDV kalem başına 20,01 + 20,01
+    ok 2 - B — 2 × 100,03: belge stopajı matrah × oran = 40,01 (kalem yuvarlamasıyla 40,02 DEĞİL); kalemlere 20,01 + 20,00; KDV kalem başına 20,01 + 20,01
+      ---
+      duration_ms: 0.664356
+      type: 'test'
+      ...
+    # Subtest: C — kişi alıcı, stopaj yok: 0003 satırı yazılmaz; net ücret = brüt 500, KDV 100, net alınan 600
+    ok 3 - C — kişi alıcı, stopaj yok: 0003 satırı yazılmaz; net ücret = brüt 500, KDV 100, net alınan 600
+      ---
+      duration_ms: 0.270791
+      type: 'test'
+      ...
+    # Subtest: D — KDV tevkifatı 5/10: tahsil edilen KDV 200 − 100 = 100; net alınan 800 + 100 = 900; tevkifat ayrı satırda
+    ok 4 - D — KDV tevkifatı 5/10: tahsil edilen KDV 200 − 100 = 100; net alınan 800 + 100 = 900; tevkifat ayrı satırda
+      ---
+      duration_ms: 0.28655
+      type: 'test'
+      ...
+    # Subtest: E — elle %15 stopaj, iki KDV oranı: stopaj (1.500 + 333,33) × %15 = 274,9995 → 275,00; KDV 300 + 33,33; net alınan 1.891,66
+    ok 5 - E — elle %15 stopaj, iki KDV oranı: stopaj (1.500 + 333,33) × %15 = 274,9995 → 275,00; KDV 300 + 33,33; net alınan 1.891,66
+      ---
+      duration_ms: 0.403816
+      type: 'test'
+      ...
+    1..5
+ok 1 - e-SMM UBL: GİB kuralından elle hesaplanan dip toplamlar (kâhin)
+  ---
+  duration_ms: 348.321445
+  type: 'suite'
+  ...
+# Subtest: e-SMM UBL: program tutarlarıyla aynı, yapı EDM'nin e-SMM örneğiyle aynı, UBL 2.1 şemasına uygun
+    # Subtest: XML tutarları programın kaydettiği makbuzla kuruşu kuruşuna aynı; kalem stopajları toplamı = belge stopajı; Σ kalem fiyatı = net alınan
+    ok 1 - XML tutarları programın kaydettiği makbuzla kuruşu kuruşuna aynı; kalem stopajları toplamı = belge stopajı; Σ kalem fiyatı = net alınan
+      ---
+      duration_ms: 0.798997
+      type: 'test'
+      ...
+    # Subtest: yapı: EDM e-SMM örneğindeki sıra ve öğeler (TaxTotal → 0003 sıra 1 + 0015 sıra 2; dip toplam dörtlüsü; kalemde NIU, vergi, ad, fiyat)
+    ok 2 - yapı: EDM e-SMM örneğindeki sıra ve öğeler (TaxTotal → 0003 sıra 1 + 0015 sıra 2; dip toplam dörtlüsü; kalemde NIU, vergi, ad, fiyat)
+      ---
+      duration_ms: 0.427076
+      type: 'test'
+      ...
+    # Subtest: taraf adresi YALNIZ BuildingName'de (EDM e-SMM örneği): GİB eArsivVeri.xsd adresinde caddeSokak zorunlu ilk öğe; StreetName ile şema hatası, ikisi birlikte adres iki kez
+    not ok 3 - taraf adresi YALNIZ BuildingName'de (EDM e-SMM örneği): GİB eArsivVeri.xsd adresinde caddeSokak zorunlu ilk öğe; StreetName ile şema hatası, ikisi birlikte adres iki kez
+      ---
+      duration_ms: 1.533578
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-adres-eski-0c1035d/test/esmm-ubl.test.mjs:161:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        A AccountingSupplierParty
+        + actual - expected
+        
+          [
+        +   'StreetName',
+        -   'BuildingName',
+            'CitySubdivisionName'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'BuildingName'
+        1: 'CitySubdivisionName'
+      actual:
+        0: 'StreetName'
+        1: 'CitySubdivisionName'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-adres-eski-0c1035d/test/esmm-ubl.test.mjs:171:16)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: stopaj artık Not değil (vergi satırında); programın fatura görünüm şablonu ve karekod gömülmez; gönderim şekli alıcının e-postasına göre
+    ok 4 - stopaj artık Not değil (vergi satırında); programın fatura görünüm şablonu ve karekod gömülmez; gönderim şekli alıcının e-postasına göre
+      ---
+      duration_ms: 0.502762
+      type: 'test'
+      ...
+    # Subtest: UBL 2.1 XSD'sine (OASIS; tools/ebelge/sema) uygun — GİB şematronu e-SMM'yi tanımlamaz (ESMM GİB UBL-TR profili değil)
+    ok 5 - UBL 2.1 XSD'sine (OASIS; tools/ebelge/sema) uygun — GİB şematronu e-SMM'yi tanımlamaz (ESMM GİB UBL-TR profili değil)
+      ---
+      duration_ms: 1144.133951
+      type: 'test'
+      ...
+    1..5
+not ok 2 - e-SMM UBL: program tutarlarıyla aynı, yapı EDM'nin e-SMM örneğiyle aynı, UBL 2.1 şemasına uygun
+  ---
+  duration_ms: 1148.117687
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-adres-eski-0c1035d/test/esmm-ubl.test.mjs:133:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: e-SMM dışı belgeler değişmedi
+    # Subtest: kâğıt SMM (e-SMM işareti kapalı): stopaj Not'ta, 0003 satırı yok, dip toplamlar e-Fatura anlamında
+    ok 1 - kâğıt SMM (e-SMM işareti kapalı): stopaj Not'ta, 0003 satırı yok, dip toplamlar e-Fatura anlamında
+      ---
+      duration_ms: 69.902768
+      type: 'test'
+      ...
+    1..1
+ok 3 - e-SMM dışı belgeler değişmedi
+  ---
+  duration_ms: 70.172098
+  type: 'suite'
+  ...
+# Subtest: Stopajın kalemlere dağıtımı (en büyük kalan)
+    # Subtest: Σ pay = belge stopajı; her pay tam payın aşağı yuvarlaması ya da bir fazlası; aynı girdi aynı sonuç
+    ok 1 - Σ pay = belge stopajı; her pay tam payın aşağı yuvarlaması ya da bir fazlası; aynı girdi aynı sonuç
+      ---
+      duration_ms: 71.111038
+      type: 'test'
+      ...
+    # Subtest: kayıtlı tutarlar GİB kimliğini (Net Alınan = Net Ücret + Tahsil Edilen KDV) ya da kalem toplamlarını tutmazsa belge üretilmez
+    ok 2 - kayıtlı tutarlar GİB kimliğini (Net Alınan = Net Ücret + Tahsil Edilen KDV) ya da kalem toplamlarını tutmazsa belge üretilmez
+      ---
+      duration_ms: 0.842839
+      type: 'test'
+      ...
+    # Subtest: tutarsız girdide (kalan kuruş kalem sayısını aşar ya da eksi) belge üretilmez
+    ok 3 - tutarsız girdide (kalan kuruş kalem sayısını aşar ya da eksi) belge üretilmez
+      ---
+      duration_ms: 0.196941
+      type: 'test'
+      ...
+    1..3
+ok 4 - Stopajın kalemlere dağıtımı (en büyük kalan)
+  ---
+  duration_ms: 72.343363
+  type: 'suite'
+  ...
+1..4
+# tests 14
+# suites 4
+# pass 13
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2299.385878
