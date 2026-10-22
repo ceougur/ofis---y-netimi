@@ -220,7 +220,9 @@ describe("iptal süresi: program uçları (sahte EDM, sahte saat)", () => {
     assert.equal(after.eStatus === "sent" || after.eStatus === "processing", true, after.eStatus);
   });
 
-  test("yalnız programda iptal (localOnly) süresi dolmuş gönderilmiş belgede de reddedilir; süre içinde çıkış yolu sürer", async () => {
+  // 2.4.4 E7 (karar 22.10.2026; K4): BEKLENTİ BİLEREK DEĞİŞTİ — süre İÇİNDE de gönderilmiş belge yalnız programda iptal edilmez (409 einvoice-local-not-allowed;
+  // önceden 200). Süre dolmuşsa önce süre söylenir (cancel-late). Çıkış yolu (K4) belirsiz gönderimde sürer: aşağıdaki "belirsiz + yalnız programda iptal" testleri.
+  test("yalnız programda iptal (localOnly) süresi dolmuş gönderilmiş belgede süreyle reddedilir; süre içinde de gönderilmiş belgede yalnız programda iptal yok (E7)", async () => {
     setDay(0);
     const late = await issue("now");
     const inside = await issue("now");
@@ -235,9 +237,10 @@ describe("iptal süresi: program uçları (sahte EDM, sahte saat)", () => {
     setDay(8, 23, 59, 30);
     const before = cancels();
     const local = await api.post(`/api/workspace/invoices/${inside.id}/cancel`, { reason: "EDM'ye ulaşılamıyor", localOnly: true, confirmLocal: true });
-    assert.equal(local.status, 200, JSON.stringify(local.data));
-    assert.equal(local.data.status, "cancelled");
-    assert.equal(cancels(), before, "yalnız programda");
+    assert.equal(local.status, 409, JSON.stringify(local.data));
+    assert.equal(local.data.code, "einvoice-local-not-allowed");
+    assert.equal((await detail(inside.id)).status, "issued");
+    assert.equal(cancels(), before, "EDM'ye iptal gitmedi");
   });
 
   test("sonucu belirsiz gönderim (EDM işledi, yanıt koptu): süre girişim gününden, Durum Sorgula gününden değil", async () => {

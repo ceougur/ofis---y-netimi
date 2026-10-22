@@ -1,0 +1,1610 @@
+TAP version 13
+# Subtest: B3/B4 — 001: sıfırlama öncesi yedeğine dönüş (gerçek 2.0.26 verisiyle)
+    # Subtest: geri yüklenen dosya kendi eski satır işaretini korur: Mutabakat Testi temiz, onarım uyarısı yok; İşlem No geri gitmez
+    ok 1 - geri yüklenen dosya kendi eski satır işaretini korur: Mutabakat Testi temiz, onarım uyarısı yok; İşlem No geri gitmez
+      ---
+      duration_ms: 3344.478044
+      type: 'test'
+      ...
+    1..1
+ok 1 - B3/B4 — 001: sıfırlama öncesi yedeğine dönüş (gerçek 2.0.26 verisiyle)
+  ---
+  duration_ms: 3346.449527
+  type: 'suite'
+  ...
+# Subtest: B4 — 002: İşlem No sayacı geri yüklemede geri gitmez (001 ile aynı kural)
+    # Subtest: yedek → 3 yeni hareket → geri yükle → yeni hareketin numarası öncekilerden büyük, tekrar yok
+    ok 1 - yedek → 3 yeni hareket → geri yükle → yeni hareketin numarası öncekilerden büyük, tekrar yok
+      ---
+      duration_ms: 2318.237589
+      type: 'test'
+      ...
+    1..1
+ok 2 - B4 — 002: İşlem No sayacı geri yüklemede geri gitmez (001 ile aynı kural)
+  ---
+  duration_ms: 2318.727849
+  type: 'suite'
+  ...
+# Subtest: Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz)
+    # Subtest: Y1/E1: canlı kilidi Servis Adresi'yle delinmez (ayar 400; veri tabanında kalmış adres 409, ağa çıkılmaz)
+    ok 1 - Y1/E1: canlı kilidi Servis Adresi'yle delinmez (ayar 400; veri tabanında kalmış adres 409, ağa çıkılmaz)
+      ---
+      duration_ms: 270.156891
+      type: 'test'
+      ...
+    # Subtest: Y2: bağlantısı kurulmamış entegratörle Gönder, Gönderilecekler'deki belgeye numara vermez
+    ok 2 - Y2: bağlantısı kurulmamış entegratörle Gönder, Gönderilecekler'deki belgeye numara vermez
+      ---
+      duration_ms: 393.572551
+      type: 'test'
+      ...
+    # Subtest: E2: portaldan gönderilmiş taslak programda düzenlenmez, e-Fatura taslağı onayla da iptal edilmez; durum güncellenir
+    ok 3 - E2: portaldan gönderilmiş taslak programda düzenlenmez, e-Fatura taslağı onayla da iptal edilmez; durum güncellenir
+      ---
+      duration_ms: 370.289572
+      type: 'test'
+      ...
+    # Subtest: Y3/S1: yanıtı kaybolan gönderim belirsizdir — silinmez, düzenlenmez; yeniden Gönder ikinci kez göndermez, durumu alır
+    ok 4 - Y3/S1: yanıtı kaybolan gönderim belirsizdir — silinmez, düzenlenmez; yeniden Gönder ikinci kez göndermez, durumu alır
+      ---
+      duration_ms: 173.272665
+      type: 'test'
+      ...
+    # Subtest: Y3: belirsiz gönderimde belge EDM'ye ulaşmadıysa Durum Sorgula belirsizliği kaldırır (EDM 11017 'Fatura bulunamadı')
+    ok 5 - Y3: belirsiz gönderimde belge EDM'ye ulaşmadıysa Durum Sorgula belirsizliği kaldırır (EDM 11017 'Fatura bulunamadı')
+      ---
+      duration_ms: 116.825805
+      type: 'test'
+      ...
+    # Subtest: Kontrol K1: Gönderilecekler'den silinmiş (withdrawn) belge bağlantısız Gönder'de de numara almaz
+    ok 6 - Kontrol K1: Gönderilecekler'den silinmiş (withdrawn) belge bağlantısız Gönder'de de numara almaz
+      ---
+      duration_ms: 112.170378
+      type: 'test'
+      ...
+    # Subtest: Kontrol K2: 'Hata'daki belgenin yeniden gönderiminde yanıt kaybolursa da belirsiz — ikinci kez gönderilmez
+    ok 7 - Kontrol K2: 'Hata'daki belgenin yeniden gönderiminde yanıt kaybolursa da belirsiz — ikinci kez gönderilmez
+      ---
+      duration_ms: 302.476759
+      type: 'test'
+      ...
+    # Subtest: Kontrol K3: tevkifatlı + istisnalı kalem aynı e-Belgede kaydedilmez (geçerli GİB tipi yok)
+    ok 8 - Kontrol K3: tevkifatlı + istisnalı kalem aynı e-Belgede kaydedilmez (geçerli GİB tipi yok)
+      ---
+      duration_ms: 73.209472
+      type: 'test'
+      ...
+    # Subtest: Çıkış yolu (kullanıcı kararı): entegratöre ulaşılamıyorsa belirsiz / taslak belge yalnız programda iptal edilir — yetki + onay + işlem kaydı
+    ok 9 - Çıkış yolu (kullanıcı kararı): entegratöre ulaşılamıyorsa belirsiz / taslak belge yalnız programda iptal edilir — yetki + onay + işlem kaydı
+      ---
+      duration_ms: 689.946104
+      type: 'test'
+      ...
+    # Subtest: Arayüz denemesi (gerçek EDM): mükellefiyeti sorgulanmamış e-Fatura mükellefine e-Arşiv gönderilmez; cari işaretlenir, numara harcanmaz
+    ok 10 - Arayüz denemesi (gerçek EDM): mükellefiyeti sorgulanmamış e-Fatura mükellefine e-Arşiv gönderilmez; cari işaretlenir, numara harcanmaz
+      ---
+      duration_ms: 126.328275
+      type: 'test'
+      ...
+    # Subtest: Arayüz denemesi: birden çok posta kutulu mükellefte kutu kendiliğinden seçilmez; kutusu bilinmeyen alıcıya e-Fatura numara almadan durur
+    ok 11 - Arayüz denemesi: birden çok posta kutulu mükellefte kutu kendiliğinden seçilmez; kutusu bilinmeyen alıcıya e-Fatura numara almadan durur
+      ---
+      duration_ms: 190.500813
+      type: 'test'
+      ...
+    # Subtest: E3: test serisi adları firmanın serisinde kalamaz (her kayıtta); kâğıt belge seri adı yüzünden 'Test' sayılmaz
+    ok 12 - E3: test serisi adları firmanın serisinde kalamaz (her kayıtta); kâğıt belge seri adı yüzünden 'Test' sayılmaz
+      ---
+      duration_ms: 109.27106
+      type: 'test'
+      ...
+    # Subtest: E4/Y7/Y6: karekod yalnız numaralı, entegratöre ulaşmış e-Fatura / e-Arşivde (PDF ve görünüm); e-SMM'ye basılmaz
+    ok 13 - E4/Y7/Y6: karekod yalnız numaralı, entegratöre ulaşmış e-Fatura / e-Arşivde (PDF ve görünüm); e-SMM'ye basılmaz
+      ---
+      duration_ms: 451.316642
+      type: 'test'
+      ...
+    # Subtest: Y4: istisnalı kalem + KDV'li kalem → ISTISNA ve GİB şematronundan temiz; 351 + 301'de iki istisna kodu da belgede
+    ok 14 - Y4: istisnalı kalem + KDV'li kalem → ISTISNA ve GİB şematronundan temiz; 351 + 301'de iki istisna kodu da belgede
+      ---
+      duration_ms: 4337.773489
+      type: 'test'
+      ...
+    # Subtest: E5: U+FFFE / U+FFFF kalem adından ayıklanır; belge şemadan geçer
+    ok 15 - E5: U+FFFE / U+FFFF kalem adından ayıklanır; belge şemadan geçer
+      ---
+      duration_ms: 1302.922427
+      type: 'test'
+      ...
+    # Subtest: E9: resmî görüntü önbelleği belgenin durumuna bağlı — e-Arşiv iptalinden sonra EDM'den yeniden alınır
+    ok 16 - E9: resmî görüntü önbelleği belgenin durumuna bağlı — e-Arşiv iptalinden sonra EDM'den yeniden alınır
+      ---
+      duration_ms: 216.737339
+      type: 'test'
+      ...
+    # Subtest: E10: Fatura Ayarları yetkisi olmayan kullanıcı entegratör kullanıcı adını, adresini ve son test iletisini görmez
+    ok 17 - E10: Fatura Ayarları yetkisi olmayan kullanıcı entegratör kullanıcı adını, adresini ve son test iletisini görmez
+      ---
+      duration_ms: 322.069763
+      type: 'test'
+      ...
+    1..17
+ok 3 - Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz)
+  ---
+  duration_ms: 10383.681029
+  type: 'suite'
+  ...
+# Subtest: E6: vekil sunucu adresindeki boşluk sessizce kesilmez
+    # Subtest: 'vekil.firma.local 8080' → 400
+    ok 1 - 'vekil.firma.local 8080' → 400
+      ---
+      duration_ms: 891.519387
+      type: 'test'
+      ...
+    1..1
+ok 4 - E6: vekil sunucu adresindeki boşluk sessizce kesilmez
+  ---
+  duration_ms: 891.783146
+  type: 'suite'
+  ...
+# Subtest: Y5: görünüm kapatılınca karekodun da kalkacağı ekranda yazar
+    # Subtest: onay kutusu metni karekodu anar
+    ok 1 - onay kutusu metni karekodu anar
+      ---
+      duration_ms: 2.291356
+      type: 'test'
+      ...
+    1..1
+ok 5 - Y5: görünüm kapatılınca karekodun da kalkacağı ekranda yazar
+  ---
+  duration_ms: 2.403864
+  type: 'suite'
+  ...
+# Subtest: Arayüz denemesi (gerçek EDM): kendine gönderilen belgenin alıcı tarafı durumu
+    # Subtest: 'RECEIVE - WAIT_APPLICATION_RESPONSE' (gerçek EDM ham yanıtı) 'işleniyor'da kalmaz, gönderen karşılığıyla aynı eşlenir
+    ok 1 - 'RECEIVE - WAIT_APPLICATION_RESPONSE' (gerçek EDM ham yanıtı) 'işleniyor'da kalmaz, gönderen karşılığıyla aynı eşlenir
+      ---
+      duration_ms: 0.602612
+      type: 'test'
+      ...
+    1..1
+ok 6 - Arayüz denemesi (gerçek EDM): kendine gönderilen belgenin alıcı tarafı durumu
+  ---
+  duration_ms: 0.730383
+  type: 'suite'
+  ...
+# Subtest: Dar kontrol turu 3 bulguları (sahte EDM; ağa çıkmaz)
+    # Subtest: B1: belgeye yazılan mükellef VKN'si perakende cariyi e-Fatura mükellefi yapmaz; sonraki kişi satışı e-Arşiv kalır
+    ok 1 - B1: belgeye yazılan mükellef VKN'si perakende cariyi e-Fatura mükellefi yapmaz; sonraki kişi satışı e-Arşiv kalır
+      ---
+      duration_ms: 242.37447
+      type: 'test'
+      ...
+    # Subtest: B1 (komşu): carinin KENDİ numarası mükellefse cari işaretlenir (önceki davranış korunur)
+    ok 2 - B1 (komşu): carinin KENDİ numarası mükellefse cari işaretlenir (önceki davranış korunur)
+      ---
+      duration_ms: 202.631597
+      type: 'test'
+      ...
+    # Subtest: B2: belirsiz gönderim → Yalnız Programda İptal Et → Sil reddedilir; numara yeni belgeye verilmez
+    ok 3 - B2: belirsiz gönderim → Yalnız Programda İptal Et → Sil reddedilir; numara yeni belgeye verilmez
+      ---
+      duration_ms: 710.166985
+      type: 'test'
+      ...
+    # Subtest: B2 (aynı sınıf): EDM'de iptal edilmiş e-Arşiv ve onaylı iptal edilmiş e-Fatura silinmez; hiç gönderilmemiş fiş silinir
+    ok 4 - B2 (aynı sınıf): EDM'de iptal edilmiş e-Arşiv ve onaylı iptal edilmiş e-Fatura silinmez; hiç gönderilmemiş fiş silinir
+      ---
+      duration_ms: 701.562034
+      type: 'test'
+      ...
+    # Subtest: B3 (E7): gönderilmiş e-Arşiv yalnız programda iptal edilmez — yetkisiz de yetkili de 409; EDM'ye iptal gitmez, işlem kaydına düşmez
+    ok 5 - B3 (E7): gönderilmiş e-Arşiv yalnız programda iptal edilmez — yetkisiz de yetkili de 409; EDM'ye iptal gitmez, işlem kaydına düşmez
+      ---
+      duration_ms: 720.780543
+      type: 'test'
+      ...
+    # Subtest: B4: buyer-alias iletisinin söylediği yapılınca gönderim geçer
+    ok 6 - B4: buyer-alias iletisinin söylediği yapılınca gönderim geçer
+      ---
+      duration_ms: 339.59116
+      type: 'test'
+      ...
+    # Subtest: B5: mükellef sorgusu bağlantı hatasıyla düşerse numara verilmez; belge belirsiz kalmaz
+    ok 7 - B5: mükellef sorgusu bağlantı hatasıyla düşerse numara verilmez; belge belirsiz kalmaz
+      ---
+      duration_ms: 263.577151
+      type: 'test'
+      ...
+    # Subtest: B6: aynı e-Arşivi iki kullanıcı aynı anda iptal eder → EDM'ye tek iptal isteği, tek işlem kaydı
+    ok 8 - B6: aynı e-Arşivi iki kullanıcı aynı anda iptal eder → EDM'ye tek iptal isteği, tek işlem kaydı
+      ---
+      duration_ms: 391.376325
+      type: 'test'
+      ...
+    # Subtest: C1: entegratöre gitmiş kaydedilmiş belge (İşleniyor / Hata) doğrudan silinmez; numara yeniden verilmez
+    ok 9 - C1: entegratöre gitmiş kaydedilmiş belge (İşleniyor / Hata) doğrudan silinmez; numara yeniden verilmez
+      ---
+      duration_ms: 172.990324
+      type: 'test'
+      ...
+    # Subtest: C2: gönderim sürerken iptal reddedilir (gönderim ↔ iptal tek kilit)
+    ok 10 - C2: gönderim sürerken iptal reddedilir (gönderim ↔ iptal tek kilit)
+      ---
+      duration_ms: 113.739851
+      type: 'test'
+      ...
+    # Subtest: D1: gönderim sürerken Sil reddedilir; belge yerinde, numara yeniden verilmez
+    ok 11 - D1: gönderim sürerken Sil reddedilir; belge yerinde, numara yeniden verilmez
+      ---
+      duration_ms: 162.847988
+      type: 'test'
+      ...
+    # Subtest: D2: gönderim sürerken Düzenle reddedilir; defterdeki tutar gönderilen belgeyle aynı
+    ok 12 - D2: gönderim sürerken Düzenle reddedilir; defterdeki tutar gönderilen belgeyle aynı
+      ---
+      duration_ms: 143.496457
+      type: 'test'
+      ...
+    # Subtest: E1: mükellef sorgusu sürerken Müşteri Fişi Olarak Bırak reddedilir; belge fişe dönmez
+    ok 13 - E1: mükellef sorgusu sürerken Müşteri Fişi Olarak Bırak reddedilir; belge fişe dönmez
+      ---
+      duration_ms: 340.868931
+      type: 'test'
+      ...
+    # Subtest: E2: boşluklu kimlikle Düzenle de gönderim kilidine düşer
+    ok 14 - E2: boşluklu kimlikle Düzenle de gönderim kilidine düşer
+      ---
+      duration_ms: 145.87768
+      type: 'test'
+      ...
+    1..14
+ok 7 - Dar kontrol turu 3 bulguları (sahte EDM; ağa çıkmaz)
+  ---
+  duration_ms: 5848.856772
+  type: 'suite'
+  ...
+# Subtest: Test serisi üretimde firmaya özgü büyük numaradan başlar (EDM test hesabı ortak)
+    # Subtest: TEF, TEA (ve e-SMM açıkken TES) 1'den başlamaz; ayar ekranında görünen numara ile kaydedilen aynı, sonraki +1
+    ok 1 - TEF, TEA (ve e-SMM açıkken TES) 1'den başlamaz; ayar ekranında görünen numara ile kaydedilen aynı, sonraki +1
+      ---
+      duration_ms: 290.526312
+      type: 'test'
+      ...
+    # Subtest: kısmi ayar kaydı (yalnız bir seri) öbür serilerin başlangıcını silmez
+    ok 2 - kısmi ayar kaydı (yalnız bir seri) öbür serilerin başlangıcını silmez
+      ---
+      duration_ms: 29.945228
+      type: 'test'
+      ...
+    # Subtest: test serisinin sıradaki numarası elle ileri alınabilir
+    ok 3 - test serisinin sıradaki numarası elle ileri alınabilir
+      ---
+      duration_ms: 33.637774
+      type: 'test'
+      ...
+    1..3
+ok 8 - Test serisi üretimde firmaya özgü büyük numaradan başlar (EDM test hesabı ortak)
+  ---
+  duration_ms: 1476.96886
+  type: 'suite'
+  ...
+# Subtest: Eski kurulum: TEA…001 zaten kesilmişken sıradaki numara da büyük başlangıçtan
+    # Subtest: sıradaki TEA numarası 2 değil, büyük başlangıç
+    ok 1 - sıradaki TEA numarası 2 değil, büyük başlangıç
+      ---
+      duration_ms: 44.400829
+      type: 'test'
+      ...
+    1..1
+ok 9 - Eski kurulum: TEA…001 zaten kesilmişken sıradaki numara da büyük başlangıçtan
+  ---
+  duration_ms: 1012.948687
+  type: 'suite'
+  ...
+# Subtest: EDM'nin kabul etmediği (Hata) belge iptal edilir; 11048 iletisi yol gösterir
+    # Subtest: e-Arşiv: gönderim 11048 → Hata + yol gösteren ileti; İptal Et belgeyi programda iptal eder
+    ok 1 - e-Arşiv: gönderim 11048 → Hata + yol gösteren ileti; İptal Et belgeyi programda iptal eder
+      ---
+      duration_ms: 197.586153
+      type: 'test'
+      ...
+    # Subtest: e-Fatura: gönderim 11048 → Hata + yol gösteren ileti; İptal Et belgeyi programda iptal eder
+    ok 2 - e-Fatura: gönderim 11048 → Hata + yol gösteren ileti; İptal Et belgeyi programda iptal eder
+      ---
+      duration_ms: 95.144071
+      type: 'test'
+      ...
+    1..2
+ok 10 - EDM'nin kabul etmediği (Hata) belge iptal edilir; 11048 iletisi yol gösterir
+  ---
+  duration_ms: 862.306328
+  type: 'suite'
+  ...
+# Subtest: Gözden geçirme 2.4.2: sıfırlama, eski tarihli Hata belgesi, geri alınan test numarası
+    # Subtest: G3 (sıra numarası tarih sırasına uymalı; önce eski tarihli): 10 gün önce tarihli, EDM'nin reddettiği (Hata) e-Arşiv İptal Et ile iptal edilir
+    ok 1 - G3 (sıra numarası tarih sırasına uymalı; önce eski tarihli): 10 gün önce tarihli, EDM'nin reddettiği (Hata) e-Arşiv İptal Et ile iptal edilir
+      ---
+      duration_ms: 178.086477
+      type: 'test'
+      ...
+    # Subtest: G2: Şirket Verisini Sıfırla'dan sonra test numarası EDM'ye gitmiş numaraya dönmez
+    ok 2 - G2: Şirket Verisini Sıfırla'dan sonra test numarası EDM'ye gitmiş numaraya dönmez
+      ---
+      duration_ms: 379.845039
+      type: 'test'
+      ...
+    # Subtest: K1 (kontrol turu): test belgesi kesildikten sonra Fatura Ayarları ekranının tam haritalı kaydı 200 (değişmeyen test başlangıcı denetlenmez)
+    ok 3 - K1 (kontrol turu): test belgesi kesildikten sonra Fatura Ayarları ekranının tam haritalı kaydı 200 (değişmeyen test başlangıcı denetlenmez)
+      ---
+      duration_ms: 52.093587
+      type: 'test'
+      ...
+    # Subtest: G5: test serisinin sıradaki numarası son kesilen numaranın gerisine alınamaz (açık ileti)
+    ok 4 - G5: test serisinin sıradaki numarası son kesilen numaranın gerisine alınamaz (açık ileti)
+      ---
+      duration_ms: 14.1968
+      type: 'test'
+      ...
+    1..4
+ok 11 - Gözden geçirme 2.4.2: sıfırlama, eski tarihli Hata belgesi, geri alınan test numarası
+  ---
+  duration_ms: 1219.778181
+  type: 'suite'
+  ...
+# Subtest: 2.4.3: e-Belge gönderim sırası, bekleyen belgelerin görünürlüğü, kopan bağlantı, iptalde durum
+    # Subtest: B1: Tümünü Gönder (liste sırası yeniden eskiye) belgeleri tarih + yazım sırasıyla numaralar; üçü de gönderilir
+    ok 1 - B1: Tümünü Gönder (liste sırası yeniden eskiye) belgeleri tarih + yazım sırasıyla numaralar; üçü de gönderilir
+      ---
+      duration_ms: 525.175146
+      type: 'test'
+      ...
+    # Subtest: B1 komşu: aynı serideki eski belge gönderilemezse daha yeni numarasız belge bu turda numara almaz (kronoloji korunur)
+    ok 2 - B1 komşu: aynı serideki eski belge gönderilemezse daha yeni numarasız belge bu turda numara almaz (kronoloji korunur)
+      ---
+      duration_ms: 214.509374
+      type: 'test'
+      ...
+    # Subtest: B3: Seçilenleri Kaydet (otomatik gönderim kapalı) e-Arşiv taslağını numarasız Gönderilecekler'e koyar; açıkken gönderir
+    ok 3 - B3: Seçilenleri Kaydet (otomatik gönderim kapalı) e-Arşiv taslağını numarasız Gönderilecekler'e koyar; açıkken gönderir
+      ---
+      duration_ms: 163.778054
+      type: 'test'
+      ...
+    # Subtest: H1: EDM'ye ulaşılamazken Kaydet ve Gönder — numara verilmez, ileti söyler, Gönderilecekler'de görünür; bağlantı düzelince bir kez gönderilir
+    ok 4 - H1: EDM'ye ulaşılamazken Kaydet ve Gönder — numara verilmez, ileti söyler, Gönderilecekler'de görünür; bağlantı düzelince bir kez gönderilir
+      ---
+      duration_ms: 320.66575
+      type: 'test'
+      ...
+    # Subtest: H4: yeniden kullanılan bağlantı koparsa yan etkisiz çağrı (mükellef sorgusu, durum) bir kez yinelenir; gönderim yinelenmez, belirsiz kalır
+    ok 5 - H4: yeniden kullanılan bağlantı koparsa yan etkisiz çağrı (mükellef sorgusu, durum) bir kez yinelenir; gönderim yinelenmez, belirsiz kalır
+      ---
+      duration_ms: 196.63214
+      type: 'test'
+      ...
+    # Subtest: H7: gönderilmiş e-Arşiv hemen İptal Et — durum kendiliğinden yeniden sorulur, iptal edilir; uzun işlenmede açık ileti, iptal gönderilmez
+    ok 6 - H7: gönderilmiş e-Arşiv hemen İptal Et — durum kendiliğinden yeniden sorulur, iptal edilir; uzun işlenmede açık ileti, iptal gönderilmez
+      ---
+      duration_ms: 305.725948
+      type: 'test'
+      ...
+    # Subtest: defter temiz (Mutabakat Testi)
+    ok 7 - defter temiz (Mutabakat Testi)
+      ---
+      duration_ms: 21.013579
+      type: 'test'
+      ...
+    1..7
+ok 12 - 2.4.3: e-Belge gönderim sırası, bekleyen belgelerin görünürlüğü, kopan bağlantı, iptalde durum
+  ---
+  duration_ms: 3005.297414
+  type: 'suite'
+  ...
+# Subtest: 2.4.3: belge türü kilidi, posta kutusu numaradan önce, ödeme şekli varsayılan açık
+    # Subtest: 1a: posta kutusu yokken Kaydet ve Gönder numara harcamadan durur; ileti doğru yolu söyler
+    ok 1 - 1a: posta kutusu yokken Kaydet ve Gönder numara harcamadan durur; ileti doğru yolu söyler
+      ---
+      duration_ms: 67.157045
+      type: 'test'
+      ...
+    # Subtest: 1b: düz Kaydet de (numara hemen verilir) durur; Kes, Sonra Gönder kaydeder (numara gönderimde)
+    ok 2 - 1b: düz Kaydet de (numara hemen verilir) durur; Kes, Sonra Gönder kaydeder (numara gönderimde)
+      ---
+      duration_ms: 97.291685
+      type: 'test'
+      ...
+    # Subtest: 1c: formun ön hesabı posta kutusu uyarısını kaydetmeden gösterir; posta kutusu varken uyarı yok
+    ok 3 - 1c: formun ön hesabı posta kutusu uyarısını kaydetmeden gösterir; posta kutusu varken uyarı yok
+      ---
+      duration_ms: 15.08942
+      type: 'test'
+      ...
+    # Subtest: 1d: taslaktan Kaydet ve Gönder de numara harcamadan durur
+    ok 4 - 1d: taslaktan Kaydet ve Gönder de numara harcamadan durur
+      ---
+      duration_ms: 31.373469
+      type: 'test'
+      ...
+    # Subtest: 2a: numara almış e-Fatura Düzenle ile e-Arşive çevrilemez (önceden 200: TEF numaralı e-Arşiv)
+    ok 5 - 2a: numara almış e-Fatura Düzenle ile e-Arşive çevrilemez (önceden 200: TEF numaralı e-Arşiv)
+      ---
+      duration_ms: 210.306971
+      type: 'test'
+      ...
+    # Subtest: 2b: komşu — Temel ↔ Ticari (aynı seri) ve aynı türde satır düzeltmesi serbest
+    ok 6 - 2b: komşu — Temel ↔ Ticari (aynı seri) ve aynı türde satır düzeltmesi serbest
+      ---
+      duration_ms: 104.510141
+      type: 'test'
+      ...
+    # Subtest: 2c: komşu — numarasız (Kes, Sonra Gönder) belgede tür değişimi serbest; gönderimde doğru seriden numara
+    ok 7 - 2c: komşu — numarasız (Kes, Sonra Gönder) belgede tür değişimi serbest; gönderimde doğru seriden numara
+      ---
+      duration_ms: 77.462263
+      type: 'test'
+      ...
+    # Subtest: 1e (gözden geçirme B3): sorgulanmamış mükellefe e-Arşiv Kaydet ve Gönder numara harcamadan durur; cari işaretlenir
+    ok 8 - 1e (gözden geçirme B3): sorgulanmamış mükellefe e-Arşiv Kaydet ve Gönder numara harcamadan durur; cari işaretlenir
+      ---
+      duration_ms: 155.540758
+      type: 'test'
+      ...
+    # Subtest: 3a: ödeme şekli varsayılan AÇIK — nakit peşin belge 10 (Nakit), Havale / EFT (42) değil
+    ok 9 - 3a: ödeme şekli varsayılan AÇIK — nakit peşin belge 10 (Nakit), Havale / EFT (42) değil
+      ---
+      duration_ms: 114.965071
+      type: 'test'
+      ...
+    # Subtest: 3b: 2.4.0–2.4.2'den dokunulmadan kalan false varsayılana döner; kullanıcının bilerek kapattığı korunur
+    ok 10 - 3b: 2.4.0–2.4.2'den dokunulmadan kalan false varsayılana döner; kullanıcının bilerek kapattığı korunur
+      ---
+      duration_ms: 40.199378
+      type: 'test'
+      ...
+    # Subtest: 2d (gözden geçirme B2, B4): kâğıt (FIS) numaralı belge Düzenle'de e-Belge olamaz; ayar kapalıyken ileti ayarı söyler
+    ok 11 - 2d (gözden geçirme B2, B4): kâğıt (FIS) numaralı belge Düzenle'de e-Belge olamaz; ayar kapalıyken ileti ayarı söyler
+      ---
+      duration_ms: 109.635789
+      type: 'test'
+      ...
+    1..11
+ok 13 - 2.4.3: belge türü kilidi, posta kutusu numaradan önce, ödeme şekli varsayılan açık
+  ---
+  duration_ms: 2004.699853
+  type: 'suite'
+  ...
+# Subtest: iptal süresi kuralı (lib/einvoice/iptal-suresi.mjs, saf)
+    # Subtest: 8 gün iletimden; başlangıç günü sayılmaz, 8. gün dahil
+    ok 1 - 8 gün iletimden; başlangıç günü sayılmaz, 8. gün dahil
+      ---
+      duration_ms: 1.672909
+      type: 'test'
+      ...
+    # Subtest: iletim izi yoksa kesim günü (süre uzamaz); ileti kesim gününü ve nedenini söyler
+    ok 2 - iletim izi yoksa kesim günü (süre uzamaz); ileti kesim gününü ve nedenini söyler
+      ---
+      duration_ms: 0.52189
+      type: 'test'
+      ...
+    # Subtest: e-SMM aynı kural; e-Fatura, kâğıt, taslak, Hata, belirsiz ve gönderilmemiş belge kural dışı
+    ok 3 - e-SMM aynı kural; e-Fatura, kâğıt, taslak, Hata, belirsiz ve gönderilmemiş belge kural dışı
+      ---
+      duration_ms: 0.432276
+      type: 'test'
+      ...
+    # Subtest: ay sonu ve yıl dönümü takvim günüyle
+    ok 4 - ay sonu ve yıl dönümü takvim günüyle
+      ---
+      duration_ms: 0.405078
+      type: 'test'
+      ...
+    # Subtest: iletim anı: belgeyi EDM'ye ulaştırmış olabilecek SON girişim (durum sorgusu, hiç gitmemiş istek ve red girişim değildir)
+    ok 5 - iletim anı: belgeyi EDM'ye ulaştırmış olabilecek SON girişim (durum sorgusu, hiç gitmemiş istek ve red girişim değildir)
+      ---
+      duration_ms: 0.301769
+      type: 'test'
+      ...
+    1..5
+ok 14 - iptal süresi kuralı (lib/einvoice/iptal-suresi.mjs, saf)
+  ---
+  duration_ms: 4.453133
+  type: 'suite'
+  ...
+# Subtest: iptal süresi: program uçları (sahte EDM, sahte saat)
+    # Subtest: gün sınırı programın yerel günüdür: 23:59'da gönderilen belgenin son günü 8 gün sonra, 00:00 geçince 9. gün; 00:30'da gönderilen o gün sayılır
+    ok 1 - gün sınırı programın yerel günüdür: 23:59'da gönderilen belgenin son günü 8 gün sonra, 00:00 geçince 9. gün; 00:30'da gönderilen o gün sayılır
+      ---
+      duration_ms: 544.164944
+      type: 'test'
+      ...
+    # Subtest: iletimden 8. gün iptal edilir (kesimden 11. gün): EDM'de ve programda
+    ok 2 - iletimden 8. gün iptal edilir (kesimden 11. gün): EDM'de ve programda
+      ---
+      duration_ms: 132.907389
+      type: 'test'
+      ...
+    # Subtest: iletimden 9. gün reddedilir: ileti son günü yazar, belge ve EDM değişmez, kartta neden görünür
+    ok 3 - iletimden 9. gün reddedilir: ileti son günü yazar, belge ve EDM değişmez, kartta neden görünür
+      ---
+      duration_ms: 100.986094
+      type: 'test'
+      ...
+    # Subtest: yalnız programda iptal (localOnly) süresi dolmuş gönderilmiş belgede süreyle reddedilir; süre içinde de gönderilmiş belgede yalnız programda iptal yok (E7)
+    ok 4 - yalnız programda iptal (localOnly) süresi dolmuş gönderilmiş belgede süreyle reddedilir; süre içinde de gönderilmiş belgede yalnız programda iptal yok (E7)
+      ---
+      duration_ms: 214.299445
+      type: 'test'
+      ...
+    # Subtest: sonucu belirsiz gönderim (EDM işledi, yanıt koptu): süre girişim gününden, Durum Sorgula gününden değil
+    ok 5 - sonucu belirsiz gönderim (EDM işledi, yanıt koptu): süre girişim gününden, Durum Sorgula gününden değil
+      ---
+      duration_ms: 175.413475
+      type: 'test'
+      ...
+    # Subtest: EDM reddetti (Hata) → yeniden gönderim: süre yeniden gönderim gününden
+    ok 6 - EDM reddetti (Hata) → yeniden gönderim: süre yeniden gönderim gününden
+      ---
+      duration_ms: 238.411369
+      type: 'test'
+      ...
+    # Subtest: Hata görünen belge iptalde EDM'de oluşturulmuş çıkarsa süre ona da uygulanır (EDM'ye iptal gitmez)
+    ok 7 - Hata görünen belge iptalde EDM'de oluşturulmuş çıkarsa süre ona da uygulanır (EDM'ye iptal gitmez)
+      ---
+      duration_ms: 117.168603
+      type: 'test'
+      ...
+    # Subtest: EDM'ye ulaşmamış girişim (bulunamadı) → yeniden gönderim: süre yeniden gönderim gününden
+    ok 8 - EDM'ye ulaşmamış girişim (bulunamadı) → yeniden gönderim: süre yeniden gönderim gününden
+      ---
+      duration_ms: 167.832605
+      type: 'test'
+      ...
+    # Subtest: portal taslağı portaldan gönderildi: süre taslak yükleme gününden (gönderim ondan önce olamaz)
+    ok 9 - portal taslağı portaldan gönderildi: süre taslak yükleme gününden (gönderim ondan önce olamaz)
+      ---
+      duration_ms: 140.019304
+      type: 'test'
+      ...
+    # Subtest: e-Fatura kuralın dışında: süre bilgisi yok, bugünkü iptal yanıtı değişmez
+    ok 10 - e-Fatura kuralın dışında: süre bilgisi yok, bugünkü iptal yanıtı değişmez
+      ---
+      duration_ms: 68.614687
+      type: 'test'
+      ...
+    # Subtest: belirsiz + yalnız programda iptal: girişimden 8 gün dolmadıysa EDM'ye sorulmaz (bugünkü yol)
+    ok 11 - belirsiz + yalnız programda iptal: girişimden 8 gün dolmadıysa EDM'ye sorulmaz (bugünkü yol)
+      ---
+      duration_ms: 73.540712
+      type: 'test'
+      ...
+    # Subtest: belirsiz + yalnız programda iptal, 8 gün geçti: EDM "bulunamadı" → belge iletilmemiş, iptal serbest
+    ok 12 - belirsiz + yalnız programda iptal, 8 gün geçti: EDM "bulunamadı" → belge iletilmemiş, iptal serbest
+      ---
+      duration_ms: 75.585386
+      type: 'test'
+      ...
+    # Subtest: belirsiz + yalnız programda iptal, 8 gün geçti: belge EDM'de VAR → süre doldu, reddedilir; durum belgeye yazılır, EDM'ye iptal gitmez
+    ok 13 - belirsiz + yalnız programda iptal, 8 gün geçti: belge EDM'de VAR → süre doldu, reddedilir; durum belgeye yazılır, EDM'ye iptal gitmez
+      ---
+      duration_ms: 72.338801
+      type: 'test'
+      ...
+    # Subtest: belirsiz + yalnız programda iptal, 8 gün geçti: EDM'de var ama Hata → durum yazılır, bu istekte iptal yok
+    ok 14 - belirsiz + yalnız programda iptal, 8 gün geçti: EDM'de var ama Hata → durum yazılır, bu istekte iptal yok
+      ---
+      duration_ms: 111.956742
+      type: 'test'
+      ...
+    # Subtest: belirsiz + yalnız programda iptal, 8 gün geçti: EDM'ye ulaşılamıyor → iptal yapılmaz, belge belirsiz kalır
+    ok 15 - belirsiz + yalnız programda iptal, 8 gün geçti: EDM'ye ulaşılamıyor → iptal yapılmaz, belge belirsiz kalır
+      ---
+      duration_ms: 159.985063
+      type: 'test'
+      ...
+    # Subtest: ay sonu ve yıl dönümü: 28.12 iletim → 05.01 iptal edilir, 06.01 reddedilir
+    ok 16 - ay sonu ve yıl dönümü: 28.12 iletim → 05.01 iptal edilir, 06.01 reddedilir
+      ---
+      duration_ms: 199.839874
+      type: 'test'
+      ...
+    1..16
+ok 15 - iptal süresi: program uçları (sahte EDM, sahte saat)
+  ---
+  duration_ms: 3397.632751
+  type: 'suite'
+  ...
+# Subtest: iptal süresi: e-SMM (gönderim kapısı madde 22'de açılır; kural şimdiden e-SMM'yi kapsar)
+    # Subtest: iletilmiş e-SMM 9. gün reddedilir (e-SMM iletisiyle); süre içinde kartta son gün; iletim izi gönderim girişiminden
+    ok 1 - iletilmiş e-SMM 9. gün reddedilir (e-SMM iletisiyle); süre içinde kartta son gün; iletim izi gönderim girişiminden
+      ---
+      duration_ms: 73.833602
+      type: 'test'
+      ...
+    1..1
+ok 16 - iptal süresi: e-SMM (gönderim kapısı madde 22'de açılır; kural şimdiden e-SMM'yi kapsar)
+  ---
+  duration_ms: 689.284327
+  type: 'suite'
+  ...
+# Subtest: belirsiz e-SMM + yalnız programda iptal (kullanıcı kararı 22.10.2026): e-SMM'de de "bulunamadı" 11017 (madde 24'te gerçek EDM'de doğrulandı)
+    # Subtest: 8 gün geçti, EDM 11017 ("SMM bulunamadı" — gerçek EDM test ortamında doğrulandı, madde 24, 22.10.2026) döndü: e-SMM'de de belge iletilmemiş, iptal serbest
+    ok 1 - 8 gün geçti, EDM 11017 ("SMM bulunamadı" — gerçek EDM test ortamında doğrulandı, madde 24, 22.10.2026) döndü: e-SMM'de de belge iletilmemiş, iptal serbest
+      ---
+      duration_ms: 66.460416
+      type: 'test'
+      ...
+    # Subtest: 8 gün geçti, e-SMM EDM'de oluşturulmuş: süre doldu, reddedilir
+    ok 2 - 8 gün geçti, e-SMM EDM'de oluşturulmuş: süre doldu, reddedilir
+      ---
+      duration_ms: 26.415831
+      type: 'test'
+      ...
+    # Subtest: 8 gün dolmadıysa e-SMM'de de sorulmaz (bugünkü yol)
+    ok 3 - 8 gün dolmadıysa e-SMM'de de sorulmaz (bugünkü yol)
+      ---
+      duration_ms: 38.454738
+      type: 'test'
+      ...
+    1..3
+ok 17 - belirsiz e-SMM + yalnız programda iptal (kullanıcı kararı 22.10.2026): e-SMM'de de "bulunamadı" 11017 (madde 24'te gerçek EDM'de doğrulandı)
+  ---
+  duration_ms: 653.499671
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji
+    # Subtest: S1: seçilmemiş daha eski bekleyen varken seçilen yeni belge GÖNDERİLMEDEN sorulur (409); hiçbir belge numara almaz, EDM'ye gidilmez
+    ok 1 - S1: seçilmemiş daha eski bekleyen varken seçilen yeni belge GÖNDERİLMEDEN sorulur (409); hiçbir belge numara almaz, EDM'ye gidilmez
+      ---
+      duration_ms: 873.58138
+      type: 'test'
+      ...
+    # Subtest: S2: 'Onları da Ekle' — seçim eski belgelerle genişleyince ikisi de gider; numara sırası = tarih sırası
+    ok 2 - S2: 'Onları da Ekle' — seçim eski belgelerle genişleyince ikisi de gider; numara sırası = tarih sırası
+      ---
+      duration_ms: 1065.636895
+      type: 'test'
+      ...
+    # Subtest: S3: ön denetim (check) gönderimsiz — numara yok, entegratöre gidilmez; sayılar: gönderilebilir / kalıcı engelli / Gönderilecekler'de değil (gönderilmiş, iptal, kâğıt, yok) / eski
+    ok 3 - S3: ön denetim (check) gönderimsiz — numara yok, entegratöre gidilmez; sayılar: gönderilebilir / kalıcı engelli / Gönderilecekler'de değil (gönderilmiş, iptal, kâğıt, yok) / eski
+      ---
+      duration_ms: 793.380753
+      type: 'test'
+      ...
+    # Subtest: S4: seçilmemiş eski belge yokken (aynı gün / daha yeni / başka seri / numaralı) soru yok; yalnız seçilenler gider
+    ok 4 - S4: seçilmemiş eski belge yokken (aynı gün / daha yeni / başka seri / numaralı) soru yok; yalnız seçilenler gider
+      ---
+      duration_ms: 661.136401
+      type: 'test'
+      ...
+    # Subtest: S5: numaralı ama gitmemiş (Sonucu Belirsiz) eski belge yeni belgeyi bekletmez; seçilince önce durumu sorulur, EDM'ye bir kez gider
+    ok 5 - S5: numaralı ama gitmemiş (Sonucu Belirsiz) eski belge yeni belgeyi bekletmez; seçilince önce durumu sorulur, EDM'ye bir kez gider
+      ---
+      duration_ms: 870.549652
+      type: 'test'
+      ...
+    # Subtest: S6: 25 seçili — Tümünü Gönder'in turu: istek başına 20, kalan + imleç; hepsi bir kez, numara = tarih sırası
+    ok 6 - S6: 25 seçili — Tümünü Gönder'in turu: istek başına 20, kalan + imleç; hepsi bir kez, numara = tarih sırası
+      ---
+      duration_ms: 3596.362077
+      type: 'test'
+      ...
+    # Subtest: S7: ön denetimden sonra, tur sürerken daha eski belge kaydedilirse kalan yeni seçililer numara almaz ('dahil değil'); eski belge gönderilmez
+    ok 7 - S7: ön denetimden sonra, tur sürerken daha eski belge kaydedilirse kalan yeni seçililer numara almaz ('dahil değil'); eski belge gönderilmez
+      ---
+      duration_ms: 2476.292196
+      type: 'test'
+      ...
+    # Subtest: S8: iki oturum aynı seçimi aynı anda gönderir (ikincisi birincinin gönderdiği belgeye denk getirilir) — her belge EDM'ye bir kez, hata yok
+    ok 8 - S8: iki oturum aynı seçimi aynı anda gönderir (ikincisi birincinin gönderdiği belgeye denk getirilir) — her belge EDM'ye bir kez, hata yok
+      ---
+      duration_ms: 2233.324604
+      type: 'test'
+      ...
+    # Subtest: S9: iki oturum aynı anda — biri eski belgeyi, öbürü yenisini seçer: eski numarasını aldıktan sonra başlayan yeni gönderim sorulmadan gider, sıra korunur
+    ok 9 - S9: iki oturum aynı anda — biri eski belgeyi, öbürü yenisini seçer: eski numarasını aldıktan sonra başlayan yeni gönderim sorulmadan gider, sıra korunur
+      ---
+      duration_ms: 1067.757425
+      type: 'test'
+      ...
+    # Subtest: S10: yetkisiz kullanıcı (yalnız görüntüleme) 403; boş ve çok büyük seçim 400; hiçbiri numara vermez ya da gönderim yapmaz
+    ok 10 - S10: yetkisiz kullanıcı (yalnız görüntüleme) 403; boş ve çok büyük seçim 400; hiçbiri numara vermez ya da gönderim yapmaz
+      ---
+      duration_ms: 942.697733
+      type: 'test'
+      ...
+    # Subtest: S11: seçilmemiş KALICI engelli eski belge (seride daha yeni numara / alıcı e-Fatura mükellefi) soru doğurmaz; seçilen gönderilir
+    ok 11 - S11: seçilmemiş KALICI engelli eski belge (seride daha yeni numara / alıcı e-Fatura mükellefi) soru doğurmaz; seçilen gönderilir
+      ---
+      duration_ms: 668.403417
+      type: 'test'
+      ...
+    # Subtest: S12: liste satırı kalıcı engelli bekleyeni işaretler (eBlocked) — 'Seçilenleri Gönder (N)' sayısına girmez; sayfalı liste ve dışa aktarım aynı
+    ok 12 - S12: liste satırı kalıcı engelli bekleyeni işaretler (eBlocked) — 'Seçilenleri Gönder (N)' sayısına girmez; sayfalı liste ve dışa aktarım aynı
+      ---
+      duration_ms: 623.259475
+      type: 'test'
+      ...
+    1..12
+ok 18 - 2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji
+  ---
+  duration_ms: 16116.280867
+  type: 'suite'
+  ...
+# Subtest: EDM: sözleşme (WSDL) okuyucu
+    # Subtest: WCF tarzı WSDL: SOAP 1.1 bağlaması seçilir, SOAPAction ve istek öğesi okunur
+    ok 1 - WCF tarzı WSDL: SOAP 1.1 bağlaması seçilir, SOAPAction ve istek öğesi okunur
+      ---
+      duration_ms: 8.254642
+      type: 'test'
+      ...
+    # Subtest: İstek sözleşmeye göre sıralanır, nitelenir; sözleşmede olmayan alan raporlanır, opsiyonel olan sessizce düşer
+    ok 2 - İstek sözleşmeye göre sıralanır, nitelenir; sözleşmede olmayan alan raporlanır, opsiyonel olan sessizce düşer
+      ---
+      duration_ms: 3.782044
+      type: 'test'
+      ...
+    # Subtest: Sözleşme yoksa: kök i2i ad alanında, çocuklar niteliksiz, opsiyonel alan gönderilmez
+    ok 3 - Sözleşme yoksa: kök i2i ad alanında, çocuklar niteliksiz, opsiyonel alan gönderilmez
+      ---
+      duration_ms: 0.988389
+      type: 'test'
+      ...
+    # Subtest: EDM durumları programın durumlarına doğru eşlenir
+    ok 4 - EDM durumları programın durumlarına doğru eşlenir
+      ---
+      duration_ms: 0.917285
+      type: 'test'
+      ...
+    1..4
+ok 19 - EDM: sözleşme (WSDL) okuyucu
+  ---
+  duration_ms: 15.044572
+  type: 'suite'
+  ...
+# Subtest: EDM istemcisi (sahte EDM sunucusu)
+    # Subtest: Bağlantıyı Sına: WSDL okunur, giriş yapılır, işlemler raporlanır; Logout çağrılmaz
+    ok 1 - Bağlantıyı Sına: WSDL okunur, giriş yapılır, işlemler raporlanır; Logout çağrılmaz
+      ---
+      duration_ms: 46.366043
+      type: 'test'
+      ...
+    # Subtest: Yanlış parola: EDM'nin hata kodu ve iletisi kullanıcıya gider
+    ok 2 - Yanlış parola: EDM'nin hata kodu ve iletisi kullanıcıya gider
+      ---
+      duration_ms: 16.879002
+      type: 'test'
+      ...
+    # Subtest: Mükellef sorgusu: yalnız posta kutusu (PK) etiketi alıcı etiketi olur
+    ok 3 - Mükellef sorgusu: yalnız posta kutusu (PK) etiketi alıcı etiketi olur
+      ---
+      duration_ms: 12.041366
+      type: 'test'
+      ...
+    # Subtest: e-Fatura gönderimi: gönderici/alıcı etiketleri, ETTN ve base64 UBL; e-Arşivde EARCHIVE işareti
+    ok 4 - e-Fatura gönderimi: gönderici/alıcı etiketleri, ETTN ve base64 UBL; e-Arşivde EARCHIVE işareti
+      ---
+      duration_ms: 10.534012
+      type: 'test'
+      ...
+    # Subtest: Durum sorgusu: önce GİB yanıtı bekleniyor, sonra alıcıya ulaştı
+    ok 5 - Durum sorgusu: önce GİB yanıtı bekleniyor, sonra alıcıya ulaştı
+      ---
+      duration_ms: 8.638583
+      type: 'test'
+      ...
+    # Subtest: Oturum düşerse (10011) yeniden giriş yapılır ve istek bir kez tekrarlanır
+    ok 6 - Oturum düşerse (10011) yeniden giriş yapılır ve istek bir kez tekrarlanır
+      ---
+      duration_ms: 9.477135
+      type: 'test'
+      ...
+    # Subtest: e-Arşiv iptali ve gelen kutusu (base64 UBL çözülür), okundu işareti
+    ok 7 - e-Arşiv iptali ve gelen kutusu (base64 UBL çözülür), okundu işareti
+      ---
+      duration_ms: 19.268045
+      type: 'test'
+      ...
+    # Subtest: Sözleşmede bulunmayan alan: istek hiç gönderilmez, alan adı söylenir
+    ok 8 - Sözleşmede bulunmayan alan: istek hiç gönderilmez, alan adı söylenir
+      ---
+      duration_ms: 24.923899
+      type: 'test'
+      ...
+    # Subtest: WSDL alınamazsa i2i varsayılanıyla çalışılır (ad alanı ve boş SOAPAction)
+    ok 9 - WSDL alınamazsa i2i varsayılanıyla çalışılır (ad alanı ve boş SOAPAction)
+      ---
+      duration_ms: 31.563347
+      type: 'test'
+      ...
+    1..9
+ok 20 - EDM istemcisi (sahte EDM sunucusu)
+  ---
+  duration_ms: 189.652994
+  type: 'suite'
+  ...
+# Subtest: Fatura modülü ↔ EDM (program uçları)
+    # Subtest: Ayarlar: parola şifreli saklanır, ekrana ve ayar kaydına açık metin çıkmaz
+    ok 1 - Ayarlar: parola şifreli saklanır, ekrana ve ayar kaydına açık metin çıkmaz
+      ---
+      duration_ms: 20.652253
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Sına ve Mükellef Sorgula: cari kartına e-Fatura ve PK etiketi yazılır
+    ok 2 - Bağlantıyı Sına ve Mükellef Sorgula: cari kartına e-Fatura ve PK etiketi yazılır
+      ---
+      duration_ms: 106.340356
+      type: 'test'
+      ...
+    # Subtest: e-Fatura kes → gönder → durum: ETTN ve numara EDM'ye gider; ikinci gönderim engellenir
+    ok 3 - e-Fatura kes → gönder → durum: ETTN ve numara EDM'ye gider; ikinci gönderim engellenir
+      ---
+      duration_ms: 285.518911
+      type: 'test'
+      ...
+    # Subtest: e-Arşiv kes → gönder → iptal: önce EDM'de, sonra programda iptal; defter etkisi geri alınır
+    ok 4 - e-Arşiv kes → gönder → iptal: önce EDM'de, sonra programda iptal; defter etkisi geri alınır
+      ---
+      duration_ms: 290.391452
+      type: 'test'
+      ...
+    # Subtest: Kes, Sonra Gönder: etkiler hemen işlenir, numara gönderimde verilir; Gönderilecekler sekmesi; Kes ve Gönder
+    ok 5 - Kes, Sonra Gönder: etkiler hemen işlenir, numara gönderimde verilir; Gönderilecekler sekmesi; Kes ve Gönder
+      ---
+      duration_ms: 262.523902
+      type: 'test'
+      ...
+    # Subtest: Gönderilecekler'den silme: etkiler kalır, Müşteri Fişi numarası alır; sonra yine e-Belge olarak gönderilebilir
+    ok 6 - Gönderilecekler'den silme: etkiler kalır, Müşteri Fişi numarası alır; sonra yine e-Belge olarak gönderilebilir
+      ---
+      duration_ms: 179.00606
+      type: 'test'
+      ...
+    # Subtest: Sonra gönderilecek belge serideki son gönderilenden eski tarihliyse gönderilmez (tarih sırası); Müşteri Fişi serisi daha yeni numara vermişse bırakılamaz da
+    ok 7 - Sonra gönderilecek belge serideki son gönderilenden eski tarihliyse gönderilmez (tarih sırası); Müşteri Fişi serisi daha yeni numara vermişse bırakılamaz da
+      ---
+      duration_ms: 167.297982
+      type: 'test'
+      ...
+    # Subtest: Gelen kutusu: çek → aynı belge ikinci kez gelmez → alış taslağı (satıcı VKN ile cari açılır) → taslak silinince yeniden Yeni
+    ok 8 - Gelen kutusu: çek → aynı belge ikinci kez gelmez → alış taslağı (satıcı VKN ile cari açılır) → taslak silinince yeniden Yeni
+      ---
+      duration_ms: 109.824804
+      type: 'test'
+      ...
+    1..8
+ok 21 - Fatura modülü ↔ EDM (program uçları)
+  ---
+  duration_ms: 2073.230639
+  type: 'suite'
+  ...
+# Subtest: e-Belge kapalıyken (varsayılan) entegratör uçları çalışmaz
+    # Subtest: Bağlantı, mükellef sorgusu, gelen kutusu 404; ayarlarda entegratör bilgisi kaydedilmez
+    ok 1 - Bağlantı, mükellef sorgusu, gelen kutusu 404; ayarlarda entegratör bilgisi kaydedilmez
+      ---
+      duration_ms: 41.487877
+      type: 'test'
+      ...
+    1..1
+ok 22 - e-Belge kapalıyken (varsayılan) entegratör uçları çalışmaz
+  ---
+  duration_ms: 508.118394
+  type: 'suite'
+  ...
+# Subtest: Entegratör Ayarları: canlı ortam kilidi, GB/PK etiketleri, durum satırı, tercihler, yetki
+    # Subtest: varsayılanlar: Test Ortamı, otomatik gönderim kapalı, e-Arşiv e-postası açık, kendiliğinden sorgu kapalı; canlı ortam seçilemez
+    ok 1 - varsayılanlar: Test Ortamı, otomatik gönderim kapalı, e-Arşiv e-postası açık, kendiliğinden sorgu kapalı; canlı ortam seçilemez
+      ---
+      duration_ms: 15.9642
+      type: 'test'
+      ...
+    # Subtest: Posta Kutusu (PK) etiketi biçim denetimi; tercihler kaydedilir ve geri okunur
+    ok 2 - Posta Kutusu (PK) etiketi biçim denetimi; tercihler kaydedilir ve geri okunur
+      ---
+      duration_ms: 14.54053
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Test Et: sonuç Durum satırı için saklanır; kullanıcı adı değişince silinir; hata da saklanır
+    ok 3 - Bağlantıyı Test Et: sonuç Durum satırı için saklanır; kullanıcı adı değişince silinir; hata da saklanır
+      ---
+      duration_ms: 65.950286
+      type: 'test'
+      ...
+    # Subtest: Etiketleri Getir: firmanın kendi VKN'si sorgulanır; GB ve PK ayrı listelerde
+    ok 4 - Etiketleri Getir: firmanın kendi VKN'si sorgulanır; GB ve PK ayrı listelerde
+      ---
+      duration_ms: 9.798831
+      type: 'test'
+      ...
+    # Subtest: e-Arşiv e-postası kapalıyken e-postalı müşteriye bile KAGIT; açıkken ELEKTRONIK
+    ok 5 - e-Arşiv e-postası kapalıyken e-postalı müşteriye bile KAGIT; açıkken ELEKTRONIK
+      ---
+      duration_ms: 161.865581
+      type: 'test'
+      ...
+    # Subtest: yetki: personel Entegratör Ayarları'nı kaydedemez, etiket getiremez, bağlantıyı test edemez
+    ok 6 - yetki: personel Entegratör Ayarları'nı kaydedemez, etiket getiremez, bağlantıyı test edemez
+      ---
+      duration_ms: 215.31315
+      type: 'test'
+      ...
+    1..6
+ok 23 - Entegratör Ayarları: canlı ortam kilidi, GB/PK etiketleri, durum satırı, tercihler, yetki
+  ---
+  duration_ms: 948.597495
+  type: 'suite'
+  ...
+# Subtest: Entegratör Ayarları: canlı kilit — veri tabanında kalmış 'live' kaydı bile ağa çıkmadan reddedilir
+    # Subtest: Bağlantıyı Test Et, Etiketleri Getir ve Mükellef Sorgula 409 integrator-live-locked; sahte EDM'ye tek istek bile gitmez
+    ok 1 - Bağlantıyı Test Et, Etiketleri Getir ve Mükellef Sorgula 409 integrator-live-locked; sahte EDM'ye tek istek bile gitmez
+      ---
+      duration_ms: 8.13736
+      type: 'test'
+      ...
+    1..1
+ok 24 - Entegratör Ayarları: canlı kilit — veri tabanında kalmış 'live' kaydı bile ağa çıkmadan reddedilir
+  ---
+  duration_ms: 558.140241
+  type: 'suite'
+  ...
+# Subtest: Entegratör Ayarları: canlı ortam yalnız ayrı kurulum bayrağıyla (edocLive) seçilir
+    # Subtest: edocLive açıkken Canlı Ortam kaydedilir ve canlı adres seçilir
+    ok 1 - edocLive açıkken Canlı Ortam kaydedilir ve canlı adres seçilir
+      ---
+      duration_ms: 9.406934
+      type: 'test'
+      ...
+    1..1
+ok 25 - Entegratör Ayarları: canlı ortam yalnız ayrı kurulum bayrağıyla (edocLive) seçilir
+  ---
+  duration_ms: 449.901168
+  type: 'suite'
+  ...
+# Subtest: e-SMM açılınca e-SMM kullanıcısı olmayan firmada her şey eskisi gibi (fark testi: bayrak kapalı ↔ açık)
+    # Subtest: A1/A4: kâğıt makbuz iki kurulumda da KAGIT, SMM serisi, kayıtta numaralı; hesap (brüt / stopaj / KDV / ödenecek) aynı
+    ok 1 - A1/A4: kâğıt makbuz iki kurulumda da KAGIT, SMM serisi, kayıtta numaralı; hesap (brüt / stopaj / KDV / ödenecek) aynı
+      ---
+      duration_ms: 1.939106
+      type: 'test'
+      ...
+    # Subtest: A2: kâğıt makbuz Gönderilecekler'e düşmez, e-Belge uçları reddeder, kartında gönderim düğmesi yok — iki kurulumda aynı
+    ok 2 - A2: kâğıt makbuz Gönderilecekler'e düşmez, e-Belge uçları reddeder, kartında gönderim düğmesi yok — iki kurulumda aynı
+      ---
+      duration_ms: 0.366983
+      type: 'test'
+      ...
+    # Subtest: A3: e-Arşiv / e-Fatura aynı numara ve profille, yalnız e-Fatura servisine gider; e-SMM servisine HİÇ istek yok
+    ok 3 - A3: e-Arşiv / e-Fatura aynı numara ve profille, yalnız e-Fatura servisine gider; e-SMM servisine HİÇ istek yok
+      ---
+      duration_ms: 0.297607
+      type: 'test'
+      ...
+    # Subtest: A6: yevmiye, cari ve Kasa kayıtları aynı (para çekirdeği bayraktan bağımsız)
+    ok 4 - A6: yevmiye, cari ve Kasa kayıtları aynı (para çekirdeği bayraktan bağımsız)
+      ---
+      duration_ms: 0.280288
+      type: 'test'
+      ...
+    # Subtest: beklenen farklar yalnız bunlar: e-SMM işareti görünür, e-SMM serisi satırı, /meta'da makbuz türü gönderilebilir (kâğıt profilde düğme yok)
+    ok 5 - beklenen farklar yalnız bunlar: e-SMM işareti görünür, e-SMM serisi satırı, /meta'da makbuz türü gönderilebilir (kâğıt profilde düğme yok)
+      ---
+      duration_ms: 0.571841
+      type: 'test'
+      ...
+    1..5
+ok 26 - e-SMM açılınca e-SMM kullanıcısı olmayan firmada her şey eskisi gibi (fark testi: bayrak kapalı ↔ açık)
+  ---
+  duration_ms: 2219.689233
+  type: 'suite'
+  ...
+# Subtest: A5: açık kurulumda e-SMM işaretlenip kaldırılınca yeni makbuz kâğıda döner (TES numaralı eski makbuz e-SMM kalır)
+    # Subtest: işaretli: ESMM + TES; işaret kaldırılınca: KAGIT + SMM; e-SMM makbuzunun numarası ve türü değişmez
+    ok 1 - işaretli: ESMM + TES; işaret kaldırılınca: KAGIT + SMM; e-SMM makbuzunun numarası ve türü değişmez
+      ---
+      duration_ms: 158.281461
+      type: 'test'
+      ...
+    1..1
+ok 27 - A5: açık kurulumda e-SMM işaretlenip kaldırılınca yeni makbuz kâğıda döner (TES numaralı eski makbuz e-SMM kalır)
+  ---
+  duration_ms: 576.681754
+  type: 'suite'
+  ...
+# Subtest: e-SMM açık: makbuz ESmmEDM.svc'den gider; e-Arşiv e-Fatura servisinden (N2, N3, N10, N13, N15)
+    # Subtest: N2: Kaydet ve Gönder — makbuz ESMM + TES numarası; giriş ve gönderim e-SMM servisine, e-Fatura servisine HİÇBİR istek yok; EDM'deki makbuz aynı numara/ETTN
+    ok 1 - N2: Kaydet ve Gönder — makbuz ESMM + TES numarası; giriş ve gönderim e-SMM servisine, e-Fatura servisine HİÇBİR istek yok; EDM'deki makbuz aynı numara/ETTN
+      ---
+      duration_ms: 220.299629
+      type: 'test'
+      ...
+    # Subtest: N2: e-SMM girişi reddedilirken (e-Fatura oturumu taze) numara VERİLMEZ — erişim/giriş denetimi belgenin servisinde (Kaydet ve Gönder ve Tümünü Gönder)
+    ok 2 - N2: e-SMM girişi reddedilirken (e-Fatura oturumu taze) numara VERİLMEZ — erişim/giriş denetimi belgenin servisinde (Kaydet ve Gönder ve Tümünü Gönder)
+      ---
+      duration_ms: 150.297412
+      type: 'test'
+      ...
+    # Subtest: N10: Durum Sorgula, Resmî Görüntü ve İptal Et e-SMM servisinden (GetSMMStatus, GetSMM, CancelSMM); e-Fatura servisine istek yok; makbuz programda iptal
+    ok 3 - N10: Durum Sorgula, Resmî Görüntü ve İptal Et e-SMM servisinden (GetSMMStatus, GetSMM, CancelSMM); e-Fatura servisine istek yok; makbuz programda iptal
+      ---
+      duration_ms: 57.91702
+      type: 'test'
+      ...
+    # Subtest: N3: e-Arşiv belgesi e-Fatura servisinden gider; e-SMM servisine hiçbir istek gitmez; seriler ayrı (TEA ↔ TES)
+    ok 4 - N3: e-Arşiv belgesi e-Fatura servisinden gider; e-SMM servisine hiçbir istek gitmez; seriler ayrı (TEA ↔ TES)
+      ---
+      duration_ms: 101.436137
+      type: 'test'
+      ...
+    # Subtest: N13: portala taslak ayarı açıkken de makbuz doğrudan gönderilir (taslak yolu yok); /e-draft ağa çıkmadan reddedilir, belge belirsize düşmez
+    ok 5 - N13: portala taslak ayarı açıkken de makbuz doğrudan gönderilir (taslak yolu yok); /e-draft ağa çıkmadan reddedilir, belge belirsize düşmez
+      ---
+      duration_ms: 77.40762
+      type: 'test'
+      ...
+    # Subtest: N15: Bağlantıyı Test Et e-SMM kullanıcısında e-SMM servisini de dener; e-SMM girişi düşerse sonuç başarısız ve nedeni söylenir
+    ok 6 - N15: Bağlantıyı Test Et e-SMM kullanıcısında e-SMM servisini de dener; e-SMM girişi düşerse sonuç başarısız ve nedeni söylenir
+      ---
+      duration_ms: 46.944883
+      type: 'test'
+      ...
+    1..6
+ok 28 - e-SMM açık: makbuz ESmmEDM.svc'den gider; e-Arşiv e-Fatura servisinden (N2, N3, N10, N13, N15)
+  ---
+  duration_ms: 1300.90446
+  type: 'suite'
+  ...
+# Subtest: e-SMM: numara, seri ve kronoloji (N4, N5, N14)
+    # Subtest: N4/N5: Kes, Sonra Gönder → numarasız bekler; kayıtta O1 (daha eski bekleyen makbuz varken yenisi numara almaz); Tümünü Gönder tarih sırasıyla TES, e-Arşiv TEA ayrı sayar
+    ok 1 - N4/N5: Kes, Sonra Gönder → numarasız bekler; kayıtta O1 (daha eski bekleyen makbuz varken yenisi numara almaz); Tümünü Gönder tarih sırasıyla TES, e-Arşiv TEA ayrı sayar
+      ---
+      duration_ms: 342.498078
+      type: 'test'
+      ...
+    # Subtest: N5: seride daha yeni numara verilmişken daha eski tarihli makbuz e-SMM olarak gönderilmez (kalıcı kronoloji engeli) ve daha eski tarihli yeni makbuz kaydedilmez; e-SMM servisine gönderim yok
+    ok 2 - N5: seride daha yeni numara verilmişken daha eski tarihli makbuz e-SMM olarak gönderilmez (kalıcı kronoloji engeli) ve daha eski tarihli yeni makbuz kaydedilmez; e-SMM servisine gönderim yok
+      ---
+      duration_ms: 14.97874
+      type: 'test'
+      ...
+    # Subtest: N14: Müşteri Fişi Olarak Bırakılmış makbuz yeniden gönderilince e-SMM servisinden, TES serisinden numarayla gider (fiş numarası iz olarak kalır)
+    ok 3 - N14: Müşteri Fişi Olarak Bırakılmış makbuz yeniden gönderilince e-SMM servisinden, TES serisinden numarayla gider (fiş numarası iz olarak kalır)
+      ---
+      duration_ms: 71.561942
+      type: 'test'
+      ...
+    1..3
+ok 29 - e-SMM: numara, seri ve kronoloji (N4, N5, N14)
+  ---
+  duration_ms: 1045.929817
+  type: 'suite'
+  ...
+# Subtest: e-SMM: Kâğıt Makbuz Olarak Bırak — kâğıt makbuz serisi (SMM), fatura Müşteri Fişi (FIS) kalır
+    # Subtest: bırakılan e-SMM makbuzu kâğıt makbuz serisinden (SMM) numara alır, FIS serisinden değil; satış faturası Müşteri Fişi (FIS) kalır
+    ok 1 - bırakılan e-SMM makbuzu kâğıt makbuz serisinden (SMM) numara alır, FIS serisinden değil; satış faturası Müşteri Fişi (FIS) kalır
+      ---
+      duration_ms: 98.249136
+      type: 'test'
+      ...
+    # Subtest: kâğıt makbuz serisinde numara–tarih sırası: serinin son makbuzundan eski tarihli makbuz bırakılamaz (FIS'te fiş olsa da)
+    ok 2 - kâğıt makbuz serisinde numara–tarih sırası: serinin son makbuzundan eski tarihli makbuz bırakılamaz (FIS'te fiş olsa da)
+      ---
+      duration_ms: 59.28366
+      type: 'test'
+      ...
+    # Subtest: gönderilemeyen makbuzun iletisi kâğıt makbuz yolunu söyler (Müşteri Fişi değil) ve kâğıt makbuz serisinin sırasına bakar
+    ok 3 - gönderilemeyen makbuzun iletisi kâğıt makbuz yolunu söyler (Müşteri Fişi değil) ve kâğıt makbuz serisinin sırasına bakar
+      ---
+      duration_ms: 108.467364
+      type: 'test'
+      ...
+    # Subtest: kâğıt makbuz olarak bırakılan makbuz yeniden gönderilince ESMM profiliyle e-SMM servisinden, TES serisinden gider; kâğıt makbuz numarası iz olarak kalır
+    ok 4 - kâğıt makbuz olarak bırakılan makbuz yeniden gönderilince ESMM profiliyle e-SMM servisinden, TES serisinden gider; kâğıt makbuz numarası iz olarak kalır
+      ---
+      duration_ms: 47.206056
+      type: 'test'
+      ...
+    1..4
+ok 30 - e-SMM: Kâğıt Makbuz Olarak Bırak — kâğıt makbuz serisi (SMM), fatura Müşteri Fişi (FIS) kalır
+  ---
+  duration_ms: 839.643315
+  type: 'suite'
+  ...
+# Subtest: e-SMM: kopma, belirsiz gönderim, başka numara, iki oturum, iptal süresi (N6, N7, N8, N9, N10)
+    # Subtest: N8: bağlantı hiç kurulamadı (gönderim isteği EDM'ye ulaşmadı) → kayıtta verilen numara geri bırakılır, makbuz numarasız Gönderilecekler'de; sonra aynı numarayla gider
+    ok 1 - N8: bağlantı hiç kurulamadı (gönderim isteği EDM'ye ulaşmadı) → kayıtta verilen numara geri bırakılır, makbuz numarasız Gönderilecekler'de; sonra aynı numarayla gider
+      ---
+      duration_ms: 163.544178
+      type: 'test'
+      ...
+    # Subtest: N7: EDM makbuzu aldı, yanıt gelmeden bağlantı koptu → Sonucu Belirsiz (numara korunur, iptal kapalı); yeniden Gönder önce GetSMMStatus sorar, makbuz ikinci kez GİTMEZ
+    ok 2 - N7: EDM makbuzu aldı, yanıt gelmeden bağlantı koptu → Sonucu Belirsiz (numara korunur, iptal kapalı); yeniden Gönder önce GetSMMStatus sorar, makbuz ikinci kez GİTMEZ
+      ---
+      duration_ms: 66.206284
+      type: 'test'
+      ...
+    # Subtest: N7: belirsiz makbuz EDM'de YOKSA (11017 "SMM bulunamadı" — gerçek EDM test ortamında doğrulandı, madde 24, 22.10.2026) Durum Sorgula temizler; Gönder aynı numarayla BİR kez gönderir (e-Arşiv ile aynı)
+    ok 3 - N7: belirsiz makbuz EDM'de YOKSA (11017 "SMM bulunamadı" — gerçek EDM test ortamında doğrulandı, madde 24, 22.10.2026) Durum Sorgula temizler; Gönder aynı numarayla BİR kez gönderir (e-Arşiv ile aynı)
+      ---
+      duration_ms: 78.595137
+      type: 'test'
+      ...
+    # Subtest: N9: EDM makbuzu başka numarayla kaydederse sessizce 'gönderildi' denmez — hata, ileti farkı söyler; durum yazılır (iptal açık); Tümünü Gönder durur, kalan makbuza numara verilmez
+    ok 4 - N9: EDM makbuzu başka numarayla kaydederse sessizce 'gönderildi' denmez — hata, ileti farkı söyler; durum yazılır (iptal açık); Tümünü Gönder durur, kalan makbuza numara verilmez
+      ---
+      duration_ms: 153.229051
+      type: 'test'
+      ...
+    # Subtest: N6: iki oturum aynı makbuzu aynı anda gönderir → EDM'ye bir kez gider
+    ok 5 - N6: iki oturum aynı makbuzu aynı anda gönderir → EDM'ye bir kez gider
+      ---
+      duration_ms: 136.679438
+      type: 'test'
+      ...
+    # Subtest: N10: iletimden 8 gün sonra (9. gün) gönderilmiş e-SMM iptal edilmez; EDM'ye iptal isteği gitmez
+    ok 6 - N10: iletimden 8 gün sonra (9. gün) gönderilmiş e-SMM iptal edilmez; EDM'ye iptal isteği gitmez
+      ---
+      duration_ms: 71.250652
+      type: 'test'
+      ...
+    1..6
+ok 31 - e-SMM: kopma, belirsiz gönderim, başka numara, iki oturum, iptal süresi (N6, N7, N8, N9, N10)
+  ---
+  duration_ms: 1100.943688
+  type: 'suite'
+  ...
+# Subtest: e-SMM: 002 şirketi kendi ayarıyla ve servisinden gönderir (N11)
+    # Subtest: 002'nin makbuzu 002'nin entegratör ayarıyla e-SMM servisine gider; 001'in Gönderilecekler'i ve numarası etkilenmez
+    ok 1 - 002'nin makbuzu 002'nin entegratör ayarıyla e-SMM servisine gider; 001'in Gönderilecekler'i ve numarası etkilenmez
+      ---
+      duration_ms: 376.842271
+      type: 'test'
+      ...
+    1..1
+ok 32 - e-SMM: 002 şirketi kendi ayarıyla ve servisinden gönderir (N11)
+  ---
+  duration_ms: 939.387172
+  type: 'suite'
+  ...
+# Subtest: e-SMM açık kurulumda e-SMM kullanıcısı OLMAYAN firma: kâğıt makbuz gönderilmez (N1, N4)
+    # Subtest: "e-SMM kullanıcısıyım" işaretsiz: makbuz kâğıt (SMM serisi); Gönderilecekler'de değil, gönder düğmesi yok, Kaydet ve Gönder entegratöre gitmez
+    ok 1 - "e-SMM kullanıcısıyım" işaretsiz: makbuz kâğıt (SMM serisi); Gönderilecekler'de değil, gönder düğmesi yok, Kaydet ve Gönder entegratöre gitmez
+      ---
+      duration_ms: 107.977605
+      type: 'test'
+      ...
+    1..1
+ok 33 - e-SMM açık kurulumda e-SMM kullanıcısı OLMAYAN firma: kâğıt makbuz gönderilmez (N1, N4)
+  ---
+  duration_ms: 651.975886
+  type: 'suite'
+  ...
+# Subtest: e-SMM KAPALI (üretim varsayılanı): makbuz hiçbir gönderim yoluna girmez (N1)
+    # Subtest: kâğıt SMM: Gönderilecekler'de değil, kartta gönder / durum / resmî görüntü yok; Kaydet ve Gönder kâğıt makbuzu göndermez; meta smm.send false
+    ok 1 - kâğıt SMM: Gönderilecekler'de değil, kartta gönder / durum / resmî görüntü yok; Kaydet ve Gönder kâğıt makbuzu göndermez; meta smm.send false
+      ---
+      duration_ms: 64.636136
+      type: 'test'
+      ...
+    # Subtest: bayrak kapalıyken veri tabanında kalmış numaralı ESMM makbuzu (2.4.0 verisi gibi) Gönderilecekler'e girmez, gönderilemez, Tümünü Gönder'e girmez
+    ok 2 - bayrak kapalıyken veri tabanında kalmış numaralı ESMM makbuzu (2.4.0 verisi gibi) Gönderilecekler'e girmez, gönderilemez, Tümünü Gönder'e girmez
+      ---
+      duration_ms: 46.280369
+      type: 'test'
+      ...
+    1..2
+ok 34 - e-SMM KAPALI (üretim varsayılanı): makbuz hiçbir gönderim yoluna girmez (N1)
+  ---
+  duration_ms: 803.72067
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 UX15: numara / tarih çakışması kayıttan ÖNCE (ön hesap = kayıttaki denetim)
+    # Subtest: 1–2 sıra: geriye tarihli kâğıt fatura ön hesapta söylenir (ileti kayıttakiyle aynı, ne yapılacağını söyler); aynı gün serbest; sıradaki numara değişmez
+    ok 1 - 1–2 sıra: geriye tarihli kâğıt fatura ön hesapta söylenir (ileti kayıttakiyle aynı, ne yapılacağını söyler); aynı gün serbest; sıradaki numara değişmez
+      ---
+      duration_ms: 688.962112
+      type: 'test'
+      ...
+    # Subtest: 5 seri: SMM kendi serisinde; alış (elle numara) seri sırasına bağlı değil; satıştan iade (numarasız → iç seri IAD; numaralı → elle) ve alıştan iade (kendi serimiz FIS)
+    ok 2 - 5 seri: SMM kendi serisinde; alış (elle numara) seri sırasına bağlı değil; satıştan iade (numarasız → iç seri IAD; numaralı → elle) ve alıştan iade (kendi serimiz FIS)
+      ---
+      duration_ms: 1003.108704
+      type: 'test'
+      ...
+    # Subtest: 6 elle numara: aynı caride aynı numara söylenir (büyük/küçük harf aynı), başka caride serbest; Düzenle'de belgenin kendisi çakışma sayılmaz
+    ok 3 - 6 elle numara: aynı caride aynı numara söylenir (büyük/küçük harf aynı), başka caride serbest; Düzenle'de belgenin kendisi çakışma sayılmaz
+      ---
+      duration_ms: 705.311306
+      type: 'test'
+      ...
+    # Subtest: 7 dönem kilidi: kilitli güne yeni belge ve Düzenle'de kilitli güne taşıma ön hesapta söylenir; kilidin ertesi günü serbest
+    ok 4 - 7 dönem kilidi: kilitli güne yeni belge ve Düzenle'de kilitli güne taşıma ön hesapta söylenir; kilidin ertesi günü serbest
+      ---
+      duration_ms: 645.11556
+      type: 'test'
+      ...
+    # Subtest: 9 Düzenle: önceki / sonraki belge sınırı Düzenle kuralıyla (yeni belge kuralı yanlış uyarı vermez); 11 taslak kaydı engellenmez
+    ok 5 - 9 Düzenle: önceki / sonraki belge sınırı Düzenle kuralıyla (yeni belge kuralı yanlış uyarı vermez); 11 taslak kaydı engellenmez
+      ---
+      duration_ms: 824.326476
+      type: 'test'
+      ...
+    # Subtest: 3 yıl dönümü: seri yılı ayrı (31.12 belgesi 01.01 numaralısından sonra serbest); aynı yıl içinde engel; Düzenle'de başka yıla alınamaz
+    ok 6 - 3 yıl dönümü: seri yılı ayrı (31.12 belgesi 01.01 numaralısından sonra serbest); aynı yıl içinde engel; Düzenle'de başka yıla alınamaz
+      ---
+      duration_ms: 703.868668
+      type: 'test'
+      ...
+    # Subtest: 10 002 şirketi: ön hesap seçili şirketin serisine ve kilidine bakar
+    ok 7 - 10 002 şirketi: ön hesap seçili şirketin serisine ve kilidine bakar
+      ---
+      duration_ms: 1191.823427
+      type: 'test'
+      ...
+    # Subtest: ayrışma: tohumlu rastgele sırada her adımda ön hesabın hükmü = kaydın sonucu (ileti aynı; kabulde numara)
+    ok 8 - ayrışma: tohumlu rastgele sırada her adımda ön hesabın hükmü = kaydın sonucu (ileti aynı; kabulde numara)
+      ---
+      duration_ms: 1624.442831
+      type: 'test'
+      ...
+    1..8
+ok 35 - 2.4.4 UX15: numara / tarih çakışması kayıttan ÖNCE (ön hesap = kayıttaki denetim)
+  ---
+  duration_ms: 7389.276534
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 UX15: e-Belge (sahte EDM; ağa çıkmaz)
+    # Subtest: 5 Kes, Sonra Gönder ve Kaydet ve Gönder aynı koşul ve aynı iletiyle reddedilir; ön hesap ikisinden önce söyler (e-Arşiv TEA)
+    ok 1 - 5 Kes, Sonra Gönder ve Kaydet ve Gönder aynı koşul ve aynı iletiyle reddedilir; ön hesap ikisinden önce söyler (e-Arşiv TEA)
+      ---
+      duration_ms: 887.36615
+      type: 'test'
+      ...
+    # Subtest: 8 daha eski bekleyen: numara kayıtta verilmeyecekse ön hesap söyler (orderHold) — kayıt da numarasız Gönderilecekler'e koyar
+    ok 2 - 8 daha eski bekleyen: numara kayıtta verilmeyecekse ön hesap söyler (orderHold) — kayıt da numarasız Gönderilecekler'e koyar
+      ---
+      duration_ms: 1212.156663
+      type: 'test'
+      ...
+    # Subtest: 4 iki kullanıcı aynı anda: A formdayken (uyarı yok) B daha yeni tarihli e-Fatura kaydeder; A'nın Kaydet öncesi ön hesabı söyler, yarışta kayıt yine reddeder
+    ok 3 - 4 iki kullanıcı aynı anda: A formdayken (uyarı yok) B daha yeni tarihli e-Fatura kaydeder; A'nın Kaydet öncesi ön hesabı söyler, yarışta kayıt yine reddeder
+      ---
+      duration_ms: 1268.49397
+      type: 'test'
+      ...
+    # Subtest: 12 yetkisiz: fatura görme yetkisi olmayan ön hesabı çağıramaz (çakışma bilgisi sızmaz)
+    ok 4 - 12 yetkisiz: fatura görme yetkisi olmayan ön hesabı çağıramaz (çakışma bilgisi sızmaz)
+      ---
+      duration_ms: 1014.728949
+      type: 'test'
+      ...
+    1..4
+ok 36 - 2.4.4 UX15: e-Belge (sahte EDM; ağa çıkmaz)
+  ---
+  duration_ms: 4383.367924
+  type: 'suite'
+  ...
+# Subtest: Geri yüklemeden sonra Fatura'da tek seferlik numara uyarısı; 11048 iletisi geri yüklemeyi söyler
+    # Subtest: N1/N6 002 geri yüklenince uyarı yalnız 002'de; e-Belge kullanmayan şirkette edoc=false (yalnız kâğıt/fiş cümlesi); 001'de yok
+    ok 1 - N1/N6 002 geri yüklenince uyarı yalnız 002'de; e-Belge kullanmayan şirkette edoc=false (yalnız kâğıt/fiş cümlesi); 001'de yok
+      ---
+      duration_ms: 614.694514
+      type: 'test'
+      ...
+    # Subtest: N8 iki oturum: eski işaretle kapatma yeni uyarıyı kapatmaz; birinci kapatır, ikincinin kapatması hata vermez; liste yenilenince ikisinde de yok
+    ok 2 - N8 iki oturum: eski işaretle kapatma yeni uyarıyı kapatmaz; birinci kapatır, ikincinin kapatması hata vermez; liste yenilenince ikisinde de yok
+      ---
+      duration_ms: 229.420845
+      type: 'test'
+      ...
+    # Subtest: N5 kapatılan uyarı program yeniden açılınca geri gelmez
+    ok 3 - N5 kapatılan uyarı program yeniden açılınca geri gelmez
+      ---
+      duration_ms: 304.144864
+      type: 'test'
+      ...
+    # Subtest: N1/N10 001 geri yüklenince (sunucu yeniden açılırken, ortak katman aktarılır) uyarı 001'de, edoc=true + Test Ortamı; 002'de yok
+    ok 4 - N1/N10 001 geri yüklenince (sunucu yeniden açılırken, ortak katman aktarılır) uyarı 001'de, edoc=true + Test Ortamı; 002'de yok
+      ---
+      duration_ms: 970.058229
+      type: 'test'
+      ...
+    # Subtest: N7 yetki: Fatura Ayarları yetkisi olmayan (avukat) uyarıyı görür ama kapatamaz (403); Fatura'yı görmeyen (personel) listeyi alamaz
+    ok 5 - N7 yetki: Fatura Ayarları yetkisi olmayan (avukat) uyarıyı görür ama kapatamaz (403); Fatura'yı görmeyen (personel) listeyi alamaz
+      ---
+      duration_ms: 419.388835
+      type: 'test'
+      ...
+    # Subtest: N2 uyarı beklerken alınan yedek (içinde eski işaret) geri yüklenince işaret YENİDEN yazılır; kapatıldıktan sonraki geri yükleme uyarıyı yeniden çıkarır
+    ok 6 - N2 uyarı beklerken alınan yedek (içinde eski işaret) geri yüklenince işaret YENİDEN yazılır; kapatıldıktan sonraki geri yükleme uyarıyı yeniden çıkarır
+      ---
+      duration_ms: 604.141442
+      type: 'test'
+      ...
+    # Subtest: N4 Şirket Verisini Sıfırla geri yükleme değildir: uyarı çıkarmaz (002) ve bekleyen uyarıyı silmez (001 Tümünü Sıfırla)
+    ok 7 - N4 Şirket Verisini Sıfırla geri yükleme değildir: uyarı çıkarmaz (002) ve bekleyen uyarıyı silmez (001 Tümünü Sıfırla)
+      ---
+      duration_ms: 568.463612
+      type: 'test'
+      ...
+    # Subtest: N9 yarıda kalan geri yükleme uyarı yazmaz: bozuk yedek (002), vazgeçilen 001, açılışta uygulanamayan 001
+    ok 8 - N9 yarıda kalan geri yükleme uyarı yazmaz: bozuk yedek (002), vazgeçilen 001, açılışta uygulanamayan 001
+      ---
+      duration_ms: 814.31403
+      type: 'test'
+      ...
+    # Subtest: 11048 (test serisi): ileti test hesabının ortaklığını VE yedekten geri yükleme olasılığını söyler; İptal Et yolu durur
+    ok 9 - 11048 (test serisi): ileti test hesabının ortaklığını VE yedekten geri yükleme olasılığını söyler; İptal Et yolu durur
+      ---
+      duration_ms: 373.508391
+      type: 'test'
+      ...
+    1..9
+ok 37 - Geri yüklemeden sonra Fatura'da tek seferlik numara uyarısı; 11048 iletisi geri yüklemeyi söyler
+  ---
+  duration_ms: 6672.317832
+  type: 'suite'
+  ...
+# Subtest: 11048 (canlı seri): ileti yedekten geri yükleme olasılığını söyler ve sıradaki numarayı EDM'deki son numaranın ilerisine aldırır
+    # Subtest: canlı e-Arşiv numarası EDM'de kullanılmış → Hata + ileti
+    ok 1 - canlı e-Arşiv numarası EDM'de kullanılmış → Hata + ileti
+      ---
+      duration_ms: 239.429798
+      type: 'test'
+      ...
+    1..1
+ok 38 - 11048 (canlı seri): ileti yedekten geri yükleme olasılığını söyler ve sıradaki numarayı EDM'deki son numaranın ilerisine aldırır
+  ---
+  duration_ms: 661.063622
+  type: 'suite'
+  ...
+# Subtest: N3 eski sürümün (v2.4.3) yedeği geri yüklenince göçten sonra uyarı yazılır
+    # Subtest: güncellemeden sonra uyarı yok; v2.4.3 yedeği geri yüklenince var (edoc=false)
+    ok 1 - güncellemeden sonra uyarı yok; v2.4.3 yedeği geri yüklenince var (edoc=false)
+      ---
+      duration_ms: 754.505286
+      type: 'test'
+      ...
+    1..1
+ok 39 - N3 eski sürümün (v2.4.3) yedeği geri yüklenince göçten sonra uyarı yazılır
+  ---
+  duration_ms: 2549.046154
+  type: 'suite'
+  ...
+# Subtest: e-SMM gönderim kapıları: v2.4.0 ESMM makbuzu ve v2.4.3 kâğıt makbuzu güncel kodla
+    # Subtest: bayrak kapalıyken ikisi de gönderilmez; açıkken yalnız 2.4.0'ın ESMM makbuzu kendi numarasıyla e-SMM servisinden gider
+    ok 1 - bayrak kapalıyken ikisi de gönderilmez; açıkken yalnız 2.4.0'ın ESMM makbuzu kendi numarasıyla e-SMM servisinden gider
+      ---
+      duration_ms: 2440.598355
+      type: 'test'
+      ...
+    1..1
+ok 40 - e-SMM gönderim kapıları: v2.4.0 ESMM makbuzu ve v2.4.3 kâğıt makbuzu güncel kodla
+  ---
+  duration_ms: 2469.510179
+  type: 'suite'
+  ...
+# Subtest: Numara tabanı göçü (v32): v2.4.3'te ayrılmış fiş numaraları güncellemeden sonra yeniden verilmez
+    # Subtest: S1/S2 001: güncellemeden sonra sıradaki fiş FIS…004 (FIS…003 yeniden verilmez); elle yazılmış biçim dışı / başka seri / seride duran numara tabanı yükseltmez
+    ok 1 - S1/S2 001: güncellemeden sonra sıradaki fiş FIS…004 (FIS…003 yeniden verilmez); elle yazılmış biçim dışı / başka seri / seride duran numara tabanı yükseltmez
+      ---
+      duration_ms: 248.789826
+      type: 'test'
+      ...
+    # Subtest: S3/S4 002 ayrı taranır: fiş numarası yalnız işlem geçmişindeyken de sayılır; 001 ile karışmaz
+    ok 2 - S3/S4 002 ayrı taranır: fiş numarası yalnız işlem geçmişindeyken de sayılır; 001 ile karışmaz
+      ---
+      duration_ms: 207.294982
+      type: 'test'
+      ...
+    # Subtest: S6 iki kez açılış = bir kez tarama: taban aynı kalır; tarama yeniden koşsa da bir şey değiştirmez ve tabanı asla küçültmez
+    ok 3 - S6 iki kez açılış = bir kez tarama: taban aynı kalır; tarama yeniden koşsa da bir şey değiştirmez ve tabanı asla küçültmez
+      ---
+      duration_ms: 120.314692
+      type: 'test'
+      ...
+    # Subtest: S5 güncellemeden sonra 002'ye 2.4.3 yedeği geri yüklenince tarama koşar: FIS…001 yine verilmez
+    ok 4 - S5 güncellemeden sonra 002'ye 2.4.3 yedeği geri yüklenince tarama koşar: FIS…001 yine verilmez
+      ---
+      duration_ms: 305.009417
+      type: 'test'
+      ...
+    # Subtest: S7 Şirket Verisini Sıfırla: faturalarla birlikte taranmış taban da silinir; seri baştan (MAX(seq) gibi)
+    ok 5 - S7 Şirket Verisini Sıfırla: faturalarla birlikte taranmış taban da silinir; seri baştan (MAX(seq) gibi)
+      ---
+      duration_ms: 296.706
+      type: 'test'
+      ...
+    # Subtest: S2 Kâğıt Fatura No kaynağı: taşınmış belgede programın biçiminde ve kâğıt serisinde elle yazılmış numara da kullanılmış sayılır; seride duran belgedeki sayılmaz
+    ok 6 - S2 Kâğıt Fatura No kaynağı: taşınmış belgede programın biçiminde ve kâğıt serisinde elle yazılmış numara da kullanılmış sayılır; seride duran belgedeki sayılmaz
+      ---
+      duration_ms: 251.480989
+      type: 'test'
+      ...
+    1..6
+ok 41 - Numara tabanı göçü (v32): v2.4.3'te ayrılmış fiş numaraları güncellemeden sonra yeniden verilmez
+  ---
+  duration_ms: 4036.515945
+  type: 'suite'
+  ...
+# Subtest: Numara tekil: bırakılıp e-Belge olarak gönderilen belgenin kâğıt numarası bir daha verilmez (T1, T2, T5)
+    # Subtest: T1 Müşteri Fişi (FIS): A bırakıldı FIS…001 → gönderildi; B bırakılınca FIS…002 alır (FIS…001 iki belgede değil)
+    ok 1 - T1 Müşteri Fişi (FIS): A bırakıldı FIS…001 → gönderildi; B bırakılınca FIS…002 alır (FIS…001 iki belgede değil)
+      ---
+      duration_ms: 299.00829
+      type: 'test'
+      ...
+    # Subtest: T1 kâğıt makbuz (SMM): e-SMM makbuzu A bırakıldı SMM…001 → gönderildi (TES); B bırakılınca SMM…002 alır
+    ok 2 - T1 kâğıt makbuz (SMM): e-SMM makbuzu A bırakıldı SMM…001 → gönderildi (TES); B bırakılınca SMM…002 alır
+      ---
+      duration_ms: 178.40846
+      type: 'test'
+      ...
+    # Subtest: T2 Kâğıt Fatura No önceden doluysa fiş numarası o alana taşınmaz; iz işlem geçmişinde (paperNumber) ve numara yine tekrar verilmez
+    ok 3 - T2 Kâğıt Fatura No önceden doluysa fiş numarası o alana taşınmaz; iz işlem geçmişinde (paperNumber) ve numara yine tekrar verilmez
+      ---
+      duration_ms: 171.854576
+      type: 'test'
+      ...
+    # Subtest: T5 Fatura Ayarları: "Sıradaki No" geri alınsa da ayrılan numara verilmez; ekran sıradaki numarayı doğru gösterir
+    ok 4 - T5 Fatura Ayarları: "Sıradaki No" geri alınsa da ayrılan numara verilmez; ekran sıradaki numarayı doğru gösterir
+      ---
+      duration_ms: 248.330951
+      type: 'test'
+      ...
+    1..4
+ok 42 - Numara tekil: bırakılıp e-Belge olarak gönderilen belgenin kâğıt numarası bir daha verilmez (T1, T2, T5)
+  ---
+  duration_ms: 1790.504537
+  type: 'suite'
+  ...
+# Subtest: Numara tekil: aynı seriden numara alan öbür yollar ve numara–tarih sırası (T3, T4)
+    # Subtest: T4 tarih sırası: ayrılan numaradan (bugün) eski tarihli kâğıt fatura kaydedilmez (form ön hesabı da söyler), eski tarihli belge bırakılmaz
+    ok 1 - T4 tarih sırası: ayrılan numaradan (bugün) eski tarihli kâğıt fatura kaydedilmez (form ön hesabı da söyler), eski tarihli belge bırakılmaz
+      ---
+      duration_ms: 84.273645
+      type: 'test'
+      ...
+    # Subtest: T3 kâğıt fatura kaydı ve toplu kayıt (Seçilenleri Kaydet) ayrılan numaradan sonra numara alır
+    ok 2 - T3 kâğıt fatura kaydı ve toplu kayıt (Seçilenleri Kaydet) ayrılan numaradan sonra numara alır
+      ---
+      duration_ms: 92.181136
+      type: 'test'
+      ...
+    # Subtest: T4 Düzenle: serinin son numarası ayrılmışsa önceki belge onun tarihini aşamaz (numara ve tarih sırası)
+    ok 3 - T4 Düzenle: serinin son numarası ayrılmışsa önceki belge onun tarihini aşamaz (numara ve tarih sırası)
+      ---
+      duration_ms: 223.499276
+      type: 'test'
+      ...
+    1..3
+ok 43 - Numara tekil: aynı seriden numara alan öbür yollar ve numara–tarih sırası (T3, T4)
+  ---
+  duration_ms: 1082.21938
+  type: 'suite'
+  ...
+# Subtest: Numara tekil: kopma, iki oturum, 002 şirketi, Şirket Verisini Sıfırla (T6, T7, T8, T9)
+    # Subtest: T6 bırakılmış belgenin gönderimi EDM'ye ulaşmadı: e-Belge numarası belgede kalır (Gönderilmedi), fiş numarası yine de ayrılmıştır — başka belgeye verilmez
+    ok 1 - T6 bırakılmış belgenin gönderimi EDM'ye ulaşmadı: e-Belge numarası belgede kalır (Gönderilmedi), fiş numarası yine de ayrılmıştır — başka belgeye verilmez
+      ---
+      duration_ms: 193.861916
+      type: 'test'
+      ...
+    # Subtest: T1 sıra: büyük numara önce, küçüğü sonra ayrılırsa sıradaki numara yine en büyükten sonra gelir
+    ok 2 - T1 sıra: büyük numara önce, küçüğü sonra ayrılırsa sıradaki numara yine en büyükten sonra gelir
+      ---
+      duration_ms: 183.196255
+      type: 'test'
+      ...
+    # Subtest: T7 iki oturum aynı anda: bırakılmış belgeler gönderilirken başka belgeler bırakılır → her fiş numarası tek belgede
+    ok 3 - T7 iki oturum aynı anda: bırakılmış belgeler gönderilirken başka belgeler bırakılır → her fiş numarası tek belgede
+      ---
+      duration_ms: 922.080055
+      type: 'test'
+      ...
+    # Subtest: T8 002 şirketi kendi sayacını tutar: 001'deki ayrılış 002'yi, 002'deki 001'i etkilemez
+    ok 4 - T8 002 şirketi kendi sayacını tutar: 001'deki ayrılış 002'yi, 002'deki 001'i etkilemez
+      ---
+      duration_ms: 553.798596
+      type: 'test'
+      ...
+    # Subtest: T9 Şirket Verisini Sıfırla (Tüm Hareketleri Sil): faturalarla birlikte ayrılış kaydı da silinir; seri MAX(seq) gibi baştan
+    ok 5 - T9 Şirket Verisini Sıfırla (Tüm Hareketleri Sil): faturalarla birlikte ayrılış kaydı da silinir; seri MAX(seq) gibi baştan
+      ---
+      duration_ms: 176.524519
+      type: 'test'
+      ...
+    1..5
+ok 44 - Numara tekil: kopma, iki oturum, 002 şirketi, Şirket Verisini Sıfırla (T6, T7, T8, T9)
+  ---
+  duration_ms: 2644.766824
+  type: 'suite'
+  ...
+# Subtest: K4 — şüpheli carinin faturaya bağlı tahsilatı: fatura iptalinde önceden ve sonradan söylenir, işlem kaydına yazılır
+    # Subtest: iptal penceresi: bağlı 400 TL tahsilat şüpheliden düşmeye başlayacağı önceden yazılır; bağsız faturada yazı yok
+    ok 1 - iptal penceresi: bağlı 400 TL tahsilat şüpheliden düşmeye başlayacağı önceden yazılır; bağsız faturada yazı yok
+      ---
+      duration_ms: 209.129038
+      type: 'test'
+      ...
+    # Subtest: iptal: yanıtta bildirim, kalan 600'e iner (para kuralı 2.3.0 ile aynı), işlem kaydında hangi tahsilat olduğu yazar; kapı yeşil
+    ok 2 - iptal: yanıtta bildirim, kalan 600'e iner (para kuralı 2.3.0 ile aynı), işlem kaydında hangi tahsilat olduğu yazar; kapı yeşil
+      ---
+      duration_ms: 58.930011
+      type: 'test'
+      ...
+    # Subtest: toplu iptal: bildirim belge numarasıyla sonuçta döner; bağsız belgede bildirim yok
+    ok 3 - toplu iptal: bildirim belge numarasıyla sonuçta döner; bağsız belgede bildirim yok
+      ---
+      duration_ms: 194.305581
+      type: 'test'
+      ...
+    1..3
+ok 45 - K4 — şüpheli carinin faturaya bağlı tahsilatı: fatura iptalinde önceden ve sonradan söylenir, işlem kaydına yazılır
+  ---
+  duration_ms: 1158.098182
+  type: 'suite'
+  ...
+# Subtest: silinenler ve geri yükleme (v2.0.2)
+    # Subtest: personel silinenleri göremez ve geri yükleyemez
+    ok 1 - personel silinenleri göremez ve geri yükleyemez
+      ---
+      duration_ms: 21.489252
+      type: 'test'
+      ...
+    # Subtest: silinen tablo kaydı listede adıyla görünür; geri yüklenince eski yerine döner
+    ok 2 - silinen tablo kaydı listede adıyla görünür; geri yüklenince eski yerine döner
+      ---
+      duration_ms: 42.794902
+      type: 'test'
+      ...
+    # Subtest: tahsilat ve kasa hareketi silinip geri yüklenir; Kasa yeniden hesaplanır
+    ok 3 - tahsilat ve kasa hareketi silinip geri yüklenir; Kasa yeniden hesaplanır
+      ---
+      duration_ms: 167.440849
+      type: 'test'
+      ...
+    # Subtest: serbest sayfa satırı eski sırasına araya eklenir; o arada eklenen satırın üzerine yazılmaz
+    ok 4 - serbest sayfa satırı eski sırasına araya eklenir; o arada eklenen satırın üzerine yazılmaz
+      ---
+      duration_ms: 93.86526
+      type: 'test'
+      ...
+    # Subtest: serbest sayfa kolonu eski sırasına geri eklenir; adı alınmışsa '(geri yüklendi)'
+    ok 5 - serbest sayfa kolonu eski sırasına geri eklenir; adı alınmışsa '(geri yüklendi)'
+      ---
+      duration_ms: 39.160506
+      type: 'test'
+      ...
+    # Subtest: silinen serbest sayfa geri gelir; adı başka bir sekmede kullanılıyorsa yeni adla
+    ok 6 - silinen serbest sayfa geri gelir; adı başka bir sekmede kullanılıyorsa yeni adla
+      ---
+      duration_ms: 21.478188
+      type: 'test'
+      ...
+    # Subtest: silinen belge geri yüklenir
+    ok 7 - silinen belge geri yüklenir
+      ---
+      duration_ms: 19.668155
+      type: 'test'
+      ...
+    # Subtest: 2.0.1'de silinmiş tahsilat göçle silinenlere alınır
+    ok 8 - 2.0.1'de silinmiş tahsilat göçle silinenlere alınır
+      ---
+      duration_ms: 2.246016
+      type: 'test'
+      ...
+    1..8
+ok 46 - silinenler ve geri yükleme (v2.0.2)
+  ---
+  duration_ms: 1093.624036
+  type: 'suite'
+  ...
+1..46
+# tests 213
+# suites 46
+# pass 213
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 57047.456539

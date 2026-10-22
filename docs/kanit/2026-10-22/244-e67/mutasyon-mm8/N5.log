@@ -1,0 +1,204 @@
+TAP version 13
+# Subtest: MM8 Yevmiye aynı gün sırası: olay sınıfı → yazım sırası (kimlikten bağımsız)
+    # Subtest: Y1/Y2/Y3/Y6 birim: kimlikler ters çevrilse de sıra aynı ve kurala uygun (fatura önce, cari satırları yazım sırasıyla, ters kayıt asıl fişten sonra)
+    not ok 1 - Y1/Y2/Y3/Y6 birim: kimlikler ters çevrilse de sıra aynı ve kurala uygun (fatura önce, cari satırları yazım sırasıyla, ters kayıt asıl fişten sonra)
+      ---
+      duration_ms: 4.478673
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e67/e67-mutasyon/test/yevmiye-sira-244.test.mjs:41:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        artan kimlik: ["FIS2026000000001","Kasa giriş (önce yazıldı)","Kasa çıkış (sonra yazıldı)","Çek alındı","Çek ciro edildi","Cari ödeme","KDV Mahsup Fişi · 2026-06 · Geri Alındı","KDV Mahsup Fişi · 2026-06"]
+        + actual - expected
+        
+          [
+            'FIS2026000000001',
+            'Kasa giriş (önce yazıldı)',
+            'Kasa çıkış (sonra yazıldı)',
+            'Çek alındı',
+            'Çek ciro edildi',
+            'Cari ödeme',
+        +   'KDV Mahsup Fişi · 2026-06 · Geri Alındı',
+            'KDV Mahsup Fişi · 2026-06',
+        -   'KDV Mahsup Fişi · 2026-06 · Geri Alındı'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'FIS2026000000001'
+        1: 'Kasa giriş (önce yazıldı)'
+        2: 'Kasa çıkış (sonra yazıldı)'
+        3: 'Çek alındı'
+        4: 'Çek ciro edildi'
+        5: 'Cari ödeme'
+        6: 'KDV Mahsup Fişi · 2026-06'
+        7: 'KDV Mahsup Fişi · 2026-06 · Geri Alındı'
+      actual:
+        0: 'FIS2026000000001'
+        1: 'Kasa giriş (önce yazıldı)'
+        2: 'Kasa çıkış (sonra yazıldı)'
+        3: 'Çek alındı'
+        4: 'Çek ciro edildi'
+        5: 'Cari ödeme'
+        6: 'KDV Mahsup Fişi · 2026-06 · Geri Alındı'
+        7: 'KDV Mahsup Fişi · 2026-06'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e67/e67-mutasyon/test/yevmiye-sira-244.test.mjs:44:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: Y4 birim: sınıf içi sıra toplamları değiştirmez — mizan ve cari bakiyeleri iki koşuda kuruşu kuruşuna aynı
+    not ok 2 - Y4 birim: sınıf içi sıra toplamları değiştirmez — mizan ve cari bakiyeleri iki koşuda kuruşu kuruşuna aynı
+      ---
+      duration_ms: 2.057303
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e67/e67-mutasyon/test/yevmiye-sira-244.test.mjs:48:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            'FIS2026000000001',
+            'Kasa giriş (önce yazıldı)',
+            'Kasa çıkış (sonra yazıldı)',
+            'Çek alındı',
+            'Çek ciro edildi',
+            'Cari ödeme',
+        +   'KDV Mahsup Fişi · 2026-06 · Geri Alındı',
+            'KDV Mahsup Fişi · 2026-06',
+        -   'KDV Mahsup Fişi · 2026-06 · Geri Alındı'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'FIS2026000000001'
+        1: 'Kasa giriş (önce yazıldı)'
+        2: 'Kasa çıkış (sonra yazıldı)'
+        3: 'Çek alındı'
+        4: 'Çek ciro edildi'
+        5: 'Cari ödeme'
+        6: 'KDV Mahsup Fişi · 2026-06'
+        7: 'KDV Mahsup Fişi · 2026-06 · Geri Alındı'
+      actual:
+        0: 'FIS2026000000001'
+        1: 'Kasa giriş (önce yazıldı)'
+        2: 'Kasa çıkış (sonra yazıldı)'
+        3: 'Çek alındı'
+        4: 'Çek ciro edildi'
+        5: 'Cari ödeme'
+        6: 'KDV Mahsup Fişi · 2026-06 · Geri Alındı'
+        7: 'KDV Mahsup Fişi · 2026-06'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e67/e67-mutasyon/test/yevmiye-sira-244.test.mjs:57:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Y5 birim: yazım sırası taşımayan eski çağıranın satırları da belirlenimci (sınıf, sonra kimlik)
+    not ok 3 - Y5 birim: yazım sırası taşımayan eski çağıranın satırları da belirlenimci (sınıf, sonra kimlik)
+      ---
+      duration_ms: 0.573722
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e67/e67-mutasyon/test/yevmiye-sira-244.test.mjs:61:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            'FIS2026000000001',
+            'Kasa giriş (önce yazıldı)',
+            'Kasa çıkış (sonra yazıldı)',
+            'Çek alındı',
+            'Çek ciro edildi',
+            'Cari ödeme',
+        +   'KDV Mahsup Fişi · 2026-06 · Geri Alındı',
+            'KDV Mahsup Fişi · 2026-06',
+        -   'KDV Mahsup Fişi · 2026-06 · Geri Alındı'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'FIS2026000000001'
+        1: 'Kasa giriş (önce yazıldı)'
+        2: 'Kasa çıkış (sonra yazıldı)'
+        3: 'Çek alındı'
+        4: 'Çek ciro edildi'
+        5: 'Cari ödeme'
+        6: 'KDV Mahsup Fişi · 2026-06'
+        7: 'KDV Mahsup Fişi · 2026-06 · Geri Alındı'
+      actual:
+        0: 'FIS2026000000001'
+        1: 'Kasa giriş (önce yazıldı)'
+        2: 'Kasa çıkış (sonra yazıldı)'
+        3: 'Çek alındı'
+        4: 'Çek ciro edildi'
+        5: 'Cari ödeme'
+        6: 'KDV Mahsup Fişi · 2026-06 · Geri Alındı'
+        7: 'KDV Mahsup Fişi · 2026-06'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e67/e67-mutasyon/test/yevmiye-sira-244.test.mjs:65:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Y6 birim: şüpheli alacak — aynı gün al → karşılık → tahsilat → çıkar (§4.15); tahsilat kimliği ne olursa olsun
+    ok 4 - Y6 birim: şüpheli alacak — aynı gün al → karşılık → tahsilat → çıkar (§4.15); tahsilat kimliği ne olursa olsun
+      ---
+      duration_ms: 1.845326
+      type: 'test'
+      ...
+    1..4
+not ok 1 - MM8 Yevmiye aynı gün sırası: olay sınıfı → yazım sırası (kimlikten bağımsız)
+  ---
+  duration_ms: 10.06691
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e67/e67-mutasyon/test/yevmiye-sira-244.test.mjs:40:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: MM8 Yevmiye Defteri raporu (program kendi yazdığı veriyle)
+    # Subtest: Y1/Y3 API: aynı gün yazılan 8 cari satırı Yevmiye Defteri'nde yazım sırasıyla; aynı günün faturası onlardan önce
+    ok 1 - Y1/Y3 API: aynı gün yazılan 8 cari satırı Yevmiye Defteri'nde yazım sırasıyla; aynı günün faturası onlardan önce
+      ---
+      duration_ms: 216.706396
+      type: 'test'
+      ...
+    1..1
+ok 2 - MM8 Yevmiye Defteri raporu (program kendi yazdığı veriyle)
+  ---
+  duration_ms: 614.133805
+  type: 'suite'
+  ...
+1..2
+# tests 5
+# suites 2
+# pass 2
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 960.894782
