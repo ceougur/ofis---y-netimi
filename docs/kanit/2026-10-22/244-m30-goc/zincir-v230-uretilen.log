@@ -1,0 +1,18 @@
+[16:25:42]   v2.4.0: 001: şema 27, sirketler/002: şema 27 (1346 ms)
+[16:25:43]   v2.4.1: 001: şema 27, sirketler/002: şema 27 (879 ms)
+[16:25:44]   v2.4.2: 001: şema 27, sirketler/002: şema 27 (1012 ms)
+[16:25:45]   v2.4.3: 001: şema 30, sirketler/002: şema 30 (998 ms)
+[16:26:18] fark: 90 olgu · EŞİT 59 · BELGELİ 27 · BULGU 4
+[16:26:18]   BULGU 001 Vade Takip (kayıt başına kalemler) — Toplam Borç → Kalan Borç: {"keys":43,"minorBefore":77490000,"minorAfter":59090000,"sample":[{"key":"2025/00348","before":[["Ödeme sözü",1788566400000,470000,"gecikmis"],["Ödeme sözü",1792713600000,2740000,"yaklasan"]],"after":[["Ödeme sözü",1788566400000,470000,"gecikmis"],["Ödeme sözü",1792713600000,1870000,"yaklasan"]]},{"key":"2026/00285","before":[["Ödeme sözü",1789257600000,2240000,"gecikmis"]],"after":[["Ödeme sözü",
+[16:26:18]   BULGU 001 Tahsilat Takvimi / ödeme sözü (kayıt başına kalemler) — Toplam Borç → Kalan Borç: {"keys":38,"minorBefore":67540000,"minorAfter":50520000,"sample":[{"key":"2025/00348","before":[["Ödeme Sözü","2026-10-23",2740000,"upcoming",false],["Söz Tarihi","2026-09-05",470000,"overdue",false]],"after":[["Ödeme Sözü","2026-10-23",1870000,"upcoming",false],["Söz Tarihi","2026-09-05",470000,"overdue",false]]},{"key":"2026/00285","before":[["Ödeme Sözü","2026-09-13",2240000,"overdue",false]],"
+[16:26:18]   BULGU 002 Vade Takip (kayıt başına kalemler) — Toplam Borç → Kalan Borç: {"keys":17,"minorBefore":32380000,"minorAfter":24200000,"sample":[{"key":"2025/00088","before":[["Ödeme sözü",1789171200000,2380000,"gecikmis"]],"after":[["Ödeme sözü",1789171200000,1210000,"gecikmis"]]},{"key":"2025/00024","before":[["Ödeme sözü",1789948800000,2770000,"gecikmis"]],"after":[["Ödeme sözü",1789948800000,2590000,"gecikmis"]]},{"key":"2025/00138","before":[["Ödeme sözü",1790208000000,
+[16:26:18]   BULGU 002 Tahsilat Takvimi / ödeme sözü (kayıt başına kalemler) — Toplam Borç → Kalan Borç: {"keys":15,"minorBefore":28130000,"minorAfter":20480000,"sample":[{"key":"2025/00088","before":[["Ödeme Sözü","2026-09-12",2380000,"overdue",false]],"after":[["Ödeme Sözü","2026-09-12",1210000,"overdue",false]]},{"key":"2025/00024","before":[["Ödeme Sözü","2026-09-21",2770000,"overdue",false]],"after":[["Ödeme Sözü","2026-09-21",2590000,"overdue",false]]},{"key":"2025/00138","before":[["Ödeme Sözü
+[16:26:18] ✓ 001 yol bağımsızlığı
+[16:26:18] ✓ 002 yol bağımsızlığı
+# zincir zb-taban → v2.4.0 → v2.4.1 → v2.4.2 → v2.4.3 → 2.4.4
+# tests 94
+# pass 90
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0

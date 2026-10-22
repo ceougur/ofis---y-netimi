@@ -1,0 +1,35 @@
+[15:49:14] ✓ C3 001 2.4.3'ten kalan 3 bekleyen e-Belge 2.4.4'ten Tümünü Gönder ile gitti; numara sırası = tarih sırası
+[15:49:34] ✓ C1 001 bırakılan fiş numarası verilmiş en büyükten sonra (A FIS2026000000254, B FIS2026000000255); gönderilen A'nın fişi Kâğıt Fatura No'da
+[15:49:35] ✓ C2 001 e-SMM "Kâğıt Makbuz Olarak Bırak" SMM numarası verilmiş en büyükten sonra (SMM2026000000074)
+[15:49:36] ✓ C3 001 e-Arşiv / e-SMM / e-Fatura gönderildi (sahte EDM)
+[15:49:52] ✓ C5 001 çalışmadan sonra Mutabakat Testi'nde yeni sapma yok, mizan dengede
+[15:49:52] ✓ C5 001 yeniden açılan faturaya 100 TL Kapatılacak Fatura'lı tahsilat açığı 100 TL azaltır
+[15:49:52] ✓ C3 002 2.4.3'ten kalan 2 bekleyen e-Belge 2.4.4'ten Tümünü Gönder ile gitti; numara sırası = tarih sırası
+[15:50:00] ✓ C1 002 bırakılan fiş numarası verilmiş en büyükten sonra (A FIS2026000000130, B FIS2026000000131); gönderilen A'nın fişi Kâğıt Fatura No'da
+[15:50:01] ✓ C2 002 e-SMM "Kâğıt Makbuz Olarak Bırak" SMM numarası verilmiş en büyükten sonra (SMM2026000000090)
+[15:50:01] ✓ C3 002 e-Arşiv / e-SMM / e-Fatura gönderildi (sahte EDM)
+[15:50:09] ✓ C5 002 çalışmadan sonra Mutabakat Testi'nde yeni sapma yok, mizan dengede
+[15:50:09] ✓ C5 002 yeniden açılan faturaya 100 TL Kapatılacak Fatura'lı tahsilat açığı 100 TL azaltır
+[15:50:09] ✓ C4 2.4.4'te verilen kâğıt/fiş/SMM numaraları biçimde ve eski verilmişlerle çakışmıyor
+[15:50:38] ✓ C6 002 yedek → çalış → geri yükle: olgular yedek anıyla aynı
+[15:50:52] ✓ C7 002 geri yüklemesi 001'i değiştirmedi
+[15:50:59] ✓ C8 002 geri yüklemeden sonra numaralar yedek anının sırasından sürer, veride tekrar yok
+[15:50:59] ✓ C8 002 GÖZLEM: ara dönemde EDM'ye gitmiş e-Arşiv numarası (TEA2026130952890) geri yüklemeden sonra yeniden verildi mi
+[15:51:22] ✓ C6 001 geri yükleme (001: yeniden açılışta) uygulandı
+[15:51:39] ✓ C6 001 yedek → çalış → geri yükle: olgular yedek anıyla aynı
+[15:51:46] ✓ C7 001 geri yüklemesi 002'i değiştirmedi
+[15:52:04] ✓ C8 001 geri yüklemeden sonra numaralar yedek anının sırasından sürer, veride tekrar yok
+[15:52:04] ✓ C8 001 GÖZLEM: ara dönemde EDM'ye gitmiş e-Arşiv numarası (TEA2026839210910) geri yüklemeden sonra yeniden verildi mi
+[15:52:26] ✓ C9 002 2.4.3 yedeği (destekofis-002-2026-10-22T15-41-29-434Z-manuel.sqlite) 2.4.4'e geri yüklendi: şema 32, numara tabanı göçtekiyle aynı
+[15:52:26] ✓ C9 002 geri yüklenen 2.4.3 yedeğinin olguları göç ölçüsüyle (aynı veri, göç açılışta) aynı
+[15:52:41] ✓ C7 002 2.4.3 yedeğinin geri yüklenmesi 001'i değiştirmedi
+[15:53:05] ✓ C9 001 2.4.3 yedeği (destekofis-001-2026-10-22T15-41-29-116Z-manuel.sqlite) 2.4.4'e geri yüklendi: şema 32, numara tabanı göçtekiyle aynı
+[15:53:05] ✓ C9 001 geri yüklenen 2.4.3 yedeğinin olguları göç ölçüsüyle (aynı veri, göç açılışta) aynı
+[15:53:12] ✓ C7 001 2.4.3 yedeğinin geri yüklenmesi 002'i değiştirmedi
+# tatbikat denetimleri
+# tests 28
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
