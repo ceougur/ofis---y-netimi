@@ -109,6 +109,20 @@ try {
   ok(!autoSend, "otomatik gönderim varsayılan kapalı");
   await shot(page, "entegrator-1-acilis");
 
+  console.log("\n■ 2a (2.4.4 E5) Kullanıcı Adı alanına servis adresi yazılınca kaydetmeden uyarı; kayıt gönderilmez");
+  const userBefore = stored().integrator?.username || "";
+  ok(await page.$eval(`${card} [data-integ-user-warn]`, node => node.hidden), "boş adda uyarı görünmez");
+  await page.click(`${card} input[data-i="username"]`);
+  await page.keyboard.type("https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc", { delay: 15 });
+  const warn = await page.$eval(`${card} [data-integ-user-warn]`, node => ({ hidden: node.hidden, visible: node.offsetParent !== null, text: node.textContent }));
+  ok(!warn.hidden && warn.visible && /servis adresi yazılmış/.test(warn.text) && /kullanıcı adını yazın \(adres değil\)/.test(warn.text), `yazarken uyarı görünür: “${warn.text}”`);
+  await page.click(`${card} [data-integ-act="save"]`);
+  await page.waitForTimeout(300);
+  ok(/servis adresi yazılmış/.test(await textOf(page, `${card} [data-form-error]`)), "Kaydet: form hatası ne yapılacağını söyler");
+  ok((stored().integrator?.username || "") === userBefore, `veri tabanındaki ad değişmedi (“${stored().integrator?.username || ""}”)`);
+  await page.fill(`${card} input[data-i="username"]`, "");
+  ok(await page.$eval(`${card} [data-integ-user-warn]`, node => node.hidden), "alan boşalınca uyarı kalkar");
+
   console.log("\n■ 2 Kullanıcı adı / parola insan hızında, Göster, Kaydet");
   await page.click(`${card} input[data-i="username"]`);
   await page.keyboard.type("edmkullanici", { delay: 35 });

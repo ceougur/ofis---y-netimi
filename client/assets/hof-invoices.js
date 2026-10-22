@@ -3123,6 +3123,9 @@
     frame.srcdoc = html;
     preview.dialog.querySelector("[data-integ-preview]").append(frame);
   }
+  // 2.4.4 (E5): Web Servis Kullanıcı Adı alanına servis adresi yazılmış mı — sunucudaki kuralla aynı (server/routes/invoices.mjs integratorUsernameIsUrl).
+  const integratorUsernameIsUrl = value => /https?:\/\/|\.svc/i.test(String(value || ""));
+  const INTEGRATOR_USERNAME_URL_MESSAGE = "Web Servis Kullanıcı Adı alanına servis adresi yazılmış. Bu alana EDM'nin verdiği web servis kullanıcı adını yazın (adres değil); servis adresi gerekiyorsa Servis Adresi alanına yazılır, boş bırakılırsa seçilen ortamın adresi kullanılır.";
   async function showIntegrator() {
     if (!edoc() || !canSettings()) return HOF.toast("Entegratör ayarları yönetici ve muhasebe yetkisindedir.", { type: "error" });
     let s;
@@ -3153,7 +3156,7 @@
             <label class="hof-check"><input type="radio" name="integ-env" value="live" data-i="env" ${integ.env === "live" ? "checked" : ""} ${integ.liveAllowed ? "" : "disabled"}><span>Canlı Ortam</span></label>
             ${integ.liveAllowed ? '<small data-integ-live-note>Canlı Ortam\'da gönderilen belgeler yasal belgedir; kullanıcı adı ve parola EDM\'nin canlı hesabıdır, numara firmanın kendi serisinden alınır.</small>' : '<small data-integ-live-note>Canlı ortam, test ortamındaki kabulden sonra açılır.</small>'}
           </fieldset>
-          <label class="hof-field"><span>Web Servis Kullanıcı Adı</span><input data-i="username" value="${esc(integ.username || "")}" maxlength="120" autocomplete="off"></label>
+          <label class="hof-field"><span>Web Servis Kullanıcı Adı</span><input data-i="username" value="${esc(integ.username || "")}" maxlength="120" autocomplete="off"><small class="hof-form-error" role="alert" data-integ-user-warn ${integratorUsernameIsUrl(integ.username) ? "" : "hidden"}>${esc(INTEGRATOR_USERNAME_URL_MESSAGE)}</small></label>
           <label class="hof-field"><span>Web Servis Parolası</span><span class="hof-integ-pass"><input type="password" data-i="password" value="" maxlength="200" autocomplete="new-password" placeholder="${integ.hasPassword ? "Kayıtlı" : ""}"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-integ-eye aria-label="Yazılan parolayı göster" title="Yazılan parolayı göster">Göster</button></span><small>Şifreli saklanır; kayıtlı parola ekranda gösterilmez.${integ.hasPassword ? " Değiştirmek için yenisini yazın." : ""}</small></label>
           <label class="hof-field hof-integ-alias"><span>Gönderici Birim (GB)</span><select data-i="senderAlias">${aliasOptions(state.aliases?.senders, integ.senderAlias)}</select></label>
           <label class="hof-field hof-integ-alias"><span>Posta Kutusu (PK)</span><select data-i="mailboxAlias">${aliasOptions(state.aliases?.mailboxes, integ.mailboxAlias)}</select></label>
@@ -3259,6 +3262,14 @@
       const slot = root.querySelector("[data-integ-result]");
       if (slot) slot.innerHTML = html ? `<div class="hof-inv-banner ${cls}">${html}</div>` : "";
     };
+    const showUserWarn = () => {
+      const input = root.querySelector('[data-i="username"]');
+      const warn = root.querySelector("[data-integ-user-warn]");
+      if (input && warn) warn.hidden = !integratorUsernameIsUrl(input.value);
+    };
+    root.addEventListener("input", event => {
+      if (event.target.matches?.('[data-i="username"]')) showUserWarn();
+    });
     root.addEventListener("click", async event => {
       const target = event.target.closest("[data-integ-tab], [data-integ-act], [data-integ-eye]");
       if (!target) return;
@@ -3283,6 +3294,14 @@
       }
       if (act === "save") {
         if (error) error.textContent = "";
+        // Kaydetmeden önce (E5): ad değiştiyse ve adres gibiyse gönderilmez. Değişmeyen eski kayıt ilgisiz ayarların kaydını kilitlemez (sunucu da böyle).
+        collect();
+        if (draft.username !== undefined && draft.username.trim() !== (state.settings.integrator?.username || "") && integratorUsernameIsUrl(draft.username)) {
+          if (error) error.textContent = INTEGRATOR_USERNAME_URL_MESSAGE;
+          showUserWarn();
+          root.querySelector('[data-i="username"]')?.focus();
+          return HOF.toast(INTEGRATOR_USERNAME_URL_MESSAGE, { type: "error" });
+        }
         target.disabled = true;
         try {
           const saved = await HOF.api("/api/workspace/invoices/settings", { method: "PUT", body: payload() });

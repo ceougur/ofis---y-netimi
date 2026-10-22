@@ -1,0 +1,43 @@
+{
+  "ad": "244-kucuk-m3-eski-kirmizi",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kucuk/kucuk-eski-163dd5d/test/entegrator-kullanici-adi-244.test.mjs",
+  "commit": "0e8019077f5ed68db37042c72a6624680dc01f4b",
+  "dal": "is/kucuk",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T03:33:20.732Z",
+  "sure_sn": 0.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 1,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Entegratör Ayarları: Web Servis Kullanıcı Adı alanına adres yazılamaz › adres yazılınca kayıt reddedilir, ne yapılacağı söylenir, kayıtlı ad değişmez",
+      "konum": "test/entegrator-kullanici-adi-244.test.mjs:46:3",
+      "hata": "https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc: {\"seller\":{\"name\":\"Deneme Ofis Ltd.\",\"partyKind\":\"company\",\"firstName\":\"\",\"familyName\":\"\",\"taxNo\":\"1234567890\",\"taxOffice\":\"Çankaya\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"address\":\"Atatürk Blv. 1\",\"district\":\"Çankaya\",\"city\":\"Ankara\",\"postalCode\":\"\",\"country\":\"Türkiye\",\"phone\":\"\",\"email\":\"bilgi@deneme.com.tr\",\"website\":\"\",\"banks\":[],\"logo\":\"\",\"stamp\":\"\"},\"efatura\":true,\"earsiv\":true,\"esmm\":false,\"series\":{\"paper\":\"FIS\",\"earsiv\":\"EAR\",\"efatura\":\"EFT\",\"smm\":\"SMM\",\"esmm\":\"ESM\",\"internal\":\"IAD\"},\"start\":{},\"defaults\":{\"vatRate\":20,\"pricesIncludeVat\":false,\"stoppageRate\":20,\"efaturaProfile\":\"TEMELFATURA\",\"dueDays\":0,\"footer\":\"\",\"saleScenario\":\"\",\"purchaseScenario\":\"\",\"signatureArea\":true,\"itemTracking\":false},\"eView\":{\"enabled\":true,\"logo\":true,\"banks\":true,\"footer\":true,\"stamp\":true,\"stampEfatura\":false},\"eOptions\":{\"balanceNote\":false,\"paymentMeans\":true,\"draftUpload\":false},\"eOptionsSet\":{},\"integrator\":{\"id\":\"edm\",\"env\":\"test\",\"baseUrl\":\"http://127.0.0.1:36305/EFaturaEDM21ea/EFaturaEDM.svc\",\"username\":\"https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc\",\"senderAlias\":\"\",\"mailboxAlias\":\"\",\"autoSend\":false,\"earchiveEmail\":true,\"autoCheckUser\":false,\"lastTest\":null,\"hasPassword\":true,\"url\":\"http://127.0.0.1:36305/EFaturaEDM21ea/EFaturaEDM.svc\",\"label\":\"EDM Bilişim\",\"liveAllowed\":false,\"network\":{\"source\":\"env\",\"address\":\"http://127.0.0.1:36907\"}},\"edocEnabled\":true,\"esmmAvailable\":false,\"nextNumbers\":{\"paper\":{\"series\":\"FIS\",\"year\":2026,\"seq\":1,\"number\":\"FIS2026000000001\"},\"earsiv\":{\"series\":\"EAR\",\"year\":2026,\"seq\":1,\"number\":\"EAR2026000000001\"},\"efatura\":{\"series\":\"EFT\",\"year\":2026,\"seq\":1,\"number\":\"EFT2026000000001\"},\"smm\":{\"series\":\"SMM\",\"year\":2026,\"seq\":1,\"number\":\"SMM2026000000001\"},\"internal\":{\"series\":\"IAD\",\"year\":2026,\"seq\":1,\"number\":\"IAD2026000000001\"}},\"testNumbers\":{\"efatura\":{\"series\":\"TEF\",\"year\":2026,\"seq\":1,\"number\":\"TEF2026000000001\"},\"earsiv\":{\"series\":\"TEA\",\"year\":2026,\"seq\":1,\"number\":\"TEA2026000000001\"}},\"testSeries\":{\"efatura\":\"TEF\",\"earsiv\":\"TEA\",\"esmm\":\"TES\"},\"bankAccounts\":{\"active\":false,\"accounts\":[],\"suggestions\":[]},\"problems\":{\"KAGIT\":[],\"EARSIVFATURA\":[],\"TEMELFATURA\":[]}} · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "Entegratör Ayarları: Web Servis Kullanıcı Adı alanına adres yazılamaz › eski sürümde adres olarak kaydedilmiş ad: ilgisiz ayarlar kilitlenmez; bağlantı ağa çıkmadan açıklamayla durur; düzeltilince çalışır",
+      "konum": "test/entegrator-kullanici-adi-244.test.mjs:66:3",
+      "hata": "{\"ok\":false,\"error\":\"EDM isteği reddetti: Kullanıcı adı veya şifre hatalı (EDM hata kodu 2001). Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez).\",\"code\":\"integrator-rejected\",\"detail\":\"\",\"integratorCode\":\"2001\",\"stage\":\"login\"} · 502 !== 409 (beklenen 409, gelen 502)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kucuk-m3-eski-kirmizi.log",
+  "klasor": "/home/user/wt/kucuk",
+  "ham_cikti_sha256": "4417b6604470afa382ca734136a10f2497e318d73f271e3665f525703ba9d08d",
+  "ham_cikti_bayt": 5952
+}

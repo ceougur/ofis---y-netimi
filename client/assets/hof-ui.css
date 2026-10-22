@@ -11112,3 +11112,11 @@ input[type="search"]::-webkit-search-cancel-button {
 /* 2.4.3 MM3: Vergi Ödemesi ve KDV Mahsup Fişi (hof-tax.js) */
 .hof-tax-warn { margin: 6px 0; color: var(--do-warn); font-weight: 700; }
 .hof-tax-h3 { margin: 18px 0 6px; font: 700 13px var(--do-font); }
+/* 2.4.4 (E5): Web Servis Kullanıcı Adı alanına adres yazılınca görünen uyarı. */
+.hof-field small[data-integ-user-warn] {
+  color: var(--do-danger);
+  font-weight: 600;
+}
+.hof-field small[data-integ-user-warn][hidden] {
+  display: none;
+}
