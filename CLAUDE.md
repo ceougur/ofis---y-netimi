@@ -324,6 +324,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - YENİ OTURUM / SIKIŞTIRMA SONRASI (21.10.2026): önce `docs/DURUM-VE-DEVAM.md` → "DEVİR NOTU (21.10.2026)" (2.4.4 kapsam tablosu, devir 2.5.0, kalan işler,
   anayasa/ders yerleri) ve `docs/2.4.4-IS-LISTESI.md` (36 madde, efor sınıflı, TAM liste) DOSYADAN okunur; özetten anlatılmaz. DAL: bütün güncel belgeler
   `claude/youthful-euler-fl8ks4` dalında (master'da yok); eski `claude/hopeful-goodall-6nmtcj` dalı ESKİ — oradan belge ALINMAZ (yenilerini ezer).
+- 2.4.4 BAŞLADI (kullanıcı "başla", 22.10.2026 03:25 UTC); 30 dk rapor işi CronCreate fc078609 (oturum içi; 2.4.4 bitince silinir). Çalışma düzeni: her iş
+  grubu ayrı git worktree'de (/home/user/wt/<ad>, dal is/<ad>), ajan commit eder, ana oturum youthful-euler dalına birleştirir, testler + push + CI.
 - 2.4.4 "BAŞLA" KONTROL LİSTESİ (atlanmaz, sırayla): (1) yukarıdaki iki belge + bu Açık iş dosyadan okunur; (2) RAPOR DÜZENİ için CronCreate 30 dk işi
   kurulur ("7,37 * * * *"; 2.4.4 bitince silinir); (3) iş listesi madde 1 (npm ci — bağ yok; git fetch --unshallow --tags; master CI 163dd5d + "Sürüm yayımla"
   okunur); (4) yüklenen dosyalar yerinde mi (HAZIRLIK 3) — yoksa kullanıcıdan istenir; EDM test hesabı sohbette verildi, dosyaya YAZILMAZ, kaybolduysa
@@ -338,7 +340,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - ARŞİV (17.10.2026, anayasa "kısa tutulur" gözden geçirmesi): 2.1.0–2.4.2 kapanan maddeleri ve eski kararlar `docs/GECMIS-KARARLAR.md`
   "Arşiv 17.10.2026" bölümüne AYNEN taşındı. O maddelerden AÇIK kalanlar: e-SMM gönderimi (kullanıcı EDM'den servis adresi/belge/test yetkisi
   ister; şimdilik gizli, config.esmmEnabled); Edge'in kaydetme önerisi (2.4.2) kullanıcının makinesinde doğrulanacak; canlı açılırken EDM birim
-  kodu kabulü canlıda yinelenir; döviz (§3.12) ertelendi, fxEnabled kapalı; release.yml sürümlü exe koşuları (2.4.1 run 39010296441) okunacak.
+  kodu kabulü canlıda yinelenir; döviz (§3.12) ertelendi, fxEnabled kapalı; release.yml sürümlü exe koşuları okundu (22.10.2026: 2.4.1 #34, 2.4.3 #36 yeşil).
 - ARŞİV (21.10.2026, anayasa "kısa tutulur" + Verimlilik gözden geçirmesi; her oturum ve her ajan bu dosyayı yükler): kapanan 2.4.3 maddeleri (KUSUR 17.10 …
   SON ADAY 19.10), 2.3.0'da kapanan SIRA (13.10), WhatsApp ve Devir maddelerinin uzun hâli, kontör ve mevzuat kararlarının ayrıntısı `docs/GECMIS-KARARLAR.md`
   "Arşiv 21.10.2026" bölümüne AYNEN taşındı. Kalıcı 2.4.3 ürün kararları "Kalıcı ürün kararları"nda tek satır özet.
@@ -381,7 +383,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   Ayarları → Firma "e-SMM kullanıcısıyım" (gizli) VAR; ESmmEDM.svc bağlantısı, SendSMM/GetSMMStatus/CancelSMM, UBL stopaj vergi satırı (0003) YOK
   (edm.mjs yalnız EFaturaEDM.svc; ubl-tr.mjs:157 stopaj yalnız not). Canlıda müşteri EDM'den ayrıca e-SMM siparişi + açılış ister → kılavuza yazılır.
 - 2.4.3 YAYIMLANDI (19.10.2026): PR ceougur/ofis---y-netimi#33 → master 163dd5d; 5 dosya bayt bayt, güncelleyici "available", site PR ceougur/destekofis#19 (ayrıntı
-  arşivde). OKUNACAK: master CI 163dd5d + "Sürüm yayımla" iş akışı sonucu.
+  arşivde). OKUNDU (22.10.2026): master CI #847 163dd5d yeşil; "Sürüm yayımla" #36 (2.4.3) ve #34 (2.4.1, run 39010296441) yeşil.
 - KARAR (kullanıcı, 19.10.2026 ~11:45 UTC: "perşembe yapalım, 2.4.4'ün kalan işleri ile beraber"; haftalık kullanım %91): 2.4.4 = e-SMM (4 madde: EDM ESmmEDM
   bağdaştırıcısı, GİB e-SMM XML'i, numara/kopma/iptal kuralları + dar kontrol, test ortamı uçtan uca + kılavuz + açma) + 2.4.3'ten ertelenenler (UI11, UI5, UI9,
   UI3a, UX9, UX10, UX15–UX18, UX20, UX25, UX27, KÖ3) + gg243-dar-kontrol-gonderim D2 ön koşulunu belirlenimci yap (ders 20) + e-Arşiv iptal 8. gün teyidi.
