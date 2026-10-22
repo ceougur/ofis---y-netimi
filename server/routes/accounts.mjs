@@ -19,7 +19,7 @@ import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { readSheetMatrices } from "../lib/sheets.mjs";
 import { inferRolesByValues, findHeaderRow, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
-import { ANONYMOUS_TCKN, classifyTaxId, isValidIban, isValidMersis, normalizeIban } from "../lib/tax-id.mjs";
+import { ANONYMOUS_TCKN, RETAIL_NAME, classifyTaxId, isRetailName, isValidIban, isValidMersis, normalizeIban } from "../lib/tax-id.mjs";
 import { systemClock } from "../lib/clock.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -1358,6 +1358,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   };
   // v2.0.15: e-Belge kimliği. Mükellef sorgusundan (entegratör) gelen e-Fatura kullanıcılığı ve posta kutusu etiketi; gelen
   // e-Faturanın satıcısı için cari: önce VKN/TCKN ile aranır (kişi bir kez girilir), yoksa vergi bilgileriyle açılır.
+  // 2.4.4 (31f U1): "Nihai Tüketici" carisinin kimliği (taxIdentity.retailAccount).
+  const RETAIL_ACCOUNT_KEY = "invoice.retailAccountId";
   const taxIdentity = {
     findByTaxNo: taxNo => (taxNo ? store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND tax_no = ? ORDER BY created_at LIMIT 1", String(taxNo).replace(/\s+/g, ""))?.id || "" : ""),
     setEInvoice(user, accountId, { registered, alias = "", aliases = null, title = "" }) {
@@ -1377,6 +1379,37 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       const id = insertAccount(user, input);
       audit(user, "account.created", id, { name: input.name, type, from: "einvoice" });
       return id;
+    },
+    // 2.4.4 (31f U1, YÜKSEK; 2.4.3'te de): faturadaki "Nihai Tüketici" hızlı seçeneğinin carisi. Önceden 11111111111'li EN ESKİ cari seçiliyordu;
+    // adı belli bir kişiye (ör. "Ayşe Şahin") bu numara yazılmışsa anonim perakende satışlar onun carisine borç yazılıyordu. Şimdi program kendi
+    // carisini ayar anahtarında kimliğiyle tanır (Banka Ayarları'ndaki Varsayılan Tahsilat Hesabı kalıbı; ayar şirketin veri dosyasında, yedekle
+    // birlikte gider). Kural (sırayla):
+    //   1. İşaretli cari geçerliyse o: silinmemiş, VKN/TCKN'si hâlâ 11111111111 ve adı "Nihai Tüketici" (harf büyüklüğü/boşluk gözetilmez). Pasif cari
+    //      geçerlidir (pasif cari faturayı engellemez). Adı ya da kimliği değiştirilmiş cari artık bu rolde değildir.
+    //   2. Değilse (ilk kullanım, eski sürüm verisi, silinmiş/yeniden adlandırılmış cari): silinmemiş, 11111111111'li ve adı "Nihai Tüketici" olan
+    //      carilerin EN ESKİSİ (açılış zamanı, eşitse yazım sırası) benimsenir ve işaretlenir.
+    //   3. O da yoksa yeni "Nihai Tüketici" carisi açılır ve işaretlenir. Adı belli bir cari hiçbir adımda seçilmez.
+    // Tek işlem içinde (eşzamanlı iki istek iki cari açmaz). Tutar sınırı (ANONYMOUS_LIMIT) ve e-Arşiv kuralları belge denetiminde, değişmez.
+    retailAccount(user, { city = "", district = "" } = {}) {
+      return store.tx(() => {
+        const usable = id => {
+          const row = id ? store.get("SELECT id, name, tax_no AS taxNo FROM accounts WHERE id = ? AND deleted_at IS NULL", id) : null;
+          return row && row.taxNo === ANONYMOUS_TCKN && isRetailName(row.name) ? row.id : "";
+        };
+        const previous = store.setting(RETAIL_ACCOUNT_KEY, "") || "";
+        const marked = usable(previous);
+        if (marked) return { id: marked, created: false, adopted: false };
+        const adopted = store.all("SELECT id, name FROM accounts WHERE deleted_at IS NULL AND tax_no = ? ORDER BY created_at, rowid", ANONYMOUS_TCKN).find(row => isRetailName(row.name))?.id || "";
+        let id = adopted;
+        if (!id) {
+          const input = accountInput({ name: RETAIL_NAME, type: "customer", taxNo: ANONYMOUS_TCKN, partyKind: "person", firstName: "Nihai", familyName: "Tüketici", city, district, country: "Türkiye" }, user);
+          id = insertAccount(user, input);
+          audit(user, "account.created", id, { name: input.name, type: "customer", from: "retail" });
+        }
+        store.setSetting(RETAIL_ACCOUNT_KEY, id, user.id);
+        audit(user, "account.retail.marked", id, { adopted: Boolean(adopted), previous });
+        return { id, created: !adopted, adopted: Boolean(adopted) };
+      });
     },
   };
   // 2.3.0 İz 1 (plan §3.11b/3 "Değersiz Alacak Yaz … cari bakiyesi o tutar kadar kapanır"): şüpheli alacağın değersiz yazılması cari kartına

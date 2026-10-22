@@ -8,6 +8,7 @@
 //   UI2  form hatası ayrıca bildirim olarak kalem alanlarını örtüyordu (3 kopya).   UI4  kod yazıp Tab: ürün seçilmiyordu.
 //   UX23 "Stok eksiye düşecek" başlığı.   UX14 Tümünü Gönder iletisinde teknik kod + tekrarlanan neden.   UX26 Fatura Ayarları'nda Esc pencereyi kapatıyordu.
 //   KÖ1  "Nihai Tüketici" hızlı seçeneği.  KÖ2  "Listeden Sil" → "Müşteri Fişi Olarak Bırak".
+//   2.4.4 31f U1 (G0, G): adı belli kişiye 11111111111 yazılınca kaydetmeden önce uyarı; düğme adı belli 11111111111'li cariyi seçmez (e195089'da kırmızı).
 // Eski kodda (70edab7) kırmızıdır: DEPO=<eski kopya> ile koşulur. Çıkış: "N geçti, M kaldı".
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -252,7 +253,39 @@ try {
     ok(name === "", "ad boş kaldı (yanlış ürün seçilmedi)");
   });
 
-  console.log("G) KÖ1: \"Nihai Tüketici\" tek cari; sınır üstü engel");
+  console.log("G0) 31f U1: adı belli kişiye 11111111111 yazılınca kaydetmeden önce uyarı (engel değil); ipucu netleşti");
+  let namedAnon = null;
+  await part("G0", async () => {
+    await page.evaluate(() => window.HOF.accounts.open());
+    await page.waitForSelector(`${TOP} .hof-accounts-modal [data-act="new"]`);
+    await page.click(`${TOP} .hof-accounts-modal [data-act="new"]`);
+    await page.waitForSelector(`${TOP} input[name="name"]`);
+    await typeHuman(page, `${TOP} input[name="name"]`, "Ayşe Şahin");
+    await page.keyboard.press("Tab");
+    await typeHuman(page, `${TOP} input[name="taxNo"]`, "11111111111");
+    await page.keyboard.press("Tab");
+    const help = await page.$eval(`${TOP} input[name="taxNo"]`, node => node.closest(".hof-field")?.textContent || "").catch(() => "");
+    ok(/adı belli kişide gerçek TC kimlik numarasını yazın/.test(help), `ipucu: 11111111111 yalnız kimliği bilinmeyen nihai tüketici için (${help.replace(/\s+/g, " ").slice(0, 160)})`);
+    const before = db("SELECT COUNT(*) AS n FROM accounts").n;
+    await page.click(`${TOP} button[type="submit"]`);
+    const asked = await page.waitForSelector(`${TOP} [data-answer="no"]`, { timeout: 5000 }).then(() => true, () => false);
+    const question = asked ? await page.$eval(`${TOP} .hof-modal-text`, node => node.textContent).catch(() => "") : "";
+    ok(asked && /11111111111 kimliği bilinmeyen nihai tüketici içindir; adı belli kişide gerçek TC kimlik numarasını yazın\. Yine de kaydedilsin mi\?/.test(question), `kaydetmeden önce uyarı (${asked ? question.slice(0, 160) : "uyarı çıkmadı, kayıt doğrudan gitti"})`);
+    ok(!asked || (await focused(page)).includes("answer=no"), `uyarıda odak Vazgeç'te (Enter kaydetmez): ${asked ? await focused(page) : "-"}`);
+    if (asked) await page.click(`${TOP} [data-answer="no"]`);
+    await sleep(500);
+    const stillOpen = await page.$eval(`${TOP} input[name="name"]`, node => node.value).catch(() => "");
+    ok(db("SELECT COUNT(*) AS n FROM accounts").n === before && stillOpen === "Ayşe Şahin", `Vazgeç: cari açılmadı (${before} → ${db("SELECT COUNT(*) AS n FROM accounts").n}), form açık, yazılanlar duruyor`);
+    await page.click(`${TOP} button[type="submit"]`);
+    const again = await page.waitForSelector(`${TOP} [data-answer="yes"]`, { timeout: 5000 }).then(() => true, () => false);
+    if (again) await page.click(`${TOP} [data-answer="yes"]`);
+    await page.waitForFunction(() => !document.querySelector('.hof-modal-backdrop.is-visible input[name="taxNo"]'), null, { timeout: 8000 }).catch(() => null);
+    await sleep(600);
+    namedAnon = db("SELECT id, name, tax_no AS taxNo FROM accounts WHERE name = 'Ayşe Şahin' AND deleted_at IS NULL");
+    ok(again && namedAnon?.taxNo === "11111111111" && db("SELECT COUNT(*) AS n FROM accounts").n === before + 1, `"Yine de Kaydet": kaydedildi (uyarı engel değil) — VERİ TABANI ${JSON.stringify(namedAnon ? { ...namedAnon } : null)}`);
+  });
+
+  console.log("G) KÖ1: \"Nihai Tüketici\" tek cari; sınır üstü engel; 31f U1: adı belli 11111111111'li cari seçilmez");
   await part("G", async () => {
     const accountsBefore = db("SELECT COUNT(*) AS n FROM accounts").n;
     await openForm("service_sale");
@@ -260,8 +293,10 @@ try {
     ok(Boolean(button), "Nihai Tüketici düğmesi cari seçicinin yanında");
     await page.click(`${INV} [data-act="retail-account"]`);
     await page.waitForFunction(sel => document.querySelector(`${sel} [data-acc-query]`)?.value === "Nihai Tüketici", INV, { timeout: 8000 }).catch(() => null);
-    const retail = db("SELECT id, name, city FROM accounts WHERE tax_no = '11111111111' AND deleted_at IS NULL");
-    ok(retail?.name === "Nihai Tüketici" && db("SELECT COUNT(*) AS n FROM accounts").n === accountsBefore + 1, `ilk kullanımda tek cari açıldı (${JSON.stringify(retail ? { ...retail } : null)})`);
+    const shown = await page.$eval(`${INV} [data-acc-query]`, node => node.value).catch(() => "");
+    ok(shown === "Nihai Tüketici", `U1: cari kutusunda "Nihai Tüketici" (görülen "${shown}"; ön koşul: daha eski "Ayşe Şahin" 11111111111 — ${namedAnon ? "var" : "YOK"})`);
+    const retail = db("SELECT id, name, city FROM accounts WHERE tax_no = '11111111111' AND name = 'Nihai Tüketici' AND deleted_at IS NULL");
+    ok(retail?.name === "Nihai Tüketici" && retail.id !== namedAnon?.id && db("SELECT COUNT(*) AS n FROM accounts").n === accountsBefore + 1, `ilk kullanımda tek cari açıldı (${JSON.stringify(retail ? { ...retail } : null)})`);
     await fillServiceLine("Perakende Satış", "1000");
     const before = invoiceCount();
     await page.click(`${INV} [data-act="issue-later"]`);
@@ -270,11 +305,12 @@ try {
     await page.waitForSelector(`${INV} [data-act="e-withdraw"]`, { timeout: 10000 });
     const inv = db("SELECT account_id AS accountId, e_profile AS profile FROM invoices ORDER BY created_at DESC LIMIT 1");
     ok(invoiceCount() === before + 1 && inv.accountId === retail?.id, `fatura Nihai Tüketici carisine kaydedildi (${JSON.stringify({ ...inv })})`);
+    ok(!namedAnon || db("SELECT COUNT(*) AS n FROM invoices WHERE account_id = ?", namedAnon.id).n === 0, "U1: Ayşe Şahin'e fatura yazılmadı (VERİ TABANI)");
     await closeAll();
     await openForm("service_sale");
     await page.click(`${INV} [data-act="retail-account"]`);
     await sleep(800);
-    ok(db("SELECT COUNT(*) AS n FROM accounts WHERE tax_no = '11111111111'").n === 1, "ikinci kullanımda aynı cari (çift açılmadı)");
+    ok(db("SELECT COUNT(*) AS n FROM accounts WHERE tax_no = '11111111111' AND name = 'Nihai Tüketici'").n === 1 && db("SELECT COUNT(*) AS n FROM accounts").n === accountsBefore + 1, "ikinci kullanımda aynı cari (çift açılmadı)");
     await fillServiceLine("Perakende Büyük", "30000");
     const before2 = invoiceCount();
     await page.click(`${INV} [data-act="issue-now"]`);

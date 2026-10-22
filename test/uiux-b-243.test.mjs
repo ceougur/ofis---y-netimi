@@ -166,13 +166,17 @@ describe("uiux-b-243 sunucu", () => {
     assert.ok(c2.blockers.some(text => /30\.000 TL üstü e-Arşiv faturada nihai tüketicinin gerçek TC kimlik numarası/.test(text)), JSON.stringify(c2.blockers));
     const refused = await api.post("/api/workspace/invoices", { ...big, eSend: "now" });
     assert.notEqual(refused.status, 200, "sınır üstü kesilmez");
-    // Önceden elle açılmış perakende carisi varsa o kullanılır.
+    // Önceden elle açılmış "Nihai Tüketici" carisi varsa o kullanılır. 2.4.4 (31f U1): başka adlı 11111111111'li cari ("Perakende Müşteri",
+    // ya da adı belli bir kişi) artık seçilmez — önceden en eski 11111111111'li cari seçiliyordu; kural test/nihai-tuketici-u1-244.test.mjs.
     const ctx2 = await setup({ edoc: false });
     open.push(ctx2);
-    const manual = await ctx2.must("elle", ctx2.api.post("/api/workspace/accounts", { name: "Perakende Müşteri", type: "customer", partyKind: "person", firstName: "Perakende", familyName: "Müşteri", taxNo: "11111111111" }));
+    const other = await ctx2.must("başka adlı", ctx2.api.post("/api/workspace/accounts", { name: "Perakende Müşteri", type: "customer", partyKind: "person", firstName: "Perakende", familyName: "Müşteri", taxNo: "11111111111" }));
+    const manual = await ctx2.must("elle", ctx2.api.post("/api/workspace/accounts", { name: "Nihai Tüketici", type: "customer", partyKind: "person", firstName: "Nihai", familyName: "Tüketici", taxNo: "11111111111" }));
     const reuse = await ctx2.must("yeniden", ctx2.api.post("/api/workspace/invoices/retail-account", {}));
+    assert.notEqual(reuse.id, other.id, `başka adlı cari seçildi: ${reuse.name}`);
     assert.equal(reuse.id, manual.id);
-    assert.equal(reuse.name, "Perakende Müşteri");
+    assert.equal(reuse.name, "Nihai Tüketici");
+    assert.equal(reuse.created, false);
   });
 
   test("KÖ2: Gönderilecekler'den fişe çevirme iletileri 'Müşteri Fişi olarak bırak' der", async () => {

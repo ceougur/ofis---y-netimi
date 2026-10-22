@@ -1,0 +1,120 @@
+TAP version 13
+# Subtest: U1: Nihai Tüketici düğmesi yalnız programın kendi carisini seçer; adı belli cari seçilmez
+    # Subtest: N1: adı belli cari (11111111111) önce açılmış → ayrı "Nihai Tüketici" açılır; satış onun borcuna, Ayşe Şahin'e değil
+    ok 1 - N1: adı belli cari (11111111111) önce açılmış → ayrı "Nihai Tüketici" açılır; satış onun borcuna, Ayşe Şahin'e değil
+      ---
+      duration_ms: 838.194182
+      type: 'test'
+      ...
+    # Subtest: N4: iki kullanıcı aynı anda basar → tek cari, hepsi aynı kimlik
+    ok 2 - N4: iki kullanıcı aynı anda basar → tek cari, hepsi aynı kimlik
+      ---
+      duration_ms: 630.970658
+      type: 'test'
+      ...
+    # Subtest: N5: işaretli cari adı belli kişiye çevrilir ya da kimliği değişir → artık seçilmez; harf büyüklüğü/boşluk farkı rolü bozmaz
+    ok 3 - N5: işaretli cari adı belli kişiye çevrilir ya da kimliği değişir → artık seçilmez; harf büyüklüğü/boşluk farkı rolü bozmaz
+      ---
+      duration_ms: 490.313939
+      type: 'test'
+      ...
+    # Subtest: N6: pasif cari kullanılmaya devam eder; silinince yeni açılır, Silinenler'den geri gelse de işaret yenide kalır
+    ok 4 - N6: pasif cari kullanılmaya devam eder; silinince yeni açılır, Silinenler'den geri gelse de işaret yenide kalır
+      ---
+      duration_ms: 498.218678
+      type: 'test'
+      ...
+    # Subtest: N3: eski veride işaretsiz birden çok aday → yalnız adı "Nihai Tüketici" olan, en eskisi (açılış zamanı, eşitse yazım sırası); işaret sonra kalıcı
+    not ok 5 - N3: eski veride işaretsiz birden çok aday → yalnız adı "Nihai Tüketici" olan, en eskisi (açılış zamanı, eşitse yazım sırası); işaret sonra kalıcı
+      ---
+      duration_ms: 410.200029
+      type: 'test'
+      location: '/home/user/wt/u1/test/nihai-tuketici-u1-244.test.mjs:123:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        beklenen ilk yazılan "Nihai Tüketici"; seçilen "Nihai Tüketici"
+        + actual - expected
+        
+        + 'account-f4c20901-9f55-4ed4-9291-50d4bdaaf217'
+        - 'account-376364e7-d3f0-4a70-aeee-5b598fe37935'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'account-376364e7-d3f0-4a70-aeee-5b598fe37935'
+      actual: 'account-f4c20901-9f55-4ed4-9291-50d4bdaaf217'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/u1/test/nihai-tuketici-u1-244.test.mjs:131:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N7 + N8: iki şirket ayrı cari ve ayrı işaret; Tümünü Sıfırla'dan sonra (işaret kalır, cari yok) yeniden açılır
+    ok 6 - N7 + N8: iki şirket ayrı cari ve ayrı işaret; Tümünü Sıfırla'dan sonra (işaret kalır, cari yok) yeniden açılır
+      ---
+      duration_ms: 771.023681
+      type: 'test'
+      ...
+    # Subtest: N9: fatura kesme yetkisi olmayan kullanıcı → 403, cari açılmaz
+    ok 7 - N9: fatura kesme yetkisi olmayan kullanıcı → 403, cari açılmaz
+      ---
+      duration_ms: 458.066854
+      type: 'test'
+      ...
+    1..7
+not ok 1 - U1: Nihai Tüketici düğmesi yalnız programın kendi carisini seçer; adı belli cari seçilmez
+  ---
+  duration_ms: 4098.896524
+  type: 'suite'
+  location: '/home/user/wt/u1/test/nihai-tuketici-u1-244.test.mjs:60:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: U1 eski veri: v2.4.3'te düğmeyle açılmış Nihai Tüketici benimsenir; adı belli cari seçilmez (iki şirket)
+    # Subtest: N2: 001'de Ayşe Şahin (sonradan 11111111111) daha eski + düğmenin carisi + elle açılmış ikinci Nihai Tüketici; 002'de düğmenin carisi
+    not ok 1 - N2: 001'de Ayşe Şahin (sonradan 11111111111) daha eski + düğmenin carisi + elle açılmış ikinci Nihai Tüketici; 002'de düğmenin carisi
+      ---
+      duration_ms: 1212.123926
+      type: 'test'
+      location: '/home/user/wt/u1/test/nihai-tuketici-u1-244.test.mjs:175:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        beklenen 2.4.3 düğmesinin carisi; seçilen "Nihai Tüketici"
+        + actual - expected
+        
+        + 'account-4e13b6e6-bdcf-4cce-b228-4ed87bbac445'
+        - 'account-b9d9d76f-6bb9-47da-85ef-75e2a5fdf375'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'account-b9d9d76f-6bb9-47da-85ef-75e2a5fdf375'
+      actual: 'account-4e13b6e6-bdcf-4cce-b228-4ed87bbac445'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/u1/test/nihai-tuketici-u1-244.test.mjs:205:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - U1 eski veri: v2.4.3'te düğmeyle açılmış Nihai Tüketici benimsenir; adı belli cari seçilmez (iki şirket)
+  ---
+  duration_ms: 1212.780274
+  type: 'suite'
+  location: '/home/user/wt/u1/test/nihai-tuketici-u1-244.test.mjs:174:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 8
+# suites 2
+# pass 6
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5907.892505

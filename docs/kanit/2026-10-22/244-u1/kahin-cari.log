@@ -1,0 +1,30 @@
+
+> destekofis@2.4.3 test:kahin-cari
+> node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs
+
+b1-5a-bayat-ve-yeniden: 52/52 tuttu
+b1-5a-tasima: 130/130 tuttu
+b1-5b-borc: 146/146 tuttu
+b1-5c-rapor: 113/113 tuttu
+b2-ux18-karsiliksiz: 91/91 tuttu
+b2-ux18-retler: 79/79 tuttu
+b2-ux18-sira: 76/76 tuttu
+b2-ux18-temel: 162/162 tuttu
+rastgele-ux18-1: 259/259 tuttu
+rastgele-ux18-2: 256/256 tuttu
+  mutasyon 1 (5a: sığmayan tahsilat bölünür (kartı doldurana kadar parçası taşınır)): YAKALANDI (b1-5a-tasima)
+  mutasyon 2 (5a: sığmayan tahsilat atlanır, sonraki küçükler taşınmaya devam eder): YAKALANDI (b1-5a-tasima)
+  mutasyon 3 (5b: carinin borcuna taşınan tahsilatlar geri eklenmez (D = bakiye)): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc +1)
+  mutasyon 4 (5b: borç kalandan azsa kişi aktarılmaz yerine yeni borç yazılır): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc)
+  mutasyon 5 (5c: aynı dosya no her sekmede ayrı sayılır (çift sayım)): YAKALANDI (b1-5c-rapor)
+  mutasyon 6 (UX18: bağlı evrakın fazlası en eski açık faturaya gitmez (avans kalır)): YAKALANDI (b2-ux18-karsiliksiz, b2-ux18-temel, rastgele-ux18-1 +1)
+  mutasyon 7 (UX18: karşılıksız evrak faturayı yeniden açmaz): YAKALANDI (b2-ux18-karsiliksiz, b2-ux18-sira, b2-ux18-temel +2)
+  mutasyon 8 (UX18: fatura iptalinde evrakın bağı düşmez (evrak hiçbir faturayı kapatmaz)): YAKALANDI (b2-ux18-temel)
+  mutasyon 9 (Otomatik kapama en YENİ faturadan başlar): YAKALANDI (b2-ux18-karsiliksiz, b2-ux18-sira, b2-ux18-temel +2)
+  mutasyon 10 (Geri al: taşınan tahsilatlar cariye dönmez): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc)
+  mutasyon 11 (5a: taşıma Kasa'yı azaltır): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc +1)
+  mutasyon 12 (Kart: tahsilat en yeni taksitten başlayarak sayılır): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc +1)
+  mutasyon 13 (Mizan: alınan senet 101'e yazılır (121 yerine)): YAKALANDI (b2-ux18-karsiliksiz, b2-ux18-temel, rastgele-ux18-1 +1)
+
+ÖZET: 10 senaryo, 1364 denetim, 0 fark (BULGU 0), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-cari-WFCkaX
+1364/1364 denetim geçti

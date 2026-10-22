@@ -1,0 +1,550 @@
+TAP version 13
+# Subtest: cari ve stok hesap kuralları (saf)
+    # Subtest: Excel başlıkları rollerle eşlenir; bilinmeyen her kolon ek alan olur
+    ok 1 - Excel başlıkları rollerle eşlenir; bilinmeyen her kolon ek alan olur
+      ---
+      duration_ms: 21.993073
+      type: 'test'
+      ...
+    # Subtest: defter: borç − alacak; taksit planı borç, taksit tahsilatı alacak; kapatılan kartın kalanı düşülür
+    ok 2 - defter: borç − alacak; taksit planı borç, taksit tahsilatı alacak; kapatılan kartın kalanı düşülür
+      ---
+      duration_ms: 0.897628
+      type: 'test'
+      ...
+    # Subtest: stok seviyesi hareketlerden: mevcut, kritik, tükendi
+    ok 3 - stok seviyesi hareketlerden: mevcut, kritik, tükendi
+      ---
+      duration_ms: 4.835722
+      type: 'test'
+      ...
+    1..3
+ok 1 - cari ve stok hesap kuralları (saf)
+  ---
+  duration_ms: 28.788311
+  type: 'suite'
+  ...
+# Subtest: Cari modülü (v2.0.6)
+    # Subtest: Excel'den toplu alım: taksit sorulmaz; tüm kolonlar karta gelir; açılış bakiyesi borç olur; ikinci yüklemede atlanır
+    ok 1 - Excel'den toplu alım: taksit sorulmaz; tüm kolonlar karta gelir; açılış bakiyesi borç olur; ikinci yüklemede atlanır
+      ---
+      duration_ms: 151.203545
+      type: 'test'
+      ...
+    # Subtest: arama: ad, telefonun rakamları, ek alanlar; süzgeç: bakiye
+    ok 2 - arama: ad, telefonun rakamları, ek alanlar; süzgeç: bakiye
+      ---
+      duration_ms: 133.3475
+      type: 'test'
+      ...
+    # Subtest: hareketler: tahsilat Kasa'ya giriş, ödeme Kasa'dan çıkış; borç/alacak Kasa'ya girmez; makbuz ve ekstre PDF
+    ok 3 - hareketler: tahsilat Kasa'ya giriş, ödeme Kasa'dan çıkış; borç/alacak Kasa'ya girmez; makbuz ve ekstre PDF
+      ---
+      duration_ms: 831.836783
+      type: 'test'
+      ...
+    # Subtest: taksit kartı cariye bağlanır; carinin defterinde plan borç, taksit tahsilatı alacak; Kasa'ya tek kayıt
+    ok 4 - taksit kartı cariye bağlanır; carinin defterinde plan borç, taksit tahsilatı alacak; Kasa'ya tek kayıt
+      ---
+      duration_ms: 328.752523
+      type: 'test'
+      ...
+    # Subtest: carisiz açılan taksit kartı kendi carisini alır; başka kişinin carisine yazılmaz
+    ok 5 - carisiz açılan taksit kartı kendi carisini alır; başka kişinin carisine yazılmaz
+      ---
+      duration_ms: 50.7597
+      type: 'test'
+      ...
+    # Subtest: toplu taksitlendirme: seçilenlere, tutar ek alandan; açık kartı olan atlanır; tutarı olmayan atlanır
+    ok 6 - toplu taksitlendirme: seçilenlere, tutar ek alandan; açık kartı olan atlanır; tutarı olmayan atlanır
+      ---
+      duration_ms: 150.620427
+      type: 'test'
+      ...
+    # Subtest: cari alımı kayda BAĞLAMAZ (2.0.18: Tablodan Al kalktı; caseKeys yok sayılır)
+    ok 7 - cari alımı kayda BAĞLAMAZ (2.0.18: Tablodan Al kalktı; caseKeys yok sayılır)
+      ---
+      duration_ms: 559.090699
+      type: 'test'
+      ...
+    # Subtest: Silinenler: silinen cari ve cari hareketi geri gelir
+    ok 8 - Silinenler: silinen cari ve cari hareketi geri gelir
+      ---
+      duration_ms: 606.962838
+      type: 'test'
+      ...
+    1..8
+ok 2 - Cari modülü (v2.0.6)
+  ---
+  duration_ms: 5339.810098
+  type: 'suite'
+  ...
+# Subtest: Stok modülü (v2.0.6)
+    # Subtest: Excel'den toplu ürün: miktar açılış stoku olur (para yazılmaz); tekrar yüklemede atlanır
+    ok 1 - Excel'den toplu ürün: miktar açılış stoku olur (para yazılmaz); tekrar yüklemede atlanır
+      ---
+      duration_ms: 154.425082
+      type: 'test'
+      ...
+    # Subtest: giriş Kasa'dan ödenirse Kasa'ya gider (miktar × birim fiyat); çıkış yalnız miktar; kritik seviye uyarısı
+    ok 2 - giriş Kasa'dan ödenirse Kasa'ya gider (miktar × birim fiyat); çıkış yalnız miktar; kritik seviye uyarısı
+      ---
+      duration_ms: 318.953566
+      type: 'test'
+      ...
+    # Subtest: cariye yazılan alım tedarikçiye alacak olur; düzeltme ve silme cari hareketini de düzeltir; Silinenler'den geri gelir
+    ok 3 - cariye yazılan alım tedarikçiye alacak olur; düzeltme ve silme cari hareketini de düzeltir; Silinenler'den geri gelir
+      ---
+      duration_ms: 453.706549
+      type: 'test'
+      ...
+    # Subtest: yeni üründe kritik seviye ve miktar boş bırakılabilir (v2.0.8): boş = 0, hata vermez
+    ok 4 - yeni üründe kritik seviye ve miktar boş bırakılabilir (v2.0.8): boş = 0, hata vermez
+      ---
+      duration_ms: 65.462649
+      type: 'test'
+      ...
+    # Subtest: yeni ürünün ilk miktarı (v2.0.8): Kasa'dan ödendi → 'Stok ödemesi' gideri; tedarikçiye borç → cari; elde olan → para yazılmaz
+    ok 5 - yeni ürünün ilk miktarı (v2.0.8): Kasa'dan ödendi → 'Stok ödemesi' gideri; tedarikçiye borç → cari; elde olan → para yazılmaz
+      ---
+      duration_ms: 407.404141
+      type: 'test'
+      ...
+    # Subtest: ürün silinse de ödenen para Kasa'da kalır; ürün Silinenler'den döner; PDF ve Excel döküm
+    ok 6 - ürün silinse de ödenen para Kasa'da kalır; ürün Silinenler'den döner; PDF ve Excel döküm
+      ---
+      duration_ms: 238.194115
+      type: 'test'
+      ...
+    1..6
+ok 3 - Stok modülü (v2.0.6)
+  ---
+  duration_ms: 3468.719884
+  type: 'suite'
+  ...
+# Subtest: göç 12: eski taksit kartları cariye dönüşür (karışmadan)
+    # Subtest: aynı kayda bağlı kartlar ya da aynı ad + telefon tek cari; diğerleri ayrı
+    ok 1 - aynı kayda bağlı kartlar ya da aynı ad + telefon tek cari; diğerleri ayrı
+      ---
+      duration_ms: 1328.124446
+      type: 'test'
+      ...
+    1..1
+ok 4 - göç 12: eski taksit kartları cariye dönüşür (karışmadan)
+  ---
+  duration_ms: 1328.326429
+  type: 'suite'
+  ...
+# Subtest: Google Sheets'ten ve binlerce satırlık toplu alım (v2.0.6)
+    # Subtest: Sheets bağlantısından sekmeler matris olarak gelir; cari ve stok aynı eşlemeyle yüklenir
+    ok 1 - Sheets bağlantısından sekmeler matris olarak gelir; cari ve stok aynı eşlemeyle yüklenir
+      ---
+      duration_ms: 144.686921
+      type: 'test'
+      ...
+    # Subtest: paylaşılmamış ya da hatalı bağlantı anlaşılır hata verir; personel toplu yükleme yapamaz
+    ok 2 - paylaşılmamış ya da hatalı bağlantı anlaşılır hata verir; personel toplu yükleme yapamaz
+      ---
+      duration_ms: 306.901084
+      type: 'test'
+      ...
+# \# döküm: 10 bin cari + 10 bin ürün PDF ve Excel 7815 ms (cari PDF 867 KB, Excel 569 KB)
+# \# süre: 10 bin cari 5537 ms, tekrar 962 ms, arama 1113 ms; 10 bin ürün 16702 ms, liste 854 ms
+    # Subtest: 10 bin cari ve 10 bin ürün tek seferde yüklenir (numara çakışmaları taramasız çözülür); ikinci yükleme çift açmaz
+    ok 3 - 10 bin cari ve 10 bin ürün tek seferde yüklenir (numara çakışmaları taramasız çözülür); ikinci yükleme çift açmaz
+      ---
+      duration_ms: 34845.507011
+      type: 'test'
+      ...
+    1..3
+ok 5 - Google Sheets'ten ve binlerce satırlık toplu alım (v2.0.6)
+  ---
+  duration_ms: 36339.999291
+  type: 'suite'
+  ...
+# Subtest: toplu alım boru hattı: temizleme, değere göre eşleme, doğrulama kapısı, işlem bütünlüğü, tarih kararlılığı (v2.0.6)
+    # Subtest: görünmez karakterler, NBSP ve Excel hata değerleri temizlenir; tarih hücresi ISO olur
+    ok 1 - görünmez karakterler, NBSP ve Excel hata değerleri temizlenir; tarih hücresi ISO olur
+      ---
+      duration_ms: 2.927667
+      type: 'test'
+      ...
+    # Subtest: başlık tanınmasa da değerlerden telefon, e-posta ve tarih kolonu bulunur; stokta birim kolonu
+    ok 2 - başlık tanınmasa da değerlerden telefon, e-posta ve tarih kolonu bulunur; stokta birim kolonu
+      ---
+      duration_ms: 3.15932
+      type: 'test'
+      ...
+    # Subtest: kapı: ad boş satır hata (alınmaz), okunamayan tarih/tutar uyarı (alınır), dosya içi tekrar uyarı; eşleme değişince yeniden hesaplanır
+    ok 3 - kapı: ad boş satır hata (alınmaz), okunamayan tarih/tutar uyarı (alınır), dosya içi tekrar uyarı; eşleme değişince yeniden hesaplanır
+      ---
+      duration_ms: 837.783504
+      type: 'test'
+      ...
+    # Subtest: işlem bütünlüğü: yükleme yarıda kesilirse hiçbir satır kalmaz (rollback)
+    ok 4 - işlem bütünlüğü: yükleme yarıda kesilirse hiçbir satır kalmaz (rollback)
+      ---
+      duration_ms: 748.008107
+      type: 'test'
+      ...
+    # Subtest: vade hesabı saat diliminden bağımsız: gün farkı takvim günüyle, DST ve UTC sınırı yanlış alarm üretmez
+    ok 5 - vade hesabı saat diliminden bağımsız: gün farkı takvim günüyle, DST ve UTC sınırı yanlış alarm üretmez
+      ---
+      duration_ms: 124.525739
+      type: 'test'
+      ...
+    1..5
+ok 6 - toplu alım boru hattı: temizleme, değere göre eşleme, doğrulama kapısı, işlem bütünlüğü, tarih kararlılığı (v2.0.6)
+  ---
+  duration_ms: 1717.057688
+  type: 'suite'
+  ...
+# Subtest: kod incelemesi düzeltmeleri (v2.0.6): numara, eşleşme, başlık satırı, yetki, silinmiş ürün
+    # Subtest: silinen carinin numarası bu arada verildiyse geri gelen cari sıradaki boş numarayı alır
+    ok 1 - silinen carinin numarası bu arada verildiyse geri gelen cari sıradaki boş numarayı alır
+      ---
+      duration_ms: 66.482929
+      type: 'test'
+      ...
+    # Subtest: stok içe aktarma: aynı kod ancak ad da aynıysa aynı ürün (S.No 1 başkasının kartını ezmez)
+    ok 2 - stok içe aktarma: aynı kod ancak ad da aynıysa aynı ürün (S.No 1 başkasının kartını ezmez)
+      ---
+      duration_ms: 29.065017
+      type: 'test'
+      ...
+    # Subtest: başlık satırı: üstteki başlık/tarih satırı elenir; tek kolonlu liste de yüklenir
+    ok 3 - başlık satırı: üstteki başlık/tarih satırı elenir; tek kolonlu liste de yüklenir
+      ---
+      duration_ms: 29.017031
+      type: 'test'
+      ...
+    # Subtest: kapı: telefonsuz aynı ad ayrı cari olarak uyarılır ve gerçekten iki cari açılır; telefonlu tekrar açılmaz
+    ok 4 - kapı: telefonsuz aynı ad ayrı cari olarak uyarılır ve gerçekten iki cari açılır; telefonlu tekrar açılmaz
+      ---
+      duration_ms: 21.868528
+      type: 'test'
+      ...
+    # Subtest: personel yalnız miktar girer: birim fiyat göndermesi ürünün fiyatını değiştirmez
+    ok 5 - personel yalnız miktar girer: birim fiyat göndermesi ürünün fiyatını değiştirmez
+      ---
+      duration_ms: 178.249892
+      type: 'test'
+      ...
+    # Subtest: ürün silindikten sonra ona bağlı hareketler carinin silinmesini engellemez; kayıt anahtarı iki kez çözülmez
+    ok 6 - ürün silindikten sonra ona bağlı hareketler carinin silinmesini engellemez; kayıt anahtarı iki kez çözülmez
+      ---
+      duration_ms: 113.295839
+      type: 'test'
+      ...
+    # Subtest: göç 12: çöpteki taksit kartı da cari alır; geri yüklenince carisiyle gelir
+    ok 7 - göç 12: çöpteki taksit kartı da cari alır; geri yüklenince carisiyle gelir
+      ---
+      duration_ms: 323.809782
+      type: 'test'
+      ...
+    1..7
+ok 7 - kod incelemesi düzeltmeleri (v2.0.6): numara, eşleşme, başlık satırı, yetki, silinmiş ürün
+  ---
+  duration_ms: 1258.812904
+  type: 'suite'
+  ...
+# Subtest: B8 — carinin defter bakiyesi: SQL toplamı = yevmiye (iki yolun eşdeğerliği)
+    # Subtest: rastgele mutabakat motoru (eşik 0: her cari SQL yolunda, eşdeğerlik denetimi açık): her işlem tutarlı, süzgeç bulgusu yok, her cari eşit
+    ok 1 - rastgele mutabakat motoru (eşik 0: her cari SQL yolunda, eşdeğerlik denetimi açık): her işlem tutarlı, süzgeç bulgusu yok, her cari eşit
+      ---
+      duration_ms: 46137.210993
+      type: 'test'
+      ...
+    # Subtest: gerçek 2.0.26 verisi (her şirket): her carinin SQL toplamı = yevmiye
+    ok 2 - gerçek 2.0.26 verisi (her şirket): her carinin SQL toplamı = yevmiye
+      ---
+      duration_ms: 995.181002
+      type: 'test'
+      ...
+    1..2
+ok 8 - B8 — carinin defter bakiyesi: SQL toplamı = yevmiye (iki yolun eşdeğerliği)
+  ---
+  duration_ms: 47133.836514
+  type: 'suite'
+  ...
+# Subtest: B8 — çok hareketli cari: süzgeç süresi carinin geçmişiyle büyümez
+    # Subtest: 2.100 satırlı cari: tahsilat süzgeç yolunda, yevmiye maddesi kurulmadan (SQL); bozuk fatura tutarı 409 ve party:accounts
+    ok 1 - 2.100 satırlı cari: tahsilat süzgeç yolunda, yevmiye maddesi kurulmadan (SQL); bozuk fatura tutarı 409 ve party:accounts
+      ---
+      duration_ms: 1422.774122
+      type: 'test'
+      ...
+    1..1
+ok 9 - B8 — çok hareketli cari: süzgeç süresi carinin geçmişiyle büyümez
+  ---
+  duration_ms: 1423.14118
+  type: 'suite'
+  ...
+# Subtest: 2.4.3 keşif A: kayda bağlı cari geçmişi, Sil engeli, ekstre TOPLAM, hareket adları
+    # Subtest: A2 kayıt önce → cari bağlı → kayıttan tahsilat: geçmişte ve Toplam Tahsilat'ta; bağsız aynı adlı carinin tahsilatı girmez
+    ok 1 - A2 kayıt önce → cari bağlı → kayıttan tahsilat: geçmişte ve Toplam Tahsilat'ta; bağsız aynı adlı carinin tahsilatı girmez
+      ---
+      duration_ms: 1031.852441
+      type: 'test'
+      ...
+    # Subtest: A2 cari önce (tahsilat bağdan ÖNCE girilmiş) → sonra kayda bağlanır: geçmişte görünür; bağ kalkınca düşer
+    ok 2 - A2 cari önce (tahsilat bağdan ÖNCE girilmiş) → sonra kayda bağlanır: geçmişte görünür; bağ kalkınca düşer
+      ---
+      duration_ms: 466.315584
+      type: 'test'
+      ...
+    # Subtest: A2 taksit önce: kayda ve cariye bağlı taksit kartının tahsilatı bir kez (plan-entry), cari tahsilatı ayrıca
+    ok 3 - A2 taksit önce: kayda ve cariye bağlı taksit kartının tahsilatı bir kez (plan-entry), cari tahsilatı ayrıca
+      ---
+      duration_ms: 480.899724
+      type: 'test'
+      ...
+    # Subtest: A2 "Kayıt Kartından Tahsilatlar": kayıt tahsilatları + kayda bağlı carilerin tahsilatları (Cari No ile); bağsız cari girmez
+    ok 4 - A2 "Kayıt Kartından Tahsilatlar": kayıt tahsilatları + kayda bağlı carilerin tahsilatları (Cari No ile); bağsız cari girmez
+      ---
+      duration_ms: 31.98981
+      type: 'test'
+      ...
+    # Subtest: A5 silinemeyen caride kart deleteBlock taşır, silme ucuyla aynı neden; engel kalkınca silinir
+    ok 5 - A5 silinemeyen caride kart deleteBlock taşır, silme ucuyla aynı neden; engel kalkınca silinir
+      ---
+      duration_ms: 880.642153
+      type: 'test'
+      ...
+    # Subtest: A22 cari ekstre PDF'inde TOPLAM satırı = satırların toplamı; A15 hareket türü adları
+    ok 6 - A22 cari ekstre PDF'inde TOPLAM satırı = satırların toplamı; A15 hareket türü adları
+      ---
+      duration_ms: 435.345876
+      type: 'test'
+      ...
+    1..6
+ok 10 - 2.4.3 keşif A: kayda bağlı cari geçmişi, Sil engeli, ekstre TOPLAM, hareket adları
+  ---
+  duration_ms: 4973.147081
+  type: 'suite'
+  ...
+# Subtest: veri katmanı: yalnız bilgi kolonuna yazan UPDATE kapıyı tetiklemez; geri kalan her yazma tetikler
+ok 11 - veri katmanı: yalnız bilgi kolonuna yazan UPDATE kapıyı tetiklemez; geri kalan her yazma tetikler
+  ---
+  duration_ms: 6.376259
+  type: 'test'
+  ...
+# Subtest: cari kartı: notu/adresi düzeltmek kapıyı ve ANLIK DURUM yenilemesini tetiklemez; tür ve ad değişikliği tetikler
+ok 12 - cari kartı: notu/adresi düzeltmek kapıyı ve ANLIK DURUM yenilemesini tetiklemez; tür ve ad değişikliği tetikler
+  ---
+  duration_ms: 4810.915825
+  type: 'test'
+  ...
+# Subtest: tür hücresi: tek tür tanınır; iki tür birden ve tanınmayan değer türe atanmaz
+ok 13 - tür hücresi: tek tür tanınır; iki tür birden ve tanınmayan değer türe atanmaz
+  ---
+  duration_ms: 2.811798
+  type: 'test'
+  ...
+# Subtest: Excel'den cari yükleme: Tür Değerleri
+    # Subtest: ön izleme: Tür kolonundaki değerler, programın okuması ve belirsiz satırlar için uyarı
+    ok 1 - ön izleme: Tür kolonundaki değerler, programın okuması ve belirsiz satırlar için uyarı
+      ---
+      duration_ms: 155.377685
+      type: 'test'
+      ...
+    # Subtest: seçim yapılmadan yükleme: belirsiz satırlar varsayılan türle açılır ve satır numarasıyla raporlanır (sessiz Tedarikçi yok)
+    ok 2 - seçim yapılmadan yükleme: belirsiz satırlar varsayılan türle açılır ve satır numarasıyla raporlanır (sessiz Tedarikçi yok)
+      ---
+      duration_ms: 146.225754
+      type: 'test'
+      ...
+    # Subtest: değer başına seçim (typeMap): seçilen türle açılır, açılış bakiyesi o türe göre
+    ok 3 - değer başına seçim (typeMap): seçilen türle açılır, açılış bakiyesi o türe göre
+      ---
+      duration_ms: 136.646513
+      type: 'test'
+      ...
+    1..3
+ok 14 - Excel'den cari yükleme: Tür Değerleri
+  ---
+  duration_ms: 2376.873583
+  type: 'suite'
+  ...
+# Subtest: Fatura 2.0.15: QA düzeltmeleri ve eklemeleri
+    # Subtest: Toplu kesme: taslaklar tarih sırasıyla kesilir; stoğu eksiye düşüren taslak kesilmez, diğerleri kesilir; kesilmiş belge invoice-not-draft
+    ok 1 - Toplu kesme: taslaklar tarih sırasıyla kesilir; stoğu eksiye düşüren taslak kesilmez, diğerleri kesilir; kesilmiş belge invoice-not-draft
+      ---
+      duration_ms: 548.883083
+      type: 'test'
+      ...
+    # Subtest: Toplu iptal: seçilenler iptal edilir; iadesi olan belge iptal edilmez; en yeni belge önce; personel 403; boş liste 400
+    ok 2 - Toplu iptal: seçilenler iptal edilir; iadesi olan belge iptal edilmez; en yeni belge önce; personel 403; boş liste 400
+      ---
+      duration_ms: 1134.161497
+      type: 'test'
+      ...
+    # Subtest: Logo: yalnız JPEG, 150 KB ve 1200 piksel sınırı; belgeye kopyalanmaz; PDF'e DCTDecode görseli olarak gömülür; kaldırılınca çıkmaz
+    ok 3 - Logo: yalnız JPEG, 150 KB ve 1200 piksel sınırı; belgeye kopyalanmaz; PDF'e DCTDecode görseli olarak gömülür; kaldırılınca çıkmaz
+      ---
+      duration_ms: 394.31578
+      type: 'test'
+      ...
+    # Subtest: Kaşe / imza alanı: satış PDF'inde Teslim Alan ve Düzenleyen kutuları; ayar kapatılınca yok; alış belgesinde hiç basılmaz
+    ok 4 - Kaşe / imza alanı: satış PDF'inde Teslim Alan ve Düzenleyen kutuları; ayar kapatılınca yok; alış belgesinde hiç basılmaz
+      ---
+      duration_ms: 141.627658
+      type: 'test'
+      ...
+    # Subtest: Stok kartı: fatura kalemine bağlı ürün silinmez (409 invoice-linked); fatura iptal edilince silinir
+    ok 5 - Stok kartı: fatura kalemine bağlı ürün silinmez (409 invoice-linked); fatura iptal edilince silinir
+      ---
+      duration_ms: 247.813445
+      type: 'test'
+      ...
+    # Subtest: Fiyat Farkı Faturası senaryosu: stoksuz satış kalemi, cariye borç; senaryo listesinde ve varsayılan satış senaryosu olarak seçilebilir
+    ok 6 - Fiyat Farkı Faturası senaryosu: stoksuz satış kalemi, cariye borç; senaryo listesinde ve varsayılan satış senaryosu olarak seçilebilir
+      ---
+      duration_ms: 136.238954
+      type: 'test'
+      ...
+    1..6
+ok 15 - Fatura 2.0.15: QA düzeltmeleri ve eklemeleri
+  ---
+  duration_ms: 4653.434275
+  type: 'suite'
+  ...
+# Subtest: gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+ok 16 - gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+  ---
+  duration_ms: 5.657476
+  type: 'test'
+  ...
+# Subtest: aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+ok 17 - aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+  ---
+  duration_ms: 446.887441
+  type: 'test'
+  ...
+# Subtest: gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+ok 18 - gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+  ---
+  duration_ms: 37.589458
+  type: 'test'
+  ...
+# Subtest: iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+ok 19 - iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+  ---
+  duration_ms: 0.75677
+  type: 'test'
+  ...
+# Subtest: lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+ok 20 - lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+  ---
+  duration_ms: 6.231461
+  type: 'test'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 4.961001
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 298.247895
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 334.575216
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 139.698375
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 540.984169
+      type: 'test'
+      ...
+    1..5
+ok 21 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 1319.836374
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 67.609761
+      type: 'test'
+      ...
+    1..1
+ok 22 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 67.868273
+  type: 'suite'
+  ...
+# Subtest: uiux-244 UX9 sunucu
+    # Subtest: partyIssues: her sorun cari formundaki bir alanı söyler; metinler partyProblems ile aynı
+    ok 1 - partyIssues: her sorun cari formundaki bir alanı söyler; metinler partyProblems ile aynı
+      ---
+      duration_ms: 3.394119
+      type: 'test'
+      ...
+    # Subtest: ön hesap partyFields döner: e-Arşiv ilsiz alıcıda ['city'], sorunsuz alıcıda [] (kâğıt belgede [] — e-Arşiv kullanıcısı kâğıt kesemez; partyIssues KAGIT durumu birinci testte)
+    ok 2 - ön hesap partyFields döner: e-Arşiv ilsiz alıcıda ['city'], sorunsuz alıcıda [] (kâğıt belgede [] — e-Arşiv kullanıcısı kâğıt kesemez; partyIssues KAGIT durumu birinci testte)
+      ---
+      duration_ms: 1703.7979
+      type: 'test'
+      ...
+    1..2
+ok 23 - uiux-244 UX9 sunucu
+  ---
+  duration_ms: 1773.081602
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 163.744559
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 6.753885
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.693841
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 4 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 76.666525
+      type: 'test'
+      ...
+    1..4
+ok 24 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 252.381764
+  type: 'suite'
+  ...
+1..24
+# tests 71
+# suites 16
+# pass 71
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 51106.767435

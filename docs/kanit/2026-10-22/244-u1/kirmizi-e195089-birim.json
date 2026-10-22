@@ -1,0 +1,68 @@
+{
+  "ad": "244-u1/kirmizi-e195089-birim",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/nihai-tuketici-u1-244.test.mjs test/uiux-b-243.test.mjs",
+  "commit": "e195089bb3bab6f4ba4f224e622b11bc83dd17c5",
+  "dal": "HEAD",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T21:53:27.566Z",
+  "sure_sn": 9.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 6,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "U1: Nihai Tüketici düğmesi yalnız programın kendi carisini seçer; adı belli cari seçilmez › N1: adı belli cari (11111111111) önce açılmış → ayrı \"Nihai Tüketici\" açılır; satış onun borcuna, Ayşe Şahin'e değil",
+      "konum": "test/nihai-tuketici-u1-244.test.mjs:61:3",
+      "hata": "düğme adı belli cariyi seçti: \"Ayşe Şahin\" (beklenen account-4bcb9558-c069-4461-99a8-c7be88caf2ba, gelen account-4bcb9558-c069-4461-99a8-c7be88caf2ba)"
+    },
+    {
+      "ad": "U1: Nihai Tüketici düğmesi yalnız programın kendi carisini seçer; adı belli cari seçilmez › N4: iki kullanıcı aynı anda basar → tek cari, hepsi aynı kimlik",
+      "konum": "test/nihai-tuketici-u1-244.test.mjs:80:3",
+      "hata": "yalnız biri açtı · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "U1: Nihai Tüketici düğmesi yalnız programın kendi carisini seçer; adı belli cari seçilmez › N5: işaretli cari adı belli kişiye çevrilir ya da kimliği değişir → artık seçilmez; harf büyüklüğü/boşluk farkı rolü bozmaz",
+      "konum": "test/nihai-tuketici-u1-244.test.mjs:92:3",
+      "hata": "adı belli cari seçildi: \"Ayşe Şahin\" (beklenen account-3a4d9abd-28bd-4ea4-ab61-5360ccd1f0f4, gelen account-3a4d9abd-28bd-4ea4-ab61-5360ccd1f0f4)"
+    },
+    {
+      "ad": "U1: Nihai Tüketici düğmesi yalnız programın kendi carisini seçer; adı belli cari seçilmez › N6: pasif cari kullanılmaya devam eder; silinince yeni açılır, Silinenler'den geri gelse de işaret yenide kalır",
+      "konum": "test/nihai-tuketici-u1-244.test.mjs:108:3",
+      "hata": "işaret yenide (eskisi geri geldi diye değişmez) · + actual - expected · + 'account-5b66494b-0fb5-4bc8-9da1-86f1fd25dd85' (beklenen account-f593efaa-8ccd-44d4-b7e4-bf4b9ba166e2, gelen account-5b66494b-0fb5-4bc8-9da1-86f1fd25dd85)"
+    },
+    {
+      "ad": "U1: Nihai Tüketici düğmesi yalnız programın kendi carisini seçer; adı belli cari seçilmez › N3: eski veride işaretsiz birden çok aday → yalnız adı \"Nihai Tüketici\" olan, en eskisi (açılış zamanı, eşitse yazım sırası); işaret sonra kalıcı",
+      "konum": "test/nihai-tuketici-u1-244.test.mjs:123:3",
+      "hata": "beklenen ilk yazılan \"Nihai Tüketici\"; seçilen \"Perakende Müşteri\" · + actual - expected · + 'account-b16b5a8c-7dea-4ad4-9d0c-7ac8dc692f53' (beklenen account-9ea68bf4-3dfb-47b2-befd-951b90fe3f12, gelen account-b16b5a8c-7dea-4ad4-9d0c-7ac8dc692f53)"
+    },
+    {
+      "ad": "U1 eski veri: v2.4.3'te düğmeyle açılmış Nihai Tüketici benimsenir; adı belli cari seçilmez (iki şirket) › N2: 001'de Ayşe Şahin (sonradan 11111111111) daha eski + düğmenin carisi + elle açılmış ikinci Nihai Tüketici; 002'de düğmenin carisi",
+      "konum": "test/nihai-tuketici-u1-244.test.mjs:175:3",
+      "hata": "beklenen 2.4.3 düğmesinin carisi; seçilen \"Ayşe Şahin\" · + actual - expected · + 'account-234e12c4-14ad-4b94-a255-8e9f8a93994b' (beklenen account-04c14e94-a940-4e67-b848-3d11fa098bd4, gelen account-234e12c4-14ad-4b94-a255-8e9f8a93994b)"
+    },
+    {
+      "ad": "uiux-b-243 sunucu › KÖ1: Nihai Tüketici carisi ilk kullanımda açılır, sonra aynısı döner (çift açılmaz, eşzamanlı da); sınır üstü e-Arşiv engellenir",
+      "konum": "test/uiux-b-243.test.mjs:145:3",
+      "hata": "başka adlı cari seçildi: Perakende Müşteri (beklenen account-b704af14-049c-40b4-98fa-9c7a0bb22f88, gelen account-b704af14-049c-40b4-98fa-9c7a0bb22f88)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/u1/docs/kanit/2026-10-22/244-u1/kirmizi-e195089-birim.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/u1/u1-eski-e195089",
+  "ham_cikti_sha256": "0389de44dc3e52ef5078144fbdd5f28fe77f429c4d16af979244a5ed18870af9",
+  "ham_cikti_bayt": 12756
+}

@@ -1,0 +1,53 @@
+{
+  "ad": "244-u1/mutasyon-M6-isaret-yazilmaz",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/nihai-tuketici-u1-244.test.mjs",
+  "commit": "e195089bb3bab6f4ba4f224e622b11bc83dd17c5",
+  "dal": "is/u1",
+  "kirli": 6,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T21:55:10.900Z",
+  "sure_sn": 5.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 4,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "U1: Nihai Tüketici düğmesi yalnız programın kendi carisini seçer; adı belli cari seçilmez › N1: adı belli cari (11111111111) önce açılmış → ayrı \"Nihai Tüketici\" açılır; satış onun borcuna, Ayşe Şahin'e değil",
+      "konum": "test/nihai-tuketici-u1-244.test.mjs:61:3",
+      "hata": "işaret ayarda · + actual - expected · + undefined"
+    },
+    {
+      "ad": "U1: Nihai Tüketici düğmesi yalnız programın kendi carisini seçer; adı belli cari seçilmez › N6: pasif cari kullanılmaya devam eder; silinince yeni açılır, Silinenler'den geri gelse de işaret yenide kalır",
+      "konum": "test/nihai-tuketici-u1-244.test.mjs:108:3",
+      "hata": "işaret yenide (eskisi geri geldi diye değişmez) · + actual - expected · + 'account-68b73135-6ba7-4938-a734-95a893c48338' (beklenen account-fa7e0cce-36d3-4348-a221-89678432dbff, gelen account-68b73135-6ba7-4938-a734-95a893c48338)"
+    },
+    {
+      "ad": "U1: Nihai Tüketici düğmesi yalnız programın kendi carisini seçer; adı belli cari seçilmez › N3: eski veride işaretsiz birden çok aday → yalnız adı \"Nihai Tüketici\" olan, en eskisi (açılış zamanı, eşitse yazım sırası); işaret sonra kalıcı",
+      "konum": "test/nihai-tuketici-u1-244.test.mjs:123:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'account-acb69dbf-bb62-4739-a32c-9e8c08904818' (beklenen account-751ff5f8-c845-48d7-b4d3-7134be4c4044, gelen account-acb69dbf-bb62-4739-a32c-9e8c08904818)"
+    },
+    {
+      "ad": "U1 eski veri: v2.4.3'te düğmeyle açılmış Nihai Tüketici benimsenir; adı belli cari seçilmez (iki şirket) › N2: 001'de Ayşe Şahin (sonradan 11111111111) daha eski + düğmenin carisi + elle açılmış ikinci Nihai Tüketici; 002'de düğmenin carisi",
+      "konum": "test/nihai-tuketici-u1-244.test.mjs:175:3",
+      "hata": "işaretlendi · + actual - expected · + '' (beklenen account-3d266077-9844-4994-8f4c-acc60b4fb024, gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-u1/mutasyon-M6-isaret-yazilmaz.log",
+  "klasor": "/home/user/wt/u1",
+  "ham_cikti_sha256": "0129aab9658301084aeda9fd851ffeb186c48a2862e8882d600c66d3312d5193",
+  "ham_cikti_bayt": 7303
+}
