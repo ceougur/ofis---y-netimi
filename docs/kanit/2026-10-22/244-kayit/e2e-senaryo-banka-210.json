@@ -1,0 +1,32 @@
+{
+  "ad": "244-kayit/e2e-senaryo-banka-210",
+  "komut": "npm run test:senaryo-banka-210",
+  "commit": "610e4ebde86bb28bf47d65fa7c5bbce391bf3242",
+  "dal": "is/kayit",
+  "kirli": 3,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T05:14:39.531Z",
+  "sure_sn": 346.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 424,
+    "gecen": 424,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kayit/e2e-senaryo-banka-210.log",
+  "klasor": "/home/user/wt/kayit",
+  "ham_cikti_sha256": "992f1eabd38df994f396331e55303e2e3ae33fe5de781129f1b745ef6f1fc812",
+  "ham_cikti_bayt": 47819
+}

@@ -135,13 +135,9 @@
     // Çek / senet (v2.0.7): tahsil / ödeme evrak kartından.
     if (item.source === "cheque") return HOF.cheques?.open({ id: item.chequeId, action: item.direction === "out" ? "pay" : "collect" });
     if (!HOF.workspace?.payment) return;
-    HOF.workspace.payment({
-      key: item.caseKey,
-      title: who(item),
-      amount: item.amount,
-      note: `${item.label} · ${item.dueText}`,
-      intro: `<b>${esc(item.label)}</b> · vade ${esc(item.dueText)}${item.amount ? ` · beklenen <b>${esc(money(item.amount))}</b>` : ""}. Kaydedince kalem kapanır ve tutar Kasa'ya tahsilat olarak düşer.`,
-    });
+    // 2.4.4 (E8): tablodaki kaydın kalemi kaydın CARİSİNE yazılır (carisi yoksa önce cari açılır; hof-workspace.js actions.payment); tutar ve açıklama
+    // hazır gelir, kalem carinin ya da taksitin tahsilatıyla kapanır. Önceden kayıttan doğrudan Kasa'ya yazılıyordu.
+    HOF.workspace.payment({ key: item.caseKey, title: who(item), person: item.person || "", phone: item.phone || "", amount: item.amount, note: `${item.label} · ${item.dueText}` });
   }
 
   function openCard(item, pillNode) {
@@ -149,7 +145,9 @@
     const plan = item.source === "plan";
     const cheque = item.source === "cheque";
     // Öbür sayfanın kalemi: tahsilat o sayfaya geçince girilir (kayıt orada); Ödendi Say buradan çalışır.
-    const canPay = item.foreign ? false : cheque ? HOF.can("cheques.manage") : plan ? HOF.can("plans.collect") : HOF.can("payments.create");
+    // 2.4.4 (E8): tablodaki kaydın tahsilatı cariden (ya da kayda bağlı taksit kartından) girilir; Kayıt Tahsilatı yetkisi (payments.create) artık yalnız eski
+    // kayıt tahsilatlarını düzeltir.
+    const canPay = item.foreign ? false : cheque ? HOF.can("cheques.manage") : plan ? HOF.can("plans.collect") : HOF.can("accounts.collect") || HOF.can("plans.collect");
     const canSettle = !plan && !cheque && HOF.can("records.edit");
     const card = HOF.el(
       "div",
