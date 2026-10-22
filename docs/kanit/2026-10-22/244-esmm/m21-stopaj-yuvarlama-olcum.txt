@@ -1,0 +1,7 @@
+deneme 100000, tohum 4242; oranlar %20 (3/5), %15, %17,5; kalem fiyatı 0,01–10.000 TL
+1 kalem: 20669 makbuz, kalem kalem yuvarlama belge stopajından 0 makbuzda ayrışıyor (%0.00)
+2 kalem: 20534 makbuz, kalem kalem yuvarlama belge stopajından 4742 makbuzda ayrışıyor (%23.09)
+3 kalem: 19795 makbuz, kalem kalem yuvarlama belge stopajından 6670 makbuzda ayrışıyor (%33.70)
+4 kalem: 19824 makbuz, kalem kalem yuvarlama belge stopajından 7730 makbuzda ayrışıyor (%38.99)
+5 kalem: 19178 makbuz, kalem kalem yuvarlama belge stopajından 9385 makbuzda ayrışıyor (%48.94)
+en büyük fark: 2 kuruş; en büyük kalan dağıtımında Σ pay ≠ belge stopajı: 0

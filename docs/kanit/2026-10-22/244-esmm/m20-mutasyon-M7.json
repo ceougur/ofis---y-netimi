@@ -1,0 +1,53 @@
+{
+  "ad": "244-esmm/m20-mutasyon-M7",
+  "komut": "node --test test/esmm-edm.test.mjs",
+  "commit": "1f6ad99df7ef569af9ed772e1e8e053c216d565c",
+  "dal": "is/esmm",
+  "kirli": 5,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T03:51:44.727Z",
+  "sure_sn": 0.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 18,
+    "gecen": 14,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Bağdaştırıcı belge türüne göre servisi seçer (e-SMM → ESmmEDM.svc; e-Fatura/e-Arşiv → EFaturaEDM.svc) › ensureSession belgenin servisinde giriş yapar; e-Fatura oturumu e-SMM için erişim kanıtı sayılmaz; argümansız çağrı e-Fatura (eski davranış)",
+      "konum": "test/esmm-edm.test.mjs:233:3",
+      "hata": "her servise bir giriş; taze oturum yeniden giriş istemez · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Bağdaştırıcı belge türüne göre servisi seçer (e-SMM → ESmmEDM.svc; e-Fatura/e-Arşiv → EFaturaEDM.svc) › e-SMM belgesinde gönder / durum / iptal / resmî PDF ESmmEDM.svc'ye gider; e-posta ayarı kapalıysa alıcıya e-posta verilmez",
+      "konum": "test/esmm-edm.test.mjs:242:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'processing' (beklenen sent, gelen processing)"
+    },
+    {
+      "ad": "Bağdaştırıcı belge türüne göre servisi seçer (e-SMM → ESmmEDM.svc; e-Fatura/e-Arşiv → EFaturaEDM.svc) › e-SMM adresi türetilemezse yalnız e-SMM işlemi düşer (integrator-url, ağa çıkılmaz); e-Fatura bağlantısı bozulmaz",
+      "konum": "test/esmm-edm.test.mjs:275:3",
+      "hata": "hata bekleniyordu"
+    },
+    {
+      "ad": "Bağdaştırıcı belge türüne göre servisi seçer (e-SMM → ESmmEDM.svc; e-Fatura/e-Arşiv → EFaturaEDM.svc) › testSmm: e-SMM servisine bağlantı testi (Entegratör Ayarları → Bağlantıyı Test Et için hazır)",
+      "konum": "test/esmm-edm.test.mjs:288:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-esmm/m20-mutasyon-M7.log",
+  "klasor": "/home/user/wt/esmm",
+  "ham_cikti_sha256": "f632fcde978beec058fdf857647e923db80da512fbfa204380773e8514c3b396",
+  "ham_cikti_bayt": 9841
+}

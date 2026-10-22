@@ -1,0 +1,98 @@
+TAP version 13
+# (node:9419) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: KDV dahil fiyatta iskonto gösterimi (müşteri, 02.10.2026)
+    # Subtest: 2.000 TL KDV dahil, %10 iskonto: Ara Toplam 1.666,67 − İskonto 166,67 = Matrah 1.500,00; KDV 300,00
+    ok 1 - 2.000 TL KDV dahil, %10 iskonto: Ara Toplam 1.666,67 − İskonto 166,67 = Matrah 1.500,00; KDV 300,00
+      ---
+      duration_ms: 1.718309
+      type: 'test'
+      ...
+    # Subtest: %20 iskonto: 1.666,67 − 333,34 = 1.333,33; KDV 266,67; toplam 1.600,00
+    ok 2 - %20 iskonto: 1.666,67 − 333,34 = 1.333,33; KDV 266,67; toplam 1.600,00
+      ---
+      duration_ms: 0.277625
+      type: 'test'
+      ...
+    # Subtest: satırlar her durumda kuruşu kuruşuna toplar (Ara Toplam − İskonto = Matrah); KDV hariçte değişiklik yok
+    ok 3 - satırlar her durumda kuruşu kuruşuna toplar (Ara Toplam − İskonto = Matrah); KDV hariçte değişiklik yok
+      ---
+      duration_ms: 9.550251
+      type: 'test'
+      ...
+    # Subtest: kayıtlı faturadan (TL ondalığı) aynı ayrım; UBL iskontosu da KDV hariç
+    ok 4 - kayıtlı faturadan (TL ondalığı) aynı ayrım; UBL iskontosu da KDV hariç
+      ---
+      duration_ms: 1.91008
+      type: 'test'
+      ...
+    1..4
+ok 1 - KDV dahil fiyatta iskonto gösterimi (müşteri, 02.10.2026)
+  ---
+  duration_ms: 14.285484
+  type: 'suite'
+  ...
+# Subtest: Kaydedilmiş faturayı düzenleme, yeni stok kartı, Stok Kodu (müşteri, 02.10.2026)
+    # Subtest: Stok Kodu tekil: aynı kod ikinci ürüne verilmez (açarken ve düzeltirken)
+    ok 1 - Stok Kodu tekil: aynı kod ikinci ürüne verilmez (açarken ve düzeltirken)
+      ---
+      duration_ms: 21.152927
+      type: 'test'
+      ...
+    # Subtest: Faturada kodla arama: tam eşleşen Stok Kodu en üstte ve exact işaretli
+    ok 2 - Faturada kodla arama: tam eşleşen Stok Kodu en üstte ve exact işaretli
+      ---
+      duration_ms: 9.937961
+      type: 'test'
+      ...
+    # Subtest: Stoğa Mal Alışı: '+ Yeni Stok Kartı' kalemi kartı faturayla aynı işlemde açar, stoğa girer, maliyet alış fiyatı
+    ok 3 - Stoğa Mal Alışı: '+ Yeni Stok Kartı' kalemi kartı faturayla aynı işlemde açar, stoğa girer, maliyet alış fiyatı
+      ---
+      duration_ms: 28.561181
+      type: 'test'
+      ...
+    # Subtest: Düzenleme: aynı numara; stok, cari ve Kasa eskiyi bırakıp yeniye göre; işlem geçmişi
+    ok 4 - Düzenleme: aynı numara; stok, cari ve Kasa eskiyi bırakıp yeniye göre; işlem geçmişi
+      ---
+      duration_ms: 85.024055
+      type: 'test'
+      ...
+    # Subtest: Düzenleme taksitli faturada kartı yeniler; tahsilat varsa ve iadesi varsa engellenir
+    ok 5 - Düzenleme taksitli faturada kartı yeniler; tahsilat varsa ve iadesi varsa engellenir
+      ---
+      duration_ms: 70.020966
+      type: 'test'
+      ...
+    # Subtest: Düzenleme stok eksiye düşürecekse sorar (stock-negative), izin verilince yapar; tarih sırası korunur
+    ok 6 - Düzenleme stok eksiye düşürecekse sorar (stock-negative), izin verilince yapar; tarih sırası korunur
+      ---
+      duration_ms: 53.650831
+      type: 'test'
+      ...
+    # Subtest: Düzenleme çekli faturada: aynı çek (aynı seri no) yeniden yazılır; portföyde tek evrak; ciro edilmiş çek varken düzenleme durur
+    ok 7 - Düzenleme çekli faturada: aynı çek (aynı seri no) yeniden yazılır; portföyde tek evrak; ciro edilmiş çek varken düzenleme durur
+      ---
+      duration_ms: 69.690576
+      type: 'test'
+      ...
+    # Subtest: Fatura PDF'inde ayrı Stok Kodu kolonu, POS ödeme satırı ve Toplamlar düzeni (metin düzeyinde)
+    ok 8 - Fatura PDF'inde ayrı Stok Kodu kolonu, POS ödeme satırı ve Toplamlar düzeni (metin düzeyinde)
+      ---
+      duration_ms: 71.851752
+      type: 'test'
+      ...
+    1..8
+ok 2 - Kaydedilmiş faturayı düzenleme, yeni stok kartı, Stok Kodu (müşteri, 02.10.2026)
+  ---
+  duration_ms: 848.017409
+  type: 'suite'
+  ...
+1..2
+# tests 12
+# suites 2
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1167.4786

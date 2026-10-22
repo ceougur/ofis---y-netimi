@@ -1,0 +1,88 @@
+{
+  "ad": "244-esmm/m21-eski-163dd5d",
+  "komut": "node --test test/esmm-ubl.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:15:03.615Z",
+  "sure_sn": 2.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 2,
+    "basarisiz": 11,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 11 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "e-SMM UBL: GİB kuralından elle hesaplanan dip toplamlar (kâhin) › A — 1.000 TL brüt, stopaj %20, KDV %20: stopaj 200, net ücret 800, KDV 200, tahsil edilen KDV 200, net alınan 1.000",
+      "konum": "test/esmm-ubl.test.mjs:79:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "e-SMM UBL: GİB kuralından elle hesaplanan dip toplamlar (kâhin) › B — 2 × 100,03: belge stopajı matrah × oran = 40,01 (kalem yuvarlamasıyla 40,02 DEĞİL); kalemlere 20,01 + 20,00; KDV kalem başına 20,01 + 20,01",
+      "konum": "test/esmm-ubl.test.mjs:96:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "e-SMM UBL: GİB kuralından elle hesaplanan dip toplamlar (kâhin) › C — kişi alıcı, stopaj yok: 0003 satırı yazılmaz; net ücret = brüt 500, KDV 100, net alınan 600",
+      "konum": "test/esmm-ubl.test.mjs:104:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "e-SMM UBL: GİB kuralından elle hesaplanan dip toplamlar (kâhin) › D — KDV tevkifatı 5/10: tahsil edilen KDV 200 − 100 = 100; net alınan 800 + 100 = 900; tevkifat ayrı satırda",
+      "konum": "test/esmm-ubl.test.mjs:112:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "e-SMM UBL: GİB kuralından elle hesaplanan dip toplamlar (kâhin) › E — elle %15 stopaj, iki KDV oranı: stopaj (1.500 + 333,33) × %15 = 274,9995 → 275,00; KDV 300 + 33,33; net alınan 1.891,66",
+      "konum": "test/esmm-ubl.test.mjs:120:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "e-SMM UBL: program tutarlarıyla aynı, yapı EDM'nin e-SMM örneğiyle aynı, UBL 2.1 şemasına uygun › XML tutarları programın kaydettiği makbuzla kuruşu kuruşuna aynı; kalem stopajları toplamı = belge stopajı; Σ kalem fiyatı = net alınan",
+      "konum": "test/esmm-ubl.test.mjs:134:3",
+      "hata": "A net ücret · 100000 !== 80000 (beklenen 80000, gelen 100000)"
+    },
+    {
+      "ad": "e-SMM UBL: program tutarlarıyla aynı, yapı EDM'nin e-SMM örneğiyle aynı, UBL 2.1 şemasına uygun › yapı: EDM e-SMM örneğindeki sıra ve öğeler (TaxTotal → 0003 sıra 1 + 0015 sıra 2; dip toplam dörtlüsü; kalemde NIU, vergi, ad, fiyat)",
+      "konum": "test/esmm-ubl.test.mjs:149:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "e-SMM UBL: program tutarlarıyla aynı, yapı EDM'nin e-SMM örneğiyle aynı, UBL 2.1 şemasına uygun › stopaj artık Not değil (vergi satırında); programın fatura görünüm şablonu ve karekod gömülmez; gönderim şekli alıcının e-postasına göre",
+      "konum": "test/esmm-ubl.test.mjs:161:3",
+      "hata": "stopaj notu yok (beklenen , gelen |-)"
+    },
+    {
+      "ad": "Stopajın kalemlere dağıtımı (en büyük kalan) › Σ pay = belge stopajı; her pay tam payın aşağı yuvarlaması ya da bir fazlası; aynı girdi aynı sonuç",
+      "konum": "test/esmm-ubl.test.mjs:189:3",
+      "hata": "ubl.stoppageShares is not a function"
+    },
+    {
+      "ad": "Stopajın kalemlere dağıtımı (en büyük kalan) › kayıtlı tutarlar GİB kimliğini (Net Alınan = Net Ücret + Tahsil Edilen KDV) ya da kalem toplamlarını tutmazsa belge üretilmez",
+      "konum": "test/esmm-ubl.test.mjs:210:3",
+      "hata": "ubl.esmmAmounts is not a function"
+    },
+    {
+      "ad": "Stopajın kalemlere dağıtımı (en büyük kalan) › tutarsız girdide (kalan kuruş kalem sayısını aşar ya da eksi) belge üretilmez",
+      "konum": "test/esmm-ubl.test.mjs:216:3",
+      "hata": "ubl.stoppageShares is not a function (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/esmm/docs/kanit/2026-10-22/244-esmm/m21-eski-163dd5d.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d",
+  "ham_cikti_sha256": "0f0f125fac92858e36d2f67a7f70a09f98f9ae522edec02f874419a8fd912fae",
+  "ham_cikti_bayt": 68460
+}

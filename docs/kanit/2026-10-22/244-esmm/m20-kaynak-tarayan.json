@@ -1,0 +1,32 @@
+{
+  "ad": "244-esmm/m20-kaynak-tarayan",
+  "komut": "node --test test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/ci-kapi-listesi.test.mjs",
+  "commit": "1f6ad99df7ef569af9ed772e1e8e053c216d565c",
+  "dal": "is/esmm",
+  "kirli": 5,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T03:55:42.669Z",
+  "sure_sn": 0.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 15,
+    "gecen": 15,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-esmm/m20-kaynak-tarayan.log",
+  "klasor": "/home/user/wt/esmm",
+  "ham_cikti_sha256": "0683abcf192306ab3b0ed836c20ba98efe49d06521e47631684f3b7d25d2298e",
+  "ham_cikti_bayt": 4739
+}

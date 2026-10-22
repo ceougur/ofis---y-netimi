@@ -1,0 +1,177 @@
+TAP version 13
+# file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-edm.test.mjs:14
+# import { EDM_SMM_URLS, EDM_URLS, createEdmClient, createEdmSmmClient, esmmUrlOf, mapEdmStatus, resetEdmCaches } from "../server/lib/einvoice/edm.mjs";
+#          ^^^^^^^^^^^^
+# SyntaxError: The requested module '../server/lib/einvoice/edm.mjs' does not provide an export named 'EDM_SMM_URLS'
+#     at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+#     at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+#     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+#     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+# Node.js v22.22.0
+# Subtest: test/esmm-edm.test.mjs
+not ok 1 - test/esmm-edm.test.mjs
+  ---
+  duration_ms: 51.874296
+  type: 'test'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-edm.test.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Sözleşme denetimi nitelikleri de denetler (gerçek EDM WSDL'leri kâhin)
+    # Subtest: e-SMM: SMM'ye e-Fatura kalıbıyla ID/UUID NİTELİĞİ verilirse uyarı → istek gönderilmez
+    not ok 1 - e-SMM: SMM'ye e-Fatura kalıbıyla ID/UUID NİTELİĞİ verilirse uyarı → istek gönderilmez
+      ---
+      duration_ms: 3.635693
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/soap-sozlesme-nitelik.test.mjs:20:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   'GetSMMStatusRequest/SMM/@ID',
+        -   'GetSMMStatusRequest/SMM/@UUID'
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'GetSMMStatusRequest/SMM/@ID'
+        1: 'GetSMMStatusRequest/SMM/@UUID'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/soap-sozlesme-nitelik.test.mjs:23:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: e-SMM: ID/UUID ÇOCUK ÖĞE ve TRXID niteliği sözleşmeye uyar
+    ok 2 - e-SMM: ID/UUID ÇOCUK ÖĞE ve TRXID niteliği sözleşmeye uyar
+      ---
+      duration_ms: 0.760974
+      type: 'test'
+      ...
+    # Subtest: e-SMM: istek düzeyindeki SENDER/RECEIVER'da yalnız vkn ve alias nitelikleri var
+    not ok 3 - e-SMM: istek düzeyindeki SENDER/RECEIVER'da yalnız vkn ve alias nitelikleri var
+      ---
+      duration_ms: 0.526837
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/soap-sozlesme-nitelik.test.mjs:32:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   'SendSMMRequest/SENDER/@eposta'
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'SendSMMRequest/SENDER/@eposta'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/soap-sozlesme-nitelik.test.mjs:34:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yerleşik basit türde (xs:token) nitelik olmaz
+    not ok 4 - yerleşik basit türde (xs:token) nitelik olmaz
+      ---
+      duration_ms: 0.278634
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/soap-sozlesme-nitelik.test.mjs:36:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   'GetSMMStatusRequest/SMM/ID/@tur'
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'GetSMMStatusRequest/SMM/ID/@tur'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/soap-sozlesme-nitelik.test.mjs:38:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: e-Fatura (eski davranış korunur): INVOICE ID/UUID niteliği, SENDER vkn/alias ve MARK value geçer; tanımsız nitelik uyarılır
+    not ok 5 - e-Fatura (eski davranış korunur): INVOICE ID/UUID niteliği, SENDER vkn/alias ve MARK value geçer; tanımsız nitelik uyarılır
+      ---
+      duration_ms: 0.518608
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/soap-sozlesme-nitelik.test.mjs:40:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   'SendInvoiceRequest/INVOICE/@SERI'
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'SendInvoiceRequest/INVOICE/@SERI'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/soap-sozlesme-nitelik.test.mjs:43:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 2 - Sözleşme denetimi nitelikleri de denetler (gerçek EDM WSDL'leri kâhin)
+  ---
+  duration_ms: 6.760082
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/soap-sozlesme-nitelik.test.mjs:19:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 6
+# suites 1
+# pass 1
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 97.476451

@@ -1,0 +1,38 @@
+{
+  "ad": "244-esmm/m20-mutasyon-M8",
+  "komut": "node --test test/esmm-edm.test.mjs",
+  "commit": "1f6ad99df7ef569af9ed772e1e8e053c216d565c",
+  "dal": "is/esmm",
+  "kirli": 5,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T03:51:45.078Z",
+  "sure_sn": 0.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 18,
+    "gecen": 17,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "e-SMM istemcisi (ESmmEDM.svc) gerçek sözleşmeye uygun istek kurar › kanal: ProfileID ESMM değilse ya da numara/ETTN içerikle uyuşmazsa istek HİÇ gitmez",
+      "konum": "test/esmm-edm.test.mjs:134:3",
+      "hata": "hata bekleniyordu"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-esmm/m20-mutasyon-M8.log",
+  "klasor": "/home/user/wt/esmm",
+  "ham_cikti_sha256": "2add5ab348b41cd57fa4f0c48f46ed40e9618b6c0ce7a63bcfb24b659e64e184",
+  "ham_cikti_bayt": 7074
+}
