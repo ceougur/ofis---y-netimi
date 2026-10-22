@@ -58,8 +58,17 @@ const addDays = (iso, days) => new Date(Date.parse(`${iso}T00:00:00Z`) + days * 
  * @returns {null | { days, start, source: "iletim" | "kesim", lastDay, late, label }}
  */
 export function cancelWindow({ profile, eStatus, issueDate, transmittedAt = "", today }) {
+  if (!TRANSMITTED.has(eStatus)) return null;
+  return attemptWindow({ profile, issueDate, transmittedAt, today });
+}
+
+/**
+ * Durumdan bağımsız pencere: belge iletilmiş OLSAYDI süresi (sonucu belirsiz gönderimde "Yalnız Programda İptal" için; kullanıcı kararı 22.10.2026).
+ * Kural dışı tür → null.
+ */
+export function attemptWindow({ profile, issueDate, transmittedAt = "", today }) {
   const label = windowLabel(profile);
-  if (!label || !TRANSMITTED.has(eStatus) || !issueDate) return null;
+  if (!label || !issueDate) return null;
   const sentDay = transmittedAt ? isoDay(new Date(transmittedAt)) : "";
   // Kesimden önce iletim olamaz; olursa (saat geri alınmış vb.) geç olan gün esas alınmaz — erken olan kesim günü de iletimden önce değildir.
   const fromSend = Boolean(sentDay) && sentDay >= issueDate;

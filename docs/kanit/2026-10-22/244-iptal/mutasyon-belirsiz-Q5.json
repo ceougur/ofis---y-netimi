@@ -1,0 +1,43 @@
+{
+  "ad": "244-iptal/mutasyon-belirsiz-Q5",
+  "komut": "node --test test/ebelge-244-iptal-suresi.test.mjs",
+  "commit": "6bde995fbe723c97c3cb6197b00c0ab39561078b",
+  "dal": "is/iptal-2",
+  "kirli": 3,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T05:40:09.166Z",
+  "sure_sn": 3.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 25,
+    "gecen": 23,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › belirsiz + yalnız programda iptal: girişimden 8 gün dolmadıysa EDM'ye sorulmaz (bugünkü yol)",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:372:3",
+      "hata": "durum sorulmadı · 14 !== 13 (beklenen 13, gelen 14)"
+    },
+    {
+      "ad": "belirsiz e-SMM + yalnız programda iptal (kullanıcı kararı 22.10.2026): e-SMM'de \"bulunamadı\" kodu doğrulanmadı → her hata bilinmiyor › 8 gün dolmadıysa e-SMM'de de sorulmaz (bugünkü yol)",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:566:3",
+      "hata": "{\"ok\":false,\"error\":\"Belge EDM'de bulundu (durum: Gönderildi); durum belgeye yazıldı, yalnız programda iptal edilmedi. Kartı yeniden açıp İptal Et ile deneyin.\",\"code\":\"einvoice-found\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-iptal/mutasyon-belirsiz-Q5.log",
+  "klasor": "/home/user/wt/iptal",
+  "ham_cikti_sha256": "d8a693e1b27621fe6ce4ce15c997b240f721f08e956781ad3a5c482ec360b2e6",
+  "ham_cikti_bayt": 10520
+}

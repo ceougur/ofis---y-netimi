@@ -1,0 +1,100 @@
+[
+ {
+  "id": "Q1",
+  "desc": "e-Arşiv'de 'bulunamadı' de bilinmiyor sayılır",
+  "edits": [
+   {
+    "file": "server/routes/invoices.mjs",
+    "old": "if (row.profile !== \"ESMM\" && remoteMissing(error)) return true;",
+    "new": "if (false && remoteMissing(error)) return true;"
+   }
+  ],
+  "tests": [
+   "test/ebelge-244-iptal-suresi.test.mjs"
+  ]
+ },
+ {
+  "id": "Q2",
+  "desc": "e-SMM'de 11017'ye güvenilir",
+  "edits": [
+   {
+    "file": "server/routes/invoices.mjs",
+    "old": "if (row.profile !== \"ESMM\" && remoteMissing(error)) return true;",
+    "new": "if (remoteMissing(error)) return true;"
+   }
+  ],
+  "tests": [
+   "test/ebelge-244-iptal-suresi.test.mjs"
+  ]
+ },
+ {
+  "id": "Q3",
+  "desc": "belirsizde EDM'ye hiç sorulmaz (6bde995 davranışı)",
+  "edits": [
+   {
+    "file": "server/routes/invoices.mjs",
+    "old": "const missingAtEdm = bypass && uncertainSend(head) ? await uncertainLocalCheck(user, head) : false;",
+    "new": "const missingAtEdm = false;"
+   }
+  ],
+  "tests": [
+   "test/ebelge-244-iptal-suresi.test.mjs"
+  ]
+ },
+ {
+  "id": "Q4",
+  "desc": "EDM'ye ulaşılamazsa iptal serbest",
+  "edits": [
+   {
+    "file": "server/routes/invoices.mjs",
+    "old": "if ([\"integrator-unreachable\", \"integrator-uncertain\"].includes(code)) throw new HttpError(502,",
+    "new": "if ([\"integrator-unreachable\", \"integrator-uncertain\"].includes(code)) return true; if (false) throw new HttpError(502,"
+   }
+  ],
+  "tests": [
+   "test/ebelge-244-iptal-suresi.test.mjs"
+  ]
+ },
+ {
+  "id": "Q5",
+  "desc": "8 gün dolmadan da sorulur",
+  "edits": [
+   {
+    "file": "server/routes/invoices.mjs",
+    "old": "    if (!limit?.late) return false;\n    const since",
+    "new": "    if (!limit) return false;\n    const since"
+   }
+  ],
+  "tests": [
+   "test/ebelge-244-iptal-suresi.test.mjs"
+  ]
+ },
+ {
+  "id": "Q6",
+  "desc": "EDM'de var (iletilmemiş durum) → iptal serbest",
+  "edits": [
+   {
+    "file": "server/routes/invoices.mjs",
+    "old": "    throw new HttpError(409, `Belge EDM'de bulundu (durum:",
+    "new": "    return true;\n    throw new HttpError(409, `Belge EDM'de bulundu (durum:"
+   }
+  ],
+  "tests": [
+   "test/ebelge-244-iptal-suresi.test.mjs"
+  ]
+ },
+ {
+  "id": "Q7",
+  "desc": "EDM'de var ve iletilmiş → iptal serbest",
+  "edits": [
+   {
+    "file": "server/routes/invoices.mjs",
+    "old": "    if (found?.late) throw new HttpError(409, `Belge EDM'de bulundu: alıcıya iletilmiş",
+    "new": "    if (found?.late) return true;\n    if (false) throw new HttpError(409, `Belge EDM'de bulundu: alıcıya iletilmiş"
+   }
+  ],
+  "tests": [
+   "test/ebelge-244-iptal-suresi.test.mjs"
+  ]
+ }
+]

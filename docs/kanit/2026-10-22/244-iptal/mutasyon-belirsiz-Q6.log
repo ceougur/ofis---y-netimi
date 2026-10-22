@@ -1,0 +1,211 @@
+TAP version 13
+# (node:29949) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: iptal süresi kuralı (lib/einvoice/iptal-suresi.mjs, saf)
+    # Subtest: 8 gün iletimden; başlangıç günü sayılmaz, 8. gün dahil
+    ok 1 - 8 gün iletimden; başlangıç günü sayılmaz, 8. gün dahil
+      ---
+      duration_ms: 1.608044
+      type: 'test'
+      ...
+    # Subtest: iletim izi yoksa kesim günü (süre uzamaz); ileti kesim gününü ve nedenini söyler
+    ok 2 - iletim izi yoksa kesim günü (süre uzamaz); ileti kesim gününü ve nedenini söyler
+      ---
+      duration_ms: 0.458775
+      type: 'test'
+      ...
+    # Subtest: e-SMM aynı kural; e-Fatura, kâğıt, taslak, Hata, belirsiz ve gönderilmemiş belge kural dışı
+    ok 3 - e-SMM aynı kural; e-Fatura, kâğıt, taslak, Hata, belirsiz ve gönderilmemiş belge kural dışı
+      ---
+      duration_ms: 0.704701
+      type: 'test'
+      ...
+    # Subtest: ay sonu ve yıl dönümü takvim günüyle
+    ok 4 - ay sonu ve yıl dönümü takvim günüyle
+      ---
+      duration_ms: 0.291305
+      type: 'test'
+      ...
+    # Subtest: iletim anı: belgeyi EDM'ye ulaştırmış olabilecek SON girişim (durum sorgusu, hiç gitmemiş istek ve red girişim değildir)
+    ok 5 - iletim anı: belgeyi EDM'ye ulaştırmış olabilecek SON girişim (durum sorgusu, hiç gitmemiş istek ve red girişim değildir)
+      ---
+      duration_ms: 0.387766
+      type: 'test'
+      ...
+    1..5
+ok 1 - iptal süresi kuralı (lib/einvoice/iptal-suresi.mjs, saf)
+  ---
+  duration_ms: 4.801843
+  type: 'suite'
+  ...
+# Subtest: iptal süresi: program uçları (sahte EDM, sahte saat)
+    # Subtest: gün sınırı programın yerel günüdür: 23:59'da gönderilen belgenin son günü 8 gün sonra, 00:00 geçince 9. gün; 00:30'da gönderilen o gün sayılır
+    ok 1 - gün sınırı programın yerel günüdür: 23:59'da gönderilen belgenin son günü 8 gün sonra, 00:00 geçince 9. gün; 00:30'da gönderilen o gün sayılır
+      ---
+      duration_ms: 327.825465
+      type: 'test'
+      ...
+    # Subtest: iletimden 8. gün iptal edilir (kesimden 11. gün): EDM'de ve programda
+    ok 2 - iletimden 8. gün iptal edilir (kesimden 11. gün): EDM'de ve programda
+      ---
+      duration_ms: 122.711116
+      type: 'test'
+      ...
+    # Subtest: iletimden 9. gün reddedilir: ileti son günü yazar, belge ve EDM değişmez, kartta neden görünür
+    ok 3 - iletimden 9. gün reddedilir: ileti son günü yazar, belge ve EDM değişmez, kartta neden görünür
+      ---
+      duration_ms: 78.821482
+      type: 'test'
+      ...
+    # Subtest: yalnız programda iptal (localOnly) süresi dolmuş gönderilmiş belgede de reddedilir; süre içinde çıkış yolu sürer
+    ok 4 - yalnız programda iptal (localOnly) süresi dolmuş gönderilmiş belgede de reddedilir; süre içinde çıkış yolu sürer
+      ---
+      duration_ms: 133.663097
+      type: 'test'
+      ...
+    # Subtest: sonucu belirsiz gönderim (EDM işledi, yanıt koptu): süre girişim gününden, Durum Sorgula gününden değil
+    ok 5 - sonucu belirsiz gönderim (EDM işledi, yanıt koptu): süre girişim gününden, Durum Sorgula gününden değil
+      ---
+      duration_ms: 110.661504
+      type: 'test'
+      ...
+    # Subtest: EDM reddetti (Hata) → yeniden gönderim: süre yeniden gönderim gününden
+    ok 6 - EDM reddetti (Hata) → yeniden gönderim: süre yeniden gönderim gününden
+      ---
+      duration_ms: 154.520791
+      type: 'test'
+      ...
+    # Subtest: Hata görünen belge iptalde EDM'de oluşturulmuş çıkarsa süre ona da uygulanır (EDM'ye iptal gitmez)
+    ok 7 - Hata görünen belge iptalde EDM'de oluşturulmuş çıkarsa süre ona da uygulanır (EDM'ye iptal gitmez)
+      ---
+      duration_ms: 84.893855
+      type: 'test'
+      ...
+    # Subtest: EDM'ye ulaşmamış girişim (bulunamadı) → yeniden gönderim: süre yeniden gönderim gününden
+    ok 8 - EDM'ye ulaşmamış girişim (bulunamadı) → yeniden gönderim: süre yeniden gönderim gününden
+      ---
+      duration_ms: 155.805265
+      type: 'test'
+      ...
+    # Subtest: portal taslağı portaldan gönderildi: süre taslak yükleme gününden (gönderim ondan önce olamaz)
+    ok 9 - portal taslağı portaldan gönderildi: süre taslak yükleme gününden (gönderim ondan önce olamaz)
+      ---
+      duration_ms: 125.465763
+      type: 'test'
+      ...
+    # Subtest: e-Fatura kuralın dışında: süre bilgisi yok, bugünkü iptal yanıtı değişmez
+    ok 10 - e-Fatura kuralın dışında: süre bilgisi yok, bugünkü iptal yanıtı değişmez
+      ---
+      duration_ms: 94.085863
+      type: 'test'
+      ...
+    # Subtest: belirsiz + yalnız programda iptal: girişimden 8 gün dolmadıysa EDM'ye sorulmaz (bugünkü yol)
+    ok 11 - belirsiz + yalnız programda iptal: girişimden 8 gün dolmadıysa EDM'ye sorulmaz (bugünkü yol)
+      ---
+      duration_ms: 97.86693
+      type: 'test'
+      ...
+    # Subtest: belirsiz + yalnız programda iptal, 8 gün geçti: EDM "bulunamadı" → belge iletilmemiş, iptal serbest
+    ok 12 - belirsiz + yalnız programda iptal, 8 gün geçti: EDM "bulunamadı" → belge iletilmemiş, iptal serbest
+      ---
+      duration_ms: 96.760101
+      type: 'test'
+      ...
+    # Subtest: belirsiz + yalnız programda iptal, 8 gün geçti: belge EDM'de VAR → süre doldu, reddedilir; durum belgeye yazılır, EDM'ye iptal gitmez
+    ok 13 - belirsiz + yalnız programda iptal, 8 gün geçti: belge EDM'de VAR → süre doldu, reddedilir; durum belgeye yazılır, EDM'ye iptal gitmez
+      ---
+      duration_ms: 72.876705
+      type: 'test'
+      ...
+    # Subtest: belirsiz + yalnız programda iptal, 8 gün geçti: EDM'de var ama Hata → durum yazılır, bu istekte iptal yok
+    not ok 14 - belirsiz + yalnız programda iptal, 8 gün geçti: EDM'de var ama Hata → durum yazılır, bu istekte iptal yok
+      ---
+      duration_ms: 75.028679
+      type: 'test'
+      location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:410:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"id":"invoice-a6859869-9765-4b2c-ad27-b1a34f2b3599","kind":"sale","kindLabel":"Satış Faturası","scenario":"service_sale","scenarioLabel":"Hizmet Satışı","status":"cancelled","statusLabel":"İptal Edildi","number":"TEA2026000000016","displayNo":"TEA2026000000016","internalNumber":false,"ettn":"64afffe6-f5ce-445f-b1b6-d65036adc1c8","issueDate":"2026-06-17","issueTime":"10:00","accountId":"account-7d72f597-49b5-431b-bb67-eba7d3c6ee5b","accountName":"Ayşe Yılmaz","accountRef":"1","accountPhone":"","profile":"EARSIVFATURA","profileLabel":"e-Arşiv Fatura","typeCode":"SATIS","currency":"TRY","rate":1,"netTotal":300,"vatTotal":60,"withheldTotal":0,"stoppageTotal":0,"payableTotal":360,"tryNet":300,"tryVat":60,"tryPayable":360,"dueDate":"2026-06-17","planId":"","originalId":"","originalNumber":"","originalDate":"","note":"","eStatus":"error","eStatusLabel":"Hata","eUnsent":false,"eTestLive":false,"eTest":true,"actorName":"Ofis yöneticisi","createdAt":"2026-06-17T07:00:00.000Z","payState":"cancelled","payStateLabel":"İptal","paid":0,"open":0,"closers":[],"party":{"id":"account-7d72f597-49b5-431b-bb67-eba7d3c6ee5b","name":"Ayşe Yılmaz","partyKind":"person","firstName":"Ayşe","familyName":"Yılmaz","taxNo":"10000000146","taxOffice":"","mersisNo":"","tradeRegistry":"","address":"","district":"","city":"İzmir","postalCode":"","country":"Türkiye","phone":"","email":"ayse@example.com","website":"","iban":"","eInvoice":false,"eAlias":""},"seller":{"name":"Deneme Ofis Ltd.","partyKind":"company","firstName":"","familyName":"","taxNo":"1234567890","taxOffice":"Çankaya","mersisNo":"","tradeRegistry":"","address":"Atatürk Blv. 1","district":"Çankaya","city":"Ankara","postalCode":"","country":"Türkiye","phone":"","email":"bilgi@deneme.com.tr","website":"","banks":[]},"pricesIncludeVat":false,"discountRate":0,"stoppageRate":0,"baseTotal":300,"discountTotal":0,"baseNetTotal":300,"discountNetTotal":0,"goodsNet":0,"serviceNet":300,"grossTotal":360,"tryWithheld":0,"tryStoppage":0,"gl":[{"account":"600","net":30000}],"orderNo":"","orderDate":"","despatchNo":"","despatchDate":"","paperNo":"","returnRef":"","payment":{"cash":[],"cheques":[],"endorse":[],"mode":"open","installments":null,"rest":360},"eMessage":"EDM'de bulunamadı (belge iletilmemiş); yalnız programda iptal edildi.","eAt":"2026-06-27T07:00:00.000Z","eAdapter":"edm","cancelledAt":"2026-06-27T07:00:00.000Z","cancelReason":"EDM'ye ulaşılamıyor","amountInWords":"Yalnız Üç Yüz Altmış Türk Lirası","byRate":[{"rate":20,"net":300,"vat":60,"withheld":0}],"lines":[{"id":"iline-77a9caeb-beb1-41f8-9ff3-c747ce5a3725","invoiceId":"invoice-a6859869-9765-4b2c-ad27-b1a34f2b3599","seq":1,"itemId":"","goods":false,"code":"","name":"Bakım","description":"","unit":"Adet","qty":1,"unitPrice":300,"discountRate":0,"base":300,"discount":0,"net":300,"vatRate":20,"vat":60,"withholdingCode":"","withholdingNum":0,"withholdingDen":0,"withheld":0,"exemptionCode":"","gross":360,"payable":360,"glAccount":"600","expenseCode":"","unitCost":0,"originLineId":"","moveId":"","serialNo":"","lotNo":"","returned":0,"expenseLabel":""}],"returnable":[{"id":"iline-77a9caeb-beb1-41f8-9ff3-c747ce5a3725","left":1}],"returns":[],"cheques":[],"plan":null,"payments":[],"posCash":false,"canManage":true,"canEdit":false,"canModify":false,"modifyBlock":"","canIssue":false,"canDelete":false,"deleteBlock":"Bu belgenin numarası entegratörde (EDM) kullanıldı; e-Belge numarası yeniden verilemeyeceği için belge silinmez, “İptal Edildi” olarak kalır.","canCancel":false,"cancelWindow":null,"cancelDeadline":"","canLocalCancel":false,"cancelNotice":"","cancelBlock":"","canReturn":false,"returnBlock":"","repeat":null,"canRepeat":false,"canSend":false,"canWithdraw":false,"sendBlock":"","canRefresh":true,"canDraft":false,"draftStale":false,"canOfficial":false,"edocEnabled":true,"notices":[]}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:415:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: belirsiz + yalnız programda iptal, 8 gün geçti: EDM'ye ulaşılamıyor → iptal yapılmaz, belge belirsiz kalır
+    ok 15 - belirsiz + yalnız programda iptal, 8 gün geçti: EDM'ye ulaşılamıyor → iptal yapılmaz, belge belirsiz kalır
+      ---
+      duration_ms: 79.471167
+      type: 'test'
+      ...
+    # Subtest: ay sonu ve yıl dönümü: 28.12 iletim → 05.01 iptal edilir, 06.01 reddedilir
+    ok 16 - ay sonu ve yıl dönümü: 28.12 iletim → 05.01 iptal edilir, 06.01 reddedilir
+      ---
+      duration_ms: 155.677617
+      type: 'test'
+      ...
+    1..16
+not ok 2 - iptal süresi: program uçları (sahte EDM, sahte saat)
+  ---
+  duration_ms: 2430.837275
+  type: 'suite'
+  location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:115:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: iptal süresi: e-SMM (gönderim kapısı madde 22'de açılır; kural şimdiden e-SMM'yi kapsar)
+    # Subtest: iletilmiş e-SMM 9. gün reddedilir (e-SMM iletisiyle); süre içinde kartta son gün; iletim izi gönderim girişiminden
+    ok 1 - iletilmiş e-SMM 9. gün reddedilir (e-SMM iletisiyle); süre içinde kartta son gün; iletim izi gönderim girişiminden
+      ---
+      duration_ms: 60.600093
+      type: 'test'
+      ...
+    1..1
+ok 3 - iptal süresi: e-SMM (gönderim kapısı madde 22'de açılır; kural şimdiden e-SMM'yi kapsar)
+  ---
+  duration_ms: 395.670691
+  type: 'suite'
+  ...
+# Subtest: belirsiz e-SMM + yalnız programda iptal (kullanıcı kararı 22.10.2026): e-SMM'de "bulunamadı" kodu doğrulanmadı → her hata bilinmiyor
+    # Subtest: 8 gün geçti, EDM 11017 (e-Arşiv'de "bulunamadı") döndü: e-SMM'de bilinmiyor sayılır, iptal YOK
+    ok 1 - 8 gün geçti, EDM 11017 (e-Arşiv'de "bulunamadı") döndü: e-SMM'de bilinmiyor sayılır, iptal YOK
+      ---
+      duration_ms: 46.722199
+      type: 'test'
+      ...
+    # Subtest: 8 gün geçti, e-SMM EDM'de oluşturulmuş: süre doldu, reddedilir
+    ok 2 - 8 gün geçti, e-SMM EDM'de oluşturulmuş: süre doldu, reddedilir
+      ---
+      duration_ms: 42.434817
+      type: 'test'
+      ...
+    # Subtest: 8 gün dolmadıysa e-SMM'de de sorulmaz (bugünkü yol)
+    ok 3 - 8 gün dolmadıysa e-SMM'de de sorulmaz (bugünkü yol)
+      ---
+      duration_ms: 98.843729
+      type: 'test'
+      ...
+    1..3
+ok 4 - belirsiz e-SMM + yalnız programda iptal (kullanıcı kararı 22.10.2026): e-SMM'de "bulunamadı" kodu doğrulanmadı → her hata bilinmiyor
+  ---
+  duration_ms: 515.790617
+  type: 'suite'
+  ...
+1..4
+# tests 25
+# suites 4
+# pass 24
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3767.765753

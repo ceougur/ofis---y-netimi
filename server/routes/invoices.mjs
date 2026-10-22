@@ -21,7 +21,7 @@ import { readUbl } from "../lib/einvoice/ubl-read.mjs";
 import { UNIT_CODE_KEYS, buildUbl, ublFileName } from "../lib/einvoice/ubl-tr.mjs";
 import { viewXslt } from "../lib/einvoice/gorunum.mjs";
 import { karekodOf } from "../lib/einvoice/karekod.mjs";
-import { NOT_SENT_CODES, TRANSMITTED, cancelDeadlineText, cancelLateText, cancelWindow, transmissionOf, windowLabel } from "../lib/einvoice/iptal-suresi.mjs";
+import { NOT_SENT_CODES, TRANSMITTED, attemptWindow, cancelDeadlineText, cancelLateText, cancelWindow, transmissionOf, windowLabel } from "../lib/einvoice/iptal-suresi.mjs";
 import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { bodyHash, createIdempotency } from "../lib/idempotency.mjs";
 import { invoicePdf } from "../lib/invoice-pdf.mjs";
@@ -2922,6 +2922,29 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       release();
     }
   }
+  // Kullanıcı kararı 22.10.2026 (madde 23 ek): sonucu BELİRSİZ gönderimde "Yalnız Programda İptal", son gönderim girişiminden 8 gün geçtiyse önce EDM'ye
+  // sorar. EDM "bulunamadı" (11017) derse belge iletilmemiştir → iptal serbest (true döner). Belge EDM'de varsa durum belgeye yazılır ve iptal reddedilir
+  // (iletilmişse süre doldu). EDM'ye ulaşılamazsa ya da yanıt tanınmazsa iptal yapılmaz. e-SMM'de "bulunamadı" kodu doğrulanmadı (madde 24): e-SMM'de
+  // her hata "bilinmiyor" sayılır. 8 gün dolmadıysa sorulmaz (bugünkü K4 çıkış yolu aynen; false döner).
+  async function uncertainLocalCheck(user, row) {
+    const limit = edocEnabled ? attemptWindow({ profile: row.profile, issueDate: row.issueDate, transmittedAt: transmittedAtOf(row.id), today: today() }) : null;
+    if (!limit?.late) return false;
+    const since = `Son gönderim girişiminin (${dayText(limit.start)}) üzerinden ${limit.days} günden fazla geçti; belgenin EDM'de olup olmadığı sorulmadan yalnız programda iptal edilmez.`;
+    let remote;
+    try {
+      remote = await integrator().status({ invoice: detail(row.id, user) });
+    } catch (error) {
+      if (row.profile !== "ESMM" && remoteMissing(error)) return true;
+      const code = error?.extra?.code || error?.code || "";
+      const reason = String(error?.message || error).slice(0, 300);
+      if (["integrator-unreachable", "integrator-uncertain"].includes(code)) throw new HttpError(502, `${since} EDM'ye ulaşılamadı (${reason}). İptal yapılmadı; bağlantı kurulunca yeniden deneyin.`, { code: "einvoice-cancel-unreachable", lastDay: limit.lastDay });
+      throw new HttpError(409, `${since} EDM belgenin durumunu bildirmedi (${reason}). İptal yapılmadı; Durum Sorgula ile bakın ya da entegratörle görüşün.`, { code: "einvoice-cancel-unknown", lastDay: limit.lastDay });
+    }
+    setE(user, row.id, { status: remote.status, message: remote.message }, "invoice.e.status", { raw: remote.raw || "", during: "cancel" });
+    const found = cancelWindowOf(invoiceRow(row.id));
+    if (found?.late) throw new HttpError(409, `Belge EDM'de bulundu: alıcıya iletilmiş, GİB'de geçerli. ${cancelLateText(found)}`, { code: "einvoice-cancel-late", lastDay: found.lastDay, start: found.start, source: found.source });
+    throw new HttpError(409, `Belge EDM'de bulundu (durum: ${E_STATES[remote.status] || remote.status}); durum belgeye yazıldı, yalnız programda iptal edilmedi. Kartı yeniden açıp İptal Et ile deneyin.`, { code: "einvoice-found" });
+  }
   async function cancelInvoiceOnce(user, id, body) {
     const relinks = invoiceRow(id).status === "issued" ? doubtfulRelinks(id) : [];
     const notices = relinks.length ? [doubtfulRelinkText(relinks, { done: true })] : [];
@@ -2947,6 +2970,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (!canUser(user, "invoices.settings")) throw new HttpError(403, "Yalnız programda iptal, Fatura Ayarları yetkisi ister; yöneticinize başvurun.", { code: "FORBIDDEN", permission: "invoices.settings" });
       if (body.confirmLocal !== true) throw new HttpError(409, "Belgenin entegratörde olmadığını ya da entegratöre ulaşılamadığını onaylayın (onay kutusu).", { code: "einvoice-local-confirm" });
     }
+    const missingAtEdm = bypass && uncertainSend(head) ? await uncertainLocalCheck(user, head) : false;
     if (uncertainSend(head) && !localOnly) throw new HttpError(409, UNCERTAIN_TEXT, { code: "einvoice-uncertain" });
     if (!bypass) await confirmDraft(user, id);
     if (bypass) options.confirmExternal = true;
@@ -2999,8 +3023,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const row = cancel(user, existing.id, options);
     if (bypass) {
       store.tx(() => {
-        store.run("UPDATE invoices SET e_message = ? WHERE id = ?", "Yalnız programda iptal edildi (entegratöre iptal gönderilmedi). Entegratörde belge varsa orada ayrıca iptal edin.", existing.id);
-        audit(user, "invoice.e.local-cancel", existing.id, { number: existing.number, eStatus: head.eStatus || "none", adapter: head.eAdapter || "" });
+        store.run("UPDATE invoices SET e_message = ? WHERE id = ?", missingAtEdm ? "EDM'de bulunamadı (belge iletilmemiş); yalnız programda iptal edildi." : "Yalnız programda iptal edildi (entegratöre iptal gönderilmedi). Entegratörde belge varsa orada ayrıca iptal edin.", existing.id);
+        audit(user, "invoice.e.local-cancel", existing.id, { number: existing.number, eStatus: head.eStatus || "none", adapter: head.eAdapter || "", ...(missingAtEdm ? { reason: "integrator-missing" } : {}) });
       });
     }
     return { ...detail(row.id, user), notices };
