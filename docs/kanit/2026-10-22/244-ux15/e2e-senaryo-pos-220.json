@@ -1,0 +1,32 @@
+{
+  "ad": "244-ux15/e2e-senaryo-pos-220",
+  "komut": "npm run test:senaryo-pos-220",
+  "commit": "403a35003e2e4b4a01cfe16013c84c9b1c836083",
+  "dal": "is/ux15",
+  "kirli": 0,
+  "izlenmeyen": 22,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T09:04:12.081Z",
+  "sure_sn": 118.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 113,
+    "gecen": 113,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ux15/e2e-senaryo-pos-220.log",
+  "klasor": "/home/user/wt/ux15",
+  "ham_cikti_sha256": "d8c1b7f12da0af29b13f8a947b64c19ecabf59ed4348f6cf7558a869ce034930",
+  "ham_cikti_bayt": 10299
+}
