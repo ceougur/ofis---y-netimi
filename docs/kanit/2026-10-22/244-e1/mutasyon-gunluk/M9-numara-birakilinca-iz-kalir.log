@@ -1,0 +1,12 @@
+✖ E1: iz yalnız belge entegratörde oluşabilecekse kalır (B4, B5) (1225.449143ms)
+ℹ tests 16
+ℹ suites 6
+ℹ pass 15
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11963.82782
+✖ failing tests:
+✖ K8 (B4) bağlantı hiç kurulamadı (numara bu istekte verildi): numara geri bırakılır, iz de — belge numarasız Gönderilecekler'de, entegratör izi yok (431.628027ms)
+  AssertionError [ERR_ASSERTION]: iz geri alındı

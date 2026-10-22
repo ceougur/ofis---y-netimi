@@ -1,0 +1,12 @@
+✖ E4: iptal EDM'de tamamlandı, yanıt gelmeden program kesildi (2499.234926ms)
+ℹ tests 16
+ℹ suites 6
+ℹ pass 15
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12866.038492
+✖ failing tests:
+✖ K11 süre içinde (aynı gün): İptal Et EDM'de iptal olduğunu görür, ikinci iptal göndermez, programda iptal eder (1267.391935ms)
+  AssertionError [ERR_ASSERTION]: ikinci iptal gönderilmedi

@@ -1,0 +1,12 @@
+✖ U birim: 11048 iletisinin gösterdiği belge ve iletim günü (2.072317ms)
+ℹ tests 36
+ℹ suites 13
+ℹ pass 35
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16903.082044
+✖ failing tests:
+✖ U1 iletideki numara ve ETTN'nin hepsi belgeninkiyse (büyük/küçük harf farkı önemsiz) bu belge; biri farklıysa ya da ikisi de yoksa değil (1.512981ms)
+  AssertionError [ERR_ASSERTION]: numara aynı, ETTN başka belgenin

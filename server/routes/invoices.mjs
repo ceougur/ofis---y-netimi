@@ -21,7 +21,7 @@ import { readUbl } from "../lib/einvoice/ubl-read.mjs";
 import { UNIT_CODE_KEYS, buildUbl, ublFileName } from "../lib/einvoice/ubl-tr.mjs";
 import { viewXslt } from "../lib/einvoice/gorunum.mjs";
 import { karekodOf } from "../lib/einvoice/karekod.mjs";
-import { NOT_SENT_CODES, TRANSMITTED, attemptWindow, cancelDeadlineText, cancelLateText, cancelWindow, transmissionOf, windowLabel } from "../lib/einvoice/iptal-suresi.mjs";
+import { NOT_SENT_CODES, SEND_DUPLICATE, SEND_INTENT, SEND_OUTCOMES, TRANSMITTED, attemptWindow, cancelDeadlineText, cancelLateText, cancelWindow, transmissionOf, windowLabel } from "../lib/einvoice/iptal-suresi.mjs";
 import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { bodyHash, createIdempotency } from "../lib/idempotency.mjs";
 import { invoicePdf } from "../lib/invoice-pdf.mjs";
@@ -73,6 +73,28 @@ const E_TRACKED = new Set(["draft", "processing", "sent", "accepted", "rejected"
 // "none" kalır, e_adapter yazılır. Belge EDM'ye ulaşmış olabilir: durum sorulmadan silinmez, düzenlenmez, iptal edilmez, yeniden gönderilmez.
 const uncertainSend = row => (row.eStatus || "none") === "none" && Boolean(row.eAdapter);
 const UNCERTAIN_TEXT = "Son e-Belge gönderiminin sonucu belirsiz (entegratöre bağlantı koptu; belge ulaşmış olabilir). Önce Durum Sorgula: belge entegratörde yoksa yeniden gönderilir ya da değiştirilir.";
+// 2.4.4 (31d E1): gönderim izinin iletisi — kesin sonuç gelince yerini sonucun iletisi alır; kalırsa program yanıt gelmeden kesilmiştir.
+const SENDING_TEXT = "Gönderim başladı, sonuç bekleniyor. Bu ileti kalırsa (program kapandı ya da bağlantı koptu) sonuç kaydedilmemiştir: önce Durum Sorgula ile bakın; belge entegratördeyse gönderilmiş sayılır, değilse yeniden gönderilir.";
+const DUPLICATE_FOUND_TEXT = "EDM bu belgeyi (aynı numara ve ETTN) önceki bir gönderimden tanıdı: belge entegratöre ulaşmış; yeniden gönderilmedi, durum güncellendi.";
+// 2.4.4 (31d E4): iptal izi — EDM'ye iptal isteği gönderilmeden ÖNCE İşlem Geçmişi'ne yazılır (yanıt kaydedilmeden program kesilirse belge programda
+// iletilmiş görünür, EDM'de iptaldir; süre dolduktan sonraki İptal Et "süre doldu" demeden önce EDM'ye sorar).
+const CANCEL_INTENT = "invoice.e.cancelling";
+const UUID_IN_TEXT = /\bUUID\s*=\s*([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i;
+const ID_IN_TEXT = /(?<![A-Za-z])ID\s*=\s*([A-Za-z0-9]+)/;
+/**
+ * 2.4.4 (31d E1): EDM 11048 ("Daha önce gönderdiğiniz bir faturayı / SMM'yi tekrar göndermeye çalıştınız") iletisi BU belgeyi mi gösteriyor? Gerçek EDM
+ * iletisi "UUID=<ETTN> ID=<numara> için …" biçimindedir (17.10.2026). İletide geçen numara ve ETTN'nin HEPSİ belgeninkiyle aynıysa (en az biri geçmeli)
+ * önceki gönderim EDM'ye ulaşmış olabilir: çağıran "Hata" yazmadan önce durumu sorar. Biri farklıysa ya da ikisi de yoksa bugünkü yol (Hata + iletisi).
+ */
+export function duplicateNamesOwn(error, doc) {
+  const text = `${error?.message || ""} ${error?.extra?.detail || error?.detail || ""}`;
+  const uuid = (text.match(UUID_IN_TEXT) || [])[1] || "";
+  const id = (text.replace(UUID_IN_TEXT, " ").match(ID_IN_TEXT) || [])[1] || "";
+  if (!uuid && !id) return false;
+  if (uuid && uuid.toLowerCase() !== String(doc?.ettn || "").toLowerCase()) return false;
+  if (id && id.toUpperCase() !== String(doc?.number || "").toUpperCase()) return false;
+  return true;
+}
 // EDM: hiç gönderilmemiş belgenin durumu sorulunca "Fatura bulunamadı" (hata kodu 11017) — gerçek test ortamında görüldü (16.10.2026,
 // docs/kanit/2026-10-16/edm-bilinmeyen).
 // 2.4.4 madde 22: "belge entegratörde YOK" kodları servis (profil) başınadır, TEK yerde. e-SMM servisi (ESmmEDM.svc) de aynı kodu verir — gerçek EDM
@@ -175,7 +197,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   const today = () => (period ? period.today() : isoDay(clock()));
   // 2.4.4 madde 23 (kullanıcı kararı 21.10.2026): e-Arşiv ve e-SMM iptal süresi — kural lib/einvoice/iptal-suresi.mjs'te TEK yerde. İletim anı belgenin
   // İşlem Geçmişi'ndeki gönderim girişimlerinden okunur (2.4.3 verisi de aynı kayıtları taşır); yazım sırasıyla (rowid; sahte saat geri alınsa da).
-  const E_ATTEMPTS = ["invoice.e.sent", "invoice.e.draft", "invoice.e.send-failed"];
+  // 2.4.4 (31d E1): gönderim izi (SEND_INTENT) ve onu kapatan sonuç kayıtları (SEND_OUTCOMES) da okunur — iz yalnız ardından sonuç gelmediyse girişimdir.
+  const E_ATTEMPTS = [...new Set(["invoice.e.sent", "invoice.e.draft", "invoice.e.send-failed", SEND_INTENT, ...SEND_OUTCOMES])];
   const transmittedAtOf = id =>
     transmissionOf(store.all(`SELECT type, payload_json AS payload, created_at AS at FROM audit_events WHERE entity_id = ? AND type IN (${E_ATTEMPTS.map(() => "?").join(", ")}) ORDER BY rowid`, id, ...E_ATTEMPTS).map(row => ({ ...row, payload: parseJson(row.payload, {}) })));
   // eStatus: iptal sırasında entegratörden okunan yeni durum (ör. "Hata" sanılan belge EDM'de oluşturulmuş çıktıysa süre ona da uygulanır).
@@ -183,6 +206,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     edocEnabled && row.status === "issued" && windowLabel(row.profile) && TRANSMITTED.has(eStatus)
       ? cancelWindow({ profile: row.profile, eStatus, issueDate: row.issueDate, transmittedAt: transmittedAtOf(row.id), today: today() })
       : null;
+  // 2.4.4 (31d E4): iletilmiş e-Arşiv / e-SMM'nin iptal süresi dolmuş ama İşlem Geçmişi'nde iptal izi var (önceki iptal isteğinin sonucu kaydedilmemiş
+  // olabilir) — İptal Et açık kalır ve "süre doldu" demeden önce EDM'ye sorar.
+  const cancelTraced = id => Boolean(store.get("SELECT 1 AS found FROM audit_events WHERE entity_id = ? AND type = ? LIMIT 1", id, CANCEL_INTENT));
+  const cancelRecheckOf = (row, limit = cancelWindowOf(row)) => Boolean(limit?.late) && cancelTraced(row.id);
   const nowTime = () => {
     const d = clock();
     return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
@@ -1001,6 +1028,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const activeReturns = returns.filter(item => item.status === "issued").length;
     const bankFee = row.status === "issued" ? bankFeeOf(row.id) : null;
     const cancelLimit = cancelWindowOf(row);
+    const cancelRecheck = cancelRecheckOf(row, cancelLimit);
     const returnable = lines.map(line => ({ id: line.id, left: Math.max(0, Math.round((line.qty - (returned.get(line.id) || 0)) * 1000) / 1000) }));
     return {
       ...shape(row, state),
@@ -1050,7 +1078,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // v2.0.17 (müşteri): her belge silinebilir — taslak, kaydedilmiş (etkiler iptaldeki gibi geri alınır), iptal edilmiş.
       canDelete: manage && !deleteBlock(row, activeReturns, plan),
       deleteBlock: manage ? deleteBlock(row, activeReturns, plan) : "",
-      canCancel: manage && row.status === "issued" && activeReturns === 0 && !bankFee && !uncertainSend(row) && !cancelLimit?.late,
+      canCancel: manage && row.status === "issued" && activeReturns === 0 && !bankFee && !uncertainSend(row) && (!cancelLimit?.late || cancelRecheck),
       // 2.4.4 madde 23: iletilmiş e-Arşiv / e-SMM'nin son iptal günü (süre içindeyse kartta "Son İptal Günü"; dolduysa cancelBlock nedeni yazar).
       cancelWindow: cancelLimit ? { start: cancelLimit.start, source: cancelLimit.source, lastDay: cancelLimit.lastDay, late: cancelLimit.late } : null,
       cancelDeadline: cancelLimit && !cancelLimit.late ? cancelDeadlineText(cancelLimit) : "",
@@ -1058,7 +1086,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       canLocalCancel: edocEnabled && manage && canUser(user, "invoices.settings") && row.status === "issued" && activeReturns === 0 && !bankFee && (uncertainSend(row) || row.eStatus === "draft"),
       // K4: iptal penceresinde söylenir (şüpheli carinin "Normal Cariye İşlendi" tahsilatı iptalle şüpheliden düşmeye başlar).
       cancelNotice: manage && row.status === "issued" ? doubtfulRelinkText(doubtfulRelinks(row.id)) : "",
-      cancelBlock: row.status === "issued" && bankFee ? bankFeeText(bankFee) : row.status === "issued" && activeReturns ? `Bu faturanın ${activeReturns} iade faturası var; önce iadeleri iptal edin.` : cancelLimit?.late ? cancelLateText(cancelLimit) : "",
+      cancelBlock: row.status === "issued" && bankFee ? bankFeeText(bankFee) : row.status === "issued" && activeReturns ? `Bu faturanın ${activeReturns} iade faturası var; önce iadeleri iptal edin.` : cancelLimit?.late && !cancelRecheck ? cancelLateText(cancelLimit) : "",
+      // 31d E4: süre dolmuş ama önceki iptal isteğinin sonucu kaydedilmemiş — İptal Et önce EDM'ye sorar.
+      cancelRecheck,
       canReturn: manage && row.status === "issued" && !kind?.return && row.kind !== "smm" && returnable.some(item => item.left > 0) && !bankFee,
       // v2.0.17: pasif düğmenin nedeni ekranda yazılı (yalnız title değil).
       returnBlock: row.status !== "issued" ? "" : bankFee ? bankFeeText(bankFee) : kind?.return ? "" : row.kind === "smm" ? "Serbest meslek makbuzundan iade belgesi olmaz; yanlışsa iptal edin." : returnable.some(item => item.left > 0) ? "" : "İade edilebilecek kalem kalmadı; faturanın tamamı iade edildi.",
@@ -3161,7 +3191,22 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const options = { reason: text(body.reason), force: forceOf(body), confirmExternal: body.confirmExternal === true, posOutcome: text(body.posOutcome) === "entry-error" ? "entry-error" : "refunded" };
     // Çıkış yolu (kullanıcı kararı 16.10.2026, kontrol turu K4): entegratöre ulaşılamıyor ya da test hesabı kapandıysa belirsiz / portalda taslak belge
     // yalnız programda iptal edilir — Fatura Ayarları yetkisi + açık onay ("Entegratörde yok, yalnız programda iptal et"); işlem kaydına düşer.
-    const head = invoiceRow(id);
+    let head = invoiceRow(id);
+    // 2.4.4 (31d E4): önceki İptal Et'in isteği EDM'ye gitti ama yanıtı kaydedilmeden program kesildiyse belge programda iletilmiş görünür, EDM'de iptal
+    // olabilir. Süre dolduysa "süre doldu" demeden ÖNCE EDM'ye sorulur (yalnız iptal izi varsa): EDM iptal diyorsa durum belgeye yazılır ve iptal programda
+    // tamamlanır (süre kuralı iletilmiş belge içindir; EDM'de iptal edilmiş belge iletilmiş durumda değildir). Sorulamazsa iptal yapılmaz, neden söylenir.
+    if (cancelRecheckOf(head)) {
+      let current = null;
+      try {
+        current = await integrator().status({ invoice: detail(head.id, user) });
+      } catch (error) {
+        if (!remoteMissing(error, head.profile)) {
+          throw new HttpError(502, `Bu belge için daha önce EDM'ye iptal isteği gönderilmiş, sonucu programa kaydedilmemiş; iptal süresi dolduğu için önce EDM'deki durumu sorulmalı, sorulamadı (${String(error?.message || error).slice(0, 200)}). İptal yapılmadı; bağlantı kurulunca yeniden deneyin ya da Durum Sorgula ile bakın.`, { code: "einvoice-cancel-unreachable" });
+        }
+      }
+      if (current?.status && current.status !== head.eStatus) setE(user, head.id, { status: current.status, message: current.message }, "invoice.e.status", { raw: current.raw || "", during: "cancel-recheck" });
+      head = invoiceRow(id);
+    }
     const localOnly = body.localOnly === true;
     const stuck = head.status === "issued" && (uncertainSend(head) || head.eStatus === "draft");
     // e-Arşiv: entegratörde de iptal edilir (EDM: taslak, hatalı ya da başarıyla oluşturulmuş e-Arşiv iptal edilebilir). e-SMM (2.4.4): e-SMM gönderimi
@@ -3209,6 +3254,15 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (current?.status === "processing") {
         throw new HttpError(409, `${existing.profile === "ESMM" ? "e-SMM" : "e-Arşiv fatura"} EDM'de henüz işleniyor; iptal ancak işlem bitince yapılabilir. Birkaç dakika sonra Durum Sorgula ile bakıp yeniden deneyin.`, { code: "einvoice-processing" });
       }
+      // 31d E4: belge EDM'de zaten iptal (önceki iptalin yanıtı kaydedilmeden program kesildi; durum yukarıda yazıldı) — ikinci iptal gönderilmez, iptal
+      // programda tamamlanır.
+      if (current?.status === "cancelled") {
+        store.tx(() => audit(user, "invoice.e.cancelled", existing.id, { number: existing.number, adapter: existing.eAdapter, recovered: true }));
+        const row = cancel(user, existing.id, { ...options, confirmExternal: true });
+        return { ...detail(row.id, user), notices };
+      }
+      // 31d E4: iptal izi — istek ağa çıkmadan önce (yanıtı kaydedilmeden program kesilirse süre dolduktan sonra da EDM'ye sorulur).
+      store.tx(() => audit(user, CANCEL_INTENT, existing.id, { number: existing.number, adapter: existing.eAdapter || "", from: current?.status || existing.eStatus || "" }));
       let result;
       try {
         result = await integrator().cancel({ invoice: doc });
@@ -3383,7 +3437,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   const setE = (user, id, { status, adapter = null, message = "" }, action, extra = {}) => {
     store.tx(() => {
       const stamp = now();
-      if (adapter) store.run("UPDATE invoices SET e_status = ?, e_adapter = ?, e_message = ?, e_at = ?, updated_at = ? WHERE id = ?", status, adapter, String(message || "").slice(0, 500), stamp, stamp, id);
+      // adapter: verilmezse (null) e_adapter değişmez; verilirse (boş metin dahil — gönderim izinin geri alınması) yazılır.
+      if (adapter !== null) store.run("UPDATE invoices SET e_status = ?, e_adapter = ?, e_message = ?, e_at = ?, updated_at = ? WHERE id = ?", status, adapter, String(message || "").slice(0, 500), stamp, stamp, id);
       else store.run("UPDATE invoices SET e_status = ?, e_message = ?, e_at = ?, updated_at = ? WHERE id = ?", status, String(message || "").slice(0, 500), stamp, stamp, id);
       audit(user, action, id, { status, ...extra });
     });
@@ -3415,14 +3470,15 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // Dar kontrol 2 (B3 + K12): gönderim isteği EDM'ye kesin ulaşmadı (bağlantı kurulamadı) — bu istekte verilen numara geri bırakılır. Koşullar (hepsi
   // işlem içinde): belge hâlâ o numarada, gönderilmemiş (durum none), numara serinin + yılın SON numarası (başka belge araya girdiyse bırakılmaz:
   // seride boşluk olmaz; belge numaralı, gönderilmemiş kalır). Açıklamalardaki numara "(gönderilecek)" yer tutucusuna döner (renumberNotes'un tersi).
-  function releaseNumber(user, id, number, error) {
+  // 2.4.4 (31d E1): adapter — gönderim izinden önceki entegratör izi; numara bırakılırken aynı işlemde geri yazılır (istek EDM'ye ulaşmadı).
+  function releaseNumber(user, id, number, error, { adapter = "" } = {}) {
     const released = store.tx(() => {
       const row = store.get("SELECT status, series, year, seq, number, profile, e_status AS eStatus FROM invoices WHERE id = ?", id);
       if (!row || row.status !== "issued" || !number || row.number !== number || !(row.seq > 0) || (row.eStatus || "none") !== "none" || row.profile === "KAGIT") return false;
       const top = store.get("SELECT MAX(seq) AS n FROM invoices WHERE series = ? AND year = ? AND seq > 0", row.series, row.year)?.n;
       if (top !== row.seq) return false;
       const message = `${String(error?.message || error).slice(0, 300)} Belge EDM'ye ulaşmadı; numara verilmedi, Gönderilecekler'de bekliyor.`;
-      store.run("UPDATE invoices SET seq = 0, number = '', e_status = 'waiting', e_profile = ?, e_message = ? WHERE id = ?", row.profile, message, id);
+      store.run("UPDATE invoices SET seq = 0, number = '', e_status = 'waiting', e_adapter = ?, e_profile = ?, e_message = ? WHERE id = ?", adapter, row.profile, message, id);
       for (const [table, where] of [["account_entries", "source = 'invoice' AND source_id = ?"], ["stock_moves", "invoice_id = ?"], ["plans", "invoice_id = ?"], ["cheques", "invoice_id = ?"], ["account_entries", "source = 'cheque' AND source_id IN (SELECT id FROM cheques WHERE invoice_id = ?)"]]) {
         store.run(`UPDATE ${table} SET note = REPLACE(note, ?, ?) WHERE ${where} AND instr(note, ?) > 0`, number, PENDING_TAG, id, number);
       }
@@ -3700,6 +3756,19 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const next = ["EARSIVFATURA", "ESMM"].includes(doc.profile) ? "Belgeyi İptal Et ile entegratörde ve programda iptal edip yeniden kesin" : "e-Fatura entegratörden iptal edilmez: alıcıyla ve entegratörle görüşün (iade faturası ya da GİB iptal yolu)";
     return `Entegratör belgeyi programdakinden farklı ${what} kaydetti; programdaki numara ${doc.number}, ETTN ${doc.ettn}. Defterdeki belge ile resmî belge ayrıştı. ${next}; sorun sürerse entegratörün seri / numara ayarını sorun.`;
   }
+  // 2.4.4 (31d E1; kullanıcı adına 5 dk yetkisiyle karar, 22.10.2026 — en yaygın kalıp: kalıcı niyet kaydı): GÖNDERİM İZİ. Belgeyi entegratörde
+  // oluşturabilecek istek (gönderim, ilk taslak yüklemesi) ağa çıkmadan ÖNCE, tek veri tabanı işleminde: belge var olan "sonucu belirsiz" düzenine alınır
+  // (e_status none + e_adapter — uncertainSend; yeni durum yok) ve İşlem Geçmişi'ne "gönderim başladı" (SEND_INTENT) yazılır. Yanıt gelmeden program
+  // kesilirse (elektrik, çökme) bellekteki kilit gider, iz kalır: yeniden açılışta belge "Sonucu Belirsiz" — Sil / Düzenle / İptal Et kapalı, Durum Sorgula
+  // önerilir, yeniden Gönder önce durumu sorar. Kesin sonuç (kabul, ret, belirsiz kopma) izi bugünkü gibi sonuca çevirir (setE); isteğin entegratöre hiç
+  // gitmediği bilinen hatada (NOT_SENT, bağlantı hiç kurulamadı) önceki durum ve iz geri yazılır. Yayın yok: iz kendi başına ekranı yenilemez.
+  function markSending(user, doc, adapter, { draft = false } = {}) {
+    store.tx(() => {
+      const stamp = now();
+      store.run("UPDATE invoices SET e_status = 'none', e_adapter = ?, e_message = ?, e_at = ?, updated_at = ? WHERE id = ?", adapter, SENDING_TEXT, stamp, stamp, doc.id);
+      audit(user, SEND_INTENT, doc.id, { adapter, number: doc.number, ettn: doc.ettn, from: doc.eStatus || "none", ...(draft ? { draft: true } : {}) });
+    });
+  }
   async function sendInvoice(user, id, options = {}) {
     const release = holdInvoice(id, "sending");
     try {
@@ -3801,6 +3870,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         }
       }
       const xml = ublFor(doc, {}, s);
+      // 31d E1: portaldaki taslağın gönderimi (durum "draft") izsizdir — belge EDM'de zaten vardır; bir sonraki Gönder durumu sorar (aşağıda).
+      if (doc.eStatus !== "draft") markSending(user, doc, link.id, { draft });
       let result;
       try {
         if (draft) result = await link.loadDraft({ invoice: doc, xml });
@@ -3829,6 +3900,29 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         // kullanılmış; test hesabı ortak olduğu için çoğunlukla başka firmanın numarası. İleti ne yapılacağını söyler. 2.4.4 (madde 30b): yedekten geri
         // yüklemeden sonra numara yedekten sonra kendi gönderdiğimiz belgenin olabilir (numaralama EDM'den eşitlenmez) — ileti iki seride de bunu söyler.
         if (String(error?.extra?.integratorCode || error?.integratorCode || "") === "11048" && error instanceof Error) {
+          // 2.4.4 (31d E1): ileti BU belgenin numarasını / ETTN'sini gösteriyorsa önceki gönderim EDM'ye ulaşmış olabilir (yanıt gelmeden kesilen program;
+          // 2.4.3'ten izsiz kalan belge; yedekten geri yüklenen veri). "Hata" yazılmadan önce durum sorulur: EDM bu ETTN'i biliyorsa belge gönderilmiş
+          // sayılır (yeniden gönderilmez); bilmiyorsa (bulunamadı) numara başkasınındır — Hata + aşağıdaki ileti; sorulamazsa belge Sonucu Belirsiz kalır.
+          if (duplicateNamesOwn(error, doc)) {
+            let remote = null;
+            let lookup = null;
+            try {
+              remote = await link.status({ invoice: doc });
+            } catch (statusError) {
+              if (!remoteMissing(statusError, doc.profile)) lookup = statusError;
+            }
+            if (remote && !(remote.uuid && String(remote.uuid).toLowerCase() !== String(doc.ettn || "").toLowerCase())) {
+              const message = `${DUPLICATE_FOUND_TEXT} ${remote.message || ""}`.trim();
+              setE(user, doc.id, { status: remote.status, adapter: link.id, message }, SEND_DUPLICATE, { adapter: link.id, code: "11048", raw: remote.raw || "" });
+              return { ...remote, message };
+            }
+            if (lookup) {
+              const message = `${error.message} Bu numara ve ETTN'li belge EDM'ye önceki bir gönderimde ulaşmış olabilir; durumu EDM'ye sorulamadı (${String(lookup?.message || lookup).slice(0, 200)}). Belge Sonucu Belirsiz olarak kaldı: kartında Durum Sorgula'ya basın.`;
+              setE(user, doc.id, { status: "none", adapter: link.id, message }, SEND_DUPLICATE, { adapter: link.id, code: "11048", unresolved: true });
+              if (lookup instanceof Error) lookup.message = message;
+              throw lookup;
+            }
+          }
           const testDoc = TEST_SERIES_SET.has(String(doc.number || "").slice(0, 3));
           error.message = `${error.message} ${testDoc
             ? "Bu numara EDM'de daha önce kullanılmış: test hesabı ortaktır, başka bir firma aynı numarayı kullanmış olabilir ya da yedekten geri yükleme yaptıysanız bu numarayla yedekten sonra siz göndermiş olabilirsiniz. Bu belgeyi İptal Et ile iptal edip yeniden kesin; yeni belge bir sonraki numarayı alır (gerekirse Entegratör Ayarları → Otomatik Seriler'den sıradaki test numarasını ileri alın)."
@@ -3837,9 +3931,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         // Dar kontrol 2 (B3 + K12): erişim kanıtı önbellekteki oturumdan geldiği için ağ, numara verildikten sonra kopmuş olabilir. Bağlantı HİÇ
         // KURULAMADIYSA (integrator-unreachable; edm.mjs B2 sınıflaması) EDM belgeyi görmemiştir: numara bu istekte verildiyse ve serinin son numarasıysa
         // geri bırakılır (seride boşluk kalmaz), belge numarasız Gönderilecekler'e döner — ağ yokken numara verilmez kuralı korunur.
-        if (code === "integrator-unreachable" && releasable && releaseNumber(user, doc.id, doc.number, error)) throw error;
+        if (code === "integrator-unreachable" && releasable && releaseNumber(user, doc.id, doc.number, error, { adapter: doc.eAdapter || "" })) throw error;
         const notSent = NOT_SENT_CODES.has(code);
-        if (notSent) setE(user, doc.id, { status: doc.eStatus || "none", message: error?.message || String(error) }, draft ? "invoice.e.draft-failed" : "invoice.e.send-failed", { adapter: link.id, code });
+        // 31d E1: istek hiç gitmedi — gönderim izi geri alınır (önceki durum ve entegratör izi aynen; belge "Sonucu Belirsiz" olmaz).
+        if (notSent) setE(user, doc.id, { status: doc.eStatus || "none", adapter: doc.eAdapter || "", message: error?.message || String(error) }, draft ? "invoice.e.draft-failed" : "invoice.e.send-failed", { adapter: link.id, code });
         else setE(user, doc.id, { status: rejected ? "error" : "none", adapter: link.id, message: error?.message || String(error) }, draft ? "invoice.e.draft-failed" : "invoice.e.send-failed", { adapter: link.id, code });
         throw error;
       }
@@ -4232,6 +4327,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const user = requireManage(req);
     requireEdoc();
     const doc = detail(invoiceRow(params.id).id, user);
+    // 2.4.4 (31d E1): gönderim sürerken belge izli ("Sonucu Belirsiz") görünür; o anda sorulan durum "bulunamadı" derse iz silinir, gönderim yanıtı
+    // gelmeden program kesilirse belge izsiz kalırdı. Gönderim bitince sorulur.
+    if (busy.get(doc.id) === "sending") throw new HttpError(409, BUSY_TEXT.sending[0], { code: BUSY_TEXT.sending[1] });
     if (!doc.canRefresh) throw new HttpError(409, doc.profile === "KAGIT" ? "Kâğıt belgenin e-Belge durumu olmaz." : "Bu belge henüz entegratöre gönderilmedi.", { code: "einvoice-not-sent" });
     let result;
     try {

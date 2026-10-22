@@ -1,0 +1,24 @@
+✖ E1: gönderim EDM'ye ulaştı, yanıt gelmeden program kesildi (SIGKILL) → yeniden açılışta Sonucu Belirsiz; Gönder önce durumu sorar (6771.058105ms)
+✖ E1: iz yalnız belge entegratörde oluşabilecekse kalır (B4, B5) (1306.867184ms)
+ℹ Error: Test "K9 (B5) gönderim sürerken Durum Sorgula 409 'gönderiliyor' (izi silmez); gönderim bitince iz sonuca döner" at test/ebelge-244-gonderim-izi.test.mjs:465:3 generated asynchronous activity after the test ended. This activity created the error "TypeError: fetch failed" and would have caused the test to fail, but instead triggered an unhandledRejection event.
+ℹ tests 16
+ℹ suites 6
+ℹ pass 10
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12363.320928
+✖ failing tests:
+✖ K2 e-SMM (Kes, Sonra Gönder → Gönder): Sonucu Belirsiz; Sil / Düzenle / İptal Et 409; Gönder makbuzu ikinci kez göndermez; iletim günü gönderim izinden (1081.3509ms)
+  AssertionError [ERR_ASSERTION]: e-SMM: entegratör izi (e_adapter) — kesintide kalmalı
+✖ K3 e-Arşiv (Kaydet ve Gönder — numara kayıtta): Sonucu Belirsiz; Durum Sorgula gönderildi der; sonra Sil 409 (gönderildi) (1089.596495ms)
+  AssertionError [ERR_ASSERTION]: e-Arşiv: entegratör izi (e_adapter) — kesintide kalmalı
+✖ K4 e-Fatura (Temel Fatura, Kes, Sonra Gönder → Gönder): Sonucu Belirsiz; Düzenle 409; Gönder ikinci kez göndermez (1220.448909ms)
+  AssertionError [ERR_ASSERTION]: e-Fatura: entegratör izi (e_adapter) — kesintide kalmalı
+✖ K5 (B2b) istek EDM'ye ULAŞMADAN kesinti: Sonucu Belirsiz → Durum Sorgula 'bulunamadı' izi temizler (Gönderilmedi, Sil açık) → Gönder aynı numarayla (1029.144657ms)
+  AssertionError [ERR_ASSERTION]: ulaşmayan e-SMM: entegratör izi (e_adapter) — kesintide kalmalı
+✖ K6 (B6) Tümünü Gönder ortasında kesinti: 1. gitti, 2. yolda, 3. bekliyor → yeniden Tümünü Gönder 2.'yi tanır (ikinci kez göndermez), 3.'ye sıradaki numara (1172.609226ms)
+  AssertionError [ERR_ASSERTION]: yoldaki 2.: entegratör izi (e_adapter) — kesintide kalmalı
+✖ K9 (B5) gönderim sürerken Durum Sorgula 409 'gönderiliyor' (izi silmez); gönderim bitince iz sonuca döner (358.872179ms)
+  AssertionError [ERR_ASSERTION]: gönderim sürerken iz var
