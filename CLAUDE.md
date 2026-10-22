@@ -509,6 +509,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   yazmadığı testle güvenceye alınır. (c) önceden var olan hata: Tablodaki Kişiler raporunda aynı dosya no iki sekmede varsa tahsilat iki kez yazılıyor (2.4.3'te de) →
   ÖNERİ 2.4.4'te düzeltilsin.
   KARAR (kullanıcı, 22.10.2026: "3 önerinde uygun"): (a), (b), (c) öneriler AYNEN 2.4.4'te (iş listesi 5a–5c).
+- SORULAR (22.10.2026, 5a/5b yapılırken; kullanıcıya baş mimar önerisiyle soruldu, iş bu önerilerle sürüyor): (1) kartı aşan tahsilat BÖLÜNMESİN (K11 bir olay = bir
+  para hareketi; bölmek para modelini değiştirir; fazlası taksit dışı kalır); (2) carinin borcu tablodaki kalandan AZSA kayıt aktarılmasın, ne yapılacağı söylensin ("tablodakini
+  yaz" çift borç riski); (3) faturalı cari 5a/5b DIŞINDA kalsın (fatura kapamayla çakışır; müşteri isterse ayrı iş). KARAR BEKLENİYOR (öneriler uygulanmış durumda).
 - MEVZUAT KARARI (kullanıcı, 20.10.2026): e-Fatura / e-Arşiv kutu metinleri DEĞİŞMEZ, 2.4.4'te değil; geri bildirim gelirse netleştirilir. 509 VUK GT okuma
   notları (IV.2.2, IV.2.4.1, V.1 kayıt yöntemi) arşivde (21.10).
 - RAPOR DÜZENİ (kullanıcı, 21.10.2026: "2.4.4'ü yaparken 30 dk'da kısa ara rapor ver, düşen test var mı, durmuş işlem var mı kontrol et; varsa gereğini yap;
