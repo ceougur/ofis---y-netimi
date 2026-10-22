@@ -22,7 +22,7 @@ import { resolveDbPath } from "./lib/db-path.mjs";
 import { openDatabase } from "./lib/db.mjs";
 import { startDiscoveryResponder } from "./lib/discovery.mjs";
 import { createLogger } from "./lib/logger.mjs";
-import { cachedResolver, createProxyFetch } from "./lib/net-proxy.mjs";
+import { cachedResolver, createProxyFetch, migrateNetworkSettings } from "./lib/net-proxy.mjs";
 import { UpdateError } from "./lib/update-envelope.mjs";
 import { createUpdateOrchestrator } from "./lib/update-orchestrator.mjs";
 import { createUpdater } from "./lib/updater.mjs";
@@ -121,6 +121,14 @@ export async function startSupervisor(options = {}) {
   const readyTimeoutMs = Number(options.readyTimeoutMs ?? 90_000);
   mkdirSync(dataDir, { recursive: true });
   mkdirSync(backupDir, { recursive: true });
+  // 2.4.4: eski sürümün açık metin vekil parolası mühürlenir. Burada yapılır, uygulamada değil: servis yöneticisi bellekte eski sürüm olarak
+  // kalabilir (güncelleme yalnız uygulama alt sürecini değiştirir) ve eski kod mühürlü parolayı okuyamaz; yeni servis yöneticisi açıldığında
+  // dosyayı okuyan herkes yenidir. Başarısızlık açılışı durdurmaz (eski biçim okunmaya devam eder).
+  try {
+    if (migrateNetworkSettings(networkFile)) log.info("Vekil sunucu parolası şifreli saklamaya alındı.");
+  } catch (error) {
+    log.warn(`Vekil sunucu ayarı şifreli saklamaya alınamadı: ${error?.code || error?.message || error}`);
+  }
   const pruned = pruneRotatedLogs(path.resolve(options.logDir || path.join(installRoot, "logs")), options.keepLogs ?? 10);
   if (pruned.length) log.info(`${pruned.length} eski servis günlüğü silindi.`);
 

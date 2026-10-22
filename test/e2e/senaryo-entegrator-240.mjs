@@ -36,9 +36,11 @@ const must = async (label, promise) => {
 const edm = await startMockEdm();
 // Sahte vekil sunucu (bölüm 6): CONNECT isteklerini kaydeder ve reddeder (403) — dışarıya hiçbir istek çıkmaz.
 const proxyLog = [];
+const proxyAuthLog = [];
 const fakeProxy = http.createServer((req, res) => res.writeHead(403).end());
 fakeProxy.on("connect", (req, socket) => {
   proxyLog.push(req.url);
+  proxyAuthLog.push(req.headers["proxy-authorization"] || "");
   socket.end("HTTP/1.1 403 Forbidden\r\n\r\n");
 });
 await new Promise(resolve => fakeProxy.listen(0, "127.0.0.1", resolve));
@@ -445,7 +447,8 @@ try {
   await page.click("#adm-network-save");
   await page.waitForFunction(() => /elle yazılan vekil sunucu/.test(document.querySelector("#adm-network-summary")?.textContent || ""), null, { timeout: 10000 });
   const savedFile = JSON.parse(readFileSync(networkFile, "utf8"));
-  ok(savedFile.mode === "manual" && savedFile.proxy === `http://ofis:Vekil-Parola-9@127.0.0.1:${fakeProxy.address().port}`, `ayar dosyaya yazıldı (mode ${savedFile.mode})`);
+  // 2.4.4 (iş listesi 28): dosyada parolasız adres + mühürlü parola; açık metin parola yok.
+  ok(savedFile.mode === "manual" && savedFile.proxy === `http://ofis@127.0.0.1:${fakeProxy.address().port}` && /^sb1:/.test(savedFile.passwordSealed || "") && !readFileSync(networkFile, "utf8").includes("Vekil-Parola-9"), `ayar dosyaya yazıldı, parola mühürlü (mode ${savedFile.mode})`);
   const passwordShown = await page.$eval("#adm-network-password", node => ({ value: node.value, hint: node.placeholder }));
   const pageHtml = await page.content();
   ok(passwordShown.value === "" && /Kayıtlı parola korunur/.test(passwordShown.hint) && !pageHtml.includes("Vekil-Parola-9"), "parola ekrana dönmez; “Kayıtlı parola korunur”");
@@ -453,6 +456,7 @@ try {
   await page.waitForFunction(() => /ulaşılamadı|ulaşıldı/.test(document.querySelector("#adm-network-result")?.textContent || ""), null, { timeout: 30000 });
   const tried = await textOf(page, "#adm-network-result");
   ok(/Vekil sunucu bağlantıyı reddetti \(403\)/.test(tried) && proxyLog.includes("guncelleme.test:443"), `Bağlantıyı Dene vekilden geçti, ret iletisi: ${tried}`);
+  ok(proxyAuthLog.at(-1) === `Basic ${Buffer.from("ofis:Vekil-Parola-9").toString("base64")}`, "vekile mühürlü parolayla kimlik bilgisi gider");
   await shot(page, "entegrator-6-ag-baglantisi");
   await page.goto(`${BASE}/`);
   await page.waitForFunction(() => Boolean(window.HOF?.invoices?.open), null, { timeout: 20000 });

@@ -1,0 +1,15 @@
+== 1) erişimde kapatma yok
+    not ok 7 - şirket erişimi kaldırılınca: kişinin 002 penceresi 'companies' olayını alır ve 002 canlı bağlantısı kapanır; 001 bağlantısı sürer
+    not ok 8 - hesap pasifleşince 002 canlı bağlantısı da hemen kapanır (ping turu beklenmez)
+# pass 6
+# fail 2
+== 2) erişimde olay yok
+    not ok 7 - şirket erişimi kaldırılınca: kişinin 002 penceresi 'companies' olayını alır ve 002 canlı bağlantısı kapanır; 001 bağlantısı sürer
+    not ok 8 - hesap pasifleşince 002 canlı bağlantısı da hemen kapanır (ping turu beklenmez)
+# pass 6
+# fail 2
+== 3) şirket kanalları kapatılmıyor
+    not ok 7 - şirket erişimi kaldırılınca: kişinin 002 penceresi 'companies' olayını alır ve 002 canlı bağlantısı kapanır; 001 bağlantısı sürer
+    not ok 8 - hesap pasifleşince 002 canlı bağlantısı da hemen kapanır (ping turu beklenmez)
+# pass 6
+# fail 2

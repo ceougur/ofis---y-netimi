@@ -1,0 +1,620 @@
+TAP version 13
+# (node:19074) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Aşama 3 (dilim 2) — Banka arayüzünün kaynak kuralları
+    # Subtest: sol menü: Banka Taksitler'in hemen altında, bank.view ister, rozetli; tıklama HOF.bank.open'a gider
+    ok 1 - sol menü: Banka Taksitler'in hemen altında, bank.view ister, rozetli; tıklama HOF.bank.open'a gider
+      ---
+      duration_ms: 1.561674
+      type: 'test'
+      ...
+    # Subtest: hof-bank.js yükleme sırası ve HOF.office kuralı; yetki sınıfı CSS kuralı
+    ok 2 - hof-bank.js yükleme sırası ve HOF.office kuralı; yetki sınıfı CSS kuralı
+      ---
+      duration_ms: 1.98146
+      type: 'test'
+      ...
+    # Subtest: canlı yenileme: istemcide banka yazımı defter değişikliği (LEDGER_PATHS); sunucuda ANLIK DURUM türleri bank'ı kapsar
+    ok 3 - canlı yenileme: istemcide banka yazımı defter değişikliği (LEDGER_PATHS); sunucuda ANLIK DURUM türleri bank'ı kapsar
+      ---
+      duration_ms: 0.81941
+      type: 'test'
+      ...
+    # Subtest: Yönetim → İşlem Geçmişi: her banka işlem geçmişi türünün adı var (admin.js EVENT_LABELS)
+    ok 4 - Yönetim → İşlem Geçmişi: her banka işlem geçmişi türünün adı var (admin.js EVENT_LABELS)
+      ---
+      duration_ms: 1.653325
+      type: 'test'
+      ...
+    1..4
+ok 1 - Aşama 3 (dilim 2) — Banka arayüzünün kaynak kuralları
+  ---
+  duration_ms: 6.759004
+  type: 'suite'
+  ...
+# Subtest: Aşama 3 (dilim 2) — Banka arayüzünün sunucu uçları
+    # Subtest: kalemle ad: Banka, Fatura ve Raporlar adları kaydedilir; tanınmayan anahtar 400
+    ok 1 - kalemle ad: Banka, Fatura ve Raporlar adları kaydedilir; tanınmayan anahtar 400
+      ---
+      duration_ms: 19.815269
+      type: 'test'
+      ...
+    # Subtest: rozet: Hesabı Belirsiz Yeni Hareketler sayısı; personel 403
+    ok 2 - rozet: Hesabı Belirsiz Yeni Hareketler sayısı; personel 403
+      ---
+      duration_ms: 12.476886
+      type: 'test'
+      ...
+    # Subtest: Kurulum Sihirbazı ilk girişte: kapatma kişi ve şirket bazında kaydedilir; personel 403
+    ok 3 - Kurulum Sihirbazı ilk girişte: kapatma kişi ve şirket bazında kaydedilir; personel 403
+      ---
+      duration_ms: 169.937861
+      type: 'test'
+      ...
+    # Subtest: Hesap Detayı: son hareketler (açılış dahil, işaretli, açıklamalı), başka hesabın hareketi yok; kilitli açılış işaretli
+    ok 4 - Hesap Detayı: son hareketler (açılış dahil, işaretli, açıklamalı), başka hesabın hareketi yok; kilitli açılış işaretli
+      ---
+      duration_ms: 117.620095
+      type: 'test'
+      ...
+    # Subtest: Ayarlar ekranı verisi: Ekstre görünmez (available false), POS 2.2.0'da görünür; hesap eşlemelerinde adlar
+    ok 5 - Ayarlar ekranı verisi: Ekstre görünmez (available false), POS 2.2.0'da görünür; hesap eşlemelerinde adlar
+      ---
+      duration_ms: 4.289752
+      type: 'test'
+      ...
+    # Subtest: Ayarlar: boş sayı alanı yalnız boş bırakılabilen kalemde kabul edilir (sessizce 0 olmaz)
+    ok 6 - Ayarlar: boş sayı alanı yalnız boş bırakılabilen kalemde kabul edilir (sessizce 0 olmaz)
+      ---
+      duration_ms: 21.523466
+      type: 'test'
+      ...
+    # Subtest: canlı yenileme: banka yazımı herkese overview.changed (kinds bank) yayımlar
+    ok 7 - canlı yenileme: banka yazımı herkese overview.changed (kinds bank) yayımlar
+      ---
+      duration_ms: 267.800499
+      type: 'test'
+      ...
+    1..7
+ok 2 - Aşama 3 (dilim 2) — Banka arayüzünün sunucu uçları
+  ---
+  duration_ms: 1152.002373
+  type: 'suite'
+  ...
+# (node:19075) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel)
+    # Subtest: katalog: Banka grubu dört rapor; süzgeçleri ve hesap seçenekleri (bakiye dönmez)
+    ok 1 - katalog: Banka grubu dört rapor; süzgeçleri ve hesap seçenekleri (bakiye dönmez)
+      ---
+      duration_ms: 7.041406
+      type: 'test'
+      ...
+    # Subtest: Banka Bakiye Raporu: her grup × her dönem — Gerçek Banka, Kart ve Kredi Borcu, Hesabı Atanmamış ayrı; Giriş/Çıkış yalnız dış hareket
+    ok 2 - Banka Bakiye Raporu: her grup × her dönem — Gerçek Banka, Kart ve Kredi Borcu, Hesabı Atanmamış ayrı; Giriş/Çıkış yalnız dış hareket
+      ---
+      duration_ms: 312.538742
+      type: 'test'
+      ...
+    # Subtest: Banka Hareket Raporu: her hesap × her hareket süzgeci × her dönem — satır satır, yürüyen bakiye, İşlem No
+    ok 3 - Banka Hareket Raporu: her hesap × her hareket süzgeci × her dönem — satır satır, yürüyen bakiye, İşlem No
+      ---
+      duration_ms: 680.465015
+      type: 'test'
+      ...
+    # Subtest: Banka Masraf Raporu: transfer ücreti dahil, BSMV ve KDV ayrı kolonlarda; her hesap × her dönem; 770 ile tutar
+    ok 4 - Banka Masraf Raporu: transfer ücreti dahil, BSMV ve KDV ayrı kolonlarda; her hesap × her dönem; 770 ile tutar
+      ---
+      duration_ms: 146.865052
+      type: 'test'
+      ...
+    # Subtest: Alt Hesap Mizanı: her dönem; alt hesaplar = bağımsız defter; ana hesaplar = Hesap Planı Mizanı (102, 108, 300, 309)
+    ok 5 - Alt Hesap Mizanı: her dönem; alt hesaplar = bağımsız defter; ana hesaplar = Hesap Planı Mizanı (102, 108, 300, 309)
+      ---
+      duration_ms: 41.695039
+      type: 'test'
+      ...
+    # Subtest: R1/R8: her süzgeç parametresi rapora ulaşır (queryOf) ve geçersiz değer 400/404 (sessizce tümü değil)
+    ok 6 - R1/R8: her süzgeç parametresi rapora ulaşır (queryOf) ve geçersiz değer 400/404 (sessizce tümü değil)
+      ---
+      duration_ms: 56.630525
+      type: 'test'
+      ...
+    # Subtest: R5: ileri tarihli hareket girilemez; raporlar değişmez
+    ok 7 - R5: ileri tarihli hareket girilemez; raporlar değişmez
+      ---
+      duration_ms: 15.288896
+      type: 'test'
+      ...
+    # Subtest: R2/K10: ANLIK DURUM Banka kutusu = Gerçek Banka; Kart ve Kredi Borcu ve Hesabı Atanmamış ayrı; Bugün Giriş/Çıkış dış, Transfer ayrı; Banka Genel Bakış ile aynı
+    ok 8 - R2/K10: ANLIK DURUM Banka kutusu = Gerçek Banka; Kart ve Kredi Borcu ve Hesabı Atanmamış ayrı; Bugün Giriş/Çıkış dış, Transfer ayrı; Banka Genel Bakış ile aynı
+      ---
+      duration_ms: 15.56607
+      type: 'test'
+      ...
+    # Subtest: R2: Banka ve POS Hareketleri — Kasa ↔ Banka ve bankalar arası transfer Dönem Giriş/Çıkış'ı şişirmez; Transfer satırında; dönem sonu aynı
+    ok 9 - R2: Banka ve POS Hareketleri — Kasa ↔ Banka ve bankalar arası transfer Dönem Giriş/Çıkış'ı şişirmez; Transfer satırında; dönem sonu aynı
+      ---
+      duration_ms: 86.07448
+      type: 'test'
+      ...
+    # Subtest: R9: Birleşik Rapor banka sütunları ANLIK DURUM'la aynı adlar ve aynı sayılar; PDF ve Excel aynı adlar; yetkisize boş
+    ok 10 - R9: Birleşik Rapor banka sütunları ANLIK DURUM'la aynı adlar ve aynı sayılar; PDF ve Excel aynı adlar; yetkisize boş
+      ---
+      duration_ms: 92.839943
+      type: 'test'
+      ...
+    # Subtest: R10: açık ANLIK DURUM yeni sayıyı gösterir (önbellek); banka ve fatura yazımı overview.changed yayımlar
+    ok 11 - R10: açık ANLIK DURUM yeni sayıyı gösterir (önbellek); banka ve fatura yazımı overview.changed yayımlar
+      ---
+      duration_ms: 312.743127
+      type: 'test'
+      ...
+    # Subtest: R6: yetki — personel 403 (dosya sızmaz); muhasebe yalnız Banka grubu; Banka Raporları kaldırılınca 403; Finans Raporları rolü Banka grubunu görmez
+    ok 12 - R6: yetki — personel 403 (dosya sızmaz); muhasebe yalnız Banka grubu; Banka Raporları kaldırılınca 403; Finans Raporları rolü Banka grubunu görmez
+      ---
+      duration_ms: 347.092585
+      type: 'test'
+      ...
+    # Subtest: R4/R7: 002 boş — raporlar boş, ANLIK DURUM "Banka Hesabı Tanımlanmadı"; ?hofCompany= ile 001'in hesabı 404; 001'in verisi 002'de görünmez
+    ok 13 - R4/R7: 002 boş — raporlar boş, ANLIK DURUM "Banka Hesabı Tanımlanmadı"; ?hofCompany= ile 001'in hesabı 404; 001'in verisi 002'de görünmez
+      ---
+      duration_ms: 177.570321
+      type: 'test'
+      ...
+# [banka-210-raporlar] ekran birleşimi 243, TOPLAM kolonu 438, PDF/Excel dosyası 108
+    # Subtest: son: mutabakat tutarlı; denenen birleşim sayısı
+    ok 14 - son: mutabakat tutarlı; denenen birleşim sayısı
+      ---
+      duration_ms: 11.042946
+      type: 'test'
+      ...
+    1..14
+ok 3 - 2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, her süzgeç × ekran/PDF/Excel)
+  ---
+  duration_ms: 3330.696503
+  type: 'suite'
+  ...
+# (node:19076) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: veri katmanı: yalnız bilgi kolonuna yazan UPDATE kapıyı tetiklemez; geri kalan her yazma tetikler
+ok 4 - veri katmanı: yalnız bilgi kolonuna yazan UPDATE kapıyı tetiklemez; geri kalan her yazma tetikler
+  ---
+  duration_ms: 5.158161
+  type: 'test'
+  ...
+# Subtest: cari kartı: notu/adresi düzeltmek kapıyı ve ANLIK DURUM yenilemesini tetiklemez; tür ve ad değişikliği tetikler
+ok 5 - cari kartı: notu/adresi düzeltmek kapıyı ve ANLIK DURUM yenilemesini tetiklemez; tür ve ad değişikliği tetikler
+  ---
+  duration_ms: 2664.830405
+  type: 'test'
+  ...
+# (node:19098) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ofis içi sohbet
+    # Subtest: özet: ofis kanalı ve kişiler listesi (kendisi hariç)
+    ok 1 - özet: ofis kanalı ve kişiler listesi (kendisi hariç)
+      ---
+      duration_ms: 9.733829
+      type: 'test'
+      ...
+    # Subtest: özel yazışmayı yalnızca iki taraf görür; üçüncü kişi ve yönetici göremez
+    ok 2 - özel yazışmayı yalnızca iki taraf görür; üçüncü kişi ve yönetici göremez
+      ---
+      duration_ms: 26.981368
+      type: 'test'
+      ...
+    # Subtest: okundu bilgisi: okununca sayaç sıfırlanır, karşı taraf okunma zamanını görür
+    ok 3 - okundu bilgisi: okununca sayaç sıfırlanır, karşı taraf okunma zamanını görür
+      ---
+      duration_ms: 10.969705
+      type: 'test'
+      ...
+    # Subtest: ofis kanalını herkes görür; her kişinin okunmamış sayısı ayrıdır
+    ok 4 - ofis kanalını herkes görür; her kişinin okunmamış sayısı ayrıdır
+      ---
+      duration_ms: 7.67692
+      type: 'test'
+      ...
+    # Subtest: geçersiz istekleri reddeder
+    ok 5 - geçersiz istekleri reddeder
+      ---
+      duration_ms: 12.089568
+      type: 'test'
+      ...
+    # Subtest: eski Mesajlar uçları sohbete yazar ve yalnızca kişinin yazışmalarını döndürür
+    ok 6 - eski Mesajlar uçları sohbete yazar ve yalnızca kişinin yazışmalarını döndürür
+      ---
+      duration_ms: 14.656684
+      type: 'test'
+      ...
+    # Subtest: canlı kanal: mesaj, okundu ve çalışma alanı değişikliği anında iletilir
+    ok 7 - canlı kanal: mesaj, okundu ve çalışma alanı değişikliği anında iletilir
+      ---
+      duration_ms: 671.202702
+      type: 'test'
+      ...
+    # Subtest: görev olayı yalnızca görevi görebilenlere gider (atanan ve tüm görevleri görenler)
+    ok 8 - görev olayı yalnızca görevi görebilenlere gider (atanan ve tüm görevleri görenler)
+      ---
+      duration_ms: 415.328119
+      type: 'test'
+      ...
+    # Subtest: oturum kapanınca canlı bağlantı da kapanır
+    ok 9 - oturum kapanınca canlı bağlantı da kapanır
+      ---
+      duration_ms: 104.014855
+      type: 'test'
+      ...
+    1..9
+ok 6 - ofis içi sohbet
+  ---
+  duration_ms: 1762.49651
+  type: 'suite'
+  ...
+# Subtest: canlı kanal oturum güvenliği
+    # Subtest: çıkış yapınca yalnızca o oturumun bağlantısı anında kapanır
+    ok 1 - çıkış yapınca yalnızca o oturumun bağlantısı anında kapanır
+      ---
+      duration_ms: 131.724537
+      type: 'test'
+      ...
+    # Subtest: yönetici oturumları kapatınca veya hesabı pasifleştirince bağlantılar anında kapanır
+    ok 2 - yönetici oturumları kapatınca veya hesabı pasifleştirince bağlantılar anında kapanır
+      ---
+      duration_ms: 150.632054
+      type: 'test'
+      ...
+    1..2
+ok 7 - canlı kanal oturum güvenliği
+  ---
+  duration_ms: 561.905824
+  type: 'suite'
+  ...
+# (node:19106) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: çek/senet kural motoru (saf)
+    # Subtest: durum geçişleri: izinli olanlar geçer, diğerleri okunur nedenle reddedilir
+    ok 1 - durum geçişleri: izinli olanlar geçer, diğerleri okunur nedenle reddedilir
+      ---
+      duration_ms: 1.307493
+      type: 'test'
+      ...
+    # Subtest: defter etkileri: alınan → cariye alacak ya da taksite tahsilat; ciro → tedarikçiye borç; karşılıksız → geri çevirme
+    ok 2 - defter etkileri: alınan → cariye alacak ya da taksite tahsilat; ciro → tedarikçiye borç; karşılıksız → geri çevirme
+      ---
+      duration_ms: 0.516623
+      type: 'test'
+      ...
+    # Subtest: portföy özeti vadeye göre (geçmiş / bugün / 7 gün)
+    ok 3 - portföy özeti vadeye göre (geçmiş / bugün / 7 gün)
+      ---
+      duration_ms: 0.657013
+      type: 'test'
+      ...
+    # Subtest: Excel başlıkları ve hücre değerleri
+    ok 4 - Excel başlıkları ve hücre değerleri
+      ---
+      duration_ms: 1.640142
+      type: 'test'
+      ...
+    1..4
+ok 8 - çek/senet kural motoru (saf)
+  ---
+  duration_ms: 5.009191
+  type: 'suite'
+  ...
+# Subtest: rapor motoru (saf): mizan, ekstre, nakit akışı
+    # Subtest: mizan: devir + dönem borç/alacak = bakiye; hareketsiz cari istenmezse yazılmaz
+    ok 1 - mizan: devir + dönem borç/alacak = bakiye; hareketsiz cari istenmezse yazılmaz
+      ---
+      duration_ms: 0.573561
+      type: 'test'
+      ...
+    # Subtest: ekstre: devir satırı ve yürüyen bakiye
+    ok 2 - ekstre: devir satırı ve yürüyen bakiye
+      ---
+      duration_ms: 0.271497
+      type: 'test'
+      ...
+    # Subtest: nakit akışı: gecikmişler ayrı, aynı gün önce çıkış, en düşük bakiye, başlangıç bugünden sonraysa aradakiler taşınır
+    ok 3 - nakit akışı: gecikmişler ayrı, aynı gün önce çıkış, en düşük bakiye, başlangıç bugünden sonraysa aradakiler taşınır
+      ---
+      duration_ms: 0.588289
+      type: 'test'
+      ...
+    # Subtest: hazır aralıklar takvim günüyle (ay sonu, artık yıl, yıl dönümü)
+    ok 4 - hazır aralıklar takvim günüyle (ay sonu, artık yıl, yıl dönümü)
+      ---
+      duration_ms: 0.436692
+      type: 'test'
+      ...
+    1..4
+ok 9 - rapor motoru (saf): mizan, ekstre, nakit akışı
+  ---
+  duration_ms: 2.171753
+  type: 'suite'
+  ...
+# Subtest: çek/senet: Cari, Taksit ve Kasa ile işlem bütünlüğü
+    # Subtest: alınan çek: carinin borcu düşer, Kasa değişmez; toplam alacak değişmez (cariden portföye geçer)
+    ok 1 - alınan çek: carinin borcu düşer, Kasa değişmez; toplam alacak değişmez (cariden portföye geçer)
+      ---
+      duration_ms: 53.519037
+      type: 'test'
+      ...
+    # Subtest: tahsil: Kasa artar, cari değişmez; geri al: Kasa eski haline döner
+    ok 2 - tahsil: Kasa artar, cari değişmez; geri al: Kasa eski haline döner
+      ---
+      duration_ms: 73.352016
+      type: 'test'
+      ...
+    # Subtest: ciro → tedarikçi borcu düşer; karşılıksız → müşteri yeniden borçlanır, ciro geri alınır; geri al hepsini çevirir
+    ok 3 - ciro → tedarikçi borcu düşer; karşılıksız → müşteri yeniden borçlanır, ciro geri alınır; geri al hepsini çevirir
+      ---
+      duration_ms: 87.788422
+      type: 'test'
+      ...
+    # Subtest: verilen çek: tedarikçi borcu düşer, toplam borç korunur; ödenince Kasa'dan çıkar ve borç kapanır
+    ok 4 - verilen çek: tedarikçi borcu düşer, toplam borç korunur; ödenince Kasa'dan çıkar ve borç kapanır
+      ---
+      duration_ms: 85.224449
+      type: 'test'
+      ...
+    # Subtest: taksite sayılan çek: taksit ödenmiş olur, Kasa değişmez; karşılıksız taksiti yeniden açar; kart silinemez, tahsilat karttan düzeltilemez
+    ok 5 - taksite sayılan çek: taksit ödenmiş olur, Kasa değişmez; karşılıksız taksiti yeniden açar; kart silinemez, tahsilat karttan düzeltilemez
+      ---
+      duration_ms: 87.902109
+      type: 'test'
+      ...
+    # Subtest: silme etkileri geri alır; Silinenler'den geri yükleme yeniden yazar; işlem görmüş evrak silinmez
+    ok 6 - silme etkileri geri alır; Silinenler'den geri yükleme yeniden yazar; işlem görmüş evrak silinmez
+      ---
+      duration_ms: 73.810767
+      type: 'test'
+      ...
+    # Subtest: doğrulama: tutar, tarih, kişi, çift seri no, işlem tarihi; personel çek göremez
+    ok 7 - doğrulama: tutar, tarih, kişi, çift seri no, işlem tarihi; personel çek göremez
+      ---
+      duration_ms: 135.792624
+      type: 'test'
+      ...
+    # Subtest: kısmi yazma geri alınır (ROLLBACK): ikinci etki başarısız olursa ilk etki de yazılmaz
+    ok 8 - kısmi yazma geri alınır (ROLLBACK): ikinci etki başarısız olursa ilk etki de yazılmaz
+      ---
+      duration_ms: 52.910527
+      type: 'test'
+      ...
+    # Subtest: Excel/Sheets'ten portföy: kapı raporu; varsayılan carilere dokunmaz, 'carilere işle' ile yazar; kapanmış ve çift satır alınmaz
+    ok 9 - Excel/Sheets'ten portföy: kapı raporu; varsayılan carilere dokunmaz, 'carilere işle' ile yazar; kapanmış ve çift satır alınmaz
+      ---
+      duration_ms: 37.827591
+      type: 'test'
+      ...
+    # Subtest: PDF ve Excel çıktıları: portföy, mizan, ekstre, nakit akışı
+    ok 10 - PDF ve Excel çıktıları: portföy, mizan, ekstre, nakit akışı
+      ---
+      duration_ms: 82.113498
+      type: 'test'
+      ...
+    1..10
+ok 10 - çek/senet: Cari, Taksit ve Kasa ile işlem bütünlüğü
+  ---
+  duration_ms: 1144.006653
+  type: 'suite'
+  ...
+# Subtest: ANLIK DURUM: karttaki rakamlar ekranlarla birebir aynı (rastgele 400 işlem)
+    # Subtest: Kasa, alacak, borç, kritik stok, mizan ve nakit akışı her adımda tutarlı
+    ok 1 - Kasa, alacak, borç, kritik stok, mizan ve nakit akışı her adımda tutarlı
+      ---
+      duration_ms: 4376.825659
+      type: 'test'
+      ...
+    # Subtest: para ya da stok değişince herkese (işlemi yapan dahil) tek 'overview.changed' olayı gider
+    ok 2 - para ya da stok değişince herkese (işlemi yapan dahil) tek 'overview.changed' olayı gider
+      ---
+      duration_ms: 324.07556
+      type: 'test'
+      ...
+    # Subtest: kart yalnız yöneticide; kişiye verilen finans raporları yetkisi raporları açar, kartı açmaz; geri alınınca kapanır
+    ok 3 - kart yalnız yöneticide; kişiye verilen finans raporları yetkisi raporları açar, kartı açmaz; geri alınınca kapanır
+      ---
+      duration_ms: 211.525611
+      type: 'test'
+      ...
+    1..3
+ok 11 - ANLIK DURUM: karttaki rakamlar ekranlarla birebir aynı (rastgele 400 işlem)
+  ---
+  duration_ms: 5143.856009
+  type: 'suite'
+  ...
+# Subtest: rapor merkezi: programdaki her bilgi ön izleme, PDF ve Excel olarak alınır
+    # Subtest: katalogdaki her rapor çalışır; PDF ve Excel üretilir; yetkisiz kişi göremez
+    ok 1 - katalogdaki her rapor çalışır; PDF ve Excel üretilir; yetkisiz kişi göremez
+      ---
+      duration_ms: 945.32163
+      type: 'test'
+      ...
+    1..1
+ok 12 - rapor merkezi: programdaki her bilgi ön izleme, PDF ve Excel olarak alınır
+  ---
+  duration_ms: 1394.169015
+  type: 'suite'
+  ...
+# (node:19114) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: canlı kanal: kaldığı yerden devam ve bağlantı yenileme
+    # Subtest: kopan sekme Last-Event-ID ile bağlanınca arada kaçan olaylar gelir (eşitlemeye gerek kalmaz)
+    ok 1 - kopan sekme Last-Event-ID ile bağlanınca arada kaçan olaylar gelir (eşitlemeye gerek kalmaz)
+      ---
+      duration_ms: 369.993207
+      type: 'test'
+      ...
+    # Subtest: başka bir sunucu oturumunun (ör. güncelleme öncesi) kimliğiyle gelen sekme eşitleme yapar
+    ok 2 - başka bir sunucu oturumunun (ör. güncelleme öncesi) kimliğiyle gelen sekme eşitleme yapar
+      ---
+      duration_ms: 21.531394
+      type: 'test'
+      ...
+    # Subtest: süresi dolan akış kısa bekleme süresi bildirip kapanır; yanıt Connection: close taşır
+    ok 3 - süresi dolan akış kısa bekleme süresi bildirip kapanır; yanıt Connection: close taşır
+      ---
+      duration_ms: 485.787047
+      type: 'test'
+      ...
+    1..3
+ok 13 - canlı kanal: kaldığı yerden devam ve bağlantı yenileme
+  ---
+  duration_ms: 1300.464493
+  type: 'suite'
+  ...
+# Subtest: 1.3.x servis yöneticisi kapısı arkasında
+    # Subtest: kapanan sekmelerin bağlantıları kapının soket havuzunda birikmez
+    ok 1 - kapanan sekmelerin bağlantıları kapının soket havuzunda birikmez
+      ---
+      duration_ms: 700.094902
+      type: 'test'
+      ...
+    1..1
+ok 14 - 1.3.x servis yöneticisi kapısı arkasında
+  ---
+  duration_ms: 1031.741998
+  type: 'suite'
+  ...
+# (node:19122) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2: veri dosyasını paylaşan şirketlerde fatura ödeme durumu
+    # Subtest: öbür şirketin bağlantısından girilen tahsilat listede de görünür (kartla aynı)
+    ok 1 - öbür şirketin bağlantısından girilen tahsilat listede de görünür (kartla aynı)
+      ---
+      duration_ms: 482.90641
+      type: 'test'
+      ...
+    1..1
+ok 15 - 2: veri dosyasını paylaşan şirketlerde fatura ödeme durumu
+  ---
+  duration_ms: 819.664057
+  type: 'suite'
+  ...
+# Subtest: 5, 6, 7, 10: tek sunucu
+    # Subtest: 5: aynı form önce taslak (yanıt kayboldu), sonra Kaydet → ikinci belge açılmaz, taslak söylenir
+    ok 1 - 5: aynı form önce taslak (yanıt kayboldu), sonra Kaydet → ikinci belge açılmaz, taslak söylenir
+      ---
+      duration_ms: 23.67168
+      type: 'test'
+      ...
+    # Subtest: 5: kaydedilen fatura silindikten sonra aynı kimlikle yineleme → açık neden (404 değil), yeni belge açılmaz
+    ok 2 - 5: kaydedilen fatura silindikten sonra aynı kimlikle yineleme → açık neden (404 değil), yeni belge açılmaz
+      ---
+      duration_ms: 16.786362
+      type: 'test'
+      ...
+    # Subtest: 5: aynı kimlikle aynı anda 6 istek → tek fatura
+    ok 3 - 5: aynı kimlikle aynı anda 6 istek → tek fatura
+      ---
+      duration_ms: 42.103156
+      type: 'test'
+      ...
+    # Subtest: 6: nesne kalıtımından gelen adlar cari türü sayılmaz (500 yok, tanımsız tür yazılmaz)
+    ok 4 - 6: nesne kalıtımından gelen adlar cari türü sayılmaz (500 yok, tanımsız tür yazılmaz)
+      ---
+      duration_ms: 56.914781
+      type: 'test'
+      ...
+    # Subtest: 7: tanınan değer için "Varsayılan Tür" seçilirse varsayılan tür yazılır (uyarısız)
+    ok 5 - 7: tanınan değer için "Varsayılan Tür" seçilirse varsayılan tür yazılır (uyarısız)
+      ---
+      duration_ms: 17.237169
+      type: 'test'
+      ...
+    # Subtest: 10: yalnız Cari No değişince olay bilgi sayılmaz (numarayı gösteren pencereler yenilenir)
+    ok 6 - 10: yalnız Cari No değişince olay bilgi sayılmaz (numarayı gösteren pencereler yenilenir)
+      ---
+      duration_ms: 1728.019575
+      type: 'test'
+      ...
+    1..6
+ok 16 - 5, 6, 7, 10: tek sunucu
+  ---
+  duration_ms: 2277.106794
+  type: 'suite'
+  ...
+# (node:19130) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: servis yöneticisi (supervisor)
+    # Subtest: bakım sayfası markalı, otomatik yenilenen bir HTML üretir
+    ok 1 - bakım sayfası markalı, otomatik yenilenen bir HTML üretir
+      ---
+      duration_ms: 1.87274
+      type: 'test'
+      ...
+    # Subtest: istekleri uygulamaya iletir; oturum çerezi ve istemci IP'si korunur
+    ok 2 - istekleri uygulamaya iletir; oturum çerezi ve istemci IP'si korunur
+      ---
+      duration_ms: 75.735094
+      type: 'test'
+      ...
+    # Subtest: canlı olay akışını (SSE) kapıdan geçirir; tarayıcı kapanınca uygulama tarafı da kapanır
+    ok 3 - canlı olay akışını (SSE) kapıdan geçirir; tarayıcı kapanınca uygulama tarafı da kapanır
+      ---
+      duration_ms: 74.614692
+      type: 'test'
+      ...
+    # Subtest: UDP keşif sinyaline sunucu adresiyle yanıt verir
+    ok 4 - UDP keşif sinyaline sunucu adresiyle yanıt verir
+      ---
+      duration_ms: 801.42743
+      type: 'test'
+      ...
+    # Subtest: uygulama çökerse bakım yanıtı verir ve kendini yeniden başlatır
+    ok 5 - uygulama çökerse bakım yanıtı verir ve kendini yeniden başlatır
+      ---
+      duration_ms: 1444.073635
+      type: 'test'
+      ...
+    # Subtest: güncelleme kipinde kullanıcıya 'Sistem güncelleniyor' sayfası gösterir
+    ok 6 - güncelleme kipinde kullanıcıya 'Sistem güncelleniyor' sayfası gösterir
+      ---
+      duration_ms: 442.629729
+      type: 'test'
+      ...
+    1..6
+ok 17 - servis yöneticisi (supervisor)
+  ---
+  duration_ms: 3405.84743
+  type: 'suite'
+  ...
+# Subtest: servis günlükleri
+    # Subtest: nssm'in kenara ayırdığı eski günlüklerden yalnızca en yeni 10 tanesi kalır
+    ok 1 - nssm'in kenara ayırdığı eski günlüklerden yalnızca en yeni 10 tanesi kalır
+      ---
+      duration_ms: 2.967811
+      type: 'test'
+      ...
+    1..1
+ok 18 - servis günlükleri
+  ---
+  duration_ms: 3.382838
+  type: 'suite'
+  ...
+# Subtest: öksüz süreç koruması
+    # Subtest: servis yöneticisi zorla kapatılınca uygulama da kapanır
+    ok 1 - servis yöneticisi zorla kapatılınca uygulama da kapanır
+      ---
+      duration_ms: 7253.297671
+      type: 'test'
+      ...
+    1..1
+ok 19 - öksüz süreç koruması
+  ---
+  duration_ms: 7253.634544
+  type: 'suite'
+  ...
+1..19
+# tests 79
+# suites 17
+# pass 79
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 18273.536628

@@ -1,0 +1,32 @@
+{
+  "ad": "244-sunucu/28-yeni",
+  "komut": "node --test test/vekil-parola-saklama.test.mjs test/vekil-sunucu.test.mjs",
+  "commit": "1f6ad99df7ef569af9ed772e1e8e053c216d565c",
+  "dal": "is/sunucu",
+  "kirli": 5,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T03:33:48.774Z",
+  "sure_sn": 0.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 21,
+    "gecen": 21,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-sunucu/28-yeni.log",
+  "klasor": "/home/user/wt/sunucu",
+  "ham_cikti_sha256": "148e6aa4a7daccd385751fb6cdbcb7367b3aac4652ee7e42d4d848ad14e60ecb",
+  "ham_cikti_bayt": 6279
+}

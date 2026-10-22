@@ -1,0 +1,32 @@
+{
+  "ad": "244-sunucu/29b-e2e",
+  "komut": "npm run test:sirket-canli-yetki-244",
+  "commit": "ed5a2eed953cc207ccbd2a4027b77845af9fd6c2",
+  "dal": "is/sunucu",
+  "kirli": 4,
+  "izlenmeyen": 9,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:11:58.754Z",
+  "sure_sn": 4.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 8,
+    "gecen": 8,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-sunucu/29b-e2e.log",
+  "klasor": "/home/user/wt/sunucu",
+  "ham_cikti_sha256": "051cd5f0932aadf580870f85d5601bb2008dd237033beeab544cee631c8dc4ef",
+  "ham_cikti_bayt": 723
+}

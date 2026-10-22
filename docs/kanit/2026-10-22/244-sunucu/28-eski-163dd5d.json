@@ -1,0 +1,63 @@
+{
+  "ad": "244-sunucu/28-eski-163dd5d",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/sunucu/sunucu-eski-163dd5d && node --test test/vekil-parola-saklama.test.mjs",
+  "commit": "1f6ad99df7ef569af9ed772e1e8e053c216d565c",
+  "dal": "is/sunucu",
+  "kirli": 5,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T03:33:48.538Z",
+  "sure_sn": 0.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 1,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Vekil parolası şifreli saklanır › kaydedilen dosyada parola açık metin yok; mühürlü alan var; okununca parolalı adres geri gelir",
+      "konum": "test/vekil-parola-saklama.test.mjs:27:3",
+      "hata": "dosyada açık metin parola: { · \"mode\": \"manual\", · \"proxy\": \"http://ofis:Gizli%40Vekil%3A9%2F%25x@127.0.0.1:3128\", (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Vekil parolası şifreli saklanır › Vekil Sunucu Kullanma / Otomatik seçilse de saklanan adresin parolası açık metin yazılmaz",
+      "konum": "test/vekil-parola-saklama.test.mjs:53:3",
+      "hata": "none (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Vekil parolası şifreli saklanır › göç: 2.4.3 biçimli açık metin dosya aynen okunur; ilk kayıtta mühürlenir, ayar bozulmaz",
+      "konum": "test/vekil-parola-saklama.test.mjs:68:3",
+      "hata": "ilk kayıttan sonra açık metin yok (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Vekil parolası şifreli saklanır › göç: migrateNetworkSettings eski dosyayı mühürler (servis yöneticisinin açılışı); parolasız ya da zaten mühürlü dosyaya dokunmaz",
+      "konum": "test/vekil-parola-saklama.test.mjs:86:3",
+      "hata": "migrateNetworkSettings yok · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "Vekil parolası şifreli saklanır › anahtar kaybolursa (dosya başka bilgisayara taşınmış) Elle ayarı ve adres bozulmaz, yalnız parola yeniden girilir; okuma anahtar üretmez",
+      "konum": "test/vekil-parola-saklama.test.mjs:112:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'http://ofis:Gizli%40Vekil%3A9%2F%25x@127.0.0.1:3128' (beklenen http://ofis@127.0.0.1:3128, gelen http://ofis:Gizli%40Vekil%3A9%2F%25x@127.0.0.1:3128)"
+    },
+    {
+      "ad": "Vekil parolası şifreli saklanır › servis yöneticisi açılışta eski dosyayı mühürler (kaynak denetimi)",
+      "konum": "test/vekil-parola-saklama.test.mjs:134:3",
+      "hata": "The input did not match the regular expression /migrateNetworkSettings\\(networkFile\\)/. Input: · '// DestekOfis servis yöneticisi (Windows servisi olarak nssm altında çalışır).\\n' + · '//\\n' + (beklenen , gelen |-)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-sunucu/28-eski-163dd5d.log",
+  "klasor": "/home/user/wt/sunucu",
+  "ham_cikti_sha256": "7f8df557f0905dea06bf517589785d38ccf6080d3e89398a73e3344de2c87708",
+  "ham_cikti_bayt": 53590
+}

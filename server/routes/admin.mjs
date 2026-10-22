@@ -30,7 +30,8 @@ export function registerAdminRoutes(router, context) {
   const { store, auth, access, audit, config, startedAt, supervisorLink, events } = context;
   const notifyInfoChange = () => context.notifyInfoChange?.();
   // Oturumları silinen kullanıcının açık canlı bağlantıları da hemen kapanır.
-  const dropLive = userId => events?.closeWhere(client => client.userId === userId);
+  // 2.4.4: bütün şirket kanallarında (002 dahil); yalnız bu örneğin kanalı değil.
+  const dropLive = userId => (context.closeLive ? context.closeLive({ userId }) : events?.closeWhere(client => client.userId === userId));
   const now = () => new Date().toISOString();
   // Gözden geçirme D5 (K4): rol ve kişi kaydı katalogdaki yetkileri yazar; Aşama 3'e kadar katalogda olmayan banka yetkileri (ve "verildi"
   // işareti) bu yazımda düşer. Aynı istekte bugünkü yetkilerden yeniden türetilir (yalnız işaretsiz satırlar; ekranda görünmez).

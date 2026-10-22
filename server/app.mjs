@@ -8,7 +8,7 @@ import { createAuth } from "./lib/auth.mjs";
 import { createRecovery } from "./lib/recovery.mjs";
 import { createChat } from "./lib/chat.mjs";
 import { createChatArchive } from "./lib/chat-archive.mjs";
-import { createEventHub } from "./lib/events.mjs";
+import { createEventHub, isSharedEvent } from "./lib/events.mjs";
 import { runDueBackups, startBackupScheduler } from "./lib/backup.mjs";
 import { createClientState } from "./lib/client-state.mjs";
 import { DEFAULT_ADMIN_PASSWORD, loadConfig } from "./lib/config.mjs";
@@ -180,6 +180,10 @@ export function createApp(overrides = {}) {
   const supervisorLink = hub ? hub.supervisorLink : overrides.supervisorLink ?? (config.supervised ? createSupervisorLink(process) : null);
   // Canlı olay kanalı: oturumu kapanan (çıkış, parola değişikliği, pasifleştirme) bağlantılar ping turunda düşer.
   const events = createEventHub({ log, pingMs: config.eventsPingMs, maxAgeMs: config.eventsMaxAgeMs, isValid: client => auth.sessionAlive(client.tokenHash) });
+  // 2.4.4 (iş listesi 29): yönetim olayları (yetki, kullanıcı, şirket listesi, lisans) ortak katmanın kanalına yayınlanır; 002'yi gösteren
+  // pencere 002'nin kanalına bağlıdır → bu olaylar şirket kanalına aynı hedefle (users/except) iletilir. Şirkete özgü veri olayları
+  // (cari, kasa, fatura, sıfırlama…) iletilmez: her şirket kendi verisinin olayını kendi kanalında yayınlar.
+  const unbridgeHubEvents = hub?.events ? hub.events.tap((event, data, target) => isSharedEvent(event, data) && events.publish(event, data, target)) : null;
   const chat = createChat({ store, events, audit, roles: access });
   // 30 günden eski sohbet mesajları veri klasöründeki mesaj-arsivi/ klasörüne taşınır (v2.0.2).
   const chatArchive = createChatArchive({ store, dir: path.join(config.dataDir, "mesaj-arsivi"), log });
@@ -240,7 +244,17 @@ export function createApp(overrides = {}) {
     timer.unref?.();
     return true;
   };
+  // 2.4.4 (iş listesi 29 ek): kişinin açık canlı bağlantılarını BÜTÜN şirket kanallarında kapatır (hesap pasif/silindi, oturumlar kapatıldı,
+  // parola sıfırlandı) ya da yalnız verilen şirketlerde (şirket erişimi kaldırıldı). Önceden yalnız 001 kanalı kapanıyordu; 002 bağlantısı
+  // ping turuna (25 sn) ya da erişim değişikliğinde bağlantı ömrüne (5 dk) kadar olay almaya devam ediyordu. Açık olmayan şirket açılmaz.
+  const closeLive = ({ userId, companyIds = null }) => {
+    if (hub) return hub.closeLive({ userId, companyIds });
+    const match = client => client.userId === userId;
+    if (!companyIds || companyIds.includes(companyId)) events.closeWhere(match);
+    for (const [id, child] of children) if (!companyIds || companyIds.includes(id)) child.events.closeWhere(match);
+  };
   const context = {
+    closeLive,
     config, log, store, bank, auth, access, recovery, audit, clientState, startedAt, supervisorLink, events, chat, chatArchive, dataset, profile, license, free, trash, companies, companyId, company: () => companies.get(companyId),
     // İş saati (v2.1.0; lib/clock.mjs): modüller "bugün"ü ve zaman damgalarını buradan okur (config.now; testlerde sahte saat).
     now: config.now,
@@ -438,7 +452,7 @@ export function createApp(overrides = {}) {
         scheduleBackups: false,
         // Şirketler aynı iş saatini paylaşır (sahte saatte de: hub'ın saati ilerleyince 002'nin de ilerler).
         now: config.now,
-        hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor, withCompanyDb, busyCompanies, backups, requestRestart, closeCompany },
+        hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor, withCompanyDb, busyCompanies, backups, requestRestart, closeCompany, events, closeLive },
       });
       child.usersStamp = usersFingerprint(store);
       children.set(company.id, child);
@@ -738,6 +752,7 @@ export function createApp(overrides = {}) {
       dataset.stop();
       documents.stop();
       if (!hub) license.stop();
+      unbridgeHubEvents?.();
       events.stop();
       await new Promise(resolve => {
         server.close(() => resolve());
