@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-e070d42-kahin-ebelge-model",
+  "komut": "python3 test/bagimsiz/ebelge/test_model.py",
+  "commit": "36762398d4f59510e1630ec38877cc5253072da6",
+  "dal": "aday6",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T17:07:21.955Z",
+  "sure_sn": 2.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 82,
+    "gecen": 82,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday-e070d42-kahin-ebelge-model.log",
+  "klasor": "/home/user/wt/aday6",
+  "ham_cikti_sha256": "a19175b9aa50b9a5d10e86c514c399fc202273a40925d61972b9660a72d352a1",
+  "ham_cikti_bayt": 211
+}
