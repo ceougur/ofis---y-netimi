@@ -17,6 +17,7 @@ const data = response => response.data?.data ?? response.data;
 function stream(base, client, pathname) {
   const controller = new AbortController();
   const frames = [];
+  const state = { closed: false };
   const ready = fetch(`${base}${pathname}`, { headers: { cookie: client.cookie }, signal: controller.signal }).then(async result => {
     if (result.status !== 200) return result.status;
     const reader = result.body.getReader();
@@ -41,6 +42,7 @@ function stream(base, client, pathname) {
       } catch {
         // kapatıldı
       }
+      state.closed = true;
     })();
     return 200;
   });
@@ -53,7 +55,14 @@ function stream(base, client, pathname) {
       await sleep(20);
     }
   };
-  return { ready, frames, waitFor, close: () => controller.abort() };
+  const waitClosed = async (timeoutMs = 2000) => {
+    const started = Date.now();
+    while (!state.closed && Date.now() - started < timeoutMs) await sleep(20);
+    return state.closed;
+  };
+  return { ready, frames, waitFor, waitClosed, get closed() {
+    return state.closed;
+  }, close: () => controller.abort() };
 }
 const isKind = kind => frame => frame.type === "workspace.changed" && frame.data?.kind === kind;
 
@@ -165,6 +174,29 @@ describe("Şirket kanalları: ortak olaylar 002 ekranına ulaşır, şirket veri
     assert.equal(taps(), before, "kapanan örneğin köprüsü kaldırıldı; yeni örnek tek köprü kurdu");
     assert.equal((await admin.patch(`/api/admin/users/${staffId}`, { grants: { add: ["stock.view"], remove: [] } })).status, 200);
     await live002.waitFor(isKind("permissions"), "geri yüklemeden sonra 002 permissions");
+  });
+
+  // Madde 29 ek (ana oturum, 22.10.2026): şirket erişimi değişince ve hesap pasifleşince 002 kanalı da hemen tepki verir.
+  it("şirket erişimi kaldırılınca: kişinin 002 penceresi 'companies' olayını alır ve 002 canlı bağlantısı kapanır; 001 bağlantısı sürer", async () => {
+    const live001 = watch(staff, "sirket-001");
+    const live002 = watch(staff, second.id);
+    assert.deepEqual(await Promise.all([live001.ready, live002.ready]), [200, 200]);
+    await Promise.all([live001.waitFor(frame => frame.type === "hello", "hello 001"), live002.waitFor(frame => frame.type === "hello", "hello 002")]);
+    assert.equal((await admin.put(`/api/companies/access/${staffId}`, { companies: ["sirket-001"] })).status, 200);
+    await live002.waitFor(isKind("companies"), "002 companies (erişim)");
+    assert.equal(await live002.waitClosed(), true, "erişimi kalkan şirketin canlı bağlantısı kapandı");
+    await sleep(200);
+    assert.equal(live001.closed, false, "erişimi süren 001 bağlantısı açık");
+    assert.equal((await fetch(`${server.base}/api/events?hofCompany=${second.id}`, { headers: { cookie: staff.cookie } })).status, 403, "yeniden bağlanamaz");
+    assert.equal((await admin.put(`/api/companies/access/${staffId}`, { companies: ["sirket-001", second.id] })).status, 200);
+  });
+
+  it("hesap pasifleşince 002 canlı bağlantısı da hemen kapanır (ping turu beklenmez)", async () => {
+    const live002 = watch(staff, second.id);
+    assert.equal(await live002.ready, 200);
+    await live002.waitFor(frame => frame.type === "hello", "hello");
+    assert.equal((await admin.patch(`/api/admin/users/${staffId}`, { active: false })).status, 200);
+    assert.equal(await live002.waitClosed(), true, "pasif hesabın 002 bağlantısı kapandı");
   });
 });
 

@@ -10,7 +10,7 @@ import { systemClock } from "../lib/clock.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { K10_LABELS } from "../lib/bank/accounts.mjs";
 
-export function registerCompanyRoutes(router, { store, auth, audit, companies, appFor, resetData, config, events, backups, closeCompany, busyCompanies, withCompanyDb, log, now: clock = systemClock }) {
+export function registerCompanyRoutes(router, { store, auth, audit, companies, appFor, resetData, config, events, backups, closeCompany, busyCompanies, withCompanyDb, log, closeLive, now: clock = systemClock }) {
   const requireManage = req => auth.requirePermission(req, "system.manage");
   // Geri yüklenen ya da silinen şirkette aynı anda ikinci işlem (ad değiştirme, sıfırlama, silme) yapılmaz.
   const notBusy = company => {
@@ -150,6 +150,11 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     if (target.role === "admin") throw new HttpError(409, "Yönetici bütün şirketleri görür; yetkisi daraltılamaz.");
     const ids = companies.setAccess(admin, target.id, body.companies);
     audit(admin, "company.access", target.id, { user: target.name, companies: ids });
+    // 2.4.4 (iş listesi 29 ek): kişinin açık pencereleri şirket menüsünü yeniler (ortak olay; bütün şirket kanallarına iletilir), erişimi
+    // kalkan şirketin canlı bağlantısı kapanır (o şirketin olaylarını artık almaz; yeniden bağlanırsa 403). Olay kapanıştan ÖNCE yazılır.
+    events?.publish("workspace.changed", { kind: "companies", actorId: admin.id, actorName: admin.display_name }, { users: [target.id] });
+    const lost = companies.list().filter(item => !companies.canAccess(target, item.id)).map(item => item.id);
+    if (lost.length) closeLive?.({ userId: target.id, companyIds: lost });
     ok(res, { userId: target.id, companies: ids });
   });
   // Şirket verisini sıfırla (m6): zorunlu yedek + onay (kod/ad + parola).

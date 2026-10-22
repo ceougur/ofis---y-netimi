@@ -244,7 +244,17 @@ export function createApp(overrides = {}) {
     timer.unref?.();
     return true;
   };
+  // 2.4.4 (iş listesi 29 ek): kişinin açık canlı bağlantılarını BÜTÜN şirket kanallarında kapatır (hesap pasif/silindi, oturumlar kapatıldı,
+  // parola sıfırlandı) ya da yalnız verilen şirketlerde (şirket erişimi kaldırıldı). Önceden yalnız 001 kanalı kapanıyordu; 002 bağlantısı
+  // ping turuna (25 sn) ya da erişim değişikliğinde bağlantı ömrüne (5 dk) kadar olay almaya devam ediyordu. Açık olmayan şirket açılmaz.
+  const closeLive = ({ userId, companyIds = null }) => {
+    if (hub) return hub.closeLive({ userId, companyIds });
+    const match = client => client.userId === userId;
+    if (!companyIds || companyIds.includes(companyId)) events.closeWhere(match);
+    for (const [id, child] of children) if (!companyIds || companyIds.includes(id)) child.events.closeWhere(match);
+  };
   const context = {
+    closeLive,
     config, log, store, bank, auth, access, recovery, audit, clientState, startedAt, supervisorLink, events, chat, chatArchive, dataset, profile, license, free, trash, companies, companyId, company: () => companies.get(companyId),
     // İş saati (v2.1.0; lib/clock.mjs): modüller "bugün"ü ve zaman damgalarını buradan okur (config.now; testlerde sahte saat).
     now: config.now,
@@ -442,7 +452,7 @@ export function createApp(overrides = {}) {
         scheduleBackups: false,
         // Şirketler aynı iş saatini paylaşır (sahte saatte de: hub'ın saati ilerleyince 002'nin de ilerler).
         now: config.now,
-        hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor, withCompanyDb, busyCompanies, backups, requestRestart, closeCompany, events },
+        hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor, withCompanyDb, busyCompanies, backups, requestRestart, closeCompany, events, closeLive },
       });
       child.usersStamp = usersFingerprint(store);
       children.set(company.id, child);

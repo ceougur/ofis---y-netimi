@@ -1,0 +1,32 @@
+{
+  "ad": "244-sunucu/29b-komsu",
+  "komut": "node --test test/auth.test.mjs test/chat.test.mjs test/events.test.mjs test/iz1-excel-sirket.test.mjs test/kullanici-yetki-210.test.mjs test/license.test.mjs test/permissions.test.mjs test/sirket-ayir-221.test.mjs test/sirket-canli-olay-244.test.mjs test/sirket-listesi-221.test.mjs test/sirket-pencere-221.test.mjs test/sirket-siniri-225.test.mjs test/sirket-yedek-klasor-210.test.mjs test/sirketler-217.test.mjs",
+  "commit": "ed5a2eed953cc207ccbd2a4027b77845af9fd6c2",
+  "dal": "is/sunucu",
+  "kirli": 4,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:08:22.217Z",
+  "sure_sn": 12.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 119,
+    "gecen": 119,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-sunucu/29b-komsu.log",
+  "klasor": "/home/user/wt/sunucu",
+  "ham_cikti_sha256": "d091c0cbccf4643fd46cc5800ab33381345b93d88a60c08b6e41ad738eaf5baf",
+  "ham_cikti_bayt": 39018
+}
