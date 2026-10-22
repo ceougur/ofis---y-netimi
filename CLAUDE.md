@@ -470,6 +470,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   sabit (company + seller hep koyu). ÖNERİ yalnız İLK EKSİK adım koyu. KARAR (kullanıcı: "uygun") → G4, 30d ajanına eklendi. AYNI İLETİDE: "şirketleri aç değil de şirket
   aç yazması gerekmez mi" → baş mimar görüşü soruldu: "Şirket Aç" Türkçede yeni şirket açmak/kurmak anlamına gelir (Şirketler'de "+ Yeni Şirket" ve 2 şirket
   sınırı var) → ÖNERİ "Şirket Adını Yaz" + doğrudan ad değiştirme penceresi. KARAR (kullanıcı, ~17:45 UTC: "önerin uygun") → G5, 30d ajanına eklendi.
+- SORU (22.10.2026 ~17:55 UTC, 30b ajanının kapsam dışı bulgusu, ana oturum koddan doğruladı; kullanıcıya baş mimar önerisiyle soruldu): Yönetim → Şirketler →
+  Verisini Sıfırla'daki "Fatura Serisi Sayaçları da Sıfırlansın" kutusu (admin.js:1586, 2.0.17'den beri) yalnız TAHSİLAT MAKBUZU sayacını (plans.receiptSeq,
+  app.mjs:655) siler; fatura/fiş serileri kutu işaretsizken de baştan başlar (faturalar ve invoice.numberFloor silinir). Ad ↔ davranış uyuşmuyor; gerileme değil.
+  ÖNERİ (B2 ile aynı ölçü — seyrek iş): 2.4.4'te kutunun adı "Tahsilat Makbuzu Numaraları da Sıfırlansın" + altına tek cümle (fatura/fiş numaraları seride baştan
+  başlar; e-Belge gönderdiyseniz Fatura Ayarları → Numaralar'dan sıradaki numarayı ileri alın); fatura serisini sıfırlamada koruma seçeneği 2.4.4 sonrası.
 - SON ADAY BAĞIMSIZ TURU (kullanıcı, 22.10.2026: "2.4.4 son aday uzun test koşusuna başlamadan kâhin (uzman mali müşavir), yargıç, eleştirmen testlerinden geçecek mi,
   regresyon testleri yapılıyor mu?" → EVET; "ekle" → uzman UI + uzman UX de): iş listesi madde 30–31 (31a kâhin, 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol,
   31f uzman UI/UX) Uzun Doğrulama'dan ÖNCE.
