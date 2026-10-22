@@ -264,6 +264,9 @@
     return `${pay}${e}${test}`;
   };
   const docTitle = doc => `${kindLabel(doc.kind)}${doc.displayNo ? ` ${doc.displayNo}` : ""}`;
+  // 2.4.4 (uzman UX25): "Belge Türü" süzgecinde e-SMM yalnız e-SMM açıkken (sunucu: config.esmmEnabled ve Entegratör Ayarları'nda
+  // "e-SMM kullanıcısıyım" → meta.settings.esmm) görünür; kapalı özellik seçenek olarak çıkmaz. Seçili kalmış süzgeç (eski adres) görünür kalır.
+  const profileOptions = () => Object.entries(meta.profiles || {}).filter(([id]) => id !== "ESMM" || meta?.settings?.esmm === true || view.profile === "ESMM");
   function renderList() {
     const root = body();
     if (!root) return;
@@ -308,7 +311,7 @@
         <label class="hof-rep-date"><span>Başlangıç</span><input type="date" data-filter="from" value="${esc(view.from)}"></label>
         <label class="hof-rep-date"><span>Bitiş</span><input type="date" data-filter="to" value="${esc(view.to)}"></label>
         <select data-filter="pay" aria-label="Ödeme durumu">${PAY_OPTIONS.map(([id, label]) => `<option value="${id}" ${view.pay === id ? "selected" : ""}>${label}</option>`).join("")}</select>
-        ${edoc() ? `<select data-filter="profile" aria-label="Belge türü"><option value="">Tüm Belge Türleri</option>${Object.entries(meta.profiles).map(([id, label]) => `<option value="${id}" ${view.profile === id ? "selected" : ""}>${esc(label)}</option>`).join("")}</select>` : ""}
+        ${edoc() ? `<select data-filter="profile" aria-label="Belge türü"><option value="">Tüm Belge Türleri</option>${profileOptions().map(([id, label]) => `<option value="${id}" ${view.profile === id ? "selected" : ""}>${esc(label)}</option>`).join("")}</select>` : ""}
         <input type="search" data-filter="q" value="${esc(view.q)}" placeholder="No, cari, ürün, VKN, not ara…" aria-label="Ara">
         ${accountChip}
       </div>

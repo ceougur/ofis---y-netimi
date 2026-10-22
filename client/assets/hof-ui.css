@@ -10405,6 +10405,14 @@ input[type="search"]::-webkit-search-cancel-button {
   opacity: 0.5;
   cursor: not-allowed;
 }
+/* 2.4.4 (uzman UX27): fatura kartında pasif dolu düğme ("Düzenle") dolu/vurgulu görünmesin — pasif "Sil" / "İptal Et" gibi gri ve çerçeveli;
+   nedeni düğmelerin altında yazılı (.hof-inv-blocks). Etkin düğmeler değişmez. */
+.hof-invoices-modal .hof-chq-actions .hof-button:not(.hof-button-ghost):not(.hof-button-danger-ghost)[disabled] {
+  background: var(--do-surface-soft);
+  color: var(--do-faint);
+  border-color: var(--do-border);
+  box-shadow: none;
+}
 /* Ayarlar */
 .hof-bank-settings {
   display: grid;
