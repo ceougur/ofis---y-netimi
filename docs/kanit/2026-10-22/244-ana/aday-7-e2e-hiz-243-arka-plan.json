@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-7-e2e-hiz-243-arka-plan",
+  "komut": "npm run test:hiz-243-arka-plan",
+  "commit": "489bfb77ad8b3536c2f109d28e1fd75b040f0402",
+  "dal": "aday7",
+  "kirli": 0,
+  "izlenmeyen": 92,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T20:32:14.982Z",
+  "sure_sn": 13.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 13,
+    "gecen": 13,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday-7-e2e-hiz-243-arka-plan.log",
+  "klasor": "/home/user/wt/aday7",
+  "ham_cikti_sha256": "3fd79bd2a734b79ca60fba2471f7f4a2cd381ae01c594602f3d50d7f96aa327c",
+  "ham_cikti_bayt": 1202
+}
