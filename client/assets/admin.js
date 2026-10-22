@@ -1403,6 +1403,9 @@
   // ---------- Sekmeler ----------
   // ---------- Şirketler (v2.0.17) ----------
   let companyData = null;
+  // 2.4.4 (madde 30c G5): Başlarken'deki "Şirket Adını Yaz" admin.html#companies/rename açar — liste yüklenince açık şirketin ad penceresi
+  // kendiliğinden açılır; kaydedilince ana ekrana (Başlarken) dönülür. Vazgeçilirse Şirketler sekmesinde kalınır.
+  let renameFromStart = false;
   async function loadCompanies() {
     const body = $("#adm-companies");
     try {
@@ -1429,6 +1432,11 @@
           </tr>`,
         )
         .join("") || '<tr><td colspan="4" class="adm-muted">Şirket yok.</td></tr>';
+      if (renameFromStart) {
+        renameFromStart = false;
+        const current = list.find(item => item.current);
+        if (current) editCompany(current, { backToStart: true });
+      }
       renderCompanyConflicts(data.conflicts || []);
       renderCompanyAccess(access);
       renderCompanyReportPick(data.companies);
@@ -1559,7 +1567,7 @@
       },
     });
   }
-  function editCompany(item) {
+  function editCompany(item, { backToStart = false } = {}) {
     HOF.formModal({
       title: "Şirketin Adı ve Kodu",
       eyebrow: "ŞİRKET",
@@ -1572,6 +1580,7 @@
       onSubmit: async values => {
         await HOF.api(`/api/companies/${encodeURIComponent(item.id)}`, { method: "PUT", body: { code: values.code, name: values.name } });
         HOF.toast("Şirket bilgisi güncellendi.", { type: "success" });
+        if (backToStart) return window.location.assign("/");
         loadCompanies();
       },
     });
@@ -1580,10 +1589,12 @@
     HOF.formModal({
       title: `Şirket Verisini Sıfırla · ${item.code} · ${item.name}`,
       eyebrow: "ŞİRKET",
-      intro: "Önce zorunlu yedek alınır (Yedekler'den geri yüklenebilir). Lisans, kullanıcılar ve öbür şirketler etkilenmez. Dönem kilidi varsa o da kaldırılır; kapatılmış dönemin hareketleri de silinir, yeniden girdikten sonra kilidi yeniden koyun. Geri alınamaz; onay için şirket kodunu ve parolanızı yazın.",
+      intro: "Önce zorunlu yedek alınır (Yedekler'den geri yüklenebilir). Lisans, kullanıcılar ve öbür şirketler etkilenmez. Dönem kilidi varsa o da kaldırılır; kapatılmış dönemin hareketleri de silinir, yeniden girdikten sonra kilidi yeniden koyun. Fatura ve fiş numaraları seride baştan başlar; e-Belge gönderdiyseniz yeniden göndermeden önce Fatura Ayarları → Numaralar'dan sıradaki numarayı ileri alın. Geri alınamaz; onay için şirket kodunu ve parolanızı yazın.",
       fields: [
         { name: "mode", label: "Ne Silinsin", type: "select", value: "movements", options: [{ value: "movements", label: "Tüm Hareketleri Sil (cari/stok kartları, Kasa hesapları ve ayarlar kalır; bakiyeler sıfır)" }, { value: "all", label: "Tümünü Sıfırla (şirket ilk açıldığı gibi boş; ad/kod, unvan/VKN/logo, fatura serisi kalır)" }] },
-        { name: "resetNumbers", label: "Fatura Serisi Sayaçları da Sıfırlansın", type: "checkbox", value: true },
+        // 2.4.4 (madde 30c G6): kutu yalnız tahsilat makbuzu sayacını (plans.receiptSeq, app.mjs) siler; fatura/fiş serileri kutudan bağımsız baştan başlar
+        // (faturalar ve invoice.numberFloor silinir) — ad buna göre, fatura numaralarının durumu açıklamada.
+        { name: "resetNumbers", label: "Tahsilat Makbuzu Numaraları da Sıfırlansın", type: "checkbox", value: true },
         ...confirmFields(item.code),
       ],
       submitLabel: "Veriyi Sıfırla",
@@ -1702,7 +1713,9 @@
     }
     $("#adm-app").hidden = false;
     const visible = [...document.querySelectorAll(".adm-tabs [data-tab]")].filter(button => getComputedStyle(button).display !== "none").map(button => button.dataset.tab);
-    const requested = location.hash.slice(1) === "recovery" ? "users" : location.hash.slice(1);
+    const [hashTab, hashIntent] = location.hash.slice(1).split("/");
+    const requested = hashTab === "recovery" ? "users" : hashTab;
+    renameFromStart = hashTab === "companies" && hashIntent === "rename" && visible.includes("companies");
     // Lisans etkinleştirilmemiş veya salt okunurken yönetici önce Lisans sekmesini görür.
     const needsLicense = me.license && !me.license.writable && visible.includes("license");
     selectTab(visible.includes(requested) ? requested : needsLicense ? "license" : visible[0]);

@@ -1,0 +1,32 @@
+{
+  "ad": "244-gezinti-g/e2e-senaryo-iz5-230",
+  "komut": "npm run test:senaryo-iz5-230",
+  "commit": "158d9c0178695ab205f2022a7878d148d3a26809",
+  "dal": "is/gezinti-g",
+  "kirli": 6,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T18:47:55.009Z",
+  "sure_sn": 37.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 44,
+    "gecen": 44,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-gezinti-g/e2e-senaryo-iz5-230.log",
+  "klasor": "/home/user/wt/gezinti-g",
+  "ham_cikti_sha256": "094851b4551430c6d82b43f8593eea6533bb2d9507abaf327467329605c96121",
+  "ham_cikti_bayt": 3632
+}
