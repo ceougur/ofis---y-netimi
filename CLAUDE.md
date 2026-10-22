@@ -585,6 +585,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - SORU (kullanıcı, 22.10.2026 ~12:20 UTC; ekran: çalıştığı kurumun e-SMM'si — kurum ve müşteri bilgisi YAZILMAZ): "logo imzayı EDM mi imzalamış?" → YANIT: hayır; imza ve logo
   düzenleyenin yüklediği resim (gerçek imza XML'deki mali mühür/e-imza); daha önce yüklenen aynı tür makbuzun PDF üreticisi wkhtmltopdf + GİB standart e-SMM görünümü
   (EDM test PDF'leri IronPdf + EDM tasarımı) → başka sistem; canlı EDM'de e-SMM görünümüne logo/kaşe eklenip eklenemediği EDM'ye sorulacak (soru metni kullanıcıya verildi).
+- İSTEK (kullanıcı, 22.10.2026 ~12:55 UTC: "aynı anda 20-30 tane esmm kesip edm'ye gönderip sonuçlarını kontrol eder misin") → iş listesi 24b: gerçek EDM test
+  ortamında 30 e-SMM — A) 20 "Kaydet ve Gönder" AYNI ANDA, 3 kullanıcı oturumundan (VKN/TCKN alıcı karışık), B) 10 "Kes, Sonra Gönder" aynı anda → "Tümünü Gönder";
+  sonra Durum Sorgula + 3 resmî PDF. Değişmezler kuraldan: 30 belge, tekil ETTN, TES ardışık/tekil, EDM'de her ETTN ve numara aynı, 5xx/askı yok; Login sayısı bilgi.
+  Belgeler İPTAL EDİLMEZ (kullanıcı portalda bakacak). Düzeneği ajan yazar (tools/edm-gercek.mjs --eszamanli, kuru + zorla gecikme + hata enjeksiyonu), gerçek
+  koşuyu ana oturum yapar (kimlik yalnız ortam değişkeninde); sonuç OZET.md kullanıcıya.
 - SON ADAY BAĞIMSIZ TURU (kullanıcı, 22.10.2026: "2.4.4 son aday uzun test koşusuna başlamadan kâhin (uzman mali müşavir), yargıç, eleştirmen testlerinden geçecek mi,
   regresyon testleri yapılıyor mu?" → EVET; "ekle" → uzman UI + uzman UX de): iş listesi madde 30–31 (31a kâhin, 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol,
   31f uzman UI/UX) Uzun Doğrulama'dan ÖNCE.
