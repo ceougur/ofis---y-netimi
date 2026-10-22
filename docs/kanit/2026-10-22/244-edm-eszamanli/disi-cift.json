@@ -1,0 +1,43 @@
+{
+  "ad": "244-edm-eszamanli/disi-cift",
+  "komut": "node --disable-warning=ExperimentalWarning tools/edm-gercek.mjs --kuru --eszamanli --ariza cift --cikti docs/kanit/2026-10-22/244-edm-eszamanli/disi-cift",
+  "commit": "02a6acd2541f752d990e100039a1ebe1dea0afae",
+  "dal": "is/edm-eszamanli",
+  "kirli": 0,
+  "izlenmeyen": 13,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T13:31:06.215Z",
+  "sure_sn": 3.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 134,
+    "gecen": 132,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "A01 TES2026444338965: EDM'de 1 kayıt, EDM'deki numara TES2026444338969 (SEND - SUCCEED)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "sahte EDM'nin defterinde numaralar tekil (29/30)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-edm-eszamanli/disi-cift.log",
+  "klasor": "/home/user/wt/edm-eszamanli",
+  "ham_cikti_sha256": "f3767589cca9d64076219c2cd4170fe14bc46122023a35ca5ec9805d36a99e24",
+  "ham_cikti_bayt": 26581
+}

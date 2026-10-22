@@ -27,3 +27,50 @@ gerçek EDM koşusunu ANA OTURUM yapar (kimlik bilgisi yalnız ortam değişkeni
 Testin dişi (ders 7/20/38): kuru koşuda sahte EDM'ye hata enjekte edilir (`--ariza kayip | cift | durum | aski`); düzenek her birinde KIRMIZI vermeli ve
 nedeni iletiden okunmalı. Zorla araya girme (`--zorla`): sahte EDM SendSMM ve Login yanıtlarını geciktirir; yeşil yalnız ön koşul gerçekten oluşunca
 (sahte EDM'de en çok eşzamanlı SendSMM ≥ 10, soğuk başta eşzamanlı Login ≥ 2) sayılır.
+
+## Gerçek koşu (ANA OTURUM; kimlik yalnız ortam değişkeninde, hiçbir dosyaya girmez)
+
+    cd /home/user/wt/edm-eszamanli && HUKUK_LICENSE_URL=http://127.0.0.1:9 EDM_TEST_KULLANICI=… EDM_TEST_PAROLA=… \
+      node tools/kanit.mjs kos 244-edm-eszamanli/gercek -- node --disable-warning=ExperimentalWarning tools/edm-gercek.mjs --gercek --eszamanli
+
+Çıktı `docs/kanit/<gün>/244-edm-eszamanli/gercek/` (OZET.md: 30 belgenin tablosu — aşama, oturum, Belge No, ETTN, tarih/saat, alıcı türü, tutarlar, EDM son durumu,
+bağımsız okuyucunun EDM'den okuduğu numara). Varsayılan SOĞUK başlangıç: programın EDM önbelleği boşaltılır → 20 istek aynı anda Login dener (N4'ün ön koşulu);
+istenmezse `--sicak`. Eşzamanlı istekte EDM girişi REDDEDİLİRSE betik Tümünü Gönder / Durum Sorgula yapmadan durur (çıkış 2). Belgeler iptal edilmez. Süre tahmini
+5–10 dk (gece yarısını geçerse çıkış 4, GEÇERSİZ). Gerçek EDM'de İLK KEZ denenecekler: TCKN'li KİŞİYE e-SMM (10 belge; kuruda UBL-TR XSD'sine uygun), EDM'ye aynı anda
+20 Login ve 20 SendSMM, okuyucunun GetSMM HEADER_ONLY "Y" biçimi (reddedilirse programın kanıtlı "N" biçimine bir kez döner).
+
+## Kuru koşu ve testin dişi (commit 02a6acd; kanıtlar bu klasörde, `node tools/kanit.mjs kos` ile)
+
+| Koşu | Sonuç | Neden (iletiden) |
+|---|---|---|
+| kuru-kosu (`--kuru --eszamanli`) | 134/134, çıkış 0 | — |
+| kuru-zorla (`--zorla`) | 136/136, çıkış 0 | ön koşul GERÇEKTEN oluştu: sahte EDM'de 20 SendSMM ve 20 Login aynı anda |
+| disi-kayip (`--ariza kayip`) | 129/134, çıkış 1 | ye: "A01 …: EDM'de 0 kayıt", "numaralı ama EDM'de olmayan belge: 1 — A01 … programda sent" (+ yb/yc/yd aynı belge) |
+| disi-cift (`--ariza cift`) | 132/134, çıkış 1 | ye: "EDM'deki numara TES…730" (program …726) — program görmedi, bağımsız okuyucu gördü; sahte EDM defteri 29/30 tekil |
+| disi-durum (`--ariza durum`) | 132/134, çıkış 1 | yc: "EDM son durum error (PACKAGE - FAIL)" (+ yd resmî görüntü 409) |
+| disi-aski (`--ariza aski --zaman-asimi 3000`) | 133/134, çıkış 1 | ya: "A01 … ASKIDA: 3 sn içinde yanıt yok" — yalnız o; belge veri tabanından izlenir, öbür değişmezler geçer |
+| mutasyon-M1-numara-boslugu (programda nextNumber TES'te +1 atlar; ayrı kopya) | 133/134, çıkış 1 | yf: "TES numaraları … boşluk 29" |
+| mutasyon-M2-numara-yarisi (programda numara EDM girişini BEKLEMEDEN önce okunur; ayrı kopya, `--zorla`) | 75/97, çıkış 1 | ya: 19 × "HTTP 500" (UNIQUE dizini), yf: "TAM 30 belge (bulunan 11)" |
+| kesif-tek-oturum-zorla (`--ariza tek-oturum`: Login öbür oturumları düşürür — EDM'nin bu davranışı DOĞRULANMADI) | 117/136, çıkış 1 | KEŞİF (aşağıda N4) |
+| duzenek-testi (test/edm-gercek-duzenek.test.mjs) | 16/16 | kuru zorla + 4 arıza + seçenek güvenceleri + okuyucu + yardımcılar |
+| komsu-birim (sahte EDM'yi kullanan e-SMM / e-Belge testleri + lisans izolasyonu + platform + kanıt aracı) | 221/221 | — |
+| e2e-gg244-esmm-gonder (sahte e-SMM'yi kullanan ekran senaryosu) | 34/34 | — |
+
+## Bulgu adayı (program; kuruda kanıtlandı, gerçek koşu karar verir)
+
+N4 — eşzamanlı giriş tek uçuş değil: `server/lib/einvoice/edm.mjs` edmTransport `ensureSession` / `withSession` oturum önbelleği boşken her eşzamanlı çağrıda ayrı
+`login()` yapar (kuru-zorla: 20 gönderim → 20 Login aynı anda). EDM her girişe ayrı oturum veriyorsa zararsız (sahte EDM varsayılanı; kayıp yok). EDM yeni girişte
+eski oturumu DÜŞÜRÜYORSA (kesif-tek-oturum-zorla): 20 Kaydet ve Gönder'in 18'i "EDM oturumu sona ermiş" (integrator-session) ile numaralı ve gönderilmemiş
+Gönderilecekler'e düşer — KAYIP YOK, ileti doğru, Tümünü Gönder hepsini gönderir, numaralar ardışık; ama kullanıcı 18 hata görür. Gerçek koşuda `ya`daki
+integrator-session sayısı EDM'nin davranışını söyler. Öneri (karar ana oturumda; EDM bağlantısı kritik alan → kırmızı test + dar kontrol): oturum anahtarı başına
+tek uçuş giriş (bekleyen giriş sözünü eşzamanlı çağıranlar paylaşır) — 20 giriş 1'e iner. Programda kayıp / çift / atlanan numara, 5xx, askı, yakalanmamış hata
+GÖRÜLMEDİ (kuru, zorla dahil).
+
+## DENENMEYEN / BİLİNEN SINIRLAR
+
+- Gerçek EDM test ortamı bu ajanda KOŞULMADI (kimlik yalnız ana oturumda; gerçek EDM'ye bağlanılmadı). EDM'nin eşzamanlı Login / hız sınırı davranışı bilinmiyor.
+- Tümünü Gönder turu SÜRERKEN yeni Kes, Sonra Gönder (N10'un ikinci yarısı); gönderim sürerken Kes, Sonra Gönder ise denendi (ya, aynı dalga).
+- Gece yarısı (N13) yalnız çıkış 4 güvencesiyle; zorla gece yarısı üretilmedi. Arayüzden (tarayıcı) eşzamanlılık yok — istekler programın API'sinden (ekranın uçları).
+- Aynı gün içinde saat ↔ numara ters komşu: BİLGİ (saat dakika çözünürlüğünde; GİB sıra kuralı tarih düzeyinde) — denetim değil.
+- Kâhin: tutarlar karşılaştırılmadı (yalnız talimattaki stopaj kuralı: VKN %20, TCKN 0); TES ardışıklığı ve EDM numarası kuraldan.
+- Mutasyon kopyalarında node_modules çalışma ağacına bağlandı (genel klasöre değil, npm ci koşulmadı; ders 29).

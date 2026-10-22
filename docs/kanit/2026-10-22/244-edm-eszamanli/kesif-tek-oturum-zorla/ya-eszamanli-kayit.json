@@ -1,0 +1,722 @@
+{
+ "adim": "ya-eszamanli-kayit",
+ "baslik": "AYNI ANDA 31 istek, 3 oturumdan: 20 e-SMM Kaydet ve Gönder + 10 e-SMM Kes, Sonra Gönder + 1 yetkisiz (Personel)",
+ "durum": "kaldı",
+ "denetimler": [
+  {
+   "gecti": false,
+   "denetim": "A01 (yonetici, VKN) HTTP 200 1734 ms: Kaydet ve Gönder → TES2026128367439, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026128367439 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gön)"
+  },
+  {
+   "gecti": false,
+   "denetim": "A02 (fatura1, VKN) HTTP 200 1792 ms: Kaydet ve Gönder → TES2026128367438, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026128367438 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gön)"
+  },
+  {
+   "gecti": false,
+   "denetim": "A03 (fatura2, TCKN) HTTP 200 2060 ms: Kaydet ve Gönder → TES2026128367441, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026128367441 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gön)"
+  },
+  {
+   "gecti": false,
+   "denetim": "A04 (yonetici, VKN) HTTP 200 1625 ms: Kaydet ve Gönder → TES2026128367440, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026128367440 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gön)"
+  },
+  {
+   "gecti": false,
+   "denetim": "A05 (fatura1, VKN) HTTP 200 1797 ms: Kaydet ve Gönder → TES2026128367442, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026128367442 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gön)"
+  },
+  {
+   "gecti": false,
+   "denetim": "A06 (fatura2, TCKN) HTTP 200 2542 ms: Kaydet ve Gönder → TES2026128367443, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026128367443 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gön)"
+  },
+  {
+   "gecti": false,
+   "denetim": "A07 (yonetici, VKN) HTTP 200 1492 ms: Kaydet ve Gönder → TES2026128367444, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026128367444 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gön)"
+  },
+  {
+   "gecti": false,
+   "denetim": "A08 (fatura1, VKN) HTTP 200 2387 ms: Kaydet ve Gönder → TES2026128367445, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026128367445 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gön)"
+  },
+  {
+   "gecti": false,
+   "denetim": "A09 (fatura2, TCKN) HTTP 200 2387 ms: Kaydet ve Gönder → TES2026128367446, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026128367446 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gön)"
+  },
+  {
+   "gecti": false,
+   "denetim": "A10 (yonetici, VKN) HTTP 200 2375 ms: Kaydet ve Gönder → TES2026128367447, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026128367447 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gön)"
+  },
+  {
+   "gecti": false,
+   "denetim": "A11 (fatura1, VKN) HTTP 200 2218 ms: Kaydet ve Gönder → TES2026128367448, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026128367448 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gön)"
+  },
+  {
+   "gecti": false,
+   "denetim": "A12 (fatura2, TCKN) HTTP 200 2214 ms: Kaydet ve Gönder → TES2026128367449, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026128367449 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gön)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A13 (yonetici, VKN) HTTP 200 2812 ms: Kaydet ve Gönder → TES2026128367450, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": false,
+   "denetim": "A14 (fatura1, VKN) HTTP 200 2069 ms: Kaydet ve Gönder → TES2026128367451, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026128367451 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gön)"
+  },
+  {
+   "gecti": false,
+   "denetim": "A15 (fatura2, TCKN) HTTP 200 2074 ms: Kaydet ve Gönder → TES2026128367452, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026128367452 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gön)"
+  },
+  {
+   "gecti": false,
+   "denetim": "A16 (yonetici, VKN) HTTP 200 2069 ms: Kaydet ve Gönder → TES2026128367453, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026128367453 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gön)"
+  },
+  {
+   "gecti": false,
+   "denetim": "A17 (fatura1, VKN) HTTP 200 2660 ms: Kaydet ve Gönder → TES2026128367454, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026128367454 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gön)"
+  },
+  {
+   "gecti": false,
+   "denetim": "A18 (fatura2, TCKN) HTTP 200 2205 ms: Kaydet ve Gönder → TES2026128367455, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026128367455 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gön)"
+  },
+  {
+   "gecti": false,
+   "denetim": "A19 (yonetici, VKN) HTTP 200 2212 ms: Kaydet ve Gönder → TES2026128367456, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026128367456 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gön)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A20 (fatura1, VKN) HTTP 200 1053 ms: Kaydet ve Gönder → TES2026128367457, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B01 (fatura1, TCKN) HTTP 200 87 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B02 (fatura2, VKN) HTTP 200 114 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B03 (yonetici, VKN) HTTP 200 137 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B04 (fatura1, TCKN) HTTP 200 163 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B05 (fatura2, VKN) HTTP 200 185 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B06 (yonetici, VKN) HTTP 200 205 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B07 (fatura1, TCKN) HTTP 200 226 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B08 (fatura2, VKN) HTTP 200 258 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B09 (yonetici, VKN) HTTP 200 287 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B10 (fatura1, TCKN) HTTP 200 324 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)"
+  },
+  {
+   "gecti": true,
+   "denetim": "yetkisiz kullanıcının (Personel) Kaydet ve Gönder'i 403 ile reddedildi, belge açılmadı, numara harcanmadı (0)"
+  },
+  {
+   "gecti": true,
+   "denetim": "ön koşul (zorla): sahte EDM'de aynı anda işlenen SendSMM en çok 20 ≥ 10"
+  },
+  {
+   "gecti": true,
+   "denetim": "ön koşul (zorla, soğuk): sahte EDM'de aynı anda Login en çok 20 ≥ 2"
+  }
+ ],
+ "kayit": {
+  "sahteEdm": {
+   "zorla": true,
+   "ariza": "tek-oturum",
+   "k": 5
+  },
+  "yetkisiz": {
+   "status": 403,
+   "sureMs": 327,
+   "kod": "FORBIDDEN",
+   "belge": 0
+  },
+  "sureler": {
+   "toplamMs": 2818,
+   "kaydetVeGonder": {
+    "en": 1053,
+    "medyan": 2205,
+    "enCok": 2812
+   },
+   "kesSonraGonder": {
+    "en": 87,
+    "medyan": 205,
+    "enCok": 324
+   },
+   "otuzSnUstu": 0
+  },
+  "izleme": {
+   "smm:WSDL": {
+    "sayi": 2,
+    "hata": 0,
+    "enCokEszamanli": 2,
+    "sureMs": {
+     "en": 22,
+     "medyan": 40,
+     "enCok": 40
+    }
+   },
+   "smm:Login": {
+    "sayi": 39,
+    "hata": 0,
+    "enCokEszamanli": 20,
+    "sureMs": {
+     "en": 251,
+     "medyan": 262,
+     "enCok": 426
+    }
+   },
+   "smm:SendSMM": {
+    "sayi": 39,
+    "hata": 0,
+    "enCokEszamanli": 20,
+    "sureMs": {
+     "en": 306,
+     "medyan": 709,
+     "enCok": 1048
+    }
+   }
+  },
+  "istekler": [
+   {
+    "kod": "A01",
+    "asama": "A",
+    "oturum": "yonetici",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 1 (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 1734,
+    "id": "invoice-bb467b70-851b-4e79-aeca-11266f502f48",
+    "numaraYanit": "TES2026128367439",
+    "autoSend": {
+     "ok": false,
+     "code": "integrator-session",
+     "message": "EDM oturumu sona ermiş. Belge TES2026128367439 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+    }
+   },
+   {
+    "kod": "A02",
+    "asama": "A",
+    "oturum": "fatura1",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 2 (Ankara)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 1792,
+    "id": "invoice-1a3acb36-77d1-4330-b5c9-0280e3e65fed",
+    "numaraYanit": "TES2026128367438",
+    "autoSend": {
+     "ok": false,
+     "code": "integrator-session",
+     "message": "EDM oturumu sona ermiş. Belge TES2026128367438 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+    }
+   },
+   {
+    "kod": "A03",
+    "asama": "A",
+    "oturum": "fatura2",
+    "aliciTuru": "TCKN",
+    "alici": "Kişi (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 2060,
+    "id": "invoice-19ea0b0f-dc2c-408e-84f8-1962fb422088",
+    "numaraYanit": "TES2026128367441",
+    "autoSend": {
+     "ok": false,
+     "code": "integrator-session",
+     "message": "EDM oturumu sona ermiş. Belge TES2026128367441 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+    }
+   },
+   {
+    "kod": "A04",
+    "asama": "A",
+    "oturum": "yonetici",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 1 (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 1625,
+    "id": "invoice-da3237c8-eb71-437b-8608-bd8ff2b858db",
+    "numaraYanit": "TES2026128367440",
+    "autoSend": {
+     "ok": false,
+     "code": "integrator-session",
+     "message": "EDM oturumu sona ermiş. Belge TES2026128367440 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+    }
+   },
+   {
+    "kod": "A05",
+    "asama": "A",
+    "oturum": "fatura1",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 2 (Ankara)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 1797,
+    "id": "invoice-4ab69c9b-3bcc-498e-a33d-01b539513050",
+    "numaraYanit": "TES2026128367442",
+    "autoSend": {
+     "ok": false,
+     "code": "integrator-session",
+     "message": "EDM oturumu sona ermiş. Belge TES2026128367442 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+    }
+   },
+   {
+    "kod": "A06",
+    "asama": "A",
+    "oturum": "fatura2",
+    "aliciTuru": "TCKN",
+    "alici": "Kişi (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 2542,
+    "id": "invoice-816327d8-1633-428c-b805-1fff8c4d097b",
+    "numaraYanit": "TES2026128367443",
+    "autoSend": {
+     "ok": false,
+     "code": "integrator-session",
+     "message": "EDM oturumu sona ermiş. Belge TES2026128367443 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+    }
+   },
+   {
+    "kod": "A07",
+    "asama": "A",
+    "oturum": "yonetici",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 1 (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 1492,
+    "id": "invoice-0c1fcadd-2175-4fe1-bced-ede251ef5495",
+    "numaraYanit": "TES2026128367444",
+    "autoSend": {
+     "ok": false,
+     "code": "integrator-session",
+     "message": "EDM oturumu sona ermiş. Belge TES2026128367444 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+    }
+   },
+   {
+    "kod": "A08",
+    "asama": "A",
+    "oturum": "fatura1",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 2 (Ankara)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 2387,
+    "id": "invoice-d760d18b-b98c-4d56-a75c-c0cb7167a2af",
+    "numaraYanit": "TES2026128367445",
+    "autoSend": {
+     "ok": false,
+     "code": "integrator-session",
+     "message": "EDM oturumu sona ermiş. Belge TES2026128367445 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+    }
+   },
+   {
+    "kod": "A09",
+    "asama": "A",
+    "oturum": "fatura2",
+    "aliciTuru": "TCKN",
+    "alici": "Kişi (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 2387,
+    "id": "invoice-489d36ed-7f20-44d3-93fb-9fa04b9192c1",
+    "numaraYanit": "TES2026128367446",
+    "autoSend": {
+     "ok": false,
+     "code": "integrator-session",
+     "message": "EDM oturumu sona ermiş. Belge TES2026128367446 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+    }
+   },
+   {
+    "kod": "A10",
+    "asama": "A",
+    "oturum": "yonetici",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 1 (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 2375,
+    "id": "invoice-6f631f58-ac9d-45eb-bc43-cb4a48f9f369",
+    "numaraYanit": "TES2026128367447",
+    "autoSend": {
+     "ok": false,
+     "code": "integrator-session",
+     "message": "EDM oturumu sona ermiş. Belge TES2026128367447 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+    }
+   },
+   {
+    "kod": "A11",
+    "asama": "A",
+    "oturum": "fatura1",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 2 (Ankara)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 2218,
+    "id": "invoice-be96c6ea-f14b-471c-84f1-23b2efc68075",
+    "numaraYanit": "TES2026128367448",
+    "autoSend": {
+     "ok": false,
+     "code": "integrator-session",
+     "message": "EDM oturumu sona ermiş. Belge TES2026128367448 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+    }
+   },
+   {
+    "kod": "A12",
+    "asama": "A",
+    "oturum": "fatura2",
+    "aliciTuru": "TCKN",
+    "alici": "Kişi (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 2214,
+    "id": "invoice-fd7182c6-aaaa-4509-ae32-c22df611e119",
+    "numaraYanit": "TES2026128367449",
+    "autoSend": {
+     "ok": false,
+     "code": "integrator-session",
+     "message": "EDM oturumu sona ermiş. Belge TES2026128367449 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+    }
+   },
+   {
+    "kod": "A13",
+    "asama": "A",
+    "oturum": "yonetici",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 1 (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 2812,
+    "id": "invoice-e9ac4047-7b41-431b-8b8b-3f47c9babf6b",
+    "numaraYanit": "TES2026128367450",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "A14",
+    "asama": "A",
+    "oturum": "fatura1",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 2 (Ankara)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 2069,
+    "id": "invoice-b78d2924-e311-4a87-a036-336883b18189",
+    "numaraYanit": "TES2026128367451",
+    "autoSend": {
+     "ok": false,
+     "code": "integrator-session",
+     "message": "EDM oturumu sona ermiş. Belge TES2026128367451 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+    }
+   },
+   {
+    "kod": "A15",
+    "asama": "A",
+    "oturum": "fatura2",
+    "aliciTuru": "TCKN",
+    "alici": "Kişi (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 2074,
+    "id": "invoice-be9f9774-103f-4987-b5d3-8ad97d8e358b",
+    "numaraYanit": "TES2026128367452",
+    "autoSend": {
+     "ok": false,
+     "code": "integrator-session",
+     "message": "EDM oturumu sona ermiş. Belge TES2026128367452 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+    }
+   },
+   {
+    "kod": "A16",
+    "asama": "A",
+    "oturum": "yonetici",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 1 (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 2069,
+    "id": "invoice-4c919acc-f190-4a67-8cec-62a822b0c3e7",
+    "numaraYanit": "TES2026128367453",
+    "autoSend": {
+     "ok": false,
+     "code": "integrator-session",
+     "message": "EDM oturumu sona ermiş. Belge TES2026128367453 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+    }
+   },
+   {
+    "kod": "A17",
+    "asama": "A",
+    "oturum": "fatura1",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 2 (Ankara)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 2660,
+    "id": "invoice-6dd30cd7-3132-423b-be53-86cfb2279950",
+    "numaraYanit": "TES2026128367454",
+    "autoSend": {
+     "ok": false,
+     "code": "integrator-session",
+     "message": "EDM oturumu sona ermiş. Belge TES2026128367454 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+    }
+   },
+   {
+    "kod": "A18",
+    "asama": "A",
+    "oturum": "fatura2",
+    "aliciTuru": "TCKN",
+    "alici": "Kişi (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 2205,
+    "id": "invoice-f8c6bb11-52f0-4802-bce4-35b561b8b814",
+    "numaraYanit": "TES2026128367455",
+    "autoSend": {
+     "ok": false,
+     "code": "integrator-session",
+     "message": "EDM oturumu sona ermiş. Belge TES2026128367455 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+    }
+   },
+   {
+    "kod": "A19",
+    "asama": "A",
+    "oturum": "yonetici",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 1 (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 2212,
+    "id": "invoice-6f5b5c5e-4dd5-48c8-b5a2-585c6ad1ddf5",
+    "numaraYanit": "TES2026128367456",
+    "autoSend": {
+     "ok": false,
+     "code": "integrator-session",
+     "message": "EDM oturumu sona ermiş. Belge TES2026128367456 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+    }
+   },
+   {
+    "kod": "A20",
+    "asama": "A",
+    "oturum": "fatura1",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 2 (Ankara)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 1053,
+    "id": "invoice-b9aa42aa-0066-4ff4-a748-d916737e6f57",
+    "numaraYanit": "TES2026128367457",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "B01",
+    "asama": "B",
+    "oturum": "fatura1",
+    "aliciTuru": "TCKN",
+    "alici": "Kişi (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 87,
+    "id": "invoice-dd6c7a63-cb32-4001-a884-f2fd7181b8a4",
+    "numaraYanit": "",
+    "autoSend": null
+   },
+   {
+    "kod": "B02",
+    "asama": "B",
+    "oturum": "fatura2",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 1 (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 114,
+    "id": "invoice-cc4b175c-05d0-4581-8967-1d978ae13f31",
+    "numaraYanit": "",
+    "autoSend": null
+   },
+   {
+    "kod": "B03",
+    "asama": "B",
+    "oturum": "yonetici",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 2 (Ankara)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 137,
+    "id": "invoice-64405c5e-2774-4524-a425-4c77953207c4",
+    "numaraYanit": "",
+    "autoSend": null
+   },
+   {
+    "kod": "B04",
+    "asama": "B",
+    "oturum": "fatura1",
+    "aliciTuru": "TCKN",
+    "alici": "Kişi (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 163,
+    "id": "invoice-e729d66f-91cf-4e02-9f11-04362f3a4115",
+    "numaraYanit": "",
+    "autoSend": null
+   },
+   {
+    "kod": "B05",
+    "asama": "B",
+    "oturum": "fatura2",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 1 (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 185,
+    "id": "invoice-03bc3056-7c32-4e62-98f9-63b7868cd599",
+    "numaraYanit": "",
+    "autoSend": null
+   },
+   {
+    "kod": "B06",
+    "asama": "B",
+    "oturum": "yonetici",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 2 (Ankara)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 205,
+    "id": "invoice-459752cf-e753-44f7-824d-5fdc1e6897e3",
+    "numaraYanit": "",
+    "autoSend": null
+   },
+   {
+    "kod": "B07",
+    "asama": "B",
+    "oturum": "fatura1",
+    "aliciTuru": "TCKN",
+    "alici": "Kişi (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 226,
+    "id": "invoice-0be90b00-21d5-44ad-a914-a8d1f17c82dd",
+    "numaraYanit": "",
+    "autoSend": null
+   },
+   {
+    "kod": "B08",
+    "asama": "B",
+    "oturum": "fatura2",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 1 (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 258,
+    "id": "invoice-1cc1096f-fed1-4e4a-8b41-144dfbdc2bcd",
+    "numaraYanit": "",
+    "autoSend": null
+   },
+   {
+    "kod": "B09",
+    "asama": "B",
+    "oturum": "yonetici",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 2 (Ankara)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 287,
+    "id": "invoice-b7ccc3da-fec9-454f-b511-3ad73155a473",
+    "numaraYanit": "",
+    "autoSend": null
+   },
+   {
+    "kod": "B10",
+    "asama": "B",
+    "oturum": "fatura1",
+    "aliciTuru": "TCKN",
+    "alici": "Kişi (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 324,
+    "id": "invoice-9f09f6ed-7008-45ec-9b01-660855de83f4",
+    "numaraYanit": "",
+    "autoSend": null
+   }
+  ],
+  "sahteEdmEnCokEszamanli": {
+   "Login": 20,
+   "SendSMM": 20
+  }
+ },
+ "bilgiler": [
+  {
+   "bilgi": "soğuk başlangıç: programın EDM oturum ve sözleşme önbelleği boşaltıldı (sabah ilk gönderim / program yeniden açıldı); her istek kendi girişini dener"
+  },
+  {
+   "bilgi": "EDM e-SMM servisine Login: 39 (en çok eşzamanlı 20); SendSMM 39 (en çok eşzamanlı 20); sözleşme (WSDL) okuma 2",
+   "veri": {
+    "izleme": {
+     "smm:WSDL": {
+      "sayi": 2,
+      "hata": 0,
+      "enCokEszamanli": 2,
+      "sureMs": {
+       "en": 22,
+       "medyan": 40,
+       "enCok": 40
+      }
+     },
+     "smm:Login": {
+      "sayi": 39,
+      "hata": 0,
+      "enCokEszamanli": 20,
+      "sureMs": {
+       "en": 251,
+       "medyan": 262,
+       "enCok": 426
+      }
+     },
+     "smm:SendSMM": {
+      "sayi": 39,
+      "hata": 0,
+      "enCokEszamanli": 20,
+      "sureMs": {
+       "en": 306,
+       "medyan": 709,
+       "enCok": 1048
+      }
+     }
+    }
+   }
+  },
+  {
+   "bilgi": "BULGU ADAYI (N4): 20 Login AYNI ANDA — programın giriş denetimi tek uçuş değil (oturum önbelleği boşken her istek kendi girişini yapar)"
+  },
+  {
+   "bilgi": "süreler: Kaydet ve Gönder {\"en\":1053,\"medyan\":2205,\"enCok\":2812} ms, Kes, Sonra Gönder {\"en\":87,\"medyan\":205,\"enCok\":324} ms; 30 sn'yi aşan Kaydet ve Gönder 0 (arayüzün kayıt zaman aşımı 30 sn: aşanlarda ekran \"sunucuda sürüyor olabilir\" derdi)"
+  }
+ ]
+}

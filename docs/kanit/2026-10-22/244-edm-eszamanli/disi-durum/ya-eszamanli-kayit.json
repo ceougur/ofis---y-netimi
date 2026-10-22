@@ -1,0 +1,710 @@
+{
+ "adim": "ya-eszamanli-kayit",
+ "baslik": "AYNI ANDA 31 istek, 3 oturumdan: 20 e-SMM Kaydet ve Gönder + 10 e-SMM Kes, Sonra Gönder + 1 yetkisiz (Personel)",
+ "durum": "geçti",
+ "denetimler": [
+  {
+   "gecti": true,
+   "denetim": "A01 (yonetici, VKN) HTTP 200 334 ms: Kaydet ve Gönder → TES2026474777241, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A02 (fatura1, VKN) HTTP 200 304 ms: Kaydet ve Gönder → TES2026474777240, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A03 (fatura2, TCKN) HTTP 200 298 ms: Kaydet ve Gönder → TES2026474777243, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A04 (yonetici, VKN) HTTP 200 296 ms: Kaydet ve Gönder → TES2026474777242, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A05 (fatura1, VKN) HTTP 200 357 ms: Kaydet ve Gönder → TES2026474777244, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A06 (fatura2, TCKN) HTTP 200 329 ms: Kaydet ve Gönder → TES2026474777245, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A07 (yonetici, VKN) HTTP 200 366 ms: Kaydet ve Gönder → TES2026474777246, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A08 (fatura1, VKN) HTTP 200 388 ms: Kaydet ve Gönder → TES2026474777247, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A09 (fatura2, TCKN) HTTP 200 426 ms: Kaydet ve Gönder → TES2026474777248, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A10 (yonetici, VKN) HTTP 200 452 ms: Kaydet ve Gönder → TES2026474777249, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A11 (fatura1, VKN) HTTP 200 478 ms: Kaydet ve Gönder → TES2026474777250, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A12 (fatura2, TCKN) HTTP 200 493 ms: Kaydet ve Gönder → TES2026474777251, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A13 (yonetici, VKN) HTTP 200 519 ms: Kaydet ve Gönder → TES2026474777252, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A14 (fatura1, VKN) HTTP 200 538 ms: Kaydet ve Gönder → TES2026474777253, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A15 (fatura2, TCKN) HTTP 200 563 ms: Kaydet ve Gönder → TES2026474777254, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A16 (yonetici, VKN) HTTP 200 579 ms: Kaydet ve Gönder → TES2026474777255, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A17 (fatura1, VKN) HTTP 200 604 ms: Kaydet ve Gönder → TES2026474777256, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A18 (fatura2, TCKN) HTTP 200 620 ms: Kaydet ve Gönder → TES2026474777257, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A19 (yonetici, VKN) HTTP 200 651 ms: Kaydet ve Gönder → TES2026474777258, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "A20 (fatura1, VKN) HTTP 200 660 ms: Kaydet ve Gönder → TES2026474777259, e-Belge durumu sent (beklenen: EDM'ye iletildi)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B01 (fatura1, TCKN) HTTP 200 124 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B02 (fatura2, VKN) HTTP 200 203 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B03 (yonetici, VKN) HTTP 200 302 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B04 (fatura1, TCKN) HTTP 200 368 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B05 (fatura2, VKN) HTTP 200 430 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B06 (yonetici, VKN) HTTP 200 481 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B07 (fatura1, TCKN) HTTP 200 521 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B08 (fatura2, VKN) HTTP 200 566 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B09 (yonetici, VKN) HTTP 200 606 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B10 (fatura1, TCKN) HTTP 200 654 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)"
+  },
+  {
+   "gecti": true,
+   "denetim": "yetkisiz kullanıcının (Personel) Kaydet ve Gönder'i 403 ile reddedildi, belge açılmadı, numara harcanmadı (0)"
+  }
+ ],
+ "kayit": {
+  "sahteEdm": {
+   "zorla": false,
+   "ariza": "durum",
+   "k": 5
+  },
+  "yetkisiz": {
+   "status": 403,
+   "sureMs": 659,
+   "kod": "FORBIDDEN",
+   "belge": 0
+  },
+  "sureler": {
+   "toplamMs": 672,
+   "kaydetVeGonder": {
+    "en": 296,
+    "medyan": 478,
+    "enCok": 660
+   },
+   "kesSonraGonder": {
+    "en": 124,
+    "medyan": 481,
+    "enCok": 654
+   },
+   "otuzSnUstu": 0
+  },
+  "izleme": {
+   "smm:WSDL": {
+    "sayi": 2,
+    "hata": 0,
+    "enCokEszamanli": 2,
+    "sureMs": {
+     "en": 39,
+     "medyan": 48,
+     "enCok": 48
+    }
+   },
+   "smm:Login": {
+    "sayi": 4,
+    "hata": 0,
+    "enCokEszamanli": 4,
+    "sureMs": {
+     "en": 19,
+     "medyan": 79,
+     "enCok": 85
+    }
+   },
+   "smm:SendSMM": {
+    "sayi": 20,
+    "hata": 0,
+    "enCokEszamanli": 6,
+    "sureMs": {
+     "en": 13,
+     "medyan": 18,
+     "enCok": 136
+    }
+   }
+  },
+  "istekler": [
+   {
+    "kod": "A01",
+    "asama": "A",
+    "oturum": "yonetici",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 1 (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 334,
+    "id": "invoice-357fc18b-85a9-4226-b016-400b1a22dbac",
+    "numaraYanit": "TES2026474777241",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "A02",
+    "asama": "A",
+    "oturum": "fatura1",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 2 (Ankara)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 304,
+    "id": "invoice-bab15c58-8e2f-423c-84b5-da8defd9f354",
+    "numaraYanit": "TES2026474777240",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "A03",
+    "asama": "A",
+    "oturum": "fatura2",
+    "aliciTuru": "TCKN",
+    "alici": "Kişi (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 298,
+    "id": "invoice-f93df2ab-a6af-45fa-9294-512ab4267d15",
+    "numaraYanit": "TES2026474777243",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "A04",
+    "asama": "A",
+    "oturum": "yonetici",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 1 (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 296,
+    "id": "invoice-893c9414-f45f-4c45-8d7f-d6b92fe31287",
+    "numaraYanit": "TES2026474777242",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "A05",
+    "asama": "A",
+    "oturum": "fatura1",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 2 (Ankara)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 357,
+    "id": "invoice-b4ca6185-a621-41a9-a753-813617b7d08a",
+    "numaraYanit": "TES2026474777244",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "A06",
+    "asama": "A",
+    "oturum": "fatura2",
+    "aliciTuru": "TCKN",
+    "alici": "Kişi (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 329,
+    "id": "invoice-35807279-ec6a-4ee5-a660-f9be3c91d918",
+    "numaraYanit": "TES2026474777245",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "A07",
+    "asama": "A",
+    "oturum": "yonetici",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 1 (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 366,
+    "id": "invoice-859e0a02-cf9f-47d1-81e2-a77ef78c469f",
+    "numaraYanit": "TES2026474777246",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "A08",
+    "asama": "A",
+    "oturum": "fatura1",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 2 (Ankara)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 388,
+    "id": "invoice-a0aca745-3a31-45f3-afa9-ab2057ed1101",
+    "numaraYanit": "TES2026474777247",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "A09",
+    "asama": "A",
+    "oturum": "fatura2",
+    "aliciTuru": "TCKN",
+    "alici": "Kişi (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 426,
+    "id": "invoice-4d029107-435a-47fe-baf2-dac3eb5ac792",
+    "numaraYanit": "TES2026474777248",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "A10",
+    "asama": "A",
+    "oturum": "yonetici",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 1 (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 452,
+    "id": "invoice-7a272dbc-d821-4f90-9f84-3067562f666f",
+    "numaraYanit": "TES2026474777249",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "A11",
+    "asama": "A",
+    "oturum": "fatura1",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 2 (Ankara)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 478,
+    "id": "invoice-a95ee637-ead0-41cd-a8a3-94ac87d5f9db",
+    "numaraYanit": "TES2026474777250",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "A12",
+    "asama": "A",
+    "oturum": "fatura2",
+    "aliciTuru": "TCKN",
+    "alici": "Kişi (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 493,
+    "id": "invoice-24dbb14e-5d93-4852-9712-aa59cb7ec6a8",
+    "numaraYanit": "TES2026474777251",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "A13",
+    "asama": "A",
+    "oturum": "yonetici",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 1 (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 519,
+    "id": "invoice-c571a8b3-bedd-4bbe-a77c-935decc4d265",
+    "numaraYanit": "TES2026474777252",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "A14",
+    "asama": "A",
+    "oturum": "fatura1",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 2 (Ankara)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 538,
+    "id": "invoice-308d366c-04ce-4f28-941b-480f8b6c05d2",
+    "numaraYanit": "TES2026474777253",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "A15",
+    "asama": "A",
+    "oturum": "fatura2",
+    "aliciTuru": "TCKN",
+    "alici": "Kişi (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 563,
+    "id": "invoice-6f169840-6315-42b8-9399-f22835df27d5",
+    "numaraYanit": "TES2026474777254",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "A16",
+    "asama": "A",
+    "oturum": "yonetici",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 1 (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 579,
+    "id": "invoice-723cc5b1-0fab-4df1-b6d8-18e5688e7507",
+    "numaraYanit": "TES2026474777255",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "A17",
+    "asama": "A",
+    "oturum": "fatura1",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 2 (Ankara)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 604,
+    "id": "invoice-a456b29f-1f36-44f2-ac9b-6fa8841d146a",
+    "numaraYanit": "TES2026474777256",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "A18",
+    "asama": "A",
+    "oturum": "fatura2",
+    "aliciTuru": "TCKN",
+    "alici": "Kişi (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 620,
+    "id": "invoice-44e0e9b4-e9f1-48f1-b743-a576c9cc56b2",
+    "numaraYanit": "TES2026474777257",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "A19",
+    "asama": "A",
+    "oturum": "yonetici",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 1 (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 651,
+    "id": "invoice-eae1e135-05a8-4697-8645-cc56bd991025",
+    "numaraYanit": "TES2026474777258",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "A20",
+    "asama": "A",
+    "oturum": "fatura1",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 2 (Ankara)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 660,
+    "id": "invoice-01824df8-f759-44e2-856e-52610be560eb",
+    "numaraYanit": "TES2026474777259",
+    "autoSend": {
+     "ok": true,
+     "code": "",
+     "message": "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."
+    }
+   },
+   {
+    "kod": "B01",
+    "asama": "B",
+    "oturum": "fatura1",
+    "aliciTuru": "TCKN",
+    "alici": "Kişi (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 124,
+    "id": "invoice-63f8c736-73f8-43b3-b728-118473c24906",
+    "numaraYanit": "",
+    "autoSend": null
+   },
+   {
+    "kod": "B02",
+    "asama": "B",
+    "oturum": "fatura2",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 1 (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 203,
+    "id": "invoice-978d209c-f11b-4f62-901f-641f09d1b157",
+    "numaraYanit": "",
+    "autoSend": null
+   },
+   {
+    "kod": "B03",
+    "asama": "B",
+    "oturum": "yonetici",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 2 (Ankara)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 302,
+    "id": "invoice-1ad62751-5ad6-43e1-b0e4-58e99d472d38",
+    "numaraYanit": "",
+    "autoSend": null
+   },
+   {
+    "kod": "B04",
+    "asama": "B",
+    "oturum": "fatura1",
+    "aliciTuru": "TCKN",
+    "alici": "Kişi (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 368,
+    "id": "invoice-2e61af3e-855e-454d-9717-5ff7ff3b58f2",
+    "numaraYanit": "",
+    "autoSend": null
+   },
+   {
+    "kod": "B05",
+    "asama": "B",
+    "oturum": "fatura2",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 1 (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 430,
+    "id": "invoice-717fceeb-9cc6-4ee2-8e05-b1d005831633",
+    "numaraYanit": "",
+    "autoSend": null
+   },
+   {
+    "kod": "B06",
+    "asama": "B",
+    "oturum": "yonetici",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 2 (Ankara)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 481,
+    "id": "invoice-4f591411-ca46-4a47-a732-7330b0b162f8",
+    "numaraYanit": "",
+    "autoSend": null
+   },
+   {
+    "kod": "B07",
+    "asama": "B",
+    "oturum": "fatura1",
+    "aliciTuru": "TCKN",
+    "alici": "Kişi (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 521,
+    "id": "invoice-c3ccd481-496b-4363-9858-a904a898ba72",
+    "numaraYanit": "",
+    "autoSend": null
+   },
+   {
+    "kod": "B08",
+    "asama": "B",
+    "oturum": "fatura2",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 1 (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 566,
+    "id": "invoice-4eb23594-f90f-46e8-b706-60dfad959506",
+    "numaraYanit": "",
+    "autoSend": null
+   },
+   {
+    "kod": "B09",
+    "asama": "B",
+    "oturum": "yonetici",
+    "aliciTuru": "VKN",
+    "alici": "Şirket 2 (Ankara)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 606,
+    "id": "invoice-31b65101-c25f-4496-956a-a1ffbe996445",
+    "numaraYanit": "",
+    "autoSend": null
+   },
+   {
+    "kod": "B10",
+    "asama": "B",
+    "oturum": "fatura1",
+    "aliciTuru": "TCKN",
+    "alici": "Kişi (İstanbul)",
+    "status": 200,
+    "askida": false,
+    "sureMs": 654,
+    "id": "invoice-aa9c6a0a-5c14-4687-8c40-66cba2441eb9",
+    "numaraYanit": "",
+    "autoSend": null
+   }
+  ]
+ },
+ "bilgiler": [
+  {
+   "bilgi": "soğuk başlangıç: programın EDM oturum ve sözleşme önbelleği boşaltıldı (sabah ilk gönderim / program yeniden açıldı); her istek kendi girişini dener"
+  },
+  {
+   "bilgi": "EDM e-SMM servisine Login: 4 (en çok eşzamanlı 4); SendSMM 20 (en çok eşzamanlı 6); sözleşme (WSDL) okuma 2",
+   "veri": {
+    "izleme": {
+     "smm:WSDL": {
+      "sayi": 2,
+      "hata": 0,
+      "enCokEszamanli": 2,
+      "sureMs": {
+       "en": 39,
+       "medyan": 48,
+       "enCok": 48
+      }
+     },
+     "smm:Login": {
+      "sayi": 4,
+      "hata": 0,
+      "enCokEszamanli": 4,
+      "sureMs": {
+       "en": 19,
+       "medyan": 79,
+       "enCok": 85
+      }
+     },
+     "smm:SendSMM": {
+      "sayi": 20,
+      "hata": 0,
+      "enCokEszamanli": 6,
+      "sureMs": {
+       "en": 13,
+       "medyan": 18,
+       "enCok": 136
+      }
+     }
+    }
+   }
+  },
+  {
+   "bilgi": "BULGU ADAYI (N4): 4 Login AYNI ANDA — programın giriş denetimi tek uçuş değil (oturum önbelleği boşken her istek kendi girişini yapar)"
+  },
+  {
+   "bilgi": "süreler: Kaydet ve Gönder {\"en\":296,\"medyan\":478,\"enCok\":660} ms, Kes, Sonra Gönder {\"en\":124,\"medyan\":481,\"enCok\":654} ms; 30 sn'yi aşan Kaydet ve Gönder 0 (arayüzün kayıt zaman aşımı 30 sn: aşanlarda ekran \"sunucuda sürüyor olabilir\" derdi)"
+  }
+ ]
+}
