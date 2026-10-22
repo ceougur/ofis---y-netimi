@@ -1,0 +1,12 @@
+  yeni #1: ön koşul OLUŞTU · yeşil
+  yeni #2: ön koşul OLUŞTU · KIRMIZI
+  yeni #3: ön koşul OLUŞTU · yeşil
+  kurtarma-yeni #1: ön koşul OLUŞTU · yeşil
+  kurtarma-yeni #2: ön koşul OLUŞTU · yeşil
+  kurtarma-yeni #3: ön koşul OLUŞTU · yeşil
+
+CPU=1 LEAD=0 TRIALS=3
+yeni: 3 deneme · ön koşul oluştu 3 · ön koşullu kırmızı 1 · ön koşulsuz kırmızı 0 · kıpırdatma anı (ms) 19/42/28
+  ✗ yeni: beklenen dışı sonuç
+kurtarma-yeni: 3 deneme · ön koşul oluştu 3 · ön koşullu kırmızı 0 · ön koşulsuz kırmızı 0 · hatırlatma denetimi (fare yerleştikten ms; * = hatırlatma ekranda) 241/266/298
+1 denetim geçti, 1 başarısız

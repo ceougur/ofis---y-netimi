@@ -1,0 +1,56 @@
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [-200] · hatırlatma ekranda hayır
+  yeni #1: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [-106,413] · hatırlatma ekranda hayır
+  yeni #2: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [-100] · hatırlatma ekranda hayır
+  yeni #3: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [-92] · hatırlatma ekranda hayır
+  yeni #4: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [-103] · hatırlatma ekranda hayır
+  yeni #5: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [-89] · hatırlatma ekranda hayır
+  yeni #6: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [-95] · hatırlatma ekranda hayır
+  yeni #7: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [-84] · hatırlatma ekranda hayır
+  yeni #8: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [-105] · hatırlatma ekranda hayır
+  yeni #9: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [-85] · hatırlatma ekranda hayır
+  yeni #10: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [-105] · hatırlatma ekranda hayır
+  yeni-gec #1: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [-91] · hatırlatma ekranda hayır
+  yeni-gec #2: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [-91] · hatırlatma ekranda hayır
+  yeni-gec #3: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [-87] · hatırlatma ekranda hayır
+  yeni-gec #4: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [-89] · hatırlatma ekranda hayır
+  yeni-gec #5: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [-98] · hatırlatma ekranda hayır
+  yeni-gec #6: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [-76] · hatırlatma ekranda hayır
+  yeni-gec #7: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [-91] · hatırlatma ekranda hayır
+  yeni-gec #8: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [-97] · hatırlatma ekranda hayır
+  yeni-gec #9: ön koşul OLUŞTU · yeşil
+    tanı: kurtarma hatırlatması denetimi (bildirimden ms) [-90] · hatırlatma ekranda hayır
+  yeni-gec #10: ön koşul OLUŞTU · yeşil
+  kurtarma-sira #1: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-sira #2: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-sira #3: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-sira #4: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-sira #5: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-sira #6: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-sira #7: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-sira #8: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-sira #9: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-sira #10: ön koşul OLUŞTU · KIRMIZI
+
+CPU=1 LEAD=0 TRIALS=10
+yeni: 10 deneme · ön koşul oluştu 10 · ön koşullu kırmızı 0 · ön koşulsuz kırmızı 0 · kıpırdatma anı (ms) 25/31/30/28/31/30/31/30/25/31
+yeni-gec: 10 deneme · ön koşul oluştu 10 · ön koşullu kırmızı 0 · ön koşulsuz kırmızı 0 · kıpırdatma anı (ms) 4046/4047/4049/4047/4047/4046/4048/4047/4048/4048
+kurtarma-sira: 10 deneme · ön koşul oluştu 10 · ön koşullu kırmızı 10 · ön koşulsuz kırmızı 0 · hatırlatma denetimi (fare yerleştikten ms; * = hatırlatma ekranda) 278+285*/286+291*/269+274*/282+288*/254+261*/246+251*/241+247*/264+271*/272+277*/290+295*
+3 denetim geçti, 0 başarısız
