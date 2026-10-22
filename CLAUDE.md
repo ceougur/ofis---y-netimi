@@ -137,6 +137,8 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
     UDP'de dışlanmış aynı blokta dolaştı. Kök neden ancak gerçek günlükle bulundu.)
 19. ZİNCİRDE HATA DURDURUR. Birden çok adımı tek komutta zincirlerken `set -euo pipefail`; bir adım düşerse commit/push/rapor
     yapılmaz. (10.10: belge betiği düştü, commit yine çalıştı ve iletisi yapılmamış işi "yapıldı" diye yazdı — d2f9ddc.)
+    DİKKAT (22.10.2026, denendi): Claude Code Bash aracında `set -e` ETKİSİZ (`set -euo pipefail; false | tail -1; echo x` → x yazar); zincirde `&&` ya da her
+    adımdan sonra `|| exit 1` kullanılır. (Aday 3'te tam npm test kırmızıyken e2e döngüsü sürdü.)
 20. ARA SIRA KIRMIZI ZORLA ÜRETİLİR. "Ara sıra" kırmızı adım yeniden deneme ya da bekleme süresi uzatmayla geçiştirilmez: yarışın
     ön koşulu zorla oluşturulan bir betikle (ör. olayı gecikmenin içine denk getir, CPU yavaşlat) önce kırmızı üretilir; düzeltmenin
     yeşili yalnız ön koşulun GERÇEKTEN oluştuğu denemelerde sayılır; düşen isteğin kimin olduğu (kullanıcı/arka plan) kayıttan okunur.
