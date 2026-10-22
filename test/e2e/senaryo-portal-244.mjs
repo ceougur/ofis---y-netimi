@@ -122,7 +122,7 @@ const button = target =>
   target.$eval(BTN, node => {
     const why = node.getAttribute("aria-describedby") ? document.getElementById(node.getAttribute("aria-describedby")) : null;
     const prev = node.previousElementSibling;
-    return { text: node.textContent.trim(), disabled: node.disabled, why: why ? why.textContent.trim() : "", whyVisible: Boolean(why && why.offsetParent !== null), afterExport: Boolean(prev && prev.classList.contains("hof-rep-export") && /Liste - Excel/.test(prev.textContent)) };
+    return { text: node.textContent.trim(), disabled: node.disabled, why: why ? why.textContent.trim() : "", whyVisible: Boolean(why && why.offsetParent !== null), afterExport: Boolean(prev && prev.classList.contains("hof-rep-export") && prev.querySelector('[data-out="xlsx"]')) };
   }).catch(() => null);
 
 try {
@@ -138,7 +138,8 @@ try {
     ok(b, `“e-Fatura Portalı” düğmesi Fatura üst satırında (${JSON.stringify(b)})`);
     if (!b) return;
     ok(b.text === "e-Fatura Portalı" && titleCase(b.text) === b.text, `ad yazım düzeninde: “${b.text}”`);
-    ok(b.afterExport, "Liste - Excel'in hemen yanında");
+    // UI11 (madde 8): "Liste - Excel" artık dışa aktarım grubunda tek ad "Excel" (PDF'in yanında); düğme o grubun hemen yanında.
+    ok(b.afterExport, "dışa aktarım grubunun (PDF / Excel) hemen yanında");
     ok(b.disabled === true, "pasif");
     ok(b.whyVisible && /Entegratör Ayarları'nda web servis kullanıcı adını ve parolasını kaydedin/.test(b.why), `nedeni görünür yazı: “${b.why}”`);
     await shot(page, "pasif-ayar-yok");
