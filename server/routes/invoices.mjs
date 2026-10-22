@@ -74,7 +74,12 @@ const uncertainSend = row => (row.eStatus || "none") === "none" && Boolean(row.e
 const UNCERTAIN_TEXT = "Son e-Belge gönderiminin sonucu belirsiz (entegratöre bağlantı koptu; belge ulaşmış olabilir). Önce Durum Sorgula: belge entegratörde yoksa yeniden gönderilir ya da değiştirilir.";
 // EDM: hiç gönderilmemiş belgenin durumu sorulunca "Fatura bulunamadı" (hata kodu 11017) — gerçek test ortamında görüldü (16.10.2026,
 // docs/kanit/2026-10-16/edm-bilinmeyen).
-const remoteMissing = error => String(error?.extra?.integratorCode || error?.integratorCode || "") === "11017";
+// 2.4.4 madde 22: "belge entegratörde YOK" kodları servis (profil) başınadır, TEK yerde. e-SMM servisinin (ESmmEDM.svc) bu kodu DOĞRULANMADI (madde 24,
+// gerçek test hesabı): doğrulanana dek e-SMM'de hiçbir hata "entegratörde yok" sayılmaz — belirsiz e-SMM gönderimi Durum Sorgula'dan temizlenmez,
+// yeniden gönderilmez, "Hata"daki e-SMM yalnız programda iptal edilmez (EDM'de belge varken numara ikinci kez kullanılmasın / geçerli belge programda
+// iptal görünmesin). Doğrulanınca kod buraya yazılır.
+const MISSING_CODES = Object.freeze({ default: new Set(["11017"]), ESMM: new Set() });
+const remoteMissing = (error, profile = "") => (MISSING_CODES[profile] || MISSING_CODES.default).has(String(error?.extra?.integratorCode || error?.integratorCode || ""));
 const E_VIEWABLE = new Set(["processing", "sent", "accepted", "rejected", "cancelled"]);
 // Resmî görüntü önbelleğe yalnız son hâlinde alınır (işlenirken entegratörün görüntüsü değişebilir).
 const E_FINAL_VIEW = new Set(["sent", "accepted", "rejected", "cancelled"]);
@@ -143,6 +148,14 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   const SEND_BUDGET_MS = Number(config.edocSendBudgetMs) > 0 ? Number(config.edocSendBudgetMs) : 10_000;
   // e-SMM gönderimi hazır olana dek kapalı (config.mjs esmmEnabled): eski "esmm: true" kaydı da etkisizdir (makbuz kâğıt).
   const esmmEnabled = edocEnabled && config.esmmEnabled === true;
+  // 2.4.4 madde 22 (E1): e-Belge GÖNDERİM KAPILARININ TEK kuralı — bu tür ve bu profil entegratöre e-Belge olarak gider mi? Gönderilecekler (liste ve
+  // SQL), kartın Gönder / Durum Sorgula / Resmî Görüntü / Portala Taslak düğmeleri, "Kes, Sonra Gönder", kayıtta O1 sırası, kayıtta gönderim denetimi,
+  // toplu XML ve /meta bununla karar verir. INVOICE_KINDS.smm.send false KALIR: e-SMM yalnız e-SMM açıkken (config.esmmEnabled) ve ESMM profilli
+  // makbuzda gönderilir; bayrak kapalıyken 2.4.0'dan kalan numaralı ESMM makbuzları ve kâğıt SMM (KAGIT) hiçbir gönderim yoluna girmez (eski davranış).
+  const sendKind = (kind, profile) => Boolean(INVOICE_KINDS[kind]?.send) || (kind === "smm" && profile === "ESMM" && esmmEnabled);
+  // Belgenin e-Belge profili: Müşteri Fişi Olarak Bırakılmış (withdrawn) belge KAGIT görünür, e-Belge olarak e_profile'ıyla gönderilir.
+  const eProfileOf = row => (row?.eStatus === "withdrawn" ? row.eProfile : row?.profile) || "";
+  const sendsDoc = row => sendKind(row.kind, eProfileOf(row));
   // 2.4.2 (kullanıcı denemesi 17.10.2026): EDM'nin test hesabı ORTAKTIR; test serisi 1'den başlarsa numara başka firmanınkiyle çakışır (EDM 11048).
   // Test serisi her yıl ilk kullanımda firmaya özgü rastgele büyük numaradan başlar; başlangıç ayara yazılır (önizleme ile kayıt aynı numarayı görür).
   const testSeriesStart = typeof config.testSeriesStart === "function" ? config.testSeriesStart : () => randomInt(100_000_001, 900_000_000);
@@ -682,7 +695,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     return out;
   }
 
-  const unsentNumbered = row => row.status === "issued" && Boolean(INVOICE_KINDS[row.kind]?.send) && row.profile !== "KAGIT" && Boolean(row.number) && ["", "none", "error"].includes(row.eStatus || "");
+  const unsentNumbered = row => row.status === "issued" && sendKind(row.kind, row.profile) && row.profile !== "KAGIT" && Boolean(row.number) && ["", "none", "error"].includes(row.eStatus || "");
   // unsentSql ile aynı kural: canlı ortamda test serisinden numara almış, gönderilmemiş belge (gönderilemez; iptal edilir).
   const testSeriesInLive = row => unsentNumbered(row) && TEST_SERIES_SET.has(row.series) && edocLive && settings().integrator.env === "live";
   const TEST_LIVE_TEXT = number => `${number} test ortamında numara almış bir belgedir (seri ${String(number || "").slice(0, 3)}); test serisi canlı ortamda gönderilmez. İptal Et ile iptal edip yeniden kesin: firmanızın serisinden numara alır.`;
@@ -1024,15 +1037,16 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       returnBlock: row.status !== "issued" ? "" : bankFee ? bankFeeText(bankFee) : kind?.return ? "" : row.kind === "smm" ? "Serbest meslek makbuzundan iade belgesi olmaz; yanlışsa iptal edin." : returnable.some(item => item.left > 0) ? "" : "İade edilebilecek kalem kalmadı; faturanın tamamı iade edildi.",
       repeat: repeatOf(row.id),
       canRepeat: manage && row.status === "issued" && !kind?.return,
-      canSend: edocEnabled && manage && row.status === "issued" && kind?.send && (row.profile !== "KAGIT" || row.eStatus === "withdrawn") && E_SENDABLE.has(row.eStatus || "none") && !sendBlockOf(row) && !buyerBlockOf(row) && !testSeriesInLive(row),
+      canSend: edocEnabled && manage && row.status === "issued" && sendsDoc(row) && (row.profile !== "KAGIT" || row.eStatus === "withdrawn") && E_SENDABLE.has(row.eStatus || "none") && !sendBlockOf(row) && !buyerBlockOf(row) && !testSeriesInLive(row),
       canWithdraw: edocEnabled && manage && row.status === "issued" && row.eStatus === "waiting",
       sendBlock: edocEnabled ? sendBlockOf(row) || buyerBlockOf(row) || (testSeriesInLive(row) ? TEST_LIVE_TEXT(row.number) : "") : "",
-      canRefresh: edocEnabled && manage && kind?.send && row.profile !== "KAGIT" && (E_TRACKED.has(row.eStatus) || uncertainSend(row)),
+      canRefresh: edocEnabled && manage && sendKind(row.kind, row.profile) && row.profile !== "KAGIT" && (E_TRACKED.has(row.eStatus) || uncertainSend(row)),
       // İz 7.3: portala taslak (ayar açıkken ya da belge zaten taslaktaysa yenileme). draftStale: taslak yüklendikten sonra belge düzenlendi.
-      canDraft: edocEnabled && manage && row.status === "issued" && kind?.send && (row.profile !== "KAGIT" || row.eStatus === "withdrawn") && E_SENDABLE.has(row.eStatus || "none") && !sendBlockOf(row) && !buyerBlockOf(row) && !testSeriesInLive(row) && (row.eStatus === "draft" || settings().eOptions.draftUpload === true),
+      // 2.4.4 madde 22: e-SMM'de portala taslak yok (adapters.mjs: einvoice-draft-unsupported) — taslak ayarı açıkken de makbuz Gönder ile gider.
+      canDraft: edocEnabled && manage && row.status === "issued" && sendsDoc(row) && eProfileOf(row) !== "ESMM" && (row.profile !== "KAGIT" || row.eStatus === "withdrawn") && E_SENDABLE.has(row.eStatus || "none") && !sendBlockOf(row) && !buyerBlockOf(row) && !testSeriesInLive(row) && (row.eStatus === "draft" || settings().eOptions.draftUpload === true),
       draftStale: row.eStatus === "draft" && Boolean(row.updatedAt && row.eAt && row.updatedAt > row.eAt),
       // Resmî görüntü (entegratörün ürettiği PDF): entegratöre ulaşmış belge (hata alanlar hariç).
-      canOfficial: edocEnabled && kind?.send && row.profile !== "KAGIT" && E_VIEWABLE.has(row.eStatus) && Boolean(row.ettn),
+      canOfficial: edocEnabled && sendKind(row.kind, row.profile) && row.profile !== "KAGIT" && E_VIEWABLE.has(row.eStatus) && Boolean(row.ettn),
       edocEnabled,
     };
   }
@@ -1234,12 +1248,14 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // Gönderilecekler: "Kes, Sonra Gönder" ile numarasız bekleyen ya da numara almış ama entegratöre ulaşmamış (Gönderilmedi, Sonucu Belirsiz, Hata) kendi
   // e-Belgemiz. Kâğıt belge / Müşteri Fişi ve listeden silinen (withdrawn) girmez; canlı ortamda test serisinden numara almış belge gönderilemeyeceği
   // için girmez (iptal edilir).
+  // 2.4.4 madde 22: tür/profil koşulu sendKind'ın SQL karşılığı (e-SMM: yalnız açıkken, ESMM profilli makbuz).
   function unsentSql() {
     const sendKinds = Object.entries(INVOICE_KINDS).filter(([, value]) => value.send).map(([key]) => key);
     const live = edocEnabled && liveEnv(settings());
     const testSeries = [...TEST_SERIES_SET];
+    const kinds = `(i.kind IN (${sendKinds.map(() => "?").join(", ")})${esmmEnabled ? " OR (i.kind = 'smm' AND i.profile = 'ESMM')" : ""})`;
     return {
-      sql: `(i.status = 'issued' AND (i.e_status = 'waiting' OR (COALESCE(i.e_status, '') IN ('', 'none', 'error') AND i.profile <> 'KAGIT' AND COALESCE(i.number, '') <> '' AND i.kind IN (${sendKinds.map(() => "?").join(", ")})${live ? ` AND i.series NOT IN (${testSeries.map(() => "?").join(", ")})` : ""})))`,
+      sql: `(i.status = 'issued' AND (i.e_status = 'waiting' OR (COALESCE(i.e_status, '') IN ('', 'none', 'error') AND i.profile <> 'KAGIT' AND COALESCE(i.number, '') <> '' AND ${kinds}${live ? ` AND i.series NOT IN (${testSeries.map(() => "?").join(", ")})` : ""})))`,
       args: [...sendKinds, ...(live ? testSeries : [])],
     };
   }
@@ -1880,11 +1896,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const s = doc.settings;
     const meta = doc.meta;
     // "Kes, Sonra Gönder" (e-Belge): bütün etkiler şimdi işlenir; resmî numara entegratöre gönderilirken verilir.
-    let later = Boolean(!edit && defer && edocEnabled && meta.own && meta.send && doc.profile !== "KAGIT");
+    let later = Boolean(!edit && defer && edocEnabled && meta.own && sendKind(doc.kind, doc.profile) && doc.profile !== "KAGIT");
     // Dar kontrol 2.4.3 (O1): numara kayıtta verilecekse (Kaydet ve Gönder, düz Kaydet, toplu kayıt, banka iade faturası) ve aynı seride daha eski
     // tarihli gönderilebilir numarasız bekleyen varsa yeni belge numara ALMAZ: kaydedilir, numarasız Gönderilecekler'e girer (yoksa eskiler kalıcı
     // kronoloji engeline düşerdi). Kural tek yerde (olderPending); gönderimdeki numara (numberForSend) aynı kuralı işlem içinde yeniden uygular.
-    const deferable = Boolean(!edit && edocEnabled && meta.own && meta.send && doc.profile !== "KAGIT");
+    const deferable = Boolean(!edit && edocEnabled && meta.own && sendKind(doc.kind, doc.profile) && doc.profile !== "KAGIT");
     let orderHeld = 0;
     // e-Belge: alıcı ve satıcı bilgisi eksiksiz olmalı (GİB doğrulaması).
     const problems = issueBlockers(doc);
@@ -2346,7 +2362,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const repeated = safeRepeats();
     const s = settings();
     ok(res, {
-      kinds: Object.fromEntries(Object.entries(INVOICE_KINDS).map(([key, value]) => [key, { label: value.label, short: value.short, side: value.side, return: value.return, own: value.own, send: value.send }])),
+      // send: bu tür HERHANGİ bir profilde gönderilir mi (madde 22: serbest meslek makbuzu yalnız e-SMM açıkken, ESMM profiliyle) — istemci profili
+      // ayrıca denetler (kâğıt belgede "Kaydet ve Gönder" yok).
+      kinds: Object.fromEntries(Object.entries(INVOICE_KINDS).map(([key, value]) => [key, { label: value.label, short: value.short, side: value.side, return: value.return, own: value.own, send: Object.keys(PROFILES).some(profile => sendKind(key, profile)) }])),
       scenarios: Object.fromEntries(Object.entries(SCENARIOS).map(([key, value]) => [key, { ...value, side: INVOICE_KINDS[value.kind].side }])),
       profiles: PROFILES,
       vatRates: VAT_RATES,
@@ -2648,7 +2666,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     try {
       remote = await integrator().status({ invoice: doc });
     } catch (error) {
-      if (!remoteMissing(error)) throw error;
+      if (!remoteMissing(error, row.profile)) throw error;
       clearE(user, row.id, "Taslak EDM portalında bulunamadı (portaldan silinmiş); belge e-Belge olarak yeniden gönderilebilir.");
       return;
     }
@@ -2940,7 +2958,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     try {
       remote = await integrator().status({ invoice: detail(row.id, user) });
     } catch (error) {
-      if (row.profile !== "ESMM" && remoteMissing(error)) return true;
+      if (remoteMissing(error, row.profile)) return true;
       const code = error?.extra?.code || error?.code || "";
       const reason = String(error?.message || error).slice(0, 300);
       if (["integrator-unreachable", "integrator-uncertain"].includes(code)) throw new HttpError(502, `${since} EDM'ye ulaşılamadı (${reason}). İptal yapılmadı; bağlantı kurulunca yeniden deneyin.`, { code: "einvoice-cancel-unreachable", lastDay: limit.lastDay });
@@ -3003,7 +3021,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // Taslak / Hata sanılan belge EDM'de oluşturulmuş çıktıysa süre ona da uygulanır.
       if (current?.status) assertWindow(existing, current.status);
       if (current?.status === "processing") {
-        throw new HttpError(409, "e-Arşiv fatura EDM'de henüz işleniyor; iptal ancak işlem bitince yapılabilir. Birkaç dakika sonra Durum Sorgula ile bakıp yeniden deneyin.", { code: "einvoice-processing" });
+        throw new HttpError(409, `${existing.profile === "ESMM" ? "e-SMM" : "e-Arşiv fatura"} EDM'de henüz işleniyor; iptal ancak işlem bitince yapılabilir. Birkaç dakika sonra Durum Sorgula ile bakıp yeniden deneyin.`, { code: "einvoice-processing" });
       }
       let result;
       try {
@@ -3011,7 +3029,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       } catch (error) {
         // 2.4.2 (kullanıcı denemesi 17.10.2026): EDM'nin reddettiği ("Hata") belge EDM'de yoktur — iptal "Fatura bulunamadı" (11017) döner.
         // Belge yalnız programda iptal edilir (entegratörde iptal edilecek bir şey yok); başka her hata iptali durdurur.
-        if (!(remoteMissing(error) && existing.eStatus === "error")) throw error;
+        if (!(remoteMissing(error, existing.profile) && existing.eStatus === "error")) throw error;
         const row = cancel(user, existing.id, { ...options, confirmExternal: true });
         store.tx(() => {
           store.run("UPDATE invoices SET e_message = ? WHERE id = ?", "EDM belgeyi kabul etmemişti (EDM'de yok); yalnız programda iptal edildi.", existing.id);
@@ -3268,7 +3286,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // hataları GEÇİCİDİR: belge düzeltilince AYNI seride numara alır, daha yeni belge önüne geçmemeli (B1).
   const PERMANENT_SEND_CODES = new Set(["chronology", "buyer-is-efatura"]);
   // Bağlantı / entegratör hesabı hatası bütün belgelerde aynı düşer: Tümünü Gönder ilk görüldüğünde durur, kalanlara numara verilmez (BİLGİ, r7).
-  const TURN_STOP_CODES = new Set(["integrator-unreachable", "integrator-url", "integrator-credentials", "integrator-login"]);
+  // integrator-reference (2.4.4 madde 22): entegratör belgeyi başka numarayla kaydetti — kendi numarasını veriyorsa kalan belgeler de ayrışırdı.
+  const TURN_STOP_CODES = new Set(["integrator-unreachable", "integrator-url", "integrator-credentials", "integrator-login", "integrator-reference"]);
   const UNREACHABLE_TEXT = "EDM'ye ulaşılamadı; bağlantı gelince yeniden deneyin.";
   const LOGIN_REJECTED_TEXT = "Entegratör girişi reddedildi (kullanıcı adı/parola). Kalan belgelere numara verilmedi; Entegratör Ayarları'nı düzeltip yeniden deneyin.";
   // Dar kontrol 2.4.3 (ek 1): entegratör GİRİŞİ reddedildi mi (yanlış kullanıcı adı/parola, hesap)? EDM girişte de "isteği reddetti" der; ayıran
@@ -3352,7 +3371,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // önbellekteyse ağa çıkılmaz.
   // Kayıtta hemen gönderim denenecek mi (entegratöre gidilecek mi)?
   function sendWouldContact(doc, body) {
-    if (!edocEnabled || body?.eSend === "later" || !doc.meta?.own || !doc.meta?.send || doc.profile === "KAGIT") return false;
+    if (!edocEnabled || body?.eSend === "later" || !doc.meta?.own || !sendKind(doc.kind, doc.profile) || doc.profile === "KAGIT") return false;
     return body?.eSend === "now" || settings().integrator?.autoSend === true;
   }
   // Dar kontrol 2 (B3): geçerli oturum ve son 5 dk içinde EDM yanıtı varsa giriş yapılmaz (edm.mjs ensureSession); yoksa giriş NUMARADAN ÖNCE.
@@ -3480,6 +3499,17 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     }
     throw new HttpError(409, `Belgedeki alıcı numarası (${taxNo}) e-Fatura mükellefine ait; ona e-Arşiv fatura kesilemez (GİB). Belgedeki numara carinin şimdiki numarasıyla aynı olmadığı için cari kartı işaretlenmedi: alıcı firmanın carisini VKN'siyle açıp faturayı ona e-Fatura olarak kesin; ${beforeSave ? "fatura kaydedilmedi, numara harcanmadı" : "bu belgeyi iptal edin"}.`, { code: "buyer-is-efatura", aliases });
   }
+  // Entegratörün yanıtındaki numara / ETTN (adapters.mjs send → reference, uuid) belgeninkinden farklı mı? Fark yoksa "".
+  function referenceMismatch(doc, result) {
+    const number = String(result?.reference ?? "").trim();
+    const uuid = String(result?.uuid ?? "").trim();
+    const numberOff = Boolean(number) && number.toUpperCase() !== String(doc.number || "").toUpperCase();
+    const uuidOff = Boolean(uuid) && uuid.toLowerCase() !== String(doc.ettn || "").toLowerCase();
+    if (!numberOff && !uuidOff) return "";
+    const what = [numberOff ? `numarayla (${number})` : "", uuidOff ? `ETTN ile (${uuid})` : ""].filter(Boolean).join(" ve ");
+    const next = ["EARSIVFATURA", "ESMM"].includes(doc.profile) ? "Belgeyi İptal Et ile entegratörde ve programda iptal edip yeniden kesin" : "e-Fatura entegratörden iptal edilmez: alıcıyla ve entegratörle görüşün (iade faturası ya da GİB iptal yolu)";
+    return `Entegratör belgeyi programdakinden farklı ${what} kaydetti; programdaki numara ${doc.number}, ETTN ${doc.ettn}. Defterdeki belge ile resmî belge ayrıştı. ${next}; sorun sürerse entegratörün seri / numara ayarını sorun.`;
+  }
   async function sendInvoice(user, id, options = {}) {
     const release = holdInvoice(id, "sending");
     try {
@@ -3512,6 +3542,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     }
     if (draft) {
       const row = invoiceRow(id);
+      // 2.4.4 madde 22: ağa çıkmadan — e-SMM portala taslak olarak yüklenmez (bağdaştırıcının reddi "isteği gitmiş olabilir" sayılıp belgeyi
+      // "Sonucu Belirsiz"e düşürürdü).
+      if (eProfileOf(row) === "ESMM") throw new HttpError(409, "e-SMM portala taslak olarak yüklenmez; makbuzu e-Belge Gönder ile gönderin.", { code: "einvoice-draft-unsupported" });
       if (settings().eOptions.draftUpload !== true && row.eStatus !== "draft") throw new HttpError(409, "Portala taslak yükleme kapalı (Entegratör Ayarları → Ek Seçenekler).", { code: "einvoice-draft-off" });
     }
     // Bitiş turu Y2: bağlantı (canlı kilidi, kullanıcı adı/parola), firma, alıcı ve iade denetimleri NUMARA VERİLMEDEN önce — gönderilemeyecek
@@ -3567,7 +3600,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
           setE(user, doc.id, { status: remote.status, adapter: link.id, message: remote.message }, "invoice.e.status", { raw: remote.raw || "" });
           return { ...remote, message: `Belge önceki gönderimde entegratöre ulaşmış; yeniden gönderilmedi. ${remote.message}` };
         } catch (error) {
-          if (!remoteMissing(error)) throw error;
+          if (!remoteMissing(error, doc.profile)) throw error;
         }
       }
       if (doc.eStatus === "draft") {
@@ -3619,7 +3652,12 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         else setE(user, doc.id, { status: rejected ? "error" : "none", adapter: link.id, message: error?.message || String(error) }, draft ? "invoice.e.draft-failed" : "invoice.e.send-failed", { adapter: link.id, code });
         throw error;
       }
-      setE(user, doc.id, { status: result.status, adapter: link.id, message: result.message }, draft ? "invoice.e.draft" : "invoice.e.sent", { adapter: link.id, reference: result.reference });
+      // 2.4.4 madde 22: entegratörün kaydettiği numara ve ETTN programdakiyle AYNI olmalı (numarayı program verir). Farklıysa sessizce "gönderildi"
+      // denmez: belge entegratöre ulaştığı için durumu yazılır (iletim kaydı, Durum Sorgula / İptal Et açık), iletisi farkı ve ne yapılacağını söyler,
+      // istek hata döner; Tümünü Gönder durur (entegratör kendi numarasını veriyorsa kalan belgeler de ayrışırdı).
+      const mismatch = referenceMismatch(doc, result);
+      setE(user, doc.id, { status: result.status, adapter: link.id, message: mismatch || result.message }, draft ? "invoice.e.draft" : "invoice.e.sent", { adapter: link.id, reference: result.reference, ...(mismatch ? { uuid: String(result.uuid || ""), mismatch: true } : {}) });
+      if (mismatch) throw new HttpError(502, mismatch, { code: "integrator-reference", reference: String(result.reference || "") });
       return result;
     } finally {
       // kilit sendInvoice'ta (gönderim ↔ iptal)
@@ -3649,7 +3687,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     return result;
   }
   // Portala taslak açıkken (İz 7.3) otomatik / toplu / "Kes ve Gönder" gönderimi taslak yükler; taslaktaki belge "Gönder"le gönderilir.
-  const draftFirst = id => settings().eOptions.draftUpload === true && invoiceRow(id).eStatus !== "draft";
+  // 2.4.4 madde 22: e-SMM'de portala taslak yok — ayar açıkken de makbuz doğrudan gönderilir (yoksa taslak yükleme reddedilip belge düşerdi).
+  const draftFirst = id => {
+    const row = settings().eOptions.draftUpload === true ? invoiceRow(id) : null;
+    return Boolean(row) && row.eStatus !== "draft" && eProfileOf(row) !== "ESMM";
+  };
   async function maybeAutoSend(user, id) {
     if (!edocEnabled) return null;
     const s = settings();
@@ -3697,6 +3739,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   function unsentResult(id, error) {
     const row = invoiceRow(id);
     const reason = error?.message || String(error);
+    // 2.4.4 madde 22: belge entegratöre ulaştı ama başka numarayla kaydedildi — "gönderilmedi" denmez; ileti farkı ve yapılacağı söyler.
+    if ((error?.extra?.code || error?.code) === "integrator-reference") return { ok: false, pending: false, number: row.number, code: "integrator-reference", message: reason };
     const where = row.eStatus === "waiting" ? "Belge numarasız olarak Gönderilecekler'de bekliyor" : row.number ? `Belge ${row.number} numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor` : "Belge Gönderilecekler'de bekliyor";
     const next = uncertainSend(row) ? "Sonuç belirsiz: önce kartında Durum Sorgula'ya basın." : "Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin.";
     return { ok: false, pending: true, number: row.number, code: error?.extra?.code || error?.code || "", message: `${reason} ${where}. ${next}` };
@@ -4002,7 +4046,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       result = await integrator().status({ invoice: doc });
     } catch (error) {
       // Belirsiz gönderim ya da portaldan silinen taslak: EDM'de yoksa belge gönderilmemiştir (Y3, E2).
-      if (!(remoteMissing(error) && (uncertainSend(doc) || doc.eStatus === "draft"))) throw error;
+      if (!(remoteMissing(error, doc.profile) && (uncertainSend(doc) || doc.eStatus === "draft"))) throw error;
       clearE(user, doc.id, "Belge entegratörde bulunamadı: gönderilmemiş. Yeniden gönderebilir ya da değiştirebilirsiniz.");
       return ok(res, { ...detail(doc.id, user), statusResult: { status: "none", message: "Belge entegratörde bulunamadı: gönderilmemiş. Yeniden gönderebilir ya da değiştirebilirsiniz." } });
     }
@@ -4039,7 +4083,19 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const s = settings();
     let result;
     try {
-      result = await integrator(s).test();
+      const link = integrator(s);
+      result = await link.test();
+      // 2.4.4 madde 22: e-SMM kullanıcısında e-SMM servisi (ESmmEDM.svc; ayrı uç nokta, ayrı oturum) de denenir — e-Fatura girişi e-SMM'nin çalıştığını
+      // göstermez.
+      if (esmmEnabled && s.esmm) {
+        try {
+          const smm = await link.testSmm();
+          result = { ...result, message: `${result.message} ${smm.message}`, smmContract: smm.contract };
+        } catch (error) {
+          if (error instanceof Error) error.message = `e-Fatura / e-Arşiv bağlantısı çalışıyor; e-SMM servisi çalışmıyor: ${error.message}`;
+          throw error;
+        }
+      }
     } catch (error) {
       saveLastTest({ ok: false, message: String(error?.message || error).slice(0, 300) });
       throw error;
@@ -4126,7 +4182,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const entries = [];
     for (const id of ids) {
       const doc = detail(id, user);
-      if (doc.status !== "issued" || doc.profile === "KAGIT" || !INVOICE_KINDS[doc.kind].send) continue;
+      if (doc.status !== "issued" || doc.profile === "KAGIT" || !sendKind(doc.kind, doc.profile)) continue;
       entries.push({ name: ublFileName(doc, false), data: Buffer.from(ublFor(doc), "utf8") });
     }
     if (!entries.length) fail400("Seçilenler arasında e-Belge olarak gönderilecek kaydedilmiş fatura yok (kâğıt fatura, taslak, iptal ve alış faturası XML'e girmez).", "ids");

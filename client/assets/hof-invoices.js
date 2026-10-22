@@ -1728,12 +1728,13 @@
     field.hidden = !edoc() || profiles.length < 2;
     form.profile = form.calc.profile;
     const actions = body()?.querySelector("[data-form-actions]");
-    // Yalnız gönderilebilirlik değişince yeniden çizilir: her hesaplamada çizmek alandan düğmeye geçen tıklamayı ve klavye odağını düşürüyordu (gözden geçirme 2.4.2).
-    if (actions && !form.busy && sendable(form) !== form.drawnSendable) actions.innerHTML = formActions(form);
+    // Yalnız gönderilebilirlik (ya da 2.4.4: taslak düğmesi — e-SMM'de taslak yok) değişince yeniden çizilir: her hesaplamada çizmek alandan düğmeye
+    // geçen tıklamayı ve klavye odağını düşürüyordu (gözden geçirme 2.4.2).
+    if (actions && !form.busy && (sendable(form) !== form.drawnSendable || draftUploadFor(form) !== form.drawnDraft)) actions.innerHTML = formActions(form);
     syncReturnRef();
     updateUnitHint();
     field.querySelector("select").innerHTML = profiles.map(item => `<option value="${esc(item.id)}" ${item.id === form.calc.profile ? "selected" : ""}>${esc(item.label)}</option>`).join("");
-    field.querySelector("[data-profile-note]").textContent = form.calc.profile === "EARSIVFATURA" ? "Alıcı e-Fatura mükellefi değil: e-Arşiv kesilir." : form.calc.profile === "TEMELFATURA" || form.calc.profile === "TICARIFATURA" ? "Alıcı e-Fatura mükellefi: e-Fatura kesilir." : "";
+    field.querySelector("[data-profile-note]").textContent = form.calc.profile === "EARSIVFATURA" ? "Alıcı e-Fatura mükellefi değil: e-Arşiv kesilir." : form.calc.profile === "TEMELFATURA" || form.calc.profile === "TICARIFATURA" ? "Alıcı e-Fatura mükellefi: e-Fatura kesilir." : form.calc.profile === "ESMM" ? "e-SMM kesilir: makbuz EDM'ye gönderilir." : "";
   }
 
   // ---------- Form olayları ----------
@@ -2181,8 +2182,10 @@
   // ya da sonra gönder (Gönderilecekler).
   // Formun düğmeleri (2.4.2, kullanıcı denemesi 17.10.2026): belge türü hesaplamadan sonra belli olur; kâğıt belgede "Kaydet ve Gönder" görünmez
   // (form açılırken tür bilinmiyordu, düğmeler hesaplamadan sonra yenilenmiyordu → kâğıt fatura "entegratöre gönderilir" diye kaydediliyordu).
-  const formActions = form => (form.drawnSendable = sendable(form), `<button type="button" class="hof-button hof-button-ghost" data-act="cancel-form">Vazgeç</button>${form.modifyId ? '<button type="button" class="hof-button" data-act="issue" title="Eski stok, cari, Kasa, taksit ve çek/senet kayıtları geri alınır, yenileri yazılır; numara değişmez">Değişiklikleri Kaydet</button>' : `<button type="button" class="hof-button hof-button-ghost" data-act="save-draft">Taslak Olarak Kaydet</button>${sendable(form) ? `<button type="button" class="hof-button hof-button-ghost" data-act="issue-later" title="Stok, cari, Kasa, taksit ve çek/senet şimdi işlenir; belge Gönderilecekler'de bekler">Kaydet, Sonra Gönder</button><button type="button" class="hof-button" data-act="issue-now">${meta?.settings?.draftUpload ? "Kaydet ve Taslak Yükle" : "Kaydet ve Gönder"}</button>` : `<button type="button" class="hof-button" data-act="issue">${esc(ISSUE_LABELS[form.kind] || "Kaydet")}</button>`}`}`);
+  const formActions = form => (form.drawnSendable = sendable(form), form.drawnDraft = draftUploadFor(form), `<button type="button" class="hof-button hof-button-ghost" data-act="cancel-form">Vazgeç</button>${form.modifyId ? '<button type="button" class="hof-button" data-act="issue" title="Eski stok, cari, Kasa, taksit ve çek/senet kayıtları geri alınır, yenileri yazılır; numara değişmez">Değişiklikleri Kaydet</button>' : `<button type="button" class="hof-button hof-button-ghost" data-act="save-draft">Taslak Olarak Kaydet</button>${sendable(form) ? `<button type="button" class="hof-button hof-button-ghost" data-act="issue-later" title="Stok, cari, Kasa, taksit ve çek/senet şimdi işlenir; belge Gönderilecekler'de bekler">Kaydet, Sonra Gönder</button><button type="button" class="hof-button" data-act="issue-now">${draftUploadFor(form) ? "Kaydet ve Taslak Yükle" : "Kaydet ve Gönder"}</button>` : `<button type="button" class="hof-button" data-act="issue">${esc(ISSUE_LABELS[form.kind] || "Kaydet")}</button>`}`}`);
   const sendable = form => edoc() && Boolean(meta.kinds[form.kind]?.send) && (form.calc?.profile || form.profile || "") !== "KAGIT";
+  // 2.4.4 madde 22: e-SMM portala taslak olarak yüklenmez (sunucu da doğrudan gönderir) — düğme "Kaydet ve Gönder" kalır.
+  const draftUploadFor = form => Boolean(meta?.settings?.draftUpload) && (form.calc?.profile || form.profile || "") !== "ESMM";
   async function submitForm(mode, eSend = "") {
     const form = view.form;
     if (!form || form.busy) return;
@@ -2263,7 +2266,7 @@
         const ok = await HOF.confirm({
           title: ISSUE_LABELS[form.kind] || "Kaydet",
           message: `${who} için ${numberText}${kindLabel(form.kind).toLocaleLowerCase("tr-TR")} kaydedilecek: ${curMoney(c.totals.payable, c.currency)}. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. ${eSend === "now" ? "Gönderildikten sonra düzenlenemez; yanlışsa iptal ya da iade gerekir." : "Yanlışsa sonradan kartındaki “Düzenle” ile düzeltilir."}${sendText}${stocklessText}`,
-          confirmLabel: eSend === "later" ? "Kaydet, Sonra Gönder" : eSend === "now" ? (meta?.settings?.draftUpload ? "Kaydet ve Taslak Yükle" : "Kaydet ve Gönder") : ISSUE_LABELS[form.kind] || "Kaydet",
+          confirmLabel: eSend === "later" ? "Kaydet, Sonra Gönder" : eSend === "now" ? (draftUploadFor(form) ? "Kaydet ve Taslak Yükle" : "Kaydet ve Gönder") : ISSUE_LABELS[form.kind] || "Kaydet",
         });
         if (!ok) return;
         // v2.0.22 (madde 5): formun istek kimliğiyle — yanıt gecikip yeniden Kaydet'e basılırsa sunucu ikinci fatura açmaz.
@@ -2648,10 +2651,12 @@
     // İz 7.3: EDM portalındaki e-Fatura taslağı programdan silinemez; kullanıcı portaldan siler, burada onaylar.
     const draftEInvoice = edoc() && ["TEMELFATURA", "TICARIFATURA"].includes(doc.profile) && doc.eStatus === "draft";
     const earchive = edoc() && doc.profile === "EARSIVFATURA" && ["draft", "processing", "sent", "accepted", "error"].includes(doc.eStatus);
+    // 2.4.4 madde 22: gönderilmiş e-SMM de önce entegratörde (EDM e-SMM servisi) iptal edilir (sunucu: remoteEligible).
+    const esmm = edoc() && doc.profile === "ESMM" && ["processing", "sent", "accepted", "error"].includes(doc.eStatus);
     HOF.formModal({
       title: `${docTitle(doc)} İptal Edilsin mi?`,
       eyebrow: "İPTAL",
-      intro: `Belgenin bütün etkileri birlikte geri alınır: stok, cari borç/alacak, peşin tahsilat/ödeme (Kasa), çek/senet ve taksit kartı. Numara korunur; belge "İptal Edildi" olarak kalır.${doc.cancelNotice ? ` ${doc.cancelNotice}` : ""}${earchive ? " e-Arşiv fatura önce entegratörde (EDM) iptal edilir." : ""}`,
+      intro: `Belgenin bütün etkileri birlikte geri alınır: stok, cari borç/alacak, peşin tahsilat/ödeme (Kasa), çek/senet ve taksit kartı. Numara korunur; belge "İptal Edildi" olarak kalır.${doc.cancelNotice ? ` ${doc.cancelNotice}` : ""}${earchive ? " e-Arşiv fatura önce entegratörde (EDM) iptal edilir." : ""}${esmm ? " e-SMM önce entegratörde (EDM) iptal edilir." : ""}`,
       fields: [
         { name: "reason", label: "İptal Nedeni", maxlength: 300, placeholder: "ör. Müşteri vazgeçti, yanlış tutar", autofocus: true },
         ...(doc.posCash ? [posOutcomeField()] : []),

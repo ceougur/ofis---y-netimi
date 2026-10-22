@@ -1,0 +1,38 @@
+{
+  "ad": "244-esmm2/mutasyon-M06-numara-farki-sessiz",
+  "komut": "node --test test/esmm-gonderim-244.test.mjs",
+  "commit": "7c36f8718bd81220e70c1441f641fa8035c11f85",
+  "dal": "HEAD",
+  "kirli": 7,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T07:05:07.447Z",
+  "sure_sn": 5.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 19,
+    "gecen": 18,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "e-SMM: kopma, belirsiz gönderim, başka numara, iki oturum, iptal süresi (N6, N7, N8, N9, N10) › N9: EDM makbuzu başka numarayla kaydederse sessizce 'gönderildi' denmez — hata, ileti farkı söyler; durum yazılır (iptal açık); Tümünü Gönder durur, kalan makbuza numara verilmez",
+      "konum": "test/esmm-gonderim-244.test.mjs:388:3",
+      "hata": "[{\"id\":\"invoice-b73f8c04-a267-4238-8c18-7311b493509e\",\"ok\":true,\"number\":\"TES2026000000005\",\"status\":\"sent\"},{\"id\":\"invoice-2a7882e8-88e7-4bb4-b053-2ea20dd1b06c\",\"ok\":true,\"number\":\"TES2026000000006\",\"status\":\"sent\"}] · true !== false (beklenen false, gelen true)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/esmm2/docs/kanit/2026-10-22/244-esmm2/mutasyon-M06-numara-farki-sessiz.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm2/esmm2-mut",
+  "ham_cikti_sha256": "d475b37dd47570b4f1d2d6be5a77b185ae338bf4476bc38ab33353f9ce100568",
+  "ham_cikti_bayt": 10634
+}

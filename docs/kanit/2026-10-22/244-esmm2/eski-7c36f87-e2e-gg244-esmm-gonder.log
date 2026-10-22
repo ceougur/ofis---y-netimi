@@ -1,0 +1,12 @@
+■ 1 e-SMM kullanıcısı firmada makbuz formu: tür notu ve gönderim düğmeleri; taslak ayarı açıkken de "Kaydet ve Gönder"
+  ✗ tür notu: ""
+  ✗ Kaydet, Sonra Gönder var
+  ✗ Kaydet ve Gönder var (yok)
+  ✗ taslak ayarı açıkken e-SMM düğmesi "Kaydet ve Gönder" ()
+■ 2 Kaydet ve Gönder: TES numarası, e-SMM servisine gider; kartta Durum Sorgula ve Resmî Görüntü, taslak düğmesi yok
+  ✗ adım tamamlanamadı: page.click: Timeout 15000ms exceeded.
+■ 3 İptal Et: pencere e-SMM'nin önce entegratörde iptal edileceğini söyler; EDM'de ve programda iptal
+  ✗ adım tamamlanamadı: 2. adımın makbuzu yok
+  ✓ sayfa hatası yok ()
+
+1 geçti, 6 kaldı
