@@ -21,6 +21,9 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
   adımları (7a2141b), e-SMM kaşe/logo cümlesi (d4c3b20, kullanıcı "ekle"), is/esmm-fis (5599e07: kâğıt/fiş numarası tekil, VKN'li düzenleyen PartyName, göç v32
   tarama; çakışma chronologyProblem'de anlamca birleşti, dar test 116/116). Kâhin adımları 5ad1277'de: defter 147/147, cari 1364/1364, tutar 3472/3472, e-Belge model
   82/82, mutasyon 36/36, senaryo 20/20. KAPI aday-kos.sh aday5 5ad1277 koşuyor (~13:05; 2 sa'te kesilirse aday-kos-devam.sh). Yeşilse çalışma dalına birleştir + push + CI.
+- ADAY 6 = /home/user/wt/aday6 (dal aday6) e070d42 = aday 5 + is/edm-eszamanli (24b düzeneği, N4 tek uçuş giriş 51c3074, gerçek koşu 1 kanıtı). KAPI aday-kos.sh aday6
+  e070d42 koşuyor (~13:55; aday 5 kapısıyla e2e'ler flock'la sırayla). Gerçek EDM koşusu 2 (soğuk, 30 belge, Login 1 beklenir) /home/user/wt/edm-eszamanli'de koşuyor
+  (kanıt gercek-2/; bitince orada commit + aday 6'ya birleştir). Sıra: aday 5 yeşil → çalışma dalı + CI; aday 6 yeşil → çalışma dalı + CI.
 - SONRA: aday 4 ve aday 5 CI yeşilince iş listesinde 5, 5a–5c, 7b, 7c, 8, 11, 12 UX15, 15, 16, 17, 18, 22, 23 eki, 24, 26 çizilir → 30 (tam test + BÜTÜN e2e, CI dışı dahil;
   yedek tatbikatı; v2.4.3 → 2.4.4 göçü; ana oturumun kullanıcı gözüyle iş akışı) → 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol (11017, F2/F3, kâğıt
   numarası + tarama, UBL-TR, I23), 31f uzman UI/UX → 32 CI → 33 Uzun Doğrulama → 34–36 paket/teslim/PR. Sürüm notu cümleleri: UX18/F3 (karşılıksız evrak faturayı açar) ve
