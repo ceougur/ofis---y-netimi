@@ -475,6 +475,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   app.mjs:655) siler; fatura/fiş serileri kutu işaretsizken de baştan başlar (faturalar ve invoice.numberFloor silinir). Ad ↔ davranış uyuşmuyor; gerileme değil.
   ÖNERİ (B2 ile aynı ölçü — seyrek iş): 2.4.4'te kutunun adı "Tahsilat Makbuzu Numaraları da Sıfırlansın" + altına tek cümle (fatura/fiş numaraları seride baştan
   başlar; e-Belge gönderdiyseniz Fatura Ayarları → Numaralar'dan sıradaki numarayı ileri alın); fatura serisini sıfırlamada koruma seçeneği 2.4.4 sonrası.
+  KARAR (kullanıcı, ~18:00 UTC: "uygun") → G6, 30d ajanına eklendi (davranış değişmez, yalnız metin).
 - SON ADAY BAĞIMSIZ TURU (kullanıcı, 22.10.2026: "2.4.4 son aday uzun test koşusuna başlamadan kâhin (uzman mali müşavir), yargıç, eleştirmen testlerinden geçecek mi,
   regresyon testleri yapılıyor mu?" → EVET; "ekle" → uzman UI + uzman UX de): iş listesi madde 30–31 (31a kâhin, 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol,
   31f uzman UI/UX) Uzun Doğrulama'dan ÖNCE.
