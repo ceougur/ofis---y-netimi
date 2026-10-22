@@ -2123,6 +2123,12 @@ html.hof-no-haciz #hof-sidecard [data-action="liens"],
 html.hof-no-tahsilat [data-case-action="payment"] {
   display: none !important;
 }
+/* 2.4.4 (E8; kullanıcı 20.10.2026: "kayıt detay kartındaki Tahsilat düğmesi kaldırılsın; regresyon olma ihtimali varsa koda dokunmadan yalnız CSS ile"):
+   kayıttan doğrudan Kasa'ya tahsilat karttan kalkar; tahsilat Cari'den / kayda bağlı Taksit kutusundaki "+ Tahsilat" ile girilir. Sunucu yolu, eski
+   tahsilatların İşlem Geçmişi'nde görünmesi/düzeltilmesi/silinmesi değişmez. */
+.hof-case-actions [data-case-action="payment"] {
+  display: none !important;
+}
 
 /* ---------- 1.6.0: kalemle değiştirilen başlıklar ---------- */
 .hof-label-pencil {

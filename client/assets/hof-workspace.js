@@ -1175,7 +1175,8 @@
     try {
       const result = await HOF.api(caseUrl(selected.key, "activity"));
       if (request !== activityRequest) return;
-      const tools = ["not", "telefon", HOF.modules.tahsilat ? "tahsilat" : "", HOF.modules.haciz ? "haciz" : ""].filter(Boolean);
+      // 2.4.4 (E8): kartta Tahsilat düğmesi yok (CSS) → boş geçmiş metni yalnız karttaki düğmeleri sayar.
+      const tools = ["not", "telefon", HOF.modules.haciz ? "haciz" : ""].filter(Boolean);
       const toolsText = `${tools.slice(0, -1).join(", ")} veya ${tools[tools.length - 1]}`;
       // Eskiden yeniye (v2.0.1): yeni eklenen işlem en altta. 2.3.0 İz 5.6: ilk 3 satır (en yeniler) görünür; "Daha Fazla Göster (n)"
       // tamamını açar.
