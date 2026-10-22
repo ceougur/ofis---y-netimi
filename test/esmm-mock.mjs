@@ -22,7 +22,13 @@ export function smmState() {
   // sent: EDM'nin kabul ettiği makbuzlar ({ id, uuid, xml, head, sender, receiver }); statuses: UUID → durum sırası (son durum kalır).
   // renumber: (gönderilen ID) => EDM'nin yanıtta döndürdüğü ID (program farkı görmeli); cutAfter: işlem adları — istek İŞLENİR, sonra bağlantı
   // koparılır (EDM aldı, yanıt gelmedi); faults: işlem → [kod, ileti] (bir kez).
-  return { calls: [], sent: [], cancelled: [], statuses: new Map(), sessions: new Set(), counter: 0, violations: [], usedIds: new Set(), pdfRequests: 0, renumber: null, cutAfter: new Set(), faults: new Map() };
+  // Eşzamanlılık düzeneği (tools/edm-gercek.mjs --eszamanli, 2.4.4 iş listesi 24b; varsayılanları davranışı DEĞİŞTİRMEZ):
+  //   delay: (işlem adı) => ms — yanıt geciktirilir (zorla araya girme, ders 20); inflight / maxInflight: işlem başına o an / en çok eşzamanlı istek;
+  //   sendCount: kaçıncı SendSMM; singleSession: Login öbür oturumları düşürür (EDM'nin bu davranışı DOĞRULANMADI — keşif);
+  //   hata enjeksiyonu (testin dişi, ders 7) — k: kaçıncı SendSMM: dropSend (kabul edilir, KAYDA GEÇMEZ: sessiz kayıp), misrecordSend (yanıtta doğru
+  //   numara, kayıtta bir önceki makbuzun numarası: çift kayıt), statusAfterSend ({ k: "PACKAGE - FAIL" }: yanlış son durum), holdSend ({ k, ms }:
+  //   yanıt ms bekletilir: askı).
+  return { calls: [], sent: [], cancelled: [], statuses: new Map(), sessions: new Set(), counter: 0, violations: [], usedIds: new Set(), pdfRequests: 0, renumber: null, cutAfter: new Set(), faults: new Map(), delay: null, inflight: {}, maxInflight: {}, sendCount: 0, singleSession: false, dropSend: 0, misrecordSend: 0, statusAfterSend: {}, holdSend: null };
 }
 
 const fault = (code, message) => `<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><s:Fault><faultcode>s:Client</faultcode><faultstring>${message}</faultstring><detail><RequestFault xmlns="${SMM_NS}"><INTL_TXN_ID xmlns="">0</INTL_TXN_ID><ERROR_CODE xmlns="">${code}</ERROR_CODE><ERROR_SHORT_DES xmlns="">${message}</ERROR_SHORT_DES></RequestFault></detail></s:Fault></s:Body></s:Envelope>`;
@@ -59,6 +65,7 @@ export function smmReply(state, { body, action, credentials }) {
     if (textOf(child(request, "USER_NAME")) !== credentials.username || textOf(child(request, "PASSWORD")) !== credentials.password) return { status: 500, xml: fault(2001, "Kullanıcı adı veya şifre hatalı") };
     state.counter += 1;
     const id = `SMM-S-${state.counter}`;
+    if (state.singleSession) state.sessions.clear();
     state.sessions.add(id);
     return { status: 200, xml: envelope(op, `${RETURN}<SESSION_ID xmlns="">${id}</SESSION_ID>`) };
   }
@@ -72,11 +79,17 @@ export function smmReply(state, { body, action, credentials }) {
     const xml = Buffer.from(textOf(child(smm.node, "CONTENT")), "base64").toString("utf8");
     if (!/<cbc:ProfileID>ESMM<\/cbc:ProfileID>/.test(xml)) state.violations.push("SendSMM: içerik ProfileID ESMM değil");
     if (state.usedIds.has(smm.id) || state.sent.some(item => item.id === smm.id)) return { status: 500, xml: fault(11048, `UUID=${smm.uuid} ID=${smm.id} için Daha önce gönderdiğiniz bir SMM'yi tekrar göndermeye çalıştınız`) };
+    state.sendCount += 1;
+    const k = state.sendCount;
     const fields = Object.fromEntries((child(smm.node, "HEADER")?.children || []).map(item => [item.name, textOf(item)]));
-    state.sent.push({ id: smm.id, uuid: smm.uuid, xml, head: fields, sender: child(request, "SENDER")?.attrs, receiver: child(request, "RECEIVER")?.attrs });
-    state.statuses.set(smm.uuid, ["PACKAGE - PROCESSING", "SEND - SUCCEED"]);
+    // Hata enjeksiyonu (yalnız eşzamanlılık düzeneğinin dişi testinde): kayıp / çift kayıt / yanlış durum / askı.
+    if (state.dropSend !== k) {
+      const recordedId = state.misrecordSend === k && state.sent.length ? state.sent.at(-1).id : smm.id;
+      state.sent.push({ id: recordedId, uuid: smm.uuid, xml, head: fields, sender: child(request, "SENDER")?.attrs, receiver: child(request, "RECEIVER")?.attrs });
+      state.statuses.set(smm.uuid, state.statusAfterSend?.[k] ? [state.statusAfterSend[k]] : ["PACKAGE - PROCESSING", "SEND - SUCCEED"]);
+    }
     const answered = state.renumber ? state.renumber(smm.id) : smm.id;
-    return { status: 200, cut, xml: envelope(op, `${RETURN}<SMM TRXID="8563409" xmlns=""><ID>${answered}</ID><UUID>${smm.uuid}</UUID>${head()}</SMM>`) };
+    return { status: 200, cut, hold: state.holdSend?.k === k ? state.holdSend.ms : 0, xml: envelope(op, `${RETURN}<SMM TRXID="8563409" xmlns=""><ID>${answered}</ID><UUID>${smm.uuid}</UUID>${head()}</SMM>`) };
   }
   if (op === "GetSMMStatus") {
     const smm = smmOf(request);

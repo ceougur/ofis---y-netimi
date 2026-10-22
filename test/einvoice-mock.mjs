@@ -109,13 +109,25 @@ export async function startMockEdm({ serveWsdl = true, contract = {} } = {}) {
           else res.writeHead(200, { "content-type": "text/xml" }).end(smmWsdl());
           return;
         }
-        const reply = smmReply(state.smm, { body: deep(parseXml(raw), "Body"), action: String(req.headers.soapaction || "").replace(/^"|"$/g, ""), credentials: { username: "edmkullanici", password: "Gizli-Parola-1" } });
-        // cut: istek İŞLENDİ (EDM aldı), yanıt gelmeden bağlantı koptu.
-        if (reply.cut) {
-          req.socket.destroy();
-          return;
-        }
-        res.writeHead(reply.status, { "content-type": "text/xml" }).end(reply.xml);
+        const body = deep(parseXml(raw), "Body");
+        const smmOp = String(body?.children?.[0]?.name || "").replace(/Request$/, "");
+        const smm = state.smm;
+        smm.inflight[smmOp] = (smm.inflight[smmOp] || 0) + 1;
+        smm.maxInflight[smmOp] = Math.max(smm.maxInflight[smmOp] || 0, smm.inflight[smmOp]);
+        const reply = smmReply(smm, { body, action: String(req.headers.soapaction || "").replace(/^"|"$/g, ""), credentials: { username: "edmkullanici", password: "Gizli-Parola-1" } });
+        const finish = () => {
+          smm.inflight[smmOp] -= 1;
+          // cut: istek İŞLENDİ (EDM aldı), yanıt gelmeden bağlantı koptu.
+          if (reply.cut) {
+            req.socket.destroy();
+            return;
+          }
+          res.writeHead(reply.status, { "content-type": "text/xml" }).end(reply.xml);
+        };
+        // Eşzamanlılık düzeneği (varsayılan 0: hemen yanıt): gecikme (zorla araya girme) + askı (hata enjeksiyonu).
+        const wait = (typeof smm.delay === "function" ? Number(smm.delay(smmOp)) || 0 : 0) + (Number(reply.hold) || 0);
+        if (wait > 0) setTimeout(finish, wait);
+        else finish();
         return;
       }
       if (req.method === "GET") {
