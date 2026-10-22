@@ -1512,7 +1512,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       }
     });
     audit(user, "plan.created", id, { name: input.name, total, accountId: input.accountId || "", importId, items: items.length, opening: roundMoney(items.reduce((sum, item) => sum + Math.min(Number(item.paid) || 0, Number(item.amount) || 0), 0)) });
-    return { id, openingIds };
+    return { id, openingIds, total };
   }
   // Programda kayıt kartından girilmiş tahsilatı karta taşır (Kasa toplamı değişmez: kayıt tahsilatı olarak çıkar, taksit
   // tahsilatı olarak aynı tarih ve tutarla girer; giren kişi ve giriş zamanı korunur). v2.0.26 (A2): ödeme yolu da korunur
@@ -1531,9 +1531,24 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     );
     return entryId;
   }
+  // 2.4.4 (5a): kayda bağlı carinin TAKSİT DIŞI tahsilatı karta yazılır (Tablodan Aktar). Satır cari hareketinden taksit tahsilatına geçer; tutar,
+  // tarih, yol, banka hesabı bağı, işlem başlığı (İşlem No), giren kişi ve giriş zamanı aynı kalır (adoptPayment gibi; bank.post op 'move'): carinin
+  // bakiyesi (cari 'in' alacağı → kartın 'plan-in' alacağı, aynı cari) ve Kasa / Banka değişmez. Karttaki satıra makbuz numarası verilmez (kayıt
+  // tahsilatı taşımasındaki gibi); geri alınınca carinin satırı numarasıyla döner. Çağıran bank.post işleminin içindedir; cari satırını çağıran siler.
+  function adoptAccountEntry(user, planId, entry, itemId = null) {
+    const entryId = newId("entry");
+    const method = methodInput(entry.method);
+    const finRef = bank.keepRef(entry.fin_ref, { method, date: entry.date }).ref;
+    store.run(
+      "INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, opening, method, fin_ref, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, 'in', ?, ?, ?, NULL, 0, ?, ?, ?, ?, ?, ?, ?)",
+      entryId, planId, itemId, roundMoney(entry.amount), entry.date, String(entry.note || "Cari tahsilatı").slice(0, 300), method, finRef,
+      bank.eventFor("plan_entries", { kind: "in", date: entry.date, method, opening: 0, cheque_id: "", event_id: entry.event_id || "" }), entry.created_by || user.id, entry.created_at || now(), user.id, now(),
+    );
+    return entryId;
+  }
   // Açık veri oturumunda kartı olan kayıtlar (silinmemiş kartlar): takvim bu kişilerin tablodaki ödeme kalemlerini
   // ikinci kez saymaz; aktarma "kartı var" der.
   const linkedCases = source => new Set(store.all("SELECT case_key AS k FROM plans WHERE deleted_at IS NULL AND case_key <> '' AND case_source = ?", source || "").map(row => row.k));
 
-  return { uncoveredDebt, assertRestorable, assertCloseOpen, assertRoom, closeDayOf, trimCovers, shrinkPlan, leftOf, signedLeftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, linkedCases };
+  return { uncoveredDebt, assertRestorable, assertCloseOpen, assertRoom, closeDayOf, trimCovers, shrinkPlan, leftOf, signedLeftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, adoptAccountEntry, linkedCases };
 }

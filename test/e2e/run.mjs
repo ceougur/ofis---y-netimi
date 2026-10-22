@@ -1363,10 +1363,10 @@ try {
       expect(/4 taksit/.test(can) && /15\.200,00/.test(can) && /9\.500,00/.test(can) && /5\.700,00/.test(can), `Can Öztürk satırı: ${can}`);
       const sumText = await page.$eval(".hof-transfer-sum", node => node.innerText.replace(/\s+/g, " "));
       expect(/kayıt tahsilatı ₺500,00/.test(sumText), `eski kayıt tahsilatı karta taşınacak olarak sayılır: ${sumText}`);
-      // Pilden carisine girilen tahsilat ön izlemede o kişinin bulgusu: "Carisinde taksit dışı … tahsilat var; karta sayılmaz" (ayrıntıda; programın ön izleme ucundan).
+      // 2.4.4 (5a): pilden carisine girilen (taksit dışı) tahsilat ön izlemede o kişinin kartına yazılacak tutar olarak görünür (programın ön izleme ucundan).
       const preview = (await page.evaluate(() => fetch("/api/workspace/plans/from-table").then(response => response.json()))).data;
       const pillRecord = (preview.records || []).find(record => record.key === pillKey);
-      expect(pillRecord?.account === "bound" && pillRecord.issues.some(issue => /taksit dışı/.test(issue.text) && issue.text.includes(amount)), `pilden carisine girilen ${amount} ön izlemede taksit dışı olarak söylenir: ${JSON.stringify(pillRecord?.issues || [])?.slice(0, 240)}`);
+      expect(pillRecord?.account === "bound" && new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(pillRecord.accountMoved) === amount && pillRecord.issues.some(issue => issue.code === "account-in-move"), `pilden carisine girilen ${amount} ön izlemede karta yazılacak: ${JSON.stringify({ moved: pillRecord?.accountMoved, issues: pillRecord?.issues })?.slice(0, 240)}`);
       await page.click(".hof-transfer-table tbody tr[data-key] [data-expand]");
       await page.waitForSelector(".hof-transfer-detail .hof-transfer-items", { timeout: 5000 });
       await page.screenshot({ path: path.join(artifacts, "10d-tablodan-aktar.png"), fullPage: true });
@@ -1385,8 +1385,8 @@ try {
       await page.waitForFunction(() => document.querySelectorAll(".hof-plans tr[data-plan]").length === 6, null, { timeout: 10000 });
       const cashAfter = (await page.evaluate(() => fetch("/api/workspace/cash?period=all").then(response => response.json()))).data;
       expect(cashAfter.totals.balance === cashBefore, `Kasa değişmedi: ${cashBefore} → ${cashAfter.totals.balance}`);
-      expect(cashAfter.entries.filter(entry => entry.source === "plan").length === 1 && !cashAfter.entries.some(entry => entry.source === "payment"), "eski kayıt tahsilatı Kasa'da artık taksit tahsilatı olarak (tek kayıt)");
-      expect(cashAfter.entries.filter(entry => entry.source === "account").length === 1, "pilden girilen tahsilat Kasa'da carinin tahsilatı olarak (tek kayıt)");
+      // 2.4.4 (5a): pilden carisine girilen tahsilat da (taksit dışı) karta yazıldı: ikisi de Kasa'da artık taksit tahsilatı, her biri tek kayıt.
+      expect(cashAfter.entries.filter(entry => entry.source === "plan").length === 2 && !cashAfter.entries.some(entry => entry.source === "payment" || entry.source === "account"), "eski kayıt tahsilatı ve pilden girilen cari tahsilatı Kasa'da artık taksit tahsilatı (iki kayıt)");
       const plansNow = (await page.evaluate(() => fetch("/api/workspace/plans?status=all").then(response => response.json()))).data;
       expect(plansNow.plans.length === 6 && plansNow.plans.every(plan => plan.caseKey && plan.accountId), "6 kart, hepsi kayda ve cariye bağlı");
       const dues = (await page.evaluate(() => fetch("/api/workspace/dues").then(response => response.json()))).data;

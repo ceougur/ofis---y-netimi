@@ -1,0 +1,106 @@
+TAP version 13
+# (node:15118) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.4 5a: Tablodan Aktar kayda bağlı carinin taksit dışı tahsilatlarını karta yazar; bakiye, Kasa ve banka aynı
+    # Subtest: A1–A6, A8 ön izleme: Elif 3.500 karta (1.000 + 2.500), 7.000 taksit dışı (kalanı aşar; iade düşüldü); Selin faturalı → taşınmaz; kapalıyken yazılmaz
+    not ok 1 - A1–A6, A8 ön izleme: Elif 3.500 karta (1.000 + 2.500), 7.000 taksit dışı (kalanı aşar; iade düşüldü); Selin faturalı → taşınmaz; kapalıyken yazılmaz
+      ---
+      duration_ms: 19.744427
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-5a2/test/tablodan-aktar-244.test.mjs:82:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        karta yazılacak: 10500
+        
+        10500 !== 3500
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 3500
+      actual: 10500
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-5a2/test/tablodan-aktar-244.test.mjs:86:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: A9 ön izlemeden sonra cariye tahsilat girilirse aktarım durur (409, hiçbir şey yazılmaz)
+    ok 2 - A9 ön izlemeden sonra cariye tahsilat girilirse aktarım durur (409, hiçbir şey yazılmaz)
+      ---
+      duration_ms: 74.841178
+      type: 'test'
+      ...
+    # Subtest: A1–A7 aktar: kart 9.000 / ödenen 3.500 (1. taksit kapandı, 2.'nin 500'ü); cari bakiyesi, Kasa, banka hesabı ve işlem sayısı aynı
+    not ok 3 - A1–A7 aktar: kart 9.000 / ödenen 3.500 (1. taksit kapandı, 2.'nin 500'ü); cari bakiyesi, Kasa, banka hesabı ve işlem sayısı aynı
+      ---
+      duration_ms: 38.62351
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-5a2/test/tablodan-aktar-244.test.mjs:114:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        3 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 3
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-5a2/test/tablodan-aktar-244.test.mjs:118:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: A7 başka kartın tahsilatına dokunulmaz; A10 geri al: cari tahsilatları aynen döner, sayılar aynı
+    not ok 4 - A7 başka kartın tahsilatına dokunulmaz; A10 geri al: cari tahsilatları aynen döner, sayılar aynı
+      ---
+      duration_ms: 77.373839
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-5a2/test/tablodan-aktar-244.test.mjs:139:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"plans":2,"links":0,"payments":0,"accountEntries":3,"accounts":0,"accountsKept":0}
+        
+        3 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 3
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-5a2/test/tablodan-aktar-244.test.mjs:146:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: A11 kapatılmış dönemdeki cari tahsilatı taşınmaz
+    ok 5 - A11 kapatılmış dönemdeki cari tahsilatı taşınmaz
+      ---
+      duration_ms: 50.753372
+      type: 'test'
+      ...
+    1..5
+not ok 1 - 2.4.4 5a: Tablodan Aktar kayda bağlı carinin taksit dışı tahsilatlarını karta yazar; bakiye, Kasa ve banka aynı
+  ---
+  duration_ms: 1524.315962
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-5a2/test/tablodan-aktar-244.test.mjs:31:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 2
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2000.987274
