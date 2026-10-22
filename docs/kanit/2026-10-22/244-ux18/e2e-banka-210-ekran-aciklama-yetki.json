@@ -1,0 +1,32 @@
+{
+  "ad": "244-ux18/e2e-banka-210-ekran-aciklama-yetki",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/banka-210-ekran-aciklama-yetki.mjs",
+  "commit": "6aeb05c711d4824f67f20d939161ae459b2b867d",
+  "dal": "is/ux18",
+  "kirli": 13,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T07:18:44.722Z",
+  "sure_sn": 11.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 11,
+    "gecen": 11,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ux18/e2e-banka-210-ekran-aciklama-yetki.log",
+  "klasor": "/home/user/wt/ux18",
+  "ham_cikti_sha256": "b00bbe2df16beee5db14f140826d3b0427566ca7a03e011751b3cf66892499ac",
+  "ham_cikti_bayt": 2079
+}

@@ -1,0 +1,43 @@
+{
+  "ad": "244-kayit/5b-mutasyon-b2",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-5b2/test/tablodan-aktar-244.test.mjs /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-5b2/test/kayit-tahsilat-244.test.mjs",
+  "commit": "f6d38288ccceaa9cc9148c778111a9e7a562c906",
+  "dal": "is/kayit",
+  "kirli": 11,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T06:06:29.358Z",
+  "sure_sn": 3.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 12,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 5b: Tablodan Aktar carinin mevcut borcunu ikinci kez yazmaz (açılış bakiyesi + kart = çift borç olmaz) › B1–B5 ön izleme: Elif mevcut borçla (2.000 karta), Selin aktarılmaz, Burak faturalı (yeni borç uyarısı); seçenek kapalıyken yeni borç uyarısı",
+      "konum": "test/tablodan-aktar-244.test.mjs:221:3",
+      "hata": "[{\"level\":\"info\",\"code\":\"cover-debt\",\"text\":\"Carinin mevcut borcu (₺1.000,00) taksitlendirilir: kart \\\"Carinin Mevcut Borcu\\\" olarak açılır, borç ikinci kez yazılmaz.\"}] · 'ready' !== 'error' (beklenen error, gelen ready)"
+    },
+    {
+      "ad": "2.4.4 5b: Tablodan Aktar carinin mevcut borcunu ikinci kez yazmaz (açılış bakiyesi + kart = çift borç olmaz) › B1–B2 aktar: Elif kartı 'Carinin Mevcut Borcu' (9.000, açılış satırı yok, 2.000 ödendi); carinin bakiyesi ve Kasa AYNI; Selin aktarılmadı",
+      "konum": "test/tablodan-aktar-244.test.mjs:242:3",
+      "hata": "Expected values to be strictly equal: · 2 !== 1 (beklenen 1, gelen 2)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kayit/5b-mutasyon-b2.log",
+  "klasor": "/home/user/wt/kayit",
+  "ham_cikti_sha256": "808c240eac0d54202c99c56a0767ab4ed78b32a7ca1acb50f8850c6a5623a757",
+  "ham_cikti_bayt": 9003
+}

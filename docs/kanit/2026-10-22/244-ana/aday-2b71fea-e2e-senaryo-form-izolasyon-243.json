@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-2b71fea-e2e-senaryo-form-izolasyon-243",
+  "komut": "npm run test:senaryo-form-izolasyon-243",
+  "commit": "2b71feac5cce579d33b9c7d9ca5b2c0784286917",
+  "dal": "aday4",
+  "kirli": 0,
+  "izlenmeyen": 56,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T12:00:23.834Z",
+  "sure_sn": 244.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 180,
+    "gecen": 180,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday-2b71fea-e2e-senaryo-form-izolasyon-243.log",
+  "klasor": "/home/user/wt/aday4",
+  "ham_cikti_sha256": "00d45fe268098a171792142e8c42511a8aee16199a698eaef2bffb5b1b92a2cf",
+  "ham_cikti_bayt": 28501
+}

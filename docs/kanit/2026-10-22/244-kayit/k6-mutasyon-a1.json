@@ -1,0 +1,53 @@
+{
+  "ad": "244-kayit/k6-mutasyon-a1",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-k6-a1/test/tablodan-aktar-244.test.mjs /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-k6-a1/test/kayit-tahsilat-244.test.mjs",
+  "commit": "7d51d60f6298e3ac058b06db34ef2059c8cba896",
+  "dal": "is/kayit",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T08:08:13.013Z",
+  "sure_sn": 2.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 10,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 5a: Tablodan Aktar kayda bağlı carinin taksit dışı tahsilatlarını karta yazar; bakiye, Kasa ve banka aynı › A1–A7 aktar: kart 9.000 / ödenen 3.500 (1. taksit kapandı, 2.'nin 500'ü); cari bakiyesi, Kasa, banka hesabı ve işlem sayısı aynı",
+      "konum": "test/tablodan-aktar-244.test.mjs:115:3",
+      "hata": "aktar: 409 {\"ok\":false,\"error\":\"Bu para hareketi (İşlem No BNK-2026-000002) zaten kayıtlı (Cari Hareketi, Taksit Tahsilatı); aynı hareket ikinci kez yazılamaz. Hiçbir değişiklik yapılmadı.\",\"code\":\"event-in-use\",\"eventId\":\"ev-0mvj9e3hg0000-0f3342ca-d6d9-4639\",\"rows\":[\"account_entries:aentry-3333f2ea-82b7-46b1- · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "2.4.4 5a: Tablodan Aktar kayda bağlı carinin taksit dışı tahsilatlarını karta yazar; bakiye, Kasa ve banka aynı › A7 başka kartın tahsilatına dokunulmaz; A10 geri al: cari tahsilatları aynen döner, sayılar aynı",
+      "konum": "test/tablodan-aktar-244.test.mjs:140:3",
+      "hata": "Cannot read properties of undefined (reading 'importId')"
+    },
+    {
+      "ad": "2.4.4 5b: Tablodan Aktar carinin mevcut borcunu ikinci kez yazmaz (açılış bakiyesi + kart = çift borç olmaz) › B1–B2 aktar: Elif kartı 'Carinin Mevcut Borcu' (9.000, açılış satırı yok, 2.000 ödendi); carinin bakiyesi ve Kasa AYNI; Selin aktarılmadı",
+      "konum": "test/tablodan-aktar-244.test.mjs:242:3",
+      "hata": "aktar: 409 {\"ok\":false,\"error\":\"Bu para hareketi (İşlem No BNK-2026-000001) zaten kayıtlı (Cari Hareketi, Taksit Tahsilatı); aynı hareket ikinci kez yazılamaz. Hiçbir değişiklik yapılmadı.\",\"code\":\"event-in-use\",\"eventId\":\"ev-0mvj9e49n0000-5a6e40da-3965-4025\",\"rows\":[\"account_entries:aentry-9e436ead-e6e7-41ed- · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "2.4.4 5b: Tablodan Aktar carinin mevcut borcunu ikinci kez yazmaz (açılış bakiyesi + kart = çift borç olmaz) › B6 geri al: kart kalkar, 2.000 carinin hesabına döner; bakiye ve Kasa aynı",
+      "konum": "test/tablodan-aktar-244.test.mjs:260:3",
+      "hata": "Cannot read properties of undefined (reading 'importId')"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kayit/k6-mutasyon-a1.log",
+  "klasor": "/home/user/wt/kayit",
+  "ham_cikti_sha256": "fec80bba68a74dc75ed7ef57e9ad15bdc1c7fb54d75f7468c0c83433405afef1",
+  "ham_cikti_bayt": 11464
+}

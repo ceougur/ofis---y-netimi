@@ -668,19 +668,21 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // keep (v2.0.23): hareket düzeltilirken değişmeyen eski bağ yeni kurallara takılmaz (taksitli ya da iptal edilmiş faturaya
   // eskiden kurulmuş bağ yalnız açıklama düzeltmesini engelliyordu); fatura artık yoksa bağ düşer. Kapama böyle bir bağı
   // zaten yok sayar (taksitli fatura kendi kartıyla kapanır).
-  const invoiceLink = (accountId, kind, value, keep = "") => {
+  // 2.4.4 UX18: çek/senet formu da (routes/cheques.mjs) AYNI kuralı kullanır (alınan evrak = tahsilat, verilen evrak = ödeme); extra hata gövdesine
+  // eklenir (alan adı), planHint taksitli faturadaki yol önerisidir.
+  const invoiceLink = (accountId, kind, value, keep = "", { extra = {}, planHint = "Tahsilatı taksite yazın: cari kartında + Tahsilat → Taksite Yaz." } = {}) => {
     const invoiceId = limited(value, 120, "Fatura");
     if (!invoiceId) return "";
-    if (kind !== "in" && kind !== "out") throw new HttpError(400, "Fatura bağı yalnız tahsilat ve ödemede seçilir.");
+    if (kind !== "in" && kind !== "out") throw new HttpError(400, "Fatura bağı yalnız tahsilat ve ödemede seçilir.", extra);
     const invoice = store.get("SELECT id, kind, status, account_id AS accountId, plan_id AS planId FROM invoices WHERE id = ?", invoiceId);
     if (keep && invoiceId === keep) return invoice && invoice.accountId === accountId ? invoice.id : "";
-    if (!invoice || invoice.accountId !== accountId) throw new HttpError(404, "Kapatılacak fatura bu caride bulunamadı.");
-    if (invoice.status !== "issued") throw new HttpError(409, "Yalnız kaydedilmiş fatura kapatılır (taslak ya da iptal edilmiş fatura seçilemez).");
+    if (!invoice || invoice.accountId !== accountId) throw new HttpError(404, "Kapatılacak fatura bu caride bulunamadı.", extra);
+    if (invoice.status !== "issued") throw new HttpError(409, "Yalnız kaydedilmiş fatura kapatılır (taslak ya da iptal edilmiş fatura seçilemez).", extra);
     // v2.0.23 (Bulgu 2 F): taksitli fatura kendi taksit kartıyla kapanır; cari kartından bağ kurulursa fatura ile kartı
     // çelişirdi (fatura ödendi, kart ödenmedi). Tahsilat kartın taksitine girilir.
-    if (invoice.planId) throw new HttpError(409, "Bu fatura taksitli; kendi taksit kartıyla kapanır. Tahsilatı taksite yazın: cari kartında + Tahsilat → Taksite Yaz.");
+    if (invoice.planId) throw new HttpError(409, `Bu fatura taksitli; kendi taksit kartıyla kapanır. ${planHint}`, extra);
     const side = ["sale", "smm"].includes(invoice.kind) ? "in" : invoice.kind === "purchase" ? "out" : "";
-    if (side !== kind) throw new HttpError(409, kind === "in" ? "Tahsilat yalnız satış faturasını kapatır; alış faturası için Ödeme girin." : "Ödeme yalnız alış faturasını kapatır; satış faturası için Tahsilat girin.");
+    if (side !== kind) throw new HttpError(409, kind === "in" ? "Tahsilat yalnız satış faturasını kapatır; alış faturası için Ödeme girin." : "Ödeme yalnız alış faturasını kapatır; satış faturası için Tahsilat girin.", extra);
     return invoice.id;
   };
   const entryInput = (body, accountId = "", previous = null) => {
@@ -1545,5 +1547,5 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     return `Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.${kept.dropped ? ` ${bank.droppedText(kept.dropped)}` : ""}`;
   }
 
-  return { exists, accountRow, createFromPlan, matchPerson, stockEntry, invoiceEntry, posEntry, doubtfulEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers, assertUnlocked };
+  return { exists, accountRow, createFromPlan, matchPerson, stockEntry, invoiceEntry, posEntry, doubtfulEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers, assertUnlocked, invoiceLink };
 }

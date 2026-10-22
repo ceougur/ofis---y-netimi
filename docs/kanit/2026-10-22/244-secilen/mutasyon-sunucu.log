@@ -1,0 +1,12 @@
+M1 ön denetim 409 kaldırıldı: çıkış 1, tests 11, fail 4 → YAKALANDI (S1, S2, S7, S9)
+M2 eski/yeni karşılaştırması ters: çıkış 1, tests 11, fail 6 → YAKALANDI (S1, S2, S4, S6, S7, S9)
+M3 aynı gün de eski sayıldı: çıkış 1, tests 11, fail 2 → YAKALANDI (S10, S4)
+M4 Seçilenleri Gönder'de outside yok: çıkış 1, tests 11, fail 1 → YAKALANDI (S7)
+M5 seçim süzgeci yok (hepsi): çıkış 1, tests 11, fail 5 → YAKALANDI (S10, S11, S4, S6, S7)
+M6 parça sınırı yalnız all: çıkış 1, tests 11, fail 2 → YAKALANDI (S6, S7)
+M7a kronoloji engelli eski de sayıldı: çıkış 1, tests 11, fail 1 → YAKALANDI (S11)
+M7b alıcı engelli eski de sayıldı: çıkış 1, tests 11, fail 1 → YAKALANDI (S11)
+M8 seçilmemiş yerine hepsi (seçili de 'eski'): çıkış 1, tests 11, fail 4 → YAKALANDI (S2, S6, S7, S8)
+# tests 9
+# pass 9
+# fail 0

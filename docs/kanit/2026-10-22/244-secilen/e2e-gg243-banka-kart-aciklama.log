@@ -1,0 +1,19 @@
+
+> destekofis@2.4.3 test:gg243-banka-kart-aciklama
+> node --disable-warning=ExperimentalWarning test/e2e/gg243-banka-kart-aciklama.mjs
+
+A) başka oturum Tümünü Gönder (canlı olay)
+  ✓ ön koşul: iade faturası numarasız, açıklama "(gönderilecek)" (numarasız; Ters Kayıt · BNK-2026-000003 · İade Faturası (gönderilecek))
+  ✓ İşlem Kartı açık, açıklama '(gönderilecek)'
+  ✓ sunucuda açıklama numaraya döndü (Ters Kayıt · BNK-2026-000003 · İade Faturası TEA2026000000002)
+  ✓ açık kart kendiliğinden yeni açıklamayı gösterdi (TEA2026000000002)
+  ✓ kartta '(gönderilecek)' kalmadı
+B) aynı sayfa Tümünü Gönder (bu ekranın yazımı)
+  ✓ ön koşul: iade faturası numarasız, açıklama "(gönderilecek)" (numarasız; Ters Kayıt · BNK-2026-000005 · İade Faturası (gönderilecek))
+  ✓ İşlem Kartı açık, açıklama '(gönderilecek)'
+  ✓ sunucuda açıklama numaraya döndü (Ters Kayıt · BNK-2026-000005 · İade Faturası TEF2026000000002)
+  ✓ açık kart kendiliğinden yeni açıklamayı gösterdi (TEF2026000000002)
+  ✓ kartta '(gönderilecek)' kalmadı
+  ✓ sayfa hatası yok
+
+✓ gg243-banka-kart-aciklama: 11 geçti, 0 kaldı

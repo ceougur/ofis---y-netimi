@@ -1,0 +1,53 @@
+{
+  "ad": "244-esmm2/mutasyon-M04b-kayit-girisi-yanlis-servis",
+  "komut": "node --test test/esmm-gonderim-244.test.mjs",
+  "commit": "7c36f8718bd81220e70c1441f641fa8035c11f85",
+  "dal": "HEAD",
+  "kirli": 7,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T07:04:57.319Z",
+  "sure_sn": 4.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 19,
+    "gecen": 15,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "e-SMM açık: makbuz ESmmEDM.svc'den gider; e-Arşiv e-Fatura servisinden (N2, N3, N10, N13, N15) › N2: Kaydet ve Gönder — makbuz ESMM + TES numarası; giriş ve gönderim e-SMM servisine, e-Fatura servisine HİÇBİR istek yok; EDM'deki makbuz aynı numara/ETTN",
+      "konum": "test/esmm-gonderim-244.test.mjs:105:3",
+      "hata": "e-Fatura servisine istek yok (ne giriş ne gönderim) · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "e-SMM açık: makbuz ESmmEDM.svc'den gider; e-Arşiv e-Fatura servisinden (N2, N3, N10, N13, N15) › N2: e-SMM girişi reddedilirken (e-Fatura oturumu taze) numara VERİLMEZ — erişim/giriş denetimi belgenin servisinde (Kaydet ve Gönder ve Tümünü Gönder)",
+      "konum": "test/esmm-gonderim-244.test.mjs:137:3",
+      "hata": "numara verilmedi: {\"ok\":false,\"pending\":true,\"number\":\"TES2026000000002\",\"code\":\"integrator-rejected\",\"message\":\"EDM isteği reddetti: Kullanıcı adı veya şifre hatalı (EDM hata kodu 2001). Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez). Belge TES2026000000002 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin.\"} · + actual - expected · + 'TES2026000000002' (beklenen , gelen TES2026000000002)"
+    },
+    {
+      "ad": "e-SMM açık: makbuz ESmmEDM.svc'den gider; e-Arşiv e-Fatura servisinden (N2, N3, N10, N13, N15) › N10: Durum Sorgula, Resmî Görüntü ve İptal Et e-SMM servisinden (GetSMMStatus, GetSMM, CancelSMM); e-Fatura servisine istek yok; makbuz programda iptal",
+      "konum": "test/esmm-gonderim-244.test.mjs:159:3",
+      "hata": "Cannot read properties of undefined (reading 'id')"
+    },
+    {
+      "ad": "e-SMM: 002 şirketi kendi ayarıyla ve servisinden gönderir (N11) › 002'nin makbuzu 002'nin entegratör ayarıyla e-SMM servisine gider; 001'in Gönderilecekler'i ve numarası etkilenmez",
+      "konum": "test/esmm-gonderim-244.test.mjs:454:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/esmm2/docs/kanit/2026-10-22/244-esmm2/mutasyon-M04b-kayit-girisi-yanlis-servis.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm2/esmm2-mut",
+  "ham_cikti_sha256": "85b1ae56782f0903f8dbc27afe637f0d193d641182e137c97f2f4a2ccbcbdd44",
+  "ham_cikti_bayt": 14041
+}

@@ -1,6 +1,9 @@
 // 2.4.1 — e-SMM gönderimi hazır olana dek gizli (kullanıcı kararı 16.10.2026: "e-SMM gizli yaparak … teslim et"). Bulgu: 2.4.0'da "e-SMM kullanıcısıyım"
 // işaretlenince serbest meslek makbuzu e-SMM serisinden numara alıyor (ProfileID ESMM) ama EDM'ye gönderilemiyor ("Bu belge gönderilemez.") — canlıda
 // numara harcanır, belge GİB'e gitmez. EDM'de e-SMM ayrı servis/yetki; bağlanana kadar config.esmmEnabled kapalı.
+// 2.4.4 (iş listesi 24): e-SMM bağlandı, üretim girişi (server/server.mjs) bayrağı AÇAR (test/edoc-uretim.test.mjs). Bu dosya iki kurulumu da korur:
+// bayrağı vermeyen kurulum (testlerin varsayılanı; 2.4.1–2.4.3 üretimi) eski "gizli" davranışı, açık kurulum (2.4.4 üretimi) e-SMM'yi. Açık kurulumda
+// e-SMM kullanıcısı olmayan firmanın değişmediği test/esmm-acik-244.test.mjs'te; gönderim test/esmm-gonderim-244.test.mjs'te.
 // "Nasıl bozulur?": işaret ekrandan ya da API'den açılır; 2.4.0'da açılmış eski kayıt makbuzu yine e-SMM yapar; seri listelerinde e-SMM satırı kalır;
 // bayrak açık kurulumda (ileride) eski davranış bozulur.
 import assert from "node:assert/strict";
@@ -22,7 +25,7 @@ async function boot(options) {
 }
 const smm = (api, accountId) => api.post("/api/workspace/invoices", { scenario: "smm", accountId, lines: [{ name: "Avukatlık Ücreti", qty: 1, unitPrice: 1000, vatRate: 20 }], payment: { rest: "open" } });
 
-describe("e-SMM gizli (esmmEnabled kapalı — üretim)", () => {
+describe("e-SMM kapalı kurulum (esmmEnabled verilmez — testlerin varsayılanı; 2.4.1–2.4.3 üretimi)", () => {
   let ctx;
   before(async () => {
     ctx = await boot({});
@@ -54,7 +57,7 @@ describe("e-SMM gizli (esmmEnabled kapalı — üretim)", () => {
   });
 });
 
-describe("e-SMM bayrağı açık kurulum (ileride, EDM e-SMM bağlanınca) eski davranışı korur", () => {
+describe("e-SMM açık kurulum (2.4.4 üretimi: server/server.mjs esmmEnabled)", () => {
   let ctx;
   before(async () => {
     ctx = await boot({ esmmEnabled: true });
@@ -62,11 +65,13 @@ describe("e-SMM bayrağı açık kurulum (ileride, EDM e-SMM bağlanınca) eski 
   after(async () => {
     await ctx?.server.close();
   });
-  test("işaret açılır, makbuz e-SMM (test serisi TES) olur", async () => {
+  test("işaret açılır, makbuz e-SMM (test serisi TES) olur; Numaralar listesinde e-SMM serisi var", async () => {
     const res = await ctx.api.put("/api/workspace/invoices/settings", { seller: SELLER, efatura: true, earsiv: true, esmm: true });
     assert.equal(res.status, 200, JSON.stringify(res.data));
     assert.equal(res.data.esmm, true);
     assert.equal(res.data.esmmAvailable, true);
+    assert.ok("esmm" in (res.data.nextNumbers || {}), "Numaralar listesinde e-SMM serisi");
+    assert.match(res.data.testNumbers?.esmm?.number || "", /^TES\d{13}$/, "test ortamında e-SMM serisi TES");
     const doc = await smm(ctx.api, ctx.accountId);
     assert.equal(doc.status, 200, JSON.stringify(doc.data));
     assert.equal(doc.data.profile, "ESMM");

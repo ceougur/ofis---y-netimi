@@ -272,6 +272,12 @@ try {
   });
   await part("Bölüm B", async () => {
     console.log("\n■ B Bildirimler: yığılma (A6), süre (B5 / A11), fare üstünde (C8)");
+    // 22.10.2026 (2.4.4 madde 7b) B4'ün ara sıra kırmızısının KÖK NEDENİ (kayıttan okundu; test/e2e/form-izolasyon-b4-yaris.mjs MODE=kurtarma-eski):
+    // ürünün "kurtarma anahtarı oluşturun" hatırlatması (hof-workspace.js nudgeRecovery) açılıştan 6 sn sonra, pencere açıksa 20 sn arayla yeniden
+    // bakar; bölüm A'nın pencereleri kapanınca ilk denetimde bir kez çıkar. B4'ün bekleme penceresine denk gelirse "Fare testi."ni yukarı iter (fare
+    // dışarıda kalır → ürün tasarımı gereği sakladığı kalan süre sonunda kapanır). Ön koşul belirlenir: hatırlatma bu yönetici için "gösterildi" sayılır (ürünün kendi
+    // 3 günlük kaydı); bölüm B'nin bildirim denetimlerine başka bildirim karışmaz.
+    await page.evaluate(() => localStorage.setItem(`hof.recovery.nudge.${window.HOF.user?.id || ""}`, String(Date.now())));
     await page.evaluate(() => {
       document.querySelectorAll(".hof-toast").forEach(node => node.remove());
       for (let i = 0; i < 4; i += 1) window.HOF.toast("Bu carinin 1 taksit kartı var. Önce kartları silin.", { type: "error" });
@@ -300,6 +306,14 @@ try {
     console.log(`  · B4 öncesi açılır bildirim: ${noticeBefore.open} (kutu kaymış: ${noticeBefore.shifted})`);
     await quietAlerts(true);
     const quiet = await settled();
+    // 22.10.2026 (2.4.4 madde 7b) B4 yine ara sıra kırmızı (ön koşullar "true true"); kök neden araya giren kurtarma hatırlatması (bölüm B başı).
+    // İkinci zamanlama açığı da kapatıldı (zorla: test/e2e/form-izolasyon-b4-yaris.mjs MODE=gec-fare): bildirimin 3,6 sn'si bildirim çıktığı anda
+    // başlıyordu; ölçüm + fare hareketi makine yüklüyken bu süreyi aşarsa bildirim fare varmadan kapanmaya başlamış olur (kapanırken 250 ms ekranda
+    // kalır → "fare içinde" ölçülür). Sıra artık süreye bağlı değil: bildirimin yeri önce
+    // bir ölçüm bildirimiyle ölçülür, fare oraya konur, bildirim farenin ALTINDA açılır (ürün: kapanma anında fare üstündeyse kapanmaz), sonra
+    // fare bildirimin içinde kıpırdatılır (ürün: fare hareketiyle bekletme). Fare ne zaman gelirse gelsin bildirim farenin altındadır.
+    // Zorla üretme: FORM_IZOLASYON_B4_ZORLA_GEC=1 kıpırdatmayı bildirimin süresi dolduktan SONRAYA atar (ön koşul ölçülür, yazılır).
+    const forceLate = process.env.FORM_IZOLASYON_B4_ZORLA_GEC === "1";
     await page.evaluate(() => {
       document.querySelectorAll(".hof-toast").forEach(node => node.remove());
       window.HOF.toast("Fare testi.", { type: "info" });
@@ -307,15 +321,48 @@ try {
     await settled();
     const toastBox = await page.locator(".hof-toast").first().boundingBox();
     const pointAt = [toastBox.x + 30, toastBox.y + toastBox.height / 2];
-    const pointerInside = () => page.evaluate(([x, y]) => {
-      const box = document.querySelector(".hof-toast")?.getBoundingClientRect();
-      return Boolean(box) && x >= box.left && x <= box.right && y >= box.top && y <= box.bottom;
-    }, pointAt);
-    // Bildirim tıklamayı geçirir; fare onun üstüne gerçek fare hareketiyle getirilir (metnin üstü, Kapat düğmesi değil).
+    // Ölçüm bildirimi kaldırılır; fare (bildirim yokken) bildirimin geleceği yere gerçek fare hareketiyle konur (metnin üstü, Kapat değil).
+    await page.evaluate(() => document.querySelectorAll(".hof-toast").forEach(node => node.remove()));
     await page.mouse.move(pointAt[0], pointAt[1], { steps: 4 });
-    const placed = quiet && (await pointerInside());
+    const opened = await page.evaluate(([x, y]) => {
+      const node = window.HOF.toast("Fare testi.", { type: "info" });
+      const box = node.getBoundingClientRect();
+      // Kayıt (bir sonraki kırmızıda nedeni okunur): araya giren bildirim, bildirimin fareden ilk ayrıldığı an ve o anki durum (pencere, açılır
+      // bildirim, kapanıyor mu), kapanmaya başladığı an.
+      const created = performance.now();
+      const others = [];
+      const watch = new MutationObserver(list => list.forEach(entry => entry.addedNodes.forEach(item => item !== node && others.push(item.querySelector?.(".hof-toast-text")?.textContent || item.className))));
+      watch.observe(document.getElementById("hof-toasts"), { childList: true });
+      const trace = { out: null, leftAt: null };
+      const sampler = setInterval(() => {
+        const t = Math.round(performance.now() - created);
+        if (node.hofLeaving && trace.leftAt === null) trace.leftAt = t;
+        const b = node.getBoundingClientRect();
+        const over = node.isConnected && x >= b.left && x <= b.right && y >= b.top && y <= b.bottom;
+        if (!over && !trace.out) trace.out = { t, box: [Math.round(b.left), Math.round(b.top), Math.round(b.width), Math.round(b.height)], connected: node.isConnected, leaving: Boolean(node.hofLeaving), modal: Boolean(document.querySelector(".hof-modal-backdrop.is-visible")), notice: document.body.classList.contains("hof-notice-open"), toasts: document.querySelectorAll(".hof-toast").length };
+      }, 100);
+      window.__b4 = { node, created, others, watch, trace, sampler };
+      return { inside: x >= box.left && x <= box.right && y >= box.top && y <= box.bottom, duration: window.HOF.toastDuration("Fare testi.", { type: "info" }) };
+    }, pointAt);
+    if (forceLate) await page.waitForFunction(ms => performance.now() - window.__b4.created >= ms, opened.duration + 400, { timeout: 15000 });
+    await page.mouse.move(pointAt[0] + 2, pointAt[1], { steps: 2 });
+    const state = () => page.evaluate(([x, y]) => {
+      const { node, created, others, trace } = window.__b4;
+      const box = node.getBoundingClientRect();
+      return { live: node.isConnected && !node.hofLeaving, inside: node.isConnected && x >= box.left && x <= box.right && y >= box.top && y <= box.bottom, elapsed: Math.round(performance.now() - created), others: [...others], trace: JSON.parse(JSON.stringify(trace)) };
+    }, [pointAt[0] + 2, pointAt[1]]);
+    const atMove = await state();
+    const placed = quiet && opened.inside && atMove.inside;
+    if (forceLate) console.log(`  · B4 ZORLA: fare ${atMove.elapsed} ms'de kıpırdadı (bildirim süresi ${opened.duration} ms; ön koşul oluştu: ${atMove.elapsed > opened.duration})`);
     await sleep(4800);
-    ok(placed && (await toastTexts(page)).includes("Fare testi."), `B4 fare üstündeyken bildirim kapanmadı (süre 3,6 sn; ön koşul: açılır bildirim yok ${quiet}, fare bildirimin içinde ${placed})`);
+    const atEnd = await state();
+    await page.evaluate(() => {
+      window.__b4.watch.disconnect();
+      clearInterval(window.__b4.sampler);
+    });
+    const b4Ok = placed && atEnd.live && atEnd.inside;
+    if (!b4Ok) console.log(`  · B4 kayıt: kıpırdatma ${atMove.elapsed} ms; fareden ilk ayrılış ${JSON.stringify(atEnd.trace.out)}; kapanmaya başladı ${atEnd.trace.leftAt ?? "—"} ms`);
+    ok(b4Ok, `B4 fare üstündeyken bildirim kapanmadı (süre ${opened.duration} ms, ${atEnd.elapsed} ms sonra; ön koşul: açılır bildirim yok ${quiet}, fare bildirimin içinde ${placed}; araya giren bildirim: ${atEnd.others.length ? JSON.stringify(atEnd.others) : "yok"})`);
     const passes = await page.evaluate(([x, y]) => {
       const hit = document.elementFromPoint(x, y);
       return !hit?.closest(".hof-toast") ? `${hit?.tagName || "?"}` : "";

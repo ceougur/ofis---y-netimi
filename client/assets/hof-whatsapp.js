@@ -152,7 +152,7 @@
           <button type="button" class="hof-button hof-button-ghost" data-prev ${state.at ? "" : "disabled"}>← Önceki</button>
           <button type="button" class="hof-button hof-button-ghost" data-skip>Atla</button>
           <button type="button" class="hof-button hof-button-ghost" data-copy>Metni Kopyala</button>
-          ${kind === "statement" ? `<a class="hof-button hof-button-ghost" href="${statementPdf(person)}" target="_blank" rel="noopener">Ekstre PDF</a>` : ""}
+          ${kind === "statement" ? HOF.outputButton({ kind: "pdf", href: statementPdf(person), label: "Cari Ekstre - PDF", tip: "Bu kişinin cari ekstresi PDF olarak açılır", attrs: 'target="_blank" rel="noopener"' }) : ""}
           <button type="button" class="hof-button hof-whatsapp" data-send>${state.armed && state.auto ? "Şimdi Aç" : "WhatsApp'ta Aç ve Sıradakine Geç"}</button>
         </div>
         <div class="hof-wa-auto">

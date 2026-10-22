@@ -72,6 +72,7 @@ jobs:
       - run: npm run test:senaryo-portal-244
       - run: npm run test:senaryo-kayit-tahsilat-244
       - run: npm run test:senaryo-netten-brute-244
+      - run: npm run test:senaryo-ux18-244
       - run: npm run test:senaryo-banka-rapor-243
       - run: npm run test:senaryo-defter-243
       - run: npm run test:banka-230-hareket-yaris
@@ -89,11 +90,16 @@ jobs:
       - run: npm run test:gg243-kopyala
       - run: npm run test:gg243-odak-kalem-sil
       - run: npm run test:gg243-tumunu-gonder
+      - run: npm run test:gg244-secilenleri-gonder
+      - run: npm run test:gg244-esmm-gonder
+      - run: npm run test:gg244-numara-tarih-onay
       - run: npm run test:gg243-odak-silme-diger
       - run: npm run test:gg243-banka-kart-aciklama
       - run: npm run test:gg243-dar2-ekran
       - run: npm run test:uiux-a-243
       - run: npm run test:uiux-b-243
+      - run: npm run test:uiux-244-ux9-ux10
+      - run: npm run test:uiux-ui11-244
       - run: npm run test:sirket-canli-yetki-244
       - run: npm run test:baslarken-244
 

@@ -271,6 +271,20 @@ try {
       kayit.yanit = { atlandi: "belge yok" };
     } else if (i === "kart_gonder") {
       kayit.yanit = ozet(await api.post(`/api/workspace/invoices/${id}/send`, {}));
+    } else if (i === "tumunu_gonder" && adim.kapsam === "secili" && adim.eski !== undefined) {
+      // BAĞLANTI (2.4.4, E6 "Seçilenleri Gönder"; YALNIZ çağrı biçimi — kural/beklenen değer YOK, model bu adımı henüz bilmez): adımda "eski"
+      // alanı varsa ekranın yeni yolu sürülür: send-pending { only: [kimlikler] }. Seçilmemiş daha eski bekleyen varsa ilk istek gönderimsiz 409
+      // einvoice-selection-older (+ olderIds) döner; "eski": "ekle" → { only: seçili ∪ olderIds } ile tur, başka değer → vazgeçilir (istek yok).
+      // Gözlem kayda yazılır (ek.soru). "eski" alanı olmayan seçili adım eski { ids } yolunu sürer (aşağıda). Kuralı kodu görmeyen ayrı el yazar.
+      const ids = adim.belgeler.map(ad => belgeId[ad]).filter(Boolean);
+      if (!ids.length) kayit.yanit = { atlandi: "seçili belge programda yok" };
+      else {
+        let r = await turGonder(api, { only: ids });
+        const soru = r.status === 409 && r.data?.code === "einvoice-selection-older" ? { sayi: r.data.count, eskiler: (r.data.olderIds || []).map(x => idAd[x] || x) } : null;
+        if (soru && adim.eski === "ekle") r = await turGonder(api, { only: [...ids, ...(r.data.olderIds || [])] });
+        kayit.yanit = ozet(r);
+        kayit.ek = { soru, sonuclar: (r.data?.results || []).map(x => ({ ad: idAd[x.id] || x.id, ok: x.ok, numara: x.number || "", durum: x.status || "", kod: x.code || x.error || "", ileti: x.message || "" })) };
+      }
     } else if (i === "tumunu_gonder") {
       const body = adim.kapsam === "secili" ? { ids: adim.belgeler.map(ad => belgeId[ad]).filter(Boolean) } : { all: true };
       const r = await turGonder(api, body);

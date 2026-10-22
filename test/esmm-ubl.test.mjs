@@ -158,6 +158,20 @@ describe("e-SMM UBL: program tutarlarıyla aynı, yapı EDM'nin e-SMM örneğiyl
     assert.deepEqual(line.children.map(item => item.name).filter(name => name !== "Note"), ["ID", "InvoicedQuantity", "LineExtensionAmount", "TaxTotal", "Item", "Price"]);
     assert.deepEqual(find(line, "TaxTotal").children.map(item => item.name), ["TaxAmount", "TaxSubtotal", "TaxSubtotal"]);
   });
+  test("taraf adresi BuildingName de taşır: EDM e-SMM'yi GİB eArsivVeri.xsd adresine çevirir (caddeSokak zorunlu ilk öğe); yalnız StreetName ile şema hatası", () => {
+    // 22.10.2026 gerçek EDM test ortamı (docs/kanit/2026-10-22/244-edm/g-toplu-gonderim.json): "The element 'adres' in namespace
+    // 'http://earsiv.efatura.gov.tr' has invalid child element 'binaAd' … expected: caddeSokak". GİB e-Arşiv paketi v1.1_9 eArsivVeri.xsd: adres =
+    // caddeSokak, binaAd, binaNo, kapiNo, kasabaKoy, semt, sehir, postaKod, ulke (hepsi zorunlu). EDM'nin e-SMM örneği adresi BuildingName'de verir;
+    // UBL 2.1 sırası StreetName → BuildingName → CitySubdivisionName. Aynı düzenle gerçek EDM'de e-SMM gönderimi geçti (244-edm, 47/47).
+    for (const [key, { tree }] of Object.entries(docs)) {
+      for (const role of ["AccountingSupplierParty", "AccountingCustomerParty"]) {
+        const address = find(tree, `${role}/Party/PostalAddress`);
+        assert.ok(address, `${key} ${role} adres yok`);
+        assert.deepEqual(address.children.map(item => item.name).slice(0, 3), ["StreetName", "BuildingName", "CitySubdivisionName"], `${key} ${role}`);
+        assert.equal(textOf(find(address, "BuildingName")), textOf(find(address, "StreetName")), `${key} ${role} bina adı = adres`);
+      }
+    }
+  });
   test("stopaj artık Not değil (vergi satırında); programın fatura görünüm şablonu ve karekod gömülmez; gönderim şekli alıcının e-postasına göre", () => {
     for (const { xml } of Object.values(docs)) {
       assert.doesNotMatch(xml, /Gelir Vergisi Stopajı %/, "stopaj notu yok");
@@ -181,6 +195,7 @@ describe("e-SMM dışı belgeler değişmedi", () => {
     assert.match(xml, /Gelir Vergisi Stopajı %20: 200\.00 TRY/);
     assert.deepEqual(subtotals(find(tree, "TaxTotal")).map(item => item.code), ["0015"]);
     assert.deepEqual(totalsOf(tree), { LineExtensionAmount: "1000.00", TaxExclusiveAmount: "1000.00", TaxInclusiveAmount: "1200.00", PayableAmount: "1000.00" });
+    assert.ok(!find(tree, "AccountingCustomerParty/Party/PostalAddress/BuildingName"), "e-SMM dışı belgede adres yapısı değişmedi (yalnız StreetName)");
     delete docs.K;
   });
 });

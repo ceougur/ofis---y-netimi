@@ -1,0 +1,38 @@
+{
+  "ad": "244-ux18/mutasyon-M10-cari-degisince-sessiz-duser",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ux18/ux18-mut-M10-cari-degisince-sessiz-duser/test/ux18-cek-fatura-244.test.mjs",
+  "commit": "6aeb05c711d4824f67f20d939161ae459b2b867d",
+  "dal": "is/ux18",
+  "kirli": 13,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T06:17:41.837Z",
+  "sure_sn": 5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 13,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T9 bağ değiştirme / kaldırma; cari değişince bağ sessizce düşmez; işlem görmüş evrakta bağ değişmez",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:289:3",
+      "hata": "cari değişti, bağ kaldı: 200 {\"id\":\"cheque-2179404e-1de9-4ee4-bb06-9e941c0eab4a\",\"direction\":\"in\",\"instrument\":\"cheque\",\"serialNo\":\"UX32\",\"bank\":\"Ziraat\",\"drawer\":\"\",\"accountId\":\"account-aea80ec5-3fba-4b7d-a193-9ce61109fd78\",\"planId\":\"\",\"amount\":300,\"issueDate\":\"2026-10-22\",\"dueDate\":\"2026-12-06\",\"status\":\"portfolio\",\"statusDat · 200 !== 404 (beklenen 404, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ux18/mutasyon-M10-cari-degisince-sessiz-duser.log",
+  "klasor": "/home/user/wt/ux18",
+  "ham_cikti_sha256": "f7fe48c7d161b1b112656c54e73d2183496a8c9823edefb45ccd40efc9d25a64",
+  "ham_cikti_bayt": 7393
+}

@@ -1,0 +1,14 @@
+M1-sendKind-profil-yok çıkış=0 # pass 6 # fail 0 
+M2-profil-isaretsiz-esmm çıkış=1 # pass 1 # fail 5 
+M3-earsiv-esmm-servisine çıkış=1 # pass 1 # fail 0 
+M4-uretim-esmm-kapali çıkış=1 # pass 9 # fail 7 
+M5-bekci-gevsek-ana-bilgisayar çıkış=1 # pass 8 # fail 1 
+M6-giris-hatasinda-surer çıkış=1 # pass 8 # fail 1 
+M7-maske-etkisiz çıkış=1 # pass 8 # fail 1 
+M8-bekci-reddi-belirsiz çıkış=1 # pass 8 # fail 1 
+M9-bekci-yol-serbest çıkış=1 # pass 8 # fail 1 
+M10-uzerine-yazar çıkış=1 # pass 8 # fail 1 
+# Not: her mutasyon çalışma ağacının kopyasında (node_modules ve kanıt hariç), tek değişiklikle; koşucu not defterindeki mutasyon.sh. Çıkış 1 = test kırmızı (yakaladı).
+# M1 EŞDEĞER (yakalanmaması beklenir): kâğıt (KAGIT) makbuz her gönderim kapısında AYRICA "profile !== KAGIT" ile korunur (invoices.mjs canSend/canRefresh/
+#    canOfficial/unsentNumbered/unsentSql/later/deferable) ve ESMM profili yalnız işaretli firmaya verilir (M2 bunu yakalar) → işaretsiz firmada gözlenebilir fark yok.
+# M3 kırmızısı before kancasında: e-Arşiv e-SMM servisine gidince gönderim düşer, senaryo durur (alt testler iptal) — yakaladı.

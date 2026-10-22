@@ -80,8 +80,9 @@ export function loadConfig(overrides = {}) {
     // (ek 5): önceden bu alan yapılandırmaya hiç geçmiyordu, testlerin verdiği kısa aralık yok sayılıyordu.
     edocStatusPollMs: Array.isArray(overrides.edocStatusPollMs) ? overrides.edocStatusPollMs.map(Number).filter(value => Number.isFinite(value) && value >= 0) : undefined,
     edocSendBudgetMs: Number.isFinite(overrides.edocSendBudgetMs) && overrides.edocSendBudgetMs > 0 ? overrides.edocSendBudgetMs : 10_000,
-    // e-SMM gönderimi (2.4.1, kullanıcı kararı 16.10.2026: "e-SMM gizli"): EDM'de e-SMM ayrı servis/yetki; bağlanana kadar kapalı — işaret gizli, sunucu
-    // reddeder, eski "esmm: true" kaydında makbuz kâğıt kalır (test/esmm-gizli-241.test.mjs). Ortam değişkeniyle açılmaz.
+    // e-SMM gönderimi (2.4.1, kullanıcı kararı 16.10.2026: "e-SMM gizli"): EDM'de e-SMM ayrı servis/yetki; kapalıyken işaret gizli, sunucu reddeder, eski
+    // "esmm: true" kaydında makbuz kâğıt kalır (test/esmm-gizli-241.test.mjs). 2.4.4'te (iş listesi 24) üretim girişi (server/server.mjs) AÇAR; testler
+    // vermedikçe kapalı. Ortam değişkeniyle açılmaz.
     esmmEnabled: overrides.esmmEnabled === true,
     // Test serisi (TEF/TEA/TES) başlangıcı (2.4.2): üretimde boş → firmaya özgü rastgele büyük numara (EDM test hesabı ortak; 1'den başlayan numara
     // başka firmanınkiyle çakışır). Testler sabit başlangıç verir (test/helpers.mjs).

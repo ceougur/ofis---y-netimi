@@ -2,6 +2,7 @@
 // test/e2e/senaryo-entegrator-240.mjs ortak kullanır (16.10.2026'da e-Belge testinden taşındı; davranış aynı).
 import { createServer } from "node:http";
 import { child, deep, find, parseXml, textOf } from "../server/lib/einvoice/xml-lite.mjs";
+import { isSmmPath, smmReply, smmState, smmWsdl } from "./esmm-mock.mjs";
 
 export const NS = "urn:edm:test";
 export const ACTION = op => `http://tempuri.org/EFaturaEDMPort/${op}`;
@@ -78,6 +79,9 @@ export async function startMockEdm({ serveWsdl = true, contract = {} } = {}) {
   // state.resetLimit: en çok kaç istek koparılsın) değiştirir.
   state.resetOps = new Set();
   state.resets = [];
+  // 2.4.4 (iş listesi 22): aynı sunucunun …/ESmmEDM.svc yolu sahte e-SMM servisidir (test/esmm-mock.mjs); kayıtları state.smm'de, e-Fatura kayıtlarından ayrı.
+  state.smm = smmState();
+  state.smm.wsdlHits = 0;
   const seen = new WeakMap();
   const server = createServer((req, res) => {
     const use = (seen.get(req.socket) || 0) + 1;
@@ -97,6 +101,22 @@ export async function startMockEdm({ serveWsdl = true, contract = {} } = {}) {
           req.socket.destroy();
           return;
         }
+      }
+      if (isSmmPath(req.url)) {
+        if (req.method === "GET") {
+          state.smm.wsdlHits += 1;
+          if (!serveWsdl) res.writeHead(404).end("yok");
+          else res.writeHead(200, { "content-type": "text/xml" }).end(smmWsdl());
+          return;
+        }
+        const reply = smmReply(state.smm, { body: deep(parseXml(raw), "Body"), action: String(req.headers.soapaction || "").replace(/^"|"$/g, ""), credentials: { username: "edmkullanici", password: "Gizli-Parola-1" } });
+        // cut: istek İŞLENDİ (EDM aldı), yanıt gelmeden bağlantı koptu.
+        if (reply.cut) {
+          req.socket.destroy();
+          return;
+        }
+        res.writeHead(reply.status, { "content-type": "text/xml" }).end(reply.xml);
+        return;
       }
       if (req.method === "GET") {
         state.wsdlHits += 1;

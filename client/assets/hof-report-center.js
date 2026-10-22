@@ -326,8 +326,8 @@
     // (ipucu) ve açıklamaya tıklayınca açılır.
     main.innerHTML = `<header class="hof-rc-head"><div><p class="hof-eyebrow">${esc(report.group)}</p><h3>${esc(preview?.title || report.title)}</h3><p class="hof-rc-desc" title="${esc(report.description)}" data-rc-desc>${esc(report.description)}</p>${preview?.subtitle ? `<small class="hof-rc-scope">${esc(preview.subtitle)}</small>` : ""}</div>
         <span class="hof-rep-export ${ready ? "" : "is-disabled"}" role="group" aria-label="Dışa aktar">
-          <a class="hof-rep-out is-pdf" href="${ready ? `/api/workspace/report-center/${esc(report.id)}/pdf?${esc(qs)}` : "#"}" target="_blank" rel="noopener" ${ready ? "" : 'aria-disabled="true" tabindex="-1"'}>PDF İndir</a>
-          <a class="hof-rep-out is-xlsx" href="${ready ? `/api/workspace/report-center/${esc(report.id)}/xlsx?${esc(qs)}` : "#"}" download ${ready ? "" : 'aria-disabled="true" tabindex="-1"'}>Excel İndir</a>
+          ${HOF.outputButton({ kind: "pdf", href: ready ? `/api/workspace/report-center/${encodeURIComponent(report.id)}/pdf?${qs}` : "#", what: preview?.title || report.title, attrs: `target="_blank" rel="noopener"${ready ? "" : ' aria-disabled="true" tabindex="-1"'}` })}
+          ${HOF.outputButton({ kind: "xlsx", href: ready ? `/api/workspace/report-center/${encodeURIComponent(report.id)}/xlsx?${qs}` : "#", what: preview?.title || report.title, attrs: `download${ready ? "" : ' aria-disabled="true" tabindex="-1"'}` })}
           ${(report.actions || []).map(action => `<button type="button" class="hof-button hof-button-small" data-rc-action="${esc(action.id)}">${esc(action.label)}</button>`).join("")}
         </span></header>
       ${report.params.length ? `<div class="hof-rc-params">${paramsHtml(report)}<button type="button" class="hof-button hof-button-small" data-rc-run>Ön İzle</button><span class="hof-rc-busy" data-rc-busy role="status" hidden>Güncelleniyor…</span></div>` : ""}

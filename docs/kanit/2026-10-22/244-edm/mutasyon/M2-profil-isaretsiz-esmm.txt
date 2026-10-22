@@ -1,0 +1,264 @@
+TAP version 13
+# Subtest: e-SMM açılınca e-SMM kullanıcısı olmayan firmada her şey eskisi gibi (fark testi: bayrak kapalı ↔ açık)
+    # Subtest: A1/A4: kâğıt makbuz iki kurulumda da KAGIT, SMM serisi, kayıtta numaralı; hesap (brüt / stopaj / KDV / ödenecek) aynı
+    not ok 1 - A1/A4: kâğıt makbuz iki kurulumda da KAGIT, SMM serisi, kayıtta numaralı; hesap (brüt / stopaj / KDV / ödenecek) aynı
+      ---
+      duration_ms: 1.939532
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm/edm-mutasyon-M2-profil-isaretsiz-esmm/test/esmm-acik-244.test.mjs:118:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        'ESMM' !== 'KAGIT'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'KAGIT'
+      actual: 'ESMM'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm/edm-mutasyon-M2-profil-isaretsiz-esmm/test/esmm-acik-244.test.mjs:121:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: A2: kâğıt makbuz Gönderilecekler'e düşmez, e-Belge uçları reddeder, kartında gönderim düğmesi yok — iki kurulumda aynı
+    not ok 2 - A2: kâğıt makbuz Gönderilecekler'e düşmez, e-Belge uçları reddeder, kartında gönderim düğmesi yok — iki kurulumda aynı
+      ---
+      duration_ms: 0.498804
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm/edm-mutasyon-M2-profil-isaretsiz-esmm/test/esmm-acik-244.test.mjs:131:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        true !== false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm/edm-mutasyon-M2-profil-isaretsiz-esmm/test/esmm-acik-244.test.mjs:135:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: A3: e-Arşiv / e-Fatura aynı numara ve profille, yalnız e-Fatura servisine gider; e-SMM servisine HİÇ istek yok
+    not ok 3 - A3: e-Arşiv / e-Fatura aynı numara ve profille, yalnız e-Fatura servisine gider; e-SMM servisine HİÇ istek yok
+      ---
+      duration_ms: 1.833093
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm/edm-mutasyon-M2-profil-isaretsiz-esmm/test/esmm-acik-244.test.mjs:146:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        e-SMM servisine istek yok
+        + actual - expected
+        
+        + [
+        +   'Login',
+        +   'SendSMM',
+        +   'SendSMM',
+        +   'GetSMMStatus',
+        +   'GetSMM',
+        +   'GetSMMStatus',
+        +   'GetSMMStatus',
+        +   'CancelSMM'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'Login'
+        1: 'SendSMM'
+        2: 'SendSMM'
+        3: 'GetSMMStatus'
+        4: 'GetSMM'
+        5: 'GetSMMStatus'
+        6: 'GetSMMStatus'
+        7: 'CancelSMM'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm/edm-mutasyon-M2-profil-isaretsiz-esmm/test/esmm-acik-244.test.mjs:150:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: A6: yevmiye, cari ve Kasa kayıtları aynı (para çekirdeği bayraktan bağımsız)
+    not ok 4 - A6: yevmiye, cari ve Kasa kayıtları aynı (para çekirdeği bayraktan bağımsız)
+      ---
+      duration_ms: 0.965385
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm/edm-mutasyon-M2-profil-isaretsiz-esmm/test/esmm-acik-244.test.mjs:156:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            {
+              gl: [
+                {
+                  account: '600',
+        ...
+              ],
+        +     number: 'TES2026000000001'
+        -     number: 'SMM2026000000001'
+            },
+            {
+              gl: [
+                {
+                  account: '600',
+        ...
+              ],
+        +     number: 'TES2026000000002'
+        -     number: 'SMM2026000000002'
+            },
+            {
+              gl: [
+                {
+                  account: '600',
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          number: 'SMM2026000000001'
+          gl:
+            0:
+              account: '600'
+              net: 120006
+        1:
+          number: 'SMM2026000000002'
+          gl:
+            0:
+              account: '600'
+              net: 75000
+        2:
+          number: 'TEA2026000000001'
+          gl:
+            0:
+              account: '600'
+              net: 50000
+        3:
+          number: 'TEF2026000000001'
+          gl:
+            0:
+              account: '600'
+              net: 80000
+        4:
+          number: 'TEA2026000000002'
+          gl:
+            0:
+              account: '600'
+              net: 30000
+      actual:
+        0:
+          number: 'TES2026000000001'
+          gl:
+            0:
+              account: '600'
+              net: 120006
+        1:
+          number: 'TES2026000000002'
+          gl:
+            0:
+              account: '600'
+              net: 75000
+        2:
+          number: 'TEA2026000000001'
+          gl:
+            0:
+              account: '600'
+              net: 50000
+        3:
+          number: 'TEF2026000000001'
+          gl:
+            0:
+              account: '600'
+              net: 80000
+        4:
+          number: 'TEA2026000000002'
+          gl:
+            0:
+              account: '600'
+              net: 30000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm/edm-mutasyon-M2-profil-isaretsiz-esmm/test/esmm-acik-244.test.mjs:158:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: beklenen farklar yalnız bunlar: e-SMM işareti görünür, e-SMM serisi satırı, /meta'da makbuz türü gönderilebilir (kâğıt profilde düğme yok)
+    ok 5 - beklenen farklar yalnız bunlar: e-SMM işareti görünür, e-SMM serisi satırı, /meta'da makbuz türü gönderilebilir (kâğıt profilde düğme yok)
+      ---
+      duration_ms: 0.721487
+      type: 'test'
+      ...
+    1..5
+not ok 1 - e-SMM açılınca e-SMM kullanıcısı olmayan firmada her şey eskisi gibi (fark testi: bayrak kapalı ↔ açık)
+  ---
+  duration_ms: 1852.810144
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm/edm-mutasyon-M2-profil-isaretsiz-esmm/test/esmm-acik-244.test.mjs:102:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: A5: açık kurulumda e-SMM işaretlenip kaldırılınca yeni makbuz kâğıda döner (TES numaralı eski makbuz e-SMM kalır)
+    # Subtest: işaretli: ESMM + TES; işaret kaldırılınca: KAGIT + SMM; e-SMM makbuzunun numarası ve türü değişmez
+    not ok 1 - işaretli: ESMM + TES; işaret kaldırılınca: KAGIT + SMM; e-SMM makbuzunun numarası ve türü değişmez
+      ---
+      duration_ms: 142.939359
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm/edm-mutasyon-M2-profil-isaretsiz-esmm/test/esmm-acik-244.test.mjs:192:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        'ESMM' !== 'KAGIT'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'KAGIT'
+      actual: 'ESMM'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm/edm-mutasyon-M2-profil-isaretsiz-esmm/test/esmm-acik-244.test.mjs:205:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - A5: açık kurulumda e-SMM işaretlenip kaldırılınca yeni makbuz kâğıda döner (TES numaralı eski makbuz e-SMM kalır)
+  ---
+  duration_ms: 460.539813
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm/edm-mutasyon-M2-profil-isaretsiz-esmm/test/esmm-acik-244.test.mjs:184:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 6
+# suites 2
+# pass 1
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2712.308075

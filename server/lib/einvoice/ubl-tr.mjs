@@ -52,13 +52,14 @@ export function tradeNameOf(p) {
   return folded(name) === folded(`${p.firstName || ""} ${p.familyName || ""}`) ? "" : name;
 }
 
-function party(p, { variant }) {
+function party(p, { variant, esmm = false }) {
   const id = String(p.taxNo || "").replace(/\s+/g, "");
   const scheme = id.length === 11 ? "TCKN" : "VKN";
   const person = p.partyKind === "person" || id.length === 11;
   const address = [
     "<cac:PostalAddress>",
     tag("cbc:StreetName", p.address || "-"),
+    esmm ? tag("cbc:BuildingName", p.address || "-") : "",
     tag("cbc:CitySubdivisionName", p.district || p.city || "-"),
     tag("cbc:CityName", p.city || "-"),
     tag("cbc:PostalZone", p.postalCode),
@@ -331,8 +332,8 @@ export function buildUbl(doc, { variant = "tr", earchiveEmail = true, xslt = "",
   const body = [
     ...head,
     ...references,
-    `<cac:AccountingSupplierParty>${party(seller || {}, { variant })}</cac:AccountingSupplierParty>`,
-    `<cac:AccountingCustomerParty>${party(buyer || {}, { variant })}</cac:AccountingCustomerParty>`,
+    `<cac:AccountingSupplierParty>${party(seller || {}, { variant, esmm })}</cac:AccountingSupplierParty>`,
+    `<cac:AccountingCustomerParty>${party(buyer || {}, { variant, esmm })}</cac:AccountingCustomerParty>`,
     payment,
     exchange,
     tax,

@@ -1,0 +1,58 @@
+{
+  "ad": "244-kayit/5a-eski-0f19206-kirmizi",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-eski-0f19206/test/tablodan-aktar-244.test.mjs",
+  "commit": "0f19206396c57339f57de1eb3b046f61871f81f3",
+  "dal": "is/kayit",
+  "kirli": 3,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T05:56:35.682Z",
+  "sure_sn": 2.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 0,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 5a: Tablodan Aktar kayda bağlı carinin taksit dışı tahsilatlarını karta yazar; bakiye, Kasa ve banka aynı › A1–A6, A8 ön izleme: Elif 3.500 karta (1.000 + 2.500), 7.000 taksit dışı (kalanı aşar; iade düşüldü); Selin faturalı → taşınmaz; kapalıyken yazılmaz",
+      "konum": "test/tablodan-aktar-244.test.mjs:82:3",
+      "hata": "karta yazılacak: undefined · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.4.4 5a: Tablodan Aktar kayda bağlı carinin taksit dışı tahsilatlarını karta yazar; bakiye, Kasa ve banka aynı › A9 ön izlemeden sonra cariye tahsilat girilirse aktarım durur (409, hiçbir şey yazılmaz)",
+      "konum": "test/tablodan-aktar-244.test.mjs:104:3",
+      "hata": "{\"importId\":\"import-383344db-bd19-41e4-a294-1661b0868b4f\",\"created\":1,\"linked\":0,\"accountsCreated\":0,\"accountsLinked\":0,\"paymentsMoved\":0,\"paymentsAmount\":0,\"total\":9000,\"opening\":0,\"remaining\":9000,\" · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.4.4 5a: Tablodan Aktar kayda bağlı carinin taksit dışı tahsilatlarını karta yazar; bakiye, Kasa ve banka aynı › A1–A7 aktar: kart 9.000 / ödenen 3.500 (1. taksit kapandı, 2.'nin 500'ü); cari bakiyesi, Kasa, banka hesabı ve işlem sayısı aynı",
+      "konum": "test/tablodan-aktar-244.test.mjs:114:3",
+      "hata": "aktar: 409 {\"ok\":false,\"error\":\"Ön izlemeden sonra tablo, kartlar ya da tahsilatlar değişti. Ön izleme yenilendi; kontrol edip yeniden aktarın.\",\"code\":\"stale\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "2.4.4 5a: Tablodan Aktar kayda bağlı carinin taksit dışı tahsilatlarını karta yazar; bakiye, Kasa ve banka aynı › A7 başka kartın tahsilatına dokunulmaz; A10 geri al: cari tahsilatları aynen döner, sayılar aynı",
+      "konum": "test/tablodan-aktar-244.test.mjs:139:3",
+      "hata": "Cannot read properties of undefined (reading 'importId')"
+    },
+    {
+      "ad": "2.4.4 5a: Tablodan Aktar kayda bağlı carinin taksit dışı tahsilatlarını karta yazar; bakiye, Kasa ve banka aynı › A11 kapatılmış dönemdeki cari tahsilatı taşınmaz",
+      "konum": "test/tablodan-aktar-244.test.mjs:162:3",
+      "hata": "kilitli dönemdeki 300 ve 1.000 taşınmaz, yalnız 500: [{\"level\":\"info\",\"code\":\"account-in\",\"text\":\"Carisinde taksit dışı ₺1.800,00 tahsilat var; karta sayılmaz, cari bakiyesinde görünür.\"}] · undefined !== 500"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kayit/5a-eski-0f19206-kirmizi.log",
+  "klasor": "/home/user/wt/kayit",
+  "ham_cikti_sha256": "33f70851c1c83ca665385d4b472fb34a498286db6521fc35aa16f7e648e65606",
+  "ham_cikti_bayt": 7300
+}

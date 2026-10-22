@@ -1,0 +1,43 @@
+{
+  "ad": "244-esmm2/mutasyon-M20-resmi-goruntu-eski-kural",
+  "komut": "node --test test/esmm-gonderim-244.test.mjs",
+  "commit": "7c36f8718bd81220e70c1441f641fa8035c11f85",
+  "dal": "HEAD",
+  "kirli": 7,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T07:06:22.641Z",
+  "sure_sn": 5.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 19,
+    "gecen": 17,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "e-SMM açık: makbuz ESmmEDM.svc'den gider; e-Arşiv e-Fatura servisinden (N2, N3, N10, N13, N15) › N2: Kaydet ve Gönder — makbuz ESMM + TES numarası; giriş ve gönderim e-SMM servisine, e-Fatura servisine HİÇBİR istek yok; EDM'deki makbuz aynı numara/ETTN",
+      "konum": "test/esmm-gonderim-244.test.mjs:105:3",
+      "hata": "Expected values to be strictly equal: · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "e-SMM açık: makbuz ESmmEDM.svc'den gider; e-Arşiv e-Fatura servisinden (N2, N3, N10, N13, N15) › N10: Durum Sorgula, Resmî Görüntü ve İptal Et e-SMM servisinden (GetSMMStatus, GetSMM, CancelSMM); e-Fatura servisine istek yok; makbuz programda iptal",
+      "konum": "test/esmm-gonderim-244.test.mjs:159:3",
+      "hata": "Cannot read properties of undefined (reading 'id')"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/esmm2/docs/kanit/2026-10-22/244-esmm2/mutasyon-M20-resmi-goruntu-eski-kural.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm2/esmm2-mut",
+  "ham_cikti_sha256": "6324e1f2e88fb024c3d1f96136523c82b2efd71bb5bede6f0d793b15b1359a13",
+  "ham_cikti_bayt": 11325
+}

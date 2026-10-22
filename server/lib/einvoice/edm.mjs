@@ -124,8 +124,10 @@ const ESMM_STATES = Object.freeze({
   "CANCELLED-SUCCEED": ["cancelled", "e-SMM EDM'de iptal edildi."],
   "CANCEL-SUCCEED": ["cancelled", "e-SMM EDM'de iptal edildi."],
   "PACKAGE-PROCESSING": ["processing", "EDM'de paketleniyor."],
-  "PACKAGE-FAIL": ["error", "Paketleme hatası: EDM'nin yönergesine göre makbuz iptal edilip yeniden gönderilir."],
-  "PACKAGE-FAILED": ["error", "Paketleme hatası: EDM'nin yönergesine göre makbuz iptal edilip yeniden gönderilir."],
+  // Program numarayı kendiliğinden değiştirmez (e-Fatura / e-Arşiv'deki kural: "Hata"daki belge aynı numarayla yeniden gönderilir; yeni numara ancak
+  // belge iptal edilip yeniden kesilince — iş listesi 22): EDM'nin yönergesi İptal Et + Kopyala ile uygulanır.
+  "PACKAGE-FAIL": ["error", "Paketleme hatası: EDM'nin yönergesine göre makbuz iptal edilip yeniden gönderilir — İptal Et ile iptal edin, Kopyala ile yeniden kesin (yeni numara alır)."],
+  "PACKAGE-FAILED": ["error", "Paketleme hatası: EDM'nin yönergesine göre makbuz iptal edilip yeniden gönderilir — İptal Et ile iptal edin, Kopyala ile yeniden kesin (yeni numara alır)."],
 });
 export function mapEdmStatus({ status = "", description = "", gibCode = "", gibDescription = "", responseCode = "", responseDescription = "", earchive = false, esmm = false }) {
   const normalized = String(status).replace(/\s+/g, "").toUpperCase();

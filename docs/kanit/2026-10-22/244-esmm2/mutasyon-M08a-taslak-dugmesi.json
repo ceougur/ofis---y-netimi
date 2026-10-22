@@ -1,0 +1,38 @@
+{
+  "ad": "244-esmm2/mutasyon-M08a-taslak-dugmesi",
+  "komut": "node --test test/esmm-gonderim-244.test.mjs",
+  "commit": "7c36f8718bd81220e70c1441f641fa8035c11f85",
+  "dal": "HEAD",
+  "kirli": 7,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T07:05:18.424Z",
+  "sure_sn": 4.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 19,
+    "gecen": 18,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "e-SMM açık: makbuz ESmmEDM.svc'den gider; e-Arşiv e-Fatura servisinden (N2, N3, N10, N13, N15) › N13: portala taslak ayarı açıkken de makbuz doğrudan gönderilir (taslak yolu yok); /e-draft ağa çıkmadan reddedilir, belge belirsize düşmez",
+      "konum": "test/esmm-gonderim-244.test.mjs:196:3",
+      "hata": "kartta Portala Taslak Yükle yok · true !== false (beklenen false, gelen true)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/esmm2/docs/kanit/2026-10-22/244-esmm2/mutasyon-M08a-taslak-dugmesi.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm2/esmm2-mut",
+  "ham_cikti_sha256": "ed91a67905c6a7d42be8d63233bb4fd576af7f08dcf4c6625fb175dc4f551677",
+  "ham_cikti_bayt": 10447
+}

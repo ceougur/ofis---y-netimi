@@ -1,0 +1,32 @@
+{
+  "ad": "244-ux18/e2e-senaryo-tahsile-ver-220",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-tahsile-ver-220.mjs",
+  "commit": "6aeb05c711d4824f67f20d939161ae459b2b867d",
+  "dal": "is/ux18",
+  "kirli": 13,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T06:32:24.051Z",
+  "sure_sn": 90.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 140,
+    "gecen": 140,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ux18/e2e-senaryo-tahsile-ver-220.log",
+  "klasor": "/home/user/wt/ux18",
+  "ham_cikti_sha256": "150f5f9e2849574b1d72acbafbe100340690edb772d6b67b0d9ddff3a4d35379",
+  "ham_cikti_bayt": 12272
+}

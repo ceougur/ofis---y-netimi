@@ -1,0 +1,78 @@
+{
+  "ad": "244-ux18/e2e-eski-163dd5d-kirmizi",
+  "komut": "node /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ux18/ux18-eski-163dd5d/test/e2e/senaryo-ux18-244.mjs",
+  "commit": "6aeb05c711d4824f67f20d939161ae459b2b867d",
+  "dal": "is/ux18",
+  "kirli": 13,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T06:18:19.157Z",
+  "sure_sn": 58.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 11,
+    "gecen": 2,
+    "basarisiz": 9,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 9 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "tahsilat yolları: Nakit, Havale / EFT, POS",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.selectOption: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.waitForSelector: Timeout 8000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: Cannot read properties of undefined (reading 'id')",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.waitForSelector: Timeout 8000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ödeme yolları: Nakit, Havale / EFT, Kredi Kartı",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.selectOption: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "evrak: undefined",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: Cannot read properties of undefined (reading 'id')",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ux18/e2e-eski-163dd5d-kirmizi.log",
+  "klasor": "/home/user/wt/ux18",
+  "ham_cikti_sha256": "a53ff12671e50317edaf18a45c38d7dc9e037eedf8d38fad1c9ed93dc54b3308",
+  "ham_cikti_bayt": 1534
+}

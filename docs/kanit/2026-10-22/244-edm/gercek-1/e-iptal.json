@@ -1,0 +1,12 @@
+{
+ "adim": "e-iptal",
+ "baslik": "İptal (8 gün içinde): B1 önce EDM'de (CancelSMM) sonra programda; ardından EDM durumu",
+ "durum": "kaldı",
+ "denetimler": [
+  {
+   "gecti": false,
+   "denetim": "B1 gönderilemediği için iptal denenmedi"
+  }
+ ],
+ "kayit": {}
+}

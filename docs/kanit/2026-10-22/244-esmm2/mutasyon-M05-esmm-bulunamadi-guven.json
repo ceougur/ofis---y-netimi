@@ -1,0 +1,38 @@
+{
+  "ad": "244-esmm2/mutasyon-M05-esmm-bulunamadi-guven",
+  "komut": "node --test test/esmm-gonderim-244.test.mjs",
+  "commit": "7c36f8718bd81220e70c1441f641fa8035c11f85",
+  "dal": "HEAD",
+  "kirli": 7,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T07:05:02.334Z",
+  "sure_sn": 5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 19,
+    "gecen": 18,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "e-SMM: kopma, belirsiz gönderim, başka numara, iki oturum, iptal süresi (N6, N7, N8, N9, N10) › N7: belirsiz makbuz EDM'de YOKSA bile e-SMM'de doğrulanmamış 'bulunamadı' koduna güvenilmez — Durum Sorgula temizlemez, Gönder ikinci kez göndermez (madde 24'e dek)",
+      "konum": "test/esmm-gonderim-244.test.mjs:371:3",
+      "hata": "temizlenmedi: {\"id\":\"invoice-739ab834-5277-4773-9516-90fe6aaf43ab\",\"kind\":\"smm\",\"kindLabel\":\"Serbest Meslek Makbuzu\",\"scenario\":\"smm\",\"scenarioLabel\":\"Serbest Meslek Makbuzu\",\"status\":\"issued\",\"statusLabel\":\"Kaydedildi\",\"number\":\"TES2026000000004\",\"displayNo\":\"TES2026000000004\",\"internalNumber\":false,\"ettn\":\"4bddb35f-ef0b-4bae-88ca-145b9236db51\",\"issueDate\":\"2026-06-17\",\"issueTime\":\"10:00\",\"accountId\":\"account-595905b1-820e-4f01-83bd-32e9fc2b9543\",\"accountName\":\"Müvekkil Ticaret A.Ş.\",\"accountRef\":\"1\",\"accountPhone\":\"\",\"profile\":\"ESMM\",\"profileLabel\":\"e-SMM\",\"typeCode\":\"SATIS\",\"currency\":\"TRY\",\"rate\":1,\"netTotal\":1000,\"vatTotal\":200,\"withheldTotal\":0,\"stoppageTotal\":200,\"payableTotal\":1000,\"tryNet\":1000,\"tryVat\":200,\"tryPayable\":1000,\"dueDate\":\"2026-06-17\",\"planId\":\"\",\"originalId\":\"\",\"originalNumber\":\"\",\"originalDate\":\"\",\"note\":\"\",\"eStatus\":\"none\",\"eStatusLabel\":\"Gönderilmedi\",\"eUnsent\":true,\"eTestLive\":false,\"eTest\":true,\"actorName\":\"Ofis yöneticisi\",\"createdAt\":\"2026-06-17T10:00:00.500Z\",\"payState\":\"open\",\"payStateLabel\":\"Açık\",\"paid\":0,\"open\":1000,\"closers\":[],\"party\":{\"id\":\"account-595905b1-820e-4f01-83bd-32e9fc2b9543\",\"name\":\"Müvekkil Ticaret A.Ş.\",\"partyKind\":\"company\",\"firstName\":\"\",\"familyName\":\"\",\"taxNo\":\"1112223339\",\"taxOffice\":\"Konak\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"address\":\"Kordon 5\",\"district\":\"Konak\",\"city\":\"İzmir\",\"postalCode\":\"\",\"country\":\"Türkiye\",\"phone\":\"\",\"email\":\"muhasebe@muvekkil.com.tr\",\"website\":\"\",\"iban\":\"\",\"eInvoice\":false,\"eAlias\":\"\"},\"seller\":{\"name\":\"Deneme Hukuk Bürosu Ltd.\",\"partyKind\":\"company\",\"firstName\":\"\",\"familyName\":\"\",\"taxNo\":\"1234567890\",\"taxOffice\":\"Çankaya\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"address\":\"Atatürk Blv. 1\",\"district\":\"Çankaya\",\"city\":\"Ankara\",\"postalCode\":\"\",\"country\":\"Türkiye\",\"phone\":\"\",\"email\":\"bilgi@deneme.com.tr\",\"website\":\"\",\"banks\":[]},\"pricesIncludeVat\":false,\"discountRate\":0,\"stoppageRate\":20,\"baseTotal\":1000,\"discountTotal\":0,\"baseNetTotal\":1000,\"discountNetTotal\":0,\"goodsNet\":0,\"serviceNet\":1000,\"grossTotal\":1200,\"tryWithheld\":0,\"tryStoppage\":200,\"gl\":[{\"account\":\"600\",\"net\":100000}],\"orderNo\":\"\",\"orderDate\":\"\",\"despatchNo\":\"\",\"despatchDate\":\"\",\"paperNo\":\"\",\"returnRef\":\"\",\"payment\":{\"cash\":[],\"cheques\":[],\"endorse\":[],\"mode\":\"open\",\"installments\":null,\"rest\":1000},\"eMessage\":\"Belge entegratörde bulunamadı: gönderilmemiş. Yeniden gönderebilir ya da değiştirebilirsiniz.\",\"eAt\":\"2026-06-17T10:00:00.606Z\",\"eAdapter\":\"\",\"cancelledAt\":null,\"cancelReason\":\"\",\"amountInWords\":\"Yalnız Bin Türk Lirası\",\"byRate\":[{\"rate\":20,\"net\":1000,\"vat\":200,\"withheld\":0}],\"lines\":[{\"id\":\"iline-1ee044da-a1ee-42d6-8517-ce002708f5a9\",\"invoiceId\":\"invoice-739ab834-5277-4773-9516-90fe6aaf43ab\",\"seq\":1,\"itemId\":\"\",\"goods\":false,\"code\":\"\",\"name\":\"Avukatlık Ücreti\",\"description\":\"\",\"unit\":\"Adet\",\"qty\":1,\"unitPrice\":1000,\"discountRate\":0,\"base\":1000,\"discount\":0,\"net\":1000,\"vatRate\":20,\"vat\":200,\"withholdingCode\":\"\",\"withholdingNum\":0,\"withholdingDen\":0,\"withheld\":0,\"exemptionCode\":\"\",\"gross\":1200,\"payable\":1200,\"glAccount\":\"600\",\"expenseCode\":\"\",\"unitCost\":0,\"originLineId\":\"\",\"moveId\":\"\",\"serialNo\":\"\",\"lotNo\":\"\",\"returned\":0,\"expenseLabel\":\"\"}],\"returnable\":[{\"id\":\"iline-1ee044da-a1ee-42d6-8517-ce002708f5a9\",\"left\":1}],\"returns\":[],\"cheques\":[],\"plan\":null,\"payments\":[],\"posCash\":false,\"canManage\":true,\"canEdit\":false,\"canModify\":true,\"modifyBlock\":\"\",\"canIssue\":false,\"canDelete\":true,\"deleteBlock\":\"\",\"canCancel\":true,\"cancelWindow\":null,\"cancelDeadline\":\"\",\"canLocalCancel\":false,\"cancelNotice\":\"\",\"cancelBlock\":\"\",\"canReturn\":false,\"returnBlock\":\"Serbest meslek makbuzundan iade belgesi olmaz; yanlışsa iptal edin.\",\"repeat\":null,\"canRepeat\":true,\"canSend\":true,\"canWithdraw\":false,\"sendBlock\":\"\",\"canRefresh\":false,\"canDraft\":false,\"draftStale\":false,\"canOfficial\":false,\"edocEnabled\":true,\"statusResult\":{\"status\":\"none\",\"message\":\"Belge entegratörde bulunamadı: gönderilmemiş. Yeniden gönderebilir ya da değiştirebilirsiniz.\"}} (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/esmm2/docs/kanit/2026-10-22/244-esmm2/mutasyon-M05-esmm-bulunamadi-guven.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm2/esmm2-mut",
+  "ham_cikti_sha256": "f0299ee2c158b546ac6e284e0470d782d2dff566353c8a8b80ca1508e5d6e934",
+  "ham_cikti_bayt": 14320
+}

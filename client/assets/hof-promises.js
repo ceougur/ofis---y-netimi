@@ -137,7 +137,7 @@
     if (!HOF.workspace?.payment) return;
     // 2.4.4 (E8): tablodaki kaydın kalemi kaydın CARİSİNE yazılır (carisi yoksa önce cari açılır; hof-workspace.js actions.payment); tutar ve açıklama
     // hazır gelir, kalem carinin ya da taksitin tahsilatıyla kapanır. Önceden kayıttan doğrudan Kasa'ya yazılıyordu.
-    HOF.workspace.payment({ key: item.caseKey, title: who(item), person: item.person || "", phone: item.phone || "", amount: item.amount, note: `${item.label} · ${item.dueText}` });
+    HOF.workspace.payment({ key: item.caseKey, title: who(item), person: item.person || "", phone: item.phone || "", amount: item.amount, note: `${item.label} · ${item.dueText}`, debt: item.debt || null, debtColumn: item.debtColumn || "" });
   }
 
   function openCard(item, pillNode) {

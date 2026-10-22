@@ -1,0 +1,38 @@
+{
+  "ad": "244-ux9/e2e-senaryo-form-izolasyon-243",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-form-izolasyon-243.mjs",
+  "commit": "2308258bb929f89e766aa807c5dc6d7b2e41a4f6",
+  "dal": "is/ux9",
+  "kirli": 8,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T06:06:45.747Z",
+  "sure_sn": 267.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 180,
+    "gecen": 179,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "B4 fare üstündeyken bildirim kapanmadı (süre 3,6 sn; ön koşul: açılır bildirim yok true, fare bildirimin içinde true)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ux9/e2e-senaryo-form-izolasyon-243.log",
+  "klasor": "/home/user/wt/ux9",
+  "ham_cikti_sha256": "d2758ab3b28876be727a614a9764e1bfe43b875f268268d02329c65d55b0d6d7",
+  "ham_cikti_bayt": 28247
+}

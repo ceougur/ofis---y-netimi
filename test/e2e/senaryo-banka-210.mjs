@@ -2575,7 +2575,7 @@ try {
     const rows = await moveRows(admin);
     ok(rows.length >= 5, `Ziraat hareketleri ekranda (${rows.length})`);
     const links = await admin.$$eval(`${bankWin} [data-mv-export] a`, nodes => nodes.map(node => [node.textContent.trim(), node.getAttribute("href")]));
-    ok(links.length === 2 && links[0][0] === "PDF İndir" && links[1][0] === "Excel İndir" && links.every(([, href]) => href.includes(`account=${R6.ziraat.id}`)), `düğmeler süzgeçli bağ taşır: ${JSON.stringify(links)}`);
+    ok(links.length === 2 && links[0][0] === "PDF" && links[1][0] === "Excel" && links.every(([, href]) => href.includes(`account=${R6.ziraat.id}`)), `düğmeler süzgeçli bağ taşır: ${JSON.stringify(links)}`);
     const xlsx = await fileText(admin, links[1][1]);
     const book = Object.values(xlsxSheets(xlsx.buffer))[0];
     const sheet = book.slice(Math.max(0, book.findIndex(row => row.length > 1)));

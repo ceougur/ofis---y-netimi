@@ -1,0 +1,103 @@
+{
+  "ad": "244-ux18/eski-163dd5d-kirmizi",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ux18/ux18-eski-163dd5d/test/ux18-cek-fatura-244.test.mjs",
+  "commit": "6aeb05c711d4824f67f20d939161ae459b2b867d",
+  "dal": "is/ux18",
+  "kirli": 13,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T06:16:38.046Z",
+  "sure_sn": 3.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 0,
+    "basarisiz": 14,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 14 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T1 bağlı çek seçilen faturayı kapatır, en eski açık faturayı değil; bağ yalnız olayda; yevmiye B 101.01 / A 120",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:113:3",
+      "hata": "seçilen (yeni) fatura kapandı; eski açık kaldı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T2 kısmi çek + nakit aynı faturada (iki sıra); çek açığı aşınca fazlası en eski açık faturaya",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:135:3",
+      "hata": "nakit-önce: 1.000 − 300 − 400; eski fatura açık · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T3 karşılıksız dönünce bağlı fatura yeniden açılır (fazlası da geri döner); geri alınca kapanır; Σ kapatan = ödenen",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:152:3",
+      "hata": "karşılıksız: iki fatura da yeniden açık, bakiye 1.000 · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T3b faturayla alınan çek (faturanın kendi evrakı) karşılıksız dönünce de fatura açılır; taksitli faturada açık = kartın kalanı (değişmedi)",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:171:3",
+      "hata": "fatura yeniden açık · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T4 tahsil / geri al / Bankaya Tahsile Ver / ciro: fatura kapalı kalır; ciro edilmişken karşılıksız müşterinin faturasını açar; faturayla ciroda alış faturası da açılır",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:187:3",
+      "hata": "ciro edilmişken karşılıksız: müşterinin bağlı faturası açık · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T5 fatura iptali: evrak portföyde kalır, bağ düşer, kapama en eski faturaya döner; iptal edilmiş faturaya bağ kurulmaz",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:215:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T6 bağ kurulamayanlar: taksitli, başka cari, ters yön, iade, taslak, taksite sayılan, carisiz — hiçbir şey yazılmaz",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:234:3",
+      "hata": "taksitli fatura: 200 {\"id\":\"cheque-7fd6968d-b86e-473e-abf5-4f47cdf171dd\",\"direction\":\"in\",\"instrument\":\"cheque\",\"serialNo\":\"UX18-T6-taksitli fatura\",\"bank\":\"\",\"drawer\":\"\",\"accountId\":\"account-b7525702-4a44-42cc-b86a-67dcda44dec8\",\"planId\":\"\",\"amount\":100,\"issueDate\":\"2026-10-22\",\"dueDate\":\"2026-11-21\",\"status\":\"portfoli · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T7 verilen çek bağlı alış faturasını kapatır (en eskiyi değil); ödenince kapalı kalır; yevmiye B 320 / A 103",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:266:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T8 senet de bağlanır: B 121.01 / A 120",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:279:3",
+      "hata": "Expected values to be strictly equal: · 300 !== 0 (beklenen 0, gelen 300)"
+    },
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T9 bağ değiştirme / kaldırma; cari değişince bağ sessizce düşmez; işlem görmüş evrakta bağ değişmez",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:289:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T10 evrak silinince fatura açılır; Silinenler'den dönünce bağ korunur; fatura bu arada taksitlendirildiyse ya da iptal edildiyse bağsız döner",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:310:3",
+      "hata": "bağ korundu · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T11 bağlı evraklı fatura sonradan taksitlendirilemez ve carisi değiştirilemez (nedenli)",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:338:3",
+      "hata": "cari değiştir: 200 {\"id\":\"invoice-ae5bd736-53d4-455c-a1df-6c8be992303e\",\"kind\":\"sale\",\"kindLabel\":\"Satış Faturası\",\"scenario\":\"service_sale\",\"scenarioLabel\":\"Hizmet Satışı\",\"status\":\"issued\",\"statusLabel\":\"Kaydedildi\",\"number\":\"FIS2026000000019\",\"displayNo\":\"FIS2026000000019\",\"internalNumber\":false,\"ettn\":\"770e261b-ad · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T14 Mutabakat Testi bozuk evrak bağını yakalar (başka carinin / taksitli / iptal faturası, taksite sayılan evrak)",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:350:3",
+      "hata": "başka carinin faturası: {\"code\":\"invoice:offset\",\"name\":\"Fatura kapama bağı ve mahsup fişleri\",\"ok\":true,\"count\":0,\"sample\":[]} (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.4 UX18: 002 şirketinde aynı kural; yedek → çalış → geri yükle › T12 002'de bağlı çek; yedekten sonraki bağlı evrak geri yüklemeyle gider; sayılar yedekteki gibi",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:380:3",
+      "hata": "002: seçilen fatura kapandı · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ux18/eski-163dd5d-kirmizi.log",
+  "klasor": "/home/user/wt/ux18",
+  "ham_cikti_sha256": "869495f4d3f7ef6e6760c9a2e197b580356de9514698f6d1a0793d537c0d70c0",
+  "ham_cikti_bayt": 20935
+}

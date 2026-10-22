@@ -1678,8 +1678,8 @@
     for (const [key, value] of Object.entries(state.filter)) if (String(value ?? "").trim()) query.set(key, String(value).trim());
     const qs = String(query);
     return `<span class="hof-rep-export hof-bank-export" role="group" aria-label="Dışa aktar" data-mv-export>
-      <a class="hof-rep-out is-pdf" href="${esc(`${BASE}/movements.pdf${qs ? `?${qs}` : ""}`)}" target="_blank" rel="noopener" title="Süzgeçteki hareketleri PDF olarak aç">PDF İndir</a>
-      <a class="hof-rep-out is-xlsx" href="${esc(`${BASE}/movements.xlsx${qs ? `?${qs}` : ""}`)}" download title="Süzgeçteki hareketleri Excel olarak indir">Excel İndir</a></span>`;
+      ${HOF.outputButton({ kind: "pdf", href: `${BASE}/movements.pdf${qs ? `?${qs}` : ""}`, what: "Banka Hareketleri", tip: "Süzgeçteki hareketleri PDF olarak aç", attrs: 'target="_blank" rel="noopener"' })}
+      ${HOF.outputButton({ kind: "xlsx", href: `${BASE}/movements.xlsx${qs ? `?${qs}` : ""}`, what: "Banka Hareketleri", tip: "Süzgeçteki hareketleri Excel olarak indir", attrs: "download" })}</span>`;
   }
   let searchTimer = 0;
   // 2.4.3 (C7): tarih alanı klavyeyle yazılırken her geçerli ara değerde (yıl "0002", "0020", "0202") change verir; önceden her hanede istek

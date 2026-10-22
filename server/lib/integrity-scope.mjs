@@ -80,6 +80,12 @@ const MONEY_ROLES = new Set(Object.keys(LINE_ACCOUNT));
 const differs = (pre, post, fields) => !pre || !post || fields.some(field => String(pre[field] ?? "") !== String(post[field] ?? ""));
 const json = values => JSON.stringify([...values]);
 const IN = "(SELECT value FROM json_each(?))";
+// 2.4.4 UX18 (tam kapı lib/integrity.mjs ile aynı koşul): Kapatılacak Fatura ile bağlanmış evrakın (ev: alış/veriliş olayı, c: evrak, i: fatura) bağı
+// geçersiz mi — fatura yok / kaydedilmiş değil / başka carinin / taksitli / ters yön ya da evrak taksite sayılıyor. Faturanın kendi evrakı (c.invoice_id
+// = olay bağı) ve silinmiş evrak bu denetime girmez.
+export const CHEQUE_BOND_BAD = `ev.invoice_id <> '' AND +ev.kind IN ('receive', 'issue') AND c.invoice_id <> ev.invoice_id AND +c.deleted_at IS NULL
+  AND (i.id IS NULL OR i.status <> 'issued' OR i.account_id <> c.account_id OR i.plan_id <> '' OR c.plan_id <> ''
+       OR (c.direction = 'in' AND i.kind NOT IN ('sale', 'smm')) OR (c.direction = 'out' AND i.kind <> 'purchase'))`;
 
 /** Taban sapmasının (açılışta bulunan) denetim kodu → alanı. null: denetim eski satırları kendisi ayırır (ileri tarih, yol, olay). */
 export function familyOf(code) {
@@ -762,6 +768,16 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
       for (const row of all(`SELECT m.id FROM stock_moves m LEFT JOIN invoices i ON i.id = m.invoice_id WHERE +m.invoice_id <> '' AND (i.id IS NULL OR i.status <> 'issued') AND m.id IN (SELECT id FROM stock_moves WHERE invoice_id IN ${IN} UNION SELECT value FROM json_each(?)) LIMIT 5`, list, json(s.moves))) find("invoice:stock", row.id);
     }
     if (has("cheques")) for (const row of all(`SELECT c.id FROM cheques c LEFT JOIN invoices i ON i.id = c.invoice_id WHERE +c.invoice_id <> '' AND +c.deleted_at IS NULL AND (i.id IS NULL OR i.status <> 'issued') AND c.id IN (SELECT id FROM cheques WHERE invoice_id IN ${IN} UNION SELECT value FROM json_each(?)) LIMIT 5`, list, json(s.cheques))) find("invoice:cheque", row.id);
+    // 2.4.4 UX18: Kapatılacak Fatura ile bağlanan evrak (tam kapının invoice:offset "evrak bağı" alt denetimi; dokunulan faturalara bağlı ve dokunulan
+    // evrakın olayları).
+    if (has("cheques") && has("cheque_events")) {
+      for (const row of all(
+        `SELECT ev.id FROM (SELECT id FROM cheque_events WHERE invoice_id IN ${IN} AND invoice_id <> '' UNION SELECT id FROM cheque_events WHERE cheque_id IN ${IN}) k
+           CROSS JOIN cheque_events ev ON ev.id = k.id CROSS JOIN cheques c ON c.id = ev.cheque_id LEFT JOIN invoices i ON i.id = ev.invoice_id
+         WHERE ${CHEQUE_BOND_BAD} LIMIT 5`,
+        list, json(s.cheques),
+      )) find("invoice:offset", `evrak bağı ${row.id}`);
+    }
     if (hasColumn("plans", "invoice_id")) for (const row of all(`SELECT p.id FROM plans p LEFT JOIN invoices i ON i.id = p.invoice_id WHERE +p.invoice_id <> '' AND +p.deleted_at IS NULL AND (i.id IS NULL OR i.status <> 'issued') AND p.id IN (SELECT id FROM plans WHERE invoice_id IN ${IN} UNION SELECT value FROM json_each(?)) LIMIT 5`, list, json(s.plans))) find("invoice:plan", row.id);
     // İade: kapsamdaki faturaların kalemleri asıl kalem olarak ya da iade kalemi olarak (asıl kalemleri).
     for (const row of all(

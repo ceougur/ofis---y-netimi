@@ -1,0 +1,58 @@
+{
+  "ad": "244-ux18/mutasyon-M1-bag-cheques-invoice-id",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ux18/ux18-mut-M1-bag-cheques-invoice-id/test/ux18-cek-fatura-244.test.mjs",
+  "commit": "6aeb05c711d4824f67f20d939161ae459b2b867d",
+  "dal": "is/ux18",
+  "kirli": 13,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T06:16:42.505Z",
+  "sure_sn": 4.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 9,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T1 bağlı çek seçilen faturayı kapatır, en eski açık faturayı değil; bağ yalnız olayda; yevmiye B 101.01 / A 120",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:113:3",
+      "hata": "cheques.invoice_id boş; bağ alış olayında · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T5 fatura iptali: evrak portföyde kalır, bağ düşer, kapama en eski faturaya döner; iptal edilmiş faturaya bağ kurulmaz",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:215:3",
+      "hata": "evrak silinmedi, portföyde; bağ düştü · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T9 bağ değiştirme / kaldırma; cari değişince bağ sessizce düşmez; işlem görmüş evrakta bağ değişmez",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:289:3",
+      "hata": "bağı değiştir: 409 {\"ok\":false,\"error\":\"Bu evrak FIS2026000000020 ile kaydedildi; kapatacağı fatura değişmez.\",\"code\":\"invoice-linked\",\"invoiceId\":\"invoice-a6778c22-349b-4e95-aadd-2d4fe3f5dd01\",\"field\":\"invoiceId\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T10 evrak silinince fatura açılır; Silinenler'den dönünce bağ korunur; fatura bu arada taksitlendirildiyse ya da iptal edildiyse bağsız döner",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:310:3",
+      "hata": "evrak sil: 409 {\"ok\":false,\"error\":\"Bu evrak FIS2026000000021 ile kaydedildi; silmek için faturayı iptal edin.\",\"code\":\"invoice-linked\",\"invoiceId\":\"invoice-29e9a57b-6459-4db2-b452-f9d0d19b7b46\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T11 bağlı evraklı fatura sonradan taksitlendirilemez ve carisi değiştirilemez (nedenli)",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:338:3",
+      "hata": "taksitlendir: 200 {\"id\":\"invoice-9903035c-4052-4396-b63d-95b0e8972810\",\"kind\":\"sale\",\"kindLabel\":\"Satış Faturası\",\"scenario\":\"service_sale\",\"scenarioLabel\":\"Hizmet Satışı\",\"status\":\"issued\",\"statusLabel\":\"Kaydedildi\",\"number\":\"FIS2026000000022\",\"displayNo\":\"FIS2026000000022\",\"internalNumber\":false,\"ettn\":\"d3666098-97 · 200 !== 409 (beklenen 409, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ux18/mutasyon-M1-bag-cheques-invoice-id.log",
+  "klasor": "/home/user/wt/ux18",
+  "ham_cikti_sha256": "870f1e43ed6238e0641536d2bd82169b3bf4ec2e7ed912a933f3d11564de747e",
+  "ham_cikti_bayt": 12656
+}

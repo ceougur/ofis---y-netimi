@@ -361,12 +361,12 @@
     HOF.swap(
       root,
       `<div class="hof-plan-head">
-        <div class="hof-plan-title"><h3>${esc(moduleName())}</h3><small>${edoc() ? "Satış, alış ve iade faturaları; e-Fatura ve e-Arşiv entegratör üzerinden gönderilir." : "Kaydedilen belgeler resmî hükmü olmayan <b>Müşteri Fişi</b> olarak basılır; e-Fatura / e-Arşiv bağlantısı kapalı."}</small></div>
+        <div class="hof-plan-title"><small>${edoc() ? "Satış, alış ve iade faturaları; e-Fatura ve e-Arşiv entegratör üzerinden gönderilir." : "Kaydedilen belgeler resmî hükmü olmayan <b>Müşteri Fişi</b> olarak basılır; e-Fatura / e-Arşiv bağlantısı kapalı."}</small></div>
         <div class="hof-plan-actions" role="toolbar" aria-label="Fatura işlemleri">
           ${canManage() ? '<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni Fatura</button>' : ""}
           ${edoc() && canManage() && view.tab === "pending" && (pendingTotal(data) || view.sendProgress) ? sendPendingButton(data) : ""}
           ${canSettings() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="settings">Fatura Ayarları</button>' : ""}${edoc() && canSettings() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="integrator">Entegratör Ayarları</button>' : ""}
-          <span class="hof-rep-export"><a class="hof-rep-out is-pdf" href="/api/workspace/invoices/liste.pdf?${esc(listParams())}" target="_blank" rel="noopener">Liste - PDF</a><a class="hof-rep-out is-xlsx" href="/api/workspace/invoices/export.xlsx?${esc(listParams())}" download>Liste - Excel</a></span>${portalButton()}
+          <span class="hof-rep-export" role="group" aria-label="Dışa aktar">${HOF.outputButton({ kind: "pdf", href: `/api/workspace/invoices/liste.pdf?${listParams()}`, what: "Fatura Listesi", attrs: 'target="_blank" rel="noopener"' })}${HOF.outputButton({ kind: "xlsx", href: `/api/workspace/invoices/export.xlsx?${listParams()}`, what: "Fatura Listesi", attrs: "download" })}</span>${portalButton()}
         </div></div>
       <div class="hof-inv-tabs" role="tablist" aria-label="Fatura listeleri">${tabs.map(([id, label]) => `<button type="button" role="tab" class="hof-rep-chip ${view.tab === id ? "is-on" : ""}" aria-selected="${view.tab === id}" data-tab="${id}">${label}${id !== "inbox" && counts[id] ? ` <b>${counts[id].toLocaleString("tr-TR")}</b>` : ""}</button>`).join("")}</div>
       ${t ? `<div class="hof-rep-stats">${tile("Toplam (KDV Dahil)", t.payable, "", `${t.issued.toLocaleString("tr-TR")} belge`)}${tile("KDV", t.vat)}${tile("Açık Bakiye", t.open, t.open > 0 ? "is-receivable" : "")}${tile("Vadesi Geçmiş", t.overdue, t.overdue > 0 ? "is-payable" : "")}</div>` : ""}
@@ -379,7 +379,7 @@
         <input type="search" data-filter="q" value="${esc(view.q)}" placeholder="No, cari, ürün, VKN, not ara…" aria-label="Ara">
         ${accountChip}
       </div>
-      <div class="hof-acc-selbar${selected ? " is-active" : ""}"><span>${selected ? `<b>${selected.toLocaleString("tr-TR")}</b> belge seçildi` : canManage() ? "Toplu yazdırmak, kaydetmek, iptal etmek ya da silmek için satırları işaretleyin." : "Toplu yazdırmak için satırları işaretleyin."}</span>${selected ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/toplu.pdf?ids=${esc(selIds)}" target="_blank" rel="noopener">Seçilenleri PDF</a><a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/export.xlsx?ids=${esc(selIds)}" download>Seçilenleri Excel</a>${edoc() ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/ubl.zip?ids=${esc(selIds)}" download>e-Belge XML (ZIP)</a>` : ""}${canManage() && selectedBy("draft").length ? `<button type="button" class="hof-button hof-button-small" data-act="bulk-issue">Seçilenleri Kaydet (${selectedBy("draft").length})</button>` : ""}${canManage() && selectedBy("issued").length ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="bulk-cancel">Seçilenleri İptal Et (${selectedBy("issued").length})</button>` : ""}${canManage() ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="bulk-delete" title="Seçilen belgeler Silinenler'e gider; kaydedilmiş belgenin etkileri iptaldeki gibi geri alınır">Seçilenleri Sil (${selected})</button>` : ""}<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="clear-sel">Seçimi Temizle</button>` : ""}</div>
+      <div class="hof-acc-selbar${selected ? " is-active" : ""}"><span>${selected ? `<b>${selected.toLocaleString("tr-TR")}</b> belge seçildi` : canManage() ? "Toplu yazdırmak, kaydetmek, iptal etmek ya da silmek için satırları işaretleyin." : "Toplu yazdırmak için satırları işaretleyin."}</span>${sendSelectedButton()}${selected ? `${HOF.outputButton({ kind: "pdf", href: `/api/workspace/invoices/toplu.pdf?ids=${selIds}`, label: "Seçilenleri PDF", tip: "Seçilen belgeler tek PDF dosyasında açılır", attrs: 'target="_blank" rel="noopener"' })}${HOF.outputButton({ kind: "xlsx", href: `/api/workspace/invoices/export.xlsx?ids=${selIds}`, label: "Seçilenleri Excel", tip: "Seçilen belgeler Excel dosyası olarak iner", attrs: "download" })}${edoc() ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/ubl.zip?ids=${esc(selIds)}" download>e-Belge XML (ZIP)</a>` : ""}${canManage() && selectedBy("draft").length ? `<button type="button" class="hof-button hof-button-small" data-act="bulk-issue">Seçilenleri Kaydet (${selectedBy("draft").length})</button>` : ""}${canManage() && selectedBy("issued").length ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="bulk-cancel">Seçilenleri İptal Et (${selectedBy("issued").length})</button>` : ""}${canManage() ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="bulk-delete" title="Seçilen belgeler Silinenler'e gider; kaydedilmiş belgenin etkileri iptaldeki gibi geri alınır">Seçilenleri Sil (${selected})</button>` : ""}<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="clear-sel">Seçimi Temizle</button>` : ""}</div>
       ${
         data
           ? `<div class="hof-rep-table"><table class="hof-table hof-chq-table hof-inv-table"><thead><tr><th class="hof-inv-check"><input type="checkbox" data-sel-all aria-label="Listedekilerin hepsini seç" ${data.invoices.length && data.invoices.every(doc => view.selected.has(doc.id)) ? "checked" : ""}></th><th>Tarih</th><th>No</th><th>Cari</th><th>Durum</th><th class="num">Tutar</th><th class="num">Açık</th></tr></thead><tbody>${rows || `<tr><td colspan="7" class="hof-empty">${emptyText()}</td></tr>`}</tbody></table></div>
@@ -423,6 +423,8 @@
         <div class="hof-plan-title"><h3>Yeni Fatura: Ne Yapacaksınız?</h3><small>${view.pickAccount ? `Cari: <b>${esc(view.pickAccount.name)}</b> · ` : ""}Senaryoyu seçin; form ona göre açılır (stok, cari, KDV ve ödeme kuralları senaryodan gelir).</small></div></div></div>
       <div class="hof-inv-pick">${side !== "purchase" ? group("sale", "Satış") : ""}${side !== "sale" ? group("purchase", "Alış") : ""}</div>`,
     );
+    // 2.4.4 (uzman UX10): odak varsayılan senaryoda (yoksa ilk kartta) — klavyeyle ok/Tab + Enter (önceden odak sayfanın başındaydı).
+    (root.querySelector(".hof-inv-scenario.is-default") || root.querySelector(".hof-inv-scenario"))?.focus({ preventScroll: true });
   }
 
   // ---------- Olaylar (liste) ----------
@@ -475,6 +477,7 @@
     if (!act) return;
     if (act === "new") return showPick("", view.account);
     if (act === "send-pending") return sendPending();
+    if (act === "send-selected") return sendSelected();
     if (act === "settings") return showSettings();
     if (act === "integrator") return showIntegrator();
     if (act === "portal") return openPortal();
@@ -649,6 +652,8 @@
       modifyNumber: modify?.number || "",
       // 2.7: Düzenle'de kaydedilmiş peşin satırların hesaplardaki etkisi (bakiyede zaten var).
       payOriginal: modify ? payOriginalOf(modify) : null,
+      // 2.4.4 (uzman UX10): ilk çizimde odak formun başlangıç alanına (focusFormStart); sonraki yeniden çizimler odağı oynatmaz.
+      focusOnDraw: true,
     };
     view.form = form;
     setMode("form");
@@ -688,6 +693,8 @@
         .map(line => ({ ...lineFrom(line), originLineId: line.id, left: left.get(line.id) ?? 0, qty: keepLines && previous.has(line.id) ? previous.get(line.id) : amountText(left.get(line.id) ?? 0) }));
       if (keepLines && previous.size) form.lines = form.lines.filter(line => previous.has(line.originLineId));
       form.returnHits = null;
+      // Asıl fatura seçildi: arama kutusu yeniden çizimde kalkar, odak ilk iade kaleminin miktarına geçer (UX10).
+      form.focusOnDraw = true;
       renderForm();
       if (!form.lines.length) HOF.toast("Bu faturanın iade edilebilecek kalemi kalmamış.", { type: "error" });
     } catch (error) {
@@ -773,6 +780,56 @@
     renderPay();
     renderTotals();
     scheduleCalc(0);
+    if (form.focusOnDraw) {
+      form.focusOnDraw = false;
+      focusFormStart(form);
+    }
+  }
+  // 2.4.4 (uzman UX10): formun başlangıç odağı — iadede asıl fatura aranır (seçildiyse ilk kalemin miktarı); cari yoksa cari kutusu (öneri
+  // listesi açılmadan); cari varsa ilk boş kalemin adı. Odak verilemezse (alan yok) eski davranış sürer.
+  const focusNode = node => {
+    if (!node || node.disabled || !node.getClientRects().length) return false;
+    node.focus({ preventScroll: true });
+    return document.activeElement === node;
+  };
+  const focusAccount = () => {
+    const picker = body()?.querySelector("[data-account-slot] .hof-acc-picker");
+    return picker?.focusQuiet ? picker.focusQuiet() : focusNode(picker?.querySelector("[data-acc-query]"));
+  };
+  const lineInput = (index, field) => body()?.querySelector(`[data-l="${index}"][data-f="${field}"]`);
+  const firstEmptyLine = form => Math.max(0, form.lines.findIndex(line => !line.itemId && !line.name.trim() && !line.originLineId));
+  function focusFormStart(form) {
+    if (view.form !== form) return false;
+    if (isReturn(form.kind)) return form.original ? focusNode(lineInput(0, "qty")) : focusNode(body()?.querySelector("[data-return-q]"));
+    if (!form.account) return focusAccount();
+    return focusNode(lineInput(firstEmptyLine(form), "name"));
+  }
+  // Cari seçildikten / açıldıktan / düzeltildikten sonra: ilk boş kalemin adı; kalemler doluysa kaydetme düğmesi (Enter ile kaydet).
+  function focusAfterAccount(form) {
+    if (view.form !== form) return;
+    const empty = form.lines.findIndex(line => !line.itemId && !line.name.trim() && !line.originLineId);
+    if (empty >= 0 && focusNode(lineInput(empty, "name"))) return;
+    focusNode(body()?.querySelector('[data-form-actions] [data-act="issue-now"], [data-form-actions] [data-act="issue"]'));
+  }
+  // Sunucunun ya da formun hatası bir alanı söylüyorsa (data.field) odak o alana: kalem hatasında ("N. kalem: …") o kalemin alanı (N, boş
+  // satırlar sayılmadan gönderilen kalemlerin sırası). Bilinmeyen alanda odak değişmez.
+  const HEAD_FOCUS = new Set(["issueDate", "issueTime", "profile", "currency", "rate", "number", "paperNo", "orderNo", "orderDate", "despatchNo", "despatchDate", "stoppageRate", "note"]);
+  const LINE_FOCUS = new Set(["qty", "unitPrice", "discountRate", "vatRate", "name", "code", "unit", "lines", "withholdingCode", "exemptionCode", "expenseCode"]);
+  function focusFailure(form, data, message = "") {
+    const field = String(data?.field || "");
+    if (!field || view.form !== form) return false;
+    if (field === "accountId") return isReturn(form.kind) ? focusNode(body()?.querySelector("[data-return-q]")) : focusAccount();
+    if (field === "originalId") return focusNode(body()?.querySelector("[data-return-q]"));
+    const at = /^(\d+)\. kalem/.exec(String(message || ""));
+    if (at && LINE_FOCUS.has(field)) {
+      const line = usedLines(form)[Number(at[1]) - 1];
+      const index = line ? form.lines.indexOf(line) : -1;
+      if (index < 0) return false;
+      return focusNode(lineInput(index, field === "lines" ? (isReturn(form.kind) ? "qty" : "name") : field)) || focusNode(lineInput(index, isReturn(form.kind) ? "qty" : "name"));
+    }
+    if (field === "lines") return focusNode(lineInput(firstEmptyLine(form), isReturn(form.kind) ? "qty" : "name"));
+    if (HEAD_FOCUS.has(field) || field === "discountRate") return focusNode(body()?.querySelector(`[data-f="${field}"]:not([data-l])`));
+    return false;
   }
   function mountAccountPicker() {
     const form = view.form;
@@ -804,6 +861,7 @@
           if (view.form !== form) return;
           applyPickedAccount(account);
           mountAccountPicker();
+          focusAfterAccount(form);
           HOF.toast(account.created ? `${account.name} carisi açıldı ve seçildi (kimliği bilinmeyen alıcı, TCKN 11111111111).` : `${account.name} seçildi (kimliği bilinmeyen alıcı).`, { type: "info" });
         } catch (error) {
           HOF.toastError(error);
@@ -827,11 +885,15 @@
     add.onclick = () => {
       const typed = picker.querySelector("[data-acc-query]")?.value.trim() || "";
       const name = typed && typed !== form.account?.name ? typed : undefined;
-      HOF.accounts.newFor({ type: form.side === "purchase" ? "supplier" : "customer", name }, { onSaved: account => {
+      // 2.4.4 (uzman UX9): e-Belge kesilecekse il ve (e-Fatura'da şirkette) vergi dairesi yanında not — zorunlu yapılmaz (kâğıt belgede
+      // gerekmez); eksikse faturada sorun ve "Cariyi Düzenle" görünür. UX10: kayıttan sonra odak ilk boş kalem adında (pencere kapanınca).
+      const badges = sendable(form) ? { city: "e-Belge İçin Zorunlu", taxOffice: "e-Fatura'da Şirkette Zorunlu" } : {};
+      HOF.accounts.newFor({ type: form.side === "purchase" ? "supplier" : "customer", name }, { badges, onSaved: account => {
         if (view.form !== form) return;
         applyPickedAccount(account);
         mountAccountPicker();
         HOF.toast(`${account.name} seçildi.`, { type: "info" });
+        setTimeout(() => focusAfterAccount(form), 0);
       } });
     };
     row.insertBefore(add, retail);
@@ -1582,7 +1644,8 @@
     const t = c.totals;
     const cur = c.currency;
     const row = (label, value, cls = "") => `<div class="${cls}"><dt>${label}</dt><dd>${esc(curMoney(value, cur))}</dd></div>`;
-    const problems = [...(c.partyProblems || []), ...(c.sellerProblems || []), ...(c.warnings || [])];
+    // 2.4.4 (UX15): numara / tarih çakışması (dönem kilidi, seri sırası, elle numara) ve numaranın kayıtta verilmeyeceği durum onaydan önce görünür.
+    const problems = [...(c.partyProblems || []), ...(c.sellerProblems || []), ...(c.warnings || []), ...(c.numbering || []), ...(c.orderHold ? [c.orderHold.text] : [])];
     slot.innerHTML = `<h4>Toplamlar</h4>
       <dl class="hof-inv-totals">
         ${totalRows({ includeVat: form.pricesIncludeVat, base: t.base, baseNet: t.baseNet, discountNet: t.discountNet, discount: t.discount, net: t.net }).map(([label, value]) => row(label, value)).join("")}
@@ -1594,7 +1657,35 @@
         ${cur !== "TRY" ? `<div><dt>TL Karşılığı</dt><dd>${esc(money(c.try.payable))}</dd></div>` : ""}
       </dl>
       <p class="hof-inv-words">${esc(c.amountInWords || "")}</p>
-      ${problems.length ? `<ul class="hof-inv-problems">${problems.map(item => `<li>${esc(item)}</li>`).join("")}</ul>` : ""}`;
+      ${problems.length ? `<ul class="hof-inv-problems">${problems.map(item => `<li>${esc(item)}</li>`).join("")}</ul>` : ""}
+      ${partyFix(form, c)}`;
+  }
+  // 2.4.4 (uzman UX9): alıcının e-Belge bilgisi eksik/hatalıysa (il, vergi dairesi, VKN…) cari formdan ayrılmadan düzeltilir. Kural (en yaygın
+  // muhasebe programlarındaki gibi): faturanın alıcı bilgisi cari kartından gelir; düzeltme CARİ KARTINA yazılır (bu ve sonraki faturalar onunla
+  // kesilir) — bildirimde söylenir. Kesilmiş belgenin alıcı bilgisi kayıt anında donmuştur (party_json), değişmez. Denetim sunucuda kalır.
+  // Nihai Tüketici (paylaşılan 11111111111 carisi) düzenlenmez: tutar sınırı aşılınca gerçek alıcının carisi seçilir ya da açılır.
+  function partyFix(form, c) {
+    if (!form.account?.id || !(c.partyProblems || []).length) return "";
+    if (String(c.party?.taxNo || "") === "11111111111") return '<p class="hof-muted hof-inv-party-hint" data-party-hint>Bu tutarda gerçek alıcı gerekir: müşterinin kendi carisini seçin ya da “+ Yeni Cari” ile TC kimlik numarası, adı soyadı ve adresiyle açın.</p>';
+    if (!HOF.accounts?.editFor || !HOF.can("accounts.manage")) return '<p class="hof-muted hof-inv-party-hint" data-party-hint>Cari kartını düzenleme yetkiniz yok; eksik bilgiyi cari kartına yetkili bir kullanıcı (yönetici) yazmalı.</p>';
+    return '<div class="hof-inv-party-fix"><button type="button" class="hof-button hof-button-small" data-act="edit-account">Cariyi Düzenle</button><small>Eksik bilgi cari kartına yazılır; bu ve sonraki faturalar onunla kesilir.</small></div>';
+  }
+  function editPartyFromForm(form) {
+    if (!form.account?.id || !HOF.accounts?.editFor) return;
+    HOF.accounts.editFor(form.account.id, {
+      require: form.calc?.partyFields || [],
+      intro: "Faturanın e-Belge olarak kesilmesi için eksik ya da hatalı bilgiler zorunlu işaretli. Kaydedince cari kartı güncellenir; bu ve sonraki faturalar yeni bilgiyle kesilir, daha önce kesilmiş belgeler değişmez.",
+      savedMessage: "Cari kartı güncellendi; fatura yeni bilgiyle hesaplanıyor. Daha önce kesilmiş belgelerin alıcı bilgisi değişmez.",
+      onSaved: account => {
+        if (view.form !== form) return;
+        applyPickedAccount(account);
+        if (isReturn(form.kind)) {
+          const link = body()?.querySelector("[data-account-slot] [data-open-account]");
+          if (link) link.textContent = account.name;
+        } else mountAccountPicker();
+        setTimeout(() => focusAfterAccount(form), 0);
+      },
+    });
   }
   const lineBody = line => ({ itemId: line.itemId, name: line.name.trim(), code: line.code, description: line.description, serialNo: line.serialNo || "", lotNo: line.lotNo || "", unit: line.unit, qty: line.qty, unitPrice: line.unitPrice || "0", discountRate: line.discountRate || "0", vatRate: line.vatRate, withholdingCode: line.withholdingCode, exemptionCode: line.exemptionCode, expenseCode: line.expenseCode, originLineId: line.originLineId, ...(line.newItem && !line.itemId ? { newItem: true, newSalePrice: line.newSalePrice || "0" } : {}) });
   // 2.4.3 (keşif B2): çok kalemli faturanın kısmi iadesi — miktarı 0 ya da boş bırakılan iade satırı iade edilmez (gönderilmez); satır × ile de çıkarılır.
@@ -1693,10 +1784,12 @@
     const ticket = ++calcTicket;
     try {
       // 2.4.3 (uzman UX2): düzenlenen iadenin kimliği — sunucu iadenin kendi miktarını "önce iade edilen" saymaz (tam iade Düzenle'de kaydedilir).
-      const calc = await HOF.api("/api/workspace/invoices/calc", { method: "POST", body: { ...docBody(form), ...(isReturn(form.kind) && (form.modifyId || form.id) ? { existingId: form.modifyId || form.id } : {}) } });
+      // 2.4.4 (UX15): Düzenle'de her belgenin kimliği — sunucu numara/tarih çakışmasını Düzenle kuralıyla söyler.
+      const calc = await HOF.api("/api/workspace/invoices/calc", { method: "POST", body: { ...docBody(form), ...(form.modifyId || (isReturn(form.kind) && form.id) ? { existingId: form.modifyId || form.id } : {}) } });
       if (ticket !== calcTicket || view.form !== form) return;
       form.calc = calc;
       form.calcError = "";
+      form.calcFailure = null;
       const used = usedLines(form);
       form.lines.forEach(line => (line.net = null));
       used.forEach((line, index) => (line.net = calc.lines[index]?.net ?? null));
@@ -1709,11 +1802,14 @@
       refreshPayAfterCalc();
       const next = body()?.querySelector("[data-next]");
       // 2.1.0 (D2): Düzenle numarayı değiştirmez — formda belgenin kendi numarası (önceden sıradaki numara "Kaydedilince Verilecek No" diye görünüyordu).
-      if (next) next.innerHTML = form.modifyId ? (form.modifyNumber ? `<span>Belge No</span><b>${esc(form.modifyNumber)}</b>` : "") : calc.nextNumber ? `<span>Kaydedilince Verilecek No</span><b>${esc(calc.nextNumber)}</b>` : "";
+      // 2.4.4 (UX15): çakışma varken (kaydedilemez) ya da numara kayıtta verilmeyecekken (orderHold) sıradaki numara gösterilmez.
+      if (next) next.innerHTML = form.modifyId ? (form.modifyNumber ? `<span>Belge No</span><b>${esc(form.modifyNumber)}</b>` : "") : calc.nextNumber && !(calc.numbering || []).length && !calc.orderHold ? `<span>Kaydedilince Verilecek No</span><b>${esc(calc.nextNumber)}</b>` : "";
     } catch (error) {
       if (ticket !== calcTicket || view.form !== form) return;
       form.calc = null;
       form.calcError = error.message;
+      // 2.4.4 (UX10): hesap hatasının alanı (data.field) Kaydet'te odak için saklanır.
+      form.calcFailure = error?.data || null;
       renderTotals();
       refreshPayAfterCalc();
     }
@@ -1727,12 +1823,13 @@
     field.hidden = !edoc() || profiles.length < 2;
     form.profile = form.calc.profile;
     const actions = body()?.querySelector("[data-form-actions]");
-    // Yalnız gönderilebilirlik değişince yeniden çizilir: her hesaplamada çizmek alandan düğmeye geçen tıklamayı ve klavye odağını düşürüyordu (gözden geçirme 2.4.2).
-    if (actions && !form.busy && sendable(form) !== form.drawnSendable) actions.innerHTML = formActions(form);
+    // Yalnız gönderilebilirlik (ya da 2.4.4: taslak düğmesi — e-SMM'de taslak yok) değişince yeniden çizilir: her hesaplamada çizmek alandan düğmeye
+    // geçen tıklamayı ve klavye odağını düşürüyordu (gözden geçirme 2.4.2).
+    if (actions && !form.busy && (sendable(form) !== form.drawnSendable || draftUploadFor(form) !== form.drawnDraft)) actions.innerHTML = formActions(form);
     syncReturnRef();
     updateUnitHint();
     field.querySelector("select").innerHTML = profiles.map(item => `<option value="${esc(item.id)}" ${item.id === form.calc.profile ? "selected" : ""}>${esc(item.label)}</option>`).join("");
-    field.querySelector("[data-profile-note]").textContent = form.calc.profile === "EARSIVFATURA" ? "Alıcı e-Fatura mükellefi değil: e-Arşiv kesilir." : form.calc.profile === "TEMELFATURA" || form.calc.profile === "TICARIFATURA" ? "Alıcı e-Fatura mükellefi: e-Fatura kesilir." : "";
+    field.querySelector("[data-profile-note]").textContent = form.calc.profile === "EARSIVFATURA" ? "Alıcı e-Fatura mükellefi değil: e-Arşiv kesilir." : form.calc.profile === "TEMELFATURA" || form.calc.profile === "TICARIFATURA" ? "Alıcı e-Fatura mükellefi: e-Fatura kesilir." : form.calc.profile === "ESMM" ? "e-SMM kesilir: makbuz EDM'ye gönderilir." : "";
   }
 
   // ---------- Form olayları ----------
@@ -2024,6 +2121,7 @@
     }
     const act = target.dataset.act;
     if (act === "add-line") return addLine();
+    if (act === "edit-account") return editPartyFromForm(form);
     if (act === "new-item-cancel") {
       const line = form.lines[Number(target.dataset.l)];
       if (line) line.newItem = false;
@@ -2180,22 +2278,25 @@
   // ya da sonra gönder (Gönderilecekler).
   // Formun düğmeleri (2.4.2, kullanıcı denemesi 17.10.2026): belge türü hesaplamadan sonra belli olur; kâğıt belgede "Kaydet ve Gönder" görünmez
   // (form açılırken tür bilinmiyordu, düğmeler hesaplamadan sonra yenilenmiyordu → kâğıt fatura "entegratöre gönderilir" diye kaydediliyordu).
-  const formActions = form => (form.drawnSendable = sendable(form), `<button type="button" class="hof-button hof-button-ghost" data-act="cancel-form">Vazgeç</button>${form.modifyId ? '<button type="button" class="hof-button" data-act="issue" title="Eski stok, cari, Kasa, taksit ve çek/senet kayıtları geri alınır, yenileri yazılır; numara değişmez">Değişiklikleri Kaydet</button>' : `<button type="button" class="hof-button hof-button-ghost" data-act="save-draft">Taslak Olarak Kaydet</button>${sendable(form) ? `<button type="button" class="hof-button hof-button-ghost" data-act="issue-later" title="Stok, cari, Kasa, taksit ve çek/senet şimdi işlenir; belge Gönderilecekler'de bekler">Kaydet, Sonra Gönder</button><button type="button" class="hof-button" data-act="issue-now">${meta?.settings?.draftUpload ? "Kaydet ve Taslak Yükle" : "Kaydet ve Gönder"}</button>` : `<button type="button" class="hof-button" data-act="issue">${esc(ISSUE_LABELS[form.kind] || "Kaydet")}</button>`}`}`);
+  const formActions = form => (form.drawnSendable = sendable(form), form.drawnDraft = draftUploadFor(form), `<button type="button" class="hof-button hof-button-ghost" data-act="cancel-form">Vazgeç</button>${form.modifyId ? '<button type="button" class="hof-button" data-act="issue" title="Eski stok, cari, Kasa, taksit ve çek/senet kayıtları geri alınır, yenileri yazılır; numara değişmez">Değişiklikleri Kaydet</button>' : `<button type="button" class="hof-button hof-button-ghost" data-act="save-draft">Taslak Olarak Kaydet</button>${sendable(form) ? `<button type="button" class="hof-button hof-button-ghost" data-act="issue-later" title="Stok, cari, Kasa, taksit ve çek/senet şimdi işlenir; belge Gönderilecekler'de bekler">Kaydet, Sonra Gönder</button><button type="button" class="hof-button" data-act="issue-now">${draftUploadFor(form) ? "Kaydet ve Taslak Yükle" : "Kaydet ve Gönder"}</button>` : `<button type="button" class="hof-button" data-act="issue">${esc(ISSUE_LABELS[form.kind] || "Kaydet")}</button>`}`}`);
   const sendable = form => edoc() && Boolean(meta.kinds[form.kind]?.send) && (form.calc?.profile || form.profile || "") !== "KAGIT";
+  // 2.4.4 madde 22: e-SMM portala taslak olarak yüklenmez (sunucu da doğrudan gönderir) — düğme "Kaydet ve Gönder" kalır.
+  const draftUploadFor = form => Boolean(meta?.settings?.draftUpload) && (form.calc?.profile || form.profile || "") !== "ESMM";
   async function submitForm(mode, eSend = "") {
     const form = view.form;
     if (!form || form.busy) return;
     const error = body()?.querySelector("[data-form-error]");
     // 2.4.3 (uzman UI2): formda görünen hata satırı varsa ayrıca bildirim çıkmaz (bildirim kalem alanlarını örtüyordu ve aynı ileti üç kez
     // görünüyordu); satır görünür alana kaydırılır. Hata satırı yoksa (form çizilmemiş) bildirim verilir. Satır, alan değişince temizlenir (UX12).
-    const fail = message => {
+    // 2.4.4 (uzman UX10): focus — hatalı alana odak (işlev; önceden odak tıklanan düğmede kalıyordu). Alan odak alırsa ileti yine görünür kalır.
+    const fail = (message, focus = null) => {
       if (error?.isConnected && error.getClientRects().length) {
         error.textContent = message;
         error.scrollIntoView?.({ block: "nearest" });
-        return;
-      }
-      HOF.toast(message, { type: "error" });
+      } else HOF.toast(message, { type: "error" });
+      if (focus) focus();
     };
+    const firstLineFocus = () => focusNode(lineInput(firstEmptyLine(form), isReturn(form.kind) ? "qty" : "name"));
     if (error) error.textContent = "";
     // v2.0.23 (2. gözden geçirme): yük, bekleyen hesap ve "Tamamı Peşin" bitmeden kuruluyordu (sunucu yavaşken ekranda peşin
     // görünen fatura 0 peşinle kaydedildi). Önce ikisi biter, kayıt ekranda görünenle yapılır.
@@ -2209,17 +2310,17 @@
       }
       if (view.form !== form) return;
     }
-    if (isReturn(form.kind) && !form.original) return fail("İade edilecek faturayı üstteki arama kutusundan seçin.");
-    if (mode !== "draft" && returnRefBlock(form)) return fail(returnRefBlock(form));
-    if (!form.account) return fail(`${form.side === "purchase" ? "Tedarikçiyi" : "Müşteriyi"} (cariyi) seçin.`);
-    if (!usedLines(form).length) return fail(isReturn(form.kind) ? "İade edilecek en az bir kalemin miktarını yazın. İade etmeyeceğiniz kalemi × ile çıkarın ya da miktarını 0 yapın." : "En az bir kalem yazın.");
+    if (isReturn(form.kind) && !form.original) return fail("İade edilecek faturayı üstteki arama kutusundan seçin.", () => focusNode(body()?.querySelector("[data-return-q]")));
+    if (mode !== "draft" && returnRefBlock(form)) return fail(returnRefBlock(form), () => focusNode(body()?.querySelector("[data-return-ref-input]")));
+    if (!form.account) return fail(`${form.side === "purchase" ? "Tedarikçiyi" : "Müşteriyi"} (cariyi) seçin.`, focusAccount);
+    if (!usedLines(form).length) return fail(isReturn(form.kind) ? "İade edilecek en az bir kalemin miktarını yazın. İade etmeyeceğiniz kalemi × ile çıkarın ya da miktarını 0 yapın." : "En az bir kalem yazın.", firstLineFocus);
     // v2.0.23 (Bulgu 1): tutarı yazılmamış ya da geçersiz ödeme satırı sessizce atılmaz (önceden evrak kayıtta düşüyordu,
     // fatura "Açık" kaydediliyordu). Peşin satırında boş tutar olabilir (satır yok sayılır); evrak satırında tutar zorunlu.
     const amountOk = value => parseTl(value) > 0;
     const badCash = form.pay.cash.findIndex(item => String(item.amount ?? "").trim() && !amountOk(item.amount));
-    if (badCash >= 0) return fail(`${badCash + 1}. ödeme satırındaki (${methodLabel(form.pay.cash[badCash].method, form.kind)}) tutar geçerli değil ("${String(form.pay.cash[badCash].amount).trim()}"). Tutarı düzeltin ya da satırı × ile silin.`);
+    if (badCash >= 0) return fail(`${badCash + 1}. ödeme satırındaki (${methodLabel(form.pay.cash[badCash].method, form.kind)}) tutar geçerli değil ("${String(form.pay.cash[badCash].amount).trim()}"). Tutarı düzeltin ya da satırı × ile silin.`, () => focusNode(body()?.querySelector(`[data-pay="cash"][data-i="${badCash}"][data-f="amount"]`)));
     const badCheque = form.pay.cheques.findIndex(item => !amountOk(item.amount));
-    if (badCheque >= 0) return fail(`${badCheque + 1}. evrakın (${form.pay.cheques[badCheque].instrument === "note" ? "senet" : "çek"}) tutarı ${String(form.pay.cheques[badCheque].amount ?? "").trim() ? `geçerli değil ("${String(form.pay.cheques[badCheque].amount).trim()}")` : "yazılmadı"}. Tutarı yazın ya da satırı × ile silin.`);
+    if (badCheque >= 0) return fail(`${badCheque + 1}. evrakın (${form.pay.cheques[badCheque].instrument === "note" ? "senet" : "çek"}) tutarı ${String(form.pay.cheques[badCheque].amount ?? "").trim() ? `geçerli değil ("${String(form.pay.cheques[badCheque].amount).trim()}")` : "yazılmadı"}. Tutarı yazın ya da satırı × ile silin.`, () => focusNode(body()?.querySelector(`[data-pay="cheques"][data-i="${badCheque}"][data-f="amount"]`)));
     const payload = { ...docBody(form), payment: payBody(form) };
     form.busy = true;
     body()?.querySelectorAll(".hof-actions .hof-button").forEach(button => (button.disabled = true));
@@ -2234,18 +2335,20 @@
         calcPending = false;
         await runCalc();
         const c = form.calc;
-        if (!c) throw new Error(form.calcError || "Toplamlar hesaplanamadı; kalemleri kontrol edin.");
+        if (!c) throw Object.assign(new Error(form.calcError || "Toplamlar hesaplanamadı; kalemleri kontrol edin."), { data: form.calcFailure || {} });
         if (eSend && !sendable(form)) eSend = "";
         // 2.4.3 (keşif B7): kesimi kesin reddedecek sorun (alıcı/satıcı bilgisi eksik, posta kutusu seçilmemiş) varken "… numarasıyla kaydedilecek"
         // onayı açılmaz; neden formda ve bildirimde yazar (önceden onaydan sonra reddediliyordu).
         const blockers = [...(c.blockers || []), ...(!form.modifyId && eSend !== "later" && c.aliasBlock ? [c.aliasBlock] : [])];
-        if (blockers.length) return fail(`Fatura kaydedilemez: ${blockers.join(" ")}`);
+        if (blockers.length) return fail(`Fatura kaydedilemez: ${blockers.join(" ")}`, () => focusNode(body()?.querySelector('[data-totals] [data-act="edit-account"]')));
         const who = form.account.name;
-        const numberText = c.nextNumber && eSend !== "later" ? `${c.nextNumber} numarasıyla ` : "";
+        // 2.4.4 (UX15): seride daha eski tarihli gönderilmemiş belge varken numara kayıtta verilmez (sunucu O1) — onay numara göstermez, nedeni söyler.
+        const held = eSend !== "later" && !form.modifyId ? c.orderHold : null;
+        const numberText = c.nextNumber && eSend !== "later" && !held ? `${c.nextNumber} numarasıyla ` : "";
         // v2.0.16 (müşteri): "Stoğa Mal Alışı"nda stok kartı olmayan kalem gider sayılır — kayıttan önce açıkça söylenir.
         const stockless = offersNewItem(form) ? usedLines(form).filter(line => !line.itemId && !line.newItem) : [];
         const stocklessText = stockless.length ? ` DİKKAT: ${stockless.map(line => `“${line.name.trim()}”`).join(", ")} stok kartı olmadan GİDER olarak kaydedilir, stoğa girmez. Mal ise Vazgeç'e basıp ürün adı kutusundaki listeden “+ Yeni Stok Kartı”nı seçin.` : "";
-        const sendText = eSend === "later" ? " Belge Gönderilecekler'de bekler; e-Belge numarası entegratöre gönderilirken verilir." : eSend === "now" ? " Belge kaydedilir kaydedilmez entegratöre (e-Belge) gönderilir." : "";
+        const sendText = held ? ` ${held.text}` : eSend === "later" ? " Belge Gönderilecekler'de bekler; e-Belge numarası entegratöre gönderilirken verilir." : eSend === "now" ? " Belge kaydedilir kaydedilmez entegratöre (e-Belge) gönderilir." : "";
         if (form.modifyId) {
           const sure = await HOF.confirm({
             title: "Değişiklikler Kaydedilsin mi?",
@@ -2261,8 +2364,8 @@
         }
         const ok = await HOF.confirm({
           title: ISSUE_LABELS[form.kind] || "Kaydet",
-          message: `${who} için ${numberText}${kindLabel(form.kind).toLocaleLowerCase("tr-TR")} kaydedilecek: ${curMoney(c.totals.payable, c.currency)}. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. ${eSend === "now" ? "Gönderildikten sonra düzenlenemez; yanlışsa iptal ya da iade gerekir." : "Yanlışsa sonradan kartındaki “Düzenle” ile düzeltilir."}${sendText}${stocklessText}`,
-          confirmLabel: eSend === "later" ? "Kaydet, Sonra Gönder" : eSend === "now" ? (meta?.settings?.draftUpload ? "Kaydet ve Taslak Yükle" : "Kaydet ve Gönder") : ISSUE_LABELS[form.kind] || "Kaydet",
+          message: `${who} için ${numberText}${kindLabel(form.kind).toLocaleLowerCase("tr-TR")} kaydedilecek: ${curMoney(c.totals.payable, c.currency)}. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. ${eSend === "now" && !held ? "Gönderildikten sonra düzenlenemez; yanlışsa iptal ya da iade gerekir." : "Yanlışsa sonradan kartındaki “Düzenle” ile düzeltilir."}${sendText}${stocklessText}`,
+          confirmLabel: eSend === "later" ? "Kaydet, Sonra Gönder" : eSend === "now" ? (draftUploadFor(form) ? "Kaydet ve Taslak Yükle" : "Kaydet ve Gönder") : ISSUE_LABELS[form.kind] || "Kaydet",
         });
         if (!ok) return;
         // v2.0.22 (madde 5): formun istek kimliğiyle — yanıt gecikip yeniden Kaydet'e basılırsa sunucu ikinci fatura açmaz.
@@ -2287,14 +2390,16 @@
       showDoc(saved);
     } catch (failure) {
       // Soruya "Vazgeç" kullanıcının kararıdır (kırmızı hata değil); banka sorusunda bilgi bildirimi (2.0.26 İ6 kalıbı).
-      if (!HOF.userCancelled(failure)) fail(failure.message || "İşlem tamamlanamadı.");
+      // 2.4.4 (UX10 sırasında bulundu): "else if" 2.1.0'da userCancelled dalına aitti; 2.4.3 UX5 eklemesi araya girince her hata ayrıca bilgi
+      // bildirimi de açıyordu (UI2: ileti iki kez) ve verisiz hatada (ör. hesap hatası) failure.data okunurken sayfa hatası çıkıyordu.
+      if (!HOF.userCancelled(failure)) fail(failure.message || "İşlem tamamlanamadı.", () => focusFailure(form, failure?.data, failure?.message));
+      else if (failure?.data?.code !== "cash-negative-cancelled") HOF.toast(failure.message, { type: "info" });
       // 2.4.3 (uzman UX5): sunucu carinin mükellefiyetini gönderimde düzeltti — açık form carinin güncel bilgisini yeniden çeker (belge türü
       // e-Fatura, posta kutusu); kullanıcı yeniden kaydedince e-Fatura olarak kesilir (önceden form e-Arşiv'de kalıyordu, ikinci kayıt da düşüyordu).
       if (failure?.data?.code === "buyer-is-efatura" && view.form === form) {
         form.profile = "";
         scheduleCalc(0);
       }
-      else if (failure.data.code !== "cash-negative-cancelled") HOF.toast(failure.message, { type: "info" });
     } finally {
       form.busy = false;
       body()?.querySelectorAll(".hof-actions .hof-button").forEach(button => (button.disabled = false));
@@ -2539,6 +2644,10 @@
       modal?.close();
       return HOF.plans.open(doc.plan.id);
     }
+    // 2.4.4 UX18 (kullanıcı kararı 21.10.2026): Çek / Senet de bu faturayı kapatır — evrak formu cari, tutar ve Kapatılacak Fatura (bu fatura) dolu
+    // açılır; bağ yalnız evrakın olayında (fatura iptal edilirse evrak portföyde kalır). Cari formundaki seçenekle aynı koşul (yetki).
+    const method = HOF.methodField("cash", { incoming: sale });
+    if (HOF.cheques?.newFor && HOF.can("cheques.manage")) method.options = [...method.options, { value: "cheque", label: sale ? "Çek / Senet (portföye alınır)" : "Çek / Senet (verilir)" }];
     HOF.formModal({
       title: sale ? "Tahsilat Ekle" : "Ödeme Yap",
       eyebrow: docTitle(doc),
@@ -2546,7 +2655,7 @@
       fields: [
         { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: amountText(doc.open), autofocus: true },
         { name: "date", label: "Tarih", type: "date", required: true, value: todayIso(), max: "today" },
-        HOF.methodField("cash", { incoming: sale }),
+        method,
         { name: "note", label: "Açıklama", maxlength: 300, value: `${doc.displayNo} ${sale ? "tahsilatı" : "ödemesi"}` },
       ],
       submitLabel: sale ? "Tahsilatı Kaydet" : "Ödemeyi Kaydet",
@@ -2562,6 +2671,11 @@
         Promise.resolve(picker).then(help).catch(() => null);
       },
       onSubmit: async data => {
+        if (data.method === "cheque") {
+          // Evrak formu bu formun yerine açılır (Kasa değişmez); kaydedilince fatura kartı kendiliğinden yenilenir (cheques değişikliği).
+          setTimeout(() => HOF.cheques.newFor({ direction: sale ? "in" : "out", account: { id: doc.accountId, name: doc.accountName }, amount: String(data.amount || "").trim(), invoiceId: doc.id, invoiceLabel: `${docTitle(doc)} · açık ${money(doc.open)}` }), 150);
+          return;
+        }
         const account = data.method === "bank" ? data.bankAccountId : data.method === "card" && !sale ? data.cardAccountId : "";
         const body = { kind: sale ? "in" : "out", amount: data.amount, date: data.date, method: data.method, invoiceId: doc.id, note: data.note, ...(account ? { bankAccountId: account } : {}) };
         const send = flags => HOF.api(`/api/workspace/accounts/${encodeURIComponent(doc.accountId)}/entries`, { method: "POST", body: { ...body, ...flags }, requestId });
@@ -2647,10 +2761,12 @@
     // İz 7.3: EDM portalındaki e-Fatura taslağı programdan silinemez; kullanıcı portaldan siler, burada onaylar.
     const draftEInvoice = edoc() && ["TEMELFATURA", "TICARIFATURA"].includes(doc.profile) && doc.eStatus === "draft";
     const earchive = edoc() && doc.profile === "EARSIVFATURA" && ["draft", "processing", "sent", "accepted", "error"].includes(doc.eStatus);
+    // 2.4.4 madde 22: gönderilmiş e-SMM de önce entegratörde (EDM e-SMM servisi) iptal edilir (sunucu: remoteEligible).
+    const esmm = edoc() && doc.profile === "ESMM" && ["processing", "sent", "accepted", "error"].includes(doc.eStatus);
     HOF.formModal({
       title: `${docTitle(doc)} İptal Edilsin mi?`,
       eyebrow: "İPTAL",
-      intro: `Belgenin bütün etkileri birlikte geri alınır: stok, cari borç/alacak, peşin tahsilat/ödeme (Kasa), çek/senet ve taksit kartı. Numara korunur; belge "İptal Edildi" olarak kalır.${doc.cancelNotice ? ` ${doc.cancelNotice}` : ""}${earchive ? " e-Arşiv fatura önce entegratörde (EDM) iptal edilir." : ""}`,
+      intro: `Belgenin bütün etkileri birlikte geri alınır: stok, cari borç/alacak, peşin tahsilat/ödeme (Kasa), çek/senet ve taksit kartı. Numara korunur; belge "İptal Edildi" olarak kalır.${doc.cancelNotice ? ` ${doc.cancelNotice}` : ""}${earchive ? " e-Arşiv fatura önce entegratörde (EDM) iptal edilir." : ""}${esmm ? " e-SMM önce entegratörde (EDM) iptal edilir." : ""}`,
       fields: [
         { name: "reason", label: "İptal Nedeni", maxlength: 300, placeholder: "ör. Müşteri vazgeçti, yanlış tutar", autofocus: true },
         ...(doc.posCash ? [posOutcomeField()] : []),
@@ -2863,14 +2979,34 @@
     return typeof data?.pendingTotal === "number" ? data.pendingTotal : data?.invoices?.length || 0;
   }
   // Dar kontrol 2.4.3 (Y1): gönderim sürerken düğme ilerlemeyi gösterir ve basılamaz (ikinci tur açılmaz); liste yeniden çizilse de durum korunur.
+  // 2.4.4 (E6): Tümünü Gönder ve Seçilenleri Gönder aynı ilerlemeyi (view.sendProgress) paylaşır — biri sürerken öbürü de basılamaz; ilerleme
+  // basılan düğmede görünür.
   function sendPendingButton(data) {
     const progress = view.sendProgress;
-    if (progress) return `<button type="button" class="hof-button hof-button-small" data-act="send-pending" disabled aria-busy="true" data-send-progress>Gönderiliyor: ${progress.done.toLocaleString("tr-TR")} / ${progress.total.toLocaleString("tr-TR")}</button>`;
-    return `<button type="button" class="hof-button hof-button-small" data-act="send-pending" title="Gönderilecekler'in tamamı eski tarihliden başlayarak entegratöre gönderilir; numara gönderimde verilir">Tümünü Gönder (${pendingTotal(data).toLocaleString("tr-TR")})</button>`;
+    if (progress && progress.mode !== "only") return `<button type="button" class="hof-button hof-button-small" data-act="send-pending" disabled aria-busy="true" data-send-progress>Gönderiliyor: ${progress.done.toLocaleString("tr-TR")} / ${progress.total.toLocaleString("tr-TR")}</button>`;
+    return `<button type="button" class="hof-button hof-button-small" data-act="send-pending"${progress ? " disabled" : ""} title="Gönderilecekler'in tamamı eski tarihliden başlayarak entegratöre gönderilir; numara gönderimde verilir">Tümünü Gönder (${pendingTotal(data).toLocaleString("tr-TR")})</button>`;
+  }
+  // 2.4.4 (E6, müşteri isteği "seçilenlerden gönderilebilir (Gönderilecekler) olanların sayısıyla"): seçimde Gönderilecekler'de olan belgeler —
+  // sunucunun kuralı (unsentSql): numarasız bekleyen ya da numaralı gitmemiş kendi e-Belgemiz. Kâğıt, gönderilmiş, iptal, taslak ve Müşteri Fişi
+  // olarak bırakılan sayılmaz. Kalıcı engelli bekleyen (eBlocked: seride daha yeni numara / alıcı e-Fatura mükellefi) gönderilemez: sayıya girmez,
+  // gönderilmez, onay penceresinde ayrıca söylenir. Seçimde bekleyen var ama hepsi kalıcı engelliyse düğme pasif ve nedeni yanında yazılı.
+  const selectedWaiting = () => (view.list?.invoices || []).filter(doc => view.selected.has(doc.id) && doc.status === "issued" && (doc.eStatus === "waiting" || doc.eUnsent));
+  const selectedPending = () => selectedWaiting().filter(doc => !doc.eBlocked);
+  const selectedBlocked = () => selectedWaiting().filter(doc => doc.eBlocked);
+  function sendSelectedButton() {
+    if (!edoc() || !canManage()) return "";
+    const progress = view.sendProgress;
+    if (progress?.mode === "only") return `<button type="button" class="hof-button hof-button-small" data-act="send-selected" disabled aria-busy="true" data-send-progress>Gönderiliyor: ${progress.done.toLocaleString("tr-TR")} / ${progress.total.toLocaleString("tr-TR")}</button>`;
+    if (!selectedWaiting().length) return "";
+    const count = selectedPending().length;
+    if (!count) return `<button type="button" class="hof-button hof-button-small" data-act="send-selected" disabled>Seçilenleri Gönder (0)</button><small class="hof-inv-warn" data-send-selected-why>Seçilen bekleyen belgeler kalıcı engelli; e-Belge olarak gönderilemez (nedeni belgenin kartında).</small>`;
+    return `<button type="button" class="hof-button hof-button-small" data-act="send-selected"${progress ? " disabled" : ""} title="Seçilen belgeler eski tarihliden başlayarak entegratöre gönderilir; numara gönderimde verilir">Seçilenleri Gönder (${count.toLocaleString("tr-TR")})</button>`;
   }
   function showSendProgress() {
-    const button = body()?.querySelector('[data-act="send-pending"]');
-    if (!button || !view.sendProgress) return;
+    if (!view.sendProgress) return;
+    for (const other of body()?.querySelectorAll('[data-act="send-pending"], [data-act="send-selected"]') || []) other.disabled = true;
+    const button = body()?.querySelector(`[data-act="${view.sendProgress.mode === "only" ? "send-selected" : "send-pending"}"]`);
+    if (!button) return;
     button.disabled = true;
     button.setAttribute("aria-busy", "true");
     button.dataset.sendProgress = "";
@@ -2879,16 +3015,85 @@
   // İstek başına zaman aşımı: sunucu bir istekte en çok 20 belge ya da ~10 sn işler; tek belgenin entegratör çağrıları (giriş, mükellef sorgusu,
   // gönderim) en kötü durumda bunu uzatabilir. Varsayılan 30 sn yetmez.
   const SEND_PENDING_TIMEOUT_MS = 150000;
+  const SEND_PENDING_URL = "/api/workspace/invoices/send-pending";
   async function sendPending() {
     if (view.sendProgress) return;
     const total = pendingTotal(view.list);
     if (!total) return;
     const go = await HOF.confirm({ title: "Gönderilecekler Gönderilsin mi?", message: `Gönderilecekler'deki ${total.toLocaleString("tr-TR")} belge tarih sırasıyla (eski tarihli önce) entegratöre gönderilecek. Numarası olmayanlara e-Belge numarası gönderim sırasında verilir; sonucu belirsiz olanlar önce entegratöre sorulur, orada varsa yeniden gönderilmez.`, confirmLabel: "Tümünü Gönder" });
     if (!go || view.sendProgress) return;
-    // Sunucu Gönderilecekler'in tamamını kendisi seçer ({ all: true }); bir istekte en çok 20 belge (ya da ~10 sn) gider, kalan varsa istemci
-    // yineler. Dar kontrol 2 (B1): tur bir imleçle ilerler — sunucunun döndürdüğü imleç (ulaşılan son belge) sonraki isteğe verilir; bir turda her
-    // belge en çok bir kez denenir. Döngü "gönderilen > 0" ile değil, imleç ilerledikçe ve kalan oldukça sürer (önceden kuyruğun başında
-    // reddedilen belgeler varken ilk istek 0 gönderip döngüyü bitiriyordu).
+    await runSend({ all: true }, total, "all");
+  }
+  // 2.4.4 (E6): seçilmemiş daha eski tarihli bekleyenler varken seçilen yeni belge numara alırsa eski belgeler e-Belge olarak hiç gönderilemez (GİB
+  // sıra kuralı). Sunucunun ön denetimi (check / 409 einvoice-selection-older) gönderimden ÖNCE bunu söyler; seçenekler: onları da ekle ya da vazgeç
+  // (sessiz atlama ya da yarım tur yok).
+  const olderQuestion = (info, selectedCount) => {
+    const shown = (info.older || []).slice(0, 3).map(item => `${item.accountName || "cari"} ${HOF.formatDate(item.issueDate)}`).join(", ");
+    const count = Number(info.count) || 0;
+    return HOF.confirm({
+      title: "Önce Daha Eski Tarihli Belgeler Gönderilmeli",
+      message: `Seçilen ${selectedCount.toLocaleString("tr-TR")} belgeyle aynı seride, seçilmemiş ve daha eski tarihli ${count.toLocaleString("tr-TR")} belge Gönderilecekler'de bekliyor (${shown}${count > 3 ? " …" : ""}). e-Belge numarası tarih sırasıyla verilir: seçilenler önce numara alırsa bu belgeler e-Belge olarak gönderilemez. Onları da ekleyip eski tarihliden başlayarak birlikte gönderelim mi?`,
+      confirmLabel: "Onları da Ekle ve Gönder",
+      cancelLabel: "Vazgeç",
+    });
+  };
+  async function sendSelected() {
+    if (view.sendProgress) return;
+    const docs = selectedPending();
+    if (!docs.length) return;
+    const blocked = selectedBlocked().map(doc => doc.id);
+    const chosen = docs.map(doc => doc.id);
+    let check;
+    try {
+      check = await HOF.api(SEND_PENDING_URL, { method: "POST", body: { only: chosen, check: true } });
+    } catch (error) {
+      HOF.toastError(error);
+      return;
+    }
+    if (view.sendProgress) return;
+    let only = chosen;
+    let total = Number(check.sendable) || 0;
+    if (check.count) {
+      if (!(await olderQuestion(check, docs.length)) || view.sendProgress) {
+        HOF.toast(`Gönderilmedi: seçilmemiş daha eski tarihli ${Number(check.count).toLocaleString("tr-TR")} belge önce gönderilmeli. Hiçbir belgeye numara verilmedi.`, { type: "info", timeout: 8000 });
+        return;
+      }
+      only = [...chosen, ...check.olderIds];
+      total += Number(check.count) || 0;
+    } else {
+      if (!total) {
+        HOF.toast("Seçilenlerden gönderilebilecek belge yok: belgeler artık Gönderilecekler'de değil ya da kalıcı engelli (nedeni belgenin kartında).", { type: "info", timeout: 8000 });
+        loadList();
+        return;
+      }
+      const go = await HOF.confirm({ title: `${total.toLocaleString("tr-TR")} Belge Gönderilsin mi?`, message: `Seçilen ${total.toLocaleString("tr-TR")} belge tarih sırasıyla (eski tarihli önce) entegratöre gönderilecek. Numarası olmayanlara e-Belge numarası gönderim sırasında verilir; sonucu belirsiz olanlar önce entegratöre sorulur, orada varsa yeniden gönderilmez.${blocked.length + (Number(check.permanent) || 0) ? ` ${(blocked.length + (Number(check.permanent) || 0)).toLocaleString("tr-TR")} seçili belge kalıcı engelli olduğu için gönderilmez.` : ""}`, confirmLabel: "Seçilenleri Gönder" });
+      if (!go || view.sendProgress) return;
+    }
+    // Ön denetimle gönderim arasında başka oturum daha eski tarihli belge kaydettiyse sunucu ilk istekte yine sorar (409); soru yinelenir.
+    for (let ask = 0; ; ask += 1) {
+      const older = await runSend({ only }, total, "only", blocked);
+      if (!older) return;
+      if (ask >= 2) {
+        HOF.toast(`Gönderilmedi: gönderim hazırlanırken daha eski tarihli belgeler kaydedilmeye devam ediyor (${Number(older.count).toLocaleString("tr-TR")} belge). Hiçbir belgeye numara verilmedi; biraz sonra yeniden deneyin ya da Tümünü Gönder'i kullanın.`, { type: "info", timeout: 10000 });
+        return;
+      }
+      if (!(await olderQuestion(older, only.length)) || view.sendProgress) {
+        HOF.toast(`Gönderilmedi: seçilmemiş daha eski tarihli ${Number(older.count).toLocaleString("tr-TR")} belge önce gönderilmeli. Hiçbir belgeye numara verilmedi.`, { type: "info", timeout: 8000 });
+        return;
+      }
+      only = [...only, ...(older.olderIds || [])];
+      total += Number(older.count) || 0;
+    }
+  }
+  // Tümünü Gönder ({ all: true }) ve Seçilenleri Gönder ({ only }) için ortak tur: sunucu bir istekte en çok 20 belge (ya da ~10 sn) gönderir, kalan
+  // varsa istemci yineler. Dar kontrol 2 (B1): tur bir imleçle ilerler — sunucunun döndürdüğü imleç (ulaşılan son belge) sonraki isteğe verilir; bir
+  // turda her belge en çok bir kez denenir. Döngü "gönderilen > 0" ile değil, imleç ilerledikçe ve kalan oldukça sürer (önceden kuyruğun başında
+  // reddedilen belgeler varken ilk istek 0 gönderip döngüyü bitiriyordu). Dönüş: Seçilenleri Gönder'in ilk isteği 409 einvoice-selection-older ile
+  // döndüyse (hiçbir belge gönderilmeden) sunucunun eski belge bilgisi; değilse boş.
+  async function runSend(base, total, mode, keep = []) {
+    const again = mode === "only" ? "Seçilenleri Gönder" : "Tümünü Gönder";
+    const listed = new Set((view.list?.invoices || []).map(doc => doc.id));
+    const tab = view.tab;
     const results = [];
     const seen = new Set();
     let sent = 0;
@@ -2896,12 +3101,22 @@
     let stopped = null;
     let cursor = null;
     let rerun = false;
-    view.sendProgress = { done: 0, total };
+    view.sendProgress = { done: 0, total, mode };
     showSendProgress();
     try {
       for (let turn = 0; turn < 100000; turn += 1) {
         const timeoutMs = Number(HOF.invoices?.sendPendingTimeoutMs) > 0 ? Number(HOF.invoices.sendPendingTimeoutMs) : SEND_PENDING_TIMEOUT_MS;
-        const result = await HOF.api("/api/workspace/invoices/send-pending", { method: "POST", body: cursor ? { all: true, after: cursor } : { all: true }, timeoutMs });
+        let result;
+        try {
+          result = await HOF.api(SEND_PENDING_URL, { method: "POST", body: cursor ? { ...base, after: cursor } : base, timeoutMs });
+        } catch (error) {
+          if (mode === "only" && !cursor && error?.data?.code === "einvoice-selection-older") {
+            view.sendProgress = null;
+            if (view.mode === "list") renderList();
+            return error.data;
+          }
+          throw error;
+        }
         sent += result.sent;
         remaining = result.remaining || 0;
         stopped = result.stopped || null;
@@ -2915,28 +3130,30 @@
           seen.add(item.id);
           results.push(item);
         }
-        view.sendProgress = { done: Math.min(total, seen.size), total: Math.max(total, seen.size) };
+        view.sendProgress = { done: Math.min(total, seen.size), total: Math.max(total, seen.size), mode };
         showSendProgress();
         if (stopped || !remaining || !moved) break;
       }
     } catch (error) {
       view.sendProgress = null;
       // Y1: zaman aşımı hata değildir — sunucu gönderimi sürdürüyor olabilir; liste yenilenir, sonuç oradan okunur.
-      if (error?.data?.code === "client-timeout") HOF.toast(`${sent ? `${sent.toLocaleString("tr-TR")} belge gönderildi; ` : ""}gönderim sunucuda sürüyor olabilir. Liste yenilendi; bir süre sonra Gönderilecekler'e bakın, kalan belge olursa Tümünü Gönder'e yeniden basın.`, { type: "info", timeout: 15000 });
+      if (error?.data?.code === "client-timeout") HOF.toast(`${sent ? `${sent.toLocaleString("tr-TR")} belge gönderildi; ` : ""}gönderim sunucuda sürüyor olabilir. Liste yenilendi; bir süre sonra Gönderilecekler'e bakın, kalan belge olursa ${again}'e yeniden basın.`, { type: "info", timeout: 15000 });
       else HOF.toastError(error);
       loadList();
-      return;
+      return null;
     }
     view.sendProgress = null;
     // 2.4.3 (keşif B1): gönderilemeyen ilk belgenin nedeni ve sırasını korumak için bekletilenlerin sayısı ayrı yazılır. Gözden geçirme (S3): başka
     // oturumda gönderilen belgeler "gönderilemedi" sayılmaz; doğru nedeni söylenir. Dar kontrol (D2, O2, bilgi): başka oturumda gönderilmiş, tur
-    // sürerken listeden silinmiş ve bağlantı kesildiği için numara verilmeden bekleyen belgeler ayrı sayılır.
+    // sürerken listeden silinmiş ve bağlantı kesildiği için numara verilmeden bekleyen belgeler ayrı sayılır. E6: seçimde olup artık
+    // Gönderilecekler'de olmayan belgeler (not-pending) ayrı sayılır.
     const busy = results.filter(item => item.busy || (item.skipped && item.reason === "busy"));
     const done = results.filter(item => item.done);
     const withdrawn = results.filter(item => item.skipped && item.reason === "withdrawn");
+    const notPending = results.filter(item => item.skipped && item.reason === "not-pending");
     const waitingStop = results.filter(item => item.skipped && item.reason === "stopped");
     const failed = results.filter(item => !item.ok && !item.skipped && !item.busy && !item.done);
-    const held = results.filter(item => item.skipped && !["busy", "withdrawn", "stopped"].includes(item.reason));
+    const held = results.filter(item => item.skipped && !["busy", "withdrawn", "stopped", "not-pending"].includes(item.reason));
     const parts = [`${sent.toLocaleString("tr-TR")} belge gönderildi`];
     // B1: gönderilemeyenler nedenleriyle (aynı nedenden kaç belge; en çok üç neden, kalanı belgelerin kartında).
     if (failed.length) {
@@ -2946,21 +3163,27 @@
         if (!reasons.has(key)) reasons.set(key, { count: 0, message: item.message || "Gönderilemedi." });
         reasons.get(key).count += 1;
       }
-      const listed = [...reasons.values()].slice(0, 3).map(reason => (reasons.size > 1 ? `${reason.count.toLocaleString("tr-TR")} belge: ${reason.message}` : reason.message));
+      const shown = [...reasons.values()].slice(0, 3).map(reason => (reasons.size > 1 ? `${reason.count.toLocaleString("tr-TR")} belge: ${reason.message}` : reason.message));
       const more = reasons.size > 3 ? ` (${(reasons.size - 3).toLocaleString("tr-TR")} başka neden; ayrıntı belgelerin kartında)` : "";
-      parts.push(`${failed.length.toLocaleString("tr-TR")} belge gönderilemedi: ${listed.join(" ")}${more}`);
+      parts.push(`${failed.length.toLocaleString("tr-TR")} belge gönderilemedi: ${shown.join(" ")}${more}`);
     }
     // 2.4.3 (uzman UX14): durma nedeni gönderilemeyen belgenin nedeniyle aynıysa ("EDM'ye bağlanılamadı… ; EDM'ye ulaşılamadı…") bir kez yazılır.
     if (stopped) parts.push(failed.length && failed.every(item => item.code === stopped.code) ? "Kalan belgelere numara verilmedi; Gönderilecekler'de bekliyor" : `${stopped.message} Kalan belgelere numara verilmedi; Gönderilecekler'de bekliyor`);
     if (done.length) parts.push(`${done.length.toLocaleString("tr-TR")} belge başka oturumda gönderildi`);
     if (busy.length) parts.push(`${busy.length.toLocaleString("tr-TR")} belge başka oturumda gönderiliyor; gönderim bitince listeyi yenileyin`);
     if (withdrawn.length) parts.push(`${withdrawn.length.toLocaleString("tr-TR")} belge gönderim sırasında Müşteri Fişi olarak bırakıldı (gönderilmedi)`);
+    if (notPending.length) parts.push(`${notPending.length.toLocaleString("tr-TR")} seçili belge artık Gönderilecekler'de değil (başka oturumda gönderilmiş, iptal edilmiş ya da Müşteri Fişi olarak bırakılmış olabilir)`);
     if (held.length) parts.push(`${held.length.toLocaleString("tr-TR")} belge sırasını korumak için bekletildi (önce eski tarihli belge gönderilmeli)`);
-    if (rerun && !stopped) parts.push("gönderim sürerken daha eski tarihli belge kaydedildi; o belge ve sonrakiler için Tümünü Gönder'e yeniden basın");
-    if (remaining && !stopped) parts.push(`${remaining.toLocaleString("tr-TR")} belge daha bekliyor; Tümünü Gönder'e yeniden basın`);
+    if (rerun && !stopped) parts.push(`gönderim sürerken daha eski tarihli belge kaydedildi; o belge ve sonrakiler için ${again}'e yeniden basın`);
+    if (remaining && !stopped) parts.push(`${remaining.toLocaleString("tr-TR")} belge daha bekliyor; ${again}'e yeniden basın`);
     const bad = failed.length || held.length || busy.length || remaining || stopped || waitingStop.length;
-    HOF.toast(`${parts.join("; ")}.`, { type: failed.length || held.length || stopped ? "error" : busy.length || remaining || withdrawn.length ? "info" : "success", timeout: bad ? 15000 : 6000 });
+    HOF.toast(`${parts.join("; ")}.`, { type: failed.length || held.length || stopped ? "error" : busy.length || remaining || withdrawn.length || notPending.length ? "info" : "success", timeout: bad ? 15000 : 6000 });
+    // Seçilenleri Gönder: gönderilemeyenler (listede görünenler) seçili kalır, gidenler seçimden düşer (toplu işlemlerin kuralı, bulkOutcome). Gönderim
+    // sürerken sekme değiştiyse (seçim zaten temizlendi) yeni sekmede görünmeyen belgeler seçilmez.
+    // Gönderilmeyen kalıcı engelli seçili belgeler (keep) de seçili kalır.
+    if (mode === "only" && view.tab === tab) view.selected = new Set([...results.filter(item => !item.ok && listed.has(item.id) && item.reason !== "not-pending").map(item => item.id), ...keep.filter(id => listed.has(id))]);
     loadList();
+    return null;
   }
   // Portala taslak (İz 7.3, Entegratör Ayarları → Ek Seçenekler): ayar açıksa ilk düğme "Portala Taslak Yükle"; taslaktaki belge "Taslağı Gönder"
   // (önce son hâl yüklenir) ve "Taslağı Yenile" ile yönetilir. Taslaktan sonra belge düzenlendiyse uyarı görünür.

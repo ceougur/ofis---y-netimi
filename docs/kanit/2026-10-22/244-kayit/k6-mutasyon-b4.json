@@ -1,0 +1,38 @@
+{
+  "ad": "244-kayit/k6-mutasyon-b4",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-k6-b4/test/tablodan-aktar-244.test.mjs /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-k6-b4/test/kayit-tahsilat-244.test.mjs",
+  "commit": "7d51d60f6298e3ac058b06db34ef2059c8cba896",
+  "dal": "is/kayit",
+  "kirli": 2,
+  "izlenmeyen": 18,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T08:08:40.868Z",
+  "sure_sn": 3.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 13,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 5b: takvim kaleminin Kalan Borç'u 'Kalan' kolonundan, kolon adıyla › Alacak Tutarı + Kalan + Son Ödeme: Kalan Borç = Kalan; tek vadeli kalemin beklenen tutarı da kalan",
+      "konum": "test/kayit-tahsilat-244.test.mjs:215:3",
+      "hata": "Kalan Borç: 20000 · 20000 !== 12000 (beklenen 12000, gelen 20000)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kayit/k6-mutasyon-b4.log",
+  "klasor": "/home/user/wt/kayit",
+  "ham_cikti_sha256": "f79e579e272fc1fe1903e8096093487142f14194b415ab7277b19be4b9ef418a",
+  "ham_cikti_bayt": 8003
+}

@@ -1,0 +1,25 @@
+
+> destekofis@2.4.3 test:fatura-243-daha-fazla-yaris
+> node --disable-warning=ExperimentalWarning test/e2e/fatura-243-daha-fazla-yaris.mjs
+
+Tur 1
+    ön koşul: oluştu (Daha Fazla isteği 2, Daha Fazla sürerken yazılan yenileme 1)
+  ✓ Daha Fazla satır getirdi (5323 ms; 400 satır)
+  ✓ liste = sunucunun ilk 400 satırı (çift 0)
+Tur 2
+    ön koşul: oluştu (Daha Fazla isteği 2, Daha Fazla sürerken yazılan yenileme 1)
+  ✓ Daha Fazla satır getirdi (5360 ms; 400 satır)
+  ✓ liste = sunucunun ilk 400 satırı (çift 0)
+Tur 3
+    ön koşul: oluştu (Daha Fazla isteği 2, Daha Fazla sürerken yazılan yenileme 1)
+  ✓ Daha Fazla satır getirdi (5294 ms; 400 satır)
+  ✓ liste = sunucunun ilk 400 satırı (çift 0)
+Tur 4
+    ön koşul: oluştu (Daha Fazla isteği 2, Daha Fazla sürerken yazılan yenileme 1)
+  ✓ Daha Fazla satır getirdi (5273 ms; 400 satır)
+  ✓ liste = sunucunun ilk 400 satırı (çift 0)
+  ✓ sayfa hatası yok
+
+ön koşulu oluşmayan deneme: 0
+
+✓ fatura-243-daha-fazla-yaris: 9 geçti, 0 kaldı

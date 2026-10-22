@@ -1,0 +1,18 @@
+  yeni-gec #1: ön koşul oluşmadı · KIRMIZI
+  yeni-gec #2: ön koşul oluşmadı · KIRMIZI
+  yeni-gec #3: ön koşul oluşmadı · KIRMIZI
+  yeni #1: ön koşul OLUŞTU · KIRMIZI
+  yeni #2: ön koşul OLUŞTU · KIRMIZI
+  yeni #3: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-yeni #1: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-yeni #2: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-yeni #3: ön koşul OLUŞTU · KIRMIZI
+
+CPU=1 LEAD=0 TRIALS=3
+yeni-gec: 3 deneme · ön koşul oluştu 0 · ön koşullu kırmızı 0 · ön koşulsuz kırmızı 3 · kıpırdatma anı (ms) 4040/4048/4048
+  ✗ yeni-gec: beklenen dışı sonuç
+yeni: 3 deneme · ön koşul oluştu 3 · ön koşullu kırmızı 3 · ön koşulsuz kırmızı 0 · kıpırdatma anı (ms) 35/30/30
+  ✗ yeni: beklenen dışı sonuç
+kurtarma-yeni: 3 deneme · ön koşul oluştu 3 · ön koşullu kırmızı 3 · ön koşulsuz kırmızı 0 · hatırlatma denetimi (fare yerleştikten ms; * = hatırlatma ekranda) 275/293/249
+  ✗ kurtarma-yeni: beklenen dışı sonuç
+0 denetim geçti, 3 başarısız

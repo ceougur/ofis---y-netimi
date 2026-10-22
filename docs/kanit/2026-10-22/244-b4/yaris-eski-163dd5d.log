@@ -1,0 +1,69 @@
+  gec-fare #1: ön koşul OLUŞTU · KIRMIZI
+  gec-fare #2: ön koşul OLUŞTU · KIRMIZI
+  gec-fare #3: ön koşul OLUŞTU · KIRMIZI
+  gec-fare #4: ön koşul OLUŞTU · KIRMIZI
+  gec-fare #5: ön koşul OLUŞTU · KIRMIZI
+  gec-fare #6: ön koşul OLUŞTU · KIRMIZI
+  gec-fare #7: ön koşul OLUŞTU · KIRMIZI
+  gec-fare #8: ön koşul OLUŞTU · KIRMIZI
+  gec-fare #9: ön koşul OLUŞTU · KIRMIZI
+  gec-fare #10: ön koşul OLUŞTU · KIRMIZI
+  yeni-gec #1: ön koşul OLUŞTU · yeşil
+  yeni-gec #2: ön koşul OLUŞTU · yeşil
+  yeni-gec #3: ön koşul OLUŞTU · yeşil
+  yeni-gec #4: ön koşul OLUŞTU · yeşil
+  yeni-gec #5: ön koşul OLUŞTU · yeşil
+  yeni-gec #6: ön koşul OLUŞTU · yeşil
+  yeni-gec #7: ön koşul OLUŞTU · yeşil
+  yeni-gec #8: ön koşul OLUŞTU · yeşil
+  yeni-gec #9: ön koşul OLUŞTU · yeşil
+  yeni-gec #10: ön koşul OLUŞTU · yeşil
+  yeni #1: ön koşul OLUŞTU · yeşil
+  yeni #2: ön koşul OLUŞTU · yeşil
+  yeni #3: ön koşul OLUŞTU · yeşil
+  yeni #4: ön koşul OLUŞTU · yeşil
+  yeni #5: ön koşul OLUŞTU · yeşil
+  yeni #6: ön koşul OLUŞTU · yeşil
+  yeni #7: ön koşul OLUŞTU · yeşil
+  yeni #8: ön koşul OLUŞTU · yeşil
+  yeni #9: ön koşul OLUŞTU · yeşil
+  yeni #10: ön koşul OLUŞTU · yeşil
+  kurtarma-eski #1: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-eski #2: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-eski #3: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-eski #4: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-eski #5: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-eski #6: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-eski #7: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-eski #8: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-eski #9: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-eski #10: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-sira #1: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-sira #2: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-sira #3: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-sira #4: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-sira #5: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-sira #6: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-sira #7: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-sira #8: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-sira #9: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-sira #10: ön koşul OLUŞTU · KIRMIZI
+  kurtarma-yeni #1: ön koşul OLUŞTU · yeşil
+  kurtarma-yeni #2: ön koşul OLUŞTU · yeşil
+  kurtarma-yeni #3: ön koşul OLUŞTU · yeşil
+  kurtarma-yeni #4: ön koşul OLUŞTU · yeşil
+  kurtarma-yeni #5: ön koşul OLUŞTU · yeşil
+  kurtarma-yeni #6: ön koşul OLUŞTU · yeşil
+  kurtarma-yeni #7: ön koşul OLUŞTU · yeşil
+  kurtarma-yeni #8: ön koşul OLUŞTU · yeşil
+  kurtarma-yeni #9: ön koşul OLUŞTU · yeşil
+  kurtarma-yeni #10: ön koşul OLUŞTU · yeşil
+
+CPU=1 LEAD=0 TRIALS=10
+gec-fare: 10 deneme · ön koşul oluştu 10 · ön koşullu kırmızı 10 · ön koşulsuz kırmızı 0
+yeni-gec: 10 deneme · ön koşul oluştu 10 · ön koşullu kırmızı 0 · ön koşulsuz kırmızı 0 · kıpırdatma anı (ms) 4048/4047/4047/4045/4048/4048/4045/4048/4045/4049
+yeni: 10 deneme · ön koşul oluştu 10 · ön koşullu kırmızı 0 · ön koşulsuz kırmızı 0 · kıpırdatma anı (ms) 31/30/32/30/31/30/31/30/33/36
+kurtarma-eski: 10 deneme · ön koşul oluştu 10 · ön koşullu kırmızı 10 · ön koşulsuz kırmızı 0 · hatırlatma denetimi (fare yerleştikten ms; * = hatırlatma ekranda) 308+313*/290+298*/287+292*/305+310*/285+291*/279+284*/288+293*/304+313*/297+302*/316+325*
+kurtarma-sira: 10 deneme · ön koşul oluştu 10 · ön koşullu kırmızı 10 · ön koşulsuz kırmızı 0 · hatırlatma denetimi (fare yerleştikten ms; * = hatırlatma ekranda) 276+281*/297+303*/252+258*/322+327*/293+300*/309+314*/283+291*/245+250*/282+288*/323+328*
+kurtarma-yeni: 10 deneme · ön koşul oluştu 10 · ön koşullu kırmızı 0 · ön koşulsuz kırmızı 0 · hatırlatma denetimi (fare yerleştikten ms; * = hatırlatma ekranda) 290/306/295/279/283/340/261/339/322/276
+6 denetim geçti, 0 başarısız

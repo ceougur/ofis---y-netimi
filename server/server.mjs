@@ -5,8 +5,13 @@ import { createApp } from "./app.mjs";
 
 // e-Belge AÇIK; test VE canlı ortam AÇIK (kullanıcı kararı 16.10.2026: "hem testi hem canlıyı aç"). Önceki karar (aynı gün): yalnız test linki,
 // "canlıyı da aç" denince edocLive. Canlıda firma kendi serisini seçer; TEF/TEA/TES test serileri canlıda kullanılamaz (invoices.mjs).
-// Testler bu dosyayı çalıştırmaz; kendi bayraklarını verir (test/helpers.mjs, varsayılan canlı kilitli). Denetim: test/edoc-uretim.test.mjs.
-const app = createApp({ edocEnabled: true, edocLive: true });
+// e-SMM AÇIK (2.4.4 iş listesi 24; kullanıcı kararı 21.10.2026: "test ortamından kurup test edeceğiz; kullanıcı canlı için EDM'den üyelik alıp canlıdan
+// önce deneme yapıp sonra kullanacak"): Entegratör Ayarları → Firma'da "e-SMM kullanıcısıyım" görünür; işaretlemeyen firmada serbest meslek makbuzu
+// eskisi gibi kâğıt (SMM serisi) kalır, e-Fatura / e-Arşiv değişmez (test/esmm-acik-244.test.mjs). e-SMM adresi Servis Adresi'nden türetilir
+// (…/EFaturaEDM.svc → …/ESmmEDM.svc); canlıda müşteri EDM'den ayrıca e-SMM siparişi verir.
+// Testler bu dosyayı çalıştırmaz; kendi bayraklarını verir (test/helpers.mjs, varsayılan canlı kilitli, e-SMM kapalı). Denetim: test/edoc-uretim.test.mjs;
+// gerçek EDM düzeneği (tools/edm-gercek.mjs) bayrakları bu satırdan okur.
+const app = createApp({ edocEnabled: true, edocLive: true, esmmEnabled: true });
 const address = await app.listen().catch(error => {
   app.log.error(error.code === "EADDRINUSE" ? `Port ${app.config.port} kullanımda. Başka bir DestekOfis sunucusu çalışıyor olabilir.` : "Sunucu başlatılamadı", error);
   process.exit(1);

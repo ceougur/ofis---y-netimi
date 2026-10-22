@@ -9,6 +9,8 @@
 //   S6 kayda bağlı kartı olup carisi kayda bağlı olmayan kayıt → taksit seçimi; "Plansız Tahsilat Kaydet" (Kasa'ya doğrudan) yok.
 //   S7 personel (cari açma yetkisi yok): carisi olmayan kayıtta yol söylenir, form açılmaz, hiçbir şey yazılmaz.
 //   S8 elle kâhin: Kasa = girilen tutarların toplamı; payments 0.
+//   S9 (2.4.4 5b) carisi olmayan kayıtta "Kalan" kolonu varsa Yeni Cari'nin Açılış Bakiyesi kayıttaki Kalan Borç ile dolu (kaynağı yazar); cari borçla açılır,
+//      tahsilat borçtan düşer (veri tabanından: açılış borcu + tahsilat).
 // Çıkış: "N geçti, M kaldı" (kaldıysa çıkış kodu 1).
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -62,6 +64,13 @@ const step = async (title, fn) => {
 // ---------- Veri (programın kendi uçları) ----------
 await must("kurulum geç", api.post("/api/workspace/bank/setup/dismiss", {}));
 const book = tahsilatWorkbook(new Date());
+// 2.4.4 (5b): "Alacak Tutarı" + "Kalan" + "Son Ödeme" sekmesi (Kalan Borç kalan kolonundan; Açılış Bakiyesi bundan dolar).
+const inDays = offset => {
+  const date = new Date();
+  date.setDate(date.getDate() + offset);
+  return `${pad(date.getDate())}.${pad(date.getMonth() + 1)}.${date.getFullYear()}`;
+};
+book.push({ name: "Alacaklar", columns: ["Dosya No", "Borçlu", "Telefon", "Alacak Tutarı", "Kalan", "Son Ödeme"], rows: [["2026/901", "Hasan Er", "0544 900 01 01", "20.000,00", "12.000,00", inDays(3)], ["2026/902", "Ece Ak", "0544 900 02 02", "21.000,00", "13.000,00", inDays(4)], ["2026/903", "Can Tan", "0544 900 03 03", "22.000,00", "14.000,00", inDays(5)]].map(([no, who, tel, all, left, due]) => ({ "Dosya No": no, Borçlu: who, Telefon: tel, "Alacak Tutarı": all, Kalan: left, "Son Ödeme": due })) });
 const matrix = sheet => [sheet.columns, ...sheet.rows.map(row => sheet.columns.map(column => row[column] ?? ""))];
 const staged = await must("tablo", api.post("/api/workspace/dataset/stage", { kind: "excel", fileName: "tahsilat.xlsx", sheets: book.map(sheet => ({ name: sheet.name, matrix: matrix(sheet) })) }));
 await must("tablo kaydet", api.post("/api/workspace/dataset/commit", { stageId: staged.stageId, mode: "replace" }));
@@ -289,6 +298,35 @@ try {
     ok(accountCount() === before.accounts && payments() === before.payments && (await cash()) === before.cash, "hiçbir şey yazılmadı");
     await shot(staff.page, "s7-personel");
     await staff.context.close();
+  });
+
+  await step("S9 (5b) Açılış Bakiyesi kayıttaki Kalan Borç ile dolu; cari borçla açılır, tahsilat borçtan düşer", async () => {
+    await openPill(page, "Hasan Er");
+    await page.click('.hof-payment-action-card [data-act="pay"]');
+    await page.waitForSelector(`${top} input[name="openingBalance"]`);
+    const form = await page.evaluate(sel => {
+      const box = document.querySelector(sel);
+      const field = box.querySelector('input[name="openingBalance"]');
+      return { value: field.value, help: field.closest(".hof-field")?.querySelector("small")?.textContent || "", name: box.querySelector('input[name="name"]').value };
+    }, top);
+    ok(form.name === "Hasan Er" && form.value === "12.000,00", `Açılış Bakiyesi kayıttaki Kalan Borç: “${form.value}” (Alacak Tutarı 20.000 değil)`);
+    ok(/“Kalan” kolonundan/.test(form.help), `kaynağı yazar: “${form.help}”`);
+    await shot(page, "s9-acilis-bakiyesi");
+    await page.click(`${top} button[type="submit"]`);
+    await page.waitForFunction(sel => document.querySelector(`${sel} .hof-modal-title`)?.textContent.trim() === "Tahsilat", top, { timeout: 10000 });
+    ok((await amountValue(page)) === "12.000,00", `tahsilat formunda tutar: ${await amountValue(page)}`);
+    await typeAmount(page, "2000");
+    await page.click(`${top} button[type="submit"]`);
+    await page.waitForTimeout(1500);
+    entered.push(2000);
+    const hasan = one("SELECT id FROM accounts WHERE name = 'Hasan Er' AND deleted_at IS NULL");
+    const rows = db.all("SELECT kind, amount FROM account_entries WHERE account_id = ? ORDER BY rowid", hasan.id).map(row => `${row.kind}:${row.amount}`);
+    ok(rows.join(",") === "debt:12000,in:2000", `carinin defteri: ${rows.join(", ")}`);
+    const balance = (await must("cari", api.get(`/api/workspace/accounts/${hasan.id}`))).totals.balance;
+    ok(balance === 10000, `cari bakiyesi 12.000 − 2.000 = ${balance}`);
+    const left = (await dues()).find(item => item.person === "Hasan Er");
+    ok(left?.amount === 10000 && left?.partial === true, `takvim kalemi 10.000 kalanla bekler: ${JSON.stringify({ amount: left?.amount, partial: left?.partial })}`);
+    await closeAll(page);
   });
 
   await step("S8 elle kâhin: Kasa = girilen tahsilatların toplamı; kayıt tahsilatı hiç yazılmadı", async () => {

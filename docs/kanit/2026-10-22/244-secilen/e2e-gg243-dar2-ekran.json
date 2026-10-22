@@ -1,0 +1,32 @@
+{
+  "ad": "244-secilen/e2e-gg243-dar2-ekran",
+  "komut": "npm run test:gg243-dar2-ekran",
+  "commit": "f7edff3b52952b68d93e66a84d8b56d886a75edc",
+  "dal": "is/secilen",
+  "kirli": 23,
+  "izlenmeyen": 20,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T05:33:41.875Z",
+  "sure_sn": 11.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 21,
+    "gecen": 21,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-secilen/e2e-gg243-dar2-ekran.log",
+  "klasor": "/home/user/wt/secilen",
+  "ham_cikti_sha256": "f050744a4b93eb1c69a597f1e538e3688f6ad089396a966ea755fde0ab2b0d70",
+  "ham_cikti_bayt": 1992
+}
