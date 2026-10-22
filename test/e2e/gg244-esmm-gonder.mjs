@@ -221,6 +221,17 @@ try {
     ok(edm.state.smm.cancelled.length === 1 && edm.state.smm.cancelled[0] === saved.ettn.toLowerCase(), "EDM'ye CancelSMM bir kez");
     ok(!edm.state.calls.some(call => call.op === "CancelInvoice"), "e-Fatura servisine iptal yok");
   });
+  // Kullanıcı kararı (22.10.2026, "ekle"): e-SMM'de logo ve kaşe yalnız programın PDF'ine basılır (EDM e-SMM'ye görünüm şablonu kabul etmiyor); Ayarlar söyler.
+  await step("■ 4 Fatura Ayarları: e-SMM kullanıcısında Kaşe / İmza açıklaması logo ve kaşenin e-SMM'de yalnız programın PDF'ine basıldığını söyler", async () => {
+    await page.evaluate(() => window.HOF.invoices.open({ account: {} }));
+    await page.waitForSelector(`${pageInv} [data-act="settings"]`);
+    await page.click(`${pageInv} [data-act="settings"]`);
+    await page.waitForSelector(`${modal} [data-stamp-field] .hof-inv-logo-tools small`);
+    const help = await textOf(page, `${modal} [data-stamp-field] .hof-inv-logo-tools small`);
+    ok(help.endsWith("Logo ve kaşe e-SMM'de yalnız programın PDF'ine basılır; resmî görüntüyü EDM çizer."), `Kaşe / İmza açıklaması: …${help.slice(-120)}`);
+    await page.$eval(`${modal} [data-stamp-field]`, node => node.scrollIntoView({ block: "center" })).catch(() => null);
+    await shot(page, "esmm-244-4-kase-aciklama");
+  });
   ok(errors.length === 0, `sayfa hatası yok (${errors.join(" | ").slice(0, 200)})`);
 } catch (error) {
   failed += 1;
