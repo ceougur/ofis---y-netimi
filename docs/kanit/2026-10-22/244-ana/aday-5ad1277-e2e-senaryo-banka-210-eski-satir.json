@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-5ad1277-e2e-senaryo-banka-210-eski-satir",
+  "komut": "npm run test:senaryo-banka-210-eski-satir",
+  "commit": "5ad12776721aa35768afca5704cace5ff27f0d89",
+  "dal": "aday5",
+  "kirli": 0,
+  "izlenmeyen": 46,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T13:41:26.821Z",
+  "sure_sn": 31.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 29,
+    "gecen": 29,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday-5ad1277-e2e-senaryo-banka-210-eski-satir.log",
+  "klasor": "/home/user/wt/aday5",
+  "ham_cikti_sha256": "e3488b1dd6f217495ae21fdc6cb750d88a7defc491c561f4f2a4e30d124338db",
+  "ham_cikti_bayt": 5192
+}

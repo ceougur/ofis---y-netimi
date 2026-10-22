@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-5ad1277-e2e-gg243-tumunu-gonder",
+  "komut": "npm run test:gg243-tumunu-gonder",
+  "commit": "5ad12776721aa35768afca5704cace5ff27f0d89",
+  "dal": "aday5",
+  "kirli": 0,
+  "izlenmeyen": 116,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T14:15:55.863Z",
+  "sure_sn": 56.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 17,
+    "gecen": 17,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday-5ad1277-e2e-gg243-tumunu-gonder.log",
+  "klasor": "/home/user/wt/aday5",
+  "ham_cikti_sha256": "df9d890efc6d6938c84a3d78c60a5b61e9cfe21c24b85b0f91ac56f0d157f1aa",
+  "ham_cikti_bayt": 1754
+}
