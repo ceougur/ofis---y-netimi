@@ -10,6 +10,8 @@
 //   D5 önceki gerçek koşunun kanıtı yeni koşuyla sessizce ezilir
 //   D6 üretim girişi e-SMM'yi açmıyorken düzenek kendi bayrağıyla açıp "üretimde çalışıyor" der
 //   D7 kimlik bilgisi verilmeden betik ağa çıkar
+//   D8 test ortamının e-SMM şablonu VKN'li düzenleyende unvanı basmıyor (EDM yanıtı 22.10.2026: kural PartyName, canlı GİB standardında) → düzenek bunu
+//      "kaldı" sayıp her gerçek koşuyu düşürür; ya da tersine e-Arşiv / TCKN'li düzenleyende eksik unvanı da görmezden gelir
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from "node:fs";
@@ -19,7 +21,7 @@ import { fileURLToPath } from "node:url";
 import { after, describe, test } from "node:test";
 import { EDM_SMM_URLS, EDM_URLS, createEdmSmmClient, resetEdmCaches } from "../server/lib/einvoice/edm.mjs";
 import { startMockEdm } from "./einvoice-mock.mjs";
-import { TEST_URLS, bekciFetch, izinliAdres, maskeci, uretimBayraklari } from "../tools/edm-gercek.mjs";
+import { TEST_URLS, bekciFetch, izinliAdres, maskeci, unvanDenetimi, uretimBayraklari } from "../tools/edm-gercek.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const TOOL = path.join(ROOT, "tools", "edm-gercek.mjs");
@@ -134,6 +136,15 @@ describe("D4/D6: maskeleme ve üretim bayrakları", () => {
     // Kaynak tarayan lisans denetimi (lisans-servisi-izolasyonu) bu örneği gerçek çağrı sanmasın: çağrı adı parçalı yazılır.
     const call = ["create", "App("].join("");
     assert.deepEqual(uretimBayraklari(`// ${call}{ esmmEnabled: true })\nconst app = ${call}{ edocEnabled: true, edocLive: true });`), { edocEnabled: true, edocLive: true });
+  });
+});
+
+describe("D8: resmî PDF'te düzenleyenin unvanı", () => {
+  test("e-SMM'de VKN'li düzenleyende BİLGİ (denetim değil); e-SMM'de TCKN'li düzenleyende ve e-Arşiv / e-Fatura'da denetim", () => {
+    assert.equal(unvanDenetimi({ profile: "ESMM", taxNo: "3230512384" }), "bilgi");
+    assert.equal(unvanDenetimi({ profile: "ESMM", taxNo: " 323 051 2384 " }), "bilgi", "boşluklu VKN");
+    assert.equal(unvanDenetimi({ profile: "ESMM", taxNo: "10000000146" }), "denetim", "TCKN'li (şahıs) düzenleyen");
+    for (const profile of ["EARSIVFATURA", "TEMELFATURA", "TICARIFATURA"]) assert.equal(unvanDenetimi({ profile, taxNo: "3230512384" }), "denetim", profile);
   });
 });
 

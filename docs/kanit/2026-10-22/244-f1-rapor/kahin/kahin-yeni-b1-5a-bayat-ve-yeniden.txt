@@ -1,0 +1,4 @@
+b1-5a-bayat-ve-yeniden: 52/52 tuttu
+
+ÖZET: 1 senaryo, 52 denetim, 0 fark (BULGU 0), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-cari-cQID0X
+52/52 denetim geçti

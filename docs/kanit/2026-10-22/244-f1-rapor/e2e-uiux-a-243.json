@@ -1,0 +1,32 @@
+{
+  "ad": "244-f1-rapor/e2e-uiux-a-243",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/uiux-a-243.mjs",
+  "commit": "2b71feac5cce579d33b9c7d9ca5b2c0784286917",
+  "dal": "is/f1-rapor",
+  "kirli": 4,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T11:52:16.053Z",
+  "sure_sn": 41,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 51,
+    "gecen": 51,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-f1-rapor/e2e-uiux-a-243.log",
+  "klasor": "/home/user/wt/f1-rapor",
+  "ham_cikti_sha256": "e83057be8ddc95848d41a823242bf52d44ef316793c8838b43ba92647e1a1df0",
+  "ham_cikti_bayt": 5290
+}

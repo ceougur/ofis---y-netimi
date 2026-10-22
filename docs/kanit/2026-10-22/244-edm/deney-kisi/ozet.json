@@ -1,0 +1,223 @@
+{
+ "kip": "gercek",
+ "commit": "959b667",
+ "baslangic": "22.10.2026 13:33:27",
+ "bitis": "22.10.2026 13:34:39",
+ "gunDegisti": false,
+ "durduruldu": "",
+ "denetim": {
+  "toplam": 51,
+  "kalan": 0
+ },
+ "adimlar": [
+  {
+   "adim": "hazirlik",
+   "durum": "geçti",
+   "kalan": 0
+  },
+  {
+   "adim": "a-baglanti",
+   "durum": "geçti",
+   "kalan": 0
+  },
+  {
+   "adim": "hazirlik-cariler",
+   "durum": "geçti",
+   "kalan": 0
+  },
+  {
+   "adim": "g-toplu-gonderim",
+   "durum": "geçti",
+   "kalan": 0
+  },
+  {
+   "adim": "b-makbuz",
+   "durum": "geçti",
+   "kalan": 0
+  },
+  {
+   "adim": "c-durum",
+   "durum": "geçti",
+   "kalan": 0
+  },
+  {
+   "adim": "d-resmi-pdf",
+   "durum": "geçti",
+   "kalan": 0
+  },
+  {
+   "adim": "e-iptal",
+   "durum": "geçti",
+   "kalan": 0
+  },
+  {
+   "adim": "f-bulunamadi",
+   "durum": "geçti",
+   "kalan": 0
+  },
+  {
+   "adim": "h-hata-kodlari",
+   "durum": "bilgi",
+   "kalan": 0
+  }
+ ],
+ "belgeler": [
+  {
+   "kod": "G1",
+   "tur": "e-SMM",
+   "no": "TES2026227664239",
+   "ettn": "ba0138b5-bc10-4488-8cb4-3df9af1239de",
+   "tarih": "2026-10-20",
+   "gonderim": "22.10.2026 13:33:34",
+   "alici": "Deneme Müvekkil Danışmanlık A.Ş.",
+   "brut": 500,
+   "stopaj": 100,
+   "kdv": 100,
+   "odenecek": 500,
+   "edmDurum": "Kabul (iletildi)",
+   "ileti": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED",
+   "iptal": ""
+  },
+  {
+   "kod": "G2",
+   "tur": "e-SMM",
+   "no": "TES2026227664240",
+   "ettn": "7ba57671-afce-484d-a970-d0c8f6296e93",
+   "tarih": "2026-10-21",
+   "gonderim": "22.10.2026 13:33:40",
+   "alici": "Deneme Müvekkil Danışmanlık A.Ş.",
+   "brut": 600,
+   "stopaj": 120,
+   "kdv": 120,
+   "odenecek": 600,
+   "edmDurum": "Kabul (iletildi)",
+   "ileti": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED",
+   "iptal": ""
+  },
+  {
+   "kod": "G3",
+   "tur": "e-Arşiv",
+   "no": "TEA2026514090925",
+   "ettn": "23e14bea-6705-4f1d-8ff9-af5896ce0763",
+   "tarih": "2026-10-20",
+   "gonderim": "22.10.2026 13:33:38",
+   "alici": "Ahmet Yılmaz",
+   "brut": 300,
+   "stopaj": null,
+   "kdv": 60,
+   "odenecek": 360,
+   "edmDurum": "Kabul (iletildi)",
+   "ileti": "e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED",
+   "iptal": ""
+  },
+  {
+   "kod": "G4",
+   "tur": "e-Arşiv",
+   "no": "TEA2026514090926",
+   "ettn": "b2363ea7-9302-434d-8bdb-3639d0080a91",
+   "tarih": "2026-10-21",
+   "gonderim": "22.10.2026 13:33:43",
+   "alici": "Ahmet Yılmaz",
+   "brut": 400,
+   "stopaj": null,
+   "kdv": 80,
+   "odenecek": 480,
+   "edmDurum": "Kabul (iletildi)",
+   "ileti": "e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED",
+   "iptal": ""
+  },
+  {
+   "kod": "G5",
+   "tur": "e-SMM",
+   "no": "TES2026227664241",
+   "ettn": "e1e525ea-b155-4b91-93ee-69c1f30ab81f",
+   "tarih": "2026-10-21",
+   "gonderim": "22.10.2026 13:33:45",
+   "alici": "Deneme Müvekkil Danışmanlık A.Ş.",
+   "brut": 700,
+   "stopaj": 140,
+   "kdv": 140,
+   "odenecek": 700,
+   "edmDurum": "Kabul (iletildi)",
+   "ileti": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED",
+   "iptal": ""
+  },
+  {
+   "kod": "B1",
+   "tur": "e-SMM",
+   "no": "TES2026227664242",
+   "ettn": "24d05808-40ec-43e3-9c7d-87ca84b22fa9",
+   "tarih": "2026-10-22",
+   "gonderim": "22.10.2026 13:33:47",
+   "alici": "Deneme Müvekkil Danışmanlık A.Ş.",
+   "brut": 1000,
+   "stopaj": 200,
+   "kdv": 200,
+   "odenecek": 1000,
+   "edmDurum": "İptal Edildi",
+   "ileti": "e-SMM EDM'de iptal edildi. SUCCEED",
+   "iptal": "22.10.2026 13:34:35"
+  },
+  {
+   "kod": "B2",
+   "tur": "e-SMM",
+   "no": "TES2026227664243",
+   "ettn": "dd26cee3-b517-449f-ad1c-c4ead7488a48",
+   "tarih": "2026-10-22",
+   "gonderim": "22.10.2026 13:33:49",
+   "alici": "Deneme Müvekkil Danışmanlık A.Ş.",
+   "brut": 200.06,
+   "stopaj": 40.01,
+   "kdv": 40.02,
+   "odenecek": 200.07,
+   "edmDurum": "Kabul (iletildi)",
+   "ileti": "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi. SUCCEED",
+   "iptal": ""
+  }
+ ],
+ "bekci": {
+  "izinli": [
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc",
+   "https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc"
+  ],
+  "reddedilen": []
+ },
+ "cikis": 0
+}

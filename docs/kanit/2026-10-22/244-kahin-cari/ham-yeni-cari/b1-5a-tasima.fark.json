@@ -1,0 +1,30 @@
+{
+ "toplam": 130,
+ "farklar": [
+  {
+   "anahtar": "k1:rapor:K-1:alacak",
+   "beklenen": 350000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B1.8 5c tahsilat bir kez",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k1:rapor:K-2:alacak",
+   "beklenen": 520000,
+   "program": 420000,
+   "etiket": "KULLANICI",
+   "kural": "B1.8 5c tahsilat bir kez",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k1:rapor:K-3:alacak",
+   "beklenen": 450000,
+   "program": 150000,
+   "etiket": "KULLANICI",
+   "kural": "B1.8 5c tahsilat bir kez",
+   "sinif": "BULGU"
+  }
+ ],
+ "hatalar": []
+}

@@ -12,6 +12,8 @@
     "start:local": "node --disable-warning=ExperimentalWarning --env-file-if-exists=.env server/server.mjs",
     "test": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 \"test/**/*.test.mjs\"",
     "test:kahin-defter": "node --disable-warning=ExperimentalWarning test/bagimsiz/defter/kos.mjs",
+    "test:kahin-cari": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs",
+    "test:kahin-tutar": "node --disable-warning=ExperimentalWarning test/bagimsiz/tutar/kos.mjs --tohum 1-3 --adet 50",
     "test:e2e": "node --disable-warning=ExperimentalWarning test/e2e/run.mjs",
     "test:senaryo": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-tablodan-aktar.mjs",
     "test:senaryo-rapor": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-raporlar.mjs",

@@ -1,0 +1,10 @@
+Komut (cwd /home/user/wt/kahin-cari, kâhin koduna dokunulmadı): HUKUK_LICENSE_URL=http://127.0.0.1:9 KAHIN_PROGRAM_KOKU=<kök> node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs test/bagimsiz/cari/senaryolar/<ad>.json --mutasyonsuz
+eski kök = git archive 2b71fea (aday 4) kopyası; yeni kök = /home/user/wt/f1-rapor (2b71fea + bu düzeltme)
+kahin-eski-b1-5a-bayat-ve-yeniden: çıkış 1 · ÖZET: 1 senaryo, 52 denetim, 1 fark (BULGU 1), 0 okuma hatası, 0 yakalanmayan mutasyon.
+kahin-eski-b1-5a-tasima: çıkış 1 · ÖZET: 1 senaryo, 130 denetim, 3 fark (BULGU 3), 0 okuma hatası, 0 yakalanmayan mutasyon.
+kahin-eski-b1-5b-borc: çıkış 1 · ÖZET: 1 senaryo, 146 denetim, 2 fark (BULGU 1), 0 okuma hatası, 0 yakalanmayan mutasyon.
+kahin-eski-b1-5c-rapor: çıkış 1 · ÖZET: 1 senaryo, 113 denetim, 15 fark (BULGU 1), 0 okuma hatası, 0 yakalanmayan mutasyon.
+kahin-yeni-b1-5a-bayat-ve-yeniden: çıkış 0 · ÖZET: 1 senaryo, 52 denetim, 0 fark (BULGU 0), 0 okuma hatası, 0 yakalanmayan mutasyon.
+kahin-yeni-b1-5a-tasima: çıkış 0 · ÖZET: 1 senaryo, 130 denetim, 0 fark (BULGU 0), 0 okuma hatası, 0 yakalanmayan mutasyon.
+kahin-yeni-b1-5b-borc: çıkış 0 · ÖZET: 1 senaryo, 146 denetim, 0 fark (BULGU 0), 0 okuma hatası, 0 yakalanmayan mutasyon.
+kahin-yeni-b1-5c-rapor: çıkış 0 · ÖZET: 1 senaryo, 113 denetim, 0 fark (BULGU 0), 0 okuma hatası, 0 yakalanmayan mutasyon.

@@ -9,6 +9,7 @@ Programla dağıtılmaz; yalnız `tools/ebelge/dogrula.mjs` ve `test/ebelge-uygu
 | `gib/` (UBL-TR_Main_Schematron.xml, UBL-TR_Common_Schematron.xml, UBL-TR_Codelist.xml) | GİB e-Fatura Paketi — https://ebelge.gib.gov.tr/dosyalar/kilavuzlar/e-FaturaPaketi%20(29).zip, `schematron/` (dosya tarihi 21.08.2026) | 16.10.2026 | 12901476… |
 | `edm/EFaturaEDM-test-singleWsdl.xml` | EDM Bilişim test e-Fatura servisinin sözleşmesi — https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc?singleWsdl (herkese açık adres; kimlik bilgisi içermez). Kâhin: test/edm-gercek-sozlesme.test.mjs | 16.10.2026 | ba4e1c1c… |
 | `edm/ESmmEDM-test-singleWsdl.xml` | EDM Bilişim test e-SMM servisinin sözleşmesi — https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc?singleWsdl (herkese açık adres; kimlik bilgisi içermez; ad alanı http://tempuri.org/, SOAP 1.1, 16 işlem — SendSMMPrepared YOK). Kâhin: test/esmm-edm.test.mjs, test/soap-sozlesme-nitelik.test.mjs | 22.10.2026 | 25f1b03b… |
+| `ubl-tr-1.2.1/` (maindoc/UBL-Invoice-2.1.xsd + common/; paketin `xsdrt/` klasörü, dosyalar aynen) | GİB UBL-TR 1.2.1 Paketi — https://ebelge.gib.gov.tr/dosyalar/kilavuzlar/UBLTR_1.2.1_Paketi.zip (OASIS UBL 2.1 şemasının GİB'in kısıtladığı hâli: ör. cac:Person'da FirstName ve FamilyName, belgede ext:UBLExtensions ve cac:Signature ZORUNLU). Kâhin: test/ebelge-uygunluk.test.mjs, test/esmm-ubl.test.mjs (2.4.4 madde 24: EDM e-SMM'yi bu şemayla reddetti — 11029) | 22.10.2026 | aeb69079… |
 | `schxslt-1.9.5/` (2.0/ ve LICENSE) | SchXslt 1.9.5 (David Maus, MIT lisansı) — npm `node-xsl-schematron@1.1.0` paketindeki kopya | 16.10.2026 | — |
 
 Kod adlarının ve istisna/tevkifat açıklamalarının kaynağı: GİB "UBL-TR Kod Listeleri" v1.43 (Temmuz 2026),
@@ -20,6 +21,10 @@ https://ebelge.gib.gov.tr/dosyalar/kilavuzlar/UBLTR_1.2.1_Kilavuzlar.zip (sha256
 2. `UBL-TR_Codelist.xml#codes` deseninin 41 `<sch:let>` değişkeni şema düzeyine taşınır: GİB'in doğrulayıcısında (ISO iskeleti) desen
    değişkenleri bütün desenlerde görünür; SchXslt bunları desene kapatır.
 3. `type` parametresi: e-Fatura için `'efatura'`, e-Arşiv için `'earchive'` (GİB "Açıklamalar.txt", 28.04.2017).
+4. UBL-TR XSD İMZALI belgeyi tanımlar (`ext:UBLExtensions` zorunlu: entegratörün mali mührü). Program imzasız belge üretir, mührü entegratör (EDM) ekler;
+   `dogrula.mjs` (`withSignatureSlot`) doğrulamadan önce — belgede yoksa — kök öğenin ilk çocuğu olarak boş bir İMZA YERİ ekler (ExtensionContent'te
+   şemasız ad alanında yer tutucu; şema `processContents="lax"` → içeriği denetlenmez). Belgenin başka hiçbir yeri değişmez (test: ebelge-uygunluk
+   "imza yeri yalnız eklenir").
 
 ## Kâhinin doğrulanması (16.10.2026)
 - EDM'nin güncel örnek faturaları (17 adet; yalnız boş bırakılan fatura numarası GİB biçimine çevrilerek): 14'ü XSD + şematrondan temiz;
@@ -63,4 +68,19 @@ a4f726bcf8cc3f7d9ffa4dab99e005535a8e8b60dced1e5d94578d2e05afa96e  ./ubl-2.1/comm
 40fae8cb436f3a9506d7acce65ba162caef3b0bed4d5cbc0992b2153ded4edf4  ./ubl-2.1/maindoc/UBL-Invoice-2.1.xsd
 ba4e1c1c270390e0e5a96341bfef4f575c4030a7a851ce3a263e92ea1e3b3bfc  ./edm/EFaturaEDM-test-singleWsdl.xml
 25f1b03b4911e2ac095a81d36f28607c5c745449cb84d72a2c5b194f80d0b1ee  ./edm/ESmmEDM-test-singleWsdl.xml
+dd546e4809df86b6445589f69f0d6c9df162840ae386574ddfc1da7638103e15  ./ubl-tr-1.2.1/common/CCTS_CCT_SchemaModule-2.1.xsd
+186085d67e0daf5bbe78427259ee3df15b3043bd6676b50b0652d264e10bed91  ./ubl-tr-1.2.1/common/UBL-CommonAggregateComponents-2.1.xsd
+9e7eb96aaba1bf2092c52d3ccb8c881a710cc48111c568e3eae29746dd6b1cab  ./ubl-tr-1.2.1/common/UBL-CommonBasicComponents-2.1.xsd
+1829b0a0dd61589edf59f400cd299e59edd42a6b33360026956f52aed4f83a74  ./ubl-tr-1.2.1/common/UBL-CommonExtensionComponents-2.1.xsd
+4fa9e2370100040fe14c43e135ef77e2eb66b21cb8dbfc2ffb8d82ae991fe92e  ./ubl-tr-1.2.1/common/UBL-CommonSignatureComponents-2.1.xsd
+8be3379dbdcbcc7802fafdd16bac72c48fff1c0bb364213a31a17911dd06100b  ./ubl-tr-1.2.1/common/UBL-CoreComponentParameters-2.1.xsd
+fcee77a11870208e6377ea6311b9f2a050bca24bdad8606ea02d71e9f9e72f8d  ./ubl-tr-1.2.1/common/UBL-ExtensionContentDataType-2.1.xsd
+7dcb156e610239c97ae70940cf4653b88e48c3595bf5f56a2204a32e2893e6cf  ./ubl-tr-1.2.1/common/UBL-QualifiedDataTypes-2.1.xsd
+9234c2ca48dbfa9a22a786112bb075c5922a305170920eaab1e3c04fa0b7344b  ./ubl-tr-1.2.1/common/UBL-SignatureAggregateComponents-2.1.xsd
+0fbe2d7afff0c1e11164b8ec83e13f18801021c3c87e390a9d76f9cf862f6a64  ./ubl-tr-1.2.1/common/UBL-SignatureBasicComponents-2.1.xsd
+09052d406b4293e2a5f9c2bfee6df10ad4d8d5f0b36e24a6349d7f7936d89eb6  ./ubl-tr-1.2.1/common/UBL-UnqualifiedDataTypes-2.1.xsd
+a4f726bcf8cc3f7d9ffa4dab99e005535a8e8b60dced1e5d94578d2e05afa96e  ./ubl-tr-1.2.1/common/UBL-XAdESv132-2.1.xsd
+3f9d50cd07e6ee9b81adfe198e43bed5ee945995511c13a41b4f07667d619625  ./ubl-tr-1.2.1/common/UBL-XAdESv141-2.1.xsd
+101909c9f06456d61ddcc4fb982f1d40dc357b439f393b1a2eb46e42acd60809  ./ubl-tr-1.2.1/common/UBL-xmldsig-core-schema-2.1.xsd
+b68a25ae3d99435f4e4a39809939183dc8b5d687aeebf2d023f4d4c2a436749e  ./ubl-tr-1.2.1/maindoc/UBL-Invoice-2.1.xsd
 ```

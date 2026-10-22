@@ -1,0 +1,204 @@
+TAP version 13
+# Subtest: 2.4.4 UX15: numara / tarih çakışması kayıttan ÖNCE (ön hesap = kayıttaki denetim)
+    # Subtest: 1–2 sıra: geriye tarihli kâğıt fatura ön hesapta söylenir (ileti kayıttakiyle aynı, ne yapılacağını söyler); aynı gün serbest; sıradaki numara değişmez
+    ok 1 - 1–2 sıra: geriye tarihli kâğıt fatura ön hesapta söylenir (ileti kayıttakiyle aynı, ne yapılacağını söyler); aynı gün serbest; sıradaki numara değişmez
+      ---
+      duration_ms: 545.888938
+      type: 'test'
+      ...
+    # Subtest: 5 seri: SMM kendi serisinde; alış (elle numara) seri sırasına bağlı değil; satıştan iade (numarasız → iç seri IAD; numaralı → elle) ve alıştan iade (kendi serimiz FIS)
+    ok 2 - 5 seri: SMM kendi serisinde; alış (elle numara) seri sırasına bağlı değil; satıştan iade (numarasız → iç seri IAD; numaralı → elle) ve alıştan iade (kendi serimiz FIS)
+      ---
+      duration_ms: 599.641291
+      type: 'test'
+      ...
+    # Subtest: 6 elle numara: aynı caride aynı numara söylenir (büyük/küçük harf aynı), başka caride serbest; Düzenle'de belgenin kendisi çakışma sayılmaz
+    ok 3 - 6 elle numara: aynı caride aynı numara söylenir (büyük/küçük harf aynı), başka caride serbest; Düzenle'de belgenin kendisi çakışma sayılmaz
+      ---
+      duration_ms: 363.623438
+      type: 'test'
+      ...
+    # Subtest: 7 dönem kilidi: kilitli güne yeni belge ve Düzenle'de kilitli güne taşıma ön hesapta söylenir; kilidin ertesi günü serbest
+    ok 4 - 7 dönem kilidi: kilitli güne yeni belge ve Düzenle'de kilitli güne taşıma ön hesapta söylenir; kilidin ertesi günü serbest
+      ---
+      duration_ms: 428.008357
+      type: 'test'
+      ...
+    # Subtest: 9 Düzenle: önceki / sonraki belge sınırı Düzenle kuralıyla (yeni belge kuralı yanlış uyarı vermez); 11 taslak kaydı engellenmez
+    ok 5 - 9 Düzenle: önceki / sonraki belge sınırı Düzenle kuralıyla (yeni belge kuralı yanlış uyarı vermez); 11 taslak kaydı engellenmez
+      ---
+      duration_ms: 462.147641
+      type: 'test'
+      ...
+    # Subtest: 3 yıl dönümü: seri yılı ayrı (31.12 belgesi 01.01 numaralısından sonra serbest); aynı yıl içinde engel; Düzenle'de başka yıla alınamaz
+    ok 6 - 3 yıl dönümü: seri yılı ayrı (31.12 belgesi 01.01 numaralısından sonra serbest); aynı yıl içinde engel; Düzenle'de başka yıla alınamaz
+      ---
+      duration_ms: 366.2838
+      type: 'test'
+      ...
+    # Subtest: 10 002 şirketi: ön hesap seçili şirketin serisine ve kilidine bakar
+    ok 7 - 10 002 şirketi: ön hesap seçili şirketin serisine ve kilidine bakar
+      ---
+      duration_ms: 634.590568
+      type: 'test'
+      ...
+    # Subtest: ayrışma: tohumlu rastgele sırada her adımda ön hesabın hükmü = kaydın sonucu (ileti aynı; kabulde numara)
+    ok 8 - ayrışma: tohumlu rastgele sırada her adımda ön hesabın hükmü = kaydın sonucu (ileti aynı; kabulde numara)
+      ---
+      duration_ms: 1118.799562
+      type: 'test'
+      ...
+    1..8
+ok 1 - 2.4.4 UX15: numara / tarih çakışması kayıttan ÖNCE (ön hesap = kayıttaki denetim)
+  ---
+  duration_ms: 4521.066076
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 UX15: e-Belge (sahte EDM; ağa çıkmaz)
+    # Subtest: 5 Kes, Sonra Gönder ve Kaydet ve Gönder aynı koşul ve aynı iletiyle reddedilir; ön hesap ikisinden önce söyler (e-Arşiv TEA)
+    not ok 1 - 5 Kes, Sonra Gönder ve Kaydet ve Gönder aynı koşul ve aynı iletiyle reddedilir; ön hesap ikisinden önce söyler (e-Arşiv TEA)
+      ---
+      duration_ms: 426.419605
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/i23-eski-7123747/test/fatura-244-numara-tarih-onay.test.mjs:318:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'TEA serisinde son gönderilen belge TEA2026000000001 17.06.2026 tarihli; numarası gönderimde verilecek bu belge ondan eski tarihli olamaz (numara ve tarih sırası). Belge tarihini 17.06.2026 ya da sonrası yapın.'
+        - 'TEA serisinde son belge TEA2026000000001 17.06.2026 tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı). Belge tarihini 17.06.2026 ya da sonrası yapın.'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'TEA serisinde son belge TEA2026000000001 17.06.2026 tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı). Belge tarihini 17.06.2026 ya da sonrası yapın.'
+      actual: 'TEA serisinde son gönderilen belge TEA2026000000001 17.06.2026 tarihli; numarası gönderimde verilecek bu belge ondan eski tarihli olamaz (numara ve tarih sırası). Belge tarihini 17.06.2026 ya da sonrası yapın.'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/i23-eski-7123747/test/fatura-244-numara-tarih-onay.test.mjs:336:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 8 daha eski bekleyen: numara kayıtta verilmeyecekse ön hesap söyler (orderHold) — kayıt da numarasız Gönderilecekler'e koyar
+    ok 2 - 8 daha eski bekleyen: numara kayıtta verilmeyecekse ön hesap söyler (orderHold) — kayıt da numarasız Gönderilecekler'e koyar
+      ---
+      duration_ms: 476.177151
+      type: 'test'
+      ...
+    # Subtest: 4 iki kullanıcı aynı anda: A formdayken (uyarı yok) B daha yeni tarihli e-Fatura kaydeder; A'nın Kaydet öncesi ön hesabı söyler, yarışta kayıt yine reddeder
+    ok 3 - 4 iki kullanıcı aynı anda: A formdayken (uyarı yok) B daha yeni tarihli e-Fatura kaydeder; A'nın Kaydet öncesi ön hesabı söyler, yarışta kayıt yine reddeder
+      ---
+      duration_ms: 603.064519
+      type: 'test'
+      ...
+    # Subtest: 12 yetkisiz: fatura görme yetkisi olmayan ön hesabı çağıramaz (çakışma bilgisi sızmaz)
+    ok 4 - 12 yetkisiz: fatura görme yetkisi olmayan ön hesabı çağıramaz (çakışma bilgisi sızmaz)
+      ---
+      duration_ms: 422.374513
+      type: 'test'
+      ...
+    1..4
+not ok 2 - 2.4.4 UX15: e-Belge (sahte EDM; ağa çıkmaz)
+  ---
+  duration_ms: 1928.604348
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/i23-eski-7123747/test/fatura-244-numara-tarih-onay.test.mjs:314:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: gg243 dar kontrol 2: kâğıt asıllı alış faturasının iadesi (MM1)
+    # Subtest: MM1: asıl no 'A 004512' — referanssız kayıt nedenli 400 (asıl kaydı düzeltin demez); önerilen referansla iade kesilir, UBL GİB'e UYGUN, asıl kayıt değişmez
+    ok 1 - MM1: asıl no 'A 004512' — referanssız kayıt nedenli 400 (asıl kaydı düzeltin demez); önerilen referansla iade kesilir, UBL GİB'e UYGUN, asıl kayıt değişmez
+      ---
+      duration_ms: 1447.657131
+      type: 'test'
+      ...
+    # Subtest: MM1: kullanıcının düzelttiği referans (öneriden farklı) korunur; Düzenle'de referans kalır; asıl 16 haneli e-Belgede davranış aynı (referans yok sayılır)
+    ok 2 - MM1: kullanıcının düzelttiği referans (öneriden farklı) korunur; Düzenle'de referans kalır; asıl 16 haneli e-Belgede davranış aynı (referans yok sayılır)
+      ---
+      duration_ms: 451.557529
+      type: 'test'
+      ...
+    1..2
+ok 3 - gg243 dar kontrol 2: kâğıt asıllı alış faturasının iadesi (MM1)
+  ---
+  duration_ms: 1941.472255
+  type: 'suite'
+  ...
+# Subtest: gg243 dar kontrol 2: iade belgesinde e-Fatura profili yalnız Temel Fatura (MM2)
+    # Subtest: MM2: Ticari profilli tedarikçiye (ve varsayılan senaryo Ticari iken) alıştan iade TEMELFATURA kesilir; Ticari isteği Temel'e döner; UBL GİB'e UYGUN
+    ok 1 - MM2: Ticari profilli tedarikçiye (ve varsayılan senaryo Ticari iken) alıştan iade TEMELFATURA kesilir; Ticari isteği Temel'e döner; UBL GİB'e UYGUN
+      ---
+      duration_ms: 1061.012498
+      type: 'test'
+      ...
+    # Subtest: MM2: eski sürümde Ticari Fatura olarak kaydedilmiş iade gönderilmeden önce nedenli durur; Düzenle ile Temel Fatura olur (numara aynı) ve gönderilir
+    ok 2 - MM2: eski sürümde Ticari Fatura olarak kaydedilmiş iade gönderilmeden önce nedenli durur; Düzenle ile Temel Fatura olur (numara aynı) ve gönderilir
+      ---
+      duration_ms: 468.514656
+      type: 'test'
+      ...
+    1..2
+ok 4 - gg243 dar kontrol 2: iade belgesinde e-Fatura profili yalnız Temel Fatura (MM2)
+  ---
+  duration_ms: 1571.567454
+  type: 'suite'
+  ...
+# Subtest: gg243 dar kontrol 2: Kes, Sonra Gönder kronolojisi (B5) ve kronoloji engelli belgenin iletisi (B7)
+    # Subtest: B5: serinin son numaralısından eski tarihli Kes, Sonra Gönder kaydedilmez (ön hesapla aynı ileti); aynı gün ve daha yeni kaydedilir
+    not ok 1 - B5: serinin son numaralısından eski tarihli Kes, Sonra Gönder kaydedilmez (ön hesapla aynı ileti); aynı gün ve daha yeni kaydedilir
+      ---
+      duration_ms: 533.168527
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/i23-eski-7123747/test/gg243-dar2-iade-sira.test.mjs:187:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'TEA serisinde son gönderilen belge TEA2026000000001 16.10.2026 tarihli; numarası gönderimde verilecek bu belge ondan eski tarihli olamaz (numara ve tarih sırası). Belge tarihini 16.10.2026 ya da sonrası yapın.'
+        - 'TEA serisinde son belge TEA2026000000001 16.10.2026 tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı). Belge tarihini 16.10.2026 ya da sonrası yapın.'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'TEA serisinde son belge TEA2026000000001 16.10.2026 tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı). Belge tarihini 16.10.2026 ya da sonrası yapın.'
+      actual: 'TEA serisinde son gönderilen belge TEA2026000000001 16.10.2026 tarihli; numarası gönderimde verilecek bu belge ondan eski tarihli olamaz (numara ve tarih sırası). Belge tarihini 16.10.2026 ya da sonrası yapın.'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/i23-eski-7123747/test/gg243-dar2-iade-sira.test.mjs:197:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B7: kronoloji engelli bekleyenin iletisi yalnız açık yolu söyler — Müşteri Fişi sırası izin vermiyorsa Müşteri Fişi Olarak Bırak önerilmez
+    ok 2 - B7: kronoloji engelli bekleyenin iletisi yalnız açık yolu söyler — Müşteri Fişi sırası izin vermiyorsa Müşteri Fişi Olarak Bırak önerilmez
+      ---
+      duration_ms: 636.304728
+      type: 'test'
+      ...
+    1..2
+not ok 5 - gg243 dar kontrol 2: Kes, Sonra Gönder kronolojisi (B5) ve kronoloji engelli belgenin iletisi (B7)
+  ---
+  duration_ms: 1214.298479
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/i23-eski-7123747/test/gg243-dar2-iade-sira.test.mjs:181:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..5
+# tests 18
+# suites 5
+# pass 16
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12184.908166
+cikis=1

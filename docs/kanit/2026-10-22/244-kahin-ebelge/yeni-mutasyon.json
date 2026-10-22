@@ -1,0 +1,32 @@
+{
+  "ad": "244-kahin-ebelge/yeni-mutasyon",
+  "komut": "python3 test/bagimsiz/ebelge/mutasyon.py",
+  "commit": "fd0b0fc6ebac15c9ebde3715179f88b0a9e774f3",
+  "dal": "is/kahin-ebelge",
+  "kirli": 7,
+  "izlenmeyen": 12,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T10:32:34.217Z",
+  "sure_sn": 75.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 36,
+    "gecen": 36,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kahin-ebelge/yeni-mutasyon.log",
+  "klasor": "/home/user/wt/kahin-ebelge",
+  "ham_cikti_sha256": "190d211f2a69aafb9852f2a0cb162e5d29159d4bcac2f0a73b85d73e20d4d530",
+  "ham_cikti_bayt": 7195
+}

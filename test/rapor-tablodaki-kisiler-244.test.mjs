@@ -50,13 +50,14 @@ describe("2.4.4 5c: Tablodaki Kişiler — aynı dosya no iki sekmede, tahsilat 
     rmSync(root, { recursive: true, force: true });
   });
 
-  test("varsayılan dönem: 2026/1104'ün tahsilatları bir kez (100 + 250), iki sekmenin borç satırları ayrı", async () => {
+  test("varsayılan dönem: 2026/1104 (Zeynep Şahin) tahsilatları bir kez (100 + 250), iki sekmenin borç satırları ayrı", async () => {
     const rep = await report(`from=${day(-30)}&to=${day(1)}`);
-    const lines = linesOf(rep, "2026/1104");
+    const lines = linesOf(rep, "Zeynep Şahin");
     const credits = lines.filter(row => row.alacak > 0);
     assert.deepEqual(credits.map(row => row.alacak).sort((a, b) => a - b), [100, 250], `alacak satırları: ${JSON.stringify(credits)}`);
     assert.ok(lines.filter(row => row.borc > 0).length >= 1, "borç satırı var");
-    const group = rep.groups.find(item => item.cari === "2026/1104");
+    // 31a F4 (bilerek güncellendi): satır grubu kişinin adıyla görünür (önceden çok sekmeli tabloda dosya no görünüyordu).
+    const group = rep.groups.find(item => item.cari === "Zeynep Şahin");
     assert.equal(group.credit, 350, "grubun alacağı 350");
     assert.equal(round(group.debit - group.credit), group.balance, "grup bakiyesi = borç − alacak");
   });
@@ -79,13 +80,13 @@ describe("2.4.4 5c: Tablodaki Kişiler — aynı dosya no iki sekmede, tahsilat 
       const rep = await report(query);
       assert.equal(round(rep.totals.debit), sumOf(rep.table.rows, "borc"), `${query || "(süzgeçsiz)"}: borç toplamı = satırlar`);
       assert.equal(round(rep.totals.credit), sumOf(rep.table.rows, "alacak"), `${query || "(süzgeçsiz)"}: alacak toplamı = satırlar`);
-      const credits = linesOf(rep, "2026/1104").filter(row => row.alacak > 0).map(row => row.alacak);
+      const credits = linesOf(rep, "Zeynep Şahin").filter(row => row.alacak > 0).map(row => row.alacak);
       const ids = credits.slice().sort((a, b) => a - b);
       assert.equal(new Set(ids).size, ids.length, `${query || "(süzgeçsiz)"}: aynı tahsilat iki kez yok: ${JSON.stringify(ids)}`);
     }
     const oneDay = await report(`from=${day(0)}&to=${day(0)}`);
-    assert.deepEqual(linesOf(oneDay, "2026/1104").filter(row => row.alacak > 0).map(row => row.alacak), [250], "bugün: yalnız cari tahsilatı");
+    assert.deepEqual(linesOf(oneDay, "Zeynep Şahin").filter(row => row.alacak > 0).map(row => row.alacak), [250], "bugün: yalnız cari tahsilatı");
     const future = await report(`from=${day(5)}&to=${day(30)}`);
-    assert.equal(linesOf(future, "2026/1104").filter(row => row.alacak > 0).length, 0, "ileri dönem: tahsilat yok");
+    assert.equal(linesOf(future, "Zeynep Şahin").filter(row => row.alacak > 0).length, 0, "ileri dönem: tahsilat yok");
   });
 });

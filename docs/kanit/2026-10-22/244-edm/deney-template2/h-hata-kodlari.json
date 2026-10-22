@@ -1,0 +1,47 @@
+{
+ "adim": "h-hata-kodlari",
+ "baslik": "Görülen ret / hata kodları (PACKAGE-FAIL, SEND-FAILED, EDM hata kodu)",
+ "durum": "bilgi",
+ "denetimler": [],
+ "kayit": {
+  "kodlar": [
+   {
+    "yer": "f e-SMM GetSMMStatus",
+    "code": "integrator-rejected",
+    "integratorCode": "11017",
+    "stage": "",
+    "status": 502,
+    "message": "EDM isteği reddetti: SMM bulunamadı (EDM hata kodu 11017)",
+    "detail": "ID=TES2026000000000 UUID=3ccefdea-20c0-401a-9515-a7363c7c10d2 kriterine uyan SMM bulunamadı. Session ID:dc5255e8-9519-4e84-8639-52644f5dd135"
+   },
+   {
+    "yer": "f e-SMM CancelSMM",
+    "code": "integrator-rejected",
+    "integratorCode": "11017",
+    "stage": "",
+    "status": 502,
+    "message": "EDM isteği reddetti: SMM bulunamadı (EDM hata kodu 11017)",
+    "detail": "SMM bulunamadı. Session ID:dc5255e8-9519-4e84-8639-52644f5dd135"
+   },
+   {
+    "yer": "f e-SMM GetSMM (PDF)",
+    "code": "integrator-not-found",
+    "integratorCode": "",
+    "stage": "",
+    "status": 404,
+    "message": "TES2026000000000 EDM'de bulunamadı (makbuz henüz işlenmemiş olabilir; birkaç dakika sonra yeniden deneyin).",
+    "detail": ""
+   },
+   {
+    "yer": "f e-Arşiv GetInvoiceStatus (karşılaştırma)",
+    "code": "integrator-rejected",
+    "integratorCode": "11017",
+    "stage": "",
+    "status": 502,
+    "message": "EDM isteği reddetti: Fatura bulunamadı (EDM hata kodu 11017)",
+    "detail": "ID=TEA2026000000000 UUID=06993df4-6a51-4b45-9be6-cce253b04124 kriterine uyan fatura bulunamadı. Session ID:dc5255e8-9519-4e84-8639-52644f5dd135"
+   }
+  ],
+  "paketHatasi": "görülmedi"
+ }
+}

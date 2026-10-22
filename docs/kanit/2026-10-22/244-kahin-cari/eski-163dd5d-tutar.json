@@ -1,0 +1,158 @@
+{
+  "ad": "244-kahin-cari/eski-163dd5d-tutar",
+  "komut": "env KAHIN_PROGRAM_KOKU=/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-cari/kahin-cari-eski-163dd5d node --disable-warning=ExperimentalWarning test/bagimsiz/tutar/kos.mjs --tohum 1 --adet 50 --mutasyonsuz --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-cari/k-eski-tutar",
+  "commit": "94c9016d667610ac178a50ff76b02013b3671803",
+  "dal": "is/kahin-cari",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T10:24:22.888Z",
+  "sure_sn": 1.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 329,
+    "gecen": 10,
+    "basarisiz": 319,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 319 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[İNCELE AJAN] c01:gfn:birimFiyat: program \"okunamadı\" · kâhin 100000 (B3.3 ilk kalemin birim fiyatı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] c01:gfn:durum: program \"ret\" · kâhin \"ok\" (B3 Netten Brüte ucu yanıt verir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU GIB] c01:gfn:stopajOrani: program \"okunamadı\" · kâhin 0 (B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] c01:kayit:brut: program \"okunamadı\" · kâhin 100000 (B3.3 en küçük brüt (uzlaşım))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] c01:kayit:durum: program \"okunamadı\" · kâhin \"ok\" (B3 makbuz kaydedilir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU GIB] c01:kayit:netUcret: program \"okunamadı\" · kâhin 100000 (B3.2 Net Ücret = Brüt − Stopaj = yazılan net)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU GIB] c01:kayit:stopajOrani: program \"okunamadı\" · kâhin 0 (B3.1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] c02:gfn:birimFiyat: program \"okunamadı\" · kâhin 125000 (B3.3 ilk kalemin birim fiyatı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] c02:gfn:durum: program \"ret\" · kâhin \"ok\" (B3 Netten Brüte ucu yanıt verir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU GIB] c02:gfn:stopajOrani: program \"okunamadı\" · kâhin 2000 (B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] c02:kayit:brut: program \"okunamadı\" · kâhin 125000 (B3.3 en küçük brüt (uzlaşım))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] c02:kayit:durum: program \"okunamadı\" · kâhin \"ok\" (B3 makbuz kaydedilir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU GIB] c02:kayit:netUcret: program \"okunamadı\" · kâhin 100000 (B3.2 Net Ücret = Brüt − Stopaj = yazılan net)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU GIB] c02:kayit:stopajOrani: program \"okunamadı\" · kâhin 2000 (B3.1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] c03:gfn:birimFiyat: program \"okunamadı\" · kâhin 150000 (B3.3 ilk kalemin birim fiyatı (KDV dahil: matrah + yuvarla(matrah × KDV)))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] c03:gfn:durum: program \"ret\" · kâhin \"ok\" (B3 Netten Brüte ucu yanıt verir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU GIB] c03:gfn:stopajOrani: program \"okunamadı\" · kâhin 2000 (B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] c03:kayit:brut: program \"okunamadı\" · kâhin 125000 (B3.3 en küçük brüt (uzlaşım))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] c03:kayit:durum: program \"okunamadı\" · kâhin \"ok\" (B3 makbuz kaydedilir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU GIB] c03:kayit:netUcret: program \"okunamadı\" · kâhin 100000 (B3.2 Net Ücret = Brüt − Stopaj = yazılan net)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU GIB] c03:kayit:stopajOrani: program \"okunamadı\" · kâhin 2000 (B3.1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] c04:gfn:birimFiyat: program \"okunamadı\" · kâhin 120004 (B3.3 ilk kalemin birim fiyatı (KDV dahil: matrah + yuvarla(matrah × KDV)))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] c04:gfn:durum: program \"ret\" · kâhin \"ok\" (B3 Netten Brüte ucu yanıt verir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU GIB] c04:gfn:stopajOrani: program \"okunamadı\" · kâhin 0 (B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] c04:kayit:brut: program \"okunamadı\" · kâhin 100003 (B3.3 en küçük brüt (uzlaşım))",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kahin-cari/eski-163dd5d-tutar.log",
+  "klasor": "/home/user/wt/kahin-cari",
+  "ham_cikti_sha256": "6ffcc3e8172ae80378047a9c16fde82e3c2c3caf7d894be944038530b6dac9c9",
+  "ham_cikti_bayt": 35885
+}

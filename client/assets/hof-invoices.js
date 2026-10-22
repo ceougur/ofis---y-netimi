@@ -2544,7 +2544,7 @@
     const email = String(party.email || "").trim();
     const eTools =
       edoc() && doc.status !== "draft" && (doc.profile !== "KAGIT" || doc.eStatus === "withdrawn") && meta.kinds[doc.kind]?.own
-        ? `<span class="hof-plan-toolgroup">${sendButtons(doc)}${doc.canWithdraw ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="e-withdraw" title="e-Belge gönderilmez; belge fiş numarasıyla Müşteri Fişi olarak kalır; stok, cari ve Kasa etkileri geri alınmaz">Müşteri Fişi Olarak Bırak</button>' : ""}${doc.canRefresh ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="e-refresh">Durum Sorgula</button>' : ""}${doc.canOfficial ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/${esc(doc.id)}/resmi.pdf?inline=1" target="_blank" rel="noopener" data-act="e-official" title="Entegratörün ürettiği, alıcının ve GİB'in gördüğü görüntü">Resmî Görüntü</a>` : ""}${doc.status === "issued" ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/${esc(doc.id)}/ubl.xml" download>XML İndir</a>` : ""}</span>`
+        ? `<span class="hof-plan-toolgroup">${sendButtons(doc)}${doc.canWithdraw ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="e-withdraw" title="${esc(paperOf(doc.kind).hint)}">${esc(paperOf(doc.kind).button)}</button>` : ""}${doc.canRefresh ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="e-refresh">Durum Sorgula</button>' : ""}${doc.canOfficial ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/${esc(doc.id)}/resmi.pdf?inline=1" target="_blank" rel="noopener" data-act="e-official" title="Entegratörün ürettiği, alıcının ve GİB'in gördüğü görüntü">Resmî Görüntü</a>` : ""}${doc.status === "issued" ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/${esc(doc.id)}/ubl.xml" download>XML İndir</a>` : ""}</span>`
         : "";
     HOF.swap(
       root,
@@ -2581,7 +2581,7 @@
         ${fact(String(party.taxNo || "").length === 11 ? "TC Kimlik No" : "Vergi No", esc(party.taxNo || ""))}
         ${fact("Vergi Dairesi", esc(party.taxOffice || ""))}
         ${fact("Adres", esc([party.address, party.district, party.city].filter(Boolean).join(", ")))}
-        ${fact("Belge Türü", esc(doc.eStatus === "withdrawn" ? "Müşteri Fişi (e-Belge olarak gönderilmedi)" : profileText))}
+        ${fact("Belge Türü", esc(doc.eStatus === "withdrawn" ? paperOf(doc.kind).kindText : profileText))}
         ${fact("e-Belge", doc.sendBlock ? `<span class="hof-inv-warn">${esc(doc.sendBlock)}</span>` : doc.eStatus === "waiting" ? "Gönderilecekler'de: numara entegratöre gönderilirken verilir." : edoc() && doc.eUnsent ? `<span class="hof-inv-warn">${doc.eStatusLabel === "Sonucu Belirsiz" ? "Son gönderimin sonucu belirsiz: önce Durum Sorgula'ya basın." : "Numara aldı ama entegratöre ulaşmadı; Gönderilecekler'de bekliyor. e-Belge Gönder ile ya da Gönderilecekler'den (Tümünü Gönder) gönderin."}</span>` : "")}
         ${fact("Son İptal Günü", doc.status === "issued" && doc.cancelWindow ? (doc.cancelWindow.late ? `<span class="hof-inv-warn">Süre Doldu (en geç ${esc(HOF.formatDate(doc.cancelWindow.lastDay))})</span>` : esc(doc.cancelDeadline || "")) : "")}
         ${fact("Para Birimi", cur !== "TRY" ? `${esc(cur)} · kur ${esc(String(doc.rate).replace(".", ","))}` : "")}
@@ -2841,15 +2841,22 @@
     window.open(HOF.whatsapp?.waUrl ? HOF.whatsapp.waUrl(wa, text) : `https://wa.me/${wa}?text=${encodeURIComponent(text)}`, "hof-whatsapp");
     HOF.toast("PDF indirildi; WhatsApp'ta sohbete ekleyip gönderin.", { type: "info", timeout: 6000 });
   }
-  // Gönderilecekler'den silme: etkiler yerinde kalır; belge Müşteri Fişi numarası alır (sonra yine gönderilebilir).
+  // Gönderilecekler'den bırakma metinleri (2.4.4 madde 22 ek, kâhin bulgusu): serbest meslek makbuzu kâğıt makbuz serisinden numara alır ("Kâğıt Makbuz
+  // Olarak Bırak"), fatura türleri Müşteri Fişi serisinden ("Müşteri Fişi Olarak Bırak"). Sunucu seriyi türe göre seçer (paperSeriesOf).
+  const paperOf = kind =>
+    kind === "smm"
+      ? { button: "Kâğıt Makbuz Olarak Bırak", title: "Kâğıt Makbuz Olarak Bırakılsın mı?", kindText: "Kâğıt Makbuz (e-SMM olarak gönderilmedi)", hint: "e-SMM gönderilmez; makbuz kâğıt makbuz numarasıyla kalır; cari ve Kasa etkileri geri alınmaz", message: "e-SMM gönderilmez; makbuz kâğıt makbuz serisinden numara alır ve kâğıt makbuz olarak kalır. Cari, Kasa, taksit ve çek/senet etkileri geri alınmaz (makbuzu geri almak için İptal Et kullanılır). İsterseniz makbuzu sonra yine e-SMM olarak gönderebilirsiniz.", done: number => `Makbuz e-SMM olarak gönderilmedi; ${number} numaralı kâğıt makbuz olarak bırakıldı.` }
+      : { button: "Müşteri Fişi Olarak Bırak", title: "Müşteri Fişi Olarak Bırakılsın mı?", kindText: "Müşteri Fişi (e-Belge olarak gönderilmedi)", hint: "e-Belge gönderilmez; belge fiş numarasıyla Müşteri Fişi olarak kalır; stok, cari ve Kasa etkileri geri alınmaz", message: "e-Belge gönderilmez; belge fiş numarasıyla Müşteri Fişi olarak kalır. Stok, cari, Kasa, taksit ve çek/senet etkileri geri alınmaz (satışı geri almak için İptal Et kullanılır). İsterseniz belgeyi sonra yine e-Belge olarak gönderebilirsiniz.", done: number => `Belge e-Belge olarak gönderilmedi; ${number} numaralı Müşteri Fişi olarak bırakıldı.` };
+  // Gönderilecekler'den silme: etkiler yerinde kalır; belge Müşteri Fişi (makbuzda kâğıt makbuz) numarası alır (sonra yine gönderilebilir).
   async function withdrawDoc(doc) {
     // 2.4.3 (KÖ2, kullanıcı kararı 18.10.2026): "Listeden Sil" silme çağrıştırıyordu; belge silinmez, fiş numarasıyla Müşteri Fişi olarak kalır.
     // Varsayılan odak Vazgeç'te (etkiler geri alınmaz; A paketi UX4 güvenli odak kuralı).
-    const go = await HOF.confirm({ title: "Müşteri Fişi Olarak Bırakılsın mı?", message: "e-Belge gönderilmez; belge fiş numarasıyla Müşteri Fişi olarak kalır. Stok, cari, Kasa, taksit ve çek/senet etkileri geri alınmaz (satışı geri almak için İptal Et kullanılır). İsterseniz belgeyi sonra yine e-Belge olarak gönderebilirsiniz.", confirmLabel: "Müşteri Fişi Olarak Bırak", safeFocus: true });
+    const paper = paperOf(doc.kind);
+    const go = await HOF.confirm({ title: paper.title, message: paper.message, confirmLabel: paper.button, safeFocus: true });
     if (!go) return;
     try {
       const saved = await HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}/withdraw`, { method: "POST", body: {} });
-      HOF.toast(`Belge e-Belge olarak gönderilmedi; ${saved.number} numaralı Müşteri Fişi olarak bırakıldı.`, { type: "success" });
+      HOF.toast(paper.done(saved.number), { type: "success" });
       HOF.emit("invoices-changed", saved);
       showDoc(saved);
     } catch (error) {
@@ -3260,7 +3267,7 @@
           <div class="hof-inv-logo-tools"><label class="hof-button hof-button-small hof-button-ghost">Logo Seç<input type="file" accept="image/*" data-logo-file hidden></label><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="logo-clear" ${logoNow() ? "" : "hidden"}>Logoyu Kaldır</button><small>PNG ya da JPEG seçin; program JPEG'e çevirip küçültür (en çok 150 KB). Kaydedince bundan sonraki PDF'lere basılır.</small></div></div></div>
         <div class="hof-field hof-inv-wide hof-inv-logo" data-stamp-field><span>Kaşe / İmza (e-Arşiv Faturasına Basılır)</span>
           <div class="hof-inv-logo-row"><div class="hof-inv-logo-box" data-stamp-preview>${imageBoxHtml("stamp")}</div>
-          <div class="hof-inv-logo-tools"><label class="hof-button hof-button-small hof-button-ghost">Kaşe / İmza Seç<input type="file" accept="image/*" data-stamp-file hidden></label><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="stamp-clear" ${stampNow() ? "" : "hidden"}>Kaşe / İmzayı Kaldır</button><small>Kaşe üzerine atılmış imzanın taranmış ya da çekilmiş resmini seçin (beyaz zemin önerilir). e-Belgede GİB logosunun altına, PDF'te Düzenleyen kutusuna basılır; e-Faturada da istenirse Entegratör Ayarları → Görünüm.</small></div></div></div>
+          <div class="hof-inv-logo-tools"><label class="hof-button hof-button-small hof-button-ghost">Kaşe / İmza Seç<input type="file" accept="image/*" data-stamp-file hidden></label><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="stamp-clear" ${stampNow() ? "" : "hidden"}>Kaşe / İmzayı Kaldır</button><small>Kaşe üzerine atılmış imzanın taranmış ya da çekilmiş resmini seçin (beyaz zemin önerilir). e-Belgede GİB logosunun altına, PDF'te Düzenleyen kutusuna basılır; e-Faturada da istenirse Entegratör Ayarları → Görünüm.${s.edocEnabled && s.esmm === true ? " Logo ve kaşe e-SMM'de yalnız programın PDF'ine basılır; resmî görüntüyü EDM çizer." : ""}</small></div></div></div>
       </div></section>
       <section class="hof-inv-settings" data-inv-banks="${bankState.active ? "accounts" : "legacy"}"><h4>Banka Hesapları <small>(belgenin altına basılır)</small></h4>${bankState.active
         ? `<p class="hof-muted">Banka modülü etkin: belgeye yalnız Banka → Hesaplar'da hesap kartında <b>IBAN Faturada Gösterilsin</b> işaretli etkin TL hesaplar basılır (en çok 4; sırası hesap sırası). Buradaki eski liste artık düzenlenmez.</p>

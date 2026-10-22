@@ -1,0 +1,130 @@
+{
+ "adim": "d-resmi-pdf",
+ "baslik": "Resmî görüntü: e-SMM GetSMM PDF (B1, B2, G1) ve karşılaştırma için e-Arşiv (G3)",
+ "durum": "geçti",
+ "denetimler": [
+  {
+   "gecti": true,
+   "denetim": "B1 TES2026482135496: PDF (92909 bayt ≥ 5000), indirme adı numarayı taşır"
+  },
+  {
+   "gecti": true,
+   "denetim": "B1 TES2026482135496: PDF metninde belge numarası (ETTN var)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B1 TES2026482135496: resmî PDF'te satıcı ve alıcı adresi birer kez (satıcı 1, alıcı 1)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B2 TES2026482135497: PDF (93281 bayt ≥ 5000), indirme adı numarayı taşır"
+  },
+  {
+   "gecti": true,
+   "denetim": "B2 TES2026482135497: PDF metninde belge numarası (ETTN var)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B2 TES2026482135497: resmî PDF'te satıcı ve alıcı adresi birer kez (satıcı 1, alıcı 1)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G1 TES2026482135493: PDF (93568 bayt ≥ 5000), indirme adı numarayı taşır"
+  },
+  {
+   "gecti": true,
+   "denetim": "G1 TES2026482135493: PDF metninde belge numarası (ETTN var)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G1 TES2026482135493: resmî PDF'te satıcı ve alıcı adresi birer kez (satıcı 1, alıcı 1)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G3 TEA2026721667485: PDF (84141 bayt ≥ 5000), indirme adı numarayı taşır"
+  },
+  {
+   "gecti": true,
+   "denetim": "G3 TEA2026721667485: PDF metninde belge numarası (ETTN var)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G3 TEA2026721667485: resmî PDF'te satıcı ve alıcı adresi birer kez (satıcı 1, alıcı 1)"
+  }
+ ],
+ "kayit": {
+  "B1": {
+   "status": 200,
+   "tur": "application/pdf",
+   "bayt": 92909,
+   "ad": "attachment; filename=\"TES2026482135496 Resmi Gorunum.pdf\"; filename*=UTF-8''TES2026482135496%20Resmi%20Gorunum.pdf",
+   "dosya": "TES2026482135496-resmi.pdf",
+   "metin": {
+    "numara": true,
+    "ettn": true,
+    "tutarlar": [
+     "20,00",
+     "1.000,00",
+     "200,00",
+     "800,00"
+    ]
+   }
+  },
+  "B2": {
+   "status": 200,
+   "tur": "application/pdf",
+   "bayt": 93281,
+   "ad": "attachment; filename=\"TES2026482135497 Resmi Gorunum.pdf\"; filename*=UTF-8''TES2026482135497%20Resmi%20Gorunum.pdf",
+   "dosya": "TES2026482135497-resmi.pdf",
+   "metin": {
+    "numara": true,
+    "ettn": true,
+    "tutarlar": [
+     "100,03",
+     "20,00",
+     "80,02",
+     "80,03",
+     "100,04",
+     "200,06",
+     "40,01",
+     "160,05",
+     "40,02",
+     "200,07"
+    ]
+   }
+  },
+  "G1": {
+   "status": 200,
+   "tur": "application/pdf",
+   "bayt": 93568,
+   "ad": "attachment; filename=\"TES2026482135493 Resmi Gorunum.pdf\"; filename*=UTF-8''TES2026482135493%20Resmi%20Gorunum.pdf",
+   "dosya": "TES2026482135493-resmi.pdf",
+   "metin": {
+    "numara": true,
+    "ettn": true,
+    "tutarlar": [
+     "20,00",
+     "500,00",
+     "100,00",
+     "400,00"
+    ]
+   }
+  },
+  "G3": {
+   "status": 200,
+   "tur": "application/pdf",
+   "bayt": 84141,
+   "ad": "attachment; filename=\"TEA2026721667485 Resmi Gorunum.pdf\"; filename*=UTF-8''TEA2026721667485%20Resmi%20Gorunum.pdf",
+   "dosya": "TEA2026721667485-resmi.pdf",
+   "metin": {
+    "numara": true,
+    "ettn": true,
+    "tutarlar": [
+     "300,00",
+     "60,00",
+     "360,00"
+    ]
+   }
+  }
+ }
+}

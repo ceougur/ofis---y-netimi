@@ -56,50 +56,70 @@ const itemDate = item => {
   return null;
 };
 
-/**
- * Bir oturumun kayıtlarını ortak omurgaya çevirir.
- * @param {{ rows: object[], analyses: object[], session: string, sessionName: string, tabs?: string[] }} input
- */
-export function normalizeRecords({ rows, analyses, session, sessionName = "", tabs = [] }) {
+// Kayıt omurgasının kolonları (kişi, kimlik, tutar, kalan borç, vade, durum, telefon) bir kolon analizinden.
+function recordLayout(analyses) {
   const primary = primaryColumns(analyses);
   const byColumn = new Map(analyses.map(item => [item.column, item]));
   const moneyColumns = analyses.filter(item => item.role === "money").map(item => item.column);
   const debtColumn = moneyColumns.find(column => DEBT_HEADER.test(foldText(column))) || null;
   const amountColumn = primary.money && primary.money !== debtColumn ? primary.money : moneyColumns.find(column => column !== debtColumn) || primary.money || null;
   const backbone = new Set([primary.person, primary.id, amountColumn, debtColumn, primary.deadline, primary.status, primary.phone].filter(Boolean));
-  const out = [];
-  for (const row of rows) {
-    if (!row || !row.__hofKey || isTotalRow(row) || isFlaggedRow(row) || String(row.__hofKey).startsWith("free:")) continue;
-    const cari = String(row[primary.person] ?? "").trim();
-    const phone = primary.phone ? String(row[primary.phone] ?? "").trim() : "";
-    const deadlineDate = primary.deadline ? parseDate(row[primary.deadline]) : null;
-    const fields = {};
-    for (const [column, value] of Object.entries(row)) {
-      if (column.startsWith("__") || backbone.has(column)) continue;
-      const text = String(value ?? "").trim();
-      if (!text) continue;
-      const info = byColumn.get(column);
-      if (info?.ignored) continue;
-      fields[column] = text;
-    }
-    out.push({
-      key: row.__hofKey,
-      session,
-      sessionName,
-      tab: String(row.__sheet || tabs[0] || ""),
-      cari,
-      cariKey: cariKeyOf(cari, phone),
-      id: primary.id ? String(row[primary.id] ?? "").trim() : "",
-      amount: amountColumn ? parseAmount(row[amountColumn]) : null,
-      debt: debtColumn ? parseAmount(row[debtColumn]) : null,
-      deadline: dayOf(deadlineDate),
-      deadlineText: primary.deadline ? String(row[primary.deadline] ?? "").trim() : "",
-      status: primary.status ? String(row[primary.status] ?? "").trim() : "",
-      phone,
-      fields,
-    });
+  const columns = { cari: primary.person, id: primary.id, amount: amountColumn, debt: debtColumn, deadline: primary.deadline, status: primary.status, phone: primary.phone };
+  return { primary, byColumn, debtColumn, amountColumn, backbone, columns };
+}
+
+function recordOf(row, { primary, byColumn, debtColumn, amountColumn, backbone }, { session, sessionName, tabs }) {
+  if (!row || !row.__hofKey || isTotalRow(row) || isFlaggedRow(row) || String(row.__hofKey).startsWith("free:")) return null;
+  const cari = String(row[primary.person] ?? "").trim();
+  const phone = primary.phone ? String(row[primary.phone] ?? "").trim() : "";
+  const deadlineDate = primary.deadline ? parseDate(row[primary.deadline]) : null;
+  const fields = {};
+  for (const [column, value] of Object.entries(row)) {
+    if (column.startsWith("__") || backbone.has(column)) continue;
+    const text = String(value ?? "").trim();
+    if (!text) continue;
+    const info = byColumn.get(column);
+    if (info?.ignored) continue;
+    fields[column] = text;
   }
-  return { records: out, columns: { cari: primary.person, id: primary.id, amount: amountColumn, debt: debtColumn, deadline: primary.deadline, status: primary.status, phone: primary.phone } };
+  return {
+    key: row.__hofKey,
+    session,
+    sessionName,
+    tab: String(row.__sheet || tabs[0] || ""),
+    cari,
+    cariKey: cariKeyOf(cari, phone),
+    id: primary.id ? String(row[primary.id] ?? "").trim() : "",
+    amount: amountColumn ? parseAmount(row[amountColumn]) : null,
+    debt: debtColumn ? parseAmount(row[debtColumn]) : null,
+    deadline: dayOf(deadlineDate),
+    deadlineText: primary.deadline ? String(row[primary.deadline] ?? "").trim() : "",
+    status: primary.status ? String(row[primary.status] ?? "").trim() : "",
+    phone,
+    fields,
+  };
+}
+
+/**
+ * Bir oturumun kayıtlarını ortak omurgaya çevirir.
+ * analyzeTab (verilirse): çok sekmeli oturumda her sekmenin kendi kolon analizi (31a F4). Sekmeler farklı başlık taşır (İcra Takip "Borçlu", Taksitler
+ * "Müşteri", Kiracılar "Kiracı"); oturumun tek analizi tek kişi / tutar kolonu seçtiği için öbür sekmelerin kişileri adsız (Tablodaki Kişiler'de dosya no ya
+ * da iç anahtar "satir:…") ya da tutarsız (borç satırı yok, rapordan düşüyordu) kalıyordu. Kayıt sırası satır sırasıdır; dönen kolonlar oturumun analizinden.
+ * @param {{ rows: object[], analyses: object[], session: string, sessionName: string, tabs?: string[], analyzeTab?: (rows: object[]) => object[] }} input
+ */
+export function normalizeRecords({ rows, analyses, session, sessionName = "", tabs = [], analyzeTab = null }) {
+  const base = recordLayout(analyses);
+  const sheetOf = row => String(row?.__sheet || "");
+  const layouts = new Map();
+  const sheets = analyzeTab ? [...new Set(rows.map(sheetOf))] : [];
+  if (sheets.length > 1) for (const sheet of sheets) layouts.set(sheet, recordLayout(analyzeTab(rows.filter(row => sheetOf(row) === sheet))));
+  const context = { session, sessionName, tabs };
+  const records = [];
+  for (const row of rows) {
+    const record = recordOf(row, layouts.get(sheetOf(row)) || base, context);
+    if (record) records.push(record);
+  }
+  return { records, columns: base.columns };
 }
 
 // ---------- Süzgeçler ----------
@@ -145,11 +165,26 @@ export function cariEkstre({ records, payments = [], filters = normalizeFilters(
     paid.get(payment.caseKey).push(payment);
   }
   const groups = new Map();
+  // 31a N5 (aynı adlı iki kişi): ad aynı, telefonlar FARKLIYSA iki ayrı kişidir (ayrı satır grubu); adın tek telefonu varsa (ya da hiç yoksa) bütün kayıtlar
+  // tek kişidir — telefonsuz kayıt da (iki dosyadaki aynı cari, v2.0.2 cross-match). Birden çok telefonlu adın telefonsuz kaydı tahmin edilmez, ayrı
+  // grupta kalır. Kişinin kimliği süzgeçten bağımsızdır (bütün kayıtlardan).
+  const phonesByName = new Map();
+  for (const record of records) {
+    const phone = phoneKey(record.phone);
+    if (!record.cariKey?.startsWith("n:") || !phone) continue;
+    if (!phonesByName.has(record.cariKey)) phonesByName.set(record.cariKey, new Set());
+    phonesByName.get(record.cariKey).add(phone);
+  }
+  const groupKeyOf = record => {
+    if (!record.cariKey) return `k:${record.key}`;
+    if ((phonesByName.get(record.cariKey)?.size || 0) < 2) return record.cariKey;
+    return `${record.cariKey}|${phoneKey(record.phone)}`;
+  };
   // 2.4.4 (5c): aynı kayıt anahtarı birden çok sekmede olabilir (İcra Takip + Ödeme Sözleri aynı dosya no); tahsilat anahtara bağlıdır ve rapora
   // BİR KEZ, süzgeçte kalan ilk kaydın satırına yazılır. 2.4.3'e kadar anahtarın her sekmedeki satırına ayrı yazılıyor, alacak iki kez sayılıyordu.
   const attached = new Set();
   for (const record of matched) {
-    const key = record.cariKey || `k:${record.key}`;
+    const key = groupKeyOf(record);
     if (!groups.has(key)) groups.set(key, { key, cari: record.cari || record.id || record.key, sessions: new Set(), lines: [] });
     const group = groups.get(key);
     group.sessions.add(record.sessionName || record.session);

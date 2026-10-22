@@ -1,0 +1,43 @@
+{
+  "ad": "mutasyon-N6-bırakma-yolu-eski-sorgu",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/numara-tekil-244.test.mjs test/einvoice-edm.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T11:59:27.874Z",
+  "sure_sn": 7.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 42,
+    "gecen": 40,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Fatura modülü ↔ EDM (program uçları) › Sonra gönderilecek belge serideki son gönderilenden eski tarihliyse gönderilmez (tarih sırası); Müşteri Fişi serisi daha yeni numara vermişse bırakılamaz da",
+      "konum": "test/einvoice-edm.test.mjs:321:3",
+      "hata": "The input was expected to not match the regular expression /Müşteri Fişi Olarak Bırak/. Input: · 'TEF serisinde son gönderilen belge TEF2026000000004 22.10.2026 tarihli; bu belge (21.10.2026) daha eski tarihli olduğu için e-Belge olarak gönderilemez. “Müşteri Fişi Olarak Bırak” ile fiş numarasıyla bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.' (beklenen , gelen TEF serisinde son gönderilen belge TEF2026000000004 22.10.2026 tarihli; bu belge (21.10.2026) daha eski tarihli olduğu için e-Belge olarak gönderilemez. “Müşteri Fişi Olarak Bırak” ile fiş numarasıyla bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.)"
+    },
+    {
+      "ad": "Numara tekil: aynı seriden numara alan öbür yollar ve numara–tarih sırası (T3, T4) › T4 tarih sırası: ayrılan numaradan (bugün) eski tarihli kâğıt fatura kaydedilmez (form ön hesabı da söyler), eski tarihli belge bırakılmaz",
+      "konum": "test/numara-tekil-244.test.mjs:171:3",
+      "hata": "TEA serisinde son gönderilen belge TEA2026000000001 17.06.2026 tarihli; bu belge (16.06.2026) daha eski tarihli olduğu için e-Belge olarak gönderilemez. “Müşteri Fişi Olarak Bırak” ile fiş numarasıyla bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin. (beklenen , gelen TEA serisinde son gönderilen belge TEA2026000000001 17.06.2026 tarihli; bu belge (16.06.2026) daha eski tarihli olduğu için e-Belge olarak gönderilemez. “Müşteri Fişi Olarak Bırak” ile fiş numarasıyla bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.)"
+    }
+  ],
+  "ham_cikti": "../mk/_m/2026-10-22/mutasyon-N6-bırakma-yolu-eski-sorgu.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon",
+  "ham_cikti_sha256": "190048e3b29b1a07c5f7cee48f38043627ffdc653cc0d68ede0028eb7a6615fd",
+  "ham_cikti_bayt": 18550
+}

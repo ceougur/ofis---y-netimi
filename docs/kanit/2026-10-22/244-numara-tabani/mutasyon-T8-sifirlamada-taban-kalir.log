@@ -1,0 +1,106 @@
+TAP version 13
+# Subtest: Numara tabanı göçü (v32): v2.4.3'te ayrılmış fiş numaraları güncellemeden sonra yeniden verilmez
+    # Subtest: S1/S2 001: güncellemeden sonra sıradaki fiş FIS…004 (FIS…003 yeniden verilmez); elle yazılmış biçim dışı / başka seri / seride duran numara tabanı yükseltmez
+    ok 1 - S1/S2 001: güncellemeden sonra sıradaki fiş FIS…004 (FIS…003 yeniden verilmez); elle yazılmış biçim dışı / başka seri / seride duran numara tabanı yükseltmez
+      ---
+      duration_ms: 204.938509
+      type: 'test'
+      ...
+    # Subtest: S3/S4 002 ayrı taranır: fiş numarası yalnız işlem geçmişindeyken de sayılır; 001 ile karışmaz
+    ok 2 - S3/S4 002 ayrı taranır: fiş numarası yalnız işlem geçmişindeyken de sayılır; 001 ile karışmaz
+      ---
+      duration_ms: 184.555249
+      type: 'test'
+      ...
+    # Subtest: S6 iki kez açılış = bir kez tarama: taban aynı kalır; tarama yeniden koşsa da bir şey değiştirmez ve tabanı asla küçültmez
+    ok 3 - S6 iki kez açılış = bir kez tarama: taban aynı kalır; tarama yeniden koşsa da bir şey değiştirmez ve tabanı asla küçültmez
+      ---
+      duration_ms: 55.194705
+      type: 'test'
+      ...
+    # Subtest: S5 güncellemeden sonra 002'ye 2.4.3 yedeği geri yüklenince tarama koşar: FIS…001 yine verilmez
+    ok 4 - S5 güncellemeden sonra 002'ye 2.4.3 yedeği geri yüklenince tarama koşar: FIS…001 yine verilmez
+      ---
+      duration_ms: 255.236126
+      type: 'test'
+      ...
+    # Subtest: S7 Şirket Verisini Sıfırla: faturalarla birlikte taranmış taban da silinir; seri baştan (MAX(seq) gibi)
+    not ok 5 - S7 Şirket Verisini Sıfırla: faturalarla birlikte taranmış taban da silinir; seri baştan (MAX(seq) gibi)
+      ---
+      duration_ms: 179.560859
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-taban-mutasyon-wt/test/goc-244-numara-tabani.test.mjs:151:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + {
+        +   FIS2026: {
+        +     issueDate: '2026-06-17',
+        +     number: 'FIS2026000000003',
+        +     seq: 3
+        +   }
+        + }
+        - {}
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        FIS2026:
+          seq: 3
+          number: 'FIS2026000000003'
+          issueDate: '2026-06-17'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-taban-mutasyon-wt/test/goc-244-numara-tabani.test.mjs:155:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S2 Kâğıt Fatura No kaynağı: taşınmış belgede programın biçiminde ve kâğıt serisinde elle yazılmış numara da kullanılmış sayılır; seride duran belgedeki sayılmaz
+    not ok 6 - S2 Kâğıt Fatura No kaynağı: taşınmış belgede programın biçiminde ve kâğıt serisinde elle yazılmış numara da kullanılmış sayılır; seride duran belgedeki sayılmaz
+      ---
+      duration_ms: 142.454452
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-taban-mutasyon-wt/test/goc-244-numara-tabani.test.mjs:159:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'FIS2026000000004'
+        - 'FIS2026000000001'
+                          ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'FIS2026000000001'
+      actual: 'FIS2026000000004'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-taban-mutasyon-wt/test/goc-244-numara-tabani.test.mjs:166:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 1 - Numara tabanı göçü (v32): v2.4.3'te ayrılmış fiş numaraları güncellemeden sonra yeniden verilmez
+  ---
+  duration_ms: 2856.001083
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-taban-mutasyon-wt/test/goc-244-numara-tabani.test.mjs:32:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 4
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3329.607569

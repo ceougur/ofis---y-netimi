@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-5ad1277-e2e-banka-210-ekran-aciklama",
+  "komut": "npm run test:banka-210-ekran-aciklama",
+  "commit": "5ad12776721aa35768afca5704cace5ff27f0d89",
+  "dal": "aday5",
+  "kirli": 0,
+  "izlenmeyen": 98,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T14:09:20.547Z",
+  "sure_sn": 12,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 11,
+    "gecen": 11,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday-5ad1277-e2e-banka-210-ekran-aciklama.log",
+  "klasor": "/home/user/wt/aday5",
+  "ham_cikti_sha256": "66b3e663ee6fd1a416dc0a2c467a5b35a9cdbd2a72375dd21696dcedd2e1fdb0",
+  "ham_cikti_bayt": 2219
+}

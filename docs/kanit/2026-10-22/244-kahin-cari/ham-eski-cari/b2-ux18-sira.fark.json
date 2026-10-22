@@ -1,0 +1,54 @@
+{
+ "toplam": 76,
+ "farklar": [
+  {
+   "anahtar": "k2:fatura:F1:acik",
+   "beklenen": 100000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:fatura:F2:acik",
+   "beklenen": 100000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k4:fatura:F2:acik",
+   "beklenen": 100000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k5:fatura:F2:acik",
+   "beklenen": 100000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k5:fatura:G1:acik",
+   "beklenen": 100000,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k5:fatura:G2:acik",
+   "beklenen": 100000,
+   "program": 50000,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz)",
+   "sinif": "İNCELE"
+  }
+ ],
+ "hatalar": []
+}

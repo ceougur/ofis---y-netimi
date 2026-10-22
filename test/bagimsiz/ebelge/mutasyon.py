@@ -72,7 +72,64 @@ def _bekleyen_silineni_de(self, b):
     return not b["prog"]
 
 
-ORJ = {"fis_engeli": D.fis_engeli, "gecici_engelli": D.gecici_engelli, "tutan": D.tutan, "engel": D.engel, "sira_listesi": D.sira_listesi, "son": D.son, "tarih_engeli": D.tarih_engeli,
+def _gun_farki_kesimden(self, b, alan):
+    return (M.gun(self.bugun) - M.gun(b["tarih"])).days  # eski hata: süreyi kesim tarihinden sayar
+
+
+def _iptal_sure_dolunca_yerel_serbest(d, b, yerel):
+    if yerel and b["prog"] is True and d.gun_farki(b, "iletim") > M.IPTAL_SURESI:
+        b["iptal"] = True
+        d.yanit = "2xx"
+        return [d]
+    return ORJ["iptal"](d, b, yerel)
+
+
+def _iptal_belirsiz_edmde_var_serbest(d, b, yerel):
+    if yerel and d.belirsiz(b) and b["edm"]:
+        b["iptal"] = True
+        d.yanit = "2xx"
+        return [d]
+    return ORJ["iptal"](d, b, yerel)
+
+
+def _k33_ayni_gun_de(self, secilen):
+    secili = [self.belgeler[a] for a in secilen if self.belgeler.get(a, {}).get("var") is True and self.bekleyen(self.belgeler[a]) is True]
+    xs = [x["ad"] for x in self.belgeler.values() if x["ad"] not in secilen and x.get("var") is True and self.bekleyen(x) is True and not x["numara"]
+          and (self.ozce_gonderilebilir(x) or self.gecici_engelli(x)) and any(self.seri_yil(s) == self.seri_yil(x) and x["tarih"] <= s["tarih"] for s in secili)]
+    return xs, xs
+
+
+def _k33_kalici_engelli_de(self, secilen):
+    secili = [self.belgeler[a] for a in secilen if self.belgeler.get(a, {}).get("var") is True and self.bekleyen(self.belgeler[a]) is True]
+    xs = [x["ad"] for x in self.belgeler.values() if x["ad"] not in secilen and x.get("var") is True and self.bekleyen(x) is True and not x["numara"]
+          and any(self.seri_yil(s) == self.seri_yil(x) and x["tarih"] < s["tarih"] for s in secili)]
+    return xs, xs
+
+
+def _tur_gonder_silinen_tutar(d, adlar=None, sil=None):
+    # A7 öncesi kâhin hatası: silinen belge tur bitene kadar seriyi bekletir.
+    if not sil:
+        return ORJ["tur_gonder"](d, adlar, sil)
+    sira = [b["ad"] for b in d.sira_listesi(adlar)]
+    dunyalar = [(d, False, False)]
+    for ad in sira:
+        yeni = []
+        for w, durdu, basladi in dunyalar:
+            if durdu or (basladi and ad == sil[0] and sil[1]):
+                yeni.append((w, durdu, basladi))
+                continue
+            for x, sonuc in M.gonder(w, ad):
+                yeni.append((x, sonuc == "durdu", basladi or sonuc in ("gitti", "hata")))
+        dunyalar = yeni
+    return [w for w, _, _ in dunyalar]
+
+
+def _model_ux15_kapali(self, senaryo, ux15=True):
+    ORJ["Model.__init__"](self, senaryo, ux15=False)
+
+
+ORJ = {"fis_engeli": D.fis_engeli, "gun_farki": D.gun_farki, "k33_eskiler": D.k33_eskiler, "alici_eksik": D.alici_eksik, "komsular": D.komsular,
+       "iptal": M.iptal, "Model.__init__": M.Model.__init__, "tur_gonder": M.tur_gonder, "IPTAL_SURESI": M.IPTAL_SURESI, "SERI": dict(M.SERI), "gecici_engelli": D.gecici_engelli, "tutan": D.tutan, "engel": D.engel, "sira_listesi": D.sira_listesi, "son": D.son, "tarih_engeli": D.tarih_engeli,
        "seri_yil": D.seri_yil, "bekleyen": D.bekleyen, "uygula": M.uygula, "gonder": M.gonder, "numara": M.numara}
 
 
@@ -203,6 +260,19 @@ MUTANTLAR = [
     ("M18 engelli belge de gönderilir (K2/K3)", lambda: setattr(M, "gonder", _gonder_engelliyi_de_yollar)),
     ("M19 'zaten gönderildi' yeni numarayla yeniden gönderilir (K11)", lambda: setattr(M, "gonder", _gonder_zaten_gonderilmisi_yeniden)),
     ("M20 numara biçimi 8 hane sıra (K5)", lambda: setattr(M, "numara", lambda s, y, n: f"{s}{y:04d}{n:08d}")),
+    # /2 (2.4.4)
+    ("M24 iptal süresi kesimden sayılır (K22 eski hata)", lambda: setattr(D, "gun_farki", _gun_farki_kesimden)),
+    ("M25 iptal süresi 7 gün (K22: 8. gün dahil)", lambda: setattr(M, "IPTAL_SURESI", 7)),
+    ("M26 süre dolunca Yalnız Programda İptal serbest (K22)", lambda: setattr(M, "iptal", _iptal_sure_dolunca_yerel_serbest)),
+    ("M27 belirsiz + EDM'de var → yerel iptal serbest (K35)", lambda: setattr(M, "iptal", _iptal_belirsiz_edmde_var_serbest)),
+    ("M28 Seçilenleri Gönder sorusu yok (K33)", lambda: setattr(D, "k33_eskiler", lambda self, secilen: ([], []))),
+    ("M29 aynı gün de sorar (K33)", lambda: setattr(D, "k33_eskiler", _k33_ayni_gun_de)),
+    ("M30 kalıcı engelli eski de sorar (K33/K9)", lambda: setattr(D, "k33_eskiler", _k33_kalici_engelli_de)),
+    ("M31 e-SMM TEA serisinden (K34)", lambda: M.SERI.__setitem__("esmm", "TEA")),
+    ("M32 eksik alıcı engel değil (K36)", lambda: setattr(D, "alici_eksik", lambda self, b: False)),
+    ("M33 UX15 kuralları yok (K37 R1/R2)", lambda: setattr(M.Model, "__init__", _model_ux15_kapali)),
+    ("M34 R2 komşu denetimi yok (K37)", lambda: setattr(D, "komsular", lambda self, b: (None, None))),
+    ("M35 tur sürerken silinen belge tur bitene dek seriyi bekletir (A7, K15/K9)", lambda: setattr(M, "tur_gonder", _tur_gonder_silinen_tutar)),
 ]
 
 
@@ -211,6 +281,10 @@ def geri_al():
     D.tutan, D.engel, D.sira_listesi, D.son = ORJ["tutan"], ORJ["engel"], ORJ["sira_listesi"], ORJ["son"]
     D.tarih_engeli, D.seri_yil, D.bekleyen = ORJ["tarih_engeli"], ORJ["seri_yil"], ORJ["bekleyen"]
     M.uygula, M.gonder, M.numara = ORJ["uygula"], ORJ["gonder"], ORJ["numara"]
+    D.gun_farki, D.k33_eskiler, D.alici_eksik, D.komsular = ORJ["gun_farki"], ORJ["k33_eskiler"], ORJ["alici_eksik"], ORJ["komsular"]
+    M.iptal, M.Model.__init__, M.IPTAL_SURESI, M.tur_gonder = ORJ["iptal"], ORJ["Model.__init__"], ORJ["IPTAL_SURESI"], ORJ["tur_gonder"]
+    M.SERI.clear()
+    M.SERI.update(ORJ["SERI"])
 
 
 def kos():

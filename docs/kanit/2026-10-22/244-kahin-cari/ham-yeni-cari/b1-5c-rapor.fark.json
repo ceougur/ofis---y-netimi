@@ -1,0 +1,126 @@
+{
+ "toplam": 113,
+ "farklar": [
+  {
+   "anahtar": "k1:rapor:K-1:ad",
+   "beklenen": "Elif Kaya",
+   "program": "satir:18f6814be644c238",
+   "etiket": "YAYGIN",
+   "kural": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k1:rapor:K-2:ad",
+   "beklenen": "Elif Kaya",
+   "program": "satir:63549357cf76c513",
+   "etiket": "YAYGIN",
+   "kural": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k1:rapor:K-3:ad",
+   "beklenen": "Tuna Sarı",
+   "program": "satir:4ef4ee65a7cc6498",
+   "etiket": "YAYGIN",
+   "kural": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k2:rapor:K-1:ad",
+   "beklenen": "Elif Kaya",
+   "program": "satir:18f6814be644c238",
+   "etiket": "YAYGIN",
+   "kural": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k2:rapor:K-1:alacak",
+   "beklenen": 50000,
+   "program": 0,
+   "etiket": "YAYGIN",
+   "kural": "B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k2:rapor:K-2:ad",
+   "beklenen": "Elif Kaya",
+   "program": "satir:63549357cf76c513",
+   "etiket": "YAYGIN",
+   "kural": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k2:rapor:K-2:alacak",
+   "beklenen": 70000,
+   "program": 0,
+   "etiket": "YAYGIN",
+   "kural": "B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k2:rapor:K-3:ad",
+   "beklenen": "Tuna Sarı",
+   "program": "satir:4ef4ee65a7cc6498",
+   "etiket": "YAYGIN",
+   "kural": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k2:rapor:K-3:alacak",
+   "beklenen": 120000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B1.8 5c tahsilat bir kez",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:rapor:K-1:ad",
+   "beklenen": "Elif Kaya",
+   "program": "satir:18f6814be644c238",
+   "etiket": "YAYGIN",
+   "kural": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k3:rapor:K-1:alacak",
+   "beklenen": 50000,
+   "program": 0,
+   "etiket": "YAYGIN",
+   "kural": "B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k3:rapor:K-2:ad",
+   "beklenen": "Elif Kaya",
+   "program": "satir:63549357cf76c513",
+   "etiket": "YAYGIN",
+   "kural": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k3:rapor:K-2:alacak",
+   "beklenen": 70000,
+   "program": 0,
+   "etiket": "YAYGIN",
+   "kural": "B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k3:rapor:K-3:ad",
+   "beklenen": "Tuna Sarı",
+   "program": "satir:4ef4ee65a7cc6498",
+   "etiket": "YAYGIN",
+   "kural": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k3:rapor:K-3:alacak",
+   "beklenen": 150000,
+   "program": 0,
+   "etiket": "YAYGIN",
+   "kural": "B1.8 5c tahsilat bir kez",
+   "sinif": "İNCELE"
+  }
+ ],
+ "hatalar": []
+}

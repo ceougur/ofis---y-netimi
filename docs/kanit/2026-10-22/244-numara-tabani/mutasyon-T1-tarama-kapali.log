@@ -1,0 +1,141 @@
+TAP version 13
+# Subtest: Numara tabanı göçü (v32): v2.4.3'te ayrılmış fiş numaraları güncellemeden sonra yeniden verilmez
+    # Subtest: S1/S2 001: güncellemeden sonra sıradaki fiş FIS…004 (FIS…003 yeniden verilmez); elle yazılmış biçim dışı / başka seri / seride duran numara tabanı yükseltmez
+    not ok 1 - S1/S2 001: güncellemeden sonra sıradaki fiş FIS…004 (FIS…003 yeniden verilmez); elle yazılmış biçim dışı / başka seri / seride duran numara tabanı yükseltmez
+      ---
+      duration_ms: 79.607651
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-taban-mutasyon-wt/test/goc-244-numara-tabani.test.mjs:101:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Fatura Ayarları sıradaki fiş
+        + actual - expected
+        
+        + 'FIS2026000000003'
+        - 'FIS2026000000004'
+                          ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'FIS2026000000004'
+      actual: 'FIS2026000000003'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-taban-mutasyon-wt/test/goc-244-numara-tabani.test.mjs:103:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: S3/S4 002 ayrı taranır: fiş numarası yalnız işlem geçmişindeyken de sayılır; 001 ile karışmaz
+    not ok 2 - S3/S4 002 ayrı taranır: fiş numarası yalnız işlem geçmişindeyken de sayılır; 001 ile karışmaz
+      ---
+      duration_ms: 132.150564
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-taban-mutasyon-wt/test/goc-244-numara-tabani.test.mjs:118:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        002: FIS…001 (işlem geçmişinde) yeniden verilmez
+        + actual - expected
+        
+        + 'FIS2026000000001'
+        - 'FIS2026000000002'
+                          ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'FIS2026000000002'
+      actual: 'FIS2026000000001'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-taban-mutasyon-wt/test/goc-244-numara-tabani.test.mjs:120:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S6 iki kez açılış = bir kez tarama: taban aynı kalır; tarama yeniden koşsa da bir şey değiştirmez ve tabanı asla küçültmez
+    not ok 3 - S6 iki kez açılış = bir kez tarama: taban aynı kalır; tarama yeniden koşsa da bir şey değiştirmez ve tabanı asla küçültmez
+      ---
+      duration_ms: 50.202882
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-taban-mutasyon-wt/test/goc-244-numara-tabani.test.mjs:126:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        idempotent
+        + actual - expected
+        
+        + [
+        +   'FIS2026'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'FIS2026'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-taban-mutasyon-wt/test/goc-244-numara-tabani.test.mjs:133:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S5 güncellemeden sonra 002'ye 2.4.3 yedeği geri yüklenince tarama koşar: FIS…001 yine verilmez
+    not ok 4 - S5 güncellemeden sonra 002'ye 2.4.3 yedeği geri yüklenince tarama koşar: FIS…001 yine verilmez
+      ---
+      duration_ms: 216.701979
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-taban-mutasyon-wt/test/goc-244-numara-tabani.test.mjs:142:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'FIS2026000000001'
+        - 'FIS2026000000002'
+                          ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'FIS2026000000002'
+      actual: 'FIS2026000000001'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-taban-mutasyon-wt/test/goc-244-numara-tabani.test.mjs:146:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S7 Şirket Verisini Sıfırla: faturalarla birlikte taranmış taban da silinir; seri baştan (MAX(seq) gibi)
+    ok 5 - S7 Şirket Verisini Sıfırla: faturalarla birlikte taranmış taban da silinir; seri baştan (MAX(seq) gibi)
+      ---
+      duration_ms: 207.855158
+      type: 'test'
+      ...
+    # Subtest: S2 Kâğıt Fatura No kaynağı: taşınmış belgede programın biçiminde ve kâğıt serisinde elle yazılmış numara da kullanılmış sayılır; seride duran belgedeki sayılmaz
+    ok 6 - S2 Kâğıt Fatura No kaynağı: taşınmış belgede programın biçiminde ve kâğıt serisinde elle yazılmış numara da kullanılmış sayılır; seride duran belgedeki sayılmaz
+      ---
+      duration_ms: 208.354388
+      type: 'test'
+      ...
+    1..6
+not ok 1 - Numara tabanı göçü (v32): v2.4.3'te ayrılmış fiş numaraları güncellemeden sonra yeniden verilmez
+  ---
+  duration_ms: 2795.460562
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-taban-mutasyon-wt/test/goc-244-numara-tabani.test.mjs:32:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 2
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3267.816894

@@ -146,11 +146,56 @@ jobs:
           path: kanit-cikti/
           if-no-files-found: warn
 
+  kahin_cari:
+    # 2.4.4 bağımsız kâhin (madde 31a; KANIT KURALI 2, ders 5): cari/evrak — Tablodan Aktar 5a–5c, UX18 çek/fatura kapama; kodu görmeden yazılmış Python modeli ↔
+    # programın HTTP API'si (ağa çıkmaz). Ayrı iş: e-Belge kâhini 330 dk'ya kadar sürer.
+    if: (!github.event.repository.private) && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[uzun-dogrulama]'))
+    name: Kâhin cari/evrak (tohum 1–30 × 120 işlem)
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Kâhin cari/evrak (kanıt kaydıyla)
+        run: node tools/kanit.mjs kos kahin-cari-tohum1-30-islem120 --sure 120 -- npm run test:kahin-cari -- --tohum 1-30 --islem 120
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kanit-kahin-cari
+          path: kanit-cikti/
+          if-no-files-found: warn
+
+  kahin_tutar:
+    # 2.4.4 bağımsız kâhin (madde 31a): tutar — Netten Brüte (GVK 94), e-SMM UBL tutarları; rastgele girdi tablosu ↔ programın hesap ucu ve XML'i.
+    if: (!github.event.repository.private) && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[uzun-dogrulama]'))
+    name: Kâhin tutar (tohum 1–20 × 200 girdi)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Kâhin tutar (kanıt kaydıyla)
+        run: node tools/kanit.mjs kos kahin-tutar-tohum1-20-adet200 -- node --disable-warning=ExperimentalWarning test/bagimsiz/tutar/kos.mjs --tohum 1-20 --adet 200
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kanit-kahin-tutar
+          path: kanit-cikti/
+          if-no-files-found: warn
+
   kapi:
     if: always() && (!github.event.repository.private) && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[uzun-dogrulama]'))
     name: Uzun Doğrulama Kapısı
     runs-on: ubuntu-latest
-    needs: [mutabakat, mutabakat_uzun, guvenilirlik, kahin_ebelge]
+    needs: [mutabakat, mutabakat_uzun, guvenilirlik, kahin_ebelge, kahin_cari, kahin_tutar]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -166,4 +211,4 @@ jobs:
           NEEDS_JSON: ${{ toJSON(needs) }}
         run: >-
           node tools/kanit.mjs kapi kanit --commit "$GITHUB_SHA"
-          --beklenen kahin-ebelge-tohum1-5-islem300,mutabakat-uzun-10000,mutabakat-ubuntu-latest-tohum1,mutabakat-ubuntu-latest-tohum2,mutabakat-ubuntu-latest-tohum3,mutabakat-ubuntu-latest-tohum4,mutabakat-ubuntu-latest-tohum5,mutabakat-ubuntu-latest-tohum6,mutabakat-ubuntu-latest-tohum7,mutabakat-ubuntu-latest-tohum8,mutabakat-ubuntu-latest-tohum9,mutabakat-ubuntu-latest-tohum10,mutabakat-windows-latest-tohum1,guvenilirlik-ubuntu-latest-bos-tohum1,guvenilirlik-ubuntu-latest-bos-tohum2,guvenilirlik-ubuntu-latest-bos-tohum3,guvenilirlik-ubuntu-latest-bos-tohum4,guvenilirlik-ubuntu-latest-bos-tohum5,guvenilirlik-ubuntu-latest-surum-2.0.19-zincir-tohum1,guvenilirlik-ubuntu-latest-surum-2.0.19-zincir-tohum2,guvenilirlik-ubuntu-latest-surum-2.0.19-zincir-tohum3,guvenilirlik-ubuntu-latest-surum-2.0.19-zincir-tohum4,guvenilirlik-ubuntu-latest-surum-2.0.19-zincir-tohum5,guvenilirlik-windows-latest-bos-tohum1
+          --beklenen kahin-ebelge-tohum1-5-islem300,kahin-cari-tohum1-30-islem120,kahin-tutar-tohum1-20-adet200,mutabakat-uzun-10000,mutabakat-ubuntu-latest-tohum1,mutabakat-ubuntu-latest-tohum2,mutabakat-ubuntu-latest-tohum3,mutabakat-ubuntu-latest-tohum4,mutabakat-ubuntu-latest-tohum5,mutabakat-ubuntu-latest-tohum6,mutabakat-ubuntu-latest-tohum7,mutabakat-ubuntu-latest-tohum8,mutabakat-ubuntu-latest-tohum9,mutabakat-ubuntu-latest-tohum10,mutabakat-windows-latest-tohum1,guvenilirlik-ubuntu-latest-bos-tohum1,guvenilirlik-ubuntu-latest-bos-tohum2,guvenilirlik-ubuntu-latest-bos-tohum3,guvenilirlik-ubuntu-latest-bos-tohum4,guvenilirlik-ubuntu-latest-bos-tohum5,guvenilirlik-ubuntu-latest-surum-2.0.19-zincir-tohum1,guvenilirlik-ubuntu-latest-surum-2.0.19-zincir-tohum2,guvenilirlik-ubuntu-latest-surum-2.0.19-zincir-tohum3,guvenilirlik-ubuntu-latest-surum-2.0.19-zincir-tohum4,guvenilirlik-ubuntu-latest-surum-2.0.19-zincir-tohum5,guvenilirlik-windows-latest-bos-tohum1

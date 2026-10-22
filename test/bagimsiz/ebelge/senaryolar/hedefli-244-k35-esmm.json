@@ -1,0 +1,68 @@
+{
+ "dil": "destekofis-ebelge/2",
+ "ad": "hedefli-244-k35-esmm",
+ "aciklama": "K35 e-SMM: belirsiz makbuz 8 gün sonra Yalnız Programda İptal — EDM'de var → red; EDM'de yok → kullanıcı kuralı serbest ([AJAN]: 'bulunamadı' doğrulanmadı → 409, İNCELE)",
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi",
+  "K6": "ilsiz_kisi",
+  "K7": "vdsiz_mukellef",
+  "K8": "nihai"
+ },
+ "adimlar": [
+  {
+   "islem": "ariza",
+   "tur": "kopma_sonra",
+   "no": 1
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B1",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "belge_turu": "esmm",
+   "no": 2
+  },
+  {
+   "islem": "ariza",
+   "tur": "kopma_once",
+   "no": 3
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B2",
+   "cari": "K5",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "belge_turu": "esmm",
+   "no": 4
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 9,
+   "no": 5
+  },
+  {
+   "islem": "iptal",
+   "belge": "B1",
+   "yerel": true,
+   "no": 6
+  },
+  {
+   "islem": "iptal",
+   "belge": "B2",
+   "yerel": true,
+   "no": 7
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 8
+  }
+ ]
+}

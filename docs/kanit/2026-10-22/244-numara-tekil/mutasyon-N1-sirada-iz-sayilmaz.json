@@ -1,0 +1,83 @@
+{
+  "ad": "mutasyon-N1-sirada-iz-sayilmaz",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/numara-tekil-244.test.mjs test/einvoice-edm.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T11:58:47.548Z",
+  "sure_sn": 7.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 42,
+    "gecen": 32,
+    "basarisiz": 10,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 10 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Numara tekil: bırakılıp e-Belge olarak gönderilen belgenin kâğıt numarası bir daha verilmez (T1, T2, T5) › T1 Müşteri Fişi (FIS): A bırakıldı FIS…001 → gönderildi; B bırakılınca FIS…002 alır (FIS…001 iki belgede değil)",
+      "konum": "test/numara-tekil-244.test.mjs:109:3",
+      "hata": "B'nin fiş numarası: FIS2026000000001 · + actual - expected · + 'FIS2026000000001' (beklenen FIS2026000000002, gelen FIS2026000000001)"
+    },
+    {
+      "ad": "Numara tekil: bırakılıp e-Belge olarak gönderilen belgenin kâğıt numarası bir daha verilmez (T1, T2, T5) › T1 kâğıt makbuz (SMM): e-SMM makbuzu A bırakıldı SMM…001 → gönderildi (TES); B bırakılınca SMM…002 alır",
+      "konum": "test/numara-tekil-244.test.mjs:119:3",
+      "hata": "B'nin kâğıt makbuz numarası: SMM2026000000001 · + actual - expected · + 'SMM2026000000001' (beklenen SMM2026000000002, gelen SMM2026000000001)"
+    },
+    {
+      "ad": "Numara tekil: bırakılıp e-Belge olarak gönderilen belgenin kâğıt numarası bir daha verilmez (T1, T2, T5) › T2 Kâğıt Fatura No önceden doluysa fiş numarası o alana taşınmaz; iz işlem geçmişinde (paperNumber) ve numara yine tekrar verilmez",
+      "konum": "test/numara-tekil-244.test.mjs:129:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'FIS2026000000002' (beklenen FIS2026000000003, gelen FIS2026000000002)"
+    },
+    {
+      "ad": "Numara tekil: bırakılıp e-Belge olarak gönderilen belgenin kâğıt numarası bir daha verilmez (T1, T2, T5) › T5 Fatura Ayarları: \"Sıradaki No\" geri alınsa da ayrılan numara verilmez; ekran sıradaki numarayı doğru gösterir",
+      "konum": "test/numara-tekil-244.test.mjs:141:3",
+      "hata": "Cannot read properties of undefined (reading 'id')"
+    },
+    {
+      "ad": "Numara tekil: aynı seriden numara alan öbür yollar ve numara–tarih sırası (T3, T4) › T3 kâğıt fatura kaydı ve toplu kayıt (Seçilenleri Kaydet) ayrılan numaradan sonra numara alır",
+      "konum": "test/numara-tekil-244.test.mjs:195:3",
+      "hata": "kâğıt fatura: FIS2026000000001 · + actual - expected · + 'FIS2026000000001' (beklenen FIS2026000000002, gelen FIS2026000000001)"
+    },
+    {
+      "ad": "Numara tekil: aynı seriden numara alan öbür yollar ve numara–tarih sırası (T3, T4) › T4 Düzenle: serinin son numarası ayrılmışsa önceki belge onun tarihini aşamaz (numara ve tarih sırası)",
+      "konum": "test/numara-tekil-244.test.mjs:210:3",
+      "hata": "F bırak: 409 {\"ok\":false,\"error\":\"Yalnız Gönderilecekler'deki belge Müşteri Fişi olarak bırakılır.\",\"code\":\"invoice-not-waiting\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "Numara tekil: kopma, iki oturum, 002 şirketi, Şirket Verisini Sıfırla (T6, T7, T8, T9) › T6 bırakılmış belgenin gönderimi EDM'ye ulaşmadı: e-Belge numarası belgede kalır (Gönderilmedi), fiş numarası yine de ayrılmıştır — başka belgeye verilmez",
+      "konum": "test/numara-tekil-244.test.mjs:237:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'FIS2026000000001' (beklenen FIS2026000000002, gelen FIS2026000000001)"
+    },
+    {
+      "ad": "Numara tekil: kopma, iki oturum, 002 şirketi, Şirket Verisini Sıfırla (T6, T7, T8, T9) › T1 sıra: büyük numara önce, küçüğü sonra ayrılırsa sıradaki numara yine en büyükten sonra gelir",
+      "konum": "test/numara-tekil-244.test.mjs:253:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'FIS2026000000002' (beklenen FIS2026000000003, gelen FIS2026000000002)"
+    },
+    {
+      "ad": "Numara tekil: kopma, iki oturum, 002 şirketi, Şirket Verisini Sıfırla (T6, T7, T8, T9) › T7 iki oturum aynı anda: bırakılmış belgeler gönderilirken başka belgeler bırakılır → her fiş numarası tek belgede",
+      "konum": "test/numara-tekil-244.test.mjs:266:3",
+      "hata": "tekrar eden fiş numarası: FIS2026000000001 · 14 !== 15 (beklenen 15, gelen 14)"
+    },
+    {
+      "ad": "Numara tekil: kopma, iki oturum, 002 şirketi, Şirket Verisini Sıfırla (T6, T7, T8, T9) › T8 002 şirketi kendi sayacını tutar: 001'deki ayrılış 002'yi, 002'deki 001'i etkilemez",
+      "konum": "test/numara-tekil-244.test.mjs:283:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'FIS2026000000001' (beklenen FIS2026000000002, gelen FIS2026000000001)"
+    }
+  ],
+  "ham_cikti": "../mk/_m/2026-10-22/mutasyon-N1-sirada-iz-sayilmaz.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon",
+  "ham_cikti_sha256": "bd639e6298e7d99ef9a167a04614d41f92857e9704078d1f14a93422cfc24f18",
+  "ham_cikti_bayt": 25729
+}

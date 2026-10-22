@@ -1,0 +1,43 @@
+{
+  "ad": "244-esmm-fis/mutasyon-F3-engel-iletisi-musteri-fisi-adi",
+  "komut": "node --test test/esmm-gonderim-244.test.mjs",
+  "commit": "60a411ff74689ddcabee53d2d7ddde170ab9e4c2",
+  "dal": "HEAD",
+  "kirli": 8,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T11:10:02.169Z",
+  "sure_sn": 5.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 23,
+    "gecen": 21,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "e-SMM: Kâğıt Makbuz Olarak Bırak — kâğıt makbuz serisi (SMM), fatura Müşteri Fişi (FIS) kalır › gönderilemeyen makbuzun iletisi kâğıt makbuz yolunu söyler (Müşteri Fişi değil) ve kâğıt makbuz serisinin sırasına bakar",
+      "konum": "test/esmm-gonderim-244.test.mjs:373:3",
+      "hata": "The input did not match the regular expression /“Kâğıt Makbuz Olarak Bırak” ile kâğıt makbuz numarasıyla bırakın/. Input: · 'TES serisinde son gönderilen belge TES2026000000001 18.06.2026 tarihli; bu belge (17.06.2026) daha eski tarihli olduğu için e-Belge olarak gönderilemez. “Müşteri Fişi Olarak Bırak” ile fiş numarasıyla bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.' (beklenen , gelen TES serisinde son gönderilen belge TES2026000000001 18.06.2026 tarihli; bu belge (17.06.2026) daha eski tarihli olduğu için e-Belge olarak gönderilemez. “Müşteri Fişi Olarak Bırak” ile fiş numarasıyla bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.)"
+    },
+    {
+      "ad": "e-SMM: Kâğıt Makbuz Olarak Bırak — kâğıt makbuz serisi (SMM), fatura Müşteri Fişi (FIS) kalır › kâğıt makbuz olarak bırakılan makbuz yeniden gönderilince ESMM profiliyle e-SMM servisinden, TES serisinden gider; kâğıt makbuz numarası iz olarak kalır",
+      "konum": "test/esmm-gonderim-244.test.mjs:393:3",
+      "hata": "{\"ok\":false,\"error\":\"TES serisinde son gönderilen belge TES2026000000001 18.06.2026 tarihli; bu belge (17.06.2026) daha eski tarihli olduğu için e-Belge olarak gönderilemez. İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.\",\"code\":\"chronology\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/esmm-fis/docs/kanit/2026-10-22/244-esmm-fis/mutasyon-F3-engel-iletisi-musteri-fisi-adi.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/esmm-fis-mut",
+  "ham_cikti_sha256": "f0f5ef350635494a1e0a3b53e37cbd9ebb7d020c25e9886a84869f2ed726b416",
+  "ham_cikti_bayt": 14073
+}

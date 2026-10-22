@@ -1,0 +1,54 @@
+{
+ "adim": "b-makbuz",
+ "baslik": "e-SMM Kaydet ve Gönder: tek kalem (1 × 1.000 TL) ve çok kalem (2 × 100,03 TL), KDV %20, stopaj (alıcı şirket)",
+ "durum": "kaldı",
+ "denetimler": [
+  {
+   "gecti": false,
+   "denetim": "B1 (tek kalem): TES2026589829654 EDM'ye iletildi (error)"
+  },
+  {
+   "gecti": false,
+   "denetim": "B2 (çok kalem 2 × 100,03): TES2026589829655 EDM'ye iletildi (error)"
+  }
+ ],
+ "kayit": {
+  "B1": {
+   "number": "TES2026589829654",
+   "ettn": "0368bc43-6bed-4935-b200-3ff5d2b5b0ca",
+   "profile": "ESMM",
+   "eStatus": "error",
+   "eMessage": "EDM isteği reddetti: UUID=0368bc43-6bed-4935-b200-3ff5d2b5b0ca ID=TES2026589829654 SMMsı gönderilemedi (Object reference not set to an instance of an object.) Session ID : dc5255e8-9519-4e84-8639-52644f5dd135 (EDM hata kodu 11032)",
+   "autoSend": {
+    "ok": false,
+    "pending": true,
+    "number": "TES2026589829654",
+    "code": "integrator-rejected",
+    "message": "EDM isteği reddetti: UUID=0368bc43-6bed-4935-b200-3ff5d2b5b0ca ID=TES2026589829654 SMMsı gönderilemedi (Object reference not set to an instance of an object.) Session ID : dc5255e8-9519-4e84-8639-52644f5dd135 (EDM hata kodu 11032) Belge TES2026589829654 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   "brut": 1000,
+   "stopaj": 200,
+   "kdv": 200,
+   "odenecek": 1000
+  },
+  "B2": {
+   "number": "TES2026589829655",
+   "ettn": "06d4126c-631e-4be2-a9ca-7114c26b4256",
+   "profile": "ESMM",
+   "eStatus": "error",
+   "eMessage": "EDM isteği reddetti: UUID=06d4126c-631e-4be2-a9ca-7114c26b4256 ID=TES2026589829655 SMMsı gönderilemedi (Object reference not set to an instance of an object.) Session ID : dc5255e8-9519-4e84-8639-52644f5dd135 (EDM hata kodu 11032)",
+   "autoSend": {
+    "ok": false,
+    "pending": true,
+    "number": "TES2026589829655",
+    "code": "integrator-rejected",
+    "message": "EDM isteği reddetti: UUID=06d4126c-631e-4be2-a9ca-7114c26b4256 ID=TES2026589829655 SMMsı gönderilemedi (Object reference not set to an instance of an object.) Session ID : dc5255e8-9519-4e84-8639-52644f5dd135 (EDM hata kodu 11032) Belge TES2026589829655 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   "brut": 200.06,
+   "stopaj": 40.01,
+   "kdv": 40.02,
+   "odenecek": 200.07
+  },
+  "kahin": "kâhin verilmedi: tutarlar yalnız kaydedildi (beklenen sayılar kodu görmeyen elden gelir, ders 5)"
+ }
+}

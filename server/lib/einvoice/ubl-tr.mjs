@@ -52,14 +52,18 @@ export function tradeNameOf(p) {
   return folded(name) === folded(`${p.firstName || ""} ${p.familyName || ""}`) ? "" : name;
 }
 
+// Taraf adı (EDM Teknik Operasyon yanıtı, 22.10.2026): tüzel kişide (VKN'li) unvan YALNIZ cac:PartyName'den alınır; şahısta (TCKN'li) ad ve soyad
+// cac:Person FirstName + FamilyName'den. e-SMM düzenleyeni de bu kurala uyar (f57245a / 32e59c0'daki "VKN'li e-SMM düzenleyeninde unvan Person'da" GERİ
+// ALINDI: EDM'nin test ortamı e-SMM şablonu VKN'li düzenleyende unvanı basmaz, canlıda karekod ve görüntü GİB standardında — EDM yanıtı).
 function party(p, { variant, esmm = false }) {
   const id = String(p.taxNo || "").replace(/\s+/g, "");
   const scheme = id.length === 11 ? "TCKN" : "VKN";
   const person = p.partyKind === "person" || id.length === 11;
   const address = [
     "<cac:PostalAddress>",
-    tag("cbc:StreetName", p.address || "-"),
-    esmm ? tag("cbc:BuildingName", p.address || "-") : "",
+    // e-SMM: adres EDM'nin e-SMM örneğindeki gibi YALNIZ BuildingName'de (EDM GİB biçiminde caddeSokak'ı ondan doldurur; StreetName de verilirse
+    // resmî PDF'te adres iki kez yazılır — 22.10.2026 gerçek EDM: "Test Cd. 1 Test Cd. 1"). e-Fatura / e-Arşiv StreetName ile (EDM kabul ediyor).
+    esmm ? tag("cbc:BuildingName", p.address || "-") : tag("cbc:StreetName", p.address || "-"),
     tag("cbc:CitySubdivisionName", p.district || p.city || "-"),
     tag("cbc:CityName", p.city || "-"),
     tag("cbc:PostalZone", p.postalCode),

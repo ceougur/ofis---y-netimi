@@ -315,7 +315,7 @@ describe("2.4.4 UX15: e-Belge (sahte EDM; ağa çıkmaz)", () => {
   const person = (name, taxNo) => ({ name, type: "customer", partyKind: "person", firstName: name.split(" ")[0], familyName: name.split(" ").slice(1).join(" ") || "Kişi", taxNo, taxOffice: "Konak", address: "Kordon 1", district: "Konak", city: "İzmir" });
   const FIRM = { name: "Alıcı Ticaret A.Ş.", type: "customer", taxNo: BUYER_VKN, taxOffice: "Kavaklıdere", address: "Cinnah Cd. 10", district: "Çankaya", city: "Ankara", eInvoice: true, eAlias: "urn:mail:defaultpk@alici.com.tr" };
 
-  test("5 Kes, Sonra Gönder ve Kaydet ve Gönder aynı koşulla reddedilir; ön hesap ikisinden önce söyler (e-Arşiv TEA)", async () => {
+  test("5 Kes, Sonra Gönder ve Kaydet ve Gönder aynı koşul ve aynı iletiyle reddedilir; ön hesap ikisinden önce söyler (e-Arşiv TEA)", async () => {
     const ctx = await setup({ edoc: true });
     const ayse = await ctx.account(person("Ayşe Kaya", "10000000146"));
     const sent = await ctx.must("gönder", ctx.api.post(INV, saleBody(ayse, ctx.day(0), { eSend: "now" })));
@@ -332,7 +332,8 @@ describe("2.4.4 UX15: e-Belge (sahte EDM; ağa çıkmaz)", () => {
     const later = await ctx.api.post(INV, saleBody(ayse, ctx.day(-1), { eSend: "later" }));
     assert.equal(later.status, 400);
     assert.equal(later.data.code, "chronology");
-    assert.equal(later.data.error, `TEA serisinde son gönderilen belge TEA2026000000001 ${dayText(ctx.day(0))} tarihli; numarası gönderimde verilecek bu belge ondan eski tarihli olamaz (numara ve tarih sırası). Belge tarihini ${dayText(ctx.day(0))} ya da sonrası yapın.`);
+    // Kâhin I23 (22.10.2026): ön hesap hangi düğmeye basılacağını bilmez — Kes, Sonra Gönder de ön hesabın iletisiyle reddedilir.
+    assert.equal(later.data.error, calc.numbering[0]);
     assert.equal(ctx.count(), before, "hiçbir yol belge yazmadı");
     assert.equal(ctx.edm.state.sent.length, 1, "EDM'ye yeni istek yok");
   });

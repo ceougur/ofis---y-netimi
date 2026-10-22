@@ -1,0 +1,612 @@
+{
+ "dil": "destekofis-tutar/1",
+ "ad": "tutar-1-50",
+ "aciklama": "model.py --uret --tohum 1 --adet 50",
+ "satirlar": [
+  {
+   "id": "c01",
+   "alici": "kisi",
+   "kdv": 20,
+   "dahil": false,
+   "net": "1000"
+  },
+  {
+   "id": "c02",
+   "alici": "firma",
+   "kdv": 20,
+   "dahil": false,
+   "net": "1000"
+  },
+  {
+   "id": "c03",
+   "alici": "firma",
+   "kdv": 20,
+   "dahil": true,
+   "net": "1000"
+  },
+  {
+   "id": "c04",
+   "alici": "kisi",
+   "kdv": 20,
+   "dahil": true,
+   "net": "1000,03"
+  },
+  {
+   "id": "c05",
+   "alici": "firma",
+   "kdv": 10,
+   "dahil": false,
+   "net": "1000",
+   "oran": "17"
+  },
+  {
+   "id": "c06",
+   "alici": "firma",
+   "kdv": 20,
+   "dahil": false,
+   "net": "1000",
+   "tevkifat": "602"
+  },
+  {
+   "id": "c07",
+   "alici": "firma",
+   "kdv": 20,
+   "dahil": false,
+   "net": "80,02",
+   "ekler": [
+    {
+     "fiyat": "100,03",
+     "kdv": 20
+    }
+   ]
+  },
+  {
+   "id": "c08",
+   "alici": "firma",
+   "kdv": 20,
+   "dahil": false,
+   "net": "500,01",
+   "tevkifat": "616",
+   "ekler": [
+    {
+     "fiyat": "100,03",
+     "kdv": 20,
+     "tevkifat": "616"
+    },
+    {
+     "fiyat": "100,03",
+     "kdv": 10
+    }
+   ]
+  },
+  {
+   "id": "c09",
+   "alici": "kisi",
+   "kdv": 20,
+   "dahil": false,
+   "net": "1000",
+   "oran": "20"
+  },
+  {
+   "id": "c10",
+   "alici": "firma",
+   "kdv": 20,
+   "dahil": false,
+   "net": "0,01"
+  },
+  {
+   "id": "s000",
+   "alici": "firma",
+   "kdv": 20,
+   "dahil": false,
+   "net": "874553,29",
+   "tevkifat": "616"
+  },
+  {
+   "id": "s001",
+   "alici": "firma",
+   "kdv": 1,
+   "dahil": false,
+   "net": "0,01",
+   "ekler": [
+    {
+     "fiyat": "3599,16",
+     "kdv": 20
+    },
+    {
+     "fiyat": "3805,56",
+     "kdv": 20
+    }
+   ]
+  },
+  {
+   "id": "s002",
+   "alici": "kimliksiz",
+   "kdv": 20,
+   "dahil": false,
+   "net": "0,01",
+   "tevkifat": "616",
+   "ekler": [
+    {
+     "fiyat": "4695,40",
+     "kdv": 10
+    },
+    {
+     "fiyat": "4772,00",
+     "kdv": 20
+    }
+   ]
+  },
+  {
+   "id": "s003",
+   "alici": "kimliksiz",
+   "kdv": 1,
+   "dahil": false,
+   "oran": "10",
+   "net": "479877014,01"
+  },
+  {
+   "id": "s004",
+   "alici": "firma",
+   "kdv": 20,
+   "dahil": false,
+   "net": "657255,52",
+   "tevkifat": "616"
+  },
+  {
+   "id": "s005",
+   "alici": "firma",
+   "kdv": 20,
+   "dahil": false,
+   "net": "494512727,46"
+  },
+  {
+   "id": "s006",
+   "alici": "kisi",
+   "kdv": 20,
+   "dahil": false,
+   "net": "83,97",
+   "ekler": [
+    {
+     "fiyat": "2988,44",
+     "kdv": 20
+    },
+    {
+     "fiyat": "2167,41",
+     "kdv": 10
+    }
+   ]
+  },
+  {
+   "id": "s007",
+   "alici": "firma",
+   "kdv": 10,
+   "dahil": false,
+   "oran": "10",
+   "net": "0,01"
+  },
+  {
+   "id": "s008",
+   "alici": "firma",
+   "kdv": 20,
+   "dahil": false,
+   "net": "14351,00",
+   "tevkifat": "602",
+   "ekler": [
+    {
+     "fiyat": "3442,78",
+     "kdv": 10
+    }
+   ]
+  },
+  {
+   "id": "s009",
+   "alici": "kisi",
+   "kdv": 1,
+   "dahil": false,
+   "oran": "20",
+   "net": "55171,00"
+  },
+  {
+   "id": "s010",
+   "alici": "kisi",
+   "kdv": 20,
+   "dahil": true,
+   "net": "964034122,08"
+  },
+  {
+   "id": "s011",
+   "alici": "kimliksiz",
+   "kdv": 1,
+   "dahil": true,
+   "net": "772887,37",
+   "tevkifat": "616",
+   "ekler": [
+    {
+     "fiyat": "4590,33",
+     "kdv": 20
+    }
+   ]
+  },
+  {
+   "id": "s012",
+   "alici": "firma",
+   "kdv": 10,
+   "dahil": false,
+   "net": "79479515,12"
+  },
+  {
+   "id": "s013",
+   "alici": "firma",
+   "kdv": 20,
+   "dahil": false,
+   "net": "596852954,08",
+   "tevkifat": "602"
+  },
+  {
+   "id": "s014",
+   "alici": "kisi",
+   "kdv": 20,
+   "dahil": false,
+   "net": "46,10",
+   "ekler": [
+    {
+     "fiyat": "4391,97",
+     "kdv": 10
+    }
+   ]
+  },
+  {
+   "id": "s015",
+   "alici": "kimliksiz",
+   "kdv": 1,
+   "dahil": false,
+   "net": "10,71",
+   "tevkifat": "602",
+   "ekler": [
+    {
+     "fiyat": "3146,83",
+     "kdv": 10
+    },
+    {
+     "fiyat": "1784,08",
+     "kdv": 20,
+     "tevkifat": "616"
+    }
+   ]
+  },
+  {
+   "id": "s016",
+   "alici": "kisi",
+   "kdv": 20,
+   "dahil": false,
+   "net": "143490453,50",
+   "iskonto": "10"
+  },
+  {
+   "id": "s017",
+   "alici": "kisi",
+   "kdv": 10,
+   "dahil": false,
+   "net": "0,01",
+   "iskonto": "10"
+  },
+  {
+   "id": "s018",
+   "alici": "firma",
+   "kdv": 20,
+   "dahil": false,
+   "net": "0,01"
+  },
+  {
+   "id": "s019",
+   "alici": "kisi",
+   "kdv": 1,
+   "dahil": false,
+   "net": "738478,14",
+   "ekler": [
+    {
+     "fiyat": "207,73",
+     "kdv": 20,
+     "tevkifat": "616"
+    },
+    {
+     "fiyat": "3808,87",
+     "kdv": 10
+    }
+   ]
+  },
+  {
+   "id": "s020",
+   "alici": "firma",
+   "kdv": 10,
+   "dahil": false,
+   "net": "849765104,24"
+  },
+  {
+   "id": "s021",
+   "alici": "firma",
+   "kdv": 20,
+   "dahil": false,
+   "net": "105136600,69"
+  },
+  {
+   "id": "s022",
+   "alici": "firma",
+   "kdv": 10,
+   "dahil": true,
+   "net": "143208529,59"
+  },
+  {
+   "id": "s023",
+   "alici": "firma",
+   "kdv": 20,
+   "dahil": false,
+   "net": "0,01"
+  },
+  {
+   "id": "s024",
+   "alici": "kimliksiz",
+   "kdv": 20,
+   "dahil": true,
+   "net": "53,76",
+   "tevkifat": "602"
+  },
+  {
+   "id": "s025",
+   "alici": "firma",
+   "kdv": 20,
+   "dahil": false,
+   "net": "98,62"
+  },
+  {
+   "id": "s026",
+   "alici": "kisi",
+   "kdv": 20,
+   "dahil": true,
+   "net": "25,87",
+   "ekler": [
+    {
+     "fiyat": "4237,58",
+     "kdv": 10
+    },
+    {
+     "fiyat": "2838,38",
+     "kdv": 10
+    }
+   ]
+  },
+  {
+   "id": "s027",
+   "alici": "firma",
+   "kdv": 10,
+   "dahil": true,
+   "net": "74791,00"
+  },
+  {
+   "id": "s028",
+   "alici": "kimliksiz",
+   "kdv": 10,
+   "dahil": false,
+   "net": "215069507,14"
+  },
+  {
+   "id": "s029",
+   "alici": "kimliksiz",
+   "kdv": 20,
+   "dahil": true,
+   "net": "447202566,17"
+  },
+  {
+   "id": "s030",
+   "alici": "kimliksiz",
+   "kdv": 20,
+   "dahil": true,
+   "oran": "15",
+   "net": "20902,00",
+   "ekler": [
+    {
+     "fiyat": "866,02",
+     "kdv": 10
+    },
+    {
+     "fiyat": "4489,36",
+     "kdv": 20
+    }
+   ]
+  },
+  {
+   "id": "s031",
+   "alici": "kisi",
+   "kdv": 20,
+   "dahil": true,
+   "net": "69972,03"
+  },
+  {
+   "id": "s032",
+   "alici": "firma",
+   "kdv": 20,
+   "dahil": false,
+   "net": "0,01",
+   "ekler": [
+    {
+     "fiyat": "2333,39",
+     "kdv": 20
+    }
+   ]
+  },
+  {
+   "id": "s033",
+   "alici": "kisi",
+   "kdv": 1,
+   "dahil": false,
+   "net": "71,79",
+   "tevkifat": "616"
+  },
+  {
+   "id": "s034",
+   "alici": "firma",
+   "kdv": 1,
+   "dahil": false,
+   "oran": "10",
+   "net": "903432,41",
+   "tevkifat": "616",
+   "ekler": [
+    {
+     "fiyat": "778,10",
+     "kdv": 20,
+     "tevkifat": "616"
+    },
+    {
+     "fiyat": "4363,94",
+     "kdv": 10
+    }
+   ]
+  },
+  {
+   "id": "s035",
+   "alici": "kimliksiz",
+   "kdv": 10,
+   "dahil": false,
+   "net": "0,01",
+   "ekler": [
+    {
+     "fiyat": "2858,88",
+     "kdv": 10
+    }
+   ]
+  },
+  {
+   "id": "s036",
+   "alici": "kimliksiz",
+   "kdv": 20,
+   "dahil": true,
+   "net": "501534623,35",
+   "ekler": [
+    {
+     "fiyat": "1836,13",
+     "kdv": 10
+    },
+    {
+     "fiyat": "1779,26",
+     "kdv": 10,
+     "tevkifat": "616"
+    }
+   ]
+  },
+  {
+   "id": "s037",
+   "alici": "kisi",
+   "kdv": 10,
+   "dahil": false,
+   "net": "26068,00"
+  },
+  {
+   "id": "s038",
+   "alici": "firma",
+   "kdv": 20,
+   "dahil": false,
+   "net": "0,01"
+  },
+  {
+   "id": "s039",
+   "alici": "kisi",
+   "kdv": 20,
+   "dahil": false,
+   "net": "118863210,98",
+   "tevkifat": "616"
+  },
+  {
+   "id": "s040",
+   "alici": "kisi",
+   "kdv": 10,
+   "dahil": true,
+   "net": "22233,00"
+  },
+  {
+   "id": "s041",
+   "alici": "firma",
+   "kdv": 1,
+   "dahil": true,
+   "net": "90499,00",
+   "ekler": [
+    {
+     "fiyat": "1243,79",
+     "kdv": 10,
+     "tevkifat": "602"
+    }
+   ]
+  },
+  {
+   "id": "s042",
+   "alici": "kimliksiz",
+   "kdv": 10,
+   "dahil": false,
+   "net": "22093,00"
+  },
+  {
+   "id": "s043",
+   "alici": "firma",
+   "kdv": 1,
+   "dahil": false,
+   "net": "54,01",
+   "ekler": [
+    {
+     "fiyat": "1659,53",
+     "kdv": 10
+    },
+    {
+     "fiyat": "1302,48",
+     "kdv": 10,
+     "tevkifat": "602"
+    }
+   ]
+  },
+  {
+   "id": "s044",
+   "alici": "kisi",
+   "kdv": 20,
+   "dahil": false,
+   "net": "186052,27"
+  },
+  {
+   "id": "s045",
+   "alici": "kisi",
+   "kdv": 10,
+   "dahil": true,
+   "net": "0,01",
+   "tevkifat": "602"
+  },
+  {
+   "id": "s046",
+   "alici": "firma",
+   "kdv": 1,
+   "dahil": false,
+   "net": "19,35"
+  },
+  {
+   "id": "s047",
+   "alici": "firma",
+   "kdv": 20,
+   "dahil": true,
+   "net": "76013,00"
+  },
+  {
+   "id": "s048",
+   "alici": "kimliksiz",
+   "kdv": 20,
+   "dahil": true,
+   "oran": "20",
+   "net": "52,36"
+  },
+  {
+   "id": "s049",
+   "alici": "kimliksiz",
+   "kdv": 20,
+   "dahil": false,
+   "net": "88,90",
+   "tevkifat": "616",
+   "iskonto": "10"
+  }
+ ]
+}

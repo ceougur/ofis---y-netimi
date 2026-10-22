@@ -1,0 +1,19 @@
+b1-5c-rapor: 98/113 tuttu
+  ✗ [İNCELE YAYGIN] k1:rapor:K-1:ad: program "satir:18f6814be644c238" · kâhin "Elif Kaya" (B1.8b Tablodaki Kişiler kişiyi adıyla gösterir)
+  ✗ [İNCELE YAYGIN] k1:rapor:K-2:ad: program "satir:63549357cf76c513" · kâhin "Elif Kaya" (B1.8b Tablodaki Kişiler kişiyi adıyla gösterir)
+  ✗ [İNCELE YAYGIN] k1:rapor:K-3:ad: program "satir:4ef4ee65a7cc6498" · kâhin "Tuna Sarı" (B1.8b Tablodaki Kişiler kişiyi adıyla gösterir)
+  ✗ [İNCELE YAYGIN] k2:rapor:K-1:ad: program "satir:18f6814be644c238" · kâhin "Elif Kaya" (B1.8b Tablodaki Kişiler kişiyi adıyla gösterir)
+  ✗ [İNCELE YAYGIN] k2:rapor:K-1:alacak: program 0 · kâhin 50000 (B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN))
+  ✗ [İNCELE YAYGIN] k2:rapor:K-2:ad: program "satir:63549357cf76c513" · kâhin "Elif Kaya" (B1.8b Tablodaki Kişiler kişiyi adıyla gösterir)
+  ✗ [İNCELE YAYGIN] k2:rapor:K-2:alacak: program 0 · kâhin 70000 (B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN))
+  ✗ [İNCELE YAYGIN] k2:rapor:K-3:ad: program "satir:4ef4ee65a7cc6498" · kâhin "Tuna Sarı" (B1.8b Tablodaki Kişiler kişiyi adıyla gösterir)
+  ✗ [BULGU KULLANICI] k2:rapor:K-3:alacak: program 0 · kâhin 120000 (B1.8 5c tahsilat bir kez)
+  ✗ [İNCELE YAYGIN] k3:rapor:K-1:ad: program "satir:18f6814be644c238" · kâhin "Elif Kaya" (B1.8b Tablodaki Kişiler kişiyi adıyla gösterir)
+  ✗ [İNCELE YAYGIN] k3:rapor:K-1:alacak: program 0 · kâhin 50000 (B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN))
+  ✗ [İNCELE YAYGIN] k3:rapor:K-2:ad: program "satir:63549357cf76c513" · kâhin "Elif Kaya" (B1.8b Tablodaki Kişiler kişiyi adıyla gösterir)
+  ✗ [İNCELE YAYGIN] k3:rapor:K-2:alacak: program 0 · kâhin 70000 (B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN))
+  ✗ [İNCELE YAYGIN] k3:rapor:K-3:ad: program "satir:4ef4ee65a7cc6498" · kâhin "Tuna Sarı" (B1.8b Tablodaki Kişiler kişiyi adıyla gösterir)
+  ✗ [İNCELE YAYGIN] k3:rapor:K-3:alacak: program 0 · kâhin 150000 (B1.8 5c tahsilat bir kez)
+
+ÖZET: 1 senaryo, 113 denetim, 15 fark (BULGU 1), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-cari-ZQ0I6L
+98/113 denetim geçti

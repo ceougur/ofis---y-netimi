@@ -1,0 +1,32 @@
+{
+  "ad": "244-kahin-cari/taban-senaryo-tohum3-islem200",
+  "komut": "python3 test/bagimsiz/fark.py --tohum 3 --islem 200",
+  "commit": "fd0b0fc6ebac15c9ebde3715179f88b0a9e774f3",
+  "dal": "is/kahin-cari",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T09:47:35.715Z",
+  "sure_sn": 8.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 1303,
+    "gecen": 1303,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kahin-cari/taban-senaryo-tohum3-islem200.log",
+  "klasor": "/home/user/wt/kahin-cari",
+  "ham_cikti_sha256": "1c4672a7f3f58a422616c15831f144239e6256138ba6adfe22422f08d74ae01e",
+  "ham_cikti_bayt": 182
+}

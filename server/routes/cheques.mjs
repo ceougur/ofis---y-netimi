@@ -521,9 +521,12 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       // (cari değişip bağ geçersizleşirse sessizce düşmez: 404/409 alan invoiceId). Bağ yalnız tek olaylı, tahsilde olmayan, açık dönemdeki evrakta değişir.
       const first = history[0];
       const bond = bondOf(previous, first);
-      const asked = body.invoiceId === undefined || body.invoiceId === null ? bond : text(body.invoiceId);
+      const given = body.invoiceId !== undefined && body.invoiceId !== null;
+      // 31a F6: faturayla kaydedilen evrak faturanın parçasıdır (bağı faturanın kendisi; fatura iptalinde evrak geri alınır) — bağı kaldırma ya da
+      // değiştirme isteği nedenli reddedilir (önceden 200 dönüp hiçbir şey yapmıyordu); aynı değer serbest.
+      if (previous.invoiceId && given && text(body.invoiceId) !== previous.invoiceId) throw new HttpError(409, `Bu evrak ${previous.invoiceNumber || "bir fatura"} ile kaydedildi; faturanın parçasıdır, kapatacağı fatura kaldırılmaz ya da değişmez. Değiştirmek için faturayı iptal edin.`, { code: "invoice-linked", invoiceId: previous.invoiceId, field: "invoiceId" });
+      const asked = previous.invoiceId || !given ? bond : text(body.invoiceId);
       if (asked !== bond) {
-        if (previous.invoiceId) throw new HttpError(409, `Bu evrak ${previous.invoiceNumber || "bir fatura"} ile kaydedildi; kapatacağı fatura değişmez.`, { code: "invoice-linked", invoiceId: previous.invoiceId, field: "invoiceId" });
         if (history.length > 1) throw new HttpError(409, "Tahsil, ciro ya da ödeme yapılmış evrakın kapatacağı fatura değiştirilemez. Önce son işlemi geri alın.", BOND_EXTRA);
         collections.assertNotDeposited(previous, "kapatacağı fatura değiştirilemez");
         period?.assertOpen(previous.issueDate, "Bu çek/senet");

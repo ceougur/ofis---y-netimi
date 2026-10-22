@@ -1,0 +1,5585 @@
+{
+ "ad": "tutar-1-50",
+ "denetimler": {
+  "c01:gfn:birimFiyat": {
+   "b": 100000,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "c01:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "c01:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "c01:gfn:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "c01:kalem1:kdv": {
+   "b": 20000,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "c01:kayit:brut": {
+   "b": 100000,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "c01:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "c01:kayit:kdv": {
+   "b": 20000,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "c01:kayit:netUcret": {
+   "b": 100000,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "c01:kayit:odenecek": {
+   "b": 120000,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "c01:kayit:stopaj": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "c01:kayit:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "c01:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "c01:xml:0015:TaxAmount": {
+   "b": 20000,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "c01:xml:LineExtensionAmount": {
+   "b": 100000,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "c01:xml:PayableAmount": {
+   "b": 120000,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "c01:xml:TaxExclusiveAmount": {
+   "b": 100000,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "c01:xml:TaxInclusiveAmount": {
+   "b": 20000,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "c01:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "c01:xml:kalemLineExtensionToplami": {
+   "b": 100000,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "c01:xml:kalemPriceToplami": {
+   "b": 120000,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "c02:gfn:birimFiyat": {
+   "b": 125000,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "c02:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "c02:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "c02:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "c02:kalem1:kdv": {
+   "b": 25000,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "c02:kayit:brut": {
+   "b": 125000,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "c02:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "c02:kayit:kdv": {
+   "b": 25000,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "c02:kayit:netUcret": {
+   "b": 100000,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "c02:kayit:odenecek": {
+   "b": 125000,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "c02:kayit:stopaj": {
+   "b": 25000,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "c02:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "c02:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "c02:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "c02:xml:0003:TaxAmount": {
+   "b": 25000,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "c02:xml:0015:TaxAmount": {
+   "b": 25000,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "c02:xml:LineExtensionAmount": {
+   "b": 125000,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "c02:xml:PayableAmount": {
+   "b": 125000,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "c02:xml:TaxExclusiveAmount": {
+   "b": 100000,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "c02:xml:TaxInclusiveAmount": {
+   "b": 25000,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "c02:xml:kalem0003Toplami": {
+   "b": 25000,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "c02:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "c02:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "c02:xml:kalemLineExtensionToplami": {
+   "b": 125000,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "c02:xml:kalemPriceToplami": {
+   "b": 125000,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "c03:gfn:birimFiyat": {
+   "b": 150000,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı (KDV dahil: matrah + yuvarla(matrah × KDV))"
+  },
+  "c03:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "c03:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "c03:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "c03:kalem1:kdv": {
+   "b": 25000,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "c03:kayit:brut": {
+   "b": 125000,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "c03:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "c03:kayit:kdv": {
+   "b": 25000,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "c03:kayit:netUcret": {
+   "b": 100000,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "c03:kayit:odenecek": {
+   "b": 125000,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "c03:kayit:stopaj": {
+   "b": 25000,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "c03:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "c03:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "c03:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "c03:xml:0003:TaxAmount": {
+   "b": 25000,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "c03:xml:0015:TaxAmount": {
+   "b": 25000,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "c03:xml:LineExtensionAmount": {
+   "b": 125000,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "c03:xml:PayableAmount": {
+   "b": 125000,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "c03:xml:TaxExclusiveAmount": {
+   "b": 100000,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "c03:xml:TaxInclusiveAmount": {
+   "b": 25000,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "c03:xml:kalem0003Toplami": {
+   "b": 25000,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "c03:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "c03:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "c03:xml:kalemLineExtensionToplami": {
+   "b": 125000,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "c03:xml:kalemPriceToplami": {
+   "b": 125000,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "c04:gfn:birimFiyat": {
+   "b": 120004,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı (KDV dahil: matrah + yuvarla(matrah × KDV))"
+  },
+  "c04:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "c04:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "c04:gfn:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "c04:kalem1:kdv": {
+   "b": 20001,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "c04:kayit:brut": {
+   "b": 100003,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "c04:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "c04:kayit:kdv": {
+   "b": 20001,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "c04:kayit:netUcret": {
+   "b": 100003,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "c04:kayit:odenecek": {
+   "b": 120004,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "c04:kayit:stopaj": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "c04:kayit:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "c04:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "c04:xml:0015:TaxAmount": {
+   "b": 20001,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "c04:xml:LineExtensionAmount": {
+   "b": 100003,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "c04:xml:PayableAmount": {
+   "b": 120004,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "c04:xml:TaxExclusiveAmount": {
+   "b": 100003,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "c04:xml:TaxInclusiveAmount": {
+   "b": 20001,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "c04:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "c04:xml:kalemLineExtensionToplami": {
+   "b": 100003,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "c04:xml:kalemPriceToplami": {
+   "b": 120004,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "c05:gfn:birimFiyat": {
+   "b": 120482,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "c05:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "c05:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "c05:gfn:stopajOrani": {
+   "b": 1700,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "c05:kalem1:kdv": {
+   "b": 12048,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "c05:kayit:brut": {
+   "b": 120482,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "c05:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "c05:kayit:kdv": {
+   "b": 12048,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "c05:kayit:netUcret": {
+   "b": 100000,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "c05:kayit:odenecek": {
+   "b": 112048,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "c05:kayit:stopaj": {
+   "b": 20482,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "c05:kayit:stopajOrani": {
+   "b": 1700,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "c05:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "c05:xml:0003:Percent": {
+   "b": 1700,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "c05:xml:0003:TaxAmount": {
+   "b": 20482,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "c05:xml:0015:TaxAmount": {
+   "b": 12048,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "c05:xml:LineExtensionAmount": {
+   "b": 120482,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "c05:xml:PayableAmount": {
+   "b": 112048,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "c05:xml:TaxExclusiveAmount": {
+   "b": 100000,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "c05:xml:TaxInclusiveAmount": {
+   "b": 12048,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "c05:xml:kalem0003Toplami": {
+   "b": 20482,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "c05:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "c05:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "c05:xml:kalemLineExtensionToplami": {
+   "b": 120482,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "c05:xml:kalemPriceToplami": {
+   "b": 112048,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "c06:gfn:birimFiyat": {
+   "b": 125000,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "c06:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "c06:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "c06:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "c06:kalem1:kdv": {
+   "b": 25000,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "c06:kayit:brut": {
+   "b": 125000,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "c06:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "c06:kayit:kdv": {
+   "b": 25000,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "c06:kayit:netUcret": {
+   "b": 100000,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "c06:kayit:odenecek": {
+   "b": 102500,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "c06:kayit:stopaj": {
+   "b": 25000,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "c06:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "c06:kayit:tevkifat": {
+   "b": 22500,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "c06:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "c06:xml:0003:TaxAmount": {
+   "b": 25000,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "c06:xml:0015:TaxAmount": {
+   "b": 25000,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "c06:xml:LineExtensionAmount": {
+   "b": 125000,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "c06:xml:PayableAmount": {
+   "b": 102500,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "c06:xml:TaxExclusiveAmount": {
+   "b": 100000,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "c06:xml:TaxInclusiveAmount": {
+   "b": 2500,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "c06:xml:WithholdingTaxAmount": {
+   "b": 22500,
+   "e": "EDM",
+   "k": "B4.7 KDV tevkifatı"
+  },
+  "c06:xml:kalem0003Toplami": {
+   "b": 25000,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "c06:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "c06:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "c06:xml:kalemLineExtensionToplami": {
+   "b": 125000,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "c06:xml:kalemPriceToplami": {
+   "b": 102500,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "c07:gfn:durum": {
+   "b": "ret",
+   "e": "AJAN",
+   "k": "B3 çözümsüz Net Ücret reddedilir"
+  },
+  "c08:gfn:birimFiyat": {
+   "b": 42495,
+   "e": "CATAL",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "c08:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "c08:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "c08:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "c08:kalem1:kdv": {
+   "b": 8499,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "c08:kalem2:kdv": {
+   "b": 2001,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "c08:kalem3:kdv": {
+   "b": 1000,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "c08:kayit:brut": {
+   "b": 62501,
+   "e": "CATAL",
+   "k": "B3.3 en küçük brüt (uzlaşım) — ÇATAL: kalem kalem stopajla 62502"
+  },
+  "c08:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "c08:kayit:kdv": {
+   "b": 11500,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "c08:kayit:netUcret": {
+   "b": 50001,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "c08:kayit:odenecek": {
+   "b": 56250,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "c08:kayit:stopaj": {
+   "b": 12500,
+   "e": "CATAL",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran) — ÇATAL: kalem kalem 12501"
+  },
+  "c08:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "c08:kayit:tevkifat": {
+   "b": 5251,
+   "e": "CATAL",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10) — ÇATAL: belge düzeyi 5250"
+  },
+  "c08:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "c08:xml:0003:TaxAmount": {
+   "b": 12500,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "c08:xml:0015:TaxAmount": {
+   "b": 11500,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "c08:xml:LineExtensionAmount": {
+   "b": 62501,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "c08:xml:PayableAmount": {
+   "b": 56250,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "c08:xml:TaxExclusiveAmount": {
+   "b": 50001,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "c08:xml:TaxInclusiveAmount": {
+   "b": 6249,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "c08:xml:WithholdingTaxAmount": {
+   "b": 5251,
+   "e": "EDM",
+   "k": "B4.7 KDV tevkifatı"
+  },
+  "c08:xml:kalem0003Toplami": {
+   "b": 12500,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "c08:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "c08:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "c08:xml:kalem2:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "c08:xml:kalem2:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "c08:xml:kalem3:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "c08:xml:kalem3:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "c08:xml:kalemLineExtensionToplami": {
+   "b": 62501,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "c08:xml:kalemPriceToplami": {
+   "b": 56250,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "c09:gfn:birimFiyat": {
+   "b": 125000,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "c09:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "c09:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "c09:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "AJAN",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "c09:kalem1:kdv": {
+   "b": 25000,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "c09:kayit:brut": {
+   "b": 125000,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "c09:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "c09:kayit:kdv": {
+   "b": 25000,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "c09:kayit:netUcret": {
+   "b": 100000,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "c09:kayit:odenecek": {
+   "b": 125000,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "c09:kayit:stopaj": {
+   "b": 25000,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "c09:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "AJAN",
+   "k": "B3.1"
+  },
+  "c09:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "c09:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "c09:xml:0003:TaxAmount": {
+   "b": 25000,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "c09:xml:0015:TaxAmount": {
+   "b": 25000,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "c09:xml:LineExtensionAmount": {
+   "b": 125000,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "c09:xml:PayableAmount": {
+   "b": 125000,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "c09:xml:TaxExclusiveAmount": {
+   "b": 100000,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "c09:xml:TaxInclusiveAmount": {
+   "b": 25000,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "c09:xml:kalem0003Toplami": {
+   "b": 25000,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "c09:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "c09:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "c09:xml:kalemLineExtensionToplami": {
+   "b": 125000,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "c09:xml:kalemPriceToplami": {
+   "b": 125000,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "c10:gfn:birimFiyat": {
+   "b": 1,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "c10:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "c10:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "c10:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "c10:kalem1:kdv": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "c10:kayit:brut": {
+   "b": 1,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "c10:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "c10:kayit:kdv": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "c10:kayit:netUcret": {
+   "b": 1,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "c10:kayit:odenecek": {
+   "b": 1,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "c10:kayit:stopaj": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "c10:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "c10:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "c10:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "c10:xml:0003:TaxAmount": {
+   "b": 0,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "c10:xml:0015:TaxAmount": {
+   "b": 0,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "c10:xml:LineExtensionAmount": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "c10:xml:PayableAmount": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "c10:xml:TaxExclusiveAmount": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "c10:xml:TaxInclusiveAmount": {
+   "b": 0,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "c10:xml:kalem0003Toplami": {
+   "b": 0,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "c10:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "c10:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "c10:xml:kalemLineExtensionToplami": {
+   "b": 1,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "c10:xml:kalemPriceToplami": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s000:gfn:birimFiyat": {
+   "b": 109319161,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s000:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s000:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s000:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s000:kalem1:kdv": {
+   "b": 21863832,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s000:kayit:brut": {
+   "b": 109319161,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s000:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s000:kayit:kdv": {
+   "b": 21863832,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s000:kayit:netUcret": {
+   "b": 87455329,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s000:kayit:odenecek": {
+   "b": 98387245,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s000:kayit:stopaj": {
+   "b": 21863832,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s000:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s000:kayit:tevkifat": {
+   "b": 10931916,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s000:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s000:xml:0003:TaxAmount": {
+   "b": 21863832,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s000:xml:0015:TaxAmount": {
+   "b": 21863832,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s000:xml:LineExtensionAmount": {
+   "b": 109319161,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s000:xml:PayableAmount": {
+   "b": 98387245,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s000:xml:TaxExclusiveAmount": {
+   "b": 87455329,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s000:xml:TaxInclusiveAmount": {
+   "b": 10931916,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s000:xml:WithholdingTaxAmount": {
+   "b": 10931916,
+   "e": "EDM",
+   "k": "B4.7 KDV tevkifatı"
+  },
+  "s000:xml:kalem0003Toplami": {
+   "b": 21863832,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s000:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s000:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s000:xml:kalemLineExtensionToplami": {
+   "b": 109319161,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s000:xml:kalemPriceToplami": {
+   "b": 98387245,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s001:gfn:durum": {
+   "b": "ret",
+   "e": "AJAN",
+   "k": "B3 çözümsüz Net Ücret reddedilir"
+  },
+  "s002:gfn:durum": {
+   "b": "ret",
+   "e": "AJAN",
+   "k": "B3 çözümsüz Net Ücret reddedilir"
+  },
+  "s003:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s003:kayit:durum": {
+   "b": "ret",
+   "e": "GIB",
+   "k": "A6 30.000 TL üstü nihai tüketici"
+  },
+  "s004:gfn:birimFiyat": {
+   "b": 82156940,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s004:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s004:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s004:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s004:kalem1:kdv": {
+   "b": 16431388,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s004:kayit:brut": {
+   "b": 82156940,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s004:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s004:kayit:kdv": {
+   "b": 16431388,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s004:kayit:netUcret": {
+   "b": 65725552,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s004:kayit:odenecek": {
+   "b": 73941246,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s004:kayit:stopaj": {
+   "b": 16431388,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s004:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s004:kayit:tevkifat": {
+   "b": 8215694,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s004:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s004:xml:0003:TaxAmount": {
+   "b": 16431388,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s004:xml:0015:TaxAmount": {
+   "b": 16431388,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s004:xml:LineExtensionAmount": {
+   "b": 82156940,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s004:xml:PayableAmount": {
+   "b": 73941246,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s004:xml:TaxExclusiveAmount": {
+   "b": 65725552,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s004:xml:TaxInclusiveAmount": {
+   "b": 8215694,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s004:xml:WithholdingTaxAmount": {
+   "b": 8215694,
+   "e": "EDM",
+   "k": "B4.7 KDV tevkifatı"
+  },
+  "s004:xml:kalem0003Toplami": {
+   "b": 16431388,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s004:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s004:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s004:xml:kalemLineExtensionToplami": {
+   "b": 82156940,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s004:xml:kalemPriceToplami": {
+   "b": 73941246,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s005:gfn:birimFiyat": {
+   "b": 61814090932,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s005:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s005:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s005:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s005:kalem1:kdv": {
+   "b": 12362818186,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s005:kayit:brut": {
+   "b": 61814090932,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s005:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s005:kayit:kdv": {
+   "b": 12362818186,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s005:kayit:netUcret": {
+   "b": 49451272746,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s005:kayit:odenecek": {
+   "b": 61814090932,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s005:kayit:stopaj": {
+   "b": 12362818186,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s005:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s005:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s005:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s005:xml:0003:TaxAmount": {
+   "b": 12362818186,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s005:xml:0015:TaxAmount": {
+   "b": 12362818186,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s005:xml:LineExtensionAmount": {
+   "b": 61814090932,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s005:xml:PayableAmount": {
+   "b": 61814090932,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s005:xml:TaxExclusiveAmount": {
+   "b": 49451272746,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s005:xml:TaxInclusiveAmount": {
+   "b": 12362818186,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s005:xml:kalem0003Toplami": {
+   "b": 12362818186,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s005:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s005:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s005:xml:kalemLineExtensionToplami": {
+   "b": 61814090932,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s005:xml:kalemPriceToplami": {
+   "b": 61814090932,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s006:gfn:durum": {
+   "b": "ret",
+   "e": "AJAN",
+   "k": "B3 çözümsüz Net Ücret reddedilir"
+  },
+  "s007:gfn:birimFiyat": {
+   "b": 1,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s007:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s007:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s007:gfn:stopajOrani": {
+   "b": 1000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s007:kalem1:kdv": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s007:kayit:brut": {
+   "b": 1,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s007:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s007:kayit:kdv": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s007:kayit:netUcret": {
+   "b": 1,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s007:kayit:odenecek": {
+   "b": 1,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s007:kayit:stopaj": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s007:kayit:stopajOrani": {
+   "b": 1000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s007:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s007:xml:0003:Percent": {
+   "b": 1000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s007:xml:0003:TaxAmount": {
+   "b": 0,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s007:xml:0015:TaxAmount": {
+   "b": 0,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s007:xml:LineExtensionAmount": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s007:xml:PayableAmount": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s007:xml:TaxExclusiveAmount": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s007:xml:TaxInclusiveAmount": {
+   "b": 0,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s007:xml:kalem0003Toplami": {
+   "b": 0,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s007:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s007:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s007:xml:kalemLineExtensionToplami": {
+   "b": 1,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s007:xml:kalemPriceToplami": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s008:gfn:birimFiyat": {
+   "b": 1449597,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s008:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s008:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s008:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s008:kalem1:kdv": {
+   "b": 289919,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s008:kalem2:kdv": {
+   "b": 34428,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s008:kayit:brut": {
+   "b": 1793875,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s008:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s008:kayit:kdv": {
+   "b": 324347,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s008:kayit:netUcret": {
+   "b": 1435100,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s008:kayit:odenecek": {
+   "b": 1498520,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s008:kayit:stopaj": {
+   "b": 358775,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s008:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s008:kayit:tevkifat": {
+   "b": 260927,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s008:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s008:xml:0003:TaxAmount": {
+   "b": 358775,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s008:xml:0015:TaxAmount": {
+   "b": 324347,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s008:xml:LineExtensionAmount": {
+   "b": 1793875,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s008:xml:PayableAmount": {
+   "b": 1498520,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s008:xml:TaxExclusiveAmount": {
+   "b": 1435100,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s008:xml:TaxInclusiveAmount": {
+   "b": 63420,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s008:xml:WithholdingTaxAmount": {
+   "b": 260927,
+   "e": "EDM",
+   "k": "B4.7 KDV tevkifatı"
+  },
+  "s008:xml:kalem0003Toplami": {
+   "b": 358775,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s008:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s008:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s008:xml:kalem2:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s008:xml:kalem2:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s008:xml:kalemLineExtensionToplami": {
+   "b": 1793875,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s008:xml:kalemPriceToplami": {
+   "b": 1498520,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s009:gfn:birimFiyat": {
+   "b": 6896375,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s009:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s009:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s009:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "AJAN",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s009:kalem1:kdv": {
+   "b": 68964,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s009:kayit:brut": {
+   "b": 6896375,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s009:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s009:kayit:kdv": {
+   "b": 68964,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s009:kayit:netUcret": {
+   "b": 5517100,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s009:kayit:odenecek": {
+   "b": 5586064,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s009:kayit:stopaj": {
+   "b": 1379275,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s009:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "AJAN",
+   "k": "B3.1"
+  },
+  "s009:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s009:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s009:xml:0003:TaxAmount": {
+   "b": 1379275,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s009:xml:0015:TaxAmount": {
+   "b": 68964,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s009:xml:LineExtensionAmount": {
+   "b": 6896375,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s009:xml:PayableAmount": {
+   "b": 5586064,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s009:xml:TaxExclusiveAmount": {
+   "b": 5517100,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s009:xml:TaxInclusiveAmount": {
+   "b": 68964,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s009:xml:kalem0003Toplami": {
+   "b": 1379275,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s009:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s009:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s009:xml:kalemLineExtensionToplami": {
+   "b": 6896375,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s009:xml:kalemPriceToplami": {
+   "b": 5586064,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s010:gfn:birimFiyat": {
+   "b": 115684094650,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı (KDV dahil: matrah + yuvarla(matrah × KDV))"
+  },
+  "s010:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s010:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s010:gfn:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s010:kalem1:kdv": {
+   "b": 19280682442,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s010:kayit:brut": {
+   "b": 96403412208,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s010:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s010:kayit:kdv": {
+   "b": 19280682442,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s010:kayit:netUcret": {
+   "b": 96403412208,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s010:kayit:odenecek": {
+   "b": 115684094650,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s010:kayit:stopaj": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s010:kayit:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s010:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s010:xml:0015:TaxAmount": {
+   "b": 19280682442,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s010:xml:LineExtensionAmount": {
+   "b": 96403412208,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s010:xml:PayableAmount": {
+   "b": 115684094650,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s010:xml:TaxExclusiveAmount": {
+   "b": 96403412208,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s010:xml:TaxInclusiveAmount": {
+   "b": 19280682442,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s010:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s010:xml:kalemLineExtensionToplami": {
+   "b": 96403412208,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s010:xml:kalemPriceToplami": {
+   "b": 115684094650,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s011:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s011:kayit:durum": {
+   "b": "ret",
+   "e": "GIB",
+   "k": "A6 30.000 TL üstü nihai tüketici"
+  },
+  "s012:gfn:birimFiyat": {
+   "b": 9934939390,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s012:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s012:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s012:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s012:kalem1:kdv": {
+   "b": 993493939,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s012:kayit:brut": {
+   "b": 9934939390,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s012:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s012:kayit:kdv": {
+   "b": 993493939,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s012:kayit:netUcret": {
+   "b": 7947951512,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s012:kayit:odenecek": {
+   "b": 8941445451,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s012:kayit:stopaj": {
+   "b": 1986987878,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s012:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s012:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s012:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s012:xml:0003:TaxAmount": {
+   "b": 1986987878,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s012:xml:0015:TaxAmount": {
+   "b": 993493939,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s012:xml:LineExtensionAmount": {
+   "b": 9934939390,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s012:xml:PayableAmount": {
+   "b": 8941445451,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s012:xml:TaxExclusiveAmount": {
+   "b": 7947951512,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s012:xml:TaxInclusiveAmount": {
+   "b": 993493939,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s012:xml:kalem0003Toplami": {
+   "b": 1986987878,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s012:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s012:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s012:xml:kalemLineExtensionToplami": {
+   "b": 9934939390,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s012:xml:kalemPriceToplami": {
+   "b": 8941445451,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s013:gfn:birimFiyat": {
+   "b": 74606619260,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s013:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s013:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s013:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s013:kalem1:kdv": {
+   "b": 14921323852,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s013:kayit:brut": {
+   "b": 74606619260,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s013:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s013:kayit:kdv": {
+   "b": 14921323852,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s013:kayit:netUcret": {
+   "b": 59685295408,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s013:kayit:odenecek": {
+   "b": 61177427793,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s013:kayit:stopaj": {
+   "b": 14921323852,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s013:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s013:kayit:tevkifat": {
+   "b": 13429191467,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s013:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s013:xml:0003:TaxAmount": {
+   "b": 14921323852,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s013:xml:0015:TaxAmount": {
+   "b": 14921323852,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s013:xml:LineExtensionAmount": {
+   "b": 74606619260,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s013:xml:PayableAmount": {
+   "b": 61177427793,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s013:xml:TaxExclusiveAmount": {
+   "b": 59685295408,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s013:xml:TaxInclusiveAmount": {
+   "b": 1492132385,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s013:xml:WithholdingTaxAmount": {
+   "b": 13429191467,
+   "e": "EDM",
+   "k": "B4.7 KDV tevkifatı"
+  },
+  "s013:xml:kalem0003Toplami": {
+   "b": 14921323852,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s013:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s013:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s013:xml:kalemLineExtensionToplami": {
+   "b": 74606619260,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s013:xml:kalemPriceToplami": {
+   "b": 61177427793,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s014:gfn:durum": {
+   "b": "ret",
+   "e": "AJAN",
+   "k": "B3 çözümsüz Net Ücret reddedilir"
+  },
+  "s015:gfn:durum": {
+   "b": "ret",
+   "e": "AJAN",
+   "k": "B3 çözümsüz Net Ücret reddedilir"
+  },
+  "s016:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s016:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s016:gfn:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s016:kalem1:kdv": {
+   "b": 2869809070,
+   "e": "YAYGIN",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s016:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s016:kayit:kdv": {
+   "b": 2869809070,
+   "e": "YAYGIN",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s016:kayit:netUcret": {
+   "b": 14349045350,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s016:kayit:odenecek": {
+   "b": 17218854420,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s016:kayit:stopaj": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s016:kayit:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s016:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s016:xml:0015:TaxAmount": {
+   "b": 2869809070,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s016:xml:LineExtensionAmount": {
+   "b": 14349045350,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s016:xml:PayableAmount": {
+   "b": 17218854420,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s016:xml:TaxExclusiveAmount": {
+   "b": 14349045350,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s016:xml:TaxInclusiveAmount": {
+   "b": 2869809070,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s016:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s016:xml:kalemLineExtensionToplami": {
+   "b": 14349045350,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s016:xml:kalemPriceToplami": {
+   "b": 17218854420,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s017:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s017:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s017:gfn:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s017:kalem1:kdv": {
+   "b": 0,
+   "e": "YAYGIN",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s017:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s017:kayit:kdv": {
+   "b": 0,
+   "e": "YAYGIN",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s017:kayit:netUcret": {
+   "b": 1,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s017:kayit:odenecek": {
+   "b": 1,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s017:kayit:stopaj": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s017:kayit:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s017:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s017:xml:0015:TaxAmount": {
+   "b": 0,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s017:xml:LineExtensionAmount": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s017:xml:PayableAmount": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s017:xml:TaxExclusiveAmount": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s017:xml:TaxInclusiveAmount": {
+   "b": 0,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s017:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s017:xml:kalemLineExtensionToplami": {
+   "b": 1,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s017:xml:kalemPriceToplami": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s018:gfn:birimFiyat": {
+   "b": 1,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s018:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s018:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s018:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s018:kalem1:kdv": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s018:kayit:brut": {
+   "b": 1,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s018:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s018:kayit:kdv": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s018:kayit:netUcret": {
+   "b": 1,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s018:kayit:odenecek": {
+   "b": 1,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s018:kayit:stopaj": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s018:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s018:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s018:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s018:xml:0003:TaxAmount": {
+   "b": 0,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s018:xml:0015:TaxAmount": {
+   "b": 0,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s018:xml:LineExtensionAmount": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s018:xml:PayableAmount": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s018:xml:TaxExclusiveAmount": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s018:xml:TaxInclusiveAmount": {
+   "b": 0,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s018:xml:kalem0003Toplami": {
+   "b": 0,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s018:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s018:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s018:xml:kalemLineExtensionToplami": {
+   "b": 1,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s018:xml:kalemPriceToplami": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s019:gfn:birimFiyat": {
+   "b": 73446154,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s019:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s019:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s019:gfn:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s019:kalem1:kdv": {
+   "b": 734462,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s019:kalem2:kdv": {
+   "b": 4155,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s019:kalem3:kdv": {
+   "b": 38089,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s019:kayit:brut": {
+   "b": 73847814,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s019:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s019:kayit:kdv": {
+   "b": 776706,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s019:kayit:netUcret": {
+   "b": 73847814,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s019:kayit:odenecek": {
+   "b": 74622442,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s019:kayit:stopaj": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s019:kayit:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s019:kayit:tevkifat": {
+   "b": 2078,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s019:xml:0015:TaxAmount": {
+   "b": 776706,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s019:xml:LineExtensionAmount": {
+   "b": 73847814,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s019:xml:PayableAmount": {
+   "b": 74622442,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s019:xml:TaxExclusiveAmount": {
+   "b": 73847814,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s019:xml:TaxInclusiveAmount": {
+   "b": 774628,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s019:xml:WithholdingTaxAmount": {
+   "b": 2078,
+   "e": "EDM",
+   "k": "B4.7 KDV tevkifatı"
+  },
+  "s019:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s019:xml:kalem2:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s019:xml:kalem3:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s019:xml:kalemLineExtensionToplami": {
+   "b": 73847814,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s019:xml:kalemPriceToplami": {
+   "b": 74622442,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s020:gfn:birimFiyat": {
+   "b": 106220638030,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s020:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s020:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s020:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s020:kalem1:kdv": {
+   "b": 10622063803,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s020:kayit:brut": {
+   "b": 106220638030,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s020:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s020:kayit:kdv": {
+   "b": 10622063803,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s020:kayit:netUcret": {
+   "b": 84976510424,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s020:kayit:odenecek": {
+   "b": 95598574227,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s020:kayit:stopaj": {
+   "b": 21244127606,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s020:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s020:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s020:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s020:xml:0003:TaxAmount": {
+   "b": 21244127606,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s020:xml:0015:TaxAmount": {
+   "b": 10622063803,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s020:xml:LineExtensionAmount": {
+   "b": 106220638030,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s020:xml:PayableAmount": {
+   "b": 95598574227,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s020:xml:TaxExclusiveAmount": {
+   "b": 84976510424,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s020:xml:TaxInclusiveAmount": {
+   "b": 10622063803,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s020:xml:kalem0003Toplami": {
+   "b": 21244127606,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s020:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s020:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s020:xml:kalemLineExtensionToplami": {
+   "b": 106220638030,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s020:xml:kalemPriceToplami": {
+   "b": 95598574227,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s021:gfn:birimFiyat": {
+   "b": 13142075086,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s021:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s021:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s021:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s021:kalem1:kdv": {
+   "b": 2628415017,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s021:kayit:brut": {
+   "b": 13142075086,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s021:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s021:kayit:kdv": {
+   "b": 2628415017,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s021:kayit:netUcret": {
+   "b": 10513660069,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s021:kayit:odenecek": {
+   "b": 13142075086,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s021:kayit:stopaj": {
+   "b": 2628415017,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s021:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s021:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s021:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s021:xml:0003:TaxAmount": {
+   "b": 2628415017,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s021:xml:0015:TaxAmount": {
+   "b": 2628415017,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s021:xml:LineExtensionAmount": {
+   "b": 13142075086,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s021:xml:PayableAmount": {
+   "b": 13142075086,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s021:xml:TaxExclusiveAmount": {
+   "b": 10513660069,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s021:xml:TaxInclusiveAmount": {
+   "b": 2628415017,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s021:xml:kalem0003Toplami": {
+   "b": 2628415017,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s021:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s021:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s021:xml:kalemLineExtensionToplami": {
+   "b": 13142075086,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s021:xml:kalemPriceToplami": {
+   "b": 13142075086,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s022:gfn:birimFiyat": {
+   "b": 19691172819,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı (KDV dahil: matrah + yuvarla(matrah × KDV))"
+  },
+  "s022:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s022:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s022:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s022:kalem1:kdv": {
+   "b": 1790106620,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s022:kayit:brut": {
+   "b": 17901066199,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s022:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s022:kayit:kdv": {
+   "b": 1790106620,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s022:kayit:netUcret": {
+   "b": 14320852959,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s022:kayit:odenecek": {
+   "b": 16110959579,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s022:kayit:stopaj": {
+   "b": 3580213240,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s022:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s022:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s022:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s022:xml:0003:TaxAmount": {
+   "b": 3580213240,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s022:xml:0015:TaxAmount": {
+   "b": 1790106620,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s022:xml:LineExtensionAmount": {
+   "b": 17901066199,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s022:xml:PayableAmount": {
+   "b": 16110959579,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s022:xml:TaxExclusiveAmount": {
+   "b": 14320852959,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s022:xml:TaxInclusiveAmount": {
+   "b": 1790106620,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s022:xml:kalem0003Toplami": {
+   "b": 3580213240,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s022:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s022:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s022:xml:kalemLineExtensionToplami": {
+   "b": 17901066199,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s022:xml:kalemPriceToplami": {
+   "b": 16110959579,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s023:gfn:birimFiyat": {
+   "b": 1,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s023:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s023:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s023:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s023:kalem1:kdv": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s023:kayit:brut": {
+   "b": 1,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s023:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s023:kayit:kdv": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s023:kayit:netUcret": {
+   "b": 1,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s023:kayit:odenecek": {
+   "b": 1,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s023:kayit:stopaj": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s023:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s023:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s023:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s023:xml:0003:TaxAmount": {
+   "b": 0,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s023:xml:0015:TaxAmount": {
+   "b": 0,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s023:xml:LineExtensionAmount": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s023:xml:PayableAmount": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s023:xml:TaxExclusiveAmount": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s023:xml:TaxInclusiveAmount": {
+   "b": 0,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s023:xml:kalem0003Toplami": {
+   "b": 0,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s023:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s023:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s023:xml:kalemLineExtensionToplami": {
+   "b": 1,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s023:xml:kalemPriceToplami": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s024:gfn:birimFiyat": {
+   "b": 6451,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı (KDV dahil: matrah + yuvarla(matrah × KDV))"
+  },
+  "s024:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s024:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s024:gfn:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s024:kalem1:kdv": {
+   "b": 1075,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s024:kayit:brut": {
+   "b": 5376,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s024:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s024:kayit:kdv": {
+   "b": 1075,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s024:kayit:netUcret": {
+   "b": 5376,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s024:kayit:odenecek": {
+   "b": 5483,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s024:kayit:stopaj": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s024:kayit:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s024:kayit:tevkifat": {
+   "b": 968,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s024:xml:0015:TaxAmount": {
+   "b": 1075,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s024:xml:LineExtensionAmount": {
+   "b": 5376,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s024:xml:PayableAmount": {
+   "b": 5483,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s024:xml:TaxExclusiveAmount": {
+   "b": 5376,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s024:xml:TaxInclusiveAmount": {
+   "b": 107,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s024:xml:WithholdingTaxAmount": {
+   "b": 968,
+   "e": "EDM",
+   "k": "B4.7 KDV tevkifatı"
+  },
+  "s024:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s024:xml:kalemLineExtensionToplami": {
+   "b": 5376,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s024:xml:kalemPriceToplami": {
+   "b": 5483,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s025:gfn:birimFiyat": {
+   "b": 12327,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s025:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s025:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s025:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s025:kalem1:kdv": {
+   "b": 2465,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s025:kayit:brut": {
+   "b": 12327,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s025:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s025:kayit:kdv": {
+   "b": 2465,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s025:kayit:netUcret": {
+   "b": 9862,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s025:kayit:odenecek": {
+   "b": 12327,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s025:kayit:stopaj": {
+   "b": 2465,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s025:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s025:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s025:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s025:xml:0003:TaxAmount": {
+   "b": 2465,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s025:xml:0015:TaxAmount": {
+   "b": 2465,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s025:xml:LineExtensionAmount": {
+   "b": 12327,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s025:xml:PayableAmount": {
+   "b": 12327,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s025:xml:TaxExclusiveAmount": {
+   "b": 9862,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s025:xml:TaxInclusiveAmount": {
+   "b": 2465,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s025:xml:kalem0003Toplami": {
+   "b": 2465,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s025:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s025:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s025:xml:kalemLineExtensionToplami": {
+   "b": 12327,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s025:xml:kalemPriceToplami": {
+   "b": 12327,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s026:gfn:durum": {
+   "b": "ret",
+   "e": "AJAN",
+   "k": "B3 çözümsüz Net Ücret reddedilir"
+  },
+  "s027:gfn:birimFiyat": {
+   "b": 10283763,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı (KDV dahil: matrah + yuvarla(matrah × KDV))"
+  },
+  "s027:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s027:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s027:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s027:kalem1:kdv": {
+   "b": 934888,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s027:kayit:brut": {
+   "b": 9348875,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s027:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s027:kayit:kdv": {
+   "b": 934888,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s027:kayit:netUcret": {
+   "b": 7479100,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s027:kayit:odenecek": {
+   "b": 8413988,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s027:kayit:stopaj": {
+   "b": 1869775,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s027:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s027:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s027:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s027:xml:0003:TaxAmount": {
+   "b": 1869775,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s027:xml:0015:TaxAmount": {
+   "b": 934888,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s027:xml:LineExtensionAmount": {
+   "b": 9348875,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s027:xml:PayableAmount": {
+   "b": 8413988,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s027:xml:TaxExclusiveAmount": {
+   "b": 7479100,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s027:xml:TaxInclusiveAmount": {
+   "b": 934888,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s027:xml:kalem0003Toplami": {
+   "b": 1869775,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s027:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s027:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s027:xml:kalemLineExtensionToplami": {
+   "b": 9348875,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s027:xml:kalemPriceToplami": {
+   "b": 8413988,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s028:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s028:kayit:durum": {
+   "b": "ret",
+   "e": "GIB",
+   "k": "A6 30.000 TL üstü nihai tüketici"
+  },
+  "s029:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s029:kayit:durum": {
+   "b": "ret",
+   "e": "GIB",
+   "k": "A6 30.000 TL üstü nihai tüketici"
+  },
+  "s030:gfn:birimFiyat": {
+   "b": 2407460,
+   "e": "CATAL",
+   "k": "B3.3 ilk kalemin birim fiyatı (KDV dahil: matrah + yuvarla(matrah × KDV))"
+  },
+  "s030:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s030:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s030:gfn:stopajOrani": {
+   "b": 1500,
+   "e": "AJAN",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s030:kalem1:kdv": {
+   "b": 401243,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s030:kalem2:kdv": {
+   "b": 7873,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s030:kalem3:kdv": {
+   "b": 74823,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s030:kayit:brut": {
+   "b": 2459059,
+   "e": "CATAL",
+   "k": "B3.3 en küçük brüt (uzlaşım) — ÇATAL: kalem kalem stopajla 2459058"
+  },
+  "s030:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s030:kayit:kdv": {
+   "b": 483939,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s030:kayit:netUcret": {
+   "b": 2090200,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s030:kayit:odenecek": {
+   "b": 2574139,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s030:kayit:stopaj": {
+   "b": 368859,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s030:kayit:stopajOrani": {
+   "b": 1500,
+   "e": "AJAN",
+   "k": "B3.1"
+  },
+  "s030:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s030:xml:0003:Percent": {
+   "b": 1500,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s030:xml:0003:TaxAmount": {
+   "b": 368859,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s030:xml:0015:TaxAmount": {
+   "b": 483939,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s030:xml:LineExtensionAmount": {
+   "b": 2459059,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s030:xml:PayableAmount": {
+   "b": 2574139,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s030:xml:TaxExclusiveAmount": {
+   "b": 2090200,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s030:xml:TaxInclusiveAmount": {
+   "b": 483939,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s030:xml:kalem0003Toplami": {
+   "b": 368859,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s030:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s030:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s030:xml:kalem2:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s030:xml:kalem2:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s030:xml:kalem3:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s030:xml:kalem3:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s030:xml:kalemLineExtensionToplami": {
+   "b": 2459059,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s030:xml:kalemPriceToplami": {
+   "b": 2574139,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s031:gfn:birimFiyat": {
+   "b": 8396644,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı (KDV dahil: matrah + yuvarla(matrah × KDV))"
+  },
+  "s031:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s031:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s031:gfn:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s031:kalem1:kdv": {
+   "b": 1399441,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s031:kayit:brut": {
+   "b": 6997203,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s031:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s031:kayit:kdv": {
+   "b": 1399441,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s031:kayit:netUcret": {
+   "b": 6997203,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s031:kayit:odenecek": {
+   "b": 8396644,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s031:kayit:stopaj": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s031:kayit:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s031:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s031:xml:0015:TaxAmount": {
+   "b": 1399441,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s031:xml:LineExtensionAmount": {
+   "b": 6997203,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s031:xml:PayableAmount": {
+   "b": 8396644,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s031:xml:TaxExclusiveAmount": {
+   "b": 6997203,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s031:xml:TaxInclusiveAmount": {
+   "b": 1399441,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s031:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s031:xml:kalemLineExtensionToplami": {
+   "b": 6997203,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s031:xml:kalemPriceToplami": {
+   "b": 8396644,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s032:gfn:durum": {
+   "b": "ret",
+   "e": "AJAN",
+   "k": "B3 çözümsüz Net Ücret reddedilir"
+  },
+  "s033:gfn:birimFiyat": {
+   "b": 7179,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s033:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s033:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s033:gfn:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s033:kalem1:kdv": {
+   "b": 72,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s033:kayit:brut": {
+   "b": 7179,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s033:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s033:kayit:kdv": {
+   "b": 72,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s033:kayit:netUcret": {
+   "b": 7179,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s033:kayit:odenecek": {
+   "b": 7215,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s033:kayit:stopaj": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s033:kayit:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s033:kayit:tevkifat": {
+   "b": 36,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s033:xml:0015:TaxAmount": {
+   "b": 72,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s033:xml:LineExtensionAmount": {
+   "b": 7179,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s033:xml:PayableAmount": {
+   "b": 7215,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s033:xml:TaxExclusiveAmount": {
+   "b": 7179,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s033:xml:TaxInclusiveAmount": {
+   "b": 36,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s033:xml:WithholdingTaxAmount": {
+   "b": 36,
+   "e": "EDM",
+   "k": "B4.7 KDV tevkifatı"
+  },
+  "s033:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s033:xml:kalemLineExtensionToplami": {
+   "b": 7179,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s033:xml:kalemPriceToplami": {
+   "b": 7215,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s034:gfn:birimFiyat": {
+   "b": 99867175,
+   "e": "CATAL",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s034:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s034:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s034:gfn:stopajOrani": {
+   "b": 1000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s034:kalem1:kdv": {
+   "b": 998672,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s034:kalem2:kdv": {
+   "b": 15562,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s034:kalem3:kdv": {
+   "b": 43639,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s034:kayit:brut": {
+   "b": 100381379,
+   "e": "CATAL",
+   "k": "B3.3 en küçük brüt (uzlaşım) — ÇATAL: kalem kalem stopajla 100381378"
+  },
+  "s034:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s034:kayit:kdv": {
+   "b": 1057873,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s034:kayit:netUcret": {
+   "b": 90343241,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s034:kayit:odenecek": {
+   "b": 90893997,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s034:kayit:stopaj": {
+   "b": 10038138,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s034:kayit:stopajOrani": {
+   "b": 1000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s034:kayit:tevkifat": {
+   "b": 507117,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s034:xml:0003:Percent": {
+   "b": 1000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s034:xml:0003:TaxAmount": {
+   "b": 10038138,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s034:xml:0015:TaxAmount": {
+   "b": 1057873,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s034:xml:LineExtensionAmount": {
+   "b": 100381379,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s034:xml:PayableAmount": {
+   "b": 90893997,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s034:xml:TaxExclusiveAmount": {
+   "b": 90343241,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s034:xml:TaxInclusiveAmount": {
+   "b": 550756,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s034:xml:WithholdingTaxAmount": {
+   "b": 507117,
+   "e": "EDM",
+   "k": "B4.7 KDV tevkifatı"
+  },
+  "s034:xml:kalem0003Toplami": {
+   "b": 10038138,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s034:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s034:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s034:xml:kalem2:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s034:xml:kalem2:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s034:xml:kalem3:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s034:xml:kalem3:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s034:xml:kalemLineExtensionToplami": {
+   "b": 100381379,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s034:xml:kalemPriceToplami": {
+   "b": 90893997,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s035:gfn:durum": {
+   "b": "ret",
+   "e": "AJAN",
+   "k": "B3 çözümsüz Net Ücret reddedilir"
+  },
+  "s036:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s036:kayit:durum": {
+   "b": "ret",
+   "e": "GIB",
+   "k": "A6 30.000 TL üstü nihai tüketici"
+  },
+  "s037:gfn:birimFiyat": {
+   "b": 2606800,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s037:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s037:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s037:gfn:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s037:kalem1:kdv": {
+   "b": 260680,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s037:kayit:brut": {
+   "b": 2606800,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s037:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s037:kayit:kdv": {
+   "b": 260680,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s037:kayit:netUcret": {
+   "b": 2606800,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s037:kayit:odenecek": {
+   "b": 2867480,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s037:kayit:stopaj": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s037:kayit:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s037:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s037:xml:0015:TaxAmount": {
+   "b": 260680,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s037:xml:LineExtensionAmount": {
+   "b": 2606800,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s037:xml:PayableAmount": {
+   "b": 2867480,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s037:xml:TaxExclusiveAmount": {
+   "b": 2606800,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s037:xml:TaxInclusiveAmount": {
+   "b": 260680,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s037:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s037:xml:kalemLineExtensionToplami": {
+   "b": 2606800,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s037:xml:kalemPriceToplami": {
+   "b": 2867480,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s038:gfn:birimFiyat": {
+   "b": 1,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s038:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s038:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s038:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s038:kalem1:kdv": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s038:kayit:brut": {
+   "b": 1,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s038:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s038:kayit:kdv": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s038:kayit:netUcret": {
+   "b": 1,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s038:kayit:odenecek": {
+   "b": 1,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s038:kayit:stopaj": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s038:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s038:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s038:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s038:xml:0003:TaxAmount": {
+   "b": 0,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s038:xml:0015:TaxAmount": {
+   "b": 0,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s038:xml:LineExtensionAmount": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s038:xml:PayableAmount": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s038:xml:TaxExclusiveAmount": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s038:xml:TaxInclusiveAmount": {
+   "b": 0,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s038:xml:kalem0003Toplami": {
+   "b": 0,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s038:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s038:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s038:xml:kalemLineExtensionToplami": {
+   "b": 1,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s038:xml:kalemPriceToplami": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s039:gfn:birimFiyat": {
+   "b": 11886321098,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s039:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s039:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s039:gfn:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s039:kalem1:kdv": {
+   "b": 2377264220,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s039:kayit:brut": {
+   "b": 11886321098,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s039:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s039:kayit:kdv": {
+   "b": 2377264220,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s039:kayit:netUcret": {
+   "b": 11886321098,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s039:kayit:odenecek": {
+   "b": 13074953208,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s039:kayit:stopaj": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s039:kayit:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s039:kayit:tevkifat": {
+   "b": 1188632110,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s039:xml:0015:TaxAmount": {
+   "b": 2377264220,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s039:xml:LineExtensionAmount": {
+   "b": 11886321098,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s039:xml:PayableAmount": {
+   "b": 13074953208,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s039:xml:TaxExclusiveAmount": {
+   "b": 11886321098,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s039:xml:TaxInclusiveAmount": {
+   "b": 1188632110,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s039:xml:WithholdingTaxAmount": {
+   "b": 1188632110,
+   "e": "EDM",
+   "k": "B4.7 KDV tevkifatı"
+  },
+  "s039:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s039:xml:kalemLineExtensionToplami": {
+   "b": 11886321098,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s039:xml:kalemPriceToplami": {
+   "b": 13074953208,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s040:gfn:birimFiyat": {
+   "b": 2445630,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı (KDV dahil: matrah + yuvarla(matrah × KDV))"
+  },
+  "s040:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s040:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s040:gfn:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s040:kalem1:kdv": {
+   "b": 222330,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s040:kayit:brut": {
+   "b": 2223300,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s040:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s040:kayit:kdv": {
+   "b": 222330,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s040:kayit:netUcret": {
+   "b": 2223300,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s040:kayit:odenecek": {
+   "b": 2445630,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s040:kayit:stopaj": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s040:kayit:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s040:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s040:xml:0015:TaxAmount": {
+   "b": 222330,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s040:xml:LineExtensionAmount": {
+   "b": 2223300,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s040:xml:PayableAmount": {
+   "b": 2445630,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s040:xml:TaxExclusiveAmount": {
+   "b": 2223300,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s040:xml:TaxInclusiveAmount": {
+   "b": 222330,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s040:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s040:xml:kalemLineExtensionToplami": {
+   "b": 2223300,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s040:xml:kalemPriceToplami": {
+   "b": 2445630,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s041:gfn:birimFiyat": {
+   "b": 11311296,
+   "e": "CATAL",
+   "k": "B3.3 ilk kalemin birim fiyatı (KDV dahil: matrah + yuvarla(matrah × KDV))"
+  },
+  "s041:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s041:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s041:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s041:kalem1:kdv": {
+   "b": 111993,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s041:kalem2:kdv": {
+   "b": 11307,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s041:kayit:brut": {
+   "b": 11312375,
+   "e": "CATAL",
+   "k": "B3.3 en küçük brüt (uzlaşım) — ÇATAL: kalem kalem stopajla 11312374"
+  },
+  "s041:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s041:kayit:kdv": {
+   "b": 123300,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s041:kayit:netUcret": {
+   "b": 9049900,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s041:kayit:odenecek": {
+   "b": 9163024,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s041:kayit:stopaj": {
+   "b": 2262475,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s041:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s041:kayit:tevkifat": {
+   "b": 10176,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s041:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s041:xml:0003:TaxAmount": {
+   "b": 2262475,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s041:xml:0015:TaxAmount": {
+   "b": 123300,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s041:xml:LineExtensionAmount": {
+   "b": 11312375,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s041:xml:PayableAmount": {
+   "b": 9163024,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s041:xml:TaxExclusiveAmount": {
+   "b": 9049900,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s041:xml:TaxInclusiveAmount": {
+   "b": 113124,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s041:xml:WithholdingTaxAmount": {
+   "b": 10176,
+   "e": "EDM",
+   "k": "B4.7 KDV tevkifatı"
+  },
+  "s041:xml:kalem0003Toplami": {
+   "b": 2262475,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s041:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s041:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s041:xml:kalem2:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s041:xml:kalem2:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s041:xml:kalemLineExtensionToplami": {
+   "b": 11312375,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s041:xml:kalemPriceToplami": {
+   "b": 9163024,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s042:gfn:birimFiyat": {
+   "b": 2209300,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s042:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s042:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s042:gfn:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s042:kalem1:kdv": {
+   "b": 220930,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s042:kayit:brut": {
+   "b": 2209300,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s042:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s042:kayit:kdv": {
+   "b": 220930,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s042:kayit:netUcret": {
+   "b": 2209300,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s042:kayit:odenecek": {
+   "b": 2430230,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s042:kayit:stopaj": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s042:kayit:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s042:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s042:xml:0015:TaxAmount": {
+   "b": 220930,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s042:xml:LineExtensionAmount": {
+   "b": 2209300,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s042:xml:PayableAmount": {
+   "b": 2430230,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s042:xml:TaxExclusiveAmount": {
+   "b": 2209300,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s042:xml:TaxInclusiveAmount": {
+   "b": 220930,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s042:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s042:xml:kalemLineExtensionToplami": {
+   "b": 2209300,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s042:xml:kalemPriceToplami": {
+   "b": 2430230,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s043:gfn:durum": {
+   "b": "ret",
+   "e": "AJAN",
+   "k": "B3 çözümsüz Net Ücret reddedilir"
+  },
+  "s044:gfn:birimFiyat": {
+   "b": 18605227,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s044:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s044:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s044:gfn:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s044:kalem1:kdv": {
+   "b": 3721045,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s044:kayit:brut": {
+   "b": 18605227,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s044:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s044:kayit:kdv": {
+   "b": 3721045,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s044:kayit:netUcret": {
+   "b": 18605227,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s044:kayit:odenecek": {
+   "b": 22326272,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s044:kayit:stopaj": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s044:kayit:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s044:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s044:xml:0015:TaxAmount": {
+   "b": 3721045,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s044:xml:LineExtensionAmount": {
+   "b": 18605227,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s044:xml:PayableAmount": {
+   "b": 22326272,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s044:xml:TaxExclusiveAmount": {
+   "b": 18605227,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s044:xml:TaxInclusiveAmount": {
+   "b": 3721045,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s044:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s044:xml:kalemLineExtensionToplami": {
+   "b": 18605227,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s044:xml:kalemPriceToplami": {
+   "b": 22326272,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s045:gfn:birimFiyat": {
+   "b": 1,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı (KDV dahil: matrah + yuvarla(matrah × KDV))"
+  },
+  "s045:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s045:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s045:gfn:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s045:kalem1:kdv": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s045:kayit:brut": {
+   "b": 1,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s045:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s045:kayit:kdv": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s045:kayit:netUcret": {
+   "b": 1,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s045:kayit:odenecek": {
+   "b": 1,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s045:kayit:stopaj": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s045:kayit:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s045:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s045:xml:0015:TaxAmount": {
+   "b": 0,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s045:xml:LineExtensionAmount": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s045:xml:PayableAmount": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s045:xml:TaxExclusiveAmount": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s045:xml:TaxInclusiveAmount": {
+   "b": 0,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s045:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s045:xml:kalemLineExtensionToplami": {
+   "b": 1,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s045:xml:kalemPriceToplami": {
+   "b": 1,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s046:gfn:birimFiyat": {
+   "b": 2419,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı"
+  },
+  "s046:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s046:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s046:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s046:kalem1:kdv": {
+   "b": 24,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s046:kayit:brut": {
+   "b": 2419,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s046:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s046:kayit:kdv": {
+   "b": 24,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s046:kayit:netUcret": {
+   "b": 1935,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s046:kayit:odenecek": {
+   "b": 1959,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s046:kayit:stopaj": {
+   "b": 484,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s046:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s046:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s046:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s046:xml:0003:TaxAmount": {
+   "b": 484,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s046:xml:0015:TaxAmount": {
+   "b": 24,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s046:xml:LineExtensionAmount": {
+   "b": 2419,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s046:xml:PayableAmount": {
+   "b": 1959,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s046:xml:TaxExclusiveAmount": {
+   "b": 1935,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s046:xml:TaxInclusiveAmount": {
+   "b": 24,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s046:xml:kalem0003Toplami": {
+   "b": 484,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s046:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s046:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s046:xml:kalemLineExtensionToplami": {
+   "b": 2419,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s046:xml:kalemPriceToplami": {
+   "b": 1959,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s047:gfn:birimFiyat": {
+   "b": 11401950,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı (KDV dahil: matrah + yuvarla(matrah × KDV))"
+  },
+  "s047:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s047:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s047:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s047:kalem1:kdv": {
+   "b": 1900325,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s047:kayit:brut": {
+   "b": 9501625,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s047:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s047:kayit:kdv": {
+   "b": 1900325,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s047:kayit:netUcret": {
+   "b": 7601300,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s047:kayit:odenecek": {
+   "b": 9501625,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s047:kayit:stopaj": {
+   "b": 1900325,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s047:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s047:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s047:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s047:xml:0003:TaxAmount": {
+   "b": 1900325,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s047:xml:0015:TaxAmount": {
+   "b": 1900325,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s047:xml:LineExtensionAmount": {
+   "b": 9501625,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s047:xml:PayableAmount": {
+   "b": 9501625,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s047:xml:TaxExclusiveAmount": {
+   "b": 7601300,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s047:xml:TaxInclusiveAmount": {
+   "b": 1900325,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s047:xml:kalem0003Toplami": {
+   "b": 1900325,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s047:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s047:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s047:xml:kalemLineExtensionToplami": {
+   "b": 9501625,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s047:xml:kalemPriceToplami": {
+   "b": 9501625,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s048:gfn:birimFiyat": {
+   "b": 7854,
+   "e": "AJAN",
+   "k": "B3.3 ilk kalemin birim fiyatı (KDV dahil: matrah + yuvarla(matrah × KDV))"
+  },
+  "s048:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s048:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s048:gfn:stopajOrani": {
+   "b": 2000,
+   "e": "AJAN",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s048:kalem1:kdv": {
+   "b": 1309,
+   "e": "GIB",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s048:kayit:brut": {
+   "b": 6545,
+   "e": "AJAN",
+   "k": "B3.3 en küçük brüt (uzlaşım)"
+  },
+  "s048:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s048:kayit:kdv": {
+   "b": 1309,
+   "e": "GIB",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s048:kayit:netUcret": {
+   "b": 5236,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s048:kayit:odenecek": {
+   "b": 6545,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s048:kayit:stopaj": {
+   "b": 1309,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s048:kayit:stopajOrani": {
+   "b": 2000,
+   "e": "AJAN",
+   "k": "B3.1"
+  },
+  "s048:kayit:tevkifat": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s048:xml:0003:Percent": {
+   "b": 2000,
+   "e": "EDM",
+   "k": "B4.5 0003 oranı"
+  },
+  "s048:xml:0003:TaxAmount": {
+   "b": 1309,
+   "e": "EDM",
+   "k": "B4.5 GV stopajı (0003) = makbuzun stopajı"
+  },
+  "s048:xml:0015:TaxAmount": {
+   "b": 1309,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s048:xml:LineExtensionAmount": {
+   "b": 6545,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s048:xml:PayableAmount": {
+   "b": 6545,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s048:xml:TaxExclusiveAmount": {
+   "b": 5236,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s048:xml:TaxInclusiveAmount": {
+   "b": 1309,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s048:xml:kalem0003Toplami": {
+   "b": 1309,
+   "e": "AJAN",
+   "k": "B4.9 Σ kalem stopajı = belge stopajı (dağıtım)"
+  },
+  "s048:xml:kalem1:0003SapmaKurus": {
+   "b": "<=1",
+   "e": "AJAN",
+   "k": "B4.10 kalem stopajı kendi matrah × oranından en çok 1 kuruş sapar"
+  },
+  "s048:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s048:xml:kalemLineExtensionToplami": {
+   "b": 6545,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s048:xml:kalemPriceToplami": {
+   "b": 6545,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  },
+  "s049:gfn:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 Netten Brüte ucu yanıt verir"
+  },
+  "s049:gfn:kayitAyni": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B3.9 Netten Brüte ön hesabı = kaydedilen makbuz"
+  },
+  "s049:gfn:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran"
+  },
+  "s049:kalem1:kdv": {
+   "b": 1778,
+   "e": "YAYGIN",
+   "k": "B3.5 KDV = matrah × oran (kalem başına kuruşa)"
+  },
+  "s049:kayit:durum": {
+   "b": "ok",
+   "e": "AJAN",
+   "k": "B3 makbuz kaydedilir"
+  },
+  "s049:kayit:kdv": {
+   "b": 1778,
+   "e": "YAYGIN",
+   "k": "B3.5 KDV toplamı = kalemlerin KDV'si"
+  },
+  "s049:kayit:netUcret": {
+   "b": 8890,
+   "e": "GIB",
+   "k": "B3.2 Net Ücret = Brüt − Stopaj = yazılan net"
+  },
+  "s049:kayit:odenecek": {
+   "b": 9779,
+   "e": "GIB",
+   "k": "B3.8 Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla)"
+  },
+  "s049:kayit:stopaj": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.6 stopaj = yuvarla(brüt × oran)"
+  },
+  "s049:kayit:stopajOrani": {
+   "b": 0,
+   "e": "GIB",
+   "k": "B3.1"
+  },
+  "s049:kayit:tevkifat": {
+   "b": 889,
+   "e": "GIB",
+   "k": "B3.7 tevkifat = yuvarla(KDV × pay/payda) (602 = 9/10, 616 = 5/10)"
+  },
+  "s049:xml:0015:TaxAmount": {
+   "b": 1778,
+   "e": "EDM",
+   "k": "B4.6 KDV (0015) toplamı"
+  },
+  "s049:xml:LineExtensionAmount": {
+   "b": 8890,
+   "e": "EDM",
+   "k": "B4.1 'Brüt Ücret'"
+  },
+  "s049:xml:PayableAmount": {
+   "b": 9779,
+   "e": "EDM",
+   "k": "B4.4 'Net Alınan' = Net Ücret + Tahsil Edilen KDV"
+  },
+  "s049:xml:TaxExclusiveAmount": {
+   "b": 8890,
+   "e": "EDM",
+   "k": "B4.2 'Net Ücret Tutarı' = brüt − stopaj"
+  },
+  "s049:xml:TaxInclusiveAmount": {
+   "b": 889,
+   "e": "EDM",
+   "k": "B4.3 'Tahsil Edilen KDV' = KDV − tevkifat"
+  },
+  "s049:xml:WithholdingTaxAmount": {
+   "b": 889,
+   "e": "EDM",
+   "k": "B4.7 KDV tevkifatı"
+  },
+  "s049:xml:kalem1:netKimlik": {
+   "b": true,
+   "e": "EDM",
+   "k": "B4.12 InvoicedQuantity 'Net Ücret' = kalem brüt − kalem stopaj; PriceAmount = net + KDV − tevkifat"
+  },
+  "s049:xml:kalemLineExtensionToplami": {
+   "b": 8890,
+   "e": "GIB",
+   "k": "B4.8 Σ kalem LineExtensionAmount = belge (UBL)"
+  },
+  "s049:xml:kalemPriceToplami": {
+   "b": 9779,
+   "e": "EDM",
+   "k": "B4.11 Σ kalem 'Net Tahsilat' (PriceAmount) = Net Alınan"
+  }
+ }
+}

@@ -1,0 +1,53 @@
+
+> destekofis@2.4.3 test:senaryo-banka-210-eski-satir
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210-eski-satir.mjs
+
+
+■ 1. Hazırlık (API): hesap yokken 10.09 hesapsız havale 1.000; sonra Ziraat ve Garanti 01.10 açılışla
+  ✓ Gerçek Banka 150000, Hesabı Atanmamış 1000
+
+■ 2. Eski havaleyi Düzelt: 1.000 → 1.200 (Atanmamış (Eski Hareket)) → kaydedilir, hesapsız kalır (B1)
+  ✓ Banka Hesabı seçicisi: Atanmamış (Eski Hareket) | Ziraat Bankası · Ana TL Hesabı (ZIR-TL) — ₺0,00 | Garanti BBVA · Ana TL Hesabı (GAR-TL) — ₺0,00 | Hesapsız (Açılıştan Önce)
+  ✓ düzeltildi: tutar 1200, hesap “”
+  ✓ Gerçek Banka 150000 (değişmedi), Hesabı Atanmamış 1200
+
+■ 2b. Yavaş ağ: Tahsilat → Havale/EFT, seçici gelmeden Kaydet → yazılmaz, "Banka Hesabı seçin"; seçici gelince seçilen hesaba yazılır
+  ✓ ön koşul: Kaydet'e basılırken Banka Hesabı seçicisi henüz yok
+  ✓ yazılmadı (satır 0, Gerçek Banka 150000, Atanmamış 1200); ileti “Banka Hesabı seçin: havale/EFT hangi hesaba girdi ya da hangi hesaptan çıktı?”
+  ✓ seçilen hesaba yazıldı: 1 satır, tutar 250, hesap Garanti
+  ✓ silindi: Gerçek Banka 150000, Hesabı Atanmamış 1200
+
+■ 3. Tahsilat → Havale/EFT → "Hesapsız (Açılıştan Önce)", tarih 15.09 → kaydedilir, hesapsız (B1, çok hesap)
+  ✓ seçenekler: Hesap Seçin | Ziraat Bankası · Ana TL Hesabı (ZIR-TL) — ₺100.000,00 | Garanti BBVA · Ana TL Hesabı (GAR-TL) — ₺50.000,00 | Hesapsız (Açılıştan Önce)
+  ✓ açıklama Hesapsız'a göre: “Cariden para alındı: bakiyeden düşer; banka hesabının açılışından önceki hareket olduğu için hiçbir hesaba girmez, Hesabı Atanmamış Eski Hareketler'de (Havale / EFT) kalır, makbuzu alınır.”
+  ✓ seçicinin altında not: “Banka hesabının açılışından önceki hareket: hiçbir hesaba yazılmaz, Hesabı Atanmamış Eski Hareketler'de kalır.”
+  ✓ hesap seçilince eski metin döner, not kalkar: “Cariden para alındı: bakiyeden düşer, seçilen banka hesabına girer, makbuzu alınır.”
+  ✓ kaydedildi: 1 satır, hesap “”
+  ✓ Gerçek Banka 150000, Hesabı Atanmamış 1500
+
+■ 4. Nasıl bozarım: bugünkü tarihle "Hesapsız (Açılıştan Önce)" → kaydedilmez, neden formda
+  ✓ kaydedilmedi: “"Hesapsız (Açılıştan Önce)" yalnız hesapların açılışından önceki hareket için seçilir; 08.10.2026 tarihli havale/EFT'nin hesabını seçin.”
+
+■ 5. Devir Kapanışı yapılmış eski havalenin tutarı → kaydedilmez, Kurulum Geçmişi yolu formda (Y1)
+  ✓ Devir Kapanışı 1500
+  ✓ kaydedilmedi (tutar 1200): “Bu hareket (10.09.2026) 01.10.2026 tarihli Devir Kapanışı'yla (BNK-2026-000007) açılış bakiyelerinin içinde kapanan eski banka ve POS hareketlerinden; parası (tutar, yol, hesap, Devir Kapanışı'ndan sonraya tarih) değiştirilemez, silinemez, geri yüklenemez ve Devir Kapanışı'ndan önceki tarihle yeni hesapsız hareket girilemez (kapanış ile hareketler tutarsız kalır). Önce Banka → Hesabı Atanmamış Eski Hareketler → Kurulum Geçmişi'nden BNK-2026-000006 kaydını Geri Alın, hareketi düzeltip Kurulum Sihirbazı'nı yeniden çalıştırın.”
+  ✓ Hesabı Atanmamış 0 (takılı artık yok)
+
+■ 6. Ödeme → Havale/EFT → "Hesapsız (Açılıştan Önce)": açıklama hesaptan çıkmadığını söyler
+  ✓ Ödeme açıklaması: “Cariye para verildi (ör. tedarikçiye ödeme, iade): banka hesabının açılışından önceki hareket olduğu için hiçbir hesaptan çıkmaz, Hesabı Atanmamış Eski Hareketler'de (Havale / EFT) kalır.”
+  ✓ Ödeme formunda seçicinin altında not
+
+■ 7. Kasa → Kasadan Bankaya Yatır / Bankadan Kasaya Aktar → "Hesapsız (Açılıştan Önce)": açıklama
+  ✓ to-bank hesap seçiliyken: “Kasadaki nakit bankaya yatırılır; seçilen banka hesabına aynı tutar girer (Banka → Hareketler). Nakit Kasa yetmiyorsa program sorar.”
+  ✓ to-bank Hesapsız: “Kasadaki nakit bankaya yatırılır; banka hesabının açılışından önceki hareket olduğu için banka tarafı hiçbir hesaba girmez, Hesabı Atanmamış Eski Hareketler'de kalır. Nakit Kasa yetmiyorsa program sorar.”
+  ✓ to-bank seçicinin altında not
+  ✓ to-cash hesap seçiliyken: “Bankadan çekilen nakit Kasa'ya girer; seçilen banka hesabından aynı tutar çıkar (Banka → Hareketler).”
+  ✓ to-cash Hesapsız: “Bankadan çekilen nakit Kasa'ya girer; banka hesabının açılışından önceki hareket olduğu için banka tarafı hiçbir hesaptan çıkmaz, Hesabı Atanmamış Eski Hareketler'de kalır.”
+  ✓ to-cash seçicinin altında not
+
+■ 8. Fatura Düzenle → peşin satırında "Hesapsız (Açılıştan Önce)": satırda not
+  ✓ hesap seçiliyken satırda not yok
+  ✓ peşin satırında not: “Banka hesabının açılışından önceki hareket: hiçbir hesaba yazılmaz, Hesabı Atanmamış Eski Hareketler'de kalır.”
+  ✓ sayfa hatası yok
+
+✓ senaryo-banka-210-eski-satir: 29 geçti, 0 kaldı · ekran görüntüleri /home/user/wt/aday5/test/e2e/artifacts/senaryo-banka-210-eski-satir

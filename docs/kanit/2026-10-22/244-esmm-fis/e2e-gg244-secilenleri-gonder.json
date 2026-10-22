@@ -1,0 +1,32 @@
+{
+  "ad": "244-esmm-fis/e2e-gg244-secilenleri-gonder",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/gg244-secilenleri-gonder.mjs",
+  "commit": "60a411ff74689ddcabee53d2d7ddde170ab9e4c2",
+  "dal": "is/esmm-fis",
+  "kirli": 8,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T11:16:44.319Z",
+  "sure_sn": 18.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 44,
+    "gecen": 44,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-esmm-fis/e2e-gg244-secilenleri-gonder.log",
+  "klasor": "/home/user/wt/esmm-fis",
+  "ham_cikti_sha256": "e06c89cf19a19f8f472d806d1c80eb652a800e0f736bb4fec0b9e6995afc8d87",
+  "ham_cikti_bayt": 5536
+}

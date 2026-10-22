@@ -1,0 +1,571 @@
+TAP version 13
+# Subtest: EDM: sözleşme (WSDL) okuyucu
+    # Subtest: WCF tarzı WSDL: SOAP 1.1 bağlaması seçilir, SOAPAction ve istek öğesi okunur
+    ok 1 - WCF tarzı WSDL: SOAP 1.1 bağlaması seçilir, SOAPAction ve istek öğesi okunur
+      ---
+      duration_ms: 3.929069
+      type: 'test'
+      ...
+    # Subtest: İstek sözleşmeye göre sıralanır, nitelenir; sözleşmede olmayan alan raporlanır, opsiyonel olan sessizce düşer
+    ok 2 - İstek sözleşmeye göre sıralanır, nitelenir; sözleşmede olmayan alan raporlanır, opsiyonel olan sessizce düşer
+      ---
+      duration_ms: 3.005318
+      type: 'test'
+      ...
+    # Subtest: Sözleşme yoksa: kök i2i ad alanında, çocuklar niteliksiz, opsiyonel alan gönderilmez
+    ok 3 - Sözleşme yoksa: kök i2i ad alanında, çocuklar niteliksiz, opsiyonel alan gönderilmez
+      ---
+      duration_ms: 0.52167
+      type: 'test'
+      ...
+    # Subtest: EDM durumları programın durumlarına doğru eşlenir
+    ok 4 - EDM durumları programın durumlarına doğru eşlenir
+      ---
+      duration_ms: 1.030973
+      type: 'test'
+      ...
+    1..4
+ok 1 - EDM: sözleşme (WSDL) okuyucu
+  ---
+  duration_ms: 9.627389
+  type: 'suite'
+  ...
+# Subtest: EDM istemcisi (sahte EDM sunucusu)
+    # Subtest: Bağlantıyı Sına: WSDL okunur, giriş yapılır, işlemler raporlanır; Logout çağrılmaz
+    ok 1 - Bağlantıyı Sına: WSDL okunur, giriş yapılır, işlemler raporlanır; Logout çağrılmaz
+      ---
+      duration_ms: 75.433102
+      type: 'test'
+      ...
+    # Subtest: Yanlış parola: EDM'nin hata kodu ve iletisi kullanıcıya gider
+    ok 2 - Yanlış parola: EDM'nin hata kodu ve iletisi kullanıcıya gider
+      ---
+      duration_ms: 20.769942
+      type: 'test'
+      ...
+    # Subtest: Mükellef sorgusu: yalnız posta kutusu (PK) etiketi alıcı etiketi olur
+    ok 3 - Mükellef sorgusu: yalnız posta kutusu (PK) etiketi alıcı etiketi olur
+      ---
+      duration_ms: 16.333194
+      type: 'test'
+      ...
+    # Subtest: e-Fatura gönderimi: gönderici/alıcı etiketleri, ETTN ve base64 UBL; e-Arşivde EARCHIVE işareti
+    ok 4 - e-Fatura gönderimi: gönderici/alıcı etiketleri, ETTN ve base64 UBL; e-Arşivde EARCHIVE işareti
+      ---
+      duration_ms: 11.922825
+      type: 'test'
+      ...
+    # Subtest: Durum sorgusu: önce GİB yanıtı bekleniyor, sonra alıcıya ulaştı
+    ok 5 - Durum sorgusu: önce GİB yanıtı bekleniyor, sonra alıcıya ulaştı
+      ---
+      duration_ms: 10.828737
+      type: 'test'
+      ...
+    # Subtest: Oturum düşerse (10011) yeniden giriş yapılır ve istek bir kez tekrarlanır
+    ok 6 - Oturum düşerse (10011) yeniden giriş yapılır ve istek bir kez tekrarlanır
+      ---
+      duration_ms: 12.139901
+      type: 'test'
+      ...
+    # Subtest: e-Arşiv iptali ve gelen kutusu (base64 UBL çözülür), okundu işareti
+    ok 7 - e-Arşiv iptali ve gelen kutusu (base64 UBL çözülür), okundu işareti
+      ---
+      duration_ms: 7.933351
+      type: 'test'
+      ...
+    # Subtest: Sözleşmede bulunmayan alan: istek hiç gönderilmez, alan adı söylenir
+    ok 8 - Sözleşmede bulunmayan alan: istek hiç gönderilmez, alan adı söylenir
+      ---
+      duration_ms: 16.689335
+      type: 'test'
+      ...
+    # Subtest: WSDL alınamazsa i2i varsayılanıyla çalışılır (ad alanı ve boş SOAPAction)
+    ok 9 - WSDL alınamazsa i2i varsayılanıyla çalışılır (ad alanı ve boş SOAPAction)
+      ---
+      duration_ms: 15.040238
+      type: 'test'
+      ...
+    1..9
+ok 2 - EDM istemcisi (sahte EDM sunucusu)
+  ---
+  duration_ms: 197.864433
+  type: 'suite'
+  ...
+# Subtest: Fatura modülü ↔ EDM (program uçları)
+    # Subtest: Ayarlar: parola şifreli saklanır, ekrana ve ayar kaydına açık metin çıkmaz
+    ok 1 - Ayarlar: parola şifreli saklanır, ekrana ve ayar kaydına açık metin çıkmaz
+      ---
+      duration_ms: 20.603037
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Sına ve Mükellef Sorgula: cari kartına e-Fatura ve PK etiketi yazılır
+    ok 2 - Bağlantıyı Sına ve Mükellef Sorgula: cari kartına e-Fatura ve PK etiketi yazılır
+      ---
+      duration_ms: 52.71042
+      type: 'test'
+      ...
+    # Subtest: e-Fatura kes → gönder → durum: ETTN ve numara EDM'ye gider; ikinci gönderim engellenir
+    ok 3 - e-Fatura kes → gönder → durum: ETTN ve numara EDM'ye gider; ikinci gönderim engellenir
+      ---
+      duration_ms: 144.046439
+      type: 'test'
+      ...
+    # Subtest: e-Arşiv kes → gönder → iptal: önce EDM'de, sonra programda iptal; defter etkisi geri alınır
+    ok 4 - e-Arşiv kes → gönder → iptal: önce EDM'de, sonra programda iptal; defter etkisi geri alınır
+      ---
+      duration_ms: 204.312389
+      type: 'test'
+      ...
+    # Subtest: Kes, Sonra Gönder: etkiler hemen işlenir, numara gönderimde verilir; Gönderilecekler sekmesi; Kes ve Gönder
+    ok 5 - Kes, Sonra Gönder: etkiler hemen işlenir, numara gönderimde verilir; Gönderilecekler sekmesi; Kes ve Gönder
+      ---
+      duration_ms: 228.931744
+      type: 'test'
+      ...
+    # Subtest: Gönderilecekler'den silme: etkiler kalır, Müşteri Fişi numarası alır; sonra yine e-Belge olarak gönderilebilir
+    ok 6 - Gönderilecekler'den silme: etkiler kalır, Müşteri Fişi numarası alır; sonra yine e-Belge olarak gönderilebilir
+      ---
+      duration_ms: 116.004388
+      type: 'test'
+      ...
+    # Subtest: Sonra gönderilecek belge serideki son gönderilenden eski tarihliyse gönderilmez (tarih sırası); Müşteri Fişi serisi daha yeni numara vermişse bırakılamaz da
+    not ok 7 - Sonra gönderilecek belge serideki son gönderilenden eski tarihliyse gönderilmez (tarih sırası); Müşteri Fişi serisi daha yeni numara vermişse bırakılamaz da
+      ---
+      duration_ms: 41.598041
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/einvoice-edm.test.mjs:321:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input was expected to not match the regular expression /Müşteri Fişi Olarak Bırak/. Input:
+        
+        'TEF serisinde son gönderilen belge TEF2026000000004 22.10.2026 tarihli; bu belge (21.10.2026) daha eski tarihli olduğu için e-Belge olarak gönderilemez. “Müşteri Fişi Olarak Bırak” ile fiş numarasıyla bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'TEF serisinde son gönderilen belge TEF2026000000004 22.10.2026 tarihli; bu belge (21.10.2026) daha eski tarihli olduğu için e-Belge olarak gönderilemez. “Müşteri Fişi Olarak Bırak” ile fiş numarasıyla bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.'
+      operator: 'doesNotMatch'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/einvoice-edm.test.mjs:345:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Gelen kutusu: çek → aynı belge ikinci kez gelmez → alış taslağı (satıcı VKN ile cari açılır) → taslak silinince yeniden Yeni
+    ok 8 - Gelen kutusu: çek → aynı belge ikinci kez gelmez → alış taslağı (satıcı VKN ile cari açılır) → taslak silinince yeniden Yeni
+      ---
+      duration_ms: 70.354359
+      type: 'test'
+      ...
+    1..8
+not ok 3 - Fatura modülü ↔ EDM (program uçları)
+  ---
+  duration_ms: 1284.261137
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/einvoice-edm.test.mjs:164:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: e-Belge kapalıyken (varsayılan) entegratör uçları çalışmaz
+    # Subtest: Bağlantı, mükellef sorgusu, gelen kutusu 404; ayarlarda entegratör bilgisi kaydedilmez
+    ok 1 - Bağlantı, mükellef sorgusu, gelen kutusu 404; ayarlarda entegratör bilgisi kaydedilmez
+      ---
+      duration_ms: 13.874292
+      type: 'test'
+      ...
+    1..1
+ok 4 - e-Belge kapalıyken (varsayılan) entegratör uçları çalışmaz
+  ---
+  duration_ms: 334.93887
+  type: 'suite'
+  ...
+# Subtest: Entegratör Ayarları: canlı ortam kilidi, GB/PK etiketleri, durum satırı, tercihler, yetki
+    # Subtest: varsayılanlar: Test Ortamı, otomatik gönderim kapalı, e-Arşiv e-postası açık, kendiliğinden sorgu kapalı; canlı ortam seçilemez
+    ok 1 - varsayılanlar: Test Ortamı, otomatik gönderim kapalı, e-Arşiv e-postası açık, kendiliğinden sorgu kapalı; canlı ortam seçilemez
+      ---
+      duration_ms: 8.70685
+      type: 'test'
+      ...
+    # Subtest: Posta Kutusu (PK) etiketi biçim denetimi; tercihler kaydedilir ve geri okunur
+    ok 2 - Posta Kutusu (PK) etiketi biçim denetimi; tercihler kaydedilir ve geri okunur
+      ---
+      duration_ms: 9.335812
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Test Et: sonuç Durum satırı için saklanır; kullanıcı adı değişince silinir; hata da saklanır
+    ok 3 - Bağlantıyı Test Et: sonuç Durum satırı için saklanır; kullanıcı adı değişince silinir; hata da saklanır
+      ---
+      duration_ms: 59.585297
+      type: 'test'
+      ...
+    # Subtest: Etiketleri Getir: firmanın kendi VKN'si sorgulanır; GB ve PK ayrı listelerde
+    ok 4 - Etiketleri Getir: firmanın kendi VKN'si sorgulanır; GB ve PK ayrı listelerde
+      ---
+      duration_ms: 13.310085
+      type: 'test'
+      ...
+    # Subtest: e-Arşiv e-postası kapalıyken e-postalı müşteriye bile KAGIT; açıkken ELEKTRONIK
+    ok 5 - e-Arşiv e-postası kapalıyken e-postalı müşteriye bile KAGIT; açıkken ELEKTRONIK
+      ---
+      duration_ms: 96.62782
+      type: 'test'
+      ...
+    # Subtest: yetki: personel Entegratör Ayarları'nı kaydedemez, etiket getiremez, bağlantıyı test edemez
+    ok 6 - yetki: personel Entegratör Ayarları'nı kaydedemez, etiket getiremez, bağlantıyı test edemez
+      ---
+      duration_ms: 118.290933
+      type: 'test'
+      ...
+    1..6
+ok 5 - Entegratör Ayarları: canlı ortam kilidi, GB/PK etiketleri, durum satırı, tercihler, yetki
+  ---
+  duration_ms: 647.940555
+  type: 'suite'
+  ...
+# Subtest: Entegratör Ayarları: canlı kilit — veri tabanında kalmış 'live' kaydı bile ağa çıkmadan reddedilir
+    # Subtest: Bağlantıyı Test Et, Etiketleri Getir ve Mükellef Sorgula 409 integrator-live-locked; sahte EDM'ye tek istek bile gitmez
+    ok 1 - Bağlantıyı Test Et, Etiketleri Getir ve Mükellef Sorgula 409 integrator-live-locked; sahte EDM'ye tek istek bile gitmez
+      ---
+      duration_ms: 10.429515
+      type: 'test'
+      ...
+    1..1
+ok 6 - Entegratör Ayarları: canlı kilit — veri tabanında kalmış 'live' kaydı bile ağa çıkmadan reddedilir
+  ---
+  duration_ms: 360.605294
+  type: 'suite'
+  ...
+# Subtest: Entegratör Ayarları: canlı ortam yalnız ayrı kurulum bayrağıyla (edocLive) seçilir
+    # Subtest: edocLive açıkken Canlı Ortam kaydedilir ve canlı adres seçilir
+    ok 1 - edocLive açıkken Canlı Ortam kaydedilir ve canlı adres seçilir
+      ---
+      duration_ms: 6.109921
+      type: 'test'
+      ...
+    1..1
+ok 7 - Entegratör Ayarları: canlı ortam yalnız ayrı kurulum bayrağıyla (edocLive) seçilir
+  ---
+  duration_ms: 310.536904
+  type: 'suite'
+  ...
+# Subtest: Numara tekil: bırakılıp e-Belge olarak gönderilen belgenin kâğıt numarası bir daha verilmez (T1, T2, T5)
+    # Subtest: T1 Müşteri Fişi (FIS): A bırakıldı FIS…001 → gönderildi; B bırakılınca FIS…002 alır (FIS…001 iki belgede değil)
+    not ok 1 - T1 Müşteri Fişi (FIS): A bırakıldı FIS…001 → gönderildi; B bırakılınca FIS…002 alır (FIS…001 iki belgede değil)
+      ---
+      duration_ms: 212.329142
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:109:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        B'nin fiş numarası: FIS2026000000001
+        + actual - expected
+        
+        + 'FIS2026000000001'
+        - 'FIS2026000000002'
+                          ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'FIS2026000000002'
+      actual: 'FIS2026000000001'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:115:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: T1 kâğıt makbuz (SMM): e-SMM makbuzu A bırakıldı SMM…001 → gönderildi (TES); B bırakılınca SMM…002 alır
+    not ok 2 - T1 kâğıt makbuz (SMM): e-SMM makbuzu A bırakıldı SMM…001 → gönderildi (TES); B bırakılınca SMM…002 alır
+      ---
+      duration_ms: 129.723328
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:119:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        B'nin kâğıt makbuz numarası: SMM2026000000001
+        + actual - expected
+        
+        + 'SMM2026000000001'
+        - 'SMM2026000000002'
+                          ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'SMM2026000000002'
+      actual: 'SMM2026000000001'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:125:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T2 Kâğıt Fatura No önceden doluysa fiş numarası o alana taşınmaz; iz işlem geçmişinde (paperNumber) ve numara yine tekrar verilmez
+    not ok 3 - T2 Kâğıt Fatura No önceden doluysa fiş numarası o alana taşınmaz; iz işlem geçmişinde (paperNumber) ve numara yine tekrar verilmez
+      ---
+      duration_ms: 42.109526
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:129:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'FIS2026000000002'
+        - 'FIS2026000000003'
+                          ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'FIS2026000000003'
+      actual: 'FIS2026000000002'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:132:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T5 Fatura Ayarları: "Sıradaki No" geri alınsa da ayrılan numara verilmez; ekran sıradaki numarayı doğru gösterir
+    not ok 4 - T5 Fatura Ayarları: "Sıradaki No" geri alınsa da ayrılan numara verilmez; ekran sıradaki numarayı doğru gösterir
+      ---
+      duration_ms: 47.452798
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:141:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'id')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:143:138)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 8 - Numara tekil: bırakılıp e-Belge olarak gönderilen belgenin kâğıt numarası bir daha verilmez (T1, T2, T5)
+  ---
+  duration_ms: 903.78589
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:100:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Numara tekil: aynı seriden numara alan öbür yollar ve numara–tarih sırası (T3, T4)
+    # Subtest: T4 tarih sırası: ayrılan numaradan (bugün) eski tarihli kâğıt fatura kaydedilmez (form ön hesabı da söyler), eski tarihli belge bırakılmaz
+    not ok 1 - T4 tarih sırası: ayrılan numaradan (bugün) eski tarihli kâğıt fatura kaydedilmez (form ön hesabı da söyler), eski tarihli belge bırakılmaz
+      ---
+      duration_ms: 26.002124
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:171:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"id":"invoice-bc06de3d-1599-48f2-8f32-29a8b1c6abb0","kind":"sale","kindLabel":"Satış Faturası","scenario":"service_sale","scenarioLabel":"Hizmet Satışı","status":"issued","statusLabel":"Kaydedildi","number":"FIS2026000000001","displayNo":"FIS2026000000001","internalNumber":false,"ettn":"cedaaa46-6809-4401-a538-71e97ad3d120","issueDate":"2026-06-16","issueTime":"10:00","accountId":"account-0444472d-d31d-4b53-be70-e8e432b251f6","accountName":"Ayşe Kaya","accountRef":"2","accountPhone":"","profile":"KAGIT","profileLabel":"Kâğıt Fatura","typeCode":"SATIS","currency":"TRY","rate":1,"netTotal":500,"vatTotal":100,"withheldTotal":0,"stoppageTotal":0,"payableTotal":600,"tryNet":500,"tryVat":100,"tryPayable":600,"dueDate":"2026-06-16","planId":"","originalId":"","originalNumber":"","originalDate":"","note":"","eStatus":"none","eStatusLabel":"Gönderilmedi","eUnsent":false,"eTestLive":false,"eTest":false,"actorName":"Ofis yöneticisi","createdAt":"2026-06-17T10:00:00.458Z","payState":"overdue","payStateLabel":"Vadesi Geçti","paid":0,"open":600,"closers":[],"party":{"id":"account-0444472d-d31d-4b53-be70-e8e432b251f6","name":"Ayşe Kaya","partyKind":"person","firstName":"Ayşe","familyName":"Kaya","taxNo":"10000000146","taxOffice":"Konak","mersisNo":"","tradeRegistry":"","address":"Kordon 1","district":"Konak","city":"İzmir","postalCode":"","country":"Türkiye","phone":"","email":"ayse@example.com","website":"","iban":"","eInvoice":false,"eAlias":""},"seller":{"name":"Deneme Hukuk Bürosu Ltd.","partyKind":"company","firstName":"","familyName":"","taxNo":"1234567890","taxOffice":"Çankaya","mersisNo":"","tradeRegistry":"","address":"Atatürk Blv. 1","district":"Çankaya","city":"Ankara","postalCode":"","country":"Türkiye","phone":"","email":"bilgi@deneme.com.tr","website":"","banks":[]},"pricesIncludeVat":false,"discountRate":0,"stoppageRate":0,"baseTotal":500,"discountTotal":0,"baseNetTotal":500,"discountNetTotal":0,"goodsNet":0,"serviceNet":500,"grossTotal":600,"tryWithheld":0,"tryStoppage":0,"gl":[{"account":"600","net":50000}],"orderNo":"","orderDate":"","despatchNo":"","despatchDate":"","paperNo":"","returnRef":"","payment":{"cash":[],"cheques":[],"endorse":[],"mode":"open","installments":null,"rest":600},"eMessage":"","eAt":"","eAdapter":"","cancelledAt":null,"cancelReason":"","amountInWords":"Yalnız Altı Yüz Türk Lirası","byRate":[{"rate":20,"net":500,"vat":100,"withheld":0}],"lines":[{"id":"iline-a2f5b1b9-7a1d-44f6-90a5-a7856637b6f5","invoiceId":"invoice-bc06de3d-1599-48f2-8f32-29a8b1c6abb0","seq":1,"itemId":"","goods":false,"code":"","name":"Danışmanlık","description":"","unit":"Adet","qty":1,"unitPrice":500,"discountRate":0,"base":500,"discount":0,"net":500,"vatRate":20,"vat":100,"withholdingCode":"","withholdingNum":0,"withholdingDen":0,"withheld":0,"exemptionCode":"","gross":600,"payable":600,"glAccount":"600","expenseCode":"","unitCost":0,"originLineId":"","moveId":"","serialNo":"","lotNo":"","returned":0,"expenseLabel":""}],"returnable":[{"id":"iline-a2f5b1b9-7a1d-44f6-90a5-a7856637b6f5","left":1}],"returns":[],"cheques":[],"plan":null,"payments":[],"posCash":false,"canManage":true,"canEdit":false,"canModify":true,"modifyBlock":"","canIssue":false,"canDelete":true,"deleteBlock":"","canCancel":true,"cancelWindow":null,"cancelDeadline":"","canLocalCancel":false,"cancelNotice":"","cancelBlock":"","canReturn":true,"returnBlock":"","repeat":null,"canRepeat":true,"canSend":false,"canWithdraw":false,"sendBlock":"","canRefresh":false,"canDraft":false,"draftStale":false,"canOfficial":false,"edocEnabled":true}
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:174:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T3 kâğıt fatura kaydı ve toplu kayıt (Seçilenleri Kaydet) ayrılan numaradan sonra numara alır
+    not ok 2 - T3 kâğıt fatura kaydı ve toplu kayıt (Seçilenleri Kaydet) ayrılan numaradan sonra numara alır
+      ---
+      duration_ms: 75.527304
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:195:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        FIS2026000000001: [{"id":"invoice-4c160aaa-d9eb-413d-9385-32acf38659f1","number":"TEA2026000000001","paperNo":"FIS2026000000001"},{"id":"invoice-bc06de3d-1599-48f2-8f32-29a8b1c6abb0","number":"FIS2026000000001","paperNo":""}]
+        
+        2 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 2
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:206:42)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 Düzenle: serinin son numarası ayrılmışsa önceki belge onun tarihini aşamaz (numara ve tarih sırası)
+    not ok 3 - T4 Düzenle: serinin son numarası ayrılmışsa önceki belge onun tarihini aşamaz (numara ve tarih sırası)
+      ---
+      duration_ms: 43.479327
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:210:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        F bırak: 409 {"ok":false,"error":"Yalnız Gönderilecekler'deki belge Müşteri Fişi olarak bırakılır.","code":"invoice-not-waiting"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:74:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async ctx.departed (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:86:18)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:213:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 9 - Numara tekil: aynı seriden numara alan öbür yollar ve numara–tarih sırası (T3, T4)
+  ---
+  duration_ms: 619.375771
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:155:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Numara tekil: kopma, iki oturum, 002 şirketi, Şirket Verisini Sıfırla (T6, T7, T8, T9)
+    # Subtest: T6 bırakılmış belgenin gönderimi EDM'ye ulaşmadı: e-Belge numarası belgede kalır (Gönderilmedi), fiş numarası yine de ayrılmıştır — başka belgeye verilmez
+    not ok 1 - T6 bırakılmış belgenin gönderimi EDM'ye ulaşmadı: e-Belge numarası belgede kalır (Gönderilmedi), fiş numarası yine de ayrılmıştır — başka belgeye verilmez
+      ---
+      duration_ms: 147.342228
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:237:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'FIS2026000000001'
+        - 'FIS2026000000002'
+                          ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'FIS2026000000002'
+      actual: 'FIS2026000000001'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:247:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T1 sıra: büyük numara önce, küçüğü sonra ayrılırsa sıradaki numara yine en büyükten sonra gelir
+    not ok 2 - T1 sıra: büyük numara önce, küçüğü sonra ayrılırsa sıradaki numara yine en büyükten sonra gelir
+      ---
+      duration_ms: 33.922639
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:253:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'FIS2026000000002'
+        - 'FIS2026000000003'
+                          ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'FIS2026000000003'
+      actual: 'FIS2026000000002'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:257:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T7 iki oturum aynı anda: bırakılmış belgeler gönderilirken başka belgeler bırakılır → her fiş numarası tek belgede
+    not ok 3 - T7 iki oturum aynı anda: bırakılmış belgeler gönderilirken başka belgeler bırakılır → her fiş numarası tek belgede
+      ---
+      duration_ms: 834.006478
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:266:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tekrar eden fiş numarası: FIS2026000000001
+        
+        14 !== 15
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 15
+      actual: 14
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:280:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T8 002 şirketi kendi sayacını tutar: 001'deki ayrılış 002'yi, 002'deki 001'i etkilemez
+    not ok 4 - T8 002 şirketi kendi sayacını tutar: 001'deki ayrılış 002'yi, 002'deki 001'i etkilemez
+      ---
+      duration_ms: 457.566768
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:283:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'FIS2026000000001'
+        - 'FIS2026000000002'
+                          ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'FIS2026000000002'
+      actual: 'FIS2026000000001'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:292:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T9 Şirket Verisini Sıfırla (Tüm Hareketleri Sil): faturalarla birlikte ayrılış kaydı da silinir; seri MAX(seq) gibi baştan
+    ok 5 - T9 Şirket Verisini Sıfırla (Tüm Hareketleri Sil): faturalarla birlikte ayrılış kaydı da silinir; seri MAX(seq) gibi baştan
+      ---
+      duration_ms: 173.081378
+      type: 'test'
+      ...
+    1..5
+not ok 10 - Numara tekil: kopma, iki oturum, 002 şirketi, Şirket Verisini Sıfırla (T6, T7, T8, T9)
+  ---
+  duration_ms: 2061.713752
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon/test/numara-tekil-244.test.mjs:228:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..10
+# tests 42
+# suites 10
+# pass 30
+# fail 12
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7593.871525

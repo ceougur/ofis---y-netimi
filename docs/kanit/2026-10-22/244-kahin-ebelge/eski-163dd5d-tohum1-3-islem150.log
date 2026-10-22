@@ -1,0 +1,29 @@
+[ebelge-t1-i150] adım 150 · fark 465 · ihlal 0 · saf model son fark 17 · çatal seçimi 47 · İNCELE 15 · okunamayan UBL 0 · 8.5 sn
+    İNCELE K14-ESMM-BELIRSIZ-KALIR      15 adım (ilk 36)
+    fark:bekleyen    BASKA                                    457
+    fark:edm         BASKA                                    1
+    fark:gonderildi  BASKA                                    1
+    fark:k33         BASKA                                    1
+    fark:numara      BASKA                                    4
+    fark:yanit       BASKA                                    1
+[ebelge-t2-i150] adım 150 · fark 837 · ihlal 0 · saf model son fark 36 · çatal seçimi 60 · İNCELE 22 · okunamayan UBL 0 · 10.6 sn
+    İNCELE K14-ESMM-BELIRSIZ-KALIR      22 adım (ilk 7)
+    fark:bekleyen    BASKA                                    817
+    fark:bekleyen    BEKLENEN-AG                              1
+    fark:bekleyen    BULGU-K22-8-GUN                          3
+    fark:edm         BASKA                                    5
+    fark:gonderildi  BASKA                                    5
+    fark:numara      BASKA                                    5
+    fark:numara      BEKLENEN-AG                              1
+[ebelge-t3-i150] adım 150 · fark 632 · ihlal 0 · saf model son fark 24 · çatal seçimi 68 · İNCELE 28 · okunamayan UBL 0 · 9.5 sn
+    İNCELE K14-ESMM-BELIRSIZ-KALIR      28 adım (ilk 14)
+    fark:bekleyen    BASKA                                    618
+    fark:edm         BASKA                                    4
+    fark:gonderildi  BASKA                                    4
+    fark:k33         BASKA                                    1
+    fark:numara      BASKA                                    3
+    fark:yanit       BASKA                                    2
+# tests 3
+# pass 0
+# fail 3
+# kahin fark 1934 ihlal 0

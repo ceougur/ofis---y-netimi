@@ -14,7 +14,7 @@ import { computeInvoice } from "../server/lib/invoice-math.mjs";
 import { children, find, parseXml, textOf } from "../server/lib/einvoice/xml-lite.mjs";
 // Ad alanıyla içe aktarılır: eski kodda (dışa aktarım yokken) dosyanın bütünü değil yalnız dağıtım testleri düşer — kırmızı kanıt testlerin kendisinden.
 import * as ubl from "../server/lib/einvoice/ubl-tr.mjs";
-import { xsdErrors } from "../tools/ebelge/dogrula.mjs";
+import { oasisXsdErrors, ublTrXsdErrors, xsdErrors } from "../tools/ebelge/dogrula.mjs";
 import { ADMIN_PASSWORD, startTestServer } from "./helpers.mjs";
 
 const unwrap = response => ({ ...response, data: response.data && typeof response.data === "object" && "ok" in response.data ? (response.data.ok ? response.data.data : response.data) : response.data });
@@ -158,17 +158,19 @@ describe("e-SMM UBL: program tutarlarıyla aynı, yapı EDM'nin e-SMM örneğiyl
     assert.deepEqual(line.children.map(item => item.name).filter(name => name !== "Note"), ["ID", "InvoicedQuantity", "LineExtensionAmount", "TaxTotal", "Item", "Price"]);
     assert.deepEqual(find(line, "TaxTotal").children.map(item => item.name), ["TaxAmount", "TaxSubtotal", "TaxSubtotal"]);
   });
-  test("taraf adresi BuildingName de taşır: EDM e-SMM'yi GİB eArsivVeri.xsd adresine çevirir (caddeSokak zorunlu ilk öğe); yalnız StreetName ile şema hatası", () => {
+  test("taraf adresi YALNIZ BuildingName'de (EDM e-SMM örneği): GİB eArsivVeri.xsd adresinde caddeSokak zorunlu ilk öğe; StreetName ile şema hatası, ikisi birlikte adres iki kez", () => {
     // 22.10.2026 gerçek EDM test ortamı (docs/kanit/2026-10-22/244-edm/g-toplu-gonderim.json): "The element 'adres' in namespace
     // 'http://earsiv.efatura.gov.tr' has invalid child element 'binaAd' … expected: caddeSokak". GİB e-Arşiv paketi v1.1_9 eArsivVeri.xsd: adres =
     // caddeSokak, binaAd, binaNo, kapiNo, kasabaKoy, semt, sehir, postaKod, ulke (hepsi zorunlu). EDM'nin e-SMM örneği adresi BuildingName'de verir;
-    // UBL 2.1 sırası StreetName → BuildingName → CitySubdivisionName. Aynı düzenle gerçek EDM'de e-SMM gönderimi geçti (244-edm, 47/47).
+    // StreetName + BuildingName birlikte verilince EDM gönderimi kabul etti (244-edm/gercek-2, 47/47) ama resmî PDF'te adres iki kez yazıldı ("Test Cd. 1
+    // Test Cd. 1"; kullanıcı portal ekranında gördü). EDM örneğindeki gibi yalnız BuildingName (UBL 2.1 sırası BuildingName → CitySubdivisionName).
     for (const [key, { tree }] of Object.entries(docs)) {
       for (const role of ["AccountingSupplierParty", "AccountingCustomerParty"]) {
         const address = find(tree, `${role}/Party/PostalAddress`);
         assert.ok(address, `${key} ${role} adres yok`);
-        assert.deepEqual(address.children.map(item => item.name).slice(0, 3), ["StreetName", "BuildingName", "CitySubdivisionName"], `${key} ${role}`);
-        assert.equal(textOf(find(address, "BuildingName")), textOf(find(address, "StreetName")), `${key} ${role} bina adı = adres`);
+        assert.deepEqual(address.children.map(item => item.name).slice(0, 2), ["BuildingName", "CitySubdivisionName"], `${key} ${role}`);
+        assert.ok(!find(address, "StreetName"), `${key} ${role}: StreetName yok (adres iki kez basılmasın)`);
+        assert.ok(textOf(find(address, "BuildingName")).length > 1, `${key} ${role} bina adı = adres`);
       }
     }
   });
@@ -181,8 +183,11 @@ describe("e-SMM UBL: program tutarlarıyla aynı, yapı EDM'nin e-SMM örneğiyl
     assert.equal(sending("A"), "ELEKTRONIK", "alıcının e-postası var");
     assert.equal(sending("C"), "KAGIT", "alıcının e-postası yok");
   });
-  test("UBL 2.1 XSD'sine (OASIS; tools/ebelge/sema) uygun — GİB şematronu e-SMM'yi tanımlamaz (ESMM GİB UBL-TR profili değil)", async () => {
-    for (const [key, { xml }] of Object.entries(docs)) assert.deepEqual(await xsdErrors(xml), [], key);
+  test("UBL 2.1 XSD'sine (OASIS) ve GİB UBL-TR 1.2.1 XSD'sine (EDM e-SMM'yi bununla denetler; madde 24) uygun — GİB şematronu e-SMM'yi tanımlamaz (ESMM GİB UBL-TR profili değil)", async () => {
+    for (const [key, { xml }] of Object.entries(docs)) {
+      assert.deepEqual(await oasisXsdErrors(xml), [], `${key} OASIS`);
+      assert.deepEqual(await ublTrXsdErrors(xml), [], `${key} UBL-TR 1.2.1`);
+    }
   });
 });
 
@@ -195,8 +200,43 @@ describe("e-SMM dışı belgeler değişmedi", () => {
     assert.match(xml, /Gelir Vergisi Stopajı %20: 200\.00 TRY/);
     assert.deepEqual(subtotals(find(tree, "TaxTotal")).map(item => item.code), ["0015"]);
     assert.deepEqual(totalsOf(tree), { LineExtensionAmount: "1000.00", TaxExclusiveAmount: "1000.00", TaxInclusiveAmount: "1200.00", PayableAmount: "1000.00" });
-    assert.ok(!find(tree, "AccountingCustomerParty/Party/PostalAddress/BuildingName"), "e-SMM dışı belgede adres yapısı değişmedi (yalnız StreetName)");
+    assert.ok(!find(tree, "AccountingCustomerParty/Party/PostalAddress/BuildingName") && find(tree, "AccountingCustomerParty/Party/PostalAddress/StreetName"), "e-SMM dışı belgede adres yapısı değişmedi (yalnız StreetName)");
     delete docs.K;
+  });
+});
+
+describe("e-SMM, VKN'li düzenleyen (ör. adi ortaklık)", () => {
+  test("unvan yalnız PartyName'de, Person YOK (EDM Teknik Operasyon yanıtı 22.10.2026: tüzel kişide unvan cac:PartyName'den, şahısta ad-soyad Person'dan); TCKN'li düzenleyende Person aynen", async () => {
+    // f57245a / 32e59c0 VKN'li e-SMM düzenleyeninin unvanını Person'a da yazıyordu (test ortamının e-SMM görüntüsü unvanı basmadığı için); EDM'nin resmî
+    // yanıtı: kural PartyName, test ortamı şablonu canlıdan farklı (canlıda karekod ve görüntü GİB standardında) → geri alındı.
+    const firm = { name: "Deneme ve Ortakları Avukatlık Ortaklığı", taxNo: "1234567890", taxOffice: "Kadıköy", address: "Moda Cd. 1", district: "Kadıköy", city: "İstanbul", email: "ortaklik@deneme.com.tr" };
+    const on = await api.put("/api/workspace/invoices/settings", { seller: firm, efatura: true, earsiv: true, esmm: true });
+    assert.equal(on.status, 200, JSON.stringify(on.data));
+    try {
+      const { doc, xml, tree } = await smm("V", accounts.firm, [{ name: "Avukatlık Ücreti", qty: 1, unitPrice: 1000, vatRate: 20 }]);
+      assert.equal(doc.profile, "ESMM");
+      const supplier = find(tree, "AccountingSupplierParty/Party");
+      assert.equal(textOf(find(supplier, "PartyIdentification/ID")), firm.taxNo);
+      assert.equal(textOf(find(supplier, "PartyName/Name")), firm.name, "unvan PartyName'de");
+      assert.ok(!find(supplier, "Person"), "VKN'li düzenleyende Person yok (unvan Person'a bölünmez)");
+      assert.ok(!find(find(tree, "AccountingCustomerParty/Party"), "Person"), "VKN'li alıcıda Person yok (adı PartyName'den)");
+      assert.deepEqual(await xsdErrors(xml), [], "UBL 2.1 + UBL-TR 1.2.1 XSD");
+    } finally {
+      delete docs.V;
+      const back = await api.put("/api/workspace/invoices/settings", { seller: SELLER, efatura: true, earsiv: true, esmm: true });
+      assert.equal(back.status, 200, JSON.stringify(back.data));
+    }
+    // TCKN'li (şahıs) düzenleyen: ad ve soyad Person'da; cari adı ad-soyaddan farklıysa ticari unvan PartyName'de de (tradeNameOf, değişmedi).
+    const { xml, tree } = await smm("T", accounts.firm, [{ name: "Avukatlık Ücreti", qty: 1, unitPrice: 1000, vatRate: 20 }]);
+    try {
+      const supplier = find(tree, "AccountingSupplierParty/Party");
+      assert.equal(textOf(find(supplier, "Person/FirstName")), SELLER.firstName);
+      assert.equal(textOf(find(supplier, "Person/FamilyName")), SELLER.familyName);
+      assert.equal(textOf(find(supplier, "PartyName/Name")), SELLER.name, "ticari unvan");
+      assert.deepEqual(await xsdErrors(xml), [], "UBL 2.1 + UBL-TR 1.2.1 XSD");
+    } finally {
+      delete docs.T;
+    }
   });
 });
 

@@ -1,0 +1,38 @@
+{
+  "ad": "mutasyon-N5-duzenlede-iz-yok",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/numara-tekil-244.test.mjs test/einvoice-edm.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T11:59:19.888Z",
+  "sure_sn": 7.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 42,
+    "gecen": 41,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Numara tekil: aynı seriden numara alan öbür yollar ve numara–tarih sırası (T3, T4) › T4 Düzenle: serinin son numarası ayrılmışsa önceki belge onun tarihini aşamaz (numara ve tarih sırası)",
+      "konum": "test/numara-tekil-244.test.mjs:210:3",
+      "hata": "{\"id\":\"invoice-291f86e3-c27b-4318-807f-e56cfbdb3224\",\"kind\":\"sale\",\"kindLabel\":\"Satış Faturası\",\"scenario\":\"service_sale\",\"scenarioLabel\":\"Hizmet Satışı\",\"status\":\"issued\",\"statusLabel\":\"Kaydedildi\",\"number\":\"FIS2026000000004\",\"displayNo\":\"FIS2026000000004\",\"internalNumber\":false,\"ettn\":\"4a09180f-3198-4ec6-87c1-f8ef99364ee9\",\"issueDate\":\"2026-06-19\",\"issueTime\":\"10:00\",\"accountId\":\"account-dd1608ff-1989-44c2-8703-aad9c887828a\",\"accountName\":\"Ayşe Kaya\",\"accountRef\":\"2\",\"accountPhone\":\"\",\"profile\":\"KAGIT\",\"profileLabel\":\"Kâğıt Fatura\",\"typeCode\":\"SATIS\",\"currency\":\"TRY\",\"rate\":1,\"netTotal\":500,\"vatTotal\":100,\"withheldTotal\":0,\"stoppageTotal\":0,\"payableTotal\":600,\"tryNet\":500,\"tryVat\":100,\"tryPayable\":600,\"dueDate\":\"2026-06-19\",\"planId\":\"\",\"originalId\":\"\",\"originalNumber\":\"\",\"originalDate\":\"\",\"note\":\"\",\"eStatus\":\"none\",\"eStatusLabel\":\"Gönderilmedi\",\"eUnsent\":false,\"eTestLive\":false,\"eTest\":false,\"actorName\":\"Ofis yöneticisi\",\"createdAt\":\"2026-06-17T10:00:00.521Z\",\"payState\":\"open\",\"payStateLabel\":\"Açık\",\"paid\":0,\"open\":600,\"closers\":[],\"party\":{\"id\":\"account-dd1608ff-1989-44c2-8703-aad9c887828a\",\"name\":\"Ayşe Kaya\",\"partyKind\":\"person\",\"firstName\":\"Ayşe\",\"familyName\":\"Kaya\",\"taxNo\":\"10000000146\",\"taxOffice\":\"Konak\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"address\":\"Kordon 1\",\"district\":\"Konak\",\"city\":\"İzmir\",\"postalCode\":\"\",\"country\":\"Türkiye\",\"phone\":\"\",\"email\":\"ayse@example.com\",\"website\":\"\",\"iban\":\"\",\"eInvoice\":false,\"eAlias\":\"\"},\"seller\":{\"name\":\"Deneme Hukuk Bürosu Ltd.\",\"partyKind\":\"company\",\"firstName\":\"\",\"familyName\":\"\",\"taxNo\":\"1234567890\",\"taxOffice\":\"Çankaya\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"address\":\"Atatürk Blv. 1\",\"district\":\"Çankaya\",\"city\":\"Ankara\",\"postalCode\":\"\",\"country\":\"Türkiye\",\"phone\":\"\",\"email\":\"bilgi@deneme.com.tr\",\"website\":\"\",\"banks\":[]},\"pricesIncludeVat\":false,\"discountRate\":0,\"stoppageRate\":0,\"baseTotal\":500,\"discountTotal\":0,\"baseNetTotal\":500,\"discountNetTotal\":0,\"goodsNet\":0,\"serviceNet\":500,\"grossTotal\":600,\"tryWithheld\":0,\"tryStoppage\":0,\"gl\":[{\"account\":\"600\",\"net\":50000}],\"orderNo\":\"\",\"orderDate\":\"\",\"despatchNo\":\"\",\"despatchDate\":\"\",\"paperNo\":\"\",\"returnRef\":\"\",\"payment\":{\"cash\":[],\"cheques\":[],\"endorse\":[],\"mode\":\"open\",\"installments\":null,\"rest\":600},\"eMessage\":\"\",\"eAt\":\"\",\"eAdapter\":\"\",\"cancelledAt\":null,\"cancelReason\":\"\",\"amountInWords\":\"Yalnız Altı Yüz Türk Lirası\",\"byRate\":[{\"rate\":20,\"net\":500,\"vat\":100,\"withheld\":0}],\"lines\":[{\"id\":\"iline-11102c7e-75c8-424d-8815-9b57e0ebe20a\",\"invoiceId\":\"invoice-291f86e3-c27b-4318-807f-e56cfbdb3224\",\"seq\":1,\"itemId\":\"\",\"goods\":false,\"code\":\"\",\"name\":\"Danışmanlık\",\"description\":\"\",\"unit\":\"Adet\",\"qty\":1,\"unitPrice\":500,\"discountRate\":0,\"base\":500,\"discount\":0,\"net\":500,\"vatRate\":20,\"vat\":100,\"withholdingCode\":\"\",\"withholdingNum\":0,\"withholdingDen\":0,\"withheld\":0,\"exemptionCode\":\"\",\"gross\":600,\"payable\":600,\"glAccount\":\"600\",\"expenseCode\":\"\",\"unitCost\":0,\"originLineId\":\"\",\"moveId\":\"\",\"serialNo\":\"\",\"lotNo\":\"\",\"returned\":0,\"expenseLabel\":\"\"}],\"returnable\":[{\"id\":\"iline-11102c7e-75c8-424d-8815-9b57e0ebe20a\",\"left\":1}],\"returns\":[],\"cheques\":[],\"plan\":null,\"payments\":[],\"posCash\":false,\"canManage\":true,\"canEdit\":false,\"canModify\":true,\"modifyBlock\":\"\",\"canIssue\":false,\"canDelete\":true,\"deleteBlock\":\"\",\"canCancel\":true,\"cancelWindow\":null,\"cancelDeadline\":\"\",\"canLocalCancel\":false,\"cancelNotice\":\"\",\"cancelBlock\":\"\",\"canReturn\":true,\"returnBlock\":\"\",\"repeat\":null,\"canRepeat\":true,\"canSend\":false,\"canWithdraw\":false,\"sendBlock\":\"\",\"canRefresh\":false,\"canDraft\":false,\"draftStale\":false,\"canOfficial\":false,\"edocEnabled\":true} · 200 !== 400 (beklenen 400, gelen 200)"
+    }
+  ],
+  "ham_cikti": "../mk/_m/2026-10-22/mutasyon-N5-duzenlede-iz-yok.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm-fis/numara-mutasyon",
+  "ham_cikti_sha256": "fa38b472256abb0ea51c80f9d05d1cad211aa6b7758c7e355a06b2560c0b0780",
+  "ham_cikti_bayt": 19807
+}

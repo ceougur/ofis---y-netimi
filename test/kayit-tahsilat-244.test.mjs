@@ -115,13 +115,13 @@ describe("2.4.4 E8: kaydın tahsilatı cariden; takvim kalemi carinin ve taksiti
     assert.ok(rows.some(row => /Ali Veli/.test(row.cari) && row.label === "Ödeme sözü"), "Ali'nin sözü (tahsilatı silindi) raporda açık");
     assert.ok(!rows.some(row => /Zeynep Şahin/.test(row.cari) && row.label === "Ödeme sözü"), "Zeynep'in sözü (cari 2.500 + taksit 5.000) raporda kapalı");
     const ekstre = await must("cari-ekstre", api.get(`/api/workspace/reports/cari-ekstre?from=${day(-30)}&to=${day(1)}`));
-    // Kişi tablodaki dosya no ile gruplanır (2026/1104 · Borçlu Zeynep Şahin). Carinin 2.500'ü kayıt tahsilatıyla aynı biçimde alacak satırı olur (taksit
-    // tahsilatı bu raporda yok). Aynı dosya no iki sekmede (İcra Takip + Ödeme Sözleri) olduğundan satır grupta her kayıt için yazılır — kayıt tahsilatında
-    // da böyle (2.4.3'ten; bu maddenin dışında, raporda yazıldı); burada yalnız tutar ve satırın varlığı denetlenir.
-    const rows2 = ekstre.report.table.rows;
-    const group = rows2.find(row => row["f:Borçlu"] === "Zeynep Şahin")?.cari;
-    const zeynepLines = rows2.filter(row => row.cari === group && row.alacak > 0);
-    assert.ok(zeynepLines.length >= 1 && zeynepLines.every(row => row.alacak === 2500 && /^Tahsilat/.test(row.description)), `Tablodaki Kişiler: carinin 2.500 tahsilatı alacak (taksit hariç): ${JSON.stringify(zeynepLines)}`);
+    // 31a F4/F5 (bilerek güncellendi): kişi adıyla görünür (önceden çok sekmeli tabloda dosya no; "Borçlu" özel alan sanılıyordu) ve takvimle aynı küme
+    // sayılır — carinin 2.500'ü VE kayda bağlı taksit kartının tahsilatı (T3), her biri BİR KEZ (5c; iki sekmede aynı dosya no).
+    const card = one("SELECT COALESCE(SUM(e.amount), 0) AS s FROM plan_entries e JOIN plans p ON p.id = e.plan_id WHERE p.case_key = ? AND p.deleted_at IS NULL AND e.kind = 'in' AND COALESCE(e.opening, 0) = 0", keys["Zeynep Şahin"]).s;
+    assert.ok(card > 0, "T3 taksit tahsilatı var");
+    const zeynepLines = ekstre.report.table.rows.filter(row => row.cari === "Zeynep Şahin" && row.alacak > 0);
+    assert.deepEqual(zeynepLines.map(row => row.alacak).sort((a, b) => a - b), [2500, card].sort((a, b) => a - b), `Tablodaki Kişiler: carinin 2.500'ü ve kartın ${card} tahsilatı bir kez: ${JSON.stringify(zeynepLines)}`);
+    assert.ok(zeynepLines.every(row => /^Tahsilat/.test(row.description)));
   });
 });
 

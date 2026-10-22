@@ -371,6 +371,9 @@ try {
   await page.waitForSelector(`${modal} [data-stamp-field]`, { timeout: 10000 });
   const stampLabel = await textOf(page, `${modal} [data-stamp-field] > span`);
   ok(stampLabel === "Kaşe / İmza (e-Arşiv Faturasına Basılır)", `Fatura Ayarları'nda Kaşe / İmza alanı: ${stampLabel}`);
+  // 2.4.4: e-SMM cümlesi yalnız e-SMM kullanıcısında (bu firma işaretlemedi; gg244-esmm-gonder ■ 4 öbür yanı).
+  const stampHelp = await textOf(page, `${modal} [data-stamp-field] .hof-inv-logo-tools small`);
+  ok(stampHelp.startsWith("Kaşe üzerine atılmış imzanın") && !stampHelp.includes("e-SMM"), `e-SMM kullanıcısı olmayan firmada açıklama e-SMM cümlesi taşımaz (…${stampHelp.slice(-60)})`);
   await page.setInputFiles(`${modal} input[data-stamp-file]`, path.join(process.cwd(), "docs/pazarlama/DestekOfis-Logo-Fatura-Kare.jpg"));
   await page.waitForSelector(`${modal} [data-stamp-preview] img`, { timeout: 10000 });
   await page.click(`${modal} [data-act="save-settings"]`);

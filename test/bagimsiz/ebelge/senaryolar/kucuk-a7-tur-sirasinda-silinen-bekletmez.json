@@ -1,0 +1,54 @@
+{
+ "dil": "destekofis-ebelge/1",
+ "ad": "kucuk-a7-tur-sirasinda-silinen-bekletmez",
+ "aciklama": "A7 (22.10.2026): turun ilk belgesi (e-Arşiv) giderken Listeden Silinen e-Fatura aynı turdaki daha yeni e-Faturayı bekletmez (K15/K9; kâhin hatası düzeltmesi — tohum 2 × 150 adım 61)",
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi"
+ },
+ "adimlar": [
+  {
+   "islem": "kaydet",
+   "belge": "B1",
+   "cari": "K1",
+   "tarih": "2026-06-15",
+   "gonder": "sonra",
+   "no": 1
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B2",
+   "cari": "K2",
+   "tarih": "2026-06-15",
+   "gonder": "sonra",
+   "no": 2
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B3",
+   "cari": "K2",
+   "tarih": "2026-06-17",
+   "gonder": "sonra",
+   "no": 3
+  },
+  {
+   "islem": "tur_sirasinda_sil",
+   "belge": "B2",
+   "no": 4
+  },
+  {
+   "islem": "ag",
+   "durum": "var",
+   "no": 5
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 6
+  }
+ ]
+}

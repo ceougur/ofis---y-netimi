@@ -1,0 +1,4 @@
+b1-5c-rapor: 113/113 tuttu
+
+ÖZET: 1 senaryo, 113 denetim, 0 fark (BULGU 0), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-cari-WsL4gs
+113/113 denetim geçti
