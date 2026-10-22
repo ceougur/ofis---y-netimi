@@ -1,0 +1,142 @@
+[
+ {
+  "id": "P1",
+  "desc": "süre 7 gün",
+  "exit": 1,
+  "tests": "17",
+  "pass": "3",
+  "fail": "14",
+  "caught": true
+ },
+ {
+  "id": "P2",
+  "desc": "süre 9 gün",
+  "exit": 1,
+  "tests": "17",
+  "pass": "4",
+  "fail": "13",
+  "caught": true
+ },
+ {
+  "id": "P3",
+  "desc": "başlangıç günü sayılır (son gün dahil değil)",
+  "exit": 1,
+  "tests": "17",
+  "pass": "9",
+  "fail": "8",
+  "caught": true
+ },
+ {
+  "id": "P4",
+  "desc": "süre kesim gününden (2.4.3 davranışı)",
+  "exit": 1,
+  "tests": "17",
+  "pass": "7",
+  "fail": "10",
+  "caught": true
+ },
+ {
+  "id": "P5",
+  "desc": "yalnız programda iptal süreyi atlar",
+  "exit": 1,
+  "tests": "17",
+  "pass": "16",
+  "fail": "1",
+  "caught": true
+ },
+ {
+  "id": "P6",
+  "desc": "ilk girişim (son değil) iletim sayılır",
+  "exit": 1,
+  "tests": "17",
+  "pass": "16",
+  "fail": "1",
+  "caught": true
+ },
+ {
+  "id": "P7",
+  "desc": "portal taslağı girişim sayılmaz",
+  "exit": 1,
+  "tests": "17",
+  "pass": "15",
+  "fail": "2",
+  "caught": true
+ },
+ {
+  "id": "P8",
+  "desc": "belirsiz girişim sayılmaz",
+  "exit": 1,
+  "tests": "17",
+  "pass": "15",
+  "fail": "2",
+  "caught": true
+ },
+ {
+  "id": "P9",
+  "desc": "durum sorgusu da girişim sayılır (iletim keşif günü olur)",
+  "exit": 1,
+  "tests": "17",
+  "pass": "12",
+  "fail": "5",
+  "caught": true
+ },
+ {
+  "id": "P10",
+  "desc": "Hata da iletilmiş sayılır",
+  "exit": 1,
+  "tests": "17",
+  "pass": "14",
+  "fail": "3",
+  "caught": true
+ },
+ {
+  "id": "P11",
+  "desc": "e-SMM kural dışı",
+  "exit": 1,
+  "tests": "17",
+  "pass": "15",
+  "fail": "2",
+  "caught": true
+ },
+ {
+  "id": "P12",
+  "desc": "iletim günü UTC'den (yerel gün değil)",
+  "exit": 1,
+  "tests": "17",
+  "pass": "16",
+  "fail": "1",
+  "caught": true
+ },
+ {
+  "id": "P13",
+  "desc": "iptal sırasında EDM'den okunan durum süreye bakılmaz",
+  "exit": 1,
+  "tests": "17",
+  "pass": "16",
+  "fail": "1",
+  "caught": true
+ },
+ {
+  "id": "P14",
+  "desc": "kartta süre dolunca İptal Et açık kalır",
+  "exit": 1,
+  "tests": "17",
+  "pass": "16",
+  "fail": "1",
+  "caught": true
+ }
+]
+# tests 14
+# pass 14
+# fail 0
+git diff (mutasyon sonrası değişmemeli):  M client/assets/hof-invoices.js
+ M server/routes/invoices.mjs
+ M test/bagimsiz/ebelge/KARARLAR.md
+ M test/bagimsiz/ebelge/fark.py
+ M test/bagimsiz/ebelge/model.py
+ M test/bagimsiz/ebelge/mutasyon.py
+ M test/bagimsiz/ebelge/test_model.py
+?? docs/kanit/2026-10-22/244-iptal/
+?? server/lib/einvoice/iptal-suresi.mjs
+?? test/ebelge-244-iptal-suresi.test.mjs
+

@@ -1,0 +1,43 @@
+{
+  "ad": "244-iptal/mutasyon-P8",
+  "komut": "node --test test/ebelge-244-iptal-suresi.test.mjs",
+  "commit": "b54ed6bf5e7fd954e76463cea8577d9866d44de8",
+  "dal": "is/iptal",
+  "kirli": 7,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:51:19.713Z",
+  "sure_sn": 2.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 15,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "iptal süresi kuralı (lib/einvoice/iptal-suresi.mjs, saf) › iletim anı: belgeyi EDM'ye ulaştırmış olabilecek SON girişim (durum sorgusu, hiç gitmemiş istek ve red girişim değildir)",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:100:3",
+      "hata": "belirsiz girişim; durum sorgusu girişim değil · + actual - expected · + '' (beklenen 2026-10-02T08:00:00.000Z, gelen )"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › sonucu belirsiz gönderim (EDM işledi, yanıt koptu): süre girişim gününden, Durum Sorgula gününden değil",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:239:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-iptal/mutasyon-P8.log",
+  "klasor": "/home/user/wt/iptal",
+  "ham_cikti_sha256": "c8fdd4267c8e74581a49e75f6f7bb340ddc5eb518cda75415d9011e618de9413",
+  "ham_cikti_bayt": 8366
+}

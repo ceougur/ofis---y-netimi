@@ -1,0 +1,16 @@
+(node:5549) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+■ 5. gün: süre içinde
+  ✓ kartta: Son İptal Günü28.06.2026 (alıcıya iletildiği 20.06.2026 gününden sonraki 8 gün)
+  ✓ İptal Et açık
+■ 12. gün: süre doldu
+  ✓ kartta: Son İptal GünüSüre Doldu (en geç 28.06.2026)
+  ✓ İptal Et pasif
+  ✓ neden: Düzenle kapalı: Bu belge e-Belge olarak gönderildi; düzenlenmez. İptal ya da iade faturasıyla düzeltin.İptal Et kapalı: e-Arşiv faturanın iptal süresi doldu: alıcıya iletildiği 20.06.2026 gününden son
+  ✓ düğme ipucunda da neden
+  ✓ sayfa hatası yok 
+
+7 geçti, 0 kaldı
+# tests 7
+# pass 7
+# fail 0

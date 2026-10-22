@@ -1,0 +1,38 @@
+{
+  "ad": "244-iptal/mutasyon-P13",
+  "komut": "node --test test/ebelge-244-iptal-suresi.test.mjs",
+  "commit": "b54ed6bf5e7fd954e76463cea8577d9866d44de8",
+  "dal": "is/iptal",
+  "kirli": 7,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:51:35.294Z",
+  "sure_sn": 2.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 16,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › Hata görünen belge iptalde EDM'de oluşturulmuş çıkarsa süre ona da uygulanır (EDM'ye iptal gitmez)",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:274:3",
+      "hata": "{\"id\":\"invoice-22a3faa6-4ef2-4261-82b8-f66c8dff234a\",\"kind\":\"sale\",\"kindLabel\":\"Satış Faturası\",\"scenario\":\"service_sale\",\"scenarioLabel\":\"Hizmet Satışı\",\"status\":\"cancelled\",\"statusLabel\":\"İptal Edildi\",\"number\":\"TEA2026000000010\",\"displayNo\":\"TEA2026000000010\",\"internalNumber\":false,\"ettn\":\"1a967cf9-6b2a-4bfd-b9a2-00a1c885a24b\",\"issueDate\":\"2026-06-17\",\"issueTime\":\"10:00\",\"accountId\":\"account-42663f9b-780e-4aed-89ee-d78c88038f90\",\"accountName\":\"Ayşe Yılmaz\",\"accountRef\":\"1\",\"accountPhone\":\"\",\"profile\":\"EARSIVFATURA\",\"profileLabel\":\"e-Arşiv Fatura\",\"typeCode\":\"SATIS\",\"currency\":\"TRY\",\"rate\":1,\"netTotal\":300,\"vatTotal\":60,\"withheldTotal\":0,\"stoppageTotal\":0,\"payableTotal\":360,\"tryNet\":300,\"tryVat\":60,\"tryPayable\":360,\"dueDate\":\"2026-06-17\",\"planId\":\"\",\"originalId\":\"\",\"originalNumber\":\"\",\"originalDate\":\"\",\"note\":\"\",\"eStatus\":\"cancelled\",\"eStatusLabel\":\"Entegratörde İptal\",\"eUnsent\":false,\"eTestLive\":false,\"eTest\":true,\"actorName\":\"Ofis yöneticisi\",\"createdAt\":\"2026-06-17T07:00:00.000Z\",\"payState\":\"cancelled\",\"payStateLabel\":\"İptal\",\"paid\":0,\"open\":0,\"closers\":[],\"party\":{\"id\":\"account-42663f9b-780e-4aed-89ee-d78c88038f90\",\"name\":\"Ayşe Yılmaz\",\"partyKind\":\"person\",\"firstName\":\"Ayşe\",\"familyName\":\"Yılmaz\",\"taxNo\":\"10000000146\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"address\":\"\",\"district\":\"\",\"city\":\"İzmir\",\"postalCode\":\"\",\"country\":\"Türkiye\",\"phone\":\"\",\"email\":\"ayse@example.com\",\"website\":\"\",\"iban\":\"\",\"eInvoice\":false,\"eAlias\":\"\"},\"seller\":{\"name\":\"Deneme Ofis Ltd.\",\"partyKind\":\"company\",\"firstName\":\"\",\"familyName\":\"\",\"taxNo\":\"1234567890\",\"taxOffice\":\"Çankaya\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"address\":\"Atatürk Blv. 1\",\"district\":\"Çankaya\",\"city\":\"Ankara\",\"postalCode\":\"\",\"country\":\"Türkiye\",\"phone\":\"\",\"email\":\"bilgi@deneme.com.tr\",\"website\":\"\",\"banks\":[]},\"pricesIncludeVat\":false,\"discountRate\":0,\"stoppageRate\":0,\"baseTotal\":300,\"discountTotal\":0,\"baseNetTotal\":300,\"discountNetTotal\":0,\"goodsNet\":0,\"serviceNet\":300,\"grossTotal\":360,\"tryWithheld\":0,\"tryStoppage\":0,\"gl\":[{\"account\":\"600\",\"net\":30000}],\"orderNo\":\"\",\"orderDate\":\"\",\"despatchNo\":\"\",\"despatchDate\":\"\",\"paperNo\":\"\",\"returnRef\":\"\",\"payment\":{\"cash\":[],\"cheques\":[],\"endorse\":[],\"mode\":\"open\",\"installments\":null,\"rest\":360},\"eMessage\":\"e-Arşiv fatura EDM'de iptal edildi; iptal GİB'e raporlanır.\",\"eAt\":\"2026-06-26T07:00:00.000Z\",\"eAdapter\":\"edm\",\"cancelledAt\":\"2026-06-26T07:00:00.000Z\",\"cancelReason\":\"geç\",\"amountInWords\":\"Yalnız Üç Yüz Altmış Türk Lirası\",\"byRate\":[{\"rate\":20,\"net\":300,\"vat\":60,\"withheld\":0}],\"lines\":[{\"id\":\"iline-79b6913b-ff89-4072-bb98-ac636b053494\",\"invoiceId\":\"invoice-22a3faa6-4ef2-4261-82b8-f66c8dff234a\",\"seq\":1,\"itemId\":\"\",\"goods\":false,\"code\":\"\",\"name\":\"Bakım\",\"description\":\"\",\"unit\":\"Adet\",\"qty\":1,\"unitPrice\":300,\"discountRate\":0,\"base\":300,\"discount\":0,\"net\":300,\"vatRate\":20,\"vat\":60,\"withholdingCode\":\"\",\"withholdingNum\":0,\"withholdingDen\":0,\"withheld\":0,\"exemptionCode\":\"\",\"gross\":360,\"payable\":360,\"glAccount\":\"600\",\"expenseCode\":\"\",\"unitCost\":0,\"originLineId\":\"\",\"moveId\":\"\",\"serialNo\":\"\",\"lotNo\":\"\",\"returned\":0,\"expenseLabel\":\"\"}],\"returnable\":[{\"id\":\"iline-79b6913b-ff89-4072-bb98-ac636b053494\",\"left\":1}],\"returns\":[],\"cheques\":[],\"plan\":null,\"payments\":[],\"posCash\":false,\"canManage\":true,\"canEdit\":false,\"canModify\":false,\"modifyBlock\":\"\",\"canIssue\":false,\"canDelete\":false,\"deleteBlock\":\"Bu belgenin numarası entegratörde (EDM) kullanıldı; e-Belge numarası yeniden verilemeyeceği için belge silinmez, “İptal Edildi” olarak kalır.\",\"canCancel\":false,\"cancelWindow\":null,\"cancelDeadline\":\"\",\"canLocalCancel\":false,\"cancelNotice\":\"\",\"cancelBlock\":\"\",\"canReturn\":false,\"returnBlock\":\"\",\"repeat\":null,\"canRepeat\":false,\"canSend\":false,\"canWithdraw\":false,\"sendBlock\":\"\",\"canRefresh\":true,\"canDraft\":false,\"draftStale\":false,\"canOfficial\":true,\"edocEnabled\":true,\"integratorResult\":{\"status\":\"cancelled\",\"message\":\"e-Arşiv fatura EDM'de iptal edildi; iptal GİB'e raporlanır.\"},\"notices\":[]} · 200 !== 409 (beklenen 409, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-iptal/mutasyon-P13.log",
+  "klasor": "/home/user/wt/iptal",
+  "ham_cikti_sha256": "24560e4c7e195c6c2bf096dff5465f7ef17e9cfd39c020ca291b5183bd4dfe31",
+  "ham_cikti_bayt": 10737
+}

@@ -1,0 +1,272 @@
+TAP version 13
+# (node:19779) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: iptal süresi kuralı (lib/einvoice/iptal-suresi.mjs, saf)
+    # Subtest: 8 gün iletimden; başlangıç günü sayılmaz, 8. gün dahil
+    ok 1 - 8 gün iletimden; başlangıç günü sayılmaz, 8. gün dahil
+      ---
+      duration_ms: 1.621986
+      type: 'test'
+      ...
+    # Subtest: iletim izi yoksa kesim günü (süre uzamaz); ileti kesim gününü ve nedenini söyler
+    ok 2 - iletim izi yoksa kesim günü (süre uzamaz); ileti kesim gününü ve nedenini söyler
+      ---
+      duration_ms: 0.456675
+      type: 'test'
+      ...
+    # Subtest: e-SMM aynı kural; e-Fatura, kâğıt, taslak, Hata, belirsiz ve gönderilmemiş belge kural dışı
+    ok 3 - e-SMM aynı kural; e-Fatura, kâğıt, taslak, Hata, belirsiz ve gönderilmemiş belge kural dışı
+      ---
+      duration_ms: 0.319145
+      type: 'test'
+      ...
+    # Subtest: ay sonu ve yıl dönümü takvim günüyle
+    ok 4 - ay sonu ve yıl dönümü takvim günüyle
+      ---
+      duration_ms: 0.237971
+      type: 'test'
+      ...
+    # Subtest: iletim anı: belgeyi EDM'ye ulaştırmış olabilecek SON girişim (durum sorgusu, hiç gitmemiş istek ve red girişim değildir)
+    not ok 5 - iletim anı: belgeyi EDM'ye ulaştırmış olabilecek SON girişim (durum sorgusu, hiç gitmemiş istek ve red girişim değildir)
+      ---
+      duration_ms: 1.083799
+      type: 'test'
+      location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:100:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        belirsiz girişim; durum sorgusu girişim değil
+        + actual - expected
+        
+        + '2026-10-05T08:00:00.000Z'
+        - '2026-10-02T08:00:00.000Z'
+                    ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '2026-10-02T08:00:00.000Z'
+      actual: '2026-10-05T08:00:00.000Z'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:104:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - iptal süresi kuralı (lib/einvoice/iptal-suresi.mjs, saf)
+  ---
+  duration_ms: 4.708659
+  type: 'suite'
+  location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:71:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: iptal süresi: program uçları (sahte EDM, sahte saat)
+    # Subtest: gün sınırı programın yerel günüdür: 23:59'da gönderilen belgenin son günü 8 gün sonra, 00:00 geçince 9. gün; 00:30'da gönderilen o gün sayılır
+    ok 1 - gün sınırı programın yerel günüdür: 23:59'da gönderilen belgenin son günü 8 gün sonra, 00:00 geçince 9. gün; 00:30'da gönderilen o gün sayılır
+      ---
+      duration_ms: 446.282451
+      type: 'test'
+      ...
+    # Subtest: iletimden 8. gün iptal edilir (kesimden 11. gün): EDM'de ve programda
+    ok 2 - iletimden 8. gün iptal edilir (kesimden 11. gün): EDM'de ve programda
+      ---
+      duration_ms: 125.515728
+      type: 'test'
+      ...
+    # Subtest: iletimden 9. gün reddedilir: ileti son günü yazar, belge ve EDM değişmez, kartta neden görünür
+    ok 3 - iletimden 9. gün reddedilir: ileti son günü yazar, belge ve EDM değişmez, kartta neden görünür
+      ---
+      duration_ms: 100.613948
+      type: 'test'
+      ...
+    # Subtest: yalnız programda iptal (localOnly) süresi dolmuş gönderilmiş belgede de reddedilir; süre içinde çıkış yolu sürer
+    ok 4 - yalnız programda iptal (localOnly) süresi dolmuş gönderilmiş belgede de reddedilir; süre içinde çıkış yolu sürer
+      ---
+      duration_ms: 159.125581
+      type: 'test'
+      ...
+    # Subtest: sonucu belirsiz gönderim (EDM işledi, yanıt koptu): süre girişim gününden, Durum Sorgula gününden değil
+    not ok 5 - sonucu belirsiz gönderim (EDM işledi, yanıt koptu): süre girişim gününden, Durum Sorgula gününden değil
+      ---
+      duration_ms: 80.233965
+      type: 'test'
+      location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:239:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   lastDay: '2026-06-29',
+        -   lastDay: '2026-06-27',
+            late: false,
+            source: 'iletim',
+        +   start: '2026-06-21'
+        -   start: '2026-06-19'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        start: '2026-06-19'
+        source: 'iletim'
+        lastDay: '2026-06-27'
+        late: false
+      actual:
+        start: '2026-06-21'
+        source: 'iletim'
+        lastDay: '2026-06-29'
+        late: false
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:252:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: EDM reddetti (Hata) → yeniden gönderim: süre yeniden gönderim gününden
+    ok 6 - EDM reddetti (Hata) → yeniden gönderim: süre yeniden gönderim gününden
+      ---
+      duration_ms: 133.813588
+      type: 'test'
+      ...
+    # Subtest: Hata görünen belge iptalde EDM'de oluşturulmuş çıkarsa süre ona da uygulanır (EDM'ye iptal gitmez)
+    not ok 7 - Hata görünen belge iptalde EDM'de oluşturulmuş çıkarsa süre ona da uygulanır (EDM'ye iptal gitmez)
+      ---
+      duration_ms: 111.981655
+      type: 'test'
+      location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:274:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"id":"invoice-87ffdd38-4067-47bb-8c15-aaafd45c6ce3","kind":"sale","kindLabel":"Satış Faturası","scenario":"service_sale","scenarioLabel":"Hizmet Satışı","status":"cancelled","statusLabel":"İptal Edildi","number":"TEA2026000000010","displayNo":"TEA2026000000010","internalNumber":false,"ettn":"32d97b4c-3e19-41e7-97c0-b32ae8c239fd","issueDate":"2026-06-17","issueTime":"10:00","accountId":"account-1149aae5-c448-4d15-8a8d-630bf7b4294c","accountName":"Ayşe Yılmaz","accountRef":"1","accountPhone":"","profile":"EARSIVFATURA","profileLabel":"e-Arşiv Fatura","typeCode":"SATIS","currency":"TRY","rate":1,"netTotal":300,"vatTotal":60,"withheldTotal":0,"stoppageTotal":0,"payableTotal":360,"tryNet":300,"tryVat":60,"tryPayable":360,"dueDate":"2026-06-17","planId":"","originalId":"","originalNumber":"","originalDate":"","note":"","eStatus":"cancelled","eStatusLabel":"Entegratörde İptal","eUnsent":false,"eTestLive":false,"eTest":true,"actorName":"Ofis yöneticisi","createdAt":"2026-06-17T07:00:00.000Z","payState":"cancelled","payStateLabel":"İptal","paid":0,"open":0,"closers":[],"party":{"id":"account-1149aae5-c448-4d15-8a8d-630bf7b4294c","name":"Ayşe Yılmaz","partyKind":"person","firstName":"Ayşe","familyName":"Yılmaz","taxNo":"10000000146","taxOffice":"","mersisNo":"","tradeRegistry":"","address":"","district":"","city":"İzmir","postalCode":"","country":"Türkiye","phone":"","email":"ayse@example.com","website":"","iban":"","eInvoice":false,"eAlias":""},"seller":{"name":"Deneme Ofis Ltd.","partyKind":"company","firstName":"","familyName":"","taxNo":"1234567890","taxOffice":"Çankaya","mersisNo":"","tradeRegistry":"","address":"Atatürk Blv. 1","district":"Çankaya","city":"Ankara","postalCode":"","country":"Türkiye","phone":"","email":"bilgi@deneme.com.tr","website":"","banks":[]},"pricesIncludeVat":false,"discountRate":0,"stoppageRate":0,"baseTotal":300,"discountTotal":0,"baseNetTotal":300,"discountNetTotal":0,"goodsNet":0,"serviceNet":300,"grossTotal":360,"tryWithheld":0,"tryStoppage":0,"gl":[{"account":"600","net":30000}],"orderNo":"","orderDate":"","despatchNo":"","despatchDate":"","paperNo":"","returnRef":"","payment":{"cash":[],"cheques":[],"endorse":[],"mode":"open","installments":null,"rest":360},"eMessage":"e-Arşiv fatura EDM'de iptal edildi; iptal GİB'e raporlanır.","eAt":"2026-06-26T07:00:00.000Z","eAdapter":"edm","cancelledAt":"2026-06-26T07:00:00.000Z","cancelReason":"geç","amountInWords":"Yalnız Üç Yüz Altmış Türk Lirası","byRate":[{"rate":20,"net":300,"vat":60,"withheld":0}],"lines":[{"id":"iline-88dfd2bc-e6c3-4dc3-93f7-d14f34c5072a","invoiceId":"invoice-87ffdd38-4067-47bb-8c15-aaafd45c6ce3","seq":1,"itemId":"","goods":false,"code":"","name":"Bakım","description":"","unit":"Adet","qty":1,"unitPrice":300,"discountRate":0,"base":300,"discount":0,"net":300,"vatRate":20,"vat":60,"withholdingCode":"","withholdingNum":0,"withholdingDen":0,"withheld":0,"exemptionCode":"","gross":360,"payable":360,"glAccount":"600","expenseCode":"","unitCost":0,"originLineId":"","moveId":"","serialNo":"","lotNo":"","returned":0,"expenseLabel":""}],"returnable":[{"id":"iline-88dfd2bc-e6c3-4dc3-93f7-d14f34c5072a","left":1}],"returns":[],"cheques":[],"plan":null,"payments":[],"posCash":false,"canManage":true,"canEdit":false,"canModify":false,"modifyBlock":"","canIssue":false,"canDelete":false,"deleteBlock":"Bu belgenin numarası entegratörde (EDM) kullanıldı; e-Belge numarası yeniden verilemeyeceği için belge silinmez, “İptal Edildi” olarak kalır.","canCancel":false,"cancelWindow":null,"cancelDeadline":"","canLocalCancel":false,"cancelNotice":"","cancelBlock":"","canReturn":false,"returnBlock":"","repeat":null,"canRepeat":false,"canSend":false,"canWithdraw":false,"sendBlock":"","canRefresh":true,"canDraft":false,"draftStale":false,"canOfficial":true,"edocEnabled":true,"integratorResult":{"status":"cancelled","message":"e-Arşiv fatura EDM'de iptal edildi; iptal GİB'e raporlanır."},"notices":[]}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:286:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: EDM'ye ulaşmamış girişim (bulunamadı) → yeniden gönderim: süre yeniden gönderim gününden
+    ok 8 - EDM'ye ulaşmamış girişim (bulunamadı) → yeniden gönderim: süre yeniden gönderim gününden
+      ---
+      duration_ms: 162.837224
+      type: 'test'
+      ...
+    # Subtest: portal taslağı portaldan gönderildi: süre taslak yükleme gününden (gönderim ondan önce olamaz)
+    not ok 9 - portal taslağı portaldan gönderildi: süre taslak yükleme gününden (gönderim ondan önce olamaz)
+      ---
+      duration_ms: 95.60304
+      type: 'test'
+      location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:311:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   lastDay: '2026-06-29',
+        -   lastDay: '2026-06-26',
+            late: false,
+            source: 'iletim',
+        +   start: '2026-06-21'
+        -   start: '2026-06-18'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        start: '2026-06-18'
+        source: 'iletim'
+        lastDay: '2026-06-26'
+        late: false
+      actual:
+        start: '2026-06-21'
+        source: 'iletim'
+        lastDay: '2026-06-29'
+        late: false
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:324:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: e-Fatura kuralın dışında: süre bilgisi yok, bugünkü iptal yanıtı değişmez
+    ok 10 - e-Fatura kuralın dışında: süre bilgisi yok, bugünkü iptal yanıtı değişmez
+      ---
+      duration_ms: 93.183278
+      type: 'test'
+      ...
+    # Subtest: ay sonu ve yıl dönümü: 28.12 iletim → 05.01 iptal edilir, 06.01 reddedilir
+    ok 11 - ay sonu ve yıl dönümü: 28.12 iletim → 05.01 iptal edilir, 06.01 reddedilir
+      ---
+      duration_ms: 178.804812
+      type: 'test'
+      ...
+    1..11
+not ok 2 - iptal süresi: program uçları (sahte EDM, sahte saat)
+  ---
+  duration_ms: 2630.138148
+  type: 'suite'
+  location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:111:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: iptal süresi: e-SMM (gönderim kapısı madde 22'de açılır; kural şimdiden e-SMM'yi kapsar)
+    # Subtest: iletilmiş e-SMM 9. gün reddedilir (e-SMM iletisiyle); süre içinde kartta son gün; iletim izi gönderim girişiminden
+    not ok 1 - iletilmiş e-SMM 9. gün reddedilir (e-SMM iletisiyle); süre içinde kartta son gün; iletim izi gönderim girişiminden
+      ---
+      duration_ms: 129.635711
+      type: 'test'
+      location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:387:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /^e-SMM'nin iptal süresi doldu: kesildiği .* Makbuz geçerli kalır/. Input:
+        
+        "e-SMM'nin iptal süresi doldu: alıcıya iletildiği 17.06.2026 gününden sonraki 8 gün içinde (en geç 25.06.2026) iptal edilebilirdi. Makbuz geçerli kalır; düzeltme için mali müşavirinize danışın."
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: "e-SMM'nin iptal süresi doldu: alıcıya iletildiği 17.06.2026 gününden sonraki 8 gün içinde (en geç 25.06.2026) iptal edilebilirdi. Makbuz geçerli kalır; düzeltme için mali müşavirinize danışın."
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:400:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 3 - iptal süresi: e-SMM (gönderim kapısı madde 22'de açılır; kural şimdiden e-SMM'yi kapsar)
+  ---
+  duration_ms: 477.96937
+  type: 'suite'
+  location: '/home/user/wt/iptal/test/ebelge-244-iptal-suresi.test.mjs:365:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 17
+# suites 3
+# pass 12
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3507.348626

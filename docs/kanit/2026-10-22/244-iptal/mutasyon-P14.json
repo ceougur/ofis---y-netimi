@@ -1,0 +1,38 @@
+{
+  "ad": "244-iptal/mutasyon-P14",
+  "komut": "node --test test/ebelge-244-iptal-suresi.test.mjs",
+  "commit": "b54ed6bf5e7fd954e76463cea8577d9866d44de8",
+  "dal": "is/iptal",
+  "kirli": 7,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:51:38.406Z",
+  "sure_sn": 4.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 16,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › iletimden 9. gün reddedilir: ileti son günü yazar, belge ve EDM değişmez, kartta neden görünür",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:195:3",
+      "hata": "Expected values to be strictly equal: · true !== false (beklenen false, gelen true)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-iptal/mutasyon-P14.log",
+  "klasor": "/home/user/wt/iptal",
+  "ham_cikti_sha256": "ce22d0bd1589d5dc0c9f6adfc1f2926b2dcba96a201a8e804ad7a292a55b83bc",
+  "ham_cikti_bayt": 6795
+}
