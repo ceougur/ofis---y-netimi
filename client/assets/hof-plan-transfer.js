@@ -27,13 +27,14 @@
     ["exists", "Kartı var", record => record.status === "exists"],
     ["error", "Aktarılamaz", record => record.status === "error"],
   ];
-  const ACCOUNT_TEXT = { new: () => "Yeni cari açılır", match: record => `Mevcut cari bağlanır: ${record.accountName}`, bound: record => `Kayda bağlı cari: ${record.accountName}`, card: record => `Kartın carisi: ${record.accountName}` };
+  const ACCOUNT_TEXT = { new: () => "Yeni cari açılır", match: record => `Mevcut cari bağlanır: ${record.accountName}`, bound: record => `Kayda bağlı cari: ${record.accountName}${record.cover ? " · mevcut borç taksitlendirilir" : ""}`, card: record => `Kartın carisi: ${record.accountName}` };
   const PAGE = 300;
   // 2.4.4 (5a): accountIn — kayda bağlı carinin taksit dışı tahsilatları karta yazılsın (varsayılan açık; sunucu routes/plan-transfer.mjs accountMoves).
-  const state = { data: null, options: { dueDay: 1, firstDue: "", payments: true, accountIn: true, group: "tab", groupName: "" }, selected: new Set(), selectable: new Set(), filter: "all", q: "", open: new Set(), limit: PAGE, loading: false };
+  // 2.4.4 (5b): coverDebt — kayda bağlı carinin mevcut borcu tablodaki kalanı karşılıyorsa kart o borçla açılır (varsayılan açık).
+  const state = { data: null, options: { dueDay: 1, firstDue: "", payments: true, accountIn: true, coverDebt: true, group: "tab", groupName: "" }, selected: new Set(), selectable: new Set(), filter: "all", q: "", open: new Set(), limit: PAGE, loading: false };
   let modal = null;
 
-  const optionQuery = () => new URLSearchParams({ dueDay: String(state.options.dueDay), firstDue: state.options.firstDue, payments: state.options.payments ? "1" : "0", accountIn: state.options.accountIn ? "1" : "0", group: state.options.group, groupName: state.options.groupName });
+  const optionQuery = () => new URLSearchParams({ dueDay: String(state.options.dueDay), firstDue: state.options.firstDue, payments: state.options.payments ? "1" : "0", accountIn: state.options.accountIn ? "1" : "0", coverDebt: state.options.coverDebt ? "1" : "0", group: state.options.group, groupName: state.options.groupName });
   async function load() {
     state.loading = true;
     render();
@@ -125,6 +126,7 @@
         ${state.options.group === "custom" ? `<label class="hof-field"><span>Grup Adı</span><input type="text" maxlength="80" data-opt="groupName" value="${esc(state.options.groupName)}" placeholder="Ör. 2026-2027 Servis"></label>` : ""}
         <label class="hof-check"><input type="checkbox" data-opt="payments" ${state.options.payments ? "checked" : ""}><span>Kayıt kartından girilmiş tahsilatlar karta taşınsın (Kasa toplamı ve tarihleri değişmez)</span></label>
         <label class="hof-check"><input type="checkbox" data-opt="accountIn" ${state.options.accountIn ? "checked" : ""}><span>Kayda bağlı carinin taksit dışı tahsilatları karta yazılsın (en eski açık taksitten; cari bakiyesi ve Kasa değişmez)</span></label>
+        <label class="hof-check"><input type="checkbox" data-opt="coverDebt" ${state.options.coverDebt ? "checked" : ""}><span>Carinin mevcut borcu varsa kartı o borçla aç (borç ikinci kez yazılmaz)</span></label>
       </div>
       <div class="hof-kpis hof-plans-kpis"><div><strong>${number(t.ready + t.warning + t.link)}</strong><span>Aktarılabilir · ${number(t.warning)} uyarılı · ${number(t.link)} bağlanacak</span></div><div><strong>${number(t.closed)}</strong><span>Kapanmış (seçilmedi)</span></div><div class="${t.error ? "is-late" : ""}"><strong>${number(t.error)}</strong><span>Aktarılamaz · ${number(t.exists)} kartı var</span></div><div class="hof-cash-balance"><strong>${esc(money(chosen.remaining))}</strong><span>Seçilenlerin Kalanı · ${number(chosen.count)} kişi</span></div></div>
       <div class="hof-plans-filters"><span class="hof-plan-chips" role="group" aria-label="Süzgeç">${FILTERS.map(([id, label, filter]) => `<button type="button" data-filter="${id}" aria-pressed="${String(id === state.filter)}">${label} <b>${number(records.filter(filter).length)}</b></button>`).join("")}</span><input type="search" data-q value="${esc(state.q)}" placeholder="Ad, telefon, sekme ara…" aria-label="Ara"></div>
@@ -188,6 +190,7 @@
       eyebrow: "TAKSİTLER",
       body: `<ul class="hof-transfer-result">
           <li><b>${number(result.created)}</b> taksit kartı açıldı (taksitler ${esc(money(result.total))}; Excel'e göre ödenen ${esc(money(result.opening))} açılış olarak yazıldı).</li>
+          ${result.covered ? `<li><b>${number(result.covered)}</b> kart carinin mevcut borcunu (${esc(money(result.coveredAmount))}) taksitlendirdi; borç ikinci kez yazılmadı.</li>` : ""}
           ${result.linked ? `<li><b>${number(result.linked)}</b> mevcut kart tablodaki kaydına bağlandı.</li>` : ""}
           <li><b>${number(result.accountsCreated)}</b> cari açıldı${result.accountsLinked ? `, <b>${number(result.accountsLinked)}</b> cari kayda bağlandı` : ""}.</li>
           ${result.paymentsMoved ? `<li>Kayıt kartından <b>${number(result.paymentsMoved)}</b> tahsilat (${esc(money(result.paymentsAmount))}) kartlara taşındı; Kasa toplamı değişmedi.</li>` : ""}
@@ -275,7 +278,7 @@
     const option = event.target.closest("[data-opt]");
     if (!option) return;
     const name = option.dataset.opt;
-    state.options[name] = name === "payments" || name === "accountIn" ? option.checked : name === "dueDay" ? Number(option.value) || 1 : option.value;
+    state.options[name] = name === "payments" || name === "accountIn" || name === "coverDebt" ? option.checked : name === "dueDay" ? Number(option.value) || 1 : option.value;
     // Seçenekler sunucuda yeniden hesaplanır (kalan, bulgular, cari); grup adı yazılırken her tuşta değil, alan bırakılınca.
     load();
   }

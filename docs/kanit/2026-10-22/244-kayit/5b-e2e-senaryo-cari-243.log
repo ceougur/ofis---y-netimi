@@ -1,0 +1,78 @@
+
+> destekofis@2.4.3 test:senaryo-cari-243
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-cari-243.mjs
+
+
+■ A1 + A3 Yeni Cari "Ahmet Yılmaz": kayıt kendiliğinden bağlanmaz, aynı adlı cari varken onay sorulur
+  ✓ tablodaki aynı adlı kayıt kendiliğinden seçilmedi (caseKey “”)
+  ✓ öneri gösterildi: “Tabloda aynı adlı kayıt var: 2026/100 · Ahmet Yılmaz. Aynı kişiyse bağlayın; bağlanmazsa kayıttan girilen tahsilat bu ca”
+  ✓ onay soruldu, ayırt edici bilgiyle: ““Ahmet Yılmaz” adıyla 2 cari kayıtlı: No 1 · 0533 111 11 11; No 2 · 0533 222 22 22. Aynı kişiyse yeni cari açmayın; borç ve tahsilatlar iki karta bölünür. Farkl”
+  ✓ Vazgeç: cari açılmadı (3 → 3), form açık
+  ✓ "Yine de Aç": yeni cari No 4, kayda bağlı DEĞİL (case_key “”)
+  ✓ kayıt kartında Tahsilat düğmesi görünmez (E8)
+  ✓ kayıt tahsilatı API'den: 200 {"ok":true,"data":{"id":"payment-54f2ce03-8285-466f-b217-fa81c3cb898b"}}
+  ✓ yeni cariye para yazılmadı (hareket 0, tahsilat 0)
+  ✓ tahsilat kaydın defterinde: 321
+  ✓ No 1'in tahsilatı değişmedi (1000 → 1000)
+
+■ A1 (bağla) + A2 "Mehmet Demir": öneriden bağlanır; kayıttan tahsilat cariye, İşlem Geçmişi'nde ve raporda görünür
+  ✓ "Bu Kayda Bağla" ile kayıt seçildi (caseKey “2026/101”)
+  ✓ cari No 5 kayda bağlı (2026/101)
+  ✓ kayıt kartında Tahsilat düğmesi görünmez (E8)
+  ✓ tahsilat formu hangi cariye yazılacağını söylüyor: “× No 5 · Mehmet Demir Tahsilat Cariden para alındı: bakiyeden düşer, Kasa'ya tahsilat olar”
+  ✓ tahsilat carinin defterinde: 500
+  ✓ İşlem Geçmişi: “İŞLEM GEÇMİŞİToplam Tahsilat ₺500,00₺₺500,00 cari tahsilatı · No 5 Mehmet Demir · Makbuz No 2 (22.10.2026)Ofis yöneticisi · 22.10.2026 06:38MakbuzKayda Git”
+  ✓ "Kayıt Kartından Tahsilatlar" raporunda: ["2026/100 · Ahmet Yılmaz","2026/101 · Mehmet Demir · Cari No 5"]
+
+■ A5 Taksit kartı olan caride Sil pasif, nedeni yazılı; A8 "bakiyeye dahil"
+  ✓ Sil pasif (true); neden: “Silinemez: Bu carinin 1 taksit kartı var. Önce kartları silin ya da başka cariye taşıyın; kapatılan kartlar da sayılır.”
+  ✓ kart göstergesi: “₺8.000,00Borç Toplamı₺1.000,00Alacak Toplamı · Tahsil ₺1.000,00₺7.000,00Bakiye · Borçlu₺3.000,00Taksitten Kalan (bakiyeye dahil) · 1 geciken”
+  ✓ liste göstergesi: “₺8.200,00Borçlular · 2 cari₺500,00Alacaklılar · 1 cari₺4.200,00Taksitlerden Kalan (bakiyeye dahil)₺1.600,00Geciken · 2 taksit”
+  ✓ "Cari Listesi - PDF" 36 px, seçici 36 px (tek satır)
+
+■ A7 Banka hesabı yokken Kasadan Bankaya Yatır kaydedilmez
+  ✓ "Banka Hesabı Tanımla" yolu: “Banka Hesabı Tanımla”
+  ✓ kaydedilmedi: “Banka hesabı tanımlı değil. Önce “Banka Hesabı Tanımla” ile hesabı tanımlayın; aktarım o hesaba yazılır.”
+  ✓ Kasa değişmedi (1821 → 1821), transfer 0 → 0
+
+■ C2 + C13 POS tahsilatı açıklaması; müşteride "Kredi Kartına İade" yok, tedarikçide var
+  ✓ seçim penceresi hangi cari: “× No 2 · Ahmet Yılmaz · 0533 222 22 22 Tahsilat Bu carinin a”
+  ✓ POS açıklaması: “Cariden POS ile tahsil edildi: bakiyeden düşer; seçilen POS'a yazılır, valör gününde komisyonu düşülerek POS'un bağlı olduğu banka hesabına geçer (aşağıdaki önizleme); Kasa'ya girmez, makbuzu alınır.”
+  ✓ müşteri tahsilatında Kredi Kartına İade kutusu yok
+  ✓ tedarikçi tahsilatında Kredi Kartına İade kutusu var
+
+■ A22 Cari ekstre PDF'inde alt TOPLAM satırı; A15 Kasa satırında "Cari Tahsilat"
+  ✓ TOPLAM satırı: ["TOPLAM","8.000,00 TL","1.000,00 TL","7.000,00 TL borçlu","Cari Ekstre · Ahmet Yılmaz","Sayfa 1 / 1"]
+  ✓ Kasa satırı başlık yazımıyla (Cari Tahsilat · Ahmet YılmazCari)
+
+■ A21 takvimde aynı adlı iki cari ayırt edilir; A9 bildirim turu 1 + özet, dizüstünde küçük
+  ✓ pillerde Cari No: ["Ahmet Yılmaz · Cari No 1","Ahmet Yılmaz · Cari No 1","Ahmet Yılmaz · Cari No 2"]
+  ✓ tek adlılara ek yazılmaz
+
+■ A17 Tab: önce "Tabloya Atla", takvim tek durak; A18 tablo yana kaymaz, tutar biçimli
+  ✓ ilk Tab durağı: “Tabloya Atla”
+  ✓ Enter → odak kayıt tablosunun arama kutusunda
+  ✓ takvim şeridi Tab durağı: 1
+  ✓ 1366'da tablo yana kaymıyor (604 / 604)
+  ✓ tutar biçimli “25.000,00”, ham değer title'da “25000,00”
+  ✓ ham tutarla arama kaydı buluyor (2026/109)
+
+■ A13 "Toplam Borç" kutu başlığı 1280 ve 1366'da kesilmez
+  ✓ 1280: “Toplam Borç” kesik false
+  ✓ 1366: “Toplam Borç” kesik false
+
+■ A20 personel ana sayfasında üst boşluk yok; A19 personele olmayan yol gösterilmez
+  ✓ içerik alanının üstü ile ilk bölüm arası 37 px (önceden ~55)
+  ✓ personel iletisi: “Bu sayfa yöneticiler içindir Yönetim paneli yalnız yönetici hesaplarında açılır. Ana ekrana dönebilirsiniz. Ana Ekran”
+
+■ A14 Sayfalar şeridi geç gelse de tablo itilmez (istek 1,5 sn geciktirilir)
+  ✓ ön koşul: sayfa listesi isteği geciktirildi (1)
+  ✓ şerit geldikten sonraki kayma 0.0000 (toplam 0.0007; [])
+
+■ A9 bildirim: tur 1 + özet, dizüstünde küçük
+  ✓ ilk bildirimin sırası “1/1” (önceden 1/5: beş bildirim dönüyordu)
+  ✓ 1366×768'de bildirim 306×111 px, alan önceden 372×128'den küçük
+  ✓ 1440×900'de ilk bildirimin sırası “1/3” (tek tek gelir; gerileme yok)
+  ✓ sayfa hatası yok ()
+
+48 geçti, 0 kaldı

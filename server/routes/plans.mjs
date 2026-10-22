@@ -1486,16 +1486,22 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const lock = period?.lockedUntil?.() || "";
     return lock && start && start <= lock ? `Kartın Kayıt Tarihi (${dayText(start)}; ilk vade ya da kayıt günü) kapatılmış (kilitli) dönemde (${dayText(lock)} ve öncesi); kart açılmadı. Yönetici dönem kilidini açarsa yeniden aktarın.` : "";
   }
-  function createScheduled(user, input, { importId = "", items = [], openingDate = today(), openingNote = "Excel'de ödenmiş" } = {}) {
+  // 2.4.4 (5b) coversBalance: kayda bağlı carinin borcu (ör. "önce cari açın" formundaki Açılış Bakiyesi = kayıttaki Kalan Borç) zaten defterde;
+  // kart "Carinin Mevcut Borcu"nu taksitlendirir (covers_balance = 1: carinin defterine ikinci kez borç yazmaz; lib/accounts.mjs). Excel'de ödenmiş
+  // kısım carinin bakiyesindedir: açılış (devir) satırı yazılmaz, taksitler ödenmemiş kısımlarıyla kurulur (tamamı ödenmiş taksit kurulmaz).
+  function createScheduled(user, input, { importId = "", items: given = [], openingDate = today(), openingNote = "Excel'de ödenmiş", coversBalance = false } = {}) {
     const id = newId("plan");
+    const items = coversBalance
+      ? given.map(item => ({ ...item, amount: roundMoney((Number(item.amount) || 0) - Math.min(Number(item.paid) || 0, Number(item.amount) || 0)), paid: 0 })).filter(item => item.amount > 0.004)
+      : given;
     const total = roundMoney(items.reduce((sum, item) => sum + (Number(item.amount) || 0), 0));
     const registeredOn = scheduledStart(input.registeredOn, items);
     // Kart, taksitleri ve açılış kayıtları tek damga taşır: geri alma denetimi (plan-transfer.mjs) "created_at =
     // updated_at" ile kartın aktarımdan sonra dokunulmadığını anlar; iki ayrı now() milisaniye sınırında ayrışabiliyordu.
     const stamp = now();
     store.run(
-      "INSERT INTO plans (id, account_id, ref_no, registered_on, case_key, case_source, case_title, group_id, subgroup_id, name, note, phone, total, status, import_id, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?)",
-      id, input.accountId || "", input.refNo || nextRef(), registeredOn, input.caseKey || "", input.caseKey ? input.caseSource || currentSource() : "", input.caseKey ? input.caseTitle || input.name : "", input.groupId || null, input.subgroupId || null, String(input.name).slice(0, 160), String(input.note || "").slice(0, 1000), String(input.phone || "").slice(0, 60), total, importId, user.id, stamp, stamp,
+      "INSERT INTO plans (id, account_id, ref_no, registered_on, case_key, case_source, case_title, group_id, subgroup_id, name, note, phone, total, status, import_id, covers_balance, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?, ?)",
+      id, input.accountId || "", input.refNo || nextRef(), registeredOn, input.caseKey || "", input.caseKey ? input.caseSource || currentSource() : "", input.caseKey ? input.caseTitle || input.name : "", input.groupId || null, input.subgroupId || null, String(input.name).slice(0, 160), String(input.note || "").slice(0, 1000), String(input.phone || "").slice(0, 60), total, importId, coversBalance ? 1 : 0, user.id, stamp, stamp,
     );
     const openingIds = [];
     items.slice(0, MAX_ITEMS).forEach((item, index) => {
@@ -1511,7 +1517,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
         openingIds.push(entryId);
       }
     });
-    audit(user, "plan.created", id, { name: input.name, total, accountId: input.accountId || "", importId, items: items.length, opening: roundMoney(items.reduce((sum, item) => sum + Math.min(Number(item.paid) || 0, Number(item.amount) || 0), 0)) });
+    audit(user, "plan.created", id, { name: input.name, total, accountId: input.accountId || "", importId, items: items.length, opening: roundMoney(items.reduce((sum, item) => sum + Math.min(Number(item.paid) || 0, Number(item.amount) || 0), 0)), coversBalance });
     return { id, openingIds, total };
   }
   // Programda kayıt kartından girilmiş tahsilatı karta taşır (Kasa toplamı değişmez: kayıt tahsilatı olarak çıkar, taksit

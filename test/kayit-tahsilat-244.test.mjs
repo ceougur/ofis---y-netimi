@@ -208,3 +208,21 @@ describe(`2.4.4 E8: eski sürüm verisi (${OLD} gerçek kodu) yeni kodla aynı s
     }
   });
 });
+
+// 2.4.4 madde 5b: "önce cari açın" formundaki Açılış Bakiyesi takvim kaleminin "Kalan Borç"undan dolar. Tabloda hem "Alacak Tutarı" hem "Kalan" varsa
+// Kalan Borç "Kalan" kolonudur (önceden ilk eşleşen "Alacak Tutarı" alınıyordu: toplam alacak kalan borç sayılıyordu); kalem kolon adını da taşır.
+describe("2.4.4 5b: takvim kaleminin Kalan Borç'u 'Kalan' kolonundan, kolon adıyla", () => {
+  test("Alacak Tutarı + Kalan + Son Ödeme: Kalan Borç = Kalan; tek vadeli kalemin beklenen tutarı da kalan", async () => {
+    const { computeDues } = await import("../server/lib/insight/dues.mjs");
+    const now = new Date();
+    const due = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3);
+    const text = `${String(due.getDate()).padStart(2, "0")}.${String(due.getMonth() + 1).padStart(2, "0")}.${due.getFullYear()}`;
+    const rows = ["Hasan Er", "Ece Ak", "Can Tan"].map((name, index) => ({ __hofKey: `2026/9${index}`, __sheet: "Alacaklar", "Dosya No": `2026/9${index}`, Borçlu: name, "Alacak Tutarı": `${20 + index}.000,00`, Kalan: `${12 + index}.000,00`, "Son Ödeme": text }));
+    const { items } = computeDues({ rows, tabs: ["Alacaklar"], now });
+    const hasan = items.find(item => item.person === "Hasan Er");
+    assert.ok(hasan, JSON.stringify(items.map(item => item.person)));
+    assert.equal(hasan.debt, 12000, `Kalan Borç: ${hasan.debt}`);
+    assert.equal(hasan.debtColumn, "Kalan");
+    assert.equal(hasan.amount, 12000, "tek vadeli kalemin beklenen tutarı kalan borç");
+  });
+});

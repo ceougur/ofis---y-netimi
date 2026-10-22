@@ -12,6 +12,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { after, before, describe, test } from "node:test";
+import { okulServisiWorkbook } from "./fixtures/okul-servisi-ornek.mjs";
 import { tahsilatWorkbook } from "./fixtures/tahsilat-ornek.mjs";
 import { CURRENT, bootVersion } from "./guvenilirlik/surumler.mjs";
 
@@ -170,3 +171,140 @@ describe("2.4.4 5a: Tablodan Aktar kayda bağlı carinin taksit dışı tahsilat
   });
 });
 
+// 2.4.4 madde 5b: "önce cari açın" formunda Açılış Bakiyesi kayıttaki Kalan Borç ile dolu gelir; ardından Tablodan Aktar aynı borcu İKİNCİ KEZ yazmaz.
+// Kural (tek kart formundaki "Borcun Kaynağı: Carinin Mevcut Borcu" varsayılanı gibi): kayda bağlı carinin kart kapsamı dışındaki borcu (karta yazılacak
+// taksit dışı tahsilatlar geri eklenerek) tablodaki kalanı karşılıyorsa kart "Carinin Mevcut Borcu" olarak açılır (cariye borç yazmaz; Excel'de ödenmiş
+// kısım zaten carinin bakiyesindedir, açılış satırı yazılmaz). Borç kalandan küçükse aynı borç mu belli değil: kişi aktarılmaz (seçenek kapatılırsa yeni
+// borç). Faturalı caride kapsanmaz (uyarı). "Nasıl bozulur?": B1 açılış = kalan → çift borç yok; B2 açılıştan sonra taksit dışı tahsilat → yine yok, tahsilat
+// karta; B3 açılış kalandan küçük → aktarılmaz; B4 seçenek kapalı → yeni borç + uyarı; B5 faturalı cari → kapsanmaz + uyarı; B6 geri al → bakiye aynı.
+describe("2.4.4 5b: Tablodan Aktar carinin mevcut borcunu ikinci kez yazmaz (açılış bakiyesi + kart = çift borç olmaz)", () => {
+  const root = mkdtempSync(path.join(tmpdir(), "tablodan-aktar-244-5b-"));
+  let server;
+  let api;
+  let db;
+  const keys = {};
+  const ids = {};
+  const balanceOf = async id => (await must("cari", api.get(`/api/workspace/accounts/${id}`))).totals.balance;
+  const cash = async () => (await must("kasa", api.get("/api/workspace/cash"))).totals.balance;
+  let preview;
+  let result;
+  let before5b;
+
+  before(async () => {
+    server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups") });
+    api = await server.login();
+    db = server.app.store;
+    await must("kurulum geç", api.post("/api/workspace/bank/setup/dismiss", {}));
+    const book = tahsilatWorkbook(new Date());
+    const staged = await must("tablo", api.post("/api/workspace/dataset/stage", { kind: "excel", fileName: "tahsilat.xlsx", sheets: book.map(sheet => ({ name: sheet.name, matrix: matrix(sheet) })) }));
+    await must("tablo kaydet", api.post("/api/workspace/dataset/commit", { stageId: staged.stageId, mode: "replace" }));
+    const first = await must("ön izleme", api.get("/api/workspace/plans/from-table"));
+    for (const name of ["Elif Aydın", "Selin Arslan", "Burak Koç"]) keys[name] = first.records.find(record => record.name === name)?.key;
+    const open = (name, phone, key, openingBalance) => must(`${name} cari`, api.post("/api/workspace/accounts", { name, phone, type: "customer", caseKey: key, caseTitle: name, openingBalance, openingSide: "auto", registeredOn: day(-40) }));
+    // Elif: açılış 9.000 (= tablodaki kalan 3 × 3.000), sonra 2.000 taksit dışı tahsilat.
+    ids.elif = (await open("Elif Aydın", "0532 600 10 10", keys["Elif Aydın"], "9.000")).id;
+    await must("Elif tahsilat", api.post(`/api/workspace/accounts/${ids.elif}/entries`, { kind: "in", amount: "2.000", date: day(-1), method: "cash" }));
+    // Selin: açılış 1.000 (< kalan 4.500).
+    ids.selin = (await open("Selin Arslan", "0532 600 30 30", keys["Selin Arslan"], "1.000")).id;
+    // Burak: açılış 6.000 (= kalan) ama faturası var.
+    ids.burak = (await open("Burak Koç", "0532 600 20 20", keys["Burak Koç"], "6.000")).id;
+    const svc = await must("hizmet", api.post("/api/workspace/stock", { kind: "service", code: "HZM-5B", name: "Servis Hizmeti", unit: "Adet", salePrice: "100" }));
+    await must("fatura", api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: ids.burak, issueDate: day(-10), lines: [{ itemId: svc.id, qty: 1, unitPrice: 100, vatRate: 0 }], payment: { rest: "open" } }));
+    before5b = { elif: await balanceOf(ids.elif), selin: await balanceOf(ids.selin), burak: await balanceOf(ids.burak), cash: await cash() };
+    assert.deepEqual([before5b.elif, before5b.selin, before5b.burak], [7000, 1000, 6100], "açılış bakiyeleri (elle): 9.000 − 2.000, 1.000, 6.000 + 100");
+  });
+  after(async () => {
+    await server?.close();
+    rmSync(root, { recursive: true, force: true });
+  });
+
+  test("B1–B5 ön izleme: Elif mevcut borçla (2.000 karta), Selin aktarılmaz, Burak faturalı (yeni borç uyarısı); seçenek kapalıyken yeni borç uyarısı", async () => {
+    preview = await must("ön izleme", api.get("/api/workspace/plans/from-table"));
+    const elif = preview.records.find(record => record.key === keys["Elif Aydın"]);
+    assert.equal(elif.cover, true, JSON.stringify(elif.issues));
+    assert.equal(elif.accountMoved, 2000);
+    assert.equal(elif.remaining, 7000, "kalan 9.000 − 2.000");
+    assert.ok(elif.issues.some(issue => issue.code === "cover-debt" && /ikinci kez/.test(issue.text)), JSON.stringify(elif.issues));
+    const selin = preview.records.find(record => record.key === keys["Selin Arslan"]);
+    assert.equal(selin.status, "error", JSON.stringify(selin.issues));
+    assert.ok(selin.issues.some(issue => issue.code === "cover-ambiguous"), JSON.stringify(selin.issues));
+    const burak = preview.records.find(record => record.key === keys["Burak Koç"]);
+    assert.equal(burak.cover, false);
+    assert.ok(burak.issues.some(issue => issue.code === "cover-new-debt" && /faturası/.test(issue.text)), JSON.stringify(burak.issues));
+    const off = await must("ön izleme kapalı", api.get("/api/workspace/plans/from-table?coverDebt=0"));
+    const elifOff = off.records.find(record => record.key === keys["Elif Aydın"]);
+    assert.equal(elifOff.cover, false);
+    assert.ok(elifOff.issues.some(issue => issue.code === "cover-new-debt"), JSON.stringify(elifOff.issues));
+    const selinOff = off.records.find(record => record.key === keys["Selin Arslan"]);
+    assert.notEqual(selinOff.status, "error", "seçenek kapalıyken Selin aktarılabilir (yeni borç)");
+  });
+
+  test("B1–B2 aktar: Elif kartı 'Carinin Mevcut Borcu' (9.000, açılış satırı yok, 2.000 ödendi); carinin bakiyesi ve Kasa AYNI; Selin aktarılmadı", async () => {
+    result = await must("aktar", api.post("/api/workspace/plans/from-table", { keys: [keys["Elif Aydın"], keys["Selin Arslan"]], fingerprint: preview.fingerprint }));
+    // Önce para: Elif'in bakiyesi 7.000 kalmalı (açılış 9.000 − 2.000); kart yeni borç yazsaydı 16.000 olurdu (çift borç).
+    assert.equal(await balanceOf(ids.elif), before5b.elif, "Elif'in bakiyesi 7.000 (çift borç yok)");
+    assert.equal(await balanceOf(ids.selin), before5b.selin, "Selin aktarılmadı, bakiyesi aynı (kalanı karşılamayan borç: aktarılmaz)");
+    assert.equal(result.created, 1);
+    assert.equal(result.skipped.length, 1, JSON.stringify(result.skipped));
+    const plan = db.get("SELECT id, total, covers_balance AS covers FROM plans WHERE case_key = ? AND deleted_at IS NULL", keys["Elif Aydın"]);
+    assert.deepEqual([plan.total, plan.covers], [9000, 1]);
+    assert.equal(db.get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ? AND opening = 1", plan.id).n, 0, "açılış (devir) satırı yazılmadı");
+    const detail = await must("kart", api.get(`/api/workspace/plans/${plan.id}`));
+    assert.deepEqual([detail.totals.total, detail.totals.paid, detail.totals.remaining], [9000, 2000, 7000]);
+    assert.equal(await cash(), before5b.cash, "Kasa aynı");
+    assert.equal(db.get("SELECT COUNT(*) AS n FROM plans WHERE case_key = ? AND deleted_at IS NULL", keys["Selin Arslan"]).n, 0);
+    const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
+    assert.equal(integrity.ok, true, `Mutabakat Testi: ${JSON.stringify(integrity.failures).slice(0, 400)}`);
+  });
+
+  test("B6 geri al: kart kalkar, 2.000 carinin hesabına döner; bakiye ve Kasa aynı", async () => {
+    await must("geri al", api.post(`/api/workspace/plans/imports/${result.importId}/undo`, {}));
+    assert.equal(db.get("SELECT COUNT(*) AS n FROM plans WHERE case_key = ? AND deleted_at IS NULL", keys["Elif Aydın"]).n, 0);
+    assert.equal(await balanceOf(ids.elif), before5b.elif);
+    assert.equal(await cash(), before5b.cash);
+    assert.deepEqual(db.all("SELECT kind, amount FROM account_entries WHERE account_id = ? ORDER BY date, rowid", ids.elif).map(row => [row.kind, row.amount]), [["debt", 9000], ["in", 2000]]);
+  });
+});
+
+// 5b B7: Excel'de kısmen ödenmiş plan (okul servisi: Can Öztürk 4 × 3.800 = 15.200, Excel'e göre ödenen 9.500, kalan 5.700). Cari açılış bakiyesi 5.700
+// (kayıttaki kalan): kart "Carinin Mevcut Borcu" 5.700 ile açılır, ödenmemiş taksit kısımlarıyla; Excel'de ödenmiş 9.500 için açılış (devir) satırı
+// YAZILMAZ (yazılsaydı carinin bakiyesi 5.700 − 9.500 = −3.800 olurdu). Bakiye 5.700 kalır.
+describe("2.4.4 5b B7: Excel'de kısmen ödenmiş plan + açılış bakiyesi = kalan → kart ödenmemiş kısımla, açılış satırı yok, bakiye aynı", () => {
+  const root = mkdtempSync(path.join(tmpdir(), "tablodan-aktar-244-5b7-"));
+  let server;
+  let api;
+  let db;
+  before(async () => {
+    server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups") });
+    api = await server.login();
+    db = server.app.store;
+    await must("kurulum geç", api.post("/api/workspace/bank/setup/dismiss", {}));
+    const book = okulServisiWorkbook(new Date());
+    const staged = await must("tablo", api.post("/api/workspace/dataset/stage", { kind: "excel", fileName: "okul.xlsx", sheets: book.map(sheet => ({ name: sheet.name, matrix: matrix(sheet) })) }));
+    await must("tablo kaydet", api.post("/api/workspace/dataset/commit", { stageId: staged.stageId, mode: "replace" }));
+  });
+  after(async () => {
+    await server?.close();
+    rmSync(root, { recursive: true, force: true });
+  });
+
+  test("B7 Can Öztürk: kart 5.700 (Mevcut Borç), açılış satırı yok, bakiye 5.700", async () => {
+    const first = await must("ön izleme", api.get("/api/workspace/plans/from-table"));
+    const can = first.records.find(record => record.name === "Can Öztürk");
+    assert.deepEqual([can.total, can.paid], [15200, 9500], "tablodaki plan (elle: 4 × 3.800; 2 ay + 1.900 ödendi)");
+    const account = await must("cari", api.post("/api/workspace/accounts", { name: "Can Öztürk", type: "customer", caseKey: can.key, caseTitle: "Can Öztürk", openingBalance: "5.700", openingSide: "auto", registeredOn: day(-120) }));
+    const preview = await must("ön izleme", api.get("/api/workspace/plans/from-table"));
+    const record = preview.records.find(item => item.key === can.key);
+    assert.equal(record.cover, true, JSON.stringify(record.issues));
+    const result = await must("aktar", api.post("/api/workspace/plans/from-table", { keys: [can.key], fingerprint: preview.fingerprint }));
+    assert.equal(result.covered, 1);
+    const balance = (await must("cari", api.get(`/api/workspace/accounts/${account.id}`))).totals.balance;
+    assert.equal(balance, 5700, `carinin bakiyesi 5.700 kalır (çift borç ya da açılış düşümü yok): ${balance}`);
+    const plan = db.get("SELECT id, total, covers_balance AS covers FROM plans WHERE case_key = ? AND deleted_at IS NULL", can.key);
+    assert.deepEqual([plan.total, plan.covers], [5700, 1]);
+    assert.equal(db.get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ?", plan.id).n, 0, "açılış (devir) satırı yok");
+    assert.equal(db.get("SELECT ROUND(SUM(amount), 2) AS s FROM plan_items WHERE plan_id = ?", plan.id).s, 5700, "taksitler ödenmemiş kısımlarla");
+    const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
+    assert.equal(integrity.ok, true, `Mutabakat Testi: ${JSON.stringify(integrity.failures).slice(0, 400)}`);
+  });
+});
