@@ -2085,21 +2085,26 @@
     if (act === "issue-now") return submitForm("issue", "now");
     if (act === "issue-later") return submitForm("issue", "later");
   }
-  // SMM: eline geçecek net tutardan brüt ücret (stopaj ve KDV'ye göre) — ilk kalemin birim fiyatına yazılır.
+  // SMM: eline geçecek net ücretten (brüt − stopaj, KDV hariç) brüt ücret — ilk kalemin birim fiyatına yazılır.
+  // 2.4.4 (madde 26): birim fiyatı sunucu kaydın kendi hesabıyla bulur (formun ön hesap gövdesi + net): stopaj oranı kayıtta uygulanacak oran
+  // (kutu boşsa alıcıya göre — önceden burada her alıcıya ayardaki %20 gidiyordu, gerçek kişide brüt %25 fazla çıkıyordu), KDV dahil fiyat, iskonto
+  // ve öbür kalemler dahil; kaydedilen makbuzun net ücreti yazılan tutara kuruşu kuruşuna eşittir.
   function grossFromNet() {
     const form = view.form;
     HOF.formModal({
       title: "Netten Brüte",
       eyebrow: "SERBEST MESLEK MAKBUZU",
-      intro: "Eline geçmesini istediğiniz net ücreti yazın; program stopaj oranına göre brüt ücreti bulur ve ilk kaleme yazar.",
+      intro: "Eline geçmesini istediğiniz net ücreti (brüt ücret − stopaj, KDV hariç) yazın; program brüt ücreti bulur ve ilk kaleme yazar. Stopaj % kutusu boşsa oran alıcıya göre belirlenir: şirket alıcıda ayarlardaki oran, gerçek kişi alıcıda stopaj yok. Başka kalemler de varsa tutar makbuzun tamamı içindir.",
       fields: [{ name: "net", label: "Net Ücret (₺)", required: true, inputmode: "decimal", autofocus: true }],
       submitLabel: "Brütü Hesapla",
       onSubmit: async data => {
-        const rate = form.stoppageRate === "" ? meta.settings.defaults.stoppageRate : num(form.stoppageRate);
-        const result = await HOF.api(`/api/workspace/invoices/gross-from-net?net=${encodeURIComponent(data.net)}&rate=${encodeURIComponent(rate)}`);
+        if (!form.account) throw new Error("Önce cariyi seçin: stopaj alıcıya göre belirlenir.");
+        const probe = { ...form, lines: form.lines.map((line, index) => (index === 0 ? { ...line, name: line.name.trim() || "Serbest meslek ücreti", qty: "1", unitPrice: "0" } : line)) };
+        const result = await HOF.api("/api/workspace/invoices/gross-from-net", { method: "POST", body: { ...docBody(probe), net: data.net } });
+        if (view.form !== form) return;
         const line = form.lines[0];
-        line.unitPrice = priceText(result.gross);
-        if (!line.name) line.name = "Serbest meslek ücreti";
+        line.unitPrice = priceText(result.unitPrice);
+        if (!line.name.trim()) line.name = "Serbest meslek ücreti";
         line.qty = "1";
         renderLines();
         scheduleCalc(0);

@@ -25,7 +25,7 @@ import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from ".
 import { bodyHash, createIdempotency } from "../lib/idempotency.mjs";
 import { invoicePdf } from "../lib/invoice-pdf.mjs";
 import { jpegInfo } from "../lib/pdf-write.mjs";
-import { CURRENCIES, EXEMPTIONS, EXPENSES, INVOICE_KINDS, InvoiceInputError, SCENARIOS, STOPPAGE_DEFAULT, VAT_RATES, WITHHOLDING, amountInWords, computeInvoice, exclusiveParts, grossFromNet, lineAccount, toTry, typeCode } from "../lib/invoice-math.mjs";
+import { CURRENCIES, EXEMPTIONS, EXPENSES, INVOICE_KINDS, InvoiceInputError, SCENARIOS, STOPPAGE_DEFAULT, VAT_RATES, WITHHOLDING, amountInWords, cents, computeInvoice, exclusiveParts, lineAccount, priceForNetFee, toTry, typeCode } from "../lib/invoice-math.mjs";
 import { CLOSER_MODES, PAY_STATES, settleInvoices } from "../lib/invoice-settle.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { METHODS, METHODS_IN, METHODS_OUT, methodLabel, methodInput } from "../lib/pay-method.mjs";
@@ -2505,9 +2505,31 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       aliasBlock: aliasMissing(doc) ? aliasBlockText() : "",
     });
   });
-  router.get("/api/workspace/invoices/gross-from-net", async ({ req, res, url }) => {
+  // SMM "Netten Brüte" (2.4.4 madde 26): istenen Net Ücretten (brüt − stopaj, KDV hariç; makbuzun tamamı) ilk kalemin birim fiyatı. Gövde formun
+  // ön hesap gövdesidir (calc ile aynı) + net. Belge kaydın KENDİ yolundan çözülür (documentInput → computeInvoice): stopaj oranı kayıtta hangisi
+  // uygulanacaksa o — kutu boşsa alıcıya göre (şirket alıcıda ayardaki oran, gerçek kişide 0; GVK md. 94), yazılmışsa yazılan —; KDV dahil fiyat,
+  // iskontolar ve öbür kalemler de hesaba girer. Önceden istemci kutu boşken her alıcıda ayardaki oranı (%20) gönderiyor, KDV dahil fiyatı ve
+  // iskontoyu bilmiyordu: gerçek kişi alıcıda brüt %25 fazla, "Fiyatlar KDV Dahil"de matrah KDV kadar eksik yazılıyordu.
+  router.post("/api/workspace/invoices/gross-from-net", async ({ req, res }) => {
     requireView(req);
-    ok(res, { gross: grossFromNet(parseAmount(url.searchParams.get("net")), Number(url.searchParams.get("rate") ?? STOPPAGE_DEFAULT)) });
+    const body = await readJson(req, { limit: 2_000_000 });
+    const target = numberOf(body.net, "Net ücret", "net", { min: 0, max: 1e12 });
+    if (!(target > 0)) fail400("Net ücreti sıfırdan büyük bir tutar olarak yazın.", "net");
+    const lines = Array.isArray(body.lines) && body.lines.length ? body.lines : [{}];
+    const first = { ...(lines[0] && typeof lines[0] === "object" ? lines[0] : {}), qty: 1, unitPrice: roundMoney(target) };
+    if (!text(first.name) && !text(first.itemId)) first.name = "Serbest meslek ücreti";
+    const doc = documentInput({ ...body, lines: [first, ...lines.slice(1)] }, { mode: "draft" });
+    if (doc.kind !== "smm") fail400("Netten Brüte yalnız serbest meslek makbuzunda kullanılır.", "kind");
+    let found;
+    try {
+      found = priceForNetFee(doc.lines, 0, cents(target), { pricesIncludeVat: doc.pricesIncludeVat, discountRate: doc.discountRate, stoppageRate: doc.stoppageRate });
+    } catch (error) {
+      if (error instanceof InvoiceInputError) fail400(error.message, error.field);
+      throw error;
+    }
+    if (!found) fail400("Öbür kalemlerin net ücreti yazdığınız tutarı aşıyor; tutarı büyütün ya da öbür kalemleri çıkarın.", "net");
+    const t = found.totals;
+    ok(res, { unitPrice: found.unitPrice, gross: c2(t.net), stoppageRate: doc.stoppageRate, stoppage: c2(t.stoppage), net: c2(t.net - t.stoppage), vat: c2(t.vat), withheld: c2(t.withheld), payable: c2(t.payable) });
   });
   router.post("/api/workspace/invoices", async ({ req, res }) => {
     const user = requireManage(req);

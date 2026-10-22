@@ -52,6 +52,7 @@
     "test:senaryo-iz5-230": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-iz5-230.mjs",
     "test:senaryo-entegrator-240": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-entegrator-240.mjs",
     "test:senaryo-ebelge-242": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-ebelge-242.mjs",
+    "test:senaryo-netten-brute-244": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-netten-brute-244.mjs",
     "test:senaryo-ebelge-243": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-ebelge-243.mjs",
     "test:senaryo-form-izolasyon-243": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-form-izolasyon-243.mjs",
     "test:senaryo-fatura-243": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-fatura-243.mjs",
