@@ -415,7 +415,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   tarih, Sayfa ve Sekme; client/assets/hof-reports.js süzgeç formu bütün rapor türlerinde aynı): Tablodaki Nakit Akışı "Kişi / Kimlik", "Durum", "En Az Tutar"
   süzgeçlerini gösteriyor ama uygulamıyor (2.4.3'te de; ders 11). ÖNERİ (en yaygın: nakit akışı şirket düzeyinde rapor; kişi bazı Vade Takip / Cari Ekstre'de):
   Nakit Akışı'nda bu üç alan gizlenir, Sayfa/Sekme kalır. Alternatif (yalnız Beklenen'e uygula; Gerçekleşen ve Kasa şirket geneli kalırdı) seçilmedi. Yanıt
-  gelmedi → önerilen uygulandı: iş listesi 30f (30a ajanı, is/b1-kalan). Kullanıcı dönünce özetlenir; isterse alternatif yapılır.
+  gelmedi → önerilen uygulandı: iş listesi 30f (30a ajanı, is/b1-kalan). TEYİT (kullanıcı, 22.10.2026 ~18:58 UTC: "önerin uygun").
 - İSTEKLER (kullanıcı, 22.10.2026 ~14:00–14:50 UTC; hepsi yanıtlandı): "18 numarada portalda ben ne yapacağım" → elle kabul adımları iş listesi 18 (teslimde
   kurulumla); "kalan işler için zaman çizelgesi, aynı anda yapılanları tek süre say" → verildi (devam notu ZAMAN ÇİZELGESİ); "compact talimatı vereceğim, veri kaybı
   olmasın" → devam notu 00 + ajan kayıtları yazıldı ve gönderildi (f013e57); EDM test hesabı ~14:45 UTC yeniden verildi (yalnız oturumda; dosyaya yazılmadı).
