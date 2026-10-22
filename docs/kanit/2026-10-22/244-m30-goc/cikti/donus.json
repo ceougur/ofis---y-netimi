@@ -1,0 +1,38 @@
+{
+ "checks": [
+  {
+   "name": "001 göçten sonra 2.4.3 açınca gösterdiği = göçten önce gösterdiği",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "name": "001 2.4.3 açılışı şemayı geri almaz (32 kalır)",
+   "ok": true,
+   "detail": {
+    "version": 32
+   }
+  },
+  {
+   "name": "001 2.4.3'ten sonra yeniden 2.4.4: gösterdiği = göç ölçüsü",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "name": "002 göçten sonra 2.4.3 açınca gösterdiği = göçten önce gösterdiği",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "name": "002 2.4.3 açılışı şemayı geri almaz (32 kalır)",
+   "ok": true,
+   "detail": {
+    "version": 32
+   }
+  },
+  {
+   "name": "002 2.4.3'ten sonra yeniden 2.4.4: gösterdiği = göç ölçüsü",
+   "ok": true,
+   "detail": []
+  }
+ ]
+}

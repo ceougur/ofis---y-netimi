@@ -1,0 +1,32 @@
+{
+  "ad": "244-m30-goc/fark-v243-244-buyuk",
+  "komut": "node --disable-warning=ExperimentalWarning tools/m30-goc.mjs fark --kok /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/m30-goc/buyuk2",
+  "commit": "a2f2134c1fa71aab4664dede0b4f7e4232e17a83",
+  "dal": "is/m30-goc",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T15:47:58.691Z",
+  "sure_sn": 1.6,
+  "cikis_kodu": 2,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 91,
+    "gecen": 87,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 2; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-m30-goc/fark-v243-244-buyuk.log",
+  "klasor": "/home/user/wt/m30-goc",
+  "ham_cikti_sha256": "8c3677b95f6ee02e718c16fc50356dac3cfa29591f065e1165070ef543a82e93",
+  "ham_cikti_bayt": 2272
+}

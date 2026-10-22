@@ -1,0 +1,12 @@
+[15:48:00] fark: 91 olgu · EŞİT 57 · BELGELİ 30 · BULGU 4
+[15:48:00]   BULGU 001 Vade Takip (kayıt başına kalemler) — Toplam Borç → Kalan Borç: {"keys":1101,"minorBefore":2228970000,"minorAfter":1669670000,"sample":[{"key":"2026/01369","before":[["Ödeme sözü",1787443200000,150000,"gecikmis"],["Ödeme sözü",1790467200000,60000,"gecikmis"],["Ödeme sözü",1792713600000,3900000,"yaklasan"]],"after":[["Ödeme sözü",1787443200000,150000,"gecikmis"],["Ödeme sözü",1790467200000,60000,"gecikmis"],["Ödeme sözü",1792713600000,2850000,"yaklasan"]]},{"ke
+[15:48:00]   BULGU 001 Tahsilat Takvimi / ödeme sözü (kayıt başına kalemler) — Toplam Borç → Kalan Borç: {"keys":965,"minorBefore":1963440000,"minorAfter":1470050000,"sample":[{"key":"2026/01369","before":[["Ödeme Sözü","2026-10-23",3900000,"upcoming",false],["Söz Tarihi","2026-08-23",150000,"overdue",false],["Söz Tarihi","2026-09-27",60000,"overdue",false]],"after":[["Ödeme Sözü","2026-10-23",2850000,"upcoming",false],["Söz Tarihi","2026-08-23",150000,"overdue",false],["Söz Tarihi","2026-09-27",6000
+[15:48:00]   BULGU 002 Vade Takip (kayıt başına kalemler) — Toplam Borç → Kalan Borç: {"keys":167,"minorBefore":338570000,"minorAfter":255480000,"sample":[{"key":"2025/00114","before":[["Ödeme sözü",1788825600000,220000,"gecikmis"],["Ödeme sözü",1791849600000,2020000,"gecikmis"]],"after":[["Ödeme sözü",1788825600000,220000,"gecikmis"],["Ödeme sözü",1791849600000,1140000,"gecikmis"]]},{"key":"2026/00175","before":[["Ödeme sözü",1788998400000,430000,"gecikmis"],["Ödeme sözü",17925408
+[15:48:00]   BULGU 002 Tahsilat Takvimi / ödeme sözü (kayıt başına kalemler) — Toplam Borç → Kalan Borç: {"keys":143,"minorBefore":289130000,"minorAfter":215620000,"sample":[{"key":"2025/00114","before":[["Ödeme Sözü","2026-10-13",2020000,"overdue",false],["Söz Tarihi","2026-09-08",220000,"overdue",false]],"after":[["Ödeme Sözü","2026-10-13",1140000,"overdue",false],["Söz Tarihi","2026-09-08",220000,"overdue",false]]},{"key":"2026/00175","before":[["Ödeme Sözü","2026-10-21",3940000,"overdue",false],[
+# olgu (EŞİT + BELGELİ = geçti, BULGU = başarısız)
+# tests 91
+# pass 87
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
