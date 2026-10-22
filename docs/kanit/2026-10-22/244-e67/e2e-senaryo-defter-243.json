@@ -1,0 +1,32 @@
+{
+  "ad": "244-e67/e2e-senaryo-defter-243",
+  "komut": "npm run test:senaryo-defter-243",
+  "commit": "a9d5c8b322524e4990043d9ef7b67bfdfcca69a4",
+  "dal": "is/e67",
+  "kirli": 0,
+  "izlenmeyen": 14,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T22:19:03.175Z",
+  "sure_sn": 25.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 24,
+    "gecen": 24,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-e67/e2e-senaryo-defter-243.log",
+  "klasor": "/home/user/wt/e67",
+  "ham_cikti_sha256": "bdb384b5a3e234b1fe3b0ba388c2c0e5f7979163e98daab303b5cbc77f4cd4fd",
+  "ham_cikti_bayt": 2727
+}

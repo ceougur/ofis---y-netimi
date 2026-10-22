@@ -1,0 +1,18 @@
+# Eleştirmen 31d betiği t9-yetki.mjs, a9d5c8b kodu (DEPO=/home/user/wt/e67), çıkış 0
+rol personel 200 200
+rol muhasebe 200 200
+rol avukat 200 200
+GET staff personel:403 muhasebe:403 avukat:403
+POST staff personel:403 muhasebe:403 avukat:403
+GET getting-started personel:200(false) muhasebe:200(false) avukat:200(false)
+POST getting-started personel:403 muhasebe:403 avukat:403
+POST restore-notice/dismiss personel:403 muhasebe:200 avukat:403
+POST send-pending only check personel:403 muhasebe:200 avukat:200
+POST send-pending only personel:403 muhasebe:200 avukat:200
+POST withdraw (Kâğıt Makbuz) personel:403 muhasebe:409 avukat:409
+POST cancel localOnly personel:403 muhasebe:409 avukat:409
+POST gross-from-net personel:403 muhasebe:200 avukat:200
+GET invoices/meta (portal) personel:403 muhasebe:200(portal "") avukat:200(portal "")
+GET from-table personel:403 muhasebe:200 avukat:200
+sonra: e-SMM {"id":"invoice-5738206c-4edf-4f4a-b176-9fa4acb5b4a3","no":"TES2026721797023","profil":"ESMM","e":"sent","adapter":"edm","durum":"issued","tarih":"2026-06-17","mesaj":"e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün."} | e-Arşiv {"id":"invoice-83a8ae86-5a8a-4f7b-94d9-63b58b4b0bf7","no":"TEA2026239091599","profil":"EARSIVFATURA","e":"sent","adapter":"edm","durum":"issued","tarih":"2026-06-17","mesaj":"e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün."}
+personel kartları ["Deneme Personel"]
