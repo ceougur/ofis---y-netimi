@@ -199,6 +199,8 @@ try {
   ok(/^TEA2026/.test(row(next[2].id).number), "bekleyen belge gönderildi");
   const summary = (await toasts()).find(item => /belge gönderildi/.test(item)) || "";
   ok(/1 belge gönderildi; 1 belge gönderilemedi: TEA serisinde son gönderilen belge/.test(summary), `özet kalıcı engelin nedenini söyler (${summary.slice(0, 260)})`);
+  await page.waitForFunction(sel => /^Seçilenleri Gönder \(1\)$/.test(document.querySelector(sel)?.textContent.trim() || ""), selButton, { timeout: 10000 }).catch(() => null);
+  ok(/^Seçilenleri Gönder \(1\)$/.test(((await page.textContent(selButton).catch(() => "")) || "").trim()), "gönderilemeyen belge seçili kalır (giden düştü)");
 
   console.log("D) onay penceresi açıkken başka oturum daha eski belge kaydeder → gönderim yine ÖNCE sorulur (409); Vazgeç → hiçbir şey; yeniden → Ekle");
   await clearToasts();
@@ -206,6 +208,8 @@ try {
   const efNew = await must("e-Fatura", api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: firm.id, issueDate: day(0), lines: [{ name: "Hizmet", qty: 1, unitPrice: 500, vatRate: 20 }], payment: { rest: "open" }, eSend: "later" }));
   ok(efNew.profile === "TEMELFATURA", `ön koşul: e-Fatura (TEF) serisi (${efNew.profile})`);
   await openTab("pending");
+  // C'de gönderilemeyen (kalıcı engelli) belge seçili kaldı (toplu işlemlerin kuralı); bu adım yalnız yeni e-Fatura'yı seçer.
+  if (await page.$(`${pageInv} [data-act="clear-sel"]`)) await page.click(`${pageInv} [data-act="clear-sel"]`);
   await check(efNew.id);
   await page.waitForSelector(selButton);
   before = sends();

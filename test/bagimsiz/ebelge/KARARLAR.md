@@ -43,16 +43,7 @@ Belirsiz kalan yerde sıra: plan/mevzuat → en yaygın muhasebe programlarını
 | K28 | Durum Sorgula, EDM'deki belgeyi programda "gönderildi" yapar. | E-BELGE-EDM.md / FATURA-ISTEKLER (durum sorgulama) |
 | K29 | Serideki son numaralı belgeden eski tarihli yeni e-Belge hiç gönderilemez (K6); kaydı reddedilebilir ya da kalıcı engelli olarak tutulabilir — ÇATAL. | K6'nın sonucu; davranış yazılı değil |
 | K31 | Listeden Sil, belgeye Müşteri Fişi (FIS) serisinde numara verirken numara–tarih sırasını korur: belgenin tarihi o yılın FIS serisindeki son fişten eskiyse Listeden Sil REDDEDİLİR (409 chronology); belge Gönderilecekler'de kalır, numara verilmez. Aynı tarih reddedilmez. Tur sürerken silmede de geçerli. | Baş mimar kararı 18.10.2026 — programın kâğıt kayıt kuralıyla tutarlılık ("numara ve tarih sırası uyuşmalı") + VUK fatura/fiş seri-sıra-tarih düzeni |
-| K33 | Seçilenleri Gönder (seçili tur): numara alacak her seçili belge (numarasız bekleyen, tarih sırasına sığan, kalıcı engelsiz — K2 PK'sız geçici engel dahil, K9) için aynı seri+yılda SEÇİLMEMİŞ, daha eski tarihli (aynı gün değil), numarasız ve seriyi bekleten (K8/K9) bekleyen varsa gönderim BAŞLAMAZ: gönderimden önce sorulur (yanıt 4xx), hiçbir belge numara almaz, EDM'ye gidilmez. Kullanıcı "onları da ekle" derse seçim o belgelerle genişler, tur K10 sırasıyla yürür (2xx); "vazgeç" derse hiçbir şey. Eski yoksa yalnız seçilenler gider (2xx). ÇATAL: ön denetim entegratöre gitmeden yapılır; alıcısı gerçekte mükellef olan ama programın henüz bilmediği (cari işaretsiz) e-Arşiv belge ön denetimde gönderilebilir sayılabilir ya da sayılmayabilir. | Müşteri isteği 19.10.2026 (CLAUDE.md "MÜŞTERİ İSTEKLERİ → 2.4.4" (1): "seçilmemiş daha eski tarihli bekleyen belge varsa seçilen yenisi numara alamaz → bunu gönderimden ÖNCE söyler; onları da ekle / iptal; sessiz atlama ya da yarım tur yok"); K6/K8 |
 | K30 | Carinin işareti (Mükellef Sorgula ya da gönderimdeki sorgu) belge türüyle çelişirse numarasız belgenin düzenlemesi reddedilir. | GİB (mükellefe e-Arşiv kesilmez); CLAUDE.md 2.4.3 karar (4) |
-
-## 22.10.2026 ek (2.4.4, E6 "Seçilenleri Gönder")
-- K33 eklendi (yukarıda). Koşucu "seçili" adımı ekranın yeni yolundan sürer: `send-pending { only: [kimlikler] }`; seçilmemiş eski bekleyen varsa ilk istek
-  409 `einvoice-selection-older` (+ `olderIds`) döner; adımın `eski` alanı (`ekle` / `vazgec`, üretecin RNG akışını değiştirmemek için adım sırasından)
-  kullanıcının yanıtıdır: `ekle` → `{ only: seçili ∪ olderIds }` ile tur. Gövde/yanıt biçimi API çağrı satırlarından ve kara kutu yoklamasından alındı.
-  Eski `{ ids }` biçimi koşucuda artık kullanılmıyor (ekran kullanmıyor; programın kendi birim testleri sınar).
-- UYARI (ders 5/32): K33'ü ve programdaki karşılığını AYNI ajan yazdı (kural müşteri isteği metninden yazıldı; K3 çatalı "ön denetim ağa çıkmaz"
-  ilkesinden). Bu kural için kâhin BAĞIMSIZ SAYILMAZ; ayrı elden dar kontrol gerekir (programın kodunu görmeden K33'ü yeniden okuyup sınayan).
 
 ## Değişmezler (fark.py; YALNIZ programın gözlenen durumu + sahte EDM kaydı üzerinde, modelden bağımsız)
 I1 seri+yıl boşluksuz (FIS dahil) · I2 sıra-tarih monoton (FIS dahil) · I3 her ETTN EDM'de en çok bir kez kabul · I4 EDM'nin kabul ettiği kimlik =

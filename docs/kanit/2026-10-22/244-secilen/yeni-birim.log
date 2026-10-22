@@ -1,77 +1,77 @@
 TAP version 13
-# (node:6620) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (node:9936) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: 2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji
     # Subtest: S1: seçilmemiş daha eski bekleyen varken seçilen yeni belge GÖNDERİLMEDEN sorulur (409); hiçbir belge numara almaz, EDM'ye gidilmez
     ok 1 - S1: seçilmemiş daha eski bekleyen varken seçilen yeni belge GÖNDERİLMEDEN sorulur (409); hiçbir belge numara almaz, EDM'ye gidilmez
       ---
-      duration_ms: 565.596462
+      duration_ms: 752.75137
       type: 'test'
       ...
     # Subtest: S2: 'Onları da Ekle' — seçim eski belgelerle genişleyince ikisi de gider; numara sırası = tarih sırası
     ok 2 - S2: 'Onları da Ekle' — seçim eski belgelerle genişleyince ikisi de gider; numara sırası = tarih sırası
       ---
-      duration_ms: 629.866038
+      duration_ms: 727.474819
       type: 'test'
       ...
-    # Subtest: S3: ön denetim (check) gönderimsiz — numara yok, entegratöre gidilmez; sayılar: gönderilebilir / kalıcı engelli / Gönderilecekler'de değil / eski
-    ok 3 - S3: ön denetim (check) gönderimsiz — numara yok, entegratöre gidilmez; sayılar: gönderilebilir / kalıcı engelli / Gönderilecekler'de değil / eski
+    # Subtest: S3: ön denetim (check) gönderimsiz — numara yok, entegratöre gidilmez; sayılar: gönderilebilir / kalıcı engelli / Gönderilecekler'de değil (gönderilmiş, iptal, kâğıt, yok) / eski
+    ok 3 - S3: ön denetim (check) gönderimsiz — numara yok, entegratöre gidilmez; sayılar: gönderilebilir / kalıcı engelli / Gönderilecekler'de değil (gönderilmiş, iptal, kâğıt, yok) / eski
       ---
-      duration_ms: 421.160864
+      duration_ms: 634.803267
       type: 'test'
       ...
     # Subtest: S4: seçilmemiş eski belge yokken (aynı gün / daha yeni / başka seri / numaralı) soru yok; yalnız seçilenler gider
     ok 4 - S4: seçilmemiş eski belge yokken (aynı gün / daha yeni / başka seri / numaralı) soru yok; yalnız seçilenler gider
       ---
-      duration_ms: 453.177117
+      duration_ms: 646.013781
       type: 'test'
       ...
     # Subtest: S5: numaralı ama gitmemiş (Sonucu Belirsiz) eski belge yeni belgeyi bekletmez; seçilince önce durumu sorulur, EDM'ye bir kez gider
     ok 5 - S5: numaralı ama gitmemiş (Sonucu Belirsiz) eski belge yeni belgeyi bekletmez; seçilince önce durumu sorulur, EDM'ye bir kez gider
       ---
-      duration_ms: 474.390863
+      duration_ms: 578.755948
       type: 'test'
       ...
     # Subtest: S6: 25 seçili — Tümünü Gönder'in turu: istek başına 20, kalan + imleç; hepsi bir kez, numara = tarih sırası
     ok 6 - S6: 25 seçili — Tümünü Gönder'in turu: istek başına 20, kalan + imleç; hepsi bir kez, numara = tarih sırası
       ---
-      duration_ms: 1970.761404
+      duration_ms: 1876.217337
       type: 'test'
       ...
     # Subtest: S7: ön denetimden sonra, tur sürerken daha eski belge kaydedilirse kalan yeni seçililer numara almaz ('dahil değil'); eski belge gönderilmez
     ok 7 - S7: ön denetimden sonra, tur sürerken daha eski belge kaydedilirse kalan yeni seçililer numara almaz ('dahil değil'); eski belge gönderilmez
       ---
-      duration_ms: 1369.417478
+      duration_ms: 1958.099668
       type: 'test'
       ...
     # Subtest: S8: iki oturum aynı seçimi aynı anda gönderir (ikincisi birincinin gönderdiği belgeye denk getirilir) — her belge EDM'ye bir kez, hata yok
     ok 8 - S8: iki oturum aynı seçimi aynı anda gönderir (ikincisi birincinin gönderdiği belgeye denk getirilir) — her belge EDM'ye bir kez, hata yok
       ---
-      duration_ms: 1740.539954
+      duration_ms: 1921.603827
       type: 'test'
       ...
     # Subtest: S9: iki oturum aynı anda — biri eski belgeyi, öbürü yenisini seçer: eski numarasını aldıktan sonra başlayan yeni gönderim sorulmadan gider, sıra korunur
     ok 9 - S9: iki oturum aynı anda — biri eski belgeyi, öbürü yenisini seçer: eski numarasını aldıktan sonra başlayan yeni gönderim sorulmadan gider, sıra korunur
       ---
-      duration_ms: 821.119256
+      duration_ms: 935.714074
       type: 'test'
       ...
     # Subtest: S10: yetkisiz kullanıcı (yalnız görüntüleme) 403; boş ve çok büyük seçim 400; hiçbiri numara vermez ya da gönderim yapmaz
     ok 10 - S10: yetkisiz kullanıcı (yalnız görüntüleme) 403; boş ve çok büyük seçim 400; hiçbiri numara vermez ya da gönderim yapmaz
       ---
-      duration_ms: 572.744326
+      duration_ms: 707.910564
       type: 'test'
       ...
     # Subtest: S11: seçilmemiş KALICI engelli eski belge (seride daha yeni numara / alıcı e-Fatura mükellefi) soru doğurmaz; seçilen gönderilir
     ok 11 - S11: seçilmemiş KALICI engelli eski belge (seride daha yeni numara / alıcı e-Fatura mükellefi) soru doğurmaz; seçilen gönderilir
       ---
-      duration_ms: 465.963983
+      duration_ms: 522.543681
       type: 'test'
       ...
     1..11
 ok 1 - 2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji
   ---
-  duration_ms: 9658.717758
+  duration_ms: 11497.847157
   type: 'suite'
   ...
 1..1
@@ -82,4 +82,4 @@ ok 1 - 2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 10089.467419
+# duration_ms 11955.320438

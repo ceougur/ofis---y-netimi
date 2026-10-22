@@ -1,11 +1,11 @@
 TAP version 13
-# (node:6730) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (node:10146) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: 2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji
     # Subtest: S1: seçilmemiş daha eski bekleyen varken seçilen yeni belge GÖNDERİLMEDEN sorulur (409); hiçbir belge numara almaz, EDM'ye gidilmez
     not ok 1 - S1: seçilmemiş daha eski bekleyen varken seçilen yeni belge GÖNDERİLMEDEN sorulur (409); hiçbir belge numara almaz, EDM'ye gidilmez
       ---
-      duration_ms: 606.246881
+      duration_ms: 606.947386
       type: 'test'
       location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:98:3'
       failureType: 'testCodeFailure'
@@ -30,7 +30,7 @@ TAP version 13
     # Subtest: S2: 'Onları da Ekle' — seçim eski belgelerle genişleyince ikisi de gider; numara sırası = tarih sırası
     not ok 2 - S2: 'Onları da Ekle' — seçim eski belgelerle genişleyince ikisi de gider; numara sırası = tarih sırası
       ---
-      duration_ms: 543.660666
+      duration_ms: 415.560597
       type: 'test'
       location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:123:3'
       failureType: 'testCodeFailure'
@@ -50,10 +50,10 @@ TAP version 13
         async Test.run (node:internal/test_runner/test:1054:7)
         async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
       ...
-    # Subtest: S3: ön denetim (check) gönderimsiz — numara yok, entegratöre gidilmez; sayılar: gönderilebilir / kalıcı engelli / Gönderilecekler'de değil / eski
-    not ok 3 - S3: ön denetim (check) gönderimsiz — numara yok, entegratöre gidilmez; sayılar: gönderilebilir / kalıcı engelli / Gönderilecekler'de değil / eski
+    # Subtest: S3: ön denetim (check) gönderimsiz — numara yok, entegratöre gidilmez; sayılar: gönderilebilir / kalıcı engelli / Gönderilecekler'de değil (gönderilmiş, iptal, kâğıt, yok) / eski
+    not ok 3 - S3: ön denetim (check) gönderimsiz — numara yok, entegratöre gidilmez; sayılar: gönderilebilir / kalıcı engelli / Gönderilecekler'de değil (gönderilmiş, iptal, kâğıt, yok) / eski
       ---
-      duration_ms: 494.373894
+      duration_ms: 597.723248
       type: 'test'
       location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:140:3'
       failureType: 'testCodeFailure'
@@ -69,7 +69,7 @@ TAP version 13
       expected: true
       operator: 'strictEqual'
       stack: |-
-        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:152:12)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:160:12)
         process.processTicksAndRejections (node:internal/process/task_queues:105:5)
         async Test.run (node:internal/test_runner/test:1054:7)
         async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -77,9 +77,9 @@ TAP version 13
     # Subtest: S4: seçilmemiş eski belge yokken (aynı gün / daha yeni / başka seri / numaralı) soru yok; yalnız seçilenler gider
     not ok 4 - S4: seçilmemiş eski belge yokken (aynı gün / daha yeni / başka seri / numaralı) soru yok; yalnız seçilenler gider
       ---
-      duration_ms: 424.768349
+      duration_ms: 387.907153
       type: 'test'
-      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:175:3'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:185:3'
       failureType: 'testCodeFailure'
       error: |-
         aynı gün, daha yeni ve başka seri bekletmez: {"results":[],"sent":0,"failed":0,"skipped":0,"done":0,"remaining":0,"attempted":0}
@@ -91,7 +91,7 @@ TAP version 13
       expected: 0
       operator: 'strictEqual'
       stack: |-
-        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:186:12)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:196:12)
         process.processTicksAndRejections (node:internal/process/task_queues:105:5)
         async Test.run (node:internal/test_runner/test:1054:7)
         async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -99,9 +99,9 @@ TAP version 13
     # Subtest: S5: numaralı ama gitmemiş (Sonucu Belirsiz) eski belge yeni belgeyi bekletmez; seçilince önce durumu sorulur, EDM'ye bir kez gider
     not ok 5 - S5: numaralı ama gitmemiş (Sonucu Belirsiz) eski belge yeni belgeyi bekletmez; seçilince önce durumu sorulur, EDM'ye bir kez gider
       ---
-      duration_ms: 435.198333
+      duration_ms: 482.44151
       type: 'test'
-      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:194:3'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:204:3'
       failureType: 'testCodeFailure'
       error: |-
         numaralı belge 'eski bekleyen' sayılmaz: {"results":[],"sent":0,"failed":0,"skipped":0,"done":0,"remaining":0,"attempted":0}
@@ -113,7 +113,7 @@ TAP version 13
       expected: 0
       operator: 'strictEqual'
       stack: |-
-        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:214:12)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:224:12)
         process.processTicksAndRejections (node:internal/process/task_queues:105:5)
         async Test.run (node:internal/test_runner/test:1054:7)
         async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -121,9 +121,9 @@ TAP version 13
     # Subtest: S6: 25 seçili — Tümünü Gönder'in turu: istek başına 20, kalan + imleç; hepsi bir kez, numara = tarih sırası
     not ok 6 - S6: 25 seçili — Tümünü Gönder'in turu: istek başına 20, kalan + imleç; hepsi bir kez, numara = tarih sırası
       ---
-      duration_ms: 790.358617
+      duration_ms: 795.528818
       type: 'test'
-      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:226:3'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:236:3'
       failureType: 'testCodeFailure'
       error: |-
         bir istekte en çok 20
@@ -136,7 +136,7 @@ TAP version 13
       actual: 0
       operator: 'strictEqual'
       stack: |-
-        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:235:12)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:245:12)
         process.processTicksAndRejections (node:internal/process/task_queues:105:5)
         async Test.run (node:internal/test_runner/test:1054:7)
         async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -144,9 +144,9 @@ TAP version 13
     # Subtest: S7: ön denetimden sonra, tur sürerken daha eski belge kaydedilirse kalan yeni seçililer numara almaz ('dahil değil'); eski belge gönderilmez
     not ok 7 - S7: ön denetimden sonra, tur sürerken daha eski belge kaydedilirse kalan yeni seçililer numara almaz ('dahil değil'); eski belge gönderilmez
       ---
-      duration_ms: 858.564849
+      duration_ms: 952.701578
       type: 'test'
-      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:249:3'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:259:3'
       failureType: 'testCodeFailure'
       error: |-
         ön koşul: ilk parça d-5 belgeleri
@@ -159,7 +159,7 @@ TAP version 13
       actual: 0
       operator: 'strictEqual'
       stack: |-
-        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:259:12)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:269:12)
         process.processTicksAndRejections (node:internal/process/task_queues:105:5)
         async Test.run (node:internal/test_runner/test:1054:7)
         async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -167,9 +167,9 @@ TAP version 13
     # Subtest: S8: iki oturum aynı seçimi aynı anda gönderir (ikincisi birincinin gönderdiği belgeye denk getirilir) — her belge EDM'ye bir kez, hata yok
     not ok 8 - S8: iki oturum aynı seçimi aynı anda gönderir (ikincisi birincinin gönderdiği belgeye denk getirilir) — her belge EDM'ye bir kez, hata yok
       ---
-      duration_ms: 452.953145
+      duration_ms: 611.793232
       type: 'test'
-      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:281:3'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:291:3'
       failureType: 'testCodeFailure'
       error: 'ön koşul: ikinci oturum birincinin gönderimi sürerken başladı'
       code: 'ERR_ASSERTION'
@@ -178,7 +178,7 @@ TAP version 13
       actual: false
       operator: '=='
       stack: |-
-        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:299:12)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:309:12)
         process.processTicksAndRejections (node:internal/process/task_queues:105:5)
         async Test.run (node:internal/test_runner/test:1054:7)
         async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -186,9 +186,9 @@ TAP version 13
     # Subtest: S9: iki oturum aynı anda — biri eski belgeyi, öbürü yenisini seçer: eski numarasını aldıktan sonra başlayan yeni gönderim sorulmadan gider, sıra korunur
     not ok 9 - S9: iki oturum aynı anda — biri eski belgeyi, öbürü yenisini seçer: eski numarasını aldıktan sonra başlayan yeni gönderim sorulmadan gider, sıra korunur
       ---
-      duration_ms: 513.847118
+      duration_ms: 455.985864
       type: 'test'
-      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:313:3'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:323:3'
       failureType: 'testCodeFailure'
       error: |-
         eski belge numarasızken yenisi sorulur
@@ -201,7 +201,7 @@ TAP version 13
       actual: 200
       operator: 'strictEqual'
       stack: |-
-        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:322:12)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:332:12)
         process.processTicksAndRejections (node:internal/process/task_queues:105:5)
         async Test.run (node:internal/test_runner/test:1054:7)
         async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -209,9 +209,9 @@ TAP version 13
     # Subtest: S10: yetkisiz kullanıcı (yalnız görüntüleme) 403; boş ve çok büyük seçim 400; hiçbiri numara vermez ya da gönderim yapmaz
     not ok 10 - S10: yetkisiz kullanıcı (yalnız görüntüleme) 403; boş ve çok büyük seçim 400; hiçbiri numara vermez ya da gönderim yapmaz
       ---
-      duration_ms: 486.444785
+      duration_ms: 542.381952
       type: 'test'
-      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:337:3'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:347:3'
       failureType: 'testCodeFailure'
       error: |-
         Expected values to be strictly equal:
@@ -224,7 +224,7 @@ TAP version 13
       actual: 200
       operator: 'strictEqual'
       stack: |-
-        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:350:12)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:360:12)
         process.processTicksAndRejections (node:internal/process/task_queues:105:5)
         async Test.run (node:internal/test_runner/test:1054:7)
         async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -232,9 +232,9 @@ TAP version 13
     # Subtest: S11: seçilmemiş KALICI engelli eski belge (seride daha yeni numara / alıcı e-Fatura mükellefi) soru doğurmaz; seçilen gönderilir
     not ok 11 - S11: seçilmemiş KALICI engelli eski belge (seride daha yeni numara / alıcı e-Fatura mükellefi) soru doğurmaz; seçilen gönderilir
       ---
-      duration_ms: 559.968344
+      duration_ms: 562.259077
       type: 'test'
-      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:367:3'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:377:3'
       failureType: 'testCodeFailure'
       error: |-
         kalıcı engelli eski belge 'eski bekleyen' sayılmaz: {"results":[],"sent":0,"failed":0,"skipped":0,"done":0,"remaining":0,"attempted":0}
@@ -246,7 +246,7 @@ TAP version 13
       expected: 0
       operator: 'strictEqual'
       stack: |-
-        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:384:12)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:394:12)
         process.processTicksAndRejections (node:internal/process/task_queues:105:5)
         async Test.run (node:internal/test_runner/test:1054:7)
         async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -254,7 +254,7 @@ TAP version 13
     1..11
 not ok 1 - 2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji
   ---
-  duration_ms: 6333.662729
+  duration_ms: 6613.127899
   type: 'suite'
   location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs:92:1'
   failureType: 'subtestsFailed'
@@ -269,4 +269,4 @@ not ok 1 - 2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 6716.639228
+# duration_ms 7114.912656

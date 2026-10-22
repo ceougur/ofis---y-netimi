@@ -1,12 +1,7 @@
 # 2.4.4 E6 sunucu mutasyonları: kopyada (git archive + değişen dosyalar) invoices.mjs bozulur, test/ebelge-244-secilenleri-gonder.test.mjs koşulur, geri alınır.
-# Kullanım: python3 mutasyon-sunucu.py <kopya-kökü> [--kahin]  (kopyada node_modules bağlı; çalışma ağacında KOŞULMAZ — ders 23)
-#   --kahin: birim test yerine kâhinin hedefli K33 senaryosu (test/bagimsiz/ebelge/senaryolar/hedefli-k33-secilenleri-gonder.json) koşulur.
+# Kullanım: python3 mutasyon-sunucu.py <kopya-kökü>  (kopyada node_modules bağlı; çalışma ağacında KOŞULMAZ — ders 23)
 import subprocess, sys, re, os
 M = sys.argv[1]
-KAHIN = "--kahin" in sys.argv[2:]
-# Kâhin kipinde kâhinin hedefli senaryosunun ERİŞEMEDİĞİ mutantlar (birim testler yakalar): M4 tur sürerken eski belge kaydı (kâhin sıralı, yarış yok),
-# M6 20'den büyük seçim (üreteç 1–3 belge seçer), M7a kronoloji engelli bekleyen (API'den üretilemez; yalnız eski sürüm verisi).
-KAHIN_DISI = {"M4", "M6", "M7a"} if KAHIN else set()
 f = os.path.join(M, "server/routes/invoices.mjs")
 orig = open(f, encoding="utf-8").read()
 MUT = [
@@ -25,8 +20,7 @@ try:
     for ad, a, b in MUT:
         assert orig.count(a) == 1, ad
         open(f, "w", encoding="utf-8").write(orig.replace(a, b))
-        komut = (["python3", os.path.join(M, "test/bagimsiz/ebelge/fark.py"), "--senaryo", os.path.join(M, "test/bagimsiz/ebelge/senaryolar/hedefli-k33-secilenleri-gonder.json"), "--cikti", os.path.join(M, "kahin-mutasyon-cikti")]
-                 if KAHIN else ["node", "--test", os.path.join(M, "test/ebelge-244-secilenleri-gonder.test.mjs")])
+        komut = ["node", "--test", os.path.join(M, "test/ebelge-244-secilenleri-gonder.test.mjs")]
         r = subprocess.run(komut, capture_output=True, text=True, timeout=600)
         out = r.stdout + r.stderr
         fail = re.search(r"^# fail (\d+)", out, re.M)
@@ -37,9 +31,7 @@ try:
         sonuc.append(satir)
 finally:
     open(f, "w", encoding="utf-8").write(orig)
-eksik = [s for s in sonuc if "YAKALANMADI" in s and s.split(" ")[0] not in KAHIN_DISI]
-if KAHIN_DISI:
-    print(f"kâhin erişimi dışında (birim testler yakalar): {', '.join(sorted(KAHIN_DISI))}")
+eksik = [s for s in sonuc if "YAKALANMADI" in s]
 print("# tests", len(MUT))
 print("# pass", len(MUT) - len(eksik))
 print("# fail", len(eksik))

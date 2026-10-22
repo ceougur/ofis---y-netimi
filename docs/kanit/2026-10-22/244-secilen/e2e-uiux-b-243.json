@@ -1,0 +1,32 @@
+{
+  "ad": "244-secilen/e2e-uiux-b-243",
+  "komut": "npm run test:uiux-b-243",
+  "commit": "f7edff3b52952b68d93e66a84d8b56d886a75edc",
+  "dal": "is/secilen",
+  "kirli": 23,
+  "izlenmeyen": 18,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T05:29:22.834Z",
+  "sure_sn": 45.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 51,
+    "gecen": 51,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-secilen/e2e-uiux-b-243.log",
+  "klasor": "/home/user/wt/secilen",
+  "ham_cikti_sha256": "e3c543717d050be28a83ca2829aa195eea161ee43114409e264450bc69e2c464",
+  "ham_cikti_bayt": 5331
+}

@@ -137,7 +137,7 @@ describe("2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji",
     for (const doc of cards) assert.equal(ctx.sentCount(doc.ettn), 1, `${doc.number} EDM'ye bir kez`);
   });
 
-  test("S3: ön denetim (check) gönderimsiz — numara yok, entegratöre gidilmez; sayılar: gönderilebilir / kalıcı engelli / Gönderilecekler'de değil / eski", async () => {
+  test("S3: ön denetim (check) gönderimsiz — numara yok, entegratöre gidilmez; sayılar: gönderilebilir / kalıcı engelli / Gönderilecekler'de değil (gönderilmiş, iptal, kâğıt, yok) / eski", async () => {
     const ctx = await setup();
     open.push(ctx);
     // Kalıcı engelli seçili belge (seride daha yeni numara verilmiş; eski sürüm verisindeki gibi kurulur — gg243 S1 düzeni).
@@ -146,30 +146,40 @@ describe("2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji",
     const blocked = await ctx.sale(ctx.people[1], { issueDate: ctx.day(0), eSend: "later" });
     ctx.server.app.store.run("UPDATE invoices SET issue_date = ? WHERE id = ?", ctx.day(-1), blocked.id);
     const fresh = await ctx.sale(ctx.people[2], { issueDate: ctx.day(0), eSend: "later" });
+    // İptal edilmiş bekleyen ve kâğıt belge (e-dönüşüm kapalıyken kaydedilen Müşteri Fişi / kâğıt fatura) de seçimde: Gönderilecekler'de değiller.
+    const cancelled = await ctx.sale(ctx.people[0], { issueDate: ctx.day(0), eSend: "later" });
+    assert.equal((await ctx.api.post(`/api/workspace/invoices/${cancelled.id}/cancel`, { reason: "Deneme" })).status, 200);
+    assert.equal((await ctx.api.put("/api/workspace/invoices/settings", { efatura: false, earsiv: false })).status, 200);
+    const paper = await ctx.sale(ctx.people[1], { issueDate: ctx.day(0) });
+    assert.equal((await ctx.api.put("/api/workspace/invoices/settings", { efatura: true, earsiv: true })).status, 200);
+    assert.equal(paper.profile, "KAGIT", "ön koşul: kâğıt belge");
+    const extra = [sentToday.id, cancelled.id, paper.id, "yok-boyle-bir-belge"];
     const before = { send: ctx.sends(), check: ctx.calls("CheckUser"), login: ctx.calls("Login"), status: ctx.calls("GetInvoiceStatus") };
-    const result = await ctx.api.post(SEND, { only: [fresh.id, blocked.id, sentToday.id, "yok-boyle-bir-belge"], check: true });
+    const result = await ctx.api.post(SEND, { only: [fresh.id, blocked.id, ...extra], check: true });
     assert.equal(result.status, 200, JSON.stringify(result.data));
     assert.equal(result.data.check, true);
     assert.equal(result.data.sendable, 1, "yalnız yeni belge gönderilebilir");
     assert.equal(result.data.permanent, 1, "kalıcı engelli seçili belge");
-    assert.equal(result.data.notPending, 2, "gönderilmiş + bulunmayan");
+    assert.equal(result.data.notPending, 4, "gönderilmiş + iptal + kâğıt + bulunmayan");
     assert.equal(result.data.count, 0, "kalıcı engelli belge 'eski bekleyen' sayılmaz");
     assert.deepEqual({ send: ctx.sends(), check: ctx.calls("CheckUser"), login: ctx.calls("Login"), status: ctx.calls("GetInvoiceStatus") }, before, "entegratöre hiç gidilmedi");
     assert.equal((await ctx.card(fresh.id)).number, "", "ön denetim numara vermez");
     // Aynı seçim gönderilince: yeni belge gider; kalıcı engelli "bekletildi" sayılmaz; Gönderilecekler'de olmayanlar ayrı nedenle (başka oturumda gönderildi DENMEZ).
-    const sent = await ctx.turn({ only: [fresh.id, blocked.id, sentToday.id, "yok-boyle-bir-belge"] });
+    const sent = await ctx.turn({ only: [fresh.id, blocked.id, ...extra] });
     assert.equal(sent.status, 200, JSON.stringify(sent.data));
     const byId = Object.fromEntries(sent.results.map(item => [item.id, item]));
     assert.equal(byId[fresh.id].ok, true, JSON.stringify(byId[fresh.id]));
     assert.equal(byId[blocked.id].permanent, true);
     assert.ok(!byId[blocked.id].skipped);
-    for (const id of [sentToday.id, "yok-boyle-bir-belge"]) {
+    for (const id of extra) {
       assert.equal(byId[id].ok, false, JSON.stringify(byId[id]));
       assert.equal(byId[id].code, "einvoice-not-pending");
       assert.equal(byId[id].reason, "not-pending");
       assert.doesNotMatch(byId[id].message, /başka oturumda gönderildi/);
     }
     assert.equal(ctx.sentCount((await ctx.card(sentToday.id)).ettn), 1, "gönderilmiş belge yeniden gitmedi");
+    for (const doc of [cancelled, paper]) assert.equal(ctx.sentCount((await ctx.card(doc.id)).ettn), 0, "iptal / kâğıt belge EDM'ye gitmedi");
+    assert.equal((await ctx.card(cancelled.id)).number, "", "iptal edilmiş bekleyen numara almadı");
   });
 
   test("S4: seçilmemiş eski belge yokken (aynı gün / daha yeni / başka seri / numaralı) soru yok; yalnız seçilenler gider", async () => {

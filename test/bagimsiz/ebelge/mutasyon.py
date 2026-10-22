@@ -72,32 +72,7 @@ def _bekleyen_silineni_de(self, b):
     return not b["prog"]
 
 
-def _secim_eskileri_ayni_gun_de(self, adlar, bilinen=False):
-    aday = [b for b in self.belgeler.values() if b.get("ad") in adlar and self.numara_alacak(b, bilinen)]
-    return [x["ad"] for x in self.belgeler.values() if x.get("var") is True and x["ad"] not in adlar and self.numara_alacak(x, bilinen)
-            and any(b["tur"] == x["tur"] and self.seri_yil(b) == self.seri_yil(x) and x["tarih"] <= b["tarih"] for b in aday)]
-
-
-def _secim_eskileri_secili_de(self, adlar, bilinen=False):
-    aday = [b for b in self.belgeler.values() if b.get("ad") in adlar and self.numara_alacak(b, bilinen)]
-    return [x["ad"] for x in self.belgeler.values() if x.get("var") is True and self.numara_alacak(x, bilinen)
-            and any(b["tur"] == x["tur"] and self.seri_yil(b) == self.seri_yil(x) and x["tarih"] < b["tarih"] for b in aday)]
-
-
-def _numara_alacak_engelsiz(self, b, bilinen=False):
-    return b.get("var") is True and b["tur"] != "kagit" and self.bekleyen(b) is True and b["numara"] == ""
-
-
-def _ekle_genisletmez(d, adim):
-    if adim["islem"] == "tumunu_gonder" and adim.get("kapsam") == "secili" and adim.get("eski") == "ekle" and d.secim_eskileri(set(adim["belgeler"])):
-        r = M.tur_gonder(d, set(adim["belgeler"]))
-        for w in r:
-            w.yanit = "2xx"
-        return r
-    return None
-
-
-ORJ = {"fis_engeli": D.fis_engeli, "secim_eskileri": D.secim_eskileri, "numara_alacak": D.numara_alacak, "gecici_engelli": D.gecici_engelli, "tutan": D.tutan, "engel": D.engel, "sira_listesi": D.sira_listesi, "son": D.son, "tarih_engeli": D.tarih_engeli,
+ORJ = {"fis_engeli": D.fis_engeli, "gecici_engelli": D.gecici_engelli, "tutan": D.tutan, "engel": D.engel, "sira_listesi": D.sira_listesi, "son": D.son, "tarih_engeli": D.tarih_engeli,
        "seri_yil": D.seri_yil, "bekleyen": D.bekleyen, "uygula": M.uygula, "gonder": M.gonder, "numara": M.numara}
 
 
@@ -228,18 +203,11 @@ MUTANTLAR = [
     ("M18 engelli belge de gönderilir (K2/K3)", lambda: setattr(M, "gonder", _gonder_engelliyi_de_yollar)),
     ("M19 'zaten gönderildi' yeni numarayla yeniden gönderilir (K11)", lambda: setattr(M, "gonder", _gonder_zaten_gonderilmisi_yeniden)),
     ("M20 numara biçimi 8 hane sıra (K5)", lambda: setattr(M, "numara", lambda s, y, n: f"{s}{y:04d}{n:08d}")),
-    ("M24 Seçilenleri Gönder ön denetimi yok (K33)", lambda: setattr(D, "secim_eskileri", lambda self, adlar, bilinen=False: [])),
-    ("M25 aynı gün de 'eski' sayılır (K33)", lambda: setattr(D, "secim_eskileri", _secim_eskileri_ayni_gun_de)),
-    ("M26 seçili belge de 'eski' sayılır (K33)", lambda: setattr(D, "secim_eskileri", _secim_eskileri_secili_de)),
-    ("M27 'onları da ekle' seçimi genişletmez (K33)", lambda: setattr(M, "uygula", _uygula_sarmali(_ekle_genisletmez))),
-    ("M28 kalıcı engelli eski de sorulur (K33/K9)", lambda: setattr(D, "numara_alacak", _numara_alacak_engelsiz)),
-    ("M29 bilinmeyen mükellef çatalı yok (K33/K3)", lambda: setattr(D, "numara_alacak", lambda self, b, bilinen=False: ORJ["numara_alacak"](self, b, False))),
 ]
 
 
 def geri_al():
     D.gecici_engelli, D.fis_engeli = ORJ["gecici_engelli"], ORJ["fis_engeli"]
-    D.secim_eskileri, D.numara_alacak = ORJ["secim_eskileri"], ORJ["numara_alacak"]
     D.tutan, D.engel, D.sira_listesi, D.son = ORJ["tutan"], ORJ["engel"], ORJ["sira_listesi"], ORJ["son"]
     D.tarih_engeli, D.seri_yil, D.bekleyen = ORJ["tarih_engeli"], ORJ["seri_yil"], ORJ["bekleyen"]
     M.uygula, M.gonder, M.numara = ORJ["uygula"], ORJ["gonder"], ORJ["numara"]
