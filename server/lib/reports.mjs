@@ -13,6 +13,7 @@
 // tablo biçimi (kolonlar + satırlar) da döner; PDF/Excel/yazdırma o tabloyu kullanır.
 import { primaryColumns } from "./insight/columns.mjs";
 import { isFlaggedRow, isTotalRow } from "./insight/cells.mjs";
+import { pickRemainingDebtColumn } from "./insight/debt-column.mjs";
 import { foldText, parseAmount, parseDate } from "./insight/validators.mjs";
 
 const DAY = 86_400_000;
@@ -61,7 +62,9 @@ function recordLayout(analyses) {
   const primary = primaryColumns(analyses);
   const byColumn = new Map(analyses.map(item => [item.column, item]));
   const moneyColumns = analyses.filter(item => item.role === "money").map(item => item.column);
-  const debtColumn = moneyColumns.find(column => DEBT_HEADER.test(foldText(column))) || null;
+  // 2.4.4 (30a): "Kalan" / "Bakiye" kolonu her zaman önce (Tahsilat Takvimi ile aynı ortak kural); yoksa ilk eşleşen borç başlığı (önceki gibi). 2.4.3'te
+  // "Toplam Borç" + "Kalan Borç" tablosunda ilk eşleşen Toplam Borç alınıyor, ödenmiş kısım da borç görünüyordu.
+  const debtColumn = pickRemainingDebtColumn(moneyColumns, DEBT_HEADER);
   const amountColumn = primary.money && primary.money !== debtColumn ? primary.money : moneyColumns.find(column => column !== debtColumn) || primary.money || null;
   const backbone = new Set([primary.person, primary.id, amountColumn, debtColumn, primary.deadline, primary.status, primary.phone].filter(Boolean));
   const columns = { cari: primary.person, id: primary.id, amount: amountColumn, debt: debtColumn, deadline: primary.deadline, status: primary.status, phone: primary.phone };
@@ -317,6 +320,9 @@ export function nakitAkis({ items = [], payments = [], cashEntries = [], filters
     const date = itemDate(item);
     if (date === null || !inRange(date, filters) || item.state === "paid" || item.settled) continue;
     if (filters.sessions.length && !filters.sessions.includes(item.session)) continue;
+    // 2.4.4 (30e): Sekme süzgeci Vade Takip ile aynı kuralla (sekmesi olmayan kalem geçer). 2.4.3'ten beri pencere Sekme'yi gönderiyor, burada yok sayılıyordu.
+    // Gerçekleşen tahsilat ve Kasa giriş/çıkış sekme taşımaz; Sayfa süzgecinde olduğu gibi süzülmez.
+    if (filters.tabs.length && item.tab && !filters.tabs.includes(item.tab)) continue;
     const amount = item.remaining ?? item.amount;
     if (amount === null || amount === undefined) continue;
     const bucket = ensure(bucketOf(date, granularity));

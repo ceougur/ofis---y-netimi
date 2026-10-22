@@ -3,7 +3,7 @@
  * akış. Sabit şablon yoktur; kolonlar sunucunun ortak omurgadan (cari, tutar, vade, durum + özel alanlar) ürettiği
  * tablodan gelir. Farklı Excel dosyalarındaki (oturumlardaki) kayıtlar cari adıyla birleştirilir. Cari, Kasa, Taksit ve
  * Çek/Senet defterlerinden gelen raporlar aynı penceredeki diğer sekmelerdedir (hof-overview.js).
- * Süzgeçler: tarih aralığı, cari, durum, oturum, sekme, en az tutar, dönem (nakit akış).
+ * Süzgeçler: tarih aralığı, cari, durum, oturum, sekme, en az tutar, dönem (nakit akış). Nakit akışta cari, durum ve en az tutar yok (2.4.4 30f).
  * Dışa aktarma: Excel (.xlsx), PDF; yazdırma tarayıcının yazdırma penceresiyle (rapor tablosu temiz bir sayfada). */
 (() => {
   const HOF = window.HOF;
@@ -37,6 +37,18 @@
       sessions: sessions.join(","),
     };
   }
+  // 2.4.4 (30f): Tablodaki Nakit Akışı kişi, durum ve en az tutar süzgeçlerini kullanmaz (dönem başına toplam); alanlar bu raporda gizlenir, değerleri
+  // isteğe ve dışa aktarıma (Excel/PDF alt başlığı) girmez, formda yerinde kalır (başka rapora dönünce aynen görünür). Sayfa ve Sekme süzgeci kalır.
+  const UNUSED = { "nakit-akis": ["cari", "status", "minAmount"] };
+  const forKind = (filters, kind = state.kind) => Object.fromEntries(Object.entries(filters).filter(([key]) => !(UNUSED[kind] || []).includes(key)));
+  function applyKind(dialog) {
+    for (const name of ["cari", "status", "minAmount"]) {
+      const field = dialog.querySelector(`[data-filter="${name}"]`)?.closest("label");
+      if (field) field.hidden = (UNUSED[state.kind] || []).includes(name);
+    }
+    const granularity = dialog.querySelector("[data-granularity-row]");
+    if (granularity) granularity.hidden = state.kind !== "nakit-akis";
+  }
   const query = filters => Object.entries(filters).filter(([, value]) => value !== "" && value !== undefined).map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join("&");
 
   function cell(column, row) {
@@ -69,7 +81,7 @@
     body.innerHTML = '<p class="hof-empty">Rapor hazırlanıyor…</p>';
     state.busy = true;
     try {
-      const data = await HOF.api(`/api/workspace/reports/${state.kind}?${query(state.filters)}`, { timeoutMs: 120_000 });
+      const data = await HOF.api(`/api/workspace/reports/${state.kind}?${query(forKind(state.filters))}`, { timeoutMs: 120_000 });
       state.data = data;
       renderFilters(dialog, data);
       body.innerHTML = `<div class="hof-report-summary">${summaryHtml(data.report)}</div>${tableHtml(data.report.table)}`;
@@ -100,12 +112,12 @@
       const options = state.kind === "vade-takip" ? [["gecikmis", "Gecikmiş"], ["bugun", "Bugün"], ["yaklasan", "Yaklaşan"], ["kapali", "Kapalı"], ["durgun", "Durgun (ödeme kesilmiş olabilir)"]] : data.statuses.map(item => [item, item]);
       status.innerHTML = `<option value="">Tüm Durumlar</option>${options.map(([value, label]) => `<option value="${esc(value)}">${esc(label)}</option>`).join("")}`;
     }
-    dialog.querySelector("[data-granularity-row]").hidden = state.kind !== "nakit-akis";
+    applyKind(dialog);
   }
 
   async function exportReport(format) {
     if (!host) return;
-    const response = await fetch(`/api/workspace/reports/${state.kind}/export`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ format, filters: { ...state.filters, sessions: state.filters.sessions ? state.filters.sessions.split(",") : [], status: state.filters.status ? [state.filters.status] : [], tabs: state.filters.tabs ? [state.filters.tabs] : [] } }) });
+    const response = await fetch(`/api/workspace/reports/${state.kind}/export`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ format, filters: { ...forKind(state.filters), sessions: state.filters.sessions ? state.filters.sessions.split(",") : [], status: forKind(state.filters).status ? [state.filters.status] : [], tabs: state.filters.tabs ? [state.filters.tabs] : [] } }) });
     if (!response.ok) {
       let message = "Dışa aktarma başarısız.";
       try {
@@ -178,6 +190,7 @@
         <div class="hof-report-toolbar"><span data-report-meta class="hof-muted"></span><span>${HOF.outputButton({ kind: "xlsx", what: "Tablo Raporu", attrs: 'data-export="xlsx"' })}${HOF.outputButton({ kind: "pdf", what: "Tablo Raporu", attrs: 'data-export="pdf"' })}${HOF.outputButton({ kind: "print", what: "Tablo Raporu", attrs: "data-print" })}</span></div>
         <div data-report-body></div>`;
     const dialog = node;
+    applyKind(dialog);
     dialog.querySelector("[data-filters]").addEventListener("submit", event => {
       event.preventDefault();
       load();
@@ -200,6 +213,7 @@
         delete status.dataset.ready;
         status.value = "";
       }
+      applyKind(dialog);
       load();
     });
     dialog.querySelectorAll("[data-export]").forEach(button =>

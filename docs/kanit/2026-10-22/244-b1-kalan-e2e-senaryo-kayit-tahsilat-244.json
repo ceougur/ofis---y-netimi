@@ -1,0 +1,32 @@
+{
+  "ad": "244-b1-kalan-e2e-senaryo-kayit-tahsilat-244",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-kayit-tahsilat-244.mjs",
+  "commit": "e070d4247567174ee1bf1b5efe142dfafba6cdb8",
+  "dal": "is/b1-kalan",
+  "kirli": 2,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T17:08:00.750Z",
+  "sure_sn": 24.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 46,
+    "gecen": 46,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-b1-kalan-e2e-senaryo-kayit-tahsilat-244.log",
+  "klasor": "/home/user/wt/b1-kalan",
+  "ham_cikti_sha256": "55f9436fd5b429f17cd85e292a5f459383e435c050a1367686ad47f1bfc8c33a",
+  "ham_cikti_bayt": 3892
+}

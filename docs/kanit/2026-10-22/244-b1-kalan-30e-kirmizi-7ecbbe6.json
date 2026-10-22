@@ -1,0 +1,48 @@
+{
+  "ad": "244-b1-kalan-30e-kirmizi-7ecbbe6",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/b1-kalan/b1-kalan-eski-7ecbbe6/test/nakit-akis-sekme-30e.test.mjs",
+  "commit": "7ecbbe63c40d5d60443a7c76260be4a49e822f4a",
+  "dal": "is/b1-kalan",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T18:10:10.910Z",
+  "sure_sn": 1.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 1,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 30e: Nakit Akışı Sekme süzgeci (birim) › tek sekme: yalnız o sekmenin kalemleri + sekmesiz kalem; iki sekme; süzgeçsiz hepsi",
+      "konum": "test/nakit-akis-sekme-30e.test.mjs:38:3",
+      "hata": "Sekme \"Borçlular\" seçiliyken Beklenen 7.600 + sekmesiz 400 = 8.000 olmalı; görülen 13500 · 13500 !== 8000 (beklenen 8000, gelen 13500)"
+    },
+    {
+      "ad": "2.4.4 30e: Nakit Akışı Sekme süzgeci (API, ekranın ve Excel'in okuduğu uç) › her sekme seçeneği: Beklenen yalnız seçili sekmelerin kalemleri; süzgeçsiz toplam = sekmelerin toplamı; satırlar = toplam",
+      "konum": "test/nakit-akis-sekme-30e.test.mjs:82:3",
+      "hata": "Sekme \"Borçlular\" seçiliyken Beklenen 10600 olmalı (yalnız o sekmenin kalemleri); görülen 20100 · 20100 !== 10600 (beklenen 10600, gelen 20100)"
+    },
+    {
+      "ad": "2.4.4 30e: Nakit Akışı Sekme süzgeci (API, ekranın ve Excel'in okuduğu uç) › Sayfa ve Sekme süzgeci birlikte; Excel dışa aktarım aynı süzgeçle 200",
+      "konum": "test/nakit-akis-sekme-30e.test.mjs:91:3",
+      "hata": "Sayfa + Sekme \"Senetler\": 3.700; görülen 20100 · 20100 !== 3700 (beklenen 3700, gelen 20100)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-b1-kalan-30e-kirmizi-7ecbbe6.log",
+  "klasor": "/home/user/wt/b1-kalan",
+  "ham_cikti_sha256": "8045a07d0ae44f72324133dfa988ec4a4ed4f4af9310f5a340d4f401de09f3f5",
+  "ham_cikti_bayt": 5307
+}

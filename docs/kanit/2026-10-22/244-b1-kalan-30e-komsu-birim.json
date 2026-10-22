@@ -1,0 +1,32 @@
+{
+  "ad": "244-b1-kalan-30e-komsu-birim",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-altin.test.mjs test/banka-210-ertelenen.test.mjs test/banka-210-gg2-gosterge.test.mjs test/banka-210-ileri-tarihli-eski.test.mjs test/banka-210-nakit-akis-k10.test.mjs test/banka-210-raporlar.test.mjs test/banka-220-pos-moduller.test.mjs test/banka-220-tahsile-ver-dogrulama.test.mjs test/banka-220-tahsile-ver.test.mjs test/banka-rapor-243.test.mjs test/bulgu-223.test.mjs test/cheques-overview.test.mjs test/defter-243-raporlar.test.mjs test/is-akisi.test.mjs test/kalan-borc-ortak-30a.test.mjs test/kullanici-yetki-210.test.mjs test/nakit-akis-ileri-tarihli-yol.test.mjs test/nakit-akis-sekme-30e.test.mjs test/rapor-tablodaki-kisiler-f1.test.mjs test/raporlar-209.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-224.test.mjs test/raporlar-230-banka.test.mjs test/reports.test.mjs test/vade-takip-kaynak-yetki-210.test.mjs test/yazim-duzeni.test.mjs test/reports.test.mjs test/rapor-tablodaki-kisiler-244.test.mjs",
+  "commit": "7ecbbe63c40d5d60443a7c76260be4a49e822f4a",
+  "dal": "is/b1-kalan",
+  "kirli": 2,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T18:10:46.011Z",
+  "sure_sn": 160.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 363,
+    "gecen": 363,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-b1-kalan-30e-komsu-birim.log",
+  "klasor": "/home/user/wt/b1-kalan",
+  "ham_cikti_sha256": "5118cbd2c85234d264954e07367416569924a75b46c7c65f634568da9258c421",
+  "ham_cikti_bayt": 126530
+}
