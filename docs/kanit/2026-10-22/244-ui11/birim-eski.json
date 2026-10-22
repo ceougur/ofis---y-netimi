@@ -1,0 +1,53 @@
+{
+  "ad": "244-ui11/birim-eski",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ui11/ui11-eski-3a2f46a/test/disa-aktarim-dugmeleri.test.mjs",
+  "commit": "3a2f46a1bf40e3c25f393d0aac678e91a45273b8",
+  "dal": "is/ui11",
+  "kirli": 17,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T06:28:43.840Z",
+  "sure_sn": 0.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 0,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "dışa aktarım düğmeleri (UI11) › eski düğme adları kalmadı (liste/rapor tek ad PDF / Excel)",
+      "konum": "test/disa-aktarim-dugmeleri.test.mjs:14:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "dışa aktarım düğmeleri (UI11) › PDF / Excel bağlantıları ortak ailede (makbuz satırı ve kılavuz bağlantısı hariç)",
+      "konum": "test/disa-aktarim-dugmeleri.test.mjs:20:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "dışa aktarım düğmeleri (UI11) › Yazdır / dışa aktar / PDF düğmeleri elle yazılmıyor (HOF.outputButton)",
+      "konum": "test/disa-aktarim-dugmeleri.test.mjs:32:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "dışa aktarım düğmeleri (UI11) › ortak yardımcı: tür sınıfı, simge, erişilebilir ad ve ipucu",
+      "konum": "test/disa-aktarim-dugmeleri.test.mjs:38:3",
+      "hata": "The input did not match the regular expression /HOF\\.outputButton = /. Input: · '/* DestekOfis — ortak istemci çekirdeği.\\n' + · ' * Tüm eklenti betikleri (hof-*.js) bu çekirdeği kullanır: API çağrısı, bildirim, pencere,\\n' + (beklenen , gelen |-)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ui11/birim-eski.log",
+  "klasor": "/home/user/wt/ui11",
+  "ham_cikti_sha256": "89ce10be85dbfa4a1d23675efb926d52c068992c9d7aa961fc07f3d4ad5f9163",
+  "ham_cikti_bayt": 123729
+}

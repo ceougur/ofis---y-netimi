@@ -1,0 +1,218 @@
+TAP version 13
+# Subtest: dışa aktarım düğmeleri (UI11)
+    # Subtest: eski düğme adları kalmadı (liste/rapor tek ad PDF / Excel)
+    ok 1 - eski düğme adları kalmadı (liste/rapor tek ad PDF / Excel)
+      ---
+      duration_ms: 12.434254
+      type: 'test'
+      ...
+    # Subtest: PDF / Excel bağlantıları ortak ailede (makbuz satırı ve kılavuz bağlantısı hariç)
+    ok 2 - PDF / Excel bağlantıları ortak ailede (makbuz satırı ve kılavuz bağlantısı hariç)
+      ---
+      duration_ms: 2.448195
+      type: 'test'
+      ...
+    # Subtest: Yazdır / dışa aktar / PDF düğmeleri elle yazılmıyor (HOF.outputButton)
+    ok 3 - Yazdır / dışa aktar / PDF düğmeleri elle yazılmıyor (HOF.outputButton)
+      ---
+      duration_ms: 4.982885
+      type: 'test'
+      ...
+    # Subtest: ortak yardımcı: tür sınıfı, simge, erişilebilir ad ve ipucu
+    ok 4 - ortak yardımcı: tür sınıfı, simge, erişilebilir ad ve ipucu
+      ---
+      duration_ms: 2.360636
+      type: 'test'
+      ...
+    1..4
+ok 1 - dışa aktarım düğmeleri (UI11)
+  ---
+  duration_ms: 23.572952
+  type: 'suite'
+  ...
+# (node:21773) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: başlık yazımı (madde 7)
+    # Subtest: her sözcüğün ilk harfi büyük; bağlaçlar küçük, parantez içi aynen, Türkçe İ
+    ok 1 - her sözcüğün ilk harfi büyük; bağlaçlar küçük, parantez içi aynen, Türkçe İ
+      ---
+      duration_ms: 1.097374
+      type: 'test'
+      ...
+    1..1
+ok 2 - başlık yazımı (madde 7)
+  ---
+  duration_ms: 2.138736
+  type: 'suite'
+  ...
+# Subtest: stok birimleri (madde 5)
+    # Subtest: tek yazım: ilk harf büyük, kısaltmalar dahil; eş biçimler; listede olmayan birim korunur
+    ok 1 - tek yazım: ilk harf büyük, kısaltmalar dahil; eş biçimler; listede olmayan birim korunur
+      ---
+      duration_ms: 0.391037
+      type: 'test'
+      ...
+    1..1
+ok 3 - stok birimleri (madde 5)
+  ---
+  duration_ms: 0.525372
+  type: 'suite'
+  ...
+# Subtest: 2.0.11 tam yığın
+    # Subtest: göç 16 kayıtlı birimleri tek yazıma getirir; yeni ürün ve Excel yüklemesi aynı yazar
+    ok 1 - göç 16 kayıtlı birimleri tek yazıma getirir; yeni ürün ve Excel yüklemesi aynı yazar
+      ---
+      duration_ms: 96.768503
+      type: 'test'
+      ...
+    # Subtest: Taksitler: grupta cari sayısı, taksit durumu süzgeci, ön izleme hiçbir şey yazmaz, çift kart açılmaz
+    ok 2 - Taksitler: grupta cari sayısı, taksit durumu süzgeci, ön izleme hiçbir şey yazmaz, çift kart açılmaz
+      ---
+      duration_ms: 215.416451
+      type: 'test'
+      ...
+    # Subtest: Veri Sağlığı: Yok say grubu ve tek kaydı puana ekler, kalıcıdır, yeni oturumda da korunur; Geri Al; yetki
+    ok 3 - Veri Sağlığı: Yok say grubu ve tek kaydı puana ekler, kalıcıdır, yeni oturumda da korunur; Geri Al; yetki
+      ---
+      duration_ms: 411.730431
+      type: 'test'
+      ...
+    1..3
+ok 4 - 2.0.11 tam yığın
+  ---
+  duration_ms: 1422.127581
+  type: 'suite'
+  ...
+# Subtest: gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+ok 5 - gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+  ---
+  duration_ms: 7.225784
+  type: 'test'
+  ...
+# Subtest: aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+ok 6 - aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+  ---
+  duration_ms: 150.111361
+  type: 'test'
+  ...
+# Subtest: gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+ok 7 - gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+  ---
+  duration_ms: 6.659104
+  type: 'test'
+  ...
+# Subtest: iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+ok 8 - iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+  ---
+  duration_ms: 0.538889
+  type: 'test'
+  ...
+# Subtest: lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+ok 9 - lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+  ---
+  duration_ms: 0.934213
+  type: 'test'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 0.774339
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 145.899786
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 117.961452
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 210.428927
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 332.033746
+      type: 'test'
+      ...
+    1..5
+ok 10 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 808.416553
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 26.918284
+      type: 'test'
+      ...
+    1..1
+ok 11 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 27.087712
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 146.445237
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 11.824928
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.728997
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 4 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 67.83331
+      type: 'test'
+      ...
+    1..4
+ok 12 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 230.229022
+  type: 'suite'
+  ...
+# Subtest: yetkiye göre görünürlük
+    # Subtest: data-requires / requires ile kullanılan her yetkinin gizleme kuralı var
+    ok 1 - data-requires / requires ile kullanılan her yetkinin gizleme kuralı var
+      ---
+      duration_ms: 37.1117
+      type: 'test'
+      ...
+    1..1
+ok 13 - yetkiye göre görünürlük
+  ---
+  duration_ms: 40.020972
+  type: 'suite'
+  ...
+1..13
+# tests 25
+# suites 8
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2318.903349

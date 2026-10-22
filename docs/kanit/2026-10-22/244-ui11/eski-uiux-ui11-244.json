@@ -1,0 +1,158 @@
+{
+  "ad": "244-ui11/eski-uiux-ui11-244",
+  "komut": "node test/e2e/uiux-ui11-244.mjs",
+  "commit": "3a2f46a1bf40e3c25f393d0aac678e91a45273b8",
+  "dal": "is/ui11",
+  "kirli": 14,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T06:16:58.319Z",
+  "sure_sn": 13,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 152,
+    "gecen": 81,
+    "basarisiz": 71,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 71 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Taksitler listesi: pdf düğmesi ortak ailede",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Taksitler listesi: print düğmesi ortak ailede",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Taksitler listesi: hepsi ortak sınıfta (.hof-rep-out is-pdf|is-xlsx|is-print) [\"Liste - PDF\",\"Yazdır\"]",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Taksitler listesi: ipucu ve erişilebilir ad dolu, ad görünen yazıyı içerir [[\"Liste - PDF\",\"\",\"PDF olarak aç; oradan kaydedebilirsiniz\"],[\"Yazdır\",\"\",\"Yazıcıya gönder\"]]",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Taksitler listesi: liste/rapor düğmeleri tek ad [\"Liste - PDF\",\"Yazdır\"]",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Taksitler: PDF bağlantısı aynı adres, yeni sekme",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Cari listesi: pdf düğmesi ortak ailede",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Cari listesi: print düğmesi ortak ailede",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Cari listesi: xlsx düğmesi ortak ailede",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Cari listesi: hepsi ortak sınıfta (.hof-rep-out is-pdf|is-xlsx|is-print) [\"Cari Listesi - PDF\",\"Yazdır\",\"Excel\"]",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Cari listesi: hepsi simgeli",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Cari listesi: ipucu ve erişilebilir ad dolu, ad görünen yazıyı içerir [[\"Cari Listesi - PDF\",\"\",\"PDF olarak aç; oradan kaydedebilirsiniz\"],[\"Yazdır\",\"\",\"Yazıcıya gönder\"],[\"Excel\",\"\",\"Ekrandaki listeyi (ek alanlarıyla) Excel olarak indir\"]]",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Cari listesi: liste/rapor düğmeleri tek ad [\"Cari Listesi - PDF\",\"Yazdır\",\"Excel\"]",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Cari: PDF ve Excel bağlantıları korunur",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Cari kartı: pdf düğmesi ortak ailede",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Cari kartı: print düğmesi ortak ailede",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Cari kartı: hepsi ortak sınıfta (.hof-rep-out is-pdf|is-xlsx|is-print) [\"Cari Ekstre - PDF\",\"Yazdır\"]",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Cari kartı: ipucu ve erişilebilir ad dolu, ad görünen yazıyı içerir [[\"Cari Ekstre - PDF\",\"\",\"PDF olarak aç; oradan kaydedebilirsiniz\"],[\"Yazdır\",\"\",\"Yazıcıya gönder\"]]",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Stok listesi: pdf düğmesi ortak ailede",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Stok listesi: print düğmesi ortak ailede",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Stok listesi: xlsx düğmesi ortak ailede",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Stok listesi: hepsi ortak sınıfta (.hof-rep-out is-pdf|is-xlsx|is-print) [\"PDF\",\"Yazdır\",\"Excel\"]",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Stok listesi: hepsi simgeli",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Stok listesi: ipucu ve erişilebilir ad dolu, ad görünen yazıyı içerir [[\"PDF\",\"\",\"PDF olarak aç; oradan kaydedebilirsiniz\"],[\"Yazdır\",\"\",\"Yazıcıya gönder\"],[\"Excel\",\"\",\"Stok durumunu Excel olarak indir\"]]",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Stok listesi: liste/rapor düğmeleri tek ad [\"PDF\",\"Yazdır\",\"Excel\"]",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ui11/eski-uiux-ui11-244.log",
+  "klasor": "/home/user/wt/ui11",
+  "ham_cikti_sha256": "46ff0ce2834135fb91c25983927994cfb7aa62dacff4669ce281d3cd144690c4",
+  "ham_cikti_bayt": 12847
+}

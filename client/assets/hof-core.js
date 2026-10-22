@@ -43,6 +43,28 @@
   HOF.esc = value => String(value ?? "").replace(/[&<>"']/g, char => ESCAPES[char]);
   HOF.normalize = value => String(value ?? "").toLocaleLowerCase("tr-TR").replace(/[İI]/g, "i").replace(/ı/g, "i").replace(/\s+/g, " ").trim();
   HOF.initials = name => String(name || "?").trim().split(/\s+/).slice(0, 2).map(part => part[0] || "").join("").toLocaleUpperCase("tr-TR") || "?";
+  // 2.4.4 (UI11): dışa aktarım düğmelerinin TEK görünümü. PDF / Excel / Yazdır her pencerede aynı aile (.hof-rep-out is-pdf | is-xlsx | is-print),
+  // aynı simge, yazı ve boy (hof-ui.css "Dışa aktarım düğmeleri"). Liste ve rapor düğmesi tek ad ("PDF", "Excel"); ne indirdiği erişilebilir adda
+  // ("Fatura Listesi - PDF") ve ipucunda (title). Kart/belge çıktıları adlı kalır (2.0.16 müşteri kararı: "Cari Ekstre - PDF"; label ile verilir).
+  // Davranış öznitelikleri (href, target, download, data-pdf / data-print / data-xlsx …) çağıranda kalır; yardımcı yalnız görünümü kurar.
+  const OUT_ICONS = {
+    pdf: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>',
+    xlsx: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M3.5 9h17M3.5 14.5h17M9 3.5v17"/></svg>',
+    print: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="6" y="14" width="12" height="7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/></svg>',
+  };
+  const OUT_NAME = { pdf: "PDF", xlsx: "Excel", print: "Yazdır" };
+  const OUT_TIP = { pdf: "PDF olarak açılır; oradan kaydedebilir ya da yazdırabilirsiniz", xlsx: "Excel dosyası olarak iner", print: "Yazıcıya gönderilir" };
+  HOF.outIcon = kind => OUT_ICONS[kind] || "";
+  // kind: "pdf" | "xlsx" | "print"; what: neyin çıktısı ("Cari Listesi"); label: kart/belge çıktısında adlı yazı; tip: ipucu cümlesi;
+  // attrs: davranış öznitelikleri (ham, çağıran kaçışlar); href varsa <a>, yoksa <button>.
+  HOF.outputButton = ({ kind = "pdf", href = "", what = "", label = "", tip = "", attrs = "" } = {}) => {
+    const name = label || OUT_NAME[kind] || "PDF";
+    const aria = what && !label ? `${what} - ${name}` : name;
+    const title = tip || `${what ? `${what}: ` : ""}${OUT_TIP[kind] || OUT_TIP.pdf}`;
+    const common = `class="hof-rep-out is-${kind}" data-out="${kind}" aria-label="${HOF.esc(aria)}" title="${HOF.esc(title)}"${attrs ? ` ${attrs}` : ""}`;
+    const inner = `${OUT_ICONS[kind] || ""}${HOF.esc(name)}`;
+    return href ? `<a href="${HOF.esc(href)}" ${common}>${inner}</a>` : `<button type="button" ${common}>${inner}</button>`;
+  };
   // Rol adları ve kayıtlara verilen ad seçili sektöre göre değişir (hof-insight.js); bunlar sektör seçilmemiş hâlidir.
   HOF.roleLabels = { admin: "Yönetici", avukat: "Uzman", personel: "Personel", muhasebe: "Muhasebe" };
   HOF.vocab = { record: "kayıt", records: "kayıtlar", Record: "Kayıt", Records: "Kayıtlar", expert: "Uzman", subtitle: "Ofis Yönetimi" };

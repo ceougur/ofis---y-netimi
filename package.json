@@ -78,6 +78,7 @@
     "test:gg243-dar2-ekran": "node --disable-warning=ExperimentalWarning test/e2e/gg243-dar2-ekran.mjs",
     "test:uiux-a-243": "node --disable-warning=ExperimentalWarning test/e2e/uiux-a-243.mjs",
     "test:uiux-b-243": "node --disable-warning=ExperimentalWarning test/e2e/uiux-b-243.mjs",
+    "test:uiux-ui11-244": "node --disable-warning=ExperimentalWarning test/e2e/uiux-ui11-244.mjs",
     "test:sirket-canli-yetki-244": "node --disable-warning=ExperimentalWarning test/e2e/sirket-canli-yetki-244.mjs",
     "test:mutabakat": "node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs",
     "test:guvenilirlik": "node --disable-warning=ExperimentalWarning test/guvenilirlik/kos.mjs",
