@@ -1,0 +1,38 @@
+{
+  "ad": "244-test-altyapi/mutasyon-is-akisi-engel-sonra",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/test-altyapi/test-altyapi-mutasyon-tools/test/yeni-izolasyon.test.mjs",
+  "commit": "1f6ad99df7ef569af9ed772e1e8e053c216d565c",
+  "dal": "is/test-altyapi",
+  "kirli": 4,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T03:37:19.253Z",
+  "sure_sn": 0.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 4,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar",
+      "konum": "test/yeni-izolasyon.test.mjs:114:1",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-test-altyapi/mutasyon-is-akisi-engel-sonra.log",
+  "klasor": "/home/user/wt/test-altyapi",
+  "ham_cikti_sha256": "19dd0ebe5afe46d10fdec33aa9fad660b3d5d7745c8a431af70841750d558f9c",
+  "ham_cikti_bayt": 3114
+}

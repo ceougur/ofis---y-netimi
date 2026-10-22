@@ -60,7 +60,14 @@ export function parseSummary(text) {
   if (node.tests !== undefined && node.pass !== undefined && node.fail !== undefined) {
     return { bicim: "node:test", toplam: node.tests, gecen: node.pass, basarisiz: node.fail, iptal: node.cancelled ?? 0, atlanan: (node.skipped ?? 0) + (node.todo ?? 0) };
   }
-  let m = last(clean, /(\d+) geçti, (\d+) kaldı/g);
+  // test:kahin-defter (test/bagimsiz/defter/kos.mjs, 2.4.4): kâhinin kendisi atlanan/reddedilen olayı ve yakalanmayan mutasyonu da kırmızı sayar
+  // (çıkış 1); burada da başarısıza eklenir, yoksa çıkış 1 + "temiz özet" ÇELİŞKİ olurdu.
+  let m = last(clean, /ÖZET: (\d+) denetim, (\d+) fark, (\d+) atlanan olay, (\d+) reddedilen olay, (\d+) yakalanmayan mutasyon/g);
+  if (m) {
+    const [denetim, fark, atlanan, reddedilen, kacan] = m.slice(1, 6).map(Number);
+    return { bicim: "kahin-defter", toplam: denetim, gecen: denetim - fark, basarisiz: fark + atlanan + reddedilen + kacan, iptal: 0, atlanan: 0 };
+  }
+  m = last(clean, /(\d+) geçti, (\d+) kaldı/g);
   if (m) return { bicim: "senaryo", toplam: Number(m[1]) + Number(m[2]), gecen: Number(m[1]), basarisiz: Number(m[2]), iptal: 0, atlanan: 0 };
   m = last(clean, /(\d+) denetim geçti, (\d+) başarısız/g);
   if (m) return { bicim: "senaryo", toplam: Number(m[1]) + Number(m[2]), gecen: Number(m[1]), basarisiz: Number(m[2]), iptal: 0, atlanan: 0 };

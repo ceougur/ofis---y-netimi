@@ -1,0 +1,43 @@
+{
+  "ad": "244-kucuk-m3-e2e-eski-kirmizi",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kucuk/kucuk-eski-163dd5d/test/e2e/senaryo-entegrator-240.mjs",
+  "commit": "0e8019077f5ed68db37042c72a6624680dc01f4b",
+  "dal": "is/kucuk",
+  "kirli": 4,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T03:36:29.282Z",
+  "sure_sn": 3.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 11,
+    "gecen": 10,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "beklenmeyen hata: page.$eval: Failed to find element matching selector \".hof-modal-backdrop.is-visible [data-integ-root] [data-integ-user-warn]\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-entegrator-240: 10 geçti, 1 kaldı",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kucuk-m3-e2e-eski-kirmizi.log",
+  "klasor": "/home/user/wt/kucuk",
+  "ham_cikti_sha256": "a255021a86be45defea4eb3650f5017cfe0f0aa4ee0e769f20cabf43b0f852b7",
+  "ham_cikti_bayt": 1103
+}

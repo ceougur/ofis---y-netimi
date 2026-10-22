@@ -34,6 +34,17 @@ describe("kanıt aracı: özet satırları", () => {
     const guv = "\n✓ Tohum 1 · taban bos: 1000 işlem\n\n✗ değişmez kural bozuldu\n";
     assert.deepEqual(parseSummary(guv), { bicim: "guvenilirlik", toplam: 2, gecen: 1, basarisiz: 1, iptal: 0, atlanan: 0 });
   });
+  it("defter kâhini (test:kahin-defter): fark, atlanan/reddedilen olay ve yakalanmayan mutasyon başarısız sayılır", () => {
+    const ozet = (fark, atlanan, red, kacan) => `147/147 denetim tuttu.\n  mutasyon 1 (x): tam senaryoda YAKALANDI\n\nÖZET: 147 denetim, ${fark} fark, ${atlanan} atlanan olay, ${red} reddedilen olay, ${kacan} yakalanmayan mutasyon. Ham çıktı: /tmp/x\n`;
+    assert.deepEqual(parseSummary(ozet(0, 0, 0, 0)), { bicim: "kahin-defter", toplam: 147, gecen: 147, basarisiz: 0, iptal: 0, atlanan: 0 });
+    assert.equal(verdict({ exitCode: 0, summary: parseSummary(ozet(0, 0, 0, 0)) }).hukum, "GEÇTİ");
+    assert.equal(parseSummary(ozet(2, 0, 0, 0)).gecen, 145);
+    for (const [fark, atlanan, red, kacan] of [[2, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]) {
+      const summary = parseSummary(ozet(fark, atlanan, red, kacan));
+      assert.ok(summary.basarisiz > 0, `${fark}/${atlanan}/${red}/${kacan}`);
+      assert.equal(verdict({ exitCode: 1, summary }).hukum, "BAŞARISIZ");
+    }
+  });
   it("tanınmayan ya da boş çıktı özet sayılmaz", () => {
     assert.equal(parseSummary(""), null);
     assert.equal(parseSummary("her şey yolunda ✓"), null);

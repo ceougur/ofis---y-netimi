@@ -1,0 +1,43 @@
+{
+  "ad": "244-kucuk-m25-eski-kirmizi",
+  "komut": "node --test --test-name-pattern=Vergi Ödemesi|her yazma yetkisi test/license.test.mjs",
+  "commit": "1f6ad99df7ef569af9ed772e1e8e053c216d565c",
+  "dal": "is/kucuk",
+  "kirli": 1,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T03:31:06.006Z",
+  "sure_sn": 0.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "lisans motoru — sunucu › katalogdaki her yazma yetkisi salt okunurda gizlenir (okuma/yönetim yetkileri açık listeyle hariç)",
+      "konum": "test/license.test.mjs:607:3",
+      "hata": "tax.manage yazma yetkisi WRITE_PERMISSIONS'ta olmalı (beklenen true, gelen false)"
+    },
+    {
+      "ad": "lisans motoru — sunucu › salt okunur lisansta Vergi Ödemesi / KDV Mahsubu yetkisi ekrana gitmez, yazım reddedilir, veri değişmez",
+      "konum": "test/license.test.mjs:616:3",
+      "hata": "tax.manage salt okunurda ekrana gönderilmez (Vergi Ödemesi düğmeleri gizlenir) (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kucuk-m25-eski-kirmizi.log",
+  "klasor": "/home/user/wt/kucuk",
+  "ham_cikti_sha256": "67ad05366f2f990cfb8dba3a4416c29ffd7775bf00dd46b70d95aed16849aaa6",
+  "ham_cikti_bayt": 2543
+}

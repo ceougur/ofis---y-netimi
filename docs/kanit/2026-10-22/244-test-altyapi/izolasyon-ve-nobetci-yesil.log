@@ -1,0 +1,142 @@
+TAP version 13
+# (node:9760) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: lisans nöbetçisi — engel
+    # Subtest: adlar programın varsayılan servis listesinden türetilir (elle liste kaymaz)
+    ok 1 - adlar programın varsayılan servis listesinden türetilir (elle liste kaymaz)
+      ---
+      duration_ms: 2.140107
+      type: 'test'
+      ...
+    # Subtest: hosts dosyasına IPv4 + IPv6 yerel satırları bir kez eklenir; sonu satırsız dosya bozulmaz
+    ok 2 - hosts dosyasına IPv4 + IPv6 yerel satırları bir kez eklenir; sonu satırsız dosya bozulmaz
+      ---
+      duration_ms: 1.800312
+      type: 'test'
+      ...
+    # Subtest: çözümleme hükmü: yalnız yerel adres TAMAM; dış adres ya da çözülemeyen ad HATA
+    ok 3 - çözümleme hükmü: yalnız yerel adres TAMAM; dış adres ya da çözülemeyen ad HATA
+      ---
+      duration_ms: 0.801765
+      type: 'test'
+      ...
+    1..3
+ok 1 - lisans nöbetçisi — engel
+  ---
+  duration_ms: 5.748306
+  type: 'suite'
+  ...
+# Subtest: lisans nöbetçisi — lisans özeti hükmü
+    # Subtest: deneme yapıldı ve ağ hatasıyla düştü → TAMAM
+    ok 1 - deneme yapıldı ve ağ hatasıyla düştü → TAMAM
+      ---
+      duration_ms: 0.600764
+      type: 'test'
+      ...
+    # Subtest: deneme henüz yapılmadı → BEKLE
+    ok 2 - deneme henüz yapılmadı → BEKLE
+      ---
+      duration_ms: 0.136303
+      type: 'test'
+      ...
+    # Subtest: servise ulaşıldı (deneme/lisans, beklenmeyen yanıt, belirteç) ya da uygulama kapalı → BAŞARISIZ
+    ok 3 - servise ulaşıldı (deneme/lisans, beklenmeyen yanıt, belirteç) ya da uygulama kapalı → BAŞARISIZ
+      ---
+      duration_ms: 0.16029
+      type: 'test'
+      ...
+    1..3
+ok 2 - lisans nöbetçisi — lisans özeti hükmü
+  ---
+  duration_ms: 1.113141
+  type: 'suite'
+  ...
+# Subtest: lisans nöbetçisi — günlük
+    # Subtest: engellenen deneme satırı var, ulaşan yok → TAMAM (alt klasör ve döndürülmüş dosya dahil)
+    ok 1 - engellenen deneme satırı var, ulaşan yok → TAMAM (alt klasör ve döndürülmüş dosya dahil)
+      ---
+      duration_ms: 1.362294
+      type: 'test'
+      ...
+    # Subtest: servise ulaşan satır (deneme başladı / durum → trial) → BAŞARISIZ; Türkçe harfi bozulmuş satır da yakalanır
+    ok 2 - servise ulaşan satır (deneme başladı / durum → trial) → BAŞARISIZ; Türkçe harfi bozulmuş satır da yakalanır
+      ---
+      duration_ms: 0.953609
+      type: 'test'
+      ...
+    # Subtest: günlük okunamazsa ya da engellenen deneme satırı yoksa sonuç bilinmiyor → BAŞARISIZ (ders 4)
+    ok 3 - günlük okunamazsa ya da engellenen deneme satırı yoksa sonuç bilinmiyor → BAŞARISIZ (ders 4)
+      ---
+      duration_ms: 0.670058
+      type: 'test'
+      ...
+    1..3
+ok 3 - lisans nöbetçisi — günlük
+  ---
+  duration_ms: 3.566905
+  type: 'suite'
+  ...
+# Subtest: lisans nöbetçisi — gerçek programa karşı (aynı süreç, lisans uygulaması AÇIK, kendiliğinden deneme AÇIK)
+    # Subtest: lisans servisi ölü adreste: deneme ağ hatasıyla düşer → nöbetçi TAMAM
+    ok 1 - lisans servisi ölü adreste: deneme ağ hatasıyla düşer → nöbetçi TAMAM
+      ---
+      duration_ms: 526.425754
+      type: 'test'
+      ...
+    # Subtest: DİŞ: program lisans servisine ulaşırsa (deneme başlar) → nöbetçi BAŞARISIZ
+    ok 2 - DİŞ: program lisans servisine ulaşırsa (deneme başlar) → nöbetçi BAŞARISIZ
+      ---
+      duration_ms: 249.76929
+      type: 'test'
+      ...
+    # Subtest: yönetici girişi reddedilirse sonuç başarı sayılmaz (ders 3)
+    ok 3 - yönetici girişi reddedilirse sonuç başarı sayılmaz (ders 3)
+      ---
+      duration_ms: 221.141718
+      type: 'test'
+      ...
+    1..3
+ok 4 - lisans nöbetçisi — gerçek programa karşı (aynı süreç, lisans uygulaması AÇIK, kendiliğinden deneme AÇIK)
+  ---
+  duration_ms: 997.841707
+  type: 'suite'
+  ...
+# Subtest: gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+ok 5 - gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+  ---
+  duration_ms: 6.977483
+  type: 'test'
+  ...
+# Subtest: aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+ok 6 - aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+  ---
+  duration_ms: 108.108318
+  type: 'test'
+  ...
+# Subtest: gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+ok 7 - gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+  ---
+  duration_ms: 4.758058
+  type: 'test'
+  ...
+# Subtest: iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+ok 8 - iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+  ---
+  duration_ms: 1.058213
+  type: 'test'
+  ...
+# Subtest: lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+ok 9 - lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+  ---
+  duration_ms: 1.507901
+  type: 'test'
+  ...
+1..9
+# tests 17
+# suites 4
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1343.978584

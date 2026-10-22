@@ -485,10 +485,17 @@ try {
   });
 
   await step("tahsilat işlenir (en altta), düzeltilir ve silinir; kasaya düşer, kasadan ödeme girilir", async () => {
-    await admin.click('.hof-case-actions [data-case-action="payment"]');
-    await admin.fill('.hof-modal input[name="amount"]', "1.250");
-    await admin.fill('.hof-modal input[name="note"]', "Elden");
-    await admin.click('.hof-modal button[type="submit"]');
+    // 2.4.4 (E8): kayıt kartında Tahsilat düğmesi yok (CSS ile gizli; eski kodda görünür → kırmızı). Kayıt tahsilatının sunucu yolu ve eski
+    // tahsilatların İşlem Geçmişi'nde düzeltilmesi/silinmesi değişmedi: tahsilat API'den girilir, düzeltme ve silme ekrandan.
+    expect(!(await admin.isVisible('.hof-case-actions [data-case-action="payment"]')), "kayıt kartında Tahsilat düğmesi görünmez (E8)");
+    expect(await admin.isVisible('.hof-case-actions [data-case-action="note"]'), "Not düğmesi yerinde");
+    const entered = await admin.evaluate(async () => {
+      const key = window.HOF.selectedCase().key;
+      const response = await fetch(`/api/workspace/cases/${encodeURIComponent(key)}/payments`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ amount: "1.250", note: "Elden", method: "cash", date: window.HOF.localToday() }) });
+      window.HOF.workspace.refreshActivity();
+      return { status: response.status, body: await response.json() };
+    });
+    expect(entered.status === 200 && entered.body.ok === true, `kayıt tahsilatı API'den girildi: ${entered.status} ${JSON.stringify(entered.body).slice(0, 160)}`);
     await admin.waitForFunction(() => document.querySelector("#hof-activity li:last-child")?.textContent.includes("1.250,00"), null, { timeout: 10000 });
     const order = await admin.$$eval("#hof-activity li", items => items.map(item => item.dataset.type));
     expect(order.at(-1) === "payment" && order.includes("note") && order.indexOf("note") < order.indexOf("payment"), `yeni işlem en altta olmalı: ${order}`);
@@ -618,10 +625,15 @@ try {
     }
     expect(await admin.evaluate(() => window.HOF.revealRecord("2026/101")), "kayıt tabloda açıldı");
     await admin.waitForFunction(() => window.HOF.selectedCase()?.key === "2026/101", null, { timeout: 8000 });
-    // Plan yokken Tahsilat: eski pencere + "Taksit planı oluşturun" kısa yolu → kart formu kayda bağlı, ad kayıttan.
-    await admin.click('.hof-case-actions [data-case-action="payment"]');
-    await admin.waitForSelector(".hof-modal [data-new-plan]", { timeout: 8000 });
-    await admin.click(".hof-modal [data-new-plan]");
+    // 2.4.4 (E8): kayıt kartında Tahsilat düğmesi (ve onun penceresindeki "Taksit planı oluşturun" kısa yolu) görünmez. Kayda bağlı kart formu,
+    // kısa yolun açtığı biçimde (kayıt anahtarı + kayıttan ad/telefon) doğrudan açılır; kayıttan taksit konusu ayrı madde (2.4.4 iş listesi).
+    expect(!(await admin.isVisible('.hof-case-actions [data-case-action="payment"]')), "kayıt kartında Tahsilat düğmesi görünmez (E8)");
+    await admin.evaluate(() => {
+      const selected = window.HOF.selectedCase();
+      const row = (window.HOF.data?.rows || []).find(item => item.__hofKey === selected.key) || null;
+      const plans = window.HOF.plans;
+      plans.openNew({ caseKey: selected.key, caseTitle: row ? plans.recordLabel(row) : selected.title, name: row ? plans.personOf(row) || selected.title : selected.title, phone: row ? plans.phoneOf(row) : "", registeredOn: row && plans.recordDay ? plans.recordDay(row) : "" });
+    });
     await admin.waitForSelector('.hof-plan-form input[name="caseKey"]', { state: "attached", timeout: 8000 });
     expect((await admin.inputValue('.hof-plan-form input[name="caseKey"]')) === "2026/101", "kart formu kayda bağlı açıldı");
     const prefilled = await admin.inputValue('.hof-plan-form input[name="name"]');
@@ -641,10 +653,8 @@ try {
     // Kişinin kartında Taksit planı bölümü (3 taksit, kalan 3.000).
     await admin.waitForFunction(() => { const box = document.querySelector("#hof-case-plan"); return box && !box.hidden && box.querySelectorAll("tbody tr").length === 3; }, null, { timeout: 10000 });
     expect((await admin.$eval("#hof-case-plan", node => node.innerText)).includes("3.000,00"), "bölümde kalan 3.000");
-    // Tahsilat → taksit seçici → 1. taksite Tahsil et → tutar taksit kadar hazır → kaydet.
-    await admin.click('.hof-case-actions [data-case-action="payment"]');
-    await admin.waitForSelector(".hof-plan-collect-modal [data-collect]", { timeout: 8000 });
-    await admin.click('.hof-plan-collect-modal tbody tr:first-child [data-collect]');
+    // Taksit bölümünde 1. taksitin ₺ düğmesi (kayıt kartındaki Tahsilat düğmesi 2.4.4 E8'de kalktı) → tutar taksit kadar hazır → kaydet.
+    await admin.click("#hof-case-plan tbody tr:first-child [data-case-collect]");
     await admin.waitForSelector('.hof-modal-backdrop.is-visible input[name="amount"]', { timeout: 8000 });
     expect((await admin.inputValue('.hof-modal-backdrop.is-visible input[name="amount"]')) === "1.000,00", "tutar 1. taksit kadar hazır");
     await admin.click('.hof-modal-backdrop.is-visible .hof-form button[type="submit"]');
