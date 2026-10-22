@@ -259,6 +259,14 @@ try {
       ok(reset.help === g6 && reset.helpAfterBox && !reset.intro.includes("Fatura ve fiş numaraları"), `${label}: G6 cümlesi kutunun altında, girişte yok (altta: “${reset.help.slice(0, 60)}”)`);
       ok(reset.submit === "Veriyi Sıfırla" && reset.danger, `${label}: “${reset.submit}” tehlikeli eylem rengi (hof-button-danger: ${reset.danger})`);
     }
+    if (label.startsWith("Şirketi Sil")) {
+      // 31f ek (ana oturum kararı): geri alınamaz "Şirketi Sil" de tehlikeli eylem rengi; onay akışı (kod + parola) aynı.
+      const del = await page.evaluate(() => {
+        const submit = document.querySelector(".hof-modal-backdrop.is-visible button[type=\"submit\"]");
+        return { text: submit?.textContent.trim() || "", danger: Boolean(submit?.classList.contains("hof-button-danger")) };
+      });
+      ok(del.text === "Şirketi Sil" && del.danger, `${label}: “${del.text}” tehlikeli eylem rengi (hof-button-danger: ${del.danger})`);
+    }
     if (code === "001" && label.startsWith("Verisini")) await shot("e-sifirla-onay");
     await escClose(page);
     await page.waitForTimeout(300);

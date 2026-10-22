@@ -1,0 +1,32 @@
+{
+  "ad": "244-ui-son/yeni-senaryo-217-sirketi-sil",
+  "komut": "npm run --silent test:senaryo-217",
+  "commit": "6edb866668e300acd511a613f44e1497bbc0bb97",
+  "dal": "is/ui-son",
+  "kirli": 2,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T23:29:27.488Z",
+  "sure_sn": 77.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 65,
+    "gecen": 65,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ui-son/yeni-senaryo-217-sirketi-sil.log",
+  "klasor": "/home/user/wt/ui-son",
+  "ham_cikti_sha256": "846af3cd68ae132fb58faeb3501cb5091c5713e55c6240e2c9b6e56bde100e95",
+  "ham_cikti_bayt": 6714
+}

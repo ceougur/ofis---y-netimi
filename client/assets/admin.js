@@ -1618,6 +1618,8 @@
         ...confirmFields(item.code),
       ],
       submitLabel: "Şirketi Sil",
+      // Ana oturum kararı (31f ek): geri alınamaz eylem — Veriyi Sıfırla ve Kullanıcıyı Sil gibi kırmızı; onay akışı aynı.
+      onOpen: dialog => dialog.querySelector('button[type="submit"]').classList.add("hof-button-danger"),
       onSubmit: async values => {
         const result = await HOF.api(`/api/companies/${encodeURIComponent(item.id)}`, { method: "DELETE", body: { confirm: values.confirm, password: values.password } });
         HOF.toast(`“${item.code} · ${item.name}” silindi. Yedek: ${result.backup || "—"}`, { type: "success", timeout: 8000 });
