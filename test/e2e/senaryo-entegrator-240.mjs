@@ -46,7 +46,8 @@ fakeProxy.on("connect", (req, socket) => {
 await new Promise(resolve => fakeProxy.listen(0, "127.0.0.1", resolve));
 const NO_ENV_PROXY = { HTTPS_PROXY: "", https_proxy: "", HTTP_PROXY: "", http_proxy: "", NO_PROXY: "", no_proxy: "" };
 const networkFile = path.join(root, "ag-ayari.json");
-const server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", edocEnabled: true, env: { ...NO_ENV_PROXY, HUKUK_NETWORK_FILE: networkFile }, networkTestUrl: "https://guncelleme.test/" });
+// 2.4.4 (iş listesi 24): üretim girişi gibi e-SMM açık (server/server.mjs esmmEnabled) — Firma sekmesinde "e-SMM kullanıcısıyım" görünür, firma işaretlemez.
+const server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", edocEnabled: true, esmmEnabled: true, env: { ...NO_ENV_PROXY, HUKUK_NETWORK_FILE: networkFile }, networkTestUrl: "https://guncelleme.test/" });
 const admin = await server.login();
 const BASE = server.base;
 await must("kurulum geç", admin.post("/api/workspace/bank/setup/dismiss", {}));
@@ -171,9 +172,15 @@ try {
   ok(firm.includes(OUR_VKN) && firm.includes("Deneme Ofis Ltd."), `firma özeti Fatura Ayarları'ndan: ${firm.slice(0, 80)}`);
   ok(await page.$(`${card} [data-integ-act="firm"]`), "“Fatura Ayarları'nda Düzenle” düğmesi");
   await page.check(`${card} input[data-i="efatura"]`);
-  ok(!(await page.$(`${card} input[data-i="esmm"]`)), "e-SMM işareti gizli (2.4.1: e-SMM gönderimi EDM'ye bağlanana kadar)");
+  // 2.4.4 (iş listesi 24): e-SMM üretimde açık — işaret görünür ve İŞARETSİZ gelir (2.4.1–2.4.3'te gizliydi); seri satırı Otomatik Seriler'de.
+  const esmmBox = await page.$(`${card} input[data-i="esmm"]`);
+  ok(Boolean(esmmBox) && !(await esmmBox.isChecked()), "e-SMM kullanıcısıyım görünür, işaretsiz gelir (2.4.4: e-SMM açık)");
+  const esmmLabel = esmmBox ? await esmmBox.evaluate(node => node.closest("label")?.textContent.replace(/\s+/g, " ").trim() || "") : "";
+  ok(esmmLabel === "e-SMM kullanıcısıyım", `işaretin adı: “${esmmLabel}”`);
   await page.click(`${card} [data-integ-tab="series"]`);
-  ok(!(await page.$(`${card} input[data-i-series="esmm"]`)), "Otomatik Seriler'de e-SMM satırı yok");
+  const esmmSeries = await page.$(`${card} input[data-i-series="esmm"]`);
+  const esmmSeriesText = esmmSeries ? await esmmSeries.evaluate(node => node.closest("label")?.textContent.replace(/\s+/g, " ").trim() || "") : "";
+  ok(Boolean(esmmSeries) && /Sıradaki: ESM\d{13}/.test(esmmSeriesText) && /Test ortamında: TES\d{13}/.test(esmmSeriesText), `Otomatik Seriler'de e-SMM satırı: ${esmmSeriesText.slice(0, 120)}`);
   await page.fill(`${card} input[data-i-series="efatura"]`, "efx");
   await page.click(`${card} [data-integ-tab="connection"]`);
   ok(await page.$eval(`${card} input[data-i="autoCheckUser"]`, input => input.checked), "sekme dönüşünde işaretlenen kutu korunur");

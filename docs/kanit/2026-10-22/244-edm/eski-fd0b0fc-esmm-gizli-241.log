@@ -1,0 +1,42 @@
+TAP version 13
+# Subtest: e-SMM kapalı kurulum (esmmEnabled verilmez — testlerin varsayılanı; 2.4.1–2.4.3 üretimi)
+    # Subtest: işaret API'den açılamaz: 400 esmm-unavailable; ayar kaydı e-SMM'yi kapalı döndürür
+    ok 1 - işaret API'den açılamaz: 400 esmm-unavailable; ayar kaydı e-SMM'yi kapalı döndürür
+      ---
+      duration_ms: 16.902646
+      type: 'test'
+      ...
+    # Subtest: 2.4.0'da açılmış eski kayıt (esmm: true) makbuzu e-SMM yapmaz: kâğıt SMM serisi, ayar e-SMM'yi kapalı gösterir
+    ok 2 - 2.4.0'da açılmış eski kayıt (esmm: true) makbuzu e-SMM yapmaz: kâğıt SMM serisi, ayar e-SMM'yi kapalı gösterir
+      ---
+      duration_ms: 41.756252
+      type: 'test'
+      ...
+    1..2
+ok 1 - e-SMM kapalı kurulum (esmmEnabled verilmez — testlerin varsayılanı; 2.4.1–2.4.3 üretimi)
+  ---
+  duration_ms: 526.957718
+  type: 'suite'
+  ...
+# Subtest: e-SMM açık kurulum (2.4.4 üretimi: server/server.mjs esmmEnabled)
+    # Subtest: işaret açılır, makbuz e-SMM (test serisi TES) olur; Numaralar listesinde e-SMM serisi var
+    ok 1 - işaret açılır, makbuz e-SMM (test serisi TES) olur; Numaralar listesinde e-SMM serisi var
+      ---
+      duration_ms: 52.870978
+      type: 'test'
+      ...
+    1..1
+ok 2 - e-SMM açık kurulum (2.4.4 üretimi: server/server.mjs esmmEnabled)
+  ---
+  duration_ms: 470.488186
+  type: 'suite'
+  ...
+1..2
+# tests 3
+# suites 2
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1535.403849

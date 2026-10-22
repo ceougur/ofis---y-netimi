@@ -1,5 +1,7 @@
-// 2.4.4 iş listesi 22 (E1) — e-SMM EKRANDAN (e-SMM açık kurulum: config.esmmEnabled; üretimde henüz kapalı, madde 24'te açılır). GERÇEK tarayıcı, sahte EDM
+// 2.4.4 iş listesi 22 (E1) — e-SMM EKRANDAN (e-SMM açık kurulum: config.esmmEnabled; madde 24'ten beri üretim girişi de açar). GERÇEK tarayıcı, sahte EDM
 // (test/einvoice-mock.mjs + …/ESmmEDM.svc yolu test/esmm-mock.mjs; ağa çıkmaz), ders 30 lisans adresi.
+//   0 (madde 24, açma) e-SMM KULLANICISI OLMAYAN firmada makbuz formu eskisi gibi kâğıt: tür notu yok, gönderim düğmesi yok; kayıt SMM serisi, KAGIT,
+//     Gönderilecekler'e düşmez. Sonra firma "e-SMM kullanıcısıyım" olur (API) ve 1–3 koşar.
 //   1 "e-SMM kullanıcısıyım" firmada serbest meslek makbuzu formu: tür notu "e-SMM kesilir", "Kaydet, Sonra Gönder" + "Kaydet ve Gönder" var; portala taslak
 //     ayarı AÇIKKEN de düğme "Kaydet ve Gönder" (e-SMM portala taslak olarak yüklenmez).
 //   2 Kaydet ve Gönder (insan hızında yazım + Tab): makbuz TES numarasıyla e-SMM servisine gider (e-Fatura servisine gönderim yok); kartta Durum Sorgula ve
@@ -43,7 +45,7 @@ const must = async (label, promise) => {
   return unwrap(res);
 };
 await must("kurulum geç", api.post("/api/workspace/bank/setup/dismiss", {}));
-await must("firma", api.put("/api/workspace/invoices/settings", { seller: { name: "Deneme Hukuk Bürosu Ltd.", taxNo: OUR_VKN, taxOffice: "Çankaya", address: "Atatürk Blv. 1", district: "Çankaya", city: "Ankara", email: "bilgi@deneme.com.tr" }, efatura: true, earsiv: true, esmm: true }));
+await must("firma", api.put("/api/workspace/invoices/settings", { seller: { name: "Deneme Hukuk Bürosu Ltd.", taxNo: OUR_VKN, taxOffice: "Çankaya", address: "Atatürk Blv. 1", district: "Çankaya", city: "Ankara", email: "bilgi@deneme.com.tr" }, efatura: true, earsiv: true, esmm: false }));
 await must("entegratör", api.put("/api/workspace/invoices/settings", { integrator: { env: "test", baseUrl: edm.url, username: "edmkullanici", password: "Gizli-Parola-1", senderAlias: "urn:mail:defaultgb@deneme.com.tr" } }));
 await must("cari", api.post("/api/workspace/accounts", { name: "Müvekkil Ticaret A.Ş.", type: "customer", taxNo: vkn(111222333), taxOffice: "Konak", address: "Kordon 5", district: "Konak", city: "İzmir", email: "muhasebe@muvekkil.com.tr" }));
 const count = () => app.store.get("SELECT COUNT(*) AS n FROM invoices").n;
@@ -120,6 +122,35 @@ try {
   await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
   await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
   await page.waitForFunction(() => Boolean(window.HOF?.invoices?.open), null, { timeout: 20000 });
+
+  await step("■ 0 e-SMM açık kurulum, e-SMM kullanıcısı OLMAYAN firma: makbuz formu kâğıt (tür notu ve gönderim düğmesi yok); kayıt SMM serisi, Gönderilecekler'e düşmez", async () => {
+    await newSmm(page);
+    const note = await textOf(page, `${pageInv} [data-profile-note]`);
+    ok(!/e-SMM/.test(note), `tür notu e-SMM demiyor ("${note}")`);
+    ok(!(await page.$(`${pageInv} [data-act="issue-later"]`)) && !(await page.$(`${pageInv} [data-act="issue-now"]`)), "Kaydet, Sonra Gönder ve Kaydet ve Gönder yok");
+    const issue = await textOf(page, `${pageInv} [data-act="issue"]`);
+    ok(Boolean(issue), `kayıt düğmesi: "${issue}"`);
+    await shot(page, "esmm-244-0-kagit-form");
+    const before = count();
+    await page.click(`${pageInv} [data-act="issue"]`);
+    // Ders 34: kayıt onayı BEKLENEN sorudur (her belge kaydında numara ve tutarla sorulur); metni kâğıt makbuz olmalı — e-SMM ya da gönderim demez.
+    await page.waitForSelector(`${dialog} [data-answer="yes"]`);
+    const question = await textOf(page, `${dialog} .hof-modal-text`);
+    console.log(`  · onay yanıtlandı (Makbuzu Kaydet, beklenen soru): ${question.slice(0, 140)}`);
+    ok(/SMM2026\d{9} numarasıyla serbest meslek makbuzu kaydedilecek/.test(question) && !/e-SMM|gönder/i.test(question), "kayıt onayı kâğıt makbuz numarasını söyler, e-SMM / gönderim demez");
+    await page.click(`${dialog} [data-answer="yes"]`);
+    for (let index = 0; index < 40 && count() === before; index += 1) await page.waitForTimeout(250);
+    const paper = lastRow();
+    ok(count() === before + 1 && paper.kind === "smm" && paper.status === "issued", "makbuz kaydedildi (veri tabanı)");
+    ok(paper.profile === "KAGIT" && /^SMM2026\d{9}$/.test(paper.number || "") && paper.eStatus === "none", `kâğıt makbuz: ${paper.profile} ${paper.number} (e-Belge durumu ${paper.eStatus})`);
+    const pending = unwrap(await api.get("/api/workspace/invoices?tab=pending"))?.invoices?.map(item => item.id) || [];
+    ok(!pending.includes(paper.id), "Gönderilecekler'de yok");
+    ok(edm.state.smm.calls.length === 0 && !edm.state.calls.some(call => ["SendInvoice", "LoadInvoice"].includes(call.op)), "EDM'ye hiçbir gönderim yok");
+    await closeAll(page);
+    await must("e-SMM kullanıcısı", api.put("/api/workspace/invoices/settings", { esmm: true }));
+    await page.reload();
+    await page.waitForFunction(() => Boolean(window.HOF?.invoices?.open), null, { timeout: 20000 });
+  });
 
   await step("■ 1 e-SMM kullanıcısı firmada makbuz formu: tür notu ve gönderim düğmeleri; taslak ayarı açıkken de \"Kaydet ve Gönder\"", async () => {
     await newSmm(page);
