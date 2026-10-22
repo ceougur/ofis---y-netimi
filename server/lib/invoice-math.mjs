@@ -275,6 +275,10 @@ export function computeInvoice(lines, { pricesIncludeVat = false, discountRate =
   }
   const net = sum("net");
   // Stopaj belge toplamından hesaplanır (makbuzda tek satır: "Gelir Vergisi Stopajı %20").
+  // 2.4.4 (mali müşavir MM10 incelendi, ana oturum kararı 22.10.2026: DEĞİŞMEZ): KDV kalem başına (UBL-TR kalem yapısı; KDV K. md. 20), stopaj ödemenin
+  // tamamı üzerinden (GVK md. 94: makbuz toplamı × oran) — iki ayrı dayanak. Çok kalemli makbuzda aynı matrah ve oranla KDV ile stopaj arasında ≤ 1 kuruş
+  // fark beklenir (2 × 100,03: KDV 20,01 + 20,01 = 40,02; stopaj 200,06 × %20 = 40,01); hata değildir. Plandan yazılmış bağımsız modeller (mutabakat
+  // fatura-model.mjs, test/bagimsiz/tutar) da stopajı belge düzeyinde hesaplar. Sabitleyen test: test/mm-smm-244.test.mjs T1.
   const stoppageTotal = stoppage > 0 ? mulDiv(net, Math.round(stoppage * 100), 10000) : 0;
   const totals = {
     base: sum("base"),

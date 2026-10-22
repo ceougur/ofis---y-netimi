@@ -63,7 +63,8 @@ export const PROFILES = Object.freeze({
   ESMM: "e-SMM",
 });
 // waiting: "Kes, Sonra Gönder" — etkileri işlenmiş, e-Belge numarası gönderimde verilir (GİB serisinde boşluk kalmaz).
-// withdrawn: Gönderilecekler'den silindi — etkiler yerinde, Müşteri Fişi numarasıyla kalır; istenirse yine gönderilir.
+// withdrawn: Gönderilecekler'den silindi — etkiler yerinde, Müşteri Fişi numarasıyla kalır; istenirse yine gönderilir (kâğıt makbuz olarak bırakılan
+// serbest meslek makbuzu gönderilmez — 2.4.4 MM4 alt kararı, paperReceiptBlockOf).
 const E_STATES = Object.freeze({ waiting: "Gönderilecek", withdrawn: "Gönderilmeyecek", none: "Gönderilmedi", exported: "XML Hazır", draft: "Portalda Taslak", processing: "İşleniyor", sent: "Gönderildi", accepted: "Kabul Edildi", rejected: "Reddedildi", error: "Hata", cancelled: "Entegratörde İptal" });
 // Gönderilebilir (ilk kez ya da hatadan sonra yeniden) ve sorgulanabilir e-Belge durumları.
 // draft (İz 7.3): EDM portalına taslak yüklendi (LoadInvoice) — henüz gönderilmedi; belge düzenlenebilir, taslak yenilenir ya da gönderilir.
@@ -180,6 +181,13 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // Belgenin e-Belge profili: Müşteri Fişi Olarak Bırakılmış (withdrawn) belge KAGIT görünür, e-Belge olarak e_profile'ıyla gönderilir.
   const eProfileOf = row => (row?.eStatus === "withdrawn" ? row.eProfile : row?.profile) || "";
   const sendsDoc = row => sendKind(row.kind, eProfileOf(row));
+  // 2.4.4 (mali müşavir MM4 alt kararı, 22.10.2026 — kullanıcının 5 dk yetkisiyle önerilen uygulandı): "Kâğıt Makbuz Olarak Bırak" ile bırakılan serbest
+  // meslek makbuzu kâğıt makbuzdur (matbu makbuz düzenlendi; 509 VUK GT V.7) — sonradan e-SMM olarak GÖNDERİLMEZ: aynı tahsilat için ikinci belge olurdu.
+  // KALICI engel (PERMANENT_SEND_CODES; seriyi bekletmez): kartın Gönder düğmesi yok, nedeni görünür; tek Gönder, Tümünü / Seçilenleri Gönder (bırakılmış
+  // belge zaten Gönderilecekler'de değil) ve numara işlemi (numberForSend, yarışa karşı) reddeder. Müşteri Fişi (faturada bırakılan) DEĞİŞMEZ: fişin mali
+  // değeri yoktur, sonradan e-Belge olarak gönderilebilir.
+  const PAPER_RECEIPT_TEXT = "Kâğıt makbuz olarak düzenlendi; e-SMM gönderilmez (aynı tahsilat için ikinci belge olur). Yanlışsa makbuzu İptal Et ile iptal edip e-SMM olarak yeniden kesin.";
+  const paperReceiptBlockOf = row => (row?.status === "issued" && row.kind === "smm" && row.eStatus === "withdrawn" ? PAPER_RECEIPT_TEXT : "");
   // 2.4.2 (kullanıcı denemesi 17.10.2026): EDM'nin test hesabı ORTAKTIR; test serisi 1'den başlarsa numara başka firmanınkiyle çakışır (EDM 11048).
   // Test serisi her yıl ilk kullanımda firmaya özgü rastgele büyük numaradan başlar; başlangıç ayara yazılır (önizleme ile kayıt aynı numarayı görür).
   const testSeriesStart = typeof config.testSeriesStart === "function" ? config.testSeriesStart : () => randomInt(100_000_001, 900_000_000);
@@ -418,7 +426,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     profile && profile !== "KAGIT" && lines.some(line => line.withholdingCode) && lines.some(line => Number(line.vatRate) === 0 && line.exemptionCode && line.exemptionCode !== "351")
       ? ["Tevkifatlı kalem ile KDV istisnalı kalem (351 dışı) aynı e-Belgede olamaz (GİB: tevkifatlı belgenin tipi TEVKIFAT, istisnalınınki ISTISNA). Bu kalemleri ayrı faturalarda kesin."]
       : [];
-  const sellerProblems = (profile, s = settings()) => partyProblems(sellerParty(s), { profile: profile === "KAGIT" ? "KAGIT" : profile === "EARSIVFATURA" ? "EARSIV" : profile === "ESMM" ? "EARSIV" : "EFATURA", role: "seller" });
+  // e-SMM'nin taraf kuralları e-Arşiv'inkilerdir (tax-id.mjs partyIssues: ESMM → e-Arşiv kuralı, iletide "e-SMM").
+  const partyProfileOf = profile => (profile === "KAGIT" ? "KAGIT" : profile === "EARSIVFATURA" ? "EARSIV" : profile === "ESMM" ? "ESMM" : "EFATURA");
+  const sellerProblems = (profile, s = settings()) => partyProblems(sellerParty(s), { profile: partyProfileOf(profile), role: "seller" });
+  // Alıcı denetimi (eski eşleme aynen; yalnız e-SMM kendi adıyla): e-Arşiv → EARSIV, e-SMM → ESMM, öbürü e-Fatura kuralı.
+  const buyerProfileOf = profile => (profile === "EARSIVFATURA" ? "EARSIV" : profile === "ESMM" ? "ESMM" : "EFATURA");
   // GG2 (orta; plan §8.9): Banka hesap kartındaki "IBAN Faturada Gösterilsin" işaretli hesaplar faturanın satıcı banka listesine girer (önce Banka
   // hesapları, sonra Fatura Ayarları'ndaki liste; aynı IBAN bir kez; en çok 4). Önceden kutunun hiçbir etkisi yoktu.
   // 2.3.0 (İz 3.4; plan §8.9 "Fatura Ayarları → Banka Hesapları", E2.16, #31): Banka modülünde İLK HESAP AÇILANA KADAR Fatura Ayarları'ndaki eski
@@ -865,12 +877,13 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const fee = row.status === "issued" ? bankFeeOf(row.id) : null;
     if (fee) return bankFeeText(fee);
     if (activeReturns) return `Bu faturanın ${activeReturns} iade faturası var; düzenlenmez. Önce iadeleri iptal edin.`;
-    if (E_SENT.has(row.eStatus)) return `Bu belge e-Belge olarak ${(E_STATES[row.eStatus] || "gönderildi").toLocaleLowerCase("tr-TR")}; düzenlenmez. İptal ya da iade faturasıyla düzeltin.`;
+    // 2.4.4 (mali müşavir MM11): makbuzdan iade belgesi olmaz — gönderilmiş e-SMM yalnız İptal Et ile (iletimden 8 gün) düzeltilir.
+    if (E_SENT.has(row.eStatus)) return row.kind === "smm" ? `Bu makbuz e-SMM olarak ${(E_STATES[row.eStatus] || "gönderildi").toLocaleLowerCase("tr-TR")}; düzenlenmez. Yanlışsa İptal Et ile iptal edip yeniden kesin (makbuzdan iade belgesi olmaz).` : `Bu belge e-Belge olarak ${(E_STATES[row.eStatus] || "gönderildi").toLocaleLowerCase("tr-TR")}; düzenlenmez. İptal ya da iade faturasıyla düzeltin.`;
     if (uncertainSend(row)) return UNCERTAIN_TEXT;
     const lock = period?.lockedUntil?.();
     if (lock && row.issueDate <= lock) return `Belge ${dayText(row.issueDate)} tarihli; ${dayText(lock)} ve öncesi kilitli dönem. Düzenlemek için dönem kilidi açılmalı.`;
     const planId = plan?.id || row.planId;
-    if (planId && store.get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ?", planId).n) return "Faturanın taksit kartında tahsilat var; düzenlenmez. Borcu düşürmek için iade faturası kaydedin.";
+    if (planId && store.get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ?", planId).n) return row.kind === "smm" ? "Makbuzun taksit kartında tahsilat var; düzenlenmez. Önce taksit kartındaki tahsilatları silin (makbuzdan iade belgesi olmaz)." : "Faturanın taksit kartında tahsilat var; düzenlenmez. Borcu düşürmek için iade faturası kaydedin.";
     return "";
   }
   // Kaydedilmiş belgeyi düzenleme: tek işlemde eski etkiler (stok, cari, Kasa, taksit, çek/senet) geri alınır, yenileri
@@ -1106,9 +1119,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       returnBlock: row.status !== "issued" ? "" : bankFee ? bankFeeText(bankFee) : kind?.return ? "" : row.kind === "smm" ? "Serbest meslek makbuzundan iade belgesi olmaz; yanlışsa iptal edin." : returnable.some(item => item.left > 0) ? "" : "İade edilebilecek kalem kalmadı; faturanın tamamı iade edildi.",
       repeat: repeatOf(row.id),
       canRepeat: manage && row.status === "issued" && !kind?.return,
-      canSend: edocEnabled && manage && row.status === "issued" && sendsDoc(row) && (row.profile !== "KAGIT" || row.eStatus === "withdrawn") && E_SENDABLE.has(row.eStatus || "none") && !sendBlockOf(row) && !buyerBlockOf(row) && !testSeriesInLive(row),
+      canSend: edocEnabled && manage && row.status === "issued" && sendsDoc(row) && (row.profile !== "KAGIT" || row.eStatus === "withdrawn") && !paperReceiptBlockOf(row) && E_SENDABLE.has(row.eStatus || "none") && !sendBlockOf(row) && !buyerBlockOf(row) && !testSeriesInLive(row),
       canWithdraw: edocEnabled && manage && row.status === "issued" && row.eStatus === "waiting",
-      sendBlock: edocEnabled ? sendBlockOf(row) || buyerBlockOf(row) || (testSeriesInLive(row) ? TEST_LIVE_TEXT(row.number) : "") : "",
+      sendBlock: edocEnabled ? paperReceiptBlockOf(row) || sendBlockOf(row) || buyerBlockOf(row) || (testSeriesInLive(row) ? TEST_LIVE_TEXT(row.number) : "") : "",
       canRefresh: edocEnabled && manage && sendKind(row.kind, row.profile) && row.profile !== "KAGIT" && (E_TRACKED.has(row.eStatus) || uncertainSend(row)),
       // İz 7.3: portala taslak (ayar açıkken ya da belge zaten taslaktaysa yenileme). draftStale: taslak yüklendikten sonra belge düzenlendi.
       // 2.4.4 madde 22: e-SMM'de portala taslak yok (adapters.mjs: einvoice-draft-unsupported) — taslak ayarı açıkken de makbuz Gönder ile gider.
@@ -2078,7 +2091,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // Kesimi kesin reddedecek e-Belge sorunları (satıcı, alıcı, iade referansı, tür karışımı). Hesaplama ucu (calc) da aynısını döner (B7).
   function issueBlockers(doc) {
     if (doc.profile === "KAGIT" || !doc.meta.own) return [];
-    return [...sellerProblems(doc.profile, doc.settings), ...partyProblems(doc.party, { profile: doc.profile === "EARSIVFATURA" || doc.profile === "ESMM" ? "EARSIV" : "EFATURA", role: "buyer", payable: c2(doc.money.payable) }), ...returnProblems(doc.profile, doc.kind, doc.returnRef || doc.original?.number, doc.original?.number), ...returnRefShape(doc), ...mixProblems(doc.profile, doc.computed?.lines || [])];
+    return [...sellerProblems(doc.profile, doc.settings), ...partyProblems(doc.party, { profile: buyerProfileOf(doc.profile), role: "buyer", payable: c2(doc.money.payable) }), ...returnProblems(doc.profile, doc.kind, doc.returnRef || doc.original?.number, doc.original?.number), ...returnRefShape(doc), ...mixProblems(doc.profile, doc.computed?.lines || [])];
   }
   // MM1: yazılan referans 16 karakter ama harf/rakam dışı (ör. "/") ise ayrıca söylenir.
   const returnRefShape = doc => (doc.returnRef && doc.returnRef.length === 16 && !RETURN_REF.test(doc.returnRef) ? ["İade Edilen Belge No (e-Belge Referansı) yalnız harf (A–Z) ve rakam içermeli."] : []);
@@ -2771,9 +2784,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       try: { net: c2(doc.money.net), vat: c2(doc.money.vat), withheld: c2(doc.money.withheld), stoppage: c2(doc.money.stoppage), payable: c2(doc.money.payable) },
       amountInWords: amountInWords(c2(t.payable), doc.currency),
       party: doc.party,
-      partyProblems: doc.profile === "KAGIT" ? [] : partyProblems(doc.party, { profile: doc.profile === "EARSIVFATURA" || doc.profile === "ESMM" ? "EARSIV" : "EFATURA", role: "buyer", payable: c2(doc.money.payable) }),
+      partyProblems: doc.profile === "KAGIT" ? [] : partyProblems(doc.party, { profile: buyerProfileOf(doc.profile), role: "buyer", payable: c2(doc.money.payable) }),
       // 2.4.4 (uzman UX9): sorunların cari kartındaki alanları — fatura formu "Cariyi Düzenle"de bunları zorunlu işaretler (denetimin kendisi değişmez).
-      partyFields: doc.profile === "KAGIT" ? [] : [...new Set(partyIssues(doc.party, { profile: doc.profile === "EARSIVFATURA" || doc.profile === "ESMM" ? "EARSIV" : "EFATURA", role: "buyer", payable: c2(doc.money.payable) }).map(issue => issue.field))],
+      partyFields: doc.profile === "KAGIT" ? [] : [...new Set(partyIssues(doc.party, { profile: buyerProfileOf(doc.profile), role: "buyer", payable: c2(doc.money.payable) }).map(issue => issue.field))],
       warnings: docWarnings(doc),
       sellerProblems: doc.profile === "KAGIT" || !doc.meta.own ? [] : sellerProblems(doc.profile, doc.settings),
       dueDays: Number(doc.account.dueDays) || Number(doc.settings.defaults.dueDays) || 0,
@@ -3029,7 +3042,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (row.eStatus === "draft") return "Bu belge EDM portalına taslak olarak yüklendi; silinmez. Önce İptal edin (e-Arşiv taslağı EDM'de de iptal edilir; e-Fatura taslağını EDM portalından silin).";
     if (traced) return `Bu belge entegratöre (EDM) iletildi (durum: ${E_STATES[row.eStatus] || row.eStatus}); numarası kullanıldı, silinmez. Gerekirse İptal edin: belge “İptal Edildi” olarak kalır.`;
     const planId = plan?.id || row.planId;
-    if (planId && store.get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ?", planId).n) return "Faturanın taksit kartında tahsilat var; silinmez. Önce tahsilatları silin ya da iade faturası kaydedin.";
+    if (planId && store.get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ?", planId).n) return row.kind === "smm" ? "Makbuzun taksit kartında tahsilat var; silinmez. Önce tahsilatları silin." : "Faturanın taksit kartında tahsilat var; silinmez. Önce tahsilatları silin ya da iade faturası kaydedin.";
     return "";
   }
   function deleteInvoice(user, id, { reason = "", force = {}, posOutcome = "refunded" } = {}) {
@@ -3564,8 +3577,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const paper = paperSeriesOf(row.kind, settings());
     // 2.4.4: kâğıt serisinin son VERİLMİŞ numarası (seriden ayrılmış numara dahil; lastIssued) — bırakma kaydındaki kuralla aynı.
     const readPaper = () => lastIssued(paper, year);
-    const lastPaper = row.eStatus === "waiting" ? (lastOf ? lastOf(`${paper}|${year}`, readPaper) : readPaper()) : null;
-    const withdrawOpen = row.eStatus === "waiting" && !(lastPaper && lastPaper.issueDate > row.issueDate);
+    // 2.4.4 (MM4): kâğıt makbuz yalnız arıza / bakım hâlinde düzenlenir (509 VUK GT V.7) — sıra sorununun çıkış yolu olarak önerilmez; makbuzda yalnız İptal Et.
+    const offerPaper = row.eStatus === "waiting" && row.kind !== "smm";
+    const lastPaper = offerPaper ? (lastOf ? lastOf(`${paper}|${year}`, readPaper) : readPaper()) : null;
+    const withdrawOpen = offerPaper && !(lastPaper && lastPaper.issueDate > row.issueDate);
     const head = `${series} serisinde son gönderilen belge ${last.number} ${dayText(last.issueDate)} tarihli; bu belge (${dayText(row.issueDate)}) daha eski tarihli olduğu için e-Belge olarak gönderilemez.`;
     return withdrawOpen
       ? `${head} “${paperNameOf(row.kind).button}” ile ${paperNameOf(row.kind).number} bırakın ya da İptal Et ile iptal edip bugünün tarihiyle yeniden kesin.`
@@ -3577,7 +3592,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   //   buyer-is-efatura  alıcı e-Fatura mükellefi; numarasız e-Arşiv belge bu seride hiç gönderilemez (İptal Et, yeniden kes: e-Fatura).
   // Düzeltilebilir belge/alıcı bilgisi (buyer-incomplete, buyer-alias, einvoice-type-mix, einvoice-return-reference), bağlantı, oturum ve ayar
   // hataları GEÇİCİDİR: belge düzeltilince AYNI seride numara alır, daha yeni belge önüne geçmemeli (B1).
-  const PERMANENT_SEND_CODES = new Set(["chronology", "buyer-is-efatura"]);
+  //   einvoice-paper-receipt  kâğıt makbuz olarak bırakılmış makbuz (MM4 alt kararı; paperReceiptBlockOf).
+  const PERMANENT_SEND_CODES = new Set(["chronology", "buyer-is-efatura", "einvoice-paper-receipt"]);
   // Bağlantı / entegratör hesabı hatası bütün belgelerde aynı düşer: Tümünü Gönder ilk görüldüğünde durur, kalanlara numara verilmez (BİLGİ, r7).
   // integrator-reference (2.4.4 madde 22): entegratör belgeyi başka numarayla kaydetti — kendi numarasını veriyorsa kalan belgeler de ayrışırdı.
   const TURN_STOP_CODES = new Set(["integrator-unreachable", "integrator-url", "integrator-credentials", "integrator-login", "integrator-reference"]);
@@ -3697,6 +3713,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (row.status !== "issued" || !["waiting", "withdrawn"].includes(row.eStatus)) return null;
       // O2: Tümünü Gönder'in seçtiği belge sonradan Listeden Silindiyse (Müşteri Fişi) e-Belge olarak gönderilmez.
       if (listedOnly && row.eStatus === "withdrawn") throw new HttpError(409, withdrawnText(row.kind), { code: "einvoice-withdrawn" });
+      const paper = paperReceiptBlockOf(row);
+      if (paper) throw new HttpError(409, paper, { code: "einvoice-paper-receipt" });
       const block = sendBlockOf(row);
       if (block) throw new HttpError(409, block, { code: "chronology" });
       const buyer = buyerBlockOf(row);
@@ -3730,7 +3748,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   function preflight(doc, s) {
     const seller = sellerProblems(doc.profile, s);
     if (seller.length) throw new HttpError(409, `Firma bilgisi eksik (Fatura Ayarları): ${seller.join(" ")}`, { code: "seller-incomplete", problems: seller });
-    const buyer = partyProblems(doc.party, { profile: doc.profile === "EARSIVFATURA" || doc.profile === "ESMM" ? "EARSIV" : "EFATURA", role: "buyer", payable: doc.tryPayable });
+    const buyer = partyProblems(doc.party, { profile: buyerProfileOf(doc.profile), role: "buyer", payable: doc.tryPayable });
     if (buyer.length) throw new HttpError(409, `Alıcı bilgisi eksik: ${buyer.join(" ")}`, { code: "buyer-incomplete", problems: buyer });
     const ret = [...returnProblems(doc.profile, doc.kind, doc.returnRef || doc.originalNumber, doc.originalNumber), ...returnRefShape(doc)];
     if (ret.length) throw new HttpError(409, ret.join(" "), { code: "einvoice-return-reference", problems: ret });
@@ -3837,6 +3855,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const row = invoiceRow(id);
       if (row.status === "issued" && !E_SENDABLE.has(row.eStatus || "none")) throw new HttpError(409, `Bu belge zaten entegratöre iletildi (durum: ${E_STATES[row.eStatus] || row.eStatus}). Sonucu Durum Sorgula ile alın.`, { code: "einvoice-already-sent" });
       if (listedOnly && row.status === "issued" && row.eStatus === "withdrawn") throw new HttpError(409, withdrawnText(row.kind), { code: "einvoice-withdrawn" });
+      const paper = paperReceiptBlockOf(row);
+      if (paper) throw new HttpError(409, paper, { code: "einvoice-paper-receipt" });
       const buyer = buyerBlockOf(row);
       if (buyer) throw new HttpError(409, buyer, { code: "buyer-is-efatura" });
       // Tümünü Gönder (listedOnly) eskiden yeniye gider; O1 orada yalnız numberForSend'in işleminde denetlenir (her belgede bir sorgu: 10.000
@@ -4063,7 +4083,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // (e_at) değişmez: taslağın eskiliği ona bakar.
   // Dar kontrol 2.4.3 (D2): başka oturumun işi (gönderiliyor / gönderildi), sıra beklemesi ve listeden silinme belgenin e-Belge iletisine yazılmaz
   // (gönderilmiş belgenin iletisi "zaten iletildi" hatasıyla eziliyordu).
-  const NOT_NOTED = new Set(["einvoice-already-sent", "einvoice-sending", "einvoice-order", "einvoice-withdrawn"]);
+  const NOT_NOTED = new Set(["einvoice-already-sent", "einvoice-sending", "einvoice-order", "einvoice-withdrawn", "einvoice-paper-receipt"]);
   const released = error => Boolean(error?.extra?.released || error?.released);
   function noteSendFailure(user, id, error) {
     if (NOT_NOTED.has(error?.extra?.code || error?.code || "") || released(error)) return;

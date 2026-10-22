@@ -1,7 +1,8 @@
 // 2.4.4 (karar 22.10.2026, baş mimar; "en yaygın ve doğru uygulama"): verilmiş kâğıt / fiş numarası BİR DAHA KULLANILMAZ. Yaygın muhasebe programlarında belge
 // numarası tekildir, seride boşluk kalabilir (VUK müteselsil sıra). "Müşteri Fişi / Kâğıt Makbuz Olarak Bırak" ile Müşteri Fişi (FIS) ya da kâğıt makbuz (SMM)
 // serisinden numara almış belge sonra e-Belge olarak gönderilse de o numara seride "kullanılmış" sayılır; sıradaki numara serinin o güne dek verilmiş EN BÜYÜK
-// numarasından (izdeki / Kâğıt Fatura No'ya taşınan dahil) sonra gelir. Bırakılmış belgenin yeniden gönderimi açık kalır (değişmez).
+// numarasından (izdeki / Kâğıt Fatura No'ya taşınan dahil) sonra gelir. Bırakılmış belgenin yeniden gönderimi açık kalır (değişmez) — kâğıt makbuz HARİÇ:
+// 2.4.4 MM4 alt kararıyla kâğıt makbuz olarak bırakılan makbuz e-SMM olarak gönderilmez, numarası seride kalır.
 // Kök neden (7502485): numberForSend bırakılmış belgeyi e-Belge serisine taşır (numara Kâğıt Fatura No'ya — o alan boşsa); nextNumber yalnız seride DURAN
 // belgelerin MAX(seq)'ini sayar → boşalan numara sıradaki belgeye yeniden verilir (SMM2026000000001 / FIS2026000000001 iki belgede).
 //
@@ -116,10 +117,13 @@ describe("Numara tekil: bırakılıp e-Belge olarak gönderilen belgenin kâğı
     assert.equal(ctx.holders(fis(1)).length, 1, JSON.stringify(ctx.holders(fis(1))));
   });
 
-  test("T1 kâğıt makbuz (SMM): e-SMM makbuzu A bırakıldı SMM…001 → gönderildi (TES); B bırakılınca SMM…002 alır", async () => {
-    const a = await ctx.departed(() => ctx.makbuz(), "makbuz A");
-    assert.equal(a.paperNumber, smm(1));
-    assert.match(a.sent.number, /^TES2026\d{9}$/);
+  test("T1 kâğıt makbuz (SMM): e-SMM makbuzu A bırakıldı SMM…001 → e-SMM gönderimi reddedilir (MM4 alt kararı; numara seride kalır); B bırakılınca SMM…002 alır", async () => {
+    const a = await ctx.must("makbuz A kayıt", ctx.makbuz());
+    const leftA = await ctx.must("makbuz A bırak", ctx.withdraw(a.id));
+    assert.equal(leftA.number, smm(1));
+    const sentA = await ctx.send(a.id);
+    assert.equal(sentA.status, 409, JSON.stringify(sentA.data));
+    assert.equal(sentA.data.code, "einvoice-paper-receipt");
     const b = await ctx.must("makbuz B kayıt", ctx.makbuz());
     const left = await ctx.must("makbuz B bırak", ctx.withdraw(b.id));
     assert.equal(left.number, smm(2), `B'nin kâğıt makbuz numarası: ${left.number}`);

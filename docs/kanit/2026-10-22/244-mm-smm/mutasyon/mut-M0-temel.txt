@@ -1,0 +1,578 @@
+TAP version 13
+# (node:18668) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: e-SMM açık: makbuz ESmmEDM.svc'den gider; e-Arşiv e-Fatura servisinden (N2, N3, N10, N13, N15)
+    # Subtest: N2: Kaydet ve Gönder — makbuz ESMM + TES numarası; giriş ve gönderim e-SMM servisine, e-Fatura servisine HİÇBİR istek yok; EDM'deki makbuz aynı numara/ETTN
+    ok 1 - N2: Kaydet ve Gönder — makbuz ESMM + TES numarası; giriş ve gönderim e-SMM servisine, e-Fatura servisine HİÇBİR istek yok; EDM'deki makbuz aynı numara/ETTN
+      ---
+      duration_ms: 122.048637
+      type: 'test'
+      ...
+    # Subtest: N2: e-SMM girişi reddedilirken (e-Fatura oturumu taze) numara VERİLMEZ — erişim/giriş denetimi belgenin servisinde (Kaydet ve Gönder ve Tümünü Gönder)
+    ok 2 - N2: e-SMM girişi reddedilirken (e-Fatura oturumu taze) numara VERİLMEZ — erişim/giriş denetimi belgenin servisinde (Kaydet ve Gönder ve Tümünü Gönder)
+      ---
+      duration_ms: 156.620618
+      type: 'test'
+      ...
+    # Subtest: N10: Durum Sorgula, Resmî Görüntü ve İptal Et e-SMM servisinden (GetSMMStatus, GetSMM, CancelSMM); e-Fatura servisine istek yok; makbuz programda iptal
+    ok 3 - N10: Durum Sorgula, Resmî Görüntü ve İptal Et e-SMM servisinden (GetSMMStatus, GetSMM, CancelSMM); e-Fatura servisine istek yok; makbuz programda iptal
+      ---
+      duration_ms: 66.849631
+      type: 'test'
+      ...
+    # Subtest: N3: e-Arşiv belgesi e-Fatura servisinden gider; e-SMM servisine hiçbir istek gitmez; seriler ayrı (TEA ↔ TES)
+    ok 4 - N3: e-Arşiv belgesi e-Fatura servisinden gider; e-SMM servisine hiçbir istek gitmez; seriler ayrı (TEA ↔ TES)
+      ---
+      duration_ms: 108.213532
+      type: 'test'
+      ...
+    # Subtest: N13: portala taslak ayarı açıkken de makbuz doğrudan gönderilir (taslak yolu yok); /e-draft ağa çıkmadan reddedilir, belge belirsize düşmez
+    ok 5 - N13: portala taslak ayarı açıkken de makbuz doğrudan gönderilir (taslak yolu yok); /e-draft ağa çıkmadan reddedilir, belge belirsize düşmez
+      ---
+      duration_ms: 122.53678
+      type: 'test'
+      ...
+    # Subtest: N15: Bağlantıyı Test Et e-SMM kullanıcısında e-SMM servisini de dener; e-SMM girişi düşerse sonuç başarısız ve nedeni söylenir
+    ok 6 - N15: Bağlantıyı Test Et e-SMM kullanıcısında e-SMM servisini de dener; e-SMM girişi düşerse sonuç başarısız ve nedeni söylenir
+      ---
+      duration_ms: 84.848387
+      type: 'test'
+      ...
+    1..6
+ok 1 - e-SMM açık: makbuz ESmmEDM.svc'den gider; e-Arşiv e-Fatura servisinden (N2, N3, N10, N13, N15)
+  ---
+  duration_ms: 1267.184561
+  type: 'suite'
+  ...
+# Subtest: e-SMM: numara, seri ve kronoloji (N4, N5, N14)
+    # Subtest: N4/N5: Kes, Sonra Gönder → numarasız bekler; kayıtta O1 (daha eski bekleyen makbuz varken yenisi numara almaz); Tümünü Gönder tarih sırasıyla TES, e-Arşiv TEA ayrı sayar
+    ok 1 - N4/N5: Kes, Sonra Gönder → numarasız bekler; kayıtta O1 (daha eski bekleyen makbuz varken yenisi numara almaz); Tümünü Gönder tarih sırasıyla TES, e-Arşiv TEA ayrı sayar
+      ---
+      duration_ms: 383.40439
+      type: 'test'
+      ...
+    # Subtest: N5: seride daha yeni numara verilmişken daha eski tarihli makbuz e-SMM olarak gönderilmez (kalıcı kronoloji engeli) ve daha eski tarihli yeni makbuz kaydedilmez; e-SMM servisine gönderim yok
+    ok 2 - N5: seride daha yeni numara verilmişken daha eski tarihli makbuz e-SMM olarak gönderilmez (kalıcı kronoloji engeli) ve daha eski tarihli yeni makbuz kaydedilmez; e-SMM servisine gönderim yok
+      ---
+      duration_ms: 36.227469
+      type: 'test'
+      ...
+    # Subtest: N14: Kâğıt Makbuz Olarak Bırakılmış makbuz e-SMM olarak gönderilmez — kartta Gönder yok, nedeni yazar; Gönder 409, EDM'ye istek yok
+    ok 3 - N14: Kâğıt Makbuz Olarak Bırakılmış makbuz e-SMM olarak gönderilmez — kartta Gönder yok, nedeni yazar; Gönder 409, EDM'ye istek yok
+      ---
+      duration_ms: 60.862204
+      type: 'test'
+      ...
+    1..3
+ok 2 - e-SMM: numara, seri ve kronoloji (N4, N5, N14)
+  ---
+  duration_ms: 921.205651
+  type: 'suite'
+  ...
+# Subtest: e-SMM: Kâğıt Makbuz Olarak Bırak — kâğıt makbuz serisi (SMM), fatura Müşteri Fişi (FIS) kalır
+    # Subtest: bırakılan e-SMM makbuzu kâğıt makbuz serisinden (SMM) numara alır, FIS serisinden değil; satış faturası Müşteri Fişi (FIS) kalır
+    ok 1 - bırakılan e-SMM makbuzu kâğıt makbuz serisinden (SMM) numara alır, FIS serisinden değil; satış faturası Müşteri Fişi (FIS) kalır
+      ---
+      duration_ms: 108.323538
+      type: 'test'
+      ...
+    # Subtest: kâğıt makbuz serisinde numara–tarih sırası: serinin son makbuzundan eski tarihli makbuz bırakılamaz (FIS'te fiş olsa da)
+    ok 2 - kâğıt makbuz serisinde numara–tarih sırası: serinin son makbuzundan eski tarihli makbuz bırakılamaz (FIS'te fiş olsa da)
+      ---
+      duration_ms: 63.001683
+      type: 'test'
+      ...
+    # Subtest: gönderilemeyen makbuzun iletisi Müşteri Fişi / kâğıt makbuz yolunu önermez, yalnız İptal Et der (MM4)
+    ok 3 - gönderilemeyen makbuzun iletisi Müşteri Fişi / kâğıt makbuz yolunu önermez, yalnız İptal Et der (MM4)
+      ---
+      duration_ms: 124.590269
+      type: 'test'
+      ...
+    # Subtest: kâğıt makbuz olarak bırakılan makbuz e-SMM olarak gönderilmez (MM4 alt kararı); faturada bırakılan Müşteri Fişi yine e-Belge olarak gider
+    ok 4 - kâğıt makbuz olarak bırakılan makbuz e-SMM olarak gönderilmez (MM4 alt kararı); faturada bırakılan Müşteri Fişi yine e-Belge olarak gider
+      ---
+      duration_ms: 98.229738
+      type: 'test'
+      ...
+    1..4
+ok 3 - e-SMM: Kâğıt Makbuz Olarak Bırak — kâğıt makbuz serisi (SMM), fatura Müşteri Fişi (FIS) kalır
+  ---
+  duration_ms: 885.272992
+  type: 'suite'
+  ...
+# Subtest: e-SMM: kopma, belirsiz gönderim, başka numara, iki oturum, iptal süresi (N6, N7, N8, N9, N10)
+    # Subtest: N8: bağlantı hiç kurulamadı (gönderim isteği EDM'ye ulaşmadı) → kayıtta verilen numara geri bırakılır, makbuz numarasız Gönderilecekler'de; sonra aynı numarayla gider
+    ok 1 - N8: bağlantı hiç kurulamadı (gönderim isteği EDM'ye ulaşmadı) → kayıtta verilen numara geri bırakılır, makbuz numarasız Gönderilecekler'de; sonra aynı numarayla gider
+      ---
+      duration_ms: 181.96022
+      type: 'test'
+      ...
+    # Subtest: N7: EDM makbuzu aldı, yanıt gelmeden bağlantı koptu → Sonucu Belirsiz (numara korunur, iptal kapalı); yeniden Gönder önce GetSMMStatus sorar, makbuz ikinci kez GİTMEZ
+    ok 2 - N7: EDM makbuzu aldı, yanıt gelmeden bağlantı koptu → Sonucu Belirsiz (numara korunur, iptal kapalı); yeniden Gönder önce GetSMMStatus sorar, makbuz ikinci kez GİTMEZ
+      ---
+      duration_ms: 82.821506
+      type: 'test'
+      ...
+    # Subtest: N7: belirsiz makbuz EDM'de YOKSA (11017 "SMM bulunamadı" — gerçek EDM test ortamında doğrulandı, madde 24, 22.10.2026) Durum Sorgula temizler; Gönder aynı numarayla BİR kez gönderir (e-Arşiv ile aynı)
+    ok 3 - N7: belirsiz makbuz EDM'de YOKSA (11017 "SMM bulunamadı" — gerçek EDM test ortamında doğrulandı, madde 24, 22.10.2026) Durum Sorgula temizler; Gönder aynı numarayla BİR kez gönderir (e-Arşiv ile aynı)
+      ---
+      duration_ms: 144.875106
+      type: 'test'
+      ...
+    # Subtest: N9: EDM makbuzu başka numarayla kaydederse sessizce 'gönderildi' denmez — hata, ileti farkı söyler; durum yazılır (iptal açık); Tümünü Gönder durur, kalan makbuza numara verilmez
+    ok 4 - N9: EDM makbuzu başka numarayla kaydederse sessizce 'gönderildi' denmez — hata, ileti farkı söyler; durum yazılır (iptal açık); Tümünü Gönder durur, kalan makbuza numara verilmez
+      ---
+      duration_ms: 144.236114
+      type: 'test'
+      ...
+    # Subtest: N6: iki oturum aynı makbuzu aynı anda gönderir → EDM'ye bir kez gider
+    ok 5 - N6: iki oturum aynı makbuzu aynı anda gönderir → EDM'ye bir kez gider
+      ---
+      duration_ms: 160.814321
+      type: 'test'
+      ...
+    # Subtest: N10: iletimden 8 gün sonra (9. gün) gönderilmiş e-SMM iptal edilmez; EDM'ye iptal isteği gitmez
+    ok 6 - N10: iletimden 8 gün sonra (9. gün) gönderilmiş e-SMM iptal edilmez; EDM'ye iptal isteği gitmez
+      ---
+      duration_ms: 48.407351
+      type: 'test'
+      ...
+    1..6
+ok 4 - e-SMM: kopma, belirsiz gönderim, başka numara, iki oturum, iptal süresi (N6, N7, N8, N9, N10)
+  ---
+  duration_ms: 1373.263748
+  type: 'suite'
+  ...
+# Subtest: e-SMM: 002 şirketi kendi ayarıyla ve servisinden gönderir (N11)
+    # Subtest: 002'nin makbuzu 002'nin entegratör ayarıyla e-SMM servisine gider; 001'in Gönderilecekler'i ve numarası etkilenmez
+    ok 1 - 002'nin makbuzu 002'nin entegratör ayarıyla e-SMM servisine gider; 001'in Gönderilecekler'i ve numarası etkilenmez
+      ---
+      duration_ms: 553.339493
+      type: 'test'
+      ...
+    1..1
+ok 5 - e-SMM: 002 şirketi kendi ayarıyla ve servisinden gönderir (N11)
+  ---
+  duration_ms: 1056.660537
+  type: 'suite'
+  ...
+# Subtest: e-SMM açık kurulumda e-SMM kullanıcısı OLMAYAN firma: kâğıt makbuz gönderilmez (N1, N4)
+    # Subtest: "e-SMM kullanıcısıyım" işaretsiz: makbuz kâğıt (SMM serisi); Gönderilecekler'de değil, gönder düğmesi yok, Kaydet ve Gönder entegratöre gitmez
+    ok 1 - "e-SMM kullanıcısıyım" işaretsiz: makbuz kâğıt (SMM serisi); Gönderilecekler'de değil, gönder düğmesi yok, Kaydet ve Gönder entegratöre gitmez
+      ---
+      duration_ms: 62.705812
+      type: 'test'
+      ...
+    1..1
+ok 6 - e-SMM açık kurulumda e-SMM kullanıcısı OLMAYAN firma: kâğıt makbuz gönderilmez (N1, N4)
+  ---
+  duration_ms: 483.797654
+  type: 'suite'
+  ...
+# Subtest: e-SMM KAPALI (üretim varsayılanı): makbuz hiçbir gönderim yoluna girmez (N1)
+    # Subtest: kâğıt SMM: Gönderilecekler'de değil, kartta gönder / durum / resmî görüntü yok; Kaydet ve Gönder kâğıt makbuzu göndermez; meta smm.send false
+    ok 1 - kâğıt SMM: Gönderilecekler'de değil, kartta gönder / durum / resmî görüntü yok; Kaydet ve Gönder kâğıt makbuzu göndermez; meta smm.send false
+      ---
+      duration_ms: 32.857973
+      type: 'test'
+      ...
+    # Subtest: bayrak kapalıyken veri tabanında kalmış numaralı ESMM makbuzu (2.4.0 verisi gibi) Gönderilecekler'e girmez, gönderilemez, Tümünü Gönder'e girmez
+    ok 2 - bayrak kapalıyken veri tabanında kalmış numaralı ESMM makbuzu (2.4.0 verisi gibi) Gönderilecekler'e girmez, gönderilemez, Tümünü Gönder'e girmez
+      ---
+      duration_ms: 30.239402
+      type: 'test'
+      ...
+    1..2
+ok 7 - e-SMM KAPALI (üretim varsayılanı): makbuz hiçbir gönderim yoluna girmez (N1)
+  ---
+  duration_ms: 436.661413
+  type: 'suite'
+  ...
+# (node:18669) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: e-SMM UBL: GİB kuralından elle hesaplanan dip toplamlar (kâhin)
+    # Subtest: A — 1.000 TL brüt, stopaj %20, KDV %20: stopaj 200, net ücret 800, KDV 200, tahsil edilen KDV 200, net alınan 1.000
+    ok 1 - A — 1.000 TL brüt, stopaj %20, KDV %20: stopaj 200, net ücret 800, KDV 200, tahsil edilen KDV 200, net alınan 1.000
+      ---
+      duration_ms: 2.1591
+      type: 'test'
+      ...
+    # Subtest: B — 2 × 100,03: belge stopajı matrah × oran = 40,01 (kalem yuvarlamasıyla 40,02 DEĞİL); kalemlere 20,01 + 20,00; KDV kalem başına 20,01 + 20,01
+    ok 2 - B — 2 × 100,03: belge stopajı matrah × oran = 40,01 (kalem yuvarlamasıyla 40,02 DEĞİL); kalemlere 20,01 + 20,00; KDV kalem başına 20,01 + 20,01
+      ---
+      duration_ms: 0.492328
+      type: 'test'
+      ...
+    # Subtest: C — kişi alıcı, stopaj yok: 0003 satırı yazılmaz; net ücret = brüt 500, KDV 100, net alınan 600
+    ok 3 - C — kişi alıcı, stopaj yok: 0003 satırı yazılmaz; net ücret = brüt 500, KDV 100, net alınan 600
+      ---
+      duration_ms: 0.266628
+      type: 'test'
+      ...
+    # Subtest: D — KDV tevkifatı 5/10: tahsil edilen KDV 200 − 100 = 100; net alınan 800 + 100 = 900; tevkifat ayrı satırda
+    ok 4 - D — KDV tevkifatı 5/10: tahsil edilen KDV 200 − 100 = 100; net alınan 800 + 100 = 900; tevkifat ayrı satırda
+      ---
+      duration_ms: 0.265721
+      type: 'test'
+      ...
+    # Subtest: E — elle %15 stopaj, iki KDV oranı: stopaj (1.500 + 333,33) × %15 = 274,9995 → 275,00; KDV 300 + 33,33; net alınan 1.891,66
+    ok 5 - E — elle %15 stopaj, iki KDV oranı: stopaj (1.500 + 333,33) × %15 = 274,9995 → 275,00; KDV 300 + 33,33; net alınan 1.891,66
+      ---
+      duration_ms: 0.320404
+      type: 'test'
+      ...
+    1..5
+ok 8 - e-SMM UBL: GİB kuralından elle hesaplanan dip toplamlar (kâhin)
+  ---
+  duration_ms: 487.980815
+  type: 'suite'
+  ...
+# Subtest: e-SMM UBL: program tutarlarıyla aynı, yapı EDM'nin e-SMM örneğiyle aynı, UBL 2.1 şemasına uygun
+    # Subtest: XML tutarları programın kaydettiği makbuzla kuruşu kuruşuna aynı; kalem stopajları toplamı = belge stopajı; Σ kalem fiyatı = net alınan
+    ok 1 - XML tutarları programın kaydettiği makbuzla kuruşu kuruşuna aynı; kalem stopajları toplamı = belge stopajı; Σ kalem fiyatı = net alınan
+      ---
+      duration_ms: 0.684792
+      type: 'test'
+      ...
+    # Subtest: yapı: EDM e-SMM örneğindeki sıra ve öğeler (TaxTotal → 0003 sıra 1 + 0015 sıra 2; dip toplam dörtlüsü; kalemde NIU, vergi, ad, fiyat)
+    ok 2 - yapı: EDM e-SMM örneğindeki sıra ve öğeler (TaxTotal → 0003 sıra 1 + 0015 sıra 2; dip toplam dörtlüsü; kalemde NIU, vergi, ad, fiyat)
+      ---
+      duration_ms: 0.344504
+      type: 'test'
+      ...
+    # Subtest: taraf adresi YALNIZ BuildingName'de (EDM e-SMM örneği): GİB eArsivVeri.xsd adresinde caddeSokak zorunlu ilk öğe; StreetName ile şema hatası, ikisi birlikte adres iki kez
+    ok 3 - taraf adresi YALNIZ BuildingName'de (EDM e-SMM örneği): GİB eArsivVeri.xsd adresinde caddeSokak zorunlu ilk öğe; StreetName ile şema hatası, ikisi birlikte adres iki kez
+      ---
+      duration_ms: 0.504277
+      type: 'test'
+      ...
+    # Subtest: stopaj artık Not değil (vergi satırında); programın fatura görünüm şablonu ve karekod gömülmez; gönderim şekli alıcının e-postasına göre
+    ok 4 - stopaj artık Not değil (vergi satırında); programın fatura görünüm şablonu ve karekod gömülmez; gönderim şekli alıcının e-postasına göre
+      ---
+      duration_ms: 0.52709
+      type: 'test'
+      ...
+    # Subtest: UBL 2.1 XSD'sine (OASIS) ve GİB UBL-TR 1.2.1 XSD'sine (EDM e-SMM'yi bununla denetler; madde 24) uygun — GİB şematronu e-SMM'yi tanımlamaz (ESMM GİB UBL-TR profili değil)
+    ok 5 - UBL 2.1 XSD'sine (OASIS) ve GİB UBL-TR 1.2.1 XSD'sine (EDM e-SMM'yi bununla denetler; madde 24) uygun — GİB şematronu e-SMM'yi tanımlamaz (ESMM GİB UBL-TR profili değil)
+      ---
+      duration_ms: 3029.695358
+      type: 'test'
+      ...
+    1..5
+ok 9 - e-SMM UBL: program tutarlarıyla aynı, yapı EDM'nin e-SMM örneğiyle aynı, UBL 2.1 şemasına uygun
+  ---
+  duration_ms: 3032.431629
+  type: 'suite'
+  ...
+# Subtest: e-SMM dışı belgeler değişmedi
+    # Subtest: kâğıt SMM (e-SMM işareti kapalı): stopaj Not'ta, 0003 satırı yok, dip toplamlar e-Fatura anlamında
+    ok 1 - kâğıt SMM (e-SMM işareti kapalı): stopaj Not'ta, 0003 satırı yok, dip toplamlar e-Fatura anlamında
+      ---
+      duration_ms: 124.293036
+      type: 'test'
+      ...
+    1..1
+ok 10 - e-SMM dışı belgeler değişmedi
+  ---
+  duration_ms: 127.373842
+  type: 'suite'
+  ...
+# Subtest: e-SMM, VKN'li düzenleyen (ör. adi ortaklık)
+    # Subtest: unvan yalnız PartyName'de, Person YOK (EDM Teknik Operasyon yanıtı 22.10.2026: tüzel kişide unvan cac:PartyName'den, şahısta ad-soyad Person'dan); TCKN'li düzenleyende Person aynen
+    ok 1 - unvan yalnız PartyName'de, Person YOK (EDM Teknik Operasyon yanıtı 22.10.2026: tüzel kişide unvan cac:PartyName'den, şahısta ad-soyad Person'dan); TCKN'li düzenleyende Person aynen
+      ---
+      duration_ms: 1344.748958
+      type: 'test'
+      ...
+    1..1
+ok 11 - e-SMM, VKN'li düzenleyen (ör. adi ortaklık)
+  ---
+  duration_ms: 1345.054919
+  type: 'suite'
+  ...
+# Subtest: Stopajın kalemlere dağıtımı (en büyük kalan)
+    # Subtest: Σ pay = belge stopajı; her pay tam payın aşağı yuvarlaması ya da bir fazlası; aynı girdi aynı sonuç
+    ok 1 - Σ pay = belge stopajı; her pay tam payın aşağı yuvarlaması ya da bir fazlası; aynı girdi aynı sonuç
+      ---
+      duration_ms: 163.494426
+      type: 'test'
+      ...
+    # Subtest: kayıtlı tutarlar GİB kimliğini (Net Alınan = Net Ücret + Tahsil Edilen KDV) ya da kalem toplamlarını tutmazsa belge üretilmez
+    ok 2 - kayıtlı tutarlar GİB kimliğini (Net Alınan = Net Ücret + Tahsil Edilen KDV) ya da kalem toplamlarını tutmazsa belge üretilmez
+      ---
+      duration_ms: 0.79931
+      type: 'test'
+      ...
+    # Subtest: tutarsız girdide (kalan kuruş kalem sayısını aşar ya da eksi) belge üretilmez
+    ok 3 - tutarsız girdide (kalan kuruş kalem sayısını aşar ya da eksi) belge üretilmez
+      ---
+      duration_ms: 0.216328
+      type: 'test'
+      ...
+    1..3
+ok 12 - Stopajın kalemlere dağıtımı (en büyük kalan)
+  ---
+  duration_ms: 164.707986
+  type: 'suite'
+  ...
+# Subtest: fatura hesabı: program = bağımsız model
+    # Subtest: 30.000 rastgele fatura (KDV dahil/hariç, satır ve genel iskonto, tevkifat, stopaj, döviz)
+    ok 1 - 30.000 rastgele fatura (KDV dahil/hariç, satır ve genel iskonto, tevkifat, stopaj, döviz)
+      ---
+      duration_ms: 987.179589
+      type: 'test'
+      ...
+    1..1
+ok 13 - fatura hesabı: program = bağımsız model
+  ---
+  duration_ms: 988.33585
+  type: 'suite'
+  ...
+# (node:18695) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: MM10 — KDV kalem başına, stopaj belge düzeyinde (kural sabitlenir); kart, defter, UBL ve PDF aynı sayı
+    # Subtest: T1 2 × 100,03 (KDV %20, stopaj %20): KDV 40,02 (kalem), stopaj 40,01 (belge); ödenecek 200,07; 193 defterde 40,01; UBL 0003 40,01 (kalem 20,01 + 20,00), XSD temiz
+    ok 1 - T1 2 × 100,03 (KDV %20, stopaj %20): KDV 40,02 (kalem), stopaj 40,01 (belge); ödenecek 200,07; 193 defterde 40,01; UBL 0003 40,01 (kalem 20,01 + 20,00), XSD temiz
+      ---
+      duration_ms: 749.880062
+      type: 'test'
+      ...
+    # Subtest: T2 Netten Brüte çok kalemde kaydın kuralıyla (stopaj belge düzeyinde) çözer: kaydedilen makbuzun Net Ücreti yazılan tutara eşit
+    ok 2 - T2 Netten Brüte çok kalemde kaydın kuralıyla (stopaj belge düzeyinde) çözer: kaydedilen makbuzun Net Ücreti yazılan tutara eşit
+      ---
+      duration_ms: 106.895279
+      type: 'test'
+      ...
+    1..2
+ok 14 - MM10 — KDV kalem başına, stopaj belge düzeyinde (kural sabitlenir); kart, defter, UBL ve PDF aynı sayı
+  ---
+  duration_ms: 1510.572595
+  type: 'suite'
+  ...
+# Subtest: MM7 / MM11 / U4 — makbuz dili: GİB e-SMM adları, makbuzda iade yok; fatura aynen
+    # Subtest: T3 tevkifatlı e-SMM PDF'i: Makbuz No, Brüt Ücret 10.000, Gelir Vergisi Stopajı 2.000, Net Ücret 8.000, KDV 2.000, KDV Tevkifatı 1.800, Tahsil Edilen KDV 200, Tahsil Edilen 8.200; fatura dili yok
+    ok 1 - T3 tevkifatlı e-SMM PDF'i: Makbuz No, Brüt Ücret 10.000, Gelir Vergisi Stopajı 2.000, Net Ücret 8.000, KDV 2.000, KDV Tevkifatı 1.800, Tahsil Edilen KDV 200, Tahsil Edilen 8.200; fatura dili yok
+      ---
+      duration_ms: 154.650604
+      type: 'test'
+      ...
+    # Subtest: T4 komşu: satış faturası (e-Arşiv) PDF'i fatura dilinde kalır (Fatura No, Vergiler Dahil Toplam, Ödenecek Tutar, kalan vadeli)
+    ok 2 - T4 komşu: satış faturası (e-Arşiv) PDF'i fatura dilinde kalır (Fatura No, Vergiler Dahil Toplam, Ödenecek Tutar, kalan vadeli)
+      ---
+      duration_ms: 215.570767
+      type: 'test'
+      ...
+    # Subtest: T5 MM11: e-SMM'de kimlik iletisi e-SMM der (e-Arşiv değil); e-Arşiv'inki aynen
+    ok 3 - T5 MM11: e-SMM'de kimlik iletisi e-SMM der (e-Arşiv değil); e-Arşiv'inki aynen
+      ---
+      duration_ms: 28.48793
+      type: 'test'
+      ...
+    # Subtest: T5b U4: gönderilmiş makbuzun Düzenle nedeni iade önermez (makbuzdan iade belgesi olmaz, yol İptal Et); faturada iade önerisi aynen
+    ok 4 - T5b U4: gönderilmiş makbuzun Düzenle nedeni iade önermez (makbuzdan iade belgesi olmaz, yol İptal Et); faturada iade önerisi aynen
+      ---
+      duration_ms: 162.124825
+      type: 'test'
+      ...
+    1..4
+ok 15 - MM7 / MM11 / U4 — makbuz dili: GİB e-SMM adları, makbuzda iade yok; fatura aynen
+  ---
+  duration_ms: 1035.129452
+  type: 'suite'
+  ...
+# Subtest: MM4 + alt karar — kâğıt makbuz olarak bırakılan makbuz Serbest Meslek Makbuzu olarak basılır ve e-SMM olarak gönderilmez; Müşteri Fişi aynen
+    # Subtest: T6 bırakılan makbuzun PDF'i: SERBEST MESLEK MAKBUZU, Makbuz No SMM…, mali değeri yoktur YAZMAZ; faturada bırakılan belge MÜŞTERİ FİŞİ kalır
+    ok 1 - T6 bırakılan makbuzun PDF'i: SERBEST MESLEK MAKBUZU, Makbuz No SMM…, mali değeri yoktur YAZMAZ; faturada bırakılan belge MÜŞTERİ FİŞİ kalır
+      ---
+      duration_ms: 33.26613
+      type: 'test'
+      ...
+    # Subtest: T7 bırakılan makbuz e-SMM olarak gönderilmez: kartta Gönder yok ve nedeni yazar; tek Gönder 409 (EDM'ye istek yok); numara ve durum değişmez
+    ok 2 - T7 bırakılan makbuz e-SMM olarak gönderilmez: kartta Gönder yok ve nedeni yazar; tek Gönder 409 (EDM'ye istek yok); numara ve durum değişmez
+      ---
+      duration_ms: 7.219405
+      type: 'test'
+      ...
+    # Subtest: T8 Tümünü / Seçilenleri Gönder bırakılan makbuzu göndermez, seriyi bekletmez; Müşteri Fişi'nin yeniden gönderimi açık (değişmez)
+    ok 3 - T8 Tümünü / Seçilenleri Gönder bırakılan makbuzu göndermez, seriyi bekletmez; Müşteri Fişi'nin yeniden gönderimi açık (değişmez)
+      ---
+      duration_ms: 154.333797
+      type: 'test'
+      ...
+    1..3
+ok 16 - MM4 + alt karar — kâğıt makbuz olarak bırakılan makbuz Serbest Meslek Makbuzu olarak basılır ve e-SMM olarak gönderilmez; Müşteri Fişi aynen
+  ---
+  duration_ms: 860.313428
+  type: 'suite'
+  ...
+# Subtest: MM1 — yalnız metin: gerçek kişi alıcıda varsayılan stopaj değişmez
+    # Subtest: T9 gerçek kişi alıcı, oran boş → stopaj 0 (eski davranış); tüzel alıcı → %20
+    ok 1 - T9 gerçek kişi alıcı, oran boş → stopaj 0 (eski davranış); tüzel alıcı → %20
+      ---
+      duration_ms: 72.133363
+      type: 'test'
+      ...
+    1..1
+ok 17 - MM1 — yalnız metin: gerçek kişi alıcıda varsayılan stopaj değişmez
+  ---
+  duration_ms: 634.756811
+  type: 'suite'
+  ...
+# (node:18723) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Netten Brüte — kaydedilen makbuzun Net Ücreti yazılan tutardır (veri tabanından)
+    # Subtest: gerçek kişi alıcı, oran boş, KDV %20
+    ok 1 - gerçek kişi alıcı, oran boş, KDV %20
+      ---
+      duration_ms: 59.558657
+      type: 'test'
+      ...
+    # Subtest: nihai tüketici (kimliksiz kişi), oran boş
+    ok 2 - nihai tüketici (kimliksiz kişi), oran boş
+      ---
+      duration_ms: 25.728633
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, oran boş (%20), KDV %20
+    ok 3 - tüzel alıcı, oran boş (%20), KDV %20
+      ---
+      duration_ms: 29.895
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, KDV'siz kalem
+    ok 4 - tüzel alıcı, KDV'siz kalem
+      ---
+      duration_ms: 29.995159
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, Fiyatlar KDV Dahil
+    ok 5 - tüzel alıcı, Fiyatlar KDV Dahil
+      ---
+      duration_ms: 32.02741
+      type: 'test'
+      ...
+    # Subtest: gerçek kişi alıcı, Fiyatlar KDV Dahil
+    ok 6 - gerçek kişi alıcı, Fiyatlar KDV Dahil
+      ---
+      duration_ms: 31.61208
+      type: 'test'
+      ...
+    # Subtest: gerçek kişi alıcı, KDV dahil, KDV kuruşu matrahtan
+    ok 7 - gerçek kişi alıcı, KDV dahil, KDV kuruşu matrahtan
+      ---
+      duration_ms: 30.917988
+      type: 'test'
+      ...
+    # Subtest: gerçek kişi alıcı, oran elle %15
+    ok 8 - gerçek kişi alıcı, oran elle %15
+      ---
+      duration_ms: 27.39334
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, oran elle 0
+    ok 9 - tüzel alıcı, oran elle 0
+      ---
+      duration_ms: 21.229247
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, oran elle %17, KDV %10
+    ok 10 - tüzel alıcı, oran elle %17, KDV %10
+      ---
+      duration_ms: 22.72351
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, KDV tevkifatlı (602, 9/10)
+    ok 11 - tüzel alıcı, KDV tevkifatlı (602, 9/10)
+      ---
+      duration_ms: 40.304822
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, kuruşlu net
+    ok 12 - tüzel alıcı, kuruşlu net
+      ---
+      duration_ms: 34.200377
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, iki kalem (net makbuzun tamamı)
+    ok 13 - tüzel alıcı, iki kalem (net makbuzun tamamı)
+      ---
+      duration_ms: 27.561627
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, kalem iskontosu %10
+    ok 14 - tüzel alıcı, kalem iskontosu %10
+      ---
+      duration_ms: 23.983856
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, genel iskonto %10
+    ok 15 - tüzel alıcı, genel iskonto %10
+      ---
+      duration_ms: 23.595354
+      type: 'test'
+      ...
+    1..15
+ok 18 - Netten Brüte — kaydedilen makbuzun Net Ücreti yazılan tutardır (veri tabanından)
+  ---
+  duration_ms: 622.003907
+  type: 'suite'
+  ...
+# Subtest: Netten Brüte — reddedilen istekler
+    # Subtest: cari seçilmeden: neden yazılır
+    ok 1 - cari seçilmeden: neden yazılır
+      ---
+      duration_ms: 5.453877
+      type: 'test'
+      ...
+    # Subtest: net boş / sıfır / harf
+    ok 2 - net boş / sıfır / harf
+      ---
+      duration_ms: 9.423945
+      type: 'test'
+      ...
+    # Subtest: SMM dışında kullanılmaz
+    ok 3 - SMM dışında kullanılmaz
+      ---
+      duration_ms: 7.59985
+      type: 'test'
+      ...
+    # Subtest: öbür kalemlerin net ücreti hedefi aşıyorsa yazılmaz
+    ok 4 - öbür kalemlerin net ücreti hedefi aşıyorsa yazılmaz
+      ---
+      duration_ms: 3.750609
+      type: 'test'
+      ...
+    # Subtest: öbür kalemde tanınmayan tevkifat kodu: girdi hatası söylenir
+    ok 5 - öbür kalemde tanınmayan tevkifat kodu: girdi hatası söylenir
+      ---
+      duration_ms: 3.248487
+      type: 'test'
+      ...
+    1..5
+ok 19 - Netten Brüte — reddedilen istekler
+  ---
+  duration_ms: 29.955056
+  type: 'suite'
+  ...
+# Subtest: Netten Brüte — rastgele formlar (tohum 2026_1022)
+    # Subtest: 300 makbuz: Net Ücret = yazılan, oran = alıcı kuralı
+    ok 1 - 300 makbuz: Net Ücret = yazılan, oran = alıcı kuralı
+      ---
+      duration_ms: 7577.569502
+      type: 'test'
+      ...
+    1..1
+ok 20 - Netten Brüte — rastgele formlar (tohum 2026_1022)
+  ---
+  duration_ms: 7577.857504
+  type: 'suite'
+  ...
+1..20
+# tests 70
+# suites 20
+# pass 70
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14567.566374
