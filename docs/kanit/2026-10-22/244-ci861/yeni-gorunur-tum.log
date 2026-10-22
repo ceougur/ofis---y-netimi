@@ -1,0 +1,115 @@
+[pencere-zorla] kip gorunur 1500 ms, hedef bütün pencereler
+
+■ 1. Boş veri: Personel Raporu → kartlar sıfır, boş liste ipucu, sekmeler
+[pencere-zorla] "Personel Raporu": is-visible 1500 ms ertelendi
+[pencere-zorla] "Personel Raporu": is-visible geldi
+  ✓ pencere başlığı Personel Raporu
+  ✓ kartlar sıfır: {"salary":"₺0,00","registered":"0","active":"0","left":"0"}
+  ✓ kart adları: Toplam Maaş, Kayıtlı Personel, Aktif Çalışan, Ayrılan Personel
+  ✓ sekmeler Çalışanlar, Ayrılanlar, Performans Özeti (active,left,performance)
+  ✓ boş liste ipucu
+
+■ 2. + Yeni Personel: bütün alanlar insan hızında + Tab, fotoğraf; kayıttan sonra veri tabanı birebir
+[pencere-zorla] "Yeni Personel": is-visible 1500 ms ertelendi
+[pencere-zorla] "Yeni Personel": is-visible geldi
+  ✓ form başlığı Yeni Personel (en üstteki pencere)
+  ✓ fotoğraf ön izlemesi
+  ✓ veri tabanında 1 kart (1)
+  ✓ ad, doğum, TC, görev birebir
+  ✓ maaş 4500050 kuruş, banka, IBAN boşluksuz
+  ✓ işe giriş, ayrılış boş, izin 6 gün
+  ✓ e-posta, telefon, öğrenim, uzmanlık, adres birebir
+  ✓ fotoğraf JPEG ve ≤ 100 KB (2 KB)
+
+■ 3. Aynı adlı iki çalışan iki ayrı satır; kartlar sayılarla
+[pencere-zorla] "Yeni Personel": is-visible 1500 ms ertelendi
+[pencere-zorla] "Yeni Personel": is-visible 1500 ms ertelendi
+  ✓ iki Mehmet Kaya satırı (Ayşe Yılmaz ▣ | Mehmet Kaya | Mehmet Kaya)
+  ✓ veri tabanında 3 kart
+  ✓ kartlar: {"salary":"₺90.000,50","registered":"3","active":"3","left":"0"}
+  ✓ sekme sayıları 3 / 0
+  ✓ alt TOPLAM satırı: TOPLAM · 3 Personel₺90.000,50
+
+■ 4. Arama: ad, TC No, görev; uymayan arama ipucu; temizleyince hepsi
+  ✓ "ayşe" → Ayşe Yılmaz
+  ✓ TC No rakamlarıyla bulunur
+  ✓ görevle bulunur (Kurye)
+  ✓ "mehmet" → iki satır
+  ✓ uymayan arama ipucu
+  ✓ temizlenince üç satır
+
+■ 5. Kart: yalnız Personel Özeti; Yaş 35; fotoğraf; Evrak/Bordro/CV/İletişim yok
+[pencere-zorla] "Ayşe Yılmaz": is-visible 1500 ms ertelendi
+[pencere-zorla] "Ayşe Yılmaz": is-visible geldi
+  ✓ kart penceresi listenin üstünde (görünür, tıklanabilir)
+  ✓ görünüm: Personel Özeti
+  ✓ Yaş 35 (Doğum Tarihi 23.10.1990)
+  ✓ Evrak Listesi, Maaş Bordrosu, CV, İletişim sekmesi yok
+  ✓ fotoğraf kartta
+  ✓ IBAN dörtlü, TC, izin gün
+
+■ 6. Düzenle → İşten Ayrılış Tarihi → Ayrılanlar'a geçer; kartlar ve Toplam Maaş; tarih silinince döner
+[pencere-zorla] "Personel Kartını Düzenle": is-visible 1500 ms ertelendi
+  ✓ düzenlemede maaş kayıtlı değerle gelir
+  ✓ bildirim: Ayrılanlar'a geçti
+  ✓ Çalışanlar'da 2 satır, Ayşe yok (Mehmet Kaya | Mehmet Kaya)
+  ✓ kartlar: {"salary":"₺45.000,00","registered":"3","active":"2","left":"1"} (Toplam Maaş yalnız aktif)
+  ✓ Ayrılanlar'da Ayşe Yılmaz
+  ✓ Ayrılanlar'da ayrılış tarihi kolonu 30.09.2026
+  ✓ veri tabanında ayrılış tarihi
+[pencere-zorla] "Ayşe Yılmaz": is-visible 1500 ms ertelendi
+[pencere-zorla] "Personel Kartını Düzenle": is-visible 1500 ms ertelendi
+  ✓ tarih silinince Ayrılanlar boş
+  ✓ kartlar geri: {"salary":"₺90.000,50","registered":"3","active":"3","left":"0"}
+  ✓ Çalışanlar'da yine üç satır
+
+■ 7. Geçersiz TC No: ekranda hata, odak TC No alanında, kayıt yazılmaz
+[pencere-zorla] "Yeni Personel": is-visible 1500 ms ertelendi
+  ✓ hata: TC No geçersiz: denetim haneleri tutmuyor.
+  ✓ odak TC No alanında
+  ✓ kayıt yazılmadı (3)
+[pencere-zorla] "Kaydedilmemiş Değişiklik": is-visible 1500 ms ertelendi
+[pencere-zorla] "Yeni Personel": is-visible geldi
+[pencere-zorla] "Kaydedilmemiş Değişiklik": is-visible geldi
+  ✓ Kaydetmeden Kapat sorusu çıktı (formda kaydedilmemiş ad ve TC var)
+  · Kaydetmeden Kapat sorusu yanıtlandı (meşru: formda yazılmış, kaydedilmemiş ad ve TC var)
+
+■ Performans Özeti sekmesi (yönetici: reports.view) eski özet ile
+  ✓ Performans Özeti: Toplam Görev, Tamamlanan
+  ✓ Çalışanlar'a dönünce liste ve arama yerinde
+
+■ 8. Yetkisiz kullanıcı: düğme görünmez, API 403; görüntüleme verilince görür, düzenleyemez
+  ✓ personelde Personel Raporu düğmesi görünmez
+  ✓ API 403 (403)
+  ✓ görüntüleme verilince düğme görünür
+[pencere-zorla] "Personel Raporu": is-visible 1500 ms ertelendi
+[pencere-zorla] "Personel Raporu": is-visible geldi
+  ✓ üç çalışan görünür
+  ✓ + Yeni Personel yok
+  ✓ Performans Özeti sekmesi yok (reports.view yok)
+  ✓ kartta Düzenle / Sil yok
+[pencere-zorla] "Ayşe Yılmaz": is-visible 1500 ms ertelendi
+  ✓ yazma API 403 (403)
+
+■ 9. Değişiklik Geçmişi: alan adı var, değer yok
+  ✓ işlem türü ve alan adları görünür
+  ✓ TC, IBAN, maaş, ad, adres, e-posta değeri YOK
+
+■ 10. İleri tarihli ayrılış: bugün Ayrılacak notuyla Çalışanlar'da ve sayılır; ertesi gün kendiliğinden Ayrılanlar'a geçer
+[pencere-zorla] "Personel Raporu": is-visible 1500 ms ertelendi
+[pencere-zorla] "Personel Raporu": is-visible geldi
+[pencere-zorla] "Mehmet Kaya": is-visible 1500 ms ertelendi
+[pencere-zorla] "Mehmet Kaya": is-visible geldi
+[pencere-zorla] "Personel Kartını Düzenle": is-visible 1500 ms ertelendi
+  ✓ bildirim: o tarihe kadar Çalışanlar'da kalır
+  ✓ Çalışanlar'da 3 satır, Mehmet Kaya "Ayrılacak · 23.10.2026" (Ayşe Yılmaz ▣ | Mehmet Kaya Ayrılacak · 23.10.2026 | Mehmet Kaya)
+  ✓ kartlar: {"salary":"₺90.000,50","registered":"3","active":"3","left":"0"} (Ayrılacak sayılır)
+  ✓ veri tabanında ayrılış tarihi 2026-10-23
+[pencere-zorla] "Personel Raporu": is-visible 1500 ms ertelendi
+[pencere-zorla] "Personel Raporu": is-visible geldi
+  ✓ ertesi gün kartlar: {"salary":"₺70.000,50","registered":"3","active":"2","left":"1"}
+  ✓ Çalışanlar'da Ayrılacak kalmadı
+  ✓ Ayrılanlar'da Mehmet Kaya (Mehmet Kaya)
+  ✓ sayfa hatası yok
+
+✓ senaryo-personel-244: 64 geçti, 0 kaldı · depo /home/user/wt/ci861 · ekran görüntüleri /home/user/wt/ci861/test/e2e/artifacts/senaryo-personel-244

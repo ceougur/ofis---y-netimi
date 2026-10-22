@@ -219,6 +219,10 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
 38. KIRMIZININ NEDENİ OKUNUR. Kırmızı kanıt (ders 7) ancak başarısız denetimin iletisinde beklenen neden (iddia edilen davranışın yokluğu) görülünce sayılır;
     test yanlış öğeyi okuyorsa eski kodda da kırmızıdır ama kanıt değildir; yeni kodda yeşil görülmeden kırmızı tek başına sayılmaz. (22.10: Fatura Ayarları kaşe
     açıklaması e2e'si `[data-stamp-field] small` ile önizleme kutusundaki "Kaşe / imza yok" yazısını okudu; eski kodda "kırmızı", yeni kodda da kırmızı çıkınca görüldü.)
+39. PENCERE SEÇİCİSİ KONUMA VE KAREYE BAĞLANMAZ. En üstteki pencere `:last-of-type` ile seçilmez: pencereden sonra body'ye eklenen bir div (bildirim kabı, Hızlı
+    Arama paneli, açılır menü) onu boşa düşürür → `${MODAL}:nth-last-child(1 of ${MODAL})`. Pencere açılınca okuma, `is-visible`'ı içeren bir beklemeden sonra yapılır
+    (sınıf bir kare sonra gelir, içerik ondan önce hazırdır); beklenen soru `if (varsa)` ile atlanmaz, beklenir (ders 34). Zorla üretme: test/e2e/pencere-yaris-zorla.mjs.
+    (22.10: CI #861 senaryo-personel-244 12/23, yerelde 64/64; iki ön koşul da aynı imzayı verdi; öbür 33 e2e dosyasında aynı kalıp — iş listesi 7d.)
 ### Verimlilik (kullanıcı, 12.10.2026: "geçmişte yaptığın hatalardan aldığın dersleri göz önüne al; gereksiz zaman ve kullanım limitimi
 harcayacak işlemlerden uzak dur!")
 - Dersler 1–24 her işte uygulanır; ama kanıt için GEREKEN kadar koşulur, fazlası değil: geliştirme sırasında yalnız değişen alanın testleri;
