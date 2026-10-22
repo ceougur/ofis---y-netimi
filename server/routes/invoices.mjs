@@ -1172,10 +1172,16 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     // Sayfalı istekte ödeme durumu süzgeci, sıralama ve toplamlar hafif satırla (leanRow: shape() ile aynı değerler) yapılır; tam şekil
     // yalnız sayfadaki satırlar için kurulur (aşağıda). Sayfasız istek (PDF / Excel) eski yoldan: önce bütün satırlar şekillenir.
     let shaped;
+    // 2.4.4 (E6, müşteri isteği "seçilenlerden gönderilebilir olanların sayısıyla"): numarasız bekleyenin KALICI gönderim engeli (seride daha yeni
+    // numara / alıcı e-Fatura mükellefi) listede işaretlenir; ekranda "Seçilenleri Gönder (N)" sayısına girmez. Yalnız bekleyen satırlarda; seri
+    // başına son numara bir kez okunur (lastOf).
+    const lastCache = new Map();
+    const lastOf = (key, read) => (lastCache.has(key) ? lastCache.get(key) : lastCache.set(key, read()).get(key));
+    const eBlocked = row => edocEnabled && row.status === "issued" && row.eStatus === "waiting" && Boolean(sendBlockOf(row, lastOf) || buyerBlockOf(row));
     if (page) shaped = rows.map(row => leanRow(row, states.get(row.id), query.sort === "party"));
     else {
       const posCash = posCashSet(rows.filter(row => row.status === "issued").map(row => row.id));
-      shaped = rows.map(row => ({ ...shape(row, states.get(row.id)), posCash: posCash.has(row.id) }));
+      shaped = rows.map(row => ({ ...shape(row, states.get(row.id)), posCash: posCash.has(row.id), eBlocked: eBlocked(row) }));
     }
     if (query.pay) shaped = shaped.filter(row => (query.pay === "open" ? ["open", "partial", "overdue", "installment"].includes(row.payState) : query.pay === "unpaid" ? row.payState === "open" : row.payState === query.pay));
     const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
@@ -1191,7 +1197,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const chosen = shaped.slice(page.offset, page.offset + page.limit);
       const full = new Map(store.all(`${INVOICE_SQL} WHERE i.id IN (SELECT value FROM json_each(?))`, JSON.stringify(chosen.map(item => item.id))).map(row => [row.id, row]));
       const posCash = posCashSet(chosen.filter(item => item.status === "issued").map(item => item.id));
-      invoices = chosen.map(item => ({ ...shape(full.get(item.id), states.get(item.id)), posCash: posCash.has(item.id) }));
+      invoices = chosen.map(item => ({ ...shape(full.get(item.id), states.get(item.id)), posCash: posCash.has(item.id), eBlocked: eBlocked(full.get(item.id)) }));
     }
     // Toplamlar yalnız kesilmiş faturalardan (taslak ve iptal hariç); iade faturaları ters işaretle.
     const totals = { count: shaped.length, issued: 0, sale: 0, purchase: 0, net: 0, vat: 0, payable: 0, open: 0, overdue: 0 };
@@ -3716,6 +3722,15 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // dolunca durur — hangisi önce dolarsa; ulaşılmayan belge sayısı (remaining) döner, istemci kalan bitene / ilerleme durana dek yineler. (Önceden
   // bir istek 200 belgeyi gönderiyordu: gerçek EDM hızında ~37 sn+ — tarayıcı 30 sn'de "Sunucu zamanında yanıt vermedi" diyordu, sunucu arkada
   // sürüyordu.) Ağa çıkmadan bekletilen belge (sıra) sınıra sayılmaz. Seçili kimliklerle gönderim ({ ids }, en çok SEND_TURN) parçalanmaz.
+  // 2.4.4 (E6, müşteri isteği "Seçilenleri Gönder"): { only: [kimlikler] } Tümünü Gönder'in AYNI turunu yürür — aynı sıra, kalıcı engel, imleç,
+  // 20'lik parça / süre bütçesi, durma, belge kilidi, sonucu belirsiz önce sorulur — yalnız seçilen Gönderilecekler'le. e-Belge numarası seri + yıl
+  // içinde tarih sırasıyla verilir (GİB): seçilmemiş, daha eski tarihli, gönderilebilir numarasız bekleyen belge varken seçilen yenisi numara alırsa
+  // eski belge e-Belge olarak hiç gönderilemez. Bu yüzden turun İLK isteği hiçbir belgeyi göndermeden bunu sorar (409 einvoice-selection-older:
+  // eski belgeler ve kimlikleri; ekran "Onları da Ekle ve Gönder / Vazgeç" der) — sessiz atlama ya da yarım tur yok. { only, check: true } aynı
+  // denetimi gönderimsiz yapar (numara yok, entegratöre gidilmez). Eski { ids } biçimi (2.4.3 API'si) değişmedi; ekran kullanmaz.
+  // Gönderim sırasında başka oturum daha eski tarihli belge kaydederse (ön denetimden sonra) o belge "dahil değil" (outside) ile seriyi bekletir.
+  const SEND_SELECT_MAX = 5000;
+  const SEND_OLDER_SHOWN = 50;
   const SEND_TURN = 200;
   const SEND_CHUNK = 20;
   const sendOrder = (x, y) => `${x.issueDate || ""} ${x.issueTime || ""} ${x.createdAt || ""}`.localeCompare(`${y.issueDate || ""} ${y.issueTime || ""} ${y.createdAt || ""}`) || x.rn - y.rn;
@@ -3731,7 +3746,14 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const user = requireManage(req);
     requireEdoc();
     const body = await readJson(req);
-    const all = body.all === true;
+    // E6: { only } seçilenlerle tur (all ile birlikte gelse de yalnız seçilenler — fazlası gönderilmez); { all } Gönderilecekler'in tamamı.
+    const only = Array.isArray(body.only) ? [...new Set(body.only.map(value => text(value)).filter(Boolean))] : null;
+    if (only && !only.length) throw new HttpError(400, "Gönderilecek belge seçilmedi.", { code: "einvoice-selection-empty" });
+    if (only && only.length > SEND_SELECT_MAX) throw new HttpError(400, `Seçilenleri Gönder en çok ${SEND_SELECT_MAX.toLocaleString("tr-TR")} belgeyle çalışır; Gönderilecekler'in tamamı için Tümünü Gönder'i kullanın.`, { code: "einvoice-selection-large" });
+    const all = body.all === true && !only;
+    const check = Boolean(only) && body.check === true;
+    // Parçalı tur (imleç, parça / süre bütçesi): Tümünü Gönder ve Seçilenleri Gönder.
+    const turn = all || Boolean(only);
     const lastCache = new Map();
     const lastOf = (key, read) => (lastCache.has(key) ? lastCache.get(key) : lastCache.set(key, read()).get(key));
     const unnumberedSeries = row => {
@@ -3745,21 +3767,57 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     // Dar kontrol 2 (2.4.3, B1): tur bir İMLEÇLE ilerler. İmleç, önceki istekte ulaşılan son belgenin sıra anahtarıdır (sendOrder); istemci onu
     // sonraki isteğe geri verir. Bir turda her belge EN ÇOK BİR KEZ denenir: imleçten önceki belgeler (gönderilemeyen / reddedilen) bu turda yeniden
     // denenmez — önceden kuyruğun başındaki reddedilen belgeler her istekte yeniden gidip 20'lik parçayı dolduruyor, yeni belgeler hiç gitmiyordu.
-    const cursor = all ? cursorOf(body.after) : null;
+    const cursor = turn && !check ? cursorOf(body.after) : null;
     const held = new Map();
     const byId = new Map();
-    if (all) {
+    const onlySet = only ? new Set(only) : null;
+    // E6: seçilmemiş, gönderilebilir (kalıcı engelsiz) numarasız bekleyenler — eskiden yeniye; seri + yıl başına ilki "outside" (bekleten).
+    const outsideRows = [];
+    if (!all) {
+      const unselected = only ? id => !onlySet.has(id) : () => true;
+      for (const row of store.all(`SELECT ${SEND_COLS}, a.name AS accountName, i.party_json AS partyJson, a.id AS accountFound, a.tax_no AS accountTaxNo, a.e_invoice AS accountEInvoice FROM invoices i LEFT JOIN accounts a ON a.id = i.account_id WHERE i.status = 'issued' AND i.e_status = 'waiting'`).sort(sendOrder)) {
+        if (!unselected(row.id) || sendBlockOf(row, lastOf) || buyerBlockOf(row, row)) continue;
+        if (unnumberedSeries(row)) outsideRows.push(row);
+      }
+    }
+    if (turn) {
       const unsent = unsentSql();
       // B4: alıcı bilgisi (buyerBlockOf) aynı sorguda okunur — istek başına satır sayısı kadar ek sorgu yok (tur 20'lik parçalarla ilerler).
-      const rows = store.all(`SELECT ${SEND_COLS}, i.party_json AS partyJson, a.id AS accountFound, a.tax_no AS accountTaxNo, a.e_invoice AS accountEInvoice FROM invoices i LEFT JOIN accounts a ON a.id = i.account_id WHERE ${unsent.sql}`, ...unsent.args).sort(sendOrder);
+      const rows = store.all(`SELECT ${SEND_COLS}, i.party_json AS partyJson, a.id AS accountFound, a.tax_no AS accountTaxNo, a.e_invoice AS accountEInvoice FROM invoices i LEFT JOIN accounts a ON a.id = i.account_id WHERE ${unsent.sql}${only ? " AND i.id IN (SELECT value FROM json_each(?))" : ""}`, ...unsent.args, ...(only ? [JSON.stringify(only)] : [])).sort(sendOrder);
       const sendable = [];
       const passed = [];
+      const permanent = [];
       for (const row of rows) {
         const block = sendBlockOf(row, lastOf);
         const buyer = block ? "" : buyerBlockOf(row, row);
-        if (block || buyer) results.push({ id: row.id, ok: false, permanent: true, code: block ? "chronology" : "buyer-is-efatura", message: block || buyer });
+        if (block || buyer) permanent.push({ id: row.id, ok: false, permanent: true, code: block ? "chronology" : "buyer-is-efatura", message: block || buyer });
         else if (cursor && sendOrder(row, cursor) <= 0) passed.push(row);
-        else sendable.push(row.id);
+        else sendable.push(row);
+      }
+      results.push(...permanent);
+      if (only && !cursor) {
+        // E6 ön denetim (turun ilk isteği; hiçbir belge gönderilmeden, numara verilmeden): seçilenlerden numara alacak olanların her seri + yılında,
+        // seçimin o serideki en yeni tarihinden ESKİ seçilmemiş gönderilebilir numarasız bekleyenler. Aynı gün bekletmez (kronoloji katı: tarih).
+        const newest = new Map();
+        for (const row of sendable) {
+          const key = unnumberedSeries(row);
+          if (key && !(newest.get(key) >= row.issueDate)) newest.set(key, row.issueDate);
+        }
+        const older = outsideRows.filter(row => {
+          const key = unnumberedSeries(row);
+          return newest.has(key) && row.issueDate < newest.get(key);
+        });
+        const found = new Set(rows.map(row => row.id));
+        const notPending = only.filter(id => !found.has(id));
+        const olderInfo = row => ({ id: row.id, issueDate: row.issueDate, accountName: row.accountName || "", series: unnumberedSeries(row).split("|")[0] });
+        const summary = { count: older.length, older: older.slice(0, SEND_OLDER_SHOWN).map(olderInfo), olderIds: older.map(row => row.id) };
+        if (check) return ok(res, { check: true, sendable: sendable.length, permanent: permanent.length, notPending: notPending.length, ...summary });
+        if (older.length) {
+          const first = older[0];
+          throw new HttpError(409, `Seçilenlerle aynı seride, seçilmemiş ve daha eski tarihli ${older.length.toLocaleString("tr-TR")} belge Gönderilecekler'de bekliyor (en eskisi: ${first.accountName || "cari"}, ${dayText(first.issueDate)}). e-Belge numarası tarih sırasıyla verilir: önce onlar gönderilmeli. Onları da seçime ekleyip gönderin ya da Tümünü Gönder'i kullanın; hiçbir belge gönderilmedi.`, { code: "einvoice-selection-older", ...summary });
+        }
+        // Seçimde olup artık Gönderilecekler'de olmayan belge (bu arada gönderildi, iptal edildi, Müşteri Fişi olarak bırakıldı) sessizce düşmez.
+        results.push(...notPending.map(id => ({ id, ok: false, skipped: true, reason: "not-pending", code: "einvoice-not-pending", message: "Gönderilmedi: belge artık Gönderilecekler'de değil (başka oturumda gönderilmiş, iptal edilmiş ya da Müşteri Fişi olarak bırakılmış olabilir)." })));
       }
       // İmleçten önceki, hâlâ numarasız bekleyen (bu turda gönderilemedi ya da sırası bekletildi) belge aynı serinin daha yeni belgelerini bu turda
       // da bekletir (sıra kuralı; turun ilk isteğindeki "held" ile aynı). En eski olan engeldir.
@@ -3776,7 +3834,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
           if (key && !held.has(key)) held.set(key, { issueDate: row.issueDate, accountName: seen.accountName || "", number: "", code: "", reason: seen.eMessage ? "failed" : "queued" });
         }
       }
-      order = sendable;
+      order = sendable.map(row => row.id);
       for (const row of rows) byId.set(row.id, row);
       ids = [...results.map(item => item.id), ...order];
     } else {
@@ -3791,14 +3849,13 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     // Gözden geçirme 2.4.3 (S2): seçili kimliklerle gönderimde, aynı serinin bu gönderime dahil olmayan daha eski numarasız bekleyeni varsa yenisi
     // numaralandırılmaz (yoksa eski belge sonradan hiç gönderilemezdi). Kalıcı engelli eski belge (sendBlockOf, buyerBlockOf) beklenmez: zaten
     // gönderilemez.
-    const inTurn = new Set(order);
+    // E6: Seçilenleri Gönder'de "dahil olmayan" = seçilmemiş (ön denetimden sonra, tur sürerken kaydedilen daha eski belge de burada yakalanır).
+    const inTurn = only ? onlySet : new Set(order);
     const outside = new Map();
-    if (!all) {
-      for (const row of store.all(`SELECT ${SEND_COLS}, a.name AS accountName FROM invoices i LEFT JOIN accounts a ON a.id = i.account_id WHERE i.status = 'issued' AND i.e_status = 'waiting'`).sort(sendOrder)) {
-        if (inTurn.has(row.id) || sendBlockOf(row, lastOf) || buyerBlockOf(row)) continue;
-        const key = unnumberedSeries(row);
-        if (key && !outside.has(key)) outside.set(key, row);
-      }
+    for (const row of outsideRows) {
+      if (inTurn.has(row.id)) continue;
+      const key = unnumberedSeries(row);
+      if (!outside.has(key)) outside.set(key, row);
     }
     // Numarasız bir belge GEÇİCİ bir nedenle (bağlantı, entegratör, başka oturumda gönderiliyor, düzeltilebilir alıcı bilgisi, sıra) gönderilemezse
     // aynı serinin daha yeni tarihli numarasız belgeleri bu turda gönderilmez: önce eski belge numara almalı. Gözden geçirme 2.4.3 (S1) ve dar kontrol
@@ -3836,10 +3893,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     };
     for (const id of order) {
       // Y1: parça sınırı (deneme sayısı) ya da süre bütçesi — her istekte en az bir belge denenir (ilerleme).
-      if (all && (attempted >= SEND_CHUNK || (attempted > 0 && Date.now() - started >= SEND_BUDGET_MS))) break; // saat: gerçek (süre ölçümü / entegratör erişim tazeliği)
-      if (all && stopped) break;
+      if (turn && (attempted >= SEND_CHUNK || (attempted > 0 && Date.now() - started >= SEND_BUDGET_MS))) break; // saat: gerçek (süre ölçümü / entegratör erişim tazeliği)
+      if (turn && stopped) break;
       reached += 1;
-      if (all) last = byId.get(id) || last;
+      if (turn) last = byId.get(id) || last;
       if (stopped) {
         results.push({ id, ok: false, skipped: true, reason: "stopped", code: stopped.code, message: `Gönderilmedi (numara verilmedi): ${stopped.message}` });
         continue;
@@ -3914,13 +3971,13 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         }
       }
     }
-    const remaining = all ? order.length - reached : 0;
+    const remaining = turn ? order.length - reached : 0;
     const byInput = new Map(results.map(item => [item.id, item]));
-    const sorted = (all ? ids : [...order, ...ids.filter(id => !order.includes(id))]).filter(id => byInput.has(id)).map(id => byInput.get(id));
+    const sorted = (turn ? ids : [...order, ...ids.filter(id => !order.includes(id))]).filter(id => byInput.has(id)).map(id => byInput.get(id));
     // B1: imleç — bu istekte ulaşılan son belgenin sıra anahtarı (ulaşılan yoksa gelen imleç aynen). attempted: entegratöre gönderimi denenen belge sayısı.
-    const nextCursor = all ? (last ? { issueDate: last.issueDate || "", issueTime: last.issueTime || "", createdAt: last.createdAt || "", rn: Number(last.rn) } : cursor) : null;
+    const nextCursor = turn ? (last ? { issueDate: last.issueDate || "", issueTime: last.issueTime || "", createdAt: last.createdAt || "", rn: Number(last.rn) } : cursor) : null;
     // "Başka oturumda gönderildi" (done) ve "gönderiliyor" (busy) bilgi sayılır: gönderilen ya da gönderilemeyen sayısına girmez.
-    ok(res, { results: sorted, sent: sorted.filter(item => item.ok && !item.done).length, failed: sorted.filter(item => !item.ok && !item.busy).length, skipped: sorted.filter(item => item.skipped).length, done: sorted.filter(item => item.done).length, remaining, attempted, ...(all ? { cursor: nextCursor } : {}), ...(sorted.some(item => item.skipped && item.reason === "queued") ? { rerun: true } : {}), ...(stopped ? { stopped } : {}) });
+    ok(res, { results: sorted, sent: sorted.filter(item => item.ok && !item.done).length, failed: sorted.filter(item => !item.ok && !item.busy).length, skipped: sorted.filter(item => item.skipped).length, done: sorted.filter(item => item.done).length, remaining, attempted, ...(turn ? { cursor: nextCursor } : {}), ...(sorted.some(item => item.skipped && item.reason === "queued") ? { rerun: true } : {}), ...(stopped ? { stopped } : {}) });
   });
   router.post("/api/workspace/invoices/:id/send", async ({ req, res, params }) => {
     const user = requireManage(req);

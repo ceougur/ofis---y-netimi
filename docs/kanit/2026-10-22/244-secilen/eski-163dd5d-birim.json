@@ -1,0 +1,88 @@
+{
+  "ad": "244-secilen/eski-163dd5d-birim",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/secilen/secilen-eski-163dd5d/test/ebelge-244-secilenleri-gonder.test.mjs",
+  "commit": "f7edff3b52952b68d93e66a84d8b56d886a75edc",
+  "dal": "is/secilen",
+  "kirli": 19,
+  "izlenmeyen": 14,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T05:17:03.721Z",
+  "sure_sn": 7.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 0,
+    "basarisiz": 11,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 11 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji › S1: seçilmemiş daha eski bekleyen varken seçilen yeni belge GÖNDERİLMEDEN sorulur (409); hiçbir belge numara almaz, EDM'ye gidilmez",
+      "konum": "test/ebelge-244-secilenleri-gonder.test.mjs:98:3",
+      "hata": "gönderimden önce sorulmalı: {\"results\":[],\"sent\":0,\"failed\":0,\"skipped\":0,\"done\":0,\"remaining\":0,\"attempted\":0} · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji › S2: 'Onları da Ekle' — seçim eski belgelerle genişleyince ikisi de gider; numara sırası = tarih sırası",
+      "konum": "test/ebelge-244-secilenleri-gonder.test.mjs:123:3",
+      "hata": "{\"results\":[],\"sent\":0,\"failed\":0,\"skipped\":0,\"done\":0,\"remaining\":0,\"attempted\":0} · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji › S3: ön denetim (check) gönderimsiz — numara yok, entegratöre gidilmez; sayılar: gönderilebilir / kalıcı engelli / Gönderilecekler'de değil (gönderilmiş, iptal, kâğıt, yok) / eski",
+      "konum": "test/ebelge-244-secilenleri-gonder.test.mjs:140:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji › S4: seçilmemiş eski belge yokken (aynı gün / daha yeni / başka seri / numaralı) soru yok; yalnız seçilenler gider",
+      "konum": "test/ebelge-244-secilenleri-gonder.test.mjs:185:3",
+      "hata": "aynı gün, daha yeni ve başka seri bekletmez: {\"results\":[],\"sent\":0,\"failed\":0,\"skipped\":0,\"done\":0,\"remaining\":0,\"attempted\":0} · undefined !== 0"
+    },
+    {
+      "ad": "2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji › S5: numaralı ama gitmemiş (Sonucu Belirsiz) eski belge yeni belgeyi bekletmez; seçilince önce durumu sorulur, EDM'ye bir kez gider",
+      "konum": "test/ebelge-244-secilenleri-gonder.test.mjs:204:3",
+      "hata": "numaralı belge 'eski bekleyen' sayılmaz: {\"results\":[],\"sent\":0,\"failed\":0,\"skipped\":0,\"done\":0,\"remaining\":0,\"attempted\":0} · undefined !== 0"
+    },
+    {
+      "ad": "2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji › S6: 25 seçili — Tümünü Gönder'in turu: istek başına 20, kalan + imleç; hepsi bir kez, numara = tarih sırası",
+      "konum": "test/ebelge-244-secilenleri-gonder.test.mjs:236:3",
+      "hata": "bir istekte en çok 20 · 0 !== 20 (beklenen 20, gelen 0)"
+    },
+    {
+      "ad": "2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji › S7: ön denetimden sonra, tur sürerken daha eski belge kaydedilirse kalan yeni seçililer numara almaz ('dahil değil'); eski belge gönderilmez",
+      "konum": "test/ebelge-244-secilenleri-gonder.test.mjs:259:3",
+      "hata": "ön koşul: ilk parça d-5 belgeleri · 0 !== 20 (beklenen 20, gelen 0)"
+    },
+    {
+      "ad": "2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji › S8: iki oturum aynı seçimi aynı anda gönderir (ikincisi birincinin gönderdiği belgeye denk getirilir) — her belge EDM'ye bir kez, hata yok",
+      "konum": "test/ebelge-244-secilenleri-gonder.test.mjs:291:3",
+      "hata": "ön koşul: ikinci oturum birincinin gönderimi sürerken başladı (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji › S9: iki oturum aynı anda — biri eski belgeyi, öbürü yenisini seçer: eski numarasını aldıktan sonra başlayan yeni gönderim sorulmadan gider, sıra korunur",
+      "konum": "test/ebelge-244-secilenleri-gonder.test.mjs:323:3",
+      "hata": "eski belge numarasızken yenisi sorulur · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji › S10: yetkisiz kullanıcı (yalnız görüntüleme) 403; boş ve çok büyük seçim 400; hiçbiri numara vermez ya da gönderim yapmaz",
+      "konum": "test/ebelge-244-secilenleri-gonder.test.mjs:347:3",
+      "hata": "Expected values to be strictly equal: · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji › S11: seçilmemiş KALICI engelli eski belge (seride daha yeni numara / alıcı e-Fatura mükellefi) soru doğurmaz; seçilen gönderilir",
+      "konum": "test/ebelge-244-secilenleri-gonder.test.mjs:377:3",
+      "hata": "kalıcı engelli eski belge 'eski bekleyen' sayılmaz: {\"results\":[],\"sent\":0,\"failed\":0,\"skipped\":0,\"done\":0,\"remaining\":0,\"attempted\":0} · undefined !== 0"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-secilen/eski-163dd5d-birim.log",
+  "klasor": "/home/user/wt/secilen",
+  "ham_cikti_sha256": "8c83b9bf1bf4fdbba6a5ff9adcc2979e1b6d61ae0467c57b9c682368cde411da",
+  "ham_cikti_bayt": 14987
+}
