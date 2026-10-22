@@ -564,6 +564,18 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   kâğıt/fiş numarası (FIS, SMM) BİR DAHA KULLANILMAZ: bırakılan belge sonra e-Belge olarak gönderilse de numarası seride kullanılmış sayılır (bugün 2.4.3'ten beri
   sıradaki bırakılan belge aynı numarayı alıyordu — esmm2 ajanının bulgusu); (3) e-Fatura/e-Arşiv/e-SMM XML'i GİB UBL-TR 1.2.1 XSD'siyle de denetlenir (EDM 11029'u
   yerelde yakalamak için; şemalar tools/ebelge/sema/ubl-tr-1.2.1, sha256 KAYNAK.md).
+  EK (baş mimar, 22.10.2026, esmm2 raporu): 2.4.3 verisinde bırakılmış en büyük fiş/makbuz numarası hiçbir yerde kayıtlı değildi (güncellemeden sonraki ilk
+  bırakmada bir kez daha verilirdi) → tek seferlik tarama is/esmm-fis'e: her şirket, seri/yıl, programın biçimindeki Kâğıt Fatura No'lardan; taban yalnız yükselir; işaret
+  veri tabanında (eski yedek geri yüklenince de koşar). I23 (kâhin: ön hesap ile "Kes, Sonra Gönder" kaydının kronoloji iletisi farklıydı) aday 5 c1598c7 ile kapandı:
+  ileti düğmeye bakmaz, tek ileti.
+- SORU (kullanıcı, 22.10.2026 ~12:15 UTC: "e-SMM kesen kullanıcının kaşe imzası ve logosu e-fatura yapılırken eklenen yerden mi eklenecek?") → YANIT (koddan): evet,
+  Fatura Ayarları → Firma Bilgisi (Logo, Kaşe / İmza); programın PDF'inde e-SMM'de de basılır (invoice-pdf.mjs: kaşe e-Fatura dışında basılır); RESMÎ e-SMM görüntüsünde
+  (EDM'nin) basılmaz (invoices.mjs ublFor: ESMM'ye görünüm şablonu gömülmez; EDM gömüleni 11032 ile reddetti, TEMPLATE_CONTENT'i kullanmadı); e-SMM'de ıslak imza/kaşe
+  gerekmez (mali mühür). ÖNERİ (yanıt bekleniyor): Ayarlar'daki Kaşe / İmza açıklamasına ve kılavuza tek cümle ("e-SMM'de yalnız programın PDF'ine basılır; resmî
+  görüntüyü EDM çizer").
+- SORU (kullanıcı, 22.10.2026 ~12:20 UTC; ekran: çalıştığı kurumun e-SMM'si — kurum ve müşteri bilgisi YAZILMAZ): "logo imzayı EDM mi imzalamış?" → YANIT: hayır; imza ve logo
+  düzenleyenin yüklediği resim (gerçek imza XML'deki mali mühür/e-imza); daha önce yüklenen aynı tür makbuzun PDF üreticisi wkhtmltopdf + GİB standart e-SMM görünümü
+  (EDM test PDF'leri IronPdf + EDM tasarımı) → başka sistem; canlı EDM'de e-SMM görünümüne logo/kaşe eklenip eklenemediği EDM'ye sorulacak (soru metni kullanıcıya verildi).
 - SON ADAY BAĞIMSIZ TURU (kullanıcı, 22.10.2026: "2.4.4 son aday uzun test koşusuna başlamadan kâhin (uzman mali müşavir), yargıç, eleştirmen testlerinden geçecek mi,
   regresyon testleri yapılıyor mu?" → EVET; "ekle" → uzman UI + uzman UX de): iş listesi madde 30–31 (31a kâhin, 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol,
   31f uzman UI/UX) Uzun Doğrulama'dan ÖNCE.

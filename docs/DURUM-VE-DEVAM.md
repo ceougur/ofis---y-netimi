@@ -4,31 +4,30 @@
 Önceki oturum: 2.4.3 YAYIMLANDI (v2.4.3, master 163dd5d, PR ceougur/ofis---y-netimi#33; site kılavuzu ceougur/destekofis#19). Kod o günden beri DEĞİŞMEDİ;
 yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
 
-### 00. 2.4.4 SÜRÜYOR — DEVAM NOTU (22.10.2026 ~09:30 UTC; sıkıştırmadan önce yazıldı — ÖNCE BUNU OKU)
-- Durum tablosu: `docs/2.4.4-IS-LISTESI.md` (biten üstü çizili + "Teslim notları" — her maddenin sınırı ve KÂHİN KURALI orada). Kararlar: CLAUDE.md Açık iş (22.10 SORU/KARAR
-  satırlarının hepsi yanıtlandı; açık karar yok). Ders 37 yeni (aday e2e listesi tahminle seçilmez); ders 19 notu: Bash aracında `set -e` ETKİSİZ → `&&` / `|| exit 1`.
-- ÇALIŞMA DÜZENİ: iş grubu = /home/user/wt/<ad> worktree (dal is/<ad>); ajan commit eder; ana oturum BİRLEŞTİRME ADAYINDA (/home/user/wt/aday, dal `aday`) birleştirir →
-  kapı betiği `<not defteri>/aday-kos.sh <worktree> <etiket>` (tam npm test, geçmezse durur; sonra ci.yml'nin 63 e2e'si flock ile) → yeşilse çalışma dalına `git merge --no-ff aday`
-  + push + `kanit.mjs ci <sha> --bekle`. Liste çakışmaları (ci.yml --beklenen, release.yml, package.json) `<not defteri>/liste-birlesim.py <dosyalar>`; kod çakışması ELLE ve anlamca.
-  Not defteri: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad (ajan-ortak.md = ajan kuralları; kapsayıcıyla gider).
-- ÇALIŞMA DALINDA (yeşil CI): madde 1–4, 6, 7, 9, 10, 12-UX16, 13, 14, 19, 20, 21, 23, 25, 27, 28, 29 (CI #849–#857). Çalışma dalında ama CI #858 KIRMIZI (senaryo-222): 5, 16, 18,
-  26, 23 eki → düzeltmesi 7c aday 3'te.
-- ADAY 3 (fd0b0fc = 22 esmm2 735da8f, 5a–5c 8ea0406, 11 a61d561, 15 55584e6, 8 242029a, 7c 761dad7, 17 fdb1a18): tam npm test 3066/3066 GEÇTİ; e2e 5/63 geçtikten sonra
-  kapı DURDURULDU (10:05) — ADAY 4 aday 3'ü kapsıyor, e2e'ler bir kez aday 4'te koşar.
-- ADAY 4 = /home/user/wt/aday4 (dal aday4) 0c1035d = fd0b0fc + 12 UX15 (b6c9fae; çakışmalar anlamca: UX18 invoice-bonded korundu + editChronologyProblem; deferableDoc
-  sendKind ile; onayda !held + draftUploadFor) + 7b B4 (f1c8614, yalnız 2 test dosyası) + 24 kod/düzenek (a67cc5d: server.mjs esmmEnabled true, tools/edm-gercek.mjs).
-  Birleşim sonrası dar test 98/98 (275ff23). KAPI: aday-kos.sh (tam npm test + ci.yml'nin 64 e2e'si); arka plan görevi 2 sa'te kesilirse
-  <not defteri>/aday-kos-devam.sh <worktree> <etiket> kanıtı olmayan e2e'leri sürdürür (GEÇTİ'yi atlar, BAŞARISIZ'ı yeniden koşmaz). Yeşilse: kanıt commit + çalışma dalına
-  `git merge --no-ff aday4` + push + CI; 5/16/18/26/23-ek + aday 3–4 maddelerinin üstü CI yeşilince çizilir.
-- 31a BAĞIMSIZ KÂHİN ERKEN BAŞLADI (09:45): iki ajan (kahin-ebelge, kahin-cari; kimlikler not defteri devam-ajanlar.md), kural kaynağı <not defteri>/kahin-hazirlik/KURALLAR-244.md
-  (KÂHİN KURALI metinleri + CLAUDE.md kararları + GİB; etiket [KULLANICI]/[GİB] fark = BULGU, [AJAN] fark = İNCELE); taban fd0b0fc; son koşu ana oturumca son adayda.
-- MADDE 24 GERÇEK EDM KOŞUSU ana oturumca (10:15 başladı, /home/user/wt/edm-gercek = 0c1035d ayrık kopya; kuru koşu orada 43/43): `EDM_TEST_KULLANICI=… EDM_TEST_PAROLA=…
-  node tools/kanit.mjs kos 244-edm/gercek -- node … tools/edm-gercek.mjs --gercek` (çıkış 2 = giriş başarısız → YENİDEN DENENMEZ, kullanıcıya sorulur), kimlik YALNIZ ortam değişkeniyle o komutta (EDM test hesabı sohbette — dosyaya YAZILMAZ;
-  kaybolduysa kullanıcıdan istenir; parolanın sonundaki nokta belirsiz — giriş başarısızsa YENİDEN DENEME, kullanıcıya sor, hesap kilitlenebilir). Koşudan sonra kullanıcıya OZET.md
-  (gönderilen belge no + ETTN listesi; kullanıcı test portalında bakacak).
-- SONRA: 30 (tam test + BÜTÜN e2e, CI dışı dahil; yedek tatbikatı; v2.4.3 → 2.4.4 göçü; ana oturumun kullanıcı gözüyle iş akışı) → 31 bağımsız tur (31a kâhin — teslim notlarındaki
-  KÂHİN KURALI satırlarından, kodu görmeden; 31b mali müşavir; 31c yargıç; 31d eleştirmen; 31e dar kontrol; 31f uzman UI/UX) → 32 CI → 33 Uzun Doğrulama → 34–36 paket/teslim/PR.
-- 30 dk RAPOR işi: CronCreate 615db56b ("7,37 * * * *"; kapsayıcı yeniden başlarsa silinir → yeniden kur). Ajan kimlikleri not defterinde devam-ajanlar.md.
+### 00. 2.4.4 SÜRÜYOR — DEVAM NOTU (22.10.2026 ~12:30 UTC; sıkıştırmadan sonra yazıldı — ÖNCE BUNU OKU)
+- Durum tablosu: `docs/2.4.4-IS-LISTESI.md` (biten üstü çizili + "Teslim notları" — her maddenin sınırı ve KÂHİN KURALI orada). Kararlar ve kullanıcı soruları: CLAUDE.md
+  Açık iş (22.10 satırları; YANIT BEKLEYEN tek öneri: e-SMM kaşe/logo açıklama cümlesi). Ders 19 notu: Bash aracında `set -e` ETKİSİZ → `&&` / `|| exit 1`.
+- ÇALIŞMA DÜZENİ: iş grubu = /home/user/wt/<ad> worktree (dal is/<ad>); ajan commit eder; ana oturum BİRLEŞTİRME ADAYINDA (/home/user/wt/aday<n>, dal aday<n>) `--no-ff`
+  birleştirir → kapı `<not defteri>/aday-kos.sh <worktree> <etiket>` (tam npm test, geçmezse durur; sonra ci.yml'nin 64 e2e'si flock ile; arka plan görevi 2 sa'te kesilir →
+  `<not defteri>/aday-kos-devam.sh <worktree> <etiket>` kanıtı olmayanları sürdürür, GEÇTİ'yi atlar, BAŞARISIZ'ı yeniden koşmaz) → yeşilse çalışma dalına `git merge --no-ff
+  aday<n>` + push + `kanit.mjs ci <sha> --bekle`. Liste çakışmaları `<not defteri>/liste-birlesim.py <dosyalar>`; kod çakışması ELLE ve anlamca. Not defteri:
+  /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad (ajan-ortak.md = ajan kuralları; devam-ajanlar.md = ajan kimlikleri; kapsayıcıyla gider).
+- ÇALIŞMA DALINDA (yeşil CI): madde 1–4, 6, 7, 9, 10, 12-UX16, 13, 14, 19, 20, 21, 23, 25, 27, 28, 29 (CI #849–#857). Çalışma dalında ama CI #858 KIRMIZI (senaryo-222): 5, 16,
+  18, 26, 23 eki → düzeltmesi 7c adayda.
+- ADAY 4 = /home/user/wt/aday4 (dal aday4) 9aa3469 = 2b71fea (aday 3 + 12 UX15 + 7b + 24 kod/düzenek + 24 adres/11017 47b55b5) + e2e portal-244 beklentisi (UI11 "Excel" adı).
+  KAPI @2b71fea: tam npm test 3094/3094 GEÇTİ; e2e 42/43 GEÇTİ, portal-244 kırmızısı eski beklenti (kanıt …-kirmizi-ui11-eski-beklenti) → 9aa3469; 2 sa sınırında kesildi;
+  kalan e2e'ler aday-kos-devam.sh ile sürüyor (12:25). Yeşilse çalışma dalına birleştir + push + CI (Windows sinyali aday 5'ten önce).
+- ADAY 5 = /home/user/wt/aday5 (dal aday5) 1fcfcf9 = aday 4 + 31a F1/F5/F4 (36830cd) + F2/F3/F6 (2c6b764) + 24 BuildingName/deneyler (7f8abd8) + kâhin e-Belge/2 (5c8f1a4) +
+  kâhin cari/tutar (bdbed0a) + I23 düzeltmesi (c1598c7; eski kodda 2 kırmızı, yenide 43/43; kâhin senaryoları 19/20 → 20/20) + CI kâhin adımları ve Uzun Doğrulama
+  kahin_cari/kahin_tutar (7a2141b; kapı testi 53/53). EKSİK: is/esmm-fis (e6a5a72 kâğıt/fiş numarası tekil — 12 test, eski kodda 12 kırmızı, mutasyon 8/8; 45fef3c VKN'li
+  düzenleyen yalnız PartyName, issuerPerson geri alındı) + tek seferlik eski veri taraması (esmm2 ajanı, 12:20'de başladı). Ajan bitince is/esmm-fis aday 5'e → aday-kos.sh aday5.
+- SONRA: aday 4 ve aday 5 CI yeşilince iş listesinde 5, 5a–5c, 7b, 7c, 8, 11, 12 UX15, 15, 16, 17, 18, 22, 23 eki, 24, 26 çizilir → 30 (tam test + BÜTÜN e2e, CI dışı dahil;
+  yedek tatbikatı; v2.4.3 → 2.4.4 göçü; ana oturumun kullanıcı gözüyle iş akışı) → 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol (11017, F2/F3, kâğıt
+  numarası + tarama, UBL-TR, I23), 31f uzman UI/UX → 32 CI → 33 Uzun Doğrulama → 34–36 paket/teslim/PR. Sürüm notu cümleleri: UX18/F3 (karşılıksız evrak faturayı açar) ve
+  "test ortamındaki e-SMM görüntüsü canlıdan farklı olabilir" (kılavuza da).
+- MADDE 24 GERÇEK EDM: kimlik YALNIZ ortam değişkeniyle o komutta (EDM test hesabı sohbette — dosyaya YAZILMAZ; kaybolduysa kullanıcıdan istenir; giriş başarısızsa YENİDEN
+  DENENMEZ, kullanıcıya sorulur — hesap kilitlenebilir). Gönderilen belgelerin listesi docs/kanit/2026-10-22/244-edm/OZET.md (kullanıcıya verildi).
+- 30 dk RAPOR işi: CronCreate 615db56b ("7,37 * * * *"; kapsayıcı yeniden başlarsa silinir → yeniden kur; 2.4.4 bitince silinir).
 
 ### 0. İlk 10 dakika
 1. `CLAUDE.md` — anayasa + kurallar (oturum başında kendiliğinden yüklenir). Bölüm yerleri:
