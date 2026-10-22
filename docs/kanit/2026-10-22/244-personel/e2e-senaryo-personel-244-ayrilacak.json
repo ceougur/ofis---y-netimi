@@ -1,0 +1,32 @@
+{
+  "ad": "244-personel/e2e-senaryo-personel-244-ayrilacak",
+  "komut": "npm run test:senaryo-personel-244",
+  "commit": "4fbb9f1d9f60b73c6e35069cc02d8a30f2eebc12",
+  "dal": "is/personel",
+  "kirli": 5,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:57:46.557Z",
+  "sure_sn": 37.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 63,
+    "gecen": 63,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-personel/e2e-senaryo-personel-244-ayrilacak.log",
+  "klasor": "/home/user/wt/personel",
+  "ham_cikti_sha256": "8d627ea0f174029a35d2c18ee2725c938c17ae11f10ca8d1d17a9543cbafc18a",
+  "ham_cikti_bayt": 4538
+}
