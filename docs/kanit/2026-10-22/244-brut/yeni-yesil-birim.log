@@ -1,0 +1,157 @@
+TAP version 13
+# Subtest: Netten Brüte — kaydedilen makbuzun Net Ücreti yazılan tutardır (veri tabanından)
+    # Subtest: gerçek kişi alıcı, oran boş, KDV %20
+    ok 1 - gerçek kişi alıcı, oran boş, KDV %20
+      ---
+      duration_ms: 64.381662
+      type: 'test'
+      ...
+    # Subtest: nihai tüketici (kimliksiz kişi), oran boş
+    ok 2 - nihai tüketici (kimliksiz kişi), oran boş
+      ---
+      duration_ms: 28.915367
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, oran boş (%20), KDV %20
+    ok 3 - tüzel alıcı, oran boş (%20), KDV %20
+      ---
+      duration_ms: 35.570247
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, KDV'siz kalem
+    ok 4 - tüzel alıcı, KDV'siz kalem
+      ---
+      duration_ms: 23.841523
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, Fiyatlar KDV Dahil
+    ok 5 - tüzel alıcı, Fiyatlar KDV Dahil
+      ---
+      duration_ms: 28.414736
+      type: 'test'
+      ...
+    # Subtest: gerçek kişi alıcı, Fiyatlar KDV Dahil
+    ok 6 - gerçek kişi alıcı, Fiyatlar KDV Dahil
+      ---
+      duration_ms: 25.29769
+      type: 'test'
+      ...
+    # Subtest: gerçek kişi alıcı, KDV dahil, KDV kuruşu matrahtan
+    ok 7 - gerçek kişi alıcı, KDV dahil, KDV kuruşu matrahtan
+      ---
+      duration_ms: 31.909137
+      type: 'test'
+      ...
+    # Subtest: gerçek kişi alıcı, oran elle %15
+    ok 8 - gerçek kişi alıcı, oran elle %15
+      ---
+      duration_ms: 36.546355
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, oran elle 0
+    ok 9 - tüzel alıcı, oran elle 0
+      ---
+      duration_ms: 32.053432
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, oran elle %17, KDV %10
+    ok 10 - tüzel alıcı, oran elle %17, KDV %10
+      ---
+      duration_ms: 31.805552
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, KDV tevkifatlı (602, 9/10)
+    ok 11 - tüzel alıcı, KDV tevkifatlı (602, 9/10)
+      ---
+      duration_ms: 31.721882
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, kuruşlu net
+    ok 12 - tüzel alıcı, kuruşlu net
+      ---
+      duration_ms: 27.530412
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, iki kalem (net makbuzun tamamı)
+    ok 13 - tüzel alıcı, iki kalem (net makbuzun tamamı)
+      ---
+      duration_ms: 27.714117
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, kalem iskontosu %10
+    ok 14 - tüzel alıcı, kalem iskontosu %10
+      ---
+      duration_ms: 24.950323
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, genel iskonto %10
+    ok 15 - tüzel alıcı, genel iskonto %10
+      ---
+      duration_ms: 23.853917
+      type: 'test'
+      ...
+    1..15
+ok 1 - Netten Brüte — kaydedilen makbuzun Net Ücreti yazılan tutardır (veri tabanından)
+  ---
+  duration_ms: 675.808544
+  type: 'suite'
+  ...
+# Subtest: Netten Brüte — reddedilen istekler
+    # Subtest: cari seçilmeden: neden yazılır
+    ok 1 - cari seçilmeden: neden yazılır
+      ---
+      duration_ms: 7.864209
+      type: 'test'
+      ...
+    # Subtest: net boş / sıfır / harf
+    ok 2 - net boş / sıfır / harf
+      ---
+      duration_ms: 16.72626
+      type: 'test'
+      ...
+    # Subtest: SMM dışında kullanılmaz
+    ok 3 - SMM dışında kullanılmaz
+      ---
+      duration_ms: 10.723253
+      type: 'test'
+      ...
+    # Subtest: öbür kalemlerin net ücreti hedefi aşıyorsa yazılmaz
+    ok 4 - öbür kalemlerin net ücreti hedefi aşıyorsa yazılmaz
+      ---
+      duration_ms: 4.966101
+      type: 'test'
+      ...
+    # Subtest: öbür kalemde tanınmayan tevkifat kodu: girdi hatası söylenir
+    ok 5 - öbür kalemde tanınmayan tevkifat kodu: girdi hatası söylenir
+      ---
+      duration_ms: 4.540288
+      type: 'test'
+      ...
+    1..5
+ok 2 - Netten Brüte — reddedilen istekler
+  ---
+  duration_ms: 45.332246
+  type: 'suite'
+  ...
+# Subtest: Netten Brüte — rastgele formlar (tohum 2026_1022)
+    # Subtest: 300 makbuz: Net Ücret = yazılan, oran = alıcı kuralı
+    ok 1 - 300 makbuz: Net Ücret = yazılan, oran = alıcı kuralı
+      ---
+      duration_ms: 8902.156614
+      type: 'test'
+      ...
+    1..1
+ok 3 - Netten Brüte — rastgele formlar (tohum 2026_1022)
+  ---
+  duration_ms: 8902.381531
+  type: 'suite'
+  ...
+1..3
+# tests 21
+# suites 3
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10437.575299
