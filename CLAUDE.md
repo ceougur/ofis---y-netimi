@@ -428,6 +428,17 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   ücretsiz). Y16 — CLAUDE.md ölçek koşusu (10/20 kullanıcı, 100.000 satır) "temel sürümde"; iş listesinde yok → ÖNERİ 2.4.4 yama sürümü sayılır (2.1.0 ölçümleri
   geçerli), ölçek koşusu temel sürüm 2.5.0'da (Devir). Yargıcın öbür bulguları (Y1 tam test CI #862'den, Y2 CI dışı 14 senaryo son adayda koşuyor, Y3 göç karşılaştırması
   yeniden, Y4/Y7/Y8 31e kapsamı iş listesinde, Y6 kâhin kural kaynağı depoya, Y10–Y15 teslim notları/kılavuz/CHANGELOG) ana oturumda.
+  5 dk YETKİSİYLE UYGULANDI (21:12 UTC, yanıt yok): Y5 EVET (windows.yml PR'dan önce çalışma dalında elle iki koşu — iş listesi 32a); Y16 2.4.4 yama sürümü,
+  ölçek koşusu 2.5.0'da.
+- SORU (22.10.2026 ~21:14 UTC, 31d eleştirmen bulguları; ana oturum E1/E2/E5'i betikleriyle yeniden üretti; 5 dk kuralıyla kullanıcıya soruldu): E1 YÜKSEK —
+  gönderim EDM'ye ulaşıp yanıt gelmeden program kapanırsa belge "Gönderilmedi" görünür; Yeniden Gönder 11048 → Hata, Sil numarayı yeniden verir (EDM'deki geçerli
+  makbuz programdan düşer), Düzenle tutarı değiştirir (e-Arşiv'de 2.4.3'te de; e-SMM yolu yeni) → ÖNERİ 2.4.4'te: ağdan önce kalıcı "gönderim başladı" izi
+  (kesintide Sonucu Belirsiz; Sil/Düzenle kapalı, Durum Sorgula önerilir) + 11048'de dönen numara belgeninse önce Durum Sorgula; E4 (iptal yanıtı kaybolunca süre
+  dolduysa EDM'ye sormadan "süre doldu") aynı kalıpla. E6 — silinen kâğıt/fiş belgenin numarası yeniden veriliyor (Silinenler'den geri yüklenince iki belge aynı
+  numara; 2.4.3'te de) → ÖNERİ numara kullanılmış sayılır (22.10 "verilmiş fiş numarası bir daha kullanılmaz" kararıyla aynı). E7 — "Yalnız Programda İptal" EDM'nin
+  kabul ettiği belgede sunucudan 200 → ÖNERİ sunucu da K4'e göre yalnız belirsiz/portal taslağında izin verir. KARAR GEREKMEYEN düzeltmeler başladı: E2 (30a gerilemesi:
+  Kalan hücresi boş satırda raporlar ayrışıyor — satır kuralı tek yardımcıda, boşsa Toplam), E3 ("Kalan Gün" gibi gün/adet sütunu borç sayılmaz), E5 (Personel'de
+  iki kişi aynı kartı düzenleyince sessiz geri alma → 409 bayat yazım).
 - İSTEKLER (kullanıcı, 22.10.2026 ~14:00–14:50 UTC; hepsi yanıtlandı): "18 numarada portalda ben ne yapacağım" → elle kabul adımları iş listesi 18 (teslimde
   kurulumla); "kalan işler için zaman çizelgesi, aynı anda yapılanları tek süre say" → verildi (devam notu ZAMAN ÇİZELGESİ); "compact talimatı vereceğim, veri kaybı
   olmasın" → devam notu 00 + ajan kayıtları yazıldı ve gönderildi (f013e57); EDM test hesabı ~14:45 UTC yeniden verildi (yalnız oturumda; dosyaya yazılmadı).
