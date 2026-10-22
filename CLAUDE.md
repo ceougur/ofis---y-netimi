@@ -507,7 +507,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   açık taksitten başlayarak karta eşleştirsin (kullanıcı kapatabilir); para çekirdeği → kırmızı test + mutasyon + dar kontrol. (b) "Önce cari açın" formunda Açılış Bakiyesi
   boş geliyor → borç girilmezse tahsilat avans görünür. ÖNERİ: kayıttaki Kalan Borç ile dolu gelsin (değiştirilebilir) + Tablodan Aktar'ın aynı borcu ikinci kez
   yazmadığı testle güvenceye alınır. (c) önceden var olan hata: Tablodaki Kişiler raporunda aynı dosya no iki sekmede varsa tahsilat iki kez yazılıyor (2.4.3'te de) →
-  ÖNERİ 2.4.4'te düzeltilsin. KARAR BEKLENİYOR.
+  ÖNERİ 2.4.4'te düzeltilsin.
+  KARAR (kullanıcı, 22.10.2026: "3 önerinde uygun"): (a), (b), (c) öneriler AYNEN 2.4.4'te (iş listesi 5a–5c).
 - MEVZUAT KARARI (kullanıcı, 20.10.2026): e-Fatura / e-Arşiv kutu metinleri DEĞİŞMEZ, 2.4.4'te değil; geri bildirim gelirse netleştirilir. 509 VUK GT okuma
   notları (IV.2.2, IV.2.4.1, V.1 kayıt yöntemi) arşivde (21.10).
 - RAPOR DÜZENİ (kullanıcı, 21.10.2026: "2.4.4'ü yaparken 30 dk'da kısa ara rapor ver, düşen test var mı, durmuş işlem var mı kontrol et; varsa gereğini yap;
