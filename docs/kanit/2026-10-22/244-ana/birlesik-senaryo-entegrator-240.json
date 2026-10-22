@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/birlesik-senaryo-entegrator-240",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-entegrator-240.mjs",
+  "commit": "6168b0ee0a8c811fb242096bef91395e26fcbbf0",
+  "dal": "claude/youthful-euler-fl8ks4",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:56:27.450Z",
+  "sure_sn": 78.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 79,
+    "gecen": 79,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/birlesik-senaryo-entegrator-240.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "6f069925666b859f053140569c05291633562079596baa6662948192e1c87ed2",
+  "ham_cikti_bayt": 8431
+}
