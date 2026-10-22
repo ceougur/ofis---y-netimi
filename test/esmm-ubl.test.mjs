@@ -52,8 +52,7 @@ before(async () => {
   }
   // A: tüzel alıcı, tek kalem, varsayılan stopaj %20, KDV %20.
   await smm("A", accounts.firm, [{ name: "Avukatlık Ücreti", qty: 1, unitPrice: 1000, vatRate: 20 }]);
-  // B: iki kalem × 100,03 — belge düzeyi stopaj (200,06 × %20 = 40,012 → 40,01) ile kalem kalem yuvarlama (20,01 + 20,01 = 40,02) ayrışır. 2.4.4 (MM10): stopaj da
-  // KDV gibi kalem başına (40,02).
+  // B: iki kalem × 100,03 — belge düzeyi stopaj (200,06 × %20 = 40,012 → 40,01) ile kalem kalem yuvarlama (20,01 + 20,01 = 40,02) ayrışır.
   await smm("B", accounts.firm, [{ name: "Danışmanlık", qty: 1, unitPrice: 100.03, vatRate: 20 }, { name: "Dilekçe", qty: 1, unitPrice: 100.03, vatRate: 20 }]);
   // C: gerçek kişi alıcı — stopaj kesilmez (program varsayılanı 0).
   await smm("C", accounts.person, [{ name: "Hukuki Danışmanlık", qty: 1, unitPrice: 500, vatRate: 20 }]);
@@ -94,14 +93,13 @@ describe("e-SMM UBL: GİB kuralından elle hesaplanan dip toplamlar (kâhin)", (
     assert.deepEqual({ qty: line.qty, unit: line.unit, gross: line.gross, price: line.price }, { qty: "800.00", unit: "NIU", gross: "1000.00", price: "1000.00" }, "kalem: miktar = net ücret, fiyat = net tahsilat (EDM düzeni)");
     assert.deepEqual(line.tax.map(item => [item.code, item.amount, item.seq]), [["0003", "200.00", "1"], ["0015", "200.00", "2"]]);
   });
-  // 2.4.4 (mali müşavir MM10, 31a F7 çatalı): stopaj KDV ile aynı kuralla kalem başına yuvarlanır (önceden belge düzeyinde 40,01, kalemlere 20,01 + 20,00).
-  test("B — 2 × 100,03: stopaj KDV gibi kalem başına 20,01 + 20,01 = 40,02 (aynı matrah ve oranla KDV de 40,02); net ücret 160,04, net alınan 200,06", () => {
+  test("B — 2 × 100,03: belge stopajı matrah × oran = 40,01 (kalem yuvarlamasıyla 40,02 DEĞİL); kalemlere 20,01 + 20,00; KDV kalem başına 20,01 + 20,01", () => {
     const { tree } = docs.B;
-    assert.deepEqual(subtotals(find(tree, "TaxTotal")).map(item => [item.code, item.taxable, item.amount]), [["0003", "200.06", "40.02"], ["0015", "200.06", "40.02"]]);
-    assert.deepEqual(totalsOf(tree), { LineExtensionAmount: "200.06", TaxExclusiveAmount: "160.04", TaxInclusiveAmount: "40.02", PayableAmount: "200.06" });
+    assert.deepEqual(subtotals(find(tree, "TaxTotal")).map(item => [item.code, item.taxable, item.amount]), [["0003", "200.06", "40.01"], ["0015", "200.06", "40.02"]]);
+    assert.deepEqual(totalsOf(tree), { LineExtensionAmount: "200.06", TaxExclusiveAmount: "160.05", TaxInclusiveAmount: "40.02", PayableAmount: "200.07" });
     const lines = linesOf(tree);
-    assert.deepEqual(lines.map(line => line.tax.find(item => item.code === "0003").amount), ["20.01", "20.01"], "kalem stopajı = kalem matrahı × oran");
-    assert.deepEqual(lines.map(line => [line.qty, line.price]), [["80.02", "100.03"], ["80.02", "100.03"]]);
+    assert.deepEqual(lines.map(line => line.tax.find(item => item.code === "0003").amount), ["20.01", "20.00"], "kalan kuruş kesri büyük (eşitse önceki) kaleme");
+    assert.deepEqual(lines.map(line => [line.qty, line.price]), [["80.02", "100.03"], ["80.03", "100.04"]]);
   });
   test("C — kişi alıcı, stopaj yok: 0003 satırı yazılmaz; net ücret = brüt 500, KDV 100, net alınan 600", () => {
     const { tree, doc } = docs.C;

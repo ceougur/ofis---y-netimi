@@ -122,9 +122,8 @@ const exemptionLabel = code => EXEMPTIONS[normalizeExemption(code)] || "";
 //   alanları böyle okur).
 // Vergi kodları GİB Kod Listeleri v1.43 §1.9: 0003 Gelir Vergisi Stopajı (GV STOPAJI), 0015 Gerçek Usulde KDV (KDV GERCEK). Matrah (TaxableAmount)
 // GİB raporundaki gibi brüt ücrettir (EDM örneğindeki 0 değil). TUTARLAR programın kâğıt SMM hesabından gelir (invoice-math; ekranda, PDF'te, defterde
-// ve cari'de aynı kuruş): 2.4.4'ten (MM10) stopaj KDV gibi KALEM BAŞINA yuvarlanır, belge stopajı kalemlerin toplamıdır; aşağıdaki dağıtım bu kuralda
-// kalem stopajlarının kendisini verir (yarım kuruş yukarı yuvarlanan kalemler en büyük kalanlılardır). Eski (2.4.4 öncesi, belge toplamından TEK kez
-// yuvarlanmış) kayıtta kayıtlı belge stopajını kalemlere kuruşu kuruşuna dağıtır — kalem stopajlarının toplamı her durumda belge stopajına eşittir.
+// ve cari'de aynı kuruş): stopaj belge toplamından TEK kez hesaplanır (GİB raporunda belge düzeyinde matrah × oran) ve kalemlere aşağıdaki kuralla
+// kuruşu kuruşuna dağıtılır — kalem stopajlarının toplamı belge stopajına eşittir.
 const STOPPAGE_TAX = Object.freeze({ code: "0003", name: "GV STOPAJI" });
 const ESMM_VAT_NAME = "KDV GERCEK";
 /**

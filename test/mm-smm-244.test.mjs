@@ -1,4 +1,5 @@
-// 2.4.4 — uzman mali müşavir (31b) bulguları MM10, MM7/MM11, MM4 (+ alt kararı), MM1 ve uzman UI/UX (31f) U4/U6'nın SUNUCU tarafı. Rota düzeyinde, sahte EDM
+// 2.4.4 — uzman mali müşavir (31b) bulguları MM7/MM11, MM4 (+ alt kararı), MM1, MM10 (incelendi, kural DEĞİŞMEDİ — sabitlenir) ve uzman UI/UX (31f) U4/U6'nın
+// SUNUCU tarafı. Rota düzeyinde, sahte EDM
 // (test/einvoice-mock.mjs; e-SMM yolu test/esmm-mock.mjs), sahte saat (ders 13), lisans adresi yerel (ders 30). Ekran tarafı: test/e2e/gg244-esmm-gonder.mjs.
 //
 // "Nasıl bozulur?" (önce yazıldı; testler buradan):
@@ -6,7 +7,8 @@
 //   B2 ad değişirken tutar değişir: Net Ücret ≠ Brüt − Stopaj, Tahsil Edilen ≠ kayıtlı ödenecek, Tahsil Edilen KDV yanlış         → T3
 //   B3 bırakılan makbuzun PDF'i "MÜŞTERİ FİŞİ … mali değeri yoktur" kalır; ya da faturada bırakılan Müşteri Fişi de değişir          → T6
 //   B4 bırakılan makbuz tek Gönder / Tümünü / Seçilenleri Gönder ile yine e-SMM olur; engel seriyi bekletir; Müşteri Fişi'ninki de kapanır → T7, T8
-//   B5 stopaj kalem başına olur ama UBL / defter / PDF / kart farklı kaynaktan okur (40,01 ↔ 40,02); eski kayıt UBL'de dağıtılamaz   → T1, T2
+//   B5 yuvarlama kuralı sessizce değişir (KDV kalem başına, stopaj belge düzeyinde — MM10 kararı) ya da UBL / defter / PDF / kart farklı
+//      kaynaktan okur; Netten Brüte kayıttan farklı kuralla çözer                                                                       → T1, T2
 //   B6 e-SMM'de "e-Arşiv için VKN" kalır ya da e-Arşiv'in iletisi bozulur; makbuzda "iade faturasıyla düzeltin" kalır, faturada kaybolur → T5
 //   B7 MM1 metni varsayılan stopajı değiştirir (gerçek kişi alıcıda otomatik oran 0 kalmalı)                                          → T9
 //
@@ -85,7 +87,10 @@ const subtotals = taxTotal => children(taxTotal, "TaxSubtotal").map(sub => [text
 const totalsOf = tree => Object.fromEntries(find(tree, "LegalMonetaryTotal").children.map(item => [item.name, textOf(item)]));
 const round2 = value => Math.round(value * 100) / 100;
 
-describe("MM10 — stopaj KDV ile aynı kuralla kalem başına yuvarlanır; kart, defter, UBL ve PDF aynı sayı", () => {
+// MM10 (mali müşavir, İNCELE; ana oturum kararı 22.10.2026: DEĞİŞMEZ): KDV kalem başına (UBL-TR kalem yapısı, KDV K. md. 20), stopaj ödemenin tamamı üzerinden
+// (GVK md. 94: makbuz toplamı × oran). Çok kalemli makbuzda aynı matrah ve oranla ≤ 1 kuruş fark BEKLENİR. Bu testler kuralı sabitler (davranış 2.4.3 ile aynı;
+// kırmızı kanıt gerekmez); plandan yazılmış bağımsız modeller (test/mutabakat/fatura-model.mjs, test/bagimsiz/tutar) aynı kuralı taşır.
+describe("MM10 — KDV kalem başına, stopaj belge düzeyinde (kural sabitlenir); kart, defter, UBL ve PDF aynı sayı", () => {
   let ctx;
   before(async () => {
     ctx = await boot();
@@ -94,41 +99,44 @@ describe("MM10 — stopaj KDV ile aynı kuralla kalem başına yuvarlanır; kart
     await ctx?.close();
   });
 
-  // El hesabı (GİB UBL-TR: her vergi kalem düzeyinde, belge = Σ kalem): kalem 100,03 × %20 = 20,006 → 20,01 (yarım kuruş yukarı); KDV 20,01 + 20,01 = 40,02;
-  // stopaj 20,01 + 20,01 = 40,02 (eski kural: 200,06 × %20 = 40,012 → 40,01); Net Ücret 200,06 − 40,02 = 160,04; Tahsil Edilen 160,04 + 40,02 = 200,06.
-  test("T1 2 × 100,03 (KDV %20, stopaj %20): stopaj 40,02 = KDV 40,02; ödenecek 200,06; 193 defterde 40,02; UBL 0003 40,02 (kalem 20,01 + 20,01), XSD temiz", async () => {
+  // El hesabı: KDV kalem başına 100,03 × %20 = 20,006 → 20,01 (yarım kuruş yukarı); 20,01 + 20,01 = 40,02. Stopaj makbuz toplamından 200,06 × %20 = 40,012 →
+  // 40,01 (1 kuruş fark beklenir); Net Ücret 200,06 − 40,01 = 160,05; Tahsil Edilen 160,05 + 40,02 = 200,07. UBL kalem payları en büyük kalanla 20,01 + 20,00.
+  test("T1 2 × 100,03 (KDV %20, stopaj %20): KDV 40,02 (kalem), stopaj 40,01 (belge); ödenecek 200,07; 193 defterde 40,01; UBL 0003 40,01 (kalem 20,01 + 20,00), XSD temiz", async () => {
     const before193 = await ctx.trial("193");
     const before120 = await ctx.trial("120");
     const doc = await ctx.smm({ lines: [{ name: "Danışmanlık", qty: 1, unitPrice: 100.03, vatRate: 20 }, { name: "Dilekçe", qty: 1, unitPrice: 100.03, vatRate: 20 }], eSend: "now" });
     const card = await ctx.card(doc.id);
     assert.equal(card.vatTotal, 40.02, "KDV kalem başına");
-    assert.equal(card.stoppageTotal, 40.02, `stopaj kalem başına (KDV ile aynı kural); program: ${card.stoppageTotal}`);
-    assert.equal(card.payableTotal, 200.06, "Tahsil Edilen = brüt − stopaj + KDV");
-    assert.equal(round2((await ctx.trial("193")) - before193), 40.02, "defter: 193 Peşin Ödenen Vergiler (stopaj) 40,02");
-    assert.equal(round2((await ctx.trial("120")) - before120), 200.06, "defter: 120 Alıcılar 200,06");
+    assert.equal(card.stoppageTotal, 40.01, `stopaj makbuz toplamından (GVK 94); program: ${card.stoppageTotal}`);
+    assert.equal(card.payableTotal, 200.07, "Tahsil Edilen = brüt − stopaj + KDV");
+    assert.equal(round2((await ctx.trial("193")) - before193), 40.01, "defter: 193 Peşin Ödenen Vergiler (stopaj) 40,01");
+    assert.equal(round2((await ctx.trial("120")) - before120), 200.07, "defter: 120 Alıcılar 200,07");
     const { xml, tree } = await ctx.xml(doc.id);
-    assert.deepEqual(subtotals(find(tree, "TaxTotal")), [["0003", "200.06", "40.02"], ["0015", "200.06", "40.02"]], "belge vergileri: 0003 ve 0015 aynı matrah, aynı tutar");
-    assert.deepEqual(totalsOf(tree), { LineExtensionAmount: "200.06", TaxExclusiveAmount: "160.04", TaxInclusiveAmount: "40.02", PayableAmount: "200.06" });
+    assert.deepEqual(subtotals(find(tree, "TaxTotal")), [["0003", "200.06", "40.01"], ["0015", "200.06", "40.02"]], "belge vergileri: aynı matrah, stopaj 40,01 / KDV 40,02 (≤ 1 kuruş fark beklenir)");
+    assert.deepEqual(totalsOf(tree), { LineExtensionAmount: "200.06", TaxExclusiveAmount: "160.05", TaxInclusiveAmount: "40.02", PayableAmount: "200.07" });
     const lines = children(tree, "InvoiceLine");
-    assert.deepEqual(lines.map(line => subtotals(find(line, "TaxTotal")).find(item => item[0] === "0003")[2]), ["20.01", "20.01"], "kalem stopajı = kalem matrahı × oran");
-    assert.deepEqual(lines.map(line => [textOf(find(line, "InvoicedQuantity")), textOf(find(line, "Price/PriceAmount"))]), [["80.02", "100.03"], ["80.02", "100.03"]], "kalem Net Ücret ve Net Tahsilat");
+    assert.deepEqual(lines.map(line => subtotals(find(line, "TaxTotal")).find(item => item[0] === "0003")[2]), ["20.01", "20.00"], "belge stopajı kalemlere en büyük kalanla dağıtılır (Σ = 40,01)");
+    assert.deepEqual(lines.map(line => subtotals(find(line, "TaxTotal")).find(item => item[0] === "0015")[2]), ["20.01", "20.01"], "KDV kalem başına");
+    assert.deepEqual(lines.map(line => [textOf(find(line, "InvoicedQuantity")), textOf(find(line, "Price/PriceAmount"))]), [["80.02", "100.03"], ["80.03", "100.04"]], "kalem Net Ücret ve Net Tahsilat");
     assert.deepEqual(await xsdErrors(xml), [], "UBL 2.1 + UBL-TR 1.2.1 XSD");
     assert.equal(ctx.edm.state.smm.sent.at(-1)?.id, card.number, "EDM'ye giden makbuz aynı numara");
     const pdf = await ctx.pdf(doc.id);
-    assert.match(pdf, /Gelir Vergisi Stopajı %20 − 40,02 TL/, "PDF stopaj 40,02");
+    assert.match(pdf, /Gelir Vergisi Stopajı %20 − 40,01 TL/, "PDF stopaj 40,01");
+    assert.match(pdf, /Net Ücret 160,05 TL/, "PDF Net Ücret 160,05");
     assert.match(pdf, /KDV %20 40,02 TL/, "PDF KDV 40,02");
-    assert.match(pdf, /Tahsil Edilen \(Net Alınan\) 200,06 TL/, "PDF tahsil edilen");
+    assert.match(pdf, /Tahsil Edilen \(Net Alınan\) 200,07 TL/, "PDF tahsil edilen");
   });
 
-  test("T2 Netten Brüte çok kalemde kalem başına stopajla çözer: kaydedilen makbuzun Net Ücreti yazılan tutara eşit", async () => {
-    // İkinci kalem 100,03 (net ücreti 100,03 − 20,01 = 80,02); hedef 160,04 → ilk kalemin net ücreti 80,02: en küçük brüt 100,02 (100,02 − 20,00).
+  test("T2 Netten Brüte çok kalemde kaydın kuralıyla (stopaj belge düzeyinde) çözer: kaydedilen makbuzun Net Ücreti yazılan tutara eşit", async () => {
+    // İkinci kalem 100,03; hedef 160,04 → en küçük brüt: ilk kalem 100,02 (toplam 200,05 × %20 = 40,01; 200,05 − 40,01 = 160,04).
     const form = { scenario: "smm", accountId: ctx.clientId, lines: [{ name: "Danışmanlık", qty: 1, unitPrice: 0, vatRate: 20 }, { name: "Dilekçe", qty: 1, unitPrice: 100.03, vatRate: 20 }], payment: { rest: "open" } };
     const found = await ctx.api.post("/api/workspace/invoices/gross-from-net", { ...form, net: "160,04" });
     assert.equal(found.status, 200, JSON.stringify(found.data));
     const doc = await ctx.smm({ ...form, lines: [{ ...form.lines[0], unitPrice: found.data.unitPrice }, form.lines[1]] });
     const card = await ctx.card(doc.id);
     assert.equal(round2(card.netTotal - card.stoppageTotal), 160.04, `Net Ücret = hedef (brüt ${card.netTotal}, stopaj ${card.stoppageTotal}, birim fiyat ${found.data.unitPrice})`);
-    assert.equal(card.stoppageTotal, round2(card.lines.reduce((sum, line) => sum + Math.round(line.net * 20) / 100, 0)), "belge stopajı = Σ kalem (matrah × %20, kuruşa)");
+    assert.equal(card.stoppageTotal, Math.round(card.netTotal * 20) / 100, "belge stopajı = makbuz toplamı × %20 (kuruşa)");
+    assert.equal(found.data.unitPrice, 100.02, `en küçük brüt (birim fiyat ${found.data.unitPrice})`);
   });
 });
 
