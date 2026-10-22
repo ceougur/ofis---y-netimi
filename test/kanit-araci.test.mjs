@@ -108,6 +108,22 @@ describe("kanıt aracı: gerçek koşu kaydı", () => {
     return JSON.parse(readFileSync(path.join(dir, day, `${name}.json`), "utf8"));
   };
 
+  // 22.10.2026 (madde 30): adı alt klasör içeren kayıtta (ör. 244-m30/test-senaryo) klasör yoksa komut koşup bitiyor, kayıt ENOENT ile yazılamıyordu
+  // (sonuç kayboluyordu); araç alt klasörü komuttan önce açar.
+  it("alt klasörlü ad: klasör yoksa açılır, kayıt ve ham çıktı alt klasöre yazılır", () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), "kanit-"));
+    try {
+      const result = runTool(dir, "alt-klasor/iyi", "console.log('# tests 1\\n# pass 1\\n# fail 0\\n# cancelled 0')");
+      assert.equal(result.status, 0, result.stdout + result.stderr);
+      const record = recordOf(dir, "alt-klasor/iyi");
+      assert.equal(record.hukum, "GEÇTİ");
+      assert.equal(record.ad, "alt-klasor/iyi");
+      assert.match(record.ham_cikti, /alt-klasor\/iyi\.log$/);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it("geçen komut: çıkış 0, kayıt GEÇTİ, ham çıktı ve sha256 yazılır", () => {
     const dir = mkdtempSync(path.join(os.tmpdir(), "kanit-"));
     try {

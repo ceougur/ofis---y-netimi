@@ -1,0 +1,76 @@
+TAP version 13
+# Subtest: kanıt aracı: gerçek koşu kaydı
+    # Subtest: alt klasörlü ad: klasör yoksa açılır, kayıt ve ham çıktı alt klasöre yazılır
+    not ok 1 - alt klasörlü ad: klasör yoksa açılır, kayıt ve ham çıktı alt klasöre yazılır
+      ---
+      duration_ms: 154.076096
+      type: 'test'
+      location: '/home/user/wt/kanit-alt/test/kanit-araci.test.mjs:113:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        # tests 1
+        # pass 1
+        # fail 0
+        # cancelled 0
+        node:fs:560
+          return binding.open(
+                         ^
+        
+        Error: ENOENT: no such file or directory, open '/tmp/kanit-jW1914/2026-10-22/alt-klasor/iyi.log'
+            at Object.openSync (node:fs:560:18)
+            at writeFileSync (node:fs:2451:35)
+            at run (file:///home/user/wt/kanit-alt/tools/kanit.mjs:252:3)
+            at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+            at async file:///home/user/wt/kanit-alt/tools/kanit.mjs:527:12 {
+          errno: -2,
+          code: 'ENOENT',
+          syscall: 'open',
+          path: '/tmp/kanit-jW1914/2026-10-22/alt-klasor/iyi.log'
+        }
+        
+        Node.js v22.22.0
+        
+        
+        1 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        Object.openSync (node:fs:560:18)
+        writeFileSync (node:fs:2451:35)
+        run (file:///home/user/wt/kanit-alt/tools/kanit.mjs:252:3)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async file:///home/user/wt/kanit-alt/tools/kanit.mjs:527:12 {
+        TestContext.<anonymous> (file:///home/user/wt/kanit-alt/test/kanit-araci.test.mjs:117:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    1..1
+not ok 1 - kanıt aracı: gerçek koşu kaydı
+  ---
+  duration_ms: 159.741402
+  type: 'suite'
+  location: '/home/user/wt/kanit-alt/test/kanit-araci.test.mjs:103:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 269.644024
