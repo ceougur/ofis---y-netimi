@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday4-birlesim-dar",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/fatura-244-numara-tarih-onay.test.mjs test/gg243-dar2-iade-sira.test.mjs test/ebelge-244-secilenleri-gonder.test.mjs test/esmm-gonderim-244.test.mjs test/esmm-edm.test.mjs test/esmm-ubl.test.mjs test/esmm-gizli-241.test.mjs test/ux18-cek-fatura-244.test.mjs",
+  "commit": "f1c86143ffa3c78ffa8dc68d7fed67caf87b3108",
+  "dal": "aday4",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T09:57:01.889Z",
+  "sure_sn": 17.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 98,
+    "gecen": 98,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday4-birlesim-dar.log",
+  "klasor": "/home/user/wt/aday4",
+  "ham_cikti_sha256": "028a6e3ce099500b7e7811c69fa6177275eb9ac38f621979dc69326394b4c61f",
+  "ham_cikti_bayt": 40631
+}
