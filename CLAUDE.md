@@ -469,7 +469,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - SORU (kullanıcı, 22.10.2026 ~17:30 UTC: "butonların bazıları neden koyu yeşil bazıları beyaz") → YANIT (koddan, hof-getting-started.js:109): renk durumdan bağımsız
   sabit (company + seller hep koyu). ÖNERİ yalnız İLK EKSİK adım koyu. KARAR (kullanıcı: "uygun") → G4, 30d ajanına eklendi. AYNI İLETİDE: "şirketleri aç değil de şirket
   aç yazması gerekmez mi" → baş mimar görüşü soruldu: "Şirket Aç" Türkçede yeni şirket açmak/kurmak anlamına gelir (Şirketler'de "+ Yeni Şirket" ve 2 şirket
-  sınırı var) → ÖNERİ "Şirket Adını Yaz" + doğrudan ad değiştirme penceresi; karar bekleniyor.
+  sınırı var) → ÖNERİ "Şirket Adını Yaz" + doğrudan ad değiştirme penceresi. KARAR (kullanıcı, ~17:45 UTC: "önerin uygun") → G5, 30d ajanına eklendi.
 - SON ADAY BAĞIMSIZ TURU (kullanıcı, 22.10.2026: "2.4.4 son aday uzun test koşusuna başlamadan kâhin (uzman mali müşavir), yargıç, eleştirmen testlerinden geçecek mi,
   regresyon testleri yapılıyor mu?" → EVET; "ekle" → uzman UI + uzman UX de): iş listesi madde 30–31 (31a kâhin, 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol,
   31f uzman UI/UX) Uzun Doğrulama'dan ÖNCE.
