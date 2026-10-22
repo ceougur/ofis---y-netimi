@@ -1,0 +1,51 @@
+
+> destekofis@2.4.3 test:senaryo-portal-244
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-portal-244.mjs
+
+
+■ 1 Bağlantı kayıtlı değil: düğme pasif, nedeni görünür
+  ✗ “e-Fatura Portalı” düğmesi Fatura üst satırında (null)
+
+■ 2 Entegratör Ayarları ekrandan kaydedilir → düğme yerinde etkinleşir
+  ✓ veri tabanında: kullanıcı edmportalkullanici, ortam test, parola mühürlü
+  ✗ liste yeniden açılmadan etkin (null)
+  ✓ sayfada parola yok
+  ✓ Fatura meta'sında kullanıcı adı ve parola yok
+
+■ 3 Tıkla → ekran boyunda ayrı pencere, TEST portalı, opener kesik, Referer yok
+  ✗ beklenmeyen hata: browserContext.waitForEvent: Timeout 10000ms exceeded while waiting for event "page"
+    at /home/user/wt/portal/test/e2e/senaryo-portal-244.mjs:172:48
+    at async step (/home/user/wt/portal/test/e2e/senaryo-portal-244.mjs:71:5)
+    at async file:///home/user/wt/portal/test/e2e/senaryo-portal-244.mjs:170:3
+
+■ 4 İkinci tıklama: program COOP same-origin ile sunulur, tarayıcı açık portal penceresini bulamaz → yeni portal penceresi (BİLİNEN SINIR)
+  ✗ beklenmeyen hata: browserContext.waitForEvent: Timeout 10000ms exceeded while waiting for event "page"
+    at /home/user/wt/portal/test/e2e/senaryo-portal-244.mjs:190:48
+    at step (/home/user/wt/portal/test/e2e/senaryo-portal-244.mjs:71:11)
+    at /home/user/wt/portal/test/e2e/senaryo-portal-244.mjs:189:9
+
+■ 5 Çalışma Ortamı Canlı → CANLI portal
+  ✓ veri tabanında ortam canlı
+  ✗ beklenmeyen hata: browserContext.waitForEvent: Timeout 10000ms exceeded while waiting for event "page"
+    at /home/user/wt/portal/test/e2e/senaryo-portal-244.mjs:204:48
+    at async step (/home/user/wt/portal/test/e2e/senaryo-portal-244.mjs:71:5)
+    at async file:///home/user/wt/portal/test/e2e/senaryo-portal-244.mjs:198:3
+
+■ 6 Açılır pencere engellenince ileti + bağlantı
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible .hof-invoices-modal .hof-plan-actions [data-act="portal"]')[22m
+
+    at /home/user/wt/portal/test/e2e/senaryo-portal-244.mjs:216:16
+    at async step (/home/user/wt/portal/test/e2e/senaryo-portal-244.mjs:71:5)
+    at async file:///home/user/wt/portal/test/e2e/senaryo-portal-244.mjs:212:3
+
+■ 7 Yetki: avukat etkin; yalnız Faturaları Görme yetkili personel pasif + neden
+  ✗ portal-avukat: etkin (null)
+  ✗ portal-goren: pasif, neden “undefined”
+  ✓ pasif düğme pencere açmaz (window.open 0)
+  ✓ yetkisize portal adresi gitmez
+  ✓ beklenmeyen dış istek yok (—)
+  ✓ sayfa hatası yok
+
+✗ senaryo-portal-244: 8 geçti, 8 kaldı · depo /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/portal/portal-eski-163dd5d · ekran görüntüleri /home/user/wt/portal/test/e2e/artifacts/senaryo-portal-244

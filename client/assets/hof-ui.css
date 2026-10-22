@@ -10991,6 +10991,8 @@ input[type="search"]::-webkit-search-cancel-button {
 .hof-cheques .hof-rep-stats { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
 .hof-rep-stat.is-deposited strong { color: #2a4f8f; }
 .hof-chq-why { flex: 1 1 260px; align-self: center; margin: 0; color: var(--do-warn); font: 650 12px/1.4 var(--do-font); }
+/* 2.4.4 E7: e-Fatura Portalı pasifken nedeni düğmenin yanında (kalıcı karar: pasif düğmenin nedeni görünür yazı). */
+.hof-inv-portal-why { flex: 1 1 100%; margin: 0; text-align: right; color: var(--do-warn); font: 650 12px/1.4 var(--do-font); }
 .hof-chq-history li.is-deposit b { color: #2a4f8f; }
 
 /* ---------- 2.3.0 İz 5.6: işlem geçmişi — Daha Fazla Göster, Kayda Git ---------- */

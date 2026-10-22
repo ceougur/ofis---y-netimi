@@ -15,7 +15,7 @@ import { randomInt, randomUUID } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { parseQty } from "../lib/accounts.mjs";
-import { ADAPTERS, DEFAULT_ADAPTER, adapterInfo, connect, integratorUrl, testOnlyUrl } from "../lib/einvoice/adapters.mjs";
+import { ADAPTERS, DEFAULT_ADAPTER, adapterInfo, connect, integratorPortalUrl, integratorUrl, isPortalUrl, testOnlyUrl } from "../lib/einvoice/adapters.mjs";
 import { EDM_URLS } from "../lib/einvoice/edm.mjs";
 import { readUbl } from "../lib/einvoice/ubl-read.mjs";
 import { UNIT_CODE_KEYS, buildUbl, ublFileName } from "../lib/einvoice/ubl-tr.mjs";
@@ -472,6 +472,17 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     return { ...s, integrator: { ...rest, hasPassword: Boolean(passwordSealed), url: integratorUrl(s.integrator), label: ADAPTERS[s.integrator.id]?.label || "", liveAllowed: edocLive, network: networkSummary() } };
   };
   const integratorSummary = s => ({ id: s.integrator.id, label: ADAPTERS[s.integrator.id]?.label || "", env: s.integrator.env, configured: Boolean(s.integrator.username && s.integrator.passwordSealed), autoSend: s.integrator.autoSend === true, autoCheckUser: s.integrator.autoCheckUser === true });
+  // e-Fatura Portalı düğmesi (2.4.4 E7): adres sunucunun sabit listesinden, Çalışma Ortamı'na göre (Test → test portalı, Canlı → canlı portal).
+  // Yetki: Fatura Kesme ve İptal (invoices.manage) — portalda yapılan işler (belge kesme/iptal, gelen faturaya yanıt) bu yetkinin programdaki
+  // karşılığı; Faturaları Görme yetkisi portal işlerini kapsamaz. Bağlantı (kullanıcı adı + parola) kayıtlı değilse portala girilecek hesap da
+  // yok. Engel varsa adres GÖNDERİLMEZ, yalnız nedeni gider (düğme pasif, nedeni görünür). Kullanıcı adı/parola hiçbir zaman gitmez.
+  const portalState = (s, user) => {
+    const url = integratorPortalUrl(s.integrator);
+    if (!url || !isPortalUrl(url)) return { url: "", block: "Bu entegratörün portal adresi programda tanımlı değil." };
+    if (!canUser(user, "invoices.manage")) return { url: "", block: "e-Fatura Portalı, Fatura Kesme ve İptal yetkisi ister; yöneticinize başvurun." };
+    if (!(s.integrator.username && s.integrator.passwordSealed)) return { url: "", block: "Önce Entegratör Ayarları'nda web servis kullanıcı adını ve parolasını kaydedin." };
+    return { url, env: s.integrator.env, block: "" };
+  };
   // Dar kontrol B2/B3: adres yazım varyantlarıyla (sonda "/", büyük harf, :443) karşılaştırılır — istemci (edm.mjs) sondaki "/"yi zaten atar.
   const sameUrl = (a, b) => {
     const norm = url => { try { const u = new URL(String(url).trim()); return `${u.protocol}//${u.host.toLowerCase()}${u.pathname.replace(/\/+$/, "")}`; } catch { return String(url).trim(); } };
@@ -2347,7 +2358,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       eStates: E_STATES,
       adapters: edocEnabled ? Object.entries(ADAPTERS).map(([id, value]) => adapterInfo(id, value)) : [],
       edocEnabled,
-      settings: { efatura: edocEnabled && s.efatura, earsiv: edocEnabled && s.earsiv, esmm: esmmEnabled && s.esmm, defaults: s.defaults, series: s.series, sellerReady: sellerProblems("KAGIT", s).length === 0 && Boolean(s.seller.name), sellerName: s.seller.name, integrator: edocEnabled ? integratorSummary(s) : null, draftUpload: edocEnabled && s.eOptions.draftUpload === true },
+      settings: { efatura: edocEnabled && s.efatura, earsiv: edocEnabled && s.earsiv, esmm: esmmEnabled && s.esmm, defaults: s.defaults, series: s.series, sellerReady: sellerProblems("KAGIT", s).length === 0 && Boolean(s.seller.name), sellerName: s.seller.name, integrator: edocEnabled ? { ...integratorSummary(s), portal: portalState(s, user) } : null, draftUpload: edocEnabled && s.eOptions.draftUpload === true },
       today: today(),
       repeated: repeated.length,
       lockedUntil: period?.lockedUntil?.() || "",
