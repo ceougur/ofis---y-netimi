@@ -1,0 +1,19 @@
+# gg243 D2 yarış denemesi: 10 deneme, SendInvoice gecikmesi 400 ms, dosya test/gg243-dar-kontrol-gonderim.test.mjs, çalışma klasörü /home/user/wt/d2
+deneme 1/10: çıkış 0, geciktirilen SendInvoice 14 → ön koşul OLUŞTU; D2 (all) GEÇTİ, D2 (ids) GEÇTİ
+deneme 2/10: çıkış 0, geciktirilen SendInvoice 14 → ön koşul OLUŞTU; D2 (all) GEÇTİ, D2 (ids) GEÇTİ
+deneme 3/10: çıkış 0, geciktirilen SendInvoice 14 → ön koşul OLUŞTU; D2 (all) GEÇTİ, D2 (ids) GEÇTİ
+deneme 4/10: çıkış 0, geciktirilen SendInvoice 14 → ön koşul OLUŞTU; D2 (all) GEÇTİ, D2 (ids) GEÇTİ
+deneme 5/10: çıkış 0, geciktirilen SendInvoice 14 → ön koşul OLUŞTU; D2 (all) GEÇTİ, D2 (ids) GEÇTİ
+deneme 6/10: çıkış 0, geciktirilen SendInvoice 14 → ön koşul OLUŞTU; D2 (all) GEÇTİ, D2 (ids) GEÇTİ
+deneme 7/10: çıkış 0, geciktirilen SendInvoice 14 → ön koşul OLUŞTU; D2 (all) GEÇTİ, D2 (ids) GEÇTİ
+deneme 8/10: çıkış 0, geciktirilen SendInvoice 14 → ön koşul OLUŞTU; D2 (all) GEÇTİ, D2 (ids) GEÇTİ
+deneme 9/10: çıkış 0, geciktirilen SendInvoice 14 → ön koşul OLUŞTU; D2 (all) GEÇTİ, D2 (ids) GEÇTİ
+deneme 10/10: çıkış 0, geciktirilen SendInvoice 14 → ön koşul OLUŞTU; D2 (all) GEÇTİ, D2 (ids) GEÇTİ
+# ön koşul oluşan deneme 10/10
+# geçersiz deneme 0
+# tests 20
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

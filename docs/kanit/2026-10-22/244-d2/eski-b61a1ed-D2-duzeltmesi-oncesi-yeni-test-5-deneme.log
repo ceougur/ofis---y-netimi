@@ -1,0 +1,28 @@
+# gg243 D2 yarış denemesi: 5 deneme, SendInvoice gecikmesi 0 ms, dosya test/gg243-dar-kontrol-gonderim.test.mjs, çalışma klasörü /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/d2/d2-eski-b61a1ed
+deneme 1/5: çıkış 1, geciktirilen SendInvoice 0 → doğal koşu; D2 (all) KALDI, D2 (ids) KALDI
+    error: hata değil: {"id":"invoice-202f6199-b1ca-4c55-bf90-35ecb7326bdf","ok":false,"code":"einvoice-already-sent","message":"Bu belge zaten entegratöre iletildi (durum: Gönderildi). Sonucu Durum Sorgula ile alın."}
+    error: hata değil: {"id":"invoice-eb4f0e2a-7884-4353-af43-76620b0debb4","ok":false,"code":"einvoice-already-sent","message":"Bu belge zaten entegratöre iletildi (durum: Gönderildi). Sonucu Durum Sorgula ile alın."}
+    error: '2 subtests failed'
+deneme 2/5: çıkış 1, geciktirilen SendInvoice 0 → doğal koşu; D2 (all) KALDI, D2 (ids) KALDI
+    error: hata değil: {"id":"invoice-99c49595-79ed-40ef-a247-eb99c4da9f97","ok":false,"code":"einvoice-already-sent","message":"Bu belge zaten entegratöre iletildi (durum: Gönderildi). Sonucu Durum Sorgula ile alın."}
+    error: hata değil: {"id":"invoice-a9a6a9e8-24b3-4803-98d0-6dc6a7eba78c","ok":false,"code":"einvoice-already-sent","message":"Bu belge zaten entegratöre iletildi (durum: Gönderildi). Sonucu Durum Sorgula ile alın."}
+    error: '2 subtests failed'
+deneme 3/5: çıkış 1, geciktirilen SendInvoice 0 → doğal koşu; D2 (all) KALDI, D2 (ids) KALDI
+    error: hata değil: {"id":"invoice-bb13e404-537b-4169-b405-b0bc947b2a05","ok":false,"code":"einvoice-already-sent","message":"Bu belge zaten entegratöre iletildi (durum: Gönderildi). Sonucu Durum Sorgula ile alın."}
+    error: hata değil: {"id":"invoice-78d62862-c272-47b5-8ab9-1283c054f5b9","ok":false,"code":"einvoice-already-sent","message":"Bu belge zaten entegratöre iletildi (durum: Gönderildi). Sonucu Durum Sorgula ile alın."}
+    error: '2 subtests failed'
+deneme 4/5: çıkış 1, geciktirilen SendInvoice 0 → doğal koşu; D2 (all) KALDI, D2 (ids) KALDI
+    error: hata değil: {"id":"invoice-e255efa4-0467-4d12-939b-6c9f469b9672","ok":false,"code":"einvoice-already-sent","message":"Bu belge zaten entegratöre iletildi (durum: Gönderildi). Sonucu Durum Sorgula ile alın."}
+    error: hata değil: {"id":"invoice-cfd35dd9-f1bb-4939-9f21-1b9cbed08093","ok":false,"code":"einvoice-already-sent","message":"Bu belge zaten entegratöre iletildi (durum: Gönderildi). Sonucu Durum Sorgula ile alın."}
+    error: '2 subtests failed'
+deneme 5/5: çıkış 1, geciktirilen SendInvoice 0 → doğal koşu; D2 (all) KALDI, D2 (ids) KALDI
+    error: hata değil: {"id":"invoice-2f23edec-ea08-4ac2-b4c1-0b5b7df630a1","ok":false,"code":"einvoice-already-sent","message":"Bu belge zaten entegratöre iletildi (durum: Gönderildi). Sonucu Durum Sorgula ile alın."}
+    error: hata değil: {"id":"invoice-cd73bfae-47f8-412b-b0ea-bd647bbd5c0e","ok":false,"code":"einvoice-already-sent","message":"Bu belge zaten entegratöre iletildi (durum: Gönderildi). Sonucu Durum Sorgula ile alın."}
+    error: '2 subtests failed'
+# geçersiz deneme 0
+# tests 10
+# pass 0
+# fail 10
+# cancelled 0
+# skipped 0
+# todo 0

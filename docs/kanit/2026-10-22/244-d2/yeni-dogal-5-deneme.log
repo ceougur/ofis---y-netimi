@@ -1,0 +1,13 @@
+# gg243 D2 yarış denemesi: 5 deneme, SendInvoice gecikmesi 0 ms, dosya test/gg243-dar-kontrol-gonderim.test.mjs, çalışma klasörü /home/user/wt/d2
+deneme 1/5: çıkış 0, geciktirilen SendInvoice 0 → doğal koşu; D2 (all) GEÇTİ, D2 (ids) GEÇTİ
+deneme 2/5: çıkış 0, geciktirilen SendInvoice 0 → doğal koşu; D2 (all) GEÇTİ, D2 (ids) GEÇTİ
+deneme 3/5: çıkış 0, geciktirilen SendInvoice 0 → doğal koşu; D2 (all) GEÇTİ, D2 (ids) GEÇTİ
+deneme 4/5: çıkış 0, geciktirilen SendInvoice 0 → doğal koşu; D2 (all) GEÇTİ, D2 (ids) GEÇTİ
+deneme 5/5: çıkış 0, geciktirilen SendInvoice 0 → doğal koşu; D2 (all) GEÇTİ, D2 (ids) GEÇTİ
+# geçersiz deneme 0
+# tests 10
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

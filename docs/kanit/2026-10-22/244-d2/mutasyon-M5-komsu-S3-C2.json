@@ -1,0 +1,43 @@
+{
+  "ad": "244-d2/mutasyon-M5-komsu-S3-C2",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-name-pattern ^(S3 \\(|C2: ) test/gg243-gonderim.test.mjs test/ebelge-240-kontrol3.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:17:38.419Z",
+  "sure_sn": 7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 1,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel, eşzamanlı gönderim, canlıda test serisi › S3 (ids): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye 'başka oturumda gönderildi' (hata değil)",
+      "konum": "test/gg243-gonderim.test.mjs:227:5",
+      "hata": "ön koşul: ikinci istek birincinin tuttuğu belgeye denk geldi ({\"results\":[{\"id\":\"invoice-afff77e4-4821-44bb-928c-16b4c6a3301c\",\"ok\":false,\"code\":\"einvoice-sending\",\"busy\":true,\"message\":\"Bu belge şu anda başka oturumda gönderiliyor; gönderim bitince listeyi yenileyin.\"},{\"id\":\"invoice-700ec7dc-0e46-42d7-8fe3-253127b19c30\",\"ok\":true,\"number\":\"TEA2026000000002\",) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel, eşzamanlı gönderim, canlıda test serisi › S3 (all): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye 'başka oturumda gönderildi' (hata değil)",
+      "konum": "test/gg243-gonderim.test.mjs:227:5",
+      "hata": "ön koşul: ikinci istek birincinin tuttuğu belgeye denk geldi ({\"results\":[{\"id\":\"invoice-aaaa6d8a-3675-4531-ba15-8fcfc8be1940\",\"ok\":false,\"code\":\"einvoice-sending\",\"busy\":true,\"message\":\"Bu belge şu anda başka oturumda gönderiliyor; gönderim bitince listeyi yenileyin.\"},{\"id\":\"invoice-74066e1a-354d-4066-9d4a-a4c96ac6a4c7\",\"ok\":true,\"number\":\"TEA2026000000002\",) (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/d2/docs/kanit/2026-10-22/244-d2/mutasyon-M5-komsu-S3-C2.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/d2/d2-mutasyon",
+  "ham_cikti_sha256": "fc83c99ba45af80646f77d1cf74761e82c4c8a1b144d5cd4357f7f0f36381541",
+  "ham_cikti_bayt": 4433
+}
