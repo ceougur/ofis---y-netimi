@@ -1,0 +1,4 @@
+B giriş 200
+A kaydet (maaş 2.000): 200 ["Maaş"]
+B kaydet (IBAN; formu A'dan önce açmıştı): 409 Bu personel kartını siz açtıktan sonra başka biri değiştirdi; değişiklikleriniz kaydedilmedi. Kartı yeniden açıp tekrar kaydedin.
+son kart: maaş 2000 IBAN TR330006100519786457841326 A'nın değişikliği korundu

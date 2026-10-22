@@ -1,0 +1,4 @@
+t10 (eleştirmen 31d betiği, scratchpad r31d/betik/t10-personel-iki-kisi.mjs) DEPO ile koşuldu.
+- ozgun-betik-yeni-kod.txt: özgün betik sürüm (updatedAt) GÖNDERMEZ; yeni kod da yazar (cari kalıbı: sürüm göndermeyen çağrı eskisi gibi yazar).
+- surumlu-*.txt: betiğin tek farkı formun updatedAt'ı da göndermesi (ekran formu 2.4.4 E5'ten beri gönderir; fark t10-surumlu.mjs.txt).
+  Yeni kodda B 409 + A'nın maaşı korunur; eski kodda (ee047cb) maaş sessizce geri alınır.

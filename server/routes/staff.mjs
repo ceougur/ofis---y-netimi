@@ -162,9 +162,9 @@ export function registerStaffRoutes(router, { auth, store, audit, events, access
       updatedAt: row.updated_at || row.created_at,
     };
   };
-  const find = id => {
+  const find = (id, { message = "Personel kartı bulunamadı. Silinmiş olabilir." } = {}) => {
     const row = store.get("SELECT * FROM staff_members WHERE id = ?", text(id).slice(0, 80));
-    if (!row) throw new HttpError(404, "Personel kartı bulunamadı. Silinmiş olabilir.", { code: "staff-missing" });
+    if (!row) throw new HttpError(404, message, { code: "staff-missing" });
     return row;
   };
   const duplicateTc = (tcNo, exceptId = "") => {
@@ -224,15 +224,26 @@ export function registerStaffRoutes(router, { auth, store, audit, events, access
 
   router.put(`${BASE}/:id`, async ({ req, res, params }) => {
     const user = editor(req);
-    const row = find(params.id);
+    const gone = { message: "Bu personel kartı siz düzenlerken silinmiş; değişiklikler kaydedilmedi. Pencereyi kapatın; kart gerekiyorsa Yeni Personel ile yeniden ekleyin." };
+    find(params.id, gone);
     const body = await readJson(req, { limit: 400_000 });
+    // 2.4.4 (eleştirmen E5): iyimser eşzamanlılık — cari formundaki kalıp (routes/accounts.mjs "account-stale"). Ekran formu bütün alanları ve
+    // açıldığı andaki sürümü (updatedAt) gönderir; arada başka biri kaydettiyse 409: ikinci kaydeden ilkinin değişikliğini (ör. maaş) sessizce geri
+    // almaz. Satır gövde okunduktan SONRA okunur (okuma sırasında gelen yazım da görülür); denetim ile yazım arasında bekleme yok. Sürüm
+    // göndermeyen kısmi çağrılar yalnız gönderdikleri alanı değiştirir, eskisi gibi yazar. KVKK: iletide ve yanıtta alan değeri yok.
+    const row = find(params.id, gone);
+    const version = row.updated_at || row.created_at;
+    if (body?.updatedAt && body.updatedAt !== version) throw new HttpError(409, "Bu personel kartını siz açtıktan sonra başka biri değiştirdi; değişiklikleriniz kaydedilmedi. Kartı yeniden açıp tekrar kaydedin.", { code: "staff-stale", updatedAt: version });
     const previous = rowOf(row);
     const values = staffInput(body || {}, { previous, today: today() });
     duplicateTc(values.tcNo, row.id);
     const changedKeys = Object.keys(STAFF_FIELDS).filter(key => values[key] !== previous[key]);
     if (changedKeys.length) {
       const pairs = write(values);
-      store.run(`UPDATE staff_members SET ${pairs.map(([column]) => `${column} = ?`).join(", ")}, updated_by = ?, updated_at = ? WHERE id = ?`, ...pairs.map(([, value]) => value), user.id, now().toISOString(), row.id);
+      // Sürüm her yazımda ilerler: saat aynı milisaniyede (ya da sahte saat geri alınmışsa) önceki sürümden büyük olmayan damga vermez.
+      const stamp = now().toISOString();
+      const at = stamp > version ? stamp : new Date(Date.parse(version) + 1).toISOString();
+      store.run(`UPDATE staff_members SET ${pairs.map(([column]) => `${column} = ?`).join(", ")}, updated_by = ?, updated_at = ? WHERE id = ?`, ...pairs.map(([, value]) => value), user.id, at, row.id);
       audit(user, "staff.updated", row.id, { fields: changedKeys.map(key => STAFF_FIELDS[key]) });
       changed(user);
     }
