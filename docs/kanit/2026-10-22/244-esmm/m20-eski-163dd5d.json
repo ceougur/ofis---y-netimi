@@ -1,0 +1,58 @@
+{
+  "ad": "244-esmm/m20-eski-163dd5d",
+  "komut": "node --test test/esmm-edm.test.mjs test/soap-sozlesme-nitelik.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T03:51:13.981Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 1,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "test/esmm-edm.test.mjs",
+      "konum": "test/esmm-edm.test.mjs:1:1",
+      "hata": "test failed"
+    },
+    {
+      "ad": "Sözleşme denetimi nitelikleri de denetler (gerçek EDM WSDL'leri kâhin) › e-SMM: SMM'ye e-Fatura kalıbıyla ID/UUID NİTELİĞİ verilirse uyarı → istek gönderilmez",
+      "konum": "test/soap-sozlesme-nitelik.test.mjs:20:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "Sözleşme denetimi nitelikleri de denetler (gerçek EDM WSDL'leri kâhin) › e-SMM: istek düzeyindeki SENDER/RECEIVER'da yalnız vkn ve alias nitelikleri var",
+      "konum": "test/soap-sozlesme-nitelik.test.mjs:32:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "Sözleşme denetimi nitelikleri de denetler (gerçek EDM WSDL'leri kâhin) › yerleşik basit türde (xs:token) nitelik olmaz",
+      "konum": "test/soap-sozlesme-nitelik.test.mjs:36:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "Sözleşme denetimi nitelikleri de denetler (gerçek EDM WSDL'leri kâhin) › e-Fatura (eski davranış korunur): INVOICE ID/UUID niteliği, SENDER vkn/alias ve MARK value geçer; tanımsız nitelik uyarılır",
+      "konum": "test/soap-sozlesme-nitelik.test.mjs:40:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [] (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/esmm/docs/kanit/2026-10-22/244-esmm/m20-eski-163dd5d.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d",
+  "ham_cikti_sha256": "159efd490cf44b3336b9629bedb1475df2546252129ec37a80895378f54feffa",
+  "ham_cikti_bayt": 7764
+}

@@ -1,0 +1,176 @@
+TAP version 13
+# Subtest: e-SMM servis adresi e-Fatura servis adresinden türetilir (kullanıcı kararı 21.10.2026 (6))
+    # Subtest: test ve canlı adres EDM'nin verdiği e-SMM adresleriyle aynı; yerel sahte servis adresi de türetilir
+    ok 1 - test ve canlı adres EDM'nin verdiği e-SMM adresleriyle aynı; yerel sahte servis adresi de türetilir
+      ---
+      duration_ms: 0.565992
+      type: 'test'
+      ...
+    # Subtest: …/EFaturaEDM.svc ile bitmeyen adresten tahmin yürütülmez: integrator-url
+    ok 2 - …/EFaturaEDM.svc ile bitmeyen adresten tahmin yürütülmez: integrator-url
+      ---
+      duration_ms: 0.535502
+      type: 'test'
+      ...
+    1..2
+ok 1 - e-SMM servis adresi e-Fatura servis adresinden türetilir (kullanıcı kararı 21.10.2026 (6))
+  ---
+  duration_ms: 1.855086
+  type: 'suite'
+  ...
+# Subtest: e-SMM istemcisi (ESmmEDM.svc) gerçek sözleşmeye uygun istek kurar
+    # Subtest: bağlantı testi: sözleşme okunur (SOAP 1.1, tempuri.org), programın kullandığı 5 işlem var; giriş e-SMM adresine gider
+    ok 1 - bağlantı testi: sözleşme okunur (SOAP 1.1, tempuri.org), programın kullandığı 5 işlem var; giriş e-SMM adresine gider
+      ---
+      duration_ms: 29.713717
+      type: 'test'
+      ...
+    # Subtest: gönderim: SendSMM — SMM'de ID/UUID ÇOCUK öğe + TRXID, CONTENT = UBL (base64), SMM_CONTENT_TYPE XML, gönderici/alıcı iki yerde
+    ok 2 - gönderim: SendSMM — SMM'de ID/UUID ÇOCUK öğe + TRXID, CONTENT = UBL (base64), SMM_CONTENT_TYPE XML, gönderici/alıcı iki yerde
+      ---
+      duration_ms: 6.799132
+      type: 'test'
+      ...
+    # Subtest: alıcının e-postası yoksa TO gitmez (kâğıt teslim)
+    ok 3 - alıcının e-postası yoksa TO gitmez (kâğıt teslim)
+      ---
+      duration_ms: 5.867257
+      type: 'test'
+      ...
+    # Subtest: kanal: ProfileID ESMM değilse ya da numara/ETTN içerikle uyuşmazsa istek HİÇ gitmez
+    ok 4 - kanal: ProfileID ESMM değilse ya da numara/ETTN içerikle uyuşmazsa istek HİÇ gitmez
+      ---
+      duration_ms: 0.889134
+      type: 'test'
+      ...
+    # Subtest: durum: GetSMMStatus SMM'de ID/UUID çocuk öğe; yanıtta SMM_STATUS'un KENDİ durumu okunur (HEADER/STATUS değil); e-SMM metinleri
+    ok 5 - durum: GetSMMStatus SMM'de ID/UUID çocuk öğe; yanıtta SMM_STATUS'un KENDİ durumu okunur (HEADER/STATUS değil); e-SMM metinleri
+      ---
+      duration_ms: 5.408052
+      type: 'test'
+      ...
+    # Subtest: durum eşlemesi EDM e-SMM tablosuna göre (xlsx): kabul/red yok, PACKAGE-FAIL iptal + yeniden gönderim yönergesi, LOAD-FAIL hata
+    ok 6 - durum eşlemesi EDM e-SMM tablosuna göre (xlsx): kabul/red yok, PACKAGE-FAIL iptal + yeniden gönderim yönergesi, LOAD-FAIL hata
+      ---
+      duration_ms: 0.851356
+      type: 'test'
+      ...
+    # Subtest: iptal: CancelSMM SMM'de ID/UUID çocuk öğe
+    ok 7 - iptal: CancelSMM SMM'de ID/UUID çocuk öğe
+      ---
+      duration_ms: 4.500916
+      type: 'test'
+      ...
+    # Subtest: resmî PDF: GetSMM (UUID + giden yön + PDF); ZIP'li içerik açılır; PDF değilse integrator-no-pdf; makbuz yoksa integrator-not-found
+    ok 8 - resmî PDF: GetSMM (UUID + giden yön + PDF); ZIP'li içerik açılır; PDF değilse integrator-no-pdf; makbuz yoksa integrator-not-found
+      ---
+      duration_ms: 8.822934
+      type: 'test'
+      ...
+    # Subtest: kopan bağlantı: yan etkisiz GetSMMStatus bir kez yinelenir; SendSMM ve CancelSMM YİNELENMEZ (sonuç belirsiz)
+    ok 9 - kopan bağlantı: yan etkisiz GetSMMStatus bir kez yinelenir; SendSMM ve CancelSMM YİNELENMEZ (sonuç belirsiz)
+      ---
+      duration_ms: 11.084386
+      type: 'test'
+      ...
+    # Subtest: EDM hatası (RequestFault) e-SMM'de de reddedildi olarak gelir; EDM kodu korunur
+    ok 10 - EDM hatası (RequestFault) e-SMM'de de reddedildi olarak gelir; EDM kodu korunur
+      ---
+      duration_ms: 4.366483
+      type: 'test'
+      ...
+    1..10
+ok 2 - e-SMM istemcisi (ESmmEDM.svc) gerçek sözleşmeye uygun istek kurar
+  ---
+  duration_ms: 79.009422
+  type: 'suite'
+  ...
+# Subtest: Bağdaştırıcı belge türüne göre servisi seçer (e-SMM → ESmmEDM.svc; e-Fatura/e-Arşiv → EFaturaEDM.svc)
+    # Subtest: ensureSession belgenin servisinde giriş yapar; e-Fatura oturumu e-SMM için erişim kanıtı sayılmaz; argümansız çağrı e-Fatura (eski davranış)
+    ok 1 - ensureSession belgenin servisinde giriş yapar; e-Fatura oturumu e-SMM için erişim kanıtı sayılmaz; argümansız çağrı e-Fatura (eski davranış)
+      ---
+      duration_ms: 15.661013
+      type: 'test'
+      ...
+    # Subtest: e-SMM belgesinde gönder / durum / iptal / resmî PDF ESmmEDM.svc'ye gider; e-posta ayarı kapalıysa alıcıya e-posta verilmez
+    ok 2 - e-SMM belgesinde gönder / durum / iptal / resmî PDF ESmmEDM.svc'ye gider; e-posta ayarı kapalıysa alıcıya e-posta verilmez
+      ---
+      duration_ms: 9.116441
+      type: 'test'
+      ...
+    # Subtest: e-Arşiv belgesi (eski davranış) e-Fatura servisinden gider
+    ok 3 - e-Arşiv belgesi (eski davranış) e-Fatura servisinden gider
+      ---
+      duration_ms: 15.096831
+      type: 'test'
+      ...
+    # Subtest: e-SMM'de portala taslak yok: 409 einvoice-draft-unsupported, ağa çıkılmaz
+    ok 4 - e-SMM'de portala taslak yok: 409 einvoice-draft-unsupported, ağa çıkılmaz
+      ---
+      duration_ms: 1.032821
+      type: 'test'
+      ...
+    # Subtest: e-SMM adresi türetilemezse yalnız e-SMM işlemi düşer (integrator-url, ağa çıkılmaz); e-Fatura bağlantısı bozulmaz
+    ok 5 - e-SMM adresi türetilemezse yalnız e-SMM işlemi düşer (integrator-url, ağa çıkılmaz); e-Fatura bağlantısı bozulmaz
+      ---
+      duration_ms: 3.779521
+      type: 'test'
+      ...
+    # Subtest: testSmm: e-SMM servisine bağlantı testi (Entegratör Ayarları → Bağlantıyı Test Et için hazır)
+    ok 6 - testSmm: e-SMM servisine bağlantı testi (Entegratör Ayarları → Bağlantıyı Test Et için hazır)
+      ---
+      duration_ms: 4.178342
+      type: 'test'
+      ...
+    1..6
+ok 3 - Bağdaştırıcı belge türüne göre servisi seçer (e-SMM → ESmmEDM.svc; e-Fatura/e-Arşiv → EFaturaEDM.svc)
+  ---
+  duration_ms: 49.181962
+  type: 'suite'
+  ...
+# Subtest: Sözleşme denetimi nitelikleri de denetler (gerçek EDM WSDL'leri kâhin)
+    # Subtest: e-SMM: SMM'ye e-Fatura kalıbıyla ID/UUID NİTELİĞİ verilirse uyarı → istek gönderilmez
+    ok 1 - e-SMM: SMM'ye e-Fatura kalıbıyla ID/UUID NİTELİĞİ verilirse uyarı → istek gönderilmez
+      ---
+      duration_ms: 1.954672
+      type: 'test'
+      ...
+    # Subtest: e-SMM: ID/UUID ÇOCUK ÖĞE ve TRXID niteliği sözleşmeye uyar
+    ok 2 - e-SMM: ID/UUID ÇOCUK ÖĞE ve TRXID niteliği sözleşmeye uyar
+      ---
+      duration_ms: 0.496841
+      type: 'test'
+      ...
+    # Subtest: e-SMM: istek düzeyindeki SENDER/RECEIVER'da yalnız vkn ve alias nitelikleri var
+    ok 3 - e-SMM: istek düzeyindeki SENDER/RECEIVER'da yalnız vkn ve alias nitelikleri var
+      ---
+      duration_ms: 0.241367
+      type: 'test'
+      ...
+    # Subtest: yerleşik basit türde (xs:token) nitelik olmaz
+    ok 4 - yerleşik basit türde (xs:token) nitelik olmaz
+      ---
+      duration_ms: 0.428504
+      type: 'test'
+      ...
+    # Subtest: e-Fatura (eski davranış korunur): INVOICE ID/UUID niteliği, SENDER vkn/alias ve MARK value geçer; tanımsız nitelik uyarılır
+    ok 5 - e-Fatura (eski davranış korunur): INVOICE ID/UUID niteliği, SENDER vkn/alias ve MARK value geçer; tanımsız nitelik uyarılır
+      ---
+      duration_ms: 0.503608
+      type: 'test'
+      ...
+    1..5
+ok 4 - Sözleşme denetimi nitelikleri de denetler (gerçek EDM WSDL'leri kâhin)
+  ---
+  duration_ms: 4.669525
+  type: 'suite'
+  ...
+1..4
+# tests 23
+# suites 4
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 230.103171

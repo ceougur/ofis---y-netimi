@@ -1,0 +1,238 @@
+TAP version 13
+# Subtest: e-SMM servis adresi e-Fatura servis adresinden türetilir (kullanıcı kararı 21.10.2026 (6))
+    # Subtest: test ve canlı adres EDM'nin verdiği e-SMM adresleriyle aynı; yerel sahte servis adresi de türetilir
+    ok 1 - test ve canlı adres EDM'nin verdiği e-SMM adresleriyle aynı; yerel sahte servis adresi de türetilir
+      ---
+      duration_ms: 0.549391
+      type: 'test'
+      ...
+    # Subtest: …/EFaturaEDM.svc ile bitmeyen adresten tahmin yürütülmez: integrator-url
+    ok 2 - …/EFaturaEDM.svc ile bitmeyen adresten tahmin yürütülmez: integrator-url
+      ---
+      duration_ms: 0.452387
+      type: 'test'
+      ...
+    1..2
+ok 1 - e-SMM servis adresi e-Fatura servis adresinden türetilir (kullanıcı kararı 21.10.2026 (6))
+  ---
+  duration_ms: 1.756958
+  type: 'suite'
+  ...
+# Subtest: e-SMM istemcisi (ESmmEDM.svc) gerçek sözleşmeye uygun istek kurar
+    # Subtest: bağlantı testi: sözleşme okunur (SOAP 1.1, tempuri.org), programın kullandığı 5 işlem var; giriş e-SMM adresine gider
+    ok 1 - bağlantı testi: sözleşme okunur (SOAP 1.1, tempuri.org), programın kullandığı 5 işlem var; giriş e-SMM adresine gider
+      ---
+      duration_ms: 29.016594
+      type: 'test'
+      ...
+    # Subtest: gönderim: SendSMM — SMM'de ID/UUID ÇOCUK öğe + TRXID, CONTENT = UBL (base64), SMM_CONTENT_TYPE XML, gönderici/alıcı iki yerde
+    ok 2 - gönderim: SendSMM — SMM'de ID/UUID ÇOCUK öğe + TRXID, CONTENT = UBL (base64), SMM_CONTENT_TYPE XML, gönderici/alıcı iki yerde
+      ---
+      duration_ms: 6.790444
+      type: 'test'
+      ...
+    # Subtest: alıcının e-postası yoksa TO gitmez (kâğıt teslim)
+    ok 3 - alıcının e-postası yoksa TO gitmez (kâğıt teslim)
+      ---
+      duration_ms: 5.492658
+      type: 'test'
+      ...
+    # Subtest: kanal: ProfileID ESMM değilse ya da numara/ETTN içerikle uyuşmazsa istek HİÇ gitmez
+    ok 4 - kanal: ProfileID ESMM değilse ya da numara/ETTN içerikle uyuşmazsa istek HİÇ gitmez
+      ---
+      duration_ms: 1.24591
+      type: 'test'
+      ...
+    # Subtest: durum: GetSMMStatus SMM'de ID/UUID çocuk öğe; yanıtta SMM_STATUS'un KENDİ durumu okunur (HEADER/STATUS değil); e-SMM metinleri
+    ok 5 - durum: GetSMMStatus SMM'de ID/UUID çocuk öğe; yanıtta SMM_STATUS'un KENDİ durumu okunur (HEADER/STATUS değil); e-SMM metinleri
+      ---
+      duration_ms: 7.195358
+      type: 'test'
+      ...
+    # Subtest: durum eşlemesi EDM e-SMM tablosuna göre (xlsx): kabul/red yok, PACKAGE-FAIL iptal + yeniden gönderim yönergesi, LOAD-FAIL hata
+    ok 6 - durum eşlemesi EDM e-SMM tablosuna göre (xlsx): kabul/red yok, PACKAGE-FAIL iptal + yeniden gönderim yönergesi, LOAD-FAIL hata
+      ---
+      duration_ms: 0.812185
+      type: 'test'
+      ...
+    # Subtest: iptal: CancelSMM SMM'de ID/UUID çocuk öğe
+    ok 7 - iptal: CancelSMM SMM'de ID/UUID çocuk öğe
+      ---
+      duration_ms: 3.983173
+      type: 'test'
+      ...
+    # Subtest: resmî PDF: GetSMM (UUID + giden yön + PDF); ZIP'li içerik açılır; PDF değilse integrator-no-pdf; makbuz yoksa integrator-not-found
+    ok 8 - resmî PDF: GetSMM (UUID + giden yön + PDF); ZIP'li içerik açılır; PDF değilse integrator-no-pdf; makbuz yoksa integrator-not-found
+      ---
+      duration_ms: 9.456733
+      type: 'test'
+      ...
+    # Subtest: kopan bağlantı: yan etkisiz GetSMMStatus bir kez yinelenir; SendSMM ve CancelSMM YİNELENMEZ (sonuç belirsiz)
+    ok 9 - kopan bağlantı: yan etkisiz GetSMMStatus bir kez yinelenir; SendSMM ve CancelSMM YİNELENMEZ (sonuç belirsiz)
+      ---
+      duration_ms: 9.752927
+      type: 'test'
+      ...
+    # Subtest: EDM hatası (RequestFault) e-SMM'de de reddedildi olarak gelir; EDM kodu korunur
+    ok 10 - EDM hatası (RequestFault) e-SMM'de de reddedildi olarak gelir; EDM kodu korunur
+      ---
+      duration_ms: 4.07016
+      type: 'test'
+      ...
+    1..10
+ok 2 - e-SMM istemcisi (ESmmEDM.svc) gerçek sözleşmeye uygun istek kurar
+  ---
+  duration_ms: 78.58904
+  type: 'suite'
+  ...
+# Subtest: Bağdaştırıcı belge türüne göre servisi seçer (e-SMM → ESmmEDM.svc; e-Fatura/e-Arşiv → EFaturaEDM.svc)
+    # Subtest: ensureSession belgenin servisinde giriş yapar; e-Fatura oturumu e-SMM için erişim kanıtı sayılmaz; argümansız çağrı e-Fatura (eski davranış)
+    not ok 1 - ensureSession belgenin servisinde giriş yapar; e-Fatura oturumu e-SMM için erişim kanıtı sayılmaz; argümansız çağrı e-Fatura (eski davranış)
+      ---
+      duration_ms: 13.375339
+      type: 'test'
+      location: '/home/user/wt/esmm/test/esmm-edm.test.mjs:233:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        her servise bir giriş; taze oturum yeniden giriş istemez
+        + actual - expected
+        
+          [
+            [
+              'Login',
+              'https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc'
+            ],
+        -   [
+        -     'Login',
+        -     'https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc'
+        -   ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'Login'
+          1: 'https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc'
+        1:
+          0: 'Login'
+          1: 'https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc'
+      actual:
+        0:
+          0: 'Login'
+          1: 'https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/esmm/test/esmm-edm.test.mjs:240:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: e-SMM belgesinde gönder / durum / iptal / resmî PDF ESmmEDM.svc'ye gider; e-posta ayarı kapalıysa alıcıya e-posta verilmez
+    not ok 2 - e-SMM belgesinde gönder / durum / iptal / resmî PDF ESmmEDM.svc'ye gider; e-posta ayarı kapalıysa alıcıya e-posta verilmez
+      ---
+      duration_ms: 11.516966
+      type: 'test'
+      location: '/home/user/wt/esmm/test/esmm-edm.test.mjs:242:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'processing'
+        - 'sent'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'sent'
+      actual: 'processing'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/esmm/test/esmm-edm.test.mjs:246:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: e-Arşiv belgesi (eski davranış) e-Fatura servisinden gider
+    ok 3 - e-Arşiv belgesi (eski davranış) e-Fatura servisinden gider
+      ---
+      duration_ms: 14.440836
+      type: 'test'
+      ...
+    # Subtest: e-SMM'de portala taslak yok: 409 einvoice-draft-unsupported, ağa çıkılmaz
+    ok 4 - e-SMM'de portala taslak yok: 409 einvoice-draft-unsupported, ağa çıkılmaz
+      ---
+      duration_ms: 0.540621
+      type: 'test'
+      ...
+    # Subtest: e-SMM adresi türetilemezse yalnız e-SMM işlemi düşer (integrator-url, ağa çıkılmaz); e-Fatura bağlantısı bozulmaz
+    not ok 5 - e-SMM adresi türetilemezse yalnız e-SMM işlemi düşer (integrator-url, ağa çıkılmaz); e-Fatura bağlantısı bozulmaz
+      ---
+      duration_ms: 13.636756
+      type: 'test'
+      location: '/home/user/wt/esmm/test/esmm-edm.test.mjs:275:3'
+      failureType: 'testCodeFailure'
+      error: 'hata bekleniyordu'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      operator: 'fail'
+      stack: |-
+        errorOf (file:///home/user/wt/esmm/test/esmm-edm.test.mjs:63:10)
+        async TestContext.<anonymous> (file:///home/user/wt/esmm/test/esmm-edm.test.mjs:278:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: testSmm: e-SMM servisine bağlantı testi (Entegratör Ayarları → Bağlantıyı Test Et için hazır)
+    not ok 6 - testSmm: e-SMM servisine bağlantı testi (Entegratör Ayarları → Bağlantıyı Test Et için hazır)
+      ---
+      duration_ms: 18.345941
+      type: 'test'
+      location: '/home/user/wt/esmm/test/esmm-edm.test.mjs:288:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+              'Login',
+        +     'efatura'
+        -     'smm'
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'Login'
+          1: 'smm'
+      actual:
+        0:
+          0: 'Login'
+          1: 'efatura'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/esmm/test/esmm-edm.test.mjs:292:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 3 - Bağdaştırıcı belge türüne göre servisi seçer (e-SMM → ESmmEDM.svc; e-Fatura/e-Arşiv → EFaturaEDM.svc)
+  ---
+  duration_ms: 72.221988
+  type: 'suite'
+  location: '/home/user/wt/esmm/test/esmm-edm.test.mjs:230:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 18
+# suites 3
+# pass 14
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 241.716189

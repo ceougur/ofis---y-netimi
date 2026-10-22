@@ -118,6 +118,44 @@ function childList(contract, decl) {
   const named = contract.types.get(key(type.ns, type.name));
   return named ? particles(contract, named.node, named) : null;
 }
+// Bir türün izin verdiği nitelik adları (2.4.4, e-SMM: e-Fatura'da INVOICE ID/UUID nitelikken e-SMM'de SMM ID/UUID çocuk öğedir; niteliği
+// sözleşmede olmayan istek EDM'de sessizce "bulunamadı" alabilirdi). Belirlenemiyorsa (xs:anyAttribute, attributeGroup, sözleşmede olmayan tür)
+// null → denetlenmez; yerleşik basit türde (xs:token…) nitelik yoktur.
+function attributesOfType(contract, node, out = new Set(), depth = 0) {
+  if (depth > 40) return null;
+  for (const item of node.children || []) {
+    if (item.ns !== XSD) continue;
+    if (item.name === "attribute") {
+      const name = item.attrs.name || (item.attrs.ref ? resolveQName(item, item.attrs.ref).name : "");
+      if (name) out.add(name);
+    } else if (item.name === "anyAttribute" || item.name === "attributeGroup") return null;
+    else if (item.name === "complexContent" || item.name === "simpleContent") {
+      const ext = item.children.find(sub => sub.ns === XSD && (sub.name === "extension" || sub.name === "restriction"));
+      if (!ext) continue;
+      if (ext.attrs.base) {
+        const base = resolveQName(ext, ext.attrs.base);
+        if (base.ns !== XSD) {
+          const type = contract.types.get(key(base.ns, base.name));
+          if (!type || !attributesOfType(contract, type.node, out, depth + 1)) return null;
+        }
+      }
+      if (!attributesOfType(contract, ext, out, depth + 1)) return null;
+    }
+  }
+  return out;
+}
+function attributeList(contract, decl) {
+  if (!decl) return null;
+  const { node } = decl;
+  const inline = node.children.find(item => item.ns === XSD && item.name === "complexType");
+  if (inline) return attributesOfType(contract, inline);
+  if (node.children.some(item => item.ns === XSD && item.name === "simpleType")) return new Set();
+  if (!node.attrs.type) return null;
+  const type = resolveQName(node, node.attrs.type);
+  if (type.ns === XSD) return new Set();
+  const named = contract.types.get(key(type.ns, type.name));
+  return named ? attributesOfType(contract, named.node) : null;
+}
 export function rootDecl(contract, operation) {
   const input = contract?.operations?.[operation]?.input;
   if (!input) return null;
@@ -162,6 +200,9 @@ export function shape(contract, operation, tree, { defaultNs }) {
   if (!root?.decl) return { tree: fallback(tree, root?.ns || defaultNs), warnings, contracted: false };
   const walk = (node, ns, decl, path) => {
     const out = { ...clean(node), ns, children: null };
+    // Sözleşmede olmayan nitelik de alan gibi raporlanır (istek gönderilmez).
+    const allowed = Object.keys(out.attrs).length ? attributeList(contract, decl) : null;
+    if (allowed) for (const name of Object.keys(out.attrs)) if (!allowed.has(name)) warnings.push(`${path}/@${name}`);
     if (!node.children) return out;
     const list = childList(contract, decl);
     const kids = node.children.filter(item => !isEmpty(item));
