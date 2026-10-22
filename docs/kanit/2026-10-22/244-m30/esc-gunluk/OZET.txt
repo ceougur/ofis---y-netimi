@@ -1,0 +1,34 @@
+## senaryo-210
+soru çıkmadı (0 satır)
+## senaryo-211
+soru çıkmadı (0 satır)
+## senaryo-212
+ADAY-MEŞRU	senaryo-212.mjs	adım senaryo-212.mjs:83 ← senaryo-212.mjs:111 ← senaryo-212.mjs:153	×1	«Yeni Taksit Kartı»	neden:alan	kapsam:<form>	dokunulan:1 değişen:1 dolu:5	["cari=Deniz Ak*","name(Ad Soyad / Kurum *)=Deniz Ak*"]
+ADAY-MEŞRU	senaryo-212.mjs	adım senaryo-212.mjs:83 ← senaryo-212.mjs:111 ← senaryo-212.mjs:159	×1	«Yeni Taksit Kartı»	neden:alan	kapsam:<form>	dokunulan:1 değişen:1 dolu:5	["cari=Deniz Ak*","cari=Deniz Ak*"]
+toplam soru 2, adım 2, ŞÜPHELİ / ELLE-BAK / sınıflanamayan 0
+## senaryo-213
+ADAY-MEŞRU	senaryo-213.mjs	adım senaryo-213.mjs:83 ← senaryo-213.mjs:98 ← senaryo-213.mjs:372	×1	«Yeni Cari»	neden:alan	kapsam:<form>	dokunulan:1 değişen:1 dolu:5	["name(Ad Soyad / Unvan *)=Tülay Arıkan*"]
+toplam soru 1, adım 1, ŞÜPHELİ / ELLE-BAK / sınıflanamayan 0
+## senaryo-214
+ADAY-MEŞRU	senaryo-214.mjs	adım senaryo-214.mjs:76 ← senaryo-214.mjs:288 ← senaryo-214.mjs:53	×1	«Yeni Cari»	neden:alan	kapsam:<form>	dokunulan:1 değişen:1 dolu:5	["name(Ad Soyad / Unvan *)=deneme*"]
+toplam soru 1, adım 1, ŞÜPHELİ / ELLE-BAK / sınıflanamayan 0
+## senaryo-215
+soru çıkmadı (0 satır)
+## senaryo-216
+soru çıkmadı (0 satır)
+## senaryo-217
+ADAY-MEŞRU	senaryo-217.mjs	adım senaryo-217.mjs:91 ← senaryo-217.mjs:253 ← senaryo-217.mjs:64	×1	«Fatura · Yeni Satış Faturası · Stoktan Satış»	neden:kapsam	kapsam:form-1	dokunulan:0 değişen:0 dolu:9	["kalem0.name(1. kalem adı)=Çay 1 Kg","kalem0.unitPrice(Birim fiyat)=80,00"]
+toplam soru 1, adım 1, ŞÜPHELİ / ELLE-BAK / sınıflanamayan 0
+## senaryo-218
+soru çıkmadı (0 satır)
+## senaryo-rapor
+soru çıkmadı (0 satır)
+## senaryo-taslak
+soru çıkmadı (0 satır)
+## senaryo-whatsapp
+soru çıkmadı (0 satır)
+## senaryo
+soru çıkmadı (0 satır)
+## ui-ux-217
+ADAY-MEŞRU	ui-ux-217.mjs	adım ui-ux-217.mjs:43 ← ui-ux-217.mjs:114 ← ui-ux-217.mjs:207	×1	«Banka Masrafı»	neden:alan	kapsam:<form>	dokunulan:1 değişen:1 dolu:6	["amount(Tutar (Vergi Dahil) *)=10,50*"]
+toplam soru 1, adım 1, ŞÜPHELİ / ELLE-BAK / sınıflanamayan 0
