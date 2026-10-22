@@ -14,9 +14,9 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
   /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad (ajan-ortak.md = ajan kuralları; devam-ajanlar.md = ajan kimlikleri; kapsayıcıyla gider).
 - ÇALIŞMA DALINDA (yeşil CI): madde 1–4, 6, 7, 9, 10, 12-UX16, 13, 14, 19, 20, 21, 23, 25, 27, 28, 29 (CI #849–#857). Çalışma dalında ama CI #858 KIRMIZI (senaryo-222): 5, 16,
   18, 26, 23 eki → düzeltmesi 7c adayda.
-- ADAY 4 ÇALIŞMA DALINDA (22.10 ~13:00): 2fb1d33 = birleştir aday 4 (4e19947; kapı npm test 3094/3094 + 64/64 e2e, kanıt aday-2b71fea-*); push edildi, CI
-  bekleniyor (`kanit.mjs ci 2fb1d33 --bekle`). Yeşilse iş listesinde 5, 5a–5c, 7b, 7c, 8, 11, 12 UX15, 15, 16, 17, 18 (madde 18 için ayrıca kullanıcının Windows + Edge
-  elle kabulü — GÖZDEN GEÇİRME 2), 22, 23 eki, 26 çizilir.
+- ADAY 4 ÇALIŞMA DALINDA (22.10 ~13:00): 2fb1d33 = birleştir aday 4 (4e19947; kapı npm test 3094/3094 + 64/64 e2e, kanıt aday-2b71fea-*); push edildi; CI #859
+  BÜTÜN İŞLER YEŞİL (Linux/Windows × Node 22/24, e2e, Doğrulama Kapısı, paket) → iş listesinde 5, 5a–5c, 7b, 7c, 8, 11, 12 UX15, 15, 16, 17, 22, 23 eki, 26 ÇİZİLDİ;
+  18 çizilmedi (kullanıcının Windows + Edge elle kabulü — GÖZDEN GEÇİRME 2).
 - ADAY 5 = /home/user/wt/aday5 (dal aday5) 5ad1277 = aday 4 + 31a F1/F5/F4, F2/F3/F6, 24 BuildingName/deneyler, kâhin e-Belge/2 + cari/tutar, I23 (c1598c7), CI kâhin
   adımları (7a2141b), e-SMM kaşe/logo cümlesi (d4c3b20, kullanıcı "ekle"), is/esmm-fis (5599e07: kâğıt/fiş numarası tekil, VKN'li düzenleyen PartyName, göç v32
   tarama; çakışma chronologyProblem'de anlamca birleşti, dar test 116/116). Kâhin adımları 5ad1277'de: defter 147/147, cari 1364/1364, tutar 3472/3472, e-Belge model
