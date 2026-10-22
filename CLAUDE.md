@@ -502,6 +502,12 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   bakmıyor (2.4.3 çıkış yolu). ÖNERİ: 8 gün geçtiyse yalnız-programda iptalden önce EDM durum sorgusu zorunlu; EDM "bulunamadı" derse (iletilmemiş) iptal serbest,
   "var" derse süre dolmuş sayılır ve iptal reddedilir (GİB'de geçerli belge programda iptal görünmesin).
   KARAR (kullanıcı, 22.10.2026: "önerin uygun"): öneri AYNEN uygulanır.
+- SORULAR (22.10.2026, madde 5 yapılırken; kullanıcıya soruldu): (a) carisi olmayan kayıtta Tablodan Aktar'dan ÖNCE şeritten girilen tahsilat caride taksit dışı kalıyor,
+  karta taşınmıyor (kart o ayı ödenmemiş gösteriyor; ön izleme söylüyor). ÖNERİ: Tablodan Aktar kayda bağlı carinin taksit dışı tahsilatlarını ön izlemede göstererek en eski
+  açık taksitten başlayarak karta eşleştirsin (kullanıcı kapatabilir); para çekirdeği → kırmızı test + mutasyon + dar kontrol. (b) "Önce cari açın" formunda Açılış Bakiyesi
+  boş geliyor → borç girilmezse tahsilat avans görünür. ÖNERİ: kayıttaki Kalan Borç ile dolu gelsin (değiştirilebilir) + Tablodan Aktar'ın aynı borcu ikinci kez
+  yazmadığı testle güvenceye alınır. (c) önceden var olan hata: Tablodaki Kişiler raporunda aynı dosya no iki sekmede varsa tahsilat iki kez yazılıyor (2.4.3'te de) →
+  ÖNERİ 2.4.4'te düzeltilsin. KARAR BEKLENİYOR.
 - MEVZUAT KARARI (kullanıcı, 20.10.2026): e-Fatura / e-Arşiv kutu metinleri DEĞİŞMEZ, 2.4.4'te değil; geri bildirim gelirse netleştirilir. 509 VUK GT okuma
   notları (IV.2.2, IV.2.4.1, V.1 kayıt yöntemi) arşivde (21.10).
 - RAPOR DÜZENİ (kullanıcı, 21.10.2026: "2.4.4'ü yaparken 30 dk'da kısa ara rapor ver, düşen test var mı, durmuş işlem var mı kontrol et; varsa gereğini yap;
