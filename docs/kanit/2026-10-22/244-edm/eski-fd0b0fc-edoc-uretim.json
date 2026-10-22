@@ -1,0 +1,38 @@
+{
+  "ad": "244-edm/eski-fd0b0fc-edoc-uretim",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-name-pattern=server/server.mjs test/edoc-uretim.test.mjs",
+  "commit": "fd0b0fc6ebac15c9ebde3715179f88b0a9e774f3",
+  "dal": "HEAD",
+  "kirli": 2,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T09:56:48.688Z",
+  "sure_sn": 0.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Üretim girişi: e-Belge açık, test ve canlı ortam açık › server/server.mjs e-Belgeyi, canlı ortamı (kullanıcı 16.10.2026: \"hem testi hem canlıyı aç\") ve e-SMM'yi (2.4.4 iş listesi 24) açar; config bunları ortam değişkeniyle açmaz",
+      "konum": "test/edoc-uretim.test.mjs:24:3",
+      "hata": "üretim girişi edocEnabled, edocLive ve esmmEnabled verir (beklenen , gelen |-)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-edm/eski-fd0b0fc-edoc-uretim.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm/edm-eski-fd0b0fc",
+  "ham_cikti_sha256": "88ca9d52095fc03a3aeef674daee8663a0ce7fe22cb300a6f7eb6af1259ff0f5",
+  "ham_cikti_bayt": 4380
+}

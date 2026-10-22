@@ -146,7 +146,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   const STATUS_POLL_MS = Array.isArray(config.edocStatusPollMs) ? config.edocStatusPollMs.map(Number).filter(value => value >= 0) : [1000, 2000];
   // Dar kontrol 2.4.3 (Y1): Tümünü Gönder'in istek başına süre bütçesi (config.mjs edocSendBudgetMs; üretimde 10 sn).
   const SEND_BUDGET_MS = Number(config.edocSendBudgetMs) > 0 ? Number(config.edocSendBudgetMs) : 10_000;
-  // e-SMM gönderimi hazır olana dek kapalı (config.mjs esmmEnabled): eski "esmm: true" kaydı da etkisizdir (makbuz kâğıt).
+  // e-SMM gönderimi (config.mjs esmmEnabled; 2.4.4'te üretim girişi açar, testler vermedikçe kapalı): kapalıyken eski "esmm: true" kaydı da etkisizdir
+  // (makbuz kâğıt).
   const esmmEnabled = edocEnabled && config.esmmEnabled === true;
   // 2.4.4 madde 22 (E1): e-Belge GÖNDERİM KAPILARININ TEK kuralı — bu tür ve bu profil entegratöre e-Belge olarak gider mi? Gönderilecekler (liste ve
   // SQL), kartın Gönder / Durum Sorgula / Resmî Görüntü / Portala Taslak düğmeleri, "Kes, Sonra Gönder", kayıtta O1 sırası, kayıtta gönderim denetimi,
