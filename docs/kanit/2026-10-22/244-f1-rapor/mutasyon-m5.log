@@ -1,0 +1,275 @@
+TAP version 13
+# (node:31178) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.4 5c: Tablodaki Kişiler — aynı dosya no iki sekmede, tahsilat bir kez; toplam = satırlar (her süzgeç)
+    # Subtest: varsayılan dönem: 2026/1104 (Zeynep Şahin) tahsilatları bir kez (100 + 250), iki sekmenin borç satırları ayrı
+    not ok 1 - varsayılan dönem: 2026/1104 (Zeynep Şahin) tahsilatları bir kez (100 + 250), iki sekmenin borç satırları ayrı
+      ---
+      duration_ms: 132.683583
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m5/test/rapor-tablodaki-kisiler-244.test.mjs:53:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        alacak satırları: []
+        + actual - expected
+        
+        + []
+        - [
+        -   100,
+        -   250
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 100
+        1: 250
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m5/test/rapor-tablodaki-kisiler-244.test.mjs:57:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: her süzgeçte toplam = satırlar; tahsilat yalnız süzgeçte kalan kayda bir kez yazılır
+    not ok 2 - her süzgeçte toplam = satırlar; tahsilat yalnız süzgeçte kalan kayda bir kez yazılır
+      ---
+      duration_ms: 231.222206
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m5/test/rapor-tablodaki-kisiler-244.test.mjs:65:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bugün: yalnız cari tahsilatı
+        + actual - expected
+        
+        + []
+        - [
+        -   250
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 250
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m5/test/rapor-tablodaki-kisiler-244.test.mjs:88:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - 2.4.4 5c: Tablodaki Kişiler — aynı dosya no iki sekmede, tahsilat bir kez; toplam = satırlar (her süzgeç)
+  ---
+  duration_ms: 1427.47623
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m5/test/rapor-tablodaki-kisiler-244.test.mjs:26:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:31180) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.4 31a F1/F5/F4: Tablodaki Kişiler ve Nakit Akışı karta taşınan ve karta girilen tahsilatı sayar; kişi adıyla görünür
+    # Subtest: N4 (F4): çok sekmeli tabloda her kişi adıyla görünür (Borçlu, Müşteri, Kiracı); iç anahtar ya da dosya no görünmez
+    not ok 1 - N4 (F4): çok sekmeli tabloda her kişi adıyla görünür (Borçlu, Müşteri, Kiracı); iç anahtar ya da dosya no görünmez
+      ---
+      duration_ms: 201.904044
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m5/test/rapor-tablodaki-kisiler-f1.test.mjs:70:3'
+      failureType: 'testCodeFailure'
+      error: 'Ali Veli yok: ["2026/1101","2026/1102","2026/1103","2026/1104","2026/1105","Elif Aydın"]'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m5/test/rapor-tablodaki-kisiler-f1.test.mjs:73:104)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: N1 öncesi: Elif'in alacağı 3.500 (cari tahsilatları); Nakit Akışı gerçekleşen tahsilat ölçülür
+    ok 2 - N1 öncesi: Elif'in alacağı 3.500 (cari tahsilatları); Nakit Akışı gerçekleşen tahsilat ölçülür
+      ---
+      duration_ms: 44.776628
+      type: 'test'
+      ...
+    # Subtest: N1/N3 (F1): Tablodan Aktar iki tahsilatı karta taşır → alacak 3.500 KALIR, Nakit Akışı gerçekleşen aynı
+    ok 3 - N1/N3 (F1): Tablodan Aktar iki tahsilatı karta taşır → alacak 3.500 KALIR, Nakit Akışı gerçekleşen aynı
+      ---
+      duration_ms: 202.382541
+      type: 'test'
+      ...
+    # Subtest: N2 (F5): karta doğrudan girilen 700 tahsilat alacağa ve Nakit Akışı'na girer (3.500 + 700 = 4.200)
+    ok 4 - N2 (F5): karta doğrudan girilen 700 tahsilat alacağa ve Nakit Akışı'na girer (3.500 + 700 = 4.200)
+      ---
+      duration_ms: 70.734506
+      type: 'test'
+      ...
+    # Subtest: N6: her süzgeçte toplam = satırlar; Elif'in tahsilatları bir kez
+    ok 5 - N6: her süzgeçte toplam = satırlar; Elif'in tahsilatları bir kez
+      ---
+      duration_ms: 45.937698
+      type: 'test'
+      ...
+    # Subtest: N1 geri al: kart kalkar, 3.500 cariye döner → alacak 3.500 (iki kez değil), Nakit Akışı gerçekleşen geri döner
+    ok 6 - N1 geri al: kart kalkar, 3.500 cariye döner → alacak 3.500 (iki kez değil), Nakit Akışı gerçekleşen geri döner
+      ---
+      duration_ms: 106.822382
+      type: 'test'
+      ...
+    1..6
+not ok 2 - 2.4.4 31a F1/F5/F4: Tablodaki Kişiler ve Nakit Akışı karta taşınan ve karta girilen tahsilatı sayar; kişi adıyla görünür
+  ---
+  duration_ms: 1816.19366
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m5/test/rapor-tablodaki-kisiler-f1.test.mjs:36:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.4 31a N5: aynı adlı iki kişi (telefonları farklı) ayrı satır; aynı kişi (biri telefonsuz) iki sekmede tek satır
+    # Subtest: iki Elif Kaya ayrı satır (500 / 700); Tuna Sarı iki sekmede tek satır (borç 4.000 + 8.000, alacak 250)
+    not ok 1 - iki Elif Kaya ayrı satır (500 / 700); Tuna Sarı iki sekmede tek satır (borç 4.000 + 8.000, alacak 250)
+      ---
+      duration_ms: 2.036475
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m5/test/rapor-tablodaki-kisiler-f1.test.mjs:148:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        [["K-1",500],["K-2",700],["K-3",0],["Tuna Sarı",250]]
+        + actual - expected
+        
+        + []
+        - [
+        -   500,
+        -   700
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 500
+        1: 700
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m5/test/rapor-tablodaki-kisiler-f1.test.mjs:151:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: ad süzgeci ikisini de getirir; toplam = satırlar
+    not ok 2 - ad süzgeci ikisini de getirir; toplam = satırlar
+      ---
+      duration_ms: 0.824967
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m5/test/rapor-tablodaki-kisiler-f1.test.mjs:159:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        0 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m5/test/rapor-tablodaki-kisiler-f1.test.mjs:161:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 3 - 2.4.4 31a N5: aynı adlı iki kişi (telefonları farklı) ayrı satır; aynı kişi (biri telefonsuz) iki sekmede tek satır
+  ---
+  duration_ms: 3.309205
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m5/test/rapor-tablodaki-kisiler-f1.test.mjs:131:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:31185) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: raporlama motoru
+    # Subtest: kayıtlar ortak omurgaya iner: cari, kalan borç, vade, durum; özel alanlar ayrı; cari anahtarı dosyalar arasında eşleşir
+    ok 1 - kayıtlar ortak omurgaya iner: cari, kalan borç, vade, durum; özel alanlar ayrı; cari anahtarı dosyalar arasında eşleşir
+      ---
+      duration_ms: 44.057145
+      type: 'test'
+      ...
+    # Subtest: cari ekstre iki dosyadaki aynı cariyi tek hesapta birleştirir; tahsilat alacak yazar; bakiye yürür; özel alan kolonları veriden gelir
+    ok 2 - cari ekstre iki dosyadaki aynı cariyi tek hesapta birleştirir; tahsilat alacak yazar; bakiye yürür; özel alan kolonları veriden gelir
+      ---
+      duration_ms: 19.434415
+      type: 'test'
+      ...
+    # Subtest: vade takip: gecikmiş / bugün / yaklaşan / kapalı; gün farkı; durum süzgeci; tarihsiz kalem listelenir
+    ok 3 - vade takip: gecikmiş / bugün / yaklaşan / kapalı; gün farkı; durum süzgeci; tarihsiz kalem listelenir
+      ---
+      duration_ms: 11.755493
+      type: 'test'
+      ...
+    # Subtest: nakit akış: dönem başına beklenen, gerçekleşen, kasa ve birikimli; gün / hafta / ay
+    ok 4 - nakit akış: dönem başına beklenen, gerçekleşen, kasa ve birikimli; gün / hafta / ay
+      ---
+      duration_ms: 1.437947
+      type: 'test'
+      ...
+    # Subtest: dışa aktarma tablosu: tarih gg.aa.yyyy, tutar Türkçe yazım, boşlar boş
+    ok 5 - dışa aktarma tablosu: tarih gg.aa.yyyy, tutar Türkçe yazım, boşlar boş
+      ---
+      duration_ms: 0.521725
+      type: 'test'
+      ...
+    1..5
+ok 4 - raporlama motoru
+  ---
+  duration_ms: 83.416972
+  type: 'suite'
+  ...
+# Subtest: raporlama uçları (tam yığın)
+    # Subtest: cari ekstre iki oturumu birleştirir; vade takip ve nakit akış döner; Excel ve PDF dışa aktarılır
+    ok 1 - cari ekstre iki oturumu birleştirir; vade takip ve nakit akış döner; Excel ve PDF dışa aktarılır
+      ---
+      duration_ms: 194.975087
+      type: 'test'
+      ...
+    1..1
+ok 5 - raporlama uçları (tam yığın)
+  ---
+  duration_ms: 1469.709017
+  type: 'suite'
+  ...
+1..5
+# tests 16
+# suites 5
+# pass 11
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2783.752326

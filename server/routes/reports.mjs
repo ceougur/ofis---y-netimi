@@ -53,7 +53,9 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
         const tabs = (view.tabs || []).map(tab => tab.title).filter(Boolean);
         const forced = profile.roles ? profile.roles() : null;
         const analyses = analyzeColumns(rows.slice(0, 5000), columnOrder(rows), { now, forced });
-        const normalized = normalizeRecords({ rows, analyses, session: session.key, sessionName: session.name, tabs });
+        // 31a F4: çok sekmeli tabloda her sekmenin kişi / tutar / kimlik kolonu kendi sekmesinden okunur (sekmeler farklı başlık taşır: Borçlu, Müşteri, Kiracı).
+        const analyzeTab = scope => analyzeColumns(scope.slice(0, 5000), columnOrder(scope), { now, forced });
+        const normalized = normalizeRecords({ rows, analyses, session: session.key, sessionName: session.name, tabs, analyzeTab });
         columnsBySession[session.key] = normalized.columns;
         for (const record of normalized.records) records.push(record);
         const keys = new Set(rows.map(row => row.__hofKey));
@@ -90,9 +92,11 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
   }
   async function backbone(filters, now) {
     const data = filters.sessions.length ? await calendar(filters, now) : await allCalendar(now);
-    // Tablodaki Kişiler ve Nakit Akışı: kaydın tahsilatı = kayıt tahsilatı (eski) + kayda bağlı carinin tahsilatı (2.4.3 A2 "Kayıt Tahsilatları" kuralı; 2.4.4
-    // E8: zil ve Tahsilat Takvimi'ndeki tahsilat artık cariye yazılır). Cari tahsilatı bağın veri oturumunu (session) taşır; yalnız o sayfanın kaydına sayılır.
-    const payments = [...store.all("SELECT case_key AS caseKey, amount, date, note FROM payments"), ...dataset.sessions().flatMap(item => caseCollections(store, item.key).filter(row => row.session))];
+    // Tablodaki Kişiler ve Nakit Akışı: kaydın tahsilatı takvimle AYNI küme — kayıt tahsilatı (eski) + kayda bağlı carinin tahsilatı (2.4.3 A2; 2.4.4 E8: zil ve
+    // Tahsilat Takvimi'ndeki tahsilat cariye yazılır) + kayda (ya da kayda bağlı cariye) bağlı taksit kartının tahsilatı (31a F1/F5: Tablodan Aktar'ın karta
+    // taşıdığı cari tahsilatı ve karta doğrudan girilen tahsilat; önceden rapordan düşüyordu). Bir para hareketi tek satırdadır (K11): iki kez sayılmaz.
+    // Cari / kart tahsilatı bağın veri oturumunu (session) taşır; yalnız o sayfanın kaydına sayılır.
+    const payments = [...store.all("SELECT case_key AS caseKey, amount, date, note FROM payments"), ...dataset.sessions().flatMap(item => caseCollections(store, item.key, { plans: true }).filter(row => row.session))];
     // Nakit akışta taksit kartı hareketleri de kasa giriş/çıkışıdır (v2.0.4).
     const cashEntries = [...store.all("SELECT kind, amount, date FROM cash_entries"), ...(plans?.cashEntries ? plans.cashEntries().map(entry => ({ kind: entry.kind, amount: entry.amount, date: entry.date })) : [])];
     return { ...data, payments, cashEntries };

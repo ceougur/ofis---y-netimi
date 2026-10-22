@@ -1,0 +1,58 @@
+{
+  "ad": "244-f1-rapor/mutasyon-m2",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m2/test/rapor-tablodaki-kisiler-f1.test.mjs /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m2/test/rapor-tablodaki-kisiler-244.test.mjs /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m2/test/reports.test.mjs",
+  "commit": "2b71feac5cce579d33b9c7d9ca5b2c0784286917",
+  "dal": "is/f1-rapor",
+  "kirli": 3,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T10:54:15.654Z",
+  "sure_sn": 2.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 16,
+    "gecen": 11,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 5c: Tablodaki Kişiler — aynı dosya no iki sekmede, tahsilat bir kez; toplam = satırlar (her süzgeç) › varsayılan dönem: 2026/1104 (Zeynep Şahin) tahsilatları bir kez (100 + 250), iki sekmenin borç satırları ayrı",
+      "konum": "test/rapor-tablodaki-kisiler-244.test.mjs:53:3",
+      "hata": "alacak satırları: [] · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.4 5c: Tablodaki Kişiler — aynı dosya no iki sekmede, tahsilat bir kez; toplam = satırlar (her süzgeç) › her süzgeçte toplam = satırlar; tahsilat yalnız süzgeçte kalan kayda bir kez yazılır",
+      "konum": "test/rapor-tablodaki-kisiler-244.test.mjs:65:3",
+      "hata": "bugün: yalnız cari tahsilatı · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.4 31a F1/F5/F4: Tablodaki Kişiler ve Nakit Akışı karta taşınan ve karta girilen tahsilatı sayar; kişi adıyla görünür › N4 (F4): çok sekmeli tabloda her kişi adıyla görünür (Borçlu, Müşteri, Kiracı); iç anahtar ya da dosya no görünmez",
+      "konum": "test/rapor-tablodaki-kisiler-f1.test.mjs:70:3",
+      "hata": "Ali Veli yok: [\"2026/1101\",\"2026/1102\",\"2026/1103\",\"2026/1104\",\"2026/1105\",\"Elif Aydın\"] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.4 31a N5: aynı adlı iki kişi (telefonları farklı) ayrı satır; aynı kişi (biri telefonsuz) iki sekmede tek satır › iki Elif Kaya ayrı satır (500 / 700); Tuna Sarı iki sekmede tek satır (borç 4.000 + 8.000, alacak 250)",
+      "konum": "test/rapor-tablodaki-kisiler-f1.test.mjs:148:3",
+      "hata": "[[\"K-1\",500],[\"K-2\",700],[\"K-3\",0],[\"Tuna Sarı\",250]] · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.4 31a N5: aynı adlı iki kişi (telefonları farklı) ayrı satır; aynı kişi (biri telefonsuz) iki sekmede tek satır › ad süzgeci ikisini de getirir; toplam = satırlar",
+      "konum": "test/rapor-tablodaki-kisiler-f1.test.mjs:159:3",
+      "hata": "Expected values to be strictly equal: · 0 !== 2 (beklenen 2, gelen 0)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-f1-rapor/mutasyon-m2.log",
+  "klasor": "/home/user/wt/f1-rapor",
+  "ham_cikti_sha256": "6227390fc922896f5ceb78fa9536011689e1554f7e03f8330e96383dd943496b",
+  "ham_cikti_bayt": 12814
+}

@@ -1,0 +1,48 @@
+{
+  "ad": "244-f1-rapor/mutasyon-m4",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m4/test/rapor-tablodaki-kisiler-f1.test.mjs /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m4/test/rapor-tablodaki-kisiler-244.test.mjs /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m4/test/reports.test.mjs",
+  "commit": "2b71feac5cce579d33b9c7d9ca5b2c0784286917",
+  "dal": "is/f1-rapor",
+  "kirli": 3,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T10:54:21.641Z",
+  "sure_sn": 2.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 16,
+    "gecen": 13,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 31a F1/F5/F4: Tablodaki Kişiler ve Nakit Akışı karta taşınan ve karta girilen tahsilatı sayar; kişi adıyla görünür › N4 (F4): çok sekmeli tabloda her kişi adıyla görünür (Borçlu, Müşteri, Kiracı); iç anahtar ya da dosya no görünmez",
+      "konum": "test/rapor-tablodaki-kisiler-f1.test.mjs:70:3",
+      "hata": "Zeynep Şahin tek satır grubu · 2 !== 1 (beklenen 1, gelen 2)"
+    },
+    {
+      "ad": "2.4.4 31a N5: aynı adlı iki kişi (telefonları farklı) ayrı satır; aynı kişi (biri telefonsuz) iki sekmede tek satır › iki Elif Kaya ayrı satır (500 / 700); Tuna Sarı iki sekmede tek satır (borç 4.000 + 8.000, alacak 250)",
+      "konum": "test/rapor-tablodaki-kisiler-f1.test.mjs:148:3",
+      "hata": "Tuna Sarı tek satır grubu (İcra Takip'te telefonsuz) · 2 !== 1 (beklenen 1, gelen 2)"
+    },
+    {
+      "ad": "raporlama motoru › cari ekstre iki dosyadaki aynı cariyi tek hesapta birleştirir; tahsilat alacak yazar; bakiye yürür; özel alan kolonları veriden gelir",
+      "konum": "test/reports.test.mjs:34:3",
+      "hata": "[\"İcra\"] (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-f1-rapor/mutasyon-m4.log",
+  "klasor": "/home/user/wt/f1-rapor",
+  "ham_cikti_sha256": "859a3f4e4481ce9bfdf91e708ac8dfeb42f7dfd65cedabae619832c3740f2e96",
+  "ham_cikti_bayt": 10495
+}
