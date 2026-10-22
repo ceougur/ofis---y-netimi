@@ -250,7 +250,7 @@ try {
       const select = document.querySelector('.hof-accounts-modal .hof-plans-filters select');
       return { button: Math.round(button?.getBoundingClientRect().height || 0), select: Math.round(select?.getBoundingClientRect().height || 0) };
     });
-    ok(sizes.button > 0 && sizes.button <= sizes.select + 1, `"Cari Listesi - PDF" ${sizes.button} px, seçici ${sizes.select} px (tek satır)`);
+    ok(sizes.button > 0 && sizes.button <= sizes.select + 1, `Cari Listesi PDF düğmesi ${sizes.button} px, seçici ${sizes.select} px (tek satır)`);
     await shot(page, "a12-suzgec");
     await closeAll(page);
   });

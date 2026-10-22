@@ -6654,16 +6654,10 @@ body.hof-dense .dynamic-table th {
   display: inline-flex;
   gap: 6px;
 }
-.hof-plan-output .hof-button svg {
-  margin-right: 2px;
-}
 /* 2.4.3 (keşif A12): süzgeç satırındaki PDF / Yazdır / Excel düğmeleri tek satır ve seçicilerle aynı boy (36 px); Cari listesinde ikinci
-   satırda kalan genişliği kullanır ("Cari Listesi - PDF" önceden üç satıra kırılıyordu). */
-.hof-plans-filters .hof-plan-output .hof-button {
-  display: inline-flex;
-  align-items: center;
+   satırda kalan genişliği kullanır. 2.4.4 (UI11): düğmeler ortak dışa aktarım ailesinde (.hof-rep-out). */
+.hof-plans-filters .hof-plan-output .hof-rep-out {
   height: 36px;
-  white-space: nowrap;
 }
 @media (min-width: 1101px) {
   .hof-acc-filters > .hof-plan-output {
@@ -8036,21 +8030,49 @@ button.hof-source-card:focus-visible {
 .hof-rep-export.is-disabled {
   opacity: 0.5;
 }
+/* 2.4.4 (UI11): dışa aktarım düğmelerinin TEK ailesi (HOF.outputButton). Liste, rapor, kart ve belge çıktılarında PDF (kırmızı ton), Excel (yeşil ton)
+   ve Yazdır (nötr) her pencerede aynı simge, yazı, köşe ve boyda; <a> ve <button> aynı görünür. Süzgeç satırında seçicilerle aynı boy (36 px, aşağıda). */
 .hof-rep-out {
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 8px 13px;
-  border: 1px solid;
+  min-height: 32px;
+  margin: 0;
+  padding: 0 12px;
+  border: 1px solid var(--do-border-strong);
   border-radius: 10px;
+  background: #fff;
+  color: var(--do-ink);
   font: 750 12.5px/1 var(--do-display);
   text-decoration: none;
   white-space: nowrap;
+  cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.hof-rep-out svg {
+  flex: none;
 }
 .hof-rep-out:hover {
   box-shadow: 0 6px 14px rgba(20, 52, 40, 0.1);
   transform: translateY(-1px);
+}
+.hof-rep-out:focus-visible {
+  outline: none;
+  box-shadow: var(--do-focus);
+}
+.hof-rep-out:disabled,
+.hof-rep-out[aria-disabled="true"] {
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+.hof-rep-out:disabled {
+  opacity: 0.6;
+}
+.hof-rep-out.is-busy {
+  cursor: progress;
 }
 .hof-rep-out.is-pdf {
   border-color: #f0cfc8;
@@ -8061,6 +8083,11 @@ button.hof-source-card:focus-visible {
   border-color: #c7e2d2;
   background: #f1faf4;
   color: #1c6b48;
+}
+.hof-rep-out.is-print {
+  border-color: var(--do-border-strong);
+  background: #fff;
+  color: var(--do-ink);
 }
 .hof-rep-filters {
   display: flex;

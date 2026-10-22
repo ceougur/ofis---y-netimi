@@ -362,10 +362,8 @@
       <label class="hof-rep-date"><span>Bitiş</span><input type="date" data-range="to" value="${esc(state.to)}"></label>
       <button type="button" class="hof-button hof-button-small" data-run>Raporu Getir</button>
     </div>`;
-  const exportButtons = (pdf, xlsx) => `<span class="hof-rep-export" role="group" aria-label="Dışa aktar">
-      <a class="hof-rep-out is-pdf" href="${esc(pdf)}" target="_blank" rel="noopener" title="PDF olarak aç; oradan kaydedin ya da yazdırın">${ICONS.report}PDF İndir</a>
-      <a class="hof-rep-out is-xlsx" href="${esc(xlsx)}" download title="Excel dosyası olarak indir"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M3.5 9h17M3.5 14.5h17M9 3.5v17"/></svg>Excel İndir</a>
-    </span>`;
+  // 2.4.4 (UI11): rapor düğmeleri tek ad "PDF" / "Excel" (ortak görünüm HOF.outputButton); ne indirdiği erişilebilir adda ve ipucunda (what).
+  const exportButtons = (pdf, xlsx, what) => `<span class="hof-rep-export" role="group" aria-label="Dışa aktar">${HOF.outputButton({ kind: "pdf", href: pdf, what, attrs: 'target="_blank" rel="noopener"' })}${HOF.outputButton({ kind: "xlsx", href: xlsx, what, attrs: "download" })}</span>`;
   const statTiles = items => `<div class="hof-rep-stats">${items
     .filter(Boolean)
     .map(item => `<div class="hof-rep-stat ${item.tone || ""}"><span>${esc(item.label)}</span><strong>${item.html || esc(item.value)}</strong>${item.help ? `<small>${item.help}</small>` : ""}</div>`)
@@ -478,7 +476,7 @@
     const ekstre = s.account ? { account: s.account.id, from: s.from, to: s.to } : null;
     const pdf = ekstre ? `/api/workspace/overview/ekstre.pdf?${query(ekstre)}` : `/api/workspace/overview/mizan.pdf?${query(params)}`;
     const xlsx = ekstre ? `/api/workspace/overview/ekstre.xlsx?${query(ekstre)}` : `/api/workspace/overview/mizan.xlsx?${query(params)}`;
-    const filters = `<div class="hof-rep-bar">${rangeBar(s, PRESETS_PAST)}${exportButtons(pdf, xlsx)}</div>
+    const filters = `<div class="hof-rep-bar">${rangeBar(s, PRESETS_PAST)}${exportButtons(pdf, xlsx, "Cari Ekstre")}</div>
       ${s.account ? "" : `<div class="hof-rep-filters"><input type="search" data-q value="${esc(s.q)}" placeholder="Cari adı, cari no ya da telefon ara…" aria-label="Cari ara"><select data-field="type" aria-label="Cari türü"><option value="">Tüm Cariler</option><option value="customer" ${s.type === "customer" ? "selected" : ""}>Müşteriler</option><option value="supplier" ${s.type === "supplier" ? "selected" : ""}>Tedarikçiler</option><option value="other" ${s.type === "other" ? "selected" : ""}>Diğer</option></select><select data-field="side" aria-label="Bakiye">${[["", "Tüm Bakiyeler"], ["debtor", "Borçlular"], ["creditor", "Alacaklılar"], ["nonzero", "Sadece Bakiyesi Olanlar"]].map(([value, label]) => `<option value="${value}" ${s.side === value ? "selected" : ""}>${label}</option>`).join("")}</select><label class="hof-rep-check"><input type="checkbox" data-field="idle" ${s.idle ? "checked" : ""}> Hareketsiz carileri de göster</label></div>`}`;
     if (!s.data) return `${filters}<p class="hof-empty">Rapor hazırlanıyor…</p>`;
     if (s.account && s.data.lines) {
@@ -518,7 +516,7 @@
     const allowed = s.data?.allowed || Object.keys(SOURCE_LABELS).filter(id => canSee() || !["cheque", "note", "cash", "invoice", "bank"].includes(id) || (id === "cash" ? HOF.can("cash.view") : id === "invoice" ? HOF.can("invoices.view") : id === "bank" ? HOF.can("bank.view") : HOF.can("cheques.view")));
     const chosen = new Set(s.sources.length ? s.sources : allowed);
     const params = { ...(s.preset ? { preset: s.preset } : { from: s.from, to: s.to }), direction: s.direction, sources: s.sources.join(","), q: s.q, late: s.late ? "" : "0" };
-    const filters = `<div class="hof-rep-bar">${rangeBar(s, PRESETS_DUE)}${exportButtons(`/api/workspace/overview/vade-takip.pdf?${query(params)}`, `/api/workspace/overview/vade-takip.xlsx?${query(params)}`)}</div>
+    const filters = `<div class="hof-rep-bar">${rangeBar(s, PRESETS_DUE)}${exportButtons(`/api/workspace/overview/vade-takip.pdf?${query(params)}`, `/api/workspace/overview/vade-takip.xlsx?${query(params)}`, "Vade Takip")}</div>
       <div class="hof-rep-filters"><input type="search" data-q value="${esc(s.q)}" placeholder="Kişi, telefon, cari, kart, çek no ara…" aria-label="Kişi ara">
         <select data-field="direction" aria-label="Yön"><option value="">Tahsil Edilecek ve Ödenecek</option><option value="in" ${s.direction === "in" ? "selected" : ""}>Yalnız Tahsil Edilecek</option><option value="out" ${s.direction === "out" ? "selected" : ""}>Yalnız Ödenecek</option></select>
         <label class="hof-rep-check" title="Başlangıçtan önce vadesi geçmiş ve kapanmamış kalemler listenin başında"><input type="checkbox" data-field="late" ${s.late ? "checked" : ""}> Gecikmişleri de göster</label></div>
@@ -552,7 +550,7 @@
   // --- Nakit akışı ---
   function flowView(s) {
     const params = { from: s.from, to: s.to, overdue: s.overdue ? "1" : "", table: s.table ? "" : "0", group: s.group };
-    const filters = `<div class="hof-rep-bar">${rangeBar(s, PRESETS_FUTURE)}${exportButtons(`/api/workspace/overview/nakit-akisi.pdf?${query(params)}`, `/api/workspace/overview/nakit-akisi.xlsx?${query(params)}`)}</div>
+    const filters = `<div class="hof-rep-bar">${rangeBar(s, PRESETS_FUTURE)}${exportButtons(`/api/workspace/overview/nakit-akisi.pdf?${query(params)}`, `/api/workspace/overview/nakit-akisi.xlsx?${query(params)}`, "Nakit Akış")}</div>
       <div class="hof-rep-filters"><select data-field="group" aria-label="Tablo görünümü"><option value="" ${!s.group ? "selected" : ""}>Tek Tek Hareketler</option><option value="day" ${s.group === "day" ? "selected" : ""}>Günlük Toplamlar</option><option value="week" ${s.group === "week" ? "selected" : ""}>Haftalık Toplamlar</option><option value="month" ${s.group === "month" ? "selected" : ""}>Aylık Toplamlar</option></select>
         <label class="hof-rep-check"><input type="checkbox" data-field="table" ${s.table ? "checked" : ""}> Tablodaki ödeme günlerini ekle</label>
         <label class="hof-rep-check"><input type="checkbox" data-field="overdue" ${s.overdue ? "checked" : ""}> Vadesi geçmiş (kapanmamış) kalemleri başlangıca ekle</label><span class="hof-rep-hint">Kaynaklar: açık taksitler, portföydeki ve ödenecek çek/senet, Kasa'ya ileri tarihli girilen hareketler${s.table ? ", Excel/Sheets tablolarındaki ödeme günleri ve ödeme sözleri" : ""}.</span></div>`;
@@ -682,7 +680,7 @@
       <select data-field="status" aria-label="Durum"><option value="open" ${s.status === "open" ? "selected" : ""}>Açık (portföyde / ödenecek)</option><option value="overdue" ${s.status === "overdue" ? "selected" : ""}>Vadesi Geçmiş</option><option value="soon" ${s.status === "soon" ? "selected" : ""}>7 Gün İçinde</option><option value="" ${!s.status ? "selected" : ""}>Tüm Durumlar</option><option value="collected" ${s.status === "collected" ? "selected" : ""}>Tahsil Edildi</option><option value="endorsed" ${s.status === "endorsed" ? "selected" : ""}>Ciro Edildi</option><option value="paid" ${s.status === "paid" ? "selected" : ""}>Ödendi</option><option value="bounced" ${s.status === "bounced" ? "selected" : ""}>Karşılıksız / İade</option></select>
       <label class="hof-rep-date"><span>Vade Başı</span><input type="date" data-range="from" value="${esc(s.from)}"></label><label class="hof-rep-date"><span>Vade Sonu</span><input type="date" data-range="to" value="${esc(s.to)}"></label>
       <button type="button" class="hof-button hof-button-small" data-run>Raporu Getir</button></div>
-      ${exportButtons(`/api/workspace/cheques/liste.pdf?${query(params)}`, `/api/workspace/cheques/export.xlsx?${query(params)}`)}</div>`;
+      ${exportButtons(`/api/workspace/cheques/liste.pdf?${query(params)}`, `/api/workspace/cheques/export.xlsx?${query(params)}`, "Çek / Senet Raporu")}</div>`;
     if (!s.data) return `${filters}<p class="hof-empty">Portföy hazırlanıyor…</p>`;
     const d = s.data;
     const sum = d.summary;

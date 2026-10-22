@@ -1,0 +1,32 @@
+{
+  "ad": "244-ui11/e2e-senaryo-211",
+  "komut": "npm run test:senaryo-211",
+  "commit": "3a2f46a1bf40e3c25f393d0aac678e91a45273b8",
+  "dal": "is/ui11",
+  "kirli": 20,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T06:38:58.819Z",
+  "sure_sn": 99.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 57,
+    "gecen": 57,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ui11/e2e-senaryo-211.log",
+  "klasor": "/home/user/wt/ui11",
+  "ham_cikti_sha256": "faf206ce60c1657d4462ebe652ed6da77b9b859da9643579f71a830e0b5955a6",
+  "ham_cikti_bayt": 4852
+}

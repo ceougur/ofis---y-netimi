@@ -175,7 +175,7 @@
           <div class="hof-report-sessions"><span>Sayfalar</span><div data-filter="sessions"></div></div>
           <div class="hof-report-actions"><button type="submit" class="hof-button">Raporu Getir</button><button type="button" class="hof-button hof-button-ghost" data-clear>Süzgeçleri Temizle</button></div>
         </form>
-        <div class="hof-report-toolbar"><span data-report-meta class="hof-muted"></span><span><button type="button" class="hof-button hof-button-small hof-button-ghost" data-export="xlsx">Excel</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-export="pdf">PDF</button><button type="button" class="hof-button hof-button-small" data-print>Yazdır</button></span></div>
+        <div class="hof-report-toolbar"><span data-report-meta class="hof-muted"></span><span>${HOF.outputButton({ kind: "xlsx", what: "Tablo Raporu", attrs: 'data-export="xlsx"' })}${HOF.outputButton({ kind: "pdf", what: "Tablo Raporu", attrs: 'data-export="pdf"' })}${HOF.outputButton({ kind: "print", what: "Tablo Raporu", attrs: "data-print" })}</span></div>
         <div data-report-body></div>`;
     const dialog = node;
     dialog.querySelector("[data-filters]").addEventListener("submit", event => {
