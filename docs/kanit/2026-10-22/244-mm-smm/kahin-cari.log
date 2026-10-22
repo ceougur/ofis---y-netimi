@@ -26,5 +26,5 @@ rastgele-ux18-2: 256/256 tuttu
   mutasyon 12 (Kart: tahsilat en yeni taksitten başlayarak sayılır): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc +1)
   mutasyon 13 (Mizan: alınan senet 101'e yazılır (121 yerine)): YAKALANDI (b2-ux18-karsiliksiz, b2-ux18-temel, rastgele-ux18-1 +1)
 
-ÖZET: 10 senaryo, 1364 denetim, 0 fark (BULGU 0), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-cari-qEFWsP
+ÖZET: 10 senaryo, 1364 denetim, 0 fark (BULGU 0), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-cari-lYqVec
 1364/1364 denetim geçti
