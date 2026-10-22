@@ -1,0 +1,48 @@
+
+■ 1 Bağlantı kayıtlı değil: düğme pasif, nedeni görünür
+  ✓ “e-Fatura Portalı” düğmesi Fatura üst satırında ({"text":"e-Fatura Portalı","disabled":true,"why":"Önce Entegratör Ayarları'nda web servis kullanıcı adını ve parolasını kaydedin.","whyVisible":true,"afterExport":true})
+  ✓ ad yazım düzeninde: “e-Fatura Portalı”
+  ✓ Liste - Excel'in hemen yanında
+  ✓ pasif
+  ✓ nedeni görünür yazı: “Önce Entegratör Ayarları'nda web servis kullanıcı adını ve parolasını kaydedin.”
+
+■ 2 Entegratör Ayarları ekrandan kaydedilir → düğme yerinde etkinleşir
+  ✓ veri tabanında: kullanıcı edmportalkullanici, ortam test, parola mühürlü
+  ✓ liste yeniden açılmadan etkin ({"text":"e-Fatura Portalı","disabled":false,"why":"","whyVisible":false,"afterExport":true})
+  ✓ sayfada parola yok
+  ✓ Fatura meta'sında kullanıcı adı ve parola yok
+
+■ 3 Tıkla → ekran boyunda ayrı pencere, TEST portalı, opener kesik, Referer yok
+  ✓ açılan adres test portalı: https://test.edmbilisim.com.tr/EFaturaUI21ea/
+  ✓ tek window.open çağrısı (1)
+  ✓ pencere adı: hof-edm-portal
+  ✓ pencere özellikleri ekran boyunda: “popup=yes,left=0,top=0,width=1366,height=768” (ekran 1366×768)
+  ✓ portal penceresinde window.opener === null
+  ✓ portala Referer gitmedi (“”)
+  ✓ canlı portala istek yok
+
+■ 4 İkinci tıklama: program COOP same-origin ile sunulur, tarayıcı açık portal penceresini bulamaz → yeni portal penceresi (BİLİNEN SINIR)
+  ✓ ikinci pencere de test portalı, opener kesik: https://test.edmbilisim.com.tr/EFaturaUI21ea/
+  ✓ ilk portal penceresi yerinde (yeniden yüklenmedi, kapanmadı)
+
+■ 5 Çalışma Ortamı Canlı → CANLI portal
+  ✓ veri tabanında ortam canlı
+  ✓ açılan adres canlı portal: https://portal4.edmbilisim.com.tr/EFaturaUI/
+  ✓ opener kesik
+
+■ 6 Açılır pencere engellenince ileti + bağlantı
+  ✓ pencere başlığı: “e-Fatura Portalı Açılamadı”
+  ✓ neden yazılı
+  ✓ bağlantı ortamın adresi, yeni sekme: {"title":"e-Fatura Portalı Açılamadı","href":"https://portal4.edmbilisim.com.tr/EFaturaUI/","target":"_blank","rel":"noopener noreferrer","text":"e-Fatura Portalını Aç","body":"\n        ×\n        FATURA\n        e-Fatura Portalı Açılamadı\n        Tarayıcı açılır pencereyi engelledi. Portalı aşağıdaki bağlantıyla yeni sekmede açabilirsiniz; ayrı pencere için adres çubuğundaki engel simgesinden bu programa açılır pencere izni verin.e-Fatura Portalını Aç\n      "}
+  ✓ bağlantı portalı açtı: https://portal4.edmbilisim.com.tr/EFaturaUI/
+  ✓ bağlantıya basınca pencere kapandı
+
+■ 7 Yetki: avukat etkin; yalnız Faturaları Görme yetkili personel pasif + neden
+  ✓ portal-avukat: etkin ({"text":"e-Fatura Portalı","disabled":false,"why":"","whyVisible":false,"afterExport":true})
+  ✓ portal-goren: pasif, neden “e-Fatura Portalı, Fatura Kesme ve İptal yetkisi ister; yöneticinize başvurun.”
+  ✓ pasif düğme pencere açmaz (window.open 0)
+  ✓ yetkisize portal adresi gitmez
+  ✓ beklenmeyen dış istek yok (—)
+  ✓ sayfa hatası yok
+
+✓ senaryo-portal-244: 32 geçti, 0 kaldı · depo /home/user/wt/aday · ekran görüntüleri /home/user/wt/aday/test/e2e/artifacts/senaryo-portal-244
