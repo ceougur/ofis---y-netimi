@@ -4,6 +4,10 @@
 //   MERSİS: 16 hane (Merkezî Sicil Kayıt Sistemi numarası; tüzel kişide faturada yazılır).
 // GİB, e-Arşiv'de kimliği bilinmeyen nihai tüketici için 11111111111 kullanılmasına izin verir.
 export const ANONYMOUS_TCKN = "11111111111";
+// 2.4.4 (31f U1): faturadaki "Nihai Tüketici" hızlı seçeneğinin carisi bu adı taşır. Adı belli bir kişinin carisi (11111111111 yazılmış olsa da)
+// kimliği bilinmeyen alıcı yerine ASLA seçilmez; ad karşılaştırması büyük/küçük harf ve fazla boşluk gözetmez (istemcide hof-accounts.js aynı kural).
+export const RETAIL_NAME = "Nihai Tüketici";
+export const isRetailName = name => String(name ?? "").trim().replace(/\s+/g, " ").toLocaleLowerCase("tr-TR") === RETAIL_NAME.toLocaleLowerCase("tr-TR");
 const digits = value => String(value ?? "").replace(/\s+/g, "");
 
 export function isValidVkn(value) {

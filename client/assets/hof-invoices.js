@@ -873,6 +873,8 @@
     // 2.4.3 (KÖ1, kullanıcı kararı 18.10.2026): perakende satışta her seferinde cari aramak / açmak gerekmesin — "Nihai Tüketici" tek tıkla
     // kimliği bilinmeyen alıcı carisini (TCKN 11111111111) seçer; cari yoksa ilk kullanımda açılır, sonra hep aynısı (çift açılmaz). e-Arşiv
     // tutar sınırı aşılırsa belge kaydedilmeden uyarılır (sunucu denetimi, Toplamlar bölümünde ve kayıtta).
+    // 2.4.4 (31f U1): seçilen cari programın işaretli "Nihai Tüketici" carisidir; 11111111111 yazılmış adı belli bir cari seçilmez
+    // (kural routes/accounts.mjs taxIdentity.retailAccount).
     const retail = form.side === "sale" && !isReturn(form.kind) ? document.createElement("button") : null;
     if (retail) {
       retail.type = "button";

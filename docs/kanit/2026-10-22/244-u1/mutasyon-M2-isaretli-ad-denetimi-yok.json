@@ -1,0 +1,38 @@
+{
+  "ad": "244-u1/mutasyon-M2-isaretli-ad-denetimi-yok",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/nihai-tuketici-u1-244.test.mjs",
+  "commit": "e195089bb3bab6f4ba4f224e622b11bc83dd17c5",
+  "dal": "is/u1",
+  "kirli": 6,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T21:54:38.486Z",
+  "sure_sn": 9.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 7,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "U1: Nihai Tüketici düğmesi yalnız programın kendi carisini seçer; adı belli cari seçilmez › N5: işaretli cari adı belli kişiye çevrilir ya da kimliği değişir → artık seçilmez; harf büyüklüğü/boşluk farkı rolü bozmaz",
+      "konum": "test/nihai-tuketici-u1-244.test.mjs:92:3",
+      "hata": "adı belli cari seçildi: \"Ayşe Şahin\" (beklenen account-f6b47502-c8a9-45de-8ffa-03cef0664bba, gelen account-f6b47502-c8a9-45de-8ffa-03cef0664bba)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-u1/mutasyon-M2-isaretli-ad-denetimi-yok.log",
+  "klasor": "/home/user/wt/u1",
+  "ham_cikti_sha256": "1f10a79dc0ddbd93f1da3ab64ef166ae900c41c414216ddf4468829e9d00030c",
+  "ham_cikti_bayt": 4307
+}

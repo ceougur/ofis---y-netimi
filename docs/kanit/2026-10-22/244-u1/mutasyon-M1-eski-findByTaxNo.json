@@ -1,0 +1,63 @@
+{
+  "ad": "244-u1/mutasyon-M1-eski-findByTaxNo",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/nihai-tuketici-u1-244.test.mjs",
+  "commit": "e195089bb3bab6f4ba4f224e622b11bc83dd17c5",
+  "dal": "is/u1",
+  "kirli": 6,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T21:54:31.150Z",
+  "sure_sn": 7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 2,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "U1: Nihai Tüketici düğmesi yalnız programın kendi carisini seçer; adı belli cari seçilmez › N1: adı belli cari (11111111111) önce açılmış → ayrı \"Nihai Tüketici\" açılır; satış onun borcuna, Ayşe Şahin'e değil",
+      "konum": "test/nihai-tuketici-u1-244.test.mjs:61:3",
+      "hata": "düğme adı belli cariyi seçti: \"Ayşe Şahin\" (beklenen account-cdf05cb9-d38c-4a10-953d-fb03d68fc848, gelen account-cdf05cb9-d38c-4a10-953d-fb03d68fc848)"
+    },
+    {
+      "ad": "U1: Nihai Tüketici düğmesi yalnız programın kendi carisini seçer; adı belli cari seçilmez › N4: iki kullanıcı aynı anda basar → tek cari, hepsi aynı kimlik",
+      "konum": "test/nihai-tuketici-u1-244.test.mjs:80:3",
+      "hata": "yalnız biri açtı · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "U1: Nihai Tüketici düğmesi yalnız programın kendi carisini seçer; adı belli cari seçilmez › N5: işaretli cari adı belli kişiye çevrilir ya da kimliği değişir → artık seçilmez; harf büyüklüğü/boşluk farkı rolü bozmaz",
+      "konum": "test/nihai-tuketici-u1-244.test.mjs:92:3",
+      "hata": "adı belli cari seçildi: \"Ayşe Şahin\" (beklenen account-054d2211-2330-44a6-9d2c-b95f8e8632d5, gelen account-054d2211-2330-44a6-9d2c-b95f8e8632d5)"
+    },
+    {
+      "ad": "U1: Nihai Tüketici düğmesi yalnız programın kendi carisini seçer; adı belli cari seçilmez › N6: pasif cari kullanılmaya devam eder; silinince yeni açılır, Silinenler'den geri gelse de işaret yenide kalır",
+      "konum": "test/nihai-tuketici-u1-244.test.mjs:108:3",
+      "hata": "işaret yenide (eskisi geri geldi diye değişmez) · + actual - expected · + 'account-26bddf8c-783c-4ba8-90a1-584b08fa9564' (beklenen account-c1720019-10ed-4eea-87cf-36bf33c4d56c, gelen account-26bddf8c-783c-4ba8-90a1-584b08fa9564)"
+    },
+    {
+      "ad": "U1: Nihai Tüketici düğmesi yalnız programın kendi carisini seçer; adı belli cari seçilmez › N3: eski veride işaretsiz birden çok aday → yalnız adı \"Nihai Tüketici\" olan, en eskisi (açılış zamanı, eşitse yazım sırası); işaret sonra kalıcı",
+      "konum": "test/nihai-tuketici-u1-244.test.mjs:123:3",
+      "hata": "beklenen ilk yazılan \"Nihai Tüketici\"; seçilen \"Perakende Müşteri\" · + actual - expected · + 'account-e64cec60-c3df-4aaa-b6be-f5aa163c4f29' (beklenen account-ab24f69d-b738-4f24-80d5-a7af4a9c27e5, gelen account-e64cec60-c3df-4aaa-b6be-f5aa163c4f29)"
+    },
+    {
+      "ad": "U1 eski veri: v2.4.3'te düğmeyle açılmış Nihai Tüketici benimsenir; adı belli cari seçilmez (iki şirket) › N2: 001'de Ayşe Şahin (sonradan 11111111111) daha eski + düğmenin carisi + elle açılmış ikinci Nihai Tüketici; 002'de düğmenin carisi",
+      "konum": "test/nihai-tuketici-u1-244.test.mjs:175:3",
+      "hata": "beklenen 2.4.3 düğmesinin carisi; seçilen \"Ayşe Şahin\" · + actual - expected · + 'account-14668d34-f38b-4eb4-b958-4eb511947c19' (beklenen account-c518060d-cece-4d1c-be3c-60c7a904471d, gelen account-14668d34-f38b-4eb4-b958-4eb511947c19)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-u1/mutasyon-M1-eski-findByTaxNo.log",
+  "klasor": "/home/user/wt/u1",
+  "ham_cikti_sha256": "6db9534de20ce4e74216c32306b2428b3f8263adebd5f420f88fb28059de1807",
+  "ham_cikti_bayt": 8832
+}

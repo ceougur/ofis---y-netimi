@@ -4411,19 +4411,17 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     ok(res, { taxNo, registered: result.registered, title: result.title, senders: result.senderAliases || [], mailboxes: result.aliases || [] });
   });
   // 2.4.3 (KÖ1, kullanıcı kararı 18.10.2026): faturada "Nihai Tüketici" hızlı seçeneği — kimliği bilinmeyen perakende alıcı için TEK cari
-  // (TCKN 11111111111; GİB e-Arşiv'de kimliği bilinmeyen nihai tüketici). Varsa en eski kayıt yeniden kullanılır (çift cari açılmaz), yoksa ilk
-  // kullanımda açılır; il / ilçe firmanın adresinden (e-Arşiv alıcıda il zorunlu). Tutar sınırı (ANONYMOUS_LIMIT) belge denetiminde (partyProblems).
+  // (TCKN 11111111111; GİB e-Arşiv'de kimliği bilinmeyen nihai tüketici); ilk kullanımda açılır, sonra hep aynısı (çift cari açılmaz); il / ilçe
+  // firmanın adresinden (e-Arşiv alıcıda il zorunlu). Tutar sınırı (ANONYMOUS_LIMIT) belge denetiminde (partyProblems).
+  // 2.4.4 (31f U1): cari 11111111111'li en eski cari DEĞİL, programın işaretli "Nihai Tüketici" carisidir (kural routes/accounts.mjs
+  // taxIdentity.retailAccount); adı belli bir kişinin carisi seçilmez.
   router.post("/api/workspace/invoices/retail-account", async ({ req, res }) => {
     const user = requireManage(req);
-    const existingId = accounts().taxIdentity.findByTaxNo(ANONYMOUS_TCKN);
-    let id = existingId;
-    if (!id) {
-      const seller = settings().seller || {};
-      id = store.tx(() => accounts().taxIdentity.findByTaxNo(ANONYMOUS_TCKN) || accounts().taxIdentity.createForParty(user, { name: "Nihai Tüketici", taxNo: ANONYMOUS_TCKN, partyKind: "person", firstName: "Nihai", familyName: "Tüketici", city: seller.city || "", district: seller.district || "", country: "Türkiye" }, "customer"));
-      publish(user, { kind: "accounts", accountId: id });
-    }
+    const seller = settings().seller || {};
+    const { id, created } = accounts().taxIdentity.retailAccount(user, { city: seller.city || "", district: seller.district || "" });
+    if (created) publish(user, { kind: "accounts", accountId: id });
     const row = store.get("SELECT id, name FROM accounts WHERE id = ?", id);
-    ok(res, { id: row.id, name: row.name, created: !existingId });
+    ok(res, { id: row.id, name: row.name, created });
   });
   // Mükellef sorgusu: VKN/TCKN GİB e-Fatura kullanıcısı mı, posta kutusu etiketi ne? Cari verilirse kartına yazılır.
   router.post("/api/workspace/invoices/check-user", async ({ req, res }) => {
