@@ -1,0 +1,32 @@
+{
+  "ad": "244-personel/ilgili-testler",
+  "komut": "node --test --disable-warning=ExperimentalWarning test/personel-ozluk-244.test.mjs test/yazim-duzeni.test.mjs test/yetki-gorunurluk.test.mjs test/permissions.test.mjs test/license.test.mjs test/banka-210-yetki-katalog.test.mjs test/kullanici-yetki-210.test.mjs test/insight.test.mjs test/backup.test.mjs test/duzeltmeler-211.test.mjs test/platform-tasinabilirlik.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/auth.test.mjs test/workspace.test.mjs test/yetki-243-muhasebe-finans.test.mjs test/sirketler-217.test.mjs test/ci-kapi-listesi.test.mjs test/kanit-araci.test.mjs test/kilavuz-surum.test.mjs test/banka-210-goc.test.mjs test/yedek-220.test.mjs",
+  "commit": "1f6ad99df7ef569af9ed772e1e8e053c216d565c",
+  "dal": "is/personel",
+  "kirli": 14,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:25:34.143Z",
+  "sure_sn": 18,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 257,
+    "gecen": 257,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-personel/ilgili-testler.log",
+  "klasor": "/home/user/wt/personel",
+  "ham_cikti_sha256": "3ffaa5551cd1e838175c8eeb4b677ee188bcadfdf62693d8c3e26debf4b4453f",
+  "ham_cikti_bayt": 79570
+}

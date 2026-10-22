@@ -1304,7 +1304,30 @@ export const MIGRATIONS = [
       });
     },
   },
+  {
+    version: 31,
+    name: "v2.4.4 Personel Özlük (çalışan kartları; para dışı)",
+    up(store) {
+      // Kullanıcı kararı 21.10.2026 (Personel Raporu → Çalışanlar / Ayrılanlar; routes/staff.mjs): şirketin çalışan kartları. YALNIZ EKLEYİCİ: yeni tablo;
+      // eski sürüm (2.4.3) aynı dosyayı okur, tabloyu görmez. Para tablosu DEĞİL: maaş yalnız bilgi (Kasa, Banka, cari ve Ana Defter okumaz; mutabakat
+      // kapısı ve kilit izi bu tabloya bakmaz). Kişisel veri (KVKK): değerler yalnız bu tabloda; işlem geçmişine alan ADI yazılır, değer yazılmaz.
+      store.exec(STAFF_SCHEMA_V31);
+    },
+  },
 ];
+
+// 2.4.4 Personel Özlük: tarihler YYYY-AA-GG ('' = yazılmadı); maaş kuruş; fotoğraf JPEG data URL (en çok 120 KB; '' = yok). İşten ayrılış tarihi
+// yazılıysa kart Ayrılanlar'dadır.
+const STAFF_SCHEMA_V31 = `
+  CREATE TABLE IF NOT EXISTS staff_members (
+    id TEXT PRIMARY KEY, full_name TEXT NOT NULL, birth_date TEXT NOT NULL DEFAULT '', tc_no TEXT NOT NULL DEFAULT '', address TEXT NOT NULL DEFAULT '',
+    position TEXT NOT NULL DEFAULT '', salary_minor INTEGER NOT NULL DEFAULT 0 CHECK (salary_minor >= 0), bank_name TEXT NOT NULL DEFAULT '', iban TEXT NOT NULL DEFAULT '',
+    hire_date TEXT NOT NULL DEFAULT '', leave_date TEXT NOT NULL DEFAULT '', used_leave_days INTEGER NOT NULL DEFAULT 0 CHECK (used_leave_days >= 0),
+    email TEXT NOT NULL DEFAULT '', phone TEXT NOT NULL DEFAULT '', education TEXT NOT NULL DEFAULT '', specialty TEXT NOT NULL DEFAULT '', photo TEXT NOT NULL DEFAULT '',
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+  ) STRICT;
+  CREATE INDEX IF NOT EXISTS idx_staff_members_name ON staff_members(full_name);
+`;
 
 // 2.3.0 İz 1: şüpheli alacak kaydı (cari, tarih, tutar, neden, karşılıksız evrak; open → released | cancelled; İşlem No'lu başlık) ve karşılık
 // (kayıt başına; active | cancelled). Değersiz Alacak satırı account_entries'tedir (source 'doubtful', source_id = kayıt).

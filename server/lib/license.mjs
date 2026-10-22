@@ -52,6 +52,8 @@ export const WRITE_PERMISSIONS = Object.freeze([
   "bank.accounts", "bank.move", "bank.cancel", "bank.transfer", "bank.pos", "bank.commission", "bank.statement", "bank.reconcile", "bank.settings",
   // 2.4.4 (madde 25 a): Vergi Ödemesi / KDV Mahsubu (2.4.3 MM3) listeye girmemişti; sunucu yazımı reddediyordu, düğmeler görünüyordu.
   "tax.manage",
+  // 2.4.4 Personel Özlük: kart ekleme/düzeltme/silme.
+  "staff.manage",
 ]);
 
 // Salt okunur modda da izin verilen değiştirici istekler: giriş/çıkış/parola, lisans işlemleri, yönetim (kullanıcılar,
