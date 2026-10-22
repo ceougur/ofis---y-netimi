@@ -513,6 +513,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   para hareketi; bölmek para modelini değiştirir; fazlası taksit dışı kalır); (2) carinin borcu tablodaki kalandan AZSA kayıt aktarılmasın, ne yapılacağı söylensin ("tablodakini
   yaz" çift borç riski); (3) faturalı cari 5a/5b DIŞINDA kalsın (fatura kapamayla çakışır; müşteri isterse ayrı iş).
   KARAR (kullanıcı, 22.10.2026: "3 önerin uygun"): üç öneri AYNEN (uygulanmış hâliyle) kalır.
+- SON ADAY BAĞIMSIZ TURU (kullanıcı, 22.10.2026: "2.4.4 son aday uzun test koşusuna başlamadan kâhin (uzman mali müşavir), yargıç, eleştirmen testlerinden geçecek mi,
+  regresyon testleri yapılıyor mu?" → EVET; "ekle" → uzman UI + uzman UX de): iş listesi madde 30–31 (31a kâhin, 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol,
+  31f uzman UI/UX) Uzun Doğrulama'dan ÖNCE.
 - MEVZUAT KARARI (kullanıcı, 20.10.2026): e-Fatura / e-Arşiv kutu metinleri DEĞİŞMEZ, 2.4.4'te değil; geri bildirim gelirse netleştirilir. 509 VUK GT okuma
   notları (IV.2.2, IV.2.4.1, V.1 kayıt yöntemi) arşivde (21.10).
 - RAPOR DÜZENİ (kullanıcı, 21.10.2026: "2.4.4'ü yaparken 30 dk'da kısa ara rapor ver, düşen test var mı, durmuş işlem var mı kontrol et; varsa gereğini yap;
