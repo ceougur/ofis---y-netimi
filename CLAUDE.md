@@ -549,6 +549,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   açıktan yeniden dağılır; cari bakiye ve yevmiye değişmez; taksitli değişmez) — ux18 ajanı (is/f2-ux18) F2 ile birlikte; sürüm notu cümlesi genişler.
   EDM'YE MAİL (kullanıcı, 22.10.2026: "maili gönderdim"): e-SMM karekodu (§2.4), özel şablon (11032), VKN'li düzenleyende unvan soruldu — YANIT BEKLENİYOR; gelene dek
   teslim notunda BİLİNEN SINIR (karekod EDM'nin, yalnız ETTN).
+  DEVAM (22.10.2026): teknik@ otomatik yanıtı konu başında kayıtlı VKN/TCKN istedi; kullanıcının canlı EDM hesabı YOK → talep test portalından ("Destek Talebi
+  Oluştur", test kullanıcısı adıyla) açıldı. Zip'teki belgeler (kullanıcı: "yeterli gelmiyor mu") entegrasyona yeterli, karekoda değil: örnek XML EDM'nin
+  general-esmm.xslt şablonuna işaret ediyor; TEMPLATE_CONTENT iki biçimde denendi, kullanılmadı; kullanıcı portalda EDM şablonunu doğruladı.
 - SON ADAY BAĞIMSIZ TURU (kullanıcı, 22.10.2026: "2.4.4 son aday uzun test koşusuna başlamadan kâhin (uzman mali müşavir), yargıç, eleştirmen testlerinden geçecek mi,
   regresyon testleri yapılıyor mu?" → EVET; "ekle" → uzman UI + uzman UX de): iş listesi madde 30–31 (31a kâhin, 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol,
   31f uzman UI/UX) Uzun Doğrulama'dan ÖNCE.
