@@ -23,6 +23,11 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
   adımları elle (değişen dosya yalnız edm.mjs/araçlar; yine de koşulur) → çalışma dalına birleştir + push + CI → CI yeşilse 24b çizilir.
 - 24b GERÇEK EDM (kullanıcı isteği, tamam): koşu 1 (16:41 TR) 19/20 kabul, N4 bulundu; koşu 2 (17:07 TR, düzeltmeli) 136/136, 30/30 kabul (TES2026475826020–049), Login 1;
   kullanıcı portalda gördü (ekran 17:12 TR); OZET.md kullanıcıya verildi. Test şablonunda VKN'li düzenleyen unvanı yok (UBL'de PartyName VAR — doğrulandı) → BİLİNEN SINIR.
+- GERÇEK EDM KOŞU 3 (GÖZDEN GEÇİRME 3, ders 18: N4 düzeltmesinin gerçek yeşili iki koşuda görülmeli; 22.10 ~14:56 UTC başladı): /home/user/wt/edm-eszamanli,
+  dal is/gercek6 (= aday 6 e070d42); arka plan görevi b093nqefl: `kanit kos 244-edm-eszamanli/gercek-3` (--eszamanli, soğuk) ve ardından `kanit kos 244-edm/gercek-6`
+  (tam takım: e-Arşiv, e-SMM, iptal, bulunamadı — ders 9/10). Bitince: iki OZET.md okunur (değişmezler yf, Login sayısı, bağımsız okuyucu ye; çıkış kodları), kanıt
+  is/gercek6'da commit → aday 6 kapısı yeşilse aday6'ya `git merge --no-ff is/gercek6` (yalnız kanıt) → çalışma dalı + CI → 24b çizilir. Çıkış 2 (giriş reddi) → YENİDEN
+  DENENMEZ, kullanıcıya sorulur. Yeni belge numaraları kullanıcıya verilir (portalda görsün).
 - MADDE 30 SÜRÜYOR (taban aday6 e070d42; ajanlar KOD DEĞİŞTİRMEZ, ürün bulgusunu raporlar): (a) CI dışı e2e — ajan a570ddc1eeb09d60d, /home/user/wt/m30-e2e (is/m30-e2e),
   13 betik (test:senaryo, -rapor, -taslak, 210–218, whatsapp) + betiksiz senaryolar; eski beklentiyi kararla düzeltir. (b) göç + yedek tatbikatı + zincirleme göç + arıza —
   ajan ae9ec21f91121d745 (xhigh), /home/user/wt/m30-goc (is/m30-goc), veri v2.4.3 gerçek koduyla. RAPOR GELİNCE: özet kanıtı denetle (ders 16), test düzeltmelerini sonraki

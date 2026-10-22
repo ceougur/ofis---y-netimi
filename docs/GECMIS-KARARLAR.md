@@ -2207,3 +2207,206 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   2.4.4 ADAYI: kutu metinleri "EDM üzerinden e-Fatura / e-Arşiv kullanıcısıyım" + kısa açıklama (GİB Portal kullanıcısıysanız işaretlemeyin).
   KARAR (kullanıcı, 20.10.2026: "teyit edilecek kısımlar önemsiz; böyle dursun, geri bildirim olursa kutuları netleştiririz") → kutular DEĞİŞMEZ, 2.4.4
   kapsamında DEĞİL; müşteri geri bildirimi gelirse yeniden ele alınır. Teyit soruları (iki yöntem aynı anda, 2025/2026 tutar sınırı) kapatıldı.
+
+## Arşiv 22.10.2026 (CLAUDE.md "Açık iş"ten AYNEN taşındı; 2.4.4 sürerken kapanan sorular, kararlar ve istekler)
+(Kullanıcı, 22.10.2026 ~14:50 UTC: "anayasamızı ve dersleri gözden geçir" → GÖZDEN GEÇİRME 3, anayasa "kısa tutulur". Maddeler CLAUDE.md'deki sırasıyla, hiç
+değiştirilmeden; kalıcı olanların özeti CLAUDE.md "Kalıcı ürün kararları" → "2.4.4 kararları".)
+- 2.4.4 "BAŞLA" KONTROL LİSTESİ (atlanmaz, sırayla): (1) yukarıdaki iki belge + bu Açık iş dosyadan okunur; (2) RAPOR DÜZENİ için CronCreate 30 dk işi
+  kurulur ("7,37 * * * *"; 2.4.4 bitince silinir); (3) iş listesi madde 1 (npm ci — bağ yok; git fetch --unshallow --tags; master CI 163dd5d + "Sürüm yayımla"
+  okunur); (4) yüklenen dosyalar yerinde mi (HAZIRLIK 3) — yoksa kullanıcıdan istenir; EDM test hesabı sohbette verildi, dosyaya YAZILMAZ, kaybolduysa
+  kullanıcıdan istenir; (5) her ajan AJAN EFORU kuralıyla (effort verilir, fork yok); (6) biten madde iş listesinde üstü çizilir + commit (yalnız belge, CI
+  koşmaz) ve 30 dk raporda gösterilir; (7) para çekirdeği maddelerinde kırmızı test + mutasyon + dar kontrol; her push'un CI'si ayrı okunur.
+- e-SMM YANITI (EDM, kullanıcının iletisi 19.10.2026): e-SMM uç noktaları e-Fatura/e-Arşiv'den FARKLI; AYNI test hesabıyla e-SMM uç noktalarında denenebilir.
+  Canlıda müşteri için ayrıca e-SMM siparişi + açılış işlemleri gerekir (ticari@edmbilisim.com.tr). Uç nokta adresleri EDM'nin Word belgesinde (e-postanın eki;
+  genel belge bağlantısı dosya.edmbilisim.com.tr owncloud). SIRADAKİ: kullanıcı Word belgesini oturuma YÜKLER → uç noktalar + şema okunur → e-SMM (config.esmmEnabled,
+  şimdilik gizli) test ortamında uçtan uca plan + kapsam/maliyet önerisi kullanıcıya; karar kullanıcıda (2.4.4 ya da ayrı sürüm). Kod henüz değişmedi.
+  BELGE OKUNDU (19.10.2026): e-SMM TEST https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc, CANLI https://portal2.edmbilisim.com.tr/EFaturaEDM/ESmmEDM.svc;
+  test WSDL erişilebilir (200): Login, SendSMM, LoadSMM, GetSMMStatus, GetSMM, CancelSMM, ArchiveSMM, EmailSMM, MarkSMM, GetSMMSerial, CheckUser, CheckCounter…
+  (ad alanı/yapı e-Fatura servisiyle aynı aile; soap-contract.mjs yeniden kullanılır). Programda hazır: SMM kâğıt makbuz, ESMM profili, TES/ESM serileri, esmm
+  ayarı (gizli). EKSİK: ESmmEDM bağdaştırıcısı + e-SMM belge XML'i (GİB e-SMM biçimi doğrulanacak) + gönderim/durum/iptal/resmî PDF akışı + test ortamında
+  uçtan uca. Plan + karar kullanıcıda.
+- e-SMM BELGELERİ (kullanıcı, 21.10.2026; oturuma yüklendi, depoya GİRMEZ): EDM e-SMM Web API v4.4.1 + Request-Response (docx), durum kodları (xlsx),
+  esmm-ubl-ornek-veri.xml, Ek_bilgi.txt (dip toplam anlamları), TesterCurrent.cs (EDM C# örnek istemci). İlk gelen "E-MM_Teknik_Doküman.zip" e-MÜSTAHSİL
+  (EmmEDM.svc, EFaturaEDM21mm) — e-SMM DEĞİL, kapsam dışı. KILAVUZDAN: iki gönderim yolu — NESNE (SendSMM: alanlar, XML'i EDM üretir; kılavuz "EXCEL
+  şablonu" anıyor) ve UBL (SendSMMPrepared: XML bizden); EDM numarayı kendisi de üretebilir ("seri üretimi talebi") → ÖNERİ numarayı program verir
+  (kronoloji/belirsiz gönderim güvenceleri tek yerde), test hesabında doğrulanır; resmî PDF GetSMM (SMM_CONTENT_TYPE PDF); iptal SÜRESİ kılavuzda YOK (e-Arşiv
+  8. gün sorusuyla aynı → mali müşavir); CANLI ADRES bugünkü belgelerde YOK (19.10 notu) → açmadan önce EDM'den teyit. EDM ÖRNEK SAYILARI TUTARSIZ (net >
+  brüt, KDV %18) → kâhin GİB kuralından (ders 5). Kodda: kâğıt SMM + defter (B 120, B 193 stopaj / A 600, A 391), ESMM profili, ESM/TES serileri, Entegratör
+  Ayarları → Firma "e-SMM kullanıcısıyım" (gizli) VAR; ESmmEDM.svc bağlantısı, SendSMM/GetSMMStatus/CancelSMM, UBL stopaj vergi satırı (0003) YOK
+  (edm.mjs yalnız EFaturaEDM.svc; ubl-tr.mjs:157 stopaj yalnız not). Canlıda müşteri EDM'den ayrıca e-SMM siparişi + açılış ister → kılavuza yazılır.
+- 2.4.3 YAYIMLANDI (19.10.2026): PR ceougur/ofis---y-netimi#33 → master 163dd5d; 5 dosya bayt bayt, güncelleyici "available", site PR ceougur/destekofis#19 (ayrıntı
+  arşivde). OKUNDU (22.10.2026): master CI #847 163dd5d yeşil; "Sürüm yayımla" #36 (2.4.3) ve #34 (2.4.1, run 39010296441) yeşil.
+- KARAR (kullanıcı, 19.10.2026 ~11:45 UTC: "perşembe yapalım, 2.4.4'ün kalan işleri ile beraber"; haftalık kullanım %91): 2.4.4 = e-SMM (4 madde: EDM ESmmEDM
+  bağdaştırıcısı, GİB e-SMM XML'i, numara/kopma/iptal kuralları + dar kontrol, test ortamı uçtan uca + kılavuz + açma) + 2.4.3'ten ertelenenler (UI11, UI5, UI9,
+  UI3a, UX9, UX10, UX15–UX18, UX20, UX25, UX27, KÖ3) + gg243-dar-kontrol-gonderim D2 ön koşulunu belirlenimci yap (ders 20) + e-Arşiv iptal 8. gün teyidi.
+  BAŞLANGIÇ: kullanıcı "başla" deyince (ilk karar Perşembe 22.10.2026 02:00 idi; kısıt 21.10.2026'da KALKTI). Tahmin ~1,5–2 gün (e-SMM), ~1,5–3 M token.
+  BÖLME YOK (kullanıcı, 21.10.2026: "bölme kararımız yoktu; e-SMM programda hazır, yalnız gösterilmiyordu") → e-SMM 2.4.4'te. 2.4.4 BAŞLANGICI: kullanıcı
+  "başla" deyince (21.10.2026: "yarın ben başla dediğimde başlarsın").
+  02:00 KISITI KALKTI (kullanıcı, 21.10.2026: "02.00 kısıtına takılma, ben başla dediğimde limit sıfırlanmış demektir").
+  KARARLAR (kullanıcı, 21.10.2026: "ilk 5 maddeyi en yaygın ve doğru kullanılan bilgi ile yapalım"; baş mimar seçti):
+  (1) UI11 dışa aktarım: liste/rapor düğmeleri tek ad "PDF" / "Excel" (ne indirdiği pencere başlığında + düğme ipucunda); kart/belge çıktıları (Cari Ekstre,
+  Taksit Ekstresi, Stok Kartı, <Belge Türü>, Kasa Dökümü) 2.0.16 kararıyla adlı kalır; hepsi TEK görünüm (aynı simge/renk ailesi/yükseklik); fatura listesi çift
+  başlık kalkar. (2) UX18: faturadan Çek/Senet ile tahsilat BU faturayı kapatır (fatura bazlı kapama; bağ yalnız cheque_events.invoice_id, cheques.invoice_id boş
+  → fatura iptalinde evrak portföyde kalır, bağ düşer); taksitli faturaya ve başka cariye/ters yöne bağ yok (invoiceLink kuralı); karşılıksız dönünce fatura yeniden
+  açılır; carideki "+ Tahsilat" Çek/Senet yolunda seçili Kapatılacak Fatura artık KORUNUR (bugün sessizce düşüyor); yevmiye değişmez (B 101/121 / A 120);
+  şüpheli alacak kuralı değişmez (BİLİNEN SINIR); para çekirdeği → kırmızı test + mutasyon + dar kontrol. (3) E7: Yol A — ayrı, ekran boyunda pencere
+  (window.open), kullanıcının kalıcı Edge profili (Beni Hatırla + Edge parola kaydı); kurulum değişmez; adres sunucunun sabit listesinden ortama göre; Turnstile'a
+  dokunulmaz, parola istemciye çıkmaz; ad yazım düzeniyle "e-Fatura Portalı"; e-SMM'ye portaldaki sarı "SMMM Portalı Girişi" ile geçilir. (4) E8: Tahsilat düğmesi
+  CSS ile gizlenir. DÜZELTME (kullanıcı, 21.10.2026: "orta tablodaki Excel'deki kayıttan taksit olmasın, cariye kaydedip oradan yapsın; kasa hareketlerini,
+  fatura, rapor gibi kısımları bozar, muhasebe mantığını kaybeder") → KAYITTAN TAKSİT KALKAR (2.0.18 kalıcı kararı bu ölçüde değişti): "Taksit planı oluşturun"
+  kısa yolu karta TAŞINMAZ; taksit yalnız Cari'den / Taksitler'den (kart cariye bağlı; createFromPlan routes/accounts.mjs:1289). Eski kayda bağlı kartlar ve eski
+  kayıt tahsilatları olduğu gibi kalır (veri bozulmaz). Boş geçmiş metni, yetki açıklaması, rapor adı, kılavuz uyarlanır. KÖR NOKTA (kullanıcıya soruldu): zil ve
+  Ödeme Sözü şeridindeki "Tahsil Et" (hof-alerts.js:285, hof-promises.js:138 → HOF.workspace.payment) kayıttan tahsilatı cari dışı doğrudan Kasa'ya yazmayı
+  sürdürür — aynı muhasebe sorunu; öneri: bu iki yol da Cari'ye gider (kayıt cariye bağlıysa cari tahsilat formu; değilse "önce cari açın" + ad/telefonu dolu
+  "+ Yeni Cari"). "Taksit → Tablodan Aktar" (tablodaki ödeme planı → cariye bağlı kart) aynı ilkeye girer mi: soruldu.
+  KARAR (kullanıcı, 21.10.2026: "önerilerin uygun"): zil ve Ödeme Sözü şeridindeki "Tahsil Et" CARİ'ye gider (bağlı cari varsa cari tahsilat formu; yoksa
+  "önce cari açın" + ad/telefonu dolu "+ Yeni Cari"); kayıttan Kasa'ya doğrudan tahsilat ekrandan kalkar (sunucu ucu ve eski kayıtlar durur); para yoluna
+  dokunur → kırmızı test + komşu senaryolar + dar kontrol. "Taksit → Tablodan Aktar" KALIR (kart cariye bağlı). (5) İPTAL SÜRESİ (GİB kaynağı: ebelge.gib.gov.tr/dosyalar/kilavuzlar/
+  e-Arsiv_Uygulamalari_Iptal_Ihtar_Itiraz_Bildirim_Kilavuzu_V.1.1.pdf §3: "e-Arşiv Fatura ve e-SMM belgelerinin iptal işlemlerinde 8 günlük sürenin tespiti e-belgenin
+  alıcıya iletilme tarihinden itibaren başlar. İptal işlemi her durumda 8 günlük süre içinde yapılmalıdır"; dayanak TTK 21/2): e-Arşiv VE e-SMM 8 gün, İLETİM
+  (gönderim) tarihinden; başlangıç günü sayılmaz, 8. gün dahil (TBK 92). Program bugün KESİM tarihinden sayıyor (invoices.mjs:2893; daha katı) → iletimden
+  sayacak; ileti sınır günüyle; kılavuz kâhin kaynağı olarak depoya (sha256); kâhin K22 (≤7) GİB kaynağıyla ayrı elden düzeltilir (ders 5); localOnly yolu
+  gönderilmiş belgede süreyi atlamaz.
+  (6) EDM TEYİDİ GEREKMEZ (kullanıcı, 21.10.2026: "test ortamından kurup test edeceğiz; kullanıcı canlı için EDM'den üyelik alıp canlıdan önce deneme yapıp sonra
+  kullanacak"): canlı e-SMM adresi 19.10'da EDM Word belgesinden okunmuştu (portal2.edmbilisim.com.tr/EFaturaEDM/ESmmEDM.svc) ve e-Fatura adresiyle aynı
+  düzende → program e-SMM adresini Entegratör Ayarları'ndaki servis adresinden türetir; kılavuza "canlıda e-SMM için EDM'den ayrıca e-SMM siparişi" yazılır.
+- KULLANICI SORUNU (19.10.2026, ekran): Mükellef Sorgula "Kullanıcı Bulunamadı (11010)" — neden: Entegratör Ayarları'nda Web Servis KULLANICI ADI alanına servis
+  ADRESİ (https://test.edmbilisim…) yazılmış. Parola "Kayıtlı": kayıtlı parola tasarım gereği gösterilmez (Göster yalnız o an yazılanı gösterir). 2.4.4 ADAYI
+  (küçük, kullanıcıya önerildi): kullanıcı adında http/https/“.svc” varsa kaydetmeden uyarı + baş/son boşluk kırpma; "Göster" yanında "kayıtlı parola gösterilmez,
+  değiştirmek için yenisini yazın" netliği.
+
+- MÜŞTERİ İSTEKLERİ → 2.4.4 (kullanıcı, 19.10.2026 ~23:05 TR: "müşterinin istekleri var sırayla yazacağım, bunları da 2.4.4 güncellemesine ekle"; ekran:
+  Fatura → Gönderilecekler, 2 belge seçili, seçim çubuğunda PDF/Excel/XML/İptal/Sil var, gönder YOK):
+  (1) "Seçilenleri Gönder" — seçim çubuğuna, seçilenlerden gönderilebilir (Gönderilecekler) olanların sayısıyla. KURAL (baş mimar): e-Belge numarası tarih
+  sırasıyla verilir (kronoloji); seçilmemiş DAHA ESKİ tarihli bekleyen belge varsa seçilen yenisi numara alamaz → düğme bunu gönderimden ÖNCE söyler
+  ("önce şu tarihli N belge gönderilmeli; onları da ekle / iptal") — sessiz atlama ya da yarım tur yok; Tümünü Gönder ile aynı sunucu yolu (seri kilidi,
+  sonucu belirsiz önce sorulur). Para-numara çekirdeği → kırmızı test + dar kontrol (ders 32).
+  (2) "E-Fatura Portal" düğmesi (Fatura üst satırı, Liste - Excel'in yanında): tıklayınca EDM portalı program içinde TAM EKRAN açılsın; kullanıcı adı/parola
+  Entegratör Ayarları'ndan alınıp şifre sormadan kullanıcının portal sayfası açılsın. KODDAN/AĞDAN (20.10.2026): EDM e-Fatura WSDL'inde (60 işlem) portala
+  oturumlu giriş/SSO/bağlantı üreten işlem YOK (Login yalnız web servis oturumu); canlı portal portal2.edmbilisim.com.tr → portal4.edmfatura.com/EFaturaUI/
+  (bu ortamdan erişilemedi; çerçeveye izin verip vermediği DOĞRULANMADI). BAŞ MİMAR UYARILARI: (a) portal girişi web servis kullanıcısıyla aynı mı — EDM'ye
+  sorulacak (çoğu entegratörde portal kullanıcısı ayrı); (b) program içinde çerçeve (iframe) çoğu portalda X-Frame-Options/çerez kuralıyla engellenir ve
+  program http://<ip>:5123'te çalışır → gerçekçi yol: başlatıcının ayrı tam ekran uygulama penceresi (Edge --app) portal adresiyle; (c) şifresiz giriş
+  ancak EDM'nin belirteçli (token/SSO) giriş bağlantısı varsa güvenli; yoksa parolayı EDM'nin giriş formuna betikle doldurmak gerekir → parola sunucudan
+  istemciye çıkar (bugün tasarım gereği hiç çıkmaz) ve EDM sayfası değişince sessizce bozulur. ÖNERİ: EDM'ye "portala belirteçli giriş bağlantısı var mı,
+  portal kullanıcısı web servis kullanıcısıyla aynı mı, test/canlı portal adresleri ve çerçeveye izin" sorulur; yanıta göre ya tam şifresiz giriş ya da
+  "portalı tam ekran aç + kullanıcı adı dolu" (parola tarayıcının kendi kaydıyla). Gerçek Windows + Edge'de denenir (ders 18).
+  EK (kullanıcı, 20.10.2026: test portalı https://test.edmbilisim.com.tr/EFaturaUI21ea/ giriş bilgisi web servisle AYNI; "program kullanıcı adı/şifre alanını
+  doldurup giriş yapacak; beni hatırla açıksa doğrudan sayfa gelecek?"). SAYFADAN OKUNDU: X-Frame-Options SAMEORIGIN → program içine gömülemez (ayrı tam ekran
+  pencere şart); giriş formunda Cloudflare Turnstile (hfTurnstileToken) + "Giriş Yap" düğmesi doğrulama bitene kadar pasif → otomatik doldur + otomatik
+  tıkla insan doğrulamasına takılır, EDM'nin bot korumasını aşmaya çalışmak YAPILMAZ; "Beni Hatırla" kutusu var (rememberMe), kalıcı çerez davranışı
+  DOĞRULANMADI. ÖNERİ: başlatıcı portalı KALICI profilli ayrı tam ekran Edge uygulama penceresinde açar; ilk girişte kullanıcı adı/parola bir kez girilir
+  (Edge kaydeder) + Beni Hatırla; sonraki açılışlarda doğrudan sayfa gelmesi beklenir — gerçek Windows + Edge'de denenir; giriş alanlarını doldurma ayrı
+  karar (Turnstile yüzünden yine tek tıklama ister, parola istemciye çıkar).
+  NETLEŞTİRME (kullanıcı, 20.10.2026: "test linki vermiştim, karışıklık olmasın; entegrasyon ayarına girilen canlı hesap linki + aynı kullanıcı adı/şifre ile
+  EDM giriş arayüzüne bağlanacak kullanıcılar, doğru mu? beni hatırla kullanılacak?") → EVET: düğme Entegratör Ayarları'ndaki ORTAMA göre açar (Test → test portalı
+  EFaturaUI21ea, Canlı → canlı portal); giriş Entegratör Ayarları'ndaki kullanıcı adı/şifre ile; Beni Hatırla kullanılır (ilk girişte bir kez). Canlı portal adresi
+  (portal2.edmbilisim.com.tr → portal4.edmfatura.com/EFaturaUI/) ve canlıda portal girişi = web servis kullanıcısı olduğu EDM'den teyit edilecek.
+  CANLI ADRES (kullanıcı ekranı, 20.10.2026: edmbilisim.com.tr → Müşteri Girişi → "E-Fatura Portal Girişi"): https://portal4.edmbilisim.com.tr/EFaturaUI/
+  ("e-Fatura / e-Arşiv v2.1" — tek giriş iki belge türünü kapsar; Beni Hatırla var). e-Arşiv'in GELEN kutusu YOKTUR (alıcı mükellef değildir; e-posta/PDF
+  ile gelir); gelen kutusu yalnız e-Fatura. GİB e-Arşiv Portalı ayrı ve ücretsiz; EDM ile kesen müşteri onu kullanmaz.
+  (3) Kayıt detay kartındaki "Tahsilat" düğmesi KALDIRILSIN (kullanıcı, 20.10.2026: "regresyon olma ihtimali varsa koda dokunmadan yalnız CSS ile").
+  KODDAN: düğme hof-workspace.js:1212 data-case-action="payment" (yetki payments.create "Kayda Tahsilat Girme", tutar Kasa'ya düşer); CSS'te gizleme kuralı zaten
+  var (hof-ui.css:2123, yalnız tahsilat modülü kapalıyken; modül, kayıtlarda tahsilat varsa profile.mjs kendiliğinden açar). PLAN: CSS'e koşulsuz gizleme;
+  sunucu yolu, eski tahsilatların İşlem Geçmişi'nde görünmesi/düzeltilmesi/silinmesi ve kayda bağlı TAKSİT kutusundaki "+ Tahsilat" (doğru yol) DEĞİŞMEZ;
+  boş geçmiş metni ("not, telefon, tahsilat veya haciz") düğmeye uygun düzeltilir. Bu düğmeye tıklayan e2e'ler (run.mjs 488/622/645, senaryo-banka-210b:214,
+  senaryo-cari-243:173/206) ekrandan girilemeyeceği için tahsilatı API'den girer + yeni denetim "düğme görünmez" (eski kodda kırmızı); bütün e2e koşulur (ders 28).
+  Standart/Pro kuralı gereği bütün kurulumlara gider.
+- SORU (kullanıcı, 20.10.2026: "demo olarak kaç kişi kullanıyor, operatör merkezinden bak") → Supabase lisans.installations SALT OKUNUR sorgu (veriye dokunulmadı):
+  9.0.0 hariç 13 kurulum; 4 lisanslı (ŞAHİN TURİZM, OFİS, AHMET ALANLI, UĞUR ÇETİN); lisanssız Türkiye adresli GERÇEK demo 5'i son 24 saatte etkin (hepsi 2.4.3;
+  178.233, 46.221, 88.225, 193.255, 88.241), 2'si Eylül'den beri görünmüyor (2.0.9, 2.0.0). Azure (GitHub Actions) adresli 2 kayıt: 2.0.12 (25–30.09) ve
+  YAYIMLANMAMIŞ "2.4.5" (ilk 15.10 10:04, SON 19.10 15:30 TR — ders 30 önlemi 210ac8e'den SONRA da görülüyor) → 2.4.4 ADAYI: hangi test/iş akışı gerçek
+  lisans servisine ulaşıyor, bulunup kapatılır (lisans-servisi-izolasyonu taraması genişletilir; release.yml/Uzun Doğrulama dahil). Kayıtlar silinmez (15.10 kararı).
+- İSTEK → 2.4.4 (kullanıcı, 21.10.2026; ekran: kendi tasarımı "Personel Raporu" kartı — Toplam Maaş / Kayıtlı Personel / Aktif Çalışan / Ayrılan Personel;
+  alanlar Ad Soyad, Yaş, TC No, Adres, Görevi, Maaş, Banka Adı, IBAN, İşe Giriş, İşten Ayrılış (iki kez), Kişisel E-Posta, Telefon, Öğrenim Durumu, Uzmanlık
+  Alanı, fotoğraf; sekmeler Personel Özeti / Evrak Listesi / Maaş Bordrosu / CV / İletişim): Personel Raporu penceresine ÇALIŞAN ÖZLÜK tablosu; "Çalışanlar" ve
+  "Ayrılanlar" sekmeleri; tablolarda arama (yazınca ilgili çalışan); kartlar görseldeki gibi; İşten Ayrılış Tarihi yazılınca kart KENDİLİĞİNDEN Ayrılanlar'a geçer;
+  ikinci "İşten Ayrılış Tarihi" alanı "Kullanılan İzinler" olur. KODDAN: bugünkü "Personel Raporu" (hof-workspace.js:879, :808 openReports) yalnız kullanıcıların
+  görev performansı ("Personel Performans Özeti"); personel/özlük verisi programda YOK → yeni modül (tablo + göç + rota + ekran), para çekirdeğine dokunmaz
+  (maaş yalnız bilgi; Kasa/Banka/defterde etkisi yok). BAŞ MİMAR UYARILARI: TC No, IBAN, maaş, adres KVKK kişisel verisi → yeni yetki (varsayılan yalnız
+  yönetici), yedekte kalır, günlüğe/değişiklik geçmişine değer yazılmaz; Yaş elle yazılırsa eskir → Doğum Tarihi girilir, yaş hesaplanır; "Maaş Bordrosu"
+  (SGK/vergi hesabı) kapsam dışı.
+  KARAR (kullanıcı, 21.10.2026: "önerilerin uygun, sadece personel özeti olan görünüm kart olsun, diğer sekmeler olmasın"): yalnız yönetici görür (yeni yetki;
+  yönetici başkasına verebilir); kartta YALNIZ Personel Özeti görünümü — Evrak Listesi, Maaş Bordrosu, CV, İletişim sekmeleri YOK; Doğum Tarihi girilir, Yaş
+  hesaplanır; "Kullanılan İzinler" gün sayısı.
+  EK (kullanıcı, 21.10.2026): IBAN, maaş, adres gibi bütün alanlar istenildiği zaman düzeltilebilir/değiştirilebilir — yönetici ve yetki verdiği kullanıcı. Uygulama:
+  iki yetki (Personel Özlük Görüntüleme / Personel Özlük Düzenleme), varsayılan yalnız yönetici; Değişiklik Geçmişi'ne kim / ne zaman / hangi alan yazılır,
+  DEĞER yazılmaz (KVKK).
+- SORU (22.10.2026, Personel Özlük yapılırken; kullanıcıya soruldu): ileri tarihli İşten Ayrılış Tarihi (ihbar süresindeki çalışan) bugün "yazılınca geçer" kararı gereği
+  hemen Ayrılanlar'a geçiyor ve Toplam Maaş'tan düşüyor. ÖNERİ: ayrılış günü gelene kadar Çalışanlar'da kalsın, yanında "Ayrılacak" notu.
+  KARAR (kullanıcı, 22.10.2026: "önerini uygula işten ayrılış tarihi ile alakalı olarak"): ileri tarihli ayrılış → ayrılış gününe kadar Çalışanlar'da + "Ayrılacak" notu,
+  Toplam Maaş'ta sayılır; ayrılış günü gelince (bugün ≥ tarih) kendiliğinden Ayrılanlar'a geçer.
+- SORU (22.10.2026, madde 23 iptal süresi; kullanıcıya soruldu): sonucu BELİRSİZ gönderimde (EDM'ye ulaştı mı bilinmiyor) "Yalnız Programda İptal" bugün süreye
+  bakmıyor (2.4.3 çıkış yolu). ÖNERİ: 8 gün geçtiyse yalnız-programda iptalden önce EDM durum sorgusu zorunlu; EDM "bulunamadı" derse (iletilmemiş) iptal serbest,
+  "var" derse süre dolmuş sayılır ve iptal reddedilir (GİB'de geçerli belge programda iptal görünmesin).
+  KARAR (kullanıcı, 22.10.2026: "önerin uygun"): öneri AYNEN uygulanır.
+- SORULAR (22.10.2026, madde 5 yapılırken; kullanıcıya soruldu): (a) carisi olmayan kayıtta Tablodan Aktar'dan ÖNCE şeritten girilen tahsilat caride taksit dışı kalıyor,
+  karta taşınmıyor (kart o ayı ödenmemiş gösteriyor; ön izleme söylüyor). ÖNERİ: Tablodan Aktar kayda bağlı carinin taksit dışı tahsilatlarını ön izlemede göstererek en eski
+  açık taksitten başlayarak karta eşleştirsin (kullanıcı kapatabilir); para çekirdeği → kırmızı test + mutasyon + dar kontrol. (b) "Önce cari açın" formunda Açılış Bakiyesi
+  boş geliyor → borç girilmezse tahsilat avans görünür. ÖNERİ: kayıttaki Kalan Borç ile dolu gelsin (değiştirilebilir) + Tablodan Aktar'ın aynı borcu ikinci kez
+  yazmadığı testle güvenceye alınır. (c) önceden var olan hata: Tablodaki Kişiler raporunda aynı dosya no iki sekmede varsa tahsilat iki kez yazılıyor (2.4.3'te de) →
+  ÖNERİ 2.4.4'te düzeltilsin.
+  KARAR (kullanıcı, 22.10.2026: "3 önerinde uygun"): (a), (b), (c) öneriler AYNEN 2.4.4'te (iş listesi 5a–5c).
+- SORULAR (22.10.2026, 5a/5b yapılırken; kullanıcıya baş mimar önerisiyle soruldu, iş bu önerilerle sürüyor): (1) kartı aşan tahsilat BÖLÜNMESİN (K11 bir olay = bir
+  para hareketi; bölmek para modelini değiştirir; fazlası taksit dışı kalır); (2) carinin borcu tablodaki kalandan AZSA kayıt aktarılmasın, ne yapılacağı söylensin ("tablodakini
+  yaz" çift borç riski); (3) faturalı cari 5a/5b DIŞINDA kalsın (fatura kapamayla çakışır; müşteri isterse ayrı iş).
+  KARAR (kullanıcı, 22.10.2026: "3 önerin uygun"): üç öneri AYNEN (uygulanmış hâliyle) kalır.
+- SORU (22.10.2026, madde 22 e-SMM gönderim kapıları; kullanıcıya soruldu): 2.4.0'da e-SMM bir gün görünürdü (2.4.1'de gizlendi); o arada kesilmiş NUMARALI ESMM
+  makbuzları e-SMM açılınca Gönderilecekler'de "Gönderilmedi" görünüyor ve ESKİ tarih + kendi numarasıyla gönderilebiliyor (geriye dönük e-belge riski). ÖNERİ: bu makbuzlar
+  kalıcı engel ("e-SMM gönderimi açılmadan önce kesildi; İptal Et ile iptal edip bugünün tarihiyle yeniden kesin"); Tümünü/Seçilenleri Gönder onları atlar.
+  KARAR (kullanıcı, 22.10.2026: "evet"): öneri AYNEN uygulanır (iş listesi 22a).
+  GERİ ALINDI (kullanıcı, 22.10.2026: "kimsenin o sürümde e-SMM kesmediğine eminim"): 22a İPTAL — böyle makbuz yok; koruma yazılmaz (gereksiz iş). Bilinen sınır olarak
+  teslim notunda kalır: 2.4.0'da kesilmiş numaralı ESMM makbuzu olsaydı e-SMM açılınca Gönderilecekler'de görünürdü.
+- SORU (22.10.2026, madde 15 UX18; kullanıcıya baş mimar önerisiyle soruldu): "karşılıksız dönünce fatura yeniden açılır" kuralı tutarlılık için faturanın KENDİ evrakına
+  (fatura kesilirken alınan çek) ve faturayla ciroya da uygulandı (taksitli hariç) → güncellemeden sonra eski verideki karşılıksız evraklı faturalar "Ödendi"den "Açık"a
+  döner; cari bakiye DEĞİŞMEZ (tutar "Faturasız Cari Alacağı"ndan faturaya geçer). ÖNERİ: kalsın (muhasebece doğru: karşılıksız evrakla ödenmiş fatura ödenmemiştir) +
+  sürüm notuna bir cümle. Alternatif: yalnız Kapatılacak Fatura bağlarına daralt.
+  KARAR (kullanıcı, 22.10.2026: "önerini uygula"): kural uygulandığı hâliyle KALIR (faturanın kendi evrakı ve faturayla ciro dahil, taksitli hariç) + sürüm notuna cümle
+  ("karşılıksız dönen evrakla ödenmiş görünen faturalar artık Açık görünür; cari bakiye değişmez").
+- İSTEK (kullanıcı, 22.10.2026: "test için kesip EDM'ye gönderdiğin e-SMM numaralarını bana verirsen EDM test portalına girip ben de görebilirim"): madde 24 gerçek EDM
+  koşusundan sonra kullanıcıya gönderilen her belgenin listesi verilir (tür, Belge No, ETTN, tarih, gönderim saati, alıcı, tutarlar, EDM durumu, iptal saati) — betik
+  docs/kanit/2026-10-22/244-edm/OZET.md üretir; kimlik bilgisi girmez.
+- SORU (kullanıcı, 22.10.2026, EDM test portalı ekranlarıyla): "bunlar bizim mi" → HAYIR (QZA/QZY serili, 1 TL, "İzole TEST sözleşme denemesi" — depoda/kanıtta yok;
+  EDM test hesabı VKN 3230512384 ORTAK, başka firmaların denemeleri de görünür). "Kestiğimiz e-SMM'lerin karekodları doğru hesabı veriyor mu?" → HAYIR: e-SMM görüntüsünü
+  ve karekodunu EDM'nin şablonu çizer, karekod YALNIZ ETTN içerir; GİB Karekod Standardı V1.2 §2.4 e-SMM'de vkntckn, avkntckn, tarih, no, ettn, parabirimi, brutucret,
+  tahsilkdv, kdvtevkifat, gvstopaj, kdvtutari, netucret, tahsilat ister. Programın şablonu e-SMM'ye gömülemiyor (EDM 11032, deney). e-Arşiv/e-Fatura karekodu programın,
+  standarda uygun (22.10: 300/60/360 doğru). → EDM'ye soru metni kullanıcıya verildi (canlıda uygun mu, test ortamı düzelecek mi, özel şablon desteği, VKN'li
+  düzenleyende unvan). Aynı ekranlardan: resmî PDF'te adres iki kez (düzeltildi 959b667), VKN'li düzenleyende unvan yok (düzeltildi 32e59c0, EDM yalnız Person'dan basar).
+  Portal kullanıcı adı/parolası kullanıcı tarafından teyit edildi (web servisle aynı; dosyaya YAZILMAZ).
+- SORU (22.10.2026, madde 31a kâhin F3; kullanıcıya soruldu): Kapatılacak Fatura SEÇİLMEDEN alınan (bağsız) çek/senet karşılıksız dönünce, onun kapattığı faturalar
+  da yeniden açılsın mı? Bugün açılmıyor (bakiye artıyor, açık faturalar toplamı bakiyeyle ayrışıyor: G1 0, G2 500, bakiye 2.000). ÖNERİ: evet (bağlı evrak için
+  verilen kararla aynı mantık: karşılıksız evrakla ödenmiş fatura ödenmemiştir; Σ açık = cari bakiye korunur).
+  KARAR (kullanıcı, 22.10.2026: "F3 için en yaygın uygulama ne ise onu yapalım"): uluslararası yaygın uygulama (QuickBooks "Record bounced check", Xero, Sage: ödeme
+  geri alınır, fatura ödenmemiş olur) + UX18 kararıyla aynı mantık → BAĞSIZ evrak karşılıksız dönünce kapattığı faturalar da yeniden açılır (kalan ödemeler en eski
+  açıktan yeniden dağılır; cari bakiye ve yevmiye değişmez; taksitli değişmez) — ux18 ajanı (is/f2-ux18) F2 ile birlikte; sürüm notu cümlesi genişler.
+  EDM'YE MAİL (kullanıcı, 22.10.2026: "maili gönderdim"): e-SMM karekodu (§2.4), özel şablon (11032), VKN'li düzenleyende unvan soruldu — YANIT BEKLENİYOR; gelene dek
+  teslim notunda BİLİNEN SINIR (karekod EDM'nin, yalnız ETTN).
+  DEVAM (22.10.2026): teknik@ otomatik yanıtı konu başında kayıtlı VKN/TCKN istedi; kullanıcının canlı EDM hesabı YOK → talep test portalından ("Destek Talebi
+  Oluştur", test kullanıcısı adıyla) açıldı. Zip'teki belgeler (kullanıcı: "yeterli gelmiyor mu") entegrasyona yeterli, karekoda değil: örnek XML EDM'nin
+  general-esmm.xslt şablonuna işaret ediyor; TEMPLATE_CONTENT iki biçimde denendi, kullanılmadı; kullanıcı portalda EDM şablonunu doğruladı.
+  EDM YANITI (22.10.2026 14:43 TR, Teknik Operasyon Yöneticisi; kullanıcıya e-posta): (1) karekodlar GİB standardına uygun, CANLIDA e-SMM karekodu da uygun; (2) özel
+  XSLT desteği var, şablon dosyası .xslt uzantılı olmalı; (3) VKN'li mükellefte unvan cac:PartyName'den, şahısta FirstName + FamilyName'den. → TEMPLATE_CONTENT
+  "XSLT" türüyle de denendi (deney-template3), kullanılmadı (özel şablon büyük olasılıkla portala yüklenir). KARAR (baş mimar): EDM'nin canlı şablonuna güvenilir,
+  kendi e-SMM şablonu YAPILMAZ (gerekirse ayrı iş); VKN'li düzenleyende unvan yalnız PartyName'de (32e59c0 Person bölmesi geri alınır, esmm2 ajanı); test
+  ortamının e-SMM görüntüsü canlıdan farklı → BİLİNEN SINIR + kılavuza not; ilk canlı deneme makbuzunda karekod ve unvan okunur.
+- KARAR (baş mimar, 22.10.2026; kullanıcının "en yaygın ve doğru uygulama" ilkesiyle — kullanıcıya bildirildi): (1) e-SMM makbuzu Gönderilecekler'den bırakılınca
+  KÂĞIT SMM serisinden numara alır, ekranda "Kâğıt Makbuz Olarak Bırak" (faturada "Müşteri Fişi Olarak Bırak" aynen) — kâhin bulgusu, is/esmm-fis 7502485; (2) verilmiş
+  kâğıt/fiş numarası (FIS, SMM) BİR DAHA KULLANILMAZ: bırakılan belge sonra e-Belge olarak gönderilse de numarası seride kullanılmış sayılır (bugün 2.4.3'ten beri
+  sıradaki bırakılan belge aynı numarayı alıyordu — esmm2 ajanının bulgusu); (3) e-Fatura/e-Arşiv/e-SMM XML'i GİB UBL-TR 1.2.1 XSD'siyle de denetlenir (EDM 11029'u
+  yerelde yakalamak için; şemalar tools/ebelge/sema/ubl-tr-1.2.1, sha256 KAYNAK.md).
+  EK (baş mimar, 22.10.2026, esmm2 raporu): 2.4.3 verisinde bırakılmış en büyük fiş/makbuz numarası hiçbir yerde kayıtlı değildi (güncellemeden sonraki ilk
+  bırakmada bir kez daha verilirdi) → tek seferlik tarama is/esmm-fis'e: her şirket, seri/yıl, programın biçimindeki Kâğıt Fatura No'lardan; taban yalnız yükselir; işaret
+  veri tabanında (eski yedek geri yüklenince de koşar). I23 (kâhin: ön hesap ile "Kes, Sonra Gönder" kaydının kronoloji iletisi farklıydı) aday 5 c1598c7 ile kapandı:
+  ileti düğmeye bakmaz, tek ileti.
+- SORU (kullanıcı, 22.10.2026 ~12:15 UTC: "e-SMM kesen kullanıcının kaşe imzası ve logosu e-fatura yapılırken eklenen yerden mi eklenecek?") → YANIT (koddan): evet,
+  Fatura Ayarları → Firma Bilgisi (Logo, Kaşe / İmza); programın PDF'inde e-SMM'de de basılır (invoice-pdf.mjs: kaşe e-Fatura dışında basılır); RESMÎ e-SMM görüntüsünde
+  (EDM'nin) basılmaz (invoices.mjs ublFor: ESMM'ye görünüm şablonu gömülmez; EDM gömüleni 11032 ile reddetti, TEMPLATE_CONTENT'i kullanmadı); e-SMM'de ıslak imza/kaşe
+  gerekmez (mali mühür). ÖNERİ: Ayarlar'daki Kaşe / İmza açıklamasına ve kılavuza tek cümle ("e-SMM'de yalnız programın PDF'ine basılır; resmî görüntüyü EDM
+  çizer"). KARAR (kullanıcı, 22.10.2026: "ekle"): aday 5'te — Fatura Ayarları açıklaması (yalnız e-SMM kullanıcısında) "Logo ve kaşe e-SMM'de yalnız programın PDF'ine
+  basılır; resmî görüntüyü EDM çizer."; kılavuzun e-SMM maddesine aynı cümle + "Test Ortamı'ndaki görüntü canlıdakinden farklı olabilir"; e2e gg244-esmm-gonder ■ 4.
+- SORU (kullanıcı, 22.10.2026 ~12:20 UTC; ekran: çalıştığı kurumun e-SMM'si — kurum ve müşteri bilgisi YAZILMAZ): "logo imzayı EDM mi imzalamış?" → YANIT: hayır; imza ve logo
+  düzenleyenin yüklediği resim (gerçek imza XML'deki mali mühür/e-imza); daha önce yüklenen aynı tür makbuzun PDF üreticisi wkhtmltopdf + GİB standart e-SMM görünümü
+  (EDM test PDF'leri IronPdf + EDM tasarımı) → başka sistem; canlı EDM'de e-SMM görünümüne logo/kaşe eklenip eklenemediği EDM'ye sorulacak (soru metni kullanıcıya verildi).
+- EK BULGULAR → 2.4.4 (kullanıcı, 21.10.2026: "önerin uygun"; e için "küçük bir işse önce doğrula, sorun varsa 2.4.4'e girsin"): iş listesi 25–29 —
+  a) salt okunur lisansta tax.manage, b) Brütü Hesapla kişi alıcı, c) defter kâhini CI'da, d) vekil sunucu parolası açık metin, e) 002'ye yetki/lisans olayı canlı
+  ulaşmıyor: KODDAN DOĞRULANDI (app.mjs:182 şirket başına kanal, :441 çocuğa kanal verilmez, license.mjs:331) → 2.4.4'te kırmızı testle.
