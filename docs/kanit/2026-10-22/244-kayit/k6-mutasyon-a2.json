@@ -1,0 +1,48 @@
+{
+  "ad": "244-kayit/k6-mutasyon-a2",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-k6-a2/test/tablodan-aktar-244.test.mjs /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-k6-a2/test/kayit-tahsilat-244.test.mjs",
+  "commit": "7d51d60f6298e3ac058b06db34ef2059c8cba896",
+  "dal": "is/kayit",
+  "kirli": 2,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T08:08:16.274Z",
+  "sure_sn": 3.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 11,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 5a: Tablodan Aktar kayda bağlı carinin taksit dışı tahsilatlarını karta yazar; bakiye, Kasa ve banka aynı › A1–A6, A8 ön izleme: Elif 3.500 karta (1.000 + 2.500), 7.000 taksit dışı (kalanı aşar; iade düşüldü); Selin faturalı → taşınmaz; kapalıyken yazılmaz",
+      "konum": "test/tablodan-aktar-244.test.mjs:83:3",
+      "hata": "karta yazılacak: 0 · 0 !== 3500 (beklenen 3500, gelen 0)"
+    },
+    {
+      "ad": "2.4.4 5a: Tablodan Aktar kayda bağlı carinin taksit dışı tahsilatlarını karta yazar; bakiye, Kasa ve banka aynı › A1–A7 aktar: kart 9.000 / ödenen 3.500 (1. taksit kapandı, 2.'nin 500'ü); cari bakiyesi, Kasa, banka hesabı ve işlem sayısı aynı",
+      "konum": "test/tablodan-aktar-244.test.mjs:115:3",
+      "hata": "Expected values to be strictly equal: · 1 !== 2 (beklenen 2, gelen 1)"
+    },
+    {
+      "ad": "2.4.4 5a: Tablodan Aktar kayda bağlı carinin taksit dışı tahsilatlarını karta yazar; bakiye, Kasa ve banka aynı › A7 başka kartın tahsilatına dokunulmaz; A10 geri al: cari tahsilatları aynen döner, sayılar aynı",
+      "konum": "test/tablodan-aktar-244.test.mjs:140:3",
+      "hata": "{\"plans\":1,\"links\":0,\"payments\":0,\"accountEntries\":0,\"accounts\":0,\"accountsKept\":0} · 0 !== 2 (beklenen 2, gelen 0)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kayit/k6-mutasyon-a2.log",
+  "klasor": "/home/user/wt/kayit",
+  "ham_cikti_sha256": "6ca8616d7ec27d6a909c8be0f55852028c8af43d56d699c247c228e1010ef69c",
+  "ham_cikti_bayt": 9722
+}
