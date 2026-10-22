@@ -32,11 +32,12 @@ import { collectionProblems } from "./bank/collections.mjs";
 import { doubtfulProblems, doubtfulSummary, doubtfulUsed } from "./bank/doubtful.mjs";
 import { BANK_SUBS, DOCUMENT_MAINS, DOCUMENT_SUB_NAMES, RECEIVED_MAINS, documentGl, documentWanted } from "./cheque-gl.mjs";
 import { compareVersions } from "./semver.mjs";
-import { createScopedGate, familyOf } from "./integrity-scope.mjs";
+import { CHEQUE_BOND_BAD, createScopedGate, familyOf } from "./integrity-scope.mjs";
 import { runScanWorker } from "./integrity-scan-runner.mjs";
 import { systemClock } from "./clock.mjs";
 import { roundMoney, toCents } from "./money.mjs";
 
+const CHEQUE_BOND_SQL = `SELECT ev.id FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id LEFT JOIN invoices i ON i.id = ev.invoice_id WHERE ${CHEQUE_BOND_BAD} LIMIT 5`;
 const AMOUNT_COLUMNS = [
   ["payments", "amount", ""],
   ["cash_entries", "amount", ""],
@@ -535,7 +536,10 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
                 OR (o.counter_type = 'entry' AND (ce.id IS NULL OR ce.account_id <> o.account_id)) OR o.amount <= 0 LIMIT 5`,
           );
           const over = store.all(`SELECT i.number FROM invoices i WHERE i.status = 'issued' AND (SELECT COALESCE(SUM(${c("o.amount")}), 0) FROM invoice_offsets o WHERE o.invoice_id = i.id OR (o.counter_type = 'invoice' AND o.counter_id = i.id)) > ${c("i.try_payable")} LIMIT 5`);
-          const bad = [...badLinks.map(row => `bağ ${row.id}`), ...badOffsets.map(row => `mahsup ${row.id}`), ...over.map(row => `mahsup toplamı faturayı aşıyor: ${row.number}`)];
+          // 2.4.4 UX18: Kapatılacak Fatura ile bağlanan çek/senet (yalnız alış/veriliş olayının bağı; faturanın kendi evrakı değil) — cari kartındaki
+          // bağın kuralı: evrakın carisinin kaydedilmiş, taksitsiz, yön uyumlu faturası; taksite sayılan evrak bağlanmaz. Silinen evrak sayılmaz.
+          const badBonds = has("cheques") && has("cheque_events") ? store.all(CHEQUE_BOND_SQL) : [];
+          const bad = [...badLinks.map(row => `bağ ${row.id}`), ...badOffsets.map(row => `mahsup ${row.id}`), ...over.map(row => `mahsup toplamı faturayı aşıyor: ${row.number}`), ...badBonds.map(row => `evrak bağı ${row.id}`)];
           checks.push({ code: "invoice:offset", name: "Fatura kapama bağı ve mahsup fişleri", ok: bad.length === 0, count: bad.length, sample: bad.slice(0, 5) });
         }
       }

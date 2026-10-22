@@ -1,0 +1,138 @@
+TAP version 13
+# (node:15342) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır
+    # Subtest: T1 bağlı çek seçilen faturayı kapatır, en eski açık faturayı değil; bağ yalnız olayda; yevmiye B 101.01 / A 120
+    ok 1 - T1 bağlı çek seçilen faturayı kapatır, en eski açık faturayı değil; bağ yalnız olayda; yevmiye B 101.01 / A 120
+      ---
+      duration_ms: 369.078001
+      type: 'test'
+      ...
+    # Subtest: T2 kısmi çek + nakit aynı faturada (iki sıra); çek açığı aşınca fazlası en eski açık faturaya
+    ok 2 - T2 kısmi çek + nakit aynı faturada (iki sıra); çek açığı aşınca fazlası en eski açık faturaya
+      ---
+      duration_ms: 345.105624
+      type: 'test'
+      ...
+    # Subtest: T3 karşılıksız dönünce bağlı fatura yeniden açılır (fazlası da geri döner); geri alınca kapanır; Σ kapatan = ödenen
+    ok 3 - T3 karşılıksız dönünce bağlı fatura yeniden açılır (fazlası da geri döner); geri alınca kapanır; Σ kapatan = ödenen
+      ---
+      duration_ms: 178.220192
+      type: 'test'
+      ...
+    # Subtest: T3b faturayla alınan çek (faturanın kendi evrakı) karşılıksız dönünce de fatura açılır; taksitli faturada açık = kartın kalanı (değişmedi)
+    ok 4 - T3b faturayla alınan çek (faturanın kendi evrakı) karşılıksız dönünce de fatura açılır; taksitli faturada açık = kartın kalanı (değişmedi)
+      ---
+      duration_ms: 158.290366
+      type: 'test'
+      ...
+    # Subtest: T4 tahsil / geri al / Bankaya Tahsile Ver / ciro: fatura kapalı kalır; ciro edilmişken karşılıksız müşterinin faturasını açar; faturayla ciroda alış faturası da açılır
+    ok 5 - T4 tahsil / geri al / Bankaya Tahsile Ver / ciro: fatura kapalı kalır; ciro edilmişken karşılıksız müşterinin faturasını açar; faturayla ciroda alış faturası da açılır
+      ---
+      duration_ms: 387.962908
+      type: 'test'
+      ...
+    # Subtest: T5 fatura iptali: evrak portföyde kalır, bağ düşer, kapama en eski faturaya döner; iptal edilmiş faturaya bağ kurulmaz
+    ok 6 - T5 fatura iptali: evrak portföyde kalır, bağ düşer, kapama en eski faturaya döner; iptal edilmiş faturaya bağ kurulmaz
+      ---
+      duration_ms: 148.913277
+      type: 'test'
+      ...
+    # Subtest: T6 bağ kurulamayanlar: taksitli, başka cari, ters yön, iade, taslak, taksite sayılan, carisiz — hiçbir şey yazılmaz
+    ok 7 - T6 bağ kurulamayanlar: taksitli, başka cari, ters yön, iade, taslak, taksite sayılan, carisiz — hiçbir şey yazılmaz
+      ---
+      duration_ms: 240.262879
+      type: 'test'
+      ...
+    # Subtest: T7 verilen çek bağlı alış faturasını kapatır (en eskiyi değil); ödenince kapalı kalır; yevmiye B 320 / A 103
+    ok 8 - T7 verilen çek bağlı alış faturasını kapatır (en eskiyi değil); ödenince kapalı kalır; yevmiye B 320 / A 103
+      ---
+      duration_ms: 160.958564
+      type: 'test'
+      ...
+    # Subtest: T8 senet de bağlanır: B 121.01 / A 120
+    ok 9 - T8 senet de bağlanır: B 121.01 / A 120
+      ---
+      duration_ms: 104.641828
+      type: 'test'
+      ...
+    # Subtest: T9 bağ değiştirme / kaldırma; cari değişince bağ sessizce düşmez; işlem görmüş evrakta bağ değişmez
+    not ok 10 - T9 bağ değiştirme / kaldırma; cari değişince bağ sessizce düşmez; işlem görmüş evrakta bağ değişmez
+      ---
+      duration_ms: 314.882149
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ux18/ux18-mut-M10-cari-degisince-sessiz-duser/test/ux18-cek-fatura-244.test.mjs:289:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        cari değişti, bağ kaldı: 200 {"id":"cheque-2179404e-1de9-4ee4-bb06-9e941c0eab4a","direction":"in","instrument":"cheque","serialNo":"UX32","bank":"Ziraat","drawer":"","accountId":"account-aea80ec5-3fba-4b7d-a193-9ce61109fd78","planId":"","amount":300,"issueDate":"2026-10-22","dueDate":"2026-12-06","status":"portfolio","statusDat
+        
+        200 !== 404
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 404
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ux18/ux18-mut-M10-cari-degisince-sessiz-duser/test/ux18-cek-fatura-244.test.mjs:40:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ux18/ux18-mut-M10-cari-degisince-sessiz-duser/test/ux18-cek-fatura-244.test.mjs:301:18)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T10 evrak silinince fatura açılır; Silinenler'den dönünce bağ korunur; fatura bu arada taksitlendirildiyse ya da iptal edildiyse bağsız döner
+    ok 11 - T10 evrak silinince fatura açılır; Silinenler'den dönünce bağ korunur; fatura bu arada taksitlendirildiyse ya da iptal edildiyse bağsız döner
+      ---
+      duration_ms: 312.166681
+      type: 'test'
+      ...
+    # Subtest: T11 bağlı evraklı fatura sonradan taksitlendirilemez ve carisi değiştirilemez (nedenli)
+    ok 12 - T11 bağlı evraklı fatura sonradan taksitlendirilemez ve carisi değiştirilemez (nedenli)
+      ---
+      duration_ms: 94.523545
+      type: 'test'
+      ...
+    # Subtest: T14 Mutabakat Testi bozuk evrak bağını yakalar (başka carinin / taksitli / iptal faturası, taksite sayılan evrak)
+    ok 13 - T14 Mutabakat Testi bozuk evrak bağını yakalar (başka carinin / taksitli / iptal faturası, taksite sayılan evrak)
+      ---
+      duration_ms: 209.793239
+      type: 'test'
+      ...
+    1..13
+not ok 1 - 2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır
+  ---
+  duration_ms: 3548.874089
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ux18/ux18-mut-M10-cari-degisince-sessiz-duser/test/ux18-cek-fatura-244.test.mjs:96:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.4 UX18: 002 şirketinde aynı kural; yedek → çalış → geri yükle
+    # Subtest: T12 002'de bağlı çek; yedekten sonraki bağlı evrak geri yüklemeyle gider; sayılar yedekteki gibi
+    ok 1 - T12 002'de bağlı çek; yedekten sonraki bağlı evrak geri yüklemeyle gider; sayılar yedekteki gibi
+      ---
+      duration_ms: 928.763918
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.4.4 UX18: 002 şirketinde aynı kural; yedek → çalış → geri yükle
+  ---
+  duration_ms: 960.810049
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 UX18: v2.4.3 gerçek koduyla üretilmiş veri
+ok 3 - 2.4.4 UX18: v2.4.3 gerçek koduyla üretilmiş veri # SKIP v2.4.3 etiketi yok (git fetch --tags)
+  ---
+  duration_ms: 0.108453
+  type: 'suite'
+  ...
+1..3
+# tests 14
+# suites 3
+# pass 13
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4942.407439

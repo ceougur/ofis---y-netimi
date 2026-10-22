@@ -173,6 +173,14 @@
   }
 
   // ---------- Kart ----------
+  // 2.4.4 UX18: evrakın kapattığı fatura (Kapatılacak Fatura bağı; faturayla kaydedilen evrakın "Fatura"sından ayrı).
+  const bondHtml = cheque => {
+    const bond = cheque.closesInvoice;
+    if (!bond) return "";
+    const name = bond.number || "Numarası Gönderimde Verilecek Fatura";
+    const why = "Bu evrak bu faturayı kapatır. Fatura iptal edilirse evrak portföyde kalır, yalnız bağ düşer; evrak karşılıksız dönerse fatura yeniden açılır.";
+    return HOF.can("invoices.view") ? `<a href="#" data-open-invoice="${esc(bond.id)}" title="${esc(why)}">${esc(name)}</a>` : `<span title="${esc(why)}">${esc(name)}</span>`;
+  };
   function renderCard() {
     const root = body();
     const cheque = view.cheque;
@@ -218,6 +226,7 @@
         ${fact("Bankada Tahsilde", held ? `${esc(held.bankLabel)} · ${esc(HOF.formatDate(held.givenDate))}${held.eventNo ? ` · ${esc(held.eventNo)}` : ""}` : "")}
         ${fact("Son durum tarihi", cheque.status === "portfolio" || cheque.status === "pending" ? "" : esc(HOF.formatDate(cheque.statusDate)))}
         ${fact("Fatura", cheque.invoiceId && HOF.can("invoices.view") ? `<a href="#" data-open-invoice="${esc(cheque.invoiceId)}" title="Bu evrak faturanın ödemesidir; faturayı iptal etmeden silinmez">${esc(cheque.invoiceNumber || "Faturayı Aç")}</a>` : "")}
+        ${fact("Kapatılacak Fatura", bondHtml(cheque))}
         ${fact("Açıklama", esc(cheque.note))}
       </dl>
       <div class="hof-chq-actions" role="toolbar" aria-label="Evrak işlemleri">${actionButtons}${offCiro}${bankButtons}${doubtfulButton}${cheque.canUndo ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="undo">↶ ${esc(cheque.undoLabel)}</button>` : ""}${cheque.canManage ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button>` : ""}${cheque.canDelete ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="delete">Sil</button>` : offDelete}${why ? `<p class="hof-chq-why" id="hof-chq-why" data-chq-why>${esc(why)}</p>` : ""}</div>
@@ -233,6 +242,11 @@
   function chequeForm({ direction, cheque = null, preset = null }) {
     const edit = Boolean(cheque);
     const core = !edit || cheque.canEditCore;
+    // 2.4.4 UX18 (kullanıcı kararı 21.10.2026): "Kapatılacak Fatura" — faturanın Tahsilat Ekle / Ödeme Yap'ından ya da cari formunda seçilen fatura bu
+    // evrakla kapanır (sunucu: aynı cari, kaydedilmiş, taksitsiz, yön uyumlu). Liste cari formundakiyle aynı; Taksite Say ile birlikte seçilmez.
+    const bondWanted = edit ? cheque.closesInvoice?.id || "" : preset?.invoiceId || "";
+    const bondAccount = edit ? cheque.accountId || "" : preset?.account?.id || "";
+    const bondState = { shown: false, account: bondAccount };
     const fields = [
       { name: "instrument", label: "Evrak", type: "select", value: cheque?.instrument || "cheque", options: [{ value: "cheque", label: "Çek" }, { value: "note", label: "Senet" }] },
       { name: "amount", label: "Tutar (₺)", required: true, autofocus: !edit, value: cheque ? String(cheque.amount).replace(".", ",") : preset?.amount ? String(preset.amount) : "", inputmode: "decimal", placeholder: "ör. 12.500,00" },
@@ -279,14 +293,61 @@
             // taksit kartları okunamazsa seçim gösterilmez
           }
         };
-        const picker = HOF.accounts?.picker({ value: cheque?.accountId ? { id: cheque.accountId, name: cheque.accountName } : preset?.account?.id ? { id: preset.account.id, name: preset.account.name } : {}, label: direction === "in" ? "Kimden Alındı (cari)" : "Kime Verildi (cari)", help: direction === "in" ? "Müşteri carisi. Yoksa aşağıya keşidecinin adını yazın." : "Tedarikçi carisi. Yoksa aşağıya lehtarın adını yazın.", prefer: direction === "in" ? "customer" : "supplier", allowNew: { type: direction === "in" ? "customer" : "supplier" }, onPick: loadPlans });
+        // UX18: Kapatılacak Fatura seçimi (faturayla kaydedilen evrakta yok: onun faturası kendisidir).
+        const invoiceSlot = HOF.el("div", { class: "hof-chq-invoice", hidden: true });
+        let invoiceTurn = 0;
+        // Taksite Say ile Kapatılacak Fatura birlikte seçilmez (sunucu 400): biri seçilince öbürü boşalır (pasifleşmez; kullanıcı fikrini değiştirebilir).
+        const exclusive = changed => {
+          const plan = form.querySelector('[name="planId"]');
+          const invoice = form.querySelector('[name="invoiceId"]');
+          if (!plan || !invoice) return;
+          if (changed === "planId" && plan.value) invoice.value = "";
+          else if (changed === "invoiceId" && invoice.value) plan.value = "";
+          else if (plan.value && invoice.value) invoice.value = "";
+        };
+        const loadInvoices = async account => {
+          const turn = ++invoiceTurn;
+          invoiceSlot.hidden = true;
+          invoiceSlot.innerHTML = "";
+          bondState.shown = false;
+          bondState.account = account?.id || "";
+          if (!account?.id || cheque?.invoiceId || !HOF.accounts?.openInvoiceOptions) return;
+          const options = await HOF.accounts.openInvoiceOptions(account, direction === "in" ? "in" : "out");
+          if (turn !== invoiceTurn) return;
+          // Evrakın (ya da açıldığı faturanın) bağı yalnız kendi carisinde seçili gelir; başka cari seçilince Otomatik.
+          const wanted = account.id === bondAccount ? bondWanted : "";
+          if (wanted && !options.some(option => option.value === wanted)) options.unshift({ value: wanted, label: cheque?.closesInvoice?.number ? `Bağlı Fatura ${cheque.closesInvoice.number}` : preset?.invoiceLabel || "Bağlı Fatura" });
+          if (!options.length) return;
+          invoiceSlot.innerHTML = HOF.fieldHtml({ name: "invoiceId", label: "Kapatılacak Fatura", type: "select", value: wanted, options: [{ value: "", label: "Otomatik (En Eski Açık Fatura)" }, ...options], help: "Seçilen fatura bu evrakla kapanır; fazlası en eski açık faturaya gider. Fatura iptal edilirse evrak portföyde kalır, yalnız bağ düşer; evrak karşılıksız dönerse fatura yeniden açılır." });
+          invoiceSlot.hidden = false;
+          bondState.shown = true;
+          exclusive();
+        };
+        const onPick = account => {
+          loadPlans(account).then(() => exclusive());
+          loadInvoices(account);
+        };
+        form.addEventListener("change", event => {
+          if (event.target.name === "planId" || event.target.name === "invoiceId") exclusive(event.target.name);
+        });
+        const picker = HOF.accounts?.picker({ value: cheque?.accountId ? { id: cheque.accountId, name: cheque.accountName } : preset?.account?.id ? { id: preset.account.id, name: preset.account.name } : {}, label: direction === "in" ? "Kimden Alındı (cari)" : "Kime Verildi (cari)", help: direction === "in" ? "Müşteri carisi. Yoksa aşağıya keşidecinin adını yazın." : "Tedarikçi carisi. Yoksa aşağıya lehtarın adını yazın.", prefer: direction === "in" ? "customer" : "supplier", allowNew: { type: direction === "in" ? "customer" : "supplier" }, onPick });
         if (picker) anchor.before(picker);
         anchor.after(planSlot);
-        if (cheque?.accountId || preset?.account?.id) loadPlans({ id: cheque?.accountId || preset.account.id });
+        planSlot.after(invoiceSlot);
+        if (cheque?.accountId || preset?.account?.id) {
+          const account = { id: cheque?.accountId || preset.account.id, name: cheque?.accountName || preset?.account?.name || "" };
+          loadPlans(account).then(() => exclusive());
+          loadInvoices(account);
+        }
       },
       onSubmit: async data => {
         const payload = { ...data, direction, amount: data.amount ?? cheque?.amount, updatedAt: cheque?.updatedAt };
         if (!payload.planId) delete payload.planId;
+        // UX18: seçim görünüyorsa değeri (Otomatik = ""); görünmüyorsa evrakın bağı başka cari seçildiği için düşer, yoksa sunucuda olduğu gibi kalır.
+        if (!bondState.shown) {
+          delete payload.invoiceId;
+          if (bondWanted && core && bondState.account !== bondAccount) payload.invoiceId = "";
+        }
         const url = edit ? `/api/workspace/cheques/${encodeURIComponent(cheque.id)}` : "/api/workspace/cheques";
         let saved;
         try {
@@ -651,9 +712,10 @@
   }
 
   // Başka modülden yeni evrak formu (v2.0.13): cari ve tutar dolu. Liste açık değilse de form tek başına çalışır.
-  const newFor = ({ direction = "in", account = null, amount = 0 } = {}) => {
+  // invoiceId (2.4.4 UX18): faturanın Tahsilat Ekle / Ödeme Yap'ından ya da cari formunun Kapatılacak Fatura'sından — evrak bu faturayı kapatır.
+  const newFor = ({ direction = "in", account = null, amount = 0, invoiceId = "", invoiceLabel = "" } = {}) => {
     if (!HOF.can("cheques.manage")) return HOF.toast("Çek / senet girme yetkiniz yok.", { type: "error" });
-    chequeForm({ direction, preset: { account, amount } });
+    chequeForm({ direction, preset: { account, amount, invoiceId, invoiceLabel } });
   };
   HOF.cheques = { open, newFor };
   // 2.3.0 İz 5.5 Hızlı Arama: yönler (alınan portföy / verilen evrak) ve yeni evrak işlemleri; "çek" ya da "senet" yazınca hepsi gelir.

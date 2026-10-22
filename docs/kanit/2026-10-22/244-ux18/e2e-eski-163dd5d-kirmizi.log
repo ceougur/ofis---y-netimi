@@ -1,0 +1,29 @@
+(node:16037) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+■ S1 Fatura kartı → + Tahsilat Ekle → Çek / Senet: evrak bu faturayı kapatır (en eskiyi değil)
+  ✗ tahsilat yolları: Nakit, Havale / EFT, POS
+  ✗ adım yarıda kaldı: page.selectOption: Timeout 15000ms exceeded.
+
+■ S2 Cari → + Tahsilat → Kapatılacak Fatura (yeni) → Çek / Senet: seçim evrak formunda korunur
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 8000ms exceeded.
+
+■ S3 + S4 Evrak kartı: Kapatılacak Fatura bağlantısı; Düzenle → Otomatik → bağ düşer
+  ✗ adım yarıda kaldı: Cannot read properties of undefined (reading 'id')
+
+■ S5 Taksite Say ile Kapatılacak Fatura birlikte seçilmez (biri seçilince öbürü boşalır)
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 8000ms exceeded.
+
+■ S6 Alış faturası → + Ödeme Yap → Çek / Senet (verilir): alış faturası kapanır
+  ✗ ödeme yolları: Nakit, Havale / EFT, Kredi Kartı
+  ✗ adım yarıda kaldı: page.selectOption: Timeout 15000ms exceeded.
+
+■ S7 Çek / Senet İşlemleri yetkisi olmayan kullanıcı faturada Çek / Senet yolunu görmez
+  ✓ yollar: Nakit, Havale / EFT, POS
+
+■ S8 Fatura iptal: evrak portföyde kalır, kartında bağ yok; Mutabakat Testi temiz
+  ✗ evrak: undefined
+  ✗ adım yarıda kaldı: Cannot read properties of undefined (reading 'id')
+  ✓ sayfa hatası yok
+
+2 geçti, 9 kaldı

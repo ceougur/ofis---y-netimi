@@ -61,6 +61,7 @@
     "test:senaryo-portal-244": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-portal-244.mjs",
     "test:senaryo-kayit-tahsilat-244": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-kayit-tahsilat-244.mjs",
     "test:uiux-244-ux9-ux10": "node --disable-warning=ExperimentalWarning test/e2e/uiux-244-ux9-ux10.mjs",
+    "test:senaryo-ux18-244": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-ux18-244.mjs",
     "test:banka-210-kart-onbellek": "node --disable-warning=ExperimentalWarning test/e2e/banka-210-kart-onbellek-yaris.mjs",
     "test:banka-210-daha-fazla": "node --disable-warning=ExperimentalWarning test/e2e/banka-210-daha-fazla-yaris.mjs",
     "test:banka-230-hareket-yaris": "node --disable-warning=ExperimentalWarning test/e2e/banka-230-hareket-yaris.mjs",
