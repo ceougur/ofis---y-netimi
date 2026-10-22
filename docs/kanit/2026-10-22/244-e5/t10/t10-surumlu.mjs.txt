@@ -1,0 +1,24 @@
+// T10 Personel kartını iki kişi aynı anda düzenler (ekran formun BÜTÜN alanlarını gönderir — hof-staff.js onSubmit { ...data, photo }).
+// A maaşı 1.000 → 2.000 yapar, B (kartı A'dan önce açmıştı) IBAN'ı değiştirir. Beklenen (cari formundaki gibi, 2.4.3 UX1 account-stale): B'ye 409 ya da A'nın
+// değişikliği korunur. node t10-personel-iki-kisi.mjs <kök>
+import { rmSync } from "node:fs";
+import path from "node:path";
+import { startProgram, logger, client, ADMIN } from "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31d/betik/kit.mjs";
+const root = path.resolve(process.argv[2]); rmSync(root, { recursive: true, force: true });
+const log = logger(path.join(root, "sonuc.txt"));
+const prog = await startProgram({ root, port: 5562, ctlPort: 5563, simdi: "2026-06-17T10:00:00" });
+try {
+  const a = client(prog.base); await a.login("admin", ADMIN);
+  await a.post("/api/admin/users", { username: "ik2", name: "İK İki", role: "personel", password: "Personel-2026!x", mustChangePassword: false, grants: { add: ["staff.view", "staff.manage"], remove: [] } });
+  const b = client(prog.base); log("B giriş", (await b.login("ik2", "Personel-2026!x")).status);
+  const c = await a.post("/api/workspace/staff", { fullName: "Ali Veli", salary: "1000", iban: "TR330006100519786457841326", position: "Kâtip" });
+  const id = c.data.id;
+  const form = d => ({ updatedAt: d.updatedAt, fullName: d.fullName, birthDate: d.birthDate, tcNo: d.tcNo, address: d.address, position: d.position, salary: String(d.salaryMinor / 100), bankName: d.bankName, iban: d.iban, hireDate: d.hireDate, leaveDate: d.leaveDate, usedLeaveDays: d.usedLeaveDays, email: d.email, phone: d.phone, education: d.education, specialty: d.specialty });
+  const openA = (await a.get(`/api/workspace/staff/${id}`)).data; const openB = (await b.get(`/api/workspace/staff/${id}`)).data;
+  const pa = await a.put(`/api/workspace/staff/${id}`, { ...form(openA), salary: "2000" });
+  log("A kaydet (maaş 2.000):", pa.status, pa.data.changed);
+  const pb = await b.put(`/api/workspace/staff/${id}`, { ...form(openB), iban: "TR320010009999901234567890" });
+  log("B kaydet (IBAN; formu A'dan önce açmıştı):", pb.status, pb.data.changed || pb.data.error);
+  const end = (await a.get(`/api/workspace/staff/${id}`)).data;
+  log("son kart: maaş", end.salaryMinor / 100, "IBAN", end.iban, end.salaryMinor === 200000 ? "A'nın değişikliği korundu" : "A'NIN MAAŞ DEĞİŞİKLİĞİ SESSİZCE GERİ ALINDI");
+} finally { await prog.stop().catch(() => null); }

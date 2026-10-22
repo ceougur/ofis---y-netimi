@@ -352,3 +352,125 @@ describe("2.4.4 Personel Özlük: ileri tarihli İşten Ayrılış Tarihi (Ayrı
     }
   });
 });
+
+// 2.4.4 eleştirmen E5 (31d, yeniden üretildi: t10-personel-iki-kisi): iki kişi aynı kartı düzenler — B formu A'dan önce açmıştı; A maaşı kaydeder, B yalnız
+// IBAN'ı değiştirip kaydeder. Beklenen (cari formundaki 2.4.3 UX1 "account-stale" kalıbı): B'ye 409 staff-stale, A'nın maaşı korunur; ileti ne yapılacağını
+// söyler, alan DEĞERİ taşımaz (KVKK); reddedilen yazım işlem geçmişine düşmez; silinmiş karta yazım anlamlı ileti verir, kart yeniden doğmaz.
+// NASIL BOZULUR (önce yazıldı): A'nın değişikliği sessizce geri alınır · saat donuk / aynı milisaniye / geri alınmış saatte sürüm değişmez · gövde okunurken gelen
+// yazım görülmez · "değişiklik yok" kaydı sürümü ilerletip öbürünü boşa reddeder · silinmiş kart yeniden doğar · ileti/yanıt/işlem geçmişi değer taşır · 002 ayrı kalır.
+describe("2.4.4 Personel Özlük: iki kişi aynı kartı düzenler (E5, staff-stale)", () => {
+  let server;
+  let a;
+  let b;
+  const form = item => ({ fullName: item.fullName, birthDate: item.birthDate, tcNo: item.tcNo, address: item.address, position: item.position, salary: String(item.salaryMinor / 100), bankName: item.bankName, iban: item.iban, hireDate: item.hireDate, leaveDate: item.leaveDate, usedLeaveDays: String(item.usedLeaveDays || ""), email: item.email, phone: item.phone, education: item.education, specialty: item.specialty, photo: item.photo || "" });
+  const IBAN_B = "TR320010009999901234567890";
+  const audits = id => server.app.store.get("SELECT COUNT(*) AS n FROM audit_events WHERE type = 'staff.updated' AND entity_id = ?", id).n;
+  const noValues = (response, values) => {
+    const text = JSON.stringify(response.data);
+    for (const value of values) assert.ok(!text.includes(value), `yanıtta değer var: ${value}`);
+  };
+  before(async () => {
+    server = await startTestServer({ now: NOW });
+    a = await loginAdmin(server);
+    const made = await a.post("/api/admin/users", { username: "ik2", name: "İK İki", role: "personel", password: "Personel-2026!x", mustChangePassword: false, grants: { add: ["staff.view", "staff.manage"], remove: [] } });
+    assert.equal(made.status, 200, JSON.stringify(made.data));
+    b = server.client();
+    assert.equal((await b.login("ik2", "Personel-2026!x")).status, 200);
+  });
+  after(async () => {
+    await server?.close();
+  });
+
+  it("donuk saatte: B (formu A'dan önce açtı) kaydedince 409 staff-stale; A'nın maaşı korunur; yeniden açınca B'nin kaydı geçer", async () => {
+    const card = data(await a.post(BASE, { fullName: "Ali Veli", salary: "1000", iban: IBAN_OK, position: "Kâtip" }));
+    const openA = data(await a.get(`${BASE}/${card.id}`));
+    const openB = data(await b.get(`${BASE}/${card.id}`));
+    const pa = data(await a.put(`${BASE}/${card.id}`, { ...form(openA), salary: "2000", updatedAt: openA.updatedAt }));
+    assert.deepEqual(pa.changed, ["Maaş"]);
+    const pb = await b.put(`${BASE}/${card.id}`, { ...form(openB), iban: IBAN_B, updatedAt: openB.updatedAt });
+    assert.equal(pb.status, 409, `B'nin bayat kaydı reddedilmeli: ${pb.status} ${JSON.stringify(pb.data).slice(0, 200)}`);
+    assert.equal(pb.data.code, "staff-stale");
+    assert.notEqual(pa.updatedAt, openA.updatedAt, "saat donukken de sürüm ilerler");
+    assert.match(pb.data.error, /siz açtıktan sonra başka biri değiştirdi; değişiklikleriniz kaydedilmedi\. Kartı yeniden açıp tekrar kaydedin\./);
+    noValues(pb, ["Ali", "Veli", "1000", "2000", "200000", "TR33", "TR32", "0006100519786457841326", "Kâtip"]);
+    let end = data(await a.get(`${BASE}/${card.id}`));
+    assert.equal(end.salaryMinor, 200_000, "A'nın maaş değişikliği korunur");
+    assert.equal(end.iban, "TR330006100519786457841326", "bayat kayıt hiçbir alanı yazmaz");
+    assert.equal(audits(card.id), 1, "reddedilen yazım işlem geçmişine düşmez");
+    // B kartı yeniden açar (güncel sürüm), IBAN'ı yeniden yazar: geçer, A'nın maaşı kalır.
+    const again = data(await b.get(`${BASE}/${card.id}`));
+    const ok2 = data(await b.put(`${BASE}/${card.id}`, { ...form(again), iban: IBAN_B, updatedAt: again.updatedAt }));
+    assert.deepEqual(ok2.changed, ["IBAN"]);
+    end = data(await a.get(`${BASE}/${card.id}`));
+    assert.deepEqual([end.salaryMinor, end.iban], [200_000, IBAN_B]);
+    // "Değişiklik yok" kaydı sürümü ilerletmez: öbür kişinin elindeki güncel form boşa reddedilmez.
+    const same = data(await a.put(`${BASE}/${card.id}`, { ...form(end), updatedAt: end.updatedAt }));
+    assert.deepEqual([same.changed, same.updatedAt], [[], end.updatedAt]);
+    assert.equal((await b.put(`${BASE}/${card.id}`, { ...form(end), position: "Baş Kâtip", updatedAt: end.updatedAt })).status, 200);
+    // Eski sürümle "değişiklik yok" kaydı da 409 (ne yazılacağı belirsiz; kullanıcı güncel kartı görür).
+    assert.equal((await a.put(`${BASE}/${card.id}`, { ...form(end), updatedAt: end.updatedAt })).status, 409);
+  });
+
+  it("saat geri alınınca da sürüm ilerler: bayat kayıt yine 409", async () => {
+    const card = data(await a.post(BASE, { fullName: "Saat Geri", salary: "5000" }));
+    const openB = data(await b.get(`${BASE}/${card.id}`));
+    server.clock.set("2026-10-22T09:00:00+03:00");
+    try {
+      const pa = data(await a.put(`${BASE}/${card.id}`, { salary: "6000", updatedAt: card.updatedAt }));
+      const pb = await b.put(`${BASE}/${card.id}`, { ...form(openB), phone: "0555 000 00 00", updatedAt: openB.updatedAt });
+      assert.equal(pb.status, 409, `saat geri alındıktan sonra bayat kayıt: ${pb.status}`);
+      assert.ok(pa.updatedAt > card.updatedAt, `sürüm geriye gitmez: ${card.updatedAt} → ${pa.updatedAt}`);
+      assert.equal(data(await a.get(`${BASE}/${card.id}`)).salaryMinor, 600_000);
+    } finally {
+      server.clock.set(NOW.time);
+    }
+  });
+
+  it("gövde okunurken gelen yazım görülür: B'nin yavaş gövdesi A'nın kaydından sonra biterse 409", async () => {
+    const card = data(await a.post(BASE, { fullName: "Yavaş Gövde", salary: "7000" }));
+    const openB = data(await b.get(`${BASE}/${card.id}`));
+    const payload = Buffer.from(JSON.stringify({ ...form(openB), iban: IBAN_B, updatedAt: openB.updatedAt }));
+    const http = await import("node:http");
+    let request;
+    const slow = new Promise((resolve, reject) => {
+      request = http.request(`${server.base}${BASE}/${card.id}`, { method: "PUT", headers: { cookie: b.cookie, "content-type": "application/json", "content-length": payload.length } }, response => {
+        let raw = "";
+        response.on("data", chunk => (raw += chunk));
+        response.on("end", () => resolve({ status: response.statusCode, data: JSON.parse(raw || "{}") }));
+      });
+      request.on("error", reject);
+      request.write(payload.subarray(0, 20));
+    });
+    await new Promise(resolve => setTimeout(resolve, 150));
+    assert.equal((await a.put(`${BASE}/${card.id}`, { salary: "8000", updatedAt: openB.updatedAt })).status, 200, "A kaydeder (B'nin gövdesi yolda)");
+    request.end(payload.subarray(20));
+    const pb = await slow;
+    assert.equal(pb.status, 409, `gövde okunurken gelen yazım görülmeli: ${pb.status} ${JSON.stringify(pb.data).slice(0, 200)}`);
+    assert.equal(pb.data.code, "staff-stale");
+    assert.equal(data(await a.get(`${BASE}/${card.id}`)).salaryMinor, 800_000);
+  });
+
+  it("silinmiş karta yazım: 404 staff-missing, ileti ne olduğunu ve ne yapılacağını söyler, kart yeniden doğmaz", async () => {
+    const card = data(await a.post(BASE, { fullName: "Silinecek Kart", salary: "9000" }));
+    const openB = data(await b.get(`${BASE}/${card.id}`));
+    data(await a.del(`${BASE}/${card.id}`));
+    const pb = await b.put(`${BASE}/${card.id}`, { ...form(openB), iban: IBAN_B, updatedAt: openB.updatedAt });
+    assert.equal(pb.status, 404);
+    assert.equal(pb.data.code, "staff-missing");
+    assert.match(pb.data.error, /siz düzenlerken silinmiş; değişiklikler kaydedilmedi\. Pencereyi kapatın; kart gerekiyorsa Yeni Personel ile yeniden ekleyin\./);
+    noValues(pb, ["Silinecek", "9000", "TR32"]);
+    assert.equal(server.app.store.get("SELECT COUNT(*) AS n FROM staff_members WHERE id = ?", card.id).n, 0);
+  });
+
+  it("002 şirketinde aynı kural; sürüm göndermeyen kısmi çağrı yalnız gönderdiği alanı yazar", async () => {
+    const second = data(await a.post("/api/companies", { name: "İkinci Şirket" })).company;
+    const q = `?hofCompany=${second.id}`;
+    const card = data(await a.post(`${BASE}${q}`, { fullName: "Zeynep Demir", salary: "3000" }));
+    data(await a.put(`${BASE}/${card.id}${q}`, { salary: "3500", updatedAt: card.updatedAt }));
+    const stale = await a.put(`${BASE}/${card.id}${q}`, { ...form(card), iban: IBAN_B, updatedAt: card.updatedAt });
+    assert.equal(stale.status, 409);
+    assert.equal(stale.data.code, "staff-stale");
+    const partial = data(await a.put(`${BASE}/${card.id}${q}`, { phone: "0532 000 00 00" }));
+    assert.deepEqual([partial.changed, partial.salaryMinor, partial.phone], [["Telefon"], 350_000, "0532 000 00 00"]);
+  });
+});
