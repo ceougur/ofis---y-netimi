@@ -1,0 +1,84 @@
+{
+ "dil": "destekofis-ebelge/2",
+ "ad": "hedefli-244-k22-esmm",
+ "aciklama": "K22 + K34: e-SMM iletimden 8 gün; 9. günde red (İptal Et ve yerel); TES serisi TEA'dan bağımsız",
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi",
+  "K6": "ilsiz_kisi",
+  "K7": "vdsiz_mukellef",
+  "K8": "nihai"
+ },
+ "adimlar": [
+  {
+   "islem": "kaydet",
+   "belge": "B1",
+   "cari": "K1",
+   "tarih": "2026-06-12",
+   "gonder": "simdi",
+   "belge_turu": "esmm",
+   "no": 1
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B2",
+   "cari": "K2",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "belge_turu": "esmm",
+   "no": 2
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B3",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 3
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B4",
+   "cari": "K5",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "belge_turu": "esmm",
+   "no": 4
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 8,
+   "no": 5
+  },
+  {
+   "islem": "iptal",
+   "belge": "B1",
+   "no": 6
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 1,
+   "no": 7
+  },
+  {
+   "islem": "iptal",
+   "belge": "B2",
+   "no": 8
+  },
+  {
+   "islem": "iptal",
+   "belge": "B4",
+   "yerel": true,
+   "no": 9
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 10
+  }
+ ]
+}

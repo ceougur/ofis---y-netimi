@@ -1,0 +1,116 @@
+{
+ "dil": "destekofis-ebelge/2",
+ "ad": "hedefli-244-k33-secilen",
+ "aciklama": "K33 Seçilenleri Gönder: seçilmemiş eski bekleyen sorulur (vazgeç: hiçbir şey değişmez; ekle: eskiden yeniye); aynı gün / başka seri / kalıcı engelli (alıcı mükellef) sormaz; geçici engelli (PK'sız) sorar",
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi",
+  "K6": "ilsiz_kisi",
+  "K7": "vdsiz_mukellef",
+  "K8": "nihai"
+ },
+ "adimlar": [
+  {
+   "islem": "kaydet",
+   "belge": "B5",
+   "cari": "K4",
+   "tarih": "2026-06-14",
+   "gonder": "sonra",
+   "no": 1
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B1",
+   "cari": "K1",
+   "tarih": "2026-06-15",
+   "gonder": "sonra",
+   "no": 2
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B2",
+   "cari": "K3",
+   "tarih": "2026-06-16",
+   "gonder": "sonra",
+   "no": 3
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B3",
+   "cari": "K2",
+   "tarih": "2026-06-17",
+   "gonder": "sonra",
+   "no": 4
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B4",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "sonra",
+   "no": 5
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B6",
+   "cari": "K5",
+   "tarih": "2026-06-17",
+   "gonder": "sonra",
+   "no": 6
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "secili",
+   "belgeler": [
+    "B4"
+   ],
+   "eski": "vazgec",
+   "no": 7
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "secili",
+   "belgeler": [
+    "B3"
+   ],
+   "eski": "vazgec",
+   "no": 8
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "secili",
+   "belgeler": [
+    "B4"
+   ],
+   "eski": "ekle",
+   "no": 9
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "secili",
+   "belgeler": [
+    "B6"
+   ],
+   "eski": "vazgec",
+   "no": 10
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "secili",
+   "belgeler": [
+    "B3"
+   ],
+   "eski": "ekle",
+   "no": 11
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 12
+  }
+ ]
+}

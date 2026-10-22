@@ -1,0 +1,108 @@
+{
+ "dil": "destekofis-ebelge/2",
+ "ad": "hedefli-244-k37-ux15",
+ "aciklama": "K37 UX15: R1 son numaralıdan eski kayıt (sonra/şimdi) reddedilir, aynı gün serbest; R2 numaralı kâğıt belge komşuları arasında düzenlenir, dışına çıkamaz; numarasız bekleyen son numaralıdan eskiye alınamaz",
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi",
+  "K6": "ilsiz_kisi",
+  "K7": "vdsiz_mukellef",
+  "K8": "nihai"
+ },
+ "adimlar": [
+  {
+   "islem": "kaydet",
+   "belge": "B1",
+   "cari": "K1",
+   "tarih": "2026-06-15",
+   "gonder": "simdi",
+   "no": 1
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B2",
+   "cari": "K1",
+   "tarih": "2026-06-12",
+   "gonder": "sonra",
+   "no": 2
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B3",
+   "cari": "K5",
+   "tarih": "2026-06-12",
+   "gonder": "simdi",
+   "no": 3
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B4",
+   "cari": "K1",
+   "tarih": "2026-06-15",
+   "gonder": "sonra",
+   "no": 4
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B5",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "sonra",
+   "no": 5
+  },
+  {
+   "islem": "duzenle_tarih",
+   "belge": "B5",
+   "tarih": "2026-06-13",
+   "no": 6
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B6",
+   "cari": "K1",
+   "tarih": "2026-06-10",
+   "no": 7
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B7",
+   "cari": "K1",
+   "tarih": "2026-06-12",
+   "no": 8
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B8",
+   "cari": "K1",
+   "tarih": "2026-06-15",
+   "no": 9
+  },
+  {
+   "islem": "duzenle_tarih",
+   "belge": "B7",
+   "tarih": "2026-06-14",
+   "no": 10
+  },
+  {
+   "islem": "duzenle_tarih",
+   "belge": "B7",
+   "tarih": "2026-06-16",
+   "no": 11
+  },
+  {
+   "islem": "duzenle_tarih",
+   "belge": "B7",
+   "tarih": "2026-06-09",
+   "no": 12
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 13
+  }
+ ]
+}

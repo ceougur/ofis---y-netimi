@@ -1,0 +1,100 @@
+{
+ "dil": "destekofis-ebelge/2",
+ "ad": "hedefli-244-k35-belirsiz-yerel",
+ "aciklama": "K35: belirsiz belgede 8 gün sonra Yalnız Programda İptal — EDM'de var → red; EDM'de yok → serbest; ağ yok → 5xx; 8 gün içinde olağan iptal önce Durum Sorgula",
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi",
+  "K6": "ilsiz_kisi",
+  "K7": "vdsiz_mukellef",
+  "K8": "nihai"
+ },
+ "adimlar": [
+  {
+   "islem": "ariza",
+   "tur": "kopma_sonra",
+   "no": 1
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B1",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 2
+  },
+  {
+   "islem": "ariza",
+   "tur": "kopma_once",
+   "no": 3
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B2",
+   "cari": "K5",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 4
+  },
+  {
+   "islem": "ariza",
+   "tur": "kopma_sonra",
+   "no": 5
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B3",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 6
+  },
+  {
+   "islem": "iptal",
+   "belge": "B3",
+   "no": 7
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 9,
+   "no": 8
+  },
+  {
+   "islem": "iptal",
+   "belge": "B1",
+   "yerel": true,
+   "no": 9
+  },
+  {
+   "islem": "iptal",
+   "belge": "B2",
+   "yerel": true,
+   "no": 10
+  },
+  {
+   "islem": "ag",
+   "durum": "yok",
+   "no": 11
+  },
+  {
+   "islem": "iptal",
+   "belge": "B3",
+   "yerel": true,
+   "no": 12
+  },
+  {
+   "islem": "ag",
+   "durum": "var",
+   "no": 13
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 14
+  }
+ ]
+}
