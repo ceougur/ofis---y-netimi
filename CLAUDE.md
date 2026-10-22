@@ -590,6 +590,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   sonra Durum Sorgula + 3 resmî PDF. Değişmezler kuraldan: 30 belge, tekil ETTN, TES ardışık/tekil, EDM'de her ETTN ve numara aynı, 5xx/askı yok; Login sayısı bilgi.
   Belgeler İPTAL EDİLMEZ (kullanıcı portalda bakacak). Düzeneği ajan yazar (tools/edm-gercek.mjs --eszamanli, kuru + zorla gecikme + hata enjeksiyonu), gerçek
   koşuyu ana oturum yapar (kimlik yalnız ortam değişkeninde); sonuç OZET.md kullanıcıya.
+  SONUÇ 1 (16:41 TR): 19/20 Kaydet ve Gönder EDM'de kabul (TES2026412701048–066); 20 eşzamanlı Login'den biri EDM'ce reddedildi ("The caller was not authenticated
+  by the service.") → belge numarasız Gönderilecekler'de, betik durdu (B gönderilmedi). KARAR (baş mimar): EDM girişi tek uçuş (edm.mjs) + gerçek koşu 2 (iş listesi 24b).
 - SON ADAY BAĞIMSIZ TURU (kullanıcı, 22.10.2026: "2.4.4 son aday uzun test koşusuna başlamadan kâhin (uzman mali müşavir), yargıç, eleştirmen testlerinden geçecek mi,
   regresyon testleri yapılıyor mu?" → EVET; "ekle" → uzman UI + uzman UX de): iş listesi madde 30–31 (31a kâhin, 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol,
   31f uzman UI/UX) Uzun Doğrulama'dan ÖNCE.
