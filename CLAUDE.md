@@ -544,6 +544,11 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - SORU (22.10.2026, madde 31a kâhin F3; kullanıcıya soruldu): Kapatılacak Fatura SEÇİLMEDEN alınan (bağsız) çek/senet karşılıksız dönünce, onun kapattığı faturalar
   da yeniden açılsın mı? Bugün açılmıyor (bakiye artıyor, açık faturalar toplamı bakiyeyle ayrışıyor: G1 0, G2 500, bakiye 2.000). ÖNERİ: evet (bağlı evrak için
   verilen kararla aynı mantık: karşılıksız evrakla ödenmiş fatura ödenmemiştir; Σ açık = cari bakiye korunur).
+  KARAR (kullanıcı, 22.10.2026: "F3 için en yaygın uygulama ne ise onu yapalım"): uluslararası yaygın uygulama (QuickBooks "Record bounced check", Xero, Sage: ödeme
+  geri alınır, fatura ödenmemiş olur) + UX18 kararıyla aynı mantık → BAĞSIZ evrak karşılıksız dönünce kapattığı faturalar da yeniden açılır (kalan ödemeler en eski
+  açıktan yeniden dağılır; cari bakiye ve yevmiye değişmez; taksitli değişmez) — ux18 ajanı (is/f2-ux18) F2 ile birlikte; sürüm notu cümlesi genişler.
+  EDM'YE MAİL (kullanıcı, 22.10.2026: "maili gönderdim"): e-SMM karekodu (§2.4), özel şablon (11032), VKN'li düzenleyende unvan soruldu — YANIT BEKLENİYOR; gelene dek
+  teslim notunda BİLİNEN SINIR (karekod EDM'nin, yalnız ETTN).
 - SON ADAY BAĞIMSIZ TURU (kullanıcı, 22.10.2026: "2.4.4 son aday uzun test koşusuna başlamadan kâhin (uzman mali müşavir), yargıç, eleştirmen testlerinden geçecek mi,
   regresyon testleri yapılıyor mu?" → EVET; "ekle" → uzman UI + uzman UX de): iş listesi madde 30–31 (31a kâhin, 31b mali müşavir, 31c yargıç, 31d eleştirmen, 31e dar kontrol,
   31f uzman UI/UX) Uzun Doğrulama'dan ÖNCE.
