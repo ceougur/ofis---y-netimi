@@ -1,0 +1,32 @@
+{
+  "ad": "244-fatura-ui/gg243-kopyala",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/gg243-kopyala.mjs",
+  "commit": "4ef5ce22ff00d94278f01b13feb57da7c45a81cf",
+  "dal": "is/fatura-ui",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:38:18.759Z",
+  "sure_sn": 9.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 15,
+    "gecen": 15,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-fatura-ui/gg243-kopyala.log",
+  "klasor": "/home/user/wt/fatura-ui",
+  "ham_cikti_sha256": "d146a7f9049488904851ce1480453fe229eb359396f02ed6aeb319ec443d4b68",
+  "ham_cikti_bayt": 1066
+}

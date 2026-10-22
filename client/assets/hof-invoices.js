@@ -63,6 +63,15 @@
     return Number.isFinite(n) ? n : 0;
   };
   const amountText = value => (value === "" || value === null || value === undefined ? "" : String(value).replace(".", ","));
+  // 2.4.4 (uzman UI9): kalemin Birim Fiyat kutusu programın doldurduğu her yolda (ürün seçimi, fiyat ipucu, Düzenle / Kopyala, Netten Brüte)
+  // para biçiminde: "1.249,90" (binlik ayraç, en az 2, en çok 4 ondalık). Önceden "1249,9" yazıyor, hemen altındaki çip "₺1.249,90" diyordu.
+  // Okuma aynı: istemci parseTl, sunucu parseAmount "1.249,90"ı 1249,9 okur. Miktar ve öbür tutar kutuları değişmez.
+  const PRICE_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+  const priceText = value => {
+    if (value === "" || value === null || value === undefined) return "";
+    const n = typeof value === "number" ? value : parseTl(value);
+    return Number.isFinite(n) ? PRICE_FORMAT.format(n) : String(value);
+  };
   const curMoney = (value, currency = "TRY") => (currency === "TRY" ? money(value) : `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(value) || 0)} ${currency}`);
   const kindLabel = kind => meta?.kinds?.[kind]?.label || kind;
   const sideOf = kind => meta?.kinds?.[kind]?.side || (["purchase", "purchase_return"].includes(kind) ? "purchase" : "sale");
@@ -255,6 +264,9 @@
     return `${pay}${e}${test}`;
   };
   const docTitle = doc => `${kindLabel(doc.kind)}${doc.displayNo ? ` ${doc.displayNo}` : ""}`;
+  // 2.4.4 (uzman UX25): "Belge Türü" süzgecinde e-SMM yalnız e-SMM açıkken (sunucu: config.esmmEnabled ve Entegratör Ayarları'nda
+  // "e-SMM kullanıcısıyım" → meta.settings.esmm) görünür; kapalı özellik seçenek olarak çıkmaz. Seçili kalmış süzgeç (eski adres) görünür kalır.
+  const profileOptions = () => Object.entries(meta.profiles || {}).filter(([id]) => id !== "ESMM" || meta?.settings?.esmm === true || view.profile === "ESMM");
   function renderList() {
     const root = body();
     if (!root) return;
@@ -299,7 +311,7 @@
         <label class="hof-rep-date"><span>Başlangıç</span><input type="date" data-filter="from" value="${esc(view.from)}"></label>
         <label class="hof-rep-date"><span>Bitiş</span><input type="date" data-filter="to" value="${esc(view.to)}"></label>
         <select data-filter="pay" aria-label="Ödeme durumu">${PAY_OPTIONS.map(([id, label]) => `<option value="${id}" ${view.pay === id ? "selected" : ""}>${label}</option>`).join("")}</select>
-        ${edoc() ? `<select data-filter="profile" aria-label="Belge türü"><option value="">Tüm Belge Türleri</option>${Object.entries(meta.profiles).map(([id, label]) => `<option value="${id}" ${view.profile === id ? "selected" : ""}>${esc(label)}</option>`).join("")}</select>` : ""}
+        ${edoc() ? `<select data-filter="profile" aria-label="Belge türü"><option value="">Tüm Belge Türleri</option>${profileOptions().map(([id, label]) => `<option value="${id}" ${view.profile === id ? "selected" : ""}>${esc(label)}</option>`).join("")}</select>` : ""}
         <input type="search" data-filter="q" value="${esc(view.q)}" placeholder="No, cari, ürün, VKN, not ara…" aria-label="Ara">
         ${accountChip}
       </div>
@@ -479,7 +491,7 @@
     lotNo: line.lotNo || "",
     unit: line.unit || "Adet",
     qty: amountText(line.qty ?? 1),
-    unitPrice: amountText(line.unitPrice ?? ""),
+    unitPrice: priceText(line.unitPrice ?? ""),
     discountRate: line.discountRate ? amountText(line.discountRate) : "",
     vatRate: String(line.vatRate ?? 20),
     withholdingCode: line.withholdingCode || "",
@@ -746,12 +758,17 @@
     add.className = "hof-button hof-button-small hof-button-ghost hof-inv-account-new";
     add.textContent = "+ Yeni Cari";
     add.title = form.side === "purchase" ? "Tedarikçi kartı aç" : "Müşteri kartı aç";
-    add.onclick = () => HOF.accounts.newFor({ type: form.side === "purchase" ? "supplier" : "customer" }, { onSaved: account => {
-      if (view.form !== form) return;
-      applyPickedAccount(account);
-      mountAccountPicker();
-      HOF.toast(`${account.name} seçildi.`, { type: "info" });
-    } });
+    // 2.4.4 (uzman UX16): seçicide yazılan ad yeni cari formuna taşınır (genel seçicideki "+ Yeni Cari" gibi); seçili carinin adı taşınmaz.
+    add.onclick = () => {
+      const typed = picker.querySelector("[data-acc-query]")?.value.trim() || "";
+      const name = typed && typed !== form.account?.name ? typed : undefined;
+      HOF.accounts.newFor({ type: form.side === "purchase" ? "supplier" : "customer", name }, { onSaved: account => {
+        if (view.form !== form) return;
+        applyPickedAccount(account);
+        mountAccountPicker();
+        HOF.toast(`${account.name} seçildi.`, { type: "info" });
+      } });
+    };
     row.insertBefore(add, retail);
     slot.replaceChildren(row);
   }
@@ -1062,7 +1079,7 @@
     // 2.4.3 (H8): stok kartında KDV oranı tanımlıysa kalemin KDV'si ondan gelir (kullanıcı değiştirebilir); tanımsızsa formun varsayılanı kalır.
     if (item.vatRate !== null && item.vatRate !== undefined && item.vatRate !== "") line.vatRate = String(item.vatRate);
     const price = form.side === "sale" ? item.salePrice : item.unitPrice;
-    if (price > 0 && !line.unitPrice) line.unitPrice = amountText(form.pricesIncludeVat ? Math.round(price * (1 + Number(line.vatRate || 0) / 100) * 100) / 100 : price);
+    if (price > 0 && !line.unitPrice) line.unitPrice = priceText(form.pricesIncludeVat ? Math.round(price * (1 + Number(line.vatRate || 0) / 100) * 100) / 100 : price);
     if (list) list.hidden = true;
     renderLines();
     loadPrices(index);
@@ -1934,7 +1951,7 @@
     if (target.dataset.applyPrice !== undefined) {
       const line = form.lines[Number(target.dataset.applyPrice)];
       if (line) {
-        line.unitPrice = amountText(Math.round(Number(target.dataset.price) * 10000) / 10000);
+        line.unitPrice = priceText(Math.round(Number(target.dataset.price) * 10000) / 10000);
         renderLines();
         scheduleCalc(0);
       }
@@ -2081,7 +2098,7 @@
         const rate = form.stoppageRate === "" ? meta.settings.defaults.stoppageRate : num(form.stoppageRate);
         const result = await HOF.api(`/api/workspace/invoices/gross-from-net?net=${encodeURIComponent(data.net)}&rate=${encodeURIComponent(rate)}`);
         const line = form.lines[0];
-        line.unitPrice = amountText(result.gross);
+        line.unitPrice = priceText(result.gross);
         if (!line.name) line.name = "Serbest meslek ücreti";
         line.qty = "1";
         renderLines();
@@ -2180,16 +2197,20 @@
         if (!ok) return;
         // v2.0.22 (madde 5): formun istek kimliğiyle — yanıt gecikip yeniden Kaydet'e basılırsa sunucu ikinci fatura açmaz.
         saved = await withStockForce(force => (form.id ? HOF.api(`/api/workspace/invoices/${encodeURIComponent(form.id)}/issue`, { method: "POST", body: { ...payload, ...force, ...(eSend ? { eSend } : {}) } }) : HOF.api("/api/workspace/invoices", { method: "POST", body: { ...payload, ...force, ...(eSend ? { eSend } : {}) }, requestId: form.requestId })));
-        if (saved.replayed) HOF.toast(`${kindLabel(saved.kind)} ${saved.displayNo || ""} zaten kaydedilmişti (önceki gönderim sunucuya ulaşmış); ikinci kez kaydedilmedi.`, { type: "info", timeout: 9000 });
-        else HOF.toast(eSend === "later" ? `${kindLabel(saved.kind)} kaydedildi; Gönderilecekler'de bekliyor.` : `${kindLabel(saved.kind)} ${saved.displayNo || ""} kaydedildi.`, { type: "success" });
+        // 2.4.4 (uzman UX20): kayıt + e-Belge gönderim sonucu TEK bildirimde (önceden aynı anda başarı ve hata bildirimi çıkıyordu); numara yalnız
+        // belge numara aldıysa yazılır (numarasız bekleyende durum adı "Gönderilecek" numara gibi yazılıyordu: "Satış Faturası Gönderilecek kaydedildi.").
+        const sent = saved.autoSend;
+        const named = `${kindLabel(saved.kind)}${saved.number ? ` ${saved.number}` : ""}`;
+        const lead = saved.replayed ? `${named} zaten kaydedilmişti (önceki gönderim sunucuya ulaşmış); ikinci kez kaydedilmedi.` : eSend === "later" ? `${kindLabel(saved.kind)} kaydedildi; Gönderilecekler'de bekliyor.` : `${named} kaydedildi.`;
+        const sendNote = !sent ? "" : sent.ok || sent.held || sent.code === "einvoice-order" ? sent.message : `e-Belge gönderilemedi: ${sent.message}`;
+        const type = !sent ? (saved.replayed ? "info" : "success") : sent.ok ? "success" : sent.code === "einvoice-order" ? "info" : "error";
+        const timeout = sent && !sent.ok && (sent.held || sent.code === "einvoice-order") ? 12000 : sent ? 8000 : saved.replayed ? 9000 : undefined;
+        HOF.toast(sendNote ? `${lead} ${sendNote}` : lead, { type, ...(timeout ? { timeout } : {}) });
         // 2.4.3 (hız testi H1): gönderilemeyen belgenin bildirimi numarayı, nedeni ve nerede beklediğini (Gönderilecekler) söyler; aynı neden kartta
         // (e-Belge satırı) ve Gönderilecekler'de kalıcı görünür. Süre eskisi gibi 8 sn (uzun bildirim pencere düğmelerinin üstünde kalıp tıklamayı
         // engelliyordu — senaryo-ebelge-242 adım 4); okuma süresine göre ayar ortak bildirim çekirdeğinin işi.
         // Dar kontrol 2.4.3 (O1): seride daha eski tarihli gönderilmemiş belge varken numara verilmedi — hata değil, belge Gönderilecekler'de bekler.
         // Ek 1 / kâhin BEKLENEN-AG: giriş reddedildi ya da EDM'ye ulaşılamadı — belge numarasız Gönderilecekler'de; ileti tam (önek yok).
-        if (saved.autoSend?.code === "einvoice-order") HOF.toast(saved.autoSend.message, { type: "info", timeout: 12000 });
-        else if (saved.autoSend?.held) HOF.toast(saved.autoSend.message, { type: "error", timeout: 12000 });
-        else if (saved.autoSend) HOF.toast(saved.autoSend.ok ? saved.autoSend.message : `e-Belge gönderilemedi: ${saved.autoSend.message}`, { type: saved.autoSend.ok ? "success" : "error", timeout: 8000 });
       }
       view.form = null;
       HOF.emit("invoices-changed", saved);
@@ -2258,10 +2279,15 @@
     }
   }
   function showDoc(doc) {
+    // 2.4.4 (uzman UI5): formdan / listeden ya da başka belgeden karta geçince pencere başa kayar — belge no ve durum (başlık) görünür.
+    // Önceden pencere formun kaydırma konumunda kalıyor (uzun formda en alttaki "Kaydet ve Gönder"), kartın başlığı ekranın üstünde kalıyordu.
+    // Aynı kartın arka plan yenilemesi (loadDoc quiet) konumu değiştirmez.
+    const fresh = view.mode !== "card" || view.id !== doc.id;
     view.doc = doc;
     view.id = doc.id;
     setMode("card");
     renderCard();
+    if (fresh && modal?.dialog) modal.dialog.scrollTop = 0;
   }
   const pdfUrl = doc => `/api/workspace/invoices/${encodeURIComponent(doc.id)}/fatura.pdf`;
   // v2.0.17 (müşteri: "hayalet kısmi ödeme"): her ödenen kuruşun kaynağı kartta görünür — tarih, tür, tutar ve nasıl
@@ -2296,6 +2322,17 @@
     const hint = doc.planId ? " Taksitli fatura kendi taksit kartıyla kapanır; tahsilat taksit kartından girilir." : sideOf(doc.kind) === "sale" ? " Aynı cariye kesilen alış faturası ve Alacak Yaz satırı kendiliğinden ödeme sayılmaz; karşılıklı kapama için Mahsup Et." : " Aynı cariye kesilen satış faturası ve Borç Yaz satırı kendiliğinden ödeme sayılmaz; karşılıklı kapama için Mahsup Et.";
     return `<div class="hof-inv-closers"><h5>Bu Faturayı Kapatanlar</h5>${rows.length ? `<ul>${rows.join("")}</ul>` : `<p class="hof-muted">Henüz kapatan yok.${hint}</p>`}${canOffset ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="offset">Mahsup Et</button>' : ""}</div>`;
   }
+  // 2.4.4 (uzman UX17): kartın üstündeki tutarın adı belgenin durumuna göre. Kapanmış (ödenmiş / mahsup edilmiş) faturada "Tahsil Edilecek"
+  // yazmaz: "Genel Toplam" (tevkifat / stopaj kesintisi varsa "Kesinti Sonrası Toplam"); kısmen ödenmişte altında "Kalan". Tutar değişmez
+  // (belgenin ödenecek toplamı); Toplamlar bölümündeki "Tahsil Edilecek" satırı mali terimdir, dokunulmaz.
+  const isClosed = doc => doc.status === "issued" && !(doc.open > 0.004);
+  function headAmountLabel(doc) {
+    if (doc.status === "cancelled") return "Belge Tutarı (İptal Edildi)";
+    if (isReturn(doc.kind)) return "İade Tutarı";
+    if (isClosed(doc)) return Math.abs((doc.payableTotal || 0) - (doc.grossTotal || 0)) > 0.004 ? "Kesinti Sonrası Toplam" : "Genel Toplam";
+    return sideOf(doc.kind) === "sale" ? "Tahsil Edilecek" : "Ödenecek";
+  }
+  const headRest = doc => (doc.status === "issued" && !isReturn(doc.kind) && doc.open > 0.004 && doc.paid > 0.004 ? `<small class="hof-inv-head-rest">Kalan ${esc(money(doc.open))}</small>` : "");
   function renderCard() {
     const root = body();
     const doc = view.doc;
@@ -2339,7 +2376,7 @@
       `<div class="hof-plan-head">
         <div class="hof-plan-headline"><button type="button" class="hof-plan-back" data-act="back" title="Listeye dön">← Liste</button>
           <div class="hof-plan-title"><h3>${esc(docTitle(doc))} ${statusPill(doc)}</h3><small>${esc(doc.accountName)} · ${esc(HOF.formatDate(doc.issueDate))} ${esc(doc.issueTime || "")}${doc.scenarioLabel ? ` · ${esc(doc.scenarioLabel)}` : ""}</small></div></div>
-        <div class="hof-chq-amount"><span>${doc.status === "cancelled" ? "Belge Tutarı (İptal Edildi)" : sideOf(doc.kind) === "sale" ? (ret ? "İade Tutarı" : "Tahsil Edilecek") : ret ? "İade Tutarı" : "Ödenecek"}</span><strong>${esc(curMoney(doc.payableTotal, cur))}</strong>${cur !== "TRY" ? `<small>${esc(money(doc.tryPayable))}</small>` : ""}</div>
+        <div class="hof-chq-amount"><span>${esc(headAmountLabel(doc))}</span><strong>${esc(curMoney(doc.payableTotal, cur))}</strong>${cur !== "TRY" ? `<small>${esc(money(doc.tryPayable))}</small>` : ""}${headRest(doc)}</div>
       </div>
       <div class="hof-inv-pills" role="group" aria-label="Bağlı kartlar">
         <button type="button" class="hof-inv-big-pill" data-open-account="${esc(doc.accountId)}"><b>Cari Kartı</b><small>${esc(doc.accountName)}</small></button>

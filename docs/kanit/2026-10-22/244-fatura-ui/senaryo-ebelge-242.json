@@ -1,0 +1,32 @@
+{
+  "ad": "244-fatura-ui/senaryo-ebelge-242",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-ebelge-242.mjs",
+  "commit": "4ef5ce22ff00d94278f01b13feb57da7c45a81cf",
+  "dal": "is/fatura-ui",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:23:17.579Z",
+  "sure_sn": 45.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 21,
+    "gecen": 21,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-fatura-ui/senaryo-ebelge-242.log",
+  "klasor": "/home/user/wt/fatura-ui",
+  "ham_cikti_sha256": "639b40e8b355201dbc49edbf8dbe1f8f98a378e4c1b6221f5969641a17b304a0",
+  "ham_cikti_bayt": 2244
+}
