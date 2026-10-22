@@ -17,7 +17,12 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
 - ÇALIŞMA DALI (claude/youthful-euler-fl8ks4) kod durumu: aday 4 = 2fb1d33 (CI #859 BÜTÜN İŞLER YEŞİL); aday 5 = 0c1ae0d (kapı npm test 3132/3132 + 64/64 e2e + 6 kâhin
   yeşil) → CI #860 BÜTÜN İŞLER YEŞİL (22.10 ~15:35 UTC okundu; madde 24 çizildi). #860 YEŞİLSE iş listesinde 24 (gerçek EDM uçtan uca: gercek-5 55/55 + düzeltmeler + kılavuz
   + açma) çizilir; 31a "son koşu" son adayın CI'sinde (kâhinler CI'da). KIRMIZIYSA: başarısız testin adı kısa günlükte, kök neden (ders 6/20/38).
-- GÜNCEL (22.10 ~17:20 UTC): ADAY 6 ÇALIŞMA DALINDA — 9f64a1f (aday6 e579b28: kapı npm test 3150/3150 + 64/64 e2e + 6 kâhin yeşil + gerçek EDM koşu 2/3 + gercek-6
+- GÜNCEL (22.10 ~20:45 UTC): ADAY 7 KAPISI YEŞİL → çalışma dalında (ed37e78 = aday7 846365c: çalışma dalı + is/m30-e2e + is/m30-goc + is/kanit-alt + is/b2-uyari
+  (+ acf156f fark testi) + is/ci861 (CI #861 düzeltmesi, test/e2e/pencere-yaris-zorla.mjs, ders 39) + is/gezinti-g (30d G1–G6) + is/b1-kalan (30a, 30e, 30f)). Kapı: tam npm test
+  3178/3180 (04d7785; 2 kırmızı fatura-liste-243-fark — 30b'nin restoreNotice yanıt alanı, beklenti eski; test düzeltildi 4/4 489bfb7, ürün kodu aynı), ci.yml 64/64 e2e,
+  6 kâhin (defter 147, cari 1364, tutar 3472, e-Belge modeli 82, mutasyon 36, senaryo 20) yeşil. SIRADAKİ: CI (ders 21; yeşilse 7d, 24b, 30, 30a, 30b, 30d, 30e, 30f
+  çizilir) → 31b/31c/31d/31f aynı anda (not defteri inceleme-ortak.md; xhigh; kod değiştirmez) → 31e dar kontrol → 32 → 33 ∥ 34 → 35 → 36.
+- ESKİ (22.10 ~17:20 UTC): ADAY 6 ÇALIŞMA DALINDA — 9f64a1f (aday6 e579b28: kapı npm test 3150/3150 + 64/64 e2e + 6 kâhin yeşil + gerçek EDM koşu 2/3 + gercek-6
   kanıtı) + 158d9c0 (gezinti kanıtı); CI bekleme arka planda (`kanit ci 158d9c0 --bekle 110`; yeşilse 24b çizilir). MADDE 30 ajanları BİTTİ (m30-e2e 51bae84, m30-goc
   b2949f2; B1/B2 kullanıcı kararı Açık iş'te). SÜRENLER: 30a (is/b1-kalan, high), 30b (is/b2-uyari, high), 30d (is/gezinti-g, medium). Araç düzeltmesi is/kanit-alt
   cf323d9. SONRAKİ: ADAY 7 = çalışma dalı + is/m30-e2e + is/m30-goc + is/kanit-alt + is/b1-kalan + is/b2-uyari + is/gezinti-g → kapı (aday-kos.sh) + kâhinler →
