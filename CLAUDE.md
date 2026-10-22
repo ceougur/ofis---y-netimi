@@ -329,6 +329,16 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   DALGA 1 (22.10 ~03:35 UTC; ajan kuralları not defteri ajan-ortak.md — kapsayıcıyla gider): kucuk [M] 3,25,4 · test-altyapi [H] 6,27 · d2 [XH] 7 · esmm [XH]
   20,21 · sunucu [H] 28,29 · personel [H] 19. SONRAKİLER: kayit [XH] 5 (4'ten sonra) · fatura-ui [M] 9,10,13,14,UX16 · UI11 [H] 8 · UX9/UX10 [H] 11 · UX15 [XH] ·
   UX18 [XH] 15 · KÖ3 [H] 16 · E6 [XH] 17 · E7 [H] 18 · brüt [XH] 26 · esmm-2 [XH] 22,23 · esmm-3 [XH] 24 (gerçek EDM). Biten dalga birleştirilince iş listesinde üstü çizilir.
+- GÖZDEN GEÇİRME (kullanıcı, 22.10.2026 ~05:20 UTC: "anayasamızı ve derslerimizi gözden geçir") — 2.4.4 çalışmasında bulunan sapmalar ve düzeltmeleri:
+  (1) DERS 35: ajan paketleri tam `npm test` görmeden çalışma dalına birleştirildi (ajanlara "tam npm test koşma" denmişti) → bundan sonra birleştirme ADAYI ayrı
+  worktree'de (/home/user/wt/aday) birleştirilir, tam `npm test` + paketin e2e'leri orada yeşil görülür, sonra çalışma dalına alınır; birleşmiş paketler için kanıt
+  CI #849–#853 (4 platform tam test, yeşil). (2) DERS 5: brief'lerde kodu yazan ajandan kâhini "ayrı elden" düzeltmesi istendi (iptal K22, secilen, brut) — aynı el;
+  geri alındı: kodu yazan ajan kâhine dokunmaz, kuralı raporlar, kâhini kodu görmeyen ayrı ajan yazar (madde 31 ile; e-SMM UBL tutarları da — esmm ajanı beklenen
+  sayıları kendi test dosyasında yazdı, bağımsız kâhin sayılmaz). (3) DERS 21/26: üç yalnız-kanıt commit'i `[skip ci]` ile gönderildi (kurallarda yok; testler kanıt
+  dosyalarını okuyabilir) → BIRAKILDI; ana oturum kanıtı birleştirme adayında üretir, kodla birlikte gönderir (Stop kancası ana ağaçta izlenmeyen dosya görmez).
+  (4) TEST KURALI "Nasıl bozulur? listesi önce yazılır" brief'lerde yoktu → eklendi. (5) DERS 19: birleştirme + push zincirinde `;` kullanıldı → `set -euo pipefail`.
+  (6) Bir birleştirme commit'i (6ee24d3, sunucu ajanı) Co-Authored-By/Claude-Session satırsız (geçmiş yeniden yazılmaz). (7) KALİTE ÇITASI: ana oturum kullanıcı
+  gözüyle günlük iş akışını baştan sona henüz yürütmedi → madde 30'da (kişi → cari → fatura/e-Belge → tahsilat → kasa/banka → rapor, iki şirket) ekran görüntüsüyle.
 - 2.4.4 "BAŞLA" KONTROL LİSTESİ (atlanmaz, sırayla): (1) yukarıdaki iki belge + bu Açık iş dosyadan okunur; (2) RAPOR DÜZENİ için CronCreate 30 dk işi
   kurulur ("7,37 * * * *"; 2.4.4 bitince silinir); (3) iş listesi madde 1 (npm ci — bağ yok; git fetch --unshallow --tags; master CI 163dd5d + "Sürüm yayımla"
   okunur); (4) yüklenen dosyalar yerinde mi (HAZIRLIK 3) — yoksa kullanıcıdan istenir; EDM test hesabı sohbette verildi, dosyaya YAZILMAZ, kaybolduysa
