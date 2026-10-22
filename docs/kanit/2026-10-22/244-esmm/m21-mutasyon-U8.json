@@ -1,0 +1,58 @@
+{
+  "ad": "244-esmm/m21-mutasyon-U8",
+  "komut": "node --test test/esmm-ubl.test.mjs",
+  "commit": "dde4675ab7eb58f8e299cdf00ad57916e964f75e",
+  "dal": "is/esmm",
+  "kirli": 2,
+  "izlenmeyen": 24,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:02:50.258Z",
+  "sure_sn": 2.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 7,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "e-SMM UBL: GİB kuralından elle hesaplanan dip toplamlar (kâhin) › A — 1.000 TL brüt, stopaj %20, KDV %20: stopaj 200, net ücret 800, KDV 200, tahsil edilen KDV 200, net alınan 1.000",
+      "konum": "test/esmm-ubl.test.mjs:79:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "e-SMM UBL: GİB kuralından elle hesaplanan dip toplamlar (kâhin) › B — 2 × 100,03: belge stopajı matrah × oran = 40,01 (kalem yuvarlamasıyla 40,02 DEĞİL); kalemlere 20,01 + 20,00; KDV kalem başına 20,01 + 20,01",
+      "konum": "test/esmm-ubl.test.mjs:96:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "e-SMM UBL: GİB kuralından elle hesaplanan dip toplamlar (kâhin) › E — elle %15 stopaj, iki KDV oranı: stopaj (1.500 + 333,33) × %15 = 274,9995 → 275,00; KDV 300 + 33,33; net alınan 1.891,66",
+      "konum": "test/esmm-ubl.test.mjs:120:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "e-SMM UBL: program tutarlarıyla aynı, yapı EDM'nin e-SMM örneğiyle aynı, UBL 2.1 şemasına uygun › XML tutarları programın kaydettiği makbuzla kuruşu kuruşuna aynı; kalem stopajları toplamı = belge stopajı; Σ kalem fiyatı = net alınan",
+      "konum": "test/esmm-ubl.test.mjs:134:3",
+      "hata": "A Σ kalem stopajı · 0 !== 20000 (beklenen 20000, gelen 0)"
+    },
+    {
+      "ad": "e-SMM UBL: program tutarlarıyla aynı, yapı EDM'nin e-SMM örneğiyle aynı, UBL 2.1 şemasına uygun › yapı: EDM e-SMM örneğindeki sıra ve öğeler (TaxTotal → 0003 sıra 1 + 0015 sıra 2; dip toplam dörtlüsü; kalemde NIU, vergi, ad, fiyat)",
+      "konum": "test/esmm-ubl.test.mjs:149:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-esmm/m21-mutasyon-U8.log",
+  "klasor": "/home/user/wt/esmm",
+  "ham_cikti_sha256": "7274b90e82368ba7c48dca3cf93301fbbbb23e3a627300ea3ac28dd811c96e84",
+  "ham_cikti_bayt": 12603
+}

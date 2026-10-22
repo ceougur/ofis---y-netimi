@@ -1,0 +1,132 @@
+[
+ {
+  "id": "U1",
+  "desc": "stopaj oranı sabit %20 (girilen oran değil)",
+  "file": "server/lib/einvoice/ubl-tr.mjs",
+  "old": "${tag(\"cbc:CalculationSequenceNumeric\", 1)}${tag(\"cbc:Percent\", doc.stoppageRate)}",
+  "new": "${tag(\"cbc:CalculationSequenceNumeric\", 1)}${tag(\"cbc:Percent\", 20)}",
+  "tests": [
+   "test/esmm-ubl.test.mjs"
+  ]
+ },
+ {
+  "id": "U2",
+  "desc": "kalem kalem yuvarlama (belge stopajına dağıtım yok)",
+  "file": "server/lib/einvoice/ubl-tr.mjs",
+  "old": "const shares = exact.map(value => Math.floor(value / 10000));",
+  "new": "const shares = exact.map(value => Math.floor((2 * value + 10000) / 20000)); if (shares) return shares;",
+  "tests": [
+   "test/esmm-ubl.test.mjs"
+  ]
+ },
+ {
+  "id": "U3",
+  "desc": "Net Ücret yerine brüt (e-Fatura anlamı)",
+  "file": "server/lib/einvoice/ubl-tr.mjs",
+  "old": "money(\"cbc:TaxExclusiveAmount\", minor(smm.netFee), currency)",
+  "new": "money(\"cbc:TaxExclusiveAmount\", minor(smm.gross), currency)",
+  "tests": [
+   "test/esmm-ubl.test.mjs"
+  ]
+ },
+ {
+  "id": "U4",
+  "desc": "Tahsil Edilen KDV yerine brüt + KDV (e-Fatura anlamı)",
+  "file": "server/lib/einvoice/ubl-tr.mjs",
+  "old": "money(\"cbc:TaxInclusiveAmount\", minor(smm.collectedVat), currency)",
+  "new": "money(\"cbc:TaxInclusiveAmount\", minor(smm.gross + smm.vat), currency)",
+  "tests": [
+   "test/esmm-ubl.test.mjs"
+  ]
+ },
+ {
+  "id": "U5",
+  "desc": "Tahsil Edilen KDV tevkifatı düşmüyor",
+  "file": "server/lib/einvoice/ubl-tr.mjs",
+  "old": "const collectedVat = vat - withheld;",
+  "new": "const collectedVat = vat;",
+  "tests": [
+   "test/esmm-ubl.test.mjs"
+  ]
+ },
+ {
+  "id": "U6",
+  "desc": "kalem miktarı Net Ücret değil gerçek miktar",
+  "file": "server/lib/einvoice/ubl-tr.mjs",
+  "old": "`<cbc:InvoicedQuantity unitCode=\"NIU\">${amount(minor(netFee))}</cbc:InvoicedQuantity>`",
+  "new": "`<cbc:InvoicedQuantity unitCode=\"NIU\">${escape(line.qty)}</cbc:InvoicedQuantity>`",
+  "tests": [
+   "test/esmm-ubl.test.mjs"
+  ]
+ },
+ {
+  "id": "U7",
+  "desc": "stopaj matrahı 0 (EDM örneğindeki gibi)",
+  "file": "server/lib/einvoice/ubl-tr.mjs",
+  "old": "`<cac:TaxSubtotal>${money(\"cbc:TaxableAmount\", taxable, currency)}${money(\"cbc:TaxAmount\", stoppage, currency)}",
+  "new": "`<cac:TaxSubtotal>${money(\"cbc:TaxableAmount\", 0, currency)}${money(\"cbc:TaxAmount\", stoppage, currency)}",
+  "tests": [
+   "test/esmm-ubl.test.mjs"
+  ]
+ },
+ {
+  "id": "U8",
+  "desc": "0003 stopaj satırı hiç yazılmıyor",
+  "file": "server/lib/einvoice/ubl-tr.mjs",
+  "old": "const withStoppage = esmm && (Number(doc.stoppageRate) > 0 || smm.stoppage > 0);",
+  "new": "const withStoppage = false;",
+  "tests": [
+   "test/esmm-ubl.test.mjs"
+  ]
+ },
+ {
+  "id": "U9",
+  "desc": "e-SMM'ye fatura görünüm şablonu gömülüyor",
+  "file": "server/routes/invoices.mjs",
+  "old": "ownsDocument(doc) && doc.profile !== \"ESMM\"))",
+  "new": "ownsDocument(doc)))",
+  "tests": [
+   "test/esmm-ubl.test.mjs"
+  ]
+ },
+ {
+  "id": "U10",
+  "desc": "kalem fiyatı Net Tahsilat değil brüt",
+  "file": "server/lib/einvoice/ubl-tr.mjs",
+  "old": "money(\"cbc:PriceAmount\", minor(netFee + collected), currency)",
+  "new": "money(\"cbc:PriceAmount\", line.net, currency)",
+  "tests": [
+   "test/esmm-ubl.test.mjs"
+  ]
+ },
+ {
+  "id": "U11",
+  "desc": "stopaj Not'u e-SMM'de de yazılıyor",
+  "file": "server/lib/einvoice/ubl-tr.mjs",
+  "old": "doc.stoppageTotal > 0 && !esmm ?",
+  "new": "doc.stoppageTotal > 0 ?",
+  "tests": [
+   "test/esmm-ubl.test.mjs"
+  ]
+ },
+ {
+  "id": "U12",
+  "desc": "stopajsız (kişi alıcı) makbuza da 0003 satırı",
+  "file": "server/lib/einvoice/ubl-tr.mjs",
+  "old": "const withStoppage = esmm && (Number(doc.stoppageRate) > 0 || smm.stoppage > 0);",
+  "new": "const withStoppage = esmm;",
+  "tests": [
+   "test/esmm-ubl.test.mjs"
+  ]
+ },
+ {
+  "id": "U13",
+  "desc": "kalan kuruş en küçük kesre veriliyor",
+  "file": "server/lib/einvoice/ubl-tr.mjs",
+  "old": "sort((a, b) => b.remainder - a.remainder || a.index - b.index)",
+  "new": "sort((a, b) => a.remainder - b.remainder || a.index - b.index)",
+  "tests": [
+   "test/esmm-ubl.test.mjs"
+  ]
+ }
+]

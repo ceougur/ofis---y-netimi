@@ -429,7 +429,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // belgede de o), sonra şablon karekodla gömülür. Şablon gömülmesi XML'in karekoda giren alanlarını değiştirmez.
   const ublFor = (doc, { variant = "tr" } = {}, s = settings()) => {
     const options = { variant, earchiveEmail: s.integrator.earchiveEmail !== false, notes: s.eOptions.balanceNote === true ? [balanceNoteOf(doc)] : [], paymentMeans: s.eOptions.paymentMeans === true };
-    if (!(variant === "tr" && s.eView.enabled !== false && ownsDocument(doc))) return buildUbl(doc, options);
+    // e-SMM (2.4.4): programın görünüm şablonu fatura içindir (e-SMM alanları yok) → gömülmez; makbuzu EDM'nin kendi e-SMM görünümü çizer.
+    if (!(variant === "tr" && s.eView.enabled !== false && ownsDocument(doc) && doc.profile !== "ESMM")) return buildUbl(doc, options);
     const qr = karekodOf(buildUbl(doc, options))?.dataUrl || "";
     return buildUbl(doc, { ...options, xslt: viewXslt({ logo: s.seller.logo, banks: doc.seller?.banks || [], footer: s.defaults.footer, view: s.eView, test: doc.eTest === true, qr, stamp: s.seller.stamp }) });
   };
