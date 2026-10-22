@@ -41,6 +41,7 @@
 
   const allowed = () => HOF.can(PERMISSION);
   async function load() {
+    stale = false;
     if (!allowed()) {
       state = null;
       render();
@@ -217,10 +218,38 @@
 
   // Adımın verisi değişince (fatura ayarı, banka hesabı, cari, şirket adı) liste yenilenir: bu penceredeki yazımlar (ledger:changed),
   // başka bilgisayardaki yazımlar (canlı olay) ve bir pencere kapanınca (ayar penceresinde Kaydet'ten sonra).
-  HOF.on("ledger:changed", () => refreshSoon());
-  HOF.on("live:workspace.changed", () => refreshSoon(800));
-  HOF.on("live:resync", () => refreshSoon(800));
-  HOF.on("settings", () => refreshSoon(800));
+  // 2.4.4 (iş listesi 7c, CI #858 senaryo-222): başka personel saniyede bir kayıt girerken her olay ayrı bir istek gönderiyordu (10 kayıtta
+  // 10 istek; 800 ms bekleme 1 sn arayla gelen olayları birleştiremez). Bütün pencerelerin düzeni (v2.0.22 "yenilemeleri birleştirir",
+  // HOF.refresher): ilgili olayda ve yalnız liste EKRANDAYKEN, en sık 3 sn'de bir; ekranda değilse (üstünde başka pencere var, açılış
+  // ekranı yok) yalnız "bayat" işaretlenir ve liste ekrana gelince (pencere kapanınca) bir kez yenilenir — değişiklik kaçmaz.
+  // Gizlenmiş ya da "zaten kurulu" şirkette liste kendiliğinden görünmez; veri değişikliği bunu değiştirmez → yalnız Başlarken penceresi
+  // açıkken (ya da sıfırlama / yeniden eşitlemede) okunur.
+  const gate = HOF.refresher(load, { delay: 600, gap: 3000 });
+  let stale = false;
+  const onScreen = () => Boolean(modal) || (Boolean(document.getElementById("hof-start")) && !document.querySelector(".hof-modal-backdrop"));
+  const dormant = () => !modal && Boolean(state) && (state.hidden === true || state.established === true);
+  const schedule = ({ local = false, always = false } = {}) => {
+    if (!allowed() || (!always && dormant())) return;
+    if (!onScreen()) {
+      stale = true;
+      return;
+    }
+    if (local) gate.now();
+    else gate();
+  };
+  // Adımları etkileyebilen olaylar: cari (açma/silme), banka hesabı, Fatura Ayarları, şirket adı, sıfırlama. Yalnız bilgi düzeltmesi
+  // (cari notu, adresi) cari varlığını değiştirmez.
+  const LIVE_KINDS = new Set(["accounts", "bank", "companies", "reset", "profile"]);
+  const relevant = change => Boolean(change) && !change.info && (LIVE_KINDS.has(change.kind) || (change.kind === "invoices" && change.settings === true));
+  HOF.on("ledger:changed", detail => {
+    const kinds = detail?.kinds || [];
+    if (!kinds.length || kinds.some(kind => kind === "accounts" || kind === "bank" || kind === "invoices")) schedule({ local: true });
+  });
+  HOF.on("live:workspace.changed", change => {
+    if (relevant(change)) schedule({ always: change.kind === "reset" });
+  });
+  HOF.on("live:resync", () => schedule({ always: true }));
+  HOF.on("settings", () => schedule());
   HOF.on("user-changed", () => {
     renderMenuEntry();
     load();
@@ -233,6 +262,7 @@
       renderInline();
       const open = document.querySelectorAll(".hof-modal-backdrop").length;
       if (open < modalsOpen && allowed()) refreshSoon(300);
+      else if (stale && allowed() && onScreen()) refreshSoon(300);
       modalsOpen = open;
     });
   });

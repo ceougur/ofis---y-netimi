@@ -1,0 +1,32 @@
+{
+  "ad": "244-s222/e2e",
+  "komut": "npm run test:e2e",
+  "commit": "f092a9cdcca61276dbd08a5659b77e004dabe782",
+  "dal": "is/s222",
+  "kirli": 2,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T08:51:52.038Z",
+  "sure_sn": 190.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "e2e-run",
+    "toplam": 50,
+    "gecen": 50,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-s222/e2e.log",
+  "klasor": "/home/user/wt/s222",
+  "ham_cikti_sha256": "847424cdf91f81274e40aa6dd4bbacbc0a5aeb0827706f8165e3ae30cd65992f",
+  "ham_cikti_bayt": 5640
+}

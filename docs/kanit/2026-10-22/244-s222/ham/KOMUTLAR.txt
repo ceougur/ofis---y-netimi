@@ -1,0 +1,11 @@
+İş listesi 7c — CI #858 (f6e265b) senaryo-222 "toplam 55 istek" (eşik ≤ 50). Ham çıktılar bu klasörde.
+Komut (her kopyada; flock ile tek tek, ders 15/30):
+  HUKUK_LICENSE_URL=http://127.0.0.1:9 flock <not defteri>/kos.lock node --disable-warning=ExperimentalWarning test/e2e/senaryo-222.mjs
+Kopyalar: git archive <commit> | tar -x (ders 23), node_modules çalışma ağacındakine bağ (npm ci koşulmadı).
+  run-174a5ea-1  : 174a5ea (CI #857 yeşil tabanı)                         → toplam 45, getting-started yok
+  run-0e5f2ed-1  : aday + madde 18 portal                                 → toplam 45
+  run-2f99f34-1  : aday + madde 16 Başlarken                              → toplam 55, getting-started 10  (KÖK: a5a624a)
+  run-f6e265b-1..3: aday 2 (CI #858 kodu)                                 → 3/3 toplam 55, getting-started 10 (kararlı)
+  run-eski-yenitest-1..2: f6e265b ürün kodu + YENİ senaryo-222             → kırmızı (yeni denetimler: 10 / 10)
+      (yenitest-1'deki "Cari araması" zaman aşımı testin ilk sürümündeki yan etkiydi — yeni adım Cari penceresini kapatıyordu; düzeltildi, yenitest-2'de yok)
+  run-yeni-1..3  : düzeltme (hof-getting-started.js)                      → 3/3 toplam 45; Başlarken 0 (Cari penceresi üstte) / 4 (liste ekranda)

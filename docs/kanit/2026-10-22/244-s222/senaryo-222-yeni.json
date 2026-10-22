@@ -1,0 +1,32 @@
+{
+  "ad": "244-s222/senaryo-222-yeni",
+  "komut": "npm run test:senaryo-222",
+  "commit": "f092a9cdcca61276dbd08a5659b77e004dabe782",
+  "dal": "is/s222",
+  "kirli": 2,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T09:06:10.467Z",
+  "sure_sn": 124.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 60,
+    "gecen": 60,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-s222/senaryo-222-yeni.log",
+  "klasor": "/home/user/wt/s222",
+  "ham_cikti_sha256": "765e77509ea2f36d86a8fa71e5b879a4d7c455e2ce329568df6cab58b6fb4149",
+  "ham_cikti_bayt": 6619
+}
