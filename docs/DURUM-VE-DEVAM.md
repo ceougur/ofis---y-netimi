@@ -15,7 +15,7 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
   "-kirmizi-<neden>" diye yeniden adlandırılıp düzeltmeden sonra yeniden koşulur) → kanıt commit (aday dalında) → çalışma dalına `git merge --no-ff aday<n>` + push +
   `node tools/kanit.mjs ci <sha> --bekle 120` (arka planda). Kâhin adımları (kahin-defter/cari/tutar/ebelge-model/mutasyon/senaryo) kapı betiğinde YOK → adayda elle kanit kos.
 - ÇALIŞMA DALI (claude/youthful-euler-fl8ks4) kod durumu: aday 4 = 2fb1d33 (CI #859 BÜTÜN İŞLER YEŞİL); aday 5 = 0c1ae0d (kapı npm test 3132/3132 + 64/64 e2e + 6 kâhin
-  yeşil) → CI #860 SÜRÜYOR (arka plan görevi `kanit.mjs ci 0c1ae0d --bekle 120`). #860 YEŞİLSE iş listesinde 24 (gerçek EDM uçtan uca: gercek-5 55/55 + düzeltmeler + kılavuz
+  yeşil) → CI #860 BÜTÜN İŞLER YEŞİL (22.10 ~15:35 UTC okundu; madde 24 çizildi). #860 YEŞİLSE iş listesinde 24 (gerçek EDM uçtan uca: gercek-5 55/55 + düzeltmeler + kılavuz
   + açma) çizilir; 31a "son koşu" son adayın CI'sinde (kâhinler CI'da). KIRMIZIYSA: başarısız testin adı kısa günlükte, kök neden (ders 6/20/38).
 - ADAY 6 = /home/user/wt/aday6 (dal aday6) e070d42 = aday 5 (5ad1277) + is/edm-eszamanli b4f8709 (24b düzeneği tools/edm-gercek.mjs --eszamanli; N4 tek uçuş EDM girişi
   51c3074; gerçek koşu 1 kanıtı). KAPI SÜRÜYOR: `aday-kos.sh /home/user/wt/aday6 e070d42` (~14:08 UTC başladı; npm test sürüyor; 2 sa sınırında ~16:08 UTC kesilirse
