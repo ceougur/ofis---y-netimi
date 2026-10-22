@@ -248,10 +248,16 @@ try {
       const reset = await page.evaluate(() => {
         const dialog = document.querySelector(".hof-modal-backdrop.is-visible");
         const box = dialog.querySelector('input[name="resetNumbers"]');
-        return { label: box?.closest("label")?.textContent.replace(/\s+/g, " ").trim() || "", checked: Boolean(box?.checked), text: dialog.textContent.replace(/\s+/g, " ") };
+        const help = box?.getAttribute("aria-describedby") ? document.getElementById(box.getAttribute("aria-describedby")) : null;
+        const submit = dialog.querySelector('button[type="submit"]');
+        return { label: box?.closest("label")?.textContent.replace(/\s+/g, " ").trim() || "", checked: Boolean(box?.checked), text: dialog.textContent.replace(/\s+/g, " "), intro: dialog.querySelector(".hof-modal-text")?.textContent.replace(/\s+/g, " ") || "", help: help?.textContent.replace(/\s+/g, " ").trim() || "", helpAfterBox: Boolean(help && box.closest("label").nextElementSibling === help), submit: submit?.textContent.trim() || "", danger: Boolean(submit?.classList.contains("hof-button-danger")) };
       });
       ok(reset.label === "Tahsilat Makbuzu Numaraları da Sıfırlansın" && reset.checked, `${label}: G6 kutu adı “${reset.label}” (işaretli: ${reset.checked})`);
-      ok(reset.text.includes("Fatura ve fiş numaraları seride baştan başlar; e-Belge gönderdiyseniz yeniden göndermeden önce Fatura Ayarları → Numaralar'dan sıradaki numarayı ileri alın."), `${label}: G6 açıklama fatura ve fiş numaralarının baştan başladığını söyler`);
+      const g6 = "Fatura ve fiş numaraları seride baştan başlar; e-Belge gönderdiyseniz yeniden göndermeden önce Fatura Ayarları → Numaralar'dan sıradaki numarayı ileri alın.";
+      ok(reset.text.includes(g6), `${label}: G6 açıklama fatura ve fiş numaralarının baştan başladığını söyler`);
+      // 31f U11: kararın cümlesi kutunun HEMEN ALTINDA (giriş paragrafında değil, tekrar da yok); geri alınamaz eylem kırmızı.
+      ok(reset.help === g6 && reset.helpAfterBox && !reset.intro.includes("Fatura ve fiş numaraları"), `${label}: G6 cümlesi kutunun altında, girişte yok (altta: “${reset.help.slice(0, 60)}”)`);
+      ok(reset.submit === "Veriyi Sıfırla" && reset.danger, `${label}: “${reset.submit}” tehlikeli eylem rengi (hof-button-danger: ${reset.danger})`);
     }
     if (code === "001" && label.startsWith("Verisini")) await shot("e-sifirla-onay");
     await escClose(page);

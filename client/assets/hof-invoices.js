@@ -407,6 +407,9 @@
       const result = await HOF.api("/api/workspace/invoices/restore-notice/dismiss", { method: "POST", body: { at: button.dataset.at || "" } });
       if (view.list) view.list.restoreNotice = result.restoreNotice || null;
       renderList();
+      // 31f U7c: düğme yeniden çizimle kalkar; odak BODY'ye düşmesin — listenin ilk işine ("+ Yeni Fatura"; yoksa arama kutusu).
+      const root = body();
+      focusNode(root?.querySelector('[data-act="new"]')) || focusNode(root?.querySelector('[data-filter="q"]'));
     } catch (error) {
       button.disabled = false;
       HOF.toast(error.message, { type: "error" });
@@ -873,7 +876,13 @@
       label: form.side === "purchase" ? "Tedarikçi (Cari)" : "Müşteri (Cari)",
       required: true,
       help: "Vergi bilgileri cari kartından gelir; kayıtlı değilse “+ Yeni Cari” ile buradan açın.",
-      onPick: account => applyPickedAccount(account),
+      // 31f U7b: listeden (fare ya da Enter) seçilince odak kalemlere geçer (önceden cari kutusunda kalıyordu; ilk kaleme 18 Tab). Yalnız
+      // kullanıcı kutudayken: dışarıdan seçim (+ Yeni Cari kaydı) kendi odağını verir, seçim kaldırılınca (×) odak kutuda kalır.
+      onPick: account => {
+        const fromBox = Boolean(account?.id) && picker?.contains(document.activeElement);
+        applyPickedAccount(account);
+        if (fromBox) setTimeout(() => focusAfterAccount(form), 0);
+      },
     });
     // v2.0.15 (QA A5): cari yoksa formdan ayrılmadan açılır; kaydedilince seçili gelir, fiyatlar ve toplamlar yenilenir.
     const canNew = HOF.accounts?.newFor && HOF.can("accounts.manage") && !isReturn(form.kind);
@@ -1724,9 +1733,11 @@
   // muhasebe programlarındaki gibi): faturanın alıcı bilgisi cari kartından gelir; düzeltme CARİ KARTINA yazılır (bu ve sonraki faturalar onunla
   // kesilir) — bildirimde söylenir. Kesilmiş belgenin alıcı bilgisi kayıt anında donmuştur (party_json), değişmez. Denetim sunucuda kalır.
   // Nihai Tüketici (paylaşılan 11111111111 carisi) düzenlenmez: tutar sınırı aşılınca gerçek alıcının carisi seçilir ya da açılır.
+  // 31f U5: ipucu YALNIZ sorun tutar sınırıysa (sunucu partyLimit; kimliğe bakılmaz) — 11111111111'li caride öbür eksiklerde (il, ad…) de
+  // "Cariyi Düzenle" çıkar; sorun listesi asıl eksikliği zaten söyler.
   function partyFix(form, c) {
     if (!form.account?.id || !(c.partyProblems || []).length) return "";
-    if (String(c.party?.taxNo || "") === "11111111111") return '<p class="hof-muted hof-inv-party-hint" data-party-hint>Bu tutarda gerçek alıcı gerekir: müşterinin kendi carisini seçin ya da “+ Yeni Cari” ile TC kimlik numarası, adı soyadı ve adresiyle açın.</p>';
+    if (c.partyLimit) return '<p class="hof-muted hof-inv-party-hint" data-party-hint>Bu tutarda gerçek alıcı gerekir: müşterinin kendi carisini seçin ya da “+ Yeni Cari” ile TC kimlik numarası, adı soyadı ve adresiyle açın.</p>';
     if (!HOF.accounts?.editFor || !HOF.can("accounts.manage")) return '<p class="hof-muted hof-inv-party-hint" data-party-hint>Cari kartını düzenleme yetkiniz yok; eksik bilgiyi cari kartına yetkili bir kullanıcı (yönetici) yazmalı.</p>';
     return '<div class="hof-inv-party-fix"><button type="button" class="hof-button hof-button-small" data-act="edit-account">Cariyi Düzenle</button><small>Eksik bilgi cari kartına yazılır; bu ve sonraki faturalar onunla kesilir.</small></div>';
   }
@@ -2453,7 +2464,8 @@
         // 2.4.3 (keşif B7): kesimi kesin reddedecek sorun (alıcı/satıcı bilgisi eksik, posta kutusu seçilmemiş) varken "… numarasıyla kaydedilecek"
         // onayı açılmaz; neden formda ve bildirimde yazar (önceden onaydan sonra reddediliyordu).
         const blockers = [...(c.blockers || []), ...(!form.modifyId && eSend !== "later" && c.aliasBlock ? [c.aliasBlock] : [])];
-        if (blockers.length) return fail(`Fatura kaydedilemez: ${blockers.join(" ")}`, () => focusNode(body()?.querySelector('[data-totals] [data-act="edit-account"]')));
+        // 31f U7a: odak sorunun alanına — alıcı bilgisi eksikse "Cariyi Düzenle", numara / tarih çakışmasında (UX15) Tarih alanı (önceden BODY'ye düşüyordu).
+        if (blockers.length) return fail(`Fatura kaydedilemez: ${blockers.join(" ")}`, () => focusNode(body()?.querySelector('[data-totals] [data-act="edit-account"]')) || ((c.numbering || []).length && focusNode(body()?.querySelector('[data-f="issueDate"]:not([data-l])'))));
         const who = form.account.name;
         // 2.4.4 (UX15): seride daha eski tarihli gönderilmemiş belge varken numara kayıtta verilmez (sunucu O1) — onay numara göstermez, nedeni söyler.
         const held = eSend !== "later" && !form.modifyId ? c.orderHold : null;
@@ -2608,20 +2620,30 @@
     // v2.0.23: taksitli fatura kendi taksit kartıyla kapanır; mahsup edilmez (sunucu da reddeder).
     const canOffset = doc.canManage && doc.open > 0.004 && !doc.planId;
     const hint = doc.planId ? " Taksitli fatura kendi taksit kartıyla kapanır; tahsilat taksit kartından girilir." : sideOf(doc.kind) === "sale" ? " Aynı cariye kesilen alış faturası ve Alacak Yaz satırı kendiliğinden ödeme sayılmaz; karşılıklı kapama için Mahsup Et." : " Aynı cariye kesilen satış faturası ve Borç Yaz satırı kendiliğinden ödeme sayılmaz; karşılıklı kapama için Mahsup Et.";
-    return `<div class="hof-inv-closers"><h5>Bu Faturayı Kapatanlar</h5>${rows.length ? `<ul>${rows.join("")}</ul>` : `<p class="hof-muted">Henüz kapatan yok.${hint}</p>`}${canOffset ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="offset">Mahsup Et</button>' : ""}</div>`;
+    return `<div class="hof-inv-closers"><h5>${doc.kind === "smm" ? "Bu Makbuzu Kapatanlar" : "Bu Faturayı Kapatanlar"}</h5>${rows.length ? `<ul>${rows.join("")}</ul>` : `<p class="hof-muted">Henüz kapatan yok.${hint}</p>`}${canOffset ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="offset">Mahsup Et</button>' : ""}</div>`;
   }
   // 2.4.4 (uzman UX17): kartın üstündeki tutarın adı belgenin durumuna göre. Kapanmış (ödenmiş / mahsup edilmiş) faturada "Tahsil Edilecek"
-  // yazmaz: "Genel Toplam" (tevkifat / stopaj kesintisi varsa "Kesinti Sonrası Toplam"); kısmen ödenmişte altında "Kalan". Tutar değişmez
+  // yazmaz: "Genel Toplam" (tevkifat / stopaj kesintisi varsa "Kesinti Sonrası Toplam"); kısmen ödenmişte büyük rakam "Kalan" (headAmountHtml). Tutar değişmez
   // (belgenin ödenecek toplamı); Toplamlar bölümündeki "Tahsil Edilecek" satırı mali terimdir, dokunulmaz.
   const isClosed = doc => doc.status === "issued" && !(doc.open > 0.004);
+  // Kâğıt makbuz olarak bırakılmış e-SMM (MM4 alt kararı; sunucu paperReceiptBlockOf): e-SMM olarak hiç gönderilmez, e-Belge XML'i yoktur — kâğıt
+  // faturadaki gibi "XML İndir" görünmez (bırakılan e-Arşiv fatura sonradan gönderilebildiği için onda kalır).
+  const isPaperReceipt = doc => doc.kind === "smm" && doc.eStatus === "withdrawn";
+  const totalLabel = doc => (doc.kind === "smm" ? "Makbuz Tutarı (Net)" : Math.abs((doc.payableTotal || 0) - (doc.grossTotal || 0)) > 0.004 ? "Kesinti Sonrası Toplam" : "Genel Toplam");
   function headAmountLabel(doc) {
     if (doc.status === "cancelled") return "Belge Tutarı (İptal Edildi)";
     if (isReturn(doc.kind)) return "İade Tutarı";
     // Makbuz (MM7): kapanmış makbuzun tutarı tahsil edilendir (GİB e-SMM "Tahsil Edilen"); "Genel Toplam" makbuzda yoktur.
-    if (isClosed(doc)) return doc.kind === "smm" ? "Tahsil Edilen (Net Alınan)" : Math.abs((doc.payableTotal || 0) - (doc.grossTotal || 0)) > 0.004 ? "Kesinti Sonrası Toplam" : "Genel Toplam";
+    if (isClosed(doc)) return doc.kind === "smm" ? "Tahsil Edilen (Net Alınan)" : totalLabel(doc);
     return sideOf(doc.kind) === "sale" ? "Tahsil Edilecek" : "Ödenecek";
   }
-  const headRest = doc => (doc.status === "issued" && !isReturn(doc.kind) && doc.open > 0.004 && doc.paid > 0.004 ? `<small class="hof-inv-head-rest">Kalan ${esc(money(doc.open))}</small>` : "");
+  // 31f U13: kısmen ödenmiş belgede büyük rakam KALAN (QuickBooks/Xero "Balance Due"); belgenin toplamı altında küçük yazılır. Tutarlar sunucudan, hesap değişmez.
+  const isPartial = doc => doc.status === "issued" && !isReturn(doc.kind) && doc.open > 0.004 && doc.paid > 0.004;
+  function headAmountHtml(doc) {
+    const cur = doc.currency;
+    if (isPartial(doc)) return `<span>Kalan</span><strong>${esc(money(doc.open))}</strong><small class="hof-inv-head-rest">${esc(totalLabel(doc))} ${esc(curMoney(doc.payableTotal, cur))}${cur !== "TRY" ? ` (${esc(money(doc.tryPayable))})` : ""} · ödenen ${esc(money(doc.paid))}</small>`;
+    return `<span>${esc(headAmountLabel(doc))}</span><strong>${esc(curMoney(doc.payableTotal, cur))}</strong>${cur !== "TRY" ? `<small>${esc(money(doc.tryPayable))}</small>` : ""}`;
+  }
   function renderCard() {
     const root = body();
     const doc = view.doc;
@@ -2658,14 +2680,14 @@
     const email = String(party.email || "").trim();
     const eTools =
       edoc() && doc.status !== "draft" && (doc.profile !== "KAGIT" || doc.eStatus === "withdrawn") && meta.kinds[doc.kind]?.own
-        ? `<span class="hof-plan-toolgroup">${sendButtons(doc)}${doc.canWithdraw ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="e-withdraw" title="${esc(paperOf(doc.kind).hint)}">${esc(paperOf(doc.kind).button)}</button>` : ""}${doc.canRefresh ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="e-refresh">Durum Sorgula</button>' : ""}${doc.canOfficial ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/${esc(doc.id)}/resmi.pdf?inline=1" target="_blank" rel="noopener" data-act="e-official" title="Entegratörün ürettiği, alıcının ve GİB'in gördüğü görüntü">Resmî Görüntü</a>` : ""}${doc.status === "issued" ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/${esc(doc.id)}/ubl.xml" download>XML İndir</a>` : ""}</span>`
+        ? `<span class="hof-plan-toolgroup">${sendButtons(doc)}${doc.canWithdraw ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="e-withdraw" title="${esc(paperOf(doc.kind).hint)}">${esc(paperOf(doc.kind).button)}</button>` : ""}${doc.canRefresh ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="e-refresh">Durum Sorgula</button>' : ""}${doc.canOfficial ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/${esc(doc.id)}/resmi.pdf?inline=1" target="_blank" rel="noopener" data-act="e-official" title="Entegratörün ürettiği, alıcının ve GİB'in gördüğü görüntü">Resmî Görüntü</a>` : ""}${doc.status === "issued" && !isPaperReceipt(doc) ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/${esc(doc.id)}/ubl.xml" download>XML İndir</a>` : ""}</span>`
         : "";
     HOF.swap(
       root,
       `<div class="hof-plan-head">
         <div class="hof-plan-headline"><button type="button" class="hof-plan-back" data-act="back" title="Listeye dön">← Liste</button>
           <div class="hof-plan-title"><h3>${esc(docTitle(doc))} ${statusPill(doc)}</h3><small>${esc(doc.accountName)} · ${esc(HOF.formatDate(doc.issueDate))} ${esc(doc.issueTime || "")}${doc.scenarioLabel ? ` · ${esc(doc.scenarioLabel)}` : ""}</small></div></div>
-        <div class="hof-chq-amount"><span>${esc(headAmountLabel(doc))}</span><strong>${esc(curMoney(doc.payableTotal, cur))}</strong>${cur !== "TRY" ? `<small>${esc(money(doc.tryPayable))}</small>` : ""}${headRest(doc)}</div>
+        <div class="hof-chq-amount">${headAmountHtml(doc)}</div>
       </div>
       <div class="hof-inv-pills" role="group" aria-label="Bağlı kartlar">
         <button type="button" class="hof-inv-big-pill" data-open-account="${esc(doc.accountId)}"><b>Cari Kartı</b><small>${esc(doc.accountName)}</small></button>
@@ -3161,6 +3183,8 @@
       message: `Seçilen ${selectedCount.toLocaleString("tr-TR")} belgeyle aynı seride, seçilmemiş ve daha eski tarihli ${count.toLocaleString("tr-TR")} belge Gönderilecekler'de bekliyor (${shown}${count > 3 ? " …" : ""}). e-Belge numarası tarih sırasıyla verilir: seçilenler önce numara alırsa bu belgeler e-Belge olarak gönderilemez. Onları da ekleyip eski tarihliden başlayarak birlikte gönderelim mi?`,
       confirmLabel: "Onları da Ekle ve Gönder",
       cancelLabel: "Vazgeç",
+      // 31f: onay kapsamı genişletir (seçilmemiş belgeler de numara alıp gider) — Enter'a basan yanlışlıkla göndermesin; odak Vazgeç'te (hiçbir şey gönderilmez).
+      safeFocus: true,
     });
   };
   async function sendSelected() {

@@ -390,6 +390,74 @@ try {
     const dup = (await toasts(page)).filter(text => /miktar sıfırdan/.test(text));
     ok(dup.length === 0, `aynı ileti ayrıca bildirim olarak çıkmadı (UI2; ${dup.length} bildirim)`);
   });
+
+  // 31f U5 — Nihai Tüketici kimliğiyle (11111111111) açılmış, ili eksik cari; tutar sınırın (30.000 TL) çok altında. Önceden ipucu "Bu tutarda gerçek alıcı
+  // gerekir" diyordu, "Cariyi Düzenle" çıkmıyordu. Cari bu bölümde açılır: D bölümündeki Nihai Tüketici düğmesi en eski 11111111111'li cariyi seçer (31f U1).
+  console.log("J) 31f U5: 11111111111'li, ili eksik caride 600 TL — sorun 'il zorunludur', 'Cariyi Düzenle' var, tutar sınırı söylenmez; sınır aşılınca ipucu");
+  await part("J", async () => {
+    const anon = await must("ili eksik 11111111111 cari", api.post("/api/workspace/accounts", { name: "Eksik İl Danışmanlık", type: "customer", partyKind: "person", taxNo: "11111111111", address: "Gazi Cd. 7" }));
+    await openForm(page, "service_sale", { id: anon.id, name: anon.name });
+    await fillLine(page, 0, "Danışmanlık", "500");
+    const list = await waitProblems(page, /il zorunludur/);
+    ok(list.some(item => /il zorunludur/.test(item)), `asıl eksiklik söylendi (${list.join(" | ").slice(0, 160)})`);
+    ok(!list.some(item => /30\.000 TL üstü/.test(item)), "600 TL'de tutar sınırı sorunu yok");
+    const hint = await page.$eval(`${INV} [data-totals] [data-party-hint]`, node => node.textContent).catch(() => "");
+    ok(!/gerçek alıcı/.test(hint), `"gerçek alıcı gerekir" ipucu yok (${hint || "ipucu yok"})`);
+    const fix = await page.$(`${INV} [data-totals] [data-act="edit-account"]`);
+    ok(Boolean(fix), "'Cariyi Düzenle' düğmesi var (UX9 yolu)");
+    await shot(page, "31f-u5-cariyi-duzenle");
+    if (fix) {
+      await fix.click();
+      await page.waitForSelector(`${TOP} input[name="city"]`);
+      await sleep(500);
+      const at = await focused(page);
+      ok(/name=city/.test(at), `cari formunda odak eksik alanda: il (${at})`);
+      await page.keyboard.type("Ankara", { delay: 35 });
+      await page.keyboard.press("Enter");
+      await page.waitForFunction(() => document.querySelectorAll(".hof-modal-backdrop.is-visible").length === 1, null, { timeout: 8000 });
+      await sleep(1200);
+      ok(accountRow(anon.id).city === "Ankara", `VERİ TABANI: cari kartına il yazıldı (${accountRow(anon.id).city})`);
+      ok(!(await waitProblems(page, /il zorunludur/, false)).some(item => /il zorunludur/.test(item)), "sorun kalktı");
+    }
+    // Komşu: aynı caride sınır aşılınca tutar sınırı söylenir; paylaşılan kimlik faturadan düzeltilmez (D ile aynı kural).
+    await page.locator(`${INV} [data-l="0"][data-f="unitPrice"]`).click();
+    await page.keyboard.press("Control+A");
+    await page.keyboard.type("40000", { delay: 35 });
+    await page.keyboard.press("Tab");
+    const over = await waitProblems(page, /30\.000 TL üstü/);
+    ok(over.some(item => /30\.000 TL üstü/.test(item)), "40.000 TL'de tutar sınırı sorunu");
+    ok(!(await page.$(`${INV} [data-totals] [data-act="edit-account"]`)), "sınır aşılınca 'Cariyi Düzenle' yok");
+    const limitHint = await page.$eval(`${INV} [data-totals] [data-party-hint]`, node => node.textContent).catch(() => "");
+    ok(/gerçek alıcı/.test(limitHint) && /Yeni Cari/.test(limitHint), `sınırda gerçek alıcı yolu yazılı (${limitHint})`);
+  });
+
+  // 31f U7b — öneri listesinden cari seçilince odak kalemlere geçer (kodun yorumu böyle diyordu; önceden ilk kaleme 18 Tab).
+  console.log("K) 31f U7b: listeden cari seçilince (Enter ve fare) odak ilk boş kalem adında; seçim kaldırılınca cari kutusunda");
+  await part("K", async () => {
+    await openForm(page, "service_sale");
+    ok(/acc-query/.test(await focused(page)), `açılışta odak cari kutusunda (${await focused(page)})`);
+    await page.keyboard.type("Alıcı Tic", { delay: 45 });
+    await page.waitForSelector(`${INV} .hof-acc-picker li[data-id]`);
+    await sleep(300);
+    await page.keyboard.press("Enter");
+    await sleep(900);
+    const byKey = await focused(page);
+    ok(/f=name,l=0/.test(byKey), `Enter ile seçince odak ilk kalem adında (${byKey})`);
+    await page.keyboard.type("Kurulum", { delay: 35 });
+    ok((await page.$eval(`${INV} [data-l="0"][data-f="name"]`, node => node.value)).startsWith("Kurulum"), "klavyeyle yazılan kalem adına girdi");
+    await page.click(`${INV} .hof-acc-picker [data-acc-clear]`);
+    await sleep(500);
+    ok(/acc-query/.test(await focused(page)), `seçim kaldırılınca odak cari kutusunda (${await focused(page)})`);
+    await page.keyboard.type("İlsiz", { delay: 45 });
+    await page.waitForSelector(`${INV} .hof-acc-picker li[data-id]`);
+    await sleep(300);
+    await page.locator(`${INV} .hof-acc-picker li[data-id]`).first().click();
+    await sleep(900);
+    // Kalem 0 dolu (Kurulum) → ilk boş kalem yoksa kaydetme düğmesi (focusAfterAccount kuralı).
+    const byMouse = await focused(page);
+    ok(/issue|Kaydet/.test(byMouse) || /f=name/.test(byMouse), `fareyle seçince odak kalemde ya da kaydetme düğmesinde (${byMouse})`);
+    ok(!/acc-query|BODY/.test(byMouse), "odak cari kutusunda ya da BODY'de kalmadı");
+  });
 } catch (error) {
   failed += 1;
   console.log(`✗ beklenmeyen hata: ${error.stack || error.message}`);

@@ -305,7 +305,16 @@ try {
     // MM4 alt kararı: bırakılan makbuz e-SMM olarak gönderilmez — Gönder düğmesi yok, nedeni kartta yazar.
     ok(!(await page.$(`${modal} [data-act="e-send"]`)), "kartta e-Belge Gönder yok");
     ok(card.includes("Kâğıt makbuz olarak düzenlendi; e-SMM gönderilmez"), "kartta nedeni yazar");
-    const pdf = await api.raw("GET", `/api/workspace/invoices/${waiting.id}/fatura.pdf`);
+    // Ek (ana oturum, e-SMM ajanının gözlemi): e-SMM kullanıcısı kâğıt makbuz düzenlemez (kayıt 400 dönüyordu, düğme açıktı) → Düzenle pasif, nedeni görünür;
+    // kâğıt belgede e-Belge XML'i yok → "XML İndir" yok (doğuştan kâğıt faturadaki gibi); başlık makbuz dilinde.
+    const modifyButton = await page.$(`${modal} [data-act="modify"]`);
+    const modifyTitle = modifyButton ? await modifyButton.getAttribute("title") : "";
+    ok(Boolean(modifyButton) && (await modifyButton.isDisabled()) && /kâğıt serbest meslek makbuzu düzenlemez/.test(modifyTitle || ""), `bırakılan makbuzda Düzenle pasif, nedeni: "${modifyTitle}"`);
+    ok(/Düzenle kapalı: Bu makbuz kâğıt makbuz olarak bırakıldı/.test(card), "Düzenle'nin nedeni kartta görünür yazı");
+    ok(!(await page.$(`${modal} a[href$="/ubl.xml"]`)), "kâğıt makbuzda XML İndir yok");
+    const closersHead = await textOf(page, `${modal} .hof-inv-closers h5`);
+    ok(closersHead === "Bu Makbuzu Kapatanlar", `kapatanlar başlığı makbuz dilinde: "${closersHead}"`);
+    const pdf =await api.raw("GET", `/api/workspace/invoices/${waiting.id}/fatura.pdf`);
     const pdfBody = pdf.status === 200 ? pdfText(pdf.buffer).replace(/\s+/g, " ") : "";
     ok(pdfBody.includes("SERBEST MESLEK MAKBUZU") && !pdfBody.includes("MÜŞTERİ FİŞİ") && !/mali değeri yoktur/.test(pdfBody) && pdfBody.includes(`Makbuz No ${row.number}`), `MM4 PDF Serbest Meslek Makbuzu (${pdf.status}): ${pdfBody.slice(0, 200)}`);
     await shot(page, "esmm-244-4-kagit-makbuz");
