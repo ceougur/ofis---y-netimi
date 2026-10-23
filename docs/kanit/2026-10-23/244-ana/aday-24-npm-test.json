@@ -1,0 +1,38 @@
+{
+  "ad": "244-ana/aday-24-npm-test",
+  "komut": "npm test",
+  "commit": "3525c2557a817f041452e233753eac09ee4b40e0",
+  "dal": "aday24",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T15:54:40.465Z",
+  "sure_sn": 1813.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3439,
+    "gecen": 3438,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "K6 statik: para tablosuna yazan her yer bank.post içinde ya da izinli listede › gerçek kod: liste dışında ham yazım yeri yok; listede eskimiş girdi yok",
+      "konum": "test/banka-210-post-statik.test.mjs:87:3",
+      "hata": "bank.post dışında, izinli listede olmayan para tablosu yazımı · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-23/244-ana/aday-24-npm-test.log.gz",
+  "klasor": "/home/user/wt/aday24",
+  "ham_cikti_sha256": "93921273e56a7fe6f2f5bae6d5e46bb8a9fac0e7916f95f841d5e4656184aa22",
+  "ham_cikti_bayt": 1238476
+}
