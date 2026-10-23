@@ -50,6 +50,14 @@ MUTASYONLAR = {
     25: "K3: toplam − ödenen negatifse 0'a çekilmez",
     26: "K2: 'birden çok sekmede; ayrı sayıldı' notu yok (rapor ve Tahsilat Takvimi)",
     27: "K5: Kasa'yı görme yetkisi olmayan kullanıcı Kasa giriş/çıkışını görür",
+    # /2 C3 (23.10.2026 [KULLANICI] kişi gruplaması)
+    28: "C3: aynı kimlik farklı adları birleştirir (kişi kimliğe göre)",
+    29: "C3: aynı ad farklı kimlik tek kişi (yalnız ada göre)",
+    30: "C3: kimliksiz satır aynı adın tek kimliğine katılmaz",
+    31: "C3: aynı adı paylaşan kişilerin etiketinde kimlik yok",
+    32: "C3 kimliksiz satır: çok kimlikli adın kimliksiz kaydı ilk kimliğe katılır (ayrı kalmaz)",
+    33: "C3 kimlik sütunu: sağlama hanesi tutmayan değer de kimlik sayılır",
+    34: "Kimlik sütunu: 'Vergi No' / 'Vergi Numarası' / 'Vergi Kimlik' tutar sayılır",
 }
 
 
@@ -64,9 +72,42 @@ def kurus(metin):
 
 
 # ───────────────────────── /2 B3: Tablodaki Kişiler borcu — [KULLANICI] 23.10.2026 03:12 UTC (5 dk yetkisiyle) K1–K5 metni; ürün kodu okunmadı
-KIMLIK_BASLIK = {"dosya no", "borçlu", "telefon", "müşteri no", "müşteri", "ad soyad"}
+# C3 (23.10.2026): kişi kimliği sütunu (TCKN/VKN). Başlık adları ORTAM bilgisidir — kara kutu yoklaması (aday 15, 23.10.2026: "TC Kimlik No", "TCKN", "VKN",
+# "TCKN/VKN", "Kimlik No", "TC Kimlik No / VKN" başlıklı sütunda aynı ad farklı kimlik ayrı satır oldu; "Vergi No" başlıklı tabloda hiç satır görünmedi — İNCELE).
+KISI_KIMLIK_BASLIK = {"tc kimlik no", "tckn", "vkn", "tckn/vkn", "kimlik no", "tc kimlik no / vkn",
+                      # KİMLİK SÜTUNU TUTAR DEĞİLDİR (baş mimar kararı, 23.10.2026): kimlik/numara bildiren başlık — sağlama hanesi tutmasa da tutar sayılmaz, borca girmez.
+                      # "Vergi", "Vergi Tutarı", "KDV" başlıklı sütunlar tutardır (bu kümede değil).
+                      "vergi no", "vergi numarası", "vergi kimlik"}
+VERGI_KIMLIK_BASLIK = {"vergi no", "vergi numarası", "vergi kimlik"}  # mutant 34
+KIMLIK_BASLIK = {"dosya no", "borçlu", "telefon", "müşteri no", "müşteri", "ad soyad"} | KISI_KIMLIK_BASLIK
 TUTAR_DISI = {"gün", "adet"}  # K3: gün/adet sütunu ("Kalan Gün", "Adet") tutar değildir
 TUTAR_DISI_EK = {"sayı", "sayısı", "ay", "yıl", "oran", "oranı", "yüzde"}  # tutar sayılmaz [YAYGIN]; senaryolarda kullanılmaz (DENENMEZ)
+
+
+def tckn_gecerli(v):
+    """TCKN sağlama haneleri (NVİ): 11 hane, ilk hane 0 değil; 10. = ((1+3+5+7+9) × 7 − (2+4+6+8)) mod 10; 11. = ilk 10 hanenin toplamı mod 10."""
+    if len(v) != 11 or not v.isdigit() or v[0] == "0":
+        return False
+    d = [int(c) for c in v]
+    return d[9] == ((d[0] + d[2] + d[4] + d[6] + d[8]) * 7 - (d[1] + d[3] + d[5] + d[7])) % 10 and d[10] == sum(d[:10]) % 10
+
+
+def vkn_gecerli(v):
+    """VKN sağlama hanesi (GİB): 10 hane; i = 0..8 için t = (d_i + 9 − i) mod 10, p = t × 2^(9−i) mod 9 (t ≠ 0 ve p = 0 ise 9); 10. hane = (10 − Σp mod 10) mod 10."""
+    if len(v) != 10 or not v.isdigit():
+        return False
+    s = 0
+    for i in range(9):
+        t = (int(v[i]) + 9 - i) % 10
+        p = (t * 2 ** (9 - i)) % 9
+        if t != 0 and p == 0:
+            p = 9
+        s += p
+    return int(v[9]) == (10 - s % 10) % 10
+
+
+def kimlik_gecerli(v):
+    return tckn_gecerli(v) or vkn_gecerli(v)
 
 
 def tr_kucuk(metin):
@@ -262,7 +303,7 @@ class Model:
         """K3 satırın borcu (kuruş), YOK (borç tutarı sütunu yok) ya da None (kural tanımsız — denetlenmez)."""
         sinif = []
         for h in sk["basliklar"]:
-            if tr_kucuk(h) in KIMLIK_BASLIK:
+            if tr_kucuk(h) in KIMLIK_BASLIK and not (self.mut == 34 and tr_kucuk(h) in VERGI_KIMLIK_BASLIK):
                 continue
             sutun = [c.get(h) for _, c in sk["satirlar"]]
             sinif.append((h, sutun_sinifi(h, sutun) if self.mut != 16 or kelimeler(h)[-1:] not in (["gün"], ["adet"]) else "tutar"))
@@ -299,6 +340,50 @@ class Model:
         if not para:
             return YOK  # yalnız söz / tarih / gün — borç değil
         return None
+
+    def kisiler(self):
+        """C3 ([KULLANICI] 23.10.2026, 31e kontrol turu 3 bulgusu C3 + bağımsız dar kontrol D1): Tablodaki Kişiler'de carisi olmayan tablo kayıtlarının kişi
+        gruplaması. Aynı ad + farklı TCKN/VKN = farklı kişi (ayrı satır, etikette kimlik); aynı ad + aynı kimlik = aynı kişi; FARKLI ad + AYNI kimlik = FARKLI kişiler
+        (kimlik yalnız aynı adı ayırır, farklı adları birleştirmez). KİMLİKSİZ SATIR (baş mimar kararı, C3 tamamlayıcısı, 23.10.2026): adın tek kimliği varsa ona
+        katılır; adın birden çok kimliği varsa AYNI Dosya No'yu taşıyan kimlikli satırın kişisine katılır; o da yoksa adın kimliksiz grubu olarak ayrı kişi kalır.
+        KİMLİK SÜTUNU (aynı karar): sağlama hanesi tutmayan değer kimlik sayılmaz (ad kuralı geçer) — tablo_yukle yalnız geçerli TCKN/VKN'yi kimlik yazar.
+        [YAYGIN] kimliği hiç olmayan aynı ad tek kişidir. TANIMSIZ (denetlenmez): bir kayıtta (dosya no) birden çok ad ya da birden çok kimlik.
+        Dönüş: kayıt no → kişi anahtarı ya da None."""
+        adaylar = [no for no, kay in self.kayitlar.items() if self.cari_bul_kayit(no) is None and kay["tur"] != "taksit"]
+        ad_kimlik = defaultdict(set)
+        bozuk = set()
+        for no in adaylar:
+            kay = self.kayitlar[no]
+            if len(kay["adlar"]) > 1 or len(kay["kimlikler"]) > 1:
+                bozuk.add(kay["isim"])
+            ad_kimlik[kay["isim"]] |= kay["kimlikler"]
+        out = {}
+        for no in adaylar:
+            kay = self.kayitlar[no]
+            ad = kay["isim"]
+            kim = next(iter(kay["kimlikler"])) if kay["kimlikler"] else None  # aynı dosya no'nun kimlikli satırı (kimliksiz satırları da bu kişiye)
+            tek = next(iter(ad_kimlik[ad])) if len(ad_kimlik[ad]) == 1 else None
+            if ad in bozuk:
+                out[no] = None
+                continue
+            if self.mut == 28:
+                kk = kim or tek
+                out[no] = ("kimlik", kk) if kk else ("ad", ad)  # D1 davranışı: kimlik farklı adları birleştirir
+            elif self.mut == 29:
+                out[no] = ("ad", ad)
+            elif kim:
+                out[no] = ("ad", ad, kim)
+            elif tek and self.mut != 30:
+                out[no] = ("ad", ad, tek)  # adın tek kimliği
+            elif len(ad_kimlik[ad]) > 1 and self.mut == 32:
+                out[no] = ("ad", ad, sorted(ad_kimlik[ad])[0])
+            else:
+                out[no] = ("ad", ad, None)  # adın kimliksiz grubu (kimliği hiç olmayan ad ya da çok kimlikli adın kimliksiz kaydı)
+        return out
+
+    def ad_cok_kimlikli(self, ad):
+        """C3: adı paylaşan birden çok kimlikli kişi var mı (etikette kimlik beklenir)."""
+        return len({k for no, kay in self.kayitlar.items() if kay["isim"] == ad and self.cari_bul_kayit(no) is None for k in kay["kimlikler"]}) > 1
 
     def tablo_borcu(self, no):
         """/2 B3 (K1–K3): dosya no'nun Tablodaki Kişiler borcu (kuruş) ya da None (tanımsız → denetlenmez).
@@ -357,11 +442,22 @@ class Model:
             else:
                 bas, satirlar = None, [(r["no"], None) for r in sk["kayitlar"]]
             self.sekmeler.append({"ad": sk["ad"], "tur": sk["tur"], "basliklar": bas, "satirlar": satirlar})
+            kimlik_sutun = [h for h in (sk.get("basliklar") or []) if tr_kucuk(h) in KISI_KIMLIK_BASLIK] if sk["tur"] == "serbest" else []
             for r in sk["kayitlar"]:
                 no = r["no"]
-                k = self.kayitlar.setdefault(no, {"sekmeler": [], "tur": sk["tur"], "isim": r["isim"], "items": [], "kalan": 0})
+                k = self.kayitlar.setdefault(no, {"sekmeler": [], "tur": sk["tur"], "isim": r["isim"], "items": [], "kalan": 0, "kimlikler": set(), "adlar": set(),
+                                                  "kimliksiz_satir": False})
                 if sk["ad"] not in k["sekmeler"]:
                     k["sekmeler"].append(sk["ad"])
+                k["adlar"].add(r["isim"])
+                satir_kimlik = False
+                for h in kimlik_sutun:  # C3: satırın kimliği (boş hücre kimliksiz)
+                    v = str((r.get("hucreler") or {}).get(h) or "").strip()
+                    if v and (kimlik_gecerli(v) or self.mut == 33):  # C3 kararı: sağlama hanesi tutmayan değer kimlik sayılmaz
+                        k["kimlikler"].add(v)
+                        satir_kimlik = True
+                if not satir_kimlik:
+                    k["kimliksiz_satir"] = True
                 if sk["tur"] == "taksit":
                     k["items"] = [(t, kurus(v)) for t, v in r["taksitler"]]
                     k["kalan"] = sum(v for _, v in k["items"])
@@ -770,9 +866,14 @@ class Model:
             for kod in sorted(set(m) | {"100", "101", "120", "121", "320", "600"}):
                 self.d("%s:mizan:%s" % (k, kod), m.get(kod, 0), "PLAN", "B2.6 §3.11a yevmiye")
         # 5c: Tablodaki Kişiler — bir dosya no'nun tahsilatı bir kez (kayıt tahsilatı + bağlı carinin bütün tahsilatları, kartta olanlar dahil)
+        kisiler_a = self.kisiler()
         for no, kay in self.kayitlar.items():
             cari = self.cari_bul_kayit(no)
             alacak = self.kayitTahsilat.get(no, 0)
+            if cari is None and no in kisiler_a:
+                if kisiler_a[no] is None:
+                    continue  # C3 tanımsız kişi — denetlenmez
+                alacak = sum(self.kayitTahsilat.get(n, 0) for n, x in kisiler_a.items() if x == kisiler_a[no])  # C3: rapor satırı kişidir
             dogrudan = False
             if cari:
                 alacak += sum(t["tutar"] for t in self.tahsilatlar.values() if t["aktif"] and t["cari"] == cari)
@@ -783,6 +884,7 @@ class Model:
                        "B1.8 5c tahsilat bir kez" + (" (aynı adlı iki kişi ayrı satırda: YAYGIN)" if ayni_ad else ""))
         # /2 B3 (K1–K3 [KULLANICI] 23.10 03:12 UTC): Tablodaki Kişiler borcu — yalnız carisi ve kartı olmayan kayıt (bağlı carinin borç satırları bu kâhinde yok)
         k4_toplam, k4_tanimli = 0, True
+        kisiler = self.kisiler()
         for no in self.kayitlar:
             if self.cari_bul_kayit(no) is not None or (no in self.kartlar and self.kartlar[no]["aktif"]):
                 k4_tanimli = False
@@ -791,11 +893,24 @@ class Model:
             if b is None:
                 k4_tanimli = False
                 continue
-            self.d("%s:rapor:%s:borc" % (k, no), b, "KULLANICI", "B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu")
-            if isinstance(b, dict):
-                k4_tanimli = False
-            else:
+            # C3: rapor satırı KİŞİdir — dosya no'nun okunan borcu kişisinin (aynı kişiye düşen bütün dosya no'ların) toplamıdır
+            kisi = kisiler.get(no)
+            if kisi is None:
                 k4_toplam += b
+                continue
+            uyeler = [n for n, x in kisiler.items() if x == kisi]
+            bs = [self.tablo_borcu(n) for n in uyeler]
+            if all(v is not None for v in bs):
+                self.d("%s:rapor:%s:borc" % (k, no), sum(bs), "KULLANICI",
+                       "B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu · C3 kişi toplamı")
+                if b > 0:
+                    self.d("%s:rapor:%s:grup" % (k, no), sorted(n for n, v in zip(uyeler, bs) if v > 0), "KULLANICI",
+                           "C3 kişi gruplaması: farklı ad aynı kimlik ayrı kişi; aynı ad farklı kimlik ayrı; kimliksiz aynı adın tek kimliğine katılır")
+                    if self.ad_cok_kimlikli(self.kayitlar[no]["isim"]):
+                        kay = self.kayitlar[no]
+                        kim = next(iter(kay["kimlikler"])) if kay["kimlikler"] else ""  # kimliksiz grup: etikette kimlik yok
+                        self.d("%s:rapor:%s:etiketKimlik" % (k, no), "" if self.mut == 31 else kim, "KULLANICI", "C3 aynı adı paylaşan kişinin etiketinde kimlik")
+            k4_toplam += b
         not_n = None
         if self.kayitlar:
             n = self.cok_sekme_sayisi()
@@ -823,7 +938,7 @@ class Model:
         if self.kayitlar:
             self.d("%s:rapor:tutarli" % k, True, "KULLANICI", "B1.8 ders 11 toplam = satırlar")
             for no, kay in self.kayitlar.items():
-                if ("%s:rapor:%s:alacak" % (k, no)) in self.out and self.out["%s:rapor:%s:alacak" % (k, no)]["b"]:
+                if ("%s:rapor:%s:alacak" % (k, no)) in self.out and self.out["%s:rapor:%s:alacak" % (k, no)]["b"] and not self.ad_cok_kimlikli(kay["isim"]):
                     self.d("%s:rapor:%s:ad" % (k, no), kay["isim"], "YAYGIN", "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir")
 
     # ───────────────────────── sürücü

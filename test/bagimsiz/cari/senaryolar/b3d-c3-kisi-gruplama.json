@@ -1,0 +1,284 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3d-c3-kisi-gruplama",
+ "aciklama": "C3 ([KULLANICI] 23.10.2026) Tablodaki Kişiler kişi gruplaması: aynı ad + farklı kimlik ayrı kişi ve etikette kimlik (Ayşe Yıldız 10000000146 / 12345678950); aynı ad + aynı kimlik tek kişi (2026/401 + 403); FARKLI ad + AYNI kimlik FARKLI kişiler — yer tutucu 11111111111, 0000000000, 2222222222 ve gerçek TCKN 11223344550 (Can Er / Hande Öz); kimliksiz satır aynı adın tek kimliğine katılır (2026/411 aynı sekmede, 2026/412 kimlik sütunu olmayan başka sekmede; 2026/410 iki sekmede — K2 ayrı borç); başlık çeşidi TC Kimlik No / TCKN · KİMLİKSİZ SATIR (baş mimar kararı 23.10): çok kimlikli adın (Ayşe Yıldız) kimliksiz satırı AYNI dosya no'nun kimlikli kişisine katılır (2026/401 '2026 Aidat'ta kimliksiz → 10000000146 kişisi), aynı dosya no'su yoksa adın kimliksiz grubu ayrı kişi (2026/423 Mavi Ltd) · KİMLİK SÜTUNU TUTAR DEĞİLDİR: 'Vergi No' başlıklı sekme borca girmez, borç Tutar; geçerli VKN (1234567890, 9876543217) kişiyi ayırır, sağlama hanesi tutmayan (1234567891, 9999999999) kimlik sayılmaz (Yeşil AŞ'nin tek geçerli VKN'si 1111111114 → geçersiz değerli ve kimliksiz satırları ona katılır, tek kişi; Sarı Koll / Mor Ltd aynı geçersiz değerle ayrı); yer tutucu 11111111111 / 0000000000 / 2222222222 de sağlama hanesi tutmaz (ad kuralı)",
+ "dayanak": "KARARLAR.md B3c (KULLANICI 23.10.2026 C3 kararı; baş mimar kararı 23.10 kimliksiz satır + kimlik sütunu tutar değildir; başlık adları kara kutu yoklaması)",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Üyeler",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "TC Kimlik No",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/401",
+       "isim": "Ayşe Yıldız",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "100,00 ₺",
+        "TC Kimlik No": "10000000146"
+       }
+      },
+      {
+       "no": "2026/402",
+       "isim": "Ayşe Yıldız",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "200,00 ₺",
+        "TC Kimlik No": "12345678950"
+       }
+      },
+      {
+       "no": "2026/403",
+       "isim": "Ayşe Yıldız",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "300,00 ₺",
+        "TC Kimlik No": "10000000146"
+       }
+      },
+      {
+       "no": "2026/404",
+       "isim": "Mehmet Kara",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "400,00 ₺",
+        "TC Kimlik No": "11111111111"
+       }
+      },
+      {
+       "no": "2026/405",
+       "isim": "Zeynep Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "500,00 ₺",
+        "TC Kimlik No": "11111111111"
+       }
+      },
+      {
+       "no": "2026/406",
+       "isim": "Ece Su",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "600,00 ₺",
+        "TC Kimlik No": "0000000000"
+       }
+      },
+      {
+       "no": "2026/407",
+       "isim": "Ufuk Ay",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "700,00 ₺",
+        "TC Kimlik No": "0000000000"
+       }
+      },
+      {
+       "no": "2026/408",
+       "isim": "Gül Tan",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "800,00 ₺",
+        "TC Kimlik No": "2222222222"
+       }
+      },
+      {
+       "no": "2026/409",
+       "isim": "Ali Can",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "900,00 ₺",
+        "TC Kimlik No": "2222222222"
+       }
+      },
+      {
+       "no": "2026/410",
+       "isim": "Can Er",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "1.000,00 ₺",
+        "TC Kimlik No": "11223344550"
+       }
+      },
+      {
+       "no": "2026/411",
+       "isim": "Can Er",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "1.100,00 ₺",
+        "TC Kimlik No": ""
+       }
+      }
+     ]
+    },
+    {
+     "ad": "2026 Aidat",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/412",
+       "isim": "Can Er",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "1.200,00 ₺"
+       }
+      },
+      {
+       "no": "2026/410",
+       "isim": "Can Er",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "150,00 ₺"
+       }
+      },
+      {
+       "no": "2026/401",
+       "isim": "Ayşe Yıldız",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "150,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Diğer",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "TCKN",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/414",
+       "isim": "Hande Öz",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "1.400,00 ₺",
+        "TCKN": "11223344550"
+       }
+      },
+      {
+       "no": "2026/415",
+       "isim": "Hande Öz",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "1.500,00 ₺",
+        "TCKN": "11223344550"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Firmalar",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Vergi No",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/421",
+       "isim": "Mavi Ltd",
+       "hucreler": {
+        "Telefon": "",
+        "Vergi No": "1234567890",
+        "Tutar": "1.000,00 ₺"
+       }
+      },
+      {
+       "no": "2026/422",
+       "isim": "Mavi Ltd",
+       "hucreler": {
+        "Telefon": "",
+        "Vergi No": "9876543217",
+        "Tutar": "1.100,00 ₺"
+       }
+      },
+      {
+       "no": "2026/423",
+       "isim": "Mavi Ltd",
+       "hucreler": {
+        "Telefon": "",
+        "Vergi No": "",
+        "Tutar": "1.200,00 ₺"
+       }
+      },
+      {
+       "no": "2026/424",
+       "isim": "Yeşil AŞ",
+       "hucreler": {
+        "Telefon": "",
+        "Vergi No": "1234567891",
+        "Tutar": "1.300,00 ₺"
+       }
+      },
+      {
+       "no": "2026/425",
+       "isim": "Yeşil AŞ",
+       "hucreler": {
+        "Telefon": "",
+        "Vergi No": "",
+        "Tutar": "1.400,00 ₺"
+       }
+      },
+      {
+       "no": "2026/426",
+       "isim": "Sarı Koll",
+       "hucreler": {
+        "Telefon": "",
+        "Vergi No": "9999999999",
+        "Tutar": "1.500,00 ₺"
+       }
+      },
+      {
+       "no": "2026/427",
+       "isim": "Mor Ltd",
+       "hucreler": {
+        "Telefon": "",
+        "Vergi No": "9999999999",
+        "Tutar": "1.600,00 ₺"
+       }
+      },
+      {
+       "no": "2026/428",
+       "isim": "Mavi Ltd",
+       "hucreler": {
+        "Telefon": "",
+        "Vergi No": "1234567890",
+        "Tutar": "1.700,00 ₺"
+       }
+      },
+      {
+       "no": "2026/429",
+       "isim": "Yeşil AŞ",
+       "hucreler": {
+        "Telefon": "",
+        "Vergi No": "1111111114",
+        "Tutar": "1.800,00 ₺"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  }
+ ]
+}
