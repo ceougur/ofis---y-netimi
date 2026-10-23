@@ -22,10 +22,14 @@ import json
 import sys
 from datetime import date, timedelta
 
-DIL = "destekofis-ebelge/2"
+DIL = "destekofis-ebelge/3"
 # /2 (2.4.4, madde 31a): e-SMM türü (K34), Seçilenleri Gönder kronolojisi (K33), iletimden 8 gün iptal (K22 düzeltildi), belirsizde Yalnız Programda İptal
 # (K35), alıcı zorunlu alanları (K36), UX15 kayıt kuralları (K37). /1 senaryoları değişmeden koşar (yeni alanları kullanmazlar).
-DILLER = ("destekofis-ebelge/1", DIL)
+# /3 (2.4.4 31a tur 2, 23.10.2026; kodu görmeyen el): K38 verilmiş kâğıt/fiş/makbuz numarası bir daha verilmez (silme, e-Belgeye dönüşme — E6, 22.10 kararı),
+# K39 Silinenler (sil / geri_yukle işlemleri — E6), K40 Kâğıt Makbuz Olarak Bırak (SMM serisi, sonra e-SMM gönderilmez — MM4 alt kararı), K41 Yalnız
+# Programda İptal yalnız sonucu belirsiz gönderimde (E7; K35 çatalı karara bağlandı), K42 Sonucu Belirsiz belgede Sil / Düzenle / İptal Et 409 (E1).
+# K41b (23.10.2026 01:26 UTC [KULLANICI]): belirsizde yerel iptal e-Arşiv, e-SMM ve e-Fatura için AYNI kural (K35'in 8 gün / EDM sorgusu kapısı e-Faturaya da).
+DILLER = ("destekofis-ebelge/1", "destekofis-ebelge/2", DIL)
 
 # K1: belge türü carinin işaretinden gelir (CLAUDE.md 2.4.3 karar 4: "işaretliyse e-Fatura, değilse e-Arşiv kesilir").
 # K2: e-Fatura alıcısının posta kutusu (PK) yoksa belge gönderilemez (CLAUDE.md 2.4.3 karar 2; GİB: e-Fatura alıcı etiketine gider).
@@ -51,8 +55,13 @@ IPTAL_SURESI = 8
 
 # K4: test ortamı serileri (EDM test hesabı; ayarda env "test") — e-Fatura TEF, e-Arşiv TEA; kâğıt/Müşteri Fişi FIS.
 SERI = {"efatura": "TEF", "earsiv": "TEA", "kagit": "FIS", "esmm": "TES"}
+# K40 ([KULLANICI] 22.10.2026 "Bırakılan e-SMM 'Kâğıt Makbuz Olarak Bırak' (SMM serisi)"): bırakılan serbest meslek makbuzu SMM serisinden numara alır;
+# bırakılan fatura FIS (Müşteri Fişi) serisinden (FATURA-ISTEKLER 122–123; 2.4.3 "Müşteri Fişi Olarak Bırak").
+KAGIT_SERI = {"esmm": "SMM"}
+KAGIT_SERILER = ("FIS", "SMM", "IAD")
 # K34 ([KULLANICI] e-SMM 2.4.4'te açılır, numarayı program verir; [AJAN] 22): e-SMM (ESMM profili) test serisi TES, TEA/TEF'ten bağımsız.
 E_TURLERI = ("efatura", "earsiv", "esmm")
+E_SERI_ONEK = ("TEF", "TEA", "TES")
 
 
 class _Belirsiz:
@@ -95,6 +104,9 @@ class Dunya:
         self.ux15 = True  # K37 (madde 12 UX15) kuralları; fark.py --ux15 kapali ile kapatılır (UX15 tabanda yokken)
         self.k33 = None  # K33: son Seçilenleri Gönder adımında modelin "önce gönderilmeli" dediği belgeler (adlar) — None: soru yok
         self.incele = []  # bu adımda yalnız [AJAN] ayrıntısıyla ayrılan dünyanın işareti (fark.py İNCELE sınıfı)
+        # K38 ([KULLANICI] 22.10.2026 "verilmiş kâğıt/fiş numarası bir daha kullanılmaz"; E6): artık hiçbir belgede durmayan ama verilmiş numara → o
+        # numaralı belgenin tarihi. Seri sayacı ve sıra-tarih tabanı bunları da sayar (Müşteri Fişi sonra e-Belge olarak gönderilince FIS numarası emekli).
+        self.emekli = {}
 
     def kopya(self, not_=None):
         d = copy.deepcopy(self)
@@ -181,29 +193,41 @@ class Dunya:
                     kati.append(x["ad"])
         return kati, gevsek
 
-    def son(self, seri, yil):
-        """(son sıra, son sıranın tarihi) — seri+yıl içinde verilmiş en büyük numara."""
-        en = (0, None)
+    def verilmis(self):
+        """Verilmiş bütün numaralar → tarih: belgelerdeki (Silinenler'deki dahil — K39/E6) + emekli (K38)."""
+        out = dict(self.emekli)
         for x in self.belgeler.values():
             if x["var"] is True and isinstance(x["numara"], str) and x["numara"]:
-                p = coz_numara(x["numara"])
-                if p and p[0] == seri and p[1] == yil and p[2] > en[0]:
-                    en = (p[2], x["tarih"])
+                out[x["numara"]] = x["tarih"]
+        return out
+
+    def son(self, seri, yil):
+        """(son sıra, son sıranın tarihi) — seri+yıl içinde verilmiş en büyük numara (K38: silinmiş ve emekli numaralar dahil — E6)."""
+        en = (0, None)
+        for no_, t in self.verilmis().items():
+            p = coz_numara(no_)
+            if p and p[0] == seri and p[1] == yil and p[2] > en[0]:
+                en = (p[2], t)
         return en
 
     def son_tarih(self, seri, yil):
-        """K6: seride numara verilmiş en geç tarih (numara sırası tarih sırasını bozamaz — VUK; FATURA-ISTEKLER satır 77)."""
+        """K6: seride numara verilmiş en geç tarih (numara sırası tarih sırasını bozamaz — VUK; FATURA-ISTEKLER satır 77). K38/E6: silinen ve emekli
+        numaralı belgelerin tarihi de taban ("yeni belge, silinen son belgeden eski tarihli olamaz")."""
         t = None
-        for x in self.belgeler.values():
-            if x["var"] is True and isinstance(x["numara"], str) and x["numara"]:
-                p = coz_numara(x["numara"])
-                if p and p[0] == seri and p[1] == yil and (t is None or x["tarih"] > t):
-                    t = x["tarih"]
+        for no_, tt in self.verilmis().items():
+            p = coz_numara(no_)
+            if p and p[0] == seri and p[1] == yil and (t is None or tt > t):
+                t = tt
         return t
 
+    def emekli_et(self, b):
+        """K38: belgeden düşen kâğıt numarası (ör. Müşteri Fişi e-Belge olarak gönderilince) emekli olur, bir daha verilmez."""
+        if isinstance(b.get("numara"), str) and b["numara"][:3] in KAGIT_SERILER:
+            self.emekli[b["numara"]] = b["tarih"]
+
     def bekleyen(self, b):
-        """Gönderilecekler listesinde mi? (K7: gönderilmemiş, iptal edilmemiş, listeden silinmemiş e-Belge)."""
-        if b["var"] is not True or b["tur"] == "kagit":
+        """Gönderilecekler listesinde mi? (K7: gönderilmemiş, iptal edilmemiş, listeden silinmemiş e-Belge; K39: Silinenler'deki belge değil)."""
+        if b["var"] is not True or b["tur"] == "kagit" or b.get("cop"):
             return False
         if b["iptal"] or b["silindi"]:
             return False
@@ -218,10 +242,14 @@ class Dunya:
         st = self.son_tarih(seri, yil)
         return st is not None and b["tarih"] < st
 
+    def birakma_serisi(self, b):
+        """K40: bırakılan belgenin kâğıt serisi — serbest meslek makbuzu SMM, fatura FIS."""
+        return KAGIT_SERI.get(b["tur"], "FIS")
+
     def fis_engeli(self, b):
         """K31 (baş mimar kararı 18.10.2026): Listeden Sil belgeye FIS numarası verirken numara–tarih sırasını korur; belgenin tarihi
-        FIS serisinin (o yılın) son fişinden eskiyse Listeden Sil reddedilir."""
-        st = self.son_tarih("FIS", gun(b["tarih"]).year)
+        FIS serisinin (o yılın) son fişinden eskiyse Listeden Sil reddedilir. K40: makbuzda SMM serisi (K6 kâğıt seride de — aynı kural)."""
+        st = self.son_tarih(self.birakma_serisi(b), gun(b["tarih"]).year)
         return st is not None and b["tarih"] < st
 
     def gecici_engelli(self, b):
@@ -238,7 +266,7 @@ class Dunya:
         BEKLETMEZ; GEÇİCİ engelli (K2 posta kutusu seçilmemiş — kullanıcı belge üzerinde tek adımla düzeltir) belge BEKLETİR."""
         seri, yil = self.seri_yil(b)
         for x in self.belgeler.values():
-            if x is b or x["var"] is not True or x["tur"] != b["tur"]:
+            if x is b or x["var"] is not True or x["tur"] != b["tur"] or x.get("cop"):
                 continue
             if self.seri_yil(x) != (seri, yil):
                 continue
@@ -250,7 +278,7 @@ class Dunya:
 
     def sira_listesi(self, adlar=None):
         """K10: Tümünü Gönder eskiden yeniye (tarih, sonra yazım sırası — ders 31)."""
-        xs = [b for b in self.belgeler.values() if self.bekleyen(b) is True or (b["var"] is True and b["edm"] and not b["prog"] and not b["iptal"] and not b["silindi"])]
+        xs = [b for b in self.belgeler.values() if self.bekleyen(b) is True or (b["var"] is True and b["edm"] and not b["prog"] and not b["iptal"] and not b["silindi"] and not b.get("cop"))]
         if adlar is not None:
             xs = [b for b in xs if b["ad"] in adlar]
         return sorted(xs, key=lambda b: (b["tarih"], b["sira"]))
@@ -399,14 +427,24 @@ def iptal(d, b, yerel):
     K22 (DÜZELTİLDİ 2.4.4): gönderilmiş e-Arşiv ve e-SMM iletimden itibaren 8 gün içinde EDM'de iptal edilir; başlangıç günü sayılmaz, 8. gün dahil
       ([GİB] Kılavuz V.1.1 §3; [KULLANICI] KARARLAR (5)). Süre dolunca İptal Et de Yalnız Programda İptal de reddedilir (belge değişmez).
       Eski K22 ("kesimden ≤7 gün") yanlış dayanaklıydı: kaynak süreyi iletimden sayar.
-    K35 ([KULLANICI] 22.10.2026, madde 23 SORU + "önerin uygun"): sonucu BELİRSİZ belgede Yalnız Programda İptal, 8 gün geçtiyse önce EDM'ye sorar —
-      EDM'de yok → iptal serbest; EDM'de var → süre dolmuş, reddedilir; ([AJAN]) EDM'ye ulaşılamaz → 5xx; e-SMM'de 'bulunamadı' doğrulanmadığından → 409
-      ([AJAN]; kullanıcı kuralıyla ayrışır → İNCELE)."""
+    K35 ([KULLANICI] 22.10.2026, madde 23 SORU + "önerin uygun") + K41b ([KULLANICI] 23.10.2026 01:26 UTC): sonucu BELİRSİZ belgede (e-Arşiv, e-SMM, e-Fatura
+      aynı) Yalnız Programda İptal, son gönderim girişiminden (yoksa kesim gününden) 8 gün geçtiyse önce EDM'ye sorar — EDM "bulunamadı" → yalnız programda
+      iptal; EDM bulursa durum belgeye yazılır, 409; EDM'ye ulaşılamaz → 502. 8 gün içinde yetkili onayla yalnız programda iptal (EDM'ye sorulmaz)."""
     def kopya(not_, **alan):
         w = d.kopya(not_)
         w.belgeler[b["ad"]].update(alan)
         return w
-    if not (b["prog"] is True or b["edm"] is True or d.belirsiz(b)):
+    if b.get("cop"):
+        d.yanit = "4xx"  # K39: Silinenler'deki belge işlem görmez
+        return [d]
+    if yerel:
+        return yerel_iptal(d, b, kopya)
+    if d.belirsiz(b):
+        # K42 ([KULLANICI] 22.10.2026 E1 "kesintide Sonucu Belirsiz; Sil/Düzenle kapalı, Durum Sorgula önerilir"; [AJAN] E1 "Sil, Düzenle ve İptal Et 409"):
+        # sonucu belirsiz belgede olağan İptal Et reddedilir, belge değişmez (önce Durum Sorgula). /2'deki "program sorup iptal eder" çatalı kalktı.
+        d.yanit = "4xx"
+        return [d]
+    if not (b["prog"] is True or b["edm"] is True):
         b["iptal"] = True
         d.yanit = "2xx"
         return [d]
@@ -425,18 +463,6 @@ def iptal(d, b, yerel):
             d.yanit = "4xx"  # K22: süre doldu — İptal Et de Yalnız Programda İptal de reddedilir
             d.notlar.append(f"{b['ad']}: K22 iletimden {g}. gün — iptal süresi doldu")
             return [d]
-        if yerel:
-            # Süre içinde, program belgeyi gönderilmiş biliyor: yerel iptal kabul (EDM'de iptal yok) YA DA reddedilir YA DA EDM'de iptal — çatal.
-            k = kopya(f"{b['ad']}: süre içinde yalnız programda iptal", iptal=True)
-            k.yanit = "2xx"
-            r = kopya(f"{b['ad']}: süre içinde yalnız programda iptal reddedildi")
-            r.yanit = "4xx"
-            sonuc = [k, r]
-            if d.ag:
-                e = kopya(f"{b['ad']}: yalnız programda iptal EDM'de iptal etti", iptal=True, edm_iptal=True)
-                e.yanit = "2xx"
-                sonuc.append(e)
-            return sonuc
         if d.ag:
             b["iptal"] = True
             b["edm_iptal"] = True
@@ -448,22 +474,32 @@ def iptal(d, b, yerel):
         r = kopya(f"{b['ad']}: ağ yok, iptal reddedildi")
         r.yanit = "4xx"
         return [u, r]
+    # Buraya yalnız EDM'de olan ama programın ne gönderildi ne belirsiz dediği (ör. Hata) belge düşer: program kendi bilgisiyle K24'ü uygulayabilir (yerel
+    # iptal) ya da reddeder — çatal (E1 bu durumu Sonucu Belirsiz sayar; program Hata dediyse kural yazılı değil).
+    r = kopya(f"{b['ad']}: EDM'de olan, programda Hata görünen belgenin iptali reddedildi")
+    r.yanit = "4xx"
+    k = kopya(f"{b['ad']}: EDM'de olan, programda Hata görünen belge programda iptal edildi", iptal=True)
+    k.yanit = "2xx"
+    return [r, k]
+
+
+def yerel_iptal(d, b, kopya):
+    """K41 Yalnız Programda İptal ([KULLANICI] 22.10.2026 E7 "sunucu da K4'e göre yalnız belirsiz/portal taslağında izin verir"; [AJAN] E7 metni):
+    yalnız sonucu belirsiz gönderimde (ya da portalda taslak belgede — senaryo dilinde YOK) yapılır. Öbür her durumda (EDM'de İşleniyor / Gönderildi /
+    Kabul / Hata, e-Fatura, Müşteri Fişi, numarasız bekleyen, kâğıt) 409: belge değişmez, EDM'ye iptal gitmez. Süre dolmuşsa da red (önce süre iletisi —
+    ileti DENENMEZ). 8 günü geçmiş belirsiz gönderimde önce EDM durum sorgusu (K35). /2'deki "süre içinde gönderilmiş belgede yerel iptal" ve "belirsizde
+    8 gün içinde red" çatalları bu kuralla kalktı."""
+    if not d.belirsiz(b):
+        d.yanit = "4xx"
+        return [d]
+    # K41b ([KULLANICI] 23.10.2026 01:26 UTC, 5 dk yetkisiyle — ana oturum iletisi): belirsiz gönderimde Yalnız Programda İptal e-Arşiv, e-SMM VE e-Fatura için
+    # AYNI kuraldır (e-Faturanın olağan iptali değişmez — K23). Tur 2'deki "belirsiz e-Fatura" çatalı (K41-EFATURA-BELIRSIZ-YEREL) ve e-SMM "bulunamadı"
+    # çatalı (K35-ESMM-BULUNAMADI) bu kararla kalktı.
+    if b["tur"] not in ("earsiv", "esmm", "efatura"):
+        d.yanit = "4xx"
+        return [d]
     # Sonucu belirsiz (program bilmiyor; EDM gerçeği b["edm"]).
     g = d.gun_farki(b, "deneme")  # [AJAN] 23: iletim günü = son gönderim girişimi
-    if not yerel:
-        # FATURA-ISTEKLER 109–110 (önce Durum Sorgula): reddedilir; ya da program kendisi sorup sonuca göre iptal eder — çatal.
-        r = kopya(f"{b['ad']}: belirsiz belgede iptal reddedildi (önce Durum Sorgula)")
-        r.yanit = "4xx"
-        sonuc = [r]
-        if d.ag and b["edm"] and d.gun_farki(b, "iletim") <= IPTAL_SURESI:
-            e = kopya(f"{b['ad']}: belirsiz belge EDM'de bulundu, EDM'de iptal", iptal=True, edm_iptal=True, belirsiz=False, prog=True)
-            e.yanit = "2xx"
-            sonuc.append(e)
-        if d.ag and not b["edm"]:
-            k = kopya(f"{b['ad']}: belirsiz belge EDM'de yok, programda iptal", iptal=True, belirsiz=False)
-            k.yanit = "2xx"
-            sonuc.append(k)
-        return sonuc
     if g > IPTAL_SURESI:
         if not d.ag:
             d.yanit = "5xx"  # [AJAN] 23: EDM'ye ulaşılamaz → 502; belge değişmez
@@ -474,20 +510,14 @@ def iptal(d, b, yerel):
             b.update(prog=True, belirsiz=False, hata=False)
             d.yanit = "4xx"
             return [d]
-        k = kopya(f"{b['ad']}: belirsiz, 8 gün geçti, EDM'de yok → yalnız programda iptal", iptal=True, belirsiz=False)
-        k.yanit = "2xx"
-        if b["tur"] == "esmm":
-            r = kopya(f"{b['ad']}: e-SMM belirsiz, EDM 'bulunamadı' doğrulanmadı → reddedildi")
-            r.yanit = "4xx"
-            r.incele = ["K35-ESMM-BULUNAMADI"]
-            return [k, r]
-        return [k]
-    # 8 gün içinde: 2.4.3 çıkış yolu (yerel iptal kabul) YA DA reddedilir — kaynak yalnız 8 gün sonrasını karara bağladı (çatal).
-    k = kopya(f"{b['ad']}: belirsiz, süre içinde yalnız programda iptal", iptal=True, belirsiz=False)
-    k.yanit = "2xx"
-    r = kopya(f"{b['ad']}: belirsiz, süre içinde yalnız programda iptal reddedildi")
-    r.yanit = "4xx"
-    return [k, r]
+        # K35/K41b: EDM "bulunamadı" → yalnız programda iptal (e-Arşiv, e-SMM, e-Fatura aynı).
+        b.update(iptal=True, belirsiz=False)
+        d.yanit = "2xx"
+        return [d]
+    # 8 gün içinde: K41 — yalnız programda iptal edilir (2.4.3 çıkış yolu; EDM'ye sorulmaz, EDM'de iptal yok). /2'deki red çatalı kalktı.
+    b.update(iptal=True, belirsiz=False)
+    d.yanit = "2xx"
+    return [d]
 
 
 # ---- model ---------------------------------------------------------------------------------------------------------
@@ -603,13 +633,23 @@ def uygula(d, adim):
         b = d.belgeler.get(adim["belge"])
         if not b or b["var"] is not True:
             return [d]
+        if b.get("cop"):
+            d.yanit = "4xx"  # K39: Silinenler'deki belge gönderilmez
+            return [d]
+        if b["silindi"] and b["tur"] == "esmm" and not b["iptal"] and not b["prog"]:
+            # K40 ([KULLANICI] 22.10.2026 MM4 alt kararı, 5 dk yetkisiyle 21:34 UTC): Kâğıt Makbuz Olarak Bırak'ılan makbuz sonradan e-SMM olarak
+            # GÖNDERİLEMEZ (kalıcı engel, nedeni görünür) — belge değişmez, EDM'ye gidilmez.
+            d.yanit = "4xx"
+            return [d]
         if b["silindi"] and not b["iptal"] and not b["prog"]:
             # K18: listeden silinen belge sonra kartından yine gönderilebilir (FATURA-ISTEKLER satır 122–123). Gönderilemezse
             # liste dışında kalır ya da Gönderilecekler'e döner (çatal).
             once = d.kopya()
             once.belgeler[b["ad"]]["silindi"] = False
-            if once.belgeler[b["ad"]]["numara"].startswith("FIS"):
-                once.belgeler[b["ad"]]["numara"] = ""  # FIS iç numarası e-Belge numarasına dönüşür (FIS serisi boşluğu değişmezde)
+            if once.belgeler[b["ad"]]["numara"][:3] in KAGIT_SERILER:
+                # FIS iç numarası e-Belge numarasına dönüşür; K38 ([KULLANICI] 22.10 "verilmiş fiş numarası bir daha kullanılmaz"): FIS numarası emekli olur.
+                once.emekli_et(once.belgeler[b["ad"]])
+                once.belgeler[b["ad"]]["numara"] = ""
             sonuc = []
             for w, s in gonder(once, b["ad"]):
                 if s in ("gitti", "hata"):
@@ -619,6 +659,7 @@ def uygula(d, adim):
                     k = w.kopya(f"{b['ad']}: gönderilemedi, liste dışında kaldı")
                     k.belgeler[b["ad"]]["silindi"] = True
                     k.belgeler[b["ad"]]["numara"] = d.belgeler[b["ad"]]["numara"]
+                    k.emekli.pop(d.belgeler[b["ad"]]["numara"], None)
                     sonuc.append(k)
             return sonuc
         return [w for w, _ in gonder(d, b["ad"])]
@@ -660,13 +701,12 @@ def uygula(d, adim):
         b = d.belgeler.get(x)
         if not b or b["var"] is not True:
             return tur_gonder(d, None)
-        sira = [y["ad"] for y in d.sira_listesi(None)]
         sonuc = []
         # Silme reddedildi → tur olağan.
         r = d.kopya(f"{x}: tur sırasında silme reddedildi")
         r.yanit = "4xx"
         sonuc.extend(tur_gonder(r, None))
-        if True:
+        if not d.belirsiz(b) and not b.get("cop"):  # K42 (E1): sonucu belirsiz belge bırakılamaz; K39: Silinenler'deki belge de
             # Silme kabul: belge gönderilmez, numara almaz (ya da FIS iç numarası — çatal). Belge turun ilk gönderilen belgesiyse
             # silme ondan sonra gelir: o dünyada belge gitmiştir ve aday elenir (aşağıdaki koşul).
             for w in tur_gonder(d.kopya(f"{x}: tur sırasında silindi"), None, sil=(x, True)):
@@ -676,21 +716,23 @@ def uygula(d, adim):
                 if not bb["prog"] and not bb["iptal"] and not bb["edm"]:
                     w.yanit = "2xx"
                     bb["silindi"] = True
-                    sonuc.append(w)
                     if bb["numara"] == "":
-                        f = w.kopya(f"{x}: silinince FIS numarası aldı")
-                        seri, yil = "FIS", gun(bb["tarih"]).year
-                        f.belgeler[x]["numara"] = numara(seri, yil, f.son(seri, yil)[0] + 1)
-                        sonuc.append(f)
+                        # K40: bırakılan belge kâğıt serisinden numara alır (fatura FIS, makbuz SMM) — /2'deki "numarasız kalır" çatalı kalktı.
+                        seri, yil = w.birakma_serisi(bb), gun(bb["tarih"]).year
+                        bb["numara"] = numara(seri, yil, w.son(seri, yil)[0] + 1)
+                    sonuc.append(w)
         return sonuc
     if i == "listeden_sil":
         b = d.belgeler.get(adim["belge"])
         if not b or b["var"] is not True:
             return [d]
-        if b["tur"] == "kagit" or b["iptal"] or b["prog"] is True or b["edm"] is True:
-            d.yanit = "4xx"  # K20: gönderilmiş / iptal / kâğıt belge listeden silinmez
+        if b["tur"] == "kagit" or b["iptal"] or b["prog"] is True or b["edm"] is True or b.get("cop"):
+            d.yanit = "4xx"  # K20: gönderilmiş / iptal / kâğıt belge listeden silinmez (K39: Silinenler'deki de)
             return [d]
         if b["silindi"]:
+            return [d]
+        if d.belirsiz(b):
+            d.yanit = "4xx"  # K42 (E1): Sonucu Belirsiz belge bırakılamaz / silinemez (önce Durum Sorgula)
             return [d]
         if b["numara"]:
             # K21: numara almış ama gitmemiş belge: silme reddedilir YA DA kabul edilir (numara korunur) — çatal.
@@ -706,10 +748,11 @@ def uygula(d, adim):
             return [d]
         d.belgeler[b["ad"]]["silindi"] = True
         d.yanit = "2xx"
-        f = d.kopya(f"{b['ad']}: silinince FIS numarası aldı")
-        seri, yil = "FIS", gun(b["tarih"]).year
-        f.belgeler[b["ad"]]["numara"] = numara(seri, yil, f.son(seri, yil)[0] + 1)
-        return [d, f]
+        # K40 ([KULLANICI] 2.4.3 "Müşteri Fişi Olarak Bırak" + 22.10 "Kâğıt Makbuz Olarak Bırak (SMM serisi)"; MM4 alt kararı metni "FIS numarası alır"):
+        # bırakılan fatura FIS, makbuz SMM serisinden numara ALIR (/2'deki "numarasız kalır" çatalı kalktı — tohum 2 × 120 adım 45).
+        seri, yil = d.birakma_serisi(b), gun(b["tarih"]).year
+        b["numara"] = numara(seri, yil, d.son(seri, yil)[0] + 1)
+        return [d]
     if i == "iptal":
         b = d.belgeler.get(adim["belge"])
         if not b or b["var"] is not True:
@@ -725,8 +768,11 @@ def uygula(d, adim):
         if adim["tarih"] > bugun:
             d.yanit = "4xx"
             return [d]
-        if b["iptal"] or b["prog"] is True or b["edm"] is True:
-            d.yanit = "4xx"  # K25: gönderilmiş / iptal belge değiştirilemez
+        if b["iptal"] or b["prog"] is True or b["edm"] is True or b.get("cop"):
+            d.yanit = "4xx"  # K25: gönderilmiş / iptal belge değiştirilemez (K39: Silinenler'deki de)
+            return [d]
+        if d.belirsiz(b):
+            d.yanit = "4xx"  # K42 (E1): Sonucu Belirsiz belge düzenlenmez
             return [d]
         if b["numara"]:
             r = d.kopya(f"{b['ad']}: numaralı belgenin tarih düzenlemesi reddedildi")
@@ -741,8 +787,8 @@ def uygula(d, adim):
                 uygun = gun(adim["tarih"]).year == gun(b["tarih"]).year and (once is None or adim["tarih"] >= once) and (sonra is None or adim["tarih"] <= sonra)
                 if not uygun:
                     return [r]
-                # Belirsiz belge (önce Durum Sorgula) ve kâğıt belge (e-dönüşüm açıkken "kâğıt değil e-Arşiv" — profile-not-allowed) reddedilebilir.
-                return [k, r] if d.belirsiz(b) or b["tur"] == "kagit" else [k]
+                # Kâğıt belge (e-dönüşüm açıkken "kâğıt değil e-Arşiv" — profile-not-allowed) reddedilebilir.
+                return [k, r] if b["tur"] == "kagit" else [k]
             # K26: numaralı ama gitmemiş (ya da kâğıt) belgenin tarihi: reddedilir YA DA kabul edilir — çatal (değişmezler denetler).
             return [r, k]
         eski = b["tarih"]
@@ -766,7 +812,7 @@ def uygula(d, adim):
         b = d.belgeler.get(adim["belge"])
         if not b or b["var"] is not True:
             return [d]
-        if b["numara"] and b["tur"] != "kagit":
+        if (b["numara"] and b["tur"] != "kagit") or b.get("cop") or d.belirsiz(b):
             d.yanit = "4xx"  # K27 (CLAUDE.md 2.4.3 karar 1): numaralı belgede Düzenle belge türünü değiştiremez
         return [d]
     if i == "ariza":
@@ -777,7 +823,7 @@ def uygula(d, adim):
         return [d]
     if i == "durum_sorgula":
         b = d.belgeler.get(adim["belge"])
-        if b and b["var"] is True and b["edm"] is True and not b["prog"] and d.ag:
+        if b and b["var"] is True and b["edm"] is True and not b["prog"] and d.ag and not b.get("cop"):
             # K28: Durum Sorgula EDM'deki belgeyi programda "gönderildi" yapar.
             b["prog"] = True
             b["hata"] = False
@@ -786,7 +832,55 @@ def uygula(d, adim):
     if i == "gun_ilerlet":
         d.bugun = (gun(bugun) + timedelta(days=adim["gun"])).isoformat()
         return [d]
+    if i == "sil":
+        return sil(d, adim)
+    if i == "geri_yukle":
+        return geri_yukle(d, adim)
     raise ValueError(f"bilinmeyen işlem {i}")
+
+
+def sil(d, adim):
+    """K39 Sil → Silinenler (E6 [AJAN] metni; ana oturum doğruladı; [KULLANICI] 22.10 "verilmiş kâğıt/fiş numarası bir daha kullanılmaz").
+    - Gönderilmiş / EDM'de olan belge silinmez ([GİB] gönderilmiş belge değiştirilemez; FATURA-ISTEKLER 119 "kesilen belge düzeltilmez").
+    - Sonucu Belirsiz belge silinmez (K42, E1).
+    - Kâğıt (FIS), bırakılmış (FIS/SMM) ve numarasız bekleyen belge silinir; numaralı belgenin numarası serbest KALMAZ (K38: sıradaki numara silinmişler
+      dahil en büyükten sonra; yeni belge silinen son belgeden eski tarihli olamaz); numarasız belgeyi silmek tabanı değiştirmez.
+    - İptal edilmiş belge, numara almış ama gitmemiş e-Belge (Hata): kaynakta yazılı değil ("e-Belge serisinin eski kuralı aynı") → ÇATAL (silinir / red)."""
+    b = d.belgeler.get(adim["belge"])
+    if not b or b["var"] is not True or b.get("cop"):
+        return [d]
+    if b["prog"] is True or b["edm"] is True or d.belirsiz(b):
+        d.yanit = "4xx"
+        return [d]
+    if b["iptal"] or b["numara"][:3] in E_SERI_ONEK:
+        k = d.kopya(f"{b['ad']}: {'iptal' if b['iptal'] else 'numaralı gitmemiş'} belge silindi")
+        k.belgeler[b["ad"]]["cop"] = True
+        k.yanit = "2xx"
+        r = d.kopya(f"{b['ad']}: silme reddedildi")
+        r.yanit = "4xx"
+        return [k, r]
+    b["cop"] = True
+    d.yanit = "2xx"
+    return [d]
+
+
+def geri_yukle(d, adim):
+    """K39 Silinenler'den geri yükle (E6): belge KENDİ numarasıyla döner; numara başka canlı belgedeyse 409, belge Silinenler'de kalır. Döndüğü durum
+    (etkisiz "İptal Edildi" mi, önceki durumu mu) kaynakta yazılı değil → ÇATAL. Numaranın başka belgede olması bu senaryo dilinde ancak programın numarayı
+    yeniden vermesiyle olur (K38 ihlali) — o hâlde de 409 beklenir."""
+    b = d.belgeler.get(adim["belge"])
+    if not b or b["var"] is not True or not b.get("cop"):
+        return [d]
+    if b["numara"] and any(x is not b and x.get("var") is True and not x.get("cop") and x.get("numara") == b["numara"] for x in d.belgeler.values()):
+        d.yanit = "4xx"
+        return [d]
+    a = d.kopya(f"{b['ad']}: Silinenler'den etkisiz (iptal) döndü")
+    a.belgeler[b["ad"]].update(cop=False, iptal=True)
+    a.yanit = "2xx"
+    o = d.kopya(f"{b['ad']}: Silinenler'den önceki durumuyla döndü")
+    o.belgeler[b["ad"]]["cop"] = False
+    o.yanit = "2xx"
+    return [a, o]
 
 
 # ---- anlık görüntü ----------------------------------------------------------------------------------------------------
@@ -799,7 +893,7 @@ def goruntu(d):
             g[ad] = {"var": b["var"] if b["var"] is B else False}
             continue
         g[ad] = {"var": True, "numara": b["numara"], "edm": b["edm"], "gonderildi": b["prog"], "iptal": b["iptal"],
-                 "bekleyen": d.bekleyen(b), "tarih": b["tarih"], "tur": b["tur"], "edm_iptal": b.get("edm_iptal", False)}
+                 "bekleyen": d.bekleyen(b), "tarih": b["tarih"], "tur": b["tur"], "edm_iptal": b.get("edm_iptal", False), "cop": bool(b.get("cop"))}
     return g
 
 

@@ -15,7 +15,10 @@ import json
 import sys
 from collections import defaultdict
 
-DIL = "destekofis-cari/1"
+DIL = "destekofis-cari/2"
+# /2 (2.4.4 31a tur 2, 23.10.2026; kodu görmeyen el): B3 Tablodaki Kişiler BORÇ (U2/E2/E3 — sütun önceliği, söz borç dışı, gün/adet tutar değil, Kalan boş →
+# Toplam Borç, aynı dosya no bir kez), B4 Nakit Akışı Kasa giriş/çıkış = Kasa raporu (MM6), B5 Nihai Tüketici carisi (U1). /1 senaryoları değişmeden koşar.
+DILLER = ("destekofis-cari/1", DIL)
 BIRINCIL = {"KULLANICI", "PLAN", "GIB", "EDM"}
 
 MUTASYONLAR = {
@@ -32,6 +35,16 @@ MUTASYONLAR = {
     11: "5a: taşıma Kasa'yı azaltır",
     12: "Kart: tahsilat en yeni taksitten başlayarak sayılır",
     13: "Mizan: alınan senet 101'e yazılır (121 yerine)",
+    # /2
+    14: "U2: Kalan/Bakiye önceliği yok (borç başlıklı sütun önce)",
+    15: "U2: söz tutarı borç sayılır",
+    16: "E3: gün/adet sütunu tutar sayılır",
+    17: "E2: Kalan boşsa borç 0 (Toplam Borç'a düşmez)",
+    18: "U2: aynı dosya no her sekmede ayrı borç (çift sayım)",
+    19: "MM6: Nakit Akışı Kasa girişi yalnız cari tahsilatı sayar (evrak tahsili ve kayıt tahsilatı dışarıda)",
+    20: "U1: Nihai Tüketici 11111111111'li en eski cariyi (adı belli olsa da) seçer",
+    21: "U1: işaretli cari adı/kimliği değişse de kullanılır",
+    22: "MM6: elle Kasa çıkışı Nakit Akışı'nda sayılmaz",
 }
 
 
@@ -45,10 +58,57 @@ def kurus(metin):
     return int(tam) * 100 + int(ond)
 
 
+# ───────────────────────── /2 B3: Tablodaki Kişiler borç sütunu (U2/E2/E3) — başlık sınıflaması kuraldan
+KIMLIK_BASLIK = {"dosya no", "borçlu", "telefon", "müşteri no", "müşteri", "ad soyad"}
+TUTAR_DISI = {"gün", "adet", "sayı", "sayısı", "ay", "yıl", "oran", "oranı", "yüzde", "tarih", "tarihi"}  # E3 [AJAN]; "tarih": tutar değil [YAYGIN]
+SOZ_KOK = ("söz", "taahhüt")  # U2 [AJAN]: başlıkta "söz", "sözü", "taahhüt"
+
+
+def tr_kucuk(metin):
+    return str(metin).replace("I", "ı").replace("İ", "i").lower()
+
+
+def kelimeler(baslik):
+    out, w = [], ""
+    for ch in tr_kucuk(baslik):
+        if ch.isalpha():
+            w += ch
+        else:
+            if w:
+                out.append(w)
+            w = ""
+    if w:
+        out.append(w)
+    return out
+
+
+def sutun_sinifi(baslik):
+    """None: tutar değil (gün/adet/sayı/ay/yıl/oran/yüzde/% — E3; tarih); "soz": ödeme sözü (borç dışı — U2); 1 Kalan/Bakiye; 2 borç/alacak başlıklı; 3 sıradan tutar."""
+    w = kelimeler(baslik)
+    if "%" in str(baslik) or any(x in TUTAR_DISI for x in w):
+        return None
+    if any(x.startswith(SOZ_KOK) for x in w):
+        return "soz"
+    if "kalan" in w or "bakiye" in w:
+        return 1
+    if any(x.startswith(("borç", "alacak")) for x in w):
+        return 2
+    return 3
+
+
+def hucre_kurus(metin):
+    """Tablo hücresi ("6.000,00 ₺", "8000", "") → kuruş; boş → None."""
+    t = str(metin if metin is not None else "").replace("₺", "").replace("TL", "").replace(" ", "").strip()
+    if not t:
+        return None
+    t = t.replace(".", "")
+    return kurus(t)
+
+
 class Model:
     def __init__(self, senaryo, mut=0):
-        if senaryo.get("dil") != DIL:
-            raise SystemExit("senaryo dili %s değil" % DIL)
+        if senaryo.get("dil") not in DILLER:
+            raise SystemExit("senaryo dili %s değil" % "/".join(DILLER))
         self.s = senaryo
         self.mut = mut
         self.bugun = senaryo["bugun"]
@@ -63,6 +123,10 @@ class Model:
         self.aktarimlar = {}       # takma ad -> {kartlar:[no]}
         self.kayitTahsilat = defaultdict(int)
         self.kasa = 0
+        self.kasa_hareket = []     # /2 B4: (tarih, giriş kuruş, çıkış kuruş) — yalnız NAKİT (MM6 "bütün kaynaklar")
+        self.sekmeler = []         # /2 B3: yüklenen tablonun sekmeleri (sırasıyla), borç sütunu önceliği için
+        self.nt_isaretli = None    # /2 B5: programın işaretli Nihai Tüketici carisi (takma ad)
+        self.nt_sayac = 0
         self.mizanBilinir = True
         self.etiketCari = defaultdict(set)   # cari -> açık/kart denetiminin etiketini AJAN'a düşüren nedenler
         self.out = {}
@@ -174,10 +238,81 @@ class Model:
                 acik[ad] = f["tutar"]
         return acik
 
+    def tablo_borcu(self, no):
+        """/2 B3 (U2 daraltılmış + E2 + E3): dosya no'nun Tablodaki Kişiler borcu. Döner (kuruş, etiket) ya da None (kural tanımsız → denetlenmez).
+        Sütun önceliği Kalan/Bakiye → borç/alacak başlıklı → sekmenin TEK tutar sütunu; tek tutar sütunu ödeme sözüyse borç dışı; gün/adet/… tutar değil;
+        Kalan 0 → 0; Kalan boş → Toplam Borç (borç başlıklı); aynı dosya no birden çok sekmede bir kez: en yüksek öncelik, eşitse ilk sekme."""
+        adaylar, ajan = [], False
+        for si, sk in enumerate(self.sekmeler):
+            if no not in sk["satir"]:
+                continue
+            if sk["basliklar"] is None:
+                return None  # taksit sekmesi: kart/taksit sütunlarının borç kuralı bu kâhinde yok
+            hucre = sk["satir"][no]
+            sinif = [(h, sutun_sinifi(h)) for h in sk["basliklar"] if tr_kucuk(h) not in KIMLIK_BASLIK]
+            tutar = [(h, c) for h, c in sinif if c is not None]
+            if any(c is None and not ({"tarih", "tarihi"} & set(kelimeler(h))) for h, c in sinif):
+                ajan = True  # E3 (gün/adet/… sütunu tutar değil) bu sekmede rol oynuyor — ayrıntı [AJAN]
+            secilen = None
+            p1 = [h for h, c in tutar if c == 1]
+            p2 = [h for h, c in tutar if c == 2]
+            if self.mut == 14:
+                p1, p2 = p2, p1
+            if len(p1) > 1 or len(p2) > 1:
+                return None  # birden çok Kalan ya da borç sütunu: kural hangisi olduğunu söylemiyor
+            if p1:
+                v = hucre_kurus(hucre.get(p1[0]))
+                if v is not None:
+                    secilen = (1, v)
+                elif self.mut == 17:
+                    secilen = (1, 0)
+                else:
+                    ajan = True  # E2: Kalan boş → Toplam Borç
+            if secilen is None and p2:
+                v = hucre_kurus(hucre.get(p2[0]))
+                if v is not None:
+                    secilen = (2, v)
+            if secilen is None and not p1 and not p2:
+                tek = tutar if self.mut != 16 else [(h, 3 if c is None else c) for h, c in sinif]
+                if len(tek) == 1:
+                    if tek[0][1] == "soz" and self.mut != 15:
+                        secilen = None  # U2: tek tutar sütunu ödeme sözü → borç dışı
+                    else:
+                        v = hucre_kurus(hucre.get(tek[0][0]))
+                        if v is not None:
+                            secilen = (3, v)
+                            ajan = True  # tek tutar sütunu borçtur (U2 daraltıldı, [AJAN])
+                elif len(tek) > 1 and not all(c == "soz" for _, c in tek):
+                    return None  # öncelikli sütun yok, birden çok tutar sütunu: kural tanımsız
+            if secilen is not None:
+                adaylar.append((secilen[0], si, secilen[1]))
+        if not adaylar:
+            return (0, "KULLANICI")
+        if len(adaylar) > 1:
+            ajan = ajan or len({p for p, _, _ in adaylar}) == 1  # "aynı öncelikte ilk sekme" [AJAN]
+        if self.mut == 18:
+            return (sum(v for _, _, v in adaylar), "KULLANICI")
+        p, _, v = min(adaylar)
+        return (v, "AJAN" if ajan or p != 1 else "KULLANICI")
+
     # ───────────────────────── işlemler
     def tablo_yukle(self, a):
         self.kayitlar = {}
+        self.sekmeler = []
         for sk in a["sekmeler"]:
+            # /2 B3: sekmenin başlıkları ve hücreleri (koşucunun tabloMatrisi ile aynı düzen; kâhin hücre metninden okur)
+            if sk["tur"] == "icra":
+                bas = ["Dosya No", "Borçlu", "Telefon", "Alacak Tutarı", "Kalan"]
+                satir = {r["no"]: {"Alacak Tutarı": r["alacak"], "Kalan": r["kalan"]} for r in sk["kayitlar"]}
+            elif sk["tur"] == "soz":
+                bas = ["Dosya No", "Borçlu", "Söz Tarihi", "Söz Tutarı"]
+                satir = {r["no"]: {"Söz Tutarı": r["tutar"]} for r in sk["kayitlar"]}
+            elif sk["tur"] == "serbest":
+                bas = ["Dosya No", "Borçlu"] + list(sk["basliklar"])
+                satir = {r["no"]: dict(r.get("hucreler", {})) for r in sk["kayitlar"]}
+            else:
+                bas, satir = None, {r["no"]: None for r in sk["kayitlar"]}
+            self.sekmeler.append({"ad": sk["ad"], "tur": sk["tur"], "basliklar": bas, "satir": satir})
             for r in sk["kayitlar"]:
                 no = r["no"]
                 k = self.kayitlar.setdefault(no, {"sekmeler": [], "tur": sk["tur"], "isim": r["isim"], "items": [], "kalan": 0})
@@ -188,13 +323,74 @@ class Model:
 
     def cari_ac(self, a):
         self.cariler[a["ad"]] = {"tur": a.get("tur", "musteri"), "isim": a["isim"], "kayit": a.get("kayit"),
-                                 "acilis": kurus(a["acilis"]) if a.get("acilis") else 0}
+                                 "acilis": kurus(a["acilis"]) if a.get("acilis") else 0, "tckn": a.get("tckn")}
+
+    # ───────────────────────── /2 B5: Nihai Tüketici carisi (U1)
+    NT_AD = "Nihai Tüketici"
+    NT_KIMLIK = "11111111111"
+
+    def nt_uygun(self, ad):
+        c = self.cariler.get(ad)
+        return bool(c) and not c.get("silindi") and c.get("tckn") == self.NT_KIMLIK and c["isim"] == self.NT_AD
+
+    def nihai_tuketici(self, a):
+        """U1 ([KULLANICI] 22.10 21:41 UTC (b): "kendi işaretli carisi, adı belli caride 11111111111 uyarısı"; [AJAN] U1 metni): yalnız programın işaretli
+        carisi kullanılır — silinmemiş, TCKN 11111111111, adı "Nihai Tüketici". İşaretli yoksa (ya da koşulu yitirdiyse) bu koşulları taşıyan EN ESKİ cari
+        benimsenir, o da yoksa yeni açılır. Adı belli 11111111111'li cari ASLA seçilmez."""
+        et = "KULLANICI"
+        if self.nt_isaretli and (self.nt_uygun(self.nt_isaretli) or self.mut == 21):
+            secilen, yeni = self.nt_isaretli, False
+        else:
+            if self.nt_isaretli:
+                et = "AJAN"  # işaretlinin koşulu yitirmesi (ad/kimlik değişti, silindi) — ayrıntı [AJAN]
+            if self.mut == 20:
+                aday = [ad for ad, c in self.cariler.items() if not c.get("silindi") and c.get("tckn") == self.NT_KIMLIK]
+            else:
+                aday = [ad for ad in self.cariler if self.nt_uygun(ad)]
+            if aday:
+                secilen, yeni = aday[0], False
+                et = "AJAN"  # en eskiyi benimseme [AJAN]
+            else:
+                self.nt_sayac += 1
+                secilen, yeni = "@nt%d" % self.nt_sayac, True
+                self.cariler[secilen] = {"tur": "musteri", "isim": self.NT_AD, "kayit": None, "acilis": 0, "tckn": self.NT_KIMLIK, "nt": True}
+        self.nt_isaretli = secilen
+        self.d("adim:%s:secilen" % a["id"], secilen, et, "B5 U1 Nihai Tüketici yalnız işaretli/uygun cari")
+        self.d("adim:%s:olusturuldu" % a["id"], yeni, et, "B5 U1 uygun cari yoksa yeni açılır")
+        return "ok"
+
+    def cari_sil(self, a):
+        if a["cari"] not in self.cariler:
+            return ("ret", "YAYGIN")  # (yalnız mutasyonlu dünyada: cari hiç açılmadı)
+        self.cariler[a["cari"]]["silindi"] = True
+        return "ok"
+
+    def cari_adlandir(self, a):
+        if a["cari"] not in self.cariler:
+            return ("ret", "YAYGIN")
+        self.cariler[a["cari"]]["isim"] = a["isim"]
+        if "tckn" in a:
+            self.cariler[a["cari"]]["tckn"] = a["tckn"]
+        return "ok"
 
     def tahsilat(self, a):
         f = a.get("fatura")
         self.tahsilatlar[a["id"]] = {"cari": a["cari"], "tutar": kurus(a["tutar"]), "tarih": a.get("tarih", self.bugun),
                                      "seq": self.yeni_seq(), "fatura": f, "kart": None, "aktif": True}
+        if a.get("yol", "nakit") == "havale":
+            self.mizanBilinir = False  # havalenin karşı hesabı (banka alt hesabı) bu kâhinde yok
+            return "ok"
         self.kasa += kurus(a["tutar"])
+        self.kasa_hareket.append((a.get("tarih", self.bugun), kurus(a["tutar"]), 0))
+        return "ok"
+
+    def kasa_cikis(self, a):
+        """/2 B4: carisiz elle Kasa çıkışı (Kasa gideri). [YAYGIN TDHP; defter kâhini ile aynı] B 770 / A 100."""
+        x = kurus(a["tutar"])
+        self.kasa -= x
+        if self.mut != 22:
+            self.kasa_hareket.append((a.get("tarih", self.bugun), 0, x))
+        self.kasa_gider = getattr(self, "kasa_gider", 0) + x
         return "ok"
 
     def borc(self, a):
@@ -211,12 +407,15 @@ class Model:
                                  "fatura": None, "kart": a["kayit"], "aktif": True, "dogrudanKart": True}
         kt["tasinan"].append(self.tahsilatlar[tid])
         self.kasa += kurus(a["tutar"])
+        self.kasa_hareket.append((a.get("tarih", self.bugun), kurus(a["tutar"]), 0))
         return "ok"
 
     def kayit_tahsilat(self, a):
         n = len(self.kayitlar.get(a["kayit"], {}).get("sekmeler", [])) if self.mut == 5 else 1
         self.kayitTahsilat[a["kayit"]] += kurus(a["tutar"]) * max(1, n)
         self.kasa += kurus(a["tutar"])
+        if self.mut != 19:
+            self.kasa_hareket.append((a.get("tarih", self.bugun), kurus(a["tutar"]), 0))
         self.mizanBilinir = False
         return "ok"
 
@@ -377,6 +576,8 @@ class Model:
             return ("ret", "PLAN")
         e["durum"] = "tahsil"
         self.kasa += e["tutar"]
+        if self.mut != 19:
+            self.kasa_hareket.append((a.get("tarih", self.bugun), e["tutar"], 0))
         return "ok"
 
     def ciro(self, a):
@@ -434,6 +635,9 @@ class Model:
                 self.d("%s:cari:%s:var" % (k, ad), not c.get("silindi"), "YAYGIN", "B1.6 aktarımın açtığı cari geri almayla kalkar")
                 if c.get("silindi"):
                     continue
+            elif c.get("silindi"):
+                self.d("%s:cari:%s:var" % (k, ad), False, "PLAN", "silinen cari listede yok")
+                continue
             self.d("%s:cari:%s:bakiye" % (k, ad), self.bakiye(ad), "YAYGIN" if "5b-borc-yok" in self.etiketCari[ad] else "PLAN",
                    "B1.1/B2.7 bakiye = borçlar − alacaklar")
             if c.get("kayit") is not None:
@@ -495,6 +699,9 @@ class Model:
                 if t["aktif"]:
                     m["100"] += t["tutar"]
                     m["120"] -= t["tutar"]
+            if getattr(self, "kasa_gider", 0):
+                m["770"] += self.kasa_gider
+                m["100"] -= self.kasa_gider
             for e in self.evraklar.values():
                 if e["durum"] == "silindi":
                     continue
@@ -524,6 +731,19 @@ class Model:
                 ayni_ad = sum(1 for x in self.kayitlar.values() if x["isim"] == kay["isim"]) > 1
                 self.d("%s:rapor:%s:alacak" % (k, no), alacak, "YAYGIN" if ayni_ad or dogrudan else "KULLANICI",
                        "B1.8 5c tahsilat bir kez" + (" (aynı adlı iki kişi ayrı satırda: YAYGIN)" if ayni_ad else ""))
+        # /2 B3: Tablodaki Kişiler borcu — yalnız carisi ve kartı olmayan kayıt (bağlı carinin borç satırları bu kâhinin kuralında yok)
+        for no in self.kayitlar:
+            if self.cari_bul_kayit(no) is not None or (no in self.kartlar and self.kartlar[no]["aktif"]):
+                continue
+            b = self.tablo_borcu(no)
+            if b is not None:
+                self.d("%s:rapor:%s:borc" % (k, no), b[0], b[1], "B3 U2/E2/E3 dosya no başına tek kaynak (Kalan → borç başlıklı → tek tutar; söz borç dışı)")
+        # /2 B4 (MM6 [KULLANICI] 22.10 21:27 UTC "Nakit Akışı Kasa giriş bütün nakit hareketleri"): yıl başından bugüne Kasa giriş/çıkış
+        bas = self.bugun[:4] + "-01-01"
+        giris = sum(g for t, g, _ in self.kasa_hareket if bas <= t <= self.bugun)
+        cikis = sum(c for t, _, c in self.kasa_hareket if bas <= t <= self.bugun)
+        for anahtar, v in (("nakit:kasaGiris", giris), ("nakit:kasaCikis", cikis), ("kasaRapor:giris", giris), ("kasaRapor:cikis", cikis)):
+            self.d("%s:%s" % (k, anahtar), v, "KULLANICI", "B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar)")
         if self.kayitlar:
             self.d("%s:rapor:tutarli" % k, True, "KULLANICI", "B1.8 ders 11 toplam = satırlar")
             for no, kay in self.kayitlar.items():

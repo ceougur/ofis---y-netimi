@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// e-Belge kâhini — program tarafı koşucu (dil "destekofis-ebelge/2" ve /1; test/bagimsiz/ebelge/model.py ile aynı senaryo).
+// e-Belge kâhini — program tarafı koşucu (dil "destekofis-ebelge/3", /2 ve /1; test/bagimsiz/ebelge/model.py ile aynı senaryo).
 //
 //   node test/bagimsiz/ebelge/kosucu.mjs <senaryo.json> --cikti <dosya>
 //
@@ -11,6 +11,9 @@
 // Seçilenleri Gönder (send-pending { only }; ilk istek 409 einvoice-selection-older + olderIds — kara kutu yoklamasıyla öğrenildi, KARARLAR.md), Yalnız
 // Programda İptal (cancel { localOnly, confirmLocal }), kayıttan önce ön hesap (POST invoices/calc: blockers, partyProblems) ve EDM'ye giden UBL'deki
 // alıcı alanları (il, vergi dairesi, kimlik, ödenecek) GÖZLENİR. Beklenen değer yine HESAPLANMAZ.
+// /3 (23.10.2026): Sil (DELETE invoices/:id?reason=…) ve Silinenler'den Geri Yükle (GET /api/admin/trash → kind "invoice", ref = belge kimliği; POST
+// /api/admin/trash/restore { id }) — uç adları test/numara-silinen-244.test.mjs ÇAĞRI satırlarından, yanıt biçimi kara kutu yoklamasından (silinen belge
+// hiçbir liste sekmesinde görünmez). Silinenler'deki belge gözleme "cop: true" ile, son görülen alanlarıyla girer (numarası kullanılmış sayılır — K38).
 // Her adımı programın HTTP API'siyle uygular, sonra programın KENDİ liste uçlarından (Tümü, İptal Edilenler, Gönderilecekler) belge
 // durumunu OKUR ve sahte EDM'nin kabul ettiği belgeleri (EDM gerçeği) ekler. Beklenen değer HESAPLAMAZ (temiz oda: model.py'yi okumaz).
 // Çıkış: 0 koşu tamam · 1 koşucu hatası (kanıt sayılmaz) · 2 kullanım hatası.
@@ -27,7 +30,7 @@ if (!senaryoYolu || args.indexOf("--cikti") < 0) {
   process.exit(2);
 }
 const senaryo = JSON.parse(readFileSync(senaryoYolu, "utf8"));
-if (!["destekofis-ebelge/1", "destekofis-ebelge/2"].includes(senaryo.dil)) {
+if (!["destekofis-ebelge/1", "destekofis-ebelge/2", "destekofis-ebelge/3"].includes(senaryo.dil)) {
   console.error(`dil ${senaryo.dil}`);
   process.exit(2);
 }
@@ -165,6 +168,7 @@ const oturum = async () => {
     get: async url => unwrap(await c.get(url)),
     post: async (url, body = {}) => unwrap(await c.post(url, body)),
     put: async (url, body = {}) => unwrap(await c.put(url, body)),
+    del: async url => unwrap(await c.del(url)),
   };
 };
 let cikis = 0;
@@ -216,6 +220,12 @@ try {
   // Müşteri Fişi olarak bırakılan belgenin e-Belge profili (gönderilirse alacağı tür). API'de görünmez (liste ve kart KAGIT gösterir); yalnız
   // gözlem için veri tabanından okunur, programa hiçbir şey yazılmaz — kâhin türü ondan okur (dar kontrol 3, 2.4.3).
   const eProfilOku = async id => server.app.store.get("SELECT e_profile AS eProfile FROM invoices WHERE id = ?", id)?.eProfile || "";
+  const sonGorulen = {}; // ad → son canlı gözlem (Silinenler'deki belgenin alanları buradan; /3)
+  const copListesi = async () => {
+    const r = await api.get("/api/admin/trash");
+    if (r.status !== 200) throw new Error(`Silinenler ${r.status}`);
+    return (Array.isArray(r.data) ? r.data : r.data?.items || []).filter(x => x.kind === "invoice");
+  };
   const gozle = async () => {
     const tum = new Map();
     for (const x of [...(await liste("all")), ...(await liste("cancelled"))]) tum.set(x.id, x);
@@ -226,6 +236,15 @@ try {
       if (!ad) continue;
       sonuc.eStatusDegerleri[x.eStatus ?? "null"] = (sonuc.eStatusDegerleri[x.eStatus ?? "null"] || 0) + 1;
       belgeler[ad] = { id, ettn: String(x.ettn || "").toLowerCase(), numara: x.number || "", eStatus: x.eStatus ?? "", durum: x.status, tarih: x.issueDate, profil: x.profile || "", eProfil: x.eStatus === "withdrawn" ? await eProfilOku(id) : "", accountId: x.accountId, bekleyen: bekleyen.has(id), eUnsent: x.eUnsent ?? null, eBlocked: x.eBlocked ?? null };
+      sonGorulen[ad] = belgeler[ad];
+    }
+    if (senaryo.dil === "destekofis-ebelge/3") {
+      for (const it of await copListesi()) {
+        const ad = idAd[it.ref];
+        if (!ad || belgeler[ad]) continue;
+        if (!sonGorulen[ad]) throw new Error(`${ad}: Silinenler'de ama hiç canlı görülmedi`);
+        belgeler[ad] = { ...sonGorulen[ad], cop: true, bekleyen: false };
+      }
     }
     const yabanci = [...tum.keys()].filter(id => !idAd[id]);
     return { belgeler, yabanci };
@@ -388,6 +407,11 @@ try {
     } else if (i === "ag") {
       if (adim.durum === "yok") await vekil.agYok();
       else await vekil.agVar();
+    } else if (i === "sil") {
+      kayit.yanit = ozet(await api.del(`/api/workspace/invoices/${id}?reason=${encodeURIComponent("Kâhin silme")}`));
+    } else if (i === "geri_yukle") {
+      const it = (await copListesi()).find(x => x.ref === id);
+      kayit.yanit = it ? ozet(await api.post("/api/admin/trash/restore", { id: it.id })) : { atlandi: "Silinenler'de yok" };
     } else if (i === "durum_sorgula") {
       kayit.yanit = ozet(await api.post(`/api/workspace/invoices/${id}/e-refresh`, {}));
     } else if (i === "gun_ilerlet") {

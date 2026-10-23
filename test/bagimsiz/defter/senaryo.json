@@ -2,6 +2,8 @@
   "aciklama": "Küçük ticari işletme, Eylül–Kasım 2026. İş olayları dilidir: kos.mjs bunları programın API'sine çevirir, kahin.py programı görmeden aynı olaylardan elle TDHP yevmiyesi kurar. Tutarlar TL (iki ondalık), tarihler sahte saate göre sabittir.",
   "simdi": "2026-11-27T17:00:00+03:00",
   "bugun": "2026-11-27",
+  "yevmiyeSiraGunleri": ["2026-10-05"],
+  "stopajAylari": ["2026-09", "2026-10", "2026-11"],
   "olaylar": [
     { "id": "M1", "tur": "cari", "ad": "Alfa Ticaret A.Ş.", "tip": "customer", "vkn": "9876543217" },
     { "id": "M2", "tur": "cari", "ad": "Ahmet Yılmaz", "tip": "customer", "kisi": ["Ahmet", "Yılmaz"], "tckn": "10000000146" },
@@ -89,6 +91,7 @@
     { "id": "MH09", "tur": "kdv_mahsup", "tarih": "2026-09-30", "ay": "2026-09" },
     { "id": "K_EYLUL_MAHSUP", "tur": "kontrol", "tarih": "2026-09-30" },
 
+    { "id": "TH0", "tur": "tahsilat", "tarih": "2026-10-05", "cari": "M1", "tutar": 1000, "yol": "nakit", "not": "31b-MM8: aynı gün faturadan ÖNCE yazılan tahsilat (yevmiyede fatura önce gelir)" },
     { "id": "F21", "tur": "fatura", "fatura": "satis", "tarih": "2026-10-05", "cari": "M1", "kalemler": [
       { "ad": "Proje Hizmeti", "miktar": 1, "fiyat": 50000, "kdv": 20 } ], "odeme": { "acik": true } },
     { "id": "F22", "tur": "fatura", "fatura": "alis", "tarih": "2026-10-06", "cari": "T1", "no": "TDK2026000000188", "kalemler": [
@@ -101,6 +104,10 @@
     { "id": "K_GERI_ALINDI", "tur": "kontrol", "tarih": "2026-10-31" },
     { "id": "MH10", "tur": "kdv_mahsup", "tarih": "2026-10-31", "ay": "2026-10" },
     { "id": "VO3", "tur": "vergi_odeme", "tarih": "2026-11-26", "vergiTuru": "kdv", "tutar": 8239, "yol": "banka", "aciklama": "Ekim KDV-1" },
+    { "id": "F6R", "tur": "fatura", "fatura": "satis_iade", "tarih": "2026-11-27", "cari": "M1", "asil": "F6", "no": "ALF2026000000011", "not": "31b-MM3: tevkifatlı satışın iadesi — Stopaj ve Tevkifat Özeti 'Bizden kesilen (193)' tarafında EKSİ", "kalemler": [
+      { "satir": 0, "miktar": 1 } ] },
+    { "id": "F3R", "tur": "fatura", "fatura": "alis_iade", "tarih": "2026-11-27", "cari": "T3", "asil": "F3", "not": "31b-MM3: tevkifatlı alışın iadesi — 'Bizim kestiğimiz (360)' tarafında EKSİ", "kalemler": [
+      { "satir": 0, "miktar": 1 } ] },
     { "id": "K_SON", "tur": "kontrol", "tarih": "2026-11-27" }
   ]
 }

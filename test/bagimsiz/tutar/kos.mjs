@@ -119,6 +119,8 @@ async function kosTohum(tohum) {
       const kalemler = (d.lines || []).map(l => ({ matrah: kurus(l.net), kdv: kurus(l.vat), kdvOrani: Number(l.vatRate), fiyatTutari: kurus(l.base) - (kurus(l.discount) || 0), tevkifatKodu: l.withholdingCode || "", tevkifat: kurus(l.withheld) }));
       kalemler.forEach((x, j) => (P[`${i}:kalem${j + 1}:kdv`] = x.kdv));
       const kayit = { brut, stopaj, kdv: kurus(d.vatTotal), tevkifat: kurus(d.withheldTotal), kalemler };
+      // MM10 (23.10.2026): aynı matrah/oranda KDV toplamı ile stopaj arasındaki fark (kuruş) — beklenen "<=1" model.py'den
+      P[`${i}:kayit:mm10KdvStopajFarkiKurus`] = Math.abs((kayit.kdv ?? 0) - (stopaj ?? 0)) <= 1 ? "<=1" : String((kayit.kdv ?? 0) - (stopaj ?? 0));
       const xr = await c.get(`/api/workspace/invoices/${k.data.id}/ubl.xml`);
       if (xr.status === 200 && typeof xr.data === "string") {
         const inv = bir(xmlAgaci(xr.data), "Invoice");

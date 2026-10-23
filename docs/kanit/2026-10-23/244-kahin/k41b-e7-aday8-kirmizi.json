@@ -1,0 +1,32 @@
+{
+  "ad": "244-kahin/k41b-e7-aday8-kirmizi",
+  "komut": "python3 test/bagimsiz/ebelge/fark.py --senaryo test/bagimsiz/ebelge/senaryolar/hedefli-244-e7-yerel-iptal.json --ux15 acik --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-244/k41b",
+  "commit": "2eadab4eb7854f197c87d40fc862f13e06bf2e4e",
+  "dal": "is/kahin-244",
+  "kirli": 6,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T01:36:37.145Z",
+  "sure_sn": 2.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/244-kahin/k41b-e7-aday8-kirmizi.log",
+  "klasor": "/home/user/wt/kahin-244",
+  "ham_cikti_sha256": "7f3ce7e2253a623ce3f979d86eac6f625bd4ae0f0ac3983c525c71074bd4e2a3",
+  "ham_cikti_bayt": 453
+}

@@ -24,6 +24,19 @@ export function karsilastir(beklenen, program) {
     ekle(`KDV ${ay} hesaplanan (391)`, v.hesaplanan, son.kdv?.[ay]?.hesaplanan ?? null);
     ekle(`KDV ${ay} indirilecek (191)`, v.indirilecek, son.kdv?.[ay]?.indirilecek ?? null);
   }
+  // 31b-MM3: Stopaj ve Tevkifat Özeti — kâhinin satırları (tarih|cari) taraf ve işaretli tutarlarıyla; 360 tarafı özeti
+  for (const [ay, v] of Object.entries(beklenen.stopajOzet || {})) {
+    const p = son.stopajOzet ? son.stopajOzet[ay] : null;
+    for (const [anahtar, satir] of Object.entries(v.satirlar)) {
+      const ps = p ? p.satirlar[anahtar] ?? {} : null;
+      ekle(`stopaj ${ay} ${anahtar} taraf`, satir.taraf, ps ? ps.taraf ?? null : null, String);
+      for (const alan of ["matrah", "stopaj", "tevkifat"]) ekle(`stopaj ${ay} ${anahtar} ${alan}`, satir[alan], ps ? ps[alan] ?? null : null);
+    }
+    ekle(`stopaj ${ay} Bizim Ödeyeceğimiz Stopaj`, v.bizimStopaj, p ? p.bizimStopaj : null);
+    ekle(`stopaj ${ay} Bizim Ödeyeceğimiz Tevkifat`, v.bizimTevkifat, p ? p.bizimTevkifat : null);
+  }
+  // 31b-MM8: yevmiye aynı gün sırası
+  for (const [gun, v] of Object.entries(beklenen.yevmiyeSira || {})) ekle(`yevmiye sırası ${gun}`, v, son.yevmiyeSira ? son.yevmiyeSira[gun] ?? null : null, String);
   const y = son.yaslandirma;
   ekle("yaşlandırma TOPLAM", beklenen.yaslandirma.toplam, y ? y.toplam : null);
   for (const ad of new Set([...Object.keys(beklenen.yaslandirma.cariler), ...Object.keys(y?.cariler || {})])) ekle(`yaşlandırma ${ad}`, beklenen.yaslandirma.cariler[ad] || 0, y ? y.cariler[ad] || 0 : null);

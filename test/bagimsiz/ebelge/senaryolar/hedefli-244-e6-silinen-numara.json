@@ -1,0 +1,175 @@
+{
+ "dil": "destekofis-ebelge/3",
+ "ad": "hedefli-244-e6-silinen-numara",
+ "aciklama": "K38/K39 (E6 + 22.10 'verilmiş kâğıt/fiş numarası bir daha kullanılmaz'): silinen kâğıt numarası serbest kalmaz, sıra-tarih tabanı silineni de sayar; geri yüklenen kendi numarasıyla döner; numarasız belgeyi silmek tabanı değiştirmez ve seriyi bekletmez; bırakılmış belge silinir; gönderilmiş belge silinmez; Silinenler'deki belge gönderilmez",
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi",
+  "K6": "ilsiz_kisi",
+  "K7": "vdsiz_mukellef",
+  "K8": "nihai"
+ },
+ "adimlar": [
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B1",
+   "cari": "K1",
+   "tarih": "2026-06-14",
+   "no": 1
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B2",
+   "cari": "K1",
+   "tarih": "2026-06-16",
+   "no": 2
+  },
+  {
+   "islem": "sil",
+   "belge": "B2",
+   "no": 3
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B3",
+   "cari": "K1",
+   "tarih": "2026-06-15",
+   "no": 4
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B4",
+   "cari": "K1",
+   "tarih": "2026-06-16",
+   "no": 5
+  },
+  {
+   "islem": "geri_yukle",
+   "belge": "B2",
+   "no": 6
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B5",
+   "cari": "K1",
+   "tarih": "2026-06-12",
+   "gonder": "sonra",
+   "no": 7
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B6",
+   "cari": "K5",
+   "tarih": "2026-06-15",
+   "gonder": "sonra",
+   "no": 8
+  },
+  {
+   "islem": "sil",
+   "belge": "B5",
+   "no": 9
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 10
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B7",
+   "cari": "K1",
+   "tarih": "2026-06-16",
+   "gonder": "sonra",
+   "no": 11
+  },
+  {
+   "islem": "listeden_sil",
+   "belge": "B7",
+   "no": 12
+  },
+  {
+   "islem": "sil",
+   "belge": "B7",
+   "no": 13
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B8",
+   "cari": "K1",
+   "tarih": "2026-06-16",
+   "no": 14
+  },
+  {
+   "islem": "kart_gonder",
+   "belge": "B7",
+   "no": 15
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B9",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 16
+  },
+  {
+   "islem": "sil",
+   "belge": "B9",
+   "no": 17
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B10",
+   "cari": "K2",
+   "tarih": "2026-06-17",
+   "gonder": "sonra",
+   "no": 18
+  },
+  {
+   "islem": "sil",
+   "belge": "B10",
+   "no": 19
+  },
+  {
+   "islem": "geri_yukle",
+   "belge": "B10",
+   "no": 20
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 21
+  },
+  {
+   "islem": "sil",
+   "belge": "B1",
+   "no": 22
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B11",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "no": 23
+  },
+  {
+   "islem": "geri_yukle",
+   "belge": "B1",
+   "no": 24
+  },
+  {
+   "islem": "geri_yukle",
+   "belge": "B7",
+   "no": 25
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 26
+  }
+ ]
+}

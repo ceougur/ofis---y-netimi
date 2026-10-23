@@ -1,0 +1,58 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b5-u1-nihai-tuketici",
+ "aciklama": "U1 Nihai Tüketici: adı belli 11111111111'li cari seçilmez; ilk çağrı yeni 'Nihai Tüketici' açar ve işaretler; sonraki çağrılar aynı cariyi verir; sonra açılan ikinci 'Nihai Tüketici' işaretliyi değiştirmez; işaretli yeniden adlandırılınca en eski uygun cari benimsenir; o da silinince yenisi açılır",
+ "dayanak": "KARARLAR.md B5 (KULLANICI 22.10 21:41 U1 (b); AJAN U1 metni)",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "c1",
+   "islem": "cari_ac",
+   "ad": "A1",
+   "isim": "Ayşe Şahin",
+   "tckn": "11111111111"
+  },
+  {
+   "id": "n1",
+   "islem": "nihai_tuketici"
+  },
+  {
+   "id": "n2",
+   "islem": "nihai_tuketici"
+  },
+  {
+   "id": "c2",
+   "islem": "cari_ac",
+   "ad": "A2",
+   "isim": "Nihai Tüketici",
+   "tckn": "11111111111"
+  },
+  {
+   "id": "n3",
+   "islem": "nihai_tuketici"
+  },
+  {
+   "id": "r1",
+   "islem": "cari_adlandir",
+   "cari": "@nt1",
+   "isim": "Perakende Satış"
+  },
+  {
+   "id": "n4",
+   "islem": "nihai_tuketici"
+  },
+  {
+   "id": "s1",
+   "islem": "cari_sil",
+   "cari": "A2"
+  },
+  {
+   "id": "n5",
+   "islem": "nihai_tuketici"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  }
+ ]
+}
