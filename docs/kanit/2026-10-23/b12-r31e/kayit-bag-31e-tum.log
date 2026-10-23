@@ -1,0 +1,294 @@
+TAP version 13
+# Subtest: 31e birim: eşleme ve taşıma kuralları
+    # Subtest: resolveIncoming: aynı içerik konum kaysa da eşlenir; aynı konumda farklı kişi yerine geçmez; kişiyle eşleme yalnız eşitlemede
+    ok 1 - resolveIncoming: aynı içerik konum kaysa da eşlenir; aynı konumda farklı kişi yerine geçmez; kişiyle eşleme yalnız eşitlemede
+      ---
+      duration_ms: 25.543255
+      type: 'test'
+      ...
+    # Subtest: planRebind (tur 8 Y2): aynı adlı iki kişi telefonla / geçerli kimlikle ayrılır — ad + o değer iki tabloda tekse bağ taşınır; telefon yalnız bir tabloda ya da iki satırda aynıysa taşınmaz
+    ok 2 - planRebind (tur 8 Y2): aynı adlı iki kişi telefonla / geçerli kimlikle ayrılır — ad + o değer iki tabloda tekse bağ taşınır; telefon yalnız bir tabloda ya da iki satırda aynıysa taşınmaz
+      ---
+      duration_ms: 8.142083
+      type: 'test'
+      ...
+    # Subtest: planRebind: körlemesine row_id taşıması yok (satır silinince kayan konumdaki farklı kişiye gitmez); tek hedef; başka sayfadaki anahtar taşınmaz
+    ok 3 - planRebind: körlemesine row_id taşıması yok (satır silinince kayan konumdaki farklı kişiye gitmez); tek hedef; başka sayfadaki anahtar taşınmaz
+      ---
+      duration_ms: 4.327126
+      type: 'test'
+      ...
+    # Subtest: taşıma hedefte aynı alanda düzeltme / kayıt notu varsa üzerine yazmaz; eskisi yerinde kalır (N17); ayarlardaki işaretler taşınır
+    ok 4 - taşıma hedefte aynı alanda düzeltme / kayıt notu varsa üzerine yazmaz; eskisi yerinde kalır (N17); ayarlardaki işaretler taşınır
+      ---
+      duration_ms: 100.755661
+      type: 'test'
+      ...
+    1..4
+ok 1 - 31e birim: eşleme ve taşıma kuralları
+  ---
+  duration_ms: 140.536873
+  type: 'suite'
+  ...
+# Subtest: 31e B1: Dosya No'suz tabloda içerik değişince bağlar yeni satıra taşınır (sessiz kopma yok)
+    # Subtest: N1 Yerine koy: Ali'nin Tutar'ı 1.000 → 1.200 — bütün bağlar Ali'de, Kişiler 1.200 / 400, Takvim 800; taşıma işlem geçmişinde ve yedekten sonra
+    ok 1 - N1 Yerine koy: Ali'nin Tutar'ı 1.000 → 1.200 — bütün bağlar Ali'de, Kişiler 1.200 / 400, Takvim 800; taşıma işlem geçmişinde ve yedekten sonra
+      ---
+      duration_ms: 708.138651
+      type: 'test'
+      ...
+    # Subtest: N1 Devamı olarak ekle: aynı değişiklik — bağlar taşınır, satır sayısı aynı (yeni kayıt açılmaz)
+    ok 2 - N1 Devamı olarak ekle: aynı değişiklik — bağlar taşınır, satır sayısı aynı (yeni kayıt açılmaz)
+      ---
+      duration_ms: 549.410938
+      type: 'test'
+      ...
+    # Subtest: N2 Telefon kolonu eklenir (bütün parmak izleri değişir): Yerine koy ve Devamı'nda bütün bağlar (cari, Ödendi Say, Sorun Yok dahil) yerinde
+    ok 3 - N2 Telefon kolonu eklenir (bütün parmak izleri değişir): Yerine koy ve Devamı'nda bütün bağlar (cari, Ödendi Say, Sorun Yok dahil) yerinde
+      ---
+      duration_ms: 1138.495746
+      type: 'test'
+      ...
+    # Subtest: N3 sıra değişir: anahtar aynı, taşıma gerekmez; bağlar yine doğru kişide
+    ok 4 - N3 sıra değişir: anahtar aynı, taşıma gerekmez; bağlar yine doğru kişide
+      ---
+      duration_ms: 453.694737
+      type: 'test'
+      ...
+    # Subtest: N4 satır silinir + sonraki satır değişir: kayan konumda bağ başka kişiye gitmez; Can'ın cari bağı Can'da, silinen Ayşe'nin işareti eşleşmez (onay ister, silinmez)
+    ok 5 - N4 satır silinir + sonraki satır değişir: kayan konumda bağ başka kişiye gitmez; Can'ın cari bağı Can'da, silinen Ayşe'nin işareti eşleşmez (onay ister, silinmez)
+      ---
+      duration_ms: 474.066855
+      type: 'test'
+      ...
+    # Subtest: N5 aynı adlı iki kişi (tur 7 N3 kararı): ad sekmede birden çok satırdaysa konumla taşınmaz — eşleşmeyen + onay, bağ eski anahtarda; içerik aynı sıra değişimi onay istemez
+    ok 6 - N5 aynı adlı iki kişi (tur 7 N3 kararı): ad sekmede birden çok satırdaysa konumla taşınmaz — eşleşmeyen + onay, bağ eski anahtarda; içerik aynı sıra değişimi onay istemez
+      ---
+      duration_ms: 414.321639
+      type: 'test'
+      ...
+    # Subtest: aday 18 kâhin b3g: iki Ali, kolon eklenir + yalnız biri değişir — değişmeyen Ali'nin tahsilatı (20) yeni satırına taşınır, değişeninki (10) eşleşmeyen + onay
+    ok 7 - aday 18 kâhin b3g: iki Ali, kolon eklenir + yalnız biri değişir — değişmeyen Ali'nin tahsilatı (20) yeni satırına taşınır, değişeninki (10) eşleşmeyen + onay
+      ---
+      duration_ms: 439.796199
+      type: 'test'
+      ...
+    # Subtest: tur 8 Y2: aynı adlı iki Ali farklı telefonla — kolon eklenir + bağlı Ali'nin tutarı değişir: ad + telefon tek, tahsilat ve not kendi Ali'sine (onaysız)
+    ok 8 - tur 8 Y2: aynı adlı iki Ali farklı telefonla — kolon eklenir + bağlı Ali'nin tutarı değişir: ad + telefon tek, tahsilat ve not kendi Ali'sine (onaysız)
+      ---
+      duration_ms: 398.394643
+      type: 'test'
+      ...
+    # Subtest: N3 (tur 7 f2) iki Ali yer değiştirip ikisi de değişir: bağ yanlış Ali'ye taşınmaz — onaysız 409, onayla eski anahtarda; Takvim 4.100 + 1.100
+    ok 9 - N3 (tur 7 f2) iki Ali yer değiştirip ikisi de değişir: bağ yanlış Ali'ye taşınmaz — onaysız 409, onayla eski anahtarda; Takvim 4.100 + 1.100
+      ---
+      duration_ms: 478.442424
+      type: 'test'
+      ...
+    # Subtest: N1 (tur 7, karar A) Dosya No'lu tabloda kapanan dosyanın bağı yeni dosya numarasına taşınmaz — onayda adı ve dosya numarasıyla; yeni dosya Takvim'de tam tutar
+    ok 10 - N1 (tur 7, karar A) Dosya No'lu tabloda kapanan dosyanın bağı yeni dosya numarasına taşınmaz — onayda adı ve dosya numarasıyla; yeni dosya Takvim'de tam tutar
+      ---
+      duration_ms: 415.879182
+      type: 'test'
+      ...
+    # Subtest: N6 ad + tutar birlikte değişir: kişi değeri tutmaz → eşleşmeyen, onaysız 409; onayla uygulanır, tahsilat silinmez
+    ok 11 - N6 ad + tutar birlikte değişir: kişi değeri tutmaz → eşleşmeyen, onaysız 409; onayla uygulanır, tahsilat silinmez
+      ---
+      duration_ms: 465.96922
+      type: 'test'
+      ...
+    1..11
+ok 2 - 31e B1: Dosya No'suz tabloda içerik değişince bağlar yeni satıra taşınır (sessiz kopma yok)
+  ---
+  duration_ms: 5939.105733
+  type: 'suite'
+  ...
+# Subtest: 31e B2: kimlik kolonu eklenir / silinir — tek adlı kişide bağlar taşınır
+    # Subtest: N8 Dosya No (2026/x) eklenir: Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda
+    ok 1 - N8 Dosya No (2026/x) eklenir: Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda
+      ---
+      duration_ms: 495.081422
+      type: 'test'
+      ...
+    # Subtest: N8 Dosya No (D-x) eklenir: Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda
+    ok 2 - N8 Dosya No (D-x) eklenir: Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda
+      ---
+      duration_ms: 507.605034
+      type: 'test'
+      ...
+    # Subtest: N8 Dosya No (2026/x) silinir: Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda
+    ok 3 - N8 Dosya No (2026/x) silinir: Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda
+      ---
+      duration_ms: 509.735125
+      type: 'test'
+      ...
+    # Subtest: N8 Dosya No (D-x) silinir: Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda
+    ok 4 - N8 Dosya No (D-x) silinir: Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda
+      ---
+      duration_ms: 462.42097
+      type: 'test'
+      ...
+    # Subtest: N8 Müşteri No silinir (kimlik kolonu kipi değişir): Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda
+    ok 5 - N8 Müşteri No silinir (kimlik kolonu kipi değişir): Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda
+      ---
+      duration_ms: 550.212751
+      type: 'test'
+      ...
+    1..5
+ok 3 - 31e B2: kimlik kolonu eklenir / silinir — tek adlı kişide bağlar taşınır
+  ---
+  duration_ms: 2525.717366
+  type: 'suite'
+  ...
+# Subtest: 31e Devamı olarak ekle: farklı kişi mevcut satırın yerine geçmez (kâhin b3g/b3h); aynı görünen satır onay ister (B3)
+    # Subtest: N9 2. satırda Lale Ak yerine Yeni Kişi: Lale ve 200 TL tahsilatı durur, Yeni Kişi yeni kayıt; önizleme 1 yeni / 1 silinmez
+    ok 1 - N9 2. satırda Lale Ak yerine Yeni Kişi: Lale ve 200 TL tahsilatı durur, Yeni Kişi yeni kayıt; önizleme 1 yeni / 1 silinmez
+      ---
+      duration_ms: 560.23088
+      type: 'test'
+      ...
+    # Subtest: N9b dosyanın başına satır eklenir (bütün konumlar kayar): Devamı olarak ekle mevcut satırları içerikleriyle eşler, kimseyi ezmez
+    ok 2 - N9b dosyanın başına satır eklenir (bütün konumlar kayar): Devamı olarak ekle mevcut satırları içerikleriyle eşler, kimseyi ezmez
+      ---
+      duration_ms: 447.478927
+      type: 'test'
+      ...
+    # Subtest: N7 başa satır eklenir + Ayşe'nin tutarı değişir (kayma + değişim): Devamı Ayşe'yi ezmez, 'mevcut bir kaydın kişisini taşıyor' der ve onay ister
+    ok 3 - N7 başa satır eklenir + Ayşe'nin tutarı değişir (kayma + değişim): Devamı Ayşe'yi ezmez, 'mevcut bir kaydın kişisini taşıyor' der ve onay ister
+      ---
+      duration_ms: 537.915025
+      type: 'test'
+      ...
+    # Subtest: N10 Dosya No eklenmiş aynı dosya Devamı olarak eklenir: '6 satır mevcut kayıtlarla aynı görünüyor' + onaysız 409; onayla eklenir
+    ok 4 - N10 Dosya No eklenmiş aynı dosya Devamı olarak eklenir: '6 satır mevcut kayıtlarla aynı görünüyor' + onaysız 409; onayla eklenir
+      ---
+      duration_ms: 426.984361
+      type: 'test'
+      ...
+    1..4
+ok 4 - 31e Devamı olarak ekle: farklı kişi mevcut satırın yerine geçmez (kâhin b3g/b3h); aynı görünen satır onay ister (B3)
+  ---
+  duration_ms: 1973.280601
+  type: 'suite'
+  ...
+# Subtest: 31e Google Sheets eşitlemesi
+    # Subtest: N11 Sheet'te Ali'nin tutarı ve sonra Telefon kolonu değişir: eşitleme bağları taşıyarak uygular, önce yedek alır
+    ok 1 - N11 Sheet'te Ali'nin tutarı ve sonra Telefon kolonu değişir: eşitleme bağları taşıyarak uygular, önce yedek alır
+      ---
+      duration_ms: 565.697146
+      type: 'test'
+      ...
+    # Subtest: N11 kişi kolonu olmayan Sheet'te tutar değişir: eşleşmeyen bağ → eşitleme bekler (yönetici onayı), veri değişmez; İncele ve karar ver onayla uygular
+    ok 2 - N11 kişi kolonu olmayan Sheet'te tutar değişir: eşleşmeyen bağ → eşitleme bekler (yönetici onayı), veri değişmez; İncele ve karar ver onayla uygular
+      ---
+      duration_ms: 387.285195
+      type: 'test'
+      ...
+    # Subtest: N7/N11 Sheet'in başına satır eklenir + Ayşe'nin tutarı değişir: eşitleme Ayşe'yi kendi satırında günceller, işareti taşınır, 'Sheet'te yok' çıkmaz
+    ok 3 - N7/N11 Sheet'in başına satır eklenir + Ayşe'nin tutarı değişir: eşitleme Ayşe'yi kendi satırında günceller, işareti taşınır, 'Sheet'te yok' çıkmaz
+      ---
+      duration_ms: 538.239619
+      type: 'test'
+      ...
+    # Subtest: N9/N11 Sheet'te 2. satır başka kişiyle değiştirilir: Lale yerinde kalır ('Sheet'te yok'), tahsilatı durur; Yeni Kişi yeni kayıt
+    ok 4 - N9/N11 Sheet'te 2. satır başka kişiyle değiştirilir: Lale yerinde kalır ('Sheet'te yok'), tahsilatı durur; Yeni Kişi yeni kayıt
+      ---
+      duration_ms: 360.31728
+      type: 'test'
+      ...
+    # Subtest: N5 (tur 7) Sheet'te Olmayanları Kaldır: bağı olan satır listede 'Bağlı: tahsilat' ile görünür, onaysız kaldırma 409 adıyla; bağsız satır onaysız kalkar; onaylı kaldırmada tahsilat eski anahtarda
+    ok 5 - N5 (tur 7) Sheet'te Olmayanları Kaldır: bağı olan satır listede 'Bağlı: tahsilat' ile görünür, onaysız kaldırma 409 adıyla; bağsız satır onaysız kalkar; onaylı kaldırmada tahsilat eski anahtarda
+      ---
+      duration_ms: 467.679049
+      type: 'test'
+      ...
+    # Subtest: N2 (tur 7) bekletilen eşitleme: Sheet aynı kaldıkça arka plan eşitlemesi yeniden hesaplamaz (unchanged), 'Şimdi Eşitle' yeniden hesaplar; Sheet değişince yeniden hesaplanır
+    ok 6 - N2 (tur 7) bekletilen eşitleme: Sheet aynı kaldıkça arka plan eşitlemesi yeniden hesaplamaz (unchanged), 'Şimdi Eşitle' yeniden hesaplar; Sheet değişince yeniden hesaplanır
+      ---
+      duration_ms: 346.883993
+      type: 'test'
+      ...
+    1..6
+ok 5 - 31e Google Sheets eşitlemesi
+  ---
+  duration_ms: 2666.760759
+  type: 'suite'
+  ...
+# Subtest: 31e eşzamanlılık, yarıda kesilme, başka veri sayfası, bayat anahtar
+    # Subtest: N12 önizlemeden sonra başka kullanıcı bağ ekler: onaysız uygulama 409; onaylanmış önizleme yeni eşleşmeyeni kapsamıyorsa 409 bonds-changed
+    ok 1 - N12 önizlemeden sonra başka kullanıcı bağ ekler: onaysız uygulama 409; onaylanmış önizleme yeni eşleşmeyeni kapsamıyorsa 409 bonds-changed
+      ---
+      duration_ms: 464.049341
+      type: 'test'
+      ...
+    # Subtest: N13 taşıma ortasında hata: satırlar ve bağlar birlikte geri alınır (tek işlem)
+    ok 2 - N13 taşıma ortasında hata: satırlar ve bağlar birlikte geri alınır (tek işlem)
+      ---
+      duration_ms: 523.861233
+      type: 'test'
+      ...
+    # Subtest: N15 aynı satır başka veri sayfasında da var: genel tablolardaki bağ o sayfanın da olabilir → taşınmaz, onay ister
+    ok 3 - N15 aynı satır başka veri sayfasında da var: genel tablolardaki bağ o sayfanın da olabilir → taşınmaz, onay ister
+      ---
+      duration_ms: 364.936741
+      type: 'test'
+      ...
+    # Subtest: İNCELE: tabloda olmayan Dosya No'suz anahtara (satir:…) not / tahsilat 409; dosya no ve serbest anahtar eskisi gibi kabul edilir
+    ok 4 - İNCELE: tabloda olmayan Dosya No'suz anahtara (satir:…) not / tahsilat 409; dosya no ve serbest anahtar eskisi gibi kabul edilir
+      ---
+      duration_ms: 336.661463
+      type: 'test'
+      ...
+    1..4
+ok 6 - 31e eşzamanlılık, yarıda kesilme, başka veri sayfası, bayat anahtar
+  ---
+  duration_ms: 1689.990787
+  type: 'suite'
+  ...
+# Subtest: 31e tur 7: kayıt kaldıran yollar (N5) ve bayat anahtar (N6)
+    # Subtest: N5 Veriyi Kaldır: kayıtlara bağlı veri varsa 409 adıyla (veri durur); ?confirm=1 kaldırır, bağlar silinmez; bağsız veri onaysız kalkar
+    ok 1 - N5 Veriyi Kaldır: kayıtlara bağlı veri varsa 409 adıyla (veri durur); ?confirm=1 kaldırır, bağlar silinmez; bağsız veri onaysız kalkar
+      ---
+      duration_ms: 779.624254
+      type: 'test'
+      ...
+    # Subtest: N5 Sayfayı Sil: yalnız o sayfada olan kaydın bağı 409 adıyla, onayla silinir; anahtarı başka sayfada da olan kaydın notu sayılmaz (orada görünür)
+    ok 2 - N5 Sayfayı Sil: yalnız o sayfada olan kaydın bağı 409 adıyla, onayla silinir; anahtarı başka sayfada da olan kaydın notu sayılmaz (orada görünür)
+      ---
+      duration_ms: 456.586648
+      type: 'test'
+      ...
+    # Subtest: N6 tabloda olmayan Dosya No'suz anahtara (satir:…) belge, görev, düzeltme, kayıt notu, telefon, haciz 409 record-gone; tablodaki kayda 200
+    ok 3 - N6 tabloda olmayan Dosya No'suz anahtara (satir:…) belge, görev, düzeltme, kayıt notu, telefon, haciz 409 record-gone; tablodaki kayda 200
+      ---
+      duration_ms: 345.872117
+      type: 'test'
+      ...
+    1..3
+ok 7 - 31e tur 7: kayıt kaldıran yollar (N5) ve bayat anahtar (N6)
+  ---
+  duration_ms: 1582.537074
+  type: 'suite'
+  ...
+# Subtest: 31e B1 K6: kayıt tahsilatının anahtar taşıması bank.post 'assign' kapısından geçer
+    # Subtest: Yerine koy taşıması: UPDATE payments bank.post bağlamında, olay kapıya bildirilir; tahsilat yeni anahtarda, olayı ve İşlem No aynı; tutar / yol / hesap / tarih aynı; K6 ihlali yok
+    ok 1 - Yerine koy taşıması: UPDATE payments bank.post bağlamında, olay kapıya bildirilir; tahsilat yeni anahtarda, olayı ve İşlem No aynı; tutar / yol / hesap / tarih aynı; K6 ihlali yok
+      ---
+      duration_ms: 499.142534
+      type: 'test'
+      ...
+    1..1
+ok 8 - 31e B1 K6: kayıt tahsilatının anahtar taşıması bank.post 'assign' kapısından geçer
+  ---
+  duration_ms: 499.370133
+  type: 'suite'
+  ...
+1..8
+# tests 38
+# suites 8
+# pass 38
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17278.908385

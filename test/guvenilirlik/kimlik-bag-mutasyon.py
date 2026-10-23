@@ -93,10 +93,14 @@ MUT = {
     "M68-T16-borc-ailesi-muafiyeti-yok": [(DC, " && !EXPECTED_AMOUNT_HEADER.test(folded) && !DEBT_FAMILY_WORD.test(folded);", " && !EXPECTED_AMOUNT_HEADER.test(folded);")],
     "M69-T16-ekli-bicim-tanimaz": [(DC, "const DEBT_FAMILY_WORD = /\\b(borc\\w*|alacak\\w*|alacag\\w*|kalan\\w*|bakiye\\w*|toplam\\w*)\\b/;", "const DEBT_FAMILY_WORD = /\\b(borc|alacak|kalan|bakiye|toplam)\\b/;")],
     "M70-T16-miktar-ay-suzulmez": [("server/lib/insight/dues.mjs", "isPromiseAmountHeader(column) && !isNotAmountHeader(column) && !isPersonAttributeHeader(column)", "isPromiseAmountHeader(column) && !isPersonAttributeHeader(column)")],
+    # ---- aday 24 K6 ----
+    "M71-K6-tahsilat-post-disinda": [(B, "        bank.post({\n          user: user || { id: \"system\", display_name: \"Otomatik eşitleme\", role: \"admin\" },", "        (post => post.write())({\n          user: user || { id: \"system\", display_name: \"Otomatik eşitleme\", role: \"admin\" },")],
+    "M72-K6-tahsilat-para-disi-yoldan": [(B, "        if (!spec.money) {\n          rekeyNonMoney(spec);", "        if (!spec.money || spec.table === \"payments\") {\n          rekeyNonMoney(spec);")],
+    "M73-K6-koruma-yok-ham-yazim": [(B, "        if (!spec.money) {\n          rekeyNonMoney(spec);", "        if (!spec.money || spec.table === \"payments\") {\n          rekeyNonMoney(spec);"), (B, "      if (spec.money || LEDGER_TABLES.includes(t)) throw new Error(`dataset-bonds: para tablosu (${t}) bank.post dışında taşınmaz`);\n", "")],
     "M28-N2-elle-esitleme-de-atlar": [(D, "if (!manual && heldBefore?.contentHash && heldBefore.contentHash === contentHash)", "if (heldBefore?.contentHash && heldBefore.contentHash === contentHash)")],
 }
-TESTS = ["test/kayit-bag-31e.test.mjs", "test/kayit-bag-31e-birim.test.mjs", "test/tablo-borc-r31e.test.mjs", "test/tablo-borc-dosya-u2.test.mjs"]
-SUPPORT = ["test/helpers.mjs", "test/banka-210-ortak.mjs", "test/guvenilirlik/surumler.mjs"]
+TESTS = ["test/kayit-bag-31e.test.mjs", "test/kayit-bag-31e-birim.test.mjs", "test/tablo-borc-r31e.test.mjs", "test/tablo-borc-dosya-u2.test.mjs", "test/banka-210-post-statik.test.mjs"]
+SUPPORT = ["test/helpers.mjs", "test/banka-210-ortak.mjs", "test/guvenilirlik/surumler.mjs", "test/bank-post-tarayici.mjs", "test/bank-post-izinli.json"]
 # İsteğe bağlı: MUT_SEC=M27,M28 yalnız adı bu öneklerle başlayan mutasyonları koşar (düzeltmeden sonra dar yeniden koşu).
 SEC = [x for x in os.environ.get("MUT_SEC", "").split(",") if x]
 if SEC:
