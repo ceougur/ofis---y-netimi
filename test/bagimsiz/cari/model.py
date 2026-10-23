@@ -89,6 +89,9 @@ MUTASYONLAR = {
     59: "TAKVİM KALEMİ: Tablodaki Kişiler de vade kaleminin tutarını (dönem tutarı) gösterir (satır borcu yerine)",
     60: "Z2 öncesi: Kalan Borç 0 ya da eksi satırın vade kalemi görünür (tutarı min(dönem tutarı, Kalan))",
     61: "Z3 öncesi: ödeme sözü kalemi söz tutarı değil, min(dönem tutarı, Kalan)",
+    62: "SÖZ TUTARI öncesi: 'söz' ile başlayan her başlık söz sütunudur ('Sözleşme Tutarı', 'Sözleşme No' da söz)",
+    63: "SÖZLEŞME TARİHİ öncesi: 'Sözleşme Tarihi' vade tarihi sayılır (vade kalemi açar)",
+    64: "SÖZ TUTARI: yalnız 'Söz Tutarı' söz sütunu — 'Ödeme Sözü Tutarı', 'Taahhüt Tutarı' söz sayılmaz",
 }
 
 
@@ -191,7 +194,9 @@ def sutun_sinifi(baslik, hucreler=()):
         return "vergi"  # karar A: tutardır ama borç sayılmaz
     if w[:2] == ["genel", "toplam"]:
         return "genel"  # karar A: KDV dahil toplam
-    if any(x.startswith(("söz", "taahhüt")) for x in w):
+    # SÖZ TUTARI (karar sahibi 23.10.2026): söz sütunu YALNIZ ödeme sözü / taahhüt tutarıdır ("Söz Tutarı", "Ödeme Sözü Tutarı", "Taahhüt Tutarı"); "Sözleşme Tutarı",
+    # "Sözleşme Bedeli", "Sözleşme No", "Sözleşme Tarihi" söz DEĞİLDİR (sözleşme bedeli dönem / taksit tutarı da değildir; borç Kalan'dan gelir). Mutant 62: eski önek kuralı.
+    if any(x in (("söz",) if SOZ_DAR[0] else ("söz", "sözü", "sözün", "taahhüt", "taahhüdü")) for x in w) or (SOZ_ONEK[0] and any(x.startswith(("söz", "taahhüt")) for x in w)):
         return "soz"
     if "kalan" in w or "bakiye" in w:
         return "kalan"
@@ -200,6 +205,10 @@ def sutun_sinifi(baslik, hucreler=()):
     if any(x.startswith(("toplam", "tutar", "ödenecek", "borç", "alacak")) for x in w):
         return "toplam"
     return "tutar"
+
+
+SOZ_ONEK = [False]  # mutant 62 (Model kurucusu ayarlar)
+SOZ_DAR = [False]  # mutant 64
 
 
 def _sayi_mi(metin):
@@ -228,6 +237,8 @@ class Model:
             raise SystemExit("senaryo dili %s değil" % "/".join(DILLER))
         self.s = senaryo
         self.mut = mut
+        SOZ_ONEK[0] = mut == 62
+        SOZ_DAR[0] = mut == 64
         self.bugun = senaryo["bugun"]
         self.seq = 0
         self.cariler = {}          # takma ad -> {tur, isim, kayit, acilis}
@@ -532,6 +543,17 @@ class Model:
         # Y3'ün "ana tutar belirlenemez → not, borç yok" kuralı yalnız SATIR BORCU içindir (Tablodaki Kişiler, Açılış Bakiyesi)
         return v
 
+    def vade_tarihli(self, sk, hucre):
+        """SÖZLEŞME TARİHİ (karar sahibi 23.10.2026): satırın vade kalemi açan tarih hücresi dolu mu. Tarih kolonu = dolu değerlerinin hepsi tarih; "Sözleşme Tarihi" vade / son
+        ödeme / söz tarihi DEĞİLDİR (sözleşmenin başlangıç tarihi) — vade kalemi açmaz (mutant 63: açar)."""
+        for h in sk["basliklar"] or []:
+            if "sözleşme" in kelimeler(h) and self.mut != 63:
+                continue
+            dolu = [str(c.get(h) or "").strip() for _, c in sk["satirlar"] if str(c.get(h) or "").strip()]
+            if dolu and all(tarih_mi(x) for x in dolu) and str(hucre.get(h) or "").strip():
+                return True
+        return False
+
     def kalem_yok(self, sk, hucre):
         """Z2 (karar sahibi 23.10.2026): Kalan Borç hücresi SAYI ve 0 ya da eksi (fazla ödeme) olan satırda vade kalemi yoktur (min(dönem tutarı, Kalan) ≤ 0)."""
         kalan_kol = [h for h in sk["basliklar"] or [] if tr_kucuk(h) not in KIMLIK_BASLIK and sutun_sinifi(h, [c.get(h) for _, c in sk["satirlar"]]) == "kalan"]
@@ -550,6 +572,8 @@ class Model:
             if sk["basliklar"] is None:
                 return None
             for no, c in sk["satirlar"]:
+                if not self.vade_tarihli(sk, c):
+                    continue  # vade tarihi olmayan satırın kalemi yok (Sözleşme Tarihi vade değil)
                 v = self.kalem_tutari(sk, c)
                 if v is None:
                     return None
@@ -1308,9 +1332,12 @@ class Model:
                 if len(yer) != 1:
                     continue
                 sk, c = yer[0]
-                tarihli = any(str(c.get(h) or "").strip() and all(tarih_mi(x) for _, x2 in sk["satirlar"] for x in [x2.get(h)] if str(x or "").strip())
-                              for h in sk["basliklar"] if h in c)
+                tarihli = self.vade_tarihli(sk, c)
                 b = self.tablo_borcu(no)
+                if not tarihli and isinstance(b, int) and any("sözleşme" in kelimeler(h) for h in sk["basliklar"]):
+                    # SÖZLEŞME TARİHİ: yalnız Sözleşme Tarihi dolu satırda vade kalemi YOK (Takvim'de görünmez); Açılış Bakiyesi kalemden dolduğundan denetlenmez
+                    self.d("%s:kalemVar:%s" % (k, no), False, "KULLANICI", "SÖZLEŞME TARİHİ vade tarihi değildir — vade kalemi açmaz")
+                    continue
                 if not tarihli or not (isinstance(b, int) or b == NOT):
                     continue
                 if self.kalem_yok(sk, c):

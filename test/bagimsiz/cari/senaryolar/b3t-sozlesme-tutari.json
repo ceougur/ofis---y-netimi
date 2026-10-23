@@ -1,0 +1,100 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3t-sozlesme-tutari",
+ "aciklama": "SÖZ TUTARI (karar sahibi 23.10.2026): söz sütunu yalnız ödeme sözü / taahhüt tutarıdır; 'Sözleşme Tutarı', 'Sözleşme Bedeli', 'Sözleşme No' söz değildir (dönem / taksit tutarı da değil; borç Kalan'dan). 'Sözleşmeler' (Ad, Sözleşme Tutarı, Kalan Borç, Söz Tarihi, Söz Tutarı): Ali Kaya 50.000 / 9.000 / söz 3.000 → söz kalemi 3.000; Ayşe Demir 40.000 / 2.000 / söz boş → kalem 2.000. 'Sözleşmeler 2' (söz sütunu yok): Can Yıldız 60.000 / 5.000 + Son Ödeme → kalem 5.000. 'Sözleşme Bedelleri' (Sözleşme No, Sözleşme Bedeli, Kalan Borç, Son Ödeme): Deniz Ok No 1024, 30.000 / 4.000 → kalem 4.000. Kişiler 20.000; Takvim / Vade Takip / Nakit Akışı 14.000.",
+ "dayanak": "KARARLAR.md B3k SÖZ TUTARI, B3j Z3, B3i TAKVİM KALEMİ",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Sözleşmeler",
+     "tur": "serbest",
+     "ilk": [
+      "Ad"
+     ],
+     "basliklar": [
+      "Sözleşme Tutarı",
+      "Kalan Borç",
+      "Söz Tarihi",
+      "Söz Tutarı"
+     ],
+     "kayitlar": [
+      {
+       "no": "S1",
+       "isim": "Ali Kaya",
+       "hucreler": {
+        "Sözleşme Tutarı": "50.000,00 ₺",
+        "Kalan Borç": "9.000,00 ₺",
+        "Söz Tarihi": "20.06.2026",
+        "Söz Tutarı": "3.000,00 ₺"
+       }
+      },
+      {
+       "no": "S2",
+       "isim": "Ayşe Demir",
+       "hucreler": {
+        "Sözleşme Tutarı": "40.000,00 ₺",
+        "Kalan Borç": "2.000,00 ₺",
+        "Söz Tarihi": "20.06.2026",
+        "Söz Tutarı": ""
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Sözleşmeler 2",
+     "tur": "serbest",
+     "ilk": [
+      "Ad"
+     ],
+     "basliklar": [
+      "Sözleşme Tutarı",
+      "Kalan Borç",
+      "Son Ödeme"
+     ],
+     "kayitlar": [
+      {
+       "no": "S3",
+       "isim": "Can Yıldız",
+       "hucreler": {
+        "Sözleşme Tutarı": "60.000,00 ₺",
+        "Kalan Borç": "5.000,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Sözleşme Bedelleri",
+     "tur": "serbest",
+     "basliklar": [
+      "Sözleşme No",
+      "Sözleşme Bedeli",
+      "Kalan Borç",
+      "Son Ödeme"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/961",
+       "isim": "Deniz Ok",
+       "hucreler": {
+        "Sözleşme No": "1024",
+        "Sözleşme Bedeli": "30.000,00 ₺",
+        "Kalan Borç": "4.000,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol",
+   "raporlar": true
+  }
+ ]
+}

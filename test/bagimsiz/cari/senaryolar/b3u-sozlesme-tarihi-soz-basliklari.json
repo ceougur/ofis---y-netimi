@@ -1,0 +1,100 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3u-sozlesme-tarihi-soz-basliklari",
+ "aciklama": "SÖZLEŞME TARİHİ (karar sahibi 23.10.2026): 'Sözleşme Tarihi' vade / son ödeme / söz tarihi değildir, vade kalemi açmaz (sözleşmenin başlangıç tarihi). 'Sözleşmeler' (Sözleşme Tarihi, Kalan Borç, Son Ödeme): Ece Ak Sözleşme Tarihi 01.01.2026 + Son Ödeme 20.06.2026 → TEK kalem 3.000; Fuat Er yalnız Sözleşme Tarihi → kalem yok (Kişiler 2.000). SÖZ TUTARI başlıkları: 'Ödeme Sözü Tutarı' (Gaye Su Taksit 1.000, Kalan 9.000, söz 2.500 → söz kalemi 2.500), 'Taahhüt Tutarı' (Hakan Ok Aidat 1.000, Kalan 5.000, taahhüt 1.800 → kalem 1.800). Kişiler 19.000; Takvim / Vade Takip / Nakit Akışı 7.300.",
+ "dayanak": "KARARLAR.md B3k SÖZ TUTARI + SÖZLEŞME TARİHİ, B3i TAKVİM KALEMİ",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Sözleşmeler",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Sözleşme Tarihi",
+      "Kalan Borç",
+      "Son Ödeme"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/971",
+       "isim": "Ece Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Sözleşme Tarihi": "01.01.2026",
+        "Kalan Borç": "3.000,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      },
+      {
+       "no": "2026/972",
+       "isim": "Fuat Er",
+       "hucreler": {
+        "Telefon": "",
+        "Sözleşme Tarihi": "01.02.2026",
+        "Kalan Borç": "2.000,00 ₺",
+        "Son Ödeme": ""
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Sözler",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Taksit Tutarı",
+      "Kalan Borç",
+      "Söz Tarihi",
+      "Ödeme Sözü Tutarı"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/973",
+       "isim": "Gaye Su",
+       "hucreler": {
+        "Telefon": "",
+        "Taksit Tutarı": "1.000,00 ₺",
+        "Kalan Borç": "9.000,00 ₺",
+        "Söz Tarihi": "20.06.2026",
+        "Ödeme Sözü Tutarı": "2.500,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Taahhütler",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Aidat",
+      "Kalan Borç",
+      "Söz Tarihi",
+      "Taahhüt Tutarı"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/974",
+       "isim": "Hakan Ok",
+       "hucreler": {
+        "Telefon": "",
+        "Aidat": "1.000,00 ₺",
+        "Kalan Borç": "5.000,00 ₺",
+        "Söz Tarihi": "20.06.2026",
+        "Taahhüt Tutarı": "1.800,00 ₺"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol",
+   "raporlar": true
+  }
+ ]
+}

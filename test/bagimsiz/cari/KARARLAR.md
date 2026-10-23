@@ -229,6 +229,19 @@ Kaynak: ana oturumun ilettiği karar metni. Ürün kodu okunmadı.
   boşsa önceki kural (min(dönem tutarı, Kalan)). Kişiler / Açılış Bakiyesi satır borcu (Kalan) — söz tutarı borç değil (K3). Senaryo b3s-soz-tutari-kalemi; mutant 61.
   [YAYGIN] Z2 söz kalemine de uygulanır (Kalan ≤ 0 → kalem yok) — senaryoda yok.
 
+### B3k — SÖZ TUTARI sütunu (karar sahibi 23.10.2026; dar kontrol YÜKSEK gerilemesi, aday 21)
+- Söz sütunu YALNIZ ödeme sözü / taahhüt tutarıdır ("Söz Tutarı", "Ödeme Sözü Tutarı", "Taahhüt Tutarı"); "Sözleşme Tutarı", "Sözleşme Bedeli", "Sözleşme No", "Sözleşme Tarihi"
+  SÖZ DEĞİLDİR — sözleşme bedeli dönem / taksit tutarı da değildir; borç Kalan'dan gelir. Tahsilat Takvimi, Vade Takip, Nakit Akışı aynı. KÂHİN DÜZELTMESİ: kâhinin sütun
+  sınıflandırması da "söz" ile BAŞLAYAN her kelimeyi söz sayıyordu ("sözleşme" dahil — aynı kusur; senaryolarda sözleşme başlığı olmadığı için görünmedi) → artık yalnız
+  "söz / sözü / taahhüt / taahhüdü" kelimesi (eski önek kuralı mutant 62). Önceki senaryolarda kâhinin değerleri değişmedi.
+- Senaryo b3t-sozlesme-tutari (Ali Kaya 50.000 / 9.000 / söz 3.000 → söz kalemi 3.000; Ayşe Demir 40.000 / 2.000 / söz boş → kalem 2.000; Can Yıldız söz sütunsuz sekmede
+  60.000 / 5.000 + Son Ödeme → kalem 5.000; Deniz Ok Sözleşme No 1024 + Sözleşme Bedeli 30.000 / Kalan 4.000 → kalem 4.000; Kişiler 20.000, Takvim / Vade / Nakit 14.000).
+- SÖZLEŞME TARİHİ (karar sahibi 23.10.2026): "Sözleşme Tarihi" vade / son ödeme / söz tarihi DEĞİLDİR, vade kalemi açmaz (sözleşmenin başlangıç tarihi). Kâhin: vade kalemi
+  yalnız tarih değerli, başlığında "sözleşme" geçmeyen kolonun dolu hücresinden açılır; yalnız Sözleşme Tarihi dolu satırın kalemi yok (`kalemVar` false, Takvim / Vade / Nakit'e
+  katılmaz, Kişiler'de borç). Senaryo b3u-sozlesme-tarihi-soz-basliklari (Ece Ak Sözleşme Tarihi + Son Ödeme → tek kalem 3.000; Fuat Er yalnız Sözleşme Tarihi → kalem yok;
+  "Ödeme Sözü Tutarı" 2.500 ve "Taahhüt Tutarı" 1.800 söz kalemi); mutant 63 (Sözleşme Tarihi kalem açar), 64 (yalnız "Söz Tutarı" söz). DENENMEYEN: öbür başlangıç tarihleri
+  ("Kayıt Tarihi", "Başlangıç Tarihi" — kararda yok).
+
 ### B4b — Dört rapor aynı satır borcu (K4 [KULLANICI] 23.10.2026; TAKVİM KALEMİ ile daraldı — B3i)
 - **K4** Tablodaki Kişiler (totals.debit), Tahsilat Takvimi (/dues Σ amount), Vade Takip (totals.amount) ve Nakit Akışı Beklenen (totals.expected) aynı satır
   borcunu kullanır; toplamları aynıdır (dönem süzgeci içinde). Kontrol adımında `"raporlar": true` ve bütün kayıtların borcu tanımlı ve tek değerliyse dört
