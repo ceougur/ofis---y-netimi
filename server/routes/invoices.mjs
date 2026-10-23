@@ -40,6 +40,7 @@ import { ANONYMOUS_TCKN, classifyTaxId, isValidIban, isValidMersis, normalizeIba
 import { UNITS, unitLabel } from "../lib/units.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { createZip } from "../lib/zip.mjs";
+import { keptOf, mergeFloor } from "../lib/number-floor.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { RESTORE_NOTICE_KEY } from "../lib/company-backups.mjs";
 
@@ -1823,13 +1824,15 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const floor = parseJson(store.setting(FLOOR_KEY, "{}"), {})?.[`${series}${year}`];
     return floor && Number(floor.seq) > 0 ? floor : null;
   };
-  // İşlem içinde (numberForSend, deleteInvoice): seriden ayrılan numara kaydedilir; daha büyüğü zaten kayıtlıysa dokunulmaz. deleted: numara belge
-  // silindiği için seride durmuyor (ileti için; E6).
+  // İşlem içinde (numberForSend, deleteInvoice): seriden ayrılan numara kaydedilir (lib/number-floor.mjs mergeFloor: en büyük numara + en büyük
+  // silinmemiş numara; kayıt yalnız yükselir). deleted: numara belge silindiği için seride durmuyor — numara tabanı sayar (E6), sıra-tarih tabanı
+  // saymaz (r31e N1).
   function reserveNumber(series, year, seq, number, issueDate, { deleted = false } = {}) {
     const floors = parseJson(store.setting(FLOOR_KEY, "{}"), {}) || {};
     const key = `${series}${year}`;
-    if (Number(floors[key]?.seq) >= seq) return;
-    floors[key] = { seq, number, issueDate, ...(deleted ? { deleted: true } : {}) };
+    const next = mergeFloor(floors[key] || null, { seq, number, issueDate, deleted });
+    if (JSON.stringify(next) === JSON.stringify(floors[key] ?? null)) return;
+    floors[key] = next;
     store.setSetting(FLOOR_KEY, JSON.stringify(floors));
   }
   // 2.4.4 E6 (eleştirmen 31d; karar 22.10.2026 — "verilmiş kâğıt / fiş numarası bir daha kullanılmaz" ile aynı, yaygın uygulama): programın e-Belge DIŞI
@@ -1837,14 +1840,17 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // SİLİNSE de kullanılmış sayılır (deleteInvoice → reserveNumber). e-Belge serisinde numara EDM'ye bağlıdır: iz bırakmış (EDM'ye gitmiş) belge zaten
   // silinmez (deleteBlock); EDM'ye hiç ulaşmamış numara serinin sonundaysa yeniden verilir (2.0.17 + releaseNumber kuralı, değişmez).
   const paperSeriesSet = s => new Set([s.series.paper, s.series.smm, s.series.internal].filter(Boolean));
-  // Serinin son VERİLMİŞ numarası: seride duran son numaralı belge ya da seriden ayrılmış daha büyük numara (tarihi o belgenin tarihi). reserved: ileti
-  // "sonra e-Belge olarak gönderildi" ya da (deleted) "belge silindi" der.
+  // Numara–tarih sırasının tabanı (bütün sıra-tarih denetimleri: kayıt, form ön hesabı, bırakma, gönderim engeli, Düzenle): seride duran son numaralı
+  // belge ya da seriden ayrılmış ama BELGESİ DURAN daha büyük numara (e-Belge olarak gönderildi; tarihi o belgenin tarihi). r31e N1 (karar 23.10.2026,
+  // 5 dk yetkisi): silinen belgenin numarası kullanılmış kalır (nextNumber floorOf'u sayar) ama TARİHİ sırayı bağlamaz (keptOf) — yanlış (ileri)
+  // tarihle kesilip silinen fiş doğru tarihle yeniden kesilebilir; önceden en geç tarihli silinen belge seriyi o güne kilitliyordu. Silinen belgenin
+  // geri yüklenmesi sırayı bozacaksa restoreDeleted reddeder. reserved: ileti "sonra e-Belge olarak gönderildi" der.
   function lastIssued(series, year) {
     const last = store.get("SELECT seq, number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0 ORDER BY seq DESC LIMIT 1", series, year) || null;
-    const floor = floorOf(series, year);
-    return floor && !(last && last.seq >= floor.seq) ? { seq: Number(floor.seq), number: floor.number, issueDate: floor.issueDate, reserved: true, deleted: floor.deleted === true } : last;
+    const held = keptOf(floorOf(series, year));
+    return held && !(last && last.seq >= held.seq) ? { ...held, reserved: true } : last;
   }
-  const issuedText = last => `${last.number}${last.reserved ? (last.deleted ? " (belge silindi; numara kullanılmış sayılır)" : " (belge sonra e-Belge olarak gönderildi; numara kullanılmış sayılır)") : ""}`;
+  const issuedText = last => `${last.number}${last.reserved ? " (belge sonra e-Belge olarak gönderildi; numara kullanılmış sayılır)" : ""}`;
   function nextNumber(series, year, s = settings()) {
     ensureTestStart(series, year, s);
     const max = store.get("SELECT COALESCE(MAX(seq), 0) AS n FROM invoices WHERE series = ? AND year = ? AND seq > 0", series, year).n;
@@ -1905,10 +1911,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     // Numara sırası ile tarih sırası uyuşmalı (VUK 231): yeni tarih, serideki önceki ve sonraki belgenin arasında kalmalı.
     let prev = store.get("SELECT seq, number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0 AND seq < ? ORDER BY seq DESC LIMIT 1", existing.series, existing.year, existing.seq);
     let next = store.get("SELECT seq, number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > ? ORDER BY seq LIMIT 1", existing.series, existing.year, existing.seq);
-    // Seriden ayrılmış en büyük numara (lastIssued) belgenin komşusuysa o da sırada yer tutar.
-    const floor = existing.seq > 0 ? floorOf(existing.series, existing.year) : null;
-    if (floor) {
-      const held = { seq: Number(floor.seq), number: floor.number, issueDate: floor.issueDate, reserved: true, deleted: floor.deleted === true };
+    // Seriden ayrılmış ama belgesi duran en büyük numara (lastIssued) belgenin komşusuysa o da sırada yer tutar; silinen belgenin tarihi tutmaz (r31e N1).
+    const kept = existing.seq > 0 ? keptOf(floorOf(existing.series, existing.year)) : null;
+    if (kept) {
+      const held = { ...kept, reserved: true };
       if (held.seq < existing.seq && !(prev && prev.seq >= held.seq)) prev = held;
       if (held.seq > existing.seq && !(next && next.seq <= held.seq)) next = held;
     }
@@ -3122,6 +3128,23 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       null
     );
   }
+  // r31e N1 (karar 23.10.2026): silinen belgenin tarihi sırayı bağlamadığı için (lastIssued) silindikten sonra seriye daha eski tarihli belge girmiş
+  // olabilir; geri yüklenen belge KENDİ numarasıyla döner, sırayı bozacaksa reddedilir. Bozulma: geri dönen belgeden BÜYÜK numaralı bir belge daha ESKİ
+  // tarihli ya da KÜÇÜK numaralı bir belge daha YENİ tarihli (seride duran — iptal edilmiş dahil — ya da seriden ayrılmış ama belgesi duran numara; aynı
+  // gün serbest). Yalnız programın e-Belge DIŞI serileri (paperSeriesSet: Fiş ve Kâğıt Belge, Serbest Meslek Makbuzu, İç İade); e-Belge serilerinin
+  // kuralı değişmez. En yakın komşu değil, sırayı bozan HER belge aranır (eski veride seri kendi içinde sırasız olabilir).
+  function restoreOrderProblem(row) {
+    if (!(Number(row.seq) > 0) || !row.number || !row.issue_date || !paperSeriesSet(settings()).has(row.series)) return null;
+    const pick = "SELECT seq, number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0";
+    const later = store.get(`${pick} AND seq > ? AND issue_date < ? ORDER BY seq LIMIT 1`, row.series, row.year, row.seq, row.issue_date);
+    const earlier = store.get(`${pick} AND seq < ? AND issue_date > ? ORDER BY seq DESC LIMIT 1`, row.series, row.year, row.seq, row.issue_date);
+    const kept = keptOf(floorOf(row.series, Number(row.year)));
+    const keptBreaks = kept && ((kept.seq > Number(row.seq) && kept.issueDate < row.issue_date) || (kept.seq < Number(row.seq) && kept.issueDate > row.issue_date));
+    const other = later || earlier || (keptBreaks ? { ...kept, reserved: true } : null);
+    if (!other) return null;
+    const side = Number(other.seq) > Number(row.seq) ? "sonraki numara, daha eski tarih" : "önceki numara, daha yeni tarih";
+    return { other, text: `${INVOICE_KINDS[row.kind]?.label || "Belge"} ${row.number} (${dayText(row.issue_date)}) geri yüklenmez: geri yüklenirse numara ve tarih sırası bozulur — ${issuedText(other)} ${dayText(other.issueDate)} tarihli (${side}). Belge Silinenler'de kalır.` };
+  }
   function restoreDeleted(user, item, payload) {
     const raw = payload?.invoice;
     if (!raw?.id) throw new HttpError(409, "Belgenin bilgisi eksik; geri yüklenemez.");
@@ -3140,6 +3163,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     // taslak serbest (izde yok, silmede de serbest). Önceden belge kapıdan geçmeden (invoices kapının izlediği tablolarda değil) kilitli döneme
     // yazılıyor, Mutabakat Testi "Kapanmış dönem" sapması veriyordu. Kalıcı ret (numara başkasında) önce: kilit açtırıp sonra reddetmeyiz.
     if (row.status !== "draft") period?.assertOpen(row.issue_date, `Bu ${label.toLocaleLowerCase("tr-TR")}`);
+    // r31e N1: sıra-tarih en son — sıra seride DURAN öbür belgelere bağlıdır (kullanıcı onları düzeltip yeniden deneyebilir); numara reddi kalıcıdır,
+    // kilit yöneticinin dönem kararıdır (kilitli dönemde sıra sorusu anlamsız: kilit açılınca yeniden denetlenir). Sıra: numara → kilit → sıra-tarih.
+    const order = row.status === "draft" ? null : restoreOrderProblem(row);
+    if (order) throw new HttpError(409, order.text, { code: "invoice-restore-chronology", number: row.number, otherNumber: order.other.number });
     if (row.status === "issued") {
       row.status = "cancelled";
       row.cancelled_by = user.id;

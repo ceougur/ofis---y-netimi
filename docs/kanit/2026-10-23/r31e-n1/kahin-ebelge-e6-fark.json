@@ -1,0 +1,103 @@
+{
+ "ad": "hedefli-244-e6-silinen-numara",
+ "dil": "destekofis-ebelge/3",
+ "ux15": true,
+ "tohum": null,
+ "islem": 26,
+ "bugun": "2026-06-17",
+ "farkSayisi": 4,
+ "ihlalSayisi": 1,
+ "safModelSonFark": 6,
+ "farklar": [
+  {
+   "belge": "B3",
+   "alan": "var",
+   "model": false,
+   "program": true,
+   "adim": 4,
+   "islem": "kagit_kaydet",
+   "sinif": "BASKA-FIS-SIRA-ARDIL (FIS serisi önceden sıra-tarih bozuk; kâğıt kaydı son numaranın tarihine göre denetleniyor)"
+  },
+  {
+   "belge": "B3",
+   "alan": "yanit",
+   "model": "4xx",
+   "program": 200,
+   "kod": "",
+   "adim": 4,
+   "islem": "kagit_kaydet",
+   "sinif": "BASKA-FIS-SIRA-ARDIL (FIS serisi önceden sıra-tarih bozuk; kâğıt kaydı son numaranın tarihine göre denetleniyor)"
+  },
+  {
+   "belge": "B2",
+   "alan": "cop",
+   "model": false,
+   "program": true,
+   "adim": 6,
+   "islem": "geri_yukle",
+   "sinif": "BASKA"
+  },
+  {
+   "belge": "B2",
+   "alan": "yanit",
+   "model": "2xx",
+   "program": 409,
+   "kod": "invoice-restore-chronology",
+   "adim": 6,
+   "islem": "geri_yukle",
+   "sinif": "BASKA"
+  }
+ ],
+ "ihlaller": [
+  {
+   "adim": 4,
+   "islem": "kagit_kaydet",
+   "kod": "I2",
+   "ileti": "FIS2026: 3 (B3, 2026-06-15) önceki 2 (B2, 2026-06-16) belgesinden eski tarihli",
+   "yineleme": 22,
+   "seri": "FIS2026",
+   "belge": "B3",
+   "sinif": "BASKA"
+  }
+ ],
+ "catalSecimleri": [
+  {
+   "adim": 6,
+   "aday": 2,
+   "secilen": [
+    "B2: Silinenler'den önceki durumuyla döndü"
+   ]
+  },
+  {
+   "adim": 20,
+   "aday": 2,
+   "secilen": [
+    "B10: Silinenler'den etkisiz (iptal) döndü"
+   ]
+  },
+  {
+   "adim": 24,
+   "aday": 2,
+   "secilen": [
+    "B1: Silinenler'den etkisiz (iptal) döndü"
+   ]
+  },
+  {
+   "adim": 25,
+   "aday": 2,
+   "secilen": [
+    "B7: Silinenler'den etkisiz (iptal) döndü"
+   ]
+  }
+ ],
+ "eStatusDegerleri": {
+  "none": 87,
+  "waiting": 13,
+  "sent": 28,
+  "withdrawn": 3
+ },
+ "incele": [],
+ "okunamayanUbl": 0,
+ "kucultulmus": null,
+ "sure": 2.2
+}

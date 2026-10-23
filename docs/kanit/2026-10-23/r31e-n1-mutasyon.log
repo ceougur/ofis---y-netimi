@@ -1,0 +1,15 @@
+YAKALANDI · M1 tarih bağı geri (sıra-tarih tabanı silinen belgenin tarihini sayar) · çıkış 1 · fail 5 · kırmızı: not ok 1 - A1 yanlış (ileri) tarihli fiş silinir → doğru (daha eski) tarihli fiş kesilir, numara yeniden verilmez; canlı fişten eskisi yine 400; silin | not ok 2 - A2 toplu silme: en geç tarihli silinen fiş seriyi o güne bağlamaz; kâğıt makbuz (SMM) serisinde de | not ok 4 - A4 iptal edilmiş belge de sırada yer tutar: daha eski tarihli büyük numaralı belge iptal edilse de geri yükleme 409
+YAKALANDI · M2 geri yükleme sıra denetimi kaldırıldı · çıkış 1 · fail 6 · kırmızı: not ok 1 - A1 yanlış (ileri) tarihli fiş silinir → doğru (daha eski) tarihli fiş kesilir, numara yeniden verilmez; canlı fişten eskisi yine 400; silin | not ok 2 - A2 toplu silme: en geç tarihli silinen fiş seriyi o güne bağlamaz; kâğıt makbuz (SMM) serisinde de | not ok 3 - A3 Düzenle silinen komşunun tarihine bağlı değil; küçük numaralı belge daha yeni tarihliyse geri yükleme 409; sıra uyunca 200 kendi numaras
+YAKALANDI · M3 kept yok sayılır (taşınan numaranın tarihi taban değil) · çıkış 1 · fail 2 · kırmızı: not ok 1 - B1 FIS…001 (bugün−2) bırakılıp e-Arşiv olarak gönderilir, FIS…002 (bugün) bırakılıp silinir: taban taşınan FIS…001'in tarihi (bugün−3 kâğıt | not ok 1 - C1 sıradan bağımsız: en büyük numara + en büyük silinmemiş numara; eski kayıt (kept yok) silinmişse tarih bağlamaz; kayıt yalnız yükselir
+YAKALANDI · M4 geri yüklemede yalnız sonraki taraf (küçük numara daha yeni tarih görülmez) · çıkış 1 · fail 1 · kırmızı: not ok 3 - A3 Düzenle silinen komşunun tarihine bağlı değil; küçük numaralı belge daha yeni tarihliyse geri yükleme 409; sıra uyunca 200 kendi numaras
+YAKALANDI · M5 sıra-tarih kilitten önce · çıkış 1 · fail 1 · kırmızı: not ok 5 - A5 sıra: dönem kilidi sıra-tarihten önce (period-locked); kilit açılınca sıra iletisi; numarası başkasında olan belgede önce invoice-number
+YAKALANDI · M6 v32 eski birleşim (Silinenler en büyükse taşınan tarih kaybolur) · çıkış 1 · fail 1 · kırmızı: not ok 1 - B1 FIS…001 (bugün−2) bırakılıp e-Arşiv olarak gönderilir, FIS…002 (bugün) bırakılıp silinir: taban taşınan FIS…001'in tarihi (bugün−3 kâğıt
+YAKALANDI · M7 Düzenle silinen komşunun tarihine bağlı · çıkış 1 · fail 1 · kırmızı: not ok 3 - A3 Düzenle silinen komşunun tarihine bağlı değil; küçük numaralı belge daha yeni tarihliyse geri yükleme 409; sıra uyunca 200 kendi numaras
+YAKALANDI · M8 iptal edilmiş belge sırada sayılmaz · çıkış 1 · fail 1 · kırmızı: not ok 4 - A4 iptal edilmiş belge de sırada yer tutar: daha eski tarihli büyük numaralı belge iptal edilse de geri yükleme 409
+YAKALANDI · M6q (Y8) ownPaymentLines çek olaylarını saymaz · çıkış 1 · fail 1 · kırmızı: not ok 13 - T11b yalnız faturanın kendi formundan alınan çek varken Düzenle → taksitli izinli: kalan 200 TL karta, çek tek ve faturanın; Mutabakat Tes
+# tests 9
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

@@ -14,7 +14,8 @@
 //   N6  iki oturum aynı anda: biri siler, öbürü bırakır (iki sıra)                   → S5
 //   N7  002 şirketi kendi tabanını tutar                                              → S6
 //   N8  eski veri: numara arada verilmişse geri yükleme 409, belge Silinenler'de      → S7 (gerçek v2.4.3 verisiyle: test/goc-244-silinen-numara.test.mjs)
-//   N9  numara–tarih sırası: silinen son belgenin tarihi serinin son tarihi; ileti "belge silindi" der → S4
+//   N9  numara–tarih sırası: silinen son belgenin NUMARASI kullanılmış, TARİHİ sırayı bağlamaz (r31e N1, 23.10.2026; önceden "serinin son tarihi") → S4
+//       (yanlış tarihle silinen fişin doğru tarihle yeniden kesilmesi ve sırayı bozan geri yükleme: test/numara-silinen-tarih-244.test.mjs)
 //   N10 taslak / numarasız bekleyen silmek tabanı değiştirmez                         → S4
 //   N12 geri yüklenen belge kendi numarasıyla; sonraki numara değişmez                → S1, S2
 // Kâhin: karar metni (yukarıda) + veri tabanı sayımı (bir numara en çok bir canlı belgede: number ∪ paper_no). Bu dosya programla aynı elden (ders 5).
@@ -148,7 +149,7 @@ describe("E6: silinen kâğıt / fiş belgenin numarası kullanılmış sayılı
     }
   });
 
-  test("S4 numara–tarih sırası: silinen son fişin tarihi serinin son tarihidir (ileti 'belge silindi' der); taslak ve numarasız bekleyeni silmek tabanı değiştirmez", async () => {
+  test("S4 numara–tarih sırası: silinen son fişin numarası kullanılmış kalır, tarihi sırayı bağlamaz (ileti seride duran son belgeyi anar); taslak ve numarasız bekleyeni silmek tabanı değiştirmez", async () => {
     const floor = () => JSON.parse(ctx.store.get("SELECT value FROM settings WHERE key = 'invoice.numberFloor'")?.value || "{}").FIS2026;
     assert.equal(floor().seq, 5, JSON.stringify(floor()));
     assert.equal(floor().deleted, true);
@@ -159,14 +160,15 @@ describe("E6: silinen kâğıt / fiş belgenin numarası kullanılmış sayılı
     assert.equal(left.status, 409, JSON.stringify(left.data));
     assert.equal(left.data.code, "chronology");
     assert.match(left.data.error, /FIS serisinde son belge FIS2026000000006/, left.data.error);
-    // Son silinen belge en büyük numaraysa ileti onu "silindi" diye anar (e-Belge olarak gönderildi demez).
+    // Bilerek güncellendi (r31e N1, karar 23.10.2026): son silinen belge en büyük numara olsa da TARİHİ sırayı bağlamaz — engel seride duran FIS…006
+    // (bugün); önceden ileti silinen FIS…007'yi "belge silindi" diye anıyordu. Numarası yine verilmez (aşağıda sıradaki FIS…008).
     const g = await ctx.slip("G");
     assert.equal(g.number, fis(7));
     await ctx.must("G sil", ctx.remove(g.id));
     const again = await ctx.withdraw(old.id);
     assert.equal(again.status, 409);
-    assert.match(again.data.error, new RegExp(`son belge ${fis(7)} \\(belge silindi; numara kullanılmış sayılır\\)`), again.data.error);
-    assert.doesNotMatch(again.data.error, /e-Belge olarak gönderildi/);
+    assert.match(again.data.error, new RegExp(`son belge ${fis(6)} 17\\.06\\.2026 tarihli`), again.data.error);
+    assert.doesNotMatch(again.data.error, /belge silindi|e-Belge olarak gönderildi/);
     await ctx.must("dünkü iptal", ctx.api.post(`/api/workspace/invoices/${old.id}/cancel`, { reason: "test: sıra" }));
     const before = JSON.stringify(floor());
     const draft = await ctx.must("taslak", ctx.sale({ status: "draft" }));

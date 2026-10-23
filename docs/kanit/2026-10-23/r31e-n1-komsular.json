@@ -1,0 +1,32 @@
+{
+  "ad": "r31e-n1-komsular",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/accounts-stock.test.mjs test/backup.test.mjs test/banka-210-altin.test.mjs test/banka-210-goc-zinciri.test.mjs test/banka-210-goc.test.mjs test/banka-210-onarim.test.mjs test/banka-210-post-statik.test.mjs test/banka-220-hesap-kart.test.mjs test/banka-230-46-iade-iptal.test.mjs test/banka-230-supheli-bozma.test.mjs test/columns.test.mjs test/dataset.test.mjs test/duzeltmeler-211.test.mjs test/ebelge-243-gonderim.test.mjs test/ebelge-244-secilenleri-gonder.test.mjs test/einvoice-edm.test.mjs test/ertelenen-224.test.mjs test/esmm-gonderim-244.test.mjs test/fatura-215.test.mjs test/fatura-216.test.mjs test/fatura-217.test.mjs test/fatura-230-ayarlar-banka.test.mjs test/fatura-243-stok-kdv.test.mjs test/fatura-244-numara-tarih-onay.test.mjs test/fatura-buyuk-tutar-210.test.mjs test/fatura-durum-222.test.mjs test/fatura-liste-243-fark.test.mjs test/fatura-model.test.mjs test/gg243-dar-kontrol-gonderim.test.mjs test/gg243-dar2-iade-sira.test.mjs test/gg243-dar3-stok.test.mjs test/gg243-dar3.test.mjs test/gg243-gonderim.test.mjs test/goc-243-iade-ref.test.mjs test/goc-243-stok-acilis.test.mjs test/goc-243-stok-kdv.test.mjs test/goc-244-esmm-gonderim.test.mjs test/goc-244-iptal-suresi.test.mjs test/goc-244-numara-tabani.test.mjs test/goc-244-silinen-numara.test.mjs test/iade-224.test.mjs test/import-crash.test.mjs test/kullanici-yetki-210.test.mjs test/migrations.test.mjs test/names.test.mjs test/numara-silinen-244.test.mjs test/numara-silinen-tarih-244.test.mjs test/numara-tekil-244.test.mjs test/personel-ozluk-244.test.mjs test/silinenler-donem-kilidi-244.test.mjs test/stopaj-tevkifat-iade-244.test.mjs test/trash.test.mjs test/update-flow.test.mjs test/upgrade-identity.test.mjs test/ux18-cek-fatura-244.test.mjs test/yedek-220-inceleme.test.mjs test/yedek-220.test.mjs test/yazim-duzeni.test.mjs test/platform-tasinabilirlik.test.mjs test/lisans-servisi-izolasyonu.test.mjs",
+  "commit": "39382c4f72974d1cc180a90a377076cca6f34d44",
+  "dal": "is/r31e-n1",
+  "kirli": 4,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T03:26:30.790Z",
+  "sure_sn": 384.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 592,
+    "gecen": 592,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/r31e-n1-komsular.log",
+  "klasor": "/home/user/wt/r31e-n1",
+  "ham_cikti_sha256": "b8f01be46536518534cd22271d3644f6cecde4fb568ae034ea28a10c08e3b466",
+  "ham_cikti_bayt": 229704
+}

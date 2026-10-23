@@ -1,0 +1,68 @@
+{
+  "ad": "r31e-n1-kirmizi-eski-39382c4",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/numara-silinen-tarih-244.test.mjs",
+  "commit": "39382c4f72974d1cc180a90a377076cca6f34d44",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T03:24:31.307Z",
+  "sure_sn": 3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 0,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "r31e N1 — silinen kâğıt / fiş belgenin tarihi sırayı bağlamaz; geri yükleme sırayı bozamaz (e-Belge kapalı: Müşteri Fişi serisi) › A1 yanlış (ileri) tarihli fiş silinir → doğru (daha eski) tarihli fiş kesilir, numara yeniden verilmez; canlı fişten eskisi yine 400; silinen geri yüklenirse sıra bozulur → 409",
+      "konum": "test/numara-silinen-tarih-244.test.mjs:80:3",
+      "hata": "satış 2026-06-14: 400 {\"ok\":false,\"error\":\"FIS serisinde son belge FIS2026000000002 (belge silindi; numara kullanılmış sayılır) 17.06.2026 tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı). Belge tarihini 17.06.2026 ya da sonrası yapın.\",\"code\":\"chronology\",\"field\":\"issueDate\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "r31e N1 — silinen kâğıt / fiş belgenin tarihi sırayı bağlamaz; geri yükleme sırayı bozamaz (e-Belge kapalı: Müşteri Fişi serisi) › A2 toplu silme: en geç tarihli silinen fiş seriyi o güne bağlamaz; kâğıt makbuz (SMM) serisinde de",
+      "konum": "test/numara-silinen-tarih-244.test.mjs:104:3",
+      "hata": "satış 2026-06-13: 400 {\"ok\":false,\"error\":\"FIS serisinde son belge FIS2026000000003 (belge silindi; numara kullanılmış sayılır) 17.06.2026 tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı). Belge tarihini 17.06.2026 ya da sonrası yapın.\",\"code\":\"chronology\",\"field\":\"issueDate\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "r31e N1 — silinen kâğıt / fiş belgenin tarihi sırayı bağlamaz; geri yükleme sırayı bozamaz (e-Belge kapalı: Müşteri Fişi serisi) › A3 Düzenle silinen komşunun tarihine bağlı değil; küçük numaralı belge daha yeni tarihliyse geri yükleme 409; sıra uyunca 200 kendi numarasıyla",
+      "konum": "test/numara-silinen-tarih-244.test.mjs:129:3",
+      "hata": "A ileri tarihe: 400 {\"ok\":false,\"error\":\"Sonraki belge FIS2026000000002 (belge silindi; numara kullanılmış sayılır) 13.06.2026 tarihli; bu belge ondan yeni tarihli olamaz (numara ve tarih sırası).\",\"code\":\"chronology\",\"field\":\"issueDate\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "r31e N1 — silinen kâğıt / fiş belgenin tarihi sırayı bağlamaz; geri yükleme sırayı bozamaz (e-Belge kapalı: Müşteri Fişi serisi) › A4 iptal edilmiş belge de sırada yer tutar: daha eski tarihli büyük numaralı belge iptal edilse de geri yükleme 409",
+      "konum": "test/numara-silinen-tarih-244.test.mjs:148:3",
+      "hata": "satış 2026-06-14: 400 {\"ok\":false,\"error\":\"FIS serisinde son belge FIS2026000000002 (belge silindi; numara kullanılmış sayılır) 17.06.2026 tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı). Belge tarihini 17.06.2026 ya da sonrası yapın.\",\"code\":\"chronology\",\"field\":\"issueDate\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "r31e N1 — silinen kâğıt / fiş belgenin tarihi sırayı bağlamaz; geri yükleme sırayı bozamaz (e-Belge kapalı: Müşteri Fişi serisi) › A5 sıra: dönem kilidi sıra-tarihten önce (period-locked); kilit açılınca sıra iletisi; numarası başkasında olan belgede önce invoice-number-taken",
+      "konum": "test/numara-silinen-tarih-244.test.mjs:163:3",
+      "hata": "satış 2026-06-14: 400 {\"ok\":false,\"error\":\"FIS serisinde son belge FIS2026000000002 (belge silindi; numara kullanılmış sayılır) 16.06.2026 tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı). Belge tarihini 16.06.2026 ya da sonrası yapın.\",\"code\":\"chronology\",\"field\":\"issueDate\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "r31e N1 — e-Belge açık: taşınan numaranın tarihi taban kalır; Müşteri Fişi Olarak Bırak; v32 aynı kaydı üretir › B1 FIS…001 (bugün−2) bırakılıp e-Arşiv olarak gönderilir, FIS…002 (bugün) bırakılıp silinir: taban taşınan FIS…001'in tarihi (bugün−3 kâğıt kayıt 400); bugün−1 bırakılır; v32 taraması aynı kaydı üretir; silinen geri yüklenmez",
+      "konum": "test/numara-silinen-tarih-244.test.mjs:209:3",
+      "hata": "taban: en büyük numara silinen FIS…002, sıra-tarih tabanı taşınan FIS…001 · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "r31e N1 — taban kaydının birleştirme kuralı (lib/number-floor.mjs) › C1 sıradan bağımsız: en büyük numara + en büyük silinmemiş numara; eski kayıt (kept yok) silinmişse tarih bağlamaz; kayıt yalnız yükselir",
+      "konum": "test/numara-silinen-tarih-244.test.mjs:246:3",
+      "hata": "Cannot find module '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-n1-eski-39382c4/server/lib/number-floor.mjs' imported from /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-n1-eski-39382c4/test/numara-silinen-tarih-244.test.mjs"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/wt/r31e-n1/docs/kanit/2026-10-23/r31e-n1-kirmizi-eski-39382c4.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-n1-eski-39382c4",
+  "ham_cikti_sha256": "44e7747918c07328a1e6f2f294eecede1f2d8269a5e7f71413d19571d0e96ed1",
+  "ham_cikti_bayt": 14170
+}
