@@ -14,7 +14,7 @@
 import { primaryColumns } from "./insight/columns.mjs";
 import { isFlaggedRow, isTotalRow } from "./insight/cells.mjs";
 import { amountCandidates, debtByRecord, debtPlan, isNotAmountHeader, rowDebt } from "./insight/debt-column.mjs";
-import { foldText, parseAmount, parseDate } from "./insight/validators.mjs";
+import { foldText, isTckn, isVkn, parseAmount, parseDate } from "./insight/validators.mjs";
 import { fromCents, toCents } from "./money.mjs";
 
 // Para toplamları kuruş (tamsayı) üzerinden: kayan nokta kalıntısı (11362.720000000001) API'ye, bakiye satırlarına ve toplamlara taşınmaz (aday 13 yan bulgusu).
@@ -32,9 +32,10 @@ const phoneKey = value => {
   return digits.length >= 10 ? digits.slice(-10) : "";
 };
 // Kimlik: 11 haneli T.C. Kimlik No ya da 10 haneli Vergi No (yalnız rakamlar); başka uzunluk kimlik sayılmaz.
+// 31e V1: sağlaması tutmayan numara (yazım hatası, yer tutucu 11111111111 / 0000000000) kişi gruplamasında kimlik sayılmaz.
 const identityKey = value => {
   const digits = String(value ?? "").replace(/\D/g, "");
-  return digits.length === 10 || digits.length === 11 ? digits : "";
+  return (digits.length === 11 && isTckn(digits)) || (digits.length === 10 && isVkn(digits)) ? digits : "";
 };
 export const cariKeyOf = (name, phone = "") => {
   const folded = foldText(name);
@@ -218,9 +219,9 @@ export function tableNotes({ split = [], overpaid = 0 } = {}) {
 // ---------- Kişi (grup) kimliği ----------
 // 31a N5 (aynı adlı iki kişi): ad aynı, telefonlar FARKLIYSA iki ayrı kişidir; adın tek telefonu varsa (ya da hiç yoksa) bütün kayıtlar tek kişidir — telefonsuz kayıt
 // da (iki dosyadaki aynı cari, v2.0.2 cross-match). Birden çok telefonlu adın telefonsuz kaydı tahmin edilmez, ayrı grupta kalır.
-// 31e C3: kimlik (T.C. Kimlik No / Vergi No) önce gelir — kimliği olan kayıt kimliğiyle gruplanır (aynı kimlik ad yazımı farklı olsa da tek kişi; aynı ad, farklı
-// kimlik ayrı kişi). Kimliği boş kayıt bugünkü kuralla (ad + telefon) TEK bir kimliğe uyuyorsa o kişiye katılır; birden çok kimliğe uyuyorsa tahmin edilmez,
-// ad (+ telefon) grubunda kalır. Aynı adı taşıyan birden çok grup varsa kimlikli grubun adına "(TC …)" / "(VKN …)" eklenir; Vadeler aynı adı yazar.
+// 31e C3 / D1: kimlik (T.C. Kimlik No / Vergi No) yalnız AYNI adlı grupları ayırır — aynı ad, farklı kimlik ayrı kişi; farklı ad aynı kimlik ayrı kişi (v2.4.3 gibi;
+// yer tutucu kimlik). Aynı adın kimliği boş kaydı bugünkü kuralla (ad + telefon) TEK bir kimliğe uyuyorsa o kişiye katılır; birden çok kimliğe uyuyorsa tahmin
+// edilmez, ad (+ telefon) grubunda kalır. Aynı adı taşıyan birden çok grup varsa kimlikli grubun adına "(TC …)" / "(VKN …)" eklenir; Vadeler aynı adı yazar.
 export function personIndex(records) {
   const phonesByName = new Map();
   const idsByName = new Map(); // ad → [{ identity, phone }]
@@ -233,17 +234,27 @@ export function personIndex(records) {
     }
     if (record.identity) {
       if (!idsByName.has(record.cariKey)) idsByName.set(record.cariKey, []);
-      idsByName.get(record.cariKey).push({ identity: record.identity, phone });
+      idsByName.get(record.cariKey).push({ identity: record.identity, phone, slot: `${record.session || ""}\u0000${record.key}` });
     }
   }
+  // 31e D1: kimlik yalnız AYNI adlı grupları ayırır — adın birden çok farklı kimliği varsa her kimlik ayrı kişi; farklı adlar kimlik yüzünden birleşmez (yer tutucu
+  // kimlik — TC 11111111111, VKN 0000000000 — farklı kişileri tek gruba topluyordu; 17cc5f4 gerilemesi). Adsız kayıt kendi kimliğiyle (yoksa dosya no) gruplanır.
   const keyOf = record => {
-    if (record.identity) return `t:${record.identity}`;
-    if (!record.cariKey) return `k:${record.key}`;
+    if (!record.cariKey) return record.identity ? `t:${record.identity}` : `k:${record.key}`;
     const byPhone = (phonesByName.get(record.cariKey)?.size || 0) >= 2;
     const phone = phoneKey(record.phone);
+    const plain = byPhone ? `${record.cariKey}|${phone}` : record.cariKey;
+    const ids = new Set((idsByName.get(record.cariKey) || []).map(entry => entry.identity));
+    if (ids.size < 2) return plain;
+    if (record.identity) return `${record.cariKey}|t:${record.identity}`;
+    // 31e V2: adın birden çok kimliği varken kimliksiz satır, AYNI dosya no'yu taşıyan kimlikli satırın kişisine katılır (kimlik sütunu olmayan sekmedeki aynı dosya);
+    // dosya no iki farklı kimlikte geçiyorsa tahmin edilmez. Eşleşme yoksa bugünkü kural (telefon) ya da adın kimliksiz grubu.
+    const slot = `${record.session || ""}\u0000${record.key}`;
+    const sameFile = new Set((idsByName.get(record.cariKey) || []).filter(entry => entry.slot === slot).map(entry => entry.identity));
+    if (sameFile.size === 1) return `${record.cariKey}|t:${[...sameFile][0]}`;
+    if (sameFile.size > 1) return plain;
     const matches = new Set((idsByName.get(record.cariKey) || []).filter(entry => !byPhone || (phone && entry.phone === phone)).map(entry => entry.identity));
-    if (matches.size === 1) return `t:${[...matches][0]}`;
-    return byPhone ? `${record.cariKey}|${phone}` : record.cariKey;
+    return matches.size === 1 ? `${record.cariKey}|t:${[...matches][0]}` : plain;
   };
   const keysByName = new Map();
   for (const record of records) {
@@ -255,8 +266,9 @@ export function personIndex(records) {
   const labelOf = record => {
     const base = record.cari || record.id || record.key;
     const key = keyOf(record);
-    if (!key.startsWith("t:") || (keysByName.get(record.cariKey)?.size || 0) < 2) return base;
-    const identity = key.slice(2);
+    const at = key.indexOf("|t:");
+    if (at < 0 || (keysByName.get(record.cariKey)?.size || 0) < 2) return base;
+    const identity = key.slice(at + 3);
     return `${base} (${identity.length === 11 ? "TC" : "VKN"} ${identity})`;
   };
   return { keyOf, labelOf };

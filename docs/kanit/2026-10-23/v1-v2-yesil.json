@@ -1,0 +1,32 @@
+{
+  "ad": "v1-v2-yesil",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/tablo-borc-r31e.test.mjs test/ice-alma-sayi-hucre.test.mjs test/ice-alma-sayi-hucre-api.test.mjs",
+  "commit": "3e04e9b7b9c359585f1eb0d996ccdbb5a8be1b34",
+  "dal": "is/r31e-d",
+  "kirli": 4,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T06:21:14.067Z",
+  "sure_sn": 5.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 43,
+    "gecen": 43,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/v1-v2-yesil.log",
+  "klasor": "/home/user/wt/r31e-d",
+  "ham_cikti_sha256": "d914400c76ba46e5779a08695a01b434e77a14bff62cdae7a8a3105c4038a672",
+  "ham_cikti_bayt": 18612
+}

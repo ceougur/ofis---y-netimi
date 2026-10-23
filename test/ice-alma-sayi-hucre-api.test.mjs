@@ -62,6 +62,16 @@ describe("31e sayı hücresi: içe alma yolları (API)", () => {
     assert.deepEqual([balanceOf("Cari Sayı"), balanceOf("Cari Dizge")], [12.13, 12125]);
   });
 
+  test("N1: açılış bakiyesi 0,005 (sayı hücresi ve Yeni Cari dizgesi) 0,01 yazılır, 0,004 yazılmaz — öbür yollarla aynı; '1,234.56' (İngilizce) 1.234,56 (B8/B9/B10)", async () => {
+    const matrix = [["Ad Soyad", "Telefon", "Bakiye"], ["Yarım Kuruş", "0532 000 00 11", 0.005], ["Kuruş Altı", "0532 000 00 12", 0.004], ["İngilizce Yazım", "0532 000 00 13", "1,234.56"]];
+    const preview = await must("ön izleme", admin.post("/api/workspace/accounts/import/preview", { matrix }));
+    await must("yükle", admin.post("/api/workspace/accounts/import", { matrix, headerAt: preview.headerAt, roles: preview.roles }));
+    await must("Yeni Cari", admin.post("/api/workspace/accounts", { name: "Elle Yarım Kuruş", type: "customer", phone: "0532 000 00 14", openingBalance: "0,005" }));
+    const accounts = (await must("cariler", admin.get("/api/workspace/accounts"))).accounts;
+    const balanceOf = name => accounts.find(item => item.name === name)?.balance;
+    assert.deepEqual([balanceOf("Yarım Kuruş"), balanceOf("Kuruş Altı"), balanceOf("İngilizce Yazım"), balanceOf("Elle Yarım Kuruş")], [0.01, 0, 1234.56, 0.01]);
+  });
+
   test("Excel'den taksit kartı: Toplam Tutar 1200.125 (sayı) → kart 1.200,13 (S5)", async () => {
     const matrix = [["Ad Soyad", "Toplam Tutar", "Taksit Sayısı", "İlk Vade"], ["Taksit Sayı", 1200.125, 3, d(10)]];
     const preview = await must("ön izleme", admin.post("/api/workspace/plans/import/preview", { matrix }));
