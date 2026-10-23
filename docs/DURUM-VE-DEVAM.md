@@ -17,7 +17,12 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
 - ÇALIŞMA DALI (claude/youthful-euler-fl8ks4) kod durumu: aday 4 = 2fb1d33 (CI #859 BÜTÜN İŞLER YEŞİL); aday 5 = 0c1ae0d (kapı npm test 3132/3132 + 64/64 e2e + 6 kâhin
   yeşil) → CI #860 BÜTÜN İŞLER YEŞİL (22.10 ~15:35 UTC okundu; madde 24 çizildi). #860 YEŞİLSE iş listesinde 24 (gerçek EDM uçtan uca: gercek-5 55/55 + düzeltmeler + kılavuz
   + açma) çizilir; 31a "son koşu" son adayın CI'sinde (kâhinler CI'da). KIRMIZIYSA: başarısız testin adı kısa günlükte, kök neden (ders 6/20/38).
-- GÜNCEL (22.10 ~20:45 UTC): ADAY 7 KAPISI YEŞİL → çalışma dalında (ed37e78 = aday7 846365c: çalışma dalı + is/m30-e2e + is/m30-goc + is/kanit-alt + is/b2-uyari
+- GÜNCEL (23.10 ~00:25 UTC): CI #862 (50e3bd0 = aday 7) YEŞİL. 31 bağımsız turu bitti (31b mali müşavir, 31c yargıç, 31d eleştirmen, 31f UI/UX); bulgular 5 dk
+  yetkisiyle karara bağlandı (CLAUDE.md Açık iş 22.10 gecesi). ADAY 8 (/home/user/wt/aday8 54bf0e6) = bütün bulgu düzeltmeleri (is/e5, e1, u1, e67, mm-rapor, mm-smm,
+  e23 + daraltma, ui-son); her dalın kırmızı/yeşil/mutasyon kanıtı ana oturumca denetlendi. KAPI SÜRÜYOR (aday-kos.sh aday8 8). Ajan kimlikleri not defteri
+  devam-ajanlar.md. SÜRENLER: teslim belgeleri (is/teslim-belge), kâhin güncellemesi (is/kahin-244, kodu görmeden). SIRADAKİ: göç karşılaştırması (Y3) → 31e dar
+  kontrol → aday 9 → çalışma dalı → CI → windows.yml ×2 (32a) → Uzun Doğrulama ∥ paket → teslim → PR.
+- ESKİ (22.10 ~20:45 UTC): ADAY 7 KAPISI YEŞİL → çalışma dalında (ed37e78 = aday7 846365c: çalışma dalı + is/m30-e2e + is/m30-goc + is/kanit-alt + is/b2-uyari
   (+ acf156f fark testi) + is/ci861 (CI #861 düzeltmesi, test/e2e/pencere-yaris-zorla.mjs, ders 39) + is/gezinti-g (30d G1–G6) + is/b1-kalan (30a, 30e, 30f)). Kapı: tam npm test
   3178/3180 (04d7785; 2 kırmızı fatura-liste-243-fark — 30b'nin restoreNotice yanıt alanı, beklenti eski; test düzeltildi 4/4 489bfb7, ürün kodu aynı), ci.yml 64/64 e2e,
   6 kâhin (defter 147, cari 1364, tutar 3472, e-Belge modeli 82, mutasyon 36, senaryo 20) yeşil. SIRADAKİ: CI (ders 21; yeşilse 7d, 24b, 30, 30a, 30b, 30d, 30e, 30f
