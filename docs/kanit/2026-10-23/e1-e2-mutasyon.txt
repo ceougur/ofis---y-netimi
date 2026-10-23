@@ -1,0 +1,15 @@
+e1/e2 mutasyonlari (taban: is/r31e-e = aday16 624810b + E1/E2; komut: node --test test/tablo-borc-e1-e2.test.mjs)
+mw1 columns.mjs: V1 rolu yeniden id (kayit kimligi adayi; E1 geri)
+mw2 debt-column.mjs: vergi sutunu borc adayi (E2 geri)
+mw3 debt-column.mjs: GRAND_TOTAL_WINS=false (karar B; tek yer)
+mw4 reports.mjs: borc sutunu secilemedi notu yok
+--- mw1: # tests 4 # pass 2 # fail 2 
+    not ok 1 - roller: Vergi No / Vergi Numarası / Vergi Kimlik No → number (kod); Kimlik No → id, VKN / TC → number (2.4.3 gibi); tutar değil (B1/B2)
+    not ok 2 - 2.4.3'te yüklenmiş dosya no'suz tablo 'Yerine koy' ile yeniden yüklenince kayıt anahtarı ve 400 TL kayıt tahsilatı korunur (E1)
+--- mw2: # tests 4 # pass 2 # fail 2 
+    not ok 1 - Faturalar: borç Genel Toplam (KDV dahil; karar A) 1.200 / 2.400 / 3.600; KDV ve Vergi Tutarı sekmelerinde borç Tutar (500, 700) (B3/B4)
+    not ok 2 - Masraflar (Tutar + Masraf, borç sütunu seçilemedi): borç sayılmaz ama raporda görünür not (B5)
+--- mw3: # tests 4 # pass 3 # fail 1 
+    not ok 1 - Faturalar: borç Genel Toplam (KDV dahil; karar A) 1.200 / 2.400 / 3.600; KDV ve Vergi Tutarı sekmelerinde borç Tutar (500, 700) (B3/B4)
+--- mw4: # tests 4 # pass 3 # fail 1 
+    not ok 2 - Masraflar (Tutar + Masraf, borç sütunu seçilemedi): borç sayılmaz ama raporda görünür not (B5)

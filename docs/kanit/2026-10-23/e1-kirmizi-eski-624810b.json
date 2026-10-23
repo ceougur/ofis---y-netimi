@@ -1,0 +1,38 @@
+{
+  "ad": "e1-kirmizi-eski-624810b",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-name-pattern=Yerine koy test/tablo-borc-e1-e2.test.mjs",
+  "commit": "624810bfa3975421ec0990aa08a5a4c2ccfefeab",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T06:46:05.595Z",
+  "sure_sn": 1.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "31e E1: 'Vergi No' (sağlamasız) kayıt kimliği adayı değil › 2.4.3'te yüklenmiş dosya no'suz tablo 'Yerine koy' ile yeniden yüklenince kayıt anahtarı ve 400 TL kayıt tahsilatı korunur (E1)",
+      "konum": "test/tablo-borc-e1-e2.test.mjs:39:3",
+      "hata": "kayıt anahtarları değişmemeli: [[\"satir:8d6f75caa36359d8\",\"satir:2e10ec73b4b1bd0e\"],[\"1234567890\",\"2234567890\"]] · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-23/e1-kirmizi-eski-624810b.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e-eski-wt-624810b",
+  "ham_cikti_sha256": "2fbf1fa56a56309141aa41daddb72187f9c3a6abf99026ebb0f6f254a66c2f67",
+  "ham_cikti_bayt": 2715
+}

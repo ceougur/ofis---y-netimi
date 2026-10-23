@@ -132,6 +132,7 @@ function recordOf(row, { primary, byColumn, plan, amountColumn, backbone }, { se
     amount: amountColumn ? parseAmount(row[amountColumn]) : null,
     // 31d E2: satır borcu takvimle AYNI fonksiyonla (Kalan sayıysa o, 0 dahil; boş / sayı değilse Toplam Borç).
     ...(debt => ({ debt: debt.amount, debtTier: debt.tier, debtColumn: debt.column, ...(debt.overpaid ? { overpaid: true } : {}) }))(rowDebt(plan, column => parseAmount(row[column]))),
+    ...(plan.unresolved ? { debtUnresolved: plan.unresolved } : {}),
     deadline: dayOf(deadlineDate),
     deadlineText: primary.deadline ? String(row[primary.deadline] ?? "").trim() : "",
     status: primary.status ? String(row[primary.status] ?? "").trim() : "",
@@ -205,8 +206,12 @@ export function dynamicColumns(records, max = 12) {
 // Hesap uyarıları görünür not olur (ekran, yazdırma, PDF, Excel ve Tahsilat Takvimi aynı metni yazar; cümle düzeninde):
 //   split: borcu birden çok sekmede olan dosya no — her sekme ayrı borç ve ayrı vade kalemi sayıldı (2.4.3 gibi; 31e A1); kopya sekme iki kez sayılır.
 //   overpaid: ödenen toplamı aşan satır (borç 0 sayıldı).
-export function tableNotes({ split = [], overpaid = 0 } = {}) {
+export function tableNotes({ split = [], overpaid = 0, unresolved = [] } = {}) {
   const notes = [];
+  // 31e E2: borç kolonu seçilemeyen sekme notsuz düşmez.
+  const unresolvedTabs = new Map();
+  for (const record of unresolved) if (record?.debtUnresolved && !unresolvedTabs.has(record.tab || "")) unresolvedTabs.set(record.tab || "", record.debtUnresolved);
+  for (const [tab, columns] of unresolvedTabs) notes.push(`${tab ? `“${tab}” sekmesinde b` : "B"}orç sütunu seçilemedi (${columns.join(", ")}): bu satırlar borç olarak sayılmadı. Borç sütununun başlığını “Kalan Borç”, “Toplam Borç” ya da “Genel Toplam” yapın.`);
   if (split.length) {
     const tabs = [...new Set(split.flatMap(item => item.tabs.map(entry => entry.tab)).filter(Boolean))];
     const list = split.slice(0, 5).map(item => `${item.meta?.id || item.meta?.caseNo || item.key}${item.meta?.cari || item.meta?.person ? ` (${item.meta.cari || item.meta.person})` : ""}`).join(", ");
@@ -344,7 +349,7 @@ export function cariEkstre({ records, payments = [], filters = normalizeFilters(
     ],
     rows: out.flatMap(group => group.lines.map(line => ({ cari: group.cari, date: line.date, description: line.description, session: line.session, borc: line.borc, alacak: line.alacak, bakiye: line.bakiye, status: line.status, ...Object.fromEntries(columns.map(column => [`f:${column}`, line.fields[column] || ""])) }))),
   };
-  const notes = tableNotes({ split, overpaid: records.filter(record => record.overpaid && inTabs(record)).length });
+  const notes = tableNotes({ split, overpaid: records.filter(record => record.overpaid && inTabs(record)).length, unresolved: records.filter(record => record.debtUnresolved && inTabs(record)) });
   return { kind: "cari-ekstre", generatedAt: now.toISOString(), groups: out, split, notes, totals: { debit: totalDebit, credit: totalCredit, balance: addMoney(totalDebit, -totalCredit), caris: out.length, crossMatched: out.filter(group => group.crossMatched).length }, table };
 }
 

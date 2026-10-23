@@ -33,6 +33,13 @@ export const isNotAmountHeader = column => NOT_AMOUNT_HEADER.test(foldText(colum
 // Ödenen / tahsil edilen tutar kolonu (borç değil; T1'de toplamdan düşülür). Tarih / gün / no kolonu değil.
 export const PAID_AMOUNT_HEADER = /\b(odenen|odenmis|odendi|tahsil edilen|tahsilat|yatan|yatirilan|alinan)\b/;
 const isPaidHeader = column => PAID_AMOUNT_HEADER.test(foldText(column)) && !/\b(tarih\w*|gun\w*|no)\b/.test(foldText(column));
+// 31e E2: vergi tutarı kolonu (KDV, Vergi, Vergi Tutarı, Stopaj, Tevkifat, ÖTV) borç adayı değildir (ödenen kolonu gibi ayrılır): fatura listesinde "Tutar" + "KDV"
+// iki tutar kolonu sayılıp borç seçilemiyor, kişiler Tablodaki Kişiler'den sessizce düşüyordu (2.4.3'te Tutar borçtu).
+export const TAX_AMOUNT_HEADER = /\b(kdv|vergi|vergisi|stopaj|stopaji|tevkifat|tevkifati|otv|kkdf|bsmv)\b/;
+const isTaxHeader = column => TAX_AMOUNT_HEADER.test(foldText(column)) && !TOTAL_DEBT_HEADER.test(foldText(column)) && !GRAND_TOTAL_HEADER.test(foldText(column));
+// KDV dahil toplam ("Genel Toplam", "KDV Dahil Tutar"). Yanında net tutar ("Tutar") da varsa borç hangisi: TEK yer (kullanıcı kararı; A = Genel Toplam, B = Tutar).
+export const GRAND_TOTAL_HEADER = /\b(genel toplam|genel toplami|kdv dahil|vergiler dahil|odenecek toplam)\b/;
+export const GRAND_TOTAL_WINS = true;
 const TIERS = ["remaining", "total", "net", "amount"];
 
 /** Tutar kolonu adayları (kolon analizinden; iki yol aynı kümeyi kullanır): tutar rolü, ya da kalem tutarı başlıklı sayı; gün / adet / oran değil. */
@@ -52,17 +59,29 @@ export function debtPlan(candidates, { sparse = null } = {}) {
   const remaining = list.find(column => REMAINING_DEBT_HEADER.test(header(column))) || null;
   const paid = list.find(column => column !== remaining && isPaidHeader(column)) || null;
   // Ödenen kolonları ve Kalan dışındaki tutarlar: borç başlıklı olan ("Toplam Borç", "Alacak Tutarı") ya da söz tutarı olmayan TEK tutar ("Tutar", "Ödenecek Tutar").
-  const rest = list.filter(column => column !== remaining && !isPaidHeader(column));
+  const rest = list.filter(column => column !== remaining && !isPaidHeader(column) && !isTaxHeader(column));
   const headed = rest.find(column => !REMAINING_DEBT_HEADER.test(header(column)) && TOTAL_DEBT_HEADER.test(header(column))) || null;
   const single = rest.length === 1 && !PROMISE_AMOUNT_HEADER.test(header(rest[0])) ? rest[0] : null;
-  const gross = headed || single || (!remaining ? sparse : null) || null;
+  // 31e E2: iki tutar kolonundan biri KDV dahil toplamsa (Genel Toplam) borç tek kuralla (GRAND_TOTAL_WINS): Genel Toplam ya da öbürü (net Tutar).
+  const grandOf = () => {
+    if (rest.length !== 2) return null;
+    const grand = rest.filter(column => GRAND_TOTAL_HEADER.test(header(column)));
+    if (grand.length !== 1) return null;
+    const other = rest.find(column => column !== grand[0]);
+    return GRAND_TOTAL_WINS ? grand[0] : PROMISE_AMOUNT_HEADER.test(header(other)) ? null : other;
+  };
+  const grand = !headed && !single ? grandOf() : null;
+  const gross = headed || single || grand || (!remaining ? sparse : null) || null;
   // Kalan varsa: Kalan; Kalan hücresi boşsa toplam (gross). Kalan yoksa: ödenen varsa toplam − ödenen (net); yoksa borç başlıklı kolon (total) ya da tek tutar (amount).
-  const total = remaining ? gross : !paid ? headed || (!headed && !single ? sparse : null) : null;
+  const total = remaining ? gross : !paid ? headed || grand || (!headed && !single ? sparse : null) : null;
   const net = !remaining && paid && gross ? gross : null;
   const amount = !remaining && !paid && !total && single ? single : null;
   // Tek sütun bir kalem tutarıysa ("Aylık Ücret", "Kira Bedeli", "Taksit Tutarı", "Ödenecek"): Tablodaki Kişiler'de borçtur (2.4.3 gibi) ama kaydın "Kalan
   // Borç"u değildir — "Önce cari açın" Açılış Bakiyesi ve Tablodan Aktar onu bir aylık ücreti açılış borcu sanmasın (2.4.3'te de boştu).
-  return { remaining, total, net, paid: net ? paid : null, amount, amountExpected: Boolean(amount && EXPECTED_AMOUNT_HEADER.test(header(amount))), column: remaining || total || net || amount };
+  const column = remaining || total || net || amount;
+  // 31e E2: borç kolonu seçilemedi (birden çok tutar kolonu, hiçbiri Kalan / borç / Genel Toplam başlıklı değil) — raporda görünür not için aday kolonlar.
+  const unresolved = !column && rest.filter(item => !PROMISE_AMOUNT_HEADER.test(header(item))).length >= 2 ? rest.filter(item => !PROMISE_AMOUNT_HEADER.test(header(item))) : null;
+  return { remaining, total, net, paid: net ? paid : null, amount, amountExpected: Boolean(amount && EXPECTED_AMOUNT_HEADER.test(header(amount))), column, unresolved };
 }
 
 /**

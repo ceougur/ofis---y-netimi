@@ -273,9 +273,12 @@ export function analyzeColumn(rows, column, { now = new Date(), forced = null } 
   // 31e V1: başlığı kimlik / vergi numarası diyen sütun ("Vergi No", "Vergi Numarası", "Vergi Kimlik", "VKN", "TC", "Kimlik No") sağlama tutmasa da TUTAR sayılmaz:
   // değerleri 10–11 haneli rakamsa kimlik / kod olarak kalır ("vergi" para sözcüğü de olduğundan "Vergi No" tutar sanılıyor, tabloda iki tutar sütunu oluyor ve
   // Tablodaki Kişiler boş kalıyordu; 2.4.3'te de). "Vergi", "Vergi Tutarı", "KDV" başlıkları bu ipucunu taşımaz, tutar kalır.
-  if (hits.vkn || hits.tckn) {
+  // 31e E1: rol "number" (kind "code"; "Sayı (tutar değil)") — KAYIT KİMLİĞİ adayı değildir (dataset-identity.mjs ID_ROLES): "id" verilince dosya no'suz 2.4.3 tablosu
+  // "Yerine koy" ile yeniden yüklenince kayıt kuralı bu sütuna geçiyor, kayıt tahsilatı / not / düzeltme bağları kopuyordu. Yalnız para ipucu da taşıyan başlık ("vergi")
+  // değişir; "Kimlik No" (2.4.3'te de kimlik) ve "VKN" / "TC" (2.4.3'te de sayı) eskisi gibi.
+  if ((hits.vkn || hits.tckn) && hits.money) {
     const coded = rate(values, value => /^\d{10,11}$/.test(String(value).replace(/\s+/g, "")));
-    if (coded >= 0.6) return result("id", 0.6 + coded * 0.2, { kind: "numeric", validRate: round(tckn) });
+    if (coded >= 0.6) return result("number", 0.6 + coded * 0.2, { kind: "code", validRate: round(tckn) });
   }
 
   // 2) Biçimi belirgin türler.
