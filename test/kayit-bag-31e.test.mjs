@@ -797,3 +797,53 @@ describe("31e tur 7: kayıt kaldıran yollar (N5) ve bayat anahtar (N6)", () => 
     }
   });
 });
+
+// 31e aday 24 (tam kapı K6 statik kırmızısı): kayıt tahsilatının (payments, para tablosu) anahtar taşıması SÖZCÜKSEL olarak bank.post'un write geri
+// çağrısının içinde (dataset-bonds.mjs move); para dışı bağ tabloları doğrudan (rekeyNonMoney; para tablosunda hata verir). Çalışma anı: test kipinde
+// (moneyStrict) bank.post dışındaki UPDATE payments K6 (c) money:raw ile işlemi geri alırdı; bank.post 'assign' tahsilatın olayına dokunur (db kancası
+// ctx.affected → adım 11 store.touchEvent; kopyada anahtar olmadığından kopya "same", damga değişmez), olay ve İşlem No aynı, tutar / yol / hesap / tarih aynı.
+describe("31e B1 K6: kayıt tahsilatının anahtar taşıması bank.post 'assign' kapısından geçer", () => {
+  it("Yerine koy taşıması: UPDATE payments bank.post bağlamında, olay kapıya bildirilir; tahsilat yeni anahtarda, olayı ve İşlem No aynı; tutar / yol / hesap / tarih aynı; K6 ihlali yok", async () => {
+    const { server, admin, store } = await boot();
+    try {
+      await load(admin, table(T0));
+      await bond(admin, store);
+      const payment = () => store.get("SELECT case_key AS k, event_id AS e, amount, method, date, fin_ref AS ref FROM payments WHERE note = 'Ali tahsilat'");
+      const eventOf = id => store.get("SELECT id, no, status, amount_minor AS minor, method, date, bank_ref AS bank, direction, updated_at AS updatedAt, updated_by AS updatedBy FROM fin_events WHERE id = ?", id);
+      const before = payment();
+      const eventBefore = eventOf(before.e);
+      assert.ok(eventBefore && eventBefore.status === "active" && eventBefore.minor === 40000, JSON.stringify(eventBefore));
+      // Kapının gördüğü: UPDATE payments'in yazıldığı bağlam (store.inPost) ve bank.post adım 11'de kapıya bildirilen olaylar (store.touchEvent).
+      const seen = { update: [], touched: new Set() };
+      const { run, touchEvent } = store;
+      store.run = (sql, ...args) => {
+        if (/^\s*UPDATE\s+payments\s+SET\s+case_key\b/i.test(sql)) seen.update.push(store.inPost);
+        return run.call(store, sql, ...args);
+      };
+      store.touchEvent = id => {
+        seen.touched.add(id);
+        return touchEvent.call(store, id);
+      };
+      try {
+        await load(admin, table(T0, PEOPLE, { "Ali Veli": { tutar: "1200" } }));
+      } finally {
+        store.run = run;
+        store.touchEvent = touchEvent;
+      }
+      assert.deepEqual(seen.update, [true], "UPDATE payments (anahtar taşıması) bir kez ve yalnız bank.post bağlamında");
+      assert.ok(seen.touched.has(before.e), `bank.post adım 11: tahsilatın olayı kapıya bildirildi (dokunulan olaylar: ${[...seen.touched].join(", ")})`);
+      const after = payment();
+      assert.notEqual(after.k, before.k, "tahsilatın anahtarı taşındı");
+      assert.deepEqual(keyOf(store, "Ali Veli"), [after.k], "Ali'nin yeni satırında");
+      assert.deepEqual([after.e, after.amount, after.method, after.date, after.ref], [before.e, before.amount, before.method, before.date, before.ref], "olay, tutar, yol, tarih, hesap aynı");
+      const eventAfter = eventOf(after.e);
+      const money = item => [item.id, item.no, item.status, item.minor, item.method, item.date, item.bank, item.direction];
+      assert.deepEqual(money(eventAfter), money(eventBefore), "İşlem No ve olay kopyasının parası aynı");
+      // Olay kopyasında anahtar yok (tutar, yön, hesap, tarih, yol, açıklama): refreshEvent "same" — kopya yeniden yazılmaz, damga değişmez.
+      assert.deepEqual([eventAfter.updatedAt, eventAfter.updatedBy], [eventBefore.updatedAt, eventBefore.updatedBy], "kopya değişmedi (parası aynı)");
+      assert.deepEqual(JSON.parse(store.setting("meta.bank.integrity", "[]") || "[]"), [], "K6 bütünlük kaydı boş (money:raw / money:event yok)");
+    } finally {
+      await server.close();
+    }
+  });
+});
