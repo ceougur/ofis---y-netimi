@@ -639,7 +639,9 @@ describe("31e tur 9 Z1 eki: iki dönem kolonu (Aidat + Kira) — kalem satırın
 describe("31e tur 10 Z2/Z3: fazla ödemeli satırda kalem yok; söz kalemi söz tutarı", () => {
   const ctx = setup([
     { name: "FazlaOdeme", matrix: [["Ad Soyad", "Aidat", "Kalan Borç", "Son Ödeme"], ["Ali Veli", "1.000", "-100", d(-2)], ["Ayşe Kaya", "1.000", "1.500", d(-3)], ["Can Er", "1.000", "", d(-4)]] },
-    { name: "SozKalan", matrix: [["Ad Soyad", "Taksit Tutarı", "Kalan Borç", "Söz Tarihi", "Söz Tutarı"], ["Kaan Uz", "1.000", "9.000", d(1), "3.000"], ["Lale Gün", "2.000", "4.000", d(2), ""]] },
+    { name: "SozKalan", matrix: [["Ad Soyad", "Taksit Tutarı", "Kalan Borç", "Söz Tarihi", "Söz Tutarı"], ["Kaan Uz", "1.000", "9.000", d(1), "3.000"], ["Lale Gün", "2.000", "4.000", d(2), ""], ["Mehmet Ay", "5.000", "3.000", d(2), ""]] },
+    // Kâhin b3r: dönem kolonu OLMAYAN sekmede de Kalan ≤ 0 satırın kalemi yok (aday 20: Dilek Su tutarsız kalem).
+    { name: "Borclar", matrix: [["Ad Soyad", "Kalan Borç", "Son Ödeme"], ["Dilek Su", "-250", d(1)], ["Ege Tan", "800", d(1)]] },
   ]);
 
   test("Z2 Takvim: Ali Veli (Kalan −100) kalemi yok; Ayşe 1.000 (Kalan 1.500), Can 1.000 (Kalan boş); Kişiler Ali −100, Ayşe 1.500, Can 1.000", async () => {
@@ -656,9 +658,14 @@ describe("31e tur 10 Z2/Z3: fazla ödemeli satırda kalem yok; söz kalemi söz 
     assert.equal((await ctx.report("nakit-akis", query)).report.totals.expected, 2000);
   });
 
-  test("Z3 Takvim: Kaan'ın söz kalemi 3.000 (söz tutarı; Kalan 9.000), Lale'nin söz tutarı boş → önceki kural (Taksit Tutarı 2.000)", async () => {
+  test("Z3 Takvim: Kaan'ın söz kalemi 3.000 (söz tutarı; Kalan 9.000); söz tutarı boşsa önceki kural min(Taksit, Kalan): Lale 2.000, Mehmet 3.000 (5.000 > Kalan 3.000)", async () => {
     const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
     const items = dues.items.filter(item => item.tab === "SozKalan").map(item => [item.person, item.amount, item.debt ?? null, Boolean(item.promise)]).sort((a, b) => a[0].localeCompare(b[0], "tr"));
-    assert.deepEqual(items, [["Kaan Uz", 3000, 9000, true], ["Lale Gün", 2000, 4000, true]]);
+    assert.deepEqual(items, [["Kaan Uz", 3000, 9000, true], ["Lale Gün", 2000, 4000, true], ["Mehmet Ay", 3000, 3000, true]]);
+  });
+
+  test("Z2 dönem kolonu olmayan sekme: Dilek Su (Kalan −250) kalemi yok, Ege Tan 800", async () => {
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    assert.deepEqual(dues.items.filter(item => item.tab === "Borclar").map(item => [item.person, item.amount]), [["Ege Tan", 800]]);
   });
 });
