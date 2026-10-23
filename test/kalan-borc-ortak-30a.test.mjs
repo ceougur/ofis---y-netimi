@@ -94,11 +94,11 @@ describe("2.4.4 30a: Tablodaki Kişiler ve Tahsilat Takvimi aynı Kalan Borç ko
     assert.equal(report(rows).columns.debt, "Toplam Borç", "Ödenecek kalan sayılmaz; ilk eşleşen borç başlığı");
   });
 
-  test("N5 Toplam Borç + Ödenen, Kalan yok: Toplam Borç (program kalanı hesaplamaz — bilinen sınır)", () => {
+  test("N5 Toplam Borç + Ödenen, Kalan yok: borç = toplam − ödenen (r31e T1 kararı, 23.10.2026; önceden Toplam — 31e bulgusu)", () => {
     const rows = rowsOf("Borçlular", ["Dosya No", "Ad Soyad", "Toplam Borç", "Ödenen", "Ödeme Sözü"], people.map(([no, name, total, paid, , date]) => [no, name, total, paid, date]));
     const rep = report(rows);
     assert.equal(rep.columns.debt, "Toplam Borç");
-    assert.equal(debitOf(rep, "Tülay Öz"), 11500);
+    assert.equal(debitOf(rep, "Tülay Öz"), 7600, "11.500 − 3.900; ödenen borç sayılmaz");
   });
 
   test("N6 Kalan Borç 0: Tablodaki Kişiler borcu 0 (Toplam değil), takvimde kalem yok (ödenmiş); Kalan boş: tutar kolonuna (Toplam Borç) düşer", () => {

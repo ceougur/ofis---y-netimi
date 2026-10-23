@@ -4,7 +4,8 @@ import { HttpError, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { caseCollections, caseCollectionsState } from "../lib/insight/case-collections.mjs";
 import { analyzeColumns } from "../lib/insight/columns.mjs";
 import { computeDeadlines, computeDues } from "../lib/insight/dues.mjs";
-import { cariEkstre, dayText, flattenTable, nakitAkis, normalizeFilters, normalizeRecords, REPORT_KINDS, vadeTakip } from "../lib/reports.mjs";
+import { cariEkstre, dayText, flattenTable, nakitAkis, normalizeFilters, normalizeRecords, REPORT_KINDS, tableNotes, vadeTakip } from "../lib/reports.mjs";
+import { canUser } from "../lib/permissions.mjs";
 import { roundMoney } from "../lib/money.mjs";
 import { isoDay } from "../lib/plans.mjs";
 import { reportFileBase, reportPdf, reportXlsx } from "../lib/report-files.mjs";
@@ -47,6 +48,8 @@ export function tableSummary(report) {
   const totals = report.totals || {};
   if (report.kind === "cari-ekstre") return [["Cari", count(totals.caris)], ["Toplam Borç", money(totals.debit)], ["Toplam Alacak", money(totals.credit)], ["Bakiye", money(totals.balance)], ...(totals.crossMatched ? [["Birden Çok Dosyada", count(totals.crossMatched)]] : [])];
   if (report.kind === "vade-takip") return [["Kalem", count(totals.count)], ["Gecikmiş", `${count(totals.overdue)} · ${money(totals.overdueAmount)}`], ["Yaklaşan / Bugün", count(totals.upcoming)], ["Toplam Tutar", money(totals.amount)], ...(totals.dormant ? [["Ödeme Kesilmiş Olabilir", count(totals.dormant)]] : [])];
+  // 31e Y1: Kasa'yı görme yetkisi olmayan kişide Kasa satırları yok (ekran, PDF ve Excel aynı).
+  if (report.cashHidden) return [["Beklenen Tahsilat", money(totals.expected)], ["Gerçekleşen Tahsilat", money(totals.collected)]];
   return [["Beklenen Tahsilat", money(totals.expected)], ["Gerçekleşen Tahsilat", money(totals.collected)], ["Kasa Giriş", money(totals.cashIn)], ["Kasa Çıkış", money(totals.cashOut)], ["Net", money(totals.net)]];
 }
 
@@ -79,12 +82,17 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
     const items = [];
     const dormant = [];
     const columnsBySession = {};
+    // 31e (a): aynı dosya no birden çok sekmede → takvimde bir kez sayıldı; rapor bunu not olarak söyler (debt-column.mjs debtByRecord).
+    const merged = [];
+    const conflicts = [];
     for (const session of sessions) {
       await dataset.withKey(session.key, async () => {
         const view = await dataset.view();
-        const rows = (view.rows || []).filter(row => !String(row.__hofKey || "").startsWith("free:"));
-        if (!rows.length) return;
+        // 31e (a): Sekme süzgeci seçiliyse takvim ve kayıtlar yalnız o sekmelerden kurulur — aynı dosya no'nun "bir kez sayılan" sekmesi seçilenler içinden
+        // seçilir (dönem sekmesi tutan tabloda her sekme kendi borcunu gösterir; not "Sekme süzgeciyle ayrı bakın" der).
         const tabs = (view.tabs || []).map(tab => tab.title).filter(Boolean);
+        const rows = (view.rows || []).filter(row => !String(row.__hofKey || "").startsWith("free:") && (!filters.tabs.length || filters.tabs.includes(String(row.__sheet || tabs[0] || ""))));
+        if (!rows.length) return;
         const forced = profile.roles ? profile.roles() : null;
         const analyses = analyzeColumns(rows.slice(0, 5000), columnOrder(rows), { now, forced });
         // 31a F4: çok sekmeli tabloda her sekmenin kişi / tutar / kimlik kolonu kendi sekmesinden okunur (sekmeler farklı başlık taşır: Borçlu, Müşteri, Kiracı).
@@ -97,6 +105,8 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
         const payments = caseCollections(store, session.key, { plans: true }).filter(item => keys.has(item.caseKey));
         const settled = parseSettled(dataset.settingKey("dues.settled"));
         const dues = computeDues({ rows, tabs, payments, settled, now, forced, window: AHEAD });
+        for (const item of dues.debtMerged || []) merged.push({ ...item, session: session.key });
+        for (const item of dues.debtConflicts || []) conflicts.push({ ...item, session: session.key });
         // Taksit kartı olan kişinin (v2.0.8) tablodaki ödeme kalemleri ikinci kez sayılmaz (takvimle aynı kural).
         const carded = plans?.linkedCases ? plans.linkedCases(session.key) : new Set();
         for (const item of dues.dormant || []) if (!carded.has(item.caseKey)) dormant.push({ ...item, session: session.key, sessionName: session.name });
@@ -104,7 +114,7 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
         for (const item of computeDeadlines({ rows, tabs, now, exclude: dues.sources, forced, aheadDays: AHEAD.aheadDays })) items.push({ ...item, session: session.key, sessionName: session.name, deadline: true });
       });
     }
-    return { sessions: sessions.map(item => ({ key: item.key, name: item.name, rowCount: item.rowCount })), records, items, dormant, columnsBySession };
+    return { sessions: sessions.map(item => ({ key: item.key, name: item.name, rowCount: item.rowCount })), records, items, dormant, columnsBySession, merged, conflicts };
   }
   // Tüm oturumların takvimi önbellekte: oturumlar, tahsilatlar, taksit kartları ve gün değişmedikçe yeniden hesaplanmaz
   // (birleşik Vade takip ve Nakit akış her süzgeç değişiminde buradan okur).
@@ -124,8 +134,8 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
       throw error;
     }
   }
-  async function backbone(filters, now) {
-    const data = filters.sessions.length ? await calendar(filters, now) : await allCalendar(now);
+  async function backbone(filters, now, { cashVisible = true } = {}) {
+    const data = filters.sessions.length || filters.tabs.length ? await calendar(filters, now) : await allCalendar(now);
     // Tablodaki Kişiler ve Nakit Akışı: kaydın tahsilatı takvimle AYNI küme — kayıt tahsilatı (eski) + kayda bağlı carinin tahsilatı (2.4.3 A2; 2.4.4 E8: zil ve
     // Tahsilat Takvimi'ndeki tahsilat cariye yazılır) + kayda (ya da kayda bağlı cariye) bağlı taksit kartının tahsilatı (31a F1/F5: Tablodan Aktar'ın karta
     // taşıdığı cari tahsilatı ve karta doğrudan girilen tahsilat; önceden rapordan düşüyordu). Bir para hareketi tek satırdadır (K11): iki kez sayılmaz.
@@ -135,26 +145,38 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
     // yalnız Nakit Kasa (2.0.17 m9), bütün kaynaklar (cari tahsilat/ödeme, fatura peşini, taksit kartı, kayıt tahsilatı, stok, çek/senet, elle, banka transferi);
     // açılış/devir düzeltmesi (adjust) dönem giriş/çıkışı sayılmaz. Önceden yalnız elle Kasa (cash_entries, her yol) + taksit kartı okunuyordu; cari ve fatura
     // nakit tahsilatı "Kasa giriş"te 0 görünüyordu (2.4.3'te de). Sekme / Sayfa süzgeci bunlara uygulanmaz (şirket geneli, 30e).
-    const cashEntries = cash.report({ id: "", role: "admin" }, "", "", "cash").entries.filter(entry => !entry.adjust).map(entry => ({ kind: entry.kind, amount: entry.amount, date: entry.date, source: entry.source }));
+    // 31e Y1: Kasa satırları yalnız Kasa'yı görme yetkisi (cash.view) olana okunur; Tablo Raporları yetkisi (reports.view) tek başına Kasa'yı açmaz.
+    const cashEntries = cashVisible ? cash.report({ id: "", role: "admin" }, "", "", "cash").entries.filter(entry => !entry.adjust).map(entry => ({ kind: entry.kind, amount: entry.amount, date: entry.date, source: entry.source })) : [];
     return { ...data, payments, cashEntries };
   }
 
-  async function build(kind, input) {
+  const CASH_COLUMNS = new Set(["cashIn", "cashOut", "net", "cumulative", "projected"]);
+  async function build(kind, input, user) {
     if (!REPORT_KINDS.includes(kind)) throw new HttpError(400, "Bilinmeyen rapor türü.");
     const now = clock();
     const filters = normalizeFilters(input);
-    const data = await backbone(filters, now);
+    const cashVisible = canUser(user, "cash.view");
+    const data = await backbone(filters, now, { cashVisible });
     let report;
     if (kind === "cari-ekstre") report = cariEkstre({ records: data.records, payments: data.payments, filters, now });
     else if (kind === "vade-takip") report = vadeTakip({ records: data.records, items: data.items, dormant: data.dormant, filters, now });
     else report = nakitAkis({ items: data.items, payments: data.payments, cashEntries: data.cashEntries, filters, now });
+    // 31e (a) / T1: birleştirme ve hesap notları — Tablodaki Kişiler kendi kayıtlarından, Vadeler ve Nakit Akışı takvimin birleştirmesinden (aynı kural).
+    if (kind !== "cari-ekstre") report = { ...report, notes: tableNotes({ merged: data.merged || [], conflicts: data.conflicts || [], overpaid: data.records.filter(record => record.overpaid).length }) };
+    // 31e Y1: Kasa yetkisi yoksa Nakit Akışı'nın Kasa kolonları (giriş, çıkış, net, birikimli, beklenenle birlikte) ve toplamları yok; not söyler.
+    if (kind === "nakit-akis" && !cashVisible) {
+      const strip = row => Object.fromEntries(Object.entries(row).filter(([key]) => !CASH_COLUMNS.has(key)));
+      report = { ...report, cashHidden: true, rows: report.rows.map(strip), totals: strip(report.totals), table: { ...report.table, columns: report.table.columns.filter(column => !CASH_COLUMNS.has(column.key)), rows: report.table.rows.map(strip) }, notes: [...(report.notes || []), "Kasa sütunları Kasa yetkisi gerektirir; bu raporda Kasa giriş, çıkış ve bakiye gösterilmiyor."] };
+    }
     // 2.4.4 U3: programın kolon adları başlık düzeninde (Yazım düzeni; lib/reports.mjs'te cümle düzeninde yazılı: "Beklenen tahsilat"); özel alan kolonları
     // kullanıcının verisidir, olduğu gibi. Alt TOPLAM satırı bütün satırlardan (ekran, PDF ve Excel bunu yazar).
     const columns = report.table.columns.map(column => (column.dynamic ? column : { ...column, label: titleCase(column.label) }));
     report = { ...report, table: { ...report.table, columns } };
     report.table.footer = tableFooter(report.table);
-    const tabs = [...new Set(data.records.map(record => record.tab).filter(Boolean))].sort((a, b) => a.localeCompare(b, "tr"));
-    const statuses = [...new Set(data.records.map(record => record.status).filter(Boolean))].slice(0, 30);
+    // 31e (a): Sekme süzgeci takvimi seçili sekmelerden kurar; süzgeç seçenekleri (Sekme, Durum) yine bütün sekmelerden — seçili sekmede öbürleri listeden düşmez.
+    const optionSource = filters.tabs.length ? (filters.sessions.length ? await calendar({ ...filters, tabs: [] }, now) : await allCalendar(now)) : data;
+    const tabs = [...new Set(optionSource.records.map(record => record.tab).filter(Boolean))].sort((a, b) => a.localeCompare(b, "tr"));
+    const statuses = [...new Set(optionSource.records.map(record => record.status).filter(Boolean))].slice(0, 30);
     return { report, summary: tableSummary(report), filters: { ...filters, from: filters.from === null ? "" : new Date(filters.from).toISOString().slice(0, 10), to: filters.to === null ? "" : new Date(filters.to).toISOString().slice(0, 10) }, sessions: data.sessions, tabs, statuses, columnsBySession: data.columnsBySession, crossMatched: data.records.length ? [...new Set(data.records.map(record => record.cariKey).filter(Boolean))].length : 0 };
   }
 
@@ -168,10 +190,10 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
   };
 
   router.get("/api/workspace/reports/:kind", async ({ req, res, params, url }) => {
-    auth.requirePermission(req, "reports.view");
+    const user = auth.requirePermission(req, "reports.view");
     const input = Object.fromEntries(url.searchParams.entries());
     for (const key of ["status", "sessions", "tabs"]) if (input[key]) input[key] = String(input[key]).split(",").map(item => item.trim()).filter(Boolean);
-    ok(res, await build(text(params.kind), input));
+    ok(res, await build(text(params.kind), input, user));
   });
 
   // Şirket etiketi "001 · Unvan" (Rapor Merkezi'nin kuralı, routes/report-center.mjs companyLabel): PDF ve Excel başlık bloğunda.
@@ -197,13 +219,14 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
     const kind = text(params.kind);
     const format = text(body.format) || "xlsx";
     if (format !== "xlsx" && format !== "pdf") throw new HttpError(400, "Biçim xlsx ya da pdf olmalı.");
-    const result = await build(kind, body.filters || {});
+    const result = await build(kind, body.filters || {}, user);
     const table = result.report.table;
     const flat = flattenTable(table);
     const title = TABLE_REPORT_TITLES[kind];
     const data = {
       title,
-      subtitle: subtitle(result.filters, result.sessions),
+      // 31e: birleştirme / yetki notları PDF ve Excel'de de (alt başlık; Excel'in Özet sayfasında Kapsam).
+      subtitle: [subtitle(result.filters, result.sessions), ...(result.report.notes || [])].filter(Boolean).join(" · "),
       headers: flat.headers,
       types: table.columns.map(column => column.type || ""),
       rows: flat.rows,
