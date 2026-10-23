@@ -24,13 +24,16 @@ const MONTH_NAMES = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Te
 
 // Başlık sınıfları (katlanmış metin üzerinde).
 const PAST = /\b(yapilan|odenen|odendigi|odenmis|tahsil edilen|gerceklesen|son odeme yapilan|son tahsilat|son islem|paid on|last payment|date paid)\b/;
-const STRONG = /\b(odeme sozu|sozu|soz tarihi|soz|taahhut\w*|vade\w*|son odeme|taksit tarihi|taksit vadesi|planlanan odeme|odenecek tarih\w*|odeme plani|tahsil tarihi|tahsilat tarihi|odeme gunu|vade gunu|taksit gunu|kira gunu|aidat gunu|her ayin|due date|due|payment due|pay by|installment date)\b/;
+const STRONG = /\b(odeme sozu|sozu|soz tarihi|soz|taahhut\w*|taahhud\w*|vade\w*|son odeme|taksit tarihi|taksit vadesi|planlanan odeme|odenecek tarih\w*|odeme plani|tahsil tarihi|tahsilat tarihi|odeme gunu|vade gunu|taksit gunu|kira gunu|aidat gunu|her ayin|due date|due|payment due|pay by|installment date)\b/;
 const WEAK = /\b(odeme tarihi|odeme|tahsil\w*|taksit\w*|payment date|payment|installment\w*)\b/;
 const DAY_OF_MONTH = /\b(odeme gunu|vade gunu|taksit gunu|kira gunu|aidat gunu|her ayin)\b/;
-// Ödeme sözü / taahhüt başlığı ("Söz Tarihi", "Ödeme Sözü", "Taahhüt Tarihi"). 31e tur 11 Z4: tam sözcük — "Sözleşme Tutarı", "Sözleşme No", "Sözleşme Bitiş"
-// söz DEĞİLDİR (önceki `soz\w*` "sözleşme"yi de yakalıyordu: söz kalemi bütün sözleşme bedeli oluyordu). Söz tutarı kolonu söz sözcüğü + tutar sözcüğü ister.
-const PROMISE = /\b(soz|sozu|taahhut|taahhudu)\b/;
-const PROMISE_AMOUNT = /\btutar\w*\b/;
+// Ödeme sözü / taahhüt başlığı ("Söz Tarihi", "Ödeme Sözü", "Taahhüt Tarihi", "Taahhütname Tarihi"). 31e tur 11 Z4: söz ailesi TAM SÖZCÜK (söz, sözü) —
+// "Sözleşme Tutarı", "Sözleşme No", "Sözleşme Bitiş" söz DEĞİLDİR (önceki `soz\w*` "sözleşme"yi de yakalıyordu: söz kalemi bütün sözleşme bedeli oluyordu).
+// 31e tur 12 Z5: taahhüt ailesi ÖNEK (taahhüt, taahhütname, taahhütlü, taahhüdü) — dışarıda kalan yalnız "sözleşme…". Söz tutarı kolonu söz sözcüğü + "tutar"
+// ya da "miktar" sözcüğü ister ("Söz Tutarı", "Ödeme Sözü Tutarı", "Taahhüt Tutarı", Z6: "Söz Miktarı", "Taahhüt Miktarı").
+const PROMISE = /\b(soz|sozu|taahhut\w*|taahhud\w*)\b/;
+const PROMISE_AMOUNT = /\b(tutar\w*|miktar\w*)\b/;
+const isPromiseAmountHeader = column => PROMISE.test(foldText(column)) && PROMISE_AMOUNT.test(foldText(column));
 const INSTALLMENT = /\b(taksit\w*|installment\w*)\b/;
 // Sıra sayılı ödeme kolonları ("1. Ödeme Tarihi" / "1. Ödeme Tutarı", "Birinci Ödeme") taksit dizisidir (v2.0.2).
 const SERIES_PAYMENT = /\b(odeme\w*|tahsilat\w*|aidat\w*|kira\w*|payment\w*|installment\w*)\b/;
@@ -199,11 +202,15 @@ function classifyColumns(rows, columns, analyses, now, forced = null) {
   // satır borcu belirlenemeyen satırda da (Y3: Aidat + Gecikme Faizi, Kalan boş → kalem Aidat; Kişiler ve Açılış Bakiyesi'nde not, borç yok). Dönem kolonu
   // yoksa ya da birden çoksa kalem satırın borcudur (belirlenemiyorsa tutarsız + not). Aidat 1.000 + Kalan 400 → 400 (K4); Taksit 1.000 + Kalan 9.000 →
   // 1.000 (975217f 9.000 gösteriyordu). Ödeme sözü kalemi söz tutarıdır (sınırlanmaz).
-  const periods = moneyLike.filter(column => AMOUNT_OWN.test(foldText(column)) && !PROMISE.test(foldText(column)) && !due.some(item => item.column === column));
+  // 31e tur 12 Z5: dönem kolonundan yalnız SÖZ TUTARI başlığı ("Söz Tutarı", "Taahhüt Tutarı") dışlanır; "Taahhütlü Ücret" dönem tutarıdır (taahhüt öneki söz
+  // tarihini tanır, aylık ücreti söz yapmaz — aday 22 / v2.4.3: Ücret 450 + Kalan 1.350 → kalem 450).
+  const periods = moneyLike.filter(column => AMOUNT_OWN.test(foldText(column)) && !isPromiseAmountHeader(column) && !due.some(item => item.column === column));
   const period = single && periods.length === 1 ? periods[0] : null;
   // 31e tur 10 Z3: ödeme sözü kalemi SÖZ TUTARIdır — sekmede söz tutarı kolonu ("Söz Tutarı", "Taahhüt Tutarı") varsa o önce gelir (Taksit Tutarı + Kalan + Söz
   // Tarihi + Söz Tutarı sekmesinde söz kalemi taksit tutarını alıyordu; v2.4.3'te de). Söz tutarı hücresi boşsa önceki kural (amountFallback).
-  const promiseAmount = moneyLike.find(column => PROMISE.test(foldText(column)) && PROMISE_AMOUNT.test(foldText(column)) && !due.some(item => item.column === column)) || null;
+  // 31e tur 12 Z6: "Söz Miktarı" sayı rolündedir (para değil; moneyLike'a girmez) — söz tutarı adayı para ya da sayı rolündeki söz + tutar/miktar başlığıdır.
+  const promiseAmount = analyses.filter(item => item.role === "money" || item.role === "number").map(item => item.column)
+    .find(column => isPromiseAmountHeader(column) && !isPersonAttributeHeader(column) && !due.some(item => item.column === column)) || null;
   for (const entry of due) {
     // Söz kaleminin söz tutarı yoksa (sütun yok ya da hücre boş) önceki kural: tek vadeli tabloda dönem tutarı (Kalan ile sınırlı), dönem kolonu yoksa satırın
     // borcu (kâhin b3t: "Sözleşme Tutarı" + Kalan 2.000 + boş söz → kalem 2.000).

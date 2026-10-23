@@ -717,3 +717,30 @@ describe("31e tur 11 Z4: söz tutarı yalnız 'söz/sözü/taahhüt' + 'tutar' b
     assert.equal((await ctx.report("nakit-akis")).report.totals.expected, 9500);
   });
 });
+
+// 31e tur 12 Z5 (DÜŞÜK, 26e6573 gerilemesi) / Z6 (DÜŞÜK, v2.4.3'te de): taahhüt ailesi ÖNEK olarak söz (taahhüt, taahhütname, taahhütlü, taahhüdü); söz ailesi tam sözcük
+// (söz, sözü) — dışarıda kalan yalnız "sözleşme…". Söz tutarı sütununda "tutar" ya da "miktar" sözcüğü yeter. "Taahhütlü Ücret" söz tutarı değil, dönem tutarıdır.
+// Aday 22: Gül 2.500 / Işıl 4.500 (söz değil, satır borcu), Fırat 3.000 / Hakan 3.500 (söz miktarı okunmuyor), Kemal kalemi yok.
+describe("31e tur 12 Z5/Z6: taahhüt öneki söz; söz tutarı 'tutar' ya da 'miktar'; 'Taahhütlü Ücret' dönem tutarı", () => {
+  const ctx = setup([
+    { name: "Taahhutname", matrix: [["Ad Soyad", "Kalan Borç", "Taahhütname Tarihi", "Taahhüt Tutarı"], ["Gül Taş", "2.500", d(4), "500"]] },
+    { name: "Taahhutlu", matrix: [["Ad Soyad", "Kalan Borç", "Taahhütlü Ödeme Tarihi", "Taahhüt Tutarı"], ["Işıl Ay", "4.500", d(5), "800"]] },
+    { name: "TaahhuduTarihi", matrix: [["Ad Soyad", "Kalan Borç", "Taahhüdü Tarihi", "Taahhüdü Tutarı"], ["Kemal Su", "2.000", d(7), "300"]] },
+    { name: "OdemeTaahhudu", matrix: [["Ad Soyad", "Kalan Borç", "Ödeme Taahhüdü", "Taahhüdü Tutarı"], ["Jale Er", "5.500", d(6), "1.100"]] },
+    { name: "SozMiktari", matrix: [["Ad Soyad", "Kalan Borç", "Söz Tarihi", "Söz Miktarı"], ["Fırat Er", "3.000", d(2), "600"]] },
+    { name: "TaahhutMiktari", matrix: [["Ad Soyad", "Kalan Borç", "Taahhüt Tarihi", "Taahhüt Miktarı"], ["Hakan Öz", "3.500", d(3), "700"]] },
+    { name: "TelekomVade", matrix: [["Ad Soyad", "Taahhütlü Ücret", "Kalan Borç", "Son Ödeme"], ["Mina Er", "450", "1.350", d(5)]] },
+  ]);
+
+  test("Takvim: söz kalemleri söz tutarı / miktarı (Gül 500, Işıl 800, Kemal 300, Jale 1.100, Fırat 600, Hakan 700); Mina 450 (Taahhütlü Ücret dönem tutarı, söz değil)", async () => {
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    const items = dues.items.map(item => [item.person, item.amount ?? null, Boolean(item.promise), item.label]).sort((a, b) => a[0].localeCompare(b[0], "tr"));
+    assert.deepEqual(items.map(item => item.slice(0, 3)), [["Fırat Er", 600, true], ["Gül Taş", 500, true], ["Hakan Öz", 700, true], ["Işıl Ay", 800, true], ["Jale Er", 1100, true], ["Kemal Su", 300, true], ["Mina Er", 450, false]]);
+    assert.deepEqual([...new Set(items.filter(item => item[2]).map(item => item[3]))], ["Ödeme sözü"]);
+  });
+
+  test("Vadeler ve Nakit Akışı Beklenen 4.450 (aday 22: 15.050)", async () => {
+    assert.equal((await ctx.report("vade-takip")).report.totals.amount, 4450);
+    assert.equal((await ctx.report("nakit-akis")).report.totals.expected, 4450);
+  });
+});
