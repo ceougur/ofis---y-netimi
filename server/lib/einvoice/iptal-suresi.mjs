@@ -7,7 +7,7 @@
 // (kılavuz "her durumda" diyor; katı olan seçildi). Gün sınırı programın "bugün"üyle aynı: sunucunun yerel günü (Türkiye kurulumunda UTC+3).
 //
 // e-Fatura bu kılavuzun konusu değildir (ayrı kılavuz): entegratörden iptal edilmez (adapters.mjs cancel → einvoice-cancel-unsupported); bugünkü
-// davranışı değişmez.
+// davranışı değişmez. Yalnız sonucu BELİRSİZ gönderimde "Yalnız Programda İptal"den önce EDM'ye sorma sınırı e-Faturayı da kapsar (uncertainWindow, aşağıda).
 import { dayText, isoDay } from "../plans.mjs";
 
 export const CANCEL_WINDOW_DAYS = 8;
@@ -78,11 +78,30 @@ export function cancelWindow({ profile, eStatus, issueDate, transmittedAt = "", 
 }
 
 /**
- * Durumdan bağımsız pencere: belge iletilmiş OLSAYDI süresi (sonucu belirsiz gönderimde "Yalnız Programda İptal" için; kullanıcı kararı 22.10.2026).
- * Kural dışı tür → null.
+ * Durumdan bağımsız pencere: belge iletilmiş OLSAYDI süresi (e-Arşiv / e-SMM; cancelWindow bunu kullanır). Kural dışı tür → null.
  */
 export function attemptWindow({ profile, issueDate, transmittedAt = "", today }) {
-  const label = windowLabel(profile);
+  return windowFrom(windowLabel(profile), { issueDate, transmittedAt, today });
+}
+
+// 2.4.4 (bağımsız kâhin İNCELE 1; kullanıcı kararı 23.10.2026, 5 dk yetkisiyle — 22.10.2026 madde 23 ekinin e-Faturaya uygulanması): sonucu BELİRSİZ
+// gönderimde "Yalnız Programda İptal" kapısı e-Faturayı (Temel / Ticari) da kapsar. e-Faturanın İPTAL SÜRESİ DEĞİLDİR: programda e-Fatura için iptal
+// süresi yoktur (cancelWindow e-Faturada null; e-Fatura entegratörden iptal edilmez — adapters.mjs einvoice-cancel-unsupported: Ticari faturayı alıcı
+// reddeder, Temel faturada iade faturası ya da GİB'in iptal yolu). Buradaki 8 gün yalnız "EDM'ye sormadan yerel iptal" sınırıdır (e-Arşiv / e-SMM ile aynı
+// sayı): son gönderim girişiminden 8 gün geçtiyse önce EDM'ye sorulur — belge EDM'de varsa (alıcıya gitmiş olabilir, GİB'de geçerli) programda iptal
+// görünmesin (22.10.2026 kararının gerekçesi).
+const UNCERTAIN_PROFILES = Object.freeze({ ...WINDOW_PROFILES, TEMELFATURA: ["e-Fatura", "e-Faturanın"], TICARIFATURA: ["e-Fatura", "e-Faturanın"] });
+export const EINVOICE_PROFILES = Object.freeze(new Set(["TEMELFATURA", "TICARIFATURA"]));
+
+/**
+ * Sonucu belirsiz gönderimde yalnız programda iptalden önce EDM'ye sorma sınırı (routes/invoices.mjs uncertainLocalCheck). e-Arşiv / e-SMM'de
+ * attemptWindow ile aynı; e-Faturada da (yukarıda). Kural dışı tür → null.
+ */
+export function uncertainWindow({ profile, issueDate, transmittedAt = "", today }) {
+  return windowFrom(UNCERTAIN_PROFILES[profile]?.[0] || "", { issueDate, transmittedAt, today });
+}
+
+function windowFrom(label, { issueDate, transmittedAt = "", today }) {
   if (!label || !issueDate) return null;
   const sentDay = transmittedAt ? isoDay(new Date(transmittedAt)) : "";
   // Kesimden önce iletim olamaz; olursa (saat geri alınmış vb.) geç olan gün esas alınmaz — erken olan kesim günü de iletimden önce değildir.
