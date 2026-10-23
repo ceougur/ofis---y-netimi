@@ -53,7 +53,9 @@ if (step === "uret") {
     log(`üretildi: ${JSON.stringify(manifest.counts)}`);
     log(`süre ${(manifest.ms / 1000).toFixed(1)} sn; EDM gönderim ${manifest.edm.sent}, iptal ${manifest.edm.cancelled}, ihlal ${manifest.edm.violations.length}`);
     // Her API yanıtı 200 olmalıydı (200 dışı yanıt üretimi durdurur); EDM sözleşme ihlali başarısızlık sayılır.
-    summary(manifest.requests + 1, manifest.edm.violations.length ? 1 : 0, `${manifest.requests} API isteği 200; EDM ihlali ${manifest.edm.violations.length}`);
+    // Aday 9: silme / Silinenler'den geri yükleme reddi (409) beklenen sonuçtur (ders 3: sayılır, başarı yazılmaz); başka her 200 dışı yanıt üretimi durdurur.
+    const refused = (manifest.deleteRefusals || []).length + (manifest.integrityRefusals || []).length;
+    summary(manifest.requests + 1, manifest.edm.violations.length ? 1 : 0, `${manifest.requests} API isteği (${manifest.requests - refused} × 200, ${refused} × 409 silme/geri yükleme ya da ledger-integrity reddi — ayrıntısı manifestte); EDM ihlali ${manifest.edm.violations.length}`);
   } finally {
     await edm.close();
   }
@@ -69,6 +71,9 @@ if (step === "uret") {
     const facts = await measure({ version, dir: copy, day: dayOf() });
     writeJson(name, facts);
     log(`ölçüldü ${name}: açılış ${facts.bootMs} ms, şirketler ${facts.install.companies.map(c => c.code).join(", ")}`);
+    // Özet (kanit.mjs): şirket başına bir ölçü; yevmiye (Excel) okunamadıysa başarısız (ders 4).
+    const unread = Object.entries(facts.companies).filter(([, f]) => !f.journal || f.journal.__status).map(([code]) => code);
+    summary(Object.keys(facts.companies).length, unread.length, `ölçü: ${Object.keys(facts.companies).length} şirket; yevmiye okunamayan ${unread.join(",") || "yok"}`);
   } finally {
     rmSync(copy, { recursive: true, force: true });
   }

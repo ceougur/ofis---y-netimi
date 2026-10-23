@@ -4,6 +4,10 @@
 //      v2.4.3'te Toplam Borç, 2.4.4'te Kalan Borç (7d51d60, madde 5b; server/lib/insight/dues.mjs classifyColumns AMOUNT_REMAINING önceliği).
 // B2 — yedek → e-Arşiv gönder + Müşteri Fişi Olarak Bırak → geri yükle → yeniden kes: yedekten sonra EDM'ye gitmiş e-Arşiv numarası ve verilmiş fiş numarası
 //      geri yüklenen veride yeniden verilir (EDM 11048 reddi). İki sürümde de.
+// G1 (aday 9 koşusu, 23.10.2026) — Silinenler'den geri yükleme dönem kilidini aşar: kapanmış dönem tarihli silinmiş fatura geri yüklenir (200), Mutabakat Testi
+//      "kapının görmediği bir yolla değişti" der ve aynı oturumda sonraki hareketler reddedilir (üretimde v2.4.3 POS'lu stoklu satış 409 ledger-integrity;
+//      2.4.4'te Kasa girişi 500). Beklenen (kural, v2.0.13 dönem kilidi: kilitli tarihe hareket eklenemez/düzeltilemez/silinemez): geri yükleme 409.
+//      server/routes/trash.mjs (fatura kolu restoreDate çağırmaz; tahsilat/Kasa/taksit kolları çağırır) + routes/invoices.mjs restoreDeleted.
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -93,6 +97,39 @@ async function b2(version) {
   }
 }
 
+async function g1(version) {
+  const root = mkdtempSync(path.join(tmpdir(), "m30-g1-"));
+  resetEdmCaches();
+  const clock = createClock({ time: new Date(`${today}T10:00:00`), fixed: true });
+  const server = await bootVersion(version, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, now: clock, ...flags(version) });
+  try {
+    const api = await server.login();
+    const acc = await must("cari", api.post("/api/workspace/accounts", { name: "Kilit Deneme", type: "customer" }));
+    const line = [{ name: "Hizmet", qty: 1, unitPrice: 100, vatRate: 20 }];
+    const doc = await must("eski satış", api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: acc.id, issueDate: addDays(today, -40), lines: line, payment: { rest: "open" }, force: true }));
+    await must("sil", api.del(`/api/workspace/invoices/${doc.id}?reason=${encodeURIComponent("Hatalı")}&force=1&cashForce=1`));
+    await must("dönem kilidi", api.put("/api/admin/period-lock", { lockedUntil: addDays(today, -30) }));
+    const codes = r => (r.failures || []).map(f => f.code).sort();
+    const before = await must("Mutabakat Testi (önce)", api.get("/api/workspace/ledger/integrity"));
+    const item = (await must("Silinenler", api.get("/api/admin/trash"))).find(t => t.kind === "invoice");
+    const restore = await api.post("/api/admin/trash/restore", { id: item.id });
+    const after = await must("Mutabakat Testi (sonra)", api.get("/api/workspace/ledger/integrity"));
+    const cash = await api.post("/api/workspace/cash", { kind: "in", amount: "10", date: today, description: "Kilit sonrası" });
+    const sale = await api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: acc.id, issueDate: today, lines: line, payment: { cash: [{ amount: 120, method: "cash" }], rest: "open" }, force: true, cashForce: true });
+    return { geriYukleme: [restore.status, String(restore.data?.message || restore.data?.error || "").slice(0, 120)], mutabakatOnce: codes(before), mutabakatSonra: codes(after), kasaGirisi: [cash.status, cash.data?.code || ""], pesinSatis: [sale.status, sale.data?.code || ""] };
+  } finally {
+    await server.close();
+    rmSync(root, { recursive: true, force: true });
+  }
+}
+
+if (which === "g1" || which === "hepsi") {
+  const old = await g1("v2.4.3");
+  const cur = await g1(CURRENT);
+  console.log(JSON.stringify({ g1: [old, cur] }));
+  const bug = r => r.geriYukleme[0] === 200 && !r.mutabakatOnce.includes("period-lock") && r.mutabakatSonra.includes("period-lock");
+  result("G1 yeniden üretildi: kapanmış dönem tarihli silinmiş fatura Silinenler'den geri yüklenir (beklenen 409), Mutabakat Testi period-lock sapması (iki sürümde de)", bug(old) && bug(cur), { old, cur });
+}
 if (which === "b1" || which === "hepsi") {
   const old = await b1("v2.4.3");
   const cur = await b1(CURRENT);
