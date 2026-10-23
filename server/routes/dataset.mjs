@@ -20,7 +20,8 @@ export function registerDatasetRoutes(router, { auth, dataset, clientState, prof
   router.post("/api/workspace/dataset/commit", async ({ req, res }) => {
     const user = auth.requirePermission(req, "sources.manage");
     const body = await readJson(req);
-    const result = dataset.commit(user, text(body.stageId), { mode: text(body.mode), link: body.link !== false, name: text(body.name) });
+    // 31e: confirm — yönetici önizlemedeki "eşleşmeyen bağ" / "aynı görünen satır" uyarısını onayladı (yoksa 409; dataset.mjs assertBondsConfirmed).
+    const result = dataset.commit(user, text(body.stageId), { mode: text(body.mode), link: body.link !== false, name: text(body.name), confirm: body.confirm === true });
     // Eşleme ekranında seçilen kolon rolleri (v2.0.2): veri kaydedildikten sonra oturuma yazılır; analiz ve takvim uyar.
     let roles = null;
     if (body.roles && typeof body.roles === "object" && profile?.setRoles) {

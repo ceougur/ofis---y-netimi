@@ -1,0 +1,2 @@
+{"kok":"/home/user/wt/r31e-b-eski","satir":20000,"onizlemeMs":1990,"uygulamaMs":548,"commit":200,"yeniSatirdakiNot":0}
+{"kok":"/home/user/wt/r31e-b","satir":20000,"onizlemeMs":2720,"uygulamaMs":1003,"commit":200,"yeniSatirdakiNot":300}

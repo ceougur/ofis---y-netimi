@@ -23,6 +23,7 @@ import { currentScope, runScoped } from "./session-scope.mjs";
 import { spreadsheetId } from "./sheets.mjs";
 import { applyPatch } from "./sources.mjs";
 import { LEGACY_IDENTITY, detectIdentity, legacyFits, rowHash, rowIdentities, sameIdentity } from "./dataset-identity.mjs";
+import { createBondStore, createPeople, findDuplicates, planRebind, resolveIncoming, summarizeBonds, unmatchedSentence } from "./dataset-bonds.mjs";
 import { columnOrder } from "./sources.mjs";
 
 export const DATASET_KEY = "dataset://ofis";
@@ -67,7 +68,7 @@ const TAB_SEP = " › ";
 
 const isSheetUrl = value => /^https:\/\/docs\.google\.com\/spreadsheets\//i.test(String(value || "").trim());
 
-export function createDatasetService({ store, audit, readGoogleSheet, bumpClientState, events, log, backupDir, backupKeep = 30, autoSync = true, tickMs = 60_000, canWrite = () => true, makeBackup = null }) {
+export function createDatasetService({ store, audit, readGoogleSheet, bumpClientState, events, log, backupDir, backupKeep = 30, autoSync = true, tickMs = 60_000, canWrite = () => true, makeBackup = null, bank = null }) {
   // Değişiklik öncesi yedek (v2.0.20): şirket uygulaması kendi yedekleyicisini verir (şirketin klasörü, kodlu ad, kimlik);
   // verilmezse eski davranış (backupDir'e kodsuz ad).
   const takeBackup = makeBackup || (backupDir ? label => createBackup(store.db, backupDir, { label, keep: backupKeep }) : null);
@@ -603,6 +604,69 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     return rows.map((values, index) => ({ ...identities[index], values, hash: rowHash(values), position: index }));
   }
 
+  // ---------- Kayda bağlı veriler (2.4.4 31e B1–B3; dataset-bonds.mjs) ----------
+  // Yükleme ya da eşitleme bir kaydın anahtarını değiştirince bağlı veriler (tahsilat, not, düzeltme, "Ödendi say", cari ve taksit kartı bağı…) güvenli
+  // eşleşmede yeni anahtara taşınır; eşleşmeyen varsa önizleme adlarıyla söyler ve onay ister, eşitleme bekler. Devamı olarak ekle ve eşitlemede aynı
+  // konumdaki farklı kişi mevcut satırın yerine geçmez (yeni kayıt).
+  const bondStore = (datasetKey = activeKey()) => createBondStore({ store, datasetKey, setting: name => sk(name, datasetKey), bank });
+  // Başka veri sayfasında da bulunan anahtarlar (not, tahsilat gibi tablolar anahtarı sayfadan bağımsız tutar; o sayfanın bağı taşınmasın).
+  function elsewhere(keys) {
+    const out = new Set();
+    if (!keys.length) return out;
+    const own = activeKey();
+    for (const key of allKeys()) {
+      if (key === own) continue;
+      for (let index = 0; index < keys.length; index += 400) {
+        const part = keys.slice(index, index + 400);
+        for (const row of store.all(`SELECT DISTINCT case_key AS k FROM dataset_rows WHERE dataset_key = ? AND case_key IN (${part.map(() => "?").join(", ")})`, key, ...part)) out.add(row.k);
+      }
+    }
+    return out;
+  }
+  /** mode: "merge" | "replace" | "sync". Dönüş: uygulanacak satırlar (Devamı/eşitlemede mevcut satırlarla eşlenmiş), taşıma planı, aynı görünenler. */
+  function bondPlan(rawEntries, mode) {
+    const storedRows = loadRows().rows;
+    const people = createPeople(storedRows, rawEntries);
+    let entries = rawEntries;
+    let differentPerson = 0;
+    if (mode !== "replace" && storedRows.length) ({ entries, differentPerson } = resolveIncoming(rawEntries, storedRows, people, { byPerson: mode === "sync" }));
+    const bonds = bondStore();
+    const plan = storedRows.length ? planRebind({ storedRows, entries, mode, people, bonded: keys => bonds.counts(keys), elsewhere }) : { moves: [], unmatched: [], lost: 0 };
+    const duplicates = mode === "merge" && storedRows.length ? findDuplicates({ storedRows, entries, people }) : [];
+    return { entries, plan, duplicates, differentPerson, bonds };
+  }
+  // Taşınanların yalnız sayısı ve türleri (uyarı değil; adlar işlem geçmişinde). Eşleşmeyen ve aynı görünenler adlarıyla.
+  const movedOf = list => {
+    const { count, kinds, labels } = summarizeBonds(list);
+    return { count, kinds, labels };
+  };
+  const bondPreview = report => ({
+    moved: movedOf(report.plan.moves),
+    unmatched: { ...summarizeBonds(report.plan.unmatched), text: unmatchedSentence(summarizeBonds(report.plan.unmatched)) },
+    duplicates: listOf(report.duplicates.filter(item => item.kind === "same")),
+    samePerson: listOf(report.duplicates.filter(item => item.kind === "person")),
+    differentPerson: report.differentPerson,
+  });
+  const listOf = list => ({ count: list.length, names: [...new Set(list.map(item => item.name).filter(Boolean))].slice(0, 12) });
+  const named = info => (info.names.length ? ` (${info.names.join(", ")}${info.count > info.names.length ? "…" : ""})` : "");
+  const duplicateSentence = preview => [
+    preview.duplicates.count ? `${preview.duplicates.count} satır mevcut kayıtlarla aynı görünüyor${named(preview.duplicates)}; Devamı Olarak Ekle bunları ikinci kez ekler, aynı dosyanın yenisiyse Yerine Koy kullanın.` : "",
+    preview.samePerson.count ? `${preview.samePerson.count} yeni satır mevcut bir kaydın kişisini taşıyor${named(preview.samePerson)}; Devamı Olarak Ekle bunları ayrı kayıt olarak ekler, mevcut kaydı güncellemek için Yerine Koy kullanın.` : "",
+  ].filter(Boolean).join(" ");
+  // Onaysız uygulamada (API, eski istemci) eşleşmeyen bağ ya da aynı görünen satır varsa 409: bağ sessizce kopmaz, kayıt sessizce çiftlenmez.
+  function assertBondsConfirmed(report, staged, effective, confirmed) {
+    const preview = bondPreview(report);
+    const unmatchedKeys = report.plan.unmatched.map(item => item.key);
+    if (!unmatchedKeys.length && !report.duplicates.length) return;
+    const known = staged.bonds?.[effective] || null;
+    if (confirmed && known && (unmatchedKeys.some(key => !known.unmatched.has(key)) || report.duplicates.length > known.duplicates)) {
+      throw new HttpError(409, "Önizleme hazırlanırken kayıtlara yeni tahsilat, not ya da bağ eklendi. Pencereyi kapatıp dosyayı yeniden bırakın.", { code: "bonds-changed", bonds: preview });
+    }
+    if (confirmed) return;
+    const parts = [preview.unmatched.text ? `${preview.unmatched.text} Bu bağlar silinmez, eski kayıtta kalır; yeni satırlarda görünmez.` : "", duplicateSentence(preview)].filter(Boolean);
+    throw new HttpError(409, `${parts.join(" ")} Onaylayarak yeniden deneyin.`, { code: unmatchedKeys.length ? "bonds-unmatched" : "merge-duplicates", bonds: preview });
+  }
+
   // Kayıt kimliği kuralı (dataset-identity.mjs). Kayıtlı kural yoksa ve veri 1.6.0 öncesinden geliyorsa (satırlar ya da
   // göç 4'ün bıraktığı ilk Sheet eşitlemesi) eski kural geçerlidir; 1.6.0 öncesinden gelen kurulumlarda kural ayrıca
   // açılışta sabitlenir (pinLegacyIdentity). "Devamı olarak ekle" ve eşitleme mevcut kuralla eşleştirir; kural hiçbir
@@ -828,10 +892,15 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     const shared = incoming.filter(column => existing.has(column)).length + (schema?.renamed.length || 0);
     const similarity = existing.size && incoming.length ? shared / Math.min(existing.size, incoming.length) : null;
     const id = `stage-${randomUUID()}`;
+    // 31e B1–B3: kayda bağlı verilerin bu yüklemede ne olacağı (taşınan, eşleşmeyen, aynı görünen). Devamı olarak ekle aynı konumdaki farklı kişiyi
+    // mevcut satırın yerine koymaz; önizleme sayıları da uygulamanın eşlemesiyle aynıdır.
+    const mergeReport = bondPlan(entries.merge, "merge");
+    const replaceReport = bondPlan(entries.replace, "replace");
+    const bondsOf = report => ({ unmatched: new Set(report.plan.unmatched.map(item => item.key)), duplicates: report.duplicates.length });
     // Anlık görüntü (v2.0.2): önizleme hazırlanırken başka biri veriyi değiştirirse kaydetme reddedilir (409).
-    stages.set(id, { id, userId: user.id, datasetKey: activeKey(), kind, label, url, entries, identity, tabs, choices, listSheets, schema, snapshot: datasetStamp(), createdAt: Date.now() });
-    const mergeChanges = diff(entries.merge);
-    const replaceChanges = entries.replace === entries.merge ? mergeChanges : diff(entries.replace);
+    stages.set(id, { id, userId: user.id, datasetKey: activeKey(), kind, label, url, entries, identity, tabs, choices, listSheets, schema, snapshot: datasetStamp(), createdAt: Date.now(), bonds: { merge: bondsOf(mergeReport), replace: bondsOf(replaceReport) } });
+    const mergeChanges = diff(mergeReport.entries);
+    const replaceChanges = diff(replaceReport.entries);
     return {
       stageId: id,
       kind,
@@ -853,6 +922,8 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
         replace: { added: replaceChanges.added, updated: replaceChanges.updated, unchanged: replaceChanges.unchanged, removed: replaceChanges.others },
         samples: entries.replace === entries.merge ? mergeChanges.samples : replaceChanges.samples,
       },
+      // 31e: kayda bağlı veriler — taşınacaklar, eşleşmeyenler (adlarıyla; onay ister), Devamı olarak eklemede aynı görünen satırlar (onay ister).
+      bonds: { merge: bondPreview(mergeReport), replace: bondPreview(replaceReport) },
     };
   }
 
@@ -970,12 +1041,12 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
   }
 
   // mode: "merge" | "replace" (önizlemenin yapıldığı oturuma) ya da "session" (yeni oturum açılır, v2.0.1).
-  function commit(user, stageId, { mode, link = true, name = "" } = {}) {
+  function commit(user, stageId, { mode, link = true, name = "", confirm = false } = {}) {
     const staged = stages.get(String(stageId || ""));
     if (!staged) throw new HttpError(404, "İçeri alma süresi doldu veya bulunamadı. Dosyayı ya da bağlantıyı yeniden seçin.");
     if (mode === "session") return openSession(user, staged, { link, name });
     const target = staged.datasetKey && knownKey(staged.datasetKey) ? staged.datasetKey : activeKey();
-    return withKey(target, () => commitInto(user, staged, { mode, link }));
+    return withKey(target, () => commitInto(user, staged, { mode, link, confirm }));
   }
 
   // Yeni oturum: dosya yeni ve boş bir oturuma kendi kimlik kuralıyla alınır; mevcut oturumlara dokunulmaz.
@@ -1137,21 +1208,26 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     return String(row.values?.[field] ?? "");
   }
 
-  function commitInto(user, staged, { mode, link = true } = {}) {
+  function commitInto(user, staged, { mode, link = true, confirm = false } = {}) {
     if (staged.snapshot && staged.datasetKey === activeKey() && staged.snapshot !== datasetStamp()) {
       throw new HttpError(409, "Bu önizleme hazırlanırken veri değişti (başka bir kullanıcı yüklemiş ya da düzenlemiş olabilir). Pencereyi kapatıp dosyayı yeniden bırakın.", { code: "STALE_STAGE" });
     }
     const empty = loadRows().rows.length === 0;
     const effective = empty ? "replace" : mode;
     if (!["merge", "replace"].includes(effective)) throw new HttpError(400, "Devamı olarak ekle ya da yerine koy seçilmelidir.");
+    // 31e: bağların planı uygulama anında yeniden kurulur (önizlemeden sonra eklenen bağ da görülür); eşleşmeyen ya da aynı görünen varsa onay gerekir.
+    const report = bondPlan(effective === "merge" ? staged.entries.merge : staged.entries.replace, effective);
+    assertBondsConfirmed(report, staged, effective, confirm === true);
     const backupName = backup(effective === "merge" ? "veri-oncesi-ekleme" : "veri-oncesi-degistirme");
     const origin = staged.kind === "sheets" ? "sheets" : "excel";
-    const entries = effective === "merge" ? staged.entries.merge : staged.entries.replace;
+    const entries = report.entries;
     const identity = effective === "merge" ? staged.identity.merge : staged.identity.replace;
     let counts;
+    let rebound = null;
     store.tx(() => {
       if (staged.schema?.renamed?.length) migrateSchema(user, staged.schema.renamed, effective);
       counts = apply(entries, { mode: effective, origin });
+      rebound = rebind(user, report, { kind: staged.kind, mode: effective });
       sset(S.identity, JSON.stringify(identity), user.id);
       // Açılır listeler: yerine koymada dosyanınkiler, eklemede dosyadaki sekmelerinki yenilenir (v2.0.2).
       const lists = effective === "replace" ? cleanChoices(staged.choices) : mergeChoices(parseJson(sget(S.choices, ""), {}), staged.choices, staged.tabs);
@@ -1191,7 +1267,19 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     });
     stages.delete(staged.id);
     afterChange(user, { imported: true, mode: empty ? "initial" : effective });
-    return { mode: empty ? "initial" : effective, counts, rowCount: loadRows().rows.length, label: sget(S.label, ""), sourceLabel: staged.label, linked: Boolean(linkedUrl()), backupName };
+    return { mode: empty ? "initial" : effective, counts, rowCount: loadRows().rows.length, label: sget(S.label, ""), sourceLabel: staged.label, linked: Boolean(linkedUrl()), backupName, bonds: rebound };
+  }
+
+  // Taşıma (çağıranın işleminde): güvenli eşleşen bağlar yeni anahtara, eşleşmeyenler yerinde (silinmez). İkisi de işlem geçmişine yazılır; geri alma
+  // işlemden önce alınan yedekle (veri-oncesi-*), taşınan her anahtar çifti işlem geçmişinde.
+  function rebind(actor, report, { kind, mode }) {
+    const { moves, unmatched } = report.plan;
+    if (!moves.length && !unmatched.length) return { moved: 0, unmatched: 0 };
+    const result = moves.length ? report.bonds.move(moves, { user: actor, at: now() }) : { moved: {}, kept: {} };
+    const brief = list => list.slice(0, 200).map(item => ({ from: item.from ?? item.key, ...(item.to ? { to: item.to } : {}), name: item.name, tab: item.tab, bonds: item.bonds }));
+    if (moves.length) audit(actor, "dataset.bonds.moved", activeKey(), { kind, mode, count: moves.length, moves: brief(moves), rows: result.moved, kept: result.kept });
+    if (unmatched.length) audit(actor, "dataset.bonds.unmatched", activeKey(), { kind, mode, count: unmatched.length, unmatched: brief(unmatched) });
+    return { moved: moves.length, unmatched: unmatched.length, rows: result.moved };
   }
 
   // ---------- Bağlı Google Sheets eşitlemesi ----------
@@ -1210,7 +1298,10 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       }
       const rows = cleanRows(result.rows);
       const identity = identitiesFor(rows).merge;
-      const entries = toEntries(rows, identity);
+      // 31e: Sheet'teki satır mevcut satırlarla eşlenir (aynı konumdaki farklı kişi yerine geçmez; Sheet'te olmayan "Sheet'te yok" işaretlenir) ve
+      // anahtarı değişen kayıtların bağları güvenli eşleşmede taşınır.
+      const report = bondPlan(toEntries(rows, identity), "sync");
+      const { entries } = report;
       const { rows: currentRows, byId } = loadRows();
       // Formüller bu kez okunamadıysa (xlsx indirilemedi) kayıtlı formüller korunur; aksi hâlde her kesintide
       // formüller silinip geri gelirdi.
@@ -1230,16 +1321,30 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       // Emniyet: Sheet boş döndüyse ya da satırların büyük kısmı birden "yeni" ve "kayıp" görünüyorsa (başlık satırı
       // değişmiş, sekme adı değişmiş gibi yapısal bir değişiklik) kendiliğinden uygulanmaz; yönetici karar verir.
       const structural = fromSheet.length >= 20 && changes.added >= fromSheet.length * 0.3 && wouldMiss >= fromSheet.length * 0.3;
-      if ((!entries.length && fromSheet.length) || structural) {
-        const hold = { at: started, added: changes.added, missing: wouldMiss, updated: changes.updated, rowCount: entries.length };
+      // Bağ emniyeti (31e B1): eşleşmeyen bağ varsa (ör. kişi kolonu olmayan satırda tutar değişti) eşitleme kendiliğinden uygulanmaz; yönetici
+      // "İncele ve karar ver"den önizlemeyi görüp onaylar. Bağı eşleşenler bekletmez (taşınarak uygulanır).
+      const unmatchedBonds = report.plan.unmatched.length ? summarizeBonds(report.plan.unmatched) : null;
+      if ((!entries.length && fromSheet.length) || structural || unmatchedBonds) {
+        const hold = { at: started, added: changes.added, missing: wouldMiss, updated: changes.updated, rowCount: entries.length, ...(unmatchedBonds && !structural && entries.length ? { reason: "bonds", bonds: { ...unmatchedBonds, text: unmatchedSentence(unmatchedBonds, { sync: true }) } } : {}) };
         sset(S.syncHold, JSON.stringify(hold));
         sset(S.lastSyncError, "");
         log?.warn?.("Sheet eşitlemesi yönetici onayına bırakıldı", hold);
         return { ok: false, held: true, hold };
       }
+      // Bağ taşınacaksa önce yedek (Yerine koy / Devamı olarak ekle gibi): taşıma geri alınabilir kalır.
+      if (report.plan.moves.length) {
+        try {
+          backup("veri-oncesi-esitleme");
+        } catch (error) {
+          sset(S.lastSyncError, error.message);
+          return { ok: false, message: error.message };
+        }
+      }
       let counts;
+      let rebound = null;
       store.tx(() => {
         counts = apply(entries, { mode: "sync", origin: "sheets" });
+        rebound = rebind(actor, report, { kind: "sheets", mode: "sync" });
         sset(S.identity, JSON.stringify(identity));
         // Listeler bu kez okunamadıysa (xlsx indirilemedi) kayıtlı listeler korunur.
         if (result.choices) {
@@ -1256,7 +1361,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       });
       if (changedSomething(counts)) afterChange(actor);
       else invalidate();
-      return { ok: true, counts, manual };
+      return { ok: true, counts, manual, bonds: rebound };
     })().finally(() => {
       syncing.delete(datasetKey);
     });

@@ -229,9 +229,39 @@
     decide(staged, options);
   }
 
+  // 31e B1–B3: kayda bağlı veriler (tahsilat, not, düzeltme, "Ödendi Say", cari bağı…). Sunucu güvenli eşleşeni yeni satıra taşır; eşleşmeyeni ve
+  // Devamı olarak eklemede mevcut kayıtla aynı görünen satırı adlarıyla söyler, onay ister (onaysız uygulama 409).
+  const bondNames = info => `${(info.names || []).join(", ")}${info.more ? ` ve ${number(info.more)} kayıt daha` : ""}`;
+  function bondWarnings(bonds, mode) {
+    const info = bonds?.[mode];
+    if (!info) return { html: "", lines: [] };
+    const lines = [];
+    const html = [];
+    if (info.unmatched?.count) {
+      const text = info.unmatched.text || `${number(info.unmatched.count)} kaydın ${(info.unmatched.labels || []).join(" / ")} bu yüklemeyle eşleşmedi: ${bondNames(info.unmatched)}.`;
+      lines.push(`${text} Bu bağlar silinmez, eski kayıtta kalır ama yeni satırlarda görünmez (ödemiş kişi Takvim'de ve raporlarda ödememiş görünür).`);
+      html.push(`<p class="hof-alert" data-bond-unmatched="${mode}">${esc(text)} Silinmez, eski kayıtta kalır ama yeni satırlarda görünmez.</p>`);
+    }
+    if (mode === "merge" && info.duplicates?.count) {
+      const text = `${number(info.duplicates.count)} satır mevcut kayıtlarla aynı görünüyor${info.duplicates.names?.length ? ` (${info.duplicates.names.join(", ")})` : ""}; aynı dosyanın yenisiyse Yerine Koy kullanın.`;
+      lines.push(`${text} Devamı Olarak Ekle bunları ikinci kez ekler.`);
+      html.push(`<p class="hof-alert" data-bond-duplicates>${esc(text)}</p>`);
+    }
+    if (mode === "merge" && info.samePerson?.count) {
+      const text = `${number(info.samePerson.count)} yeni satır mevcut bir kaydın kişisini taşıyor${info.samePerson.names?.length ? ` (${info.samePerson.names.join(", ")})` : ""}; Devamı Olarak Ekle bunları ayrı kayıt olarak ekler, mevcut kaydı güncellemek için Yerine Koy kullanın.`;
+      lines.push(text);
+      html.push(`<p class="hof-alert" data-bond-same-person>${esc(text)}</p>`);
+    }
+    if (mode === "merge" && info.differentPerson) html.push(`<p class="hof-inline-note" data-bond-different>Aynı satırda kişisi değişen ${number(info.differentPerson)} satır mevcut kaydın yerine geçmez; yeni kayıt olarak eklenir.</p>`);
+    if (info.moved?.count) html.push(`<p class="hof-inline-note" data-bond-moved="${mode}">${number(info.moved.count)} kaydın ${esc((info.moved.labels || []).join(" / "))} aynı kişinin yeni satırına taşınır.</p>`);
+    return { html: html.join(""), lines };
+  }
+
   // "Devamı olarak ekle" / "Yerine koy" kararı; sayılar sunucunun gerçek karşılaştırmasından gelir.
   function decide(staged, options = {}) {
     const { merge, replace, samples } = staged.preview;
+    const mergeBonds = bondWarnings(staged.bonds, "merge");
+    const replaceBonds = bondWarnings(staged.bonds, "replace");
     const sample = (label, list) => (list.length ? `<span><b>${esc(label)}:</b> ${list.map(esc).join(", ")}${list.length === 5 ? "…" : ""}</span>` : "");
     const samplesHtml = [sample("yeni", samples.added), sample("güncellenecek", samples.updated), sample("yeni dosyada olmayan", samples.removed)].filter(Boolean).join("");
     const minutes = Number(summary?.syncMinutes || HOF.settings.syncMinutes || 5);
@@ -267,6 +297,7 @@
               <li>Yeni dosyada olmayan <b>${number(merge.kept)}</b> kayıt silinmez</li>
             </ul>
             <p>Ofiste yapılan düzeltmeler, notlar ve görevler korunur.</p>
+            ${mergeBonds.html}
             <button type="button" class="hof-button ${preferSession ? "hof-button-ghost" : ""}" data-mode="merge" ${preferSession ? "" : "autofocus"}>Devamı Olarak Ekle</button>
           </article>
           <article class="hof-choice">
@@ -275,7 +306,8 @@
               <li><b>${number(replace.added)}</b> yeni, <b>${number(replace.updated)}</b> güncellenen, <b>${number(replace.unchanged)}</b> aynı kayıt</li>
               <li>Yeni dosyada olmayan <b>${number(replace.removed)}</b> kayıt tablodan kalkar</li>
             </ul>
-            <p>Notlar, görevler ve işlem geçmişi silinmez; aynı dosya numarası tekrar gelirse yeniden bağlanır.</p>
+            <p>Notlar, tahsilatlar, düzeltmeler ve cari bağları silinmez. Kayıt yeni dosyada da varsa (aynı dosya numarası ya da aynı kişi tek satırda) ona bağlı kalır; eşleşmeyen olursa burada adıyla yazar.</p>
+            ${replaceBonds.html}
             <button type="button" class="hof-button hof-button-ghost" data-mode="replace">Yerine Koy</button>
           </article>
         </div>
@@ -296,9 +328,16 @@
       const button = event.target.closest("[data-mode]");
       if (!button) return;
       const mode = button.dataset.mode;
-      if (mode === "replace" && replace.removed > 0) {
-        const ok = await HOF.confirm({ title: "Yerine Koy", message: `Yeni dosyada olmayan ${number(replace.removed)} kayıt tablodan kalkacak. Notları ve geçmişi silinmez; işlemden önce yedek alınır. Devam edilsin mi?`, confirmLabel: "Yerine Koy", danger: true });
+      // 31e B2: onay metni gerçeği söyler — kalkan kayıt sayısı ve (varsa) yeni satırlara bağlanamayan tahsilat / not / bağ, adlarıyla.
+      const warnings = mode === "replace" ? replaceBonds.lines : mode === "merge" ? mergeBonds.lines : [];
+      let confirm = false;
+      if ((mode === "replace" && replace.removed > 0) || warnings.length) {
+        const head = mode === "replace" && replace.removed > 0 ? `Yeni dosyada olmayan ${number(replace.removed)} kayıt tablodan kalkacak.` : "";
+        const message = [head, ...warnings, "İşlemden önce yedek alınır. Devam edilsin mi?"].filter(Boolean).join(" ");
+        const label = mode === "replace" ? "Yerine Koy" : "Devamı Olarak Ekle";
+        const ok = await HOF.confirm({ title: label, message, confirmLabel: label, danger: mode === "replace" || warnings.length > 0 });
         if (!ok) return;
+        confirm = warnings.length > 0;
       }
       const link = staged.kind === "sheets" ? Boolean(modal.dialog.querySelector("[data-link]")?.checked) : true;
       const nameInput = modal.dialog.querySelector("[data-session-name]");
@@ -311,7 +350,7 @@
       button.classList.add("is-busy");
       button.textContent = mode === "session" ? "Sayfa açılıyor…" : "Uygulanıyor…";
       try {
-        finish(await HOF.api("/api/workspace/dataset/commit", { method: "POST", body: { stageId: staged.stageId, mode, link, name, roles: chosenRoles(modal.dialog) }, timeoutMs: 180_000 }));
+        finish(await HOF.api("/api/workspace/dataset/commit", { method: "POST", body: { stageId: staged.stageId, mode, link, name, roles: chosenRoles(modal.dialog), ...(confirm ? { confirm: true } : {}) }, timeoutMs: 180_000 }));
       } catch (error) {
         modal.close();
         HOF.toastError(error);
@@ -472,7 +511,7 @@
       body: `<section class="hof-data-summary">
           <div><b>${esc(data.label || (data.rowCount ? "Çalışma Verisi" : "Veri Yok"))}</b><span>${number(data.rowCount)} kayıt${data.tabs?.length ? ` · ${number(data.tabs.length)} sekme` : ""}${data.recordCount ? ` · uygulamada eklenen ${number(data.recordCount)} kayıt` : ""}</span><small>${esc(sourceLine(data))}</small></div>
           ${data.lastSyncError ? `<p class="hof-alert">Son eşitlemede Google Sheets'e ulaşılamadı: ${esc(data.lastSyncError)} Son eşitlenen veri kullanılmaya devam ediyor.</p>` : ""}
-          ${data.syncHold ? `<p class="hof-alert">Sheet'in yapısı değişmiş görünüyor (${number(data.syncHold.added)} yeni, ${number(data.syncHold.missing)} kayıp satır). Yanlışlıkla veri çoğalmasın diye otomatik eşitleme durduruldu. <button type="button" class="hof-button hof-button-small" data-review>İncele ve karar ver</button></p>` : ""}
+          ${data.syncHold ? `<p class="hof-alert" data-sync-hold="${esc(data.syncHold.reason || "structure")}">${data.syncHold.reason === "bonds" ? `${esc(data.syncHold.bonds?.text || "Sheet'teki değişiklik bazı kayıtların tahsilat, not ya da bağlarını yeni satırlara bağlayamıyor.")} Bağlar sessizce kopmasın diye otomatik eşitleme durduruldu.` : `Sheet'in yapısı değişmiş görünüyor (${number(data.syncHold.added)} yeni, ${number(data.syncHold.missing)} kayıp satır). Yanlışlıkla veri çoğalmasın diye otomatik eşitleme durduruldu.`} <button type="button" class="hof-button hof-button-small" data-review>İncele ve karar ver</button></p>` : ""}
           ${data.missingCount ? `<p class="hof-alert hof-alert-soft">${number(data.missingCount)} kayıt bağlı Sheet'te artık yok; tabloda duruyor. <button type="button" class="hof-button hof-button-small hof-button-ghost" data-missing>Listeyi Gör</button></p>` : ""}
         </section>
         ${sessions?.html || ""}
@@ -542,7 +581,7 @@
       try {
         const result = await HOF.api("/api/workspace/dataset/sync", { method: "POST", timeoutMs: 120_000 });
         modal.close();
-        if (result.held) HOF.toast("Sheet'in yapısı değişmiş görünüyor; eşitleme onayınızı bekliyor (Ayarlar → Veri).", { type: "error", timeout: 8000 });
+        if (result.held) HOF.toast(result.hold?.reason === "bonds" ? `${result.hold.bonds?.text || "Sheet'teki değişiklik bazı kayıtların bağlarını yeni satırlara bağlayamıyor."} Eşitleme onayınızı bekliyor (Ayarlar → Veri → İncele ve karar ver).` : "Sheet'in yapısı değişmiş görünüyor; eşitleme onayınızı bekliyor (Ayarlar → Veri).", { type: "error", timeout: 10000 });
         else if (!result.ok) HOF.toast(result.message || "Google Sheets okunamadı.", { type: "error", timeout: 7000 });
         else {
           const counts = result.counts || {};

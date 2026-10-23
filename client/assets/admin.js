@@ -34,6 +34,9 @@
     "source.excel.uploaded": "Excel tablosu yükledi",
     "dataset.imported": "Veri içeri aldı",
     "dataset.removed": "Veriyi kaldırdı",
+    // 2.4.4 31e: yükleme/eşitlemede kayda bağlı veriler (tahsilat, not, düzeltme, "Ödendi Say", cari bağı…).
+    "dataset.bonds.moved": "Kayıt bağlarını yeni satırlara taşıdı",
+    "dataset.bonds.unmatched": "Eşleşmeyen kayıt bağlarını onayladı",
     "dataset.unlinked": "Sheet bağlantısını kaldırdı",
     "dataset.missing.remove": "Sheet'te olmayan kayıtları kaldırdı",
     "dataset.missing.keep": "Sheet'te olmayan kayıtları tuttu",
@@ -881,6 +884,11 @@
       parts.push(`${payload.label || ""} · ${modes[payload.mode] || payload.mode} · ${payload.rows} kayıt (${payload.added || 0} yeni, ${payload.updated || 0} güncellendi${payload.removed ? `, ${payload.removed} kaldırıldı` : ""})`);
     }
     if (event.type === "dataset.removed") parts.push(`${payload.removed} kayıt`);
+    if (event.type.startsWith("dataset.bonds.")) {
+      const list = payload.moves || payload.unmatched || [];
+      const names = [...new Set(list.map(item => item.name).filter(Boolean))];
+      parts.push(`${payload.count} kayıt${names.length ? `: ${names.slice(0, 12).join(", ")}${names.length > 12 ? "…" : ""}` : ""}`);
+    }
     if (event.type.startsWith("profile.sector.custom")) parts.push(payload.name || "");
     if (event.type === "profile.sector") parts.push(`${payload.name}${payload.source === "confirmed" ? " (analiz önerisi onaylandı)" : ""}`);
     if (event.type === "profile.label") parts.push(`${payload.name}: "${payload.previous || "varsayılan"}" → "${payload.value || "varsayılan"}"`);

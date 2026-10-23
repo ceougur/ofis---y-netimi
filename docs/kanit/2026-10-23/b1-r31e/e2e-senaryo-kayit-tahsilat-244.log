@@ -1,0 +1,66 @@
+
+■ S1 kayda bağlı carisi olan söz: şeritten Tahsilat Gir → carinin tahsilat formu; para cariye, Kasa'ya bir kez
+  ✓ şeritte Ali Veli · Ödeme sözü · 5.000,00
+  ✓ carinin tahsilat formu: “Tahsilat” · “No 1 · Ali Veli · 0532 111 11 11”
+  ✓ kayıt tahsilatı penceresi ve Taksit planı kısa yolu yok
+  ✓ tutar hazır: 5.000,00
+  ✓ açıklama takvim kaleminden: “Ödeme sözü · 17.10.2026”
+  ✓ pil kalktı (söz carinin tahsilatıyla kapandı)
+  ✓ carinin defterine 1 tahsilat, 5.000 (0 → 5000)
+  ✓ kayıt tahsilatı yazılmadı (payments 0 → 0)
+  ✓ Kasa 5.000 arttı (0,00 → 5.000,00)
+
+■ S2 carisi olmayan kayıt: önce cari açın (ad, telefon kayıttan; kayda bağlı) → kaydedince tahsilat formu → para yeni cariye
+  ✓ “Yeni Cari” + “önce cari açın” iletisi
+  ✓ ad, telefon ve kayıt bağı kayıttan: {"name":"Selin Arslan","phone":"0532 600 30 30","caseKey":"satir:313c0ca38a5431b8"}
+  ✓ Taksit planı kısa yolu yok
+  ✓ yeni cari No 5 kayda bağlı (satir:313c0ca38a5431b8)
+  ✓ tahsilat formunda tutar hazır: 1.500,00 (pil 1.500,00)
+  ✓ pil kalktı (1. taksit)
+  ✓ para yeni carinin defterinde: 1 hareket, 1500
+  ✓ kayıt tahsilatı yazılmadı
+  ✓ Kasa tahsilat kadar arttı
+
+■ S3 kartlı kişinin sözü: Taksite Yaz / Taksit Dışı seçimi → Taksite Yaz → taksit kartına; söz kalkar
+  ✓ cari + Tahsilat ile aynı seçim: “Taksite Yaz · Ayşe KayaKalan ₺6.000,00 · sıradaki 02.11.2026 Taksit Dışı TahsilatCarinin hesabına yazılır (ör. ek hizmet”
+  ✓ söz pili kalktı (taksit tahsilatıyla)
+  ✓ taksit kartına 3.000 (0 → 3000)
+  ✓ taksit dışı cari tahsilatı ve kayıt tahsilatı yazılmadı
+
+■ S4 zil: Tahsilat Gir → aynı cari yolu; kısmi tahsilatta söz kalanla bekler
+  ✓ zilde Zeynep Şahin'in sözü “Tahsilat Gir” ile
+  ✓ carinin tahsilat formu: “No 2 · Zeynep Şahin · 0535 444 44 44”
+  ✓ tutar hazır: 7.500,00
+  ✓ carinin defterine 2.500 (0 → 2500)
+  ✓ söz 5.000 kalanla bekler (kısmen ödendi): {"amount":5000,"partial":true}
+
+■ S5 kayıttan taksit yok: tutarsız kalemde de "Tahsilat İşle" / "Taksit planı oluşturun" açılmaz; dolu Yeni Cari Esc ile sorusuz kapanır
+  ✓ carisi olmayan kayıtta Yeni Cari açıldı (“Yeni Cari”)
+  ✓ kayıt tahsilatı penceresi / Taksit planı kısa yolu yok
+  ✓ kayıttan gelen dolu form Esc ile sorusuz kapandı
+  ✓ hiçbir şey yazılmadı
+
+■ S6 kayda bağlı kartı olup carisi kayda bağlı olmayan kayıt: taksit seçimi, "Plansız Tahsilat Kaydet" yok
+  ✓ kayda bağlı kartın taksitleri
+  ✓ “Plansız Tahsilat Kaydet” (Kasa'ya doğrudan) yok
+
+■ S7 personel: carisi olmayan kayıtta yol söylenir; form açılmaz, hiçbir şey yazılmaz
+  ✓ personelde Tahsilat Gir görünür (Cariden Tahsilat Girme yetkisi var)
+  ✓ yol söylendi: “Tahsilat carinin hesabına yazılır; “Deniz Öztürk” kaydının carisi yok. Cari açmak yönetici, uzman ve muhasebe yetkisidir: yöneticinizden bu kişiye cari açıp kay”
+  ✓ form açılmadı
+  ✓ hiçbir şey yazılmadı
+
+■ S9 (5b) Açılış Bakiyesi kayıttaki Kalan Borç ile dolu; cari borçla açılır, tahsilat borçtan düşer
+  ✓ Açılış Bakiyesi kayıttaki Kalan Borç: “12.000,00” (Alacak Tutarı 20.000 değil)
+  ✓ kaynağı yazar: “Kayıttaki “Kalan” kolonundan geldi; değiştirebilir ya da silebilirsiniz. Tablodan Aktar bu borcu ikinci kez yazmaz.”
+  ✓ tahsilat formunda tutar: 12.000,00
+  ✓ carinin defteri: debt:12000, in:2000
+  ✓ cari bakiyesi 12.000 − 2.000 = 10000
+  ✓ takvim kalemi 10.000 kalanla bekler: {"amount":10000,"partial":true}
+
+■ S8 elle kâhin: Kasa = girilen tahsilatların toplamı; kayıt tahsilatı hiç yazılmadı
+  ✓ Kasa 0,00 + 14.000,00 = 14.000,00
+  ✓ payments 0
+  ✓ sayfa hatası yok ()
+
+46 geçti, 0 kaldı

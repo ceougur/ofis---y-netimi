@@ -1,0 +1,10 @@
+# senaryo-225 C yarışı: MODE=natural FIX=new CPU=1 TRIALS=5
+ok 1 - ön koşul (uyarı önceki yüklemede gösterildi): EVET [yükleme 4 "1. sayfa yüklendikten sonra" t=2346 ms]; son yüklemeden önce "görüldü" kaydında 1 kimlik (hedef VAR; önceki yüklemelerde ekrana çıkan bildirim 1); silinen: hof-notices:user-ff93d3ff-ecdd-426a-9bb0-dcbb6720f87d; 1. sayfada uyarı: GÖRÜNDÜ
+ok 2 - ön koşul (uyarı önceki yüklemede gösterildi): EVET [yükleme 5 "2. sayfa açıldıktan sonra" t=478 ms]; son yüklemeden önce "görüldü" kaydında 1 kimlik (hedef VAR; önceki yüklemelerde ekrana çıkan bildirim 1); silinen: hof-notices:user-20641d71-091d-46e1-b877-62abb214ff14; 1. sayfada uyarı: GÖRÜNDÜ
+ok 3 - ön koşul (uyarı önceki yüklemede gösterildi): EVET [yükleme 4 "1. sayfa yüklendikten sonra" t=2315 ms]; son yüklemeden önce "görüldü" kaydında 1 kimlik (hedef VAR; önceki yüklemelerde ekrana çıkan bildirim 1); silinen: hof-notices:user-c2ce8e75-2d60-4ec3-9119-f1ba9a422721; 1. sayfada uyarı: GÖRÜNDÜ
+ok 4 - ön koşul (uyarı önceki yüklemede gösterildi): EVET [yükleme 5 "2. sayfa açıldıktan sonra" t=476 ms]; son yüklemeden önce "görüldü" kaydında 1 kimlik (hedef VAR; önceki yüklemelerde ekrana çıkan bildirim 1); silinen: hof-notices:user-c99756a6-0aca-4fae-88e6-c0fc2fd5493f; 1. sayfada uyarı: GÖRÜNDÜ
+ok 5 - ön koşul (uyarı önceki yüklemede gösterildi): EVET [yükleme 4 "1. sayfa yüklendikten sonra" t=2350 ms]; son yüklemeden önce "görüldü" kaydında 1 kimlik (hedef VAR; önceki yüklemelerde ekrana çıkan bildirim 1); silinen: hof-notices:user-003c3d1d-1600-4544-8747-88d679852afe; 1. sayfada uyarı: GÖRÜNDÜ
+# ön koşulun oluştuğu deneme: 5/5
+# tests 5
+# pass 5
+# fail 0
