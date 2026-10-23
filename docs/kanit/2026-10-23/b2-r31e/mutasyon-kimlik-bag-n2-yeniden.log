@@ -1,0 +1,4 @@
+M27-N2-bekleyen-esitleme-her-turda {"cikis": 1, "tests": 70, "pass": 69, "fail": 1, "cancelled": 0, "yakaladi": true, "kirmizi": ["6 - N2 (tur 7) bekletilen eşitleme: Sheet aynı kaldıkça arka plan eşitlemesi yeniden hesaplamaz (unchan"]}
+M28-N2-elle-esitleme-de-atlar {"cikis": 1, "tests": 70, "pass": 69, "fail": 1, "cancelled": 0, "yakaladi": true, "kirmizi": ["6 - N2 (tur 7) bekletilen eşitleme: Sheet aynı kaldıkça arka plan eşitlemesi yeniden hesaplamaz (unchan"]}
+YAKALANAN 2/2
+2/2 kontrol geçti
