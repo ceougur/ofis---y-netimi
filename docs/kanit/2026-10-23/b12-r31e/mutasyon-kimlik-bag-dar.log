@@ -1,0 +1,5 @@
+M71-K6-tahsilat-post-disinda {"cikis": 1, "tests": 119, "pass": 104, "fail": 15, "cancelled": 0, "yakaladi": true, "kirmizi": ["3 - gerçek kod: liste dışında ham yazım yeri yok; listede eskimiş girdi yok", "1 - N1 Yerine koy: Ali'nin Tutar'ı 1.000 → 1.200 — bütün bağlar Ali'de, Kişiler 1.200 / 400, Takvim 800", "2 - N1 Devamı o
+M72-K6-tahsilat-para-disi-yoldan {"cikis": 1, "tests": 119, "pass": 103, "fail": 16, "cancelled": 0, "yakaladi": true, "kirmizi": ["4 - taşıma hedefte aynı alanda düzeltme / kayıt notu varsa üzerine yazmaz; eskisi yerinde kalır (N17); ", "1 - N1 Yerine koy: Ali'nin Tutar'ı 1.000 → 1.200 — bütün bağlar Ali'de, Kişiler 1.200 / 400, T
+M73-K6-koruma-yok-ham-yazim {"cikis": 1, "tests": 119, "pass": 105, "fail": 14, "cancelled": 0, "yakaladi": true, "kirmizi": ["1 - N1 Yerine koy: Ali'nin Tutar'ı 1.000 → 1.200 — bütün bağlar Ali'de, Kişiler 1.200 / 400, Takvim 800", "2 - N1 Devamı olarak ekle: aynı değişiklik — bağlar taşınır, satır sayısı aynı (yeni kayıt açı
+YAKALANAN 3/3
+3/3 kontrol geçti

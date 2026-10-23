@@ -17,6 +17,7 @@ import { isTotalLabel } from "./insight/cells.mjs";
 import { analyzeColumns, primaryColumns } from "./insight/columns.mjs";
 import { foldText, isTckn, isVkn } from "./insight/validators.mjs";
 import { columnOrder } from "./sources.mjs";
+import { LEDGER_TABLES } from "./bank/money-lines.mjs";
 
 const isPositional = id => String(id).startsWith("p|");
 const isPrint = key => String(key).startsWith("satir:"); // içerik özeti anahtarı (Dosya No'suz satır; sources.mjs canonicalCaseKey)
@@ -551,26 +552,50 @@ export function createBondStore({ store, datasetKey, setting, bank = null }) {
     store.run("CREATE TEMP TABLE IF NOT EXISTS hof_bond_map (from_key TEXT PRIMARY KEY, to_key TEXT NOT NULL)");
     store.run("DELETE FROM hof_bond_map");
     for (const { from, to } of moves) store.run("INSERT INTO hof_bond_map (from_key, to_key) VALUES (?, ?)", from, to);
+    // Para tablosu OLMAYAN bağ tablosu (not, kayıt notu, telefon, haciz, görev, belge, düzeltme, silme işareti, cari ve taksit kartı bağı, mesaj): tablo adı
+    // dinamik (BOND_TABLES), doğrudan yazılır. Para tablosu buraya gelemez (K6; izinli liste "tablo-disi" — test/bank-post-izinli.json).
+    function rekeyNonMoney(spec) {
+      const t = spec.table;
+      if (spec.money || LEDGER_TABLES.includes(t)) throw new Error(`dataset-bonds: para tablosu (${t}) bank.post dışında taşınmaz`);
+      const target = `(SELECT m.to_key FROM hof_bond_map m WHERE m.from_key = ${t}.case_key)`;
+      const where = `case_key IN (SELECT from_key FROM hof_bond_map)${scopeSql(spec)}`;
+      let sql;
+      const args = [...(spec.stamp && !spec.unique ? [at] : []), ...scopeArgs(spec)];
+      if (spec.unique) sql = `UPDATE OR IGNORE ${t} SET case_key = ${target} WHERE ${where}`;
+      else if (spec.guard) {
+        sql = `UPDATE ${t} SET case_key = ${target}${spec.stamp ? ", updated_at = ?" : ""} WHERE ${where} AND NOT EXISTS (SELECT 1 FROM ${t} other WHERE other.case_key = ${target}${spec.scope ? ` AND other.${spec.scope} = ${t}.${spec.scope}` : ""} AND other.${spec.guard})`;
+      } else sql = `UPDATE ${t} SET case_key = ${target}${spec.stamp ? ", updated_at = ?" : ""} WHERE ${where}`;
+      const changes = store.run(sql, ...args).changes;
+      if (changes) moved[t] = (moved[t] || 0) + changes;
+      const left = store.get(`SELECT COUNT(*) AS n FROM ${t} WHERE ${where}`, ...scopeArgs(spec))?.n || 0;
+      if (left) kept[t] = (kept[t] || 0) + left;
+    }
     try {
       for (const spec of BOND_TABLES) {
-        const t = spec.table;
-        const target = `(SELECT m.to_key FROM hof_bond_map m WHERE m.from_key = ${t}.case_key)`;
-        const where = `case_key IN (SELECT from_key FROM hof_bond_map)${scopeSql(spec)}`;
-        const run = () => {
-          let sql;
-          const args = [...(spec.stamp && !spec.unique ? [at] : []), ...scopeArgs(spec)];
-          if (spec.unique) sql = `UPDATE OR IGNORE ${t} SET case_key = ${target} WHERE ${where}`;
-          else if (spec.guard) {
-            sql = `UPDATE ${t} SET case_key = ${target}${spec.stamp ? ", updated_at = ?" : ""} WHERE ${where} AND NOT EXISTS (SELECT 1 FROM ${t} other WHERE other.case_key = ${target}${spec.scope ? ` AND other.${spec.scope} = ${t}.${spec.scope}` : ""} AND other.${spec.guard})`;
-          } else sql = `UPDATE ${t} SET case_key = ${target}${spec.stamp ? ", updated_at = ?" : ""} WHERE ${where}`;
-          const changes = store.run(sql, ...args).changes;
-          if (changes) moved[t] = (moved[t] || 0) + changes;
-          const left = store.get(`SELECT COUNT(*) AS n FROM ${t} WHERE ${where}`, ...scopeArgs(spec))?.n || 0;
-          if (left) kept[t] = (kept[t] || 0) + left;
-        };
-        // Kayıt tahsilatı para tablosudur: anahtarı yalnız bank.post bağlamında değişir (K6); olayın kopyası (tutar, yol, hesap, tarih) değişmez.
-        if (spec.money && bank) bank.post({ user: user || { id: "system", display_name: "Otomatik eşitleme", role: "admin" }, module: "payment", op: "assign", prev: moves.map(({ from, to }) => ({ from, to })), write: run });
-        else run();
+        if (!spec.money) {
+          rekeyNonMoney(spec);
+          continue;
+        }
+        // Kayıt tahsilatı (payments) para tablosudur: anahtarı yalnız bank.post'un "assign" bağlamında değişir (K6) — yazım SÖZCÜKSEL olarak write
+        // geri çağrısının içinde (statik K6 testi görür; çalışma anında K6 (c) money:raw denetimi ve olay kopyası yenilemesi). Olayın kopyası (tutar,
+        // yol, hesap, tarih) değişmez. bank yoksa (yalnız birim testlerin bağ deposu) taşınacak tahsilat varken ham yazım yapılmaz, hata verilir.
+        if (spec.table !== "payments") throw new Error(`dataset-bonds: para tablosu (${spec.table}) için taşıma tanımlı değil`);
+        if (!bank) {
+          if (store.get("SELECT COUNT(*) AS n FROM payments WHERE case_key IN (SELECT from_key FROM hof_bond_map)")?.n) throw new Error("dataset-bonds: kayıt tahsilatının bağı merkezi para yazımı (bank.post) olmadan taşınamaz");
+          continue;
+        }
+        bank.post({
+          user: user || { id: "system", display_name: "Otomatik eşitleme", role: "admin" },
+          module: "payment",
+          op: "assign",
+          prev: moves.map(({ from, to }) => ({ from, to })),
+          write: () => {
+            const changes = store.run("UPDATE payments SET case_key = (SELECT m.to_key FROM hof_bond_map m WHERE m.from_key = payments.case_key) WHERE case_key IN (SELECT from_key FROM hof_bond_map)").changes;
+            if (changes) moved.payments = (moved.payments || 0) + changes;
+            const left = store.get("SELECT COUNT(*) AS n FROM payments WHERE case_key IN (SELECT from_key FROM hof_bond_map)")?.n || 0;
+            if (left) kept.payments = (kept.payments || 0) + left;
+          },
+        });
       }
     } finally {
       store.run("DELETE FROM hof_bond_map");
