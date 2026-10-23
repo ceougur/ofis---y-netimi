@@ -89,12 +89,12 @@ describe("31d E3: gün / adet / sayı / ay / yıl / oran / yüzde / % başlıkl�
     }
   });
 
-  test("B7 para başlıkları dışlanmaz: 'Aylık Taksit', 'Yıllık Ücret', 'Günlük Ücret' kalem tutarıdır (takvimde tutar; borç değil); 'Bakiye' kalan", () => {
+  test("B7 para başlıkları dışlanmaz: 'Aylık Taksit', 'Yıllık Ücret', 'Günlük Ücret' tek tutar sütunuysa borçtur (2.4.3 gibi) ve takvimde tutardır; 'Bakiye' kalan", () => {
     for (const header of ["Aylık Taksit", "Yıllık Ücret", "Günlük Ücret"]) {
       const rows = rowsOf("Kayıtlar", ["Dosya No", "Ad Soyad", header, "Ödeme Sözü"], [["2026/1", "Tülay Öz", "11.500,00", P], ["2026/2", "Mert Can", "8.000,00", P]]);
       const items = dues(rows);
       assert.deepEqual([items["Tülay Öz"]?.[0], items["Mert Can"]?.[0]], [11500, 8000], `"${header}" tutar kolonudur (gün/ay/yıl diye dışlanmaz): ${JSON.stringify(items)}`);
-      assert.deepEqual(debits(rows), {}, `"${header}" beklenen tahsilattır, borç satırı açmaz (31f U2): ${JSON.stringify(debits(rows))}`);
+      assert.deepEqual(debits(rows), { "Mert Can": 8000, "Tülay Öz": 11500 }, `"${header}" tek tutar sütunu borçtur (daraltılmış karar 22.10.2026): ${JSON.stringify(debits(rows))}`);
     }
     const rows = rowsOf("Kayıtlar", ["Dosya No", "Ad Soyad", "Toplam Borç", "Bakiye", "Ödeme Sözü"], [["2026/1", "Tülay Öz", "11.500,00", "7.600,00", P], ["2026/2", "Mert Can", "8.000,00", "6.000,00", P]]);
     assert.deepEqual(debits(rows), { "Mert Can": 6000, "Tülay Öz": 7600 });
