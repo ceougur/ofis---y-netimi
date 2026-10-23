@@ -178,21 +178,27 @@ async function kos(senaryo) {
           }
           // `ilk` sekmeleri (Fatura No + Müşteri / Dosya No'suz): kayıt anahtarı rapordan ADLA çözülür (kara kutu: Dosya No'suz satırın anahtarı "satir:<özet>";
           // önizleme bu kayıtları listelemiyor — yoklama 23.10.2026). Aynı adlı iki `ilk` kaydı üretilmez.
-          if (a.sekmeler.some(sk => sk.ilk)) {
+          // `ilk` sekmelerinin kayıtları (bu yüklemede gelenler + önceki yüklemelerden bilinenler — Devamı olarak ekle'de dosyada olmayan mevcut kayıtların anahtarı da
+          // güncellemeyle değişebilir) anahtarı rapordan ADLA (aynı adlı birden çok satırda GİRDİ tutarıyla) çözülür; çözülemeyen kayıt `cozulemedi` (okunan değeri
+          // "anahtar çözülemedi" yazılır — 0 sanılmaz, ders 4).
+          for (const sk of a.sekmeler.filter(x => x.ilk)) for (const kay of sk.kayitlar) (ids.ilkKayit ||= {})[kay.no] = kay;
+          if (ids.ilkKayit) {
             const cozR = (await api("GET", "/api/workspace/reports/cari-ekstre?from=2000-01-01&to=2099-12-31")).data?.report;
-            for (const sk of a.sekmeler.filter(x => x.ilk)) {
-              for (const kay of sk.kayitlar) {
-                const gs = (cozR?.groups || []).filter(g => g.cari === kay.isim || String(g.cari || "").startsWith(`${kay.isim} (`));
-                let keys = [...new Set(gs.flatMap(g => g.lines.map(l => l.key)))];
-                if (keys.length > 1 && kay.hucreler?.Tutar) {
-                  // aynı adlı birden çok satır: satırın GİRDİ tutarıyla ayrılır (beklenen değer değil — tablonun kendi hücresi)
-                  const t = kurusOf(String(kay.hucreler.Tutar).replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", "."));
-                  const kk = [...new Set(gs.flatMap(g => g.lines.filter(l => kurus(l.borc) === t).map(l => l.key)))];
-                  if (kk.length === 1) keys = kk;
-                }
-                if (keys.length === 1) ids.anahtar[kay.no] = keys[0];
-                ((ids.anahtarGecmis ||= {})[kay.no] ||= []).push(keys.length === 1 ? keys[0] : keys.length ? `belirsiz:${keys.length}` : "yok");
+            const satirdaVar = k2 => (cozR?.groups || []).some(g => g.lines.some(l => l.key === k2));
+            ids.cozulemedi = new Set();
+            for (const kay of Object.values(ids.ilkKayit)) {
+              const gs = (cozR?.groups || []).filter(g => g.cari === kay.isim || String(g.cari || "").startsWith(`${kay.isim} (`));
+              let keys = [...new Set(gs.flatMap(g => g.lines.map(l => l.key)))];
+              if (keys.length > 1 && kay.hucreler?.Tutar) {
+                // aynı adlı birden çok satır: satırın GİRDİ tutarıyla ayrılır (beklenen değer değil — tablonun kendi hücresi)
+                const t = kurusOf(String(kay.hucreler.Tutar).replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", "."));
+                const kk = [...new Set(gs.flatMap(g => g.lines.filter(l => kurus(l.borc) === t).map(l => l.key)))];
+                if (kk.length === 1) keys = kk;
+                else if (kk.length > 1 && satirdaVar(ids.anahtar[kay.no])) keys = [ids.anahtar[kay.no]]; // önceki anahtar hâlâ raporda
               }
+              if (keys.length === 1) ids.anahtar[kay.no] = keys[0];
+              else if (!satirdaVar(ids.anahtar[kay.no])) ids.cozulemedi.add(kay.no);
+              ((ids.anahtarGecmis ||= {})[kay.no] ||= []).push(keys.length === 1 ? keys[0] : keys.length ? `belirsiz:${keys.length}` : "yok");
             }
             ham[`tablo:${a.id}:anahtarlar`] = ids.anahtarGecmis;
           }
@@ -458,6 +464,10 @@ async function kos(senaryo) {
                 P[`${k}:rapor:${no}:alacak`] = g ? kurus(g.credit) : 0;
                 const gg = ids.genisRapor?.groups?.find(gr => gr.lines.some(l => l.key === anahtar));
                 P[`${k}:rapor:${no}:borc`] = ids.genisRapor ? (gg ? kurus(gg.debit) : 0) : "okunamadı"; // /2 B3 (geniş dönem)
+                if (ids.cozulemedi?.has(no)) {
+                  for (const alan of ["borc", "alacak", "grup", "etiketKimlik", "ad", "gorunurVeyaNot"]) P[`${k}:rapor:${no}:${alan}`] = "anahtar çözülemedi";
+                  continue;
+                }
                 // C3 (23.10.2026): kişi gruplaması — dosya no'nun borçlu satırının bulunduğu rapor satır(lar)ındaki borçlu dosya no'lar; birden çok satırdaysa liste listesi
                 if (ids.genisRapor) {
                   // anahtar → kayıt no: İLK kayıt kazanır (Devamı olarak ekle'de içeriği aynı satır mevcut kaydın kendisidir; aynı anahtarı taşır — NETLEŞTİRME (1))

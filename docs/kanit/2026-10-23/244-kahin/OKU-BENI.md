@@ -111,3 +111,16 @@ yeni dosyanın 2. satırıyla (Yeni Kişi) değiştiriyor — Lale Ak raporda yo
 alacak 200). Kâhin kararın "(yani ikinci kez eklenecek)" ifadesine göre uyarı + onay bekliyor — Devamı olarak ekle'nin aynı kişili satırı güncellemesi karar sahibince teyit
 edilmeli. Ara kâhin hataları (düzeltildi): koşucu uyarı adlarını öbür seçeneğin `bonds.merge.duplicates`'ından okuyordu (NETLEŞTİRME (3)); Devam'da aynı içerikli satır aynı
 anahtarı taşıdığı için grup eşlemesi son kaydı seçiyordu (ilk kayıt kazanır).
+
+### Tur 6 ek 2 — NETLEŞTİRME 2 (Devam'da güvenli eşleşen satır güncellemedir) — ADAY 17 (e5fc407)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| aday17-cari-bag-netlestirme-2 | 20 senaryo (b3h t4: Kaan Uz aynı içerik, Lale Ak güncelleme, Mete Er iki satır, Yeni Kişi; b3i yeni) + 46 mutant, ADAY 17 kodunda | 3195/3199 — 4 fark (BULGU 4) · 0 okuma hatası · 0 yakalanmayan mutasyon |
+
+Dört farkın nedeni TEK (ham çıktı, ders 38): b3h t4 Devamı olarak ekle'de dosyada iki "Mete Er" (3.000, Açıklama Aralık ve Ocak) var; mevcut tabloda Mete Er 3. satırda. Kâhin
+NETLEŞTİRME 2'ye göre AYNI KONUMDAKİ (3. satır) + aynı kişili satırı güncelleme, yalnız öbürünü ikinci kayıt bekliyor (Mete Er 2 satır, 6.000); program İKİSİNİ de "aynı
+görünen" sayıp onayla ikinci kez ekliyor (uyarı "2 satır … (Mete Er…)", kod merge-duplicates; rapor Mete Er 3 satır, 9.000). H8'in iki farkı aynı nedenin okuma sonucudur
+(aynı ad + aynı tutarlı üç satırda anahtar çözülemedi). Lale Ak (güncelleme, uyarısız) ve Kaan Uz (aynı içerik) kurala uygun; b3i (aynı içerik, başka konum) kurala uygun.
+Ara kâhin hatası (düzeltildi): Devam'dan sonra dosyada olmayan mevcut kaydın (Lale Ak H2) eski anahtarı yenilenmiyordu (anahtar güncellemeyle değişti) → bütün bilinen kayıtlar
+yeniden çözülüyor.

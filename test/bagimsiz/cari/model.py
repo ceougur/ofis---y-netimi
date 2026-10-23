@@ -73,6 +73,7 @@ MUTASYONLAR = {
     # /2 NETLEŞTİRME (karar sahibi, 23.10.2026): içeriği tamamen aynı satır mevcut kaydın kendisidir
     44: "İçeriği aynı satır yer değişince (aynı adlı iki satırın yer değiştirmesi) eşleşmez — onay ister",
     45: "Devamı olarak ekle içeriği tamamen aynı satırı ikinci kez ekler ve onay ister",
+    46: "Devamı olarak ekle güvenli eşleşen (aynı kişi, başka hücresi farklı) satırı güncellemez, ikinci kez ekler ve onay ister",
 }
 
 
@@ -544,17 +545,41 @@ class Model:
         eşleşme yoksa önizlemede eşleşmeyen kayıtları ADIYLA söyleyen uyarı ve ONAY; eşleşmeyen bağlı veri silinmez (yeri kuralda yok → o adın denetimi yapılmaz). (4) Devamı
         olarak ekle mevcut kayıtlarla aynı kişi + aynı tutar görünen satırları önizlemede söyler ve onay ister. Denetimler `adim:<id>:onay`, `adim:<id>:uyariAdlari`."""
         if a.get("mod") == "devam":
+            # NETLEŞTİRME 2 (karar sahibi 23.10.2026): Devamı olarak ekle'de (a) içeriği tamamen aynı satır mevcut kaydın KENDİSİdir; (b) GÜVENLİ EŞLEŞEN satır (aynı kişi
+            # değeri + iki tabloda tek satır, ya da aynı konum + aynı kişi) mevcut kaydın GÜNCELLEMESİdir — ikinci kez eklenmez, bağları kendisinde, uyarı/onay yok; (c) "aynı
+            # görünen satır" uyarısı + onay yalnız güvenli eşleşmeyen VE ikinci kez eklenecek (yeni kayıt açılacak) aynı kişi + aynı tutar satırı için; yeni kayıt açılır.
             yeni = self.satir_listesi()
-            # NETLEŞTİRME (1)/(2): içeriği tamamen aynı satır mevcut kaydın kendisidir — yeni kayıt açılmaz, onay/uyarı yok (mutant 45: ikinci kez eklenir + uyarı)
-            ayni = {y["ref"] for y in yeni if any(e["icerik"] == y["icerik"] for e in eski)} if self.mut != 45 else set()
+            esles = {}  # yeni satırın ref'i → mevcut kaydın ref'i (aynı içerik ya da güncelleme)
+            for y in yeni:
+                if self.mut != 45 and any(e["icerik"] == y["icerik"] for e in eski):
+                    esles[y["ref"]] = next(e for e in eski if e["icerik"] == y["icerik"])["ref"]
+                    continue
+                if self.mut == 46:
+                    continue
+                ae = [e for e in eski if e["kd"] == y["kd"]]
+                ay = [z for z in yeni if z["kd"] == y["kd"]]
+                if len(ae) == 1 and len(ay) == 1:
+                    esles[y["ref"]] = ae[0]["ref"]
+                    continue
+                konum = next((e for e in eski if e["sekme"] == y["sekme"] and e["sira"] == y["sira"]), None)
+                if konum and konum["kd"] == y["kd"] and konum["ref"] not in esles.values():
+                    esles[y["ref"]] = konum["ref"]
+            # güncelleme: mevcut kaydın satırı yeni satırın hücrelerini alır (borç yeni satırdan); yeni satır sekmeden çıkar, yeni kayıt açılmaz
+            yeni_hucre = {}
             for sk in self.sekmeler:
-                tut = [i for i, (no, _) in enumerate(sk["satirlar"]) if no not in ayni]
+                for no, c in sk["satirlar"]:
+                    if no in esles:
+                        yeni_hucre[esles[no]] = c
+            for sk in eski_sekme:
+                sk["satirlar"] = [(no, yeni_hucre.get(no, c)) for no, c in sk["satirlar"]]
+            for sk in self.sekmeler:
+                tut = [i for i, (no, _) in enumerate(sk["satirlar"]) if no not in esles]
                 for alan in ("satirlar", "adlar", "telefon", "dosyalar"):
                     if alan in sk:
                         sk[alan] = [sk[alan][i] for i in tut]
-            for no in ayni:
+            for no in esles:
                 self.kayitlar.pop(no, None)
-            yeni = [y for y in yeni if y["ref"] not in ayni]
+            eklenen = [y for y in yeni if y["ref"] not in esles]
             self.sekmeler = eski_sekme + self.sekmeler
             birlesik = dict(eski_kayit)
             for no, kay in self.kayitlar.items():
@@ -563,15 +588,11 @@ class Model:
                 else:
                     birlesik[no] = kay
             self.kayitlar = birlesik
-            # (2): uyarı, aynı kişi + aynı tutar ama başka hücresi farklı (ikinci kez eklenecek) satır için
-            cift = sorted({y["ad"] for y in yeni if y["borc"] is not None and any(e["kd"] == y["kd"] and e["borc"] == y["borc"] and e["icerik"] != y["icerik"] for e in eski)})
-            if self.mut == 45:
-                cift = sorted({y["ad"] for y in yeni if y["borc"] is not None and any(e["kd"] == y["kd"] and e["borc"] == y["borc"] for e in eski)})
+            cift = sorted({y["ad"] for y in eklenen if y["borc"] is not None and any(e["kd"] == y["kd"] and e["borc"] == y["borc"] for e in eski)})
             if self.mut == 43:
                 cift = []
-            self.belirsiz_adlar |= set(cift)
-            self.d("adim:%s:onay" % a["id"], bool(cift), "KULLANICI", "bağ sürekliliği (4) Devamı olarak ekle: aynı kişi + aynı tutar satırında onay")
-            self.d("adim:%s:uyariAdlari" % a["id"], cift, "KULLANICI", "bağ sürekliliği (4) önizleme aynı kişi + aynı tutar satırlarını adıyla söyler")
+            self.d("adim:%s:onay" % a["id"], bool(cift), "KULLANICI", "bağ sürekliliği (4) + NETLEŞTİRME 2: yalnız ikinci kez eklenecek aynı kişi + aynı tutar satırında onay")
+            self.d("adim:%s:uyariAdlari" % a["id"], cift, "KULLANICI", "bağ sürekliliği (4) + NETLEŞTİRME 2: önizleme ikinci kez eklenecek aynı görünen satırları adıyla söyler")
             return
         yeni = self.satir_listesi()
         tutanlar = sorted({no for no, v in self.kayitTahsilat.items() if v} | {c["kayit"] for c in self.cariler.values() if c.get("kayit")})

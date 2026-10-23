@@ -1,7 +1,7 @@
 {
  "dil": "destekofis-cari/2",
  "ad": "b3h-dosya-no-ve-devam",
- "aciklama": "TABLO BAĞ SÜREKLİLİĞİ (baş mimar kararı 23.10.2026 + NETLEŞTİRME): Dosya No'suz tabloya Dosya No kolonu EKLENİR (v2) ve yeniden SİLİNİR (v3) — kişi değeri (ad) tekil, güvenli eşleşme: kayıt tahsilatı (Kaan Uz 100, Lale Ak 200) aynı kişide, onay yok. v4 'Devamı olarak ekle': içeriği tamamen aynı satır (Kaan Uz 1.000 Ekim) mevcut kaydın kendisidir — yeni kayıt açılmaz, uyarı/onay yok; aynı kişi + aynı tutar ama başka hücresi farklı satır (Lale Ak 2.000 Kasım) ikinci kez eklenecektir → önizlemede adıyla uyarı + onay; mevcut satırlar (Lale Ak, Mete Er) ve bağlı tahsilatları yerinde, yeni kişi eklenir.",
+ "aciklama": "TABLO BAĞ SÜREKLİLİĞİ (baş mimar kararı 23.10.2026 + karar sahibinin NETLEŞTİRMELERİ): Dosya No'suz tabloya Dosya No kolonu EKLENİR (v2) ve yeniden SİLİNİR (v3) — kişi değeri (ad) tekil, güvenli eşleşme: kayıt tahsilatı (Kaan Uz 100, Lale Ak 200) aynı kişide, onay yok. v4 'Devamı olarak ekle': içeriği aynı satır (Kaan Uz Ekim) mevcut kaydın kendisi; güvenli eşleşen satır (Lale Ak — tek satır, Açıklama Ekim → Kasım; Mete Er'in ilki — aynı konum + aynı kişi) mevcut kaydın GÜNCELLEMESİ, bağ yerinde, uyarı/onay yok; güvenli eşleşmeyen ve ikinci kez eklenecek aynı kişi + aynı tutar satırı (Mete Er'in ikincisi, 3.000 Ocak) önizlemede adıyla uyarı + onay, yeni kayıt açılır (Mete Er 6.000); yeni kişi eklenir.",
  "dayanak": "KARARLAR.md B3f (baş mimar kararı 23.10.2026 tablo bağ sürekliliği (1), (2), (4))",
  "bugun": "2026-06-17",
  "adimlar": [
@@ -201,6 +201,24 @@
         "Telefon": "",
         "Tutar": "2.000,00 ₺",
         "Açıklama": "Kasım"
+       }
+      },
+      {
+       "no": "H7",
+       "isim": "Mete Er",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "3.000,00 ₺",
+        "Açıklama": "Aralık"
+       }
+      },
+      {
+       "no": "H8",
+       "isim": "Mete Er",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "3.000,00 ₺",
+        "Açıklama": "Ocak"
        }
       },
       {

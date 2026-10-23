@@ -1,0 +1,102 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3i-devam-ayni-icerik",
+ "aciklama": "NETLEŞTİRME (karar sahibi 23.10.2026): 'Devamı olarak ekle' ile gelen içeriği tamamen AYNI satır mevcut kaydın kendisidir — aynı adlı iki satırdan (Ali Veli 100 / 200) 200'lük olanın aynısı dosyanın İLK satırında gelir (konumu farklı, kişi değeri iki satırda): yeni kayıt açılmaz, öbür Ali Veli'nin satırı GÜNCELLENMEZ, uyarı/onay yok; Ali Veli borcu 300, tahsilatı 30 kalır.",
+ "dayanak": "KARARLAR.md B3f NETLEŞTİRME (N1, N4)",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Aidat",
+     "tur": "serbest",
+     "ilk": [
+      "Müşteri"
+     ],
+     "basliklar": [
+      "Telefon",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "A1",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "100"
+       }
+      },
+      {
+       "no": "A2",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "200"
+       }
+      },
+      {
+       "no": "A3",
+       "isim": "Su Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "300"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "p1",
+   "islem": "kayit_tahsilat",
+   "kayit": "A1",
+   "tutar": "10",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "p2",
+   "islem": "kayit_tahsilat",
+   "kayit": "A2",
+   "tutar": "20",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  },
+  {
+   "id": "t2",
+   "islem": "tablo_yukle",
+   "mod": "devam",
+   "sekmeler": [
+    {
+     "ad": "Aidat",
+     "tur": "serbest",
+     "ilk": [
+      "Müşteri"
+     ],
+     "basliklar": [
+      "Telefon",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "A4",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "200"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k2",
+   "islem": "kontrol"
+  }
+ ]
+}
