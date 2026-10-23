@@ -599,26 +599,91 @@ function karsilastir(beklenen, program) {
   return { toplam, farklar };
 }
 
+// ───────── BİLİNEN SINIR listesi (ana oturum 23.10.2026): ürün sahibinin ERTELEDİĞİ, kâhin beklentisi DOĞRU kalan farklar (BILINEN.json). Her kayıt TAM ad (senaryo +
+// denetim anahtarı; joker / önek / kalıp YOK), karar kaynağı, kâhinin beklediği ve programın BİLİNEN değeri. Listedeki fark "BİLİNEN" diye ayrı yazılır, başarısız sayılmaz;
+// program değeri (ya da kâhin beklentisi) listedekinden farklıysa BAŞARISIZ ("BİLİNEN DEĞİŞTİ"); listede olup farkı kalmayan kayıt BAŞARISIZ ("BİLİNEN KAPANDI — listeden çıkar");
+// liste dışı her fark BAŞARISIZ. Liste mutantları (aşağıda) eşleştiricinin bir farkı yutmadığını sınar.
+const BILINEN_YOLU = process.env.KAHIN_BILINEN || path.join(HERE, "BILINEN.json"); // KAHIN_BILINEN: yalnız mekanizmanın kendi denemesi için başka liste
+function bilinenYukle() {
+  const ham = JSON.parse(readFileSync(BILINEN_YOLU, "utf8"));
+  const kayitlar = ham.kayitlar || [];
+  const hatalar = [];
+  const gorulen = new Set();
+  const elleAdlar = new Set(readdirSync(path.join(HERE, "senaryolar")).filter(f => f.endsWith(".json")).map(f => f.replace(/\.json$/, "")));
+  for (const [i, e] of kayitlar.entries()) {
+    for (const alan of ["senaryo", "anahtar", "kaynak", "beklenen", "program"]) if (!(alan in e)) hatalar.push(`BILINEN.json kayıt ${i}: "${alan}" alanı yok`);
+    if (/[*?\[\]]/.test(`${e.senaryo}${e.anahtar}`)) hatalar.push(`BILINEN.json kayıt ${i}: joker / kalıp karakteri yasak (tam ad gerekir): ${e.senaryo} ${e.anahtar}`);
+    if (!elleAdlar.has(e.senaryo) && !String(e.senaryo).startsWith("rastgele-")) hatalar.push(`BILINEN.json kayıt ${i}: senaryo yok (bayat kayıt): ${e.senaryo}`);
+    const ad = `${e.senaryo}|${e.anahtar}`;
+    if (gorulen.has(ad)) hatalar.push(`BILINEN.json kayıt ${i}: çift kayıt ${ad}`);
+    gorulen.add(ad);
+  }
+  return { kayitlar, hatalar };
+}
+// mut (yalnız liste mutantları için): 1 senaryo adı yok sayılır · 2 alt dizgi eşleşmesi (joker) · 3 program değeri karşılaştırılmaz · 4 kapanan kayıt denetlenmez ·
+// 5 kâhin beklentisi karşılaştırılmaz
+function bilinenAyir(senaryoAd, denetimler, farklar, liste, mut = 0) {
+  const eslesir = (e, f) => (mut === 1 || e.senaryo === senaryoAd) && (mut === 2 ? f.anahtar.includes(e.anahtar) : e.anahtar === f.anahtar);
+  const kalan = [], bilinen = [];
+  for (const f of farklar) {
+    const e = liste.find(x => eslesir(x, f));
+    if (!e) { kalan.push(f); continue; }
+    if ((mut === 3 || esit(f.program, e.program)) && (mut === 5 || esit(f.beklenen, e.beklenen))) bilinen.push({ ...f, sinif: "BİLİNEN", kaynak: e.kaynak });
+    else kalan.push({ ...f, sinif: "BİLİNEN DEĞİŞTİ", kural: `${f.kural} · BİLİNEN listesinde program ${JSON.stringify(e.program)} / kâhin ${JSON.stringify(e.beklenen)} (${e.kaynak}) — liste ya da ürün yeniden incelenmeli` });
+  }
+  if (mut !== 4) {
+    for (const e of liste.filter(x => (mut === 1 || x.senaryo === senaryoAd))) {
+      if (farklar.some(f => eslesir(e, f))) continue;
+      kalan.push({ anahtar: e.anahtar, beklenen: e.beklenen, program: e.anahtar in denetimler ? "tuttu" : "denetim yok", etiket: "BİLİNEN", sinif: "BİLİNEN KAPANDI",
+        kural: `BİLİNEN KAPANDI — listeden çıkar (${e.kaynak})` });
+    }
+  }
+  return { kalan, bilinen };
+}
+// Liste mutantlarının dişi: sentetik durumlarda doğru eşleştirici ile her mutant en az bir durumda farklı sonuç vermeli (ders 7).
+function bilinenMutantlari() {
+  const L = [{ senaryo: "S", anahtar: "k1:kalem:2026/101", kaynak: "deneme", beklenen: 1, program: 2 }, { senaryo: "S", anahtar: "k1:acilis:X", kaynak: "deneme", beklenen: 5, program: 6 }];
+  const F = (anahtar, beklenen, program) => ({ anahtar, beklenen, program, etiket: "KULLANICI", kural: "deneme", sinif: "BULGU" });
+  const durumlar = [
+    ["S", { "k1:kalem:2026/101": {}, "k1:kalem:2026/1012": {}, "k1:acilis:X": {} }, [F("k1:kalem:2026/101", 1, 2), F("k1:kalem:2026/1012", 1, 2), F("k1:acilis:X", 5, 6)]],
+    ["T", { "k1:kalem:2026/101": {} }, [F("k1:kalem:2026/101", 1, 2)]],
+    ["S", { "k1:kalem:2026/101": {}, "k1:acilis:X": {} }, [F("k1:kalem:2026/101", 1, 3), F("k1:acilis:X", 5, 6)]],
+    ["S", { "k1:kalem:2026/101": {}, "k1:acilis:X": {} }, [F("k1:acilis:X", 5, 6)]],
+    ["S", { "k1:kalem:2026/101": {}, "k1:acilis:X": {} }, [F("k1:kalem:2026/101", 9, 2), F("k1:acilis:X", 5, 6)]],
+  ];
+  const imza = mut => JSON.stringify(durumlar.map(([s, d, f]) => { const r = bilinenAyir(s, d, f, L, mut); return [r.bilinen.map(x => x.anahtar), r.kalan.map(x => `${x.anahtar}:${x.sinif}`)]; }));
+  const dogru = imza(0);
+  const adlar = { 1: "senaryo adı yok sayılır", 2: "alt dizgi (joker) eşleşmesi", 3: "program değeri karşılaştırılmaz", 4: "kapanan kayıt denetlenmez", 5: "kâhin beklentisi karşılaştırılmaz" };
+  return Object.entries(adlar).map(([n, ad]) => ({ n, ad, yakalandi: imza(Number(n)) !== dogru }));
+}
+const BILINEN = bilinenYukle();
+
 let genelToplam = 0;
 let genelFark = 0;
 let okumaHatasi = 0;
+let genelBilinen = 0;
+const bilinenHepsi = [];
 const ozet = [];
 for (const dosya of dosyalar) {
   const senaryo = JSON.parse(readFileSync(dosya, "utf8"));
   const { program, hatalar, gunluk, ham } = await kos(senaryo);
   writeFileSync(path.join(OUT, `${senaryo.ad}.ham.json`), JSON.stringify(ham, null, 1));
   const beklenen = model(dosya);
-  const { toplam, farklar } = karsilastir(beklenen, program);
+  const { toplam, farklar: tumFarklar } = karsilastir(beklenen, program);
+  const { kalan: farklar, bilinen } = bilinenAyir(senaryo.ad, beklenen.denetimler, tumFarklar, BILINEN.kayitlar);
   genelToplam += toplam;
   genelFark += farklar.length;
+  genelBilinen += bilinen.length;
+  bilinenHepsi.push(...bilinen.map(b => ({ senaryo: senaryo.ad, ...b })));
   okumaHatasi += hatalar.length;
   writeFileSync(path.join(OUT, `${senaryo.ad}.program.json`), JSON.stringify(program, null, 1));
   writeFileSync(path.join(OUT, `${senaryo.ad}.kahin.json`), JSON.stringify(beklenen, null, 1));
   writeFileSync(path.join(OUT, `${senaryo.ad}.api-gunlugu.json`), JSON.stringify(gunluk, null, 1));
-  writeFileSync(path.join(OUT, `${senaryo.ad}.fark.json`), JSON.stringify({ toplam, farklar, hatalar }, null, 1));
-  console.log(`${senaryo.ad}: ${toplam - farklar.length}/${toplam} tuttu${hatalar.length ? ` · OKUMA HATASI ${hatalar.length}: ${hatalar.join("; ")}` : ""}`);
+  writeFileSync(path.join(OUT, `${senaryo.ad}.fark.json`), JSON.stringify({ toplam, farklar, bilinen, hatalar }, null, 1));
+  console.log(`${senaryo.ad}: ${toplam - farklar.length - bilinen.length}/${toplam} tuttu${bilinen.length ? ` · BİLİNEN ${bilinen.length}` : ""}${hatalar.length ? ` · OKUMA HATASI ${hatalar.length}: ${hatalar.join("; ")}` : ""}`);
+  for (const b of bilinen) console.log(`  ≈ [BİLİNEN] ${b.anahtar}: program ${JSON.stringify(b.program)} · kâhin ${JSON.stringify(b.beklenen)} (${b.kaynak})`);
   for (const f of farklar) console.log(`  ✗ [${f.sinif} ${f.etiket}] ${f.anahtar}: program ${JSON.stringify(f.program)} · kâhin ${JSON.stringify(f.beklenen)} (${f.kural})${f.anahtar.endsWith(":durum") && program[f.anahtar.replace(/:durum$/, ":yanit")] ? ` · yanıt: ${program[f.anahtar.replace(/:durum$/, ":yanit")]}` : ""}`);
-  ozet.push({ ad: senaryo.ad, toplam, fark: farklar.length, bulgu: farklar.filter(f => f.sinif === "BULGU").length });
+  ozet.push({ ad: senaryo.ad, toplam, fark: farklar.length, bulgu: farklar.filter(f => f.sinif === "BULGU").length, bilinen: bilinen.length });
 }
 
 // Mutasyon: her mutasyon senaryo kümesinin en az birinde kâhinin çıktısını değiştirmeli (kural bu senaryolarla gerçekten sınanıyor).
@@ -636,7 +701,16 @@ if (!argv.includes("--mutasyonsuz")) {
     console.log(`  mutasyon ${n} (${ad}): ${yakalayan.length ? `YAKALANDI (${yakalayan.slice(0, 3).join(", ")}${yakalayan.length > 3 ? ` +${yakalayan.length - 3}` : ""})` : "YAKALANMADI"}`);
   }
 }
-writeFileSync(path.join(OUT, "ozet.json"), JSON.stringify({ ozet, genelToplam, genelFark, okumaHatasi, kacan }, null, 1));
-console.log(`\nÖZET: ${dosyalar.length} senaryo, ${genelToplam} denetim, ${genelFark} fark (BULGU ${ozet.reduce((s, o) => s + o.bulgu, 0)}), ${okumaHatasi} okuma hatası, ${kacan} yakalanmayan mutasyon. Ham çıktı: ${OUT}`);
-console.log(`${Math.max(0, genelToplam - genelFark - okumaHatasi - kacan)}/${genelToplam} denetim geçti`);
+// BİLİNEN listesi: geçersiz kayıt BAŞARISIZ; liste mutantları her koşuda (program açılmaz)
+for (const h of BILINEN.hatalar) console.log(`  ✗ [BİLİNEN LİSTESİ] ${h}`);
+genelFark += BILINEN.hatalar.length;
+for (const m of bilinenMutantlari()) {
+  if (!m.yakalandi) kacan += 1;
+  console.log(`  liste mutasyonu ${m.n} (${m.ad}): ${m.yakalandi ? "YAKALANDI" : "YAKALANMADI"}`);
+}
+writeFileSync(path.join(OUT, "ozet.json"), JSON.stringify({ ozet, genelToplam, genelFark, okumaHatasi, kacan, bilinen: genelBilinen, bilinenKayitlar: bilinenHepsi, bilinenListesiHatalari: BILINEN.hatalar }, null, 1));
+console.log(`\nÖZET: ${dosyalar.length} senaryo, ${genelToplam} denetim, ${genelFark} fark (BULGU ${ozet.reduce((s, o) => s + o.bulgu, 0)}), ${genelBilinen} bilinen sınır (BILINEN.json; başarısız sayılmaz), ${okumaHatasi} okuma hatası, ${kacan} yakalanmayan mutasyon. Ham çıktı: ${OUT}`);
+if (genelBilinen) console.log(`BİLİNEN SINIRLAR (${genelBilinen}): ${bilinenHepsi.map(b => `${b.senaryo} ${b.anahtar}`).join("; ")}`);
+// "geçti" sayısı bilinen sınırları içerir (başarısız sayılmaz — CI kapısı); ayrıntısı yukarıdaki BİLİNEN satırlarında ve ozet.json "bilinen" alanında
+console.log(`${Math.max(0, genelToplam - genelFark - okumaHatasi - kacan)}/${genelToplam} denetim geçti${genelBilinen ? ` (${genelBilinen} bilinen sınır dahil)` : ""}`);
 process.exitCode = genelFark || okumaHatasi || kacan ? 1 : 0;

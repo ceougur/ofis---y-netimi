@@ -280,6 +280,17 @@ Kaynak: ana oturumun ilettiği karar metni. Ürün kodu okunmadı.
 - Senaryo b3y-taahhut-alacak-bakiye ((a) Kerem Ak 2.200; (b) Leman Er 1.000 / 4.000, Mert Ay 1.000 / 300; (c) Nazlı Su Kalan 5.000, (Ay) 6; Kişiler 11.500, Takvim 8.500);
   mutant 71 (muafiyet yok — yalın söz), 72 ("(Ay)" söz tutarı).
 
+### B3p — BİLİNEN SINIR listesi (ana oturum isteği, 23.10.2026; DONDURMA kararı)
+- `BILINEN.json`: ürün sahibinin ERTELEDİĞİ, kâhin beklentisi DOĞRU kalan farklar. Her kayıt TAM ad (senaryo + denetim anahtarı; joker / kalıp karakteri yasak), karar kaynağı,
+  kâhinin beklediği ve programın BİLİNEN değeri. Koşucu: listedeki fark "≈ [BİLİNEN]" diye ayrı yazılır, başarısız sayılmaz ("N/M denetim geçti (B bilinen sınır dahil)",
+  ÖZET'te ve ozet.json `bilinen` alanında ayrı sayı); program ya da kâhin değeri listedekinden farklıysa BAŞARISIZ ("BİLİNEN DEĞİŞTİ"); listede olup farkı kalmayan (ya da
+  denetimi olmayan) kayıt BAŞARISIZ ("BİLİNEN KAPANDI — listeden çıkar"); liste dışı her fark BAŞARISIZ; geçersiz kayıt (alan eksik, joker, çift, senaryosu yok) BAŞARISIZ.
+- Liste mutantları (her koşuda, program açılmadan, sentetik durumlarda): 1 senaryo adı yok sayılır, 2 alt dizgi (joker) eşleşmesi, 3 program değeri karşılaştırılmaz,
+  4 kapanan kayıt denetlenmez, 5 kâhin beklentisi karşılaştırılmaz — yakalanmayan liste mutantı "yakalanmayan mutasyon" sayılır (çıkış 1).
+- ŞİMDİKİ KAYITLAR (5): b3y (b) "Taahhüt Bakiyesi" — DONDURMA 23.10.2026, 2.5.0 adayı 2 (ek biçim "Bakiyesi" / "Alacağı"; ürün v2.4.3'te ve aday 22'de de tanımıyor): Leman Er
+  Kişiler / Açılış 1.000 (kâhin 4.000), Mert Ay Kişiler / Açılış / kalem 1.000 (kâhin 300). Değerler aday 23'ün (439eb2d); tur 16 ürününde YENİDEN DOĞRULANACAK. K4 toplamları
+  bilerek listede değil ((a) "Taahhüt Alacağı" ve (c) "(Ay)" farklarını da taşıyorlar — ertelenmedi); tur 16'dan sonra yalnız (b) payı kalırsa o ürünün değerleriyle eklenir.
+
 ### B4b — Dört rapor aynı satır borcu (K4 [KULLANICI] 23.10.2026; TAKVİM KALEMİ ile daraldı — B3i)
 - **K4** Tablodaki Kişiler (totals.debit), Tahsilat Takvimi (/dues Σ amount), Vade Takip (totals.amount) ve Nakit Akışı Beklenen (totals.expected) aynı satır
   borcunu kullanır; toplamları aynıdır (dönem süzgeci içinde). Kontrol adımında `"raporlar": true` ve bütün kayıtların borcu tanımlı ve tek değerliyse dört
