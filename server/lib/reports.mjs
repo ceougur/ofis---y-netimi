@@ -15,6 +15,11 @@ import { primaryColumns } from "./insight/columns.mjs";
 import { isFlaggedRow, isTotalRow } from "./insight/cells.mjs";
 import { amountCandidates, debtByRecord, debtPlan, isNotAmountHeader, rowDebt } from "./insight/debt-column.mjs";
 import { foldText, parseAmount, parseDate } from "./insight/validators.mjs";
+import { fromCents, toCents } from "./money.mjs";
+
+// Para toplamları kuruş (tamsayı) üzerinden: kayan nokta kalıntısı (11362.720000000001) API'ye, bakiye satırlarına ve toplamlara taşınmaz (aday 13 yan bulgusu).
+const addMoney = (total, value) => fromCents(toCents(total) + toCents(value || 0));
+const sumMoney = values => fromCents(values.reduce((sum, value) => sum + toCents(value || 0), 0));
 
 const DAY = 86_400_000;
 const BACKBONE = ["cari", "id", "amount", "debt", "deadline", "status", "phone"];
@@ -57,9 +62,21 @@ const itemDate = item => {
 };
 
 // Kayıt omurgasının kolonları (kişi, kimlik, tutar, kalan borç, vade, durum, telefon) bir kolon analizinden.
-function recordLayout(analyses) {
-  const primary = primaryColumns(analyses);
+// fallback (sekme düzeninde; rol → aday kolonlar, öncelik sırasıyla): sekmenin kendi analizi kişi / kimlik / telefon kolonunu bulamazsa, sekmede bulunan ilk
+// aday kullanılır — önce oturumun seçtiği kolon, sonra öbür sekmelerin aynı başlıkla bulduğu kolon. Aynı kişinin birden çok satırı olan dönem sekmesinde
+// ("2025 Aidat": 10 satırda 4 ad, tekillik 0,4) sekme analizi "Borçlu"yu kişi saymıyordu; satırlar adsız, dosya no ile ayrı grup oluyor, aynı kişi iki satıra
+// bölünüyordu (aday 13 cari kâhini; kök 31a F4 sekme başına analiz).
+const FALLBACK_ROLES = ["person", "id", "phone"];
+function recordLayout(analyses, fallback = null) {
   const byColumn = new Map(analyses.map(item => [item.column, item]));
+  const primary = { ...primaryColumns(analyses) };
+  if (fallback) {
+    for (const role of FALLBACK_ROLES) {
+      if (primary[role]) continue;
+      const column = (fallback[role] || []).find(candidate => byColumn.has(candidate) && !Object.values(primary).includes(candidate));
+      if (column) primary[role] = column;
+    }
+  }
   // Borç düzeni Tahsilat Takvimi ile ORTAK (debt-column.mjs): Kalan / Bakiye → borç / alacak başlıklı → sekmenin tek tutarı (söz / taksit / kira tutarı
   // değilse). 30a: Kalan her zaman önce; 31d E3: gün / adet / oran kolonu tutar değil; 31f U2: söz tutarı borç değil (2.4.4 aday 6'da her sekmenin tutar
   // kolonu — "Söz Tutarı", "Kira bedeli", taksit "Toplam" — borç sayılıyordu; kapanmış dosya söz yüzünden borçlu görünüyordu).
@@ -118,7 +135,12 @@ export function normalizeRecords({ rows, analyses, session, sessionName = "", ta
   const sheetOf = row => String(row?.__sheet || "");
   const layouts = new Map();
   const sheets = analyzeTab ? [...new Set(rows.map(sheetOf))] : [];
-  if (sheets.length > 1) for (const sheet of sheets) layouts.set(sheet, recordLayout(analyzeTab(rows.filter(row => sheetOf(row) === sheet))));
+  if (sheets.length > 1) {
+    const analysed = sheets.map(sheet => [sheet, analyzeTab(rows.filter(row => sheetOf(row) === sheet))]);
+    const own = analysed.map(([, analyses]) => primaryColumns(analyses));
+    const fallback = Object.fromEntries(FALLBACK_ROLES.map(role => [role, [...new Set([base.primary[role], ...own.map(primary => primary[role])].filter(Boolean))]]));
+    for (const [sheet, analyses] of analysed) layouts.set(sheet, recordLayout(analyses, fallback));
+  }
   const context = { session, sessionName, tabs };
   const records = [];
   for (const row of rows) {
@@ -237,15 +259,16 @@ export function cariEkstre({ records, payments = [], filters = normalizeFilters(
   let totalCredit = 0;
   for (const group of [...groups.values()].sort((a, b) => a.cari.localeCompare(b.cari, "tr"))) {
     group.lines.sort((a, b) => (a.date ?? Infinity) - (b.date ?? Infinity) || (a.kind === "borc" ? -1 : 1));
-    let balance = 0;
+    let balanceCents = 0;
     for (const line of group.lines) {
-      balance += (line.borc || 0) - (line.alacak || 0);
-      line.bakiye = balance;
+      balanceCents += toCents(line.borc || 0) - toCents(line.alacak || 0);
+      line.bakiye = fromCents(balanceCents);
     }
-    const debit = group.lines.reduce((sum, line) => sum + (line.borc || 0), 0);
-    const credit = group.lines.reduce((sum, line) => sum + (line.alacak || 0), 0);
-    totalDebit += debit;
-    totalCredit += credit;
+    const balance = fromCents(balanceCents);
+    const debit = sumMoney(group.lines.map(line => line.borc));
+    const credit = sumMoney(group.lines.map(line => line.alacak));
+    totalDebit = addMoney(totalDebit, debit);
+    totalCredit = addMoney(totalCredit, credit);
     if (!group.lines.length) continue;
     out.push({ cari: group.cari, sessions: [...group.sessions], crossMatched: group.sessions.size > 1, debit, credit, balance, lines: group.lines });
     if (out.length >= filters.limit) break;
@@ -259,7 +282,7 @@ export function cariEkstre({ records, payments = [], filters = normalizeFilters(
     rows: out.flatMap(group => group.lines.map(line => ({ cari: group.cari, date: line.date, description: line.description, session: line.session, borc: line.borc, alacak: line.alacak, bakiye: line.bakiye, status: line.status, ...Object.fromEntries(columns.map(column => [`f:${column}`, line.fields[column] || ""])) }))),
   };
   const notes = tableNotes({ split, overpaid: records.filter(record => record.overpaid && inTabs(record)).length });
-  return { kind: "cari-ekstre", generatedAt: now.toISOString(), groups: out, split, notes, totals: { debit: totalDebit, credit: totalCredit, balance: totalDebit - totalCredit, caris: out.length, crossMatched: out.filter(group => group.crossMatched).length }, table };
+  return { kind: "cari-ekstre", generatedAt: now.toISOString(), groups: out, split, notes, totals: { debit: totalDebit, credit: totalCredit, balance: addMoney(totalDebit, -totalCredit), caris: out.length, crossMatched: out.filter(group => group.crossMatched).length }, table };
 }
 
 // ---------- Vade takip ----------
@@ -300,7 +323,7 @@ export function vadeTakip({ records, items = [], dormant = [], filters = normali
   }
   const columns = dynamicColumns(rows.map(row => ({ fields: row.fields })));
   const STATE_TR = { gecikmis: "Gecikmiş", bugun: "Bugün", yaklasan: "Yaklaşan", kapali: "Kapalı", belirsiz: "Tarihsiz", durgun: "Durgun" };
-  const totals = { count: rows.length, dormant: rows.filter(row => row.state === "durgun").length, overdue: rows.filter(row => row.state === "gecikmis").length, upcoming: rows.filter(row => row.state === "yaklasan" || row.state === "bugun").length, amount: rows.reduce((sum, row) => sum + (row.amount || 0), 0), overdueAmount: rows.filter(row => row.state === "gecikmis").reduce((sum, row) => sum + (row.amount || 0), 0) };
+  const totals = { count: rows.length, dormant: rows.filter(row => row.state === "durgun").length, overdue: rows.filter(row => row.state === "gecikmis").length, upcoming: rows.filter(row => row.state === "yaklasan" || row.state === "bugun").length, amount: sumMoney(rows.map(row => row.amount)), overdueAmount: sumMoney(rows.filter(row => row.state === "gecikmis").map(row => row.amount)) };
   const table = {
     columns: [
       { key: "cari", label: "Cari" }, { key: "label", label: "Kalem" }, { key: "date", label: "Vade", type: "date" }, { key: "days", label: "Gün", type: "number" },
@@ -351,33 +374,33 @@ export function nakitAkis({ items = [], payments = [], cashEntries = [], filters
     const amount = item.remaining ?? item.amount;
     if (amount === null || amount === undefined) continue;
     const bucket = ensure(bucketOf(date, granularity));
-    bucket.expected += amount;
+    bucket.expected = addMoney(bucket.expected, amount);
     bucket.expectedCount += 1;
   }
   for (const payment of payments) {
     const date = parseIsoDay(payment.date);
     if (date === null || !inRange(date, filters)) continue;
     const bucket = ensure(bucketOf(date, granularity));
-    bucket.collected += Number(payment.amount) || 0;
+    bucket.collected = addMoney(bucket.collected, Number(payment.amount) || 0);
     bucket.collectedCount += 1;
   }
   for (const entry of cashEntries) {
     const date = parseIsoDay(entry.date);
     if (date === null || !inRange(date, filters)) continue;
     const bucket = ensure(bucketOf(date, granularity));
-    if (entry.kind === "in") bucket.cashIn += Number(entry.amount) || 0;
-    else bucket.cashOut += Number(entry.amount) || 0;
+    if (entry.kind === "in") bucket.cashIn = addMoney(bucket.cashIn, Number(entry.amount) || 0);
+    else bucket.cashOut = addMoney(bucket.cashOut, Number(entry.amount) || 0);
   }
   const rows = [...buckets.values()].sort((a, b) => a.period.localeCompare(b.period));
   let cumulative = 0;
   for (const row of rows) {
-    row.net = row.cashIn - row.cashOut;
-    cumulative += row.net;
+    row.net = addMoney(row.cashIn, -row.cashOut);
+    cumulative = addMoney(cumulative, row.net);
     row.cumulative = cumulative;
-    row.projected = cumulative + row.expected;
+    row.projected = addMoney(cumulative, row.expected);
   }
-  const totals = rows.reduce((sum, row) => ({ expected: sum.expected + row.expected, collected: sum.collected + row.collected, cashIn: sum.cashIn + row.cashIn, cashOut: sum.cashOut + row.cashOut }), { expected: 0, collected: 0, cashIn: 0, cashOut: 0 });
-  totals.net = totals.cashIn - totals.cashOut;
+  const totals = Object.fromEntries(["expected", "collected", "cashIn", "cashOut"].map(key => [key, sumMoney(rows.map(row => row[key]))]));
+  totals.net = addMoney(totals.cashIn, -totals.cashOut);
   const table = {
     columns: [
       { key: "label", label: granularity === "month" ? "Ay" : granularity === "week" ? "Hafta" : "Gün" }, { key: "expected", label: "Beklenen tahsilat", type: "money" }, { key: "expectedCount", label: "Açık kalem", type: "number" },

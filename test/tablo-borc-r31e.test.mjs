@@ -206,6 +206,49 @@ describe("31e A1: kopya sekme iki kez sayılır + not; söz sekmesi (borç deği
   });
 });
 
+// Aday 13 cari kâhini (rastgele-ux18-2): dönem sekmesinde aynı kişinin birden çok satırı ("2025 Aidat": ad tekrarlanır) sekmenin kendi analizinde "Borçlu"yu
+// kişi kolonu yapmıyordu (31a F4 sekme başına analiz) → satırlar adsız, dosya no ile ayrı grup ("T2/001" 3.686,48 + "Tablo Kişi 2-1" 79). 2.4.3 aynı kişide
+// topluyordu. Kural: sekme analizi kişi / kimlik / telefon kolonunu bulamazsa ve sekmede oturumun seçtiği kolon varsa o kullanılır. A1 (ayrı borç) aynen.
+describe("31e aday 13: dönem sekmesinde tekrarlanan ad — kişi adı oturumun kişi kolonundan, aynı kişinin sekmelerdeki borcu tek grupta", () => {
+  // Kâhinin ürettiği tablonun iki aidat sekmesi aynen (2025 Aidat'ta 10 satırda 4 ad: tekillik 0,4 < 0,5 → sekme analizi "Borçlu"yu kişi saymıyordu). Söz sekmesi
+  // gerekmez; tetikleyici adların tekrar oranı. Beklenen tutarlar hücrelerin toplamı (v2.4.3 de aynı grupları verir).
+  const H = ["Dosya No", "Borçlu", "Telefon", "Tutar"];
+  const ctx = setup([
+    { name: "2026 Aidat", matrix: [H, ["T2/005", "Tablo Kişi 2-5", "", "2.024,39 ₺"], ["T2/006", "Tablo Kişi 2-6", "", "29,00 ₺"], ["T2/007", "Tablo Kişi 2-7", "", "98,00 ₺"], ["T2/007", "Tablo Kişi 2-7", "", "2.973,32 ₺"], ["T2/001", "Tablo Kişi 2-1", "", "79,00 ₺"], ["T2/002", "Tablo Kişi 2-2", "", "69,00 ₺"], ["T2/002", "Tablo Kişi 2-2", "", "4.787,25 ₺"]] },
+    { name: "2025 Aidat", matrix: [H, ["T2/003", "Tablo Kişi 2-3", "", "9,00 ₺"], ["T2/003", "Tablo Kişi 2-3", "", "87,00 ₺"], ["T2/003", "Tablo Kişi 2-3", "", "5.017,14 ₺"], ["T2/004", "Tablo Kişi 2-4", "", "78,00 ₺"], ["T2/004", "Tablo Kişi 2-4", "", "4.166,62 ₺"], ["T2/004", "Tablo Kişi 2-4", "", "17,00 ₺"], ["T2/001", "Tablo Kişi 2-1", "", "3.686,48 ₺"], ["T2/002", "Tablo Kişi 2-2", "", "2.324,10 ₺"], ["T2/002", "Tablo Kişi 2-2", "", "60,00 ₺"], ["T2/002", "Tablo Kişi 2-2", "", "36,00 ₺"]] },
+  ]);
+
+  test("Tablodaki Kişiler: Kişi 2-1 79 + 3.686,48 = 3.765,48 tek grup; Kişi 2-2 69 + 4.787,25 + 2.324,10 + 60 + 36 = 7.276,35; dosya no adlı grup yok", async () => {
+    const { report } = await ctx.report("cari-ekstre");
+    const groups = debitBy(report);
+    assert.deepEqual(groups, { "Tablo Kişi 2-1": 3765.48, "Tablo Kişi 2-2": 7276.35, "Tablo Kişi 2-3": 5113.14, "Tablo Kişi 2-4": 4261.62, "Tablo Kişi 2-5": 2024.39, "Tablo Kişi 2-6": 29, "Tablo Kişi 2-7": 3071.32 }, `gruplar: ${JSON.stringify(report.groups.map(group => [group.cari, group.debit]))}`);
+    // Para toplamları kuruş üzerinden (yan bulgu: önceden 25541.300000000003 gibi kalıntı API'ye çıkıyordu).
+    assert.equal(report.totals.debit, 25541.3);
+  });
+});
+
+describe("31e aday 13 yan bulgu: tablo raporlarında para toplamları kuruşta (kayan nokta kalıntısı yok)", () => {
+  const ctx = setup([{ name: "Taksitler", matrix: [["Dosya No", "Ad Soyad", "Kalan Borç", "Vade"], ["K-1", "Ali Veli", "0,10", d(1)], ["K-1", "Ali Veli", "0,20", d(2)]] }]);
+
+  test("Tablodaki Kişiler: Ali Veli 0,10 + 0,20 = 0,30 (borç, bakiye, satır bakiyesi), toplam 0,30 — tam eşitlik", async () => {
+    const { report } = await ctx.report("cari-ekstre");
+    const ali = report.groups.find(group => group.cari === "Ali Veli");
+    assert.deepEqual([ali.debit, ali.balance, ali.lines.at(-1).bakiye], [0.3, 0.3, 0.3], `Ali Veli: ${JSON.stringify([ali.debit, ali.balance, ali.lines.map(line => line.bakiye)])}`);
+    assert.deepEqual([report.totals.debit, report.totals.balance], [0.3, 0.3], `toplam: ${JSON.stringify(report.totals)}`);
+  });
+
+  test("Vadeler toplamı 0,10 + 0,20 = 0,30 — tam eşitlik", async () => {
+    const vade = (await ctx.report("vade-takip")).report.totals;
+    assert.equal(vade.amount, 0.3, `Vadeler: ${vade.amount}`);
+  });
+
+  test("Nakit Akışı Beklenen 0,30 ve her kova kuruşta — tam eşitlik", async () => {
+    const nakit = (await ctx.report("nakit-akis")).report;
+    assert.equal(nakit.totals.expected, 0.3, `Nakit Akışı: ${nakit.totals.expected}`);
+    assert.ok(nakit.rows.every(row => row.expected === Math.round(row.expected * 100) / 100), `kova: ${JSON.stringify(nakit.rows.map(row => row.expected))}`);
+  });
+});
+
 describe("31e Y1: Tablodaki Nakit Akışı'nda Kasa sütunları yalnız Kasa yetkisiyle", () => {
   const ctx = setup(null);
   let staff;

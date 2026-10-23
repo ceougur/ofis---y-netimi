@@ -1,0 +1,38 @@
+{
+  "ad": "ad-kirmizi-eski-f24bc41",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/tablo-borc-r31e.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T04:47:36.906Z",
+  "sure_sn": 3.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 15,
+    "gecen": 14,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "31e aday 13: dönem sekmesinde tekrarlanan ad — kişi adı oturumun kişi kolonundan, aynı kişinin sekmelerdeki borcu tek grupta › Tablodaki Kişiler: Kişi 2-1 79 + 3.686,48 = 3.765,48 tek grup; Kişi 2-2 69 + 4.787,25 + 2.324,10 + 60 + 36 = 7.276,35; dosya no adlı grup yok",
+      "konum": "test/tablo-borc-r31e.test.mjs:221:3",
+      "hata": "gruplar: [[\"T2/001\",3686.48],[\"T2/002\",2420.1],[\"T2/003\",5113.14],[\"T2/004\",4261.62],[\"Tablo Kişi 2-1\",79],[\"Tablo Kişi 2-2\",4856.25],[\"Tablo Kişi 2-5\",2024.39],[\"Tablo Kişi 2-6\",29],[\"Tablo Kişi 2-7\",3071.32]] · + actual - expected · { (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-23/ad-kirmizi-eski-f24bc41.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/ad-eski-f24bc41",
+  "ham_cikti_sha256": "c587a0a6e75af25c9ff36cb5bf7229c8f6a0327682b3e870dcac8ac4cf7acc96",
+  "ham_cikti_bayt": 9883
+}
