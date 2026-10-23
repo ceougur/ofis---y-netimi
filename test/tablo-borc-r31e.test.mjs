@@ -220,10 +220,32 @@ describe("31e aday 13: dönem sekmesinde tekrarlanan ad — kişi adı oturumun 
 
   test("Tablodaki Kişiler: Kişi 2-1 79 + 3.686,48 = 3.765,48 tek grup; Kişi 2-2 69 + 4.787,25 + 2.324,10 + 60 + 36 = 7.276,35; dosya no adlı grup yok", async () => {
     const { report } = await ctx.report("cari-ekstre");
-    const groups = Object.fromEntries(Object.entries(debitBy(report)).map(([cari, debit]) => [cari, Math.round(debit * 100) / 100]));
+    const groups = debitBy(report);
     assert.deepEqual(groups, { "Tablo Kişi 2-1": 3765.48, "Tablo Kişi 2-2": 7276.35, "Tablo Kişi 2-3": 5113.14, "Tablo Kişi 2-4": 4261.62, "Tablo Kişi 2-5": 2024.39, "Tablo Kişi 2-6": 29, "Tablo Kişi 2-7": 3071.32 }, `gruplar: ${JSON.stringify(report.groups.map(group => [group.cari, group.debit]))}`);
-    // Toplam yuvarlanmadan toplanabiliyor (kayan nokta kalıntısı; ekranda / PDF'te kuruşa yuvarlı); bu işin kapsamı dışında, raporlandı.
-    assert.equal(Math.round(report.totals.debit * 100) / 100, 25541.3);
+    // Para toplamları kuruş üzerinden (yan bulgu: önceden 25541.300000000003 gibi kalıntı API'ye çıkıyordu).
+    assert.equal(report.totals.debit, 25541.3);
+  });
+});
+
+describe("31e aday 13 yan bulgu: tablo raporlarında para toplamları kuruşta (kayan nokta kalıntısı yok)", () => {
+  const ctx = setup([{ name: "Taksitler", matrix: [["Dosya No", "Ad Soyad", "Kalan Borç", "Vade"], ["K-1", "Ali Veli", "0,10", d(1)], ["K-1", "Ali Veli", "0,20", d(2)]] }]);
+
+  test("Tablodaki Kişiler: Ali Veli 0,10 + 0,20 = 0,30 (borç, bakiye, satır bakiyesi), toplam 0,30 — tam eşitlik", async () => {
+    const { report } = await ctx.report("cari-ekstre");
+    const ali = report.groups.find(group => group.cari === "Ali Veli");
+    assert.deepEqual([ali.debit, ali.balance, ali.lines.at(-1).bakiye], [0.3, 0.3, 0.3], `Ali Veli: ${JSON.stringify([ali.debit, ali.balance, ali.lines.map(line => line.bakiye)])}`);
+    assert.deepEqual([report.totals.debit, report.totals.balance], [0.3, 0.3], `toplam: ${JSON.stringify(report.totals)}`);
+  });
+
+  test("Vadeler toplamı 0,10 + 0,20 = 0,30 — tam eşitlik", async () => {
+    const vade = (await ctx.report("vade-takip")).report.totals;
+    assert.equal(vade.amount, 0.3, `Vadeler: ${vade.amount}`);
+  });
+
+  test("Nakit Akışı Beklenen 0,30 ve her kova kuruşta — tam eşitlik", async () => {
+    const nakit = (await ctx.report("nakit-akis")).report;
+    assert.equal(nakit.totals.expected, 0.3, `Nakit Akışı: ${nakit.totals.expected}`);
+    assert.ok(nakit.rows.every(row => row.expected === Math.round(row.expected * 100) / 100), `kova: ${JSON.stringify(nakit.rows.map(row => row.expected))}`);
   });
 });
 
