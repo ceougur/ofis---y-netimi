@@ -86,6 +86,8 @@ const CANCEL_FAILED = "invoice.e.cancel-failed";
 const CANCEL_DEFINITE_CODES = new Set(["integrator-rejected", "integrator-contract", "integrator-unreachable"]);
 // 31e E1-Y: Durum Sorgula'nın yanıtı yoldayken belge başka oturumda değişti (yeniden gönderim başladı, sonuç yazıldı) — eski sonuç yazılmaz.
 const STATUS_STALE_TEXT = "Durum sorgulanırken belgenin e-Belge durumu başka bir oturumda değişti (ör. yeniden gönderim başladı); sorgunun sonucu yazılmadı. Birkaç saniye sonra kartı yenileyin, gerekirse yeniden Durum Sorgula'ya basın.";
+// 31e kontrol turu 2 (A3): bu arada yeni gönderim başlamadı, yalnız başka bir sorgu (başka oturumun Durum Sorgula'sı, iptal öncesi sorgu) durumu yazdı.
+const STATUS_REFRESHED_TEXT = "Belgenin durumu bu sırada başka bir sorguyla güncellendi; kartı yenileyip gerekirse yeniden sorgulayın.";
 const UUID_IN_TEXT = /\bUUID\s*=\s*([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i;
 const ID_IN_TEXT = /(?<![A-Za-z])ID\s*=\s*([A-Za-z0-9]+)/;
 /**
@@ -3332,6 +3334,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         }
       }
       if (current?.status && current.status !== head.eStatus) setE(user, head.id, { status: current.status, message: current.message }, "invoice.e.status", { raw: current.raw || "", during: "cancel-recheck" });
+      // 31e K45: EDM kesin yanıt verdi — belge iptal EDİLMEMİŞ: önceki iptal isteği EDM'ye işlenmemiş; iptal izi kapanır (süre dolduğu için aşağıda "süre
+      // doldu"; sonraki İptal Et'ler EDM'ye yeniden sormaz). EDM'de iptalse iz açık kalır, iptal programda tamamlanır.
+      if (current?.status && current.status !== "cancelled") store.tx(() => audit(user, CANCEL_FAILED, head.id, { number: head.number, reason: "recheck", status: current.status }));
       head = invoiceRow(id);
     }
     const localOnly = body.localOnly === true;
@@ -4487,7 +4492,15 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     // 31e E1-Y: sorgu kilit tutmaz (gönderimi bekletmez); sonucu yalnız belgenin e-Belge durumu sorgu başladığındaki gibiyse yazılır (iyimser kilit).
     const guard = eGuardOf(doc.id);
     const writeIfUnchanged = write => {
-      if (!store.tx(() => (eGuardOf(doc.id) === guard ? (write(), true) : false))) throw new HttpError(409, STATUS_STALE_TEXT, { code: "einvoice-status-stale" });
+      const current = store.tx(() => {
+        const now = eGuardOf(doc.id);
+        if (now === guard) write();
+        return now;
+      });
+      if (current === guard) return;
+      // A3: ileti nedene göre — sorgudan sonra yeni gönderim izi yazıldıysa "yeniden gönderim", yoksa başka bir sorgu durumu güncelledi.
+      const sending = JSON.parse(current).at(-1) !== JSON.parse(guard).at(-1);
+      throw new HttpError(409, sending ? STATUS_STALE_TEXT : STATUS_REFRESHED_TEXT, { code: "einvoice-status-stale", reason: sending ? "send-started" : "status-updated" });
     };
     let result;
     try {

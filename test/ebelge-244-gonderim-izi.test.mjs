@@ -718,6 +718,7 @@ describe("31e: Durum Sorgula ↔ Gönder yarışı, 11048 ETTN doğrulaması, ip
       assert.deepEqual({ ...window }, { status: "none", adapter: "edm" }, "gönderim yoldayken iz silinmemeli: o anda program kesilseydi EDM'deki makbuz programda 'Gönderilmedi' kalırdı");
       assert.equal(refreshed.status, 409, JSON.stringify(refreshed.data).slice(0, 300));
       assert.equal(refreshed.data.code, "einvoice-status-stale");
+      assert.match(String(refreshed.data.error), /yeniden gönderim başladı/, "A3: yeni gönderim izi → ileti gönderimi söyler");
       sendHold.release();
       await must("B Gönder", sending);
       const end = await ctx.card(doc.id);
@@ -802,6 +803,70 @@ describe("31e: Durum Sorgula ↔ Gönder yarışı, 11048 ETTN doğrulaması, ip
       assert.equal(asked.status, 409, "EDM'de iptal değil → süre doldu");
       assert.equal(asked.data.code, "einvoice-cancel-late");
       assert.equal(ctx.count("smm", "GetSMMStatus"), statusBefore + 1, "belirsiz denemeden sonra önce EDM'ye soruldu");
+    } finally {
+      await ctx.close();
+    }
+  });
+});
+
+// 31e kontrol turu 2 (23.10.2026): A3 (eşzamanlı iki Durum Sorgula'da ileti) ve K45 (iptal izi süre dolduktan sonraki kesin yanıtla kapanır).
+// "Nasıl bozulur?": Z1 iki oturum aynı anda Durum Sorgula → geç kalan "yeniden gönderim başladı" der (yanlış neden) → R5; Z2 yeni gönderim izi varken ileti
+// "başka sorgu" der → R1; Z3 iptal yanıtı kaybolmuş belgede süre dolunca EDM "iptal edilmemiş" der, iz açık kalır, her İptal Et yeniden sorar → R6;
+// Z4 EDM "iptal edilmiş" derse iz kapanmamalı, iptal programda tamamlanmalı → K10.
+describe("31e kontrol turu 2: eşzamanlı Durum Sorgula iletisi, iptal izi kesin yanıtla kapanır", () => {
+  test("R5 (A3) iki oturum aynı belgede aynı anda Durum Sorgula: geç kalan 409 alır, ileti 'başka bir sorguyla güncellendi' der ('yeniden gönderim' değil); veri doğru", async () => {
+    const ctx = await scene();
+    try {
+      const api = await ctx.reopen();
+      const ids = await ctx.setup(api);
+      const doc = await must("makbuz", api.post("/api/workspace/invoices", smmBody(ids.clientId, { eSend: "now" })));
+      assert.equal(doc.eStatus, "sent", doc.eMessage);
+      const clientB = ctx.server.client();
+      assert.equal((await clientB.login("admin", ADMIN_PASSWORD)).status, 200);
+      const held = ctx.proxy.hold("GetSMMStatus", { phase: "after" });
+      const a = api.post(`/api/workspace/invoices/${doc.id}/e-refresh`, {});
+      await held.reached;
+      const b = await must("B Durum Sorgula", apiOf(clientB).post(`/api/workspace/invoices/${doc.id}/e-refresh`, {}));
+      held.release();
+      const late = await a;
+      assert.equal(late.status, 409, JSON.stringify(late.data).slice(0, 300));
+      assert.equal(late.data.code, "einvoice-status-stale");
+      assert.match(String(late.data.error), /başka bir sorguyla güncellendi/);
+      assert.doesNotMatch(String(late.data.error), /gönderim/, "yeni gönderim yok: ileti gönderim demez");
+      assert.equal((await ctx.card(doc.id)).eStatus, b.eStatus, "B'nin yazdığı durum kaldı");
+    } finally {
+      await ctx.close();
+    }
+  });
+
+  test("R6 (K45) e-Arşiv iptal isteği koptu (iz açık) → süre dolunca İptal Et EDM'ye BİR KEZ sorar, 'iptal edilmemiş' → süre doldu + iz kapanır; sonraki İptal Et sormaz, kartta neden yazar", async () => {
+    const ctx = await scene();
+    try {
+      const api = await ctx.reopen();
+      const ids = await ctx.setup(api);
+      const doc = await must("e-Arşiv", api.post("/api/workspace/invoices", saleBody(ids.personId, { eSend: "now" })));
+      assert.equal(doc.eStatus, "sent", doc.eMessage);
+      const cut = ctx.proxy.hold("CancelInvoice", { phase: "before" });
+      const cancel = api.post(`/api/workspace/invoices/${doc.id}/cancel`, { reason: "deneme" });
+      await cut.reached;
+      cut.release();
+      assert.notEqual((await cancel).status, 200);
+      assert.equal(ctx.edm.state.cancelled.length, 0, "EDM iptal etmedi");
+      await ctx.reopen(`${day(10)}T10:00:00`);
+      assert.equal((await ctx.card(doc.id)).cancelRecheck, true, "iz açık: süre dolunca EDM'ye sorulacak");
+      const before = ctx.count("fatura", "GetInvoiceStatus");
+      const first = await ctx.api.post(`/api/workspace/invoices/${doc.id}/cancel`, { reason: "deneme" });
+      assert.equal(first.status, 409);
+      assert.equal(first.data.code, "einvoice-cancel-late");
+      assert.equal(ctx.count("fatura", "GetInvoiceStatus"), before + 1, "EDM'ye bir kez soruldu");
+      const card = await ctx.card(doc.id);
+      assert.equal(card.cancelRecheck, false, "EDM'nin kesin yanıtı iptal izini kapattı");
+      assert.equal(card.canCancel, false);
+      assert.match(String(card.cancelBlock), /iptal süresi doldu/);
+      const second = await ctx.api.post(`/api/workspace/invoices/${doc.id}/cancel`, { reason: "deneme" });
+      assert.equal(second.status, 409);
+      assert.equal(second.data.code, "einvoice-cancel-late");
+      assert.equal(ctx.count("fatura", "GetInvoiceStatus"), before + 1, "ikinci İptal Et EDM'ye yeniden sormadı");
     } finally {
       await ctx.close();
     }
