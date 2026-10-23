@@ -565,6 +565,9 @@ def sinif_iptal(once, adim, fark, kayit):
     y = kayit.get("yanit") or {}
     program_kabul = 200 <= (y.get("status") or 0) < 300
     g_iletim, g_deneme, g_kesim = once.gun_farki(b, "iletim"), once.gun_farki(b, "deneme"), (M.gun(once.bugun) - M.gun(b["tarih"])).days
+    if adim.get("yerel") and b.get("belirsiz") and program_kabul and g_deneme > M.IPTAL_SURESI and not (kayit.get("edm") or {}).get("cagrilar"):
+        # K41b ([KULLANICI] 23.10.2026): belirsiz belgede 8 gün sonra yerel iptal önce EDM'ye sorar; program sormadan kabul etti
+        return f"BULGU-K41b-SORGUSUZ ({b['tur']}: son girişimden {g_deneme}. gün, EDM'ye sorulmadan yalnız programda iptal)"
     if program_kabul and b.get("iletim") and g_iletim > M.IPTAL_SURESI:
         if b.get("deneme") and g_deneme <= M.IPTAL_SURESI:
             return f"BULGU-K22-SON-DENEME (GİB §3: iletim = EDM'nin aldığı gün {b['iletim']}; program sonraki girişimi {b['deneme']} saydı, {g_iletim}. günde iptal etti)"

@@ -316,10 +316,34 @@ class BelirsizYerelIptal(unittest.TestCase):
                    sec=lambda ad, a: next((x for x in ad if x.belgeler.get("B1", {}).get("belirsiz")), ad[0]))
         self.assertEqual((d.yanit, d.belgeler["B1"]["iptal"]), ("5xx", False))
 
-    def test_esmm_bulunamadi_catal_incele_K35(self):
+    def test_esmm_bulunamadi_yerel_iptal_K35_K41b(self):
+        # K41b ([KULLANICI] 23.10.2026 01:26 UTC): e-SMM'de de EDM "bulunamadı" → yalnız programda iptal (tur 2'deki İNCELE çatalı kalktı)
         _, adaylar = kos([{"islem": "ariza", "tur": "kopma_sonra"}, S("B1", "K1", "2026-06-17", "simdi"), G(9), {"islem": "iptal", "belge": "B1", "yerel": True}],
                          sec=lambda ad, a: next((x for x in ad if x.belgeler.get("B1", {}).get("edm") is False and x.belgeler["B1"].get("belirsiz")), ad[0]) if a["islem"] == "kaydet" else ad[0])
-        self.assertEqual(sorted((a.yanit, tuple(a.incele)) for a in adaylar), [("2xx", ()), ("4xx", ("K35-ESMM-BULUNAMADI",))])
+        self.assertEqual([(a.yanit, a.belgeler["B1"]["iptal"], tuple(a.incele)) for a in adaylar], [("2xx", True, ())])
+
+    def test_efatura_belirsiz_ayni_kural_K41b(self):
+        # K41b: belirsiz e-Fatura (K2) — 8. gün dahil yerel iptal (EDM'ye sorulmaz); 9. gün EDM'de var → 409 ve gönderildi; yok → iptal; ağ yok → 5xx
+        def kur(edm, gun, ag=True):
+            adim = [{"islem": "ariza", "tur": "kopma_sonra" if edm else "kopma_once"}, K("B1", "K2", "2026-06-17", "simdi"), G(gun)]
+            if not ag:
+                adim.append({"islem": "ag", "durum": "yok"})
+            sec = lambda ad, a, e=edm: next((x for x in ad if x.belgeler.get("B1", {}).get("edm") is e and x.belgeler["B1"].get("belirsiz")), ad[0]) if a["islem"] == "kaydet" else ad[0]  # noqa: E731
+            return kos(adim + [{"islem": "iptal", "belge": "B1", "yerel": True}], sec=sec)
+        for edm in (True, False):
+            d, adaylar = kur(edm, 8)
+            self.assertEqual((len(adaylar), d.yanit, d.belgeler["B1"]["iptal"], d.belgeler["B1"]["edm_iptal"]), (1, "2xx", True, False), f"8. gün edm={edm}")
+        d, adaylar = kur(True, 9)
+        self.assertEqual((len(adaylar), d.yanit, d.belgeler["B1"]["iptal"], d.belgeler["B1"]["prog"]), (1, "4xx", False, True))
+        d, adaylar = kur(False, 9)
+        self.assertEqual((len(adaylar), d.yanit, d.belgeler["B1"]["iptal"]), (1, "2xx", True))
+        d, adaylar = kur(True, 9, ag=False)
+        self.assertEqual((len(adaylar), d.yanit, d.belgeler["B1"]["iptal"]), (1, "5xx", False))
+        # e-Faturanın olağan iptali değişmez (gönderilmiş e-Fatura: K23 çatalı; yerel iptal gönderilmişte red — K41)
+        _, adaylar = kos([K("B1", "K2", "2026-06-17", "simdi"), G(9), {"islem": "iptal", "belge": "B1"}])
+        self.assertEqual(sorted(a.yanit or "-" for a in adaylar), ["-", "4xx"])
+        d, adaylar = kos([K("B1", "K2", "2026-06-17", "simdi"), G(2), {"islem": "iptal", "belge": "B1", "yerel": True}])
+        self.assertEqual((len(adaylar), d.yanit, d.belgeler["B1"]["iptal"]), (1, "4xx", False))
 
     def test_belirsizde_olagan_iptal_once_durum_sorgula(self):
         _, adaylar = kos([{"islem": "ariza", "tur": "kopma_sonra"}, K("B1", "K1", "2026-06-17", "simdi"), {"islem": "iptal", "belge": "B1"}],

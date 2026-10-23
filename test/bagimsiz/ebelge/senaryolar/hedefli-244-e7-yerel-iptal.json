@@ -1,7 +1,7 @@
 {
  "dil": "destekofis-ebelge/3",
  "ad": "hedefli-244-e7-yerel-iptal",
- "aciklama": "K41 (E7, 22.10): Yalnız Programda İptal yalnız sonucu belirsiz gönderimde — gönderilmiş e-Arşiv/e-SMM (süre içinde ve sonra), e-Fatura, numarasız bekleyen, Müşteri Fişi, kâğıt belge 409, belge değişmez, EDM'ye iptal gitmez; belirsiz e-Arşiv/e-SMM 8 gün içinde yalnız programda iptal edilir (EDM'de iptal yok); belirsiz e-Fatura ÇATAL (K41-EFATURA-BELIRSIZ-YEREL); sonra olağan İptal Et süre içinde EDM'de iptal eder",
+ "aciklama": "K41 (E7, 22.10): Yalnız Programda İptal yalnız sonucu belirsiz gönderimde — gönderilmiş e-Arşiv/e-SMM (süre içinde ve sonra), e-Fatura, numarasız bekleyen, Müşteri Fişi, kâğıt belge 409, belge değişmez, EDM'ye iptal gitmez; belirsiz e-Arşiv/e-SMM/e-Fatura 8 gün içinde yalnız programda iptal edilir (EDM'ye sorulmaz). K41b ([KULLANICI] 23.10 01:26 UTC): belirsiz e-Fatura da AYNI kural — son girişimden 9. gün EDM'de VAR → 409 ve durum belgeye yazılır (B11), EDM'de YOK → yalnız programda iptal (B12), EDM'ye ulaşılamaz → 502 (B13); olağan İptal Et süre içinde EDM'de iptal eder",
  "bugun": "2026-06-17",
  "cariler": {
   "K1": "kisi",
@@ -206,9 +206,81 @@
    "no": 30
   },
   {
+   "islem": "ariza",
+   "tur": "kopma_sonra",
+   "no": 31
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B11",
+   "cari": "K2",
+   "tarih": "2026-06-29",
+   "gonder": "simdi",
+   "no": 32
+  },
+  {
+   "islem": "ariza",
+   "tur": "kopma_once",
+   "no": 33
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B12",
+   "cari": "K2",
+   "tarih": "2026-06-29",
+   "gonder": "simdi",
+   "no": 34
+  },
+  {
+   "islem": "ariza",
+   "tur": "kopma_sonra",
+   "no": 35
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B13",
+   "cari": "K2",
+   "tarih": "2026-06-29",
+   "gonder": "simdi",
+   "no": 36
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 9,
+   "no": 37
+  },
+  {
+   "islem": "iptal",
+   "belge": "B11",
+   "yerel": true,
+   "no": 38
+  },
+  {
+   "islem": "iptal",
+   "belge": "B12",
+   "yerel": true,
+   "no": 39
+  },
+  {
+   "islem": "ag",
+   "durum": "yok",
+   "no": 40
+  },
+  {
+   "islem": "iptal",
+   "belge": "B13",
+   "yerel": true,
+   "no": 41
+  },
+  {
+   "islem": "ag",
+   "durum": "var",
+   "no": 42
+  },
+  {
    "islem": "tumunu_gonder",
    "kapsam": "hepsi",
-   "no": 31
+   "no": 43
   }
  ]
 }

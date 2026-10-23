@@ -28,6 +28,7 @@ DIL = "destekofis-ebelge/3"
 # /3 (2.4.4 31a tur 2, 23.10.2026; kodu görmeyen el): K38 verilmiş kâğıt/fiş/makbuz numarası bir daha verilmez (silme, e-Belgeye dönüşme — E6, 22.10 kararı),
 # K39 Silinenler (sil / geri_yukle işlemleri — E6), K40 Kâğıt Makbuz Olarak Bırak (SMM serisi, sonra e-SMM gönderilmez — MM4 alt kararı), K41 Yalnız
 # Programda İptal yalnız sonucu belirsiz gönderimde (E7; K35 çatalı karara bağlandı), K42 Sonucu Belirsiz belgede Sil / Düzenle / İptal Et 409 (E1).
+# K41b (23.10.2026 01:26 UTC [KULLANICI]): belirsizde yerel iptal e-Arşiv, e-SMM ve e-Fatura için AYNI kural (K35'in 8 gün / EDM sorgusu kapısı e-Faturaya da).
 DILLER = ("destekofis-ebelge/1", "destekofis-ebelge/2", DIL)
 
 # K1: belge türü carinin işaretinden gelir (CLAUDE.md 2.4.3 karar 4: "işaretliyse e-Fatura, değilse e-Arşiv kesilir").
@@ -426,9 +427,9 @@ def iptal(d, b, yerel):
     K22 (DÜZELTİLDİ 2.4.4): gönderilmiş e-Arşiv ve e-SMM iletimden itibaren 8 gün içinde EDM'de iptal edilir; başlangıç günü sayılmaz, 8. gün dahil
       ([GİB] Kılavuz V.1.1 §3; [KULLANICI] KARARLAR (5)). Süre dolunca İptal Et de Yalnız Programda İptal de reddedilir (belge değişmez).
       Eski K22 ("kesimden ≤7 gün") yanlış dayanaklıydı: kaynak süreyi iletimden sayar.
-    K35 ([KULLANICI] 22.10.2026, madde 23 SORU + "önerin uygun"): sonucu BELİRSİZ belgede Yalnız Programda İptal, 8 gün geçtiyse önce EDM'ye sorar —
-      EDM'de yok → iptal serbest; EDM'de var → süre dolmuş, reddedilir; ([AJAN]) EDM'ye ulaşılamaz → 5xx; e-SMM'de 'bulunamadı' doğrulanmadığından → 409
-      ([AJAN]; kullanıcı kuralıyla ayrışır → İNCELE)."""
+    K35 ([KULLANICI] 22.10.2026, madde 23 SORU + "önerin uygun") + K41b ([KULLANICI] 23.10.2026 01:26 UTC): sonucu BELİRSİZ belgede (e-Arşiv, e-SMM, e-Fatura
+      aynı) Yalnız Programda İptal, son gönderim girişiminden (yoksa kesim gününden) 8 gün geçtiyse önce EDM'ye sorar — EDM "bulunamadı" → yalnız programda
+      iptal; EDM bulursa durum belgeye yazılır, 409; EDM'ye ulaşılamaz → 502. 8 gün içinde yetkili onayla yalnız programda iptal (EDM'ye sorulmaz)."""
     def kopya(not_, **alan):
         w = d.kopya(not_)
         w.belgeler[b["ad"]].update(alan)
@@ -491,16 +492,10 @@ def yerel_iptal(d, b, kopya):
     if not d.belirsiz(b):
         d.yanit = "4xx"
         return [d]
-    if b["tur"] == "efatura":
-        # E7 metni "öbür her durum"a e-Fatura'yı da sayar → red; ama sonucu belirsiz e-Fatura için açık değil (kural belirsiz gönderimi genel söyler) →
-        # ÇATAL, kabul dünyası İNCELE işaretli.
-        r = kopya(f"{b['ad']}: belirsiz e-Fatura yalnız programda iptal reddedildi")
-        r.yanit = "4xx"
-        k = kopya(f"{b['ad']}: belirsiz e-Fatura yalnız programda iptal edildi", iptal=True, belirsiz=False)
-        k.yanit = "2xx"
-        k.incele = list(d.incele) + ["K41-EFATURA-BELIRSIZ-YEREL"]
-        return [r, k]
-    if b["tur"] not in ("earsiv", "esmm"):
+    # K41b ([KULLANICI] 23.10.2026 01:26 UTC, 5 dk yetkisiyle — ana oturum iletisi): belirsiz gönderimde Yalnız Programda İptal e-Arşiv, e-SMM VE e-Fatura için
+    # AYNI kuraldır (e-Faturanın olağan iptali değişmez — K23). Tur 2'deki "belirsiz e-Fatura" çatalı (K41-EFATURA-BELIRSIZ-YEREL) ve e-SMM "bulunamadı"
+    # çatalı (K35-ESMM-BULUNAMADI) bu kararla kalktı.
+    if b["tur"] not in ("earsiv", "esmm", "efatura"):
         d.yanit = "4xx"
         return [d]
     # Sonucu belirsiz (program bilmiyor; EDM gerçeği b["edm"]).
@@ -515,14 +510,10 @@ def yerel_iptal(d, b, kopya):
             b.update(prog=True, belirsiz=False, hata=False)
             d.yanit = "4xx"
             return [d]
-        k = kopya(f"{b['ad']}: belirsiz, 8 gün geçti, EDM'de yok → yalnız programda iptal", iptal=True, belirsiz=False)
-        k.yanit = "2xx"
-        if b["tur"] == "esmm":
-            r = kopya(f"{b['ad']}: e-SMM belirsiz, EDM 'bulunamadı' doğrulanmadı → reddedildi")
-            r.yanit = "4xx"
-            r.incele = ["K35-ESMM-BULUNAMADI"]
-            return [k, r]
-        return [k]
+        # K35/K41b: EDM "bulunamadı" → yalnız programda iptal (e-Arşiv, e-SMM, e-Fatura aynı).
+        b.update(iptal=True, belirsiz=False)
+        d.yanit = "2xx"
+        return [d]
     # 8 gün içinde: K41 — yalnız programda iptal edilir (2.4.3 çıkış yolu; EDM'ye sorulmaz, EDM'de iptal yok). /2'deki red çatalı kalktı.
     b.update(iptal=True, belirsiz=False)
     d.yanit = "2xx"

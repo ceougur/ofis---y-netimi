@@ -199,6 +199,23 @@ def _bekleyen_copu_de(self, b):
     return not b["prog"]
 
 
+def _yerel_belirsiz_sorgusuz(d, b, kopya):
+    # K41b: 8 gün sonra EDM'ye sorulmadan yalnız programda iptal (aday 8'deki e-Fatura davranışı)
+    if d.belirsiz(b) and b["tur"] in ("earsiv", "esmm", "efatura"):
+        b.update(iptal=True, belirsiz=False)
+        d.yanit = "2xx"
+        return [d]
+    return ORJ["yerel_iptal"](d, b, kopya)
+
+
+def _yerel_belirsiz_efatura_red(d, b, kopya):
+    # K41b öncesi E7 metni: belirsiz e-Fatura'da yerel iptal hep red
+    if d.belirsiz(b) and b["tur"] == "efatura":
+        d.yanit = "4xx"
+        return [d]
+    return ORJ["yerel_iptal"](d, b, kopya)
+
+
 def _model_ux15_kapali(self, senaryo, ux15=True):
     ORJ["Model.__init__"](self, senaryo, ux15=False)
 
@@ -358,6 +375,8 @@ MUTANTLAR = [
     ("M42 belirsiz belgede İptal/Listeden Sil/Düzenle serbest (K42)", lambda: setattr(M, "uygula", _uygula_sarmali(_belirsiz_islemler_serbest))),
     ("M43 gönderilmiş belge silinir (K39)", lambda: setattr(M, "uygula", _uygula_sarmali(_gonderilmis_silinir))),
     ("M44 Silinenler'deki belge bekleyen sayılır (K39)", lambda: setattr(D, "bekleyen", _bekleyen_copu_de)),
+    ("M45 belirsizde 8 gün sonra EDM'ye sorulmadan yerel iptal (K41b)", lambda: setattr(M, "yerel_iptal", _yerel_belirsiz_sorgusuz)),
+    ("M46 belirsiz e-Fatura'da yerel iptal hep red (K41b öncesi)", lambda: setattr(M, "yerel_iptal", _yerel_belirsiz_efatura_red)),
 ]
 
 
