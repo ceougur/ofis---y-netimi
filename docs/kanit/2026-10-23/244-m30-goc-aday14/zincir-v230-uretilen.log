@@ -1,0 +1,14 @@
+[05:20:21]   v2.4.0: 001: şema 27, sirketler/002: şema 27 (1142 ms)
+[05:20:22]   v2.4.1: 001: şema 27, sirketler/002: şema 27 (884 ms)
+[05:20:23]   v2.4.2: 001: şema 27, sirketler/002: şema 27 (960 ms)
+[05:20:24]   v2.4.3: 001: şema 30, sirketler/002: şema 30 (585 ms)
+[05:20:47] fark: 100 olgu · EŞİT 61 · BELGELİ 39 · BULGU 0
+[05:20:47] ✓ 001 yol bağımsızlığı
+[05:20:47] ✓ 002 yol bağımsızlığı
+# zincir zb-taban → v2.4.0 → v2.4.1 → v2.4.2 → v2.4.3 → 2.4.4
+# tests 104
+# pass 104
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
