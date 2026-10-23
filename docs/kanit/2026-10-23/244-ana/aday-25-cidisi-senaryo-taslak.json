@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-25-cidisi-senaryo-taslak",
+  "komut": "npm run test:senaryo-taslak",
+  "commit": "a38dbb5b65bca0792a9ecd50c1a692a050559d4f",
+  "dal": "aday25",
+  "kirli": 0,
+  "izlenmeyen": 152,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T18:22:49.488Z",
+  "sure_sn": 14.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 30,
+    "gecen": 30,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/244-ana/aday-25-cidisi-senaryo-taslak.log",
+  "klasor": "/home/user/wt/aday25",
+  "ham_cikti_sha256": "eebbab6c34a9931bc4a7cba066eb23566989284cf1c1cbc40598c8d8f1a2c5e1",
+  "ham_cikti_bayt": 2491
+}

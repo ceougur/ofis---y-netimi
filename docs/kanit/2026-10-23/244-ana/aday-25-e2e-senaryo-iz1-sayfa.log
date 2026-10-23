@@ -1,0 +1,35 @@
+
+> destekofis@2.4.4 test:senaryo-iz1-sayfa
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-iz1-sayfa.mjs
+
+
+■ Kurulum: yönetici girer; ilk sayfa “Rehber.xlsx” (5 kayıt); aynı hesapla iki pencere (A ve B) aynı sayfada
+  ✓ ilk sayfa yüklendi
+  ✓ iki pencere aynı sayfada (dataset://ofis)
+  ✓ B'nin şeridi: Rehber.xlsx5 kayıt (1 sayfa)
+
+■ A penceresinde + Sayfa → Excel'den Aktar → dosya → sayfa adı → Yeni Sayfada Aç (gerçek tıklama)
+  ✓ A yeni sayfada: Taksit Takibi3 kayıt
+
+■ B penceresi: yeniden yüklenmez, 'silindi' demez, yeni sayfayı şeride ekler, kendi sayfasında kalır
+  ✓ B yeniden yüklenmedi (yükleme sayısı 4 → 4)
+  ✓ B'de 'silindi' bildirimi yok (“Yönetici parolanızı unutursanız programa kurtarma anahtarıyla girersiniz. Henüz oluşturmadınız.Oluştur×”)
+  ✓ B'nin şeridinde iki sayfa (2)
+  ✓ B'de seçili sayfa yine Rehber (“Rehber.xlsx5 kayıt”)
+  ✓ B'nin sayfa anahtarı X
+  ✓ yeni sayfa B'nin şeridinde: Rehber.xlsx · Taksit Takibi
+  ✓ B'nin tablosu X'in satırları (5)
+  ✓ B'nin ekrandaki tablosu Rehber'in kayıtları
+  ✓ B'nin sayfa listesi isteği: current X
+  ✓ B'nin eşitlemesi (istemci durumu) X
+  ✓ B'de girilen yeni kayıt X'e yazıldı (dataset://ofis)
+  ✓ A'nın tablosu Y'nin satırları; B'nin kaydı orada yok (3)
+
+■ Gerileme: A, Y'yi şeritten siler → A kendi silmesini söyler; Y'yi gösteren başka pencere (C) 'silindi' der ve X'e geçer; B etkilenmez
+  ✓ yeni açılan pencere (C) kullanıcının son seçimi Y'de
+  ✓ C: silinen sayfa için bildirim (“Çalıştığınız sayfa veri yöneticisi tarafından silindi; “Rehber.xlsx” sayfasına geçildi.×”)
+  ✓ C kalan sayfaya (X) geçti
+  ✓ B yerinde, şerit tek sayfa (1)
+  ✓ sayfa hatası yok
+
+SONUÇ: 21 geçti, 0 kaldı
