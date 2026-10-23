@@ -1,0 +1,159 @@
+{
+ "uretim": {
+  "geriYukleme": [
+   409,
+   "period-locked",
+   "Bu satış faturası 15.09.2026 tarihli; 30.09.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı."
+  ],
+  "mutabakat": [],
+  "kasaGirisi": [
+   200,
+   "",
+   ""
+  ],
+  "pesinSatis": [
+   200,
+   "",
+   ""
+  ],
+  "cariTahsilat": [
+   200,
+   "",
+   ""
+  ],
+  "kapiYolu": {
+   "path": "scoped",
+   "ms": 5.712273999999979,
+   "runMs": 0,
+   "lockMs": 0,
+   "sections": {
+    "scoped": 5.518343000000073,
+    "s.scope": 0.15985299999999825,
+    "s.lock": 0.029602000000068074,
+    "s.money": 1.2650659999999334,
+    "s.party": 1.3399200000000064,
+    "s.links": 0.0598290000000361,
+    "s.rows": 0.2493019999999433,
+    "s.bank": 2.397106000000008
+   },
+   "events": 1,
+   "tables": [
+    "fin_events",
+    "account_entries"
+   ],
+   "rejected": false,
+   "scope": {
+    "parties": 1,
+    "plans": 0,
+    "cheques": 0,
+    "invoices": 0,
+    "items": 0,
+    "money": 1,
+    "events": 1,
+    "heavyParties": 0,
+    "built": 4
+   }
+  },
+  "tamKapiKasa": [
+   200,
+   "",
+   ""
+  ],
+  "tamKapiYolu": [
+   "full",
+   "store dışı yazım"
+  ],
+  "kilitDegisti": [
+   200,
+   "",
+   ""
+  ],
+  "sonraKasa": [
+   200,
+   "",
+   ""
+  ],
+  "sonraMutabakat": []
+ },
+ "test": {
+  "geriYukleme": [
+   409,
+   "period-locked",
+   "Bu satış faturası 15.09.2026 tarihli; 30.09.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı."
+  ],
+  "mutabakat": [],
+  "kasaGirisi": [
+   200,
+   "",
+   ""
+  ],
+  "pesinSatis": [
+   200,
+   "",
+   ""
+  ],
+  "cariTahsilat": [
+   200,
+   "",
+   ""
+  ],
+  "kapiYolu": {
+   "path": "full",
+   "reason": "doğrulama",
+   "ms": 13.607856000000083,
+   "runMs": 13.049604000000045,
+   "lockMs": 0.51165600000013,
+   "sections": {
+    "accounts": 0.29741600000011204,
+    "ledger": 1.2981129999998302,
+    "cheques": 0.11017700000002151,
+    "bank": 3.3978149999998095,
+    "parties": 0.07216300000004594,
+    "plans": 0.1746170000001257,
+    "stock": 0.10359899999980371,
+    "cents": 1.485445000000027,
+    "links": 0.45597700000007535,
+    "dates": 0.46211200000016106,
+    "lock": 0.51165600000013,
+    "scoped": 5.006008999999949
+   },
+   "events": 1,
+   "tables": [
+    "fin_events",
+    "account_entries"
+   ],
+   "rejected": false,
+   "scope": {
+    "parties": 1,
+    "plans": 0,
+    "cheques": 0,
+    "invoices": 0,
+    "items": 0,
+    "money": 1,
+    "events": 1,
+    "heavyParties": 0,
+    "built": 4
+   }
+  },
+  "tamKapiKasa": [
+   200,
+   "",
+   ""
+  ],
+  "tamKapiYolu": [
+   "full",
+   "store dışı yazım"
+  ],
+  "kilitDegisti": [
+   200,
+   "",
+   ""
+  ],
+  "sonraKasa": [
+   200,
+   "",
+   ""
+  ],
+  "sonraMutabakat": []
+ }
+}

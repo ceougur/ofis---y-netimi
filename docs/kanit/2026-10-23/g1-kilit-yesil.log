@@ -1,0 +1,74 @@
+TAP version 13
+# (node:12730) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: G1 — Silinenler'den geri yükleme kapanmış (kilitli) döneme belge döndürmez (test kipi: kapı eşdeğerlik denetimi açık)
+    # Subtest: kilitli tarihli kaydedilmiş belge (satış, peşin satış, alış, satıştan iade, iptal edilmiş, kilit günü) → 409 period-locked, öbür kollarla aynı ileti; Silinenler'de kalır
+    ok 1 - kilitli tarihli kaydedilmiş belge (satış, peşin satış, alış, satıştan iade, iptal edilmiş, kilit günü) → 409 period-locked, öbür kollarla aynı ileti; Silinenler'de kalır
+      ---
+      duration_ms: 17.923653
+      type: 'test'
+      ...
+    # Subtest: reddedilen denemelerden sonra Mutabakat Testi temiz; Kasa girişi ve peşin satış geçer (kapı 500/409 vermez)
+    ok 2 - reddedilen denemelerden sonra Mutabakat Testi temiz; Kasa girişi ve peşin satış geçer (kapı 500/409 vermez)
+      ---
+      duration_ms: 64.919774
+      type: 'test'
+      ...
+    # Subtest: öbür kollar aynı sırayla (sil → kilit → geri yükle): Kasa, kayıt tahsilatı, cari hareketi, stok hareketi, taksit hareketi, çek/senet, taksit kartı → 409 aynı ileti kalıbıyla
+    ok 3 - öbür kollar aynı sırayla (sil → kilit → geri yükle): Kasa, kayıt tahsilatı, cari hareketi, stok hareketi, taksit hareketi, çek/senet, taksit kartı → 409 aynı ileti kalıbıyla
+      ---
+      duration_ms: 29.508556
+      type: 'test'
+      ...
+    # Subtest: kilit sonrası tarihli eşler 200; belge “İptal Edildi” (etkisiz) döner; Mutabakat Testi temiz
+    ok 4 - kilit sonrası tarihli eşler 200; belge “İptal Edildi” (etkisiz) döner; Mutabakat Testi temiz
+      ---
+      duration_ms: 121.767645
+      type: 'test'
+      ...
+    # Subtest: kilitli tarihli TASLAK geri yüklenir (200, taslak); kilit izi taslağı saymaz
+    ok 5 - kilitli tarihli TASLAK geri yüklenir (200, taslak); kilit izi taslağı saymaz
+      ---
+      duration_ms: 15.281068
+      type: 'test'
+      ...
+    # Subtest: numarası başka belgede olan kilitli belge: önce kalıcı ret (invoice-number-taken), kilit iletisi değil
+    ok 6 - numarası başka belgede olan kilitli belge: önce kalıcı ret (invoice-number-taken), kilit iletisi değil
+      ---
+      duration_ms: 3.64504
+      type: 'test'
+      ...
+    # Subtest: kilit açılınca kilitli tarihli belge geri yüklenir (iptal edilmiş, etkisiz); kilit yeniden konunca Mutabakat Testi temiz, Kasa girişi geçer
+    ok 7 - kilit açılınca kilitli tarihli belge geri yüklenir (iptal edilmiş, etkisiz); kilit yeniden konunca Mutabakat Testi temiz, Kasa girişi geçer
+      ---
+      duration_ms: 83.609282
+      type: 'test'
+      ...
+    1..7
+ok 1 - G1 — Silinenler'den geri yükleme kapanmış (kilitli) döneme belge döndürmez (test kipi: kapı eşdeğerlik denetimi açık)
+  ---
+  duration_ms: 1629.1333
+  type: 'suite'
+  ...
+# Subtest: G1 — üretim kipi (kapı eşdeğerlik denetimi kapalı)
+    # Subtest: kilitli tarihli silinmiş satış → 409 period-locked; Mutabakat Testi temiz; sonraki Kasa girişi 200
+    ok 1 - kilitli tarihli silinmiş satış → 409 period-locked; Mutabakat Testi temiz; sonraki Kasa girişi 200
+      ---
+      duration_ms: 373.179789
+      type: 'test'
+      ...
+    1..1
+ok 2 - G1 — üretim kipi (kapı eşdeğerlik denetimi kapalı)
+  ---
+  duration_ms: 373.609539
+  type: 'suite'
+  ...
+1..2
+# tests 8
+# suites 2
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2365.177033

@@ -1,0 +1,32 @@
+{
+  "ad": "g1-kilit-yesil",
+  "komut": "node --test test/silinenler-donem-kilidi-244.test.mjs",
+  "commit": "247d6a73e4c90057b634f8c41e5b2fbed9dd7131",
+  "dal": "is/g1-kilit",
+  "kirli": 1,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T02:32:17.323Z",
+  "sure_sn": 2.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 8,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/g1-kilit-yesil.log",
+  "klasor": "/home/user/wt/g1-kilit",
+  "ham_cikti_sha256": "eeda810eac429d011aa3641e7cef81e3986e1bbda04ce613ffc38f740aec70ca",
+  "ham_cikti_bayt": 3658
+}

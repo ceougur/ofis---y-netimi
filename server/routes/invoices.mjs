@@ -3135,6 +3135,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const moved = holder.number && holder.number !== row.number ? `şimdi ${holder.number} numaralı, ` : "";
       throw new HttpError(409, `${label} ${row.number} geri yüklenmez: bu numara belge silindikten sonra başka bir belgeye verildi (${moved}${dayText(holder.issueDate)} tarihli${party ? `, ${party}` : ""}). Aynı numara iki belgede olamaz; belge Silinenler'de kalır.`, { code: "invoice-number-taken", number: row.number, holderId: holder.id });
     }
+    // 2.4.4 G1: kapanmış (kilitli) döneme belge geri dönmez — silmedeki kuralın (deleteBlock) tersi; ileti öbür Silinenler kollarıyla aynı
+    // (period.assertOpen, 409 period-locked). Kilit izi (lib/integrity.mjs LOCK_SQL invoices) taslak dışındaki her belgeyi, iptal edilmişi de, sayar;
+    // taslak serbest (izde yok, silmede de serbest). Önceden belge kapıdan geçmeden (invoices kapının izlediği tablolarda değil) kilitli döneme
+    // yazılıyor, Mutabakat Testi "Kapanmış dönem" sapması veriyordu. Kalıcı ret (numara başkasında) önce: kilit açtırıp sonra reddetmeyiz.
+    if (row.status !== "draft") period?.assertOpen(row.issue_date, `Bu ${label.toLocaleLowerCase("tr-TR")}`);
     if (row.status === "issued") {
       row.status = "cancelled";
       row.cancelled_by = user.id;

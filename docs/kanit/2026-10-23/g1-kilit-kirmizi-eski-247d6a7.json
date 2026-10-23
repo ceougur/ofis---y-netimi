@@ -1,0 +1,63 @@
+{
+  "ad": "g1-kilit-kirmizi-eski-247d6a7",
+  "komut": "node --test test/silinenler-donem-kilidi-244.test.mjs",
+  "commit": "247d6a73e4c90057b634f8c41e5b2fbed9dd7131",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T02:29:52.386Z",
+  "sure_sn": 2.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 2,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "G1 — Silinenler'den geri yükleme kapanmış (kilitli) döneme belge döndürmez (test kipi: kapı eşdeğerlik denetimi açık) › kilitli tarihli kaydedilmiş belge (satış, peşin satış, alış, satıştan iade, iptal edilmiş, kilit günü) → 409 period-locked, öbür kollarla aynı ileti; Silinenler'de kalır",
+      "konum": "test/silinenler-donem-kilidi-244.test.mjs:136:3",
+      "hata": "sale geri yükle: 409 beklendi, 200 geldi () {\"restored\":\"invoice\",\"message\":\"Satış Faturası FIS2026000000002 geri geldi (iptal edilmiş, etkisiz).\"} · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "G1 — Silinenler'den geri yükleme kapanmış (kilitli) döneme belge döndürmez (test kipi: kapı eşdeğerlik denetimi açık) › reddedilen denemelerden sonra Mutabakat Testi temiz; Kasa girişi ve peşin satış geçer (kapı 500/409 vermez)",
+      "konum": "test/silinenler-donem-kilidi-244.test.mjs:156:3",
+      "hata": "kilitli geri yükleme denemeleri: Mutabakat Testi bozuk [{\"code\":\"period-lock\",\"name\":\"Kapanmış dönem (2026-09-30 ve öncesi) kapının görmediği bir yolla değişti\",\"ok\":false,\"count\":1}] · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "G1 — Silinenler'den geri yükleme kapanmış (kilitli) döneme belge döndürmez (test kipi: kapı eşdeğerlik denetimi açık) › öbür kollar aynı sırayla (sil → kilit → geri yükle): Kasa, kayıt tahsilatı, cari hareketi, stok hareketi, taksit hareketi, çek/senet, taksit kartı → 409 aynı ileti kalıbıyla",
+      "konum": "test/silinenler-donem-kilidi-244.test.mjs:163:3",
+      "hata": "öbür kolların kilitli denemeleri: Mutabakat Testi bozuk [{\"code\":\"period-lock\",\"name\":\"Kapanmış dönem (2026-09-30 ve öncesi) kapının görmediği bir yolla değişti\",\"ok\":false,\"count\":1}] · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "G1 — Silinenler'den geri yükleme kapanmış (kilitli) döneme belge döndürmez (test kipi: kapı eşdeğerlik denetimi açık) › kilit sonrası tarihli eşler 200; belge “İptal Edildi” (etkisiz) döner; Mutabakat Testi temiz",
+      "konum": "test/silinenler-donem-kilidi-244.test.mjs:171:3",
+      "hata": "Kasa hareketi geri yükle (açık dönem): 500 {\"ok\":false,\"error\":\"Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (period-lock).\",\"code\":\"gate-equivalence\",\"failures\":[{\"code\":\"period-lock\",\"name\":\"Kapanmış dönem (2026-09-30 ve öncesi) değişemez\",\"ok\":false,\"count\":1}],\"decision\":{\"full\":\"\",\"findings\":[],\"sections\":{\"scope\":0.07748399999991307,\"lock\":0.06751000000008389,\"money\":0.8194909999999709,\"rows\":0.2710899999999583,\"bank\":2.1051780000000235},\"ms\":3.3492029999999886,\"scope\":{\"parties\":0,\"plans\":0,\"chequ · 500 !== 200 (beklenen 200, gelen 500)"
+    },
+    {
+      "ad": "G1 — Silinenler'den geri yükleme kapanmış (kilitli) döneme belge döndürmez (test kipi: kapı eşdeğerlik denetimi açık) › kilitli tarihli TASLAK geri yüklenir (200, taslak); kilit izi taslağı saymaz",
+      "konum": "test/silinenler-donem-kilidi-244.test.mjs:178:3",
+      "hata": "taslak geri yükleme: Mutabakat Testi bozuk [{\"code\":\"period-lock\",\"name\":\"Kapanmış dönem (2026-09-30 ve öncesi) kapının görmediği bir yolla değişti\",\"ok\":false,\"count\":1}] · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "G1 — üretim kipi (kapı eşdeğerlik denetimi kapalı) › kilitli tarihli silinmiş satış → 409 period-locked; Mutabakat Testi temiz; sonraki Kasa girişi 200",
+      "konum": "test/silinenler-donem-kilidi-244.test.mjs:203:3",
+      "hata": "geri yükle: 409 beklendi, 200 geldi () {\"restored\":\"invoice\",\"message\":\"Satış Faturası FIS2026000000001 geri geldi (iptal edilmiş, etkisiz).\"} · 200 !== 409 (beklenen 409, gelen 200)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/wt/g1-kilit/docs/kanit/2026-10-23/g1-kilit-kirmizi-eski-247d6a7.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/g1-kilit-eski-247d6a7",
+  "ham_cikti_sha256": "fe404f4b4489d791cfd5d981cdce29b8c2ca51317373977a6a4d100a207d30fc",
+  "ham_cikti_bayt": 11772
+}
