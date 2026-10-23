@@ -1,0 +1,50 @@
+{
+ "toplam": 78,
+ "farklar": [
+  {
+   "anahtar": "adim:t2:uyariAdlari",
+   "beklenen": [],
+   "program": [
+    "Kaan Uz",
+    "Lale Ak",
+    "Mete Er"
+   ],
+   "etiket": "KULLANICI",
+   "kural": "bağ sürekliliği (3) önizleme eşleşmeyen kayıtları adıyla söyler",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "adim:t3:uyariAdlari",
+   "beklenen": [],
+   "program": [
+    "Kaan Uz",
+    "Lale Ak",
+    "Mete Er"
+   ],
+   "etiket": "KULLANICI",
+   "kural": "bağ sürekliliği (3) önizleme eşleşmeyen kayıtları adıyla söyler",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "adim:t4:onay",
+   "beklenen": true,
+   "program": false,
+   "etiket": "KULLANICI",
+   "kural": "bağ sürekliliği (4) Devamı olarak ekle: aynı kişi + aynı tutar satırında onay",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "adim:t4:uyariAdlari",
+   "beklenen": [
+    "Kaan Uz"
+   ],
+   "program": [
+    "Lale Ak"
+   ],
+   "etiket": "KULLANICI",
+   "kural": "bağ sürekliliği (4) önizleme aynı kişi + aynı tutar satırlarını adıyla söyler",
+   "sinif": "BULGU"
+  }
+ ],
+ "hatalar": []
+}
