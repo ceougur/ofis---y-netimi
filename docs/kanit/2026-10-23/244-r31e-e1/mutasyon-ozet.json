@@ -1,0 +1,115 @@
+[
+ {
+  "mutant": "MA-durum-sorgula-korumasiz",
+  "exit": 1,
+  "tests": 20,
+  "pass": 19,
+  "fail": 1,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "R1 "
+  ],
+  "reasons": [
+   "gönderim yoldayken iz silinmemeli: o anda program kesilseydi EDM'deki makbuz programda 'Gönderilmedi' kalırdı"
+  ]
+ },
+ {
+  "mutant": "MB-koruma-gonderim-izine-bakmaz",
+  "exit": 1,
+  "tests": 20,
+  "pass": 19,
+  "fail": 1,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "R1 "
+  ],
+  "reasons": [
+   "gönderim yoldayken iz silinmemeli: o anda program kesilseydi EDM'deki makbuz programda 'Gönderilmedi' kalırdı"
+  ]
+ },
+ {
+  "mutant": "MC-11048-ettnsiz-yanit-gonderildi",
+  "exit": 1,
+  "tests": 20,
+  "pass": 18,
+  "fail": 2,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "R3 "
+  ],
+  "reasons": [
+   "gönderilmiş sayılmamalı: {\"id\":\"invoice-0d7cb3af-e1c6-40b9-803b-903a8cf6ea08\",\"kind\":\"sale\",\"kindLabel\":\"Satış Faturası\"",
+   "gönderilmiş sayılmamalı: {\"id\":\"invoice-61922438-3a28-4b60-a6ca-f6a29b0b50a7\",\"kind\":\"smm\",\"kindLabel\":\"Serbest Meslek M"
+  ]
+ },
+ {
+  "mutant": "MD-iptal-reddi-izi-kapatmaz",
+  "exit": 1,
+  "tests": 20,
+  "pass": 19,
+  "fail": 1,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "R4 "
+  ],
+  "reasons": [
+   "kesin ret iptal izini kapattı"
+  ]
+ },
+ {
+  "mutant": "ME-iz-yalniz-varlik",
+  "exit": 1,
+  "tests": 20,
+  "pass": 19,
+  "fail": 1,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "R4 "
+  ],
+  "reasons": [
+   "kesin ret iptal izini kapattı"
+  ]
+ },
+ {
+  "mutant": "MF-belirsiz-iptal-de-izi-kapatir",
+  "exit": 1,
+  "tests": 20,
+  "pass": 19,
+  "fail": 1,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "R4 "
+  ],
+  "reasons": [
+   "kopan ikinci deneme izi yeniden açtı"
+  ]
+ },
+ {
+  "mutant": "MG-ilk-iptal-kaydina-bakar",
+  "exit": 1,
+  "tests": 20,
+  "pass": 19,
+  "fail": 1,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "R4 "
+  ],
+  "reasons": [
+   "kesin ret iptal izini kapattı"
+  ]
+ }
+]
