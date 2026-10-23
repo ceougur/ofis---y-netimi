@@ -16,6 +16,7 @@
 //   Tahsile Ver → Tahsil, ciro, nakit tahsil, karşılıksız — faturanın kendi evrakı, Kapatılacak Fatura'lı ve bağsız evrak dahil — verilen
 //   çek/senet ödemesi); cariye bağlı taksit kartları ve tahsilatları; kayıt tahsilatları + Tablodan Aktar; Vergi Ödemesi + aylık KDV Mahsup;
 //   dönem kilidi (001); özel rollü kullanıcılar; üç ayda bir yedek (o sürümün Yedekle ucu).
+import { writeFileSync } from "node:fs";
 import path from "node:path";
 import { createClock } from "../../server/lib/clock.mjs";
 import { BUYER_VKN, OUR_VKN, vkn } from "../einvoice-mock.mjs";
@@ -83,6 +84,7 @@ export async function generate({ version, dataDir, backupDir, edmUrl, seed = 7, 
   const admin = await server.login();
   const manifest = { version, commit: server.commit, seed, hacim, startDay, endDay, companies: {}, counts: {}, refusals: {}, backups: [], users: [], timings: {} };
   const count = (key, n = 1) => (manifest.counts[key] = (manifest.counts[key] || 0) + n);
+  let lastRequest = null;
   const t0 = performance.now();
   try {
     // ---------- şirketler ----------
@@ -92,8 +94,13 @@ export async function generate({ version, dataDir, backupDir, edmUrl, seed = 7, 
       { key: "B", id: second.company.id, code: second.company.code, name: second.company.name, idx: 1 },
     ];
     for (const company of companies) {
-      company.api = scoped(admin, company.id);
+      // Son yazma isteği (ledger-integrity reddini yeniden üretmek için kaydedilir; aday 9).
+      const raw = scoped(admin, company.id);
+      company.api = { ...raw, post: (url, body) => ((lastRequest = { company: company.code, url, body }), raw.post(url, body)), put: (url, body) => ((lastRequest = { company: company.code, url, body }), raw.put(url, body)) };
       company.R = rng(seed * 100 + company.idx + 1);
+      // Aday 9 eklentileri ayrı akışla (ana akışın çekimleri değişmesin): RT tablo çeşitleri (30a/E2/E3/U2), RD silme / Silinenler'den geri yükleme (E6).
+      company.RT = rng(seed * 100 + company.idx + 71);
+      company.RD = rng(seed * 100 + company.idx + 51);
       manifest.companies[company.key] = { id: company.id, code: company.code, name: company.name };
     }
     // 001'in adı (Ofis bilgisi) ve kullanıcılar (özel rol + kişiye özel yetki; Personel Özlük yetkisi bunlara açılmamalı — göç sonrası denetim).
@@ -129,7 +136,13 @@ export async function generate({ version, dataDir, backupDir, edmUrl, seed = 7, 
           if (hasEdoc && day >= edocFrom && !company.edoc) await enableEdoc(company, day);
           if (monthChanged) await monthStart(company, day, month);
           const n = V.gun[company.idx];
-          for (let i = 0; i < n; i += 1) await randomOp(company, day);
+          for (let i = 0; i < n; i += 1) {
+            try {
+              await randomOp(company, day);
+            } catch (error) {
+              if (!error.integritySkip) throw error;
+            }
+          }
           await afterDay(company, day);
         }
         if (monthChanged) {
@@ -154,6 +167,12 @@ export async function generate({ version, dataDir, backupDir, edmUrl, seed = 7, 
     // Son gün: bekleyen e-Belge kuyruğu kısmen bırakılır (Gönderilecekler'de belge kalsın), son yedek.
     setDay(endDay);
     for (const company of companies) {
+      // E6 (aday 9): serinin SON numarası silinip Silinenler'de kalır (2.4.3'te yeniden verilirdi; 2.4.4'te verilmiş sayılır) — makbuz kesilip hemen silinir.
+      const last = await must("son makbuz", company.api.post("/api/workspace/invoices", { scenario: "smm", accountId: company.persons[0], issueDate: endDay, lines: [{ name: "Danışmanlık Ücreti", qty: 1, unitPrice: 1500, vatRate: 20 }], payment: { rest: "open" }, force: true, cashForce: true }));
+      const gone = await must("son makbuzu sil", company.api.del(`/api/workspace/invoices/${last.id}?reason=${encodeURIComponent("Hatalı kesildi")}&force=1&cashForce=1`));
+      company.deleted.push({ id: last.id, day: endDay, number: gone.number || last.number || "" });
+      manifest.companies[company.key].lastDeleted = gone.number || last.number || "";
+      count("fatura-silindi-son");
       await backup(company, endDay);
       const listed = await must("faturalar", company.api.get("/api/workspace/invoices?tab=all&limit=5000"));
       manifest.companies[company.key].invoices = listed.invoices.length;
@@ -237,6 +256,8 @@ export async function generate({ version, dataDir, backupDir, edmUrl, seed = 7, 
       const odenen = r.chance(0.4) ? r.int(0, Math.floor(borc / 200)) * 100 : 0;
       const soz = r.chance(0.3) ? trDay(addDays(endDay, r.int(-40, 40))) : "";
       rehber.push([`${2025 + (i % 2)}/${String(i).padStart(5, "0")}`, `${r.pick(FIRST)} ${r.pick(LAST)}`, phone(r), r.pick(CITY), trDay(addDays(startDay, r.int(0, 30))), String(borc), odenen ? String(odenen) : "", String(borc - odenen), soz]);
+      // E2 (aday 9): satırların bir kısmında Kalan Borç hücresi boş (kural: Kalan boşsa Toplam).
+      if (company.RT.chance(0.06)) rehber.at(-1)[7] = "";
     }
     const soz = [];
     for (let i = 0; i < V.soz[company.idx]; i += 1) {
@@ -253,14 +274,20 @@ export async function generate({ version, dataDir, backupDir, edmUrl, seed = 7, 
       const cols = [8, 9, 10, 11, 12, 13].map(() => String(per));
       taksit.push([`${r.pick(FIRST)} ${r.pick(LAST)}`, phone(r), ...cols, String(per * 6)]);
     }
+    // E3 / U2 daraltma (aday 9): tek tutar sütunlu tablolar — okul servisi (Aylık Ücret + gün sütunu "Kalan Gün") ve aidat (Ödenecek + adet sütunu).
+    const RT = company.RT;
+    const servis = Array.from({ length: [120, 40][company.idx] }, () => [`${RT.pick(FIRST)} ${RT.pick(LAST)}`, phone(RT), RT.pick(["Atatürk İlkokulu", "Cumhuriyet Ortaokulu", "Fatih Anadolu Lisesi"]), String(RT.int(15, 60) * 100), String(RT.int(1, 30))]);
+    const aidat = Array.from({ length: [80, 30][company.idx] }, (_, i) => [`AİD-${company.code}-${String(i + 1).padStart(4, "0")}`, `${RT.pick(FIRST)} ${RT.pick(LAST)}`, String(RT.int(4, 30) * 100), String(RT.int(1, 4))]);
     const sheets = [
       { name: "Borçlular", matrix: [["Dosya No", "Ad Soyad", "Telefon", "Şehir", "Kayıt Tarihi", "Toplam Borç", "Ödenen", "Kalan Borç", "Ödeme Sözü"], ...rehber] },
       { name: "Ödeme Sözleri", matrix: [["Dosya No", "Ad Soyad", "Söz Tarihi", "Söz Tutarı"], ...soz] },
       { name: "Taksitler", matrix: [["Ad Soyad", "Telefon", head(8), head(9), head(10), head(11), head(12), head(13), "Toplam"], ...taksit] },
+      { name: "Servis Ücretleri", matrix: [["Ad Soyad", "Telefon", "Okul", "Aylık Ücret", "Kalan Gün"], ...servis] },
+      { name: "Aidatlar", matrix: [["Dosya No", "Ad Soyad", "Ödenecek", "Daire Adedi"], ...aidat] },
     ];
     const staged = await must("tablo önizleme", api.post("/api/workspace/dataset/stage", { kind: "excel", fileName: "MUSTERILER.xlsx", sheets }));
     await must("tablo kaydet", api.post("/api/workspace/dataset/commit", { stageId: staged.stageId, mode: "replace" }));
-    count("tablo-satiri", rehber.length + soz.length + taksit.length);
+    count("tablo-satiri", rehber.length + soz.length + taksit.length + servis.length + aidat.length);
     company.recordKeys = await recordKeys(api);
     count("tablo-kaydi", company.recordKeys.length);
     // Kayda bağlı cariler (caseKey): Borçlular'dan 25 kayıt.
@@ -274,7 +301,8 @@ export async function generate({ version, dataDir, backupDir, edmUrl, seed = 7, 
     }
     count("cari-kayda-bagli", company.linked.length);
     company.cheques = { portfolio: [], deposited: [], endorsed: [], outPending: [] };
-    company.invoices = { kagit: [], pending: [], withdrawn: [], sentToday: [], open: [] };
+    company.invoices = { kagit: [], pending: [], withdrawn: [], sentToday: [], open: [], smm: [] };
+    company.deleted = [];
     company.plans = [];
     company.supplierNo = 0;
   }
@@ -372,7 +400,9 @@ export async function generate({ version, dataDir, backupDir, edmUrl, seed = 7, 
       // Gönderilecekler (sunucunun listesi; GİB sıra kuralı: eskiden yeniye). Eskiden başlanır: gönder / bırak; "beklet" denince o ve
       // sonrakiler bekler (daha yenisi gönderilemez). Bazı günler Tümünü Gönder.
       const listed = await must("Gönderilecekler", api.get("/api/workspace/invoices?tab=pending&limit=500"));
-      const queue = listed.invoices.filter(x => x.issueDate < day).sort((a, b) => (a.issueDate + a.issueTime).localeCompare(b.issueDate + b.issueTime));
+      // Yalnız gönderilmeyi bekleyen ("waiting") belgeler: iptal edilmiş numarasız belge ve e-Belge durumu "none" olan alıştan iade de listede görünür ama
+      // bırakılamaz (aday 9 koşusunda 409 "invoice-not-waiting").
+      const queue = listed.invoices.filter(x => x.issueDate < day && x.status === "issued" && x.eStatus === "waiting").sort((a, b) => (a.issueDate + a.issueTime).localeCompare(b.issueDate + b.issueTime));
       if (queue.length && r.chance(0.25)) {
         const turn = await sendAll(api, must);
         count("ebelge-tumunu-gonder");
@@ -384,13 +414,14 @@ export async function generate({ version, dataDir, backupDir, edmUrl, seed = 7, 
             await must("gönder", api.post(`/api/workspace/invoices/${doc.id}/send`, {}));
             count("ebelge-sonra-gonderildi");
           } else if (roll < 0.9) {
-            const left = await must("Müşteri Fişi Olarak Bırak", api.post(`/api/workspace/invoices/${doc.id}/withdraw`, {}));
+            const left = await must(`Müşteri Fişi Olarak Bırak ${doc.id} ${doc.status}/${doc.eStatus}/${doc.issueDate}`, api.post(`/api/workspace/invoices/${doc.id}/withdraw`, {}));
             company.invoices.withdrawn.push({ id: doc.id, number: left.number, day });
             count("ebelge-birakildi");
             // Bırakılan belgenin bir kısmı hemen e-Belge olarak gönderilir (2.4.3'te fiş numarası seriden ayrılır — v32'nin taradığı durum).
             if (r.chance(0.35)) {
               await must("bırakılanı gönder", api.post(`/api/workspace/invoices/${doc.id}/send`, {}));
               count("ebelge-birakilan-gonderildi");
+              company.invoices.withdrawn.at(-1).sent = true;
             }
           } else break;
         }
@@ -401,6 +432,48 @@ export async function generate({ version, dataDir, backupDir, edmUrl, seed = 7, 
         await must("e-Arşiv iptal", api.post(`/api/workspace/invoices/${doc.id}/cancel`, { reason: "Müşteri vazgeçti" }));
         company.invoices.open = company.invoices.open.filter(x => x.id !== doc.id);
         count("ebelge-iptal");
+      }
+    }
+    // E6 (aday 9): kâğıt fatura / Müşteri Fişi / SMM silme (Silinenler'e) ve bir kısmının Silinenler'den geri yüklenmesi — o sürümün kendi uçları.
+    await deleteStep(company, day);
+  }
+
+  async function deleteStep(company, day) {
+    const { api, RD } = company;
+    const refused = (what, res) => {
+      count(`${what}-reddedildi-${res.status}`);
+      manifest.deleteRefusals = [...(manifest.deleteRefusals || []), { company: company.code, day, what, status: res.status, message: String(res.data?.error || res.data?.message || JSON.stringify(res.data)).slice(0, 240) }];
+      if (res.status !== 409) throw new Error(`${version} ${what}: ${res.status} ${JSON.stringify(res.data).slice(0, 400)}`);
+    };
+    if (RD.chance(0.08)) {
+      const open = x => x.day > (company.locked || "0000");
+      const pools = [
+        company.invoices.kagit.filter(x => x.day === day && !x.used && !x.returned && !x.plan && !x.own),
+        company.invoices.withdrawn.filter(x => !x.sent && !x.deleted && open(x)),
+        company.invoices.smm.filter(x => x.day === day && !x.deleted),
+      ].filter(list => list.length);
+      if (pools.length) {
+        const doc = RD.pick(RD.pick(pools));
+        doc.deleted = true;
+        doc.used = true;
+        const res = await api.del(`/api/workspace/invoices/${doc.id}?reason=${encodeURIComponent("Hatalı kesildi")}&force=1&cashForce=1`);
+        manifest.requests = (manifest.requests || 0) + 1;
+        if (res.status === 200) {
+          company.invoices.open = company.invoices.open.filter(x => x.id !== doc.id);
+          company.deleted.push({ id: doc.id, day, number: res.data?.number || "" });
+          count("fatura-silindi");
+        } else refused("fatura-silme", res);
+      }
+    }
+    if (company.deleted.length && RD.chance(0.03)) {
+      const listed = await must("Silinenler", api.get("/api/admin/trash"));
+      const items = (Array.isArray(listed) ? listed : listed.items || []).filter(item => item.kind === "invoice" && String(item.id).startsWith("trash:"));
+      if (items.length) {
+        const item = RD.pick(items);
+        const res = await api.post("/api/admin/trash/restore", { id: item.id });
+        manifest.requests += 1;
+        if (res.status === 200) count("fatura-silinenlerden-geri-yuklendi");
+        else refused("fatura-geri-yukleme", res);
       }
     }
   }
@@ -460,7 +533,7 @@ export async function generate({ version, dataDir, backupDir, edmUrl, seed = 7, 
     }
     if (edoc) {
       if (eSend !== "later" && !toBuyer) company.invoices.sentToday.push({ id: made.id });
-    } else company.invoices.kagit.push({ id: made.id, day, accountId, total: gross, paid: p >= 0.4 });
+    } else company.invoices.kagit.push({ id: made.id, day, accountId, total: gross, paid: p >= 0.4, plan: payment.rest === "installments", own: Boolean(origin) });
     if (payment.rest === "open" && p < 0.4) company.invoices.open.push({ id: made.id, accountId, day });
   }
 
@@ -520,8 +593,9 @@ export async function generate({ version, dataDir, backupDir, edmUrl, seed = 7, 
     const accountId = r.chance(0.5) ? r.pick(company.suppliers.length ? company.customers : company.persons) : r.pick(company.persons);
     const fee = r.int(10, 200) * 100;
     const pay = r.chance(0.5) ? { cash: [cashLine(company, Math.floor(fee * r.int(20, 90)) / 100, r.pick(["cash", "bank"]))], rest: "open" } : { rest: "open" };
-    await must("SMM", api.post("/api/workspace/invoices", { scenario: "smm", accountId, issueDate: day, lines: [{ name: r.pick(["Danışmanlık Ücreti", "Mali Müşavirlik Ücreti", "Avukatlık Ücreti"]), qty: 1, unitPrice: fee, vatRate: 20 }], payment: pay, force: true, cashForce: true }));
+    const made = await must("SMM", api.post("/api/workspace/invoices", { scenario: "smm", accountId, issueDate: day, lines: [{ name: r.pick(["Danışmanlık Ücreti", "Mali Müşavirlik Ücreti", "Avukatlık Ücreti"]), qty: 1, unitPrice: fee, vatRate: 20 }], payment: pay, force: true, cashForce: true }));
     count("smm-kagit");
+    company.invoices.smm.push({ id: made.id, day });
   }
 
   async function collection(company, day) {
@@ -542,7 +616,16 @@ export async function generate({ version, dataDir, backupDir, edmUrl, seed = 7, 
       count("cari-borc");
       return;
     }
-    await must("tahsilat", api.post(`/api/workspace/accounts/${accountId}/entries`, body));
+    // Aday 9 koşusunda v2.4.3 bir tahsilatı 409 "ledger-integrity" (Kapanmış dönem değişemez) ile reddetti: ayrıntı kaydedilir (yeniden üretmek için;
+    // ders 3 — sayılır, başarı yazılmaz), üretim sürer. Başka her ret üretimi durdurur.
+    const res = await api.post(`/api/workspace/accounts/${accountId}/entries`, body);
+    manifest.requests = (manifest.requests || 0) + 1;
+    if (res.status === 409 && res.data?.code === "ledger-integrity") {
+      count("tahsilat-reddedildi-ledger-integrity");
+      manifest.integrityRefusals = [...(manifest.integrityRefusals || []), { company: company.code, day, accountId, invoiceId: invoiceId || "", body, failures: res.data.failures, error: res.data.error }];
+      return;
+    }
+    if (res.status !== 200) throw new Error(`${version} tahsilat: ${res.status} ${JSON.stringify(res.data).slice(0, 600)}`);
     count(`cari-tahsilat-${method}${invoiceId ? "-kapatilacak" : ""}`);
   }
 
@@ -676,6 +759,17 @@ export async function generate({ version, dataDir, backupDir, edmUrl, seed = 7, 
   async function must(what, promise) {
     const response = await promise;
     manifest.requests = (manifest.requests || 0) + 1;
+    if (response.status === 409 && response.data?.code === "ledger-integrity") {
+      // Aday 9 koşusunda v2.4.3 POS'lu bazı işlemleri "Kapanmış dönem değişemez" diye reddetti (Hiçbir değişiklik yazılmadı). Ayrıntı + istek kaydedilir
+      // (ders 3: sayılır, başarı yazılmaz); M30_ILK_RET=1 ise üretim ilk retle durur (veri reddin hemen öncesindeki hâlde kalır — yeniden üretme).
+      count("ledger-integrity-reddi");
+      manifest.integrityRefusals = [...(manifest.integrityRefusals || []), { what, day: clock().toISOString(), request: lastRequest, failures: response.data.failures, error: response.data.error }];
+      if (process.env.M30_ILK_RET === "1") {
+        writeFileSync(path.join(dataDir, "..", "ilk-ret.json"), `${JSON.stringify(manifest.integrityRefusals.at(-1), null, 1)}\n`);
+        throw new Error(`${version} ${what}: ilk ledger-integrity reddi (M30_ILK_RET) — ${path.join(dataDir, "..", "ilk-ret.json")}`);
+      }
+      throw Object.assign(new Error(`${what}: ledger-integrity`), { integritySkip: true });
+    }
     if (response.status !== 200) {
       manifest.refusals[what] = (manifest.refusals[what] || 0) + 1;
       throw new Error(`${version} ${what}: ${response.status} ${JSON.stringify(response.data).slice(0, 600)}`);
@@ -699,7 +793,7 @@ const tr = minor => `${Math.trunc(minor / 100)},${String(Math.abs(minor) % 100).
 /** Seçili şirketi her istekte hofCompany ile adresleyen api (iki şirket aynı oturumda; arayüzün şirket bağlamı gibi). */
 export function scoped(api, companyId) {
   const add = url => `${url}${url.includes("?") ? "&" : "?"}hofCompany=${encodeURIComponent(companyId)}`;
-  return { get: url => api.get(add(url)), post: (url, body) => api.post(add(url), body), put: (url, body) => api.put(add(url), body), del: (url, body) => api.del(add(url), body), client: api.client, raw: api };
+  return { get: url => api.get(add(url)), post: (url, body) => api.post(add(url), body), put: (url, body) => api.put(add(url), body), del: (url, body) => api.del(add(url), body), bin: url => api.client.raw("GET", add(url)), client: api.client, raw: api };
 }
 
 /**

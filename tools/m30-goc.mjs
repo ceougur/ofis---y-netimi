@@ -53,7 +53,9 @@ if (step === "uret") {
     log(`üretildi: ${JSON.stringify(manifest.counts)}`);
     log(`süre ${(manifest.ms / 1000).toFixed(1)} sn; EDM gönderim ${manifest.edm.sent}, iptal ${manifest.edm.cancelled}, ihlal ${manifest.edm.violations.length}`);
     // Her API yanıtı 200 olmalıydı (200 dışı yanıt üretimi durdurur); EDM sözleşme ihlali başarısızlık sayılır.
-    summary(manifest.requests + 1, manifest.edm.violations.length ? 1 : 0, `${manifest.requests} API isteği 200; EDM ihlali ${manifest.edm.violations.length}`);
+    // Aday 9: silme / Silinenler'den geri yükleme reddi (409) beklenen sonuçtur (ders 3: sayılır, başarı yazılmaz); başka her 200 dışı yanıt üretimi durdurur.
+    const refused = (manifest.deleteRefusals || []).length + (manifest.integrityRefusals || []).length;
+    summary(manifest.requests + 1, manifest.edm.violations.length ? 1 : 0, `${manifest.requests} API isteği (${manifest.requests - refused} × 200, ${refused} × 409 silme/geri yükleme ya da ledger-integrity reddi — ayrıntısı manifestte); EDM ihlali ${manifest.edm.violations.length}`);
   } finally {
     await edm.close();
   }

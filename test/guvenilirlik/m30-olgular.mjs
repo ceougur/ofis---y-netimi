@@ -12,6 +12,7 @@ import { copyFileSync, existsSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
+import { readZip } from "../../server/lib/zip.mjs";
 
 export const cents = value => Math.round(Number(value || 0) * 100);
 export const digest = value => createHash("sha256").update(JSON.stringify(value)).digest("hex").slice(0, 24);
@@ -68,6 +69,8 @@ export async function companyFacts(api, { reportsFrom = "2000-01-01", reportsTo 
   // Faturalar
   const inv = await must("faturalar", api.get("/api/workspace/invoices?tab=all&limit=10000"));
   out.invoiceTabs = inv.tabCounts || null;
+  // 2.4.4 madde 30b (aday 9): geri yüklemeden sonraki tek seferlik uyarı — 2.4.3'te alan yok (null); normal göçte de çıkmamalı.
+  out.restoreNotice = inv.restoreNotice ?? null;
   out.invoices = Object.fromEntries(inv.invoices.map(d => [d.id, { kind: d.kind, status: d.status, number: d.number, displayNo: d.displayNo, ettn: d.ettn, issueDate: d.issueDate, accountId: d.accountId, profile: d.profile, eStatus: d.eStatus || "", eUnsent: d.eUnsent ?? null, payable: cents(d.payableTotal), payState: d.payState, paid: cents(d.paid), open: cents(d.open), planId: d.planId || "", originalId: d.originalId || "" }]));
   const pending = await must("Gönderilecekler", api.get("/api/workspace/invoices?tab=pending&limit=1000"));
   out.pending = pending.invoices.map(d => d.id).sort();
@@ -111,6 +114,13 @@ export async function companyFacts(api, { reportsFrom = "2000-01-01", reportsTo 
     const r = await soft(api.get(`/api/workspace/reports/${kind}?from=${reportsFrom}&to=${reportsTo}&limit=20000`));
     out.tableReports[kind] = r.__status ? r : { report: r.report, tabs: r.tabs, crossMatched: r.crossMatched };
   }
+  // MM8 (aday 9): Yevmiye'nin BÜTÜN satırları (rapor merkezi ön izlemesi 200 satırla sınırlı; Excel çıktısı hepsini taşır). Gün başına satır kümesi
+  // (sıradan bağımsız özet) ve madde sırası (işlem adları) — aynı gün sırasının değişmesi kümeyi değiştirmemeli.
+  out.journal = api.bin ? await journalFacts(api, reportsFrom, reportsTo) : null;
+  // Silinenler (E6, aday 9): göç çöp kutusuna dokunmamalı.
+  const trash = await soft(api.get("/api/admin/trash"));
+  const trashItems = trash.__status ? null : Array.isArray(trash) ? trash : trash.items || [];
+  out.trash = trashItems ? { count: trashItems.length, byKind: trashItems.reduce((m, t) => ({ ...m, [t.kind]: (m[t.kind] || 0) + 1 }), {}), invoices: trashItems.filter(t => t.kind === "invoice").map(t => ({ id: t.id, title: t.title, restorable: t.restorable ?? null })).sort((a, b) => a.id.localeCompare(b.id)) } : trash;
   const dues = await soft(api.get("/api/workspace/dues"));
   out.dues = dues.__status ? dues : dues;
   const vat = await soft(api.get("/api/workspace/tax/vat-offset"));
@@ -160,4 +170,50 @@ export function fileFacts(file) {
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
+}
+
+const unxml = text => String(text).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n))).replace(/&amp;/g, "&");
+const columnIndex = letters => [...letters].reduce((n, ch) => n * 26 + ch.charCodeAt(0) - 64, 0) - 1;
+/** Excel çıktısının (xlsx) ilk sayfasının satırları (hücre metni ya da sayı değeri; boş hücre ""). */
+export function xlsxRows(buffer) {
+  const entries = readZip(buffer);
+  const sheet = entries.find(e => /^xl\/worksheets\/sheet1\.xml$/.test(e.name));
+  if (!sheet) throw new Error("xlsx: sheet1 yok");
+  const xml = sheet.data.toString("utf8");
+  const rows = [];
+  for (const rowMatch of xml.matchAll(/<row\b[^>]*>([\s\S]*?)<\/row>/g)) {
+    const cells = [];
+    for (const cell of rowMatch[1].matchAll(/<c r="([A-Z]+)\d+"[^>]*?(?:\/>|>([\s\S]*?)<\/c>)/g)) {
+      const inner = cell[2] || "";
+      const value = /<v>([\s\S]*?)<\/v>/.exec(inner)?.[1] ?? [...inner.matchAll(/<t\b[^>]*>([\s\S]*?)<\/t>/g)].map(m => m[1]).join("");
+      cells[columnIndex(cell[1])] = unxml(value);
+    }
+    rows.push(Array.from(cells, v => v ?? ""));
+  }
+  return rows;
+}
+async function journalFacts(api, from, to) {
+  const res = await api.bin(`/api/workspace/report-center/yevmiye/xlsx?from=${from}&to=${to}`);
+  if (res.status !== 200) return { __status: res.status };
+  const rows = xlsxRows(res.buffer);
+  const head = rows.findIndex(r => r[0] === "Tarih");
+  const data = [];
+  for (const r of rows.slice(head + 1)) {
+    if (r[0] === "TOPLAM") break;
+    if (/^\d{2}\.\d{2}\.\d{4}$/.test(r[0])) data.push(r.slice(0, 6));
+  }
+  const byDate = {};
+  let last = null;
+  for (const r of data) {
+    const day = (byDate[r[0]] ||= { n: 0, rows: [], order: [] });
+    day.n += 1;
+    day.rows.push(JSON.stringify(r));
+    // madde: art arda aynı (tarih, işlem, açıklama) satırları
+    const madde = `${r[0]}|${r[1]}|${r[2]}`;
+    if (madde !== last) day.order.push(r[1]);
+    last = madde;
+  }
+  const out = {};
+  for (const [day, v] of Object.entries(byDate)) out[day] = { n: v.n, set: digest(v.rows.sort()), order: v.order };
+  return { rows: data.length, header: rows[head] || null, days: out };
 }
