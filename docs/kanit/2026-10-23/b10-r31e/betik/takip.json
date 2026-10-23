@@ -1,0 +1,7 @@
+{"sheets":[
+ {"name":"Takip","matrix":[["Dosya No","Borçlu","Borçlu Telefon","Son Ödeme"],["2026/701","Can Er","0532 111 22 33","@d+3"],["2026/702","Ece Su","0533 444 55 66","@d+4"]]},
+ {"name":"Masrafli","matrix":[["Dosya No","Borçlu","Tutar","Masraf"],["2026/703","Deniz Ak","1.000","150"]]},
+ {"name":"Aidat","matrix":[["Ad Soyad","Borçlu Telefon","Tutar"],["Hale İn","0535 777 88 99","1.000"]]},
+ {"name":"SozTarihYalniz","matrix":[["Ad Soyad","Söz Tarihi"],["Kaan Ay","@d+2"]]},
+ {"name":"Rehber","matrix":[["Ad Soyad","Telefon"],["Lale Su","0536 123 45 67"]]}
+]}
