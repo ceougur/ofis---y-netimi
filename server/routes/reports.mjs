@@ -82,14 +82,12 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
     const items = [];
     const dormant = [];
     const columnsBySession = {};
-    // 31e (a): aynı dosya no birden çok sekmede → takvimde bir kez sayıldı; rapor bunu not olarak söyler (debt-column.mjs debtByRecord).
-    const merged = [];
-    const conflicts = [];
+    // 31e A1: borcu birden çok sekmede olan dosya no → her sekme ayrı sayıldı; rapor bunu not olarak söyler (debt-column.mjs debtByRecord).
+    const split = [];
     for (const session of sessions) {
       await dataset.withKey(session.key, async () => {
         const view = await dataset.view();
-        // 31e (a): Sekme süzgeci seçiliyse takvim ve kayıtlar yalnız o sekmelerden kurulur — aynı dosya no'nun "bir kez sayılan" sekmesi seçilenler içinden
-        // seçilir (dönem sekmesi tutan tabloda her sekme kendi borcunu gösterir; not "Sekme süzgeciyle ayrı bakın" der).
+        // 31e: Sekme süzgeci seçiliyse takvim ve kayıtlar yalnız o sekmelerden kurulur (her sekme kendi borcu ve kalemleri; not seçili sekmelerden).
         const tabs = (view.tabs || []).map(tab => tab.title).filter(Boolean);
         const rows = (view.rows || []).filter(row => !String(row.__hofKey || "").startsWith("free:") && (!filters.tabs.length || filters.tabs.includes(String(row.__sheet || tabs[0] || ""))));
         if (!rows.length) return;
@@ -105,8 +103,7 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
         const payments = caseCollections(store, session.key, { plans: true }).filter(item => keys.has(item.caseKey));
         const settled = parseSettled(dataset.settingKey("dues.settled"));
         const dues = computeDues({ rows, tabs, payments, settled, now, forced, window: AHEAD });
-        for (const item of dues.debtMerged || []) merged.push({ ...item, session: session.key });
-        for (const item of dues.debtConflicts || []) conflicts.push({ ...item, session: session.key });
+        for (const item of dues.debtSplit || []) split.push({ ...item, session: session.key });
         // Taksit kartı olan kişinin (v2.0.8) tablodaki ödeme kalemleri ikinci kez sayılmaz (takvimle aynı kural).
         const carded = plans?.linkedCases ? plans.linkedCases(session.key) : new Set();
         for (const item of dues.dormant || []) if (!carded.has(item.caseKey)) dormant.push({ ...item, session: session.key, sessionName: session.name });
@@ -114,7 +111,7 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
         for (const item of computeDeadlines({ rows, tabs, now, exclude: dues.sources, forced, aheadDays: AHEAD.aheadDays })) items.push({ ...item, session: session.key, sessionName: session.name, deadline: true });
       });
     }
-    return { sessions: sessions.map(item => ({ key: item.key, name: item.name, rowCount: item.rowCount })), records, items, dormant, columnsBySession, merged, conflicts };
+    return { sessions: sessions.map(item => ({ key: item.key, name: item.name, rowCount: item.rowCount })), records, items, dormant, columnsBySession, split };
   }
   // Tüm oturumların takvimi önbellekte: oturumlar, tahsilatlar, taksit kartları ve gün değişmedikçe yeniden hesaplanmaz
   // (birleşik Vade takip ve Nakit akış her süzgeç değişiminde buradan okur).
@@ -161,8 +158,8 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
     if (kind === "cari-ekstre") report = cariEkstre({ records: data.records, payments: data.payments, filters, now });
     else if (kind === "vade-takip") report = vadeTakip({ records: data.records, items: data.items, dormant: data.dormant, filters, now });
     else report = nakitAkis({ items: data.items, payments: data.payments, cashEntries: data.cashEntries, filters, now });
-    // 31e (a) / T1: birleştirme ve hesap notları — Tablodaki Kişiler kendi kayıtlarından, Vadeler ve Nakit Akışı takvimin birleştirmesinden (aynı kural).
-    if (kind !== "cari-ekstre") report = { ...report, notes: tableNotes({ merged: data.merged || [], conflicts: data.conflicts || [], overpaid: data.records.filter(record => record.overpaid).length }) };
+    // 31e A1 / T1: sekme ve hesap notları — Tablodaki Kişiler kendi kayıtlarından, Vadeler ve Nakit Akışı takvimden (aynı kural).
+    if (kind !== "cari-ekstre") report = { ...report, notes: tableNotes({ split: data.split || [], overpaid: data.records.filter(record => record.overpaid).length }) };
     // 31e Y1: Kasa yetkisi yoksa Nakit Akışı'nın Kasa kolonları (giriş, çıkış, net, birikimli, beklenenle birlikte) ve toplamları yok; not söyler.
     if (kind === "nakit-akis" && !cashVisible) {
       const strip = row => Object.fromEntries(Object.entries(row).filter(([key]) => !CASH_COLUMNS.has(key)));
@@ -173,7 +170,7 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
     const columns = report.table.columns.map(column => (column.dynamic ? column : { ...column, label: titleCase(column.label) }));
     report = { ...report, table: { ...report.table, columns } };
     report.table.footer = tableFooter(report.table);
-    // 31e (a): Sekme süzgeci takvimi seçili sekmelerden kurar; süzgeç seçenekleri (Sekme, Durum) yine bütün sekmelerden — seçili sekmede öbürleri listeden düşmez.
+    // 31e: Sekme süzgeci takvimi seçili sekmelerden kurar; süzgeç seçenekleri (Sekme, Durum) yine bütün sekmelerden — seçili sekmede öbürleri listeden düşmez.
     const optionSource = filters.tabs.length ? (filters.sessions.length ? await calendar({ ...filters, tabs: [] }, now) : await allCalendar(now)) : data;
     const tabs = [...new Set(optionSource.records.map(record => record.tab).filter(Boolean))].sort((a, b) => a.localeCompare(b, "tr"));
     const statuses = [...new Set(optionSource.records.map(record => record.status).filter(Boolean))].slice(0, 30);

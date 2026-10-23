@@ -162,20 +162,15 @@ export function dynamicColumns(records, max = 12) {
 }
 
 // ---------- Tablo notları (2.4.4 31e) ----------
-// Birleştirme ve hesap uyarıları görünür not olur (ekran, yazdırma, PDF ve Excel aynı metni yazar; cümle düzeninde):
-//   merged: aynı dosya no birden çok sekmede → bir kez sayıldı (hangi sekme, ne kadar); dönem sekmesi tutan tabloda Sekme süzgeciyle ayrı bakılır.
-//   conflicts: aynı öncelikteki iki sekmenin borcu farklı; overpaid: ödenen toplamı aşan satır (borç 0 sayıldı).
-const noteMoney = value => `${MONEY_FORMAT.format(value || 0)} TL`;
-export function tableNotes({ merged = [], conflicts = [], overpaid = 0 } = {}) {
+// Hesap uyarıları görünür not olur (ekran, yazdırma, PDF, Excel ve Tahsilat Takvimi aynı metni yazar; cümle düzeninde):
+//   split: borcu birden çok sekmede olan dosya no — her sekme ayrı borç ve ayrı vade kalemi sayıldı (2.4.3 gibi; 31e A1); kopya sekme iki kez sayılır.
+//   overpaid: ödenen toplamı aşan satır (borç 0 sayıldı).
+export function tableNotes({ split = [], overpaid = 0 } = {}) {
   const notes = [];
-  if (merged.length) {
-    const tabs = [...new Set(merged.flatMap(item => [item.kept.tab, ...item.others.map(other => other.tab)]).filter(Boolean))];
-    const kept = merged.slice(0, 5).map(item => `${item.meta?.id || item.meta?.caseNo || item.key}${item.meta?.cari || item.meta?.person ? ` (${item.meta.cari || item.meta.person})` : ""}: ${item.kept.tab} ${noteMoney(item.kept.amount)}`).join("; ");
-    notes.push(`${merged.length} dosya no birden çok sekmede; bir kez sayıldı (${tabs.join(", ")}). Dönem sekmesiyse Sekme süzgeciyle ayrı bakın. Sayılan: ${kept}${merged.length > 5 ? ` ve ${merged.length - 5} dosya daha` : ""}.`);
-  }
-  if (conflicts.length) {
-    const list = conflicts.slice(0, 5).map(item => `${item.meta?.id || item.meta?.caseNo || item.key}: ${item.kept.tab} ${noteMoney(item.kept.amount)} sayıldı, ${item.other.tab} ${noteMoney(item.other.amount)}`).join("; ");
-    notes.push(`Aynı dosya numarası farklı sekmelerde farklı kalan borç taşıyor: ${list}${conflicts.length > 5 ? ` ve ${conflicts.length - 5} kayıt daha` : ""}.`);
+  if (split.length) {
+    const tabs = [...new Set(split.flatMap(item => item.tabs.map(entry => entry.tab)).filter(Boolean))];
+    const list = split.slice(0, 5).map(item => `${item.meta?.id || item.meta?.caseNo || item.key}${item.meta?.cari || item.meta?.person ? ` (${item.meta.cari || item.meta.person})` : ""}`).join(", ");
+    notes.push(`${split.length} dosya no birden çok sekmede; ayrı sayıldı (${tabs.join(", ")}). Aynı borçsa kopya sekmeyi kaldırın ya da Sekme süzgeciyle bakın. Dosya No: ${list}${split.length > 5 ? ` ve ${split.length - 5} dosya daha` : ""}.`);
   }
   if (overpaid) notes.push(`${overpaid} satırda ödenen tutar toplam tutarı aşıyor; o satırların borcu 0 sayıldı.`);
   return notes;
@@ -209,19 +204,18 @@ export function cariEkstre({ records, payments = [], filters = normalizeFilters(
   // 2.4.4 (5c): aynı kayıt anahtarı birden çok sekmede olabilir (İcra Takip + Ödeme Sözleri aynı dosya no); tahsilat anahtara bağlıdır ve rapora
   // BİR KEZ, süzgeçte kalan ilk kaydın satırına yazılır. 2.4.3'e kadar anahtarın her sekmedeki satırına ayrı yazılıyor, alacak iki kez sayılıyordu.
   const attached = new Set();
-  // 31b MM5 / 31f U2 / 31e T4: borç kayıt anahtarı (dosya no) başına Tahsilat Takvimi ile AYNI kuralla (debt-column.mjs debtByRecord): aynı SEKMEDEKİ satırlar
-  // ayrı borçtur (satır başına taksit), FARKLI sekmelerden yalnız biri sayılır (Kalan > borç başlıklı > toplam − ödenen > tek tutar; aynı öncelikte ilk sekme) ve
-  // bu görünür not olur (tableNotes). Söz tutarı borç değildir (debtPlan). Seçim Sekme süzgecindeki kayıtlardan (öbür süzgeçlerden bağımsız).
+  // 31f U2 / 31e T4 / A1: satırın borcu Tahsilat Takvimi ile AYNI kuralla (debt-column.mjs): her satır kendi borcunu sayar — aynı sekmedeki satırlar (satır başına
+  // taksit) ve FARKLI sekmelerdeki aynı dosya no ayrı borçtur (2.4.3 gibi); borcu birden çok sekmede olan dosya no görünür not olur (tableNotes). Söz tutarı borç
+  // değildir (debtPlan). Not Sekme süzgecindeki kayıtlardan (öbür süzgeçlerden bağımsız).
   const slotOf = record => `${record.session || ""}\u0000${record.key}`;
-  // Sekme süzgeci seçiliyse sayılan sekme seçilenler içinden (dönem sekmeleri ayrı bakılabilsin — not bunu söyler).
   const inTabs = record => !filters.tabs.length || filters.tabs.includes(record.tab);
-  const { byKey: debtOwner, merged, conflicts } = debtByRecord(records.filter(inTabs).map(record => ({ key: slotOf(record), tab: record.tab, amount: record.debt, tier: record.debtTier, meta: { cari: record.cari, id: record.id || record.key } })));
+  const { split } = debtByRecord(records.filter(inTabs).map(record => ({ key: slotOf(record), tab: record.tab, amount: record.debt, tier: record.debtTier, meta: { cari: record.cari, id: record.id || record.key } })));
   for (const record of matched) {
     const key = groupKeyOf(record);
     if (!groups.has(key)) groups.set(key, { key, cari: record.cari || record.id || record.key, sessions: new Set(), lines: [] });
     const group = groups.get(key);
     group.sessions.add(record.sessionName || record.session);
-    const debit = record.debt !== null && record.debt !== undefined && debtOwner.get(slotOf(record))?.tab === record.tab ? record.debt : null;
+    const debit = record.debt !== null && record.debt !== undefined ? record.debt : null;
     const date = record.deadline;
     if (debit !== null && inRange(date, filters) && (filters.minAmount === null || Math.abs(debit) >= filters.minAmount)) {
       group.lines.push({ date, kind: "borc", description: [record.tab, record.id].filter(Boolean).join(" · "), session: record.sessionName, tab: record.tab, borc: debit, alacak: null, status: record.status, fields: record.fields, key: record.key });
@@ -264,8 +258,8 @@ export function cariEkstre({ records, payments = [], filters = normalizeFilters(
     ],
     rows: out.flatMap(group => group.lines.map(line => ({ cari: group.cari, date: line.date, description: line.description, session: line.session, borc: line.borc, alacak: line.alacak, bakiye: line.bakiye, status: line.status, ...Object.fromEntries(columns.map(column => [`f:${column}`, line.fields[column] || ""])) }))),
   };
-  const notes = tableNotes({ merged, conflicts, overpaid: records.filter(record => record.overpaid && inTabs(record)).length });
-  return { kind: "cari-ekstre", generatedAt: now.toISOString(), groups: out, conflicts, merged, notes, totals: { debit: totalDebit, credit: totalCredit, balance: totalDebit - totalCredit, caris: out.length, crossMatched: out.filter(group => group.crossMatched).length }, table };
+  const notes = tableNotes({ split, overpaid: records.filter(record => record.overpaid && inTabs(record)).length });
+  return { kind: "cari-ekstre", generatedAt: now.toISOString(), groups: out, split, notes, totals: { debit: totalDebit, credit: totalCredit, balance: totalDebit - totalCredit, caris: out.length, crossMatched: out.filter(group => group.crossMatched).length }, table };
 }
 
 // ---------- Vade takip ----------

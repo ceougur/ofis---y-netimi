@@ -7,6 +7,7 @@
 // "Nasıl bozulur?": D1 söz sekmesi borç sayılır · D2 "Ödendi" söz borç / takvim · D3 kapanmış dosya (Kalan 0) söz yüzünden borçlu · D4 aynı dosya iki sekmede
 // borç iki kez (Kişiler, Vade Takip, Nakit Akışı) · D5 iki sekmede farklı Kalan · D6 söz kaleminin Açılış Bakiyesi boş (U8) · D7 dosya no'suz satırlar
 // birleşir · D8 taksit "Toplam" / kira bedeli borç sayılır.
+// DEĞİŞTİ (31e kontrol turu 2 A1, 23.10.2026): (2) artık "aynı dosya no farklı sekmelerde AYRI borç ve ayrı kalem + görünür not; tahsilat bir kez" (2.4.3 gibi).
 import assert from "node:assert/strict";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -93,7 +94,9 @@ describe("31f U2 daraltılmış karar: okul servisi (tek tutar sütunu 'Aylık �
   });
 });
 
-describe("31b MM5: aynı dosya no iki sekmede — borç bir kez (Kişiler, Vade Takip, Nakit Akışı), tahsilat bir kez", () => {
+// 31e kontrol turu 2 A1 kararı (kullanıcı adına 5 dk yetkisiyle, 23.10.2026 04:09 UTC): MM5 "borç bir kez" kararı DEĞİŞTİ — farklı sekmede aynı dosya no ayrı
+// borç ve ayrı vade kalemidir (2.4.3 gibi) + görünür not; tahsilat (5c) yine bir kez.
+describe("31b MM5 → 31e A1: aynı dosya no iki sekmede — borç ve kalem ayrı (2.4.3 gibi) + not; tahsilat bir kez (5c)", () => {
   const root = mkdtempSync(path.join(tmpdir(), "tablo-borc-mm5-"));
   let server;
   let api;
@@ -116,15 +119,17 @@ describe("31b MM5: aynı dosya no iki sekmede — borç bir kez (Kişiler, Vade 
     rmSync(root, { recursive: true, force: true });
   });
 
-  test("Tablodaki Kişiler Deniz Ak: borç 12.000 bir kez, alacak 3.000, bakiye 9.000; Vade Takip ve Nakit Akışı Beklenen 18.000 (9.000 + 9.000)", async () => {
+  test("Tablodaki Kişiler Deniz Ak: borç 12.000 + 12.000 (iki sekme ayrı), alacak 3.000 bir kez, bakiye 21.000; Vade Takip ve Nakit Akışı Beklenen 12.000 + 12.000 + 9.000 − 3.000 = 30.000; not", async () => {
     const rep = (await mustOf("Tablodaki Kişiler", api.get(`/api/workspace/reports/cari-ekstre?${RANGE}`))).report;
     const deniz = rep.groups.find(group => group.cari === "Deniz Ak");
-    assert.deepEqual([deniz?.debit, deniz?.credit, deniz?.balance], [12000, 3000, 9000], `Deniz Ak borç bir kez olmalı; görülen ${JSON.stringify([deniz?.debit, deniz?.credit, deniz?.balance])}`);
+    assert.deepEqual([deniz?.debit, deniz?.credit, deniz?.balance], [24000, 3000, 21000], `Deniz Ak borç iki sekmede ayrı, tahsilat bir kez olmalı; görülen ${JSON.stringify([deniz?.debit, deniz?.credit, deniz?.balance])}`);
     const vade = (await mustOf("Vade Takip", api.get(`/api/workspace/reports/vade-takip?${RANGE}`))).report;
-    assert.equal(vade.totals.amount, 18000, `Vade Takip toplamı 18.000 olmalı (Deniz 12.000 − 3.000, Mert 9.000; bir kez); görülen ${vade.totals.amount}`);
+    assert.equal(vade.totals.amount, 30000, `Vade Takip toplamı 30.000 olmalı (Deniz 12.000 + 12.000 − 3.000, Mert 9.000); görülen ${vade.totals.amount}`);
     const akis = (await mustOf("Nakit Akışı", api.get(`/api/workspace/reports/nakit-akis?${RANGE}`))).report;
-    assert.equal(akis.totals.expected, 18000, `Nakit Akışı Beklenen 18.000 olmalı; görülen ${akis.totals.expected}`);
-    assert.deepEqual(rep.conflicts, [], "iki sekmenin Kalan'ı aynı: uyuşmazlık yok");
+    assert.equal(akis.totals.expected, 30000, `Nakit Akışı Beklenen 30.000 olmalı; görülen ${akis.totals.expected}`);
+    for (const [name, notes] of [["Kişiler", rep.notes], ["Vade Takip", vade.notes], ["Nakit Akışı", akis.notes]]) {
+      assert.ok((notes || []).some(note => note.startsWith("1 dosya no birden çok sekmede; ayrı sayıldı (Alacaklar, Takip).")), `${name} notu: ${JSON.stringify(notes)}`);
+    }
   });
 });
 
@@ -138,25 +143,25 @@ describe("31b MM5 / D5 / D7: iki sekmede farklı Kalan ve dosya no'suz satırlar
     return cariEkstre({ records: normalized.records, payments: [], filters: normalizeFilters({}), now: NOW });
   };
 
-  test("D5 farklı Kalan: ilk sekmenin Kalan'ı (12.000) geçerli, uyuşmazlık bildirilir; takvim aynı tutarı kullanır", () => {
+  test("D5 / A1 farklı Kalan: iki sekme ayrı borç (12.000 + 11.000), not iki sekmeyi adlandırır; takvimde iki kalem, her kalemin Kalan Borç'u kendi sekmesinden", () => {
     const rows = [...sheet("Alacaklar", header, [["2026/501", "Deniz Ak", "12.000,00", V], ["2026/502", "Mert Su", "9.000,00", V]]), ...sheet("Takip", header, [["2026/501", "Deniz Ak", "11.000,00", V]])];
     const rep = run(rows);
-    assert.equal(rep.groups.find(group => group.cari === "Deniz Ak").debit, 12000, "ilk sekmenin (Alacaklar) Kalan'ı");
-    assert.equal(rep.conflicts.length, 1, `uyuşmazlık bildirilir: ${JSON.stringify(rep.conflicts)}`);
-    assert.deepEqual([rep.conflicts[0].kept.tab, rep.conflicts[0].kept.amount, rep.conflicts[0].other.tab, rep.conflicts[0].other.amount], ["Alacaklar", 12000, "Takip", 11000]);
+    assert.equal(rep.groups.find(group => group.cari === "Deniz Ak").debit, 23000, "iki sekme ayrı: 12.000 + 11.000");
+    assert.deepEqual(rep.split.map(item => item.tabs.map(entry => [entry.tab, entry.amount])), [[["Alacaklar", 12000], ["Takip", 11000]]], `not kaynağı: ${JSON.stringify(rep.split)}`);
+    assert.ok(rep.notes[0].startsWith("1 dosya no birden çok sekmede; ayrı sayıldı (Alacaklar, Takip). Aynı borçsa kopya sekmeyi kaldırın ya da Sekme süzgeciyle bakın."), rep.notes[0]);
     const dues = computeDues({ rows, tabs: ["Alacaklar", "Takip"], now: NOW });
     const deniz = dues.items.filter(item => item.person === "Deniz Ak");
-    assert.deepEqual(deniz.map(item => [item.amount, item.debt]), [[12000, 12000]], `takvimde Deniz bir kalem, 12.000: ${JSON.stringify(deniz.map(item => [item.tab, item.amount, item.debt]))}`);
-    assert.equal(dues.debtConflicts.length, 1, "takvim de uyuşmazlığı bildirir");
+    assert.deepEqual(deniz.map(item => [item.tab, item.amount, item.debt]), [["Alacaklar", 12000, 12000], ["Takip", 11000, 11000]], `takvimde Deniz iki kalem: ${JSON.stringify(deniz.map(item => [item.tab, item.amount, item.debt]))}`);
+    assert.equal(dues.debtSplit.length, 1, "takvim de aynı notun kaynağını verir");
   });
 
-  test("D4 aynı dosya iki sekmede FARKLI vadeyle: borçtan gelen kalem tutarı bir kez (en erken vade), takvim toplamı 12.000 + 9.000", () => {
+  test("D4 / A1 aynı dosya iki sekmede FARKLI vadeyle: iki kalem (dönem sekmesinin vadesi düşmez), takvim toplamı 12.000 + 12.000 + 9.000", () => {
     const rows = [...sheet("Alacaklar", header, [["2026/501", "Deniz Ak", "12.000,00", shift(2)], ["2026/502", "Mert Su", "9.000,00", shift(2)]]), ...sheet("Takip", header, [["2026/501", "Deniz Ak", "12.000,00", shift(5)]])];
     const items = computeDues({ rows, tabs: ["Alacaklar", "Takip"], now: NOW }).items;
     const deniz = items.filter(item => item.person === "Deniz Ak");
-    assert.deepEqual(deniz.map(item => [item.tab, item.amount]), [["Alacaklar", 12000]], `Deniz'in borcu takvimde bir kez (en erken vadeli kalem) olmalı; görülen ${JSON.stringify(deniz.map(item => [item.tab, item.due, item.amount]))}`);
-    assert.equal(items.reduce((sum, item) => sum + (item.amount || 0), 0), 21000, "takvim toplamı 12.000 + 9.000");
-    assert.equal(run(rows).totals.debit, 21000, "Tablodaki Kişiler toplamı aynı");
+    assert.deepEqual(deniz.map(item => [item.tab, item.amount]), [["Alacaklar", 12000], ["Takip", 12000]], `Deniz'in iki sekmedeki kalemi ayrı olmalı; görülen ${JSON.stringify(deniz.map(item => [item.tab, item.due, item.amount]))}`);
+    assert.equal(items.reduce((sum, item) => sum + (item.amount || 0), 0), 33000, "takvim toplamı 12.000 + 12.000 + 9.000");
+    assert.equal(run(rows).totals.debit, 33000, "Tablodaki Kişiler toplamı aynı");
   });
 
   test("D1 yalnız söz sekmesi (dosyanın başka sekmede borcu yok): söz tutarı borç satırı açmaz; takvimde söz tutarı yerinde", () => {

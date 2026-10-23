@@ -358,9 +358,9 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
   const sources = [];
   const dormant = [];
   const monthlyCases = new Set(); // ay kolonlu tablodaki kayıtlar: tahsilat notundaki ay o aya sayılır
-  // 31b MM5 / 31f U8 / 31e T4: kayıt anahtarı (dosya no) başına borç — ortak kural (debt-column.mjs debtByRecord): aynı sekmedeki satırlar toplanır (satır
-  // başına taksit ayrı borçtur), FARKLI sekmelerden yalnız biri sayılır. Söz sekmesindeki kalemin Kalan Borç'u ("Önce cari açın" Açılış Bakiyesi) aynı dosya
-  // no'nun öbür sekmesindeki Kalan'dan gelir.
+  // 31f U8 / 31e T4 / A1: kayıt anahtarı (dosya no) başına borç — ortak kural (debt-column.mjs debtByRecord): aynı sekmedeki satırlar toplanır (satır
+  // başına taksit ayrı borçtur); FARKLI sekmeler de ayrı borç ve ayrı kalemdir (2.4.3 gibi; borcu birden çok sekmede olan dosya no not olur). Söz sekmesindeki
+  // (kendi borcu olmayan) kalemin Kalan Borç'u ("Önce cari açın" Açılış Bakiyesi) aynı dosya no'nun öbür sekmelerindeki borçtan gelir.
   const debtEntries = [];
   // Önce bütün sekmelerin kayıt borcu (kalem çıkarmayan sekme de — ör. "İcra Takip" Kalan'ı, sözler "Ödeme Sözleri"nde).
   const contexts = new Map();
@@ -374,9 +374,7 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
       if (record) debtEntries.push({ key: row.__hofKey, tab, amount: record.amount, tier: record.tier, column: record.column, meta: { person: state.person, caseNo: state.caseNo } });
     }
   }
-  const { byKey: keyDebt, merged: debtMerged, conflicts: debtConflicts } = debtByRecord(debtEntries);
-  const keyColumn = new Map();
-  for (const entry of debtEntries) if (keyDebt.get(entry.key)?.tab === entry.tab && !keyColumn.has(entry.key)) keyColumn.set(entry.key, entry.column);
+  const { byKey: keyDebt, split: debtSplit } = debtByRecord(debtEntries);
   for (const tab of order) {
     const scope = groups.get(tab);
     const context = contexts.get(tab);
@@ -422,27 +420,17 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
     }
   }
 
-  // 31b MM5 / 31f U8: kalemin Kalan Borç'u kaydın (dosya no) tek borcundan; borçtan gelen kalem tutarı dosya başına BİR KEZ (en erken vadeli kalem);
-  // aynı kalem iki sekmede aynen yazılmışsa bir kez.
-  // T4: borçtan gelen kalemler (satırın kendi borcu) yalnız kaydın sayılan sekmesinden — aynı sekmedeki her satır ayrı kalemdir; öbür sekmedeki kopya düşer.
-  const seen = new Map();
+  // 31f U8 / T4 / A1: kalemin Kalan Borç'u kendi sekmesindeki kaydın borcundan (aynı sekmedeki satırların toplamı); kendi sekmesinde borcu olmayan kalem (söz
+  // sekmesi) öbür sekmelerin borcunu alır. Kalemler sekmeler arasında birleştirilmez (dönem sekmesinin vadesi düşmez; kopya sekme iki kez sayılır + not).
   for (const item of candidates) {
-    const record = keyDebt.get(item.caseKey);
-    if (!record) continue;
-    item.debt = record.amount > 0 ? record.amount : null;
-    const column = keyColumn.get(item.caseKey) || "";
-    item.debtColumn = record.amount > 0 ? (record.tab === item.tab ? column : `${record.tab} · ${column}`) : "";
+    const tabs = keyDebt.get(item.caseKey);
+    if (!tabs) continue;
+    const own = tabs.get(item.tab);
+    const from = own ? [own] : [...tabs.values()];
+    const amount = Math.round(from.reduce((sum, record) => sum + record.amount, 0) * 100) / 100;
+    item.debt = amount > 0 ? amount : null;
+    item.debtColumn = amount > 0 ? (own ? own.column : from.map(record => `${record.tab} · ${record.column}`).join(" + ")) : "";
   }
-  const kept = [];
-  for (const item of candidates) {
-    if (item.fromDebt && keyDebt.has(item.caseKey) && keyDebt.get(item.caseKey).tab !== item.tab) continue;
-    // Aynı kalem FARKLI sekmelerde aynen yazılmışsa bir kez (aynı sekmedeki iki satır iki kalemdir).
-    const same = [item.caseKey, item.time, item.kind, item.label, item.promise, item.amount, item.monthly ? item.column : ""].join("\u0000");
-    if (seen.has(same) && seen.get(same) !== item.tab) continue;
-    if (!seen.has(same)) seen.set(same, item.tab);
-    kept.push(item);
-  }
-  candidates.splice(0, candidates.length, ...kept);
   // Tahsilatlar kaydın kalemlerine vade sırasıyla sayılır.
   const byCase = new Map();
   for (const item of candidates) {
@@ -535,7 +523,7 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
   // Önce gecikenler (en eskiden), sonra bugün, bu ay ve yaklaşanlar (en yakından).
   const rank = item => (item.state === "overdue" ? 0 : item.state === "month" || item.state === "today" ? 1 : 2);
   out.sort((a, b) => rank(a) - rank(b) || a.days - b.days || a.person.localeCompare(b.person, "tr"));
-  return { items: out, sources, dormant, debtConflicts, debtMerged };
+  return { items: out, sources, dormant, debtSplit };
 }
 
 // Son tarihi yaklaşan işler (bildirim için): ödeme takvimi dışındaki son tarih kolonları (yenileme, bitiş, teslim,
