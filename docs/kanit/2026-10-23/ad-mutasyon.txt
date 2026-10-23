@@ -1,0 +1,7 @@
+ad mutasyonlari (taban: is/r31e-ad calisma agaci = f24bc41 + duzeltme; komut: node --test test/tablo-borc-r31e.test.mjs)
+mb1 reports.mjs recordLayout: sekme yedegi kapali (if (false && fallback))
+mb2 reports.mjs normalizeRecords: yalniz oturum kolonu yedek, kardes sekmenin ayni basligi yok
+--- mb1: # tests 15 # pass 14 # fail 1 
+    not ok 1 - Tablodaki Kişiler: Kişi 2-1 79 + 3.686,48 = 3.765,48 tek grup; Kişi 2-2 69 + 4.787,25 + 2.324,10 + 60 + 36 = 7.276,35; dosya no adlı grup yok
+--- mb2: # tests 15 # pass 14 # fail 1 
+    not ok 1 - Tablodaki Kişiler: Kişi 2-1 79 + 3.686,48 = 3.765,48 tek grup; Kişi 2-2 69 + 4.787,25 + 2.324,10 + 60 + 36 = 7.276,35; dosya no adlı grup yok

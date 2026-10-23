@@ -57,9 +57,21 @@ const itemDate = item => {
 };
 
 // Kayıt omurgasının kolonları (kişi, kimlik, tutar, kalan borç, vade, durum, telefon) bir kolon analizinden.
-function recordLayout(analyses) {
-  const primary = primaryColumns(analyses);
+// fallback (sekme düzeninde; rol → aday kolonlar, öncelik sırasıyla): sekmenin kendi analizi kişi / kimlik / telefon kolonunu bulamazsa, sekmede bulunan ilk
+// aday kullanılır — önce oturumun seçtiği kolon, sonra öbür sekmelerin aynı başlıkla bulduğu kolon. Aynı kişinin birden çok satırı olan dönem sekmesinde
+// ("2025 Aidat": 10 satırda 4 ad, tekillik 0,4) sekme analizi "Borçlu"yu kişi saymıyordu; satırlar adsız, dosya no ile ayrı grup oluyor, aynı kişi iki satıra
+// bölünüyordu (aday 13 cari kâhini; kök 31a F4 sekme başına analiz).
+const FALLBACK_ROLES = ["person", "id", "phone"];
+function recordLayout(analyses, fallback = null) {
   const byColumn = new Map(analyses.map(item => [item.column, item]));
+  const primary = { ...primaryColumns(analyses) };
+  if (fallback) {
+    for (const role of FALLBACK_ROLES) {
+      if (primary[role]) continue;
+      const column = (fallback[role] || []).find(candidate => byColumn.has(candidate) && !Object.values(primary).includes(candidate));
+      if (column) primary[role] = column;
+    }
+  }
   // Borç düzeni Tahsilat Takvimi ile ORTAK (debt-column.mjs): Kalan / Bakiye → borç / alacak başlıklı → sekmenin tek tutarı (söz / taksit / kira tutarı
   // değilse). 30a: Kalan her zaman önce; 31d E3: gün / adet / oran kolonu tutar değil; 31f U2: söz tutarı borç değil (2.4.4 aday 6'da her sekmenin tutar
   // kolonu — "Söz Tutarı", "Kira bedeli", taksit "Toplam" — borç sayılıyordu; kapanmış dosya söz yüzünden borçlu görünüyordu).
@@ -118,7 +130,12 @@ export function normalizeRecords({ rows, analyses, session, sessionName = "", ta
   const sheetOf = row => String(row?.__sheet || "");
   const layouts = new Map();
   const sheets = analyzeTab ? [...new Set(rows.map(sheetOf))] : [];
-  if (sheets.length > 1) for (const sheet of sheets) layouts.set(sheet, recordLayout(analyzeTab(rows.filter(row => sheetOf(row) === sheet))));
+  if (sheets.length > 1) {
+    const analysed = sheets.map(sheet => [sheet, analyzeTab(rows.filter(row => sheetOf(row) === sheet))]);
+    const own = analysed.map(([, analyses]) => primaryColumns(analyses));
+    const fallback = Object.fromEntries(FALLBACK_ROLES.map(role => [role, [...new Set([base.primary[role], ...own.map(primary => primary[role])].filter(Boolean))]]));
+    for (const [sheet, analyses] of analysed) layouts.set(sheet, recordLayout(analyses, fallback));
+  }
   const context = { session, sessionName, tabs };
   const records = [];
   for (const row of rows) {
