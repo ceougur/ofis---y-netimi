@@ -212,6 +212,12 @@ describe("31e B1: Dosya No'suz tabloda içerik değişince bağlar yeni satıra 
       await load(admin, table(T0, twins.map(p => (p.aciklama === "İkinci Ali" ? { ...p, tutar: "7500" } : p))));
       const noteKey = store.get("SELECT case_key AS k FROM notes WHERE note = 'İkinci Ali notu'").k;
       assert.equal(rowsOf(store).find(r => r.k === noteKey)?.values["Açıklama"], "İkinci Ali", "not ikinci Ali'nin yeni satırında (birinci Ali'ye gitmedi)");
+      // Aynı adlı iki satırın SIRASI değişir (içerik aynı): anahtarlar içerikten, değişmez → taşıma ve onay gerekmez, not yine ikinci Ali'de (kâhin b3g t3).
+      const swapped = twins.map(p => (p.aciklama === "İkinci Ali" ? { ...p, tutar: "7500" } : p)).reverse();
+      const { staged: order } = await load(admin, table(T0, swapped));
+      assert.equal(order.bonds?.replace?.unmatched?.count ?? 0, 0, "sıra değişince eşleşmeyen yok");
+      assert.equal(order.bonds?.replace?.moved?.count ?? 0, 0, "sıra değişince taşıma yok (anahtar aynı)");
+      assert.equal(rowsOf(store).find(r => r.k === noteKey)?.values["Açıklama"], "İkinci Ali", "sıra değişince not yine ikinci Ali'de");
       // İlk Ali silinir, ikincisinin tutarı değişir: konum kayar, ad artık tek ama eskide iki → güvenli değil.
       const staged = await stage(admin, excel(table(T0, twins.slice(1).map(p => (p.aciklama === "İkinci Ali" ? { ...p, tutar: "8000" } : p)))));
       assert.equal(staged.bonds?.replace?.unmatched?.count, 1, "ikinci Ali'nin notu eşleşmez");
