@@ -221,6 +221,11 @@ async function kos(senaryo) {
           durum(a, await api("PUT", `/api/workspace/cheques/${ids.evrak[a.evrak]}`, { invoiceId: a.fatura ? ids.fatura[a.fatura] : "", updatedAt: e?.updatedAt }));
           break;
         }
+        case "kasa_cikis": {
+          // /2 B4: carisiz elle Kasa çıkışı (POST /api/workspace/cash — test/nakit-akis-kasa-mm6 ÇAĞRI satırı)
+          durum(a, await api("POST", "/api/workspace/cash", { kind: "out", amount: tlMetin(kurusOf(a.tutar)), date: t, description: a.id }));
+          break;
+        }
         case "nihai_tuketici": {
           const r = await api("POST", "/api/workspace/invoices/retail-account", {});
           durum(a, r);

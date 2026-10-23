@@ -44,6 +44,7 @@ MUTASYONLAR = {
     19: "MM6: Nakit Akışı Kasa girişi yalnız cari tahsilatı sayar (evrak tahsili ve kayıt tahsilatı dışarıda)",
     20: "U1: Nihai Tüketici 11111111111'li en eski cariyi (adı belli olsa da) seçer",
     21: "U1: işaretli cari adı/kimliği değişse de kullanılır",
+    22: "MM6: elle Kasa çıkışı Nakit Akışı'nda sayılmaz",
 }
 
 
@@ -383,6 +384,15 @@ class Model:
         self.kasa_hareket.append((a.get("tarih", self.bugun), kurus(a["tutar"]), 0))
         return "ok"
 
+    def kasa_cikis(self, a):
+        """/2 B4: carisiz elle Kasa çıkışı (Kasa gideri). [YAYGIN TDHP; defter kâhini ile aynı] B 770 / A 100."""
+        x = kurus(a["tutar"])
+        self.kasa -= x
+        if self.mut != 22:
+            self.kasa_hareket.append((a.get("tarih", self.bugun), 0, x))
+        self.kasa_gider = getattr(self, "kasa_gider", 0) + x
+        return "ok"
+
     def borc(self, a):
         self.borclar[a["cari"]] += kurus(a["tutar"])
         self.mizanBilinir = False  # elle borç dekontunun karşı hesabı planda yok
@@ -689,6 +699,9 @@ class Model:
                 if t["aktif"]:
                     m["100"] += t["tutar"]
                     m["120"] -= t["tutar"]
+            if getattr(self, "kasa_gider", 0):
+                m["770"] += self.kasa_gider
+                m["100"] -= self.kasa_gider
             for e in self.evraklar.values():
                 if e["durum"] == "silindi":
                     continue
