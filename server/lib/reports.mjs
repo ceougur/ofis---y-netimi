@@ -13,7 +13,7 @@
 // tablo biçimi (kolonlar + satırlar) da döner; PDF/Excel/yazdırma o tabloyu kullanır.
 import { primaryColumns } from "./insight/columns.mjs";
 import { isFlaggedRow, isTotalRow } from "./insight/cells.mjs";
-import { amountCandidates, debtByRecord, debtPlan, isNotAmountHeader, rowDebt, sparseDebtColumn } from "./insight/debt-column.mjs";
+import { amountCandidates, debtByRecord, debtPlan, isNotAmountHeader, isPersonAttributeHeader, rowDebt, sparseDebtColumn } from "./insight/debt-column.mjs";
 import { foldText, isTckn, isVkn, parseAmount, parseDate } from "./insight/validators.mjs";
 import { fromCents, toCents } from "./money.mjs";
 
@@ -98,9 +98,9 @@ function recordLayout(analyses, fallback = null, rows = []) {
   // kolonu — "Söz Tutarı", "Kira bedeli", taksit "Toplam" — borç sayılıyordu; kapanmış dosya söz yüzünden borçlu görünüyordu).
   const moneyColumns = amountCandidates(analyses);
   // 31e tur 7 N4: seyrek borç kolonu Tahsilat Takvimi ile aynı kuralla (sparseDebtColumn) — rapor ↔ takvim aynı borç planı.
-  const plan = debtPlan(moneyColumns, { sparse: sparseDebtColumn(analyses.map(item => item.column), rows) });
+  const plan = debtPlan(moneyColumns, { sparse: sparseDebtColumn(analyses.map(item => item.column), rows, undefined, { analyses }) });
   const debtColumn = plan.column;
-  const money = primary.money && !isNotAmountHeader(primary.money) ? primary.money : null;
+  const money = primary.money && !isNotAmountHeader(primary.money) && !isPersonAttributeHeader(primary.money) ? primary.money : null;
   const amountColumn = money && money !== debtColumn ? money : moneyColumns.find(column => column !== debtColumn) || money || null;
   const backbone = new Set([primary.person, primary.id, amountColumn, plan.remaining, plan.total, primary.deadline, primary.status, primary.phone].filter(Boolean));
   const columns = { cari: primary.person, id: primary.id, amount: amountColumn, debt: debtColumn, deadline: primary.deadline, status: primary.status, phone: primary.phone };
@@ -132,7 +132,14 @@ function recordOf(row, { primary, byColumn, plan, amountColumn, backbone }, { se
     id: primary.id ? String(row[primary.id] ?? "").trim() : "",
     amount: amountColumn ? parseAmount(row[amountColumn]) : null,
     // 31d E2: satır borcu takvimle AYNI fonksiyonla (Kalan sayıysa o, 0 dahil; boş / sayı değilse Toplam Borç).
-    ...(debt => ({ debt: debt.amount, debtTier: debt.tier, debtColumn: debt.column, ...(debt.overpaid ? { overpaid: true } : {}) }))(rowDebt(plan, column => parseAmount(row[column]))),
+    ...(debt => ({
+      debt: debt.amount,
+      debtTier: debt.tier,
+      debtColumn: debt.column,
+      ...(debt.overpaid ? { overpaid: true } : {}),
+      // 31e tur 8 Y3: Kalan hücresi boş ve ana tutarı seçilemeyen satır notsuz düşmez.
+      ...(!plan.unresolved && plan.grossUnresolved && debt.amount === null ? { debtUnresolved: plan.grossUnresolved, debtUnresolvedEmpty: plan.remaining } : {}),
+    }))(rowDebt(plan, column => parseAmount(row[column]))),
     ...(plan.unresolved ? { debtUnresolved: plan.unresolved } : {}),
     deadline: dayOf(deadlineDate),
     deadlineText: primary.deadline ? String(row[primary.deadline] ?? "").trim() : "",
@@ -211,8 +218,11 @@ export function tableNotes({ split = [], overpaid = 0, unresolved = [] } = {}) {
   const notes = [];
   // 31e E2: borç kolonu seçilemeyen sekme notsuz düşmez.
   const unresolvedTabs = new Map();
-  for (const record of unresolved) if (record?.debtUnresolved && !unresolvedTabs.has(record.tab || "")) unresolvedTabs.set(record.tab || "", record.debtUnresolved);
-  for (const [tab, columns] of unresolvedTabs) notes.push(`${tab ? `“${tab}” sekmesinde b` : "B"}orç sütunu seçilemedi (${columns.join(", ")}): bu satırlar borç olarak sayılmadı. Borç sütununun başlığını “Kalan Borç”, “Toplam Borç” ya da “Genel Toplam” yapın.`);
+  for (const record of unresolved) if (record?.debtUnresolved && !unresolvedTabs.has(record.tab || "")) unresolvedTabs.set(record.tab || "", { columns: record.debtUnresolved, empty: record.debtUnresolvedEmpty || "" });
+  for (const [tab, { columns, empty }] of unresolvedTabs) {
+    if (empty) notes.push(`${tab ? `“${tab}” sekmesinde “${empty}” boş olan` : `“${empty}” boş olan`} satırların borç sütunu seçilemedi (${columns.join(", ")}): bu satırlar borç olarak sayılmadı. “${empty}” hücresini doldurun ya da tutar sütununun başlığını “Toplam Borç” ya da “Genel Toplam” yapın.`);
+    else notes.push(`${tab ? `“${tab}” sekmesinde b` : "B"}orç sütunu seçilemedi (${columns.join(", ")}): bu satırlar borç olarak sayılmadı. Borç sütununun başlığını “Kalan Borç”, “Toplam Borç” ya da “Genel Toplam” yapın.`);
+  }
   if (split.length) {
     const tabs = [...new Set(split.flatMap(item => item.tabs.map(entry => entry.tab)).filter(Boolean))];
     const list = split.slice(0, 5).map(item => `${item.meta?.id || item.meta?.caseNo || item.key}${item.meta?.cari || item.meta?.person ? ` (${item.meta.cari || item.meta.person})` : ""}`).join(", ");
