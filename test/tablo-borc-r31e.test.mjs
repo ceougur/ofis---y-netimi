@@ -632,3 +632,33 @@ describe("31e tur 9 Z1 eki: iki dönem kolonu (Aidat + Kira) — kalem satırın
     assert.ok(dues.notes.some(note => note.startsWith("“IkiDonem” sekmesinde “Kalan Borç” boş olan satırların")), JSON.stringify(dues.notes));
   });
 });
+
+// 31e tur 10 (dar kontrol aday 20; ikisi v2.4.3'te de, ORTA): Z2 — Kalan hücresi sayı ve 0 ya da EKSİ (fazla ödeme) olan satırdan tahsilat beklenmez, kalem çıkmaz
+// (min(dönem, Kalan) ≤ 0; Kalan 0 zaten atlanıyordu). Tablodaki Kişiler satır borcunu olduğu gibi gösterir (Ali Veli −100; değişmedi). Z3 — ödeme sözü kalemi SÖZ
+// TUTARIdır: söz tutarı kolonu önce gelir (Taksit Tutarı kolonu olan sekmede söz kalemi taksit tutarını alıyordu); söz tutarı hücresi boşsa önceki kural.
+describe("31e tur 10 Z2/Z3: fazla ödemeli satırda kalem yok; söz kalemi söz tutarı", () => {
+  const ctx = setup([
+    { name: "FazlaOdeme", matrix: [["Ad Soyad", "Aidat", "Kalan Borç", "Son Ödeme"], ["Ali Veli", "1.000", "-100", d(-2)], ["Ayşe Kaya", "1.000", "1.500", d(-3)], ["Can Er", "1.000", "", d(-4)]] },
+    { name: "SozKalan", matrix: [["Ad Soyad", "Taksit Tutarı", "Kalan Borç", "Söz Tarihi", "Söz Tutarı"], ["Kaan Uz", "1.000", "9.000", d(1), "3.000"], ["Lale Gün", "2.000", "4.000", d(2), ""]] },
+  ]);
+
+  test("Z2 Takvim: Ali Veli (Kalan −100) kalemi yok; Ayşe 1.000 (Kalan 1.500), Can 1.000 (Kalan boş); Kişiler Ali −100, Ayşe 1.500, Can 1.000", async () => {
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    const items = dues.items.filter(item => item.tab === "FazlaOdeme").map(item => [item.person, item.amount, item.debt ?? null]).sort((a, b) => a[0].localeCompare(b[0], "tr"));
+    assert.deepEqual(items, [["Ayşe Kaya", 1000, 1500], ["Can Er", 1000, 1000]]);
+    const { report } = await ctx.report("cari-ekstre", `tabs=${encodeURIComponent("FazlaOdeme")}`);
+    assert.deepEqual(debitBy(report), { "Ali Veli": -100, "Ayşe Kaya": 1500, "Can Er": 1000 });
+  });
+
+  test("Z2 Vadeler ve Nakit Akışı (Sekme: FazlaOdeme) Beklenen 2.000 (aday 20: 3.000)", async () => {
+    const query = `tabs=${encodeURIComponent("FazlaOdeme")}`;
+    assert.equal((await ctx.report("vade-takip", query)).report.totals.amount, 2000);
+    assert.equal((await ctx.report("nakit-akis", query)).report.totals.expected, 2000);
+  });
+
+  test("Z3 Takvim: Kaan'ın söz kalemi 3.000 (söz tutarı; Kalan 9.000), Lale'nin söz tutarı boş → önceki kural (Taksit Tutarı 2.000)", async () => {
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    const items = dues.items.filter(item => item.tab === "SozKalan").map(item => [item.person, item.amount, item.debt ?? null, Boolean(item.promise)]).sort((a, b) => a[0].localeCompare(b[0], "tr"));
+    assert.deepEqual(items, [["Kaan Uz", 3000, 9000, true], ["Lale Gün", 2000, 4000, true]]);
+  });
+});

@@ -198,9 +198,16 @@ function classifyColumns(rows, columns, analyses, now, forced = null) {
   // 1.000 (975217f 9.000 gösteriyordu). Ödeme sözü kalemi söz tutarıdır (sınırlanmaz).
   const periods = moneyLike.filter(column => AMOUNT_OWN.test(foldText(column)) && !PROMISE.test(foldText(column)) && !due.some(item => item.column === column));
   const period = single && periods.length === 1 ? periods[0] : null;
+  // 31e tur 10 Z3: ödeme sözü kalemi SÖZ TUTARIdır — sekmede söz tutarı kolonu ("Söz Tutarı", "Taahhüt Tutarı") varsa o önce gelir (Taksit Tutarı + Kalan + Söz
+  // Tarihi + Söz Tutarı sekmesinde söz kalemi taksit tutarını alıyordu; v2.4.3'te de). Söz tutarı hücresi boşsa önceki kural (amountFallback).
+  const promiseAmount = moneyLike.find(column => PROMISE.test(foldText(column)) && !due.some(item => item.column === column)) || null;
   for (const entry of due) {
     const ownColumn = single && !entry.promise ? period : own;
-    entry.amountColumn = pairFor(entry) || (entry.installment === null ? ownColumn || fallback : null);
+    const base = entry.installment === null ? ownColumn || fallback : null;
+    const promiseFirst = entry.promise && entry.installment === null ? promiseAmount : null;
+    entry.amountColumn = pairFor(entry) || promiseFirst || base;
+    entry.amountFallback = promiseFirst && base && base !== promiseFirst ? base : null;
+    entry.amountFallbackFromDebt = Boolean(debt && entry.amountFallback === debt);
     // Kalemin tutarı borç kolonuysa satır borcundan okunur (Kalan boş satırda ana tutar — Tablodaki Kişiler ile aynı).
     entry.amountFromDebt = Boolean(debt && entry.amountColumn === debt);
     entry.amountCapped = Boolean(single && !entry.promise && entry.amountColumn && entry.amountColumn === period && !entry.amountFromDebt) ? plan.remaining || "" : null;
@@ -334,7 +341,9 @@ export function rowState(row, context) {
   // "kart dışı borcu" olur ve öğrenci aktarılamaz (run.mjs okul servisi; denendi).
   const feeOnly = Boolean(plan.amountExpected && (context.monthly?.length || context.recurring?.length));
   const { amount: debtAmount, column: debtFrom, tier: debtTier } = rowDebt(plan, column => parseAmount(cell(row, column)), { expected: !feeOnly });
-  const paidOff = Boolean(debtFrom && debtAmount === 0 && !isEmptyCell(cell(row, debtFrom)));
+  // Kalan hücresi sayı ve 0 → ödenmiş; 31e tur 10 Z2: eksi (fazla ödeme) de — o satırdan tahsilat beklenmez (kalem çıkmaz; min(dönem, Kalan) ≤ 0). Tablodaki
+  // Kişiler satır borcunu olduğu gibi gösterir (−100), değişmedi.
+  const paidOff = Boolean(debtFrom && typeof debtAmount === "number" && debtAmount <= 0 && !isEmptyCell(cell(row, debtFrom)));
   const phone = context.primary.phone ? String(cell(row, context.primary.phone) ?? "").trim() : "";
   return { person, caseNo, phone, closed, inactive, paidOff, debt: debtAmount && debtAmount > 0 ? debtAmount : null, debtColumn: debtAmount && debtAmount > 0 ? debtFrom : "", debtRecord: debtFrom ? { amount: debtAmount, column: debtFrom, tier: debtTier } : null };
 }
@@ -418,6 +427,7 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
           if (ownAmount && ownAmount > 0) ownAmount = typeof left === "number" && left > 0 ? Math.min(ownAmount, left) : ownAmount;
           else ownAmount = state.debt;
         }
+        if (!(ownAmount > 0) && entry.amountFallback) ownAmount = entry.amountFallbackFromDebt ? state.debt : parseAmount(cell(row, entry.amountFallback));
         const amount = ownAmount && ownAmount > 0 ? ownAmount : amountInText(read.rest);
         candidates.push({ ...base, column: entry.column, label: entry.label, promise: entry.promise, kind: read.kind, time: read.time, amount: amount || null, fromDebt: entry.amountFromDebt });
       }

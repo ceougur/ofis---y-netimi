@@ -60,6 +60,10 @@ MUT = {
     "M35-Y3-not-yok": [(R, "      ...(!plan.unresolved && plan.grossUnresolved && debt.amount === null ? {", "      ...(false ? {")],
     "M36-Y3-seyrek-kalan-kalan-degil": [(DC, " || (sparse && !isNotAmountHeader(sparse) && REMAINING_DEBT_HEADER.test(header(sparse)) ? sparse : null);", " || null;")],
     "M37-Y2-kimlik-esleme-yok": [(B, "        if (match || !sig[field]) continue;", "        continue;")],
+    # ---- tur 10 ----
+    "M45-Z2-eksi-kalan-kalem": [("server/lib/insight/dues.mjs", "typeof debtAmount === \"number\" && debtAmount <= 0 && ", "debtAmount === 0 && ")],
+    "M46-Z3-soz-tutari-sonra": [("server/lib/insight/dues.mjs", "    const promiseFirst = entry.promise && entry.installment === null ? promiseAmount : null;", "    const promiseFirst = null;")],
+    "M47-Z3-bos-soz-onceki-kural-yok": [("server/lib/insight/dues.mjs", "        if (!(ownAmount > 0) && entry.amountFallback) ownAmount = entry.amountFallbackFromDebt ? state.debt : parseAmount(cell(row, entry.amountFallback));\n", "")],
     "M28-N2-elle-esitleme-de-atlar": [(D, "if (!manual && heldBefore?.contentHash && heldBefore.contentHash === contentHash)", "if (heldBefore?.contentHash && heldBefore.contentHash === contentHash)")],
 }
 TESTS = ["test/kayit-bag-31e.test.mjs", "test/kayit-bag-31e-birim.test.mjs", "test/tablo-borc-r31e.test.mjs", "test/tablo-borc-dosya-u2.test.mjs"]
