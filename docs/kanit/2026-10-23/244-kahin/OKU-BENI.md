@@ -191,3 +191,13 @@ DENENMEYEN: "Borçlu Adres" başlığı (kelime kuralında var, senaryoda yok); 
 listeliyor → 0 kolu). Neden (ham takvim kalemi, ders 38): b3q'da kalem tutarı dönem kolonlu satırda da Kalan Borç — Kaan Uz `amount` 9.000 `debtColumn` "Kalan Borç" (kâhin
 1.000 = Taksit Tutarı), Oya Tan 2.500 (kâhin 1.000 = Aidat); Takvim / Vade Takip / Nakit Akışı toplamı 19.900 = Kişiler (kâhin 10.400). Lale Ak (1.500 / 1.000), Nil Su
 (1.000 / 400), Mert Oz (Kalan boş → 2.000), Pelin Ak (yalnız Kira) tutuyor.
+
+### Tur 9 ek — çatal kararı (karar sahibi): iki adaylı satırın kalemi dönem tutarı — ADAY 19 (a9f84b5)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| KIRMIZI kirmizi-aday19-cari-takvim-kalemi-2 | 27 senaryo + 59 mutant; b3o Murat Al çatalı kaldırıldı (kalem = Aidat 800; satır borcu not) — b3q + Murat Al'da kırmızı BEKLENİR | 3565/3574 — 9 fark (BULGU 9) · 0 okuma hatası · 0 yakalanmayan mutasyon |
+
+Neden (ham, ders 38): b3q 5 fark (Tur 9 ile aynı: Kaan Uz kalemi 9.000, Oya Tan 2.500 — Kalan alınıyor). b3o 4 fark: Murat Al (Aidat 800 + Gecikme Faizi 40, Kalan boş) takvim
+kalemi `amount` null (kâhin 800 = dönem tutarı Aidat) → Takvim / Vade Takip / Nakit Akışı 3.200 (kâhin 4.000). Tablodaki Kişiler 3.200 ve Murat Al'ın görünür notu / boş Açılış
+Bakiyesi (satır borcu, Y3) tutuyor.

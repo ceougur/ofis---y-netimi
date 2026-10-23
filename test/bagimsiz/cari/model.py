@@ -518,9 +518,8 @@ class Model:
         kalan_kol = [h for h in sk["basliklar"] if tr_kucuk(h) not in KIMLIK_BASLIK and sutun_sinifi(h, [c.get(h) for _, c in sk["satirlar"]]) == "kalan"]
         k = hucre_kurus(hucre.get(kalan_kol[0])) if len(kalan_kol) == 1 else None
         v = d if k is None or self.mut == 58 else min(d, k)
-        if b == NOT:
-            # Y3 (iki aday: ana tutar belirlenemez → borç yok, görünür not) ↔ TAKVİM KALEMİ (Kalan boşsa dönem tutarı) — iki karar bu satırda ayrışıyor → ÇATAL
-            return {"catal": [0, v]} if v else 0
+        # Karar sahibi (23.10.2026, çatal kararı): Y3'ün iki adaylı satırında (Aidat + Gecikme Faizi, Kalan boş) TAKVİM KALEMİ geçerli — kalem dönem tutarı (Aidat);
+        # Y3'ün "ana tutar belirlenemez → not, borç yok" kuralı yalnız SATIR BORCU içindir (Tablodaki Kişiler, Açılış Bakiyesi)
         return v
 
     def kalem_toplami(self):

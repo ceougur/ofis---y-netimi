@@ -213,11 +213,12 @@ Kaynak: ana oturumun ilettiği karar metni. Ürün kodu okunmadı.
   `k4:kisiler` = satır borçları toplamı, `k4:takvim` / `k4:vade` / `k4:akis` = kalem tutarları toplamı; tek satırlı kayıtta `<kontrol>:kalem:<no>` (takvim kalemi `amount`).
 - Dönem kolonu: para kolonu + başlığın bir kelimesi "taksit", "aidat", "kira", "ücret", "aylık" ile başlar ("dönem", "abonelik" [YAYGIN]); kişi özniteliği / tarih kolonu değil
   ("Sonraki Taksit Tarihi" değil). Birden çok dönem kolonu → kalem tanımsız (denetlenmez). Borçsuz (Y1 not) satırda dönem kolonu yoksa kalem 0.
-- ÇELİŞKİ (karar sahibine soruldu): Y3'ün iki adaylı satırı (Aidat + Gecikme Faizi, Kalan boş — "ana tutar belirlenemez → not, borç yok") TAKVİM KALEMİ'ne göre "Kalan boşsa
-  dönem tutarı" = Aidat. Kâhin bu satırın kalemini ÇATAL sayar (0 ya da Aidat; b3o Murat Al: Takvim 3.200 ya da 4.000).
+- Y3 ↔ TAKVİM KALEMİ (karar sahibi, 23.10.2026 çatal kararı): Y3'ün iki adaylı satırında (Aidat + Gecikme Faizi, Kalan boş) TAKVİM KALEMİ geçerli — Takvim / Vade / Nakit
+  kalemi dönem tutarı Aidat (b3o Murat Al 800 → Takvim 4.000); Y3'ün "ana tutar belirlenemez → not, borç yok" kuralı SATIR BORCU içindir (Tablodaki Kişiler, Açılış Bakiyesi —
+  not kalır). Çatal kaldırıldı.
 - Senaryo b3q-takvim-kalemi (Kaan Uz Taksit Tutarı 1.000 / Kalan 9.000 → kalem 1.000, Kişiler 9.000; Aidat 1.000 / Kalan 400 → kalem 400; Aidat 1.000 / Kalan 2.500 → kalem
   1.000); mutant 57 (kalem = satır borcu — önceki kâhin kuralı), 58 (min alınmaz), 59 (Kişiler kalem tutarını gösterir). Önceki senaryolarda kâhinin K4 değerleri değişmedi
-  (dönem kolonlu satırlarda Kalan dönem tutarından küçüktü ya da Kalan kolonu yoktu); yalnız b3o Murat Al çatallandı.
+  (dönem kolonlu satırlarda Kalan dönem tutarından küçüktü ya da Kalan kolonu yoktu); yalnız b3o Murat Al'ın kalemi 800 (Takvim / Vade / Nakit 4.000).
 
 ### B4b — Dört rapor aynı satır borcu (K4 [KULLANICI] 23.10.2026; TAKVİM KALEMİ ile daraldı — B3i)
 - **K4** Tablodaki Kişiler (totals.debit), Tahsilat Takvimi (/dues Σ amount), Vade Takip (totals.amount) ve Nakit Akışı Beklenen (totals.expected) aynı satır
