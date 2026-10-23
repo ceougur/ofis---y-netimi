@@ -205,14 +205,13 @@ function classifyColumns(rows, columns, analyses, now, forced = null) {
   // Tarihi + Söz Tutarı sekmesinde söz kalemi taksit tutarını alıyordu; v2.4.3'te de). Söz tutarı hücresi boşsa önceki kural (amountFallback).
   const promiseAmount = moneyLike.find(column => PROMISE.test(foldText(column)) && PROMISE_AMOUNT.test(foldText(column)) && !due.some(item => item.column === column)) || null;
   for (const entry of due) {
-    // Söz kaleminin söz tutarı yoksa önceki kural (v2.4.3 / aday 20): tek vadeli tabloda dönem tutarı (Kalan ile sınırlı); söz tutarı kolonu hiç yoksa ve dönem
-    // kolonu da yoksa satırın borcu; söz tutarı kolonu var ama hücresi boşsa (dönem kolonu yoksa) tutarsız.
+    // Söz kaleminin söz tutarı yoksa (sütun yok ya da hücre boş) önceki kural: tek vadeli tabloda dönem tutarı (Kalan ile sınırlı), dönem kolonu yoksa satırın
+    // borcu (kâhin b3t: "Sözleşme Tutarı" + Kalan 2.000 + boş söz → kalem 2.000).
     const ownColumn = single ? period : own;
     const base = entry.installment === null ? ownColumn || fallback : null;
     const promiseFirst = entry.promise && entry.installment === null ? promiseAmount : null;
     entry.amountColumn = pairFor(entry) || promiseFirst || base;
-    const fallbackOf = promiseFirst ? (single ? period : base) : null;
-    entry.amountFallback = fallbackOf && fallbackOf !== promiseFirst ? fallbackOf : null;
+    entry.amountFallback = promiseFirst && base && base !== promiseFirst ? base : null;
     entry.amountFallbackFromDebt = Boolean(debt && entry.amountFallback === debt);
     entry.amountFallbackCap = entry.amountFallback && entry.amountFallback === period ? plan.remaining || "" : null;
     // Kalemin tutarı borç kolonuysa satır borcundan okunur (Kalan boş satırda ana tutar — Tablodaki Kişiler ile aynı).
