@@ -58,6 +58,13 @@ MUTASYONLAR = {
     32: "C3 kimliksiz satır: çok kimlikli adın kimliksiz kaydı ilk kimliğe katılır (ayrı kalmaz)",
     33: "C3 kimlik sütunu: sağlama hanesi tutmayan değer de kimlik sayılır",
     34: "Kimlik sütunu: 'Vergi No' / 'Vergi Numarası' / 'Vergi Kimlik' tutar sayılır",
+    # /2 VERGİ SÜTUNU BORÇ DEĞİLDİR ([KULLANICI] 23.10.2026 karar A, 5 dk yetkisiyle)
+    35: "Vergi sütunu (KDV, Vergi, Vergi Tutarı, Stopaj, Tevkifat, ÖTV) tutar sayılır ve Genel Toplam ayrı sınıf değil (eski K3: borç belirlenemez)",
+    36: "Tutar + Genel Toplam tablosunda borç Tutar (KDV hariç)",
+    37: "Borç sütunu belirlenemeyen kişiler raporda notsuz kaybolur",
+    # /2 KAYIT ANAHTARI SÜREKLİLİĞİ (baş mimar kararı 23.10.2026)
+    38: "Yerine koy (aynı dosyayı yeniden yükle) kayda bağlı tahsilatı kayıttan koparır",
+    39: "Sağlaması tutmayan Vergi No / TC değeri kayıt kimliğine girer (değer değişince tahsilat kopar)",
 }
 
 
@@ -74,12 +81,16 @@ def kurus(metin):
 # ───────────────────────── /2 B3: Tablodaki Kişiler borcu — [KULLANICI] 23.10.2026 03:12 UTC (5 dk yetkisiyle) K1–K5 metni; ürün kodu okunmadı
 # C3 (23.10.2026): kişi kimliği sütunu (TCKN/VKN). Başlık adları ORTAM bilgisidir — kara kutu yoklaması (aday 15, 23.10.2026: "TC Kimlik No", "TCKN", "VKN",
 # "TCKN/VKN", "Kimlik No", "TC Kimlik No / VKN" başlıklı sütunda aynı ad farklı kimlik ayrı satır oldu; "Vergi No" başlıklı tabloda hiç satır görünmedi — İNCELE).
+# VERGİ SÜTUNU BORÇ DEĞİLDİR ([KULLANICI] 23.10.2026 karar A): "KDV", "Vergi", "Vergi Tutarı", "Stopaj", "Tevkifat", "ÖTV" başlıklı sütunlar tutardır ama borç sayılmaz;
+# Kalan/ödenen yoksa ve "Tutar" (KDV hariç) ile "Genel Toplam" (KDV dahil) varsa borç Genel Toplam.
+VERGI_KELIME = {"kdv", "stopaj", "tevkifat", "ötv"}
+VERGI_TAM_BASLIK = {"vergi", "vergi tutarı"}
 KISI_KIMLIK_BASLIK = {"tc kimlik no", "tckn", "vkn", "tckn/vkn", "kimlik no", "tc kimlik no / vkn",
                       # KİMLİK SÜTUNU TUTAR DEĞİLDİR (baş mimar kararı, 23.10.2026): kimlik/numara bildiren başlık — sağlama hanesi tutmasa da tutar sayılmaz, borca girmez.
                       # "Vergi", "Vergi Tutarı", "KDV" başlıklı sütunlar tutardır (bu kümede değil).
                       "vergi no", "vergi numarası", "vergi kimlik"}
 VERGI_KIMLIK_BASLIK = {"vergi no", "vergi numarası", "vergi kimlik"}  # mutant 34
-KIMLIK_BASLIK = {"dosya no", "borçlu", "telefon", "müşteri no", "müşteri", "ad soyad"} | KISI_KIMLIK_BASLIK
+KIMLIK_BASLIK = {"dosya no", "borçlu", "telefon", "müşteri no", "müşteri", "ad soyad", "fatura no"} | KISI_KIMLIK_BASLIK
 TUTAR_DISI = {"gün", "adet"}  # K3: gün/adet sütunu ("Kalan Gün", "Adet") tutar değildir
 TUTAR_DISI_EK = {"sayı", "sayısı", "ay", "yıl", "oran", "oranı", "yüzde"}  # tutar sayılmaz [YAYGIN]; senaryolarda kullanılmaz (DENENMEZ)
 
@@ -142,6 +153,10 @@ def sutun_sinifi(baslik, hucreler=()):
     w = kelimeler(baslik)
     if "%" in str(baslik) or any(x in TUTAR_DISI or x in TUTAR_DISI_EK for x in w):
         return None
+    if any(x in VERGI_KELIME for x in w) or " ".join(w) in VERGI_TAM_BASLIK:
+        return "vergi"  # karar A: tutardır ama borç sayılmaz
+    if w[:2] == ["genel", "toplam"]:
+        return "genel"  # karar A: KDV dahil toplam
     if any(x.startswith(("söz", "taahhüt")) for x in w):
         return "soz"
     if "kalan" in w or "bakiye" in w:
@@ -307,8 +322,12 @@ class Model:
                 continue
             sutun = [c.get(h) for _, c in sk["satirlar"]]
             sinif.append((h, sutun_sinifi(h, sutun) if self.mut != 16 or kelimeler(h)[-1:] not in (["gün"], ["adet"]) else "tutar"))
+        if self.mut == 35:  # eski K3: vergi sütunu tutar, Genel Toplam toplam sınıfı
+            sinif = [(h, "tutar" if x == "vergi" else "toplam" if x == "genel" else x) for h, x in sinif]
         al = lambda c: [h for h, x in sinif if x == c]  # noqa: E731
-        kalan, toplam, odenen, tutar, soz = al("kalan"), al("toplam"), al("odenen"), al("tutar"), al("soz")
+        kalan, toplam, odenen, tutar, soz, genel = al("kalan"), al("toplam"), al("odenen"), al("tutar"), al("soz"), al("genel")
+        if len(genel) > 1:
+            return None
         if self.mut == 15:
             tutar = tutar + soz
         if len(kalan) > 1 or len(toplam) > 1 or len(odenen) > 1:
@@ -324,6 +343,8 @@ class Model:
             return None
         if kalan and self.mut == 14 and toplam:
             return hucre_kurus(hucre.get(toplam[0]))
+        if odenen and genel:
+            toplam = genel  # karar A + K3 "Kalan yoksa toplam − ödenen": toplam KDV dahil Genel Toplam [YAYGIN — hangi toplam metinde yok]
         if odenen and toplam:
             t = hucre_kurus(hucre.get(toplam[0]))
             o = hucre_kurus(hucre.get(odenen[0]))
@@ -334,6 +355,10 @@ class Model:
             return t - o if self.mut == 25 else max(0, t - o)  # K3: Kalan yoksa toplam − ödenen; negatifse 0
         if odenen:
             return None
+        if genel:
+            if self.mut == 36 and len(toplam) == 1:
+                return hucre_kurus(hucre.get(toplam[0]))
+            return hucre_kurus(hucre.get(genel[0]))  # karar A: Tutar (KDV hariç) + Genel Toplam (KDV dahil) → borç Genel Toplam
         para = toplam + tutar
         if len(para) == 1:
             return hucre_kurus(hucre.get(para[0]))  # K3: tek tutar sütunu (taksit, kira, aidat, ücret, "Ödenecek" dahil)
@@ -426,6 +451,11 @@ class Model:
 
     # ───────────────────────── işlemler
     def tablo_yukle(self, a):
+        # KAYIT ANAHTARI SÜREKLİLİĞİ (baş mimar kararı 23.10.2026): "Yerine koy" ile yeniden yüklenen tabloda kayda bağlı tahsilat kayıttan kopmaz (kayitTahsilat
+        # kayıt no'suyla kalır); sağlaması tutmayan Vergi No / TC değeri kayıt kimliği sayılmaz — değeri değişse ya da silinse de kayıt aynı kayıttır.
+        if self.mut == 38:
+            self.kayitTahsilat.clear()
+        onceki_imza = {no: kay.get("ham_kimlik") for no, kay in getattr(self, "kayitlar", {}).items()}
         self.kayitlar = {}
         self.sekmeler = []
         for sk in a["sekmeler"]:
@@ -437,7 +467,7 @@ class Model:
                 bas = ["Dosya No", "Borçlu", "Söz Tarihi", "Söz Tutarı"]
                 satirlar = [(r["no"], {"Söz Tarihi": r["tarih"], "Söz Tutarı": r["tutar"]}) for r in sk["kayitlar"]]
             elif sk["tur"] == "serbest":
-                bas = ["Dosya No", "Borçlu"] + list(sk["basliklar"])
+                bas = list(sk.get("ilk") or ["Dosya No", "Borçlu"]) + list(sk["basliklar"])  # `ilk`: Fatura No + Müşteri ya da Dosya No'suz (yalnız Müşteri)
                 satirlar = [(r["no"], dict(r.get("hucreler", {}))) for r in sk["kayitlar"]]
             else:
                 bas, satirlar = None, [(r["no"], None) for r in sk["kayitlar"]]
@@ -451,6 +481,7 @@ class Model:
                     k["sekmeler"].append(sk["ad"])
                 k["adlar"].add(r["isim"])
                 satir_kimlik = False
+                k.setdefault("ham_kimlik", set()).update(str((r.get("hucreler") or {}).get(h) or "").strip() for h in kimlik_sutun)
                 for h in kimlik_sutun:  # C3: satırın kimliği (boş hücre kimliksiz)
                     v = str((r.get("hucreler") or {}).get(h) or "").strip()
                     if v and (kimlik_gecerli(v) or self.mut == 33):  # C3 kararı: sağlama hanesi tutmayan değer kimlik sayılmaz
@@ -461,6 +492,10 @@ class Model:
                 if sk["tur"] == "taksit":
                     k["items"] = [(t, kurus(v)) for t, v in r["taksitler"]]
                     k["kalan"] = sum(v for _, v in k["items"])
+        if self.mut == 39:  # geçersiz değer anahtara girseydi: ham kimlik değerleri değişen kaydın tahsilatı kopardı
+            for no, kay in self.kayitlar.items():
+                if onceki_imza.get(no) is not None and onceki_imza[no] != kay.get("ham_kimlik"):
+                    self.kayitTahsilat[no] = 0
 
     def cari_ac(self, a):
         self.cariler[a["ad"]] = {"tur": a.get("tur", "musteri"), "isim": a["isim"], "kayit": a.get("kayit"),
@@ -892,6 +927,9 @@ class Model:
             b = self.tablo_borcu(no)
             if b is None:
                 k4_tanimli = False
+                if self.kayitlar[no]["tur"] == "serbest":
+                    # karar A: borç sütunu belirlenemiyorsa kişiler raporda notsuz kaybolmaz — satır görünür ya da raporda görünür not (sekme adı / "borç sütunu")
+                    self.d("%s:rapor:%s:gorunurVeyaNot" % (k, no), self.mut != 37, "KULLANICI", "karar A: borç sütunu belirlenemeyen kişi notsuz kaybolmaz")
                 continue
             # C3: rapor satırı KİŞİdir — dosya no'nun okunan borcu kişisinin (aynı kişiye düşen bütün dosya no'ların) toplamıdır
             kisi = kisiler.get(no)
@@ -901,8 +939,11 @@ class Model:
             uyeler = [n for n, x in kisiler.items() if x == kisi]
             bs = [self.tablo_borcu(n) for n in uyeler]
             if all(v is not None for v in bs):
-                self.d("%s:rapor:%s:borc" % (k, no), sum(bs), "KULLANICI",
-                       "B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu · C3 kişi toplamı")
+                yaygin = any(sk["basliklar"] and any(sutun_sinifi(h) == "genel" for h in sk["basliklar"]) and any(sutun_sinifi(h) == "odenen" for h in sk["basliklar"])
+                             and any(n2 in uyeler for n2, _ in sk["satirlar"]) for sk in self.sekmeler)
+                self.d("%s:rapor:%s:borc" % (k, no), sum(bs), "YAYGIN" if yaygin else "KULLANICI",
+                       "B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu · C3 kişi toplamı"
+                       + (" · karar A Genel Toplam − ödenen (hangi toplam: YAYGIN)" if yaygin else ""))
                 if b > 0:
                     self.d("%s:rapor:%s:grup" % (k, no), sorted(n for n, v in zip(uyeler, bs) if v > 0), "KULLANICI",
                            "C3 kişi gruplaması: farklı ad aynı kimlik ayrı kişi; aynı ad farklı kimlik ayrı; kimliksiz aynı adın tek kimliğine katılır")

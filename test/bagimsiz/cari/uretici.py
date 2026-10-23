@@ -139,6 +139,21 @@ def rastgele_tablo(rt, tohum):
     fr += [firma(no, ad, bozuk) for no, ad in [yeni() for _ in range(2)]]
     rt.shuffle(fr)
     sekmeler.append({"ad": "Firmalar", "tur": "serbest", "basliklar": ["Telefon", vb, "Tutar"], "kayitlar": fr})
+    # VERGİ SÜTUNU BORÇ DEĞİLDİR ([KULLANICI] 23.10.2026 karar A): Fatura No + Müşteri + Tutar + vergi sütunu + Genel Toplam + Vade (yarı tohumlarda Tahsil Edilen);
+    # adlar tekil (Fatura No'lu sekmede kayıt anahtarı rapordan adla çözülür).
+    vs = rt.choice(["KDV", "Vergi", "Vergi Tutarı", "Stopaj", "Tevkifat", "ÖTV"])
+    tahsil = rt.random() < 0.5
+    fb = ["Telefon", "Tutar", vs, "Genel Toplam"] + (["Tahsil Edilen"] if tahsil else []) + ["Vade"]
+    fat = []
+    for i in range(rt.randint(2, 4)):
+        _, ad = yeni()
+        t = tutar()
+        v = t * rt.choice([1, 8, 10, 18, 20]) // 100
+        h = {"Telefon": "", "Tutar": para(t), vs: para(v), "Genel Toplam": para(t + v), "Vade": "%02d.07.2026" % rt.randint(1, 28)}
+        if tahsil:
+            h["Tahsil Edilen"] = para(rt.choice([0, (t + v) // 2, t + v, t + v + rt.randint(1, 5000)]))
+        fat.append({"no": "F%d-%03d" % (tohum, n[0]), "isim": ad, "hucreler": h})
+    sekmeler.append({"ad": "Faturalar", "tur": "serbest", "ilk": ["Fatura No", "Müşteri"], "basliklar": fb, "kayitlar": fat})
     rt.shuffle(sekmeler)  # sekme sırası (K2 04:09: farklı sekmedeki aynı dosya no ayrı borç — sonuç sıradan bağımsız)
     return {"id": "tablo", "islem": "tablo_yukle", "sekmeler": sekmeler}
 
@@ -157,7 +172,7 @@ def uret(tohum, islem):
     if rt.random() < 0.5:
         adimlar.insert(1, {"id": "u-y", "islem": "kullanici_ac", "ad": "Y%d" % tohum, "rol": "avukat", "kaldir": ["cash.view"]})
     sen = {"dil": M.DIL, "ad": "rastgele-ux18-%d" % tohum, "aciklama": "uretici.py --tohum %d --islem %d" % (tohum, islem),
-           "dayanak": "KARARLAR.md B2, B3 (K1–K3), B3c (C3), B5b (K5); ders 17", "bugun": bugun.isoformat(), "adimlar": adimlar}
+           "dayanak": "KARARLAR.md B2, B3 (K1–K3), B3c (C3), B3d (karar A), B5b (K5); ders 17", "bugun": bugun.isoformat(), "adimlar": adimlar}
     n_f = n_e = 0
     kontrol = 0
 

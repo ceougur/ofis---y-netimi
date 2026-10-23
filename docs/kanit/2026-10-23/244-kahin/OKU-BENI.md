@@ -74,3 +74,15 @@ Neden (ham çıktı, ders 38; her fark aşağıdakilerden birine düştü — s�
 yok (sütun tutar sayılıyor — b3d 21, rastgele 119 + 112 fark); (2) farklı adların aynı değerle birleşmesi (D1; yer tutucu ve gerçek TCKN); (3) kimliksiz satır: çok kimlikli
 adın aynı dosya no'lu kimliksiz satırı ayrı "kimliksiz" kişiye gidiyor (b3d 2026/401: "Ayşe Yıldız" 150 ayrı satır; rastgele 14 + 14); (4) sağlama hanesi tutmayan yer
 tutucu tek kimlikli adda ayrı kişi yapıyor (rastgele 21 + 21). Borç farkları gruplamanın sonucudur (rapor satırı kişi toplamı).
+
+### Tur 5 — karar A (vergi sütunu borç değildir) ve kayıt anahtarı sürekliliği (23.10.2026)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| KIRMIZI kirmizi-aday16-cari-vergi-anahtar | 17 senaryo (b3e, b3f yeni; üreteçte "Faturalar") + 39 mutant, ADAY 16 kodunda (salt okunur) — (1)'de kırmızı BEKLENİR | 41 fark (BULGU 26, İNCELE 15 — Genel Toplam − ödenen YAYGIN) · 0 okuma hatası · 0 yakalanmayan mutasyon |
+
+Neden (ham çıktı, ders 38): (1) KDV (ve b3e "Vergili Satış"ta Vergi / Vergi Tutarı / Tevkifat sütunlarından en az biri) tutar sayılıyor → Tutar + KDV + Genel Toplam,
+Tutar + KDV sekmelerinin kişileri raporda HİÇ yok (b3e Kemal Uz, Leyla Su, Mert Ay, Okan Ak, Rıza Ok; rastgele 1 KDV'li Faturalar); Ücret + Stopaj, Kalan Borç önceliği ve
+rastgele 2'nin ÖTV + Genel Toplam + Tahsil Edilen sekmesi aday 16'da kurala uygun; (2) borç sütunu belirlenemeyen sekmenin (Aidat + Ek Ücret) kişisi raporda notsuz
+kayboluyor (Tülin Er); (3) b3f: aynı dosya Yerine koy'da tahsilat kalıyor (anahtar aynı), ama geçersiz Vergi No (Oya Er) / TC (Sami Er) silinip yeniden yüklenince satır
+anahtarı değişiyor ("satir:c7ae…" → "satir:1b06…") ve kayda bağlı tahsilat düşüyor (alacak 60 / 90 → 0) — geçersiz değer kayıt kimliğine giriyor.

@@ -75,7 +75,13 @@ function tabloMatrisi(sk) {
   if (sk.tur === "icra") return [["Dosya No", "Borçlu", "Telefon", "Alacak Tutarı", "Kalan"], ...sk.kayitlar.map(r => [r.no, r.isim, r.tel || "", hucreTutar(r.alacak), hucreTutar(r.kalan)])];
   if (sk.tur === "soz") return [["Dosya No", "Borçlu", "Söz Tarihi", "Söz Tutarı"], ...sk.kayitlar.map(r => [r.no, r.isim, hucreTarih(r.tarih), hucreTutar(r.tutar)])];
   // /2 B3: başlıklar ve hücre metinleri senaryodan AYNEN (kâhin aynı metinden okur)
-  if (sk.tur === "serbest") return [["Dosya No", "Borçlu", ...sk.basliklar], ...sk.kayitlar.map(r => [r.no, r.isim, ...sk.basliklar.map(h => r.hucreler?.[h] ?? "")])];
+  // /2 (23.10.2026, vergi sütunu + kayıt anahtarı): `ilk` ilk sütunların başlıkları — iki başlık ("Fatura No", "Müşteri"): kayıt no + ad; tek başlık ("Müşteri"):
+  // Dosya No'suz tablo (yalnız ad; senaryodaki `no` kâhinin iç kimliğidir, tabloya yazılmaz).
+  if (sk.tur === "serbest") {
+    const ilk = sk.ilk || ["Dosya No", "Borçlu"];
+    const bas = r => (ilk.length === 1 ? [r.isim] : [r.no, r.isim]);
+    return [[...ilk, ...sk.basliklar], ...sk.kayitlar.map(r => [...bas(r), ...sk.basliklar.map(h => r.hucreler?.[h] ?? "")])];
+  }
   throw new Error(`sekme türü bilinmiyor: ${sk.tur}`);
 }
 
@@ -114,7 +120,29 @@ async function kos(senaryo) {
           const r = st.status === 200 ? await api("POST", "/api/workspace/dataset/commit", { stageId: st.data.stageId, mode: "replace" }) : st;
           durum(a, r);
           const pv = await api("GET", "/api/workspace/plans/from-table");
-          for (const sk of a.sekmeler) for (const kay of sk.kayitlar) ids.anahtar[kay.no] = pv.data?.records?.find(x => x.caseNo === kay.no && x.name === kay.isim)?.key || kay.no;
+          ham[`tablo:${a.id}:onizleme`] = (pv.data?.records || []).slice(0, 200).map(x => Object.fromEntries(Object.entries(x).filter(([, v]) => typeof v !== "object")));
+          for (const sk of a.sekmeler) {
+            for (const kay of sk.kayitlar) {
+              // Dosya No'suz sekme (`ilk` tek başlık): kayıt ADLA eşlenir (aynı adlı iki kayıt üretilmez); iki kez yüklenen tabloda aynı ad aynı kayda eşlenir.
+              const bul = sk.ilk && sk.ilk.length === 1 ? pv.data?.records?.find(x => x.name === kay.isim) : pv.data?.records?.find(x => x.caseNo === kay.no && x.name === kay.isim);
+              ids.anahtar[kay.no] = bul?.key || ids.anahtar[kay.no] || kay.no;
+              ((ids.sekmeAd ||= {})[kay.no] ||= new Set()).add(sk.ad);
+            }
+          }
+          // `ilk` sekmeleri (Fatura No + Müşteri / Dosya No'suz): kayıt anahtarı rapordan ADLA çözülür (kara kutu: Dosya No'suz satırın anahtarı "satir:<özet>";
+          // önizleme bu kayıtları listelemiyor — yoklama 23.10.2026). Aynı adlı iki `ilk` kaydı üretilmez.
+          if (a.sekmeler.some(sk => sk.ilk)) {
+            const cozR = (await api("GET", "/api/workspace/reports/cari-ekstre?from=2000-01-01&to=2099-12-31")).data?.report;
+            for (const sk of a.sekmeler.filter(x => x.ilk)) {
+              for (const kay of sk.kayitlar) {
+                const gs = (cozR?.groups || []).filter(g => g.cari === kay.isim || String(g.cari || "").startsWith(`${kay.isim} (`));
+                const keys = [...new Set(gs.flatMap(g => g.lines.map(l => l.key)))];
+                if (keys.length === 1) ids.anahtar[kay.no] = keys[0];
+                ((ids.anahtarGecmis ||= {})[kay.no] ||= []).push(keys.length === 1 ? keys[0] : keys.length ? `belirsiz:${keys.length}` : "yok");
+              }
+            }
+            ham[`tablo:${a.id}:anahtarlar`] = ids.anahtarGecmis;
+          }
           break;
         }
         case "cari_ac": {
@@ -385,6 +413,17 @@ async function kos(senaryo) {
                   P[`${k}:rapor:${no}:grup`] = gruplar.length === 1 ? gruplar[0] : gruplar;
                   const etiket = String(gruplar.length ? ids.genisRapor.groups.find(gr => gr.lines.some(l => l.key === anahtar && kurus(l.borc) > 0))?.cari ?? "" : "");
                   P[`${k}:rapor:${no}:etiketKimlik`] = (/\d{10,11}/.exec(etiket) || [""])[0];
+                  // karar A: borç sütunu belirlenemeyen kişi notsuz kaybolmaz — satırı raporda var mı, yoksa raporda sekme adını ya da "borç/tutar … sütun" diyen not
+                  const gorunur = ids.genisRapor.groups.some(gr => gr.lines.some(l => l.key === anahtar));
+                  const metinler = [];
+                  const tara = o => (typeof o === "string" ? metinler.push(o) : o && typeof o === "object" ? Object.values(o).forEach(tara) : null);
+                  tara(rp.data);
+                  tara(ids.genisRapor);
+                  const sekmeler = [...(ids.sekmeAd?.[no] || [])];
+                  // not: sekme adını geçen VE borç/tutar/sütun/gösterilmedi diyen metin ya da "borç/tutar … sütun" kalıbı (yalnız sekme adı — ör. süzgeç seçenekleri — not değil)
+                  const not = metinler.some(m => sekmeler.some(sa => m.includes(sa) && /(borç|tutar|sütun|gösteril|görün)/i.test(m)) || /(borç|tutar)[^.]{0,40}sütun|sütun[^.]{0,40}(borç|tutar)/i.test(m));
+                  P[`${k}:rapor:${no}:gorunurVeyaNot`] = gorunur || not;
+                  if (!gorunur) ham[`${k}:kayip:${no}`] = { not, notlar: metinler.filter(m => /sütun|sekme/i.test(m)).slice(0, 5) };
                 }
                 if (g) P[`${k}:rapor:${no}:ad`] = g.cari;
               }
