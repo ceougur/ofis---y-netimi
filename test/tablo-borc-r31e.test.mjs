@@ -669,3 +669,26 @@ describe("31e tur 10 Z2/Z3: fazla ödemeli satırda kalem yok; söz kalemi söz 
     assert.deepEqual(dues.items.filter(item => item.tab === "Borclar").map(item => [item.person, item.amount]), [["Ege Tan", 800]]);
   });
 });
+
+// 31e tur 11 Z4 (YÜKSEK, 007eb2e gerilemesi): söz başlığı tam sözcüktür — "Sözleşme Tutarı" / "Sözleşme Son Ödeme" söz DEĞİLDİR (`soz\w*` "sözleşme"yi
+// yakalıyordu: söz kalemi bütün sözleşme bedeli, Nakit 12.800 → 153.300; vade kolonu "Ödeme sözü" etiketi alıyordu). Söz tutarı kolonu söz sözcüğü + tutar
+// sözcüğü ister ("Söz Tutarı", "Ödeme Sözü Tutarı", "Taahhüt Tutarı"); sütun yoksa ya da hücre boşsa önceki kural (v2.4.3 / aday 20 ile aynı).
+describe("31e tur 11 Z4: 'Sözleşme Tutarı' söz tutarı değil; 'Sözleşme Son Ödeme' söz değil", () => {
+  const ctx = setup([
+    { name: "SozlesmeOnce", matrix: [["Ad Soyad", "Sözleşme Tutarı", "Kalan Borç", "Söz Tarihi", "Söz Tutarı"], ["Ali Veli", "50.000", "9.000", d(2), "3.000"], ["Ayşe Kaya", "40.000", "2.000", d(3), ""]] },
+    { name: "SozlesmeYalniz", matrix: [["Ad Soyad", "Sözleşme Tutarı", "Kalan Borç", "Söz Tarihi"], ["Can Er", "60.000", "5.000", d(2)]] },
+    { name: "SozlesmeVade", matrix: [["Ad Soyad", "Kira Bedeli", "Sözleşme Son Ödeme"], ["Jale Er", "4.000", d(5)]] },
+  ]);
+
+  test("Takvim: Ali söz 3.000, Ayşe söz tutarsız (söz hücresi boş), Can söz 5.000 (Kalan; söz sütunu yok); Jale'nin kalemi söz değil, 4.000", async () => {
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    const items = dues.items.filter(item => item.tab.startsWith("Sozlesme")).map(item => [item.person, item.amount ?? null, Boolean(item.promise), item.label]).sort((a, b) => a[0].localeCompare(b[0], "tr"));
+    assert.deepEqual(items.map(item => item.slice(0, 3)), [["Ali Veli", 3000, true], ["Ayşe Kaya", null, true], ["Can Er", 5000, true], ["Jale Er", 4000, false]]);
+    assert.notEqual(items.find(item => item[0] === "Jale Er")[3], "Ödeme sözü", "vade kolonu 'Ödeme sözü' etiketi almaz");
+  });
+
+  test("Vadeler ve Nakit Akışı Beklenen 12.000 (aday 21: 154.000)", async () => {
+    assert.equal((await ctx.report("vade-takip")).report.totals.amount, 12000);
+    assert.equal((await ctx.report("nakit-akis")).report.totals.expected, 12000);
+  });
+});

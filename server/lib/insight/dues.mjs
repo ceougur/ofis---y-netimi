@@ -27,7 +27,10 @@ const PAST = /\b(yapilan|odenen|odendigi|odenmis|tahsil edilen|gerceklesen|son o
 const STRONG = /\b(odeme sozu|sozu|soz tarihi|soz|taahhut\w*|vade\w*|son odeme|taksit tarihi|taksit vadesi|planlanan odeme|odenecek tarih\w*|odeme plani|tahsil tarihi|tahsilat tarihi|odeme gunu|vade gunu|taksit gunu|kira gunu|aidat gunu|her ayin|due date|due|payment due|pay by|installment date)\b/;
 const WEAK = /\b(odeme tarihi|odeme|tahsil\w*|taksit\w*|payment date|payment|installment\w*)\b/;
 const DAY_OF_MONTH = /\b(odeme gunu|vade gunu|taksit gunu|kira gunu|aidat gunu|her ayin)\b/;
-const PROMISE = /\b(soz\w*|taahhut\w*)\b/;
+// Ödeme sözü / taahhüt başlığı ("Söz Tarihi", "Ödeme Sözü", "Taahhüt Tarihi"). 31e tur 11 Z4: tam sözcük — "Sözleşme Tutarı", "Sözleşme No", "Sözleşme Bitiş"
+// söz DEĞİLDİR (önceki `soz\w*` "sözleşme"yi de yakalıyordu: söz kalemi bütün sözleşme bedeli oluyordu). Söz tutarı kolonu söz sözcüğü + tutar sözcüğü ister.
+const PROMISE = /\b(soz|sozu|taahhut|taahhudu)\b/;
+const PROMISE_AMOUNT = /\btutar\w*\b/;
 const INSTALLMENT = /\b(taksit\w*|installment\w*)\b/;
 // Sıra sayılı ödeme kolonları ("1. Ödeme Tarihi" / "1. Ödeme Tutarı", "Birinci Ödeme") taksit dizisidir (v2.0.2).
 const SERIES_PAYMENT = /\b(odeme\w*|tahsilat\w*|aidat\w*|kira\w*|payment\w*|installment\w*)\b/;
@@ -200,14 +203,16 @@ function classifyColumns(rows, columns, analyses, now, forced = null) {
   const period = single && periods.length === 1 ? periods[0] : null;
   // 31e tur 10 Z3: ödeme sözü kalemi SÖZ TUTARIdır — sekmede söz tutarı kolonu ("Söz Tutarı", "Taahhüt Tutarı") varsa o önce gelir (Taksit Tutarı + Kalan + Söz
   // Tarihi + Söz Tutarı sekmesinde söz kalemi taksit tutarını alıyordu; v2.4.3'te de). Söz tutarı hücresi boşsa önceki kural (amountFallback).
-  const promiseAmount = moneyLike.find(column => PROMISE.test(foldText(column)) && !due.some(item => item.column === column)) || null;
+  const promiseAmount = moneyLike.find(column => PROMISE.test(foldText(column)) && PROMISE_AMOUNT.test(foldText(column)) && !due.some(item => item.column === column)) || null;
   for (const entry of due) {
-    // Söz kaleminin söz tutarı yoksa (kolon yok ya da hücre boş) önceki kural: tek vadeli tabloda dönem tutarı (Kalan ile sınırlı), yoksa satırın borcu.
+    // Söz kaleminin söz tutarı yoksa önceki kural (v2.4.3 / aday 20): tek vadeli tabloda dönem tutarı (Kalan ile sınırlı); söz tutarı kolonu hiç yoksa ve dönem
+    // kolonu da yoksa satırın borcu; söz tutarı kolonu var ama hücresi boşsa (dönem kolonu yoksa) tutarsız.
     const ownColumn = single ? period : own;
     const base = entry.installment === null ? ownColumn || fallback : null;
     const promiseFirst = entry.promise && entry.installment === null ? promiseAmount : null;
     entry.amountColumn = pairFor(entry) || promiseFirst || base;
-    entry.amountFallback = promiseFirst && base && base !== promiseFirst ? base : null;
+    const fallbackOf = promiseFirst ? (single ? period : base) : null;
+    entry.amountFallback = fallbackOf && fallbackOf !== promiseFirst ? fallbackOf : null;
     entry.amountFallbackFromDebt = Boolean(debt && entry.amountFallback === debt);
     entry.amountFallbackCap = entry.amountFallback && entry.amountFallback === period ? plan.remaining || "" : null;
     // Kalemin tutarı borç kolonuysa satır borcundan okunur (Kalan boş satırda ana tutar — Tablodaki Kişiler ile aynı).
