@@ -1,0 +1,11 @@
+{"sheets":[
+ {"name":"TaahhutYalniz","matrix":[["Ad Soyad","Taahhüt Tarihi","Taahhüt Tutarı"],["Kaan Ay","@d+3","650"]]},
+ {"name":"TaahhutnameYalniz","matrix":[["Ad Soyad","Taahhütname Tarihi","Taahhütname Tutarı"],["Lale Ak","@d+3","700"]]},
+ {"name":"TaahhutluTutar","matrix":[["Ad Soyad","Taahhütlü Ödeme Tarihi","Taahhütlü Tutar"],["Mert Su","@d+4","800"]]},
+ {"name":"SozMiktariYalniz","matrix":[["Ad Soyad","Söz Tarihi","Söz Miktarı"],["Nur Ak","@d+3","900"]]},
+ {"name":"TelekomTek","matrix":[["Ad Soyad","Taahhütlü Ücret","Ödeme Günü"],["Oya Er","450","15"]]},
+ {"name":"TutarVeSoz","matrix":[["Ad Soyad","Tutar","Söz Tarihi","Söz Tutarı"],["Pelin Su","5.000","@d+2","1.000"]]},
+ {"name":"TutarVeTaahhutname","matrix":[["Ad Soyad","Tutar","Taahhütname Tarihi","Taahhütname Tutarı"],["Rıza Ak","6.000","@d+2","1.200"]]},
+ {"name":"KalanBosTaahhutname","matrix":[["Ad Soyad","Kalan Borç","Taahhütname Tarihi","Taahhütname Tutarı"],["Selin Ay","","@d+5","400"],["Tarık Er","2.000","@d+6","300"]]},
+ {"name":"OdemeSozuSayi","matrix":[["Ad Soyad","Borç","Ödeme Sözü Tarihi","Ödeme Sözü"],["Ufuk Can","3.000","@d+4","500"]]}
+]}

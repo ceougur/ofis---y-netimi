@@ -501,12 +501,15 @@ describe("31e tur 8 Y1: 'Borçlu Telefon' / 'Borçlu TC' kolonu borç değil —
     assert.deepEqual(of(["Borçlu", "Borçlu Sicil", "Alacaklı", "Borçlu Tutarı", "Bakiye Borçlu", "Tutar"]), ["Borçlu Tutarı", "Bakiye Borçlu", "Tutar"]);
   });
   const NOTE = "“BorcluTC” sekmesinde borç sütunu seçilemedi (Tutar, Masraf): bu satırlar borç olarak sayılmadı. Borç sütununun başlığını “Kalan Borç”, “Toplam Borç” ya da “Genel Toplam” yapın.";
+  // 31e tur 15: Y1 kararının "borç kolonu yoksa … görünür not" kısmı — tutar kolonu olmayan dört sekme (yalnız telefon / TC / sicil) de sekmeyi adlandıran notla
+  // (tur 8'de bu beklenti yalnız BorcluTC notunu yazıyordu; kararın bu kısmı uygulanmamıştı, kâhin b3n yakaladı).
+  const MISSING = tab => `“${tab}” sekmesinde borç sütunu yok: bu satırlar borç olarak sayılmadı. Borç için “Kalan Borç”, “Toplam Borç” ya da “Tutar” başlıklı bir sütun ekleyin.`;
 
-  test("Kişiler: yalnız Pınar Su 1.000 ve Rıza Ak 2.000 (toplam 3.000); telefon / TC numarası borç değil; BorcluTC için not", async () => {
+  test("Kişiler: yalnız Pınar Su 1.000 ve Rıza Ak 2.000 (toplam 3.000); telefon / TC numarası borç değil; BorcluTC için not, tutar kolonu olmayan sekmeler için not", async () => {
     const { report } = await ctx.report("cari-ekstre");
     assert.deepEqual(debitBy(report), { "Pınar Su": 1000, "Rıza Ak": 2000 }, JSON.stringify(report.groups.map(group => [group.cari, group.debit])));
     assert.equal(report.totals.debit, 3000);
-    assert.deepEqual(report.notes, [NOTE]);
+    assert.deepEqual(report.notes, [NOTE, MISSING("BorcluTel"), MISSING("BorcluSicil"), MISSING("BorcluTCHatali"), MISSING("BorcIletisim")]);
   });
 
   test("Takvim: BorcluTel / BorcluTC kalemlerinde tutar ve borç yok (Açılış Bakiyesi ön dolumu boş); hiçbir kalemin borç kolonu kimlik / telefon değil", async () => {
@@ -715,5 +718,127 @@ describe("31e tur 11 Z4: söz tutarı yalnız 'söz/sözü/taahhüt' + 'tutar' b
   test("Vadeler ve Nakit Akışı Beklenen 9.500", async () => {
     assert.equal((await ctx.report("vade-takip")).report.totals.amount, 9500);
     assert.equal((await ctx.report("nakit-akis")).report.totals.expected, 9500);
+  });
+});
+
+// 31e tur 12 Z5 (DÜŞÜK, 26e6573 gerilemesi) / Z6 (DÜŞÜK, v2.4.3'te de): taahhüt ailesi ÖNEK olarak söz (taahhüt, taahhütname, taahhütlü, taahhüdü); söz ailesi tam sözcük
+// (söz, sözü) — dışarıda kalan yalnız "sözleşme…". Söz tutarı sütununda "tutar" ya da "miktar" sözcüğü yeter. "Taahhütlü Ücret" söz tutarı değil, dönem tutarıdır.
+// Aday 22: Gül 2.500 / Işıl 4.500 (söz değil, satır borcu), Fırat 3.000 / Hakan 3.500 (söz miktarı okunmuyor), Kemal kalemi yok.
+describe("31e tur 12 Z5/Z6: taahhüt öneki söz; söz tutarı 'tutar' ya da 'miktar'; 'Taahhütlü Ücret' dönem tutarı", () => {
+  const ctx = setup([
+    { name: "Taahhutname", matrix: [["Ad Soyad", "Kalan Borç", "Taahhütname Tarihi", "Taahhüt Tutarı"], ["Gül Taş", "2.500", d(4), "500"]] },
+    { name: "Taahhutlu", matrix: [["Ad Soyad", "Kalan Borç", "Taahhütlü Ödeme Tarihi", "Taahhüt Tutarı"], ["Işıl Ay", "4.500", d(5), "800"]] },
+    { name: "TaahhuduTarihi", matrix: [["Ad Soyad", "Kalan Borç", "Taahhüdü Tarihi", "Taahhüdü Tutarı"], ["Kemal Su", "2.000", d(7), "300"]] },
+    { name: "OdemeTaahhudu", matrix: [["Ad Soyad", "Kalan Borç", "Ödeme Taahhüdü", "Taahhüdü Tutarı"], ["Jale Er", "5.500", d(6), "1.100"]] },
+    { name: "SozMiktari", matrix: [["Ad Soyad", "Kalan Borç", "Söz Tarihi", "Söz Miktarı"], ["Fırat Er", "3.000", d(2), "600"]] },
+    { name: "TaahhutMiktari", matrix: [["Ad Soyad", "Kalan Borç", "Taahhüt Tarihi", "Taahhüt Miktarı"], ["Hakan Öz", "3.500", d(3), "700"]] },
+    { name: "TelekomVade", matrix: [["Ad Soyad", "Taahhütlü Ücret", "Kalan Borç", "Son Ödeme"], ["Mina Er", "450", "1.350", d(5)]] },
+  ]);
+
+  test("Takvim: söz kalemleri söz tutarı / miktarı (Gül 500, Işıl 800, Kemal 300, Jale 1.100, Fırat 600, Hakan 700); Mina 450 (Taahhütlü Ücret dönem tutarı, söz değil)", async () => {
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    const items = dues.items.map(item => [item.person, item.amount ?? null, Boolean(item.promise), item.label]).sort((a, b) => a[0].localeCompare(b[0], "tr"));
+    assert.deepEqual(items.map(item => item.slice(0, 3)), [["Fırat Er", 600, true], ["Gül Taş", 500, true], ["Hakan Öz", 700, true], ["Işıl Ay", 800, true], ["Jale Er", 1100, true], ["Kemal Su", 300, true], ["Mina Er", 450, false]]);
+    assert.deepEqual([...new Set(items.filter(item => item[2]).map(item => item[3]))], ["Ödeme sözü"]);
+  });
+
+  test("Vadeler ve Nakit Akışı Beklenen 4.450 (aday 22: 15.050)", async () => {
+    assert.equal((await ctx.report("vade-takip")).report.totals.amount, 4450);
+    assert.equal((await ctx.report("nakit-akis")).report.totals.expected, 4450);
+  });
+});
+
+// 31e tur 13 (ORTA, sakınca süzgeci: borç tutarı yanlış, Kişiler ↔ Takvim tutarsız): söz tutarı sütunu TEK tanım (debt-column.mjs isPromiseAmountHeader) —
+// söz ailesi tam sözcük YA DA taahhüt öneki, ve "tutar" ya da "miktar". Söz tutarı BORÇ DEĞİLDİR (A1), hiçbir yolda: borç düzeni (Tablodaki Kişiler, Açılış
+// Bakiyesi ön dolumu) aynı yardımcıyla söz tutarını borç adayı saymaz. Aday 22: "Taahhütname Tutarı" / "Taahhütlü Tutar" Kişiler'de borç (700 / 800; Kalan'ı
+// boş satırda 400), "Tutar" + söz tutarı sekmesinde borç yok (Pelin notsuz düşüyor, Rıza "seçilemedi" notu). "Taahhütlü Ücret" borç kalır (5b).
+describe("31e tur 13: söz tutarı tek tanım, hiçbir yolda borç değil; 'Taahhütlü Ücret' borç kalır", () => {
+  const ctx = setup([
+    { name: "TaahhutnameYalniz", matrix: [["Ad Soyad", "Taahhütname Tarihi", "Taahhütname Tutarı"], ["Lale Ak", d(3), "700"]] },
+    { name: "TaahhutluTutar", matrix: [["Ad Soyad", "Taahhütlü Ödeme Tarihi", "Taahhütlü Tutar"], ["Mert Su", d(4), "800"]] },
+    { name: "SozMiktariYalniz", matrix: [["Ad Soyad", "Söz Tarihi", "Söz Miktarı"], ["Nur Ak", d(3), "900"]] },
+    { name: "TelekomTek", matrix: [["Ad Soyad", "Taahhütlü Ücret", "Ödeme Günü"], ["Oya Er", "450", "15"]] },
+    { name: "TutarVeSoz", matrix: [["Ad Soyad", "Tutar", "Söz Tarihi", "Söz Tutarı"], ["Pelin Su", "5.000", d(2), "1.000"]] },
+    { name: "TutarVeTaahhutname", matrix: [["Ad Soyad", "Tutar", "Taahhütname Tarihi", "Taahhütname Tutarı"], ["Rıza Ak", "6.000", d(2), "1.200"]] },
+    { name: "KalanBosTaahhutname", matrix: [["Ad Soyad", "Kalan Borç", "Taahhütname Tarihi", "Taahhütname Tutarı"], ["Selin Ay", "", d(5), "400"], ["Tarık Er", "2.000", d(6), "300"]] },
+  ]);
+
+  test("Tablodaki Kişiler: söz tutarı borç değil (Lale, Mert, Nur, Selin yok); Tutar borç (Pelin 5.000, Rıza 6.000); Taahhütlü Ücret borç (Oya 450); not yok", async () => {
+    const { report } = await ctx.report("cari-ekstre");
+    assert.deepEqual(debitBy(report), { "Oya Er": 450, "Pelin Su": 5000, "Rıza Ak": 6000, "Tarık Er": 2000 });
+    assert.deepEqual(report.notes || [], []);
+  });
+
+  test("Takvim: söz kalemi söz tutarı, kalemin borcu (Açılış Bakiyesi ön dolumu) raporun satır borcu — söz tutarı değil", async () => {
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    const items = dues.items.filter(item => item.tab !== "TelekomTek").map(item => [item.person, item.amount ?? null, item.debt ?? null, Boolean(item.promise)]).sort((a, b) => a[0].localeCompare(b[0], "tr"));
+    assert.deepEqual(items, [["Lale Ak", 700, null, true], ["Mert Su", 800, null, true], ["Nur Ak", 900, null, true], ["Pelin Su", 1000, 5000, true], ["Rıza Ak", 1200, 6000, true], ["Selin Ay", 400, null, true], ["Tarık Er", 300, 2000, true]]);
+  });
+});
+
+// 31e tur 14 (ORTA, f8e9ae4 gerilemesi + para): YALIN söz / taahhüt kolonu ("Ödeme Sözü", "Söz", "Taahhüt"; tutar / miktar / dönem sözcüğü yok) PARA KOLONU
+// SAYILMAZ — borç adayı değildir, söz kalemi tutarı da olmaz (A1 "Ödeme Sözü tutarı borç değil"; tek tanım debt-column.mjs isBarePromiseHeader). Dönem sözcüğü
+// taşıyan ("Taahhütlü Ücret", "Taahhütlü Kira") normal sınıflanır (5b). f8e9ae4: "Ödeme Sözü" 1.500 Kişiler'de borç (aday 22'de değildi); "Tutar" + "Ödeme Sözü"
+// sekmesinde "seçilemedi" notu. Aday 22: Ali'nin söz kalemi "Ödeme Sözü" kolonundan 1.500; Deniz borçsuz, notsuz.
+describe("31e tur 14: yalın 'Ödeme Sözü' / 'Söz' / 'Taahhüt' kolonu para kolonu değil; 'Taahhütlü Ücret' / 'Taahhütlü Kira' normal", () => {
+  const ctx = setup([
+    { name: "OdemeSozuYalin", matrix: [["Ad Soyad", "Ödeme Sözü Tarihi", "Ödeme Sözü"], ["Ali Can", d(3), "1.500"]] },
+    { name: "SozYalin", matrix: [["Ad Soyad", "Söz Tarihi", "Söz"], ["Banu Ay", d(4), "2.000"]] },
+    { name: "TaahhutYalin", matrix: [["Ad Soyad", "Taahhüt Tarihi", "Taahhüt"], ["Cem Er", d(5), "2.500"]] },
+    { name: "TutarVeOdemeSozu", matrix: [["Ad Soyad", "Tutar", "Ödeme Sözü Tarihi", "Ödeme Sözü"], ["Deniz Su", "4.000", d(2), "1.000"]] },
+    { name: "BorcVeSoz", matrix: [["Ad Soyad", "Borç", "Ödeme Sözü Tarihi", "Ödeme Sözü"], ["Ece Ak", "3.000", d(4), "500"]] },
+    { name: "TaahhutluUcret", matrix: [["Ad Soyad", "Taahhütlü Ücret", "Son Ödeme"], ["Fikret Öz", "450", d(5)]] },
+    { name: "TaahhutluKira", matrix: [["Ad Soyad", "Taahhütlü Kira", "Son Ödeme"], ["Gaye Su", "3.000", d(6)]] },
+    { name: "KalanVeSoz", matrix: [["Ad Soyad", "Kalan Borç", "Söz Tarihi", "Söz"], ["Hakan Su", "", d(3), "700"], ["Irmak Ay", "1.800", d(4), "600"]] },
+  ]);
+
+  test("Tablodaki Kişiler: yalın söz kolonu borç değil (Ali, Banu, Cem, Hakan yok); Deniz 4.000 (Tutar tek tutar); Taahhütlü Ücret / Kira borç; not yok", async () => {
+    const { report } = await ctx.report("cari-ekstre");
+    assert.deepEqual(debitBy(report), { "Deniz Su": 4000, "Ece Ak": 3000, "Fikret Öz": 450, "Gaye Su": 3000, "Irmak Ay": 1800 });
+    assert.deepEqual(report.notes || [], []);
+  });
+
+  test("Takvim: yalın söz kolonu söz kalemi tutarı olmaz (Ali boş); Deniz söz kalemi satır borcu 4.000; dönem kolonları kalem tutarı", async () => {
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    const items = dues.items.map(item => [item.person, item.amount ?? null, item.debt ?? null, Boolean(item.promise)]).sort((a, b) => a[0].localeCompare(b[0], "tr"));
+    assert.deepEqual(items, [["Ali Can", null, null, true], ["Banu Ay", null, null, true], ["Cem Er", null, null, true], ["Deniz Su", 4000, 4000, true], ["Ece Ak", 3000, 3000, true], ["Fikret Öz", 450, 450, false], ["Gaye Su", 3000, 3000, false], ["Hakan Su", null, null, true], ["Irmak Ay", 1800, 1800, true]]);
+  });
+
+  test("Vadeler ve Nakit Akışı Beklenen 12.250 (aday 22 ve f8e9ae4: 9.750)", async () => {
+    assert.equal((await ctx.report("vade-takip")).report.totals.amount, 12250);
+    assert.equal((await ctx.report("nakit-akis")).report.totals.expected, 12250);
+  });
+});
+
+// 31e tur 15 (ORTA; Y1 kararı eksik uygulanmıştı): "Borç kolonu yoksa (yalnız kişi / tarih kolonları; söz de yok) … borç YOK (bütün raporlarda 0) ve satır görünür
+// ya da raporda görünür not." Aday 22: "Takip" (Dosya No, Borçlu, Borçlu Telefon, Son Ödeme) kişileri Tablodaki Kişiler'den NOTSUZ düşüyordu (görünen tek not
+// "Masrafli"yi adlandırıyordu). Şimdi Kişiler, Vadeler ve Nakit Akışı sekmeyi adlandıran not yazar (Y1 notunun biçimi); söz sekmesi (A1) not açmaz.
+describe("31e tur 15: tutar kolonu olmayan sekme notsuz düşmez; söz sekmesi not açmaz", () => {
+  const MISSING = tab => `“${tab}” sekmesinde borç sütunu yok: bu satırlar borç olarak sayılmadı. Borç için “Kalan Borç”, “Toplam Borç” ya da “Tutar” başlıklı bir sütun ekleyin.`;
+  const UNRESOLVED = "“Masrafli” sekmesinde borç sütunu seçilemedi (Tutar, Masraf): bu satırlar borç olarak sayılmadı. Borç sütununun başlığını “Kalan Borç”, “Toplam Borç” ya da “Genel Toplam” yapın.";
+  const ctx = setup([
+    { name: "Takip", matrix: [["Dosya No", "Borçlu", "Borçlu Telefon", "Son Ödeme"], ["2026/701", "Can Er", "0532 111 22 33", d(3)], ["2026/702", "Ece Su", "0533 444 55 66", d(4)]] },
+    { name: "Masrafli", matrix: [["Dosya No", "Borçlu", "Tutar", "Masraf"], ["2026/703", "Deniz Ak", "1.000", "150"]] },
+    { name: "Aidat", matrix: [["Ad Soyad", "Borçlu Telefon", "Tutar"], ["Hale İn", "0535 777 88 99", "1.000"]] },
+    { name: "SozTarihYalniz", matrix: [["Ad Soyad", "Söz Tarihi"], ["Kaan Ay", d(2)]] },
+    { name: "Rehber", matrix: [["Ad Soyad", "Telefon"], ["Lale Su", "0536 123 45 67"]] },
+  ]);
+
+  test("Tablodaki Kişiler: borç yalnız Hale 1.000; Takip ve Rehber sekmeyi adlandıran notla, Masrafli 'seçilemedi' notuyla; söz sekmesi notsuz", async () => {
+    const { report } = await ctx.report("cari-ekstre");
+    assert.deepEqual(debitBy(report), { "Hale İn": 1000 });
+    assert.deepEqual(report.notes, [UNRESOLVED, MISSING("Takip"), MISSING("Rehber")]);
+  });
+
+  test("Vadeler ve Nakit Akışı aynı notlar; Takip kalemleri görünür, tutarsız (borç 0); Sekme süzgecinde yalnız seçili sekmenin notu", async () => {
+    const vade = (await ctx.report("vade-takip")).report;
+    assert.deepEqual(vade.notes, [UNRESOLVED, MISSING("Takip"), MISSING("Rehber")]);
+    assert.equal(vade.totals.amount, 0);
+    const nakit = (await ctx.report("nakit-akis")).report;
+    assert.deepEqual(nakit.notes, [UNRESOLVED, MISSING("Takip"), MISSING("Rehber")]);
+    assert.equal(nakit.totals.expected, 0);
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    assert.deepEqual(dues.items.filter(item => item.tab === "Takip").map(item => [item.person, item.amount ?? null, item.debt ?? null]).sort((a, b) => a[0].localeCompare(b[0], "tr")), [["Can Er", null, null], ["Ece Su", null, null]]);
+    assert.deepEqual((await ctx.report("cari-ekstre", "tabs=Takip")).report.notes, [MISSING("Takip")]);
   });
 });

@@ -46,9 +46,9 @@ MUT = {
     "M29-b3g-icerik-ikizi-yok": [(B, "      const news = common.length ? people.incoming.byContent(tab, common).get(value) || [] : [];\n      if (olds.length === 1 && news.length === 1) [match] = news;\n", "      const news = common.length ? people.incoming.byContent(tab, common).get(value) || [] : [];\n")],
     # ---- tur 8 ----
     "M30-Y1-rol-denetimi-yok": [(DC, " || NOT_AMOUNT_ROLES.has(roles.get(column))) return false;", ") return false;")],
-    "M31-Y1-tutar-adayinda-kisi-ozniteligi": [(DC, "  .filter(column => column && !isNotAmountHeader(column) && !isPersonAttributeHeader(column));", "  .filter(column => column && !isNotAmountHeader(column));")],
+    "M31-Y1-tutar-adayinda-kisi-ozniteligi": [(DC, "  .filter(column => column && !isNotAmountHeader(column) && !isPersonAttributeHeader(column) && !isBarePromiseHeader(column));", "  .filter(column => column && !isNotAmountHeader(column) && !isBarePromiseHeader(column));")],
     "M32-Y1-seyrek-baslik-yok": [(DC, "isPersonAttributeHeader(column) || IDENTIFIER_HEADER.test(folded) || NOT_AMOUNT_ROLES", "NOT_AMOUNT_ROLES")],
-    "M33-Y1-kalem-tutari-kisi-ozniteligi": [("server/lib/insight/dues.mjs", ".map(item => item.column).filter(column => !isPersonAttributeHeader(column));", ".map(item => item.column);")],
+    "M33-Y1-kalem-tutari-kisi-ozniteligi": [("server/lib/insight/dues.mjs", ".map(item => item.column).filter(column => !isPersonAttributeHeader(column) && !isBarePromiseHeader(column));", ".map(item => item.column).filter(column => !isBarePromiseHeader(column));")],
     "M34-Z1-kalem-sinirsiz": [("server/lib/insight/dues.mjs", "return typeof left === \"number\" && left > 0 ? Math.min(value, left) : value;", "return value;")],
     "M42-Z1-kalem-tum-kalan": [("server/lib/insight/dues.mjs", "? Math.min(value, left) : value;", "? left : value;")],
     "M43-Z1-donem-birden-cok": [("server/lib/insight/dues.mjs", "const period = single && periods.length === 1 ? periods[0] : null;", "const period = single && periods.length >= 1 ? periods[0] : null;")],
@@ -65,9 +65,30 @@ MUT = {
     "M46-Z3-soz-tutari-sonra": [("server/lib/insight/dues.mjs", "    const promiseFirst = entry.promise && entry.installment === null ? promiseAmount : null;", "    const promiseFirst = null;")],
     "M47-Z3-bos-soz-onceki-kural-yok": [("server/lib/insight/dues.mjs", "        if (!(ownAmount > 0) && entry.amountFallback) ownAmount = capped(entry.amountFallbackFromDebt ? state.debt : parseAmount(cell(row, entry.amountFallback)), entry.amountFallbackCap);\n", "")],
     # ---- tur 11 ----
-    "M48-Z4-soz-kalibi-genis": [("server/lib/insight/dues.mjs", "const PROMISE = /\\b(soz|sozu|taahhut|taahhudu)\\b/;", "const PROMISE = /\\b(soz\\w*|taahhut\\w*)\\b/;")],
-    "M49-Z4-soz-tutari-tutar-sozcuksuz": [("server/lib/insight/dues.mjs", "PROMISE.test(foldText(column)) && PROMISE_AMOUNT.test(foldText(column)) && ", "PROMISE.test(foldText(column)) && ")],
+    "M48-Z4-soz-kalibi-genis": [(DC, "export const PROMISE_HEADER = /\\b(soz|sozu|taahhut\\w*|taahhud\\w*)\\b/;", "export const PROMISE_HEADER = /\\b(soz\\w*|taahhut\\w*|taahhud\\w*)\\b/;")],
+    "M49-Z4-soz-tutari-tutar-sozcuksuz": [(DC, "  return PROMISE_HEADER.test(folded) && PROMISE_AMOUNT_WORD.test(folded);", "  return PROMISE_HEADER.test(folded);")],
     "M50-Z4-bos-soz-satir-borcu-yok": [("server/lib/insight/dues.mjs", "    entry.amountFallback = promiseFirst && base && base !== promiseFirst ? base : null;", "    entry.amountFallback = promiseFirst && period && period !== promiseFirst ? period : null;")],
+    # ---- tur 12 ----
+    "M51-Z5-taahhut-tam-sozcuk": [(DC, "export const PROMISE_HEADER = /\\b(soz|sozu|taahhut\\w*|taahhud\\w*)\\b/;", "export const PROMISE_HEADER = /\\b(soz|sozu|taahhut|taahhudu)\\b/;")],
+    "M52-Z5-taahhud-oneki-yok": [(DC, "export const PROMISE_HEADER = /\\b(soz|sozu|taahhut\\w*|taahhud\\w*)\\b/;", "export const PROMISE_HEADER = /\\b(soz|sozu|taahhut\\w*)\\b/;")],
+    "M53-Z5-strong-taahhud-yok": [("server/lib/insight/dues.mjs", "|taahhut\\w*|taahhud\\w*|vade\\w*|", "|taahhut\\w*|vade\\w*|")],
+    "M54-Z6-miktar-yok": [(DC, "const PROMISE_AMOUNT_WORD = /\\b(tutar\\w*|miktar\\w*)\\b/;", "const PROMISE_AMOUNT_WORD = /\\btutar\\w*\\b/;")],
+    "M55-Z6-soz-tutari-yalniz-para": [("server/lib/insight/dues.mjs", "const promiseAmount = analyses.filter(item => item.role === \"money\" || item.role === \"number\")", "const promiseAmount = analyses.filter(item => item.role === \"money\")")],
+    "M56-Z5-donem-soz-sozcugu-dislar": [("server/lib/insight/dues.mjs", "AMOUNT_OWN.test(foldText(column)) && !isPromiseAmountHeader(column) && ", "AMOUNT_OWN.test(foldText(column)) && !PROMISE.test(foldText(column)) && ")],
+    # ---- tur 13 ----
+    "M57-T13-yardimci-ikiye": [("server/lib/insight/dues.mjs", "isPersonAttributeHeader, isPromiseAmountHeader, PROMISE_HEADER, rowDebt", "isPersonAttributeHeader, PROMISE_HEADER, rowDebt"), ("server/lib/insight/dues.mjs", "const PROMISE = PROMISE_HEADER;\n", "const PROMISE = PROMISE_HEADER;\nconst isPromiseAmountHeader = column => PROMISE.test(foldText(column)) && /\\btutar\\w*\\b/.test(foldText(column));\n")],
+    "M58-T13-borc-eski-kalip": [(DC, "  const list = (candidates || []).filter(column => column && !isNotAmountHeader(column) && !isPromiseAmountHeader(column));", "  const list = (candidates || []).filter(column => column && !isNotAmountHeader(column) && !/\\b(soz|sozu|taahhut|taahhudu)\\b/.test(foldText(column)));")],
+    "M59-T13-borc-soz-suzgeci-yok": [(DC, "  const list = (candidates || []).filter(column => column && !isNotAmountHeader(column) && !isPromiseAmountHeader(column));", "  const list = (candidates || []).filter(column => column && !isNotAmountHeader(column));")],
+    # ---- tur 14 ----
+    "M60-T14-yalin-soz-borc-adayi": [(DC, "!isPersonAttributeHeader(column) && !isBarePromiseHeader(column));", "!isPersonAttributeHeader(column));")],
+    "M61-T14-yalin-soz-kalem-tutari": [("server/lib/insight/dues.mjs", ".filter(column => !isPersonAttributeHeader(column) && !isBarePromiseHeader(column));", ".filter(column => !isPersonAttributeHeader(column));")],
+    "M62-T14-donem-sozcugu-yok": [(DC, "  return PROMISE_HEADER.test(folded) && !PROMISE_AMOUNT_WORD.test(folded) && !EXPECTED_AMOUNT_HEADER.test(folded);", "  return PROMISE_HEADER.test(folded) && !PROMISE_AMOUNT_WORD.test(folded);")],
+    # ---- tur 15 ----
+    "M63-T15-sekme-notu-yok": [(R, "  for (const tab of missingTabs) notes.push(", "  for (const tab of []) notes.push(")],
+    "M64-T15-soz-sekmesi-de-not": [(DC, "Boolean(plan?.noAmount) && !(columns || []).some(column => PROMISE_HEADER.test(foldText(column)));", "Boolean(plan?.noAmount);")],
+    "M65-T15-vade-nakit-suzgeci": [(W.replace("workspace", "reports"), "unresolved: data.records.filter(record => (record.debtUnresolved || record.debtMissing) && inTabs(record.tab))", "unresolved: data.records.filter(record => record.debtUnresolved && inTabs(record.tab))")],
+    "M66-T15-kisiler-suzgeci": [(R, "unresolved: records.filter(record => (record.debtUnresolved || record.debtMissing) && inTabs(record))", "unresolved: records.filter(record => record.debtUnresolved && inTabs(record))")],
+    "M67-T15-seyrek-sayilmaz": [(DC, "  const noAmount = !list.length && !sparse;", "  const noAmount = !list.length;")],
     "M28-N2-elle-esitleme-de-atlar": [(D, "if (!manual && heldBefore?.contentHash && heldBefore.contentHash === contentHash)", "if (heldBefore?.contentHash && heldBefore.contentHash === contentHash)")],
 }
 TESTS = ["test/kayit-bag-31e.test.mjs", "test/kayit-bag-31e-birim.test.mjs", "test/tablo-borc-r31e.test.mjs", "test/tablo-borc-dosya-u2.test.mjs"]

@@ -1,0 +1,231 @@
+TAP version 13
+# Subtest: 31e tur 14: yalın 'Ödeme Sözü' / 'Söz' / 'Taahhüt' kolonu para kolonu değil; 'Taahhütlü Ücret' / 'Taahhütlü Kira' normal
+    # Subtest: Tablodaki Kişiler: yalın söz kolonu borç değil (Ali, Banu, Cem, Hakan yok); Deniz 4.000 (Tutar tek tutar); Taahhütlü Ücret / Kira borç; not yok
+    not ok 1 - Tablodaki Kişiler: yalın söz kolonu borç değil (Ali, Banu, Cem, Hakan yok); Deniz 4.000 (Tutar tek tutar); Taahhütlü Ücret / Kira borç; not yok
+      ---
+      duration_ms: 52.241243
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b9-eski-f8e9ae4/test/tablo-borc-r31e.test.mjs:792:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   'Ali Can': 1500,
+        -   'Deniz Su': 4000,
+            'Ece Ak': 3000,
+            'Fikret Öz': 450,
+            'Gaye Su': 3000,
+            'Irmak Ay': 1800
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        Deniz Su: 4000
+        Ece Ak: 3000
+        Fikret Öz: 450
+        Gaye Su: 3000
+        Irmak Ay: 1800
+      actual:
+        Ali Can: 1500
+        Ece Ak: 3000
+        Fikret Öz: 450
+        Gaye Su: 3000
+        Irmak Ay: 1800
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b9-eski-f8e9ae4/test/tablo-borc-r31e.test.mjs:794:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Takvim: yalın söz kolonu söz kalemi tutarı olmaz (Ali boş); Deniz söz kalemi satır borcu 4.000; dönem kolonları kalem tutarı
+    not ok 2 - Takvim: yalın söz kolonu söz kalemi tutarı olmaz (Ali boş); Deniz söz kalemi satır borcu 4.000; dönem kolonları kalem tutarı
+      ---
+      duration_ms: 21.501079
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b9-eski-f8e9ae4/test/tablo-borc-r31e.test.mjs:798:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            [
+              'Ali Can',
+        +     1500,
+        +     1500,
+        -     null,
+        -     null,
+              true
+            ],
+            [
+              'Banu Ay',
+              null,
+        ...
+              'Deniz Su',
+        +     null,
+        +     null,
+        -     4000,
+        -     4000,
+              true
+            ],
+            [
+              'Ece Ak',
+              3000,
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'Ali Can'
+          1: ~
+          2: ~
+          3: true
+        1:
+          0: 'Banu Ay'
+          1: ~
+          2: ~
+          3: true
+        2:
+          0: 'Cem Er'
+          1: ~
+          2: ~
+          3: true
+        3:
+          0: 'Deniz Su'
+          1: 4000
+          2: 4000
+          3: true
+        4:
+          0: 'Ece Ak'
+          1: 3000
+          2: 3000
+          3: true
+        5:
+          0: 'Fikret Öz'
+          1: 450
+          2: 450
+          3: false
+        6:
+          0: 'Gaye Su'
+          1: 3000
+          2: 3000
+          3: false
+        7:
+          0: 'Hakan Su'
+          1: ~
+          2: ~
+          3: true
+        8:
+          0: 'Irmak Ay'
+          1: 1800
+          2: 1800
+          3: true
+      actual:
+        0:
+          0: 'Ali Can'
+          1: 1500
+          2: 1500
+          3: true
+        1:
+          0: 'Banu Ay'
+          1: ~
+          2: ~
+          3: true
+        2:
+          0: 'Cem Er'
+          1: ~
+          2: ~
+          3: true
+        3:
+          0: 'Deniz Su'
+          1: ~
+          2: ~
+          3: true
+        4:
+          0: 'Ece Ak'
+          1: 3000
+          2: 3000
+          3: true
+        5:
+          0: 'Fikret Öz'
+          1: 450
+          2: 450
+          3: false
+        6:
+          0: 'Gaye Su'
+          1: 3000
+          2: 3000
+          3: false
+        7:
+          0: 'Hakan Su'
+          1: ~
+          2: ~
+          3: true
+        8:
+          0: 'Irmak Ay'
+          1: 1800
+          2: 1800
+          3: true
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b9-eski-f8e9ae4/test/tablo-borc-r31e.test.mjs:801:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Vadeler ve Nakit Akışı Beklenen 12.250 (aday 22 ve f8e9ae4: 9.750)
+    not ok 3 - Vadeler ve Nakit Akışı Beklenen 12.250 (aday 22 ve f8e9ae4: 9.750)
+      ---
+      duration_ms: 7.978842
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b9-eski-f8e9ae4/test/tablo-borc-r31e.test.mjs:804:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        9750 !== 12250
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 12250
+      actual: 9750
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b9-eski-f8e9ae4/test/tablo-borc-r31e.test.mjs:805:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 1 - 31e tur 14: yalın 'Ödeme Sözü' / 'Söz' / 'Taahhüt' kolonu para kolonu değil; 'Taahhütlü Ücret' / 'Taahhütlü Kira' normal
+  ---
+  duration_ms: 488.869273
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b9-eski-f8e9ae4/test/tablo-borc-r31e.test.mjs:780:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 3
+# suites 1
+# pass 0
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 847.492985
+
+[kanit] başarısız testler (3):
+  ✖ 31e tur 14: yalın 'Ödeme Sözü' / 'Söz' / 'Taahhüt' kolonu para kolonu değil; 'Taahhütlü Ücret' / 'Taahhütlü Kira' normal › Tablodaki Kişiler: yalın söz kolonu borç değil (Ali, Banu, Cem, Hakan yok); Deniz 4.000 (Tutar tek tutar); Taahhütlü Ücret / Kira borç; not yok [test/tablo-borc-r31e.test.mjs:792:3] — Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )
+  ✖ 31e tur 14: yalın 'Ödeme Sözü' / 'Söz' / 'Taahhüt' kolonu para kolonu değil; 'Taahhütlü Ücret' / 'Taahhütlü Kira' normal › Takvim: yalın söz kolonu söz kalemi tutarı olmaz (Ali boş); Deniz söz kalemi satır borcu 4.000; dönem kolonları kalem tutarı [test/tablo-borc-r31e.test.mjs:798:3] — Expected values to be strictly deep-equal: · + actual - expected · ... Skipped lines
+  ✖ 31e tur 14: yalın 'Ödeme Sözü' / 'Söz' / 'Taahhüt' kolonu para kolonu değil; 'Taahhütlü Ücret' / 'Taahhütlü Kira' normal › Vadeler ve Nakit Akışı Beklenen 12.250 (aday 22 ve f8e9ae4: 9.750) [test/tablo-borc-r31e.test.mjs:804:3] — Expected values to be strictly equal: · 9750 !== 12250 (beklenen 12250, gelen 9750)
+
+[kanit] b9-r31e/kirmizi-f8e9ae4-yeni-testler: BAŞARISIZ (çıkış 1; 3 başarısız, 0 iptal) · çıkış 1 · 0/3 geçti, 3 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v153 x64 · Node v22.22.0

@@ -1,0 +1,43 @@
+{
+  "ad": "b10-r31e/kirmizi-a4274a5-yeni-testler",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-name-pattern=tur 15 test/tablo-borc-r31e.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T14:43:53.943Z",
+  "sure_sn": 0.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "31e tur 15: tutar kolonu olmayan sekme notsuz düşmez; söz sekmesi not açmaz › Tablodaki Kişiler: borç yalnız Hale 1.000; Takip ve Rehber sekmeyi adlandıran notla, Masrafli 'seçilemedi' notuyla; söz sekmesi notsuz",
+      "konum": "test/tablo-borc-r31e.test.mjs:824:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "31e tur 15: tutar kolonu olmayan sekme notsuz düşmez; söz sekmesi not açmaz › Vadeler ve Nakit Akışı aynı notlar; Takip kalemleri görünür, tutarsız (borç 0); Sekme süzgecinde yalnız seçili sekmenin notu",
+      "konum": "test/tablo-borc-r31e.test.mjs:830:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/r31e-f/docs/kanit/2026-10-23/b10-r31e/kirmizi-a4274a5-yeni-testler.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b10-eski-a4274a5",
+  "ham_cikti_sha256": "38314f2ee770d141acb85ef495924281fdb0aa9b6d752561c6dcc5f8aac05dc8",
+  "ham_cikti_bayt": 6093
+}

@@ -1,0 +1,43 @@
+{
+  "ad": "b8-r31e/kirmizi-63b28b4-yeni-testler",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-name-pattern=tur 13 test/tablo-borc-r31e.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T13:58:01.969Z",
+  "sure_sn": 1.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "31e tur 13: söz tutarı tek tanım, hiçbir yolda borç değil; 'Taahhütlü Ücret' borç kalır › Tablodaki Kişiler: söz tutarı borç değil (Lale, Mert, Nur, Selin yok); Tutar borç (Pelin 5.000, Rıza 6.000); Taahhütlü Ücret borç (Oya 450); not yok",
+      "konum": "test/tablo-borc-r31e.test.mjs:763:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "31e tur 13: söz tutarı tek tanım, hiçbir yolda borç değil; 'Taahhütlü Ücret' borç kalır › Takvim: söz kalemi söz tutarı, kalemin borcu (Açılış Bakiyesi ön dolumu) raporun satır borcu — söz tutarı değil",
+      "konum": "test/tablo-borc-r31e.test.mjs:769:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · ... Skipped lines"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/r31e-f/docs/kanit/2026-10-23/b8-r31e/kirmizi-63b28b4-yeni-testler.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b8-eski-63b28b4",
+  "ham_cikti_sha256": "02511356a11373211c0102d6afdd5cc726ae12d67fca42823258126d5d8379cb",
+  "ham_cikti_bayt": 5605
+}

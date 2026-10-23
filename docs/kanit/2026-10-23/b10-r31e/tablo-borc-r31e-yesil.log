@@ -1,0 +1,130 @@
+TAP version 13
+# Subtest: 31e tur 11 Z4: 'Sözleşme Tutarı' söz tutarı değil; 'Sözleşme Son Ödeme' söz değil; 'Sözleşme Tarihi' / 'Başlangıç' vade değil
+    # Subtest: Takvim: Ali söz 3.000, Ayşe söz hücresi boş → Kalan 2.000, Can söz 5.000 (Kalan; söz sütunu yok); Jale'nin kalemi söz değil, 4.000; Sözleşme Tarihi / Başlangıç kalem açmaz
+    ok 1 - Takvim: Ali söz 3.000, Ayşe söz hücresi boş → Kalan 2.000, Can söz 5.000 (Kalan; söz sütunu yok); Jale'nin kalemi söz değil, 4.000; Sözleşme Tarihi / Başlangıç kalem açmaz
+      ---
+      duration_ms: 26.529484
+      type: 'test'
+      ...
+    # Subtest: Vadeler ve Nakit Akışı Beklenen 14.000 (aday 21: 154.000); Sözleşme Tarihi sekmesinden vade satırı yok
+    ok 2 - Vadeler ve Nakit Akışı Beklenen 14.000 (aday 21: 154.000); Sözleşme Tarihi sekmesinden vade satırı yok
+      ---
+      duration_ms: 29.259814
+      type: 'test'
+      ...
+    1..2
+ok 1 - 31e tur 11 Z4: 'Sözleşme Tutarı' söz tutarı değil; 'Sözleşme Son Ödeme' söz değil; 'Sözleşme Tarihi' / 'Başlangıç' vade değil
+  ---
+  duration_ms: 477.81836
+  type: 'suite'
+  ...
+# Subtest: 31e tur 11 Z4: söz tutarı yalnız 'söz/sözü/taahhüt' + 'tutar' başlığıdır
+    # Subtest: Takvim: Mert 6.000 (Kalan; 'Söz Öncesi Ödenen' söz tutarı değil), Nil 2.500 (Taahhüt Tutarı), Oya 1.000 (Ödeme Sözü Tutarı); üçü de söz kalemi
+    ok 1 - Takvim: Mert 6.000 (Kalan; 'Söz Öncesi Ödenen' söz tutarı değil), Nil 2.500 (Taahhüt Tutarı), Oya 1.000 (Ödeme Sözü Tutarı); üçü de söz kalemi
+      ---
+      duration_ms: 9.532246
+      type: 'test'
+      ...
+    # Subtest: Vadeler ve Nakit Akışı Beklenen 9.500
+    ok 2 - Vadeler ve Nakit Akışı Beklenen 9.500
+      ---
+      duration_ms: 17.062276
+      type: 'test'
+      ...
+    1..2
+ok 2 - 31e tur 11 Z4: söz tutarı yalnız 'söz/sözü/taahhüt' + 'tutar' başlığıdır
+  ---
+  duration_ms: 342.285407
+  type: 'suite'
+  ...
+# Subtest: 31e tur 12 Z5/Z6: taahhüt öneki söz; söz tutarı 'tutar' ya da 'miktar'; 'Taahhütlü Ücret' dönem tutarı
+    # Subtest: Takvim: söz kalemleri söz tutarı / miktarı (Gül 500, Işıl 800, Kemal 300, Jale 1.100, Fırat 600, Hakan 700); Mina 450 (Taahhütlü Ücret dönem tutarı, söz değil)
+    ok 1 - Takvim: söz kalemleri söz tutarı / miktarı (Gül 500, Işıl 800, Kemal 300, Jale 1.100, Fırat 600, Hakan 700); Mina 450 (Taahhütlü Ücret dönem tutarı, söz değil)
+      ---
+      duration_ms: 14.287313
+      type: 'test'
+      ...
+    # Subtest: Vadeler ve Nakit Akışı Beklenen 4.450 (aday 22: 15.050)
+    ok 2 - Vadeler ve Nakit Akışı Beklenen 4.450 (aday 22: 15.050)
+      ---
+      duration_ms: 23.743266
+      type: 'test'
+      ...
+    1..2
+ok 3 - 31e tur 12 Z5/Z6: taahhüt öneki söz; söz tutarı 'tutar' ya da 'miktar'; 'Taahhütlü Ücret' dönem tutarı
+  ---
+  duration_ms: 335.91629
+  type: 'suite'
+  ...
+# Subtest: 31e tur 13: söz tutarı tek tanım, hiçbir yolda borç değil; 'Taahhütlü Ücret' borç kalır
+    # Subtest: Tablodaki Kişiler: söz tutarı borç değil (Lale, Mert, Nur, Selin yok); Tutar borç (Pelin 5.000, Rıza 6.000); Taahhütlü Ücret borç (Oya 450); not yok
+    ok 1 - Tablodaki Kişiler: söz tutarı borç değil (Lale, Mert, Nur, Selin yok); Tutar borç (Pelin 5.000, Rıza 6.000); Taahhütlü Ücret borç (Oya 450); not yok
+      ---
+      duration_ms: 18.875628
+      type: 'test'
+      ...
+    # Subtest: Takvim: söz kalemi söz tutarı, kalemin borcu (Açılış Bakiyesi ön dolumu) raporun satır borcu — söz tutarı değil
+    ok 2 - Takvim: söz kalemi söz tutarı, kalemin borcu (Açılış Bakiyesi ön dolumu) raporun satır borcu — söz tutarı değil
+      ---
+      duration_ms: 11.120543
+      type: 'test'
+      ...
+    1..2
+ok 4 - 31e tur 13: söz tutarı tek tanım, hiçbir yolda borç değil; 'Taahhütlü Ücret' borç kalır
+  ---
+  duration_ms: 314.045023
+  type: 'suite'
+  ...
+# Subtest: 31e tur 14: yalın 'Ödeme Sözü' / 'Söz' / 'Taahhüt' kolonu para kolonu değil; 'Taahhütlü Ücret' / 'Taahhütlü Kira' normal
+    # Subtest: Tablodaki Kişiler: yalın söz kolonu borç değil (Ali, Banu, Cem, Hakan yok); Deniz 4.000 (Tutar tek tutar); Taahhütlü Ücret / Kira borç; not yok
+    ok 1 - Tablodaki Kişiler: yalın söz kolonu borç değil (Ali, Banu, Cem, Hakan yok); Deniz 4.000 (Tutar tek tutar); Taahhütlü Ücret / Kira borç; not yok
+      ---
+      duration_ms: 25.563164
+      type: 'test'
+      ...
+    # Subtest: Takvim: yalın söz kolonu söz kalemi tutarı olmaz (Ali boş); Deniz söz kalemi satır borcu 4.000; dönem kolonları kalem tutarı
+    ok 2 - Takvim: yalın söz kolonu söz kalemi tutarı olmaz (Ali boş); Deniz söz kalemi satır borcu 4.000; dönem kolonları kalem tutarı
+      ---
+      duration_ms: 11.568294
+      type: 'test'
+      ...
+    # Subtest: Vadeler ve Nakit Akışı Beklenen 12.250 (aday 22 ve f8e9ae4: 9.750)
+    ok 3 - Vadeler ve Nakit Akışı Beklenen 12.250 (aday 22 ve f8e9ae4: 9.750)
+      ---
+      duration_ms: 8.845535
+      type: 'test'
+      ...
+    1..3
+ok 5 - 31e tur 14: yalın 'Ödeme Sözü' / 'Söz' / 'Taahhüt' kolonu para kolonu değil; 'Taahhütlü Ücret' / 'Taahhütlü Kira' normal
+  ---
+  duration_ms: 330.782406
+  type: 'suite'
+  ...
+# Subtest: 31e tur 15: tutar kolonu olmayan sekme notsuz düşmez; söz sekmesi not açmaz
+    # Subtest: Tablodaki Kişiler: borç yalnız Hale 1.000; Takip ve Rehber sekmeyi adlandıran notla, Masrafli 'seçilemedi' notuyla; söz sekmesi notsuz
+    ok 1 - Tablodaki Kişiler: borç yalnız Hale 1.000; Takip ve Rehber sekmeyi adlandıran notla, Masrafli 'seçilemedi' notuyla; söz sekmesi notsuz
+      ---
+      duration_ms: 23.014743
+      type: 'test'
+      ...
+    # Subtest: Vadeler ve Nakit Akışı aynı notlar; Takip kalemleri görünür, tutarsız (borç 0); Sekme süzgecinde yalnız seçili sekmenin notu
+    ok 2 - Vadeler ve Nakit Akışı aynı notlar; Takip kalemleri görünür, tutarsız (borç 0); Sekme süzgecinde yalnız seçili sekmenin notu
+      ---
+      duration_ms: 23.686454
+      type: 'test'
+      ...
+    1..2
+ok 6 - 31e tur 15: tutar kolonu olmayan sekme notsuz düşmez; söz sekmesi not açmaz
+  ---
+  duration_ms: 346.554155
+  type: 'suite'
+  ...
+1..6
+# tests 13
+# suites 6
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2496.887281

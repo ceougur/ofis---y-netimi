@@ -1,0 +1,65 @@
+
+> destekofis@2.4.4 test:senaryo-kayit-bag-31e
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-kayit-bag-31e.mjs
+
+
+■ Giriş, ilk Excel (4 kişi), kayda bağlı veri: Ali'ye 400 TL tahsilat + not, Ayşe'nin vadesine Ödendi Say
+✓ sunucu veritabanı okunabilir
+✓ Ali'ye kayıt tahsilatı (eski sürüm verisi gibi)
+✓ Ali'ye not
+✓ Ayşe'nin kalemi Ödendi Say
+
+■ A) Yerine Koy: Ali'nin tutarı 1.000 → 1.200, Ayşe dosyada yok — önizleme taşınanı ve eşleşmeyeni adıyla söyler
+✓ taşınan: 1 kaydın tahsilatı / notu aynı kişinin yeni satırına taşınır.
+✓ eşleşmeyen: 1 kaydın “Ödendi Say” işareti bu yüklemeyle eşleşmedi: Ayşe Kaya. Silinmez, eski kayıtta kalır ama yeni satırlarda görünmez.
+✓ eski yanıltıcı kart cümlesi yok
+✓ onay metni: Yeni dosyada olmayan 1 kayıt tablodan kalkacak. 1 kaydın “Ödendi Say” işareti bu yüklemeyle eşleşmedi: Ayşe Kaya. Bu bağlar silinmez, eski kayıtta kalır ama yeni satırlarda görünmez (ödemiş kişi Takvim'de ve raporlarda ödememiş görünür). İşlemden önce yedek alınır. Devam edilsin mi?
+✓ B2: yanıltıcı cümle yok
+✓ ön koşul: Ali'nin anahtarı değişti
+✓ tahsilat Ali'nin yeni satırında
+✓ not Ali'nin yeni satırında
+✓ Takvim Ali 800 (1.200 − 400): [800]
+
+■ B) Devamı Olarak Ekle: Can'ın satırında başka kişi — mevcut kaydın yerine geçmez
+✓ not: Aynı satırda kişisi değişen 1 satır mevcut kaydın yerine geçmez; yeni kayıt olarak eklenir.
+✓ kart: Mevcut Verinin Devamı Olarak Ekle ÖNERİLEN 1 yeni kayıt eklenir 0 kayıt yeni bilgilerle güncellenir 2 kayıt aynı kalır Yeni dosyada olmayan 1 kayıt silinmez Ofiste yapılan düzeltmeler, notlar ve görevler korunur. Aynı satırda kişisi değişen 1 satır mevcut kaydın yerine geçmez; yeni kayıt olarak eklenir. Devamı Olarak Ekle
+✓ Can durur, Yeni Kişi eklenir: Ali Veli, Can Er, Deniz Ak, Yeni Kişi
+
+■ C) Devamı Olarak Ekle: Dosya No eklenmiş aynı dosya — aynı görünen satırlar söylenir, onay ister; Vazgeç veriyi değiştirmez
+✓ uyarı: 4 satır mevcut kayıtlarla aynı görünüyor (Ali Veli, Can Er, Deniz Ak, Yeni Kişi); aynı dosyanın yenisiyse Yerine Koy kullanın.
+✓ onay metni: 4 satır mevcut kayıtlarla aynı görünüyor (Ali Veli, Can Er, Deniz Ak, Yeni Kişi); aynı dosyanın yenisiyse Yerine Koy kullanın. Devamı Olarak Ekle bunları ikinci kez ekler. İşlemden önce yedek alınır. Devam edilsin mi?
+✓ Vazgeç: satır sayısı 4 kaldı
+
+■ D) Veriyi Kaldır: Ali'nin tahsilatı ve notu var — ikinci soru adıyla söyler; Vazgeç veriyi bırakır, onay kaldırır, bağlar silinmez
+✓ ilk soru (genel)
+✓ ikinci soru: 1 kaydın tahsilatı / notu kaldırılacak satırlarda: Ali Veli. Bu bağlar silinmez, eski kayıtta kalır ama tabloda ve raporlarda bu kayıtlarla görünmez. İşlemden önce yedek alınır. Devam edilsin mi?
+✓ Vazgeç: satır sayısı 4 kaldı
+✓ ilk soru (genel)
+✓ onayla veri kaldırıldı
+✓ tahsilat ve not silinmedi (eski anahtarda)
+✓ onaylanan kopma işlem geçmişinde
+
+■ E) Google Sheets: Sheet'te olmayan satır listede “Bağlı: not”; Seçilenleri Kaldır adıyla sorar, onayla kaldırır
+✓ Sheet önizlemesi: 200
+✓ Sheet bağlandı
+✓ Lale'ye not
+✓ eşitleme: Lale ve Mert Sheet'te yok ({"added":0,"updated":0,"unchanged":1,"removed":0,"missing":2})
+✓ listede yalnız Lale "Bağlı: not": ["Kimliksiz satır · Müşteriler Ad Soyad: Lale Ak · Tutar: 200 · Son Ödeme: 20.10.2026 Bağlı: not"]
+✓ soru: 1 kaydın notu kaldırılacak satırlarda: Lale Ak. Bu bağlar silinmez, eski kayıtta kalır ama tabloda ve raporlarda bu kayıtlarla görünmez. İşlemden önce yedek alınır. Devam edilsin mi?
+✓ onayla Lale ve Mert kalktı: Kemal Er
+✓ Lale'nin notu silinmedi
+
+■ F) Sayfayı Sil: yalnız o sayfada olan kaydın notu adıyla söylenir; onayla sayfa silinir, not kalır
+✓ ikinci sayfa önizlemesi
+✓ ikinci sayfa açıldı: 200
+✓ Gizem'e not (yeni sayfanın penceresinden): 200
+✓ ilk soru sayfa adını söyler
+✓ ikinci soru: 1 kaydın notu kaldırılacak satırlarda: Gizem Ak. Bu bağlar silinmez, eski kayıtta kalır ama tabloda ve raporlarda bu kayıtlarla görünmez. Devam edilsin mi?
+✓ sayfa silindi
+✓ Gizem'in notu silinmedi
+
+■ Tarayıcı konsolu
+✓ beklenen 4 soru yanıtı (409): 4
+✓ konsolda başka hata yok
+
+43/43 denetim geçti
