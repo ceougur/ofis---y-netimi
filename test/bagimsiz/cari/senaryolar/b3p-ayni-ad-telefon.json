@@ -1,0 +1,279 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3p-ayni-ad-telefon",
+ "aciklama": "Y2 (karar sahibi 23.10.2026): aynı adlı iki satır telefonla (ya da geçerli TCKN/VKN ile) ayırt ediliyorsa ve (ad + telefon) iki tabloda da tek satırsa güvenli eşleşmedir — tabloya kolon eklense ya da tutar değişse de bağ o kişide kalır (uyarı/onay yok). Üyeler: iki Ali Veli (telefon farklı); Firmalar: iki Deniz Ak (TC farklı). t2 Son Ödeme kolonu eklenir + K2, K4 tutarı değişir; t3 sıra değişir + K1, K3 tutarı değişir. Tahsilatlar yerinde: Ali Veli kişisi 300 (iki satır tek kişi, YAYGIN), Deniz Ak 300 / 400 (kimlik ayrı kişi).",
+ "dayanak": "KARARLAR.md B3h Y2, B3f bağ sürekliliği (2)",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Üyeler",
+     "tur": "serbest",
+     "ilk": [
+      "Müşteri"
+     ],
+     "basliklar": [
+      "Telefon",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "K1",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "0532 100 00 01",
+        "Tutar": "1000"
+       }
+      },
+      {
+       "no": "K2",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "0532 100 00 02",
+        "Tutar": "2000"
+       }
+      },
+      {
+       "no": "K5",
+       "isim": "Nur Ay",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "500"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Firmalar",
+     "tur": "serbest",
+     "ilk": [
+      "Müşteri"
+     ],
+     "basliklar": [
+      "TC Kimlik No",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "K3",
+       "isim": "Deniz Ak",
+       "hucreler": {
+        "TC Kimlik No": "10000000146",
+        "Tutar": "3000"
+       }
+      },
+      {
+       "no": "K4",
+       "isim": "Deniz Ak",
+       "hucreler": {
+        "TC Kimlik No": "12345678950",
+        "Tutar": "4000"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "p1",
+   "islem": "kayit_tahsilat",
+   "kayit": "K1",
+   "tutar": "100",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "p2",
+   "islem": "kayit_tahsilat",
+   "kayit": "K2",
+   "tutar": "200",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "p3",
+   "islem": "kayit_tahsilat",
+   "kayit": "K3",
+   "tutar": "300",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "p4",
+   "islem": "kayit_tahsilat",
+   "kayit": "K4",
+   "tutar": "400",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  },
+  {
+   "id": "t2",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Üyeler",
+     "tur": "serbest",
+     "ilk": [
+      "Müşteri"
+     ],
+     "basliklar": [
+      "Telefon",
+      "Tutar",
+      "Son Ödeme"
+     ],
+     "kayitlar": [
+      {
+       "no": "K1",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "0532 100 00 01",
+        "Tutar": "1000",
+        "Son Ödeme": "15.06.2026"
+       }
+      },
+      {
+       "no": "K2",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "0532 100 00 02",
+        "Tutar": "2500",
+        "Son Ödeme": "15.06.2026"
+       }
+      },
+      {
+       "no": "K5",
+       "isim": "Nur Ay",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "500",
+        "Son Ödeme": "15.06.2026"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Firmalar",
+     "tur": "serbest",
+     "ilk": [
+      "Müşteri"
+     ],
+     "basliklar": [
+      "TC Kimlik No",
+      "Tutar",
+      "Son Ödeme"
+     ],
+     "kayitlar": [
+      {
+       "no": "K3",
+       "isim": "Deniz Ak",
+       "hucreler": {
+        "TC Kimlik No": "10000000146",
+        "Tutar": "3000",
+        "Son Ödeme": "15.06.2026"
+       }
+      },
+      {
+       "no": "K4",
+       "isim": "Deniz Ak",
+       "hucreler": {
+        "TC Kimlik No": "12345678950",
+        "Tutar": "4500",
+        "Son Ödeme": "15.06.2026"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k2",
+   "islem": "kontrol"
+  },
+  {
+   "id": "t3",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Üyeler",
+     "tur": "serbest",
+     "ilk": [
+      "Müşteri"
+     ],
+     "basliklar": [
+      "Telefon",
+      "Tutar",
+      "Son Ödeme"
+     ],
+     "kayitlar": [
+      {
+       "no": "K2",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "0532 100 00 02",
+        "Tutar": "2500",
+        "Son Ödeme": "15.06.2026"
+       }
+      },
+      {
+       "no": "K1",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "0532 100 00 01",
+        "Tutar": "1100",
+        "Son Ödeme": "15.06.2026"
+       }
+      },
+      {
+       "no": "K5",
+       "isim": "Nur Ay",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "500",
+        "Son Ödeme": "15.06.2026"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Firmalar",
+     "tur": "serbest",
+     "ilk": [
+      "Müşteri"
+     ],
+     "basliklar": [
+      "TC Kimlik No",
+      "Tutar",
+      "Son Ödeme"
+     ],
+     "kayitlar": [
+      {
+       "no": "K4",
+       "isim": "Deniz Ak",
+       "hucreler": {
+        "TC Kimlik No": "12345678950",
+        "Tutar": "4500",
+        "Son Ödeme": "15.06.2026"
+       }
+      },
+      {
+       "no": "K3",
+       "isim": "Deniz Ak",
+       "hucreler": {
+        "TC Kimlik No": "10000000146",
+        "Tutar": "3300",
+        "Son Ödeme": "15.06.2026"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k3",
+   "islem": "kontrol"
+  }
+ ]
+}

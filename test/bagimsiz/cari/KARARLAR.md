@@ -186,6 +186,26 @@ Kaynak: ana oturumun ilettiği karar metni. Ürün kodu okunmadı.
   Rana Ok kimliği 10000000146 → 12345678950 → geri). Mutant 49 (N1 öncesi: kişi eşleşmesiyle yeni dosyaya taşınır), 50 (geri gelen dosyanın bağı görünmez). DENENMEYEN: not /
   düzeltme / haciz bağları (uçları bilinmiyor; kara kutudan yalnız kayıt tahsilatı), Sheets eşitlemesi.
 
+### B3h — Bağımsız dar kontrol bulguları (karar sahibi 23.10.2026: Y1, Y2, Y3; aday 18)
+- **Y1** Borç kolonu YALNIZ para (tutar) kolonudur: telefon, TCKN/VKN/kimlik, tarih, kişi kolonları ve "Borçlu Telefon", "Borçlu TC", "Borçlu Adres" gibi kişi özniteliği başlıkları
+  ASLA borç değildir — başlıkta "borç" geçse de. Kâhin: başlığın bir kelimesi kişi özniteliğiyse (telefon, tel, gsm, cep, tc, tckn, vkn, kimlik, adres, ad, soyad, unvan, tarih;
+  [YAYGIN] e-posta / mail) kolon tutar adayı değildir. Borç kolonu yoksa (yalnız kişi / tarih kolonları; söz de yok) ya da iki tutar kolonu varken Kalan / toplam yoksa
+  (Tutar + Masraf) borç YOK (bütün raporlarda 0) ve satır görünür ya da raporda görünür not. Bütün tablo raporları (Kişiler, Vadeler, Nakit Akışı, Tahsilat Takvimi — K4) ve
+  "önce cari açın" Açılış Bakiyesi aynı borcu kullanır. ORTAM: form Açılış Bakiyesi'ni Tahsilat Takvimi kaleminin Kalan Borç'undan doldurur (kalem `debt`, kayıt anahtarı
+  `caseKey` — kara kutu yoklaması 23.10.2026; kaynağı test adı/açıklaması, ürün kodu okunmadı); `debt` null = Açılış Bakiyesi boş gelir ("boş"; formun tutara düşüp düşmediği
+  kara kutudan bilinmiyor — ekrandan doğrulanır). Kâhin tek satırlı, carisiz, vadesi dolu serbest kayıtta `<kontrol>:acilis:<no>` = satır borcu denetler (borç 0 / borçsuz
+  satırda 0 ya da boş; kalem yoksa 0; raporlar: true kontrollerinde). Senaryo b3n-borc-kolonu-kisi-ozniteligi; mutant 51 (kişi özniteliği tutar), 52 (iki tutarda ilk kolon borç), 55 (Açılış Bakiyesi ilk
+  tutar hücresinden). Yan etki: b3g'nin boş "E-posta" kolonu artık tutar adayı değil → o tabloda borç Tutar (önceden belirlenemez — yalnız görünürlük denetleniyordu).
+- **Y3** Seyrek Kalan Borç: Kalan hücresi BOŞ satırda borç satırın ana tutarıdır (Toplam / Genel Toplam — ikisi birden varsa Genel Toplam [YAYGIN, karar A ile aynı yön; senaryoda
+  yok]; yoksa tek tutar kolonu, ör. "Aidat"); ana tutar belirlenemiyorsa (Aidat + Gecikme Faizi iki aday) görünür not, borç yok (Y1'in "not, borç yok" ifadesiyle aynı);
+  satır hiçbir raporda notsuz kaybolmaz, bütün raporlar aynı. Senaryo b3o-seyrek-kalan; mutant 53 (Toplam yoksa belirlenemez — Aidat kullanılmaz), 54 (iki adayın toplamı),
+  17 (Kalan boşsa 0) de bu senaryoda.
+- **Y2** Aynı adlı iki satır telefonla (ya da geçerli TCKN/VKN ile) ayırt ediliyorsa ve (ad + telefon) iki tabloda da tek satırsa güvenli eşleşmedir: tabloya kolon eklense ya da
+  tutar değişse de (sıra değişse de — tekil kişi değeri kuralı) bağ o kişide kalır, uyarı / onay yok. Senaryo b3p-ayni-ad-telefon (iki Ali Veli telefonla, iki Deniz Ak TC ile;
+  Dosya No'suz); mutant 56 (kişi değeri yalnız ad + kimlik). [YAYGIN yorum] Kimliksiz aynı adlı satırların HEPSİ dolu ve farklı telefon taşıyorsa Tablodaki Kişiler'de ayrı
+  kişidir (Y2 telefonu geçerli TCKN/VKN gibi ayırt edici sayar; C3 yalnız kimliği söyler) — bu kişilerin borç / grup / tahsilat denetimleri YAYGIN (İNCELE). Telefonsuz aynı ad
+  C3 [YAYGIN] gibi tek kişi (b3g, b3j değişmedi). TC ile ayrılanlar ayrı kişi (C3 [KULLANICI]) → tahsilat ayrı satırda (etiket KULLANICI).
+
 ### B4b — Dört rapor aynı satır borcu (K4 [KULLANICI] 23.10.2026)
 - **K4** Tablodaki Kişiler (totals.debit), Tahsilat Takvimi (/dues Σ amount), Vade Takip (totals.amount) ve Nakit Akışı Beklenen (totals.expected) aynı satır
   borcunu kullanır; toplamları aynıdır (dönem süzgeci içinde). Kontrol adımında `"raporlar": true` ve bütün kayıtların borcu tanımlı ve tek değerliyse dört

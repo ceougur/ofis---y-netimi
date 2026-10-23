@@ -160,3 +160,23 @@ KİŞİ EŞLEŞMESİYLE yeni dosya 2026/150'ye taşıyor; eşleşmeyen uyarısı
 Kimlik kolonlu sekme (Üyeler, TC Kimlik No; Rana Ok 10000000146 → 12345678950 → geri): program N1'e UYGUN — kayıt anahtarı kimlikle değişiyor (satir:e473… → satir:7ab2… → satir:e473…),
 t2'de adlı uyarı + onay, eski TC geri gelince tahsilat (50) yeniden görünüyor (YEŞİL). DENENMEYEN: not / düzeltme / haciz bağları (uçları bilinmiyor), Dosya No kolonu
 tamamen kalkan tablo (karar söylemiyor), Sheets eşitlemesi.
+
+### Tur 8 — bağımsız dar kontrol bulguları Y1, Y2, Y3 (karar sahibi 23.10.2026) — ADAY 18 (7e7c31e; ürün kodu 983af10 ile aynı, server/client farkı 0)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| KIRMIZI kirmizi-aday18-cari-y1-y2-y3 | 26 senaryo (b3n, b3o, b3p yeni) + 56 mutant (51–56 yeni), ADAY 18 kodunda (salt okunur) — Y1/Y2/Y3'te kırmızı BEKLENİR | 3488/3511 — 23 fark (BULGU 20, İNCELE 3) · 0 okuma hatası · 0 yakalanmayan mutasyon |
+
+Önceki 3335 denetimin hepsi yine tutuyor (aday 18 = 3335/3335). İlk iki koşu kâhin okuma kusuruyla atıldı (kayıtları depoda değil): (1) takvim kalemi kayıt anahtarını `key` değil
+`caseKey` alanında taşıyor — Açılış Bakiyesi bütün kayıtlarda yanlış 0 okundu (yoklama ile bulundu, düzeltildi); (2) taksit kalemlerinde `debt` alanı yok — denetlenmeyen
+b1 kontrollerinde de okuma hatası yazılıyordu (yalnız raporlar: true kontrolünde sayılıyor). Neden (ham çıktı, ders 38):
+- **Y1** — b3n: program "Borçlu Telefon" ve "Borçlu TC" kolonlarını borç sayıyor — takvim kaleminde `debtColumn` = "Borçlu Telefon" / "Borçlu TC"; Tablodaki Kişiler, Takvim, Vade
+  Takip ve Nakit Akışı toplamı 33.001.237.895,00 TL (kâhin 1.000); "önce cari açın" Açılış Bakiyesi 5.321.112.233 TL vb. (kâhin boş/0) — 8 fark. b3b 2026/207 (Kira: Aylık
+  Ücret + Kalan Gün): raporlar ve takvim tutarı 4.000, ama kalemin Kalan Borç'u `debt` null → Açılış Bakiyesi boş gelir (kâhin 4.000) — 1 fark (formun boş Kalan Borç'ta tutara
+  düşüp düşmediği kara kutudan bilinmiyor: ekrandan doğrulanmalı).
+- **Y3** — b3o: Tablodaki Kişiler 3.200 = kâhin (seyrek Kalan: boş Kalan'da Aidat), ama Takvim / Vade Takip / Nakit Akışı 4.900: takvim kaleminin tutarı Kalan'ı dolu satırda da
+  Aidat (İpek Ay 1.000 — `debt` 400; Leyla Ok 1.000 — `debt` 700) ve iki adaylı Murat Al 800 sayılıyor; Murat Al Tablodaki Kişiler'de YOK ve not yok — 4 fark.
+- **Y2** — b3p: kolon eklenip tutar değişince (t2) ve sıra + tutar değişince (t3) önizleme `bonds.replace.unmatched` = "Ali Veli, Deniz Ak" + onay; (ad + telefon) / (ad + TC)
+  iki tabloda tek satır olsa da tutarı değişen satırın bağı taşınmıyor (kayıt anahtarı içerikle değişiyor: satir:f0d0… → satir:3624…); Deniz Ak (TC ile ayrı kişi) tahsilatı 0
+  (kâhin 300 / 400) — BULGU 7; telefonla ayrılan Ali Veli'nin tahsilatı 0 — İNCELE 3 (kişi ayrımı telefonla [YAYGIN yorum]).
+DENENMEYEN: "Borçlu Adres" başlığı (kelime kuralında var, senaryoda yok); Toplam + Genel Toplam + seyrek Kalan (Genel Toplam önce [YAYGIN]); Devamı olarak ekle'de Y2.
