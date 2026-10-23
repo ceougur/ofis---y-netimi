@@ -842,3 +842,32 @@ describe("31e tur 15: tutar kolonu olmayan sekme notsuz düşmez; söz sekmesi n
     assert.deepEqual((await ctx.report("cari-ekstre", "tabs=Takip")).report.notes, [MISSING("Takip")]);
   });
 });
+
+// 31e tur 16 (aday 23 gerilemeleri, tur 13–14 farkından). R1 ORTA: yalın söz kuralı borç / alacak / kalan / bakiye / toplam ailesi sözcüklü taahhüt sütununu da para
+// dışı sayıyordu ("Taahhüt Alacağı" kalemi 3.300 → boş; "Aylık Ücret" + "Taahhüt Bakiyesi" Kişiler / Açılış 300). Karar: bu başlıklar yalın söz DEĞİL (aday 22 gibi
+// para kolonu; ekli biçimler yalnız bu muafiyette). R2 DÜŞÜK: söz tutarı adayı "Taahhüt Miktarı (Ay)" gibi gün / ay / % başlığı olamaz (söz kalemi 5.000 → 12).
+describe("31e tur 16: borç ailesi sözcüklü taahhüt sütunu para kolonu; 'Taahhüt Miktarı (Ay)' söz tutarı değil", () => {
+  const SECILEMEDI = "“TaahhutBakiye” sekmesinde borç sütunu seçilemedi (Aylık Ücret, Taahhüt Bakiyesi): bu satırlar borç olarak sayılmadı. Borç sütununun başlığını “Kalan Borç”, “Toplam Borç” ya da “Genel Toplam” yapın.";
+  const ctx = setup([
+    { name: "TaahhutluBorc", matrix: [["Ad Soyad", "Taahhütlü Borç", "Son Ödeme"], ["Ali Veli", "4.000", d(-2)], ["Ayşe Kaya", "5.000", d(-3)]] },
+    { name: "TaahhutBakiye", matrix: [["Ad Soyad", "Aylık Ücret", "Taahhüt Bakiyesi", "Son Ödeme"], ["Can Er", "300", "2.100", d(-2)], ["Deniz Ak", "300", "", d(-3)]] },
+    { name: "KalanTaahhut", matrix: [["Ad Soyad", "Kalan Taahhüt", "Son Ödeme"], ["Ece Su", "1.800", d(-2)], ["Fırat Er", "2.400", d(-3)]] },
+    { name: "TaahhutAlacagi", matrix: [["Müşteri", "Taahhüt Alacağı", "Vade"], ["Gül Taş", "3.300", d(-2)], ["Hale Ak", "3.600", d(-3)]] },
+    { name: "TaahhutTutariBorc", matrix: [["Abone", "Taahhüt Tutarı", "Son Ödeme"], ["İlker Su", "2.500", d(-2)], ["Kaan Uz", "2.700", d(-3)]] },
+    { name: "TaahhutMiktariAy", matrix: [["Ad Soyad", "Kalan Borç", "Taahhüt Tarihi", "Taahhüt Miktarı (Ay)"], ["Nur Ak", "5.000", d(3), "12"]] },
+  ]);
+
+  test("Takvim: kalem tutarları aday 22 ile aynı (Gül 3.300, Hale 3.600, Can / Deniz 300, Nur 5.000); Can / Deniz borcu yok (Açılış Bakiyesi boş)", async () => {
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    const items = dues.items.map(item => [item.person, item.amount ?? null, item.debt ?? null, Boolean(item.promise)]).sort((a, b) => a[0].localeCompare(b[0], "tr"));
+    assert.deepEqual(items, [["Ali Veli", 4000, 4000, false], ["Ayşe Kaya", 5000, 5000, false], ["Can Er", 300, null, false], ["Deniz Ak", 300, null, false], ["Ece Su", 1800, 1800, false], ["Fırat Er", 2400, 2400, false], ["Gül Taş", 3300, 3300, false], ["Hale Ak", 3600, 3600, false], ["İlker Su", 2500, null, false], ["Kaan Uz", 2700, null, false], ["Nur Ak", 5000, 5000, true]]);
+  });
+
+  test("Tablodaki Kişiler: Taahhüt Alacağı tek tutar sütunu borç; Aylık Ücret + Taahhüt Bakiyesi seçilemedi notuyla (300 borç sayılmaz); Vade / Nakit 30.900", async () => {
+    const { report } = await ctx.report("cari-ekstre");
+    assert.deepEqual(debitBy(report), { "Ali Veli": 4000, "Ayşe Kaya": 5000, "Ece Su": 1800, "Fırat Er": 2400, "Gül Taş": 3300, "Hale Ak": 3600, "Nur Ak": 5000 });
+    assert.deepEqual(report.notes, [SECILEMEDI]);
+    assert.equal((await ctx.report("vade-takip")).report.totals.amount, 30900);
+    assert.equal((await ctx.report("nakit-akis")).report.totals.expected, 30900);
+  });
+});

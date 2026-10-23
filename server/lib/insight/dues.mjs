@@ -208,7 +208,8 @@ function classifyColumns(rows, columns, analyses, now, forced = null) {
   // Tarihi + Söz Tutarı sekmesinde söz kalemi taksit tutarını alıyordu; v2.4.3'te de). Söz tutarı hücresi boşsa önceki kural (amountFallback).
   // 31e tur 12 Z6: "Söz Miktarı" sayı rolündedir (para değil; moneyLike'a girmez) — söz tutarı adayı para ya da sayı rolündeki söz + tutar/miktar başlığıdır.
   const promiseAmount = analyses.filter(item => item.role === "money" || item.role === "number").map(item => item.column)
-    .find(column => isPromiseAmountHeader(column) && !isPersonAttributeHeader(column) && !due.some(item => item.column === column)) || null;
+    // 31e tur 16 (R2): sayı rolündeki aday gün / ay / adet / oran / % başlıklı olamaz ("Taahhüt Miktarı (Ay)" 12 söz tutarı sayılıyordu; aday 22: Kalan 5.000).
+    .find(column => isPromiseAmountHeader(column) && !isNotAmountHeader(column) && !isPersonAttributeHeader(column) && !due.some(item => item.column === column)) || null;
   for (const entry of due) {
     // Söz kaleminin söz tutarı yoksa (sütun yok ya da hücre boş) önceki kural: tek vadeli tabloda dönem tutarı (Kalan ile sınırlı), dönem kolonu yoksa satırın
     // borcu (kâhin b3t: "Sözleşme Tutarı" + Kalan 2.000 + boş söz → kalem 2.000).
