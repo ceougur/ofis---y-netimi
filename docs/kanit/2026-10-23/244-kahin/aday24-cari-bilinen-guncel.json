@@ -1,0 +1,32 @@
+{
+  "ad": "244-kahin/aday24-cari-bilinen-guncel",
+  "komut": "node test/bagimsiz/cari/kos.mjs --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-aday24",
+  "commit": "4e684113cea3737805f56d10dfdd5064b09faabc",
+  "dal": "is/kahin-244",
+  "kirli": 1,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T15:44:29.894Z",
+  "sure_sn": 197,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 3883,
+    "gecen": 3883,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/244-kahin/aday24-cari-bilinen-guncel.log",
+  "klasor": "/home/user/wt/kahin-244",
+  "ham_cikti_sha256": "a0b78591c3a297886b62305ba55ac229773ad8b8fd95059da6b239841fd98982",
+  "ham_cikti_bayt": 17158
+}

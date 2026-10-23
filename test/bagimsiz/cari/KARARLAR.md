@@ -288,7 +288,10 @@ Kaynak: ana oturumun ilettiği karar metni. Ürün kodu okunmadı.
 - Liste mutantları (her koşuda, program açılmadan, sentetik durumlarda): 1 senaryo adı yok sayılır, 2 alt dizgi (joker) eşleşmesi, 3 program değeri karşılaştırılmaz,
   4 kapanan kayıt denetlenmez, 5 kâhin beklentisi karşılaştırılmaz — yakalanmayan liste mutantı "yakalanmayan mutasyon" sayılır (çıkış 1).
 - ŞİMDİKİ KAYITLAR (5): b3y (b) "Taahhüt Bakiyesi" — DONDURMA 23.10.2026, 2.5.0 adayı 2 (ek biçim "Bakiyesi" — Kalan tanınması; ürün v2.4.3'te ve aday 22'de de tanımıyor).
-  (a) "Taahhüt Alacağı" ERTELENMEDİ (ana oturum: R1 gerilemesi, tur 16 ürününde düzelir) → listede yok, BAŞARISIZ kalır. (b): Leman Er
+  (a) "Taahhüt Alacağı" ERTELENMEDİ (ana oturum: R1 gerilemesi, tur 16 ürününde düzelir) → listede yok, BAŞARISIZ kalır. GÜNCEL (aday 24 = tur 16, 550c2b0; ham kalemden):
+  11 kayıt — Leman Er / Mert Ay Kişiler borcu 0 + grup [] (sekme borçsuz + görünür not "borç sütunu seçilemedi (Aylık Ücret, Taahhüt Bakiyesi)"), Açılış Bakiyesi boş, Mert Ay
+  kalemi 1.000 (kâhin 300); K4 Kişiler 720.000 (kâhin 1.150.000; fark yalnız (b) 4.000 + 300), Takvim / Vade / Nakit 920.000 (kâhin 850.000; fark yalnız Mert Ay 700). (a) ve (c)
+  aday 24'te kapandı. ESKİ (aday 23): (b): Leman Er
   Kişiler / Açılış 1.000 (kâhin 4.000), Mert Ay Kişiler / Açılış / kalem 1.000 (kâhin 300). Değerler aday 23'ün (439eb2d); tur 16 ürününde YENİDEN DOĞRULANACAK. K4 toplamları
   bilerek listede değil ((a) "Taahhüt Alacağı" ve (c) "(Ay)" farklarını da taşıyorlar — ertelenmedi); tur 16'dan sonra yalnız (b) payı kalırsa o ürünün değerleriyle eklenir.
 

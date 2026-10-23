@@ -1,41 +1,63 @@
 {
- "aciklama": "BİLİNEN SINIR listesi (cari kâhini; ana oturum isteği 23.10.2026). Ürün sahibinin ERTELEDİĞİ farklar: kâhin beklentisi doğru kalır, koşucu bu farkları 'BİLİNEN' diye ayrı yazar ve başarısız saymaz. Her kayıt TAM ad (senaryo + denetim anahtarı; joker yok). Program değeri ya da kâhin beklentisi değişirse BAŞARISIZ (BİLİNEN DEĞİŞTİ); farkı kalmayan kayıt BAŞARISIZ (BİLİNEN KAPANDI — listeden çıkar). K4 toplamları (k1:k4:*) bilerek LİSTEDE DEĞİL: aday 23'te (a) 'Taahhüt Alacağı' ve (c) '(Ay)' farklarını da taşıyorlar (ertelenmedi); tur 16'dan sonra yalnız (b) payı kalırsa o ürünün değerleriyle eklenir. (a) 'Taahhüt Alacağı' ERTELENMEDİ (ana oturum 23.10.2026: R1 gerilemesi, tur 16 ürününde düzelir) — listede yok.",
+ "aciklama": "BİLİNEN SINIR listesi (cari kâhini; ana oturum isteği 23.10.2026). Ürün sahibinin ERTELEDİĞİ farklar: kâhin beklentisi doğru kalır, koşucu bu farkları 'BİLİNEN' diye ayrı yazar ve başarısız saymaz. Her kayıt TAM ad (senaryo + denetim anahtarı; joker yok). Program değeri ya da kâhin beklentisi değişirse BAŞARISIZ (BİLİNEN DEĞİŞTİ); farkı kalmayan kayıt BAŞARISIZ (BİLİNEN KAPANDI — listeden çıkar). K4 toplamları (k1:k4:*) tur 16 ürününde (aday 24) yalnız (b) payını taşıdıkları ham kalemden gösterildikten sonra eklendi ((a) ve (c) aday 24'te kapandı). (a) 'Taahhüt Alacağı' ERTELENMEDİ (ana oturum 23.10.2026: R1 gerilemesi, tur 16 ürününde düzelir) — listede yok.",
  "kayitlar": [
   {
    "senaryo": "b3y-taahhut-alacak-bakiye",
    "anahtar": "k1:rapor:2026/1012:borc",
    "kaynak": "DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır",
    "beklenen": 400000,
-   "program": 100000,
-   "neden": "Leman Er: Tablodaki Kişiler borcu Aylık Ücret'ten (1.000), Taahhüt Bakiyesi (Kalan 4.000) değil",
-   "dogrulama": "aday 23 (439eb2d) program değeri; tur 16 ürününde YENİDEN DOĞRULANACAK (değer değişirse BİLİNEN DEĞİŞTİ → liste güncellenir)"
+   "program": 0,
+   "neden": "Leman Er: Tablodaki Kişiler'de yok (borç 0) — sekme borçsuz + görünür not; kâhin Kalan (Taahhüt Bakiyesi) 4.000",
+   "dogrulama": "aday 24 (550c2b0, tur 16 ürünü) — ham takvim kalemi + rapor + not kâhin ajanınca okundu 23.10.2026: 'Aylık Taahhütler' sekmesi borçsuz + görünür not “borç sütunu seçilemedi (Aylık Ücret, Taahhüt Bakiyesi)”, kalem tutarı Aylık Ücret (1.000), kalem debt null"
+  },
+  {
+   "senaryo": "b3y-taahhut-alacak-bakiye",
+   "anahtar": "k1:rapor:2026/1012:grup",
+   "kaynak": "DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır",
+   "beklenen": [
+    "2026/1012"
+   ],
+   "program": [],
+   "neden": "Leman Er: borçlu satırı yok (borç 0'ın sonucu)",
+   "dogrulama": "aday 24 (550c2b0, tur 16 ürünü) — ham takvim kalemi + rapor + not kâhin ajanınca okundu 23.10.2026: 'Aylık Taahhütler' sekmesi borçsuz + görünür not “borç sütunu seçilemedi (Aylık Ücret, Taahhüt Bakiyesi)”, kalem tutarı Aylık Ücret (1.000), kalem debt null"
   },
   {
    "senaryo": "b3y-taahhut-alacak-bakiye",
    "anahtar": "k1:acilis:2026/1012",
    "kaynak": "DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır",
    "beklenen": 400000,
-   "program": 100000,
-   "neden": "Leman Er: Açılış Bakiyesi (takvim kalemi debt) Aylık Ücret'ten",
-   "dogrulama": "aday 23 (439eb2d) program değeri; tur 16 ürününde YENİDEN DOĞRULANACAK (değer değişirse BİLİNEN DEĞİŞTİ → liste güncellenir)"
+   "program": "boş",
+   "neden": "Leman Er: Açılış Bakiyesi boş (kalem debt null); kâhin 4.000",
+   "dogrulama": "aday 24 (550c2b0, tur 16 ürünü) — ham takvim kalemi + rapor + not kâhin ajanınca okundu 23.10.2026: 'Aylık Taahhütler' sekmesi borçsuz + görünür not “borç sütunu seçilemedi (Aylık Ücret, Taahhüt Bakiyesi)”, kalem tutarı Aylık Ücret (1.000), kalem debt null"
   },
   {
    "senaryo": "b3y-taahhut-alacak-bakiye",
    "anahtar": "k1:rapor:2026/1013:borc",
    "kaynak": "DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır",
    "beklenen": 30000,
-   "program": 100000,
-   "neden": "Mert Ay: Kişiler borcu Aylık Ücret'ten (1.000), Taahhüt Bakiyesi (300) değil",
-   "dogrulama": "aday 23 (439eb2d) program değeri; tur 16 ürününde YENİDEN DOĞRULANACAK (değer değişirse BİLİNEN DEĞİŞTİ → liste güncellenir)"
+   "program": 0,
+   "neden": "Mert Ay: Tablodaki Kişiler'de yok (borç 0); kâhin Kalan 300",
+   "dogrulama": "aday 24 (550c2b0, tur 16 ürünü) — ham takvim kalemi + rapor + not kâhin ajanınca okundu 23.10.2026: 'Aylık Taahhütler' sekmesi borçsuz + görünür not “borç sütunu seçilemedi (Aylık Ücret, Taahhüt Bakiyesi)”, kalem tutarı Aylık Ücret (1.000), kalem debt null"
+  },
+  {
+   "senaryo": "b3y-taahhut-alacak-bakiye",
+   "anahtar": "k1:rapor:2026/1013:grup",
+   "kaynak": "DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır",
+   "beklenen": [
+    "2026/1013"
+   ],
+   "program": [],
+   "neden": "Mert Ay: borçlu satırı yok (borç 0'ın sonucu)",
+   "dogrulama": "aday 24 (550c2b0, tur 16 ürünü) — ham takvim kalemi + rapor + not kâhin ajanınca okundu 23.10.2026: 'Aylık Taahhütler' sekmesi borçsuz + görünür not “borç sütunu seçilemedi (Aylık Ücret, Taahhüt Bakiyesi)”, kalem tutarı Aylık Ücret (1.000), kalem debt null"
   },
   {
    "senaryo": "b3y-taahhut-alacak-bakiye",
    "anahtar": "k1:acilis:2026/1013",
    "kaynak": "DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır",
    "beklenen": 30000,
-   "program": 100000,
-   "neden": "Mert Ay: Açılış Bakiyesi Aylık Ücret'ten",
-   "dogrulama": "aday 23 (439eb2d) program değeri; tur 16 ürününde YENİDEN DOĞRULANACAK (değer değişirse BİLİNEN DEĞİŞTİ → liste güncellenir)"
+   "program": "boş",
+   "neden": "Mert Ay: Açılış Bakiyesi boş; kâhin 300",
+   "dogrulama": "aday 24 (550c2b0, tur 16 ürünü) — ham takvim kalemi + rapor + not kâhin ajanınca okundu 23.10.2026: 'Aylık Taahhütler' sekmesi borçsuz + görünür not “borç sütunu seçilemedi (Aylık Ücret, Taahhüt Bakiyesi)”, kalem tutarı Aylık Ücret (1.000), kalem debt null"
   },
   {
    "senaryo": "b3y-taahhut-alacak-bakiye",
@@ -43,8 +65,44 @@
    "kaynak": "DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır",
    "beklenen": 30000,
    "program": 100000,
-   "neden": "Mert Ay: takvim kalemi min(ücret, Kalan) = 300 değil, ücret 1.000 (Kalan tanınmıyor)",
-   "dogrulama": "aday 23 (439eb2d) program değeri; tur 16 ürününde YENİDEN DOĞRULANACAK (değer değişirse BİLİNEN DEĞİŞTİ → liste güncellenir)"
+   "neden": "Mert Ay: takvim kalemi Aylık Ücret 1.000; kâhin min(ücret 1.000, Kalan 300) = 300",
+   "dogrulama": "aday 24 (550c2b0, tur 16 ürünü) — ham takvim kalemi + rapor + not kâhin ajanınca okundu 23.10.2026: 'Aylık Taahhütler' sekmesi borçsuz + görünür not “borç sütunu seçilemedi (Aylık Ücret, Taahhüt Bakiyesi)”, kalem tutarı Aylık Ücret (1.000), kalem debt null"
+  },
+  {
+   "senaryo": "b3y-taahhut-alacak-bakiye",
+   "anahtar": "k1:k4:kisiler",
+   "kaynak": "DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır",
+   "beklenen": 1150000,
+   "program": 720000,
+   "neden": "K4 Kişiler toplamı: fark 430.000 kuruş = yalnız (b) — Leman Er 4.000 + Mert Ay 300 (Kerem Ak 2.200 ve Nazlı Su 5.000 tutuyor)",
+   "dogrulama": "aday 24 (550c2b0, tur 16 ürünü) — ham takvim kalemi + rapor + not kâhin ajanınca okundu 23.10.2026: 'Aylık Taahhütler' sekmesi borçsuz + görünür not “borç sütunu seçilemedi (Aylık Ücret, Taahhüt Bakiyesi)”, kalem tutarı Aylık Ücret (1.000), kalem debt null"
+  },
+  {
+   "senaryo": "b3y-taahhut-alacak-bakiye",
+   "anahtar": "k1:k4:takvim",
+   "kaynak": "DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır",
+   "beklenen": 850000,
+   "program": 920000,
+   "neden": "K4 Takvim toplamı: fark 70.000 kuruş = yalnız (b) — Mert Ay kalemi 1.000 − 300 (Kerem 2.200, Leman 1.000, Nazlı 5.000 kalemleri tutuyor)",
+   "dogrulama": "aday 24 (550c2b0, tur 16 ürünü) — ham takvim kalemi + rapor + not kâhin ajanınca okundu 23.10.2026: 'Aylık Taahhütler' sekmesi borçsuz + görünür not “borç sütunu seçilemedi (Aylık Ücret, Taahhüt Bakiyesi)”, kalem tutarı Aylık Ücret (1.000), kalem debt null"
+  },
+  {
+   "senaryo": "b3y-taahhut-alacak-bakiye",
+   "anahtar": "k1:k4:vade",
+   "kaynak": "DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır",
+   "beklenen": 850000,
+   "program": 920000,
+   "neden": "K4 Vade Takip toplamı: Takvim ile aynı yalnız-(b) farkı (70.000 kuruş)",
+   "dogrulama": "aday 24 (550c2b0, tur 16 ürünü) — ham takvim kalemi + rapor + not kâhin ajanınca okundu 23.10.2026: 'Aylık Taahhütler' sekmesi borçsuz + görünür not “borç sütunu seçilemedi (Aylık Ücret, Taahhüt Bakiyesi)”, kalem tutarı Aylık Ücret (1.000), kalem debt null"
+  },
+  {
+   "senaryo": "b3y-taahhut-alacak-bakiye",
+   "anahtar": "k1:k4:akis",
+   "kaynak": "DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır",
+   "beklenen": 850000,
+   "program": 920000,
+   "neden": "K4 Nakit Akışı Beklenen toplamı: Takvim ile aynı yalnız-(b) farkı (70.000 kuruş)",
+   "dogrulama": "aday 24 (550c2b0, tur 16 ürünü) — ham takvim kalemi + rapor + not kâhin ajanınca okundu 23.10.2026: 'Aylık Taahhütler' sekmesi borçsuz + görünür not “borç sütunu seçilemedi (Aylık Ücret, Taahhüt Bakiyesi)”, kalem tutarı Aylık Ücret (1.000), kalem debt null"
   }
  ]
 }
