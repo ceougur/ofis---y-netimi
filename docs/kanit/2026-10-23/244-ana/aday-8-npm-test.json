@@ -1,0 +1,48 @@
+{
+  "ad": "244-ana/aday-8-npm-test",
+  "komut": "npm test",
+  "commit": "54bf0e6343f24fbd28efb516c16559993cd6c682",
+  "dal": "aday8",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T00:20:53.550Z",
+  "sure_sn": 1607.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3279,
+    "gecen": 3276,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir › v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)",
+      "konum": "test/banka-210-altin.test.mjs:449:3",
+      "hata": "4 fark: · motor · 001 · admin · pdf /api/workspace/report-center/kasa-hareketleri/pdf?from=2026-08-09&to=2026-10-15: Expected values to be strictly deep-equal: · + actual - expected"
+    },
+    {
+      "ad": "Madde 1: fatura Sil — kartta ve toplu; etkiler geri alınır; Silinenler'e gider; numara sayacı › kaydedilmiş satış silinir: stok, cari, Kasa eski hâline döner; belge listeden kalkar, Silinenler'de; sayaç geri gelir",
+      "konum": "test/fatura-217.test.mjs:307:3",
+      "hata": "sayaç geri geldi · + actual - expected · + 'FIS2026000000002' (beklenen FIS2026000000001, gelen FIS2026000000002)"
+    },
+    {
+      "ad": "Madde 1: fatura Sil — kartta ve toplu; etkiler geri alınır; Silinenler'e gider; numara sayacı › Silinenler'den geri yükle: belge 'İptal Edildi' olarak döner, etkisiz (stok/cari/Kasa aynı)",
+      "konum": "test/fatura-217.test.mjs:327:3",
+      "hata": "{\"ok\":false,\"error\":\"Geri yüklenecek öğe seçilmedi.\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-23/244-ana/aday-8-npm-test.log.gz",
+  "klasor": "/home/user/wt/aday8",
+  "ham_cikti_sha256": "65ee495634d0a0507b59c07a20dd85456309f047a237dd874d3281432ec17f85",
+  "ham_cikti_bayt": 1195276
+}
