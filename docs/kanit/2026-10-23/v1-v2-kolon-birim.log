@@ -1,0 +1,609 @@
+TAP version 13
+# Subtest: T1/D6 — tahsil kaydı yazımları kapının dokunulan varlıklar yolundan geçer (üretim ayarı)
+    # Subtest: Tahsile Ver, Bankadan Geri Al, tahsildeki evrakın tahsili, karşılıksızı ve karşılıksızın Geri Al'ı: süzgeç yolu; Mutabakat tamam
+    ok 1 - Tahsile Ver, Bankadan Geri Al, tahsildeki evrakın tahsili, karşılıksızı ve karşılıksızın Geri Al'ı: süzgeç yolu; Mutabakat tamam
+      ---
+      duration_ms: 118.744591
+      type: 'test'
+      ...
+    1..1
+ok 1 - T1/D6 — tahsil kaydı yazımları kapının dokunulan varlıklar yolundan geçer (üretim ayarı)
+  ---
+  duration_ms: 603.005971
+  type: 'suite'
+  ...
+# Subtest: Kapı — tahsil kaydını kapı dışından bozma: dokunulan varlıklar yolu yakalar (eşdeğerlik ihlali değil)
+    # Subtest: geri alınmış kayıt yeniden bekleyen; verilme tarihi alıştan önce; verilme başlığı iptal; tahsildeki evrakın tutarı ve alış tarihi
+    ok 1 - geri alınmış kayıt yeniden bekleyen; verilme tarihi alıştan önce; verilme başlığı iptal; tahsildeki evrakın tutarı ve alış tarihi
+      ---
+      duration_ms: 60.737336
+      type: 'test'
+      ...
+    1..1
+ok 2 - Kapı — tahsil kaydını kapı dışından bozma: dokunulan varlıklar yolu yakalar (eşdeğerlik ihlali değil)
+  ---
+  duration_ms: 462.732857
+  type: 'suite'
+  ...
+# Subtest: T2 — tahsildeki evrak karşılıksız: tek madde, alacak 101.02
+    # Subtest: carili senet: 08.10'da B 120 / A 121.02 tek madde; Alt Hesap Mizanı 121.01 hareketsiz, 121.02 alacak 3.000
+    ok 1 - carili senet: 08.10'da B 120 / A 121.02 tek madde; Alt Hesap Mizanı 121.01 hareketsiz, 121.02 alacak 3.000
+      ---
+      duration_ms: 96.45098
+      type: 'test'
+      ...
+    # Subtest: carisiz çek ve taksite sayılmış çek: karşılıksız maddesi A 101.02; 101.01 / 101.02 sıfır; Mutabakat tamam
+    ok 2 - carisiz çek ve taksite sayılmış çek: karşılıksız maddesi A 101.02; 101.01 / 101.02 sıfır; Mutabakat tamam
+      ---
+      duration_ms: 121.107475
+      type: 'test'
+      ...
+    1..2
+ok 3 - T2 — tahsildeki evrak karşılıksız: tek madde, alacak 101.02
+  ---
+  duration_ms: 566.788696
+  type: 'suite'
+  ...
+# Subtest: T3, T4, G1 — Yevmiye ve İşlem Kartı alt hesapları; Alt Hesap Mizanı'nda 101
+    # Subtest: T4: hiç tahsile verilmemiş şirkette 101.01 = 2.000 ve 101 ana hesabı
+    ok 1 - T4: hiç tahsile verilmemiş şirkette 101.01 = 2.000 ve 101 ana hesabı
+      ---
+      duration_ms: 5.583732
+      type: 'test'
+      ...
+    # Subtest: T3: Tahsile Ver maddesi Yevmiye'de 101.02 borç / 101.01 alacak; tahsil maddesi 102.01 borç / 101.02 alacak
+    ok 2 - T3: Tahsile Ver maddesi Yevmiye'de 101.02 borç / 101.01 alacak; tahsil maddesi 102.01 borç / 101.02 alacak
+      ---
+      duration_ms: 41.398946
+      type: 'test'
+      ...
+    # Subtest: G1: İşlem Kartı — Tahsile Ver başlığında 101.02 / 101.01 satırları; tahsil olayında A 101.02 (adlarıyla)
+    ok 3 - G1: İşlem Kartı — Tahsile Ver başlığında 101.02 / 101.01 satırları; tahsil olayında A 101.02 (adlarıyla)
+      ---
+      duration_ms: 7.439687
+      type: 'test'
+      ...
+    1..3
+ok 4 - T3, T4, G1 — Yevmiye ve İşlem Kartı alt hesapları; Alt Hesap Mizanı'nda 101
+  ---
+  duration_ms: 384.78424
+  type: 'suite'
+  ...
+# Subtest: T5, T6 — tahsildeki çekin beklenen günü: zil/takvim, Vade Takip, Nakit Akış (kaynak)
+    # Subtest: zil/takvim (dues): D-1 12.10 'Bankada Tahsilde', D-2 10.10 'Tahsil Edilecek' — Vade Takip ile aynı günler
+    ok 1 - zil/takvim (dues): D-1 12.10 'Bankada Tahsilde', D-2 10.10 'Tahsil Edilecek' — Vade Takip ile aynı günler
+      ---
+      duration_ms: 12.721655
+      type: 'test'
+      ...
+    # Subtest: Nakit Akış: kaynak özetinde tahsildeki 1.000 ve portföydeki 300 ayrı; Excel'de Kaynak 'Tahsildeki Çek ve Senet'
+    ok 2 - Nakit Akış: kaynak özetinde tahsildeki 1.000 ve portföydeki 300 ayrı; Excel'de Kaynak 'Tahsildeki Çek ve Senet'
+      ---
+      duration_ms: 25.168388
+      type: 'test'
+      ...
+    1..2
+ok 5 - T5, T6 — tahsildeki çekin beklenen günü: zil/takvim, Vade Takip, Nakit Akış (kaynak)
+  ---
+  duration_ms: 380.840635
+  type: 'suite'
+  ...
+# Subtest: T7, T9 — Çek / Senet raporları ve Tahsildeki Çek ve Senetler
+    # Subtest: T7: status=deposited yalnız tahsildeki; status=portfolio satır toplamı = özet 'Portföyde (alınan)'; 'Bankada Tahsilde' ayrı
+    ok 1 - T7: status=deposited yalnız tahsildeki; status=portfolio satır toplamı = özet 'Portföyde (alınan)'; 'Bankada Tahsilde' ayrı
+      ---
+      duration_ms: 5.557988
+      type: 'test'
+      ...
+    # Subtest: T9: Çek / Senet Hareketleri'nde Bankaya Tahsile Verildi ve Bankadan Geri Alındı; Tahsildeki Çek ve Senetler raporu = 101.02
+    ok 2 - T9: Çek / Senet Hareketleri'nde Bankaya Tahsile Verildi ve Bankadan Geri Alındı; Tahsildeki Çek ve Senetler raporu = 101.02
+      ---
+      duration_ms: 9.615651
+      type: 'test'
+      ...
+    1..2
+ok 6 - T7, T9 — Çek / Senet raporları ve Tahsildeki Çek ve Senetler
+  ---
+  duration_ms: 396.585515
+  type: 'suite'
+  ...
+# Subtest: T8/D5, D3, D4 — geçiş kuralları
+    # Subtest: T8/D5: hesabın açılışından önce tahsile verme 409; açılış günü 200; açılışı ilk tahsile vermeden sonraya alma 409
+    ok 1 - T8/D5: hesabın açılışından önce tahsile verme 409; açılış günü 200; açılışı ilk tahsile vermeden sonraya alma 409
+      ---
+      duration_ms: 90.589803
+      type: 'test'
+      ...
+    # Subtest: D3: karşılıksızdan sonra hesap pasif ya da Vadeli → karşılıksızı Geri Al reddedilir; hesap etkinleşince yeniden tahsilde
+    ok 2 - D3: karşılıksızdan sonra hesap pasif ya da Vadeli → karşılıksızı Geri Al reddedilir; hesap etkinleşince yeniden tahsilde
+      ---
+      duration_ms: 181.315138
+      type: 'test'
+      ...
+    # Subtest: D4: tahsil kaydı geri alınmış evrakın alış tarihi veriliş gününden sonraya alınamaz (409); veriliş günü olur
+    ok 3 - D4: tahsil kaydı geri alınmış evrakın alış tarihi veriliş gününden sonraya alınamaz (409); veriliş günü olur
+      ---
+      duration_ms: 76.69277
+      type: 'test'
+      ...
+    1..3
+ok 7 - T8/D5, D3, D4 — geçiş kuralları
+  ---
+  duration_ms: 643.839425
+  type: 'suite'
+  ...
+# Subtest: D1/D2 — v2.1.0'a dönüp tahsildeki evraka dokunma; bu dalda açılış onarımı (h)
+    # Subtest: D1 silme (statusDate alış günü 03.10 < veriliş 06.10): kapanış veriliş gününe; Mutabakat tamam
+    ok 1 - D1 silme (statusDate alış günü 03.10 < veriliş 06.10): kapanış veriliş gününe; Mutabakat tamam
+      ---
+      duration_ms: 809.834711
+      type: 'test'
+      ...
+    # Subtest: D1 veriliş gününden önceki tarihle ciro ve tahsil: kapanış veriliş gününe; Mutabakat tamam
+    ok 2 - D1 veriliş gününden önceki tarihle ciro ve tahsil: kapanış veriliş gününe; Mutabakat tamam
+      ---
+      duration_ms: 1153.645947
+      type: 'test'
+      ...
+    # Subtest: D2 tahsildeki evrakın tutarı 800 → 950 ve alış tarihi 08.10'a: verilme başlığı onarılır; Mutabakat tamam
+    ok 3 - D2 tahsildeki evrakın tutarı 800 → 950 ve alış tarihi 08.10'a: verilme başlığı onarılır; Mutabakat tamam
+      ---
+      duration_ms: 1173.520772
+      type: 'test'
+      ...
+    1..3
+ok 8 - D1/D2 — v2.1.0'a dönüp tahsildeki evraka dokunma; bu dalda açılış onarımı (h)
+  ---
+  duration_ms: 3137.369498
+  type: 'suite'
+  ...
+# Subtest: kolon başlıklarını adlandırma
+    # Subtest: yönetici başlıkları adlandırır; profil adları verir, tüm kullanıcılar görür
+    ok 1 - yönetici başlıkları adlandırır; profil adları verir, tüm kullanıcılar görür
+      ---
+      duration_ms: 13.615565
+      type: 'test'
+      ...
+    # Subtest: veri ve düzeltmeler asıl kolon adıyla çalışmaya devam eder
+    ok 2 - veri ve düzeltmeler asıl kolon adıyla çalışmaya devam eder
+      ---
+      duration_ms: 14.555712
+      type: 'test'
+      ...
+    # Subtest: Excel'e dışa aktarmada başlıklar ofisin verdiği adla yazılır
+    ok 3 - Excel'e dışa aktarmada başlıklar ofisin verdiği adla yazılır
+      ---
+      duration_ms: 10.44281
+      type: 'test'
+      ...
+    # Subtest: çakışan ad, verideki olmayan kolon ve yetkisiz kullanıcı reddedilir; boş ad asıl ada döndürür
+    ok 4 - çakışan ad, verideki olmayan kolon ve yetkisiz kullanıcı reddedilir; boş ad asıl ada döndürür
+      ---
+      duration_ms: 17.793113
+      type: 'test'
+      ...
+    # Subtest: tarih kolon adı olamaz: değer sanılıp başlığa yazılan tarih reddedilir, ay-yıl başlığı kabul edilir (v2.0.6)
+    ok 5 - tarih kolon adı olamaz: değer sanılıp başlığa yazılan tarih reddedilir, ay-yıl başlığı kabul edilir (v2.0.6)
+      ---
+      duration_ms: 22.35239
+      type: 'test'
+      ...
+    # Subtest: adlar veri oturumuna özeldir
+    ok 6 - adlar veri oturumuna özeldir
+      ---
+      duration_ms: 18.082472
+      type: 'test'
+      ...
+    1..6
+ok 9 - kolon başlıklarını adlandırma
+  ---
+  duration_ms: 590.93189
+  type: 'suite'
+  ...
+# Subtest: zor değerler (v2.0.2)
+    # Subtest: ay adlı tarihler ve Amerikan sırası okunur; takvimde olmayan tarih okunmaz
+    ok 1 - ay adlı tarihler ve Amerikan sırası okunur; takvimde olmayan tarih okunmaz
+      ---
+      duration_ms: 0.329066
+      type: 'test'
+      ...
+    # Subtest: Excel hata değerleri boş sayılır; küçük tablolarda başlık destekliyorsa tür verilir
+    ok 2 - Excel hata değerleri boş sayılır; küçük tablolarda başlık destekliyorsa tür verilir
+      ---
+      duration_ms: 6.728554
+      type: 'test'
+      ...
+    1..2
+ok 10 - zor değerler (v2.0.2)
+  ---
+  duration_ms: 7.350384
+  type: 'suite'
+  ...
+# Subtest: eşleme ekranı: kullanıcı rolleri (v2.0.2)
+    # Subtest: seçilen rol otomatik kararın üstüne yazar; 'Yok Say' önemi sıfırlar; kanıt ve kesinlik bunu söyler
+    ok 1 - seçilen rol otomatik kararın üstüne yazar; 'Yok Say' önemi sıfırlar; kanıt ve kesinlik bunu söyler
+      ---
+      duration_ms: 2.515513
+      type: 'test'
+      ...
+    1..1
+ok 11 - eşleme ekranı: kullanıcı rolleri (v2.0.2)
+  ---
+  duration_ms: 2.635994
+  type: 'suite'
+  ...
+# Subtest: göç 10: kolon adına yazılmış tarihler asıl adına döner (v2.0.6)
+    # Subtest: tarih adları kalkar, diğer adlar kalır; işlem geçmişine ve bir kerelik bildirime yazılır
+    ok 1 - tarih adları kalkar, diğer adlar kalır; işlem geçmişine ve bir kerelik bildirime yazılır
+      ---
+      duration_ms: 161.691692
+      type: 'test'
+      ...
+    1..1
+ok 12 - göç 10: kolon adına yazılmış tarihler asıl adına döner (v2.0.6)
+  ---
+  duration_ms: 423.310039
+  type: 'suite'
+  ...
+# Subtest: ayrıştırıcı dayanıklılık (rastgele düzenler)
+    # Subtest: temiz tablolar süsleme (başlık, boş satır, toplam, dipnot) ne olursa olsun aynı kayıtları verir
+    ok 1 - temiz tablolar süsleme (başlık, boş satır, toplam, dipnot) ne olursa olsun aynı kayıtları verir
+      ---
+      duration_ms: 101.64082
+      type: 'test'
+      ...
+    # Subtest: başlıksız tablolar kayıt kaybetmez; rastgele çöp girdiler hata vermez
+    ok 2 - başlıksız tablolar kayıt kaybetmez; rastgele çöp girdiler hata vermez
+      ---
+      duration_ms: 62.757501
+      type: 'test'
+      ...
+    # Subtest: form ve yan çevrilmiş düzenler rastgele alanlarla da tanınır
+    ok 3 - form ve yan çevrilmiş düzenler rastgele alanlarla da tanınır
+      ---
+      duration_ms: 24.271401
+      type: 'test'
+      ...
+    # Subtest: 50.000 satırlık sayfa iki saniyenin altında okunur
+    ok 4 - 50.000 satırlık sayfa iki saniyenin altında okunur
+      ---
+      duration_ms: 1160.699415
+      type: 'test'
+      ...
+    1..4
+ok 13 - ayrıştırıcı dayanıklılık (rastgele düzenler)
+  ---
+  duration_ms: 1350.646196
+  type: 'suite'
+  ...
+# Subtest: kendi kendini onarma (heal)
+    # Subtest: UTF-8'in Windows-1254 sanılmasından doğan bozuk Türkçe onarılır; sağlam metin ve gerçek Latin metin dokunulmaz
+    ok 1 - UTF-8'in Windows-1254 sanılmasından doğan bozuk Türkçe onarılır; sağlam metin ve gerçek Latin metin dokunulmaz
+      ---
+      duration_ms: 1.745267
+      type: 'test'
+      ...
+    # Subtest: görünmez karakterler ve NBSP temizlenir, boşluklar sadeleşir, yer tutucular boş olur
+    ok 2 - görünmez karakterler ve NBSP temizlenir, boşluklar sadeleşir, yer tutucular boş olur
+      ---
+      duration_ms: 1.658536
+      type: 'test'
+      ...
+    # Subtest: kayıt dizisi yerinde onarılır ve rapor notu üretilir
+    ok 3 - kayıt dizisi yerinde onarılır ve rapor notu üretilir
+      ---
+      duration_ms: 1.878063
+      type: 'test'
+      ...
+    1..3
+ok 14 - kendi kendini onarma (heal)
+  ---
+  duration_ms: 6.310343
+  type: 'suite'
+  ...
+# Subtest: şemaya esnek uyum ve toplu düzeltme (tam yığın)
+    # Subtest: yeniden adlandırılan kolon eşlenir; düzeltme ve saklı satırlar yeni ada taşınır; okuma raporu ve şema önizlemede
+    ok 1 - yeniden adlandırılan kolon eşlenir; düzeltme ve saklı satırlar yeni ada taşınır; okuma raporu ve şema önizlemede
+      ---
+      duration_ms: 95.819306
+      type: 'test'
+      ...
+    # Subtest: toplu düzeltme: telefon yazımı tek tıkla uygulanır ve geri alınır
+    ok 2 - toplu düzeltme: telefon yazımı tek tıkla uygulanır ve geri alınır
+      ---
+      duration_ms: 155.983494
+      type: 'test'
+      ...
+    1..2
+ok 15 - şemaya esnek uyum ve toplu düzeltme (tam yığın)
+  ---
+  duration_ms: 665.385433
+  type: 'suite'
+  ...
+# Subtest: ekip çakışma önleme (v2.0.2)
+    # Subtest: aynı hücreyi iki kişi düzenlerse ikincisi 409 alır; 'force' ile üzerine yazabilir
+    ok 1 - aynı hücreyi iki kişi düzenlerse ikincisi 409 alır; 'force' ile üzerine yazabilir
+      ---
+      duration_ms: 18.877803
+      type: 'test'
+      ...
+    # Subtest: önizleme hazırlanırken veri değişirse kaydetme 409 ile reddedilir
+    ok 2 - önizleme hazırlanırken veri değişirse kaydetme 409 ile reddedilir
+      ---
+      duration_ms: 36.367741
+      type: 'test'
+      ...
+    1..2
+ok 16 - ekip çakışma önleme (v2.0.2)
+  ---
+  duration_ms: 329.727956
+  type: 'suite'
+  ...
+# Subtest: hata toleransı: işaretlenen hatalar (v2.0.2)
+    # Subtest: kaymış satır işaretlenir, takvime girmez, 'Sorun yok' ile olağan akışa döner
+    ok 1 - kaymış satır işaretlenir, takvime girmez, 'Sorun yok' ile olağan akışa döner
+      ---
+      duration_ms: 180.968619
+      type: 'test'
+      ...
+    1..1
+ok 17 - hata toleransı: işaretlenen hatalar (v2.0.2)
+  ---
+  duration_ms: 473.68028
+  type: 'suite'
+  ...
+# Subtest: ön izleme ve eşleme (v2.0.2)
+    # Subtest: aşama kolon rollerini, örnek satırları ve şüpheli hücreleri verir; kaydetmede seçilen roller analize ve takvime uygulanır
+    ok 1 - aşama kolon rollerini, örnek satırları ve şüpheli hücreleri verir; kaydetmede seçilen roller analize ve takvime uygulanır
+      ---
+      duration_ms: 124.93504
+      type: 'test'
+      ...
+    1..1
+ok 18 - ön izleme ve eşleme (v2.0.2)
+  ---
+  duration_ms: 467.666089
+  type: 'suite'
+  ...
+# Subtest: kolon eşleme
+    # Subtest: yeniden adlandırılan, eklenen ve kaldırılan kolonları ayırır; aynı adlar aynen eşlenir
+    ok 1 - yeniden adlandırılan, eklenen ve kaldırılan kolonları ayırır; aynı adlar aynen eşlenir
+      ---
+      duration_ms: 3.255673
+      type: 'test'
+      ...
+    # Subtest: değer örtüşmesi ad benzemese de eşler; yazım düzeltmesi ve büyük/küçük harf farkı eşlenir
+    ok 2 - değer örtüşmesi ad benzemese de eşler; yazım düzeltmesi ve büyük/küçük harf farkı eşlenir
+      ---
+      duration_ms: 0.945732
+      type: 'test'
+      ...
+    # Subtest: her kolon en çok bir kolonla eşlenir; benzemeyenler eşlenmez
+    ok 3 - her kolon en çok bir kolonla eşlenir; benzemeyenler eşlenmez
+      ---
+      duration_ms: 0.330158
+      type: 'test'
+      ...
+    # Subtest: kayıt anahtarları eşlemeye göre yeniden adlandırılır; hedef ad zaten varsa dokunulmaz
+    ok 4 - kayıt anahtarları eşlemeye göre yeniden adlandırılır; hedef ad zaten varsa dokunulmaz
+      ---
+      duration_ms: 0.382189
+      type: 'test'
+      ...
+    1..4
+ok 19 - kolon eşleme
+  ---
+  duration_ms: 6.1438
+  type: 'suite'
+  ...
+# Subtest: alt tablolar (bölümler)
+    # Subtest: başlık + kolon başlığı düzenindeki alt tabloları kendi kolonlarıyla ayırır
+    ok 1 - başlık + kolon başlığı düzenindeki alt tabloları kendi kolonlarıyla ayırır
+      ---
+      duration_ms: 8.367978
+      type: 'test'
+      ...
+    # Subtest: tek tablolu sekmede davranış değişmez: ilk satır kolon başlığı, sekme adı aynı
+    ok 2 - tek tablolu sekmede davranış değişmez: ilk satır kolon başlığı, sekme adı aynı
+      ---
+      duration_ms: 0.808343
+      type: 'test'
+      ...
+    # Subtest: en üstteki başlık satırı kolon başlığı sanılmaz; tek bölümde sekme adı korunur
+    ok 3 - en üstteki başlık satırı kolon başlığı sanılmaz; tek bölümde sekme adı korunur
+      ---
+      duration_ms: 0.596575
+      type: 'test'
+      ...
+    # Subtest: aynı kolonlar içindeki grup satırlarını alt başlık yapar
+    ok 4 - aynı kolonlar içindeki grup satırlarını alt başlık yapar
+      ---
+      duration_ms: 1.961378
+      type: 'test'
+      ...
+    # Subtest: tek bir yarım kaydı veya adla başlayan satırı grup başlığı sanmaz
+    ok 5 - tek bir yarım kaydı veya adla başlayan satırı grup başlığı sanmaz
+      ---
+      duration_ms: 0.646163
+      type: 'test'
+      ...
+    # Subtest: araya yeniden konmuş aynı kolon başlığını kayıt saymaz, tabloyu bölmez
+    ok 6 - araya yeniden konmuş aynı kolon başlığını kayıt saymaz, tabloyu bölmez
+      ---
+      duration_ms: 0.496565
+      type: 'test'
+      ...
+    # Subtest: İngilizce ve genel başlıklarla da çalışır (sayfaya özgü değil)
+    ok 7 - İngilizce ve genel başlıklarla da çalışır (sayfaya özgü değil)
+      ---
+      duration_ms: 1.111063
+      type: 'test'
+      ...
+    # Subtest: emin olunamayan düzende (tanıdık başlık yok, veri yok) tabloyu bölmez
+    ok 8 - emin olunamayan düzende (tanıdık başlık yok, veri yok) tabloyu bölmez
+      ---
+      duration_ms: 1.040894
+      type: 'test'
+      ...
+    # Subtest: başlığı boş ama verisi olan kolonu kaybetmez, aynı adlı kolonları ayırır
+    ok 9 - başlığı boş ama verisi olan kolonu kaybetmez, aynı adlı kolonları ayırır
+      ---
+      duration_ms: 0.652432
+      type: 'test'
+      ...
+    # Subtest: sekme adı yoksa bölüm adları tek başına etiket olur; başlıksız bölüm numaralanır
+    ok 10 - sekme adı yoksa bölüm adları tek başına etiket olur; başlıksız bölüm numaralanır
+      ---
+      duration_ms: 0.740093
+      type: 'test'
+      ...
+    # Subtest: başlık kelimesi tanıma Türkçe ekleri ve harf farklarını kapsar
+    ok 11 - başlık kelimesi tanıma Türkçe ekleri ve harf farklarını kapsar
+      ---
+      duration_ms: 0.337323
+      type: 'test'
+      ...
+    # Subtest: çok satırlı sekmede çağrı yığını taşmaz ve süre makul kalır
+    ok 12 - çok satırlı sekmede çağrı yığını taşmaz ve süre makul kalır
+      ---
+      duration_ms: 512.043597
+      type: 'test'
+      ...
+    # Subtest: boş veya bozuk girdide hata vermez
+    ok 13 - boş veya bozuk girdide hata vermez
+      ---
+      duration_ms: 0.618404
+      type: 'test'
+      ...
+    1..13
+ok 20 - alt tablolar (bölümler)
+  ---
+  duration_ms: 532.386713
+  type: 'suite'
+  ...
+# Subtest: zor düzenler (v2.0.2): gruplu başlık, dipnot, toplam, yan yana tablo, uzak not
+    # Subtest: iki satırlı gruplu başlıkta asıl başlıklar alt satırdan alınır; boş alt başlık grubun adını alır
+    ok 1 - iki satırlı gruplu başlıkta asıl başlıklar alt satırdan alınır; boş alt başlık grubun adını alır
+      ---
+      duration_ms: 0.521312
+      type: 'test'
+      ...
+    # Subtest: tablonun üstünde sağ köşedeki tek hücreli not başlık sanılmaz
+    ok 2 - tablonun üstünde sağ köşedeki tek hücreli not başlık sanılmaz
+      ---
+      duration_ms: 0.380704
+      type: 'test'
+      ...
+    # Subtest: tablo sonundaki dipnotlar kayıt olmaz; toplam satırı kayıt olarak kalır (formülü hesaplanır) ama grup oranına girmez
+    ok 3 - tablo sonundaki dipnotlar kayıt olmaz; toplam satırı kayıt olarak kalır (formülü hesaplanır) ama grup oranına girmez
+      ---
+      duration_ms: 1.252629
+      type: 'test'
+      ...
+    # Subtest: aralarında boş kolon bulunan yan yana tablolar kendi başlıklarıyla ayrılır; içinde boş ayraç olan tek tablo bölünmez
+    ok 4 - aralarında boş kolon bulunan yan yana tablolar kendi başlıklarıyla ayrılır; içinde boş ayraç olan tek tablo bölünmez
+      ---
+      duration_ms: 0.896503
+      type: 'test'
+      ...
+    1..4
+ok 21 - zor düzenler (v2.0.2): gruplu başlık, dipnot, toplam, yan yana tablo, uzak not
+  ---
+  duration_ms: 3.262213
+  type: 'suite'
+  ...
+# Subtest: sayfa şekilleri ve okuma raporu (v2.0.2): form, yan çevrilmiş, başlıksız, bölünmüş başlık
+    # Subtest: solda alan adı sağda değer olan form tek kayıt olur
+    ok 1 - solda alan adı sağda değer olan form tek kayıt olur
+      ---
+      duration_ms: 0.522447
+      type: 'test'
+      ...
+    # Subtest: alanları aşağı, kayıtları sağa yazılmış sayfa yan çevrilerek okunur
+    ok 2 - alanları aşağı, kayıtları sağa yazılmış sayfa yan çevrilerek okunur
+      ---
+      duration_ms: 0.959428
+      type: 'test'
+      ...
+    # Subtest: başlık satırı olmayan tabloda kolon adları içerikten türetilir ve ilk satır da kayıt olur
+    ok 3 - başlık satırı olmayan tabloda kolon adları içerikten türetilir ve ilk satır da kayıt olur
+      ---
+      duration_ms: 3.346477
+      type: 'test'
+      ...
+    # Subtest: iki satıra bölünmüş başlık birleştirilir; metin içerikli ilk kayıt başlıkla birleştirilmez
+    ok 4 - iki satıra bölünmüş başlık birleştirilir; metin içerikli ilk kayıt başlıkla birleştirilmez
+      ---
+      duration_ms: 0.603237
+      type: 'test'
+      ...
+    # Subtest: okuma raporu: atlanan satırlar türüyle listelenir, kapsam kayda giren hücre oranıdır
+    ok 5 - okuma raporu: atlanan satırlar türüyle listelenir, kapsam kayda giren hücre oranıdır
+      ---
+      duration_ms: 0.407652
+      type: 'test'
+      ...
+    1..5
+ok 22 - sayfa şekilleri ve okuma raporu (v2.0.2): form, yan çevrilmiş, başlıksız, bölünmüş başlık
+  ---
+  duration_ms: 6.048515
+  type: 'suite'
+  ...
+# Subtest: tabloda sütun ekleme ve silme (v2.0.6)
+    # Subtest: sütun seçilen sütunun hemen sağına, sekmedeki her satıra boş hücreyle eklenir; diğer sekme etkilenmez
+    ok 1 - sütun seçilen sütunun hemen sağına, sekmedeki her satıra boş hücreyle eklenir; diğer sekme etkilenmez
+      ---
+      duration_ms: 17.251385
+      type: 'test'
+      ...
+    # Subtest: eklenen sütuna yazılan değer o sütunda kalır (benzer adlı “Durum” kolonuna kaymaz)
+    ok 2 - eklenen sütuna yazılan değer o sütunda kalır (benzer adlı “Durum” kolonuna kaymaz)
+      ---
+      duration_ms: 12.963371
+      type: 'test'
+      ...
+    # Subtest: ad verilmezse “Yeni sütun”, sonra “Yeni sütun 2”; aynı ad reddedilir; eklenenin sağına da eklenir
+    ok 3 - ad verilmezse “Yeni sütun”, sonra “Yeni sütun 2”; aynı ad reddedilir; eklenenin sağına da eklenir
+      ---
+      duration_ms: 17.742415
+      type: 'test'
+      ...
+    # Subtest: silinen sütun tüm satırlardan kalkar, sağdakiler sola kayar; verisi durur ve Silinenler'den geri gelir
+    ok 4 - silinen sütun tüm satırlardan kalkar, sağdakiler sola kayar; verisi durur ve Silinenler'den geri gelir
+      ---
+      duration_ms: 32.013446
+      type: 'test'
+      ...
+    # Subtest: bağlı olduğu sütun silinse de eklenen sütun yerinde kalır; son tarih sütunu silinince uyarısı da kalkar
+    ok 5 - bağlı olduğu sütun silinse de eklenen sütun yerinde kalır; son tarih sütunu silinince uyarısı da kalkar
+      ---
+      duration_ms: 54.179223
+      type: 'test'
+      ...
+    # Subtest: yeniden yükleme ve eşitlemeden sonra düzen kalır
+    ok 6 - yeniden yükleme ve eşitlemeden sonra düzen kalır
+      ---
+      duration_ms: 46.355967
+      type: 'test'
+      ...
+    # Subtest: yalnız yönetici; son sütun silinemez; olmayan sütun reddedilir
+    ok 7 - yalnız yönetici; son sütun silinemez; olmayan sütun reddedilir
+      ---
+      duration_ms: 16.507185
+      type: 'test'
+      ...
+    1..7
+ok 23 - tabloda sütun ekleme ve silme (v2.0.6)
+  ---
+  duration_ms: 710.908313
+  type: 'suite'
+  ...
+1..23
+# tests 73
+# suites 23
+# pass 73
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13849.710786

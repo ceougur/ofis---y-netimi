@@ -14,7 +14,7 @@
 import { primaryColumns } from "./insight/columns.mjs";
 import { isFlaggedRow, isTotalRow } from "./insight/cells.mjs";
 import { amountCandidates, debtByRecord, debtPlan, isNotAmountHeader, rowDebt } from "./insight/debt-column.mjs";
-import { foldText, parseAmount, parseDate } from "./insight/validators.mjs";
+import { foldText, isTckn, isVkn, parseAmount, parseDate } from "./insight/validators.mjs";
 import { fromCents, toCents } from "./money.mjs";
 
 // Para toplamları kuruş (tamsayı) üzerinden: kayan nokta kalıntısı (11362.720000000001) API'ye, bakiye satırlarına ve toplamlara taşınmaz (aday 13 yan bulgusu).
@@ -32,9 +32,10 @@ const phoneKey = value => {
   return digits.length >= 10 ? digits.slice(-10) : "";
 };
 // Kimlik: 11 haneli T.C. Kimlik No ya da 10 haneli Vergi No (yalnız rakamlar); başka uzunluk kimlik sayılmaz.
+// 31e V1: sağlaması tutmayan numara (yazım hatası, yer tutucu 11111111111 / 0000000000) kişi gruplamasında kimlik sayılmaz.
 const identityKey = value => {
   const digits = String(value ?? "").replace(/\D/g, "");
-  return digits.length === 10 || digits.length === 11 ? digits : "";
+  return (digits.length === 11 && isTckn(digits)) || (digits.length === 10 && isVkn(digits)) ? digits : "";
 };
 export const cariKeyOf = (name, phone = "") => {
   const folded = foldText(name);
@@ -233,7 +234,7 @@ export function personIndex(records) {
     }
     if (record.identity) {
       if (!idsByName.has(record.cariKey)) idsByName.set(record.cariKey, []);
-      idsByName.get(record.cariKey).push({ identity: record.identity, phone });
+      idsByName.get(record.cariKey).push({ identity: record.identity, phone, slot: `${record.session || ""}\u0000${record.key}` });
     }
   }
   // 31e D1: kimlik yalnız AYNI adlı grupları ayırır — adın birden çok farklı kimliği varsa her kimlik ayrı kişi; farklı adlar kimlik yüzünden birleşmez (yer tutucu
@@ -246,6 +247,12 @@ export function personIndex(records) {
     const ids = new Set((idsByName.get(record.cariKey) || []).map(entry => entry.identity));
     if (ids.size < 2) return plain;
     if (record.identity) return `${record.cariKey}|t:${record.identity}`;
+    // 31e V2: adın birden çok kimliği varken kimliksiz satır, AYNI dosya no'yu taşıyan kimlikli satırın kişisine katılır (kimlik sütunu olmayan sekmedeki aynı dosya);
+    // dosya no iki farklı kimlikte geçiyorsa tahmin edilmez. Eşleşme yoksa bugünkü kural (telefon) ya da adın kimliksiz grubu.
+    const slot = `${record.session || ""}\u0000${record.key}`;
+    const sameFile = new Set((idsByName.get(record.cariKey) || []).filter(entry => entry.slot === slot).map(entry => entry.identity));
+    if (sameFile.size === 1) return `${record.cariKey}|t:${[...sameFile][0]}`;
+    if (sameFile.size > 1) return plain;
     const matches = new Set((idsByName.get(record.cariKey) || []).filter(entry => !byPhone || (phone && entry.phone === phone)).map(entry => entry.identity));
     return matches.size === 1 ? `${record.cariKey}|t:${[...matches][0]}` : plain;
   };

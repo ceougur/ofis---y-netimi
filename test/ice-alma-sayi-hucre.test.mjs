@@ -12,7 +12,24 @@ import { cellText, matrixText, parseAmount as moneyAmount } from "../server/lib/
 import { parseAmount } from "../server/lib/insight/validators.mjs";
 import { sanitizeCell } from "../server/lib/import-gate.mjs";
 import { matrixToFree } from "../server/lib/free-import.mjs";
+import { analyzeColumns } from "../server/lib/insight/columns.mjs";
+import { isVkn } from "../server/lib/insight/validators.mjs";
+// Geçerli bir VKN (sağlamalı); testte üretilir.
+const VALID_VKN = (() => {
+  for (let n = 1000000000; ; n += 1) if (isVkn(String(n))) return String(n);
+})();
 
+
+describe("31e V1: kimlik / numara başlıklı sütun tutar sayılmaz; para başlıkları tutar kalır; geçerli VKN / TCKN tanınır (birim)", () => {
+  test("analyzeColumns rolleri (B1/B2/B3)", () => {
+    const roleOf = (head, values) => analyzeColumns(values.map((value, index) => ({ "Ad Soyad": ["Ali Veli", "Ayşe Kaya", "Can Er"][index], [head]: value, Tutar: String((index + 1) * 100) })), ["Ad Soyad", head, "Tutar"], { now: new Date(2026, 9, 23) }).find(item => item.column === head).role;
+    const invalid = ["1234567890", "2345678901", "3456789012"];
+    for (const head of ["Vergi No", "Vergi Numarası", "Vergi Kimlik No", "VKN", "TC", "Kimlik No"]) assert.notEqual(roleOf(head, invalid), "money", `${head} tutar sayılmamalı`);
+    for (const head of ["Vergi", "Vergi Tutarı", "KDV"]) assert.equal(roleOf(head, ["100", "250,50", "1.000"]), "money", `${head} tutar kalmalı`);
+    assert.equal(roleOf("Vergi No", ["1234567891", "1234567891", "1234567891"].map(() => VALID_VKN)), "vkn", "geçerli VKN");
+    assert.equal(roleOf("TC Kimlik No", ["10000000146", "12345678950", "10000000146"]), "tckn", "geçerli TCKN");
+  });
+});
 
 describe("31e N2: İngilizce yazım '1,234.56' iki çözümleyicide aynı (1234,56); Türkçe kurallar aynen (birim)", () => {
   test("money.parseAmount = insight parseAmount (B10/B11)", () => {

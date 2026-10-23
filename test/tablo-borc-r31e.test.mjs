@@ -311,15 +311,15 @@ describe("31e C2: kuruş altı hücre — TOPLAM satırı = özet (ekran, Excel)
 
 describe("31e C3: aynı adlı iki kişi — farklı T.C. Kimlik No ayrı, aynı kimlik tek kişi; Vadeler aynı adı yazar", () => {
   const ctx = setup([
-    { name: "Senetler", matrix: [["Ad Soyad", "TC Kimlik No", "Kalan", "Vade"], ["Ali Veli", "10000000146", "700", d(-2)], ["Ali Veli", "22222222222", "900", d(-6)], ["Ayşe Kaya", "33333333333", "300", d(-1)], ["A. Can Er", "44444444444", "400", d(-3)], ["Can Er", "44444444444", "250", d(-4)]] },
+    { name: "Senetler", matrix: [["Ad Soyad", "TC Kimlik No", "Kalan", "Vade"], ["Ali Veli", "10000000146", "700", d(-2)], ["Ali Veli", "12345678950", "900", d(-6)], ["Ayşe Kaya", "33333333333", "300", d(-1)], ["A. Can Er", "44444444444", "400", d(-3)], ["Can Er", "44444444444", "250", d(-4)]] },
     { name: "Kiracılar", matrix: [["Kiracı", "Daire No", "Cep Tel", "Kira Bedeli", "Ödeme Günü"], ["Ali Veli", "K-1", "0555 999 99 99", "5.000", "5"], ["Ayşe Kaya", "K-3", "0532 222 22 22", "3.000", "6"]] },
   ]);
 
-  test("Ali Veli üç kişi: TC 10000000146 700, TC 22222222222 900, kimliksiz Kiracılar 5.000 (iki kimliğe uyuyor, tahmin edilmez); Ayşe tek kimlik → 300 + 3.000 (B10/B11)", async () => {
+  test("Ali Veli üç kişi: TC 10000000146 700, TC 12345678950 900, kimliksiz Kiracılar 5.000 (iki kimliğe uyuyor, tahmin edilmez); Ayşe tek kimlik → 300 + 3.000 (B10/B11)", async () => {
     const { report } = await ctx.report("cari-ekstre");
     const groups = debitBy(report);
     assert.equal(groups["Ali Veli (TC 10000000146)"], 700, JSON.stringify(report.groups.map(group => [group.cari, group.debit])));
-    assert.equal(groups["Ali Veli (TC 22222222222)"], 900);
+    assert.equal(groups["Ali Veli (TC 12345678950)"], 900);
     assert.equal(groups["Ali Veli"], 5000);
     assert.equal(groups["Ayşe Kaya"], 3300, "aynı ad, biri kimliksiz: bugünkü kural (tek kimlik → aynı kişi)");
   });
@@ -334,7 +334,7 @@ describe("31e C3: aynı adlı iki kişi — farklı T.C. Kimlik No ayrı, aynı 
 
   test("Vadeler: iki Ali Veli kalemi kimlik ekiyle, Tablodaki Kişiler ile aynı ad (B14)", async () => {
     const rows = (await ctx.report("vade-takip")).report.table.rows.filter(row => /Ali Veli/.test(row.cari)).map(row => [row.cari, row.amount]).sort((a, b) => a[1] - b[1]);
-    assert.deepEqual(rows.filter(([, amount]) => amount === 700 || amount === 900), [["Ali Veli (TC 10000000146)", 700], ["Ali Veli (TC 22222222222)", 900]], JSON.stringify(rows));
+    assert.deepEqual(rows.filter(([, amount]) => amount === 700 || amount === 900), [["Ali Veli (TC 10000000146)", 700], ["Ali Veli (TC 12345678950)", 900]], JSON.stringify(rows));
   });
 });
 
@@ -355,6 +355,38 @@ describe("31e D1: aynı kimlik farklı ad — ayrı kişiler (v2.4.3 gibi); ayn�
     const rows = (await ctx.report("vade-takip")).report.table.rows.map(row => row.cari);
     assert.deepEqual([...new Set(rows)].sort((x, y) => x.localeCompare(y, "tr")), ["Ali Veli", "Ayşe Kaya", "Can Er", "Deniz Ak", "Ece Su", "Fırat Er", "Gül Ay"], JSON.stringify(rows));
     assert.equal(rows.length, 8);
+  });
+});
+
+// 31e V1 (cari kâhini İNCELE, 23.10.2026): "Vergi No" başlıklı sütun (sağlaması tutmayan 10 hane) tutar sanılıyordu → tabloda iki tutar sütunu, borç yok, Tablodaki Kişiler
+// boş (2.4.3'te de). Kural: kimlik / numara başlıklı sütun tutar sayılmaz; sağlaması tutmayan numara kişi gruplamasında kimlik sayılmaz. V2: iki kimlikli adın kimliksiz satırı
+// (kimlik sütunu olmayan sekme) AYNI dosya no'lu kimlikli satırın kişisine katılır. "Nasıl bozulur?" not defteri v-nasil-bozulur.md B1–B7.
+describe("31e V1: 'Vergi No' sütunu tutar değil; Tablodaki Kişiler borcu Tutar'dan; sağlaması tutmayan numara kişiyi bölmez", () => {
+  const ctx = setup([
+    { name: "Firmalar", matrix: [["Dosya No", "Unvan", "Vergi No", "Tutar", "Vade"], ["F-1", "Alfa Ltd", "1234567890", "1.000", d(-2)], ["F-2", "Beta AŞ", "2345678901", "2.000", d(-3)], ["F-3", "Gama Ltd", "3456789012", "3.000", d(-4)], ["F-4", "Gama Ltd", "4567890123", "500", d(-5)]] },
+  ]);
+
+  test("Kişiler: Alfa 1.000, Beta 2.000, Gama 3.000 + 500 (geçersiz iki numara kişiyi bölmez) — toplam 6.500 (B1/B4)", async () => {
+    const { report } = await ctx.report("cari-ekstre");
+    assert.deepEqual(debitBy(report), { "Alfa Ltd": 1000, "Beta AŞ": 2000, "Gama Ltd": 3500 }, JSON.stringify(report.groups.map(group => [group.cari, group.debit])));
+    assert.equal(report.totals.debit, 6500);
+  });
+
+  test("Vadeler 4 kalem, 6.500", async () => {
+    const vade = (await ctx.report("vade-takip")).report.totals;
+    assert.deepEqual([vade.count, vade.amount], [4, 6500]);
+  });
+});
+
+describe("31e V2: iki kimlikli adın kimliksiz satırı aynı dosya no'nun kişisine katılır", () => {
+  const ctx = setup([
+    { name: "Üyeler", matrix: [["Dosya No", "Ad Soyad", "TC Kimlik No", "Kalan Borç", "Vade"], ["K-1", "Ayşe Yıldız", "10000000146", "100", d(-2)], ["K-2", "Ayşe Yıldız", "12345678950", "200", d(-3)]] },
+    { name: "2026 Aidat", matrix: [["Dosya No", "Ad Soyad", "Kalan Borç", "Vade"], ["K-1", "Ayşe Yıldız", "50", d(4)], ["K-3", "Ayşe Yıldız", "70", d(5)]] },
+  ]);
+
+  test("TC 10000000146: K-1 100 + K-1 (Aidat) 50 = 150; TC 12345678950: 200; dosya no eşleşmeyen K-3 adın kimliksiz grubu 70 (B6/B7)", async () => {
+    const { report } = await ctx.report("cari-ekstre");
+    assert.deepEqual(debitBy(report), { "Ayşe Yıldız (TC 10000000146)": 150, "Ayşe Yıldız (TC 12345678950)": 200, "Ayşe Yıldız": 70 }, JSON.stringify(report.groups.map(group => [group.cari, group.debit])));
   });
 });
 
