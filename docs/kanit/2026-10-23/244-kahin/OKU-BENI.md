@@ -51,3 +51,15 @@ Neden (ham çıktı, ders 38): aday 8 farklı sekmedeki aynı dosya no'yu BİR K
 (b3c Takvim kalemleri: 301 → yalnız "2025 Aidat" 1.200, 304 → yalnız 600; ikinci sekmenin kalemi düşüyor — kararın gerekçesiyle aynı); not ne raporda ne Takvim'de
 var; ayrıca K1 (302 tek satır) ve K3 (303: Takvim 2.500 = Ödenecek Tutar, ödenen düşülmüyor; Tablodaki Kişiler'de 0) → K4'te Tablodaki Kişiler 2.200, öbür üç rapor 4.700,
 kâhin 6.300. Takvim kalemleri koşucunun ham çıktısına eklendi (`k*:takvim`; b3c tek başına yeniden koşuldu — ilk kayıt bu alandan önce alındı).
+
+### Tur 4 — C3 kişi gruplaması ([KULLANICI] 23.10.2026; kapsam boşluğu: aday 15'te kâhin 1967/1967 iken bağımsız dar kontrol D1 gerilemesini yakaladı)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| KIRMIZI kirmizi-aday15-cari-c3 | 15 senaryo (b3d yeni; rastgele tohumlarda "Üyeler" sekmesi) + 31 mutant, ADAY 15 kodunda (KAHIN_PROGRAM_KOKU=/home/user/wt/aday15, salt okunur) — kırmızı BEKLENİR | 92 fark (hepsi BULGU KULLANICI) · 0 okuma hatası · 0 yakalanmayan mutasyon |
+
+Neden (ham çıktı, ders 38): farkların HEPSİ farklı adların aynı kimlikle tek satırda birleşmesi — b3d: Mehmet Kara + Zeynep Ak (11111111111), Ece Su + Ufuk Ay
+(0000000000), Gül Tan + Ali Can (2222222222), Can Er + Hande Öz (gerçek TCKN 11223344550; satır etiketi yalnız ilk ad); rastgele 1: T1/012 + T1/013 (11111111111),
+rastgele 2: T2/014–016 (yer tutucu). Aynı ad farklı kimlik (etiketinde "(TC …)"), aynı ad aynı kimlik, kimliksiz satırın tek kimliğe katılması ve iki sekmede aynı
+kişi aday 15'te kurala uygun (fark yok). Kâhin hatası düzeltildi (ders 6): ilk koşuda aynı dosya no'yu iki kimlikli bir adın kimliksiz satırıyla kullandım; program
+o satırı ayrı kişi yaptı — kural bu durumu söylemiyor → kâhinde TANIMSIZ, senaryoda o satır tek kimlikli ada taşındı, İNCELE olarak raporda.

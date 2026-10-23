@@ -33,6 +33,13 @@ def para(k):
     return "%s,%02d ₺" % (tam, k % 100)
 
 
+def tckn(rt):
+    """Geçerli TCKN (GİB/NVİ denetim haneleri): 10. hane = ((1+3+5+7+9) × 7 − (2+4+6+8)) mod 10, 11. hane = ilk 10 hanenin toplamı mod 10."""
+    d = [rt.randint(1, 9)] + [rt.randint(0, 9) for _ in range(8)]
+    d10 = ((d[0] + d[2] + d[4] + d[6] + d[8]) * 7 - (d[1] + d[3] + d[5] + d[7])) % 10
+    return "".join(map(str, d + [d10, (sum(d) + d10) % 10]))
+
+
 def rastgele_tablo(rt, tohum):
     """/2 (23.10.2026, K1–K3 [KULLANICI]): carisiz tablo kayıtları — dönem sekmeleri ("2025 Aidat" / "2026 Aidat"; aynı sekmede tekrar eden ve iki sekmede ortak
     dosya no), Kalan'sız Tutar + Tahsil Edilen (ödenen > tutar dahil), Toplam Borç + Kalan Borç (Kalan boş / 0), tek tutar + "Kalan Gün", Ödeme Sözleri."""
@@ -76,6 +83,29 @@ def rastgele_tablo(rt, tohum):
     soz += [{"no": no, "isim": ad, "tarih": "2026-07-05", "tutar": "%d" % rt.randint(1, 5000)} for no, ad in [yeni() for _ in range(rt.randint(0, 1))]]
     if soz:
         sekmeler.append({"ad": "Ödeme Sözleri", "tur": "soz", "kayitlar": soz})
+    # C3 ([KULLANICI] 23.10.2026) kişi gruplaması: ortak/yer tutucu kimlik FARKLI adlarda, aynı ad iki kimlik (+ bazen aynı kimlikle ikinci dosya), kimliksiz +
+    # kimlikli aynı ad, iki sekmede aynı kişi (kimlik sütunu olmayan "2026 Aidat"ta aynı adın kimliksiz yeni dosyası), farklı ad aynı gerçek TCKN. Başlık adı
+    # kara kutu yoklamasındaki tanınan adlardan (ORTAM). Aynı adın iki kimliği varken kimliksiz satır ÜRETİLMEZ (kural tanımsız).
+    baslik = rt.choice(["TC Kimlik No", "TCKN", "Kimlik No"])
+    uye = []
+    satir = lambda no, ad, kim: {"no": no, "isim": ad, "hucreler": {"Telefon": "", baslik: kim, "Tutar": para(tutar())}}  # noqa: E731
+    yer = rt.choice(["11111111111", "0000000000", "2222222222"])
+    for no, ad in [yeni() for _ in range(rt.randint(2, 3))]:
+        uye.append(satir(no, ad, yer))
+    (no1, ad1), (no2, _) = yeni(), yeni()
+    k1, k2 = tckn(rt), tckn(rt)
+    uye += [satir(no1, ad1, k1), satir(no2, ad1, k2)]
+    if rt.random() < 0.5:
+        uye.append(satir(yeni()[0], ad1, k1))
+    (no3, ad3), (no4, _) = yeni(), yeni()
+    k3 = tckn(rt)
+    uye += [satir(no3, ad3, k3), satir(no4, ad3, "")]
+    aidat26.append({"no": yeni()[0], "isim": ad3, "hucreler": {"Telefon": "", "Tutar": para(tutar())}})
+    if rt.random() < 0.5:
+        no5, ad5 = yeni()
+        uye.append(satir(no5, ad5, k3))
+    rt.shuffle(uye)
+    sekmeler.append({"ad": "Üyeler", "tur": "serbest", "basliklar": ["Telefon", baslik, "Tutar"], "kayitlar": uye})
     rt.shuffle(sekmeler)  # sekme sırası (K2 04:09: farklı sekmedeki aynı dosya no ayrı borç — sonuç sıradan bağımsız)
     return {"id": "tablo", "islem": "tablo_yukle", "sekmeler": sekmeler}
 
@@ -94,7 +124,7 @@ def uret(tohum, islem):
     if rt.random() < 0.5:
         adimlar.insert(1, {"id": "u-y", "islem": "kullanici_ac", "ad": "Y%d" % tohum, "rol": "avukat", "kaldir": ["cash.view"]})
     sen = {"dil": M.DIL, "ad": "rastgele-ux18-%d" % tohum, "aciklama": "uretici.py --tohum %d --islem %d" % (tohum, islem),
-           "dayanak": "KARARLAR.md B2, B3 (K1–K3), B5b (K5); ders 17", "bugun": bugun.isoformat(), "adimlar": adimlar}
+           "dayanak": "KARARLAR.md B2, B3 (K1–K3), B3c (C3), B5b (K5); ders 17", "bugun": bugun.isoformat(), "adimlar": adimlar}
     n_f = n_e = 0
     kontrol = 0
 

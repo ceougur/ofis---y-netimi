@@ -369,7 +369,7 @@ async function kos(senaryo) {
             const rep = rp.data?.report;
             if (!rep) hatalar.push(`${k} Tablodaki Kişiler okunamadı (${rp.status})`);
             else {
-              ham[`${k}:raporGenis`] = (ids.genisRapor?.groups || []).map(g => ({ cari: g.cari, debit: g.debit, credit: g.credit }));
+              ham[`${k}:raporGenis`] = (ids.genisRapor?.groups || []).map(g => ({ cari: g.cari, debit: g.debit, credit: g.credit, keys: [...new Set(g.lines.map(l => l.key))] }));
               ham[`${k}:rapor`] = rep.groups.map(g => ({ cari: g.cari, debit: g.debit, credit: g.credit, lines: g.lines.map(l => ({ kind: l.kind, d: l.description, borc: l.borc, alacak: l.alacak, key: l.key })) }));
               for (const [no, anahtar] of Object.entries(ids.anahtar)) {
                 const g = rep.groups.find(gr => gr.lines.some(l => l.key === anahtar));
@@ -377,6 +377,15 @@ async function kos(senaryo) {
                 P[`${k}:rapor:${no}:alacak`] = g ? kurus(g.credit) : 0;
                 const gg = ids.genisRapor?.groups?.find(gr => gr.lines.some(l => l.key === anahtar));
                 P[`${k}:rapor:${no}:borc`] = ids.genisRapor ? (gg ? kurus(gg.debit) : 0) : "okunamadı"; // /2 B3 (geniş dönem)
+                // C3 (23.10.2026): kişi gruplaması — dosya no'nun borçlu satırının bulunduğu rapor satır(lar)ındaki borçlu dosya no'lar; birden çok satırdaysa liste listesi
+                if (ids.genisRapor) {
+                  const keyNo = new Map(Object.entries(ids.anahtar).map(([n, a]) => [a, n]));
+                  const gruplar = ids.genisRapor.groups.filter(gr => gr.lines.some(l => l.key === anahtar && kurus(l.borc) > 0))
+                    .map(gr => [...new Set(gr.lines.filter(l => kurus(l.borc) > 0).map(l => keyNo.get(l.key) ?? `?${l.key}`))].sort());
+                  P[`${k}:rapor:${no}:grup`] = gruplar.length === 1 ? gruplar[0] : gruplar;
+                  const etiket = String(gruplar.length ? ids.genisRapor.groups.find(gr => gr.lines.some(l => l.key === anahtar && kurus(l.borc) > 0))?.cari ?? "" : "");
+                  P[`${k}:rapor:${no}:etiketKimlik`] = (/\d{10,11}/.exec(etiket) || [""])[0];
+                }
                 if (g) P[`${k}:rapor:${no}:ad`] = g.cari;
               }
               const top = (arr, f) => arr.reduce((s, x) => s + (kurus(f(x)) || 0), 0);
