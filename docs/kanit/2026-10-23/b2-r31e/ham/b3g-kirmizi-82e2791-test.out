@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: 31e B1: Dosya No'suz tabloda içerik değişince bağlar yeni satıra taşınır (sessiz kopma yok)
+    # Subtest: aday 18 kâhin b3g: iki Ali, kolon eklenir + yalnız biri değişir — değişmeyen Ali'nin tahsilatı (20) yeni satırına taşınır, değişeninki (10) eşleşmeyen + onay
+    not ok 1 - aday 18 kâhin b3g: iki Ali, kolon eklenir + yalnız biri değişir — değişmeyen Ali'nin tahsilatı (20) yeni satırına taşınır, değişeninki (10) eşleşmeyen + onay
+      ---
+      duration_ms: 596.47682
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b3g-eski-82e2791/test/kayit-bag-31e.test.mjs:230:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ali 200 (içerik aynı) ve Can taşınır: {"moved":{"count":1,"kinds":["payment"],"labels":["tahsilatı"]},"unmatched":{"count":2,"kinds":["payment"],"labels":["tahsilatı"],"names":["Ali Veli"],"more":0,"text":"2 kaydın tahsilatı bu yüklemeyle eşleşmedi: Ali Veli."},"duplicates":{"count":0,"names":[]},"samePerson":{"count":0,"names":[]},"dif
+        
+        1 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b3g-eski-82e2791/test/kayit-bag-31e.test.mjs:243:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 6)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - 31e B1: Dosya No'suz tabloda içerik değişince bağlar yeni satıra taşınır (sessiz kopma yok)
+  ---
+  duration_ms: 599.737676
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b3g-eski-82e2791/test/kayit-bag-31e.test.mjs:111:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1018.816996

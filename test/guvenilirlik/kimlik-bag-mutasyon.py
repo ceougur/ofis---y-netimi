@@ -13,9 +13,9 @@ DC = "server/lib/insight/debt-column.mjs"
 R = "server/lib/reports.mjs"
 MUT = {
     "M1-tasima-kapali": [(D, "const result = moves.length ? report.bonds.move(moves, { user: actor, at: now() }) : { moved: {}, kept: {} };", "const result = { moved: {}, kept: {} };")],
-    "M2-teklik-gevsek": [(B, "if (tab === null || people.stored.count(oldTab, anchor) !== 1 || people.incoming.count(tab, anchor) !== 1) continue;", "if (tab === null) continue;")],
+    "M2-teklik-gevsek": [(B, "    if (people.stored.count(oldTab, anchor) === 1 && people.incoming.count(tab, anchor) === 1) [match] = people.incoming.only(tab, anchor);", "    if (true) [match] = people.incoming.only(tab, anchor);")],
     # tur 7 N3: aday 17'nin "aynı row_id'de aynı kişi" konum kuralı geri gelirse iki Ali yer değiştirip değişince bağ yanlış Ali'ye gider.
-    "M3-konum-kurali-geri": [(B, "    const tab = tabFor(oldTab);\n    if (tab === null || people.stored.count", "    const same = entries.find(entry => entry.id === row.rowId);\n    if (same && same.caseKey !== key && fresh(same) && samePerson(sig, people.incoming.sig(same)) && people.stored.count(oldTab, anchor) === people.incoming.count(people.tabOfEntry(same), anchor)) {\n      candidate.set(key, same);\n      continue;\n    }\n    const tab = tabFor(oldTab);\n    if (tab === null || people.stored.count")],
+    "M3-konum-kurali-geri": [(B, "    const tab = tabFor(oldTab);\n    if (tab === null) continue;", "    const same = entries.find(entry => entry.id === row.rowId);\n    if (same && same.caseKey !== key && fresh(same) && samePerson(sig, people.incoming.sig(same)) && people.stored.count(oldTab, anchor) === people.incoming.count(people.tabOfEntry(same), anchor)) {\n      candidate.set(key, same);\n      continue;\n    }\n    const tab = tabFor(oldTab);\n    if (tab === null) continue;")],
     "M4-onay-atlanir": [(D, "    if (!unmatchedKeys.length && !report.duplicates.length) return;", "    return;")],
     "M5-farkli-kisi-ezer": [(B, "    const keep = (!hasPerson(a) && !hasPerson(b)) || (samePerson(a, b) && people.stored.count(people.tabOfRow(row), anchor) === people.incoming.count(tab, anchor));", "    const keep = true;")],
     "M6-ayni-gorunen-yok": [(B, "  if (!added.length || !storedRows.length) return [];", "  return [];")],
@@ -43,6 +43,7 @@ MUT = {
     "M24-N4-tek-vergi-kolonu-duser": [(DC, "  const rest = nonTax.length || remaining ? nonTax : amountRest;", "  const rest = nonTax;")],
     "M26-N4-seyrek-kalan-raporda-yok": [(R, "  const plan = debtPlan(moneyColumns, { sparse: sparseDebtColumn(analyses.map(item => item.column), rows) });", "  const plan = debtPlan(moneyColumns);")],
     "M27-N2-bekleyen-esitleme-her-turda": [(D, "if (!manual && heldBefore?.contentHash && heldBefore.contentHash === contentHash)", "if (false)")],
+    "M29-b3g-icerik-ikizi-yok": [(B, "      if (olds.length === 1 && news.length === 1) [match] = news;\n", "")],
     "M28-N2-elle-esitleme-de-atlar": [(D, "if (!manual && heldBefore?.contentHash && heldBefore.contentHash === contentHash)", "if (heldBefore?.contentHash && heldBefore.contentHash === contentHash)")],
 }
 TESTS = ["test/kayit-bag-31e.test.mjs", "test/kayit-bag-31e-birim.test.mjs", "test/tablo-borc-r31e.test.mjs"]

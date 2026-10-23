@@ -43,3 +43,21 @@
 - Ara sürümde, yalnız "Söz Tutarı" olan sekme için Tablodaki Kişiler'e bir not eklendi. Bu not A1 kararına aykırıydı: "söz sekmesi (borç değil) not açmaz", Nasıl bozulur B4.
 - Sonuç: tablo-borc-r31e.test.mjs:195 kırmızıya döndü.
 - Ürün geri alındı, A1 testinin beklentisi değişmedi. Sonra `komsu-testler` 1061/1061 geçti.
+
+## Aday 18 cari kâhini b3g (k2–k4, R3/R4 Ali Veli alacak: kâhin 20 TL, program 0)
+- Yeniden üretim: `betik/b3g-yeniden.mjs`. Tabloda iki "Ali Veli" var (100 → 10 TL tahsilat, 200 → 20 TL). t2'de E-posta kolonu eklenir ve ilk Ali 110 olur.
+- Kök neden: içerik özeti anahtarı bütün kolonları içerir (sources.mjs canonicalCaseKey). Kolon eklenince tutarı değişmeyen Ali 200'ün de anahtarı değişir.
+  - Tek adlı kişiler kişi eşleşmesiyle taşınıyordu. Aynı adlı iki satırı N3 kuralı bekletiyordu.
+  - Sonuç: ikisi birden eşleşmeyen oldu, onaydan sonra 0 TL görünüyordu. Kâhin doğru, program eksikti.
+  - Kolon eklenmeden yalnız tutar değişince program zaten 20 TL gösteriyordu (anahtar aynı).
+- Düzeltme (dataset-bonds.mjs planRebind): aynı adlı birden çok satırda, iki tablonun ORTAK kolonlarındaki değerleri aynı olan satır eşlenir. Koşul: o değerlerle iki tabloda da TEK satır olması (içerik ikizi; konum değil).
+- Sonuçlar:
+  - aday17 (konum kuralı) 30 TL. Burada doğru çıkıyor, f2'de yanlış kişiye gidiyordu.
+  - v2.4.3: 0 TL.
+  - 82e2791: onaysız 409 "2 kaydın…", onaylı 0 TL.
+  - Yeni: onaysız 409 "1 kaydın tahsilatı … Ali Veli.", veri değişmez; onaylı 20 TL (10 TL eski anahtarda kalır).
+- Kanıt:
+  - Kırmızı 82e2791: `ham/b3g-kirmizi-82e2791-test.out`. İletide "taşınan 1, beklenen 2", Ali için 2 eşleşmeyen.
+  - Yeşil: `komsu-testler-b3g` 1062/1062.
+  - Mutasyon `mutasyon-kimlik-bag-b3g` 7/7 (M29 içerik ikizi kapalı; M2/M3 yeni koda uyarlandı).
+  - e2e `e2e-senaryo-kayit-bag-31e-b3g` 43/43, göç `goc-v243-b3g` 46/46.

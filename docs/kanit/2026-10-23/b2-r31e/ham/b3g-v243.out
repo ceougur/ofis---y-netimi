@@ -1,0 +1,74 @@
+{
+ "kolon-eklenir+Ali110 (onaysız)": {
+  "onaysiz": [
+   200,
+   null,
+   null
+  ],
+  "aliAlacak": [
+   0
+  ],
+  "tahsilatNerede": [
+   "10:YOK",
+   "20:YOK",
+   "30:YOK",
+   "40:YOK",
+   "50:YOK",
+   "60:YOK"
+  ]
+ },
+ "kolon-eklenir+Ali110 (onaylı)": {
+  "onaysiz": [
+   200,
+   null,
+   null
+  ],
+  "aliAlacak": [
+   0
+  ],
+  "tahsilatNerede": [
+   "10:YOK",
+   "20:YOK",
+   "30:YOK",
+   "40:YOK",
+   "50:YOK",
+   "60:YOK"
+  ]
+ },
+ "kolonsuz+Ali110 (onaysız)": {
+  "onaysiz": [
+   200,
+   null,
+   null
+  ],
+  "aliAlacak": [
+   20
+  ],
+  "tahsilatNerede": [
+   "10:YOK",
+   "20:Ali Veli 200",
+   "30:Can Su 300",
+   "40:Deniz Ay 400",
+   "50:YOK",
+   "60:Oya Er 800"
+  ]
+ },
+ "kolonsuz+Ali110 (onaylı)": {
+  "onaysiz": [
+   200,
+   null,
+   null
+  ],
+  "aliAlacak": [
+   20
+  ],
+  "tahsilatNerede": [
+   "10:YOK",
+   "20:Ali Veli 200",
+   "30:Can Su 300",
+   "40:Deniz Ay 400",
+   "50:YOK",
+   "60:Oya Er 800"
+  ]
+ }
+}
