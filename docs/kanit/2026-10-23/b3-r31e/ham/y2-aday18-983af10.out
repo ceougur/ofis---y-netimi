@@ -1,0 +1,4 @@
+{"test":"tel a-kolon","kural":"{\"mode\":\"legacy\"}","onizleme":{"tasinan":1,"eslesmeyen":[]},"uygula":[200,null],"onay":null,"tahsilat":"Ali Veli 0532 111 22 33 1000","not":"Ali Veli 0532 111 22 33 1000"}
+{"test":"tel b-kolon+tutar","kural":"{\"mode\":\"legacy\"}","onizleme":{"tasinan":0,"eslesmeyen":["Ali Veli"]},"uygula":[409,"bonds-unmatched"],"onay":200,"tahsilat":"YOK","not":"YOK"}
+{"test":"tc a-kolon","kural":"{\"mode\":\"column\",\"column\":\"TC Kimlik No\"}","onizleme":{"tasinan":0,"eslesmeyen":[]},"uygula":[200,null],"onay":null,"tahsilat":"Ali Veli 10000000146 1000","not":"Ali Veli 10000000146 1000"}
+{"test":"tc b-kolon+tutar","kural":"{\"mode\":\"column\",\"column\":\"TC Kimlik No\"}","onizleme":{"tasinan":0,"eslesmeyen":[]},"uygula":[200,null],"onay":null,"tahsilat":"Ali Veli 10000000146 1200","not":"Ali Veli 10000000146 1200"}
