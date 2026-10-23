@@ -45,10 +45,14 @@ export const isPromiseAmountHeader = column => {
  * taşıyan kolon ("Ödeme Sözü", "Söz", "Taahhüt" altına tutar yazılmış): PARA KOLONU SAYILMAZ — borç adayı değildir, söz kalemi tutarı da olmaz (31e tur 14;
  * A1 "Ödeme Sözü tutarı borç değil"). Aday 22 bu kolonu yalnız tek tutar / not adaylarından ayırıyordu; f8e9ae4'te borç olabiliyordu ("Ödeme Sözü" 1.500 Kişiler'de).
  * Dönem sözcüğü taşıyan ("Taahhütlü Ücret", "Taahhütlü Kira") normal sınıflanır (5b).
+ * 31e tur 16 (R1, aday 23 gerilemesi; Y1 "borç kolonu para kolonu" + N4 "Bakiye Kalan sayılır" + K3 Kalan önceliği): borç / alacak / kalan / bakiye / toplam ailesi
+ * sözcüğü taşıyan söz ailesi başlığı ("Taahhüt Alacağı", "Taahhüt Bakiyesi", "Taahhütlü Borç", "Kalan Taahhüt") yalın söz DEĞİLDİR — aday 22'deki gibi para kolonu.
+ * Ekli biçimler ("Alacağı", "Bakiyesi", "Borcu", "Toplamı") YALNIZ bu muafiyette tanınır; borç / Kalan kalıplarının kendisi genişlemez (2.5.0 adayı).
  */
+const DEBT_FAMILY_WORD = /\b(borc\w*|alacak\w*|alacag\w*|kalan\w*|bakiye\w*|toplam\w*)\b/;
 export const isBarePromiseHeader = column => {
   const folded = foldText(column);
-  return PROMISE_HEADER.test(folded) && !PROMISE_AMOUNT_WORD.test(folded) && !EXPECTED_AMOUNT_HEADER.test(folded);
+  return PROMISE_HEADER.test(folded) && !PROMISE_AMOUNT_WORD.test(folded) && !EXPECTED_AMOUNT_HEADER.test(folded) && !DEBT_FAMILY_WORD.test(folded);
 };
 export const NOT_AMOUNT_HEADER = /\b(gun|gunu|gunler|gunleri|adet|adedi|sayi|sayisi|ay|ayi|yil|yili|oran|orani|yuzde|yuzdesi)\b/;
 export const isNotAmountHeader = column => NOT_AMOUNT_HEADER.test(foldText(column)) || String(column ?? "").includes("%");
