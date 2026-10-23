@@ -398,7 +398,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   (8) YETKİ: kullanıcı döndü → 5 dk yetkisiyle verilen kararların özeti yanıtta verildi. (9) TEMİZ: GG4'ten beri 116 commit (bütün dallar) model adsız, Co-Authored-By +
   Claude-Session tam; uzakta yalnız çalışma dalı; EDM parolası dosyada / not defterinde / git geçmişinde YOK (tarama 0; yalnız komutun ortam değişkeninde); yalnız kendi
   görevleri durduruldu (TaskStop), yalnız temiz worktree'ler kaldırıldı (ders 36); ajan eforları kurala uygun (para/e-Belge xhigh); her düzeltmede kırmızı/yeşil + mutasyon +
-  komşular; ajan raporları ham kanıttan (kanit JSON) denetlendi, T4/Y1/N1 ve gruplama gerilemesi ana oturumca yeniden üretildi (ders 16); disk 20 GB.
+  komşular; ajan raporları ham kanıttan (kanit JSON) denetlendi, T4/Y1/N1 ve gruplama gerilemesi ana oturumca yeniden üretildi (ders 16); disk 20 GB. (10) SAPMA (aynı gün): ana oturum yeni "ADAY KAPISI SON DALGADA" kuralını yazdıktan
+  hemen sonra aday 14 kapısını dar kontrol bitmeden başlattı; ~2 dk sonra fark edildi, yalnız kendi görevi durduruldu (yarım kayıt yok). (11) KAPSAYICI 05:05 UTC'de yeniden
+  başladı: göç ve dar kontrol görevleri kesildi, 30 dk rapor işi kayboldu → yeniden kuruldu (2e260437); ajanlar kaldıkları yerden sürdürüldü.
 - YETKİ (kullanıcı, 22.10.2026 ~18:40 UTC: "bir süre ekran başında olmayacağım, benim kararım gereken bir konu da 5 dk cevap vermezsem soruna; en yaygın kullanılan
   öneriye göre yap"): karar gereken soru iletide sorulur (bekletmeyen; 5 dk sonrasına kendine hatırlatma), 5 dk içinde yanıt yoksa en yaygın / önerilen seçenek
   uygulanır ve burada "5 dk yetkisiyle uygulandı" diye yazılır; kullanıcı dönünce özetlenir. YORUM (baş mimar): anayasanın kullanıcıya bıraktığı adımlar (PR →

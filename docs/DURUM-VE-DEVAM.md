@@ -17,7 +17,14 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
 - ÇALIŞMA DALI (claude/youthful-euler-fl8ks4) kod durumu: aday 4 = 2fb1d33 (CI #859 BÜTÜN İŞLER YEŞİL); aday 5 = 0c1ae0d (kapı npm test 3132/3132 + 64/64 e2e + 6 kâhin
   yeşil) → CI #860 BÜTÜN İŞLER YEŞİL (22.10 ~15:35 UTC okundu; madde 24 çizildi). #860 YEŞİLSE iş listesinde 24 (gerçek EDM uçtan uca: gercek-5 55/55 + düzeltmeler + kılavuz
   + açma) çizilir; 31a "son koşu" son adayın CI'sinde (kâhinler CI'da). KIRMIZIYSA: başarısız testin adı kısa günlükte, kök neden (ders 6/20/38).
-- GÜNCEL (23.10 ~00:25 UTC): CI #862 (50e3bd0 = aday 7) YEŞİL. 31 bağımsız turu bitti (31b mali müşavir, 31c yargıç, 31d eleştirmen, 31f UI/UX); bulgular 5 dk
+- GÜNCEL (23.10 ~05:15 UTC; kapsayıcı 05:05'te yeniden başladı — disk, worktree'ler, not defteri yerinde; arka plan görevleri kesildi, 30 dk rapor işi yeniden kuruldu
+  2e260437): ADAY 14 = /home/user/wt/aday14 9b0f520 = aday 13 (f24bc41: aday 12 + is/kahin-244 0dcf7ba + is/r31e-a1 + is/r31e-a3) + is/r31e-ad 31cb7a3 (Tablodaki Kişiler
+  gruplama gerilemesi, kök neden 36830cd; kuruş toplamı). Aday 12 npm test 3324/3324, aday 13 npm test 3329/3329 (ikisi de e2e'den önce durduruldu); aday 13 kâhinler e-Belge
+  27/27, defter 176, tutar 3559, cari 1953/1967 → aday 14 cari 1967/1967. SÜRENLER: 31e dar kontrol (ders 32; aacb5253c1e83b520, /home/user/wt/r31e), göç tam takım aday 14'te
+  (ae9ec21f91121d745, /home/user/wt/goc9; aday 13 olcu/goc/fark 100/100 kanıtı goc9'da). SIRADAKİ (Verimlilik "ADAY KAPISI SON DALGADA"): ikisi temizse aday 14 tam kapı
+  (`<not defteri>/aday-kos.sh /home/user/wt/aday14 14` + `<not defteri>/cidisi-kos.sh /home/user/wt/aday14 14`) → ekran gezintisi (GG5 (5)) → çalışma dalı + CI → windows.yml ×2
+  → Uzun Doğrulama ∥ paket → teslim → PR. Teslim notu adayları iş listesinin "Teslim notları" sonunda ("SON ADAY TURU").
+- ESKİ (23.10 ~00:25 UTC): CI #862 (50e3bd0 = aday 7) YEŞİL. 31 bağımsız turu bitti (31b mali müşavir, 31c yargıç, 31d eleştirmen, 31f UI/UX); bulgular 5 dk
   yetkisiyle karara bağlandı (CLAUDE.md Açık iş 22.10 gecesi). ADAY 8 (/home/user/wt/aday8 54bf0e6) = bütün bulgu düzeltmeleri (is/e5, e1, u1, e67, mm-rapor, mm-smm,
   e23 + daraltma, ui-son); her dalın kırmızı/yeşil/mutasyon kanıtı ana oturumca denetlendi. KAPI SÜRÜYOR (aday-kos.sh aday8 8). Ajan kimlikleri not defteri
   devam-ajanlar.md. SÜRENLER: teslim belgeleri (is/teslim-belge), kâhin güncellemesi (is/kahin-244, kodu görmeden). SIRADAKİ: göç karşılaştırması (Y3) → 31e dar
