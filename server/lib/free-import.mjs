@@ -9,9 +9,11 @@
 // - Her formül hücresi için Excel'de görünen değer "fallback" olarak döner: program formülü hesaplayamazsa (desteklenmeyen
 //   işlev) hücreye bu değer yazılır (free-sheets.mjs importSheet).
 import { HttpError } from "./http.mjs";
+import { cellText } from "./money.mjs";
 import { mapReferences } from "./formula/sheet.mjs";
 
-const text = value => (value === null || value === undefined ? "" : String(value));
+// 31e: sayı hücresi Türkçe ondalık metin (money.mjs cellText; 12.125 → "12,125"), dizge olduğu gibi.
+const text = value => cellText(value);
 const filled = value => text(value).trim() !== "";
 
 // Başlık satırı: ilk 15 dolu satır içinde, en kalabalık satırın en az yarısı kadar (ve en az 2) dolu hücresi olan ilk satır.

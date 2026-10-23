@@ -1,0 +1,72 @@
+TAP version 13
+# Subtest: 31e sayı hücresi: içe alma yolları (API)
+    # Subtest: Tablo (dataset stage) → Tablodaki Kişiler satırı: 12.125 → 12,125; 0.005 → 0,005; 1500 → 1500; '1.500' → 1500; '12.125' dizgesi → 12125 (S1/S2/S4)
+    ok 1 - Tablo (dataset stage) → Tablodaki Kişiler satırı: 12.125 → 12,125; 0.005 → 0,005; 1500 → 1500; '1.500' → 1500; '12.125' dizgesi → 12125 (S1/S2/S4)
+      ---
+      duration_ms: 65.476309
+      type: 'test'
+      ...
+    # Subtest: Tablodan Aktar: sayı hücreli Toplam Tutar 3000.125 → kalan 3.000,13 (3.000.125 değil) (S5)
+    ok 2 - Tablodan Aktar: sayı hücreli Toplam Tutar 3000.125 → kalan 3.000,13 (3.000.125 değil) (S5)
+      ---
+      duration_ms: 46.296828
+      type: 'test'
+      ...
+    # Subtest: Excel'den cari: Bakiye 12.125 (sayı) → 12,13; '12.125' (dizge) → 12.125 TL (Türkçe kural) (S1/S2/S5)
+    ok 3 - Excel'den cari: Bakiye 12.125 (sayı) → 12,13; '12.125' (dizge) → 12.125 TL (Türkçe kural) (S1/S2/S5)
+      ---
+      duration_ms: 40.032332
+      type: 'test'
+      ...
+    # Subtest: Excel'den taksit kartı: Toplam Tutar 1200.125 (sayı) → kart 1.200,13 (S5)
+    ok 4 - Excel'den taksit kartı: Toplam Tutar 1200.125 (sayı) → kart 1.200,13 (S5)
+      ---
+      duration_ms: 29.965828
+      type: 'test'
+      ...
+    # Subtest: Excel'den çek / senet: Tutar 2500.125 (sayı) → 2.500,13 (S5)
+    ok 5 - Excel'den çek / senet: Tutar 2500.125 (sayı) → 2.500,13 (S5)
+      ---
+      duration_ms: 19.098662
+      type: 'test'
+      ...
+    # Subtest: Excel'den stok: Birim Fiyat 12.125 (sayı) × 10 → değer 121,25 civarı (121.250 değil) (S5)
+    ok 6 - Excel'den stok: Birim Fiyat 12.125 (sayı) × 10 → değer 121,25 civarı (121.250 değil) (S5)
+      ---
+      duration_ms: 23.730746
+      type: 'test'
+      ...
+    1..6
+ok 1 - 31e sayı hücresi: içe alma yolları (API)
+  ---
+  duration_ms: 593.424659
+  type: 'suite'
+  ...
+# Subtest: 31e sayı hücresi: dönüşüm ve ayrıştırma (birim)
+    # Subtest: cellText: 12.125 → '12,125', 0.005 → '0,005', -12.5 → '-12,5', 333.3333333 → '333,3333333'; tam sayı ve dizge olduğu gibi (S1/S3/S4/S6)
+    ok 1 - cellText: 12.125 → '12,125', 0.005 → '0,005', -12.5 → '-12,5', 333.3333333 → '333,3333333'; tam sayı ve dizge olduğu gibi (S1/S3/S4/S6)
+      ---
+      duration_ms: 1.787534
+      type: 'test'
+      ...
+    # Subtest: ayrıştırma: sayı türü sayıdır; dizgede Türkçe kural aynen (S2)
+    ok 2 - ayrıştırma: sayı türü sayıdır; dizgede Türkçe kural aynen (S2)
+      ---
+      duration_ms: 1.65749
+      type: 'test'
+      ...
+    1..2
+ok 2 - 31e sayı hücresi: dönüşüm ve ayrıştırma (birim)
+  ---
+  duration_ms: 4.486024
+  type: 'suite'
+  ...
+1..2
+# tests 8
+# suites 2
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 905.622246

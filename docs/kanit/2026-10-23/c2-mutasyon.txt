@@ -1,0 +1,19 @@
+c2 mutasyonlari (taban: is/r31e-c = 17cc5f4 + sayi hucresi duzeltmesi; komut: node --test test/ice-alma-sayi-hucre.test.mjs test/ice-alma-sayi-hucre-api.test.mjs)
+md1 dataset.mjs stage: String(cell) geri
+md2 import-gate sanitizeCell: String(value) geri (ikinci savunma; birim yakalar)
+md3 insight/validators parseAmount: sayi turu hizli yolu yok
+md4 money.mjs cellText: ondalik sayi String(value)
+--- md1: # tests 8 # pass 6 # fail 2 
+    not ok 1 - Tablo (dataset stage) → Tablodaki Kişiler satırı: 12.125 → 12,125; 0.005 → 0,005; 1500 → 1500; '1.500' → 1500; '12.125' dizgesi → 12125 (S1/S2/S4)
+    not ok 2 - Tablodan Aktar: sayı hücreli Toplam Tutar 3000.125 → kalan 3.000,13 (3.000.125 değil) (S5)
+--- md2: # tests 8 # pass 7 # fail 1 
+    not ok 2 - ayrıştırma: sayı türü sayıdır; dizgede Türkçe kural aynen (S2)
+--- md3: # tests 8 # pass 7 # fail 1 
+    not ok 2 - ayrıştırma: sayı türü sayıdır; dizgede Türkçe kural aynen (S2)
+--- md4: # tests 8 # pass 2 # fail 6 
+    not ok 1 - Tablo (dataset stage) → Tablodaki Kişiler satırı: 12.125 → 12,125; 0.005 → 0,005; 1500 → 1500; '1.500' → 1500; '12.125' dizgesi → 12125 (S1/S2/S4)
+    not ok 2 - Tablodan Aktar: sayı hücreli Toplam Tutar 3000.125 → kalan 3.000,13 (3.000.125 değil) (S5)
+    not ok 3 - Excel'den cari: Bakiye 12.125 (sayı) → 12,13; '12.125' (dizge) → 12.125 TL (Türkçe kural) (S1/S2/S5)
+    not ok 6 - Excel'den stok: Birim Fiyat 12.125 (sayı) × 10 → değer 121,25 civarı (121.250 değil) (S5)
+    not ok 1 - cellText: 12.125 → '12,125', 0.005 → '0,005', -12.5 → '-12,5', 333.3333333 → '333,3333333'; tam sayı ve dizge olduğu gibi (S1/S3/S4/S6)
+    not ok 2 - ayrıştırma: sayı türü sayıdır; dizgede Türkçe kural aynen (S2)

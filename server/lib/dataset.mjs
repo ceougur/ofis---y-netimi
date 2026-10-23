@@ -9,6 +9,7 @@
 // yönetici onayı beklenir.
 import { randomUUID } from "node:crypto";
 import { createBackup } from "./backup.mjs";
+import { cellText } from "./money.mjs";
 import { applyIndexedCombos, cleanChoices, comboRulesFromParts, listOnlySheets, listRulesFromXml, mergeChoices, resolveChoices } from "./choices.mjs";
 import { HttpError, parseJson } from "./http.mjs";
 import { attachFormulas, sourceTagOf } from "./formula/bind.mjs";
@@ -645,7 +646,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     // 1) Hücreler, formüller, açılır liste ve birleşik giriş kutusu kuralları.
     for (const sheet of sheets) {
       const name = String(sheet?.name ?? "").trim().slice(0, 200);
-      const matrix = Array.isArray(sheet?.matrix) ? sheet.matrix.slice(0, MAX_ROWS + 1).map(line => (Array.isArray(line) ? line.slice(0, 500).map(cell => String(cell ?? "").slice(0, 20_000)) : [])) : [];
+      const matrix = Array.isArray(sheet?.matrix) ? sheet.matrix.slice(0, MAX_ROWS + 1).map(line => (Array.isArray(line) ? line.slice(0, 500).map(cell => cellText(cell).slice(0, 20_000)) : [])) : [];
       cells += matrix.reduce((total, line) => total + line.length, 0);
       if (cells > 20_000_000) throw new HttpError(400, "Tablo çok büyük (en fazla 20 milyon hücre).");
       const formulas = cleanFormulas(sheet?.formulas);
