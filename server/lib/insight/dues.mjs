@@ -11,7 +11,7 @@
 //    tahsilat kapatır). Vadesinden en çok 20 gün önce girilen tahsilat da sayılır.
 import { columnOrder as columnsOf } from "../sources.mjs";
 import { analyzeColumns, cell, primaryColumns } from "./columns.mjs";
-import { amountCandidates, debtByRecord, debtPlan, EXPECTED_AMOUNT_HEADER, isNotAmountHeader, isPersonAttributeHeader, rowDebt, sparseDebtColumn } from "./debt-column.mjs";
+import { amountCandidates, debtByRecord, debtPlan, EXPECTED_AMOUNT_HEADER, isNotAmountHeader, isPersonAttributeHeader, isPromiseAmountHeader, PROMISE_HEADER, rowDebt, sparseDebtColumn } from "./debt-column.mjs";
 import { embeddedDates, isBlankRecord, isEmptyCell, isFlaggedRow, isSequenceHeader, isTotalRow } from "./cells.mjs";
 import { dateMeaning, ordinalOf, subjectOf } from "./temporal.mjs";
 import { foldText, parseAmount, parseDate } from "./validators.mjs";
@@ -27,13 +27,10 @@ const PAST = /\b(yapilan|odenen|odendigi|odenmis|tahsil edilen|gerceklesen|son o
 const STRONG = /\b(odeme sozu|sozu|soz tarihi|soz|taahhut\w*|taahhud\w*|vade\w*|son odeme|taksit tarihi|taksit vadesi|planlanan odeme|odenecek tarih\w*|odeme plani|tahsil tarihi|tahsilat tarihi|odeme gunu|vade gunu|taksit gunu|kira gunu|aidat gunu|her ayin|due date|due|payment due|pay by|installment date)\b/;
 const WEAK = /\b(odeme tarihi|odeme|tahsil\w*|taksit\w*|payment date|payment|installment\w*)\b/;
 const DAY_OF_MONTH = /\b(odeme gunu|vade gunu|taksit gunu|kira gunu|aidat gunu|her ayin)\b/;
-// Ödeme sözü / taahhüt başlığı ("Söz Tarihi", "Ödeme Sözü", "Taahhüt Tarihi", "Taahhütname Tarihi"). 31e tur 11 Z4: söz ailesi TAM SÖZCÜK (söz, sözü) —
-// "Sözleşme Tutarı", "Sözleşme No", "Sözleşme Bitiş" söz DEĞİLDİR (önceki `soz\w*` "sözleşme"yi de yakalıyordu: söz kalemi bütün sözleşme bedeli oluyordu).
-// 31e tur 12 Z5: taahhüt ailesi ÖNEK (taahhüt, taahhütname, taahhütlü, taahhüdü) — dışarıda kalan yalnız "sözleşme…". Söz tutarı kolonu söz sözcüğü + "tutar"
-// ya da "miktar" sözcüğü ister ("Söz Tutarı", "Ödeme Sözü Tutarı", "Taahhüt Tutarı", Z6: "Söz Miktarı", "Taahhüt Miktarı").
-const PROMISE = /\b(soz|sozu|taahhut\w*|taahhud\w*)\b/;
-const PROMISE_AMOUNT = /\b(tutar\w*|miktar\w*)\b/;
-const isPromiseAmountHeader = column => PROMISE.test(foldText(column)) && PROMISE_AMOUNT.test(foldText(column));
+// Ödeme sözü / taahhüt başlığı ("Söz Tarihi", "Ödeme Sözü", "Taahhüt Tarihi", "Taahhütname Tarihi") ve söz TUTARI sütunu ("Söz Tutarı", "Söz Miktarı"): TEK tanım
+// debt-column.mjs'te (PROMISE_HEADER, isPromiseAmountHeader) — borç düzeni aynı yardımcıyla söz tutarını borç saymaz. 31e tur 11 Z4: "Sözleşme Tutarı", "Sözleşme No",
+// "Sözleşme Bitiş" söz DEĞİLDİR; tur 12 Z5: taahhüt ailesi önek; Z6: "tutar" ya da "miktar".
+const PROMISE = PROMISE_HEADER;
 const INSTALLMENT = /\b(taksit\w*|installment\w*)\b/;
 // Sıra sayılı ödeme kolonları ("1. Ödeme Tarihi" / "1. Ödeme Tutarı", "Birinci Ödeme") taksit dizisidir (v2.0.2).
 const SERIES_PAYMENT = /\b(odeme\w*|tahsilat\w*|aidat\w*|kira\w*|payment\w*|installment\w*)\b/;

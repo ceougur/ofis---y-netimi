@@ -26,8 +26,20 @@ export const TOTAL_DEBT_HEADER = /\b(borc\w*|alacak\w*)\b/;
 export const EXPECTED_AMOUNT_HEADER = /\b(soz tutari|taahhut tutari|taksit tutari|taksit miktari|aylik taksit|aylik odeme|odenecek|odenecek tutar|kira bedeli|kira|aidat|aylik|aylik ucret|servis ucreti|ucret|ucreti|ayligi)\b/;
 // Borç tutarı OLMAYAN sayı kolonları (başlık katlanmış hâlde; "Kalan Gün", "Gecikme Günü", "Taksit Sayısı", "Kalan Ay", "Faiz Oranı", "KDV %"). Tam sözcük:
 // "Aylık Taksit", "Yıllık Ücret", "Günlük Ücret" para kolonudur, dışlanmaz.
-// Ödeme sözü tutarı: borç DEĞİL (31f U2).
-export const PROMISE_AMOUNT_HEADER = /\b(soz|sozu|taahhut|taahhudu)\b/;
+// Ödeme sözü / taahhüt sözcüğü — TEK tanım (31e tur 11 Z4, tur 12 Z5): söz ailesi TAM SÖZCÜK (söz, sözü; "Sözleşme…" söz değildir), taahhüt ailesi ÖNEK
+// (taahhüt, taahhütname, taahhütlü, taahhüdü). insight/dues.mjs söz kalemini, "Ödeme sözü" etiketini ve söz tutarını bununla tanır.
+export const PROMISE_HEADER = /\b(soz|sozu|taahhut\w*|taahhud\w*)\b/;
+const PROMISE_AMOUNT_WORD = /\b(tutar\w*|miktar\w*)\b/;
+/**
+ * Ödeme sözü TUTARI sütunu — TEK tanım; Tahsilat Takvimi (dues.mjs) ve borç düzeni (debtPlan → Tablodaki Kişiler, Açılış Bakiyesi, Vade / Nakit) AYNI yardımcıyı
+ * kullanır: söz / taahhüt sözcüğü + "tutar" ya da "miktar" sözcüğü ("Söz Tutarı", "Ödeme Sözü Tutarı", "Taahhüt Tutarı", "Taahhütname Tutarı", "Söz Miktarı").
+ * Söz tutarı BORÇ DEĞİLDİR (A1 / 31f U2), hiçbir yolda: borç adayı sayılmaz (31e tur 13: aday 22'de borç düzeni tam sözcük "taahhut" kalıbını kullanıyordu —
+ * "Taahhütname Tutarı" Takvim'de söz tutarı, Tablodaki Kişiler'de borç). "Taahhütlü Ücret" (tutar / miktar sözcüğü yok) söz tutarı değildir: borç ve dönem tutarı kalır (5b).
+ */
+export const isPromiseAmountHeader = column => {
+  const folded = foldText(column);
+  return PROMISE_HEADER.test(folded) && PROMISE_AMOUNT_WORD.test(folded);
+};
 export const NOT_AMOUNT_HEADER = /\b(gun|gunu|gunler|gunleri|adet|adedi|sayi|sayisi|ay|ayi|yil|yili|oran|orani|yuzde|yuzdesi)\b/;
 export const isNotAmountHeader = column => NOT_AMOUNT_HEADER.test(foldText(column)) || String(column ?? "").includes("%");
 // Ödenen / tahsil edilen tutar kolonu (borç değil; T1'de toplamdan düşülür). Tarih / gün / no kolonu değil.
@@ -85,7 +97,8 @@ export const sparseDebtColumn = (columns, rows, value = (row, column) => row?.[c
  * @param {{ sparse?: string|null }} [options] tutar rolü almamış ama borç başlıklı, seyrek yazılmış kolon (yalnız remaining/total yoksa total sayılır)
  */
 export function debtPlan(candidates, { sparse = null } = {}) {
-  const list = (candidates || []).filter(column => column && !isNotAmountHeader(column));
+  // Söz tutarı borç adayı değildir (isPromiseAmountHeader): "Tutar" + "Söz Tutarı" sekmesinde "Tutar" sekmenin TEK tutar sütunudur (borç), söz tutarı takvimde kalır.
+  const list = (candidates || []).filter(column => column && !isNotAmountHeader(column) && !isPromiseAmountHeader(column));
   const header = column => foldText(column);
   // Kalan: tutar kolonu ya da (31e tur 8 Y3) seyrek yazılmış Kalan / Bakiye kolonu — ikisinde de Kalan hücresi boş satırın borcu ana tutardır.
   const remaining = list.find(column => REMAINING_DEBT_HEADER.test(header(column))) || (sparse && !isNotAmountHeader(sparse) && REMAINING_DEBT_HEADER.test(header(sparse)) ? sparse : null);
@@ -97,14 +110,14 @@ export function debtPlan(candidates, { sparse = null } = {}) {
   const nonTax = amountRest.filter(column => !isTaxHeader(column));
   const rest = nonTax.length || remaining ? nonTax : amountRest;
   const headed = rest.find(column => !REMAINING_DEBT_HEADER.test(header(column)) && TOTAL_DEBT_HEADER.test(header(column))) || null;
-  const single = rest.length === 1 && !PROMISE_AMOUNT_HEADER.test(header(rest[0])) ? rest[0] : null;
+  const single = rest.length === 1 ? rest[0] : null;
   // 31e E2: iki tutar kolonundan biri KDV dahil toplamsa (Genel Toplam) borç tek kuralla (GRAND_TOTAL_WINS): Genel Toplam ya da öbürü (net Tutar).
   const grandOf = () => {
     if (rest.length !== 2) return null;
     const grand = rest.filter(column => GRAND_TOTAL_HEADER.test(header(column)));
     if (grand.length !== 1) return null;
     const other = rest.find(column => column !== grand[0]);
-    return GRAND_TOTAL_WINS ? grand[0] : PROMISE_AMOUNT_HEADER.test(header(other)) ? null : other;
+    return GRAND_TOTAL_WINS ? grand[0] : other;
   };
   const grand = !headed && !single ? grandOf() : null;
   // Kalan var ve Kalan hücresi boşsa satırın ana tutarı (30a "Kalan boşsa Toplam"): borç başlıklı / tek tutar / Genel Toplam. 31e tur 8 Y3: ana tutar
@@ -118,7 +131,7 @@ export function debtPlan(candidates, { sparse = null } = {}) {
   // "Önce cari açın" Açılış Bakiyesi ve takvim kaleminin Kalan Borç'u da raporların satır borcudur (önceden boş geliyordu; amountExpected yalnız bilgi).
   const column = remaining || total || net || amount;
   // 31e E2: borç kolonu seçilemedi (birden çok tutar kolonu, hiçbiri Kalan / borç / Genel Toplam başlıklı değil) — raporda görünür not için aday kolonlar.
-  const choices = rest.filter(item => !PROMISE_AMOUNT_HEADER.test(header(item)));
+  const choices = rest;
   const unresolved = !column && choices.length >= 2 ? choices : null;
   const grossUnresolved = remaining && !gross && choices.length >= 2 ? choices : null;
   return { remaining, total, net, paid: net ? paid : null, amount, amountExpected: Boolean(amount && EXPECTED_AMOUNT_HEADER.test(header(amount))), column, unresolved, grossUnresolved };

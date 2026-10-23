@@ -744,3 +744,31 @@ describe("31e tur 12 Z5/Z6: taahhüt öneki söz; söz tutarı 'tutar' ya da 'mi
     assert.equal((await ctx.report("nakit-akis")).report.totals.expected, 4450);
   });
 });
+
+// 31e tur 13 (ORTA, sakınca süzgeci: borç tutarı yanlış, Kişiler ↔ Takvim tutarsız): söz tutarı sütunu TEK tanım (debt-column.mjs isPromiseAmountHeader) —
+// söz ailesi tam sözcük YA DA taahhüt öneki, ve "tutar" ya da "miktar". Söz tutarı BORÇ DEĞİLDİR (A1), hiçbir yolda: borç düzeni (Tablodaki Kişiler, Açılış
+// Bakiyesi ön dolumu) aynı yardımcıyla söz tutarını borç adayı saymaz. Aday 22: "Taahhütname Tutarı" / "Taahhütlü Tutar" Kişiler'de borç (700 / 800; Kalan'ı
+// boş satırda 400), "Tutar" + söz tutarı sekmesinde borç yok (Pelin notsuz düşüyor, Rıza "seçilemedi" notu). "Taahhütlü Ücret" borç kalır (5b).
+describe("31e tur 13: söz tutarı tek tanım, hiçbir yolda borç değil; 'Taahhütlü Ücret' borç kalır", () => {
+  const ctx = setup([
+    { name: "TaahhutnameYalniz", matrix: [["Ad Soyad", "Taahhütname Tarihi", "Taahhütname Tutarı"], ["Lale Ak", d(3), "700"]] },
+    { name: "TaahhutluTutar", matrix: [["Ad Soyad", "Taahhütlü Ödeme Tarihi", "Taahhütlü Tutar"], ["Mert Su", d(4), "800"]] },
+    { name: "SozMiktariYalniz", matrix: [["Ad Soyad", "Söz Tarihi", "Söz Miktarı"], ["Nur Ak", d(3), "900"]] },
+    { name: "TelekomTek", matrix: [["Ad Soyad", "Taahhütlü Ücret", "Ödeme Günü"], ["Oya Er", "450", "15"]] },
+    { name: "TutarVeSoz", matrix: [["Ad Soyad", "Tutar", "Söz Tarihi", "Söz Tutarı"], ["Pelin Su", "5.000", d(2), "1.000"]] },
+    { name: "TutarVeTaahhutname", matrix: [["Ad Soyad", "Tutar", "Taahhütname Tarihi", "Taahhütname Tutarı"], ["Rıza Ak", "6.000", d(2), "1.200"]] },
+    { name: "KalanBosTaahhutname", matrix: [["Ad Soyad", "Kalan Borç", "Taahhütname Tarihi", "Taahhütname Tutarı"], ["Selin Ay", "", d(5), "400"], ["Tarık Er", "2.000", d(6), "300"]] },
+  ]);
+
+  test("Tablodaki Kişiler: söz tutarı borç değil (Lale, Mert, Nur, Selin yok); Tutar borç (Pelin 5.000, Rıza 6.000); Taahhütlü Ücret borç (Oya 450); not yok", async () => {
+    const { report } = await ctx.report("cari-ekstre");
+    assert.deepEqual(debitBy(report), { "Oya Er": 450, "Pelin Su": 5000, "Rıza Ak": 6000, "Tarık Er": 2000 });
+    assert.deepEqual(report.notes || [], []);
+  });
+
+  test("Takvim: söz kalemi söz tutarı, kalemin borcu (Açılış Bakiyesi ön dolumu) raporun satır borcu — söz tutarı değil", async () => {
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    const items = dues.items.filter(item => item.tab !== "TelekomTek").map(item => [item.person, item.amount ?? null, item.debt ?? null, Boolean(item.promise)]).sort((a, b) => a[0].localeCompare(b[0], "tr"));
+    assert.deepEqual(items, [["Lale Ak", 700, null, true], ["Mert Su", 800, null, true], ["Nur Ak", 900, null, true], ["Pelin Su", 1000, 5000, true], ["Rıza Ak", 1200, 6000, true], ["Selin Ay", 400, null, true], ["Tarık Er", 300, 2000, true]]);
+  });
+});
