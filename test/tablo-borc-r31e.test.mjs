@@ -551,21 +551,21 @@ describe("31e tur 8 Y3: seyrek 'Kalan Borç' — Kalan önce, boşsa tek ana tut
     assert.deepEqual(report.notes, NOTES);
   });
 
-  test("Takvim: kalem tutarı = satır borcu = Kalan Borç (Açılış Bakiyesi ön dolumu); borcu belirlenemeyen satırda tutar yok; not Takvim'de de", async () => {
+  test("Takvim: Kalan Borç (Açılış Bakiyesi ön dolumu) = satır borcu; kalem = min(dönem tutarı, Kalan), Kalan boşsa dönem tutarı (tur 9 Z1: Hale 500 / Kalan 530; Gül ve İlker Aidat 500, borç yok + not); dönem kolonu yoksa kalem satır borcu (Jale tutarsız); not Takvim'de de", async () => {
     const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
     const of = tab => dues.items.filter(item => item.tab === tab).map(item => [item.person, item.amount ?? null, item.debt ?? null]).sort((a, b) => a[0].localeCompare(b[0], "tr"));
-    assert.deepEqual(of("SeyrekKalan"), [["Gül Taş", null, null], ["Hale Ak", 530, 530], ["İlker Su", null, null]]);
+    assert.deepEqual(of("SeyrekKalan"), [["Gül Taş", 500, null], ["Hale Ak", 500, 530], ["İlker Su", 500, null]]);
     assert.deepEqual(of("IkiAday"), [["Jale Er", null, null], ["Kemal Su", 1500, 1500]]);
     assert.deepEqual(of("SeyrekYazi"), [["Mehmet Ay", 500, 500], ["Nalan Ay", 500, 500], ["Oğuz Ay", 250, 250], ["Pelin Ay", 500, 500]]);
     assert.deepEqual(dues.notes, NOTES);
   });
 
-  test("K4: Vade Takip ve Nakit Akışı Beklenen 3.780 = Tablodaki Kişiler (aday 18: kalem tutarları)", async () => {
+  test("Z1: Vade Takip ve Nakit Akışı Beklenen 4.750 = kalemler (SeyrekKalan 1.500 + IkiAday 1.500 + SeyrekYazi 1.750); Tablodaki Kişiler 3.780 (satır borcu)", async () => {
     const vade = await ctx.report("vade-takip");
-    assert.equal(vade.report.totals.amount, 3780);
+    assert.equal(vade.report.totals.amount, 4750);
     assert.deepEqual(vade.report.notes, NOTES);
     const nakit = await ctx.report("nakit-akis");
-    assert.equal(nakit.report.totals.expected, 3780);
+    assert.equal(nakit.report.totals.expected, 4750);
   });
 });
 
@@ -587,13 +587,48 @@ describe("31e tur 8 5b: tek kalem tutarlı sekmede Açılış Bakiyesi ön dolum
 // K4 kuralının sınırı: ödeme sözü kalemi söz tutarıdır (31f U2) — sekmede Kalan Borç olsa da kalem Kalan'ı almaz; kaydın borcu (Kalan Borç) ayrı alanda.
 describe("31e tur 8 K4 sınırı: Söz Tutarı + Kalan Borç sekmesinde söz kalemi söz tutarıyla", () => {
   const ctx = setup([
-    { name: "SozKalan", matrix: [["Ad Soyad", "Söz Tarihi", "Söz Tutarı", "Kalan Borç"], ["Tuna Ak", d(3), "300", "900"]] },
+    { name: "SozKalan", matrix: [["Ad Soyad", "Söz Tarihi", "Söz Tutarı", "Kalan Borç"], ["Tuna Ak", d(3), "300", "900"], ["Ufuk Er", d(4), "1.200", "900"]] },
   ]);
 
-  test("Takvim: söz kalemi 300, Kalan Borç 900; Kişiler 900", async () => {
+  test("Takvim: söz kalemi söz tutarı (300; Kalan'ı aşan 1.200 sözü de sınırlanmaz — Z1 yalnız dönem / taksit tutarı), Kalan Borç 900; Kişiler 900 + 900", async () => {
     const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
-    assert.deepEqual(dues.items.filter(item => item.tab === "SozKalan").map(item => [item.person, item.amount, item.debt]), [["Tuna Ak", 300, 900]]);
+    assert.deepEqual(dues.items.filter(item => item.tab === "SozKalan").map(item => [item.person, item.amount, item.debt]).sort((a, b) => a[0].localeCompare(b[0], "tr")), [["Tuna Ak", 300, 900], ["Ufuk Er", 1200, 900]]);
     const { report } = await ctx.report("cari-ekstre");
-    assert.deepEqual(debitBy(report), { "Tuna Ak": 900 });
+    assert.deepEqual(debitBy(report), { "Tuna Ak": 900, "Ufuk Er": 900 });
+  });
+});
+
+// 31e tur 9 Z1 (baş mimar kararı, 23.10.2026): takvim kalemi vadesi gelen tutardır ve kalan borçtan büyük olamaz — kalemin kendi dönem / taksit tutarı varsa kalem =
+// min(kalem tutarı, satırın Kalan'ı), yoksa satırın borcu. Tablodaki Kişiler ve Açılış Bakiyesi satır borcunda (Kalan) kalır. v2.4.3 ve aday 18 ile aynı; aday 19
+// (975217f) taksit tablosunda kalemi bütün Kalan yapıyordu (Kaan Uz 1.000 → 9.000 "gecikmiş", Nakit Beklenen 3.500 → 13.500).
+describe("31e tur 9 Z1: tek vadeli taksit tablosu — kalem taksit tutarı (Kalan'dan büyük değil), borç Kalan", () => {
+  const ctx = setup([
+    { name: "TaksitKalan", matrix: [["Ad Soyad", "Taksit Tutarı", "Kalan Borç", "Sonraki Taksit Tarihi"], ["Kaan Uz", "1.000", "9.000", d(-2)], ["Lale Gün", "2.000", "4.000", d(3)], ["Mert Can", "500", "", d(-5)], ["Nur Ay", "1.500", "600", d(-1)]] },
+  ]);
+
+  test("Takvim: Kaan 1.000 (Kalan 9.000), Lale 2.000 (Kalan 4.000), Mert 500 (Kalan boş → taksit), Nur 600 (taksit 1.500 > Kalan 600)", async () => {
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    const items = dues.items.filter(item => item.tab === "TaksitKalan").map(item => [item.person, item.amount, item.debt]).sort((a, b) => a[0].localeCompare(b[0], "tr"));
+    assert.deepEqual(items, [["Kaan Uz", 1000, 9000], ["Lale Gün", 2000, 4000], ["Mert Can", 500, 500], ["Nur Ay", 600, 600]]);
+  });
+
+  test("Vadeler ve Nakit Akışı Beklenen 4.100 (kalemler); Tablodaki Kişiler 14.100 (Kalan)", async () => {
+    assert.equal((await ctx.report("vade-takip")).report.totals.amount, 4100);
+    assert.equal((await ctx.report("nakit-akis")).report.totals.expected, 4100);
+    const { report } = await ctx.report("cari-ekstre");
+    assert.deepEqual(debitBy(report), { "Kaan Uz": 9000, "Lale Gün": 4000, "Mert Can": 500, "Nur Ay": 600 });
+  });
+});
+
+// Z1 eki: dönem kolonu birden çoksa (Aidat + Kira) kalem satırın borcudur — Kalan doluysa Kalan; Kalan boşsa ana tutar belirlenemez (not), kalem tutarsız.
+describe("31e tur 9 Z1 eki: iki dönem kolonu (Aidat + Kira) — kalem satırın borcu", () => {
+  const ctx = setup([
+    { name: "IkiDonem", matrix: [["Ad Soyad", "Aidat", "Kira", "Kalan Borç", "Son Ödeme"], ["Ozan Er", "300", "2.000", "1.800", d(-2)], ["Pınar Ak", "300", "2.000", "", d(-3)]] },
+  ]);
+
+  test("Takvim: Ozan 1.800 (Kalan), Pınar tutarsız (borç belirlenemiyor) + not", async () => {
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    assert.deepEqual(dues.items.filter(item => item.tab === "IkiDonem").map(item => [item.person, item.amount ?? null, item.debt ?? null]).sort((a, b) => a[0].localeCompare(b[0], "tr")), [["Ozan Er", 1800, 1800], ["Pınar Ak", null, null]]);
+    assert.ok(dues.notes.some(note => note.startsWith("“IkiDonem” sekmesinde “Kalan Borç” boş olan satırların")), JSON.stringify(dues.notes));
   });
 });

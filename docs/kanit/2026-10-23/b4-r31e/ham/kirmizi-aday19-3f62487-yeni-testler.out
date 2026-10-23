@@ -1,0 +1,238 @@
+TAP version 13
+# Subtest: 31e tur 8 Y3: seyrek 'Kalan Borç' — Kalan önce, boşsa tek ana tutar, iki adayda not; dört rapor aynı satır borcu (K4)
+    # Subtest: Kişiler: Hale 530, Kemal 1.500, Mehmet 500, Nalan 500, Oğuz 250, Pelin 500 (toplam 3.780); Gül, İlker, Jale notla
+    ok 1 - Kişiler: Hale 530, Kemal 1.500, Mehmet 500, Nalan 500, Oğuz 250, Pelin 500 (toplam 3.780); Gül, İlker, Jale notla
+      ---
+      duration_ms: 42.462802
+      type: 'test'
+      ...
+    # Subtest: Takvim: Kalan Borç (Açılış Bakiyesi ön dolumu) = satır borcu; kalem = min(dönem tutarı, Kalan), Kalan boşsa dönem tutarı (tur 9 Z1: Hale 500 / Kalan 530; Gül ve İlker Aidat 500, borç yok + not); dönem kolonu yoksa kalem satır borcu (Jale tutarsız); not Takvim'de de
+    not ok 2 - Takvim: Kalan Borç (Açılış Bakiyesi ön dolumu) = satır borcu; kalem = min(dönem tutarı, Kalan), Kalan boşsa dönem tutarı (tur 9 Z1: Hale 500 / Kalan 530; Gül ve İlker Aidat 500, borç yok + not); dönem kolonu yoksa kalem satır borcu (Jale tutarsız); not Takvim'de de
+      ---
+      duration_ms: 17.727176
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b4-eski-3f62487/test/tablo-borc-r31e.test.mjs:554:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+              'Gül Taş',
+        -     500,
+              null,
+        +     null
+            ],
+            [
+              'Hale Ak',
+        -     500,
+              530,
+        +     530
+            ],
+            [
+              'İlker Su',
+        -     500,
+              null,
+        +     null
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'Gül Taş'
+          1: 500
+          2: ~
+        1:
+          0: 'Hale Ak'
+          1: 500
+          2: 530
+        2:
+          0: 'İlker Su'
+          1: 500
+          2: ~
+      actual:
+        0:
+          0: 'Gül Taş'
+          1: ~
+          2: ~
+        1:
+          0: 'Hale Ak'
+          1: 530
+          2: 530
+        2:
+          0: 'İlker Su'
+          1: ~
+          2: ~
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b4-eski-3f62487/test/tablo-borc-r31e.test.mjs:557:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Z1: Vade Takip ve Nakit Akışı Beklenen 4.750 = kalemler (SeyrekKalan 1.500 + IkiAday 1.500 + SeyrekYazi 1.750); Tablodaki Kişiler 3.780 (satır borcu)
+    not ok 3 - Z1: Vade Takip ve Nakit Akışı Beklenen 4.750 = kalemler (SeyrekKalan 1.500 + IkiAday 1.500 + SeyrekYazi 1.750); Tablodaki Kişiler 3.780 (satır borcu)
+      ---
+      duration_ms: 8.649422
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b4-eski-3f62487/test/tablo-borc-r31e.test.mjs:563:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        3780 !== 4750
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 4750
+      actual: 3780
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b4-eski-3f62487/test/tablo-borc-r31e.test.mjs:565:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 1 - 31e tur 8 Y3: seyrek 'Kalan Borç' — Kalan önce, boşsa tek ana tutar, iki adayda not; dört rapor aynı satır borcu (K4)
+  ---
+  duration_ms: 548.077859
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b4-eski-3f62487/test/tablo-borc-r31e.test.mjs:535:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 31e tur 9 Z1: tek vadeli taksit tablosu — kalem taksit tutarı (Kalan'dan büyük değil), borç Kalan
+    # Subtest: Takvim: Kaan 1.000 (Kalan 9.000), Lale 2.000 (Kalan 4.000), Mert 500 (Kalan boş → taksit), Nur 600 (taksit 1.500 > Kalan 600)
+    not ok 1 - Takvim: Kaan 1.000 (Kalan 9.000), Lale 2.000 (Kalan 4.000), Mert 500 (Kalan boş → taksit), Nur 600 (taksit 1.500 > Kalan 600)
+      ---
+      duration_ms: 8.46235
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b4-eski-3f62487/test/tablo-borc-r31e.test.mjs:609:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+              'Kaan Uz',
+        -     1000,
+              9000,
+        +     9000
+            ],
+            [
+              'Lale Gün',
+        -     2000,
+              4000,
+        +     4000
+            ],
+            [
+              'Mert Can',
+              500,
+              500
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'Kaan Uz'
+          1: 1000
+          2: 9000
+        1:
+          0: 'Lale Gün'
+          1: 2000
+          2: 4000
+        2:
+          0: 'Mert Can'
+          1: 500
+          2: 500
+        3:
+          0: 'Nur Ay'
+          1: 600
+          2: 600
+      actual:
+        0:
+          0: 'Kaan Uz'
+          1: 9000
+          2: 9000
+        1:
+          0: 'Lale Gün'
+          1: 4000
+          2: 4000
+        2:
+          0: 'Mert Can'
+          1: 500
+          2: 500
+        3:
+          0: 'Nur Ay'
+          1: 600
+          2: 600
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b4-eski-3f62487/test/tablo-borc-r31e.test.mjs:612:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Vadeler ve Nakit Akışı Beklenen 4.100 (kalemler); Tablodaki Kişiler 14.100 (Kalan)
+    not ok 2 - Vadeler ve Nakit Akışı Beklenen 4.100 (kalemler); Tablodaki Kişiler 14.100 (Kalan)
+      ---
+      duration_ms: 8.892044
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b4-eski-3f62487/test/tablo-borc-r31e.test.mjs:615:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        14100 !== 4100
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 4100
+      actual: 14100
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b4-eski-3f62487/test/tablo-borc-r31e.test.mjs:616:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - 31e tur 9 Z1: tek vadeli taksit tablosu — kalem taksit tutarı (Kalan'dan büyük değil), borç Kalan
+  ---
+  duration_ms: 341.883155
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b4-eski-3f62487/test/tablo-borc-r31e.test.mjs:604:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 31e tur 9 Z1 eki: iki dönem kolonu (Aidat + Kira) — kalem satırın borcu
+    # Subtest: Takvim: Ozan 1.800 (Kalan), Pınar tutarsız (borç belirlenemiyor) + not
+    ok 1 - Takvim: Ozan 1.800 (Kalan), Pınar tutarsız (borç belirlenemiyor) + not
+      ---
+      duration_ms: 7.854324
+      type: 'test'
+      ...
+    1..1
+ok 3 - 31e tur 9 Z1 eki: iki dönem kolonu (Aidat + Kira) — kalem satırın borcu
+  ---
+  duration_ms: 348.736182
+  type: 'suite'
+  ...
+1..3
+# tests 6
+# suites 3
+# pass 2
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1667.031512
