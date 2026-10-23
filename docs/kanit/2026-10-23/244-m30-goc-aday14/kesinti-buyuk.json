@@ -1,0 +1,32 @@
+{
+  "ad": "244-m30-goc-aday14/kesinti-buyuk",
+  "komut": "node --disable-warning=ExperimentalWarning tools/m30-goc.mjs kesinti --kok /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/m30-goc/aday9",
+  "commit": "9b0f52036e9e6574114264c6e4802adc3c191b45",
+  "dal": "is/goc9",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T05:15:00.144Z",
+  "sure_sn": 287.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 79,
+    "gecen": 79,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/244-m30-goc-aday14/kesinti-buyuk.log",
+  "klasor": "/home/user/wt/goc9",
+  "ham_cikti_sha256": "6588f5262a4e507825b48f3b996ca2b6bf1f31112db3a3774a244f29ce9859f7",
+  "ham_cikti_bayt": 8316
+}

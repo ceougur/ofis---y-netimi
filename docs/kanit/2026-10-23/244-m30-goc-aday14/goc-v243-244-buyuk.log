@@ -1,0 +1,17 @@
+2026-10-23T05:10:54.491Z [INFO] Göç öncesi yedek alındı: destekofis-001-2026-10-23T05-10-54-357Z-pre-migration-v32.sqlite
+2026-10-23T05:10:54.496Z [INFO] Veritabanı göçü uygulandı: 31 (v2.4.4 Personel Özlük (çalışan kartları; para dışı))
+2026-10-23T05:10:54.502Z [INFO] Veritabanı göçü uygulandı: 32 (v2.4.4 seriden ayrılmış ve silinmiş belgelerin kâğıt / fiş numaraları (bir kez tarama))
+2026-10-23T05:11:08.682Z [INFO] Göç öncesi yedek alındı: destekofis-002-2026-10-23T05-11-08-639Z-pre-migration-v32.sqlite
+2026-10-23T05:11:08.685Z [INFO] Veritabanı göçü uygulandı: 31 (v2.4.4 Personel Özlük (çalışan kartları; para dışı))
+2026-10-23T05:11:08.687Z [INFO] Veritabanı göçü uygulandı: 32 (v2.4.4 seriden ayrılmış ve silinmiş belgelerin kâğıt / fiş numaraları (bir kez tarama))
+2026-10-23T05:11:08.809Z [INFO] Şirket açıldı: 002 · Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti.
+[05:11:15] göç + ölçü: 001 açılışı (göç dahil) 648 ms; ilk erişim {"001":5,"002":179}; yeni yedek 001 - Merkez Ticaret ve Danışmanlık A.Ş/destekofis-001-2026-10-23T05-10-54-357Z-pre-migration-v32.sqlite, 002 - Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti/destekofis-002-2026-10-23T05-11-08-639Z-pre-migration-v32.sqlite
+[05:11:15]   001: şema 32, bütünlük ok, numara tabanı {"FIS2026":{"seq":259,"number":"FIS2026000000259","issueDate":"2026-10-07"},"SMM2026":{"seq":67,"number":"SMM2026000000067","issueDate":"2026-10-23","deleted":true}}
+[05:11:15]   002: şema 32, bütünlük ok, numara tabanı {"FIS2026":{"seq":110,"number":"FIS2026000000110","issueDate":"2026-10-05"},"FIS2025":{"seq":73,"number":"FIS2025000000073","issueDate":"2025-12-18","deleted":true},"SMM2026":{"seq":120,"number":"SMM2026000000120","issueDate":"2026-10-23","deleted":true}}
+# göç: 2 şirket şema 32 + göç öncesi yedek; sorunlu yok
+# tests 2
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
