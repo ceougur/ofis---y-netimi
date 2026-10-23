@@ -87,6 +87,8 @@ MUTASYONLAR = {
     57: "TAKVİM KALEMİ öncesi: vade kaleminin tutarı satır borcudur (Kalan) — dönem / taksit tutarı kolonu yok sayılır",
     58: "TAKVİM KALEMİ: kalem tutarı dönem tutarıdır, Kalan Borç daha küçükse de (min alınmaz)",
     59: "TAKVİM KALEMİ: Tablodaki Kişiler de vade kaleminin tutarını (dönem tutarı) gösterir (satır borcu yerine)",
+    60: "Z2 öncesi: Kalan Borç 0 ya da eksi satırın vade kalemi görünür (tutarı min(dönem tutarı, Kalan))",
+    61: "Z3 öncesi: ödeme sözü kalemi söz tutarı değil, min(dönem tutarı, Kalan)",
 }
 
 
@@ -506,6 +508,14 @@ class Model:
         b = self.satir_borcu(sk, hucre)
         if b is None:
             return None
+        if self.kalem_yok(sk, hucre) and self.mut != 60:
+            return 0  # Z2: Kalan Borç 0 ya da eksi → vade kalemi YOK (Takvim / Vade Takip / Nakit Akışı'nda görünmez, gecikmiş sayılmaz)
+        # Z3 (karar sahibi 23.10.2026): ödeme sözü kalemi SÖZ TUTARIdır (satırda Taksit Tutarı da olsa); söz tutarı hücresi boşsa önceki kural
+        soz_kol = [h for h in sk["basliklar"] if tr_kucuk(h) not in KIMLIK_BASLIK and sutun_sinifi(h, [c.get(h) for _, c in sk["satirlar"]]) == "soz"]
+        if len(soz_kol) == 1 and self.mut != 61:
+            sv = hucre_kurus(hucre.get(soz_kol[0]))
+            if sv is not None:
+                return sv
         satir = 0 if b in (YOK, NOT) else b
         donem = self.donem_kolonlari(sk) if self.mut != 57 else []
         if not donem:
@@ -521,6 +531,17 @@ class Model:
         # Karar sahibi (23.10.2026, çatal kararı): Y3'ün iki adaylı satırında (Aidat + Gecikme Faizi, Kalan boş) TAKVİM KALEMİ geçerli — kalem dönem tutarı (Aidat);
         # Y3'ün "ana tutar belirlenemez → not, borç yok" kuralı yalnız SATIR BORCU içindir (Tablodaki Kişiler, Açılış Bakiyesi)
         return v
+
+    def kalem_yok(self, sk, hucre):
+        """Z2 (karar sahibi 23.10.2026): Kalan Borç hücresi SAYI ve 0 ya da eksi (fazla ödeme) olan satırda vade kalemi yoktur (min(dönem tutarı, Kalan) ≤ 0)."""
+        kalan_kol = [h for h in sk["basliklar"] or [] if tr_kucuk(h) not in KIMLIK_BASLIK and sutun_sinifi(h, [c.get(h) for _, c in sk["satirlar"]]) == "kalan"]
+        if len(kalan_kol) != 1:
+            return False
+        try:
+            k = hucre_kurus(hucre.get(kalan_kol[0]))
+        except (ValueError, TypeError):
+            return False
+        return k is not None and k <= 0
 
     def kalem_toplami(self):
         """K4 Takvim / Vade Takip / Nakit Akışı toplamı: tablodaki bütün satırların vade kalemi tutarları; ÇATAL'lı satırda olası toplamlar; tanımsız satır → None."""
@@ -1222,7 +1243,7 @@ class Model:
                     self.d("%s:rapor:%s:alacak" % (k, no), alacak, "YAYGIN" if ayni_ad or dogrudan else "KULLANICI",
                            "B1.8 5c tahsilat bir kez" + (" (aynı adlı iki kişi ayrı satırda: YAYGIN)" if ayni_ad else ""))
         # /2 B3 (K1–K3 [KULLANICI] 23.10 03:12 UTC): Tablodaki Kişiler borcu — yalnız carisi ve kartı olmayan kayıt (bağlı carinin borç satırları bu kâhinde yok)
-        k4_toplam, k4_tanimli = 0, True
+        k4_toplam, k4_tanimli, k4_negatif = 0, True, 0
         kisiler = self.kisiler()
         for no in self.kayitlar:
             if self.cari_bul_kayit(no) is not None or (no in self.kartlar and self.kartlar[no]["aktif"]):
@@ -1232,6 +1253,11 @@ class Model:
                 k4_tanimli = False
                 continue
             b = self.tablo_borcu(no)
+            if isinstance(b, int) and b < 0:
+                # Z2: Kalan eksi (fazla ödeme) — Tablodaki Kişiler'deki borcu kararda yok (eksi ya da 0) → kişi denetlenmez, K4 Kişiler toplamı ÇATAL [YAYGIN]
+                k4_negatif += b
+                k4_toplam += b
+                continue
             if b == NOT:
                 # Y1/Y3 (karar sahibi 23.10.2026): borç kolonu yok ya da ana tutar belirlenemiyor → borç yok (bütün raporlarda 0) + satır görünür ya da görünür not
                 self.d("%s:rapor:%s:gorunurVeyaNot" % (k, no), self.mut != 37, "KULLANICI", "Y1/Y3: borç kolonu yok / ana tutar belirlenemiyor — satır notsuz kaybolmaz")
@@ -1287,6 +1313,10 @@ class Model:
                 b = self.tablo_borcu(no)
                 if not tarihli or not (isinstance(b, int) or b == NOT):
                     continue
+                if self.kalem_yok(sk, c):
+                    # Z2: Kalan 0 / eksi → vade kalemi yok (Takvim'de görünmez); Açılış Bakiyesi kararda yok (denetlenmez)
+                    self.d("%s:kalemVar:%s" % (k, no), self.mut == 60, "KULLANICI", "Z2: Kalan Borç 0 ya da eksi satırda vade kalemi yoktur")
+                    continue
                 v = 0 if b == NOT else b
                 if self.mut == 55:
                     ilk = next((hucre_kurus(c.get(h)) for h in sk["basliklar"] if h in c and _sayi_mi(c.get(h)) and hucre_kurus(c.get(h)) is not None), 0)
@@ -1303,7 +1333,8 @@ class Model:
             kalem = self.kalem_toplami()
             if self.mut == 59 and kalem is not None:
                 k4_toplam = kalem[0]
-            self.d("%s:k4:kisiler" % k, k4_toplam, "KULLANICI", "B4b K4 + TAKVİM KALEMİ: Tablodaki Kişiler satır borcunu gösterir")
+            self.d("%s:k4:kisiler" % k, {"catal": [k4_toplam, k4_toplam - k4_negatif]} if k4_negatif else k4_toplam, "KULLANICI",
+                   "B4b K4 + TAKVİM KALEMİ: Tablodaki Kişiler satır borcunu gösterir" + (" (Z2 eksi Kalan: eksi ya da 0 — ÇATAL)" if k4_negatif else ""))
             if kalem is not None:
                 for anahtar in ("k4:takvim", "k4:vade", "k4:akis"):
                     self.d("%s:%s" % (k, anahtar), kalem[0] if len(kalem) == 1 else {"catal": kalem}, "KULLANICI",

@@ -1,0 +1,55 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3s-soz-tutari-kalemi",
+ "aciklama": "Z3 (karar sahibi 23.10.2026): ödeme sözü kalemi SÖZ TUTARIdır, satırda Taksit Tutarı da olsa: Filiz Ok Taksit Tutarı 1.000, Kalan 9.000, Söz Tarihi, Söz Tutarı 3.000 → söz kalemi 3.000; söz tutarı hücresi boşsa önceki kural (Gül Er → min(1.000, 9.000) = 1.000). Kişiler satır borcu (Kalan): 18.000; Takvim / Vade / Nakit 4.000.",
+ "dayanak": "KARARLAR.md B3j Z3, B3i TAKVİM KALEMİ",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Taksit Sözleri",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Taksit Tutarı",
+      "Kalan Borç",
+      "Söz Tarihi",
+      "Söz Tutarı"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/956",
+       "isim": "Filiz Ok",
+       "hucreler": {
+        "Telefon": "",
+        "Taksit Tutarı": "1.000,00 ₺",
+        "Kalan Borç": "9.000,00 ₺",
+        "Söz Tarihi": "20.06.2026",
+        "Söz Tutarı": "3.000,00 ₺"
+       }
+      },
+      {
+       "no": "2026/957",
+       "isim": "Gül Er",
+       "hucreler": {
+        "Telefon": "",
+        "Taksit Tutarı": "1.000,00 ₺",
+        "Kalan Borç": "9.000,00 ₺",
+        "Söz Tarihi": "20.06.2026",
+        "Söz Tutarı": ""
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol",
+   "raporlar": true
+  }
+ ]
+}

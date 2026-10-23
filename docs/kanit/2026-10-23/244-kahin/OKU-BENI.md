@@ -201,3 +201,14 @@ listeliyor → 0 kolu). Neden (ham takvim kalemi, ders 38): b3q'da kalem tutarı
 Neden (ham, ders 38): b3q 5 fark (Tur 9 ile aynı: Kaan Uz kalemi 9.000, Oya Tan 2.500 — Kalan alınıyor). b3o 4 fark: Murat Al (Aidat 800 + Gecikme Faizi 40, Kalan boş) takvim
 kalemi `amount` null (kâhin 800 = dönem tutarı Aidat) → Takvim / Vade Takip / Nakit Akışı 3.200 (kâhin 4.000). Tablodaki Kişiler 3.200 ve Murat Al'ın görünür notu / boş Açılış
 Bakiyesi (satır borcu, Y3) tutuyor.
+
+### Tur 10 — Z2 (Kalan 0 / eksi → vade kalemi yok), Z3 (söz kalemi = söz tutarı) — ADAY 20 (c38d549; ürün kodu 7ffc838 ile aynı)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| KIRMIZI kirmizi-aday20-cari-z2-z3 | 29 senaryo (b3r, b3s yeni) + 61 mutant (60, 61 yeni) — Z2/Z3'te kırmızı BEKLENİR | 3623/3632 — 9 fark (BULGU 9, hepsi b3r + b3s) · 0 okuma hatası · 0 yakalanmayan mutasyon |
+
+Önceki 27 senaryo yeşil (kâhinin değerleri HEAD modeliyle aynı). Neden (ham takvim kalemi, ders 38): **Z2** — b3r: Ali Veli (Aidat 1.000, Kalan −100, vade 2 gün önce) Takvim'de
+`state` overdue, `amount` 1.000 (Aidat; `debt` null); Dilek Su (dönem kolonsuz, Kalan −250) tutarsız kalem olarak görünüyor; Banu Er (Kalan 0) görünmüyor (doğru). Takvim / Vade /
+Nakit 2.400 (kâhin 1.400) — 5 fark. Tablodaki Kişiler 1.050 (eksi Kalan eksi sayılıyor; kâhin çatalının bir kolu). **Z3** — b3s: Filiz Ok söz kalemi (`promise` true, Söz Tarihi)
+`amount` 1.000 = Taksit Tutarı (kâhin 3.000 = Söz Tutarı); Gül Er (söz tutarı boş) 1.000 doğru; Takvim / Vade / Nakit 2.000 (kâhin 4.000) — 4 fark.
