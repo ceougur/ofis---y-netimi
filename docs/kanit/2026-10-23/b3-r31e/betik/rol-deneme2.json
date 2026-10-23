@@ -1,0 +1,4 @@
+{"sheets":[
+ {"name":"BorcTarih","matrix":[["Dosya No","Ad Soyad","Borç Tarihi","Açıklama"],["2026/1","Ali Veli","20.10.2026","a"],["2026/2","Ayşe Kaya","21.10.2026","b"]]},
+ {"name":"BorcIletisim","matrix":[["Dosya No","Ad Soyad","Borç İletişim","Açıklama"],["2026/1","Ali Veli","05321112233","a"],["2026/2","Ayşe Kaya","05321112244","b"]]}
+]}

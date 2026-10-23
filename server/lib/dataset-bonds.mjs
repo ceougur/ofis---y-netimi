@@ -143,7 +143,27 @@ export function createPeople(storedRows, entries, cache = null) {
       }
       return contents.get(id);
     };
-    return { sig, count, only, columns, byContent, tabs: () => [...groups().keys()], layout };
+    // Ad + telefon / ad + geçerli kimlik → satırlar (31e tur 8 Y2: aynı adlı iki kişi telefonla ya da kimlikle ayrılır).
+    const extras = new Map();
+    const withExtra = (tab, anchor, field, value) => {
+      if (!extras.has(tab)) {
+        const map = new Map();
+        for (const item of groups().get(tab) || []) {
+          const itemSig = sig(item);
+          const key = anchorOf(itemSig);
+          if (!key) continue;
+          for (const name of ["tax", "phone"]) {
+            if (!itemSig[name]) continue;
+            const id = `${key}\u0000${name}\u0000${itemSig[name]}`;
+            if (!map.has(id)) map.set(id, []);
+            map.get(id).push(item);
+          }
+        }
+        extras.set(tab, map);
+      }
+      return extras.get(tab).get(`${anchor}\u0000${field}\u0000${value}`) || [];
+    };
+    return { sig, count, only, columns, byContent, withExtra, tabs: () => [...groups().keys()], layout };
   };
   const cached = (map, list, tabOf) => {
     if (!map || !list || typeof list !== "object") return side(list, tabOf);
@@ -296,6 +316,15 @@ export function planRebind({ storedRows, entries, mode, people, bonded, elsewher
     let match = null;
     if (people.stored.count(oldTab, anchor) === 1 && people.incoming.count(tab, anchor) === 1) [match] = people.incoming.only(tab, anchor);
     else {
+      // 31e tur 8 Y2: aynı adlı satırlarda telefon ya da geçerli TCKN / VKN iki tabloda da varsa ve (ad + o değer) iki tabloda da TEK satırsa güvenli eşleşme.
+      for (const field of ["tax", "phone"]) {
+        if (match || !sig[field]) continue;
+        const olds = people.stored.withExtra(oldTab, anchor, field, sig[field]);
+        const news = people.incoming.withExtra(tab, anchor, field, sig[field]);
+        if (olds.length === 1 && news.length === 1) [match] = news;
+      }
+    }
+    if (!match && !(people.stored.count(oldTab, anchor) === 1 && people.incoming.count(tab, anchor) === 1)) {
       // Aday 18 kâhin b3g: aynı adlı birden çok satırda kolon eklenip / çıkınca İÇERİĞİ DEĞİŞMEYEN satır mevcut kayıttır — iki tablonun ortak kolonlarındaki
       // değerleri aynı olan satır, o değerlerle iki tabloda da TEK satırsa eşlenir (konum değil içerik). Tutarı değişen satır eşlenmez (eşleşmeyen + onay).
       const incomingColumns = new Set(people.incoming.columns(tab));

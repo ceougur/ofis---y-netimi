@@ -258,6 +258,28 @@ describe("31e B1: Dosya No'suz tabloda içerik değişince bağlar yeni satıra 
     }
   });
 
+  it("tur 8 Y2: aynı adlı iki Ali farklı telefonla — kolon eklenir + bağlı Ali'nin tutarı değişir: ad + telefon tek, tahsilat ve not kendi Ali'sine (onaysız)", async () => {
+    const head = ["Ad Soyad", "Telefon", "Tutar", "Son Ödeme"];
+    const base = [head, ["Ali Veli", "0532 111 22 33", "1000", tr(-3)], ["Ayşe Kaya", "0534 777 88 99", "2000", tr(-4)], ["Ali Veli", "0533 444 55 66", "4000", tr(-5)]];
+    const { server, admin, store } = await boot();
+    try {
+      await load(admin, base);
+      const ali = rowsOf(store)[0].k;
+      assert.equal((await admin.post(`/api/workspace/cases/${encodeURIComponent(ali)}/payments`, { amount: 100, date: iso(-1), method: "cash", cashForce: true, note: "Ali 1 tahsilat" })).status, 200);
+      assert.equal((await admin.post(`/api/workspace/cases/${encodeURIComponent(ali)}/notes`, { note: "Ali 1 notu" })).status, 200);
+      const next = base.map((line, i) => [...line, i ? "-" : "Not"]).map((line, i) => (i === 1 ? line.map((cell, j) => (j === 2 ? "1200" : cell)) : line));
+      const { staged, result } = await load(admin, next);
+      assert.equal(staged.bonds?.replace?.moved?.count, 1);
+      assert.equal(staged.bonds?.replace?.unmatched?.count ?? 0, 0, "eşleşmeyen yok (aday 18: 'eşleşmedi: Ali Veli')");
+      assert.equal(result.bonds?.moved, 1);
+      const owner = sql => { const k = store.get(sql)?.k; const row = rowsOf(store).find(r => r.k === k); return row ? `${row.name} ${row.values.Telefon} ${row.values.Tutar}` : "YOK"; };
+      assert.equal(owner("SELECT case_key AS k FROM payments WHERE note = 'Ali 1 tahsilat'"), "Ali Veli 0532 111 22 33 1200");
+      assert.equal(owner("SELECT case_key AS k FROM notes WHERE note = 'Ali 1 notu'"), "Ali Veli 0532 111 22 33 1200");
+    } finally {
+      await server.close();
+    }
+  });
+
   it("N3 (tur 7 f2) iki Ali yer değiştirip ikisi de değişir: bağ yanlış Ali'ye taşınmaz — onaysız 409, onayla eski anahtarda; Takvim 4.100 + 1.100", async () => {
     const twins = [PEOPLE[0], PEOPLE[1], PEOPLE[2], { ...PEOPLE[3], name: "Ali Veli" }, PEOPLE[4], PEOPLE[5]];
     const { server, admin, store } = await boot();

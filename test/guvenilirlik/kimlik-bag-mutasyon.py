@@ -41,13 +41,26 @@ MUT = {
     "M22-N6-gorev-bayat-kabul": [(W, "    const key = liveCaseKey(limited(body.caseKey || body.case_key, CASE_KEY_MAX, \"Dosya kimliği\"));", "    const key = limited(body.caseKey || body.case_key, CASE_KEY_MAX, \"Dosya kimliği\");")],
     "M23-N6-duzeltme-bayat-kabul": [(W, "    const key = liveCaseKey(caseKeyOf(body.caseKey || body.case_key, \"Dosya kimliği\"));", "    const key = caseKeyOf(body.caseKey || body.case_key, \"Dosya kimliği\");")],
     "M24-N4-tek-vergi-kolonu-duser": [(DC, "  const rest = nonTax.length || remaining ? nonTax : amountRest;", "  const rest = nonTax;")],
-    "M26-N4-seyrek-kalan-raporda-yok": [(R, "  const plan = debtPlan(moneyColumns, { sparse: sparseDebtColumn(analyses.map(item => item.column), rows) });", "  const plan = debtPlan(moneyColumns);")],
+    "M26-N4-seyrek-kalan-raporda-yok": [(R, "  const plan = debtPlan(moneyColumns, { sparse: sparseDebtColumn(analyses.map(item => item.column), rows, undefined, { analyses }) });", "  const plan = debtPlan(moneyColumns);")],
     "M27-N2-bekleyen-esitleme-her-turda": [(D, "if (!manual && heldBefore?.contentHash && heldBefore.contentHash === contentHash)", "if (false)")],
-    "M29-b3g-icerik-ikizi-yok": [(B, "      if (olds.length === 1 && news.length === 1) [match] = news;\n", "")],
+    "M29-b3g-icerik-ikizi-yok": [(B, "      const news = common.length ? people.incoming.byContent(tab, common).get(value) || [] : [];\n      if (olds.length === 1 && news.length === 1) [match] = news;\n", "      const news = common.length ? people.incoming.byContent(tab, common).get(value) || [] : [];\n")],
+    # ---- tur 8 ----
+    "M30-Y1-rol-denetimi-yok": [(DC, " || NOT_AMOUNT_ROLES.has(roles.get(column))) return false;", ") return false;")],
+    "M31-Y1-tutar-adayinda-kisi-ozniteligi": [(DC, "  .filter(column => column && !isNotAmountHeader(column) && !isPersonAttributeHeader(column));", "  .filter(column => column && !isNotAmountHeader(column));")],
+    "M32-Y1-seyrek-baslik-yok": [(DC, "isPersonAttributeHeader(column) || IDENTIFIER_HEADER.test(folded) || NOT_AMOUNT_ROLES", "NOT_AMOUNT_ROLES")],
+    "M33-Y1-kalem-tutari-kisi-ozniteligi": [("server/lib/insight/dues.mjs", ".map(item => item.column).filter(column => !isPersonAttributeHeader(column));", ".map(item => item.column);")],
+    "M34-K4-kalem-kendi-tutari": [("server/lib/insight/dues.mjs", "(single && debt && !entry.promise ? debt : own || fallback)", "(own || fallback)")],
+    "M38-5b-acilis-kalem-tutarsiz": [("server/lib/insight/dues.mjs", "rowDebt(plan, column => parseAmount(cell(row, column)), { expected: !feeOnly });", "rowDebt(plan, column => parseAmount(cell(row, column)), { expected: false });")],
+    "M41-5b-aylik-ucret-acilis": [("server/lib/insight/dues.mjs", "rowDebt(plan, column => parseAmount(cell(row, column)), { expected: !feeOnly });", "rowDebt(plan, column => parseAmount(cell(row, column)));")],
+    "M39-Y3-takvim-notu-yok": [("server/routes/dues.mjs", "unresolved: computed.debtUnresolved || [] });", "unresolved: [] });")],
+    "M40-K4-soz-kalemi-borc": [("server/lib/insight/dues.mjs", "(single && debt && !entry.promise ? debt : own || fallback)", "(single && debt ? debt : own || fallback)")],
+    "M35-Y3-not-yok": [(R, "      ...(!plan.unresolved && plan.grossUnresolved && debt.amount === null ? {", "      ...(false ? {")],
+    "M36-Y3-seyrek-kalan-kalan-degil": [(DC, " || (sparse && !isNotAmountHeader(sparse) && REMAINING_DEBT_HEADER.test(header(sparse)) ? sparse : null);", " || null;")],
+    "M37-Y2-kimlik-esleme-yok": [(B, "        if (match || !sig[field]) continue;", "        continue;")],
     "M28-N2-elle-esitleme-de-atlar": [(D, "if (!manual && heldBefore?.contentHash && heldBefore.contentHash === contentHash)", "if (heldBefore?.contentHash && heldBefore.contentHash === contentHash)")],
 }
-TESTS = ["test/kayit-bag-31e.test.mjs", "test/kayit-bag-31e-birim.test.mjs", "test/tablo-borc-r31e.test.mjs"]
-SUPPORT = ["test/helpers.mjs", "test/banka-210-ortak.mjs"]
+TESTS = ["test/kayit-bag-31e.test.mjs", "test/kayit-bag-31e-birim.test.mjs", "test/tablo-borc-r31e.test.mjs", "test/tablo-borc-dosya-u2.test.mjs"]
+SUPPORT = ["test/helpers.mjs", "test/banka-210-ortak.mjs", "test/guvenilirlik/surumler.mjs"]
 # İsteğe bağlı: MUT_SEC=M27,M28 yalnız adı bu öneklerle başlayan mutasyonları koşar (düzeltmeden sonra dar yeniden koşu).
 SEC = [x for x in os.environ.get("MUT_SEC", "").split(",") if x]
 if SEC:
@@ -61,6 +74,7 @@ for name, edits in MUT.items():
         shutil.copytree(os.path.join(SRC, item), os.path.join(root, item))
     shutil.copy(os.path.join(SRC, "package.json"), root)
     for item in [*SUPPORT, *TESTS]:
+        os.makedirs(os.path.dirname(os.path.join(root, item)), exist_ok=True)
         shutil.copy(os.path.join(SRC, item), os.path.join(root, item))
     shutil.copytree(os.path.join(SRC, "test", "fixtures"), os.path.join(root, "test", "fixtures"))
     ok = True

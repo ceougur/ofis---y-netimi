@@ -48,6 +48,28 @@ describe("31e birim: eşleme ve taşıma kuralları", () => {
     assert.ok(!old.some(r => r.rowId === result.entries[1].id), "Yeni Kişi Ayşe'nin satırını almaz");
   });
 
+  it("planRebind (tur 8 Y2): aynı adlı iki kişi telefonla / geçerli kimlikle ayrılır — ad + o değer iki tabloda tekse bağ taşınır; telefon yalnız bir tabloda ya da iki satırda aynıysa taşınmaz", () => {
+    const bonded = keys => new Map(keys.map(key => [key, { note: 1 }]));
+    const plan = (oldList, nextList) => {
+      const old = stored(oldList);
+      const next = entriesOf(nextList);
+      return { old, next, plan: planRebind({ storedRows: old, entries: next, mode: "replace", people: createPeople(old, next), bonded: keys => new Map([...bonded(keys)].filter(([key]) => key === old[0].caseKey)) }) };
+    };
+    // Telefon: ilk Ali'nin tutarı değişir ve kolon eklenir — içerik ikizi yok, ad iki satırda; ad + telefon tek → taşınır.
+    const tel = plan([P("Ali Veli", "1000", { Telefon: "0532 111 22 33" }), P("Ali Veli", "4000", { Telefon: "0533 444 55 66" })], [P("Ali Veli", "1200", { Telefon: "0532 111 22 33", Not: "x" }), P("Ali Veli", "4000", { Telefon: "0533 444 55 66", Not: "-" })]);
+    assert.deepEqual(tel.plan.moves.map(item => item.to), [tel.next[0].caseKey], "ad + telefonla tek satır: bağ kendi Ali'sine");
+    // Geçerli TCKN (kimlik kolonu kayıt kuralı değilken de: kimlik başlıklı olmayan "Ek Bilgi" kolonunda).
+    const tc = plan([P("Ali Veli", "1000", { "Ek Bilgi": "10000000146" }), P("Ali Veli", "4000", { "Ek Bilgi": "12345678950" })], [P("Ali Veli", "1200", { "Ek Bilgi": "10000000146", Not: "x" }), P("Ali Veli", "4000", { "Ek Bilgi": "12345678950", Not: "-" })]);
+    assert.deepEqual(tc.plan.moves.map(item => item.to), [tc.next[0].caseKey], "ad + geçerli TCKN ile tek satır: bağ kendi Ali'sine");
+    // İki Ali'nin telefonu aynı: ayrılamaz → taşınmaz (eşleşmeyen).
+    const same = plan([P("Ali Veli", "1000", { Telefon: "0532 111 22 33" }), P("Ali Veli", "4000", { Telefon: "0532 111 22 33" })], [P("Ali Veli", "1200", { Telefon: "0532 111 22 33", Not: "x" }), P("Ali Veli", "4000", { Telefon: "0532 111 22 33", Not: "-" })]);
+    assert.equal(same.plan.moves.length, 0, "aynı telefonlu iki Ali: taşıma yok");
+    assert.deepEqual(same.plan.unmatched.map(item => item.name), ["Ali Veli"]);
+    // Telefon yalnız yeni tabloda: eski satırda kimlik yok → ad + telefon kuralı uygulanmaz.
+    const fresh = plan([P("Ali Veli", "1000"), P("Ali Veli", "4000")], [P("Ali Veli", "1200", { Telefon: "0532 111 22 33" }), P("Ali Veli", "4000", { Telefon: "0533 444 55 66" })]);
+    assert.equal(fresh.plan.moves.length, 0, "telefon iki tabloda da yoksa taşıma yok");
+  });
+
   it("planRebind: körlemesine row_id taşıması yok (satır silinince kayan konumdaki farklı kişiye gitmez); tek hedef; başka sayfadaki anahtar taşınmaz", () => {
     const old = stored([P("Ali Veli", "1"), P("Ayşe Kaya", "2"), P("Can Er", "3")]);
     const next = entriesOf([P("Ayşe Kaya", "2"), P("Can Er", "4")]);

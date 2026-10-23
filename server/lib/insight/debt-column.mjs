@@ -41,23 +41,43 @@ const isTaxHeader = column => TAX_AMOUNT_HEADER.test(foldText(column)) && !TOTAL
 export const GRAND_TOTAL_HEADER = /\b(genel toplam|genel toplami|kdv dahil|vergiler dahil|odenecek toplam)\b/;
 export const GRAND_TOTAL_WINS = true;
 const TIERS = ["remaining", "total", "net", "amount"];
+// 31e tur 8 Y1: borç kolonu yalnız tutar kolonudur. Kişi özniteliği başlığı ("Borçlu", "Borçlu Telefon", "Borçlu TC", "Alacaklı Adı"), kimlik / iletişim başlığı
+// ("… No", "Telefon", "TC", "IBAN") ve kolon analizinde tutar olamayacak rol (telefon, TCKN, VKN, IBAN, kimlik, tarih, kişi, kuruluş, e-posta, adres, bağlantı)
+// hiçbir zaman borç değildir: "Borçlu Telefon" başlığı borç başlığına ("borç…") uyup 10–11 haneli numara tutar sayılıyordu (Kişiler'de 5.321.112.233 TL).
+export const PERSON_ATTRIBUTE_HEADER = /\b(borclu\w*|alacakli\w*)\b/;
+// "Borçlu Tutarı", "Bakiye Borçlu" (mizan) tutar sözcüğü taşır: tutardır.
+const AMOUNT_WORD = /\b(tutar\w*|bakiye\w*|toplam\w*|miktar\w*)\b/;
+export const isPersonAttributeHeader = column => {
+  const folded = foldText(column);
+  return PERSON_ATTRIBUTE_HEADER.test(folded) && !AMOUNT_WORD.test(folded);
+};
+const IDENTIFIER_HEADER = /\b(no|numara\w*|kod|kodu|tel|telefon\w*|gsm|cep|tc|tckn|vkn|kimlik|iban)\b/;
+export const NOT_AMOUNT_ROLES = new Set(["phone", "tckn", "vkn", "iban", "id", "date", "person", "org", "email", "address", "url"]);
 
 /** Tutar kolonu adayları (kolon analizinden; iki yol aynı kümeyi kullanır): tutar rolü, ya da kalem tutarı başlıklı sayı; gün / adet / oran değil. */
 export const amountCandidates = analyses => (analyses || [])
   .filter(item => item.role === "money" || (item.role === "number" && EXPECTED_AMOUNT_HEADER.test(foldText(item.column))))
   .map(item => item.column)
-  .filter(column => column && !isNotAmountHeader(column));
+  .filter(column => column && !isNotAmountHeader(column) && !isPersonAttributeHeader(column));
 
 /**
  * Tutar rolü almamış ama başlığı Kalan / Bakiye / Borç / Alacak olan ve en az bir satırında tutar yazılmış (seyrek) kolon. Tahsilat Takvimi (insight/dues.mjs)
  * ve Tablodaki Kişiler (reports.mjs) AYNI kuralla bulur (31e tur 7 N4: önceden yalnız takvim kullanıyordu; seyrek "Kalan Borç" satırı takvimde 500 TL görünüp
  * Tablodaki Kişiler'den notsuz düşüyordu).
+ * 31e tur 8 Y1: kişi özniteliği / kimlik başlığı ve tutar olamayacak rol (NOT_AMOUNT_ROLES; analyses verilirse) seyrek borç kolonu olmaz.
  * @param {string[]} columns sekmenin kolonları
  * @param {object[]} rows sekmenin satırları
  * @param {(row: object, column: string) => unknown} [value] hücre değeri
+ * @param {{ analyses?: Array<{ column: string, role: string }> }} [options] sekmenin kolon analizi (rol denetimi)
  */
-export const sparseDebtColumn = (columns, rows, value = (row, column) => row?.[column]) =>
-  (columns || []).find(column => !isNotAmountHeader(column) && (REMAINING_DEBT_HEADER.test(foldText(column)) || TOTAL_DEBT_HEADER.test(foldText(column))) && (rows || []).some(row => parseAmount(value(row, column)) !== null)) || null;
+export const sparseDebtColumn = (columns, rows, value = (row, column) => row?.[column], { analyses = null } = {}) => {
+  const roles = new Map((analyses || []).map(item => [item.column, item.role]));
+  return (columns || []).find(column => {
+    const folded = foldText(column);
+    if (isNotAmountHeader(column) || isPersonAttributeHeader(column) || IDENTIFIER_HEADER.test(folded) || NOT_AMOUNT_ROLES.has(roles.get(column))) return false;
+    return (REMAINING_DEBT_HEADER.test(folded) || TOTAL_DEBT_HEADER.test(folded)) && (rows || []).some(row => parseAmount(value(row, column)) !== null);
+  }) || null;
+};
 
 /**
  * Sekmenin borç düzeni.
@@ -67,7 +87,8 @@ export const sparseDebtColumn = (columns, rows, value = (row, column) => row?.[c
 export function debtPlan(candidates, { sparse = null } = {}) {
   const list = (candidates || []).filter(column => column && !isNotAmountHeader(column));
   const header = column => foldText(column);
-  const remaining = list.find(column => REMAINING_DEBT_HEADER.test(header(column))) || null;
+  // Kalan: tutar kolonu ya da (31e tur 8 Y3) seyrek yazılmış Kalan / Bakiye kolonu — ikisinde de Kalan hücresi boş satırın borcu ana tutardır.
+  const remaining = list.find(column => REMAINING_DEBT_HEADER.test(header(column))) || (sparse && !isNotAmountHeader(sparse) && REMAINING_DEBT_HEADER.test(header(sparse)) ? sparse : null);
   const paid = list.find(column => column !== remaining && isPaidHeader(column)) || null;
   // Ödenen kolonları ve Kalan dışındaki tutarlar: borç başlıklı olan ("Toplam Borç", "Alacak Tutarı") ya da söz tutarı olmayan TEK tutar ("Tutar", "Ödenecek Tutar").
   // 31e tur 7 N4: vergi kolonu (KDV, Vergi Tutarı…) YALNIZ başka bir tutar kolonu varken borç adayından çıkar (Tutar / Genel Toplam yanında KDV borç değildir);
@@ -86,24 +107,29 @@ export function debtPlan(candidates, { sparse = null } = {}) {
     return GRAND_TOTAL_WINS ? grand[0] : PROMISE_AMOUNT_HEADER.test(header(other)) ? null : other;
   };
   const grand = !headed && !single ? grandOf() : null;
+  // Kalan var ve Kalan hücresi boşsa satırın ana tutarı (30a "Kalan boşsa Toplam"): borç başlıklı / tek tutar / Genel Toplam. 31e tur 8 Y3: ana tutar
+  // belirlenemezse (iki aday: Aidat + Gecikme Faizi, Tutar + Masraf) Kalan'ı boş satır borç sayılmaz ve görünür not alır (grossUnresolved) — bütün raporlarda.
   const gross = headed || single || grand || (!remaining ? sparse : null) || null;
   // Kalan varsa: Kalan; Kalan hücresi boşsa toplam (gross). Kalan yoksa: ödenen varsa toplam − ödenen (net); yoksa borç başlıklı kolon (total) ya da tek tutar (amount).
   const total = remaining ? gross : !paid ? headed || grand || (!headed && !single ? sparse : null) : null;
   const net = !remaining && paid && gross ? gross : null;
   const amount = !remaining && !paid && !total && single ? single : null;
-  // Tek sütun bir kalem tutarıysa ("Aylık Ücret", "Kira Bedeli", "Taksit Tutarı", "Ödenecek"): Tablodaki Kişiler'de borçtur (2.4.3 gibi) ama kaydın "Kalan
-  // Borç"u değildir — "Önce cari açın" Açılış Bakiyesi ve Tablodan Aktar onu bir aylık ücreti açılış borcu sanmasın (2.4.3'te de boştu).
+  // Tek sütun bir kalem tutarıysa ("Aylık Ücret", "Kira Bedeli", "Taksit Tutarı", "Ödenecek"): Tablodaki Kişiler'de borçtur (2.4.3 gibi). 31e tur 8 kararı:
+  // "Önce cari açın" Açılış Bakiyesi ve takvim kaleminin Kalan Borç'u da raporların satır borcudur (önceden boş geliyordu; amountExpected yalnız bilgi).
   const column = remaining || total || net || amount;
   // 31e E2: borç kolonu seçilemedi (birden çok tutar kolonu, hiçbiri Kalan / borç / Genel Toplam başlıklı değil) — raporda görünür not için aday kolonlar.
-  const unresolved = !column && rest.filter(item => !PROMISE_AMOUNT_HEADER.test(header(item))).length >= 2 ? rest.filter(item => !PROMISE_AMOUNT_HEADER.test(header(item))) : null;
-  return { remaining, total, net, paid: net ? paid : null, amount, amountExpected: Boolean(amount && EXPECTED_AMOUNT_HEADER.test(header(amount))), column, unresolved };
+  const choices = rest.filter(item => !PROMISE_AMOUNT_HEADER.test(header(item)));
+  const unresolved = !column && choices.length >= 2 ? choices : null;
+  const grossUnresolved = remaining && !gross && choices.length >= 2 ? choices : null;
+  return { remaining, total, net, paid: net ? paid : null, amount, amountExpected: Boolean(amount && EXPECTED_AMOUNT_HEADER.test(header(amount))), column, unresolved, grossUnresolved };
 }
 
 /**
  * Bir satırın borcu: sırayla Kalan, Toplam Borç, sekmenin tek tutarı — ilk SAYI hücre (0 dahil); hiçbiri yoksa null.
  * @param {{ remaining: string|null, total: string|null, amount?: string|null }} plan
  * @param {(column: string) => number|null} read hücrenin tutarı (parseAmount)
- * @param {{ expected?: boolean }} [options] expected: false → kalem tutarı olan tek sütun (amountExpected) borç sayılmaz (kaydın Kalan Borç'u için)
+ * @param {{ expected?: boolean }} [options] expected: false → kalem tutarı olan tek sütun (amountExpected) borç sayılmaz. 31e tur 8'den beri Takvim / Açılış
+ *   Bakiyesi de varsayılanı (true) kullanır: kaydın borcu raporların satır borcuyla aynı.
  * @returns {{ amount: number|null, column: string|null, tier: string|null }}
  */
 export function rowDebt(plan, read, { expected = true } = {}) {

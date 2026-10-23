@@ -15,6 +15,7 @@ import assert from "node:assert/strict";
 import { after, before, describe, test } from "node:test";
 import { loginAdmin, startTestServer } from "./helpers.mjs";
 import { pdfText, xlsxSheets } from "./banka-210-ortak.mjs";
+import { amountCandidates } from "../server/lib/insight/debt-column.mjs";
 
 const NOW = "2026-10-23T10:00:00+03:00";
 const pad = value => String(value).padStart(2, "0");
@@ -76,8 +77,9 @@ describe("31e T4: aynı sekmede aynı dosya no'lu satırlar ayrı borç ve ayrı
   test("Tahsilat Takvimi: 6 kalem, tutarları satır satır (1.000, 1.500, 700, 700, 400, 600); söz / zil ön dolumunun Kalan Borç'u dosyanın Kalan toplamı", async () => {
     const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
     const items = dues.items.filter(item => item.person).map(item => [item.person, item.amount, item.debt]).sort((a, b) => a[0].localeCompare(b[0], "tr") || a[1] - b[1]);
-    assert.deepEqual(items, [["Ali Veli", 1000, 2500], ["Ali Veli", 1500, 2500], ["Ayşe Kaya", 700, 1400], ["Ayşe Kaya", 700, 1400], ["Can Yıldız", 400, null], ["Can Yıldız", 600, null]], "kalemler birleşmez (R2); Kalan Borç dosya toplamı (5b Açılış Bakiyesi)");
-    // Can Yıldız: tek tutar sütunu kalem tutarı ("Taksit Tutarı") — kaydın Kalan Borç'u sayılmaz, Açılış Bakiyesi boş gelir (8871ccf; 2.4.3'te de boştu).
+    assert.deepEqual(items, [["Ali Veli", 1000, 2500], ["Ali Veli", 1500, 2500], ["Ayşe Kaya", 700, 1400], ["Ayşe Kaya", 700, 1400], ["Can Yıldız", 400, 1000], ["Can Yıldız", 600, 1000]], "kalemler birleşmez (R2); Kalan Borç dosya toplamı (5b Açılış Bakiyesi)");
+    // Can Yıldız: tek tutar sütunu kalem tutarı ("Taksit Tutarı"). 31e tur 8 kararı (Y1/5b, 23.10.2026): Açılış Bakiyesi raporların borcudur — Tablodaki Kişiler
+    // 1.000 → Kalan Borç 1.000 (8871ccf'deki "kalem tutarı Kalan Borç sayılmaz, Açılış Bakiyesi boş" kuralı bu kararla kalktı).
   });
 
   test("Vadeler ve Nakit Akışı: 6 kalem, 4.900; Gecikmiş 1.000 + 700 + 400 = 2.100", async () => {
@@ -475,5 +477,123 @@ describe("31e tur 7 N4: seyrek 'Kalan Borç' (çoğu yazı) sayı olan satırda 
     const pick = name => dues.items.filter(item => item.person === name).map(item => [item.amount, item.debt]);
     assert.deepEqual(pick("Ali Seyrek"), [[500, 500]]);
     assert.deepEqual(pick("Ali Söz"), [[1000, null]]);
+  });
+});
+
+// 31e tur 8 Y1 (karar): borç kolonu yalnız tutar kolonudur — telefon, TCKN/VKN/kimlik, tarih, kişi rollü kolon ve "Borçlu …" gibi kişi özniteliği başlığı hiçbir
+// zaman borç değildir; bütün yollar (Kişiler, Takvim / zil / Ödeme Sözü / "Önce cari açın" Açılış Bakiyesi, Vade Takip, Nakit Akışı) aynı yardımcıdan. Borç kolonu
+// seçilemeyen Tutar + Masraf sekmesi görünür notla (aday 17 gibi). Aday 18: Kişiler'de Ali Veli 5.321.112.233 TL, Deniz Ak 10.000.000.146 TL; Takvim / Vade / Nakit'te
+// v2.4.3'ten beri aynı numaralar tutar.
+describe("31e tur 8 Y1: 'Borçlu Telefon' / 'Borçlu TC' kolonu borç değil — Kişiler, Takvim, Vadeler, Nakit Akışı; Tutar + Masraf sekmesi notla", () => {
+  const ctx = setup([
+    { name: "BorcluTel", matrix: [["Dosya No", "Borçlu", "Borçlu Telefon", "Son Ödeme"], ["2026/1", "Ali Veli", "05321112233", d(-2)], ["2026/2", "Ayşe Kaya", "05321112244", d(-3)], ["2026/3", "Can Er", "05321112255", d(-4)]] },
+    { name: "BorcluTC", matrix: [["Dosya No", "Borçlu", "Borçlu TC", "Tutar", "Masraf", "Son Ödeme"], ["2026/11", "Deniz Ak", "10000000146", "1.000", "50", d(-2)], ["2026/12", "Ece Su", "12345678950", "2.000", "60", d(-3)], ["2026/13", "Fırat Er", "10000000078", "3.000", "70", d(-4)]] },
+    { name: "AlacakliAdi", matrix: [["Müşteri", "Alacaklı", "Tutar", "KDV", "Vade"], ["Pınar Su", "ABC Ltd", "1.000", "200", d(-2)], ["Rıza Ak", "XYZ AŞ", "2.000", "400", d(-3)]] },
+    // Kolon analizi 6 haneli sicil numarasına tutar rolü veriyor; "Borçlu …" başlığı yine borç değildir.
+    { name: "BorcluSicil", matrix: [["Dosya No", "Borçlu", "Borçlu Sicil", "Son Ödeme"], ["2026/21", "Gül Taş", "125478", d(-2)], ["2026/22", "Hale Ak", "225479", d(-3)]] },
+    // Başlık "Borç …" (borç başlığı), kolon analizi telefon rolü veriyor: rol tek başına borcu dışlar.
+    { name: "BorcluTCHatali", matrix: [["Dosya No", "Borçlu", "Borçlu TC", "Son Ödeme"], ["2026/41", "Rana Ak", "12345678901", d(-2)], ["2026/42", "Sena Ak", "22345678902", d(-3)]] },
+    { name: "BorcIletisim", matrix: [["Dosya No", "Ad Soyad", "Borç İletişim", "Son Ödeme"], ["2026/31", "Jale Er", "05321112266", d(-2)], ["2026/32", "Kemal Su", "05321112277", d(-3)]] },
+  ]);
+
+  test("başlık kuralı: 'Borçlu', 'Borçlu Sicil', 'Alacaklı' tutar değil; 'Borçlu Tutarı', 'Bakiye Borçlu' tutardır", () => {
+    const of = columns => amountCandidates(columns.map(column => ({ column, role: "money" })));
+    assert.deepEqual(of(["Borçlu", "Borçlu Sicil", "Alacaklı", "Borçlu Tutarı", "Bakiye Borçlu", "Tutar"]), ["Borçlu Tutarı", "Bakiye Borçlu", "Tutar"]);
+  });
+  const NOTE = "“BorcluTC” sekmesinde borç sütunu seçilemedi (Tutar, Masraf): bu satırlar borç olarak sayılmadı. Borç sütununun başlığını “Kalan Borç”, “Toplam Borç” ya da “Genel Toplam” yapın.";
+
+  test("Kişiler: yalnız Pınar Su 1.000 ve Rıza Ak 2.000 (toplam 3.000); telefon / TC numarası borç değil; BorcluTC için not", async () => {
+    const { report } = await ctx.report("cari-ekstre");
+    assert.deepEqual(debitBy(report), { "Pınar Su": 1000, "Rıza Ak": 2000 }, JSON.stringify(report.groups.map(group => [group.cari, group.debit])));
+    assert.equal(report.totals.debit, 3000);
+    assert.deepEqual(report.notes, [NOTE]);
+  });
+
+  test("Takvim: BorcluTel / BorcluTC kalemlerinde tutar ve borç yok (Açılış Bakiyesi ön dolumu boş); hiçbir kalemin borç kolonu kimlik / telefon değil", async () => {
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    const of = tab => dues.items.filter(item => item.tab === tab).map(item => [item.person, item.amount ?? null, item.debt ?? null]).sort((a, b) => a[0].localeCompare(b[0], "tr"));
+    assert.deepEqual(of("BorcluTel"), [["Ali Veli", null, null], ["Ayşe Kaya", null, null], ["Can Er", null, null]]);
+    assert.deepEqual(of("BorcluTC"), [["Deniz Ak", null, null], ["Ece Su", null, null], ["Fırat Er", null, null]]);
+    assert.deepEqual(of("BorcluSicil"), [["Gül Taş", null, null], ["Hale Ak", null, null]]);
+    assert.deepEqual(of("BorcIletisim"), [["Jale Er", null, null], ["Kemal Su", null, null]]);
+    assert.deepEqual(of("BorcluTCHatali"), [["Rana Ak", null, null], ["Sena Ak", null, null]], "sağlaması tutmayan TC (sayı rolü) de borç değil: 'Borçlu TC' başlığı");
+    assert.ok(dues.items.every(item => !/Borçlu|TC|Telefon/.test(item.debtColumn || "")), JSON.stringify(dues.items.map(item => item.debtColumn)));
+  });
+
+  test("Vadeler ve Nakit Akışı Beklenen 3.000 (aday 18: 48.309.027.906)", async () => {
+    const vade = (await ctx.report("vade-takip")).report.totals;
+    assert.equal(vade.amount, 3000);
+    const nakit = (await ctx.report("nakit-akis")).report.totals;
+    assert.equal(nakit.expected, 3000);
+  });
+});
+
+// 31e tur 8 Y3 (karar, 30a ailesi; bağımsız kâhin b3o ile aynı okuma): Kalan doluysa borç Kalan; Kalan hücresi boşsa satırın ana tutarı (borç başlıklı / Genel Toplam /
+// TEK tutar kolonu); ana tutar belirlenemiyorsa (iki aday: Aidat + Gecikme Faizi, Tutar + Masraf) borç yok + görünür not. K4: Tablodaki Kişiler, Takvim, Vade Takip ve
+// Nakit Akışı AYNI satır borcunu kullanır (aday 18: Takvim / Vade / Nakit Kalan'ı dolu satırda da Aidat'ı alıyor, iki adaylı satırı Aidat sayıyordu; Kişiler'de
+// Kalan'ı boş satırlar notsuz düşüyordu).
+describe("31e tur 8 Y3: seyrek 'Kalan Borç' — Kalan önce, boşsa tek ana tutar, iki adayda not; dört rapor aynı satır borcu (K4)", () => {
+  const ctx = setup([
+    { name: "SeyrekKalan", matrix: [["Ad Soyad", "Aidat", "Gecikme Faizi", "Kalan Borç", "Son Ödeme"], ["Gül Taş", "500", "20", "", d(-2)], ["Hale Ak", "500", "30", "530", d(-3)], ["İlker Su", "500", "40", "", d(-4)]] },
+    { name: "IkiAday", matrix: [["Ad Soyad", "Tutar", "Masraf", "Kalan Borç", "Son Ödeme"], ["Jale Er", "1.000", "50", "", d(-2)], ["Kemal Su", "2.000", "60", "1.500", d(-3)]] },
+    // Kalan Borç çoğu yazı (seyrek, metin rolü) + tek tutar Aidat: Kalan önce, boş / yazı ise Aidat. Aday 18: Kalan yok sayılıyordu (Oğuz 500).
+    { name: "SeyrekYazi", matrix: [["Ad Soyad", "Aidat", "Kalan Borç", "Son Ödeme"], ["Mehmet Ay", "500", "", d(-2)], ["Nalan Ay", "500", "görüşülecek", d(-3)], ["Oğuz Ay", "500", "250", d(-4)], ["Pelin Ay", "500", "sorulacak", d(-5)]] },
+  ]);
+  const NOTES = [
+    "“SeyrekKalan” sekmesinde “Kalan Borç” boş olan satırların borç sütunu seçilemedi (Aidat, Gecikme Faizi): bu satırlar borç olarak sayılmadı. “Kalan Borç” hücresini doldurun ya da tutar sütununun başlığını “Toplam Borç” ya da “Genel Toplam” yapın.",
+    "“IkiAday” sekmesinde “Kalan Borç” boş olan satırların borç sütunu seçilemedi (Tutar, Masraf): bu satırlar borç olarak sayılmadı. “Kalan Borç” hücresini doldurun ya da tutar sütununun başlığını “Toplam Borç” ya da “Genel Toplam” yapın.",
+  ];
+
+  test("Kişiler: Hale 530, Kemal 1.500, Mehmet 500, Nalan 500, Oğuz 250, Pelin 500 (toplam 3.780); Gül, İlker, Jale notla", async () => {
+    const { report } = await ctx.report("cari-ekstre");
+    assert.deepEqual(debitBy(report), { "Hale Ak": 530, "Kemal Su": 1500, "Mehmet Ay": 500, "Nalan Ay": 500, "Oğuz Ay": 250, "Pelin Ay": 500 }, JSON.stringify(report.groups.map(group => [group.cari, group.debit])));
+    assert.equal(report.totals.debit, 3780);
+    assert.deepEqual(report.notes, NOTES);
+  });
+
+  test("Takvim: kalem tutarı = satır borcu = Kalan Borç (Açılış Bakiyesi ön dolumu); borcu belirlenemeyen satırda tutar yok; not Takvim'de de", async () => {
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    const of = tab => dues.items.filter(item => item.tab === tab).map(item => [item.person, item.amount ?? null, item.debt ?? null]).sort((a, b) => a[0].localeCompare(b[0], "tr"));
+    assert.deepEqual(of("SeyrekKalan"), [["Gül Taş", null, null], ["Hale Ak", 530, 530], ["İlker Su", null, null]]);
+    assert.deepEqual(of("IkiAday"), [["Jale Er", null, null], ["Kemal Su", 1500, 1500]]);
+    assert.deepEqual(of("SeyrekYazi"), [["Mehmet Ay", 500, 500], ["Nalan Ay", 500, 500], ["Oğuz Ay", 250, 250], ["Pelin Ay", 500, 500]]);
+    assert.deepEqual(dues.notes, NOTES);
+  });
+
+  test("K4: Vade Takip ve Nakit Akışı Beklenen 3.780 = Tablodaki Kişiler (aday 18: kalem tutarları)", async () => {
+    const vade = await ctx.report("vade-takip");
+    assert.equal(vade.report.totals.amount, 3780);
+    assert.deepEqual(vade.report.notes, NOTES);
+    const nakit = await ctx.report("nakit-akis");
+    assert.equal(nakit.report.totals.expected, 3780);
+  });
+});
+
+// 31e tur 8 (Y1 / 5b, bağımsız kâhin b3b): "Önce cari açın" Açılış Bakiyesi (takvim kaleminin Kalan Borç'u) raporların satır borcudur — tek kalem tutarlı sekmede de
+// (Aylık Ücret 4.000; "Kalan Gün" gün sayısıdır). Aday 18: raporlar 4.000, Açılış Bakiyesi boş.
+describe("31e tur 8 5b: tek kalem tutarlı sekmede Açılış Bakiyesi ön dolumu = raporların borcu", () => {
+  const ctx = setup([
+    { name: "Kira", matrix: [["Dosya No", "Ad Soyad", "Aylık Ücret", "Kalan Gün", "Son Ödeme"], ["2026/207", "Sevgi Ak", "4.000", "12", d(-2)]] },
+  ]);
+
+  test("Kişiler 4.000; Takvim kalemi tutar 4.000, Kalan Borç 4.000 (borç kolonu Aylık Ücret)", async () => {
+    const { report } = await ctx.report("cari-ekstre");
+    assert.deepEqual(debitBy(report), { "Sevgi Ak": 4000 });
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    assert.deepEqual(dues.items.filter(item => item.tab === "Kira").map(item => [item.person, item.amount, item.debt, item.debtColumn]), [["Sevgi Ak", 4000, 4000, "Aylık Ücret"]]);
+  });
+});
+
+// K4 kuralının sınırı: ödeme sözü kalemi söz tutarıdır (31f U2) — sekmede Kalan Borç olsa da kalem Kalan'ı almaz; kaydın borcu (Kalan Borç) ayrı alanda.
+describe("31e tur 8 K4 sınırı: Söz Tutarı + Kalan Borç sekmesinde söz kalemi söz tutarıyla", () => {
+  const ctx = setup([
+    { name: "SozKalan", matrix: [["Ad Soyad", "Söz Tarihi", "Söz Tutarı", "Kalan Borç"], ["Tuna Ak", d(3), "300", "900"]] },
+  ]);
+
+  test("Takvim: söz kalemi 300, Kalan Borç 900; Kişiler 900", async () => {
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    assert.deepEqual(dues.items.filter(item => item.tab === "SozKalan").map(item => [item.person, item.amount, item.debt]), [["Tuna Ak", 300, 900]]);
+    const { report } = await ctx.report("cari-ekstre");
+    assert.deepEqual(debitBy(report), { "Tuna Ak": 900 });
   });
 });
