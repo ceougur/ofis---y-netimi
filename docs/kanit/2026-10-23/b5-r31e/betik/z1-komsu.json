@@ -1,0 +1,10 @@
+{"sheets":[
+ {"name":"FazlaOdeme","matrix":[["Ad Soyad","Aidat","Kalan Borç","Son Ödeme"],["Ali Veli","1.000","-100","@d-2"],["Ayşe Kaya","1.000","1.500","@d-3"],["Can Er","1.000","","@d-4"]]},
+ {"name":"AidatOdenen","matrix":[["Ad Soyad","Aidat","Ödenen","Son Ödeme"],["Deniz Ak","1.000","600","@d-2"],["Ece Su","1.000","","@d-3"]]},
+ {"name":"TaksitToplamKalan","matrix":[["Ad Soyad","Taksit Tutarı","Toplam Borç","Kalan Borç","Sonraki Taksit"],["Fırat Er","1.000","12.000","9.000","@d-2"],["Gül Taş","1.000","12.000","","@d+4"],["Hale Ak","","5.000","3.000","@d-1"]]},
+ {"name":"IkiDonem","matrix":[["Ad Soyad","Aidat","Kira","Kalan Borç","Son Ödeme"],["İlker Su","500","4.000","2.000","@d-2"]]},
+ {"name":"SozKalan","matrix":[["Ad Soyad","Taksit Tutarı","Kalan Borç","Söz Tarihi","Söz Tutarı"],["Kaan Uz","1.000","9.000","@d+1","3.000"]]},
+ {"name":"YalnizDonem","matrix":[["Ad Soyad","Aylık Ücret","Son Ödeme"],["Lale Gün","1.500","@d-2"]]},
+ {"name":"Y3Murat","matrix":[["Ad Soyad","Aidat","Gecikme Faizi","Kalan Borç","Son Ödeme"],["Murat Al","800","40","","@d-2"],["Nur Ak","800","40","300","@d-3"]]}
+],
+"tabs":[["TaksitToplamKalan"],["FazlaOdeme","AidatOdenen"]]}
