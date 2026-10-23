@@ -262,6 +262,15 @@ Kaynak: ana oturumun ilettiği karar metni. Ürün kodu okunmadı.
 - Senaryo b3w-yalniz-soz-tutari (Ada Er 700, Bora Ak 800, Cansu Ok 900, Doruk Tan 1.000 — her biri ayrı sekme; Selin Ak 1.200 / 3.600, Tarık Su 1.500 / boş; Kişiler 5.100,
   Takvim 6.100); mutant 15 (söz tutarı borç — K3) bu senaryoda da, 61 (söz kalemi söz tutarı değil), 67 ("Taahhütlü Ücret" para değil), 68 ("Taahhütlü Ücret" söz tutarı).
 
+### B3n — Yalın söz sütunu ve "Tutar" + söz tutarı (ana oturum, 23.10.2026; A1 + K3 "tek tutar sütunu borç" + Z6; aday 22)
+- (a) Borç sütunu olarak yalnız YALIN sayı değerli söz-ailesi sütunu ("Ödeme Sözü", "Söz", "Taahhüt" — tutar / miktar / dönem sözcüğü yok) olan sekme: Kişiler borcu 0, Açılış
+  Bakiyesi 0 / boş; söz kalemi bu sütundan tutar ALMAZ (kalem 0). Kâhin: yalın söz sütunu `soz_yalin` sınıfı — söz tutarı değil, borç değil, sekmede söz olduğunu söyler (yalnız
+  söz → borç 0, not denetlenmez; B3l/B3m'deki [YAYGIN] "para kolonu değildir" yorumu böylece karar oldu).
+- (b) "Tutar" + "Söz Tutarı" ve "Tutar" + "Taahhütname Tutarı": borç "Tutar"dan (söz tutarı borç değil → tek tutar sütunu), söz kalemi söz tutarından, "borç sütunu belirlenemedi"
+  türü not YOK (`<kontrol>:rapor:<no>:notYok` — sekme adını geçen + "borç sütun / tutar sütun / belirlenemedi / gösterilmedi" metni yok).
+- (c) Yalın "Ödeme Sözü" (sayı) + "Borç" + Son Ödeme: borç "Borç"tan, kalem borç; söz tarihi olmadığından kalem düz vade [YAYGIN: `kalemSoz` false].
+- Senaryo b3x-yalin-soz-ve-tutar (Kişiler 15.000; Takvim / Vade / Nakit 8.500); mutant 69 (yalın söz sütunu söz tutarı), 70 (yalın söz sütunu tutar); 15 ve 61 bu senaryoda da.
+
 ### B4b — Dört rapor aynı satır borcu (K4 [KULLANICI] 23.10.2026; TAKVİM KALEMİ ile daraldı — B3i)
 - **K4** Tablodaki Kişiler (totals.debit), Tahsilat Takvimi (/dues Σ amount), Vade Takip (totals.amount) ve Nakit Akışı Beklenen (totals.expected) aynı satır
   borcunu kullanır; toplamları aynıdır (dönem süzgeci içinde). Kontrol adımında `"raporlar": true` ve bütün kayıtların borcu tanımlı ve tek değerliyse dört

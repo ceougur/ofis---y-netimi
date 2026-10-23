@@ -212,3 +212,17 @@ Bakiyesi (satır borcu, Y3) tutuyor.
 `state` overdue, `amount` 1.000 (Aidat; `debt` null); Dilek Su (dönem kolonsuz, Kalan −250) tutarsız kalem olarak görünüyor; Banu Er (Kalan 0) görünmüyor (doğru). Takvim / Vade /
 Nakit 2.400 (kâhin 1.400) — 5 fark. Tablodaki Kişiler 1.050 (eksi Kalan eksi sayılıyor; kâhin çatalının bir kolu). **Z3** — b3s: Filiz Ok söz kalemi (`promise` true, Söz Tarihi)
 `amount` 1.000 = Taksit Tutarı (kâhin 3.000 = Söz Tutarı); Gül Er (söz tutarı boş) 1.000 doğru; Takvim / Vade / Nakit 2.000 (kâhin 4.000) — 4 fark.
+
+### Tur 12 ek 2 — yalın söz sütunu ve "Tutar" + söz tutarı (A1 + K3 + Z6) — ADAY 22 (e5667af)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| KIRMIZI kirmizi-aday22-cari-yalin-soz | 34 senaryo (b3x yeni; söz sütunlu sekmede `notYok`) + 70 mutant (69, 70 yeni) — kırmızı BEKLENİR | 3817/3845 — 28 fark (BULGU 28: b3v 8 + b3w 4 önceki; b3x 14; b3n 2 YENİ OKUNAN) · 0 okuma hatası · 0 yakalanmayan mutasyon |
+
+KÂHİN OKUMA DÜZELTMESİ (ders 38): "görünür not" okuması genel "borç … sütun" kalıbını HERHANGİ bir metinde kabul ediyordu → b3n "Takip" kişileri (Can Er, Ece Su; borç kolonu
+yok) "Masraflı" sekmesinin notuyla yanlışlıkla geçiyordu. Artık not satırın kendi sekmesini adlandırmalı (ya da hiçbir sekmeyi adlandırmayan genel not). İlk koşu (eski okuma) atıldı.
+Neden (ham, ders 38): **b3n (Y1)** — "Takip" sekmesi (Borçlu Telefon + Son Ödeme, tutar yok) kişileri Tablodaki Kişiler'de YOK ve kendi sekmeleri için not YOK (yalnız "Masraflı"
+notu var) — 2 fark. **b3x** — (b) Hande Ok ("Tutar" + "Söz Tutarı"): Kişiler'de yok, notu da yok, kalemin `debt` null → borç 0 / Açılış Bakiyesi boş (kâhin 5.000); söz kalemi 1.500
+doğru. Irmak Ay ("Tutar" + "Taahhütname Tutarı"): not "“Tutar ve Taahhütname” sekmesinde borç sütunu seçilemedi (Tutar, Taahhütname Tutarı)" → borç 0 (kâhin 4.000), kalem tutarsız
+ve söz değil (kâhin 1.000, söz). (a) Emre Ak (yalın "Ödeme Sözü" 1.100): söz kalemi 1.100 (kâhin 0 — bu sütundan tutar almaz); Figen Er ("Söz"), Gökhan Su ("Taahhüt") doğru (kalem
+tutarsız, borç 0). (c) Jülide Tan (yalın "Ödeme Sözü" + "Borç"): doğru (borç 6.000, kalem 6.000, düz vade). Kişiler 6.000 (kâhin 15.000), Takvim 8.600 (kâhin 8.500) — 14 fark.

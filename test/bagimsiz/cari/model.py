@@ -96,6 +96,8 @@ MUTASYONLAR = {
     66: "ÖDEME SÖZÜ başlıkları: söz tutarı sütunu yalnız 'tutar' sözcüğüyle ('Söz Miktarı', 'Taahhüt Miktarı' söz tutarı değil)",
     67: "5b + ÖDEME SÖZÜ: söz ailesi + dönem sözcüğü ('Taahhütlü Ücret') para kolonu sayılmaz (ücret borç / dönem tutarı olmaz)",
     68: "5b + ÖDEME SÖZÜ: 'Taahhütlü Ücret' söz tutarı sayılır (ücret borç değil, kalemi ödeme sözü)",
+    69: "A1 + Z6: yalın sayı değerli 'Ödeme Sözü' / 'Söz' / 'Taahhüt' sütunu söz tutarıdır (söz kalemi bu sütundan tutar alır)",
+    70: "A1 + Z6: yalın sayı değerli 'Ödeme Sözü' / 'Söz' / 'Taahhüt' sütunu tutar sayılır (borç olur)",
 }
 
 
@@ -219,8 +221,16 @@ def sutun_sinifi(baslik, hucreler=()):
         donem_sozcugu = any(x.startswith(DONEM_KELIME) for x in w)
         if SOZ_DAR[0] or SOZ_ONEK[0] or any(x.startswith("tutar") or (x.startswith("miktar") and not SOZ_YALNIZ_TUTAR[0]) for x in w) or (donem_sozcugu and SOZ_UCRET[0] == 68):
             return "soz"
-        if not donem_sozcugu or SOZ_UCRET[0] == 67:
+        if SOZ_UCRET[0] == 67 and donem_sozcugu:
             return None
+        if not donem_sozcugu:
+            # A1 + Z6 (ana oturum 23.10.2026, (a)/(c)): yalın söz-ailesi sütunu ("Ödeme Sözü", "Söz", "Taahhüt" — tutar/miktar/dönem sözcüğü yok) söz tutarı DEĞİL (söz kalemi
+            # bundan tutar almaz) ve borç DEĞİL (A1: söz borç değil); sekmede söz bulunduğunu söyler (yalnız bu sütun varsa borç 0, not yok — "yalnız söz" gibi)
+            if SOZ_UCRET[0] == 69 and dolu and all(_sayi_mi(h) for h in dolu):
+                return "soz"
+            if SOZ_UCRET[0] == 70 and dolu and all(_sayi_mi(h) for h in dolu):
+                return "tutar"
+            return "soz_yalin" if dolu and all(_sayi_mi(h) for h in dolu) else None
         # 5b + ÖDEME SÖZÜ (karar sahibi 23.10.2026): söz/taahhüt ailesi + dönem sözcüğü, tutar/miktar sözcüğü YOK ("Taahhütlü Ücret") söz tutarı DEĞİLDİR — ücret borç /
         # dönem tutarı olarak kalır (Kalan doluysa borç Kalan, boşsa ücret; kalem min(ücret, Kalan)); sınıflandırma aşağıda sürer
     if "kalan" in w or "bakiye" in w:
@@ -269,7 +279,7 @@ class Model:
         SOZ_DAR[0] = mut == 64
         SOZ_TAM_TAAHHUT[0] = mut == 65
         SOZ_YALNIZ_TUTAR[0] = mut == 66
-        SOZ_UCRET[0] = mut if mut in (67, 68) else 0
+        SOZ_UCRET[0] = mut if mut in (67, 68, 69, 70) else 0
         self.bugun = senaryo["bugun"]
         self.seq = 0
         self.cariler = {}          # takma ad -> {tur, isim, kayit, acilis}
@@ -419,6 +429,7 @@ class Model:
             sinif = [(h, "tutar" if x == "vergi" else x) for h, x in sinif]
         al = lambda c: [h for h, x in sinif if x == c]  # noqa: E731
         kalan, toplam, odenen, tutar, soz, genel = al("kalan"), al("toplam"), al("odenen"), al("tutar"), al("soz"), al("genel")
+        soz_var = soz + al("soz_yalin")  # A1: yalın söz sütunu da sekmede söz olduğunu söyler (yalnız söz → borç değil, not yok)
         if len(genel) > 1:
             return None
         if self.mut == 15:
@@ -467,7 +478,7 @@ class Model:
             return hucre_kurus(hucre.get(para[0]))  # K3: tek tutar sütunu (taksit, kira, aidat, ücret, "Ödenecek" dahil)
         if not para:
             # yalnız söz → borç değil (K3); Y1: söz de yoksa (telefon / tarih / kişi kolonları) borç kolonu yok → görünür not
-            return YOK if soz else NOT
+            return YOK if soz_var else NOT
         if self.mut == 52:
             return hucre_kurus(hucre.get(para[0]))
         return NOT  # Y1: iki tutar kolonu, Kalan / toplam yok → borç yok + görünür not
@@ -1345,6 +1356,12 @@ class Model:
                         kim = next(iter(kay["kimlikler"])) if kay["kimlikler"] else ""  # kimliksiz grup: etikette kimlik yok
                         self.d("%s:rapor:%s:etiketKimlik" % (k, no), "" if self.mut == 31 else kim, "KULLANICI", "C3 aynı adı paylaşan kişinin etiketinde kimlik")
             k4_toplam += b
+            if b > 0:
+                sks = [sk for sk in self.sekmeler if any(n == no for n, _ in sk["satirlar"])]
+                if len(sks) == 1 and sks[0]["basliklar"] and any(
+                        sutun_sinifi(h, [c.get(h) for _, c in sks[0]["satirlar"]]) in ("soz", "soz_yalin") for h in sks[0]["basliklar"]):
+                    # (b)/(c): söz sütunu borç sütununu belirsiz yapmaz — borcu belli satırda "borç sütunu belirlenemedi" notu YOK
+                    self.d("%s:rapor:%s:notYok" % (k, no), True, "KULLANICI", "A1 + tek tutar sütunu borç: söz sütunlu sekmede borç belli — not yok")
         not_n = None
         if self.kayitlar:
             n = self.cok_sekme_sayisi()
@@ -1391,7 +1408,9 @@ class Model:
                 elif not soz_kol and any(soz_ailesi(h) for h in sk["basliklar"]) and not any(
                         soz_ailesi(h) and tarih_mi(c.get(h)) for h in sk["basliklar"]):
                     # 5b + ÖDEME SÖZÜ: söz ailesi başlığı söz tutarı değilse ("Taahhütlü Ücret") ve vade tarihi söz tarihi değilse kalem ödeme sözü DEĞİLDİR
-                    self.d("%s:kalemSoz:%s" % (k, no), False, "KULLANICI", "5b + ÖDEME SÖZÜ: 'Taahhütlü Ücret' söz tutarı değildir — kalem düz vade kalemi")
+                    ucret = any(soz_ailesi(h) and any(x.startswith(DONEM_KELIME) for x in kelimeler(h)) for h in sk["basliklar"])
+                    self.d("%s:kalemSoz:%s" % (k, no), False, "KULLANICI" if ucret else "YAYGIN",
+                           "5b + ÖDEME SÖZÜ: söz tutarı olmayan söz-ailesi başlığı ('Taahhütlü Ücret'; yalın 'Ödeme Sözü' [YAYGIN]) — söz tarihi yoksa kalem düz vade kalemi")
         if a.get("raporlar") and k4_tanimli:
             # TAKVİM KALEMİ (baş mimar kararı 23.10.2026): "dört rapor aynı borç" (K4) SATIR BORCU içindir — Tablodaki Kişiler satır borcunu (Kalan) gösterir; Takvim / Vade Takip /
             # Nakit Akışı vadesi gelen tutarı (kalem tutarı) toplar.
