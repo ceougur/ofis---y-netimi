@@ -14,9 +14,16 @@
 // /3 (23.10.2026): Sil (DELETE invoices/:id?reason=…) ve Silinenler'den Geri Yükle (GET /api/admin/trash → kind "invoice", ref = belge kimliği; POST
 // /api/admin/trash/restore { id }) — uç adları test/numara-silinen-244.test.mjs ÇAĞRI satırlarından, yanıt biçimi kara kutu yoklamasından (silinen belge
 // hiçbir liste sekmesinde görünmez). Silinenler'deki belge gözleme "cop: true" ile, son görülen alanlarıyla girer (numarası kullanılmış sayılır — K38).
+// /3 ek (23.10.2026, K43–K45 [KULLANICI]): vekil her durum sorgusunu (GetInvoiceStatus / GetSMMStatus) adımıyla yazar (gözlem "sorgu": o adımda belge
+// için EDM'ye soruldu mu); gönderim arızaları 11048_kendi / _ettnsiz (istek EDM'ye iletilir, EDM'nin gerçek 11048 yanıtı programa verilir; ettnsiz'de
+// durum yanıtından ETTN silinir — o belge için sonraki Durum Sorgula adımına dek) ve 11048_baska / _yok (numara sahte EDM'de kullanılmış sayılır —
+// usedIds; baska'da o adımın durum sorgusu başka bir ETTN'e yöneltilir); iptal arızaları iptal_kopma_sonra / _once / _red (bir sonraki İptal Et
+// isteğine). "esz_sorgu_gonder": oturum 1 Durum Sorgula, EDM'nin yanıtı vekilde tutulur; bu sırada oturum 2 belgeyi gönderir (4 sn içinde biterse sıra
+// "eszamanli", bitmezse "bekledi"); sonra tutulan yanıt verilir. 11048 alan belgenin kartındaki/yanıtındaki ileti metinleri (numara geçenler) gözlenir.
 // Her adımı programın HTTP API'siyle uygular, sonra programın KENDİ liste uçlarından (Tümü, İptal Edilenler, Gönderilecekler) belge
 // durumunu OKUR ve sahte EDM'nin kabul ettiği belgeleri (EDM gerçeği) ekler. Beklenen değer HESAPLAMAZ (temiz oda: model.py'yi okumaz).
 // Çıkış: 0 koşu tamam · 1 koşucu hatası (kanıt sayılmaz) · 2 kullanım hatası.
+import { randomUUID } from "node:crypto";
 import { createServer } from "node:http";
 import { readFileSync, writeFileSync } from "node:fs";
 import { BUYER_VKN, MULTI_VKN, OUR_VKN, startMockEdm } from "../../einvoice-mock.mjs";
@@ -46,7 +53,12 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 // ---- arıza vekili ---------------------------------------------------------------------------------------------------
 async function startProxy(target) {
   const hedef = new URL(target);
-  const st = { down: false, ariza: null, gecikme: 0, onSend: null, denemeler: [], adim: 0, sockets: new Set() };
+  const st = { down: false, ariza: null, gecikme: 0, onSend: null, denemeler: [], adim: 0, sockets: new Set(),
+    // /3 ek (K43–K45)
+    edm: null, iptalAriza: null, sorgular: [], iptalIstekleri: [], yanit11048: [], ettnSil: new Set(), ettnDegis: new Map(), tut: null };
+  const kaydet11048 = (r, uuid) => {
+    if (/ERROR_CODE(?: xmlns="")?>11048</.test(r.body.toString("utf8"))) st.yanit11048.push({ adim: st.adim, uuid });
+  };
   const ileri = async (req, body) => {
     const headers = {};
     for (const k of ["content-type", "soapaction"]) if (req.headers[k]) headers[k] = req.headers[k];
@@ -85,6 +97,70 @@ async function startProxy(target) {
             st.onSend = null;
             f();
           }
+          if (ariza && ariza.startsWith("11048_")) {
+            // K44: EDM "bu numara daha önce gönderildi" (11048). kendi/ettnsiz: istek EDM'ye bir kez iletilir (EDM belgeyi alır, yanıt programa verilmez),
+            // ikinci iletimin gerçek 11048 yanıtı programa gider. baska/yok: numara sahte EDM'de kullanılmış sayılır (usedIds) → gerçek 11048.
+            const dep = smm ? st.edm.state.smm : st.edm.state;
+            if (ariza === "11048_kendi" || ariza === "11048_ettnsiz") await ileri(req, body);
+            else dep.usedIds.add(id);
+            if (ariza === "11048_ettnsiz") st.ettnSil.add(uuid);
+            if (ariza === "11048_baska") {
+              const baska = randomUUID();
+              dep.statuses.set(baska, ["SEND - SUCCEED"]);
+              st.ettnDegis.set(uuid, { baska, adim: st.adim });
+            }
+            const r = await ileri(req, body);
+            kaydet11048(r, uuid);
+            res.writeHead(r.status, { "content-type": r.type }).end(r.body);
+            return;
+          }
+        }
+        if (/<(?:\w+:)?Get(?:Invoice|SMM)StatusRequest[\s>]/.test(s)) {
+          // K43–K45: durum sorgusu günlüğü; K44 ETTN'siz / başka ETTN yanıtı; K43 yanıt tutma.
+          const kucuk = s.toLowerCase();
+          const kayit = { adim: st.adim, govde: kucuk, degisti: "" };
+          st.sorgular.push(kayit);
+          let govde = body;
+          for (const [u, v] of st.ettnDegis) {
+            if (v.adim === st.adim && kucuk.includes(u)) {
+              govde = Buffer.from(s.replace(new RegExp(u, "gi"), v.baska));
+              kayit.degisti = "ettn-baska";
+            }
+          }
+          const sil = [...st.ettnSil].some(u => kucuk.includes(u));
+          if (sil) kayit.degisti = "ettn-silindi";
+          const tut = st.tut && !st.tut.yakalandi && st.tut.uuid && kucuk.includes(st.tut.uuid) ? st.tut : null;
+          if (tut) tut.yakalandi = true;
+          let r = await ileri(req, govde);
+          if (sil) r = { ...r, body: Buffer.from(r.body.toString("utf8").replace(/\sUUID="[^"]*"/g, "").replace(/<(?:\w+:)?UUID>[^<]*<\/(?:\w+:)?UUID>/g, "")) };
+          if (kayit.degisti) kayit.yanit = (/<(?:\w+:)?(?:INVOICE|SMM)_STATUS\b[\s\S]*?<\/(?:\w+:)?(?:INVOICE|SMM)_STATUS>|<(?:\w+:)?Fault>[\s\S]*?<\/(?:\w+:)?Fault>/.exec(r.body.toString("utf8")) || [""])[0].slice(0, 400);
+          if (tut) {
+            tut.yakala();
+            await tut.birakildi;
+          }
+          res.writeHead(r.status, { "content-type": r.type }).end(r.body);
+          return;
+        }
+        if (/<(?:\w+:)?Cancel(?:Invoice|SMM)Request[\s>]/.test(s)) {
+          const ia = st.iptalAriza;
+          st.iptalAriza = null;
+          st.iptalIstekleri.push({ adim: st.adim, ariza: ia || "" });
+          if (ia === "iptal_kopma_once") {
+            req.socket.destroy();
+            return;
+          }
+          if (ia === "iptal_red") {
+            const smmIptal = /CancelSMMRequest/.test(s);
+            res.writeHead(500, { "content-type": "text/xml" }).end(smmIptal
+              ? `<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><s:Fault><faultcode>s:Client</faultcode><faultstring>İptal talebi kabul edilmedi</faultstring><detail><RequestFault xmlns="http://tempuri.org/"><INTL_TXN_ID xmlns="">0</INTL_TXN_ID><ERROR_CODE xmlns="">11050</ERROR_CODE><ERROR_SHORT_DES xmlns="">İptal talebi kabul edilmedi</ERROR_SHORT_DES></RequestFault></detail></s:Fault></s:Body></s:Envelope>`
+              : `<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><s:Fault><faultcode>s:Client</faultcode><faultstring>İptal talebi kabul edilmedi</faultstring><detail><RequestFault xmlns="${NS}"><ERROR_CODE>11050</ERROR_CODE><ERROR_SHORT_DES>İptal talebi kabul edilmedi</ERROR_SHORT_DES></RequestFault></detail></s:Fault></s:Body></s:Envelope>`);
+            return;
+          }
+          if (ia === "iptal_kopma_sonra") {
+            await ileri(req, body);
+            req.socket.destroy();
+            return;
+          }
         }
         if (ariza === "gecici_hata" && smm) {
           res.writeHead(500, { "content-type": "text/xml" }).end(`<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><s:Fault><faultcode>s:Server</faultcode><faultstring>Geçici sistem hatası</faultstring><detail><RequestFault xmlns="http://tempuri.org/"><INTL_TXN_ID xmlns="">0</INTL_TXN_ID><ERROR_CODE xmlns="">11999</ERROR_CODE><ERROR_SHORT_DES xmlns="">Geçici sistem hatası</ERROR_SHORT_DES></RequestFault></detail></s:Fault></s:Body></s:Envelope>`);
@@ -104,6 +180,7 @@ async function startProxy(target) {
           req.socket.destroy();
           return;
         }
+        if (send) kaydet11048(r, ((/\bUUID="([^"]*)"/.exec(s) || /<(?:\w+:)?UUID>([^<]*)</.exec(s) || [])[1] || "").toLowerCase());
         res.writeHead(r.status, { "content-type": r.type }).end(r.body);
       } catch (error) {
         req.socket.destroy();
@@ -146,6 +223,7 @@ async function startProxy(target) {
 // ---- koşu -----------------------------------------------------------------------------------------------------------
 const edm = await startMockEdm();
 const vekil = await startProxy(edm.url);
+vekil.edm = edm;
 const fetchImpl = async (input, init) => {
   const url = String(typeof input === "string" || input instanceof URL ? input : input.url);
   if (!url.startsWith("http://127.0.0.1")) throw new Error(`ağa çıkılmaz (kâhin): ${url}`);
@@ -403,7 +481,8 @@ try {
       const kart = await api.get(`/api/workspace/invoices/${id}`);
       kayit.yanit = ozet(await api.post(`/api/workspace/invoices/${id}/edit`, govde(adim.belge, { issueDate: kart.data.issueDate, profile: adim.profil })));
     } else if (i === "ariza") {
-      vekil.ariza = adim.tur;
+      if (String(adim.tur).startsWith("iptal_")) vekil.iptalAriza = adim.tur; // K45: bir sonraki İptal Et isteğine
+      else vekil.ariza = adim.tur;
     } else if (i === "ag") {
       if (adim.durum === "yok") await vekil.agYok();
       else await vekil.agVar();
@@ -413,7 +492,38 @@ try {
       const it = (await copListesi()).find(x => x.ref === id);
       kayit.yanit = it ? ozet(await api.post("/api/admin/trash/restore", { id: it.id })) : { atlandi: "Silinenler'de yok" };
     } else if (i === "durum_sorgula") {
+      const e = sonGorulen[adim.belge]?.ettn;
+      if (e) vekil.ettnSil.delete(e); // K44 ettnsiz: bu sorguda EDM'nin olağan yanıtı (kendi ETTN'i)
       kayit.yanit = ozet(await api.post(`/api/workspace/invoices/${id}/e-refresh`, {}));
+    } else if (i === "esz_sorgu_gonder") {
+      // K43: oturum 1 Durum Sorgula; EDM'nin yanıtı vekilde tutulur; oturum 2 kart Gönder; sonra tutulan yanıt verilir.
+      let yakala;
+      const yakalandi = new Promise(resolve => (yakala = resolve));
+      let birak;
+      const birakildi = new Promise(resolve => (birak = resolve));
+      vekil.tut = { uuid: sonGorulen[adim.belge]?.ettn || "", yakalandi: false, yakala, birakildi };
+      const p1 = api.post(`/api/workspace/invoices/${id}/e-refresh`, {});
+      const tutuldu = await Promise.race([yakalandi.then(() => true), sleep(3000).then(() => false)]);
+      if (!tutuldu) vekil.tut = null;
+      const p2 = api2.post(`/api/workspace/invoices/${id}/send`, {});
+      let r2 = null;
+      let sira = "tutulamadi";
+      let ara = null;
+      if (tutuldu) {
+        r2 = await Promise.race([p2, sleep(4000).then(() => null)]);
+        sira = r2 ? "eszamanli" : "bekledi";
+        if (r2) {
+          // Gönderim bitti, sorgu yanıtı henüz verilmedi: belgenin o anki durumu (geç sonuçtan ÖNCE; kanıt — ders 38)
+          const k = await api2.get(`/api/workspace/invoices/${id}`);
+          ara = { status: k.status, eStatus: k.data?.eStatus ?? null, eUnsent: k.data?.eUnsent ?? null, number: k.data?.number || "" };
+        }
+      }
+      birak();
+      vekil.tut = null;
+      const r1 = await p1;
+      if (!r2) r2 = await p2;
+      kayit.yanit = ozet(r1);
+      kayit.ek = { gonder: ozet(r2), sira, gonderimSonrasi: ara };
     } else if (i === "gun_ilerlet") {
       server.clock.advance({ days: adim.gun });
     } else throw new Error(`bilinmeyen işlem ${i}`);
@@ -432,6 +542,29 @@ try {
     };
     kayit.bugun = new Date(server.clock.ms()).toISOString().slice(0, 10);
     kayit.arizaBekliyor = vekil.ariza || "";
+    kayit.iptalArizaBekliyor = vekil.iptalAriza || "";
+    // K43–K45: bu adımda belge için EDM'ye durum sorgusu gitti mi (ETTN ya da numara sorgu gövdesinde)
+    const adimSorgu = vekil.sorgular.filter(q => q.adim === adim.no);
+    kayit.sorgu = Object.fromEntries(Object.entries(g.belgeler).map(([ad, b]) => [ad, adimSorgu.some(q => (b.ettn && q.govde.includes(b.ettn)) || (b.numara && q.govde.includes(b.numara.toLowerCase())))]));
+    kayit.iptalIstek = vekil.iptalIstekleri.filter(x => x.adim === adim.no).length;
+    const degisen = adimSorgu.filter(q => q.degisti).map(q => ({ degisti: q.degisti, yanit: q.yanit || "" }));
+    if (degisen.length) kayit.sorguDegisen = degisen; // K44 kanıtı: vekilin değiştirdiği durum yanıtları
+    // K44: 11048 alan belgenin iletisi (kart + adım yanıtı; numara/11048/çakış/daha önce geçen metinler)
+    const y11048 = vekil.yanit11048.filter(x => x.adim === adim.no);
+    if (y11048.length) {
+      kayit.ileti = {};
+      for (const x of y11048) {
+        const ad = Object.entries(g.belgeler).find(([, b]) => b.ettn && b.ettn === x.uuid)?.[0];
+        if (!ad || kayit.ileti[ad]) continue;
+        const kart = await api.get(`/api/workspace/invoices/${belgeId[ad]}`);
+        const metinler = [];
+        const tara = o => (typeof o === "string" ? (/(numara|11048|çakış|daha önce)/i.test(o) ? metinler.push(o.slice(0, 600)) : null) : o && typeof o === "object" ? Object.values(o).forEach(tara) : null);
+        tara(kart.data);
+        tara(kayit.yanit);
+        tara(kayit.ek);
+        kayit.ileti[ad] = metinler.slice(0, 12);
+      }
+    }
     kayit.ag = vekil.down ? "yok" : "var";
     // Cari işaretleri (program gönderimde alıcıyı sorgulayıp işareti kendisi değiştirebilir — model bunu ortam olarak alır).
     kayit.cariler = {};

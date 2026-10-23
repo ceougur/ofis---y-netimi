@@ -1,0 +1,32 @@
+{
+  "ad": "244-kahin/ebelge-model-k43-k45-n1",
+  "komut": "python3 -I test/bagimsiz/ebelge/test_model.py",
+  "commit": "4d62cb037d50fd43ba2f0890b0582bf8b789bfc5",
+  "dal": "is/kahin-244",
+  "kirli": 12,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T03:57:40.577Z",
+  "sure_sn": 2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 114,
+    "gecen": 114,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/244-kahin/ebelge-model-k43-k45-n1.log",
+  "klasor": "/home/user/wt/kahin-244",
+  "ham_cikti_sha256": "2534f1b7c30361152cbc7135c0e44aa0f8be2a3e4776d8cd119d9de885f22d22",
+  "ham_cikti_bayt": 246
+}

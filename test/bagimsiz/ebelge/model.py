@@ -29,6 +29,9 @@ DIL = "destekofis-ebelge/3"
 # K39 Silinenler (sil / geri_yukle işlemleri — E6), K40 Kâğıt Makbuz Olarak Bırak (SMM serisi, sonra e-SMM gönderilmez — MM4 alt kararı), K41 Yalnız
 # Programda İptal yalnız sonucu belirsiz gönderimde (E7; K35 çatalı karara bağlandı), K42 Sonucu Belirsiz belgede Sil / Düzenle / İptal Et 409 (E1).
 # K41b (23.10.2026 01:26 UTC [KULLANICI]): belirsizde yerel iptal e-Arşiv, e-SMM ve e-Fatura için AYNI kural (K35'in 8 gün / EDM sorgusu kapısı e-Faturaya da).
+# K43–K45 (23.10.2026 [KULLANICI] E1 kararı 22.10 "ağdan önce kalıcı gönderim izi; 11048'de dönen numara belgeninse önce durum sorgusu; E4 aynı kalıp" + 31e
+# baş mimar yorumu; ana oturum iletisi): K43 Durum Sorgula yarışı (geç gelen sorgu sonucu belgeyi ezmez, 409), K44 11048'de EDM'nin durum yanıtındaki ETTN,
+# K45 iptal izi (yanıtı kaybolan iptalde süre dolsa da önce EDM'ye sorulur; süre dolunca izsiz belgede EDM'ye sorulmaz).
 DILLER = ("destekofis-ebelge/1", "destekofis-ebelge/2", DIL)
 
 # K1: belge türü carinin işaretinden gelir (CLAUDE.md 2.4.3 karar 4: "işaretliyse e-Fatura, değilse e-Arşiv kesilir").
@@ -59,6 +62,19 @@ SERI = {"efatura": "TEF", "earsiv": "TEA", "kagit": "FIS", "esmm": "TES"}
 # bırakılan fatura FIS (Müşteri Fişi) serisinden (FATURA-ISTEKLER 122–123; 2.4.3 "Müşteri Fişi Olarak Bırak").
 KAGIT_SERI = {"esmm": "SMM"}
 KAGIT_SERILER = ("FIS", "SMM", "IAD")
+SILINEN_TARIH_BAGLAR = [False]  # K38 N1: silinen kâğıt belgenin tarihi sırayı bağlamaz (mutant M47 True yapar — N1 öncesi davranış)
+# K43–K45 bayrakları (mutasyon.py bozar): K43 geç gelen sorgu sonucu belgeyi ezmez · K44 11048'de EDM'ye sorulur ve ETTN denetlenir · K45 iptal izi.
+K43_GEC_SORGU_EZMEZ = [True]
+K44_SORGU = [True]
+K44_ETTN_DENETIMI = [True]
+K45_IZ = [True]
+K45_SURE_DOLUNCA_SORMAZ = [True]
+# Senaryo dili /3 ek arızaları (vekil uygular; kosucu.mjs): gönderimde 11048 — "kendi" (EDM bu ETTN'i önceden almış; durum yanıtı kendi ETTN'ini taşır),
+# "ettnsiz" (EDM almış; durum yanıtında ETTN yok), "baska" (numara EDM'de başka belgede; durum yanıtı başka ETTN), "yok" (numara EDM'de kullanılmış; bu
+# ETTN EDM'de yok — durum sorgusu "bulunamadı"). İptal isteğinde: yanıt kopar (EDM işledi / işlemedi), EDM hata koduyla reddeder.
+ARIZA_11048 = ("11048_kendi", "11048_ettnsiz", "11048_baska", "11048_yok")
+IPTAL_ARIZALARI = ("iptal_kopma_sonra", "iptal_kopma_once", "iptal_red")
+BEKLENTI_ALANLARI = (("sorgu_beklenen", "sorgu"), ("edurum_beklenen", "edurum"), ("cakisma_beklenen", "cakisma"))
 # K34 ([KULLANICI] e-SMM 2.4.4'te açılır, numarayı program verir; [AJAN] 22): e-SMM (ESMM profili) test serisi TES, TEA/TEF'ten bağımsız.
 E_TURLERI = ("efatura", "earsiv", "esmm")
 E_SERI_ONEK = ("TEF", "TEA", "TES")
@@ -107,6 +123,10 @@ class Dunya:
         # K38 ([KULLANICI] 22.10.2026 "verilmiş kâğıt/fiş numarası bir daha kullanılmaz"; E6): artık hiçbir belgede durmayan ama verilmiş numara → o
         # numaralı belgenin tarihi. Seri sayacı ve sıra-tarih tabanı bunları da sayar (Müşteri Fişi sonra e-Belge olarak gönderilince FIS numarası emekli).
         self.emekli = {}
+        # K43–K45: bir sonraki İptal Et isteğine uygulanacak tek atımlık arıza; K43 eşzamanlı adımda gözlenen sıra ve ikinci oturumun yanıt sınıfı.
+        self.iptal_ariza = None
+        self.k43_sira = None
+        self.yanit2 = None
 
     def kopya(self, not_=None):
         d = copy.deepcopy(self)
@@ -153,19 +173,21 @@ class Dunya:
         return (gun(self.bugun) - gun(g)).days
 
     def komsular(self, b):
-        """K37 R2: aynı seri+yılda b'nin numarasından önceki ve sonraki numaralı belgelerin tarihleri (iptal dahil)."""
+        """K37 R2: aynı seri+yılda b'nin numarasından önceki ve sonraki numaralı belgelerin tarihleri (iptal dahil). K38 N1 ([KULLANICI] 23.10.2026; ana
+        oturum açıklaması): sırayı Silinenler dışında seride kalan her numara bağlar — iptal edilmiş ve Müşteri Fişi Olarak Bırak'ılıp e-Belge olarak
+        gönderilmiş (emekli) numara dahil; Silinenler'deki kâğıt/fiş/SMM/iç belgenin tarihi bağlamaz (verilmis(tarih_icin=True) ile aynı küme)."""
         p = coz_numara(b["numara"])
         once = sonra = None
-        for x in self.belgeler.values():
-            if x is b or x.get("var") is not True or not x.get("numara"):
+        for no_, t in self.verilmis(tarih_icin=True).items():
+            if no_ == b["numara"]:
                 continue
-            q = coz_numara(x["numara"])
+            q = coz_numara(no_)
             if not q or q[:2] != p[:2]:
                 continue
-            if q[2] < p[2] and (once is None or x["tarih"] > once):
-                once = x["tarih"]
-            if q[2] > p[2] and (sonra is None or x["tarih"] < sonra):
-                sonra = x["tarih"]
+            if q[2] < p[2] and (once is None or t > once):
+                once = t
+            if q[2] > p[2] and (sonra is None or t < sonra):
+                sonra = t
         return once, sonra
 
     def seri_yil(self, b):
@@ -193,11 +215,14 @@ class Dunya:
                     kati.append(x["ad"])
         return kati, gevsek
 
-    def verilmis(self):
-        """Verilmiş bütün numaralar → tarih: belgelerdeki (Silinenler'deki dahil — K39/E6) + emekli (K38)."""
+    def verilmis(self, tarih_icin=False):
+        """Verilmiş bütün numaralar → tarih: belgelerdeki (Silinenler'deki dahil — K39/E6) + emekli (K38). tarih_icin: sıra-tarih tabanı — K38 N1 ([KULLANICI]
+        23.10.2026 03:12 UTC): Silinenler'deki KÂĞIT/fiş/SMM/iç belgenin tarihi sıra-tarih denetimini BAĞLAMAZ (numarası yine kullanılmış); e-Belge serileri değişmez."""
         out = dict(self.emekli)
         for x in self.belgeler.values():
             if x["var"] is True and isinstance(x["numara"], str) and x["numara"]:
+                if tarih_icin and x.get("cop") and x["numara"][:3] in KAGIT_SERILER and not SILINEN_TARIH_BAGLAR[0]:
+                    continue
                 out[x["numara"]] = x["tarih"]
         return out
 
@@ -214,7 +239,7 @@ class Dunya:
         """K6: seride numara verilmiş en geç tarih (numara sırası tarih sırasını bozamaz — VUK; FATURA-ISTEKLER satır 77). K38/E6: silinen ve emekli
         numaralı belgelerin tarihi de taban ("yeni belge, silinen son belgeden eski tarihli olamaz")."""
         t = None
-        for no_, tt in self.verilmis().items():
+        for no_, tt in self.verilmis(tarih_icin=True).items():
             p = coz_numara(no_)
             if p and p[0] == seri and p[1] == yil and (t is None or tt > t):
                 t = tt
@@ -330,6 +355,10 @@ def _gonder_numarali(d, ad, b, numarali):
         ariza = None
     else:
         ariza, d.ariza = d.ariza, None
+    if ariza is None and b.get("cakisma"):
+        ariza = "11048_yok"  # K44: numara EDM'de başka belgede — her yeni gönderimde EDM yine 11048 der, bu ETTN EDM'de yok
+    if ariza in ARIZA_11048:
+        return _k44(d, ad, b, ariza)
     if ariza is None:
         b["edm"] = True
         b["prog"] = True
@@ -363,6 +392,34 @@ def _gonder_numarali(d, ad, b, numarali):
                 x.belgeler[ad]["iletim"] = b.get("iletim") or d.bugun
             sonuc.append((x, "gitti" if prog else "hata"))
     return sonuc
+
+
+def _k44(d, ad, b, ariza):
+    """K44 ([KULLANICI] 23.10.2026; E1 kararı 22.10 "11048'de dönen numara belgeninse önce durum sorgusu" + 31e baş mimar yorumu): EDM "bu numara daha önce
+    gönderildi" (11048) dediğinde program EDM'ye durum sorar; belge ANCAK durum yanıtı KENDİ ETTN'ini taşıyorsa gönderilmiş sayılır. Yanıtta ETTN yoksa
+    Sonucu Belirsiz kalır. EDM bulamazsa ya da başka ETTN dönerse belge Hata olur ve ileti numara çakışmasını söyler. Numara korunur (I5; kural numarayı
+    bırakmayı söylemez — çözüm kullanıcıda: Fatura Ayarları → Numaralar)."""
+    edm_var = ariza in ("11048_kendi", "11048_ettnsiz")
+    if edm_var:
+        b["edm"] = True
+        b["iletim"] = b.get("iletim") or d.bugun
+    if ariza in ("11048_baska", "11048_yok"):
+        b["cakisma"] = True
+    b["deneme"] = d.bugun
+    d.notlar.append(f"K44: {ad} 11048 ({ariza})")
+    if not K44_SORGU[0]:
+        # mutant (2.4.3 davranışı): 11048 → Hata, EDM'ye sorulmaz
+        b.update(prog=False, hata=True, belirsiz=False, edurum_beklenen="hata", sorgu_beklenen=False)
+        return [(d, "hata")]
+    b["sorgu_beklenen"] = True
+    if ariza == "11048_kendi" or not K44_ETTN_DENETIMI[0]:
+        b.update(prog=True, hata=False, belirsiz=False)
+        return [(d, "gitti")]
+    if ariza == "11048_ettnsiz":
+        b.update(prog=False, hata=True, belirsiz=True, edurum_beklenen="belirsiz")
+        return [(d, "hata")]
+    b.update(prog=False, hata=True, belirsiz=False, edurum_beklenen="hata", cakisma_beklenen=True)
+    return [(d, "hata")]
 
 
 def tur_gonder(d, adlar=None, sil=None):
@@ -459,13 +516,50 @@ def iptal(d, b, yerel):
         return [d]
     if b["prog"] is True:
         g = d.gun_farki(b, "iletim")
-        if g > IPTAL_SURESI:
+        if b.get("iptal_iz") and d.ag:
+            # K45 ([KULLANICI] 23.10.2026; E4 "aynı kalıp"): önceki iptal isteği EDM'ye gitti, yanıtı kayboldu → iz açık. Süre dolsa da önce EDM'ye sorulur:
+            # EDM iptal etmişse belge programda iptal olur (yanıt sınıfı kaynakta yok); etmemişse süre dolmuşsa 409, süre içindeyse iptal yeniden istenir.
+            b["sorgu_beklenen"] = True
+            b["iptal_iz"] = False
+            d.notlar.append(f"K45: {b['ad']} iptal izi açık — önce EDM'ye soruldu")
+            if b.get("edm_iptal"):
+                b["iptal"] = True
+                d.yanit = None
+                return [d]
+            if g > IPTAL_SURESI:
+                d.yanit = "4xx"
+                return [d]
+        elif b.get("iptal_iz"):
+            d.yanit = None  # K45: iz açık ama EDM'ye ulaşılamıyor — sorulamaz; belge değişmez, iz açık kalır (5xx ya da 4xx)
+            return [d]
+        elif g > IPTAL_SURESI:
             d.yanit = "4xx"  # K22: süre doldu — İptal Et de Yalnız Programda İptal de reddedilir
             d.notlar.append(f"{b['ad']}: K22 iletimden {g}. gün — iptal süresi doldu")
+            if K45_SURE_DOLUNCA_SORMAZ[0]:
+                b["sorgu_beklenen"] = False  # K45: süre dolunca (iz yokken) kart "süre doldu" der, EDM'ye sorulmaz
+                d.notlar.append(f"K45: {b['ad']} süre doldu, iz yok — EDM'ye sorulmaz")
             return [d]
         if d.ag:
+            ia, d.iptal_ariza = d.iptal_ariza, None
+            if ia == "iptal_red":
+                # K45: EDM iptali hata koduyla kesin reddetti → iz kapanır, belge değişmez (yanıt sınıfı kaynakta yok: 4xx ya da 5xx).
+                b["iptal_iz"] = False
+                d.yanit = None
+                d.notlar.append(f"K45: {b['ad']} iptal EDM'ce reddedildi — iz kapandı")
+                return [d]
+            if ia in ("iptal_kopma_sonra", "iptal_kopma_once"):
+                # K45: iptal isteği EDM'ye gitti (program kopmanın önce/sonra olduğunu yanıttan bilemez), yanıt kayboldu → iz açık kalır, belge programda
+                # iptal görünmez. [AJAN] çatalı: program aynı adımda EDM'ye sorup sonucu yazabilir (iz kapanır; o dünyada sorgu ZORUNLU).
+                edm_ip = ia == "iptal_kopma_sonra"
+                neden = "EDM işledi" if edm_ip else "EDM işlemedi"
+                acik = d.kopya(f"K45: {b['ad']} iptal yanıtı kayboldu ({neden}) — iz açık")
+                acik.belgeler[b["ad"]].update(edm_iptal=edm_ip, iptal_iz=K45_IZ[0])
+                coz = d.kopya(f"K45: {b['ad']} iptal yanıtı kayboldu ({neden}) — program aynı adımda EDM'ye sordu")
+                coz.belgeler[b["ad"]].update(edm_iptal=edm_ip, iptal=edm_ip, iptal_iz=False, sorgu_beklenen=True)
+                return [acik, coz]
             b["iptal"] = True
             b["edm_iptal"] = True
+            b["iptal_iz"] = False
             d.yanit = "2xx"
             return [d]
         # K23 ek (19.10.2026): süre içindeki gönderilmiş belgede ağ yoksa EDM'ye ulaşılamaz → iptal yapılmaz (5xx; ya da 4xx) — belge değişmez.
@@ -539,6 +633,11 @@ class Model:
             d.yanit = None
             d.k33 = None
             d.incele = []
+            d.k43_sira = None
+            d.yanit2 = None
+            for b in d.belgeler.values():
+                for alan, _ in BEKLENTI_ALANLARI:
+                    b.pop(alan, None)  # K43–K45 beklentileri yalnız üretildikleri adımda geçerli
             sonuc.extend(uygula(d, adim))
         self.adaylar = sonuc
         return sonuc
@@ -816,19 +915,20 @@ def uygula(d, adim):
             d.yanit = "4xx"  # K27 (CLAUDE.md 2.4.3 karar 1): numaralı belgede Düzenle belge türünü değiştiremez
         return [d]
     if i == "ariza":
-        d.ariza = adim["tur"]
+        if adim["tur"] in IPTAL_ARIZALARI:
+            d.iptal_ariza = adim["tur"]  # K45: bir sonraki İptal Et isteğine (gönderime değil)
+        else:
+            d.ariza = adim["tur"]
         return [d]
     if i == "ag":
         d.ag = adim["durum"] == "var"
         return [d]
     if i == "durum_sorgula":
         b = d.belgeler.get(adim["belge"])
-        if b and b["var"] is True and b["edm"] is True and not b["prog"] and d.ag and not b.get("cop"):
-            # K28: Durum Sorgula EDM'deki belgeyi programda "gönderildi" yapar.
-            b["prog"] = True
-            b["hata"] = False
-            b["belirsiz"] = False
+        _durum_sorgula(d, b)
         return [d]
+    if i == "esz_sorgu_gonder":
+        return esz_sorgu_gonder(d, adim)
     if i == "gun_ilerlet":
         d.bugun = (gun(bugun) + timedelta(days=adim["gun"])).isoformat()
         return [d]
@@ -837,6 +937,48 @@ def uygula(d, adim):
     if i == "geri_yukle":
         return geri_yukle(d, adim)
     raise ValueError(f"bilinmeyen işlem {i}")
+
+
+def _durum_sorgula(d, b):
+    if b and b["var"] is True and b["edm"] is True and not b["prog"] and d.ag and not b.get("cop"):
+        # K28: Durum Sorgula EDM'deki belgeyi programda "gönderildi" yapar.
+        b["prog"] = True
+        b["hata"] = False
+        b["belirsiz"] = False
+
+
+def esz_sorgu_gonder(d, adim):
+    """K43 ([KULLANICI] 23.10.2026; E1 kararı 22.10 + 31e baş mimar yorumu): oturum 1 Durum Sorgula başlatır, EDM'nin yanıtı (o anki durum) vekilde
+    tutulur; bu sırada oturum 2 belgeyi gönderir (kart Gönder); sonra tutulan yanıt programa verilir. Sorgunun geç gelen sonucu belgeyi EZMEZ: gönderim izi
+    silinmez, sorgu 409 ile "yeniden sorgula" der. Gözlenen sıra (kosucu: ek.sira) ortamdır: "eszamanli" (gönderim sorgu tutulurken bitti) ya da "bekledi"
+    (program ikinci işlemi ilki bitene dek bekletti — yarış oluşmaz). Program aynı belgede ikinci işlemi o sırada reddedebilir (yarış oluşmaz) — çatal."""
+    b = d.belgeler.get(adim["belge"])
+    if not b or b["var"] is not True:
+        return [d]
+    ad = b["ad"]
+    sonuc = []
+    a = d.kopya(f"K43: {ad} gönderim sorgu sürerken tamamlandı")
+    for w, s in gonder(a, ad):
+        w.k43_sira = "eszamanli"
+        w.yanit2 = "2xx" if s == "gitti" else None
+        if K43_GEC_SORGU_EZMEZ[0]:
+            w.yanit = "4xx" if s == "gitti" else None  # belge sorgu sürerken değişti → 409 "yeniden sorgula"; belge gönderim sonrası hâlinde kalır
+        else:
+            # mutant: geç gelen sonuç (EDM'nin sorgu anındaki durumu) belgeyi ezer — gönderim izi silinir
+            w.belgeler[ad].update(prog=b["prog"], belirsiz=b.get("belirsiz", False), hata=b.get("hata", False))
+            w.yanit = "2xx"
+        sonuc.append(w)
+    r = d.kopya(f"K43: {ad} sorgu sürerken gönderim reddedildi")
+    r.k43_sira, r.yanit2, r.yanit = "eszamanli", "4xx", None
+    _durum_sorgula(r, r.belgeler[ad])
+    sonuc.append(r)
+    c = d.kopya(f"K43: {ad} gönderim sorguyu bekledi")
+    _durum_sorgula(c, c.belgeler[ad])
+    for w, s in gonder(c, ad):
+        w.k43_sira, w.yanit = "bekledi", None
+        w.yanit2 = "2xx" if s == "gitti" else None
+        sonuc.append(w)
+    return sonuc
 
 
 def sil(d, adim):
@@ -864,6 +1006,9 @@ def sil(d, adim):
     return [d]
 
 
+GERI_YUKLEME_SIRA_DENETIMI = [True]  # mutant M48 False yapar
+
+
 def geri_yukle(d, adim):
     """K39 Silinenler'den geri yükle (E6): belge KENDİ numarasıyla döner; numara başka canlı belgedeyse 409, belge Silinenler'de kalır. Döndüğü durum
     (etkisiz "İptal Edildi" mi, önceki durumu mu) kaynakta yazılı değil → ÇATAL. Numaranın başka belgede olması bu senaryo dilinde ancak programın numarayı
@@ -872,8 +1017,20 @@ def geri_yukle(d, adim):
     if not b or b["var"] is not True or not b.get("cop"):
         return [d]
     if b["numara"] and any(x is not b and x.get("var") is True and not x.get("cop") and x.get("numara") == b["numara"] for x in d.belgeler.values()):
-        d.yanit = "4xx"
+        d.yanit = "4xx"  # K38 N1 ret sırası 1: numara başka canlı belgede
         return [d]
+    # (ret sırası 2: kilitli dönem — senaryo dilinde YOK)
+    p = coz_numara(b["numara"]) if b["numara"] else None
+    if p and GERI_YUKLEME_SIRA_DENETIMI[0]:
+        # K38 N1 ([KULLANICI] 23.10.2026 03:12 UTC) ret sırası 3: geri yükleme canlı belgelere göre sıra-tarihi bozacaksa 409, belge Silinenler'de kalır
+        for no_, t in d.verilmis(tarih_icin=True).items():
+            q = coz_numara(no_)
+            if no_ == b["numara"] or not q or q[:2] != p[:2]:
+                continue
+            if (q[2] < p[2] and t > b["tarih"]) or (q[2] > p[2] and t < b["tarih"]):
+                d.yanit = "4xx"
+                d.notlar.append(f"{b['ad']}: geri yükleme {no_} ({t}) ile sıra-tarihi bozar — K38 N1 409")
+                return [d]
     a = d.kopya(f"{b['ad']}: Silinenler'den etkisiz (iptal) döndü")
     a.belgeler[b["ad"]].update(cop=False, iptal=True)
     a.yanit = "2xx"
@@ -894,6 +1051,9 @@ def goruntu(d):
             continue
         g[ad] = {"var": True, "numara": b["numara"], "edm": b["edm"], "gonderildi": b["prog"], "iptal": b["iptal"],
                  "bekleyen": d.bekleyen(b), "tarih": b["tarih"], "tur": b["tur"], "edm_iptal": b.get("edm_iptal", False), "cop": bool(b.get("cop"))}
+        for alan, gorunen in BEKLENTI_ALANLARI:  # K43–K45: yalnız modelin bu adımda beklenti koyduğu belgede karşılaştırılır
+            if b.get(alan) is not None:
+                g[ad][gorunen] = b[alan]
     return g
 
 
