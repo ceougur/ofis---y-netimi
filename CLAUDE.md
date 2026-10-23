@@ -464,6 +464,14 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   MM10 GERİ ALINDI (plan modeli + kâhin: KDV kalem, stopaj belge düzeyinde; çok kalemli makbuzda ≤ 1 kuruş fark — BİLİNEN SINIR/açıklama); makbuzda kronoloji engeli
   "Kâğıt Makbuz Olarak Bırak" önermez (V.7); "Şirketi Sil" de kırmızı (G6 kalıbı); kısmi makbuzda "Makbuz Tutarı (Net)" etiketi (mali müşavirce teyit — teslim notu);
   birden çok TOPLAM satırlı raporda yapışkan satırların üst üste binmesi (2.4.3'ten) SONRAYA.
+- SORU → 5 dk YETKİSİYLE UYGULANDI (23.10.2026 01:20 → 01:26 UTC; 31a kâhin tur 2 İNCELE 1, ana oturum koddan doğruladı — invoices.mjs uncertainLocalCheck → iptal-suresi.mjs
+  attemptWindow e-Faturada null): sonucu belirsiz e-Faturada "Yalnız Programda İptal" EDM'ye hiç sormadan yapılıyordu (alıcıya ulaşmış e-Fatura programda "İptal"; 22.10 kararı
+  e-Arşiv/e-SMM için yazılmıştı) → e-Faturaya da aynı kural: son gönderim girişiminden 8 gün geçtiyse önce EDM durum sorgusu (bulunamadı → serbest, var → reddedilir, ulaşılamadı →
+  reddedilir); 8 gün içinde K4 çıkışı + e-Faturaya uygun ileti; e-Faturanın normal iptali değişmez. Alternatif (her zaman sor) seçilmedi: EDM'ye ulaşılamayınca K4 çıkışı kapanırdı.
+  Ajanlar: ürün is/efatura-iptal (af758d0efa275c16f), kâhin kuralı ayrı elden is/kahin-244 (a273b1175b2d0e124). Kâhin tur 2 sonucu (31a): BULGU yok; İNCELE 2 (30.000 TL
+  sınırı stopaj/tevkifat düşülmüş tutara mı vergiler dahil toplama mı — kâhinde çatal; teslimde BİLİNEN SINIR, mali müşavire sorulur); İNCELE 3 (yalnız API: Seçilenleri
+  Gönder'e Silinenler'deki belge → boş sonuç kodu) SONRAYA. Aday 8 kapısı KIRMIZI (3276/3279: fatura-217 E6 beklentisi ×2, banka-210-altin U3 PDF yerleşimi; ürün hatası
+  değil, testler bilerek güncellendi); aday 9 (6dc52d6) tam npm test 3283/3283, e2e sürüyor. SONRAYA: altın testin m6 kuralı "…"dan sonra her metni kabul ediyor.
 - İSTEKLER (kullanıcı, 22.10.2026 ~14:00–14:50 UTC; hepsi yanıtlandı): "18 numarada portalda ben ne yapacağım" → elle kabul adımları iş listesi 18 (teslimde
   kurulumla); "kalan işler için zaman çizelgesi, aynı anda yapılanları tek süre say" → verildi (devam notu ZAMAN ÇİZELGESİ); "compact talimatı vereceğim, veri kaybı
   olmasın" → devam notu 00 + ajan kayıtları yazıldı ve gönderildi (f013e57); EDM test hesabı ~14:45 UTC yeniden verildi (yalnız oturumda; dosyaya yazılmadı).
