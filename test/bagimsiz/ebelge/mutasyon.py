@@ -147,7 +147,7 @@ def _birakilan_makbuz_gonderilir(d, adim):
     return None
 
 
-def _verilmis_copsuz(self):
+def _verilmis_copsuz(self, tarih_icin=False):
     # K38/K39: Silinenler'deki belgenin numarası serbest kalır
     out = dict(self.emekli)
     for x in self.belgeler.values():
@@ -327,6 +327,23 @@ def _gonder_zaten_gonderilmisi_yeniden(d, ad):
     return ORJ["gonder"](d, ad)
 
 
+def _komsular_eski(self, b):
+    # K38 N1 öncesi R2: komşular yalnız belgelerden (Silinenler'deki kâğıt dahil, emekli numara hariç)
+    p = M.coz_numara(b["numara"])
+    once = sonra = None
+    for x in self.belgeler.values():
+        if x is b or x.get("var") is not True or not x.get("numara"):
+            continue
+        q = M.coz_numara(x["numara"])
+        if not q or q[:2] != p[:2]:
+            continue
+        if q[2] < p[2] and (once is None or x["tarih"] > once):
+            once = x["tarih"]
+        if q[2] > p[2] and (sonra is None or x["tarih"] < sonra):
+            sonra = x["tarih"]
+    return once, sonra
+
+
 MUTANTLAR = [
     ("M1 bekletme yok (K8)", lambda: setattr(D, "tutan", lambda self, b: None)),
     ("M2 kalıcı engelli de bekletir (O1 benzeri, K9)", lambda: setattr(D, "tutan", _tutan_engelliler_de)),
@@ -377,6 +394,15 @@ MUTANTLAR = [
     ("M44 Silinenler'deki belge bekleyen sayılır (K39)", lambda: setattr(D, "bekleyen", _bekleyen_copu_de)),
     ("M45 belirsizde 8 gün sonra EDM'ye sorulmadan yerel iptal (K41b)", lambda: setattr(M, "yerel_iptal", _yerel_belirsiz_sorgusuz)),
     ("M46 belirsiz e-Fatura'da yerel iptal hep red (K41b öncesi)", lambda: setattr(M, "yerel_iptal", _yerel_belirsiz_efatura_red)),
+    ("M47 silinen kâğıt belgenin tarihi sırayı bağlar (K38 N1 öncesi)", lambda: M.SILINEN_TARIH_BAGLAR.__setitem__(0, True)),
+    ("M48 geri yükleme sıra-tarihi denetlemez (K38 N1)", lambda: M.GERI_YUKLEME_SIRA_DENETIMI.__setitem__(0, False)),
+    # /3 ek (23.10.2026 K43–K45 [KULLANICI]; N1 ana oturum açıklaması)
+    ("M49 geç gelen Durum Sorgula sonucu belgeyi ezer (K43)", lambda: M.K43_GEC_SORGU_EZMEZ.__setitem__(0, False)),
+    ("M50 11048'de EDM'ye sorulmaz, belge Hata (K44; 2.4.3)", lambda: M.K44_SORGU.__setitem__(0, False)),
+    ("M51 11048'de ETTN'e bakılmaz, hep gönderildi (K44)", lambda: M.K44_ETTN_DENETIMI.__setitem__(0, False)),
+    ("M52 iptal yanıtı kaybolunca iz kapanır (K45)", lambda: M.K45_IZ.__setitem__(0, False)),
+    ("M53 süre dolunca izsiz belgede EDM'ye sorulması serbest (K45)", lambda: M.K45_SURE_DOLUNCA_SORMAZ.__setitem__(0, False)),
+    ("M54 R2 komşusu silinen kâğıdı sayar, emekliyi saymaz (K38 N1)", lambda: setattr(D, "komsular", _komsular_eski)),
 ]
 
 
@@ -392,6 +418,8 @@ def geri_al():
     M.yerel_iptal, D.emekli_et, D.verilmis = ORJ["yerel_iptal"], ORJ["emekli_et"], ORJ["verilmis"]
     M.KAGIT_SERI.clear()
     M.KAGIT_SERI.update(ORJ["KAGIT_SERI"])
+    M.SILINEN_TARIH_BAGLAR[0], M.GERI_YUKLEME_SIRA_DENETIMI[0] = False, True
+    M.K43_GEC_SORGU_EZMEZ[0] = M.K44_SORGU[0] = M.K44_ETTN_DENETIMI[0] = M.K45_IZ[0] = M.K45_SURE_DOLUNCA_SORMAZ[0] = True
 
 
 def kos():

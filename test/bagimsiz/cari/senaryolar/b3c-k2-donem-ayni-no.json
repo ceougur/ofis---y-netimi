@@ -1,0 +1,91 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3c-k2-donem-ayni-no",
+ "aciklama": "K2 dönem sekmelerinde (2025 Aidat / 2026 Aidat) AYNI dosya no tek kayıt, bir kez sayılır (hangi sekmenin borcu: ÇATAL 1.200 / 1.500) ve 'birden çok sekmede' notu (1); K1 aynı sekmede tekrar eden dosya no (400 + 400 = 800); K3 Kalan'sız Ödenecek Tutar + Ödenen Tutar",
+ "dayanak": "KARARLAR.md B3 (KULLANICI 23.10 03:12 UTC K1–K3)",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "2025 Aidat",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/301",
+       "isim": "Hale Öz",
+       "hucreler": {
+        "Telefon": "0532 333 33 01",
+        "Tutar": "1.200,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "2026 Aidat",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/301",
+       "isim": "Hale Öz",
+       "hucreler": {
+        "Telefon": "0532 333 33 01",
+        "Tutar": "1.500,00 ₺"
+       }
+      },
+      {
+       "no": "2026/302",
+       "isim": "İlker Su",
+       "hucreler": {
+        "Telefon": "0532 333 33 02",
+        "Tutar": "400,00 ₺"
+       }
+      },
+      {
+       "no": "2026/302",
+       "isim": "İlker Su",
+       "hucreler": {
+        "Telefon": "0532 333 33 02",
+        "Tutar": "400,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Taksit Planı",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Ödenecek Tutar",
+      "Ödenen Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/303",
+       "isim": "Jale Ay",
+       "hucreler": {
+        "Telefon": "0532 333 33 03",
+        "Ödenecek Tutar": "2.500,00 ₺",
+        "Ödenen Tutar": "1.000,00 ₺"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  }
+ ]
+}

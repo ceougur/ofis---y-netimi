@@ -61,18 +61,36 @@ iptalinde bağ düştü, evrak çöp kutusundan geri yüklendi, bağ değiştiri
   (ders 11). [YAYGIN] karta doğrudan girilen tahsilat da kişinin tahsilatıdır; aynı adlı iki kişi ayrı satır; satır kişinin adını gösterir (B1.8b).
 - **B1.9** [AJAN A9] Ön izlemeden sonra cariye tahsilat girilirse aktarım reddedilir (kart açılmaz).
 
-### B3 — Tablodaki Kişiler BORCU (2.4.4 tur 2: U2 daraltılmış, E2, E3; 23.10.2026)
-Kaynak: [KULLANICI] CLAUDE.md Açık iş 22.10 21:34→21:41 UTC (31f (a), 5 dk yetkisiyle) "borç DOSYA NO başına tek kaynaktan (Kalan Borç), aynı dosya no farklı sekmede aynı
-kayıt, söz borç değil" + 22.10 ~16:55 UTC B1 kararı "Kalan Borç kalsın; Tablodaki Kişiler de aynı kurala"; [AJAN] ana oturumun verdiği kural metinleri (U2 daraltılmış,
-E2 "Kalan hücresi boş satırda … boşsa Toplam", E3 "Kalan Gün gibi gün/adet sütunu borç sayılmaz" — Açık iş 21:14 SORU'da "KARAR GEREKMEYEN düzeltme").
-- **B3.1** [KULLANICI] Bir dosya no'nun borcu TEK kaynaktan; aynı dosya no birden çok sekmede bir kez sayılır. Ödeme sözü tutarı borç değildir.
-- **B3.2** [AJAN] Sütun önceliği: Kalan/Bakiye → borç/alacak başlıklı sütun → sekmenin TEK tutar sütunu. Tek tutar sütunundan yalnız ödeme sözü (başlıkta "söz",
-  "sözü", "taahhüt") borç dışıdır. Aynı öncelikte ilk sekme; yüksek öncelik sonraki sekmede olsa da kazanır.
-- **B3.3** [AJAN] Başlığı gün, adet, sayı, ay, yıl, oran, yüzde ya da % olan sütun tutar değildir (E3). [YAYGIN] "Tarih" başlıklı sütun da tutar değildir.
-- **B3.4** [KULLANICI] Kalan 0 → borç 0. [AJAN] Kalan boş → Toplam Borç (borç başlıklı sütun; E2).
-- Denetim yalnız carisi ve taksit kartı olmayan, taksit sekmesinde bulunmayan kayıtta (bağlı carinin ve kartın borç satırlarının kuralı bu kâhinde yok); kural tanımsız
-  sekme (birden çok Kalan ya da borç sütunu; öncelikli sütun olmadan birden çok tutar sütunu) denetlenmez. Etiket: yalnız B3.1 + Kalan sütunu → KULLANICI; öbürü AJAN.
-- DENENMEYEN: "Ödendi" söz hiçbir yerde görünmez (söz durum sütunu bu dilde yok), ödeme sözü/vade/zil/Tahsilat Takvimi tutarları (yalnız Tablodaki Kişiler).
+### B3 — Tablodaki Kişiler BORCU (23.10.2026 03:12 UTC — [KULLANICI] K1–K3, 5 dk yetkisiyle; tur 2'nin [AJAN] B3.2–B3.4'ünün YERİNE, ders 5)
+Kaynak: ana oturumun ilettiği kullanıcı kararı metni (31e dar kontrol bulgusu: tur 2 B3.2–B3.4 kodu yazan elden geliyordu; kâhin aynı sekmede tekrar eden dosya
+no'yu, dönem sekmelerini ve Kalan'sız iki tutarlı tabloyu üretmiyordu). Ürün kodu okunmadı.
+- **K1** [KULLANICI] Borç satır başınadır: AYNI SEKMEDE aynı Dosya No'lu birden çok satır ayrı borç ve ayrı vade kalemidir (Tablodaki Kişiler'de toplanır).
+- **K2** [KULLANICI] FARKLI SEKMEDE aynı Dosya No tek kayıttır, bir kez sayılır; raporda "N dosya no birden çok sekmede; bir kez sayıldı" notu görünür. Hangi
+  sekmenin borcunun sayılacağı metinde yok → beklenen sekme borçlarından BİRİ (ÇATAL; yalnız Ödeme Sözü olan sekme borç kaynağı değildir); N de ÇATAL (bütün
+  sekmeler / borç kaynağı sekmeler). Not yanıtın herhangi bir metninde aranır (alan adı bilinmiyor); not yoksa 0.
+- **K3** [KULLANICI] Satırın borcu: Kalan/Kalan Borç/Bakiye sütunu varsa ve hücre doluysa Kalan; Kalan hücresi boşsa toplam (Toplam Borç/Tutar); Kalan sütunu YOKSA
+  ve ödenen sütunu (Tahsil Edilen, Ödenen, Ödenen Tutar) ile toplam sütunu (Tutar, Ödenecek Tutar, Toplam) varsa toplam − ödenen, negatifse 0; tek tutar sütunlu
+  tabloda (taksit, kira, aidat, ücret, "Ödenecek" dahil) o tutar; gün/adet sütunu ("Kalan Gün", "Adet") tutar değildir; Ödeme Sözü tutarı borç değildir (beklenen
+  tahsilattır). [YAYGIN] değerleri tarih olan sütun ("Ödeme Sözü" tarihi) tutar değildir. Tanımsız (birden çok Kalan/toplam/ödenen sütunu; ödenen var toplam yok;
+  öncelikli sütun olmadan birden çok tutar sütunu) satır denetlenmez.
+- Denetim yalnız carisi ve taksit kartı olmayan, taksit sekmesinde bulunmayan kayıtta. Senaryolar: b3-u2-tablo-borcu, b3b-k1-k4-donem-raporlar,
+  b3c-k2-donem-ayni-no; mutantlar 14–18, 23–26.
+- DENENMEYEN: "Ödendi" söz hiçbir yerde görünmez; Tahsilat Takvimi penceresi dışındaki vade; dönem süzgecinin kendisi (K4 geniş dönemle).
+
+### B4b — Dört rapor aynı satır borcu (K4 [KULLANICI] 23.10.2026)
+- **K4** Tablodaki Kişiler (totals.debit), Tahsilat Takvimi (/dues Σ amount), Vade Takip (totals.amount) ve Nakit Akışı Beklenen (totals.expected) aynı satır
+  borcunu kullanır; toplamları aynıdır (dönem süzgeci içinde). Kontrol adımında `"raporlar": true` ve bütün kayıtların borcu tanımlı ve tek değerliyse dört
+  toplamın her biri Σ satır borcuna eşit beklenir. Senaryoda bütün satırların vadesi ("Ödeme Sözü" tarih sütunu) takvim penceresinde (bugün + 3); Ödeme Sözü
+  tutarı ve fatura/taksit kaynağı olan senaryoda denetlenmez.
+
+### B5b — Kasa yetkisi olmayan kullanıcı (K5 / Y1 [KULLANICI] 23.10.2026)
+- **K5** Kasa'yı görme yetkisi olmayan kullanıcı Nakit Akışı'nda Kasa giriş/çıkışını görmez (boş/gizli + not). `kullanici_ac {ad, rol, kaldir}` (rol "avukat"
+  Nakit Akışı'nı açar; `cash.view` kaldırılır — kara kutu yoklaması); beklenen `yetkisiz:<ad>:kasa` = "gizli" (cashIn ve cashOut null/yok), `yetkisiz:<ad>:not`
+  = yanıtta "Kasa" ve "yetki/göreme/görüntüle/gizli" geçen metin. Mutant 27. Kurulum denetimi (ders 38): kullanıcı adı `kahin-<ad>` (program 3–60 karakter ister);
+  bu kullanıcıya Kasa sayfası (`GET /api/workspace/cash`) 200 dönerse yetki kaldırılamamıştır → okuma hatası (K5 denetimi geçersiz), fark sayılmaz.
+- (B3 okuma) Tablodaki Kişiler dosya no başına borç (`rapor:<no>:borc`) GENİŞ dönem raporundan okunur (2000-01-01 – 2099-12-31): kâhin satır borcunu tarihe bakmadan
+  hesaplar; tarih sütunu (ör. Ödeme Sözü bugünden sonra) satırı yıl başı–bugün süzgecinin dışına düşürebilir (ilk koşuda b3b'de bütün satırlar 0 okunmuştu — kâhin
+  hatası, ders 6). Tahsilat (`alacak`) ve tutarlılık yıl başı–bugün raporundan kalır.
 
 ### B4 — Nakit Akışı Kasa giriş/çıkış = Kasa raporu (31b MM6; 23.10.2026)
 - **B4.1** [KULLANICI] CLAUDE.md Açık iş 22.10 21:21→21:27 UTC "MM6 Nakit Akışı Kasa giriş bütün nakit hareketleri"; ana oturumun kural metni "Nakit Akış'ın Kasa
@@ -131,7 +149,7 @@ Kapsam dışı (senaryo kurmaz): 002 şirketi, yetkisiz kullanıcı, döviz, ş�
 `geri_al {aktar}` · `kart_tahsilat {kayit}` · `fatura {ad, cari, tutar, tarih, tur: satis|alis, taksit?, evrak?, taslak?}` · `iade {ad, fatura}` ·
 `evrak {ad, cari|null, tur: cek|senet, tutar, tarih, fatura?}` · `karsiliksiz` · `tahsil` · `ciro {cari}` · `evrak_sil` · `evrak_geri_yukle` ·
 `bag_degistir {evrak, fatura|""}` · `fatura_iptal` · `kontrol`.
-/2 ekleri: sekme türü `serbest {basliklar:[…], kayitlar:[{no, isim, hucreler:{başlık: hücre metni}}]}` (koşucu "Dosya No", "Borçlu" + başlıkları AYNEN yazar);
+/2 ekleri: `kullanici_ac {ad, rol, kaldir}`; `kontrol {raporlar: true}` (K4); sekme türü `serbest {basliklar:[…], kayitlar:[{no, isim, hucreler:{başlık: hücre metni}}]}` (koşucu "Dosya No", "Borçlu" + başlıkları AYNEN yazar);
 `tahsilat {…, yol: "havale"}`; `kasa_cikis {tutar, tarih}`; `cari_ac {…, tckn}` (gerçek kişi); `nihai_tuketici` (POST /api/workspace/invoices/retail-account); `cari_sil {cari}`;
 `cari_adlandir {cari, isim}`. Yeni çıktı anahtarları: `<kontrol>:rapor:<no>:borc`, `<kontrol>:nakit:{kasaGiris,kasaCikis}`, `<kontrol>:kasaRapor:{giris,cikis}`,
 `adim:<id>:{secilen,olusturuldu}` (seçilen carinin takma adı; programın açtığı yeni cari `@nt1`, `@nt2`… sırayla), `<kontrol>:cari:<ad>:var` (silinen cari). Geçerlilik: aynı seride fatura tarihleri artan (VUK sıra-tarih; program reddeder).

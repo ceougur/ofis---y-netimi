@@ -26,3 +26,17 @@ ve `HUKUK_LICENSE_URL=http://127.0.0.1:9` ile. Kâhin commit'leri: 34e94ea (kura
 Kırmızıların nedeni iletide okundu (ders 38): her fark iddia edilen eski davranışın kendisi (ör. e7 adım 9–14 "200, iptal" — eski kod yerel iptali kabul ediyor).
 E1 senaryosu (hedefli-244-e1-belirsiz) eski kodda da yeşil: bağlantı kopmasını 2.4.3 de "belirsiz" sayıyordu; E1'in asıl değişikliği (süreç yanıt gelmeden
 KAPANIRSA iz) bu kâhinde benzetilemez → DENENMEYEN.
+
+### Tur 3 (23.10.2026, ana oturum iletileri: cari B3 K1–K5 [KULLANICI 03:12 UTC], e-Belge K38 N1 + açıklaması, K43–K45 [KULLANICI])
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| ebelge-model-k43-k45-n1 | e-Belge model birim testleri (N1 açıklaması, K43, K44, K45 eklendi) | 114/114 |
+| ebelge-mutasyon-k43-k45-n1 | mutantlar M1–M54 (yeni M49–M54) | 55/55 öldü (temel dahil) |
+| KIRMIZI kirmizi-aday8-ebelge-senaryo-k43-k45-n1 | 27 hedefli senaryo, aday 8 (54bf0e6) kodunda — kırmızı BEKLENİR | 5 senaryo kırmızı, 25 fark / 1 ihlal: e6 adım 4/30 400 chronology (silinen FIS tarihi bağlıyor — N1); e7 K41b (önceki tur); k43 adım 3 gönderim sonrası "sent" olan belge geç "bulunamadı" ile none/eUnsent'e döndü (ek.gonderimSonrasi kanıtı), adım 7 sorgu 200 (409 yok), I25 ardıl; k44 ETTN'siz durum yanıtında belge "gönderildi" (B2, S1); k45 adım 21/22/24 izsiz belgede süre dolunca yine GetInvoiceStatus |
+| KIRMIZI kirmizi-aday8-cari-k1-k5 | 14 senaryo (b3b, b3c yeni) + 27 mutant, aday 8 kodunda — kırmızı BEKLENİR | 103 fark (hepsi BULGU KULLANICI): K1 aynı sekmede tekrar eden dosya no ilk satırla; K3 Tutar + Tahsil Edilen → 0; K2 "birden çok sekmede" notu yok; K4 dört rapor aynı (740.000) ama K1/K3 yüzünden 1.020.000 değil; K5 Kasa sayfası 403 olan kullanıcı Nakit Akışı'nda Kasa girişini görüyor · 0 okuma hatası · 0 yakalanmayan mutasyon |
+
+Kırmızıların nedeni iletide/ham çıktıda okundu (ders 38). Kâhin hatası düzeltildi (ders 6): ilk koşuda K5 kullanıcı adı 2 karakterdi (program reddetti → 401) ve
+dosya no başına borç yıl başı–bugün raporundan okunuyordu (b3b'de Ödeme Sözü tarihi bugünden sonra → satır raporda yok); kullanıcı adı `kahin-<ad>`, borç geniş dönem
+raporundan, K5 için kurulum denetimi (Kasa sayfası 200 ise okuma hatası). K44 çakışma iletisi ilk sürümde "numarası kullanıldı, silinmez" notunu da çakışma sayıyordu →
+kalıplar daraltıldı. Yeşil koşular ana oturumda aday 12'de.
