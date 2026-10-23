@@ -63,3 +63,14 @@ Neden (ham çıktı, ders 38): farkların HEPSİ farklı adların aynı kimlikle
 rastgele 2: T2/014–016 (yer tutucu). Aynı ad farklı kimlik (etiketinde "(TC …)"), aynı ad aynı kimlik, kimliksiz satırın tek kimliğe katılması ve iki sekmede aynı
 kişi aday 15'te kurala uygun (fark yok). Kâhin hatası düzeltildi (ders 6): ilk koşuda aynı dosya no'yu iki kimlikli bir adın kimliksiz satırıyla kullandım; program
 o satırı ayrı kişi yaptı — kural bu durumu söylemiyor → kâhinde TANIMSIZ, senaryoda o satır tek kimlikli ada taşındı, İNCELE olarak raporda.
+
+### Tur 4 ek — C3 tamamlayıcıları (baş mimar kararları 23.10.2026: kimliksiz satır; kimlik sütunu tutar değildir)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| KIRMIZI kirmizi-aday15-cari-c3-tamamlayici | 15 senaryo (b3d: "2026 Aidat"ta 2026/401'in kimliksiz satırı, "Firmalar" sekmesi "Vergi No" geçerli/geçersiz VKN; üreteç "Firmalar" sekmesi — başlık Vergi No / Vergi Numarası / Vergi Kimlik) + 34 mutant, ADAY 15 kodunda — kırmızı BEKLENİR | 537 fark (hepsi BULGU KULLANICI) · 0 okuma hatası · 0 yakalanmayan mutasyon (ilk koşuda mutant 33 yaşadı → b3d'ye geçerli VKN'li Yeşil AŞ satırı, üreteçte yer tutucu + gerçek kimlik aynı adda her tohumda) |
+
+Neden (ham çıktı, ders 38; her fark aşağıdakilerden birine düştü — sınıflama betiği not defterinde): (1) Vergi No / Numarası / Kimlik başlıklı sekmenin satırları raporda HİÇ
+yok (sütun tutar sayılıyor — b3d 21, rastgele 119 + 112 fark); (2) farklı adların aynı değerle birleşmesi (D1; yer tutucu ve gerçek TCKN); (3) kimliksiz satır: çok kimlikli
+adın aynı dosya no'lu kimliksiz satırı ayrı "kimliksiz" kişiye gidiyor (b3d 2026/401: "Ayşe Yıldız" 150 ayrı satır; rastgele 14 + 14); (4) sağlama hanesi tutmayan yer
+tutucu tek kimlikli adda ayrı kişi yapıyor (rastgele 21 + 21). Borç farkları gruplamanın sonucudur (rapor satırı kişi toplamı).

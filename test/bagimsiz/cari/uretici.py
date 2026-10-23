@@ -40,6 +40,15 @@ def tckn(rt):
     return "".join(map(str, d + [d10, (sum(d) + d10) % 10]))
 
 
+def vkn(rt, gecerli=True):
+    """VKN (GİB sağlama hanesi); gecerli=False → sağlama hanesi bilerek bozuk."""
+    ilk = "".join(str(rt.randint(0, 9)) for _ in range(9))
+    for c in range(10):
+        if M.vkn_gecerli(ilk + str(c)) == gecerli:
+            return ilk + str(c)
+    return ilk + "0"
+
+
 def rastgele_tablo(rt, tohum):
     """/2 (23.10.2026, K1–K3 [KULLANICI]): carisiz tablo kayıtları — dönem sekmeleri ("2025 Aidat" / "2026 Aidat"; aynı sekmede tekrar eden ve iki sekmede ortak
     dosya no), Kalan'sız Tutar + Tahsil Edilen (ödenen > tutar dahil), Toplam Borç + Kalan Borç (Kalan boş / 0), tek tutar + "Kalan Gün", Ödeme Sözleri."""
@@ -85,7 +94,7 @@ def rastgele_tablo(rt, tohum):
         sekmeler.append({"ad": "Ödeme Sözleri", "tur": "soz", "kayitlar": soz})
     # C3 ([KULLANICI] 23.10.2026) kişi gruplaması: ortak/yer tutucu kimlik FARKLI adlarda, aynı ad iki kimlik (+ bazen aynı kimlikle ikinci dosya), kimliksiz +
     # kimlikli aynı ad, iki sekmede aynı kişi (kimlik sütunu olmayan "2026 Aidat"ta aynı adın kimliksiz yeni dosyası), farklı ad aynı gerçek TCKN. Başlık adı
-    # kara kutu yoklamasındaki tanınan adlardan (ORTAM). Aynı adın iki kimliği varken kimliksiz satır ÜRETİLMEZ (kural tanımsız).
+    # kara kutu yoklamasındaki tanınan adlardan (ORTAM). Yer tutucular sağlama hanesi tutmaz → kimlik sayılmaz (ad kuralı; baş mimar kararı 23.10).
     baslik = rt.choice(["TC Kimlik No", "TCKN", "Kimlik No"])
     uye = []
     satir = lambda no, ad, kim: {"no": no, "isim": ad, "hucreler": {"Telefon": "", baslik: kim, "Tutar": para(tutar())}}  # noqa: E731
@@ -104,8 +113,32 @@ def rastgele_tablo(rt, tohum):
     if rt.random() < 0.5:
         no5, ad5 = yeni()
         uye.append(satir(no5, ad5, k3))
+    # Kimliksiz satır (baş mimar kararı 23.10): çok kimlikli adın (ad1) aynı dosya no'lu kimliksiz satırı kimlik sütunu olmayan sekmede → o kişiye katılır;
+    # aynı dosya no'su olmayan kimliksiz kaydı → adın kimliksiz grubu (ayrı kişi); tek kimlikli adda yer tutucu değer → kimliksiz → tek kimliğe katılır.
+    aidat26.append({"no": no1, "isim": ad1, "hucreler": {"Telefon": "", "Tutar": para(tutar())}})
+    if rt.random() < 0.5:
+        uye.append(satir(yeni()[0], ad1, ""))
+    uye.append(satir(yeni()[0], ad3, yer))  # mutant 33 her tohumda: geçersiz değer kimlik sayılırsa ad3 iki kişiye bölünür
     rt.shuffle(uye)
     sekmeler.append({"ad": "Üyeler", "tur": "serbest", "basliklar": ["Telefon", baslik, "Tutar"], "kayitlar": uye})
+    # KİMLİK SÜTUNU TUTAR DEĞİLDİR (baş mimar kararı 23.10): "Vergi No" başlıklı sekme, geçerli ve geçersiz VKN karışık; geçerli VKN aynı adı ayırır, geçersiz
+    # değer kimlik sayılmaz (ad kuralı), aynı geçersiz değer farklı adlarda.
+    vb = rt.choice(["Vergi No", "Vergi Numarası", "Vergi Kimlik"])
+    firma = lambda no, ad, v: {"no": no, "isim": ad, "hucreler": {"Telefon": "", vb: v, "Tutar": para(tutar())}}  # noqa: E731
+    fr = []
+    (f1, fa1), (f2, _) = yeni(), yeni()
+    v1, v2 = vkn(rt), vkn(rt)
+    fr += [firma(f1, fa1, v1), firma(f2, fa1, v2)]
+    if rt.random() < 0.5:
+        fr.append(firma(yeni()[0], fa1, v1))
+    if rt.random() < 0.5:
+        fr.append(firma(yeni()[0], fa1, ""))
+    (f3, fa3), (f4, _) = yeni(), yeni()
+    fr += [firma(f3, fa3, vkn(rt, False)), firma(f4, fa3, "")]
+    bozuk = vkn(rt, False)
+    fr += [firma(no, ad, bozuk) for no, ad in [yeni() for _ in range(2)]]
+    rt.shuffle(fr)
+    sekmeler.append({"ad": "Firmalar", "tur": "serbest", "basliklar": ["Telefon", vb, "Tutar"], "kayitlar": fr})
     rt.shuffle(sekmeler)  # sekme sırası (K2 04:09: farklı sekmedeki aynı dosya no ayrı borç — sonuç sıradan bağımsız)
     return {"id": "tablo", "islem": "tablo_yukle", "sekmeler": sekmeler}
 
