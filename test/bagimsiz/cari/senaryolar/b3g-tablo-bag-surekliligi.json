@@ -1,7 +1,7 @@
 {
  "dil": "destekofis-cari/2",
  "ad": "b3g-tablo-bag-surekliligi",
- "aciklama": "TABLO BAĞ SÜREKLİLİĞİ (baş mimar kararı 23.10.2026) — Dosya No'suz tablo, Yerine koy: kayıt tahsilatları (Nur Ak, Oya Er, Ali Veli × 2, Can Su, Deniz Ay) ve cari bağı (Ece Naz carisi + carinin tahsilatı). v2 tutar değişimi (Nur Ak 700 → 750) + yeni kolon (E-posta): hepsi güvenli eşleşme, onay yok, tahsilat aynı kişide. v3 satır sırası ters: tekil kişi değerleri güvenli; aynı adlı iki Ali Veli'den konumu değişen eşleşmez → önizlemede 'Ali Veli' uyarısı + onay. v4 ad değişimi (Oya Er → Oya Erk) + satır silme (Deniz Ay) → uyarıda iki ad + onay; öbür kişilerin tahsilatı/cari bağı yerinde.",
+ "aciklama": "TABLO BAĞ SÜREKLİLİĞİ (baş mimar kararı 23.10.2026 + karar sahibinin NETLEŞTİRMESİ) — Dosya No'suz tablo, Yerine koy: kayıt tahsilatları (Nur Ak, Oya Er, Ali Veli × 2, Can Su, Deniz Ay) ve cari bağı (Ece Naz). v2 tutar değişimi (Nur Ak 700 → 750; aynı adlı Ali Veli'nin biri 100 → 110 — AYNI KONUM eşleşmesi) + yeni kolon (E-posta): hepsi güvenli, onay/uyarı yok, tahsilat aynı kişide. v3 satır sırası ters (aynı adlı iki Ali Veli'nin yer değiştirmesi dahil): içeriği tamamen aynı satır mevcut kaydın kendisidir — onay/uyarı yok. v4 ad değişimi (Oya Er → Oya Erk) + satır silme (Deniz Ay): önizlemede iki ad + onay; öbür kişilerin tahsilatı/cari bağı yerinde.",
  "dayanak": "KARARLAR.md B3f (baş mimar kararı 23.10.2026 tablo bağ sürekliliği (1)–(3))",
  "bugun": "2026-06-17",
  "adimlar": [
@@ -176,7 +176,7 @@
        "isim": "Ali Veli",
        "hucreler": {
         "Telefon": "",
-        "Tutar": "100",
+        "Tutar": "110",
         "E-posta": ""
        }
       },
@@ -281,7 +281,7 @@
        "isim": "Ali Veli",
        "hucreler": {
         "Telefon": "",
-        "Tutar": "100",
+        "Tutar": "110",
         "E-posta": ""
        }
       },
@@ -359,7 +359,7 @@
        "isim": "Ali Veli",
        "hucreler": {
         "Telefon": "",
-        "Tutar": "100",
+        "Tutar": "110",
         "E-posta": ""
        }
       },

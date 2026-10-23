@@ -1,7 +1,7 @@
 {
  "dil": "destekofis-cari/2",
  "ad": "b3h-dosya-no-ve-devam",
- "aciklama": "TABLO BAĞ SÜREKLİLİĞİ (baş mimar kararı 23.10.2026): Dosya No'suz tabloya Dosya No kolonu EKLENİR (v2) ve yeniden SİLİNİR (v3) — kişi değeri (ad) tekil, güvenli eşleşme: kayıt tahsilatı (Kaan Uz 100, Lale Ak 200) aynı kişide, onay yok. v4 'Devamı olarak ekle': mevcut kayıtla aynı kişi + aynı tutar görünen satır (Kaan Uz 1.000) önizlemede adıyla söylenir ve onay istenir; mevcut satırlar (Lale Ak, Mete Er) ve bağlı tahsilatları yerinde kalır, yeni kişi eklenir.",
+ "aciklama": "TABLO BAĞ SÜREKLİLİĞİ (baş mimar kararı 23.10.2026 + NETLEŞTİRME): Dosya No'suz tabloya Dosya No kolonu EKLENİR (v2) ve yeniden SİLİNİR (v3) — kişi değeri (ad) tekil, güvenli eşleşme: kayıt tahsilatı (Kaan Uz 100, Lale Ak 200) aynı kişide, onay yok. v4 'Devamı olarak ekle': içeriği tamamen aynı satır (Kaan Uz 1.000 Ekim) mevcut kaydın kendisidir — yeni kayıt açılmaz, uyarı/onay yok; aynı kişi + aynı tutar ama başka hücresi farklı satır (Lale Ak 2.000 Kasım) ikinci kez eklenecektir → önizlemede adıyla uyarı + onay; mevcut satırlar (Lale Ak, Mete Er) ve bağlı tahsilatları yerinde, yeni kişi eklenir.",
  "dayanak": "KARARLAR.md B3f (baş mimar kararı 23.10.2026 tablo bağ sürekliliği (1), (2), (4))",
  "bugun": "2026-06-17",
  "adimlar": [
@@ -14,7 +14,8 @@
      "tur": "serbest",
      "basliklar": [
       "Telefon",
-      "Tutar"
+      "Tutar",
+      "Açıklama"
      ],
      "kayitlar": [
       {
@@ -22,7 +23,8 @@
        "isim": "Kaan Uz",
        "hucreler": {
         "Telefon": "",
-        "Tutar": "1.000,00 ₺"
+        "Tutar": "1.000,00 ₺",
+        "Açıklama": "Ekim"
        }
       },
       {
@@ -30,7 +32,8 @@
        "isim": "Lale Ak",
        "hucreler": {
         "Telefon": "",
-        "Tutar": "2.000,00 ₺"
+        "Tutar": "2.000,00 ₺",
+        "Açıklama": "Ekim"
        }
       },
       {
@@ -38,7 +41,8 @@
        "isim": "Mete Er",
        "hucreler": {
         "Telefon": "",
-        "Tutar": "3.000,00 ₺"
+        "Tutar": "3.000,00 ₺",
+        "Açıklama": "Ekim"
        }
       }
      ],
@@ -75,7 +79,8 @@
      "tur": "serbest",
      "basliklar": [
       "Telefon",
-      "Tutar"
+      "Tutar",
+      "Açıklama"
      ],
      "kayitlar": [
       {
@@ -83,7 +88,8 @@
        "isim": "Kaan Uz",
        "hucreler": {
         "Telefon": "",
-        "Tutar": "1.000,00 ₺"
+        "Tutar": "1.000,00 ₺",
+        "Açıklama": "Ekim"
        },
        "dosya": "D-01"
       },
@@ -92,7 +98,8 @@
        "isim": "Lale Ak",
        "hucreler": {
         "Telefon": "",
-        "Tutar": "2.000,00 ₺"
+        "Tutar": "2.000,00 ₺",
+        "Açıklama": "Ekim"
        },
        "dosya": "D-02"
       },
@@ -101,7 +108,8 @@
        "isim": "Mete Er",
        "hucreler": {
         "Telefon": "",
-        "Tutar": "3.000,00 ₺"
+        "Tutar": "3.000,00 ₺",
+        "Açıklama": "Ekim"
        },
        "dosya": "D-03"
       }
@@ -122,7 +130,8 @@
      "tur": "serbest",
      "basliklar": [
       "Telefon",
-      "Tutar"
+      "Tutar",
+      "Açıklama"
      ],
      "kayitlar": [
       {
@@ -130,7 +139,8 @@
        "isim": "Kaan Uz",
        "hucreler": {
         "Telefon": "",
-        "Tutar": "1.000,00 ₺"
+        "Tutar": "1.000,00 ₺",
+        "Açıklama": "Ekim"
        }
       },
       {
@@ -138,7 +148,8 @@
        "isim": "Lale Ak",
        "hucreler": {
         "Telefon": "",
-        "Tutar": "2.000,00 ₺"
+        "Tutar": "2.000,00 ₺",
+        "Açıklama": "Ekim"
        }
       },
       {
@@ -146,7 +157,8 @@
        "isim": "Mete Er",
        "hucreler": {
         "Telefon": "",
-        "Tutar": "3.000,00 ₺"
+        "Tutar": "3.000,00 ₺",
+        "Açıklama": "Ekim"
        }
       }
      ],
@@ -169,7 +181,8 @@
      "tur": "serbest",
      "basliklar": [
       "Telefon",
-      "Tutar"
+      "Tutar",
+      "Açıklama"
      ],
      "kayitlar": [
       {
@@ -177,7 +190,17 @@
        "isim": "Kaan Uz",
        "hucreler": {
         "Telefon": "",
-        "Tutar": "1.000,00 ₺"
+        "Tutar": "1.000,00 ₺",
+        "Açıklama": "Ekim"
+       }
+      },
+      {
+       "no": "H6",
+       "isim": "Lale Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "2.000,00 ₺",
+        "Açıklama": "Kasım"
        }
       },
       {
@@ -185,7 +208,8 @@
        "isim": "Yeni Kişi",
        "hucreler": {
         "Telefon": "",
-        "Tutar": "999,00 ₺"
+        "Tutar": "999,00 ₺",
+        "Açıklama": "Kasım"
        }
       }
      ],

@@ -128,15 +128,27 @@ async function kos(senaryo) {
             P[`adim:${a.id}:onay`] = r.status !== 200;
             const adlar = new Set([...(ids.tabloAdlari || []), ...a.sekmeler.flatMap(sk => sk.kayitlar.map(kay => kay.isim))]);
             const metin = [];
+            // NETLEŞTİRME (3) (karar sahibi 23.10.2026): önizleme iki seçeneğin (merge = Devamı Olarak Ekle / replace = Yerine Koy) uyarılarını ayrı taşır; her seçeneğin
+            // uyarısı yalnız o seçeneğe göre okunur → HER derinlikte öbür seçeneğin adını taşıyan alt ağaç (ör. preview.<öbür>, bonds.<öbür>) ve preview altındaki örnek
+            // listeleri ("samples") okunmaz. Bağ önizlemesinde (bonds.<seçenek>) taşınacak bağların SAYISI (moved) uyarı değildir — yalnız adlar aranır.
+            const obur = mode === "merge" ? "replace" : "merge";
             const tara = (o, yol) => {
               if (typeof o === "string") metin.push(o);
               else if (Array.isArray(o)) o.forEach(x => tara(x, yol));
-              else if (o && typeof o === "object") for (const [k2, v] of Object.entries(o)) if (!(yol === "" && k2 === "mapping") && !(yol === "preview" && k2 === "samples")) tara(v, yol ? `${yol}.${k2}` : k2);
+              else if (o && typeof o === "object") {
+                for (const [k2, v] of Object.entries(o)) {
+                  if (yol === "" && k2 === "mapping") continue;
+                  if (k2 === obur) continue;
+                  if (yol.startsWith("preview") && k2 === "samples") continue;
+                  tara(v, yol ? `${yol}.${k2}` : k2);
+                }
+              }
             };
             tara(st.data, "");
             if (r.status !== 200) tara(r.data, "");
             P[`adim:${a.id}:uyariAdlari`] = [...adlar].filter(ad => metin.some(m => m.includes(ad))).sort();
-            ham[`adim:${a.id}:onizleme`] = { preview: st.data?.preview, schema: st.data?.schema, ilkCommit: { status: r.status, data: r.data } };
+            ham[`adim:${a.id}:onizleme`] = { stage: Object.fromEntries(Object.entries(st.data || {}).filter(([k2]) => k2 !== "mapping")), ilkCommit: { status: r.status, data: r.data },
+              adGecen: metin.filter(m => [...adlar].some(ad => m.includes(ad))).slice(0, 10) };
             if (r.status !== 200) {
               for (const ek of [{ confirm: true }, { confirmed: true }, { confirmUnmatched: true }, { acceptUnmatched: true }, { onay: true }, { force: true }]) {
                 const st2 = await sahne();
@@ -448,7 +460,9 @@ async function kos(senaryo) {
                 P[`${k}:rapor:${no}:borc`] = ids.genisRapor ? (gg ? kurus(gg.debit) : 0) : "okunamadı"; // /2 B3 (geniş dönem)
                 // C3 (23.10.2026): kişi gruplaması — dosya no'nun borçlu satırının bulunduğu rapor satır(lar)ındaki borçlu dosya no'lar; birden çok satırdaysa liste listesi
                 if (ids.genisRapor) {
-                  const keyNo = new Map(Object.entries(ids.anahtar).map(([n, a]) => [a, n]));
+                  // anahtar → kayıt no: İLK kayıt kazanır (Devamı olarak ekle'de içeriği aynı satır mevcut kaydın kendisidir; aynı anahtarı taşır — NETLEŞTİRME (1))
+                  const keyNo = new Map();
+                  for (const [n, a2] of Object.entries(ids.anahtar)) if (!keyNo.has(a2)) keyNo.set(a2, n);
                   const gruplar = ids.genisRapor.groups.filter(gr => gr.lines.some(l => l.key === anahtar && kurus(l.borc) > 0))
                     .map(gr => [...new Set(gr.lines.filter(l => kurus(l.borc) > 0).map(l => keyNo.get(l.key) ?? `?${l.key}`))].sort());
                   P[`${k}:rapor:${no}:grup`] = gruplar.length === 1 ? gruplar[0] : gruplar;

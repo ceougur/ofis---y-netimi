@@ -70,6 +70,9 @@ MUTASYONLAR = {
     41: "Güvenli eşleşme yokken uyarı ve onay yok (sessiz)",
     42: "Aynı kişi değeri birden çok satırdayken aynı konum eşleşmesi yok",
     43: "Devamı olarak ekle aynı kişi + aynı tutar satırını söylemez, onay istemez",
+    # /2 NETLEŞTİRME (karar sahibi, 23.10.2026): içeriği tamamen aynı satır mevcut kaydın kendisidir
+    44: "İçeriği aynı satır yer değişince (aynı adlı iki satırın yer değiştirmesi) eşleşmez — onay ister",
+    45: "Devamı olarak ekle içeriği tamamen aynı satırı ikinci kez ekler ve onay ister",
 }
 
 
@@ -155,6 +158,8 @@ def sutun_sinifi(baslik, hucreler=()):
     dolu = [h for h in hucreler if str(h or "").strip()]
     if dolu and all(tarih_mi(h) for h in dolu):
         return None
+    if dolu and not any(_sayi_mi(h) for h in dolu):
+        return None  # [YAYGIN] değerleri sayı olmayan metin sütunu ("Açıklama": "Ekim") tutar değildir
     w = kelimeler(baslik)
     if "%" in str(baslik) or any(x in TUTAR_DISI or x in TUTAR_DISI_EK for x in w):
         return None
@@ -171,6 +176,13 @@ def sutun_sinifi(baslik, hucreler=()):
     if any(x.startswith(("toplam", "tutar", "ödenecek", "borç", "alacak")) for x in w):
         return "toplam"
     return "tutar"
+
+
+def _sayi_mi(metin):
+    try:
+        return hucre_kurus(metin) is not None
+    except (ValueError, TypeError):
+        return False
 
 
 def hucre_kurus(metin):
@@ -480,6 +492,7 @@ class Model:
             else:
                 bas, satirlar = None, [(r["no"], None) for r in sk["kayitlar"]]
             self.sekmeler.append({"ad": sk["ad"], "tur": sk["tur"], "basliklar": bas, "satirlar": satirlar, "adlar": [r["isim"] for r in sk["kayitlar"]],
+                                  "dosyalar": [None if (sk.get("ilk") and len(sk["ilk"]) == 1) else r.get("dosya", r["no"]) for r in sk["kayitlar"]],
                                   "telefon": [str((r.get("hucreler") or {}).get("Telefon") or r.get("tel") or "").strip() for r in sk["kayitlar"]]})
             kimlik_sutun = [h for h in (sk.get("basliklar") or []) if tr_kucuk(h) in KISI_KIMLIK_BASLIK] if sk["tur"] == "serbest" else []
             for r in sk["kayitlar"]:
@@ -518,7 +531,10 @@ class Model:
                 tel = (sk.get("telefon") or [""] * (i + 1))[i]
                 kim = next((str((c or {}).get(h) or "").strip() for h in kim_sutun if kimlik_gecerli(str((c or {}).get(h) or "").strip())), "")
                 b = self.satir_borcu(sk, c) if sk["tur"] == "serbest" and sk["basliklar"] is not None else None
-                out.append({"sekme": sk["ad"], "sira": i, "ref": no, "ad": ad, "kd": (ad, tel or kim or None), "borc": b})
+                # NETLEŞTİRME (1): içerik = tabloya yazılan bütün hücreler (Dosya No, ad, öbür hücreler; boş hücre yok sayılır)
+                dosya = (sk.get("dosyalar") or [None] * (i + 1))[i]
+                icerik = (dosya, ad, tuple(sorted((k, str(v).strip()) for k, v in (c or {}).items() if str(v).strip())))
+                out.append({"sekme": sk["ad"], "sira": i, "ref": no, "ad": ad, "kd": (ad, tel or kim or None), "borc": b, "icerik": icerik})
         return out
 
     def bag_surekliligi(self, a, eski, eski_sekme, eski_kayit):
@@ -529,6 +545,16 @@ class Model:
         olarak ekle mevcut kayıtlarla aynı kişi + aynı tutar görünen satırları önizlemede söyler ve onay ister. Denetimler `adim:<id>:onay`, `adim:<id>:uyariAdlari`."""
         if a.get("mod") == "devam":
             yeni = self.satir_listesi()
+            # NETLEŞTİRME (1)/(2): içeriği tamamen aynı satır mevcut kaydın kendisidir — yeni kayıt açılmaz, onay/uyarı yok (mutant 45: ikinci kez eklenir + uyarı)
+            ayni = {y["ref"] for y in yeni if any(e["icerik"] == y["icerik"] for e in eski)} if self.mut != 45 else set()
+            for sk in self.sekmeler:
+                tut = [i for i, (no, _) in enumerate(sk["satirlar"]) if no not in ayni]
+                for alan in ("satirlar", "adlar", "telefon", "dosyalar"):
+                    if alan in sk:
+                        sk[alan] = [sk[alan][i] for i in tut]
+            for no in ayni:
+                self.kayitlar.pop(no, None)
+            yeni = [y for y in yeni if y["ref"] not in ayni]
             self.sekmeler = eski_sekme + self.sekmeler
             birlesik = dict(eski_kayit)
             for no, kay in self.kayitlar.items():
@@ -537,7 +563,10 @@ class Model:
                 else:
                     birlesik[no] = kay
             self.kayitlar = birlesik
-            cift = sorted({y["ad"] for y in yeni if y["borc"] is not None and any(e["kd"] == y["kd"] and e["borc"] == y["borc"] for e in eski)})
+            # (2): uyarı, aynı kişi + aynı tutar ama başka hücresi farklı (ikinci kez eklenecek) satır için
+            cift = sorted({y["ad"] for y in yeni if y["borc"] is not None and any(e["kd"] == y["kd"] and e["borc"] == y["borc"] and e["icerik"] != y["icerik"] for e in eski)})
+            if self.mut == 45:
+                cift = sorted({y["ad"] for y in yeni if y["borc"] is not None and any(e["kd"] == y["kd"] and e["borc"] == y["borc"] for e in eski)})
             if self.mut == 43:
                 cift = []
             self.belirsiz_adlar |= set(cift)
@@ -552,7 +581,11 @@ class Model:
             if er is None:
                 continue  # tablo dışı kayıt (ör. taksit kartı anahtarı) — bu kuralın konusu değil
             hedef = None
-            if self.mut != 40:
+            ayni_icerik = [y for y in yeni if y["icerik"] == er["icerik"]] if self.mut not in (40, 44) else []
+            if ayni_icerik:
+                # NETLEŞTİRME (1): içeriği tamamen aynı satır mevcut kaydın kendisidir (yalnız yeri değişse de) — bağ yerinde, onay yok
+                hedef = next((y for y in ayni_icerik if y["sekme"] == er["sekme"] and y["sira"] == er["sira"]), ayni_icerik[0])["ref"]
+            elif self.mut != 40:
                 ayni_eski = [e for e in eski if e["kd"] == er["kd"]]
                 ayni_yeni = [y for y in yeni if y["kd"] == er["kd"]]
                 if len(ayni_eski) == 1 and len(ayni_yeni) == 1:

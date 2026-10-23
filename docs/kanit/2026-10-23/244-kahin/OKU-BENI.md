@@ -99,3 +99,15 @@ ve cari bağını koparıyor (b3g k2: Nur Ak 50, Oya Er 60, Can Su 30, Deniz Ay 
 özeti; Dosya No kolonu eklenince de kopuyor (b3h k2); aynı içerik geri yüklenince bağ geri görünüyor (b3h k3 — veri silinmemiş); (2) hiçbir yüklemede uyarı ya da onay yok
 (b3g t3 "Ali Veli", t4 "Oya Er"/"Deniz Ay"; b3h t4 "Kaan Uz" çift satırı) — commit onaysız 200; (3) Devamı olarak ekle (merge) mevcut 2. satırı (Lale Ak, tahsilatı 200)
 yeni dosyanın 2. satırıyla (Yeni Kişi) değiştiriyor — Lale Ak raporda yok; (4) b3f k4 (geçersiz değer silinince tahsilat kopuyor) aynı bulgunun parçası.
+
+### Tur 6 ek — NETLEŞTİRME (aynı içerik = mevcut kayıt; Devam uyarısı; seçeneğe göre uyarı) — ADAY 17 (e5fc407)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| aday17-cari-bag-netlestirme | 19 senaryo (b3g v2'de aynı adlı satırın tutarı değişir — konum eşleşmesi; v3 ters sıra — aynı içerik; b3h "Açıklama" sütunu, Devam'da aynı içerikli Kaan Uz + başka hücresi farklı Lale Ak) + 45 mutant, ADAY 17 kodunda | 2 fark (BULGU 2) · 0 okuma hatası · 0 yakalanmayan mutasyon |
+
+İki farkın nedeni TEK (ham çıktı, ders 38): b3h t4 Devamı olarak ekle — "Lale Ak" (aynı kişi + aynı tutar 2.000, Açıklama Ekim → Kasım) için önizlemede uyarı ve onay yok
+(`bonds.merge.samePerson` 0); program bu satırı İKİNCİ KAYIT değil, mevcut Lale Ak kaydının GÜNCELLEMESİ sayıyor (`preview.merge.updated` 1, bağ taşındı, rapor Lale Ak 2.000 /
+alacak 200). Kâhin kararın "(yani ikinci kez eklenecek)" ifadesine göre uyarı + onay bekliyor — Devamı olarak ekle'nin aynı kişili satırı güncellemesi karar sahibince teyit
+edilmeli. Ara kâhin hataları (düzeltildi): koşucu uyarı adlarını öbür seçeneğin `bonds.merge.duplicates`'ından okuyordu (NETLEŞTİRME (3)); Devam'da aynı içerikli satır aynı
+anahtarı taşıdığı için grup eşlemesi son kaydı seçiyordu (ilk kayıt kazanır).
