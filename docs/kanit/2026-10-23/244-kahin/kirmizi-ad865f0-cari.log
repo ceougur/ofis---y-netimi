@@ -1,0 +1,19 @@
+b3-u2-tablo-borcu: 23/27 tuttu
+  ✗ [BULGU KULLANICI] k1:nakit:kasaGiris: program 0 · kâhin 120000 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))
+  ✗ [İNCELE AJAN] k1:rapor:2026/105:borc: program 1200 · kâhin 800000 (B3 U2/E2/E3 dosya no başına tek kaynak (Kalan → borç başlıklı → tek tutar; söz borç dışı))
+  ✗ [İNCELE AJAN] k1:rapor:2026/106:borc: program 700000 · kâhin 400000 (B3 U2/E2/E3 dosya no başına tek kaynak (Kalan → borç başlıklı → tek tutar; söz borç dışı))
+  ✗ [İNCELE AJAN] k1:rapor:2026/107:borc: program 150300 · kâhin 150000 (B3 U2/E2/E3 dosya no başına tek kaynak (Kalan → borç başlıklı → tek tutar; söz borç dışı))
+b5-u1-nihai-tuketici: 24/34 tuttu
+  ✗ [BULGU KULLANICI] adim:n1:olusturuldu: program false · kâhin true (B5 U1 uygun cari yoksa yeni açılır)
+  ✗ [BULGU KULLANICI] adim:n1:secilen: program "A1" · kâhin "@nt1" (B5 U1 Nihai Tüketici yalnız işaretli/uygun cari)
+  ✗ [BULGU KULLANICI] adim:n2:secilen: program "A1" · kâhin "@nt1" (B5 U1 Nihai Tüketici yalnız işaretli/uygun cari)
+  ✗ [BULGU KULLANICI] adim:n3:secilen: program "A1" · kâhin "@nt1" (B5 U1 Nihai Tüketici yalnız işaretli/uygun cari)
+  ✗ [İNCELE AJAN] adim:n4:secilen: program "A1" · kâhin "A2" (B5 U1 Nihai Tüketici yalnız işaretli/uygun cari)
+  ✗ [İNCELE AJAN] adim:n5:olusturuldu: program false · kâhin true (B5 U1 uygun cari yoksa yeni açılır)
+  ✗ [İNCELE AJAN] adim:n5:secilen: program "A1" · kâhin "@nt2" (B5 U1 Nihai Tüketici yalnız işaretli/uygun cari)
+  ✗ [BULGU PLAN] adim:r1:durum: program "ret" · kâhin "ok" (adım kabul edilir) · yanıt:  Cari bulunamadı. Silinmiş olabilir.
+  ✗ [BULGU PLAN] k1:cari:@nt1:bakiye: program "okunamadı" · kâhin 0 (B1.1/B2.7 bakiye = borçlar − alacaklar)
+  ✗ [BULGU PLAN] k1:cari:@nt2:bakiye: program "okunamadı" · kâhin 0 (B1.1/B2.7 bakiye = borçlar − alacaklar)
+
+ÖZET: 2 senaryo, 61 denetim, 14 fark (BULGU 8), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-244/kanit-kirmizi-cari
+47/61 denetim geçti

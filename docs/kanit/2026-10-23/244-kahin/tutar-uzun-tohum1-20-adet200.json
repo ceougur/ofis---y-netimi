@@ -1,0 +1,43 @@
+{
+  "ad": "244-kahin/tutar-uzun-tohum1-20-adet200",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/tutar/kos.mjs --tohum 1-20 --adet 200 --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-244/kanit-tutar-uzun",
+  "commit": "7123816fa43f717621b2fc399383e171ffe8d7c7",
+  "dal": "is/kahin-244",
+  "kirli": 0,
+  "izlenmeyen": 22,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T01:09:32.087Z",
+  "sure_sn": 108.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 83069,
+    "gecen": 83067,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU GIB] s053:kayit:durum: program \"ok\" · kâhin \"ret\" (A6 30.000 TL üstü nihai tüketici)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU GIB] s037:kayit:durum: program \"ok\" · kâhin \"ret\" (A6 30.000 TL üstü nihai tüketici)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-23/244-kahin/tutar-uzun-tohum1-20-adet200.log",
+  "klasor": "/home/user/wt/kahin-244",
+  "ham_cikti_sha256": "3106080fc7c8c6654815718baa38d6284359f729bd08c1e38616b8c18ebfceaa",
+  "ham_cikti_bayt": 1688
+}
