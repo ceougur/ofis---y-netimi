@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""e-Belge kâhini — fark: model.py (temiz oda) ↔ program (kosucu.mjs) + değişmezler + küçültme. Dil `destekofis-ebelge/2` (/1 senaryoları da).
+"""e-Belge kâhini — fark: model.py (temiz oda) ↔ program (kosucu.mjs) + değişmezler + küçültme. Dil `destekofis-ebelge/3` (/1 ve /2 senaryoları da).
 
 Kullanım (depo kökünden):
   python3 test/bagimsiz/ebelge/fark.py --tohum 1 --islem 100 [--kucult] [--butce 40] [--cikti <klasör>]
@@ -24,6 +24,9 @@ Ne yapar:
        e-Fatura VKN alıcısında vergi dairesi dolu, 30.000 TL üstü e-Arşivde 11111111111 yok (K36) · I22 EDM'de iptal yalnız iletimden (EDM'nin kabul günü)
        sonraki 8 gün içinde; e-Fatura EDM'de iptal edilmez (K22, K23) · I23 ön hesap (calc) engel/alıcı sorunu söylüyor ⇔ kayıt reddediyor, iletiler aynı
        (K37; --ux15 acik) · I24 Seçilenleri Gönder sorusu (409) gönderimden ÖNCE: o istekte EDM denemesi ve numara değişimi yok (K33).
+       /3: I1/I2 seri GEÇMİŞİ üzerinden (bir kez görülmüş her numara — Silinenler'deki ve emekli dahil — K38) · I26 bir numara bir kez, tek belgeye verilir
+       (başka belgede bir daha görünmez; E6, 22.10 kararı) · I25 Sonucu Belirsiz ve EDM'de olan belge için yeniden EDM'ye gönderim denemesi yok (E1 [AJAN]) ·
+       I8 ek: Silinenler'deki belge EDM'ye gitmez (K39).
   4. MODEL FARKI (adım adım, "kilit adım"): model her adımdan önce programın gözlenen durumuna eşitlenir (numara, gönderim, iptal,
      liste, cari işareti, bekleyen arıza), adımı kendi kurallarıyla uygular; olası dünyalardan (çatal) gözleme en yakını seçilir ve kalan
      alan farkları yazılır: belge başına var / numara / edm / gonderildi / iptal / bekleyen + yanıt sınıfı (2xx/4xx). Böylece her fark
@@ -51,7 +54,7 @@ import uretici  # noqa: E402
 SENT = {"sent", "processing", "cancelled", "delivered", "accepted", "approved", "rejected", "succeed"}
 NOT_SENT = {"waiting", "error", "withdrawn", "none", "", "unsent", "draft"}
 TUR_ISLEMLERI = {"tumunu_gonder", "esz_tumunu_gonder", "tur_sirasinda_sil"}
-ALANLAR = ("var", "numara", "edm", "gonderildi", "iptal", "bekleyen", "edm_iptal")
+ALANLAR = ("var", "numara", "edm", "gonderildi", "iptal", "bekleyen", "edm_iptal", "cop")
 E_SERILER = ("TEF", "TEA", "TES")
 
 
@@ -124,7 +127,8 @@ def gozlem_goruntu(adim_kaydi, edm_kabul, edm_iptal=frozenset()):
     g = {}
     for ad, b in adim_kaydi["gozlem"].items():
         g[ad] = {"var": True, "numara": b["numara"], "edm": b["ettn"] in edm_kabul, "gonderildi": gonderildi_mi(b["eStatus"]),
-                 "iptal": b["durum"] == "cancelled", "bekleyen": b["bekleyen"], "tarih": b["tarih"], "tur": tur_bul(b), "edm_iptal": b["ettn"] in edm_iptal}
+                 "iptal": b["durum"] == "cancelled", "bekleyen": b["bekleyen"], "tarih": b["tarih"], "tur": tur_bul(b), "edm_iptal": b["ettn"] in edm_iptal,
+                 "cop": bool(b.get("cop"))}
     return g
 
 
@@ -156,7 +160,7 @@ def alan_farki(beklenen, gozlenen):
     return fark
 
 
-def esitle(d, kayit, edm_kabul, senaryo_cari, edm_iptal=frozenset(), iletim_gun=None, deneme_gun=None, senaryo_tutar=None):
+def esitle(d, kayit, edm_kabul, senaryo_cari, edm_iptal=frozenset(), iletim_gun=None, deneme_gun=None, senaryo_tutar=None, emekli=None):
     """Model dünyasını programın gözlenen durumuna eşitler (kilit adım). /2: iletim günü (ETTN'i EDM'nin İLK kabul ettiği adımın günü), son gönderim
     girişimi günü (vekilin gördüğü son SendInvoice/SendSMM; EDM'nin açık reddi — geçici hata — sayılmaz), belirsizlik ve EDM'de iptal gözlemden."""
     iletim_gun = iletim_gun or {}
@@ -180,12 +184,15 @@ def esitle(d, kayit, edm_kabul, senaryo_cari, edm_iptal=frozenset(), iletim_gun=
         x.update({"var": True, "numara": b["numara"], "tarih": b["tarih"], "tur": tur_bul(b), "edm": b["ettn"] in edm_kabul,
                   "prog": prog if prog is not M.B else True, "iptal": b["durum"] == "cancelled", "silindi": b["eStatus"] == "withdrawn",
                   "hata": b["eStatus"] == "error", "belirsiz": belirsiz_mi(b), "edm_iptal": b["ettn"] in edm_iptal,
-                  "engel_bilinen": b["eBlocked"] if b.get("eBlocked") is not None else x.get("engel_bilinen", False)})
+                  "engel_bilinen": b["eBlocked"] if b.get("eBlocked") is not None else x.get("engel_bilinen", False), "cop": bool(b.get("cop"))})
         x["iletim"] = iletim_gun.get(b["ettn"])
         x["deneme"] = deneme_gun.get(b["ettn"])
     for ad, x in d.belgeler.items():
         if ad not in gor:
             d.belgeler[ad] = {"ad": ad, "var": False}
+    # K38: verilmiş ama artık hiçbir belgede (Silinenler dahil) durmayan kâğıt numaraları — programın gözlenen GEÇMİŞİNDEN (Degismez.numara_gecmis).
+    if emekli is not None:
+        d.emekli = dict(emekli)
 
 
 # ---- değişmezler ---------------------------------------------------------------------------------------------------
@@ -202,6 +209,14 @@ class Degismez:
         self.silinmis = set()  # ad (önceki adımda listeden silinmiş görülen)
         self.gorulen = {}
         self.fis_sira_bozuk = False
+        self.numara_gecmis = {}  # /3 K38: numara → {"ad", "tarih"} (bir kez görülmüş her numara; tarih: numarayı taşıdığı son gözlem)
+        self.onceki_belirsiz = set()  # /3 I25: önceki adımda Sonucu Belirsiz görülen belgelerin ETTN'leri
+        self.onceki_cop = set()  # /3 I8: önceki adımda Silinenler'de görülen belgeler
+
+    def emekli(self, kayit):
+        """K38: geçmişte görülmüş, şimdi hiçbir belgede (Silinenler dahil) durmayan kâğıt numaraları → tarih."""
+        simdi = {b["numara"] for b in kayit["gozlem"].values() if b["numara"]}
+        return {n: v["tarih"] for n, v in self.numara_gecmis.items() if n not in simdi and n[:3] in M.KAGIT_SERILER}
 
     def denetle(self, adim, kayit, denemeler, cariler_tur):
         ihlal = []
@@ -215,6 +230,7 @@ class Degismez:
             ihlal.append(x)
         g = kayit["gozlem"]
         ettn_ad = {b["ettn"]: ad for ad, b in g.items()}
+        onceki_kabul = set(self.kabul_sayisi)  # I25: EDM'nin bu adımdan ÖNCE kabul ettikleri
         for k in kayit["edm"]["kabul"]:
             self.kabul_gun.setdefault(k["uuid"], kayit["bugun"])
             self.kabul_sayisi[k["uuid"]] = self.kabul_sayisi.get(k["uuid"], 0) + 1
@@ -260,6 +276,11 @@ class Degismez:
                     ek("I6", f"{ad}: {b['tarih']} tarihli belge {p[1]} yılı numarasıyla gitti ({dn['id']})", belge=ad)
             if ad in self.iptal_edilmis:
                 ek("I8", f"{ad}: iptal edilmiş belge EDM'ye gönderildi ({dn['id']})", belge=ad)
+            if ad in self.onceki_cop:
+                ek("I8", f"{ad}: Silinenler'deki belge EDM'ye gönderildi ({dn['id']})", belge=ad)
+            if dn["uuid"] in self.onceki_belirsiz and dn["uuid"] in onceki_kabul and not dn.get("ariza"):
+                # I25 (E1 [AJAN] "yeniden Gönder önce EDM'ye sorar, ikinci kez göndermez"): Sonucu Belirsiz ve EDM'de zaten olan belge yeniden gönderildi.
+                ek("I25", f"{ad}: Sonucu Belirsiz ve EDM'de olan belge yeniden EDM'ye gönderildi ({dn['id']})", belge=ad)
             if ad in self.silinmis and adim["islem"] in TUR_ISLEMLERI:
                 ek("I8", f"{ad}: listeden silinmiş belge turda EDM'ye gönderildi ({dn['id']})", belge=ad)
         if adim["islem"] == "tur_sirasinda_sil" and adim.get("belge") in g:
@@ -267,8 +288,7 @@ class Degismez:
             b = g[adim["belge"]]
             if y.get("status", 0) // 100 == 2 and (b["ettn"] in self.kabul_sayisi):
                 ek("I8", f"{adim['belge']}: tur sürerken Listeden Sil kabul edildi ama belge EDM'ye gitti", belge=adim["belge"])
-        # I1 / I2 / I12 / I13
-        seriler = {}
+        # I1 / I2 / I12 / I13 / I26 — /3: I1 ve I2 seri GEÇMİŞİ üzerinden (K38: silinen, emekli numara serbest kalmaz; boşluk değildir)
         gorulen = {}
         for ad, b in g.items():
             if not b["numara"]:
@@ -282,7 +302,16 @@ class Degismez:
             gorulen[b["numara"]] = ad
             if str(p[1]) != b["tarih"][:4]:
                 ek("I12", f"{ad}: numara yılı {p[1]} ≠ belge tarihi {b['tarih']}", belge=ad)
-            seriler.setdefault((p[0], p[1]), []).append((p[2], b["tarih"], ad))
+            onceki = self.numara_gecmis.get(b["numara"])
+            if onceki and onceki["ad"] != ad:
+                # I26 (K38/E6; [KULLANICI] 22.10 "verilmiş kâğıt/fiş numarası bir daha kullanılmaz"): bir numara başka belgede yeniden görüldü.
+                ek("I26", f"{b['numara']} önce {onceki['ad']} belgesindeydi, şimdi {ad} belgesinde (numara yeniden verildi)", belge=ad)
+            else:
+                self.numara_gecmis[b["numara"]] = {"ad": ad, "tarih": b["tarih"]}
+        seriler = {}
+        for no_, v in self.numara_gecmis.items():
+            p = M.coz_numara(no_)
+            seriler.setdefault((p[0], p[1]), []).append((p[2], v["tarih"], v["ad"]))
         for (seri, yil), xs in sorted(seriler.items()):
             xs.sort()
             siralar = [x[0] for x in xs]
@@ -363,6 +392,8 @@ class Degismez:
                 if adim["islem"] == "esz_tumunu_gonder" and g[ad]["ettn"] not in arizali and s.get("kod") != "integrator-uncertain" and not s.get("ok") and g[ad]["ettn"] in self.kabul_id and gonderildi_mi(g[ad]["eStatus"]) is True:
                     ek("I15", f"{ad}: eşzamanlı turda gönderilen belge için hata yanıtı ({s.get('kod')})", belge=ad)
         # durum güncelle
+        self.onceki_belirsiz = {b["ettn"] for b in g.values() if belirsiz_mi(b)}
+        self.onceki_cop = {ad for ad, b in g.items() if b.get("cop")}
         for ad, b in g.items():
             if b["durum"] == "cancelled" and b["ettn"] not in self.kabul_id:
                 self.iptal_edilmis.add(ad)
@@ -375,7 +406,7 @@ class Degismez:
     def son(self, kayit):
         ihlal = []
         for ad, b in kayit["gozlem"].items():
-            if b["durum"] == "cancelled":
+            if b["durum"] == "cancelled" or b.get("cop"):
                 continue
             prog = gonderildi_mi(b["eStatus"])
             edm = b["ettn"] in self.kabul_id
@@ -510,7 +541,7 @@ def karsilastir(senaryo, p, ux15=True):
                     x["sinif"] = "BASKA-FIS-SIRA-ARDIL (FIS serisi önceden sıra-tarih bozuk; kâğıt kaydı son numaranın tarihine göre denetleniyor)"
                 elif adim["islem"] == "duzenle_tarih" and x.get("kod") == "chronology" and x["model"] == "2xx":
                     x["sinif"] = "BASKA-DUZENLE-SIRA (numarasız bekleyenin tarihi sıra-tarihi bozmadan değiştirilemiyor)"
-        esitle(d, kayit, edm_kabul, senaryo_cari, edm_iptal, iletim_gun, deneme_gun, senaryo_tutar)
+        esitle(d, kayit, edm_kabul, senaryo_cari, edm_iptal, iletim_gun, deneme_gun, senaryo_tutar, dg.emekli(kayit))
         d.notlar = []
         # saf model (eşitlemesiz; yalnız çatal seçimi gözleme göre)
         saf.adim(adim)
@@ -551,7 +582,7 @@ def _engelli_eski(once, b):
     """b'den eski tarihli, aynı seri+yılda numarasız bekleyen ve KALICI ENGELLİ belgeler (O1/O3 adayı)."""
     xs = []
     for x in once.belgeler.values():
-        if x is b or x.get("var") is not True or x["tur"] != b["tur"] or x["numara"] or x["iptal"] or x["silindi"] or x["prog"]:
+        if x is b or x.get("var") is not True or x["tur"] != b["tur"] or x["numara"] or x["iptal"] or x["silindi"] or x["prog"] or x.get("cop"):
             continue
         if once.seri_yil(x) != once.seri_yil(b) or x["tarih"] >= b["tarih"]:
             continue
@@ -751,7 +782,7 @@ def main():
     a.add_argument("--kucult", action="store_true")
     a.add_argument("--butce", type=int, default=40)
     a.add_argument("--cikti", default=os.path.join(BURASI, "cikti"))
-    a.add_argument("--dil", type=int, choices=(1, 2), default=2, help="üreteç dili (tohumlu senaryolar)")
+    a.add_argument("--dil", type=int, choices=(1, 2, 3), default=3, help="üreteç dili (tohumlu senaryolar)")
     a.add_argument("--ux15", choices=("acik", "kapali"), default="acik", help="K37 UX15 kuralları (madde 12); tabanda yokken kapali")
     x = a.parse_args()
     UX15[0] = x.ux15 == "acik"

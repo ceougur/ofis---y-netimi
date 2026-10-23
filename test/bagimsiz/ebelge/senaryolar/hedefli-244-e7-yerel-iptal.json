@@ -1,0 +1,214 @@
+{
+ "dil": "destekofis-ebelge/3",
+ "ad": "hedefli-244-e7-yerel-iptal",
+ "aciklama": "K41 (E7, 22.10): Yalnız Programda İptal yalnız sonucu belirsiz gönderimde — gönderilmiş e-Arşiv/e-SMM (süre içinde ve sonra), e-Fatura, numarasız bekleyen, Müşteri Fişi, kâğıt belge 409, belge değişmez, EDM'ye iptal gitmez; belirsiz e-Arşiv/e-SMM 8 gün içinde yalnız programda iptal edilir (EDM'de iptal yok); belirsiz e-Fatura ÇATAL (K41-EFATURA-BELIRSIZ-YEREL); sonra olağan İptal Et süre içinde EDM'de iptal eder",
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi",
+  "K6": "ilsiz_kisi",
+  "K7": "vdsiz_mukellef",
+  "K8": "nihai"
+ },
+ "adimlar": [
+  {
+   "islem": "kaydet",
+   "belge": "B1",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 1
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B2",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "belge_turu": "esmm",
+   "no": 2
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B3",
+   "cari": "K2",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 3
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B4",
+   "cari": "K2",
+   "tarih": "2026-06-17",
+   "gonder": "sonra",
+   "no": 4
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B5",
+   "cari": "K5",
+   "tarih": "2026-06-17",
+   "gonder": "sonra",
+   "no": 5
+  },
+  {
+   "islem": "listeden_sil",
+   "belge": "B5",
+   "no": 6
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B6",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "no": 7
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 2,
+   "no": 8
+  },
+  {
+   "islem": "iptal",
+   "belge": "B1",
+   "yerel": true,
+   "no": 9
+  },
+  {
+   "islem": "iptal",
+   "belge": "B2",
+   "yerel": true,
+   "no": 10
+  },
+  {
+   "islem": "iptal",
+   "belge": "B3",
+   "yerel": true,
+   "no": 11
+  },
+  {
+   "islem": "iptal",
+   "belge": "B4",
+   "yerel": true,
+   "no": 12
+  },
+  {
+   "islem": "iptal",
+   "belge": "B5",
+   "yerel": true,
+   "no": 13
+  },
+  {
+   "islem": "iptal",
+   "belge": "B6",
+   "yerel": true,
+   "no": 14
+  },
+  {
+   "islem": "ariza",
+   "tur": "kopma_sonra",
+   "no": 15
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B7",
+   "cari": "K1",
+   "tarih": "2026-06-19",
+   "gonder": "simdi",
+   "no": 16
+  },
+  {
+   "islem": "ariza",
+   "tur": "kopma_sonra",
+   "no": 17
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B8",
+   "cari": "K1",
+   "tarih": "2026-06-19",
+   "gonder": "simdi",
+   "belge_turu": "esmm",
+   "no": 18
+  },
+  {
+   "islem": "iptal",
+   "belge": "B4",
+   "no": 19
+  },
+  {
+   "islem": "ariza",
+   "tur": "kopma_sonra",
+   "no": 20
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B9",
+   "cari": "K2",
+   "tarih": "2026-06-19",
+   "gonder": "simdi",
+   "no": 21
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 3,
+   "no": 22
+  },
+  {
+   "islem": "iptal",
+   "belge": "B7",
+   "yerel": true,
+   "no": 23
+  },
+  {
+   "islem": "iptal",
+   "belge": "B8",
+   "yerel": true,
+   "no": 24
+  },
+  {
+   "islem": "iptal",
+   "belge": "B9",
+   "yerel": true,
+   "no": 25
+  },
+  {
+   "islem": "iptal",
+   "belge": "B1",
+   "no": 26
+  },
+  {
+   "islem": "iptal",
+   "belge": "B2",
+   "no": 27
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 7,
+   "no": 28
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B10",
+   "cari": "K5",
+   "tarih": "2026-06-29",
+   "gonder": "sonra",
+   "no": 29
+  },
+  {
+   "islem": "iptal",
+   "belge": "B10",
+   "yerel": true,
+   "no": 30
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 31
+  }
+ ]
+}

@@ -124,11 +124,86 @@ def _tur_gonder_silinen_tutar(d, adlar=None, sil=None):
     return [w for w, _, _ in dunyalar]
 
 
+def _birakilan_numarasiz(d, adim):
+    # K40 öncesi: bırakılan belge numarasız kalır
+    if adim["islem"] == "listeden_sil":
+        r = ORJ["uygula"](d, adim)
+        for w in r:
+            b = w.belgeler.get(adim["belge"])
+            if b and b.get("silindi") and b.get("numara", "")[:3] in M.KAGIT_SERILER:
+                b["numara"] = ""
+        return r
+    return None
+
+
+def _birakilan_makbuz_gonderilir(d, adim):
+    # K40: Kâğıt Makbuz Olarak Bırak'ılan makbuz kartından e-SMM olarak gider (kalıcı engel yok)
+    if adim["islem"] == "kart_gonder":
+        b = d.belgeler.get(adim["belge"])
+        if b and b.get("var") is True and b["tur"] == "esmm" and b["silindi"]:
+            b["silindi"] = False
+            b["numara"] = ""
+            return [w for w, _ in M.gonder(d, b["ad"])]
+    return None
+
+
+def _verilmis_copsuz(self):
+    # K38/K39: Silinenler'deki belgenin numarası serbest kalır
+    out = dict(self.emekli)
+    for x in self.belgeler.values():
+        if x["var"] is True and isinstance(x["numara"], str) and x["numara"] and not x.get("cop"):
+            out[x["numara"]] = x["tarih"]
+    return out
+
+
+def _yerel_iptal_gonderilmiste_serbest(d, b, kopya):
+    if b["prog"] is True and not b["iptal"]:
+        b["iptal"] = True
+        d.yanit = "2xx"
+        return [d]
+    return ORJ["yerel_iptal"](d, b, kopya)
+
+
+def _belirsiz_islemler_serbest(d, adim):
+    # K42: belirsiz belgede olağan İptal Et / Listeden Sil / Düzenle kabul
+    b = d.belgeler.get(adim.get("belge"))
+    if b and b.get("var") is True and d.belirsiz(b) and adim["islem"] in ("iptal", "listeden_sil", "duzenle_tarih") and not adim.get("yerel"):
+        if adim["islem"] == "iptal":
+            b["iptal"] = True
+        elif adim["islem"] == "listeden_sil":
+            b["silindi"] = True
+        else:
+            b["tarih"] = adim["tarih"]
+        d.yanit = "2xx"
+        return [d]
+    return None
+
+
+def _gonderilmis_silinir(d, adim):
+    if adim["islem"] == "sil":
+        b = d.belgeler.get(adim["belge"])
+        if b and b.get("var") is True and not b.get("cop") and b["prog"] is True:
+            b["cop"] = True
+            d.yanit = "2xx"
+            return [d]
+    return None
+
+
+def _bekleyen_copu_de(self, b):
+    if b["var"] is not True or b["tur"] == "kagit":
+        return False
+    if b["iptal"] or b["silindi"]:
+        return False
+    if b["prog"] is M.B:
+        return M.B
+    return not b["prog"]
+
+
 def _model_ux15_kapali(self, senaryo, ux15=True):
     ORJ["Model.__init__"](self, senaryo, ux15=False)
 
 
-ORJ = {"fis_engeli": D.fis_engeli, "gun_farki": D.gun_farki, "k33_eskiler": D.k33_eskiler, "alici_eksik": D.alici_eksik, "komsular": D.komsular,
+ORJ = {"yerel_iptal": M.yerel_iptal, "emekli_et": D.emekli_et, "verilmis": D.verilmis, "KAGIT_SERI": dict(M.KAGIT_SERI), "fis_engeli": D.fis_engeli, "gun_farki": D.gun_farki, "k33_eskiler": D.k33_eskiler, "alici_eksik": D.alici_eksik, "komsular": D.komsular,
        "iptal": M.iptal, "Model.__init__": M.Model.__init__, "tur_gonder": M.tur_gonder, "IPTAL_SURESI": M.IPTAL_SURESI, "SERI": dict(M.SERI), "gecici_engelli": D.gecici_engelli, "tutan": D.tutan, "engel": D.engel, "sira_listesi": D.sira_listesi, "son": D.son, "tarih_engeli": D.tarih_engeli,
        "seri_yil": D.seri_yil, "bekleyen": D.bekleyen, "uygula": M.uygula, "gonder": M.gonder, "numara": M.numara}
 
@@ -273,6 +348,16 @@ MUTANTLAR = [
     ("M33 UX15 kuralları yok (K37 R1/R2)", lambda: setattr(M.Model, "__init__", _model_ux15_kapali)),
     ("M34 R2 komşu denetimi yok (K37)", lambda: setattr(D, "komsular", lambda self, b: (None, None))),
     ("M35 tur sürerken silinen belge tur bitene dek seriyi bekletir (A7, K15/K9)", lambda: setattr(M, "tur_gonder", _tur_gonder_silinen_tutar)),
+    # /3 (2.4.4 31a tur 2)
+    ("M36 bırakılan belge numarasız kalır (K40)", lambda: setattr(M, "uygula", _uygula_sarmali(_birakilan_numarasiz))),
+    ("M37 makbuz FIS serisinden bırakılır (K40)", lambda: M.KAGIT_SERI.clear()),
+    ("M38 emekli Müşteri Fişi numarası unutulur (K38)", lambda: setattr(D, "emekli_et", lambda self, b: None)),
+    ("M39 silinen belgenin numarası serbest kalır (K38/K39)", lambda: setattr(D, "verilmis", _verilmis_copsuz)),
+    ("M40 bırakılan makbuz e-SMM olarak gönderilir (K40)", lambda: setattr(M, "uygula", _uygula_sarmali(_birakilan_makbuz_gonderilir))),
+    ("M41 gönderilmiş belgede Yalnız Programda İptal serbest (K41)", lambda: setattr(M, "yerel_iptal", _yerel_iptal_gonderilmiste_serbest)),
+    ("M42 belirsiz belgede İptal/Listeden Sil/Düzenle serbest (K42)", lambda: setattr(M, "uygula", _uygula_sarmali(_belirsiz_islemler_serbest))),
+    ("M43 gönderilmiş belge silinir (K39)", lambda: setattr(M, "uygula", _uygula_sarmali(_gonderilmis_silinir))),
+    ("M44 Silinenler'deki belge bekleyen sayılır (K39)", lambda: setattr(D, "bekleyen", _bekleyen_copu_de)),
 ]
 
 
@@ -285,6 +370,9 @@ def geri_al():
     M.iptal, M.Model.__init__, M.IPTAL_SURESI, M.tur_gonder = ORJ["iptal"], ORJ["Model.__init__"], ORJ["IPTAL_SURESI"], ORJ["tur_gonder"]
     M.SERI.clear()
     M.SERI.update(ORJ["SERI"])
+    M.yerel_iptal, D.emekli_et, D.verilmis = ORJ["yerel_iptal"], ORJ["emekli_et"], ORJ["verilmis"]
+    M.KAGIT_SERI.clear()
+    M.KAGIT_SERI.update(ORJ["KAGIT_SERI"])
 
 
 def kos():

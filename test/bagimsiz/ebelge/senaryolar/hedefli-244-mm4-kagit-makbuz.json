@@ -1,0 +1,134 @@
+{
+ "dil": "destekofis-ebelge/3",
+ "ad": "hedefli-244-mm4-kagit-makbuz",
+ "aciklama": "K40 (MM4 alt kararı, 22.10): Kâğıt Makbuz Olarak Bırak → SMM serisi, sonra e-SMM GÖNDERİLEMEZ (kart da tur da); Müşteri Fişi Olarak Bırak → FIS, sonra e-Belge gönderilebilir ve FIS numarası emekli olur (K38: yeni fiş bir sonrakini alır, sıra-tarih tabanı emekli fişi de sayar); seriler bağımsız; SMM serisinde de sıra-tarih (K6 kâğıt seride de; K31 benzeri — [AJAN] dayanaklı değil, kural kâhinin)",
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi",
+  "K6": "ilsiz_kisi",
+  "K7": "vdsiz_mukellef",
+  "K8": "nihai"
+ },
+ "adimlar": [
+  {
+   "islem": "kaydet",
+   "belge": "B1",
+   "cari": "K1",
+   "tarih": "2026-06-15",
+   "gonder": "sonra",
+   "belge_turu": "esmm",
+   "no": 1
+  },
+  {
+   "islem": "listeden_sil",
+   "belge": "B1",
+   "no": 2
+  },
+  {
+   "islem": "kart_gonder",
+   "belge": "B1",
+   "no": 3
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 4
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B2",
+   "cari": "K5",
+   "tarih": "2026-06-16",
+   "gonder": "simdi",
+   "belge_turu": "esmm",
+   "no": 5
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B3",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "sonra",
+   "belge_turu": "esmm",
+   "no": 6
+  },
+  {
+   "islem": "listeden_sil",
+   "belge": "B3",
+   "no": 7
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B4",
+   "cari": "K1",
+   "tarih": "2026-06-16",
+   "gonder": "sonra",
+   "no": 8
+  },
+  {
+   "islem": "listeden_sil",
+   "belge": "B4",
+   "no": 9
+  },
+  {
+   "islem": "kart_gonder",
+   "belge": "B4",
+   "no": 10
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B5",
+   "cari": "K1",
+   "tarih": "2026-06-15",
+   "no": 11
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B6",
+   "cari": "K1",
+   "tarih": "2026-06-16",
+   "no": 12
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B7",
+   "cari": "K5",
+   "tarih": "2026-06-17",
+   "gonder": "sonra",
+   "no": 13
+  },
+  {
+   "islem": "listeden_sil",
+   "belge": "B7",
+   "no": 14
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B8",
+   "cari": "K1",
+   "tarih": "2026-06-16",
+   "gonder": "sonra",
+   "belge_turu": "esmm",
+   "no": 15
+  },
+  {
+   "islem": "listeden_sil",
+   "belge": "B8",
+   "no": 16
+  },
+  {
+   "islem": "kart_gonder",
+   "belge": "B3",
+   "no": 17
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 18
+  }
+ ]
+}

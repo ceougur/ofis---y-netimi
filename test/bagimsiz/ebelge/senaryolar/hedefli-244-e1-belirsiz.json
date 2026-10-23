@@ -1,0 +1,151 @@
+{
+ "dil": "destekofis-ebelge/3",
+ "ad": "hedefli-244-e1-belirsiz",
+ "aciklama": "K42 (E1, 22.10): gönderim yanıtı kopunca belge Sonucu Belirsiz — Listeden Sil, Düzenle, Sil, olağan İptal Et 409, belge değişmez; yeniden Gönder EDM'de olanı ikinci kez göndermez (I25, [AJAN]), aynı numarayla 'gönderildi' olur; EDM'de olmayan aynı numarayla gider; ağ yokken numara verilmez (K12)",
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi",
+  "K6": "ilsiz_kisi",
+  "K7": "vdsiz_mukellef",
+  "K8": "nihai"
+ },
+ "adimlar": [
+  {
+   "islem": "ariza",
+   "tur": "kopma_sonra",
+   "no": 1
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B1",
+   "cari": "K1",
+   "tarih": "2026-06-16",
+   "gonder": "simdi",
+   "no": 2
+  },
+  {
+   "islem": "ariza",
+   "tur": "kopma_once",
+   "no": 3
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B2",
+   "cari": "K1",
+   "tarih": "2026-06-16",
+   "gonder": "simdi",
+   "belge_turu": "esmm",
+   "no": 4
+  },
+  {
+   "islem": "listeden_sil",
+   "belge": "B1",
+   "no": 5
+  },
+  {
+   "islem": "duzenle_tarih",
+   "belge": "B1",
+   "tarih": "2026-06-15",
+   "no": 6
+  },
+  {
+   "islem": "sil",
+   "belge": "B1",
+   "no": 7
+  },
+  {
+   "islem": "iptal",
+   "belge": "B1",
+   "no": 8
+  },
+  {
+   "islem": "listeden_sil",
+   "belge": "B2",
+   "no": 9
+  },
+  {
+   "islem": "sil",
+   "belge": "B2",
+   "no": 10
+  },
+  {
+   "islem": "iptal",
+   "belge": "B2",
+   "no": 11
+  },
+  {
+   "islem": "ariza",
+   "tur": "kopma_sonra",
+   "no": 12
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B3",
+   "cari": "K2",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 13
+  },
+  {
+   "islem": "iptal",
+   "belge": "B3",
+   "no": 14
+  },
+  {
+   "islem": "duzenle_tarih",
+   "belge": "B3",
+   "tarih": "2026-06-16",
+   "no": 15
+  },
+  {
+   "islem": "kart_gonder",
+   "belge": "B1",
+   "no": 16
+  },
+  {
+   "islem": "kart_gonder",
+   "belge": "B2",
+   "no": 17
+  },
+  {
+   "islem": "kart_gonder",
+   "belge": "B3",
+   "no": 18
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B4",
+   "cari": "K5",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 19
+  },
+  {
+   "islem": "ag",
+   "durum": "yok",
+   "no": 20
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B5",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 21
+  },
+  {
+   "islem": "ag",
+   "durum": "var",
+   "no": 22
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 23
+  }
+ ]
+}

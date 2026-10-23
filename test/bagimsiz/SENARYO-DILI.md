@@ -4,6 +4,18 @@ Dil sürümü: **`destekofis-senaryo/4`** · Yazıldığı gün: 10.10.2026 (sü
 Kapsam: 2.1.0 (Banka İlk Teslim) içinden, **döviz, POS ve ekstre/mutabakat HARİÇ** işlemler; sürüm 3 ile çek/senet portföyü ve Bankaya
 Tahsile Ver (plan §3.11a, §3.14), sürüm 4 ile **Şüpheli Ticari Alacaklar (plan §3.11b) ve K8 taksit kuralları (plan §3.10/3)** kapsama girdi.
 
+### 2.4.4 tur 2 kâhin kuralları (23.10.2026, iş listesi 31a — bu dilin dışındaki kâhinlere yönlendirme)
+
+Bu belgenin dili (`destekofis-bagimsiz`, banka/mutabakat) değişmedi. 2.4.4'ün ikinci kâhin turunda gelen kurallar kendi kâhinlerinde, kaynak etiketleriyle
+([KULLANICI] / [GİB] / [AJAN]) yazıldı; kural metinleri `docs/kanit/2026-10-23/244-kahin/KURALLAR-244-TUR2.md`:
+
+| Kural | Kâhin | Yer |
+|---|---|---|
+| E1/E4 Sonucu Belirsiz (Sil/Düzenle/İptal Et 409, yeniden gönderimde EDM'ye önce sor), E6 silinen kâğıt/fiş numarası, E7 Yalnız Programda İptal, MM4 alt kararı Kâğıt Makbuz | e-Belge (`destekofis-ebelge/3`) | test/bagimsiz/ebelge/KARARLAR.md K38–K42, I25/I26 |
+| U1 Nihai Tüketici, U2 (daraltılmış) + E2/E3 Tablodaki Kişiler borcu, MM6 Nakit Akışı Kasa | cari (`destekofis-cari/2`) | test/bagimsiz/cari/KARARLAR.md B3–B5 |
+| 31b-MM3 Stopaj ve Tevkifat Özeti iade tarafı, 31b-MM8 yevmiye aynı gün sırası | defter | test/bagimsiz/defter/kahin.py başlığı, senaryo.json F6R/F3R/TH0 |
+| MM10 stopaj belge toplamından, KDV kalem başına | tutar | test/bagimsiz/tutar/KARARLAR.md B3.6, çapa c11 |
+
 ### Sürüm 4 değişiklikleri (15.10.2026)
 
 Sürüm 3'teki kurallar aşağıdakiler dışında aynen geçerlidir. Sürüm 2 ve 3 senaryoları (`"dil": "destekofis-senaryo/2"` / `/3`)
