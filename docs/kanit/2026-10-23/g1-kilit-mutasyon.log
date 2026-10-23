@@ -1,0 +1,11 @@
+YAKALANDI · M1 kilit denetimi kaldırıldı · çıkış 1 · # fail 6 · ilk kırmızı: not ok 1 - kilitli tarihli kaydedilmiş belge (satış, peşin satış, alış, satıştan iade, iptal edilmiş, kilit günü) → 409 period-locked, öbür kollarla aynı ileti;
+YAKALANDI · M2 taslak istisnası kaldırıldı (taslak da reddedilir) · çıkış 1 · # fail 1 · ilk kırmızı: not ok 5 - kilitli tarihli TASLAK geri yüklenir (200, taslak); kilit izi taslağı saymaz
+YAKALANDI · M3 yanlış tarih (belge tarihi yerine bugün) · çıkış 1 · # fail 6 · ilk kırmızı: not ok 1 - kilitli tarihli kaydedilmiş belge (satış, peşin satış, alış, satıştan iade, iptal edilmiş, kilit günü) → 409 period-locked, öbür kollarla aynı ileti;
+YAKALANDI · M4 kilit, numara (kalıcı ret) denetiminden önce · çıkış 1 · # fail 1 · ilk kırmızı: not ok 6 - numarası başka belgede olan kilitli belge: önce kalıcı ret (invoice-number-taken), kilit iletisi değil
+YAKALANDI · M5 yalnız 'issued' denetlenir (iptal edilmiş/silinmiş belge kaçar) · çıkış 1 · # fail 6 · ilk kırmızı: not ok 1 - kilitli tarihli kaydedilmiş belge (satış, peşin satış, alış, satıştan iade, iptal edilmiş, kilit günü) → 409 period-locked, öbür kollarla aynı ileti;
+# tests 5
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
