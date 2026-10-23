@@ -151,12 +151,25 @@ def denetimler(girdi, program=None, mut=0):
             ilk = (a0["matrah"], rh(a0["matrah"] * s["kdv"], 100)) if iskonto else h.kalem(a0["fiyat"], s["kdv"], dahil)
             ekl = [h.kalem(kurus(e["fiyat"]), e["kdv"], dahil) for e in s.get("ekler", [])]
             toplam = sum(m + k for m, k in [ilk] + ekl)
-            if toplam > 3000000:
+            # A6 eşiğinin TABANI (23.10.2026, Uzun Doğrulama ölçeğinde yerel koşu tohum 5 s053 / tohum 11 s037): "vergiler dahil toplam" (matrah + KDV) mı,
+            # tahsil edilen / ödenecek (stopaj ve tevkifat düşülmüş) mı — kaynakta doğrulanamadı (CLAUDE.md: "30.000 TL nihai tüketici engeli değişmez (mevzuat
+            # doğrulanamadı; kullanıcının mali müşavirine sorulur)"; e-Belge KARARLAR K36 "KDV dahil mi DENENMEZ"). İki taban eşiğin iki yanına düşerse (yalnız
+            # nihai tüketiciye stopaj/tevkifat uygulanan — gerçekte olağan dışı — satırda) ÇATAL: kayıt sonucu denetlenmez, not yazılır (İNCELE).
+            kdv_top = sum(k for _, k in [ilk] + ekl)
+            kodlar = [s.get("tevkifat")] + [e.get("tevkifat") for e in s.get("ekler", [])]
+            tev_t = sum(h.tevkifat(k, c) for (_, k), c in zip([ilk] + ekl, kodlar))
+            odenecek_t = kurus(s["net"]) + kdv_top - tev_t
+            if toplam > 3000000 and odenecek_t <= 3000000:
+                d("%s:not:a6Tabani" % i, "catal", "CATAL", "A6 30.000 TL tabanı belirsiz: vergiler dahil toplam %d kuruş > eşik ≥ ödenecek %d kuruş — kayıt sonucu denetlenmez" % (toplam, odenecek_t))
+                if program is None or i not in program.get("satirlar", {}):
+                    continue
+            elif toplam > 3000000:
                 # GİB (KURALLAR-244 A6): nihai tüketicide 30.000 TL üstü belgede gerçek TCKN + ad + adres zorunlu; 11111111111 yazılamaz
                 d("%s:kayit:durum" % i, "ret", "GIB", "A6 30.000 TL üstü nihai tüketici")
                 continue
         d("%s:gfn:stopajOrani" % i, r, et_r, "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran")
-        d("%s:kayit:durum" % i, "ok", "AJAN", "B3 makbuz kaydedilir")
+        if ("%s:not:a6Tabani" % i) not in out:
+            d("%s:kayit:durum" % i, "ok", "AJAN", "B3 makbuz kaydedilir")
         d("%s:kayit:stopajOrani" % i, r, et_r, "B3.1")
         d("%s:kayit:netUcret" % i, kurus(s["net"]), "GIB", "B3.2 Net Ücret = Brüt − Stopaj = yazılan net")
         if not iskonto:

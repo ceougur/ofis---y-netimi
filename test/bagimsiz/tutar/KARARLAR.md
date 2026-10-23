@@ -40,7 +40,7 @@ Koşucu: `kos.mjs` · Komut: `node --disable-warning=ExperimentalWarning test/ba
 | B3.7 | KDV tevkifatı = yuvarla(KDV × pay/payda) kalem başına — **ÇATAL** kalem / belge düzeyi | GİB tek dalda, ÇATAL iki dalda |
 | B3.8 | Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla) | GİB (SMM "Net Tahsil Edilen") |
 | B3.9 | Netten Brüte ön hesabı (gross, stoppage, net, vat, withheld, payable) = kaydedilen makbuz | AJAN |
-| A6 | Nihai tüketici (11111111111) + 30.000 TL üstü toplam → kayıt reddedilir | GİB |
+| A6 | Nihai tüketici (11111111111) + 30.000 TL üstü toplam → kayıt reddedilir. **23.10.2026 ÇATAL (taban):** "vergiler dahil toplam" (matrah + KDV) eşiği aşıp ödenecek (stopaj ve tevkifat düşülmüş) aşmıyorsa kayıt sonucu denetlenmez, `:not:a6Tabani` yazılır — program bu satırlarda ödenecek tutarı esas alıyor (Uzun Doğrulama ölçeğinde yerel koşu tohum 5 s053, tohum 11 s037); kaynak doğrulanamadı (CLAUDE.md "30.000 TL nihai tüketici engeli … mevzuat doğrulanamadı; kullanıcının mali müşavirine sorulur") → İNCELE | GİB (taban ÇATAL) |
 | B4.1–4 | XML LegalMonetaryTotal: LineExtension = brüt; TaxExclusive = brüt − stopaj; TaxInclusive = KDV − tevkifat; Payable = Net Ücret + Tahsil Edilen KDV | EDM |
 | B4.5–7 | 0003 GV stopajı tutarı ve oranı; 0015 KDV toplamı; WithholdingTaxTotal = tevkifat | EDM |
 | B4.8 | Σ kalem LineExtensionAmount = belge | GİB/UBL |
