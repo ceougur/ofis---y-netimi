@@ -181,6 +181,8 @@ async function kos(senaryo) {
           // `ilk` sekmelerinin kayıtları (bu yüklemede gelenler + önceki yüklemelerden bilinenler — Devamı olarak ekle'de dosyada olmayan mevcut kayıtların anahtarı da
           // güncellemeyle değişebilir) anahtarı rapordan ADLA (aynı adlı birden çok satırda GİRDİ tutarıyla) çözülür; çözülemeyen kayıt `cozulemedi` (okunan değeri
           // "anahtar çözülemedi" yazılır — 0 sanılmaz, ders 4).
+          // güncel tablonun Dosya No'suz kayıtları: Yerine koy'da yalnız bu dosyanınkiler (silinen satırın kaydı tabloda değildir), Devamı olarak ekle'de mevcutlar + yeniler
+          if (a.mod !== "devam") ids.ilkKayit = a.sekmeler.some(x => x.ilk) ? {} : null;
           for (const sk of a.sekmeler.filter(x => x.ilk)) for (const kay of sk.kayitlar) (ids.ilkKayit ||= {})[kay.no] = kay;
           if (ids.ilkKayit) {
             const cozR = (await api("GET", "/api/workspace/reports/cari-ekstre?from=2000-01-01&to=2099-12-31")).data?.report;
@@ -199,6 +201,28 @@ async function kos(senaryo) {
               if (keys.length === 1) ids.anahtar[kay.no] = keys[0];
               else if (!satirdaVar(ids.anahtar[kay.no])) ids.cozulemedi.add(kay.no);
               ((ids.anahtarGecmis ||= {})[kay.no] ||= []).push(keys.length === 1 ? keys[0] : keys.length ? `belirsiz:${keys.length}` : "yok");
+            }
+            // İkinci geçiş: aynı ad + aynı GİRDİ tutarlı çözülemeyen kayıtlar raporda birbirinden ayırt edilemez (satırda başka alan yok) — yalnız sayıları tutuyorsa ve
+            // başka kayda ait olmayan anahtarlara sıralı atanır (kâhinin bütün denetimlerinde değiştirilebilirler: aynı ad, aynı borç; bağlı tahsilatı olan kayıtta YAPILMAZ).
+            const kurusTablo = kay => (kay.hucreler?.Tutar ? kurusOf(String(kay.hucreler.Tutar).replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", ".")) : null);
+            const sahipli = new Set(Object.entries(ids.anahtar).filter(([n]) => !ids.cozulemedi.has(n)).map(([, k2]) => k2));
+            const gruplar = {};
+            for (const n of ids.cozulemedi) {
+              const kay = ids.ilkKayit[n];
+              (gruplar[`${kay.isim}|${kurusTablo(kay)}`] ||= []).push(n);
+            }
+            for (const nos of Object.values(gruplar)) {
+              const kay = ids.ilkKayit[nos[0]];
+              const t = kurusTablo(kay);
+              if (nos.some(n => ids.odemeli?.has(n))) continue;
+              const aday = [...new Set((cozR?.groups || []).filter(g => g.cari === kay.isim || String(g.cari || "").startsWith(`${kay.isim} (`))
+                .flatMap(g => g.lines.filter(l => kurus(l.borc) === t).map(l => l.key)))].filter(k2 => !sahipli.has(k2)).sort();
+              if (aday.length !== nos.length) continue;
+              [...nos].sort().forEach((n, i) => {
+                ids.anahtar[n] = aday[i];
+                ids.cozulemedi.delete(n);
+                ids.anahtarGecmis[n].push(`degistirilebilir:${aday[i]}`);
+              });
             }
             ham[`tablo:${a.id}:anahtarlar`] = ids.anahtarGecmis;
           }
@@ -225,6 +249,7 @@ async function kos(senaryo) {
           break;
         }
         case "kayit_tahsilat": {
+          (ids.odemeli ||= new Set()).add(a.kayit);
           const r = await api("POST", `/api/workspace/cases/${encodeURIComponent(ids.anahtar[a.kayit] || a.kayit)}/payments`, { amount: tlMetin(kurusOf(a.tutar)), date: t, method: "cash" });
           durum(a, r);
           break;
@@ -465,7 +490,9 @@ async function kos(senaryo) {
                 const gg = ids.genisRapor?.groups?.find(gr => gr.lines.some(l => l.key === anahtar));
                 P[`${k}:rapor:${no}:borc`] = ids.genisRapor ? (gg ? kurus(gg.debit) : 0) : "okunamadı"; // /2 B3 (geniş dönem)
                 if (ids.cozulemedi?.has(no)) {
-                  for (const alan of ["borc", "alacak", "grup", "etiketKimlik", "ad", "gorunurVeyaNot"]) P[`${k}:rapor:${no}:${alan}`] = "anahtar çözülemedi";
+                  // çözülemeyen anahtar: denetimler OKUNAMADI (fark değil, okuma hatası — ders 4)
+                  for (const alan of ["borc", "alacak", "grup", "etiketKimlik", "ad", "gorunurVeyaNot"]) P[`${k}:rapor:${no}:${alan}`] = "OKUNAMADI";
+                  hatalar.push(`${k} ${no}: kayıt anahtarı çözülemedi (aynı ad + aynı tutarlı ayırt edilemeyen satırlar) — rapor denetimleri okunamadı`);
                   continue;
                 }
                 // C3 (23.10.2026): kişi gruplaması — dosya no'nun borçlu satırının bulunduğu rapor satır(lar)ındaki borçlu dosya no'lar; birden çok satırdaysa liste listesi
@@ -527,6 +554,7 @@ function karsilastir(beklenen, program) {
   for (const [anahtar, d] of Object.entries(beklenen.denetimler)) {
     toplam += 1;
     const p = program[anahtar];
+    if (p === "OKUNAMADI") continue; // okuma hatası olarak sayıldı (hatalar), fark değil
     // /2: ÇATAL beklenen ({ catal: [...] }) — kural birden çok değere izin veriyor (K2 hangi sekme; not sayımı)
     const tutar = d.b && typeof d.b === "object" && Array.isArray(d.b.catal) ? d.b.catal.some(x => esit(p, x)) : esit(p, d.b);
     if (!tutar) farklar.push({ anahtar, beklenen: d.b, program: p === undefined ? "okunamadı" : p, etiket: d.e, kural: d.k, sinif: BIRINCIL.has(d.e) ? "BULGU" : "İNCELE" });

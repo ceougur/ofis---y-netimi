@@ -1,0 +1,32 @@
+{
+  "ad": "244-kahin/aday17-cari-bag-netlestirme-3",
+  "komut": "node test/bagimsiz/cari/kos.mjs --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-244/k37-aday17",
+  "commit": "f0b897fc6f3f7a417fa23f3af63d3eb0e9863f1a",
+  "dal": "is/kahin-244",
+  "kirli": 3,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T09:21:48.238Z",
+  "sure_sn": 76.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 3201,
+    "gecen": 3201,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/244-kahin/aday17-cari-bag-netlestirme-3.log",
+  "klasor": "/home/user/wt/kahin-244",
+  "ham_cikti_sha256": "8cf2fbffa52a24343c163650d262bfe7453892661490215aa632b4055d8ae290",
+  "ham_cikti_bayt": 7611
+}

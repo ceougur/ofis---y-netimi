@@ -561,8 +561,11 @@ class Model:
                 if len(ae) == 1 and len(ay) == 1:
                     esles[y["ref"]] = ae[0]["ref"]
                     continue
+                # Karar (Mete Er, 23.10.2026): "aynı konum + aynı kişi" YALNIZ o kişi değeri sekmede iki tabloda da AYNI SAYIDA satırdayken geçerli; eklenen dosyada (ya da
+                # mevcut tabloda) sayı farklıysa eşleşme belirsiz → güvenli değil → yeni kayıt (+ aynı görünen uyarısı)
                 konum = next((e for e in eski if e["sekme"] == y["sekme"] and e["sira"] == y["sira"]), None)
-                if konum and konum["kd"] == y["kd"] and konum["ref"] not in esles.values():
+                if (konum and konum["kd"] == y["kd"] and konum["ref"] not in esles.values()
+                        and sum(1 for e in eski if e["sekme"] == y["sekme"] and e["kd"] == y["kd"]) == sum(1 for z in yeni if z["sekme"] == y["sekme"] and z["kd"] == y["kd"])):
                     esles[y["ref"]] = konum["ref"]
             # güncelleme: mevcut kaydın satırı yeni satırın hücrelerini alır (borç yeni satırdan); yeni satır sekmeden çıkar, yeni kayıt açılmaz
             yeni_hucre = {}
@@ -613,7 +616,9 @@ class Model:
                     hedef = ayni_yeni[0]["ref"]
                 elif self.mut != 42:
                     konum = next((y for y in yeni if y["sekme"] == er["sekme"] and y["sira"] == er["sira"]), None)
-                    if konum and konum["kd"] == er["kd"]:
+                    ayni_sayi = (sum(1 for e in eski if e["sekme"] == er["sekme"] and e["kd"] == er["kd"])
+                                 == sum(1 for y in yeni if y["sekme"] == er["sekme"] and y["kd"] == er["kd"]))  # karar (Mete Er): konum eşleşmesi yalnız aynı sayıda satırda
+                    if konum and konum["kd"] == er["kd"] and ayni_sayi:
                         hedef = konum["ref"]
             if hedef is not None:
                 if hedef != h:

@@ -124,3 +124,13 @@ görünen" sayıp onayla ikinci kez ekliyor (uyarı "2 satır … (Mete Er…)",
 (aynı ad + aynı tutarlı üç satırda anahtar çözülemedi). Lale Ak (güncelleme, uyarısız) ve Kaan Uz (aynı içerik) kurala uygun; b3i (aynı içerik, başka konum) kurala uygun.
 Ara kâhin hatası (düzeltildi): Devam'dan sonra dosyada olmayan mevcut kaydın (Lale Ak H2) eski anahtarı yenilenmiyordu (anahtar güncellemeyle değişti) → bütün bilinen kayıtlar
 yeniden çözülüyor.
+
+### Tur 6 ek 3 — karar (Mete Er): konum eşleşmesi yalnız aynı sayıda satırda — ADAY 17 (e5fc407)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| aday17-cari-bag-netlestirme-3 | 20 senaryo + 46 mutant, ADAY 17 kodunda (salt okunur) | 3201/3201 GEÇTİ · 0 fark · 0 okuma hatası · 0 yakalanmayan mutasyon |
+
+Kâhin düzeltmesi: "aynı konum + aynı kişi" eşleşmesi yalnız kişi değeri iki tabloda aynı sayıda satırdayken (b3h t4 Mete Er artık 3 satır 9.000 + uyarı + onay — programla
+aynı); aynı ad + aynı tutarlı ayırt edilemeyen yeni kayıtlar boştaki anahtarlara sıralı atanıyor (H7 → satir:3d86…, H8 → satir:fc59…); çözülemeyen kayıt okuma hatası
+sayılıyor; Yerine koy'da silinen satırın kaydı (b3g R6) artık güncel tablo dışında (ilk koşuda yanlış okuma hatası verdi — düzeltildi).
