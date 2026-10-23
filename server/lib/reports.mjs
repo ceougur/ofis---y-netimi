@@ -13,7 +13,7 @@
 // tablo biçimi (kolonlar + satırlar) da döner; PDF/Excel/yazdırma o tabloyu kullanır.
 import { primaryColumns } from "./insight/columns.mjs";
 import { isFlaggedRow, isTotalRow } from "./insight/cells.mjs";
-import { amountCandidates, debtByRecord, debtPlan, isNotAmountHeader, isPersonAttributeHeader, rowDebt, sparseDebtColumn } from "./insight/debt-column.mjs";
+import { amountCandidates, debtByRecord, debtPlan, isDebtColumnMissing, isNotAmountHeader, isPersonAttributeHeader, rowDebt, sparseDebtColumn } from "./insight/debt-column.mjs";
 import { foldText, isTckn, isVkn, parseAmount, parseDate } from "./insight/validators.mjs";
 import { fromCents, toCents } from "./money.mjs";
 
@@ -104,10 +104,12 @@ function recordLayout(analyses, fallback = null, rows = []) {
   const amountColumn = money && money !== debtColumn ? money : moneyColumns.find(column => column !== debtColumn) || money || null;
   const backbone = new Set([primary.person, primary.id, amountColumn, plan.remaining, plan.total, primary.deadline, primary.status, primary.phone].filter(Boolean));
   const columns = { cari: primary.person, id: primary.id, amount: amountColumn, debt: debtColumn, deadline: primary.deadline, status: primary.status, phone: primary.phone };
-  return { primary, byColumn, debtColumn, plan, amountColumn, backbone, columns };
+  // 31e tur 15 (Y1): tutar kolonu olmayan (söz de olmayan) sekmenin satırları borçsuz; raporda sekmeyi adlandıran not (tableNotes).
+  const missing = isDebtColumnMissing(plan, analyses.map(item => item.column));
+  return { primary, byColumn, debtColumn, plan, amountColumn, backbone, columns, missing };
 }
 
-function recordOf(row, { primary, byColumn, plan, amountColumn, backbone }, { session, sessionName, tabs }) {
+function recordOf(row, { primary, byColumn, plan, amountColumn, backbone, missing }, { session, sessionName, tabs }) {
   if (!row || !row.__hofKey || isTotalRow(row) || isFlaggedRow(row) || String(row.__hofKey).startsWith("free:")) return null;
   const cari = String(row[primary.person] ?? "").trim();
   const phone = primary.phone ? String(row[primary.phone] ?? "").trim() : "";
@@ -141,6 +143,7 @@ function recordOf(row, { primary, byColumn, plan, amountColumn, backbone }, { se
       ...(!plan.unresolved && plan.grossUnresolved && debt.amount === null ? { debtUnresolved: plan.grossUnresolved, debtUnresolvedEmpty: plan.remaining } : {}),
     }))(rowDebt(plan, column => parseAmount(row[column]))),
     ...(plan.unresolved ? { debtUnresolved: plan.unresolved } : {}),
+    ...(missing ? { debtMissing: true } : {}),
     deadline: dayOf(deadlineDate),
     deadlineText: primary.deadline ? String(row[primary.deadline] ?? "").trim() : "",
     status: primary.status ? String(row[primary.status] ?? "").trim() : "",
@@ -219,10 +222,13 @@ export function tableNotes({ split = [], overpaid = 0, unresolved = [] } = {}) {
   // 31e E2: borç kolonu seçilemeyen sekme notsuz düşmez.
   const unresolvedTabs = new Map();
   for (const record of unresolved) if (record?.debtUnresolved && !unresolvedTabs.has(record.tab || "")) unresolvedTabs.set(record.tab || "", { columns: record.debtUnresolved, empty: record.debtUnresolvedEmpty || "" });
+  // 31e tur 15 (Y1): tutar kolonu olmayan sekme de notsuz düşmez (isDebtColumnMissing).
+  const missingTabs = [...new Set(unresolved.filter(record => record?.debtMissing && !record.debtUnresolved).map(record => record.tab || ""))];
   for (const [tab, { columns, empty }] of unresolvedTabs) {
     if (empty) notes.push(`${tab ? `“${tab}” sekmesinde “${empty}” boş olan` : `“${empty}” boş olan`} satırların borç sütunu seçilemedi (${columns.join(", ")}): bu satırlar borç olarak sayılmadı. “${empty}” hücresini doldurun ya da tutar sütununun başlığını “Toplam Borç” ya da “Genel Toplam” yapın.`);
     else notes.push(`${tab ? `“${tab}” sekmesinde b` : "B"}orç sütunu seçilemedi (${columns.join(", ")}): bu satırlar borç olarak sayılmadı. Borç sütununun başlığını “Kalan Borç”, “Toplam Borç” ya da “Genel Toplam” yapın.`);
   }
+  for (const tab of missingTabs) notes.push(`${tab ? `“${tab}” sekmesinde b` : "B"}orç sütunu yok: bu satırlar borç olarak sayılmadı. Borç için “Kalan Borç”, “Toplam Borç” ya da “Tutar” başlıklı bir sütun ekleyin.`);
   if (split.length) {
     const tabs = [...new Set(split.flatMap(item => item.tabs.map(entry => entry.tab)).filter(Boolean))];
     const list = split.slice(0, 5).map(item => `${item.meta?.id || item.meta?.caseNo || item.key}${item.meta?.cari || item.meta?.person ? ` (${item.meta.cari || item.meta.person})` : ""}`).join(", ");
@@ -360,7 +366,7 @@ export function cariEkstre({ records, payments = [], filters = normalizeFilters(
     ],
     rows: out.flatMap(group => group.lines.map(line => ({ cari: group.cari, date: line.date, description: line.description, session: line.session, borc: line.borc, alacak: line.alacak, bakiye: line.bakiye, status: line.status, ...Object.fromEntries(columns.map(column => [`f:${column}`, line.fields[column] || ""])) }))),
   };
-  const notes = tableNotes({ split, overpaid: records.filter(record => record.overpaid && inTabs(record)).length, unresolved: records.filter(record => record.debtUnresolved && inTabs(record)) });
+  const notes = tableNotes({ split, overpaid: records.filter(record => record.overpaid && inTabs(record)).length, unresolved: records.filter(record => (record.debtUnresolved || record.debtMissing) && inTabs(record)) });
   return { kind: "cari-ekstre", generatedAt: now.toISOString(), groups: out, split, notes, totals: { debit: totalDebit, credit: totalCredit, balance: addMoney(totalDebit, -totalCredit), caris: out.length, crossMatched: out.filter(group => group.crossMatched).length }, table };
 }
 

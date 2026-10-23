@@ -164,7 +164,7 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
     // Sekme süzgecinde not yalnız seçili sekmelerin ikisinde (ya da daha çoğunda) borcu olan dosya no için (Tablodaki Kişiler ile aynı).
     const inTabs = tab => !filters.tabs.length || filters.tabs.includes(tab);
     const split = (data.split || []).map(item => ({ ...item, tabs: item.tabs.filter(entry => inTabs(entry.tab)) })).filter(item => item.tabs.length > 1);
-    if (kind !== "cari-ekstre") report = { ...report, notes: tableNotes({ split, overpaid: data.records.filter(record => record.overpaid && inTabs(record.tab)).length, unresolved: data.records.filter(record => record.debtUnresolved && inTabs(record.tab)) }) };
+    if (kind !== "cari-ekstre") report = { ...report, notes: tableNotes({ split, overpaid: data.records.filter(record => record.overpaid && inTabs(record.tab)).length, unresolved: data.records.filter(record => (record.debtUnresolved || record.debtMissing) && inTabs(record.tab)) }) };
     // 31e Y1: Kasa yetkisi yoksa Nakit Akışı'nın Kasa kolonları (giriş, çıkış, net, birikimli, beklenenle birlikte) ve toplamları yok; not söyler.
     if (kind === "nakit-akis" && !cashVisible) {
       const strip = row => Object.fromEntries(Object.entries(row).filter(([key]) => !CASH_COLUMNS.has(key)));

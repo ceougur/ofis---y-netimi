@@ -144,8 +144,19 @@ export function debtPlan(candidates, { sparse = null } = {}) {
   const choices = rest;
   const unresolved = !column && choices.length >= 2 ? choices : null;
   const grossUnresolved = remaining && !gross && choices.length >= 2 ? choices : null;
-  return { remaining, total, net, paid: net ? paid : null, amount, amountExpected: Boolean(amount && EXPECTED_AMOUNT_HEADER.test(header(amount))), column, unresolved, grossUnresolved };
+  // 31e tur 15: sekmede tutar kolonu HİÇ yok (yalnız kişi / telefon / tarih kolonları; seyrek borç kolonu da yok) — isDebtColumnMissing.
+  const noAmount = !list.length && !sparse;
+  return { remaining, total, net, paid: net ? paid : null, amount, amountExpected: Boolean(amount && EXPECTED_AMOUNT_HEADER.test(header(amount))), column, unresolved, grossUnresolved, noAmount };
 }
+
+/**
+ * 31e tur 15 (Y1, 23.10.2026: "Borç kolonu yoksa (yalnız kişi / tarih kolonları; söz de yok) … borç YOK (bütün raporlarda 0) ve satır görünür ya da raporda görünür
+ * not"): sekmede tutar kolonu yok ve söz / taahhüt kolonu da yok → kişileri borçsuz sayılır, raporlar sekmeyi adlandıran not yazar (tableNotes — lib/reports.mjs).
+ * Aday 22: "Takip" (Dosya No, Borçlu, Borçlu Telefon, Son Ödeme) kişileri Tablodaki Kişiler'den notsuz düşüyordu. Söz sekmesi (söz tarihi / söz tutarı; A1) not açmaz.
+ * @param {{ noAmount?: boolean }|null} plan debtPlan sonucu
+ * @param {string[]} columns sekmenin kolonları
+ */
+export const isDebtColumnMissing = (plan, columns) => Boolean(plan?.noAmount) && !(columns || []).some(column => PROMISE_HEADER.test(foldText(column)));
 
 /**
  * Bir satırın borcu: sırayla Kalan, Toplam Borç, sekmenin tek tutarı — ilk SAYI hücre (0 dahil); hiçbiri yoksa null.

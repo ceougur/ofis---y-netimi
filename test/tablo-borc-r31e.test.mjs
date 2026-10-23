@@ -806,3 +806,36 @@ describe("31e tur 14: yalın 'Ödeme Sözü' / 'Söz' / 'Taahhüt' kolonu para k
     assert.equal((await ctx.report("nakit-akis")).report.totals.expected, 12250);
   });
 });
+
+// 31e tur 15 (ORTA; Y1 kararı eksik uygulanmıştı): "Borç kolonu yoksa (yalnız kişi / tarih kolonları; söz de yok) … borç YOK (bütün raporlarda 0) ve satır görünür
+// ya da raporda görünür not." Aday 22: "Takip" (Dosya No, Borçlu, Borçlu Telefon, Son Ödeme) kişileri Tablodaki Kişiler'den NOTSUZ düşüyordu (görünen tek not
+// "Masrafli"yi adlandırıyordu). Şimdi Kişiler, Vadeler ve Nakit Akışı sekmeyi adlandıran not yazar (Y1 notunun biçimi); söz sekmesi (A1) not açmaz.
+describe("31e tur 15: tutar kolonu olmayan sekme notsuz düşmez; söz sekmesi not açmaz", () => {
+  const MISSING = tab => `“${tab}” sekmesinde borç sütunu yok: bu satırlar borç olarak sayılmadı. Borç için “Kalan Borç”, “Toplam Borç” ya da “Tutar” başlıklı bir sütun ekleyin.`;
+  const UNRESOLVED = "“Masrafli” sekmesinde borç sütunu seçilemedi (Tutar, Masraf): bu satırlar borç olarak sayılmadı. Borç sütununun başlığını “Kalan Borç”, “Toplam Borç” ya da “Genel Toplam” yapın.";
+  const ctx = setup([
+    { name: "Takip", matrix: [["Dosya No", "Borçlu", "Borçlu Telefon", "Son Ödeme"], ["2026/701", "Can Er", "0532 111 22 33", d(3)], ["2026/702", "Ece Su", "0533 444 55 66", d(4)]] },
+    { name: "Masrafli", matrix: [["Dosya No", "Borçlu", "Tutar", "Masraf"], ["2026/703", "Deniz Ak", "1.000", "150"]] },
+    { name: "Aidat", matrix: [["Ad Soyad", "Borçlu Telefon", "Tutar"], ["Hale İn", "0535 777 88 99", "1.000"]] },
+    { name: "SozTarihYalniz", matrix: [["Ad Soyad", "Söz Tarihi"], ["Kaan Ay", d(2)]] },
+    { name: "Rehber", matrix: [["Ad Soyad", "Telefon"], ["Lale Su", "0536 123 45 67"]] },
+  ]);
+
+  test("Tablodaki Kişiler: borç yalnız Hale 1.000; Takip ve Rehber sekmeyi adlandıran notla, Masrafli 'seçilemedi' notuyla; söz sekmesi notsuz", async () => {
+    const { report } = await ctx.report("cari-ekstre");
+    assert.deepEqual(debitBy(report), { "Hale İn": 1000 });
+    assert.deepEqual(report.notes, [UNRESOLVED, MISSING("Takip"), MISSING("Rehber")]);
+  });
+
+  test("Vadeler ve Nakit Akışı aynı notlar; Takip kalemleri görünür, tutarsız (borç 0); Sekme süzgecinde yalnız seçili sekmenin notu", async () => {
+    const vade = (await ctx.report("vade-takip")).report;
+    assert.deepEqual(vade.notes, [UNRESOLVED, MISSING("Takip"), MISSING("Rehber")]);
+    assert.equal(vade.totals.amount, 0);
+    const nakit = (await ctx.report("nakit-akis")).report;
+    assert.deepEqual(nakit.notes, [UNRESOLVED, MISSING("Takip"), MISSING("Rehber")]);
+    assert.equal(nakit.totals.expected, 0);
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    assert.deepEqual(dues.items.filter(item => item.tab === "Takip").map(item => [item.person, item.amount ?? null, item.debt ?? null]).sort((a, b) => a[0].localeCompare(b[0], "tr")), [["Can Er", null, null], ["Ece Su", null, null]]);
+    assert.deepEqual((await ctx.report("cari-ekstre", "tabs=Takip")).report.notes, [MISSING("Takip")]);
+  });
+});
