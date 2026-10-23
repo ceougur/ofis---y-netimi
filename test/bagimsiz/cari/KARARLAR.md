@@ -250,6 +250,18 @@ Kaynak: ana oturumun ilettiği karar metni. Ürün kodu okunmadı.
   Tarihi / Tutarı" 800; "Taahhütname Miktarı" 900); mutant 65 (taahhüt tam sözcük), 66 (yalnız "tutar"). DENENMEYEN: "Taahhütlü …" başlığı (söz tarihi olmayan sekmede söz
   kaleminin tarihi kararda yok), "Söz" / "Ödeme Sözü" sayı değerli tutar sözcüksüz sütun.
 
+### B3m — Yalnız söz tutarlı sekme (A1 + B3l) ve "Taahhütlü Ücret" (5b) (ana oturum, 23.10.2026; aday 22)
+- A1 ("Ödeme Sözü tutarı borç değil — beklenen tahsilat") + B3l: borç sütunu olarak YALNIZ söz tutarı sütunu bulunan sekmede ("Taahhüt Tutarı", "Taahhütname Tutarı", "Söz Miktarı",
+  "Ödeme Sözü Tutarı") Tablodaki Kişiler borcu 0 (borç sayılmaz) ve "önce cari açın" Açılış Bakiyesi 0 / boş; Takvim / Vade / Nakit'te ödeme sözü kalemi (`kalemSoz` true) söz
+  tutarıyla. Kural metni Kişiler'de ne gösterileceğini söylemiyor → yalnız "borç 0" denetlenir (görünür not denetlenmez — Y1'in "borç kolonu yoksa not"u söz-yalnız sekmeye
+  uygulanır mı yazılı değil: DENENMEYEN).
+- "Taahhütlü Ücret" + Kalan (5b): söz/taahhüt ailesi + dönem sözcüğü, tutar/miktar sözcüğü YOK → söz tutarı DEĞİL; ücret borç / dönem tutarı olarak kalır (Kalan doluysa borç
+  Kalan, boşsa ücret — Y3; kalem min(ücret, Kalan)); kalemi düz vade kalemi (`kalemSoz` false). KÂHİN DÜZELTMESİ: B3l'deki [YAYGIN] "tutar/miktar sözcüğü olmayan söz-ailesi
+  sütunu para kolonu değildir" yorumu bu satırda yanlıştı (ücret hiç sayılmazdı) → dönem sözcüğü taşıyan söz-ailesi başlığı normal sınıflandırılır; dönem sözcüğü de yoksa
+  (yalın "Ödeme Sözü" sayı sütunu) para kolonu değil [YAYGIN]. Önceki senaryolarda kâhinin değerleri değişmedi.
+- Senaryo b3w-yalniz-soz-tutari (Ada Er 700, Bora Ak 800, Cansu Ok 900, Doruk Tan 1.000 — her biri ayrı sekme; Selin Ak 1.200 / 3.600, Tarık Su 1.500 / boş; Kişiler 5.100,
+  Takvim 6.100); mutant 15 (söz tutarı borç — K3) bu senaryoda da, 61 (söz kalemi söz tutarı değil), 67 ("Taahhütlü Ücret" para değil), 68 ("Taahhütlü Ücret" söz tutarı).
+
 ### B4b — Dört rapor aynı satır borcu (K4 [KULLANICI] 23.10.2026; TAKVİM KALEMİ ile daraldı — B3i)
 - **K4** Tablodaki Kişiler (totals.debit), Tahsilat Takvimi (/dues Σ amount), Vade Takip (totals.amount) ve Nakit Akışı Beklenen (totals.expected) aynı satır
   borcunu kullanır; toplamları aynıdır (dönem süzgeci içinde). Kontrol adımında `"raporlar": true` ve bütün kayıtların borcu tanımlı ve tek değerliyse dört

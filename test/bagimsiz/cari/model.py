@@ -94,6 +94,8 @@ MUTASYONLAR = {
     64: "SÖZ TUTARI: yalnız 'Söz Tutarı' söz sütunu — 'Ödeme Sözü Tutarı', 'Taahhüt Tutarı' söz sayılmaz",
     65: "ÖDEME SÖZÜ başlıkları: taahhüt ailesi tam sözcük ('Taahhütname', 'Taahhütlü' söz değil)",
     66: "ÖDEME SÖZÜ başlıkları: söz tutarı sütunu yalnız 'tutar' sözcüğüyle ('Söz Miktarı', 'Taahhüt Miktarı' söz tutarı değil)",
+    67: "5b + ÖDEME SÖZÜ: söz ailesi + dönem sözcüğü ('Taahhütlü Ücret') para kolonu sayılmaz (ücret borç / dönem tutarı olmaz)",
+    68: "5b + ÖDEME SÖZÜ: 'Taahhütlü Ücret' söz tutarı sayılır (ücret borç değil, kalemi ödeme sözü)",
 }
 
 
@@ -181,6 +183,18 @@ def tarih_mi(metin):
     return len(t) == 10 and ((t[2] == "." and t[5] == "." and t.replace(".", "").isdigit()) or (t[4] == "-" and t[7] == "-" and t.replace("-", "").isdigit()))
 
 
+def soz_ailesi(baslik):
+    """ÖDEME SÖZÜ başlıkları (karar sahibi 23.10.2026): söz ailesi TAM sözcük ("Söz", "Sözü", "Ödeme Sözü"); TAAHHÜT ailesi ÖNEK ("Taahhüt", "Taahhüdü", "Taahhütname",
+    "Taahhütlü"); "Sözleşme…" söz değil. Mutantlar 62 (söz öneki), 64 (yalnız "söz"), 65 (taahhüt tam sözcük)."""
+    w = kelimeler(baslik)
+    if SOZ_DAR[0]:
+        return "söz" in w
+    if SOZ_ONEK[0]:
+        return any(x.startswith(("söz", "taahhüt")) for x in w)
+    return any(x in ("söz", "sözü", "sözün") for x in w) or any(
+        (x in ("taahhüt", "taahhüdü")) if SOZ_TAM_TAAHHUT[0] else x.startswith(("taahhüt", "taahhüd")) for x in w)
+
+
 def sutun_sinifi(baslik, hucreler=()):
     """K3 sütun sınıfı: None tutar değil (tarih değerli sütun [YAYGIN]; gün/adet — K3); "soz" Ödeme Sözü tutarı (borç değil — K3); "kalan" Kalan/Kalan Borç/
     Bakiye; "odenen" Tahsil Edilen/Ödenen/Ödenen Tutar; "toplam" Toplam Borç/Tutar/Ödenecek Tutar/Toplam (borç/alacak başlıklı da); "tutar" öbür tutar (Aidat, Ücret …)."""
@@ -201,17 +215,14 @@ def sutun_sinifi(baslik, hucreler=()):
     # ÖDEME SÖZÜ başlıkları (karar sahibi 23.10.2026): söz ailesi TAM sözcük ("Söz", "Sözü", "Ödeme Sözü"); TAAHHÜT ailesi ÖNEK ("Taahhüt", "Taahhüdü", "Taahhütname",
     # "Taahhütlü"); yalnız "Sözleşme…" söz değildir. Söz TUTARI sütunu söz/taahhüt sözcüğü + "tutar" YA DA "miktar" sözcüğü taşır ("Söz Tutarı", "Söz Miktarı", "Taahhüt
     # Miktarı"); tutar/miktar sözcüğü olmayan söz-ailesi sütunu para kolonu değildir [YAYGIN] (tarih değerliyse zaten tarih).
-    if SOZ_DAR[0]:
-        aile = "söz" in w
-    elif SOZ_ONEK[0]:
-        aile = any(x.startswith(("söz", "taahhüt")) for x in w)
-    else:
-        aile = any(x in ("söz", "sözü", "sözün") for x in w) or any(
-            (x in ("taahhüt", "taahhüdü")) if SOZ_TAM_TAAHHUT[0] else x.startswith(("taahhüt", "taahhüd")) for x in w)
-    if aile:
-        if SOZ_DAR[0] or SOZ_ONEK[0] or any(x.startswith("tutar") or (x.startswith("miktar") and not SOZ_YALNIZ_TUTAR[0]) for x in w):
+    if soz_ailesi(baslik):
+        donem_sozcugu = any(x.startswith(DONEM_KELIME) for x in w)
+        if SOZ_DAR[0] or SOZ_ONEK[0] or any(x.startswith("tutar") or (x.startswith("miktar") and not SOZ_YALNIZ_TUTAR[0]) for x in w) or (donem_sozcugu and SOZ_UCRET[0] == 68):
             return "soz"
-        return None
+        if not donem_sozcugu or SOZ_UCRET[0] == 67:
+            return None
+        # 5b + ÖDEME SÖZÜ (karar sahibi 23.10.2026): söz/taahhüt ailesi + dönem sözcüğü, tutar/miktar sözcüğü YOK ("Taahhütlü Ücret") söz tutarı DEĞİLDİR — ücret borç /
+        # dönem tutarı olarak kalır (Kalan doluysa borç Kalan, boşsa ücret; kalem min(ücret, Kalan)); sınıflandırma aşağıda sürer
     if "kalan" in w or "bakiye" in w:
         return "kalan"
     if ("tahsil" in w and any(x.startswith("edil") for x in w)) or any(x.startswith("ödenen") for x in w):
@@ -225,6 +236,7 @@ SOZ_ONEK = [False]  # mutant 62 (Model kurucusu ayarlar)
 SOZ_DAR = [False]  # mutant 64
 SOZ_TAM_TAAHHUT = [False]  # mutant 65
 SOZ_YALNIZ_TUTAR = [False]  # mutant 66
+SOZ_UCRET = [0]  # mutant 67 / 68
 
 
 def _sayi_mi(metin):
@@ -257,6 +269,7 @@ class Model:
         SOZ_DAR[0] = mut == 64
         SOZ_TAM_TAAHHUT[0] = mut == 65
         SOZ_YALNIZ_TUTAR[0] = mut == 66
+        SOZ_UCRET[0] = mut if mut in (67, 68) else 0
         self.bugun = senaryo["bugun"]
         self.seq = 0
         self.cariler = {}          # takma ad -> {tur, isim, kayit, acilis}
@@ -1375,6 +1388,10 @@ class Model:
                 soz_kol = [h for h in sk["basliklar"] if tr_kucuk(h) not in KIMLIK_BASLIK and sutun_sinifi(h, [x.get(h) for _, x in sk["satirlar"]]) == "soz"]
                 if len(soz_kol) == 1 and hucre_kurus(c.get(soz_kol[0])) is not None and self.mut != 61:
                     self.d("%s:kalemSoz:%s" % (k, no), True, "KULLANICI", "Z3 + ÖDEME SÖZÜ başlıkları: söz tutarından gelen kalem ödeme sözü kalemidir")
+                elif not soz_kol and any(soz_ailesi(h) for h in sk["basliklar"]) and not any(
+                        soz_ailesi(h) and tarih_mi(c.get(h)) for h in sk["basliklar"]):
+                    # 5b + ÖDEME SÖZÜ: söz ailesi başlığı söz tutarı değilse ("Taahhütlü Ücret") ve vade tarihi söz tarihi değilse kalem ödeme sözü DEĞİLDİR
+                    self.d("%s:kalemSoz:%s" % (k, no), False, "KULLANICI", "5b + ÖDEME SÖZÜ: 'Taahhütlü Ücret' söz tutarı değildir — kalem düz vade kalemi")
         if a.get("raporlar") and k4_tanimli:
             # TAKVİM KALEMİ (baş mimar kararı 23.10.2026): "dört rapor aynı borç" (K4) SATIR BORCU içindir — Tablodaki Kişiler satır borcunu (Kalan) gösterir; Takvim / Vade Takip /
             # Nakit Akışı vadesi gelen tutarı (kalem tutarı) toplar.
