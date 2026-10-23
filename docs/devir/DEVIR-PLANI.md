@@ -268,7 +268,7 @@ UYARIR (onayla geçilir, Devir Raporu'na yazılır):
 ## 10. Aşamalar ve tahmin
 | Aşama | İş | Çıktı |
 |---|---|---|
-| D0 | Bu planı koda karşı yeniden doğrula (2.4.4 sonrası), tablo sınıflamasını tamamla, §11 kararları | Güncel plan |
+| D0 | Bu planı koda karşı yeniden doğrula (2.4.4 sonrası), tablo sınıflamasını tamamla, §11 kararları; **KÂHİN ÖNCE** (kullanıcı kararı 23.10.2026): devir kâhini (ayrı ajan, programın kodunu GÖRMEDEN, yalnız bu plandan ve §11 kararlarından; Python temiz oda + kara kutu API koşucusu + mutantlar, test/bagimsiz/devir/) kod yazılmadan ÖNCE kurulur; her D adımı ona karşı geliştirilir, CI'de ve Uzun Doğrulama'da koşar; kâhinle program ayrışınca kural yalnız karar metninden netleştirilir (CLAUDE.md ders 40) | Güncel plan + devir kâhini |
 | D1 | Kâhin modeli (ayrı ajan, kodu görmeden) + "Nasıl bozulur" testleri (kırmızı) | test/bagimsiz/devir, test/devir-*.test.mjs |
 | D2 | Göç + `ledger_vouchers` + CHART (690/590/591/570/580/621) + cari `is_opening` | Gerileme yok (tam npm test) |
 | D3 | Saf hesap (`plan.mjs`) + Devir Raporu (`report.mjs`) | Ön izleme = kâhin |

@@ -420,7 +420,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - MÜŞTERİ İSTEĞİ (13.10.2026, emlakçı): kayıt detay kartından "WhatsApp'tan Paylaş" (resimler + bilgiler) — BEKLER (kullanıcı: "şimdilik kalsın"). Alıcı
   numarası karttan GELMEZ; API'siz yollar (Windows Paylaş / wa.me / tek "Portföy Sunumu" dosyası) ve Yol B (Meta API, Pro) ayrıntısı arşivde (21.10).
 - DEVİR MODÜLÜ (sürüm 2.5.0, 2.4.4'ten SONRA): YÖNTEM KARARI Wolvox (kesim tarihinde ikiye ayır; eski yıl salt okunur arşiv); TEK BAŞINA YETERLİ plan
-  `docs/devir/DEVIR-PLANI.md` (§11 kararları verildi, 20.10.2026); arka plan `docs/devir/DEVIR-MODULU.md`; ilk adım D0 (planı koda karşı yeniden doğrula).
+  `docs/devir/DEVIR-PLANI.md` (§11 kararları verildi, 20.10.2026); arka plan `docs/devir/DEVIR-MODULU.md`; ilk adım D0 (planı koda karşı yeniden doğrula). KÂHİN ÖNCE (kullanıcı, 23.10.2026 ~13:10 UTC: "önerin uygun" — cari kâhininin başarısı üzerine): devir kâhini D0'da, kod yazılmadan, planın kendisinden (kodu görmeyen ayrı ajan) kurulur; her D adımı ona karşı geliştirilir (plan D0 satırı).
   HATIRLATICI (kullanıcı, 21.10.2026: "kapat ama ileride bana hatırlat"): eski 22.10 hatırlatıcısı (trig_01NEGfcTp7hAnHG1tgw6mFAv, eski oturuma bağlı, istemi
   eskimişti) KAPATILDI; yenisi 29.10.2026 09:00 TR (trig_01DE8bFDurzMRT6thbptBrQM, oturum session_01JyhFmK2mfqMV3KTwvTZdhs). O oturum kapanmışsa: 2.4.4
   bitince kullanıcıya devri hatırlat (devir Ocak–Şubat'ta kullanılır → 2.5.0 Aralık başına kadar yayında olmalı).
