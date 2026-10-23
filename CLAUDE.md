@@ -488,6 +488,14 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   sıra-tarih denetimini bağlamaz, sırayı bozan geri yükleme 409. Alternatifler seçilmedi: (a) 2.4.3 gibi ayrı (kopya sekmede çift sayım). Ajanlar: is/r31e-rapor
   (a4c6a5adce2fe84a1), is/r31e-n1 (af758d0efa275c16f), is/r31e-e1 (aa6d8a7ea376869f6), kâhin kuralları karar metninden (a273b1175b2d0e124). Aday 11 npm test 3301/3301,
   kapı e2e'den önce durduruldu → ADAY 12 + tam kapı + göç son koşusu + 31e kontrol turu (Verimlilik: yeniden üretilmiş bulgu → düzeltme + bir kontrol turu).
+- 31e KONTROL TURU 2 (23.10.2026 ~04:00 UTC, aday 12 2fd232a): T4, T1, Y1, N1, E1-Y, Y8 KAPANDI (yeni sayılarla, v2.4.3 ↔ aday 12). Yeni: A1 ORTA ((a) kararının yan etkisi: dönem
+  sekmesinin vade kalemleri Tahsilat Takvimi / zil / Ödeme Sözü'nde notsuz düşüyor — 2026 aidat hatırlatması gelmez), A2 ORTA (Sekme süzgecinde tahsilat başka sekmenin kaydına;
+  2.4.3'te de → BİLİNEN SINIR), A3 DÜŞÜK (eşzamanlı Durum Sorgula iletisi yanlış), A4 DÜŞÜK (taksit sayısı sütunlu tabloda kalan ilk taksit gününe; 2.4.3 kuralı → BİLİNEN SINIR).
+  SORU → 5 dk YETKİSİYLE UYGULANDI (04:04 → 04:09 UTC): A1 = ÖNERİ A — FARKLI sekmede aynı Dosya No AYRI borç ve AYRI vade kalemi (2.4.3 gibi); raporlarda ve Takvim'de "N dosya
+  no birden çok sekmede; ayrı sayıldı" notu ((a) kararı DEĞİŞTİ; söz tutarı borç olmadığından söz sekmesi çift saymaz). Alternatif B (bir kez + Takvim notu; 2026 kalemleri
+  Takvim'de görünmezdi) seçilmedi. Ajanlar: is/r31e-a1 (a4c6a5adce2fe84a1), is/r31e-a3 (aa6d8a7ea376869f6; A3 iletisi + K45 iptal izi süre dolunca kesin yanıtla kapanır — kâhin
+  aday 12k'da 26/27, tek fark bu), kâhin K2 (a273b1175b2d0e124). Gerçek EDM (23.10 ~03:40 UTC, kullanıcı test hesabını yeniden verdi — yalnız oturumda): tam takım 52/52 +
+  GetSMMStatus kendi ETTN'ini taşıyor. → ADAY 13 (aday 12 + is/kahin-244 + A1 + A3) tam kapı + kâhinler + göç + CI dışı 14.
 - İSTEKLER (kullanıcı, 22.10.2026 ~14:00–14:50 UTC; hepsi yanıtlandı): "18 numarada portalda ben ne yapacağım" → elle kabul adımları iş listesi 18 (teslimde
   kurulumla); "kalan işler için zaman çizelgesi, aynı anda yapılanları tek süre say" → verildi (devam notu ZAMAN ÇİZELGESİ); "compact talimatı vereceğim, veri kaybı
   olmasın" → devam notu 00 + ajan kayıtları yazıldı ve gönderildi (f013e57); EDM test hesabı ~14:45 UTC yeniden verildi (yalnız oturumda; dosyaya yazılmadı).
