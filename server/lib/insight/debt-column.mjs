@@ -40,6 +40,16 @@ export const isPromiseAmountHeader = column => {
   const folded = foldText(column);
   return PROMISE_HEADER.test(folded) && PROMISE_AMOUNT_WORD.test(folded);
 };
+/**
+ * Yalın söz / taahhüt kolonu — söz ailesi başlığı olup ne "tutar" / "miktar" ne dönem sözcüğü ("Ücret", "Kira", "Aidat", "Taksit Tutarı"; EXPECTED_AMOUNT_HEADER)
+ * taşıyan kolon ("Ödeme Sözü", "Söz", "Taahhüt" altına tutar yazılmış): PARA KOLONU SAYILMAZ — borç adayı değildir, söz kalemi tutarı da olmaz (31e tur 14;
+ * A1 "Ödeme Sözü tutarı borç değil"). Aday 22 bu kolonu yalnız tek tutar / not adaylarından ayırıyordu; f8e9ae4'te borç olabiliyordu ("Ödeme Sözü" 1.500 Kişiler'de).
+ * Dönem sözcüğü taşıyan ("Taahhütlü Ücret", "Taahhütlü Kira") normal sınıflanır (5b).
+ */
+export const isBarePromiseHeader = column => {
+  const folded = foldText(column);
+  return PROMISE_HEADER.test(folded) && !PROMISE_AMOUNT_WORD.test(folded) && !EXPECTED_AMOUNT_HEADER.test(folded);
+};
 export const NOT_AMOUNT_HEADER = /\b(gun|gunu|gunler|gunleri|adet|adedi|sayi|sayisi|ay|ayi|yil|yili|oran|orani|yuzde|yuzdesi)\b/;
 export const isNotAmountHeader = column => NOT_AMOUNT_HEADER.test(foldText(column)) || String(column ?? "").includes("%");
 // Ödenen / tahsil edilen tutar kolonu (borç değil; T1'de toplamdan düşülür). Tarih / gün / no kolonu değil.
@@ -66,11 +76,11 @@ export const isPersonAttributeHeader = column => {
 const IDENTIFIER_HEADER = /\b(no|numara\w*|kod|kodu|tel|telefon\w*|gsm|cep|tc|tckn|vkn|kimlik|iban)\b/;
 export const NOT_AMOUNT_ROLES = new Set(["phone", "tckn", "vkn", "iban", "id", "date", "person", "org", "email", "address", "url"]);
 
-/** Tutar kolonu adayları (kolon analizinden; iki yol aynı kümeyi kullanır): tutar rolü, ya da kalem tutarı başlıklı sayı; gün / adet / oran değil. */
+/** Tutar kolonu adayları (kolon analizinden; iki yol aynı kümeyi kullanır): tutar rolü, ya da kalem tutarı başlıklı sayı; gün / adet / oran ve yalın söz kolonu değil. */
 export const amountCandidates = analyses => (analyses || [])
   .filter(item => item.role === "money" || (item.role === "number" && EXPECTED_AMOUNT_HEADER.test(foldText(item.column))))
   .map(item => item.column)
-  .filter(column => column && !isNotAmountHeader(column) && !isPersonAttributeHeader(column));
+  .filter(column => column && !isNotAmountHeader(column) && !isPersonAttributeHeader(column) && !isBarePromiseHeader(column));
 
 /**
  * Tutar rolü almamış ama başlığı Kalan / Bakiye / Borç / Alacak olan ve en az bir satırında tutar yazılmış (seyrek) kolon. Tahsilat Takvimi (insight/dues.mjs)

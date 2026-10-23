@@ -11,7 +11,7 @@
 //    tahsilat kapatır). Vadesinden en çok 20 gün önce girilen tahsilat da sayılır.
 import { columnOrder as columnsOf } from "../sources.mjs";
 import { analyzeColumns, cell, primaryColumns } from "./columns.mjs";
-import { amountCandidates, debtByRecord, debtPlan, EXPECTED_AMOUNT_HEADER, isNotAmountHeader, isPersonAttributeHeader, isPromiseAmountHeader, PROMISE_HEADER, rowDebt, sparseDebtColumn } from "./debt-column.mjs";
+import { amountCandidates, debtByRecord, debtPlan, EXPECTED_AMOUNT_HEADER, isNotAmountHeader, isBarePromiseHeader, isPersonAttributeHeader, isPromiseAmountHeader, PROMISE_HEADER, rowDebt, sparseDebtColumn } from "./debt-column.mjs";
 import { embeddedDates, isBlankRecord, isEmptyCell, isFlaggedRow, isSequenceHeader, isTotalRow } from "./cells.mjs";
 import { dateMeaning, ordinalOf, subjectOf } from "./temporal.mjs";
 import { foldText, parseAmount, parseDate } from "./validators.mjs";
@@ -172,7 +172,8 @@ function classifyColumns(rows, columns, analyses, now, forced = null) {
   // Aylık ödeme kolonları: en az iki ay kolonu varsa (tek "Eylül" kolonu başka bir şey olabilir).
   const monthly = paymentMonths(rows, columns, monthColumns(columns, now), analyses);
   // 31e tur 8 Y1: "Borçlu …" / "Alacaklı …" kişi özniteliği başlığı (tutar sözcüğü yoksa) kalem tutarı da olmaz — borç kolonuyla aynı kural (debt-column.mjs).
-  const moneyLike = analyses.filter(item => item.role === "money" || (item.role === "number" && AMOUNT_OWN.test(foldText(item.column)))).map(item => item.column).filter(column => !isPersonAttributeHeader(column));
+  // 31e tur 14: yalın söz / taahhüt kolonu ("Ödeme Sözü", "Söz", "Taahhüt"; tutar / miktar / dönem sözcüğü yok) para kolonu sayılmaz — kalem tutarı olmaz (debt-column.mjs).
+  const moneyLike = analyses.filter(item => item.role === "money" || (item.role === "number" && AMOUNT_OWN.test(foldText(item.column)))).map(item => item.column).filter(column => !isPersonAttributeHeader(column) && !isBarePromiseHeader(column));
   const pairFor = entry => {
     if (entry.installment === null) return null;
     return moneyLike.find(column => {
