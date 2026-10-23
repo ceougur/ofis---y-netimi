@@ -18,6 +18,8 @@
 //   C2b bırakılan kâğıt makbuz sonradan e-SMM olarak GÖNDERİLEMEZ (kalıcı engel): istek reddedilir, kart ve EDM değişmez
 //   C11 E6: 2.4.3'te silinip Silinenler'de duran belge — numarası canlı başka belgedeyse geri yükleme reddedilir (409) ve Silinenler'de kalır; numarası boştaysa
 //       kendi numarasıyla döner; sıradaki numara verilmiş en büyükten (silinenler dahil) sonra kalır
+//   C11k G1 (v2.0.13 dönem kilidi: kilitli tarihe hareket eklenemez): kapanmış dönem tarihli silinmiş belge Silinenler'den geri YÜKLENMEZ (409, Silinenler'de
+//       kalır); ardından Mutabakat Testi'nde yeni sapma yok ve aynı oturumda Kasa girişi 200
 import { BUYER_VKN } from "../einvoice-mock.mjs";
 import { ADMIN_PASSWORD } from "../helpers.mjs";
 import { companyFacts, digest, fileFacts } from "./m30-olgular.mjs";
@@ -269,10 +271,25 @@ export async function runDrill({ dir, day, maps, baseline, oldBackups, bootCurre
   for (const company of companies) {
     const c = scoped(api, company.id);
     const listed = await must("Silinenler", c.get("/api/admin/trash"));
-    const items = (Array.isArray(listed) ? listed : listed.items || []).filter(item => item.kind === "invoice").map(item => ({ ...item, number: String(item.title || "").split(/\s+/).find(w => PROGRAM.test(w)) || "" }));
+    const lock = (await must("dönem kilidi", c.get("/api/workspace/ledger/lock"))).lockedUntil || "";
+    const dayOfItem = item => (/(\d{2})\.(\d{2})\.(\d{4})/.exec(item.detail || "") || []).slice(1).reverse().join("-");
+    const all = (Array.isArray(listed) ? listed : listed.items || []).filter(item => item.kind === "invoice").map(item => ({ ...item, number: String(item.title || "").split(/\s+/).find(w => PROGRAM.test(w)) || "", day: dayOfItem(item) }));
+    const locked = all.filter(item => lock && item.day && item.day <= lock);
+    const items = all.filter(item => !locked.includes(item));
     const live = new Map((await must("faturalar", c.get("/api/workspace/invoices?tab=all&limit=10000"))).invoices.map(d => [d.number, d]));
     const taken = items.find(item => item.number && live.has(item.number));
     const free = items.find(item => item.number && !live.has(item.number));
+    if (locked.length) {
+      const item = locked[0];
+      const integrityBefore = (await must("Mutabakat Testi", c.get("/api/workspace/ledger/integrity"))).failures || [];
+      const res = await c.post("/api/admin/trash/restore", { id: item.id });
+      const again = await must("Silinenler", c.get("/api/admin/trash"));
+      const still = (Array.isArray(again) ? again : again.items || []).filter(x => x.id === item.id).length;
+      const integrityAfter = (await must("Mutabakat Testi", c.get("/api/workspace/ledger/integrity"))).failures || [];
+      const cashRes = await c.post("/api/workspace/cash", { kind: "in", amount: "1", date: day, description: "Kilit denetimi sonrası" });
+      const newFailures = integrityAfter.map(f => f.code).filter(code => !integrityBefore.some(f => f.code === code));
+      check(`C11k ${company.code} G1: kapanmış dönem (${lock}) tarihli silinmiş belge (${item.number || item.title}, ${item.day}) geri yüklenmez (409), Silinenler'de kalır; Mutabakat Testi'nde yeni sapma yok; Kasa girişi 200`, res.status === 409 && still === 1 && !newFailures.length && cashRes.status === 200, { status: res.status, message: String(res.data?.error || res.data?.message || "").slice(0, 200), still, newFailures, kasa: [cashRes.status, cashRes.data?.code || ""], kilitliTarihliSilinen: locked.length });
+    } else check(`C11k ${company.code} G1: kapanmış dönem tarihli silinmiş belge YOK (${lock ? `kilit ${lock}` : "kilit yok"})`, true, { trashInvoices: all.length });
     const nextBefore = (await must("ayarlar", c.get("/api/workspace/invoices/settings"))).nextNumbers;
     if (taken) {
       const res = await c.post("/api/admin/trash/restore", { id: taken.id });
