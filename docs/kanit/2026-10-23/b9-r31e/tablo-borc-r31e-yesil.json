@@ -1,0 +1,32 @@
+{
+  "ad": "b9-r31e/tablo-borc-r31e-yesil",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-name-pattern=tur 1[1234] test/tablo-borc-r31e.test.mjs",
+  "commit": "40c9d99f9b422fddda9f7be5720abb0e21b2645f",
+  "dal": "is/r31e-f",
+  "kirli": 3,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T14:18:47.851Z",
+  "sure_sn": 2.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 11,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/b9-r31e/tablo-borc-r31e-yesil.log",
+  "klasor": "/home/user/wt/r31e-f",
+  "ham_cikti_sha256": "ccb3c15d3250f8f82f4ad2665eaab05d7cc43f47a00245aeaec911089e6da641",
+  "ham_cikti_bayt": 5460
+}

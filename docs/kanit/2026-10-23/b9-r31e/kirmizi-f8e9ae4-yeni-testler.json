@@ -1,0 +1,48 @@
+{
+  "ad": "b9-r31e/kirmizi-f8e9ae4-yeni-testler",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-name-pattern=tur 14 test/tablo-borc-r31e.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T14:19:02.257Z",
+  "sure_sn": 0.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 0,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "31e tur 14: yalın 'Ödeme Sözü' / 'Söz' / 'Taahhüt' kolonu para kolonu değil; 'Taahhütlü Ücret' / 'Taahhütlü Kira' normal › Tablodaki Kişiler: yalın söz kolonu borç değil (Ali, Banu, Cem, Hakan yok); Deniz 4.000 (Tutar tek tutar); Taahhütlü Ücret / Kira borç; not yok",
+      "konum": "test/tablo-borc-r31e.test.mjs:792:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "31e tur 14: yalın 'Ödeme Sözü' / 'Söz' / 'Taahhüt' kolonu para kolonu değil; 'Taahhütlü Ücret' / 'Taahhütlü Kira' normal › Takvim: yalın söz kolonu söz kalemi tutarı olmaz (Ali boş); Deniz söz kalemi satır borcu 4.000; dönem kolonları kalem tutarı",
+      "konum": "test/tablo-borc-r31e.test.mjs:798:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "31e tur 14: yalın 'Ödeme Sözü' / 'Söz' / 'Taahhüt' kolonu para kolonu değil; 'Taahhütlü Ücret' / 'Taahhütlü Kira' normal › Vadeler ve Nakit Akışı Beklenen 12.250 (aday 22 ve f8e9ae4: 9.750)",
+      "konum": "test/tablo-borc-r31e.test.mjs:804:3",
+      "hata": "Expected values to be strictly equal: · 9750 !== 12250 (beklenen 12250, gelen 9750)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/r31e-f/docs/kanit/2026-10-23/b9-r31e/kirmizi-f8e9ae4-yeni-testler.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b9-eski-f8e9ae4",
+  "ham_cikti_sha256": "c6648b9e684fa435521bfe853085c310db97aa5faa5857c0063f3458e8cc0a7a",
+  "ham_cikti_bayt": 6760
+}
