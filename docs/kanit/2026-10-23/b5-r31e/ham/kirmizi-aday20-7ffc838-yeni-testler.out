@@ -1,0 +1,215 @@
+TAP version 13
+# Subtest: 31e tur 10 Z2/Z3: fazla ödemeli satırda kalem yok; söz kalemi söz tutarı
+    # Subtest: Z2 Takvim: Ali Veli (Kalan −100) kalemi yok; Ayşe 1.000 (Kalan 1.500), Can 1.000 (Kalan boş); Kişiler Ali −100, Ayşe 1.500, Can 1.000
+    not ok 1 - Z2 Takvim: Ali Veli (Kalan −100) kalemi yok; Ayşe 1.000 (Kalan 1.500), Can 1.000 (Kalan boş); Kişiler Ali −100, Ayşe 1.500, Can 1.000
+      ---
+      duration_ms: 30.833899
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b5-eski-7ffc838/test/tablo-borc-r31e.test.mjs:647:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+        +     'Ali Veli',
+        +     1000,
+        +     null
+        +   ],
+        +   [
+              'Ayşe Kaya',
+              1000,
+              1500
+            ],
+            [
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'Ayşe Kaya'
+          1: 1000
+          2: 1500
+        1:
+          0: 'Can Er'
+          1: 1000
+          2: 1000
+      actual:
+        0:
+          0: 'Ali Veli'
+          1: 1000
+          2: ~
+        1:
+          0: 'Ayşe Kaya'
+          1: 1000
+          2: 1500
+        2:
+          0: 'Can Er'
+          1: 1000
+          2: 1000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b5-eski-7ffc838/test/tablo-borc-r31e.test.mjs:650:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Z2 Vadeler ve Nakit Akışı (Sekme: FazlaOdeme) Beklenen 2.000 (aday 20: 3.000)
+    not ok 2 - Z2 Vadeler ve Nakit Akışı (Sekme: FazlaOdeme) Beklenen 2.000 (aday 20: 3.000)
+      ---
+      duration_ms: 33.361219
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b5-eski-7ffc838/test/tablo-borc-r31e.test.mjs:655:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        3000 !== 2000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2000
+      actual: 3000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b5-eski-7ffc838/test/tablo-borc-r31e.test.mjs:657:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Z3 Takvim: Kaan'ın söz kalemi 3.000 (söz tutarı; Kalan 9.000); söz tutarı boşsa önceki kural min(Taksit, Kalan): Lale 2.000, Mehmet 3.000 (5.000 > Kalan 3.000)
+    not ok 3 - Z3 Takvim: Kaan'ın söz kalemi 3.000 (söz tutarı; Kalan 9.000); söz tutarı boşsa önceki kural min(Taksit, Kalan): Lale 2.000, Mehmet 3.000 (5.000 > Kalan 3.000)
+      ---
+      duration_ms: 6.309154
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b5-eski-7ffc838/test/tablo-borc-r31e.test.mjs:661:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            [
+              'Kaan Uz',
+        +     1000,
+        -     3000,
+              9000,
+              true
+            ],
+            [
+              'Lale Gün',
+        ...
+              'Mehmet Ay',
+        +     5000,
+              3000,
+        -     3000,
+              true
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'Kaan Uz'
+          1: 3000
+          2: 9000
+          3: true
+        1:
+          0: 'Lale Gün'
+          1: 2000
+          2: 4000
+          3: true
+        2:
+          0: 'Mehmet Ay'
+          1: 3000
+          2: 3000
+          3: true
+      actual:
+        0:
+          0: 'Kaan Uz'
+          1: 1000
+          2: 9000
+          3: true
+        1:
+          0: 'Lale Gün'
+          1: 2000
+          2: 4000
+          3: true
+        2:
+          0: 'Mehmet Ay'
+          1: 5000
+          2: 3000
+          3: true
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b5-eski-7ffc838/test/tablo-borc-r31e.test.mjs:664:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Z2 dönem kolonu olmayan sekme: Dilek Su (Kalan −250) kalemi yok, Ege Tan 800
+    not ok 4 - Z2 dönem kolonu olmayan sekme: Dilek Su (Kalan −250) kalemi yok, Ege Tan 800
+      ---
+      duration_ms: 4.966247
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b5-eski-7ffc838/test/tablo-borc-r31e.test.mjs:667:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+        +     'Dilek Su',
+        +     null
+        +   ],
+        +   [
+              'Ege Tan',
+              800
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'Ege Tan'
+          1: 800
+      actual:
+        0:
+          0: 'Dilek Su'
+          1: ~
+        1:
+          0: 'Ege Tan'
+          1: 800
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b5-eski-7ffc838/test/tablo-borc-r31e.test.mjs:669:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 1 - 31e tur 10 Z2/Z3: fazla ödemeli satırda kalem yok; söz kalemi söz tutarı
+  ---
+  duration_ms: 656.025703
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b5-eski-7ffc838/test/tablo-borc-r31e.test.mjs:639:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1137.794737

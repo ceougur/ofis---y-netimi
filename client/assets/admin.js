@@ -34,6 +34,9 @@
     "source.excel.uploaded": "Excel tablosu yükledi",
     "dataset.imported": "Veri içeri aldı",
     "dataset.removed": "Veriyi kaldırdı",
+    // 2.4.4 31e: yükleme/eşitlemede kayda bağlı veriler (tahsilat, not, düzeltme, "Ödendi Say", cari bağı…).
+    "dataset.bonds.moved": "Kayıt bağlarını yeni satırlara taşıdı",
+    "dataset.bonds.unmatched": "Eşleşmeyen kayıt bağlarını onayladı",
     "dataset.unlinked": "Sheet bağlantısını kaldırdı",
     "dataset.missing.remove": "Sheet'te olmayan kayıtları kaldırdı",
     "dataset.missing.keep": "Sheet'te olmayan kayıtları tuttu",
@@ -881,6 +884,11 @@
       parts.push(`${payload.label || ""} · ${modes[payload.mode] || payload.mode} · ${payload.rows} kayıt (${payload.added || 0} yeni, ${payload.updated || 0} güncellendi${payload.removed ? `, ${payload.removed} kaldırıldı` : ""})`);
     }
     if (event.type === "dataset.removed") parts.push(`${payload.removed} kayıt`);
+    if (event.type.startsWith("dataset.bonds.")) {
+      const list = payload.moves || payload.unmatched || [];
+      const names = [...new Set(list.map(item => item.name).filter(Boolean))];
+      parts.push(`${payload.count} kayıt${names.length ? `: ${names.slice(0, 12).join(", ")}${names.length > 12 ? "…" : ""}` : ""}`);
+    }
     if (event.type.startsWith("profile.sector.custom")) parts.push(payload.name || "");
     if (event.type === "profile.sector") parts.push(`${payload.name}${payload.source === "confirmed" ? " (analiz önerisi onaylandı)" : ""}`);
     if (event.type === "profile.label") parts.push(`${payload.name}: "${payload.previous || "varsayılan"}" → "${payload.value || "varsayılan"}"`);
@@ -1589,15 +1597,18 @@
     HOF.formModal({
       title: `Şirket Verisini Sıfırla · ${item.code} · ${item.name}`,
       eyebrow: "ŞİRKET",
-      intro: "Önce zorunlu yedek alınır (Yedekler'den geri yüklenebilir). Lisans, kullanıcılar ve öbür şirketler etkilenmez. Dönem kilidi varsa o da kaldırılır; kapatılmış dönemin hareketleri de silinir, yeniden girdikten sonra kilidi yeniden koyun. Fatura ve fiş numaraları seride baştan başlar; e-Belge gönderdiyseniz yeniden göndermeden önce Fatura Ayarları → Numaralar'dan sıradaki numarayı ileri alın. Geri alınamaz; onay için şirket kodunu ve parolanızı yazın.",
+      intro: "Önce zorunlu yedek alınır (Yedekler'den geri yüklenebilir). Lisans, kullanıcılar ve öbür şirketler etkilenmez. Dönem kilidi varsa o da kaldırılır; kapatılmış dönemin hareketleri de silinir, yeniden girdikten sonra kilidi yeniden koyun. Geri alınamaz; onay için şirket kodunu ve parolanızı yazın.",
       fields: [
         { name: "mode", label: "Ne Silinsin", type: "select", value: "movements", options: [{ value: "movements", label: "Tüm Hareketleri Sil (cari/stok kartları, Kasa hesapları ve ayarlar kalır; bakiyeler sıfır)" }, { value: "all", label: "Tümünü Sıfırla (şirket ilk açıldığı gibi boş; ad/kod, unvan/VKN/logo, fatura serisi kalır)" }] },
         // 2.4.4 (madde 30c G6): kutu yalnız tahsilat makbuzu sayacını (plans.receiptSeq, app.mjs) siler; fatura/fiş serileri kutudan bağımsız baştan başlar
         // (faturalar ve invoice.numberFloor silinir) — ad buna göre, fatura numaralarının durumu açıklamada.
-        { name: "resetNumbers", label: "Tahsilat Makbuzu Numaraları da Sıfırlansın", type: "checkbox", value: true },
+        // 31f U11: kararın tek cümlesi kutunun ALTINDA (önceden giriş paragrafındaydı).
+        { name: "resetNumbers", label: "Tahsilat Makbuzu Numaraları da Sıfırlansın", type: "checkbox", value: true, help: "Fatura ve fiş numaraları seride baştan başlar; e-Belge gönderdiyseniz yeniden göndermeden önce Fatura Ayarları → Numaralar'dan sıradaki numarayı ileri alın." },
         ...confirmFields(item.code),
       ],
       submitLabel: "Veriyi Sıfırla",
+      // 31f U11: geri alınamaz eylem — programın öbür yıkıcı onayları gibi kırmızı (Kullanıcıyı Sil ile aynı kalıp).
+      onOpen: dialog => dialog.querySelector('button[type="submit"]').classList.add("hof-button-danger"),
       onSubmit: async values => {
         const result = await HOF.api(`/api/companies/${encodeURIComponent(item.id)}/reset`, { method: "POST", body: { mode: values.mode, confirm: values.confirm, password: values.password, resetNumbers: Boolean(values.resetNumbers) } });
         const unlocked = result.unlocked ? ` Dönem kilidi (${result.unlocked.split("-").reverse().join(".")}) kaldırıldı.` : "";
@@ -1615,6 +1626,8 @@
         ...confirmFields(item.code),
       ],
       submitLabel: "Şirketi Sil",
+      // Ana oturum kararı (31f ek): geri alınamaz eylem — Veriyi Sıfırla ve Kullanıcıyı Sil gibi kırmızı; onay akışı aynı.
+      onOpen: dialog => dialog.querySelector('button[type="submit"]').classList.add("hof-button-danger"),
       onSubmit: async values => {
         const result = await HOF.api(`/api/companies/${encodeURIComponent(item.id)}`, { method: "DELETE", body: { confirm: values.confirm, password: values.password } });
         HOF.toast(`“${item.code} · ${item.name}” silindi. Yedek: ${result.backup || "—"}`, { type: "success", timeout: 8000 });

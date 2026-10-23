@@ -225,6 +225,17 @@ html.hof-auth-required #root {
   height: 17px;
   accent-color: var(--do-accent);
 }
+/* 31f (G6): açıklamalı onay kutusu — açıklama kutunun hemen altında, kutunun metniyle hizalı. */
+.hof-check-field {
+  display: grid;
+  gap: 4px;
+}
+.hof-check-field small {
+  padding-left: 26px;
+  color: var(--do-faint);
+  font-size: 12px;
+  font-weight: 500;
+}
 .hof-password {
   position: relative;
   display: block;
@@ -485,6 +496,9 @@ body:has(.hof-modal-backdrop.is-visible) .hof-toasts {
 }
 .hof-toast-text {
   flex: 1;
+}
+.hof-toast-text .hof-nobreak {
+  white-space: nowrap;
 }
 .hof-toast-action {
   padding: 6px 10px;
@@ -6356,6 +6370,16 @@ body.hof-dense .dynamic-table th {
 .hof-report-table .is-num {
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+/* 2.4.4 U3: alt TOPLAM satırı (Rapor Merkezi'nin TOPLAM'ı gibi): kaydırınca tablonun altında kalır. */
+.hof-report-table tfoot td {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  border-top: 2px solid var(--do-ink);
+  background: #eef6f1;
+  color: var(--do-ink);
+  font-weight: 800;
 }
 .hof-state {
   padding: 1px 8px;

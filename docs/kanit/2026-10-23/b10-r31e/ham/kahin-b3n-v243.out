@@ -1,0 +1,20 @@
+b3n-borc-kolonu-kisi-ozniteligi: 19/35 tuttu
+  ✗ [BULGU KULLANICI] k1:acilis:2026/701: program 532111223300 · kâhin {"catal":[0,"boş"]} (Y1: 'önce cari açın' Açılış Bakiyesi = raporların satır borcu (borçsuz satırda 0 ya da boş))
+  ✗ [BULGU KULLANICI] k1:acilis:2026/702: program 533444556600 · kâhin {"catal":[0,"boş"]} (Y1: 'önce cari açın' Açılış Bakiyesi = raporların satır borcu (borçsuz satırda 0 ya da boş))
+  ✗ [BULGU KULLANICI] k1:acilis:2026/703: program 1000000014600 · kâhin {"catal":[0,"boş"]} (Y1: 'önce cari açın' Açılış Bakiyesi = raporların satır borcu (borçsuz satırda 0 ya da boş))
+  ✗ [BULGU KULLANICI] k1:acilis:2026/704: program 1234567895000 · kâhin {"catal":[0,"boş"]} (Y1: 'önce cari açın' Açılış Bakiyesi = raporların satır borcu (borçsuz satırda 0 ya da boş))
+  ✗ [BULGU KULLANICI] k1:acilis:2026/705: program 535777889900 · kâhin 100000 (Y1: 'önce cari açın' Açılış Bakiyesi = raporların satır borcu (borçsuz satırda 0 ya da boş))
+  ✗ [BULGU KULLANICI] k1:k4:akis: program 3835901579400 · kâhin 100000 (TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu)
+  ✗ [BULGU KULLANICI] k1:k4:kisiler: program 600000 · kâhin 100000 (B4b K4 + TAKVİM KALEMİ: Tablodaki Kişiler satır borcunu gösterir)
+  ✗ [BULGU KULLANICI] k1:k4:takvim: program 3835901579400 · kâhin 100000 (TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu)
+  ✗ [BULGU KULLANICI] k1:k4:vade: program 3835901579400 · kâhin 100000 (TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu)
+  ✗ [BULGU KULLANICI] k1:kalem:2026/701: program 532111223300 · kâhin 0 (TAKVİM KALEMİ: Tahsilat Takvimi kaleminin tutarı (min(dönem tutarı, Kalan); Kalan boşsa dönem tutarı))
+  ✗ [BULGU KULLANICI] k1:kalem:2026/702: program 533444556600 · kâhin 0 (TAKVİM KALEMİ: Tahsilat Takvimi kaleminin tutarı (min(dönem tutarı, Kalan); Kalan boşsa dönem tutarı))
+  ✗ [BULGU KULLANICI] k1:kalem:2026/703: program 1000000014600 · kâhin 0 (TAKVİM KALEMİ: Tahsilat Takvimi kaleminin tutarı (min(dönem tutarı, Kalan); Kalan boşsa dönem tutarı))
+  ✗ [BULGU KULLANICI] k1:kalem:2026/704: program 1234567895000 · kâhin 0 (TAKVİM KALEMİ: Tahsilat Takvimi kaleminin tutarı (min(dönem tutarı, Kalan); Kalan boşsa dönem tutarı))
+  ✗ [BULGU KULLANICI] k1:kalem:2026/705: program 535777889900 · kâhin 100000 (TAKVİM KALEMİ: Tahsilat Takvimi kaleminin tutarı (min(dönem tutarı, Kalan); Kalan boşsa dönem tutarı))
+  ✗ [BULGU KULLANICI] k1:rapor:2026/701:gorunurVeyaNot: program false · kâhin true (Y1/Y3: borç kolonu yok / ana tutar belirlenemiyor — satır notsuz kaybolmaz)
+  ✗ [BULGU KULLANICI] k1:rapor:2026/702:gorunurVeyaNot: program false · kâhin true (Y1/Y3: borç kolonu yok / ana tutar belirlenemiyor — satır notsuz kaybolmaz)
+
+ÖZET: 1 senaryo, 35 denetim, 16 fark (BULGU 16), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b10/kahin-b3n-v243
+19/35 denetim geçti

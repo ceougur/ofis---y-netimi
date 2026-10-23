@@ -1,7 +1,7 @@
 # Bağımsız TUTAR kâhini — Netten Brüte ve e-SMM UBL tutarları (2.4.4 madde 31a, B3–B4)
 
 Dil: **`destekofis-tutar/1`** (tohumlu girdi tablosu) · Yazıldığı gün: 22.10.2026 · Kâhin: `model.py` (Python 3, standart kütüphane, `python3 -I`) ·
-Koşucu: `kos.mjs` · Komut: `node --disable-warning=ExperimentalWarning test/bagimsiz/tutar/kos.mjs --tohum 1-3 --adet 50` (tohum başına 50 satır + 10 çapa satırı; npm betiği `test:kahin-tutar` iş akışına eklenirken açılır).
+Koşucu: `kos.mjs` · Komut: `node --disable-warning=ExperimentalWarning test/bagimsiz/tutar/kos.mjs --tohum 1-3 --adet 50` (tohum başına 50 satır + 11 çapa satırı — c11 23.10.2026 MM10 örneği; npm betiği `test:kahin-tutar` iş akışına eklenirken açılır).
 
 ## 0. Temiz oda ve kaynaklar
 
@@ -36,11 +36,11 @@ Koşucu: `kos.mjs` · Komut: `node --disable-warning=ExperimentalWarning test/ba
 | B3.3 | Brüt = Net Ücreti veren EN KÜÇÜK brüt; birim fiyat KDV hariçte = brüt − öbür kalemler, KDV dahilde = matrah + yuvarla(matrah × KDV) | AJAN (iki dalda farklıysa ÇATAL) |
 | B3.4 | Öbür kalemler Net Ücreti zaten karşılıyorsa (ilk kaleme > 0 brüt kalmıyorsa) Netten Brüte reddeder | AJAN |
 | B3.5 | KDV = yuvarla(kalem matrahı × oran), belge KDV'si = Σ kalem | GİB (KDV K. md. 20; kalem başına) |
-| B3.6 | Stopaj = yuvarla(brüt × oran) — **ÇATAL** A belge düzeyi / B kalem kalem; GİB yazmıyor | GİB tek dalda, ÇATAL iki dalda |
+| B3.6 | Stopaj = yuvarla(belge brütü × oran) — **23.10.2026: ÇATAL karara bağlandı, dal A (belge düzeyi)**: 31b MM10 ([KULLANICI] 22.10 21:27 UTC "MM10 … tek yuvarlama kuralı"; ana oturumun kural metni "KDV kalem başına, stopaj makbuz toplamı üzerinden; çok kalemli makbuzda ≤ 1 kuruş fark beklenir; mevcut model böyle, değişmedi"). Dal B (kalem kalem) yalnız bilgi. Ek denetim `mm10KdvStopajFarkiKurus`: iki kalemli, KDV hariç, iskontosuz, KDV oranı = stopaj oranı makbuzda KDV − stopaj ≤ 1 kuruş (üç ve daha çok kalemde 2 kuruşa çıkabildiğinden denetlenmez) | KULLANICI (MM10); GİB tek dalda |
 | B3.7 | KDV tevkifatı = yuvarla(KDV × pay/payda) kalem başına — **ÇATAL** kalem / belge düzeyi | GİB tek dalda, ÇATAL iki dalda |
 | B3.8 | Ödenecek = Net Ücret + KDV − tevkifat (programın kendi tutarlarıyla) | GİB (SMM "Net Tahsil Edilen") |
 | B3.9 | Netten Brüte ön hesabı (gross, stoppage, net, vat, withheld, payable) = kaydedilen makbuz | AJAN |
-| A6 | Nihai tüketici (11111111111) + 30.000 TL üstü toplam → kayıt reddedilir | GİB |
+| A6 | Nihai tüketici (11111111111) + 30.000 TL üstü toplam → kayıt reddedilir. **23.10.2026 ÇATAL (taban):** "vergiler dahil toplam" (matrah + KDV) eşiği aşıp ödenecek (stopaj ve tevkifat düşülmüş) aşmıyorsa kayıt sonucu denetlenmez, `:not:a6Tabani` yazılır — program bu satırlarda ödenecek tutarı esas alıyor (Uzun Doğrulama ölçeğinde yerel koşu tohum 5 s053, tohum 11 s037); kaynak doğrulanamadı (CLAUDE.md "30.000 TL nihai tüketici engeli … mevzuat doğrulanamadı; kullanıcının mali müşavirine sorulur") → İNCELE | GİB (taban ÇATAL) |
 | B4.1–4 | XML LegalMonetaryTotal: LineExtension = brüt; TaxExclusive = brüt − stopaj; TaxInclusive = KDV − tevkifat; Payable = Net Ücret + Tahsil Edilen KDV | EDM |
 | B4.5–7 | 0003 GV stopajı tutarı ve oranı; 0015 KDV toplamı; WithholdingTaxTotal = tevkifat | EDM |
 | B4.8 | Σ kalem LineExtensionAmount = belge | GİB/UBL |

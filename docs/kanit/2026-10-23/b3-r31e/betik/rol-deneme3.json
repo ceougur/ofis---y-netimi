@@ -1,0 +1,4 @@
+{"sheets":[
+ {"name":"SeyrekYazi","matrix":[["Ad Soyad","Aidat","Kalan Borç","Son Ödeme"],["Mehmet Ay","500","","@d-2"],["Nalan Ay","500","görüşülecek","@d-3"],["Oğuz Ay","500","250","@d-4"],["Pelin Ay","500","sorulacak","@d-5"]]},
+ {"name":"BorcluTCHatali","matrix":[["Dosya No","Borçlu","Borçlu TC","Son Ödeme"],["2026/41","Rana Ak","12345678901","@d-2"],["2026/42","Sena Ak","22345678902","@d-3"]]}
+]}

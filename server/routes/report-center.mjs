@@ -2131,27 +2131,52 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
       id: "stopaj-tevkifat",
       group: "Fatura",
       title: "Stopaj ve Tevkifat Özeti",
-      description: "Müşterinin bizden kestiği stopaj (193, mahsup edilir) ve alıcı olarak bizim kestiğimiz stopaj ile KDV tevkifatı (360, muhtasar ve 2 No.lu KDV).",
+      description: "Müşterinin bizden kestiği stopaj (193, mahsup edilir) ve alıcı olarak bizim kestiğimiz stopaj ile KDV tevkifatı (360, muhtasar ve 2 No.lu KDV); iadeler asıl belgenin tarafında eksi yazılır.",
       params: ["range"],
       preset: "thisYear",
       build(query) {
         const range = rangeOf(query, "thisYear");
-        const list = store.all(
-          `SELECT i.issue_date AS date, i.number, i.kind, COALESCE(json_extract(i.party_json, '$.name'), '') AS name, COALESCE(json_extract(i.party_json, '$.taxNo'), '') AS taxNo,
-                  i.try_net AS net, i.stoppage_rate AS stoppageRate, i.try_stoppage AS stoppage, i.try_withheld AS withheld
-           FROM invoices i WHERE i.status = 'issued' AND (i.try_stoppage > 0 OR i.try_withheld > 0) AND (? = '' OR i.issue_date >= ?) AND (? = '' OR i.issue_date <= ?) ORDER BY i.issue_date, i.number`,
-          range.from, range.from, range.to, range.to,
-        );
-        const side = kind => (["sale", "smm", "purchase_return"].includes(kind) ? "Bizden kesilen (193)" : "Bizim kestiğimiz (360)");
-        const sum = (filter, key) => roundMoney(list.filter(filter).reduce((total, row) => total + (Number(row[key]) || 0), 0));
-        const ours = row => !["sale", "smm", "purchase_return"].includes(row.kind);
+        // 2.4.4 MM3 (uzman mali müşavir 31b): taraf ve işaret belgenin yönünden, defterin kuralıyla (general-ledger.mjs journal()):
+        //   satış / SMM   : müşterinin bizden kestiği — stopaj B 193; KDV tevkifatını alıcı öder (A 391 o kadar az)  → artı
+        //   satıştan iade : aynı taraf, EKSİ — asıl satışın tevkifatı ters yönde azalır (B 391 (KDV − tevkifat)); 360'a dokunmaz
+        //   alış          : bizim kestiğimiz — A 360 (tevkifat + stopaj)                                              → artı
+        //   alıştan iade  : aynı taraf, EKSİ — B 360 (tevkifat + stopaj)
+        // Böylece özet defterle (193 / 360 hareketi) ve KDV Özeti'yle ("Alıcı Olarak Kesilen Tevkifat (2 No.lu)") aynı sayıyı verir. Önceden (2.4.3'te de)
+        // satıştan iade "Bizim kestiğimiz (360)", alıştan iade "Bizden kesilen (193)" sayılıp ikisi de artı toplanıyordu (tevkifatlı satış + iadesi →
+        // defterde 360 yokken "Bizim Ödeyeceğimiz Tevkifat 1.800").
+        const THEIRS = "Bizden kesilen (193)";
+        const OURS = "Bizim kestiğimiz (360)";
+        const SIDE = { sale: [THEIRS, 1], smm: [THEIRS, 1], sale_return: [THEIRS, -1], purchase: [OURS, 1], purchase_return: [OURS, -1] };
+        const list = store
+          .all(
+            `SELECT i.issue_date AS date, i.number, i.kind, COALESCE(json_extract(i.party_json, '$.name'), '') AS name, COALESCE(json_extract(i.party_json, '$.taxNo'), '') AS taxNo,
+                    i.try_net AS net, i.stoppage_rate AS stoppageRate, i.try_stoppage AS stoppage, i.try_withheld AS withheld
+             FROM invoices i WHERE i.status = 'issued' AND (i.try_stoppage > 0 OR i.try_withheld > 0) AND (? = '' OR i.issue_date >= ?) AND (? = '' OR i.issue_date <= ?) ORDER BY i.issue_date, i.number`,
+            range.from, range.from, range.to, range.to,
+          )
+          .filter(row => SIDE[row.kind])
+          .map(row => {
+            const [side, sign] = SIDE[row.kind];
+            // "|| 0": eksi sıfır "-0,00 TL" yazılmaz.
+            const signed = value => roundMoney(sign * (Number(value) || 0)) || 0;
+            return { ...row, side, net: signed(row.net), stoppage: signed(row.stoppage), withheld: signed(row.withheld) };
+          });
+        const sum = (side, key) => roundMoney(list.filter(row => row.side === side).reduce((total, row) => total + row[key], 0)) || 0;
         return {
           subtitle: rangeText(range),
           headers: ["Tarih", "Belge No", "Cari", "VKN / TCKN", "Taraf", "Matrah", "Stopaj %", "Stopaj", "KDV Tevkifatı"],
           types: ["", "", "", "", "", "money", "", "money", "money"],
-          rows: list.map(row => [dayText(row.date), row.number, row.name, row.taxNo, side(row.kind), money(row.net), row.stoppageRate ? `%${row.stoppageRate}` : "", money(row.stoppage), money(row.withheld)]),
-          summary: [["Bizden Kesilen Stopaj", money(sum(row => !ours(row), "stoppage"))], ["Bizim Ödeyeceğimiz Stopaj", money(sum(ours, "stoppage"))], ["Bizim Ödeyeceğimiz Tevkifat", money(sum(ours, "withheld"))]],
-          footerUniform: "Taraf",
+          rows: list.map(row => [dayText(row.date), row.number, row.name, row.taxNo, row.side, money(row.net), row.stoppageRate ? `%${row.stoppageRate}` : "", money(row.stoppage), money(row.withheld)]),
+          summary: [["Bizden Kesilen Stopaj", money(sum(THEIRS, "stoppage"))], ["Bizim Ödeyeceğimiz Stopaj", money(sum(OURS, "stoppage"))], ["Bizim Ödeyeceğimiz Tevkifat", money(sum(OURS, "withheld"))]],
+          // İki taraf karışınca her tarafın kendi TOPLAM satırı (2.4.3 UX24 düzeni; 193 ile 360 toplanmaz, Net satırı yok); tek taraf kalınca tek TOPLAM.
+          // Önceki footerUniform karışık dönemde TOPLAM'ı hiç göstermiyordu (raporun taraf süzgeci yok).
+          footerGroups: {
+            column: "Taraf",
+            groups: [
+              { label: "TOPLAM Bizden Kesilen (193)", values: [THEIRS] },
+              { label: "TOPLAM Bizim Kestiğimiz (360)", values: [OURS] },
+            ],
+          },
         };
       },
     },

@@ -1,0 +1,32 @@
+{
+  "ad": "v1-v2-e2e-senaryo-tablodan-aktar",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-tablodan-aktar.mjs",
+  "commit": "3e04e9b7b9c359585f1eb0d996ccdbb5a8be1b34",
+  "dal": "is/r31e-d",
+  "kirli": 4,
+  "izlenmeyen": 27,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T06:29:17.361Z",
+  "sure_sn": 65,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 47,
+    "gecen": 47,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/v1-v2-e2e-senaryo-tablodan-aktar.log",
+  "klasor": "/home/user/wt/r31e-d",
+  "ham_cikti_sha256": "12f8f6131ff79affd001e1937c1e779720a91cac62a94c57b0e35359f211b2c8",
+  "ham_cikti_bayt": 6427
+}

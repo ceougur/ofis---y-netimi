@@ -1,0 +1,53 @@
+{
+  "ad": "2026-10-23/kolon-ipucu-kirmizi",
+  "komut": "node --test test/kolon-ipucu-244.test.mjs",
+  "commit": "624810bfa3975421ec0990aa08a5a4c2ccfefeab",
+  "dal": "is/kolon-ipucu",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T07:23:53.073Z",
+  "sure_sn": 0.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 0,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "kolon eşleme ipucu değer adlarını yazar › kategori kolonu (Yerel Mahkeme): değer adları var, [object Object] yok",
+      "konum": "test/kolon-ipucu-244.test.mjs:13:3",
+      "hata": "ipucu nesne metni taşıyor: başlık kelimesi: kategori · 50 farklı değer: [object Object], [object Object], [object Object], [object Object]… (beklenen , gelen başlık kelimesi: kategori · 50 farklı değer: [object Object], [object Object], [object Object], [object Object]…)"
+    },
+    {
+      "ad": "kolon eşleme ipucu değer adlarını yazar › durum kolonu: değer adları sayılarıyla değil adıyla, sıklık sırasıyla",
+      "konum": "test/kolon-ipucu-244.test.mjs:24:3",
+      "hata": "The input was expected to not match the regular expression /\\[object Object\\]/. Input: · 'başlık kelimesi: durum · 3 farklı değer: [object Object], [object Object], [object Object]' (beklenen , gelen başlık kelimesi: durum · 3 farklı değer: [object Object], [object Object], [object Object])"
+    },
+    {
+      "ad": "kolon eşleme ipucu değer adlarını yazar › sorumlu kolonu: tekrar eden kişi adları yazılır",
+      "konum": "test/kolon-ipucu-244.test.mjs:32:3",
+      "hata": "ipucu: başlık kelimesi: sorumlu · az sayıda kişi tekrar ediyor: [object Object], [object Object], [object Object] (beklenen , gelen başlık kelimesi: sorumlu · az sayıda kişi tekrar ediyor: [object Object], [object Object], [object Object])"
+    },
+    {
+      "ad": "kolon eşleme ipucu değer adlarını yazar › değer metni olduğu gibi gelir (kaçırma istemcide esc ile)",
+      "konum": "test/kolon-ipucu-244.test.mjs:41:3",
+      "hata": "The input did not match the regular expression /<b>x<\\/b>/. Input: · 'başlık kelimesi: kategori · 2 farklı değer: [object Object], [object Object]' (beklenen , gelen başlık kelimesi: kategori · 2 farklı değer: [object Object], [object Object])"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-23/2026-10-23/kolon-ipucu-kirmizi.log",
+  "klasor": "/home/user/wt/kolon-ipucu",
+  "ham_cikti_sha256": "353149638c7cfb5e02320565e14a86d32742f67828d58c86ff7b5a46237c0b25",
+  "ham_cikti_bayt": 5667
+}

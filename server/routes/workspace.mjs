@@ -45,6 +45,8 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
     if (!key) throw new HttpError(400, `${label} gerekli.`);
     return key;
   };
+  // 31e İNCELE + tur 7 N6: bayat "satir:" anahtarına kayıt bağı yazımı 409 record-gone (dataset.liveKey; belge yüklemesi de: routes/documents.mjs).
+  const liveCaseKey = key => (dataset?.liveKey ? dataset.liveKey(key) : key);
   // v1.5.0: tek ve kalıcı çalışma verisi var; arayüzün gönderdiği kaynak adı ne olursa olsun düzeltmeler, silmeler ve
   // yeni kayıtlar ona bağlanır (güncelleme sırasında açık kalan eski sayfalar eski kaynak adını gönderse bile).
   const sourceNameOf = () => dataset.currentKey();
@@ -280,7 +282,7 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
     const user = auth.requirePermission(req, "records.edit");
     const body = await readJson(req);
     const source = sourceNameOf(body);
-    const key = caseKeyOf(body.caseKey || body.case_key, "Dosya kimliği");
+    const key = liveCaseKey(caseKeyOf(body.caseKey || body.case_key, "Dosya kimliği"));
     const field = limited(body.field, 200, "Alan adı");
     if (!field) throw new HttpError(400, "Dosya ve alan bilgisi gerekli.");
     // "__sheet", "__hofKey" gibi iç alanlar düzenlenemez (kaydı başka sekmeye taşıyamaz).
@@ -362,7 +364,7 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
   router.post("/api/workspace/cases/:key/notes", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "notes.write");
     const body = await readJson(req);
-    const key = caseKeyOf(params.key);
+    const key = liveCaseKey(caseKeyOf(params.key));
     const note = limited(body.note, 5000, "Not");
     if (!note) throw new HttpError(400, "Not metni gerekli.");
     const itemId = newId("note");
@@ -375,7 +377,7 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
   router.post("/api/workspace/cases/:key/phones", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "phones.create");
     const body = await readJson(req);
-    const key = caseKeyOf(params.key);
+    const key = liveCaseKey(caseKeyOf(params.key));
     const phone = text(body.phone).replace(/[^\d+]/g, "");
     if (phone.length < 7 || phone.length > 20) throw new HttpError(400, "Geçerli bir telefon numarası gerekli.");
     const itemId = newId("phone");
@@ -392,7 +394,7 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
   router.post("/api/workspace/cases/:key/payments", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "payments.create");
     const body = await readJson(req);
-    const key = caseKeyOf(params.key);
+    const key = liveCaseKey(caseKeyOf(params.key));
     const { amount, date } = paymentInput(body);
     const method = methodInput(body.method);
     // 2.2.0: kart yolu POS'tur (posId; tek POS kendiliğinden) — taksit sayısı, provizyon, kart son 4 hanesi işlem başlığına (POS kancası).
@@ -502,7 +504,7 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
   router.post("/api/workspace/cases/:key/liens", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "liens.create");
     const body = await readJson(req);
-    const key = caseKeyOf(params.key);
+    const key = liveCaseKey(caseKeyOf(params.key));
     const placed = new Date(text(body.placedAt));
     if (Number.isNaN(placed.getTime())) throw new HttpError(400, "Geçerli bir haciz tarihi gerekli.");
     const expires = new Date(placed);
@@ -619,7 +621,7 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
     if (!title) throw new HttpError(400, "Görev başlığı gerekli.");
     const priority = ["normal", "high", "urgent"].includes(text(body.priority)) ? text(body.priority) : "normal";
     const itemId = newId("task");
-    const key = limited(body.caseKey || body.case_key, CASE_KEY_MAX, "Dosya kimliği");
+    const key = liveCaseKey(limited(body.caseKey || body.case_key, CASE_KEY_MAX, "Dosya kimliği"));
     const typed = limited(body.assignee, 120, "Atanan kişi") || user.display_name;
     // v2.0.10: arayüz kişiyi listeden seçer ve kimliğini gönderir (aynı adlı iki kullanıcı karışmaz). Kimlik yoksa (eski
     // istemci) yazılan ad tek bir kullanıcıya denk geliyorsa görev o kişiye kimliğiyle bağlanır.
@@ -806,7 +808,7 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
   router.put("/api/workspace/case-notes/:key", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "notes.write");
     const body = await readJson(req);
-    const key = caseKeyOf(params.key);
+    const key = liveCaseKey(caseKeyOf(params.key));
     const note = limited(body.note ?? "", 10_000, "Not");
     const old = store.get("SELECT note, version FROM case_notes WHERE case_key = ?", key);
     const version = (old?.version || 0) + 1;

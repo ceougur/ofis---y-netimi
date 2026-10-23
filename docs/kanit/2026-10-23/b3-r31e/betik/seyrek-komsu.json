@@ -1,0 +1,8 @@
+{"sheets":[
+ {"name":"BorcluTel","matrix":[["Dosya No","Borçlu","Borçlu Telefon","Son Ödeme"],["2026/1","Ali Veli","05321112233","@d-2"],["2026/2","Ayşe Kaya","05321112244","@d-3"],["2026/3","Can Er","05321112255","@d-4"]]},
+ {"name":"BorcluTC","matrix":[["Dosya No","Borçlu","Borçlu TC","Tutar","Masraf","Son Ödeme"],["2026/11","Deniz Ak","10000000146","1.000","50","@d-2"],["2026/12","Ece Su","12345678950","2.000","60","@d-3"],["2026/13","Fırat Er","10000000078","3.000","70","@d-4"]]},
+ {"name":"SeyrekKalan","matrix":[["Ad Soyad","Aidat","Gecikme Faizi","Kalan Borç","Son Ödeme"],["Gül Taş","500","20","","@d-2"],["Hale Ak","500","30","530","@d-3"],["İlker Su","500","40","","@d-4"]]},
+ {"name":"BorcDurum","matrix":[["Ad Soyad","Tutar","Peşinat","Borç","Son Ödeme"],["Kaan Uz","1.000","100","0","@d-2"],["Lale Gün","2.000","200","Var","@d-3"],["Mert Can","3.000","300","Var","@d-4"]]},
+ {"name":"OdemeSozu","matrix":[["Ad Soyad","Söz Tarihi","Söz Tutarı"],["Nur Ak","@d-1","700"],["Oya Er","@d-2","800"]]},
+ {"name":"AlacakliAdi","matrix":[["Müşteri","Alacaklı","Tutar","KDV","Vade"],["Pınar Su","ABC Ltd","1.000","200","@d-2"],["Rıza Ak","XYZ AŞ","2.000","400","@d-3"]]}
+]}

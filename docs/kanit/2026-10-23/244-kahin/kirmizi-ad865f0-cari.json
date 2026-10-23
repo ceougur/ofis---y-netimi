@@ -1,0 +1,103 @@
+{
+  "ad": "244-kahin/kirmizi-ad865f0-cari",
+  "komut": "env KAHIN_PROGRAM_KOKU=/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-244/kahin244-eski-ad865f0 node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs test/bagimsiz/cari/senaryolar/b3-u2-tablo-borcu.json test/bagimsiz/cari/senaryolar/b5-u1-nihai-tuketici.json --mutasyonsuz --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-244/kanit-kirmizi-cari",
+  "commit": "7123816fa43f717621b2fc399383e171ffe8d7c7",
+  "dal": "is/kahin-244",
+  "kirli": 0,
+  "izlenmeyen": 26,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T01:11:55.365Z",
+  "sure_sn": 1.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 61,
+    "gecen": 47,
+    "basarisiz": 14,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 14 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU KULLANICI] k1:nakit:kasaGiris: program 0 · kâhin 120000 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k1:rapor:2026/105:borc: program 1200 · kâhin 800000 (B3 U2/E2/E3 dosya no başına tek kaynak (Kalan → borç başlıklı → tek tutar; söz borç dışı))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k1:rapor:2026/106:borc: program 700000 · kâhin 400000 (B3 U2/E2/E3 dosya no başına tek kaynak (Kalan → borç başlıklı → tek tutar; söz borç dışı))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k1:rapor:2026/107:borc: program 150300 · kâhin 150000 (B3 U2/E2/E3 dosya no başına tek kaynak (Kalan → borç başlıklı → tek tutar; söz borç dışı))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] adim:n1:olusturuldu: program false · kâhin true (B5 U1 uygun cari yoksa yeni açılır)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] adim:n1:secilen: program \"A1\" · kâhin \"@nt1\" (B5 U1 Nihai Tüketici yalnız işaretli/uygun cari)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] adim:n2:secilen: program \"A1\" · kâhin \"@nt1\" (B5 U1 Nihai Tüketici yalnız işaretli/uygun cari)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] adim:n3:secilen: program \"A1\" · kâhin \"@nt1\" (B5 U1 Nihai Tüketici yalnız işaretli/uygun cari)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] adim:n4:secilen: program \"A1\" · kâhin \"A2\" (B5 U1 Nihai Tüketici yalnız işaretli/uygun cari)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] adim:n5:olusturuldu: program false · kâhin true (B5 U1 uygun cari yoksa yeni açılır)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] adim:n5:secilen: program \"A1\" · kâhin \"@nt2\" (B5 U1 Nihai Tüketici yalnız işaretli/uygun cari)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN] adim:r1:durum: program \"ret\" · kâhin \"ok\" (adım kabul edilir) · yanıt:  Cari bulunamadı. Silinmiş olabilir.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN] k1:cari:@nt1:bakiye: program \"okunamadı\" · kâhin 0 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN] k1:cari:@nt2:bakiye: program \"okunamadı\" · kâhin 0 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-23/244-kahin/kirmizi-ad865f0-cari.log",
+  "klasor": "/home/user/wt/kahin-244",
+  "ham_cikti_sha256": "d2f6a0a748387eb0b2bd21dbcf23d42833856eb49454e5d915aaaf582b6c49fe",
+  "ham_cikti_bayt": 2198
+}

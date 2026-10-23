@@ -1,0 +1,78 @@
+{
+  "ad": "244-kahin/kirmizi-aday20-cari-z2-z3",
+  "komut": "node test/bagimsiz/cari/kos.mjs --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-z-aday20",
+  "commit": "0f237689977dd22f4c9137bcc30766d128770429",
+  "dal": "is/kahin-244",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T12:25:18.357Z",
+  "sure_sn": 153.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 3632,
+    "gecen": 3623,
+    "basarisiz": 9,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 9 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:akis: program 240000 · kâhin 140000 (TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:takvim: program 240000 · kâhin 140000 (TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:vade: program 240000 · kâhin 140000 (TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:kalemVar:2026/951: program true · kâhin false (Z2: Kalan Borç 0 ya da eksi satırda vade kalemi yoktur)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:kalemVar:2026/954: program true · kâhin false (Z2: Kalan Borç 0 ya da eksi satırda vade kalemi yoktur)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:akis: program 200000 · kâhin 400000 (TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:takvim: program 200000 · kâhin 400000 (TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:vade: program 200000 · kâhin 400000 (TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:kalem:2026/956: program 100000 · kâhin 300000 (TAKVİM KALEMİ: Tahsilat Takvimi kaleminin tutarı (min(dönem tutarı, Kalan); Kalan boşsa dönem tutarı))",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-23/244-kahin/kirmizi-aday20-cari-z2-z3.log",
+  "klasor": "/home/user/wt/kahin-244",
+  "ham_cikti_sha256": "f79917c236cb14610db79c11093324ad337e23435f36576722f9c72f242b86f7",
+  "ham_cikti_bayt": 12329
+}

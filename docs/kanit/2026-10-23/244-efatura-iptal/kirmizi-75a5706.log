@@ -1,0 +1,240 @@
+TAP version 13
+# Subtest: belirsiz e-Fatura: yalnız programda iptal kapısının sınırı (saf)
+    # Subtest: uncertainWindow e-Faturayı kapsar; e-Arşiv / e-SMM'de attemptWindow ile aynı; cancelWindow e-Faturada yine yok (normal iptal değişmez)
+    not ok 1 - uncertainWindow e-Faturayı kapsar; e-Arşiv / e-SMM'de attemptWindow ile aynı; cancelWindow e-Faturada yine yok (normal iptal değişmez)
+      ---
+      duration_ms: 2.377559
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/efatura-iptal/efatura-iptal-eski-75a5706/test/ebelge-244-efatura-belirsiz-iptal.test.mjs:68:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        belirsiz gönderimde yerel iptal sınırı (uncertainWindow) yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/efatura-iptal/efatura-iptal-eski-75a5706/test/ebelge-244-efatura-belirsiz-iptal.test.mjs:70:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    1..1
+not ok 1 - belirsiz e-Fatura: yalnız programda iptal kapısının sınırı (saf)
+  ---
+  duration_ms: 3.528511
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/efatura-iptal/efatura-iptal-eski-75a5706/test/ebelge-244-efatura-belirsiz-iptal.test.mjs:67:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: belirsiz e-Fatura + Yalnız Programda İptal (sahte EDM, sahte saat)
+    # Subtest: F5 girişimden 8 gün dolmadıysa EDM'ye sorulmaz (K4 çıkış yolu); belgeye yazılan ileti e-Faturanın iptal yolunu söyler
+    not ok 1 - F5 girişimden 8 gün dolmadıysa EDM'ye sorulmaz (K4 çıkış yolu); belgeye yazılan ileti e-Faturanın iptal yolunu söyler
+      ---
+      duration_ms: 141.821478
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/efatura-iptal/efatura-iptal-eski-75a5706/test/ebelge-244-efatura-belirsiz-iptal.test.mjs:134:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'Yalnız programda iptal edildi (entegratöre iptal gönderilmedi). Entegratörde belge varsa orada ayrıca iptal edin.'
+        - "Yalnız programda iptal edildi (EDM'ye sorulmadı). Belge EDM'ye ulaşıp alıcıya iletildiyse GİB'de geçerlidir: alıcıdan ret ya da GİB'in e-Fatura iptal yolunu isteyin, gerekirse alıcı iade faturası keser."
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: "Yalnız programda iptal edildi (EDM'ye sorulmadı). Belge EDM'ye ulaşıp alıcıya iletildiyse GİB'de geçerlidir: alıcıdan ret ya da GİB'in e-Fatura iptal yolunu isteyin, gerekirse alıcı iade faturası keser."
+      actual: 'Yalnız programda iptal edildi (entegratöre iptal gönderilmedi). Entegratörde belge varsa orada ayrıca iptal edin.'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/efatura-iptal/efatura-iptal-eski-75a5706/test/ebelge-244-efatura-belirsiz-iptal.test.mjs:142:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: F6 sınır: girişimden sonraki 8. gün 23:59'da sorulmaz; 9. gün sorulur
+    not ok 2 - F6 sınır: girişimden sonraki 8. gün 23:59'da sorulmaz; 9. gün sorulur
+      ---
+      duration_ms: 178.098458
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/efatura-iptal/efatura-iptal-eski-75a5706/test/ebelge-244-efatura-belirsiz-iptal.test.mjs:146:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        9. gün: önce EDM'ye soruldu
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/efatura-iptal/efatura-iptal-eski-75a5706/test/ebelge-244-efatura-belirsiz-iptal.test.mjs:157:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: F3 8 gün geçti, EDM "bulunamadı" → belge iletilmemiş, iptal serbest
+    not ok 3 - F3 8 gün geçti, EDM "bulunamadı" → belge iletilmemiş, iptal serbest
+      ---
+      duration_ms: 78.448314
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/efatura-iptal/efatura-iptal-eski-75a5706/test/ebelge-244-efatura-belirsiz-iptal.test.mjs:160:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        önce EDM'ye soruldu
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/efatura-iptal/efatura-iptal-eski-75a5706/test/ebelge-244-efatura-belirsiz-iptal.test.mjs:167:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: F1/F2/F10 TEMELFATURA: 8 gün geçti, belge EDM'de VAR → yalnız programda iptal reddedilir, durum belgeye yazılır; ileti iptal yolunu söyler ve o yol çalışır
+    not ok 4 - F1/F2/F10 TEMELFATURA: 8 gün geçti, belge EDM'de VAR → yalnız programda iptal reddedilir, durum belgeye yazılır; ileti iptal yolunu söyler ve o yol çalışır
+      ---
+      duration_ms: 77.485296
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/efatura-iptal/efatura-iptal-eski-75a5706/test/ebelge-244-efatura-belirsiz-iptal.test.mjs:174:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"id":"invoice-45c4e672-f5b0-4667-b11c-874919396a2a","kind":"sale","kindLabel":"Satış Faturası","scenario":"service_sale","scenarioLabel":"Hizmet Satışı","status":"cancelled","statusLabel":"İptal Edildi","number":"TEF2026000000005","displayNo":"TEF2026000000005","internalNumber":false,"ettn":"375b850c-890b-4ec1-882f-629103fd6257","issueDate":"2026-06-17","issueTime":"10:00","accountId":"account-3cfd5419-dadd-406e-885e-1e3614249cfb","accountName":"Alıcı Ticaret A.Ş.","accountRef":"1","accountPhone":"","profile":"TEMELFATURA","profileLabel":"e-Fatura (Temel)","typeCode":"SATIS","currency":"TRY","rate":1,"netTotal":500,"vatTotal":100,"withheldTotal":0,"stoppageTotal":0,"payableTotal":600,"tryNet":500,"tryVat":100,"tryPayable":600,"dueDate":"2026-06-17","planId":"","originalId":"","originalNumber":"","originalDate":"","note":"","eStatus":"none","eStatusLabel":"Sonucu Belirsiz","eUnsent":false,"eTestLive":false,"eTest":true,"actorName":"Ofis yöneticisi","createdAt":"2026-06-17T10:00:00.000Z","payState":"cancelled","payStateLabel":"İptal","paid":0,"open":0,"closers":[],"party":{"id":"account-3cfd5419-dadd-406e-885e-1e3614249cfb","name":"Alıcı Ticaret A.Ş.","partyKind":"company","firstName":"","familyName":"","taxNo":"9876543217","taxOffice":"Kavaklıdere","mersisNo":"","tradeRegistry":"","address":"Cinnah Cd. 10","district":"Çankaya","city":"Ankara","postalCode":"","country":"Türkiye","phone":"","email":"","website":"","iban":"","eInvoice":true,"eAlias":"urn:mail:defaultpk@alici.com.tr"},"seller":{"name":"Deneme Ofis Ltd.","partyKind":"company","firstName":"","familyName":"","taxNo":"1234567890","taxOffice":"Çankaya","mersisNo":"","tradeRegistry":"","address":"Atatürk Blv. 1","district":"Çankaya","city":"Ankara","postalCode":"","country":"Türkiye","phone":"","email":"bilgi@deneme.com.tr","website":"","banks":[]},"pricesIncludeVat":false,"discountRate":0,"stoppageRate":0,"baseTotal":500,"discountTotal":0,"baseNetTotal":500,"discountNetTotal":0,"goodsNet":0,"serviceNet":500,"grossTotal":600,"tryWithheld":0,"tryStoppage":0,"gl":[{"account":"600","net":50000}],"orderNo":"","orderDate":"","despatchNo":"","despatchDate":"","paperNo":"","returnRef":"","payment":{"cash":[],"cheques":[],"endorse":[],"mode":"open","installments":null,"rest":600},"eMessage":"Yalnız programda iptal edildi (entegratöre iptal gönderilmedi). Entegratörde belge varsa orada ayrıca iptal edin.","eAt":"2026-06-18T10:00:00.000Z","eAdapter":"edm","cancelledAt":"2026-06-27T10:00:00.000Z","cancelReason":"EDM'ye ulaşılamıyor","amountInWords":"Yalnız Altı Yüz Türk Lirası","byRate":[{"rate":20,"net":500,"vat":100,"withheld":0}],"lines":[{"id":"iline-ad21b0e9-8f33-44ae-80fa-4e19085e7547","invoiceId":"invoice-45c4e672-f5b0-4667-b11c-874919396a2a","seq":1,"itemId":"","goods":false,"code":"","name":"Danışmanlık","description":"","unit":"Adet","qty":1,"unitPrice":500,"discountRate":0,"base":500,"discount":0,"net":500,"vatRate":20,"vat":100,"withholdingCode":"","withholdingNum":0,"withholdingDen":0,"withheld":0,"exemptionCode":"","gross":600,"payable":600,"glAccount":"600","expenseCode":"","unitCost":0,"originLineId":"","moveId":"","serialNo":"","lotNo":"","returned":0,"expenseLabel":""}],"returnable":[{"id":"iline-ad21b0e9-8f33-44ae-80fa-4e19085e7547","left":1}],"returns":[],"cheques":[],"plan":null,"payments":[],"posCash":false,"canManage":true,"canEdit":false,"canModify":false,"modifyBlock":"","canIssue":false,"canDelete":false,"deleteBlock":"Bu belgenin numarası entegratörde (EDM) kullanıldı; e-Belge numarası yeniden verilemeyeceği için belge silinmez, “İptal Edildi” olarak kalır.","canCancel":false,"cancelWindow":null,"cancelDeadline":"","canLocalCancel":false,"cancelNotice":"","cancelBlock":"","cancelRecheck":false,"canReturn":false,"returnBlock":"","repeat":null,"canRepeat":false,"canSend":false,"canWithdraw":false,"sendBlock":"","canRefresh":true,"canDraft":false,"draftStale":false,"canOfficial":false,"edocEnabled":true,"notices":[]}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/efatura-iptal/efatura-iptal-eski-75a5706/test/ebelge-244-efatura-belirsiz-iptal.test.mjs:179:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: F1/F2/F10 TICARIFATURA: 8 gün geçti, belge EDM'de VAR → yalnız programda iptal reddedilir, durum belgeye yazılır; ileti iptal yolunu söyler ve o yol çalışır
+    not ok 5 - F1/F2/F10 TICARIFATURA: 8 gün geçti, belge EDM'de VAR → yalnız programda iptal reddedilir, durum belgeye yazılır; ileti iptal yolunu söyler ve o yol çalışır
+      ---
+      duration_ms: 85.963862
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/efatura-iptal/efatura-iptal-eski-75a5706/test/ebelge-244-efatura-belirsiz-iptal.test.mjs:174:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"id":"invoice-7f0def16-2947-4e45-8d18-3d003bf7de58","kind":"sale","kindLabel":"Satış Faturası","scenario":"service_sale","scenarioLabel":"Hizmet Satışı","status":"cancelled","statusLabel":"İptal Edildi","number":"TEF2026000000006","displayNo":"TEF2026000000006","internalNumber":false,"ettn":"70ce4001-b108-4307-93cf-f6efdd523dd5","issueDate":"2026-06-17","issueTime":"10:00","accountId":"account-3cfd5419-dadd-406e-885e-1e3614249cfb","accountName":"Alıcı Ticaret A.Ş.","accountRef":"1","accountPhone":"","profile":"TICARIFATURA","profileLabel":"e-Fatura (Ticari)","typeCode":"SATIS","currency":"TRY","rate":1,"netTotal":500,"vatTotal":100,"withheldTotal":0,"stoppageTotal":0,"payableTotal":600,"tryNet":500,"tryVat":100,"tryPayable":600,"dueDate":"2026-06-17","planId":"","originalId":"","originalNumber":"","originalDate":"","note":"","eStatus":"none","eStatusLabel":"Sonucu Belirsiz","eUnsent":false,"eTestLive":false,"eTest":true,"actorName":"Ofis yöneticisi","createdAt":"2026-06-17T10:00:00.000Z","payState":"cancelled","payStateLabel":"İptal","paid":0,"open":0,"closers":[],"party":{"id":"account-3cfd5419-dadd-406e-885e-1e3614249cfb","name":"Alıcı Ticaret A.Ş.","partyKind":"company","firstName":"","familyName":"","taxNo":"9876543217","taxOffice":"Kavaklıdere","mersisNo":"","tradeRegistry":"","address":"Cinnah Cd. 10","district":"Çankaya","city":"Ankara","postalCode":"","country":"Türkiye","phone":"","email":"","website":"","iban":"","eInvoice":true,"eAlias":"urn:mail:defaultpk@alici.com.tr"},"seller":{"name":"Deneme Ofis Ltd.","partyKind":"company","firstName":"","familyName":"","taxNo":"1234567890","taxOffice":"Çankaya","mersisNo":"","tradeRegistry":"","address":"Atatürk Blv. 1","district":"Çankaya","city":"Ankara","postalCode":"","country":"Türkiye","phone":"","email":"bilgi@deneme.com.tr","website":"","banks":[]},"pricesIncludeVat":false,"discountRate":0,"stoppageRate":0,"baseTotal":500,"discountTotal":0,"baseNetTotal":500,"discountNetTotal":0,"goodsNet":0,"serviceNet":500,"grossTotal":600,"tryWithheld":0,"tryStoppage":0,"gl":[{"account":"600","net":50000}],"orderNo":"","orderDate":"","despatchNo":"","despatchDate":"","paperNo":"","returnRef":"","payment":{"cash":[],"cheques":[],"endorse":[],"mode":"open","installments":null,"rest":600},"eMessage":"Yalnız programda iptal edildi (entegratöre iptal gönderilmedi). Entegratörde belge varsa orada ayrıca iptal edin.","eAt":"2026-06-18T10:00:00.000Z","eAdapter":"edm","cancelledAt":"2026-06-27T10:00:00.000Z","cancelReason":"EDM'ye ulaşılamıyor","amountInWords":"Yalnız Altı Yüz Türk Lirası","byRate":[{"rate":20,"net":500,"vat":100,"withheld":0}],"lines":[{"id":"iline-e21d4f8d-6d45-4b11-897e-ffdb64b00ff0","invoiceId":"invoice-7f0def16-2947-4e45-8d18-3d003bf7de58","seq":1,"itemId":"","goods":false,"code":"","name":"Danışmanlık","description":"","unit":"Adet","qty":1,"unitPrice":500,"discountRate":0,"base":500,"discount":0,"net":500,"vatRate":20,"vat":100,"withholdingCode":"","withholdingNum":0,"withholdingDen":0,"withheld":0,"exemptionCode":"","gross":600,"payable":600,"glAccount":"600","expenseCode":"","unitCost":0,"originLineId":"","moveId":"","serialNo":"","lotNo":"","returned":0,"expenseLabel":""}],"returnable":[{"id":"iline-e21d4f8d-6d45-4b11-897e-ffdb64b00ff0","left":1}],"returns":[],"cheques":[],"plan":null,"payments":[],"posCash":false,"canManage":true,"canEdit":false,"canModify":false,"modifyBlock":"","canIssue":false,"canDelete":false,"deleteBlock":"Bu belgenin numarası entegratörde (EDM) kullanıldı; e-Belge numarası yeniden verilemeyeceği için belge silinmez, “İptal Edildi” olarak kalır.","canCancel":false,"cancelWindow":null,"cancelDeadline":"","canLocalCancel":false,"cancelNotice":"","cancelBlock":"","cancelRecheck":false,"canReturn":false,"returnBlock":"","repeat":null,"canRepeat":false,"canSend":false,"canWithdraw":false,"sendBlock":"","canRefresh":true,"canDraft":false,"draftStale":false,"canOfficial":false,"edocEnabled":true,"notices":[]}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/efatura-iptal/efatura-iptal-eski-75a5706/test/ebelge-244-efatura-belirsiz-iptal.test.mjs:179:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: F4 8 gün geçti, EDM'ye ulaşılamıyor → iptal yapılmaz (502), belge belirsiz kalır
+    not ok 6 - F4 8 gün geçti, EDM'ye ulaşılamıyor → iptal yapılmaz (502), belge belirsiz kalır
+      ---
+      duration_ms: 76.838423
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/efatura-iptal/efatura-iptal-eski-75a5706/test/ebelge-244-efatura-belirsiz-iptal.test.mjs:199:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"id":"invoice-26f02d85-eeaa-453d-a209-b669b9c5b793","kind":"sale","kindLabel":"Satış Faturası","scenario":"service_sale","scenarioLabel":"Hizmet Satışı","status":"cancelled","statusLabel":"İptal Edildi","number":"TEF2026000000007","displayNo":"TEF2026000000007","internalNumber":false,"ettn":"0786c742-a622-446b-8da9-274f053e3fc3","issueDate":"2026-06-17","issueTime":"10:00","accountId":"account-3cfd5419-dadd-406e-885e-1e3614249cfb","accountName":"Alıcı Ticaret A.Ş.","accountRef":"1","accountPhone":"","profile":"TEMELFATURA","profileLabel":"e-Fatura (Temel)","typeCode":"SATIS","currency":"TRY","rate":1,"netTotal":500,"vatTotal":100,"withheldTotal":0,"stoppageTotal":0,"payableTotal":600,"tryNet":500,"tryVat":100,"tryPayable":600,"dueDate":"2026-06-17","planId":"","originalId":"","originalNumber":"","originalDate":"","note":"","eStatus":"none","eStatusLabel":"Sonucu Belirsiz","eUnsent":false,"eTestLive":false,"eTest":true,"actorName":"Ofis yöneticisi","createdAt":"2026-06-17T10:00:00.000Z","payState":"cancelled","payStateLabel":"İptal","paid":0,"open":0,"closers":[],"party":{"id":"account-3cfd5419-dadd-406e-885e-1e3614249cfb","name":"Alıcı Ticaret A.Ş.","partyKind":"company","firstName":"","familyName":"","taxNo":"9876543217","taxOffice":"Kavaklıdere","mersisNo":"","tradeRegistry":"","address":"Cinnah Cd. 10","district":"Çankaya","city":"Ankara","postalCode":"","country":"Türkiye","phone":"","email":"","website":"","iban":"","eInvoice":true,"eAlias":"urn:mail:defaultpk@alici.com.tr"},"seller":{"name":"Deneme Ofis Ltd.","partyKind":"company","firstName":"","familyName":"","taxNo":"1234567890","taxOffice":"Çankaya","mersisNo":"","tradeRegistry":"","address":"Atatürk Blv. 1","district":"Çankaya","city":"Ankara","postalCode":"","country":"Türkiye","phone":"","email":"bilgi@deneme.com.tr","website":"","banks":[]},"pricesIncludeVat":false,"discountRate":0,"stoppageRate":0,"baseTotal":500,"discountTotal":0,"baseNetTotal":500,"discountNetTotal":0,"goodsNet":0,"serviceNet":500,"grossTotal":600,"tryWithheld":0,"tryStoppage":0,"gl":[{"account":"600","net":50000}],"orderNo":"","orderDate":"","despatchNo":"","despatchDate":"","paperNo":"","returnRef":"","payment":{"cash":[],"cheques":[],"endorse":[],"mode":"open","installments":null,"rest":600},"eMessage":"Yalnız programda iptal edildi (entegratöre iptal gönderilmedi). Entegratörde belge varsa orada ayrıca iptal edin.","eAt":"2026-06-18T10:00:00.000Z","eAdapter":"edm","cancelledAt":"2026-06-27T10:00:00.000Z","cancelReason":"EDM'ye ulaşılamıyor","amountInWords":"Yalnız Altı Yüz Türk Lirası","byRate":[{"rate":20,"net":500,"vat":100,"withheld":0}],"lines":[{"id":"iline-6a1534fb-1872-4c48-aeba-a3cb7f311f16","invoiceId":"invoice-26f02d85-eeaa-453d-a209-b669b9c5b793","seq":1,"itemId":"","goods":false,"code":"","name":"Danışmanlık","description":"","unit":"Adet","qty":1,"unitPrice":500,"discountRate":0,"base":500,"discount":0,"net":500,"vatRate":20,"vat":100,"withholdingCode":"","withholdingNum":0,"withholdingDen":0,"withheld":0,"exemptionCode":"","gross":600,"payable":600,"glAccount":"600","expenseCode":"","unitCost":0,"originLineId":"","moveId":"","serialNo":"","lotNo":"","returned":0,"expenseLabel":""}],"returnable":[{"id":"iline-6a1534fb-1872-4c48-aeba-a3cb7f311f16","left":1}],"returns":[],"cheques":[],"plan":null,"payments":[],"posCash":false,"canManage":true,"canEdit":false,"canModify":false,"modifyBlock":"","canIssue":false,"canDelete":false,"deleteBlock":"Bu belgenin numarası entegratörde (EDM) kullanıldı; e-Belge numarası yeniden verilemeyeceği için belge silinmez, “İptal Edildi” olarak kalır.","canCancel":false,"cancelWindow":null,"cancelDeadline":"","canLocalCancel":false,"cancelNotice":"","cancelBlock":"","cancelRecheck":false,"canReturn":false,"returnBlock":"","repeat":null,"canRepeat":false,"canSend":false,"canWithdraw":false,"sendBlock":"","canRefresh":true,"canDraft":false,"draftStale":false,"canOfficial":false,"edocEnabled":true,"notices":[]}
+        
+        200 !== 502
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 502
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/efatura-iptal/efatura-iptal-eski-75a5706/test/ebelge-244-efatura-belirsiz-iptal.test.mjs:205:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: F7 gönderim izi yoksa kesim gününden: kesimden 9. gün EDM'ye sorulur
+    not ok 7 - F7 gönderim izi yoksa kesim gününden: kesimden 9. gün EDM'ye sorulur
+      ---
+      duration_ms: 36.44019
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/efatura-iptal/efatura-iptal-eski-75a5706/test/ebelge-244-efatura-belirsiz-iptal.test.mjs:217:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kesim gününden 9. gün: soruldu (200 {"id":"invoice-bff5c51b-53af-44d8-8285-3b43b94b911c","kind":"sale","kindLabel":"Satış Faturası","scenario":"service_sale","scenarioLabel":"Hizmet Satışı","status":"cancelled","statusLabel":"İptal Edil)
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/efatura-iptal/efatura-iptal-eski-75a5706/test/ebelge-244-efatura-belirsiz-iptal.test.mjs:228:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: F8 Fatura Ayarları yetkisi olmayan: 403, EDM'ye sorulmaz, belge değişmez
+    ok 8 - F8 Fatura Ayarları yetkisi olmayan: 403, EDM'ye sorulmaz, belge değişmez
+      ---
+      duration_ms: 180.345107
+      type: 'test'
+      ...
+    # Subtest: F9 e-Faturanın normal iptali değişmez: gönderilmiş e-Faturada süre bilgisi yok; onaysız İptal Et 409 einvoice-sent
+    ok 9 - F9 e-Faturanın normal iptali değişmez: gönderilmiş e-Faturada süre bilgisi yok; onaysız İptal Et 409 einvoice-sent
+      ---
+      duration_ms: 82.251054
+      type: 'test'
+      ...
+    1..9
+not ok 2 - belirsiz e-Fatura + Yalnız Programda İptal (sahte EDM, sahte saat)
+  ---
+  duration_ms: 1520.210964
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/efatura-iptal/efatura-iptal-eski-75a5706/test/ebelge-244-efatura-belirsiz-iptal.test.mjs:84:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 10
+# suites 2
+# pass 2
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1898.258469

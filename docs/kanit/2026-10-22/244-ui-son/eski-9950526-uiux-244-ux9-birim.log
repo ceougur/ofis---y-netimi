@@ -1,0 +1,114 @@
+TAP version 13
+# (node:26121) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: uiux-244 UX9 sunucu
+    # Subtest: partyIssues: her sorun cari formundaki bir alanı söyler; metinler partyProblems ile aynı
+    ok 1 - partyIssues: her sorun cari formundaki bir alanı söyler; metinler partyProblems ile aynı
+      ---
+      duration_ms: 3.02367
+      type: 'test'
+      ...
+    # Subtest: ön hesap partyFields döner: e-Arşiv ilsiz alıcıda ['city'], sorunsuz alıcıda [] (kâğıt belgede [] — e-Arşiv kullanıcısı kâğıt kesemez; partyIssues KAGIT durumu birinci testte)
+    not ok 2 - ön hesap partyFields döner: e-Arşiv ilsiz alıcıda ['city'], sorunsuz alıcıda [] (kâğıt belgede [] — e-Arşiv kullanıcısı kâğıt kesemez; partyIssues KAGIT durumu birinci testte)
+      ---
+      duration_ms: 509.544997
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ui-son/ui-son-eski-9950526/test/uiux-244-ux9.test.mjs:47:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tutar sınırı sorunu yok
+        + actual - expected
+        
+        + undefined
+        - false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ui-son/ui-son-eski-9950526/test/uiux-244-ux9.test.mjs:78:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: partyIssues: tutar sınırından doğan sorunlar limit işaretli, öbürleri değil (31f U5)
+    not ok 3 - partyIssues: tutar sınırından doğan sorunlar limit işaretli, öbürleri değil (31f U5)
+      ---
+      duration_ms: 1.614908
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ui-son/ui-son-eski-9950526/test/uiux-244-ux9.test.mjs:92:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+              'city',
+              false
+            ],
+            [
+              'taxNo',
+        +     false
+        -     true
+            ],
+            [
+              'address',
+        +     false
+        -     true
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'city'
+          1: false
+        1:
+          0: 'taxNo'
+          1: true
+        2:
+          0: 'address'
+          1: true
+      actual:
+        0:
+          0: 'city'
+          1: false
+        1:
+          0: 'taxNo'
+          1: false
+        2:
+          0: 'address'
+          1: false
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ui-son/ui-son-eski-9950526/test/uiux-244-ux9.test.mjs:95:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 1 - uiux-244 UX9 sunucu
+  ---
+  duration_ms: 534.359639
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ui-son/ui-son-eski-9950526/test/uiux-244-ux9.test.mjs:18:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 3
+# suites 1
+# pass 1
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 910.804019

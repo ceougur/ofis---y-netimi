@@ -1,0 +1,44 @@
+b1-5a-bayat-ve-yeniden: 67/67 tuttu
+b1-5a-tasima: 150/150 tuttu
+b1-5b-borc: 166/166 tuttu
+b1-5c-rapor: 131/131 tuttu
+b2-ux18-karsiliksiz: 115/115 tuttu
+b2-ux18-retler: 91/91 tuttu
+b2-ux18-sira: 96/96 tuttu
+b2-ux18-temel: 198/198 tuttu
+b3-u2-tablo-borcu: 28/28 tuttu
+b3b-k1-k4-donem-raporlar: 32/32 tuttu
+b3c-k2-donem-ayni-no: 25/25 tuttu
+b5-u1-nihai-tuketici: 34/34 tuttu
+rastgele-ux18-1: 408/408 tuttu
+rastgele-ux18-2: 426/426 tuttu
+  mutasyon 1 (5a: sığmayan tahsilat bölünür (kartı doldurana kadar parçası taşınır)): YAKALANDI (b1-5a-tasima)
+  mutasyon 2 (5a: sığmayan tahsilat atlanır, sonraki küçükler taşınmaya devam eder): YAKALANDI (b1-5a-tasima)
+  mutasyon 3 (5b: carinin borcuna taşınan tahsilatlar geri eklenmez (D = bakiye)): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc +1)
+  mutasyon 4 (5b: borç kalandan azsa kişi aktarılmaz yerine yeni borç yazılır): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc)
+  mutasyon 5 (5c: aynı dosya no her sekmede ayrı sayılır (çift sayım)): YAKALANDI (b1-5c-rapor)
+  mutasyon 6 (UX18: bağlı evrakın fazlası en eski açık faturaya gitmez (avans kalır)): YAKALANDI (b2-ux18-karsiliksiz, b2-ux18-temel, rastgele-ux18-1 +1)
+  mutasyon 7 (UX18: karşılıksız evrak faturayı yeniden açmaz): YAKALANDI (b2-ux18-karsiliksiz, b2-ux18-sira, b2-ux18-temel +2)
+  mutasyon 8 (UX18: fatura iptalinde evrakın bağı düşmez (evrak hiçbir faturayı kapatmaz)): YAKALANDI (b2-ux18-temel)
+  mutasyon 9 (Otomatik kapama en YENİ faturadan başlar): YAKALANDI (b2-ux18-karsiliksiz, b2-ux18-sira, b2-ux18-temel +2)
+  mutasyon 10 (Geri al: taşınan tahsilatlar cariye dönmez): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc)
+  mutasyon 11 (5a: taşıma Kasa'yı azaltır): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc +1)
+  mutasyon 12 (Kart: tahsilat en yeni taksitten başlayarak sayılır): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc +1)
+  mutasyon 13 (Mizan: alınan senet 101'e yazılır (121 yerine)): YAKALANDI (b2-ux18-karsiliksiz, b2-ux18-temel, rastgele-ux18-1 +1)
+  mutasyon 14 (K3: Kalan önceliği yok (toplam önce)): YAKALANDI (b3-u2-tablo-borcu, rastgele-ux18-1, rastgele-ux18-2)
+  mutasyon 15 (K3: Ödeme Sözü tutarı borç sayılır): YAKALANDI (b1-5c-rapor, b3-u2-tablo-borcu, rastgele-ux18-1 +1)
+  mutasyon 16 (K3: gün/adet sütunu tutar sayılır): YAKALANDI (b3-u2-tablo-borcu, b3b-k1-k4-donem-raporlar, rastgele-ux18-1 +1)
+  mutasyon 17 (K3: Kalan hücresi boşsa borç 0 (toplama düşmez)): YAKALANDI (b3-u2-tablo-borcu, rastgele-ux18-2)
+  mutasyon 18 (K2 (04:09): farklı sekmede aynı dosya no tek kayıt — yalnız ilk borçlu sekme sayılır (03:12 kuralı)): YAKALANDI (b3-u2-tablo-borcu, b3c-k2-donem-ayni-no, rastgele-ux18-1 +1)
+  mutasyon 19 (MM6: Nakit Akışı Kasa girişi yalnız cari tahsilatı sayar (evrak tahsili ve kayıt tahsilatı dışarıda)): YAKALANDI (b1-5c-rapor, b2-ux18-temel, b3-u2-tablo-borcu +2)
+  mutasyon 20 (U1: Nihai Tüketici 11111111111'li en eski cariyi (adı belli olsa da) seçer): YAKALANDI (b5-u1-nihai-tuketici)
+  mutasyon 21 (U1: işaretli cari adı/kimliği değişse de kullanılır): YAKALANDI (b5-u1-nihai-tuketici)
+  mutasyon 22 (MM6: elle Kasa çıkışı Nakit Akışı'nda sayılmaz): YAKALANDI (b3-u2-tablo-borcu)
+  mutasyon 23 (K1: aynı sekmede tekrar eden dosya no yalnız ilk satırla sayılır): YAKALANDI (b3b-k1-k4-donem-raporlar, b3c-k2-donem-ayni-no, rastgele-ux18-1 +1)
+  mutasyon 24 (K3: Kalan'sız Tutar + Tahsil Edilen tablosunda ödenen düşülmez): YAKALANDI (b3b-k1-k4-donem-raporlar, b3c-k2-donem-ayni-no, rastgele-ux18-1 +1)
+  mutasyon 25 (K3: toplam − ödenen negatifse 0'a çekilmez): YAKALANDI (b3b-k1-k4-donem-raporlar, rastgele-ux18-1)
+  mutasyon 26 (K2: 'birden çok sekmede; ayrı sayıldı' notu yok (rapor ve Tahsilat Takvimi)): YAKALANDI (b1-5c-rapor, b3-u2-tablo-borcu, b3c-k2-donem-ayni-no +2)
+  mutasyon 27 (K5: Kasa'yı görme yetkisi olmayan kullanıcı Kasa giriş/çıkışını görür): YAKALANDI (b3b-k1-k4-donem-raporlar, rastgele-ux18-1, rastgele-ux18-2)
+
+ÖZET: 14 senaryo, 1967 denetim, 0 fark (BULGU 0), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/aday14-kahin/cari
+1967/1967 denetim geçti

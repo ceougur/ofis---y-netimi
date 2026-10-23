@@ -116,7 +116,12 @@ describe("devamı olarak ekle / yerine koy", () => {
 
   it("veriyi kaldır: satırlar kalkar, yedek alınır, uygulamada oluşturulan kayıtlar ve notlar kalır", async () => {
     await personel.post("/api/workspace/records", { values: { "DOSYA NO": "2026/77", BORÇLU: "Elle girilen" } });
-    const removed = await admin.del("/api/workspace/dataset");
+    // 31e tur 7 N5: satırlara bağlı not varken Veriyi Kaldır adıyla uyarır (409); onayla (?confirm=1) kaldırır, not kalır.
+    const asked = await admin.del("/api/workspace/dataset");
+    assert.equal(asked.status, 409, JSON.stringify(asked.data).slice(0, 300));
+    assert.equal(asked.data.code, "bonds-unmatched");
+    assert.match(asked.data.error, /^2 kaydın notu \/ düzeltmesi kaldırılacak satırlarda: Ali Kaya \(2025\/1\), Veli \(2025\/2\)\. Bu bağlar silinmez/);
+    const removed = await admin.del("/api/workspace/dataset?confirm=1");
     assert.equal(removed.status, 200);
     assert.equal(removed.data.data.removed, 2);
     assert.match(removed.data.data.backupName, /veri-kaldirma-oncesi/);

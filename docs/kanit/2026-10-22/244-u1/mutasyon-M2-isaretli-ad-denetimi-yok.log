@@ -1,0 +1,89 @@
+TAP version 13
+# Subtest: U1: Nihai Tüketici düğmesi yalnız programın kendi carisini seçer; adı belli cari seçilmez
+    # Subtest: N1: adı belli cari (11111111111) önce açılmış → ayrı "Nihai Tüketici" açılır; satış onun borcuna, Ayşe Şahin'e değil
+    ok 1 - N1: adı belli cari (11111111111) önce açılmış → ayrı "Nihai Tüketici" açılır; satış onun borcuna, Ayşe Şahin'e değil
+      ---
+      duration_ms: 868.805574
+      type: 'test'
+      ...
+    # Subtest: N4: iki kullanıcı aynı anda basar → tek cari, hepsi aynı kimlik
+    ok 2 - N4: iki kullanıcı aynı anda basar → tek cari, hepsi aynı kimlik
+      ---
+      duration_ms: 961.956304
+      type: 'test'
+      ...
+    # Subtest: N5: işaretli cari adı belli kişiye çevrilir ya da kimliği değişir → artık seçilmez; harf büyüklüğü/boşluk farkı rolü bozmaz
+    not ok 3 - N5: işaretli cari adı belli kişiye çevrilir ya da kimliği değişir → artık seçilmez; harf büyüklüğü/boşluk farkı rolü bozmaz
+      ---
+      duration_ms: 517.818914
+      type: 'test'
+      location: '/home/user/wt/u1/test/nihai-tuketici-u1-244.test.mjs:92:3'
+      failureType: 'testCodeFailure'
+      error: 'adı belli cari seçildi: "Ayşe Şahin"'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'account-f6b47502-c8a9-45de-8ffa-03cef0664bba'
+      actual: 'account-f6b47502-c8a9-45de-8ffa-03cef0664bba'
+      operator: 'notStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/u1/test/nihai-tuketici-u1-244.test.mjs:97:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N6: pasif cari kullanılmaya devam eder; silinince yeni açılır, Silinenler'den geri gelse de işaret yenide kalır
+    ok 4 - N6: pasif cari kullanılmaya devam eder; silinince yeni açılır, Silinenler'den geri gelse de işaret yenide kalır
+      ---
+      duration_ms: 656.174109
+      type: 'test'
+      ...
+    # Subtest: N3: eski veride işaretsiz birden çok aday → yalnız adı "Nihai Tüketici" olan, en eskisi (açılış zamanı, eşitse yazım sırası); işaret sonra kalıcı
+    ok 5 - N3: eski veride işaretsiz birden çok aday → yalnız adı "Nihai Tüketici" olan, en eskisi (açılış zamanı, eşitse yazım sırası); işaret sonra kalıcı
+      ---
+      duration_ms: 668.915675
+      type: 'test'
+      ...
+    # Subtest: N7 + N8: iki şirket ayrı cari ve ayrı işaret; Tümünü Sıfırla'dan sonra (işaret kalır, cari yok) yeniden açılır
+    ok 6 - N7 + N8: iki şirket ayrı cari ve ayrı işaret; Tümünü Sıfırla'dan sonra (işaret kalır, cari yok) yeniden açılır
+      ---
+      duration_ms: 1340.562177
+      type: 'test'
+      ...
+    # Subtest: N9: fatura kesme yetkisi olmayan kullanıcı → 403, cari açılmaz
+    ok 7 - N9: fatura kesme yetkisi olmayan kullanıcı → 403, cari açılmaz
+      ---
+      duration_ms: 777.890024
+      type: 'test'
+      ...
+    1..7
+not ok 1 - U1: Nihai Tüketici düğmesi yalnız programın kendi carisini seçer; adı belli cari seçilmez
+  ---
+  duration_ms: 5794.306666
+  type: 'suite'
+  location: '/home/user/wt/u1/test/nihai-tuketici-u1-244.test.mjs:60:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: U1 eski veri: v2.4.3'te düğmeyle açılmış Nihai Tüketici benimsenir; adı belli cari seçilmez (iki şirket)
+    # Subtest: N2: 001'de Ayşe Şahin (sonradan 11111111111) daha eski + düğmenin carisi + elle açılmış ikinci Nihai Tüketici; 002'de düğmenin carisi
+    ok 1 - N2: 001'de Ayşe Şahin (sonradan 11111111111) daha eski + düğmenin carisi + elle açılmış ikinci Nihai Tüketici; 002'de düğmenin carisi
+      ---
+      duration_ms: 2316.015958
+      type: 'test'
+      ...
+    1..1
+ok 2 - U1 eski veri: v2.4.3'te düğmeyle açılmış Nihai Tüketici benimsenir; adı belli cari seçilmez (iki şirket)
+  ---
+  duration_ms: 2316.659987
+  type: 'suite'
+  ...
+1..2
+# tests 8
+# suites 2
+# pass 7
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9063.662516

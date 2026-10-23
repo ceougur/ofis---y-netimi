@@ -1,5 +1,9 @@
 #!/usr/bin/env node
-// Bağımsız CARİ / EVRAK kâhini — kara kutu koşucusu (2.4.4 madde 31a, B1–B2; dil "destekofis-cari/1", KARARLAR.md).
+// Bağımsız CARİ / EVRAK kâhini — kara kutu koşucusu (2.4.4 madde 31a, B1–B2; dil "destekofis-cari/2" ve /1, KARARLAR.md).
+// /2 (23.10.2026): B3 Tablodaki Kişiler borcu (sekme türü "serbest": başlıklar ve hücre metinleri senaryodan aynen), B4 Nakit Akışı / Kasa raporu Kasa
+// giriş-çıkışı (GET /api/workspace/reports/nakit-akis → report.totals.cashIn/cashOut; GET /api/workspace/cash?method=cash → totals.in/out), B5 Nihai
+// Tüketici (POST /api/workspace/invoices/retail-account → {id, name, created}); uçlar test/nakit-akis-kasa-mm6, test/nihai-tuketici-u1-244 ÇAĞRI
+// satırlarından, yanıt biçimi kara kutu yoklamasından (not defteri yokla3.mjs).
 //
 //   node test/bagimsiz/cari/kos.mjs [senaryo.json …] [--tohum 1-3 --islem 60] [--cikti <klasör>] [--mutasyonsuz]
 //
@@ -70,6 +74,14 @@ function tabloMatrisi(sk) {
   }
   if (sk.tur === "icra") return [["Dosya No", "Borçlu", "Telefon", "Alacak Tutarı", "Kalan"], ...sk.kayitlar.map(r => [r.no, r.isim, r.tel || "", hucreTutar(r.alacak), hucreTutar(r.kalan)])];
   if (sk.tur === "soz") return [["Dosya No", "Borçlu", "Söz Tarihi", "Söz Tutarı"], ...sk.kayitlar.map(r => [r.no, r.isim, hucreTarih(r.tarih), hucreTutar(r.tutar)])];
+  // /2 B3: başlıklar ve hücre metinleri senaryodan AYNEN (kâhin aynı metinden okur)
+  // /2 (23.10.2026, vergi sütunu + kayıt anahtarı): `ilk` ilk sütunların başlıkları — iki başlık ("Fatura No", "Müşteri"): kayıt no + ad; tek başlık ("Müşteri"):
+  // Dosya No'suz tablo (yalnız ad; senaryodaki `no` kâhinin iç kimliğidir, tabloya yazılmaz).
+  if (sk.tur === "serbest") {
+    const ilk = sk.ilk || ["Dosya No", "Borçlu"];
+    const bas = r => (ilk.length === 1 ? [r.isim] : [r.dosya ?? r.no, r.isim]); // `dosya`: tabloya yazılan Dosya No (yoksa kâhinin kayıt no'su)
+    return [[...ilk, ...sk.basliklar], ...sk.kayitlar.map(r => [...bas(r), ...sk.basliklar.map(h => r.hucreler?.[h] ?? "")])];
+  }
   throw new Error(`sekme türü bilinmiyor: ${sk.tur}`);
 }
 
@@ -104,16 +116,122 @@ async function kos(senaryo) {
       const t = a.tarih || senaryo.bugun;
       switch (a.islem) {
         case "tablo_yukle": {
-          const st = await api("POST", "/api/workspace/dataset/stage", { kind: "excel", fileName: `${senaryo.ad}.xlsx`, sheets: a.sekmeler.map(sk => ({ name: sk.ad, matrix: tabloMatrisi(sk) })) });
-          const r = st.status === 200 ? await api("POST", "/api/workspace/dataset/commit", { stageId: st.data.stageId, mode: "replace" }) : st;
+          // Bağ sürekliliği (baş mimar kararı 23.10.2026): "mod": "devam" → Devamı olarak ekle (commit mode "merge"; kara kutu yoklaması), yoksa Yerine koy ("replace").
+          // İkinci ve sonraki yüklemede önce ONAYSIZ commit: 200 değilse program onay istedi (`adim:<id>:onay` true); uyarı adları önizleme (stage) yanıtında —
+          // mapping (satır yankısı) ve preview.samples dışında — ya da onay isteyen yanıtta geçen tablo adları. Onay bayrağının adı bilinmiyor: aday bayraklar denenir.
+          const sheets = a.sekmeler.map(sk => ({ name: sk.ad, matrix: tabloMatrisi(sk) }));
+          const sahne = () => api("POST", "/api/workspace/dataset/stage", { kind: "excel", fileName: `${senaryo.ad}.xlsx`, sheets });
+          const st = await sahne();
+          const mode = a.mod === "devam" ? "merge" : "replace";
+          let r = st.status === 200 ? await api("POST", "/api/workspace/dataset/commit", { stageId: st.data.stageId, mode }) : st;
+          if (ids.tabloYuklendi && st.status === 200) {
+            P[`adim:${a.id}:onay`] = r.status !== 200;
+            const adlar = new Set([...(ids.tabloAdlari || []), ...a.sekmeler.flatMap(sk => sk.kayitlar.map(kay => kay.isim))]);
+            const metin = [];
+            // NETLEŞTİRME (3) (karar sahibi 23.10.2026): önizleme iki seçeneğin (merge = Devamı Olarak Ekle / replace = Yerine Koy) uyarılarını ayrı taşır; her seçeneğin
+            // uyarısı yalnız o seçeneğe göre okunur → HER derinlikte öbür seçeneğin adını taşıyan alt ağaç (ör. preview.<öbür>, bonds.<öbür>) ve preview altındaki örnek
+            // listeleri ("samples") okunmaz. Bağ önizlemesinde (bonds.<seçenek>) taşınacak bağların SAYISI (moved) uyarı değildir — yalnız adlar aranır.
+            const obur = mode === "merge" ? "replace" : "merge";
+            const tara = (o, yol) => {
+              if (typeof o === "string") metin.push(o);
+              else if (Array.isArray(o)) o.forEach(x => tara(x, yol));
+              else if (o && typeof o === "object") {
+                for (const [k2, v] of Object.entries(o)) {
+                  if (yol === "" && k2 === "mapping") continue;
+                  if (k2 === obur) continue;
+                  if (yol.startsWith("preview") && k2 === "samples") continue;
+                  tara(v, yol ? `${yol}.${k2}` : k2);
+                }
+              }
+            };
+            tara(st.data, "");
+            if (r.status !== 200) tara(r.data, "");
+            P[`adim:${a.id}:uyariAdlari`] = [...adlar].filter(ad => metin.some(m => m.includes(ad))).sort();
+            ham[`adim:${a.id}:onizleme`] = { stage: Object.fromEntries(Object.entries(st.data || {}).filter(([k2]) => k2 !== "mapping")), ilkCommit: { status: r.status, data: r.data },
+              adGecen: metin.filter(m => [...adlar].some(ad => m.includes(ad))).slice(0, 10) };
+            if (r.status !== 200) {
+              for (const ek of [{ confirm: true }, { confirmed: true }, { confirmUnmatched: true }, { acceptUnmatched: true }, { onay: true }, { force: true }]) {
+                const st2 = await sahne();
+                const r2 = st2.status === 200 ? await api("POST", "/api/workspace/dataset/commit", { stageId: st2.data.stageId, mode, ...ek }) : st2;
+                if (r2.status === 200) {
+                  ham[`adim:${a.id}:onayBayragi`] = ek;
+                  r = r2;
+                  break;
+                }
+              }
+              if (r.status !== 200) hatalar.push(`${a.id} onay istendi ama onay bayrağı bulunamadı (okunamadı) — ${r.status} ${JSON.stringify(r.data).slice(0, 200)}`);
+            }
+          }
           durum(a, r);
+          ids.tabloYuklendi = true;
+          ids.tabloAdlari = [...new Set([...(a.mod === "devam" ? ids.tabloAdlari || [] : []), ...a.sekmeler.flatMap(sk => sk.kayitlar.map(kay => kay.isim))])];
           const pv = await api("GET", "/api/workspace/plans/from-table");
-          for (const sk of a.sekmeler) for (const kay of sk.kayitlar) ids.anahtar[kay.no] = pv.data?.records?.find(x => x.caseNo === kay.no && x.name === kay.isim)?.key || kay.no;
+          ham[`tablo:${a.id}:onizleme`] = (pv.data?.records || []).slice(0, 200).map(x => Object.fromEntries(Object.entries(x).filter(([, v]) => typeof v !== "object")));
+          for (const sk of a.sekmeler) {
+            for (const kay of sk.kayitlar) {
+              // Dosya No'suz sekme (`ilk` tek başlık): kayıt ADLA eşlenir (aynı adlı iki kayıt üretilmez); iki kez yüklenen tabloda aynı ad aynı kayda eşlenir.
+              const dosya = kay.dosya ?? kay.no;
+              const bul = sk.ilk && sk.ilk.length === 1 ? pv.data?.records?.find(x => x.name === kay.isim) : pv.data?.records?.find(x => x.caseNo === dosya && x.name === kay.isim);
+              ids.anahtar[kay.no] = bul?.key || (sk.ilk ? ids.anahtar[kay.no] : dosya) || kay.no;
+              ((ids.sekmeAd ||= {})[kay.no] ||= new Set()).add(sk.ad);
+            }
+          }
+          // `ilk` sekmeleri (Fatura No + Müşteri / Dosya No'suz): kayıt anahtarı rapordan ADLA çözülür (kara kutu: Dosya No'suz satırın anahtarı "satir:<özet>";
+          // önizleme bu kayıtları listelemiyor — yoklama 23.10.2026). Aynı adlı iki `ilk` kaydı üretilmez.
+          // `ilk` sekmelerinin kayıtları (bu yüklemede gelenler + önceki yüklemelerden bilinenler — Devamı olarak ekle'de dosyada olmayan mevcut kayıtların anahtarı da
+          // güncellemeyle değişebilir) anahtarı rapordan ADLA (aynı adlı birden çok satırda GİRDİ tutarıyla) çözülür; çözülemeyen kayıt `cozulemedi` (okunan değeri
+          // "anahtar çözülemedi" yazılır — 0 sanılmaz, ders 4).
+          // güncel tablonun Dosya No'suz kayıtları: Yerine koy'da yalnız bu dosyanınkiler (silinen satırın kaydı tabloda değildir), Devamı olarak ekle'de mevcutlar + yeniler
+          if (a.mod !== "devam") ids.ilkKayit = a.sekmeler.some(x => x.ilk) ? {} : null;
+          for (const sk of a.sekmeler.filter(x => x.ilk)) for (const kay of sk.kayitlar) (ids.ilkKayit ||= {})[kay.no] = kay;
+          if (ids.ilkKayit) {
+            const cozR = (await api("GET", "/api/workspace/reports/cari-ekstre?from=2000-01-01&to=2099-12-31")).data?.report;
+            const satirdaVar = k2 => (cozR?.groups || []).some(g => g.lines.some(l => l.key === k2));
+            ids.cozulemedi = new Set();
+            for (const kay of Object.values(ids.ilkKayit)) {
+              const gs = (cozR?.groups || []).filter(g => g.cari === kay.isim || String(g.cari || "").startsWith(`${kay.isim} (`));
+              let keys = [...new Set(gs.flatMap(g => g.lines.map(l => l.key)))];
+              if (keys.length > 1 && kay.hucreler?.Tutar) {
+                // aynı adlı birden çok satır: satırın GİRDİ tutarıyla ayrılır (beklenen değer değil — tablonun kendi hücresi)
+                const t = kurusOf(String(kay.hucreler.Tutar).replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", "."));
+                const kk = [...new Set(gs.flatMap(g => g.lines.filter(l => kurus(l.borc) === t).map(l => l.key)))];
+                if (kk.length === 1) keys = kk;
+                else if (kk.length > 1 && satirdaVar(ids.anahtar[kay.no])) keys = [ids.anahtar[kay.no]]; // önceki anahtar hâlâ raporda
+              }
+              if (keys.length === 1) ids.anahtar[kay.no] = keys[0];
+              else if (!satirdaVar(ids.anahtar[kay.no])) ids.cozulemedi.add(kay.no);
+              ((ids.anahtarGecmis ||= {})[kay.no] ||= []).push(keys.length === 1 ? keys[0] : keys.length ? `belirsiz:${keys.length}` : "yok");
+            }
+            // İkinci geçiş: aynı ad + aynı GİRDİ tutarlı çözülemeyen kayıtlar raporda birbirinden ayırt edilemez (satırda başka alan yok) — yalnız sayıları tutuyorsa ve
+            // başka kayda ait olmayan anahtarlara sıralı atanır (kâhinin bütün denetimlerinde değiştirilebilirler: aynı ad, aynı borç; bağlı tahsilatı olan kayıtta YAPILMAZ).
+            const kurusTablo = kay => (kay.hucreler?.Tutar ? kurusOf(String(kay.hucreler.Tutar).replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", ".")) : null);
+            const sahipli = new Set(Object.entries(ids.anahtar).filter(([n]) => !ids.cozulemedi.has(n)).map(([, k2]) => k2));
+            const gruplar = {};
+            for (const n of ids.cozulemedi) {
+              const kay = ids.ilkKayit[n];
+              (gruplar[`${kay.isim}|${kurusTablo(kay)}`] ||= []).push(n);
+            }
+            for (const nos of Object.values(gruplar)) {
+              const kay = ids.ilkKayit[nos[0]];
+              const t = kurusTablo(kay);
+              if (nos.some(n => ids.odemeli?.has(n))) continue;
+              const aday = [...new Set((cozR?.groups || []).filter(g => g.cari === kay.isim || String(g.cari || "").startsWith(`${kay.isim} (`))
+                .flatMap(g => g.lines.filter(l => kurus(l.borc) === t).map(l => l.key)))].filter(k2 => !sahipli.has(k2)).sort();
+              if (aday.length !== nos.length) continue;
+              [...nos].sort().forEach((n, i) => {
+                ids.anahtar[n] = aday[i];
+                ids.cozulemedi.delete(n);
+                ids.anahtarGecmis[n].push(`degistirilebilir:${aday[i]}`);
+              });
+            }
+            ham[`tablo:${a.id}:anahtarlar`] = ids.anahtarGecmis;
+          }
           break;
         }
         case "cari_ac": {
           const body = { name: a.isim, type: a.tur === "tedarikci" ? "supplier" : "customer", phone: a.tel || "", registeredOn: a.tarih || senaryo.bugun };
           if (a.kayit) Object.assign(body, { caseKey: ids.anahtar[a.kayit], caseTitle: a.isim });
+          if (a.tckn) Object.assign(body, { partyKind: "person", firstName: a.isim.split(" ")[0], familyName: a.isim.split(" ").slice(1).join(" ") || a.isim, taxNo: a.tckn, city: "Ankara", district: "Çankaya", similarOk: true });
           if (a.acilis) Object.assign(body, { openingBalance: tlMetin(kurusOf(a.acilis)), openingSide: "auto" });
           const r = await api("POST", "/api/workspace/accounts", body);
           durum(a, r);
@@ -121,7 +239,7 @@ async function kos(senaryo) {
           break;
         }
         case "tahsilat": {
-          const r = await api("POST", `/api/workspace/accounts/${ids.cari[a.cari]}/entries`, { kind: "in", amount: tlMetin(kurusOf(a.tutar)), date: t, method: "cash", cashForce: true, similarOk: true, note: a.id, ...(a.fatura ? { invoiceId: ids.fatura[a.fatura] } : {}) });
+          const r = await api("POST", `/api/workspace/accounts/${ids.cari[a.cari]}/entries`, { kind: "in", amount: tlMetin(kurusOf(a.tutar)), date: t, method: a.yol === "havale" ? "bank" : "cash", cashForce: true, similarOk: true, note: a.id, ...(a.fatura ? { invoiceId: ids.fatura[a.fatura] } : {}) });
           durum(a, r);
           break;
         }
@@ -131,6 +249,7 @@ async function kos(senaryo) {
           break;
         }
         case "kayit_tahsilat": {
+          (ids.odemeli ||= new Set()).add(a.kayit);
           const r = await api("POST", `/api/workspace/cases/${encodeURIComponent(ids.anahtar[a.kayit] || a.kayit)}/payments`, { amount: tlMetin(kurusOf(a.tutar)), date: t, method: "cash" });
           durum(a, r);
           break;
@@ -214,6 +333,51 @@ async function kos(senaryo) {
           durum(a, await api("PUT", `/api/workspace/cheques/${ids.evrak[a.evrak]}`, { invoiceId: a.fatura ? ids.fatura[a.fatura] : "", updatedAt: e?.updatedAt }));
           break;
         }
+        case "kasa_cikis": {
+          // /2 B4: carisiz elle Kasa çıkışı (POST /api/workspace/cash — test/nakit-akis-kasa-mm6 ÇAĞRI satırı)
+          durum(a, await api("POST", "/api/workspace/cash", { kind: "out", amount: tlMetin(kurusOf(a.tutar)), date: t, description: a.id }));
+          break;
+        }
+        case "kullanici_ac": {
+          // /2 B5b (K5): Kasa'yı görme yetkisi kaldırılmış kullanıcı — POST /api/admin/users + PATCH /api/admin/users/:id { grants } (test ÇAĞRI satırları;
+          // rol ve yetki adları kara kutu yoklamasından: "avukat" Nakit Akışı'nı açar, "cash.view" Kasa'yı gösterir)
+          const parola = "Kahin-Yetkisiz-2026!";
+          // Kullanıcı adı 3–60 karakter (harf, rakam, nokta, tire, alt çizgi) — programın ret iletisinden; senaryodaki ad anahtar olarak kalır.
+          const kadi = `kahin-${a.ad.toLowerCase()}`;
+          const r = await api("POST", "/api/admin/users", { username: kadi, name: a.ad, role: a.rol || "avukat", password: parola, mustChangePassword: false });
+          durum(a, r);
+          if (r.status >= 200 && r.status < 300 && (a.kaldir || ["cash.view"]).length) durum(a, await api("PATCH", `/api/admin/users/${r.data?.id}`, { grants: { add: [], remove: a.kaldir || ["cash.view"] } }));
+          const kc = server.client();
+          if ((await kc.login(kadi, parola)).status !== 200) hatalar.push(`${a.id} kullanıcı girişi olmadı`);
+          (ids.kullanici ||= {})[a.ad] = kc;
+          break;
+        }
+        case "nihai_tuketici": {
+          const r = await api("POST", "/api/workspace/invoices/retail-account", {});
+          durum(a, r);
+          if (r.status === 200) {
+            let ad = Object.entries(ids.cari).find(([, id]) => id === r.data.id)?.[0];
+            if (!ad) {
+              ids.ntSayac = (ids.ntSayac || 0) + 1;
+              ad = `@nt${ids.ntSayac}`;
+              ids.cari[ad] = r.data.id;
+            }
+            P[`adim:${a.id}:secilen`] = ad;
+            P[`adim:${a.id}:olusturuldu`] = r.data.created === true;
+          }
+          break;
+        }
+        case "cari_sil": {
+          durum(a, await api("DELETE", `/api/workspace/accounts/${ids.cari[a.cari]}`));
+          (ids.silinen ||= new Set()).add(a.cari);
+          break;
+        }
+        case "cari_adlandir": {
+          const cur = (await api("GET", `/api/workspace/accounts/${ids.cari[a.cari]}`)).data || {};
+          const govde = { name: a.isim, type: cur.type, taxNo: a.tckn ?? cur.taxNo, partyKind: cur.partyKind, firstName: a.isim.split(" ")[0], familyName: a.isim.split(" ").slice(1).join(" ") || a.isim, city: cur.city, district: cur.district, phone: cur.phone, similarOk: true, ...(cur.updatedAt ? { updatedAt: cur.updatedAt } : {}) };
+          durum(a, await api("PUT", `/api/workspace/accounts/${ids.cari[a.cari]}`, govde));
+          break;
+        }
         case "fatura_iptal": {
           durum(a, await api("POST", `/api/workspace/invoices/${ids.fatura[a.fatura]}/cancel`, { reason: "Kâhin denemesi" }));
           break;
@@ -228,6 +392,10 @@ async function kos(senaryo) {
           for (const [ad, id] of Object.entries(ids.cari)) {
             if (!id) continue;
             const r = await api("GET", `/api/workspace/accounts/${id}`);
+            if (ids.silinen?.has(ad)) {
+              P[`${k}:cari:${ad}:var`] = r.status === 200 && !r.data?.deletedAt;
+              continue;
+            }
             if (ad.startsWith("@")) P[`${k}:cari:${ad}:var`] = r.status === 200;
             if (ad.startsWith("@") && r.status === 404) continue;
             if (r.status !== 200) {
@@ -263,19 +431,125 @@ async function kos(senaryo) {
             for (const kod of ["100", "101", "120", "121", "320", "600", "610", "770"]) P[`${k}:mizan:${kod}`] = 0;
             for (const h of led.data.trial.accounts) if (Math.round(h.balance * 100)) P[`${k}:mizan:${h.code}`] = Math.round(h.balance * 100);
           } else hatalar.push(`${k} mizan okunamadı (${led.status})`);
+          {
+            // /2 B4 (MM6): yıl başından bugüne Nakit Akışı Kasa giriş/çıkışı ve Kasa raporu (yalnız nakit)
+            const aralik = `from=${senaryo.bugun.slice(0, 4)}-01-01&to=${senaryo.bugun}`;
+            const na = await api("GET", `/api/workspace/reports/nakit-akis?${aralik}`);
+            const tot = na.data?.report?.totals;
+            if (tot) Object.assign(P, { [`${k}:nakit:kasaGiris`]: kurus(tot.cashIn), [`${k}:nakit:kasaCikis`]: kurus(tot.cashOut) });
+            else ham[`${k}:nakit`] = { status: na.status, data: na.data };
+            const kr = await api("GET", `/api/workspace/cash?${aralik}&method=cash`);
+            if (kr.data?.totals) Object.assign(P, { [`${k}:kasaRapor:giris`]: kurus(kr.data.totals.in), [`${k}:kasaRapor:cikis`]: kurus(kr.data.totals.out) });
+            else hatalar.push(`${k} Kasa raporu okunamadı (${kr.status})`);
+            // /2 B4b (K4): dört rapor aynı satır borcu (geniş dönem); Tahsilat Takvimi /dues (pencere), Vade Takip toplamı, Nakit Akışı Beklenen
+            const genis = "from=2000-01-01&to=2099-12-31";
+            // Tablodaki Kişiler geniş dönem: K4 toplamı + B3 dosya no başına borç (kâhin satır borcunu tarihe bakmadan hesaplar; tarih sütunu
+            // satırı yıl başı–bugün süzgecinin dışına düşürebilir — b3b'de Ödeme Sözü bugünden sonra)
+            const kisR = (await api("GET", `/api/workspace/reports/cari-ekstre?${genis}`)).data?.report;
+            ids.genisRapor = kisR;
+            const kis = kisR?.totals;
+            const takvimR = (await api("GET", "/api/workspace/dues")).data;
+            const takvim = takvimR?.items;
+            if (Array.isArray(takvim)) ham[`${k}:takvim`] = takvim.map(x => Object.fromEntries(Object.entries(x).filter(([, v]) => v === null || typeof v !== "object"))); // K2/K4 kanıtı (ders 38)
+            // Y1 (23.10.2026): "önce cari açın" Açılış Bakiyesi takvim kaleminin Kalan Borç'undan dolar (ORTAM: kalem `debt`) — kayıt başına; kalemi olmayan kayıt 0
+            if (Array.isArray(takvim)) {
+              for (const [no, anahtar] of Object.entries(ids.anahtar)) {
+                const its = takvim.filter(x => (x.caseKey ?? x.key) === anahtar); // kara kutu: kalemin kayıt anahtarı `caseKey` (yoklama 23.10.2026, aday 18)
+                // TAKVİM KALEMİ (23.10.2026): kaydın vade kalemi tutarı (kalem yoksa 0; birden çok kalemde liste)
+                { const ts = its.map(x => kurus(x.amount) ?? 0); P[`${k}:kalem:${no}`] = ts.length === 0 ? 0 : ts.length === 1 ? ts[0] : ts; }
+                P[`${k}:kalemVar:${no}`] = its.length > 0; // Z2 (23.10.2026): Kalan 0 / eksi satırın kalemi Takvim'de görünmez
+                P[`${k}:kalemSoz:${no}`] = its.length === 1 ? its[0].promise === true : its.length ? its.map(x => x.promise === true) : false; // ÖDEME SÖZÜ: kalem söz kalemi mi
+                if (its.some(x => !("debt" in x))) {
+                  P[`${k}:acilis:${no}`] = "OKUNAMADI";
+                  // yalnız Açılış Bakiyesi'nin denetlendiği (raporlar: true) kontrolde okuma hatası; taksit kalemlerinde alan yok (b1 senaryoları) — denetlenmez
+                  if (a.raporlar && !ids.debtYok) hatalar.push(`${k} ${no}: takvim kaleminde Kalan Borç (debt) alanı yok — Açılış Bakiyesi okunamadı`);
+                  if (a.raporlar) ids.debtYok = true;
+                  continue;
+                }
+                // debt null: kalemde Kalan Borç yok → form Açılış Bakiyesi'ni boş getirir (ORTAM varsayımı; formun tutara düşüp düşmediği kara kutudan bilinmiyor) → "boş"
+                const vs = its.map(x => (x.debt === null || x.debt === undefined || x.debt === "" ? "boş" : kurus(x.debt)));
+                P[`${k}:acilis:${no}`] = vs.length === 0 ? 0 : vs.length === 1 ? vs[0] : vs;
+              }
+            }
+            P[`${k}:takvim:cokSekmeNotu`] = cokSekmeNotu(JSON.stringify(takvimR ?? null)); // /2 B3 K2 (04:09): not Tahsilat Takvimi'nde de
+            const vade = (await api("GET", `/api/workspace/reports/vade-takip?${genis}`)).data?.report?.totals;
+            const akis = (await api("GET", `/api/workspace/reports/nakit-akis?${genis}`)).data?.report?.totals;
+            Object.assign(P, {
+              [`${k}:k4:kisiler`]: kis ? kurus(kis.debit) : "okunamadı",
+              [`${k}:k4:takvim`]: Array.isArray(takvim) ? takvim.reduce((t, x) => t + (kurus(x.amount) || 0), 0) : "okunamadı",
+              [`${k}:k4:vade`]: vade ? kurus(vade.amount) : "okunamadı",
+              [`${k}:k4:akis`]: akis ? kurus(akis.expected) : "okunamadı",
+            });
+            // /2 B5b (K5): Kasa'yı görme yetkisi olmayan kullanıcının Nakit Akışı'nda Kasa giriş/çıkışı gizli + not
+            for (const [ad, kc] of Object.entries(ids.kullanici || {})) {
+              const yr = await kc.get(`/api/workspace/reports/nakit-akis?${aralik}`);
+              const yd = unwrap(yr);
+              const yt = yd?.report?.totals;
+              P[`${k}:yetkisiz:${ad}:kasa`] = yr.status !== 200 ? `erisim-${yr.status}` : yt && (yt.cashIn === null || yt.cashIn === undefined) && (yt.cashOut === null || yt.cashOut === undefined) ? "gizli" : "gorunur";
+              const metinler = [];
+              const tara = o => (typeof o === "string" ? metinler.push(o) : o && typeof o === "object" ? Object.values(o).forEach(tara) : null);
+              tara(yd);
+              P[`${k}:yetkisiz:${ad}:not`] = metinler.some(m => /kasa/i.test(m) && /(yetki|göreme|görüntüle|gizli)/i.test(m));
+              // Kurulum denetimi (ders 38): yetki gerçekten kalktı mı — Kasa sayfası bu kullanıcıya açılıyorsa K5 denetimi geçersizdir (okuma hatası).
+              const ks = (await kc.get("/api/workspace/cash")).status;
+              if (ks === 200) hatalar.push(`${k} ${ad}: Kasa yetkisi kaldırılamadı (Kasa sayfası açık) — K5 denetimi geçersiz`);
+              ham[`${k}:yetkisiz:${ad}`] = { status: yr.status, kasaSayfasi: ks, totals: yt ?? null, notlar: metinler.filter(m => /kasa/i.test(m)).slice(0, 5) };
+            }
+          }
           if (Object.keys(ids.anahtar).length) {
             const rp = await api("GET", `/api/workspace/reports/cari-ekstre?from=${senaryo.bugun.slice(0, 4)}-01-01&to=${senaryo.bugun}`);
             const rep = rp.data?.report;
             if (!rep) hatalar.push(`${k} Tablodaki Kişiler okunamadı (${rp.status})`);
             else {
+              ham[`${k}:raporGenis`] = (ids.genisRapor?.groups || []).map(g => ({ cari: g.cari, debit: g.debit, credit: g.credit, keys: [...new Set(g.lines.map(l => l.key))] }));
               ham[`${k}:rapor`] = rep.groups.map(g => ({ cari: g.cari, debit: g.debit, credit: g.credit, lines: g.lines.map(l => ({ kind: l.kind, d: l.description, borc: l.borc, alacak: l.alacak, key: l.key })) }));
               for (const [no, anahtar] of Object.entries(ids.anahtar)) {
                 const g = rep.groups.find(gr => gr.lines.some(l => l.key === anahtar));
                 // Rapor okundu; kişinin satırı yoksa tahsilatı raporda 0'dır (okunamadı değil).
                 P[`${k}:rapor:${no}:alacak`] = g ? kurus(g.credit) : 0;
+                const gg = ids.genisRapor?.groups?.find(gr => gr.lines.some(l => l.key === anahtar));
+                P[`${k}:rapor:${no}:borc`] = ids.genisRapor ? (gg ? kurus(gg.debit) : 0) : "okunamadı"; // /2 B3 (geniş dönem)
+                if (ids.cozulemedi?.has(no)) {
+                  // çözülemeyen anahtar: denetimler OKUNAMADI (fark değil, okuma hatası — ders 4)
+                  for (const alan of ["borc", "alacak", "grup", "etiketKimlik", "ad", "gorunurVeyaNot"]) P[`${k}:rapor:${no}:${alan}`] = "OKUNAMADI";
+                  hatalar.push(`${k} ${no}: kayıt anahtarı çözülemedi (aynı ad + aynı tutarlı ayırt edilemeyen satırlar) — rapor denetimleri okunamadı`);
+                  continue;
+                }
+                // C3 (23.10.2026): kişi gruplaması — dosya no'nun borçlu satırının bulunduğu rapor satır(lar)ındaki borçlu dosya no'lar; birden çok satırdaysa liste listesi
+                if (ids.genisRapor) {
+                  // anahtar → kayıt no: İLK kayıt kazanır (Devamı olarak ekle'de içeriği aynı satır mevcut kaydın kendisidir; aynı anahtarı taşır — NETLEŞTİRME (1))
+                  const keyNo = new Map();
+                  for (const [n, a2] of Object.entries(ids.anahtar)) if (!keyNo.has(a2)) keyNo.set(a2, n);
+                  const gruplar = ids.genisRapor.groups.filter(gr => gr.lines.some(l => l.key === anahtar && kurus(l.borc) > 0))
+                    .map(gr => [...new Set(gr.lines.filter(l => kurus(l.borc) > 0).map(l => keyNo.get(l.key) ?? `?${l.key}`))].sort());
+                  P[`${k}:rapor:${no}:grup`] = gruplar.length === 1 ? gruplar[0] : gruplar;
+                  const etiket = String(gruplar.length ? ids.genisRapor.groups.find(gr => gr.lines.some(l => l.key === anahtar && kurus(l.borc) > 0))?.cari ?? "" : "");
+                  P[`${k}:rapor:${no}:etiketKimlik`] = (/\d{10,11}/.exec(etiket) || [""])[0];
+                  // karar A: borç sütunu belirlenemeyen kişi notsuz kaybolmaz — satırı raporda var mı, yoksa raporda sekme adını ya da "borç/tutar … sütun" diyen not
+                  const gorunur = ids.genisRapor.groups.some(gr => gr.lines.some(l => l.key === anahtar));
+                  const metinler = [];
+                  const tara = o => (typeof o === "string" ? metinler.push(o) : o && typeof o === "object" ? Object.values(o).forEach(tara) : null);
+                  tara(rp.data);
+                  tara(ids.genisRapor);
+                  const sekmeler = [...(ids.sekmeAd?.[no] || [])];
+                  // not: sekme adını geçen VE borç/tutar/sütun/gösterilmedi diyen metin ya da "borç/tutar … sütun" kalıbı (yalnız sekme adı — ör. süzgeç seçenekleri — not değil)
+                  // Kâhin düzeltmesi (23.10.2026, ders 38): genel "borç … sütun" kalıbı yalnız HİÇBİR sekmenin adını geçmeyen metinde not sayılır — başka sekmenin notu bu satırın
+                  // notu değildir (b3n "Takip" kişileri "Masraflı" sekmesinin notuyla yanlışlıkla geçiyordu)
+                  const tumSekmeler = [...new Set(Object.values(ids.sekmeAd || {}).flatMap(x => [...x]))];
+                  const not = metinler.some(m => sekmeler.some(sa => m.includes(sa) && /(borç|tutar|sütun|gösteril|görün)/i.test(m))
+                    || (!tumSekmeler.some(sa => m.includes(sa)) && /(borç|tutar)[^.]{0,40}sütun|sütun[^.]{0,40}(borç|tutar)/i.test(m)));
+                  P[`${k}:rapor:${no}:gorunurVeyaNot`] = gorunur || not;
+                  // A1 + tek tutar sütunu (23.10.2026): borcu belli satırın sekmesi için "borç sütunu belirlenemedi" türü not YOK (sekme adını geçen + sütun/belirleme sözcüğü)
+                  const notMetin = metinler.filter(m => sekmeler.some(sa => m.includes(sa)) && /(borç sütun|tutar sütun|belirlenemed|belirlenemey|gösterilmed)/i.test(m));
+                  P[`${k}:rapor:${no}:notYok`] = notMetin.length === 0;
+                  if (notMetin.length) ham[`${k}:not:${no}`] = notMetin.slice(0, 5);
+                  if (!gorunur) ham[`${k}:kayip:${no}`] = { not, notlar: metinler.filter(m => /sütun|sekme/i.test(m)).slice(0, 5) };
+                }
                 if (g) P[`${k}:rapor:${no}:ad`] = g.cari;
               }
               const top = (arr, f) => arr.reduce((s, x) => s + (kurus(f(x)) || 0), 0);
+              // /2 B3 K2 (04:09): "N dosya no birden çok sekmede; ayrı sayıldı" notu — rapor yanıtının herhangi bir metninde (alan adı bilinmiyor)
+              P[`${k}:rapor:cokSekmeNotu`] = cokSekmeNotu(JSON.stringify(rp.data) + JSON.stringify(ids.genisRapor ?? null));
               P[`${k}:rapor:tutarli`] = kurus(rep.totals.credit) === top(rep.groups, g => g.credit) && kurus(rep.totals.debit) === top(rep.groups, g => g.debit) && rep.groups.every(g => kurus(g.credit) === top(g.lines, l => l.alacak) && kurus(g.debit) === top(g.lines, l => l.borc));
             }
           }
@@ -294,13 +568,24 @@ async function kos(senaryo) {
 
 const model = (dosya, mut = 0) => JSON.parse(execFileSync(PYTHON, ["-I", path.join(HERE, "model.py"), dosya, "--mutasyon", String(mut)], { encoding: "utf8" }));
 const esit = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+// /2 B3 K2 ([KULLANICI] 23.10.2026 04:09 UTC): "N dosya no birden çok sekmede; ayrı sayıldı" → N. Not yoksa 0; 03:12 metni ("bir kez sayıldı") ya da sonu
+// okunamayan not "bir-kez:N" / "metin:N" olarak yazılır (beklenenle tutmaz — fark; ders 38: hangi metin göründüğü raporda okunur).
+function cokSekmeNotu(metin) {
+  const m = /(\d+)\s*dosya no birden çok sekmede[^"\d]{0,20}?(ayrı|bir kez)\s*sayıldı/i.exec(metin);
+  if (m) return /ayrı/i.test(m[2]) ? Number(m[1]) : `bir-kez:${m[1]}`;
+  const e = /(\d+)\s*dosya no birden çok sekmede/i.exec(metin);
+  return e ? `metin:${e[1]}` : 0;
+}
 function karsilastir(beklenen, program) {
   const farklar = [];
   let toplam = 0;
   for (const [anahtar, d] of Object.entries(beklenen.denetimler)) {
     toplam += 1;
     const p = program[anahtar];
-    if (!esit(p, d.b)) farklar.push({ anahtar, beklenen: d.b, program: p === undefined ? "okunamadı" : p, etiket: d.e, kural: d.k, sinif: BIRINCIL.has(d.e) ? "BULGU" : "İNCELE" });
+    if (p === "OKUNAMADI") continue; // okuma hatası olarak sayıldı (hatalar), fark değil
+    // /2: ÇATAL beklenen ({ catal: [...] }) — kural birden çok değere izin veriyor (K2 hangi sekme; not sayımı)
+    const tutar = d.b && typeof d.b === "object" && Array.isArray(d.b.catal) ? d.b.catal.some(x => esit(p, x)) : esit(p, d.b);
+    if (!tutar) farklar.push({ anahtar, beklenen: d.b, program: p === undefined ? "okunamadı" : p, etiket: d.e, kural: d.k, sinif: BIRINCIL.has(d.e) ? "BULGU" : "İNCELE" });
   }
   // Kâhinin bildiği kontrol noktalarında programda beklenmeyen bir mizan hesabı varsa (sıfırdan farklı) o da farktır.
   const kontroller = new Set(Object.keys(beklenen.denetimler).filter(k => k.includes(":mizan:")).map(k => k.split(":")[0]));
@@ -314,40 +599,118 @@ function karsilastir(beklenen, program) {
   return { toplam, farklar };
 }
 
+// ───────── BİLİNEN SINIR listesi (ana oturum 23.10.2026): ürün sahibinin ERTELEDİĞİ, kâhin beklentisi DOĞRU kalan farklar (BILINEN.json). Her kayıt TAM ad (senaryo +
+// denetim anahtarı; joker / önek / kalıp YOK), karar kaynağı, kâhinin beklediği ve programın BİLİNEN değeri. Listedeki fark "BİLİNEN" diye ayrı yazılır, başarısız sayılmaz;
+// program değeri (ya da kâhin beklentisi) listedekinden farklıysa BAŞARISIZ ("BİLİNEN DEĞİŞTİ"); listede olup farkı kalmayan kayıt BAŞARISIZ ("BİLİNEN KAPANDI — listeden çıkar");
+// liste dışı her fark BAŞARISIZ. Liste mutantları (aşağıda) eşleştiricinin bir farkı yutmadığını sınar.
+const BILINEN_YOLU = process.env.KAHIN_BILINEN || path.join(HERE, "BILINEN.json"); // KAHIN_BILINEN: yalnız mekanizmanın kendi denemesi için başka liste
+function bilinenYukle() {
+  const ham = JSON.parse(readFileSync(BILINEN_YOLU, "utf8"));
+  const kayitlar = ham.kayitlar || [];
+  const hatalar = [];
+  const gorulen = new Set();
+  const elleAdlar = new Set(readdirSync(path.join(HERE, "senaryolar")).filter(f => f.endsWith(".json")).map(f => f.replace(/\.json$/, "")));
+  for (const [i, e] of kayitlar.entries()) {
+    for (const alan of ["senaryo", "anahtar", "kaynak", "beklenen", "program"]) if (!(alan in e)) hatalar.push(`BILINEN.json kayıt ${i}: "${alan}" alanı yok`);
+    if (/[*?\[\]]/.test(`${e.senaryo}${e.anahtar}`)) hatalar.push(`BILINEN.json kayıt ${i}: joker / kalıp karakteri yasak (tam ad gerekir): ${e.senaryo} ${e.anahtar}`);
+    if (!elleAdlar.has(e.senaryo) && !String(e.senaryo).startsWith("rastgele-")) hatalar.push(`BILINEN.json kayıt ${i}: senaryo yok (bayat kayıt): ${e.senaryo}`);
+    const ad = `${e.senaryo}|${e.anahtar}`;
+    if (gorulen.has(ad)) hatalar.push(`BILINEN.json kayıt ${i}: çift kayıt ${ad}`);
+    gorulen.add(ad);
+  }
+  return { kayitlar, hatalar };
+}
+// mut (yalnız liste mutantları için): 1 senaryo adı yok sayılır · 2 alt dizgi eşleşmesi (joker) · 3 program değeri karşılaştırılmaz · 4 kapanan kayıt denetlenmez ·
+// 5 kâhin beklentisi karşılaştırılmaz
+function bilinenAyir(senaryoAd, denetimler, farklar, liste, mut = 0) {
+  const eslesir = (e, f) => (mut === 1 || e.senaryo === senaryoAd) && (mut === 2 ? f.anahtar.includes(e.anahtar) : e.anahtar === f.anahtar);
+  const kalan = [], bilinen = [];
+  for (const f of farklar) {
+    const e = liste.find(x => eslesir(x, f));
+    if (!e) { kalan.push(f); continue; }
+    if ((mut === 3 || esit(f.program, e.program)) && (mut === 5 || esit(f.beklenen, e.beklenen))) bilinen.push({ ...f, sinif: "BİLİNEN", kaynak: e.kaynak });
+    else kalan.push({ ...f, sinif: "BİLİNEN DEĞİŞTİ", kural: `${f.kural} · BİLİNEN listesinde program ${JSON.stringify(e.program)} / kâhin ${JSON.stringify(e.beklenen)} (${e.kaynak}) — liste ya da ürün yeniden incelenmeli` });
+  }
+  if (mut !== 4) {
+    for (const e of liste.filter(x => (mut === 1 || x.senaryo === senaryoAd))) {
+      if (farklar.some(f => eslesir(e, f))) continue;
+      kalan.push({ anahtar: e.anahtar, beklenen: e.beklenen, program: e.anahtar in denetimler ? "tuttu" : "denetim yok", etiket: "BİLİNEN", sinif: "BİLİNEN KAPANDI",
+        kural: `BİLİNEN KAPANDI — listeden çıkar (${e.kaynak})` });
+    }
+  }
+  return { kalan, bilinen };
+}
+// Liste mutantlarının dişi: sentetik durumlarda doğru eşleştirici ile her mutant en az bir durumda farklı sonuç vermeli (ders 7).
+function bilinenMutantlari() {
+  const L = [{ senaryo: "S", anahtar: "k1:kalem:2026/101", kaynak: "deneme", beklenen: 1, program: 2 }, { senaryo: "S", anahtar: "k1:acilis:X", kaynak: "deneme", beklenen: 5, program: 6 }];
+  const F = (anahtar, beklenen, program) => ({ anahtar, beklenen, program, etiket: "KULLANICI", kural: "deneme", sinif: "BULGU" });
+  const durumlar = [
+    ["S", { "k1:kalem:2026/101": {}, "k1:kalem:2026/1012": {}, "k1:acilis:X": {} }, [F("k1:kalem:2026/101", 1, 2), F("k1:kalem:2026/1012", 1, 2), F("k1:acilis:X", 5, 6)]],
+    ["T", { "k1:kalem:2026/101": {} }, [F("k1:kalem:2026/101", 1, 2)]],
+    ["S", { "k1:kalem:2026/101": {}, "k1:acilis:X": {} }, [F("k1:kalem:2026/101", 1, 3), F("k1:acilis:X", 5, 6)]],
+    ["S", { "k1:kalem:2026/101": {}, "k1:acilis:X": {} }, [F("k1:acilis:X", 5, 6)]],
+    ["S", { "k1:kalem:2026/101": {}, "k1:acilis:X": {} }, [F("k1:kalem:2026/101", 9, 2), F("k1:acilis:X", 5, 6)]],
+  ];
+  const imza = mut => JSON.stringify(durumlar.map(([s, d, f]) => { const r = bilinenAyir(s, d, f, L, mut); return [r.bilinen.map(x => x.anahtar), r.kalan.map(x => `${x.anahtar}:${x.sinif}`)]; }));
+  const dogru = imza(0);
+  const adlar = { 1: "senaryo adı yok sayılır", 2: "alt dizgi (joker) eşleşmesi", 3: "program değeri karşılaştırılmaz", 4: "kapanan kayıt denetlenmez", 5: "kâhin beklentisi karşılaştırılmaz" };
+  return Object.entries(adlar).map(([n, ad]) => ({ n, ad, yakalandi: imza(Number(n)) !== dogru }));
+}
+const BILINEN = bilinenYukle();
+
 let genelToplam = 0;
 let genelFark = 0;
 let okumaHatasi = 0;
+let genelBilinen = 0;
+const bilinenHepsi = [];
 const ozet = [];
 for (const dosya of dosyalar) {
   const senaryo = JSON.parse(readFileSync(dosya, "utf8"));
   const { program, hatalar, gunluk, ham } = await kos(senaryo);
   writeFileSync(path.join(OUT, `${senaryo.ad}.ham.json`), JSON.stringify(ham, null, 1));
   const beklenen = model(dosya);
-  const { toplam, farklar } = karsilastir(beklenen, program);
+  const { toplam, farklar: tumFarklar } = karsilastir(beklenen, program);
+  const { kalan: farklar, bilinen } = bilinenAyir(senaryo.ad, beklenen.denetimler, tumFarklar, BILINEN.kayitlar);
   genelToplam += toplam;
   genelFark += farklar.length;
+  genelBilinen += bilinen.length;
+  bilinenHepsi.push(...bilinen.map(b => ({ senaryo: senaryo.ad, ...b })));
   okumaHatasi += hatalar.length;
   writeFileSync(path.join(OUT, `${senaryo.ad}.program.json`), JSON.stringify(program, null, 1));
   writeFileSync(path.join(OUT, `${senaryo.ad}.kahin.json`), JSON.stringify(beklenen, null, 1));
   writeFileSync(path.join(OUT, `${senaryo.ad}.api-gunlugu.json`), JSON.stringify(gunluk, null, 1));
-  writeFileSync(path.join(OUT, `${senaryo.ad}.fark.json`), JSON.stringify({ toplam, farklar, hatalar }, null, 1));
-  console.log(`${senaryo.ad}: ${toplam - farklar.length}/${toplam} tuttu${hatalar.length ? ` · OKUMA HATASI ${hatalar.length}: ${hatalar.join("; ")}` : ""}`);
+  writeFileSync(path.join(OUT, `${senaryo.ad}.fark.json`), JSON.stringify({ toplam, farklar, bilinen, hatalar }, null, 1));
+  console.log(`${senaryo.ad}: ${toplam - farklar.length - bilinen.length}/${toplam} tuttu${bilinen.length ? ` · BİLİNEN ${bilinen.length}` : ""}${hatalar.length ? ` · OKUMA HATASI ${hatalar.length}: ${hatalar.join("; ")}` : ""}`);
+  for (const b of bilinen) console.log(`  ≈ [BİLİNEN] ${b.anahtar}: program ${JSON.stringify(b.program)} · kâhin ${JSON.stringify(b.beklenen)} (${b.kaynak})`);
   for (const f of farklar) console.log(`  ✗ [${f.sinif} ${f.etiket}] ${f.anahtar}: program ${JSON.stringify(f.program)} · kâhin ${JSON.stringify(f.beklenen)} (${f.kural})${f.anahtar.endsWith(":durum") && program[f.anahtar.replace(/:durum$/, ":yanit")] ? ` · yanıt: ${program[f.anahtar.replace(/:durum$/, ":yanit")]}` : ""}`);
-  ozet.push({ ad: senaryo.ad, toplam, fark: farklar.length, bulgu: farklar.filter(f => f.sinif === "BULGU").length });
+  ozet.push({ ad: senaryo.ad, toplam, fark: farklar.length, bulgu: farklar.filter(f => f.sinif === "BULGU").length, bilinen: bilinen.length });
 }
 
 // Mutasyon: her mutasyon senaryo kümesinin en az birinde kâhinin çıktısını değiştirmeli (kural bu senaryolarla gerçekten sınanıyor).
 let kacan = 0;
 if (!argv.includes("--mutasyonsuz")) {
   const mutasyonlar = JSON.parse(execFileSync(PYTHON, ["-I", path.join(HERE, "model.py"), "-", "--mutasyonlar"], { encoding: "utf8" }));
-  const taban = Object.fromEntries(dosyalar.map(d => [d, model(d)]));
+  // Mutasyon kümesi: koşulan dosyalar + BÜTÜN elle senaryolar (yalnız kâhin modeli koşar, program açılmaz). Böylece --tohum ile yalnız rastgele UX18 dizileri
+  // koşulduğunda da (Uzun Doğrulama) /2 kurallarının (U1/U2/MM6) mutantları elle senaryolarda yakalanır (23.10.2026).
+  const elle = readdirSync(path.join(HERE, "senaryolar")).filter(f => f.endsWith(".json")).sort().map(f => path.join(HERE, "senaryolar", f));
+  const mutKume = [...new Set([...dosyalar, ...elle])];
+  const taban = Object.fromEntries(mutKume.map(d => [d, model(d)]));
   for (const [n, ad] of Object.entries(mutasyonlar)) {
-    const yakalayan = dosyalar.filter(d => !esit(model(d, Number(n)).denetimler, taban[d].denetimler)).map(d => path.basename(d, ".json"));
+    const yakalayan = mutKume.filter(d => !esit(model(d, Number(n)).denetimler, taban[d].denetimler)).map(d => path.basename(d, ".json"));
     if (!yakalayan.length) kacan += 1;
     console.log(`  mutasyon ${n} (${ad}): ${yakalayan.length ? `YAKALANDI (${yakalayan.slice(0, 3).join(", ")}${yakalayan.length > 3 ? ` +${yakalayan.length - 3}` : ""})` : "YAKALANMADI"}`);
   }
 }
-writeFileSync(path.join(OUT, "ozet.json"), JSON.stringify({ ozet, genelToplam, genelFark, okumaHatasi, kacan }, null, 1));
-console.log(`\nÖZET: ${dosyalar.length} senaryo, ${genelToplam} denetim, ${genelFark} fark (BULGU ${ozet.reduce((s, o) => s + o.bulgu, 0)}), ${okumaHatasi} okuma hatası, ${kacan} yakalanmayan mutasyon. Ham çıktı: ${OUT}`);
-console.log(`${Math.max(0, genelToplam - genelFark - okumaHatasi - kacan)}/${genelToplam} denetim geçti`);
+// BİLİNEN listesi: geçersiz kayıt BAŞARISIZ; liste mutantları her koşuda (program açılmaz)
+for (const h of BILINEN.hatalar) console.log(`  ✗ [BİLİNEN LİSTESİ] ${h}`);
+genelFark += BILINEN.hatalar.length;
+for (const m of bilinenMutantlari()) {
+  if (!m.yakalandi) kacan += 1;
+  console.log(`  liste mutasyonu ${m.n} (${m.ad}): ${m.yakalandi ? "YAKALANDI" : "YAKALANMADI"}`);
+}
+writeFileSync(path.join(OUT, "ozet.json"), JSON.stringify({ ozet, genelToplam, genelFark, okumaHatasi, kacan, bilinen: genelBilinen, bilinenKayitlar: bilinenHepsi, bilinenListesiHatalari: BILINEN.hatalar }, null, 1));
+console.log(`\nÖZET: ${dosyalar.length} senaryo, ${genelToplam} denetim, ${genelFark} fark (BULGU ${ozet.reduce((s, o) => s + o.bulgu, 0)}), ${genelBilinen} bilinen sınır (BILINEN.json; başarısız sayılmaz), ${okumaHatasi} okuma hatası, ${kacan} yakalanmayan mutasyon. Ham çıktı: ${OUT}`);
+if (genelBilinen) console.log(`BİLİNEN SINIRLAR (${genelBilinen}): ${bilinenHepsi.map(b => `${b.senaryo} ${b.anahtar}`).join("; ")}`);
+// "geçti" sayısı bilinen sınırları içerir (başarısız sayılmaz — CI kapısı); ayrıntısı yukarıdaki BİLİNEN satırlarında ve ozet.json "bilinen" alanında
+console.log(`${Math.max(0, genelToplam - genelFark - okumaHatasi - kacan)}/${genelToplam} denetim geçti${genelBilinen ? ` (${genelBilinen} bilinen sınır dahil)` : ""}`);
 process.exitCode = genelFark || okumaHatasi || kacan ? 1 : 0;

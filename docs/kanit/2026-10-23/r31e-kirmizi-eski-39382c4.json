@@ -1,0 +1,83 @@
+{
+  "ad": "r31e-kirmizi-eski-39382c4",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/tablo-borc-r31e.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T03:30:42.010Z",
+  "sure_sn": 2.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 1,
+    "basarisiz": 10,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 10 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "31e T4: aynı sekmede aynı dosya no'lu satırlar ayrı borç ve ayrı takvim kalemi (2.4.3 gibi) › Tablodaki Kişiler: Ali Veli 1.000 + 1.500 = 2.500, Ayşe Kaya 700 + 700 = 1.400, Can Yıldız 400 + 600 = 1.000; toplam 4.900; birleştirme notu yok",
+      "konum": "test/tablo-borc-r31e.test.mjs:69:3",
+      "hata": "aynı sekmedeki satırlar toplanır (R1) · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "31e T4: aynı sekmede aynı dosya no'lu satırlar ayrı borç ve ayrı takvim kalemi (2.4.3 gibi) › Tahsilat Takvimi: 6 kalem, tutarları satır satır (1.000, 1.500, 700, 700, 400, 600); söz / zil ön dolumunun Kalan Borç'u dosyanın Kalan toplamı",
+      "konum": "test/tablo-borc-r31e.test.mjs:76:3",
+      "hata": "kalemler birleşmez (R2); Kalan Borç dosya toplamı (5b Açılış Bakiyesi) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "31e T4: aynı sekmede aynı dosya no'lu satırlar ayrı borç ve ayrı takvim kalemi (2.4.3 gibi) › Vadeler ve Nakit Akışı: 6 kalem, 4.900; Gecikmiş 1.000 + 700 + 400 = 2.100",
+      "konum": "test/tablo-borc-r31e.test.mjs:83:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "31e T1: Kalan / Borç başlığı yoksa borç = toplam − ödenen; ödenen > toplam ise 0 ve not › Tablodaki Kişiler: 10.000 − 4.000, 8.000 − 8.000, 6.000 − 1.000, 1.000 − 1.200 → 0; senet 5.000 − 2.000, 3.000 − 0; gün sütunu tutar değil; Kalan varsa Kalan (5.000) — toplam 24.500",
+      "konum": "test/tablo-borc-r31e.test.mjs:101:3",
+      "hata": "Ali Veli borcu (R5/R6/R7) · + actual - expected · + undefined"
+    },
+    {
+      "ad": "31e T1: Kalan / Borç başlığı yoksa borç = toplam − ödenen; ödenen > toplam ise 0 ve not › Vadeler ve Nakit Akışı Beklenen aynı kuraldan: 24.500; not aynı",
+      "konum": "test/tablo-borc-r31e.test.mjs:108:3",
+      "hata": "Vadeler toplamı Tablodaki Kişiler ile aynı · 15500 !== 24500 (beklenen 24500, gelen 15500)"
+    },
+    {
+      "ad": "31e T1: Tablodan Aktar ile Tablodaki Kişiler aynı dosyada aynı kalan (toplam − ödenen) › Elif Aydın: Kişiler borcu 4.500; Tablodan Aktar ön izlemesinde kalan 4.500 (R10)",
+      "konum": "test/tablo-borc-r31e.test.mjs:121:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "31e (a): farklı sekmelerde aynı dosya no bir kez sayılır, rapor bunu söyler; Sekme süzgeciyle her sekme kendi borcu › süzgeçsiz: bir kez (ilk sekme) — Ali Veli 1.200, Ayşe Kaya 600, toplam 1.800; not hangi kaydın sayıldığını ve uyuşmazlığı söyler (üç raporda)",
+      "konum": "test/tablo-borc-r31e.test.mjs:139:3",
+      "hata": "Cannot read properties of undefined (reading 'join')"
+    },
+    {
+      "ad": "31e (a): farklı sekmelerde aynı dosya no bir kez sayılır, rapor bunu söyler; Sekme süzgeciyle her sekme kendi borcu › Sekme süzgeci: 2026 Aidat → Ali Veli 800, Ayşe Kaya 600 (1.400); 2025 Aidat → 1.800; seçili sekmede öbür sekme listeden düşmez (R3)",
+      "konum": "test/tablo-borc-r31e.test.mjs:155:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + {} (beklenen , gelen )"
+    },
+    {
+      "ad": "31e (a): farklı sekmelerde aynı dosya no bir kez sayılır, rapor bunu söyler; Sekme süzgeciyle her sekme kendi borcu › PDF ve Excel aynı notu taşır (R4)",
+      "konum": "test/tablo-borc-r31e.test.mjs:167:3",
+      "hata": "cari-ekstre PDF notu (beklenen true, gelen false)"
+    },
+    {
+      "ad": "31e Y1: Tablodaki Nakit Akışı'nda Kasa sütunları yalnız Kasa yetkisiyle › Kasa yetkisi olmayan (yalnız Tablo Raporları): Kasa'ya 403; Nakit Akışı'nda Kasa sütunu, toplamı, özeti yok; not var — ekran, PDF, Excel (R8)",
+      "konum": "test/tablo-borc-r31e.test.mjs:197:3",
+      "hata": "toplamda cashIn yok (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-23/r31e-kirmizi-eski-39382c4.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/r31e-eski-39382c4",
+  "ham_cikti_sha256": "ca37d954244e206d7a72aaa5d35bc4d10f46a7d702db4bd049cc2e3cd4fbb708",
+  "ham_cikti_bayt": 16954
+}

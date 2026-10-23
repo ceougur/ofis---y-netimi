@@ -1,0 +1,84 @@
+TAP version 13
+# Subtest: belirsiz e-Fatura: yalnız programda iptal kapısının sınırı (saf)
+    # Subtest: uncertainWindow e-Faturayı kapsar; e-Arşiv / e-SMM'de attemptWindow ile aynı; cancelWindow e-Faturada yine yok (normal iptal değişmez)
+    ok 1 - uncertainWindow e-Faturayı kapsar; e-Arşiv / e-SMM'de attemptWindow ile aynı; cancelWindow e-Faturada yine yok (normal iptal değişmez)
+      ---
+      duration_ms: 1.817608
+      type: 'test'
+      ...
+    1..1
+ok 1 - belirsiz e-Fatura: yalnız programda iptal kapısının sınırı (saf)
+  ---
+  duration_ms: 2.882827
+  type: 'suite'
+  ...
+# Subtest: belirsiz e-Fatura + Yalnız Programda İptal (sahte EDM, sahte saat)
+    # Subtest: F5 girişimden 8 gün dolmadıysa EDM'ye sorulmaz (K4 çıkış yolu); belgeye yazılan ileti e-Faturanın iptal yolunu söyler
+    ok 1 - F5 girişimden 8 gün dolmadıysa EDM'ye sorulmaz (K4 çıkış yolu); belgeye yazılan ileti e-Faturanın iptal yolunu söyler
+      ---
+      duration_ms: 133.105537
+      type: 'test'
+      ...
+    # Subtest: F6 sınır: girişimden sonraki 8. gün 23:59'da sorulmaz; 9. gün sorulur
+    ok 2 - F6 sınır: girişimden sonraki 8. gün 23:59'da sorulmaz; 9. gün sorulur
+      ---
+      duration_ms: 174.164503
+      type: 'test'
+      ...
+    # Subtest: F3 8 gün geçti, EDM "bulunamadı" → belge iletilmemiş, iptal serbest
+    ok 3 - F3 8 gün geçti, EDM "bulunamadı" → belge iletilmemiş, iptal serbest
+      ---
+      duration_ms: 79.062987
+      type: 'test'
+      ...
+    # Subtest: F1/F2/F10 TEMELFATURA: 8 gün geçti, belge EDM'de VAR → yalnız programda iptal reddedilir, durum belgeye yazılır; ileti iptal yolunu söyler ve o yol çalışır
+    ok 4 - F1/F2/F10 TEMELFATURA: 8 gün geçti, belge EDM'de VAR → yalnız programda iptal reddedilir, durum belgeye yazılır; ileti iptal yolunu söyler ve o yol çalışır
+      ---
+      duration_ms: 101.531651
+      type: 'test'
+      ...
+    # Subtest: F1/F2/F10 TICARIFATURA: 8 gün geçti, belge EDM'de VAR → yalnız programda iptal reddedilir, durum belgeye yazılır; ileti iptal yolunu söyler ve o yol çalışır
+    ok 5 - F1/F2/F10 TICARIFATURA: 8 gün geçti, belge EDM'de VAR → yalnız programda iptal reddedilir, durum belgeye yazılır; ileti iptal yolunu söyler ve o yol çalışır
+      ---
+      duration_ms: 103.181315
+      type: 'test'
+      ...
+    # Subtest: F4 8 gün geçti, EDM'ye ulaşılamıyor → iptal yapılmaz (502), belge belirsiz kalır
+    ok 6 - F4 8 gün geçti, EDM'ye ulaşılamıyor → iptal yapılmaz (502), belge belirsiz kalır
+      ---
+      duration_ms: 64.737665
+      type: 'test'
+      ...
+    # Subtest: F7 gönderim izi yoksa kesim gününden: kesimden 9. gün EDM'ye sorulur
+    ok 7 - F7 gönderim izi yoksa kesim gününden: kesimden 9. gün EDM'ye sorulur
+      ---
+      duration_ms: 38.675327
+      type: 'test'
+      ...
+    # Subtest: F8 Fatura Ayarları yetkisi olmayan: 403, EDM'ye sorulmaz, belge değişmez
+    ok 8 - F8 Fatura Ayarları yetkisi olmayan: 403, EDM'ye sorulmaz, belge değişmez
+      ---
+      duration_ms: 162.681474
+      type: 'test'
+      ...
+    # Subtest: F9 e-Faturanın normal iptali değişmez: gönderilmiş e-Faturada süre bilgisi yok; onaysız İptal Et 409 einvoice-sent
+    ok 9 - F9 e-Faturanın normal iptali değişmez: gönderilmiş e-Faturada süre bilgisi yok; onaysız İptal Et 409 einvoice-sent
+      ---
+      duration_ms: 59.660305
+      type: 'test'
+      ...
+    1..9
+ok 2 - belirsiz e-Fatura + Yalnız Programda İptal (sahte EDM, sahte saat)
+  ---
+  duration_ms: 1348.883703
+  type: 'suite'
+  ...
+1..2
+# tests 10
+# suites 2
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1719.017423

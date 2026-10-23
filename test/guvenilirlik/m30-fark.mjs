@@ -95,8 +95,30 @@ export function oldDataMap(file) {
         // okunamayan iz
       }
     }
+    const givenLive = Object.fromEntries(given);
+    // E6 (aday 9; karar 22.10.2026 "verilmiş numara silmeyle serbest kalmaz"): Silinenler'deki belgelerin numaraları da VERİLMİŞTİR — eski verinin kendi
+    // çöp kutusu yükünden (2.4.3'ün yazdığı trash.payload_json → invoice). Geri yüklenmiş öğenin belgesi canlıdır (numarası yukarıda zaten sayıldı).
+    const deleted = [];
+    let trashRows = [];
+    try {
+      trashRows = all("SELECT id, payload_json AS p, restored_at AS r FROM trash WHERE kind = 'invoice'");
+    } catch {
+      trashRows = [];
+    }
+    for (const t of trashRows) {
+      let inv = null;
+      try {
+        inv = JSON.parse(t.p)?.invoice || null;
+      } catch {
+        inv = null;
+      }
+      if (!inv) continue;
+      deleted.push({ id: t.id, ref: inv.id, number: inv.number || "", series: inv.series || "", year: inv.year, seq: Number(inv.seq) || 0, status: inv.status, restored: Boolean(t.r) });
+      giveNo(inv.number);
+    }
+    const liveNumbers = new Set(all("SELECT number FROM invoices WHERE number <> ''").map(r => r.number));
     const invoicePlan = new Map(all("SELECT id, plan_id AS p, account_id AS a, kind, profile FROM invoices").map(r => [r.id, r]));
-    return { bounced, bouncedEndorse, linkedCari, planKeys, planAccounts, paidKeys, tabsOfKey, firstTab, valuesOfKey, linkedEntries, sentDay, given: Object.fromEntries(given), invoicePlan };
+    return { bounced, bouncedEndorse, linkedCari, planKeys, planAccounts, paidKeys, tabsOfKey, firstTab, valuesOfKey, linkedEntries, sentDay, given: Object.fromEntries(given), givenLive, deleted, deletedTaken: deleted.filter(d => !d.restored && d.number && liveNumbers.has(d.number)).length, invoicePlan };
   } finally {
     db.close();
     rmSync(dir, { recursive: true, force: true });
@@ -164,6 +186,43 @@ export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}
     mustEqual("şüpheli alacaklar", B.doubtful, A.doubtful);
     mustEqual("Gönderilecekler", B.pending, A.pending, { count: B.pending.length });
     mustEqual("seri adları", B.series, A.series, B.series);
+    // Aday 9: Silinenler (göç çöp kutusuna dokunmaz), geri yükleme uyarısı (30b: göçte yok; 2.4.3'te alan yok → null).
+    mustEqual("Silinenler (çöp kutusu)", B.trash, A.trash, { count: B.trash?.count, byKind: B.trash?.byKind, faturaSilinen: M?.deleted?.length, faturaSilinenNumarasiCanlida: M?.deletedTaken });
+    mustEqual("geri yükleme uyarısı (30b; göçte yok)", B.restoreNotice ?? null, A.restoreNotice ?? null);
+    let journalOk = false;
+    // Yevmiye (MM8, karar 22.10.2026 "aynı gün sırası belge → tahsilat/ödeme"; ders 31): BÜTÜN satırlar (Excel çıktısı). Her günün satır kümesi aynı kalmalı;
+    // yalnız gün içi sıra değişebilir ve sonrasında o gün belge maddeleri tahsilat/ödeme maddelerinden önce gelir.
+    {
+      const jb = B.journal;
+      const ja = A.journal;
+      const expectRows = Number(B.reports?.yevmiye?.total) || 0;
+      if (!jb || !ja || jb.__status || ja.__status || jb.rows !== expectRows || !jb.rows) add(code, "Yevmiye (bütün satırlar)", "BULGU", "okunamadı ya da eksik okundu (ders 4: boş başarı değildir)", { before: jb?.__status ?? jb?.rows, after: ja?.__status ?? ja?.rows, raporSatiri: expectRows });
+      else {
+        const days = [...new Set([...Object.keys(jb.days), ...Object.keys(ja.days)])];
+        const setBad = days.filter(d => jb.days[d]?.n !== ja.days[d]?.n || jb.days[d]?.set !== ja.days[d]?.set);
+        const reordered = days.filter(d => !setBad.includes(d) && !same(jb.days[d].order, ja.days[d].order));
+        // Sınıf (kararın metni "belge → tahsilat/ödeme"): belge = fatura / makbuz; para = tahsilat / tahsil / ödeme / iade (fatura olmayan iade bir ödemedir,
+        // ör. "Taksit iadesi"); öbürleri (açılış, borç/alacak yaz, Kasa, çek/senet girişi, stok, taksit kartı) karar dışı — konumları denetlenmez.
+        const cls = name => (/fatura|makbuz/iu.test(name) ? "belge" : /tahsil|ödeme|iade/iu.test(name) ? "para" : "diğer");
+        const ruleBad = days.filter(d => {
+          const o = (ja.days[d]?.order || []).map(cls);
+          const firstPara = o.indexOf("para");
+          return firstPara >= 0 && o.lastIndexOf("belge") > firstPara;
+        });
+        const beforeBad = days.filter(d => {
+          const o = (jb.days[d]?.order || []).map(cls);
+          const firstPara = o.indexOf("para");
+          return firstPara >= 0 && o.lastIndexOf("belge") > firstPara;
+        });
+        const names = {};
+        for (const d of days) for (const n of ja.days[d]?.order || []) names[n] = cls(n);
+        const detail = { satir: [jb.rows, ja.rows], gun: days.length, kumesiDegisenGun: setBad.slice(0, 10), kumesiDegisenGunSayisi: setBad.length, sirasiDegisenGun: reordered.length, kuralaUymayanGunSonra: ruleBad.slice(0, 5), kuralaUymayanGunSonraSayisi: ruleBad.length, kuralaUymayanGunOnce: beforeBad.length, islemSiniflari: names, header: [jb.header, ja.header] };
+        if (jb.rows !== ja.rows || setBad.length) add(code, "Yevmiye (bütün satırlar)", "BULGU", "günlük satır kümesi değişti", detail);
+        else if (ruleBad.length) add(code, "Yevmiye (bütün satırlar)", "BULGU", "MM8 kuralı tutmuyor (aynı gün belge tahsilat/ödemeden sonra)", detail);
+        else add(code, "Yevmiye (bütün satırlar)", reordered.length ? "BELGELİ" : "EŞİT", reordered.length ? "MM8 aynı gün sırası belge → tahsilat/ödeme (karar 22.10.2026; satır kümesi her gün aynı)" : "", detail);
+        journalOk = !setBad.length && !ruleBad.length && jb.rows === ja.rows;
+      }
+    }
 
     // ---------- faturalar ----------
     const changed = [];
@@ -260,7 +319,10 @@ export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}
       const b = B.nextNumbers[key];
       const a = A.nextNumbers[key];
       if (same(a, b)) {
-        add(code, `sıradaki numara · ${key}`, "EŞİT", "", { next: a, givenMax: givenFor(M, a) });
+        // Eşit de olsa kural denetlenir (aday 9, E6): sıradaki = 1 + eski veride VERİLMİŞ en büyük (silinenler dahil).
+        const g = givenFor(M, a);
+        const n = Number(/(\d{9})$/.exec(String(a || ""))?.[1]);
+        add(code, `sıradaki numara · ${key}`, g === null || n === g + 1 ? "EŞİT" : "BULGU", g === null || n === g + 1 ? "" : "eşit ama 1 + verilmiş en büyük (silinenler dahil) değil", { next: a, givenMax: g, givenLiveMax: givenFor({ given: M?.givenLive || {} }, a) });
         continue;
       }
       if (b === undefined && key === "esmm") {
@@ -269,7 +331,8 @@ export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}
       }
       const m = /^([A-Z0-9]{3})(\d{4})(\d{9})$/.exec(String(a || ""));
       const expected = m ? (M?.given[`${m[1]}${m[2]}`] || 0) + 1 : null;
-      if (m && ["paper", "smm"].includes(key) && Number(m[3]) === expected) add(code, `sıradaki numara · ${key}`, "BELGELİ", "K-v32 / numara tekil: verilmiş fiş numarası bir daha verilmez (karar 22.10.2026)", { before: b, after: a, givenMax: expected - 1, eskiSurumYenidenVerirdi: Number(/(\d{9})$/.exec(b)?.[1]) <= expected - 1 });
+      const liveMax = m ? M?.givenLive?.[`${m[1]}${m[2]}`] || 0 : null;
+      if (m && ["paper", "smm", "internal"].includes(key) && Number(m[3]) === expected) add(code, `sıradaki numara · ${key}`, "BELGELİ", expected - 1 > liveMax ? "K-v32 + E6: verilmiş numara (silinenler dahil) bir daha verilmez (kararlar 22.10.2026)" : "K-v32 / numara tekil: verilmiş fiş numarası bir daha verilmez (karar 22.10.2026)", { before: b, after: a, givenMax: expected - 1, givenLiveMax: liveMax, silinenYukseltti: expected - 1 > liveMax, eskiSurumYenidenVerirdi: Number(/(\d{9})$/.exec(b)?.[1]) <= expected - 1 });
       else add(code, `sıradaki numara · ${key}`, "BULGU", "", { before: b, after: a, expected });
     }
     // ---------- rapor merkezi ----------
@@ -292,6 +355,10 @@ export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}
       const diffKeys = ["title", "headers", "total", "footer", "summary", "rowsDigest"].filter(k => !same(x[k], y[k]));
       if (!diffKeys.length) {
         reportsEqual += 1;
+        continue;
+      }
+      if (id === "yevmiye" && diffKeys.every(k => k === "rowsDigest") && journalOk) {
+        add(code, `rapor ${id}`, "BELGELİ", "MM8 aynı gün sırası (ön izlemenin ilk 200 satırı; TOPLAM, özet ve bütün satırların günlük kümesi aynı — yukarıda)", { diffKeys });
         continue;
       }
       if (diffKeys.length === 1 && diffKeys[0] === "title" && id === "kayit-tahsilatlari" && y.title === "Kayıt Tahsilatları") {
@@ -327,7 +394,8 @@ export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}
     };
     const isB1 = (key, x, y, amountAt) => {
       const rows = M?.valuesOfKey.get(key) || [];
-      const pairs = rows.map(r => [tlCell(r.values["Toplam Borç"]), tlCell(r.values["Kalan Borç"])]).filter(([t, k]) => t !== null && k !== null && t !== k);
+      // Kalan Borç hücresi BOŞ satır (E2: borç Toplam'dan kalır) kaymaya aday değildir.
+      const pairs = rows.map(r => [tlCell(r.values["Toplam Borç"]), String(r.values["Kalan Borç"] ?? "").trim() === "" ? null : tlCell(r.values["Kalan Borç"])]).filter(([t, k]) => t !== null && k !== null && t !== k);
       if (!pairs.length || !x || !y || x.length !== y.length) return false;
       let moved = 0;
       for (let i = 0; i < x.length; i += 1) {
@@ -357,7 +425,7 @@ export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}
         if (!reasons.length) unexplained.push({ key, before: x[key], after: y[key] });
         for (const r of reasons) byReason[r] = (byReason[r] || 0) + 1;
       }
-      if (b1.length) add(code, `${area} — Toplam Borç → Kalan Borç`, "BULGU", "B1: belgesiz yan etki (7d51d60 madde 5b borç kolonu seçimi)", { keys: b1.length, minorBefore: b1.reduce((s, r) => s + r.before.reduce((t, it) => t + it[amountAt], 0), 0), minorAfter: b1.reduce((s, r) => s + r.after.reduce((t, it) => t + it[amountAt], 0), 0), sample: b1.slice(0, 3) });
+      if (b1.length) add(code, `${area} — Toplam Borç → Kalan Borç`, "BELGELİ", "30a: Kalan Borç önceliği (aday 6 B1; kullanıcı kararı 22.10.2026 ~16:55 \"önerin uygun\")", { keys: b1.length, minorBefore: b1.reduce((s, r) => s + r.before.reduce((t, it) => t + it[amountAt], 0), 0), minorAfter: b1.reduce((s, r) => s + r.after.reduce((t, it) => t + it[amountAt], 0), 0), sample: b1.slice(0, 3) });
       if (unexplained.length) add(code, area, "BULGU", "değişen kayıt belgeli durumların hiçbirinde değil", { changed: keys.length - b1.length, unexplained: unexplained.slice(0, 10), unexplainedCount: unexplained.length, byReason });
       else if (keys.length > b1.length) add(code, area, "BELGELİ", "K-5 / K-31a F1-F4-F5 / K-5c (madde 5, 31a)", { changed: keys.length - b1.length, byReason });
     };
@@ -373,7 +441,106 @@ export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}
       }
       return out;
     };
-    keyTable("Tablodaki Kişiler (kayıt başına borç / alacak)", ce(B.tableReports["cari-ekstre"]), ce(A.tableReports["cari-ekstre"]));
+    // Tablodaki Kişiler (aday 9): borç kâhini — kararların METNİNDEN (30a + E2 + E3 + U2 daraltılmış; CLAUDE.md Açık iş 22.10.2026) ve eski verinin kendi
+    // satırlarından (dataset_rows, 2.4.3'ün yazdığı); 2.4.4 kodundan türetilmez:
+    //   satırın borcu: "Kalan Borç" doluysa o (30a), boşsa "Toplam Borç" / "Toplam" (E2); gün/adet sütunu ("Kalan Gün", "Daire Adedi") tutar değil (E3); tek tutar
+    //   sütunlu tablolarda o sütun ("Aylık Ücret", "Ödenecek") borç (U2 daraltma); Ödeme Sözü tutarı ("Söz Tutarı") borç DEĞİL (U2); aynı dosya no farklı sekmede
+    //   aynı kayıt (U2, tek kaynak); her sekme kendi sütun analiziyle (K-31a F4).
+    //   2.4.3'ün kuralı (önce değerleri de denetlenir): sütun analizi yalnız İLK sekmede (K-31a F4'ün düzelttiği) → ilk sekmede ilk eşleşen "Toplam Borç", öbür
+    //   sekmelerin borcu 0.
+    {
+      const xb = ce(B.tableReports["cari-ekstre"]);
+      const xa = ce(A.tableReports["cari-ekstre"]);
+      const cell = v => (String(v ?? "").trim() === "" ? null : tlCell(v));
+      const ruleOf = key => {
+        const rows = M?.valuesOfKey.get(key);
+        if (!rows) return null;
+        let debt = 0;
+        let old = 0;
+        const parts = { kalan: 0, toplamBos: 0, soz: 0, servis: 0, aidat: 0, taksit: 0, toplamFark: 0 };
+        for (const { tab, values } of rows) {
+          if (tab === M.firstTab) old += cell(values["Toplam Borç"]) || 0;
+          if (tab === "Taksitler") {
+            const v = cell(values.Toplam) || 0;
+            debt += v;
+            parts.taksit += v;
+            continue;
+          }
+          if (tab === "Ödeme Sözleri") {
+            parts.soz += cell(values["Söz Tutarı"]) || 0;
+            continue;
+          }
+          if (tab === "Borçlular") {
+            const kalan = cell(values["Kalan Borç"]);
+            const toplam = cell(values["Toplam Borç"]) || 0;
+            if (kalan !== null) {
+              debt += kalan;
+              parts.kalan += kalan;
+              parts.toplamFark += toplam - kalan;
+            } else {
+              debt += toplam;
+              parts.toplamBos += toplam;
+            }
+            continue;
+          }
+          if (tab === "Servis Ücretleri") {
+            const v = cell(values["Aylık Ücret"]) || 0;
+            debt += v;
+            parts.servis += v;
+            continue;
+          }
+          if (tab === "Aidatlar") {
+            const v = cell(values["Ödenecek"]) || 0;
+            debt += v;
+            parts.aidat += v;
+            continue;
+          }
+          return null;
+        }
+        return { debt, old, parts };
+      };
+      const keys = [...new Set([...Object.keys(xb), ...Object.keys(xa)])];
+      const debtBad = [];
+      const sums = { before: 0, after: 0, toplamFark: 0, soz: 0, taksit: 0, servis: 0, aidat: 0, taksitlerDegisen: 0 };
+      const oldBad = [];
+      const alacakChanged = [];
+      let ruled = 0;
+      for (const key of keys) {
+        const b = xb[key] || { borc: 0, alacak: 0, lines: 0 };
+        const a = xa[key] || { borc: 0, alacak: 0, lines: 0 };
+        sums.before += b.borc;
+        sums.after += a.borc;
+        const rule = ruleOf(key);
+        const tabs = [...(M?.tabsOfKey.get(key) || [])];
+        if (rule) {
+          ruled += 1;
+          if (a.borc !== rule.debt) debtBad.push({ key, tabs, before: b.borc, after: a.borc, expected: rule.debt, parts: rule.parts });
+          if (b.borc !== rule.old) oldBad.push({ key, tabs, before: b.borc, expected243: rule.old });
+          sums.toplamFark += rule.parts.toplamFark;
+          sums.soz += rule.parts.soz;
+          sums.taksit += rule.parts.taksit;
+          sums.servis += rule.parts.servis;
+          sums.aidat += rule.parts.aidat;
+        } else if (a.borc !== b.borc) {
+          debtBad.push({ key, tabs, before: b.borc, after: a.borc, expected: "2.4.3'teki değer (karar yeni kural koymaz)" });
+          sums.taksitlerDegisen += 1;
+        }
+        if (a.alacak !== b.alacak) alacakChanged.push(key);
+      }
+      // Kuruşu kuruşuna ayrıştırma: toplam borç farkı = 30a (Toplam − Kalan) + U2 söz tutarları + tek tutarlı sekmelerin farkı — 2.4.3'ün kuralı (Toplam Borç +
+      // söz tutarı) eski verinin satırlarından doğrulanır (önce değerleri).
+      // fark = Σ(önce − sonra) = 30a (Toplam − Kalan, ilk sekme) − F4 ile sayılmaya başlayan öbür sekmeler (Taksitler Toplam, Servis Aylık Ücret, Aidat Ödenecek);
+      // söz tutarı iki sürümde de borç değil (2.4.3: ikinci sekme analiz edilmezdi; 2.4.4: U2).
+      const delta = sums.before - sums.after;
+      const explained = sums.toplamFark - sums.taksit - sums.servis - sums.aidat;
+      const detail = { kayit: keys.length, kuralli: ruled, borcOnce: sums.before, borcSonra: sums.after, fark: delta, ayristirma: { "30a Toplam−Kalan (ilk sekme)": sums.toplamFark, "K-31a F4 Taksitler (Toplam)": -sums.taksit, "K-31a F4 + E3 Servis (Aylık Ücret; Kalan Gün değil)": -sums.servis, "K-31a F4 + U2 Aidat (Ödenecek; Daire Adedi değil)": -sums.aidat, "U2 söz tutarı (iki sürümde de borç dışı)": sums.soz }, aciklanamayan: delta - explained, debtBad: debtBad.slice(0, 10), debtBadCount: debtBad.length, eskiKuralTutmayan: oldBad.slice(0, 10), eskiKuralTutmayanSayisi: oldBad.length };
+      if (debtBad.length || oldBad.length || delta !== explained) add(code, "Tablodaki Kişiler — kayıt borcu (30a/E2/E3/U2)", "BULGU", "kararın kuralı tutmuyor", detail);
+      else add(code, "Tablodaki Kişiler — kayıt borcu (30a/E2/E3/U2)", delta ? "BELGELİ" : "EŞİT", delta ? "30a Kalan Borç önceliği + E2 boşsa Toplam + E3 gün/adet tutar değil + U2 söz borç değil, dosya no tek kayıt (kararlar 22.10.2026)" : "", detail);
+      // Alacak (tahsilat) ve satır sayısı: K-5 / K-31a / K-5c (aday 6'daki kural) + U2 dosya no tek kayıt.
+      const xbA = Object.fromEntries(Object.entries(xb).map(([k, v]) => [k, { alacak: v.alacak }]));
+      const xaA = Object.fromEntries(Object.entries(xa).map(([k, v]) => [k, { alacak: v.alacak }]));
+      keyTable("Tablodaki Kişiler (kayıt başına tahsilat)", xbA, xaA);
+    }
     const vt = r => {
       const out = {};
       for (const row of r?.report?.rows || []) {
@@ -395,8 +562,22 @@ export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}
     const nb = na(B.tableReports["nakit-akis"]);
     const nc = na(A.tableReports["nakit-akis"]);
     if (same(nb, nc)) add(code, "Nakit Akışı", "EŞİT", "", nb);
-    else if (nb && nc && nb.cashIn === nc.cashIn && nb.cashOut === nc.cashOut && nb.net === nc.net) add(code, "Nakit Akışı", "BELGELİ", "K-5 / K-31a F5 (Beklenen / Gerçekleşen; Kasa giriş-çıkışı aynı)", { before: nb, after: nc });
-    else add(code, "Nakit Akışı", "BULGU", "", { before: nb, after: nc });
+    else if (!nb || !nc) add(code, "Nakit Akışı", "BULGU", "okunamadı", { before: nb, after: nc });
+    else {
+      // MM6 (karar 22.10.2026): Kasa giriş / çıkış sütunları BÜTÜN Kasa hareketleri = 2.4.3'ün KENDİ Kasa Hareketleri raporu (Dönem Giriş / Dönem Çıkış).
+      const sumOf = (r, k) => minorOf(r?.summary?.find?.(([key]) => key === k)?.[1]);
+      const kasaIn = sumOf(B.reports["kasa-hareketleri"], "Dönem Giriş");
+      const kasaOut = sumOf(B.reports["kasa-hareketleri"], "Dönem Çıkış");
+      const c = v => Math.round(Number(v || 0) * 100);
+      const mm6 = c(nc.cashIn) === kasaIn && c(nc.cashOut) === kasaOut && c(nc.net) === kasaIn - kasaOut;
+      // Beklenen: farkı = Vade Takip kalemlerinin farkı (aynı kaynak; her kalemin kuralı Vade Takip satırında denetlenir).
+      const vtSum = r => (r?.report?.rows || []).reduce((s2, row) => s2 + Math.round((row.amount || 0) * 100), 0);
+      const vtDelta = vtSum(A.tableReports["vade-takip"]) - vtSum(B.tableReports["vade-takip"]);
+      const expOk = c(nc.expected) - c(nb.expected) === vtDelta;
+      const detail = { before: nb, after: nc, kasaRaporu243: { giris: kasaIn, cikis: kasaOut }, beklenenFarki: c(nc.expected) - c(nb.expected), vadeTakipFarki: vtDelta, gerceklesenFarki: c(nc.collected) - c(nb.collected) };
+      if (mm6 && expOk) add(code, "Nakit Akışı", "BELGELİ", "MM6 Kasa sütunları = 2.4.3 Kasa Hareketleri toplamı; Beklenen farkı = Vade Takip farkı (30a); Gerçekleşen K-5/F5", detail);
+      else add(code, "Nakit Akışı", "BULGU", mm6 ? "Beklenen farkı Vade Takip farkına eşit değil" : "MM6: Kasa sütunları 2.4.3'ün Kasa raporuyla aynı değil", detail);
+    }
   }
   // ---------- dosya ----------
   for (const code of Object.keys(before.files)) {

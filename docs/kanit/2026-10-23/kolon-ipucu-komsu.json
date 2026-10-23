@@ -1,0 +1,32 @@
+{
+  "ad": "2026-10-23/kolon-ipucu-komsu",
+  "komut": "node --test test/insight.test.mjs test/kalan-borc-satir-31d.test.mjs test/temporal.test.mjs test/kalan-borc-ortak-30a.test.mjs test/cards.test.mjs test/ice-alma-sayi-hucre.test.mjs test/analysis-worker.test.mjs test/rapor-tablodaki-kisiler-f1.test.mjs test/raporlar-209.test.mjs test/reports.test.mjs test/columns.test.mjs test/tablo-borc-dosya-u2.test.mjs test/fixes.test.mjs test/kolon-ipucu-244.test.mjs",
+  "commit": "624810bfa3975421ec0990aa08a5a4c2ccfefeab",
+  "dal": "is/kolon-ipucu",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T07:24:08.347Z",
+  "sure_sn": 14.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 195,
+    "gecen": 195,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/2026-10-23/kolon-ipucu-komsu.log",
+  "klasor": "/home/user/wt/kolon-ipucu",
+  "ham_cikti_sha256": "ae3cce121880403926332609e5352f2cba2b6e5f629b95e9f36edcefdd815275",
+  "ham_cikti_bayt": 60662
+}

@@ -16,36 +16,92 @@ const pad = value => String(value).padStart(2, "0");
 const moneyFormat = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const tl = value => `${moneyFormat.format(Number(value) || 0)} TL`;
 
+const MARGIN = 36;
+const CELL_PAD = 4;
+// Sayfa düzeni kolon sayısından: 7'den çok kolon yatay sayfa; yazı boyu kolon sayısıyla küçülür.
+const layoutOf = count => {
+  const size = count > 7 ? { width: A4.height, height: A4.width } : A4;
+  return { size, W: size.width - MARGIN * 2, fontSize: count > 10 ? 7 : count > 7 ? 7.5 : 8.5 };
+};
+// Kolon ölçüleri: başlık ve hücre ölçümlerinin p90'ı, en az 40 ve en çok W/3. 2.4.4 U3: tutar ve sayı kolonunda p90 değil EN GENİŞ hücre (bütün
+// satırların en uzun metni ve kalın TOPLAM hücreleri dahil) — en büyük tutarlar ve TOPLAM satır ortasından bölünmesin ("36.00 / 0,00").
+// rigid: bölünmez kolon (tutar, sayı, boşluksuz değer: tarih, telefon, numara); floor: sözcüklü kolonun en dar hâli (başlığı sığar).
+function columnMeasures(doc, { headers, rows, types, totals, fontSize, W }) {
+  const sample = rows.slice(0, 400);
+  const numeric = index => types[index] === "money" || types[index] === "number";
+  const widths = headers.map((header, index) => {
+    const samples = sample.map(row => doc.measure(String(row[index] ?? ""), "regular", fontSize)).sort((a, b) => a - b);
+    let content = samples.length ? samples[Math.min(samples.length - 1, Math.floor(samples.length * 0.9))] : 0;
+    if (numeric(index)) {
+      // Rakamlar eşit genişlikte: bütün satırlarda yalnız en uzun metin ölçülür (büyük raporda da hızlı).
+      let longest = "";
+      for (const row of rows) {
+        const value = String(row[index] ?? "");
+        if (value.length > longest.length) longest = value;
+      }
+      content = Math.max(samples.length ? samples[samples.length - 1] : 0, doc.measure(longest, "regular", fontSize), ...totals.map(line => doc.measure(String(line[index] ?? ""), "bold", fontSize)));
+    }
+    return Math.min(W / 3, Math.max(40, Math.max(doc.measure(header, "bold", fontSize) + 6, content) + CELL_PAD * 2));
+  });
+  const rigid = index => numeric(index) || sample.every(row => !/\s/.test(String(row[index] ?? "").trim()));
+  const floor = index => Math.max(48, Math.min(widths[index], doc.measure(headers[index], "bold", fontSize) + 6 + CELL_PAD * 2));
+  return { widths, rigid, floor };
+}
+const totalsOf = ({ footer = null, footers = null }) => (Array.isArray(footers) && footers.length ? footers : footer ? [footer] : []);
+
 /**
- * @param {{ title: string, subtitle?: string, headers: string[], rows: string[][], types?: string[], summary?: Array<[string, string]>, footer?: string[] | null, footers?: string[][] | null, officeName?: string, userName?: string, brand?: string, now?: Date }} input
+ * @param {{ title: string, subtitle?: string, headers: string[], rows: string[][], types?: string[], summary?: Array<[string, string]>, footer?: string[] | null, footers?: string[][] | null, officeName?: string, userName?: string, brand?: string, now?: Date, optional?: number[], optionalNote?: (count: number) => string }} input
  * footer (v2.0.20): tablonun altındaki kalın TOPLAM satırı (rapor merkezi hesaplar; yoksa çizilmez). footers (2.4.3 UX24): birden çok
  * TOPLAM satırı (yönü karışık raporda "TOPLAM Satış", "TOPLAM Alış", "Net"); verilirse footer yerine bunlar sırayla çizilir.
  * brand: altbilgideki ad (varsayılan "DestekOfis"); boş metin yalnız başlığı yazar (müşteriye verilen belgeler, v2.0.6).
+ *
+ * optional (2.4.4 U3): sayfaya sığmazsa bırakılabilecek kolonların sırası (tablo raporlarının özel alan kolonları; Excel'de hepsi var). Bölünmez kolonların
+ * ve sözcüklü kolonların en dar hâlinin toplamı sayfaya sığana kadar sağdaki bırakılabilir kolon çıkarılır — tutar ve başlık sözcük ortasından bölünmez
+ * (önceden 18 kolonlu Tablodaki Kişiler'de bütün kolonlar orantılanıyor, "36.00 / 0,00", "Kayna k" çıkıyordu). Bırakılan sayı alt başlığa optionalNote(n)
+ * ile yazılır. optional verilmezse kolon bırakılmaz.
  */
-export function tablePdf({ title, subtitle = "", headers, rows, types = [], summary = [], footer = null, footers = null, officeName = "", userName = "", brand = "DestekOfis", now = new Date() }) {
-  const M = 36;
-  const landscape = headers.length > 7;
-  const size = landscape ? { width: A4.height, height: A4.width } : A4;
+export function tablePdf(input) {
+  const optional = Array.isArray(input.optional) ? input.optional.filter(index => Number.isInteger(index) && index >= 0 && index < input.headers.length) : [];
+  if (!optional.length) return drawTablePdf(input);
+  const pick = keep => ({
+    ...input,
+    headers: keep.map(index => input.headers[index]),
+    types: keep.map(index => (input.types || [])[index] ?? ""),
+    rows: input.rows.map(row => keep.map(index => row[index])),
+    footer: input.footer ? keep.map(index => input.footer[index]) : null,
+    footers: Array.isArray(input.footers) ? input.footers.map(line => keep.map(index => line[index])) : null,
+  });
+  const measurer = new PdfDocument({ fonts: loadFonts(), size: A4 });
+  const fits = part => {
+    const { W, fontSize } = layoutOf(part.headers.length);
+    const { widths, rigid, floor } = columnMeasures(measurer, { ...part, types: part.types, totals: totalsOf(part), fontSize, W });
+    return widths.reduce((total, width, index) => total + (rigid(index) ? width : floor(index)), 0) <= W;
+  };
+  const left = [...new Set(optional)].sort((a, b) => a - b);
+  let keep = input.headers.map((_, index) => index);
+  while (left.length && !fits(pick(keep))) {
+    const drop = left.pop();
+    keep = keep.filter(index => index !== drop);
+  }
+  const dropped = input.headers.length - keep.length;
+  if (!dropped) return drawTablePdf(input);
+  const note = typeof input.optionalNote === "function" ? input.optionalNote(dropped) : `${dropped} kolon sayfaya sığmadı`;
+  return drawTablePdf({ ...pick(keep), subtitle: [input.subtitle, note].filter(Boolean).join(" · ") });
+}
+
+function drawTablePdf({ title, subtitle = "", headers, rows, types = [], summary = [], footer = null, footers = null, officeName = "", userName = "", brand = "DestekOfis", now = new Date() }) {
+  const M = MARGIN;
+  const { size, W, fontSize } = layoutOf(headers.length);
   const doc = new PdfDocument({ fonts: loadFonts(), size, title, author: officeName || "DestekOfis", subject: title });
-  const W = size.width - M * 2;
   const bottomLimit = size.height - 48;
   const muted = "#6b7280";
   const ink = "#111827";
-  const fontSize = headers.length > 10 ? 7 : headers.length > 7 ? 7.5 : 8.5;
-  const cellPad = 4;
+  const cellPad = CELL_PAD;
 
-  // Kolon genişlikleri: başlık ve hücre ölçümlerinin p90'ı, en az 40 ve en çok W/3.
-  const sample = rows.slice(0, 400);
-  const widths = headers.map((header, index) => {
-    const samples = sample.map(row => doc.measure(String(row[index] ?? ""), "regular", fontSize)).sort((a, b) => a - b);
-    const p90 = samples.length ? samples[Math.min(samples.length - 1, Math.floor(samples.length * 0.9))] : 0;
-    return Math.min(W / 3, Math.max(40, Math.max(doc.measure(header, "bold", fontSize) + 6, p90) + cellPad * 2));
-  });
+  const { widths, rigid, floor } = columnMeasures(doc, { headers, rows, types, totals: totalsOf({ footer, footers }), fontSize, W });
   // Sayfaya sığmayınca (v2.0.6) yalnız sözcüklü metin kolonları (ad, grup, not) daralıp satır içinde sarılır; tutar, tarih,
   // telefon gibi bölünmez değerler kendi genişliğinde kalır ("03.09.202 / 6" diye kırılmasın). Yetmezse hepsi orantılanır.
   const sum = list => list.reduce((total, value) => total + value, 0);
-  const rigid = index => types[index] === "money" || types[index] === "number" || sample.every(row => !/\s/.test(String(row[index] ?? "").trim()));
-  const floor = index => Math.max(48, Math.min(widths[index], doc.measure(headers[index], "bold", fontSize) + 6 + cellPad * 2));
   let cols = widths.slice();
   if (sum(widths) > W) {
     const flex = headers.map((_, index) => index).filter(index => !rigid(index));

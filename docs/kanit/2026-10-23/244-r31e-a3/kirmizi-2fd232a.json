@@ -1,0 +1,43 @@
+{
+  "ad": "244-r31e-a3/kirmizi-2fd232a",
+  "komut": "node --test --test-reporter=spec --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/a3-eski-2fd232a/test/ebelge-244-gonderim-izi.test.mjs",
+  "commit": "2fd232a8484cdcd6b0283afb00a81f6af42dfed9",
+  "dal": "is/r31e-a3",
+  "kirli": 2,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T04:13:14.073Z",
+  "sure_sn": 16.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 23,
+    "gecen": 21,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "R5 (A3) iki oturum aynı belgede aynı anda Durum Sorgula: geç kalan 409 alır, ileti 'başka bir sorguyla güncellendi' der ('yeniden gönderim' değil); veri doğru",
+      "konum": "test/ebelge-244-gonderim-izi.test.mjs:817:3",
+      "hata": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /başka bir sorguyla güncellendi/. Input: · \"Durum sorgulanırken belgenin e-Belge durumu başka bir oturumda değişti (ör. yeniden gönderim başladı); sorgunun sonucu yazılmadı. Birkaç saniye sonra kartı yenileyin, gerekirse yeniden Durum Sorgula'ya basın.\""
+    },
+    {
+      "ad": "R6 (K45) e-Arşiv iptal isteği koptu (iz açık) → süre dolunca İptal Et EDM'ye BİR KEZ sorar, 'iptal edilmemiş' → süre doldu + iz kapanır; sonraki İptal Et sormaz, kartta neden yazar",
+      "konum": "test/ebelge-244-gonderim-izi.test.mjs:842:3",
+      "hata": "AssertionError [ERR_ASSERTION]: EDM'nin kesin yanıtı iptal izini kapattı · true !== false"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-23/244-r31e-a3/kirmizi-2fd232a.log",
+  "klasor": "/home/user/wt/r31e-a3",
+  "ham_cikti_sha256": "e9bfc623873d5fc6417d458a4dc993d80abcf8fc1e633910c6fb6aaca8021578",
+  "ham_cikti_bayt": 8574
+}

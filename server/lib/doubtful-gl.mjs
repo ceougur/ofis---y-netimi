@@ -257,24 +257,26 @@ export function applyDoubtfulToJournal(entries, doubtful) {
     }
   }
   const label = record => [record.reasonLabel || "", record.chequeSerialNo ? `Evrak No ${record.chequeSerialNo}` : "", record.note || ""].filter(Boolean).join(" · ") || "Şüpheli alacak";
+  // Yazım sırası (yevmiye journalOrder, MM8): kaydın rowid'i (seq); karşılıkların sırası yükleyicinin sırası (tarih, rowid).
+  const seqOf = record => (Number.isFinite(record?.seq) ? { seq: record.seq } : {});
   for (const record of records) {
     const control = record.control || "120";
-    entries.push({ id: `doubtful-take:${record.id}`, date: record.date, source: "Şüpheli Alacağa Al", text: label(record), lines: [{ account: DOUBTFUL_GL.doubtful, debit: record.amountMinor, credit: 0, party: record.party }, { account: control, debit: 0, credit: record.amountMinor, party: record.party }] });
+    entries.push({ ...seqOf(record), id: `doubtful-take:${record.id}`, date: record.date, source: "Şüpheli Alacağa Al", text: label(record), lines: [{ account: DOUBTFUL_GL.doubtful, debit: record.amountMinor, credit: 0, party: record.party }, { account: control, debit: 0, credit: record.amountMinor, party: record.party }] });
   }
   const recordById = new Map(records.map(record => [record.id, record]));
-  for (const item of doubtful?.provisions || []) {
+  for (const [index, item] of (doubtful?.provisions || []).entries()) {
     const record = recordById.get(item.recordId);
     if (!record || !(item.amountMinor > 0)) continue;
-    entries.push({ id: `doubtful-provision:${item.id}`, date: item.date, source: "Karşılık Ayır", text: item.note || label(record), lines: [{ account: DOUBTFUL_GL.expense, debit: item.amountMinor, credit: 0 }, { account: DOUBTFUL_GL.provision, debit: 0, credit: item.amountMinor }] });
+    entries.push({ seq: Number.isFinite(item.seq) ? item.seq : index, id: `doubtful-provision:${item.id}`, date: item.date, source: "Karşılık Ayır", text: item.note || label(record), lines: [{ account: DOUBTFUL_GL.expense, debit: item.amountMinor, credit: 0 }, { account: DOUBTFUL_GL.provision, debit: 0, credit: item.amountMinor }] });
   }
   for (const extra of extras) {
     const record = recordById.get(extra.recordId);
     if (!record || !(extra.minor > 0)) continue;
     if (extra.kind === "release") {
-      entries.push({ id: `doubtful-release:${record.id}`, date: extra.date, source: "Şüpheliden Çıkar", text: label(record), lines: [{ account: record.control || "120", debit: extra.minor, credit: 0, party: record.party }, { account: DOUBTFUL_GL.doubtful, debit: 0, credit: extra.minor, party: record.party }] });
+      entries.push({ ...seqOf(record), id: `doubtful-release:${record.id}`, date: extra.date, source: "Şüpheliden Çıkar", text: label(record), lines: [{ account: record.control || "120", debit: extra.minor, credit: 0, party: record.party }, { account: DOUBTFUL_GL.doubtful, debit: 0, credit: extra.minor, party: record.party }] });
     } else {
       const suffix = extra.kind === "release644close" ? "release" : extra.key;
-      entries.push({ id: `doubtful-644:${record.id}:${suffix}`, date: extra.date, source: "Konusu Kalmayan Karşılık", text: label(record), lines: [{ account: DOUBTFUL_GL.provision, debit: extra.minor, credit: 0 }, { account: DOUBTFUL_GL.groundless, debit: 0, credit: extra.minor }] });
+      entries.push({ ...seqOf(record), id: `doubtful-644:${record.id}:${suffix}`, date: extra.date, source: "Konusu Kalmayan Karşılık", text: label(record), lines: [{ account: DOUBTFUL_GL.provision, debit: extra.minor, credit: 0 }, { account: DOUBTFUL_GL.groundless, debit: 0, credit: extra.minor }] });
     }
   }
   return state;

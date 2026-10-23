@@ -1,0 +1,32 @@
+{
+  "ad": "244-kahin/ebelge-senaryo",
+  "komut": "npm run test:kahin-ebelge -- --senaryo test/bagimsiz/ebelge/senaryolar --ux15 acik --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-244/kanit-ebelge-senaryo",
+  "commit": "7123816fa43f717621b2fc399383e171ffe8d7c7",
+  "dal": "is/kahin-244",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T01:00:02.066Z",
+  "sure_sn": 34.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 24,
+    "gecen": 24,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/244-kahin/ebelge-senaryo.log",
+  "klasor": "/home/user/wt/kahin-244",
+  "ham_cikti_sha256": "44e67ff3f061e7a6e3e14befdedfa8ef382a9ec35d0b216233e75d56d1a1458f",
+  "ham_cikti_bayt": 3777
+}

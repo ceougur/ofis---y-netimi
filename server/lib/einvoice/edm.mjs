@@ -516,7 +516,8 @@ export function createEdmClient(options) {
         touch();
         const status = deep(body, "INVOICE_STATUS");
         const read = name => textOf(find(status, name));
-        return mapEdmStatus({ status: read("STATUS"), description: read("STATUS_DESCRIPTION"), gibCode: read("GIB_STATUS_CODE"), gibDescription: read("GIB_STATUS_DESCRIPTION"), responseCode: read("RESPONSE_CODE"), responseDescription: read("RESPONSE_DESCRIPTION"), earchive });
+        // 2.4.4 (31d E1): yanıttaki ETTN (INVOICE_STATUS, tns:INVOICE'tan türer: UUID niteliği) — 11048'de "bu belge mi" denetimi için; yoksa "".
+        return { ...mapEdmStatus({ status: read("STATUS"), description: read("STATUS_DESCRIPTION"), gibCode: read("GIB_STATUS_CODE"), gibDescription: read("GIB_STATUS_DESCRIPTION"), responseCode: read("RESPONSE_CODE"), responseDescription: read("RESPONSE_DESCRIPTION"), earchive }), uuid: String(status?.attrs?.UUID || read("UUID") || "") };
       });
     },
     // e-Arşiv iptali (EDM: taslak, hatalı ya da Send-Succeed durumundaki e-Arşiv fatura iptal edilebilir). e-Fatura
@@ -634,7 +635,8 @@ export function createEdmSmmClient(options) {
         // Yanıt SMM_STATUS (tns:SMM'den türer): STATUS, STATUS_DESCRIPTION, GIB_STATUS_* doğrudan çocuk (SMM/HEADER/STATUS değil).
         const status = deep(body, "SMM_STATUS");
         const read = name => textOf(find(status, name));
-        return mapEdmStatus({ status: read("STATUS"), description: read("STATUS_DESCRIPTION"), gibCode: read("GIB_STATUS_CODE"), gibDescription: read("GIB_STATUS_DESCRIPTION"), esmm: true });
+        // 2.4.4 (31d E1): yanıttaki ETTN (SMM_STATUS, tns:SMM'den türer: UUID öğesi) — 11048'de "bu belge mi" denetimi için; yoksa "".
+        return { ...mapEdmStatus({ status: read("STATUS"), description: read("STATUS_DESCRIPTION"), gibCode: read("GIB_STATUS_CODE"), gibDescription: read("GIB_STATUS_DESCRIPTION"), esmm: true }), uuid: String(read("UUID") || status?.attrs?.UUID || "") };
       });
     },
     // e-SMM iptali (EDM §5.13: e-Arşiv senaryosundaki gibi; başarısız ve taslak SMM'ler de iptale çekilebilir). Süre kuralı çağıranın işidir

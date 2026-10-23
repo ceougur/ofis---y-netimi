@@ -10,7 +10,7 @@ import { canUser } from "../lib/permissions.mjs";
 
 const KINDS_VIEWABLE = new Set(["application/pdf", "image/jpeg", "image/png", "image/gif", "image/webp"]);
 
-export function registerDocumentRoutes(router, { store, auth, audit, events, config, log }) {
+export function registerDocumentRoutes(router, { store, auth, audit, events, config, log, dataset = null }) {
   const files = createDocumentStore({ dir: path.join(config.dataDir, "belgeler"), log });
   // Açılışta eski silinmiş belgeleri ve sahipsiz dosyaları temizler (arka planda, açılışı bekletmez).
   const purgeTimer = setTimeout(() => files.purge(store), 5_000);
@@ -47,7 +47,8 @@ export function registerDocumentRoutes(router, { store, auth, audit, events, con
 
   router.post("/api/workspace/cases/:key/documents", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "documents.upload");
-    const key = caseKeyOf(params.key);
+    // 31e tur 7 N6: bayat "satir:" anahtarına belge 409 record-gone (dataset.liveKey).
+    const key = dataset?.liveKey ? dataset.liveKey(caseKeyOf(params.key)) : caseKeyOf(params.key);
     const body = await readBuffer(req, { limit: MAX_DOCUMENT_BYTES });
     const name = cleanDocumentName(url.searchParams.get("name"));
     const type = detectDocumentType(name, body);

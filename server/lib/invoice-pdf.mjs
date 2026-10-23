@@ -27,8 +27,13 @@ const METHOD_OUT = { ...METHOD, card: "Kredi Kartı" };
 // matbaanın basılı formuna ya da e-Belge olarak düzenlenir): başlık "Müşteri Fişi" ve altta "resmî fatura yerine
 // geçmez" yazar. e-Belge bağlantısı açılınca e-Fatura / e-Arşiv görseli kendi başlığıyla basılır.
 const isFormal = doc => ["EARSIVFATURA", "TEMELFATURA", "TICARIFATURA", "ESMM"].includes(doc.profile);
+// 2.4.4 (mali müşavir MM4): "Kâğıt Makbuz Olarak Bırak" ile bırakılan e-SMM makbuzu kâğıt serbest meslek makbuzudur (kâğıt makbuz serisinden numara,
+// defterde 600/391, kartta "Kâğıt Makbuz") — PDF'i de Serbest Meslek Makbuzu olarak basılır; "Müşteri Fişi … mali değeri yoktur" yazmaz. Faturada bırakılan
+// belge (Müşteri Fişi Olarak Bırak) Müşteri Fişi kalır.
+const isPaperReceipt = doc => doc.kind === "smm" && doc.profile === "KAGIT" && doc.eStatus === "withdrawn";
 const titleOf = doc => {
   if (doc.status === "draft") return "PROFORMA";
+  if (isPaperReceipt(doc)) return "SERBEST MESLEK MAKBUZU";
   if (!isFormal(doc)) return { sale: "MÜŞTERİ FİŞİ", smm: "MÜŞTERİ FİŞİ (SERBEST MESLEK)", sale_return: "İADE FİŞİ", purchase: "ALIŞ KAYDI", purchase_return: "İADE FİŞİ (ALIŞTAN)" }[doc.kind] || "MÜŞTERİ FİŞİ";
   if (doc.kind === "smm") return doc.eTest ? "e-SERBEST MESLEK MAKBUZU · TEST" : "e-SERBEST MESLEK MAKBUZU";
   const head = doc.profile === "EARSIVFATURA" ? "e-ARŞİV FATURA" : "e-FATURA";
@@ -62,6 +67,10 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
   const seller = incoming ? invoice.party : invoice.seller;
   const buyer = incoming ? invoice.seller : invoice.party;
   const withholding = (invoice.lines || []).some(item => item.withholdingCode);
+  // 2.4.4 (mali müşavir MM7/MM11): serbest meslek makbuzu fatura dilinde basılmaz — GİB e-SMM görünümündeki adlar (Makbuz No, Brüt Ücret, Gelir Vergisi
+  // Stopajı, Net Ücret, KDV, KDV Tevkifatı, Tahsil Edilen KDV, Tahsil Edilen; GİB Karekod Standardı V1.2 §2.4 brutucret, gvstopaj, netucret, kdvtutari,
+  // kdvtevkifat, tahsilkdv, tahsilat). Tutarlar aynı (kayıtlı toplamlar); yalnız ad, satır ve metin.
+  const smm = invoice.kind === "smm";
   // 2.4.3 (uzman UI3b): kod kolonu sabit 62pt'ydi; 13 haneli barkod (EAN-13) "8690123456…", "STK-2.0.26-0…" diye kesiliyordu. Genişlik en uzun koda
   // göre (en az 62, en çok 120pt; ad kolonu kalan yeri alır); 120pt'yi aşan çok uzun kod yine "…" ile kısalır.
   const codeWidth = Math.min(120, Math.max(62, ...(invoice.lines || []).map(item => Math.ceil(doc.measure(String(item.code || ""), "regular", 8)) + 8)));
@@ -69,13 +78,13 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
     { key: "seq", label: "Sıra", w: 26, align: "right" },
     // v2.0.16 (müşteri): Stok Kodu ayrı kolon (kalemlerden birinde kod varsa).
     ...((invoice.lines || []).some(item => item.code) ? [{ key: "code", label: "Stok Kodu", w: codeWidth }] : []),
-    { key: "name", label: "Mal / Hizmet", w: 0 },
+    { key: "name", label: smm ? "Hizmet" : "Mal / Hizmet", w: 0 },
     { key: "qty", label: "Miktar", w: 58, align: "right" },
     { key: "price", label: "Birim Fiyat", w: 66, align: "right" },
     { key: "disc", label: "İsk. %", w: 34, align: "right" },
     { key: "vat", label: "KDV %", w: 34, align: "right" },
     { key: "vatAmount", label: "KDV", w: 58, align: "right" },
-    { key: "net", label: "Tutar", w: 72, align: "right" },
+    { key: "net", label: smm ? "Brüt Ücret" : "Tutar", w: 72, align: "right" },
   ];
   const nameCol = cols.find(col => col.key === "name");
   nameCol.w = W - cols.reduce((sum, col) => sum + col.w, 0);
@@ -133,11 +142,12 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
     page.rect(boxX, 36, titleW, 24, { fill: accent, radius: 3 });
     page.text(boxX, 52, titleOf(invoice), { font: "bold", size: qr ? 9 : 11, color: "#ffffff", align: "center", width: titleW });
     const facts = [
-      [isFormal(invoice) ? "Fatura No" : "Fiş No", invoice.displayNo || invoice.number || "Taslak"],
-      invoice.paperNo ? ["Kâğıt Fatura No", invoice.paperNo] : null,
+      [numberLabel(invoice), invoice.displayNo || invoice.number || "Taslak"],
+      invoice.paperNo ? [smm ? "Kâğıt Makbuz No" : "Kâğıt Fatura No", invoice.paperNo] : null,
       ["Tarih / Saat", `${dayText(invoice.issueDate)} ${invoice.issueTime || ""}`.trim()],
-      isFormal(invoice) ? ["Senaryo", invoice.profileLabel || ""] : null,
-      isFormal(invoice) ? ["Fatura Tipi", invoice.typeCode || ""] : null,
+      // Senaryo ve fatura tipi faturanın alanlarıdır; makbuzun türü başlıkta yazar.
+      isFormal(invoice) && !smm ? ["Senaryo", invoice.profileLabel || ""] : null,
+      isFormal(invoice) && !smm ? ["Fatura Tipi", invoice.typeCode || ""] : null,
       invoice.dueDate && invoice.dueDate !== invoice.issueDate ? ["Vade", dayText(invoice.dueDate)] : null,
       invoice.orderNo ? ["Sipariş", `${invoice.orderNo}${invoice.orderDate ? ` · ${dayText(invoice.orderDate)}` : ""}`] : null,
       invoice.despatchNo ? ["İrsaliye", `${invoice.despatchNo}${invoice.despatchDate ? ` · ${dayText(invoice.despatchDate)}` : ""}`] : null,
@@ -148,7 +158,7 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
     let factTop = qr ? 36 + qrSize + 10 : 74;
     for (const [label, value] of facts) {
       page.text(boxX + 4, factTop, label, { size: 7.5, color: muted });
-      const strong = label === "Fatura No" || label === "Fiş No";
+      const strong = NUMBER_LABELS.has(label);
       page.text(boxX + 66, factTop, doc.fit(String(value), boxW - 70, strong ? "bold" : "regular", label === "ETTN" ? 6.5 : 8), { size: label === "ETTN" ? 6.5 : 8, font: strong ? "bold" : "regular", color: ink });
       factTop += 11;
     }
@@ -208,7 +218,7 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
     page.line(M, y, M + W, y, { color: "#e5e7eb" });
   }
   // Toplamlar.
-  const rows = [
+  const rows = smm ? receiptRows(invoice, currency, withholding) : [
     // v2.0.16 (müşteri): iskonto varsa Toplam ve İskonto KDV hariç (Toplam − İskonto = Matrah); iskonto yoksa KDV dahil
     // fiyatta Toplam girilen KDV dahil tutardır. Ekrandaki Toplamlar ile aynı kural (hof-invoices.js totalRows).
     ["Mal / Hizmet Toplamı", money((invoice.discountNetTotal ?? invoice.discountTotal) > 0 || !invoice.pricesIncludeVat ? (invoice.baseNetTotal ?? invoice.baseTotal) : invoice.baseTotal, currency)],
@@ -228,8 +238,14 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
     (invoice.seller?.banks || []).filter(bank => bank.iban).map(bank => `${bank.name ? `${bank.name} ` : ""}IBAN: ${bank.iban.replace(/(.{4})/g, "$1 ").trim()}`).join("   "),
     invoice.profile === "EARSIVFATURA" ? "e-Arşiv izni kapsamında elektronik ortamda iletilmiştir." : "",
     invoice.eTest && isFormal(invoice) ? "TEST ORTAMI: Bu belge entegratörün test ortamında denenmiştir; yasal geçerliliği yoktur." : "",
-    invoice.status === "draft" ? "Bu belge proformadır; yasal fatura yerine geçmez." : !isFormal(invoice) ? "Bu belge bilgi amaçlıdır; resmî fatura yerine geçmez ve mali değeri yoktur." : "",
-    invoice.status === "cancelled" ? `Bu fatura ${dayText((invoice.cancelledAt || "").slice(0, 10))} tarihinde iptal edildi${invoice.cancelReason ? `: ${invoice.cancelReason}` : ""}.` : "",
+    invoice.status === "draft"
+      ? "Bu belge proformadır; yasal fatura yerine geçmez."
+      : isPaperReceipt(invoice)
+        ? "Kâğıt serbest meslek makbuzu: e-SMM olarak gönderilmedi."
+        : !isFormal(invoice)
+          ? `Bu belge bilgi amaçlıdır; ${smm ? "serbest meslek makbuzu" : "resmî fatura"} yerine geçmez ve mali değeri yoktur.`
+          : "",
+    invoice.status === "cancelled" ? `Bu ${smm ? "makbuz" : "fatura"} ${dayText((invoice.cancelledAt || "").slice(0, 10))} tarihinde iptal edildi${invoice.cancelReason ? `: ${invoice.cancelReason}` : ""}.` : "",
     footer,
   ].filter(Boolean);
   const noteLines = notes.flatMap(text => doc.wrap(text, W * 0.55, "regular", 8));
@@ -240,7 +256,7 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
   const totalsW = W * 0.42;
   let ty = y;
   for (const [label, value] of rows) {
-    const strong = label === "Ödenecek Tutar";
+    const strong = label === "Ödenecek Tutar" || label === RECEIPT_TOTAL;
     if (strong) page.rect(totalsX, ty - 2, totalsW, 16, { fill: "#eef2f7" });
     page.text(totalsX + 4, ty + 10, label, { size: 8, font: strong ? "bold" : "regular", color: ink });
     page.text(totalsX, ty + 10, value, { size: strong ? 9.5 : 8.5, font: strong ? "bold" : "regular", color: ink, align: "right", width: totalsW - 4 });
@@ -283,6 +299,29 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
   pages.forEach((item, index) => item.text(M, A4.height - 30, `${invoice.displayNo || ""} · Sayfa ${index + 1} / ${pages.length}`, { size: 7, color: muted, align: "right", width: W }));
 }
 
+const NUMBER_LABELS = new Set(["Fatura No", "Fiş No", "Makbuz No"]);
+const numberLabel = invoice => (invoice.kind === "smm" ? "Makbuz No" : isFormal(invoice) ? "Fatura No" : "Fiş No");
+const RECEIPT_TOTAL = "Tahsil Edilen (Net Alınan)";
+// Kuruş farkı (kayan nokta artığı olmadan): a − b.
+const minus = (a, b) => (Math.round((Number(a) || 0) * 100) - Math.round((Number(b) || 0) * 100)) / 100;
+// Serbest meslek makbuzunun toplamları (GİB e-SMM görünümü sırasıyla): Brüt Ücret − Gelir Vergisi Stopajı = Net Ücret; KDV − KDV Tevkifatı = Tahsil Edilen
+// KDV; Net Ücret + Tahsil Edilen KDV = Tahsil Edilen (Net Alınan). Kayıtlı toplamlardan (netTotal, stoppageTotal, vatTotal, withheldTotal, payableTotal).
+function receiptRows(invoice, currency, withholding) {
+  const off = invoice.discountNetTotal ?? invoice.discountTotal;
+  return [
+    off > 0 ? ["Hizmet Toplamı", money(invoice.baseNetTotal ?? invoice.baseTotal, currency)] : null,
+    off > 0 ? ["Toplam İskonto", money(off, currency)] : null,
+    ["Brüt Ücret", money(invoice.netTotal, currency)],
+    invoice.stoppageTotal > 0 ? [`Gelir Vergisi Stopajı %${String(invoice.stoppageRate).replace(".", ",")}`, `− ${money(invoice.stoppageTotal, currency)}`] : null,
+    ["Net Ücret", money(minus(invoice.netTotal, invoice.stoppageTotal), currency)],
+    ...(invoice.byRate || []).map(item => [`KDV %${item.rate}${(invoice.byRate || []).length > 1 ? ` (Matrah ${numberFormat.format(item.net)})` : ""}`, money(item.vat, currency)]),
+    withholding ? ["KDV Tevkifatı", `− ${money(invoice.withheldTotal, currency)}`] : null,
+    withholding ? ["Tahsil Edilen KDV", money(minus(invoice.vatTotal, invoice.withheldTotal), currency)] : null,
+    [RECEIPT_TOTAL, money(invoice.payableTotal, currency)],
+    currency !== "TRY" ? ["TL Karşılığı", money(invoice.tryPayable, "TRY")] : null,
+  ].filter(Boolean);
+}
+
 function paymentText(invoice) {
   const p = invoice.payment || {};
   const parts = [];
@@ -290,6 +329,8 @@ function paymentText(invoice) {
   for (const item of p.cash || []) parts.push(`${names[item.method] || "Nakit"} ${money(item.amount, "TRY")}`);
   if ((p.cheques || []).length) parts.push(`${p.cheques.length} çek/senet ${money(p.cheques.reduce((sum, item) => sum + (Number(item.amount) || 0), 0), "TRY")}`);
   if ((p.endorse || []).length) parts.push(`${p.endorse.length} çek cirosu`);
+  // 2.4.4 (MM7): makbuz tahsilat için düzenlenir (VUK 236); "kalan vadeli / taksit" fatura dilidir — makbuzda yalnız alınan tahsilat yazar.
+  if (invoice.kind === "smm") return parts.length ? `Tahsilat: ${parts.join(" · ")}` : "";
   if (p.mode === "installments" && p.installments) parts.push(`kalan ${p.installments.count} taksit (ilk vade ${dayText(p.installments.firstDue)})`);
   else if (p.mode === "open" && invoice.dueDate) parts.push(`kalan vadeli (vade ${dayText(invoice.dueDate)})`);
   return parts.length ? `Ödeme: ${parts.join(" · ")}` : "";

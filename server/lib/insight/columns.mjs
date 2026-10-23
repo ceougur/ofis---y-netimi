@@ -270,6 +270,16 @@ export function analyzeColumn(rows, column, { now = new Date(), forced = null } 
     const vkn = rate(values, isVkn);
     if (pass(vkn, 0.6, true)) return result("vkn", vkn, { verified: true, validRate: round(vkn) });
   }
+  // 31e V1: başlığı kimlik / vergi numarası diyen sütun ("Vergi No", "Vergi Numarası", "Vergi Kimlik", "VKN", "TC", "Kimlik No") sağlama tutmasa da TUTAR sayılmaz:
+  // değerleri 10–11 haneli rakamsa kimlik / kod olarak kalır ("vergi" para sözcüğü de olduğundan "Vergi No" tutar sanılıyor, tabloda iki tutar sütunu oluyor ve
+  // Tablodaki Kişiler boş kalıyordu; 2.4.3'te de). "Vergi", "Vergi Tutarı", "KDV" başlıkları bu ipucunu taşımaz, tutar kalır.
+  // 31e E1: rol "number" (kind "code"; "Sayı (tutar değil)") — KAYIT KİMLİĞİ adayı değildir (dataset-identity.mjs ID_ROLES): "id" verilince dosya no'suz 2.4.3 tablosu
+  // "Yerine koy" ile yeniden yüklenince kayıt kuralı bu sütuna geçiyor, kayıt tahsilatı / not / düzeltme bağları kopuyordu. Yalnız para ipucu da taşıyan başlık ("vergi")
+  // değişir; "Kimlik No" (2.4.3'te de kimlik) ve "VKN" / "TC" (2.4.3'te de sayı) eskisi gibi.
+  if ((hits.vkn || hits.tckn) && hits.money) {
+    const coded = rate(values, value => /^\d{10,11}$/.test(String(value).replace(/\s+/g, "")));
+    if (coded >= 0.6) return result("number", 0.6 + coded * 0.2, { kind: "code", validRate: round(tckn) });
+  }
 
   // 2) Biçimi belirgin türler.
   const email = rate(values, isEmail);
@@ -441,6 +451,9 @@ function inferAcrossColumns(rows, analyses) {
   }
 }
 
+// item.values topValues() çıktısıdır ({ value, count }); ipucu değerin kendisini yazar (eski düz dizi de olduğu gibi).
+const valueNames = (values, limit) => values.slice(0, limit).map(entry => (entry && typeof entry === "object" ? entry.value : entry)).join(", ");
+
 function explain(item) {
   const out = [];
   if (item.forced) out.push(`eşleme ekranında seçildi: ${FORCED_ROLES[item.forced]?.label || item.forced}`);
@@ -455,8 +468,8 @@ function explain(item) {
   }
   if (item.currency) out.push(`para birimi ${item.currency}`);
   if ((item.role === "id" || item.role === "person" || item.role === "org") && item.stats.uniqueness >= 0.95) out.push("her satırda farklı değer");
-  if ((item.role === "status" || item.role === "category") && item.values?.length) out.push(`${item.stats.distinct} farklı değer: ${item.values.slice(0, 4).join(", ")}${item.stats.distinct > 4 ? "…" : ""}`);
-  if (item.role === "responsible" && item.values?.length) out.push(`az sayıda kişi tekrar ediyor: ${item.values.slice(0, 3).join(", ")}`);
+  if ((item.role === "status" || item.role === "category") && item.values?.length) out.push(`${item.stats.distinct} farklı değer: ${valueNames(item.values, 4)}${item.stats.distinct > 4 ? "…" : ""}`);
+  if (item.role === "responsible" && item.values?.length) out.push(`az sayıda kişi tekrar ediyor: ${valueNames(item.values, 3)}`);
   if (item.warning === "scientific") out.push("değerler Excel'de sayıya dönüşmüş (bilimsel gösterim)");
   if (item.warning === "serial") out.push(`değerlerin %${Math.round((item.serialRate || 0) * 100)}'i Excel seri tarih sayısı (45000 gibi): toplu düzeltmeyle tarihe çevrilir`);
   if (item.stats.fill < 0.5 && item.role !== "empty") out.push(`satırların yalnız %${Math.round(item.stats.fill * 100)}'inde dolu`);

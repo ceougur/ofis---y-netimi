@@ -1,0 +1,32 @@
+{
+  "ad": "244-e23-e2e-hiz-243-arka-plan",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/hiz-243-arka-plan.mjs",
+  "commit": "ee047cb245ba5d15db4c04713198cc6d50a612bd",
+  "dal": "is/e23",
+  "kirli": 7,
+  "izlenmeyen": 76,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T23:06:24.079Z",
+  "sure_sn": 13.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 13,
+    "gecen": 13,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-e23-e2e-hiz-243-arka-plan.log",
+  "klasor": "/home/user/wt/e23",
+  "ham_cikti_sha256": "6d43206d3bcd2ccb01372ee13317fd2121c35bad412f4bc2e45034f06dba041c",
+  "ham_cikti_bayt": 1082
+}

@@ -437,6 +437,17 @@
     return payload.data === undefined ? payload : payload.data;
   };
 
+  // ---------- Arama katlaması (31f; hof-chips.js zaten HOF.fold'u arar) ----------
+  // Türkçe harf duyarsız: "Ayşe" ↔ "ayse" ↔ "AYŞE", "İsmail" ↔ "ismail", "Irmak" ↔ "ırmak"; harf ve rakam dışı karakterler boşluk. hof-chips.js'in
+  // kendi yedek katlamasıyla aynı sonuç (yalnız â/î/û da a/i/u olur).
+  const FOLD_MAP = { ı: "i", İ: "i", I: "i", ş: "s", Ş: "s", ğ: "g", Ğ: "g", ü: "u", Ü: "u", ö: "o", Ö: "o", ç: "c", Ç: "c", â: "a", Â: "a", î: "i", Î: "i", û: "u", Û: "u" };
+  HOF.fold = value =>
+    String(value ?? "")
+      .replace(/[ıİIşŞğĞüÜöÖçÇâÂîÎûÛ]/g, char => FOLD_MAP[char])
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
+
   // ---------- Başlık yazımı (v2.0.11) ----------
   // Sunucudaki server/lib/text-case.mjs ile aynı kural: her sözcüğün ilk harfi büyük (Türkçe i → İ), bağlaçlar küçük,
   // parantez içi olduğu gibi. Yalnız programın ürettiği başlıklara uygulanır; kullanıcının yazdığı ada değil.
@@ -775,6 +786,20 @@
     }
     return done;
   };
+  // 23.10.2026 (ekran gezintisi): "e-Belge", "e-Fatura", "e-Arşiv", "e-SMM", "e-Posta" gibi adlar uzun bildirimde kısa çizgiden satıra bölünüyordu
+  // ("belgenin e-" / "Belge durumu"). Ad, satır kırılmayan (white-space: nowrap) bir span'e alınır; metin yalnız metin düğümü olarak yazılır (innerHTML yok),
+  // karakter eklenmez (U+2011 gibi bölünmez tire Kopyala'nın ve aramanın metnini değiştirirdi) → textContent ve Kopyala aynı metin.
+  const NO_BREAK_NAME = /(^|[^\p{L}\p{N}])([eE]-\p{L}+)/gu;
+  const fillToastText = (target, message) => {
+    let last = 0;
+    for (const match of message.matchAll(NO_BREAK_NAME)) {
+      const start = match.index + match[1].length;
+      if (start > last) target.append(message.slice(last, start));
+      target.append(HOF.el("span", { class: "hof-nobreak", text: match[2] }));
+      last = start + match[2].length;
+    }
+    if (last < message.length) target.append(message.slice(last));
+  };
   HOF.toast = (message, { type = "info", action, timeout = 3600 } = {}) => {
     const host = toastHost();
     const sameKey = `${type}\u0001${String(message)}`;
@@ -786,7 +811,8 @@
     }
     const node = HOF.el("div", { class: `hof-toast hof-toast-${type}` });
     node.hofKey = sameKey;
-    const text = HOF.el("span", { class: "hof-toast-text", text: String(message) });
+    const text = HOF.el("span", { class: "hof-toast-text" });
+    fillToastText(text, String(message));
     node.appendChild(text);
     if (action) {
       const button = HOF.el("button", { type: "button", class: "hof-toast-action", text: action.label });
@@ -1323,7 +1349,11 @@
       const options = field.options || [];
       const known = !value || options.includes(value);
       control = `<select ${common} data-choice>${`<option value="">${HOF.esc(field.blankLabel || "— Seçin —")}</option>`}${options.map(option => `<option value="${HOF.esc(option)}" ${option === value ? "selected" : ""}>${HOF.esc(option)}</option>`).join("")}${known ? "" : `<option value="${HOF.esc(value)}" selected>${HOF.esc(value)} (listede yok)</option>`}${field.strict ? "" : `<option value="${OTHER_CHOICE}">Başka Bir Değer Yaz…</option>`}</select>`;
-    } else if (field.type === "checkbox") return `<label class="hof-check"><input type="checkbox" ${common} ${field.value ? "checked" : ""}><span>${HOF.esc(field.label)}</span></label>`;
+    } else if (field.type === "checkbox") {
+      // 31f (G6): açıklaması olan kutu — açıklama kutunun hemen altında, etiketin dışında (etiket metni değişmez), aria-describedby ile bağlı.
+      const box = help => `<label class="hof-check"><input type="checkbox" ${common} ${field.value ? "checked" : ""}${help ? ` aria-describedby="${id}-help"` : ""}><span>${HOF.esc(field.label)}</span></label>`;
+      return field.help ? `<div class="hof-check-field">${box(true)}<small id="${id}-help">${HOF.esc(field.help)}</small></div>` : box(false);
+    }
     else {
       const list = field.list && field.list.length ? `${id}-list` : "";
       control = `<input ${common} type="${field.type || "text"}" value="${HOF.esc(field.value ?? "")}" placeholder="${HOF.esc(field.placeholder || "")}" ${field.inputmode ? `inputmode="${field.inputmode}"` : ""} ${field.step ? `step="${field.step}"` : ""} ${field.min != null ? `min="${field.min}"` : ""} ${field.max != null ? `max="${field.max === "today" ? HOF.localToday() : field.max}"` : ""} ${list ? `list="${list}"` : ""} autocomplete="${field.autocomplete || "off"}">${list ? `<datalist id="${list}">${field.list.map(item => `<option value="${HOF.esc(item)}"></option>`).join("")}</datalist>` : ""}`;

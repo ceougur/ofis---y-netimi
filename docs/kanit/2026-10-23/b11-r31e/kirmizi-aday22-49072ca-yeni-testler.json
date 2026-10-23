@@ -1,0 +1,43 @@
+{
+  "ad": "b11-r31e/kirmizi-aday22-49072ca-yeni-testler",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-name-pattern=tur 16 test/tablo-borc-r31e.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T15:19:05.312Z",
+  "sure_sn": 0.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "31e tur 16: borç ailesi sözcüklü taahhüt sütunu para kolonu; 'Taahhüt Miktarı (Ay)' söz tutarı değil › Takvim: kalem tutarları aday 22 ile aynı (Gül 3.300, Hale 3.600, Can / Deniz 300, Nur 5.000); Can / Deniz borcu yok (Açılış Bakiyesi boş)",
+      "konum": "test/tablo-borc-r31e.test.mjs:860:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "31e tur 16: borç ailesi sözcüklü taahhüt sütunu para kolonu; 'Taahhüt Miktarı (Ay)' söz tutarı değil › Tablodaki Kişiler: Taahhüt Alacağı tek tutar sütunu borç; Aylık Ücret + Taahhüt Bakiyesi seçilemedi notuyla (300 borç sayılmaz); Vade / Nakit 30.900",
+      "konum": "test/tablo-borc-r31e.test.mjs:866:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/r31e-f/docs/kanit/2026-10-23/b11-r31e/kirmizi-aday22-49072ca-yeni-testler.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b11-eski-49072ca",
+  "ham_cikti_sha256": "7e100a6bd07bb9b32fd869b8d6ee5d6ddd998a6909c82fdf2f00393a71a288cd",
+  "ham_cikti_bayt": 6122
+}

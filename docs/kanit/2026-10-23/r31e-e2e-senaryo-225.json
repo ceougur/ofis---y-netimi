@@ -1,0 +1,32 @@
+{
+  "ad": "r31e-e2e-senaryo-225",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-225.mjs",
+  "commit": "39382c4f72974d1cc180a90a377076cca6f34d44",
+  "dal": "is/r31e-rapor",
+  "kirli": 6,
+  "izlenmeyen": 24,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T03:38:36.179Z",
+  "sure_sn": 31.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 55,
+    "gecen": 55,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/r31e-e2e-senaryo-225.log",
+  "klasor": "/home/user/wt/r31e-rapor",
+  "ham_cikti_sha256": "a1388d391a60e2ce58d4c7264731af385f287c14f12f6f8f92ba732f162f7d9f",
+  "ham_cikti_bayt": 4976
+}

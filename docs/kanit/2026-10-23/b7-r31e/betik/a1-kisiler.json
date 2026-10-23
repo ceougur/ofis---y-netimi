@@ -1,0 +1,5 @@
+{"sheets":[
+ {"name":"TaahhutYalniz","matrix":[["Ad Soyad","Taahhüt Tarihi","Taahhüt Tutarı"],["Kaan Ay","@d+3","650"]]},
+ {"name":"TaahhutnameYalniz","matrix":[["Ad Soyad","Taahhütname Tarihi","Taahhütname Tutarı"],["Lale Ak","@d+3","700"]]},
+ {"name":"SozMiktariYalniz","matrix":[["Ad Soyad","Söz Tarihi","Söz Miktarı"],["Mert Su","@d+3","800"]]}
+]}

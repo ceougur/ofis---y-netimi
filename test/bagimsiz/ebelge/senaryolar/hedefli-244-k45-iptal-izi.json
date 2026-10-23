@@ -1,0 +1,155 @@
+{
+ "dil": "destekofis-ebelge/3",
+ "ad": "hedefli-244-k45-iptal-izi",
+ "aciklama": "K45: gönderilmiş e-Arşiv / e-SMM'nin iptal isteği EDM'ye gidip yanıtı kaybolursa iz açık kalır (B1 EDM iptal etti, B2 etmedi, S1 e-SMM); süre dolsa da önce EDM'ye sorulur (B1/S1 → programda iptal; B2 → süre doldu 409, iz kapanır). EDM iptali hata koduyla reddederse (B3) ya da istek hiç gitmezse (B4, ağ yok) iz kapanır: süre dolunca kart 'süre doldu' der, EDM'ye sorulmaz (B3, B4, ikinci kez B2). Aday 8 tabanında kırmızı BEKLENİR.",
+ "dayanak": "KARARLAR.md K45 [KULLANICI] 23.10.2026 (E1 kararı 22.10 'E4 aynı kalıp' + 31e baş mimar yorumu); K22 iletimden 8 gün",
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi",
+  "K6": "ilsiz_kisi",
+  "K7": "vdsiz_mukellef",
+  "K8": "nihai"
+ },
+ "adimlar": [
+  {
+   "islem": "kaydet",
+   "belge": "B1",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 1
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B2",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 2
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B3",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 3
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B4",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 4
+  },
+  {
+   "islem": "kaydet",
+   "belge": "S1",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "belge_turu": "esmm",
+   "no": 5
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 2,
+   "no": 6
+  },
+  {
+   "islem": "ariza",
+   "tur": "iptal_kopma_sonra",
+   "no": 7
+  },
+  {
+   "islem": "iptal",
+   "belge": "B1",
+   "no": 8
+  },
+  {
+   "islem": "ariza",
+   "tur": "iptal_kopma_once",
+   "no": 9
+  },
+  {
+   "islem": "iptal",
+   "belge": "B2",
+   "no": 10
+  },
+  {
+   "islem": "ariza",
+   "tur": "iptal_red",
+   "no": 11
+  },
+  {
+   "islem": "iptal",
+   "belge": "B3",
+   "no": 12
+  },
+  {
+   "islem": "ag",
+   "durum": "yok",
+   "no": 13
+  },
+  {
+   "islem": "iptal",
+   "belge": "B4",
+   "no": 14
+  },
+  {
+   "islem": "ag",
+   "durum": "var",
+   "no": 15
+  },
+  {
+   "islem": "ariza",
+   "tur": "iptal_kopma_sonra",
+   "no": 16
+  },
+  {
+   "islem": "iptal",
+   "belge": "S1",
+   "no": 17
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 10,
+   "no": 18
+  },
+  {
+   "islem": "iptal",
+   "belge": "B1",
+   "no": 19
+  },
+  {
+   "islem": "iptal",
+   "belge": "B2",
+   "no": 20
+  },
+  {
+   "islem": "iptal",
+   "belge": "B3",
+   "no": 21
+  },
+  {
+   "islem": "iptal",
+   "belge": "B4",
+   "no": 22
+  },
+  {
+   "islem": "iptal",
+   "belge": "S1",
+   "no": 23
+  },
+  {
+   "islem": "iptal",
+   "belge": "B2",
+   "no": 24
+  }
+ ]
+}

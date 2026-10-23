@@ -1,0 +1,32 @@
+(node:14001) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+■ Tablodaki Kişiler — 4 satır; kartlar: Cari 3 | Toplam Borç 1.500.068,39 ₺ | Toplam Alacak 34.567,89 ₺ | Bakiye 1.465.500,50 ₺
+  ✓ Tablodaki Kişiler: ekranda TOPLAM satırı [["TOPLAM","","","","1.500.068,39 ₺","34.567,89 ₺","1.465.500,50 ₺","","","","","","","","","","","","",""]]
+  ✓ Tablodaki Kişiler: kart adları başlık düzeninde ["Cari","Toplam Borç","Toplam Alacak","Bakiye"]
+  ✓ Tablodaki Kişiler: TOPLAM Borç 1.500.068,39 ₺ = satırların toplamı
+  ✓ Tablodaki Kişiler: TOPLAM Alacak 34.567,89 ₺ = satırların toplamı
+  ✓ Tablodaki Kişiler: PDF dosya adı "Tablodaki Kişiler 23.10.2026.pdf"
+  ✓ Tablodaki Kişiler: XLSX dosya adı "Tablodaki Kişiler 23.10.2026.xlsx"
+
+■ Tablodaki Vadeler — 3 satır; kartlar: Kalem 3 | Gecikmiş 1 · 1.200.000,00 ₺ | Yaklaşan / Bugün 2 | Toplam Tutar 1.465.500,50 ₺
+  ✓ Tablodaki Vadeler: ekranda TOPLAM satırı [["TOPLAM","","","","1.465.500,50 ₺","","","","","","","","","","","","","","",""]]
+  ✓ Tablodaki Vadeler: kart adları başlık düzeninde ["Kalem","Gecikmiş","Yaklaşan / Bugün","Toplam Tutar"]
+  ✓ Tablodaki Vadeler: TOPLAM Tutar 1.465.500,50 ₺ = satırların toplamı
+  ✓ Tablodaki Vadeler: PDF dosya adı "Tablodaki Vadeler 23.10.2026.pdf"
+  ✓ Tablodaki Vadeler: XLSX dosya adı "Tablodaki Vadeler 23.10.2026.xlsx"
+
+■ Tablodaki Nakit Akışı — 3 satır; kartlar: Beklenen Tahsilat 1.465.500,50 ₺ | Gerçekleşen Tahsilat 34.567,89 ₺ | Kasa Giriş 5.000,00 ₺ | Kasa Çıkış 0,00 ₺ | Net 5.000,00 ₺
+  ✓ Tablodaki Nakit Akışı: ekranda TOPLAM satırı [["TOPLAM","1.465.500,50 ₺","3","34.567,89 ₺","5.000,00 ₺","0,00 ₺","5.000,00 ₺","",""]]
+  ✓ Tablodaki Nakit Akışı: kart adları başlık düzeninde ["Beklenen Tahsilat","Gerçekleşen Tahsilat","Kasa Giriş","Kasa Çıkış","Net"]
+  ✓ Tablodaki Nakit Akışı: TOPLAM Beklenen Tahsilat 1.465.500,50 ₺ = satırların toplamı
+  ✓ Tablodaki Nakit Akışı: TOPLAM Gerçekleşen Tahsilat 34.567,89 ₺ = satırların toplamı
+  ✓ Tablodaki Nakit Akışı: TOPLAM Kasa Giriş 5.000,00 ₺ = satırların toplamı
+  ✓ Tablodaki Nakit Akışı: TOPLAM Kasa Çıkış 0,00 ₺ = satırların toplamı
+  ✓ Tablodaki Nakit Akışı: TOPLAM Net 5.000,00 ₺ = satırların toplamı
+  ✓ Tablodaki Nakit Akışı: PDF dosya adı "Tablodaki Nakit Akışı 23.10.2026.pdf"
+  ✓ Tablodaki Nakit Akışı: XLSX dosya adı "Tablodaki Nakit Akışı 23.10.2026.xlsx"
+
+# tests 20
+# pass 20
+# fail 0

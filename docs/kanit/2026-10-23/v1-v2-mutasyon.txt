@@ -1,0 +1,12 @@
+v1/v2 mutasyonlari (taban: is/r31e-d = 3e04e9b + V1/V2; komut: node --test test/tablo-borc-r31e.test.mjs test/ice-alma-sayi-hucre.test.mjs)
+mv1 columns.mjs: kimlik basligi tutar engeli kapali (V1 geri)
+mv2 reports.mjs identityKey: saglamasiz kimlik (V1 sağlama kurali geri)
+mv3 reports.mjs personIndex: ayni dosya no eslesmesi yok (V2 geri)
+--- mv1: # tests 36 # pass 33 # fail 3 
+    not ok 1 - analyzeColumns rolleri (B1/B2/B3)
+    not ok 1 - Kişiler: Alfa 1.000, Beta 2.000, Gama 3.000 + 500 (geçersiz iki numara kişiyi bölmez) — toplam 6.500 (B1/B4)
+    not ok 2 - Vadeler 4 kalem, 6.500
+--- mv2: # tests 36 # pass 35 # fail 1 
+    not ok 1 - Kişiler: Alfa 1.000, Beta 2.000, Gama 3.000 + 500 (geçersiz iki numara kişiyi bölmez) — toplam 6.500 (B1/B4)
+--- mv3: # tests 36 # pass 35 # fail 1 
+    not ok 1 - TC 10000000146: K-1 100 + K-1 (Aidat) 50 = 150; TC 12345678950: 200; dosya no eşleşmeyen K-3 adın kimliksiz grubu 70 (B6/B7)

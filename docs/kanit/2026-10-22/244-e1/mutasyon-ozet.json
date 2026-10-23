@@ -1,0 +1,270 @@
+[
+ {
+  "mutant": "M1-iz-yazilmaz",
+  "applied": true,
+  "exit": 1,
+  "tests": 16,
+  "pass": 9,
+  "fail": 7,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "E1: gönderim EDM'ye ulaştı, yanıt gelmeden program kesildi",
+   "E1: iz yalnız belge entegratörde oluşabilecekse kalır",
+   "K2",
+   "K3",
+   "K4",
+   "K5",
+   "K6",
+   "K7",
+   "K9",
+   "failing tests:"
+  ]
+ },
+ {
+  "mutant": "M2a-iz-yoldayken-silinir",
+  "applied": true,
+  "exit": 1,
+  "tests": 16,
+  "pass": 10,
+  "fail": 6,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "E1: gönderim EDM'ye ulaştı, yanıt gelmeden program kesildi",
+   "E1: iz yalnız belge entegratörde oluşabilecekse kalır",
+   "K2",
+   "K3",
+   "K4",
+   "K5",
+   "K6",
+   "K9",
+   "failing tests:"
+  ]
+ },
+ {
+  "mutant": "M2b-her-hatada-iz-geri-alinir",
+  "applied": true,
+  "exit": 1,
+  "tests": 67,
+  "pass": 58,
+  "fail": 9,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "Bitiş turu bulguları",
+   "E1: iz yalnız belge entegratörde oluşabilecekse kalır",
+   "K9",
+   "Kontrol K2: 'Hata'daki belgenin yeniden gönderiminde yanıt k",
+   "N10: Durum Sorgula, Resmî Görüntü ve İptal Et e-SMM servisin",
+   "N2: Kaydet ve Gönder — makbuz ESMM + TES numarası; giriş ve",
+   "N7: EDM makbuzu aldı, yanıt gelmeden bağlantı koptu → Sonucu",
+   "N7: belirsiz makbuz EDM'de YOKSA",
+   "Y3/S1: yanıtı kaybolan gönderim belirsizdir — silinmez, düze",
+   "Y3: belirsiz gönderimde belge EDM'ye ulaşmadıysa Durum Sorgu",
+   "e-SMM açık: makbuz ESmmEDM.svc'den gider; e-Arşiv e-Fatura s",
+   "e-SMM: kopma, belirsiz gönderim, başka numara, iki oturum, i"
+  ]
+ },
+ {
+  "mutant": "M3a-11048-hic-bu-belge-degil",
+  "applied": true,
+  "exit": 1,
+  "tests": 16,
+  "pass": 14,
+  "fail": 2,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "E1: EDM 11048",
+   "K12",
+   "U birim: 11048 iletisinin gösterdiği belge ve iletim günü",
+   "U1",
+   "failing tests:"
+  ]
+ },
+ {
+  "mutant": "M3b-11048-ettn-karsilastirilmaz",
+  "applied": true,
+  "exit": 1,
+  "tests": 16,
+  "pass": 15,
+  "fail": 1,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "U birim: 11048 iletisinin gösterdiği belge ve iletim günü",
+   "U1",
+   "failing tests:"
+  ]
+ },
+ {
+  "mutant": "M3c-11048-numara-karsilastirilmaz",
+  "applied": true,
+  "exit": 1,
+  "tests": 16,
+  "pass": 15,
+  "fail": 1,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "U birim: 11048 iletisinin gösterdiği belge ve iletim günü",
+   "U1",
+   "failing tests:"
+  ]
+ },
+ {
+  "mutant": "M3d-11048-yanit-ettn-denetlenmez",
+  "applied": true,
+  "exit": 1,
+  "tests": 16,
+  "pass": 15,
+  "fail": 1,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "E1: EDM 11048",
+   "K14",
+   "failing tests:"
+  ]
+ },
+ {
+  "mutant": "M3e-11048-her-zaman-bu-belge",
+  "applied": true,
+  "exit": 1,
+  "tests": 36,
+  "pass": 35,
+  "fail": 1,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "U birim: 11048 iletisinin gösterdiği belge ve iletim günü",
+   "U1",
+   "failing tests:"
+  ]
+ },
+ {
+  "mutant": "M4-iptal-izi-yazilmaz",
+  "applied": true,
+  "exit": 1,
+  "tests": 16,
+  "pass": 15,
+  "fail": 1,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "E4: iptal EDM'de tamamlandı, yanıt gelmeden program kesildi",
+   "K10",
+   "failing tests:"
+  ]
+ },
+ {
+  "mutant": "M5-edmde-iptal-yeniden-gonderilir",
+  "applied": true,
+  "exit": 1,
+  "tests": 16,
+  "pass": 15,
+  "fail": 1,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "E4: iptal EDM'de tamamlandı, yanıt gelmeden program kesildi",
+   "K11",
+   "failing tests:"
+  ]
+ },
+ {
+  "mutant": "M6a-11048-iletim-sayilir",
+  "applied": true,
+  "exit": 1,
+  "tests": 16,
+  "pass": 14,
+  "fail": 2,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "E1: EDM 11048",
+   "K12",
+   "U birim: 11048 iletisinin gösterdiği belge ve iletim günü",
+   "U2",
+   "failing tests:"
+  ]
+ },
+ {
+  "mutant": "M6b-iz-iletim-sayilmaz",
+  "applied": true,
+  "exit": 1,
+  "tests": 16,
+  "pass": 14,
+  "fail": 2,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "E1: gönderim EDM'ye ulaştı, yanıt gelmeden program kesildi",
+   "K2",
+   "U birim: 11048 iletisinin gösterdiği belge ve iletim günü",
+   "U2",
+   "failing tests:"
+  ]
+ },
+ {
+  "mutant": "M7-gonderirken-durum-sorgulanir",
+  "applied": true,
+  "exit": 1,
+  "tests": 16,
+  "pass": 15,
+  "fail": 1,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "E1: iz yalnız belge entegratörde oluşabilecekse kalır",
+   "K9",
+   "failing tests:"
+  ]
+ },
+ {
+  "mutant": "M8-hic-gitmeyende-iz-kalir",
+  "applied": true,
+  "exit": 1,
+  "tests": 16,
+  "pass": 15,
+  "fail": 1,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "E1: iz yalnız belge entegratörde oluşabilecekse kalır",
+   "K7",
+   "failing tests:"
+  ]
+ },
+ {
+  "mutant": "M9-numara-birakilinca-iz-kalir",
+  "applied": true,
+  "exit": 1,
+  "tests": 16,
+  "pass": 15,
+  "fail": 1,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "E1: iz yalnız belge entegratörde oluşabilecekse kalır",
+   "K8",
+   "failing tests:"
+  ]
+ }
+]

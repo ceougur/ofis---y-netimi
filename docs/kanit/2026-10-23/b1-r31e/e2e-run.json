@@ -1,0 +1,32 @@
+{
+  "ad": "b1-r31e/e2e-run",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/run.mjs",
+  "commit": "c6aa701297bcbd0685d0f16ebb02f1170ed8bed6",
+  "dal": "is/r31e-b",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T08:02:28.613Z",
+  "sure_sn": 162.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "e2e-run",
+    "toplam": 50,
+    "gecen": 50,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/b1-r31e/e2e-run.log",
+  "klasor": "/home/user/wt/r31e-b",
+  "ham_cikti_sha256": "95f3e4f873ffed9d4819f9ec8bd627e2d55c9f0441fef98c909189c96d318e01",
+  "ham_cikti_bayt": 5544
+}

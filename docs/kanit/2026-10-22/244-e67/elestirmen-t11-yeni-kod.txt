@@ -1,0 +1,7 @@
+# Eleştirmen 31d betiği t11-fis-sil-geri.mjs, a9d5c8b kodu (DEPO=/home/user/wt/e67), çıkış 0
+1 bırak A: 200 {"id":"invoice-e4d089e5-608b-421f-9e63-c312183c2a7f","no":"FIS2026000000001","profil":"KAGIT","e":"withdrawn","adapter":"","durum":"issued","tarih":"2026-06-17","mesaj":""}
+2 sil A: 200 {"id":"invoice-e4d089e5-608b-421f-9e63-c312183c2a7f","number":"FIS2026000000001","status":"cancelled"}
+3 bırak B: 200 {"id":"invoice-e791f7c4-e581-4361-85f5-d6ae90ae918f","no":"FIS2026000000002","profil":"KAGIT","e":"withdrawn","adapter":"","durum":"issued","tarih":"2026-06-17","mesaj":""}
+4 Silinenler: 200 {"id":"trash:trash-ae427bf6-b7a0-4e0b-962f-d97bd987bbcf","kind":"invoice","ref":"invoice-e4d089e5-608b-421f-9e63-c312183c2a7f","title":"Satış Faturası FIS2026000000001","detail":"Ayşe Kaya · 600,00 TL · 17.06.2026","dele
+5 geri yükle A: 200 {"restored":"invoice","message":"Satış Faturası FIS2026000000001 geri geldi (iptal edilmiş, etkisiz)."}
+6 belgeler: [["FIS2026000000002","issued","withdrawn","KAGIT"],["FIS2026000000001","cancelled","withdrawn","KAGIT"]]

@@ -1,0 +1,222 @@
+TAP version 13
+# Subtest: 31e tur 16: borç ailesi sözcüklü taahhüt sütunu para kolonu; 'Taahhüt Miktarı (Ay)' söz tutarı değil
+    # Subtest: Takvim: kalem tutarları aday 22 ile aynı (Gül 3.300, Hale 3.600, Can / Deniz 300, Nur 5.000); Can / Deniz borcu yok (Açılış Bakiyesi boş)
+    not ok 1 - Takvim: kalem tutarları aday 22 ile aynı (Gül 3.300, Hale 3.600, Can / Deniz 300, Nur 5.000); Can / Deniz borcu yok (Açılış Bakiyesi boş)
+      ---
+      duration_ms: 32.095162
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b11-eski-49072ca/test/tablo-borc-r31e.test.mjs:860:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            [
+              'Ali Veli',
+              4000,
+              4000,
+        ...
+              3300,
+        +     null,
+        -     3300,
+              false
+            ],
+            [
+              'Hale Ak',
+              3600,
+        +     null,
+        -     3600,
+              false
+            ],
+            [
+              'İlker Su',
+              2500,
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'Ali Veli'
+          1: 4000
+          2: 4000
+          3: false
+        1:
+          0: 'Ayşe Kaya'
+          1: 5000
+          2: 5000
+          3: false
+        2:
+          0: 'Can Er'
+          1: 300
+          2: ~
+          3: false
+        3:
+          0: 'Deniz Ak'
+          1: 300
+          2: ~
+          3: false
+        4:
+          0: 'Ece Su'
+          1: 1800
+          2: 1800
+          3: false
+        5:
+          0: 'Fırat Er'
+          1: 2400
+          2: 2400
+          3: false
+        6:
+          0: 'Gül Taş'
+          1: 3300
+          2: 3300
+          3: false
+        7:
+          0: 'Hale Ak'
+          1: 3600
+          2: 3600
+          3: false
+        8:
+          0: 'İlker Su'
+          1: 2500
+          2: ~
+          3: false
+        9:
+          0: 'Kaan Uz'
+          1: 2700
+          2: ~
+          3: false
+        10:
+          0: 'Nur Ak'
+          1: 5000
+          2: 5000
+          3: true
+      actual:
+        0:
+          0: 'Ali Veli'
+          1: 4000
+          2: 4000
+          3: false
+        1:
+          0: 'Ayşe Kaya'
+          1: 5000
+          2: 5000
+          3: false
+        2:
+          0: 'Can Er'
+          1: 300
+          2: ~
+          3: false
+        3:
+          0: 'Deniz Ak'
+          1: 300
+          2: ~
+          3: false
+        4:
+          0: 'Ece Su'
+          1: 1800
+          2: 1800
+          3: false
+        5:
+          0: 'Fırat Er'
+          1: 2400
+          2: 2400
+          3: false
+        6:
+          0: 'Gül Taş'
+          1: 3300
+          2: ~
+          3: false
+        7:
+          0: 'Hale Ak'
+          1: 3600
+          2: ~
+          3: false
+        8:
+          0: 'İlker Su'
+          1: 2500
+          2: ~
+          3: false
+        9:
+          0: 'Kaan Uz'
+          1: 2700
+          2: ~
+          3: false
+        10:
+          0: 'Nur Ak'
+          1: 5000
+          2: 5000
+          3: true
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b11-eski-49072ca/test/tablo-borc-r31e.test.mjs:863:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Tablodaki Kişiler: Taahhüt Alacağı tek tutar sütunu borç; Aylık Ücret + Taahhüt Bakiyesi seçilemedi notuyla (300 borç sayılmaz); Vade / Nakit 30.900
+    not ok 2 - Tablodaki Kişiler: Taahhüt Alacağı tek tutar sütunu borç; Aylık Ücret + Taahhüt Bakiyesi seçilemedi notuyla (300 borç sayılmaz); Vade / Nakit 30.900
+      ---
+      duration_ms: 31.53358
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b11-eski-49072ca/test/tablo-borc-r31e.test.mjs:866:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            'Ali Veli': 4000,
+            'Ayşe Kaya': 5000,
+            'Ece Su': 1800,
+            'Fırat Er': 2400,
+        -   'Gül Taş': 3300,
+        -   'Hale Ak': 3600,
+            'Nur Ak': 5000
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        Ali Veli: 4000
+        Ayşe Kaya: 5000
+        Ece Su: 1800
+        Fırat Er: 2400
+        Gül Taş: 3300
+        Hale Ak: 3600
+        Nur Ak: 5000
+      actual:
+        Ali Veli: 4000
+        Ayşe Kaya: 5000
+        Ece Su: 1800
+        Fırat Er: 2400
+        Nur Ak: 5000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b11-eski-49072ca/test/tablo-borc-r31e.test.mjs:868:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - 31e tur 16: borç ailesi sözcüklü taahhüt sütunu para kolonu; 'Taahhüt Miktarı (Ay)' söz tutarı değil
+  ---
+  duration_ms: 557.79231
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b11-eski-49072ca/test/tablo-borc-r31e.test.mjs:849:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 905.002238

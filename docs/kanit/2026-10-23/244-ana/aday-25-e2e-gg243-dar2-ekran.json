@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-25-e2e-gg243-dar2-ekran",
+  "komut": "npm run test:gg243-dar2-ekran",
+  "commit": "a38dbb5b65bca0792a9ecd50c1a692a050559d4f",
+  "dal": "aday25",
+  "kirli": 0,
+  "izlenmeyen": 118,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T18:08:33.120Z",
+  "sure_sn": 9.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 21,
+    "gecen": 21,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/244-ana/aday-25-e2e-gg243-dar2-ekran.log",
+  "klasor": "/home/user/wt/aday25",
+  "ham_cikti_sha256": "3dfc5bb474b93835562e8c3d6bea4e06b8730603e6401d20b4c2a1e6817cbe23",
+  "ham_cikti_bayt": 1981
+}

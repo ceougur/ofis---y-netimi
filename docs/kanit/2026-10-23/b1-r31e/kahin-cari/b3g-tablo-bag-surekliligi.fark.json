@@ -1,0 +1,24 @@
+{
+ "toplam": 123,
+ "farklar": [
+  {
+   "anahtar": "adim:t3:onay",
+   "beklenen": true,
+   "program": false,
+   "etiket": "KULLANICI",
+   "kural": "bağ sürekliliği (3) güvenli eşleşme yoksa onay; hepsi güvenliyse onaysız",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "adim:t3:uyariAdlari",
+   "beklenen": [
+    "Ali Veli"
+   ],
+   "program": [],
+   "etiket": "KULLANICI",
+   "kural": "bağ sürekliliği (3) önizleme eşleşmeyen kayıtları adıyla söyler",
+   "sinif": "BULGU"
+  }
+ ],
+ "hatalar": []
+}

@@ -1,0 +1,83 @@
+{
+  "ad": "b11-r31e/kahin-cari-4e68411-tum",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T15:37:49.772Z",
+  "sure_sn": 187.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 3883,
+    "gecen": 3873,
+    "basarisiz": 10,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 10 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BİLİNEN DEĞİŞTİ KULLANICI] k1:acilis:2026/1012: program \"boş\" · kâhin 400000 (Y1: 'önce cari açın' Açılış Bakiyesi = raporların satır borcu (borçsuz satırda 0 ya da boş) · BİLİNEN listesinde program 100000 / kâhin 400000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan ta",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BİLİNEN DEĞİŞTİ KULLANICI] k1:acilis:2026/1013: program \"boş\" · kâhin 30000 (Y1: 'önce cari açın' Açılış Bakiyesi = raporların satır borcu (borçsuz satırda 0 ya da boş) · BİLİNEN listesinde program 100000 / kâhin 30000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanı",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:akis: program 920000 · kâhin 850000 (TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:kisiler: program 720000 · kâhin 1150000 (B4b K4 + TAKVİM KALEMİ: Tablodaki Kişiler satır borcunu gösterir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:takvim: program 920000 · kâhin 850000 (TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:vade: program 920000 · kâhin 850000 (TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BİLİNEN DEĞİŞTİ KULLANICI] k1:rapor:2026/1012:borc: program 0 · kâhin 400000 (B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu · C3 kişi toplamı · BİLİNEN listesinde program 100000 / kâhin 400000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek bi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:2026/1012:grup: program [] · kâhin [\"2026/1012\"] (C3 kişi gruplaması: farklı ad aynı kimlik ayrı kişi; aynı ad farklı kimlik ayrı; kimliksiz aynı adın tek kimliğine katılır)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BİLİNEN DEĞİŞTİ KULLANICI] k1:rapor:2026/1013:borc: program 0 · kâhin 30000 (B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu · C3 kişi toplamı · BİLİNEN listesinde program 100000 / kâhin 30000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:2026/1013:grup: program [] · kâhin [\"2026/1013\"] (C3 kişi gruplaması: farklı ad aynı kimlik ayrı kişi; aynı ad farklı kimlik ayrı; kimliksiz aynı adın tek kimliğine katılır)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/r31e-f/docs/kanit/2026-10-23/b11-r31e/kahin-cari-4e68411-tum.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/kahin-4e68411",
+  "ham_cikti_sha256": "dada1a96f08c358fb8c2f48f8012609ab7de38d1fe87690ea059eaa42e82299c",
+  "ham_cikti_bayt": 16913
+}

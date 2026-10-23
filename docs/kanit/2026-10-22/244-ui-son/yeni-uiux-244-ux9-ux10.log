@@ -1,0 +1,87 @@
+A) UX9: ili eksik e-Arşiv alıcısı — faturadan 'Cariyi Düzenle', il yazılır, cari kartı güncellenir, fatura kesilir
+  ✓ Toplamlar'da "il zorunludur" (Cari (alıcı): il zorunludur (adres).)
+  ✓ Toplamlar'da 'Cariyi Düzenle' düğmesi var
+  ✓ düğme adı 'Cariyi Düzenle'
+  ✓ cari formu açıldı (Cariyi Düzenle)
+  ✓ İl alanı zorunlu işaretli
+  ✓ e-Arşiv alıcısında Vergi Dairesi zorunlu değil
+  ✓ odak eksik alanda: İl (INPUT[name=city]|)
+  ✓ odaktaki İl alanı ekranda görünür (aşağıda kalmadı)
+  ✓ fatura penceresi arkada açık (2 pencere)
+  ✓ VERİ TABANI: carinin ili "Ankara" (Ankara)
+  ✓ VERİ TABANI: önceden kesilmiş belgenin alıcı bilgisi değişmedi
+  ✓ bildirim cari kartının güncellendiğini ve eski belgelerin değişmediğini söylüyor (Cari kartı güncellendi; fatura yeni bilgiyle hesaplanıyor. Daha önce kesilmiş belgelerin alıcı bilgisi değişmez.)
+  ✓ sorun kalktı (sorun yok)
+  ✓ kalem adı yerinde
+  ✓ birim fiyat yerinde (1500)
+  ✓ cari seçili kaldı
+  ✓ VERİ TABANI: fatura kaydedildi (2 → 3)
+  ✓ VERİ TABANI: yeni e-Arşiv belgesinde alıcının ili Ankara (EARSIVFATURA, Ankara)
+B) UX9: e-Fatura tüzel alıcıda vergi dairesi — Vazgeç formu bozmaz; ikinci denemede yazılır
+  ✓ Toplamlar'da vergi dairesi sorunu (Cari (alıcı): e-Fatura'da tüzel alıcının vergi dairesi zorunludur.)
+  ✓ 'Cariyi Düzenle' var
+  ✓ Vergi Dairesi zorunlu işaretli
+  ✓ odak Vergi Dairesi'nde (INPUT[name=taxOffice]|)
+  ✓ Vazgeç: yalnız fatura penceresi kaldı
+  ✓ Vazgeç: kalem yerinde
+  ✓ Vazgeç: sorun hâlâ görünür (cari değişmedi)
+  ✓ VERİ TABANI: Vazgeç'te vergi dairesi yazılmadı
+  ✓ VERİ TABANI: vergi dairesi "Kavaklıdere" (Kavaklıdere)
+  ✓ sorun kalktı (sorun yok)
+  ✓ belge türü e-Fatura olarak kaldı (Alıcı e-Fatura mükellefi: e-Fatura kesilir.)
+C) UX9: aynı cariyi başkası değiştirirse (UX1) fatura eski bilgiyle kalmaz; ikinci Kaydet iki değişikliği de korur
+  ✓ 'Cariyi Düzenle' var
+  ✓ çakışma söylendi, cari formu açık (Bu cari siz düzenlerken başka biri tarafından değiştirildi; güncel hâli yüklendi. Değiştirdiğiniz alanlar formda duruyor)
+  ✓ fatura henüz güncellenmedi (cari kaydedilmedi)
+  ✓ VERİ TABANI: il ve başkasının telefonu birlikte (İzmir, 0312 555 11 22)
+  ✓ sorun kalktı
+D) UX9: Nihai Tüketici (paylaşılan 11111111111 carisi) faturadan düzenlenmez; gerçek cari seçme yolu yazılır
+  ✓ tutar sınırı sorunu (Cari (alıcı): 30.000 TL üstü e-Arşiv faturada nihai tüketicinin gerçek TC kimlik numarası, adı soyadı ve adresi zorunludur (11111111111 yazılamaz). | Cari (alıc)
+  ✓ Nihai Tüketici'de 'Cariyi Düzenle' YOK
+  ✓ yol yazılı (Bu tutarda gerçek alıcı gerekir: müşterinin kendi carisini seçin ya da “+ Yeni Cari” ile TC kimlik numarası, adı soyadı ve adresiyle açın.)
+E) UX9: cari düzenleme yetkisi olmayan kullanıcıda düğme yok (sorun yine görünür)
+  ✓ sorun görünür
+  ✓ yetkisiz: 'Cariyi Düzenle' yok
+  ✓ yetkisize ne yapacağı yazılı (Cari kartını düzenleme yetkiniz yok; eksik bilgiyi cari kartına yetkili bir kullanıcı (yönetici) yazmalı.)
+F) UX10: '+ Yeni Fatura' senaryo ekranında odak senaryo kartında; Enter formu açar, odak cari kutusunda (liste açılmadan)
+  ✓ senaryo ekranında odak bir senaryo kartında (BUTTON[scenario=goods_sale]|Stoktan SatışStoktaki ürünü sa)
+  ✓ Hizmet Satışı formunda odak cari kutusunda (INPUT[acc-query]|)
+  ✓ açılışta cari öneri listesi açılmadı (kalem alanlarını örtmez)
+  ✓ "Müşteriyi (cariyi) seçin." (Müşteriyi (cariyi) seçin.)
+  ✓ hata sonrası odak cari kutusunda (INPUT[acc-query]|)
+  ✓ yazınca cari listesi açılıyor
+G) UX10: faturadan '+ Yeni Cari' kaydedilince odak ilk boş kalem adında
+  ✓ odak ilk kalem adında (INPUT[f=name,l=0]|)
+  ✓ VERİ TABANI: yeni cari ili ile açıldı
+  ✓ klavyeyle yazılan kalem adına girdi
+H) UX10: iade formu açılınca odak iade edilecek fatura arama kutusunda; asıl fatura seçilince ilk kalemin miktarında
+  ✓ iade formunda odak arama kutusunda (INPUT[return-q]|)
+  ✓ asıl fatura listede
+  ✓ asıl fatura seçilince odak ilk kalemin miktarında (INPUT[f=qty,l=0]|)
+I) UX10: doğrulama hatasında odak hatalı alana (boş kalem; sunucunun 'N. kalem' hatası)
+  ✓ "En az bir kalem yazın." (En az bir kalem yazın.)
+  ✓ odak ilk kalem adında (INPUT[f=name,l=0]|)
+  ✓ sunucu kalem hatası formda (1. kalem: miktar sıfırdan büyük olmalı.)
+  ✓ odak hatalı kalemin (2. satır) miktarında (INPUT[f=qty,l=1]|)
+  ✓ aynı ileti ayrıca bildirim olarak çıkmadı (UI2; 0 bildirim)
+J) 31f U5: 11111111111'li, ili eksik caride 600 TL — sorun 'il zorunludur', 'Cariyi Düzenle' var, tutar sınırı söylenmez; sınır aşılınca ipucu
+  ✓ asıl eksiklik söylendi (Cari (alıcı): il zorunludur (adres).)
+  ✓ 600 TL'de tutar sınırı sorunu yok
+  ✓ "gerçek alıcı gerekir" ipucu yok (ipucu yok)
+  ✓ 'Cariyi Düzenle' düğmesi var (UX9 yolu)
+  ✓ cari formunda odak eksik alanda: il (INPUT[name=city]|)
+  ✓ VERİ TABANI: cari kartına il yazıldı (Ankara)
+  ✓ sorun kalktı
+  ✓ 40.000 TL'de tutar sınırı sorunu
+  ✓ sınır aşılınca 'Cariyi Düzenle' yok
+  ✓ sınırda gerçek alıcı yolu yazılı (Bu tutarda gerçek alıcı gerekir: müşterinin kendi carisini seçin ya da “+ Yeni Cari” ile TC kimlik numarası, adı soyadı ve adresiyle açın.)
+K) 31f U7b: listeden cari seçilince (Enter ve fare) odak ilk boş kalem adında; seçim kaldırılınca cari kutusunda
+  ✓ açılışta odak cari kutusunda (INPUT[acc-query]|)
+  ✓ Enter ile seçince odak ilk kalem adında (INPUT[f=name,l=0]|)
+  ✓ klavyeyle yazılan kalem adına girdi
+  ✓ seçim kaldırılınca odak cari kutusunda (INPUT[acc-query]|)
+  ✓ fareyle seçince odak kalemde ya da kaydetme düğmesinde (BUTTON[]|Kaydet ve Gönder)
+  ✓ odak cari kutusunda ya da BODY'de kalmadı
+  ✓ sayfa hatası yok
+
+✓ uiux-244-ux9-ux10: 74 geçti, 0 kaldı

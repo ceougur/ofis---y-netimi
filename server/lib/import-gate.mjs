@@ -10,7 +10,7 @@
 //                    "warning" satırlar girer ama raporlanır (okunamayan tarih → bugün, okunamayan tutar → yok, dosya
 //                    içinde çift). Kullanıcı eşlemeyi değiştirdikçe kapı yeniden hesaplanır (POST …/import/preview { roles }).
 //   Yükleme tek işlem bloğunda (store.tx: BEGIN IMMEDIATE … COMMIT); yarıda kesilirse hiçbir satır kalmaz (rollback).
-import { parseAmount } from "./money.mjs";
+import { cellText, parseAmount } from "./money.mjs";
 import { parseDay } from "./plans.mjs";
 import { TYPE_DEFAULT, accountTypeKey, classifyAccountType, isAccountType, parseQty } from "./accounts.mjs";
 import { parseStatus } from "./cheques.mjs";
@@ -20,7 +20,7 @@ const EXCEL_ERROR = /^#(N\/A|REF!|VALUE!|DIV\/0!|NAME\?|NUM!|NULL!|YOK|BAŞV!|DE
 export function sanitizeCell(value) {
   if (value === null || value === undefined) return "";
   if (value instanceof Date) return Number.isNaN(value.getTime()) ? "" : parseDay(value);
-  let text = String(value).replace(INVISIBLE, "").replace(/\u00A0/g, " ").replace(/\s+/g, " ").trim();
+  let text = cellText(value).replace(INVISIBLE, "").replace(/\u00A0/g, " ").replace(/\s+/g, " ").trim();
   if (EXCEL_ERROR.test(text)) text = "";
   return text;
 }

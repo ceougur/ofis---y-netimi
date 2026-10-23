@@ -12,6 +12,10 @@
 //   5 Fatura Ayarları Kaşe / İmza açıklaması e-SMM cümlesi. 6–7 ve 0/1/2 ek denetimleri (madde 30c gezinti bulguları): G1 kâğıda düşen belgenin nedeni formda
 //     (makbuz: e-SMM işareti; satış: e-Fatura / e-Arşiv işareti; Alış'ta, e-Arşiv'de, entegratörsüz firmada not yok); G2 Fatura Ayarları açıkken Entegratör
 //     Ayarları'nda e-SMM işareti değişince açıklama yenilenir, kaydedilmemiş alan durur; G3 makbuzun Kaydet ve Gönder onayı iade demez.
+//   2.4.4 mali müşavir (31b) ve uzman UI/UX (31f) düzeltmeleri: U6 tek seçenekte belge türü formda görünür satırda ([data-kind-note]; e-SMM ve e-Arşiv), onay
+//     türün adını söyler; MM7/MM11 makbuz toplamları GİB e-SMM adlarıyla (Brüt Ücret, Net Ücret, Tahsil Edilen; "Genel Toplam" yok); MM1 Stopaj % ipucu (GVK 94);
+//     U4 gönderilmiş makbuzun kartı iade önermez; MM4 bırakma onayı yasal koşulu söyler (509 V.7, matbu makbuz), bırakılan makbuz e-SMM olarak gönderilmez
+//     (kartta Gönder yok, nedeni yazar) ve PDF'i "SERBEST MESLEK MAKBUZU" (Müşteri Fişi değil).
 // Her soru/onay yanıtı nedeniyle yazılır (ders 34). Eski kodda (7c36f87) form kâğıt makbuz gibi yalnız "Kaydet" gösterir → 1 kırmızı; DEPO=<eski kopya>.
 // Çıkış: "N geçti, M kaldı".
 import { mkdtempSync, rmSync } from "node:fs";
@@ -26,6 +30,7 @@ const { createClient } = await import(pathToFileURL(path.join(ROOT, "test", "hel
 const { OUR_VKN, startMockEdm, vkn } = await import(pathToFileURL(path.join(ROOT, "test", "einvoice-mock.mjs")).href);
 const { resetEdmCaches } = await import(pathToFileURL(path.join(ROOT, "server", "lib", "einvoice", "edm.mjs")).href);
 const { escClose } = await import(pathToFileURL(path.join(ROOT, "test", "e2e", "esc-kapat.mjs")).href);
+const { pdfText } = await import(pathToFileURL(path.join(ROOT, "test", "banka-210-ortak.mjs")).href);
 
 const PASS = "Prova-Admin-2026!";
 const NOW = "2026-06-17T09:00:00+03:00";
@@ -103,6 +108,10 @@ async function newSmm(page, scenario = "smm") {
 }
 // 2.4.4 madde 30c G1: kâğıda düşen belgenin nedeni (formun [data-paper-note] satırı).
 const paperNote = page => page.$eval(`${pageInv} [data-paper-note]`, node => ({ hidden: node.hidden, text: node.textContent.replace(/\s+/g, " ").trim() })).catch(() => ({ hidden: true, text: "(satır yok)" }));
+// 2.4.4 (U6): tek seçenekte belge türünün görünür satırı (kâğıt notunun yerinde; ikisi aynı anda görünmez).
+const kindNote = page => page.$eval(`${pageInv} [data-kind-note]`, node => ({ hidden: node.hidden || !node.getClientRects().length, text: node.textContent.replace(/\s+/g, " ").trim() })).catch(() => ({ hidden: true, text: "(satır yok)" }));
+// Toplamlar dt/dd: innerText satırları ayırır (textContent "Brüt Ücret₺1.000,00" diye birleştirirdi).
+const totalsText = page => page.$eval(`${pageInv} [data-totals]`, node => node.innerText.replace(/\s+/g, " ").trim()).catch(() => "");
 const reloadPage = async page => {
   await page.reload();
   await page.waitForFunction(() => Boolean(window.HOF?.invoices?.open), null, { timeout: 20000 });
@@ -144,6 +153,8 @@ try {
     // G1: entegratör kayıtlı, firma e-SMM kullanıcısı değil → formda kâğıt makbuzun nedeni yazar.
     const paper = await paperNote(page);
     ok(!paper.hidden && paper.text === "Kâğıt makbuz: firma e-SMM kullanıcısı olarak işaretli değil (Entegratör Ayarları → Firma / Etiket Tanımları).", `G1 kâğıt makbuzun nedeni formda: "${paper.text}" (gizli: ${paper.hidden})`);
+    const kind0 = await kindNote(page);
+    ok(kind0.hidden, `U6 kâğıt nedeni varken tür satırı görünmez (çakışma yok; gizli: ${kind0.hidden}, "${kind0.text}")`);
     await shot(page, "esmm-244-0-kagit-form");
     const before = count();
     await page.click(`${pageInv} [data-act="issue"]`);
@@ -151,7 +162,7 @@ try {
     await page.waitForSelector(`${dialog} [data-answer="yes"]`);
     const question = await textOf(page, `${dialog} .hof-modal-text`);
     console.log(`  · onay yanıtlandı (Makbuzu Kaydet, beklenen soru): ${question.slice(0, 140)}`);
-    ok(/SMM2026\d{9} numarasıyla serbest meslek makbuzu kaydedilecek/.test(question) && !/e-SMM|gönder/i.test(question), "kayıt onayı kâğıt makbuz numarasını söyler, e-SMM / gönderim demez");
+    ok(/SMM2026\d{9} numarasıyla serbest meslek makbuzu \(Kâğıt Makbuz\) kaydedilecek/.test(question) && !/e-SMM|gönder/i.test(question), "kayıt onayı kâğıt makbuz numarasını ve türünü (U6: Kâğıt Makbuz) söyler, e-SMM / gönderim demez");
     await page.click(`${dialog} [data-answer="yes"]`);
     for (let index = 0; index < 40 && count() === before; index += 1) await page.waitForTimeout(250);
     const paperRow = lastRow();
@@ -168,8 +179,15 @@ try {
 
   await step("■ 1 e-SMM kullanıcısı firmada makbuz formu: tür notu ve gönderim düğmeleri; taslak ayarı açıkken de \"Kaydet ve Gönder\"", async () => {
     await newSmm(page);
-    const note = await textOf(page, `${pageInv} [data-profile-note]`);
-    ok(/e-SMM kesilir/.test(note), `tür notu: "${note}"`);
+    // U6: tek seçenekte Belge Türü alanı gizli; tür görünür satırda (önceden not gizli alanın içinde kalıyordu — DOM'da var, ekranda yok).
+    const kind = await kindNote(page);
+    ok(!kind.hidden && kind.text === "Belge Türü: e-SMM (makbuz EDM'ye gönderilir).", `U6 tür satırı görünür: "${kind.text}" (gizli: ${kind.hidden})`);
+    // MM7/MM11: makbuz toplamları GİB e-SMM adlarıyla; "Genel Toplam" (Vergiler Dahil Toplam) yok.
+    const totals = await totalsText(page);
+    ok(["Brüt Ücret ₺1.000,00", "Gelir Vergisi Stopajı %20 -₺200,00", "Net Ücret ₺800,00", "KDV %20 ₺200,00", "Tahsil Edilen (Net Alınan) ₺1.000,00"].every(part => totals.replace(/−/g, "-").includes(part)) && !/Genel Toplam|Ara Toplam/.test(totals), `MM7 makbuz toplamları: ${totals.slice(0, 220)}`);
+    // MM1 (yalnız metin): Stopaj % ipucu gerçek kişi tacir / serbest meslek erbabını söyler.
+    const hint = await page.$eval(`${pageInv} [data-f="stoppageRate"]`, node => node.closest("label")?.title || "").catch(() => "");
+    ok(/varsayılan olarak uygulanmaz; alıcı tacir ya da serbest meslek erbabıysa \(GVK 94\) stopaj oranını girin/.test(hint), `MM1 Stopaj % ipucu: "${hint}"`);
     const paper = await paperNote(page);
     ok(paper.hidden, `G1 e-SMM formunda kâğıt nedeni satırı yok (gizli: ${paper.hidden}, "${paper.text}")`);
     ok(Boolean(await page.$(`${pageInv} [data-act="issue-later"]`)), "Kaydet, Sonra Gönder var");
@@ -189,6 +207,22 @@ try {
     await page.waitForFunction(() => Boolean(window.HOF?.invoices?.open), null, { timeout: 20000 });
   });
 
+  await step("■ 1b U6 e-Arşiv faturası formunda tür görünür satırda (alan tek seçenekte gizli); onay türün adını söyler", async () => {
+    await newSmm(page, "service_sale");
+    const kind = await kindNote(page);
+    ok(!kind.hidden && kind.text === "Belge Türü: e-Arşiv Fatura (alıcı e-Fatura mükellefi değil).", `U6 e-Arşiv tür satırı: "${kind.text}" (gizli: ${kind.hidden})`);
+    const field = await page.$eval(`${pageInv} [data-profile-field]`, node => node.hidden).catch(() => null);
+    ok(field === true, `ön koşul: Belge Türü alanı tek seçenekte gizli (${field})`);
+    const totals = await totalsText(page);
+    ok(/Genel Toplam/.test(totals) && !/Brüt Ücret|Net Ücret/.test(totals), `komşu: fatura toplamları fatura dilinde (${totals.slice(0, 120)})`);
+    await page.click(`${pageInv} [data-act="issue-later"]`);
+    await page.waitForSelector(`${dialog} [data-answer="yes"]`);
+    const question = await textOf(page, `${dialog} .hof-modal-text`);
+    console.log(`  · onay yanıtlandı — Vazgeç (Kaydet, Sonra Gönder; beklenen soru, kaydetmeden): ${question.slice(0, 120)}`);
+    ok(/satış faturası \(e-Arşiv Fatura\) kaydedilecek/.test(question), `U6 onay türün adını söyler: ${question.slice(0, 140)}`);
+    await page.click(`${dialog} [data-answer="no"]`);
+  });
+
   let saved = null;
   await step("■ 2 Kaydet ve Gönder: TES numarası, e-SMM servisine gider; kartta Durum Sorgula ve Resmî Görüntü, taslak düğmesi yok", async () => {
     await newSmm(page);
@@ -200,6 +234,7 @@ try {
     console.log(`  · onay yanıtlandı (Kaydet ve Gönder, beklenen soru): ${question.slice(0, 120)}`);
     // G3: makbuzda iade belgesi olmaz — onay yalnız iptali söyler (kartta "İade kapalı … yanlışsa iptal edin").
     ok(/Gönderildikten sonra düzenlenemez; yanlışsa iptal gerekir/.test(question) && !/iade gerekir/.test(question), `G3 onay makbuzda iade demiyor: …${question.slice(question.indexOf("Gönderildikten"), question.indexOf("Gönderildikten") + 110)}`);
+    ok(/serbest meslek makbuzu \(e-SMM\) kaydedilecek/.test(question), `U6 onay türün adını söyler: ${question.slice(0, 120)}`);
     await page.click(`${dialog} [data-answer="yes"]`);
     for (let index = 0; index < 60 && !(lastRow()?.eStatus === "sent"); index += 1) await page.waitForTimeout(250);
     await page.waitForSelector(`${pageInv} .hof-plan-title h3`, { timeout: 15000 });
@@ -214,6 +249,10 @@ try {
     ok(Boolean(await page.$(`${pageInv} [data-act="e-refresh"]`)), "kartta Durum Sorgula var");
     ok(Boolean(await page.$(`${pageInv} [data-act="e-official"]`)), "kartta Resmî Görüntü var");
     ok(!(await page.$(`${pageInv} [data-act="e-draft"]`)), "Portala Taslak Yükle yok");
+    const cardText = await textOf(page, pageInv);
+    ok(cardText.includes("Tahsil Edilen (Net Alınan)") && cardText.includes("Net Ücret") && !cardText.includes("Genel Toplam"), "MM7 kart toplamları makbuz adlarıyla (Genel Toplam yok)");
+    const modifyWhy = await page.$eval(`${pageInv} [data-act="modify"]`, node => node.title || "").catch(() => "");
+    ok(/İptal Et ile iptal edip yeniden kesin/.test(modifyWhy) && !/iade faturasıyla/.test(`${modifyWhy} ${cardText}`), `U4 Düzenle nedeni iade önermez: "${modifyWhy}"`);
     await shot(page, "esmm-244-2-kart");
     await page.click(`${pageInv} [data-act="e-refresh"]`);
     await page.waitForTimeout(1200);
@@ -254,6 +293,7 @@ try {
     const message = await textOf(page, `${dialog} .hof-modal-text`);
     console.log(`  · onay yanıtlandı (Kâğıt Makbuz Olarak Bırak, beklenen soru): "${title}" — ${message.slice(0, 100)}`);
     ok(/Kâğıt Makbuz Olarak Bırakılsın mı\?/.test(title) && /kâğıt makbuz/.test(message) && !/Müşteri Fişi/.test(`${title} ${message}`), "onay penceresi kâğıt makbuz der (Müşteri Fişi değil)");
+    ok(/yalnız GİB'in, entegratörün ya da kendi sisteminin arızası, kesintisi veya bakımı/.test(message) && /matbu makbuzla/.test(message) && /V\.7/.test(message) && /sonradan e-SMM olarak gönderilemez/.test(message) && !/sonra yine e-SMM olarak gönderebilirsiniz/.test(message), `MM4 onay yasal koşulu söyler, "sonra yine gönderebilirsiniz" demez: ${message.slice(0, 400)}`);
     await page.click(`${dialog} [data-answer="yes"]`);
     for (let index = 0; index < 40 && app.store.get("SELECT e_status AS s FROM invoices WHERE id = ?", waiting.id).s !== "withdrawn"; index += 1) await page.waitForTimeout(250);
     const row = app.store.get("SELECT profile, number, e_status AS eStatus FROM invoices WHERE id = ?", waiting.id);
@@ -262,6 +302,21 @@ try {
     await page.waitForTimeout(600);
     const card = await textOf(page, modal);
     ok(card.includes("Kâğıt Makbuz (e-SMM olarak gönderilmedi)") && !card.includes("Müşteri Fişi (e-Belge olarak gönderilmedi)"), "kartta Belge Türü kâğıt makbuz");
+    // MM4 alt kararı: bırakılan makbuz e-SMM olarak gönderilmez — Gönder düğmesi yok, nedeni kartta yazar.
+    ok(!(await page.$(`${modal} [data-act="e-send"]`)), "kartta e-Belge Gönder yok");
+    ok(card.includes("Kâğıt makbuz olarak düzenlendi; e-SMM gönderilmez"), "kartta nedeni yazar");
+    // Ek (ana oturum, e-SMM ajanının gözlemi): e-SMM kullanıcısı kâğıt makbuz düzenlemez (kayıt 400 dönüyordu, düğme açıktı) → Düzenle pasif, nedeni görünür;
+    // kâğıt belgede e-Belge XML'i yok → "XML İndir" yok (doğuştan kâğıt faturadaki gibi); başlık makbuz dilinde.
+    const modifyButton = await page.$(`${modal} [data-act="modify"]`);
+    const modifyTitle = modifyButton ? await modifyButton.getAttribute("title") : "";
+    ok(Boolean(modifyButton) && (await modifyButton.isDisabled()) && /kâğıt serbest meslek makbuzu düzenlemez/.test(modifyTitle || ""), `bırakılan makbuzda Düzenle pasif, nedeni: "${modifyTitle}"`);
+    ok(/Düzenle kapalı: Bu makbuz kâğıt makbuz olarak bırakıldı/.test(card), "Düzenle'nin nedeni kartta görünür yazı");
+    ok(!(await page.$(`${modal} a[href$="/ubl.xml"]`)), "kâğıt makbuzda XML İndir yok");
+    const closersHead = await textOf(page, `${modal} .hof-inv-closers h5`);
+    ok(closersHead === "Bu Makbuzu Kapatanlar", `kapatanlar başlığı makbuz dilinde: "${closersHead}"`);
+    const pdf =await api.raw("GET", `/api/workspace/invoices/${waiting.id}/fatura.pdf`);
+    const pdfBody = pdf.status === 200 ? pdfText(pdf.buffer).replace(/\s+/g, " ") : "";
+    ok(pdfBody.includes("SERBEST MESLEK MAKBUZU") && !pdfBody.includes("MÜŞTERİ FİŞİ") && !/mali değeri yoktur/.test(pdfBody) && pdfBody.includes(`Makbuz No ${row.number}`), `MM4 PDF Serbest Meslek Makbuzu (${pdf.status}): ${pdfBody.slice(0, 200)}`);
     await shot(page, "esmm-244-4-kagit-makbuz");
   });
   // Kullanıcı kararı (22.10.2026, "ekle"): e-SMM'de logo ve kaşe yalnız programın PDF'ine basılır (EDM e-SMM'ye görünüm şablonu kabul etmiyor); Ayarlar söyler.

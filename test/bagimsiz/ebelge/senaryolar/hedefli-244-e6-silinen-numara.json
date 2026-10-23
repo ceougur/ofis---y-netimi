@@ -1,0 +1,300 @@
+{
+ "dil": "destekofis-ebelge/3",
+ "ad": "hedefli-244-e6-silinen-numara",
+ "aciklama": "K38/K39 (E6 + 22.10 'verilmiş kâğıt/fiş numarası bir daha kullanılmaz') ve K38 N1 ([KULLANICI] 23.10 03:12 UTC + ana oturum açıklaması): silinen kâğıt/fiş/SMM/iç belgenin numarası yeniden verilmez AMA tarihi sıra-tarih denetimini bağlamaz (adım 4: 15.06 belge silinen 16.06'dan eski olabilir, FIS…3 alır; adım 30); Silinenler dışında seride kalan her belge eskisi gibi sırayı bağlar — İPTAL EDİLMİŞ (adım 41: 409) ve Müşteri Fişi Olarak Bırak'ılıp e-Belge olarak gönderilmiş (emekli) numara dahil (adım 46: 409); geri yükleme, geri dönen belgeden büyük numaralı bir belgenin tarihi daha eskiyse (adım 6) ya da küçük numaralı bir belgenin tarihi daha yeniyse (adım 33) 409, belge Silinenler'de kalır; aynı gün serbest (adım 37); sırayı bozmayan geri yükleme kendi numarasıyla döner (adım 24, 25, 32); ret sırası numara → kilit → sıra-tarih; e-Belge serileri değişmez; numarasız belgeyi silmek tabanı değiştirmez ve seriyi bekletmez; bırakılmış belge silinir; gönderilmiş belge silinmez; Silinenler'deki belge gönderilmez",
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi",
+  "K6": "ilsiz_kisi",
+  "K7": "vdsiz_mukellef",
+  "K8": "nihai"
+ },
+ "adimlar": [
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B1",
+   "cari": "K1",
+   "tarih": "2026-06-14",
+   "no": 1
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B2",
+   "cari": "K1",
+   "tarih": "2026-06-16",
+   "no": 2
+  },
+  {
+   "islem": "sil",
+   "belge": "B2",
+   "no": 3
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B3",
+   "cari": "K1",
+   "tarih": "2026-06-15",
+   "no": 4
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B4",
+   "cari": "K1",
+   "tarih": "2026-06-16",
+   "no": 5
+  },
+  {
+   "islem": "geri_yukle",
+   "belge": "B2",
+   "no": 6
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B5",
+   "cari": "K1",
+   "tarih": "2026-06-12",
+   "gonder": "sonra",
+   "no": 7
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B6",
+   "cari": "K5",
+   "tarih": "2026-06-15",
+   "gonder": "sonra",
+   "no": 8
+  },
+  {
+   "islem": "sil",
+   "belge": "B5",
+   "no": 9
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 10
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B7",
+   "cari": "K1",
+   "tarih": "2026-06-16",
+   "gonder": "sonra",
+   "no": 11
+  },
+  {
+   "islem": "listeden_sil",
+   "belge": "B7",
+   "no": 12
+  },
+  {
+   "islem": "sil",
+   "belge": "B7",
+   "no": 13
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B8",
+   "cari": "K1",
+   "tarih": "2026-06-16",
+   "no": 14
+  },
+  {
+   "islem": "kart_gonder",
+   "belge": "B7",
+   "no": 15
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B9",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 16
+  },
+  {
+   "islem": "sil",
+   "belge": "B9",
+   "no": 17
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B10",
+   "cari": "K2",
+   "tarih": "2026-06-17",
+   "gonder": "sonra",
+   "no": 18
+  },
+  {
+   "islem": "sil",
+   "belge": "B10",
+   "no": 19
+  },
+  {
+   "islem": "geri_yukle",
+   "belge": "B10",
+   "no": 20
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 21
+  },
+  {
+   "islem": "sil",
+   "belge": "B1",
+   "no": 22
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B11",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "no": 23
+  },
+  {
+   "islem": "geri_yukle",
+   "belge": "B1",
+   "no": 24
+  },
+  {
+   "islem": "geri_yukle",
+   "belge": "B7",
+   "no": 25
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 26
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 3,
+   "no": 27
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B12",
+   "cari": "K1",
+   "tarih": "2026-06-19",
+   "no": 28
+  },
+  {
+   "islem": "sil",
+   "belge": "B12",
+   "no": 29
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B13",
+   "cari": "K1",
+   "tarih": "2026-06-18",
+   "no": 30
+  },
+  {
+   "islem": "sil",
+   "belge": "B13",
+   "no": 31
+  },
+  {
+   "islem": "geri_yukle",
+   "belge": "B12",
+   "no": 32
+  },
+  {
+   "islem": "geri_yukle",
+   "belge": "B13",
+   "no": 33
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B14",
+   "cari": "K1",
+   "tarih": "2026-06-20",
+   "no": 34
+  },
+  {
+   "islem": "sil",
+   "belge": "B14",
+   "no": 35
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B15",
+   "cari": "K1",
+   "tarih": "2026-06-20",
+   "no": 36
+  },
+  {
+   "islem": "geri_yukle",
+   "belge": "B14",
+   "no": 37
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 1,
+   "no": 38
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B16",
+   "cari": "K1",
+   "tarih": "2026-06-21",
+   "no": 39
+  },
+  {
+   "islem": "iptal",
+   "belge": "B16",
+   "no": 40
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B17",
+   "cari": "K1",
+   "tarih": "2026-06-20",
+   "no": 41
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 1,
+   "no": 42
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B18",
+   "cari": "K1",
+   "tarih": "2026-06-22",
+   "gonder": "sonra",
+   "no": 43
+  },
+  {
+   "islem": "listeden_sil",
+   "belge": "B18",
+   "no": 44
+  },
+  {
+   "islem": "kart_gonder",
+   "belge": "B18",
+   "no": 45
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B19",
+   "cari": "K1",
+   "tarih": "2026-06-21",
+   "no": 46
+  },
+  {
+   "islem": "kagit_kaydet",
+   "belge": "B20",
+   "cari": "K1",
+   "tarih": "2026-06-22",
+   "no": 47
+  }
+ ],
+ "dayanak": "KARARLAR.md K38 (N1), K39 — [KULLANICI] 22.10 E6 kararı + 23.10.2026 03:12 UTC N1 + ana oturum açıklaması (23.10)"
+}

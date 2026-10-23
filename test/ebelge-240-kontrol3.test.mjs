@@ -5,6 +5,7 @@
 //   B2 YÜKSEK  belirsiz gönderim → Yalnız Programda İptal Et → Sil → numara yeni belgeye verilir (Y3 geri gelir). Aynı sınıf: EDM'de iptal
 //              edilmiş e-Arşiv, onaylı iptal edilmiş e-Fatura, portalda taslak — numarası entegratörde kullanılmış iptal belgesi silinir.
 //   B3 ORTA    Fatura Ayarları yetkisi olmayan kullanıcı gönderilmiş e-Arşivi "localOnly" ile EDM'ye sormadan yalnız programda iptal eder.
+//              (2.4.4 E7: gönderilmiş e-Arşiv artık hiçbir rolde yalnız programda iptal edilmez; yetki kapısı belirsiz / taslak belgede.)
 //   B4 ORTA    "buyer-alias" iletisinin söylediği yapılınca (cari kartında posta kutusu) gönderim yine aynı hatayla düşer.
 //   B5 ORTA    mükellef sorgusu bağlantı hatası verince numara yine harcanır; belge önce belirsiz, sonra hiç gönderilemez.
 //   B6 ORTA    (iki şirket / on kullanıcı yük denemesinde bulundu) iki kullanıcı aynı e-Arşivi aynı anda iptal eder → program bir kez iptal
@@ -154,22 +155,29 @@ describe("Dar kontrol turu 3 bulguları (sahte EDM; ağa çıkmaz)", () => {
     assert.equal((await card(slip.id)).canDelete, true, "entegratöre hiç gitmemiş fiş silinir");
   });
 
-  test("B3: gönderilmiş e-Arşivi yalnız programda iptal Fatura Ayarları yetkisi + onay ister ve işlem kaydına düşer", async () => {
+  // 2.4.4 E7 (eleştirmen 31d, karar 22.10.2026; K4): BEKLENTİ BİLEREK DEĞİŞTİ — gönderilmiş (EDM'nin kabul ettiği) e-Arşiv artık HİÇBİR rolde yalnız programda
+  // iptal edilmez (önceden yetki + onayla 200 dönüyordu; belge GİB'de geçerli kalırken programda "İptal Edildi" oluyordu). Yetki + onay kapısı (B3) yalnız
+  // belirsiz / portal taslağında sürer (ebelge-240-bitis-turu "Çıkış yolu"; ebelge-244-yerel-iptal P7).
+  test("B3 (E7): gönderilmiş e-Arşiv yalnız programda iptal edilmez — yetkisiz de yetkili de 409; EDM'ye iptal gitmez, işlem kaydına düşmez", async () => {
     const doc = (await sale(personId)).data;
     assert.equal((await api.post(`/api/workspace/invoices/${doc.id}/send`, {})).status, 200);
     await settle(doc.id);
     const lawyer = await createUser(server, { post: async (url, body) => client.post(url, body) }, { username: "avukat-k3", role: "avukat" });
     const before = edm.state.cancelled.length;
     const forbidden = unwrap(await lawyer.post(`/api/workspace/invoices/${doc.id}/cancel`, { reason: "x", localOnly: true, confirmExternal: true }));
-    assert.equal(forbidden.status, 403, JSON.stringify(forbidden.data));
+    assert.equal(forbidden.status, 409, JSON.stringify(forbidden.data));
+    assert.equal(forbidden.data.code, "einvoice-local-not-allowed");
     assert.equal((await card(doc.id)).status, "issued");
     const unconfirmed = await api.post(`/api/workspace/invoices/${doc.id}/cancel`, { reason: "x", localOnly: true });
     assert.equal(unconfirmed.status, 409);
-    assert.equal(unconfirmed.data.code, "einvoice-local-confirm");
-    const done = await api.post(`/api/workspace/invoices/${doc.id}/cancel`, { reason: "EDM portalından iptal edildi", localOnly: true, confirmLocal: true });
-    assert.equal(done.status, 200, JSON.stringify(done.data));
-    assert.equal(edm.state.cancelled.length, before, "EDM'ye iptal gönderilmedi (yalnız program)");
-    assert.ok(audits(doc.id).includes("invoice.e.local-cancel"));
+    assert.equal(unconfirmed.data.code, "einvoice-local-not-allowed");
+    const refused = await api.post(`/api/workspace/invoices/${doc.id}/cancel`, { reason: "EDM portalından iptal edildi", localOnly: true, confirmLocal: true });
+    assert.equal(refused.status, 409, JSON.stringify(refused.data));
+    assert.equal(refused.data.code, "einvoice-local-not-allowed");
+    assert.match(refused.data.error, /İptal Et'i kullanın/);
+    assert.equal((await card(doc.id)).status, "issued", "belge iptal edilmedi (veri tabanı)");
+    assert.equal(edm.state.cancelled.length, before, "EDM'ye iptal gönderilmedi");
+    assert.ok(!audits(doc.id).includes("invoice.e.local-cancel"));
   });
 
   test("B4: buyer-alias iletisinin söylediği yapılınca gönderim geçer", async () => {

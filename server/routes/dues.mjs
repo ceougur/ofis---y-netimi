@@ -5,6 +5,7 @@ import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { caseCollections, caseCollectionsState } from "../lib/insight/case-collections.mjs";
 import { computeDeadlines, computeDues, DUE_WINDOW } from "../lib/insight/dues.mjs";
 import { canUser } from "../lib/permissions.mjs";
+import { tableNotes } from "../lib/reports.mjs";
 import { systemClock } from "../lib/clock.mjs";
 
 const SETTLED_KEY = "dues.settled";
@@ -104,7 +105,10 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
         // öbür sayfalar okunamazsa açık sayfanın takvimi yine verilir
       }
     }
-    const result = { items: [...items, ...planItems, ...chequeItems, ...invoiceItems, ...bankItems, ...foreignItems], deadlines: [...deadlines, ...foreignDeadlines], sources, dormant, today: local, generatedAt: now.toISOString() };
+    // 31e A1: borcu birden çok sekmede olan dosya no her sekmede ayrı borç ve ayrı kalemdir (2.4.3 gibi); Tahsilat Takvimi bunu raporlarla aynı notla söyler
+    // (zil söylemez). Taksit kartı olan kaydın tablo kalemleri zaten listede yok; notta da sayılmaz.
+    const notes = tableNotes({ split: (computed.debtSplit || []).filter(item => !carded.has(item.key)), unresolved: computed.debtUnresolved || [] });
+    const result = { items: [...items, ...planItems, ...chequeItems, ...invoiceItems, ...bankItems, ...foreignItems], deadlines: [...deadlines, ...foreignDeadlines], sources, dormant, notes, today: local, generatedAt: now.toISOString() };
     // 2.4.3 H2: içeriğin sürümü (üretim anı hariç her alan). Ekran elindeki sürümü gönderir; içerik değişmediyse büyük yanıt (10.000
     // faturalı veride 2,8 MB) yeniden gönderilmez. Başka personelin her kaydında anahtar değişir ama takvimin içeriği çoğu kez değişmez.
     const { generatedAt: _, ...content } = result;

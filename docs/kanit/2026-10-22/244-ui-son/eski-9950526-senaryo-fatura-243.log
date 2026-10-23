@@ -1,0 +1,89 @@
+■ 0 B1 Tümünü Gönder tarih sırasıyla (bugün henüz TEA numarası verilmeden; liste yeniden eskiye)
+  ✓ düğme 3 belge
+  ✓ eski önce numaralandı, üçü de gönderildi: TEA2026451525526, TEA2026451525527, TEA2026451525528
+
+■ 1 H8 Stok kartında KDV Oranı → faturada kalemin KDV'si
+  ✓ kartın KDV Oranı alanı %10 gösterir
+  ✓ ekrandan %1 kaydedildi
+  ✓ ürün seçilince kalemin KDV'si %1 (karttan)
+
+■ 2 B8 eksi stok uyarısı kayıttan önce; B11 uzun ad ipucu
+  ✓ satır uyarısı: Stokta 5 Adet; bu miktar stoğu -3 Adet (eksi) yapar. Kaydederken sorulur.
+  ✓ miktar düzelince uyarı kalkar
+  ✓ uzun adın tamamı ipucunda
+
+■ 3 B12 fiyatsız kalemde 400 yok; B13 yeni kartta odak Miktar, sayı kutusu harf almaz
+  ✓ odak Miktar'da (qty)
+  ✓ Miktar kutusu harfi almadı
+  ✓ fiyatsız kalemde hesap 400'ü yok (0)
+  ✓ toplam kutusu fiyat ister
+
+■ 4 B2 çok kalemli faturada kısmi iade ekrandan
+  ✓ iade onayı soruldu (miktarı 0 olan kalem engel olmadı)
+  ✓ iade yazıldı (sale_return)
+  ✓ yalnız birinci kalem iade edildi ([{"name":"Defter Kareli","qty":2}])
+  ✓ iade tutarı 2 × 35 + %1 = 70,70 (70.7)
+
+■ 5 B7 reddedilecek belgede numaralı onay açılmaz
+  ✓ numaralı onay penceresi açılmadı
+  ✓ neden yazıldı: Fatura kaydedilemez: Cari (alıcı): e-Arşiv için VKN ya da TCKN zorunludur (kimliği bilinmeyen nihai tüketicide 11111111111). Cari (alıcı): i
+  ✓ belge yazılmadı
+
+■ 6 B6 Posta Kutusu Seçin → Esc: etiket yazılmaz
+  ✓ Esc sonrası posta kutusu boş kaldı
+  ✓ ileti "seçilmedi" (e-Fatura mükellefi: ÇOKLU A.Ş. Posta kutusu seçilmedi; etiket boş kaldı. e-Fatura kesmeden önce Mükellef Sorgula ile posta kutusunu seçin.)
+  ✓ çift nokta yok
+
+■ 7 H1 EDM'ye ulaşılamazken Kaydet ve Gönder
+  ✓ numara verilmedi, Gönderilecekler'de (numarasız waiting)
+  ✓ bildirim numarasız Gönderilecekler der: e-Fatura mükellefi: ÇOKLU A.Ş. Posta kutusu seçilmedi; etiket boş kaldı. e-Fatura kesmeden önce Mükellef Sorgula ile posta kutusunu seçin. | Satış Faturası kaydedildi. EDM'ye ulaşılamadı; belge numara
+  ✓ UX20 kayıt + gönderim sonucu tek bildirim (1: Satış Faturası kaydedildi. EDM'ye ulaşılamadı; belge numarasız Gönderilecekler'e eklendi, bağlantı gelince Tümünü Gönder ile gönderin.)
+  ✓ UX20 bildirim durum adını numara gibi yazmaz ("Gönderilecek kaydedildi" yok)
+  ✓ belge Gönderilecekler'de "Gönderilecek" rozetiyle (22.10.202622:59 GönderilecekSatış Faturası Zeynep ŞahinHizmet Satışı AçıkGönderilecekTest ₺360,00 ₺360,00)
+  ✓ düğme 1 belge
+  ✓ bağlantı düzelince numara alıp gönderildi (TEA2026451525530 sent)
+  ✓ EDM'ye bir kez
+
+■ 8 B3 Seçilenleri Kaydet → Gönderilecekler (numarasız)
+  ✓ onay e-Belgeyi söyler: × ONAY 1 Taslak Kesilsin mi? Seçili taslaklar tarih sırasıyla kaydedilir (toplam ₺300,00). Her belgede stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. Stoku eksiye düşüren ya da kili
+  ✓ numarasız bekliyor ({"number":"","status":"issued","eStatus":"waiting","profile":"EARSIVFATURA","kind":"sale","payable":300})
+
+■ 9 UI9 birim fiyat biçimi; UI3a kod kesilmez; UI5 Kaydet ve Gönder sonrası kart başta; UX20 tek bildirim
+  ✓ UI9 ürün seçilince Birim Fiyat "1.249,90" (1.249,90)
+  ✓ UI9 kutu ile satırdaki tutar aynı biçimde
+  ✓ UI9 Tab ile girip çıkınca biçim bozulmaz
+  ✓ UI3a EAN-13 kutuda kesilmez (8690123456789 · görünen 142 / içerik 142)
+  ✓ UI3a 14 karakterli kod kesilmez (STK-2.0.26-001 · 142 / 142)
+  · bilgi: 1366 genişlikte kalem tablosunda yatay kaydırma yok
+  ✓ ön koşul: pencere aşağı kaydırıldı (scrollTop 204)
+  ✓ UI5 kart başta açıldı, başlık görünür (scrollTop 0, görünür true)
+  ✓ UI5 başlıkta belge no ve durum: Satış Faturası TEA2026451525531 AçıkGönderildiTest
+  ✓ UI9 kaydedilen birim fiyat 1249,9 (1249.9)
+  ✓ UX20 başarıda tek bildirim, numaralı (1: Satış Faturası TEA2026451525531 kaydedildi. e-Arşiv fatura EDM'ye iletildi; sonucu Durum Sorgula ile görün.)
+
+■ 10 UX17 ödenmiş faturada "Genel Toplam", kısmide "Kalan"; UX27 pasif Düzenle gri ve nedeni yazılı
+  ✓ UX17 ödenmiş faturanın üstü "Genel Toplam" (Genel Toplam; açık 0)
+  ✓ UX17 başlıkta "Tahsil Edilecek" yok
+  ✓ UX27 gönderilmiş belgede Düzenle pasif
+  ✓ UX27 pasif Düzenle dolu değil, gri zemin (rgb(244, 249, 245) ↔ rgb(244, 249, 245))
+  ✓ UX27 nedeni görünür yazı: Düzenle kapalı: Bu belge e-Belge olarak gönderildi; düzenlenmez. İptal ya da iade faturasıyla düzeltin.Sil kapalı: Bu belge e-Belge olarak g
+  ✗ UX17 kısmi ödenmişte büyük rakam Kalan (Tahsil Edilecek ₺600,00; açık 400)
+  ✗ UX17 kısmi ödenmişte altında Genel Toplam ve ödenen (Kalan ₺400,00)
+  ✗ UX17 kısmi ödenmişte başlık "Tahsil Edilecek" değil (Tahsil Edilecek₺600,00Kalan ₺400,00)
+
+■ 11 UX16 faturadan + Yeni Cari yazılan adı taşır (klavyeyle)
+  ✓ UX16 yazılan ad yeni cari formunda (Yeni Müşteri A)
+  ✓ cari bir kez açıldı, müşteri ([{"id":"account-3e5b5fac-dd04-4aa2-8533-5a2d5fb4fdfc","name":"Yeni Müşteri A","type":"customer"}])
+  ✓ faturada yeni cari seçili ({"name":"Yeni Müşteri A","id":"account-3e5b5fac-dd04-4aa2-8533-5a2d5fb4fdfc"})
+
+■ 12 UX25 Belge Türü süzgecinde e-SMM yalnız açıkken; her seçenek
+  ✓ UX25 e-SMM kapalıyken seçenek yok (Tüm Belge Türleri, Kâğıt Fatura, e-Arşiv Fatura, e-Fatura (Temel), e-Fatura (Ticari))
+  ✓ süzgeç "Tüm Belge Türleri": 9 satır = alt sayı 9
+  ✓ süzgeç "Kâğıt Fatura": 0 satır = alt sayı 0
+  ✓ süzgeç "e-Arşiv Fatura": 9 satır = alt sayı 9
+  ✓ süzgeç "e-Fatura (Temel)": 0 satır = alt sayı 0
+  ✓ süzgeç "e-Fatura (Ticari)": 0 satır = alt sayı 0
+  ✓ UX25 e-SMM açıkken seçenek var (, KAGIT, EARSIVFATURA, TEMELFATURA, TICARIFATURA, ESMM; meta 2 kez)
+  ✓ sayfa hatası yok
+
+58 geçti, 3 kaldı

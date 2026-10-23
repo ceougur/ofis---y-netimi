@@ -1,0 +1,43 @@
+{
+  "ad": "244-u1/mutasyon-M5-benimseme-en-yeni",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/nihai-tuketici-u1-244.test.mjs",
+  "commit": "e195089bb3bab6f4ba4f224e622b11bc83dd17c5",
+  "dal": "is/u1",
+  "kirli": 6,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T21:55:04.796Z",
+  "sure_sn": 6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 6,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "U1: Nihai Tüketici düğmesi yalnız programın kendi carisini seçer; adı belli cari seçilmez › N3: eski veride işaretsiz birden çok aday → yalnız adı \"Nihai Tüketici\" olan, en eskisi (açılış zamanı, eşitse yazım sırası); işaret sonra kalıcı",
+      "konum": "test/nihai-tuketici-u1-244.test.mjs:123:3",
+      "hata": "beklenen ilk yazılan \"Nihai Tüketici\"; seçilen \"Nihai Tüketici\" · + actual - expected · + 'account-f4c20901-9f55-4ed4-9291-50d4bdaaf217' (beklenen account-376364e7-d3f0-4a70-aeee-5b598fe37935, gelen account-f4c20901-9f55-4ed4-9291-50d4bdaaf217)"
+    },
+    {
+      "ad": "U1 eski veri: v2.4.3'te düğmeyle açılmış Nihai Tüketici benimsenir; adı belli cari seçilmez (iki şirket) › N2: 001'de Ayşe Şahin (sonradan 11111111111) daha eski + düğmenin carisi + elle açılmış ikinci Nihai Tüketici; 002'de düğmenin carisi",
+      "konum": "test/nihai-tuketici-u1-244.test.mjs:175:3",
+      "hata": "beklenen 2.4.3 düğmesinin carisi; seçilen \"Nihai Tüketici\" · + actual - expected · + 'account-4e13b6e6-bdcf-4cce-b228-4ed87bbac445' (beklenen account-b9d9d76f-6bb9-47da-85ef-75e2a5fdf375, gelen account-4e13b6e6-bdcf-4cce-b228-4ed87bbac445)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-u1/mutasyon-M5-benimseme-en-yeni.log",
+  "klasor": "/home/user/wt/u1",
+  "ham_cikti_sha256": "9ae70097a1d2f6e53546d8a3825f62222d7d023bacce3b404a552a7af86ff472",
+  "ham_cikti_bayt": 5686
+}

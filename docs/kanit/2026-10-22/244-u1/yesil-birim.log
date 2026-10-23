@@ -1,0 +1,109 @@
+TAP version 13
+# Subtest: U1: Nihai Tüketici düğmesi yalnız programın kendi carisini seçer; adı belli cari seçilmez
+    # Subtest: N1: adı belli cari (11111111111) önce açılmış → ayrı "Nihai Tüketici" açılır; satış onun borcuna, Ayşe Şahin'e değil
+    ok 1 - N1: adı belli cari (11111111111) önce açılmış → ayrı "Nihai Tüketici" açılır; satış onun borcuna, Ayşe Şahin'e değil
+      ---
+      duration_ms: 1251.415189
+      type: 'test'
+      ...
+    # Subtest: N4: iki kullanıcı aynı anda basar → tek cari, hepsi aynı kimlik
+    ok 2 - N4: iki kullanıcı aynı anda basar → tek cari, hepsi aynı kimlik
+      ---
+      duration_ms: 989.298022
+      type: 'test'
+      ...
+    # Subtest: N5: işaretli cari adı belli kişiye çevrilir ya da kimliği değişir → artık seçilmez; harf büyüklüğü/boşluk farkı rolü bozmaz
+    ok 3 - N5: işaretli cari adı belli kişiye çevrilir ya da kimliği değişir → artık seçilmez; harf büyüklüğü/boşluk farkı rolü bozmaz
+      ---
+      duration_ms: 736.428034
+      type: 'test'
+      ...
+    # Subtest: N6: pasif cari kullanılmaya devam eder; silinince yeni açılır, Silinenler'den geri gelse de işaret yenide kalır
+    ok 4 - N6: pasif cari kullanılmaya devam eder; silinince yeni açılır, Silinenler'den geri gelse de işaret yenide kalır
+      ---
+      duration_ms: 794.076531
+      type: 'test'
+      ...
+    # Subtest: N3: eski veride işaretsiz birden çok aday → yalnız adı "Nihai Tüketici" olan, en eskisi (açılış zamanı, eşitse yazım sırası); işaret sonra kalıcı
+    ok 5 - N3: eski veride işaretsiz birden çok aday → yalnız adı "Nihai Tüketici" olan, en eskisi (açılış zamanı, eşitse yazım sırası); işaret sonra kalıcı
+      ---
+      duration_ms: 649.302152
+      type: 'test'
+      ...
+    # Subtest: N7 + N8: iki şirket ayrı cari ve ayrı işaret; Tümünü Sıfırla'dan sonra (işaret kalır, cari yok) yeniden açılır
+    ok 6 - N7 + N8: iki şirket ayrı cari ve ayrı işaret; Tümünü Sıfırla'dan sonra (işaret kalır, cari yok) yeniden açılır
+      ---
+      duration_ms: 1011.552287
+      type: 'test'
+      ...
+    # Subtest: N9: fatura kesme yetkisi olmayan kullanıcı → 403, cari açılmaz
+    ok 7 - N9: fatura kesme yetkisi olmayan kullanıcı → 403, cari açılmaz
+      ---
+      duration_ms: 653.089662
+      type: 'test'
+      ...
+    1..7
+ok 1 - U1: Nihai Tüketici düğmesi yalnız programın kendi carisini seçer; adı belli cari seçilmez
+  ---
+  duration_ms: 6087.930123
+  type: 'suite'
+  ...
+# Subtest: U1 eski veri: v2.4.3'te düğmeyle açılmış Nihai Tüketici benimsenir; adı belli cari seçilmez (iki şirket)
+    # Subtest: N2: 001'de Ayşe Şahin (sonradan 11111111111) daha eski + düğmenin carisi + elle açılmış ikinci Nihai Tüketici; 002'de düğmenin carisi
+    ok 1 - N2: 001'de Ayşe Şahin (sonradan 11111111111) daha eski + düğmenin carisi + elle açılmış ikinci Nihai Tüketici; 002'de düğmenin carisi
+      ---
+      duration_ms: 1738.053215
+      type: 'test'
+      ...
+    1..1
+ok 2 - U1 eski veri: v2.4.3'te düğmeyle açılmış Nihai Tüketici benimsenir; adı belli cari seçilmez (iki şirket)
+  ---
+  duration_ms: 1738.520486
+  type: 'suite'
+  ...
+# Subtest: uiux-b-243 sunucu
+    # Subtest: UX2: tam iade Düzenle'de ön hesap ve kayıt geçer; kısmi iade ve öbür iadenin miktarı korunur; başka faturanın iadesi kimliği sayılmaz
+    ok 1 - UX2: tam iade Düzenle'de ön hesap ve kayıt geçer; kısmi iade ve öbür iadenin miktarı korunur; başka faturanın iadesi kimliği sayılmaz
+      ---
+      duration_ms: 1654.104809
+      type: 'test'
+      ...
+    # Subtest: UX5: çok posta kutulu alıcıda gönderimde işaret geri konurken seçili kutu korunur ve ileti bunu söyler; listede olmayan etiket silinir
+    ok 2 - UX5: çok posta kutulu alıcıda gönderimde işaret geri konurken seçili kutu korunur ve ileti bunu söyler; listede olmayan etiket silinir
+      ---
+      duration_ms: 1249.735443
+      type: 'test'
+      ...
+    # Subtest: UX14: bağlantı hatası iletisinde teknik kod yok; kod detail'de
+    ok 3 - UX14: bağlantı hatası iletisinde teknik kod yok; kod detail'de
+      ---
+      duration_ms: 28.31102
+      type: 'test'
+      ...
+    # Subtest: KÖ1: Nihai Tüketici carisi ilk kullanımda açılır, sonra aynısı döner (çift açılmaz, eşzamanlı da); sınır üstü e-Arşiv engellenir
+    ok 4 - KÖ1: Nihai Tüketici carisi ilk kullanımda açılır, sonra aynısı döner (çift açılmaz, eşzamanlı da); sınır üstü e-Arşiv engellenir
+      ---
+      duration_ms: 1145.919209
+      type: 'test'
+      ...
+    # Subtest: KÖ2: Gönderilecekler'den fişe çevirme iletileri 'Müşteri Fişi olarak bırak' der
+    ok 5 - KÖ2: Gönderilecekler'den fişe çevirme iletileri 'Müşteri Fişi olarak bırak' der
+      ---
+      duration_ms: 612.191009
+      type: 'test'
+      ...
+    1..5
+ok 3 - uiux-b-243 sunucu
+  ---
+  duration_ms: 4882.881351
+  type: 'suite'
+  ...
+1..3
+# tests 13
+# suites 3
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8636.412521

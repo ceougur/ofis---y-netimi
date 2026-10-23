@@ -1,0 +1,71 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3k-vergi-tek-kolon",
+ "aciklama": "N4 (karar sahibi 23.10.2026): vergi kolonu YALNIZ tabloda başka bir tutar kolonu varken borç dışıdır; 'Vergiler' sekmesinde (Vergi Tutarı + Son Ödeme) tek tutar kolonu vergi kolonudur → borç (Ufuk Er 1.500, Vedat Ay 2.500); 'Aidat' sekmesinde Tutar + KDV → borç Tutar (Yasin Ok 1.000). Bütün tablo raporları (Kişiler, Takvim, Vade Takip, Nakit Akışı Beklenen) aynı borcu gösterir (K4: 5.000; Son Ödeme takvim penceresinde).",
+ "dayanak": "KARARLAR.md B3d N4, B4b K4",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Vergiler",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Vergi Tutarı",
+      "Son Ödeme"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/601",
+       "isim": "Ufuk Er",
+       "hucreler": {
+        "Telefon": "",
+        "Vergi Tutarı": "1.500,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      },
+      {
+       "no": "2026/602",
+       "isim": "Vedat Ay",
+       "hucreler": {
+        "Telefon": "",
+        "Vergi Tutarı": "2.500,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Aidat",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar",
+      "KDV",
+      "Son Ödeme"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/603",
+       "isim": "Yasin Ok",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "1.000,00 ₺",
+        "KDV": "180,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol",
+   "raporlar": true
+  }
+ ]
+}

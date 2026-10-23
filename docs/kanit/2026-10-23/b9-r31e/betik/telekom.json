@@ -1,0 +1,4 @@
+{"sheets":[
+ {"name":"TelekomVade","matrix":[["Ad Soyad","Taahhütlü Ücret","Kalan Borç","Son Ödeme"],["Mina Er","450","1.350","@d+5"],["Nail Ak","300","","@d+6"]]},
+ {"name":"SozUcret","matrix":[["Ad Soyad","Söz Tutarı","Aylık Ücret","Kalan Borç","Söz Tarihi"],["Oğuz Can","200","1.000","2.000","@d+4"]]}
+]}

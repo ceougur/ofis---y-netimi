@@ -1,0 +1,15 @@
+✖ E1: EDM 11048 (daha önce gönderildi) — ileti bu belgeyi gösteriyorsa önce durum sorulur (2881.876584ms)
+✖ U birim: 11048 iletisinin gösterdiği belge ve iletim günü (5.454077ms)
+ℹ tests 16
+ℹ suites 6
+ℹ pass 14
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15870.871196
+✖ failing tests:
+✖ K12 (B8, B9, B10) 002 şirketi: numaralı e-Arşiv → yedek → gönder → yedeği geri yükle (belge yine 'Gönderilmedi') → Gönder: 11048 → durum → gönderilmiş sayılır; iletim günü bilinmiyor → kesim günü (1457.898493ms)
+  AssertionError [ERR_ASSERTION]: yeniden Gönder: 502 {"ok":false,"error":"EDM isteği reddetti: UUID=305d39a9-1814-444c-8283-5ec3d61aaa79 ID=TEA2026000000001 için Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız (EDM hata kodu 11048) Bu numara EDM'de daha önce kullanılmış: test hesabı ortaktır, başka bir firma aynı numarayı kullanmış olabilir ya da yedekten geri yükleme yaptıysanız bu numarayla yedekten sonra siz göndermiş olabilirsiniz. Bu belgeyi İptal Et ile iptal edip yeniden kesin; yeni belge bir sonraki numarayı alır (gerekir
+✖ U1 iletideki numara ve ETTN'nin hepsi belgeninkiyse (büyük/küçük harf farkı önemsiz) bu belge; biri farklıysa ya da ikisi de yoksa değil (0.707234ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:

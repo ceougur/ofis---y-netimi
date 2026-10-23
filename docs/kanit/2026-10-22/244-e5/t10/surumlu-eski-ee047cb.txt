@@ -1,0 +1,4 @@
+B giriş 200
+A kaydet (maaş 2.000): 200 ["Maaş"]
+B kaydet (IBAN; formu A'dan önce açmıştı): 200 ["Maaş","IBAN"]
+son kart: maaş 1000 IBAN TR320010009999901234567890 A'NIN MAAŞ DEĞİŞİKLİĞİ SESSİZCE GERİ ALINDI

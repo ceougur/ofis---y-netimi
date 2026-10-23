@@ -1,0 +1,32 @@
+{
+  "ad": "b1-r31e/yeni-testler",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/kayit-bag-31e.test.mjs test/kayit-bag-31e-birim.test.mjs",
+  "commit": "a747a857287d801e0b769780da3a7d46e3422725",
+  "dal": "is/r31e-b",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T08:58:27.487Z",
+  "sure_sn": 11.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 27,
+    "gecen": 27,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/b1-r31e/yeni-testler.log",
+  "klasor": "/home/user/wt/r31e-b",
+  "ham_cikti_sha256": "22b568d525a0c95f4a455415fbf0eb896e3b516c41a4166ee32b64dae5785b52",
+  "ham_cikti_bayt": 11322
+}

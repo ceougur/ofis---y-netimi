@@ -1,0 +1,146 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3x-yalin-soz-ve-tutar",
+ "aciklama": "A1 (söz tutarı borç değil) + 'tek tutar sütunu borç' (K3) + Z6 (söz tutarı sütunu söz/taahhüt + tutar ya da miktar): (a) borç sütunu olarak yalnız yalın sayı değerli 'Ödeme Sözü' / 'Söz' / 'Taahhüt' sütunu olan sekme (Emre Ak 1.100, Figen Er 1.200, Gökhan Su 1.300) → Kişiler borç 0, Açılış Bakiyesi 0 / boş, söz kalemi bu sütundan tutar almaz (kalem 0); (b) 'Tutar' + 'Söz Tutarı' (Hande Ok 5.000 / söz 1.500) ve 'Tutar' + 'Taahhütname Tutarı' (Irmak Ay 4.000 / 1.000) → borç Tutar, söz kalemi söz tutarı, not yok; (c) yalın 'Ödeme Sözü' (700) + 'Borç' (6.000) + Son Ödeme (Jülide Tan) → borç 6.000, kalem 6.000. Kişiler 15.000; Takvim / Vade Takip / Nakit Akışı 8.500.",
+ "dayanak": "KARARLAR.md B3n (A1 + K3 + Z6), B3i TAKVİM KALEMİ",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Sözler Yalın",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Söz Tarihi",
+      "Ödeme Sözü"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/1001",
+       "isim": "Emre Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Söz Tarihi": "20.06.2026",
+        "Ödeme Sözü": "1.100,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Söz Yalın",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Söz Tarihi",
+      "Söz"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/1002",
+       "isim": "Figen Er",
+       "hucreler": {
+        "Telefon": "",
+        "Söz Tarihi": "20.06.2026",
+        "Söz": "1.200,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Taahhüt Yalın",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Taahhüt Tarihi",
+      "Taahhüt"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/1003",
+       "isim": "Gökhan Su",
+       "hucreler": {
+        "Telefon": "",
+        "Taahhüt Tarihi": "20.06.2026",
+        "Taahhüt": "1.300,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Tutar ve Söz",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar",
+      "Söz Tarihi",
+      "Söz Tutarı"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/1004",
+       "isim": "Hande Ok",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "5.000,00 ₺",
+        "Söz Tarihi": "20.06.2026",
+        "Söz Tutarı": "1.500,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Tutar ve Taahhütname",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar",
+      "Taahhütname Tarihi",
+      "Taahhütname Tutarı"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/1005",
+       "isim": "Irmak Ay",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "4.000,00 ₺",
+        "Taahhütname Tarihi": "20.06.2026",
+        "Taahhütname Tutarı": "1.000,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Söz ve Borç",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Ödeme Sözü",
+      "Borç",
+      "Son Ödeme"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/1006",
+       "isim": "Jülide Tan",
+       "hucreler": {
+        "Telefon": "",
+        "Ödeme Sözü": "700,00 ₺",
+        "Borç": "6.000,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol",
+   "raporlar": true
+  }
+ ]
+}

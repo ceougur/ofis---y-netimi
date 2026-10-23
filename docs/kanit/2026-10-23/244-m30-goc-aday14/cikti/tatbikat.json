@@ -1,0 +1,605 @@
+{
+ "day": "2026-10-23",
+ "checks": [
+  {
+   "name": "C10 001 göçten sonra (geri yükleme yok) Fatura'da geri yükleme uyarısı yok (30b)",
+   "ok": true,
+   "detail": {
+    "notice": null
+   }
+  },
+  {
+   "name": "C10 002 göçten sonra (geri yükleme yok) Fatura'da geri yükleme uyarısı yok (30b)",
+   "ok": true,
+   "detail": {
+    "notice": null
+   }
+  },
+  {
+   "name": "C3 001 2.4.3'ten kalan 0 bekleyen e-Belge 2.4.4'ten Tümünü Gönder ile gitti; numara sırası = tarih sırası",
+   "ok": true,
+   "detail": {
+    "pendingBefore": 0,
+    "pendingAfter": 0,
+    "cancelledPending": [],
+    "turns": [
+     {
+      "ok": 0,
+      "failed": []
+     }
+    ],
+    "sent": 0,
+    "eStatus": {},
+    "orderBad": [],
+    "oldest": null
+   }
+  },
+  {
+   "name": "C1 001 bırakılan fiş numarası verilmiş en büyükten sonra (A FIS2026000000260, B FIS2026000000261); gönderilen A'nın fişi Kâğıt Fatura No'da",
+   "ok": true,
+   "detail": {
+    "leftA": "FIS2026000000260",
+    "leftB": "FIS2026000000261",
+    "givenMax": 259,
+    "aPaperNo": "FIS2026000000260",
+    "aNumber": "TEA2026118068995",
+    "aEStatus": "sent",
+    "sentA": true
+   }
+  },
+  {
+   "name": "C2 001 e-SMM \"Kâğıt Makbuz Olarak Bırak\" SMM numarası verilmiş en büyükten sonra (SMM2026000000068)",
+   "ok": true,
+   "detail": {
+    "got": "SMM2026000000068",
+    "givenMax": 67
+   }
+  },
+  {
+   "name": "C2b 001 bırakılan kâğıt makbuz e-SMM olarak gönderilemez (istek reddedilir; kart ve EDM değişmez)",
+   "ok": true,
+   "detail": {
+    "status": 409,
+    "message": "Kâğıt makbuz olarak düzenlendi; e-SMM gönderilmez (aynı tahsilat için ikinci belge olur). Yanlışsa makbuzu İptal Et ile iptal edip e-SMM olarak yeniden kesin.",
+    "before": {
+     "number": "SMM2026000000068",
+     "paperNo": "",
+     "profile": "KAGIT",
+     "eStatus": "withdrawn",
+     "status": "issued",
+     "canSend": false
+    },
+    "after": {
+     "number": "SMM2026000000068",
+     "paperNo": "",
+     "profile": "KAGIT",
+     "eStatus": "withdrawn",
+     "status": "issued",
+     "canSend": false
+    },
+    "smmSent": [
+     1,
+     1
+    ]
+   }
+  },
+  {
+   "name": "C3 001 e-Arşiv / e-SMM / e-Fatura gönderildi (sahte EDM)",
+   "ok": true,
+   "detail": {
+    "earsiv": [
+     "TEA2026118068994",
+     "sent"
+    ],
+    "esmm": [
+     "TES2026602224625",
+     "ESMM",
+     "sent"
+    ],
+    "efatura": [
+     "TEF2026660694265",
+     "sent"
+    ],
+    "smmSent": 1,
+    "violations": []
+   }
+  },
+  {
+   "name": "C5 001 çalışmadan sonra Mutabakat Testi'nde yeni sapma yok, mizan dengede",
+   "ok": true,
+   "detail": {
+    "newFailures": [],
+    "trialTotals": {
+     "debit": 5128053427,
+     "credit": 5128053427,
+     "difference": 0
+    },
+    "cashDelta": 350
+   }
+  },
+  {
+   "name": "C5 001 yeniden açılan faturaya 100 TL Kapatılacak Fatura'lı tahsilat açığı 100 TL azaltır",
+   "ok": true,
+   "detail": {
+    "invoice": "TEF2026660694264",
+    "before": 2937600,
+    "after": 2927600
+   }
+  },
+  {
+   "name": "C3 002 2.4.3'ten kalan 0 bekleyen e-Belge 2.4.4'ten Tümünü Gönder ile gitti; numara sırası = tarih sırası",
+   "ok": true,
+   "detail": {
+    "pendingBefore": 0,
+    "pendingAfter": 0,
+    "cancelledPending": [],
+    "turns": [
+     {
+      "ok": 0,
+      "failed": []
+     }
+    ],
+    "sent": 0,
+    "eStatus": {},
+    "orderBad": [],
+    "oldest": null
+   }
+  },
+  {
+   "name": "C1 002 bırakılan fiş numarası verilmiş en büyükten sonra (A FIS2026000000111, B FIS2026000000112); gönderilen A'nın fişi Kâğıt Fatura No'da",
+   "ok": true,
+   "detail": {
+    "leftA": "FIS2026000000111",
+    "leftB": "FIS2026000000112",
+    "givenMax": 110,
+    "aPaperNo": "FIS2026000000111",
+    "aNumber": "TEA2026508235316",
+    "aEStatus": "sent",
+    "sentA": true
+   }
+  },
+  {
+   "name": "C2 002 e-SMM \"Kâğıt Makbuz Olarak Bırak\" SMM numarası verilmiş en büyükten sonra (SMM2026000000121)",
+   "ok": true,
+   "detail": {
+    "got": "SMM2026000000121",
+    "givenMax": 120
+   }
+  },
+  {
+   "name": "C2b 002 bırakılan kâğıt makbuz e-SMM olarak gönderilemez (istek reddedilir; kart ve EDM değişmez)",
+   "ok": true,
+   "detail": {
+    "status": 409,
+    "message": "Kâğıt makbuz olarak düzenlendi; e-SMM gönderilmez (aynı tahsilat için ikinci belge olur). Yanlışsa makbuzu İptal Et ile iptal edip e-SMM olarak yeniden kesin.",
+    "before": {
+     "number": "SMM2026000000121",
+     "paperNo": "",
+     "profile": "KAGIT",
+     "eStatus": "withdrawn",
+     "status": "issued",
+     "canSend": false
+    },
+    "after": {
+     "number": "SMM2026000000121",
+     "paperNo": "",
+     "profile": "KAGIT",
+     "eStatus": "withdrawn",
+     "status": "issued",
+     "canSend": false
+    },
+    "smmSent": [
+     2,
+     2
+    ]
+   }
+  },
+  {
+   "name": "C3 002 e-Arşiv / e-SMM / e-Fatura gönderildi (sahte EDM)",
+   "ok": true,
+   "detail": {
+    "earsiv": [
+     "TEA2026508235315",
+     "sent"
+    ],
+    "esmm": [
+     "TES2026484027801",
+     "ESMM",
+     "sent"
+    ],
+    "efatura": [
+     "TEF2026573878145",
+     "sent"
+    ],
+    "smmSent": 2,
+    "violations": []
+   }
+  },
+  {
+   "name": "C5 002 çalışmadan sonra Mutabakat Testi'nde yeni sapma yok, mizan dengede",
+   "ok": true,
+   "detail": {
+    "newFailures": [],
+    "trialTotals": {
+     "debit": 3531504108,
+     "credit": 3531504108,
+     "difference": 0
+    },
+    "cashDelta": 350
+   }
+  },
+  {
+   "name": "C5 002 yeniden açılan faturaya 100 TL Kapatılacak Fatura'lı tahsilat açığı 100 TL azaltır",
+   "ok": true,
+   "detail": {
+    "invoice": "TEA2026508235298",
+    "before": 1141200,
+    "after": 1131200
+   }
+  },
+  {
+   "name": "C4 2.4.4'te verilen kâğıt/fiş/SMM numaraları biçimde ve eski verilmişlerle çakışmıyor",
+   "ok": true,
+   "detail": {
+    "given": [
+     "FIS2026000000260",
+     "FIS2026000000261",
+     "SMM2026000000068",
+     "FIS2026000000111",
+     "FIS2026000000112",
+     "SMM2026000000121"
+    ]
+   }
+  },
+  {
+   "name": "C6 002 yedek → çalış → geri yükle: olgular yedek anıyla aynı",
+   "ok": true,
+   "detail": {
+    "diff": [],
+    "backup": "destekofis-002-2026-10-23T05-11-58-803Z-manuel.sqlite"
+   }
+  },
+  {
+   "name": "C10 002 geri yüklemeden sonra Fatura'da tek seferlik uyarı VAR (yalnız bu şirkette)",
+   "ok": true,
+   "detail": {
+    "notice": {
+     "at": "2026-10-23T05:12:14.336Z",
+     "backupAt": "2026-10-23T05:11:58.803Z",
+     "edoc": true,
+     "test": true,
+     "canDismiss": true
+    },
+    "otherNotice": null
+   }
+  },
+  {
+   "name": "C10 002 uyarı kapatılınca gider",
+   "ok": true,
+   "detail": {
+    "dismissed": {
+     "dismissed": true,
+     "restoreNotice": null
+    }
+   }
+  },
+  {
+   "name": "C7 002 geri yüklemesi 001'i değiştirmedi",
+   "ok": true,
+   "detail": {
+    "diff": []
+   }
+  },
+  {
+   "name": "C8 002 geri yüklemeden sonra numaralar yedek anının sırasından sürer, veride tekrar yok",
+   "ok": true,
+   "detail": {
+    "dup": [],
+    "eskiVeridekiTekrar": 6,
+    "w3Fis": "FIS2026000000113",
+    "momentNextPaper": "FIS2026000000113",
+    "w2Fis": "FIS2026000000113"
+   }
+  },
+  {
+   "name": "C8 002 GÖZLEM: ara dönemde EDM'ye gitmiş e-Arşiv numarası (TEA2026508235317) geri yüklemeden sonra yeniden verildi mi",
+   "ok": true,
+   "detail": {
+    "w2": [
+     "TEA2026508235317",
+     "sent"
+    ],
+    "w3": [
+     "TEA2026508235317",
+     "error",
+     "EDM isteği reddetti: UUID=9f2ecf1e-3a5b-4a8f-a8a5-88864e5b933e ID=TEA2026508235317 için Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız (EDM hata kodu 11048) Bu numara EDM'de daha önce kullanılmış: test hesabı ortaktır, başka bir firma aynı numarayı kullanmış olabilir ya da yedekten geri yükleme yaptıysanız bu numarayla yedekten sonra siz göndermiş olabilirsiniz. Bu belgeyi İptal Et ile iptal edip yeniden kesin; yeni belge bir sonraki numarayı alır (gerekirse Entegratör Ayarlar"
+    ],
+    "reused": true,
+    "edmHasBoth": 1
+   }
+  },
+  {
+   "name": "C6 001 geri yükleme (001: yeniden açılışta) uygulandı",
+   "ok": true,
+   "detail": {
+    "staged": {
+     "ok": true,
+     "name": "destekofis-001-2026-10-23T05-12-36-065Z-manuel.sqlite",
+     "safety": "destekofis-001-2026-10-23T05-12-57-468Z-geri-yukleme-oncesi-001.sqlite",
+     "by": "user-61f098f5-db43-45cf-b8cb-6795908a1508",
+     "byName": "Ofis yöneticisi",
+     "at": "2026-10-23T05:12:58.133Z"
+    }
+   }
+  },
+  {
+   "name": "C6 001 yedek → çalış → geri yükle: olgular yedek anıyla aynı",
+   "ok": true,
+   "detail": {
+    "diff": [],
+    "backup": "destekofis-001-2026-10-23T05-12-36-065Z-manuel.sqlite"
+   }
+  },
+  {
+   "name": "C10 001 geri yüklemeden sonra Fatura'da tek seferlik uyarı VAR (yalnız bu şirkette)",
+   "ok": true,
+   "detail": {
+    "notice": {
+     "at": "2026-10-23T05:12:58.117Z",
+     "backupAt": "2026-10-23T05:12:36.065Z",
+     "edoc": true,
+     "test": true,
+     "canDismiss": true
+    },
+    "otherNotice": null
+   }
+  },
+  {
+   "name": "C10 001 uyarı kapatılınca gider",
+   "ok": true,
+   "detail": {
+    "dismissed": {
+     "dismissed": true,
+     "restoreNotice": null
+    }
+   }
+  },
+  {
+   "name": "C7 001 geri yüklemesi 002'i değiştirmedi",
+   "ok": true,
+   "detail": {
+    "diff": []
+   }
+  },
+  {
+   "name": "C8 001 geri yüklemeden sonra numaralar yedek anının sırasından sürer, veride tekrar yok",
+   "ok": true,
+   "detail": {
+    "dup": [],
+    "eskiVeridekiTekrar": 9,
+    "w3Fis": "FIS2026000000262",
+    "momentNextPaper": "FIS2026000000262",
+    "w2Fis": "FIS2026000000262"
+   }
+  },
+  {
+   "name": "C8 001 GÖZLEM: ara dönemde EDM'ye gitmiş e-Arşiv numarası (TEA2026118068996) geri yüklemeden sonra yeniden verildi mi",
+   "ok": true,
+   "detail": {
+    "w2": [
+     "TEA2026118068996",
+     "sent"
+    ],
+    "w3": [
+     "TEA2026118068996",
+     "error",
+     "EDM isteği reddetti: UUID=7bd54b99-f9b0-4a94-bff5-fcde7d525afa ID=TEA2026118068996 için Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız (EDM hata kodu 11048) Bu numara EDM'de daha önce kullanılmış: test hesabı ortaktır, başka bir firma aynı numarayı kullanmış olabilir ya da yedekten geri yükleme yaptıysanız bu numarayla yedekten sonra siz göndermiş olabilirsiniz. Bu belgeyi İptal Et ile iptal edip yeniden kesin; yeni belge bir sonraki numarayı alır (gerekirse Entegratör Ayarlar"
+    ],
+    "reused": true,
+    "edmHasBoth": 1
+   }
+  },
+  {
+   "name": "C9 002 2.4.3 yedeği (destekofis-002-2026-10-23T01-54-08-054Z-manuel.sqlite) 2.4.4'e geri yüklendi: şema 32, numara tabanı göçtekiyle aynı",
+   "ok": true,
+   "detail": {
+    "version": 32,
+    "numberFloor": "{\"FIS2026\":{\"seq\":110,\"number\":\"FIS2026000000110\",\"issueDate\":\"2026-10-05\"},\"FIS2025\":{\"seq\":73,\"number\":\"FIS2025000000073\",\"issueDate\":\"2025-12-18\",\"deleted\":true},\"SMM2026\":{\"seq\":120,\"number\":\"SMM2026000000120\",\"issueDate\":\"2026-10-23\",\"deleted\":true}}",
+    "expected": "{\"FIS2026\":{\"seq\":110,\"number\":\"FIS2026000000110\",\"issueDate\":\"2026-10-05\"},\"FIS2025\":{\"seq\":73,\"number\":\"FIS2025000000073\",\"issueDate\":\"2025-12-18\",\"deleted\":true},\"SMM2026\":{\"seq\":120,\"number\":\"SMM2026000000120\",\"issueDate\":\"2026-10-23\",\"deleted\":true}}"
+   }
+  },
+  {
+   "name": "C9 002 geri yüklenen 2.4.3 yedeğinin olguları göç ölçüsüyle (aynı veri, göç açılışta) aynı",
+   "ok": true,
+   "detail": {
+    "diff": []
+   }
+  },
+  {
+   "name": "C10 002 2.4.3 yedeği geri yüklenince de uyarı VAR; kapatılınca gider",
+   "ok": true,
+   "detail": {
+    "notice": {
+     "at": "2026-10-23T05:13:39.717Z",
+     "backupAt": "2026-10-23T01:54:08.054Z",
+     "edoc": true,
+     "test": true,
+     "canDismiss": true
+    }
+   }
+  },
+  {
+   "name": "C7 002 2.4.3 yedeğinin geri yüklenmesi 001'i değiştirmedi",
+   "ok": true,
+   "detail": {
+    "diff": []
+   }
+  },
+  {
+   "name": "C9 001 2.4.3 yedeği (destekofis-001-2026-10-23T01-54-07-703Z-manuel.sqlite) 2.4.4'e geri yüklendi: şema 32, numara tabanı göçtekiyle aynı",
+   "ok": true,
+   "detail": {
+    "version": 32,
+    "numberFloor": "{\"FIS2026\":{\"seq\":259,\"number\":\"FIS2026000000259\",\"issueDate\":\"2026-10-07\"},\"SMM2026\":{\"seq\":67,\"number\":\"SMM2026000000067\",\"issueDate\":\"2026-10-23\",\"deleted\":true}}",
+    "expected": "{\"FIS2026\":{\"seq\":259,\"number\":\"FIS2026000000259\",\"issueDate\":\"2026-10-07\"},\"SMM2026\":{\"seq\":67,\"number\":\"SMM2026000000067\",\"issueDate\":\"2026-10-23\",\"deleted\":true}}"
+   }
+  },
+  {
+   "name": "C9 001 geri yüklenen 2.4.3 yedeğinin olguları göç ölçüsüyle (aynı veri, göç açılışta) aynı",
+   "ok": true,
+   "detail": {
+    "diff": []
+   }
+  },
+  {
+   "name": "C10 001 2.4.3 yedeği geri yüklenince de uyarı VAR; kapatılınca gider",
+   "ok": true,
+   "detail": {
+    "notice": {
+     "at": "2026-10-23T05:14:00.409Z",
+     "backupAt": "2026-10-23T01:54:07.703Z",
+     "edoc": true,
+     "test": true,
+     "canDismiss": true
+    }
+   }
+  },
+  {
+   "name": "C7 001 2.4.3 yedeğinin geri yüklenmesi 002'i değiştirmedi",
+   "ok": true,
+   "detail": {
+    "diff": []
+   }
+  },
+  {
+   "name": "C11k 001 G1: kapanmış dönem (2026-04-23) tarihli silinmiş belge (FIS2026000000215, 2026-04-14) geri yüklenmez (409), Silinenler'de kalır; Mutabakat Testi'nde yeni sapma yok; Kasa girişi 200",
+   "ok": true,
+   "detail": {
+    "status": 409,
+    "message": "Bu satış faturası 14.04.2026 tarihli; 23.04.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı.",
+    "still": 1,
+    "newFailures": [],
+    "kasa": [
+     200,
+     ""
+    ],
+    "kilitliTarihliSilinen": 2
+   }
+  },
+  {
+   "name": "C11 001 E6: numarası canlı belgede olan silinmiş belge YOK (veride bu durum oluşmadı)",
+   "ok": true,
+   "detail": {
+    "items": 4
+   }
+  },
+  {
+   "name": "C11 001 E6: numarası boşta olan silinmiş belge (SMM2026000000067) kendi numarasıyla geri gelir",
+   "ok": true,
+   "detail": {
+    "status": 200,
+    "message": "Serbest Meslek Makbuzu SMM2026000000067 geri geldi (iptal edilmiş, etkisiz).",
+    "back": [
+     "SMM2026000000067",
+     "cancelled"
+    ]
+   }
+  },
+  {
+   "name": "C11 001 E6: sıradaki kâğıt/fiş/SMM/iç numara verilmiş en büyükten (silinenler dahil) sonra; geri yükleme sıradakini değiştirmedi",
+   "ok": true,
+   "detail": {
+    "bad": [],
+    "nextBefore": {
+     "paper": "FIS2026000000260",
+     "earsiv": "EAR2026000000001",
+     "efatura": "EFT2026000000001",
+     "smm": "SMM2026000000068",
+     "esmm": "ESM2026000000001",
+     "internal": "IAD2026000000015"
+    },
+    "nextAfter": {
+     "paper": "FIS2026000000260",
+     "earsiv": "EAR2026000000001",
+     "efatura": "EFT2026000000001",
+     "smm": "SMM2026000000068",
+     "esmm": "ESM2026000000001",
+     "internal": "IAD2026000000015"
+    },
+    "trashInvoices": 4
+   }
+  },
+  {
+   "name": "C11k 002 G1: kapanmış dönem tarihli silinmiş belge YOK (kilit yok)",
+   "ok": true,
+   "detail": {
+    "trashInvoices": 13
+   }
+  },
+  {
+   "name": "C11 002 E6: numarası (SMM2026000000098) canlı başka belgede olan silinmiş belge geri yüklenmez (409), Silinenler'de kalır",
+   "ok": true,
+   "detail": {
+    "status": 409,
+    "message": "Serbest Meslek Makbuzu SMM2026000000098 geri yüklenmez: bu numara belge silindikten sonra başka bir belgeye verildi (01.09.2026 tarihli, İsmail Çakır). Aynı numara iki belgede olamaz; belge Silinenler",
+    "liveDoc": [
+     "invoice-25d85ab6-d60f-453d-8098-c22cdc117fed",
+     "issued"
+    ]
+   }
+  },
+  {
+   "name": "C11 002 E6: numarası boşta olan silinmiş belge (SMM2026000000120) kendi numarasıyla geri gelir",
+   "ok": true,
+   "detail": {
+    "status": 200,
+    "message": "Serbest Meslek Makbuzu SMM2026000000120 geri geldi (iptal edilmiş, etkisiz).",
+    "back": [
+     "SMM2026000000120",
+     "cancelled"
+    ]
+   }
+  },
+  {
+   "name": "C11 002 E6: sıradaki kâğıt/fiş/SMM/iç numara verilmiş en büyükten (silinenler dahil) sonra; geri yükleme sıradakini değiştirmedi",
+   "ok": true,
+   "detail": {
+    "bad": [],
+    "nextBefore": {
+     "paper": "FIS2026000000111",
+     "earsiv": "EAR2026000000001",
+     "efatura": "EFT2026000000001",
+     "smm": "SMM2026000000121",
+     "esmm": "ESM2026000000001",
+     "internal": "IAD2026000000009"
+    },
+    "nextAfter": {
+     "paper": "FIS2026000000111",
+     "earsiv": "EAR2026000000001",
+     "efatura": "EFT2026000000001",
+     "smm": "SMM2026000000121",
+     "esmm": "ESM2026000000001",
+     "internal": "IAD2026000000009"
+    },
+    "trashInvoices": 13
+   }
+  }
+ ],
+ "edm": {
+  "sent": [
+   "TEA2026118068994",
+   "TEA2026118068995",
+   "TEF2026660694265",
+   "TEA2026508235315",
+   "TEA2026508235316",
+   "TEF2026573878145",
+   "TEA2026508235317",
+   "TEA2026118068996"
+  ],
+  "smm": [
+   "TES2026602224625",
+   "TES2026484027801"
+  ],
+  "violations": []
+ }
+}

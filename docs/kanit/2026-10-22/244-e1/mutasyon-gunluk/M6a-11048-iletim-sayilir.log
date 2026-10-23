@@ -1,0 +1,15 @@
+✖ E1: EDM 11048 (daha önce gönderildi) — ileti bu belgeyi gösteriyorsa önce durum sorulur (1814.845434ms)
+✖ U birim: 11048 iletisinin gösterdiği belge ve iletim günü (1.411566ms)
+ℹ tests 16
+ℹ suites 6
+ℹ pass 14
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12840.812229
+✖ failing tests:
+✖ K12 (B8, B9, B10) 002 şirketi: numaralı e-Arşiv → yedek → gönder → yedeği geri yükle (belge yine 'Gönderilmedi') → Gönder: 11048 → durum → gönderilmiş sayılır; iletim günü bilinmiyor → kesim günü (952.476857ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+✖ U2 iletim günü: gönderim izi yalnız ardından sonuç kaydı gelmediyse girişimdir (kesinti); sonuç gelince sonucun kuralı (0.791048ms)
+  AssertionError [ERR_ASSERTION]: 11048 (EDM zaten almış): bu gönderim iletim değil

@@ -1,0 +1,32 @@
+{
+  "ad": "aday22-birlesim-dar",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/tablo-borc-r31e.test.mjs",
+  "commit": "49072ca28217a3d73a88d60762443cc64e3c1523",
+  "dal": "aday22",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T13:33:55.650Z",
+  "sure_sn": 9.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 56,
+    "gecen": 56,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/aday22-birlesim-dar.log",
+  "klasor": "/home/user/wt/aday22",
+  "ham_cikti_sha256": "c76ef7ac9c4a831f3a06a48dad43f5661d14b926bb17055d8cc74a3f14a0a1d5",
+  "ham_cikti_bayt": 25790
+}

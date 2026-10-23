@@ -1,0 +1,148 @@
+{
+  "ad": "b1-r31e/kirmizi-aday16",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/kayit-bag-31e.test.mjs",
+  "commit": "624810bfa3975421ec0990aa08a5a4c2ccfefeab",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T08:58:57.077Z",
+  "sure_sn": 10.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 24,
+    "gecen": 1,
+    "basarisiz": 23,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 23 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "31e B1: Dosya No'suz tabloda içerik değişince bağlar yeni satıra taşınır (sessiz kopma yok) › N1 Yerine koy: Ali'nin Tutar'ı 1.000 → 1.200 — bütün bağlar Ali'de, Kişiler 1.200 / 400, Takvim 800; taşıma işlem geçmişinde ve yedekten sonra",
+      "konum": "test/kayit-bag-31e.test.mjs:112:3",
+      "hata": "Yerine koy: Ali'nin tahsilat bağı yeni satırında (YOK) · + actual - expected · + 'satir:9f59b05f146c69df' (beklenen satir:017c8ec80bdbe2b9, gelen satir:9f59b05f146c69df)"
+    },
+    {
+      "ad": "31e B1: Dosya No'suz tabloda içerik değişince bağlar yeni satıra taşınır (sessiz kopma yok) › N1 Devamı olarak ekle: aynı değişiklik — bağlar taşınır, satır sayısı aynı (yeni kayıt açılmaz)",
+      "konum": "test/kayit-bag-31e.test.mjs:131:3",
+      "hata": "Devamı: Ali'nin tahsilat bağı yeni satırında (YOK) · + actual - expected · + 'satir:9f59b05f146c69df' (beklenen satir:017c8ec80bdbe2b9, gelen satir:9f59b05f146c69df)"
+    },
+    {
+      "ad": "31e B1: Dosya No'suz tabloda içerik değişince bağlar yeni satıra taşınır (sessiz kopma yok) › N2 Telefon kolonu eklenir (bütün parmak izleri değişir): Yerine koy ve Devamı'nda bütün bağlar (cari, Ödendi Say, Sorun Yok dahil) yerinde",
+      "konum": "test/kayit-bag-31e.test.mjs:146:3",
+      "hata": "replace: Ali'nin tahsilat bağı yeni satırında (YOK) · + actual - expected · + 'satir:9f59b05f146c69df' (beklenen satir:854ede596f0c4624, gelen satir:9f59b05f146c69df)"
+    },
+    {
+      "ad": "31e B1: Dosya No'suz tabloda içerik değişince bağlar yeni satıra taşınır (sessiz kopma yok) › N4 satır silinir + sonraki satır değişir: kayan konumda bağ başka kişiye gitmez; Can'ın cari bağı Can'da, silinen Ayşe'nin işareti eşleşmez (onay ister, silinmez)",
+      "konum": "test/kayit-bag-31e.test.mjs:178:3",
+      "hata": "önizleme eşleşmeyeni adıyla söyler · + actual - expected · + undefined"
+    },
+    {
+      "ad": "31e B1: Dosya No'suz tabloda içerik değişince bağlar yeni satıra taşınır (sessiz kopma yok) › N5 aynı adlı iki kişi: aynı konumda aynı ad ve aynı sayı → doğru Ali'ye taşınır; ilk Ali silinip ikincisi değişirse taşınmaz (onay)",
+      "konum": "test/kayit-bag-31e.test.mjs:205:3",
+      "hata": "not ikinci Ali'nin yeni satırında (birinci Ali'ye gitmedi) · + actual - expected · + undefined"
+    },
+    {
+      "ad": "31e B1: Dosya No'suz tabloda içerik değişince bağlar yeni satıra taşınır (sessiz kopma yok) › N6 ad + tutar birlikte değişir: kişi değeri tutmaz → eşleşmeyen, onaysız 409; onayla uygulanır, tahsilat silinmez",
+      "konum": "test/kayit-bag-31e.test.mjs:230:3",
+      "hata": "The expression evaluated to a falsy value: · assert.ok(staged.bonds?.replace?.unmatched?.names.includes(\"Ali Veli\"))"
+    },
+    {
+      "ad": "31e B2: kimlik kolonu eklenir / silinir — tek adlı kişide bağlar taşınır › N8 Dosya No (2026/x) eklenir: Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda",
+      "konum": "test/kayit-bag-31e.test.mjs:257:5",
+      "hata": "Dosya No (2026/x) eklenir: Ali'nin tahsilat bağı yeni satırında (YOK) · + actual - expected · + 'satir:9f59b05f146c69df' (beklenen 2026/101, gelen satir:9f59b05f146c69df)"
+    },
+    {
+      "ad": "31e B2: kimlik kolonu eklenir / silinir — tek adlı kişide bağlar taşınır › N8 Dosya No (D-x) eklenir: Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda",
+      "konum": "test/kayit-bag-31e.test.mjs:257:5",
+      "hata": "Dosya No (D-x) eklenir: Ali'nin tahsilat bağı yeni satırında (YOK) · + actual - expected · + 'satir:9f59b05f146c69df' (beklenen D-101, gelen satir:9f59b05f146c69df)"
+    },
+    {
+      "ad": "31e B2: kimlik kolonu eklenir / silinir — tek adlı kişide bağlar taşınır › N8 Dosya No (2026/x) silinir: Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda",
+      "konum": "test/kayit-bag-31e.test.mjs:257:5",
+      "hata": "Dosya No (2026/x) silinir: Ali'nin tahsilat bağı yeni satırında (YOK) · + actual - expected · + '2026/101' (beklenen satir:9f59b05f146c69df, gelen 2026/101)"
+    },
+    {
+      "ad": "31e B2: kimlik kolonu eklenir / silinir — tek adlı kişide bağlar taşınır › N8 Dosya No (D-x) silinir: Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda",
+      "konum": "test/kayit-bag-31e.test.mjs:257:5",
+      "hata": "Dosya No (D-x) silinir: Ali'nin tahsilat bağı yeni satırında (YOK) · + actual - expected · + 'D-101' (beklenen satir:9f59b05f146c69df, gelen D-101)"
+    },
+    {
+      "ad": "31e B2: kimlik kolonu eklenir / silinir — tek adlı kişide bağlar taşınır › N8 Müşteri No silinir (kimlik kolonu kipi değişir): Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda",
+      "konum": "test/kayit-bag-31e.test.mjs:257:5",
+      "hata": "Müşteri No silinir (kimlik kolonu kipi değişir): Ali'nin tahsilat bağı yeni satırında (YOK) · + actual - expected · + 'M-001' (beklenen satir:9f59b05f146c69df, gelen M-001)"
+    },
+    {
+      "ad": "31e Devamı olarak ekle: farklı kişi mevcut satırın yerine geçmez (kâhin b3g/b3h); aynı görünen satır onay ister (B3) › N9 2. satırda Lale Ak yerine Yeni Kişi: Lale ve 200 TL tahsilatı durur, Yeni Kişi yeni kayıt; önizleme 1 yeni / 1 silinmez",
+      "konum": "test/kayit-bag-31e.test.mjs:274:3",
+      "hata": "Lale'nin satırı ezilmedi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "31e Devamı olarak ekle: farklı kişi mevcut satırın yerine geçmez (kâhin b3g/b3h); aynı görünen satır onay ister (B3) › N9b dosyanın başına satır eklenir (bütün konumlar kayar): Devamı olarak ekle mevcut satırları içerikleriyle eşler, kimseyi ezmez",
+      "konum": "test/kayit-bag-31e.test.mjs:299:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "31e Devamı olarak ekle: farklı kişi mevcut satırın yerine geçmez (kâhin b3g/b3h); aynı görünen satır onay ister (B3) › N7 başa satır eklenir + Ayşe'nin tutarı değişir (kayma + değişim): Devamı Ayşe'yi ezmez, 'mevcut bir kaydın kişisini taşıyor' der ve onay ister",
+      "konum": "test/kayit-bag-31e.test.mjs:312:3",
+      "hata": "aynı kişi uyarısı adıyla · + actual - expected · + undefined"
+    },
+    {
+      "ad": "31e Devamı olarak ekle: farklı kişi mevcut satırın yerine geçmez (kâhin b3g/b3h); aynı görünen satır onay ister (B3) › N10 Dosya No eklenmiş aynı dosya Devamı olarak eklenir: '6 satır mevcut kayıtlarla aynı görünüyor' + onaysız 409; onayla eklenir",
+      "konum": "test/kayit-bag-31e.test.mjs:335:3",
+      "hata": "Expected values to be strictly equal: · undefined !== 6"
+    },
+    {
+      "ad": "31e Google Sheets eşitlemesi › N11 Sheet'te Ali'nin tutarı ve sonra Telefon kolonu değişir: eşitleme bağları taşıyarak uygular, önce yedek alır",
+      "konum": "test/kayit-bag-31e.test.mjs:378:3",
+      "hata": "`eşitleme Ali'nin bağlarını taşır: {\"ok\":true,\"counts\":{\"added\":0,\"updated\":1,\"unchanged\":5,\"removed\":0,\"missing\":0},\"manual\":true,\"summary\":{\"hasData\":true,\"label\":\"Google Sheets\",\"rowCount\":6,\"recordCount\":0,\"tabs\":[\"Müşteriler\"],\"li` (beklenen true, gelen false)"
+    },
+    {
+      "ad": "31e Google Sheets eşitlemesi › N11 kişi kolonu olmayan Sheet'te tutar değişir: eşleşmeyen bağ → eşitleme bekler (yönetici onayı), veri değişmez; İncele ve karar ver onayla uygular",
+      "konum": "test/kayit-bag-31e.test.mjs:396:3",
+      "hata": "eşitleme beklemeli: {\"ok\":true,\"counts\":{\"added\":0,\"updated\":1,\"unchanged\":2,\"removed\":0,\"missing\":0},\"manual\":true,\"summary\":{\"hasData\":true,\"label\":\"Google Sheets\",\"rowCount\":3,\"recordCount\":0,\"tabs\":[\"Müşteriler\"],\"linked\":true,\"lastSyncOkAt\":\"2026-10-23T08:59:05.587Z\",\"changedAt\":\"2026-10-23T08:59:05.591Z\",\"missing · + actual - expected · + undefined"
+    },
+    {
+      "ad": "31e Google Sheets eşitlemesi › N7/N11 Sheet'in başına satır eklenir + Ayşe'nin tutarı değişir: eşitleme Ayşe'yi kendi satırında günceller, işareti taşınır, 'Sheet'te yok' çıkmaz",
+      "konum": "test/kayit-bag-31e.test.mjs:421:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "31e Google Sheets eşitlemesi › N9/N11 Sheet'te 2. satır başka kişiyle değiştirilir: Lale yerinde kalır ('Sheet'te yok'), tahsilatı durur; Yeni Kişi yeni kayıt",
+      "konum": "test/kayit-bag-31e.test.mjs:435:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "31e eşzamanlılık, yarıda kesilme, başka veri sayfası, bayat anahtar › N12 önizlemeden sonra başka kullanıcı bağ ekler: onaysız uygulama 409; onaylanmış önizleme yeni eşleşmeyeni kapsamıyorsa 409 bonds-changed",
+      "konum": "test/kayit-bag-31e.test.mjs:453:3",
+      "hata": "önizlemeden sonra eklenen bağ sessizce kopmaz · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "31e eşzamanlılık, yarıda kesilme, başka veri sayfası, bayat anahtar › N13 taşıma ortasında hata: satırlar ve bağlar birlikte geri alınır (tek işlem)",
+      "konum": "test/kayit-bag-31e.test.mjs:479:3",
+      "hata": "kesinti taşımanın ortasında oldu (tahsilat ve not taşındıktan sonra) · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "31e eşzamanlılık, yarıda kesilme, başka veri sayfası, bayat anahtar › N15 aynı satır başka veri sayfasında da var: genel tablolardaki bağ o sayfanın da olabilir → taşınmaz, onay ister",
+      "konum": "test/kayit-bag-31e.test.mjs:507:3",
+      "hata": "başka sayfada da olan anahtarın bağı sessizce taşınmaz ya da kopmaz (onay ister) · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "31e eşzamanlılık, yarıda kesilme, başka veri sayfası, bayat anahtar › İNCELE: tabloda olmayan Dosya No'suz anahtara (satir:…) not / tahsilat 409; dosya no ve serbest anahtar eskisi gibi kabul edilir",
+      "konum": "test/kayit-bag-31e.test.mjs:528:3",
+      "hata": "Expected values to be strictly equal: · 200 !== 409 (beklenen 409, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-23/b1-r31e/kirmizi-aday16.log",
+  "klasor": "/home/user/wt/r31e-b-eski",
+  "ham_cikti_sha256": "08948d10b6a37527b2f206ae8b7f08ccaeef70040b56a9bae0351f799b095420",
+  "ham_cikti_bayt": 31377
+}

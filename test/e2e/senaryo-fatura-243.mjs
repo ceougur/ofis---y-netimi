@@ -14,7 +14,7 @@
 //   7 UX20 (ek) EDM'ye ulaşılamazken kayıt + gönderim sonucu TEK bildirim; "Gönderilecek kaydedildi" yazmaz.
 //   9 UI9 Birim Fiyat ürün seçilince "1.249,90" (Tab ile bozulmaz, veri tabanında 1249,9).  UI3a EAN-13 ve 14 karakterli stok kodu kutuda kesilmez.
 //     UI5 Kaydet ve Gönder (pencere en alta kaydırılmışken) → kart başa kayar, belge no ve durum görünür.  UX20 başarıda tek bildirim, numaralı.
-//  10 UX17 Ödenmiş faturanın üstünde "Tahsil Edilecek" yok ("Genel Toplam"); kısmi ödenmişte "Kalan".  UX27 Pasif "Düzenle" gri, nedeni yazılı.
+//  10 UX17 Ödenmiş faturanın üstünde "Tahsil Edilecek" yok ("Genel Toplam"); kısmi ödenmişte büyük rakam "Kalan", altında Genel Toplam (31f U13).  UX27 Pasif "Düzenle" gri, nedeni yazılı.
 //  11 UX16 Faturadan "+ Yeni Cari": seçicide yazılan ad formda dolu; klavyeyle kaydedilince cari açılır ve faturada seçili gelir.
 //  12 UX25 Belge Türü süzgecinde e-SMM kapalıyken yok, açıkken (meta.settings.esmm) var; her seçenek açılır, satır sayısı = alt sayı.
 // Çıkış: "N geçti, M kaldı".
@@ -406,7 +406,13 @@ try {
     await page.waitForFunction(([sel, id]) => document.querySelector(`${sel} .hof-plan-title h3`) && window.HOF && document.querySelector(`${sel} [data-act="back"]`), [pageInv, part.id]);
     await page.waitForTimeout(600);
     const partHead = await textOf(page, `${pageInv} .hof-chq-amount`);
-    ok(/^Tahsil Edilecek/.test(partHead) && partHead.includes("Kalan ₺400,00"), `UX17 kısmi ödenmişte tutar + "Kalan" (${partHead})`);
+    // 31f U13: kısmi ödenmişte büyük rakam KALAN (QuickBooks/Xero "Balance Due"); belgenin Genel Toplam'ı altında küçük. Tutar hesabı değişmez.
+    const partLabel = await textOf(page, `${pageInv} .hof-chq-amount span`);
+    const partBig = await textOf(page, `${pageInv} .hof-chq-amount strong`);
+    const partSmall = await textOf(page, `${pageInv} .hof-chq-amount small`);
+    ok(partLabel === "Kalan" && partBig === "₺400,00", `UX17 kısmi ödenmişte büyük rakam Kalan (${partLabel} ${partBig}; açık ${part.open})`);
+    ok(partSmall.includes("Genel Toplam ₺600,00") && partSmall.includes("ödenen ₺200,00"), `UX17 kısmi ödenmişte altında Genel Toplam ve ödenen (${partSmall})`);
+    ok(!partHead.includes("Tahsil Edilecek"), `UX17 kısmi ödenmişte başlık "Tahsil Edilecek" değil (${partHead})`);
   });
 
   await step("\n■ 11 UX16 faturadan + Yeni Cari yazılan adı taşır (klavyeyle)", async () => {

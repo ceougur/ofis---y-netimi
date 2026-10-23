@@ -1,0 +1,163 @@
+{
+ "uretim": {
+  "geriYukleme": [
+   200,
+   "",
+   "Satış Faturası FIS2026000000001 geri geldi (iptal edilmiş, etkisiz)."
+  ],
+  "mutabakat": [
+   "period-lock"
+  ],
+  "kasaGirisi": [
+   200,
+   "",
+   ""
+  ],
+  "pesinSatis": [
+   200,
+   "",
+   ""
+  ],
+  "cariTahsilat": [
+   200,
+   "",
+   ""
+  ],
+  "kapiYolu": {
+   "path": "scoped",
+   "ms": 5.341885999999931,
+   "runMs": 0,
+   "lockMs": 0,
+   "sections": {
+    "scoped": 5.153368,
+    "s.scope": 0.16159800000002633,
+    "s.lock": 0.024420999999961168,
+    "s.money": 1.022972999999979,
+    "s.party": 1.2766169999999875,
+    "s.links": 0.05748500000004242,
+    "s.rows": 0.24988299999995434,
+    "s.bank": 2.3459139999999934
+   },
+   "events": 1,
+   "tables": [
+    "fin_events",
+    "account_entries"
+   ],
+   "rejected": false,
+   "scope": {
+    "parties": 1,
+    "plans": 0,
+    "cheques": 0,
+    "invoices": 0,
+    "items": 0,
+    "money": 1,
+    "events": 1,
+    "heavyParties": 0,
+    "built": 4
+   }
+  },
+  "tamKapiKasa": [
+   409,
+   "ledger-integrity",
+   "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-09-30 ve öncesi) değişemez). Hiçbir değişiklik yazılmadı; yöneti"
+  ],
+  "tamKapiYolu": [
+   "full",
+   "store dışı yazım"
+  ],
+  "kilitDegisti": [
+   200,
+   "",
+   ""
+  ],
+  "sonraKasa": [
+   200,
+   "",
+   ""
+  ],
+  "sonraMutabakat": []
+ },
+ "test": {
+  "geriYukleme": [
+   200,
+   "",
+   "Satış Faturası FIS2026000000001 geri geldi (iptal edilmiş, etkisiz)."
+  ],
+  "mutabakat": [
+   "period-lock"
+  ],
+  "kasaGirisi": [
+   500,
+   "gate-equivalence",
+   "Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (period-lock)."
+  ],
+  "pesinSatis": [
+   500,
+   "gate-equivalence",
+   "Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (period-lock)."
+  ],
+  "cariTahsilat": [
+   500,
+   "gate-equivalence",
+   "Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (period-lock)."
+  ],
+  "kapiYolu": {
+   "path": "full",
+   "reason": "doğrulama",
+   "ms": 11.862060999999812,
+   "runMs": 11.257678999999825,
+   "lockMs": 0.5529430000001412,
+   "sections": {
+    "accounts": 0.3108640000000378,
+    "ledger": 1.0643039999999928,
+    "cheques": 0.05095600000004197,
+    "bank": 3.1915189999997438,
+    "parties": 0.03927500000008877,
+    "plans": 0.11349199999995108,
+    "stock": 0.0667270000001281,
+    "cents": 1.1123149999998532,
+    "links": 0.3304840000000695,
+    "dates": 0.4291690000000017,
+    "lock": 0.5529430000001412,
+    "scoped": 4.372780000000148
+   },
+   "events": 1,
+   "tables": [
+    "fin_events",
+    "account_entries"
+   ],
+   "rejected": true,
+   "scope": {
+    "parties": 1,
+    "plans": 0,
+    "cheques": 0,
+    "invoices": 0,
+    "items": 0,
+    "money": 1,
+    "events": 1,
+    "heavyParties": 0,
+    "built": 2
+   }
+  },
+  "tamKapiKasa": [
+   409,
+   "ledger-integrity",
+   "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-09-30 ve öncesi) değişemez). Hiçbir değişiklik yazılmadı; yöneti"
+  ],
+  "tamKapiYolu": [
+   "full",
+   "store dışı yazım"
+  ],
+  "kilitDegisti": [
+   200,
+   "",
+   ""
+  ],
+  "sonraKasa": [
+   200,
+   "",
+   ""
+  ],
+  "sonraMutabakat": []
+ }
+}

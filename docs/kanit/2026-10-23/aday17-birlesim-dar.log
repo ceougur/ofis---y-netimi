@@ -1,0 +1,339 @@
+TAP version 13
+# Subtest: 2.0.13 defter ve mantık düzeltmeleri
+    # Subtest: tedarikçinin açılış bakiyesi Alacaklı yazılır; yön düzeltilebilir
+    ok 1 - tedarikçinin açılış bakiyesi Alacaklı yazılır; yön düzeltilebilir
+      ---
+      duration_ms: 50.91738
+      type: 'test'
+      ...
+    # Subtest: veresiye satış + mevcut borcu taksitlendir: borç bir kez; aynı borç ikinci karta bölünemez
+    ok 2 - veresiye satış + mevcut borcu taksitlendir: borç bir kez; aynı borç ikinci karta bölünemez
+      ---
+      duration_ms: 111.691452
+      type: 'test'
+      ...
+    # Subtest: müşteri iadesi: satış iadesi olarak yazılır; maliyet fiyatı değişmez; Kasa'da 'Satış iadesi'
+    ok 3 - müşteri iadesi: satış iadesi olarak yazılır; maliyet fiyatı değişmez; Kasa'da 'Satış iadesi'
+      ---
+      duration_ms: 39.520667
+      type: 'test'
+      ...
+    # Subtest: ödeme yolu: Nakit / Banka / Kart ayrı bakiye; nakit kasa eksiye düşmek istenirse sorulur
+    ok 4 - ödeme yolu: Nakit / Banka / Kart ayrı bakiye; nakit kasa eksiye düşmek istenirse sorulur
+      ---
+      duration_ms: 67.870061
+      type: 'test'
+      ...
+    # Subtest: çek/senet: al, ciro, tahsil (banka), karşılıksız, ver, öde — ana defter dengede ve alt defterlerle tutarlı
+    ok 5 - çek/senet: al, ciro, tahsil (banka), karşılıksız, ver, öde — ana defter dengede ve alt defterlerle tutarlı
+      ---
+      duration_ms: 192.287249
+      type: 'test'
+      ...
+    # Subtest: yevmiye motoru: her madde dengeli; kuruş tamsayısı; mutabakat farkı raporlanır
+    ok 6 - yevmiye motoru: her madde dengeli; kuruş tamsayısı; mutabakat farkı raporlanır
+      ---
+      duration_ms: 0.869571
+      type: 'test'
+      ...
+    1..6
+ok 1 - 2.0.13 defter ve mantık düzeltmeleri
+  ---
+  duration_ms: 938.863472
+  type: 'suite'
+  ...
+# Subtest: 31e birim: eşleme ve taşıma kuralları
+    # Subtest: resolveIncoming: aynı içerik konum kaysa da eşlenir; aynı konumda farklı kişi yerine geçmez; kişiyle eşleme yalnız eşitlemede
+    ok 1 - resolveIncoming: aynı içerik konum kaysa da eşlenir; aynı konumda farklı kişi yerine geçmez; kişiyle eşleme yalnız eşitlemede
+      ---
+      duration_ms: 22.448501
+      type: 'test'
+      ...
+    # Subtest: planRebind: körlemesine row_id taşıması yok (satır silinince kayan konumdaki farklı kişiye gitmez); tek hedef; başka sayfadaki anahtar taşınmaz
+    ok 2 - planRebind: körlemesine row_id taşıması yok (satır silinince kayan konumdaki farklı kişiye gitmez); tek hedef; başka sayfadaki anahtar taşınmaz
+      ---
+      duration_ms: 5.307216
+      type: 'test'
+      ...
+    # Subtest: taşıma hedefte aynı alanda düzeltme / kayıt notu varsa üzerine yazmaz; eskisi yerinde kalır (N17); ayarlardaki işaretler taşınır
+    ok 3 - taşıma hedefte aynı alanda düzeltme / kayıt notu varsa üzerine yazmaz; eskisi yerinde kalır (N17); ayarlardaki işaretler taşınır
+      ---
+      duration_ms: 106.8729
+      type: 'test'
+      ...
+    1..3
+ok 2 - 31e birim: eşleme ve taşıma kuralları
+  ---
+  duration_ms: 136.007848
+  type: 'suite'
+  ...
+# Subtest: 31e B1: Dosya No'suz tabloda içerik değişince bağlar yeni satıra taşınır (sessiz kopma yok)
+    # Subtest: N1 Yerine koy: Ali'nin Tutar'ı 1.000 → 1.200 — bütün bağlar Ali'de, Kişiler 1.200 / 400, Takvim 800; taşıma işlem geçmişinde ve yedekten sonra
+    ok 1 - N1 Yerine koy: Ali'nin Tutar'ı 1.000 → 1.200 — bütün bağlar Ali'de, Kişiler 1.200 / 400, Takvim 800; taşıma işlem geçmişinde ve yedekten sonra
+      ---
+      duration_ms: 692.04546
+      type: 'test'
+      ...
+    # Subtest: N1 Devamı olarak ekle: aynı değişiklik — bağlar taşınır, satır sayısı aynı (yeni kayıt açılmaz)
+    ok 2 - N1 Devamı olarak ekle: aynı değişiklik — bağlar taşınır, satır sayısı aynı (yeni kayıt açılmaz)
+      ---
+      duration_ms: 500.884713
+      type: 'test'
+      ...
+    # Subtest: N2 Telefon kolonu eklenir (bütün parmak izleri değişir): Yerine koy ve Devamı'nda bütün bağlar (cari, Ödendi Say, Sorun Yok dahil) yerinde
+    ok 3 - N2 Telefon kolonu eklenir (bütün parmak izleri değişir): Yerine koy ve Devamı'nda bütün bağlar (cari, Ödendi Say, Sorun Yok dahil) yerinde
+      ---
+      duration_ms: 994.748893
+      type: 'test'
+      ...
+    # Subtest: N3 sıra değişir: anahtar aynı, taşıma gerekmez; bağlar yine doğru kişide
+    ok 4 - N3 sıra değişir: anahtar aynı, taşıma gerekmez; bağlar yine doğru kişide
+      ---
+      duration_ms: 466.089383
+      type: 'test'
+      ...
+    # Subtest: N4 satır silinir + sonraki satır değişir: kayan konumda bağ başka kişiye gitmez; Can'ın cari bağı Can'da, silinen Ayşe'nin işareti eşleşmez (onay ister, silinmez)
+    ok 5 - N4 satır silinir + sonraki satır değişir: kayan konumda bağ başka kişiye gitmez; Can'ın cari bağı Can'da, silinen Ayşe'nin işareti eşleşmez (onay ister, silinmez)
+      ---
+      duration_ms: 408.342488
+      type: 'test'
+      ...
+    # Subtest: N5 aynı adlı iki kişi: aynı konumda aynı ad ve aynı sayı → doğru Ali'ye taşınır; ilk Ali silinip ikincisi değişirse taşınmaz (onay)
+    ok 6 - N5 aynı adlı iki kişi: aynı konumda aynı ad ve aynı sayı → doğru Ali'ye taşınır; ilk Ali silinip ikincisi değişirse taşınmaz (onay)
+      ---
+      duration_ms: 457.918658
+      type: 'test'
+      ...
+    # Subtest: N6 ad + tutar birlikte değişir: kişi değeri tutmaz → eşleşmeyen, onaysız 409; onayla uygulanır, tahsilat silinmez
+    ok 7 - N6 ad + tutar birlikte değişir: kişi değeri tutmaz → eşleşmeyen, onaysız 409; onayla uygulanır, tahsilat silinmez
+      ---
+      duration_ms: 453.279094
+      type: 'test'
+      ...
+    1..7
+ok 3 - 31e B1: Dosya No'suz tabloda içerik değişince bağlar yeni satıra taşınır (sessiz kopma yok)
+  ---
+  duration_ms: 3975.556239
+  type: 'suite'
+  ...
+# Subtest: 31e B2: kimlik kolonu eklenir / silinir — tek adlı kişide bağlar taşınır
+    # Subtest: N8 Dosya No (2026/x) eklenir: Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda
+    ok 1 - N8 Dosya No (2026/x) eklenir: Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda
+      ---
+      duration_ms: 493.57934
+      type: 'test'
+      ...
+    # Subtest: N8 Dosya No (D-x) eklenir: Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda
+    ok 2 - N8 Dosya No (D-x) eklenir: Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda
+      ---
+      duration_ms: 411.017189
+      type: 'test'
+      ...
+    # Subtest: N8 Dosya No (2026/x) silinir: Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda
+    ok 3 - N8 Dosya No (2026/x) silinir: Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda
+      ---
+      duration_ms: 468.535295
+      type: 'test'
+      ...
+    # Subtest: N8 Dosya No (D-x) silinir: Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda
+    ok 4 - N8 Dosya No (D-x) silinir: Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda
+      ---
+      duration_ms: 490.156385
+      type: 'test'
+      ...
+    # Subtest: N8 Müşteri No silinir (kimlik kolonu kipi değişir): Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda
+    ok 5 - N8 Müşteri No silinir (kimlik kolonu kipi değişir): Yerine koy onaysız uygulanır (eşleşmeyen yok), bütün bağlar yeni satırlarda
+      ---
+      duration_ms: 475.849479
+      type: 'test'
+      ...
+    1..5
+ok 4 - 31e B2: kimlik kolonu eklenir / silinir — tek adlı kişide bağlar taşınır
+  ---
+  duration_ms: 2340.206944
+  type: 'suite'
+  ...
+# Subtest: 31e Devamı olarak ekle: farklı kişi mevcut satırın yerine geçmez (kâhin b3g/b3h); aynı görünen satır onay ister (B3)
+    # Subtest: N9 2. satırda Lale Ak yerine Yeni Kişi: Lale ve 200 TL tahsilatı durur, Yeni Kişi yeni kayıt; önizleme 1 yeni / 1 silinmez
+    ok 1 - N9 2. satırda Lale Ak yerine Yeni Kişi: Lale ve 200 TL tahsilatı durur, Yeni Kişi yeni kayıt; önizleme 1 yeni / 1 silinmez
+      ---
+      duration_ms: 433.812169
+      type: 'test'
+      ...
+    # Subtest: N9b dosyanın başına satır eklenir (bütün konumlar kayar): Devamı olarak ekle mevcut satırları içerikleriyle eşler, kimseyi ezmez
+    ok 2 - N9b dosyanın başına satır eklenir (bütün konumlar kayar): Devamı olarak ekle mevcut satırları içerikleriyle eşler, kimseyi ezmez
+      ---
+      duration_ms: 412.263457
+      type: 'test'
+      ...
+    # Subtest: N7 başa satır eklenir + Ayşe'nin tutarı değişir (kayma + değişim): Devamı Ayşe'yi ezmez, 'mevcut bir kaydın kişisini taşıyor' der ve onay ister
+    ok 3 - N7 başa satır eklenir + Ayşe'nin tutarı değişir (kayma + değişim): Devamı Ayşe'yi ezmez, 'mevcut bir kaydın kişisini taşıyor' der ve onay ister
+      ---
+      duration_ms: 419.284578
+      type: 'test'
+      ...
+    # Subtest: N10 Dosya No eklenmiş aynı dosya Devamı olarak eklenir: '6 satır mevcut kayıtlarla aynı görünüyor' + onaysız 409; onayla eklenir
+    ok 4 - N10 Dosya No eklenmiş aynı dosya Devamı olarak eklenir: '6 satır mevcut kayıtlarla aynı görünüyor' + onaysız 409; onayla eklenir
+      ---
+      duration_ms: 336.128435
+      type: 'test'
+      ...
+    1..4
+ok 5 - 31e Devamı olarak ekle: farklı kişi mevcut satırın yerine geçmez (kâhin b3g/b3h); aynı görünen satır onay ister (B3)
+  ---
+  duration_ms: 1602.236743
+  type: 'suite'
+  ...
+# Subtest: 31e Google Sheets eşitlemesi
+    # Subtest: N11 Sheet'te Ali'nin tutarı ve sonra Telefon kolonu değişir: eşitleme bağları taşıyarak uygular, önce yedek alır
+    ok 1 - N11 Sheet'te Ali'nin tutarı ve sonra Telefon kolonu değişir: eşitleme bağları taşıyarak uygular, önce yedek alır
+      ---
+      duration_ms: 588.682946
+      type: 'test'
+      ...
+    # Subtest: N11 kişi kolonu olmayan Sheet'te tutar değişir: eşleşmeyen bağ → eşitleme bekler (yönetici onayı), veri değişmez; İncele ve karar ver onayla uygular
+    ok 2 - N11 kişi kolonu olmayan Sheet'te tutar değişir: eşleşmeyen bağ → eşitleme bekler (yönetici onayı), veri değişmez; İncele ve karar ver onayla uygular
+      ---
+      duration_ms: 338.345408
+      type: 'test'
+      ...
+    # Subtest: N7/N11 Sheet'in başına satır eklenir + Ayşe'nin tutarı değişir: eşitleme Ayşe'yi kendi satırında günceller, işareti taşınır, 'Sheet'te yok' çıkmaz
+    ok 3 - N7/N11 Sheet'in başına satır eklenir + Ayşe'nin tutarı değişir: eşitleme Ayşe'yi kendi satırında günceller, işareti taşınır, 'Sheet'te yok' çıkmaz
+      ---
+      duration_ms: 456.004088
+      type: 'test'
+      ...
+    # Subtest: N9/N11 Sheet'te 2. satır başka kişiyle değiştirilir: Lale yerinde kalır ('Sheet'te yok'), tahsilatı durur; Yeni Kişi yeni kayıt
+    ok 4 - N9/N11 Sheet'te 2. satır başka kişiyle değiştirilir: Lale yerinde kalır ('Sheet'te yok'), tahsilatı durur; Yeni Kişi yeni kayıt
+      ---
+      duration_ms: 417.265736
+      type: 'test'
+      ...
+    1..4
+ok 6 - 31e Google Sheets eşitlemesi
+  ---
+  duration_ms: 1800.874814
+  type: 'suite'
+  ...
+# Subtest: 31e eşzamanlılık, yarıda kesilme, başka veri sayfası, bayat anahtar
+    # Subtest: N12 önizlemeden sonra başka kullanıcı bağ ekler: onaysız uygulama 409; onaylanmış önizleme yeni eşleşmeyeni kapsamıyorsa 409 bonds-changed
+    ok 1 - N12 önizlemeden sonra başka kullanıcı bağ ekler: onaysız uygulama 409; onaylanmış önizleme yeni eşleşmeyeni kapsamıyorsa 409 bonds-changed
+      ---
+      duration_ms: 462.697686
+      type: 'test'
+      ...
+    # Subtest: N13 taşıma ortasında hata: satırlar ve bağlar birlikte geri alınır (tek işlem)
+    ok 2 - N13 taşıma ortasında hata: satırlar ve bağlar birlikte geri alınır (tek işlem)
+      ---
+      duration_ms: 438.665236
+      type: 'test'
+      ...
+    # Subtest: N15 aynı satır başka veri sayfasında da var: genel tablolardaki bağ o sayfanın da olabilir → taşınmaz, onay ister
+    ok 3 - N15 aynı satır başka veri sayfasında da var: genel tablolardaki bağ o sayfanın da olabilir → taşınmaz, onay ister
+      ---
+      duration_ms: 314.500199
+      type: 'test'
+      ...
+    # Subtest: İNCELE: tabloda olmayan Dosya No'suz anahtara (satir:…) not / tahsilat 409; dosya no ve serbest anahtar eskisi gibi kabul edilir
+    ok 4 - İNCELE: tabloda olmayan Dosya No'suz anahtara (satir:…) not / tahsilat 409; dosya no ve serbest anahtar eskisi gibi kabul edilir
+      ---
+      duration_ms: 290.701832
+      type: 'test'
+      ...
+    1..4
+ok 7 - 31e eşzamanlılık, yarıda kesilme, başka veri sayfası, bayat anahtar
+  ---
+  duration_ms: 1507.225338
+  type: 'suite'
+  ...
+# Subtest: kolon eşleme ipucu değer adlarını yazar
+    # Subtest: kategori kolonu (Yerel Mahkeme): değer adları var, [object Object] yok
+    ok 1 - kategori kolonu (Yerel Mahkeme): değer adları var, [object Object] yok
+      ---
+      duration_ms: 30.626501
+      type: 'test'
+      ...
+    # Subtest: durum kolonu: değer adları sayılarıyla değil adıyla, sıklık sırasıyla
+    ok 2 - durum kolonu: değer adları sayılarıyla değil adıyla, sıklık sırasıyla
+      ---
+      duration_ms: 1.791218
+      type: 'test'
+      ...
+    # Subtest: sorumlu kolonu: tekrar eden kişi adları yazılır
+    ok 3 - sorumlu kolonu: tekrar eden kişi adları yazılır
+      ---
+      duration_ms: 2.429555
+      type: 'test'
+      ...
+    # Subtest: değer metni olduğu gibi gelir (kaçırma istemcide esc ile)
+    ok 4 - değer metni olduğu gibi gelir (kaçırma istemcide esc ile)
+      ---
+      duration_ms: 1.209369
+      type: 'test'
+      ...
+    1..4
+ok 8 - kolon eşleme ipucu değer adlarını yazar
+  ---
+  duration_ms: 37.227557
+  type: 'suite'
+  ...
+# Subtest: 31e E1: 'Vergi No' (sağlamasız) kayıt kimliği adayı değil
+    # Subtest: roller: Vergi No / Vergi Numarası / Vergi Kimlik No → number (kod); Kimlik No → id, VKN / TC → number (2.4.3 gibi); tutar değil (B1/B2)
+    ok 1 - roller: Vergi No / Vergi Numarası / Vergi Kimlik No → number (kod); Kimlik No → id, VKN / TC → number (2.4.3 gibi); tutar değil (B1/B2)
+      ---
+      duration_ms: 16.784813
+      type: 'test'
+      ...
+    # Subtest: 2.4.3'te yüklenmiş dosya no'suz tablo 'Yerine koy' ile yeniden yüklenince kayıt anahtarı ve 400 TL kayıt tahsilatı korunur (E1)
+    ok 2 - 2.4.3'te yüklenmiş dosya no'suz tablo 'Yerine koy' ile yeniden yüklenince kayıt anahtarı ve 400 TL kayıt tahsilatı korunur (E1)
+      ---
+      duration_ms: 1015.103991
+      type: 'test'
+      ...
+    1..2
+ok 9 - 31e E1: 'Vergi No' (sağlamasız) kayıt kimliği adayı değil
+  ---
+  duration_ms: 1033.48209
+  type: 'suite'
+  ...
+# Subtest: 31e E2: borç düzeni (birim) — karar A kesin; Kalan / ödenen öncelikli
+    # Subtest: Tutar + KDV + Genel Toplam → Genel Toplam; + Ödenen → Genel Toplam − Ödenen; + Kalan Borç → Kalan (Genel Toplam yalnız Kalan boşsa); Toplam + Taksit Tutarı (U2) borçsuz kalır (B4/B6/B7)
+    ok 1 - Tutar + KDV + Genel Toplam → Genel Toplam; + Ödenen → Genel Toplam − Ödenen; + Kalan Borç → Kalan (Genel Toplam yalnız Kalan boşsa); Toplam + Taksit Tutarı (U2) borçsuz kalır (B4/B6/B7)
+      ---
+      duration_ms: 1.118746
+      type: 'test'
+      ...
+    1..1
+ok 10 - 31e E2: borç düzeni (birim) — karar A kesin; Kalan / ödenen öncelikli
+  ---
+  duration_ms: 1.349176
+  type: 'suite'
+  ...
+# Subtest: 31e E2: vergi sütunlu fatura / sipariş listesi Tablodaki Kişiler'de; borç seçilemezse not
+    # Subtest: Faturalar: borç Genel Toplam (KDV dahil; karar A) 1.200 / 2.400 / 3.600; KDV ve Vergi Tutarı sekmelerinde borç Tutar (500, 700) (B3/B4)
+    ok 1 - Faturalar: borç Genel Toplam (KDV dahil; karar A) 1.200 / 2.400 / 3.600; KDV ve Vergi Tutarı sekmelerinde borç Tutar (500, 700) (B3/B4)
+      ---
+      duration_ms: 21.09251
+      type: 'test'
+      ...
+    # Subtest: Masraflar (Tutar + Masraf, borç sütunu seçilemedi): borç sayılmaz ama raporda görünür not (B5)
+    ok 2 - Masraflar (Tutar + Masraf, borç sütunu seçilemedi): borç sayılmaz ama raporda görünür not (B5)
+      ---
+      duration_ms: 11.664323
+      type: 'test'
+      ...
+    1..2
+ok 11 - 31e E2: vergi sütunlu fatura / sipariş listesi Tablodaki Kişiler'de; borç seçilemezse not
+  ---
+  duration_ms: 315.006075
+  type: 'suite'
+  ...
+1..11
+# tests 42
+# suites 11
+# pass 42
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15090.963292

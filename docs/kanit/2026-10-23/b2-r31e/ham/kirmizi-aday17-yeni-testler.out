@@ -1,0 +1,341 @@
+TAP version 13
+# (node:6254) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 31e B1: Dosya No'suz tabloda içerik değişince bağlar yeni satıra taşınır (sessiz kopma yok)
+    # Subtest: N5 aynı adlı iki kişi (tur 7 N3 kararı): ad sekmede birden çok satırdaysa konumla taşınmaz — eşleşmeyen + onay, bağ eski anahtarda; içerik aynı sıra değişimi onay istemez
+    ok 1 - N5 aynı adlı iki kişi (tur 7 N3 kararı): ad sekmede birden çok satırdaysa konumla taşınmaz — eşleşmeyen + onay, bağ eski anahtarda; içerik aynı sıra değişimi onay istemez
+      ---
+      duration_ms: 626.302643
+      type: 'test'
+      ...
+    # Subtest: N3 (tur 7 f2) iki Ali yer değiştirip ikisi de değişir: bağ yanlış Ali'ye taşınmaz — onaysız 409, onayla eski anahtarda; Takvim 4.100 + 1.100
+    not ok 2 - N3 (tur 7 f2) iki Ali yer değiştirip ikisi de değişir: bağ yanlış Ali'ye taşınmaz — onaysız 409, onayla eski anahtarda; Takvim 4.100 + 1.100
+      ---
+      duration_ms: 544.195567
+      type: 'test'
+      location: '/home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-kayit-bag.test.mjs:230:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aynı adlı iki satırın bağı sessizce (ve yanlış kişiye) taşınmaz
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-kayit-bag.test.mjs:240:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N1 (tur 7, karar A) Dosya No'lu tabloda kapanan dosyanın bağı yeni dosya numarasına taşınmaz — onayda adı ve dosya numarasıyla; yeni dosya Takvim'de tam tutar
+    not ok 3 - N1 (tur 7, karar A) Dosya No'lu tabloda kapanan dosyanın bağı yeni dosya numarasına taşınmaz — onayda adı ve dosya numarasıyla; yeni dosya Takvim'de tam tutar
+      ---
+      duration_ms: 338.187148
+      type: 'test'
+      location: '/home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-kayit-bag.test.mjs:252:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        açık kimlikten açık kimliğe kişiyle taşıma yok
+        
+        1 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-kayit-bag.test.mjs:263:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 1 - 31e B1: Dosya No'suz tabloda içerik değişince bağlar yeni satıra taşınır (sessiz kopma yok)
+  ---
+  duration_ms: 1510.948997
+  type: 'suite'
+  location: '/home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-kayit-bag.test.mjs:111:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 31e Google Sheets eşitlemesi
+    # Subtest: N5 (tur 7) Sheet'te Olmayanları Kaldır: bağı olan satır listede 'Bağlı: tahsilat' ile görünür, onaysız kaldırma 409 adıyla; bağsız satır onaysız kalkar; onaylı kaldırmada tahsilat eski anahtarda
+    not ok 1 - N5 (tur 7) Sheet'te Olmayanları Kaldır: bağı olan satır listede 'Bağlı: tahsilat' ile görünür, onaysız kaldırma 409 adıyla; bağsız satır onaysız kalkar; onaylı kaldırmada tahsilat eski anahtarda
+      ---
+      duration_ms: 301.005656
+      type: 'test'
+      location: '/home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-kayit-bag.test.mjs:498:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Lale'nin bağı listede: [{"rowId":"p|Müşteriler#1","caseKey":"satir:5ec6eaac9c858638","tab":"Müşteriler","missingSince":"2026-10-23T09:54:26.295Z","preview":["Ad Soyad: Lale Ak","Tutar: 200","Son Ödeme: 20.10.2026"]},{"rowId":"p|Müşteriler#2","caseKey":"satir:ceb68265a5eeaa04","tab":"Müşteriler","missingSince":"2026-10-23T09:54:26.295Z","preview":["Ad Soyad: Mert Su","Tutar: 300","Son Ödeme: 20.10.2026"]}]
+        + actual - expected
+        
+        + undefined
+        - [
+        -   'tahsilat'
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'tahsilat'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-kayit-bag.test.mjs:510:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 4)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N2 (tur 7) bekletilen eşitleme: Sheet aynı kaldıkça arka plan eşitlemesi yeniden hesaplamaz (unchanged), 'Şimdi Eşitle' yeniden hesaplar; Sheet değişince yeniden hesaplanır
+    not ok 2 - N2 (tur 7) bekletilen eşitleme: Sheet aynı kaldıkça arka plan eşitlemesi yeniden hesaplamaz (unchanged), 'Şimdi Eşitle' yeniden hesaplar; Sheet değişince yeniden hesaplanır
+      ---
+      duration_ms: 337.570095
+      type: 'test'
+      location: '/home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-kayit-bag.test.mjs:529:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aynı içerik yeniden hesaplanmaz: {"ok":false,"held":true,"hold":{"at":"2026-10-23T09:54:26.632Z","added":0,"missing":0,"updated":1,"rowCount":3,"reason":"bonds","bonds":{"count":1,"kinds":["note"],"labels":["notu"],"names":["Çatı ona
+        + actual - expected
+        
+        + undefined
+        - true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-kayit-bag.test.mjs:543:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - 31e Google Sheets eşitlemesi
+  ---
+  duration_ms: 639.173337
+  type: 'suite'
+  location: '/home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-kayit-bag.test.mjs:405:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 31e tur 7: kayıt kaldıran yollar (N5) ve bayat anahtar (N6)
+    # Subtest: N5 Veriyi Kaldır: kayıtlara bağlı veri varsa 409 adıyla (veri durur); ?confirm=1 kaldırır, bağlar silinmez; bağsız veri onaysız kalkar
+    not ok 1 - N5 Veriyi Kaldır: kayıtlara bağlı veri varsa 409 adıyla (veri durur); ?confirm=1 kaldırır, bağlar silinmez; bağsız veri onaysız kalkar
+      ---
+      duration_ms: 428.196324
+      type: 'test'
+      location: '/home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-kayit-bag.test.mjs:658:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-kayit-bag.test.mjs:665:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N5 Sayfayı Sil: yalnız o sayfada olan kaydın bağı 409 adıyla, onayla silinir; anahtarı başka sayfada da olan kaydın notu sayılmaz (orada görünür)
+    not ok 2 - N5 Sayfayı Sil: yalnız o sayfada olan kaydın bağı 409 adıyla, onayla silinir; anahtarı başka sayfada da olan kaydın notu sayılmaz (orada görünür)
+      ---
+      duration_ms: 394.403161
+      type: 'test'
+      location: '/home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-kayit-bag.test.mjs:686:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-kayit-bag.test.mjs:708:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N6 tabloda olmayan Dosya No'suz anahtara (satir:…) belge, görev, düzeltme, kayıt notu, telefon, haciz 409 record-gone; tablodaki kayda 200
+    not ok 3 - N6 tabloda olmayan Dosya No'suz anahtara (satir:…) belge, görev, düzeltme, kayıt notu, telefon, haciz 409 record-gone; tablodaki kayda 200
+      ---
+      duration_ms: 302.909938
+      type: 'test'
+      location: '/home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-kayit-bag.test.mjs:721:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        belge: 200 {"ok":true,"data":{"id":"doc-58d6289d-c5cc-41dd-ad83-6eec71f2fd9d","name":"vekalet.pdf","kind":"pdf","mime":"application/pdf","size":45,"viewable":true,"createdAt":"2026-10-23T09:54:27.760Z","actorId"
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-kayit-bag.test.mjs:736:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 3 - 31e tur 7: kayıt kaldıran yollar (N5) ve bayat anahtar (N6)
+  ---
+  duration_ms: 1126.280453
+  type: 'suite'
+  location: '/home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-kayit-bag.test.mjs:653:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Error: Test "N6 tabloda olmayan Dosya No'suz anahtara (satir:…) belge, görev, düzeltme, kayıt notu, telefon, haciz 409 record-gone; tablodaki kayda 200" at test/kirmizi-r31e-f-kayit-bag.test.mjs:721:3 generated asynchronous activity after the test ended. This activity created the error "TypeError: fetch failed" and would have caused the test to fail, but instead triggered an unhandledRejection event.
+# Error: Test "N6 tabloda olmayan Dosya No'suz anahtara (satir:…) belge, görev, düzeltme, kayıt notu, telefon, haciz 409 record-gone; tablodaki kayda 200" at test/kirmizi-r31e-f-kayit-bag.test.mjs:721:3 generated asynchronous activity after the test ended. This activity created the error "TypeError: fetch failed" and would have caused the test to fail, but instead triggered an unhandledRejection event.
+# Error: Test "N6 tabloda olmayan Dosya No'suz anahtara (satir:…) belge, görev, düzeltme, kayıt notu, telefon, haciz 409 record-gone; tablodaki kayda 200" at test/kirmizi-r31e-f-kayit-bag.test.mjs:721:3 generated asynchronous activity after the test ended. This activity created the error "TypeError: fetch failed" and would have caused the test to fail, but instead triggered an unhandledRejection event.
+# Error: Test "N6 tabloda olmayan Dosya No'suz anahtara (satir:…) belge, görev, düzeltme, kayıt notu, telefon, haciz 409 record-gone; tablodaki kayda 200" at test/kirmizi-r31e-f-kayit-bag.test.mjs:721:3 generated asynchronous activity after the test ended. This activity created the error "TypeError: fetch failed" and would have caused the test to fail, but instead triggered an unhandledRejection event.
+# Error: Test "N6 tabloda olmayan Dosya No'suz anahtara (satir:…) belge, görev, düzeltme, kayıt notu, telefon, haciz 409 record-gone; tablodaki kayda 200" at test/kirmizi-r31e-f-kayit-bag.test.mjs:721:3 generated asynchronous activity after the test ended. This activity created the error "TypeError: fetch failed" and would have caused the test to fail, but instead triggered an unhandledRejection event.
+# (node:6260) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 31e tur 7 N4: tek tutar kolonu vergi başlıklı sekme Tablodaki Kişiler'de borç; Kişiler = Vadeler; Tutar + KDV'de borç Tutar
+    # Subtest: Kişiler: her sekmenin tek tutar kolonu borç (19.500) + Faturalar'da Tutar 1.000 (KDV 180 borç değil) = 20.500; not yok
+    not ok 1 - Kişiler: her sekmenin tek tutar kolonu borç (19.500) + Faturalar'da Tutar 1.000 (KDV 180 borç değil) = 20.500; not yok
+      ---
+      duration_ms: 39.166237
+      type: 'test'
+      location: '/home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-tablo-borc.test.mjs:444:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        [["İlker Su",900],["Jale Er",1000]]
+        + actual - expected
+        
+          {
+        -   'Ali Veli': 1500,
+        -   'Ayşe Kaya': 2500,
+        -   'Can Er': 3500,
+        -   'Deniz Ak': 4000,
+        -   'Ece Su': 5000,
+        -   'Fırat Er': 600,
+        -   'Gül Taş': 700,
+        -   'Hale Ak': 800,
+            'Jale Er': 1000,
+            'İlker Su': 900
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        Ali Veli: 1500
+        Ayşe Kaya: 2500
+        Can Er: 3500
+        Deniz Ak: 4000
+        Ece Su: 5000
+        Fırat Er: 600
+        Gül Taş: 700
+        Hale Ak: 800
+        İlker Su: 900
+        Jale Er: 1000
+      actual:
+        İlker Su: 900
+        Jale Er: 1000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-tablo-borc.test.mjs:446:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Vadeler 10 kalem 20.500 = Kişiler; Takvim'de Jale Er borcu 1.000
+    ok 2 - Vadeler 10 kalem 20.500 = Kişiler; Takvim'de Jale Er borcu 1.000
+      ---
+      duration_ms: 23.244903
+      type: 'test'
+      ...
+    1..2
+not ok 4 - 31e tur 7 N4: tek tutar kolonu vergi başlıklı sekme Tablodaki Kişiler'de borç; Kişiler = Vadeler; Tutar + KDV'de borç Tutar
+  ---
+  duration_ms: 549.723649
+  type: 'suite'
+  location: '/home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-tablo-borc.test.mjs:434:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 31e tur 7 N4: yalnız Söz Tutarı olan sekme notla; seyrek 'Kalan Borç' (çoğu yazı) sayı olan satırda borç — Kişiler ile Takvim aynı
+    # Subtest: Kişiler: Ali Seyrek 500 (aday 17'de düşüyordu); Söz sekmesi için görünür not
+    not ok 1 - Kişiler: Ali Seyrek 500 (aday 17'de düşüyordu); Söz sekmesi için görünür not
+      ---
+      duration_ms: 21.773265
+      type: 'test'
+      location: '/home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-tablo-borc.test.mjs:465:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        []
+        + actual - expected
+        
+        + {}
+        - {
+        -   'Ali Seyrek': 500
+        - }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        Ali Seyrek: 500
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-tablo-borc.test.mjs:467:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Takvim: Ali Seyrek borç 500 (Kalan Borç), sözler söz tutarıyla
+    ok 2 - Takvim: Ali Seyrek borç 500 (Kalan Borç), sözler söz tutarıyla
+      ---
+      duration_ms: 11.938295
+      type: 'test'
+      ...
+    1..2
+not ok 5 - 31e tur 7 N4: yalnız Söz Tutarı olan sekme notla; seyrek 'Kalan Borç' (çoğu yazı) sayı olan satırda borç — Kişiler ile Takvim aynı
+  ---
+  duration_ms: 412.519452
+  type: 'suite'
+  location: '/home/user/wt/r31e-f-eski/test/kirmizi-r31e-f-tablo-borc.test.mjs:459:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..5
+# tests 12
+# suites 5
+# pass 3
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3653.505984

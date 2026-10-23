@@ -4,7 +4,7 @@
 // Hesap kuralı server/lib/plans.mjs içinde (saf, testli); burada yalnızca doğrulama, kayıt ve yetki vardır.
 import { randomUUID } from "node:crypto";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
-import { parseAmount, roundMoney } from "../lib/money.mjs";
+import { matrixText, parseAmount, roundMoney } from "../lib/money.mjs";
 import { toMinor } from "../lib/minor.mjs";
 import { bankForm } from "../lib/bank/module-ref.mjs";
 import { posMetaOf } from "../lib/bank/pos.mjs";
@@ -1012,7 +1012,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   router.post("/api/workspace/plans/import/preview", async ({ req, res }) => {
     auth.requirePermission(req, "plans.manage");
     const body = await readJson(req, { limit: 20_000_000 });
-    const matrix = Array.isArray(body.matrix) ? body.matrix : [];
+    const matrix = matrixText(body.matrix); // 31e: sayı hücresi Türkçe ondalık metin (money.mjs cellText)
     const headerAt = matrix.findIndex(row => Array.isArray(row) && row.filter(cell => String(cell ?? "").trim()).length >= 2);
     if (headerAt < 0) throw new HttpError(400, "Sayfada başlık satırı bulunamadı.");
     const headers = matrix[headerAt].map(cell => String(cell ?? "").trim());
@@ -1072,7 +1072,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   router.post("/api/workspace/plans/import", async ({ req, res }) => {
     const user = auth.requirePermission(req, "plans.manage");
     const body = await readJson(req, { limit: 20_000_000 });
-    const matrix = Array.isArray(body.matrix) ? body.matrix : [];
+    const matrix = matrixText(body.matrix); // 31e: sayı hücresi Türkçe ondalık metin (money.mjs cellText)
     const headerAt = Math.max(0, Math.trunc(Number(body.headerAt) || 0));
     const roles = body.roles && typeof body.roles === "object" ? body.roles : {};
     const columnOf = role => {

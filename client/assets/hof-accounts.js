@@ -580,7 +580,7 @@
     const a = account || {};
     return [
       { name: "partyKind", label: "Kişi Türü", type: "select", value: a.partyKind || "", options: [{ value: "", label: "Belirtilmedi" }, { value: "company", label: "Tüzel Kişi (Şirket)" }, { value: "person", label: "Gerçek Kişi (Şahıs)" }] },
-      { name: "taxNo", label: "VKN / TCKN", maxlength: 11, inputmode: "numeric", value: a.taxNo || "", help: "Şirkette 10 haneli vergi no, şahısta 11 haneli TC kimlik no. Kimliği bilinmeyen nihai tüketicide 11111111111." },
+      { name: "taxNo", label: "VKN / TCKN", maxlength: 11, inputmode: "numeric", value: a.taxNo || "", help: "Şirkette 10 haneli vergi no, şahısta 11 haneli TC kimlik no. 11111111111 yalnız kimliği bilinmeyen nihai tüketici içindir (faturadaki “Nihai Tüketici” seçeneği bu cariyi kendisi açar); adı belli kişide gerçek TC kimlik numarasını yazın." },
       { name: "taxOffice", label: "Vergi Dairesi", maxlength: 120, value: a.taxOffice || "" },
       { name: "firstName", label: "Adı (Gerçek Kişi)", maxlength: 80, value: a.firstName || "" },
       { name: "familyName", label: "Soyadı (Gerçek Kişi)", maxlength: 80, value: a.familyName || "" },
@@ -605,6 +605,16 @@
     ];
   }
   const TAX_KEYS = ["partyKind", "taxNo", "taxOffice", "firstName", "familyName", "district", "city", "postalCode", "country", "mersisNo", "tradeRegistry", "website", "iban", "dueDays"];
+  // 2.4.4 (31f U1): 11111111111 kimliği bilinmeyen nihai tüketicinin numarasıdır; adı belli bir kişinin carisine yazılınca kaydetmeden önce sorulur
+  // (engel değil). Ad kuralı sunucudaki isRetailName ile aynı (server/lib/tax-id.mjs): büyük/küçük harf ve fazla boşluk gözetilmez.
+  const ANONYMOUS_TCKN = "11111111111";
+  const isRetailName = name => String(name ?? "").trim().replace(/\s+/g, " ").toLocaleLowerCase("tr-TR") === "nihai tüketici";
+  function anonymousOnNamed(data, account) {
+    const taxNo = String(data.taxNo ?? "").replace(/\s+/g, "");
+    if (taxNo !== ANONYMOUS_TCKN || isRetailName(data.name)) return false;
+    // Düzenlemede yalnız kimlik ya da ad değiştiyse sorulur (eski kaydın her kaydedilişinde değil).
+    return !account || String(account.taxNo || "").replace(/\s+/g, "") !== taxNo || String(account.name || "").trim() !== String(data.name || "").trim();
+  }
   function taxPayload(data) {
     const out = Object.fromEntries(TAX_KEYS.filter(key => key in data).map(key => [key, String(data[key] ?? "").trim()]));
     if (out.taxNo !== undefined) out.taxNo = out.taxNo.replace(/\s+/g, "");
@@ -891,6 +901,13 @@
         }
       },
       onSubmit: async (data, modalApi) => {
+        if (anonymousOnNamed(data, account)) {
+          const go = await HOF.confirm({ title: "Nihai Tüketici Kimliği", message: "11111111111 kimliği bilinmeyen nihai tüketici içindir; adı belli kişide gerçek TC kimlik numarasını yazın. Yine de kaydedilsin mi?", confirmLabel: "Yine de Kaydet", cancelLabel: "Vazgeç", danger: true });
+          if (!go) {
+            modalApi.dialog.querySelector('input[name="taxNo"]')?.focus();
+            return true;
+          }
+        }
         if (!account) {
           // Kaydederken: aynı ad + aynı telefon varsa (ya da ikisinde de telefon yoksa) açıkça sorulur.
           const same = await samePeople(data.name);

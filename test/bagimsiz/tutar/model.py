@@ -151,12 +151,25 @@ def denetimler(girdi, program=None, mut=0):
             ilk = (a0["matrah"], rh(a0["matrah"] * s["kdv"], 100)) if iskonto else h.kalem(a0["fiyat"], s["kdv"], dahil)
             ekl = [h.kalem(kurus(e["fiyat"]), e["kdv"], dahil) for e in s.get("ekler", [])]
             toplam = sum(m + k for m, k in [ilk] + ekl)
-            if toplam > 3000000:
+            # A6 eşiğinin TABANI (23.10.2026, Uzun Doğrulama ölçeğinde yerel koşu tohum 5 s053 / tohum 11 s037): "vergiler dahil toplam" (matrah + KDV) mı,
+            # tahsil edilen / ödenecek (stopaj ve tevkifat düşülmüş) mı — kaynakta doğrulanamadı (CLAUDE.md: "30.000 TL nihai tüketici engeli değişmez (mevzuat
+            # doğrulanamadı; kullanıcının mali müşavirine sorulur)"; e-Belge KARARLAR K36 "KDV dahil mi DENENMEZ"). İki taban eşiğin iki yanına düşerse (yalnız
+            # nihai tüketiciye stopaj/tevkifat uygulanan — gerçekte olağan dışı — satırda) ÇATAL: kayıt sonucu denetlenmez, not yazılır (İNCELE).
+            kdv_top = sum(k for _, k in [ilk] + ekl)
+            kodlar = [s.get("tevkifat")] + [e.get("tevkifat") for e in s.get("ekler", [])]
+            tev_t = sum(h.tevkifat(k, c) for (_, k), c in zip([ilk] + ekl, kodlar))
+            odenecek_t = kurus(s["net"]) + kdv_top - tev_t
+            if toplam > 3000000 and odenecek_t <= 3000000:
+                d("%s:not:a6Tabani" % i, "catal", "CATAL", "A6 30.000 TL tabanı belirsiz: vergiler dahil toplam %d kuruş > eşik ≥ ödenecek %d kuruş — kayıt sonucu denetlenmez" % (toplam, odenecek_t))
+                if program is None or i not in program.get("satirlar", {}):
+                    continue
+            elif toplam > 3000000:
                 # GİB (KURALLAR-244 A6): nihai tüketicide 30.000 TL üstü belgede gerçek TCKN + ad + adres zorunlu; 11111111111 yazılamaz
                 d("%s:kayit:durum" % i, "ret", "GIB", "A6 30.000 TL üstü nihai tüketici")
                 continue
         d("%s:gfn:stopajOrani" % i, r, et_r, "B3.1 GVK 94/1 yükümlü / 94/2-b %20 / elle oran")
-        d("%s:kayit:durum" % i, "ok", "AJAN", "B3 makbuz kaydedilir")
+        if ("%s:not:a6Tabani" % i) not in out:
+            d("%s:kayit:durum" % i, "ok", "AJAN", "B3 makbuz kaydedilir")
         d("%s:kayit:stopajOrani" % i, r, et_r, "B3.1")
         d("%s:kayit:netUcret" % i, kurus(s["net"]), "GIB", "B3.2 Net Ücret = Brüt − Stopaj = yazılan net")
         if not iskonto:
@@ -164,9 +177,11 @@ def denetimler(girdi, program=None, mut=0):
             bb = h.en_kucuk(s, r, "B")
             if a:
                 ek = sum(h.kalem(kurus(e["fiyat"]), e["kdv"], s.get("dahil", False))[0] for e in s.get("ekler", []))
-                catal = a["matrah"] != (bb or {}).get("matrah")
-                d("%s:kayit:brut" % i, a["matrah"] + ek, "CATAL" if catal else "AJAN", "B3.3 en küçük brüt (uzlaşım)" + (" — ÇATAL: kalem kalem stopajla %s" % ((bb["matrah"] + ek) if bb else "yok") if catal else ""))
-                d("%s:gfn:birimFiyat" % i, a["fiyat"], "CATAL" if catal else "AJAN", "B3.3 ilk kalemin birim fiyatı" + (" (KDV dahil: matrah + yuvarla(matrah × KDV))" if s.get("dahil") else ""))
+                # MM10 (23.10.2026, [KULLANICI] 22.10 21:27 UTC "MM10 … tek yuvarlama kuralı" + ana oturumun kural metni "stopaj makbuz toplamı üzerinden"):
+                # stopaj dalı A (belge düzeyi) karara bağlandı; kalem kalem dal (B) artık çatal değil, yalnız bilgi.
+                fark_b = a["matrah"] != (bb or {}).get("matrah")
+                d("%s:kayit:brut" % i, a["matrah"] + ek, "AJAN", "B3.3 en küçük brüt (uzlaşım; stopaj belge düzeyinde — MM10)" + (" — eski çatal B (kalem kalem stopaj) %s" % ((bb["matrah"] + ek) if bb else "yok") if fark_b else ""))
+                d("%s:gfn:birimFiyat" % i, a["fiyat"], "AJAN", "B3.3 ilk kalemin birim fiyatı" + (" (KDV dahil: matrah + yuvarla(matrah × KDV))" if s.get("dahil") else ""))
                 if s.get("dahil") and a["geriDonus"] != a["matrah"]:
                     d("%s:not:dahilGeriDonus" % i, "uyusmaz", "CATAL", "B3.4 KDV dahil fiyattan matrah geri hesabı farklı (KDV-DAHIL sınıfı)")
         if program is None or i not in program.get("satirlar", {}):
@@ -190,8 +205,14 @@ def denetimler(girdi, program=None, mut=0):
         A = h.belge(ms, ks, cs, r, "A")
         Bt = h.belge(ms, ks, cs, r, "B")
         catal_s = A["stopaj"] != Bt["stopaj"]
-        d("%s:kayit:stopaj" % i, A["stopaj"], "CATAL" if catal_s else "GIB",
-          "B3.6 stopaj = yuvarla(brüt × oran)" + (" — ÇATAL: kalem kalem %d" % Bt["stopaj"] if catal_s else ""))
+        # B3.6 + MM10 ([KULLANICI] 22.10 21:27 UTC; kural metni "KDV kalem başına, stopaj makbuz toplamı üzerinden; çok kalemli makbuzda ≤ 1 kuruş fark beklenir"):
+        # stopaj belge toplamından tek kez yuvarlanır (eski ÇATAL B kalktı). Aynı oranlı KDV (kalem başına) ile stopaj arasındaki kuruş farkı bu kuralın sonucudur.
+        d("%s:kayit:stopaj" % i, A["stopaj"], "KULLANICI" if catal_s else "GIB",
+          "B3.6 stopaj = yuvarla(belge brütü × oran) — MM10" + (" (kalem kalem olsaydı %d)" % Bt["stopaj"] if catal_s else ""))
+        if len(ms) == 2 and not s.get("dahil") and not iskonto and all(x["kdvOrani"] * 100 == r for x in kalemler):
+            # MM10: aynı matrah ve aynı oranda KDV (kalem başına) − stopaj (belge düzeyi) farkı iki kalemde en çok 1 kuruş (iki yarım kuruşluk yuvarlama;
+            # üç ve daha çok kalemde 2 kuruşa çıkabilir — kural metni "≤ 1 kuruş" iki kalemli örnekten, bu yüzden yalnız iki kalemde denetlenir)
+            d("%s:kayit:mm10KdvStopajFarkiKurus" % i, "<=1", "KULLANICI", "MM10 aynı matrah/oranda KDV ile stopaj en çok 1 kuruş ayrışır")
         d("%s:kayit:kdv" % i, sum(ks_b), "GIB" if not iskonto else "YAYGIN", "B3.5 KDV toplamı = kalemlerin KDV'si")
         t_kalem = sum(h.tevkifat(k, c) for k, c in zip(ks, cs))
         t_belge = sum(h.tevkifat(sum(k for k, c2 in zip(ks, cs) if c2 == c), c) for c in set(c for c in cs if c))
@@ -240,6 +261,8 @@ def uret(tohum, adet):
          "ekler": [{"fiyat": "100,03", "kdv": 20, "tevkifat": "616"}, {"fiyat": "100,03", "kdv": 10}]},
         {"id": "c09", "alici": "kisi", "kdv": 20, "dahil": False, "net": "1000", "oran": "20"},
         {"id": "c10", "alici": "firma", "kdv": 20, "dahil": False, "net": "0,01"},
+        # c11 (23.10.2026, 31b MM10 örneğinin GİRDİSİ): iki kalem 100,03 + KDV %20, stopaj %20 — KDV kalem başına, stopaj belge toplamından
+        {"id": "c11", "alici": "firma", "kdv": 20, "dahil": False, "net": "160,05", "ekler": [{"fiyat": "100,03", "kdv": 20}]},
     ]
     for n in range(adet):
         alici = rnd.choices(["firma", "kisi", "kimliksiz"], weights=[50, 35, 15])[0]

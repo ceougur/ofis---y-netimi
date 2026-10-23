@@ -1,0 +1,6 @@
+"Tablodaki Vadeler 23.10.2026.pdf" → "Tablodaki Vadeler 23.10.2026.pdf"
+"Tablodaki Kişiler 23.10.2026.pdf" → "download"
+"Kişiler.pdf" → "download"
+"Akışı.pdf" → "download"
+"Oezel.pdf" → "Oezel.pdf"
+BITTI rc=0

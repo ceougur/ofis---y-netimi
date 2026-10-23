@@ -1,0 +1,1499 @@
+TAP version 13
+# Subtest: analiz iş parçacığı
+    # Subtest: worker sonucu ana iş parçacığındakiyle aynıdır ve bekleme sırasında olay döngüsü akar
+    ok 1 - worker sonucu ana iş parçacığındakiyle aynıdır ve bekleme sırasında olay döngüsü akar
+      ---
+      duration_ms: 710.452547
+      type: 'test'
+      ...
+    # Subtest: aynı worker art arda işleri sırayla bitirir; kapatıldıktan sonra ana iş parçacığında hesaplar
+    ok 2 - aynı worker art arda işleri sırayla bitirir; kapatıldıktan sonra ana iş parçacığında hesaplar
+      ---
+      duration_ms: 948.986155
+      type: 'test'
+      ...
+    # Subtest: zaman aşımında worker sonlandırılır ve iş ana iş parçacığında tamamlanır
+    ok 3 - zaman aşımında worker sonlandırılır ve iş ana iş parçacığında tamamlanır
+      ---
+      duration_ms: 260.737578
+      type: 'test'
+      ...
+    # Subtest: devre dışıysa hiç worker açmaz
+    ok 4 - devre dışıysa hiç worker açmaz
+      ---
+      duration_ms: 301.409795
+      type: 'test'
+      ...
+    1..4
+ok 1 - analiz iş parçacığı
+  ---
+  duration_ms: 2223.060105
+  type: 'suite'
+  ...
+# (node:25405) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: hücre okuma
+    # Subtest: tek tarih, tarih + not, birden çok tarih, tutar, tutar + not, telefon, etiket ve not ayrılır
+    ok 1 - tek tarih, tarih + not, birden çok tarih, tutar, tutar + not, telefon, etiket ve not ayrılır
+      ---
+      duration_ms: 8.60529
+      type: 'test'
+      ...
+    # Subtest: telefon: birden çok numara ve numaranın yanındaki not geçerli; eksik haneli numara geçersiz
+    ok 2 - telefon: birden çok numara ve numaranın yanındaki not geçerli; eksik haneli numara geçersiz
+      ---
+      duration_ms: 2.080887
+      type: 'test'
+      ...
+    # Subtest: toplam satırı tanınır
+    ok 3 - toplam satırı tanınır
+      ---
+      duration_ms: 0.363713
+      type: 'test'
+      ...
+    # Subtest: Türkçe yüzde ekleri
+    ok 4 - Türkçe yüzde ekleri
+      ---
+      duration_ms: 0.556008
+      type: 'test'
+      ...
+    1..4
+ok 2 - hücre okuma
+  ---
+  duration_ms: 13.022792
+  type: 'suite'
+  ...
+# Subtest: sabit seçenek süzgeçleri
+    # Subtest: serbest yazılmış kolon (aynı anlam farklı biçimlerde, tarih ve notlarla) dağılım olarak kabul edilmez
+    ok 1 - serbest yazılmış kolon (aynı anlam farklı biçimlerde, tarih ve notlarla) dağılım olarak kabul edilmez
+      ---
+      duration_ms: 2.558964
+      type: 'test'
+      ...
+    # Subtest: birbirini içeren, aynı kökten, yazım farklı ve eş anlamlı seçenekler örtüşür
+    ok 2 - birbirini içeren, aynı kökten, yazım farklı ve eş anlamlı seçenekler örtüşür
+      ---
+      duration_ms: 0.83981
+      type: 'test'
+      ...
+    # Subtest: olumsuzluk ve sayı farkı bir ayrımdır: seçenekler ayrı sayılır
+    ok 3 - olumsuzluk ve sayı farkı bir ayrımdır: seçenekler ayrı sayılır
+      ---
+      duration_ms: 0.465839
+      type: 'test'
+      ...
+    # Subtest: temiz seçenek listesi kabul edilir; büyük/küçük harf, Türkçe karakter ve noktalama aynı seçenektir
+    ok 4 - temiz seçenek listesi kabul edilir; büyük/küçük harf, Türkçe karakter ve noktalama aynı seçenektir
+      ---
+      duration_ms: 1.188818
+      type: 'test'
+      ...
+    # Subtest: kesinlik: hücrelerin en az %98'i bir seçenek olmalı (fazlası 'diğer' olarak yazılır)
+    ok 5 - kesinlik: hücrelerin en az %98'i bir seçenek olmalı (fazlası 'diğer' olarak yazılır)
+      ---
+      duration_ms: 1.136314
+      type: 'test'
+      ...
+    # Subtest: tek değer, az hücre, çok fazla seçenek ve sayı kodları dağılım değildir
+    ok 6 - tek değer, az hücre, çok fazla seçenek ve sayı kodları dağılım değildir
+      ---
+      duration_ms: 1.899825
+      type: 'test'
+      ...
+    # Subtest: sorumlu kişiler: unvanlı/unvansız ve kısaltılmış adlar aynı kişi olabilir; birden çok kişi yazılmış hücre kişi değildir
+    ok 7 - sorumlu kişiler: unvanlı/unvansız ve kısaltılmış adlar aynı kişi olabilir; birden çok kişi yazılmış hücre kişi değildir
+      ---
+      duration_ms: 2.361949
+      type: 'test'
+      ...
+    1..7
+ok 3 - sabit seçenek süzgeçleri
+  ---
+  duration_ms: 11.018087
+  type: 'suite'
+  ...
+# Subtest: kart doğrulaması
+    # Subtest: tutar: yalnız tutarlar toplanır; not hücreleri ve toplam satırı katılmaz, açıklamada yazar
+    ok 1 - tutar: yalnız tutarlar toplanır; not hücreleri ve toplam satırı katılmaz, açıklamada yazar
+      ---
+      duration_ms: 2.698206
+      type: 'test'
+      ...
+    # Subtest: tutar: tutarı başka bilgiyle karışık hücreler %2'yi aşarsa toplam gösterilmez; kimlik gibi değer toplanmaz
+    ok 2 - tutar: tutarı başka bilgiyle karışık hücreler %2'yi aşarsa toplam gösterilmez; kimlik gibi değer toplanmaz
+      ---
+      duration_ms: 1.957955
+      type: 'test'
+      ...
+    # Subtest: tutar: para birimi yazılı değilse birimsiz; başlıkta yazıyorsa başlıktan
+    ok 3 - tutar: para birimi yazılı değilse birimsiz; başlıkta yazıyorsa başlıktan
+      ---
+      duration_ms: 0.957125
+      type: 'test'
+      ...
+    # Subtest: son tarih: not hücreleri sayılmaz; tarih + not ya da iki tarihli hücreler %2'yi aşarsa kart gösterilmez
+    ok 4 - son tarih: not hücreleri sayılmaz; tarih + not ya da iki tarihli hücreler %2'yi aşarsa kart gösterilmez
+      ---
+      duration_ms: 2.031524
+      type: 'test'
+      ...
+    # Subtest: dağılım kartı: temiz durum kolonu gösterilir, serbest yazılmış kolon gösterilmez ve nedeni yazılır
+    ok 5 - dağılım kartı: temiz durum kolonu gösterilir, serbest yazılmış kolon gösterilmez ve nedeni yazılır
+      ---
+      duration_ms: 1.21831
+      type: 'test'
+      ...
+    # Subtest: kapsamın kartları: kolon adıyla, öncelik sırasıyla; doğrulanamayan aday reddedilenlere yazılır
+    ok 6 - kapsamın kartları: kolon adıyla, öncelik sırasıyla; doğrulanamayan aday reddedilenlere yazılır
+      ---
+      duration_ms: 15.063001
+      type: 'test'
+      ...
+    # Subtest: her sekme kendi kolonlarıyla: bir sekmede temiz olan kolon diğer sekmedeki karışık değerlerden etkilenmez
+    ok 7 - her sekme kendi kolonlarıyla: bir sekmede temiz olan kolon diğer sekmedeki karışık değerlerden etkilenmez
+      ---
+      duration_ms: 28.413987
+      type: 'test'
+      ...
+    1..7
+ok 4 - kart doğrulaması
+  ---
+  duration_ms: 52.667212
+  type: 'suite'
+  ...
+# Subtest: kart doğrulaması: inceleme bulguları
+    # Subtest: para birimi: yalnızca bazı hücrelerde yabancı para birimi ya da başlıkla çelişen para birimi reddedilir; kısmi TL kabul
+    ok 1 - para birimi: yalnızca bazı hücrelerde yabancı para birimi ya da başlıkla çelişen para birimi reddedilir; kısmi TL kabul
+      ---
+      duration_ms: 1.195716
+      type: 'test'
+      ...
+    # Subtest: toplam satırları: 'TOPLAM ALACAK', 'Toplam (40 dosya)' ve etiketsiz toplam satırı toplanmaz
+    ok 2 - toplam satırları: 'TOPLAM ALACAK', 'Toplam (40 dosya)' ve etiketsiz toplam satırı toplanmaz
+      ---
+      duration_ms: 0.466442
+      type: 'test'
+      ...
+    # Subtest: bir kayıt birden çok satırdaysa tutar kayıt başına bir kez; satırlarda farklı tutar varsa kart yok
+    ok 3 - bir kayıt birden çok satırdaysa tutar kayıt başına bir kez; satırlarda farklı tutar varsa kart yok
+      ---
+      duration_ms: 0.778903
+      type: 'test'
+      ...
+    # Subtest: sayı yazımı: kuruşsuz yazım eksi değil; iki yazım karışıksa ya da belirsizse kesin değil; yüzde tutar değil
+    ok 4 - sayı yazımı: kuruşsuz yazım eksi değil; iki yazım karışıksa ya da belirsizse kesin değil; yüzde tutar değil
+      ---
+      duration_ms: 1.22822
+      type: 'test'
+      ...
+    # Subtest: para bildirmeyen sayısal kolonlar tutar kartı olmaz; güçlü başlık birimle birlikte de tutardır
+    ok 5 - para bildirmeyen sayısal kolonlar tutar kartı olmaz; güçlü başlık birimle birlikte de tutardır
+      ---
+      duration_ms: 0.654033
+      type: 'test'
+      ...
+    # Subtest: sembol taşıyan seçenekler birleşmez; olumsuzluk ve kısaltmalar doğru ayrılır
+    ok 6 - sembol taşıyan seçenekler birleşmez; olumsuzluk ve kısaltmalar doğru ayrılır
+      ---
+      duration_ms: 0.600736
+      type: 'test'
+      ...
+    # Subtest: sorumlu kolonunda birim adları kişi sayılmaz; tarihlerde ay/gün sırası belirsizse kart yok
+    ok 7 - sorumlu kolonunda birim adları kişi sayılmaz; tarihlerde ay/gün sırası belirsizse kart yok
+      ---
+      duration_ms: 0.400953
+      type: 'test'
+      ...
+    # Subtest: büyük seçenek listesi hızla elenir
+    ok 8 - büyük seçenek listesi hızla elenir
+      ---
+      duration_ms: 75.765102
+      type: 'test'
+      ...
+    1..8
+ok 5 - kart doğrulaması: inceleme bulguları
+  ---
+  duration_ms: 81.65769
+  type: 'suite'
+  ...
+# Subtest: veri sağlığı: hücre denetimleri
+    # Subtest: not yazılmış tarih/tutar/telefon hücresi hata sayılmaz; iki numaralı telefon ve notlu T.C. geçerlidir
+    ok 1 - not yazılmış tarih/tutar/telefon hücresi hata sayılmaz; iki numaralı telefon ve notlu T.C. geçerlidir
+      ---
+      duration_ms: 8.307985
+      type: 'test'
+      ...
+    # Subtest: bir kaydı birden çok satırda tutan tablo (taraflar alt alta) tekrar eden kimlik hatası vermez
+    ok 2 - bir kaydı birden çok satırda tutan tablo (taraflar alt alta) tekrar eden kimlik hatası vermez
+      ---
+      duration_ms: 2.595685
+      type: 'test'
+      ...
+    1..2
+ok 6 - veri sağlığı: hücre denetimleri
+  ---
+  duration_ms: 11.206878
+  type: 'suite'
+  ...
+# Subtest: sekmeler ve uygulamada eklenen kayıtlar
+    # Subtest: kayıt eklendiği sekmede; sekmesiz eski kayıt alanlarının örtüştüğü sekmede; hiçbiriyle örtüşmeyen ayrı sekmede görünür
+    ok 1 - kayıt eklendiği sekmede; sekmesiz eski kayıt alanlarının örtüştüğü sekmede; hiçbiriyle örtüşmeyen ayrı sekmede görünür
+      ---
+      duration_ms: 810.922712
+      type: 'test'
+      ...
+    # Subtest: sekmesiz veride kayıtlar sekmesiz kalır
+    ok 2 - sekmesiz veride kayıtlar sekmesiz kalır
+      ---
+      duration_ms: 311.841674
+      type: 'test'
+      ...
+    1..2
+ok 7 - sekmeler ve uygulamada eklenen kayıtlar
+  ---
+  duration_ms: 1123.058493
+  type: 'suite'
+  ...
+# (node:25406) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: kolon başlıklarını adlandırma
+    # Subtest: yönetici başlıkları adlandırır; profil adları verir, tüm kullanıcılar görür
+    ok 1 - yönetici başlıkları adlandırır; profil adları verir, tüm kullanıcılar görür
+      ---
+      duration_ms: 17.369085
+      type: 'test'
+      ...
+    # Subtest: veri ve düzeltmeler asıl kolon adıyla çalışmaya devam eder
+    ok 2 - veri ve düzeltmeler asıl kolon adıyla çalışmaya devam eder
+      ---
+      duration_ms: 21.641334
+      type: 'test'
+      ...
+    # Subtest: Excel'e dışa aktarmada başlıklar ofisin verdiği adla yazılır
+    ok 3 - Excel'e dışa aktarmada başlıklar ofisin verdiği adla yazılır
+      ---
+      duration_ms: 11.407613
+      type: 'test'
+      ...
+    # Subtest: çakışan ad, verideki olmayan kolon ve yetkisiz kullanıcı reddedilir; boş ad asıl ada döndürür
+    ok 4 - çakışan ad, verideki olmayan kolon ve yetkisiz kullanıcı reddedilir; boş ad asıl ada döndürür
+      ---
+      duration_ms: 16.395817
+      type: 'test'
+      ...
+    # Subtest: tarih kolon adı olamaz: değer sanılıp başlığa yazılan tarih reddedilir, ay-yıl başlığı kabul edilir (v2.0.6)
+    ok 5 - tarih kolon adı olamaz: değer sanılıp başlığa yazılan tarih reddedilir, ay-yıl başlığı kabul edilir (v2.0.6)
+      ---
+      duration_ms: 36.309349
+      type: 'test'
+      ...
+    # Subtest: adlar veri oturumuna özeldir
+    ok 6 - adlar veri oturumuna özeldir
+      ---
+      duration_ms: 24.007913
+      type: 'test'
+      ...
+    1..6
+ok 8 - kolon başlıklarını adlandırma
+  ---
+  duration_ms: 893.121187
+  type: 'suite'
+  ...
+# Subtest: zor değerler (v2.0.2)
+    # Subtest: ay adlı tarihler ve Amerikan sırası okunur; takvimde olmayan tarih okunmaz
+    ok 1 - ay adlı tarihler ve Amerikan sırası okunur; takvimde olmayan tarih okunmaz
+      ---
+      duration_ms: 0.479049
+      type: 'test'
+      ...
+    # Subtest: Excel hata değerleri boş sayılır; küçük tablolarda başlık destekliyorsa tür verilir
+    ok 2 - Excel hata değerleri boş sayılır; küçük tablolarda başlık destekliyorsa tür verilir
+      ---
+      duration_ms: 9.918284
+      type: 'test'
+      ...
+    1..2
+ok 9 - zor değerler (v2.0.2)
+  ---
+  duration_ms: 10.769857
+  type: 'suite'
+  ...
+# Subtest: eşleme ekranı: kullanıcı rolleri (v2.0.2)
+    # Subtest: seçilen rol otomatik kararın üstüne yazar; 'Yok Say' önemi sıfırlar; kanıt ve kesinlik bunu söyler
+    ok 1 - seçilen rol otomatik kararın üstüne yazar; 'Yok Say' önemi sıfırlar; kanıt ve kesinlik bunu söyler
+      ---
+      duration_ms: 2.623197
+      type: 'test'
+      ...
+    1..1
+ok 10 - eşleme ekranı: kullanıcı rolleri (v2.0.2)
+  ---
+  duration_ms: 2.789826
+  type: 'suite'
+  ...
+# Subtest: göç 10: kolon adına yazılmış tarihler asıl adına döner (v2.0.6)
+    # Subtest: tarih adları kalkar, diğer adlar kalır; işlem geçmişine ve bir kerelik bildirime yazılır
+    ok 1 - tarih adları kalkar, diğer adlar kalır; işlem geçmişine ve bir kerelik bildirime yazılır
+      ---
+      duration_ms: 188.957596
+      type: 'test'
+      ...
+    1..1
+ok 11 - göç 10: kolon adına yazılmış tarihler asıl adına döner (v2.0.6)
+  ---
+  duration_ms: 461.854672
+  type: 'suite'
+  ...
+# Subtest: toplu düzeltme önerileri
+    # Subtest: telefon, tarih ve tutar tek yazıma çevrilir; belirsiz yazım önerilmez
+    ok 1 - telefon, tarih ve tutar tek yazıma çevrilir; belirsiz yazım önerilmez
+      ---
+      duration_ms: 2.417391
+      type: 'test'
+      ...
+    # Subtest: analizden öneri üretir: telefon yazımı, tarih yazımı, durum yazımı, boşluk; değişiklikler kayıt anahtarıyla döner
+    ok 2 - analizden öneri üretir: telefon yazımı, tarih yazımı, durum yazımı, boşluk; değişiklikler kayıt anahtarıyla döner
+      ---
+      duration_ms: 25.66296
+      type: 'test'
+      ...
+    # Subtest: Excel'de sayıya dönüşmüş telefon kolonuna yazım önerisi verilmez (rakamlar dosyada yok)
+    ok 3 - Excel'de sayıya dönüşmüş telefon kolonuna yazım önerisi verilmez (rakamlar dosyada yok)
+      ---
+      duration_ms: 1.008135
+      type: 'test'
+      ...
+    1..3
+ok 12 - toplu düzeltme önerileri
+  ---
+  duration_ms: 30.070813
+  type: 'suite'
+  ...
+# Subtest: veri temizleme kütüphanesi: Excel seri tarihleri ve hata değerleri (v2.0.2)
+    # Subtest: başlığı tarih olan beş haneli sayı kolonu seri tarih sayılır; toplu düzeltme gerçek tarihe çevirir; takvim çevrilene dek uyarı üretmez
+    ok 1 - başlığı tarih olan beş haneli sayı kolonu seri tarih sayılır; toplu düzeltme gerçek tarihe çevirir; takvim çevrilene dek uyarı üretmez
+      ---
+      duration_ms: 6.4671
+      type: 'test'
+      ...
+    # Subtest: Excel hata değerleri boş sayılır
+    ok 2 - Excel hata değerleri boş sayılır
+      ---
+      duration_ms: 2.210083
+      type: 'test'
+      ...
+    1..2
+ok 13 - veri temizleme kütüphanesi: Excel seri tarihleri ve hata değerleri (v2.0.2)
+  ---
+  duration_ms: 8.910975
+  type: 'suite'
+  ...
+# Subtest: 31e V1: kimlik / numara başlıklı sütun tutar sayılmaz; para başlıkları tutar kalır; geçerli VKN / TCKN tanınır (birim)
+    # Subtest: analyzeColumns rolleri (B1/B2/B3)
+    ok 1 - analyzeColumns rolleri (B1/B2/B3)
+      ---
+      duration_ms: 23.71699
+      type: 'test'
+      ...
+    1..1
+ok 14 - 31e V1: kimlik / numara başlıklı sütun tutar sayılmaz; para başlıkları tutar kalır; geçerli VKN / TCKN tanınır (birim)
+  ---
+  duration_ms: 24.741331
+  type: 'suite'
+  ...
+# Subtest: 31e N2: İngilizce yazım '1,234.56' iki çözümleyicide aynı (1234,56); Türkçe kurallar aynen (birim)
+    # Subtest: money.parseAmount = insight parseAmount (B10/B11)
+    ok 1 - money.parseAmount = insight parseAmount (B10/B11)
+      ---
+      duration_ms: 0.710547
+      type: 'test'
+      ...
+    1..1
+ok 15 - 31e N2: İngilizce yazım '1,234.56' iki çözümleyicide aynı (1234,56); Türkçe kurallar aynen (birim)
+  ---
+  duration_ms: 0.853831
+  type: 'suite'
+  ...
+# Subtest: 31e sayı hücresi: dönüşüm ve ayrıştırma (birim)
+    # Subtest: cellText: 12.125 → '12,125', 0.005 → '0,005', -12.5 → '-12,5', 333.3333333 → '333,3333333'; tam sayı ve dizge olduğu gibi (S1/S3/S4/S6)
+    ok 1 - cellText: 12.125 → '12,125', 0.005 → '0,005', -12.5 → '-12,5', 333.3333333 → '333,3333333'; tam sayı ve dizge olduğu gibi (S1/S3/S4/S6)
+      ---
+      duration_ms: 1.45179
+      type: 'test'
+      ...
+    # Subtest: ayrıştırma: sayı türü sayıdır; dizgede Türkçe kural aynen (S2)
+    ok 2 - ayrıştırma: sayı türü sayıdır; dizgede Türkçe kural aynen (S2)
+      ---
+      duration_ms: 1.412496
+      type: 'test'
+      ...
+    1..2
+ok 16 - 31e sayı hücresi: dönüşüm ve ayrıştırma (birim)
+  ---
+  duration_ms: 3.064129
+  type: 'suite'
+  ...
+# (node:25448) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: doğrulayıcılar
+    # Subtest: T.C., VKN ve IBAN sağlamaları; telefon, plaka, il
+    ok 1 - T.C., VKN ve IBAN sağlamaları; telefon, plaka, il
+      ---
+      duration_ms: 1.093081
+      type: 'test'
+      ...
+    # Subtest: tarih takvimde olmalı; tutarlar Türkçe ve İngilizce yazımla okunur
+    ok 2 - tarih takvimde olmalı; tutarlar Türkçe ve İngilizce yazımla okunur
+      ---
+      duration_ms: 0.562154
+      type: 'test'
+      ...
+    1..2
+ok 17 - doğrulayıcılar
+  ---
+  duration_ms: 2.891483
+  type: 'suite'
+  ...
+# Subtest: kolon tanıma
+    # Subtest: örnek icra tablosunda her kolonun türü doğru
+    ok 1 - örnek icra tablosunda her kolonun türü doğru
+      ---
+      duration_ms: 49.989117
+      type: 'test'
+      ...
+    # Subtest: para: başlıksız ondalık sayı tutar sayılmaz, ADET miktardır, birim fiyat toplanmaz, para işareti tutar yapar
+    ok 2 - para: başlıksız ondalık sayı tutar sayılmaz, ADET miktardır, birim fiyat toplanmaz, para işareti tutar yapar
+      ---
+      duration_ms: 1.840881
+      type: 'test'
+      ...
+    # Subtest: kişi ve bir şeyin adı ayrılır; tarihlerde son tarih, olay ve doğum tarihi ayrılır
+    ok 3 - kişi ve bir şeyin adı ayrılır; tarihlerde son tarih, olay ve doğum tarihi ayrılır
+      ---
+      duration_ms: 3.187099
+      type: 'test'
+      ...
+    # Subtest: aynı türden iki tarih kolonundan ileri tarihleri taşıyan son tarih seçilir
+    ok 4 - aynı türden iki tarih kolonundan ileri tarihleri taşıyan son tarih seçilir
+      ---
+      duration_ms: 2.50967
+      type: 'test'
+      ...
+    # Subtest: T.C. kolonu yalnızca sağlaması tutuyorsa doğrulanmış sayılır
+    ok 5 - T.C. kolonu yalnızca sağlaması tutuyorsa doğrulanmış sayılır
+      ---
+      duration_ms: 0.740217
+      type: 'test'
+      ...
+    1..5
+ok 18 - kolon tanıma
+  ---
+  duration_ms: 58.78957
+  type: 'suite'
+  ...
+# Subtest: sektör önerisi
+    # Subtest: katalog: 22 grup, 140+ sektör; kimlikler benzersiz; her grubun bir genel sektörü; her sektörün kelime dağarcığı
+    ok 1 - katalog: 22 grup, 140+ sektör; kimlikler benzersiz; her grubun bir genel sektörü; her sektörün kelime dağarcığı
+      ---
+      duration_ms: 6.178301
+      type: 'test'
+      ...
+    # Subtest: örnek tablolar beklenen sektörü en az beklenen güvenle önerir; genel veride Genel ve düşük güven
+    ok 2 - örnek tablolar beklenen sektörü en az beklenen güvenle önerir; genel veride Genel ve düşük güven
+      ---
+      duration_ms: 391.10694
+      type: 'test'
+      ...
+    # Subtest: gerçek icra dosyaları yüksek güvenle icra takibi; kanıtlar kolon adlarıyla
+    ok 3 - gerçek icra dosyaları yüksek güvenle icra takibi; kanıtlar kolon adlarıyla
+      ---
+      duration_ms: 56.013767
+      type: 'test'
+      ...
+    # Subtest: belirsiz veride yanlış sektöre yüksek güven verilmez; öneri belirleyicidir
+    ok 4 - belirsiz veride yanlış sektöre yüksek güven verilmez; öneri belirleyicidir
+      ---
+      duration_ms: 31.339346
+      type: 'test'
+      ...
+    1..4
+ok 19 - sektör önerisi
+  ---
+  duration_ms: 484.997466
+  type: 'suite'
+  ...
+# Subtest: veri sağlığı ve göstergeler
+    # Subtest: geçersiz T.C., aynı sekmede tekrar eden kimlik, boş kimlik ve takvimde olmayan tarih bulunur; not ve farklı sekmede tekrar sorun sayılmaz
+    ok 1 - geçersiz T.C., aynı sekmede tekrar eden kimlik, boş kimlik ve takvimde olmayan tarih bulunur; not ve farklı sekmede tekrar sorun sayılmaz
+      ---
+      duration_ms: 2.595562
+      type: 'test'
+      ...
+    # Subtest: göstergeler her sekme için ayrı kapsamda; az veriyle kart doğrulanmaz, nedeni yazılır
+    ok 2 - göstergeler her sekme için ayrı kapsamda; az veriyle kart doğrulanmaz, nedeni yazılır
+      ---
+      duration_ms: 7.129996
+      type: 'test'
+      ...
+    # Subtest: karışık para biriminde toplam gösterilmez; nedeni ve veri sağlığında bilgi yazılır
+    ok 3 - karışık para biriminde toplam gösterilmez; nedeni ve veri sağlığında bilgi yazılır
+      ---
+      duration_ms: 1.151818
+      type: 'test'
+      ...
+    # Subtest: tam analiz: 200 bin satır birkaç saniyenin altında
+    ok 4 - tam analiz: 200 bin satır birkaç saniyenin altında
+      ---
+      duration_ms: 9784.661834
+      type: 'test'
+      ...
+    # Subtest: çok uzun hücreler analizi yavaşlatmaz (düzenli ifadeler doğrusal, biçim denetimi uzunlukla sınırlı)
+    ok 5 - çok uzun hücreler analizi yavaşlatmaz (düzenli ifadeler doğrusal, biçim denetimi uzunlukla sınırlı)
+      ---
+      duration_ms: 25.176929
+      type: 'test'
+      ...
+    # Subtest: kart listesi: kartla aynı kapsam (sekme), kolon ve okuma; toplam listenin tamamı, en fazla sınır kadar kayıt döner
+    ok 6 - kart listesi: kartla aynı kapsam (sekme), kolon ve okuma; toplam listenin tamamı, en fazla sınır kadar kayıt döner
+      ---
+      duration_ms: 37.028466
+      type: 'test'
+      ...
+    1..6
+ok 20 - veri sağlığı ve göstergeler
+  ---
+  duration_ms: 9858.135426
+  type: 'suite'
+  ...
+# Subtest: kayıt kimliği
+    # Subtest: dosya numaralı veri eski kurala göre; kimlik kolonlu veri o kolondan; ikisi de yoksa içerik izi
+    ok 1 - dosya numaralı veri eski kurala göre; kimlik kolonlu veri o kolondan; ikisi de yoksa içerik izi
+      ---
+      duration_ms: 9.76993
+      type: 'test'
+      ...
+    # Subtest: kimlik kolonlu veride hücre değişse de notlar ve düzeltmeler kaybolmaz; yeni kayıt aynı kimliği alamaz
+    ok 2 - kimlik kolonlu veride hücre değişse de notlar ve düzeltmeler kaybolmaz; yeni kayıt aynı kimliği alamaz
+      ---
+      duration_ms: 510.138603
+      type: 'test'
+      ...
+    1..2
+ok 21 - kayıt kimliği
+  ---
+  duration_ms: 520.260193
+  type: 'suite'
+  ...
+# Subtest: ofis profili
+    # Subtest: yeni kurulum Genel profille açılır; giriş ekranı alt başlığı 'Ofis Yönetimi'
+    ok 1 - yeni kurulum Genel profille açılır; giriş ekranı alt başlığı 'Ofis Yönetimi'
+      ---
+      duration_ms: 5.183974
+      type: 'test'
+      ...
+    # Subtest: analiz ucu: göstergeler herkese; sektör önerisi ve kanıtı yalnızca yöneticiye
+    ok 2 - analiz ucu: göstergeler herkese; sektör önerisi ve kanıtı yalnızca yöneticiye
+      ---
+      duration_ms: 139.29571
+      type: 'test'
+      ...
+    # Subtest: analiz önbelleği: düzeltmeden sonra göstergeler yeniden hesaplanır
+    ok 3 - analiz önbelleği: düzeltmeden sonra göstergeler yeniden hesaplanır
+      ---
+      duration_ms: 19.485965
+      type: 'test'
+      ...
+    # Subtest: analiz önbelleği: bir kayıt silinip başka biri geri alınınca (sayılar aynı kalsa da) göstergeler yenilenir
+    ok 4 - analiz önbelleği: bir kayıt silinip başka biri geri alınınca (sayılar aynı kalsa da) göstergeler yenilenir
+      ---
+      duration_ms: 42.085934
+      type: 'test'
+      ...
+    # Subtest: kart listesi ucu: herkese açık, bilinmeyen liste reddedilir, sekme kapsamı uygulanır
+    ok 5 - kart listesi ucu: herkese açık, bilinmeyen liste reddedilir, sekme kapsamı uygulanır
+      ---
+      duration_ms: 24.324949
+      type: 'test'
+      ...
+    # Subtest: analiz önbelleği: veri okunurken değişirse eski sonuç yeni verinin anahtarıyla saklanmaz
+    ok 6 - analiz önbelleği: veri okunurken değişirse eski sonuç yeni verinin anahtarıyla saklanmaz
+      ---
+      duration_ms: 5.276593
+      type: 'test'
+      ...
+    # Subtest: sektör seçimi yalnızca yöneticide; bilinmeyen sektör reddedilir; rol adı, dağarcık ve alt başlık değişir
+    ok 7 - sektör seçimi yalnızca yöneticide; bilinmeyen sektör reddedilir; rol adı, dağarcık ve alt başlık değişir
+      ---
+      duration_ms: 19.470049
+      type: 'test'
+      ...
+    # Subtest: haciz modülü: sektör istemese de ofisin haciz kaydı varsa açık kalır
+    ok 8 - haciz modülü: sektör istemese de ofisin haciz kaydı varsa açık kalır
+      ---
+      duration_ms: 5.558276
+      type: 'test'
+      ...
+    # Subtest: başlık anahtarı: nesnenin kalıtılan adları (constructor, toString, __proto__) yuva sayılmaz
+    ok 9 - başlık anahtarı: nesnenin kalıtılan adları (constructor, toString, __proto__) yuva sayılmaz
+      ---
+      duration_ms: 8.861229
+      type: 'test'
+      ...
+    # Subtest: başlıklar: yalnızca yönetici; izinli anahtarlar; uzunluk sınırı; boş değer varsayılana döner; tümünü sıfırla
+    ok 10 - başlıklar: yalnızca yönetici; izinli anahtarlar; uzunluk sınırı; boş değer varsayılana döner; tümünü sıfırla
+      ---
+      duration_ms: 15.67226
+      type: 'test'
+      ...
+    1..10
+ok 22 - ofis profili
+  ---
+  duration_ms: 670.93958
+  type: 'suite'
+  ...
+# Subtest: 1.6.0 öncesinden gelen kurulum
+    # Subtest: verisi olan eski kurulum hukuk profiliyle açılır ve yöneticiye bir kez analiz gösterilir
+    ok 1 - verisi olan eski kurulum hukuk profiliyle açılır ve yöneticiye bir kez analiz gösterilir
+      ---
+      duration_ms: 477.702994
+      type: 'test'
+      ...
+    1..1
+ok 23 - 1.6.0 öncesinden gelen kurulum
+  ---
+  duration_ms: 478.021132
+  type: 'suite'
+  ...
+# (node:25454) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.4 30a: Tablodaki Kişiler ve Tahsilat Takvimi aynı Kalan Borç kolonunu okur (birim)
+    # Subtest: N1 Toplam Borç önce: Tablodaki Kişiler borcu Kalan Borç hücresi (7.600, 6.000, 3.000), Toplam Borç değil
+    ok 1 - N1 Toplam Borç önce: Tablodaki Kişiler borcu Kalan Borç hücresi (7.600, 6.000, 3.000), Toplam Borç değil
+      ---
+      duration_ms: 26.751388
+      type: 'test'
+      ...
+    # Subtest: N1 Kalan Borç önce (kolon sırası ters): yine Kalan Borç
+    ok 2 - N1 Kalan Borç önce (kolon sırası ters): yine Kalan Borç
+      ---
+      duration_ms: 7.433297
+      type: 'test'
+      ...
+    # Subtest: N1 takvim (SABİTLER, 5b'den beri): söz kaleminin tutarı ve Kalan Borç'u Kalan Borç hücresi; iki kolon sırasında da
+    ok 3 - N1 takvim (SABİTLER, 5b'den beri): söz kaleminin tutarı ve Kalan Borç'u Kalan Borç hücresi; iki kolon sırasında da
+      ---
+      duration_ms: 14.448401
+      type: 'test'
+      ...
+    # Subtest: N2 yalnız Toplam Borç: iki yerde de Toplam Borç (geri dönüş değişmez)
+    ok 4 - N2 yalnız Toplam Borç: iki yerde de Toplam Borç (geri dönüş değişmez)
+      ---
+      duration_ms: 5.184506
+      type: 'test'
+      ...
+    # Subtest: N3 yalnız Kalan: Kalan
+    ok 5 - N3 yalnız Kalan: Kalan
+      ---
+      duration_ms: 5.4934
+      type: 'test'
+      ...
+    # Subtest: N4 'Bakiye' ve 'Kalan Tutar' Kalan sayılır (Toplam Borç önce olsa da); 'Ödenecek' sayılmaz (ilk eşleşen borç başlığı, önceki gibi)
+    ok 6 - N4 'Bakiye' ve 'Kalan Tutar' Kalan sayılır (Toplam Borç önce olsa da); 'Ödenecek' sayılmaz (ilk eşleşen borç başlığı, önceki gibi)
+      ---
+      duration_ms: 12.97728
+      type: 'test'
+      ...
+    # Subtest: N5 Toplam Borç + Ödenen, Kalan yok: borç = toplam − ödenen (r31e T1 kararı, 23.10.2026; önceden Toplam — 31e bulgusu)
+    ok 7 - N5 Toplam Borç + Ödenen, Kalan yok: borç = toplam − ödenen (r31e T1 kararı, 23.10.2026; önceden Toplam — 31e bulgusu)
+      ---
+      duration_ms: 2.444302
+      type: 'test'
+      ...
+    # Subtest: N6 Kalan Borç 0: Tablodaki Kişiler borcu 0 (Toplam değil), takvimde kalem yok (ödenmiş); Kalan boş: tutar kolonuna (Toplam Borç) düşer
+    ok 8 - N6 Kalan Borç 0: Tablodaki Kişiler borcu 0 (Toplam değil), takvimde kalem yok (ödenmiş); Kalan boş: tutar kolonuna (Toplam Borç) düşer
+      ---
+      duration_ms: 7.890424
+      type: 'test'
+      ...
+    # Subtest: N12 programın kendi şablonu (Alacak ve Tahsilat Yönetimi: Borç Tutarı + Kalan Borç): Tablodaki Kişiler ve takvim Kalan Borç
+    ok 9 - N12 programın kendi şablonu (Alacak ve Tahsilat Yönetimi: Borç Tutarı + Kalan Borç): Tablodaki Kişiler ve takvim Kalan Borç
+      ---
+      duration_ms: 18.724251
+      type: 'test'
+      ...
+    # Subtest: N11 tek yer: dues.mjs ve reports.mjs kalan kolonunu ortak yardımcıdan seçer
+    ok 10 - N11 tek yer: dues.mjs ve reports.mjs kalan kolonunu ortak yardımcıdan seçer
+      ---
+      duration_ms: 1.889669
+      type: 'test'
+      ...
+    1..10
+ok 24 - 2.4.4 30a: Tablodaki Kişiler ve Tahsilat Takvimi aynı Kalan Borç kolonunu okur (birim)
+  ---
+  duration_ms: 107.4074
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 30a: Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip, Nakit Akışı ve Excel aynı Kalan Borç'u gösterir (API)
+    # Subtest: Tablodaki Kişiler: her sekmede borç = o sekmenin Kalan Borç hücresi (Kalan yoksa Toplam Borç); toplam = satırlar
+    ok 1 - Tablodaki Kişiler: her sekmede borç = o sekmenin Kalan Borç hücresi (Kalan yoksa Toplam Borç); toplam = satırlar
+      ---
+      duration_ms: 57.477143
+      type: 'test'
+      ...
+    # Subtest: Tahsilat Takvimi, Vade Takip ve Nakit Akışı aynı tutarı gösterir (Borçlular sekmesi: Tülay 7.600, Ece 3.000; Mert ödenmiş)
+    ok 2 - Tahsilat Takvimi, Vade Takip ve Nakit Akışı aynı tutarı gösterir (Borçlular sekmesi: Tülay 7.600, Ece 3.000; Mert ödenmiş)
+      ---
+      duration_ms: 42.518869
+      type: 'test'
+      ...
+    # Subtest: Excel dışa aktarım: Tülay Öz (Borçlular) Borç hücresi 7.600
+    ok 3 - Excel dışa aktarım: Tülay Öz (Borçlular) Borç hücresi 7.600
+      ---
+      duration_ms: 21.03628
+      type: 'test'
+      ...
+    # Subtest: 5c: aynı dosya no iki sekmede — tahsilat bir kez; Borçlular satırı Kalan Borç (7.600)
+    ok 4 - 5c: aynı dosya no iki sekmede — tahsilat bir kez; Borçlular satırı Kalan Borç (7.600)
+      ---
+      duration_ms: 76.415742
+      type: 'test'
+      ...
+    1..4
+ok 25 - 2.4.4 30a: Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip, Nakit Akışı ve Excel aynı Kalan Borç'u gösterir (API)
+  ---
+  duration_ms: 670.69868
+  type: 'suite'
+  ...
+# (node:25464) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 31d E2: satır düzeyi tek kural — Kalan boşsa o satırda Toplam Borç (birim)
+    # Subtest: B1 Kalan boş (t13): Tablodaki Kişiler ve takvim aynı — Tülay 11.500 (Toplam), Mert 6.000 (Kalan), Ece 4.000 (Toplam)
+    ok 1 - B1 Kalan boş (t13): Tablodaki Kişiler ve takvim aynı — Tülay 11.500 (Toplam), Mert 6.000 (Kalan), Ece 4.000 (Toplam)
+      ---
+      duration_ms: 33.046641
+      type: 'test'
+      ...
+    # Subtest: B2 Kalan hücresi sayı değil ('belirsiz'): o satırda Toplam Borç
+    ok 2 - B2 Kalan hücresi sayı değil ('belirsiz'): o satırda Toplam Borç
+      ---
+      duration_ms: 4.33871
+      type: 'test'
+      ...
+    # Subtest: B3 Kalan 0: borç 0 (Toplam'a düşülmez); takvimde kalem yok
+    ok 3 - B3 Kalan 0: borç 0 (Toplam'a düşülmez); takvimde kalem yok
+      ---
+      duration_ms: 5.405005
+      type: 'test'
+      ...
+    # Subtest: B4 bütün Kalan hücreleri dolu: Kalan (30a aynen); B5 yalnız Toplam: Toplam
+    ok 4 - B4 bütün Kalan hücreleri dolu: Kalan (30a aynen); B5 yalnız Toplam: Toplam
+      ---
+      duration_ms: 3.820777
+      type: 'test'
+      ...
+    1..4
+ok 26 - 31d E2: satır düzeyi tek kural — Kalan boşsa o satırda Toplam Borç (birim)
+  ---
+  duration_ms: 47.858309
+  type: 'suite'
+  ...
+# Subtest: 31d E3: gün / adet / sayı / ay / yıl / oran / yüzde / % başlıklı kolon borç tutarı değildir (birim)
+    # Subtest: B6 Tutar + Kalan Gün: borç Tutar (11.500 + 8.000 = 19.500), 'Kalan Gün' (5, 12) değil
+    ok 1 - B6 Tutar + Kalan Gün: borç Tutar (11.500 + 8.000 = 19.500), 'Kalan Gün' (5, 12) değil
+      ---
+      duration_ms: 2.946091
+      type: 'test'
+      ...
+    # Subtest: B6 her biçim (Türkçe büyük harf dahil): Toplam Borç + <kolon> → borç Toplam Borç
+    ok 2 - B6 her biçim (Türkçe büyük harf dahil): Toplam Borç + <kolon> → borç Toplam Borç
+      ---
+      duration_ms: 32.151298
+      type: 'test'
+      ...
+    # Subtest: B7 para başlıkları dışlanmaz: 'Aylık Taksit', 'Yıllık Ücret', 'Günlük Ücret' tek tutar sütunuysa borçtur (2.4.3 gibi) ve takvimde tutardır; 'Bakiye' kalan
+    ok 3 - B7 para başlıkları dışlanmaz: 'Aylık Taksit', 'Yıllık Ücret', 'Günlük Ücret' tek tutar sütunuysa borçtur (2.4.3 gibi) ve takvimde tutardır; 'Bakiye' kalan
+      ---
+      duration_ms: 13.653121
+      type: 'test'
+      ...
+    # Subtest: B10 tek yer: dues.mjs ve reports.mjs satır borcunu ve kolon dışlamasını ortak yardımcıdan alır
+    ok 4 - B10 tek yer: dues.mjs ve reports.mjs satır borcunu ve kolon dışlamasını ortak yardımcıdan alır
+      ---
+      duration_ms: 1.289829
+      type: 'test'
+      ...
+    1..4
+ok 27 - 31d E3: gün / adet / sayı / ay / yıl / oran / yüzde / % başlıklı kolon borç tutarı değildir (birim)
+  ---
+  duration_ms: 50.551995
+  type: 'suite'
+  ...
+# Subtest: 31d E2/E3: ekranların okuduğu uçlar aynı toplamı gösterir (API)
+    # Subtest: Sekme "Borçlular": Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip ve Nakit Akışı hepsi 21500
+    ok 1 - Sekme "Borçlular": Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip ve Nakit Akışı hepsi 21500
+      ---
+      duration_ms: 46.900625
+      type: 'test'
+      ...
+    # Subtest: Sekme "Kira": Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip ve Nakit Akışı hepsi 19500
+    ok 2 - Sekme "Kira": Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip ve Nakit Akışı hepsi 19500
+      ---
+      duration_ms: 24.63085
+      type: 'test'
+      ...
+    1..2
+ok 28 - 31d E2/E3: ekranların okuduğu uçlar aynı toplamı gösterir (API)
+  ---
+  duration_ms: 551.03817
+  type: 'suite'
+  ...
+# Subtest: kolon eşleme ipucu değer adlarını yazar
+    # Subtest: kategori kolonu (Yerel Mahkeme): değer adları var, [object Object] yok
+    ok 1 - kategori kolonu (Yerel Mahkeme): değer adları var, [object Object] yok
+      ---
+      duration_ms: 35.067951
+      type: 'test'
+      ...
+    # Subtest: durum kolonu: değer adları sayılarıyla değil adıyla, sıklık sırasıyla
+    ok 2 - durum kolonu: değer adları sayılarıyla değil adıyla, sıklık sırasıyla
+      ---
+      duration_ms: 1.829386
+      type: 'test'
+      ...
+    # Subtest: sorumlu kolonu: tekrar eden kişi adları yazılır
+    ok 3 - sorumlu kolonu: tekrar eden kişi adları yazılır
+      ---
+      duration_ms: 1.457713
+      type: 'test'
+      ...
+    # Subtest: değer metni olduğu gibi gelir (kaçırma istemcide esc ile)
+    ok 4 - değer metni olduğu gibi gelir (kaçırma istemcide esc ile)
+      ---
+      duration_ms: 1.646206
+      type: 'test'
+      ...
+    1..4
+ok 29 - kolon eşleme ipucu değer adlarını yazar
+  ---
+  duration_ms: 41.391854
+  type: 'suite'
+  ...
+# (node:25479) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.4 31a F1/F5/F4: Tablodaki Kişiler ve Nakit Akışı karta taşınan ve karta girilen tahsilatı sayar; kişi adıyla görünür
+    # Subtest: N4 (F4): çok sekmeli tabloda her kişi adıyla görünür (Borçlu, Müşteri, Kiracı); iç anahtar ya da dosya no görünmez
+    ok 1 - N4 (F4): çok sekmeli tabloda her kişi adıyla görünür (Borçlu, Müşteri, Kiracı); iç anahtar ya da dosya no görünmez
+      ---
+      duration_ms: 47.070046
+      type: 'test'
+      ...
+    # Subtest: N1 öncesi: Elif'in alacağı 3.500 (cari tahsilatları); Nakit Akışı gerçekleşen tahsilat ölçülür
+    ok 2 - N1 öncesi: Elif'in alacağı 3.500 (cari tahsilatları); Nakit Akışı gerçekleşen tahsilat ölçülür
+      ---
+      duration_ms: 12.945253
+      type: 'test'
+      ...
+    # Subtest: N1/N3 (F1): Tablodan Aktar iki tahsilatı karta taşır → alacak 3.500 KALIR, Nakit Akışı gerçekleşen aynı
+    ok 3 - N1/N3 (F1): Tablodan Aktar iki tahsilatı karta taşır → alacak 3.500 KALIR, Nakit Akışı gerçekleşen aynı
+      ---
+      duration_ms: 89.131745
+      type: 'test'
+      ...
+    # Subtest: N2 (F5): karta doğrudan girilen 700 tahsilat alacağa ve Nakit Akışı'na girer (3.500 + 700 = 4.200)
+    ok 4 - N2 (F5): karta doğrudan girilen 700 tahsilat alacağa ve Nakit Akışı'na girer (3.500 + 700 = 4.200)
+      ---
+      duration_ms: 52.822954
+      type: 'test'
+      ...
+    # Subtest: N6: her süzgeçte toplam = satırlar; Elif'in tahsilatları bir kez
+    ok 5 - N6: her süzgeçte toplam = satırlar; Elif'in tahsilatları bir kez
+      ---
+      duration_ms: 49.985377
+      type: 'test'
+      ...
+    # Subtest: N1 geri al: kart kalkar, 3.500 cariye döner → alacak 3.500 (iki kez değil), Nakit Akışı gerçekleşen geri döner
+    ok 6 - N1 geri al: kart kalkar, 3.500 cariye döner → alacak 3.500 (iki kez değil), Nakit Akışı gerçekleşen geri döner
+      ---
+      duration_ms: 105.500037
+      type: 'test'
+      ...
+    1..6
+ok 30 - 2.4.4 31a F1/F5/F4: Tablodaki Kişiler ve Nakit Akışı karta taşınan ve karta girilen tahsilatı sayar; kişi adıyla görünür
+  ---
+  duration_ms: 943.983032
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 31a N5: aynı adlı iki kişi (telefonları farklı) ayrı satır; aynı kişi (biri telefonsuz) iki sekmede tek satır
+    # Subtest: iki Elif Kaya ayrı satır (500 / 700); Tuna Sarı iki sekmede tek satır (borç 4.000 + 8.000, alacak 250)
+    ok 1 - iki Elif Kaya ayrı satır (500 / 700); Tuna Sarı iki sekmede tek satır (borç 4.000 + 8.000, alacak 250)
+      ---
+      duration_ms: 0.652256
+      type: 'test'
+      ...
+    # Subtest: ad süzgeci ikisini de getirir; toplam = satırlar
+    ok 2 - ad süzgeci ikisini de getirir; toplam = satırlar
+      ---
+      duration_ms: 0.517442
+      type: 'test'
+      ...
+    1..2
+ok 31 - 2.4.4 31a N5: aynı adlı iki kişi (telefonları farklı) ayrı satır; aynı kişi (biri telefonsuz) iki sekmede tek satır
+  ---
+  duration_ms: 1.44865
+  type: 'suite'
+  ...
+# (node:25487) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: vade listesi ve nakit dönemleri (saf)
+    # Subtest: aralık, gecikmiş, bu ay, tutarsız kalem ve toplamlar
+    ok 1 - aralık, gecikmiş, bu ay, tutarsız kalem ve toplamlar
+      ---
+      duration_ms: 3.058689
+      type: 'test'
+      ...
+    # Subtest: nakit akışı ay / hafta toplamları: son dönemin kasası tahmini kasadır
+    ok 2 - nakit akışı ay / hafta toplamları: son dönemin kasası tahmini kasadır
+      ---
+      duration_ms: 1.298427
+      type: 'test'
+      ...
+    1..2
+ok 32 - vade listesi ve nakit dönemleri (saf)
+  ---
+  duration_ms: 5.816665
+  type: 'suite'
+  ...
+# Subtest: Raporlar penceresi uçları (tam yığın)
+    # Subtest: Vade takip: her kaynak kendi hesabından; toplamlar; süzgeçler; dışa aktarma
+    ok 1 - Vade takip: her kaynak kendi hesabından; toplamlar; süzgeçler; dışa aktarma
+      ---
+      duration_ms: 137.204603
+      type: 'test'
+      ...
+    # Subtest: Vade takip önbelleği: tablodaki hücre düzeltilince ve tahsilat girilince hemen yenilenir
+    ok 2 - Vade takip önbelleği: tablodaki hücre düzeltilince ve tahsilat girilince hemen yenilenir
+      ---
+      duration_ms: 84.46437
+      type: 'test'
+      ...
+    # Subtest: Vade takip yetkisi: personel göremez; muhasebe (2.4.3 H9: Finans Raporları varsayılan) görür; uzman görür; ANLIK DURUM verilen personel görür
+    ok 3 - Vade takip yetkisi: personel göremez; muhasebe (2.4.3 H9: Finans Raporları varsayılan) görür; uzman görür; ANLIK DURUM verilen personel görür
+      ---
+      duration_ms: 358.352265
+      type: 'test'
+      ...
+    # Subtest: Nakit akış: tablo kaynağı açılıp kapanır (çift sayım yok); dönem toplamları
+    ok 4 - Nakit akış: tablo kaynağı açılıp kapanır (çift sayım yok); dönem toplamları
+      ---
+      duration_ms: 43.596721
+      type: 'test'
+      ...
+    # Subtest: Mizan: aynı adlı iki cari ayrı; telefonla arama; boşken cari sayısı döner
+    ok 5 - Mizan: aynı adlı iki cari ayrı; telefonla arama; boşken cari sayısı döner
+      ---
+      duration_ms: 8.578312
+      type: 'test'
+      ...
+    # Subtest: Yeni modül raporları rakamları ekranlarla aynı
+    ok 6 - Yeni modül raporları rakamları ekranlarla aynı
+      ---
+      duration_ms: 34.69736
+      type: 'test'
+      ...
+    1..6
+ok 33 - Raporlar penceresi uçları (tam yığın)
+  ---
+  duration_ms: 1412.07824
+  type: 'suite'
+  ...
+# Subtest: rapor ekranı kuralı: boş veri, geçmiş/gelecek dönem, tek kayıt, yetkisiz kullanıcı
+    # Subtest: boş kurulumda her yeni rapor ve Vade takip hatasız, sıfır satır; geçmiş ve gelecek dönem; tek kayıt; personel 403
+    ok 1 - boş kurulumda her yeni rapor ve Vade takip hatasız, sıfır satır; geçmiş ve gelecek dönem; tek kayıt; personel 403
+      ---
+      duration_ms: 549.357368
+      type: 'test'
+      ...
+    1..1
+ok 34 - rapor ekranı kuralı: boş veri, geçmiş/gelecek dönem, tek kayıt, yetkisiz kullanıcı
+  ---
+  duration_ms: 549.681889
+  type: 'suite'
+  ...
+# Subtest: sektöre uygun taslak Excel
+    # Subtest: her sektörün taslağı var; doldurulan taslak doğru sektör ve kolon türleriyle okunur; aylar ve ödeme günü takvime girer
+    ok 1 - her sektörün taslağı var; doldurulan taslak doğru sektör ve kolon türleriyle okunur; aylar ve ödeme günü takvime girer
+      ---
+      duration_ms: 2268.063439
+      type: 'test'
+      ...
+    # Subtest: ay kolonları: eğitim yılı Eylül–Haziran, takvim yılı Ocak–Aralık (yılla)
+    ok 2 - ay kolonları: eğitim yılı Eylül–Haziran, takvim yılı Ocak–Aralık (yılla)
+      ---
+      duration_ms: 0.208396
+      type: 'test'
+      ...
+    # Subtest: dosya: başlık satırı, açılır liste, ödeme günü sınırı, yardım notu, tarih/tutar/metin biçimi
+    ok 3 - dosya: başlık satırı, açılır liste, ödeme günü sınırı, yardım notu, tarih/tutar/metin biçimi
+      ---
+      duration_ms: 4.938743
+      type: 'test'
+      ...
+    # Subtest: uçlar: katalog, dosya adı, bilinmeyen sektör, giriş gerekir
+    ok 4 - uçlar: katalog, dosya adı, bilinmeyen sektör, giriş gerekir
+      ---
+      duration_ms: 303.889089
+      type: 'test'
+      ...
+    1..4
+ok 35 - sektöre uygun taslak Excel
+  ---
+  duration_ms: 2578.217873
+  type: 'suite'
+  ...
+# (node:25495) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: raporlama motoru
+    # Subtest: kayıtlar ortak omurgaya iner: cari, kalan borç, vade, durum; özel alanlar ayrı; cari anahtarı dosyalar arasında eşleşir
+    ok 1 - kayıtlar ortak omurgaya iner: cari, kalan borç, vade, durum; özel alanlar ayrı; cari anahtarı dosyalar arasında eşleşir
+      ---
+      duration_ms: 20.232206
+      type: 'test'
+      ...
+    # Subtest: cari ekstre iki dosyadaki aynı cariyi tek hesapta birleştirir; tahsilat alacak yazar; bakiye yürür; özel alan kolonları veriden gelir
+    ok 2 - cari ekstre iki dosyadaki aynı cariyi tek hesapta birleştirir; tahsilat alacak yazar; bakiye yürür; özel alan kolonları veriden gelir
+      ---
+      duration_ms: 6.35114
+      type: 'test'
+      ...
+    # Subtest: vade takip: gecikmiş / bugün / yaklaşan / kapalı; gün farkı; durum süzgeci; tarihsiz kalem listelenir
+    ok 3 - vade takip: gecikmiş / bugün / yaklaşan / kapalı; gün farkı; durum süzgeci; tarihsiz kalem listelenir
+      ---
+      duration_ms: 2.732993
+      type: 'test'
+      ...
+    # Subtest: nakit akış: dönem başına beklenen, gerçekleşen, kasa ve birikimli; gün / hafta / ay
+    ok 4 - nakit akış: dönem başına beklenen, gerçekleşen, kasa ve birikimli; gün / hafta / ay
+      ---
+      duration_ms: 1.492211
+      type: 'test'
+      ...
+    # Subtest: dışa aktarma tablosu: tarih gg.aa.yyyy, tutar Türkçe yazım, boşlar boş
+    ok 5 - dışa aktarma tablosu: tarih gg.aa.yyyy, tutar Türkçe yazım, boşlar boş
+      ---
+      duration_ms: 0.439324
+      type: 'test'
+      ...
+    1..5
+ok 36 - raporlama motoru
+  ---
+  duration_ms: 32.411648
+  type: 'suite'
+  ...
+# Subtest: raporlama uçları (tam yığın)
+    # Subtest: cari ekstre iki oturumu birleştirir; vade takip ve nakit akış döner; Excel ve PDF dışa aktarılır
+    ok 1 - cari ekstre iki oturumu birleştirir; vade takip ve nakit akış döner; Excel ve PDF dışa aktarılır
+      ---
+      duration_ms: 99.574967
+      type: 'test'
+      ...
+    1..1
+ok 37 - raporlama uçları (tam yığın)
+  ---
+  duration_ms: 596.007874
+  type: 'suite'
+  ...
+# (node:25503) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 31f U2 / U8: programın örnek dosyası — söz tutarı borç değil, takvimde kalır; borç dosya başına bir kez
+    # Subtest: D1/D3/D8 Tablodaki Kişiler: söz borç satırı açmaz; İcra Takip Kalan 98.000 + Kiracılar Kira bedeli 45.000 = 143.000; Ali Veli 36.000, Mehmet Demir 0
+    ok 1 - D1/D3/D8 Tablodaki Kişiler: söz borç satırı açmaz; İcra Takip Kalan 98.000 + Kiracılar Kira bedeli 45.000 = 143.000; Ali Veli 36.000, Mehmet Demir 0
+      ---
+      duration_ms: 126.310819
+      type: 'test'
+      ...
+    # Subtest: D2/D6 Tahsilat Takvimi: açık sözler yerinde (Ali Veli 5.000), 'Ödendi' sözler yok; söz kaleminin Kalan Borç'u İcra Takip'ten (36.000)
+    ok 2 - D2/D6 Tahsilat Takvimi: açık sözler yerinde (Ali Veli 5.000), 'Ödendi' sözler yok; söz kaleminin Kalan Borç'u İcra Takip'ten (36.000)
+      ---
+      duration_ms: 38.821817
+      type: 'test'
+      ...
+    1..2
+ok 38 - 31f U2 / U8: programın örnek dosyası — söz tutarı borç değil, takvimde kalır; borç dosya başına bir kez
+  ---
+  duration_ms: 855.750704
+  type: 'suite'
+  ...
+# Subtest: 31f U2 daraltılmış karar: okul servisi (tek tutar sütunu 'Aylık Ücret') Tablodaki Kişiler'de öğrencileri gösterir
+    # Subtest: okul servisi: 6 öğrenci, borç = Aylık Ücret hücresi (3.500 + 3.500 + 3.800 + 3.800 + 4.500 + 4.500 = 23.600)
+    ok 1 - okul servisi: 6 öğrenci, borç = Aylık Ücret hücresi (3.500 + 3.500 + 3.800 + 3.800 + 4.500 + 4.500 = 23.600)
+      ---
+      duration_ms: 19.532653
+      type: 'test'
+      ...
+    1..1
+ok 39 - 31f U2 daraltılmış karar: okul servisi (tek tutar sütunu 'Aylık Ücret') Tablodaki Kişiler'de öğrencileri gösterir
+  ---
+  duration_ms: 19.757534
+  type: 'suite'
+  ...
+# Subtest: 31b MM5 → 31e A1: aynı dosya no iki sekmede — borç ve kalem ayrı (2.4.3 gibi) + not; tahsilat bir kez (5c)
+    # Subtest: Tablodaki Kişiler Deniz Ak: borç 12.000 + 12.000 (iki sekme ayrı), alacak 3.000 bir kez, bakiye 21.000; Vade Takip ve Nakit Akışı Beklenen 12.000 + 12.000 + 9.000 − 3.000 = 30.000; not
+    ok 1 - Tablodaki Kişiler Deniz Ak: borç 12.000 + 12.000 (iki sekme ayrı), alacak 3.000 bir kez, bakiye 21.000; Vade Takip ve Nakit Akışı Beklenen 12.000 + 12.000 + 9.000 − 3.000 = 30.000; not
+      ---
+      duration_ms: 27.513482
+      type: 'test'
+      ...
+    1..1
+ok 40 - 31b MM5 → 31e A1: aynı dosya no iki sekmede — borç ve kalem ayrı (2.4.3 gibi) + not; tahsilat bir kez (5c)
+  ---
+  duration_ms: 544.250286
+  type: 'suite'
+  ...
+# Subtest: 31b MM5 / D5 / D7: iki sekmede farklı Kalan ve dosya no'suz satırlar (birim)
+    # Subtest: D5 / A1 farklı Kalan: iki sekme ayrı borç (12.000 + 11.000), not iki sekmeyi adlandırır; takvimde iki kalem, her kalemin Kalan Borç'u kendi sekmesinden
+    ok 1 - D5 / A1 farklı Kalan: iki sekme ayrı borç (12.000 + 11.000), not iki sekmeyi adlandırır; takvimde iki kalem, her kalemin Kalan Borç'u kendi sekmesinden
+      ---
+      duration_ms: 6.551944
+      type: 'test'
+      ...
+    # Subtest: D4 / A1 aynı dosya iki sekmede FARKLI vadeyle: iki kalem (dönem sekmesinin vadesi düşmez), takvim toplamı 12.000 + 12.000 + 9.000
+    ok 2 - D4 / A1 aynı dosya iki sekmede FARKLI vadeyle: iki kalem (dönem sekmesinin vadesi düşmez), takvim toplamı 12.000 + 12.000 + 9.000
+      ---
+      duration_ms: 5.767517
+      type: 'test'
+      ...
+    # Subtest: D1 yalnız söz sekmesi (dosyanın başka sekmede borcu yok): söz tutarı borç satırı açmaz; takvimde söz tutarı yerinde
+    ok 3 - D1 yalnız söz sekmesi (dosyanın başka sekmede borcu yok): söz tutarı borç satırı açmaz; takvimde söz tutarı yerinde
+      ---
+      duration_ms: 2.144151
+      type: 'test'
+      ...
+    # Subtest: D7 dosya no'suz satırlar ayrı kalır (aynı ad, iki sekme: iki ayrı borç)
+    ok 4 - D7 dosya no'suz satırlar ayrı kalır (aynı ad, iki sekme: iki ayrı borç)
+      ---
+      duration_ms: 1.450071
+      type: 'test'
+      ...
+    1..4
+ok 41 - 31b MM5 / D5 / D7: iki sekmede farklı Kalan ve dosya no'suz satırlar (birim)
+  ---
+  duration_ms: 16.386108
+  type: 'suite'
+  ...
+# Subtest: tarih kolonunun anlamı
+    # Subtest: Sigorta Bitiş (ileri %10) → expiry
+    ok 1 - Sigorta Bitiş (ileri %10) → expiry
+      ---
+      duration_ms: 4.369987
+      type: 'test'
+      ...
+    # Subtest: Ehliyet Geçerlilik Tarihi (ileri %90) → expiry
+    ok 2 - Ehliyet Geçerlilik Tarihi (ileri %90) → expiry
+      ---
+      duration_ms: 0.967737
+      type: 'test'
+      ...
+    # Subtest: Güzergâh İzni Vize (ileri %50) → expiry
+    ok 3 - Güzergâh İzni Vize (ileri %50) → expiry
+      ---
+      duration_ms: 0.135409
+      type: 'test'
+      ...
+    # Subtest: Vade Tarihi (ileri %20) → expiry
+    ok 4 - Vade Tarihi (ileri %20) → expiry
+      ---
+      duration_ms: 0.087109
+      type: 'test'
+      ...
+    # Subtest: Başvuru Son Tarihi (ileri %30) → expiry
+    ok 5 - Başvuru Son Tarihi (ileri %30) → expiry
+      ---
+      duration_ms: 0.230976
+      type: 'test'
+      ...
+    # Subtest: Poliçe Yenileme (ileri %80) → expiry
+    ok 6 - Poliçe Yenileme (ileri %80) → expiry
+      ---
+      duration_ms: 0.13596
+      type: 'test'
+      ...
+    # Subtest: Ödeme Sözü (ileri %50) → expiry
+    ok 7 - Ödeme Sözü (ileri %50) → expiry
+      ---
+      duration_ms: 0.125646
+      type: 'test'
+      ...
+    # Subtest: Sözleşme Bitiş (ileri %70) → expiry
+    ok 8 - Sözleşme Bitiş (ileri %70) → expiry
+      ---
+      duration_ms: 0.378356
+      type: 'test'
+      ...
+    # Subtest: Sonraki Muayene (ileri %0) → expiry
+    ok 9 - Sonraki Muayene (ileri %0) → expiry
+      ---
+      duration_ms: 1.008087
+      type: 'test'
+      ...
+    # Subtest: Muayene Tarihi (ileri %5) → record
+    ok 10 - Muayene Tarihi (ileri %5) → record
+      ---
+      duration_ms: 3.902164
+      type: 'test'
+      ...
+    # Subtest: Muayene Tarihi (ileri %80) → expiry
+    ok 11 - Muayene Tarihi (ileri %80) → expiry
+      ---
+      duration_ms: 1.294217
+      type: 'test'
+      ...
+    # Subtest: Kasko (ileri %70) → expiry
+    ok 12 - Kasko (ileri %70) → expiry
+      ---
+      duration_ms: 0.172764
+      type: 'test'
+      ...
+    # Subtest: Kalibrasyon Tarihi (ileri %10) → record
+    ok 13 - Kalibrasyon Tarihi (ileri %10) → record
+      ---
+      duration_ms: 0.164358
+      type: 'test'
+      ...
+    # Subtest: Aşı Tarihi (ileri %90) → expiry
+    ok 14 - Aşı Tarihi (ileri %90) → expiry
+      ---
+      duration_ms: 0.13984
+      type: 'test'
+      ...
+    # Subtest: Randevu (ileri %60) → schedule
+    ok 15 - Randevu (ileri %60) → schedule
+      ---
+      duration_ms: 0.070038
+      type: 'test'
+      ...
+    # Subtest: Duruşma Tarihi (ileri %10) → schedule
+    ok 16 - Duruşma Tarihi (ileri %10) → schedule
+      ---
+      duration_ms: 0.181905
+      type: 'test'
+      ...
+    # Subtest: Sınav Tarihi (ileri %90) → schedule
+    ok 17 - Sınav Tarihi (ileri %90) → schedule
+      ---
+      duration_ms: 0.097859
+      type: 'test'
+      ...
+    # Subtest: Teslim Tarihi (ileri %50) → schedule
+    ok 18 - Teslim Tarihi (ileri %50) → schedule
+      ---
+      duration_ms: 0.054203
+      type: 'test'
+      ...
+    # Subtest: Kontrol Tarihi (ileri %70) → schedule
+    ok 19 - Kontrol Tarihi (ileri %70) → schedule
+      ---
+      duration_ms: 0.047772
+      type: 'test'
+      ...
+    # Subtest: Kayıt Tarihi (ileri %90) → record
+    ok 20 - Kayıt Tarihi (ileri %90) → record
+      ---
+      duration_ms: 0.076786
+      type: 'test'
+      ...
+    # Subtest: Üyelik Başlangıç (ileri %90) → record
+    ok 21 - Üyelik Başlangıç (ileri %90) → record
+      ---
+      duration_ms: 0.078226
+      type: 'test'
+      ...
+    # Subtest: Üyelik Tarihi (ileri %90) → record
+    ok 22 - Üyelik Tarihi (ileri %90) → record
+      ---
+      duration_ms: 0.330623
+      type: 'test'
+      ...
+    # Subtest: İşe Giriş Tarihi (ileri %80) → record
+    ok 23 - İşe Giriş Tarihi (ileri %80) → record
+      ---
+      duration_ms: 0.125721
+      type: 'test'
+      ...
+    # Subtest: Fatura Tarihi (ileri %10) → record
+    ok 24 - Fatura Tarihi (ileri %10) → record
+      ---
+      duration_ms: 1.429205
+      type: 'test'
+      ...
+    # Subtest: Son Görüşme (ileri %0) → record
+    ok 25 - Son Görüşme (ileri %0) → record
+      ---
+      duration_ms: 0.163524
+      type: 'test'
+      ...
+    # Subtest: Yapılan Muayene (ileri %90) → record
+    ok 26 - Yapılan Muayene (ileri %90) → record
+      ---
+      duration_ms: 0.1142
+      type: 'test'
+      ...
+    # Subtest: Haciz Tarihi (ileri %80) → record
+    ok 27 - Haciz Tarihi (ileri %80) → record
+      ---
+      duration_ms: 0.445088
+      type: 'test'
+      ...
+    # Subtest: Kaza Tarihi (ileri %70) → record
+    ok 28 - Kaza Tarihi (ileri %70) → record
+      ---
+      duration_ms: 0.088039
+      type: 'test'
+      ...
+    # Subtest: Sipariş Tarihi (ileri %40) → record
+    ok 29 - Sipariş Tarihi (ileri %40) → record
+      ---
+      duration_ms: 0.059258
+      type: 'test'
+      ...
+    # Subtest: Doğum Tarihi (ileri %0) → birth
+    ok 30 - Doğum Tarihi (ileri %0) → birth
+      ---
+      duration_ms: 0.073483
+      type: 'test'
+      ...
+    # Subtest: Tarih (ileri %90) → other
+    ok 31 - Tarih (ileri %90) → other
+      ---
+      duration_ms: 0.122453
+      type: 'test'
+      ...
+    # Subtest: Görüşme Tarihi (ileri %80) → other
+    ok 32 - Görüşme Tarihi (ileri %80) → other
+      ---
+      duration_ms: 0.097752
+      type: 'test'
+      ...
+    # Subtest: Tarih (ileri %10) → record
+    ok 33 - Tarih (ileri %10) → record
+      ---
+      duration_ms: 0.079017
+      type: 'test'
+      ...
+    # Subtest: Mülakat Tarihi (ileri %80) → schedule
+    ok 34 - Mülakat Tarihi (ileri %80) → schedule
+      ---
+      duration_ms: 0.051936
+      type: 'test'
+      ...
+    # Subtest: Yapıldığı Tarih (ileri %90) → record
+    ok 35 - Yapıldığı Tarih (ileri %90) → record
+      ---
+      duration_ms: 0.052639
+      type: 'test'
+      ...
+    # Subtest: Ödendiği Gün (ileri %90) → record
+    ok 36 - Ödendiği Gün (ileri %90) → record
+      ---
+      duration_ms: 0.072831
+      type: 'test'
+      ...
+    # Subtest: Tamamlanmış (ileri %80) → record
+    ok 37 - Tamamlanmış (ileri %80) → record
+      ---
+      duration_ms: 0.596928
+      type: 'test'
+      ...
+    # Subtest: Teslim Edilen (ileri %90) → record
+    ok 38 - Teslim Edilen (ileri %90) → record
+      ---
+      duration_ms: 0.204508
+      type: 'test'
+      ...
+    # Subtest: Yenilenecek Tarih (ileri %0) → expiry
+    ok 39 - Yenilenecek Tarih (ileri %0) → expiry
+      ---
+      duration_ms: 0.101852
+      type: 'test'
+      ...
+    # Subtest: Poliçe Biteceği (ileri %0) → expiry
+    ok 40 - Poliçe Biteceği (ileri %0) → expiry
+      ---
+      duration_ms: 0.096744
+      type: 'test'
+      ...
+    # Subtest: Ödeme Yapılacak (ileri %10) → schedule
+    ok 41 - Ödeme Yapılacak (ileri %10) → schedule
+      ---
+      duration_ms: 0.112109
+      type: 'test'
+      ...
+    # Subtest: Planlanmış Ziyaret (ileri %0) → schedule
+    ok 42 - Planlanmış Ziyaret (ileri %0) → schedule
+      ---
+      duration_ms: 0.076207
+      type: 'test'
+      ...
+    # Subtest: Hatırlatma (ileri %30) → schedule
+    ok 43 - Hatırlatma (ileri %30) → schedule
+      ---
+      duration_ms: 0.526607
+      type: 'test'
+      ...
+    # Subtest: Muayene Tarihi (ileri %50) → record
+    ok 44 - Muayene Tarihi (ileri %50) → record
+      ---
+      duration_ms: 0.174215
+      type: 'test'
+      ...
+    # Subtest: kolon analizi anlamı değerlerden hesaplar ve gerekçesini yazar
+    ok 45 - kolon analizi anlamı değerlerden hesaplar ve gerekçesini yazar
+      ---
+      duration_ms: 7.548297
+      type: 'test'
+      ...
+    1..45
+ok 42 - tarih kolonunun anlamı
+  ---
+  duration_ms: 29.151727
+  type: 'suite'
+  ...
+# Subtest: yaklaşan ve geçen işler bildirimleri tarih anlamına göre
+    # Subtest: klinik: muayene günü hiç bildirilmez; randevu yalnız yaklaşırken (planlı tarih) bildirilir
+    ok 1 - klinik: muayene günü hiç bildirilmez; randevu yalnız yaklaşırken (planlı tarih) bildirilir
+      ---
+      duration_ms: 15.427285
+      type: 'test'
+      ...
+    # Subtest: geçmiş randevu 'süresi geçti' diye bildirilmez; geçmiş belge bitişi bildirilir
+    ok 2 - geçmiş randevu 'süresi geçti' diye bildirilmez; geçmiş belge bitişi bildirilir
+      ---
+      duration_ms: 3.637538
+      type: 'test'
+      ...
+    # Subtest: satır bağlamı: durum, evet/hayır kolonu ve aynı konuda daha yeni tarih uyarıyı susturur
+    ok 3 - satır bağlamı: durum, evet/hayır kolonu ve aynı konuda daha yeni tarih uyarıyı susturur
+      ---
+      duration_ms: 4.290885
+      type: 'test'
+      ...
+    # Subtest: satır bağlamı: ileri tarihli yeni bitiş varsa eski bitiş 'süresi geçti' sayılmaz
+    ok 4 - satır bağlamı: ileri tarihli yeni bitiş varsa eski bitiş 'süresi geçti' sayılmaz
+      ---
+      duration_ms: 1.754522
+      type: 'test'
+      ...
+    1..4
+ok 43 - yaklaşan ve geçen işler bildirimleri tarih anlamına göre
+  ---
+  duration_ms: 25.378524
+  type: 'suite'
+  ...
+1..43
+# tests 195
+# suites 43
+# pass 195
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14510.571702

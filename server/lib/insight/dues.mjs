@@ -11,7 +11,7 @@
 //    tahsilat kapatır). Vadesinden en çok 20 gün önce girilen tahsilat da sayılır.
 import { columnOrder as columnsOf } from "../sources.mjs";
 import { analyzeColumns, cell, primaryColumns } from "./columns.mjs";
-import { pickRemainingDebtColumn } from "./debt-column.mjs";
+import { amountCandidates, debtByRecord, debtPlan, EXPECTED_AMOUNT_HEADER, isNotAmountHeader, isBarePromiseHeader, isPersonAttributeHeader, isPromiseAmountHeader, PROMISE_HEADER, rowDebt, sparseDebtColumn } from "./debt-column.mjs";
 import { embeddedDates, isBlankRecord, isEmptyCell, isFlaggedRow, isSequenceHeader, isTotalRow } from "./cells.mjs";
 import { dateMeaning, ordinalOf, subjectOf } from "./temporal.mjs";
 import { foldText, parseAmount, parseDate } from "./validators.mjs";
@@ -24,10 +24,13 @@ const MONTH_NAMES = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Te
 
 // Başlık sınıfları (katlanmış metin üzerinde).
 const PAST = /\b(yapilan|odenen|odendigi|odenmis|tahsil edilen|gerceklesen|son odeme yapilan|son tahsilat|son islem|paid on|last payment|date paid)\b/;
-const STRONG = /\b(odeme sozu|sozu|soz tarihi|soz|taahhut\w*|vade\w*|son odeme|taksit tarihi|taksit vadesi|planlanan odeme|odenecek tarih\w*|odeme plani|tahsil tarihi|tahsilat tarihi|odeme gunu|vade gunu|taksit gunu|kira gunu|aidat gunu|her ayin|due date|due|payment due|pay by|installment date)\b/;
+const STRONG = /\b(odeme sozu|sozu|soz tarihi|soz|taahhut\w*|taahhud\w*|vade\w*|son odeme|taksit tarihi|taksit vadesi|planlanan odeme|odenecek tarih\w*|odeme plani|tahsil tarihi|tahsilat tarihi|odeme gunu|vade gunu|taksit gunu|kira gunu|aidat gunu|her ayin|due date|due|payment due|pay by|installment date)\b/;
 const WEAK = /\b(odeme tarihi|odeme|tahsil\w*|taksit\w*|payment date|payment|installment\w*)\b/;
 const DAY_OF_MONTH = /\b(odeme gunu|vade gunu|taksit gunu|kira gunu|aidat gunu|her ayin)\b/;
-const PROMISE = /\b(soz\w*|taahhut\w*)\b/;
+// Ödeme sözü / taahhüt başlığı ("Söz Tarihi", "Ödeme Sözü", "Taahhüt Tarihi", "Taahhütname Tarihi") ve söz TUTARI sütunu ("Söz Tutarı", "Söz Miktarı"): TEK tanım
+// debt-column.mjs'te (PROMISE_HEADER, isPromiseAmountHeader) — borç düzeni aynı yardımcıyla söz tutarını borç saymaz. 31e tur 11 Z4: "Sözleşme Tutarı", "Sözleşme No",
+// "Sözleşme Bitiş" söz DEĞİLDİR; tur 12 Z5: taahhüt ailesi önek; Z6: "tutar" ya da "miktar".
+const PROMISE = PROMISE_HEADER;
 const INSTALLMENT = /\b(taksit\w*|installment\w*)\b/;
 // Sıra sayılı ödeme kolonları ("1. Ödeme Tarihi" / "1. Ödeme Tutarı", "Birinci Ödeme") taksit dizisidir (v2.0.2).
 const SERIES_PAYMENT = /\b(odeme\w*|tahsilat\w*|aidat\w*|kira\w*|payment\w*|installment\w*)\b/;
@@ -41,7 +44,8 @@ const installmentOf = (column, folded = foldText(column)) => {
 const SETTLED = /\b(odendi|odenmistir|odeme alindi|tahsil edildi|tahsilat yapildi|kapandi|kapali|kapatildi|iptal\w*|tamamlandi|sonuclandi|bitti|feragat|infaz|gerceklestirildi|gerceklestirilmistir|paid|closed|cancelled|canceled|completed|done|settled)\b/;
 const PARTIAL = /\b(kismen|kismi|eksik)\b/;
 // Tutar kolonları: kalemin kendi tutarı ve bağlam olarak kalan borç.
-const AMOUNT_OWN = /\b(soz tutari|taahhut tutari|taksit tutari|taksit miktari|aylik taksit|aylik odeme|odenecek|odenecek tutar|kira bedeli|kira|aidat|aylik|aylik ucret|servis ucreti|ucret|ucreti|ayligi)\b/;
+// Kalem (beklenen tahsilat) tutarı: liste borç kuralıyla ortak (debt-column.mjs; bu tutarlar borç sayılmaz).
+const AMOUNT_OWN = EXPECTED_AMOUNT_HEADER;
 // Aylık ödeme kolonları ("Eylül", "Ekim 2026", "Kasım ödemesi"): hücrede ödeme işareti ya da tutar varsa o ay ödenmiştir.
 // Yazımlar (katlanmış metin): "Eylül", "Ekim 2026", "Eyl.26" → "eyl 26", "Ekim'26" → "ekim 26", "2026-11" → "2026 11",
 // "11/2026" → "11 2026", "Kasım ödemesi". Kısaltmalar yalnız tam eşleşir ("mar" evet, "marka" hayır).
@@ -69,7 +73,6 @@ function monthHeader(column) {
   return { month, year, suffix: match[7] || "" };
 }
 const UNPAID_MARK = /^(0|0 00|yok|odenmedi|odemedi|odenmemis|borc|borclu|bekliyor|gecikti|gecikme|x|hayir|h)$/;
-const AMOUNT_DEBT = /\b(kalan|bakiye|borc\w*|alacak\w*|toplam borc)\b/;
 // v2.0.2: şablon satırları ve öğrencinin (üyenin) hizmet dönemi.
 // Hizmetin başladığı / bittiği tarih: öncesindeki ve sonrasındaki boş aylar borç sayılmaz.
 const START_DATE = /\b(kayit tarihi|kayit|baslangic\w*|baslama\w*|giris tarihi|servise baslama|hizmet baslangic\w*)\b/;
@@ -168,7 +171,9 @@ function classifyColumns(rows, columns, analyses, now, forced = null) {
   }
   // Aylık ödeme kolonları: en az iki ay kolonu varsa (tek "Eylül" kolonu başka bir şey olabilir).
   const monthly = paymentMonths(rows, columns, monthColumns(columns, now), analyses);
-  const moneyLike = analyses.filter(item => item.role === "money" || (item.role === "number" && AMOUNT_OWN.test(foldText(item.column)))).map(item => item.column);
+  // 31e tur 8 Y1: "Borçlu …" / "Alacaklı …" kişi özniteliği başlığı (tutar sözcüğü yoksa) kalem tutarı da olmaz — borç kolonuyla aynı kural (debt-column.mjs).
+  // 31e tur 14: yalın söz / taahhüt kolonu ("Ödeme Sözü", "Söz", "Taahhüt"; tutar / miktar / dönem sözcüğü yok) para kolonu sayılmaz — kalem tutarı olmaz (debt-column.mjs).
+  const moneyLike = analyses.filter(item => item.role === "money" || (item.role === "number" && AMOUNT_OWN.test(foldText(item.column)))).map(item => item.column).filter(column => !isPersonAttributeHeader(column) && !isBarePromiseHeader(column));
   const pairFor = entry => {
     if (entry.installment === null) return null;
     return moneyLike.find(column => {
@@ -180,12 +185,45 @@ function classifyColumns(rows, columns, analyses, now, forced = null) {
   // Kalan borç: tutar kolonu olarak tanınmış, ya da başlığı kalan/bakiye/borç olan ve tutar yazılmış (seyrek de olsa) kolon.
   // 2.4.4 (5b, 30a): "Kalan" / "Bakiye" kolonu varsa o (önceden ilk eşleşen alındığı için "Alacak Tutarı" + "Kalan" tablosunda toplam alacak "Kalan Borç"
   // sayılıyordu; "önce cari açın" formundaki Açılış Bakiyesi bu tutardan dolar). Seçim Tablodaki Kişiler ile ORTAK yardımcıda (debt-column.mjs).
-  const debt = pickRemainingDebtColumn(moneyLike, AMOUNT_DEBT) || columns.find(column => AMOUNT_DEBT.test(foldText(column)) && rows.some(row => parseAmount(cell(row, column)) !== null)) || null;
+  // 31d E2/E3: satır borcu ortak rowDebt ile (Kalan boşsa o satırda Toplam Borç); gün / adet / oran kolonu borç sayılmaz.
+  // 31f U2: sekmenin tek tutarı beklenen tahsilat değilse (söz / taksit / kira tutarı değilse) borçtur — Tablodaki Kişiler ile aynı ortak düzen.
+  const sparse = sparseDebtColumn(columns, rows, cell, { analyses });
+  const plan = debtPlan(amountCandidates(analyses), { sparse });
+  const debt = plan.column;
   // Tek vadeli tabloda ("Alacak / Son ödeme", "Tutar / Vade") kalemin tutarı, kendi tutar kolonu yoksa borç ya da
   // tablodaki tek tutar kolonudur; birden çok tutar kolonu varsa (borç, ödenen, kalan) yalnız kalan borç kullanılır.
   const single = due.filter(entry => entry.installment === null).length === 1 && !monthly.length && !recurring.length;
-  const fallback = single ? debt || (moneyLike.filter(column => !due.some(item => item.column === column)).length === 1 ? moneyLike.find(column => !due.some(item => item.column === column)) : null) : null;
-  for (const entry of due) entry.amountColumn = pairFor(entry) || (entry.installment === null ? own || fallback : null);
+  const amounts = moneyLike.filter(column => !isNotAmountHeader(column) && !due.some(item => item.column === column));
+  const fallback = single ? debt || (amounts.length === 1 ? amounts[0] : null) : null;
+  // 31e tur 9 Z1 (baş mimar kararı: takvim kalemi vadesi gelen tutardır, kalan borçtan büyük olamaz): tek vadeli tabloda satırın TEK dönem / taksit kolonu
+  // ("Taksit Tutarı", "Aidat", "Kira", "Aylık Ücret") varsa kalem = min(dönem tutarı, Kalan hücresi); Kalan boşsa (ya da Kalan kolonu yoksa) dönem tutarı —
+  // satır borcu belirlenemeyen satırda da (Y3: Aidat + Gecikme Faizi, Kalan boş → kalem Aidat; Kişiler ve Açılış Bakiyesi'nde not, borç yok). Dönem kolonu
+  // yoksa ya da birden çoksa kalem satırın borcudur (belirlenemiyorsa tutarsız + not). Aidat 1.000 + Kalan 400 → 400 (K4); Taksit 1.000 + Kalan 9.000 →
+  // 1.000 (975217f 9.000 gösteriyordu). Ödeme sözü kalemi söz tutarıdır (sınırlanmaz).
+  // 31e tur 12 Z5: dönem kolonundan yalnız SÖZ TUTARI başlığı ("Söz Tutarı", "Taahhüt Tutarı") dışlanır; "Taahhütlü Ücret" dönem tutarıdır (taahhüt öneki söz
+  // tarihini tanır, aylık ücreti söz yapmaz — aday 22 / v2.4.3: Ücret 450 + Kalan 1.350 → kalem 450).
+  const periods = moneyLike.filter(column => AMOUNT_OWN.test(foldText(column)) && !isPromiseAmountHeader(column) && !due.some(item => item.column === column));
+  const period = single && periods.length === 1 ? periods[0] : null;
+  // 31e tur 10 Z3: ödeme sözü kalemi SÖZ TUTARIdır — sekmede söz tutarı kolonu ("Söz Tutarı", "Taahhüt Tutarı") varsa o önce gelir (Taksit Tutarı + Kalan + Söz
+  // Tarihi + Söz Tutarı sekmesinde söz kalemi taksit tutarını alıyordu; v2.4.3'te de). Söz tutarı hücresi boşsa önceki kural (amountFallback).
+  // 31e tur 12 Z6: "Söz Miktarı" sayı rolündedir (para değil; moneyLike'a girmez) — söz tutarı adayı para ya da sayı rolündeki söz + tutar/miktar başlığıdır.
+  const promiseAmount = analyses.filter(item => item.role === "money" || item.role === "number").map(item => item.column)
+    // 31e tur 16 (R2): sayı rolündeki aday gün / ay / adet / oran / % başlıklı olamaz ("Taahhüt Miktarı (Ay)" 12 söz tutarı sayılıyordu; aday 22: Kalan 5.000).
+    .find(column => isPromiseAmountHeader(column) && !isNotAmountHeader(column) && !isPersonAttributeHeader(column) && !due.some(item => item.column === column)) || null;
+  for (const entry of due) {
+    // Söz kaleminin söz tutarı yoksa (sütun yok ya da hücre boş) önceki kural: tek vadeli tabloda dönem tutarı (Kalan ile sınırlı), dönem kolonu yoksa satırın
+    // borcu (kâhin b3t: "Sözleşme Tutarı" + Kalan 2.000 + boş söz → kalem 2.000).
+    const ownColumn = single ? period : own;
+    const base = entry.installment === null ? ownColumn || fallback : null;
+    const promiseFirst = entry.promise && entry.installment === null ? promiseAmount : null;
+    entry.amountColumn = pairFor(entry) || promiseFirst || base;
+    entry.amountFallback = promiseFirst && base && base !== promiseFirst ? base : null;
+    entry.amountFallbackFromDebt = Boolean(debt && entry.amountFallback === debt);
+    entry.amountFallbackCap = entry.amountFallback && entry.amountFallback === period ? plan.remaining || "" : null;
+    // Kalemin tutarı borç kolonuysa satır borcundan okunur (Kalan boş satırda ana tutar — Tablodaki Kişiler ile aynı).
+    entry.amountFromDebt = Boolean(debt && entry.amountColumn === debt);
+    entry.amountCapped = Boolean(single && entry.amountColumn && entry.amountColumn === period && !entry.amountFromDebt) ? plan.remaining || "" : null;
+  }
   for (const entry of monthly) entry.amountColumn = own;
   for (const entry of recurring) {
     entry.amountColumn = own;
@@ -193,7 +231,7 @@ function classifyColumns(rows, columns, analyses, now, forced = null) {
     if (entry.label === "Aylık ödeme" && /\bkira\b/.test(hint)) entry.label = "Kira";
     else if (entry.label === "Aylık ödeme" && /\baidat\b/.test(hint)) entry.label = "Aidat";
   }
-  return { due, recurring, monthly, debt };
+  return { due, recurring, monthly, debt, debtPlan: plan };
 }
 
 // Ay kolonları ve yılları. Yıl yazılmamışsa kolonların sırasından bulunur: aylar tabloda zaman sırasıyla dizilir
@@ -284,7 +322,7 @@ export function tabContext(scope, { now = new Date(), forced = null } = {}) {
   const columns = columnsOf(scope);
   const analyses = analyzeColumns(scope, columns, { now, forced });
   const primary = primaryColumns(analyses);
-  const { due, recurring, monthly, debt } = classifyColumns(scope, columns, analyses, now, forced);
+  const { due, recurring, monthly, debt, debtPlan: debtLayout } = classifyColumns(scope, columns, analyses, now, forced);
   const statusColumns = analyses.filter(item => item.role === "status" || /\b(durum\w*|asama\w*|sonuc\w*)\b/.test(foldText(item.column))).map(item => item.column);
   const sequence = new Set(columns.filter(isSequenceHeader));
   const idColumn = primary.id && primary.id !== primary.person && !sequence.has(primary.id) ? primary.id : null;
@@ -294,7 +332,7 @@ export function tabContext(scope, { now = new Date(), forced = null } = {}) {
   const endColumn = monthly.length ? dateColumn(END_DATE) : null;
   // Ay hücreleri ödeme mi, ödenecek taksit planı mı (installments.mjs → detectMonthPlan)?
   const plan = monthly.length ? detectMonthPlan({ rows: scope, months: monthly, columns, now }) : null;
-  return { columns, analyses, primary, due, recurring, monthly, debt, statusColumns, idColumn, hasIdentity, startColumn, endColumn, plan };
+  return { columns, analyses, primary, due, recurring, monthly, debt, debtPlan: debtLayout, statusColumns, idColumn, hasIdentity, startColumn, endColumn, plan };
 }
 
 // Satır kayıt mı, kapanmış mı? null: toplam satırı, işaretli hata satırı, boş şablon ya da adı/kimliği yazılmamış satır.
@@ -307,10 +345,19 @@ export function rowState(row, context) {
   const person = context.primary.person ? String(cell(row, context.primary.person) ?? "").trim() : "";
   const caseNo = context.idColumn ? String(cell(row, context.idColumn) ?? "").trim() : "";
   if (context.hasIdentity && isEmptyCell(person) && isEmptyCell(caseNo)) return null;
-  const debtAmount = context.debt ? parseAmount(cell(row, context.debt)) : null;
-  const paidOff = Boolean(context.debt && debtAmount === 0 && !isEmptyCell(cell(row, context.debt)));
+  // 31d E2: satır borcu ortak kuralla (Kalan sayıysa o, 0 dahil; boşsa Toplam Borç) — Tablodaki Kişiler (reports.mjs) aynı fonksiyonu kullanır.
+  const plan = context.debtPlan || { remaining: context.debt || null, total: null };
+  // 31e tur 8 (Y1/5b): kaydın borcu ("Önce cari açın" Açılış Bakiyesi, Kalan Borç) raporların satır borcuyla AYNI — tek kalem tutarlı tek vadeli sekmede de
+  // (Kira: Aylık Ücret 4.000 → Açılış Bakiyesi 4.000; önceden boş geliyordu). İstisna (8871ccf, okul servisi): ay kolonlu / aylık ödemeli sekmede kalem tutarı
+  // ("Aylık Ücret") bir ayın ücretidir, açılış borcu değil — borç Tablodan Aktar'ın aylardan kurduğu karttadır; Açılış Bakiyesi bu tutarla dolarsa carinin
+  // "kart dışı borcu" olur ve öğrenci aktarılamaz (run.mjs okul servisi; denendi).
+  const feeOnly = Boolean(plan.amountExpected && (context.monthly?.length || context.recurring?.length));
+  const { amount: debtAmount, column: debtFrom, tier: debtTier } = rowDebt(plan, column => parseAmount(cell(row, column)), { expected: !feeOnly });
+  // Kalan hücresi sayı ve 0 → ödenmiş; 31e tur 10 Z2: eksi (fazla ödeme) de — o satırdan tahsilat beklenmez (kalem çıkmaz; min(dönem, Kalan) ≤ 0). Tablodaki
+  // Kişiler satır borcunu olduğu gibi gösterir (−100), değişmedi.
+  const paidOff = Boolean(debtFrom && typeof debtAmount === "number" && debtAmount <= 0 && !isEmptyCell(cell(row, debtFrom)));
   const phone = context.primary.phone ? String(cell(row, context.primary.phone) ?? "").trim() : "";
-  return { person, caseNo, phone, closed, inactive, paidOff, debt: debtAmount && debtAmount > 0 ? debtAmount : null, debtColumn: debtAmount && debtAmount > 0 ? context.debt : "" };
+  return { person, caseNo, phone, closed, inactive, paidOff, debt: debtAmount && debtAmount > 0 ? debtAmount : null, debtColumn: debtAmount && debtAmount > 0 ? debtFrom : "", debtRecord: debtFrom ? { amount: debtAmount, column: debtFrom, tier: debtTier } : null };
 }
 
 // Takvim kaleminin kimliği ("Ödendi say" bu kimlikle saklanır; aktarma da aynı kimlikle okur).
@@ -347,9 +394,31 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
   const sources = [];
   const dormant = [];
   const monthlyCases = new Set(); // ay kolonlu tablodaki kayıtlar: tahsilat notundaki ay o aya sayılır
+  // 31f U8 / 31e T4 / A1: kayıt anahtarı (dosya no) başına borç — ortak kural (debt-column.mjs debtByRecord): aynı sekmedeki satırlar toplanır (satır
+  // başına taksit ayrı borçtur); FARKLI sekmeler de ayrı borç ve ayrı kalemdir (2.4.3 gibi; borcu birden çok sekmede olan dosya no not olur). Söz sekmesindeki
+  // (kendi borcu olmayan) kalemin Kalan Borç'u ("Önce cari açın" Açılış Bakiyesi) aynı dosya no'nun öbür sekmelerindeki borçtan gelir.
+  const debtEntries = [];
+  const debtUnresolved = [];
+  // Önce bütün sekmelerin kayıt borcu (kalem çıkarmayan sekme de — ör. "İcra Takip" Kalan'ı, sözler "Ödeme Sözleri"nde).
+  const contexts = new Map();
   for (const tab of order) {
     const scope = groups.get(tab);
     const context = tabContext(scope, { now, forced });
+    contexts.set(tab, context);
+    const layout = context.debtPlan || {};
+    for (const row of scope) {
+      const state = rowState(row, context);
+      const record = state?.debtRecord;
+      if (record) debtEntries.push({ key: row.__hofKey, tab, amount: record.amount, tier: record.tier, column: record.column, meta: { person: state.person, caseNo: state.caseNo } });
+      // 31e tur 8 (Y1/Y3): borcu belirlenemeyen satır Tahsilat Takvimi'nde de notsuz kalmaz (raporlarla aynı not; reports.mjs tableNotes).
+      if (state && layout.unresolved) debtUnresolved.push({ tab, debtUnresolved: layout.unresolved });
+      else if (state && layout.grossUnresolved && !record) debtUnresolved.push({ tab, debtUnresolved: layout.grossUnresolved, debtUnresolvedEmpty: layout.remaining });
+    }
+  }
+  const { byKey: keyDebt, split: debtSplit } = debtByRecord(debtEntries);
+  for (const tab of order) {
+    const scope = groups.get(tab);
+    const context = contexts.get(tab);
     const { due, recurring, monthly, startColumn, endColumn, plan } = context;
     if (!due.length && !recurring.length && !monthly.length) continue;
     sources.push({ tab, columns: [...due, ...recurring, ...monthly].map(item => item.column) });
@@ -364,9 +433,17 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
       for (const entry of due) {
         const read = readDue(cell(row, entry.column), now);
         if (!read || read.settled) continue;
-        const ownAmount = entry.amountColumn ? parseAmount(cell(row, entry.amountColumn)) : null;
+        // Z1: dönem tutarı Kalan hücresiyle sınırlı (Kalan boşsa dönem tutarı; dönem tutarı boşsa satırın borcu).
+        const capped = (value, capColumn) => {
+          if (capColumn === null || capColumn === undefined) return value;
+          const left = capColumn ? parseAmount(cell(row, capColumn)) : null;
+          if (value && value > 0) return typeof left === "number" && left > 0 ? Math.min(value, left) : value;
+          return state.debt;
+        };
+        let ownAmount = capped(entry.amountFromDebt ? state.debt : entry.amountColumn ? parseAmount(cell(row, entry.amountColumn)) : null, entry.amountCapped);
+        if (!(ownAmount > 0) && entry.amountFallback) ownAmount = capped(entry.amountFallbackFromDebt ? state.debt : parseAmount(cell(row, entry.amountFallback)), entry.amountFallbackCap);
         const amount = ownAmount && ownAmount > 0 ? ownAmount : amountInText(read.rest);
-        candidates.push({ ...base, column: entry.column, label: entry.label, promise: entry.promise, kind: read.kind, time: read.time, amount: amount || null });
+        candidates.push({ ...base, column: entry.column, label: entry.label, promise: entry.promise, kind: read.kind, time: read.time, amount: amount || null, fromDebt: entry.amountFromDebt });
       }
       // Ay matrisi → taksit defteri (v2.0.2, installments.mjs): yalnız geçerlilik aralığındaki aylar taksit satırı olur;
       // girişten önceki ve çıkıştan sonraki boş hücreler için satır açılmaz. Üst üste 3 boş ay → "durgun" (uyarı yok, listede).
@@ -392,6 +469,17 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
     }
   }
 
+  // 31f U8 / T4 / A1: kalemin Kalan Borç'u kendi sekmesindeki kaydın borcundan (aynı sekmedeki satırların toplamı); kendi sekmesinde borcu olmayan kalem (söz
+  // sekmesi) öbür sekmelerin borcunu alır. Kalemler sekmeler arasında birleştirilmez (dönem sekmesinin vadesi düşmez; kopya sekme iki kez sayılır + not).
+  for (const item of candidates) {
+    const tabs = keyDebt.get(item.caseKey);
+    if (!tabs) continue;
+    const own = tabs.get(item.tab);
+    const from = own ? [own] : [...tabs.values()];
+    const amount = Math.round(from.reduce((sum, record) => sum + record.amount, 0) * 100) / 100;
+    item.debt = amount > 0 ? amount : null;
+    item.debtColumn = amount > 0 ? (own ? own.column : from.map(record => `${record.tab} · ${record.column}`).join(" + ")) : "";
+  }
   // Tahsilatlar kaydın kalemlerine vade sırasıyla sayılır.
   const byCase = new Map();
   for (const item of candidates) {
@@ -484,7 +572,7 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
   // Önce gecikenler (en eskiden), sonra bugün, bu ay ve yaklaşanlar (en yakından).
   const rank = item => (item.state === "overdue" ? 0 : item.state === "month" || item.state === "today" ? 1 : 2);
   out.sort((a, b) => rank(a) - rank(b) || a.days - b.days || a.person.localeCompare(b.person, "tr"));
-  return { items: out, sources, dormant };
+  return { items: out, sources, dormant, debtSplit, debtUnresolved };
 }
 
 // Son tarihi yaklaşan işler (bildirim için): ödeme takvimi dışındaki son tarih kolonları (yenileme, bitiş, teslim,

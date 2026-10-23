@@ -10,6 +10,7 @@ import { DEFAULT_ADMIN_PASSWORD } from "./config.mjs";
 import { rowHash, rowIdentities } from "./dataset-identity.mjs";
 import { parseJson } from "./http.mjs";
 import { isFullDate } from "./insight/validators.mjs";
+import { mergeFloor } from "./number-floor.mjs";
 import { verifyPassword } from "./passwords.mjs";
 import { unitLabel } from "./units.mjs";
 
@@ -1316,7 +1317,7 @@ export const MIGRATIONS = [
   },
   {
     version: 32,
-    name: "v2.4.4 seriden ayrılmış kâğıt / fiş numaraları (bir kez tarama)",
+    name: "v2.4.4 seriden ayrılmış ve silinmiş belgelerin kâğıt / fiş numaraları (bir kez tarama)",
     up(store, { now = systemClock } = {}) {
       // Karar 22.10.2026 (verilmiş kâğıt / fiş numarası bir daha kullanılmaz; routes/invoices.mjs numberFloor). Para tablosu DEĞİL: yalnız bir ayar satırı
       // yazılır (invoice.numberFloor); faturalar, kilit izi ve mutabakat kapısı değişmez. Eski sürüm (2.4.3) ayarı okumaz. Geri yüklenen eski yedekte de
@@ -1331,7 +1332,8 @@ export const MIGRATIONS = [
 // yeniden verilirdi. Bir kezlik tarama: firmanın kâğıt serilerine (Fatura Ayarları → Kâğıt Fatura / Müşteri Fişi ve Serbest Meslek Makbuzu serisi; ayar
 // yoksa FIS / SMM) ait, programın biçimindeki (seri + yıl + 9 hane) numaralardan o seride DURMAYAN (taşınmış) belgelerde kalanlar:
 //   - Kâğıt Fatura No (numberForSend fiş numarasını, alan boşsa, buraya taşır);
-//   - işlem geçmişi "invoice.withdrawn" (alan önceden doluysa numara yalnız orada; 2.4.0'dan beri yazılır) — belge hâlâ varsa ve artık o numarada değilse.
+//   - işlem geçmişi "invoice.withdrawn" (alan önceden doluysa numara yalnız orada; 2.4.0'dan beri yazılır) — belge hâlâ varsa ve artık o numarada değilse;
+//   - (E6) Silinenler'de duran, geri yüklenmemiş belgenin kendi numarası (kâğıt / fiş / iç seri; aşağıda).
 // Seri + yıl başına en büyük sıra (numarası, o belgenin tarihi) routes/invoices.mjs'in numberFloor kaydına yazılır; kayıt yalnız YÜKSELİR (idempotent:
 // ikinci tarama bir şey değiştirmez). Biçim dışı ("EL-55", eksik hane) ya da başka seriye ait (e-Belge serisi, eski kâğıt serisi) elle yazılmış numara sayılmaz.
 const FLOOR_KEY = "invoice.numberFloor"; // routes/invoices.mjs FLOOR_KEY ile aynı
@@ -1348,7 +1350,7 @@ export function scanPaperFloors(store, { now = systemClock } = {}) {
     const seq = Number(match[3]);
     if (!(seq > 0)) return;
     const key = `${match[1]}${Number(match[2])}`;
-    if (!(best.get(key)?.seq >= seq)) best.set(key, { seq, number: match[0], issueDate: row.issueDate });
+    best.set(key, mergeFloor(best.get(key) || null, { seq, number: match[0], issueDate: row.issueDate }));
   };
   for (const row of store.all("SELECT series, number, paper_no AS paperNo, issue_date AS issueDate FROM invoices WHERE paper_no <> ''")) consider(row.paperNo, row);
   if (has("audit_events")) {
@@ -1358,10 +1360,33 @@ export function scanPaperFloors(store, { now = systemClock } = {}) {
       if (number && number !== row.number) consider(number, row);
     }
   }
+  // 2.4.4 E6 (eleştirmen 31d; karar 22.10.2026): silinen belgenin numarası da kullanılmış sayılır (routes/invoices.mjs deleteInvoice → reserveNumber).
+  // 2.4.0–2.4.3'te silinip Silinenler'de DURAN (geri yüklenmemiş) belge seride olmadığından MAX(seq) onu görmez → güncellemeden sonra numarası yeniden
+  // verilir, belge geri yüklenince iki belgede aynı numara olurdu. Kaynak belgenin silindiği andaki kendi satırı (seri, yıl, sıra; programın verdiği
+  // numara, seq > 0). Seriler programın e-Belge DIŞI serileri (paperSeriesSet ile aynı: Fiş ve Kâğıt Belge, Serbest Meslek Makbuzu, İç İade; ayar yoksa
+  // FIS / SMM / IAD). 2.4.3'te zaten yeniden verilmiş numara olduğu gibi kalır (geri yükleme reddedilir — routes/invoices.mjs restoreDeleted).
+  if (has("trash")) {
+    const deletedSeries = new Set([settings.series?.paper || "FIS", settings.series?.smm || "SMM", settings.series?.internal || "IAD"]);
+    for (const item of store.all("SELECT payload_json AS payload FROM trash WHERE kind = 'invoice' AND restored_at IS NULL")) {
+      const raw = parseJson(item.payload, {})?.invoice;
+      const seq = Number(raw?.seq);
+      if (!raw || !(seq > 0) || !raw.number || !deletedSeries.has(raw.series)) continue;
+      const key = `${raw.series}${Number(raw.year)}`;
+      best.set(key, mergeFloor(best.get(key) || null, { seq, number: raw.number, issueDate: raw.issue_date, deleted: true }));
+    }
+  }
+  // r31e N1 (23.10.2026): kayıt lib/number-floor.mjs mergeFloor'la birleşir — en büyük numara (numara tabanı) + en büyük SİLİNMEMİŞ numara (kept; sıra-tarih
+  // tabanı silinen belgenin tarihini saymaz). Önceden en büyüğü Silinenler'deki belgeyse taşınan numaranın tarihi kayboluyordu. v32 yayımlanmış hiçbir
+  // sürümde yok (v2.4.3 şeması 30): yeni şema sürümü gerekmez; aday yapılarının yazdığı kept'siz kayıt okunur (keptOf: silinmişse tarih bağlamaz).
   const floors = parseJson(store.get("SELECT value FROM settings WHERE key = ?", FLOOR_KEY)?.value, {}) || {};
-  const raised = [...best].filter(([key, entry]) => !(Number(floors[key]?.seq) >= entry.seq)).map(([key]) => key);
+  const raised = [];
+  for (const [key, entry] of best) {
+    let merged = floors[key] || null;
+    for (const part of [entry, ...(entry.deleted && entry.kept ? [entry.kept] : [])]) merged = mergeFloor(merged, { ...part, deleted: part === entry && entry.deleted === true });
+    if (JSON.stringify(merged) !== JSON.stringify(floors[key] ?? null)) raised.push(key);
+    floors[key] = merged;
+  }
   if (!raised.length) return { raised };
-  for (const key of raised) floors[key] = best.get(key);
   store.run("INSERT INTO settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, NULL) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at", FLOOR_KEY, JSON.stringify(floors), now().toISOString());
   return { raised };
 }

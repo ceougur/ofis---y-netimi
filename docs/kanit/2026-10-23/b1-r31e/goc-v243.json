@@ -1,0 +1,32 @@
+{
+  "ad": "b1-r31e/goc-v243",
+  "komut": "node --disable-warning=ExperimentalWarning test/guvenilirlik/kimlik-bag-goc.mjs",
+  "commit": "2856caeda52ec4d55214f2697fba3e369c9aa7f1",
+  "dal": "is/r31e-b",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T08:51:00.758Z",
+  "sure_sn": 34.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 46,
+    "gecen": 46,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/b1-r31e/goc-v243.log",
+  "klasor": "/home/user/wt/r31e-b",
+  "ham_cikti_sha256": "24db86191c8fb88aadfa7852f0add97e7dd6105a770a657534b45b9f081904cc",
+  "ham_cikti_bayt": 103575
+}

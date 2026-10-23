@@ -1,0 +1,14 @@
+c mutasyonlari (taban: is/r31e-c calisma agaci = 9b0f520 + C1/C2/C3; komut: node --test test/tablo-borc-r31e.test.mjs)
+mc1 routes/reports.mjs: takvim yeniden yalniz secili sekmelerden (C1 geri)
+mc2 routes/reports.mjs tableFooter: ham tutarlar toplanip yuvarlanir (C2 geri)
+mc3 lib/reports.mjs personIndex: kimlikli kayit kimlikle gruplanmaz (C3)
+--- mc1: # tests 27 # pass 24 # fail 3 
+    not ok 2 - Sekme süzgeci: 2026 Aidat → Ali Veli 800, Ayşe Kaya 600 (1.400), not yok; 2025 Aidat → 1.800; seçenekler iki sekme (B10)
+    not ok 2 - Sekme 2026 Aidat: 3 kalem / 1.900 (Ali 800, Ayşe 600, Can 500); Nakit Akışı Beklenen 1.900; not yok (B1/B3)
+    not ok 3 - Sekme 2025 Aidat: 1 kalem (Ali 1.200; Ayşe ödendi, Can 0); öbür sekmenin kalemi sızmaz (B2); seçenekler iki sekme (B5)
+--- mc2: # tests 27 # pass 25 # fail 2 
+    not ok 1 - Tablodaki Kişiler: satırlar 333,33 × 3 + 0,01 + 0,10 + 0,20 = 1.000,30; TOPLAM satırı, toplam ve özet aynı (B7)
+    not ok 3 - Excel: TOPLAM satırının borç hücresi 1000.3, özet 1.000,30; 1000.31 yok
+--- mc3: # tests 27 # pass 25 # fail 2 
+    not ok 1 - Ali Veli üç kişi: TC 10000000146 700, TC 22222222222 900, kimliksiz Kiracılar 5.000 (iki kimliğe uyuyor, tahmin edilmez); Ayşe tek kimlik → 300 + 3.000 (B10/B11)
+    not ok 3 - Vadeler: iki Ali Veli kalemi kimlik ekiyle, Tablodaki Kişiler ile aynı ad (B14)

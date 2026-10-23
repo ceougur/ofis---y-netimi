@@ -1,0 +1,63 @@
+{
+  "ad": "244-mm-smm/yeni-test-ESKI-ad865f0",
+  "komut": "node --test --test-reporter=spec /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-smm/mm-smm-eski-ad865f0/test/mm-smm-244.test.mjs",
+  "commit": "d602695dcd963952a8f64e0491f85045d69bf383",
+  "dal": "is/mm-smm",
+  "kirli": 8,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T22:27:31.398Z",
+  "sure_sn": 3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 10,
+    "gecen": 4,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "T1 2 × 100,03 (KDV %20, stopaj %20): KDV 40,02 (kalem), stopaj 40,01 (belge); ödenecek 200,07; 193 defterde 40,01; UBL 0003 40,01 (kalem 20,01 + 20,00), XSD temiz",
+      "konum": "test/mm-smm-244.test.mjs:104:3",
+      "hata": "AssertionError [ERR_ASSERTION]: PDF Net Ücret 160,05 · at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-smm/mm-smm-eski-ad865f0/test/mm-smm-244.test.mjs:125:12)"
+    },
+    {
+      "ad": "T3 tevkifatlı e-SMM PDF'i: Makbuz No, Brüt Ücret 10.000, Gelir Vergisi Stopajı 2.000, Net Ücret 8.000, KDV 2.000, KDV Tevkifatı 1.800, Tahsil Edilen KDV 200, Tahsil Edilen 8.200; fatura dili yok",
+      "konum": "test/mm-smm-244.test.mjs:153:3",
+      "hata": "AssertionError [ERR_ASSERTION]: PDF satırı: Makbuz No TES2026000000001 · at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-smm/mm-smm-eski-ad865f0/test/mm-smm-244.test.mjs:158:332)"
+    },
+    {
+      "ad": "T5 MM11: e-SMM'de kimlik iletisi e-SMM der (e-Arşiv değil); e-Arşiv'inki aynen",
+      "konum": "test/mm-smm-244.test.mjs:169:3",
+      "hata": "AssertionError [ERR_ASSERTION]: e-SMM iletisi: [\"Cari (alıcı): e-Arşiv için VKN ya da TCKN zorunludur (kimliği bilinmeyen nihai tüketicide 11111111111).\"] · at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-smm/mm-smm-eski-ad865f0/test/mm-smm-244.test.mjs:173:12)"
+    },
+    {
+      "ad": "T5b U4: gönderilmiş makbuzun Düzenle nedeni iade önermez (makbuzdan iade belgesi olmaz, yol İptal Et); faturada iade önerisi aynen",
+      "konum": "test/mm-smm-244.test.mjs:182:3",
+      "hata": "AssertionError [ERR_ASSERTION]: makbuzun Düzenle nedeni iade önermez: \"Bu belge e-Belge olarak gönderildi; düzenlenmez. İptal ya da iade faturasıyla düzeltin.\" · at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-smm/mm-smm-eski-ad865f0/test/mm-smm-244.test.mjs:187:12)"
+    },
+    {
+      "ad": "T6 bırakılan makbuzun PDF'i: SERBEST MESLEK MAKBUZU, Makbuz No SMM…, mali değeri yoktur YAZMAZ; faturada bırakılan belge MÜŞTERİ FİŞİ kalır",
+      "konum": "test/mm-smm-244.test.mjs:215:3",
+      "hata": "AssertionError [ERR_ASSERTION]: başlık: Deneme Hukuk Bürosu Ltd. Atatürk Blv. 1 Çankaya / Ankara Vergi Dairesi: Çankaya VKN: 1234567890 E-Posta: bilgi@deneme.com.tr MÜŞTERİ FİŞİ (SERBEST MESLEK) Fiş N · at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-smm/mm-smm-eski-ad865f0/test/mm-smm-244.test.mjs:217:12)"
+    },
+    {
+      "ad": "T7 bırakılan makbuz e-SMM olarak gönderilmez: kartta Gönder yok ve nedeni yazar; tek Gönder 409 (EDM'ye istek yok); numara ve durum değişmez",
+      "konum": "test/mm-smm-244.test.mjs:225:3",
+      "hata": "AssertionError [ERR_ASSERTION]: Gönder düğmesi yok · true !== false"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-mm-smm/yeni-test-ESKI-ad865f0.log",
+  "klasor": "/home/user/wt/mm-smm",
+  "ham_cikti_sha256": "f8d0bb24d106573cdbb03de83276101e91ebfbb53c1f87c13ea3631c63d1f225",
+  "ham_cikti_bayt": 11264
+}

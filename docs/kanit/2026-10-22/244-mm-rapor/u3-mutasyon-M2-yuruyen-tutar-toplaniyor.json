@@ -1,0 +1,43 @@
+{
+  "ad": "244-mm-rapor/u3-mutasyon-M2-yuruyen-tutar-toplaniyor",
+  "komut": "node --test --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-rapor/mm-rapor-mutasyon/test/tablo-raporlari-u3-244.test.mjs",
+  "commit": "0f610f9508dab20e28357ee59f50e0d26c381cdd",
+  "dal": "is/mm-rapor",
+  "kirli": 5,
+  "izlenmeyen": 13,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T22:05:06.186Z",
+  "sure_sn": 1.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 10,
+    "gecen": 8,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 U3 — Tablo raporları: kendi adı, alt TOPLAM satırı (ekran/PDF/Excel), bölünmeyen tutar, yerel gün › Tablodaki Vadeler: her süzgeç × ekran (JSON) / PDF / Excel — TOPLAM = satırlar, kendi adı, bölünmeyen tutar, yerel gün",
+      "konum": "test/tablo-raporlari-u3-244.test.mjs:134:5",
+      "hata": "vade-takip {}: \"days\" toplanmaz · 81 !== null (beklenen ~, gelen 81)"
+    },
+    {
+      "ad": "2.4.4 U3 — Tablo raporları: kendi adı, alt TOPLAM satırı (ekran/PDF/Excel), bölünmeyen tutar, yerel gün › Tablodaki Nakit Akışı: her süzgeç × ekran (JSON) / PDF / Excel — TOPLAM = satırlar, kendi adı, bölünmeyen tutar, yerel gün",
+      "konum": "test/tablo-raporlari-u3-244.test.mjs:134:5",
+      "hata": "nakit-akis {}: \"cumulative\" toplanmaz · 11248.5 !== null (beklenen ~, gelen 11248.5)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-mm-rapor/u3-mutasyon-M2-yuruyen-tutar-toplaniyor.log",
+  "klasor": "/home/user/wt/mm-rapor",
+  "ham_cikti_sha256": "ca21d455b7df701d6523400fb6e250501fe60a77cb32436af0b1af7c2aabbcd1",
+  "ham_cikti_bayt": 5871
+}

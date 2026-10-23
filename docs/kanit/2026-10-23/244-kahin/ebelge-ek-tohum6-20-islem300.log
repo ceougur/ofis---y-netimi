@@ -1,0 +1,23 @@
+
+> destekofis@2.4.3 test:kahin-ebelge
+> python3 test/bagimsiz/ebelge/fark.py --tohumlar 6-20 --islem 300 --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-244/kanit-ebelge-ek
+
+[ebelge-t6-i300] adım 300 · fark 0 · ihlal 0 · saf model son fark 1 · çatal seçimi 43 · İNCELE 0 · okunamayan UBL 0 · 16.9 sn
+[ebelge-t7-i300] adım 301 · fark 0 · ihlal 0 · saf model son fark 28 · çatal seçimi 38 · İNCELE 0 · okunamayan UBL 0 · 13.9 sn
+[ebelge-t8-i300] adım 301 · fark 0 · ihlal 0 · saf model son fark 11 · çatal seçimi 26 · İNCELE 0 · okunamayan UBL 0 · 14.0 sn
+[ebelge-t9-i300] adım 300 · fark 0 · ihlal 0 · saf model son fark 5 · çatal seçimi 23 · İNCELE 0 · okunamayan UBL 0 · 13.6 sn
+[ebelge-t10-i300] adım 300 · fark 0 · ihlal 0 · saf model son fark 2 · çatal seçimi 21 · İNCELE 0 · okunamayan UBL 0 · 15.8 sn
+[ebelge-t11-i300] adım 300 · fark 0 · ihlal 0 · saf model son fark 23 · çatal seçimi 36 · İNCELE 0 · okunamayan UBL 0 · 12.5 sn
+[ebelge-t12-i300] adım 300 · fark 0 · ihlal 0 · saf model son fark 24 · çatal seçimi 24 · İNCELE 0 · okunamayan UBL 0 · 13.5 sn
+[ebelge-t13-i300] adım 300 · fark 0 · ihlal 0 · saf model son fark 11 · çatal seçimi 35 · İNCELE 0 · okunamayan UBL 0 · 13.7 sn
+[ebelge-t14-i300] adım 300 · fark 0 · ihlal 0 · saf model son fark 2 · çatal seçimi 41 · İNCELE 0 · okunamayan UBL 0 · 15.9 sn
+[ebelge-t15-i300] adım 301 · fark 0 · ihlal 0 · saf model son fark 3 · çatal seçimi 40 · İNCELE 0 · okunamayan UBL 0 · 17.2 sn
+[ebelge-t16-i300] adım 300 · fark 0 · ihlal 0 · saf model son fark 6 · çatal seçimi 37 · İNCELE 0 · okunamayan UBL 0 · 15.8 sn
+[ebelge-t17-i300] adım 300 · fark 0 · ihlal 0 · saf model son fark 16 · çatal seçimi 29 · İNCELE 0 · okunamayan UBL 0 · 15.3 sn
+[ebelge-t18-i300] adım 300 · fark 0 · ihlal 0 · saf model son fark 26 · çatal seçimi 37 · İNCELE 0 · okunamayan UBL 0 · 17.6 sn
+[ebelge-t19-i300] adım 300 · fark 0 · ihlal 0 · saf model son fark 2 · çatal seçimi 40 · İNCELE 0 · okunamayan UBL 0 · 13.1 sn
+[ebelge-t20-i300] adım 300 · fark 0 · ihlal 0 · saf model son fark 3 · çatal seçimi 36 · İNCELE 0 · okunamayan UBL 0 · 15.8 sn
+# tests 15
+# pass 15
+# fail 0
+# kahin fark 0 ihlal 0

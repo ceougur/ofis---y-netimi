@@ -1,0 +1,38 @@
+{
+  "ad": "b10-r31e/kirmizi-a4274a5-tur8-y1-beklentisi",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-name-pattern=tur 8 Y1 test/tablo-borc-r31e.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T14:47:56.970Z",
+  "sure_sn": 1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 3,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "31e tur 8 Y1: 'Borçlu Telefon' / 'Borçlu TC' kolonu borç değil — Kişiler, Takvim, Vadeler, Nakit Akışı; Tutar + Masraf sekmesi notla › Kişiler: yalnız Pınar Su 1.000 ve Rıza Ak 2.000 (toplam 3.000); telefon / TC numarası borç değil; BorcluTC için not, tutar kolonu olmayan sekmeler için not",
+      "konum": "test/tablo-borc-r31e.test.mjs:508:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/r31e-f/docs/kanit/2026-10-23/b10-r31e/kirmizi-a4274a5-tur8-y1-beklentisi.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b10-eski-a4274a5",
+  "ham_cikti_sha256": "558099ec9993cd42cefa88e46f30b92275afc9cbc7b2ce7c513fbf30a593f84d",
+  "ham_cikti_bayt": 5259
+}

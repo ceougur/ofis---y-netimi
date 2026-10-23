@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""e-Belge numara/gönderim senaryo üreteci — dil `destekofis-ebelge/2` (varsayılan) ya da `/1` (tohumlu, belirlenimli).
+"""e-Belge numara/gönderim senaryo üreteci — dil `destekofis-ebelge/3` (varsayılan), `/2` ya da `/1` (tohumlu, belirlenimli).
 
-  python3 -I test/bagimsiz/ebelge/uretici.py --tohum 7 [--islem 100] [--dil 2] [--cikti <dosya>]
+  python3 -I test/bagimsiz/ebelge/uretici.py --tohum 7 [--islem 100] [--dil 3] [--cikti <dosya>]
+
+/3 ekleri (23.10.2026): Sil (Silinenler'e — kâğıt, bırakılmış, numarasız bekleyen, ara sıra başka belge) ve Silinenler'den Geri Yükle (K38/K39, E6); seçimler
+ayrı akıştan (r3) — /2 tohum dizisi /3'te aynı kalmaz (yeni işlem araya girer).
 
 /2 ekleri: e-SMM makbuzu (kaydet "belge_turu": "esmm"; kişi ve tüzel alıcı), Seçilenleri Gönder (seçili adımda "eski": "ekle" | "vazgec" — K33
 ön sorusuna kullanıcının yanıtı), Yalnız Programda İptal (iptal "yerel": true), üç yeni cari (il yok · vergi dairesi yok · Nihai Tüketici) ve büyük
@@ -27,6 +30,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from model import DIL, Model  # noqa: E402
 
 DIL1 = "destekofis-ebelge/1"
+DIL2 = "destekofis-ebelge/2"
 
 BASLANGICLAR = ["2026-06-17", "2026-12-27", "2026-01-28", "2026-03-30", "2026-02-26", "2026-08-31"]
 CARILER = {"K1": "kisi", "K2": "mukellef", "K3": "mukellef_pksiz", "K4": "gizli_mukellef", "K5": "kisi"}
@@ -46,12 +50,14 @@ def agirlikli(r, secenekler):
     return secenekler[-1][0]
 
 
-def uret(tohum, islem=100, dil=2):
+def uret(tohum, islem=100, dil=3):
     r = random.Random(tohum)
     r2 = random.Random(tohum * 1000003 + 2)  # /2 seçimleri ayrı akıştan (tohum aynıyken /1 akışı bozulmasın)
-    v2 = dil == 2
+    r3 = random.Random(tohum * 7919 + 3)  # /3 seçimleri ayrı akıştan
+    v2 = dil >= 2
+    v3 = dil == 3
     bugun = r.choice(BASLANGICLAR)
-    senaryo = {"dil": DIL if v2 else DIL1, "ad": f"ebelge-t{tohum}-i{islem}" + ("" if v2 else "-d1"), "tohum": tohum, "bugun": bugun,
+    senaryo = {"dil": {1: DIL1, 2: DIL2, 3: DIL}[dil], "ad": f"ebelge-t{tohum}-i{islem}" + {1: "-d1", 2: "-d2", 3: ""}[dil], "tohum": tohum, "bugun": bugun,
                "cariler": dict(CARILER2 if v2 else CARILER), "adimlar": []}
     m = Model(senaryo, ux15=v2)
     sayac = 0
@@ -77,11 +83,25 @@ def uret(tohum, islem=100, dil=2):
             ag = True
             ekle({"islem": "ag", "durum": "var"})
             continue
+        if v3 and r3.random() < 0.07:
+            # K39 Sil / Geri Yükle: çoğunlukla kâğıt, bırakılmış ya da numarasız bekleyen belge; ara sıra herhangi biri (gönderilmiş → red beklenir)
+            copte = belgeler(lambda b: b.get("cop"))
+            if copte and r3.random() < 0.35:
+                ekle({"islem": "geri_yukle", "belge": r3.choice(copte)["ad"]})
+                continue
+            uygun = belgeler(lambda b: not b.get("cop") and (b["tur"] == "kagit" or b["silindi"] or (not b["numara"] and not b["prog"])))
+            hepsi = belgeler(lambda b: not b.get("cop"))
+            xs = uygun if uygun and r3.random() < 0.85 else hepsi
+            if xs:
+                ekle({"islem": "sil", "belge": r3.choice(xs)["ad"]})
+                continue
         secim = agirlikli(r, [
             ("kaydet_sonra", 24), ("kaydet_simdi", 15), ("kagit", 3), ("kart_gonder", 8), ("tumunu", 8), ("secili", 3),
             ("listeden_sil", 5), ("iptal", 5), ("duzenle_tarih", 5), ("duzenle_tur", 2), ("ariza", 4), ("ag_yok", 3),
             ("esz", 2), ("tur_sil", 3), ("durum", 3), ("gun", 6), ("ileri", 1),
         ])
+        if v3 and secim == "kaydet_sonra" and r3.random() < 0.1:
+            secim = "kagit"  # /3: K38/K39 kâğıt seride silme ve sıra için daha çok kâğıt belge
         if v2 and secim in ("kaydet_sonra", "kaydet_simdi") and r2.random() < 0.3:
             secim = "smm_" + secim  # K34: kayıtların ~%30'u e-SMM makbuzu
         if secim in ("kaydet_sonra", "kaydet_simdi", "ileri", "kagit", "smm_kaydet_sonra", "smm_kaydet_simdi"):
@@ -108,7 +128,8 @@ def uret(tohum, islem=100, dil=2):
         elif secim == "tumunu":
             ekle({"islem": "tumunu_gonder", "kapsam": "hepsi"})
         elif secim == "secili":
-            xs = belgeler(lambda b: b["tur"] != "kagit" and not b["prog"])
+            # /3: Silinenler'deki belge Gönderilecekler'de görünmez, seçilemez (yalnız API yolu — seçimden dışarıda)
+            xs = belgeler(lambda b: b["tur"] != "kagit" and not b["prog"] and not b.get("cop"))
             if xs:
                 adim = {"islem": "tumunu_gonder", "kapsam": "secili", "belgeler": sorted({b["ad"] for b in r.sample(xs, min(len(xs), r.randint(1, 3)))})}
                 if v2 and r2.random() < 0.85:
@@ -167,6 +188,10 @@ def uret(tohum, islem=100, dil=2):
             ekle({"islem": "gun_ilerlet", "gun": g})
         ariza_bekliyor = m.dunyalar[0].ariza is not None
     ekle({"islem": "ag", "durum": "var"})
+    if m.dunyalar[0].ariza is not None:
+        # Bekleyen tek atımlık arıza son tura düşerse belge sonda Sonucu Belirsiz kalır ve I18 (sonda tutarlılık) haksız ateşlenir (kâhin hatası
+        # düzeltmesi 23.10.2026, tohum 3 × 150 adım 150): arıza önce ayrı bir turda tüketilir, son tur belirsizi çözer.
+        ekle({"islem": "tumunu_gonder", "kapsam": "hepsi"})
     ekle({"islem": "tumunu_gonder", "kapsam": "hepsi"})
     return senaryo
 
@@ -175,7 +200,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--tohum", type=int, required=True)
     p.add_argument("--islem", type=int, default=100)
-    p.add_argument("--dil", type=int, choices=(1, 2), default=2)
+    p.add_argument("--dil", type=int, choices=(1, 2, 3), default=3)
     p.add_argument("--cikti")
     a = p.parse_args()
     s = uret(a.tohum, a.islem, dil=a.dil)

@@ -18,6 +18,8 @@
 //   N11 (31a F3, kullanıcı kararı 22.10) BAĞSIZ evrak karşılıksız: kapattığı faturalar açılır; kısmi, geri al, sonraki ödeme en eskiye, ciro
 //       edilmiş, iki karşılıksız (bağlı + bağsız), iade faturası, taksitli/taksite sayılan (değişmez), şüpheli alacak, tahsildeki,
 //       Mevcut Borç kartı arada; 002 şirketi; v2.4.3 verisinde karşılıksız bağsız evrak (Ödendi → Açık, bakiye aynı)         → T17, T12, T13
+//   N12 (r31e Y8, 31e dar kontrol 23.10) faturanın KENDİ formundan alınan çek "kendi ödemesi": yalnız o varken Düzenle → taksitli İZİNLİ (olumlu yol
+//       hiçbir testte yoktu; ownPaymentLines çek olaylarını saymayan mutant M6q yaşıyordu)                                     → T11b
 // Beklenen sayılar programdan bağımsız: burada girilen tutarların elle toplamı / kuralı (karar metni); veri tabanı satırları ayrıca okunur (ders 3).
 import assert from "node:assert/strict";
 import { mkdtempSync, rmSync } from "node:fs";
@@ -358,6 +360,22 @@ describe("2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu 
     await refused("taksitlendir", api.post(`/api/workspace/invoices/${target.id}/edit`, { ...body, payment: { rest: "installments", installments: { count: 2, firstDue: day(20), everyMonths: 1 } } }), 409, "invoice-paid-elsewhere");
     await refused("cari değiştir", api.post(`/api/workspace/invoices/${target.id}/edit`, { ...body, accountId: other.id, payment: { rest: "open" } }), 400, "invoice-bonded");
     assert.equal(await k.open(target.id), 600);
+    await k.integrity();
+  });
+
+  test("T11b yalnız faturanın kendi formundan alınan çek varken Düzenle → taksitli izinli: kalan 200 TL karta, çek tek ve faturanın; Mutabakat Testi temiz", async () => {
+    const acc = await k.account("T11b");
+    const cheques = [{ instrument: "cheque", amount: 400, dueDate: day(30), serialNo: "UX18-T11B", bank: "Ziraat" }];
+    const target = await k.invoice(acc, 600, { payment: { cheques, rest: "open" } });
+    assert.equal(await k.open(target.id), 200, "ön koşul: 600 − kendi çeki 400");
+    const body = { kind: "sale", scenario: "service_sale", accountId: acc.id, issueDate: target.issueDate, lines: [{ itemId: k.item.id, qty: 1, unitPrice: 600, vatRate: 0 }] };
+    const edited = await must("taksitlendir", api.post(`/api/workspace/invoices/${target.id}/edit`, { ...body, payment: { cheques, rest: "installments", installments: { count: 2, firstDue: day(20), everyMonths: 1 } } }));
+    assert.equal(edited.id, target.id);
+    const plan = k.one("SELECT id, total FROM plans WHERE invoice_id = ? AND deleted_at IS NULL", target.id);
+    assert.ok(plan, "fatura taksit kartına bağlandı");
+    assert.equal(cents(plan.total), 20000, "kart yalnız kalanı taşır: 600 − 400 = 200");
+    const own = k.many("SELECT c.id, c.amount, c.invoice_id AS own FROM cheques c WHERE c.account_id = ? AND c.deleted_at IS NULL", acc.id);
+    assert.deepEqual(own.map(row => [cents(row.amount), row.own]), [[40000, target.id]], "çek tek, faturanın kendi evrakı (form yeniden yazdı, ikinci çek açılmadı)");
     await k.integrity();
   });
 

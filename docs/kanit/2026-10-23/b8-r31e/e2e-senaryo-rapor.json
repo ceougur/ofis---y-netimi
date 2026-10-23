@@ -1,0 +1,32 @@
+{
+  "ad": "b8-r31e/e2e-senaryo-rapor",
+  "komut": "npm run test:senaryo-rapor",
+  "commit": "f8e9ae4fd1ff023b1c35f5d8cd0a60792f629f12",
+  "dal": "is/r31e-f",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T14:04:52.073Z",
+  "sure_sn": 37.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 90,
+    "gecen": 90,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/b8-r31e/e2e-senaryo-rapor.log",
+  "klasor": "/home/user/wt/r31e-f",
+  "ham_cikti_sha256": "129e5310cb348ddb523e3454ce75fdb7b49a330311cad6d21d2cdd21b2cd1fd2",
+  "ham_cikti_bayt": 7770
+}

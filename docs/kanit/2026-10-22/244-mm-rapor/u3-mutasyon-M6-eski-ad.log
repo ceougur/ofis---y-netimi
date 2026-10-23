@@ -1,0 +1,142 @@
+TAP version 13
+# Subtest: 2.4.4 U3 — Tablo raporları: kendi adı, alt TOPLAM satırı (ekran/PDF/Excel), bölünmeyen tutar, yerel gün
+    # Subtest: Tablodaki Kişiler: TOPLAM Borç / Alacak / Bakiye elle hesapla aynı; özet aynı
+    ok 1 - Tablodaki Kişiler: TOPLAM Borç / Alacak / Bakiye elle hesapla aynı; özet aynı
+      ---
+      duration_ms: 20.454627
+      type: 'test'
+      ...
+    # Subtest: Tablodaki Kişiler: her süzgeç × ekran (JSON) / PDF / Excel — TOPLAM = satırlar, kendi adı, bölünmeyen tutar, yerel gün
+    ok 2 - Tablodaki Kişiler: her süzgeç × ekran (JSON) / PDF / Excel — TOPLAM = satırlar, kendi adı, bölünmeyen tutar, yerel gün
+      ---
+      duration_ms: 226.024093
+      type: 'test'
+      ...
+    # Subtest: Tablodaki Vadeler: her süzgeç × ekran (JSON) / PDF / Excel — TOPLAM = satırlar, kendi adı, bölünmeyen tutar, yerel gün
+    ok 3 - Tablodaki Vadeler: her süzgeç × ekran (JSON) / PDF / Excel — TOPLAM = satırlar, kendi adı, bölünmeyen tutar, yerel gün
+      ---
+      duration_ms: 174.330604
+      type: 'test'
+      ...
+    # Subtest: Tablodaki Nakit Akışı: her süzgeç × ekran (JSON) / PDF / Excel — TOPLAM = satırlar, kendi adı, bölünmeyen tutar, yerel gün
+    not ok 4 - Tablodaki Nakit Akışı: her süzgeç × ekran (JSON) / PDF / Excel — TOPLAM = satırlar, kendi adı, bölünmeyen tutar, yerel gün
+      ---
+      duration_ms: 11.843476
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-rapor/mm-rapor-mutasyon/test/tablo-raporlari-u3-244.test.mjs:134:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        nakit-akis {}: PDF dosya adı
+        + actual - expected
+        
+        + 'Nakit Akış 23.10.2026.pdf'
+        - 'Tablodaki Nakit Akışı 23.10.2026.pdf'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Tablodaki Nakit Akışı 23.10.2026.pdf'
+      actual: 'Nakit Akış 23.10.2026.pdf'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-rapor/mm-rapor-mutasyon/test/tablo-raporlari-u3-244.test.mjs:147:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: PDF: 20 kolonlu Tablodaki Kişiler'de her tutar ve programın kolon başlıkları bölünmeden; bırakılan özel alan kolonu söylenir
+    ok 5 - PDF: 20 kolonlu Tablodaki Kişiler'de her tutar ve programın kolon başlıkları bölünmeden; bırakılan özel alan kolonu söylenir
+      ---
+      duration_ms: 14.062946
+      type: 'test'
+      ...
+    # Subtest: PDF başlığı, Excel sayfası ve dosya adı raporun kendi adı (defter raporunun adı değil)
+    not ok 6 - PDF başlığı, Excel sayfası ve dosya adı raporun kendi adı (defter raporunun adı değil)
+      ---
+      duration_ms: 36.5152
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-rapor/mm-rapor-mutasyon/test/tablo-raporlari-u3-244.test.mjs:201:3'
+      failureType: 'testCodeFailure'
+      error: 'nakit-akis: PDF başlığı "Tablodaki Nakit Akışı" olmalı ("Nakit Akış" değil): 001 · Şirket 1 Nakit Akış 2 sayfa birleşik Oluşturma: 23.10.2026 00:25 Hazırlayan: Ofis yöneticisi Beklenen Tahsilat 1.466.500,50 TL Gerçekleşen Tahsilat 34.567'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-rapor/mm-rapor-mutasyon/test/tablo-raporlari-u3-244.test.mjs:205:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: istemcinin sekme adları (hof-reports.js KINDS) = sunucunun PDF/Excel adları (TABLE_REPORT_TITLES)
+    not ok 7 - istemcinin sekme adları (hof-reports.js KINDS) = sunucunun PDF/Excel adları (TABLE_REPORT_TITLES)
+      ---
+      duration_ms: 2.122627
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-rapor/mm-rapor-mutasyon/test/tablo-raporlari-u3-244.test.mjs:213:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        sunucunun rapor adları (TABLE_REPORT_TITLES)
+        + actual - expected
+        
+          {
+            'cari-ekstre': 'Tablodaki Kişiler',
+        +   'nakit-akis': 'Nakit Akış',
+        -   'nakit-akis': 'Tablodaki Nakit Akışı',
+            'vade-takip': 'Tablodaki Vadeler'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        cari-ekstre: 'Tablodaki Kişiler'
+        vade-takip: 'Tablodaki Vadeler'
+        nakit-akis: 'Tablodaki Nakit Akışı'
+      actual:
+        cari-ekstre: 'Tablodaki Kişiler'
+        vade-takip: 'Tablodaki Vadeler'
+        nakit-akis: 'Nakit Akış'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-rapor/mm-rapor-mutasyon/test/tablo-raporlari-u3-244.test.mjs:218:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: PDF üreticisi (bütün raporlar): en büyük tutar satırların %10'unda kalsa da ve TOPLAM hücresi bölünmez
+    ok 8 - PDF üreticisi (bütün raporlar): en büyük tutar satırların %10'unda kalsa da ve TOPLAM hücresi bölünmez
+      ---
+      duration_ms: 5.967979
+      type: 'test'
+      ...
+    # Subtest: dosya adı yerel gündür: yerel 00:25 (UTC'de dünkü gün) → bugünün tarihi
+    ok 9 - dosya adı yerel gündür: yerel 00:25 (UTC'de dünkü gün) → bugünün tarihi
+      ---
+      duration_ms: 14.066366
+      type: 'test'
+      ...
+    # Subtest: yetkisiz kullanıcı (Tablo ve Personel Raporları yetkisi yok): ekran ve dışa aktarım 403
+    ok 10 - yetkisiz kullanıcı (Tablo ve Personel Raporları yetkisi yok): ekran ve dışa aktarım 403
+      ---
+      duration_ms: 111.524949
+      type: 'test'
+      ...
+    1..10
+not ok 1 - 2.4.4 U3 — Tablo raporları: kendi adı, alt TOPLAM satırı (ekran/PDF/Excel), bölünmeyen tutar, yerel gün
+  ---
+  duration_ms: 1173.894703
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-rapor/mm-rapor-mutasyon/test/tablo-raporlari-u3-244.test.mjs:49:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 10
+# suites 1
+# pass 7
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1596.402353

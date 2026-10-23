@@ -1,0 +1,32 @@
+{
+  "ad": "c2-komsu-birim",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/accounts-stock.test.mjs test/asama0-226.test.mjs test/banka-210-eslesmis.test.mjs test/banka-210-gg-olay.test.mjs test/banka-210-gg2-bag.test.mjs test/banka-210-gg3-bag.test.mjs test/banka-210-post.test.mjs test/banka-210-sira.test.mjs test/banka-210-statik.test.mjs test/cards.test.mjs test/cari-tur-222.test.mjs test/cash.test.mjs test/cheques-overview.test.mjs test/choices.test.mjs test/columns.test.mjs test/custom-sectors.test.mjs test/dataset.test.mjs test/defter-243-stok-acilis.test.mjs test/drive-kaldirildi.test.mjs test/dues.test.mjs test/duzeltmeler-211.test.mjs test/duzeltmeler-212.test.mjs test/export.test.mjs test/fatura-243-stok-kdv.test.mjs test/fixes.test.mjs test/formula.test.mjs test/free.test.mjs test/gg243-dar-kontrol-stok.test.mjs test/gg243-dar3-stok.test.mjs test/gg243-stok-excel.test.mjs test/goc-243-stok-acilis.test.mjs test/hiz-243-hesap-defter.test.mjs test/ice-alma-sayi-hucre-api.test.mjs test/ice-alma-sayi-hucre.test.mjs test/import-crash.test.mjs test/inceleme-222.test.mjs test/inceleme-226-2.test.mjs test/inceleme-226.test.mjs test/insight.test.mjs test/is-akisi.test.mjs test/iz1-sayfa-pencere.test.mjs test/kalan-borc-ortak-30a.test.mjs test/kalan-borc-satir-31d.test.mjs test/kayit-tahsilat-244.test.mjs test/nakit-akis-kasa-mm6.test.mjs test/nakit-akis-sekme-30e.test.mjs test/netten-brute-244.test.mjs test/permissions.test.mjs test/plan-case-link.test.mjs test/plan-transfer.test.mjs test/plans.test.mjs test/rapor-220.test.mjs test/rapor-tablodaki-kisiler-244.test.mjs test/rapor-tablodaki-kisiler-f1.test.mjs test/raporlar-209.test.mjs test/reasoning.test.mjs test/reports.test.mjs test/sayfa-225.test.mjs test/schema-flex.test.mjs test/serbest-aktar-210.test.mjs test/sessions.test.mjs test/sheets-yedek.test.mjs test/sirketler-217.test.mjs test/sources.test.mjs test/table-columns.test.mjs test/tablo-borc-dosya-u2.test.mjs test/tablo-borc-r31e.test.mjs test/tablo-raporlari-u3-244.test.mjs test/tablodan-aktar-244.test.mjs test/trash.test.mjs test/upgrade-identity.test.mjs test/uyari-ufku-225.test.mjs test/yazim-duzeni.test.mjs test/insight.test.mjs test/money*.test.mjs",
+  "commit": "17cc5f42ac576348312441774b5c8c6deb18025f",
+  "dal": "is/r31e-c",
+  "kirli": 9,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T05:37:43.096Z",
+  "sure_sn": 180.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 787,
+    "gecen": 787,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/c2-komsu-birim.log",
+  "klasor": "/home/user/wt/r31e-c",
+  "ham_cikti_sha256": "e8e3032f13a6130d0c79e6814aef0be6ef9581529b27d9479e532f3ec317253a",
+  "ham_cikti_bayt": 269336
+}

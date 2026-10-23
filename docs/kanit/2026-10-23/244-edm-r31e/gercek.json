@@ -1,0 +1,32 @@
+{
+  "ad": "244-edm-r31e/gercek",
+  "komut": "node --disable-warning=ExperimentalWarning tools/edm-gercek.mjs --gercek --cikti docs/kanit/2026-10-23/244-edm-r31e/gercek",
+  "commit": "9708b4aad16a9ee6c0c76bd933bb280e314ebe33",
+  "dal": "is/r31e-e1",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T03:26:42.988Z",
+  "sure_sn": 104.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 52,
+    "gecen": 52,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/244-edm-r31e/gercek.log",
+  "klasor": "/home/user/wt/r31e-e1",
+  "ham_cikti_sha256": "04e5b48303412203839423e631045d20844dadbc42ceedb335e74a2825035f55",
+  "ham_cikti_bayt": 10552
+}

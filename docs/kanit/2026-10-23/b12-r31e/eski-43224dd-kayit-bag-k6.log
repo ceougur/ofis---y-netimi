@@ -1,0 +1,23 @@
+TAP version 13
+# Subtest: 31e B1 K6: kayıt tahsilatının anahtar taşıması bank.post 'assign' kapısından geçer
+    # Subtest: Yerine koy taşıması: UPDATE payments bank.post bağlamında, olay kapıya bildirilir; tahsilat yeni anahtarda, olayı ve İşlem No aynı; tutar / yol / hesap / tarih aynı; K6 ihlali yok
+    ok 1 - Yerine koy taşıması: UPDATE payments bank.post bağlamında, olay kapıya bildirilir; tahsilat yeni anahtarda, olayı ve İşlem No aynı; tutar / yol / hesap / tarih aynı; K6 ihlali yok
+      ---
+      duration_ms: 678.915987
+      type: 'test'
+      ...
+    1..1
+ok 1 - 31e B1 K6: kayıt tahsilatının anahtar taşıması bank.post 'assign' kapısından geçer
+  ---
+  duration_ms: 679.854503
+  type: 'suite'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1083.157101

@@ -1,0 +1,124 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3j-ayni-ad-takas",
+ "aciklama": "N3 (karar sahibi 23.10.2026): 'aynı konum + aynı kişi' yalnız kişi değeri iki tabloda TEK satırken geçerli. Aynı adlı iki kişi (Ali Veli 100 / 200; telefon ve kimlik yok) Yerine koy'da yer değiştirir ve İKİSİNİN de tutarı değişir (250 / 150): bağ HİÇBİR YERE taşınmaz — önizlemede 'Ali Veli' uyarısı + onay; Ali Veli'nin rapordaki tahsilatı 0 (bağ yanlış satıra gitmez); Su Ak (aynı içerik) yerinde.",
+ "dayanak": "KARARLAR.md B3f N3",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Aidat",
+     "tur": "serbest",
+     "ilk": [
+      "Müşteri"
+     ],
+     "basliklar": [
+      "Telefon",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "Q1",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "100"
+       }
+      },
+      {
+       "no": "Q2",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "200"
+       }
+      },
+      {
+       "no": "Q3",
+       "isim": "Su Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "300"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "p1",
+   "islem": "kayit_tahsilat",
+   "kayit": "Q1",
+   "tutar": "10",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "p2",
+   "islem": "kayit_tahsilat",
+   "kayit": "Q2",
+   "tutar": "20",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "p3",
+   "islem": "kayit_tahsilat",
+   "kayit": "Q3",
+   "tutar": "30",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  },
+  {
+   "id": "t2",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Aidat",
+     "tur": "serbest",
+     "ilk": [
+      "Müşteri"
+     ],
+     "basliklar": [
+      "Telefon",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "Q2",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "250"
+       }
+      },
+      {
+       "no": "Q1",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "150"
+       }
+      },
+      {
+       "no": "Q3",
+       "isim": "Su Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "300"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k2",
+   "islem": "kontrol"
+  }
+ ]
+}

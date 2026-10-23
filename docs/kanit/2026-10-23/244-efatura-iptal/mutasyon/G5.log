@@ -1,0 +1,287 @@
+TAP version 13
+# Subtest: belirsiz e-Fatura: yalnız programda iptal kapısının sınırı (saf)
+    # Subtest: uncertainWindow e-Faturayı kapsar; e-Arşiv / e-SMM'de attemptWindow ile aynı; cancelWindow e-Faturada yine yok (normal iptal değişmez)
+    ok 1 - uncertainWindow e-Faturayı kapsar; e-Arşiv / e-SMM'de attemptWindow ile aynı; cancelWindow e-Faturada yine yok (normal iptal değişmez)
+      ---
+      duration_ms: 2.844869
+      type: 'test'
+      ...
+    1..1
+ok 1 - belirsiz e-Fatura: yalnız programda iptal kapısının sınırı (saf)
+  ---
+  duration_ms: 4.19316
+  type: 'suite'
+  ...
+# Subtest: belirsiz e-Fatura + Yalnız Programda İptal (sahte EDM, sahte saat)
+    # Subtest: F5 girişimden 8 gün dolmadıysa EDM'ye sorulmaz (K4 çıkış yolu); belgeye yazılan ileti e-Faturanın iptal yolunu söyler
+    not ok 1 - F5 girişimden 8 gün dolmadıysa EDM'ye sorulmaz (K4 çıkış yolu); belgeye yazılan ileti e-Faturanın iptal yolunu söyler
+      ---
+      duration_ms: 229.056639
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/efatura-iptal/efatura-iptal-eski-75a5706/test/ebelge-244-efatura-belirsiz-iptal.test.mjs:134:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'Yalnız programda iptal edildi (entegratöre iptal gönderilmedi). Entegratörde belge varsa orada ayrıca iptal edin.'
+        - "Yalnız programda iptal edildi (EDM'ye sorulmadı). Belge EDM'ye ulaşıp alıcıya iletildiyse GİB'de geçerlidir: alıcıdan ret ya da GİB'in e-Fatura iptal yolunu isteyin, gerekirse alıcı iade faturası keser."
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: "Yalnız programda iptal edildi (EDM'ye sorulmadı). Belge EDM'ye ulaşıp alıcıya iletildiyse GİB'de geçerlidir: alıcıdan ret ya da GİB'in e-Fatura iptal yolunu isteyin, gerekirse alıcı iade faturası keser."
+      actual: 'Yalnız programda iptal edildi (entegratöre iptal gönderilmedi). Entegratörde belge varsa orada ayrıca iptal edin.'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/efatura-iptal/efatura-iptal-eski-75a5706/test/ebelge-244-efatura-belirsiz-iptal.test.mjs:142:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: F6 sınır: girişimden sonraki 8. gün 23:59'da sorulmaz; 9. gün sorulur
+    ok 2 - F6 sınır: girişimden sonraki 8. gün 23:59'da sorulmaz; 9. gün sorulur
+      ---
+      duration_ms: 200.138234
+      type: 'test'
+      ...
+    # Subtest: F3 8 gün geçti, EDM "bulunamadı" → belge iletilmemiş, iptal serbest
+    ok 3 - F3 8 gün geçti, EDM "bulunamadı" → belge iletilmemiş, iptal serbest
+      ---
+      duration_ms: 98.28849
+      type: 'test'
+      ...
+    # Subtest: F1/F2/F10 TEMELFATURA: 8 gün geçti, belge EDM'de VAR → yalnız programda iptal reddedilir, durum belgeye yazılır; ileti iptal yolunu söyler ve o yol çalışır
+    ok 4 - F1/F2/F10 TEMELFATURA: 8 gün geçti, belge EDM'de VAR → yalnız programda iptal reddedilir, durum belgeye yazılır; ileti iptal yolunu söyler ve o yol çalışır
+      ---
+      duration_ms: 134.831494
+      type: 'test'
+      ...
+    # Subtest: F1/F2/F10 TICARIFATURA: 8 gün geçti, belge EDM'de VAR → yalnız programda iptal reddedilir, durum belgeye yazılır; ileti iptal yolunu söyler ve o yol çalışır
+    ok 5 - F1/F2/F10 TICARIFATURA: 8 gün geçti, belge EDM'de VAR → yalnız programda iptal reddedilir, durum belgeye yazılır; ileti iptal yolunu söyler ve o yol çalışır
+      ---
+      duration_ms: 107.47057
+      type: 'test'
+      ...
+    # Subtest: F4 8 gün geçti, EDM'ye ulaşılamıyor → iptal yapılmaz (502), belge belirsiz kalır
+    ok 6 - F4 8 gün geçti, EDM'ye ulaşılamıyor → iptal yapılmaz (502), belge belirsiz kalır
+      ---
+      duration_ms: 72.722776
+      type: 'test'
+      ...
+    # Subtest: F7 gönderim izi yoksa kesim gününden: kesimden 9. gün EDM'ye sorulur
+    ok 7 - F7 gönderim izi yoksa kesim gününden: kesimden 9. gün EDM'ye sorulur
+      ---
+      duration_ms: 51.335966
+      type: 'test'
+      ...
+    # Subtest: F8 Fatura Ayarları yetkisi olmayan: 403, EDM'ye sorulmaz, belge değişmez
+    ok 8 - F8 Fatura Ayarları yetkisi olmayan: 403, EDM'ye sorulmaz, belge değişmez
+      ---
+      duration_ms: 172.61851
+      type: 'test'
+      ...
+    # Subtest: F9 e-Faturanın normal iptali değişmez: gönderilmiş e-Faturada süre bilgisi yok; onaysız İptal Et 409 einvoice-sent
+    ok 9 - F9 e-Faturanın normal iptali değişmez: gönderilmiş e-Faturada süre bilgisi yok; onaysız İptal Et 409 einvoice-sent
+      ---
+      duration_ms: 64.835385
+      type: 'test'
+      ...
+    1..9
+not ok 2 - belirsiz e-Fatura + Yalnız Programda İptal (sahte EDM, sahte saat)
+  ---
+  duration_ms: 1637.732573
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/efatura-iptal/efatura-iptal-eski-75a5706/test/ebelge-244-efatura-belirsiz-iptal.test.mjs:84:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: iptal süresi kuralı (lib/einvoice/iptal-suresi.mjs, saf)
+    # Subtest: 8 gün iletimden; başlangıç günü sayılmaz, 8. gün dahil
+    ok 1 - 8 gün iletimden; başlangıç günü sayılmaz, 8. gün dahil
+      ---
+      duration_ms: 1.678701
+      type: 'test'
+      ...
+    # Subtest: iletim izi yoksa kesim günü (süre uzamaz); ileti kesim gününü ve nedenini söyler
+    ok 2 - iletim izi yoksa kesim günü (süre uzamaz); ileti kesim gününü ve nedenini söyler
+      ---
+      duration_ms: 0.399203
+      type: 'test'
+      ...
+    # Subtest: e-SMM aynı kural; e-Fatura, kâğıt, taslak, Hata, belirsiz ve gönderilmemiş belge kural dışı
+    ok 3 - e-SMM aynı kural; e-Fatura, kâğıt, taslak, Hata, belirsiz ve gönderilmemiş belge kural dışı
+      ---
+      duration_ms: 0.460155
+      type: 'test'
+      ...
+    # Subtest: ay sonu ve yıl dönümü takvim günüyle
+    ok 4 - ay sonu ve yıl dönümü takvim günüyle
+      ---
+      duration_ms: 0.268478
+      type: 'test'
+      ...
+    # Subtest: iletim anı: belgeyi EDM'ye ulaştırmış olabilecek SON girişim (durum sorgusu, hiç gitmemiş istek ve red girişim değildir)
+    ok 5 - iletim anı: belgeyi EDM'ye ulaştırmış olabilecek SON girişim (durum sorgusu, hiç gitmemiş istek ve red girişim değildir)
+      ---
+      duration_ms: 0.362116
+      type: 'test'
+      ...
+    1..5
+ok 3 - iptal süresi kuralı (lib/einvoice/iptal-suresi.mjs, saf)
+  ---
+  duration_ms: 4.247536
+  type: 'suite'
+  ...
+# Subtest: iptal süresi: program uçları (sahte EDM, sahte saat)
+    # Subtest: gün sınırı programın yerel günüdür: 23:59'da gönderilen belgenin son günü 8 gün sonra, 00:00 geçince 9. gün; 00:30'da gönderilen o gün sayılır
+    ok 1 - gün sınırı programın yerel günüdür: 23:59'da gönderilen belgenin son günü 8 gün sonra, 00:00 geçince 9. gün; 00:30'da gönderilen o gün sayılır
+      ---
+      duration_ms: 406.159141
+      type: 'test'
+      ...
+    # Subtest: iletimden 8. gün iptal edilir (kesimden 11. gün): EDM'de ve programda
+    ok 2 - iletimden 8. gün iptal edilir (kesimden 11. gün): EDM'de ve programda
+      ---
+      duration_ms: 118.825986
+      type: 'test'
+      ...
+    # Subtest: iletimden 9. gün reddedilir: ileti son günü yazar, belge ve EDM değişmez, kartta neden görünür
+    ok 3 - iletimden 9. gün reddedilir: ileti son günü yazar, belge ve EDM değişmez, kartta neden görünür
+      ---
+      duration_ms: 71.654289
+      type: 'test'
+      ...
+    # Subtest: yalnız programda iptal (localOnly) süresi dolmuş gönderilmiş belgede süreyle reddedilir; süre içinde de gönderilmiş belgede yalnız programda iptal yok (E7)
+    ok 4 - yalnız programda iptal (localOnly) süresi dolmuş gönderilmiş belgede süreyle reddedilir; süre içinde de gönderilmiş belgede yalnız programda iptal yok (E7)
+      ---
+      duration_ms: 123.470528
+      type: 'test'
+      ...
+    # Subtest: sonucu belirsiz gönderim (EDM işledi, yanıt koptu): süre girişim gününden, Durum Sorgula gününden değil
+    ok 5 - sonucu belirsiz gönderim (EDM işledi, yanıt koptu): süre girişim gününden, Durum Sorgula gününden değil
+      ---
+      duration_ms: 80.299082
+      type: 'test'
+      ...
+    # Subtest: EDM reddetti (Hata) → yeniden gönderim: süre yeniden gönderim gününden
+    ok 6 - EDM reddetti (Hata) → yeniden gönderim: süre yeniden gönderim gününden
+      ---
+      duration_ms: 133.087805
+      type: 'test'
+      ...
+    # Subtest: Hata görünen belge iptalde EDM'de oluşturulmuş çıkarsa süre ona da uygulanır (EDM'ye iptal gitmez)
+    ok 7 - Hata görünen belge iptalde EDM'de oluşturulmuş çıkarsa süre ona da uygulanır (EDM'ye iptal gitmez)
+      ---
+      duration_ms: 86.862701
+      type: 'test'
+      ...
+    # Subtest: EDM'ye ulaşmamış girişim (bulunamadı) → yeniden gönderim: süre yeniden gönderim gününden
+    ok 8 - EDM'ye ulaşmamış girişim (bulunamadı) → yeniden gönderim: süre yeniden gönderim gününden
+      ---
+      duration_ms: 152.777337
+      type: 'test'
+      ...
+    # Subtest: portal taslağı portaldan gönderildi: süre taslak yükleme gününden (gönderim ondan önce olamaz)
+    ok 9 - portal taslağı portaldan gönderildi: süre taslak yükleme gününden (gönderim ondan önce olamaz)
+      ---
+      duration_ms: 100.16972
+      type: 'test'
+      ...
+    # Subtest: e-Fatura kuralın dışında: süre bilgisi yok, bugünkü iptal yanıtı değişmez
+    ok 10 - e-Fatura kuralın dışında: süre bilgisi yok, bugünkü iptal yanıtı değişmez
+      ---
+      duration_ms: 87.54431
+      type: 'test'
+      ...
+    # Subtest: belirsiz + yalnız programda iptal: girişimden 8 gün dolmadıysa EDM'ye sorulmaz (bugünkü yol)
+    ok 11 - belirsiz + yalnız programda iptal: girişimden 8 gün dolmadıysa EDM'ye sorulmaz (bugünkü yol)
+      ---
+      duration_ms: 79.698073
+      type: 'test'
+      ...
+    # Subtest: belirsiz + yalnız programda iptal, 8 gün geçti: EDM "bulunamadı" → belge iletilmemiş, iptal serbest
+    ok 12 - belirsiz + yalnız programda iptal, 8 gün geçti: EDM "bulunamadı" → belge iletilmemiş, iptal serbest
+      ---
+      duration_ms: 82.116936
+      type: 'test'
+      ...
+    # Subtest: belirsiz + yalnız programda iptal, 8 gün geçti: belge EDM'de VAR → süre doldu, reddedilir; durum belgeye yazılır, EDM'ye iptal gitmez
+    ok 13 - belirsiz + yalnız programda iptal, 8 gün geçti: belge EDM'de VAR → süre doldu, reddedilir; durum belgeye yazılır, EDM'ye iptal gitmez
+      ---
+      duration_ms: 73.815736
+      type: 'test'
+      ...
+    # Subtest: belirsiz + yalnız programda iptal, 8 gün geçti: EDM'de var ama Hata → durum yazılır, bu istekte iptal yok
+    ok 14 - belirsiz + yalnız programda iptal, 8 gün geçti: EDM'de var ama Hata → durum yazılır, bu istekte iptal yok
+      ---
+      duration_ms: 71.022946
+      type: 'test'
+      ...
+    # Subtest: belirsiz + yalnız programda iptal, 8 gün geçti: EDM'ye ulaşılamıyor → iptal yapılmaz, belge belirsiz kalır
+    ok 15 - belirsiz + yalnız programda iptal, 8 gün geçti: EDM'ye ulaşılamıyor → iptal yapılmaz, belge belirsiz kalır
+      ---
+      duration_ms: 69.802
+      type: 'test'
+      ...
+    # Subtest: ay sonu ve yıl dönümü: 28.12 iletim → 05.01 iptal edilir, 06.01 reddedilir
+    ok 16 - ay sonu ve yıl dönümü: 28.12 iletim → 05.01 iptal edilir, 06.01 reddedilir
+      ---
+      duration_ms: 148.283556
+      type: 'test'
+      ...
+    1..16
+ok 4 - iptal süresi: program uçları (sahte EDM, sahte saat)
+  ---
+  duration_ms: 2317.591448
+  type: 'suite'
+  ...
+# Subtest: iptal süresi: e-SMM (gönderim kapısı madde 22'de açılır; kural şimdiden e-SMM'yi kapsar)
+    # Subtest: iletilmiş e-SMM 9. gün reddedilir (e-SMM iletisiyle); süre içinde kartta son gün; iletim izi gönderim girişiminden
+    ok 1 - iletilmiş e-SMM 9. gün reddedilir (e-SMM iletisiyle); süre içinde kartta son gün; iletim izi gönderim girişiminden
+      ---
+      duration_ms: 48.674223
+      type: 'test'
+      ...
+    1..1
+ok 5 - iptal süresi: e-SMM (gönderim kapısı madde 22'de açılır; kural şimdiden e-SMM'yi kapsar)
+  ---
+  duration_ms: 323.392792
+  type: 'suite'
+  ...
+# Subtest: belirsiz e-SMM + yalnız programda iptal (kullanıcı kararı 22.10.2026): e-SMM'de de "bulunamadı" 11017 (madde 24'te gerçek EDM'de doğrulandı)
+    # Subtest: 8 gün geçti, EDM 11017 ("SMM bulunamadı" — gerçek EDM test ortamında doğrulandı, madde 24, 22.10.2026) döndü: e-SMM'de de belge iletilmemiş, iptal serbest
+    ok 1 - 8 gün geçti, EDM 11017 ("SMM bulunamadı" — gerçek EDM test ortamında doğrulandı, madde 24, 22.10.2026) döndü: e-SMM'de de belge iletilmemiş, iptal serbest
+      ---
+      duration_ms: 59.891601
+      type: 'test'
+      ...
+    # Subtest: 8 gün geçti, e-SMM EDM'de oluşturulmuş: süre doldu, reddedilir
+    ok 2 - 8 gün geçti, e-SMM EDM'de oluşturulmuş: süre doldu, reddedilir
+      ---
+      duration_ms: 36.306857
+      type: 'test'
+      ...
+    # Subtest: 8 gün dolmadıysa e-SMM'de de sorulmaz (bugünkü yol)
+    ok 3 - 8 gün dolmadıysa e-SMM'de de sorulmaz (bugünkü yol)
+      ---
+      duration_ms: 57.283363
+      type: 'test'
+      ...
+    1..3
+ok 6 - belirsiz e-SMM + yalnız programda iptal (kullanıcı kararı 22.10.2026): e-SMM'de de "bulunamadı" 11017 (madde 24'te gerçek EDM'de doğrulandı)
+  ---
+  duration_ms: 509.408883
+  type: 'suite'
+  ...
+1..6
+# tests 35
+# suites 6
+# pass 34
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3555.333365

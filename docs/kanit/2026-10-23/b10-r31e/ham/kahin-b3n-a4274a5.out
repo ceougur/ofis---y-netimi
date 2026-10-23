@@ -1,0 +1,6 @@
+b3n-borc-kolonu-kisi-ozniteligi: 33/35 tuttu
+  ✗ [BULGU KULLANICI] k1:rapor:2026/701:gorunurVeyaNot: program false · kâhin true (Y1/Y3: borç kolonu yok / ana tutar belirlenemiyor — satır notsuz kaybolmaz)
+  ✗ [BULGU KULLANICI] k1:rapor:2026/702:gorunurVeyaNot: program false · kâhin true (Y1/Y3: borç kolonu yok / ana tutar belirlenemiyor — satır notsuz kaybolmaz)
+
+ÖZET: 1 senaryo, 35 denetim, 2 fark (BULGU 2), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b10/kahin-b3n-a4274a5
+33/35 denetim geçti

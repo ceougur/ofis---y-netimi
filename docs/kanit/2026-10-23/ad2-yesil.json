@@ -1,0 +1,32 @@
+{
+  "ad": "ad2-yesil",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/tablo-borc-r31e.test.mjs",
+  "commit": "95ac3d19f7e3640ff8ffc53a103206a0232867ad",
+  "dal": "is/r31e-ad",
+  "kirli": 2,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T04:58:37.148Z",
+  "sure_sn": 3.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 18,
+    "gecen": 18,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/ad2-yesil.log",
+  "klasor": "/home/user/wt/r31e-ad",
+  "ham_cikti_sha256": "9712d55914187625e858f0147cfbc09d784858ed93ace5d99651eb70c8e0b91f",
+  "ham_cikti_bayt": 8585
+}

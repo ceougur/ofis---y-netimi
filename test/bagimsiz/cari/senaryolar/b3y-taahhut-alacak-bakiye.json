@@ -1,0 +1,94 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3y-taahhut-alacak-bakiye",
+ "aciklama": "MUAFİYET (ana oturum 23.10.2026; Y1, N4, K3): borç / alacak / kalan / bakiye / toplam ailesinden sözcük taşıyan söz-ailesi başlığı yalın söz DEĞİLDİR. (a) 'Taahhüt Alacağı' tek tutar sütunu (Kerem Ak 2.200) → borç ve kalem bu sütundan; (b) 'Aylık Ücret' + 'Taahhüt Bakiyesi' (Kalan): Leman Er 1.000 / 4.000 → Kişiler ve Açılış Bakiyesi 4.000, kalem 1.000; Mert Ay 1.000 / 300 → Kişiler 300, kalem 300; (c) 'Taahhüt Miktarı (Ay)' sayı sütunu söz tutarı değil (K3 gün/adet/ay): Nazlı Su Kalan 5.000, Taahhüt Tarihi, (Ay) 6 → borç 5.000, kalem 5.000. Kişiler 11.500; Takvim / Vade Takip / Nakit Akışı 8.500.",
+ "dayanak": "KARARLAR.md B3o (Y1 + N4 + K3 muafiyeti), B3i TAKVİM KALEMİ",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Taahhüt Alacakları",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Taahhüt Alacağı",
+      "Son Ödeme"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/1011",
+       "isim": "Kerem Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Taahhüt Alacağı": "2.200,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Aylık Taahhütler",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Aylık Ücret",
+      "Taahhüt Bakiyesi",
+      "Son Ödeme"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/1012",
+       "isim": "Leman Er",
+       "hucreler": {
+        "Telefon": "",
+        "Aylık Ücret": "1.000,00 ₺",
+        "Taahhüt Bakiyesi": "4.000,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      },
+      {
+       "no": "2026/1013",
+       "isim": "Mert Ay",
+       "hucreler": {
+        "Telefon": "",
+        "Aylık Ücret": "1.000,00 ₺",
+        "Taahhüt Bakiyesi": "300,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Taahhüt Süreleri",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Kalan Borç",
+      "Taahhüt Tarihi",
+      "Taahhüt Miktarı (Ay)"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/1014",
+       "isim": "Nazlı Su",
+       "hucreler": {
+        "Telefon": "",
+        "Kalan Borç": "5.000,00 ₺",
+        "Taahhüt Tarihi": "20.06.2026",
+        "Taahhüt Miktarı (Ay)": "6"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol",
+   "raporlar": true
+  }
+ ]
+}

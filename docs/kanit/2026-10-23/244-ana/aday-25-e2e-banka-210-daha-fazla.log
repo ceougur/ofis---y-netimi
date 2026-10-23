@@ -1,0 +1,84 @@
+
+> destekofis@2.4.4 test:banka-210-daha-fazla
+> node --disable-warning=ExperimentalWarning test/e2e/banka-210-daha-fazla-yaris.mjs
+
+
+■ B1 — Daha Fazla tutulurken başka oturum yazar, arka plan yenilemesi listeyi değiştirir (H4)
+  · ön koşul: Daha Fazla yanıtı tutuldu (true) ve arka plan yenilemesi listeyi taze yazdı (true)
+  ✓ B1: listede 100 hareket (en az 100)
+  ✓ B1: liste = sunucunun ilk 100 hareketi (eksik [], çift [], fazla [])
+
+■ A1 — arka plan yenilemesi tutulurken Daha Fazla (H4 tersi)
+  · ön koşul: arka plan yenilemesi tutuldu (true) ve Daha Fazla bu sırada yazıldı (true)
+  ✓ A1: listede 100 hareket (en az 100)
+  ✓ A1: liste = sunucunun ilk 100 hareketi (eksik [], çift [], fazla [])
+
+■ C1 — + Masraf kaydının pencere yenilemesi (/summary) tutulurken Daha Fazla (H5)
+  · ön koşul: yenileme tutuldu (true), form kapandı (true), Daha Fazla yazıldı (true)
+  ✓ C1 (Daha Fazla geri alınmadı): listede 100 hareket (en az 100)
+  ✓ C1 (Daha Fazla geri alınmadı): liste = sunucunun ilk 100 hareketi (eksik [], çift [], fazla [])
+
+■ D1 — + Masraf kaydının pencere yenilemesi (/movements) sürerken Daha Fazla tıklanır (H5)
+  · ön koşul: liste yüklemesi tutuldu (true), form kapandı (true), tıklama yükleme sürerken (liste büyümedi: true)
+  ✓ D1 (yükleme sırasındaki tıklama yok sayılmadı): listede 100 hareket (en az 100)
+  ✓ D1 (yükleme sırasındaki tıklama yok sayılmadı): liste = sunucunun ilk 100 hareketi (eksik [], çift [], fazla [])
+
+■ B2 — Daha Fazla tutulurken başka oturum yazar, arka plan yenilemesi listeyi değiştirir (H4)
+  · ön koşul: Daha Fazla yanıtı tutuldu (true) ve arka plan yenilemesi listeyi taze yazdı (true)
+  ✓ B2: listede 100 hareket (en az 100)
+  ✓ B2: liste = sunucunun ilk 100 hareketi (eksik [], çift [], fazla [])
+
+■ A2 — arka plan yenilemesi tutulurken Daha Fazla (H4 tersi)
+  · ön koşul: arka plan yenilemesi tutuldu (true) ve Daha Fazla bu sırada yazıldı (true)
+  ✓ A2: listede 100 hareket (en az 100)
+  ✓ A2: liste = sunucunun ilk 100 hareketi (eksik [], çift [], fazla [])
+
+■ C2 — + Masraf kaydının pencere yenilemesi (/summary) tutulurken Daha Fazla (H5)
+  · ön koşul: yenileme tutuldu (true), form kapandı (true), Daha Fazla yazıldı (true)
+  ✓ C2 (Daha Fazla geri alınmadı): listede 100 hareket (en az 100)
+  ✓ C2 (Daha Fazla geri alınmadı): liste = sunucunun ilk 100 hareketi (eksik [], çift [], fazla [])
+
+■ D2 — + Masraf kaydının pencere yenilemesi (/movements) sürerken Daha Fazla tıklanır (H5)
+  · ön koşul: liste yüklemesi tutuldu (true), form kapandı (true), tıklama yükleme sürerken (liste büyümedi: true)
+  ✓ D2 (yükleme sırasındaki tıklama yok sayılmadı): listede 100 hareket (en az 100)
+  ✓ D2 (yükleme sırasındaki tıklama yok sayılmadı): liste = sunucunun ilk 100 hareketi (eksik [], çift [], fazla [])
+
+■ B3 — Daha Fazla tutulurken başka oturum yazar, arka plan yenilemesi listeyi değiştirir (H4)
+  · ön koşul: Daha Fazla yanıtı tutuldu (true) ve arka plan yenilemesi listeyi taze yazdı (true)
+  ✓ B3: listede 100 hareket (en az 100)
+  ✓ B3: liste = sunucunun ilk 100 hareketi (eksik [], çift [], fazla [])
+
+■ A3 — arka plan yenilemesi tutulurken Daha Fazla (H4 tersi)
+  · ön koşul: arka plan yenilemesi tutuldu (true) ve Daha Fazla bu sırada yazıldı (true)
+  ✓ A3: listede 100 hareket (en az 100)
+  ✓ A3: liste = sunucunun ilk 100 hareketi (eksik [], çift [], fazla [])
+
+■ C3 — + Masraf kaydının pencere yenilemesi (/summary) tutulurken Daha Fazla (H5)
+  · ön koşul: yenileme tutuldu (true), form kapandı (true), Daha Fazla yazıldı (true)
+  ✓ C3 (Daha Fazla geri alınmadı): listede 100 hareket (en az 100)
+  ✓ C3 (Daha Fazla geri alınmadı): liste = sunucunun ilk 100 hareketi (eksik [], çift [], fazla [])
+
+■ D3 — + Masraf kaydının pencere yenilemesi (/movements) sürerken Daha Fazla tıklanır (H5)
+  · ön koşul: liste yüklemesi tutuldu (true), form kapandı (true), tıklama yükleme sürerken (liste büyümedi: true)
+  ✓ D3 (yükleme sırasındaki tıklama yok sayılmadı): listede 100 hareket (en az 100)
+  ✓ D3 (yükleme sırasındaki tıklama yok sayılmadı): liste = sunucunun ilk 100 hareketi (eksik [], çift [], fazla [])
+
+■ E1 — Cari: Daha Fazla tutulurken başka oturum ilk sayfadan bir cariyi siler (H4 komşusu)
+  · ön koşul: Daha Fazla yanıtı tutuldu (true) ve arka plan yenilemesi silineni listeden çıkardı (true)
+  ✓ E1: Daha Fazla bir sayfa ekledi (329 cari)
+  ✓ E1: liste = sunucunun ilk 329 carisi (çift 0, eksik 0)
+
+■ E2 — Cari: Daha Fazla tutulurken başka oturum ilk sayfadan bir cariyi siler (H4 komşusu)
+  · ön koşul: Daha Fazla yanıtı tutuldu (true) ve arka plan yenilemesi silineni listeden çıkardı (true)
+  ✓ E2: Daha Fazla bir sayfa ekledi (328 cari)
+  ✓ E2: liste = sunucunun ilk 328 carisi (çift 0, eksik 0)
+
+■ E3 — Cari: Daha Fazla tutulurken başka oturum ilk sayfadan bir cariyi siler (H4 komşusu)
+  · ön koşul: Daha Fazla yanıtı tutuldu (true) ve arka plan yenilemesi silineni listeden çıkardı (true)
+  ✓ E3: Daha Fazla bir sayfa ekledi (327 cari)
+  ✓ E3: liste = sunucunun ilk 327 carisi (çift 0, eksik 0)
+  ✓ sayfa hatası yok
+
+ön koşulu oluşmayan deneme: 0; başka oturumun masrafı: 6
+
+✓ banka-210-daha-fazla-yaris: 31 geçti, 0 kaldı

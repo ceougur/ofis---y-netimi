@@ -94,11 +94,11 @@ describe("2.4.4 30a: Tablodaki Kişiler ve Tahsilat Takvimi aynı Kalan Borç ko
     assert.equal(report(rows).columns.debt, "Toplam Borç", "Ödenecek kalan sayılmaz; ilk eşleşen borç başlığı");
   });
 
-  test("N5 Toplam Borç + Ödenen, Kalan yok: Toplam Borç (program kalanı hesaplamaz — bilinen sınır)", () => {
+  test("N5 Toplam Borç + Ödenen, Kalan yok: borç = toplam − ödenen (r31e T1 kararı, 23.10.2026; önceden Toplam — 31e bulgusu)", () => {
     const rows = rowsOf("Borçlular", ["Dosya No", "Ad Soyad", "Toplam Borç", "Ödenen", "Ödeme Sözü"], people.map(([no, name, total, paid, , date]) => [no, name, total, paid, date]));
     const rep = report(rows);
     assert.equal(rep.columns.debt, "Toplam Borç");
-    assert.equal(debitOf(rep, "Tülay Öz"), 11500);
+    assert.equal(debitOf(rep, "Tülay Öz"), 7600, "11.500 − 3.900; ödenen borç sayılmaz");
   });
 
   test("N6 Kalan Borç 0: Tablodaki Kişiler borcu 0 (Toplam değil), takvimde kalem yok (ödenmiş); Kalan boş: tutar kolonuna (Toplam Borç) düşer", () => {
@@ -128,8 +128,9 @@ describe("2.4.4 30a: Tablodaki Kişiler ve Tahsilat Takvimi aynı Kalan Borç ko
   test("N11 tek yer: dues.mjs ve reports.mjs kalan kolonunu ortak yardımcıdan seçer", () => {
     for (const file of ["server/lib/insight/dues.mjs", "server/lib/reports.mjs"]) {
       const source = readFileSync(path.join(ROOT, file), "utf8").split(/\r?\n/).filter(line => !/^\s*\/\//.test(line)).join("\n");
-      assert.match(source, /import \{[^}]*pickRemainingDebtColumn[^}]*\} from "\.\/(insight\/)?debt-column\.mjs"/, `${file} ortak yardımcıyı içe almalı`);
-      assert.match(source, /pickRemainingDebtColumn\(/, `${file} ortak yardımcıyı çağırmalı`);
+      // 31d (bilerek güncellendi): kolon seçimi debtPlan, satır borcu rowDebt — ikisi de ortak yardımcıda.
+      assert.match(source, /import \{[^}]*debtPlan[^}]*\} from "\.\/(insight\/)?debt-column\.mjs"/, `${file} ortak yardımcıyı içe almalı`);
+      assert.match(source, /debtPlan\(/, `${file} ortak yardımcıyı çağırmalı`);
     }
   });
 });
@@ -213,6 +214,7 @@ describe("2.4.4 30a: Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip, Nakit Ak�
     const tulay = rep.groups.find(group => group.cari === "Tülay Öz");
     assert.deepEqual(tulay.lines.filter(line => line.kind === "alacak").map(line => line.alacak), [1000], "tahsilat bir kez");
     assert.deepEqual(lineOf(rep, "Tülay Öz", "Borçlular").map(line => line.borc), [7600]);
-    assert.deepEqual(lineOf(rep, "Tülay Öz", "Ödeme Sözleri").map(line => line.borc), [1000], "Ödeme Sözleri sekmesinin kendi tutarı (Söz Tutarı)");
+    // 31f U2 (bilerek güncellendi): söz tutarı borç değildir; aynı dosya no'nun borcu bir kez, Borçlular'ın Kalan Borç'undan.
+    assert.deepEqual(lineOf(rep, "Tülay Öz", "Ödeme Sözleri").map(line => line.borc), [], "Ödeme Sözleri sekmesi borç satırı açmaz");
   });
 });

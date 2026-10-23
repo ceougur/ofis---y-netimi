@@ -1,0 +1,148 @@
+{
+  "ad": "244-kahin/kirmizi-aday18-cari-y1-y2-y3",
+  "komut": "node test/bagimsiz/cari/kos.mjs --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-y-aday18",
+  "commit": "a64ca00a0d61b28cf4b5e522db5b0da7affd283f",
+  "dal": "is/kahin-244",
+  "kirli": 3,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T10:56:00.262Z",
+  "sure_sn": 117.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 3511,
+    "gecen": 3488,
+    "basarisiz": 23,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 23 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU KULLANICI] k1:acilis:2026/207: program \"boş\" · kâhin 400000 (Y1: 'önce cari açın' Açılış Bakiyesi = raporların satır borcu (borçsuz satırda 0 ya da boş))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:acilis:2026/701: program 532111223300 · kâhin {\"catal\":[0,\"boş\"]} (Y1: 'önce cari açın' Açılış Bakiyesi = raporların satır borcu (borçsuz satırda 0 ya da boş))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:acilis:2026/702: program 533444556600 · kâhin {\"catal\":[0,\"boş\"]} (Y1: 'önce cari açın' Açılış Bakiyesi = raporların satır borcu (borçsuz satırda 0 ya da boş))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:acilis:2026/703: program 1000000014600 · kâhin {\"catal\":[0,\"boş\"]} (Y1: 'önce cari açın' Açılış Bakiyesi = raporların satır borcu (borçsuz satırda 0 ya da boş))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:acilis:2026/704: program 1234567895000 · kâhin {\"catal\":[0,\"boş\"]} (Y1: 'önce cari açın' Açılış Bakiyesi = raporların satır borcu (borçsuz satırda 0 ya da boş))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:akis: program 3300123789500 · kâhin 100000 (B4b K4 dört rapor aynı satır borcunu kullanır (dönem süzgeci içinde))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:kisiler: program 3300123789500 · kâhin 100000 (B4b K4 dört rapor aynı satır borcunu kullanır (dönem süzgeci içinde))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:takvim: program 3300123789500 · kâhin 100000 (B4b K4 dört rapor aynı satır borcunu kullanır (dönem süzgeci içinde))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:vade: program 3300123789500 · kâhin 100000 (B4b K4 dört rapor aynı satır borcunu kullanır (dönem süzgeci içinde))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:akis: program 490000 · kâhin 320000 (B4b K4 dört rapor aynı satır borcunu kullanır (dönem süzgeci içinde))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:takvim: program 490000 · kâhin 320000 (B4b K4 dört rapor aynı satır borcunu kullanır (dönem süzgeci içinde))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:vade: program 490000 · kâhin 320000 (B4b K4 dört rapor aynı satır borcunu kullanır (dönem süzgeci içinde))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:2026/805:gorunurVeyaNot: program false · kâhin true (Y1/Y3: borç kolonu yok / ana tutar belirlenemiyor — satır notsuz kaybolmaz)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] adim:t2:onay: program true · kâhin false (bağ sürekliliği (3) güvenli eşleşme yoksa onay; hepsi güvenliyse onaysız)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] adim:t2:uyariAdlari: program [\"Ali Veli\",\"Deniz Ak\"] · kâhin [] (bağ sürekliliği (3) önizleme eşleşmeyen kayıtları adıyla söyler)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] adim:t3:onay: program true · kâhin false (bağ sürekliliği (3) güvenli eşleşme yoksa onay; hepsi güvenliyse onaysız)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] adim:t3:uyariAdlari: program [\"Ali Veli\",\"Deniz Ak\"] · kâhin [] (bağ sürekliliği (3) önizleme eşleşmeyen kayıtları adıyla söyler)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k2:rapor:K2:alacak: program 0 · kâhin 20000 (B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:rapor:K4:alacak: program 0 · kâhin 40000 (B1.8 5c tahsilat bir kez)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k3:rapor:K1:alacak: program 0 · kâhin 10000 (B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k3:rapor:K2:alacak: program 0 · kâhin 20000 (B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k3:rapor:K3:alacak: program 0 · kâhin 30000 (B1.8 5c tahsilat bir kez)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k3:rapor:K4:alacak: program 0 · kâhin 40000 (B1.8 5c tahsilat bir kez)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-23/244-kahin/kirmizi-aday18-cari-y1-y2-y3.log",
+  "klasor": "/home/user/wt/kahin-244",
+  "ham_cikti_sha256": "db366a9e6cf8665a3a24aad82d65e4a160ce55cc740b2f53e43b81d2e578a072",
+  "ham_cikti_bayt": 13256
+}

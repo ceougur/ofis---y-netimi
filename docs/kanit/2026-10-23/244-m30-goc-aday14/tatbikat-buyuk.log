@@ -1,0 +1,53 @@
+[05:11:18] ✓ C10 001 göçten sonra (geri yükleme yok) Fatura'da geri yükleme uyarısı yok (30b)
+[05:11:18] ✓ C10 002 göçten sonra (geri yükleme yok) Fatura'da geri yükleme uyarısı yok (30b)
+[05:11:18] ✓ C3 001 2.4.3'ten kalan 0 bekleyen e-Belge 2.4.4'ten Tümünü Gönder ile gitti; numara sırası = tarih sırası
+[05:11:33] ✓ C1 001 bırakılan fiş numarası verilmiş en büyükten sonra (A FIS2026000000260, B FIS2026000000261); gönderilen A'nın fişi Kâğıt Fatura No'da
+[05:11:34] ✓ C2 001 e-SMM "Kâğıt Makbuz Olarak Bırak" SMM numarası verilmiş en büyükten sonra (SMM2026000000068)
+[05:11:35] ✓ C2b 001 bırakılan kâğıt makbuz e-SMM olarak gönderilemez (istek reddedilir; kart ve EDM değişmez)
+[05:11:35] ✓ C3 001 e-Arşiv / e-SMM / e-Fatura gönderildi (sahte EDM)
+[05:11:46] ✓ C5 001 çalışmadan sonra Mutabakat Testi'nde yeni sapma yok, mizan dengede
+[05:11:46] ✓ C5 001 yeniden açılan faturaya 100 TL Kapatılacak Fatura'lı tahsilat açığı 100 TL azaltır
+[05:11:46] ✓ C3 002 2.4.3'ten kalan 0 bekleyen e-Belge 2.4.4'ten Tümünü Gönder ile gitti; numara sırası = tarih sırası
+[05:11:52] ✓ C1 002 bırakılan fiş numarası verilmiş en büyükten sonra (A FIS2026000000111, B FIS2026000000112); gönderilen A'nın fişi Kâğıt Fatura No'da
+[05:11:53] ✓ C2 002 e-SMM "Kâğıt Makbuz Olarak Bırak" SMM numarası verilmiş en büyükten sonra (SMM2026000000121)
+[05:11:53] ✓ C2b 002 bırakılan kâğıt makbuz e-SMM olarak gönderilemez (istek reddedilir; kart ve EDM değişmez)
+[05:11:53] ✓ C3 002 e-Arşiv / e-SMM / e-Fatura gönderildi (sahte EDM)
+[05:11:58] ✓ C5 002 çalışmadan sonra Mutabakat Testi'nde yeni sapma yok, mizan dengede
+[05:11:58] ✓ C5 002 yeniden açılan faturaya 100 TL Kapatılacak Fatura'lı tahsilat açığı 100 TL azaltır
+[05:11:58] ✓ C4 2.4.4'te verilen kâğıt/fiş/SMM numaraları biçimde ve eski verilmişlerle çakışmıyor
+[05:12:20] ✓ C6 002 yedek → çalış → geri yükle: olgular yedek anıyla aynı
+[05:12:20] ✓ C10 002 geri yüklemeden sonra Fatura'da tek seferlik uyarı VAR (yalnız bu şirkette)
+[05:12:20] ✓ C10 002 uyarı kapatılınca gider
+[05:12:30] ✓ C7 002 geri yüklemesi 001'i değiştirmedi
+[05:12:36] ✓ C8 002 geri yüklemeden sonra numaralar yedek anının sırasından sürer, veride tekrar yok
+[05:12:36] ✓ C8 002 GÖZLEM: ara dönemde EDM'ye gitmiş e-Arşiv numarası (TEA2026508235317) geri yüklemeden sonra yeniden verildi mi
+[05:12:58] ✓ C6 001 geri yükleme (001: yeniden açılışta) uygulandı
+[05:13:11] ✓ C6 001 yedek → çalış → geri yükle: olgular yedek anıyla aynı
+[05:13:12] ✓ C10 001 geri yüklemeden sonra Fatura'da tek seferlik uyarı VAR (yalnız bu şirkette)
+[05:13:12] ✓ C10 001 uyarı kapatılınca gider
+[05:13:17] ✓ C7 001 geri yüklemesi 002'i değiştirmedi
+[05:13:29] ✓ C8 001 geri yüklemeden sonra numaralar yedek anının sırasından sürer, veride tekrar yok
+[05:13:29] ✓ C8 001 GÖZLEM: ara dönemde EDM'ye gitmiş e-Arşiv numarası (TEA2026118068996) geri yüklemeden sonra yeniden verildi mi
+[05:13:45] ✓ C9 002 2.4.3 yedeği (destekofis-002-2026-10-23T01-54-08-054Z-manuel.sqlite) 2.4.4'e geri yüklendi: şema 32, numara tabanı göçtekiyle aynı
+[05:13:45] ✓ C9 002 geri yüklenen 2.4.3 yedeğinin olguları göç ölçüsüyle (aynı veri, göç açılışta) aynı
+[05:13:45] ✓ C10 002 2.4.3 yedeği geri yüklenince de uyarı VAR; kapatılınca gider
+[05:13:55] ✓ C7 002 2.4.3 yedeğinin geri yüklenmesi 001'i değiştirmedi
+[05:14:12] ✓ C9 001 2.4.3 yedeği (destekofis-001-2026-10-23T01-54-07-703Z-manuel.sqlite) 2.4.4'e geri yüklendi: şema 32, numara tabanı göçtekiyle aynı
+[05:14:12] ✓ C9 001 geri yüklenen 2.4.3 yedeğinin olguları göç ölçüsüyle (aynı veri, göç açılışta) aynı
+[05:14:13] ✓ C10 001 2.4.3 yedeği geri yüklenince de uyarı VAR; kapatılınca gider
+[05:14:18] ✓ C7 001 2.4.3 yedeğinin geri yüklenmesi 002'i değiştirmedi
+[05:14:19] ✓ C11k 001 G1: kapanmış dönem (2026-04-23) tarihli silinmiş belge (FIS2026000000215, 2026-04-14) geri yüklenmez (409), Silinenler'de kalır; Mutabakat Testi'nde yeni sapma yok; Kasa girişi 200
+[05:14:19] ✓ C11 001 E6: numarası canlı belgede olan silinmiş belge YOK (veride bu durum oluşmadı)
+[05:14:19] ✓ C11 001 E6: numarası boşta olan silinmiş belge (SMM2026000000067) kendi numarasıyla geri gelir
+[05:14:19] ✓ C11 001 E6: sıradaki kâğıt/fiş/SMM/iç numara verilmiş en büyükten (silinenler dahil) sonra; geri yükleme sıradakini değiştirmedi
+[05:14:19] ✓ C11k 002 G1: kapanmış dönem tarihli silinmiş belge YOK (kilit yok)
+[05:14:19] ✓ C11 002 E6: numarası (SMM2026000000098) canlı başka belgede olan silinmiş belge geri yüklenmez (409), Silinenler'de kalır
+[05:14:19] ✓ C11 002 E6: numarası boşta olan silinmiş belge (SMM2026000000120) kendi numarasıyla geri gelir
+[05:14:19] ✓ C11 002 E6: sıradaki kâğıt/fiş/SMM/iç numara verilmiş en büyükten (silinenler dahil) sonra; geri yükleme sıradakini değiştirmedi
+# tatbikat denetimleri
+# tests 46
+# pass 46
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

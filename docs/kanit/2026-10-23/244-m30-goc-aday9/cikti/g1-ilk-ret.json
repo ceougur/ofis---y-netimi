@@ -1,0 +1,50 @@
+{
+ "what": "satış 2026-10-23",
+ "day": "2026-10-23T09:00:00.682Z",
+ "request": {
+  "company": "001",
+  "url": "/api/workspace/invoices",
+  "body": {
+   "scenario": "goods_sale",
+   "accountId": "account-816927c5-acfe-451b-82c7-ba0c48a94084",
+   "issueDate": "2026-10-23",
+   "lines": [
+    {
+     "itemId": "stock-56c72a4f-e7ab-47d8-a7d3-20051f05d6b7",
+     "qty": 6,
+     "unitPrice": 240,
+     "vatRate": 20
+    }
+   ],
+   "payment": {
+    "cash": [
+     {
+      "amount": 1728,
+      "method": "card",
+      "posId": "pos-cb070495-d27e-414c-a6a5-f1ca827eea09"
+     }
+    ],
+    "rest": "open"
+   },
+   "force": true,
+   "cashForce": true,
+   "eSend": "later"
+  }
+ },
+ "failures": [
+  {
+   "code": "period-lock",
+   "name": "Kapanmış dönem (2026-04-23 ve öncesi) değişemez",
+   "ok": false,
+   "count": 1,
+   "tables": [
+    "stock_moves",
+    "account_entries",
+    "fin_events",
+    "pos_sales",
+    "pos_items"
+   ]
+  }
+ ],
+ "error": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-04-23 ve öncesi) değişemez). Hiçbir değişiklik yazılmadı; yöneticinize bildirin."
+}

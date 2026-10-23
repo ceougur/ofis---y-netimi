@@ -304,7 +304,7 @@ describe("Madde 1: fatura Sil — kartta ve toplu; etkiler geri alınır; Siline
   const cashBalance = async () => (await api.get("/api/workspace/cash")).data.totals.balance;
   const trashList = async () => (await raw.get("/api/admin/trash")).data.data;
 
-  test("kaydedilmiş satış silinir: stok, cari, Kasa eski hâline döner; belge listeden kalkar, Silinenler'de; sayaç geri gelir", async () => {
+  test("kaydedilmiş satış silinir: stok, cari, Kasa eski hâline döner; belge listeden kalkar, Silinenler'de; numarası kullanılmış sayılır (2.4.4 E6)", async () => {
     const before = { stock: await stockQty(), balance: await balance(), cash: await cashBalance() };
     const sale = await api.post("/api/workspace/invoices", { scenario: "goods_sale", accountId: ids.customer, issueDate: shift(-3), lines: [{ itemId: ids.item, qty: 10, unitPrice: 10, vatRate: 0 }], payment: { cash: [{ amount: 40, method: "cash" }], rest: "open" } });
     assert.equal(sale.status, 200, JSON.stringify(sale.data));
@@ -313,9 +313,12 @@ describe("Madde 1: fatura Sil — kartta ve toplu; etkiler geri alınır; Siline
     assert.equal(removed.status, 200, JSON.stringify(removed.data));
     assert.equal((await api.get(`/api/workspace/invoices/${sale.data.id}`)).status, 404);
     assert.deepEqual([await stockQty(), await balance(), await cashBalance()], [before.stock, before.balance, before.cash]);
-    // Serinin son numarasıydı: sayaç geri geldi — sıradaki belge aynı numarayı alır.
+    // 2.4.4 E6 (bilerek; eleştirmen 31d, karar 22.10.2026): kâğıt / fiş serisinde verilmiş numara belge silinse de kullanılmış sayılır — serinin son numarası
+    // silinse de sayaç geri GELMEZ, sıradaki belge bir sonraki numarayı alır (önceden 2.0.17 kuralı: "sayaç geri gelir", aynı numara yeni belgeye veriliyordu
+    // ve Silinenler'den geri yüklenince iki belgede aynı numara oluyordu). Kural testi: test/numara-silinen-244.test.mjs.
     const again = await api.post("/api/workspace/invoices", { scenario: "goods_sale", accountId: ids.customer, issueDate: shift(-3), lines: [{ itemId: ids.item, qty: 1, unitPrice: 10, vatRate: 0 }], payment: { rest: "open" } });
-    assert.equal(again.data.number, sale.data.number, "sayaç geri geldi");
+    const nextNo = number => `${number.slice(0, 7)}${String(Number(number.slice(7)) + 1).padStart(9, "0")}`;
+    assert.equal(again.data.number, nextNo(sale.data.number), "silinen numara yeniden verilmedi; sıradaki numara");
     assert.equal((await api.del(`/api/workspace/invoices/${again.data.id}`)).status, 200);
     // Silinenler listesi yeniden eskiye sıralı: ilk silinen (sale) en sonda.
     const entries = (await trashList()).filter(entry => entry.kind === "invoice");

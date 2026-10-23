@@ -115,7 +115,20 @@
     if (!ok) return false;
     removing = key;
     try {
-      const result = await HOF.api("/api/workspace/sessions/delete", { method: "POST", body: { key } });
+      // 31e tur 7 N5: sayfadaki kayıtlara bağlı veri (tahsilat, not …) varsa sunucu adlarıyla söyler (409 bonds-unmatched); onaylanırsa onayla yinelenir.
+      const send = confirm => HOF.api("/api/workspace/sessions/delete", { method: "POST", body: { key, ...(confirm ? { confirm: true } : {}) } });
+      let result;
+      try {
+        result = await send(false);
+      } catch (error) {
+        if (error?.status !== 409 || error.data?.code !== "bonds-unmatched") throw error;
+        const again = await HOF.confirm({ title: "Sayfayı Sil", message: `${String(error.message || "").replace(/\s*Onaylayarak yeniden deneyin\.$/, "")} Devam edilsin mi?`, confirmLabel: "Sayfayı Sil", danger: true });
+        if (!again) {
+          removing = null;
+          return false;
+        }
+        result = await send(true);
+      }
       const message = `“${nameOf(target)}” sayfası silindi (${number(result.removed)} kayıt). Yedek: ${result.backupName || "—"}`;
       if (target.current) {
         const data = await load().catch(() => null);

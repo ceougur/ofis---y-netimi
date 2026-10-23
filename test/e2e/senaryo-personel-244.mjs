@@ -2,7 +2,8 @@
 //  1. Boş veri: Personel Raporu → kartlar 0, "Henüz çalışan kartı yok".
 //  2. "+ Yeni Personel": bütün alanlar + fotoğraf → kayıttan sonra veri tabanı (API) okunur, alanlar birebir (ders 12).
 //  3. Aynı adlı iki çalışan (Mehmet Kaya ×2) iki ayrı satır; kartlar Toplam Maaş / Kayıtlı / Aktif / Ayrılan sayılarla.
-//  4. Arama: ad (Türkçe küçük harf), TC No rakamları, görev; aramaya uymayan → "Aramaya uyan personel yok".
+//  4. Arama: ad (Türkçe küçük harf; "ayse"/"AYŞE" de — 31f U10), TC No rakamları, görev; aramaya uymayan → "Aramaya uyan personel yok".
+//     6'da: Çalışanlar'da sonuç yokken Ayrılanlar'daki sonuç söylenir ("Ayrılanlar'a Geç"; 31f U10).
 //  5. Kart: yalnız Personel Özeti (Evrak Listesi, Maaş Bordrosu, CV, İletişim YOK); Yaş Doğum Tarihi'nden (35).
 //  6. Düzenle → İşten Ayrılış Tarihi → kart Ayrılanlar'a geçer; kartlar ve Toplam Maaş (yalnız aktif) değişir; tarih silinince Çalışanlar'a döner.
 //  7. Geçersiz TC No ekranda hata + odak TC No alanında; kayıt yazılmaz.
@@ -11,6 +12,9 @@
 //  9. Değişiklik Geçmişi'nde alan adı var, değer (TC, IBAN, maaş) yok.
 // 10. İleri tarihli ayrılış (kullanıcı kararı 22.10.2026): yarın ayrılacak çalışan Çalışanlar'da "Ayrılacak · tarih" notuyla kalır, Aktif Çalışan ve Toplam
 //     Maaş'ta sayılır; sahte saat ertesi güne ilerletilince (sunucu + tarayıcı) kendiliğinden Ayrılanlar'a geçer.
+// 11. İki kişi aynı kartı düzenler (eleştirmen E5; cari formundaki account-stale kalıbı): B formu A'dan önce açar, A maaşı kaydeder, B IBAN'ı yazıp kaydeder →
+//     B'nin formunda "başka biri değiştirdi; güncel hâli yüklendi" iletisi, form açık, B'nin yazdığı IBAN duruyor, maaş alanı A'nın değeriyle güncellendi,
+//     veri tabanında A'nın maaşı korunur; ikinci Kaydet geçer (ikisi birden). Kart silinince B'nin kaydı formda "silinmiş" iletisi verir, kart yeniden doğmaz.
 // Kırmızı kanıt: DEPO=<eski kopya> ile aynı senaryo eski kodda koşulur (ürün DEPO'dan yüklenir).
 // Çalıştırma: npm run test:senaryo-personel-244 (ekran görüntüleri test/e2e/artifacts/senaryo-personel-244/).
 import fs, { mkdtempSync } from "node:fs";
@@ -194,6 +198,12 @@ try {
     const search = `${WIN} [data-q]`;
     await typeInto(search, "ayşe");
     ok((await rows()).length === 1 && (await rows())[0].startsWith("Ayşe Yılmaz"), "\"ayşe\" → Ayşe Yılmaz");
+    // 31f U10: Türkçe harf duyarsız (programın ortak katlaması HOF.fold). Sorgular yalnız adla eşleşir ("ayse" tek başına e-postadan da tutar — ders 38).
+    for (const query of ["ayse yilmaz", "AYSE YILMAZ", "yilmaz"]) {
+      await typeInto(search, query);
+      const found = await rows();
+      ok(found.length === 1 && found[0].startsWith("Ayşe Yılmaz"), `"${query}" → Ayşe Yılmaz (${found.join(" | ") || "sonuç yok"})`);
+    }
     await typeInto(search, "1000000014");
     ok((await rows()).length === 1, "TC No rakamlarıyla bulunur");
     await typeInto(search, "kurye");
@@ -244,6 +254,27 @@ try {
     ok(headers.includes("İşten Ayrılış Tarihi") && (await page.$eval(`${WIN} tbody tr[data-staff-id]`, node => node.textContent)).includes("30.09.2026"), "Ayrılanlar'da ayrılış tarihi kolonu 30.09.2026");
     ok(dbRows().find(row => row.full_name === "Ayşe Yılmaz").leave_date === "2026-09-30", "veri tabanında ayrılış tarihi");
     await shot("ayrilanlar");
+    // 31f U10: Çalışanlar'da arama sonuç vermezken Ayrılanlar'da varsa söylenir; düğmeyle oraya geçilir, arama korunur, odak arama kutusunda.
+    await page.click(`${WIN} [data-staff-tab="active"]`);
+    await page.waitForTimeout(300);
+    await typeInto(`${WIN} [data-q]`, "ayse");
+    const emptyText = await page.$eval(`${WIN} [data-staff-empty]`, node => node.textContent.replace(/\s+/g, " ").trim()).catch(() => "");
+    ok(/Aramaya uyan personel yok\./.test(emptyText) && /Ayrılanlar'da 1 sonuç var\./.test(emptyText), `Çalışanlar'da "ayse": öbür sekme söylenir (${emptyText})`);
+    const goto = await page.$(`${WIN} [data-staff-goto="left"]`);
+    ok(Boolean(goto) && (await goto.textContent()).trim() === "Ayrılanlar'a Geç", "\"Ayrılanlar'a Geç\" düğmesi");
+    if (goto) {
+      await goto.click();
+      await page.waitForTimeout(400);
+      const moved = await rows();
+      ok(moved.length === 1 && moved[0].startsWith("Ayşe Yılmaz") && (await page.$eval(`${WIN} [data-staff-tab="left"]`, node => node.getAttribute("aria-selected"))) === "true", `Ayrılanlar'a geçildi, Ayşe Yılmaz listede (${moved.join(" | ")})`);
+      ok((await page.$eval(`${WIN} [data-q]`, node => node.value)) === "ayse" && (await page.evaluate(() => document.activeElement?.hasAttribute("data-q"))), "arama korundu, odak arama kutusunda");
+    }
+    await typeInto(`${WIN} [data-q]`, "bulunmayan");
+    ok(!(await page.$(`${WIN} [data-staff-other]`)), "iki sekmede de sonuç yoksa öbür sekme ipucu yok");
+    await page.fill(`${WIN} [data-q]`, "");
+    await page.dispatchEvent(`${WIN} [data-q]`, "input");
+    if (!(await page.$eval(`${WIN} [data-staff-tab="left"]`, node => node.getAttribute("aria-selected") === "true"))) await page.click(`${WIN} [data-staff-tab="left"]`);
+    await page.waitForTimeout(300);
     await page.click(`${WIN} tr[data-staff-id]`);
     await page.waitForSelector('.hof-staff-card-modal [data-staff-card-act="edit"]');
     await page.click('.hof-staff-card-modal [data-staff-card-act="edit"]');
@@ -368,6 +399,85 @@ try {
     ok(left.length === 1 && left[0].startsWith("Mehmet Kaya"), `Ayrılanlar'da Mehmet Kaya (${left.join(" | ")})`);
     await shot("ertesi-gun-ayrilanlar");
     await closeTop();
+  });
+
+  await step("11. İki kişi aynı kartı düzenler: bayat kayıt reddedilir, A'nın maaşı korunur, B'nin yazdığı kaybolmaz; silinmiş karta kayıt anlamlı ileti", async () => {
+    await must("ikinci düzenleyici", api.post("/api/admin/users", { username: "ik244", name: "İK Kişi", role: "personel", password: STAFF_PASS, mustChangePassword: false, grants: { add: ["staff.view", "staff.manage"], remove: [] } }));
+    const other = await browser.newContext({ viewport: { width: 1366, height: 900 }, locale: "tr-TR" });
+    await other.addInitScript(() => document.addEventListener("DOMContentLoaded", () => document.head.appendChild(Object.assign(document.createElement("style"), { textContent: "#hof-license-bar,.hof-license-notice{display:none!important}" }))));
+    const b = await other.newPage();
+    try {
+      await login(b, "ik244", STAFF_PASS);
+      const ayse = () => dbRows().find(row => row.full_name === "Ayşe Yılmaz");
+      const before = ayse();
+      // B kartı ÖNCE açar (Düzenle formu açık kalır).
+      await openWindow(b);
+      await b.click(`${WIN} tr[data-staff-id]:has-text("Ayşe Yılmaz")`);
+      await b.waitForSelector(`${MODAL} .hof-staff-card-modal [data-staff-card-act="edit"]`, { state: "visible" });
+      await b.click('.hof-staff-card-modal [data-staff-card-act="edit"]');
+      await b.waitForSelector(`${MODAL} ${FORM} input[name="iban"]`, { state: "visible" });
+      ok((await b.$eval(`${FORM} input[name="salary"]`, node => node.value)) === "45.000,50", "B'nin formunda maaş 45.000,50");
+      // A aynı kartı açar, maaşı 50.000 yapıp kaydeder.
+      await openWindow(page);
+      // Pencere son sekmeyi hatırlar (10. adım Ayrılanlar'da kapandı): Çalışanlar'a dönülür.
+      await page.click(`${WIN} [data-staff-tab="active"]`);
+      await page.waitForSelector(`${WIN} tr[data-staff-id]:has-text("Ayşe Yılmaz")`, { state: "visible" });
+      await page.click(`${WIN} tr[data-staff-id]:has-text("Ayşe Yılmaz")`);
+      await page.waitForSelector(`${MODAL} .hof-staff-card-modal [data-staff-card-act="edit"]`, { state: "visible" });
+      await page.click('.hof-staff-card-modal [data-staff-card-act="edit"]');
+      await page.waitForSelector(`${MODAL} ${FORM} input[name="salary"]`, { state: "visible" });
+      await typeInto(`${FORM} input[name="salary"]`, "50.000");
+      await page.click(`${FORM} button[type="submit"]`);
+      await page.waitForFunction(() => !document.querySelector(".hof-staff-form"), null, { timeout: 10000 });
+      ok(ayse().salary_minor === 5_000_000, `A kaydetti: veri tabanında maaş 50.000 (${ayse().salary_minor})`);
+      // B yalnız IBAN'ı insan hızında değiştirip kaydeder.
+      await typeInto(`${FORM} input[name="iban"]`, "TR32 0010 0099 9990 1234 5678 90", b);
+      await b.click(`${FORM} button[type="submit"]`);
+      await b.waitForFunction(() => document.querySelector(".hof-staff-form .hof-form-error")?.textContent.trim() || !document.querySelector(".hof-staff-form"), null, { timeout: 10000 });
+      const formOpen = Boolean(await b.$(`${MODAL} ${FORM}`));
+      const error = formOpen ? await b.$eval(`${FORM} .hof-form-error`, node => node.textContent.trim()) : "";
+      ok(formOpen && /başka biri değiştirdi; güncel hâli yüklendi\. Değiştirdiğiniz alanlar formda duruyor; kontrol edip yeniden kaydedin\./.test(error), `B'nin formunda bayat kayıt iletisi, form açık (${formOpen ? error : "form kapandı"})`);
+      ok(!/50\.000|45\.000|TR3[23]/.test(error), "iletide alan değeri yok (KVKK)");
+      const after409 = ayse();
+      ok(after409.salary_minor === 5_000_000 && after409.iban === before.iban, `veri tabanında A'nın maaşı korundu, IBAN değişmedi (maaş ${after409.salary_minor}, IBAN ${after409.iban === before.iban ? "aynı" : "DEĞİŞTİ"})`);
+      if (formOpen) {
+        ok((await b.$eval(`${FORM} input[name="iban"]`, node => node.value)) === "TR32 0010 0099 9990 1234 5678 90", "B'nin yazdığı IBAN formda duruyor");
+        ok((await b.$eval(`${FORM} input[name="salary"]`, node => node.value)) === "50.000,00", "maaş alanı güncel değeri aldı (50.000,00)");
+        await shot("iki-kisi-bayat-kayit", b);
+        await b.click(`${FORM} button[type="submit"]`);
+        await b.waitForFunction(() => !document.querySelector(".hof-staff-form"), null, { timeout: 10000 }).catch(() => null);
+        ok(!(await b.$(`${MODAL} ${FORM}`)), "ikinci Kaydet geçti, form kapandı");
+      }
+      const both = ayse();
+      ok(both.salary_minor === 5_000_000 && both.iban === "TR320010009999901234567890", `iki değişiklik birden: maaş ${both.salary_minor}, IBAN ${both.iban}`);
+      // Silinmiş kart: B formu açar, A kartı siler, B kaydeder.
+      await closeTop(page);
+      await b.click(`${WIN} tr[data-staff-id]:has-text("Ayşe Yılmaz")`);
+      await b.waitForSelector(`${MODAL} .hof-staff-card-modal [data-staff-card-act="edit"]`, { state: "visible" });
+      await b.click('.hof-staff-card-modal [data-staff-card-act="edit"]');
+      await b.waitForSelector(`${MODAL} ${FORM} input[name="phone"]`, { state: "visible" });
+      await must("A kartı siler", api.del(`/api/workspace/staff/${both.id}`));
+      await typeInto(`${FORM} input[name="phone"]`, "0532 999 88 77", b);
+      await b.click(`${FORM} button[type="submit"]`);
+      await b.waitForFunction(() => document.querySelector(".hof-staff-form .hof-form-error")?.textContent.trim() || !document.querySelector(".hof-staff-form"), null, { timeout: 10000 });
+      const goneOpen = Boolean(await b.$(`${MODAL} ${FORM}`));
+      const gone = goneOpen ? await b.$eval(`${FORM} .hof-form-error`, node => node.textContent.trim()) : "";
+      ok(goneOpen && /siz düzenlerken silinmiş; değişiklikler kaydedilmedi/.test(gone), `silinmiş karta kayıt: formda ileti (${goneOpen ? gone : "form kapandı"})`);
+      ok(!ayse(), "silinen kart yeniden doğmadı");
+      await shot("silinmis-kart", b);
+      if (goneOpen) {
+        await closeTop(b);
+        // Soru BEKLENİR (ders 34): formda kaydedilmemiş telefon var.
+        const leave = await b.waitForSelector(`${TOP} [data-answer="yes"]`, { timeout: 8000 }).catch(() => null);
+        ok(Boolean(leave), "Kaydetmeden Kapat sorusu çıktı (formda kaydedilmemiş telefon var)");
+        if (leave) {
+          console.log("  · Kaydetmeden Kapat sorusu yanıtlandı (meşru: formda kaydedilmemiş telefon var)");
+          await leave.click();
+        }
+      }
+    } finally {
+      await other.close();
+    }
   });
 } catch (error) {
   failed += 1;

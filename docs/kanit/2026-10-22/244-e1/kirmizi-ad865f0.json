@@ -1,0 +1,98 @@
+{
+  "ad": "244-e1/kirmizi-ad865f0",
+  "komut": "node --test --test-reporter=spec --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs",
+  "commit": "ad865f0b04a18da1016904e0b46ffae8d5a989a7",
+  "dal": "is/e1",
+  "kirli": 3,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T21:45:39.979Z",
+  "sure_sn": 14.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 4,
+    "basarisiz": 13,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 13 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "K2 e-SMM (Kes, Sonra Gönder → Gönder): Sonucu Belirsiz; Sil / Düzenle / İptal Et 409; Gönder makbuzu ikinci kez göndermez; iletim günü gönderim izinden",
+      "konum": "test/ebelge-244-gonderim-izi.test.mjs:253:3",
+      "hata": "AssertionError [ERR_ASSERTION]: e-SMM: entegratör izi (e_adapter) — kesintide kalmalı · '' !== 'edm'"
+    },
+    {
+      "ad": "K3 e-Arşiv (Kaydet ve Gönder — numara kayıtta): Sonucu Belirsiz; Durum Sorgula gönderildi der; sonra Sil 409 (gönderildi)",
+      "konum": "test/ebelge-244-gonderim-izi.test.mjs:283:3",
+      "hata": "AssertionError [ERR_ASSERTION]: e-Arşiv: entegratör izi (e_adapter) — kesintide kalmalı · '' !== 'edm'"
+    },
+    {
+      "ad": "K4 e-Fatura (Temel Fatura, Kes, Sonra Gönder → Gönder): Sonucu Belirsiz; Düzenle 409; Gönder ikinci kez göndermez",
+      "konum": "test/ebelge-244-gonderim-izi.test.mjs:309:3",
+      "hata": "AssertionError [ERR_ASSERTION]: e-Fatura: entegratör izi (e_adapter) — kesintide kalmalı · '' !== 'edm'"
+    },
+    {
+      "ad": "K5 (B2b) istek EDM'ye ULAŞMADAN kesinti: Sonucu Belirsiz → Durum Sorgula 'bulunamadı' izi temizler (Gönderilmedi, Sil açık) → Gönder aynı numarayla",
+      "konum": "test/ebelge-244-gonderim-izi.test.mjs:335:3",
+      "hata": "AssertionError [ERR_ASSERTION]: ulaşmayan e-SMM: entegratör izi (e_adapter) — kesintide kalmalı · '' !== 'edm'"
+    },
+    {
+      "ad": "K6 (B6) Tümünü Gönder ortasında kesinti: 1. gitti, 2. yolda, 3. bekliyor → yeniden Tümünü Gönder 2.'yi tanır (ikinci kez göndermez), 3.'ye sıradaki numara",
+      "konum": "test/ebelge-244-gonderim-izi.test.mjs:382:3",
+      "hata": "AssertionError [ERR_ASSERTION]: yoldaki 2.: entegratör izi (e_adapter) — kesintide kalmalı · '' !== 'edm'"
+    },
+    {
+      "ad": "K7 (B4) hiç gitmeyen istek (oturum iki kez reddedildi → integrator-session): iz geri alınır — Gönderilmedi, Sil açık, Sonucu Belirsiz değil",
+      "konum": "test/ebelge-244-gonderim-izi.test.mjs:419:3",
+      "hata": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal: · + actual - expected"
+    },
+    {
+      "ad": "K9 (B5) gönderim sürerken Durum Sorgula 409 'gönderiliyor' (izi silmez); gönderim bitince iz sonuca döner",
+      "konum": "test/ebelge-244-gonderim-izi.test.mjs:465:3",
+      "hata": "AssertionError [ERR_ASSERTION]: gönderim sürerken iz var · '' !== 'edm'"
+    },
+    {
+      "ad": "K10 süre dolduktan sonra (10 gün): iptal izi olan makbuzda İptal Et açık, önce EDM'ye sorar → EDM'de iptal → programda iptal; izsiz makbuzda kural aynen (süre doldu, EDM'ye sorulmaz)",
+      "konum": "test/ebelge-244-gonderim-izi.test.mjs:502:3",
+      "hata": "AssertionError [ERR_ASSERTION]: İptal Et açık (önce EDM'ye sorar) · false !== true"
+    },
+    {
+      "ad": "K11 süre içinde (aynı gün): İptal Et EDM'de iptal olduğunu görür, ikinci iptal göndermez, programda iptal eder",
+      "konum": "test/ebelge-244-gonderim-izi.test.mjs:537:3",
+      "hata": "AssertionError [ERR_ASSERTION]: ikinci iptal gönderilmedi · 2 !== 1"
+    },
+    {
+      "ad": "K12 (B8, B9, B10) 002 şirketi: numaralı e-Arşiv → yedek → gönder → yedeği geri yükle (belge yine 'Gönderilmedi') → Gönder: 11048 → durum → gönderilmiş sayılır; iletim günü bilinmiyor → kesim günü",
+      "konum": "test/ebelge-244-gonderim-izi.test.mjs:557:3",
+      "hata": "AssertionError [ERR_ASSERTION]: yeniden Gönder: 502 {\"ok\":false,\"error\":\"EDM isteği reddetti: UUID=0f72ec32-02e3-40cb-b91e-cc30090e6899 ID=TEA2026000000001 için Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız (EDM hata kodu 11048) Bu numara EDM'de daha önce kullanılmış: test hesabı ortaktır, başka bir firma aynı numarayı kullanmış olabilir ya da yedekten geri yükleme yaptıysanız bu numarayla yedekten sonra siz göndermiş olabilirsiniz. Bu belgeyi İptal Et ile iptal edip yeniden kesin; yeni belge bir sonraki numarayı alır (gerekir · 502 !== 200"
+    },
+    {
+      "ad": "K15 v2.4.3'te e-Arşiv gönderimi EDM'ye ulaştı, program kesildi → 2.4.4'te belge izsiz (Gönderilmedi; bilinen sınır: Sil açık) → Gönder: 11048 → durum → gönderilmiş sayılır, Hata değil",
+      "konum": "test/ebelge-244-gonderim-izi.test.mjs:628:3",
+      "hata": "AssertionError [ERR_ASSERTION]: Gönder: 502 {\"ok\":false,\"error\":\"EDM isteği reddetti: UUID=7e4202c4-7b68-49bb-a009-266407b098bc ID=TEA2026000000001 için Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız (EDM hata kodu 11048) Bu numara EDM'de daha önce kullanılmış: test hesabı ortaktır, başka bir firma aynı numarayı kullanmış olabilir ya da yedekten geri yükleme yaptıysanız bu numarayla yedekten sonra siz göndermiş olabilirsiniz. Bu belgeyi İptal Et ile iptal edip yeniden kesin; yeni belge bir sonraki numarayı alır (gerekir · 502 !== 200"
+    },
+    {
+      "ad": "U1 iletideki numara ve ETTN'nin hepsi belgeninkiyse (büyük/küçük harf farkı önemsiz) bu belge; biri farklıysa ya da ikisi de yoksa değil",
+      "konum": "test/ebelge-244-gonderim-izi.test.mjs:658:3",
+      "hata": "AssertionError [ERR_ASSERTION]: 11048 iletisinin belgeyi gösterip göstermediğini söyleyen yardımcı (duplicateNamesOwn) yok · + actual - expected"
+    },
+    {
+      "ad": "U2 iletim günü: gönderim izi yalnız ardından sonuç kaydı gelmediyse girişimdir (kesinti); sonuç gelince sonucun kuralı",
+      "konum": "test/ebelge-244-gonderim-izi.test.mjs:668:3",
+      "hata": "AssertionError [ERR_ASSERTION]: kesinti: iz girişimdir · + actual - expected"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-e1/kirmizi-ad865f0.log",
+  "klasor": "/home/user/wt/e1",
+  "ham_cikti_sha256": "ebc0bf6b7f456a7569cc54961d758821374344fd0699628f6822b260251fdb15",
+  "ham_cikti_bayt": 21560
+}

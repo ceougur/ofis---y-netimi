@@ -1,0 +1,311 @@
+▶ E1: gönderim EDM'ye ulaştı, yanıt gelmeden program kesildi (SIGKILL) → yeniden açılışta Sonucu Belirsiz; Gönder önce durumu sorar
+  ✖ K2 e-SMM (Kes, Sonra Gönder → Gönder): Sonucu Belirsiz; Sil / Düzenle / İptal Et 409; Gönder makbuzu ikinci kez göndermez; iletim günü gönderim izinden (1137.941339ms)
+  ✖ K3 e-Arşiv (Kaydet ve Gönder — numara kayıtta): Sonucu Belirsiz; Durum Sorgula gönderildi der; sonra Sil 409 (gönderildi) (1020.188213ms)
+  ✖ K4 e-Fatura (Temel Fatura, Kes, Sonra Gönder → Gönder): Sonucu Belirsiz; Düzenle 409; Gönder ikinci kez göndermez (1073.185283ms)
+  ✖ K5 (B2b) istek EDM'ye ULAŞMADAN kesinti: Sonucu Belirsiz → Durum Sorgula 'bulunamadı' izi temizler (Gönderilmedi, Sil açık) → Gönder aynı numarayla (1142.462165ms)
+  ✔ K1 (B1) giriş yanıtı beklerken kesinti: belge numarasız Gönderilecekler'de, iz yok (yanlış Sonucu Belirsiz yok); EDM'ye makbuz gitmedi (994.237132ms)
+  ✖ K6 (B6) Tümünü Gönder ortasında kesinti: 1. gitti, 2. yolda, 3. bekliyor → yeniden Tümünü Gönder 2.'yi tanır (ikinci kez göndermez), 3.'ye sıradaki numara (1191.468788ms)
+✖ E1: gönderim EDM'ye ulaştı, yanıt gelmeden program kesildi (SIGKILL) → yeniden açılışta Sonucu Belirsiz; Gönder önce durumu sorar (6561.652572ms)
+▶ E1: iz yalnız belge entegratörde oluşabilecekse kalır (B4, B5)
+  ✖ K7 (B4) hiç gitmeyen istek (oturum iki kez reddedildi → integrator-session): iz geri alınır — Gönderilmedi, Sil açık, Sonucu Belirsiz değil (452.501925ms)
+  ✔ K8 (B4) bağlantı hiç kurulamadı (numara bu istekte verildi): numara geri bırakılır, iz de — belge numarasız Gönderilecekler'de, entegratör izi yok (537.474019ms)
+  ✖ K9 (B5) gönderim sürerken Durum Sorgula 409 'gönderiliyor' (izi silmez); gönderim bitince iz sonuca döner (433.977789ms)
+✖ E1: iz yalnız belge entegratörde oluşabilecekse kalır (B4, B5) (1425.043915ms)
+▶ E4: iptal EDM'de tamamlandı, yanıt gelmeden program kesildi
+  ✖ K10 süre dolduktan sonra (10 gün): iptal izi olan makbuzda İptal Et açık, önce EDM'ye sorar → EDM'de iptal → programda iptal; izsiz makbuzda kural aynen (süre doldu, EDM'ye sorulmaz) (1184.525906ms)
+  ✖ K11 süre içinde (aynı gün): İptal Et EDM'de iptal olduğunu görür, ikinci iptal göndermez, programda iptal eder (1267.616912ms)
+✖ E4: iptal EDM'de tamamlandı, yanıt gelmeden program kesildi (2452.652294ms)
+▶ E1: EDM 11048 (daha önce gönderildi) — ileti bu belgeyi gösteriyorsa önce durum sorulur
+  ✖ K12 (B8, B9, B10) 002 şirketi: numaralı e-Arşiv → yedek → gönder → yedeği geri yükle (belge yine 'Gönderilmedi') → Gönder: 11048 → durum → gönderilmiş sayılır; iletim günü bilinmiyor → kesim günü (921.819693ms)
+  ✔ K13 (B8) numara başka belgenin (EDM'de bu ETTN yok — ortak test hesabı / yedekten sonra başka belge): durum sorulur, bulunamadı → Hata + İptal Et iletisi (bugünkü yol) (481.107564ms)
+  ✔ K14 (B8) EDM'nin durum yanıtı BAŞKA bir ETTN bildiriyorsa (numarayla eşleşmiş başka belge) gönderilmiş sayılmaz → Hata (406.396684ms)
+✖ E1: EDM 11048 (daha önce gönderildi) — ileti bu belgeyi gösteriyorsa önce durum sorulur (1809.849323ms)
+▶ B11 eski sürüm verisi: v2.4.3'ün GERÇEK koduyla kesinti (izsiz belge), güncel kodla açılış
+  ✖ K15 v2.4.3'te e-Arşiv gönderimi EDM'ye ulaştı, program kesildi → 2.4.4'te belge izsiz (Gönderilmedi; bilinen sınır: Sil açık) → Gönder: 11048 → durum → gönderilmiş sayılır, Hata değil (1432.267965ms)
+✖ B11 eski sürüm verisi: v2.4.3'ün GERÇEK koduyla kesinti (izsiz belge), güncel kodla açılış (1432.818544ms)
+▶ U birim: 11048 iletisinin gösterdiği belge ve iletim günü
+  ✖ U1 iletideki numara ve ETTN'nin hepsi belgeninkiyse (büyük/küçük harf farkı önemsiz) bu belge; biri farklıysa ya da ikisi de yoksa değil (0.734118ms)
+  ✖ U2 iletim günü: gönderim izi yalnız ardından sonuç kaydı gelmediyse girişimdir (kesinti); sonuç gelince sonucun kuralı (0.393968ms)
+✖ U birim: 11048 iletisinin gösterdiği belge ve iletim günü (1.264328ms)
+ℹ Error: Test "K9 (B5) gönderim sürerken Durum Sorgula 409 'gönderiliyor' (izi silmez); gönderim bitince iz sonuca döner" at ../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:465:3 generated asynchronous activity after the test ended. This activity created the error "TypeError: fetch failed" and would have caused the test to fail, but instead triggered an unhandledRejection event.
+ℹ tests 17
+ℹ suites 6
+ℹ pass 4
+ℹ fail 13
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14207.527375
+
+✖ failing tests:
+
+test at ../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:253:3
+✖ K2 e-SMM (Kes, Sonra Gönder → Gönder): Sonucu Belirsiz; Sil / Düzenle / İptal Et 409; Gönder makbuzu ikinci kez göndermez; iletim günü gönderim izinden (1137.941339ms)
+  AssertionError [ERR_ASSERTION]: e-SMM: entegratör izi (e_adapter) — kesintide kalmalı
+  
+  '' !== 'edm'
+  
+      at assertUncertain (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:235:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:266:20)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: 'edm',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:283:3
+✖ K3 e-Arşiv (Kaydet ve Gönder — numara kayıtta): Sonucu Belirsiz; Durum Sorgula gönderildi der; sonra Sil 409 (gönderildi) (1020.188213ms)
+  AssertionError [ERR_ASSERTION]: e-Arşiv: entegratör izi (e_adapter) — kesintide kalmalı
+  
+  '' !== 'edm'
+  
+      at assertUncertain (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:235:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:299:7)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: 'edm',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:309:3
+✖ K4 e-Fatura (Temel Fatura, Kes, Sonra Gönder → Gönder): Sonucu Belirsiz; Düzenle 409; Gönder ikinci kez göndermez (1073.185283ms)
+  AssertionError [ERR_ASSERTION]: e-Fatura: entegratör izi (e_adapter) — kesintide kalmalı
+  
+  '' !== 'edm'
+  
+      at assertUncertain (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:235:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:324:20)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: 'edm',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:335:3
+✖ K5 (B2b) istek EDM'ye ULAŞMADAN kesinti: Sonucu Belirsiz → Durum Sorgula 'bulunamadı' izi temizler (Gönderilmedi, Sil açık) → Gönder aynı numarayla (1142.462165ms)
+  AssertionError [ERR_ASSERTION]: ulaşmayan e-SMM: entegratör izi (e_adapter) — kesintide kalmalı
+  
+  '' !== 'edm'
+  
+      at assertUncertain (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:235:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:348:20)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: 'edm',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:382:3
+✖ K6 (B6) Tümünü Gönder ortasında kesinti: 1. gitti, 2. yolda, 3. bekliyor → yeniden Tümünü Gönder 2.'yi tanır (ikinci kez göndermez), 3.'ye sıradaki numara (1191.468788ms)
+  AssertionError [ERR_ASSERTION]: yoldaki 2.: entegratör izi (e_adapter) — kesintide kalmalı
+  
+  '' !== 'edm'
+  
+      at assertUncertain (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:235:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:398:7)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: 'edm',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:419:3
+✖ K7 (B4) hiç gitmeyen istek (oturum iki kez reddedildi → integrator-session): iz geri alınır — Gönderilmedi, Sil açık, Sonucu Belirsiz değil (452.501925ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  -   'invoice.e.sending',
+      'invoice.e.send-failed'
+    ]
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:435:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'invoice.e.send-failed' ],
+    expected: [ 'invoice.e.sending', 'invoice.e.send-failed' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:465:3
+✖ K9 (B5) gönderim sürerken Durum Sorgula 409 'gönderiliyor' (izi silmez); gönderim bitince iz sonuca döner (433.977789ms)
+  AssertionError [ERR_ASSERTION]: gönderim sürerken iz var
+  
+  '' !== 'edm'
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:475:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: 'edm',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:502:3
+✖ K10 süre dolduktan sonra (10 gün): iptal izi olan makbuzda İptal Et açık, önce EDM'ye sorar → EDM'de iptal → programda iptal; izsiz makbuzda kural aynen (süre doldu, EDM'ye sorulmaz) (1184.525906ms)
+  AssertionError [ERR_ASSERTION]: İptal Et açık (önce EDM'ye sorar)
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:515:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:537:3
+✖ K11 süre içinde (aynı gün): İptal Et EDM'de iptal olduğunu görür, ikinci iptal göndermez, programda iptal eder (1267.616912ms)
+  AssertionError [ERR_ASSERTION]: ikinci iptal gönderilmedi
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:549:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:557:3
+✖ K12 (B8, B9, B10) 002 şirketi: numaralı e-Arşiv → yedek → gönder → yedeği geri yükle (belge yine 'Gönderilmedi') → Gönder: 11048 → durum → gönderilmiş sayılır; iletim günü bilinmiyor → kesim günü (921.819693ms)
+  AssertionError [ERR_ASSERTION]: yeniden Gönder: 502 {"ok":false,"error":"EDM isteği reddetti: UUID=0f72ec32-02e3-40cb-b91e-cc30090e6899 ID=TEA2026000000001 için Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız (EDM hata kodu 11048) Bu numara EDM'de daha önce kullanılmış: test hesabı ortaktır, başka bir firma aynı numarayı kullanmış olabilir ya da yedekten geri yükleme yaptıysanız bu numarayla yedekten sonra siz göndermiş olabilirsiniz. Bu belgeyi İptal Et ile iptal edip yeniden kesin; yeni belge bir sonraki numarayı alır (gerekir
+  
+  502 !== 200
+  
+      at must (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:62:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:575:21)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 502,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:628:3
+✖ K15 v2.4.3'te e-Arşiv gönderimi EDM'ye ulaştı, program kesildi → 2.4.4'te belge izsiz (Gönderilmedi; bilinen sınır: Sil açık) → Gönder: 11048 → durum → gönderilmiş sayılır, Hata değil (1432.267965ms)
+  AssertionError [ERR_ASSERTION]: Gönder: 502 {"ok":false,"error":"EDM isteği reddetti: UUID=7e4202c4-7b68-49bb-a009-266407b098bc ID=TEA2026000000001 için Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız (EDM hata kodu 11048) Bu numara EDM'de daha önce kullanılmış: test hesabı ortaktır, başka bir firma aynı numarayı kullanmış olabilir ya da yedekten geri yükleme yaptıysanız bu numarayla yedekten sonra siz göndermiş olabilirsiniz. Bu belgeyi İptal Et ile iptal edip yeniden kesin; yeni belge bir sonraki numarayı alır (gerekir
+  
+  502 !== 200
+  
+      at must (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:62:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:645:20)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 502,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:658:3
+✖ U1 iletideki numara ve ETTN'nin hepsi belgeninkiyse (büyük/küçük harf farkı önemsiz) bu belge; biri farklıysa ya da ikisi de yoksa değil (0.734118ms)
+  AssertionError [ERR_ASSERTION]: 11048 iletisinin belgeyi gösterip göstermediğini söyleyen yardımcı (duplicateNamesOwn) yok
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at duplicateNamesOwn (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:45:10)
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:659:18)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at node:internal/test_runner/test:1440:71
+      at node:internal/per_context/primordials:464:82
+      at new Promise (<anonymous>)
+      at new SafePromise (node:internal/per_context/primordials:433:3)
+      at node:internal/per_context/primordials:464:9 {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:668:3
+✖ U2 iletim günü: gönderim izi yalnız ardından sonuç kaydı gelmediyse girişimdir (kesinti); sonuç gelince sonucun kuralı (0.393968ms)
+  AssertionError [ERR_ASSERTION]: kesinti: iz girişimdir
+  + actual - expected
+  
+  + ''
+  - '2026-06-17T09:00:00.000Z'
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/e1-eski-wt-ad865f0/test/ebelge-244-gonderim-izi.test.mjs:672:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: '2026-06-17T09:00:00.000Z',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

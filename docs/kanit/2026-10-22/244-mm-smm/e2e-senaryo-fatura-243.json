@@ -1,0 +1,32 @@
+{
+  "ad": "244-mm-smm/e2e-senaryo-fatura-243",
+  "komut": "npm run test:senaryo-fatura-243",
+  "commit": "d602695dcd963952a8f64e0491f85045d69bf383",
+  "dal": "is/mm-smm",
+  "kirli": 11,
+  "izlenmeyen": 25,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T22:52:29.535Z",
+  "sure_sn": 68.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 59,
+    "gecen": 59,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-mm-smm/e2e-senaryo-fatura-243.log",
+  "klasor": "/home/user/wt/mm-smm",
+  "ham_cikti_sha256": "7b28b409869c0fefefa6daa84485746f4f57473777bbad3d754a9a58ff922801",
+  "ham_cikti_bayt": 5939
+}

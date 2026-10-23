@@ -150,7 +150,12 @@ describe("veri oturumları", () => {
     assert.ok((await rowsOf(admin)).some(row => row["İlan No"] === "EM-1"), "başka oturuma geçildi");
     assert.deepEqual((await cash()).totals, inSession.totals, "oturum değişince kasa aynı kalır");
 
-    assert.equal((await admin.post("/api/workspace/sessions/delete", { key: opened.data.data.session.key })).status, 200);
+    // 31e tur 7 N5: sayfadaki kayda bağlı tahsilat varken Sayfayı Sil adıyla uyarır (409); onayla siler, Kasa hareketi kalır.
+    const asked = await admin.post("/api/workspace/sessions/delete", { key: opened.data.data.session.key });
+    assert.equal(asked.status, 409, JSON.stringify(asked.data).slice(0, 300));
+    assert.equal(asked.data.code, "bonds-unmatched");
+    assert.match(asked.data.error, /^1 kaydın tahsilatı kaldırılacak satırlarda: /);
+    assert.equal((await admin.post("/api/workspace/sessions/delete", { key: opened.data.data.session.key, confirm: true })).status, 200);
     assert.deepEqual((await cash()).totals, inSession.totals, "oturum silinince kasa hareketleri silinmez");
   });
 });

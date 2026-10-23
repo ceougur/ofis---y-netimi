@@ -110,6 +110,75 @@ try {
   await sleep(300);
   ok((await readClipboard()) === message, "Enter ile panoya yazıldı");
 
+  // 23.10.2026 (ekran gezintisi, aday 14): uzun bildirimde "e-Belge" kısa çizgiden bölünüyordu ("belgenin e-" / "Belge durumu"). Dar genişlikler
+  // taranır; her "e-X" adının satır kutuları (Range.getClientRects) TEK satırda olmalı. Metin (textContent) ve Kopyala'nın panoya yazdığı metin
+  // sunucu metniyle bayt bayt aynı; görünmez karakter (U+00AD, U+200B, U+2011, U+2060, U+FEFF) eklenmez. Eski kodda kırmızı: bölünen genişlik > 0.
+  console.log("3b) e-Belge / e-Fatura / e-Arşiv / e-SMM / e-Posta kısa çizgiden satıra bölünmez");
+  const { readFileSync } = await import("node:fs");
+  const routeSource = readFileSync(path.join(ROOT, "server", "routes", "invoices.mjs"), "utf8");
+  const serverText = /const STATUS_STALE_TEXT = "([^"]+)"/.exec(routeSource)?.[1] || "";
+  ok(/e-Belge/.test(serverText), `ön koşul: sunucu metni okundu (${serverText.length} karakter)`);
+  const mixed = "E-Fatura mükellefi olmayan alıcıya e-Arşiv kesilir; serbest meslekte e-SMM düzenlenir, belge e-Posta ile gönderilir ve e-Belge'nin durumu kartta görünür.";
+  for (const [label, text] of [["sunucu metni", serverText], ["karma metin", mixed]]) {
+    await page.evaluate(() => document.querySelectorAll(".hof-toast").forEach(node => node.remove()));
+    await page.evaluate(value => window.HOF.toast(value, { type: "error" }), text);
+    await toast().waitFor();
+    const result = await toast().locator(".hof-toast-text").evaluate(node => {
+      const words = [];
+      const full = node.textContent;
+      for (const match of full.matchAll(/(^|[^\p{L}\p{N}])([eE]-\p{L}+)/gu)) words.push({ start: match.index + match[1].length, word: match[2] });
+      // Metin düğümlerinde [start, end) aralığını kuran Range (ad birden çok düğüme yayılabilir).
+      const rangeFor = (start, end) => {
+        const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
+        const range = document.createRange();
+        let offset = 0;
+        let begun = false;
+        for (let current = walker.nextNode(); current; current = walker.nextNode()) {
+          const length = current.data.length;
+          if (!begun && start < offset + length) {
+            range.setStart(current, start - offset);
+            begun = true;
+          }
+          if (begun && end <= offset + length) {
+            range.setEnd(current, end - offset);
+            return range;
+          }
+          offset += length;
+        }
+        return null;
+      };
+      const lines = rects => new Set([...rects].filter(rect => rect.width > 0).map(rect => Math.round(rect.top))).size;
+      const broken = [];
+      let multiLine = 0;
+      const widths = [];
+      for (let width = 150; width <= 460; width += 2) widths.push(width);
+      for (const width of widths) {
+        node.style.flex = `0 0 ${width}px`;
+        node.style.width = `${width}px`;
+        const all = document.createRange();
+        all.selectNodeContents(node);
+        if (lines(all.getClientRects()) > 1) multiLine += 1;
+        for (const { start, word } of words) {
+          const range = rangeFor(start, start + word.length);
+          if (range && lines(range.getClientRects()) > 1) broken.push(`${width}px:${word}`);
+        }
+      }
+      node.style.flex = "";
+      node.style.width = "";
+      return { text: full, words: words.map(item => item.word), widths: widths.length, multiLine, broken };
+    });
+    ok(result.words.length >= (label === "karma metin" ? 5 : 1), `${label}: e- adları bulundu (${result.words.join(", ")})`);
+    ok(result.multiLine >= result.widths / 2, `${label}: ön koşul — metin dar genişlikte birden çok satır (${result.multiLine}/${result.widths} genişlik)`);
+    ok(result.broken.length === 0, `${label}: hiçbir genişlikte e- adı satıra bölünmedi (${result.broken.length} bölünme${result.broken.length ? `: ${result.broken.slice(0, 6).join(" ")}` : ""})`);
+    ok(result.text === text, `${label}: bildirim metni (textContent) sunucu metniyle aynı`);
+    ok(!/[­​‑⁠﻿]/.test(result.text), `${label}: görünmez karakter yok`);
+    await writeClipboard("eski içerik");
+    await toast().locator(".hof-toast-copy").click({ timeout: 3000 }).catch(() => null);
+    await sleep(300);
+    const board = await readClipboard();
+    ok(board === text && Buffer.from(board, "utf8").equals(Buffer.from(text, "utf8")), `${label}: Kopyala panoya bayt bayt aynı metni yazdı`);
+  }
+
   console.log("4) navigator.clipboard yok (http://<ip> benzetimi) → yedek yol");
   await page.evaluate(() => {
     Object.defineProperty(navigator, "clipboard", { configurable: true, get: () => undefined });

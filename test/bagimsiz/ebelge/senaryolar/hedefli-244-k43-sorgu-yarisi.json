@@ -1,0 +1,70 @@
+{
+ "dil": "destekofis-ebelge/3",
+ "ad": "hedefli-244-k43-sorgu-yarisi",
+ "aciklama": "K43: Durum Sorgula sürerken (EDM'nin yanıtı vekilde tutulur) belge başka oturumda gönderilir; sorgunun geç gelen sonucu belgeyi EZMEZ — gönderim izi silinmez, sorgu 409 'yeniden sorgula'. B1: gönderim yanıtı EDM'ye ulaşmadan koptu (Sonucu Belirsiz, EDM'de yok) → oturum 2 aynı numarayla gönderir, geç 'bulunamadı' belgeyi gönderilmemiş yapmaz. B2: EDM işledi, yanıt koptu (EDM'de var) → oturum 2 ikinci kez göndermez (I25), geç sonuç ezmez. Sıra ortamdır (eszamanli / bekledi); program ikinci işlemi o sırada reddederse yarış oluşmaz (çatal). Aday 8 tabanında kırmızı BEKLENİR.",
+ "dayanak": "KARARLAR.md K43 [KULLANICI] 23.10.2026 (E1 kararı 22.10 + 31e baş mimar yorumu)",
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi",
+  "K6": "ilsiz_kisi",
+  "K7": "vdsiz_mukellef",
+  "K8": "nihai"
+ },
+ "adimlar": [
+  {
+   "islem": "ariza",
+   "tur": "kopma_once",
+   "no": 1
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B1",
+   "cari": "K1",
+   "tarih": "2026-06-16",
+   "gonder": "simdi",
+   "no": 2
+  },
+  {
+   "islem": "esz_sorgu_gonder",
+   "belge": "B1",
+   "no": 3
+  },
+  {
+   "islem": "durum_sorgula",
+   "belge": "B1",
+   "no": 4
+  },
+  {
+   "islem": "ariza",
+   "tur": "kopma_sonra",
+   "no": 5
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B2",
+   "cari": "K1",
+   "tarih": "2026-06-16",
+   "gonder": "simdi",
+   "no": 6
+  },
+  {
+   "islem": "esz_sorgu_gonder",
+   "belge": "B2",
+   "no": 7
+  },
+  {
+   "islem": "durum_sorgula",
+   "belge": "B2",
+   "no": 8
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 9
+  }
+ ]
+}

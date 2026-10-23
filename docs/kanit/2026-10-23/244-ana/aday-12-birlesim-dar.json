@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-12-birlesim-dar",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=2 test/ebelge-244-gonderim-izi.test.mjs test/numara-silinen-244.test.mjs test/ux18-cek-fatura-244.test.mjs test/silinenler-donem-kilidi-244.test.mjs test/ebelge-244-efatura-belirsiz-iptal.test.mjs test/tablo-borc-r31e.test.mjs test/fatura-217.test.mjs",
+  "commit": "2fd232a8484cdcd6b0283afb00a81f6af42dfed9",
+  "dal": "aday12",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T03:50:35.829Z",
+  "sure_sn": 20.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 99,
+    "gecen": 99,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/244-ana/aday-12-birlesim-dar.log",
+  "klasor": "/home/user/wt/aday12",
+  "ham_cikti_sha256": "5044ae4590aa4d3fc37fa1a2eff7492aa51cd8d00d91eb503b8713630daf4f6d",
+  "ham_cikti_bayt": 42620
+}
