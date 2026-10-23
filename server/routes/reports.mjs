@@ -6,7 +6,7 @@ import { analyzeColumns } from "../lib/insight/columns.mjs";
 import { computeDeadlines, computeDues } from "../lib/insight/dues.mjs";
 import { cariEkstre, dayText, flattenTable, nakitAkis, normalizeFilters, normalizeRecords, REPORT_KINDS, tableNotes, vadeTakip } from "../lib/reports.mjs";
 import { canUser } from "../lib/permissions.mjs";
-import { roundMoney } from "../lib/money.mjs";
+import { fromCents, roundMoney, toCents } from "../lib/money.mjs";
 import { isoDay } from "../lib/plans.mjs";
 import { reportFileBase, reportPdf, reportXlsx } from "../lib/report-files.mjs";
 import { columnOrder } from "../lib/sources.mjs";
@@ -31,8 +31,9 @@ export function tableFooter(table) {
     if ((column.type !== "money" && column.type !== "number") || column.dynamic || NO_SUM.has(column.key)) continue;
     const values = rows.map(row => row[column.key]).filter(value => typeof value === "number" && Number.isFinite(value));
     if (!values.length) continue;
-    const total = values.reduce((sum, value) => sum + value, 0);
-    footer[column.key] = column.type === "money" ? roundMoney(total) : total;
+    // 31e C2: para kolonunda her satır önce kuruşa (ekranda, PDF'te ve Excel hücresinde görünen tutar), toplam kuruştan — özet ile TOPLAM satırı aynı
+    // (kuruş altı hücrede — Excel formülü 333,3333333 — önceden ham değerler toplanıp yuvarlanıyor, özet 11.868,02 iken TOPLAM 11.868,03 çıkıyordu).
+    footer[column.key] = column.type === "money" ? fromCents(values.reduce((sum, value) => sum + toCents(value), 0)) : values.reduce((sum, value) => sum + value, 0);
   }
   if (table.columns.some(column => column.key === "bakiye")) footer.bakiye = roundMoney((footer.borc || 0) - (footer.alacak || 0));
   const label = table.columns.find(column => !column.type && !column.dynamic);
@@ -87,9 +88,10 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
     for (const session of sessions) {
       await dataset.withKey(session.key, async () => {
         const view = await dataset.view();
-        // 31e: Sekme süzgeci seçiliyse takvim ve kayıtlar yalnız o sekmelerden kurulur (her sekme kendi borcu ve kalemleri; not seçili sekmelerden).
+        // 31e C1: takvim BÜTÜN sekmelerden kurulur, Sekme süzgeci kalemlere ve kayıtlara SONRA uygulanır (2.4.3 yolu; lib/reports.mjs). Takvim yalnız seçili sekmelerden
+        // kurulunca kaydın bütün tahsilatı o sekmenin kalemlerine sayılıyor, öbür sekme için yapılan tahsilat bu sekmenin kalemini kapatıyordu (aday 12–14).
         const tabs = (view.tabs || []).map(tab => tab.title).filter(Boolean);
-        const rows = (view.rows || []).filter(row => !String(row.__hofKey || "").startsWith("free:") && (!filters.tabs.length || filters.tabs.includes(String(row.__sheet || tabs[0] || ""))));
+        const rows = (view.rows || []).filter(row => !String(row.__hofKey || "").startsWith("free:"));
         if (!rows.length) return;
         const forced = profile.roles ? profile.roles() : null;
         const analyses = analyzeColumns(rows.slice(0, 5000), columnOrder(rows), { now, forced });
@@ -132,7 +134,7 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
     }
   }
   async function backbone(filters, now, { cashVisible = true } = {}) {
-    const data = filters.sessions.length || filters.tabs.length ? await calendar(filters, now) : await allCalendar(now);
+    const data = filters.sessions.length ? await calendar(filters, now) : await allCalendar(now);
     // Tablodaki Kişiler ve Nakit Akışı: kaydın tahsilatı takvimle AYNI küme — kayıt tahsilatı (eski) + kayda bağlı carinin tahsilatı (2.4.3 A2; 2.4.4 E8: zil ve
     // Tahsilat Takvimi'ndeki tahsilat cariye yazılır) + kayda (ya da kayda bağlı cariye) bağlı taksit kartının tahsilatı (31a F1/F5: Tablodan Aktar'ın karta
     // taşıdığı cari tahsilatı ve karta doğrudan girilen tahsilat; önceden rapordan düşüyordu). Bir para hareketi tek satırdadır (K11): iki kez sayılmaz.
@@ -159,7 +161,10 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
     else if (kind === "vade-takip") report = vadeTakip({ records: data.records, items: data.items, dormant: data.dormant, filters, now });
     else report = nakitAkis({ items: data.items, payments: data.payments, cashEntries: data.cashEntries, filters, now });
     // 31e A1 / T1: sekme ve hesap notları — Tablodaki Kişiler kendi kayıtlarından, Vadeler ve Nakit Akışı takvimden (aynı kural).
-    if (kind !== "cari-ekstre") report = { ...report, notes: tableNotes({ split: data.split || [], overpaid: data.records.filter(record => record.overpaid).length }) };
+    // Sekme süzgecinde not yalnız seçili sekmelerin ikisinde (ya da daha çoğunda) borcu olan dosya no için (Tablodaki Kişiler ile aynı).
+    const inTabs = tab => !filters.tabs.length || filters.tabs.includes(tab);
+    const split = (data.split || []).map(item => ({ ...item, tabs: item.tabs.filter(entry => inTabs(entry.tab)) })).filter(item => item.tabs.length > 1);
+    if (kind !== "cari-ekstre") report = { ...report, notes: tableNotes({ split, overpaid: data.records.filter(record => record.overpaid && inTabs(record.tab)).length }) };
     // 31e Y1: Kasa yetkisi yoksa Nakit Akışı'nın Kasa kolonları (giriş, çıkış, net, birikimli, beklenenle birlikte) ve toplamları yok; not söyler.
     if (kind === "nakit-akis" && !cashVisible) {
       const strip = row => Object.fromEntries(Object.entries(row).filter(([key]) => !CASH_COLUMNS.has(key)));
@@ -170,10 +175,9 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
     const columns = report.table.columns.map(column => (column.dynamic ? column : { ...column, label: titleCase(column.label) }));
     report = { ...report, table: { ...report.table, columns } };
     report.table.footer = tableFooter(report.table);
-    // 31e: Sekme süzgeci takvimi seçili sekmelerden kurar; süzgeç seçenekleri (Sekme, Durum) yine bütün sekmelerden — seçili sekmede öbürleri listeden düşmez.
-    const optionSource = filters.tabs.length ? (filters.sessions.length ? await calendar({ ...filters, tabs: [] }, now) : await allCalendar(now)) : data;
-    const tabs = [...new Set(optionSource.records.map(record => record.tab).filter(Boolean))].sort((a, b) => a.localeCompare(b, "tr"));
-    const statuses = [...new Set(optionSource.records.map(record => record.status).filter(Boolean))].slice(0, 30);
+    // Süzgeç seçenekleri (Sekme, Durum) bütün sekmelerden (takvim süzülmeden kurulur; seçili sekmede öbürleri listeden düşmez).
+    const tabs = [...new Set(data.records.map(record => record.tab).filter(Boolean))].sort((a, b) => a.localeCompare(b, "tr"));
+    const statuses = [...new Set(data.records.map(record => record.status).filter(Boolean))].slice(0, 30);
     return { report, summary: tableSummary(report), filters: { ...filters, from: filters.from === null ? "" : new Date(filters.from).toISOString().slice(0, 10), to: filters.to === null ? "" : new Date(filters.to).toISOString().slice(0, 10) }, sessions: data.sessions, tabs, statuses, columnsBySession: data.columnsBySession, crossMatched: data.records.length ? [...new Set(data.records.map(record => record.cariKey).filter(Boolean))].length : 0 };
   }
 

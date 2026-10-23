@@ -1,0 +1,32 @@
+{
+  "ad": "c-e2e-senaryo-banka-rapor-243",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-rapor-243.mjs",
+  "commit": "9b0f52036e9e6574114264c6e4802adc3c191b45",
+  "dal": "is/r31e-c",
+  "kirli": 3,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T05:24:31.371Z",
+  "sure_sn": 42.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 38,
+    "gecen": 38,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/c-e2e-senaryo-banka-rapor-243.log",
+  "klasor": "/home/user/wt/r31e-c",
+  "ham_cikti_sha256": "2c2b3044e641c552a33f398a9b098c418a03c1f895f3d7461900e3305ab1f0cf",
+  "ham_cikti_bayt": 5009
+}

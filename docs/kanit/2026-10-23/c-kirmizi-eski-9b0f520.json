@@ -1,0 +1,63 @@
+{
+  "ad": "c-kirmizi-eski-9b0f520",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/tablo-borc-r31e.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T05:22:48.979Z",
+  "sure_sn": 4.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 27,
+    "gecen": 21,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "31e C1: Sekme süzgeçli Vadeler / Nakit Akışı — öbür sekmenin tahsilatı bu sekmenin kalemini kapatmaz (2.4.3 gibi) › Sekme 2026 Aidat: 3 kalem / 1.900 (Ali 800, Ayşe 600, Can 500); Nakit Akışı Beklenen 1.900; not yok (B1/B3)",
+      "konum": "test/tablo-borc-r31e.test.mjs:270:3",
+      "hata": "kalemler: [[\"Ali Veli\",\"2026 Aidat\",800],[\"Can Er\",\"2026 Aidat\",500]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "31e C2: kuruş altı hücre — TOPLAM satırı = özet (ekran, Excel) › Tablodaki Kişiler: satırlar 333,33 × 3 + 0,01 + 0,10 + 0,20 = 1.000,30; TOPLAM satırı, toplam ve özet aynı (B7)",
+      "konum": "test/tablo-borc-r31e.test.mjs:288:3",
+      "hata": "TOPLAM satırı: {\"borc\":1000.31,\"bakiye\":1000.31,\"cari\":\"TOPLAM\"} · + actual - expected · + 1000.31 (beklenen 1000.3, gelen 1000.31)"
+    },
+    {
+      "ad": "31e C2: kuruş altı hücre — TOPLAM satırı = özet (ekran, Excel) › Excel: TOPLAM satırının borç hücresi 1000.3, özet 1.000,30; 1000.31 yok",
+      "konum": "test/tablo-borc-r31e.test.mjs:301:3",
+      "hata": "TOPLAM: [\"TOPLAM\",\"\",\"\",\"\",1000.31,\"\",1000.31,\"\"] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "31e C3: aynı adlı iki kişi — farklı T.C. Kimlik No ayrı, aynı kimlik tek kişi; Vadeler aynı adı yazar › Ali Veli üç kişi: TC 10000000146 700, TC 22222222222 900, kimliksiz Kiracılar 5.000 (iki kimliğe uyuyor, tahmin edilmez); Ayşe tek kimlik → 300 + 3.000 (B10/B11)",
+      "konum": "test/tablo-borc-r31e.test.mjs:318:3",
+      "hata": "[[\"A. Can Er\",400],[\"Ali Veli\",6600],[\"Ayşe Kaya\",3300],[\"Can Er\",250]] · undefined !== 700"
+    },
+    {
+      "ad": "31e C3: aynı adlı iki kişi — farklı T.C. Kimlik No ayrı, aynı kimlik tek kişi; Vadeler aynı adı yazar › aynı kimlik, farklı ad yazımı ('A. Can Er' / 'Can Er'): tek kişi 650 (B12)",
+      "konum": "test/tablo-borc-r31e.test.mjs:327:3",
+      "hata": "[[\"A. Can Er\",400],[\"Can Er\",250]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "31e C3: aynı adlı iki kişi — farklı T.C. Kimlik No ayrı, aynı kimlik tek kişi; Vadeler aynı adı yazar › Vadeler: iki Ali Veli kalemi kimlik ekiyle, Tablodaki Kişiler ile aynı ad (B14)",
+      "konum": "test/tablo-borc-r31e.test.mjs:333:3",
+      "hata": "[[\"Ali Veli\",700],[\"Ali Veli\",900],[\"Ali Veli\",5000],[\"Ali Veli\",5000]] · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-23/c-kirmizi-eski-9b0f520.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/c-eski-9b0f520",
+  "ham_cikti_sha256": "347acf6b35a8eb1436f43eecb8fcbf898e21032559947f22f0dcd1227a9d69d7",
+  "ham_cikti_bayt": 18877
+}

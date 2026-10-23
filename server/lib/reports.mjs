@@ -31,6 +31,11 @@ const phoneKey = value => {
   const digits = String(value ?? "").replace(/\D/g, "");
   return digits.length >= 10 ? digits.slice(-10) : "";
 };
+// Kimlik: 11 haneli T.C. Kimlik No ya da 10 haneli Vergi No (yalnız rakamlar); başka uzunluk kimlik sayılmaz.
+const identityKey = value => {
+  const digits = String(value ?? "").replace(/\D/g, "");
+  return digits.length === 10 || digits.length === 11 ? digits : "";
+};
 export const cariKeyOf = (name, phone = "") => {
   const folded = foldText(name);
   if (folded && folded.length >= 3) return `n:${folded}`;
@@ -66,10 +71,20 @@ const itemDate = item => {
 // aday kullanılır — önce oturumun seçtiği kolon, sonra öbür sekmelerin aynı başlıkla bulduğu kolon. Aynı kişinin birden çok satırı olan dönem sekmesinde
 // ("2025 Aidat": 10 satırda 4 ad, tekillik 0,4) sekme analizi "Borçlu"yu kişi saymıyordu; satırlar adsız, dosya no ile ayrı grup oluyor, aynı kişi iki satıra
 // bölünüyordu (aday 13 cari kâhini; kök 31a F4 sekme başına analiz).
-const FALLBACK_ROLES = ["person", "id", "phone"];
+const FALLBACK_ROLES = ["person", "id", "phone", "identity"];
+// 31e C3: kişinin resmî kimliği (T.C. Kimlik No ya da Vergi No) — aynı adlı iki kişiyi ayırır, aynı kimliği (ad yazımı farklı olsa da) birleştirir.
+// Başlığı açıkça kimlik diyen kolon da sayılır ("TC Kimlik No", "Vergi No"): değerlerin sağlama hanesi tutmasa da (yazım hatası, örnek veri) kolon kimliktir;
+// kayıtta yalnız 10 / 11 haneli değer kimlik olur (identityKey).
+const IDENTITY_HEADER = /\b(tc|t c|tckn|tc no|tc kimlik|kimlik no|vkn|vergi no|vergi numarasi|vergi kimlik)\b/;
+const primaryOf = analyses => {
+  const primary = primaryColumns(analyses);
+  const vkn = analyses.find(item => item.role === "vkn" && item.stats?.nonEmpty)?.column || null;
+  const headed = analyses.find(item => item.stats?.nonEmpty && IDENTITY_HEADER.test(foldText(item.column)) && item.role !== "phone")?.column || null;
+  return { ...primary, identity: primary.tckn || vkn || headed };
+};
 function recordLayout(analyses, fallback = null) {
   const byColumn = new Map(analyses.map(item => [item.column, item]));
-  const primary = { ...primaryColumns(analyses) };
+  const primary = primaryOf(analyses);
   if (fallback) {
     for (const role of FALLBACK_ROLES) {
       if (primary[role]) continue;
@@ -94,6 +109,7 @@ function recordOf(row, { primary, byColumn, plan, amountColumn, backbone }, { se
   if (!row || !row.__hofKey || isTotalRow(row) || isFlaggedRow(row) || String(row.__hofKey).startsWith("free:")) return null;
   const cari = String(row[primary.person] ?? "").trim();
   const phone = primary.phone ? String(row[primary.phone] ?? "").trim() : "";
+  const identity = identityKey(primary.identity ? row[primary.identity] : "");
   const deadlineDate = primary.deadline ? parseDate(row[primary.deadline]) : null;
   const fields = {};
   for (const [column, value] of Object.entries(row)) {
@@ -119,6 +135,7 @@ function recordOf(row, { primary, byColumn, plan, amountColumn, backbone }, { se
     deadlineText: primary.deadline ? String(row[primary.deadline] ?? "").trim() : "",
     status: primary.status ? String(row[primary.status] ?? "").trim() : "",
     phone,
+    identity,
     fields,
   };
 }
@@ -137,7 +154,7 @@ export function normalizeRecords({ rows, analyses, session, sessionName = "", ta
   const sheets = analyzeTab ? [...new Set(rows.map(sheetOf))] : [];
   if (sheets.length > 1) {
     const analysed = sheets.map(sheet => [sheet, analyzeTab(rows.filter(row => sheetOf(row) === sheet))]);
-    const own = analysed.map(([, analyses]) => primaryColumns(analyses));
+    const own = analysed.map(([, analyses]) => primaryOf(analyses));
     const fallback = Object.fromEntries(FALLBACK_ROLES.map(role => [role, [...new Set([base.primary[role], ...own.map(primary => primary[role])].filter(Boolean))]]));
     for (const [sheet, analyses] of analysed) layouts.set(sheet, recordLayout(analyses, fallback));
   }
@@ -198,6 +215,53 @@ export function tableNotes({ split = [], overpaid = 0 } = {}) {
   return notes;
 }
 
+// ---------- Kişi (grup) kimliği ----------
+// 31a N5 (aynı adlı iki kişi): ad aynı, telefonlar FARKLIYSA iki ayrı kişidir; adın tek telefonu varsa (ya da hiç yoksa) bütün kayıtlar tek kişidir — telefonsuz kayıt
+// da (iki dosyadaki aynı cari, v2.0.2 cross-match). Birden çok telefonlu adın telefonsuz kaydı tahmin edilmez, ayrı grupta kalır.
+// 31e C3: kimlik (T.C. Kimlik No / Vergi No) önce gelir — kimliği olan kayıt kimliğiyle gruplanır (aynı kimlik ad yazımı farklı olsa da tek kişi; aynı ad, farklı
+// kimlik ayrı kişi). Kimliği boş kayıt bugünkü kuralla (ad + telefon) TEK bir kimliğe uyuyorsa o kişiye katılır; birden çok kimliğe uyuyorsa tahmin edilmez,
+// ad (+ telefon) grubunda kalır. Aynı adı taşıyan birden çok grup varsa kimlikli grubun adına "(TC …)" / "(VKN …)" eklenir; Vadeler aynı adı yazar.
+export function personIndex(records) {
+  const phonesByName = new Map();
+  const idsByName = new Map(); // ad → [{ identity, phone }]
+  for (const record of records) {
+    if (!record.cariKey?.startsWith("n:")) continue;
+    const phone = phoneKey(record.phone);
+    if (phone) {
+      if (!phonesByName.has(record.cariKey)) phonesByName.set(record.cariKey, new Set());
+      phonesByName.get(record.cariKey).add(phone);
+    }
+    if (record.identity) {
+      if (!idsByName.has(record.cariKey)) idsByName.set(record.cariKey, []);
+      idsByName.get(record.cariKey).push({ identity: record.identity, phone });
+    }
+  }
+  const keyOf = record => {
+    if (record.identity) return `t:${record.identity}`;
+    if (!record.cariKey) return `k:${record.key}`;
+    const byPhone = (phonesByName.get(record.cariKey)?.size || 0) >= 2;
+    const phone = phoneKey(record.phone);
+    const matches = new Set((idsByName.get(record.cariKey) || []).filter(entry => !byPhone || (phone && entry.phone === phone)).map(entry => entry.identity));
+    if (matches.size === 1) return `t:${[...matches][0]}`;
+    return byPhone ? `${record.cariKey}|${phone}` : record.cariKey;
+  };
+  const keysByName = new Map();
+  for (const record of records) {
+    const name = record.cariKey?.startsWith("n:") ? record.cariKey : "";
+    if (!name) continue;
+    if (!keysByName.has(name)) keysByName.set(name, new Set());
+    keysByName.get(name).add(keyOf(record));
+  }
+  const labelOf = record => {
+    const base = record.cari || record.id || record.key;
+    const key = keyOf(record);
+    if (!key.startsWith("t:") || (keysByName.get(record.cariKey)?.size || 0) < 2) return base;
+    const identity = key.slice(2);
+    return `${base} (${identity.length === 11 ? "TC" : "VKN"} ${identity})`;
+  };
+  return { keyOf, labelOf };
+}
+
 // ---------- Cari ekstre ----------
 export function cariEkstre({ records, payments = [], filters = normalizeFilters(), now = new Date() }) {
   const matched = records.filter(record => matchesRecord(record, filters));
@@ -208,21 +272,8 @@ export function cariEkstre({ records, payments = [], filters = normalizeFilters(
     paid.get(payment.caseKey).push(payment);
   }
   const groups = new Map();
-  // 31a N5 (aynı adlı iki kişi): ad aynı, telefonlar FARKLIYSA iki ayrı kişidir (ayrı satır grubu); adın tek telefonu varsa (ya da hiç yoksa) bütün kayıtlar
-  // tek kişidir — telefonsuz kayıt da (iki dosyadaki aynı cari, v2.0.2 cross-match). Birden çok telefonlu adın telefonsuz kaydı tahmin edilmez, ayrı
-  // grupta kalır. Kişinin kimliği süzgeçten bağımsızdır (bütün kayıtlardan).
-  const phonesByName = new Map();
-  for (const record of records) {
-    const phone = phoneKey(record.phone);
-    if (!record.cariKey?.startsWith("n:") || !phone) continue;
-    if (!phonesByName.has(record.cariKey)) phonesByName.set(record.cariKey, new Set());
-    phonesByName.get(record.cariKey).add(phone);
-  }
-  const groupKeyOf = record => {
-    if (!record.cariKey) return `k:${record.key}`;
-    if ((phonesByName.get(record.cariKey)?.size || 0) < 2) return record.cariKey;
-    return `${record.cariKey}|${phoneKey(record.phone)}`;
-  };
+  // Kişinin kimliği süzgeçten bağımsızdır (bütün kayıtlardan; personIndex).
+  const { keyOf: groupKeyOf, labelOf } = personIndex(records);
   // 2.4.4 (5c): aynı kayıt anahtarı birden çok sekmede olabilir (İcra Takip + Ödeme Sözleri aynı dosya no); tahsilat anahtara bağlıdır ve rapora
   // BİR KEZ, süzgeçte kalan ilk kaydın satırına yazılır. 2.4.3'e kadar anahtarın her sekmedeki satırına ayrı yazılıyor, alacak iki kez sayılıyordu.
   const attached = new Set();
@@ -234,7 +285,7 @@ export function cariEkstre({ records, payments = [], filters = normalizeFilters(
   const { split } = debtByRecord(records.filter(inTabs).map(record => ({ key: slotOf(record), tab: record.tab, amount: record.debt, tier: record.debtTier, meta: { cari: record.cari, id: record.id || record.key } })));
   for (const record of matched) {
     const key = groupKeyOf(record);
-    if (!groups.has(key)) groups.set(key, { key, cari: record.cari || record.id || record.key, sessions: new Set(), lines: [] });
+    if (!groups.has(key)) groups.set(key, { key, cari: labelOf(record), sessions: new Set(), lines: [] });
     const group = groups.get(key);
     group.sessions.add(record.sessionName || record.session);
     const debit = record.debt !== null && record.debt !== undefined ? record.debt : null;
@@ -290,12 +341,14 @@ export function cariEkstre({ records, payments = [], filters = normalizeFilters(
 export function vadeTakip({ records, items = [], dormant = [], filters = normalizeFilters(), now = new Date() }) {
   const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
   const byKey = new Map(records.map(record => [`${record.session}\u0000${record.key}`, record]));
+  // 31e C3: kişi adı Tablodaki Kişiler ile aynı (aynı adlı iki kişide kimlik eki).
+  const { labelOf } = personIndex(records);
   const rows = [];
   for (const item of items) {
     const record = byKey.get(`${item.session}\u0000${item.caseKey}`) || null;
     const date = itemDate(item);
     if (!inRange(date, filters)) continue;
-    const cari = record?.cari || item.person || item.caseKey;
+    const cari = (record?.cari && labelOf(record)) || item.person || item.caseKey;
     if (filters.cari && !foldText(`${cari} ${item.caseKey}`).includes(filters.cari)) continue;
     if (filters.sessions.length && !filters.sessions.includes(item.session)) continue;
     if (filters.tabs.length && item.tab && !filters.tabs.includes(item.tab)) continue;
@@ -312,7 +365,7 @@ export function vadeTakip({ records, items = [], dormant = [], filters = normali
   if (!filters.status.length || filters.status.includes("durgun")) {
     for (const item of dormant) {
       const record = byKey.get(`${item.session}\u0000${item.caseKey}`) || null;
-      const cari = record?.cari || item.person || item.caseKey;
+      const cari = (record?.cari && labelOf(record)) || item.person || item.caseKey;
       if (filters.cari && !foldText(`${cari} ${item.caseKey}`).includes(filters.cari)) continue;
       if (filters.sessions.length && !filters.sessions.includes(item.session)) continue;
       if (filters.tabs.length && item.tab && !filters.tabs.includes(item.tab)) continue;
