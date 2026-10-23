@@ -165,7 +165,7 @@ Kaynak: ana oturumun ilettiği karar metni. Ürün kodu okunmadı.
   yalnız kayıt tahsilatı ve cari bağı); eşleşmeyen bağlı verinin "silinmediği" doğrudan okunamadı (rapor eşleşmeyeni göstermez; b3h v3'te aynı içerik geri gelince bağ
   geri göründü — dolaylı); Dosya No'lu tabloda tutar değişimi (anahtar Dosya No).
 
-### B3g — Dar kontrol bulguları (karar sahibi 23.10.2026: N3, N4, N5, N6)
+### B3g — Dar kontrol bulguları (karar sahibi 23.10.2026: N3, N4, N5, N6; kullanıcı kararı A: N1)
 - **N3** "Aynı konum + aynı kişi" eşleşmesi YALNIZ kişi değeri sekmede eski ve yeni tabloda TEK satırken geçerli (Mete Er kuralının sıkılaştırılması — tekil kişi değeri kuralının
   içinde; ayrı konum kuralı kalktı, eski "aynı sayıda" kuralı mutant 42). Aynı adlı iki kişi yer değiştirip tutarları değişirse (ya da biri değişirse) bağ HİÇBİR YERE taşınmaz →
   eşleşmeyen uyarısı + onay; bağ yanlış kişiye gitmez: o kişinin rapordaki tahsilatı (0 dahil) denetlenir. Senaryo b3j-ayni-ad-takas; b3g v2 (aynı adlı satırın tutarı değişir).
@@ -176,6 +176,15 @@ Kaynak: ana oturumun ilettiği karar metni. Ürün kodu okunmadı.
   bilinmiyor) ve öbür kaldırma yolları (uçları bilinmiyor).
 - **N6** Tabloda artık olmayan (eski karttaki) kayda yazım reddedilir (409), sessizce kaybolmaz. Kara kutudan: kayıt tahsilatı (b3g p7 — Yerine koy'la çıkan Deniz Ay'ın eski
   anahtarına); not / telefon / haciz / belge / görev / düzeltme uçları bilinmediğinden DENENMEDİ. Mutant 48.
+- **N1** (kullanıcı kararı A, 5 dk yetkisiyle 23.10.2026) Dosya No'lu (ya da kimlik kolonlu) tabloda her kayıt KENDİ dosya numarasıyla (kimliğiyle) tanınır. Dosya numarası değişen
+  kayıtta (2026/101 kapanır, aynı kişiye 2026/150 açılır) bağlar (tahsilat, not, düzeltme, haciz…) yeni dosyaya TAŞINMAZ, eski dosyada kalır; Yerine Koy onayı kalkacak dosyanın
+  bağlarını ADIYLA söyler. Aynı dosya numarası geri gelirse bağları yeniden görünür. Kişi eşleşmesiyle taşıma YALNIZ Dosya No'suz (kimlik kolonsuz) tablolarda. Kâhin: Dosya No
+  kolonlu sekmede bağ yalnız aynı dosya numarasının TEK satırına gider; yoksa eşleşmeyen uyarısı + onay ve bağ "eski dosyada" bekler (raporda yeni dosyanın tahsilatı 0); dosya
+  numarası geri gelince bağ o satırın raporunda yeniden görünür (eski satırların bağları yerleştikten SONRA). Kimlik kolonlu tabloda aynı kural geçerli kimlikle (B3c: geçersiz
+  kimlik kimlik değildir). [YAYGIN yorum] Yeni tabloda Dosya No kolonu HİÇ yoksa (sekme Dosya No'suz hâle geldiyse) kişi eşleşmesi — karar bu durumu söylemiyor, senaryoda yok.
+  Senaryo b3m-dosya-no-degisimi (icra sekmesi Gül Ak 2026/101 → 2026/150 → 2026/101, Hakan Er 2026/102 tutarı değişir — bağ aynı dosyada kalır; Üyeler sekmesi TC Kimlik No'lu
+  Rana Ok kimliği 10000000146 → 12345678950 → geri). Mutant 49 (N1 öncesi: kişi eşleşmesiyle yeni dosyaya taşınır), 50 (geri gelen dosyanın bağı görünmez). DENENMEYEN: not /
+  düzeltme / haciz bağları (uçları bilinmiyor; kara kutudan yalnız kayıt tahsilatı), Sheets eşitlemesi.
 
 ### B4b — Dört rapor aynı satır borcu (K4 [KULLANICI] 23.10.2026)
 - **K4** Tablodaki Kişiler (totals.debit), Tahsilat Takvimi (/dues Σ amount), Vade Takip (totals.amount) ve Nakit Akışı Beklenen (totals.expected) aynı satır

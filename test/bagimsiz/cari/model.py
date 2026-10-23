@@ -76,6 +76,8 @@ MUTASYONLAR = {
     46: "Devamı olarak ekle güvenli eşleşen (aynı kişi, başka hücresi farklı) satırı güncellemez, ikinci kez ekler ve onay ister",
     47: "N4 öncesi: tablodaki TEK tutar kolonu vergi kolonuysa da borç sayılmaz",
     48: "N6 öncesi: tabloda artık olmayan kayda tahsilat yazımı kabul edilir",
+    49: "N1 öncesi: Dosya No'lu tabloda dosya numarası değişen kaydın bağı kişi eşleşmesiyle yeni dosyaya taşınır",
+    50: "N1: geri gelen dosya numarasının bağları yeniden görünmez",
 }
 
 
@@ -228,7 +230,8 @@ class Model:
         self.out = {}
         self.belirsiz = []
         self.belirsiz_adlar = set()
-        self.bag_kopan_adlar = set()  # N3: bağı hiçbir yere taşınmayan kişiler — rapordaki tahsilatları (0 dahil) denetlenir  # bağ sürekliliği: eşleşmeyen bağlı verinin yeri kuralda yok → bu adlı kişilerin borç/alacak denetimi yapılmaz
+        self.bag_kopan_adlar = set()
+        self.kayip_dosya = {}  # N1: tablodan kalkan Dosya No → kalan kayıt tahsilatı (dosya numarası geri gelirse bağ yeniden görünür)  # N3: bağı hiçbir yere taşınmayan kişiler — rapordaki tahsilatları (0 dahil) denetlenir  # bağ sürekliliği: eşleşmeyen bağlı verinin yeri kuralda yok → bu adlı kişilerin borç/alacak denetimi yapılmaz
 
     # ───────────────────────── yardımcılar
     def yeni_seq(self):
@@ -542,7 +545,7 @@ class Model:
                 # NETLEŞTİRME (1): içerik = tabloya yazılan bütün hücreler (Dosya No, ad, öbür hücreler; boş hücre yok sayılır)
                 dosya = (sk.get("dosyalar") or [None] * (i + 1))[i]
                 icerik = (dosya, ad, tuple(sorted((k, str(v).strip()) for k, v in (c or {}).items() if str(v).strip())))
-                out.append({"sekme": sk["ad"], "sira": i, "ref": no, "ad": ad, "kd": (ad, tel or kim or None), "borc": b, "icerik": icerik})
+                out.append({"sekme": sk["ad"], "sira": i, "ref": no, "ad": ad, "kd": (ad, tel or kim or None), "borc": b, "icerik": icerik, "dosya": dosya, "kimlik": kim or None})
         return out
 
     def bag_surekliligi(self, a, eski, eski_sekme, eski_kayit):
@@ -605,6 +608,7 @@ class Model:
             self.d("adim:%s:uyariAdlari" % a["id"], cift, "KULLANICI", "bağ sürekliliği (4) + NETLEŞTİRME 2: önizleme ikinci kez eklenecek aynı görünen satırları adıyla söyler")
             return
         yeni = self.satir_listesi()
+        dosyali_sekme = {y["sekme"] for y in yeni if y["dosya"] is not None}
         tutanlar = sorted({no for no, v in self.kayitTahsilat.items() if v} | {c["kayit"] for c in self.cariler.values() if c.get("kayit")})
         eslesmeyen = []
         for h in tutanlar:
@@ -612,6 +616,26 @@ class Model:
             if er is None:
                 continue  # tablo dışı kayıt (ör. taksit kartı anahtarı) — bu kuralın konusu değil
             hedef = None
+            if er["dosya"] is not None and er["sekme"] in dosyali_sekme and self.mut != 49:
+                # N1 (kullanıcı kararı A, 23.10.2026): Dosya No'lu tabloda her kayıt KENDİ dosya numarasıyla tanınır — bağ yalnız aynı dosya numarasında kalır; numarası
+                # değişen kaydın bağı yeni dosyaya TAŞINMAZ, eski dosyada kalır (Yerine Koy onayı adıyla söyler). Kişi eşleşmesi yalnız Dosya No'suz tabloda. [YAYGIN yorum]
+                # Dosya No kolonu yeni tabloda HİÇ yoksa eski kural (kişi eşleşmesi) — karar bu durumu söylemiyor.
+                ayni_dosya = {y["ref"] for y in yeni if y["dosya"] == er["dosya"]}
+                if len(ayni_dosya) == 1:
+                    hedef = next(iter(ayni_dosya))
+                if hedef is None:
+                    eslesmeyen.append(er["ad"])
+                    self.kayip_dosya[("dosya", er["dosya"])] = self.kayip_dosya.get(("dosya", er["dosya"]), 0) + self.kayitTahsilat.pop(h, 0)
+                    for c in self.cariler.values():
+                        if c.get("kayit") == h:
+                            c["kayit"] = None
+                    continue
+                if hedef != h:
+                    self.kayitTahsilat[hedef] += self.kayitTahsilat.pop(h, 0)
+                for c in self.cariler.values():
+                    if c.get("kayit") == h:
+                        c["kayit"] = hedef
+                continue
             ayni_icerik = [y for y in yeni if y["icerik"] == er["icerik"]] if self.mut not in (40, 44) else []
             if ayni_icerik:
                 # NETLEŞTİRME (1): içeriği tamamen aynı satır mevcut kaydın kendisidir (yalnız yeri değişse de) — bağ yerinde, onay yok
@@ -637,10 +661,20 @@ class Model:
                         c["kayit"] = hedef
                 continue
             eslesmeyen.append(er["ad"])
-            self.kayitTahsilat.pop(h, None)  # N3: eşleşmeyen bağ HİÇBİR satıra taşınmaz (silinmez ama tabloda kimsenin değildir) — kişinin raporunda görünmez
+            kalan = self.kayitTahsilat.pop(h, 0)  # N3: eşleşmeyen bağ HİÇBİR satıra taşınmaz (silinmez ama tabloda kimsenin değildir) — kişinin raporunda görünmez
+            if er["kimlik"] and kalan:
+                # N1 (kimlik kolonlu tablo): kayıt kendi geçerli kimliğiyle tanınır — kimliği değişen kaydın bağı eskide kalır, aynı kimlik geri gelirse yeniden görünür
+                self.kayip_dosya[("kimlik", er["kimlik"])] = self.kayip_dosya.get(("kimlik", er["kimlik"]), 0) + kalan
             for c in self.cariler.values():
                 if c.get("kayit") == h:
                     c["kayit"] = None
+        # N1: tablodan kalkmış Dosya No (kimlik kolonlu tabloda geçerli kimlik) geri geldiyse bağı yeniden görünür (mutant 50: görünmez). Eski satırların bağları
+        # yukarıda yerleştikten SONRA eklenir: geri dönen bağ yeni satırındır, eski tablonun o satırı gibi yeniden eşlenmez.
+        for (tur, deger), tutar in list(self.kayip_dosya.items()):
+            y = next((y for y in yeni if y[tur] == deger), None)
+            if y is not None and self.mut != 50:
+                self.kayitTahsilat[y["ref"]] += tutar
+                del self.kayip_dosya[(tur, deger)]
         if self.mut == 40:
             eslesmeyen = []  # aday 16 davranışı: bağ sessizce kopar
         adlar = sorted(set(eslesmeyen))

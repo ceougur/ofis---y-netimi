@@ -146,3 +146,17 @@ Neden (ham çıktı, ders 38): **N3** — b3g t2: aynı adlı iki Ali Veli'den b
 kâhin 0) — 8 + 4 fark (onay, uyarı adları, tahsilat). **N4** — b3k: "Vergiler" sekmesinde (tek tutar kolonu Vergi Tutarı) kişiler Tablodaki Kişiler'de YOK (Ufuk Er, Vedat Ay borç
 0), ama Tahsilat Takvimi, Vade Takip ve Nakit Akışı Beklenen onları borç sayıyor (Takvim 1.500 + 2.500 + 1.000) → raporlar ayrışıyor (Kişiler 1.000, öbürleri 5.000) — 5 fark.
 **N6** — tablodan çıkan kayda tahsilat aday 17'de zaten 409 "record-gone" (YEŞİL). **N5** — Yerine koy satır silme yeşil; "Sheet'te Olmayanları Kaldır" DENENMEDİ (Sheets).
+
+### Tur 7 ek — N1 (kullanıcı kararı A, 5 dk yetkisiyle): kayıt kendi dosya numarasıyla tanınır — ADAY 17 (30e9c90; ürün kodu e5fc407 ile aynı, server/client farkı 0)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| KIRMIZI kirmizi-aday17-cari-n1 | 23 senaryo (b3m yeni) + 50 mutant (49, 50 yeni), ADAY 17 kodunda (salt okunur) — N1'de kırmızı BEKLENİR | 3316/3335 — 19 fark (BULGU 19) · 0 okuma hatası · 0 yakalanmayan mutasyon |
+
+Koşu kâhin ağacının ed08f1a + bu commit'teki değişiklikleriyle yapıldı (kanıt "+1 değişmiş +1 izlenmeyen" = model.py, b3m). 17 fark Tur 7'dekilerle aynı (N3 12, N4 5).
+Neden (ham çıktı, ders 38): **N1** — b3m t2 (Yerine koy, Gül Ak 2026/101 → 2026/150): önizleme `bonds.replace.moved` = 1 "tahsilatı" — program Gül Ak'ın 2026/101'deki tahsilatını
+KİŞİ EŞLEŞMESİYLE yeni dosya 2026/150'ye taşıyor; eşleşmeyen uyarısında yalnız "Rana Ok" var, "Gül Ak" yok (onay yalnız Rana Ok yüzünden geliyor); rapor 2026/150 tahsilatı
+100 (kâhin 0 — bağ eski dosyada kalmalı) — 2 fark. Dosya numarası geri gelince (t3) program bağı yine kişiyle geri taşıyor; sonuç kâhinle aynı (2026/101 = 100, onay yok).
+Kimlik kolonlu sekme (Üyeler, TC Kimlik No; Rana Ok 10000000146 → 12345678950 → geri): program N1'e UYGUN — kayıt anahtarı kimlikle değişiyor (satir:e473… → satir:7ab2… → satir:e473…),
+t2'de adlı uyarı + onay, eski TC geri gelince tahsilat (50) yeniden görünüyor (YEŞİL). DENENMEYEN: not / düzeltme / haciz bağları (uçları bilinmiyor), Dosya No kolonu
+tamamen kalkan tablo (karar söylemiyor), Sheets eşitlemesi.
