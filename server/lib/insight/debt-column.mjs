@@ -4,8 +4,9 @@
 // 1. Kolon (debtPlan): borç kolonu, tablodaki sırasından bağımsız şu öncelikle seçilir —
 //      remaining: başlığı "Kalan" / "Bakiye" olan tutar kolonu;
 //      total:     başlığı borç / alacak olan tutar kolonu ("Toplam Borç", "Alacak Tutarı");
-//      amount:    ikisi de yoksa, sekmenin TEK tutar kolonu — beklenen tahsilat tutarı değilse ("Söz Tutarı", "Taksit Tutarı", "Kira Bedeli", "Aidat",
-//                 "Ücret", "Ödenecek" borç değildir: takvimde ve Nakit Akışı Beklenen'de yerini korur, borç toplamına girmez).
+//      amount:    ikisi de yoksa, sekmenin TEK tutar kolonu ("Tutar", "Aylık Ücret", "Kira Bedeli", "Ödenecek Tutar" — 2.4.3'teki gibi borç). Yalnız ÖDEME
+//                 SÖZÜ tutarı ("Söz Tutarı", "Taahhüt Tutarı") borç değildir: takvimde ve Nakit Akışı Beklenen'de yerini korur, borç toplamına girmez.
+//                 (Karar 22.10.2026, kullanıcı adına 5 dk yetkisiyle: taksit / kira / ücret / ödenecek tek sütunu borçtur; müşteri tablosu sessizce boş kalmaz.)
 //    Başlığı gün / adet / sayı / ay / yıl / oran / yüzde / % olan kolon tutar değildir ("Kalan Gün" 5 TL borç sayılıyordu — E3).
 // 2. Satır (rowDebt): sırayla remaining, total, amount hücresinden ilki SAYIYSA o (0 dahil — ödenmiş, sonrakine düşülmez); boş / sayı değilse sonraki (E2).
 // 3. Kayıt (chooseDebt): aynı kayıt anahtarı (dosya no) birden çok sekmede ise borç BİR KEZ: öncelik remaining > total > amount; aynı öncelikte çalışma
@@ -14,10 +15,12 @@ import { foldText } from "./validators.mjs";
 
 export const REMAINING_DEBT_HEADER = /\b(kalan|bakiye)\b/;
 export const TOTAL_DEBT_HEADER = /\b(borc\w*|alacak\w*)\b/;
-// Beklenen tahsilat tutarı (kalem tutarı): borç DEĞİL. insight/dues.mjs kalem tutarını da bu listeden tanır.
+// Kalem (beklenen tahsilat) tutarı başlıkları: insight/dues.mjs kalem tutarını bu listeden tanır.
 export const EXPECTED_AMOUNT_HEADER = /\b(soz tutari|taahhut tutari|taksit tutari|taksit miktari|aylik taksit|aylik odeme|odenecek|odenecek tutar|kira bedeli|kira|aidat|aylik|aylik ucret|servis ucreti|ucret|ucreti|ayligi)\b/;
 // Borç tutarı OLMAYAN sayı kolonları (başlık katlanmış hâlde; "Kalan Gün", "Gecikme Günü", "Taksit Sayısı", "Kalan Ay", "Faiz Oranı", "KDV %"). Tam sözcük:
 // "Aylık Taksit", "Yıllık Ücret", "Günlük Ücret" para kolonudur, dışlanmaz.
+// Ödeme sözü tutarı: borç DEĞİL (31f U2).
+export const PROMISE_AMOUNT_HEADER = /\b(soz|sozu|taahhut|taahhudu)\b/;
 export const NOT_AMOUNT_HEADER = /\b(gun|gunu|gunler|gunleri|adet|adedi|sayi|sayisi|ay|ayi|yil|yili|oran|orani|yuzde|yuzdesi)\b/;
 export const isNotAmountHeader = column => NOT_AMOUNT_HEADER.test(foldText(column)) || String(column ?? "").includes("%");
 const TIERS = ["remaining", "total", "amount"];
@@ -38,20 +41,24 @@ export function debtPlan(candidates, { sparse = null } = {}) {
   const header = column => foldText(column);
   const remaining = list.find(column => REMAINING_DEBT_HEADER.test(header(column))) || null;
   const total = list.find(column => column !== remaining && !REMAINING_DEBT_HEADER.test(header(column)) && TOTAL_DEBT_HEADER.test(header(column))) || (!remaining ? sparse : null) || null;
-  const amount = !remaining && !total && list.length === 1 && !EXPECTED_AMOUNT_HEADER.test(header(list[0])) ? list[0] : null;
-  return { remaining, total, amount, column: remaining || total || amount };
+  const amount = !remaining && !total && list.length === 1 && !PROMISE_AMOUNT_HEADER.test(header(list[0])) ? list[0] : null;
+  // Tek sütun bir kalem tutarıysa ("Aylık Ücret", "Kira Bedeli", "Taksit Tutarı", "Ödenecek"): Tablodaki Kişiler'de borçtur (2.4.3 gibi) ama kaydın "Kalan
+  // Borç"u değildir — "Önce cari açın" Açılış Bakiyesi ve Tablodan Aktar onu bir aylık ücreti açılış borcu sanmasın (2.4.3'te de boştu).
+  return { remaining, total, amount, amountExpected: Boolean(amount && EXPECTED_AMOUNT_HEADER.test(header(amount))), column: remaining || total || amount };
 }
 
 /**
  * Bir satırın borcu: sırayla Kalan, Toplam Borç, sekmenin tek tutarı — ilk SAYI hücre (0 dahil); hiçbiri yoksa null.
  * @param {{ remaining: string|null, total: string|null, amount?: string|null }} plan
  * @param {(column: string) => number|null} read hücrenin tutarı (parseAmount)
+ * @param {{ expected?: boolean }} [options] expected: false → kalem tutarı olan tek sütun (amountExpected) borç sayılmaz (kaydın Kalan Borç'u için)
  * @returns {{ amount: number|null, column: string|null, tier: string|null }}
  */
-export function rowDebt(plan, read) {
+export function rowDebt(plan, read, { expected = true } = {}) {
   for (const tier of TIERS) {
     const column = plan?.[tier];
     if (!column) continue;
+    if (tier === "amount" && plan.amountExpected && !expected) continue;
     const value = read(column);
     if (typeof value === "number" && Number.isFinite(value)) return { amount: value, column, tier };
   }

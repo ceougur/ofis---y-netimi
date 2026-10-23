@@ -193,7 +193,7 @@ function classifyColumns(rows, columns, analyses, now, forced = null) {
   for (const entry of due) {
     entry.amountColumn = pairFor(entry) || (entry.installment === null ? own || fallback : null);
     // Kalemin tutarı kalan borçsa satır borcundan okunur (Kalan boş satırda Toplam Borç — Tablodaki Kişiler ile aynı).
-    entry.amountFromDebt = Boolean(debt && entry.amountColumn === debt);
+    entry.amountFromDebt = Boolean(debt && entry.amountColumn === debt && !plan.amountExpected);
   }
   for (const entry of monthly) entry.amountColumn = own;
   for (const entry of recurring) {
@@ -318,7 +318,7 @@ export function rowState(row, context) {
   if (context.hasIdentity && isEmptyCell(person) && isEmptyCell(caseNo)) return null;
   // 31d E2: satır borcu ortak kuralla (Kalan sayıysa o, 0 dahil; boşsa Toplam Borç) — Tablodaki Kişiler (reports.mjs) aynı fonksiyonu kullanır.
   const plan = context.debtPlan || { remaining: context.debt || null, total: null };
-  const { amount: debtAmount, column: debtFrom, tier: debtTier } = rowDebt(plan, column => parseAmount(cell(row, column)));
+  const { amount: debtAmount, column: debtFrom, tier: debtTier } = rowDebt(plan, column => parseAmount(cell(row, column)), { expected: false });
   const paidOff = Boolean(debtFrom && debtAmount === 0 && !isEmptyCell(cell(row, debtFrom)));
   const phone = context.primary.phone ? String(cell(row, context.primary.phone) ?? "").trim() : "";
   return { person, caseNo, phone, closed, inactive, paidOff, debt: debtAmount && debtAmount > 0 ? debtAmount : null, debtColumn: debtAmount && debtAmount > 0 ? debtFrom : "", debtRecord: debtFrom ? { amount: debtAmount, column: debtFrom, tier: debtTier } : null };

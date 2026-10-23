@@ -1,4 +1,4 @@
-stage 200 {"stageId":"stage-2d40dd5f-e5ce-4851-bd36-3815cd24ea6f","kind":"excel","label":"borclular.xlsx","url":null,"rowCount":2,
+stage 200 {"stageId":"stage-9a9ca3b7-8982-404d-b626-43033cc9fd8f","kind":"excel","label":"borclular.xlsx","url":null,"rowCount":2,
 commit 200
 Tablodaki Kişiler: 200 [["Mert Can",8000],["Tülay Öz",11500]] toplam 19500
 Nakit Akış: 200 {"expected":19500,"collected":0,"cashIn":0,"cashOut":0,"net":0}

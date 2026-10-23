@@ -352,12 +352,8 @@ try {
     await page.waitForSelector(`${modal} .hof-rep-tablepane .hof-report-filters`, { timeout: 10000 });
     // "Rapor hazırlanıyor…" yer tutucusu sonuç değildir; özet kartları ve tablo gelene kadar beklenir.
     await page.waitForSelector(`${modal} .hof-rep-tablepane [data-report-body] .hof-report-summary`, { timeout: 15000 });
-    // 31f U2 (bilerek güncellendi, kullanıcı adına karar 22.10.2026): aylık ücret / söz / taksit / kira tutarı borç değildir (beklenen tahsilattır) → okul servisi
-    // tablosunda borç kolonu yok, Tablodaki Kişiler boş ipucuyla açılır (önceden aylık ücret kişi başına "borç" görünüyordu). Taşma denetimi geniş tablolu
-    // Tablodaki Vadeler'de yapılır.
-    const emptyPeople = await page.$eval(`${modal} .hof-rep-tablepane [data-report-body]`, body => /satır bulunamadı/.test(body.textContent));
-    ok(emptyPeople, "Tablodaki Kişiler: aylık ücret borç sayılmaz (okul servisi tablosunda borç kolonu yok, boş ipucu)");
-    await page.click(`${modal} .hof-rep-tablepane [data-kind="vade-takip"]`);
+    // 31f U2 daraltılmış karar (22.10.2026): okul servisinin tek tutar sütunu "Aylık Ücret" 2.4.3'teki gibi borçtur → Tablodaki Kişiler öğrencileri gösterir.
+    ok(await page.$eval(`${modal} .hof-rep-tablepane [data-report-body]`, body => /Yılmaz/.test(body.textContent) && !/satır bulunamadı/.test(body.textContent)), "Tablodaki Kişiler okul servisinde öğrencileri gösterir (Aylık Ücret borç; boş açılmaz)");
     await page.waitForSelector(`${modal} .hof-rep-tablepane .hof-report-scroll table`, { timeout: 15000 });
     // Taşma: sekmedeki her kutu (açıklama, süzgeç kartı, özet, tablo çerçevesi) Raporlar kutusunun sağ kenarı içinde.
     const overflow = await page.$eval(`${modal} .hof-rep`, rep => {

@@ -1,0 +1,244 @@
+TAP version 13
+# Subtest: 31d E2: satır düzeyi tek kural — Kalan boşsa o satırda Toplam Borç (birim)
+    # Subtest: B1 Kalan boş (t13): Tablodaki Kişiler ve takvim aynı — Tülay 11.500 (Toplam), Mert 6.000 (Kalan), Ece 4.000 (Toplam)
+    ok 1 - B1 Kalan boş (t13): Tablodaki Kişiler ve takvim aynı — Tülay 11.500 (Toplam), Mert 6.000 (Kalan), Ece 4.000 (Toplam)
+      ---
+      duration_ms: 24.545221
+      type: 'test'
+      ...
+    # Subtest: B2 Kalan hücresi sayı değil ('belirsiz'): o satırda Toplam Borç
+    ok 2 - B2 Kalan hücresi sayı değil ('belirsiz'): o satırda Toplam Borç
+      ---
+      duration_ms: 4.82262
+      type: 'test'
+      ...
+    # Subtest: B3 Kalan 0: borç 0 (Toplam'a düşülmez); takvimde kalem yok
+    ok 3 - B3 Kalan 0: borç 0 (Toplam'a düşülmez); takvimde kalem yok
+      ---
+      duration_ms: 5.661761
+      type: 'test'
+      ...
+    # Subtest: B4 bütün Kalan hücreleri dolu: Kalan (30a aynen); B5 yalnız Toplam: Toplam
+    ok 4 - B4 bütün Kalan hücreleri dolu: Kalan (30a aynen); B5 yalnız Toplam: Toplam
+      ---
+      duration_ms: 3.844663
+      type: 'test'
+      ...
+    1..4
+ok 1 - 31d E2: satır düzeyi tek kural — Kalan boşsa o satırda Toplam Borç (birim)
+  ---
+  duration_ms: 40.122892
+  type: 'suite'
+  ...
+# Subtest: 31d E3: gün / adet / sayı / ay / yıl / oran / yüzde / % başlıklı kolon borç tutarı değildir (birim)
+    # Subtest: B6 Tutar + Kalan Gün: borç Tutar (11.500 + 8.000 = 19.500), 'Kalan Gün' (5, 12) değil
+    ok 1 - B6 Tutar + Kalan Gün: borç Tutar (11.500 + 8.000 = 19.500), 'Kalan Gün' (5, 12) değil
+      ---
+      duration_ms: 4.574865
+      type: 'test'
+      ...
+    # Subtest: B6 her biçim (Türkçe büyük harf dahil): Toplam Borç + <kolon> → borç Toplam Borç
+    ok 2 - B6 her biçim (Türkçe büyük harf dahil): Toplam Borç + <kolon> → borç Toplam Borç
+      ---
+      duration_ms: 26.591108
+      type: 'test'
+      ...
+    # Subtest: B7 para başlıkları dışlanmaz: 'Aylık Taksit', 'Yıllık Ücret', 'Günlük Ücret' tek tutar sütunuysa borçtur (2.4.3 gibi) ve takvimde tutardır; 'Bakiye' kalan
+    not ok 3 - B7 para başlıkları dışlanmaz: 'Aylık Taksit', 'Yıllık Ücret', 'Günlük Ücret' tek tutar sütunuysa borçtur (2.4.3 gibi) ve takvimde tutardır; 'Bakiye' kalan
+      ---
+      duration_ms: 4.457995
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-eski-f53aaab/test/kalan-borc-satir-31d.test.mjs:92:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        "Aylık Taksit" tek tutar sütunu borçtur (daraltılmış karar 22.10.2026): {}
+        + actual - expected
+        
+        + {}
+        - {
+        -   'Mert Can': 8000,
+        -   'Tülay Öz': 11500
+        - }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        Mert Can: 8000
+        Tülay Öz: 11500
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-eski-f53aaab/test/kalan-borc-satir-31d.test.mjs:97:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B10 tek yer: dues.mjs ve reports.mjs satır borcunu ve kolon dışlamasını ortak yardımcıdan alır
+    ok 4 - B10 tek yer: dues.mjs ve reports.mjs satır borcunu ve kolon dışlamasını ortak yardımcıdan alır
+      ---
+      duration_ms: 4.780789
+      type: 'test'
+      ...
+    1..4
+not ok 2 - 31d E3: gün / adet / sayı / ay / yıl / oran / yüzde / % başlıklı kolon borç tutarı değildir (birim)
+  ---
+  duration_ms: 41.060228
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-eski-f53aaab/test/kalan-borc-satir-31d.test.mjs:73:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 31d E2/E3: ekranların okuduğu uçlar aynı toplamı gösterir (API)
+    # Subtest: Sekme "Borçlular": Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip ve Nakit Akışı hepsi 21500
+    ok 1 - Sekme "Borçlular": Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip ve Nakit Akışı hepsi 21500
+      ---
+      duration_ms: 52.112987
+      type: 'test'
+      ...
+    # Subtest: Sekme "Kira": Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip ve Nakit Akışı hepsi 19500
+    ok 2 - Sekme "Kira": Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip ve Nakit Akışı hepsi 19500
+      ---
+      duration_ms: 23.206073
+      type: 'test'
+      ...
+    1..2
+ok 3 - 31d E2/E3: ekranların okuduğu uçlar aynı toplamı gösterir (API)
+  ---
+  duration_ms: 489.504557
+  type: 'suite'
+  ...
+# Subtest: 31f U2 / U8: programın örnek dosyası — söz tutarı borç değil, takvimde kalır; borç dosya başına bir kez
+    # Subtest: D1/D3/D8 Tablodaki Kişiler: söz borç satırı açmaz; İcra Takip Kalan 98.000 + Kiracılar Kira bedeli 45.000 = 143.000; Ali Veli 36.000, Mehmet Demir 0
+    not ok 1 - D1/D3/D8 Tablodaki Kişiler: söz borç satırı açmaz; İcra Takip Kalan 98.000 + Kiracılar Kira bedeli 45.000 = 143.000; Ali Veli 36.000, Mehmet Demir 0
+      ---
+      duration_ms: 82.162201
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-eski-f53aaab/test/tablo-borc-dosya-u2.test.mjs:57:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        toplam borç 143.000 olmalı (İcra Takip Kalan 98.000 + Kira bedeli 45.000; söz yok); görülen 98000
+        
+        98000 !== 143000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 143000
+      actual: 98000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-eski-f53aaab/test/tablo-borc-dosya-u2.test.mjs:60:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: D2/D6 Tahsilat Takvimi: açık sözler yerinde (Ali Veli 5.000), 'Ödendi' sözler yok; söz kaleminin Kalan Borç'u İcra Takip'ten (36.000)
+    ok 2 - D2/D6 Tahsilat Takvimi: açık sözler yerinde (Ali Veli 5.000), 'Ödendi' sözler yok; söz kaleminin Kalan Borç'u İcra Takip'ten (36.000)
+      ---
+      duration_ms: 30.264191
+      type: 'test'
+      ...
+    1..2
+not ok 4 - 31f U2 / U8: programın örnek dosyası — söz tutarı borç değil, takvimde kalır; borç dosya başına bir kez
+  ---
+  duration_ms: 584.651825
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-eski-f53aaab/test/tablo-borc-dosya-u2.test.mjs:42:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 31f U2 daraltılmış karar: okul servisi (tek tutar sütunu 'Aylık Ücret') Tablodaki Kişiler'de öğrencileri gösterir
+    # Subtest: okul servisi: 6 öğrenci, borç = Aylık Ücret hücresi (3.500 + 3.500 + 3.800 + 3.800 + 4.500 + 4.500 = 23.600)
+    not ok 1 - okul servisi: 6 öğrenci, borç = Aylık Ücret hücresi (3.500 + 3.500 + 3.800 + 3.800 + 4.500 + 4.500 = 23.600)
+      ---
+      duration_ms: 5.934124
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-eski-f53aaab/test/tablo-borc-dosya-u2.test.mjs:80:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Tablodaki Kişiler okul servisinde öğrencileri göstermeli (boş açılmamalı); görülen 0 kişi
+        
+        0 !== 6
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 6
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-eski-f53aaab/test/tablo-borc-dosya-u2.test.mjs:86:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 5 - 31f U2 daraltılmış karar: okul servisi (tek tutar sütunu 'Aylık Ücret') Tablodaki Kişiler'de öğrencileri gösterir
+  ---
+  duration_ms: 6.124694
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-eski-f53aaab/test/tablo-borc-dosya-u2.test.mjs:79:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 31b MM5: aynı dosya no iki sekmede — borç bir kez (Kişiler, Vade Takip, Nakit Akışı), tahsilat bir kez
+    # Subtest: Tablodaki Kişiler Deniz Ak: borç 12.000 bir kez, alacak 3.000, bakiye 9.000; Vade Takip ve Nakit Akışı Beklenen 18.000 (9.000 + 9.000)
+    ok 1 - Tablodaki Kişiler Deniz Ak: borç 12.000 bir kez, alacak 3.000, bakiye 9.000; Vade Takip ve Nakit Akışı Beklenen 18.000 (9.000 + 9.000)
+      ---
+      duration_ms: 22.565461
+      type: 'test'
+      ...
+    1..1
+ok 6 - 31b MM5: aynı dosya no iki sekmede — borç bir kez (Kişiler, Vade Takip, Nakit Akışı), tahsilat bir kez
+  ---
+  duration_ms: 378.417346
+  type: 'suite'
+  ...
+# Subtest: 31b MM5 / D5 / D7: iki sekmede farklı Kalan ve dosya no'suz satırlar (birim)
+    # Subtest: D5 farklı Kalan: ilk sekmenin Kalan'ı (12.000) geçerli, uyuşmazlık bildirilir; takvim aynı tutarı kullanır
+    ok 1 - D5 farklı Kalan: ilk sekmenin Kalan'ı (12.000) geçerli, uyuşmazlık bildirilir; takvim aynı tutarı kullanır
+      ---
+      duration_ms: 4.705011
+      type: 'test'
+      ...
+    # Subtest: D4 aynı dosya iki sekmede FARKLI vadeyle: borçtan gelen kalem tutarı bir kez (en erken vade), takvim toplamı 12.000 + 9.000
+    ok 2 - D4 aynı dosya iki sekmede FARKLI vadeyle: borçtan gelen kalem tutarı bir kez (en erken vade), takvim toplamı 12.000 + 9.000
+      ---
+      duration_ms: 3.915463
+      type: 'test'
+      ...
+    # Subtest: D1 yalnız söz sekmesi (dosyanın başka sekmede borcu yok): söz tutarı borç satırı açmaz; takvimde söz tutarı yerinde
+    ok 3 - D1 yalnız söz sekmesi (dosyanın başka sekmede borcu yok): söz tutarı borç satırı açmaz; takvimde söz tutarı yerinde
+      ---
+      duration_ms: 1.738001
+      type: 'test'
+      ...
+    # Subtest: D7 dosya no'suz satırlar ayrı kalır (aynı ad, iki sekme: iki ayrı borç)
+    ok 4 - D7 dosya no'suz satırlar ayrı kalır (aynı ad, iki sekme: iki ayrı borç)
+      ---
+      duration_ms: 2.108068
+      type: 'test'
+      ...
+    1..4
+ok 7 - 31b MM5 / D5 / D7: iki sekmede farklı Kalan ve dosya no'suz satırlar (birim)
+  ---
+  duration_ms: 13.062907
+  type: 'suite'
+  ...
+1..7
+# tests 18
+# suites 7
+# pass 15
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2293.941018

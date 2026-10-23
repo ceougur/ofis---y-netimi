@@ -1,0 +1,38 @@
+{
+  "ad": "244-e23-dar-mutasyon-soz-borc",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-mutant-soz/test/tablo-borc-dosya-u2.test.mjs /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-mutant-soz/test/kalan-borc-satir-31d.test.mjs /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-mutant-soz/test/kalan-borc-ortak-30a.test.mjs /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e23-mutant-soz/test/rapor-tablodaki-kisiler-f1.test.mjs",
+  "commit": "f53aaab23733f54abb3eafd6bda1912cc556ed76",
+  "dal": "is/e23",
+  "kirli": 15,
+  "izlenmeyen": 34,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T23:56:22.959Z",
+  "sure_sn": 4.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 40,
+    "gecen": 39,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "31b MM5 / D5 / D7: iki sekmede farklı Kalan ve dosya no'suz satırlar (birim) › D1 yalnız söz sekmesi (dosyanın başka sekmede borcu yok): söz tutarı borç satırı açmaz; takvimde söz tutarı yerinde",
+      "konum": "test/tablo-borc-dosya-u2.test.mjs:162:3",
+      "hata": "söz tutarı borç değildir; görülen toplam borç 4000 · 4000 !== 0 (beklenen 0, gelen 4000)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-e23-dar-mutasyon-soz-borc.log",
+  "klasor": "/home/user/wt/e23",
+  "ham_cikti_sha256": "14ecd28202e4ec8f3e7b3c6cc0ad0a60299eb3505596724b1b02926924d0f3c3",
+  "ham_cikti_bayt": 16806
+}

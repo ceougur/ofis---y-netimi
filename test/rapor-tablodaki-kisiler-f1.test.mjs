@@ -70,10 +70,11 @@ describe("2.4.4 31a F1/F5/F4: Tablodaki Kişiler ve Nakit Akışı karta taşın
   test("N4 (F4): çok sekmeli tabloda her kişi adıyla görünür (Borçlu, Müşteri, Kiracı); iç anahtar ya da dosya no görünmez", async () => {
     const rep = await kisiler("");
     const names = rep.groups.map(group => group.cari);
-    for (const name of ["Ali Veli", "Zeynep Şahin", "Elif Aydın"]) assert.ok(names.includes(name), `${name} yok: ${JSON.stringify(names)}`);
-    // 31f U2 (bilerek güncellendi, kullanıcı adına karar 22.10.2026): söz / taksit / kira tutarı borç değildir → borcu da tahsilatı da olmayan Burak Koç
-    // (Taksitler) ve Deniz Öztürk (Kiracılar) Tablodaki Kişiler'de satır almaz (2.4.3'te de görünmüyorlardı).
-    for (const name of ["Burak Koç", "Deniz Öztürk"]) assert.ok(!names.includes(name), `${name} borçsuz ve tahsilatsız, satır almaz: ${JSON.stringify(names)}`);
+    for (const name of ["Ali Veli", "Zeynep Şahin", "Elif Aydın", "Deniz Öztürk"]) assert.ok(names.includes(name), `${name} yok: ${JSON.stringify(names)}`);
+    // 31f U2 (bilerek güncellendi, kullanıcı adına karar 22.10.2026, daraltılmış): yalnız söz tutarı borç değildir; Kiracılar'ın tek tutar sütunu (Kira bedeli)
+    // borçtur → Deniz Öztürk görünür. Taksitler'de birden çok tutar sütunu (Toplam + taksit tutarları) var, borç sütunu yok → borçsuz ve tahsilatsız Burak Koç
+    // satır almaz.
+    assert.ok(!names.includes("Burak Koç"), `Burak Koç borçsuz ve tahsilatsız, satır almaz: ${JSON.stringify(names)}`);
     assert.deepEqual(names.filter(name => /^satir:|^\d{4}\/\d+$|^M-\d+$/.test(name)), [], "ad yerine anahtar / dosya no / müşteri no");
     assert.equal(groupOf(rep, keys.elif)?.cari, "Elif Aydın");
     // İcra Takip + Ödeme Sözleri'ndeki aynı dosya no tek kişi (Zeynep Şahin, 2026/1104): iki sekmenin satırları aynı satır grubunda.

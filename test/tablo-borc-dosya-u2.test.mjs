@@ -39,7 +39,7 @@ const mustOf = async (label, promise) => {
   return res.data;
 };
 
-describe("31f U2 / U8: programın örnek dosyası — borç yalnız dosyanın Kalan'ından (98.000), söz takvimde kalır", () => {
+describe("31f U2 / U8: programın örnek dosyası — söz tutarı borç değil, takvimde kalır; borç dosya başına bir kez", () => {
   const root = mkdtempSync(path.join(tmpdir(), "tablo-borc-u2-"));
   let server;
   let api;
@@ -54,13 +54,14 @@ describe("31f U2 / U8: programın örnek dosyası — borç yalnız dosyanın Ka
     rmSync(root, { recursive: true, force: true });
   });
 
-  test("D1/D3/D8 Tablodaki Kişiler: toplam borç 98.000 (İcra Takip Kalan), Ali Veli 36.000, Mehmet Demir 0; söz / taksit / kira borç satırı açmaz", async () => {
+  test("D1/D3/D8 Tablodaki Kişiler: söz borç satırı açmaz; İcra Takip Kalan 98.000 + Kiracılar Kira bedeli 45.000 = 143.000; Ali Veli 36.000, Mehmet Demir 0", async () => {
     const rep = (await mustOf("Tablodaki Kişiler", api.get(`/api/workspace/reports/cari-ekstre?${RANGE}`))).report;
-    assert.equal(rep.totals.debit, 98000, `toplam borç 98.000 olmalı (yalnız İcra Takip'in Kalan'ı); görülen ${rep.totals.debit}`);
+    // Daraltılmış karar (22.10.2026): yalnız söz tutarı borç dışı; tek tutar sütunlu Kiracılar (15.000 + 12.000 + 18.000) borçtur; Taksitler'de borç sütunu yok.
+    assert.equal(rep.totals.debit, 143000, `toplam borç 143.000 olmalı (İcra Takip Kalan 98.000 + Kira bedeli 45.000; söz yok); görülen ${rep.totals.debit}`);
     const debit = name => rep.groups.find(group => group.cari === name)?.debit;
     assert.deepEqual(["Ali Veli", "Ayşe Kaya", "Mehmet Demir", "Zeynep Şahin", "Can Yıldız"].map(debit), [36000, 22000, 0, 27500, 12500], "kişi başına borç = İcra Takip Kalan hücresi");
     const tabs = [...new Set(rep.table.rows.filter(row => row.borc !== null && row.borc !== undefined).map(row => row.description.split(" · ")[0]))];
-    assert.deepEqual(tabs, ["İcra Takip"], `borç satırları yalnız İcra Takip'ten: ${JSON.stringify(tabs)}`);
+    assert.deepEqual(tabs.sort(), ["Kiracılar", "İcra Takip"].sort(), `borç satırları İcra Takip ve Kiracılar'dan (Ödeme Sözleri ve Taksitler yok): ${JSON.stringify(tabs)}`);
   });
 
   test("D2/D6 Tahsilat Takvimi: açık sözler yerinde (Ali Veli 5.000), 'Ödendi' sözler yok; söz kaleminin Kalan Borç'u İcra Takip'ten (36.000)", async () => {
@@ -72,6 +73,23 @@ describe("31f U2 / U8: programın örnek dosyası — borç yalnız dosyanın Ka
     assert.equal(items.some(item => item.person === "Mehmet Demir" || item.person === "Can Yıldız"), false, "'Ödendi' sözler takvimde değil");
     const akis = (await mustOf("Nakit Akışı", api.get(`/api/workspace/reports/nakit-akis?${RANGE}&tabs=${encodeURIComponent("Ödeme Sözleri")}`))).report;
     assert.equal(akis.totals.expected, 15500, `Nakit Akışı Beklenen (Ödeme Sözleri): açık sözler 5.000 + 3.000 + 7.500; görülen ${akis.totals.expected}`);
+  });
+});
+
+describe("31f U2 daraltılmış karar: okul servisi (tek tutar sütunu 'Aylık Ücret') Tablodaki Kişiler'de öğrencileri gösterir", () => {
+  test("okul servisi: 6 öğrenci, borç = Aylık Ücret hücresi (3.500 + 3.500 + 3.800 + 3.800 + 4.500 + 4.500 = 23.600)", async () => {
+    const { okulServisiWorkbook } = await import("./fixtures/okul-servisi-ornek.mjs");
+    const sheet = okulServisiWorkbook(NOW)[0];
+    const rows = sheet.rows.map((row, index) => ({ __hofKey: `satir:${index}`, __sheet: sheet.name, ...row }));
+    const analyses = analyzeColumns(rows, sheet.columns, { now: NOW });
+    const rep = cariEkstre({ records: normalizeRecords({ rows, analyses, session: "s1", sessionName: "Okul" }).records, payments: [], filters: normalizeFilters({}), now: NOW });
+    assert.equal(rep.groups.length, 6, `Tablodaki Kişiler okul servisinde öğrencileri göstermeli (boş açılmamalı); görülen ${rep.groups.length} kişi`);
+    assert.equal(rep.totals.debit, 23600, `toplam = Aylık Ücret hücreleri; görülen ${rep.totals.debit}`);
+    // Aylık ücret kaydın Kalan Borç'u DEĞİLDİR: "Önce cari açın" Açılış Bakiyesi ve Tablodan Aktar bir aylık ücreti açılış borcu sanmaz (2.4.3'te de boştu;
+    // e2e run.mjs okul servisi: pil → cari → Tablodan Aktar karta taşıma).
+    const items = computeDues({ rows, tabs: [sheet.name], now: NOW }).items;
+    assert.ok(items.length > 0, "okul servisinde ödenmemiş ay kalemleri var");
+    assert.deepEqual([...new Set(items.map(item => item.debt))], [null], `takvim kaleminin Kalan Borç'u boş olmalı (aylık ücret açılış borcu değil); görülen ${JSON.stringify(items.map(item => [item.person, item.amount, item.debt]))}`);
   });
 });
 
@@ -139,6 +157,13 @@ describe("31b MM5 / D5 / D7: iki sekmede farklı Kalan ve dosya no'suz satırlar
     assert.deepEqual(deniz.map(item => [item.tab, item.amount]), [["Alacaklar", 12000]], `Deniz'in borcu takvimde bir kez (en erken vadeli kalem) olmalı; görülen ${JSON.stringify(deniz.map(item => [item.tab, item.due, item.amount]))}`);
     assert.equal(items.reduce((sum, item) => sum + (item.amount || 0), 0), 21000, "takvim toplamı 12.000 + 9.000");
     assert.equal(run(rows).totals.debit, 21000, "Tablodaki Kişiler toplamı aynı");
+  });
+
+  test("D1 yalnız söz sekmesi (dosyanın başka sekmede borcu yok): söz tutarı borç satırı açmaz; takvimde söz tutarı yerinde", () => {
+    const rows = sheet("Sözler", ["Dosya No", "Borçlu", "Söz Tarihi", "Söz Tutarı"], [["2026/601", "Nur Ay", shift(3), "4.000,00"]]);
+    const rep = run(rows);
+    assert.equal(rep.totals.debit, 0, `söz tutarı borç değildir; görülen toplam borç ${rep.totals.debit}`);
+    assert.deepEqual(computeDues({ rows, tabs: ["Sözler"], now: NOW }).items.map(item => [item.person, item.amount]), [["Nur Ay", 4000]], "takvimde söz 4.000");
   });
 
   test("D7 dosya no'suz satırlar ayrı kalır (aynı ad, iki sekme: iki ayrı borç)", () => {
