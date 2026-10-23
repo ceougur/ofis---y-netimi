@@ -134,3 +134,15 @@ yeniden çözülüyor.
 Kâhin düzeltmesi: "aynı konum + aynı kişi" eşleşmesi yalnız kişi değeri iki tabloda aynı sayıda satırdayken (b3h t4 Mete Er artık 3 satır 9.000 + uyarı + onay — programla
 aynı); aynı ad + aynı tutarlı ayırt edilemeyen yeni kayıtlar boştaki anahtarlara sıralı atanıyor (H7 → satir:3d86…, H8 → satir:fc59…); çözülemeyen kayıt okuma hatası
 sayılıyor; Yerine koy'da silinen satırın kaydı (b3g R6) artık güncel tablo dışında (ilk koşuda yanlış okuma hatası verdi — düzeltildi).
+
+### Tur 7 — dar kontrol bulguları N3, N4, N5, N6 (karar sahibi 23.10.2026) — ADAY 17 (e5fc407)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| KIRMIZI kirmizi-aday17-cari-n3-n4-n6 | 22 senaryo (b3j, b3k yeni; b3g v2 + p7) + 48 mutant, ADAY 17 kodunda (salt okunur) — N3/N4'te kırmızı BEKLENİR | 3253/3270 — 17 fark (BULGU 17) · 0 okuma hatası · 0 yakalanmayan mutasyon |
+
+Neden (ham çıktı, ders 38): **N3** — b3g t2: aynı adlı iki Ali Veli'den birinin tutarı değişince (100 → 110) program bağı KONUMLA taşıyor, uyarı/onay yok (Ali Veli tahsilatı
+30, kâhin 20 — değişen satırın bağı taşınmamalı); b3j: iki Ali Veli yer değiştirip ikisinin tutarı da değişince program bağları sessizce yeni satırlara bağlıyor (Ali Veli 30,
+kâhin 0) — 8 + 4 fark (onay, uyarı adları, tahsilat). **N4** — b3k: "Vergiler" sekmesinde (tek tutar kolonu Vergi Tutarı) kişiler Tablodaki Kişiler'de YOK (Ufuk Er, Vedat Ay borç
+0), ama Tahsilat Takvimi, Vade Takip ve Nakit Akışı Beklenen onları borç sayıyor (Takvim 1.500 + 2.500 + 1.000) → raporlar ayrışıyor (Kişiler 1.000, öbürleri 5.000) — 5 fark.
+**N6** — tablodan çıkan kayda tahsilat aday 17'de zaten 409 "record-gone" (YEŞİL). **N5** — Yerine koy satır silme yeşil; "Sheet'te Olmayanları Kaldır" DENENMEDİ (Sheets).
