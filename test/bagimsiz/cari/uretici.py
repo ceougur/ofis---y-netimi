@@ -76,7 +76,7 @@ def rastgele_tablo(rt, tohum):
     soz += [{"no": no, "isim": ad, "tarih": "2026-07-05", "tutar": "%d" % rt.randint(1, 5000)} for no, ad in [yeni() for _ in range(rt.randint(0, 1))]]
     if soz:
         sekmeler.append({"ad": "Ödeme Sözleri", "tur": "soz", "kayitlar": soz})
-    rt.shuffle(sekmeler)  # sekme sırası (K2 "hangi sekme" ÇATAL'ı sıradan bağımsız beklenir)
+    rt.shuffle(sekmeler)  # sekme sırası (K2 04:09: farklı sekmedeki aynı dosya no ayrı borç — sonuç sıradan bağımsız)
     return {"id": "tablo", "islem": "tablo_yukle", "sekmeler": sekmeler}
 
 
