@@ -1,0 +1,32 @@
+{
+  "ad": "244-kahin/k41b-e7-aday10",
+  "komut": "npm run test:kahin-ebelge -- --senaryo test/bagimsiz/ebelge/senaryolar --ux15 acik",
+  "commit": "6e360c0c89189f27054c763f414092a597532390",
+  "dal": "aday10",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T01:42:08.543Z",
+  "sure_sn": 34.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 24,
+    "gecen": 24,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/244-kahin/k41b-e7-aday10.log",
+  "klasor": "/home/user/wt/aday10",
+  "ham_cikti_sha256": "41d16b4bf614bf53885dae461608014690c56574af3d9a1038b66bae8502b412",
+  "ham_cikti_bayt": 3607
+}
