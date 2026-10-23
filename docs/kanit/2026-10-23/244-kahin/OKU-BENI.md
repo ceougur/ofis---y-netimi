@@ -226,3 +226,13 @@ notu var) — 2 fark. **b3x** — (b) Hande Ok ("Tutar" + "Söz Tutarı"): Kişi
 doğru. Irmak Ay ("Tutar" + "Taahhütname Tutarı"): not "“Tutar ve Taahhütname” sekmesinde borç sütunu seçilemedi (Tutar, Taahhütname Tutarı)" → borç 0 (kâhin 4.000), kalem tutarsız
 ve söz değil (kâhin 1.000, söz). (a) Emre Ak (yalın "Ödeme Sözü" 1.100): söz kalemi 1.100 (kâhin 0 — bu sütundan tutar almaz); Figen Er ("Söz"), Gökhan Su ("Taahhüt") doğru (kalem
 tutarsız, borç 0). (c) Jülide Tan (yalın "Ödeme Sözü" + "Borç"): doğru (borç 6.000, kalem 6.000, düz vade). Kişiler 6.000 (kâhin 15.000), Takvim 8.600 (kâhin 8.500) — 14 fark.
+
+### Tur 13 ek — BİLİNEN SINIR listesi (BILINEN.json; DONDURMA 23.10.2026) — ADAY 23 (439eb2d)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| aday23-cari-bilinen-listesi | 35 senaryo + 72 model mutantı + 5 liste mutantı; BILINEN.json'da b3y (b) "Taahhüt Bakiyesi"nin 5 farkı | 3874/3883 geçti (5 bilinen sınır dahil) · 9 BAŞARISIZ (b3y (a) "Taahhüt Alacağı" 4 + (c) "(Ay)" 1 + K4 toplamları 4) · 5 BİLİNEN · 0 okuma hatası · 0 yakalanmayan mutasyon |
+| bilinen-mekanizma/ | Mekanizmanın kendi denemesi (yalnız b3y, aday 23, `KAHIN_BILINEN` ile başka liste): dogru (5 BİLİNEN + 9 fark), degisti (program değeri farklı → "BİLİNEN DEĞİŞTİ" BAŞARISIZ), kapandi (farkı olmayan kayıt → "BİLİNEN KAPANDI — listeden çıkar" BAŞARISIZ), joker ("2026/101*" → liste hatası + kapandı BAŞARISIZ), hepsi (14 farkın hepsi listede → çıkış 0, "38/38 geçti (14 bilinen sınır dahil)", ozet.json bilinen 14) | 5/5 beklenen davranış |
+
+BİLİNEN kayıtları aday 23 program değerleriyle; tur 16 ürününde YENİDEN DOĞRULANACAK (değer değişirse BİLİNEN DEĞİŞTİ, (b) düzelirse BİLİNEN KAPANDI → liste güncellenir). K4 toplamları
+listede değil ((a) ve (c) farklarını da taşıyorlar).

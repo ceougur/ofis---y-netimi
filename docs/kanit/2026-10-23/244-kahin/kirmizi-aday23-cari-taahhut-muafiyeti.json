@@ -1,0 +1,103 @@
+{
+  "ad": "244-kahin/kirmizi-aday23-cari-taahhut-muafiyeti",
+  "komut": "node test/bagimsiz/cari/kos.mjs --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-muafiyet-aday23",
+  "commit": "e546d4b527e7c6cf9fab79eef7ad1424549a69bf",
+  "dal": "is/kahin-244",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T15:18:18.151Z",
+  "sure_sn": 197.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 3883,
+    "gecen": 3869,
+    "basarisiz": 14,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 14 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU KULLANICI] k1:acilis:2026/1011: program \"boş\" · kâhin 220000 (Y1: 'önce cari açın' Açılış Bakiyesi = raporların satır borcu (borçsuz satırda 0 ya da boş))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:acilis:2026/1012: program 100000 · kâhin 400000 (Y1: 'önce cari açın' Açılış Bakiyesi = raporların satır borcu (borçsuz satırda 0 ya da boş))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:acilis:2026/1013: program 100000 · kâhin 30000 (Y1: 'önce cari açın' Açılış Bakiyesi = raporların satır borcu (borçsuz satırda 0 ya da boş))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:akis: program 200600 · kâhin 850000 (TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:kisiler: program 700000 · kâhin 1150000 (B4b K4 + TAKVİM KALEMİ: Tablodaki Kişiler satır borcunu gösterir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:takvim: program 200600 · kâhin 850000 (TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:vade: program 200600 · kâhin 850000 (TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:kalem:2026/1011: program 0 · kâhin 220000 (TAKVİM KALEMİ: Tahsilat Takvimi kaleminin tutarı (min(dönem tutarı, Kalan); Kalan boşsa dönem tutarı))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:kalem:2026/1013: program 100000 · kâhin 30000 (TAKVİM KALEMİ: Tahsilat Takvimi kaleminin tutarı (min(dönem tutarı, Kalan); Kalan boşsa dönem tutarı))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:kalem:2026/1014: program 600 · kâhin 500000 (TAKVİM KALEMİ: Tahsilat Takvimi kaleminin tutarı (min(dönem tutarı, Kalan); Kalan boşsa dönem tutarı))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:2026/1011:borc: program 0 · kâhin 220000 (B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu · C3 kişi toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:2026/1011:grup: program [] · kâhin [\"2026/1011\"] (C3 kişi gruplaması: farklı ad aynı kimlik ayrı kişi; aynı ad farklı kimlik ayrı; kimliksiz aynı adın tek kimliğine katılır)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:2026/1012:borc: program 100000 · kâhin 400000 (B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu · C3 kişi toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:2026/1013:borc: program 100000 · kâhin 30000 (B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu · C3 kişi toplamı)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-23/244-kahin/kirmizi-aday23-cari-taahhut-muafiyeti.log",
+  "klasor": "/home/user/wt/kahin-244",
+  "ham_cikti_sha256": "25584357fc09b07b7bb92f1fec2c19a34b696cfb667e27d60437aaaf13c16901",
+  "ham_cikti_bayt": 15796
+}
