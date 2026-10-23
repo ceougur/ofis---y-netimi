@@ -4,6 +4,9 @@
 //    işareti bu yüklemeyle eşleşmedi: Ayşe Kaya."; onay metni kalkan kaydı ve eşleşmeyeni söyler (B2: "Notları ve geçmişi silinmez" yanıltıcı cümlesi yok).
 // B) Devamı Olarak Ekle, Can'ın satırında başka kişi: "mevcut kaydın yerine geçmez; yeni kayıt" — Can durur.
 // C) Devamı Olarak Ekle, Dosya No eklenmiş aynı dosya: "… satır mevcut kayıtlarla aynı görünüyor" + onay; Vazgeç → veri değişmez.
+// Tur 7 N5 (kayıt kaldıran her yol bağları adıyla söyler, onay ister): D) Veriyi Kaldır — ikinci soru "1 kaydın tahsilatı / notu kaldırılacak satırlarda:
+//    Ali Veli."; Vazgeç → veri durur; onay → kalkar, tahsilat ve not silinmez. E) Google Sheets: Sheet'te olmayan satır listede "Bağlı: not"; Seçilenleri
+//    Kaldır adıyla sorar. F) Sayfayı Sil: yalnız o sayfada olan kaydın notu adıyla söylenir.
 // Çalıştırma: npm run test:senaryo-kayit-bag-31e (ekran görüntüleri test/e2e/artifacts/kayit-bag-31e/).
 import fs, { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -37,7 +40,10 @@ const file = (name, people, { dosya = false } = {}) => {
   writeFileSync(target, buildXlsx([{ name: "Müşteriler", columns, rows }]));
   return target;
 };
-const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0", HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f90" } });
+// E adımı: bağlı Google Sheets yerine sahte yanıt (ağ yok); CSV adım içinde değişir.
+const sheet = { csv: "" };
+const fetchImpl = async target => (String(target).includes("/edit") ? new Response('<script>"gid":"0","name":"Müşteriler"</script>') : new Response(sheet.csv, { headers: { "content-type": "text/csv" } }));
+const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, fetchImpl, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0", HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f90" } });
 const { port } = await app.listen(0, "127.0.0.1");
 const BASE = `http://127.0.0.1:${port}`;
 const browser = await chromium.launch();
@@ -171,8 +177,101 @@ try {
     ok(rows().length === count, `Vazgeç: satır sayısı ${count} kaldı`);
   });
 
+  await step("D) Veriyi Kaldır: Ali'nin tahsilatı ve notu var — ikinci soru adıyla söyler; Vazgeç veriyi bırakır, onay kaldırır, bağlar silinmez", async () => {
+    const count = rows().length;
+    const [ali] = keyOf("Ali Veli");
+    const openRemove = async () => {
+      await closeModals();
+      await page.click("#hof-side-settings");
+      await page.waitForSelector(`${MODAL} [data-remove]`);
+      await page.click(`${MODAL} [data-remove]`);
+      await page.waitForSelector(`${TOP} [data-answer="yes"]`);
+      ok(/kayıt tüm bilgisayarlarda tablodan kalkacak/.test(await text(`${TOP} .hof-modal-text`)), "ilk soru (genel)");
+      await page.click(`${TOP} [data-answer="yes"]`);
+      await page.waitForFunction(() => /kaldırılacak satırlarda/.test([...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-modal-text")].map(node => node.textContent).join(" ")), null, { timeout: 15000 });
+      await page.waitForSelector(`${TOP} [data-answer="no"]`);
+    };
+    await openRemove();
+    const question = await text(`${TOP} .hof-modal-text`);
+    ok(question === "1 kaydın tahsilatı / notu kaldırılacak satırlarda: Ali Veli. Bu bağlar silinmez, eski kayıtta kalır ama tabloda ve raporlarda bu kayıtlarla görünmez. İşlemden önce yedek alınır. Devam edilsin mi?", `ikinci soru: ${question}`);
+    await shot("veriyi-kaldir-bag-sorusu");
+    await page.click(`${TOP} [data-answer="no"]`);
+    await page.waitForTimeout(600);
+    ok(rows().length === count, `Vazgeç: satır sayısı ${count} kaldı`);
+    await openRemove();
+    await Promise.all([page.waitForEvent("load", { timeout: 30000 }), page.click(`${TOP} [data-answer="yes"]`)]);
+    ok(rows().length === 0, "onayla veri kaldırıldı");
+    ok(app.store.get("SELECT case_key AS k FROM payments").k === ali && app.store.get("SELECT case_key AS k FROM notes").k === ali, "tahsilat ve not silinmedi (eski anahtarda)");
+    ok(Boolean(app.store.get("SELECT 1 AS x FROM audit_events WHERE type = 'dataset.bonds.unmatched' AND payload_json LIKE '%dataset-remove%'")), "onaylanan kopma işlem geçmişinde");
+  });
+
+  await step("E) Google Sheets: Sheet'te olmayan satır listede “Bağlı: not”; Seçilenleri Kaldır adıyla sorar, onayla kaldırır", async () => {
+    const head = "Ad Soyad,Tutar,Son Ödeme";
+    sheet.csv = [head, `Kemal Er,100,${day(-3)}`, `Lale Ak,200,${day(-3)}`, `Mert Su,300,${day(-3)}`].join("\n");
+    const staged = await api("/api/workspace/dataset/stage", { kind: "sheets", url: "https://docs.google.com/spreadsheets/d/E2E31E/edit" });
+    ok(staged.status === 200, `Sheet önizlemesi: ${staged.status}`);
+    ok((await api("/api/workspace/dataset/commit", { stageId: staged.data.stageId, mode: "replace", link: true })).status === 200, "Sheet bağlandı");
+    const [lale] = keyOf("Lale Ak");
+    ok((await api(`/api/workspace/cases/${encodeURIComponent(lale)}/notes`, { note: "Lale arandı" })).status === 200, "Lale'ye not");
+    sheet.csv = [head, `Kemal Er,100,${day(-3)}`].join("\n");
+    const synced = await api("/api/workspace/dataset/sync", {});
+    ok(synced.status === 200 && synced.data.counts?.missing === 2, `eşitleme: Lale ve Mert Sheet'te yok (${JSON.stringify(synced.data?.counts)})`);
+    await page.goto(`${BASE}/`, { waitUntil: "load" });
+    await settle();
+    await page.click("#hof-side-settings");
+    await page.waitForSelector(`${MODAL} [data-missing]`);
+    await page.click(`${MODAL} [data-missing]`);
+    await page.waitForSelector(`${TOP} .hof-missing-list`);
+    const bonds = await page.$$eval(`${TOP} [data-missing-bonds]`, nodes => nodes.map(node => node.closest("li").innerText.replace(/\s+/g, " ").trim()));
+    ok(bonds.length === 1 && /Lale Ak/.test(bonds[0]) && /Bağlı: not$/.test(bonds[0]), `listede yalnız Lale "Bağlı: not": ${JSON.stringify(bonds)}`);
+    await shot("sheette-yok-bagli");
+    await page.click(`${TOP} [data-action="remove"]`);
+    await page.waitForFunction(() => /kaldırılacak satırlarda/.test([...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-modal-text")].map(node => node.textContent).join(" ")), null, { timeout: 15000 });
+    await page.waitForSelector(`${TOP} [data-answer="yes"]`);
+    const question = await text(`${TOP} .hof-modal-text`);
+    ok(question === "1 kaydın notu kaldırılacak satırlarda: Lale Ak. Bu bağlar silinmez, eski kayıtta kalır ama tabloda ve raporlarda bu kayıtlarla görünmez. İşlemden önce yedek alınır. Devam edilsin mi?", `soru: ${question}`);
+    await shot("sheette-yok-kaldir-sorusu");
+    await page.click(`${TOP} [data-answer="yes"]`);
+    await page.waitForFunction(() => !document.querySelector(".hof-missing-list"), null, { timeout: 15000 });
+    ok(rows().length === 1 && keyOf("Kemal Er").length === 1, `onayla Lale ve Mert kalktı: ${rows().map(row => row["Ad Soyad"]).join(", ")}`);
+    ok(app.store.get("SELECT case_key AS k FROM notes WHERE note = 'Lale arandı'").k === lale, "Lale'nin notu silinmedi");
+  });
+
+  await step("F) Sayfayı Sil: yalnız o sayfada olan kaydın notu adıyla söylenir; onayla sayfa silinir, not kalır", async () => {
+    const staged = await api("/api/workspace/dataset/stage", { kind: "excel", fileName: "ikinci.xlsx", sheets: [{ name: "Liste", matrix: [["Ad Soyad", "Tutar", "Son Ödeme"], ["Gizem Ak", "700", day(-3)]] }] });
+    ok(staged.status === 200, "ikinci sayfa önizlemesi");
+    const opened = await api("/api/workspace/dataset/commit", { stageId: staged.data.stageId, mode: "session", name: "İkinci Sayfa" });
+    ok(opened.status === 200, `ikinci sayfa açıldı: ${opened.status}`);
+    const second = opened.data.session.key;
+    const gizem = app.store.get("SELECT case_key AS k FROM dataset_rows WHERE dataset_key = ?", second).k;
+    // Pencere hâlâ ilk sayfayı gösteriyor (istekler pencerenin sayfasıyla gider); yeniden açılınca yeni sayfa açılır, not o sayfanın kaydına yazılır.
+    await page.goto(`${BASE}/`, { waitUntil: "load" });
+    await settle();
+    const noted = await api(`/api/workspace/cases/${encodeURIComponent(gizem)}/notes`, { note: "Gizem notu" });
+    ok(noted.status === 200, `Gizem'e not (yeni sayfanın penceresinden): ${noted.status}`);
+    await page.waitForSelector("#hof-pages .hof-page.is-current [data-remove-page]");
+    await page.click("#hof-pages .hof-page.is-current [data-remove-page]");
+    await page.waitForSelector(`${TOP} [data-answer="yes"]`);
+    ok(/İkinci Sayfa/.test(await text(`${TOP} .hof-modal-text`)), "ilk soru sayfa adını söyler");
+    await page.click(`${TOP} [data-answer="yes"]`);
+    await page.waitForFunction(() => /kaldırılacak satırlarda/.test([...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-modal-text")].map(node => node.textContent).join(" ")), null, { timeout: 15000 });
+    await page.waitForSelector(`${TOP} [data-answer="yes"]`);
+    const question = await text(`${TOP} .hof-modal-text`);
+    ok(question === "1 kaydın notu kaldırılacak satırlarda: Gizem Ak. Bu bağlar silinmez, eski kayıtta kalır ama tabloda ve raporlarda bu kayıtlarla görünmez. Devam edilsin mi?", `ikinci soru: ${question}`);
+    await shot("sayfayi-sil-bag-sorusu");
+    await Promise.all([page.waitForEvent("load", { timeout: 30000 }), page.click(`${TOP} [data-answer="yes"]`)]);
+    ok(app.store.get("SELECT COUNT(*) AS n FROM dataset_rows WHERE dataset_key = ?", second).n === 0, "sayfa silindi");
+    ok(app.store.get("SELECT case_key AS k FROM notes WHERE note = 'Gizem notu'").k === gizem, "Gizem'in notu silinmedi");
+  });
+
   await step("Tarayıcı konsolu", async () => {
-    ok(consoleErrors.length === 0, consoleErrors.length ? `konsol: ${consoleErrors.join(" | ")}` : "konsolda hata yok");
+    // D/E/F: kayıt kaldıran isteğin 409 bonds-unmatched yanıtı beklenen sorudur (ekran adlarıyla sorar, onayla yeniden gönderir; Kasa eksiye düşecek
+    // sorusu gibi — run.mjs). Yalnız bu üç adresin 409'u ve tam beklenen sayıda (Veriyi Kaldır 2, Seçilenleri Kaldır 1, Sayfayı Sil 1) hata sayılmaz.
+    const EXPECTED = /status of 409 \(Conflict\) @ \S+\/api\/workspace\/(dataset|dataset\/missing|sessions\/delete)\?/;
+    const expected = consoleErrors.filter(item => EXPECTED.test(item));
+    const other = consoleErrors.filter(item => !EXPECTED.test(item));
+    ok(expected.length === 4, `beklenen 4 soru yanıtı (409): ${expected.length}`);
+    ok(other.length === 0, other.length ? `konsol: ${other.join(" | ")}` : "konsolda başka hata yok");
   });
 } catch (error) {
   console.log(`\n${error.stack || error}`);

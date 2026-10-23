@@ -23,7 +23,7 @@ import { currentScope, runScoped } from "./session-scope.mjs";
 import { spreadsheetId } from "./sheets.mjs";
 import { applyPatch } from "./sources.mjs";
 import { LEGACY_IDENTITY, detectIdentity, legacyFits, rowHash, rowIdentities, sameIdentity } from "./dataset-identity.mjs";
-import { createBondStore, createPeople, findDuplicates, planRebind, resolveIncoming, summarizeBonds, unmatchedSentence } from "./dataset-bonds.mjs";
+import { BOND_NAMES, createBondStore, createPeople, findDuplicates, planRebind, removalPlan, resolveIncoming, summarizeBonds, unmatchedSentence } from "./dataset-bonds.mjs";
 import { columnOrder } from "./sources.mjs";
 
 export const DATASET_KEY = "dataset://ofis";
@@ -134,6 +134,16 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     if (!key) return false;
     const datasetKey = activeKey();
     return Boolean(store.get("SELECT 1 AS one FROM dataset_rows WHERE dataset_key = ? AND case_key = ? LIMIT 1", datasetKey, key)) || Boolean(store.get("SELECT 1 AS one FROM records r WHERE r.source_name = ? AND r.case_key = ? AND NOT EXISTS (SELECT 1 FROM deleted_records d WHERE d.source_name = r.source_name AND d.case_key = r.case_key) LIMIT 1", datasetKey, key));
+  }
+  // 31e İNCELE + tur 7 N6: Dosya No'suz satırın anahtarı ("satir:…", içerik özeti) yalnız tablodaki bir satırdan gelir. Tabloda o anahtar yoksa (tablo yeniden
+  // yüklenmiş ya da eşitlenmiş, kart eski) kayda yazılan not / tahsilat / telefon / haciz / görev / belge / düzeltme / kayıt notu hiçbir kayıtta görünmezdi → 409.
+  // Öbür anahtarlar (dosya no, kimlik kolonu, uygulamada eklenen kayıt, serbest sayfa) eskisi gibi kabul edilir.
+  function liveKey(caseKey) {
+    const key = String(caseKey || "");
+    if (key.startsWith("satir:") && !hasRecord(key)) {
+      throw new HttpError(409, "Bu kayıt tabloda artık yok (tablo yeniden yüklenmiş ya da eşitlenmiş olabilir). Kartı kapatıp kaydı tablodan yeniden açın.", { code: "record-gone" });
+    }
+    return caseKey;
   }
   function loadRows() {
     const datasetKey = activeKey();
@@ -624,9 +634,11 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     return out;
   }
   /** mode: "merge" | "replace" | "sync". Dönüş: uygulanacak satırlar (Devamı/eşitlemede mevcut satırlarla eşlenmiş), taşıma planı, aynı görünenler. */
+  // Kişi değerleri önizleme ve uygulama arasında paylaşılır (aynı önbellek satırları ve önizlemenin aynı satır dizisi; 31e tur 7 N2).
+  const peopleCache = { stored: new WeakMap(), incoming: new WeakMap() };
   function bondPlan(rawEntries, mode) {
     const storedRows = loadRows().rows;
-    const people = createPeople(storedRows, rawEntries);
+    const people = createPeople(storedRows, rawEntries, peopleCache);
     let entries = rawEntries;
     let differentPerson = 0;
     if (mode !== "replace" && storedRows.length) ({ entries, differentPerson } = resolveIncoming(rawEntries, storedRows, people, { byPerson: mode === "sync" }));
@@ -1297,6 +1309,11 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
         return { ok: false, message: result.message };
       }
       const rows = cleanRows(result.rows);
+      // 31e tur 7 N2: bekletilen eşitleme, Sheet'in içeriği ve programdaki satırlar aynı kaldıkça zamanlayıcının her turunda yeniden hesaplanmaz (20.000
+      // satırda her 5 dakikada bir donma); "Şimdi Eşitle" (manual) her zaman yeniden hesaplar.
+      const contentHash = `${rowHash(rows)}|${datasetStamp()}`;
+      const heldBefore = parseJson(sget(S.syncHold, ""), null);
+      if (!manual && heldBefore?.contentHash && heldBefore.contentHash === contentHash) return { ok: false, held: true, hold: heldBefore, unchanged: true };
       const identity = identitiesFor(rows).merge;
       // 31e: Sheet'teki satır mevcut satırlarla eşlenir (aynı konumdaki farklı kişi yerine geçmez; Sheet'te olmayan "Sheet'te yok" işaretlenir) ve
       // anahtarı değişen kayıtların bağları güvenli eşleşmede taşınır.
@@ -1325,7 +1342,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       // "İncele ve karar ver"den önizlemeyi görüp onaylar. Bağı eşleşenler bekletmez (taşınarak uygulanır).
       const unmatchedBonds = report.plan.unmatched.length ? summarizeBonds(report.plan.unmatched) : null;
       if ((!entries.length && fromSheet.length) || structural || unmatchedBonds) {
-        const hold = { at: started, added: changes.added, missing: wouldMiss, updated: changes.updated, rowCount: entries.length, ...(unmatchedBonds && !structural && entries.length ? { reason: "bonds", bonds: { ...unmatchedBonds, text: unmatchedSentence(unmatchedBonds, { sync: true }) } } : {}) };
+        const hold = { at: started, added: changes.added, missing: wouldMiss, updated: changes.updated, rowCount: entries.length, contentHash, ...(unmatchedBonds && !structural && entries.length ? { reason: "bonds", bonds: { ...unmatchedBonds, text: unmatchedSentence(unmatchedBonds, { sync: true }) } } : {}) };
         sset(S.syncHold, JSON.stringify(hold));
         sset(S.lastSyncError, "");
         log?.warn?.("Sheet eşitlemesi yönetici onayına bırakıldı", hold);
@@ -1381,7 +1398,33 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     return summary({ detailed: true });
   }
 
-  function remove(user) {
+  // 31e tur 7 N5: kayıt kaldıran yollar ("Veriyi Kaldır", "Sheet'te Olmayanları Kaldır") bağlı veri varsa adlı uyarı + onay ister (Yerine Koy ile aynı
+  // metin ailesi); bağlar silinmez, eski anahtarda kalır. Onaylanan kaldırma işlem geçmişine yazılır.
+  // kinds: yalnız bu bağ türleri sayılır (sayfa silmede düzeltme / silme işareti / sayfa ayarları sayfayla birlikte silinir); global: sayfadan bağımsız
+  // tablolardaki (not, tahsilat …) bağ, anahtar başka sayfada da varsa orada görünmeye devam ettiği için sayılmaz.
+  const GLOBAL_BONDS = new Set(["payment", "note", "phone", "lien", "task", "document"]);
+  function assertRemovalConfirmed(user, removedIds, confirm, mode, { kinds = null, global = false } = {}) {
+    const datasetKey = activeKey();
+    const bonded = keys => {
+      const counts = bondStore(datasetKey).counts(keys);
+      if (!kinds && !global) return counts;
+      const shared = global ? elsewhere([...counts.keys()]) : new Set();
+      const out = new Map();
+      for (const [key, item] of counts) {
+        const kept = Object.fromEntries(Object.entries(item).filter(([kind]) => (!kinds || kinds.includes(kind)) && !(shared.has(key) && GLOBAL_BONDS.has(kind))));
+        if (Object.keys(kept).length) out.set(key, kept);
+      }
+      return out;
+    };
+    const plan = removalPlan({ storedRows: loadRows().rows, removedIds, bonded });
+    if (!plan.length) return null;
+    const summary = summarizeBonds(plan);
+    const text = unmatchedSentence(summary, { removal: true });
+    if (!confirm) throw new HttpError(409, `${text} Bu bağlar silinmez, eski kayıtta kalır ama tabloda ve raporlarda bu kayıtlarla görünmez. Onaylayarak yeniden deneyin.`, { code: "bonds-unmatched", bonds: { unmatched: { ...summary, text } } });
+    return () => audit(user, "dataset.bonds.unmatched", datasetKey, { kind: "remove", mode, count: plan.length, unmatched: plan.slice(0, 200).map(item => ({ from: item.key, name: item.name, tab: item.tab, bonds: item.bonds })) });
+  }
+  function remove(user, { confirm = false } = {}) {
+    const logBonds = assertRemovalConfirmed(user, loadRows().rows.map(row => row.rowId), confirm, "dataset-remove");
     const backupName = backup("veri-kaldirma-oncesi");
     let removed = 0;
     store.tx(() => {
@@ -1390,23 +1433,26 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       sset(S.needsInitialSync, "0", user.id);
       logImport(user, { kind: "remove", mode: "remove", label: "", rowCount: 0, counts: { removed }, backupName });
       audit(user, "dataset.removed", activeKey(), { removed, backupName });
+      logBonds?.();
     });
     afterChange(user);
     return { removed, backupName };
   }
 
   function missingRows(limit = 500) {
-    return loadRows()
-      .rows.filter(row => row.missingSince)
-      .slice(0, limit)
-      .map(row => ({ rowId: row.rowId, caseKey: row.caseKey, tab: row.tab, missingSince: row.missingSince, preview: Object.entries(row.values).filter(([key, value]) => !key.startsWith("__") && String(value).trim()).slice(0, 4).map(([key, value]) => `${key}: ${String(value).slice(0, 60)}`) }));
+    const list = loadRows().rows.filter(row => row.missingSince).slice(0, limit);
+    // 31e tur 7 N5: "Sheet'te yok" satırı kendi bağlarıyla görünür (listede "Bağlı: tahsilat, not"; kaldırmadan önce bilinsin).
+    const bonds = list.length ? bondStore().counts([...new Set(list.map(row => row.caseKey))]) : new Map();
+    return list.map(row => ({ rowId: row.rowId, caseKey: row.caseKey, tab: row.tab, missingSince: row.missingSince, preview: Object.entries(row.values).filter(([key, value]) => !key.startsWith("__") && String(value).trim()).slice(0, 4).map(([key, value]) => `${key}: ${String(value).slice(0, 60)}`), bonds: Object.keys(bonds.get(row.caseKey) || {}).map(kind => BOND_NAMES[kind] || kind) }));
   }
 
   // action: "remove" (tablodan kaldır) | "keep" (tut; artık Sheet'e bağlı sayılmaz, işaretlenmez)
-  function resolveMissing(user, action, rowIds) {
+  function resolveMissing(user, action, rowIds, { confirm = false } = {}) {
     if (!["remove", "keep"].includes(action)) throw new HttpError(400, "Geçersiz işlem.");
     const ids = Array.isArray(rowIds) ? rowIds.map(String).slice(0, 200_000) : [];
     if (!ids.length) throw new HttpError(400, "Kayıt seçilmedi.");
+    const missingIds = new Set(loadRows().rows.filter(row => row.missingSince).map(row => row.rowId));
+    const logBonds = action === "remove" ? assertRemovalConfirmed(user, ids.filter(id => missingIds.has(id)), confirm, "missing-remove") : null;
     const backupName = action === "remove" ? backup("sheette-olmayanlar-kaldirma-oncesi") : null;
     let changed = 0;
     store.tx(() => {
@@ -1417,6 +1463,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       }
       logImport(user, { kind: "missing", mode: action, label: sget(S.label, ""), rowCount: changed, counts: action === "remove" ? { removed: changed } : { unchanged: changed }, backupName });
       audit(user, `dataset.missing.${action}`, activeKey(), { rows: changed, backupName });
+      logBonds?.();
     });
     afterChange(user);
     return { changed, backupName };
@@ -1518,10 +1565,13 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
 
   // Oturum silme: oturumun satırları, düzeltmeleri, silinenleri, yeni kayıtları ve ayarları kalkar (önce yedek alınır).
   // İlk oturum silinmez; verisi Ayarlar → Veri → "Veriyi kaldır" ile boşaltılır.
-  function deleteSession(user, datasetKey) {
+  function deleteSession(user, datasetKey, { confirm = false } = {}) {
     const target = String(datasetKey || "");
     if (target === DATASET_KEY) throw new HttpError(400, "İlk sayfa silinemez; verisini Ayarlar → Veri → Veriyi kaldır ile boşaltabilirsiniz.");
     if (!sessionList().some(item => item.key === target)) throw new HttpError(404, "Sayfa bulunamadı.");
+    // 31e tur 7 N5: sayfadaki kayıtlara bağlı ve sayfayla silinmeyen veri (tahsilat, not, telefon, haciz, görev, belge, cari / taksit bağı) adlarıyla söylenir,
+    // onay ister; anahtar başka sayfada da varsa genel tablolardaki bağ orada görünmeye devam eder (sayılmaz).
+    const logBonds = withKey(target, () => assertRemovalConfirmed(user, loadRows().rows.map(row => row.rowId), confirm, "session-delete", { kinds: ["payment", "note", "phone", "lien", "task", "document", "account", "plan"], global: true }));
     const backupName = takeBackup ? (() => {
       try {
         const result = takeBackup("sayfa-silme-oncesi");
@@ -1543,6 +1593,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       store.setSetting(REG.sessions, JSON.stringify(sessionList().filter(item => item.key !== target)), user.id);
       if (setting(REG.fallback, "") === target) store.setSetting(REG.fallback, sessionList().at(-1)?.key || DATASET_KEY, user.id);
       audit(user, "dataset.session.deleted", target, { rows: removed, backupName });
+      logBonds?.();
     });
     caches.delete(target);
     visibleCounts.delete(target);
@@ -1567,7 +1618,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
 
   return {
     view, summary, info, stage, commit, sync, unlink, remove, missingRows, resolveMissing, adoptLegacySheetUrl, hasData, start, stop, invalidate, onChange, identity, pinLegacyIdentity,
-    sessions, selectSession, renameSession, deleteSession, currentKey: activeKey, settingKey: name => sk(name), withKey, setFreeProvider, dataTabs, baseValue, unflag, hasRecord,
+    sessions, selectSession, renameSession, deleteSession, currentKey: activeKey, settingKey: name => sk(name), withKey, setFreeProvider, dataTabs, baseValue, unflag, hasRecord, liveKey,
     renameTab, hideTab, unhideTab, hiddenTabs, originalTab,
     addColumn, hideColumn, unhideColumn, hiddenColumns, layoutTab, columnLayout: readLayout,
   };

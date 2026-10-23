@@ -18,7 +18,7 @@
 // Kalan kolonu varsa 30a aynen: Kalan; Kalan hücresi boşsa toplam.
 // 2.4.4 31e T4: aynı SEKMEDE aynı dosya no'lu birden çok satır (satır başına taksit / kalem) ayrı borçtur, 2.4.3 gibi; farklı sekmeler de ayrı (A1) ve
 // görünür not ister (tableNotes — lib/reports.mjs).
-import { foldText } from "./validators.mjs";
+import { foldText, parseAmount } from "./validators.mjs";
 
 export const REMAINING_DEBT_HEADER = /\b(kalan|bakiye)\b/;
 export const TOTAL_DEBT_HEADER = /\b(borc\w*|alacak\w*)\b/;
@@ -49,6 +49,17 @@ export const amountCandidates = analyses => (analyses || [])
   .filter(column => column && !isNotAmountHeader(column));
 
 /**
+ * Tutar rolü almamış ama başlığı Kalan / Bakiye / Borç / Alacak olan ve en az bir satırında tutar yazılmış (seyrek) kolon. Tahsilat Takvimi (insight/dues.mjs)
+ * ve Tablodaki Kişiler (reports.mjs) AYNI kuralla bulur (31e tur 7 N4: önceden yalnız takvim kullanıyordu; seyrek "Kalan Borç" satırı takvimde 500 TL görünüp
+ * Tablodaki Kişiler'den notsuz düşüyordu).
+ * @param {string[]} columns sekmenin kolonları
+ * @param {object[]} rows sekmenin satırları
+ * @param {(row: object, column: string) => unknown} [value] hücre değeri
+ */
+export const sparseDebtColumn = (columns, rows, value = (row, column) => row?.[column]) =>
+  (columns || []).find(column => !isNotAmountHeader(column) && (REMAINING_DEBT_HEADER.test(foldText(column)) || TOTAL_DEBT_HEADER.test(foldText(column))) && (rows || []).some(row => parseAmount(value(row, column)) !== null)) || null;
+
+/**
  * Sekmenin borç düzeni.
  * @param {string[]} candidates tutar kolonları, tablodaki sırasıyla (amountCandidates)
  * @param {{ sparse?: string|null }} [options] tutar rolü almamış ama borç başlıklı, seyrek yazılmış kolon (yalnız remaining/total yoksa total sayılır)
@@ -59,7 +70,11 @@ export function debtPlan(candidates, { sparse = null } = {}) {
   const remaining = list.find(column => REMAINING_DEBT_HEADER.test(header(column))) || null;
   const paid = list.find(column => column !== remaining && isPaidHeader(column)) || null;
   // Ödenen kolonları ve Kalan dışındaki tutarlar: borç başlıklı olan ("Toplam Borç", "Alacak Tutarı") ya da söz tutarı olmayan TEK tutar ("Tutar", "Ödenecek Tutar").
-  const rest = list.filter(column => column !== remaining && !isPaidHeader(column) && !isTaxHeader(column));
+  // 31e tur 7 N4: vergi kolonu (KDV, Vergi Tutarı…) YALNIZ başka bir tutar kolonu varken borç adayından çıkar (Tutar / Genel Toplam yanında KDV borç değildir);
+  // sekmenin tek tutar kolonu vergiyse ("Vergiler": Mükellef, Vergi Tutarı, Son Ödeme) o borçtur — 2.4.3 gibi; önceden kişiler Tablodaki Kişiler'den notsuz düşüyordu.
+  const amountRest = list.filter(column => column !== remaining && !isPaidHeader(column));
+  const nonTax = amountRest.filter(column => !isTaxHeader(column));
+  const rest = nonTax.length || remaining ? nonTax : amountRest;
   const headed = rest.find(column => !REMAINING_DEBT_HEADER.test(header(column)) && TOTAL_DEBT_HEADER.test(header(column))) || null;
   const single = rest.length === 1 && !PROMISE_AMOUNT_HEADER.test(header(rest[0])) ? rest[0] : null;
   // 31e E2: iki tutar kolonundan biri KDV dahil toplamsa (Genel Toplam) borç tek kuralla (GRAND_TOTAL_WINS): Genel Toplam ya da öbürü (net Tutar).

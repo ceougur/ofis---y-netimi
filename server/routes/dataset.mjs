@@ -47,9 +47,10 @@ export function registerDatasetRoutes(router, { auth, dataset, clientState, prof
     ok(res, dataset.unlink(user));
   });
 
-  router.delete("/api/workspace/dataset", async ({ req, res }) => {
+  router.delete("/api/workspace/dataset", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "sources.manage");
-    const result = dataset.remove(user);
+    // 31e tur 7 N5: kalkacak kayıtlara bağlı veri varsa 409 bonds-unmatched; ?confirm=1 yönetici onayıdır.
+    const result = dataset.remove(user, { confirm: url.searchParams.get("confirm") === "1" });
     ok(res, { ...result, state: clientState.read() });
   });
 
@@ -77,7 +78,8 @@ export function registerDatasetRoutes(router, { auth, dataset, clientState, prof
   router.post("/api/workspace/sessions/delete", async ({ req, res }) => {
     const user = auth.requirePermission(req, "sources.manage");
     const body = await readJson(req);
-    const result = dataset.deleteSession(user, text(body.key));
+    // 31e tur 7 N5: sayfadaki kayıtlara bağlı veri varsa 409 bonds-unmatched; body.confirm === true yönetici onayıdır.
+    const result = dataset.deleteSession(user, text(body.key), { confirm: body.confirm === true });
     ok(res, { ...result, current: dataset.currentKey() });
   });
 
@@ -89,6 +91,6 @@ export function registerDatasetRoutes(router, { auth, dataset, clientState, prof
   router.post("/api/workspace/dataset/missing", async ({ req, res }) => {
     const user = auth.requirePermission(req, "sources.manage");
     const body = await readJson(req, { limit: 20_000_000 });
-    ok(res, dataset.resolveMissing(user, text(body.action), body.rowIds));
+    ok(res, dataset.resolveMissing(user, text(body.action), body.rowIds, { confirm: body.confirm === true }));
   });
 }

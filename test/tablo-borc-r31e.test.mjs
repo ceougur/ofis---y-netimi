@@ -428,3 +428,52 @@ describe("31e Y1: Tablodaki Nakit Akışı'nda Kasa sütunları yalnız Kasa yet
     assert.ok(!xlsx.includes("Kasa Giriş") && !xlsx.includes("1500"), "Excel'de Kasa Giriş ve 1.500 yok");
   });
 });
+
+// 31e tur 7 N4 (karar): vergi başlıklı kolon YALNIZ sekmede başka bir tutar kolonu varken borç adayından çıkar; tek tutar kolonu vergi başlıklıysa borç odur.
+// Bütün tablo raporları ve Tahsilat Takvimi aynı borç planını kullanır; notsuz düşme hiçbir yolda yok (aday 17: Kişiler 900 / Vadeler 19.500).
+describe("31e tur 7 N4: tek tutar kolonu vergi başlıklı sekme Tablodaki Kişiler'de borç; Kişiler = Vadeler; Tutar + KDV'de borç Tutar", () => {
+  const ctx = setup([
+    { name: "Vergiler", matrix: [["Mükellef", "Vergi Türü", "Vergi Tutarı", "Son Ödeme"], ["Ali Veli", "KDV", "1.500", d(-2)], ["Ayşe Kaya", "Muhtasar", "2.500", d(-3)], ["Can Er", "Gelir Vergisi", "3.500", d(-4)]] },
+    { name: "Emlak", matrix: [["Ad Soyad", "Emlak Vergisi", "Son Ödeme"], ["Deniz Ak", "4.000", d(-2)], ["Ece Su", "5.000", d(-3)]] },
+    { name: "KdvListe", matrix: [["Firma", "KDV", "Vade"], ["Fırat Er", "600", d(-2)], ["Gül Taş", "700", d(-3)]] },
+    { name: "Stopaj", matrix: [["Ad Soyad", "Stopaj Tutarı", "Son Ödeme"], ["Hale Ak", "800", d(-2)]] },
+    { name: "KdvBorcu", matrix: [["Ad Soyad", "KDV Borcu", "Son Ödeme"], ["İlker Su", "900", d(-2)]] },
+    { name: "Faturalar", matrix: [["Ad Soyad", "Tutar", "KDV", "Son Ödeme"], ["Jale Er", "1.000", "180", d(-2)]] },
+  ]);
+
+  test("Kişiler: her sekmenin tek tutar kolonu borç (19.500) + Faturalar'da Tutar 1.000 (KDV 180 borç değil) = 20.500; not yok", async () => {
+    const { report } = await ctx.report("cari-ekstre");
+    assert.deepEqual(debitBy(report), { "Ali Veli": 1500, "Ayşe Kaya": 2500, "Can Er": 3500, "Deniz Ak": 4000, "Ece Su": 5000, "Fırat Er": 600, "Gül Taş": 700, "Hale Ak": 800, "İlker Su": 900, "Jale Er": 1000 }, JSON.stringify(report.groups.map(group => [group.cari, group.debit])));
+    assert.equal(report.totals.debit, 20500);
+    assert.deepEqual(report.notes, []);
+  });
+
+  test("Vadeler 10 kalem 20.500 = Kişiler; Takvim'de Jale Er borcu 1.000", async () => {
+    const vade = (await ctx.report("vade-takip")).report.totals;
+    assert.deepEqual([vade.count, vade.amount], [10, 20500]);
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    assert.deepEqual(dues.items.filter(item => item.person === "Jale Er").map(item => [item.amount, item.debt]), [[1000, 1000]]);
+  });
+});
+
+// Söz sekmesi borç değildir ve not açmaz (31f U2; A1 B4 "söz sekmesi boşuna not"); seyrek "Kalan Borç" kolonunu Tahsilat Takvimi ile Tablodaki Kişiler aynı
+// kuralla bulur (aday 17: Takvim'de 500, Kişiler'de notsuz yok).
+describe("31e tur 7 N4: seyrek 'Kalan Borç' (çoğu yazı) sayı olan satırda borç — Kişiler ile Takvim aynı; yalnız Söz Tutarı olan sekme borç değil, not açmaz", () => {
+  const ctx = setup([
+    { name: "Sozler", matrix: [["Ad Soyad", "Söz Tutarı", "Söz Tarihi"], ["Ali Söz", "1000", d(2)], ["Ayşe Söz", "1100", d(3)]] },
+    { name: "Seyrek", matrix: [["Ad Soyad", "Kalan Borç", "Son Ödeme", "Açıklama"], ["Ali Seyrek", "500", d(-2), "a"], ["Ayşe Seyrek", "görüşülecek", d(-3), "b"], ["Can Seyrek", "belirsiz", d(-4), "c"], ["Deniz Seyrek", "sorulacak", d(-5), "d"], ["Ece Seyrek", "yok", d(-6), "e"]] },
+  ]);
+
+  test("Kişiler: Ali Seyrek 500 (aday 17'de düşüyordu); söz satırları borç değil; not yok", async () => {
+    const { report } = await ctx.report("cari-ekstre");
+    assert.deepEqual(debitBy(report), { "Ali Seyrek": 500 }, JSON.stringify(report.groups.map(group => [group.cari, group.debit])));
+    assert.deepEqual(report.notes, []);
+  });
+
+  test("Takvim: Ali Seyrek borç 500 (Kalan Borç), sözler söz tutarıyla", async () => {
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    const pick = name => dues.items.filter(item => item.person === name).map(item => [item.amount, item.debt]);
+    assert.deepEqual(pick("Ali Seyrek"), [[500, 500]]);
+    assert.deepEqual(pick("Ali Söz"), [[1000, null]]);
+  });
+});

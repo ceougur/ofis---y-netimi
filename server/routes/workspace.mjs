@@ -45,16 +45,8 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
     if (!key) throw new HttpError(400, `${label} gerekli.`);
     return key;
   };
-  // 31e (İNCELE, kâhin): Dosya No'suz satırın anahtarı ("satir:…", satırın içerik özeti) yalnız tablodaki bir satırdan gelir. Tabloda o anahtar yoksa
-  // (tablo yeniden yüklenmiş ya da eşitlenmiş, kart eski) not / tahsilat / telefon / haciz hiçbir kayıtta görünmeyecekti → 409. Öbür anahtarlar (dosya no,
-  // kimlik kolonu, uygulamada eklenen kayıt, serbest sayfa) eskisi gibi kabul edilir: 2.1.0'dan beri kayıt tahsilatı ucu anahtarı serbest metin alır
-  // (mutabakat motoru, güvenilirlik üreticisi ve eski sürüm verisi bunu kullanır; arayüz 2.4.4'te bu ucu çağırmaz — E8).
-  const liveCaseKey = key => {
-    if (key.startsWith("satir:") && dataset?.hasRecord && !dataset.hasRecord(key)) {
-      throw new HttpError(409, "Bu kayıt tabloda artık yok (tablo yeniden yüklenmiş ya da eşitlenmiş olabilir). Kartı kapatıp kaydı tablodan yeniden açın.", { code: "record-gone" });
-    }
-    return key;
-  };
+  // 31e İNCELE + tur 7 N6: bayat "satir:" anahtarına kayıt bağı yazımı 409 record-gone (dataset.liveKey; belge yüklemesi de: routes/documents.mjs).
+  const liveCaseKey = key => (dataset?.liveKey ? dataset.liveKey(key) : key);
   // v1.5.0: tek ve kalıcı çalışma verisi var; arayüzün gönderdiği kaynak adı ne olursa olsun düzeltmeler, silmeler ve
   // yeni kayıtlar ona bağlanır (güncelleme sırasında açık kalan eski sayfalar eski kaynak adını gönderse bile).
   const sourceNameOf = () => dataset.currentKey();
@@ -290,7 +282,7 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
     const user = auth.requirePermission(req, "records.edit");
     const body = await readJson(req);
     const source = sourceNameOf(body);
-    const key = caseKeyOf(body.caseKey || body.case_key, "Dosya kimliği");
+    const key = liveCaseKey(caseKeyOf(body.caseKey || body.case_key, "Dosya kimliği"));
     const field = limited(body.field, 200, "Alan adı");
     if (!field) throw new HttpError(400, "Dosya ve alan bilgisi gerekli.");
     // "__sheet", "__hofKey" gibi iç alanlar düzenlenemez (kaydı başka sekmeye taşıyamaz).
@@ -629,7 +621,7 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
     if (!title) throw new HttpError(400, "Görev başlığı gerekli.");
     const priority = ["normal", "high", "urgent"].includes(text(body.priority)) ? text(body.priority) : "normal";
     const itemId = newId("task");
-    const key = limited(body.caseKey || body.case_key, CASE_KEY_MAX, "Dosya kimliği");
+    const key = liveCaseKey(limited(body.caseKey || body.case_key, CASE_KEY_MAX, "Dosya kimliği"));
     const typed = limited(body.assignee, 120, "Atanan kişi") || user.display_name;
     // v2.0.10: arayüz kişiyi listeden seçer ve kimliğini gönderir (aynı adlı iki kullanıcı karışmaz). Kimlik yoksa (eski
     // istemci) yazılan ad tek bir kullanıcıya denk geliyorsa görev o kişiye kimliğiyle bağlanır.
@@ -816,7 +808,7 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
   router.put("/api/workspace/case-notes/:key", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "notes.write");
     const body = await readJson(req);
-    const key = caseKeyOf(params.key);
+    const key = liveCaseKey(caseKeyOf(params.key));
     const note = limited(body.note ?? "", 10_000, "Not");
     const old = store.get("SELECT note, version FROM case_notes WHERE case_key = ?", key);
     const version = (old?.version || 0) + 1;
