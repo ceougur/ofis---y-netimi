@@ -277,6 +277,28 @@ function pdfUntruncatedEqual(oldText, newText) {
   const parts = left.split("…");
   return new RegExp(`^${parts.map(escape).join("[^]*?")}$`).test(right);
 }
+/**
+ * 2.4.4 U3 (bilerek): PDF üreticisi (server/lib/report-pdf.mjs columnMeasures) tutar ve sayı kolonunu p90 hücreye değil EN GENİŞ hücreye (kalın TOPLAM
+ * dahil) göre ölçer: v2.0.26'nın satır ortasından böldüğü tutar ("27.716,8" / "2 TL") artık tek satırda, ad kolonu daralıp iki satıra iner ("Ofis" /
+ * "yöneticisi"), sayfa sayısı değişebilir; özet kutusundaki tutar da kesilmez ("-2.749.191,4…" → "-2.749.191,43 TL"). Yalnız Rapor Merkezi PDF'inde iki
+ * şey normalleştirilir: (1) satır kırılımı ve boşluk — iki taraf sayfa yapısından arındırılır (pdfFlow) ve BÜTÜN boşluklar atılır (kırılım sözcük ve
+ * tutar ortasından olabilir); (2) eski taraftaki "…" ile kesilmiş TUTAR (kesik rakamla biter) yeni taraftaki tam tutarın öneki olmalı: kesikten sonra
+ * yalnız rakam, nokta, virgül ve "TL" gelebilir. Rakamla bitmeyen kesik (alt başlık) bu kurala girmez. Başka her fark, bir rakam bile, farktır.
+ */
+function pdfReflowEqual(oldText, newText) {
+  const squeeze = text => pdfFlow(text).replace(/\s+/g, "");
+  const left = squeeze(oldText);
+  const right = squeeze(newText);
+  if (left === right) return true;
+  const parts = left.split("…");
+  if (parts.slice(0, -1).some(part => !/\d$/.test(part))) return false;
+  const escape = value => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`^${parts.map(escape).join("[\\d.,]*(?:TL)?")}$`).test(right);
+}
+/** PDF metinleri aynı mı (katı eşitlik tutmadığında): m6 kesik metin kuralı ya da (Rapor Merkezi) 2.4.4 U3 yeniden yerleşim kuralı. */
+function pdfSame(url, oldText, newText) {
+  return pdfUntruncatedEqual(oldText, newText) || (url.includes("/report-center/") && pdfReflowEqual(oldText, newText));
+}
 const MONEY_CELL = /^−?(?:\d{1,3}(?:\.\d{3})*|\d+),\d{2} TL$/;
 /** Banka ve POS Hareketleri'nin bu dönemi iç hareket içeriyor mu (yeni ekran)? İçeriyorsa PDF/Excel aynı dönemin ekranıyla karşılaştırılır. */
 async function bankPosSelfCheck(api, request) {
@@ -363,7 +385,7 @@ async function compare(oldServer, newServer, { companies, label, skip = () => fa
           try {
             assert.deepStrictEqual(right.body, left.body);
           } catch (error) {
-            if (!(request.kind === "pdf" && typeof left.body === "string" && typeof right.body === "string" && pdfUntruncatedEqual(left.body, right.body))) problems.push(`${where}: ${String(error.message).slice(0, 1500)}`);
+            if (!(request.kind === "pdf" && typeof left.body === "string" && typeof right.body === "string" && pdfSame(request.url, left.body, right.body))) problems.push(`${where}: ${String(error.message).slice(0, 1500)}`);
           }
         }
       }
@@ -494,5 +516,27 @@ describe("altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS,
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
+  });
+});
+
+// 2.4.4 U3 normalleştirmesinin dişi (etiket gerektirmez): yeniden yerleşim ve kesik tutar kabul edilir; bir rakamın değişmesi, araya metin girmesi ve
+// Rapor Merkezi dışındaki PDF yine fark sayılır.
+describe("altın test PDF karşılaştırması: 2.4.4 U3 yeniden yerleşim kuralı yalnız boşluğu ve kesik tutarın devamını kabul eder", () => {
+  const RC = "/api/workspace/report-center/kasa-hareketleri/pdf?from=2026-08-09&to=2026-10-15";
+  const OLD_TEXT = "Kasa Hareketleri\nDönem Sonu\n-2.749.191,4…\nTarih\nGiren\n27.716,8\n2 TL\nOfis yöneticisi\n6.374,00\nTL\nDestekOfis · Kasa Hareketleri\nSayfa 1 / 9";
+  it("aynı sayılar başka satır kırılımıyla ve kesiksiz özet tutarıyla: aynı", () => {
+    assert.equal(pdfSame(RC, OLD_TEXT, "Kasa Hareketleri\nDönem Sonu\n-2.749.191,43 TL\nTarih\nGiren\n27.716,82 TL\nOfis\nyöneticisi\n6.374,00 TL\nDestekOfis · Kasa Hareketleri\nSayfa 1 / 8"), true);
+  });
+  it("tablo tutarının son rakamı değişirse fark", () => {
+    assert.equal(pdfSame(RC, OLD_TEXT, "Kasa Hareketleri\nDönem Sonu\n-2.749.191,43 TL\nTarih\nGiren\n27.716,83 TL\nOfis\nyöneticisi\n6.374,00 TL\nDestekOfis · Kasa Hareketleri\nSayfa 1 / 8"), false);
+    assert.equal(pdfSame(RC, OLD_TEXT, "Kasa Hareketleri\nDönem Sonu\n-2.749.191,43 TL\nTarih\nGiren\n27.716,82 TL\nOfis\nyöneticisi\n6.374,01 TL\nDestekOfis · Kasa Hareketleri\nSayfa 1 / 8"), false);
+  });
+  it("kesik özet tutarı yeni tutarın öneki değilse fark; kesiğin devamına metin giremez", () => {
+    assert.equal(pdfSame(RC, OLD_TEXT, "Kasa Hareketleri\nDönem Sonu\n-2.749.191,53 TL\nTarih\nGiren\n27.716,82 TL\nOfis\nyöneticisi\n6.374,00 TL\nDestekOfis · Kasa Hareketleri\nSayfa 1 / 8"), false);
+    assert.equal(pdfReflowEqual("Dönem Sonu\n-2.749.191,4…\nTarih", "Dönem Sonu\n-2.749.191,43 TL\nFazla Satır\nTarih"), false);
+  });
+  it("araya sözcük girerse ya da sözcük değişirse fark; Rapor Merkezi dışındaki PDF bu kurala girmez", () => {
+    assert.equal(pdfSame(RC, OLD_TEXT, "Kasa Hareketleri\nDönem Sonu\n-2.749.191,43 TL\nTarih\nGiren\n27.716,82 TL\nOfis\nyönetici\n6.374,00 TL\nDestekOfis · Kasa Hareketleri\nSayfa 1 / 8"), false);
+    assert.equal(pdfSame("/api/workspace/cash.pdf", "Kasa\n27.716,8\n2 TL", "Kasa\n27.716,82 TL"), false);
   });
 });
