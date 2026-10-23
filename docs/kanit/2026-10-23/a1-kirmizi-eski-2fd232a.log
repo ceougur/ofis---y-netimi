@@ -1,0 +1,547 @@
+TAP version 13
+# Subtest: 31f U2 / U8: programın örnek dosyası — söz tutarı borç değil, takvimde kalır; borç dosya başına bir kez
+    # Subtest: D1/D3/D8 Tablodaki Kişiler: söz borç satırı açmaz; İcra Takip Kalan 98.000 + Kiracılar Kira bedeli 45.000 = 143.000; Ali Veli 36.000, Mehmet Demir 0
+    ok 1 - D1/D3/D8 Tablodaki Kişiler: söz borç satırı açmaz; İcra Takip Kalan 98.000 + Kiracılar Kira bedeli 45.000 = 143.000; Ali Veli 36.000, Mehmet Demir 0
+      ---
+      duration_ms: 59.460173
+      type: 'test'
+      ...
+    # Subtest: D2/D6 Tahsilat Takvimi: açık sözler yerinde (Ali Veli 5.000), 'Ödendi' sözler yok; söz kaleminin Kalan Borç'u İcra Takip'ten (36.000)
+    ok 2 - D2/D6 Tahsilat Takvimi: açık sözler yerinde (Ali Veli 5.000), 'Ödendi' sözler yok; söz kaleminin Kalan Borç'u İcra Takip'ten (36.000)
+      ---
+      duration_ms: 33.678055
+      type: 'test'
+      ...
+    1..2
+ok 1 - 31f U2 / U8: programın örnek dosyası — söz tutarı borç değil, takvimde kalır; borç dosya başına bir kez
+  ---
+  duration_ms: 502.811329
+  type: 'suite'
+  ...
+# Subtest: 31f U2 daraltılmış karar: okul servisi (tek tutar sütunu 'Aylık Ücret') Tablodaki Kişiler'de öğrencileri gösterir
+    # Subtest: okul servisi: 6 öğrenci, borç = Aylık Ücret hücresi (3.500 + 3.500 + 3.800 + 3.800 + 4.500 + 4.500 = 23.600)
+    ok 1 - okul servisi: 6 öğrenci, borç = Aylık Ücret hücresi (3.500 + 3.500 + 3.800 + 3.800 + 4.500 + 4.500 = 23.600)
+      ---
+      duration_ms: 11.452995
+      type: 'test'
+      ...
+    1..1
+ok 2 - 31f U2 daraltılmış karar: okul servisi (tek tutar sütunu 'Aylık Ücret') Tablodaki Kişiler'de öğrencileri gösterir
+  ---
+  duration_ms: 11.618377
+  type: 'suite'
+  ...
+# Subtest: 31b MM5 → 31e A1: aynı dosya no iki sekmede — borç ve kalem ayrı (2.4.3 gibi) + not; tahsilat bir kez (5c)
+    # Subtest: Tablodaki Kişiler Deniz Ak: borç 12.000 + 12.000 (iki sekme ayrı), alacak 3.000 bir kez, bakiye 21.000; Vade Takip ve Nakit Akışı Beklenen 12.000 + 12.000 + 9.000 − 3.000 = 30.000; not
+    not ok 1 - Tablodaki Kişiler Deniz Ak: borç 12.000 + 12.000 (iki sekme ayrı), alacak 3.000 bir kez, bakiye 21.000; Vade Takip ve Nakit Akışı Beklenen 12.000 + 12.000 + 9.000 − 3.000 = 30.000; not
+      ---
+      duration_ms: 15.124663
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/a1-eski-2fd232a/test/tablo-borc-dosya-u2.test.mjs:122:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Deniz Ak borç iki sekmede ayrı, tahsilat bir kez olmalı; görülen [12000,3000,9000]
+        + actual - expected
+        
+          [
+        +   12000,
+        -   24000,
+            3000,
+        +   9000
+        -   21000
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 24000
+        1: 3000
+        2: 21000
+      actual:
+        0: 12000
+        1: 3000
+        2: 9000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/a1-eski-2fd232a/test/tablo-borc-dosya-u2.test.mjs:125:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 3 - 31b MM5 → 31e A1: aynı dosya no iki sekmede — borç ve kalem ayrı (2.4.3 gibi) + not; tahsilat bir kez (5c)
+  ---
+  duration_ms: 341.343172
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/a1-eski-2fd232a/test/tablo-borc-dosya-u2.test.mjs:99:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 31b MM5 / D5 / D7: iki sekmede farklı Kalan ve dosya no'suz satırlar (birim)
+    # Subtest: D5 / A1 farklı Kalan: iki sekme ayrı borç (12.000 + 11.000), not iki sekmeyi adlandırır; takvimde iki kalem, her kalemin Kalan Borç'u kendi sekmesinden
+    not ok 1 - D5 / A1 farklı Kalan: iki sekme ayrı borç (12.000 + 11.000), not iki sekmeyi adlandırır; takvimde iki kalem, her kalemin Kalan Borç'u kendi sekmesinden
+      ---
+      duration_ms: 3.236983
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/a1-eski-2fd232a/test/tablo-borc-dosya-u2.test.mjs:146:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        iki sekme ayrı: 12.000 + 11.000
+        
+        12000 !== 23000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 23000
+      actual: 12000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/a1-eski-2fd232a/test/tablo-borc-dosya-u2.test.mjs:149:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: D4 / A1 aynı dosya iki sekmede FARKLI vadeyle: iki kalem (dönem sekmesinin vadesi düşmez), takvim toplamı 12.000 + 12.000 + 9.000
+    not ok 2 - D4 / A1 aynı dosya iki sekmede FARKLI vadeyle: iki kalem (dönem sekmesinin vadesi düşmez), takvim toplamı 12.000 + 12.000 + 9.000
+      ---
+      duration_ms: 2.636739
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/a1-eski-2fd232a/test/tablo-borc-dosya-u2.test.mjs:158:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Deniz'in iki sekmedeki kalemi ayrı olmalı; görülen [["Alacaklar","2026-10-25",12000]]
+        + actual - expected
+        
+          [
+            [
+              'Alacaklar',
+              12000
+            ],
+        -   [
+        -     'Takip',
+        -     12000
+        -   ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'Alacaklar'
+          1: 12000
+        1:
+          0: 'Takip'
+          1: 12000
+      actual:
+        0:
+          0: 'Alacaklar'
+          1: 12000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/a1-eski-2fd232a/test/tablo-borc-dosya-u2.test.mjs:162:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: D1 yalnız söz sekmesi (dosyanın başka sekmede borcu yok): söz tutarı borç satırı açmaz; takvimde söz tutarı yerinde
+    ok 3 - D1 yalnız söz sekmesi (dosyanın başka sekmede borcu yok): söz tutarı borç satırı açmaz; takvimde söz tutarı yerinde
+      ---
+      duration_ms: 1.760391
+      type: 'test'
+      ...
+    # Subtest: D7 dosya no'suz satırlar ayrı kalır (aynı ad, iki sekme: iki ayrı borç)
+    ok 4 - D7 dosya no'suz satırlar ayrı kalır (aynı ad, iki sekme: iki ayrı borç)
+      ---
+      duration_ms: 1.533695
+      type: 'test'
+      ...
+    1..4
+not ok 4 - 31b MM5 / D5 / D7: iki sekmede farklı Kalan ve dosya no'suz satırlar (birim)
+  ---
+  duration_ms: 9.57819
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/a1-eski-2fd232a/test/tablo-borc-dosya-u2.test.mjs:136:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 31e T4: aynı sekmede aynı dosya no'lu satırlar ayrı borç ve ayrı takvim kalemi (2.4.3 gibi)
+    # Subtest: Tablodaki Kişiler: Ali Veli 1.000 + 1.500 = 2.500, Ayşe Kaya 700 + 700 = 1.400, Can Yıldız 400 + 600 = 1.000; toplam 4.900; birleştirme notu yok
+    ok 1 - Tablodaki Kişiler: Ali Veli 1.000 + 1.500 = 2.500, Ayşe Kaya 700 + 700 = 1.400, Can Yıldız 400 + 600 = 1.000; toplam 4.900; birleştirme notu yok
+      ---
+      duration_ms: 31.430386
+      type: 'test'
+      ...
+    # Subtest: Tahsilat Takvimi: 6 kalem, tutarları satır satır (1.000, 1.500, 700, 700, 400, 600); söz / zil ön dolumunun Kalan Borç'u dosyanın Kalan toplamı
+    ok 2 - Tahsilat Takvimi: 6 kalem, tutarları satır satır (1.000, 1.500, 700, 700, 400, 600); söz / zil ön dolumunun Kalan Borç'u dosyanın Kalan toplamı
+      ---
+      duration_ms: 12.243319
+      type: 'test'
+      ...
+    # Subtest: Vadeler ve Nakit Akışı: 6 kalem, 4.900; Gecikmiş 1.000 + 700 + 400 = 2.100
+    ok 3 - Vadeler ve Nakit Akışı: 6 kalem, 4.900; Gecikmiş 1.000 + 700 + 400 = 2.100
+      ---
+      duration_ms: 10.618344
+      type: 'test'
+      ...
+    1..3
+ok 5 - 31e T4: aynı sekmede aynı dosya no'lu satırlar ayrı borç ve ayrı takvim kalemi (2.4.3 gibi)
+  ---
+  duration_ms: 471.463776
+  type: 'suite'
+  ...
+# Subtest: 31e T1: Kalan / Borç başlığı yoksa borç = toplam − ödenen; ödenen > toplam ise 0 ve not
+    # Subtest: Tablodaki Kişiler: 10.000 − 4.000, 8.000 − 8.000, 6.000 − 1.000, 1.000 − 1.200 → 0; senet 5.000 − 2.000, 3.000 − 0; gün sütunu tutar değil; Kalan varsa Kalan (5.000) — toplam 24.500
+    ok 1 - Tablodaki Kişiler: 10.000 − 4.000, 8.000 − 8.000, 6.000 − 1.000, 1.000 − 1.200 → 0; senet 5.000 − 2.000, 3.000 − 0; gün sütunu tutar değil; Kalan varsa Kalan (5.000) — toplam 24.500
+      ---
+      duration_ms: 25.854993
+      type: 'test'
+      ...
+    # Subtest: Vadeler ve Nakit Akışı Beklenen aynı kuraldan: 24.500; not aynı
+    ok 2 - Vadeler ve Nakit Akışı Beklenen aynı kuraldan: 24.500; not aynı
+      ---
+      duration_ms: 8.36075
+      type: 'test'
+      ...
+    1..2
+ok 6 - 31e T1: Kalan / Borç başlığı yoksa borç = toplam − ödenen; ödenen > toplam ise 0 ve not
+  ---
+  duration_ms: 338.888946
+  type: 'suite'
+  ...
+# Subtest: 31e T1: Tablodan Aktar ile Tablodaki Kişiler aynı dosyada aynı kalan (toplam − ödenen)
+    # Subtest: Elif Aydın: Kişiler borcu 4.500; Tablodan Aktar ön izlemesinde kalan 4.500 (R10)
+    ok 1 - Elif Aydın: Kişiler borcu 4.500; Tablodan Aktar ön izlemesinde kalan 4.500 (R10)
+      ---
+      duration_ms: 25.565407
+      type: 'test'
+      ...
+    1..1
+ok 7 - 31e T1: Tablodan Aktar ile Tablodaki Kişiler aynı dosyada aynı kalan (toplam − ödenen)
+  ---
+  duration_ms: 302.307947
+  type: 'suite'
+  ...
+# Subtest: 31e A1: dönem sekmeleri (2025 / 2026 Aidat) aynı dosya no — her sekme ayrı borç (2.4.3 gibi), not; Sekme süzgeciyle her sekme kendi borcu
+    # Subtest: süzgeçsiz: Ali Veli 1.200 + 800 = 2.000, Ayşe Kaya 600 + 600 = 1.200, toplam 3.200 (2.4.3 ile aynı); not üç raporda (B2)
+    not ok 1 - süzgeçsiz: Ali Veli 1.200 + 800 = 2.000, Ayşe Kaya 600 + 600 = 1.200, toplam 3.200 (2.4.3 ile aynı); not üç raporda (B2)
+      ---
+      duration_ms: 12.321955
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/a1-eski-2fd232a/test/tablo-borc-r31e.test.mjs:144:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   'Ali Veli': 1200,
+        +   'Ayşe Kaya': 600
+        -   'Ali Veli': 2000,
+        -   'Ayşe Kaya': 1200
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        Ali Veli: 2000
+        Ayşe Kaya: 1200
+      actual:
+        Ali Veli: 1200
+        Ayşe Kaya: 600
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/a1-eski-2fd232a/test/tablo-borc-r31e.test.mjs:146:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Sekme süzgeci: 2026 Aidat → Ali Veli 800, Ayşe Kaya 600 (1.400), not yok; 2025 Aidat → 1.800; seçenekler iki sekme (B10)
+    ok 2 - Sekme süzgeci: 2026 Aidat → Ali Veli 800, Ayşe Kaya 600 (1.400), not yok; 2025 Aidat → 1.800; seçenekler iki sekme (B10)
+      ---
+      duration_ms: 31.180944
+      type: 'test'
+      ...
+    # Subtest: PDF ve Excel aynı notu taşır (B5)
+    not ok 3 - PDF ve Excel aynı notu taşır (B5)
+      ---
+      duration_ms: 22.565688
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/a1-eski-2fd232a/test/tablo-borc-r31e.test.mjs:165:3'
+      failureType: 'testCodeFailure'
+      error: 'cari-ekstre PDF notu'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/a1-eski-2fd232a/test/tablo-borc-r31e.test.mjs:167:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 8 - 31e A1: dönem sekmeleri (2025 / 2026 Aidat) aynı dosya no — her sekme ayrı borç (2.4.3 gibi), not; Sekme süzgeciyle her sekme kendi borcu
+  ---
+  duration_ms: 355.330331
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/a1-eski-2fd232a/test/tablo-borc-r31e.test.mjs:137:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 31e A1: Tahsilat Takvimi — dönem sekmesinin kalemleri düşmez (aday 12: 2 kalem; 2.4.3: 4), not takvim yanıtında (B1/B5/B7)
+    # Subtest: 4 kalem: 2025 Ali 1.200 / Ayşe 600, 2026 Ali 800 / Ayşe 600; her kalemin Kalan Borç'u kendi sekmesinden; not
+    not ok 1 - 4 kalem: 2025 Ali 1.200 / Ayşe 600, 2026 Ali 800 / Ayşe 600; her kalemin Kalan Borç'u kendi sekmesinden; not
+      ---
+      duration_ms: 8.134103
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/a1-eski-2fd232a/test/tablo-borc-r31e.test.mjs:179:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            [
+              '2025 Aidat',
+              'Ali Veli',
+              1200,
+        ...
+            ],
+        -   [
+        -     '2026 Aidat',
+        -     'Ali Veli',
+        -     800,
+        -     800
+        -   ],
+        -   [
+        -     '2026 Aidat',
+        -     'Ayşe Kaya',
+        -     600,
+        -     600
+        -   ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: '2025 Aidat'
+          1: 'Ali Veli'
+          2: 1200
+          3: 1200
+        1:
+          0: '2025 Aidat'
+          1: 'Ayşe Kaya'
+          2: 600
+          3: 600
+        2:
+          0: '2026 Aidat'
+          1: 'Ali Veli'
+          2: 800
+          3: 800
+        3:
+          0: '2026 Aidat'
+          1: 'Ayşe Kaya'
+          2: 600
+          3: 600
+      actual:
+        0:
+          0: '2025 Aidat'
+          1: 'Ali Veli'
+          2: 1200
+          3: 1200
+        1:
+          0: '2025 Aidat'
+          1: 'Ayşe Kaya'
+          2: 600
+          3: 600
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/a1-eski-2fd232a/test/tablo-borc-r31e.test.mjs:182:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 9 - 31e A1: Tahsilat Takvimi — dönem sekmesinin kalemleri düşmez (aday 12: 2 kalem; 2.4.3: 4), not takvim yanıtında (B1/B5/B7)
+  ---
+  duration_ms: 326.026406
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/a1-eski-2fd232a/test/tablo-borc-r31e.test.mjs:173:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 31e A1: kopya sekme iki kez sayılır + not; söz sekmesi (borç değil) not açmaz, söz kaleminin Kalan Borç'u borç sekmesinden (B3/B4/B6)
+    # Subtest: Tablodaki Kişiler: Can Yıldız 500 + 500 = 1.000 (kopya iki kez), Ece Ak 900 (söz borç değil); yalnız K-1 notu
+    not ok 1 - Tablodaki Kişiler: Can Yıldız 500 + 500 = 1.000 (kopya iki kez), Ece Ak 900 (söz borç değil); yalnız K-1 notu
+      ---
+      duration_ms: 13.181406
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/a1-eski-2fd232a/test/tablo-borc-r31e.test.mjs:195:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   'Can Yıldız': 500,
+        -   'Can Yıldız': 1000,
+            'Ece Ak': 900
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        Can Yıldız: 1000
+        Ece Ak: 900
+      actual:
+        Can Yıldız: 500
+        Ece Ak: 900
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/a1-eski-2fd232a/test/tablo-borc-r31e.test.mjs:197:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Tahsilat Takvimi: Can iki kalem (500, 500), Ece Liste 900 + söz 300 (Kalan Borç 900, Liste'den); not
+    not ok 2 - Tahsilat Takvimi: Can iki kalem (500, 500), Ece Liste 900 + söz 300 (Kalan Borç 900, Liste'den); not
+      ---
+      duration_ms: 9.165799
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/a1-eski-2fd232a/test/tablo-borc-r31e.test.mjs:201:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            [
+              'Can Yıldız',
+              'Liste',
+              500,
+        ...
+            [
+        -     'Can Yıldız',
+        -     'Liste Kopya',
+        -     500,
+        -     500
+        -   ],
+        -   [
+              'Ece Ak',
+              'Liste',
+              900,
+              900
+            ],
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'Can Yıldız'
+          1: 'Liste'
+          2: 500
+          3: 500
+        1:
+          0: 'Can Yıldız'
+          1: 'Liste Kopya'
+          2: 500
+          3: 500
+        2:
+          0: 'Ece Ak'
+          1: 'Liste'
+          2: 900
+          3: 900
+        3:
+          0: 'Ece Ak'
+          1: 'Sözler'
+          2: 300
+          3: 900
+      actual:
+        0:
+          0: 'Can Yıldız'
+          1: 'Liste'
+          2: 500
+          3: 500
+        1:
+          0: 'Ece Ak'
+          1: 'Liste'
+          2: 900
+          3: 900
+        2:
+          0: 'Ece Ak'
+          1: 'Sözler'
+          2: 300
+          3: 900
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/a1-eski-2fd232a/test/tablo-borc-r31e.test.mjs:204:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 10 - 31e A1: kopya sekme iki kez sayılır + not; söz sekmesi (borç değil) not açmaz, söz kaleminin Kalan Borç'u borç sekmesinden (B3/B4/B6)
+  ---
+  duration_ms: 321.573262
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/a1-eski-2fd232a/test/tablo-borc-r31e.test.mjs:187:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 31e Y1: Tablodaki Nakit Akışı'nda Kasa sütunları yalnız Kasa yetkisiyle
+    # Subtest: yetkili (yönetici): Kasa Giriş 1.000 (cari nakit) + 500 (elle) = 1.500; Kasa sütunları ve özeti var, not yok (R9)
+    ok 1 - yetkili (yönetici): Kasa Giriş 1.000 (cari nakit) + 500 (elle) = 1.500; Kasa sütunları ve özeti var, not yok (R9)
+      ---
+      duration_ms: 6.385198
+      type: 'test'
+      ...
+    # Subtest: Kasa yetkisi olmayan (yalnız Tablo Raporları): Kasa'ya 403; Nakit Akışı'nda Kasa sütunu, toplamı, özeti yok; not var — ekran, PDF, Excel (R8)
+    ok 2 - Kasa yetkisi olmayan (yalnız Tablo Raporları): Kasa'ya 403; Nakit Akışı'nda Kasa sütunu, toplamı, özeti yok; not var — ekran, PDF, Excel (R8)
+      ---
+      duration_ms: 23.939964
+      type: 'test'
+      ...
+    1..2
+ok 11 - 31e Y1: Tablodaki Nakit Akışı'nda Kasa sütunları yalnız Kasa yetkisiyle
+  ---
+  duration_ms: 470.608062
+  type: 'suite'
+  ...
+1..11
+# tests 22
+# suites 11
+# pass 14
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2945.521451

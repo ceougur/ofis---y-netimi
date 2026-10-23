@@ -9,14 +9,15 @@
 //                 (Karar 22.10.2026, kullanıcı adına 5 dk yetkisiyle: taksit / kira / ücret / ödenecek tek sütunu borçtur; müşteri tablosu sessizce boş kalmaz.)
 //    Başlığı gün / adet / sayı / ay / yıl / oran / yüzde / % olan kolon tutar değildir ("Kalan Gün" 5 TL borç sayılıyordu — E3).
 // 2. Satır (rowDebt): sırayla remaining, total, net (toplam − ödenen), amount hücresinden ilki SAYIYSA o (0 dahil — ödenmiş, sonrakine düşülmez); boş / sayı değilse sonraki (E2).
-// 3. Kayıt (debtByRecord): aynı SEKMEDEKİ satırlar ayrı borçtur ve toplanır (T4); aynı anahtar FARKLI sekmelerde ise borç BİR KEZ: öncelik remaining > total >
-//    net > amount; aynı öncelikte çalışma kitabındaki ilk sekme. Aynı öncelikte farklı tutar "uyuşmazlık"tır; birleştirme ekranda, PDF ve Excel'de not olur.
-//    Dosya no'suz satırlar ayrı kalır.
+// 3. Kayıt (debtByRecord): aynı SEKMEDEKİ satırlar ayrı borçtur ve toplanır (T4); aynı anahtar FARKLI sekmelerde de AYRI borç ve ayrı vade kalemidir
+//    (2.4.3 gibi; 31e kontrol turu 2 A1 kararı, 23.10.2026 — dönem sekmesi tutan tabloda 2026 kalemleri düşüyordu). Borcu birden çok sekmede olan dosya no
+//    görünür not olur (ekran, PDF, Excel ve Tahsilat Takvimi): "ayrı sayıldı; aynı borçsa kopya sekmeyi kaldırın ya da Sekme süzgeciyle bakın".
+//    Dosya no'suz satırlar ayrı kalır. Tahsilat (5c) dosya no başına bir kez yazılır — bu kural tahsilat tarafındadır, değişmez.
 // 2.4.4 31e T1: Kalan / borç kolonu YOKSA ve tabloda bir ödenen kolonu ("Ödenen", "Tahsil Edilen", "Tahsilat"…) ile bir toplam tutar kolonu ("Tutar",
 // "Ödenecek Tutar", "Toplam Borç"…) varsa satırın borcu toplam − ödenen (ödenen boşsa 0; ödenen toplamı aşarsa 0 ve uyarı). Ödenen kolonu borç sayılmaz.
 // Kalan kolonu varsa 30a aynen: Kalan; Kalan hücresi boşsa toplam.
-// 2.4.4 31e T4: aynı SEKMEDE aynı dosya no'lu birden çok satır (satır başına taksit / kalem) ayrı borçtur, 2.4.3 gibi; tek kayıt kuralı yalnız FARKLI
-// sekmeler için (debtByRecord) ve görünür not ister (tableNotes — lib/reports.mjs).
+// 2.4.4 31e T4: aynı SEKMEDE aynı dosya no'lu birden çok satır (satır başına taksit / kalem) ayrı borçtur, 2.4.3 gibi; farklı sekmeler de ayrı (A1) ve
+// görünür not ister (tableNotes — lib/reports.mjs).
 import { foldText } from "./validators.mjs";
 
 export const REMAINING_DEBT_HEADER = /\b(kalan|bakiye)\b/;
@@ -88,37 +89,29 @@ export function rowDebt(plan, read, { expected = true } = {}) {
 }
 
 /**
- * Kayıt (dosya no) başına borç (T4 / U2 / MM5): aynı SEKMEDEKİ satırlar ayrı borçtur ve toplanır; aynı anahtar FARKLI sekmelerdeyse yalnız bir sekme sayılır —
- * öncelik remaining > total > net > amount, aynı öncelikte çalışma kitabındaki ilk sekme. Aynı öncelikte farklı toplam "uyuşmazlık"tır.
- * @param {Array<{ key: string, tab: string, amount: number|null, tier: string|null }>} entries satır borçları, tablo sırasıyla
- * @returns {{ byKey: Map<string, { tab: string, amount: number, tier: string, tabs: string[] }>, merged: object[], conflicts: object[] }}
+ * Kayıt (dosya no) başına borç (T4 / A1): aynı SEKMEDEKİ satırlar ayrı borçtur ve toplanır; FARKLI sekmeler de ayrı borçtur (birleştirilmez).
+ * byKey: anahtar → sekme → { amount, tier, column } (sekmeler tablo sırasıyla); split: borcu (> 0) birden çok sekmede olan anahtarlar (görünür not için).
+ * @param {Array<{ key: string, tab: string, amount: number|null, tier: string|null, column?: string, meta?: object }>} entries satır borçları, tablo sırasıyla
+ * @returns {{ byKey: Map<string, Map<string, { tab: string, amount: number, tier: string|null, column: string, rows: number }>>, split: Array<{ key: string, meta: object, tabs: Array<{ tab: string, amount: number }> }> }}
  */
 export function debtByRecord(entries) {
-  const perKey = new Map();
+  const byKey = new Map();
+  const metaOf = new Map();
   for (const entry of entries || []) {
     if (!entry?.key || entry.amount === null || entry.amount === undefined) continue;
-    if (!perKey.has(entry.key)) perKey.set(entry.key, new Map());
-    const tabs = perKey.get(entry.key);
-    const current = tabs.get(entry.tab) || { tab: entry.tab, amount: 0, rank: Infinity, rows: 0, meta: entry.meta };
+    if (!byKey.has(entry.key)) byKey.set(entry.key, new Map());
+    if (!metaOf.has(entry.key)) metaOf.set(entry.key, entry.meta);
+    const tabs = byKey.get(entry.key);
+    const current = tabs.get(entry.tab) || { tab: entry.tab, amount: 0, tier: entry.tier || null, column: entry.column || "", rows: 0 };
     current.amount = Math.round((current.amount + entry.amount) * 100) / 100;
-    current.rank = Math.min(current.rank, Math.max(0, TIERS.indexOf(entry.tier)));
     current.rows += 1;
     tabs.set(entry.tab, current);
   }
-  const byKey = new Map();
-  const merged = [];
-  const conflicts = [];
-  for (const [key, tabs] of perKey) {
-    const list = [...tabs.values()];
-    let kept = list[0];
-    for (const candidate of list.slice(1)) if (candidate.rank < kept.rank) kept = candidate;
-    // order: sekmeler tercih sırasıyla (sayılan önce) — Sekme süzgeci seçilince seçilen sekmeler içinde ilki sayılır (raporlar).
-    const order = [...list].sort((a, b) => a.rank - b.rank || list.indexOf(a) - list.indexOf(b)).map(item => item.tab);
-    byKey.set(key, { tab: kept.tab, amount: kept.amount, tier: TIERS[kept.rank] || null, tabs: list.map(item => item.tab), order });
-    if (list.length < 2) continue;
-    const others = list.filter(item => item !== kept);
-    merged.push({ key, meta: kept.meta, kept: { tab: kept.tab, amount: kept.amount }, others: others.map(item => ({ tab: item.tab, amount: item.amount })) });
-    for (const other of others) if (other.rank === kept.rank && Math.abs(other.amount - kept.amount) > 0.004) conflicts.push({ key, meta: kept.meta, kept: { tab: kept.tab, amount: kept.amount }, other: { tab: other.tab, amount: other.amount } });
+  const split = [];
+  // Not yalnız borcu (> 0) birden çok sekmede olan dosya no için: Kalan 0 (ödenmiş) sekme borç toplamına bir şey katmaz.
+  for (const [key, tabs] of byKey) {
+    const owing = [...tabs.values()].filter(item => item.amount > 0);
+    if (owing.length > 1) split.push({ key, meta: metaOf.get(key), tabs: owing.map(item => ({ tab: item.tab, amount: item.amount })) });
   }
-  return { byKey, merged, conflicts };
+  return { byKey, split };
 }

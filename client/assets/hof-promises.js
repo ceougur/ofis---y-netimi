@@ -216,7 +216,8 @@
       signature = "";
       return;
     }
-    const nextSignature = JSON.stringify(items.map(item => [item.id, item.amount, item.state, item.days]));
+    const notes = data.notes || [];
+    const nextSignature = JSON.stringify([items.map(item => [item.id, item.amount, item.state, item.days]), notes]);
     if (existing && existing.isConnected && signature === nextSignature && existing.previousElementSibling === anchor) return;
     existing?.remove();
     signature = nextSignature;
@@ -225,8 +226,10 @@
     const soon = items.length - overdue - now;
     const shown = items.slice(0, PILL_LIMIT);
     const parts = [overdue ? `${overdue} gecikmiş` : "", now ? `${now} bugün/bu ay` : "", soon ? `${soon} yaklaşan` : ""].filter(Boolean).join(" · ");
-    const band = HOF.el("section", { class: "hof-payment-promises", "aria-label": "Tahsilat takvimi" });
-    band.innerHTML = `<div class="hof-payment-promises-heading"><span class="hof-payment-promises-dot${overdue ? " is-late" : ""}"></span><strong>Tahsilat Takvimi</strong><small>${esc(parts)}${shown.length < items.length ? ` · ilk ${shown.length}` : ""}</small></div><div class="hof-payment-promises-viewport"><div class="hof-payment-promises-track"></div></div>`;
+    const band = HOF.el("section", { class: `hof-payment-promises${notes.length ? " has-note" : ""}`, "aria-label": "Tahsilat takvimi" });
+    // 31e A1: borcu birden çok sekmede olan dosya no ayrı kalem sayıldı — raporlarla aynı not (zil söylemez).
+    const noteHtml = notes.length ? `<p class="hof-payment-promises-note" data-dues-notes>${notes.map(note => esc(note)).join(" ")}</p>` : "";
+    band.innerHTML = `<div class="hof-payment-promises-heading"><span class="hof-payment-promises-dot${overdue ? " is-late" : ""}"></span><strong>Tahsilat Takvimi</strong><small>${esc(parts)}${shown.length < items.length ? ` · ilk ${shown.length}` : ""}</small></div><div class="hof-payment-promises-viewport"><div class="hof-payment-promises-track"></div></div>${noteHtml}`;
     const track = band.querySelector(".hof-payment-promises-track");
     const pill = item => {
       const button = HOF.el(

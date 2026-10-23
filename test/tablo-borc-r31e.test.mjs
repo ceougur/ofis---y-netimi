@@ -1,7 +1,7 @@
 // 2.4.4 31e (bağımsız dar kontrol) bulguları — kullanıcı adına 5 dk yetkisiyle verilen kararlar (23.10.2026 03:12 UTC):
 // T4  AYNI sekmede aynı Dosya No'lu birden çok satır (taksit / dönem satırı) ayrı borç ve ayrı takvim kalemidir (2.4.3 gibi); kayıt borcu satırların toplamı.
-// (a) FARKLI sekmelerde aynı Dosya No tek kayıttır (bir kez sayılır, 31b MM5) ama rapor bunu görünür not olarak söyler (ekran, PDF, Excel); Sekme süzgeci
-//     seçilince her sekme kendi borcunu gösterir (dönem sekmesi tutan tablo).
+// (a) → A1 (DEĞİŞTİ, 23.10.2026 04:09 UTC): FARKLI sekmelerde aynı Dosya No ayrı borç ve ayrı vade kalemidir (2.4.3 gibi); rapor ve Tahsilat Takvimi bunu
+//     görünür not olarak söyler; Sekme süzgeci seçilince her sekme kendi borcunu gösterir.
 // T1  Kalan / Borç başlığı yoksa ve ödenen + toplam sütunu varsa satır borcu = toplam − ödenen (negatifse 0 + not); ödenen tutar borç sayılmaz.
 // Y1  Tablodaki Nakit Akışı'nda Kasa sütunları yalnız Kasa'yı görme yetkisi (cash.view) olana; Tablo Raporları yetkisi tek başına Kasa'yı açmaz.
 // Beklenen sayılar tablo hücrelerinden ve girilen tutarlardan (ders 5); kâhin değil, kodu yazan elin testi.
@@ -128,35 +128,33 @@ describe("31e T1: Tablodan Aktar ile Tablodaki Kişiler aynı dosyada aynı kala
   });
 });
 
-describe("31e (a): farklı sekmelerde aynı dosya no bir kez sayılır, rapor bunu söyler; Sekme süzgeciyle her sekme kendi borcu", () => {
+// 31e kontrol turu 2 A1 kararı (kullanıcı adına 5 dk yetkisiyle, 23.10.2026 04:09 UTC; (a) DEĞİŞTİ): farklı sekmede aynı Dosya No AYRI borç ve AYRI vade
+// kalemidir (2.4.3 gibi); görünür not raporlarda (ekran / PDF / Excel) ve Tahsilat Takvimi'nde. Aday 12'de dönem sekmesinin (2026) kalemleri takvimden düşüyordu.
+// "Nasıl bozulur?" (not defteri a1-nasil-bozulur.md B1–B12) — B1 dönem kalemi düşer · B2 öbür sekmenin borcu sayılmaz · B3 kopya sekme bir kez, notsuz · B4 söz
+// sekmesi boşuna not · B5 not takvimde / PDF / Excel'de yok · B6 söz kaleminin Kalan Borç'u boş · B7 kalemin Kalan Borç'u öbür sekmeden · B10 Sekme süzgeci.
+const SPLIT_NOTE = tabs => `dosya no birden çok sekmede; ayrı sayıldı (${tabs}). Aynı borçsa kopya sekmeyi kaldırın ya da Sekme süzgeciyle bakın.`;
+
+describe("31e A1: dönem sekmeleri (2025 / 2026 Aidat) aynı dosya no — her sekme ayrı borç (2.4.3 gibi), not; Sekme süzgeciyle her sekme kendi borcu", () => {
   const ctx = setup([
     { name: "2025 Aidat", matrix: [["Dosya No", "Ad Soyad", "Kalan Borç", "Son Ödeme"], ["D-5", "Ali Veli", "1.200", d(-40)], ["D-7", "Ayşe Kaya", "600", d(-35)]] },
     { name: "2026 Aidat", matrix: [["Dosya No", "Ad Soyad", "Kalan Borç", "Son Ödeme"], ["D-5", "Ali Veli", "800", d(10)], ["D-7", "Ayşe Kaya", "600", d(12)]] },
   ]);
-  const MERGED = "2 dosya no birden çok sekmede; bir kez sayıldı (2025 Aidat, 2026 Aidat). Dönem sekmesiyse Sekme süzgeciyle ayrı bakın.";
-  const CONFLICT = "Aynı dosya numarası farklı sekmelerde farklı kalan borç taşıyor: D-5: 2025 Aidat";
+  const NOTE = `2 ${SPLIT_NOTE("2025 Aidat, 2026 Aidat")} Dosya No: D-5 (Ali Veli), D-7 (Ayşe Kaya).`;
 
-  test("süzgeçsiz: bir kez (ilk sekme) — Ali Veli 1.200, Ayşe Kaya 600, toplam 1.800; not hangi kaydın sayıldığını ve uyuşmazlığı söyler (üç raporda)", async () => {
+  test("süzgeçsiz: Ali Veli 1.200 + 800 = 2.000, Ayşe Kaya 600 + 600 = 1.200, toplam 3.200 (2.4.3 ile aynı); not üç raporda (B2)", async () => {
     const { report } = await ctx.report("cari-ekstre");
-    assert.deepEqual(debitBy(report), { "Ali Veli": 1200, "Ayşe Kaya": 600 });
-    assert.equal(report.totals.debit, 1800);
-    const notes = report.notes.join(" | ");
-    assert.ok(notes.includes(MERGED), `birleştirme notu: ${notes}`);
-    assert.ok(notes.includes("Sayılan: D-5 (Ali Veli): 2025 Aidat"), `sayılan kayıt: ${notes}`);
-    assert.ok(notes.includes(CONFLICT), `uyuşmazlık notu: ${notes}`);
-    for (const kind of ["vade-takip", "nakit-akis"]) {
-      const other = (await ctx.report(kind)).report;
-      assert.ok(other.notes.join(" | ").includes(MERGED), `${kind} birleştirme notu: ${JSON.stringify(other.notes)}`);
-    }
-    assert.equal((await ctx.report("vade-takip")).report.totals.amount, 1800);
-    assert.equal((await ctx.report("nakit-akis")).report.totals.expected, 1800);
+    assert.deepEqual(debitBy(report), { "Ali Veli": 2000, "Ayşe Kaya": 1200 });
+    assert.equal(report.totals.debit, 3200);
+    assert.deepEqual(report.notes, [NOTE]);
+    for (const kind of ["vade-takip", "nakit-akis"]) assert.deepEqual((await ctx.report(kind)).report.notes, [NOTE], `${kind} notu`);
+    assert.equal((await ctx.report("vade-takip")).report.totals.amount, 3200);
+    assert.equal((await ctx.report("nakit-akis")).report.totals.expected, 3200);
   });
 
-  test("Sekme süzgeci: 2026 Aidat → Ali Veli 800, Ayşe Kaya 600 (1.400); 2025 Aidat → 1.800; seçili sekmede öbür sekme listeden düşmez (R3)", async () => {
+  test("Sekme süzgeci: 2026 Aidat → Ali Veli 800, Ayşe Kaya 600 (1.400), not yok; 2025 Aidat → 1.800; seçenekler iki sekme (B10)", async () => {
     const only2026 = await ctx.report("cari-ekstre", "tabs=2026 Aidat");
     assert.deepEqual(debitBy(only2026.report), { "Ali Veli": 800, "Ayşe Kaya": 600 });
-    assert.equal(only2026.report.totals.debit, 1400);
-    assert.deepEqual(only2026.report.notes, [], "tek sekmede birleştirme notu yok");
+    assert.deepEqual(only2026.report.notes, [], "tek sekmede not yok");
     assert.deepEqual(only2026.tabs, ["2025 Aidat", "2026 Aidat"], "Sekme seçenekleri bütün sekmelerden");
     assert.equal((await ctx.report("vade-takip", "tabs=2026 Aidat")).report.totals.amount, 1400);
     assert.equal((await ctx.report("nakit-akis", "tabs=2026 Aidat")).report.totals.expected, 1400);
@@ -164,11 +162,47 @@ describe("31e (a): farklı sekmelerde aynı dosya no bir kez sayılır, rapor bu
     assert.equal((await ctx.report("vade-takip", "tabs=2025 Aidat")).report.totals.amount, 1800);
   });
 
-  test("PDF ve Excel aynı notu taşır (R4)", async () => {
+  test("PDF ve Excel aynı notu taşır (B5)", async () => {
     for (const kind of ["cari-ekstre", "vade-takip", "nakit-akis"]) {
-      assert.ok(flat(pdfText(await ctx.exportOf(kind, "pdf"))).includes("bir kez sayıldı (2025 Aidat, 2026 Aidat)"), `${kind} PDF notu`);
-      assert.ok(flat(xlsxText(await ctx.exportOf(kind, "xlsx"))).includes(MERGED), `${kind} Excel notu`);
+      assert.ok(flat(pdfText(await ctx.exportOf(kind, "pdf"))).includes("ayrı sayıldı (2025 Aidat, 2026 Aidat)"), `${kind} PDF notu`);
+      assert.ok(flat(xlsxText(await ctx.exportOf(kind, "xlsx"))).includes(NOTE), `${kind} Excel notu`);
     }
+  });
+});
+
+describe("31e A1: Tahsilat Takvimi — dönem sekmesinin kalemleri düşmez (aday 12: 2 kalem; 2.4.3: 4), not takvim yanıtında (B1/B5/B7)", () => {
+  const ctx = setup([
+    { name: "2025 Aidat", matrix: [["Dosya No", "Ad Soyad", "Kalan Borç", "Son Ödeme"], ["D-5", "Ali Veli", "1.200", d(-2)], ["D-7", "Ayşe Kaya", "600", d(-1)]] },
+    { name: "2026 Aidat", matrix: [["Dosya No", "Ad Soyad", "Kalan Borç", "Son Ödeme"], ["D-5", "Ali Veli", "800", d(3)], ["D-7", "Ayşe Kaya", "600", d(4)]] },
+  ]);
+
+  test("4 kalem: 2025 Ali 1.200 / Ayşe 600, 2026 Ali 800 / Ayşe 600; her kalemin Kalan Borç'u kendi sekmesinden; not", async () => {
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    const items = dues.items.filter(item => item.person).map(item => [item.tab, item.person, item.amount, item.debt]).sort((a, b) => a[0].localeCompare(b[0], "tr") || a[1].localeCompare(b[1], "tr"));
+    assert.deepEqual(items, [["2025 Aidat", "Ali Veli", 1200, 1200], ["2025 Aidat", "Ayşe Kaya", 600, 600], ["2026 Aidat", "Ali Veli", 800, 800], ["2026 Aidat", "Ayşe Kaya", 600, 600]]);
+    assert.deepEqual(dues.notes, [`2 ${SPLIT_NOTE("2025 Aidat, 2026 Aidat")} Dosya No: D-5 (Ali Veli), D-7 (Ayşe Kaya).`]);
+  });
+});
+
+describe("31e A1: kopya sekme iki kez sayılır + not; söz sekmesi (borç değil) not açmaz, söz kaleminin Kalan Borç'u borç sekmesinden (B3/B4/B6)", () => {
+  const ctx = setup([
+    { name: "Liste", matrix: [["Dosya No", "Ad Soyad", "Kalan Borç", "Vade"], ["K-1", "Can Yıldız", "500", d(2)], ["K-2", "Ece Ak", "900", d(5)]] },
+    { name: "Liste Kopya", matrix: [["Dosya No", "Ad Soyad", "Kalan Borç", "Vade"], ["K-1", "Can Yıldız", "500", d(2)]] },
+    { name: "Sözler", matrix: [["Dosya No", "Ad Soyad", "Söz Tarihi", "Söz Tutarı"], ["K-2", "Ece Ak", d(3), "300"]] },
+  ]);
+  const NOTE = `1 ${SPLIT_NOTE("Liste, Liste Kopya")} Dosya No: K-1 (Can Yıldız).`;
+
+  test("Tablodaki Kişiler: Can Yıldız 500 + 500 = 1.000 (kopya iki kez), Ece Ak 900 (söz borç değil); yalnız K-1 notu", async () => {
+    const { report } = await ctx.report("cari-ekstre");
+    assert.deepEqual(debitBy(report), { "Can Yıldız": 1000, "Ece Ak": 900 });
+    assert.deepEqual(report.notes, [NOTE]);
+  });
+
+  test("Tahsilat Takvimi: Can iki kalem (500, 500), Ece Liste 900 + söz 300 (Kalan Borç 900, Liste'den); not", async () => {
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    const items = dues.items.filter(item => item.person).map(item => [item.person, item.tab, item.amount, item.debt]).sort((a, b) => a[0].localeCompare(b[0], "tr") || a[1].localeCompare(b[1], "tr"));
+    assert.deepEqual(items, [["Can Yıldız", "Liste", 500, 500], ["Can Yıldız", "Liste Kopya", 500, 500], ["Ece Ak", "Liste", 900, 900], ["Ece Ak", "Sözler", 300, 900]]);
+    assert.deepEqual(dues.notes, [NOTE]);
   });
 });
 
