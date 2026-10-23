@@ -45,6 +45,16 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
     if (!key) throw new HttpError(400, `${label} gerekli.`);
     return key;
   };
+  // 31e (İNCELE, kâhin): Dosya No'suz satırın anahtarı ("satir:…", satırın içerik özeti) yalnız tablodaki bir satırdan gelir. Tabloda o anahtar yoksa
+  // (tablo yeniden yüklenmiş ya da eşitlenmiş, kart eski) not / tahsilat / telefon / haciz hiçbir kayıtta görünmeyecekti → 409. Öbür anahtarlar (dosya no,
+  // kimlik kolonu, uygulamada eklenen kayıt, serbest sayfa) eskisi gibi kabul edilir: 2.1.0'dan beri kayıt tahsilatı ucu anahtarı serbest metin alır
+  // (mutabakat motoru, güvenilirlik üreticisi ve eski sürüm verisi bunu kullanır; arayüz 2.4.4'te bu ucu çağırmaz — E8).
+  const liveCaseKey = key => {
+    if (key.startsWith("satir:") && dataset?.hasRecord && !dataset.hasRecord(key)) {
+      throw new HttpError(409, "Bu kayıt tabloda artık yok (tablo yeniden yüklenmiş ya da eşitlenmiş olabilir). Kartı kapatıp kaydı tablodan yeniden açın.", { code: "record-gone" });
+    }
+    return key;
+  };
   // v1.5.0: tek ve kalıcı çalışma verisi var; arayüzün gönderdiği kaynak adı ne olursa olsun düzeltmeler, silmeler ve
   // yeni kayıtlar ona bağlanır (güncelleme sırasında açık kalan eski sayfalar eski kaynak adını gönderse bile).
   const sourceNameOf = () => dataset.currentKey();
@@ -362,7 +372,7 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
   router.post("/api/workspace/cases/:key/notes", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "notes.write");
     const body = await readJson(req);
-    const key = caseKeyOf(params.key);
+    const key = liveCaseKey(caseKeyOf(params.key));
     const note = limited(body.note, 5000, "Not");
     if (!note) throw new HttpError(400, "Not metni gerekli.");
     const itemId = newId("note");
@@ -375,7 +385,7 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
   router.post("/api/workspace/cases/:key/phones", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "phones.create");
     const body = await readJson(req);
-    const key = caseKeyOf(params.key);
+    const key = liveCaseKey(caseKeyOf(params.key));
     const phone = text(body.phone).replace(/[^\d+]/g, "");
     if (phone.length < 7 || phone.length > 20) throw new HttpError(400, "Geçerli bir telefon numarası gerekli.");
     const itemId = newId("phone");
@@ -392,7 +402,7 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
   router.post("/api/workspace/cases/:key/payments", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "payments.create");
     const body = await readJson(req);
-    const key = caseKeyOf(params.key);
+    const key = liveCaseKey(caseKeyOf(params.key));
     const { amount, date } = paymentInput(body);
     const method = methodInput(body.method);
     // 2.2.0: kart yolu POS'tur (posId; tek POS kendiliğinden) — taksit sayısı, provizyon, kart son 4 hanesi işlem başlığına (POS kancası).
@@ -502,7 +512,7 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
   router.post("/api/workspace/cases/:key/liens", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "liens.create");
     const body = await readJson(req);
-    const key = caseKeyOf(params.key);
+    const key = liveCaseKey(caseKeyOf(params.key));
     const placed = new Date(text(body.placedAt));
     if (Number.isNaN(placed.getTime())) throw new HttpError(400, "Geçerli bir haciz tarihi gerekli.");
     const expires = new Date(placed);

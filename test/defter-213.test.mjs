@@ -120,7 +120,9 @@ describe("2.0.13 defter ve mantık düzeltmeleri", () => {
     const given = ok(await admin.post("/api/workspace/cheques", { direction: "out", instrument: "cheque", amount: "1.500", dueDate: "2026-12-10", accountId: tedarik.id, serialNo: "V-1" }), "çek ver");
     ok(await admin.post(`/api/workspace/cheques/${given.id}/actions`, { action: "pay", method: "bank", cashForce: true }), "öde (banka; bakiye yetmiyor, onaylı)");
     ok(await admin.post("/api/workspace/cheques", { direction: "out", instrument: "note", amount: "900", dueDate: "2027-01-10", accountId: tedarik.id, serialNo: "V-2" }), "senet ver (açık)");
-    ok(await admin.post("/api/workspace/cases/satir:1/payments", { amount: "250", method: "bank", caseTitle: "Kayıt" }).catch(() => ({ status: 200, data: { data: {} } })), "kayıt tahsilatı");
+    // 31e İNCELE: "satir:…" yalnız tablodaki Dosya No'suz satırın anahtarıdır; tabloda olmayan satir: anahtarına tahsilat 409 (record-gone). Burada
+    // kayıt tahsilatının deftere etkisi sınanır; anahtar serbest metin (2.1.0 sözleşmesi).
+    ok(await admin.post("/api/workspace/cases/KAYIT-213/payments", { amount: "250", method: "bank", caseTitle: "Kayıt" }).catch(() => ({ status: 200, data: { data: {} } })), "kayıt tahsilatı");
     const ledger = data(await admin.get("/api/workspace/ledger"));
     assert.equal(ledger.trial.balanced, true, "borç toplamı = alacak toplamı");
     assert.equal(ledger.trial.totals.difference, 0);

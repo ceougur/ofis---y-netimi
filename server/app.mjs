@@ -204,6 +204,8 @@ export function createApp(overrides = {}) {
     log,
     backupKeep: config.backupKeep,
     makeBackup: label => takeBackup(label),
+    // 31e: kayıt tahsilatının anahtarı (bağı) yükleme/eşitlemede taşınırken merkezi para yazımından geçer (K6 "assign").
+    bank,
     autoSync: config.datasetAutoSync,
     tickMs: config.datasetTickMs,
     canWrite: () => !license || license.writable(),
