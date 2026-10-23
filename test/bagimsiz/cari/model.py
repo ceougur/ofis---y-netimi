@@ -84,6 +84,9 @@ MUTASYONLAR = {
     54: "Y3: Kalan hücresi boş, iki aday (Aidat + Gecikme Faizi) — ikisinin toplamı borç sayılır (not yerine)",
     55: "Y1: 'önce cari açın' Açılış Bakiyesi satırın ilk tutar hücresinden dolar (raporların borcundan değil)",
     56: "Y2 öncesi: aynı adlı iki satır telefonla ayırt edilse de güvenli eşleşme sayılmaz (kişi değeri yalnız ad + kimlik)",
+    57: "TAKVİM KALEMİ öncesi: vade kaleminin tutarı satır borcudur (Kalan) — dönem / taksit tutarı kolonu yok sayılır",
+    58: "TAKVİM KALEMİ: kalem tutarı dönem tutarıdır, Kalan Borç daha küçükse de (min alınmaz)",
+    59: "TAKVİM KALEMİ: Tablodaki Kişiler de vade kaleminin tutarını (dönem tutarı) gösterir (satır borcu yerine)",
 }
 
 
@@ -115,6 +118,9 @@ KIMLIK_BASLIK = {"dosya no", "borçlu", "telefon", "müşteri no", "müşteri", 
 # yazımları [YAYGIN].
 KISI_OZNITELIK_KELIME = {"telefon", "tel", "gsm", "cep", "tc", "tckn", "vkn", "kimlik", "adres", "adresi", "ad", "adı", "soyad", "soyadı", "unvan", "unvanı",
                          "tarih", "tarihi", "posta", "eposta", "mail", "email"}
+# TAKVİM KALEMİ (baş mimar kararı 23.10.2026): satırın kendi dönem / taksit tutarı kolonu — "Taksit Tutarı", "Aidat", "Kira", "Aylık Ücret"… (kelime başı; "dönem",
+# "abonelik" [YAYGIN]). Para kolonu olmalı (kişi özniteliği / tarih kolonu değil: "Sonraki Taksit Tarihi" dönem kolonu değildir).
+DONEM_KELIME = ("taksit", "aidat", "kira", "ücret", "aylık", "dönem", "abonelik")
 TUTAR_DISI = {"gün", "adet"}  # K3: gün/adet sütunu ("Kalan Gün", "Adet") tutar değildir
 TUTAR_DISI_EK = {"sayı", "sayısı", "ay", "yıl", "oran", "oranı", "yüzde"}  # tutar sayılmaz [YAYGIN]; senaryolarda kullanılmaz (DENENMEZ)
 
@@ -480,6 +486,55 @@ class Model:
     def ad_cok_kimlikli(self, ad):
         """C3: adı paylaşan birden çok kimlikli kişi var mı (etikette kimlik beklenir)."""
         return len({k for no, kay in self.kayitlar.items() if kay["isim"] == ad and self.cari_bul_kayit(no) is None for k in kay["kimlikler"]}) > 1
+
+    def donem_kolonlari(self, sk):
+        """TAKVİM KALEMİ: sekmenin dönem / taksit tutarı kolonları (para kolonu + başlığında dönem kelimesi)."""
+        out = []
+        for h in sk["basliklar"] or []:
+            if tr_kucuk(h) in KIMLIK_BASLIK or any(x in KISI_OZNITELIK_KELIME for x in kelimeler(h)):
+                continue
+            if sutun_sinifi(h, [c.get(h) for _, c in sk["satirlar"]]) not in ("tutar", "toplam"):
+                continue
+            if any(x.startswith(DONEM_KELIME) for x in kelimeler(h)):
+                out.append(h)
+        return out
+
+    def kalem_tutari(self, sk, hucre):
+        """TAKVİM KALEMİ (baş mimar kararı 23.10.2026): Tahsilat Takvimi / zil / Vade Takip / Nakit Akışı'ndaki vade kaleminin tutarı o vadede ödenmesi gereken tutardır:
+        dönem / taksit tutarı kolonu varsa min(dönem tutarı, satırın Kalan Borç'u); Kalan boşsa (ya da Kalan kolonu yoksa) dönem tutarı; dönem kolonu yoksa satır borcu.
+        Dönüş: kuruş, {"catal": [...]} ya da None (tanımsız: birden çok dönem kolonu)."""
+        b = self.satir_borcu(sk, hucre)
+        if b is None:
+            return None
+        satir = 0 if b in (YOK, NOT) else b
+        donem = self.donem_kolonlari(sk) if self.mut != 57 else []
+        if not donem:
+            return satir
+        if len(donem) > 1:
+            return None
+        d = hucre_kurus(hucre.get(donem[0]))
+        if d is None:
+            return satir
+        kalan_kol = [h for h in sk["basliklar"] if tr_kucuk(h) not in KIMLIK_BASLIK and sutun_sinifi(h, [c.get(h) for _, c in sk["satirlar"]]) == "kalan"]
+        k = hucre_kurus(hucre.get(kalan_kol[0])) if len(kalan_kol) == 1 else None
+        v = d if k is None or self.mut == 58 else min(d, k)
+        # Karar sahibi (23.10.2026, çatal kararı): Y3'ün iki adaylı satırında (Aidat + Gecikme Faizi, Kalan boş) TAKVİM KALEMİ geçerli — kalem dönem tutarı (Aidat);
+        # Y3'ün "ana tutar belirlenemez → not, borç yok" kuralı yalnız SATIR BORCU içindir (Tablodaki Kişiler, Açılış Bakiyesi)
+        return v
+
+    def kalem_toplami(self):
+        """K4 Takvim / Vade Takip / Nakit Akışı toplamı: tablodaki bütün satırların vade kalemi tutarları; ÇATAL'lı satırda olası toplamlar; tanımsız satır → None."""
+        toplamlar = {0}
+        for sk in self.sekmeler:
+            if sk["basliklar"] is None:
+                return None
+            for no, c in sk["satirlar"]:
+                v = self.kalem_tutari(sk, c)
+                if v is None:
+                    return None
+                secenek = v["catal"] if isinstance(v, dict) else [v]
+                toplamlar = {t + x for t in toplamlar for x in secenek}
+        return sorted(toplamlar)
 
     def tablo_borcu(self, no):
         """/2 B3 (K1–K3): dosya no'nun Tablodaki Kişiler borcu (kuruş) ya da None (tanımsız → denetlenmez).
@@ -1239,9 +1294,20 @@ class Model:
                 # borç 0 / borçsuz satır: Açılış Bakiyesi 0 ya da boş (kalemde Kalan Borç yok) — ikisi de "borç yok"
                 self.d("%s:acilis:%s" % (k, no), {"catal": [0, "boş"]} if v == 0 else v, "KULLANICI",
                        "Y1: 'önce cari açın' Açılış Bakiyesi = raporların satır borcu (borçsuz satırda 0 ya da boş)")
+                kt = self.kalem_tutari(sk, c)
+                if kt is not None:
+                    self.d("%s:kalem:%s" % (k, no), kt, "KULLANICI", "TAKVİM KALEMİ: Tahsilat Takvimi kaleminin tutarı (min(dönem tutarı, Kalan); Kalan boşsa dönem tutarı)")
         if a.get("raporlar") and k4_tanimli:
-            for anahtar in ("k4:kisiler", "k4:takvim", "k4:vade", "k4:akis"):
-                self.d("%s:%s" % (k, anahtar), k4_toplam, "KULLANICI", "B4b K4 dört rapor aynı satır borcunu kullanır (dönem süzgeci içinde)")
+            # TAKVİM KALEMİ (baş mimar kararı 23.10.2026): "dört rapor aynı borç" (K4) SATIR BORCU içindir — Tablodaki Kişiler satır borcunu (Kalan) gösterir; Takvim / Vade Takip /
+            # Nakit Akışı vadesi gelen tutarı (kalem tutarı) toplar.
+            kalem = self.kalem_toplami()
+            if self.mut == 59 and kalem is not None:
+                k4_toplam = kalem[0]
+            self.d("%s:k4:kisiler" % k, k4_toplam, "KULLANICI", "B4b K4 + TAKVİM KALEMİ: Tablodaki Kişiler satır borcunu gösterir")
+            if kalem is not None:
+                for anahtar in ("k4:takvim", "k4:vade", "k4:akis"):
+                    self.d("%s:%s" % (k, anahtar), kalem[0] if len(kalem) == 1 else {"catal": kalem}, "KULLANICI",
+                           "TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu")
             if not_n is not None:
                 # K2 (04:09): not Tahsilat Takvimi'nde de çıkar — yalnız bütün satırların vadesi takvim penceresindeyken (K4 koşulu) denetlenir
                 self.d("%s:takvim:cokSekmeNotu" % k, not_n, "KULLANICI", "B3 K2 (04:09) Tahsilat Takvimi 'N dosya no birden çok sekmede; ayrı sayıldı' notu (0 = not yok)")
