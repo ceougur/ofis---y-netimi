@@ -1,0 +1,32 @@
+{
+  "ad": "244-teslim-belge/belge-surum-testleri",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/kilavuz-surum.test.mjs test/yazim-duzeni.test.mjs test/banka-220-kredi-karti-metin.test.mjs test/kanit-araci.test.mjs test/disa-aktarim-dugmeleri.test.mjs test/updater.test.mjs test/packaging.test.mjs test/supervisor.test.mjs test/platform-tasinabilirlik.test.mjs",
+  "commit": "54bf0e6343f24fbd28efb516c16559993cd6c682",
+  "dal": "is/teslim-belge",
+  "kirli": 4,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T00:30:34.830Z",
+  "sure_sn": 29.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 106,
+    "gecen": 106,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/244-teslim-belge/belge-surum-testleri.log",
+  "klasor": "/home/user/wt/teslim-belge",
+  "ham_cikti_sha256": "84aae4b4a83e6b92e04def778320cb37ab86f808c272466a735cbae0b3d1c71c",
+  "ham_cikti_bayt": 31419
+}
