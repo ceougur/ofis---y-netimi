@@ -271,6 +271,15 @@ Kaynak: ana oturumun ilettiği karar metni. Ürün kodu okunmadı.
 - (c) Yalın "Ödeme Sözü" (sayı) + "Borç" + Son Ödeme: borç "Borç"tan, kalem borç; söz tarihi olmadığından kalem düz vade [YAYGIN: `kalemSoz` false].
 - Senaryo b3x-yalin-soz-ve-tutar (Kişiler 15.000; Takvim / Vade / Nakit 8.500); mutant 69 (yalın söz sütunu söz tutarı), 70 (yalın söz sütunu tutar); 15 ve 61 bu senaryoda da.
 
+### B3o — Borç ailesi sözcüklü söz-ailesi başlığı yalın söz değildir (ana oturum, 23.10.2026; Y1 + N4 + K3; aday 23)
+- KÂHİN DÜZELTMESİ (ders 5 — B3n'deki (a) yorumumun eksiği; dar kontrol programda buldu, aynı yanlış kâhinde de vardı): söz/taahhüt ailesi başlığı dönem ya da tutar/miktar
+  sözcüğü taşımasa da borç / alacak / kalan / bakiye / toplam ailesinden sözcük taşıyorsa ("Taahhüt Alacağı", "Taahhüt Bakiyesi"; ekli biçimler — alacağı, bakiyesi — YALNIZ bu
+  muafiyette) yalın söz DEĞİLDİR: kalan / bakiye → Kalan (N4 "'Bakiye' Kalan sayılır", K3 Kalan önceliği); borç / alacak / toplam → borç sütunu (Y1 "borç kolonu yalnız para
+  kolonudur"). Genel borç kalıpları (ör. "Bakiyesi" tek başına) genişletilmedi. Önceki 32 elle + 2 rastgele senaryoda kâhinin beklediği değerler DEĞİŞMEDİ (HEAD modeliyle bayt bayt).
+- "Taahhüt Miktarı (Ay)" sayı sütunu söz tutarı değil (K3 gün/adet — ay [YAYGIN, ana oturum "gün/adet/ay sütunu tutar değil kararı"]); söz kalemi önceki kurala düşer (satır borcu).
+- Senaryo b3y-taahhut-alacak-bakiye ((a) Kerem Ak 2.200; (b) Leman Er 1.000 / 4.000, Mert Ay 1.000 / 300; (c) Nazlı Su Kalan 5.000, (Ay) 6; Kişiler 11.500, Takvim 8.500);
+  mutant 71 (muafiyet yok — yalın söz), 72 ("(Ay)" söz tutarı).
+
 ### B4b — Dört rapor aynı satır borcu (K4 [KULLANICI] 23.10.2026; TAKVİM KALEMİ ile daraldı — B3i)
 - **K4** Tablodaki Kişiler (totals.debit), Tahsilat Takvimi (/dues Σ amount), Vade Takip (totals.amount) ve Nakit Akışı Beklenen (totals.expected) aynı satır
   borcunu kullanır; toplamları aynıdır (dönem süzgeci içinde). Kontrol adımında `"raporlar": true` ve bütün kayıtların borcu tanımlı ve tek değerliyse dört

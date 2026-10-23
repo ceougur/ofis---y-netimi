@@ -98,6 +98,8 @@ MUTASYONLAR = {
     68: "5b + ÖDEME SÖZÜ: 'Taahhütlü Ücret' söz tutarı sayılır (ücret borç değil, kalemi ödeme sözü)",
     69: "A1 + Z6: yalın sayı değerli 'Ödeme Sözü' / 'Söz' / 'Taahhüt' sütunu söz tutarıdır (söz kalemi bu sütundan tutar alır)",
     70: "A1 + Z6: yalın sayı değerli 'Ödeme Sözü' / 'Söz' / 'Taahhüt' sütunu tutar sayılır (borç olur)",
+    71: "Y1/N4/K3 muafiyeti öncesi: borç/alacak/kalan/bakiye/toplam sözcüklü söz-ailesi başlığı ('Taahhüt Alacağı', 'Taahhüt Bakiyesi') yalın söz sayılır",
+    72: "K3 gün/adet/ay: '(Ay)' söz-ailesi miktar sütunu ('Taahhüt Miktarı (Ay)') söz tutarı sayılır",
 }
 
 
@@ -206,8 +208,8 @@ def sutun_sinifi(baslik, hucreler=()):
     if dolu and not any(_sayi_mi(h) for h in dolu):
         return None  # [YAYGIN] değerleri sayı olmayan metin sütunu ("Açıklama": "Ekim") tutar değildir
     w = kelimeler(baslik)
-    if "%" in str(baslik) or any(x in TUTAR_DISI or x in TUTAR_DISI_EK for x in w):
-        return None
+    if ("%" in str(baslik) or any(x in TUTAR_DISI or x in TUTAR_DISI_EK for x in w)) and not (SOZ_UCRET[0] == 72 and soz_ailesi(baslik)):
+        return None  # K3 gün/adet (ve [YAYGIN] ay/sayı/oran): "Taahhüt Miktarı (Ay)" de söz tutarı değil (ana oturum 23.10.2026)
     if any(x in VERGI_KELIME for x in w) or " ".join(w) in VERGI_TAM_BASLIK:
         return "vergi"  # karar A: tutardır ama borç sayılmaz
     if w[:2] == ["genel", "toplam"]:
@@ -224,6 +226,12 @@ def sutun_sinifi(baslik, hucreler=()):
         if SOZ_UCRET[0] == 67 and donem_sozcugu:
             return None
         if not donem_sozcugu:
+            # MUAFİYET (ana oturum 23.10.2026; Y1 "borç kolonu yalnız para kolonudur", N4 "'Bakiye' ve 'Kalan Tutar' Kalan sayılır", K3 Kalan önceliği): borç / alacak / kalan /
+            # bakiye / toplam ailesinden sözcük taşıyan söz-ailesi başlığı ("Taahhüt Alacağı", "Taahhüt Bakiyesi"; ekli biçimler dahil — YALNIZ bu muafiyette) yalın söz DEĞİLDİR:
+            # kalan / bakiye → Kalan; borç / alacak / toplam → borç (toplam). Genel borç kalıpları genişletilmez.
+            borc_ailesi = [x for x in w if x.startswith(("borç", "alacak", "alacağ", "kalan", "bakiye", "toplam"))]
+            if borc_ailesi and SOZ_UCRET[0] != 71:
+                return "kalan" if any(x.startswith(("kalan", "bakiye")) for x in borc_ailesi) else "toplam"
             # A1 + Z6 (ana oturum 23.10.2026, (a)/(c)): yalın söz-ailesi sütunu ("Ödeme Sözü", "Söz", "Taahhüt" — tutar/miktar/dönem sözcüğü yok) söz tutarı DEĞİL (söz kalemi
             # bundan tutar almaz) ve borç DEĞİL (A1: söz borç değil); sekmede söz bulunduğunu söyler (yalnız bu sütun varsa borç 0, not yok — "yalnız söz" gibi)
             if SOZ_UCRET[0] == 69 and dolu and all(_sayi_mi(h) for h in dolu):
@@ -279,7 +287,7 @@ class Model:
         SOZ_DAR[0] = mut == 64
         SOZ_TAM_TAAHHUT[0] = mut == 65
         SOZ_YALNIZ_TUTAR[0] = mut == 66
-        SOZ_UCRET[0] = mut if mut in (67, 68, 69, 70) else 0
+        SOZ_UCRET[0] = mut if mut in (67, 68, 69, 70, 71, 72) else 0
         self.bugun = senaryo["bugun"]
         self.seq = 0
         self.cariler = {}          # takma ad -> {tur, isim, kayit, acilis}
