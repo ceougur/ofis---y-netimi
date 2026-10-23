@@ -89,6 +89,7 @@ MUTASYONLAR = {
     59: "TAKVİM KALEMİ: Tablodaki Kişiler de vade kaleminin tutarını (dönem tutarı) gösterir (satır borcu yerine)",
     60: "Z2 öncesi: Kalan Borç 0 ya da eksi satırın vade kalemi görünür (tutarı min(dönem tutarı, Kalan))",
     61: "Z3 öncesi: ödeme sözü kalemi söz tutarı değil, min(dönem tutarı, Kalan)",
+    62: "SÖZ TUTARI öncesi: 'söz' ile başlayan her başlık söz sütunudur ('Sözleşme Tutarı', 'Sözleşme No' da söz)",
 }
 
 
@@ -191,7 +192,9 @@ def sutun_sinifi(baslik, hucreler=()):
         return "vergi"  # karar A: tutardır ama borç sayılmaz
     if w[:2] == ["genel", "toplam"]:
         return "genel"  # karar A: KDV dahil toplam
-    if any(x.startswith(("söz", "taahhüt")) for x in w):
+    # SÖZ TUTARI (karar sahibi 23.10.2026): söz sütunu YALNIZ ödeme sözü / taahhüt tutarıdır ("Söz Tutarı", "Ödeme Sözü Tutarı", "Taahhüt Tutarı"); "Sözleşme Tutarı",
+    # "Sözleşme Bedeli", "Sözleşme No", "Sözleşme Tarihi" söz DEĞİLDİR (sözleşme bedeli dönem / taksit tutarı da değildir; borç Kalan'dan gelir). Mutant 62: eski önek kuralı.
+    if any(x in ("söz", "sözü", "sözün", "taahhüt", "taahhüdü") for x in w) or (SOZ_ONEK[0] and any(x.startswith(("söz", "taahhüt")) for x in w)):
         return "soz"
     if "kalan" in w or "bakiye" in w:
         return "kalan"
@@ -200,6 +203,9 @@ def sutun_sinifi(baslik, hucreler=()):
     if any(x.startswith(("toplam", "tutar", "ödenecek", "borç", "alacak")) for x in w):
         return "toplam"
     return "tutar"
+
+
+SOZ_ONEK = [False]  # mutant 62 (Model kurucusu ayarlar)
 
 
 def _sayi_mi(metin):
@@ -228,6 +234,7 @@ class Model:
             raise SystemExit("senaryo dili %s değil" % "/".join(DILLER))
         self.s = senaryo
         self.mut = mut
+        SOZ_ONEK[0] = mut == 62
         self.bugun = senaryo["bugun"]
         self.seq = 0
         self.cariler = {}          # takma ad -> {tur, isim, kayit, acilis}
