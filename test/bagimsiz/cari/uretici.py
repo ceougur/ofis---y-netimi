@@ -27,6 +27,59 @@ def tl(k):
     return "%d,%02d" % (k // 100, k % 100)
 
 
+def para(k):
+    """kuruş → "1.234,56 ₺" (tablo hücresi)."""
+    tam = "{:,}".format(k // 100).replace(",", ".")
+    return "%s,%02d ₺" % (tam, k % 100)
+
+
+def rastgele_tablo(rt, tohum):
+    """/2 (23.10.2026, K1–K3 [KULLANICI]): carisiz tablo kayıtları — dönem sekmeleri ("2025 Aidat" / "2026 Aidat"; aynı sekmede tekrar eden ve iki sekmede ortak
+    dosya no), Kalan'sız Tutar + Tahsil Edilen (ödenen > tutar dahil), Toplam Borç + Kalan Borç (Kalan boş / 0), tek tutar + "Kalan Gün", Ödeme Sözleri."""
+    n = [0]
+
+    def yeni():
+        n[0] += 1
+        return "T%d/%03d" % (tohum, n[0]), "Tablo Kişi %d-%d" % (tohum, n[0])
+
+    def tutar():
+        return rt.choice([rt.randint(1, 99) * 100, rt.randint(100, 900000)]) * 1
+    sekmeler = []
+    aidat25, aidat26 = [], []
+    ortak = [yeni() for _ in range(rt.randint(0, 2))]
+    for no, ad in [yeni() for _ in range(rt.randint(1, 3))] + ortak:
+        for _ in range(rt.choice([1, 1, 2, 3])):  # K1: aynı sekmede tekrar
+            aidat25.append({"no": no, "isim": ad, "hucreler": {"Telefon": "", "Tutar": para(tutar())}})
+    for no, ad in [yeni() for _ in range(rt.randint(1, 3))] + ortak:  # K2: ortak dosya no iki dönem sekmesinde
+        for _ in range(rt.choice([1, 1, 2])):
+            aidat26.append({"no": no, "isim": ad, "hucreler": {"Telefon": "", "Tutar": para(tutar())}})
+    sekmeler.append({"ad": "2025 Aidat", "tur": "serbest", "basliklar": ["Telefon", "Tutar"], "kayitlar": aidat25})
+    sekmeler.append({"ad": "2026 Aidat", "tur": "serbest", "basliklar": ["Telefon", "Tutar"], "kayitlar": aidat26})
+    servis = []
+    for no, ad in [yeni() for _ in range(rt.randint(1, 3))]:
+        t = tutar()
+        o = rt.choice([0, t // 2, t, t + rt.randint(1, 50000)])  # ödenen > tutar → 0
+        servis.append({"no": no, "isim": ad, "hucreler": {"Telefon": "", "Tutar": para(t), "Tahsil Edilen": para(o)}})
+    sekmeler.append({"ad": "Okul Servisi", "tur": "serbest", "basliklar": ["Telefon", "Tutar", "Tahsil Edilen"], "kayitlar": servis})
+    borclu = []
+    for no, ad in [yeni() for _ in range(rt.randint(1, 3))]:
+        t = tutar()
+        kalan = rt.choice(["", para(0), para(rt.randint(0, t))])
+        borclu.append({"no": no, "isim": ad, "hucreler": {"Telefon": "", "Toplam Borç": para(t), "Kalan Borç": kalan}})
+    sekmeler.append({"ad": "Borçlular", "tur": "serbest", "basliklar": ["Telefon", "Toplam Borç", "Kalan Borç"], "kayitlar": borclu})
+    kira = [{"no": no, "isim": ad, "hucreler": {"Telefon": "", "Aylık Ücret": para(tutar()), "Kalan Gün": str(rt.randint(1, 30))}}
+            for no, ad in [yeni() for _ in range(rt.randint(1, 2))]]
+    sekmeler.append({"ad": "Kira", "tur": "serbest", "basliklar": ["Telefon", "Aylık Ücret", "Kalan Gün"], "kayitlar": kira})
+    hepsi = aidat25 + aidat26 + servis + borclu
+    soz = [{"no": r["no"], "isim": r["isim"], "tarih": "2026-07-0%d" % rt.randint(1, 9), "tutar": "%d" % rt.randint(1, 5000)}
+           for r in rt.sample(hepsi, min(len(hepsi), rt.randint(0, 2)))]
+    soz += [{"no": no, "isim": ad, "tarih": "2026-07-05", "tutar": "%d" % rt.randint(1, 5000)} for no, ad in [yeni() for _ in range(rt.randint(0, 1))]]
+    if soz:
+        sekmeler.append({"ad": "Ödeme Sözleri", "tur": "soz", "kayitlar": soz})
+    rt.shuffle(sekmeler)  # sekme sırası (K2 "hangi sekme" ÇATAL'ı sıradan bağımsız beklenir)
+    return {"id": "tablo", "islem": "tablo_yukle", "sekmeler": sekmeler}
+
+
 def uret(tohum, islem):
     rnd = random.Random(tohum)
     bugun = date(2026, 6, 30)
@@ -35,8 +88,13 @@ def uret(tohum, islem):
                {"id": "c-b", "islem": "cari_ac", "ad": "B", "isim": "Rastgele Beta %d" % tohum},
                {"id": "c-c", "islem": "cari_ac", "ad": "C", "isim": "Rastgele Gama %d" % tohum},
                {"id": "c-t", "islem": "cari_ac", "ad": "T", "isim": "Rastgele Tedarik %d" % tohum, "tur": "tedarikci"}]
+    # /2 (23.10.2026): carisiz rastgele tablo (K1–K3) ve yarı tohumlarda Kasa yetkisi kaldırılmış kullanıcı (K5); ayrı akış — UX18 dizisi değişmez
+    rt = random.Random(tohum * 7919 + 17)
+    adimlar.insert(0, rastgele_tablo(rt, tohum))
+    if rt.random() < 0.5:
+        adimlar.insert(1, {"id": "u-y", "islem": "kullanici_ac", "ad": "Y%d" % tohum, "rol": "avukat", "kaldir": ["cash.view"]})
     sen = {"dil": M.DIL, "ad": "rastgele-ux18-%d" % tohum, "aciklama": "uretici.py --tohum %d --islem %d" % (tohum, islem),
-           "dayanak": "KARARLAR.md B2; ders 17", "bugun": bugun.isoformat(), "adimlar": adimlar}
+           "dayanak": "KARARLAR.md B2, B3 (K1–K3), B5b (K5); ders 17", "bugun": bugun.isoformat(), "adimlar": adimlar}
     n_f = n_e = 0
     kontrol = 0
 

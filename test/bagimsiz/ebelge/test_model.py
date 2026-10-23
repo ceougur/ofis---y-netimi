@@ -553,11 +553,21 @@ class KagitNumara(unittest.TestCase):
                     K("B3", "K1", "2026-06-17"), {"islem": "listeden_sil", "belge": "B3"}])
         self.assertEqual((no(d, "B2"), no(d, "B3")), ("FIS2026000000002", "FIS2026000000003"))
 
-    def test_silinen_kagit_numarasi_serbest_kalmaz_K38_K39(self):
-        d, _ = kos([KG("B1", "2026-06-15"), KG("B2", "2026-06-16"), {"islem": "sil", "belge": "B2"}, KG("B3", "2026-06-15")])
-        self.assertEqual((d.belgeler["B2"]["cop"], d.belgeler["B3"]["var"], d.yanit), (True, False, "4xx"))
-        d, _ = kos([KG("B1", "2026-06-15"), KG("B2", "2026-06-16"), {"islem": "sil", "belge": "B2"}, KG("B3", "2026-06-16")])
-        self.assertEqual(no(d, "B3"), "FIS2026000000003")
+    def test_silinen_kagit_numarasi_serbest_kalmaz_tarihi_baglamaz_K38_N1(self):
+        # K38 N1 ([KULLANICI] 23.10.2026 03:12 UTC): silinen FIS…2'nin (16.06) numarası kullanılmış kalır ama TARİHİ sırayı bağlamaz — 15.06 yeni belge FIS…3 alır
+        d, adaylar = kos([KG("B1", "2026-06-14"), KG("B2", "2026-06-16"), {"islem": "sil", "belge": "B2"}, KG("B3", "2026-06-15")])
+        self.assertEqual((len(adaylar), d.belgeler["B2"]["cop"], d.yanit, no(d, "B3")), (1, True, "2xx", "FIS2026000000003"))
+        # canlı belgelere göre sıra yine korunur: 13.06 (canlı FIS…1 14.06'dan eski) reddedilir
+        d, _ = kos([KG("B1", "2026-06-14"), KG("B2", "2026-06-16"), {"islem": "sil", "belge": "B2"}, KG("B3", "2026-06-13")])
+        self.assertEqual((d.yanit, d.belgeler["B3"]["var"]), ("4xx", False))
+
+    def test_geri_yukleme_sira_tarihi_bozarsa_409_K38_N1(self):
+        # FIS…2 (16.06) silindi, FIS…3 (15.06) kesildi → FIS…2'yi geri yüklemek 2 < 3 iken 16.06 > 15.06 olur: 409, belge Silinenler'de kalır
+        d, adaylar = kos([KG("B1", "2026-06-14"), KG("B2", "2026-06-16"), {"islem": "sil", "belge": "B2"}, KG("B3", "2026-06-15"), {"islem": "geri_yukle", "belge": "B2"}])
+        self.assertEqual((len(adaylar), d.yanit, d.belgeler["B2"]["cop"], no(d, "B2")), (1, "4xx", True, "FIS2026000000002"))
+        # sırayı bozmayan geri yükleme kabul (kendi numarasıyla)
+        _, adaylar = kos([KG("B1", "2026-06-14"), KG("B2", "2026-06-16"), {"islem": "sil", "belge": "B2"}, KG("B3", "2026-06-17"), {"islem": "geri_yukle", "belge": "B2"}])
+        self.assertTrue(adaylar and all(a.yanit == "2xx" and not a.belgeler["B2"]["cop"] for a in adaylar))
 
     def test_numarasiz_silme_tabani_degistirmez_bekletmez_K39(self):
         d, _ = kos([K("B1", "K1", "2026-06-15"), {"islem": "sil", "belge": "B1"}, K("B2", "K1", "2026-06-17", "simdi")])
@@ -615,6 +625,121 @@ class BelirsizK42(unittest.TestCase):
     def test_belirsiz_yeniden_gonder_ikinci_kez_kabul_yok_K42_K11(self):
         d, _ = kos([{"islem": "ariza", "tur": "kopma_sonra"}, K("B1", "K1", "2026-06-17", "simdi"), {"islem": "kart_gonder", "belge": "B1"}], sec=BELIRSIZ())
         self.assertEqual((no(d, "B1"), d.belgeler["B1"]["prog"]), ("TEA2026000000001", True))
+
+
+class SilinenN1Aciklama(unittest.TestCase):
+    """/3: K38 N1 ana oturum açıklaması (23.10.2026): Silinenler dışında seride kalan her belge (iptal edilmiş, emekli dahil) sırayı bağlar; geri yükleme
+    küçük numaralı belgenin tarihi daha yeniyse de 409; aynı gün serbest."""
+
+    def test_kucuk_numara_yeni_tarih_geri_yukleme_409_ayni_gun_serbest_N1(self):
+        d, _ = kos([KG("B1", "2026-06-16"), {"islem": "sil", "belge": "B1"}, KG("B2", "2026-06-15"), {"islem": "sil", "belge": "B2"},
+                    {"islem": "geri_yukle", "belge": "B1"}, {"islem": "geri_yukle", "belge": "B2"}])
+        self.assertEqual((d.yanit, d.belgeler["B2"].get("cop"), no(d, "B2")), ("4xx", True, "FIS2026000000002"))
+        d, _ = kos([KG("B1", "2026-06-16"), {"islem": "sil", "belge": "B1"}, KG("B2", "2026-06-16"), {"islem": "geri_yukle", "belge": "B1"}])
+        self.assertEqual((d.yanit, bool(d.belgeler["B1"].get("cop"))), ("2xx", False))
+
+    def test_iptal_ve_emekli_numara_sirayi_baglar_N1(self):
+        d, _ = kos([KG("B1", "2026-06-17"), {"islem": "iptal", "belge": "B1"}, KG("B2", "2026-06-16")])
+        self.assertEqual((d.yanit, d.belgeler["B2"]["var"]), ("4xx", False))
+        d, _ = kos([K("B1", "K1", "2026-06-17"), {"islem": "listeden_sil", "belge": "B1"}, {"islem": "kart_gonder", "belge": "B1"}, KG("B2", "2026-06-16")])
+        self.assertEqual((no(d, "B1")[:3], d.yanit, d.belgeler["B2"]["var"]), ("TEA", "4xx", False))
+
+    def test_silinen_kagit_komsu_tarihini_baglamaz_emekli_baglar_N1(self):
+        d = M.Dunya("2026-06-17", {})
+        d.belgeler = {"A": {"ad": "A", "var": True, "numara": "FIS2026000000001", "tarih": "2026-06-10"},
+                      "C": {"ad": "C", "var": True, "numara": "FIS2026000000003", "tarih": "2026-06-16", "cop": True}}
+        d.emekli = {"FIS2026000000004": "2026-06-14"}
+        self.assertEqual(d.komsular({"numara": "FIS2026000000002"}), ("2026-06-10", "2026-06-14"))
+
+
+def SEC_K43(sira="eszamanli", yanit2="2xx"):
+    """K43 adımında gözlenen sırayı ve ikinci oturumun yanıtını taşıyan dünyayı, kaydet adımında Sonucu Belirsiz (EDM'de yok) dünyasını seçer."""
+    def sec(adaylar, a):
+        if a["islem"] == "kaydet":
+            return next((x for x in adaylar if x.belgeler[a["belge"]].get("belirsiz") and not x.belgeler[a["belge"]]["edm"]), adaylar[0])
+        if a["islem"] == "esz_sorgu_gonder":
+            return next(x for x in adaylar if x.k43_sira == sira and x.yanit2 == yanit2)
+        return adaylar[0]
+    return sec
+
+
+class DurumSorgulaYarisiK43(unittest.TestCase):
+    """/3 ek: K43 Durum Sorgula sürerken belge başka oturumda gönderilirse geç gelen sonuç belgeyi ezmez, sorgu 409 ([KULLANICI] 23.10.2026)."""
+
+    def test_gec_sorgu_sonucu_belgeyi_ezmez_409_K43(self):
+        d, adaylar = kos([{"islem": "ariza", "tur": "kopma_once"}, K("B1", "K1", "2026-06-16", "simdi"), {"islem": "esz_sorgu_gonder", "belge": "B1"}], sec=SEC_K43())
+        b = d.belgeler["B1"]
+        self.assertEqual((d.yanit, d.yanit2, b["prog"], b["edm"], b["numara"]), ("4xx", "2xx", True, True, "TEA2026000000001"))
+
+    def test_bekledi_ve_reddedildi_dunyalari_yaris_degil_K43(self):
+        d, _ = kos([{"islem": "ariza", "tur": "kopma_once"}, K("B1", "K1", "2026-06-16", "simdi"), {"islem": "esz_sorgu_gonder", "belge": "B1"}],
+                   sec=SEC_K43("bekledi", "2xx"))
+        self.assertEqual((d.yanit, d.belgeler["B1"]["prog"]), (None, True))
+        d, _ = kos([{"islem": "ariza", "tur": "kopma_once"}, K("B1", "K1", "2026-06-16", "simdi"), {"islem": "esz_sorgu_gonder", "belge": "B1"}],
+                   sec=SEC_K43("eszamanli", "4xx"))
+        self.assertEqual((d.belgeler["B1"]["prog"], d.belgeler["B1"]["edm"], d.belgeler["B1"]["numara"]), (False, False, "TEA2026000000001"))
+
+
+class Numara11048K44(unittest.TestCase):
+    """/3 ek: K44 11048'de EDM'ye durum sorulur; kendi ETTN → gönderildi, ETTN yok → Sonucu Belirsiz, yok/başka ETTN → Hata + çakışma iletisi."""
+
+    def k44(self, tur, kur=K):
+        d, adaylar = kos([{"islem": "ariza", "tur": tur}, kur("B1", "K1", "2026-06-16", "simdi")])
+        self.assertEqual(len(adaylar), 1, tur)
+        b = d.belgeler["B1"]
+        return (b["prog"], d.belirsiz(b), b["hata"], b["edm"], b["numara"][:3], b.get("sorgu_beklenen"), b.get("edurum_beklenen"), b.get("cakisma_beklenen"))
+
+    def test_11048_ettn_kurali_K44(self):
+        for kur, seri in ((K, "TEA"), (S, "TES")):
+            self.assertEqual(self.k44("11048_kendi", kur), (True, False, False, True, seri, True, None, None))
+            self.assertEqual(self.k44("11048_ettnsiz", kur), (False, True, True, True, seri, True, "belirsiz", None))
+            for tur in ("11048_yok", "11048_baska"):
+                self.assertEqual(self.k44(tur, kur), (False, False, True, False, seri, True, "hata", True), tur)
+
+    def test_ettnsiz_sonra_durum_sorgula_gonderildi_K44_K28(self):
+        d, _ = kos([{"islem": "ariza", "tur": "11048_ettnsiz"}, K("B1", "K1", "2026-06-16", "simdi"), {"islem": "durum_sorgula", "belge": "B1"}])
+        self.assertEqual((d.belgeler["B1"]["prog"], d.belgeler["B1"]["numara"]), (True, "TEA2026000000001"))
+
+    def test_cakisan_numara_yeniden_gonderimde_yine_hata_K44(self):
+        d, _ = kos([{"islem": "ariza", "tur": "11048_yok"}, K("B1", "K1", "2026-06-16", "simdi"), K("B2", "K1", "2026-06-17", "simdi"), T])
+        self.assertEqual((d.belgeler["B1"]["prog"], d.belgeler["B1"]["edm"], d.belgeler["B1"]["numara"], d.belgeler["B1"].get("cakisma_beklenen")),
+                         (False, False, "TEA2026000000001", True))
+        self.assertEqual((d.belgeler["B2"]["prog"], d.belgeler["B2"]["numara"]), (True, "TEA2026000000002"))
+
+
+class IptalIziK45(unittest.TestCase):
+    """/3 ek: K45 yanıtı kaybolan iptalde iz açık kalır; süre dolsa da önce EDM'ye sorulur; red / hiç gitmeyen istekte iz kapanır, süre dolunca sorulmaz."""
+
+    def iptal_sonra(self, ariza, kur=K, ag_yok=False, ikinci=False):
+        adimlar = [kur("B1", "K1", "2026-06-17", "simdi"), G(2)]
+        if ag_yok:
+            adimlar += [{"islem": "ag", "durum": "yok"}, {"islem": "iptal", "belge": "B1"}, {"islem": "ag", "durum": "var"}]
+        else:
+            adimlar += [{"islem": "ariza", "tur": ariza}, {"islem": "iptal", "belge": "B1"}]
+        adimlar += [G(10), {"islem": "iptal", "belge": "B1"}] + ([{"islem": "iptal", "belge": "B1"}] if ikinci else [])
+        d, adaylar = kos(adimlar)
+        b = d.belgeler["B1"]
+        return (len(adaylar), d.yanit, b["iptal"], b["edm_iptal"], b.get("sorgu_beklenen"))
+
+    def test_kopan_iptal_izi_sure_dolsa_da_sorar_K45(self):
+        for kur in (K, S):
+            self.assertEqual(self.iptal_sonra("iptal_kopma_sonra", kur), (1, None, True, True, True), kur.__name__)
+            self.assertEqual(self.iptal_sonra("iptal_kopma_once", kur), (1, "4xx", False, False, True), kur.__name__)
+            # iz bir kez sorulunca kapanır: üçüncü İptal Et yine 'süre doldu', EDM'ye sorulmaz
+            self.assertEqual(self.iptal_sonra("iptal_kopma_once", kur, ikinci=True), (1, "4xx", False, False, False), kur.__name__)
+
+    def test_red_ve_gitmeyen_istekte_iz_kapanir_K45(self):
+        self.assertEqual(self.iptal_sonra("iptal_red"), (1, "4xx", False, False, False))
+        self.assertEqual(self.iptal_sonra(None, ag_yok=True), (1, "4xx", False, False, False))
+
+    def test_kopmada_iki_dunya_hemen_soran_programda_sorgu_zorunlu_K45(self):
+        _, adaylar = kos([K("B1", "K1", "2026-06-17", "simdi"), G(2), {"islem": "ariza", "tur": "iptal_kopma_sonra"}, {"islem": "iptal", "belge": "B1"}])
+        self.assertEqual(sorted((x.belgeler["B1"]["iptal"], bool(x.belgeler["B1"].get("iptal_iz")), x.belgeler["B1"].get("sorgu_beklenen")) for x in adaylar),
+                         [(False, True, None), (True, False, True)])
+
+    def test_izsiz_sure_dolunca_sorulmaz_K45(self):
+        d, _ = kos([K("B1", "K1", "2026-06-17", "simdi"), G(9), {"islem": "iptal", "belge": "B1"}])
+        self.assertEqual((d.yanit, d.belgeler["B1"].get("sorgu_beklenen")), ("4xx", False))
 
 
 class Ozellik(unittest.TestCase):
@@ -708,6 +833,16 @@ class DegismezDenetimi(unittest.TestCase):
         self.kodlar({"no": 1, "islem": "sil"}, k)
         k2 = self.kayit({"B1": ("TEA2026000000001", "2026-06-17", "EARSIVFATURA", "waiting", "issued")})
         self.assertIn("I8", self.kodlar({"no": 2, "islem": "kart_gonder"}, k2, [{"id": "TEA2026000000001", "uuid": "u-B1"}]))
+
+    def test_silinen_kagit_tarihi_I2_disinda_K38_N1(self):
+        k = self.kayit({"B1": ("FIS2026000000001", "2026-06-14", "KAGIT", "none", "issued"), "B2": ("FIS2026000000002", "2026-06-16", "KAGIT", "none", "issued")})
+        self.kodlar({"no": 1, "islem": "x"}, k)
+        k = self.kayit({"B1": ("FIS2026000000001", "2026-06-14", "KAGIT", "none", "issued"), "B2": ("FIS2026000000002", "2026-06-16", "KAGIT", "none", "issued"),
+                        "B3": ("FIS2026000000003", "2026-06-15", "KAGIT", "none", "issued")})
+        k["gozlem"]["B2"]["cop"] = True
+        self.assertFalse({"I1", "I2"} & self.kodlar({"no": 2, "islem": "kagit_kaydet"}, k))
+        k["gozlem"]["B2"]["cop"] = False  # geri yüklendi: canlı → sıra-tarih bozuk
+        self.assertIn("I2", self.kodlar({"no": 3, "islem": "geri_yukle"}, k))
 
     def test_temiz_gozlemde_ihlal_yok(self):
         k = self.kayit({"B1": ("TEA2026000000001", "2026-06-15", "EARSIVFATURA", "sent", "issued"),

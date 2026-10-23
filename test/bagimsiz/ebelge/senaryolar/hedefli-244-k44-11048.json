@@ -1,0 +1,109 @@
+{
+ "dil": "destekofis-ebelge/3",
+ "ad": "hedefli-244-k44-11048",
+ "aciklama": "K44: EDM 11048 ('bu numara daha önce gönderildi') dediğinde program EDM'ye durum sorar; belge ANCAK durum yanıtı kendi ETTN'ini taşıyorsa gönderilmiş sayılır (B1, EDM'de var). Yanıtta ETTN yoksa Sonucu Belirsiz kalır (B2 e-Arşiv, S1 e-SMM; sonraki Durum Sorgula kendi ETTN'iyle gönderildi yapar — K28). EDM bulamazsa (B3, S2) ya da başka ETTN dönerse (B4) belge Hata olur, numarası korunur, ileti numara çakışmasını söyler. Aday 8 tabanında kırmızı BEKLENİR.",
+ "dayanak": "KARARLAR.md K44 [KULLANICI] 23.10.2026 (E1 kararı 22.10 '11048'de dönen numara belgeninse önce durum sorgusu' + 31e baş mimar yorumu)",
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi",
+  "K6": "ilsiz_kisi",
+  "K7": "vdsiz_mukellef",
+  "K8": "nihai"
+ },
+ "adimlar": [
+  {
+   "islem": "ariza",
+   "tur": "11048_kendi",
+   "no": 1
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B1",
+   "cari": "K1",
+   "tarih": "2026-06-16",
+   "gonder": "simdi",
+   "no": 2
+  },
+  {
+   "islem": "ariza",
+   "tur": "11048_ettnsiz",
+   "no": 3
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B2",
+   "cari": "K1",
+   "tarih": "2026-06-16",
+   "gonder": "simdi",
+   "no": 4
+  },
+  {
+   "islem": "durum_sorgula",
+   "belge": "B2",
+   "no": 5
+  },
+  {
+   "islem": "ariza",
+   "tur": "11048_yok",
+   "no": 6
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B3",
+   "cari": "K1",
+   "tarih": "2026-06-16",
+   "gonder": "simdi",
+   "no": 7
+  },
+  {
+   "islem": "ariza",
+   "tur": "11048_baska",
+   "no": 8
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B4",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 9
+  },
+  {
+   "islem": "ariza",
+   "tur": "11048_ettnsiz",
+   "no": 10
+  },
+  {
+   "islem": "kaydet",
+   "belge": "S1",
+   "cari": "K1",
+   "tarih": "2026-06-16",
+   "gonder": "simdi",
+   "belge_turu": "esmm",
+   "no": 11
+  },
+  {
+   "islem": "durum_sorgula",
+   "belge": "S1",
+   "no": 12
+  },
+  {
+   "islem": "ariza",
+   "tur": "11048_yok",
+   "no": 13
+  },
+  {
+   "islem": "kaydet",
+   "belge": "S2",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "belge_turu": "esmm",
+   "no": 14
+  }
+ ]
+}

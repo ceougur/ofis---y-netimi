@@ -226,6 +226,20 @@ async function kos(senaryo) {
           durum(a, await api("POST", "/api/workspace/cash", { kind: "out", amount: tlMetin(kurusOf(a.tutar)), date: t, description: a.id }));
           break;
         }
+        case "kullanici_ac": {
+          // /2 B5b (K5): Kasa'yı görme yetkisi kaldırılmış kullanıcı — POST /api/admin/users + PATCH /api/admin/users/:id { grants } (test ÇAĞRI satırları;
+          // rol ve yetki adları kara kutu yoklamasından: "avukat" Nakit Akışı'nı açar, "cash.view" Kasa'yı gösterir)
+          const parola = "Kahin-Yetkisiz-2026!";
+          // Kullanıcı adı 3–60 karakter (harf, rakam, nokta, tire, alt çizgi) — programın ret iletisinden; senaryodaki ad anahtar olarak kalır.
+          const kadi = `kahin-${a.ad.toLowerCase()}`;
+          const r = await api("POST", "/api/admin/users", { username: kadi, name: a.ad, role: a.rol || "avukat", password: parola, mustChangePassword: false });
+          durum(a, r);
+          if (r.status >= 200 && r.status < 300 && (a.kaldir || ["cash.view"]).length) durum(a, await api("PATCH", `/api/admin/users/${r.data?.id}`, { grants: { add: [], remove: a.kaldir || ["cash.view"] } }));
+          const kc = server.client();
+          if ((await kc.login(kadi, parola)).status !== 200) hatalar.push(`${a.id} kullanıcı girişi olmadı`);
+          (ids.kullanici ||= {})[a.ad] = kc;
+          break;
+        }
         case "nihai_tuketici": {
           const r = await api("POST", "/api/workspace/invoices/retail-account", {});
           durum(a, r);
@@ -315,21 +329,57 @@ async function kos(senaryo) {
             const kr = await api("GET", `/api/workspace/cash?${aralik}&method=cash`);
             if (kr.data?.totals) Object.assign(P, { [`${k}:kasaRapor:giris`]: kurus(kr.data.totals.in), [`${k}:kasaRapor:cikis`]: kurus(kr.data.totals.out) });
             else hatalar.push(`${k} Kasa raporu okunamadı (${kr.status})`);
+            // /2 B4b (K4): dört rapor aynı satır borcu (geniş dönem); Tahsilat Takvimi /dues (pencere), Vade Takip toplamı, Nakit Akışı Beklenen
+            const genis = "from=2000-01-01&to=2099-12-31";
+            // Tablodaki Kişiler geniş dönem: K4 toplamı + B3 dosya no başına borç (kâhin satır borcunu tarihe bakmadan hesaplar; tarih sütunu
+            // satırı yıl başı–bugün süzgecinin dışına düşürebilir — b3b'de Ödeme Sözü bugünden sonra)
+            const kisR = (await api("GET", `/api/workspace/reports/cari-ekstre?${genis}`)).data?.report;
+            ids.genisRapor = kisR;
+            const kis = kisR?.totals;
+            const takvim = (await api("GET", "/api/workspace/dues")).data?.items;
+            const vade = (await api("GET", `/api/workspace/reports/vade-takip?${genis}`)).data?.report?.totals;
+            const akis = (await api("GET", `/api/workspace/reports/nakit-akis?${genis}`)).data?.report?.totals;
+            Object.assign(P, {
+              [`${k}:k4:kisiler`]: kis ? kurus(kis.debit) : "okunamadı",
+              [`${k}:k4:takvim`]: Array.isArray(takvim) ? takvim.reduce((t, x) => t + (kurus(x.amount) || 0), 0) : "okunamadı",
+              [`${k}:k4:vade`]: vade ? kurus(vade.amount) : "okunamadı",
+              [`${k}:k4:akis`]: akis ? kurus(akis.expected) : "okunamadı",
+            });
+            // /2 B5b (K5): Kasa'yı görme yetkisi olmayan kullanıcının Nakit Akışı'nda Kasa giriş/çıkışı gizli + not
+            for (const [ad, kc] of Object.entries(ids.kullanici || {})) {
+              const yr = await kc.get(`/api/workspace/reports/nakit-akis?${aralik}`);
+              const yd = unwrap(yr);
+              const yt = yd?.report?.totals;
+              P[`${k}:yetkisiz:${ad}:kasa`] = yr.status !== 200 ? `erisim-${yr.status}` : yt && (yt.cashIn === null || yt.cashIn === undefined) && (yt.cashOut === null || yt.cashOut === undefined) ? "gizli" : "gorunur";
+              const metinler = [];
+              const tara = o => (typeof o === "string" ? metinler.push(o) : o && typeof o === "object" ? Object.values(o).forEach(tara) : null);
+              tara(yd);
+              P[`${k}:yetkisiz:${ad}:not`] = metinler.some(m => /kasa/i.test(m) && /(yetki|göreme|görüntüle|gizli)/i.test(m));
+              // Kurulum denetimi (ders 38): yetki gerçekten kalktı mı — Kasa sayfası bu kullanıcıya açılıyorsa K5 denetimi geçersizdir (okuma hatası).
+              const ks = (await kc.get("/api/workspace/cash")).status;
+              if (ks === 200) hatalar.push(`${k} ${ad}: Kasa yetkisi kaldırılamadı (Kasa sayfası açık) — K5 denetimi geçersiz`);
+              ham[`${k}:yetkisiz:${ad}`] = { status: yr.status, kasaSayfasi: ks, totals: yt ?? null, notlar: metinler.filter(m => /kasa/i.test(m)).slice(0, 5) };
+            }
           }
           if (Object.keys(ids.anahtar).length) {
             const rp = await api("GET", `/api/workspace/reports/cari-ekstre?from=${senaryo.bugun.slice(0, 4)}-01-01&to=${senaryo.bugun}`);
             const rep = rp.data?.report;
             if (!rep) hatalar.push(`${k} Tablodaki Kişiler okunamadı (${rp.status})`);
             else {
+              ham[`${k}:raporGenis`] = (ids.genisRapor?.groups || []).map(g => ({ cari: g.cari, debit: g.debit, credit: g.credit }));
               ham[`${k}:rapor`] = rep.groups.map(g => ({ cari: g.cari, debit: g.debit, credit: g.credit, lines: g.lines.map(l => ({ kind: l.kind, d: l.description, borc: l.borc, alacak: l.alacak, key: l.key })) }));
               for (const [no, anahtar] of Object.entries(ids.anahtar)) {
                 const g = rep.groups.find(gr => gr.lines.some(l => l.key === anahtar));
                 // Rapor okundu; kişinin satırı yoksa tahsilatı raporda 0'dır (okunamadı değil).
                 P[`${k}:rapor:${no}:alacak`] = g ? kurus(g.credit) : 0;
-                P[`${k}:rapor:${no}:borc`] = g ? kurus(g.debit) : 0; // /2 B3
+                const gg = ids.genisRapor?.groups?.find(gr => gr.lines.some(l => l.key === anahtar));
+                P[`${k}:rapor:${no}:borc`] = ids.genisRapor ? (gg ? kurus(gg.debit) : 0) : "okunamadı"; // /2 B3 (geniş dönem)
                 if (g) P[`${k}:rapor:${no}:ad`] = g.cari;
               }
               const top = (arr, f) => arr.reduce((s, x) => s + (kurus(f(x)) || 0), 0);
+              // /2 B3 K2: "N dosya no birden çok sekmede; bir kez sayıldı" notu — rapor yanıtının herhangi bir metninde (alan adı bilinmiyor)
+              const notM = /(\d+)\s*dosya no birden çok sekmede/i.exec(JSON.stringify(rp.data) + JSON.stringify(ids.genisRapor ?? null));
+              P[`${k}:rapor:cokSekmeNotu`] = notM ? Number(notM[1]) : 0;
               P[`${k}:rapor:tutarli`] = kurus(rep.totals.credit) === top(rep.groups, g => g.credit) && kurus(rep.totals.debit) === top(rep.groups, g => g.debit) && rep.groups.every(g => kurus(g.credit) === top(g.lines, l => l.alacak) && kurus(g.debit) === top(g.lines, l => l.borc));
             }
           }
@@ -354,7 +404,9 @@ function karsilastir(beklenen, program) {
   for (const [anahtar, d] of Object.entries(beklenen.denetimler)) {
     toplam += 1;
     const p = program[anahtar];
-    if (!esit(p, d.b)) farklar.push({ anahtar, beklenen: d.b, program: p === undefined ? "okunamadı" : p, etiket: d.e, kural: d.k, sinif: BIRINCIL.has(d.e) ? "BULGU" : "İNCELE" });
+    // /2: ÇATAL beklenen ({ catal: [...] }) — kural birden çok değere izin veriyor (K2 hangi sekme; not sayımı)
+    const tutar = d.b && typeof d.b === "object" && Array.isArray(d.b.catal) ? d.b.catal.some(x => esit(p, x)) : esit(p, d.b);
+    if (!tutar) farklar.push({ anahtar, beklenen: d.b, program: p === undefined ? "okunamadı" : p, etiket: d.e, kural: d.k, sinif: BIRINCIL.has(d.e) ? "BULGU" : "İNCELE" });
   }
   // Kâhinin bildiği kontrol noktalarında programda beklenmeyen bir mizan hesabı varsa (sıfırdan farklı) o da farktır.
   const kontroller = new Set(Object.keys(beklenen.denetimler).filter(k => k.includes(":mizan:")).map(k => k.split(":")[0]));

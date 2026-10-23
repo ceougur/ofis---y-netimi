@@ -36,15 +36,20 @@ MUTASYONLAR = {
     12: "Kart: tahsilat en yeni taksitten başlayarak sayılır",
     13: "Mizan: alınan senet 101'e yazılır (121 yerine)",
     # /2
-    14: "U2: Kalan/Bakiye önceliği yok (borç başlıklı sütun önce)",
-    15: "U2: söz tutarı borç sayılır",
-    16: "E3: gün/adet sütunu tutar sayılır",
-    17: "E2: Kalan boşsa borç 0 (Toplam Borç'a düşmez)",
-    18: "U2: aynı dosya no her sekmede ayrı borç (çift sayım)",
+    14: "K3: Kalan önceliği yok (toplam önce)",
+    15: "K3: Ödeme Sözü tutarı borç sayılır",
+    16: "K3: gün/adet sütunu tutar sayılır",
+    17: "K3: Kalan hücresi boşsa borç 0 (toplama düşmez)",
+    18: "K2: farklı sekmede aynı dosya no her sekmede ayrı borç (çift sayım)",
     19: "MM6: Nakit Akışı Kasa girişi yalnız cari tahsilatı sayar (evrak tahsili ve kayıt tahsilatı dışarıda)",
     20: "U1: Nihai Tüketici 11111111111'li en eski cariyi (adı belli olsa da) seçer",
     21: "U1: işaretli cari adı/kimliği değişse de kullanılır",
     22: "MM6: elle Kasa çıkışı Nakit Akışı'nda sayılmaz",
+    23: "K1: aynı sekmede tekrar eden dosya no yalnız ilk satırla sayılır",
+    24: "K3: Kalan'sız Tutar + Tahsil Edilen tablosunda ödenen düşülmez",
+    25: "K3: toplam − ödenen negatifse 0'a çekilmez",
+    26: "K2: 'birden çok sekmede' notu yok",
+    27: "K5: Kasa'yı görme yetkisi olmayan kullanıcı Kasa giriş/çıkışını görür",
 }
 
 
@@ -58,10 +63,10 @@ def kurus(metin):
     return int(tam) * 100 + int(ond)
 
 
-# ───────────────────────── /2 B3: Tablodaki Kişiler borç sütunu (U2/E2/E3) — başlık sınıflaması kuraldan
+# ───────────────────────── /2 B3: Tablodaki Kişiler borcu — [KULLANICI] 23.10.2026 03:12 UTC (5 dk yetkisiyle) K1–K5 metni; ürün kodu okunmadı
 KIMLIK_BASLIK = {"dosya no", "borçlu", "telefon", "müşteri no", "müşteri", "ad soyad"}
-TUTAR_DISI = {"gün", "adet", "sayı", "sayısı", "ay", "yıl", "oran", "oranı", "yüzde", "tarih", "tarihi"}  # E3 [AJAN]; "tarih": tutar değil [YAYGIN]
-SOZ_KOK = ("söz", "taahhüt")  # U2 [AJAN]: başlıkta "söz", "sözü", "taahhüt"
+TUTAR_DISI = {"gün", "adet"}  # K3: gün/adet sütunu ("Kalan Gün", "Adet") tutar değildir
+TUTAR_DISI_EK = {"sayı", "sayısı", "ay", "yıl", "oran", "oranı", "yüzde"}  # tutar sayılmaz [YAYGIN]; senaryolarda kullanılmaz (DENENMEZ)
 
 
 def tr_kucuk(metin):
@@ -82,18 +87,29 @@ def kelimeler(baslik):
     return out
 
 
-def sutun_sinifi(baslik):
-    """None: tutar değil (gün/adet/sayı/ay/yıl/oran/yüzde/% — E3; tarih); "soz": ödeme sözü (borç dışı — U2); 1 Kalan/Bakiye; 2 borç/alacak başlıklı; 3 sıradan tutar."""
-    w = kelimeler(baslik)
-    if "%" in str(baslik) or any(x in TUTAR_DISI for x in w):
+def tarih_mi(metin):
+    t = str(metin or "").strip()
+    return len(t) == 10 and ((t[2] == "." and t[5] == "." and t.replace(".", "").isdigit()) or (t[4] == "-" and t[7] == "-" and t.replace("-", "").isdigit()))
+
+
+def sutun_sinifi(baslik, hucreler=()):
+    """K3 sütun sınıfı: None tutar değil (tarih değerli sütun [YAYGIN]; gün/adet — K3); "soz" Ödeme Sözü tutarı (borç değil — K3); "kalan" Kalan/Kalan Borç/
+    Bakiye; "odenen" Tahsil Edilen/Ödenen/Ödenen Tutar; "toplam" Toplam Borç/Tutar/Ödenecek Tutar/Toplam (borç/alacak başlıklı da); "tutar" öbür tutar (Aidat, Ücret …)."""
+    dolu = [h for h in hucreler if str(h or "").strip()]
+    if dolu and all(tarih_mi(h) for h in dolu):
         return None
-    if any(x.startswith(SOZ_KOK) for x in w):
+    w = kelimeler(baslik)
+    if "%" in str(baslik) or any(x in TUTAR_DISI or x in TUTAR_DISI_EK for x in w):
+        return None
+    if any(x.startswith(("söz", "taahhüt")) for x in w):
         return "soz"
     if "kalan" in w or "bakiye" in w:
-        return 1
-    if any(x.startswith(("borç", "alacak")) for x in w):
-        return 2
-    return 3
+        return "kalan"
+    if ("tahsil" in w and any(x.startswith("edil") for x in w)) or any(x.startswith("ödenen") for x in w):
+        return "odenen"
+    if any(x.startswith(("toplam", "tutar", "ödenecek", "borç", "alacak")) for x in w):
+        return "toplam"
+    return "tutar"
 
 
 def hucre_kurus(metin):
@@ -103,6 +119,9 @@ def hucre_kurus(metin):
         return None
     t = t.replace(".", "")
     return kurus(t)
+
+
+YOK = "yok"  # satırda borç tutarı sütunu yok (yalnız söz / tarih / gün) — borç kaynağı sayılmaz
 
 
 class Model:
@@ -124,7 +143,8 @@ class Model:
         self.kayitTahsilat = defaultdict(int)
         self.kasa = 0
         self.kasa_hareket = []     # /2 B4: (tarih, giriş kuruş, çıkış kuruş) — yalnız NAKİT (MM6 "bütün kaynaklar")
-        self.sekmeler = []         # /2 B3: yüklenen tablonun sekmeleri (sırasıyla), borç sütunu önceliği için
+        self.sekmeler = []         # /2 B3: yüklenen tablonun sekmeleri (sırasıyla) — satırlar (dosya no, hücreler) yazım sırasıyla (K1)
+        self.kullanicilar = {}     # /2 B5b (K5): Kasa görme yetkisi kaldırılmış kullanıcılar
         self.nt_isaretli = None    # /2 B5: programın işaretli Nihai Tüketici carisi (takma ad)
         self.nt_sayac = 0
         self.mizanBilinir = True
@@ -238,62 +258,86 @@ class Model:
                 acik[ad] = f["tutar"]
         return acik
 
+    def satir_borcu(self, sk, hucre):
+        """K3 satırın borcu (kuruş), YOK (borç tutarı sütunu yok) ya da None (kural tanımsız — denetlenmez)."""
+        sinif = []
+        for h in sk["basliklar"]:
+            if tr_kucuk(h) in KIMLIK_BASLIK:
+                continue
+            sutun = [c.get(h) for _, c in sk["satirlar"]]
+            sinif.append((h, sutun_sinifi(h, sutun) if self.mut != 16 or kelimeler(h)[-1:] not in (["gün"], ["adet"]) else "tutar"))
+        al = lambda c: [h for h, x in sinif if x == c]  # noqa: E731
+        kalan, toplam, odenen, tutar, soz = al("kalan"), al("toplam"), al("odenen"), al("tutar"), al("soz")
+        if self.mut == 15:
+            tutar = tutar + soz
+        if len(kalan) > 1 or len(toplam) > 1 or len(odenen) > 1:
+            return None
+        if kalan and self.mut != 14:
+            v = hucre_kurus(hucre.get(kalan[0]))
+            if v is not None:
+                return v
+            if self.mut == 17:
+                return 0
+            if toplam:
+                return hucre_kurus(hucre.get(toplam[0]))  # K3: Kalan hücresi boş → toplam
+            return None
+        if kalan and self.mut == 14 and toplam:
+            return hucre_kurus(hucre.get(toplam[0]))
+        if odenen and toplam:
+            t = hucre_kurus(hucre.get(toplam[0]))
+            o = hucre_kurus(hucre.get(odenen[0]))
+            if t is None or o is None:
+                return None
+            if self.mut == 24:
+                return t
+            return t - o if self.mut == 25 else max(0, t - o)  # K3: Kalan yoksa toplam − ödenen; negatifse 0
+        if odenen:
+            return None
+        para = toplam + tutar
+        if len(para) == 1:
+            return hucre_kurus(hucre.get(para[0]))  # K3: tek tutar sütunu (taksit, kira, aidat, ücret, "Ödenecek" dahil)
+        if not para:
+            return YOK  # yalnız söz / tarih / gün — borç değil
+        return None
+
     def tablo_borcu(self, no):
-        """/2 B3 (U2 daraltılmış + E2 + E3): dosya no'nun Tablodaki Kişiler borcu. Döner (kuruş, etiket) ya da None (kural tanımsız → denetlenmez).
-        Sütun önceliği Kalan/Bakiye → borç/alacak başlıklı → sekmenin TEK tutar sütunu; tek tutar sütunu ödeme sözüyse borç dışı; gün/adet/… tutar değil;
-        Kalan 0 → 0; Kalan boş → Toplam Borç (borç başlıklı); aynı dosya no birden çok sekmede bir kez: en yüksek öncelik, eşitse ilk sekme."""
-        adaylar, ajan = [], False
-        for si, sk in enumerate(self.sekmeler):
-            if no not in sk["satir"]:
+        """/2 B3 (K1–K3): dosya no'nun Tablodaki Kişiler borcu (kuruş) ya da {"catal": [...]} ya da None (tanımsız → denetlenmez).
+        K1 aynı sekmede aynı dosya no'lu satırlar ayrı borçtur (toplanır); K2 farklı sekmelerde tek kayıt, bir kez sayılır — hangi sekmenin borcu sayılacağı
+        metinde yok → sekme borçlarından BİRİ (ÇATAL; borç sütunu olmayan sekme — yalnız söz — kaynak sayılmaz)."""
+        adaylar = []
+        for sk in self.sekmeler:
+            satirlar = [c for n, c in sk["satirlar"] if n == no]
+            if not satirlar:
                 continue
             if sk["basliklar"] is None:
                 return None  # taksit sekmesi: kart/taksit sütunlarının borç kuralı bu kâhinde yok
-            hucre = sk["satir"][no]
-            sinif = [(h, sutun_sinifi(h)) for h in sk["basliklar"] if tr_kucuk(h) not in KIMLIK_BASLIK]
-            tutar = [(h, c) for h, c in sinif if c is not None]
-            if any(c is None and not ({"tarih", "tarihi"} & set(kelimeler(h))) for h, c in sinif):
-                ajan = True  # E3 (gün/adet/… sütunu tutar değil) bu sekmede rol oynuyor — ayrıntı [AJAN]
-            secilen = None
-            p1 = [h for h, c in tutar if c == 1]
-            p2 = [h for h, c in tutar if c == 2]
-            if self.mut == 14:
-                p1, p2 = p2, p1
-            if len(p1) > 1 or len(p2) > 1:
-                return None  # birden çok Kalan ya da borç sütunu: kural hangisi olduğunu söylemiyor
-            if p1:
-                v = hucre_kurus(hucre.get(p1[0]))
-                if v is not None:
-                    secilen = (1, v)
-                elif self.mut == 17:
-                    secilen = (1, 0)
-                else:
-                    ajan = True  # E2: Kalan boş → Toplam Borç
-            if secilen is None and p2:
-                v = hucre_kurus(hucre.get(p2[0]))
-                if v is not None:
-                    secilen = (2, v)
-            if secilen is None and not p1 and not p2:
-                tek = tutar if self.mut != 16 else [(h, 3 if c is None else c) for h, c in sinif]
-                if len(tek) == 1:
-                    if tek[0][1] == "soz" and self.mut != 15:
-                        secilen = None  # U2: tek tutar sütunu ödeme sözü → borç dışı
-                    else:
-                        v = hucre_kurus(hucre.get(tek[0][0]))
-                        if v is not None:
-                            secilen = (3, v)
-                            ajan = True  # tek tutar sütunu borçtur (U2 daraltıldı, [AJAN])
-                elif len(tek) > 1 and not all(c == "soz" for _, c in tek):
-                    return None  # öncelikli sütun yok, birden çok tutar sütunu: kural tanımsız
-            if secilen is not None:
-                adaylar.append((secilen[0], si, secilen[1]))
+            if self.mut == 23:
+                satirlar = satirlar[:1]
+            vs = [self.satir_borcu(sk, c) for c in satirlar]
+            if any(v is None for v in vs):
+                return None
+            if all(v == YOK for v in vs):
+                continue
+            adaylar.append(sum(v for v in vs if v != YOK))
         if not adaylar:
-            return (0, "KULLANICI")
-        if len(adaylar) > 1:
-            ajan = ajan or len({p for p, _, _ in adaylar}) == 1  # "aynı öncelikte ilk sekme" [AJAN]
+            return 0
         if self.mut == 18:
-            return (sum(v for _, _, v in adaylar), "KULLANICI")
-        p, _, v = min(adaylar)
-        return (v, "AJAN" if ajan or p != 1 else "KULLANICI")
+            return sum(adaylar)
+        if len(set(adaylar)) == 1:
+            return adaylar[0]
+        return {"catal": sorted(set(adaylar))}
+
+    def cok_sekme_sayisi(self):
+        """K2 notu: birden çok sekmede geçen dosya no sayısı — ÇATAL (bütün sekmeler / yalnız borç kaynağı sekmeler)."""
+        hepsi, borclu = 0, 0
+        for no in self.kayitlar:
+            sek = [sk for sk in self.sekmeler if any(n == no for n, _ in sk["satirlar"])]
+            if len(sek) > 1:
+                hepsi += 1
+            kaynak = [sk for sk in sek if sk["basliklar"] is None or any(self.satir_borcu(sk, c) not in (YOK,) for n, c in sk["satirlar"] if n == no)]
+            if len(kaynak) > 1:
+                borclu += 1
+        return sorted({hepsi, borclu})
 
     # ───────────────────────── işlemler
     def tablo_yukle(self, a):
@@ -303,20 +347,21 @@ class Model:
             # /2 B3: sekmenin başlıkları ve hücreleri (koşucunun tabloMatrisi ile aynı düzen; kâhin hücre metninden okur)
             if sk["tur"] == "icra":
                 bas = ["Dosya No", "Borçlu", "Telefon", "Alacak Tutarı", "Kalan"]
-                satir = {r["no"]: {"Alacak Tutarı": r["alacak"], "Kalan": r["kalan"]} for r in sk["kayitlar"]}
+                satirlar = [(r["no"], {"Alacak Tutarı": r["alacak"], "Kalan": r["kalan"]}) for r in sk["kayitlar"]]
             elif sk["tur"] == "soz":
                 bas = ["Dosya No", "Borçlu", "Söz Tarihi", "Söz Tutarı"]
-                satir = {r["no"]: {"Söz Tutarı": r["tutar"]} for r in sk["kayitlar"]}
+                satirlar = [(r["no"], {"Söz Tarihi": r["tarih"], "Söz Tutarı": r["tutar"]}) for r in sk["kayitlar"]]
             elif sk["tur"] == "serbest":
                 bas = ["Dosya No", "Borçlu"] + list(sk["basliklar"])
-                satir = {r["no"]: dict(r.get("hucreler", {})) for r in sk["kayitlar"]}
+                satirlar = [(r["no"], dict(r.get("hucreler", {}))) for r in sk["kayitlar"]]
             else:
-                bas, satir = None, {r["no"]: None for r in sk["kayitlar"]}
-            self.sekmeler.append({"ad": sk["ad"], "tur": sk["tur"], "basliklar": bas, "satir": satir})
+                bas, satirlar = None, [(r["no"], None) for r in sk["kayitlar"]]
+            self.sekmeler.append({"ad": sk["ad"], "tur": sk["tur"], "basliklar": bas, "satirlar": satirlar})
             for r in sk["kayitlar"]:
                 no = r["no"]
                 k = self.kayitlar.setdefault(no, {"sekmeler": [], "tur": sk["tur"], "isim": r["isim"], "items": [], "kalan": 0})
-                k["sekmeler"].append(sk["ad"])
+                if sk["ad"] not in k["sekmeler"]:
+                    k["sekmeler"].append(sk["ad"])
                 if sk["tur"] == "taksit":
                     k["items"] = [(t, kurus(v)) for t, v in r["taksitler"]]
                     k["kalan"] = sum(v for _, v in k["items"])
@@ -357,6 +402,11 @@ class Model:
         self.nt_isaretli = secilen
         self.d("adim:%s:secilen" % a["id"], secilen, et, "B5 U1 Nihai Tüketici yalnız işaretli/uygun cari")
         self.d("adim:%s:olusturuldu" % a["id"], yeni, et, "B5 U1 uygun cari yoksa yeni açılır")
+        return "ok"
+
+    def kullanici_ac(self, a):
+        """/2 B5b: Kasa'yı görme yetkisi kaldırılmış kullanıcı (rol + kaldırılan yetkiler)."""
+        self.kullanicilar[a["ad"]] = {"rol": a.get("rol", "avukat"), "kaldir": a.get("kaldir", ["cash.view"])}
         return "ok"
 
     def cari_sil(self, a):
@@ -731,13 +781,34 @@ class Model:
                 ayni_ad = sum(1 for x in self.kayitlar.values() if x["isim"] == kay["isim"]) > 1
                 self.d("%s:rapor:%s:alacak" % (k, no), alacak, "YAYGIN" if ayni_ad or dogrudan else "KULLANICI",
                        "B1.8 5c tahsilat bir kez" + (" (aynı adlı iki kişi ayrı satırda: YAYGIN)" if ayni_ad else ""))
-        # /2 B3: Tablodaki Kişiler borcu — yalnız carisi ve kartı olmayan kayıt (bağlı carinin borç satırları bu kâhinin kuralında yok)
+        # /2 B3 (K1–K3 [KULLANICI] 23.10 03:12 UTC): Tablodaki Kişiler borcu — yalnız carisi ve kartı olmayan kayıt (bağlı carinin borç satırları bu kâhinde yok)
+        k4_toplam, k4_tanimli = 0, True
         for no in self.kayitlar:
             if self.cari_bul_kayit(no) is not None or (no in self.kartlar and self.kartlar[no]["aktif"]):
+                k4_tanimli = False
                 continue
             b = self.tablo_borcu(no)
-            if b is not None:
-                self.d("%s:rapor:%s:borc" % (k, no), b[0], b[1], "B3 U2/E2/E3 dosya no başına tek kaynak (Kalan → borç başlıklı → tek tutar; söz borç dışı)")
+            if b is None:
+                k4_tanimli = False
+                continue
+            self.d("%s:rapor:%s:borc" % (k, no), b, "KULLANICI", "B3 K1 satır başına (aynı sekme ayrı borç) · K2 farklı sekme bir kez · K3 satır borcu")
+            if isinstance(b, dict):
+                k4_tanimli = False
+            else:
+                k4_toplam += b
+        if self.kayitlar:
+            n = self.cok_sekme_sayisi()
+            if self.mut == 26:
+                n = [0]
+            self.d("%s:rapor:cokSekmeNotu" % k, n[0] if len(n) == 1 else {"catal": n}, "KULLANICI", "B3 K2 'N dosya no birden çok sekmede; bir kez sayıldı' notu (0 = not yok)")
+        # /2 B4b (K4 [KULLANICI]): Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip, Nakit Akışı Beklenen aynı satır borcu, aynı toplam (kontrol adımında "raporlar")
+        if a.get("raporlar") and k4_tanimli:
+            for anahtar in ("k4:kisiler", "k4:takvim", "k4:vade", "k4:akis"):
+                self.d("%s:%s" % (k, anahtar), k4_toplam, "KULLANICI", "B4b K4 dört rapor aynı satır borcunu kullanır (dönem süzgeci içinde)")
+        # /2 B5b (K5 [KULLANICI] Y1): Kasa'yı görme yetkisi olmayan kullanıcı Nakit Akışı'nda Kasa giriş/çıkışını görmez (boş/gizli + not)
+        for ad in self.kullanicilar:
+            self.d("%s:yetkisiz:%s:kasa" % (k, ad), "gorunur" if self.mut == 27 else "gizli", "KULLANICI", "B5b K5 Kasa giriş/çıkışı gizli")
+            self.d("%s:yetkisiz:%s:not" % (k, ad), self.mut != 27, "KULLANICI", "B5b K5 gizlilik notu")
         # /2 B4 (MM6 [KULLANICI] 22.10 21:27 UTC "Nakit Akışı Kasa giriş bütün nakit hareketleri"): yıl başından bugüne Kasa giriş/çıkış
         bas = self.bugun[:4] + "-01-01"
         giris = sum(g for t, g, _ in self.kasa_hareket if bas <= t <= self.bugun)
