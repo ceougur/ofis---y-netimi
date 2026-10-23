@@ -320,7 +320,7 @@ describe("31e Devamı olarak ekle: farklı kişi mevcut satırın yerine geçmez
       assert.equal(ownerOf(store, bondKeys(store).odendi), "Ayşe Kaya");
       // Aynı dosyanın önizlemesinde Yerine Koy Ayşe'yi tek kişi olarak eşliyordu (bağ yeni satırına taşınacaktı, eşleşmeyen yok).
       assert.equal(staged.bonds?.replace?.unmatched?.count, 0);
-      assert.deepEqual(staged.bonds?.replace?.moved?.names, ["Ayşe Kaya"]);
+      assert.deepEqual(staged.bonds?.replace?.moved, { count: 1, kinds: ["settled"], labels: ["“Ödendi Say” işareti"] }, "Ayşe'nin işareti taşınır (adlar önizlemede yok, işlem geçmişinde)");
     } finally {
       await server.close();
     }

@@ -61,4 +61,6 @@ for name, edits in MUT.items():
 json.dump(summary, open(os.path.join(OUT, "ozet.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 caught = sum(1 for item in summary.values() if item.get("yakaladi"))
 print(f"YAKALANAN {caught}/{len(MUT)}")
+# Kanıt aracının tanıdığı özet (yakalanan mutasyon = geçen kontrol).
+print(f"{caught}/{len(MUT)} kontrol geçti")
 sys.exit(0 if caught == len(MUT) else 1)

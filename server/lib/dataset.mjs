@@ -635,8 +635,13 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     const duplicates = mode === "merge" && storedRows.length ? findDuplicates({ storedRows, entries, people }) : [];
     return { entries, plan, duplicates, differentPerson, bonds };
   }
+  // Taşınanların yalnız sayısı ve türleri (uyarı değil; adlar işlem geçmişinde). Eşleşmeyen ve aynı görünenler adlarıyla.
+  const movedOf = list => {
+    const { count, kinds, labels } = summarizeBonds(list);
+    return { count, kinds, labels };
+  };
   const bondPreview = report => ({
-    moved: summarizeBonds(report.plan.moves),
+    moved: movedOf(report.plan.moves),
     unmatched: { ...summarizeBonds(report.plan.unmatched), text: unmatchedSentence(summarizeBonds(report.plan.unmatched)) },
     duplicates: listOf(report.duplicates.filter(item => item.kind === "same")),
     samePerson: listOf(report.duplicates.filter(item => item.kind === "person")),
