@@ -201,7 +201,9 @@ export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}
         const days = [...new Set([...Object.keys(jb.days), ...Object.keys(ja.days)])];
         const setBad = days.filter(d => jb.days[d]?.n !== ja.days[d]?.n || jb.days[d]?.set !== ja.days[d]?.set);
         const reordered = days.filter(d => !setBad.includes(d) && !same(jb.days[d].order, ja.days[d].order));
-        const cls = name => (/fatura|makbuz|iade/iu.test(name) ? "belge" : /tahsilat|tahsil|ödeme/iu.test(name) ? "para" : "diğer");
+        // Sınıf (kararın metni "belge → tahsilat/ödeme"): belge = fatura / makbuz; para = tahsilat / tahsil / ödeme / iade (fatura olmayan iade bir ödemedir,
+        // ör. "Taksit iadesi"); öbürleri (açılış, borç/alacak yaz, Kasa, çek/senet girişi, stok, taksit kartı) karar dışı — konumları denetlenmez.
+        const cls = name => (/fatura|makbuz/iu.test(name) ? "belge" : /tahsil|ödeme|iade/iu.test(name) ? "para" : "diğer");
         const ruleBad = days.filter(d => {
           const o = (ja.days[d]?.order || []).map(cls);
           const firstPara = o.indexOf("para");
