@@ -191,15 +191,19 @@ function classifyColumns(rows, columns, analyses, now, forced = null) {
   const single = due.filter(entry => entry.installment === null).length === 1 && !monthly.length && !recurring.length;
   const amounts = moneyLike.filter(column => !isNotAmountHeader(column) && !due.some(item => item.column === column));
   const fallback = single ? debt || (amounts.length === 1 ? amounts[0] : null) : null;
+  // 31e tur 9 Z1 (baş mimar kararı: takvim kalemi vadesi gelen tutardır, kalan borçtan büyük olamaz): tek vadeli tabloda satırın TEK dönem / taksit kolonu
+  // ("Taksit Tutarı", "Aidat", "Kira", "Aylık Ücret") varsa kalem = min(dönem tutarı, Kalan hücresi); Kalan boşsa (ya da Kalan kolonu yoksa) dönem tutarı —
+  // satır borcu belirlenemeyen satırda da (Y3: Aidat + Gecikme Faizi, Kalan boş → kalem Aidat; Kişiler ve Açılış Bakiyesi'nde not, borç yok). Dönem kolonu
+  // yoksa ya da birden çoksa kalem satırın borcudur (belirlenemiyorsa tutarsız + not). Aidat 1.000 + Kalan 400 → 400 (K4); Taksit 1.000 + Kalan 9.000 →
+  // 1.000 (975217f 9.000 gösteriyordu). Ödeme sözü kalemi söz tutarıdır (sınırlanmaz).
+  const periods = moneyLike.filter(column => AMOUNT_OWN.test(foldText(column)) && !PROMISE.test(foldText(column)) && !due.some(item => item.column === column));
+  const period = single && periods.length === 1 ? periods[0] : null;
   for (const entry of due) {
-    entry.amountColumn = pairFor(entry) || (entry.installment === null ? own || fallback : null);
+    const ownColumn = single && !entry.promise ? period : own;
+    entry.amountColumn = pairFor(entry) || (entry.installment === null ? ownColumn || fallback : null);
     // Kalemin tutarı borç kolonuysa satır borcundan okunur (Kalan boş satırda ana tutar — Tablodaki Kişiler ile aynı).
     entry.amountFromDebt = Boolean(debt && entry.amountColumn === debt);
-    // 31e tur 9 Z1 (baş mimar kararı: takvim kalemi vadesi gelen tutardır, kalan borçtan büyük olamaz): tek vadeli tabloda kalemin kendi dönem / taksit tutarı
-    // ("Taksit Tutarı", "Aidat", "Kira", "Aylık Ücret") varsa kalem = min(kalem tutarı, satırın borcu); kendi tutarı boşsa satırın borcu; satırın borcu
-    // belirlenemiyorsa (iki aday, notlu) kalem tutarsız. Aidat 1.000 + Kalan 400 → 400 (K4); Taksit 1.000 + Kalan 9.000 → 1.000 (975217f 9.000 gösteriyordu).
-    // Ödeme sözü kalemi söz tutarıdır (sınırlanmaz).
-    entry.amountCapped = Boolean(single && debt && !entry.promise && entry.amountColumn && !entry.amountFromDebt);
+    entry.amountCapped = Boolean(single && !entry.promise && entry.amountColumn && entry.amountColumn === period && !entry.amountFromDebt) ? plan.remaining || "" : null;
   }
   for (const entry of monthly) entry.amountColumn = own;
   for (const entry of recurring) {
@@ -409,7 +413,11 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
         const read = readDue(cell(row, entry.column), now);
         if (!read || read.settled) continue;
         let ownAmount = entry.amountFromDebt ? state.debt : entry.amountColumn ? parseAmount(cell(row, entry.amountColumn)) : null;
-        if (entry.amountCapped) ownAmount = state.debt === null ? null : ownAmount && ownAmount > 0 ? Math.min(ownAmount, state.debt) : state.debt;
+        if (entry.amountCapped !== null && entry.amountCapped !== undefined) {
+          const left = entry.amountCapped ? parseAmount(cell(row, entry.amountCapped)) : null;
+          if (ownAmount && ownAmount > 0) ownAmount = typeof left === "number" && left > 0 ? Math.min(ownAmount, left) : ownAmount;
+          else ownAmount = state.debt;
+        }
         const amount = ownAmount && ownAmount > 0 ? ownAmount : amountInText(read.rest);
         candidates.push({ ...base, column: entry.column, label: entry.label, promise: entry.promise, kind: read.kind, time: read.time, amount: amount || null, fromDebt: entry.amountFromDebt });
       }
