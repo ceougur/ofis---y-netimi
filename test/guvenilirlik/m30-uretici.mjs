@@ -622,7 +622,7 @@ export async function generate({ version, dataDir, backupDir, edmUrl, seed = 7, 
     manifest.requests = (manifest.requests || 0) + 1;
     if (res.status === 409 && res.data?.code === "ledger-integrity") {
       count("tahsilat-reddedildi-ledger-integrity");
-      manifest.integrityRefusals = [...(manifest.integrityRefusals || []), { company: company.code, day, accountId, invoiceId: invoiceId || "", body, failures: res.data.failures, error: res.data.error }];
+      manifest.integrityRefusals = [...(manifest.integrityRefusals || []), { what: "tahsilat", company: company.code, day, request: { company: company.code, url: `/api/workspace/accounts/${accountId}/entries`, body }, failures: res.data.failures, error: res.data.error }];
       return;
     }
     if (res.status !== 200) throw new Error(`${version} tahsilat: ${res.status} ${JSON.stringify(res.data).slice(0, 600)}`);

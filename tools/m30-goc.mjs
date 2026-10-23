@@ -71,6 +71,9 @@ if (step === "uret") {
     const facts = await measure({ version, dir: copy, day: dayOf() });
     writeJson(name, facts);
     log(`ölçüldü ${name}: açılış ${facts.bootMs} ms, şirketler ${facts.install.companies.map(c => c.code).join(", ")}`);
+    // Özet (kanit.mjs): şirket başına bir ölçü; yevmiye (Excel) okunamadıysa başarısız (ders 4).
+    const unread = Object.entries(facts.companies).filter(([, f]) => !f.journal || f.journal.__status).map(([code]) => code);
+    summary(Object.keys(facts.companies).length, unread.length, `ölçü: ${Object.keys(facts.companies).length} şirket; yevmiye okunamayan ${unread.join(",") || "yok"}`);
   } finally {
     rmSync(copy, { recursive: true, force: true });
   }
