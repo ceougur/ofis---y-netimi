@@ -497,6 +497,9 @@ body:has(.hof-modal-backdrop.is-visible) .hof-toasts {
 .hof-toast-text {
   flex: 1;
 }
+.hof-toast-text .hof-nobreak {
+  white-space: nowrap;
+}
 .hof-toast-action {
   padding: 6px 10px;
   border: 0;

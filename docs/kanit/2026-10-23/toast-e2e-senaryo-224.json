@@ -1,0 +1,32 @@
+{
+  "ad": "toast-e2e-senaryo-224",
+  "komut": "npm run test:senaryo-224",
+  "commit": "db468403ae739d7ddc43dc06d33808d7a538f779",
+  "dal": "is/toast-tire",
+  "kirli": 3,
+  "izlenmeyen": 14,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T06:17:42.537Z",
+  "sure_sn": 67.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 63,
+    "gecen": 63,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/toast-e2e-senaryo-224.log",
+  "klasor": "/home/user/wt/toast-tire",
+  "ham_cikti_sha256": "8e91aaf5101e1f9b973a0fd00f701958b098833481ed479880411abce63fd7f7",
+  "ham_cikti_bayt": 6112
+}
