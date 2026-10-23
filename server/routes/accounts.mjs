@@ -11,7 +11,7 @@ import { negativeConfirmed } from "../lib/bank/module-ref.mjs";
 import { posMetaOf } from "../lib/bank/pos.mjs";
 import { ACCOUNT_TYPES, TYPE_DEFAULT, accountLedger, accountTypeKey, balanceSide, classifyAccountType, isAccountType, mapAccountHeaders } from "../lib/accounts.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
-import { parseAmount, roundMoney } from "../lib/money.mjs";
+import { matrixText, parseAmount, roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { receiptPdf } from "../lib/plan-report.mjs";
 import { dayText, isoDay, parseDay } from "../lib/plans.mjs";
@@ -1007,7 +1007,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   router.post("/api/workspace/accounts/import/preview", async ({ req, res }) => {
     auth.requirePermission(req, "accounts.manage");
     const body = await readJson(req, { limit: 40_000_000 });
-    const matrix = Array.isArray(body.matrix) ? body.matrix : [];
+    const matrix = matrixText(body.matrix); // 31e: sayı hücresi Türkçe ondalık metin (money.mjs cellText)
     const headerAt = findHeaderRow(matrix, { mapper: mapAccountHeaders });
     if (headerAt < 0) throw new HttpError(400, "Sayfada başlık satırı bulunamadı.");
     const headers = matrix[headerAt].map(sanitizeCell);
@@ -1066,7 +1066,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   router.post("/api/workspace/accounts/import", async ({ req, res }) => {
     const user = auth.requirePermission(req, "accounts.manage");
     const body = await readJson(req, { limit: 40_000_000 });
-    const matrix = Array.isArray(body.matrix) ? body.matrix : [];
+    const matrix = matrixText(body.matrix); // 31e: sayı hücresi Türkçe ondalık metin (money.mjs cellText)
     const headerAt = Math.max(0, Math.trunc(Number(body.headerAt) || 0));
     const headers = (matrix[headerAt] || []).map(cell => String(cell ?? "").replace(/\s+/g, " ").trim());
     const roles = body.roles && typeof body.roles === "object" ? body.roles : {};

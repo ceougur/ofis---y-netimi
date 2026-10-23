@@ -11,7 +11,7 @@ import { randomUUID } from "node:crypto";
 import { ACTIONS, DIRECTIONS, EVENT_LABELS, INSTRUMENTS, STATUSES, dueState, initialEvent, initialStatus, mapChequeHeaders, parseDirection, parseInstrument, parseStatus, plannedEffects, portfolioSummary, transition } from "../lib/cheques.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { findHeaderRow, inferRolesByValues, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
-import { parseAmount, roundMoney } from "../lib/money.mjs";
+import { matrixText, parseAmount, roundMoney } from "../lib/money.mjs";
 import { bankForm } from "../lib/bank/module-ref.mjs";
 import { BANK_ACTIONS, collectionsFingerprint, createChequeCollections } from "../lib/bank/collections.mjs";
 import { canUser } from "../lib/permissions.mjs";
@@ -746,7 +746,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   router.post("/api/workspace/cheques/import/preview", async ({ req, res }) => {
     auth.requirePermission(req, "cheques.manage");
     const body = await readJson(req, { limit: 40_000_000 });
-    const matrix = Array.isArray(body.matrix) ? body.matrix : [];
+    const matrix = matrixText(body.matrix); // 31e: sayı hücresi Türkçe ondalık metin (money.mjs cellText)
     const headerAt = findHeaderRow(matrix, { mapper: mapChequeHeaders });
     if (headerAt < 0) throw new HttpError(400, "Sayfada başlık satırı bulunamadı.");
     const headers = matrix[headerAt].map(sanitizeCell);
@@ -757,7 +757,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   router.post("/api/workspace/cheques/import", async ({ req, res }) => {
     const user = auth.requirePermission(req, "cheques.manage");
     const body = await readJson(req, { limit: 40_000_000 });
-    const matrix = Array.isArray(body.matrix) ? body.matrix : [];
+    const matrix = matrixText(body.matrix); // 31e: sayı hücresi Türkçe ondalık metin (money.mjs cellText)
     const headerAt = Math.max(0, Math.trunc(Number(body.headerAt) || 0));
     const headers = (matrix[headerAt] || []).map(sanitizeCell);
     const roles = body.roles && typeof body.roles === "object" ? body.roles : {};

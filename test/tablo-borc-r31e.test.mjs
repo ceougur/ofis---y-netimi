@@ -249,6 +249,93 @@ describe("31e aday 13 yan bulgu: tablo raporlarında para toplamları kuruşta (
   });
 });
 
+// 31e kontrol turu 3 (aday 14): C1 Sekme süzgeçli Vadeler / Nakit Akışı'nda öbür sekmenin tahsilatı bu sekmenin kalemini kapatıyordu (takvim yalnız seçili sekmeden kurulduğu
+// için; 9c44652) — takvim bütün sekmelerden, kalemler sonra süzülür (2.4.3 yolu). C2 kuruş altı hücrede TOPLAM satırı ile özet 1 kuruş ayrışıyordu — satır kuruşa, toplam
+// kuruştan. C3 aynı adlı iki kişi farklı T.C. Kimlik No ile tek grupta — kimlik önce. "Nasıl bozulur?" not defteri c-nasil-bozulur.md B1–B14.
+describe("31e C1: Sekme süzgeçli Vadeler / Nakit Akışı — öbür sekmenin tahsilatı bu sekmenin kalemini kapatmaz (2.4.3 gibi)", () => {
+  const H = ["Dosya No", "Ad Soyad", "Kalan Borç", "Son Ödeme"];
+  const ctx = setup([
+    { name: "2025 Aidat", matrix: [H, ["D-5", "Ali Veli", "1.200", d(-2)], ["D-7", "Ayşe Kaya", "600", d(-1)], ["D-9", "Can Er", "0", d(-3)]] },
+    { name: "2026 Aidat", matrix: [H, ["D-5", "Ali Veli", "800", d(3)], ["D-7", "Ayşe Kaya", "600", d(4)], ["D-9", "Can Er", "500", d(5)]] },
+  ]);
+  before(async () => {
+    await ctx.must("2025 tahsilatı", ctx.admin.post(`/api/workspace/cases/${encodeURIComponent("D-7")}/payments`, { amount: 600, date: iso(-1), method: "cash", cashForce: true, note: "2025" }));
+  });
+
+  test("süzgeçsiz: 2025 Ayşe kalemi kapanır, 2026 açık — 4 kalem (1.200 + 800 + 600 + 500 = 3.100)", async () => {
+    const vade = (await ctx.report("vade-takip")).report.totals;
+    assert.deepEqual([vade.count, vade.amount], [4, 3100]);
+  });
+
+  test("Sekme 2026 Aidat: 3 kalem / 1.900 (Ali 800, Ayşe 600, Can 500); Nakit Akışı Beklenen 1.900; not yok (B1/B3)", async () => {
+    const vade = (await ctx.report("vade-takip", "tabs=2026 Aidat")).report;
+    assert.deepEqual([vade.totals.count, vade.totals.amount], [3, 1900], `kalemler: ${JSON.stringify(vade.table.rows.map(row => [row.cari, row.tab, row.amount]))}`);
+    assert.deepEqual(vade.notes, []);
+    const nakit = (await ctx.report("nakit-akis", "tabs=2026 Aidat")).report;
+    assert.equal(nakit.totals.expected, 1900);
+  });
+
+  test("Sekme 2025 Aidat: 1 kalem (Ali 1.200; Ayşe ödendi, Can 0); öbür sekmenin kalemi sızmaz (B2); seçenekler iki sekme (B5)", async () => {
+    const data = await ctx.report("vade-takip", "tabs=2025 Aidat");
+    assert.deepEqual([data.report.totals.count, data.report.totals.amount], [1, 1200], `kalemler: ${JSON.stringify(data.report.table.rows.map(row => [row.cari, row.tab, row.amount]))}`);
+    assert.deepEqual(data.tabs, ["2025 Aidat", "2026 Aidat"]);
+  });
+});
+
+describe("31e C2: kuruş altı hücre — TOPLAM satırı = özet (ekran, Excel)", () => {
+  const ctx = setup([{ name: "Borçlar", matrix: [["Dosya No", "Ad Soyad", "Kalan Borç", "Son Ödeme"], ["B-1", "Ali Veli", 333.3333333, d(-2)], ["B-2", "Ali Veli", 333.3333333, d(-3)], ["B-3", "Ali Veli", 333.3333333, d(-4)], ["B-5", "Can Er", "0,01", d(-5)], ["B-6", "Can Er", "0,1", d(-6)], ["B-7", "Can Er", "0,2", d(-7)]] }]);
+
+  test("Tablodaki Kişiler: satırlar 333,33 × 3 + 0,01 + 0,10 + 0,20 = 1.000,30; TOPLAM satırı, toplam ve özet aynı (B7)", async () => {
+    const data = await ctx.report("cari-ekstre");
+    assert.equal(data.report.totals.debit, 1000.3);
+    assert.equal(data.report.table.footer.borc, 1000.3, `TOPLAM satırı: ${JSON.stringify(data.report.table.footer)}`);
+    assert.ok(data.summary.some(([label, value]) => label === "Toplam Borç" && value === "1.000,30 TL"), JSON.stringify(data.summary));
+  });
+
+  test("Vadeler TOPLAM satırı = özet (1.000,30)", async () => {
+    const data = await ctx.report("vade-takip");
+    assert.equal(data.report.table.footer.amount, 1000.3, `TOPLAM satırı: ${JSON.stringify(data.report.table.footer)}`);
+    assert.equal(data.report.totals.amount, 1000.3);
+  });
+
+  test("Excel: TOPLAM satırının borç hücresi 1000.3, özet 1.000,30; 1000.31 yok", async () => {
+    const sheets = xlsxSheets(await ctx.exportOf("cari-ekstre", "xlsx"));
+    const table = Object.entries(sheets).find(([name]) => name !== "Özet")[1];
+    const total = table.find(row => row[0] === "TOPLAM");
+    assert.ok(total, `TOPLAM satırı yok: ${JSON.stringify(table.slice(-2))}`);
+    const cells = total.map(cell => (typeof cell === "number" ? Math.round(cell * 100) / 100 : cell));
+    assert.ok(cells.includes(1000.3) || cells.includes("1.000,30"), `TOPLAM: ${JSON.stringify(total)}`);
+    assert.ok(!xlsxText(await ctx.exportOf("cari-ekstre", "xlsx")).includes("1000.31"), "1000.31 hücresi yok");
+  });
+});
+
+describe("31e C3: aynı adlı iki kişi — farklı T.C. Kimlik No ayrı, aynı kimlik tek kişi; Vadeler aynı adı yazar", () => {
+  const ctx = setup([
+    { name: "Senetler", matrix: [["Ad Soyad", "TC Kimlik No", "Kalan", "Vade"], ["Ali Veli", "10000000146", "700", d(-2)], ["Ali Veli", "22222222222", "900", d(-6)], ["Ayşe Kaya", "33333333333", "300", d(-1)], ["A. Can Er", "44444444444", "400", d(-3)], ["Can Er", "44444444444", "250", d(-4)]] },
+    { name: "Kiracılar", matrix: [["Kiracı", "Daire No", "Cep Tel", "Kira Bedeli", "Ödeme Günü"], ["Ali Veli", "K-1", "0555 999 99 99", "5.000", "5"], ["Ayşe Kaya", "K-3", "0532 222 22 22", "3.000", "6"]] },
+  ]);
+
+  test("Ali Veli üç kişi: TC 10000000146 700, TC 22222222222 900, kimliksiz Kiracılar 5.000 (iki kimliğe uyuyor, tahmin edilmez); Ayşe tek kimlik → 300 + 3.000 (B10/B11)", async () => {
+    const { report } = await ctx.report("cari-ekstre");
+    const groups = debitBy(report);
+    assert.equal(groups["Ali Veli (TC 10000000146)"], 700, JSON.stringify(report.groups.map(group => [group.cari, group.debit])));
+    assert.equal(groups["Ali Veli (TC 22222222222)"], 900);
+    assert.equal(groups["Ali Veli"], 5000);
+    assert.equal(groups["Ayşe Kaya"], 3300, "aynı ad, biri kimliksiz: bugünkü kural (tek kimlik → aynı kişi)");
+  });
+
+  test("aynı kimlik, farklı ad yazımı ('A. Can Er' / 'Can Er'): tek kişi 650 (B12)", async () => {
+    const { report } = await ctx.report("cari-ekstre");
+    const can = report.groups.filter(group => /Can Er/.test(group.cari));
+    assert.deepEqual(can.map(group => group.debit), [650], JSON.stringify(can.map(group => [group.cari, group.debit])));
+  });
+
+  test("Vadeler: iki Ali Veli kalemi kimlik ekiyle, Tablodaki Kişiler ile aynı ad (B14)", async () => {
+    const rows = (await ctx.report("vade-takip")).report.table.rows.filter(row => /Ali Veli/.test(row.cari)).map(row => [row.cari, row.amount]).sort((a, b) => a[1] - b[1]);
+    assert.deepEqual(rows.filter(([, amount]) => amount === 700 || amount === 900), [["Ali Veli (TC 10000000146)", 700], ["Ali Veli (TC 22222222222)", 900]], JSON.stringify(rows));
+  });
+});
+
 describe("31e Y1: Tablodaki Nakit Akışı'nda Kasa sütunları yalnız Kasa yetkisiyle", () => {
   const ctx = setup(null);
   let staff;

@@ -123,6 +123,8 @@ export const isFullDate = value => {
 
 // Tutar/sayı: Türkçe (1.234,56) ve İngilizce (1,234.56) yazımlar, para birimi ve yüzde işaretleri. Sayı değilse null.
 export function parseAmount(value) {
+  // 31e: SAYI türündeki değer sayıdır (Türkçe yazım tahmini yalnız dizgeye; 12.125 → 12.125, "12.125" → 12125).
+  if (typeof value === "number") return Number.isFinite(value) ? value : null;
   // "1.500,-" kuruşsuz yazımdır (eksi değil).
   let text = String(value ?? "").trim().replace(/(\d)[.,]-{1,2}$/, "$1");
   if (!text || text.length > 40) return null;
