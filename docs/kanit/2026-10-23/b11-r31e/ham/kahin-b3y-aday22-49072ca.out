@@ -1,0 +1,24 @@
+b3y-taahhut-alacak-bakiye: 24/38 tuttu · BİLİNEN 1
+  ≈ [BİLİNEN] k1:kalem:2026/1013: program 100000 · kâhin 30000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+  ✗ [BULGU KULLANICI] k1:acilis:2026/1011: program "boş" · kâhin 220000 (Y1: 'önce cari açın' Açılış Bakiyesi = raporların satır borcu (borçsuz satırda 0 ya da boş))
+  ✗ [BİLİNEN DEĞİŞTİ KULLANICI] k1:acilis:2026/1012: program "boş" · kâhin 400000 (Y1: 'önce cari açın' Açılış Bakiyesi = raporların satır borcu (borçsuz satırda 0 ya da boş) · BİLİNEN listesinde program 100000 / kâhin 400000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır) — liste ya da ürün yeniden incelenmeli)
+  ✗ [BİLİNEN DEĞİŞTİ KULLANICI] k1:acilis:2026/1013: program "boş" · kâhin 30000 (Y1: 'önce cari açın' Açılış Bakiyesi = raporların satır borcu (borçsuz satırda 0 ya da boş) · BİLİNEN listesinde program 100000 / kâhin 30000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır) — liste ya da ürün yeniden incelenmeli)
+  ✗ [BULGU KULLANICI] k1:k4:akis: program 920000 · kâhin 850000 (TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu)
+  ✗ [BULGU KULLANICI] k1:k4:kisiler: program 500000 · kâhin 1150000 (B4b K4 + TAKVİM KALEMİ: Tablodaki Kişiler satır borcunu gösterir)
+  ✗ [BULGU KULLANICI] k1:k4:takvim: program 920000 · kâhin 850000 (TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu)
+  ✗ [BULGU KULLANICI] k1:k4:vade: program 920000 · kâhin 850000 (TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu)
+  ✗ [BULGU KULLANICI] k1:rapor:2026/1011:borc: program 0 · kâhin 220000 (B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu · C3 kişi toplamı)
+  ✗ [BULGU KULLANICI] k1:rapor:2026/1011:grup: program [] · kâhin ["2026/1011"] (C3 kişi gruplaması: farklı ad aynı kimlik ayrı kişi; aynı ad farklı kimlik ayrı; kimliksiz aynı adın tek kimliğine katılır)
+  ✗ [BİLİNEN DEĞİŞTİ KULLANICI] k1:rapor:2026/1012:borc: program 0 · kâhin 400000 (B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu · C3 kişi toplamı · BİLİNEN listesinde program 100000 / kâhin 400000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır) — liste ya da ürün yeniden incelenmeli)
+  ✗ [BULGU KULLANICI] k1:rapor:2026/1012:grup: program [] · kâhin ["2026/1012"] (C3 kişi gruplaması: farklı ad aynı kimlik ayrı kişi; aynı ad farklı kimlik ayrı; kimliksiz aynı adın tek kimliğine katılır)
+  ✗ [BİLİNEN DEĞİŞTİ KULLANICI] k1:rapor:2026/1013:borc: program 0 · kâhin 30000 (B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu · C3 kişi toplamı · BİLİNEN listesinde program 100000 / kâhin 30000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır) — liste ya da ürün yeniden incelenmeli)
+  ✗ [BULGU KULLANICI] k1:rapor:2026/1013:grup: program [] · kâhin ["2026/1013"] (C3 kişi gruplaması: farklı ad aynı kimlik ayrı kişi; aynı ad farklı kimlik ayrı; kimliksiz aynı adın tek kimliğine katılır)
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+ÖZET: 1 senaryo, 38 denetim, 13 fark (BULGU 9), 1 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b11/kahin-b3y-aday22-49072ca
+BİLİNEN SINIRLAR (1): b3y-taahhut-alacak-bakiye k1:kalem:2026/1013
+25/38 denetim geçti (1 bilinen sınır dahil)

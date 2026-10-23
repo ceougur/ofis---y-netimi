@@ -82,13 +82,17 @@ MUT = {
     # ---- tur 14 ----
     "M60-T14-yalin-soz-borc-adayi": [(DC, "!isPersonAttributeHeader(column) && !isBarePromiseHeader(column));", "!isPersonAttributeHeader(column));")],
     "M61-T14-yalin-soz-kalem-tutari": [("server/lib/insight/dues.mjs", ".filter(column => !isPersonAttributeHeader(column) && !isBarePromiseHeader(column));", ".filter(column => !isPersonAttributeHeader(column));")],
-    "M62-T14-donem-sozcugu-yok": [(DC, "  return PROMISE_HEADER.test(folded) && !PROMISE_AMOUNT_WORD.test(folded) && !EXPECTED_AMOUNT_HEADER.test(folded);", "  return PROMISE_HEADER.test(folded) && !PROMISE_AMOUNT_WORD.test(folded);")],
+    "M62-T14-donem-sozcugu-yok": [(DC, "  return PROMISE_HEADER.test(folded) && !PROMISE_AMOUNT_WORD.test(folded) && !EXPECTED_AMOUNT_HEADER.test(folded) && !DEBT_FAMILY_WORD.test(folded);", "  return PROMISE_HEADER.test(folded) && !PROMISE_AMOUNT_WORD.test(folded) && !DEBT_FAMILY_WORD.test(folded);")],
     # ---- tur 15 ----
     "M63-T15-sekme-notu-yok": [(R, "  for (const tab of missingTabs) notes.push(", "  for (const tab of []) notes.push(")],
     "M64-T15-soz-sekmesi-de-not": [(DC, "Boolean(plan?.noAmount) && !(columns || []).some(column => PROMISE_HEADER.test(foldText(column)));", "Boolean(plan?.noAmount);")],
     "M65-T15-vade-nakit-suzgeci": [(W.replace("workspace", "reports"), "unresolved: data.records.filter(record => (record.debtUnresolved || record.debtMissing) && inTabs(record.tab))", "unresolved: data.records.filter(record => record.debtUnresolved && inTabs(record.tab))")],
     "M66-T15-kisiler-suzgeci": [(R, "unresolved: records.filter(record => (record.debtUnresolved || record.debtMissing) && inTabs(record))", "unresolved: records.filter(record => record.debtUnresolved && inTabs(record))")],
     "M67-T15-seyrek-sayilmaz": [(DC, "  const noAmount = !list.length && !sparse;", "  const noAmount = !list.length;")],
+    # ---- tur 16 ----
+    "M68-T16-borc-ailesi-muafiyeti-yok": [(DC, " && !EXPECTED_AMOUNT_HEADER.test(folded) && !DEBT_FAMILY_WORD.test(folded);", " && !EXPECTED_AMOUNT_HEADER.test(folded);")],
+    "M69-T16-ekli-bicim-tanimaz": [(DC, "const DEBT_FAMILY_WORD = /\\b(borc\\w*|alacak\\w*|alacag\\w*|kalan\\w*|bakiye\\w*|toplam\\w*)\\b/;", "const DEBT_FAMILY_WORD = /\\b(borc|alacak|kalan|bakiye|toplam)\\b/;")],
+    "M70-T16-miktar-ay-suzulmez": [("server/lib/insight/dues.mjs", "isPromiseAmountHeader(column) && !isNotAmountHeader(column) && !isPersonAttributeHeader(column)", "isPromiseAmountHeader(column) && !isPersonAttributeHeader(column)")],
     "M28-N2-elle-esitleme-de-atlar": [(D, "if (!manual && heldBefore?.contentHash && heldBefore.contentHash === contentHash)", "if (heldBefore?.contentHash && heldBefore.contentHash === contentHash)")],
 }
 TESTS = ["test/kayit-bag-31e.test.mjs", "test/kayit-bag-31e-birim.test.mjs", "test/tablo-borc-r31e.test.mjs", "test/tablo-borc-dosya-u2.test.mjs"]
