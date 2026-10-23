@@ -501,12 +501,15 @@ describe("31e tur 8 Y1: 'Borçlu Telefon' / 'Borçlu TC' kolonu borç değil —
     assert.deepEqual(of(["Borçlu", "Borçlu Sicil", "Alacaklı", "Borçlu Tutarı", "Bakiye Borçlu", "Tutar"]), ["Borçlu Tutarı", "Bakiye Borçlu", "Tutar"]);
   });
   const NOTE = "“BorcluTC” sekmesinde borç sütunu seçilemedi (Tutar, Masraf): bu satırlar borç olarak sayılmadı. Borç sütununun başlığını “Kalan Borç”, “Toplam Borç” ya da “Genel Toplam” yapın.";
+  // 31e tur 15: Y1 kararının "borç kolonu yoksa … görünür not" kısmı — tutar kolonu olmayan dört sekme (yalnız telefon / TC / sicil) de sekmeyi adlandıran notla
+  // (tur 8'de bu beklenti yalnız BorcluTC notunu yazıyordu; kararın bu kısmı uygulanmamıştı, kâhin b3n yakaladı).
+  const MISSING = tab => `“${tab}” sekmesinde borç sütunu yok: bu satırlar borç olarak sayılmadı. Borç için “Kalan Borç”, “Toplam Borç” ya da “Tutar” başlıklı bir sütun ekleyin.`;
 
-  test("Kişiler: yalnız Pınar Su 1.000 ve Rıza Ak 2.000 (toplam 3.000); telefon / TC numarası borç değil; BorcluTC için not", async () => {
+  test("Kişiler: yalnız Pınar Su 1.000 ve Rıza Ak 2.000 (toplam 3.000); telefon / TC numarası borç değil; BorcluTC için not, tutar kolonu olmayan sekmeler için not", async () => {
     const { report } = await ctx.report("cari-ekstre");
     assert.deepEqual(debitBy(report), { "Pınar Su": 1000, "Rıza Ak": 2000 }, JSON.stringify(report.groups.map(group => [group.cari, group.debit])));
     assert.equal(report.totals.debit, 3000);
-    assert.deepEqual(report.notes, [NOTE]);
+    assert.deepEqual(report.notes, [NOTE, MISSING("BorcluTel"), MISSING("BorcluSicil"), MISSING("BorcluTCHatali"), MISSING("BorcIletisim")]);
   });
 
   test("Takvim: BorcluTel / BorcluTC kalemlerinde tutar ve borç yok (Açılış Bakiyesi ön dolumu boş); hiçbir kalemin borç kolonu kimlik / telefon değil", async () => {
