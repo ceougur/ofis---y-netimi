@@ -1,0 +1,43 @@
+{
+  "ad": "b6-r31e/kirmizi-aday21-8def842-m49-testi",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-name-pattern=tur 11 Z4: söz tutarı yalnız test/tablo-borc-r31e.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T13:31:11.363Z",
+  "sure_sn": 1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "31e tur 11 Z4: söz tutarı yalnız 'söz/sözü/taahhüt' + 'tutar' başlığıdır › Takvim: Mert 6.000 (Kalan; 'Söz Öncesi Ödenen' söz tutarı değil), Nil 2.500 (Taahhüt Tutarı), Oya 1.000 (Ödeme Sözü Tutarı); üçü de söz kalemi",
+      "konum": "test/tablo-borc-r31e.test.mjs:709:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "31e tur 11 Z4: söz tutarı yalnız 'söz/sözü/taahhüt' + 'tutar' başlığıdır › Vadeler ve Nakit Akışı Beklenen 9.500",
+      "konum": "test/tablo-borc-r31e.test.mjs:715:3",
+      "hata": "Expected values to be strictly equal: · 5000 !== 9500 (beklenen 9500, gelen 5000)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/r31e-f/docs/kanit/2026-10-23/b6-r31e/kirmizi-aday21-8def842-m49-testi.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/b6-eski-8def842",
+  "ham_cikti_sha256": "dba027ab4787bc012262b1d47f43c3654369ea56c3bdbb92c96532c6835d4af5",
+  "ham_cikti_bayt": 3581
+}

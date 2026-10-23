@@ -1,0 +1,5 @@
+{"sheets":[
+ {"name":"SozTarih","matrix":[["Ad Soyad","Kira Bedeli","Sözleşme Tarihi"],["Jale Er","4.000","@d+5"],["Kemal Su","3.000","@d-5"]]},
+ {"name":"SozBaslangic","matrix":[["Ad Soyad","Tutar","Sözleşme Başlangıç"],["Lale Ak","2.000","@d+3"],["Mert Su","1.000","@d-3"]]},
+ {"name":"SozBitis","matrix":[["Ad Soyad","Tutar","Sözleşme Bitiş"],["Nur Ay","2.500","@d+4"]]}
+]}

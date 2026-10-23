@@ -1,0 +1,48 @@
+TAP version 13
+# Subtest: 31e tur 11 Z4: 'Sözleşme Tutarı' söz tutarı değil; 'Sözleşme Son Ödeme' söz değil; 'Sözleşme Tarihi' / 'Başlangıç' vade değil
+    # Subtest: Takvim: Ali söz 3.000, Ayşe söz hücresi boş → Kalan 2.000, Can söz 5.000 (Kalan; söz sütunu yok); Jale'nin kalemi söz değil, 4.000; Sözleşme Tarihi / Başlangıç kalem açmaz
+    ok 1 - Takvim: Ali söz 3.000, Ayşe söz hücresi boş → Kalan 2.000, Can söz 5.000 (Kalan; söz sütunu yok); Jale'nin kalemi söz değil, 4.000; Sözleşme Tarihi / Başlangıç kalem açmaz
+      ---
+      duration_ms: 26.777688
+      type: 'test'
+      ...
+    # Subtest: Vadeler ve Nakit Akışı Beklenen 14.000 (aday 21: 154.000); Sözleşme Tarihi sekmesinden vade satırı yok
+    ok 2 - Vadeler ve Nakit Akışı Beklenen 14.000 (aday 21: 154.000); Sözleşme Tarihi sekmesinden vade satırı yok
+      ---
+      duration_ms: 29.660633
+      type: 'test'
+      ...
+    1..2
+ok 1 - 31e tur 11 Z4: 'Sözleşme Tutarı' söz tutarı değil; 'Sözleşme Son Ödeme' söz değil; 'Sözleşme Tarihi' / 'Başlangıç' vade değil
+  ---
+  duration_ms: 499.413298
+  type: 'suite'
+  ...
+# Subtest: 31e tur 11 Z4: söz tutarı yalnız 'söz/sözü/taahhüt' + 'tutar' başlığıdır
+    # Subtest: Takvim: Mert 6.000 (Kalan; 'Söz Öncesi Ödenen' söz tutarı değil), Nil 2.500 (Taahhüt Tutarı), Oya 1.000 (Ödeme Sözü Tutarı); üçü de söz kalemi
+    ok 1 - Takvim: Mert 6.000 (Kalan; 'Söz Öncesi Ödenen' söz tutarı değil), Nil 2.500 (Taahhüt Tutarı), Oya 1.000 (Ödeme Sözü Tutarı); üçü de söz kalemi
+      ---
+      duration_ms: 10.170058
+      type: 'test'
+      ...
+    # Subtest: Vadeler ve Nakit Akışı Beklenen 9.500
+    ok 2 - Vadeler ve Nakit Akışı Beklenen 9.500
+      ---
+      duration_ms: 17.15544
+      type: 'test'
+      ...
+    1..2
+ok 2 - 31e tur 11 Z4: söz tutarı yalnız 'söz/sözü/taahhüt' + 'tutar' başlığıdır
+  ---
+  duration_ms: 409.26171
+  type: 'suite'
+  ...
+1..2
+# tests 4
+# suites 2
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1292.454548

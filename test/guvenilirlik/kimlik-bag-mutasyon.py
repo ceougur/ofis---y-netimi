@@ -64,6 +64,10 @@ MUT = {
     "M45-Z2-eksi-kalan-kalem": [("server/lib/insight/dues.mjs", "typeof debtAmount === \"number\" && debtAmount <= 0 && ", "debtAmount === 0 && ")],
     "M46-Z3-soz-tutari-sonra": [("server/lib/insight/dues.mjs", "    const promiseFirst = entry.promise && entry.installment === null ? promiseAmount : null;", "    const promiseFirst = null;")],
     "M47-Z3-bos-soz-onceki-kural-yok": [("server/lib/insight/dues.mjs", "        if (!(ownAmount > 0) && entry.amountFallback) ownAmount = capped(entry.amountFallbackFromDebt ? state.debt : parseAmount(cell(row, entry.amountFallback)), entry.amountFallbackCap);\n", "")],
+    # ---- tur 11 ----
+    "M48-Z4-soz-kalibi-genis": [("server/lib/insight/dues.mjs", "const PROMISE = /\\b(soz|sozu|taahhut|taahhudu)\\b/;", "const PROMISE = /\\b(soz\\w*|taahhut\\w*)\\b/;")],
+    "M49-Z4-soz-tutari-tutar-sozcuksuz": [("server/lib/insight/dues.mjs", "PROMISE.test(foldText(column)) && PROMISE_AMOUNT.test(foldText(column)) && ", "PROMISE.test(foldText(column)) && ")],
+    "M50-Z4-bos-soz-satir-borcu-yok": [("server/lib/insight/dues.mjs", "    entry.amountFallback = promiseFirst && base && base !== promiseFirst ? base : null;", "    entry.amountFallback = promiseFirst && period && period !== promiseFirst ? period : null;")],
     "M28-N2-elle-esitleme-de-atlar": [(D, "if (!manual && heldBefore?.contentHash && heldBefore.contentHash === contentHash)", "if (heldBefore?.contentHash && heldBefore.contentHash === contentHash)")],
 }
 TESTS = ["test/kayit-bag-31e.test.mjs", "test/kayit-bag-31e-birim.test.mjs", "test/tablo-borc-r31e.test.mjs", "test/tablo-borc-dosya-u2.test.mjs"]

@@ -1,0 +1,32 @@
+{
+  "ad": "b6-r31e/mutasyon-kimlik-bag",
+  "komut": "python3 -I test/guvenilirlik/kimlik-bag-mutasyon.py /home/user/wt/r31e-f /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/r31e-f/mut7",
+  "commit": "b0ef5eb5913bccddc563f1bdd55e5ecc0cff9128",
+  "dal": "is/r31e-f",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T13:15:29.930Z",
+  "sure_sn": 901.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 49,
+    "gecen": 48,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/b6-r31e/mutasyon-kimlik-bag.log",
+  "klasor": "/home/user/wt/r31e-f",
+  "ham_cikti_sha256": "eeac231419e514b4120c0583d3946ea3699fab33d7e7ad6c4ec843c7cba050c4",
+  "ham_cikti_bayt": 14337
+}

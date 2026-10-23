@@ -669,3 +669,51 @@ describe("31e tur 10 Z2/Z3: fazla ödemeli satırda kalem yok; söz kalemi söz 
     assert.deepEqual(dues.items.filter(item => item.tab === "Borclar").map(item => [item.person, item.amount]), [["Ege Tan", 800]]);
   });
 });
+
+// 31e tur 11 Z4 (YÜKSEK, 007eb2e gerilemesi): söz başlığı tam sözcüktür — "Sözleşme Tutarı" / "Sözleşme Son Ödeme" söz DEĞİLDİR (`soz\w*` "sözleşme"yi
+// yakalıyordu: söz kalemi bütün sözleşme bedeli, Nakit 12.800 → 153.300; vade kolonu "Ödeme sözü" etiketi alıyordu). Söz tutarı kolonu söz sözcüğü + tutar
+// sözcüğü ister ("Söz Tutarı", "Ödeme Sözü Tutarı", "Taahhüt Tutarı"); sütun yoksa ya da hücre boşsa önceki kural — dönem tutarı (Kalan ile sınırlı), dönem kolonu
+// yoksa satırın borcu (kâhin b3t). Ek karar: "Sözleşme Tarihi" / "Sözleşme Başlangıç" vade / söz tarihi değildir, kalem açmaz (aday 21'de de açmıyordu — koruma).
+describe("31e tur 11 Z4: 'Sözleşme Tutarı' söz tutarı değil; 'Sözleşme Son Ödeme' söz değil; 'Sözleşme Tarihi' / 'Başlangıç' vade değil", () => {
+  const ctx = setup([
+    { name: "SozlesmeOnce", matrix: [["Ad Soyad", "Sözleşme Tutarı", "Kalan Borç", "Söz Tarihi", "Söz Tutarı"], ["Ali Veli", "50.000", "9.000", d(2), "3.000"], ["Ayşe Kaya", "40.000", "2.000", d(3), ""]] },
+    { name: "SozlesmeYalniz", matrix: [["Ad Soyad", "Sözleşme Tutarı", "Kalan Borç", "Söz Tarihi"], ["Can Er", "60.000", "5.000", d(2)]] },
+    { name: "SozlesmeVade", matrix: [["Ad Soyad", "Kira Bedeli", "Sözleşme Son Ödeme"], ["Jale Er", "4.000", d(5)]] },
+    { name: "SozlesmeTarih", matrix: [["Ad Soyad", "Kira Bedeli", "Sözleşme Tarihi", "Sözleşme Başlangıç"], ["Kemal Su", "3.000", d(5), d(-5)], ["Lale Ak", "2.000", d(-3), d(3)]] },
+  ]);
+
+  test("Takvim: Ali söz 3.000, Ayşe söz hücresi boş → Kalan 2.000, Can söz 5.000 (Kalan; söz sütunu yok); Jale'nin kalemi söz değil, 4.000; Sözleşme Tarihi / Başlangıç kalem açmaz", async () => {
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    const items = dues.items.filter(item => item.tab.startsWith("Sozlesme")).map(item => [item.person, item.amount ?? null, Boolean(item.promise), item.label]).sort((a, b) => a[0].localeCompare(b[0], "tr"));
+    assert.deepEqual(items.map(item => item.slice(0, 3)), [["Ali Veli", 3000, true], ["Ayşe Kaya", 2000, true], ["Can Er", 5000, true], ["Jale Er", 4000, false]]);
+    assert.notEqual(items.find(item => item[0] === "Jale Er")[3], "Ödeme sözü", "vade kolonu 'Ödeme sözü' etiketi almaz");
+  });
+
+  test("Vadeler ve Nakit Akışı Beklenen 14.000 (aday 21: 154.000); Sözleşme Tarihi sekmesinden vade satırı yok", async () => {
+    const vade = (await ctx.report("vade-takip")).report;
+    assert.equal(vade.totals.amount, 14000);
+    assert.ok(!vade.table.rows.some(row => /Kemal Su|Lale Ak/.test(row.cari || "")), JSON.stringify(vade.table.rows.map(row => row.cari)));
+    assert.equal((await ctx.report("nakit-akis")).report.totals.expected, 14000);
+  });
+});
+
+// 31e tur 11 Z4 (mutasyon M49'un dişi): söz tutarı sütunu söz sözcüğü + TUTAR sözcüğü ister. "Söz Öncesi Ödenen" söz sözcüğü taşır ama söz tutarı değildir →
+// söz kalemi önceki kuralla satırın borcu (Kalan 6.000), 1.500 DEĞİL. "Taahhüt Tutarı" ve "Ödeme Sözü Tutarı" söz tutarıdır (kâhin b3u ile aynı başlıklar).
+describe("31e tur 11 Z4: söz tutarı yalnız 'söz/sözü/taahhüt' + 'tutar' başlığıdır", () => {
+  const ctx = setup([
+    { name: "SozOncesi", matrix: [["Ad Soyad", "Kalan Borç", "Söz Tarihi", "Söz Öncesi Ödenen"], ["Mert Can", "6.000", d(4), "1.500"]] },
+    { name: "TaahhutTutari", matrix: [["Ad Soyad", "Kalan Borç", "Taahhüt Tarihi", "Taahhüt Tutarı"], ["Nil Er", "7.000", d(6), "2.500"]] },
+    { name: "OdemeSozuTutari", matrix: [["Ad Soyad", "Kalan Borç", "Ödeme Sözü", "Ödeme Sözü Tutarı"], ["Oya Su", "8.000", d(7), "1.000"]] },
+  ]);
+
+  test("Takvim: Mert 6.000 (Kalan; 'Söz Öncesi Ödenen' söz tutarı değil), Nil 2.500 (Taahhüt Tutarı), Oya 1.000 (Ödeme Sözü Tutarı); üçü de söz kalemi", async () => {
+    const dues = await ctx.must("takvim", ctx.admin.get("/api/workspace/dues"));
+    const items = dues.items.map(item => [item.person, item.amount ?? null, Boolean(item.promise)]).sort((a, b) => a[0].localeCompare(b[0], "tr"));
+    assert.deepEqual(items, [["Mert Can", 6000, true], ["Nil Er", 2500, true], ["Oya Su", 1000, true]]);
+  });
+
+  test("Vadeler ve Nakit Akışı Beklenen 9.500", async () => {
+    assert.equal((await ctx.report("vade-takip")).report.totals.amount, 9500);
+    assert.equal((await ctx.report("nakit-akis")).report.totals.expected, 9500);
+  });
+});
