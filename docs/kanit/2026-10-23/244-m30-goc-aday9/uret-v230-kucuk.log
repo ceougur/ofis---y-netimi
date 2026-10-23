@@ -1,0 +1,9 @@
+[02:13:06] üretildi: {"banka-hesabi":4,"pos":2,"cari-excel":420,"cari-elle":146,"stok-karti":24,"tablo-satiri":940,"tablo-kaydi":940,"cari-kayda-bagli":48,"fatura-kagit":445,"fatura-taksitli":51,"fatura-silindi":23,"fatura-kendi-evraki":100,"cari-tahsilat-cash":79,"evrak-verildi-note":7,"stok-giris":24,"fatura-satistan-iade":46,"evrak-alindi-note":25,"kasa-cikis":33,"kayit-tahsilati-bank":18,"smm-kagit":114,"cari-borc":5,"evrak-faturayla-ciro":21,"fatura-alis":120,"stok-satis-card":17,"cari-tahsilat-bank":33,"stok-satis-cash":22,"banka-fisi":26,"banka-transfer":26,"cari-tahsilat-card":37,"kasa-giris":32,"kayit-tahsilati-cash":52,"taksit-karti":19,"cari-odeme-bank":59,"fatura-alistan-iade":3,"cari-odeme-cash":24,"kasa-banka-to-bank":10,"cari-tahsilat-cash-kapatilacak":29,"taksit-tahsilat-card":11,"fatura-silinenlerden-geri-yuklendi":15,"evrak-karsiliksiz-fatura":14,"evrak-verildi-cheque":17,"taksit-tahsilat-bank":6,"cari-tahsilat-card-kapatilacak":12,"evrak-tahsile-ver":52,"evrak-alindi-cheque":78,"evrak-verilen-odendi":20,"evrak-bankadan-tahsil":47,"taksit-tahsilat-cash":10,"kasa-banka-to-cash":7,"evrak-ciro":48,"fatura-kagit-iptal":3,"evrak-nakit-tahsil":41,"cari-tahsilat-bank-kapatilacak":14,"evrak-karsiliksiz-cirodan-fatura":5,"yedek":10,"evrak-karsiliksiz-bagsiz":8,"evrak-karsiliksiz-tahsilde-fatura":3,"evrak-karsiliksiz-cirodan-bagsiz":3,"evrak-karsiliksiz-tahsilde-bagsiz":2,"kayit-tahsilati-aktarim-oncesi":11,"tablodan-aktar-kart":20,"tablodan-aktar-tasinan-tahsilat":7,"ledger-integrity-reddi":8,"tahsilat-reddedildi-ledger-integrity":4,"fatura-silindi-son":2}
+[02:13:06] süre 40.3 sn; EDM gönderim 0, iptal 0, ihlal 0
+# 2666 API isteği (2654 × 200, 12 × 409 silme/geri yükleme ya da ledger-integrity reddi — ayrıntısı manifestte); EDM ihlali 0
+# tests 2667
+# pass 2667
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

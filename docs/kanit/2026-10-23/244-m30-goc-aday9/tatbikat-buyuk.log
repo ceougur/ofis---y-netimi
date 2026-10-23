@@ -1,0 +1,51 @@
+[02:00:30] ✓ C10 001 göçten sonra (geri yükleme yok) Fatura'da geri yükleme uyarısı yok (30b)
+[02:00:30] ✓ C10 002 göçten sonra (geri yükleme yok) Fatura'da geri yükleme uyarısı yok (30b)
+[02:00:30] ✓ C3 001 2.4.3'ten kalan 0 bekleyen e-Belge 2.4.4'ten Tümünü Gönder ile gitti; numara sırası = tarih sırası
+[02:00:47] ✓ C1 001 bırakılan fiş numarası verilmiş en büyükten sonra (A FIS2026000000260, B FIS2026000000261); gönderilen A'nın fişi Kâğıt Fatura No'da
+[02:00:48] ✓ C2 001 e-SMM "Kâğıt Makbuz Olarak Bırak" SMM numarası verilmiş en büyükten sonra (SMM2026000000068)
+[02:00:48] ✓ C2b 001 bırakılan kâğıt makbuz e-SMM olarak gönderilemez (istek reddedilir; kart ve EDM değişmez)
+[02:00:49] ✓ C3 001 e-Arşiv / e-SMM / e-Fatura gönderildi (sahte EDM)
+[02:01:01] ✓ C5 001 çalışmadan sonra Mutabakat Testi'nde yeni sapma yok, mizan dengede
+[02:01:01] ✓ C5 001 yeniden açılan faturaya 100 TL Kapatılacak Fatura'lı tahsilat açığı 100 TL azaltır
+[02:01:01] ✓ C3 002 2.4.3'ten kalan 0 bekleyen e-Belge 2.4.4'ten Tümünü Gönder ile gitti; numara sırası = tarih sırası
+[02:01:08] ✓ C1 002 bırakılan fiş numarası verilmiş en büyükten sonra (A FIS2026000000111, B FIS2026000000112); gönderilen A'nın fişi Kâğıt Fatura No'da
+[02:01:08] ✓ C2 002 e-SMM "Kâğıt Makbuz Olarak Bırak" SMM numarası verilmiş en büyükten sonra (SMM2026000000121)
+[02:01:08] ✓ C2b 002 bırakılan kâğıt makbuz e-SMM olarak gönderilemez (istek reddedilir; kart ve EDM değişmez)
+[02:01:08] ✓ C3 002 e-Arşiv / e-SMM / e-Fatura gönderildi (sahte EDM)
+[02:01:14] ✓ C5 002 çalışmadan sonra Mutabakat Testi'nde yeni sapma yok, mizan dengede
+[02:01:14] ✓ C5 002 yeniden açılan faturaya 100 TL Kapatılacak Fatura'lı tahsilat açığı 100 TL azaltır
+[02:01:14] ✓ C4 2.4.4'te verilen kâğıt/fiş/SMM numaraları biçimde ve eski verilmişlerle çakışmıyor
+[02:01:38] ✓ C6 002 yedek → çalış → geri yükle: olgular yedek anıyla aynı
+[02:01:38] ✓ C10 002 geri yüklemeden sonra Fatura'da tek seferlik uyarı VAR (yalnız bu şirkette)
+[02:01:38] ✓ C10 002 uyarı kapatılınca gider
+[02:01:50] ✓ C7 002 geri yüklemesi 001'i değiştirmedi
+[02:01:56] ✓ C8 002 geri yüklemeden sonra numaralar yedek anının sırasından sürer, veride tekrar yok
+[02:01:56] ✓ C8 002 GÖZLEM: ara dönemde EDM'ye gitmiş e-Arşiv numarası (TEA2026508235317) geri yüklemeden sonra yeniden verildi mi
+[02:02:15] ✓ C6 001 geri yükleme (001: yeniden açılışta) uygulandı
+[02:02:29] ✓ C6 001 yedek → çalış → geri yükle: olgular yedek anıyla aynı
+[02:02:30] ✓ C10 001 geri yüklemeden sonra Fatura'da tek seferlik uyarı VAR (yalnız bu şirkette)
+[02:02:30] ✓ C10 001 uyarı kapatılınca gider
+[02:02:35] ✓ C7 001 geri yüklemesi 002'i değiştirmedi
+[02:02:48] ✓ C8 001 geri yüklemeden sonra numaralar yedek anının sırasından sürer, veride tekrar yok
+[02:02:48] ✓ C8 001 GÖZLEM: ara dönemde EDM'ye gitmiş e-Arşiv numarası (TEA2026118068996) geri yüklemeden sonra yeniden verildi mi
+[02:03:05] ✓ C9 002 2.4.3 yedeği (destekofis-002-2026-10-23T01-54-08-054Z-manuel.sqlite) 2.4.4'e geri yüklendi: şema 32, numara tabanı göçtekiyle aynı
+[02:03:05] ✓ C9 002 geri yüklenen 2.4.3 yedeğinin olguları göç ölçüsüyle (aynı veri, göç açılışta) aynı
+[02:03:05] ✓ C10 002 2.4.3 yedeği geri yüklenince de uyarı VAR; kapatılınca gider
+[02:03:17] ✓ C7 002 2.4.3 yedeğinin geri yüklenmesi 001'i değiştirmedi
+[02:03:37] ✓ C9 001 2.4.3 yedeği (destekofis-001-2026-10-23T01-54-07-703Z-manuel.sqlite) 2.4.4'e geri yüklendi: şema 32, numara tabanı göçtekiyle aynı
+[02:03:37] ✗ C9 001 geri yüklenen 2.4.3 yedeğinin olguları göç ölçüsüyle (aynı veri, göç açılışta) aynı — {"diff":[{"section":"cash","count":1,"first":[["allDigest","ff36aa2bb331f6f6004ea456","f986a8e782e1928a8f29a7b4"]]},{"section":"reports","count":1,"first":[["banka-masraf",{"title":"Banka Masraf Raporu","total":166,"footer":["TOPLAM","","","","","29.117,13 TL","1.455,92 TL","0,00 TL","30.573,05 TL","",""],"summary":[["Kayıt","166"],["Matrah","29.117,13 TL"],["BSMV","1.455,92 TL"],["KDV","0,00 TL"],["Toplam","30.573,05 TL"],["653 Komisyon Giderleri","30.292,64 TL"],["770 Genel Giderler ve Alış Faturaları","280,41 TL"],["Ziraat Bankası · Ana TL Hesabı","30.573,05 TL"]],"rowsDigest":"f961a7eb84b8
+[02:03:38] ✓ C10 001 2.4.3 yedeği geri yüklenince de uyarı VAR; kapatılınca gider
+[02:03:43] ✓ C7 001 2.4.3 yedeğinin geri yüklenmesi 002'i değiştirmedi
+[02:03:43] ✓ C11 001 E6: numarası canlı belgede olan silinmiş belge YOK (veride bu durum oluşmadı)
+[02:03:44] ✓ C11 001 E6: numarası boşta olan silinmiş belge (SMM2026000000067) kendi numarasıyla geri gelir
+[02:03:44] ✓ C11 001 E6: sıradaki kâğıt/fiş/SMM/iç numara verilmiş en büyükten (silinenler dahil) sonra; geri yükleme sıradakini değiştirmedi
+[02:03:44] ✓ C11 002 E6: numarası (SMM2026000000098) canlı başka belgede olan silinmiş belge geri yüklenmez (409), Silinenler'de kalır
+[02:03:44] ✓ C11 002 E6: numarası boşta olan silinmiş belge (SMM2026000000120) kendi numarasıyla geri gelir
+[02:03:44] ✓ C11 002 E6: sıradaki kâğıt/fiş/SMM/iç numara verilmiş en büyükten (silinenler dahil) sonra; geri yükleme sıradakini değiştirmedi
+# tatbikat denetimleri
+# tests 44
+# pass 43
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
