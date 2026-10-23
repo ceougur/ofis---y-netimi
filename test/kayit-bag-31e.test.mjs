@@ -227,6 +227,37 @@ describe("31e B1: Dosya No'suz tabloda içerik değişince bağlar yeni satıra 
     }
   });
 
+  it("aday 18 kâhin b3g: iki Ali, kolon eklenir + yalnız biri değişir — değişmeyen Ali'nin tahsilatı (20) yeni satırına taşınır, değişeninki (10) eşleşmeyen + onay", async () => {
+    const head = ["Müşteri", "Telefon", "Tutar"];
+    const base = [head, ["Nur Ak", "", "700"], ["Ali Veli", "", "100"], ["Ali Veli", "", "200"], ["Can Su", "0532 111 11 11", "300"]];
+    const { server, admin, store } = await boot();
+    try {
+      await load(admin, base);
+      const keys = store.all("SELECT case_key AS k, values_json AS v FROM dataset_rows ORDER BY position").map(r => ({ k: r.k, tutar: JSON.parse(r.v).Tutar }));
+      for (const [tutar, amount] of [["100", 10], ["200", 20], ["300", 30]]) {
+        const key = keys.find(r => r.tutar === tutar).k;
+        assert.equal((await admin.post(`/api/workspace/cases/${encodeURIComponent(key)}/payments`, { amount, date: iso(-1), method: "cash", cashForce: true, note: `t${amount}` })).status, 200);
+      }
+      const next = [["Müşteri", "E-posta", "Telefon", "Tutar"], ["Nur Ak", "", "", "700"], ["Ali Veli", "", "", "110"], ["Ali Veli", "", "", "200"], ["Can Su", "", "0532 111 11 11", "300"]];
+      const staged = await stage(admin, excel(next));
+      assert.equal(staged.bonds?.replace?.moved?.count, 2, `Ali 200 (içerik aynı) ve Can taşınır: ${JSON.stringify(staged.bonds?.replace).slice(0, 300)}`);
+      assert.equal(staged.bonds?.replace?.unmatched?.text, "1 kaydın tahsilatı bu yüklemeyle eşleşmedi: Ali Veli.");
+      const refused = await commitRaw(admin, staged, "replace");
+      assert.equal(refused.status, 409, "onaysız uygulanmaz");
+      assert.equal(store.get("SELECT values_json AS v FROM dataset_rows WHERE case_key = (SELECT case_key FROM payments WHERE note = 't20')") ? 1 : 0, 1, "onaysız yolda veri değişmedi");
+      assert.equal((await commitRaw(admin, staged, "replace", { confirm: true })).status, 200);
+      const owner = note => {
+        const row = store.get("SELECT r.values_json AS v FROM payments p JOIN dataset_rows r ON r.case_key = p.case_key WHERE p.note = ?", note);
+        return row ? `${JSON.parse(row.v)["Müşteri"]} ${JSON.parse(row.v).Tutar}` : "YOK";
+      };
+      assert.deepEqual([owner("t10"), owner("t20"), owner("t30")], ["YOK", "Ali Veli 200", "Can Su 300"], "20 değişmeyen Ali'de, 10 eski anahtarda (yanlış Ali'ye gitmez)");
+      const report = (await admin.get(`/api/workspace/reports/cari-ekstre?${RANGE}`)).data.data.report;
+      assert.deepEqual(report.groups.filter(group => group.cari === "Ali Veli").map(group => group.credit), [20], "Tablodaki Kişiler: Ali Veli alacak 20");
+    } finally {
+      await server.close();
+    }
+  });
+
   it("N3 (tur 7 f2) iki Ali yer değiştirip ikisi de değişir: bağ yanlış Ali'ye taşınmaz — onaysız 409, onayla eski anahtarda; Takvim 4.100 + 1.100", async () => {
     const twins = [PEOPLE[0], PEOPLE[1], PEOPLE[2], { ...PEOPLE[3], name: "Ali Veli" }, PEOPLE[4], PEOPLE[5]];
     const { server, admin, store } = await boot();

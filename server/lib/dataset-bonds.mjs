@@ -59,6 +59,7 @@ export function signatureOf(values, layout) {
   const phoneDigits = layout.phone ? digits(values?.[layout.phone]) : "";
   return { name, tax, phone: phoneDigits.length >= 10 ? phoneDigits.slice(-10) : "" };
 }
+const projectionOf = (values, cols) => JSON.stringify(cols.map(column => String(values?.[column] ?? "").trim()));
 /** İki satır aynı kişi mi: adları (ya da geçerli kimlik numaraları) ikisinde de var ve aynı; ikisinde de bulunan telefon/kimlik çelişmiyor. */
 export function samePerson(a, b) {
   if (!a || !b) return false;
@@ -122,7 +123,27 @@ export function createPeople(storedRows, entries, cache = null) {
     };
     const count = (tab, anchor) => (anchor ? byAnchor(tab).get(anchor)?.length || 0 : 0);
     const only = (tab, anchor) => (anchor ? byAnchor(tab).get(anchor) || [] : []);
-    return { sig, count, only, tabs: () => [...groups().keys()], layout };
+    // Sekmenin kolonları ve verilen kolonlardaki değerlere göre satırlar (içerik ikizi; aday 18 kâhin b3g).
+    const columnLists = new Map();
+    const columns = tab => {
+      if (!columnLists.has(tab)) columnLists.set(tab, columnOrder((groups().get(tab) || []).map(item => item.values || {})));
+      return columnLists.get(tab);
+    };
+    const contents = new Map();
+    const byContent = (tab, cols) => {
+      const id = `${tab}\u0000${cols.join("\u0001")}`;
+      if (!contents.has(id)) {
+        const map = new Map();
+        for (const item of groups().get(tab) || []) {
+          const value = projectionOf(item.values, cols);
+          if (!map.has(value)) map.set(value, []);
+          map.get(value).push(item);
+        }
+        contents.set(id, map);
+      }
+      return contents.get(id);
+    };
+    return { sig, count, only, columns, byContent, tabs: () => [...groups().keys()], layout };
   };
   const cached = (map, list, tabOf) => {
     if (!map || !list || typeof list !== "object") return side(list, tabOf);
@@ -271,8 +292,19 @@ export function planRebind({ storedRows, entries, mode, people, bonded, elsewher
     // Kişi değeri eski ve yeni sekmede TEK satır. 31e tur 7 N3: aynı adlı birden çok satırda konumla taşıma YOK (iki Ali yer değiştirip ikisi de değişince
     // bağ yanlış Ali'ye gidiyordu) — eşleşmeyen uyarısı + onay.
     const tab = tabFor(oldTab);
-    if (tab === null || people.stored.count(oldTab, anchor) !== 1 || people.incoming.count(tab, anchor) !== 1) continue;
-    const [match] = people.incoming.only(tab, anchor);
+    if (tab === null) continue;
+    let match = null;
+    if (people.stored.count(oldTab, anchor) === 1 && people.incoming.count(tab, anchor) === 1) [match] = people.incoming.only(tab, anchor);
+    else {
+      // Aday 18 kâhin b3g: aynı adlı birden çok satırda kolon eklenip / çıkınca İÇERİĞİ DEĞİŞMEYEN satır mevcut kayıttır — iki tablonun ortak kolonlarındaki
+      // değerleri aynı olan satır, o değerlerle iki tabloda da TEK satırsa eşlenir (konum değil içerik). Tutarı değişen satır eşlenmez (eşleşmeyen + onay).
+      const incomingColumns = new Set(people.incoming.columns(tab));
+      const common = people.stored.columns(oldTab).filter(column => incomingColumns.has(column));
+      const value = projectionOf(row.values, common);
+      const olds = common.length ? people.stored.byContent(oldTab, common).get(value) || [] : [];
+      const news = common.length ? people.incoming.byContent(tab, common).get(value) || [] : [];
+      if (olds.length === 1 && news.length === 1) [match] = news;
+    }
     if (!match || !fresh(match) || !samePerson(sig, people.incoming.sig(match))) continue;
     // 31e tur 7 N1 (karar A): iki anahtar da açık kimlikse (Dosya No / kimlik kolonu değeri) kişi eşleşmesiyle taşınmaz — kapanan dosyanın bağı yeni
     // dosyaya gitmez (v2.4.3 gibi eski dosyada kalır; onayda dosya numarasıyla söylenir). Taşıma yalnız anahtarlardan biri içerik özetiyken.

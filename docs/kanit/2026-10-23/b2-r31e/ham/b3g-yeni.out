@@ -1,0 +1,76 @@
+{
+ "kolon-eklenir+Ali110 (onaysız)": {
+  "onaysiz": [
+   409,
+   "bonds-unmatched",
+   "1 kaydın tahsilatı bu yüklemeyle eşleşmedi: Ali Veli. Bu bağlar silinmez, eski kayıtta kalır; yeni satırlarda görünmez. "
+  ],
+  "aliAlacak": [
+   30
+  ],
+  "tahsilatNerede": [
+   "10:Ali Veli 100",
+   "20:Ali Veli 200",
+   "30:Can Su 300",
+   "40:Deniz Ay 400",
+   "50:Nur Ak 700",
+   "60:Oya Er 800"
+  ]
+ },
+ "kolon-eklenir+Ali110 (onaylı)": {
+  "onaysiz": [
+   409,
+   "bonds-unmatched",
+   "1 kaydın tahsilatı bu yüklemeyle eşleşmedi: Ali Veli. Bu bağlar silinmez, eski kayıtta kalır; yeni satırlarda görünmez. "
+  ],
+  "onayli": 200,
+  "aliAlacak": [
+   20
+  ],
+  "tahsilatNerede": [
+   "10:YOK",
+   "20:Ali Veli 200",
+   "30:Can Su 300",
+   "40:Deniz Ay 400",
+   "50:Nur Ak 750",
+   "60:Oya Er 800"
+  ]
+ },
+ "kolonsuz+Ali110 (onaysız)": {
+  "onaysiz": [
+   409,
+   "bonds-unmatched",
+   "1 kaydın tahsilatı bu yüklemeyle eşleşmedi: Ali Veli. Bu bağlar silinmez, eski kayıtta kalır; yeni satırlarda görünmez. "
+  ],
+  "aliAlacak": [
+   30
+  ],
+  "tahsilatNerede": [
+   "10:Ali Veli 100",
+   "20:Ali Veli 200",
+   "30:Can Su 300",
+   "40:Deniz Ay 400",
+   "50:Nur Ak 700",
+   "60:Oya Er 800"
+  ]
+ },
+ "kolonsuz+Ali110 (onaylı)": {
+  "onaysiz": [
+   409,
+   "bonds-unmatched",
+   "1 kaydın tahsilatı bu yüklemeyle eşleşmedi: Ali Veli. Bu bağlar silinmez, eski kayıtta kalır; yeni satırlarda görünmez. "
+  ],
+  "onayli": 200,
+  "aliAlacak": [
+   20
+  ],
+  "tahsilatNerede": [
+   "10:YOK",
+   "20:Ali Veli 200",
+   "30:Can Su 300",
+   "40:Deniz Ay 400",
+   "50:Nur Ak 750",
+   "60:Oya Er 800"
+  ]
+ }
+}
