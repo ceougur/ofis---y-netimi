@@ -86,3 +86,16 @@ Tutar + KDV sekmelerinin kişileri raporda HİÇ yok (b3e Kemal Uz, Leyla Su, Me
 rastgele 2'nin ÖTV + Genel Toplam + Tahsil Edilen sekmesi aday 16'da kurala uygun; (2) borç sütunu belirlenemeyen sekmenin (Aidat + Ek Ücret) kişisi raporda notsuz
 kayboluyor (Tülin Er); (3) b3f: aynı dosya Yerine koy'da tahsilat kalıyor (anahtar aynı), ama geçersiz Vergi No (Oya Er) / TC (Sami Er) silinip yeniden yüklenince satır
 anahtarı değişiyor ("satir:c7ae…" → "satir:1b06…") ve kayda bağlı tahsilat düşüyor (alacak 60 / 90 → 0) — geçersiz değer kayıt kimliğine giriyor.
+
+### Tur 6 — tablo bağ sürekliliği (baş mimar kararı 23.10.2026)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| KIRMIZI kirmizi-aday16-cari-bag-surekliligi | 19 senaryo (b3g, b3h yeni) + 43 mutant, ADAY 16 kodunda | 68 fark (BULGU 50) · 0 okuma hatası · 0 yakalanmayan mutasyon |
+| KIRMIZI kirmizi-r31e-e-cari-bag-surekliligi | aynı, is/r31e-e (E1/E2 düzeltmesi, 6838d3e) kodunda | 29 fark (BULGU 26) · 0 okuma hatası · 0 yakalanmayan mutasyon — b3e ve rastgele YEŞİL (karar A düzeltmesi tutuyor) |
+
+Neden (ham çıktı, ders 38; iki ağaçta bağ sürekliliği farkları aynı): (1) Yerine koy'da yeni kolon (E-posta) + bir satırın tutar değişimi tablodaki BÜTÜN kayıt tahsilatlarını
+ve cari bağını koparıyor (b3g k2: Nur Ak 50, Oya Er 60, Can Su 30, Deniz Ay 40, Ali Veli 10 + 20, Ece Naz carisinin 25'i → 0) — Dosya No'suz satırın anahtarı satır içeriğinin
+özeti; Dosya No kolonu eklenince de kopuyor (b3h k2); aynı içerik geri yüklenince bağ geri görünüyor (b3h k3 — veri silinmemiş); (2) hiçbir yüklemede uyarı ya da onay yok
+(b3g t3 "Ali Veli", t4 "Oya Er"/"Deniz Ay"; b3h t4 "Kaan Uz" çift satırı) — commit onaysız 200; (3) Devamı olarak ekle (merge) mevcut 2. satırı (Lale Ak, tahsilatı 200)
+yeni dosyanın 2. satırıyla (Yeni Kişi) değiştiriyor — Lale Ak raporda yok; (4) b3f k4 (geçersiz değer silinince tahsilat kopuyor) aynı bulgunun parçası.

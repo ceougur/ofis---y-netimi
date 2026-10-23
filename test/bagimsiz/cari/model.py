@@ -65,6 +65,11 @@ MUTASYONLAR = {
     # /2 KAYIT ANAHTARI SÜREKLİLİĞİ (baş mimar kararı 23.10.2026)
     38: "Yerine koy (aynı dosyayı yeniden yükle) kayda bağlı tahsilatı kayıttan koparır",
     39: "Sağlaması tutmayan Vergi No / TC değeri kayıt kimliğine girer (değer değişince tahsilat kopar)",
+    # /2 TABLO BAĞ SÜREKLİLİĞİ (baş mimar kararı 23.10.2026)
+    40: "Yerine koy güvenli eşleşmede de bağı koparır (satır içeriği anahtar)",
+    41: "Güvenli eşleşme yokken uyarı ve onay yok (sessiz)",
+    42: "Aynı kişi değeri birden çok satırdayken aynı konum eşleşmesi yok",
+    43: "Devamı olarak ekle aynı kişi + aynı tutar satırını söylemez, onay istemez",
 }
 
 
@@ -207,6 +212,7 @@ class Model:
         self.etiketCari = defaultdict(set)   # cari -> açık/kart denetiminin etiketini AJAN'a düşüren nedenler
         self.out = {}
         self.belirsiz = []
+        self.belirsiz_adlar = set()  # bağ sürekliliği: eşleşmeyen bağlı verinin yeri kuralda yok → bu adlı kişilerin borç/alacak denetimi yapılmaz
 
     # ───────────────────────── yardımcılar
     def yeni_seq(self):
@@ -456,6 +462,8 @@ class Model:
         if self.mut == 38:
             self.kayitTahsilat.clear()
         onceki_imza = {no: kay.get("ham_kimlik") for no, kay in getattr(self, "kayitlar", {}).items()}
+        eski_satir = self.satir_listesi() if self.sekmeler else None
+        eski_sekme, eski_kayit = list(self.sekmeler), dict(self.kayitlar)
         self.kayitlar = {}
         self.sekmeler = []
         for sk in a["sekmeler"]:
@@ -471,7 +479,8 @@ class Model:
                 satirlar = [(r["no"], dict(r.get("hucreler", {}))) for r in sk["kayitlar"]]
             else:
                 bas, satirlar = None, [(r["no"], None) for r in sk["kayitlar"]]
-            self.sekmeler.append({"ad": sk["ad"], "tur": sk["tur"], "basliklar": bas, "satirlar": satirlar})
+            self.sekmeler.append({"ad": sk["ad"], "tur": sk["tur"], "basliklar": bas, "satirlar": satirlar, "adlar": [r["isim"] for r in sk["kayitlar"]],
+                                  "telefon": [str((r.get("hucreler") or {}).get("Telefon") or r.get("tel") or "").strip() for r in sk["kayitlar"]]})
             kimlik_sutun = [h for h in (sk.get("basliklar") or []) if tr_kucuk(h) in KISI_KIMLIK_BASLIK] if sk["tur"] == "serbest" else []
             for r in sk["kayitlar"]:
                 no = r["no"]
@@ -496,6 +505,82 @@ class Model:
             for no, kay in self.kayitlar.items():
                 if onceki_imza.get(no) is not None and onceki_imza[no] != kay.get("ham_kimlik"):
                     self.kayitTahsilat[no] = 0
+        if eski_satir is not None:
+            self.bag_surekliligi(a, eski_satir, eski_sekme, eski_kayit)
+
+    def satir_listesi(self):
+        """BAĞ SÜREKLİLİĞİ: yüklü tablonun satırları — sekme, sıra (konum), ref (kâhinin kayıt no'su), ad, kişi değeri (ad; varsa telefon ya da geçerli TCKN/VKN), borç."""
+        out = []
+        for sk in self.sekmeler:
+            kim_sutun = [h for h in (sk.get("basliklar") or []) if tr_kucuk(h) in KISI_KIMLIK_BASLIK]
+            for i, (no, c) in enumerate(sk["satirlar"]):
+                ad = sk.get("adlar", [None] * (i + 1))[i]
+                tel = (sk.get("telefon") or [""] * (i + 1))[i]
+                kim = next((str((c or {}).get(h) or "").strip() for h in kim_sutun if kimlik_gecerli(str((c or {}).get(h) or "").strip())), "")
+                b = self.satir_borcu(sk, c) if sk["tur"] == "serbest" and sk["basliklar"] is not None else None
+                out.append({"sekme": sk["ad"], "sira": i, "ref": no, "ad": ad, "kd": (ad, tel or kim or None), "borc": b})
+        return out
+
+    def bag_surekliligi(self, a, eski, eski_sekme, eski_kayit):
+        """TABLO BAĞ SÜREKLİLİĞİ (baş mimar kararı 23.10.2026): (1) Yerine koy / Devamı olarak ekle / Sheets eşitlemesi kayda bağlı veriyi (kayıt tahsilatı, not, düzeltme,
+        "Ödendi say", cari bağı) SESSİZCE koparmaz. (2) Güvenli eşleşme varsa bağ yeni satıra taşınır: eski ve yeni satır aynı kişi değerini taşır ve o kişi değeri eski ve
+        yeni tabloda TEK satırdadır — ya da AYNI KONUMDAKİ satır aynı kişi değerini taşır; tutar/vade değişse, kolon eklense, sıra değişse de bağ aynı kişide kalır. (3) Güvenli
+        eşleşme yoksa önizlemede eşleşmeyen kayıtları ADIYLA söyleyen uyarı ve ONAY; eşleşmeyen bağlı veri silinmez (yeri kuralda yok → o adın denetimi yapılmaz). (4) Devamı
+        olarak ekle mevcut kayıtlarla aynı kişi + aynı tutar görünen satırları önizlemede söyler ve onay ister. Denetimler `adim:<id>:onay`, `adim:<id>:uyariAdlari`."""
+        if a.get("mod") == "devam":
+            yeni = self.satir_listesi()
+            self.sekmeler = eski_sekme + self.sekmeler
+            birlesik = dict(eski_kayit)
+            for no, kay in self.kayitlar.items():
+                if no in birlesik:
+                    birlesik[no]["sekmeler"] = list(dict.fromkeys(birlesik[no]["sekmeler"] + kay["sekmeler"]))
+                else:
+                    birlesik[no] = kay
+            self.kayitlar = birlesik
+            cift = sorted({y["ad"] for y in yeni if y["borc"] is not None and any(e["kd"] == y["kd"] and e["borc"] == y["borc"] for e in eski)})
+            if self.mut == 43:
+                cift = []
+            self.belirsiz_adlar |= set(cift)
+            self.d("adim:%s:onay" % a["id"], bool(cift), "KULLANICI", "bağ sürekliliği (4) Devamı olarak ekle: aynı kişi + aynı tutar satırında onay")
+            self.d("adim:%s:uyariAdlari" % a["id"], cift, "KULLANICI", "bağ sürekliliği (4) önizleme aynı kişi + aynı tutar satırlarını adıyla söyler")
+            return
+        yeni = self.satir_listesi()
+        tutanlar = sorted({no for no, v in self.kayitTahsilat.items() if v} | {c["kayit"] for c in self.cariler.values() if c.get("kayit")})
+        eslesmeyen = []
+        for h in tutanlar:
+            er = next((e for e in eski if e["ref"] == h), None)
+            if er is None:
+                continue  # tablo dışı kayıt (ör. taksit kartı anahtarı) — bu kuralın konusu değil
+            hedef = None
+            if self.mut != 40:
+                ayni_eski = [e for e in eski if e["kd"] == er["kd"]]
+                ayni_yeni = [y for y in yeni if y["kd"] == er["kd"]]
+                if len(ayni_eski) == 1 and len(ayni_yeni) == 1:
+                    hedef = ayni_yeni[0]["ref"]
+                elif self.mut != 42:
+                    konum = next((y for y in yeni if y["sekme"] == er["sekme"] and y["sira"] == er["sira"]), None)
+                    if konum and konum["kd"] == er["kd"]:
+                        hedef = konum["ref"]
+            if hedef is not None:
+                if hedef != h:
+                    self.kayitTahsilat[hedef] += self.kayitTahsilat.pop(h, 0)
+                for c in self.cariler.values():
+                    if c.get("kayit") == h:
+                        c["kayit"] = hedef
+                continue
+            eslesmeyen.append(er["ad"])
+            self.kayitTahsilat.pop(h, None)  # eşleşmeyen bağlı veri silinmez ama hiçbir satırda değildir (yeri kuralda yok)
+            for c in self.cariler.values():
+                if c.get("kayit") == h:
+                    c["kayit"] = None
+            self.belirsiz_adlar.add(er["ad"])
+        if self.mut == 40:
+            eslesmeyen = []  # aday 16 davranışı: bağ sessizce kopar
+        adlar = sorted(set(eslesmeyen))
+        if self.mut == 41:
+            adlar = []
+        self.d("adim:%s:onay" % a["id"], bool(adlar), "KULLANICI", "bağ sürekliliği (3) güvenli eşleşme yoksa onay; hepsi güvenliyse onaysız")
+        self.d("adim:%s:uyariAdlari" % a["id"], adlar, "KULLANICI", "bağ sürekliliği (3) önizleme eşleşmeyen kayıtları adıyla söyler")
 
     def cari_ac(self, a):
         self.cariler[a["ad"]] = {"tur": a.get("tur", "musteri"), "isim": a["isim"], "kayit": a.get("kayit"),
@@ -903,6 +988,8 @@ class Model:
         # 5c: Tablodaki Kişiler — bir dosya no'nun tahsilatı bir kez (kayıt tahsilatı + bağlı carinin bütün tahsilatları, kartta olanlar dahil)
         kisiler_a = self.kisiler()
         for no, kay in self.kayitlar.items():
+            if kay["isim"] in self.belirsiz_adlar:
+                continue  # bağ sürekliliği (3)/(4): eşleşmeyen bağlı verinin yeri kuralda yok
             cari = self.cari_bul_kayit(no)
             alacak = self.kayitTahsilat.get(no, 0)
             if cari is None and no in kisiler_a:
@@ -922,6 +1009,9 @@ class Model:
         kisiler = self.kisiler()
         for no in self.kayitlar:
             if self.cari_bul_kayit(no) is not None or (no in self.kartlar and self.kartlar[no]["aktif"]):
+                k4_tanimli = False
+                continue
+            if self.kayitlar[no]["isim"] in self.belirsiz_adlar:
                 k4_tanimli = False
                 continue
             b = self.tablo_borcu(no)

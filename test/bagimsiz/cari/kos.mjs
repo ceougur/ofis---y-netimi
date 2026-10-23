@@ -79,7 +79,7 @@ function tabloMatrisi(sk) {
   // Dosya No'suz tablo (yalnız ad; senaryodaki `no` kâhinin iç kimliğidir, tabloya yazılmaz).
   if (sk.tur === "serbest") {
     const ilk = sk.ilk || ["Dosya No", "Borçlu"];
-    const bas = r => (ilk.length === 1 ? [r.isim] : [r.no, r.isim]);
+    const bas = r => (ilk.length === 1 ? [r.isim] : [r.dosya ?? r.no, r.isim]); // `dosya`: tabloya yazılan Dosya No (yoksa kâhinin kayıt no'su)
     return [[...ilk, ...sk.basliklar], ...sk.kayitlar.map(r => [...bas(r), ...sk.basliklar.map(h => r.hucreler?.[h] ?? "")])];
   }
   throw new Error(`sekme türü bilinmiyor: ${sk.tur}`);
@@ -116,16 +116,51 @@ async function kos(senaryo) {
       const t = a.tarih || senaryo.bugun;
       switch (a.islem) {
         case "tablo_yukle": {
-          const st = await api("POST", "/api/workspace/dataset/stage", { kind: "excel", fileName: `${senaryo.ad}.xlsx`, sheets: a.sekmeler.map(sk => ({ name: sk.ad, matrix: tabloMatrisi(sk) })) });
-          const r = st.status === 200 ? await api("POST", "/api/workspace/dataset/commit", { stageId: st.data.stageId, mode: "replace" }) : st;
+          // Bağ sürekliliği (baş mimar kararı 23.10.2026): "mod": "devam" → Devamı olarak ekle (commit mode "merge"; kara kutu yoklaması), yoksa Yerine koy ("replace").
+          // İkinci ve sonraki yüklemede önce ONAYSIZ commit: 200 değilse program onay istedi (`adim:<id>:onay` true); uyarı adları önizleme (stage) yanıtında —
+          // mapping (satır yankısı) ve preview.samples dışında — ya da onay isteyen yanıtta geçen tablo adları. Onay bayrağının adı bilinmiyor: aday bayraklar denenir.
+          const sheets = a.sekmeler.map(sk => ({ name: sk.ad, matrix: tabloMatrisi(sk) }));
+          const sahne = () => api("POST", "/api/workspace/dataset/stage", { kind: "excel", fileName: `${senaryo.ad}.xlsx`, sheets });
+          const st = await sahne();
+          const mode = a.mod === "devam" ? "merge" : "replace";
+          let r = st.status === 200 ? await api("POST", "/api/workspace/dataset/commit", { stageId: st.data.stageId, mode }) : st;
+          if (ids.tabloYuklendi && st.status === 200) {
+            P[`adim:${a.id}:onay`] = r.status !== 200;
+            const adlar = new Set([...(ids.tabloAdlari || []), ...a.sekmeler.flatMap(sk => sk.kayitlar.map(kay => kay.isim))]);
+            const metin = [];
+            const tara = (o, yol) => {
+              if (typeof o === "string") metin.push(o);
+              else if (Array.isArray(o)) o.forEach(x => tara(x, yol));
+              else if (o && typeof o === "object") for (const [k2, v] of Object.entries(o)) if (!(yol === "" && k2 === "mapping") && !(yol === "preview" && k2 === "samples")) tara(v, yol ? `${yol}.${k2}` : k2);
+            };
+            tara(st.data, "");
+            if (r.status !== 200) tara(r.data, "");
+            P[`adim:${a.id}:uyariAdlari`] = [...adlar].filter(ad => metin.some(m => m.includes(ad))).sort();
+            ham[`adim:${a.id}:onizleme`] = { preview: st.data?.preview, schema: st.data?.schema, ilkCommit: { status: r.status, data: r.data } };
+            if (r.status !== 200) {
+              for (const ek of [{ confirm: true }, { confirmed: true }, { confirmUnmatched: true }, { acceptUnmatched: true }, { onay: true }, { force: true }]) {
+                const st2 = await sahne();
+                const r2 = st2.status === 200 ? await api("POST", "/api/workspace/dataset/commit", { stageId: st2.data.stageId, mode, ...ek }) : st2;
+                if (r2.status === 200) {
+                  ham[`adim:${a.id}:onayBayragi`] = ek;
+                  r = r2;
+                  break;
+                }
+              }
+              if (r.status !== 200) hatalar.push(`${a.id} onay istendi ama onay bayrağı bulunamadı (okunamadı) — ${r.status} ${JSON.stringify(r.data).slice(0, 200)}`);
+            }
+          }
           durum(a, r);
+          ids.tabloYuklendi = true;
+          ids.tabloAdlari = [...new Set([...(a.mod === "devam" ? ids.tabloAdlari || [] : []), ...a.sekmeler.flatMap(sk => sk.kayitlar.map(kay => kay.isim))])];
           const pv = await api("GET", "/api/workspace/plans/from-table");
           ham[`tablo:${a.id}:onizleme`] = (pv.data?.records || []).slice(0, 200).map(x => Object.fromEntries(Object.entries(x).filter(([, v]) => typeof v !== "object")));
           for (const sk of a.sekmeler) {
             for (const kay of sk.kayitlar) {
               // Dosya No'suz sekme (`ilk` tek başlık): kayıt ADLA eşlenir (aynı adlı iki kayıt üretilmez); iki kez yüklenen tabloda aynı ad aynı kayda eşlenir.
-              const bul = sk.ilk && sk.ilk.length === 1 ? pv.data?.records?.find(x => x.name === kay.isim) : pv.data?.records?.find(x => x.caseNo === kay.no && x.name === kay.isim);
-              ids.anahtar[kay.no] = bul?.key || ids.anahtar[kay.no] || kay.no;
+              const dosya = kay.dosya ?? kay.no;
+              const bul = sk.ilk && sk.ilk.length === 1 ? pv.data?.records?.find(x => x.name === kay.isim) : pv.data?.records?.find(x => x.caseNo === dosya && x.name === kay.isim);
+              ids.anahtar[kay.no] = bul?.key || (sk.ilk ? ids.anahtar[kay.no] : dosya) || kay.no;
               ((ids.sekmeAd ||= {})[kay.no] ||= new Set()).add(sk.ad);
             }
           }
@@ -136,7 +171,13 @@ async function kos(senaryo) {
             for (const sk of a.sekmeler.filter(x => x.ilk)) {
               for (const kay of sk.kayitlar) {
                 const gs = (cozR?.groups || []).filter(g => g.cari === kay.isim || String(g.cari || "").startsWith(`${kay.isim} (`));
-                const keys = [...new Set(gs.flatMap(g => g.lines.map(l => l.key)))];
+                let keys = [...new Set(gs.flatMap(g => g.lines.map(l => l.key)))];
+                if (keys.length > 1 && kay.hucreler?.Tutar) {
+                  // aynı adlı birden çok satır: satırın GİRDİ tutarıyla ayrılır (beklenen değer değil — tablonun kendi hücresi)
+                  const t = kurusOf(String(kay.hucreler.Tutar).replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", "."));
+                  const kk = [...new Set(gs.flatMap(g => g.lines.filter(l => kurus(l.borc) === t).map(l => l.key)))];
+                  if (kk.length === 1) keys = kk;
+                }
                 if (keys.length === 1) ids.anahtar[kay.no] = keys[0];
                 ((ids.anahtarGecmis ||= {})[kay.no] ||= []).push(keys.length === 1 ? keys[0] : keys.length ? `belirsiz:${keys.length}` : "yok");
               }

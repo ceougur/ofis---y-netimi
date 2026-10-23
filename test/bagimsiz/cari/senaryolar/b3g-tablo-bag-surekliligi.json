@@ -1,0 +1,396 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3g-tablo-bag-surekliligi",
+ "aciklama": "TABLO BAĞ SÜREKLİLİĞİ (baş mimar kararı 23.10.2026) — Dosya No'suz tablo, Yerine koy: kayıt tahsilatları (Nur Ak, Oya Er, Ali Veli × 2, Can Su, Deniz Ay) ve cari bağı (Ece Naz carisi + carinin tahsilatı). v2 tutar değişimi (Nur Ak 700 → 750) + yeni kolon (E-posta): hepsi güvenli eşleşme, onay yok, tahsilat aynı kişide. v3 satır sırası ters: tekil kişi değerleri güvenli; aynı adlı iki Ali Veli'den konumu değişen eşleşmez → önizlemede 'Ali Veli' uyarısı + onay. v4 ad değişimi (Oya Er → Oya Erk) + satır silme (Deniz Ay) → uyarıda iki ad + onay; öbür kişilerin tahsilatı/cari bağı yerinde.",
+ "dayanak": "KARARLAR.md B3f (baş mimar kararı 23.10.2026 tablo bağ sürekliliği (1)–(3))",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Aidat",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "R1",
+       "isim": "Nur Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "700"
+       }
+      },
+      {
+       "no": "R2",
+       "isim": "Oya Er",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "800"
+       }
+      },
+      {
+       "no": "R3",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "100"
+       }
+      },
+      {
+       "no": "R4",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "200"
+       }
+      },
+      {
+       "no": "R5",
+       "isim": "Can Su",
+       "hucreler": {
+        "Telefon": "0532 111 11 11",
+        "Tutar": "300"
+       }
+      },
+      {
+       "no": "R6",
+       "isim": "Deniz Ay",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "400"
+       }
+      },
+      {
+       "no": "R7",
+       "isim": "Ece Naz",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "500"
+       }
+      }
+     ],
+     "ilk": [
+      "Müşteri"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "p1",
+   "islem": "kayit_tahsilat",
+   "kayit": "R1",
+   "tutar": "50",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "p2",
+   "islem": "kayit_tahsilat",
+   "kayit": "R2",
+   "tutar": "60",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "p3",
+   "islem": "kayit_tahsilat",
+   "kayit": "R3",
+   "tutar": "10",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "p4",
+   "islem": "kayit_tahsilat",
+   "kayit": "R4",
+   "tutar": "20",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "p5",
+   "islem": "kayit_tahsilat",
+   "kayit": "R5",
+   "tutar": "30",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "p6",
+   "islem": "kayit_tahsilat",
+   "kayit": "R6",
+   "tutar": "40",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "c1",
+   "islem": "cari_ac",
+   "ad": "ECE",
+   "isim": "Ece Naz",
+   "kayit": "R7"
+  },
+  {
+   "id": "h1",
+   "islem": "tahsilat",
+   "cari": "ECE",
+   "tutar": "25",
+   "tarih": "2026-06-11"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  },
+  {
+   "id": "t2",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Aidat",
+     "tur": "serbest",
+     "basliklar": [
+      "E-posta",
+      "Telefon",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "R1",
+       "isim": "Nur Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "750",
+        "E-posta": ""
+       }
+      },
+      {
+       "no": "R2",
+       "isim": "Oya Er",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "800",
+        "E-posta": ""
+       }
+      },
+      {
+       "no": "R3",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "100",
+        "E-posta": ""
+       }
+      },
+      {
+       "no": "R4",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "200",
+        "E-posta": ""
+       }
+      },
+      {
+       "no": "R5",
+       "isim": "Can Su",
+       "hucreler": {
+        "Telefon": "0532 111 11 11",
+        "Tutar": "300",
+        "E-posta": ""
+       }
+      },
+      {
+       "no": "R6",
+       "isim": "Deniz Ay",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "400",
+        "E-posta": ""
+       }
+      },
+      {
+       "no": "R7",
+       "isim": "Ece Naz",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "500",
+        "E-posta": ""
+       }
+      }
+     ],
+     "ilk": [
+      "Müşteri"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k2",
+   "islem": "kontrol"
+  },
+  {
+   "id": "t3",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Aidat",
+     "tur": "serbest",
+     "basliklar": [
+      "E-posta",
+      "Telefon",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "R7",
+       "isim": "Ece Naz",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "500",
+        "E-posta": ""
+       }
+      },
+      {
+       "no": "R6",
+       "isim": "Deniz Ay",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "400",
+        "E-posta": ""
+       }
+      },
+      {
+       "no": "R5",
+       "isim": "Can Su",
+       "hucreler": {
+        "Telefon": "0532 111 11 11",
+        "Tutar": "300",
+        "E-posta": ""
+       }
+      },
+      {
+       "no": "R4",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "200",
+        "E-posta": ""
+       }
+      },
+      {
+       "no": "R3",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "100",
+        "E-posta": ""
+       }
+      },
+      {
+       "no": "R2",
+       "isim": "Oya Er",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "800",
+        "E-posta": ""
+       }
+      },
+      {
+       "no": "R1",
+       "isim": "Nur Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "750",
+        "E-posta": ""
+       }
+      }
+     ],
+     "ilk": [
+      "Müşteri"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k3",
+   "islem": "kontrol"
+  },
+  {
+   "id": "t4",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Aidat",
+     "tur": "serbest",
+     "basliklar": [
+      "E-posta",
+      "Telefon",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "R7",
+       "isim": "Ece Naz",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "500",
+        "E-posta": ""
+       }
+      },
+      {
+       "no": "R5",
+       "isim": "Can Su",
+       "hucreler": {
+        "Telefon": "0532 111 11 11",
+        "Tutar": "300",
+        "E-posta": ""
+       }
+      },
+      {
+       "no": "R4",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "200",
+        "E-posta": ""
+       }
+      },
+      {
+       "no": "R3",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "100",
+        "E-posta": ""
+       }
+      },
+      {
+       "no": "R2",
+       "isim": "Oya Erk",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "800",
+        "E-posta": ""
+       }
+      },
+      {
+       "no": "R1",
+       "isim": "Nur Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "750",
+        "E-posta": ""
+       }
+      }
+     ],
+     "ilk": [
+      "Müşteri"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k4",
+   "islem": "kontrol"
+  }
+ ]
+}

@@ -1,0 +1,204 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3h-dosya-no-ve-devam",
+ "aciklama": "TABLO BAĞ SÜREKLİLİĞİ (baş mimar kararı 23.10.2026): Dosya No'suz tabloya Dosya No kolonu EKLENİR (v2) ve yeniden SİLİNİR (v3) — kişi değeri (ad) tekil, güvenli eşleşme: kayıt tahsilatı (Kaan Uz 100, Lale Ak 200) aynı kişide, onay yok. v4 'Devamı olarak ekle': mevcut kayıtla aynı kişi + aynı tutar görünen satır (Kaan Uz 1.000) önizlemede adıyla söylenir ve onay istenir; mevcut satırlar (Lale Ak, Mete Er) ve bağlı tahsilatları yerinde kalır, yeni kişi eklenir.",
+ "dayanak": "KARARLAR.md B3f (baş mimar kararı 23.10.2026 tablo bağ sürekliliği (1), (2), (4))",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Aidat",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "H1",
+       "isim": "Kaan Uz",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "1.000,00 ₺"
+       }
+      },
+      {
+       "no": "H2",
+       "isim": "Lale Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "2.000,00 ₺"
+       }
+      },
+      {
+       "no": "H3",
+       "isim": "Mete Er",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "3.000,00 ₺"
+       }
+      }
+     ],
+     "ilk": [
+      "Müşteri"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "p1",
+   "islem": "kayit_tahsilat",
+   "kayit": "H1",
+   "tutar": "100",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "p2",
+   "islem": "kayit_tahsilat",
+   "kayit": "H2",
+   "tutar": "200",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  },
+  {
+   "id": "t2",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Aidat",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "H1",
+       "isim": "Kaan Uz",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "1.000,00 ₺"
+       },
+       "dosya": "D-01"
+      },
+      {
+       "no": "H2",
+       "isim": "Lale Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "2.000,00 ₺"
+       },
+       "dosya": "D-02"
+      },
+      {
+       "no": "H3",
+       "isim": "Mete Er",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "3.000,00 ₺"
+       },
+       "dosya": "D-03"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k2",
+   "islem": "kontrol"
+  },
+  {
+   "id": "t3",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Aidat",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "H1",
+       "isim": "Kaan Uz",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "1.000,00 ₺"
+       }
+      },
+      {
+       "no": "H2",
+       "isim": "Lale Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "2.000,00 ₺"
+       }
+      },
+      {
+       "no": "H3",
+       "isim": "Mete Er",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "3.000,00 ₺"
+       }
+      }
+     ],
+     "ilk": [
+      "Müşteri"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k3",
+   "islem": "kontrol"
+  },
+  {
+   "id": "t4",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Aidat",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "H4",
+       "isim": "Kaan Uz",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "1.000,00 ₺"
+       }
+      },
+      {
+       "no": "H5",
+       "isim": "Yeni Kişi",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "999,00 ₺"
+       }
+      }
+     ],
+     "ilk": [
+      "Müşteri"
+     ]
+    }
+   ],
+   "mod": "devam"
+  },
+  {
+   "id": "k4",
+   "islem": "kontrol"
+  }
+ ]
+}
