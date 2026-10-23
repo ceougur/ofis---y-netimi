@@ -458,6 +458,7 @@ async function kos(senaryo) {
                 // TAKVİM KALEMİ (23.10.2026): kaydın vade kalemi tutarı (kalem yoksa 0; birden çok kalemde liste)
                 { const ts = its.map(x => kurus(x.amount) ?? 0); P[`${k}:kalem:${no}`] = ts.length === 0 ? 0 : ts.length === 1 ? ts[0] : ts; }
                 P[`${k}:kalemVar:${no}`] = its.length > 0; // Z2 (23.10.2026): Kalan 0 / eksi satırın kalemi Takvim'de görünmez
+                P[`${k}:kalemSoz:${no}`] = its.length === 1 ? its[0].promise === true : its.length ? its.map(x => x.promise === true) : false; // ÖDEME SÖZÜ: kalem söz kalemi mi
                 if (its.some(x => !("debt" in x))) {
                   P[`${k}:acilis:${no}`] = "OKUNAMADI";
                   // yalnız Açılış Bakiyesi'nin denetlendiği (raporlar: true) kontrolde okuma hatası; taksit kalemlerinde alan yok (b1 senaryoları) — denetlenmez

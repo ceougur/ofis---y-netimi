@@ -242,6 +242,14 @@ Kaynak: ana oturumun ilettiği karar metni. Ürün kodu okunmadı.
   "Ödeme Sözü Tutarı" 2.500 ve "Taahhüt Tutarı" 1.800 söz kalemi); mutant 63 (Sözleşme Tarihi kalem açar), 64 (yalnız "Söz Tutarı" söz). DENENMEYEN: öbür başlangıç tarihleri
   ("Kayıt Tarihi", "Başlangıç Tarihi" — kararda yok).
 
+### B3l — ÖDEME SÖZÜ başlıkları (karar sahibi 23.10.2026; aday 22)
+- Söz ailesi TAM sözcük ("Söz", "Sözü", "Ödeme Sözü"); TAAHHÜT ailesi ÖNEK ("Taahhüt", "Taahhüdü", "Taahhütname", "Taahhütlü" — hepsi söz); yalnız "Sözleşme…" söz değildir
+  (B3k). Söz TUTARI sütunu söz / taahhüt sözcüğü + "tutar" YA DA "miktar" sözcüğü taşır ("Söz Tutarı", "Söz Miktarı", "Taahhüt Miktarı"); [YAYGIN] tutar / miktar sözcüğü
+  olmayan söz-ailesi sütunu para kolonu değildir. Söz tutarından gelen kalem ödeme sözü kalemidir (`<kontrol>:kalemSoz:<no>` = takvim kalemi `promise`).
+- Senaryo b3v-taahhut-soz-miktari (Kalan 2.500, "Taahhütname Tarihi", "Taahhüt Tutarı" 500 → söz kalemi 500; Kalan 3.000, "Söz Tarihi", "Söz Miktarı" 600 → 600; "Ödeme Taahhüdü
+  Tarihi / Tutarı" 800; "Taahhütname Miktarı" 900); mutant 65 (taahhüt tam sözcük), 66 (yalnız "tutar"). DENENMEYEN: "Taahhütlü …" başlığı (söz tarihi olmayan sekmede söz
+  kaleminin tarihi kararda yok), "Söz" / "Ödeme Sözü" sayı değerli tutar sözcüksüz sütun.
+
 ### B4b — Dört rapor aynı satır borcu (K4 [KULLANICI] 23.10.2026; TAKVİM KALEMİ ile daraldı — B3i)
 - **K4** Tablodaki Kişiler (totals.debit), Tahsilat Takvimi (/dues Σ amount), Vade Takip (totals.amount) ve Nakit Akışı Beklenen (totals.expected) aynı satır
   borcunu kullanır; toplamları aynıdır (dönem süzgeci içinde). Kontrol adımında `"raporlar": true` ve bütün kayıtların borcu tanımlı ve tek değerliyse dört
