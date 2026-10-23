@@ -202,26 +202,74 @@ describe("31e B1: Dosya No'suz tabloda içerik değişince bağlar yeni satıra 
     }
   });
 
-  it("N5 aynı adlı iki kişi: aynı konumda aynı ad ve aynı sayı → doğru Ali'ye taşınır; ilk Ali silinip ikincisi değişirse taşınmaz (onay)", async () => {
+  it("N5 aynı adlı iki kişi (tur 7 N3 kararı): ad sekmede birden çok satırdaysa konumla taşınmaz — eşleşmeyen + onay, bağ eski anahtarda; içerik aynı sıra değişimi onay istemez", async () => {
     const twins = [PEOPLE[0], PEOPLE[1], PEOPLE[2], { ...PEOPLE[3], name: "Ali Veli", tutar: "7000", aciklama: "İkinci Ali" }];
     const { server, admin, store } = await boot();
     try {
       await load(admin, table(T0, twins));
       const second = rowsOf(store).find(r => r.values["Açıklama"] === "İkinci Ali").k;
       assert.equal((await admin.post(`/api/workspace/cases/${encodeURIComponent(second)}/notes`, { note: "İkinci Ali notu" })).status, 200);
-      await load(admin, table(T0, twins.map(p => (p.aciklama === "İkinci Ali" ? { ...p, tutar: "7500" } : p))));
-      const noteKey = store.get("SELECT case_key AS k FROM notes WHERE note = 'İkinci Ali notu'").k;
-      assert.equal(rowsOf(store).find(r => r.k === noteKey)?.values["Açıklama"], "İkinci Ali", "not ikinci Ali'nin yeni satırında (birinci Ali'ye gitmedi)");
       // Aynı adlı iki satırın SIRASI değişir (içerik aynı): anahtarlar içerikten, değişmez → taşıma ve onay gerekmez, not yine ikinci Ali'de (kâhin b3g t3).
-      const swapped = twins.map(p => (p.aciklama === "İkinci Ali" ? { ...p, tutar: "7500" } : p)).reverse();
-      const { staged: order } = await load(admin, table(T0, swapped));
+      const { staged: order } = await load(admin, table(T0, [...twins].reverse()));
       assert.equal(order.bonds?.replace?.unmatched?.count ?? 0, 0, "sıra değişince eşleşmeyen yok");
       assert.equal(order.bonds?.replace?.moved?.count ?? 0, 0, "sıra değişince taşıma yok (anahtar aynı)");
-      assert.equal(rowsOf(store).find(r => r.k === noteKey)?.values["Açıklama"], "İkinci Ali", "sıra değişince not yine ikinci Ali'de");
-      // İlk Ali silinir, ikincisinin tutarı değişir: konum kayar, ad artık tek ama eskide iki → güvenli değil.
-      const staged = await stage(admin, excel(table(T0, twins.slice(1).map(p => (p.aciklama === "İkinci Ali" ? { ...p, tutar: "8000" } : p)))));
-      assert.equal(staged.bonds?.replace?.unmatched?.count, 1, "ikinci Ali'nin notu eşleşmez");
-      assert.equal((await commitRaw(admin, staged, "replace")).status, 409);
+      assert.equal(rowsOf(store).find(r => r.k === second)?.values["Açıklama"], "İkinci Ali", "sıra değişince not yine ikinci Ali'de");
+      // İkinci Ali'nin tutarı değişir: ad sekmede iki satır → konumla taşınmaz; eşleşmeyen uyarısı ve onay.
+      const staged = await stage(admin, excel(table(T0, twins.map(p => (p.aciklama === "İkinci Ali" ? { ...p, tutar: "7500" } : p)))));
+      assert.equal(staged.bonds?.replace?.moved?.count ?? 0, 0, "aynı adlı satırda konumla taşıma yok");
+      assert.deepEqual(staged.bonds?.replace?.unmatched?.names, ["Ali Veli"], "eşleşmeyen adıyla");
+      assert.equal((await commitRaw(admin, staged, "replace")).status, 409, "onaysız uygulanmaz");
+      assert.equal((await commitRaw(admin, staged, "replace", { confirm: true })).status, 200);
+      assert.equal(store.get("SELECT case_key AS k FROM notes WHERE note = 'İkinci Ali notu'").k, second, "onayla not eski anahtarda kalır (silinmez, birinci Ali'ye gitmez)");
+      assert.ok(!rowsOf(store).some(r => r.k === second), "eski anahtar artık tabloda yok (onaylanan kopma)");
+    } finally {
+      await server.close();
+    }
+  });
+
+  it("N3 (tur 7 f2) iki Ali yer değiştirip ikisi de değişir: bağ yanlış Ali'ye taşınmaz — onaysız 409, onayla eski anahtarda; Takvim 4.100 + 1.100", async () => {
+    const twins = [PEOPLE[0], PEOPLE[1], PEOPLE[2], { ...PEOPLE[3], name: "Ali Veli" }, PEOPLE[4], PEOPLE[5]];
+    const { server, admin, store } = await boot();
+    try {
+      await load(admin, table(T0, twins));
+      const { ali } = await bond(admin, store);
+      assert.equal(rowsOf(store).find(r => r.k === ali)?.values.Tutar, "1000", "ön koşul: bağlar 1.000'lik Ali'de");
+      const next = table(T0, [{ ...twins[3], tutar: "4100" }, twins[1], twins[2], { ...twins[0], tutar: "1100" }, twins[4], twins[5]]);
+      const staged = await stage(admin, excel(next));
+      const refused = await commitRaw(admin, staged, "replace");
+      assert.equal(refused.status, 409, "aynı adlı iki satırın bağı sessizce (ve yanlış kişiye) taşınmaz");
+      assert.equal(refused.data.code, "bonds-unmatched");
+      assert.equal(staged.bonds?.replace?.moved?.count ?? 0, 0);
+      assert.equal((await commitRaw(admin, staged, "replace", { confirm: true })).status, 200);
+      assert.equal(bondKeys(store).tahsilat, ali, "tahsilat eski anahtarda (4.100'lük Ali'ye gitmedi)");
+      const takvim = (await reports(admin)).takvim("Ali Veli").sort((a, b) => a - b);
+      assert.deepEqual(takvim, [1100, 4100], `Takvim Ali (bağ kimseye taşınmadı): ${JSON.stringify(takvim)}`);
+    } finally {
+      await server.close();
+    }
+  });
+
+  it("N1 (tur 7, karar A) Dosya No'lu tabloda kapanan dosyanın bağı yeni dosya numarasına taşınmaz — onayda adı ve dosya numarasıyla; yeni dosya Takvim'de tam tutar", async () => {
+    const HUKUK = [C.dosya, ["Borçlu", p => p.name], ["Alacak", p => p.tutar], C.vade];
+    const { server, admin, store } = await boot();
+    try {
+      await load(admin, table(HUKUK));
+      const key = "2026/101";
+      assert.ok(rowsOf(store).some(r => r.k === key), "ön koşul: anahtar dosya no");
+      assert.equal((await admin.post(`/api/workspace/cases/${encodeURIComponent(key)}/payments`, { amount: 400, date: iso(-1), method: "cash", cashForce: true, caseTitle: "Ali Veli" })).status, 200);
+      assert.equal((await admin.post(`/api/workspace/cases/${encodeURIComponent(key)}/notes`, { note: "2026/101 notu" })).status, 200);
+      const next = table(HUKUK, PEOPLE.map(p => (p.name === "Ali Veli" ? { ...p, dosya: "2026/150", tutar: "5000" } : p)));
+      const staged = await stage(admin, excel(next));
+      assert.equal(staged.bonds?.replace?.moved?.count ?? 0, 0, "açık kimlikten açık kimliğe kişiyle taşıma yok");
+      assert.deepEqual(staged.bonds?.replace?.unmatched?.names, ["Ali Veli (2026/101)"], "kalkacak dosya adı ve numarasıyla");
+      const refused = await commitRaw(admin, staged, "replace");
+      assert.equal(refused.status, 409, "kalkacak dosyanın bağı sessizce başka dosyaya gitmez");
+      assert.match(refused.data.error, /Ali Veli \(2026\/101\)/);
+      assert.equal((await commitRaw(admin, staged, "replace", { confirm: true })).status, 200);
+      assert.equal(store.get("SELECT case_key AS k FROM payments").k, key, "tahsilat 2026/101'de kalır");
+      assert.equal(store.get("SELECT case_key AS k FROM notes").k, key, "not 2026/101'de kalır");
+      const items = (await admin.get("/api/workspace/dues")).data.data.items.filter(i => i.person === "Ali Veli").map(i => i.amount);
+      assert.deepEqual(items, [5000], `yeni dosya 2026/150 Takvim'de 5.000 (4.600 değil): ${JSON.stringify(items)}`);
     } finally {
       await server.close();
     }
@@ -447,6 +495,64 @@ describe("31e Google Sheets eşitlemesi", () => {
       await server.close();
     }
   });
+  it("N5 (tur 7) Sheet'te Olmayanları Kaldır: bağı olan satır listede 'Bağlı: tahsilat' ile görünür, onaysız kaldırma 409 adıyla; bağsız satır onaysız kalkar; onaylı kaldırmada tahsilat eski anahtarda", async () => {
+    const { server, admin, store, state } = await sheetServer();
+    try {
+      const head = ["Ad Soyad", "Tutar", "Son Ödeme"];
+      await link(admin, state, [head, ["Kemal Er", "100", tr(-3)], ["Lale Ak", "200", tr(-3)], ["Mert Su", "300", tr(-3)]]);
+      const [lale] = keyOf(store, "Lale Ak");
+      assert.equal((await admin.post(`/api/workspace/cases/${encodeURIComponent(lale)}/payments`, { amount: 200, date: iso(-1), method: "cash", cashForce: true, note: "Lale tahsilat" })).status, 200);
+      const result = await sync(admin, state, [head, ["Kemal Er", "100", tr(-3)]]);
+      assert.equal(result.counts.missing, 2, "Lale ve Mert 'Sheet'te yok'");
+      const listed = await admin.get("/api/workspace/dataset/missing");
+      assert.equal(listed.status, 200);
+      const byName = Object.fromEntries(listed.data.data.map(row => [row.preview.find(text => text.startsWith("Ad Soyad:"))?.slice(10), row]));
+      assert.deepEqual(byName["Lale Ak"]?.bonds, ["tahsilat"], `Lale'nin bağı listede: ${JSON.stringify(listed.data.data).slice(0, 400)}`);
+      assert.deepEqual(byName["Mert Su"]?.bonds, []);
+      const mert = await admin.post("/api/workspace/dataset/missing", { action: "remove", rowIds: [byName["Mert Su"].rowId] });
+      assert.equal(mert.status, 200, `bağsız satır onaysız kalkar: ${JSON.stringify(mert.data).slice(0, 200)}`);
+      const refused = await admin.post("/api/workspace/dataset/missing", { action: "remove", rowIds: [byName["Lale Ak"].rowId] });
+      assert.equal(refused.status, 409, "bağı olan satır uyarısız kalkmaz");
+      assert.equal(refused.data.code, "bonds-unmatched");
+      assert.match(refused.data.error || refused.data.message || "", /^1 kaydın tahsilatı kaldırılacak satırlarda: Lale Ak\. Bu bağlar silinmez/);
+      assert.deepEqual(keyOf(store, "Lale Ak"), [lale], "reddedilen istek satırı kaldırmadı");
+      const done = await admin.post("/api/workspace/dataset/missing", { action: "remove", rowIds: [byName["Lale Ak"].rowId], confirm: true });
+      assert.equal(done.status, 200);
+      assert.deepEqual(keyOf(store, "Lale Ak"), [], "onayla kalktı");
+      assert.equal(store.get("SELECT case_key AS k FROM payments WHERE note = 'Lale tahsilat'").k, lale, "tahsilat silinmedi, eski anahtarda");
+      assert.ok(store.get("SELECT 1 AS x FROM audit_events WHERE type = 'dataset.bonds.unmatched'"), "onaylanan kopma işlem geçmişinde");
+    } finally {
+      await server.close();
+    }
+  });
+
+  it("N2 (tur 7) bekletilen eşitleme: Sheet aynı kaldıkça arka plan eşitlemesi yeniden hesaplamaz (unchanged), 'Şimdi Eşitle' yeniden hesaplar; Sheet değişince yeniden hesaplanır", async () => {
+    const { server, admin, store, state } = await sheetServer();
+    try {
+      const head = ["Açıklama", "Tutar", "Son Ödeme"];
+      const base = [head, ["Bahçe bakımı", "100", tr(-2)], ["Çatı onarımı", "200", tr(-2)], ["Asansör", "300", tr(-2)]];
+      await link(admin, state, base);
+      const key = rowsOf(store).find(r => r.values["Açıklama"] === "Çatı onarımı").k;
+      assert.equal((await admin.post(`/api/workspace/cases/${encodeURIComponent(key)}/notes`, { note: "Usta arandı" })).status, 200);
+      const next = [head, base[1], ["Çatı onarımı", "250", tr(-2)], base[3]];
+      const held = await sync(admin, state, next);
+      assert.equal(held.held, true);
+      const dataset = server.app.context.dataset;
+      const background = await dataset.sync({});
+      assert.equal(background.held, true);
+      assert.equal(background.unchanged, true, `aynı içerik yeniden hesaplanmaz: ${JSON.stringify(background).slice(0, 200)}`);
+      const manual = await sync(admin, state, next);
+      assert.equal(manual.held, true);
+      assert.equal(manual.unchanged, undefined, "Şimdi Eşitle her zaman yeniden hesaplar");
+      state.csv = [head, base[1], ["Çatı onarımı", "260", tr(-2)], base[3]].map(line => line.join(",")).join("\n");
+      const changed = await dataset.sync({});
+      assert.equal(changed.held, true);
+      assert.equal(changed.unchanged, undefined, "Sheet değişince yeniden hesaplanır");
+      assert.equal(rowsOf(store).find(r => r.values["Açıklama"] === "Çatı onarımı").values.Tutar, "200", "veri değişmedi");
+    } finally {
+      await server.close();
+    }
+  });
 });
 
 describe("31e eşzamanlılık, yarıda kesilme, başka veri sayfası, bayat anahtar", () => {
@@ -538,6 +644,101 @@ describe("31e eşzamanlılık, yarıda kesilme, başka veri sayfası, bayat anah
       assert.equal((await admin.post(`/api/workspace/cases/${encodeURIComponent("2026/999")}/notes`, { note: "dosya no" })).status, 200);
       const [ali] = keyOf(store, "Ali Veli");
       assert.equal((await admin.post(`/api/workspace/cases/${encodeURIComponent(ali)}/notes`, { note: "var olan" })).status, 200);
+    } finally {
+      await server.close();
+    }
+  });
+});
+
+describe("31e tur 7: kayıt kaldıran yollar (N5) ve bayat anahtar (N6)", () => {
+  const PDF = Buffer.from("%PDF-1.4\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF\n");
+  const upload = (client, key) => client.raw("POST", `/api/workspace/cases/${encodeURIComponent(key)}/documents?name=${encodeURIComponent("vekalet.pdf")}`, { body: PDF, headers: { "content-type": "application/octet-stream", "x-hof-upload": "1" } });
+  const messageOf = response => response.data?.error || response.data?.message || "";
+
+  it("N5 Veriyi Kaldır: kayıtlara bağlı veri varsa 409 adıyla (veri durur); ?confirm=1 kaldırır, bağlar silinmez; bağsız veri onaysız kalkar", async () => {
+    const { server, admin, store } = await boot();
+    try {
+      await load(admin, table(T0));
+      const [ali] = keyOf(store, "Ali Veli");
+      assert.equal((await admin.post(`/api/workspace/cases/${encodeURIComponent(ali)}/notes`, { note: "Ali ile görüşüldü" })).status, 200);
+      const refused = await admin.del("/api/workspace/dataset");
+      assert.equal(refused.status, 409);
+      assert.equal(refused.data.code, "bonds-unmatched");
+      assert.match(messageOf(refused), /^1 kaydın notu kaldırılacak satırlarda: Ali Veli\. /);
+      assert.equal(rowsOf(store).length, 6, "reddedilen istek veriyi kaldırmadı");
+      const done = await admin.del("/api/workspace/dataset?confirm=1");
+      assert.equal(done.status, 200, JSON.stringify(done.data).slice(0, 200));
+      assert.equal(done.data.data.removed, 6);
+      assert.equal(store.get("SELECT case_key AS k FROM notes WHERE note = 'Ali ile görüşüldü'").k, ali, "not silinmedi");
+    } finally {
+      await server.close();
+    }
+    const plain = await boot();
+    try {
+      await load(plain.admin, table(T0));
+      const done = await plain.admin.del("/api/workspace/dataset");
+      assert.equal(done.status, 200, "bağsız veri onay sormadan kalkar");
+    } finally {
+      await plain.server.close();
+    }
+  });
+
+  it("N5 Sayfayı Sil: yalnız o sayfada olan kaydın bağı 409 adıyla, onayla silinir; anahtarı başka sayfada da olan kaydın notu sayılmaz (orada görünür)", async () => {
+    const { server, admin, store } = await boot();
+    try {
+      await load(admin, table(T0));
+      const [ali] = keyOf(store, "Ali Veli");
+      const extra = { ...PEOPLE[0], name: "Gizem Ak", tutar: "700", aciklama: "Aidat 7" };
+      const page = await stage(admin, { ...excel(table(T0, [...PEOPLE, extra])), fileName: "ikinci.xlsx" });
+      const opened = await commitRaw(admin, page, "session", { name: "İkinci Sayfa" });
+      assert.equal(opened.status, 200, JSON.stringify(opened.data).slice(0, 200));
+      const second = opened.data.data.session.key;
+      const gizem = store.get("SELECT case_key AS k FROM dataset_rows WHERE dataset_key = ? AND values_json LIKE '%Gizem Ak%'", second).k;
+      assert.equal(store.get("SELECT COUNT(*) AS n FROM dataset_rows WHERE dataset_key = ? AND case_key = ?", second, ali).n, 1, "ön koşul: Ali iki sayfada");
+      assert.equal((await admin.post(`/api/workspace/cases/${encodeURIComponent(ali)}/notes`, { note: "Ortak not" })).status, 200);
+      const shared = await admin.post("/api/workspace/sessions/delete", { key: second });
+      // Yalnız ortak anahtarın notu varken sayfa onaysız silinir; sayfayı yeniden açıp Gizem'e not ekleyerek asıl durumu kur.
+      assert.equal(shared.status, 200, `ortak anahtarın notu sayfa silmeyi bekletmez: ${JSON.stringify(shared.data).slice(0, 300)}`);
+      const page2 = await stage(admin, { ...excel(table(T0, [...PEOPLE, extra])), fileName: "ucuncu.xlsx" });
+      const opened2 = await commitRaw(admin, page2, "session", { name: "Üçüncü Sayfa" });
+      assert.equal(opened2.status, 200);
+      const third = opened2.data.data.session.key;
+      assert.equal((await admin.post(`/api/workspace/cases/${encodeURIComponent(gizem)}/notes`, { note: "Gizem notu" })).status, 200, "Gizem'in kaydı üçüncü sayfada");
+      const refused = await admin.post("/api/workspace/sessions/delete", { key: third });
+      assert.equal(refused.status, 409);
+      assert.equal(refused.data.code, "bonds-unmatched");
+      assert.match(messageOf(refused), /^1 kaydın notu kaldırılacak satırlarda: Gizem Ak\. /);
+      assert.equal(store.get("SELECT COUNT(*) AS n FROM dataset_rows WHERE dataset_key = ?", third).n, 7, "reddedilen istek sayfayı silmedi");
+      const done = await admin.post("/api/workspace/sessions/delete", { key: third, confirm: true });
+      assert.equal(done.status, 200);
+      assert.equal(store.get("SELECT COUNT(*) AS n FROM dataset_rows WHERE dataset_key = ?", third).n, 0);
+      assert.equal(store.get("SELECT case_key AS k FROM notes WHERE note = 'Gizem notu'").k, gizem, "not silinmedi");
+    } finally {
+      await server.close();
+    }
+  });
+
+  it("N6 tabloda olmayan Dosya No'suz anahtara (satir:…) belge, görev, düzeltme, kayıt notu, telefon, haciz 409 record-gone; tablodaki kayda 200", async () => {
+    const { server, admin, store } = await boot();
+    try {
+      await load(admin, table(T0));
+      const gone = "satir:0123456789abcdef";
+      const tries = key => ({
+        belge: upload(admin, key),
+        görev: admin.post("/api/workspace/tasks", { title: "Ara", caseKey: key, dueDate: iso(2) }),
+        düzeltme: admin.post("/api/workspace/overrides", { caseKey: key, field: "Açıklama", value: "Düzeltildi" }),
+        "kayıt notu": admin.put(`/api/workspace/case-notes/${encodeURIComponent(key)}`, { note: "Durum" }),
+        telefon: admin.post(`/api/workspace/cases/${encodeURIComponent(key)}/phones`, { phone: "05321112233", label: "İş" }),
+        haciz: admin.post(`/api/workspace/cases/${encodeURIComponent(key)}/liens`, { title: "Araç", placedAt: iso(-2) }),
+      });
+      for (const [label, promise] of Object.entries(tries(gone))) {
+        const response = await promise;
+        assert.equal(response.status, 409, `${label}: ${response.status} ${JSON.stringify(response.data).slice(0, 200)}`);
+        assert.equal(response.data.code, "record-gone", label);
+      }
+      for (const table of ["case_documents", "tasks", "overrides", "case_notes", "phones", "liens"]) assert.equal(store.get(`SELECT COUNT(*) AS n FROM ${table} WHERE case_key = ?`, gone).n, 0, `${table}: bayat anahtara yazılmadı`);
+      const [ali] = keyOf(store, "Ali Veli");
+      for (const [label, promise] of Object.entries(tries(ali))) assert.equal((await promise).status, 200, `${label}: tablodaki kayda yazılır`);
     } finally {
       await server.close();
     }

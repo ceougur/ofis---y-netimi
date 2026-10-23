@@ -11,7 +11,7 @@
 //    tahsilat kapatır). Vadesinden en çok 20 gün önce girilen tahsilat da sayılır.
 import { columnOrder as columnsOf } from "../sources.mjs";
 import { analyzeColumns, cell, primaryColumns } from "./columns.mjs";
-import { amountCandidates, debtByRecord, debtPlan, EXPECTED_AMOUNT_HEADER, isNotAmountHeader, REMAINING_DEBT_HEADER, rowDebt, TOTAL_DEBT_HEADER } from "./debt-column.mjs";
+import { amountCandidates, debtByRecord, debtPlan, EXPECTED_AMOUNT_HEADER, isNotAmountHeader, rowDebt, sparseDebtColumn } from "./debt-column.mjs";
 import { embeddedDates, isBlankRecord, isEmptyCell, isFlaggedRow, isSequenceHeader, isTotalRow } from "./cells.mjs";
 import { dateMeaning, ordinalOf, subjectOf } from "./temporal.mjs";
 import { foldText, parseAmount, parseDate } from "./validators.mjs";
@@ -182,7 +182,7 @@ function classifyColumns(rows, columns, analyses, now, forced = null) {
   // sayılıyordu; "önce cari açın" formundaki Açılış Bakiyesi bu tutardan dolar). Seçim Tablodaki Kişiler ile ORTAK yardımcıda (debt-column.mjs).
   // 31d E2/E3: satır borcu ortak rowDebt ile (Kalan boşsa o satırda Toplam Borç); gün / adet / oran kolonu borç sayılmaz.
   // 31f U2: sekmenin tek tutarı beklenen tahsilat değilse (söz / taksit / kira tutarı değilse) borçtur — Tablodaki Kişiler ile aynı ortak düzen.
-  const sparse = columns.find(column => !isNotAmountHeader(column) && (REMAINING_DEBT_HEADER.test(foldText(column)) || TOTAL_DEBT_HEADER.test(foldText(column))) && rows.some(row => parseAmount(cell(row, column)) !== null)) || null;
+  const sparse = sparseDebtColumn(columns, rows, cell);
   const plan = debtPlan(amountCandidates(analyses), { sparse });
   const debt = plan.column;
   // Tek vadeli tabloda ("Alacak / Son ödeme", "Tutar / Vade") kalemin tutarı, kendi tutar kolonu yoksa borç ya da

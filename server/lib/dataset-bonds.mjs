@@ -19,12 +19,7 @@ import { foldText, isTckn, isVkn } from "./insight/validators.mjs";
 import { columnOrder } from "./sources.mjs";
 
 const isPositional = id => String(id).startsWith("p|");
-const CHUNK = 400;
-const chunks = list => {
-  const out = [];
-  for (let index = 0; index < list.length; index += CHUNK) out.push(list.slice(index, index + CHUNK));
-  return out;
-};
+const isPrint = key => String(key).startsWith("satir:"); // içerik özeti anahtarı (Dosya No'suz satır; sources.mjs canonicalCaseKey)
 
 // ---------- Kişi değeri ----------
 // Sekmenin kişi kolonu (ad; "Adı" + "Soyadı" ayrıysa ikisi), telefonu, kimlik numarası ve tutar/tarih kolonları — programın kolon analiziyle.
@@ -76,15 +71,18 @@ export function samePerson(a, b) {
 const anchorOf = sig => (sig?.name ? `n:${sig.name}` : sig?.tax ? `t:${sig.tax}` : "");
 const hasPerson = sig => Boolean(anchorOf(sig));
 
-/** Eski satırlar (dataset_rows) ve gelen satırlar için kişi değerleri; sekme başına kolon analizi yalnız gerektiğinde. */
-export function createPeople(storedRows, entries) {
+/**
+ * Eski satırlar (dataset_rows) ve gelen satırlar için kişi değerleri; sekme başına kolon analizi yalnız gerektiğinde.
+ * cache (isteğe bağlı): { stored: WeakMap, incoming: WeakMap } — aynı dizi (önbellekteki dataset_rows, önizlemenin satırları) için kişi değerleri bir
+ * kez hesaplanır; önizleme (iki yol) ve uygulama aynı hesabı paylaşır (31e tur 7 N2). Değerler dizinin içeriğinin saf işlevidir.
+ */
+export function createPeople(storedRows, entries, cache = null) {
   const tabOfRow = row => String(row.tab ?? row.values?.__sheet ?? "");
   const tabOfEntry = entry => String(entry.tab ?? entry.values?.__sheet ?? "");
   const side = (list, tabOf) => {
     let byTab = null;
     const layouts = new Map();
     const sigs = new Map();
-    let counts = null;
     const groups = () => {
       if (!byTab) {
         byTab = new Map();
@@ -106,24 +104,33 @@ export function createPeople(storedRows, entries) {
       if (!sigs.has(values)) sigs.set(values, signatureOf(values, layout(tabOf(item))));
       return sigs.get(values);
     };
-    const count = (tab, anchor) => {
-      if (!anchor) return 0;
-      if (!counts) counts = new Map();
-      if (!counts.has(tab)) {
+    // Sekme → kişi değeri → satırlar dizini (bir kez kurulur). 31e tur 7 N2: önceden only() her çağrıda sekmeyi baştan tarıyordu; sıra değişip içerik de
+    // değişince her kaybolan anahtar için çağrıldığından süre karesel büyüyordu (20.000 satırda Yerine Koy 18 + 16 sn, eşitleme 60 sn).
+    const index = new Map();
+    const byAnchor = tab => {
+      if (!index.has(tab)) {
         const map = new Map();
         for (const item of groups().get(tab) || []) {
           const key = anchorOf(sig(item));
-          if (key) map.set(key, (map.get(key) || 0) + 1);
+          if (!key) continue;
+          if (!map.has(key)) map.set(key, []);
+          map.get(key).push(item);
         }
-        counts.set(tab, map);
+        index.set(tab, map);
       }
-      return counts.get(tab).get(anchor) || 0;
+      return index.get(tab);
     };
-    const only = (tab, anchor) => (groups().get(tab) || []).filter(item => anchorOf(sig(item)) === anchor);
+    const count = (tab, anchor) => (anchor ? byAnchor(tab).get(anchor)?.length || 0 : 0);
+    const only = (tab, anchor) => (anchor ? byAnchor(tab).get(anchor) || [] : []);
     return { sig, count, only, tabs: () => [...groups().keys()], layout };
   };
-  const stored = side(storedRows, tabOfRow);
-  const incoming = side(entries, tabOfEntry);
+  const cached = (map, list, tabOf) => {
+    if (!map || !list || typeof list !== "object") return side(list, tabOf);
+    if (!map.has(list)) map.set(list, side(list, tabOf));
+    return map.get(list);
+  };
+  const stored = cached(cache?.stored, storedRows, tabOfRow);
+  const incoming = cached(cache?.incoming, entries, tabOfEntry);
   return { stored, incoming, tabOfRow, tabOfEntry, anchorOf };
 }
 
@@ -245,7 +252,6 @@ export function planRebind({ storedRows, entries, mode, people, bonded, elsewher
     if (!rowsOfKey.has(row.caseKey)) rowsOfKey.set(row.caseKey, []);
     rowsOfKey.get(row.caseKey).push(row);
   }
-  const byId = new Map(entries.map(entry => [entry.id, entry]));
   const fresh = entry => !oldKeys.has(entry.caseKey);
   // Yeniden adlandırılmış tek sekme: eski tabloda olup yenide olmayan TEK sekme ile yenide olup eskide olmayan TEK sekme aynı sekmedir.
   const oldTabs = new Set(people.stored.tabs());
@@ -262,17 +268,16 @@ export function planRebind({ storedRows, entries, mode, people, bonded, elsewher
     const anchor = anchorOf(sig);
     if (!anchor) continue;
     const oldTab = people.tabOfRow(row);
-    // (a) aynı row_id'de aynı kişi (ve kişinin sekmedeki sayısı iki tabloda aynı)
-    const same = byId.get(row.rowId);
-    if (same && same.caseKey !== key && fresh(same) && samePerson(sig, people.incoming.sig(same)) && people.stored.count(oldTab, anchor) === people.incoming.count(people.tabOfEntry(same), anchor)) {
-      candidate.set(key, same);
-      continue;
-    }
-    // (b) kişi değeri eski ve yeni sekmede TEK satır
+    // Kişi değeri eski ve yeni sekmede TEK satır. 31e tur 7 N3: aynı adlı birden çok satırda konumla taşıma YOK (iki Ali yer değiştirip ikisi de değişince
+    // bağ yanlış Ali'ye gidiyordu) — eşleşmeyen uyarısı + onay.
     const tab = tabFor(oldTab);
     if (tab === null || people.stored.count(oldTab, anchor) !== 1 || people.incoming.count(tab, anchor) !== 1) continue;
     const [match] = people.incoming.only(tab, anchor);
-    if (match && fresh(match) && samePerson(sig, people.incoming.sig(match))) candidate.set(key, match);
+    if (!match || !fresh(match) || !samePerson(sig, people.incoming.sig(match))) continue;
+    // 31e tur 7 N1 (karar A): iki anahtar da açık kimlikse (Dosya No / kimlik kolonu değeri) kişi eşleşmesiyle taşınmaz — kapanan dosyanın bağı yeni
+    // dosyaya gitmez (v2.4.3 gibi eski dosyada kalır; onayda dosya numarasıyla söylenir). Taşıma yalnız anahtarlardan biri içerik özetiyken.
+    if (!isPrint(key) && !isPrint(match.caseKey)) continue;
+    candidate.set(key, match);
   }
   // Tek hedef: iki eski anahtar aynı yeni anahtara gidemez; başka veri sayfasında da bulunan anahtar (genel tablolardaki bağ o sayfanın da olabilir) taşınmaz.
   const targets = new Map();
@@ -289,12 +294,43 @@ export function planRebind({ storedRows, entries, mode, people, bonded, elsewher
   for (const key of losing) {
     const row = (rowsOfKey.get(key) || [])[0];
     const entry = candidate.get(key);
-    const base = { name: row ? nameOf(row) : key, tab: row ? people.tabOfRow(row) : "", bonds: bonds.get(key) };
+    const name = row ? nameOf(row) : key;
+    // Açık kimlikli kaydın (dosya no) adı numarasıyla: "Ali Veli (2026/101)".
+    const base = { name: isPrint(key) || name === key ? name : `${name} (${key})`, tab: row ? people.tabOfRow(row) : "", bonds: bonds.get(key) };
     if (entry && targets.get(entry.caseKey) === 1 && !shared.has(key) && !shared.has(entry.caseKey)) moves.push({ from: key, to: entry.caseKey, ...base });
     else unmatched.push({ key, ...base });
   }
   return { moves, unmatched, lost: lost.length };
 }
+/**
+ * Kayıt kaldıran yollar (31e tur 7 N5: "Sheet'te Olmayanları Kaldır", "Veriyi Kaldır"): kalkan satırların anahtarı tabloda başka satırda kalmıyorsa o kaydın
+ * bağları (tahsilat, not, düzeltme…) hiçbir kayıtta görünmez. Dönüş planRebind'in "unmatched" biçiminde: [{ key, name, tab, bonds }] (adı, açık kimlikte numarasıyla).
+ */
+export function removalPlan({ storedRows, removedIds, bonded }) {
+  const removed = new Set(removedIds);
+  const staying = new Set(storedRows.filter(row => !removed.has(row.rowId)).map(row => row.caseKey));
+  const rowsOfKey = new Map();
+  for (const row of storedRows) {
+    if (!removed.has(row.rowId) || staying.has(row.caseKey)) continue;
+    if (!rowsOfKey.has(row.caseKey)) rowsOfKey.set(row.caseKey, []);
+    rowsOfKey.get(row.caseKey).push(row);
+  }
+  if (!rowsOfKey.size) return [];
+  const bonds = bonded([...rowsOfKey.keys()]);
+  if (!bonds.size) return [];
+  const people = createPeople(storedRows, []);
+  const out = [];
+  for (const [key, rows] of rowsOfKey) {
+    if (!bonds.has(key)) continue;
+    const row = rows[0];
+    const layout = people.stored.layout(people.tabOfRow(row));
+    const name = personName(row.values, layout) || firstText(row.values) || key;
+    out.push({ key, name: isPrint(key) || name === key ? name : `${name} (${key})`, tab: people.tabOfRow(row), bonds: bonds.get(key) });
+  }
+  return out;
+}
+// Bağ türlerinin düz adları (listelerde "Bağlı: tahsilat, not").
+export const BOND_NAMES = Object.freeze({ payment: "tahsilat", note: "not", phone: "telefon", lien: "haciz", task: "görev", document: "belge", override: "düzeltme", deleted: "silme işareti", account: "cari bağı", plan: "taksit kartı", settled: "“Ödendi Say”", unflagged: "“Sorun Yok”" });
 const firstText = values => {
   for (const [key, value] of Object.entries(values || {})) {
     if (key.startsWith("__")) continue;
@@ -389,9 +425,10 @@ export function summarizeBonds(list, limit = 12) {
   return { count: list.length, kinds: KIND_ORDER.filter(kind => kinds.has(kind)), labels: KIND_ORDER.filter(kind => kinds.has(kind)).map(kind => BOND_LABELS[kind]), names, more: Math.max(0, new Set(list.map(item => item.name)).size - names.length) };
 }
 /** "3 kaydın tahsilatı / notu / cari bağı bu yüklemeyle eşleşmedi: Ali Veli, Can Er" */
-export function unmatchedSentence(summary, { sync = false } = {}) {
+export function unmatchedSentence(summary, { sync = false, removal = false } = {}) {
   if (!summary?.count) return "";
   const names = `${summary.names.join(", ")}${summary.more ? ` ve ${summary.more} kayıt daha` : ""}`;
+  if (removal) return `${summary.count} kaydın ${summary.labels.join(" / ")} kaldırılacak satırlarda: ${names}.`;
   return `${summary.count} kaydın ${summary.labels.join(" / ")} ${sync ? "bu eşitlemeyle" : "bu yüklemeyle"} eşleşmedi: ${names}.`;
 }
 
@@ -412,61 +449,70 @@ export function createBondStore({ store, datasetKey, setting, bank = null }) {
     }
   };
   const settledKeyOf = id => (String(id).startsWith("due|") ? String(id).split("|")[2] || "" : "");
-  /** Map(anahtar → { tür: adet }) — yalnız bağı olan anahtarlar. */
+  /** Map(anahtar → { tür: adet }) — yalnız bağı olan anahtarlar. Anahtar listesi geçici tabloda (31e tur 7 N2: önceden 400'lük parçalarla tablo başına çok sorgu). */
   function counts(keys) {
     const wanted = new Set(keys);
     const out = new Map();
+    if (!wanted.size) return out;
     const add = (key, kind, n) => {
       if (!kind || !n || !wanted.has(key)) return;
       if (!out.has(key)) out.set(key, {});
       const item = out.get(key);
       item[kind] = (item[kind] || 0) + n;
     };
-    for (const spec of BOND_TABLES) {
-      if (!spec.kind) continue;
-      const live = spec.live ? ` AND ${spec.live}` : "";
-      if (indexed.has(spec.table) && wanted.size <= 20_000) {
-        for (const part of chunks([...wanted])) {
-          const marks = part.map(() => "?").join(", ");
-          for (const row of store.all(`SELECT case_key AS k, COUNT(*) AS n FROM ${spec.table} WHERE case_key IN (${marks})${scopeSql(spec)}${live} GROUP BY case_key`, ...part, ...scopeArgs(spec))) add(row.k, spec.kind, row.n);
-        }
-      } else {
-        for (const row of store.all(`SELECT case_key AS k, COUNT(*) AS n FROM ${spec.table} WHERE case_key IS NOT NULL AND case_key <> ''${scopeSql(spec)}${live} GROUP BY case_key`, ...scopeArgs(spec))) add(row.k, spec.kind, row.n);
+    // Anahtarlar bir kez geçici tabloya (birincil anahtarlı) alınır, her bağlı tablo onunla sorgulanır: 20.000 anahtarda json_each'i her tabloda
+    // yeniden açmaktan ~3 kat hızlı.
+    store.run("CREATE TEMP TABLE IF NOT EXISTS hof_bond_keys (key TEXT PRIMARY KEY)");
+    store.run("DELETE FROM hof_bond_keys");
+    store.run("INSERT OR IGNORE INTO hof_bond_keys (key) SELECT value FROM json_each(?)", JSON.stringify([...wanted]));
+    try {
+      for (const spec of BOND_TABLES) {
+        if (!spec.kind) continue;
+        const live = spec.live ? ` AND ${spec.live}` : "";
+        for (const row of store.all(`SELECT case_key AS k, COUNT(*) AS n FROM ${spec.table} WHERE case_key IN (SELECT key FROM hof_bond_keys)${scopeSql(spec)}${live} GROUP BY case_key`, ...scopeArgs(spec))) add(row.k, spec.kind, row.n);
       }
+    } finally {
+      store.run("DELETE FROM hof_bond_keys");
     }
     for (const id of Object.keys(json(setting("dues.settled")))) add(settledKeyOf(id), "settled", 1);
     for (const key of Object.keys(json(setting("dataset.unflagged")))) add(key, "unflagged", 1);
     return out;
   }
-  /** Bağları taşır (çağıran işlemin içinde). Dönüş: { tablo: taşınan satır } + yerinde kalan (hedefte aynısı olduğu için) satırlar. */
+  /**
+   * Bağları taşır (çağıran işlemin içinde). Dönüş: { tablo: taşınan satır } + yerinde kalan (hedefte aynısı olduğu için) satırlar.
+   * 31e tur 7 N2: eski → yeni anahtar eşlemesi geçici tabloda; her bağlı tablo TEK UPDATE (önceden taşınan her anahtar için tablo başına iki sorgu: 5.000
+   * taşımada ~130.000 sorgu).
+   */
   function move(moves, { user = null, at = new Date().toISOString() } = {}) {
     const moved = {};
     const kept = {};
     if (!moves.length) return { moved, kept };
-    const note = (table, n) => n && (moved[table] = (moved[table] || 0) + n);
-    for (const spec of BOND_TABLES) {
-      const run = () => {
-        for (const { from, to } of moves) {
+    store.run("CREATE TEMP TABLE IF NOT EXISTS hof_bond_map (from_key TEXT PRIMARY KEY, to_key TEXT NOT NULL)");
+    store.run("DELETE FROM hof_bond_map");
+    for (const { from, to } of moves) store.run("INSERT INTO hof_bond_map (from_key, to_key) VALUES (?, ?)", from, to);
+    try {
+      for (const spec of BOND_TABLES) {
+        const t = spec.table;
+        const target = `(SELECT m.to_key FROM hof_bond_map m WHERE m.from_key = ${t}.case_key)`;
+        const where = `case_key IN (SELECT from_key FROM hof_bond_map)${scopeSql(spec)}`;
+        const run = () => {
           let sql;
-          let args;
-          if (spec.unique) {
-            sql = `UPDATE OR IGNORE ${spec.table} SET case_key = ? WHERE case_key = ?${scopeSql(spec)}`;
-            args = [to, from, ...scopeArgs(spec)];
-          } else if (spec.guard) {
-            sql = `UPDATE ${spec.table} SET case_key = ?${spec.stamp ? ", updated_at = ?" : ""} WHERE case_key = ?${scopeSql(spec)} AND NOT EXISTS (SELECT 1 FROM ${spec.table} other WHERE other.case_key = ?${spec.scope ? ` AND other.${spec.scope} = ?` : ""} AND other.${spec.guard})`;
-            args = [to, ...(spec.stamp ? [at] : []), from, ...scopeArgs(spec), to, ...scopeArgs(spec)];
-          } else {
-            sql = `UPDATE ${spec.table} SET case_key = ?${spec.stamp ? ", updated_at = ?" : ""} WHERE case_key = ?${scopeSql(spec)}`;
-            args = [to, ...(spec.stamp ? [at] : []), from, ...scopeArgs(spec)];
-          }
-          note(spec.table, store.run(sql, ...args).changes);
-          const left = store.get(`SELECT COUNT(*) AS n FROM ${spec.table} WHERE case_key = ?${scopeSql(spec)}`, from, ...scopeArgs(spec))?.n || 0;
-          if (left) kept[spec.table] = (kept[spec.table] || 0) + left;
-        }
-      };
-      // Kayıt tahsilatı para tablosudur: anahtarı yalnız bank.post bağlamında değişir (K6); olayın kopyası (tutar, yol, hesap, tarih) değişmez.
-      if (spec.money && bank) bank.post({ user: user || { id: "system", display_name: "Otomatik eşitleme", role: "admin" }, module: "payment", op: "assign", prev: moves.map(({ from, to }) => ({ from, to })), write: run });
-      else run();
+          const args = [...(spec.stamp && !spec.unique ? [at] : []), ...scopeArgs(spec)];
+          if (spec.unique) sql = `UPDATE OR IGNORE ${t} SET case_key = ${target} WHERE ${where}`;
+          else if (spec.guard) {
+            sql = `UPDATE ${t} SET case_key = ${target}${spec.stamp ? ", updated_at = ?" : ""} WHERE ${where} AND NOT EXISTS (SELECT 1 FROM ${t} other WHERE other.case_key = ${target}${spec.scope ? ` AND other.${spec.scope} = ${t}.${spec.scope}` : ""} AND other.${spec.guard})`;
+          } else sql = `UPDATE ${t} SET case_key = ${target}${spec.stamp ? ", updated_at = ?" : ""} WHERE ${where}`;
+          const changes = store.run(sql, ...args).changes;
+          if (changes) moved[t] = (moved[t] || 0) + changes;
+          const left = store.get(`SELECT COUNT(*) AS n FROM ${t} WHERE ${where}`, ...scopeArgs(spec))?.n || 0;
+          if (left) kept[t] = (kept[t] || 0) + left;
+        };
+        // Kayıt tahsilatı para tablosudur: anahtarı yalnız bank.post bağlamında değişir (K6); olayın kopyası (tutar, yol, hesap, tarih) değişmez.
+        if (spec.money && bank) bank.post({ user: user || { id: "system", display_name: "Otomatik eşitleme", role: "admin" }, module: "payment", op: "assign", prev: moves.map(({ from, to }) => ({ from, to })), write: run });
+        else run();
+      }
+    } finally {
+      store.run("DELETE FROM hof_bond_map");
     }
     // Ayarlardaki işaretler: "Ödendi say" (dues.settled: due|sekme|anahtar|kolon|gün), "Sorun yok" (dataset.unflagged), zilden kaldırılanlar (kişi başına).
     const map = new Map(moves.map(({ from, to }) => [from, to]));

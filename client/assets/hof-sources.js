@@ -619,7 +619,8 @@
       const ok = await HOF.confirm({ title: "Veriyi Kaldır", message: `${number(data.rowCount)} kayıt tüm bilgisayarlarda tablodan kalkacak. Notlar, görevler ve işlem geçmişi silinmez; işlemden önce yedek alınır.`, confirmLabel: "Veriyi Kaldır", danger: true });
       if (!ok) return;
       try {
-        const result = await HOF.api("/api/workspace/dataset", { method: "DELETE" });
+        const result = await withBondConfirm(confirm => HOF.api(`/api/workspace/dataset${confirm ? "?confirm=1" : ""}`, { method: "DELETE" }), "Veriyi Kaldır", "Veriyi Kaldır");
+        if (!result) return;
         HOF.applyClientState(result.state);
         sessionStorage.setItem("hof-flash", `Veri kaldırıldı (${number(result.removed)} kayıt). Yedek: ${result.backupName || "—"}`);
         location.reload();
@@ -627,6 +628,20 @@
         HOF.toastError(error);
       }
     });
+  }
+
+  // 31e tur 7 N5: kayıt kaldıran istek (Veriyi Kaldır, Sheet'te Olmayanları Kaldır) kalkacak kayıtlara bağlı veri varsa 409 bonds-unmatched döner; ileti
+  // adları söyler, yönetici onaylarsa istek onayla yinelenir (sunucu her seferinde yeniden hesaplar).
+  async function withBondConfirm(send, title, confirmLabel) {
+    try {
+      return await send(false);
+    } catch (error) {
+      if (error?.status !== 409 || error.data?.code !== "bonds-unmatched") throw error;
+      const message = `${String(error.message || "").replace(/\s*Onaylayarak yeniden deneyin\.$/, "")} İşlemden önce yedek alınır. Devam edilsin mi?`;
+      const ok = await HOF.confirm({ title, message, confirmLabel, danger: true });
+      if (!ok) return null;
+      return send(true);
+    }
   }
 
   async function openMissing() {
@@ -641,9 +656,9 @@
       title: "Sheet'te Artık Olmayan Kayıtlar",
       eyebrow: "VERİ",
       size: "wide",
-      body: `<p class="hof-modal-text">Bu kayıtlar bağlı Google Sheets'ten silinmiş veya taşınmış. DestekOfis onları kendiliğinden silmez. <b>Tut</b> derseniz bir daha işaretlenmez; <b>Kaldır</b> derseniz tablodan çıkar (notları ve geçmişi silinmez, öncesinde yedek alınır).</p>
+      body: `<p class="hof-modal-text">Bu kayıtlar bağlı Google Sheets'ten silinmiş veya taşınmış. DestekOfis onları kendiliğinden silmez. <b>Tut</b> derseniz bir daha işaretlenmez; <b>Kaldır</b> derseniz tablodan çıkar (öncesinde yedek alınır). Tahsilatı, notu ya da düzeltmesi olan kayıtta “Bağlı:” yazar; bu bağlar silinmez ama kayıt kalkınca tabloda görünmez, kaldırmadan önce sorulur.</p>
         <label class="hof-check"><input type="checkbox" data-all checked><span>Tümünü Seç (${number(rows.length)})</span></label>
-        <ul class="hof-missing-list">${rows.map(row => `<li><label class="hof-check"><input type="checkbox" value="${esc(row.rowId)}" checked><span><b>${esc(row.caseKey.startsWith("satir:") ? "Kimliksiz satır" : row.caseKey)}</b>${row.tab ? ` · ${esc(row.tab)}` : ""}<small>${esc(row.preview.join(" · "))}</small></span></label></li>`).join("")}</ul>
+        <ul class="hof-missing-list">${rows.map(row => `<li><label class="hof-check"><input type="checkbox" value="${esc(row.rowId)}" checked><span><b>${esc(row.caseKey.startsWith("satir:") ? "Kimliksiz satır" : row.caseKey)}</b>${row.tab ? ` · ${esc(row.tab)}` : ""}<small>${esc(row.preview.join(" · "))}</small>${row.bonds?.length ? `<small class="hof-missing-bonds" data-missing-bonds>Bağlı: ${esc(row.bonds.join(", "))}</small>` : ""}</span></label></li>`).join("")}</ul>
         <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-action="keep">Seçilenleri Tut</button><button type="button" class="hof-button hof-button-danger" data-action="remove">Seçilenleri Kaldır</button></div>`,
     });
     const boxes = () => [...modal.dialog.querySelectorAll(".hof-missing-list input[type=checkbox]")];
@@ -657,7 +672,8 @@
         return;
       }
       try {
-        const result = await HOF.api("/api/workspace/dataset/missing", { method: "POST", body: { action, rowIds } });
+        const result = await withBondConfirm(confirm => HOF.api("/api/workspace/dataset/missing", { method: "POST", body: { action, rowIds, ...(confirm ? { confirm: true } : {}) } }), "Seçilenleri Kaldır", "Kaldır");
+        if (!result) return;
         modal.close();
         HOF.toast(action === "remove" ? `${number(result.changed)} kayıt tablodan kaldırıldı.` : `${number(result.changed)} kayıt tutuldu.`, { type: "success" });
         await loadSummary();

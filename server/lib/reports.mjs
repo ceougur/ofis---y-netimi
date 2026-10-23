@@ -13,7 +13,7 @@
 // tablo biçimi (kolonlar + satırlar) da döner; PDF/Excel/yazdırma o tabloyu kullanır.
 import { primaryColumns } from "./insight/columns.mjs";
 import { isFlaggedRow, isTotalRow } from "./insight/cells.mjs";
-import { amountCandidates, debtByRecord, debtPlan, isNotAmountHeader, rowDebt } from "./insight/debt-column.mjs";
+import { amountCandidates, debtByRecord, debtPlan, isNotAmountHeader, rowDebt, sparseDebtColumn } from "./insight/debt-column.mjs";
 import { foldText, isTckn, isVkn, parseAmount, parseDate } from "./insight/validators.mjs";
 import { fromCents, toCents } from "./money.mjs";
 
@@ -83,7 +83,7 @@ const primaryOf = analyses => {
   const headed = analyses.find(item => item.stats?.nonEmpty && IDENTITY_HEADER.test(foldText(item.column)) && item.role !== "phone")?.column || null;
   return { ...primary, identity: primary.tckn || vkn || headed };
 };
-function recordLayout(analyses, fallback = null) {
+function recordLayout(analyses, fallback = null, rows = []) {
   const byColumn = new Map(analyses.map(item => [item.column, item]));
   const primary = primaryOf(analyses);
   if (fallback) {
@@ -97,7 +97,8 @@ function recordLayout(analyses, fallback = null) {
   // değilse). 30a: Kalan her zaman önce; 31d E3: gün / adet / oran kolonu tutar değil; 31f U2: söz tutarı borç değil (2.4.4 aday 6'da her sekmenin tutar
   // kolonu — "Söz Tutarı", "Kira bedeli", taksit "Toplam" — borç sayılıyordu; kapanmış dosya söz yüzünden borçlu görünüyordu).
   const moneyColumns = amountCandidates(analyses);
-  const plan = debtPlan(moneyColumns);
+  // 31e tur 7 N4: seyrek borç kolonu Tahsilat Takvimi ile aynı kuralla (sparseDebtColumn) — rapor ↔ takvim aynı borç planı.
+  const plan = debtPlan(moneyColumns, { sparse: sparseDebtColumn(analyses.map(item => item.column), rows) });
   const debtColumn = plan.column;
   const money = primary.money && !isNotAmountHeader(primary.money) ? primary.money : null;
   const amountColumn = money && money !== debtColumn ? money : moneyColumns.find(column => column !== debtColumn) || money || null;
@@ -150,7 +151,7 @@ function recordOf(row, { primary, byColumn, plan, amountColumn, backbone }, { se
  * @param {{ rows: object[], analyses: object[], session: string, sessionName: string, tabs?: string[], analyzeTab?: (rows: object[]) => object[] }} input
  */
 export function normalizeRecords({ rows, analyses, session, sessionName = "", tabs = [], analyzeTab = null }) {
-  const base = recordLayout(analyses);
+  const base = recordLayout(analyses, null, rows);
   const sheetOf = row => String(row?.__sheet || "");
   const layouts = new Map();
   const sheets = analyzeTab ? [...new Set(rows.map(sheetOf))] : [];
@@ -158,7 +159,7 @@ export function normalizeRecords({ rows, analyses, session, sessionName = "", ta
     const analysed = sheets.map(sheet => [sheet, analyzeTab(rows.filter(row => sheetOf(row) === sheet))]);
     const own = analysed.map(([, analyses]) => primaryOf(analyses));
     const fallback = Object.fromEntries(FALLBACK_ROLES.map(role => [role, [...new Set([base.primary[role], ...own.map(primary => primary[role])].filter(Boolean))]]));
-    for (const [sheet, analyses] of analysed) layouts.set(sheet, recordLayout(analyses, fallback));
+    for (const [sheet, analyses] of analysed) layouts.set(sheet, recordLayout(analyses, fallback, rows.filter(row => sheetOf(row) === sheet)));
   }
   const context = { session, sessionName, tabs };
   const records = [];
