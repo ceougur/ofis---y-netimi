@@ -1,0 +1,210 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3e-vergi-sutunu",
+ "aciklama": "Karar A ([KULLANICI] 23.10.2026, 5 dk yetkisiyle) VERGİ SÜTUNU BORÇ DEĞİLDİR: Fatura No + Müşteri + Tutar + KDV + Genel Toplam + Vade sekmesinde borç Genel Toplam (Kemal Uz 1.200, Leyla Su 600); Tahsil Edilen sütunlu türevinde Genel Toplam − Tahsil Edilen (Mert Ay 1.200 − 300 = 900; Nil Su 480 − 600 → 0; hangi toplam: YAYGIN); Tutar + KDV → Tutar (Okan Ak 1.000); Ücret + Stopaj → Ücret (Pınar Ay 5.000); Tutar + ÖTV + Tevkifat + Vergi + Vergi Tutarı → Tutar (Rıza Ok 2.000); Kalan Borç önceliği vergi sütunuyla da önce gelir (Sevda Ak 350); borç sütunu belirlenemeyen sekme (Aidat + Ek Ücret) kişileri raporda notsuz kaybolmaz (Tülin Er)",
+ "dayanak": "KARARLAR.md B3d (KULLANICI 23.10.2026 karar A); K3",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Faturalar",
+     "tur": "serbest",
+     "ilk": [
+      "Fatura No",
+      "Müşteri"
+     ],
+     "basliklar": [
+      "Telefon",
+      "Tutar",
+      "KDV",
+      "Genel Toplam",
+      "Vade"
+     ],
+     "kayitlar": [
+      {
+       "no": "F-1001",
+       "isim": "Kemal Uz",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "1.000,00 ₺",
+        "KDV": "200,00 ₺",
+        "Genel Toplam": "1.200,00 ₺",
+        "Vade": "20.06.2026"
+       }
+      },
+      {
+       "no": "F-1002",
+       "isim": "Leyla Su",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "500,00 ₺",
+        "KDV": "100,00 ₺",
+        "Genel Toplam": "600,00 ₺",
+        "Vade": "20.06.2026"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Tahsilli Faturalar",
+     "tur": "serbest",
+     "ilk": [
+      "Fatura No",
+      "Müşteri"
+     ],
+     "basliklar": [
+      "Telefon",
+      "Tutar",
+      "KDV",
+      "Genel Toplam",
+      "Tahsil Edilen",
+      "Vade"
+     ],
+     "kayitlar": [
+      {
+       "no": "F-2001",
+       "isim": "Mert Ay",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "1.000,00 ₺",
+        "KDV": "200,00 ₺",
+        "Genel Toplam": "1.200,00 ₺",
+        "Tahsil Edilen": "300,00 ₺",
+        "Vade": "20.06.2026"
+       }
+      },
+      {
+       "no": "F-2002",
+       "isim": "Nil Su",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "400,00 ₺",
+        "KDV": "80,00 ₺",
+        "Genel Toplam": "480,00 ₺",
+        "Tahsil Edilen": "600,00 ₺",
+        "Vade": "20.06.2026"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "KDV'li Aidat",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar",
+      "KDV"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/501",
+       "isim": "Okan Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "1.000,00 ₺",
+        "KDV": "180,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Stopajlı Ücret",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Ücret",
+      "Stopaj"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/502",
+       "isim": "Pınar Ay",
+       "hucreler": {
+        "Telefon": "",
+        "Ücret": "5.000,00 ₺",
+        "Stopaj": "1.000,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Vergili Satış",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar",
+      "ÖTV",
+      "Tevkifat",
+      "Vergi",
+      "Vergi Tutarı"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/503",
+       "isim": "Rıza Ok",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "2.000,00 ₺",
+        "ÖTV": "100,00 ₺",
+        "Tevkifat": "50,00 ₺",
+        "Vergi": "40,00 ₺",
+        "Vergi Tutarı": "30,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Kalanlı Fatura",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar",
+      "KDV",
+      "Genel Toplam",
+      "Kalan Borç"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/504",
+       "isim": "Sevda Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "500,00 ₺",
+        "KDV": "100,00 ₺",
+        "Genel Toplam": "600,00 ₺",
+        "Kalan Borç": "350,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Belirsiz Ücretler",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Aidat",
+      "Ek Ücret"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/505",
+       "isim": "Tülin Er",
+       "hucreler": {
+        "Telefon": "",
+        "Aidat": "300,00 ₺",
+        "Ek Ücret": "150,00 ₺"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  }
+ ]
+}

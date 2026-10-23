@@ -74,3 +74,89 @@ Neden (ham çıktı, ders 38; her fark aşağıdakilerden birine düştü — s�
 yok (sütun tutar sayılıyor — b3d 21, rastgele 119 + 112 fark); (2) farklı adların aynı değerle birleşmesi (D1; yer tutucu ve gerçek TCKN); (3) kimliksiz satır: çok kimlikli
 adın aynı dosya no'lu kimliksiz satırı ayrı "kimliksiz" kişiye gidiyor (b3d 2026/401: "Ayşe Yıldız" 150 ayrı satır; rastgele 14 + 14); (4) sağlama hanesi tutmayan yer
 tutucu tek kimlikli adda ayrı kişi yapıyor (rastgele 21 + 21). Borç farkları gruplamanın sonucudur (rapor satırı kişi toplamı).
+
+### Tur 5 — karar A (vergi sütunu borç değildir) ve kayıt anahtarı sürekliliği (23.10.2026)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| KIRMIZI kirmizi-aday16-cari-vergi-anahtar | 17 senaryo (b3e, b3f yeni; üreteçte "Faturalar") + 39 mutant, ADAY 16 kodunda (salt okunur) — (1)'de kırmızı BEKLENİR | 41 fark (BULGU 26, İNCELE 15 — Genel Toplam − ödenen YAYGIN) · 0 okuma hatası · 0 yakalanmayan mutasyon |
+
+Neden (ham çıktı, ders 38): (1) KDV (ve b3e "Vergili Satış"ta Vergi / Vergi Tutarı / Tevkifat sütunlarından en az biri) tutar sayılıyor → Tutar + KDV + Genel Toplam,
+Tutar + KDV sekmelerinin kişileri raporda HİÇ yok (b3e Kemal Uz, Leyla Su, Mert Ay, Okan Ak, Rıza Ok; rastgele 1 KDV'li Faturalar); Ücret + Stopaj, Kalan Borç önceliği ve
+rastgele 2'nin ÖTV + Genel Toplam + Tahsil Edilen sekmesi aday 16'da kurala uygun; (2) borç sütunu belirlenemeyen sekmenin (Aidat + Ek Ücret) kişisi raporda notsuz
+kayboluyor (Tülin Er); (3) b3f: aynı dosya Yerine koy'da tahsilat kalıyor (anahtar aynı), ama geçersiz Vergi No (Oya Er) / TC (Sami Er) silinip yeniden yüklenince satır
+anahtarı değişiyor ("satir:c7ae…" → "satir:1b06…") ve kayda bağlı tahsilat düşüyor (alacak 60 / 90 → 0) — geçersiz değer kayıt kimliğine giriyor.
+
+### Tur 6 — tablo bağ sürekliliği (baş mimar kararı 23.10.2026)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| KIRMIZI kirmizi-aday16-cari-bag-surekliligi | 19 senaryo (b3g, b3h yeni) + 43 mutant, ADAY 16 kodunda | 68 fark (BULGU 50) · 0 okuma hatası · 0 yakalanmayan mutasyon |
+| KIRMIZI kirmizi-r31e-e-cari-bag-surekliligi | aynı, is/r31e-e (E1/E2 düzeltmesi, 6838d3e) kodunda | 29 fark (BULGU 26) · 0 okuma hatası · 0 yakalanmayan mutasyon — b3e ve rastgele YEŞİL (karar A düzeltmesi tutuyor) |
+
+Neden (ham çıktı, ders 38; iki ağaçta bağ sürekliliği farkları aynı): (1) Yerine koy'da yeni kolon (E-posta) + bir satırın tutar değişimi tablodaki BÜTÜN kayıt tahsilatlarını
+ve cari bağını koparıyor (b3g k2: Nur Ak 50, Oya Er 60, Can Su 30, Deniz Ay 40, Ali Veli 10 + 20, Ece Naz carisinin 25'i → 0) — Dosya No'suz satırın anahtarı satır içeriğinin
+özeti; Dosya No kolonu eklenince de kopuyor (b3h k2); aynı içerik geri yüklenince bağ geri görünüyor (b3h k3 — veri silinmemiş); (2) hiçbir yüklemede uyarı ya da onay yok
+(b3g t3 "Ali Veli", t4 "Oya Er"/"Deniz Ay"; b3h t4 "Kaan Uz" çift satırı) — commit onaysız 200; (3) Devamı olarak ekle (merge) mevcut 2. satırı (Lale Ak, tahsilatı 200)
+yeni dosyanın 2. satırıyla (Yeni Kişi) değiştiriyor — Lale Ak raporda yok; (4) b3f k4 (geçersiz değer silinince tahsilat kopuyor) aynı bulgunun parçası.
+
+### Tur 6 ek — NETLEŞTİRME (aynı içerik = mevcut kayıt; Devam uyarısı; seçeneğe göre uyarı) — ADAY 17 (e5fc407)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| aday17-cari-bag-netlestirme | 19 senaryo (b3g v2'de aynı adlı satırın tutarı değişir — konum eşleşmesi; v3 ters sıra — aynı içerik; b3h "Açıklama" sütunu, Devam'da aynı içerikli Kaan Uz + başka hücresi farklı Lale Ak) + 45 mutant, ADAY 17 kodunda | 2 fark (BULGU 2) · 0 okuma hatası · 0 yakalanmayan mutasyon |
+
+İki farkın nedeni TEK (ham çıktı, ders 38): b3h t4 Devamı olarak ekle — "Lale Ak" (aynı kişi + aynı tutar 2.000, Açıklama Ekim → Kasım) için önizlemede uyarı ve onay yok
+(`bonds.merge.samePerson` 0); program bu satırı İKİNCİ KAYIT değil, mevcut Lale Ak kaydının GÜNCELLEMESİ sayıyor (`preview.merge.updated` 1, bağ taşındı, rapor Lale Ak 2.000 /
+alacak 200). Kâhin kararın "(yani ikinci kez eklenecek)" ifadesine göre uyarı + onay bekliyor — Devamı olarak ekle'nin aynı kişili satırı güncellemesi karar sahibince teyit
+edilmeli. Ara kâhin hataları (düzeltildi): koşucu uyarı adlarını öbür seçeneğin `bonds.merge.duplicates`'ından okuyordu (NETLEŞTİRME (3)); Devam'da aynı içerikli satır aynı
+anahtarı taşıdığı için grup eşlemesi son kaydı seçiyordu (ilk kayıt kazanır).
+
+### Tur 6 ek 2 — NETLEŞTİRME 2 (Devam'da güvenli eşleşen satır güncellemedir) — ADAY 17 (e5fc407)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| aday17-cari-bag-netlestirme-2 | 20 senaryo (b3h t4: Kaan Uz aynı içerik, Lale Ak güncelleme, Mete Er iki satır, Yeni Kişi; b3i yeni) + 46 mutant, ADAY 17 kodunda | 3195/3199 — 4 fark (BULGU 4) · 0 okuma hatası · 0 yakalanmayan mutasyon |
+
+Dört farkın nedeni TEK (ham çıktı, ders 38): b3h t4 Devamı olarak ekle'de dosyada iki "Mete Er" (3.000, Açıklama Aralık ve Ocak) var; mevcut tabloda Mete Er 3. satırda. Kâhin
+NETLEŞTİRME 2'ye göre AYNI KONUMDAKİ (3. satır) + aynı kişili satırı güncelleme, yalnız öbürünü ikinci kayıt bekliyor (Mete Er 2 satır, 6.000); program İKİSİNİ de "aynı
+görünen" sayıp onayla ikinci kez ekliyor (uyarı "2 satır … (Mete Er…)", kod merge-duplicates; rapor Mete Er 3 satır, 9.000). H8'in iki farkı aynı nedenin okuma sonucudur
+(aynı ad + aynı tutarlı üç satırda anahtar çözülemedi). Lale Ak (güncelleme, uyarısız) ve Kaan Uz (aynı içerik) kurala uygun; b3i (aynı içerik, başka konum) kurala uygun.
+Ara kâhin hatası (düzeltildi): Devam'dan sonra dosyada olmayan mevcut kaydın (Lale Ak H2) eski anahtarı yenilenmiyordu (anahtar güncellemeyle değişti) → bütün bilinen kayıtlar
+yeniden çözülüyor.
+
+### Tur 6 ek 3 — karar (Mete Er): konum eşleşmesi yalnız aynı sayıda satırda — ADAY 17 (e5fc407)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| aday17-cari-bag-netlestirme-3 | 20 senaryo + 46 mutant, ADAY 17 kodunda (salt okunur) | 3201/3201 GEÇTİ · 0 fark · 0 okuma hatası · 0 yakalanmayan mutasyon |
+
+Kâhin düzeltmesi: "aynı konum + aynı kişi" eşleşmesi yalnız kişi değeri iki tabloda aynı sayıda satırdayken (b3h t4 Mete Er artık 3 satır 9.000 + uyarı + onay — programla
+aynı); aynı ad + aynı tutarlı ayırt edilemeyen yeni kayıtlar boştaki anahtarlara sıralı atanıyor (H7 → satir:3d86…, H8 → satir:fc59…); çözülemeyen kayıt okuma hatası
+sayılıyor; Yerine koy'da silinen satırın kaydı (b3g R6) artık güncel tablo dışında (ilk koşuda yanlış okuma hatası verdi — düzeltildi).
+
+### Tur 7 — dar kontrol bulguları N3, N4, N5, N6 (karar sahibi 23.10.2026) — ADAY 17 (e5fc407)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| KIRMIZI kirmizi-aday17-cari-n3-n4-n6 | 22 senaryo (b3j, b3k yeni; b3g v2 + p7) + 48 mutant, ADAY 17 kodunda (salt okunur) — N3/N4'te kırmızı BEKLENİR | 3253/3270 — 17 fark (BULGU 17) · 0 okuma hatası · 0 yakalanmayan mutasyon |
+
+Neden (ham çıktı, ders 38): **N3** — b3g t2: aynı adlı iki Ali Veli'den birinin tutarı değişince (100 → 110) program bağı KONUMLA taşıyor, uyarı/onay yok (Ali Veli tahsilatı
+30, kâhin 20 — değişen satırın bağı taşınmamalı); b3j: iki Ali Veli yer değiştirip ikisinin tutarı da değişince program bağları sessizce yeni satırlara bağlıyor (Ali Veli 30,
+kâhin 0) — 8 + 4 fark (onay, uyarı adları, tahsilat). **N4** — b3k: "Vergiler" sekmesinde (tek tutar kolonu Vergi Tutarı) kişiler Tablodaki Kişiler'de YOK (Ufuk Er, Vedat Ay borç
+0), ama Tahsilat Takvimi, Vade Takip ve Nakit Akışı Beklenen onları borç sayıyor (Takvim 1.500 + 2.500 + 1.000) → raporlar ayrışıyor (Kişiler 1.000, öbürleri 5.000) — 5 fark.
+**N6** — tablodan çıkan kayda tahsilat aday 17'de zaten 409 "record-gone" (YEŞİL). **N5** — Yerine koy satır silme yeşil; "Sheet'te Olmayanları Kaldır" DENENMEDİ (Sheets).
+
+### Tur 7 ek — N1 (kullanıcı kararı A, 5 dk yetkisiyle): kayıt kendi dosya numarasıyla tanınır — ADAY 17 (30e9c90; ürün kodu e5fc407 ile aynı, server/client farkı 0)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| KIRMIZI kirmizi-aday17-cari-n1 | 23 senaryo (b3m yeni) + 50 mutant (49, 50 yeni), ADAY 17 kodunda (salt okunur) — N1'de kırmızı BEKLENİR | 3316/3335 — 19 fark (BULGU 19) · 0 okuma hatası · 0 yakalanmayan mutasyon |
+
+Koşu kâhin ağacının ed08f1a + bu commit'teki değişiklikleriyle yapıldı (kanıt "+1 değişmiş +1 izlenmeyen" = model.py, b3m). 17 fark Tur 7'dekilerle aynı (N3 12, N4 5).
+Neden (ham çıktı, ders 38): **N1** — b3m t2 (Yerine koy, Gül Ak 2026/101 → 2026/150): önizleme `bonds.replace.moved` = 1 "tahsilatı" — program Gül Ak'ın 2026/101'deki tahsilatını
+KİŞİ EŞLEŞMESİYLE yeni dosya 2026/150'ye taşıyor; eşleşmeyen uyarısında yalnız "Rana Ok" var, "Gül Ak" yok (onay yalnız Rana Ok yüzünden geliyor); rapor 2026/150 tahsilatı
+100 (kâhin 0 — bağ eski dosyada kalmalı) — 2 fark. Dosya numarası geri gelince (t3) program bağı yine kişiyle geri taşıyor; sonuç kâhinle aynı (2026/101 = 100, onay yok).
+Kimlik kolonlu sekme (Üyeler, TC Kimlik No; Rana Ok 10000000146 → 12345678950 → geri): program N1'e UYGUN — kayıt anahtarı kimlikle değişiyor (satir:e473… → satir:7ab2… → satir:e473…),
+t2'de adlı uyarı + onay, eski TC geri gelince tahsilat (50) yeniden görünüyor (YEŞİL). DENENMEYEN: not / düzeltme / haciz bağları (uçları bilinmiyor), Dosya No kolonu
+tamamen kalkan tablo (karar söylemiyor), Sheets eşitlemesi.

@@ -1,0 +1,297 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3f-kayit-anahtari",
+ "aciklama": "KAYIT ANAHTARI SÜREKLİLİĞİ (baş mimar kararı 23.10.2026): Dosya No'suz tablo (yalnız Müşteri sütunu; Vergi No / TC Kimlik No geçerli, geçersiz, boş) yüklenir, kayıtlara tahsilat girilir; AYNI dosya 'Yerine koy' ile yeniden yüklenince tahsilat aynı kişide kalır; sağlaması tutmayan Vergi No (Oya Er 1234567891) ve TC (Sami Er 10000000147) kayıt kimliği sayılmadığından değer silinip yeniden yüklenince de tahsilat kopmaz. v2.4.3 → 2.4.4 geçişi bu kâhinde DENENMEZ (tek program kökü — KARARLAR).",
+ "dayanak": "KARARLAR.md B3e (baş mimar kararı 23.10.2026 kayıt anahtarı sürekliliği)",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Üyeler",
+     "tur": "serbest",
+     "ilk": [
+      "Müşteri"
+     ],
+     "basliklar": [
+      "Telefon",
+      "Vergi No",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "N1",
+       "isim": "Nur Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Vergi No": "1234567890",
+        "Tutar": "700,00 ₺"
+       }
+      },
+      {
+       "no": "N2",
+       "isim": "Oya Er",
+       "hucreler": {
+        "Telefon": "",
+        "Vergi No": "1234567891",
+        "Tutar": "800,00 ₺"
+       }
+      },
+      {
+       "no": "N3",
+       "isim": "Pelin Uz",
+       "hucreler": {
+        "Telefon": "",
+        "Vergi No": "",
+        "Tutar": "900,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Kişiler",
+     "tur": "serbest",
+     "ilk": [
+      "Müşteri"
+     ],
+     "basliklar": [
+      "Telefon",
+      "TC Kimlik No",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "T1",
+       "isim": "Rana Ok",
+       "hucreler": {
+        "Telefon": "",
+        "TC Kimlik No": "10000000146",
+        "Tutar": "1.100,00 ₺"
+       }
+      },
+      {
+       "no": "T2",
+       "isim": "Sami Er",
+       "hucreler": {
+        "Telefon": "",
+        "TC Kimlik No": "10000000147",
+        "Tutar": "1.200,00 ₺"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  },
+  {
+   "id": "p1",
+   "islem": "kayit_tahsilat",
+   "kayit": "N1",
+   "tutar": "50",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "p2",
+   "islem": "kayit_tahsilat",
+   "kayit": "N2",
+   "tutar": "60",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "p3",
+   "islem": "kayit_tahsilat",
+   "kayit": "N3",
+   "tutar": "70",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "p4",
+   "islem": "kayit_tahsilat",
+   "kayit": "T1",
+   "tutar": "80",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "p5",
+   "islem": "kayit_tahsilat",
+   "kayit": "T2",
+   "tutar": "90",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "k2",
+   "islem": "kontrol"
+  },
+  {
+   "id": "t2",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Üyeler",
+     "tur": "serbest",
+     "ilk": [
+      "Müşteri"
+     ],
+     "basliklar": [
+      "Telefon",
+      "Vergi No",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "N1",
+       "isim": "Nur Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Vergi No": "1234567890",
+        "Tutar": "700,00 ₺"
+       }
+      },
+      {
+       "no": "N2",
+       "isim": "Oya Er",
+       "hucreler": {
+        "Telefon": "",
+        "Vergi No": "1234567891",
+        "Tutar": "800,00 ₺"
+       }
+      },
+      {
+       "no": "N3",
+       "isim": "Pelin Uz",
+       "hucreler": {
+        "Telefon": "",
+        "Vergi No": "",
+        "Tutar": "900,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Kişiler",
+     "tur": "serbest",
+     "ilk": [
+      "Müşteri"
+     ],
+     "basliklar": [
+      "Telefon",
+      "TC Kimlik No",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "T1",
+       "isim": "Rana Ok",
+       "hucreler": {
+        "Telefon": "",
+        "TC Kimlik No": "10000000146",
+        "Tutar": "1.100,00 ₺"
+       }
+      },
+      {
+       "no": "T2",
+       "isim": "Sami Er",
+       "hucreler": {
+        "Telefon": "",
+        "TC Kimlik No": "10000000147",
+        "Tutar": "1.200,00 ₺"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k3",
+   "islem": "kontrol"
+  },
+  {
+   "id": "t3",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Üyeler",
+     "tur": "serbest",
+     "ilk": [
+      "Müşteri"
+     ],
+     "basliklar": [
+      "Telefon",
+      "Vergi No",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "N1",
+       "isim": "Nur Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Vergi No": "1234567890",
+        "Tutar": "700,00 ₺"
+       }
+      },
+      {
+       "no": "N2",
+       "isim": "Oya Er",
+       "hucreler": {
+        "Telefon": "",
+        "Vergi No": "",
+        "Tutar": "800,00 ₺"
+       }
+      },
+      {
+       "no": "N3",
+       "isim": "Pelin Uz",
+       "hucreler": {
+        "Telefon": "",
+        "Vergi No": "",
+        "Tutar": "900,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Kişiler",
+     "tur": "serbest",
+     "ilk": [
+      "Müşteri"
+     ],
+     "basliklar": [
+      "Telefon",
+      "TC Kimlik No",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "T1",
+       "isim": "Rana Ok",
+       "hucreler": {
+        "Telefon": "",
+        "TC Kimlik No": "10000000146",
+        "Tutar": "1.100,00 ₺"
+       }
+      },
+      {
+       "no": "T2",
+       "isim": "Sami Er",
+       "hucreler": {
+        "Telefon": "",
+        "TC Kimlik No": "",
+        "Tutar": "1.200,00 ₺"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k4",
+   "islem": "kontrol"
+  }
+ ]
+}

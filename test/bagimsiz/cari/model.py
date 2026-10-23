@@ -58,6 +58,26 @@ MUTASYONLAR = {
     32: "C3 kimliksiz satır: çok kimlikli adın kimliksiz kaydı ilk kimliğe katılır (ayrı kalmaz)",
     33: "C3 kimlik sütunu: sağlama hanesi tutmayan değer de kimlik sayılır",
     34: "Kimlik sütunu: 'Vergi No' / 'Vergi Numarası' / 'Vergi Kimlik' tutar sayılır",
+    # /2 VERGİ SÜTUNU BORÇ DEĞİLDİR ([KULLANICI] 23.10.2026 karar A, 5 dk yetkisiyle)
+    35: "Vergi sütunu (KDV, Vergi, Vergi Tutarı, Stopaj, Tevkifat, ÖTV) tutar sayılır ve Genel Toplam ayrı sınıf değil (eski K3: borç belirlenemez)",
+    36: "Tutar + Genel Toplam tablosunda borç Tutar (KDV hariç)",
+    37: "Borç sütunu belirlenemeyen kişiler raporda notsuz kaybolur",
+    # /2 KAYIT ANAHTARI SÜREKLİLİĞİ (baş mimar kararı 23.10.2026)
+    38: "Yerine koy (aynı dosyayı yeniden yükle) kayda bağlı tahsilatı kayıttan koparır",
+    39: "Sağlaması tutmayan Vergi No / TC değeri kayıt kimliğine girer (değer değişince tahsilat kopar)",
+    # /2 TABLO BAĞ SÜREKLİLİĞİ (baş mimar kararı 23.10.2026)
+    40: "Yerine koy güvenli eşleşmede de bağı koparır (satır içeriği anahtar)",
+    41: "Güvenli eşleşme yokken uyarı ve onay yok (sessiz)",
+    42: "N3 öncesi: aynı konum + aynı kişi eşleşmesi kişi değeri iki tabloda AYNI SAYIDA satırdayken de geçerli (bağ yanlış kişiye gidebilir)",
+    43: "Devamı olarak ekle aynı kişi + aynı tutar satırını söylemez, onay istemez",
+    # /2 NETLEŞTİRME (karar sahibi, 23.10.2026): içeriği tamamen aynı satır mevcut kaydın kendisidir
+    44: "İçeriği aynı satır yer değişince (aynı adlı iki satırın yer değiştirmesi) eşleşmez — onay ister",
+    45: "Devamı olarak ekle içeriği tamamen aynı satırı ikinci kez ekler ve onay ister",
+    46: "Devamı olarak ekle güvenli eşleşen (aynı kişi, başka hücresi farklı) satırı güncellemez, ikinci kez ekler ve onay ister",
+    47: "N4 öncesi: tablodaki TEK tutar kolonu vergi kolonuysa da borç sayılmaz",
+    48: "N6 öncesi: tabloda artık olmayan kayda tahsilat yazımı kabul edilir",
+    49: "N1 öncesi: Dosya No'lu tabloda dosya numarası değişen kaydın bağı kişi eşleşmesiyle yeni dosyaya taşınır",
+    50: "N1: geri gelen dosya numarasının bağları yeniden görünmez",
 }
 
 
@@ -74,12 +94,16 @@ def kurus(metin):
 # ───────────────────────── /2 B3: Tablodaki Kişiler borcu — [KULLANICI] 23.10.2026 03:12 UTC (5 dk yetkisiyle) K1–K5 metni; ürün kodu okunmadı
 # C3 (23.10.2026): kişi kimliği sütunu (TCKN/VKN). Başlık adları ORTAM bilgisidir — kara kutu yoklaması (aday 15, 23.10.2026: "TC Kimlik No", "TCKN", "VKN",
 # "TCKN/VKN", "Kimlik No", "TC Kimlik No / VKN" başlıklı sütunda aynı ad farklı kimlik ayrı satır oldu; "Vergi No" başlıklı tabloda hiç satır görünmedi — İNCELE).
+# VERGİ SÜTUNU BORÇ DEĞİLDİR ([KULLANICI] 23.10.2026 karar A): "KDV", "Vergi", "Vergi Tutarı", "Stopaj", "Tevkifat", "ÖTV" başlıklı sütunlar tutardır ama borç sayılmaz;
+# Kalan/ödenen yoksa ve "Tutar" (KDV hariç) ile "Genel Toplam" (KDV dahil) varsa borç Genel Toplam.
+VERGI_KELIME = {"kdv", "stopaj", "tevkifat", "ötv"}
+VERGI_TAM_BASLIK = {"vergi", "vergi tutarı"}
 KISI_KIMLIK_BASLIK = {"tc kimlik no", "tckn", "vkn", "tckn/vkn", "kimlik no", "tc kimlik no / vkn",
                       # KİMLİK SÜTUNU TUTAR DEĞİLDİR (baş mimar kararı, 23.10.2026): kimlik/numara bildiren başlık — sağlama hanesi tutmasa da tutar sayılmaz, borca girmez.
                       # "Vergi", "Vergi Tutarı", "KDV" başlıklı sütunlar tutardır (bu kümede değil).
                       "vergi no", "vergi numarası", "vergi kimlik"}
 VERGI_KIMLIK_BASLIK = {"vergi no", "vergi numarası", "vergi kimlik"}  # mutant 34
-KIMLIK_BASLIK = {"dosya no", "borçlu", "telefon", "müşteri no", "müşteri", "ad soyad"} | KISI_KIMLIK_BASLIK
+KIMLIK_BASLIK = {"dosya no", "borçlu", "telefon", "müşteri no", "müşteri", "ad soyad", "fatura no"} | KISI_KIMLIK_BASLIK
 TUTAR_DISI = {"gün", "adet"}  # K3: gün/adet sütunu ("Kalan Gün", "Adet") tutar değildir
 TUTAR_DISI_EK = {"sayı", "sayısı", "ay", "yıl", "oran", "oranı", "yüzde"}  # tutar sayılmaz [YAYGIN]; senaryolarda kullanılmaz (DENENMEZ)
 
@@ -139,9 +163,15 @@ def sutun_sinifi(baslik, hucreler=()):
     dolu = [h for h in hucreler if str(h or "").strip()]
     if dolu and all(tarih_mi(h) for h in dolu):
         return None
+    if dolu and not any(_sayi_mi(h) for h in dolu):
+        return None  # [YAYGIN] değerleri sayı olmayan metin sütunu ("Açıklama": "Ekim") tutar değildir
     w = kelimeler(baslik)
     if "%" in str(baslik) or any(x in TUTAR_DISI or x in TUTAR_DISI_EK for x in w):
         return None
+    if any(x in VERGI_KELIME for x in w) or " ".join(w) in VERGI_TAM_BASLIK:
+        return "vergi"  # karar A: tutardır ama borç sayılmaz
+    if w[:2] == ["genel", "toplam"]:
+        return "genel"  # karar A: KDV dahil toplam
     if any(x.startswith(("söz", "taahhüt")) for x in w):
         return "soz"
     if "kalan" in w or "bakiye" in w:
@@ -151,6 +181,13 @@ def sutun_sinifi(baslik, hucreler=()):
     if any(x.startswith(("toplam", "tutar", "ödenecek", "borç", "alacak")) for x in w):
         return "toplam"
     return "tutar"
+
+
+def _sayi_mi(metin):
+    try:
+        return hucre_kurus(metin) is not None
+    except (ValueError, TypeError):
+        return False
 
 
 def hucre_kurus(metin):
@@ -192,6 +229,9 @@ class Model:
         self.etiketCari = defaultdict(set)   # cari -> açık/kart denetiminin etiketini AJAN'a düşüren nedenler
         self.out = {}
         self.belirsiz = []
+        self.belirsiz_adlar = set()
+        self.bag_kopan_adlar = set()
+        self.kayip_dosya = {}  # N1: tablodan kalkan Dosya No → kalan kayıt tahsilatı (dosya numarası geri gelirse bağ yeniden görünür)  # N3: bağı hiçbir yere taşınmayan kişiler — rapordaki tahsilatları (0 dahil) denetlenir  # bağ sürekliliği: eşleşmeyen bağlı verinin yeri kuralda yok → bu adlı kişilerin borç/alacak denetimi yapılmaz
 
     # ───────────────────────── yardımcılar
     def yeni_seq(self):
@@ -307,8 +347,16 @@ class Model:
                 continue
             sutun = [c.get(h) for _, c in sk["satirlar"]]
             sinif.append((h, sutun_sinifi(h, sutun) if self.mut != 16 or kelimeler(h)[-1:] not in (["gün"], ["adet"]) else "tutar"))
+        if self.mut == 35:  # eski K3: vergi sütunu tutar, Genel Toplam toplam sınıfı
+            sinif = [(h, "tutar" if x == "vergi" else "toplam" if x == "genel" else x) for h, x in sinif]
+        # N4 (karar sahibi 23.10.2026): vergi kolonu YALNIZ tabloda başka bir tutar kolonu varken borç dışıdır; tek tutar kolonu vergi kolonuysa ("Vergiler": Vergi Tutarı) o borçtur
+        vergi_kol = [h for h, x in sinif if x == "vergi"]
+        if len(vergi_kol) == 1 and not any(x in ("kalan", "toplam", "odenen", "tutar", "genel") for _, x in sinif) and self.mut != 47:
+            sinif = [(h, "tutar" if x == "vergi" else x) for h, x in sinif]
         al = lambda c: [h for h, x in sinif if x == c]  # noqa: E731
-        kalan, toplam, odenen, tutar, soz = al("kalan"), al("toplam"), al("odenen"), al("tutar"), al("soz")
+        kalan, toplam, odenen, tutar, soz, genel = al("kalan"), al("toplam"), al("odenen"), al("tutar"), al("soz"), al("genel")
+        if len(genel) > 1:
+            return None
         if self.mut == 15:
             tutar = tutar + soz
         if len(kalan) > 1 or len(toplam) > 1 or len(odenen) > 1:
@@ -324,6 +372,8 @@ class Model:
             return None
         if kalan and self.mut == 14 and toplam:
             return hucre_kurus(hucre.get(toplam[0]))
+        if odenen and genel:
+            toplam = genel  # karar A + K3 "Kalan yoksa toplam − ödenen": toplam KDV dahil Genel Toplam [YAYGIN — hangi toplam metinde yok]
         if odenen and toplam:
             t = hucre_kurus(hucre.get(toplam[0]))
             o = hucre_kurus(hucre.get(odenen[0]))
@@ -334,6 +384,10 @@ class Model:
             return t - o if self.mut == 25 else max(0, t - o)  # K3: Kalan yoksa toplam − ödenen; negatifse 0
         if odenen:
             return None
+        if genel:
+            if self.mut == 36 and len(toplam) == 1:
+                return hucre_kurus(hucre.get(toplam[0]))
+            return hucre_kurus(hucre.get(genel[0]))  # karar A: Tutar (KDV hariç) + Genel Toplam (KDV dahil) → borç Genel Toplam
         para = toplam + tutar
         if len(para) == 1:
             return hucre_kurus(hucre.get(para[0]))  # K3: tek tutar sütunu (taksit, kira, aidat, ücret, "Ödenecek" dahil)
@@ -426,6 +480,13 @@ class Model:
 
     # ───────────────────────── işlemler
     def tablo_yukle(self, a):
+        # KAYIT ANAHTARI SÜREKLİLİĞİ (baş mimar kararı 23.10.2026): "Yerine koy" ile yeniden yüklenen tabloda kayda bağlı tahsilat kayıttan kopmaz (kayitTahsilat
+        # kayıt no'suyla kalır); sağlaması tutmayan Vergi No / TC değeri kayıt kimliği sayılmaz — değeri değişse ya da silinse de kayıt aynı kayıttır.
+        if self.mut == 38:
+            self.kayitTahsilat.clear()
+        onceki_imza = {no: kay.get("ham_kimlik") for no, kay in getattr(self, "kayitlar", {}).items()}
+        eski_satir = self.satir_listesi() if self.sekmeler else None
+        eski_sekme, eski_kayit = list(self.sekmeler), dict(self.kayitlar)
         self.kayitlar = {}
         self.sekmeler = []
         for sk in a["sekmeler"]:
@@ -437,11 +498,13 @@ class Model:
                 bas = ["Dosya No", "Borçlu", "Söz Tarihi", "Söz Tutarı"]
                 satirlar = [(r["no"], {"Söz Tarihi": r["tarih"], "Söz Tutarı": r["tutar"]}) for r in sk["kayitlar"]]
             elif sk["tur"] == "serbest":
-                bas = ["Dosya No", "Borçlu"] + list(sk["basliklar"])
+                bas = list(sk.get("ilk") or ["Dosya No", "Borçlu"]) + list(sk["basliklar"])  # `ilk`: Fatura No + Müşteri ya da Dosya No'suz (yalnız Müşteri)
                 satirlar = [(r["no"], dict(r.get("hucreler", {}))) for r in sk["kayitlar"]]
             else:
                 bas, satirlar = None, [(r["no"], None) for r in sk["kayitlar"]]
-            self.sekmeler.append({"ad": sk["ad"], "tur": sk["tur"], "basliklar": bas, "satirlar": satirlar})
+            self.sekmeler.append({"ad": sk["ad"], "tur": sk["tur"], "basliklar": bas, "satirlar": satirlar, "adlar": [r["isim"] for r in sk["kayitlar"]],
+                                  "dosyalar": [None if (sk.get("ilk") and len(sk["ilk"]) == 1) else r.get("dosya", r["no"]) for r in sk["kayitlar"]],
+                                  "telefon": [str((r.get("hucreler") or {}).get("Telefon") or r.get("tel") or "").strip() for r in sk["kayitlar"]]})
             kimlik_sutun = [h for h in (sk.get("basliklar") or []) if tr_kucuk(h) in KISI_KIMLIK_BASLIK] if sk["tur"] == "serbest" else []
             for r in sk["kayitlar"]:
                 no = r["no"]
@@ -451,6 +514,7 @@ class Model:
                     k["sekmeler"].append(sk["ad"])
                 k["adlar"].add(r["isim"])
                 satir_kimlik = False
+                k.setdefault("ham_kimlik", set()).update(str((r.get("hucreler") or {}).get(h) or "").strip() for h in kimlik_sutun)
                 for h in kimlik_sutun:  # C3: satırın kimliği (boş hücre kimliksiz)
                     v = str((r.get("hucreler") or {}).get(h) or "").strip()
                     if v and (kimlik_gecerli(v) or self.mut == 33):  # C3 kararı: sağlama hanesi tutmayan değer kimlik sayılmaz
@@ -461,6 +525,164 @@ class Model:
                 if sk["tur"] == "taksit":
                     k["items"] = [(t, kurus(v)) for t, v in r["taksitler"]]
                     k["kalan"] = sum(v for _, v in k["items"])
+        if self.mut == 39:  # geçersiz değer anahtara girseydi: ham kimlik değerleri değişen kaydın tahsilatı kopardı
+            for no, kay in self.kayitlar.items():
+                if onceki_imza.get(no) is not None and onceki_imza[no] != kay.get("ham_kimlik"):
+                    self.kayitTahsilat[no] = 0
+        if eski_satir is not None:
+            self.bag_surekliligi(a, eski_satir, eski_sekme, eski_kayit)
+
+    def satir_listesi(self):
+        """BAĞ SÜREKLİLİĞİ: yüklü tablonun satırları — sekme, sıra (konum), ref (kâhinin kayıt no'su), ad, kişi değeri (ad; varsa telefon ya da geçerli TCKN/VKN), borç."""
+        out = []
+        for sk in self.sekmeler:
+            kim_sutun = [h for h in (sk.get("basliklar") or []) if tr_kucuk(h) in KISI_KIMLIK_BASLIK]
+            for i, (no, c) in enumerate(sk["satirlar"]):
+                ad = sk.get("adlar", [None] * (i + 1))[i]
+                tel = (sk.get("telefon") or [""] * (i + 1))[i]
+                kim = next((str((c or {}).get(h) or "").strip() for h in kim_sutun if kimlik_gecerli(str((c or {}).get(h) or "").strip())), "")
+                b = self.satir_borcu(sk, c) if sk["tur"] == "serbest" and sk["basliklar"] is not None else None
+                # NETLEŞTİRME (1): içerik = tabloya yazılan bütün hücreler (Dosya No, ad, öbür hücreler; boş hücre yok sayılır)
+                dosya = (sk.get("dosyalar") or [None] * (i + 1))[i]
+                icerik = (dosya, ad, tuple(sorted((k, str(v).strip()) for k, v in (c or {}).items() if str(v).strip())))
+                out.append({"sekme": sk["ad"], "sira": i, "ref": no, "ad": ad, "kd": (ad, tel or kim or None), "borc": b, "icerik": icerik, "dosya": dosya, "kimlik": kim or None})
+        return out
+
+    def bag_surekliligi(self, a, eski, eski_sekme, eski_kayit):
+        """TABLO BAĞ SÜREKLİLİĞİ (baş mimar kararı 23.10.2026): (1) Yerine koy / Devamı olarak ekle / Sheets eşitlemesi kayda bağlı veriyi (kayıt tahsilatı, not, düzeltme,
+        "Ödendi say", cari bağı) SESSİZCE koparmaz. (2) Güvenli eşleşme varsa bağ yeni satıra taşınır: eski ve yeni satır aynı kişi değerini taşır ve o kişi değeri eski ve
+        yeni tabloda TEK satırdadır — ya da AYNI KONUMDAKİ satır aynı kişi değerini taşır; tutar/vade değişse, kolon eklense, sıra değişse de bağ aynı kişide kalır. (3) Güvenli
+        eşleşme yoksa önizlemede eşleşmeyen kayıtları ADIYLA söyleyen uyarı ve ONAY; eşleşmeyen bağlı veri silinmez (yeri kuralda yok → o adın denetimi yapılmaz). (4) Devamı
+        olarak ekle mevcut kayıtlarla aynı kişi + aynı tutar görünen satırları önizlemede söyler ve onay ister. Denetimler `adim:<id>:onay`, `adim:<id>:uyariAdlari`."""
+        if a.get("mod") == "devam":
+            # NETLEŞTİRME 2 (karar sahibi 23.10.2026): Devamı olarak ekle'de (a) içeriği tamamen aynı satır mevcut kaydın KENDİSİdir; (b) GÜVENLİ EŞLEŞEN satır (aynı kişi
+            # değeri + iki tabloda tek satır, ya da aynı konum + aynı kişi) mevcut kaydın GÜNCELLEMESİdir — ikinci kez eklenmez, bağları kendisinde, uyarı/onay yok; (c) "aynı
+            # görünen satır" uyarısı + onay yalnız güvenli eşleşmeyen VE ikinci kez eklenecek (yeni kayıt açılacak) aynı kişi + aynı tutar satırı için; yeni kayıt açılır.
+            yeni = self.satir_listesi()
+            esles = {}  # yeni satırın ref'i → mevcut kaydın ref'i (aynı içerik ya da güncelleme)
+            for y in yeni:
+                if self.mut != 45 and any(e["icerik"] == y["icerik"] for e in eski):
+                    esles[y["ref"]] = next(e for e in eski if e["icerik"] == y["icerik"])["ref"]
+                    continue
+                if self.mut == 46:
+                    continue
+                ae = [e for e in eski if e["kd"] == y["kd"]]
+                ay = [z for z in yeni if z["kd"] == y["kd"]]
+                if len(ae) == 1 and len(ay) == 1:
+                    esles[y["ref"]] = ae[0]["ref"]
+                    continue
+                # Karar (Mete Er, 23.10.2026): "aynı konum + aynı kişi" YALNIZ o kişi değeri sekmede iki tabloda da AYNI SAYIDA satırdayken geçerli; eklenen dosyada (ya da
+                # mevcut tabloda) sayı farklıysa eşleşme belirsiz → güvenli değil → yeni kayıt (+ aynı görünen uyarısı)
+                konum = next((e for e in eski if e["sekme"] == y["sekme"] and e["sira"] == y["sira"]), None)
+                if (self.mut == 42 and konum and konum["kd"] == y["kd"] and konum["ref"] not in esles.values()
+                        and sum(1 for e in eski if e["sekme"] == y["sekme"] and e["kd"] == y["kd"]) == sum(1 for z in yeni if z["sekme"] == y["sekme"] and z["kd"] == y["kd"])):
+                    esles[y["ref"]] = konum["ref"]  # N3: konum eşleşmesi tekil kişi değerinin içinde — ayrı kural yalnız mutant 42
+            # güncelleme: mevcut kaydın satırı yeni satırın hücrelerini alır (borç yeni satırdan); yeni satır sekmeden çıkar, yeni kayıt açılmaz
+            yeni_hucre = {}
+            for sk in self.sekmeler:
+                for no, c in sk["satirlar"]:
+                    if no in esles:
+                        yeni_hucre[esles[no]] = c
+            for sk in eski_sekme:
+                sk["satirlar"] = [(no, yeni_hucre.get(no, c)) for no, c in sk["satirlar"]]
+            for sk in self.sekmeler:
+                tut = [i for i, (no, _) in enumerate(sk["satirlar"]) if no not in esles]
+                for alan in ("satirlar", "adlar", "telefon", "dosyalar"):
+                    if alan in sk:
+                        sk[alan] = [sk[alan][i] for i in tut]
+            for no in esles:
+                self.kayitlar.pop(no, None)
+            eklenen = [y for y in yeni if y["ref"] not in esles]
+            self.sekmeler = eski_sekme + self.sekmeler
+            birlesik = dict(eski_kayit)
+            for no, kay in self.kayitlar.items():
+                if no in birlesik:
+                    birlesik[no]["sekmeler"] = list(dict.fromkeys(birlesik[no]["sekmeler"] + kay["sekmeler"]))
+                else:
+                    birlesik[no] = kay
+            self.kayitlar = birlesik
+            cift = sorted({y["ad"] for y in eklenen if y["borc"] is not None and any(e["kd"] == y["kd"] and e["borc"] == y["borc"] for e in eski)})
+            if self.mut == 43:
+                cift = []
+            self.d("adim:%s:onay" % a["id"], bool(cift), "KULLANICI", "bağ sürekliliği (4) + NETLEŞTİRME 2: yalnız ikinci kez eklenecek aynı kişi + aynı tutar satırında onay")
+            self.d("adim:%s:uyariAdlari" % a["id"], cift, "KULLANICI", "bağ sürekliliği (4) + NETLEŞTİRME 2: önizleme ikinci kez eklenecek aynı görünen satırları adıyla söyler")
+            return
+        yeni = self.satir_listesi()
+        dosyali_sekme = {y["sekme"] for y in yeni if y["dosya"] is not None}
+        tutanlar = sorted({no for no, v in self.kayitTahsilat.items() if v} | {c["kayit"] for c in self.cariler.values() if c.get("kayit")})
+        eslesmeyen = []
+        for h in tutanlar:
+            er = next((e for e in eski if e["ref"] == h), None)
+            if er is None:
+                continue  # tablo dışı kayıt (ör. taksit kartı anahtarı) — bu kuralın konusu değil
+            hedef = None
+            if er["dosya"] is not None and er["sekme"] in dosyali_sekme and self.mut != 49:
+                # N1 (kullanıcı kararı A, 23.10.2026): Dosya No'lu tabloda her kayıt KENDİ dosya numarasıyla tanınır — bağ yalnız aynı dosya numarasında kalır; numarası
+                # değişen kaydın bağı yeni dosyaya TAŞINMAZ, eski dosyada kalır (Yerine Koy onayı adıyla söyler). Kişi eşleşmesi yalnız Dosya No'suz tabloda. [YAYGIN yorum]
+                # Dosya No kolonu yeni tabloda HİÇ yoksa eski kural (kişi eşleşmesi) — karar bu durumu söylemiyor.
+                ayni_dosya = {y["ref"] for y in yeni if y["dosya"] == er["dosya"]}
+                if len(ayni_dosya) == 1:
+                    hedef = next(iter(ayni_dosya))
+                if hedef is None:
+                    eslesmeyen.append(er["ad"])
+                    self.kayip_dosya[("dosya", er["dosya"])] = self.kayip_dosya.get(("dosya", er["dosya"]), 0) + self.kayitTahsilat.pop(h, 0)
+                    for c in self.cariler.values():
+                        if c.get("kayit") == h:
+                            c["kayit"] = None
+                    continue
+                if hedef != h:
+                    self.kayitTahsilat[hedef] += self.kayitTahsilat.pop(h, 0)
+                for c in self.cariler.values():
+                    if c.get("kayit") == h:
+                        c["kayit"] = hedef
+                continue
+            ayni_icerik = [y for y in yeni if y["icerik"] == er["icerik"]] if self.mut not in (40, 44) else []
+            if ayni_icerik:
+                # NETLEŞTİRME (1): içeriği tamamen aynı satır mevcut kaydın kendisidir (yalnız yeri değişse de) — bağ yerinde, onay yok
+                hedef = next((y for y in ayni_icerik if y["sekme"] == er["sekme"] and y["sira"] == er["sira"]), ayni_icerik[0])["ref"]
+            elif self.mut != 40:
+                ayni_eski = [e for e in eski if e["kd"] == er["kd"]]
+                ayni_yeni = [y for y in yeni if y["kd"] == er["kd"]]
+                if len(ayni_eski) == 1 and len(ayni_yeni) == 1:
+                    hedef = ayni_yeni[0]["ref"]
+                elif self.mut == 42:
+                    # N3 (karar sahibi 23.10.2026): "aynı konum + aynı kişi" YALNIZ kişi değeri sekmede eski ve yeni tabloda TEK satırken geçerli — bu da tekil kişi değeri
+                    # kuralının içindedir; aynı adlı iki kişi yer değiştirip ikisinin tutarı da değişirse bağ HİÇBİR YERE taşınmaz (uyarı + onay). Mutant 42: eski "aynı sayıda" kuralı.
+                    konum = next((y for y in yeni if y["sekme"] == er["sekme"] and y["sira"] == er["sira"]), None)
+                    ayni_sayi = (sum(1 for e in eski if e["sekme"] == er["sekme"] and e["kd"] == er["kd"])
+                                 == sum(1 for y in yeni if y["sekme"] == er["sekme"] and y["kd"] == er["kd"]))
+                    if konum and konum["kd"] == er["kd"] and ayni_sayi:
+                        hedef = konum["ref"]
+            if hedef is not None:
+                if hedef != h:
+                    self.kayitTahsilat[hedef] += self.kayitTahsilat.pop(h, 0)
+                for c in self.cariler.values():
+                    if c.get("kayit") == h:
+                        c["kayit"] = hedef
+                continue
+            eslesmeyen.append(er["ad"])
+            kalan = self.kayitTahsilat.pop(h, 0)  # N3: eşleşmeyen bağ HİÇBİR satıra taşınmaz (silinmez ama tabloda kimsenin değildir) — kişinin raporunda görünmez
+            if er["kimlik"] and kalan:
+                # N1 (kimlik kolonlu tablo): kayıt kendi geçerli kimliğiyle tanınır — kimliği değişen kaydın bağı eskide kalır, aynı kimlik geri gelirse yeniden görünür
+                self.kayip_dosya[("kimlik", er["kimlik"])] = self.kayip_dosya.get(("kimlik", er["kimlik"]), 0) + kalan
+            for c in self.cariler.values():
+                if c.get("kayit") == h:
+                    c["kayit"] = None
+        # N1: tablodan kalkmış Dosya No (kimlik kolonlu tabloda geçerli kimlik) geri geldiyse bağı yeniden görünür (mutant 50: görünmez). Eski satırların bağları
+        # yukarıda yerleştikten SONRA eklenir: geri dönen bağ yeni satırındır, eski tablonun o satırı gibi yeniden eşlenmez.
+        for (tur, deger), tutar in list(self.kayip_dosya.items()):
+            y = next((y for y in yeni if y[tur] == deger), None)
+            if y is not None and self.mut != 50:
+                self.kayitTahsilat[y["ref"]] += tutar
+                del self.kayip_dosya[(tur, deger)]
+        if self.mut == 40:
+            eslesmeyen = []  # aday 16 davranışı: bağ sessizce kopar
+        adlar = sorted(set(eslesmeyen))
+        self.bag_kopan_adlar |= set(adlar)
+        if self.mut == 41:
+            adlar = []
+        self.d("adim:%s:onay" % a["id"], bool(adlar), "KULLANICI", "bağ sürekliliği (3) güvenli eşleşme yoksa onay; hepsi güvenliyse onaysız")
+        self.d("adim:%s:uyariAdlari" % a["id"], adlar, "KULLANICI", "bağ sürekliliği (3) önizleme eşleşmeyen kayıtları adıyla söyler")
 
     def cari_ac(self, a):
         self.cariler[a["ad"]] = {"tur": a.get("tur", "musteri"), "isim": a["isim"], "kayit": a.get("kayit"),
@@ -557,6 +779,9 @@ class Model:
         return "ok"
 
     def kayit_tahsilat(self, a):
+        if self.sekmeler and a["kayit"] not in self.kayitlar and self.mut != 48:
+            # N6 (karar sahibi 23.10.2026): tabloda artık olmayan (eski karttaki) kayda yazım reddedilir (409), sessizce kaybolmaz
+            return ("ret", "KULLANICI")
         n = len(self.kayitlar.get(a["kayit"], {}).get("sekmeler", [])) if self.mut == 5 else 1
         self.kayitTahsilat[a["kayit"]] += kurus(a["tutar"]) * max(1, n)
         self.kasa += kurus(a["tutar"])
@@ -868,6 +1093,8 @@ class Model:
         # 5c: Tablodaki Kişiler — bir dosya no'nun tahsilatı bir kez (kayıt tahsilatı + bağlı carinin bütün tahsilatları, kartta olanlar dahil)
         kisiler_a = self.kisiler()
         for no, kay in self.kayitlar.items():
+            if kay["isim"] in self.belirsiz_adlar:
+                continue  # bağ sürekliliği (3)/(4): eşleşmeyen bağlı verinin yeri kuralda yok
             cari = self.cari_bul_kayit(no)
             alacak = self.kayitTahsilat.get(no, 0)
             if cari is None and no in kisiler_a:
@@ -878,10 +1105,13 @@ class Model:
             if cari:
                 alacak += sum(t["tutar"] for t in self.tahsilatlar.values() if t["aktif"] and t["cari"] == cari)
                 dogrudan = any(t.get("dogrudanKart") for t in self.tahsilatlar.values() if t["aktif"] and t["cari"] == cari)
-            if alacak or len(kay["sekmeler"]) > 1:
+            if alacak or len(kay["sekmeler"]) > 1 or kay["isim"] in self.bag_kopan_adlar:
                 ayni_ad = sum(1 for x in self.kayitlar.values() if x["isim"] == kay["isim"]) > 1
-                self.d("%s:rapor:%s:alacak" % (k, no), alacak, "YAYGIN" if ayni_ad or dogrudan else "KULLANICI",
-                       "B1.8 5c tahsilat bir kez" + (" (aynı adlı iki kişi ayrı satırda: YAYGIN)" if ayni_ad else ""))
+                if kay["isim"] in self.bag_kopan_adlar:
+                    self.d("%s:rapor:%s:alacak" % (k, no), alacak, "KULLANICI", "B1.8 5c · N3 eşleşmeyen bağ hiçbir satıra taşınmaz (yanlış kişiye gitmez)")
+                else:
+                    self.d("%s:rapor:%s:alacak" % (k, no), alacak, "YAYGIN" if ayni_ad or dogrudan else "KULLANICI",
+                           "B1.8 5c tahsilat bir kez" + (" (aynı adlı iki kişi ayrı satırda: YAYGIN)" if ayni_ad else ""))
         # /2 B3 (K1–K3 [KULLANICI] 23.10 03:12 UTC): Tablodaki Kişiler borcu — yalnız carisi ve kartı olmayan kayıt (bağlı carinin borç satırları bu kâhinde yok)
         k4_toplam, k4_tanimli = 0, True
         kisiler = self.kisiler()
@@ -889,9 +1119,15 @@ class Model:
             if self.cari_bul_kayit(no) is not None or (no in self.kartlar and self.kartlar[no]["aktif"]):
                 k4_tanimli = False
                 continue
+            if self.kayitlar[no]["isim"] in self.belirsiz_adlar:
+                k4_tanimli = False
+                continue
             b = self.tablo_borcu(no)
             if b is None:
                 k4_tanimli = False
+                if self.kayitlar[no]["tur"] == "serbest":
+                    # karar A: borç sütunu belirlenemiyorsa kişiler raporda notsuz kaybolmaz — satır görünür ya da raporda görünür not (sekme adı / "borç sütunu")
+                    self.d("%s:rapor:%s:gorunurVeyaNot" % (k, no), self.mut != 37, "KULLANICI", "karar A: borç sütunu belirlenemeyen kişi notsuz kaybolmaz")
                 continue
             # C3: rapor satırı KİŞİdir — dosya no'nun okunan borcu kişisinin (aynı kişiye düşen bütün dosya no'ların) toplamıdır
             kisi = kisiler.get(no)
@@ -901,8 +1137,11 @@ class Model:
             uyeler = [n for n, x in kisiler.items() if x == kisi]
             bs = [self.tablo_borcu(n) for n in uyeler]
             if all(v is not None for v in bs):
-                self.d("%s:rapor:%s:borc" % (k, no), sum(bs), "KULLANICI",
-                       "B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu · C3 kişi toplamı")
+                yaygin = any(sk["basliklar"] and any(sutun_sinifi(h) == "genel" for h in sk["basliklar"]) and any(sutun_sinifi(h) == "odenen" for h in sk["basliklar"])
+                             and any(n2 in uyeler for n2, _ in sk["satirlar"]) for sk in self.sekmeler)
+                self.d("%s:rapor:%s:borc" % (k, no), sum(bs), "YAYGIN" if yaygin else "KULLANICI",
+                       "B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu · C3 kişi toplamı"
+                       + (" · karar A Genel Toplam − ödenen (hangi toplam: YAYGIN)" if yaygin else ""))
                 if b > 0:
                     self.d("%s:rapor:%s:grup" % (k, no), sorted(n for n, v in zip(uyeler, bs) if v > 0), "KULLANICI",
                            "C3 kişi gruplaması: farklı ad aynı kimlik ayrı kişi; aynı ad farklı kimlik ayrı; kimliksiz aynı adın tek kimliğine katılır")
