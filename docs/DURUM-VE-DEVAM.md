@@ -17,7 +17,26 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
 - ÇALIŞMA DALI (claude/youthful-euler-fl8ks4) kod durumu: aday 4 = 2fb1d33 (CI #859 BÜTÜN İŞLER YEŞİL); aday 5 = 0c1ae0d (kapı npm test 3132/3132 + 64/64 e2e + 6 kâhin
   yeşil) → CI #860 BÜTÜN İŞLER YEŞİL (22.10 ~15:35 UTC okundu; madde 24 çizildi). #860 YEŞİLSE iş listesinde 24 (gerçek EDM uçtan uca: gercek-5 55/55 + düzeltmeler + kılavuz
   + açma) çizilir; 31a "son koşu" son adayın CI'sinde (kâhinler CI'da). KIRMIZIYSA: başarısız testin adı kısa günlükte, kök neden (ders 6/20/38).
-- GÜNCEL (23.10 ~05:15 UTC; kapsayıcı 05:05'te yeniden başladı — disk, worktree'ler, not defteri yerinde; arka plan görevleri kesildi, 30 dk rapor işi yeniden kuruldu
+- GÜNCEL (23.10 ~06:00 UTC; kullanıcı /compact öncesi — SIKIŞTIRMADAN SONRA ÖNCE BUNU OKU): ADAY 14 = /home/user/wt/aday14 9b0f520 (dal aday14): npm test henüz yok (aday 13
+  npm test 3329/3329, fark yalnız is/r31e-ad 95ac3d1 + 31cb7a3), cari kâhini 1967/1967, göç tam takım BULGU 0 (kanıt is/goc9 240d952, /home/user/wt/goc9). SÜREN İŞ: is/r31e-c
+  (/home/user/wt/r31e-c, taban aday14): 17cc5f4 C1/C2/C3 BİTTİ (kanıt docs/kanit/2026-10-23/c-*); SAYI HÜCRESİ düzeltmesi (parseAmount 3 ondalıklı sayı → 1000 kat) ajan
+  a4c6a5adce2fe84a1'de sürüyor. SIRADAKİ ADIMLAR (sırasıyla; "ADAY KAPISI SON DALGADA"):
+  1. is/r31e-c bitince raporu + kanıt JSON'ları (kirmizi/yesil/mutasyon/komsu) denetlenir (ders 16).
+  2. ADAY 15: `git worktree add -b aday15 /home/user/wt/aday15 aday14 && git merge --no-ff is/r31e-c` (+ is/goc9 göç kanıtı) → npm ci → birleşim dar testi.
+  3. Bağımsız turlar (adaydan önce): 31e ajanı aacb5253c1e83b520'e "aday 15'te yalnız C1–C3 + sayı hücresi betiklerini yeniden koş" (worktree /home/user/wt/r31e'yi aday15'e
+     al); cari kâhini (`node tools/kanit.mjs kos 244-kahin/cari-aday15 -- node test/bagimsiz/cari/kos.mjs --cikti <not defteri>/aday15-kahin/cari`, flock); göç ajanı
+     ae9ec21f91121d745'e kısa olcu → goc → fark (aday 15; goc9'u ff ile al).
+  4. Hepsi temizse TAM KAPI: `bash <not defteri>/aday-kos.sh /home/user/wt/aday15 15` (tam npm test + ci.yml'nin 64 e2e'si) ve ardından `bash <not defteri>/cidisi-kos.sh
+     /home/user/wt/aday15 15` (CI dışı 14). e-Belge/defter/tutar kâhinleri aday 13'te yeşil (e-Belge kodu o zamandan beri değişmedi; yine de son adayda bir kez koşulur).
+  5. Ekran gezintisi (GG5 (5)): birden çok sekme notu (rapor + Takvim şeridi), Nakit Akışı yetkisiz Kasa notu, geri yükleme 409 iletileri, A3 iletisi — ekran görüntüsüyle
+     (örnek düzen docs/kanit/2026-10-22/244-gezinti/sunucu.mjs + adim.mjs).
+  6. Kanıt aday dalına commit → çalışma dalına `git merge --no-ff aday15` → push → `node tools/kanit.mjs ci <sha> --bekle 120` (ders 21) → iş listesinde 30, 30a, 31, 32 çizilir.
+  7. 32a windows.yml elle ×2 (GitHub actions_run_trigger, çalışma dalı) → 33 Uzun Doğrulama ∥ 34 paket (Wine kurulumu, imza anahtarı /root/.claude/uploads/<oturum>/*imza-anahtari*.pem)
+     → 35 teslim (iş listesi "Teslim notları" sonundaki "SON ADAY TURU" bölümü + DENENEN/DENENMEYEN/BİLİNEN SINIRLAR) → 36 PR (kullanıcı "birleştir" der).
+  AJANLAR (SendMessage ile sürdürülür): a4c6a5adce2fe84a1 tablo/rapor (30a, T4/T1/Y1, A1, gruplama, C1–C3, sayı hücresi) · aacb5253c1e83b520 31e bağımsız dar kontrol (kod yazmaz;
+  betikler <not defteri>/r31e/betik, tur3/) · ae9ec21f91121d745 göç (m30; betik <not defteri>/m30-goc/aday9/kos13.sh, taban not defterinde) · a273b1175b2d0e124 bağımsız kâhin (kodu görmez;
+  is/kahin-244) · af758d0efa275c16f E6/E7/N1/G1/e-Fatura iptal · aa6d8a7ea376869f6 E1/E4/E1-Y/A3/K45. 30 dk rapor işi: CronCreate 2e260437 (oturum içi).
+- ESKİ (23.10 ~05:15 UTC; kapsayıcı 05:05'te yeniden başladı — disk, worktree'ler, not defteri yerinde; arka plan görevleri kesildi, 30 dk rapor işi yeniden kuruldu
   2e260437): ADAY 14 = /home/user/wt/aday14 9b0f520 = aday 13 (f24bc41: aday 12 + is/kahin-244 0dcf7ba + is/r31e-a1 + is/r31e-a3) + is/r31e-ad 31cb7a3 (Tablodaki Kişiler
   gruplama gerilemesi, kök neden 36830cd; kuruş toplamı). Aday 12 npm test 3324/3324, aday 13 npm test 3329/3329 (ikisi de e2e'den önce durduruldu); aday 13 kâhinler e-Belge
   27/27, defter 176, tutar 3559, cari 1953/1967 → aday 14 cari 1967/1967. SÜRENLER: 31e dar kontrol (ders 32; aacb5253c1e83b520, /home/user/wt/r31e), göç tam takım aday 14'te

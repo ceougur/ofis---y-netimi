@@ -424,6 +424,18 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   Takvim'de görünmezdi) seçilmedi. Ajanlar: is/r31e-a1 (a4c6a5adce2fe84a1), is/r31e-a3 (aa6d8a7ea376869f6; A3 iletisi + K45 iptal izi süre dolunca kesin yanıtla kapanır — kâhin
   aday 12k'da 26/27, tek fark bu), kâhin K2 (a273b1175b2d0e124). Gerçek EDM (23.10 ~03:40 UTC, kullanıcı test hesabını yeniden verdi — yalnız oturumda): tam takım 52/52 +
   GetSMMStatus kendi ETTN'ini taşıyor. → ADAY 13 (aday 12 + is/kahin-244 + A1 + A3) tam kapı + kâhinler + göç + CI dışı 14.
+- ADAY 13 → 14 → 15 (23.10.2026 04:35 → 06:00 UTC): aday 13 (f24bc41) npm test 3329/3329, kâhinler e-Belge 27/27 · defter 176 · tutar 3559 · cari 1953/1967 → cari kâhini
+  GERİLEME yakaladı (Tablodaki Kişiler'de ad tekrarı yüksek sekmede kişi ikiye bölünüyor; kök neden 36830cd 31a F4; ana oturum v2.4.3 ile yeniden üretti) → is/r31e-ad 95ac3d1
+  + kuruş toplamı 31cb7a3 → ADAY 14 (9b0f520): cari kâhini 1967/1967; göç tam takım BULGU 0 (fark 100/100, tatbikat 46/46 C11k dahil, dönüş 6/6, kesinti 79/79, zincir 185 + 104).
+  31e KONTROL TURU 3 (ders 32; aday 14): A1/A3/K45/gruplama/kuruş sorunsuz; yeni C1 ORTA (sekme süzgeçli Vade/Nakit'te başka sekmenin tahsilatı kalemi kapatıyor; 9c44652
+  gerilemesi), C2 DÜŞÜK (kuruş altı hücrede özet ↔ TOPLAM 1 kuruş), C3 ORTA (aynı ad farklı TCKN tek grup) — C1/C3 ana oturumca yeniden üretildi; karar gerekmedi (C1 2.4.3
+  yolu, C3 farklı kimlik = farklı kişi) → is/r31e-c 17cc5f4 (kırmızı 6/27 → yeşil, mutasyon 3/3, komşu 891/891, kâhin-cari 1967, 6 e2e). YAN BULGU (sürüyor, a4c6a5adce2fe84a1,
+  aynı dal): istemci Excel'i ham sayıyla okuyor (sheet_to_json raw), insight/validators.mjs parseAmount "12.125" gibi tam 3 ondalıklı SAYIYI binlik sanıyor → 12125 (1000 kat);
+  düzeltme: sayı türündeki hücre sayı olarak alınır, Türkçe yazım tahmini yalnız dizgede; v2.4.3'te de var mı ajan bakıyor. SONRA: ADAY 15 = aday 14 + is/r31e-c → dar kontrol
+  (yalnız C1–C3 + sayı hücresi betikleri) + kâhin-cari + kısa göç farkı → TAM KAPI (aday-kos.sh + cidisi-kos.sh) → ekran gezintisi → çalışma dalı + CI → windows.yml ×2 →
+  Uzun Doğrulama ∥ paket → teslim → PR.
+- İSTEK (kullanıcı, 23.10.2026 ~06:00 UTC: "compact talimatı vereceğim, hazırlığını yap") → devam notu 00 "GÜNCEL (23.10 ~06:00 UTC)" + bu madde yazıldı ve gönderildi; ajan
+  kimlikleri devam notunda.
 - Yayın geçmişi özeti: 2.0.12 … 2.0.26, 2.1.0, 2.2.0, 2.3.0, 2.4.0, 2.4.1, 2.4.2, 2.4.3 yayımlandı (her biri PR + etiket + 5 dosya bayt bayt + güncelleyici "available" + site
   kılavuz PR'ı); ayrıntı arşivde. Kâhin bilinen sınıfları: KDV-DAHIL-ISKONTO (program doğru), KASA-ACILIS-649 (İz 1.3 ile kapanacak).
 - PLANLI TEST (kullanıcı, ertelendi; 16.10.2026'da yine ertelendi: "cuma testini pazara ertele"): Pazar 18.10.2026 09:00 TR (trig_0144BJLRwsZFizXTTYrJVszA): 2.0.24 DENENMEYEN/BİLİNEN SINIRLAR
