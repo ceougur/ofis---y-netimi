@@ -224,9 +224,14 @@ export async function runDrill({ dir, day, maps, baseline, oldBackups, bootCurre
     const w3b = await must("W3 bırakılacak", c.post("/api/workspace/invoices", { scenario: "service_sale", accountId: people[company.code].person2, issueDate: day, lines: [{ name: "Geri yükleme sonrası", qty: 1, unitPrice: 444, vatRate: 20 }], payment: { rest: "open" }, eSend: "later" }));
     const w3left = await must("W3 bırak", c.post(`/api/workspace/invoices/${w3b.id}/withdraw`, {}));
     const after = await factsOf(company);
-    const nums = Object.values(after.invoices).flatMap(d => [d.number]).filter(n => PROGRAM.test(n || ""));
-    const dup = nums.filter((n, i) => nums.indexOf(n) !== i);
-    check(`C8 ${company.code} geri yüklemeden sonra numaralar yedek anının sırasından sürer, veride tekrar yok`, !dup.length && w3left.number === moment.nextNumbers.paper && (w3Card.number === w2Card.number || w3Card.eStatus), { dup, w3Fis: w3left.number, momentNextPaper: moment.nextNumbers.paper, w2Fis: w2left.number });
+    // Yeni tekrar: yedek anında zaten iki belgede duran numara (2.4.3'te silinip geri yüklenen belge numara metnini korur — eski veri) sayılmaz.
+    const dupsOf = facts => {
+      const list = Object.values(facts.invoices).map(d => d.number).filter(n => PROGRAM.test(n || ""));
+      return new Set(list.filter((n, i) => list.indexOf(n) !== i));
+    };
+    const oldDup = dupsOf(moment);
+    const dup = [...dupsOf(after)].filter(n => !oldDup.has(n));
+    check(`C8 ${company.code} geri yüklemeden sonra numaralar yedek anının sırasından sürer, veride tekrar yok`, !dup.length && w3left.number === moment.nextNumbers.paper && (w3Card.number === w2Card.number || w3Card.eStatus), { dup, eskiVeridekiTekrar: oldDup.size, w3Fis: w3left.number, momentNextPaper: moment.nextNumbers.paper, w2Fis: w2left.number });
     check(`C8 ${company.code} GÖZLEM: ara dönemde EDM'ye gitmiş e-Arşiv numarası (${w2Card.number}) geri yüklemeden sonra yeniden verildi mi`, true, { w2: [w2Card.number, w2Card.eStatus], w3: [w3Card.number, w3Card.eStatus, w3Card.eMessage || ""], reused: w2Card.number === w3Card.number, edmHasBoth: edm.state.sent.filter(s => s.id === w2Card.number).length });
   }
 

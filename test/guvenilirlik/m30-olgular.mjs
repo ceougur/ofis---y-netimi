@@ -51,7 +51,9 @@ export async function companyFacts(api, { reportsFrom = "2000-01-01", reportsTo 
   // Kasa
   const cashAll = await must("Kasa (tüm yollar)", api.get("/api/workspace/cash?method=all"));
   const cash = await must("Kasa", api.get("/api/workspace/cash"));
-  const cashRows = list => list.map(e => [e.source || "", e.id, e.kind, cents(e.amount), e.date, e.method].join("|")).sort();
+  // Sistemin yazdığı satırın (ör. açılışta / okumada kendiliğinden yapılan POS gün sonu) kimliği her açılışta yeniden üretilebilir: olay numarasıyla
+  // karşılaştırılır (aday 9: 001'de ölçüm anında iki sürüm aynı BNK numaralı gün sonunu yazdı, yalnız üretilen kimlikler farklıydı).
+  const cashRows = list => list.map(e => [e.source || "", e.actorId === "system" && e.eventNo ? `system:${e.eventNo}` : e.id, e.kind, cents(e.amount), e.date, e.method].join("|")).sort();
   out.cash = { totals: cashAll.totals, byMethod: cashAll.byMethod, allCount: cashAll.entries.length, allDigest: digest(cashRows(cashAll.entries)), window: cash.totals, windowCount: cash.entries.length, windowDigest: digest(cashRows(cash.entries)) };
   // Banka
   const banks = await soft(api.get("/api/workspace/bank/accounts"));
@@ -198,9 +200,17 @@ async function journalFacts(api, from, to) {
   const rows = xlsxRows(res.buffer);
   const head = rows.findIndex(r => r[0] === "Tarih");
   const data = [];
+  // Tarih hücresi Excel'de sayı (gün seri numarası) olarak yazılır (lib/xlsx-write.mjs typedCell) → gg.aa.yyyy.
+  const dayText = v => {
+    if (/^\d{2}\.\d{2}\.\d{4}$/.test(v)) return v;
+    if (!/^\d{5}(\.\d+)?$/.test(v)) return null;
+    const d = new Date(Date.UTC(1899, 11, 30) + Math.round(Number(v)) * 86400000);
+    return `${String(d.getUTCDate()).padStart(2, "0")}.${String(d.getUTCMonth() + 1).padStart(2, "0")}.${d.getUTCFullYear()}`;
+  };
   for (const r of rows.slice(head + 1)) {
     if (r[0] === "TOPLAM") break;
-    if (/^\d{2}\.\d{2}\.\d{4}$/.test(r[0])) data.push(r.slice(0, 6));
+    const day = dayText(r[0]);
+    if (day) data.push([day, ...r.slice(1, 6)]);
   }
   const byDate = {};
   let last = null;

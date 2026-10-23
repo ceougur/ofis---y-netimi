@@ -195,7 +195,8 @@ export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}
     {
       const jb = B.journal;
       const ja = A.journal;
-      if (!jb || !ja || jb.__status || ja.__status) add(code, "Yevmiye (bütün satırlar)", "BULGU", "okunamadı (ders 4: boş başarı değildir)", { before: jb?.__status ?? jb, after: ja?.__status ?? ja });
+      const expectRows = Number(B.reports?.yevmiye?.total) || 0;
+      if (!jb || !ja || jb.__status || ja.__status || jb.rows !== expectRows || !jb.rows) add(code, "Yevmiye (bütün satırlar)", "BULGU", "okunamadı ya da eksik okundu (ders 4: boş başarı değildir)", { before: jb?.__status ?? jb?.rows, after: ja?.__status ?? ja?.rows, raporSatiri: expectRows });
       else {
         const days = [...new Set([...Object.keys(jb.days), ...Object.keys(ja.days)])];
         const setBad = days.filter(d => jb.days[d]?.n !== ja.days[d]?.n || jb.days[d]?.set !== ja.days[d]?.set);
@@ -440,9 +441,11 @@ export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}
     };
     // Tablodaki Kişiler (aday 9): borç kâhini — kararların METNİNDEN (30a + E2 + E3 + U2 daraltılmış; CLAUDE.md Açık iş 22.10.2026) ve eski verinin kendi
     // satırlarından (dataset_rows, 2.4.3'ün yazdığı); 2.4.4 kodundan türetilmez:
-    //   satırın borcu: "Kalan Borç" doluysa o (30a), boşsa "Toplam Borç" (E2); gün/adet sütunu ("Kalan Gün", "Daire Adedi") tutar değil (E3); tek tutar sütunlu
-    //   tablolarda o sütun ("Aylık Ücret", "Ödenecek") 2.4.3'teki gibi borç (U2 daraltma); Ödeme Sözü tutarı ("Söz Tutarı") borç DEĞİL (U2); aynı dosya no
-    //   farklı sekmede aynı kayıt (U2, tek kaynak). Taksit kolonlu sekme (Taksitler) için karar yeni kural koymaz → 2.4.3'teki değer.
+    //   satırın borcu: "Kalan Borç" doluysa o (30a), boşsa "Toplam Borç" / "Toplam" (E2); gün/adet sütunu ("Kalan Gün", "Daire Adedi") tutar değil (E3); tek tutar
+    //   sütunlu tablolarda o sütun ("Aylık Ücret", "Ödenecek") borç (U2 daraltma); Ödeme Sözü tutarı ("Söz Tutarı") borç DEĞİL (U2); aynı dosya no farklı sekmede
+    //   aynı kayıt (U2, tek kaynak); her sekme kendi sütun analiziyle (K-31a F4).
+    //   2.4.3'ün kuralı (önce değerleri de denetlenir): sütun analizi yalnız İLK sekmede (K-31a F4'ün düzelttiği) → ilk sekmede ilk eşleşen "Toplam Borç", öbür
+    //   sekmelerin borcu 0.
     {
       const xb = ce(B.tableReports["cari-ekstre"]);
       const xa = ce(A.tableReports["cari-ekstre"]);
@@ -451,9 +454,16 @@ export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}
         const rows = M?.valuesOfKey.get(key);
         if (!rows) return null;
         let debt = 0;
-        const parts = { kalan: 0, toplamBos: 0, soz: 0, servis: 0, aidat: 0, toplamFark: 0 };
+        let old = 0;
+        const parts = { kalan: 0, toplamBos: 0, soz: 0, servis: 0, aidat: 0, taksit: 0, toplamFark: 0 };
         for (const { tab, values } of rows) {
-          if (tab === "Taksitler") return null;
+          if (tab === M.firstTab) old += cell(values["Toplam Borç"]) || 0;
+          if (tab === "Taksitler") {
+            const v = cell(values.Toplam) || 0;
+            debt += v;
+            parts.taksit += v;
+            continue;
+          }
           if (tab === "Ödeme Sözleri") {
             parts.soz += cell(values["Söz Tutarı"]) || 0;
             continue;
@@ -485,11 +495,12 @@ export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}
           }
           return null;
         }
-        return { debt, parts };
+        return { debt, old, parts };
       };
       const keys = [...new Set([...Object.keys(xb), ...Object.keys(xa)])];
       const debtBad = [];
-      const sums = { before: 0, after: 0, toplamFark: 0, soz: 0, servisOnce: 0, servisSonra: 0, aidatOnce: 0, aidatSonra: 0, taksitlerDegisen: 0 };
+      const sums = { before: 0, after: 0, toplamFark: 0, soz: 0, taksit: 0, servis: 0, aidat: 0, taksitlerDegisen: 0 };
+      const oldBad = [];
       const alacakChanged = [];
       let ruled = 0;
       for (const key of keys) {
@@ -502,16 +513,12 @@ export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}
         if (rule) {
           ruled += 1;
           if (a.borc !== rule.debt) debtBad.push({ key, tabs, before: b.borc, after: a.borc, expected: rule.debt, parts: rule.parts });
+          if (b.borc !== rule.old) oldBad.push({ key, tabs, before: b.borc, expected243: rule.old });
           sums.toplamFark += rule.parts.toplamFark;
           sums.soz += rule.parts.soz;
-          if (tabs.includes("Servis Ücretleri")) {
-            sums.servisOnce += b.borc;
-            sums.servisSonra += a.borc;
-          }
-          if (tabs.includes("Aidatlar")) {
-            sums.aidatOnce += b.borc;
-            sums.aidatSonra += a.borc;
-          }
+          sums.taksit += rule.parts.taksit;
+          sums.servis += rule.parts.servis;
+          sums.aidat += rule.parts.aidat;
         } else if (a.borc !== b.borc) {
           debtBad.push({ key, tabs, before: b.borc, after: a.borc, expected: "2.4.3'teki değer (karar yeni kural koymaz)" });
           sums.taksitlerDegisen += 1;
@@ -520,10 +527,12 @@ export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}
       }
       // Kuruşu kuruşuna ayrıştırma: toplam borç farkı = 30a (Toplam − Kalan) + U2 söz tutarları + tek tutarlı sekmelerin farkı — 2.4.3'ün kuralı (Toplam Borç +
       // söz tutarı) eski verinin satırlarından doğrulanır (önce değerleri).
+      // fark = Σ(önce − sonra) = 30a (Toplam − Kalan, ilk sekme) − F4 ile sayılmaya başlayan öbür sekmeler (Taksitler Toplam, Servis Aylık Ücret, Aidat Ödenecek);
+      // söz tutarı iki sürümde de borç değil (2.4.3: ikinci sekme analiz edilmezdi; 2.4.4: U2).
       const delta = sums.before - sums.after;
-      const explained = sums.toplamFark + sums.soz + (sums.servisOnce - sums.servisSonra) + (sums.aidatOnce - sums.aidatSonra);
-      const detail = { kayit: keys.length, kuralli: ruled, borcOnce: sums.before, borcSonra: sums.after, fark: delta, ayristirma: { "30a Toplam−Kalan": sums.toplamFark, "U2 söz tutarı": sums.soz, "E3/U2 Servis (önce→sonra)": [sums.servisOnce, sums.servisSonra], "U2 Aidat (önce→sonra)": [sums.aidatOnce, sums.aidatSonra] }, aciklanamayan: delta - explained, debtBad: debtBad.slice(0, 10), debtBadCount: debtBad.length };
-      if (debtBad.length || delta !== explained) add(code, "Tablodaki Kişiler — kayıt borcu (30a/E2/E3/U2)", "BULGU", "kararın kuralı tutmuyor", detail);
+      const explained = sums.toplamFark - sums.taksit - sums.servis - sums.aidat;
+      const detail = { kayit: keys.length, kuralli: ruled, borcOnce: sums.before, borcSonra: sums.after, fark: delta, ayristirma: { "30a Toplam−Kalan (ilk sekme)": sums.toplamFark, "K-31a F4 Taksitler (Toplam)": -sums.taksit, "K-31a F4 + E3 Servis (Aylık Ücret; Kalan Gün değil)": -sums.servis, "K-31a F4 + U2 Aidat (Ödenecek; Daire Adedi değil)": -sums.aidat, "U2 söz tutarı (iki sürümde de borç dışı)": sums.soz }, aciklanamayan: delta - explained, debtBad: debtBad.slice(0, 10), debtBadCount: debtBad.length, eskiKuralTutmayan: oldBad.slice(0, 10), eskiKuralTutmayanSayisi: oldBad.length };
+      if (debtBad.length || oldBad.length || delta !== explained) add(code, "Tablodaki Kişiler — kayıt borcu (30a/E2/E3/U2)", "BULGU", "kararın kuralı tutmuyor", detail);
       else add(code, "Tablodaki Kişiler — kayıt borcu (30a/E2/E3/U2)", delta ? "BELGELİ" : "EŞİT", delta ? "30a Kalan Borç önceliği + E2 boşsa Toplam + E3 gün/adet tutar değil + U2 söz borç değil, dosya no tek kayıt (kararlar 22.10.2026)" : "", detail);
       // Alacak (tahsilat) ve satır sayısı: K-5 / K-31a / K-5c (aday 6'daki kural) + U2 dosya no tek kayıt.
       const xbA = Object.fromEntries(Object.entries(xb).map(([k, v]) => [k, { alacak: v.alacak }]));
