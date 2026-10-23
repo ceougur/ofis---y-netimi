@@ -40,7 +40,7 @@ MUTASYONLAR = {
     15: "K3: Ödeme Sözü tutarı borç sayılır",
     16: "K3: gün/adet sütunu tutar sayılır",
     17: "K3: Kalan hücresi boşsa borç 0 (toplama düşmez)",
-    18: "K2: farklı sekmede aynı dosya no her sekmede ayrı borç (çift sayım)",
+    18: "K2 (04:09): farklı sekmede aynı dosya no tek kayıt — yalnız ilk borçlu sekme sayılır (03:12 kuralı)",
     19: "MM6: Nakit Akışı Kasa girişi yalnız cari tahsilatı sayar (evrak tahsili ve kayıt tahsilatı dışarıda)",
     20: "U1: Nihai Tüketici 11111111111'li en eski cariyi (adı belli olsa da) seçer",
     21: "U1: işaretli cari adı/kimliği değişse de kullanılır",
@@ -48,7 +48,7 @@ MUTASYONLAR = {
     23: "K1: aynı sekmede tekrar eden dosya no yalnız ilk satırla sayılır",
     24: "K3: Kalan'sız Tutar + Tahsil Edilen tablosunda ödenen düşülmez",
     25: "K3: toplam − ödenen negatifse 0'a çekilmez",
-    26: "K2: 'birden çok sekmede' notu yok",
+    26: "K2: 'birden çok sekmede; ayrı sayıldı' notu yok (rapor ve Tahsilat Takvimi)",
     27: "K5: Kasa'yı görme yetkisi olmayan kullanıcı Kasa giriş/çıkışını görür",
 }
 
@@ -301,9 +301,10 @@ class Model:
         return None
 
     def tablo_borcu(self, no):
-        """/2 B3 (K1–K3): dosya no'nun Tablodaki Kişiler borcu (kuruş) ya da {"catal": [...]} ya da None (tanımsız → denetlenmez).
-        K1 aynı sekmede aynı dosya no'lu satırlar ayrı borçtur (toplanır); K2 farklı sekmelerde tek kayıt, bir kez sayılır — hangi sekmenin borcu sayılacağı
-        metinde yok → sekme borçlarından BİRİ (ÇATAL; borç sütunu olmayan sekme — yalnız söz — kaynak sayılmaz)."""
+        """/2 B3 (K1–K3): dosya no'nun Tablodaki Kişiler borcu (kuruş) ya da None (tanımsız → denetlenmez).
+        K1 aynı sekmede aynı dosya no'lu satırlar ayrı borçtur (toplanır). K2 ([KULLANICI] 23.10.2026 04:09 UTC, 5 dk yetkisiyle; 03:12'deki "farklı sekmede tek
+        kayıt, bir kez" kuralının YERİNE — dönem sekmelerinin vade kalemleri Takvim'de düşüyordu): FARKLI SEKMEDE aynı dosya no da AYRI borç ve ayrı vade kalemidir
+        (2.4.3 gibi) → bütün sekmelerin satır borçları toplanır (yalnız sözü olan sekme borç katmaz). Tahsilat bir kez (5c) değişmez."""
         adaylar = []
         for sk in self.sekmeler:
             satirlar = [c for n, c in sk["satirlar"] if n == no]
@@ -322,13 +323,12 @@ class Model:
         if not adaylar:
             return 0
         if self.mut == 18:
-            return sum(adaylar)
-        if len(set(adaylar)) == 1:
             return adaylar[0]
-        return {"catal": sorted(set(adaylar))}
+        return sum(adaylar)
 
     def cok_sekme_sayisi(self):
-        """K2 notu: birden çok sekmede geçen dosya no sayısı — ÇATAL (bütün sekmeler / yalnız borç kaynağı sekmeler)."""
+        """K2 notu ("N dosya no birden çok sekmede; ayrı sayıldı"): birden çok sekmede geçen dosya no sayısı — ÇATAL (bütün sekmeler / yalnız borç kaynağı
+        sekmeler; yalnız sözü olan sekmenin sayılıp sayılmadığı metinde yok)."""
         hepsi, borclu = 0, 0
         for no in self.kayitlar:
             sek = [sk for sk in self.sekmeler if any(n == no for n, _ in sk["satirlar"])]
@@ -791,20 +791,25 @@ class Model:
             if b is None:
                 k4_tanimli = False
                 continue
-            self.d("%s:rapor:%s:borc" % (k, no), b, "KULLANICI", "B3 K1 satır başına (aynı sekme ayrı borç) · K2 farklı sekme bir kez · K3 satır borcu")
+            self.d("%s:rapor:%s:borc" % (k, no), b, "KULLANICI", "B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu")
             if isinstance(b, dict):
                 k4_tanimli = False
             else:
                 k4_toplam += b
+        not_n = None
         if self.kayitlar:
             n = self.cok_sekme_sayisi()
             if self.mut == 26:
                 n = [0]
-            self.d("%s:rapor:cokSekmeNotu" % k, n[0] if len(n) == 1 else {"catal": n}, "KULLANICI", "B3 K2 'N dosya no birden çok sekmede; bir kez sayıldı' notu (0 = not yok)")
+            not_n = n[0] if len(n) == 1 else {"catal": n}
+            self.d("%s:rapor:cokSekmeNotu" % k, not_n, "KULLANICI", "B3 K2 (04:09) Tablodaki Kişiler 'N dosya no birden çok sekmede; ayrı sayıldı' notu (0 = not yok)")
         # /2 B4b (K4 [KULLANICI]): Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip, Nakit Akışı Beklenen aynı satır borcu, aynı toplam (kontrol adımında "raporlar")
         if a.get("raporlar") and k4_tanimli:
             for anahtar in ("k4:kisiler", "k4:takvim", "k4:vade", "k4:akis"):
                 self.d("%s:%s" % (k, anahtar), k4_toplam, "KULLANICI", "B4b K4 dört rapor aynı satır borcunu kullanır (dönem süzgeci içinde)")
+            if not_n is not None:
+                # K2 (04:09): not Tahsilat Takvimi'nde de çıkar — yalnız bütün satırların vadesi takvim penceresindeyken (K4 koşulu) denetlenir
+                self.d("%s:takvim:cokSekmeNotu" % k, not_n, "KULLANICI", "B3 K2 (04:09) Tahsilat Takvimi 'N dosya no birden çok sekmede; ayrı sayıldı' notu (0 = not yok)")
         # /2 B5b (K5 [KULLANICI] Y1): Kasa'yı görme yetkisi olmayan kullanıcı Nakit Akışı'nda Kasa giriş/çıkışını görmez (boş/gizli + not)
         for ad in self.kullanicilar:
             self.d("%s:yetkisiz:%s:kasa" % (k, ad), "gorunur" if self.mut == 27 else "gizli", "KULLANICI", "B5b K5 Kasa giriş/çıkışı gizli")

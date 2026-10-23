@@ -1,8 +1,8 @@
 {
  "dil": "destekofis-cari/2",
  "ad": "b3-u2-tablo-borcu",
- "aciklama": "K3 Tablodaki Kişiler borcu: Kalan önceliği, Kalan 0 → 0, Kalan boş → Toplam Borç, söz borç dışı (aynı dosyada ve yalnız sözü olan dosyada), 'Kalan Gün' tutar değil (tek tutar sütunu borç); K2 aynı dosya no iki sekmede bir kez (hangi sekme: ÇATAL) + not; MM6 Kasa giriş: cari nakit + kayıt tahsilatı + çek tahsili, havale hariç; Kasa çıkış: elle Kasa çıkışı",
- "dayanak": "KARARLAR.md B3 (KULLANICI 23.10 03:12 UTC K1–K3), B4 (KULLANICI MM6)",
+ "aciklama": "K3 Tablodaki Kişiler borcu: Kalan önceliği, Kalan 0 → 0, Kalan boş → Toplam Borç, söz borç dışı (aynı dosyada ve yalnız sözü olan dosyada), 'Kalan Gün' tutar değil (tek tutar sütunu borç); K2 (04:09) aynı dosya no iki sekmede ayrı borç + 'ayrı sayıldı' notu; MM6 Kasa giriş: cari nakit + kayıt tahsilatı + çek tahsili, havale hariç; Kasa çıkış: elle Kasa çıkışı",
+ "dayanak": "KARARLAR.md B3 (KULLANICI 23.10 03:12 UTC K1, K3; 04:09 UTC K2), B4 (KULLANICI MM6)",
  "bugun": "2026-06-17",
  "adimlar": [
   {

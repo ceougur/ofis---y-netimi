@@ -1,0 +1,158 @@
+{
+  "ad": "244-kahin/kirmizi-aday8-cari-k2-0409",
+  "komut": "node test/bagimsiz/cari/kos.mjs --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-244/k21-cari",
+  "commit": "f4a26cc7fdf2da4bbf2b4229739128f7cdbee7d1",
+  "dal": "is/kahin-244",
+  "kirli": 6,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T04:12:59.393Z",
+  "sure_sn": 33,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 1967,
+    "gecen": 1841,
+    "basarisiz": 126,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 126 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:2026/106:borc: program 400000 · kâhin 700000 (B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:2026/107:borc: program 150000 · kâhin 350000 (B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:cokSekmeNotu: program 0 · kâhin {\"catal\":[2,3]} (B3 K2 (04:09) Tablodaki Kişiler 'N dosya no birden çok sekmede; ayrı sayıldı' notu (0 = not yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:akis: program 740000 · kâhin 1020000 (B4b K4 dört rapor aynı satır borcunu kullanır (dönem süzgeci içinde))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:kisiler: program 740000 · kâhin 1020000 (B4b K4 dört rapor aynı satır borcunu kullanır (dönem süzgeci içinde))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:takvim: program 740000 · kâhin 1020000 (B4b K4 dört rapor aynı satır borcunu kullanır (dönem süzgeci içinde))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:vade: program 740000 · kâhin 1020000 (B4b K4 dört rapor aynı satır borcunu kullanır (dönem süzgeci içinde))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:2026/201:borc: program 100000 · kâhin 200000 (B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:2026/205:borc: program 0 · kâhin 180000 (B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:yetkisiz:Y1:kasa: program \"gorunur\" · kâhin \"gizli\" (B5b K5 Kasa giriş/çıkışı gizli)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:yetkisiz:Y1:not: program false · kâhin true (B5b K5 gizlilik notu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:akis: program 470000 · kâhin 630000 (B4b K4 dört rapor aynı satır borcunu kullanır (dönem süzgeci içinde))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:kisiler: program 220000 · kâhin 630000 (B4b K4 dört rapor aynı satır borcunu kullanır (dönem süzgeci içinde))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:takvim: program 470000 · kâhin 630000 (B4b K4 dört rapor aynı satır borcunu kullanır (dönem süzgeci içinde))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:vade: program 470000 · kâhin 630000 (B4b K4 dört rapor aynı satır borcunu kullanır (dönem süzgeci içinde))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:2026/301:borc: program 120000 · kâhin 270000 (B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:2026/302:borc: program 40000 · kâhin 80000 (B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:2026/303:borc: program 0 · kâhin 150000 (B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:2026/304:borc: program 60000 · kâhin 130000 (B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:cokSekmeNotu: program 0 · kâhin 2 (B3 K2 (04:09) Tablodaki Kişiler 'N dosya no birden çok sekmede; ayrı sayıldı' notu (0 = not yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:takvim:cokSekmeNotu: program 0 · kâhin 2 (B3 K2 (04:09) Tahsilat Takvimi 'N dosya no birden çok sekmede; ayrı sayıldı' notu (0 = not yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:T1/001:borc: program 2800 · kâhin 261436 (B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:T1/002:borc: program 7600 · kâhin 772237 (B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:T1/008:borc: program 0 · kâhin 267253 (B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:cokSekmeNotu: program 0 · kâhin 2 (B3 K2 (04:09) Tablodaki Kişiler 'N dosya no birden çok sekmede; ayrı sayıldı' notu (0 = not yok))",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-23/244-kahin/kirmizi-aday8-cari-k2-0409.log",
+  "klasor": "/home/user/wt/kahin-244",
+  "ham_cikti_sha256": "10822ee36f45aa61c617a7d6270c3a1c252b60e0eb24104821ebc3550571477d",
+  "ham_cikti_bayt": 25344
+}

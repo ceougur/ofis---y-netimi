@@ -336,7 +336,10 @@ async function kos(senaryo) {
             const kisR = (await api("GET", `/api/workspace/reports/cari-ekstre?${genis}`)).data?.report;
             ids.genisRapor = kisR;
             const kis = kisR?.totals;
-            const takvim = (await api("GET", "/api/workspace/dues")).data?.items;
+            const takvimR = (await api("GET", "/api/workspace/dues")).data;
+            const takvim = takvimR?.items;
+            if (Array.isArray(takvim)) ham[`${k}:takvim`] = takvim.map(x => ({ amount: x.amount, tab: x.tab, date: x.date, key: x.key })); // K2/K4 kanıtı (ders 38)
+            P[`${k}:takvim:cokSekmeNotu`] = cokSekmeNotu(JSON.stringify(takvimR ?? null)); // /2 B3 K2 (04:09): not Tahsilat Takvimi'nde de
             const vade = (await api("GET", `/api/workspace/reports/vade-takip?${genis}`)).data?.report?.totals;
             const akis = (await api("GET", `/api/workspace/reports/nakit-akis?${genis}`)).data?.report?.totals;
             Object.assign(P, {
@@ -377,9 +380,8 @@ async function kos(senaryo) {
                 if (g) P[`${k}:rapor:${no}:ad`] = g.cari;
               }
               const top = (arr, f) => arr.reduce((s, x) => s + (kurus(f(x)) || 0), 0);
-              // /2 B3 K2: "N dosya no birden çok sekmede; bir kez sayıldı" notu — rapor yanıtının herhangi bir metninde (alan adı bilinmiyor)
-              const notM = /(\d+)\s*dosya no birden çok sekmede/i.exec(JSON.stringify(rp.data) + JSON.stringify(ids.genisRapor ?? null));
-              P[`${k}:rapor:cokSekmeNotu`] = notM ? Number(notM[1]) : 0;
+              // /2 B3 K2 (04:09): "N dosya no birden çok sekmede; ayrı sayıldı" notu — rapor yanıtının herhangi bir metninde (alan adı bilinmiyor)
+              P[`${k}:rapor:cokSekmeNotu`] = cokSekmeNotu(JSON.stringify(rp.data) + JSON.stringify(ids.genisRapor ?? null));
               P[`${k}:rapor:tutarli`] = kurus(rep.totals.credit) === top(rep.groups, g => g.credit) && kurus(rep.totals.debit) === top(rep.groups, g => g.debit) && rep.groups.every(g => kurus(g.credit) === top(g.lines, l => l.alacak) && kurus(g.debit) === top(g.lines, l => l.borc));
             }
           }
@@ -398,6 +400,14 @@ async function kos(senaryo) {
 
 const model = (dosya, mut = 0) => JSON.parse(execFileSync(PYTHON, ["-I", path.join(HERE, "model.py"), dosya, "--mutasyon", String(mut)], { encoding: "utf8" }));
 const esit = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+// /2 B3 K2 ([KULLANICI] 23.10.2026 04:09 UTC): "N dosya no birden çok sekmede; ayrı sayıldı" → N. Not yoksa 0; 03:12 metni ("bir kez sayıldı") ya da sonu
+// okunamayan not "bir-kez:N" / "metin:N" olarak yazılır (beklenenle tutmaz — fark; ders 38: hangi metin göründüğü raporda okunur).
+function cokSekmeNotu(metin) {
+  const m = /(\d+)\s*dosya no birden çok sekmede[^"\d]{0,20}?(ayrı|bir kez)\s*sayıldı/i.exec(metin);
+  if (m) return /ayrı/i.test(m[2]) ? Number(m[1]) : `bir-kez:${m[1]}`;
+  const e = /(\d+)\s*dosya no birden çok sekmede/i.exec(metin);
+  return e ? `metin:${e[1]}` : 0;
+}
 function karsilastir(beklenen, program) {
   const farklar = [];
   let toplam = 0;

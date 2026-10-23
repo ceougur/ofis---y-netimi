@@ -40,3 +40,14 @@ Kırmızıların nedeni iletide/ham çıktıda okundu (ders 38). Kâhin hatası 
 dosya no başına borç yıl başı–bugün raporundan okunuyordu (b3b'de Ödeme Sözü tarihi bugünden sonra → satır raporda yok); kullanıcı adı `kahin-<ad>`, borç geniş dönem
 raporundan, K5 için kurulum denetimi (Kasa sayfası 200 ise okuma hatası). K44 çakışma iletisi ilk sürümde "numarası kullanıldı, silinmez" notunu da çakışma sayıyordu →
 kalıplar daraltıldı. Yeşil koşular ana oturumda aday 12'de.
+
+### Tur 3 ek — K2 değişti ([KULLANICI] 23.10.2026 04:09 UTC: farklı sekmede aynı dosya no AYRI borç ve ayrı vade kalemi + "ayrı sayıldı" notu)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| KIRMIZI kirmizi-aday8-cari-k2-0409 | 14 senaryo (b3c yeni K2'ye göre: 2026/301 ve 2026/304 iki dönem sekmesinde, Ödeme Sözü takvim penceresinde, K4 açık) + 27 mutant, aday 8 kodunda | 126 fark (hepsi BULGU KULLANICI) · 0 okuma hatası · 0 yakalanmayan mutasyon |
+
+Neden (ham çıktı, ders 38): aday 8 farklı sekmedeki aynı dosya no'yu BİR KEZ sayıyor — Tablodaki Kişiler ve Tahsilat Takvimi yalnız ilk sekmenin ilk satırını alıyor
+(b3c Takvim kalemleri: 301 → yalnız "2025 Aidat" 1.200, 304 → yalnız 600; ikinci sekmenin kalemi düşüyor — kararın gerekçesiyle aynı); not ne raporda ne Takvim'de
+var; ayrıca K1 (302 tek satır) ve K3 (303: Takvim 2.500 = Ödenecek Tutar, ödenen düşülmüyor; Tablodaki Kişiler'de 0) → K4'te Tablodaki Kişiler 2.200, öbür üç rapor 4.700,
+kâhin 6.300. Takvim kalemleri koşucunun ham çıktısına eklendi (`k*:takvim`; b3c tek başına yeniden koşuldu — ilk kayıt bu alandan önce alındı).
