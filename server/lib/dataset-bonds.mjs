@@ -164,11 +164,16 @@ export function resolveIncoming(entries, storedRows, people, { byPerson = false 
   }
   let differentPerson = 0;
   const fresh = [];
+  const loose = []; // konumunda mevcut satır yok (dosya uzamış): kimliği boş, yeni kayıt — eşitlemede önce kişiyle eşlenir
   for (const index of later) {
     const entry = out[index];
     const row = byId.get(entry.id);
-    if (!row || claimed.has(row.rowId) || !isPositional(row.rowId)) {
-      if (row && claimed.has(row.rowId)) fresh.push(index);
+    if (!row) {
+      loose.push(index);
+      continue;
+    }
+    if (claimed.has(row.rowId)) {
+      fresh.push(index);
       continue;
     }
     const a = people.stored.sig(row);
@@ -184,9 +189,10 @@ export function resolveIncoming(entries, storedRows, people, { byPerson = false 
   }
   // (5) Eşitleme (byPerson): Sheet tek doğrudur; kişi o sekmede iki tabloda da TEK satırsa (dosyada satırlar kaymış ve değişmiş) gelen satır o mevcut
   // satırın güncellemesidir. Devamı olarak eklemede yapılmaz (kendiliğinden birleştirme yok; findDuplicates "person" onay ister).
-  if (byPerson && fresh.length) {
+  if (byPerson && (fresh.length || loose.length)) {
     const left = [];
-    for (const index of fresh) {
+    const looseSet = new Set(loose);
+    for (const index of [...fresh, ...loose]) {
       const entry = out[index];
       const sig = people.incoming.sig(entry);
       const anchor = anchorOf(sig);
@@ -195,7 +201,7 @@ export function resolveIncoming(entries, storedRows, people, { byPerson = false 
       if (row && isPositional(row.rowId) && !claimed.has(row.rowId) && samePerson(people.stored.sig(row), sig)) {
         claimed.add(row.rowId);
         out[index] = { ...entry, id: row.rowId };
-      } else left.push(index);
+      } else if (!looseSet.has(index)) left.push(index);
     }
     fresh.length = 0;
     fresh.push(...left);

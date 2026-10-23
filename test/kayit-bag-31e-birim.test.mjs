@@ -36,6 +36,11 @@ describe("31e birim: eşleme ve taşıma kuralları", () => {
     const sync = ids({ byPerson: true });
     assert.equal(sync["Ayşe Kaya"], old[1].rowId, "eşitlemede tek adlı Ayşe kendi satırının güncellemesi");
     assert.ok(!old.some(r => r.rowId === sync["Zeki Öz"]));
+    // Eşitlemede satır dosyanın sonuna kayıp değişince de (konumunda mevcut satır yok) tek adlı kişi kendi satırına eşlenir.
+    const tail = entriesOf([P("Zeki Öz", "9"), P("Ali Veli", "1"), P("Can Er", "3"), P("Ayşe Kaya", "5")]);
+    const tailIds = Object.fromEntries(resolveIncoming(tail, old, createPeople(old, tail), { byPerson: true }).entries.map(e => [e.values["Ad Soyad"], e.id]));
+    assert.equal(tailIds["Ayşe Kaya"], old[1].rowId, "sona kayan Ayşe kendi satırının güncellemesi");
+    assert.equal(new Set(Object.values(tailIds)).size, 4);
     // Aynı konumda farklı kişi: yerine geçmez, sayılır.
     const swapped = entriesOf([P("Ali Veli", "1"), P("Yeni Kişi", "7"), P("Can Er", "3")]);
     const result = resolveIncoming(swapped, old, createPeople(old, swapped));
