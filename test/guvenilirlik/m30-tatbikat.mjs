@@ -20,7 +20,7 @@
 //       kendi numarasıyla döner; sıradaki numara verilmiş en büyükten (silinenler dahil) sonra kalır
 import { BUYER_VKN } from "../einvoice-mock.mjs";
 import { ADMIN_PASSWORD } from "../helpers.mjs";
-import { companyFacts, fileFacts } from "./m30-olgular.mjs";
+import { companyFacts, digest, fileFacts } from "./m30-olgular.mjs";
 import { scoped, sendAll } from "./m30-uretici.mjs";
 import { companyDbFile, readRegistry } from "./uretici.mjs";
 
@@ -29,9 +29,16 @@ const PROGRAM = /^([A-Z0-9]{3})(\d{4})(\d{9})$/;
 /** Karşılaştırılan (zamana bağlı olmayan) olgu bölümleri. */
 export function stable(f) {
   // İşlem Geçmişi (denetim kaydı) ortak katmandadır: yedek alma / geri yükleme işlemi kendi kaydını yazar — ayrıca sayılır (auditCount), karşılaştırmaya girmez.
-  const reports = Object.fromEntries(Object.entries(f.reports || {}).filter(([id]) => id !== "islem-gecmisi").map(([id, r]) => [id, { title: r.title, total: r.total, footer: r.footer, summary: r.summary, rowsDigest: r.rowsDigest }]));
+  // Sistemin yazdığı olayın numarası (aday 9 C9: geri yüklemeden sonra kendiliğinden yeniden yazılan POS gün sonu, olay sayacı geri gitmez — iki sürümde de)
+  // tür + tarihle okunur; öbür her olay numarası aynen karşılaştırılır.
+  const sys = f.cash?.systemEvents || {};
+  const norm = value => (typeof value === "string" ? value.replace(/BNK-\d{4}-\d{6}/g, no => (sys[no] ? `sistem:${sys[no]}` : no)) : value);
+  const rowsDigestOf = r => (Array.isArray(r.rows) && Object.keys(sys).length ? digest(r.rows.map(row => (Array.isArray(row) ? row.map(norm) : row))) : r.rowsDigest);
+  const reports = Object.fromEntries(Object.entries(f.reports || {}).filter(([id]) => id !== "islem-gecmisi").map(([id, r]) => [id, { title: r.title, total: r.total, footer: r.footer, summary: r.summary, rowsDigest: rowsDigestOf(r) }]));
   const tableReports = Object.fromEntries(Object.entries(f.tableReports || {}).map(([id, r]) => [id, r?.report?.totals ?? r]));
-  return { accounts: f.accounts, trial: f.trial, trialTotals: f.trialTotals, reconciliation: f.reconciliation, integrity: f.integrity.failures, lockedUntil: f.lockedUntil, cash: f.cash, bank: f.bank, cheques: f.cheques, invoices: f.invoices, pending: f.pending, nextNumbers: f.nextNumbers, plans: f.plans, planTotals: f.planTotals, stock: f.stock, vatOffsets: f.vatOffsets, edocCards: f.edocCards, reports, tableReports };
+  const { allDigestNorm, systemEvents, ...cashRest } = f.cash || {};
+  const cash = allDigestNorm ? { ...cashRest, allDigest: allDigestNorm } : f.cash;
+  return { accounts: f.accounts, trial: f.trial, trialTotals: f.trialTotals, reconciliation: f.reconciliation, integrity: f.integrity.failures, lockedUntil: f.lockedUntil, cash, bank: f.bank, cheques: f.cheques, invoices: f.invoices, pending: f.pending, nextNumbers: f.nextNumbers, plans: f.plans, planTotals: f.planTotals, stock: f.stock, vatOffsets: f.vatOffsets, edocCards: f.edocCards, reports, tableReports };
 }
 export function stableDiff(x, y) {
   const a = stable(x);

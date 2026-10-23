@@ -54,7 +54,13 @@ export async function companyFacts(api, { reportsFrom = "2000-01-01", reportsTo 
   // Sistemin yazdığı satırın (ör. açılışta / okumada kendiliğinden yapılan POS gün sonu) kimliği her açılışta yeniden üretilebilir: olay numarasıyla
   // karşılaştırılır (aday 9: 001'de ölçüm anında iki sürüm aynı BNK numaralı gün sonunu yazdı, yalnız üretilen kimlikler farklıydı).
   const cashRows = list => list.map(e => [e.source || "", e.actorId === "system" && e.eventNo ? `system:${e.eventNo}` : e.id, e.kind, cents(e.amount), e.date, e.method].join("|")).sort();
-  out.cash = { totals: cashAll.totals, byMethod: cashAll.byMethod, allCount: cashAll.entries.length, allDigest: digest(cashRows(cashAll.entries)), window: cash.totals, windowCount: cash.entries.length, windowDigest: digest(cashRows(cash.entries)) };
+  // Sistemin yazdığı olaylar (POS valör kuyruğu, server/lib/bank/pos.mjs createPosQueue): geri yüklemeden sonra yeniden yazılırsa olay sayacı geri gitmediği
+  // için (lib/company-backups.mjs EVENT_COUNTERS) yeni numara alır — iki sürümde de (aday 9 C9). Yedek tatbikatının karşılaştırması (m30-tatbikat stable)
+  // bu olayları numarasız (tür + tarih) okur; göç farkı (m30-fark) numaralı özeti kullanır.
+  const systemEvents = {};
+  for (const e of cashAll.entries) if (e.actorId === "system" && e.eventNo) systemEvents[e.eventNo] = `${e.eventType || ""}|${e.date}`;
+  const normRows = list => list.map(e => [e.source || "", e.actorId === "system" && e.eventNo ? `system:${e.eventType || ""}:${e.date}` : e.id, e.kind, cents(e.amount), e.date, e.method].join("|")).sort();
+  out.cash = { totals: cashAll.totals, byMethod: cashAll.byMethod, allCount: cashAll.entries.length, allDigest: digest(cashRows(cashAll.entries)), allDigestNorm: digest(normRows(cashAll.entries)), systemEvents, window: cash.totals, windowCount: cash.entries.length, windowDigest: digest(cashRows(cash.entries)) };
   // Banka
   const banks = await soft(api.get("/api/workspace/bank/accounts"));
   out.bank = banks.__status ? banks : { accounts: Object.fromEntries((banks.accounts || []).map(a => [a.id, { name: `${a.bankName} · ${a.name}`, balance: a.balanceMinor, status: a.status }])), totals: banks.totals };
