@@ -11,7 +11,7 @@
 //    tahsilat kapatır). Vadesinden en çok 20 gün önce girilen tahsilat da sayılır.
 import { columnOrder as columnsOf } from "../sources.mjs";
 import { analyzeColumns, cell, primaryColumns } from "./columns.mjs";
-import { amountCandidates, chooseDebt, debtPlan, EXPECTED_AMOUNT_HEADER, isNotAmountHeader, REMAINING_DEBT_HEADER, rowDebt, TOTAL_DEBT_HEADER } from "./debt-column.mjs";
+import { amountCandidates, debtByRecord, debtPlan, EXPECTED_AMOUNT_HEADER, isNotAmountHeader, REMAINING_DEBT_HEADER, rowDebt, TOTAL_DEBT_HEADER } from "./debt-column.mjs";
 import { embeddedDates, isBlankRecord, isEmptyCell, isFlaggedRow, isSequenceHeader, isTotalRow } from "./cells.mjs";
 import { dateMeaning, ordinalOf, subjectOf } from "./temporal.mjs";
 import { foldText, parseAmount, parseDate } from "./validators.mjs";
@@ -358,10 +358,10 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
   const sources = [];
   const dormant = [];
   const monthlyCases = new Set(); // ay kolonlu tablodaki kayıtlar: tahsilat notundaki ay o aya sayılır
-  // 31b MM5 / 31f U8: kayıt anahtarı (dosya no) başına TEK borç — sekmeler arasında ortak kural (debt-column.mjs chooseDebt). Söz sekmesindeki kalemin
-  // Kalan Borç'u ("Önce cari açın" Açılış Bakiyesi) aynı dosya no'nun öbür sekmesindeki Kalan'dan gelir.
-  const keyDebt = new Map();
-  const debtConflicts = [];
+  // 31b MM5 / 31f U8 / 31e T4: kayıt anahtarı (dosya no) başına borç — ortak kural (debt-column.mjs debtByRecord): aynı sekmedeki satırlar toplanır (satır
+  // başına taksit ayrı borçtur), FARKLI sekmelerden yalnız biri sayılır. Söz sekmesindeki kalemin Kalan Borç'u ("Önce cari açın" Açılış Bakiyesi) aynı dosya
+  // no'nun öbür sekmesindeki Kalan'dan gelir.
+  const debtEntries = [];
   // Önce bütün sekmelerin kayıt borcu (kalem çıkarmayan sekme de — ör. "İcra Takip" Kalan'ı, sözler "Ödeme Sözleri"nde).
   const contexts = new Map();
   for (const tab of order) {
@@ -369,13 +369,14 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
     const context = tabContext(scope, { now, forced });
     contexts.set(tab, context);
     for (const row of scope) {
-      const record = rowState(row, context)?.debtRecord;
-      if (!record) continue;
-      const chosen = chooseDebt(keyDebt.get(row.__hofKey), { ...record, tab });
-      if (chosen.conflict) debtConflicts.push({ caseKey: row.__hofKey, kept: chosen.debt, other: { ...record, tab } });
-      keyDebt.set(row.__hofKey, chosen.debt);
+      const state = rowState(row, context);
+      const record = state?.debtRecord;
+      if (record) debtEntries.push({ key: row.__hofKey, tab, amount: record.amount, tier: record.tier, column: record.column, meta: { person: state.person, caseNo: state.caseNo } });
     }
   }
+  const { byKey: keyDebt, merged: debtMerged, conflicts: debtConflicts } = debtByRecord(debtEntries);
+  const keyColumn = new Map();
+  for (const entry of debtEntries) if (keyDebt.get(entry.key)?.tab === entry.tab && !keyColumn.has(entry.key)) keyColumn.set(entry.key, entry.column);
   for (const tab of order) {
     const scope = groups.get(tab);
     const context = contexts.get(tab);
@@ -423,29 +424,22 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
 
   // 31b MM5 / 31f U8: kalemin Kalan Borç'u kaydın (dosya no) tek borcundan; borçtan gelen kalem tutarı dosya başına BİR KEZ (en erken vadeli kalem);
   // aynı kalem iki sekmede aynen yazılmışsa bir kez.
-  const seen = new Set();
-  const debtTaken = new Map();
-  for (let index = 0; index < candidates.length; index += 1) {
-    const item = candidates[index];
-    const record = keyDebt.get(item.caseKey);
-    if (record) {
-      item.debt = record.amount > 0 ? record.amount : null;
-      item.debtColumn = record.amount > 0 ? (record.tab === item.tab ? record.column : `${record.tab} · ${record.column}`) : "";
-    }
-    if (item.fromDebt && item.debt) item.amount = item.debt;
-  }
-  // Borçtan gelen kalemlerden dosya başına en erken vadeli olan (eşitse sekme sırasında ilk) kalır.
+  // T4: borçtan gelen kalemler (satırın kendi borcu) yalnız kaydın sayılan sekmesinden — aynı sekmedeki her satır ayrı kalemdir; öbür sekmedeki kopya düşer.
+  const seen = new Map();
   for (const item of candidates) {
-    if (!item.fromDebt) continue;
-    const first = debtTaken.get(item.caseKey);
-    if (!first || item.time < first.time) debtTaken.set(item.caseKey, item);
+    const record = keyDebt.get(item.caseKey);
+    if (!record) continue;
+    item.debt = record.amount > 0 ? record.amount : null;
+    const column = keyColumn.get(item.caseKey) || "";
+    item.debtColumn = record.amount > 0 ? (record.tab === item.tab ? column : `${record.tab} · ${column}`) : "";
   }
   const kept = [];
   for (const item of candidates) {
-    if (item.fromDebt && debtTaken.get(item.caseKey) !== item) continue;
+    if (item.fromDebt && keyDebt.has(item.caseKey) && keyDebt.get(item.caseKey).tab !== item.tab) continue;
+    // Aynı kalem FARKLI sekmelerde aynen yazılmışsa bir kez (aynı sekmedeki iki satır iki kalemdir).
     const same = [item.caseKey, item.time, item.kind, item.label, item.promise, item.amount, item.monthly ? item.column : ""].join("\u0000");
-    if (seen.has(same)) continue;
-    seen.add(same);
+    if (seen.has(same) && seen.get(same) !== item.tab) continue;
+    if (!seen.has(same)) seen.set(same, item.tab);
     kept.push(item);
   }
   candidates.splice(0, candidates.length, ...kept);
@@ -541,7 +535,7 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
   // Önce gecikenler (en eskiden), sonra bugün, bu ay ve yaklaşanlar (en yakından).
   const rank = item => (item.state === "overdue" ? 0 : item.state === "month" || item.state === "today" ? 1 : 2);
   out.sort((a, b) => rank(a) - rank(b) || a.days - b.days || a.person.localeCompare(b.person, "tr"));
-  return { items: out, sources, dormant, debtConflicts };
+  return { items: out, sources, dormant, debtConflicts, debtMerged };
 }
 
 // Son tarihi yaklaşan işler (bildirim için): ödeme takvimi dışındaki son tarih kolonları (yenileme, bitiş, teslim,

@@ -75,12 +75,11 @@
     return (data.summary || []).map(([label, value]) => card(label, String(value ?? "").replace(/ TL$/, " ₺"))).join("");
   }
 
-  // 2.4.4 (31b MM5): aynı dosya no birden çok sekmede farklı kalan borç taşıyorsa borç bir kez, ilk sekmeden sayılır; kullanıcıya hangisinin alındığı söylenir.
-  function conflictHtml(report) {
-    const list = report.kind === "cari-ekstre" ? report.conflicts || [] : [];
-    if (!list.length) return "";
-    const items = list.slice(0, 5).map(item => `${esc(item.cari || item.key)}: ${esc(item.kept.tab)} ${esc(money(item.kept.amount))} alındı (${esc(item.other.tab)} ${esc(money(item.other.amount))})`).join("; ");
-    return `<p class="hof-modal-text hof-report-note" data-debt-conflicts>Aynı dosya numarası farklı sekmelerde farklı kalan borç taşıyor; borç bir kez, ilk sekmeden sayıldı. ${items}${list.length > 5 ? ` ve ${list.length - 5} kayıt daha` : ""}.</p>`;
+  // 2.4.4 (31b MM5 / 31e): sunucunun notları — aynı dosya no birden çok sekmede (bir kez sayıldı, hangisi), farklı kalan borç, ödenen toplamı aşan satır, Kasa
+  // yetkisi. Ekran, yazdırma, PDF ve Excel aynı metni yazar.
+  function notesHtml(report) {
+    const list = report.notes || [];
+    return list.length ? `<div class="hof-report-notes" data-report-notes>${list.map(note => `<p class="hof-modal-text hof-report-note">${esc(note)}</p>`).join("")}</div>` : "";
   }
 
   async function load() {
@@ -94,7 +93,7 @@
       const data = await HOF.api(`/api/workspace/reports/${state.kind}?${query(forKind(state.filters))}`, { timeoutMs: 120_000 });
       state.data = data;
       renderFilters(dialog, data);
-      body.innerHTML = `<div class="hof-report-summary">${summaryHtml(data)}</div>${conflictHtml(data.report)}${tableHtml(data.report.table)}`;
+      body.innerHTML = `<div class="hof-report-summary">${summaryHtml(data)}</div>${notesHtml(data.report)}${tableHtml(data.report.table)}`;
       dialog.querySelector("[data-report-meta]").textContent = `${number(data.report.table.rows.length)} satır · ${data.sessions.length > 1 && !state.filters.sessions ? `${data.sessions.length} oturum birleşik` : data.sessions.map(item => item.name).join(", ")}${data.report.table.columns.some(column => column.dynamic) ? ` · ${data.report.table.columns.filter(column => column.dynamic).length} özel alan kolonu` : ""}`;
     } catch (error) {
       body.innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
@@ -162,7 +161,7 @@
       .cards{display:flex;gap:8px;margin:0 0 12px}.cards div{border:1px solid #ddd;border-radius:6px;padding:6px 10px;min-width:110px}.cards small{display:block;color:#666;font-size:9px}.cards b{font-size:12px}
       table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:4px 6px;text-align:left;vertical-align:top;font-size:10px}th{background:#f2f2f2}td.num,th.num{text-align:right;white-space:nowrap}tr.total td{font-weight:700;border-top:2px solid #111;background:#f2f7f4}
       @page{size:${report.table.columns.length > 7 ? "A4 landscape" : "A4"};margin:10mm}
-    </style></head><body><h1>${esc(title)}</h1><p class="meta">DestekOfis · ${esc(new Date().toLocaleString("tr-TR"))}${state.filters.from || state.filters.to ? ` · ${esc(state.filters.from || "başlangıç")} – ${esc(state.filters.to || "bugün")}` : ""}</p>
+    </style></head><body><h1>${esc(title)}</h1><p class="meta">DestekOfis · ${esc(new Date().toLocaleString("tr-TR"))}${state.filters.from || state.filters.to ? ` · ${esc(state.filters.from || "başlangıç")} – ${esc(state.filters.to || "bugün")}` : ""}</p>${(report.notes || []).map(note => `<p class="meta">${esc(note)}</p>`).join("")}
       <div class="cards">${summaryHtml(state.data).replace(/hof-report-card/g, "")}</div>
       <table><thead><tr>${report.table.columns.map(column => `<th class="${column.type === "money" || column.type === "number" ? "num" : ""}">${esc(column.label)}</th>`).join("")}</tr></thead><tbody>${report.table.rows.map(row => `<tr>${report.table.columns.map(column => `<td class="${column.type === "money" || column.type === "number" ? "num" : ""}">${printCell(column, row)}</td>`).join("")}</tr>`).join("")}</tbody>${report.table.footer ? `<tfoot><tr class="total">${report.table.columns.map(column => `<td class="${column.type === "money" || column.type === "number" ? "num" : ""}">${report.table.footer[column.key] === undefined || report.table.footer[column.key] === null ? "" : printCell(column, report.table.footer)}</td>`).join("")}</tr></tfoot>` : ""}</table></body></html>`;
     document.body.appendChild(frame);
