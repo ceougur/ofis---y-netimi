@@ -436,6 +436,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   Uzun Doğrulama ∥ paket → teslim → PR.
 - İSTEK (kullanıcı, 23.10.2026 ~06:00 UTC: "compact talimatı vereceğim, hazırlığını yap") → devam notu 00 "GÜNCEL (23.10 ~06:00 UTC)" + bu madde yazıldı ve gönderildi; ajan
   kimlikleri devam notunda.
+- KARAR (kullanıcı, 23.10.2026 ~05:48 UTC; "pek bir ilerleme olmamış biten işlerde" üzerine sorulan dondurma sorusu): "B" — aday 15'ten sonra da DONDURMA YOK; her yeniden üretilmiş bulgu (v2.4.3'te de olsa, ORTA/DÜŞÜK da olsa) düzeltilir ve yeni aday açılır. Önerilen (A: yalnız 2.4.4 gerilemesi + YÜKSEK para hatası adayı açar) seçilmedi. Hız için: ekran gezintisi aday 14'te paralel başladı (yeniden koşulabilir betik scratchpad/ekran-g/kos.sh; aday 15'te yinelenir); Verimlilik "ADAY KAPISI SON DALGADA" sürer.
 - Yayın geçmişi özeti: 2.0.12 … 2.0.26, 2.1.0, 2.2.0, 2.3.0, 2.4.0, 2.4.1, 2.4.2, 2.4.3 yayımlandı (her biri PR + etiket + 5 dosya bayt bayt + güncelleyici "available" + site
   kılavuz PR'ı); ayrıntı arşivde. Kâhin bilinen sınıfları: KDV-DAHIL-ISKONTO (program doğru), KASA-ACILIS-649 (İz 1.3 ile kapanacak).
 - PLANLI TEST (kullanıcı, ertelendi; 16.10.2026'da yine ertelendi: "cuma testini pazara ertele"): Pazar 18.10.2026 09:00 TR (trig_0144BJLRwsZFizXTTYrJVszA): 2.0.24 DENENMEYEN/BİLİNEN SINIRLAR
