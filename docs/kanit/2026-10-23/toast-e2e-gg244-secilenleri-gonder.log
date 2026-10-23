@@ -1,0 +1,62 @@
+
+> destekofis@2.4.4 test:gg244-secilenleri-gonder
+> node --disable-warning=ExperimentalWarning test/e2e/gg244-secilenleri-gonder.mjs
+
+A) 2 eski seçilmemiş + 3 yeni seçili — soru gönderimden ÖNCE; Vazgeç → hiçbir şey; Ekle → 5 belge sırayla
+  ✓ seçim yokken Seçilenleri Gönder görünmez
+  ✓ düğme seçilen 3 belge (Seçilenleri Gönder (3))
+    [soru] "Önce Daha Eski Tarihli Belgeler Gönderilmeli" → Enter (kullanıcı Enter'a basar: odak Vazgeç'te, hiçbir belge gitmemeli)
+  ✓ soru başlığı "Önce Daha Eski Tarihli Belgeler Gönderilmeli" (Önce Daha Eski Tarihli Belgeler Gönderilmeli)
+  ✓ varsayılan odak Vazgeç düğmesinde (no)
+  ✓ soru eski belge sayısını söyler (Seçilen 3 belgeyle aynı seride, seçilmemiş ve daha eski tarihli 2 belge Gönderilecekler'de bekliyor (Perakende 1 12.06.2026, Perakende 2 13.06.2026). e-Belge numarası tarih sırasıyla verilir: seçilenl)
+  ✓ soru eski belgelerin carisini ve tarihini söyler (Seçilen 3 belgeyle aynı seride, seçilmemiş ve daha eski tarihli 2 belge Gönderilecekler'de bekliyor (Perakende 1 12.06.2026, Perakende 2 13.06.2026). e-Belge numarası tarih sırasıyla verilir: seçilenler önce numara alırsa bu belgeler e-Belge olarak gönderileme)
+  ✓ Vazgeç: EDM'ye gönderim yok (0)
+  ✓ Vazgeç: yalnız ön denetim isteği (1)
+  ✓ Vazgeç: hiçbir belge numara almadı
+  ✓ Vazgeç bildirimi (hof-toast hof-toast-info is-visible|Gönderilmedi: seçilmemiş daha eski tarihli 2 belge önce gönderilmeli. Hiçbir belgeye numara verilmedi.)
+  ✓ seçim korunur
+    [soru] "Önce Daha Eski Tarihli Belgeler Gönderilmeli" → Evet (kullanıcı eskileri de ekler)
+  ✓ soru başlığı "Önce Daha Eski Tarihli Belgeler Gönderilmeli" (Önce Daha Eski Tarihli Belgeler Gönderilmeli)
+  ✓ bitiş "5 belge gönderildi." (hof-toast hof-toast-success is-visible|5 belge gönderildi.)
+  ✓ ilerleme Seçilenleri Gönder düğmesinde (Gönderiliyor: X / 5), basılamaz
+  ✓ gönderim sürerken Tümünü Gönder basılamaz
+  ✓ EDM'ye 5 gönderim (5)
+  ✓ beşi de numaralı ve gönderilmiş
+  ✓ numara sırası = tarih sırası (TEA2026000000001, TEA2026000000002, TEA2026000000003, TEA2026000000004, TEA2026000000005)
+  ✓ her belge EDM'ye bir kez
+  ✓ gidenler seçimden düştü (düğme kalktı)
+B) eski bekleyen yokken soru yok — yalnız seçilenler gider
+  ✓ düğme (2)
+    [soru] "2 Belge Gönderilsin mi?" → Evet (eski bekleyen yok: düz onay beklenir)
+  ✓ soru başlığı "^2 Belge Gönderilsin mi\?$" (2 Belge Gönderilsin mi?)
+  ✓ onay metni (Seçilen 2 belge tarih sırasıyla (eski tarihli önce) entegratöre gönderilecek. Numarası olmayanlara e-Belge numarası gönderim sırasında verilir; sonucu belirsiz )
+  ✓ bitiş "2 belge gönderildi." (hof-toast hof-toast-success is-visible|2 belge gönderildi.)
+  ✓ EDM'ye 2 gönderim (2)
+  ✓ seçilmeyen belge Gönderilecekler'de bekliyor
+C) sayı yalnız gönderilebilirleri sayar (gönderilmiş, iptal, kalıcı engelli sayılmaz); kalıcı engelli onayda söylenir; yalnız engelli kalınca düğme pasif + neden
+  ✓ 4 seçili (gönderilmiş, iptal, kalıcı engelli, bekleyen) → gönderilebilir 1 (Seçilenleri Gönder (1))
+    [soru] "1 Belge Gönderilsin mi?" → Evet (kalıcı engelli seçili belge gönderilmez, onayda söylenir)
+  ✓ soru başlığı "^1 Belge Gönderilsin mi\?$" (1 Belge Gönderilsin mi?)
+  ✓ onay kalıcı engelliyi söyler (Seçilen 1 belge tarih sırasıyla (eski tarihli önce) entegratöre gönderilecek. Numarası olmayanlara e-Belge numarası gönderim sırasında verilir; sonucu belirsiz olanlar önce entegratöre sorulur, orada varsa yeniden gönder)
+  ✓ EDM'ye 1 gönderim (1)
+  ✓ kalıcı engelli belge numara almadı
+  ✓ bekleyen belge gönderildi
+  ✓ özet "1 belge gönderildi." — kalıcı engelli gönderime girmedi (hof-toast hof-toast-success|1 belge gönderildi.)
+  ✓ yalnız kalıcı engelli seçili kaldı: düğme pasif (0) ({"text":"Seçilenleri Gönder (0)","disabled":true,"why":"Seçilen bekleyen belgeler kalıcı engelli; e-Belge olarak gönderilemez (nedeni belgenin kartında)."})
+  ✓ pasif düğmenin nedeni görünür yazı (Seçilen bekleyen belgeler kalıcı engelli; e-Belge olarak gönderilemez (nedeni belgenin kartında).)
+D) onay penceresi açıkken başka oturum daha eski belge kaydeder → gönderim yine ÖNCE sorulur (409); Vazgeç → hiçbir şey; yeniden → Ekle
+  ✓ ön koşul: e-Fatura (TEF) serisi (TEMELFATURA)
+    [soru] "1 Belge Gönderilsin mi?" → Evet (ön denetim geçmişti; bu arada eski belge kaydedildi)
+  ✓ soru başlığı "^1 Belge Gönderilsin mi\?$" (1 Belge Gönderilsin mi?)
+    [soru] "Önce Daha Eski Tarihli Belgeler Gönderilmeli" → Vazgeç (sunucu gönderimden önce yeniden sordu; kullanıcı vazgeçer)
+  ✓ soru başlığı "Önce Daha Eski Tarihli Belgeler Gönderilmeli" (Önce Daha Eski Tarihli Belgeler Gönderilmeli)
+  ✓ yarışta soru yeniden çıktı (Seçilen 1 belgeyle aynı seride, seçilmemiş ve daha eski tarihli 1 belge Gönderilecekler'de bekliyor (Alıcı Ticaret A.Ş. 15.06.2026). e-Belge numarası tarih sıra)
+  ✓ yarışta EDM'ye gönderim yok (0)
+  ✓ yarışta hiçbir belge numara almadı
+    [soru] "Önce Daha Eski Tarihli Belgeler Gönderilmeli" → Evet (kullanıcı eskiyi de ekler)
+  ✓ soru başlığı "Önce Daha Eski Tarihli Belgeler Gönderilmeli" (Önce Daha Eski Tarihli Belgeler Gönderilmeli)
+  ✓ bitiş "2 belge gönderildi." (hof-toast hof-toast-success is-visible|2 belge gönderildi.)
+  ✓ TEF sırası = tarih sırası (TEF2026000000001, TEF2026000000002)
+  ✓ sayfa hatası yok
+
+✓ gg244-secilenleri-gonder: 45 geçti, 0 kaldı

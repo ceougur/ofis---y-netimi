@@ -786,6 +786,20 @@
     }
     return done;
   };
+  // 23.10.2026 (ekran gezintisi): "e-Belge", "e-Fatura", "e-Arşiv", "e-SMM", "e-Posta" gibi adlar uzun bildirimde kısa çizgiden satıra bölünüyordu
+  // ("belgenin e-" / "Belge durumu"). Ad, satır kırılmayan (white-space: nowrap) bir span'e alınır; metin yalnız metin düğümü olarak yazılır (innerHTML yok),
+  // karakter eklenmez (U+2011 gibi bölünmez tire Kopyala'nın ve aramanın metnini değiştirirdi) → textContent ve Kopyala aynı metin.
+  const NO_BREAK_NAME = /(^|[^\p{L}\p{N}])([eE]-\p{L}+)/gu;
+  const fillToastText = (target, message) => {
+    let last = 0;
+    for (const match of message.matchAll(NO_BREAK_NAME)) {
+      const start = match.index + match[1].length;
+      if (start > last) target.append(message.slice(last, start));
+      target.append(HOF.el("span", { class: "hof-nobreak", text: match[2] }));
+      last = start + match[2].length;
+    }
+    if (last < message.length) target.append(message.slice(last));
+  };
   HOF.toast = (message, { type = "info", action, timeout = 3600 } = {}) => {
     const host = toastHost();
     const sameKey = `${type}\u0001${String(message)}`;
@@ -797,7 +811,8 @@
     }
     const node = HOF.el("div", { class: `hof-toast hof-toast-${type}` });
     node.hofKey = sameKey;
-    const text = HOF.el("span", { class: "hof-toast-text", text: String(message) });
+    const text = HOF.el("span", { class: "hof-toast-text" });
+    fillToastText(text, String(message));
     node.appendChild(text);
     if (action) {
       const button = HOF.el("button", { type: "button", class: "hof-toast-action", text: action.label });
