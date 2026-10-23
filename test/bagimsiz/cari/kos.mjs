@@ -457,6 +457,7 @@ async function kos(senaryo) {
                 const its = takvim.filter(x => (x.caseKey ?? x.key) === anahtar); // kara kutu: kalemin kayıt anahtarı `caseKey` (yoklama 23.10.2026, aday 18)
                 // TAKVİM KALEMİ (23.10.2026): kaydın vade kalemi tutarı (kalem yoksa 0; birden çok kalemde liste)
                 { const ts = its.map(x => kurus(x.amount) ?? 0); P[`${k}:kalem:${no}`] = ts.length === 0 ? 0 : ts.length === 1 ? ts[0] : ts; }
+                P[`${k}:kalemVar:${no}`] = its.length > 0; // Z2 (23.10.2026): Kalan 0 / eksi satırın kalemi Takvim'de görünmez
                 if (its.some(x => !("debt" in x))) {
                   P[`${k}:acilis:${no}`] = "OKUNAMADI";
                   // yalnız Açılış Bakiyesi'nin denetlendiği (raporlar: true) kontrolde okuma hatası; taksit kalemlerinde alan yok (b1 senaryoları) — denetlenmez

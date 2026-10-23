@@ -1,0 +1,91 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3r-kalan-sifir-eksi",
+ "aciklama": "Z2 (karar sahibi 23.10.2026): Kalan Borç hücresi sayı ve 0 ya da eksi (fazla ödeme) olan satırda vade kalemi YOKTUR — Takvim, Vade Takip, Nakit Akışı'nda görünmez, gecikmiş sayılmaz (min(dönem tutarı, Kalan) ≤ 0). 'Aidat': Ali Veli Aidat 1.000, Kalan −100, vade 2 gün önce → kalem yok; Banu Er Kalan 0 → kalem yok; Cem Ak Kalan 600 → kalem 600. 'Borçlar' (yalnız Kalan Borç): Dilek Su −250 → kalem yok; Ege Tan 800 → kalem 800. Takvim / Vade / Nakit 1.400; Kişiler 1.400 (eksi Kalan'ın Kişiler'deki borcu kararda yok: eksi ya da 0 — çatal).",
+ "dayanak": "KARARLAR.md B3j Z2, B3i TAKVİM KALEMİ",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Aidat",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Aidat",
+      "Kalan Borç",
+      "Son Ödeme"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/951",
+       "isim": "Ali Veli",
+       "hucreler": {
+        "Telefon": "",
+        "Aidat": "1.000,00 ₺",
+        "Kalan Borç": "-100,00 ₺",
+        "Son Ödeme": "15.06.2026"
+       }
+      },
+      {
+       "no": "2026/952",
+       "isim": "Banu Er",
+       "hucreler": {
+        "Telefon": "",
+        "Aidat": "1.000,00 ₺",
+        "Kalan Borç": "0,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      },
+      {
+       "no": "2026/953",
+       "isim": "Cem Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Aidat": "1.000,00 ₺",
+        "Kalan Borç": "600,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Borçlar",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Kalan Borç",
+      "Son Ödeme"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/954",
+       "isim": "Dilek Su",
+       "hucreler": {
+        "Telefon": "",
+        "Kalan Borç": "-250,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      },
+      {
+       "no": "2026/955",
+       "isim": "Ege Tan",
+       "hucreler": {
+        "Telefon": "",
+        "Kalan Borç": "800,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol",
+   "raporlar": true
+  }
+ ]
+}

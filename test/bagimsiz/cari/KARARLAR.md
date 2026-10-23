@@ -220,6 +220,15 @@ Kaynak: ana oturumun ilettiği karar metni. Ürün kodu okunmadı.
   1.000); mutant 57 (kalem = satır borcu — önceki kâhin kuralı), 58 (min alınmaz), 59 (Kişiler kalem tutarını gösterir). Önceki senaryolarda kâhinin K4 değerleri değişmedi
   (dönem kolonlu satırlarda Kalan dönem tutarından küçüktü ya da Kalan kolonu yoktu); yalnız b3o Murat Al'ın kalemi 800 (Takvim / Vade / Nakit 4.000).
 
+### B3j — Z2, Z3 (karar sahibi 23.10.2026; dar kontrol, aday 20)
+- **Z2** Kalan Borç hücresi SAYI ve 0 ya da EKSİ (fazla ödeme) olan satırda vade kalemi YOKTUR: Takvim, Vade Takip, Nakit Akışı'nda görünmez, gecikmiş sayılmaz (min(dönem tutarı,
+  Kalan) ≤ 0). Kâhin: o satırın kalemi 0 ve `<kontrol>:kalemVar:<no>` = false (Takvim'de kaydın kalemi yok). Eksi Kalan'ın Tablodaki Kişiler'deki borcu ve Açılış Bakiyesi
+  kararda yok → kişi denetlenmez, K4 Kişiler toplamı ÇATAL (eksi ya da 0) [YAYGIN]. Senaryo b3r-kalan-sifir-eksi (Ali Veli Aidat 1.000, Kalan −100, vade 2 gün önce; Kalan 0;
+  dönem kolonsuz −250); mutant 60. DENENMEYEN: Vade Takip / Nakit Akışı'nda tutarı 0 satırın GÖRÜNÜP görünmediği (yalnız toplam okunuyor).
+- **Z3** Ödeme sözü kalemi SÖZ TUTARIdır, satırda Taksit Tutarı da olsa (Taksit Tutarı 1.000, Kalan 9.000, Söz Tarihi, Söz Tutarı 3.000 → söz kalemi 3.000); söz tutarı hücresi
+  boşsa önceki kural (min(dönem tutarı, Kalan)). Kişiler / Açılış Bakiyesi satır borcu (Kalan) — söz tutarı borç değil (K3). Senaryo b3s-soz-tutari-kalemi; mutant 61.
+  [YAYGIN] Z2 söz kalemine de uygulanır (Kalan ≤ 0 → kalem yok) — senaryoda yok.
+
 ### B4b — Dört rapor aynı satır borcu (K4 [KULLANICI] 23.10.2026; TAKVİM KALEMİ ile daraldı — B3i)
 - **K4** Tablodaki Kişiler (totals.debit), Tahsilat Takvimi (/dues Σ amount), Vade Takip (totals.amount) ve Nakit Akışı Beklenen (totals.expected) aynı satır
   borcunu kullanır; toplamları aynıdır (dönem süzgeci içinde). Kontrol adımında `"raporlar": true` ve bütün kayıtların borcu tanımlı ve tek değerliyse dört
