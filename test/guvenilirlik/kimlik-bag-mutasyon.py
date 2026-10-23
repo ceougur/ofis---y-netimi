@@ -65,9 +65,16 @@ MUT = {
     "M46-Z3-soz-tutari-sonra": [("server/lib/insight/dues.mjs", "    const promiseFirst = entry.promise && entry.installment === null ? promiseAmount : null;", "    const promiseFirst = null;")],
     "M47-Z3-bos-soz-onceki-kural-yok": [("server/lib/insight/dues.mjs", "        if (!(ownAmount > 0) && entry.amountFallback) ownAmount = capped(entry.amountFallbackFromDebt ? state.debt : parseAmount(cell(row, entry.amountFallback)), entry.amountFallbackCap);\n", "")],
     # ---- tur 11 ----
-    "M48-Z4-soz-kalibi-genis": [("server/lib/insight/dues.mjs", "const PROMISE = /\\b(soz|sozu|taahhut|taahhudu)\\b/;", "const PROMISE = /\\b(soz\\w*|taahhut\\w*)\\b/;")],
-    "M49-Z4-soz-tutari-tutar-sozcuksuz": [("server/lib/insight/dues.mjs", "PROMISE.test(foldText(column)) && PROMISE_AMOUNT.test(foldText(column)) && ", "PROMISE.test(foldText(column)) && ")],
+    "M48-Z4-soz-kalibi-genis": [("server/lib/insight/dues.mjs", "const PROMISE = /\\b(soz|sozu|taahhut\\w*|taahhud\\w*)\\b/;", "const PROMISE = /\\b(soz\\w*|taahhut\\w*|taahhud\\w*)\\b/;")],
+    "M49-Z4-soz-tutari-tutar-sozcuksuz": [("server/lib/insight/dues.mjs", "const isPromiseAmountHeader = column => PROMISE.test(foldText(column)) && PROMISE_AMOUNT.test(foldText(column));", "const isPromiseAmountHeader = column => PROMISE.test(foldText(column));")],
     "M50-Z4-bos-soz-satir-borcu-yok": [("server/lib/insight/dues.mjs", "    entry.amountFallback = promiseFirst && base && base !== promiseFirst ? base : null;", "    entry.amountFallback = promiseFirst && period && period !== promiseFirst ? period : null;")],
+    # ---- tur 12 ----
+    "M51-Z5-taahhut-tam-sozcuk": [("server/lib/insight/dues.mjs", "const PROMISE = /\\b(soz|sozu|taahhut\\w*|taahhud\\w*)\\b/;", "const PROMISE = /\\b(soz|sozu|taahhut|taahhudu)\\b/;")],
+    "M52-Z5-taahhud-oneki-yok": [("server/lib/insight/dues.mjs", "const PROMISE = /\\b(soz|sozu|taahhut\\w*|taahhud\\w*)\\b/;", "const PROMISE = /\\b(soz|sozu|taahhut\\w*)\\b/;")],
+    "M53-Z5-strong-taahhud-yok": [("server/lib/insight/dues.mjs", "|taahhut\\w*|taahhud\\w*|vade\\w*|", "|taahhut\\w*|vade\\w*|")],
+    "M54-Z6-miktar-yok": [("server/lib/insight/dues.mjs", "const PROMISE_AMOUNT = /\\b(tutar\\w*|miktar\\w*)\\b/;", "const PROMISE_AMOUNT = /\\btutar\\w*\\b/;")],
+    "M55-Z6-soz-tutari-yalniz-para": [("server/lib/insight/dues.mjs", "const promiseAmount = analyses.filter(item => item.role === \"money\" || item.role === \"number\")", "const promiseAmount = analyses.filter(item => item.role === \"money\")")],
+    "M56-Z5-donem-soz-sozcugu-dislar": [("server/lib/insight/dues.mjs", "AMOUNT_OWN.test(foldText(column)) && !isPromiseAmountHeader(column) && ", "AMOUNT_OWN.test(foldText(column)) && !PROMISE.test(foldText(column)) && ")],
     "M28-N2-elle-esitleme-de-atlar": [(D, "if (!manual && heldBefore?.contentHash && heldBefore.contentHash === contentHash)", "if (heldBefore?.contentHash && heldBefore.contentHash === contentHash)")],
 }
 TESTS = ["test/kayit-bag-31e.test.mjs", "test/kayit-bag-31e-birim.test.mjs", "test/tablo-borc-r31e.test.mjs", "test/tablo-borc-dosya-u2.test.mjs"]
