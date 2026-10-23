@@ -451,6 +451,9 @@ function inferAcrossColumns(rows, analyses) {
   }
 }
 
+// item.values topValues() çıktısıdır ({ value, count }); ipucu değerin kendisini yazar (eski düz dizi de olduğu gibi).
+const valueNames = (values, limit) => values.slice(0, limit).map(entry => (entry && typeof entry === "object" ? entry.value : entry)).join(", ");
+
 function explain(item) {
   const out = [];
   if (item.forced) out.push(`eşleme ekranında seçildi: ${FORCED_ROLES[item.forced]?.label || item.forced}`);
@@ -465,8 +468,8 @@ function explain(item) {
   }
   if (item.currency) out.push(`para birimi ${item.currency}`);
   if ((item.role === "id" || item.role === "person" || item.role === "org") && item.stats.uniqueness >= 0.95) out.push("her satırda farklı değer");
-  if ((item.role === "status" || item.role === "category") && item.values?.length) out.push(`${item.stats.distinct} farklı değer: ${item.values.slice(0, 4).join(", ")}${item.stats.distinct > 4 ? "…" : ""}`);
-  if (item.role === "responsible" && item.values?.length) out.push(`az sayıda kişi tekrar ediyor: ${item.values.slice(0, 3).join(", ")}`);
+  if ((item.role === "status" || item.role === "category") && item.values?.length) out.push(`${item.stats.distinct} farklı değer: ${valueNames(item.values, 4)}${item.stats.distinct > 4 ? "…" : ""}`);
+  if (item.role === "responsible" && item.values?.length) out.push(`az sayıda kişi tekrar ediyor: ${valueNames(item.values, 3)}`);
   if (item.warning === "scientific") out.push("değerler Excel'de sayıya dönüşmüş (bilimsel gösterim)");
   if (item.warning === "serial") out.push(`değerlerin %${Math.round((item.serialRate || 0) * 100)}'i Excel seri tarih sayısı (45000 gibi): toplu düzeltmeyle tarihe çevrilir`);
   if (item.stats.fill < 0.5 && item.role !== "empty") out.push(`satırların yalnız %${Math.round(item.stats.fill * 100)}'inde dolu`);
