@@ -167,5 +167,5 @@ DENENMEYEN: aday 11 koşusu (bekliyor); C11k; MM3 (veride stopajlı / tevkifatl�
 veride adı belli 11111111111'li cari yok); E1/E4 (gönderim sırasında kesinti — göç dışı); UX17, E5, E7 (göç olgusunda değişmedi; ayrı denetlenmedi); U3 çıktı
 dosyaları (PDF/Excel adı ve TOPLAM — yalnız Yevmiye Excel'i okundu); ekran (arayüz); gerçek Windows; tek tohum (7).
 BİLİNEN SINIRLAR: (1) G1 sızıntısı eski veride kalır (iptal edilmiş, etkisiz; 2.4.4 görmez). (2) Geri yüklemeden sonra sistemin yeniden yazdığı olay yeni numara alır
-(sayaç geri gitmez; iki sürümde de). (3) 2.4.3'te silinip geri yüklenen belgenin numara metni canlı belgeyle aynı kalır (001: 7, 002: 6 numara; göç düzeltmez).
+(sayaç geri gitmez; iki sürümde de). (3) 2.4.3'te silinip geri yüklenen belgenin numara metni canlı belgeyle aynı kalır (iki belgede aynı numara: 001'de 9, 002'de 6; ayrıca bırakılıp gönderilen belgenin Kâğıt Fatura No'su başka belgenin numarası: 20 / 8 — göç düzeltmez, v32 yalnız yeniden vermeyi önler).
 (4) 2.4.3 Gönderilecekler'de iptal edilmiş numarasız e-Arşiv ve e-Belge durumu "none" olan alıştan iade gösterir (gözlem; 2.4.4'te Tümünü Gönder bunları göndermez).
