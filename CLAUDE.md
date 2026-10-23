@@ -472,6 +472,12 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   sınırı stopaj/tevkifat düşülmüş tutara mı vergiler dahil toplama mı — kâhinde çatal; teslimde BİLİNEN SINIR, mali müşavire sorulur); İNCELE 3 (yalnız API: Seçilenleri
   Gönder'e Silinenler'deki belge → boş sonuç kodu) SONRAYA. Aday 8 kapısı KIRMIZI (3276/3279: fatura-217 E6 beklentisi ×2, banka-210-altin U3 PDF yerleşimi; ürün hatası
   değil, testler bilerek güncellendi); aday 9 (6dc52d6) tam npm test 3283/3283, e2e sürüyor. SONRAYA: altın testin m6 kuralı "…"dan sonra her metni kabul ediyor.
+- BULGU G1 (23.10.2026 ~02:15 UTC, madde 30 göç ajanı ae9ec21f91121d745, v2.4.3'te de yeniden üretildi; karar gerekmez — v2.0.13 kilit kuralı): Silinenler'den geri yüklenen
+  kapanmış dönem tarihli fatura 200 dönüyor (beklenen 409); ardından Mutabakat Testi period-lock, aynı oturumda sonraki işlemler 2.4.3'te 409 ledger-integrity, 2.4.4'te 500
+  gate-equivalence (yeniden açılışta geçer). Neden: server/routes/trash.mjs fatura kolu restoreDate çağırmıyor (tahsilat/Kasa/taksit çağırıyor), invoices.mjs restoreDeleted'da
+  kilit yok. Düzeltme is/g1-kilit (af758d0efa275c16f, taban aday 10 247d6a7) → aday 11 tam kapı + göç son koşusu. Aday 10 (6e360c0: + e-Fatura belirsiz yerel iptal + kâhin
+  K41b) npm test 3293/3293, 3/64 e2e yeşil, kapı bu yüzden durduruldu. Göç (aday 9): olcu/goc/fark 100/100/donus 6/6/kesinti 79/79 GEÇTİ; tatbikat C9 kırmızısı ARAÇ (geri
+  yüklemede olay sayacı bilerek geri gitmez → sistemin yeniden yazdığı POS gün sonu yeni numara alır; iki sürümde aynı).
 - İSTEKLER (kullanıcı, 22.10.2026 ~14:00–14:50 UTC; hepsi yanıtlandı): "18 numarada portalda ben ne yapacağım" → elle kabul adımları iş listesi 18 (teslimde
   kurulumla); "kalan işler için zaman çizelgesi, aynı anda yapılanları tek süre say" → verildi (devam notu ZAMAN ÇİZELGESİ); "compact talimatı vereceğim, veri kaybı
   olmasın" → devam notu 00 + ajan kayıtları yazıldı ve gönderildi (f013e57); EDM test hesabı ~14:45 UTC yeniden verildi (yalnız oturumda; dosyaya yazılmadı).
