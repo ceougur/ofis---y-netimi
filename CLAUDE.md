@@ -478,6 +478,16 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   kilit yok. Düzeltme is/g1-kilit (af758d0efa275c16f, taban aday 10 247d6a7) → aday 11 tam kapı + göç son koşusu. Aday 10 (6e360c0: + e-Fatura belirsiz yerel iptal + kâhin
   K41b) npm test 3293/3293, 3/64 e2e yeşil, kapı bu yüzden durduruldu. Göç (aday 9): olcu/goc/fark 100/100/donus 6/6/kesinti 79/79 GEÇTİ; tatbikat C9 kırmızısı ARAÇ (geri
   yüklemede olay sayacı bilerek geri gitmez → sistemin yeniden yazdığı POS gün sonu yeni numara alır; iki sürümde aynı).
+- 31e DAR KONTROL (23.10.2026 ~03:00 UTC, bağımsız ajan, aday 11 88aaf09; ana oturum T4/Y1/N1'i v2.4.3 ↔ aday 11 yeniden üretti): T4 YÜKSEK (U2 gerilemesi: AYNI sekmede aynı
+  Dosya No'lu satırlar tek kayıt sayılıyor — 3.900 → 1.700, takvim 4 → 2 kalem); Y1 YÜKSEK (Kasa yetkisi olmayan Nakit Akışı'nda Kasa girişini görüyor; MM6 genişletti,
+  2.4.3'te de dar); E1-Y ORTA (Durum Sorgula "bulunamadı" ile eşzamanlı Gönder izi siliyor; 2.4.3'te de); T1 ORTA (Kalan'sız "Tutar + Tahsil Edilen" tablosu Tablodaki
+  Kişiler'den düşüyor; 32.000 → 2.500); N1 ORTA (E6 sonucu: yanlış tarihli silinen fiş doğru eski tarihle yeniden kesilemiyor); İNCELE 11048 ETTN yankısı, E4 izi kesin
+  retten sonra; mutasyon Y7 (m21 U5: değişmez ikinci savunma, test dişli — OKU-BENI "13/13" ölçüte aykırı, düzeltilecek), Y8 (M6q yaşıyor → olumlu test eksik).
+  KARAR GEREKMEYENLER: T4 aynı sekme ayrı (2.4.3 gibi), Y1 yetki, E1-Y, İNCELE, Y8. SORU → 5 dk YETKİSİYLE UYGULANDI (03:07 → 03:12 UTC): (a) farklı sekmede aynı Dosya No
+  bir kez (U2 aynen) + raporda görünür not; (b) Kalan sütunu yoksa borç = Tutar − Ödenen, tek yardımcı, bütün raporlar aynı; (c) silinen fişin numarası kullanılmış, tarihi
+  sıra-tarih denetimini bağlamaz, sırayı bozan geri yükleme 409. Alternatifler seçilmedi: (a) 2.4.3 gibi ayrı (kopya sekmede çift sayım). Ajanlar: is/r31e-rapor
+  (a4c6a5adce2fe84a1), is/r31e-n1 (af758d0efa275c16f), is/r31e-e1 (aa6d8a7ea376869f6), kâhin kuralları karar metninden (a273b1175b2d0e124). Aday 11 npm test 3301/3301,
+  kapı e2e'den önce durduruldu → ADAY 12 + tam kapı + göç son koşusu + 31e kontrol turu (Verimlilik: yeniden üretilmiş bulgu → düzeltme + bir kontrol turu).
 - İSTEKLER (kullanıcı, 22.10.2026 ~14:00–14:50 UTC; hepsi yanıtlandı): "18 numarada portalda ben ne yapacağım" → elle kabul adımları iş listesi 18 (teslimde
   kurulumla); "kalan işler için zaman çizelgesi, aynı anda yapılanları tek süre say" → verildi (devam notu ZAMAN ÇİZELGESİ); "compact talimatı vereceğim, veri kaybı
   olmasın" → devam notu 00 + ajan kayıtları yazıldı ve gönderildi (f013e57); EDM test hesabı ~14:45 UTC yeniden verildi (yalnız oturumda; dosyaya yazılmadı).
