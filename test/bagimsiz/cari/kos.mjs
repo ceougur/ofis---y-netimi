@@ -450,7 +450,23 @@ async function kos(senaryo) {
             const kis = kisR?.totals;
             const takvimR = (await api("GET", "/api/workspace/dues")).data;
             const takvim = takvimR?.items;
-            if (Array.isArray(takvim)) ham[`${k}:takvim`] = takvim.map(x => ({ amount: x.amount, tab: x.tab, date: x.date, key: x.key })); // K2/K4 kanıtı (ders 38)
+            if (Array.isArray(takvim)) ham[`${k}:takvim`] = takvim.map(x => Object.fromEntries(Object.entries(x).filter(([, v]) => v === null || typeof v !== "object"))); // K2/K4 kanıtı (ders 38)
+            // Y1 (23.10.2026): "önce cari açın" Açılış Bakiyesi takvim kaleminin Kalan Borç'undan dolar (ORTAM: kalem `debt`) — kayıt başına; kalemi olmayan kayıt 0
+            if (Array.isArray(takvim)) {
+              for (const [no, anahtar] of Object.entries(ids.anahtar)) {
+                const its = takvim.filter(x => (x.caseKey ?? x.key) === anahtar); // kara kutu: kalemin kayıt anahtarı `caseKey` (yoklama 23.10.2026, aday 18)
+                if (its.some(x => !("debt" in x))) {
+                  P[`${k}:acilis:${no}`] = "OKUNAMADI";
+                  // yalnız Açılış Bakiyesi'nin denetlendiği (raporlar: true) kontrolde okuma hatası; taksit kalemlerinde alan yok (b1 senaryoları) — denetlenmez
+                  if (a.raporlar && !ids.debtYok) hatalar.push(`${k} ${no}: takvim kaleminde Kalan Borç (debt) alanı yok — Açılış Bakiyesi okunamadı`);
+                  if (a.raporlar) ids.debtYok = true;
+                  continue;
+                }
+                // debt null: kalemde Kalan Borç yok → form Açılış Bakiyesi'ni boş getirir (ORTAM varsayımı; formun tutara düşüp düşmediği kara kutudan bilinmiyor) → "boş"
+                const vs = its.map(x => (x.debt === null || x.debt === undefined || x.debt === "" ? "boş" : kurus(x.debt)));
+                P[`${k}:acilis:${no}`] = vs.length === 0 ? 0 : vs.length === 1 ? vs[0] : vs;
+              }
+            }
             P[`${k}:takvim:cokSekmeNotu`] = cokSekmeNotu(JSON.stringify(takvimR ?? null)); // /2 B3 K2 (04:09): not Tahsilat Takvimi'nde de
             const vade = (await api("GET", `/api/workspace/reports/vade-takip?${genis}`)).data?.report?.totals;
             const akis = (await api("GET", `/api/workspace/reports/nakit-akis?${genis}`)).data?.report?.totals;

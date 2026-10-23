@@ -1,0 +1,98 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3n-borc-kolonu-kisi-ozniteligi",
+ "aciklama": "Y1 (karar sahibi 23.10.2026): borç kolonu yalnız para kolonudur — 'Borçlu Telefon', 'Borçlu TC' gibi kişi özniteliği başlıkları başlıkta 'borç' geçse de borç değildir. 'Takip' sekmesi (Dosya No, Borçlu, Borçlu Telefon, Son Ödeme — tutar yok): borç kolonu yok → borç yok + görünür not. 'Masraflı' sekmesi (Dosya No, Borçlu, Borçlu TC, Tutar, Masraf — iki tutar, Kalan/toplam yok): borç yok + görünür not. 'Aidat' sekmesi (Borçlu Telefon + tek Tutar): borç Tutar (Hale İn 1.000). Bütün tablo raporları (Kişiler, Takvim, Vade Takip, Nakit Akışı Beklenen) ve 'önce cari açın' Açılış Bakiyesi aynı borç: toplam 1.000; borçsuz satırların Açılış Bakiyesi 0.",
+ "dayanak": "KARARLAR.md B3h Y1, B4b K4",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Takip",
+     "tur": "serbest",
+     "basliklar": [
+      "Borçlu Telefon",
+      "Son Ödeme"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/701",
+       "isim": "Can Er",
+       "hucreler": {
+        "Borçlu Telefon": "0532 111 22 33",
+        "Son Ödeme": "20.06.2026"
+       }
+      },
+      {
+       "no": "2026/702",
+       "isim": "Ece Su",
+       "hucreler": {
+        "Borçlu Telefon": "0533 444 55 66",
+        "Son Ödeme": "20.06.2026"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Masraflı",
+     "tur": "serbest",
+     "basliklar": [
+      "Borçlu TC",
+      "Tutar",
+      "Masraf",
+      "Son Ödeme"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/703",
+       "isim": "Ferda Ak",
+       "hucreler": {
+        "Borçlu TC": "10000000146",
+        "Tutar": "2.000,00 ₺",
+        "Masraf": "150,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      },
+      {
+       "no": "2026/704",
+       "isim": "Gani Ok",
+       "hucreler": {
+        "Borçlu TC": "12345678950",
+        "Tutar": "3.000,00 ₺",
+        "Masraf": "200,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Aidat",
+     "tur": "serbest",
+     "basliklar": [
+      "Borçlu Telefon",
+      "Tutar",
+      "Son Ödeme"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/705",
+       "isim": "Hale İn",
+       "hucreler": {
+        "Borçlu Telefon": "0535 777 88 99",
+        "Tutar": "1.000,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol",
+   "raporlar": true
+  }
+ ]
+}
