@@ -180,3 +180,14 @@ b1 kontrollerinde de okuma hatası yazılıyordu (yalnız raporlar: true kontrol
   iki tabloda tek satır olsa da tutarı değişen satırın bağı taşınmıyor (kayıt anahtarı içerikle değişiyor: satir:f0d0… → satir:3624…); Deniz Ak (TC ile ayrı kişi) tahsilatı 0
   (kâhin 300 / 400) — BULGU 7; telefonla ayrılan Ali Veli'nin tahsilatı 0 — İNCELE 3 (kişi ayrımı telefonla [YAYGIN yorum]).
 DENENMEYEN: "Borçlu Adres" başlığı (kelime kuralında var, senaryoda yok); Toplam + Genel Toplam + seyrek Kalan (Genel Toplam önce [YAYGIN]); Devamı olarak ekle'de Y2.
+
+### Tur 9 — TAKVİM KALEMİ (baş mimar kararı 23.10.2026; dar kontrol gerilemesi) — ADAY 19 (a9f84b5; ürün kodu 3f62487 ile aynı)
+
+| Kayıt | Ne | Sonuç |
+|---|---|---|
+| KIRMIZI kirmizi-aday19-cari-takvim-kalemi | 27 senaryo (b3q yeni; K4 Takvim / Vade / Nakit toplamı artık kalem tutarı, Kişiler satır borcu; kayıt başına `kalem`) + 59 mutant (57–59 yeni) — b3q'da kırmızı BEKLENİR | 3569/3574 — 5 fark (BULGU 5, hepsi b3q) · 0 okuma hatası · 0 yakalanmayan mutasyon |
+
+Önceki 26 senaryo yeşil (kâhinin K4 değerleri değişmedi; yalnız b3o Murat Al ÇATAL — Y3 "not, borç yok" ↔ TAKVİM KALEMİ "Kalan boşsa dönem tutarı"; aday 19 kalemi tutarsız
+listeliyor → 0 kolu). Neden (ham takvim kalemi, ders 38): b3q'da kalem tutarı dönem kolonlu satırda da Kalan Borç — Kaan Uz `amount` 9.000 `debtColumn` "Kalan Borç" (kâhin
+1.000 = Taksit Tutarı), Oya Tan 2.500 (kâhin 1.000 = Aidat); Takvim / Vade Takip / Nakit Akışı toplamı 19.900 = Kişiler (kâhin 10.400). Lale Ak (1.500 / 1.000), Nil Su
+(1.000 / 400), Mert Oz (Kalan boş → 2.000), Pelin Ak (yalnız Kira) tutuyor.

@@ -206,7 +206,20 @@ Kaynak: ana oturumun ilettiği karar metni. Ürün kodu okunmadı.
   kişidir (Y2 telefonu geçerli TCKN/VKN gibi ayırt edici sayar; C3 yalnız kimliği söyler) — bu kişilerin borç / grup / tahsilat denetimleri YAYGIN (İNCELE). Telefonsuz aynı ad
   C3 [YAYGIN] gibi tek kişi (b3g, b3j değişmedi). TC ile ayrılanlar ayrı kişi (C3 [KULLANICI]) → tahsilat ayrı satırda (etiket KULLANICI).
 
-### B4b — Dört rapor aynı satır borcu (K4 [KULLANICI] 23.10.2026)
+### B3i — TAKVİM KALEMİ (baş mimar kararı 23.10.2026; dar kontrol gerilemesi, aday 19)
+- Tahsilat Takvimi / zil / Vade Takip / Nakit Akışı'ndaki vade kaleminin tutarı O VADEDE ödenmesi gereken tutardır. Satırın kendi dönem / taksit tutarı kolonu (Taksit Tutarı, Aidat,
+  Kira, Aylık Ücret…) varsa kalem = min(dönem tutarı, satırın Kalan Borç'u); Kalan boşsa (ya da Kalan kolonu yoksa) dönem tutarı; dönem tutarı kolonu yoksa satır borcu.
+  Tablodaki Kişiler ve "önce cari açın" Açılış Bakiyesi satır borcunu (Kalan) gösterir. K4 "dört rapor aynı borç" SATIR BORCU içindir, kalem toplamı için değil: kâhin
+  `k4:kisiler` = satır borçları toplamı, `k4:takvim` / `k4:vade` / `k4:akis` = kalem tutarları toplamı; tek satırlı kayıtta `<kontrol>:kalem:<no>` (takvim kalemi `amount`).
+- Dönem kolonu: para kolonu + başlığın bir kelimesi "taksit", "aidat", "kira", "ücret", "aylık" ile başlar ("dönem", "abonelik" [YAYGIN]); kişi özniteliği / tarih kolonu değil
+  ("Sonraki Taksit Tarihi" değil). Birden çok dönem kolonu → kalem tanımsız (denetlenmez). Borçsuz (Y1 not) satırda dönem kolonu yoksa kalem 0.
+- ÇELİŞKİ (karar sahibine soruldu): Y3'ün iki adaylı satırı (Aidat + Gecikme Faizi, Kalan boş — "ana tutar belirlenemez → not, borç yok") TAKVİM KALEMİ'ne göre "Kalan boşsa
+  dönem tutarı" = Aidat. Kâhin bu satırın kalemini ÇATAL sayar (0 ya da Aidat; b3o Murat Al: Takvim 3.200 ya da 4.000).
+- Senaryo b3q-takvim-kalemi (Kaan Uz Taksit Tutarı 1.000 / Kalan 9.000 → kalem 1.000, Kişiler 9.000; Aidat 1.000 / Kalan 400 → kalem 400; Aidat 1.000 / Kalan 2.500 → kalem
+  1.000); mutant 57 (kalem = satır borcu — önceki kâhin kuralı), 58 (min alınmaz), 59 (Kişiler kalem tutarını gösterir). Önceki senaryolarda kâhinin K4 değerleri değişmedi
+  (dönem kolonlu satırlarda Kalan dönem tutarından küçüktü ya da Kalan kolonu yoktu); yalnız b3o Murat Al çatallandı.
+
+### B4b — Dört rapor aynı satır borcu (K4 [KULLANICI] 23.10.2026; TAKVİM KALEMİ ile daraldı — B3i)
 - **K4** Tablodaki Kişiler (totals.debit), Tahsilat Takvimi (/dues Σ amount), Vade Takip (totals.amount) ve Nakit Akışı Beklenen (totals.expected) aynı satır
   borcunu kullanır; toplamları aynıdır (dönem süzgeci içinde). Kontrol adımında `"raporlar": true` ve bütün kayıtların borcu tanımlı ve tek değerliyse dört
   toplamın her biri Σ satır borcuna eşit beklenir. Senaryoda bütün satırların vadesi ("Ödeme Sözü" tarih sütunu) takvim penceresinde (bugün + 3); Ödeme Sözü

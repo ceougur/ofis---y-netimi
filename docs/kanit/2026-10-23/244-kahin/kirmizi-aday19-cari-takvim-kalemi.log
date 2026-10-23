@@ -1,0 +1,96 @@
+(node:23236) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+b1-5a-bayat-ve-yeniden: 67/67 tuttu
+b1-5a-tasima: 150/150 tuttu
+b1-5b-borc: 166/166 tuttu
+b1-5c-rapor: 134/134 tuttu
+b2-ux18-karsiliksiz: 115/115 tuttu
+b2-ux18-retler: 91/91 tuttu
+b2-ux18-sira: 96/96 tuttu
+b2-ux18-temel: 198/198 tuttu
+b3-u2-tablo-borcu: 33/33 tuttu
+b3b-k1-k4-donem-raporlar: 50/50 tuttu
+b3c-k2-donem-ayni-no: 31/31 tuttu
+b3d-c3-kisi-gruplama: 69/69 tuttu
+b3e-vergi-sutunu: 30/30 tuttu
+b3f-kayit-anahtari: 116/116 tuttu
+b3g-tablo-bag-surekliligi: 153/153 tuttu
+b3h-dosya-no-ve-devam: 86/86 tuttu
+b3i-devam-ayni-icerik: 40/40 tuttu
+b3j-ayni-ad-takas: 43/43 tuttu
+b3k-vergi-tek-kolon: 31/31 tuttu
+b3m-dosya-no-degisimi: 65/65 tuttu
+b3n-borc-kolonu-kisi-ozniteligi: 35/35 tuttu
+b3o-seyrek-kalan: 38/38 tuttu
+b3p-ayni-ad-telefon: 86/86 tuttu
+b3q-takvim-kalemi: 38/43 tuttu
+  ✗ [BULGU KULLANICI] k1:k4:akis: program 1990000 · kâhin 1040000 (TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu)
+  ✗ [BULGU KULLANICI] k1:k4:takvim: program 1990000 · kâhin 1040000 (TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu)
+  ✗ [BULGU KULLANICI] k1:k4:vade: program 1990000 · kâhin 1040000 (TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu)
+  ✗ [BULGU KULLANICI] k1:kalem:2026/902: program 250000 · kâhin 100000 (TAKVİM KALEMİ: Tahsilat Takvimi kaleminin tutarı (min(dönem tutarı, Kalan); Kalan boşsa dönem tutarı))
+  ✗ [BULGU KULLANICI] k1:kalem:K1: program 900000 · kâhin 100000 (TAKVİM KALEMİ: Tahsilat Takvimi kaleminin tutarı (min(dönem tutarı, Kalan); Kalan boşsa dönem tutarı))
+b5-u1-nihai-tuketici: 34/34 tuttu
+rastgele-ux18-1: 764/764 tuttu
+rastgele-ux18-2: 810/810 tuttu
+  mutasyon 1 (5a: sığmayan tahsilat bölünür (kartı doldurana kadar parçası taşınır)): YAKALANDI (b1-5a-tasima)
+  mutasyon 2 (5a: sığmayan tahsilat atlanır, sonraki küçükler taşınmaya devam eder): YAKALANDI (b1-5a-tasima)
+  mutasyon 3 (5b: carinin borcuna taşınan tahsilatlar geri eklenmez (D = bakiye)): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc +1)
+  mutasyon 4 (5b: borç kalandan azsa kişi aktarılmaz yerine yeni borç yazılır): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc)
+  mutasyon 5 (5c: aynı dosya no her sekmede ayrı sayılır (çift sayım)): YAKALANDI (b1-5c-rapor)
+  mutasyon 6 (UX18: bağlı evrakın fazlası en eski açık faturaya gitmez (avans kalır)): YAKALANDI (b2-ux18-karsiliksiz, b2-ux18-temel, rastgele-ux18-1 +1)
+  mutasyon 7 (UX18: karşılıksız evrak faturayı yeniden açmaz): YAKALANDI (b2-ux18-karsiliksiz, b2-ux18-sira, b2-ux18-temel +2)
+  mutasyon 8 (UX18: fatura iptalinde evrakın bağı düşmez (evrak hiçbir faturayı kapatmaz)): YAKALANDI (b2-ux18-temel)
+  mutasyon 9 (Otomatik kapama en YENİ faturadan başlar): YAKALANDI (b2-ux18-karsiliksiz, b2-ux18-sira, b2-ux18-temel +2)
+  mutasyon 10 (Geri al: taşınan tahsilatlar cariye dönmez): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc)
+  mutasyon 11 (5a: taşıma Kasa'yı azaltır): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc +1)
+  mutasyon 12 (Kart: tahsilat en yeni taksitten başlayarak sayılır): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc +1)
+  mutasyon 13 (Mizan: alınan senet 101'e yazılır (121 yerine)): YAKALANDI (b2-ux18-karsiliksiz, b2-ux18-temel, rastgele-ux18-1 +1)
+  mutasyon 14 (K3: Kalan önceliği yok (toplam önce)): YAKALANDI (b3-u2-tablo-borcu, b3e-vergi-sutunu, b3o-seyrek-kalan +3)
+  mutasyon 15 (K3: Ödeme Sözü tutarı borç sayılır): YAKALANDI (b1-5c-rapor, b3-u2-tablo-borcu, rastgele-ux18-1 +1)
+  mutasyon 16 (K3: gün/adet sütunu tutar sayılır): YAKALANDI (b3-u2-tablo-borcu, b3b-k1-k4-donem-raporlar, rastgele-ux18-1 +1)
+  mutasyon 17 (K3: Kalan hücresi boşsa borç 0 (toplama düşmez)): YAKALANDI (b3-u2-tablo-borcu, b3o-seyrek-kalan, b3q-takvim-kalemi +1)
+  mutasyon 18 (K2 (04:09): farklı sekmede aynı dosya no tek kayıt — yalnız ilk borçlu sekme sayılır (03:12 kuralı)): YAKALANDI (b3-u2-tablo-borcu, b3c-k2-donem-ayni-no, b3d-c3-kisi-gruplama +2)
+  mutasyon 19 (MM6: Nakit Akışı Kasa girişi yalnız cari tahsilatı sayar (evrak tahsili ve kayıt tahsilatı dışarıda)): YAKALANDI (b1-5c-rapor, b2-ux18-temel, b3-u2-tablo-borcu +9)
+  mutasyon 20 (U1: Nihai Tüketici 11111111111'li en eski cariyi (adı belli olsa da) seçer): YAKALANDI (b5-u1-nihai-tuketici)
+  mutasyon 21 (U1: işaretli cari adı/kimliği değişse de kullanılır): YAKALANDI (b5-u1-nihai-tuketici)
+  mutasyon 22 (MM6: elle Kasa çıkışı Nakit Akışı'nda sayılmaz): YAKALANDI (b3-u2-tablo-borcu)
+  mutasyon 23 (K1: aynı sekmede tekrar eden dosya no yalnız ilk satırla sayılır): YAKALANDI (b3b-k1-k4-donem-raporlar, b3c-k2-donem-ayni-no, rastgele-ux18-1 +1)
+  mutasyon 24 (K3: Kalan'sız Tutar + Tahsil Edilen tablosunda ödenen düşülmez): YAKALANDI (b3b-k1-k4-donem-raporlar, b3c-k2-donem-ayni-no, b3e-vergi-sutunu +2)
+  mutasyon 25 (K3: toplam − ödenen negatifse 0'a çekilmez): YAKALANDI (b3b-k1-k4-donem-raporlar, b3e-vergi-sutunu, rastgele-ux18-1)
+  mutasyon 26 (K2: 'birden çok sekmede; ayrı sayıldı' notu yok (rapor ve Tahsilat Takvimi)): YAKALANDI (b1-5c-rapor, b3-u2-tablo-borcu, b3c-k2-donem-ayni-no +3)
+  mutasyon 27 (K5: Kasa'yı görme yetkisi olmayan kullanıcı Kasa giriş/çıkışını görür): YAKALANDI (b3b-k1-k4-donem-raporlar)
+  mutasyon 28 (C3: aynı kimlik farklı adları birleştirir (kişi kimliğe göre)): YAKALANDI (b3d-c3-kisi-gruplama, b3p-ayni-ad-telefon)
+  mutasyon 29 (C3: aynı ad farklı kimlik tek kişi (yalnız ada göre)): YAKALANDI (b3d-c3-kisi-gruplama, b3p-ayni-ad-telefon, rastgele-ux18-1 +1)
+  mutasyon 30 (C3: kimliksiz satır aynı adın tek kimliğine katılmaz): YAKALANDI (b3d-c3-kisi-gruplama, rastgele-ux18-1, rastgele-ux18-2)
+  mutasyon 31 (C3: aynı adı paylaşan kişilerin etiketinde kimlik yok): YAKALANDI (b3d-c3-kisi-gruplama, b3p-ayni-ad-telefon, rastgele-ux18-1 +1)
+  mutasyon 32 (C3 kimliksiz satır: çok kimlikli adın kimliksiz kaydı ilk kimliğe katılır (ayrı kalmaz)): YAKALANDI (b3d-c3-kisi-gruplama, rastgele-ux18-1, rastgele-ux18-2)
+  mutasyon 33 (C3 kimlik sütunu: sağlama hanesi tutmayan değer de kimlik sayılır): YAKALANDI (b3d-c3-kisi-gruplama, rastgele-ux18-1, rastgele-ux18-2)
+  mutasyon 34 (Kimlik sütunu: 'Vergi No' / 'Vergi Numarası' / 'Vergi Kimlik' tutar sayılır): YAKALANDI (b3d-c3-kisi-gruplama, b3f-kayit-anahtari, rastgele-ux18-1 +1)
+  mutasyon 35 (Vergi sütunu (KDV, Vergi, Vergi Tutarı, Stopaj, Tevkifat, ÖTV) tutar sayılır ve Genel Toplam ayrı sınıf değil (eski K3: borç belirlenemez)): YAKALANDI (b3e-vergi-sutunu, b3k-vergi-tek-kolon, rastgele-ux18-1 +1)
+  mutasyon 36 (Tutar + Genel Toplam tablosunda borç Tutar (KDV hariç)): YAKALANDI (b3e-vergi-sutunu)
+  mutasyon 37 (Borç sütunu belirlenemeyen kişiler raporda notsuz kaybolur): YAKALANDI (b3e-vergi-sutunu, b3n-borc-kolonu-kisi-ozniteligi, b3o-seyrek-kalan)
+  mutasyon 38 (Yerine koy (aynı dosyayı yeniden yükle) kayda bağlı tahsilatı kayıttan koparır): YAKALANDI (b3f-kayit-anahtari, b3g-tablo-bag-surekliligi, b3h-dosya-no-ve-devam +4)
+  mutasyon 39 (Sağlaması tutmayan Vergi No / TC değeri kayıt kimliğine girer (değer değişince tahsilat kopar)): YAKALANDI (b3f-kayit-anahtari, b3m-dosya-no-degisimi)
+  mutasyon 40 (Yerine koy güvenli eşleşmede de bağı koparır (satır içeriği anahtar)): YAKALANDI (b3f-kayit-anahtari, b3g-tablo-bag-surekliligi, b3h-dosya-no-ve-devam +3)
+  mutasyon 41 (Güvenli eşleşme yokken uyarı ve onay yok (sessiz)): YAKALANDI (b3g-tablo-bag-surekliligi, b3j-ayni-ad-takas, b3m-dosya-no-degisimi)
+  mutasyon 42 (N3 öncesi: aynı konum + aynı kişi eşleşmesi kişi değeri iki tabloda AYNI SAYIDA satırdayken de geçerli (bağ yanlış kişiye gidebilir)): YAKALANDI (b3g-tablo-bag-surekliligi, b3j-ayni-ad-takas)
+  mutasyon 43 (Devamı olarak ekle aynı kişi + aynı tutar satırını söylemez, onay istemez): YAKALANDI (b3h-dosya-no-ve-devam)
+  mutasyon 44 (İçeriği aynı satır yer değişince (aynı adlı iki satırın yer değiştirmesi) eşleşmez — onay ister): YAKALANDI (b3g-tablo-bag-surekliligi)
+  mutasyon 45 (Devamı olarak ekle içeriği tamamen aynı satırı ikinci kez ekler ve onay ister): YAKALANDI (b3i-devam-ayni-icerik)
+  mutasyon 46 (Devamı olarak ekle güvenli eşleşen (aynı kişi, başka hücresi farklı) satırı güncellemez, ikinci kez ekler ve onay ister): YAKALANDI (b3h-dosya-no-ve-devam)
+  mutasyon 47 (N4 öncesi: tablodaki TEK tutar kolonu vergi kolonuysa da borç sayılmaz): YAKALANDI (b3k-vergi-tek-kolon)
+  mutasyon 48 (N6 öncesi: tabloda artık olmayan kayda tahsilat yazımı kabul edilir): YAKALANDI (b3g-tablo-bag-surekliligi)
+  mutasyon 49 (N1 öncesi: Dosya No'lu tabloda dosya numarası değişen kaydın bağı kişi eşleşmesiyle yeni dosyaya taşınır): YAKALANDI (b3m-dosya-no-degisimi)
+  mutasyon 50 (N1: geri gelen dosya numarasının bağları yeniden görünmez): YAKALANDI (b3m-dosya-no-degisimi)
+  mutasyon 51 (Y1 öncesi: başlığında 'borç' geçen kişi özniteliği kolonu (Borçlu Telefon, Borçlu TC) tutar sayılır): YAKALANDI (b3g-tablo-bag-surekliligi, b3n-borc-kolonu-kisi-ozniteligi)
+  mutasyon 52 (Y1: iki tutar kolonlu (Kalan/toplam yok) tabloda ilk tutar kolonu borç sayılır (not yerine)): YAKALANDI (b3e-vergi-sutunu, b3n-borc-kolonu-kisi-ozniteligi)
+  mutasyon 53 (Y3 öncesi: Kalan hücresi boş, Toplam yok — tek tutar kolonu (Aidat) ana tutar sayılmaz (borç belirlenemez)): YAKALANDI (b3o-seyrek-kalan)
+  mutasyon 54 (Y3: Kalan hücresi boş, iki aday (Aidat + Gecikme Faizi) — ikisinin toplamı borç sayılır (not yerine)): YAKALANDI (b3o-seyrek-kalan)
+  mutasyon 55 (Y1: 'önce cari açın' Açılış Bakiyesi satırın ilk tutar hücresinden dolar (raporların borcundan değil)): YAKALANDI (b3b-k1-k4-donem-raporlar, b3c-k2-donem-ayni-no, b3n-borc-kolonu-kisi-ozniteligi +2)
+  mutasyon 56 (Y2 öncesi: aynı adlı iki satır telefonla ayırt edilse de güvenli eşleşme sayılmaz (kişi değeri yalnız ad + kimlik)): YAKALANDI (b3p-ayni-ad-telefon)
+  mutasyon 57 (TAKVİM KALEMİ öncesi: vade kaleminin tutarı satır borcudur (Kalan) — dönem / taksit tutarı kolonu yok sayılır): YAKALANDI (b3o-seyrek-kalan, b3q-takvim-kalemi)
+  mutasyon 58 (TAKVİM KALEMİ: kalem tutarı dönem tutarıdır, Kalan Borç daha küçükse de (min alınmaz)): YAKALANDI (b3o-seyrek-kalan, b3q-takvim-kalemi)
+  mutasyon 59 (TAKVİM KALEMİ: Tablodaki Kişiler de vade kaleminin tutarını (dönem tutarı) gösterir (satır borcu yerine)): YAKALANDI (b3q-takvim-kalemi)
+
+ÖZET: 27 senaryo, 3574 denetim, 5 fark (BULGU 5), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-takvim-aday19
+3569/3574 denetim geçti
