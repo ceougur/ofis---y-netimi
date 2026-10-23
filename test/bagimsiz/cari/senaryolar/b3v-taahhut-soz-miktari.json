@@ -1,0 +1,108 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3v-taahhut-soz-miktari",
+ "aciklama": "ÖDEME SÖZÜ başlıkları (karar sahibi 23.10.2026): söz ailesi tam sözcük ('Söz', 'Sözü', 'Ödeme Sözü'), taahhüt ailesi önek ('Taahhüt', 'Taahhüdü', 'Taahhütname', 'Taahhütlü'); yalnız 'Sözleşme…' söz değil. Söz tutarı sütunu söz/taahhüt + 'tutar' ya da 'miktar'. İlker Ay Kalan 2.500, 'Taahhütname Tarihi', 'Taahhüt Tutarı' 500 → söz kalemi 500 (ödeme sözü); Jale Ok Kalan 3.000, 'Söz Tarihi', 'Söz Miktarı' 600 → söz kalemi 600; Kemal Er Kalan 4.000, 'Ödeme Taahhüdü Tarihi', 'Ödeme Taahhüdü Tutarı' 800 → 800; Lale Su Kalan 5.000, 'Taahhütname Tarihi', 'Taahhütname Miktarı' 900 → 900 (taahhüt ailesi önek). Kişiler 14.500; Takvim / Vade Takip / Nakit Akışı 2.800.",
+ "dayanak": "KARARLAR.md B3k ÖDEME SÖZÜ başlıkları, B3j Z3",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Taahhütler",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Kalan Borç",
+      "Taahhütname Tarihi",
+      "Taahhüt Tutarı"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/981",
+       "isim": "İlker Ay",
+       "hucreler": {
+        "Telefon": "",
+        "Kalan Borç": "2.500,00 ₺",
+        "Taahhütname Tarihi": "20.06.2026",
+        "Taahhüt Tutarı": "500,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Sözler",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Kalan Borç",
+      "Söz Tarihi",
+      "Söz Miktarı"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/982",
+       "isim": "Jale Ok",
+       "hucreler": {
+        "Telefon": "",
+        "Kalan Borç": "3.000,00 ₺",
+        "Söz Tarihi": "20.06.2026",
+        "Söz Miktarı": "600,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Ödeme Taahhütleri",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Kalan Borç",
+      "Ödeme Taahhüdü Tarihi",
+      "Ödeme Taahhüdü Tutarı"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/983",
+       "isim": "Kemal Er",
+       "hucreler": {
+        "Telefon": "",
+        "Kalan Borç": "4.000,00 ₺",
+        "Ödeme Taahhüdü Tarihi": "20.06.2026",
+        "Ödeme Taahhüdü Tutarı": "800,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Taahhütnameler",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Kalan Borç",
+      "Taahhütname Tarihi",
+      "Taahhütname Miktarı"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/984",
+       "isim": "Lale Su",
+       "hucreler": {
+        "Telefon": "",
+        "Kalan Borç": "5.000,00 ₺",
+        "Taahhütname Tarihi": "20.06.2026",
+        "Taahhütname Miktarı": "900,00 ₺"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol",
+   "raporlar": true
+  }
+ ]
+}

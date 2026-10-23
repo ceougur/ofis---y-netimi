@@ -458,6 +458,7 @@ async function kos(senaryo) {
                 // TAKVİM KALEMİ (23.10.2026): kaydın vade kalemi tutarı (kalem yoksa 0; birden çok kalemde liste)
                 { const ts = its.map(x => kurus(x.amount) ?? 0); P[`${k}:kalem:${no}`] = ts.length === 0 ? 0 : ts.length === 1 ? ts[0] : ts; }
                 P[`${k}:kalemVar:${no}`] = its.length > 0; // Z2 (23.10.2026): Kalan 0 / eksi satırın kalemi Takvim'de görünmez
+                P[`${k}:kalemSoz:${no}`] = its.length === 1 ? its[0].promise === true : its.length ? its.map(x => x.promise === true) : false; // ÖDEME SÖZÜ: kalem söz kalemi mi
                 if (its.some(x => !("debt" in x))) {
                   P[`${k}:acilis:${no}`] = "OKUNAMADI";
                   // yalnız Açılış Bakiyesi'nin denetlendiği (raporlar: true) kontrolde okuma hatası; taksit kalemlerinde alan yok (b1 senaryoları) — denetlenmez
@@ -532,8 +533,16 @@ async function kos(senaryo) {
                   tara(ids.genisRapor);
                   const sekmeler = [...(ids.sekmeAd?.[no] || [])];
                   // not: sekme adını geçen VE borç/tutar/sütun/gösterilmedi diyen metin ya da "borç/tutar … sütun" kalıbı (yalnız sekme adı — ör. süzgeç seçenekleri — not değil)
-                  const not = metinler.some(m => sekmeler.some(sa => m.includes(sa) && /(borç|tutar|sütun|gösteril|görün)/i.test(m)) || /(borç|tutar)[^.]{0,40}sütun|sütun[^.]{0,40}(borç|tutar)/i.test(m));
+                  // Kâhin düzeltmesi (23.10.2026, ders 38): genel "borç … sütun" kalıbı yalnız HİÇBİR sekmenin adını geçmeyen metinde not sayılır — başka sekmenin notu bu satırın
+                  // notu değildir (b3n "Takip" kişileri "Masraflı" sekmesinin notuyla yanlışlıkla geçiyordu)
+                  const tumSekmeler = [...new Set(Object.values(ids.sekmeAd || {}).flatMap(x => [...x]))];
+                  const not = metinler.some(m => sekmeler.some(sa => m.includes(sa) && /(borç|tutar|sütun|gösteril|görün)/i.test(m))
+                    || (!tumSekmeler.some(sa => m.includes(sa)) && /(borç|tutar)[^.]{0,40}sütun|sütun[^.]{0,40}(borç|tutar)/i.test(m)));
                   P[`${k}:rapor:${no}:gorunurVeyaNot`] = gorunur || not;
+                  // A1 + tek tutar sütunu (23.10.2026): borcu belli satırın sekmesi için "borç sütunu belirlenemedi" türü not YOK (sekme adını geçen + sütun/belirleme sözcüğü)
+                  const notMetin = metinler.filter(m => sekmeler.some(sa => m.includes(sa)) && /(borç sütun|tutar sütun|belirlenemed|belirlenemey|gösterilmed)/i.test(m));
+                  P[`${k}:rapor:${no}:notYok`] = notMetin.length === 0;
+                  if (notMetin.length) ham[`${k}:not:${no}`] = notMetin.slice(0, 5);
                   if (!gorunur) ham[`${k}:kayip:${no}`] = { not, notlar: metinler.filter(m => /sütun|sekme/i.test(m)).slice(0, 5) };
                 }
                 if (g) P[`${k}:rapor:${no}:ad`] = g.cari;
