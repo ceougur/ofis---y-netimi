@@ -21,7 +21,7 @@ import { readUbl } from "../lib/einvoice/ubl-read.mjs";
 import { UNIT_CODE_KEYS, buildUbl, ublFileName } from "../lib/einvoice/ubl-tr.mjs";
 import { viewXslt } from "../lib/einvoice/gorunum.mjs";
 import { karekodOf } from "../lib/einvoice/karekod.mjs";
-import { NOT_SENT_CODES, SEND_DUPLICATE, SEND_INTENT, SEND_OUTCOMES, TRANSMITTED, attemptWindow, cancelDeadlineText, cancelLateText, cancelWindow, transmissionOf, windowLabel } from "../lib/einvoice/iptal-suresi.mjs";
+import { EINVOICE_PROFILES, NOT_SENT_CODES, SEND_DUPLICATE, SEND_INTENT, SEND_OUTCOMES, TRANSMITTED, uncertainWindow, cancelDeadlineText, cancelLateText, cancelWindow, transmissionOf, windowLabel } from "../lib/einvoice/iptal-suresi.mjs";
 import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { bodyHash, createIdempotency } from "../lib/idempotency.mjs";
 import { invoicePdf } from "../lib/invoice-pdf.mjs";
@@ -872,6 +872,15 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     if (["processing", "sent", "accepted"].includes(row.eStatus)) return `Bu belge EDM'ye iletildi (durum: ${E_STATES[row.eStatus]}); yalnız programda iptal edilmez. ${how}`;
     if (row.eStatus === "error") return `Bu belge EDM'de “${E_STATES.error}” durumunda; yalnız programda iptal edilmez. İptal için İptal Et'i kullanın: belge EDM'de yoksa program onu yalnız programda iptal eder.`;
     return `Yalnız programda iptal yalnız sonucu belirsiz gönderimde ya da EDM portalına taslak olarak yüklenmiş belgede yapılır. ${how}`;
+  }
+  // 2.4.4 (kâhin İNCELE 1, 23.10.2026): e-Faturanın programdaki iptal yolu — entegratörden iptal edilmez (adapters.mjs einvoice-cancel-unsupported); alıcının
+  // reddi ya da GİB'in iptal yolu ya da alıcının iade faturasından SONRA İptal Et + onay kutusu (cancel → confirmExternal; istemci cancelForm sentEInvoice).
+  const EINVOICE_CANCEL_PATH = "Programda iptal, e-Fatura GİB'de iptal edildikten (alıcının reddi ya da GİB'in e-Fatura iptal yolu) ya da alıcı iade faturası kestikten sonra yapılır: İptal Et → “Bu e-Fatura alıcı tarafından reddedildi ya da GİB'den iptal edildi” kutusu.";
+  // Yalnız programda iptalin belgeye yazılan iletisi (EDM'ye sorulmadan; 8 gün içinde ya da portal taslağında). e-Faturada entegratörden iptal yoktur.
+  function localCancelDoneText(row) {
+    if (!EINVOICE_PROFILES.has(row.profile)) return "Yalnız programda iptal edildi (entegratöre iptal gönderilmedi). Entegratörde belge varsa orada ayrıca iptal edin.";
+    if (row.eStatus === "draft") return "Yalnız programda iptal edildi. EDM portalındaki taslağı silin (yoksa portaldan gönderilebilir).";
+    return "Yalnız programda iptal edildi (EDM'ye sorulmadı). Belge EDM'ye ulaşıp alıcıya iletildiyse GİB'de geçerlidir: alıcıdan ret ya da GİB'in e-Fatura iptal yolunu isteyin, gerekirse alıcı iade faturası keser.";
   }
   function modifyBlock(row, activeReturns = 0, plan = null) {
     const fee = row.status === "issued" ? bankFeeOf(row.id) : null;
@@ -3233,8 +3242,12 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // sorar. EDM "bulunamadı" (11017) derse belge iletilmemiştir → iptal serbest (true döner). Belge EDM'de varsa durum belgeye yazılır ve iptal reddedilir
   // (iletilmişse süre doldu). EDM'ye ulaşılamazsa ya da yanıt tanınmazsa iptal yapılmaz. e-SMM'de de "bulunamadı" 11017 (madde 24'te gerçek EDM'de doğrulandı).
   // 8 gün dolmadıysa sorulmaz (bugünkü K4 çıkış yolu aynen; false döner).
+  // 2.4.4 (bağımsız kâhin İNCELE 1; kullanıcı kararı 23.10.2026, 5 dk yetkisiyle): e-Faturada da (Temel / Ticari) — önceden sınır yalnız e-Arşiv / e-SMM'deydi
+  // (attemptWindow e-Faturada null), belirsiz e-Fatura EDM'ye hiç sorulmadan yalnız programda iptal ediliyordu: alıcıya ulaşmış, GİB'de geçerli e-Fatura
+  // programda "İptal Edildi" görünebiliyordu. e-Faturanın iptal süresi DEĞİL (o yok; iptal yolu alıcının reddi / GİB'in iptal yolu / iade faturası):
+  // yalnız bu kapının sınırı (iptal-suresi.mjs uncertainWindow). EDM'de varsa ileti e-Faturanın programdaki iptal yolunu söyler (İptal Et + onay kutusu).
   async function uncertainLocalCheck(user, row) {
-    const limit = edocEnabled ? attemptWindow({ profile: row.profile, issueDate: row.issueDate, transmittedAt: transmittedAtOf(row.id), today: today() }) : null;
+    const limit = edocEnabled ? uncertainWindow({ profile: row.profile, issueDate: row.issueDate, transmittedAt: transmittedAtOf(row.id), today: today() }) : null;
     if (!limit?.late) return false;
     const since = `Son gönderim girişiminin (${dayText(limit.start)}) üzerinden ${limit.days} günden fazla geçti; belgenin EDM'de olup olmadığı sorulmadan yalnız programda iptal edilmez.`;
     let remote;
@@ -3250,6 +3263,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     setE(user, row.id, { status: remote.status, message: remote.message }, "invoice.e.status", { raw: remote.raw || "", during: "cancel" });
     const found = cancelWindowOf(invoiceRow(row.id));
     if (found?.late) throw new HttpError(409, `Belge EDM'de bulundu: alıcıya iletilmiş, GİB'de geçerli. ${cancelLateText(found)}`, { code: "einvoice-cancel-late", lastDay: found.lastDay, start: found.start, source: found.source });
+    if (EINVOICE_PROFILES.has(row.profile) && TRANSMITTED.has(remote.status)) throw new HttpError(409, `Belge EDM'de bulundu (durum: ${E_STATES[remote.status] || remote.status}): e-Fatura ${remote.status === "processing" ? "EDM'de işleniyor, alıcıya iletilebilir" : "alıcıya iletilmiş, GİB'de geçerli"}; durum belgeye yazıldı, yalnız programda iptal edilmedi. ${EINVOICE_CANCEL_PATH}`, { code: "einvoice-found", eStatus: remote.status });
     throw new HttpError(409, `Belge EDM'de bulundu (durum: ${E_STATES[remote.status] || remote.status}); durum belgeye yazıldı, yalnız programda iptal edilmedi. Kartı yeniden açıp İptal Et ile deneyin.`, { code: "einvoice-found" });
   }
   async function cancelInvoiceOnce(user, id, body) {
@@ -3358,7 +3372,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const row = cancel(user, existing.id, options);
     if (bypass) {
       store.tx(() => {
-        store.run("UPDATE invoices SET e_message = ? WHERE id = ?", missingAtEdm ? "EDM'de bulunamadı (belge iletilmemiş); yalnız programda iptal edildi." : "Yalnız programda iptal edildi (entegratöre iptal gönderilmedi). Entegratörde belge varsa orada ayrıca iptal edin.", existing.id);
+        store.run("UPDATE invoices SET e_message = ? WHERE id = ?", missingAtEdm ? "EDM'de bulunamadı (belge iletilmemiş); yalnız programda iptal edildi." : localCancelDoneText(head), existing.id);
         audit(user, "invoice.e.local-cancel", existing.id, { number: existing.number, eStatus: head.eStatus || "none", adapter: head.eAdapter || "", ...(missingAtEdm ? { reason: "integrator-missing" } : {}) });
       });
     }
