@@ -218,9 +218,9 @@ export function tableNotes({ split = [], overpaid = 0 } = {}) {
 // ---------- Kişi (grup) kimliği ----------
 // 31a N5 (aynı adlı iki kişi): ad aynı, telefonlar FARKLIYSA iki ayrı kişidir; adın tek telefonu varsa (ya da hiç yoksa) bütün kayıtlar tek kişidir — telefonsuz kayıt
 // da (iki dosyadaki aynı cari, v2.0.2 cross-match). Birden çok telefonlu adın telefonsuz kaydı tahmin edilmez, ayrı grupta kalır.
-// 31e C3: kimlik (T.C. Kimlik No / Vergi No) önce gelir — kimliği olan kayıt kimliğiyle gruplanır (aynı kimlik ad yazımı farklı olsa da tek kişi; aynı ad, farklı
-// kimlik ayrı kişi). Kimliği boş kayıt bugünkü kuralla (ad + telefon) TEK bir kimliğe uyuyorsa o kişiye katılır; birden çok kimliğe uyuyorsa tahmin edilmez,
-// ad (+ telefon) grubunda kalır. Aynı adı taşıyan birden çok grup varsa kimlikli grubun adına "(TC …)" / "(VKN …)" eklenir; Vadeler aynı adı yazar.
+// 31e C3 / D1: kimlik (T.C. Kimlik No / Vergi No) yalnız AYNI adlı grupları ayırır — aynı ad, farklı kimlik ayrı kişi; farklı ad aynı kimlik ayrı kişi (v2.4.3 gibi;
+// yer tutucu kimlik). Aynı adın kimliği boş kaydı bugünkü kuralla (ad + telefon) TEK bir kimliğe uyuyorsa o kişiye katılır; birden çok kimliğe uyuyorsa tahmin
+// edilmez, ad (+ telefon) grubunda kalır. Aynı adı taşıyan birden çok grup varsa kimlikli grubun adına "(TC …)" / "(VKN …)" eklenir; Vadeler aynı adı yazar.
 export function personIndex(records) {
   const phonesByName = new Map();
   const idsByName = new Map(); // ad → [{ identity, phone }]
@@ -236,14 +236,18 @@ export function personIndex(records) {
       idsByName.get(record.cariKey).push({ identity: record.identity, phone });
     }
   }
+  // 31e D1: kimlik yalnız AYNI adlı grupları ayırır — adın birden çok farklı kimliği varsa her kimlik ayrı kişi; farklı adlar kimlik yüzünden birleşmez (yer tutucu
+  // kimlik — TC 11111111111, VKN 0000000000 — farklı kişileri tek gruba topluyordu; 17cc5f4 gerilemesi). Adsız kayıt kendi kimliğiyle (yoksa dosya no) gruplanır.
   const keyOf = record => {
-    if (record.identity) return `t:${record.identity}`;
-    if (!record.cariKey) return `k:${record.key}`;
+    if (!record.cariKey) return record.identity ? `t:${record.identity}` : `k:${record.key}`;
     const byPhone = (phonesByName.get(record.cariKey)?.size || 0) >= 2;
     const phone = phoneKey(record.phone);
+    const plain = byPhone ? `${record.cariKey}|${phone}` : record.cariKey;
+    const ids = new Set((idsByName.get(record.cariKey) || []).map(entry => entry.identity));
+    if (ids.size < 2) return plain;
+    if (record.identity) return `${record.cariKey}|t:${record.identity}`;
     const matches = new Set((idsByName.get(record.cariKey) || []).filter(entry => !byPhone || (phone && entry.phone === phone)).map(entry => entry.identity));
-    if (matches.size === 1) return `t:${[...matches][0]}`;
-    return byPhone ? `${record.cariKey}|${phone}` : record.cariKey;
+    return matches.size === 1 ? `${record.cariKey}|t:${[...matches][0]}` : plain;
   };
   const keysByName = new Map();
   for (const record of records) {
@@ -255,8 +259,9 @@ export function personIndex(records) {
   const labelOf = record => {
     const base = record.cari || record.id || record.key;
     const key = keyOf(record);
-    if (!key.startsWith("t:") || (keysByName.get(record.cariKey)?.size || 0) < 2) return base;
-    const identity = key.slice(2);
+    const at = key.indexOf("|t:");
+    if (at < 0 || (keysByName.get(record.cariKey)?.size || 0) < 2) return base;
+    const identity = key.slice(at + 3);
     return `${base} (${identity.length === 11 ? "TC" : "VKN"} ${identity})`;
   };
   return { keyOf, labelOf };

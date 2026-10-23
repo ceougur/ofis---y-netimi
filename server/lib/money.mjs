@@ -5,7 +5,9 @@ export function parseAmount(value) {
   if (typeof value === "number") return value;
   let raw = String(value ?? "").trim().replace(/[₺$€\s]|tl|try/gi, "");
   if (!raw) return Number.NaN;
-  if (raw.includes(",")) raw = raw.replace(/\./g, "").replace(",", ".");
+  // 31e N2: virgül ve nokta birlikte, virgül önce ("1,234.56") İngilizce yazımdır → 1234,56 (insight/validators.mjs ile aynı). Türkçe "1.234,56" değişmez.
+  if (raw.includes(",") && raw.includes(".") && raw.lastIndexOf(",") < raw.lastIndexOf(".")) raw = raw.replace(/,/g, "");
+  else if (raw.includes(",")) raw = raw.replace(/\./g, "").replace(",", ".");
   else if (/^-?\d{1,3}(\.\d{3})+$/.test(raw)) raw = raw.replace(/\./g, "");
   return /^-?\d+(\.\d+)?$/.test(raw) ? Number(raw) : Number.NaN;
 }

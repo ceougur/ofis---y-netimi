@@ -324,15 +324,37 @@ describe("31e C3: aynı adlı iki kişi — farklı T.C. Kimlik No ayrı, aynı 
     assert.equal(groups["Ayşe Kaya"], 3300, "aynı ad, biri kimliksiz: bugünkü kural (tek kimlik → aynı kişi)");
   });
 
-  test("aynı kimlik, farklı ad yazımı ('A. Can Er' / 'Can Er'): tek kişi 650 (B12)", async () => {
+  // D1 (aday 15 dar kontrolü, 23.10.2026): kimlik yalnız AYNI adlı grupları ayırır; farklı adlar kimlik yüzünden birleşmez (v2.4.3 gibi ayrı) — önceki "tek kişi 650"
+  // beklentisi bilerek değişti (yer tutucu kimlikte — 11111111111 — farklı kişiler birleşiyordu).
+  test("aynı kimlik, farklı ad yazımı ('A. Can Er' / 'Can Er'): iki ayrı kişi 400 / 250 (D1, v2.4.3 gibi)", async () => {
     const { report } = await ctx.report("cari-ekstre");
-    const can = report.groups.filter(group => /Can Er/.test(group.cari));
-    assert.deepEqual(can.map(group => group.debit), [650], JSON.stringify(can.map(group => [group.cari, group.debit])));
+    const can = report.groups.filter(group => /Can Er/.test(group.cari)).map(group => [group.cari, group.debit]).sort((x, y) => x[1] - y[1]);
+    assert.deepEqual(can, [["Can Er", 250], ["A. Can Er", 400]], JSON.stringify(can));
   });
 
   test("Vadeler: iki Ali Veli kalemi kimlik ekiyle, Tablodaki Kişiler ile aynı ad (B14)", async () => {
     const rows = (await ctx.report("vade-takip")).report.table.rows.filter(row => /Ali Veli/.test(row.cari)).map(row => [row.cari, row.amount]).sort((a, b) => a[1] - b[1]);
     assert.deepEqual(rows.filter(([, amount]) => amount === 700 || amount === 900), [["Ali Veli (TC 10000000146)", 700], ["Ali Veli (TC 22222222222)", 900]], JSON.stringify(rows));
+  });
+});
+
+// 31e D1 (aday 15 dar kontrolü): yer tutucu kimlik (TC 11111111111, VKN 0000000000) taşıyan FARKLI adlı kişiler tek grupta toplanıyor, öbür adlar Tablodaki Kişiler'den
+// düşüyordu (17cc5f4 C3'ün gerilemesi). Kural: kimlik yalnız aynı adlı grupları ayırır. "Nasıl bozulur?" not defteri d-nasil-bozulur.md B1–B7.
+describe("31e D1: aynı kimlik farklı ad — ayrı kişiler (v2.4.3 gibi); aynı ad aynı kimlik tek kişi", () => {
+  const H = ["Dosya No", "Ad Soyad", "TC Kimlik No", "Kalan Borç", "Son Ödeme"];
+  const ctx = setup([
+    { name: "Satışlar", matrix: [H, ["P-1", "Ali Veli", "11111111111", "100", d(-2)], ["P-2", "Ayşe Kaya", "11111111111", "200", d(-3)], ["P-3", "Can Er", "11111111111", "300", d(-4)], ["P-4", "Deniz Ak", "12345678950", "400", d(-5)], ["P-5", "Ece Su", "0000000000", "500", d(-6)], ["P-6", "Fırat Er", "0000000000", "600", d(-7)], ["P-7", "Gül Ay", "22222222222", "50", d(-8)], ["P-8", "Gül Ay", "22222222222", "70", d(-9)]] },
+  ]);
+
+  test("Tablodaki Kişiler: 7 kişi, her biri kendi adıyla (Ali 100, Ayşe 200, Can 300, Deniz 400, Ece 500, Fırat 600, Gül Ay iki satır tek kişi 120); kimlik eki yok (B1/B3/B7)", async () => {
+    const { report } = await ctx.report("cari-ekstre");
+    assert.deepEqual(debitBy(report), { "Ali Veli": 100, "Ayşe Kaya": 200, "Can Er": 300, "Deniz Ak": 400, "Ece Su": 500, "Fırat Er": 600, "Gül Ay": 120 }, JSON.stringify(report.groups.map(group => [group.cari, group.debit])));
+  });
+
+  test("Vadeler aynı adlar (8 kalem)", async () => {
+    const rows = (await ctx.report("vade-takip")).report.table.rows.map(row => row.cari);
+    assert.deepEqual([...new Set(rows)].sort((x, y) => x.localeCompare(y, "tr")), ["Ali Veli", "Ayşe Kaya", "Can Er", "Deniz Ak", "Ece Su", "Fırat Er", "Gül Ay"], JSON.stringify(rows));
+    assert.equal(rows.length, 8);
   });
 });
 

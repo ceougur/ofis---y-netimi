@@ -488,7 +488,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       const id = insertAccount(user, input);
       // Açılış bakiyesi: ör. önceki programdan devreden borç (+) ya da alacak (−).
       const opening = parseAmount(body.openingBalance);
-      if (Number.isFinite(opening) && Math.abs(opening) > EPS) addEntry(user, id, { kind: openingKind(opening, input.type, sideOf(body.openingSide)), amount: roundMoney(Math.abs(opening)), date: input.registeredOn, note: "Açılış bakiyesi" });
+      if (Number.isFinite(opening) && roundMoney(Math.abs(opening)) > 0) addEntry(user, id, { kind: openingKind(opening, input.type, sideOf(body.openingSide)), amount: roundMoney(Math.abs(opening)), date: input.registeredOn, note: "Açılış bakiyesi" });
       audit(user, "account.created", id, { name: input.name, type: input.type });
       return detail(id, user);
     });
@@ -1185,7 +1185,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
           if (report.typeDefaulted.length < 500) report.typeDefaulted.push({ row: headerAt + index + 2, ...typed.warn });
         }
         const opening = parseAmount(cell(row, col.balance));
-        if (Number.isFinite(opening) && Math.abs(opening) > EPS) {
+        // 31e N1: eşik kuruşa yuvarlanmış tutarla (0,005 → 0,01 yazılır, 0,004 yazılmaz) — öbür içe alma yollarıyla aynı.
+        if (Number.isFinite(opening) && roundMoney(Math.abs(opening)) > 0) {
           addEntry(user, id, { kind: openingKind(opening, person.type, openingSide), amount: roundMoney(Math.abs(opening)), date: person.registeredOn, note: "Açılış bakiyesi" });
           report.balances += 1;
         }

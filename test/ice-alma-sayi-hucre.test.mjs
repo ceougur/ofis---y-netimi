@@ -14,6 +14,16 @@ import { sanitizeCell } from "../server/lib/import-gate.mjs";
 import { matrixToFree } from "../server/lib/free-import.mjs";
 
 
+describe("31e N2: İngilizce yazım '1,234.56' iki çözümleyicide aynı (1234,56); Türkçe kurallar aynen (birim)", () => {
+  test("money.parseAmount = insight parseAmount (B10/B11)", () => {
+    const cases = [["1,234.56", 1234.56], ["1.234,56", 1234.56], ["1.500", 1500], ["12,125", 12.125], ["12.125", 12125], ["1,5", 1.5], ["1.234.567", 1234567], ["12.5", 12.5], ["-1,234.56", -1234.56]];
+    for (const [text, expected] of cases) {
+      assert.equal(moneyAmount(text), expected, `money.parseAmount(${text})`);
+      assert.equal(parseAmount(text), expected, `insight parseAmount(${text})`);
+    }
+  });
+});
+
 describe("31e sayı hücresi: dönüşüm ve ayrıştırma (birim)", () => {
   test("cellText: 12.125 → '12,125', 0.005 → '0,005', -12.5 → '-12,5', 333.3333333 → '333,3333333'; tam sayı ve dizge olduğu gibi (S1/S3/S4/S6)", () => {
     assert.deepEqual([12.125, 0.005, -12.5, 333.3333333, 1500, 5551234567, 10000000146, 45000, "12.125", "1.500", null].map(cellText), ["12,125", "0,005", "-12,5", "333,3333333", "1500", "5551234567", "10000000146", "45000", "12.125", "1.500", ""]);
