@@ -1,0 +1,290 @@
+TAP version 13
+# Subtest: E6: silinen kâğıt / fiş belgenin numarası kullanılmış sayılır; geri yüklenen belge kendi numarasıyla döner
+    # Subtest: S1 Müşteri Fişi: A FIS…001 → Sil → aynı cari ve içerikle B → FIS…002 (FIS…001 yeniden verilmez); A geri yüklenince kendi numarasıyla döner, iki belgede aynı numara yok
+    ok 1 - S1 Müşteri Fişi: A FIS…001 → Sil → aynı cari ve içerikle B → FIS…002 (FIS…001 yeniden verilmez); A geri yüklenince kendi numarasıyla döner, iki belgede aynı numara yok
+      ---
+      duration_ms: 144.048552
+      type: 'test'
+      ...
+    # Subtest: S2 kâğıt makbuz: e-SMM makbuzu Kâğıt Makbuz Olarak Bırak SMM…001 → Sil → yeni makbuz SMM…002; geri yüklenen SMM…001 tek
+    ok 2 - S2 kâğıt makbuz: e-SMM makbuzu Kâğıt Makbuz Olarak Bırak SMM…001 → Sil → yeni makbuz SMM…002; geri yüklenen SMM…001 tek
+      ---
+      duration_ms: 102.918189
+      type: 'test'
+      ...
+    # Subtest: S3 kâğıt kayıt (Kâğıt profil), iptal edilmiş belgeyi silme ve toplu sil: hiçbir silinen numara yeniden verilmez
+    ok 3 - S3 kâğıt kayıt (Kâğıt profil), iptal edilmiş belgeyi silme ve toplu sil: hiçbir silinen numara yeniden verilmez
+      ---
+      duration_ms: 127.720675
+      type: 'test'
+      ...
+    # Subtest: S4 numara–tarih sırası: silinen son fişin numarası kullanılmış kalır, tarihi sırayı bağlamaz (ileti seride duran son belgeyi anar); taslak ve numarasız bekleyeni silmek tabanı değiştirmez
+    ok 4 - S4 numara–tarih sırası: silinen son fişin numarası kullanılmış kalır, tarihi sırayı bağlamaz (ileti seride duran son belgeyi anar); taslak ve numarasız bekleyeni silmek tabanı değiştirmez
+      ---
+      duration_ms: 141.618372
+      type: 'test'
+      ...
+    1..4
+ok 1 - E6: silinen kâğıt / fiş belgenin numarası kullanılmış sayılır; geri yüklenen belge kendi numarasıyla döner
+  ---
+  duration_ms: 946.120902
+  type: 'suite'
+  ...
+# Subtest: E6: iç iade serisi (IAD) — müşterinin numara vermediği satıştan iade
+    # Subtest: S8 numarasız satıştan iade IAD…001 → Sil → sonraki iade IAD…002; geri yüklenen IAD…001 kendi numarasıyla, tek
+    ok 1 - S8 numarasız satıştan iade IAD…001 → Sil → sonraki iade IAD…002; geri yüklenen IAD…001 kendi numarasıyla, tek
+      ---
+      duration_ms: 83.795686
+      type: 'test'
+      ...
+    1..1
+ok 2 - E6: iç iade serisi (IAD) — müşterinin numara vermediği satıştan iade
+  ---
+  duration_ms: 402.493986
+  type: 'suite'
+  ...
+# Subtest: E6: iki oturum, 002 şirketi, eski veride arada verilmiş numara
+    # Subtest: S5 iki oturum aynı anda: biri belgeyi silerken öbürü başka belgeyi bırakır (iki sıra) → her numara tek belgede; bütün silinenler geri yüklenebilir
+    ok 1 - S5 iki oturum aynı anda: biri belgeyi silerken öbürü başka belgeyi bırakır (iki sıra) → her numara tek belgede; bütün silinenler geri yüklenebilir
+      ---
+      duration_ms: 566.226371
+      type: 'test'
+      ...
+    # Subtest: S6 002 şirketi kendi tabanını tutar: 002'de silinen FIS…001 002'de yeniden verilmez; 001'in sırası değişmez
+    ok 2 - S6 002 şirketi kendi tabanını tutar: 002'de silinen FIS…001 002'de yeniden verilmez; 001'in sırası değişmez
+      ---
+      duration_ms: 275.832988
+      type: 'test'
+      ...
+    # Subtest: S7 eski veride (2.4.3) numara arada başka belgeye verilmişse geri yükleme reddedilir; belge Silinenler'de kalır, numara tek belgede
+    ok 3 - S7 eski veride (2.4.3) numara arada başka belgeye verilmişse geri yükleme reddedilir; belge Silinenler'de kalır, numara tek belgede
+      ---
+      duration_ms: 420.600905
+      type: 'test'
+      ...
+    1..3
+ok 3 - E6: iki oturum, 002 şirketi, eski veride arada verilmiş numara
+  ---
+  duration_ms: 1579.057168
+  type: 'suite'
+  ...
+# Subtest: r31e N1 — silinen kâğıt / fiş belgenin tarihi sırayı bağlamaz; geri yükleme sırayı bozamaz (e-Belge kapalı: Müşteri Fişi serisi)
+    # Subtest: A1 yanlış (ileri) tarihli fiş silinir → doğru (daha eski) tarihli fiş kesilir, numara yeniden verilmez; canlı fişten eskisi yine 400; silinen geri yüklenirse sıra bozulur → 409
+    ok 1 - A1 yanlış (ileri) tarihli fiş silinir → doğru (daha eski) tarihli fiş kesilir, numara yeniden verilmez; canlı fişten eskisi yine 400; silinen geri yüklenirse sıra bozulur → 409
+      ---
+      duration_ms: 581.069979
+      type: 'test'
+      ...
+    # Subtest: A2 toplu silme: en geç tarihli silinen fiş seriyi o güne bağlamaz; kâğıt makbuz (SMM) serisinde de
+    ok 2 - A2 toplu silme: en geç tarihli silinen fiş seriyi o güne bağlamaz; kâğıt makbuz (SMM) serisinde de
+      ---
+      duration_ms: 489.195034
+      type: 'test'
+      ...
+    # Subtest: A3 Düzenle silinen komşunun tarihine bağlı değil; küçük numaralı belge daha yeni tarihliyse geri yükleme 409; sıra uyunca 200 kendi numarasıyla
+    ok 3 - A3 Düzenle silinen komşunun tarihine bağlı değil; küçük numaralı belge daha yeni tarihliyse geri yükleme 409; sıra uyunca 200 kendi numarasıyla
+      ---
+      duration_ms: 360.94448
+      type: 'test'
+      ...
+    # Subtest: A4 iptal edilmiş belge de sırada yer tutar: daha eski tarihli büyük numaralı belge iptal edilse de geri yükleme 409
+    ok 4 - A4 iptal edilmiş belge de sırada yer tutar: daha eski tarihli büyük numaralı belge iptal edilse de geri yükleme 409
+      ---
+      duration_ms: 403.286544
+      type: 'test'
+      ...
+    # Subtest: A5 sıra: dönem kilidi sıra-tarihten önce (period-locked); kilit açılınca sıra iletisi; numarası başkasında olan belgede önce invoice-number-taken
+    ok 5 - A5 sıra: dönem kilidi sıra-tarihten önce (period-locked); kilit açılınca sıra iletisi; numarası başkasında olan belgede önce invoice-number-taken
+      ---
+      duration_ms: 469.033585
+      type: 'test'
+      ...
+    1..5
+ok 4 - r31e N1 — silinen kâğıt / fiş belgenin tarihi sırayı bağlamaz; geri yükleme sırayı bozamaz (e-Belge kapalı: Müşteri Fişi serisi)
+  ---
+  duration_ms: 2305.392361
+  type: 'suite'
+  ...
+# Subtest: r31e N1 — e-Belge açık: taşınan numaranın tarihi taban kalır; Müşteri Fişi Olarak Bırak; v32 aynı kaydı üretir
+    # Subtest: B1 FIS…001 (bugün−2) bırakılıp e-Arşiv olarak gönderilir, FIS…002 (bugün) bırakılıp silinir: taban taşınan FIS…001'in tarihi (bugün−3 kâğıt kayıt 400); bugün−1 bırakılır; v32 taraması aynı kaydı üretir; silinen geri yüklenmez
+    ok 1 - B1 FIS…001 (bugün−2) bırakılıp e-Arşiv olarak gönderilir, FIS…002 (bugün) bırakılıp silinir: taban taşınan FIS…001'in tarihi (bugün−3 kâğıt kayıt 400); bugün−1 bırakılır; v32 taraması aynı kaydı üretir; silinen geri yüklenmez
+      ---
+      duration_ms: 228.544216
+      type: 'test'
+      ...
+    1..1
+ok 5 - r31e N1 — e-Belge açık: taşınan numaranın tarihi taban kalır; Müşteri Fişi Olarak Bırak; v32 aynı kaydı üretir
+  ---
+  duration_ms: 525.889701
+  type: 'suite'
+  ...
+# Subtest: r31e N1 — taban kaydının birleştirme kuralı (lib/number-floor.mjs)
+    # Subtest: C1 sıradan bağımsız: en büyük numara + en büyük silinmemiş numara; eski kayıt (kept yok) silinmişse tarih bağlamaz; kayıt yalnız yükselir
+    ok 1 - C1 sıradan bağımsız: en büyük numara + en büyük silinmemiş numara; eski kayıt (kept yok) silinmişse tarih bağlamaz; kayıt yalnız yükselir
+      ---
+      duration_ms: 0.841589
+      type: 'test'
+      ...
+    1..1
+ok 6 - r31e N1 — taban kaydının birleştirme kuralı (lib/number-floor.mjs)
+  ---
+  duration_ms: 1.334648
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır
+    # Subtest: T1 bağlı çek seçilen faturayı kapatır, en eski açık faturayı değil; bağ yalnız olayda; yevmiye B 101.01 / A 120
+    ok 1 - T1 bağlı çek seçilen faturayı kapatır, en eski açık faturayı değil; bağ yalnız olayda; yevmiye B 101.01 / A 120
+      ---
+      duration_ms: 174.305789
+      type: 'test'
+      ...
+    # Subtest: T2 kısmi çek + nakit aynı faturada (iki sıra); çek açığı aşınca fazlası en eski açık faturaya
+    ok 2 - T2 kısmi çek + nakit aynı faturada (iki sıra); çek açığı aşınca fazlası en eski açık faturaya
+      ---
+      duration_ms: 313.797311
+      type: 'test'
+      ...
+    # Subtest: T3 karşılıksız dönünce bağlı fatura yeniden açılır (fazlası da geri döner); geri alınca kapanır; Σ kapatan = ödenen
+    ok 3 - T3 karşılıksız dönünce bağlı fatura yeniden açılır (fazlası da geri döner); geri alınca kapanır; Σ kapatan = ödenen
+      ---
+      duration_ms: 175.629707
+      type: 'test'
+      ...
+    # Subtest: T3b faturayla alınan çek (faturanın kendi evrakı) karşılıksız dönünce de fatura açılır; taksitli faturada açık = kartın kalanı (değişmedi)
+    ok 4 - T3b faturayla alınan çek (faturanın kendi evrakı) karşılıksız dönünce de fatura açılır; taksitli faturada açık = kartın kalanı (değişmedi)
+      ---
+      duration_ms: 173.134165
+      type: 'test'
+      ...
+    # Subtest: T4 tahsil / geri al / Bankaya Tahsile Ver / ciro: fatura kapalı kalır; ciro edilmişken karşılıksız müşterinin faturasını açar; faturayla ciroda alış faturası da açılır
+    ok 5 - T4 tahsil / geri al / Bankaya Tahsile Ver / ciro: fatura kapalı kalır; ciro edilmişken karşılıksız müşterinin faturasını açar; faturayla ciroda alış faturası da açılır
+      ---
+      duration_ms: 313.717914
+      type: 'test'
+      ...
+    # Subtest: T5 fatura iptali: evrak portföyde kalır, bağ düşer, kapama en eski faturaya döner; iptal edilmiş faturaya bağ kurulmaz
+    ok 6 - T5 fatura iptali: evrak portföyde kalır, bağ düşer, kapama en eski faturaya döner; iptal edilmiş faturaya bağ kurulmaz
+      ---
+      duration_ms: 118.463756
+      type: 'test'
+      ...
+    # Subtest: T6 bağ kurulamayanlar: taksitli, başka cari, ters yön, iade, taslak, taksite sayılan, carisiz — hiçbir şey yazılmaz
+    ok 7 - T6 bağ kurulamayanlar: taksitli, başka cari, ters yön, iade, taslak, taksite sayılan, carisiz — hiçbir şey yazılmaz
+      ---
+      duration_ms: 193.905454
+      type: 'test'
+      ...
+    # Subtest: T7 verilen çek bağlı alış faturasını kapatır (en eskiyi değil); ödenince kapalı kalır; yevmiye B 320 / A 103
+    ok 8 - T7 verilen çek bağlı alış faturasını kapatır (en eskiyi değil); ödenince kapalı kalır; yevmiye B 320 / A 103
+      ---
+      duration_ms: 123.001334
+      type: 'test'
+      ...
+    # Subtest: T8 senet de bağlanır: B 121.01 / A 120
+    ok 9 - T8 senet de bağlanır: B 121.01 / A 120
+      ---
+      duration_ms: 99.432397
+      type: 'test'
+      ...
+    # Subtest: T9 bağ değiştirme / kaldırma; cari değişince bağ sessizce düşmez; işlem görmüş evrakta bağ değişmez
+    ok 10 - T9 bağ değiştirme / kaldırma; cari değişince bağ sessizce düşmez; işlem görmüş evrakta bağ değişmez
+      ---
+      duration_ms: 198.189852
+      type: 'test'
+      ...
+    # Subtest: T10 evrak silinince fatura açılır; Silinenler'den dönünce bağ korunur; fatura bu arada taksitlendirildiyse ya da iptal edildiyse bağsız döner
+    ok 11 - T10 evrak silinince fatura açılır; Silinenler'den dönünce bağ korunur; fatura bu arada taksitlendirildiyse ya da iptal edildiyse bağsız döner
+      ---
+      duration_ms: 269.311605
+      type: 'test'
+      ...
+    # Subtest: T11 bağlı evraklı fatura sonradan taksitlendirilemez ve carisi değiştirilemez (nedenli)
+    ok 12 - T11 bağlı evraklı fatura sonradan taksitlendirilemez ve carisi değiştirilemez (nedenli)
+      ---
+      duration_ms: 121.705361
+      type: 'test'
+      ...
+    # Subtest: T11b yalnız faturanın kendi formundan alınan çek varken Düzenle → taksitli izinli: kalan 200 TL karta, çek tek ve faturanın; Mutabakat Testi temiz
+    ok 13 - T11b yalnız faturanın kendi formundan alınan çek varken Düzenle → taksitli izinli: kalan 200 TL karta, çek tek ve faturanın; Mutabakat Testi temiz
+      ---
+      duration_ms: 85.995032
+      type: 'test'
+      ...
+    # Subtest: T14 Mutabakat Testi bozuk evrak bağını yakalar (başka carinin / taksitli / iptal faturası, taksite sayılan evrak)
+    ok 14 - T14 Mutabakat Testi bozuk evrak bağını yakalar (başka carinin / taksitli / iptal faturası, taksite sayılan evrak)
+      ---
+      duration_ms: 234.925161
+      type: 'test'
+      ...
+    # Subtest: T15 karşılıksızdan sonra bağsız tahsilat en eski açık faturayı kapatır (fatura kendi tarihiyle açılır); Mevcut Borç kartı arada açıldıysa kapsamı değişmez
+    ok 15 - T15 karşılıksızdan sonra bağsız tahsilat en eski açık faturayı kapatır (fatura kendi tarihiyle açılır); Mevcut Borç kartı arada açıldıysa kapsamı değişmez
+      ---
+      duration_ms: 447.329644
+      type: 'test'
+      ...
+    # Subtest: T16 faturayla kaydedilen evrakın bağı kaldırılamaz / değiştirilemez (409, hiçbir şey yazılmaz); aynı değer serbest
+    ok 16 - T16 faturayla kaydedilen evrakın bağı kaldırılamaz / değiştirilemez (409, hiçbir şey yazılmaz); aynı değer serbest
+      ---
+      duration_ms: 147.099702
+      type: 'test'
+      ...
+    # Subtest: T17 bağsız evrak karşılıksız dönünce kapattığı faturalar açılır (kısmi, geri al, sonraki ödeme en eskiye, ciro, iki karşılıksız, iade, taksitli, şüpheli, tahsildeki, Mevcut Borç kartı)
+    ok 17 - T17 bağsız evrak karşılıksız dönünce kapattığı faturalar açılır (kısmi, geri al, sonraki ödeme en eskiye, ciro, iki karşılıksız, iade, taksitli, şüpheli, tahsildeki, Mevcut Borç kartı)
+      ---
+      duration_ms: 1495.04882
+      type: 'test'
+      ...
+    1..17
+ok 7 - 2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır
+  ---
+  duration_ms: 5069.453519
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 UX18: 002 şirketinde aynı kural; yedek → çalış → geri yükle
+    # Subtest: T12 002'de bağlı çek; yedekten sonraki bağlı evrak geri yüklemeyle gider; sayılar yedekteki gibi
+    ok 1 - T12 002'de bağlı çek; yedekten sonraki bağlı evrak geri yüklemeyle gider; sayılar yedekteki gibi
+      ---
+      duration_ms: 875.233844
+      type: 'test'
+      ...
+    1..1
+ok 8 - 2.4.4 UX18: 002 şirketinde aynı kural; yedek → çalış → geri yükle
+  ---
+  duration_ms: 901.649667
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 UX18: karşılıksız çiftinin korumaları (kapama çekirdeği, birim)
+    # Subtest: T18 tutarı farklı ya da tarafı aynı çift çıkarılmaz; doğru çift çıkarılır
+    ok 1 - T18 tutarı farklı ya da tarafı aynı çift çıkarılmaz; doğru çift çıkarılır
+      ---
+      duration_ms: 1.112903
+      type: 'test'
+      ...
+    1..1
+ok 9 - 2.4.4 UX18: karşılıksız çiftinin korumaları (kapama çekirdeği, birim)
+  ---
+  duration_ms: 1.328906
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 UX18: v2.4.3 gerçek koduyla üretilmiş veri
+    # Subtest: T13 yeni kod eski veriyi aynı okur; eski veride yeni bağ çalışır; Mutabakat Testi temiz
+    ok 1 - T13 yeni kod eski veriyi aynı okur; eski veride yeni bağ çalışır; Mutabakat Testi temiz
+      ---
+      duration_ms: 272.105677
+      type: 'test'
+      ...
+    1..1
+ok 10 - 2.4.4 UX18: v2.4.3 gerçek koduyla üretilmiş veri
+  ---
+  duration_ms: 1163.669262
+  type: 'suite'
+  ...
+1..10
+# tests 35
+# suites 10
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14002.386849

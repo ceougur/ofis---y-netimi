@@ -10,6 +10,7 @@ import { DEFAULT_ADMIN_PASSWORD } from "./config.mjs";
 import { rowHash, rowIdentities } from "./dataset-identity.mjs";
 import { parseJson } from "./http.mjs";
 import { isFullDate } from "./insight/validators.mjs";
+import { mergeFloor } from "./number-floor.mjs";
 import { verifyPassword } from "./passwords.mjs";
 import { unitLabel } from "./units.mjs";
 
@@ -1349,7 +1350,7 @@ export function scanPaperFloors(store, { now = systemClock } = {}) {
     const seq = Number(match[3]);
     if (!(seq > 0)) return;
     const key = `${match[1]}${Number(match[2])}`;
-    if (!(best.get(key)?.seq >= seq)) best.set(key, { seq, number: match[0], issueDate: row.issueDate });
+    best.set(key, mergeFloor(best.get(key) || null, { seq, number: match[0], issueDate: row.issueDate }));
   };
   for (const row of store.all("SELECT series, number, paper_no AS paperNo, issue_date AS issueDate FROM invoices WHERE paper_no <> ''")) consider(row.paperNo, row);
   if (has("audit_events")) {
@@ -1371,13 +1372,21 @@ export function scanPaperFloors(store, { now = systemClock } = {}) {
       const seq = Number(raw?.seq);
       if (!raw || !(seq > 0) || !raw.number || !deletedSeries.has(raw.series)) continue;
       const key = `${raw.series}${Number(raw.year)}`;
-      if (!(best.get(key)?.seq >= seq)) best.set(key, { seq, number: raw.number, issueDate: raw.issue_date, deleted: true });
+      best.set(key, mergeFloor(best.get(key) || null, { seq, number: raw.number, issueDate: raw.issue_date, deleted: true }));
     }
   }
+  // r31e N1 (23.10.2026): kayıt lib/number-floor.mjs mergeFloor'la birleşir — en büyük numara (numara tabanı) + en büyük SİLİNMEMİŞ numara (kept; sıra-tarih
+  // tabanı silinen belgenin tarihini saymaz). Önceden en büyüğü Silinenler'deki belgeyse taşınan numaranın tarihi kayboluyordu. v32 yayımlanmış hiçbir
+  // sürümde yok (v2.4.3 şeması 30): yeni şema sürümü gerekmez; aday yapılarının yazdığı kept'siz kayıt okunur (keptOf: silinmişse tarih bağlamaz).
   const floors = parseJson(store.get("SELECT value FROM settings WHERE key = ?", FLOOR_KEY)?.value, {}) || {};
-  const raised = [...best].filter(([key, entry]) => !(Number(floors[key]?.seq) >= entry.seq)).map(([key]) => key);
+  const raised = [];
+  for (const [key, entry] of best) {
+    let merged = floors[key] || null;
+    for (const part of [entry, ...(entry.deleted && entry.kept ? [entry.kept] : [])]) merged = mergeFloor(merged, { ...part, deleted: part === entry && entry.deleted === true });
+    if (JSON.stringify(merged) !== JSON.stringify(floors[key] ?? null)) raised.push(key);
+    floors[key] = merged;
+  }
   if (!raised.length) return { raised };
-  for (const key of raised) floors[key] = best.get(key);
   store.run("INSERT INTO settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, NULL) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at", FLOOR_KEY, JSON.stringify(floors), now().toISOString());
   return { raised };
 }
