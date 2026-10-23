@@ -192,11 +192,14 @@ function classifyColumns(rows, columns, analyses, now, forced = null) {
   const amounts = moneyLike.filter(column => !isNotAmountHeader(column) && !due.some(item => item.column === column));
   const fallback = single ? debt || (amounts.length === 1 ? amounts[0] : null) : null;
   for (const entry of due) {
-    // 31e tur 8 (K4): tek vadeli tabloda kalemin tutarı satırın borcudur (Kalan doluysa Kalan, boşsa ana tutar; belirlenemezse yok) — Tablodaki Kişiler, Vade
-    // Takip ve Nakit Akışı aynı. Önceden kendi tutar kolonu ("Aidat") Kalan'ın önüne geçiyordu (İpek Ay: Kalan 400, kalem 1.000). Ödeme sözü kalemi söz tutarıdır.
-    entry.amountColumn = pairFor(entry) || (entry.installment === null ? (single && debt && !entry.promise ? debt : own || fallback) : null);
+    entry.amountColumn = pairFor(entry) || (entry.installment === null ? own || fallback : null);
     // Kalemin tutarı borç kolonuysa satır borcundan okunur (Kalan boş satırda ana tutar — Tablodaki Kişiler ile aynı).
     entry.amountFromDebt = Boolean(debt && entry.amountColumn === debt);
+    // 31e tur 9 Z1 (baş mimar kararı: takvim kalemi vadesi gelen tutardır, kalan borçtan büyük olamaz): tek vadeli tabloda kalemin kendi dönem / taksit tutarı
+    // ("Taksit Tutarı", "Aidat", "Kira", "Aylık Ücret") varsa kalem = min(kalem tutarı, satırın borcu); kendi tutarı boşsa satırın borcu; satırın borcu
+    // belirlenemiyorsa (iki aday, notlu) kalem tutarsız. Aidat 1.000 + Kalan 400 → 400 (K4); Taksit 1.000 + Kalan 9.000 → 1.000 (975217f 9.000 gösteriyordu).
+    // Ödeme sözü kalemi söz tutarıdır (sınırlanmaz).
+    entry.amountCapped = Boolean(single && debt && !entry.promise && entry.amountColumn && !entry.amountFromDebt);
   }
   for (const entry of monthly) entry.amountColumn = own;
   for (const entry of recurring) {
@@ -405,7 +408,8 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
       for (const entry of due) {
         const read = readDue(cell(row, entry.column), now);
         if (!read || read.settled) continue;
-        const ownAmount = entry.amountFromDebt ? state.debt : entry.amountColumn ? parseAmount(cell(row, entry.amountColumn)) : null;
+        let ownAmount = entry.amountFromDebt ? state.debt : entry.amountColumn ? parseAmount(cell(row, entry.amountColumn)) : null;
+        if (entry.amountCapped) ownAmount = state.debt === null ? null : ownAmount && ownAmount > 0 ? Math.min(ownAmount, state.debt) : state.debt;
         const amount = ownAmount && ownAmount > 0 ? ownAmount : amountInText(read.rest);
         candidates.push({ ...base, column: entry.column, label: entry.label, promise: entry.promise, kind: read.kind, time: read.time, amount: amount || null, fromDebt: entry.amountFromDebt });
       }
