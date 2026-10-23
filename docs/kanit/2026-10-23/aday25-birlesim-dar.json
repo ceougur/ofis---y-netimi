@@ -1,0 +1,32 @@
+{
+  "ad": "aday25-birlesim-dar",
+  "komut": "node --test test/kayit-bag-31e.test.mjs test/banka-210-post-statik.test.mjs",
+  "commit": "d8aa7f69ef80f6741148954ce3dd8e8c53d9b432",
+  "dal": "aday25",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T16:37:27.780Z",
+  "sure_sn": 17.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 40,
+    "gecen": 40,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/aday25-birlesim-dar.log",
+  "klasor": "/home/user/wt/aday25",
+  "ham_cikti_sha256": "f440a8339b3b129a20614cbc0c025e4c5893470a7282976844faf234a1facf91",
+  "ham_cikti_bayt": 16894
+}
