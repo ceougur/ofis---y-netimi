@@ -1,0 +1,50 @@
+[
+ {
+  "mutant": "N1-k45-iz-kapanmaz",
+  "exit": 1,
+  "tests": 22,
+  "pass": 21,
+  "fail": 1,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "R6"
+  ],
+  "reasons": [
+   "EDM'nin kesin yanıtı iptal izini kapattı"
+  ]
+ },
+ {
+  "mutant": "N2a-a3-hep-gonderim-iletisi",
+  "exit": 1,
+  "tests": 22,
+  "pass": 21,
+  "fail": 1,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "R5"
+  ],
+  "reasons": [
+   "The input did not match the regular expression /başka bir sorguyla güncellendi/. Input:"
+  ]
+ },
+ {
+  "mutant": "N2b-a3-hep-sorgu-iletisi",
+  "exit": 1,
+  "tests": 22,
+  "pass": 21,
+  "fail": 1,
+  "cancelled": 0,
+  "skipped": 0,
+  "killed": true,
+  "failed": [
+   "R1"
+  ],
+  "reasons": [
+   "A3: yeni gönderim izi → ileti gönderimi söyler"
+  ]
+ }
+]

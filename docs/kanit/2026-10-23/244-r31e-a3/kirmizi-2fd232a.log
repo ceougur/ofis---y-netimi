@@ -1,0 +1,87 @@
+▶ E1: gönderim EDM'ye ulaştı, yanıt gelmeden program kesildi (SIGKILL) → yeniden açılışta Sonucu Belirsiz; Gönder önce durumu sorar
+  ✔ K2 e-SMM (Kes, Sonra Gönder → Gönder): Sonucu Belirsiz; Sil / Düzenle / İptal Et 409; Gönder makbuzu ikinci kez göndermez; iletim günü gönderim izinden (1414.642925ms)
+  ✔ K3 e-Arşiv (Kaydet ve Gönder — numara kayıtta): Sonucu Belirsiz; Durum Sorgula gönderildi der; sonra Sil 409 (gönderildi) (1374.865835ms)
+  ✔ K4 e-Fatura (Temel Fatura, Kes, Sonra Gönder → Gönder): Sonucu Belirsiz; Düzenle 409; Gönder ikinci kez göndermez (1052.108906ms)
+  ✔ K5 (B2b) istek EDM'ye ULAŞMADAN kesinti: Sonucu Belirsiz → Durum Sorgula 'bulunamadı' izi temizler (Gönderilmedi, Sil açık) → Gönder aynı numarayla (1167.865126ms)
+  ✔ K1 (B1) giriş yanıtı beklerken kesinti: belge numarasız Gönderilecekler'de, iz yok (yanlış Sonucu Belirsiz yok); EDM'ye makbuz gitmedi (1007.658571ms)
+  ✔ K6 (B6) Tümünü Gönder ortasında kesinti: 1. gitti, 2. yolda, 3. bekliyor → yeniden Tümünü Gönder 2.'yi tanır (ikinci kez göndermez), 3.'ye sıradaki numara (1138.705068ms)
+✔ E1: gönderim EDM'ye ulaştı, yanıt gelmeden program kesildi (SIGKILL) → yeniden açılışta Sonucu Belirsiz; Gönder önce durumu sorar (7157.408288ms)
+▶ E1: iz yalnız belge entegratörde oluşabilecekse kalır (B4, B5)
+  ✔ K7 (B4) hiç gitmeyen istek (oturum iki kez reddedildi → integrator-session): iz geri alınır — Gönderilmedi, Sil açık, Sonucu Belirsiz değil (405.420205ms)
+  ✔ K8 (B4) bağlantı hiç kurulamadı (numara bu istekte verildi): numara geri bırakılır, iz de — belge numarasız Gönderilecekler'de, entegratör izi yok (394.273547ms)
+  ✔ K9 (B5) gönderim sürerken Durum Sorgula 409 'gönderiliyor' (izi silmez); gönderim bitince iz sonuca döner (405.491608ms)
+✔ E1: iz yalnız belge entegratörde oluşabilecekse kalır (B4, B5) (1205.991255ms)
+▶ E4: iptal EDM'de tamamlandı, yanıt gelmeden program kesildi
+  ✔ K10 süre dolduktan sonra (10 gün): iptal izi olan makbuzda İptal Et açık, önce EDM'ye sorar → EDM'de iptal → programda iptal; izsiz makbuzda kural aynen (süre doldu, EDM'ye sorulmaz) (1094.642472ms)
+  ✔ K11 süre içinde (aynı gün): İptal Et EDM'de iptal olduğunu görür, ikinci iptal göndermez, programda iptal eder (1149.113363ms)
+✔ E4: iptal EDM'de tamamlandı, yanıt gelmeden program kesildi (2244.118756ms)
+▶ E1: EDM 11048 (daha önce gönderildi) — ileti bu belgeyi gösteriyorsa önce durum sorulur
+  ✔ K12 (B8, B9, B10) 002 şirketi: numaralı e-Arşiv → yedek → gönder → yedeği geri yükle (belge yine 'Gönderilmedi') → Gönder: 11048 → durum → gönderilmiş sayılır; iletim günü bilinmiyor → kesim günü (834.656233ms)
+  ✔ K13 (B8) numara başka belgenin (EDM'de bu ETTN yok — ortak test hesabı / yedekten sonra başka belge): durum sorulur, bulunamadı → Hata + İptal Et iletisi (bugünkü yol) (399.872407ms)
+  ✔ K14 (B8) EDM'nin durum yanıtı BAŞKA bir ETTN bildiriyorsa (numarayla eşleşmiş başka belge) gönderilmiş sayılmaz → Hata (381.002728ms)
+✔ E1: EDM 11048 (daha önce gönderildi) — ileti bu belgeyi gösteriyorsa önce durum sorulur (1615.962223ms)
+▶ B11 eski sürüm verisi: v2.4.3'ün GERÇEK koduyla kesinti (izsiz belge), güncel kodla açılış
+  ✔ K15 v2.4.3'te e-Arşiv gönderimi EDM'ye ulaştı, program kesildi → 2.4.4'te belge izsiz (Gönderilmedi; bilinen sınır: Sil açık) → Gönder: 11048 → durum → gönderilmiş sayılır, Hata değil (1325.608214ms)
+✔ B11 eski sürüm verisi: v2.4.3'ün GERÇEK koduyla kesinti (izsiz belge), güncel kodla açılış (1325.877252ms)
+▶ U birim: 11048 iletisinin gösterdiği belge ve iletim günü
+  ✔ U1 iletideki numara ve ETTN'nin hepsi belgeninkiyse (büyük/küçük harf farkı önemsiz) bu belge; biri farklıysa ya da ikisi de yoksa değil (0.503465ms)
+  ✔ U2 iletim günü: gönderim izi yalnız ardından sonuç kaydı gelmediyse girişimdir (kesinti); sonuç gelince sonucun kuralı (0.352018ms)
+✔ U birim: 11048 iletisinin gösterdiği belge ve iletim günü (0.999461ms)
+▶ 31e: Durum Sorgula ↔ Gönder yarışı, 11048 ETTN doğrulaması, iptal izi kesin ret
+  ✔ R1 (Y1) Durum Sorgula'nın 'bulunamadı' yanıtı yoldayken başka oturum Gönder'e basar: geç yanıt izi SİLMEZ (409 değişti), kesinti penceresinde belge Sonucu Belirsiz kalır (465.103821ms)
+  ✔ R3 (Y4) e-SMM: 11048 + durum yanıtında ETTN YOK → belge 'gönderildi' sayılmaz; Sonucu Belirsiz (Durum Sorgula önerilir), Hata / İptal Et yönlendirmesi de değil (372.833957ms)
+  ✔ R3 (Y4) e-Arşiv: 11048 + durum yanıtında ETTN YOK → belge 'gönderildi' sayılmaz; Sonucu Belirsiz (Durum Sorgula önerilir), Hata / İptal Et yönlendirmesi de değil (357.56182ms)
+  ✔ R4 (Y6, Y8) iptal EDM'de KESİN reddedildi → iptal izi kapanır (8 gün sonra 'süre doldu', EDM'ye sorulmaz); sonraki iptal denemesi koparsa iz yeniden açılır (süre dolunca EDM'ye sorar) (542.188597ms)
+✔ 31e: Durum Sorgula ↔ Gönder yarışı, 11048 ETTN doğrulaması, iptal izi kesin ret (1738.182041ms)
+▶ 31e kontrol turu 2: eşzamanlı Durum Sorgula iletisi, iptal izi kesin yanıtla kapanır
+  ✖ R5 (A3) iki oturum aynı belgede aynı anda Durum Sorgula: geç kalan 409 alır, ileti 'başka bir sorguyla güncellendi' der ('yeniden gönderim' değil); veri doğru (431.079474ms)
+  ✖ R6 (K45) e-Arşiv iptal isteği koptu (iz açık) → süre dolunca İptal Et EDM'ye BİR KEZ sorar, 'iptal edilmemiş' → süre doldu + iz kapanır; sonraki İptal Et sormaz, kartta neden yazar (487.874092ms)
+✖ 31e kontrol turu 2: eşzamanlı Durum Sorgula iletisi, iptal izi kesin yanıtla kapanır (919.598068ms)
+ℹ tests 23
+ℹ suites 8
+ℹ pass 21
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16637.707248
+
+✖ failing tests:
+
+test at ../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/a3-eski-2fd232a/test/ebelge-244-gonderim-izi.test.mjs:817:3
+✖ R5 (A3) iki oturum aynı belgede aynı anda Durum Sorgula: geç kalan 409 alır, ileti 'başka bir sorguyla güncellendi' der ('yeniden gönderim' değil); veri doğru (431.079474ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /başka bir sorguyla güncellendi/. Input:
+  
+  "Durum sorgulanırken belgenin e-Belge durumu başka bir oturumda değişti (ör. yeniden gönderim başladı); sorgunun sonucu yazılmadı. Birkaç saniye sonra kartı yenileyin, gerekirse yeniden Durum Sorgula'ya basın."
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/a3-eski-2fd232a/test/ebelge-244-gonderim-izi.test.mjs:834:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: "Durum sorgulanırken belgenin e-Belge durumu başka bir oturumda değişti (ör. yeniden gönderim başladı); sorgunun sonucu yazılmadı. Birkaç saniye sonra kartı yenileyin, gerekirse yeniden Durum Sorgula'ya basın.",
+    expected: /başka bir sorguyla güncellendi/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/a3-eski-2fd232a/test/ebelge-244-gonderim-izi.test.mjs:842:3
+✖ R6 (K45) e-Arşiv iptal isteği koptu (iz açık) → süre dolunca İptal Et EDM'ye BİR KEZ sorar, 'iptal edilmemiş' → süre doldu + iz kapanır; sonraki İptal Et sormaz, kartta neden yazar (487.874092ms)
+  AssertionError [ERR_ASSERTION]: EDM'nin kesin yanıtı iptal izini kapattı
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/a3-eski-2fd232a/test/ebelge-244-gonderim-izi.test.mjs:863:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
