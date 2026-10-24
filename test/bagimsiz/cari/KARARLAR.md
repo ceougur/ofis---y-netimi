@@ -411,7 +411,8 @@ Bkz. `docs/kanit/2026-10-22/244-kahin-cari/` ve teslim raporu. Yeniden üretim: 
 
 ### C0 2.4.5 kararıyla GEÇERSİZ /1 /2 senaryoları ve denetimleri (silinmedi)
 Kural (`model.py gecersiz_245`): `/1` ya da `/2` dilindeki senaryo bir **kayıt tahsilatı POST** (`kayit_tahsilat`) ya da **Tablodan Aktar** (`aktar`) adımı içeriyorsa 2.4.5 kararıyla
-geçersizdir: varsayılan kipte koşulmaz, sayısı ve adları "ATLANAN" satırında yazılır; `--legacy` kipinde (iki anahtar AÇIK sunucu + 2.4.4 kural seti) YALNIZ bunlar koşar.
+geçersizdir: varsayılan kipte koşulmaz, sayısı ve adları "ATLANAN" satırında yazılır. `--legacy` kipi (K4.1, 24.10.2026): BÜTÜN `/1 /2` senaryoları (geçersizler dahil) + rastgele
+UX18, ÜÇ anahtar AÇIK (`legacyCasePayments`, `legacyTableTransfer`, `legacyTableDues`) sunucuda, 2.4.4 kural setiyle; `/3` atlanır.
 
 | Senaryo | Neden geçersiz (2.4.5 kararı) | `--legacy` |
 |---|---|---|
@@ -420,14 +421,16 @@ geçersizdir: varsayılan kipte koşulmaz, sayısı ve adları "ATLANAN" satır�
 | b3-u2-tablo-borcu | kayıt tahsilatı POST (madde 1; KULLANICI (1)) — B3 borç denetimleri `b3b…b3y`'de sürer | koşar |
 | b3f-kayit-anahtari, b3g-tablo-bag-surekliligi, b3h-dosya-no-ve-devam, b3i-devam-ayni-icerik, b3j-ayni-ad-takas, b3m-dosya-no-degisimi, b3p-ayni-ad-telefon | bağ sürekliliği (B3e–B3h) kayda bağlı **yeni** kayıt tahsilatıyla ölçülüyordu; 2.4.5'te yeni kayıt tahsilatı girilemez (eski veri DONDURULUR, göç yok — Kapsam dışı) | koşar |
 
-Geçersiz DENETİMLER (senaryo koşar; `/2` `kontrol {raporlar: true}` — b3b, b3c, b3k, b3n, b3o, b3q, b3r, b3s, b3t, b3u, b3v, b3w, b3x, b3y):
-- `kalem:<no>`, `kalemVar:<no>`, `kalemSoz:<no>` (Tahsilat Takvimi'nde tablo kalemi — madde 4) ve `takvim:cokSekmeNotu` 2.4.5'te YAZILMAZ; `k4:takvim` = **0** [KULLANICI madde 4].
-- `acilis:<no>` ("önce cari açın" Açılış Bakiyesi = takvim kaleminin `debt`'i) → ÇATAL `[0, "boş"]` [YAYGIN — madde 3 ön dolum BOŞ; kara kutu vekili, asıl denetim ekranda].
+Geçersiz DENETİMLER [BAŞ MİMAR K4.1 — /2 B4, B5b ve takvim denetimleri KS4 / madde 4 kararıyla bilerek ayrışır; senaryo koşar, denetim varsayılan kipte YAZILMAZ, `--legacy`'de
+eski kuralla koşar; koşucu "GEÇERSİZ DENETİM" satırında senaryo başına sayısını yazar (2.4.4 kural setinin yazıp 2.4.5'in yazmadığı anahtarlar)]:
+- `/2` `kontrol {raporlar: true}` (b3b, b3c, b3k, b3n, b3o, b3q, b3r, b3s, b3t, b3u, b3v, b3w, b3x, b3y): `kalem:<no>`, `kalemVar:<no>`, `kalemSoz:<no>`, `acilis:<no>` ("önce cari açın"
+  Açılış Bakiyesi = takvim kaleminin `debt`'i), `k4:takvim`, `takvim:cokSekmeNotu` (takvim; madde 3/4).
+- Bütün senaryolar: B4 (MM6) `nakit:kasaGiris/Cikis` (Tablodaki Nakit Akışı `cashIn/cashOut`) ve B5b (K5) `yetkisiz:<ad>:kasa`, `yetkisiz:<ad>:not`.
 - Yeni (her `raporlar` kontrolünde): `takvim:tabloTutarli`, `takvim:kalemTutar:<no>`, `vadeTakip:tablo`, `projeksiyon:tablo`, `projeksiyon:tabloSecenek` = 0 [KULLANICI madde 4].
 - DEĞİŞMEYEN: `k4:kisiler`, `k4:vade`, `k4:akis` (Tablodaki Kişiler / Vadeler / Nakit Akışı tablo raporlarıdır — madde 5 bu sürümde YALNIZ etiketler), `rapor:*`.
-- Bütün senaryolar: `nakit:kasaGiris/Cikis` (Tablodaki Nakit Akışı Kasa sütunu) = **"yok"** [BAŞ MİMAR KS4: madde 5 önerisi uygulanır, Kasa sütunları KALKAR]; Kasa raporu
-  (`kasaRapor:*`, MM6 kaynakları) aynen denetlenir. K5 `yetkisiz:<ad>:not` = **false** [KS4: gösterilecek Kasa sütunu yok → "Kasa yetkisi" notu da kalkar]; `yetkisiz:<ad>:kasa`
-  "gizli" kalır (K5). `--legacy` (2.4.4 kuralları) eski MM6 / K5 denetimlerini aynen koşar.
+- Yerlerine 2.4.5 denetimleri: madde 4 `takvim:tabloTutarli`, `takvim:kalemTutar:<no>`, `vadeTakip:tablo`, `projeksiyon:tablo/tabloSecenek` = 0 [KULLANICI]; KS4 [BAŞ MİMAR]
+  `nakit:kasaSutunu` = **"yok"** (Kasa sütunları KALKAR; mutant 107) ve Kasa yetkisi kaldırılmış kullanıcıda `yetkisiz:<ad>:kasaNotu` = **false** (not da kalkar; mutant 108).
+  Kasa raporu (`kasaRapor:*`, MM6 kaynakları) aynen denetlenir.
 - `BILINEN.json`: b3y'nin dört kaydı (`k1:acilis:2026/1012`, `k1:acilis:2026/1013`, `k1:kalem:2026/1013`, `k1:k4:takvim`) `"kural": "2.4.4"` — yalnız `--legacy`'de uygulanır.
 - Mutasyon kümesi: geçersiz senaryolar 2.4.4 kipinde, öbür `/1 /2` senaryoları İKİ kipte, `/3` 2.4.5 kipinde değerlendirilir. 2.4.5'te konusu kalkan kuralların mutantları
   (1–5, 22, 38–50, 55, 56) yalnız 2.4.4 değerlendirmesinde yakalanır (koşucu "[2.4.4]" diye yazar).
@@ -440,8 +443,9 @@ Geçersiz DENETİMLER (senaryo koşar; `/2` `kontrol {raporlar: true}` — b3b, 
   ret, http ÇATAL `[404, 405, 410]` ("405/404 kalabilir").
 - **C1.3** [KULLANICI "silme/geri yükleme açık"] `DELETE /api/workspace/payments/:id` AÇIK: Kasa ve Tablodaki Kişiler tahsilatı düşer; Silinenler'den geri yükleme AÇIK: geri gelir.
 - **C1.4** [BAŞ MİMAR madde 1 "eski satırlar Kasa'da ve defterde (A 602) aynen"] `/3`'te kayıt tahsilatı (nakit) **B 100 / A 602**; mizan denetlenir (`/1 /2`'de denetlenmiyordu).
-- **C1.5** Anahtar AÇIKKEN (senaryo `anahtar: {legacyCasePayments: true}` ya da `--legacy`) 2.4.4 davranışı (B1.8, N6). Koşucu `startTestServer`'a `legacyCasePayments` /
-  `legacyTableTransfer`'ı HER ZAMAN açıkça verir (false dahil) — yardımcının varsayılanı ne olursa olsun kapalı kapı sınanır (kodlayıcıya not: seçenek config'e iletilmeli).
+- **C1.5** Anahtar AÇIKKEN (senaryo `anahtar: {legacyCasePayments: true}` ya da `--legacy`) 2.4.4 davranışı (B1.8, N6). Koşucu `startTestServer`'a `legacyCasePayments`,
+  `legacyTableTransfer` ve `legacyTableDues`'u (K4.1) HER ZAMAN açıkça verir, false dahil — [BAŞ MİMAR K1.2] test yardımcısı seçenek verilmezse eski testler için üçünü AÇAR;
+  ürün varsayılanı KAPALI.
 - Senaryo `c1-kayit-tahsilat-kapisi`; mutantlar 91 (kapı yok), 92 (silme kapalı), 93 (geri yükleme Kasa'ya dönmez), 105 (düzeltme açık).
 
 ### C2 Tablodan Aktar kapısı (madde 2)
@@ -483,6 +487,13 @@ Geçersiz DENETİMLER (senaryo koşar; `/2` `kontrol {raporlar: true}` — b3b, 
   bugün+7 kalem VAR, bugün+8 YOK — c6 b6 / b7; rastgele üretici sınır gününü de üretir). Yalnız `accounts.view` yetkisi olana (yetkisi kaldırılmış kullanıcıda 0; kurulum denetimi: o kullanıcıya Cari listesi 403 olmalı). "Ödendi Say" YOK
   (`settle {id: "account|…"}` ret, kalem durur). Vade Takip (Anlık Durum) aynı kalemleri `{amount, date, direction}` gösterir (bugün+6'ya kadar denetlenir). Nakit Akış
   Projeksiyonu cari vadesini KATMAZ (satır 0; BİLİNEN SINIR 2.5.x). Silinen kayıt kalem değildir; Kalan 0 / tarihsiz kayıt kalem değildir.
+- **K6.5** [BAŞ MİMAR, 24.10.2026, cari-vade soruları] (a) "Carinin Mevcut Borcu" kartının kapsadığı borçta `remaining` kapsanan kısmı İÇERİR (defter kalanı, faturanın `open`'ı gibi);
+  takvim / zil / Vade Takip `amount` = Kalan − kartın açık kapsamı (kapsanan borç kartın taksitleriyle BİR kez; v2.0.23 kuralı). Kâhin: kartların hepsi mevcut borç kartı, carinin
+  tek etkin elle kaydı / açılışı (borç yönlü) ve faturasız caride; açık kapsam = kart tutarı − kartın ödenen kısmı; [YAYGIN — PLAN §4.3/2 1b] kartın ödemesi defter Kalan'ını da
+  düşürür (Kalan etiketi o durumda YAYGIN; kalem tutarı kart ödemesinden bağımsız — BAŞ MİMAR). Öbür kartlı durumlar tanımsız. Senaryo `c6c-mevcut-borc-karti`; mutantlar 112, 113.
+  (b) Kapanmış dönemdeki (kayıt tarihi ≤ `lockedUntil`) kaydın vade alanları kilitli — Düzenle ret, alanlar aynı; dönemden sonraki kayıt düzenlenir (c6b ed1 / ed2; mutant 111).
+  (c) Beklenen Ödeme Tarihi Vade Tarihi'nden ÖNCE olabilir — 400 DEĞİL (c6b v9; mutant 109). (d) Açılış satırı yokken `openingDueDate` / `openingExpectedDate` → 400
+  `code: "opening-missing"`, cari açılmaz (c6b cq; mutant 110).
 - **K6.4** [BAŞ MİMAR] Düzenle verilmeyen alanı korur (kısmi PUT); Silinenler'den geri yükleme ve yedekten geri yükleme Vade / Beklenen Ödeme Tarihi'ni TAŞIR; vade değişikliği
   yevmiyeyi değiştirmez (`kontrol {mizanKarsilastir: "<önceki kontrol>"}` → `mizanEsit` true). Göç (eski satırlar boş) kara kutudan DENENMEDİ (v2.4.4 verisi gerekir — C12).
 - Senaryolar `c6-cari-vade-fifo` (elle elle hesaplanan beklenenler: k1 Kalan b1 300 / F1 800, k2 b1 0 / F1 0 / b2 300, k3 Açılış 400 / b1 500 / F1 300, k6 çekle b2 100, k7 karşılıksızla 300,
@@ -493,10 +504,11 @@ Geçersiz DENETİMLER (senaryo koşar; `/2` `kontrol {raporlar: true}` — b3b, 
 `borc {…, vade?, beklenen?}` · `odeme {cari, tutar, tarih, fatura?}` · `tahsilat {…, vade?}` (kaydedilmez) · `cari_ac {…, acilisYon: "alacak", acilisVade?, acilisBeklenen?}` ·
 `hareket_sil {hareket}` · `hareket_geri_yukle {hareket}` · `hareket_duzenle {hareket, tutar?, tarih?, vade?, beklenen?}` (kısmi) · `cari_kalem_odendi {hareket}` ·
 `kayit_tahsilat_duzenle {odeme, tutar}` · `kayit_tahsilat_put {kayit, tutar}` · `kayit_tahsilat_sil {odeme}` · `kayit_tahsilat_geri_yukle {odeme}` · `yedek_al {ad}` ·
-`yedek_geri_yukle {yedek}` · `kullanici_ac {…, kaldir: ["accounts.view"]}` · `kontrol {uyari: true, mizanKarsilastir}`. Hareket adı: adım id'si; Açılış `acilis:<cari>`.
+`yedek_geri_yukle {yedek}` · `donem_kilitle {tarih}` (boş = aç) · `kullanici_ac {…, kaldir: ["accounts.view"]}` · `kontrol {uyari: true, mizanKarsilastir}`; `anahtar` ve
+`sunucu_yeniden.anahtar` alanı `legacyTableDues`'u da alır. Hareket adı: adım id'si; Açılış `acilis:<cari>`.
 Yeni çıktı anahtarları: `adim:<id>:{kod, ileti, alan}`, `<k>:hareket:<ad>:{var, kalan, vade, beklenen}`, `<k>:takvim:{hareket:<ad>, cariKalemSayisi, fatura:<ad>, cek:<ad>,
 tabloTutarli, kalemTutar:<no>, deadline:<no>}`, `<k>:vadeTakip:{hareket:<ad>, tablo, deadline:<no>}`, `<k>:projeksiyon:{cari, tablo, tabloSecenek}`,
-`<k>:yetkisizTakvim:<kullanıcı>:cariKalem`, `<k>:mizanEsit`, `<k>:mizan:602`.
+`<k>:yetkisizTakvim:<kullanıcı>:cariKalem`, `<k>:mizanEsit`, `<k>:mizan:602`, `<k>:nakit:kasaSutunu`, `<k>:yetkisiz:<ad>:kasaNotu`.
 
 ### C8 Nasıl bozulur? (2.4.5 — önce yazıldı; senaryo karşılıkları)
 | # | Bozulma | Senaryo |
@@ -513,7 +525,7 @@ tabloTutarli, kalemTutar:<no>, deadline:<no>}`, `<k>:vadeTakip:{hareket:<ad>, ta
 | Z10 | Rastgele sıra (ders 17): fatura + elle kayıt + tahsilat + silme / geri yükleme + düzenleme karışık | rastgele-s1-<t> |
 
 ### C10 Mutasyonlar (2.4.5)
-73–108 (`model.py --mutasyonlar`; 106–108 KS4/KS5'ten; 79 yok — karşılıksızın kapatması eski mutant 7'de, artık elle kayda da uygulanır). Her biri en az bir senaryoda kâhin çıktısını değiştirir
+73–113 (`model.py --mutasyonlar`; 106–108 KS4/KS5'ten, 109–113 K6.5'ten; 79 yok — karşılıksızın kapatması eski mutant 7'de, artık elle kayda da uygulanır). Her biri en az bir senaryoda kâhin çıktısını değiştirir
 (model tek başına doğrulandı: yakalanmayan 0). Koşucu mutantları tek Python sürecinde tarar (`model.py - --mutasyon-tara <liste>`; her mutantta ilk 3 yakalayan) —
 eski "her mutant × her dosya ayrı süreç" yolu ~20 dk sürüyordu, yeni yol ~10 sn.
 

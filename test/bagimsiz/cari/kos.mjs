@@ -4,7 +4,8 @@
 // table-transfer-closed; eski aktarımın Geri Al'ı açık), uyarı kapısı (madde 4: /dues, Anlık Durum Vade Takip, Nakit Akış Projeksiyonu'nda tablo tutar kalemi yok;
 // tutarsız tablo tarihleri `deadlines` KALIR), cari borç vadesi (madde 6: dueDate / expectedDate, S1 FIFO `remaining`, `account|<entryId>` kalemleri). Sunucu anahtarları
 // startTestServer seçenekleri `legacyCasePayments` / `legacyTableTransfer` ile verilir (varsayılan KAPALI; senaryonun `anahtar`ı ve `sunucu_yeniden` adımı açar).
-//   --legacy: yalnız "2.4.5 kararıyla geçersiz" /1 /2 senaryoları (kayıt tahsilatı POST / Tablodan Aktar içeren), anahtarlar AÇIK sunucuda, 2.4.4 kurallarıyla.
+//   --legacy: BÜTÜN /1 /2 senaryoları (2.4.5 kararıyla geçersiz olanlar dahil) + rastgele UX18, üç anahtar AÇIK (legacyCasePayments, legacyTableTransfer,
+//   legacyTableDues — K1, K4.1) sunucuda, 2.4.4 kurallarıyla. Varsayılan kipte üçü de AÇIKÇA false verilir (K1.2: test yardımcısı seçenek verilmezse açar).
 // /2 (23.10.2026): B3 Tablodaki Kişiler borcu (sekme türü "serbest": başlıklar ve hücre metinleri senaryodan aynen), B4 Nakit Akışı / Kasa raporu Kasa
 // giriş-çıkışı (GET /api/workspace/reports/nakit-akis → report.totals.cashIn/cashOut; GET /api/workspace/cash?method=cash → totals.in/out), B5 Nihai
 // Tüketici (POST /api/workspace/invoices/retail-account → {id, name, created}); uçlar test/nakit-akis-kasa-mm6, test/nihai-tuketici-u1-244 ÇAĞRI
@@ -44,10 +45,10 @@ let dosyalar = argv.filter((a, i) => a.endsWith(".json") && argv[i - 1] !== "--c
 const LEGACY = argv.includes("--legacy");
 const VARSAYILAN = !dosyalar.length && !opt("--tohum");
 if (VARSAYILAN) dosyalar = readdirSync(path.join(HERE, "senaryolar")).filter(f => f.endsWith(".json")).sort().map(f => path.join(HERE, "senaryolar", f));
-const TOHUM = opt("--tohum") || (VARSAYILAN && !LEGACY ? "1-2" : null);
+const TOHUM = opt("--tohum") || (VARSAYILAN ? "1-2" : null);
 if (TOHUM) {
   const [bas, son] = TOHUM.split("-").map(Number);
-  const turler = opt("--tur") ? [opt("--tur")] : ["ux18", "s1"];
+  const turler = opt("--tur") ? [opt("--tur")] : LEGACY ? ["ux18"] : ["ux18", "s1"];
   for (let t = bas; t <= (son || bas); t += 1) {
     for (const tur of turler) {
       const yol = path.join(OUT, `rastgele-${tur}-${t}.json`);
@@ -56,17 +57,18 @@ if (TOHUM) {
     }
   }
 }
-// 2.4.5 kararıyla geçersiz (/1 /2 senaryosu tablo para yoluna bağlı — KARARLAR.md C0): varsayılan kipte atlanır (sayısı yazılır); --legacy'de YALNIZ bunlar koşar.
+// 2.4.5 kararıyla geçersiz (/1 /2 senaryosu tablo para yoluna bağlı — KARARLAR.md C0): varsayılan kipte atlanır (sayısı yazılır); --legacy'de bütün /1 /2 koşar, /3 atlanır.
 const gecersizOnbellek = new Map();
 const gecersizMi = dosya => {
   if (!gecersizOnbellek.has(dosya)) gecersizOnbellek.set(dosya, JSON.parse(execFileSync(PYTHON, ["-I", path.join(HERE, "model.py"), dosya, "--gecersiz-mi"], { encoding: "utf8" })));
   return gecersizOnbellek.get(dosya);
 };
 const ATLANAN = [];
+const dilOf = d => JSON.parse(readFileSync(d, "utf8")).dil;
 dosyalar = dosyalar.filter(d => {
-  const g = gecersizMi(d);
-  if (g !== LEGACY) ATLANAN.push(path.basename(d, ".json"));
-  return g === LEGACY;
+  const kos = LEGACY ? dilOf(d) !== "destekofis-cari/3" : !gecersizMi(d);
+  if (!kos) ATLANAN.push(path.basename(d, ".json"));
+  return kos;
 });
 
 const kurus = x => (x === null || x === undefined || x === "" ? null : Math.round(Number(x) * 100));
@@ -108,8 +110,8 @@ function tabloMatrisi(sk) {
 
 // Anahtarlar (config.legacyCasePayments / legacyTableTransfer; K1): --legacy'de ikisi AÇIK; değilse senaryonun `anahtar`ı / sunucu_yeniden adımı (verilmeyen KAPALI).
 // startTestServer'a AÇIKÇA false da verilir: test yardımcısının varsayılanı ne olursa olsun kâhin kapalı kapıyı sınar (eski kodda seçenek yok sayılır).
-const anahtarlar = verilen => (LEGACY ? { legacyCasePayments: true, legacyTableTransfer: true }
-  : { legacyCasePayments: Boolean(verilen?.legacyCasePayments), legacyTableTransfer: Boolean(verilen?.legacyTableTransfer) });
+const anahtarlar = verilen => (LEGACY ? { legacyCasePayments: true, legacyTableTransfer: true, legacyTableDues: true }
+  : { legacyCasePayments: Boolean(verilen?.legacyCasePayments), legacyTableTransfer: Boolean(verilen?.legacyTableTransfer), legacyTableDues: Boolean(verilen?.legacyTableDues) });
 const sirali = o => Object.fromEntries(Object.entries(o).sort(([x], [y]) => (x < y ? -1 : x > y ? 1 : 0)));
 const gunEkle = (iso, n) => { const d = new Date(`${iso}T12:00:00Z`); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
 
@@ -404,6 +406,11 @@ async function kos(senaryo) {
           durum(a, await api("PUT", `/api/workspace/accounts/${ids.cari[h?.cari]}/entries/${h?.id}`, govde));
           break;
         }
+        case "donem_kilitle": {
+          // K6.5: dönem kilidi (PUT /api/admin/period-lock — test çağrı satırları); boş tarih kilidi açar
+          durum(a, await api("PUT", "/api/admin/period-lock", { lockedUntil: a.tarih || "", force: true }));
+          break;
+        }
         case "cari_kalem_odendi": {
           durum(a, await api("POST", "/api/workspace/dues/settle", { id: `account|${ids.hareket[a.hareket]?.id}` }));
           break;
@@ -667,6 +674,8 @@ async function kos(senaryo) {
             const kasaAlani = v => (v === null || v === undefined ? "yok" : kurus(v));
             if (tot) Object.assign(P, { [`${k}:nakit:kasaGiris`]: kasaAlani(tot.cashIn), [`${k}:nakit:kasaCikis`]: kasaAlani(tot.cashOut) });
             else ham[`${k}:nakit`] = { status: na.status, data: na.data };
+            // KS4: Tablodaki Nakit Akışı'nda Kasa sütunu var mı (yönetici gözüyle)
+            P[`${k}:nakit:kasaSutunu`] = tot ? (kasaAlani(tot.cashIn) === "yok" && kasaAlani(tot.cashOut) === "yok" ? "yok" : "var") : "okunamadı";
             const kr = await api("GET", `/api/workspace/cash?${aralik}&method=cash`);
             if (kr.data?.totals) Object.assign(P, { [`${k}:kasaRapor:giris`]: kurus(kr.data.totals.in), [`${k}:kasaRapor:cikis`]: kurus(kr.data.totals.out) });
             else hatalar.push(`${k} Kasa raporu okunamadı (${kr.status})`);
@@ -719,6 +728,7 @@ async function kos(senaryo) {
               const tara = o => (typeof o === "string" ? metinler.push(o) : o && typeof o === "object" ? Object.values(o).forEach(tara) : null);
               tara(yd);
               P[`${k}:yetkisiz:${ad}:not`] = metinler.some(m => /kasa/i.test(m) && /(yetki|göreme|görüntüle|gizli)/i.test(m));
+              P[`${k}:yetkisiz:${ad}:kasaNotu`] = P[`${k}:yetkisiz:${ad}:not`]; // KS4 (2.4.5): not kalkar
               // Kurulum denetimi (ders 38): yetki gerçekten kalktı mı — Kasa sayfası bu kullanıcıya açılıyorsa K5 denetimi geçersizdir (okuma hatası).
               // /3: yalnız Kasa yetkisi kaldırılan kullanıcıda (cari görüntüleme yetkisi kaldırılanın Kasa'sı açıktır)
               const ks = (await kc.get("/api/workspace/cash")).status;
@@ -889,6 +899,7 @@ function bilinenMutantlari() {
 }
 const BILINEN = bilinenYukle();
 
+const GECERSIZ_DENETIM = [];
 let genelToplam = 0;
 let genelFark = 0;
 let okumaHatasi = 0;
@@ -900,6 +911,12 @@ for (const dosya of dosyalar) {
   const { program, hatalar, gunluk, ham } = await kos(senaryo);
   writeFileSync(path.join(OUT, `${senaryo.ad}.ham.json`), JSON.stringify(ham, null, 1));
   const beklenen = model(dosya);
+  // 2.4.5 kararıyla geçersiz DENETİMLER (K4.1, C0): varsayılan kipte /1 /2 senaryosunda 2.4.4 kural setinin yazıp 2.4.5'in yazmadığı denetimler (yalnız --legacy'de koşar)
+  if (!LEGACY && senaryo.dil !== "destekofis-cari/3") {
+    const eski = model(dosya, 0, true).denetimler;
+    const atlananDenetim = Object.keys(eski).filter(x => !(x in beklenen.denetimler));
+    if (atlananDenetim.length) GECERSIZ_DENETIM.push({ senaryo: senaryo.ad, adet: atlananDenetim.length, ornek: atlananDenetim.slice(0, 3) });
+  }
   const { toplam, farklar: tumFarklar } = karsilastir(beklenen, program);
   // /3: BILINEN kaydının `kural` alanı varsa yalnız o kural setinde uygulanır (2.4.5'te konusu kalkan Takvim / Açılış Bakiyesi kayıtları "2.4.4")
   const { kalan: farklar, bilinen } = bilinenAyir(senaryo.ad, beklenen.denetimler, tumFarklar, BILINEN.kayitlar.filter(e => !e.kural || e.kural === (LEGACY ? "2.4.4" : "2.4.5")));
@@ -949,8 +966,9 @@ for (const m of bilinenMutantlari()) {
   if (!m.yakalandi) kacan += 1;
   console.log(`  liste mutasyonu ${m.n} (${m.ad}): ${m.yakalandi ? "YAKALANDI" : "YAKALANMADI"}`);
 }
-writeFileSync(path.join(OUT, "ozet.json"), JSON.stringify({ kip: LEGACY ? "legacy (2.4.4 kuralları, anahtarlar açık)" : "2.4.5", ozet, genelToplam, genelFark, okumaHatasi, kacan, bilinen: genelBilinen, bilinenKayitlar: bilinenHepsi, bilinenListesiHatalari: BILINEN.hatalar, atlanan: ATLANAN }, null, 1));
-console.log(`\nATLANAN (${LEGACY ? "2.4.5 kurallarıyla geçerli — varsayılan kipte koşar" : "2.4.5 kararıyla geçersiz — --legacy ile koşar"}): ${ATLANAN.length}${ATLANAN.length ? ` — ${ATLANAN.join(", ")}` : ""}`);
+writeFileSync(path.join(OUT, "ozet.json"), JSON.stringify({ kip: LEGACY ? "legacy (2.4.4 kuralları, anahtarlar açık)" : "2.4.5", ozet, genelToplam, genelFark, okumaHatasi, kacan, bilinen: genelBilinen, bilinenKayitlar: bilinenHepsi, bilinenListesiHatalari: BILINEN.hatalar, atlanan: ATLANAN, gecersizDenetim: GECERSIZ_DENETIM }, null, 1));
+if (!LEGACY) console.log(`\nGEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de koşar — KARARLAR.md §8 C0): ${GECERSIZ_DENETIM.reduce((t, x) => t + x.adet, 0)} denetim, ${GECERSIZ_DENETIM.length} senaryo${GECERSIZ_DENETIM.length ? ` — ${GECERSIZ_DENETIM.map(x => `${x.senaryo} ${x.adet}`).join(", ")}` : ""}`);
+console.log(`\nATLANAN (${LEGACY ? "/3 — yalnız varsayılan kipte koşar" : "2.4.5 kararıyla geçersiz — --legacy ile koşar"}): ${ATLANAN.length}${ATLANAN.length ? ` — ${ATLANAN.join(", ")}` : ""}`);
 console.log(`\nÖZET [${LEGACY ? "legacy" : "2.4.5"}]: ${dosyalar.length} senaryo, ${genelToplam} denetim, ${genelFark} fark (BULGU ${ozet.reduce((s, o) => s + o.bulgu, 0)}), ${genelBilinen} bilinen sınır (BILINEN.json; başarısız sayılmaz), ${okumaHatasi} okuma hatası, ${kacan} yakalanmayan mutasyon, ${ATLANAN.length} atlanan senaryo. Ham çıktı: ${OUT}`);
 if (genelBilinen) console.log(`BİLİNEN SINIRLAR (${genelBilinen}): ${bilinenHepsi.map(b => `${b.senaryo} ${b.anahtar}`).join("; ")}`);
 // "geçti" sayısı bilinen sınırları içerir (başarısız sayılmaz — CI kapısı); ayrıntısı yukarıdaki BİLİNEN satırlarında ve ozet.json "bilinen" alanında
