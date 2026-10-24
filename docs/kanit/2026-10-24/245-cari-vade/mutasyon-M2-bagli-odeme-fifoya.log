@@ -1,0 +1,164 @@
+TAP version 13
+# Subtest: 2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi)
+    # Subtest: K6.4 göç: account_entries'te due_date ve expected_date (TEXT, varsayılan '')
+    ok 1 - K6.4 göç: account_entries'te due_date ve expected_date (TEXT, varsayılan '')
+      ---
+      duration_ms: 1.307809
+      type: 'test'
+      ...
+    # Subtest: K6.1 alanlar: Borç ve Alacak'ta saklanır, kartta döner; tahsilat / ödemede gönderilse de kaydedilmez
+    ok 2 - K6.1 alanlar: Borç ve Alacak'ta saklanır, kartta döner; tahsilat / ödemede gönderilse de kaydedilmez
+      ---
+      duration_ms: 156.314889
+      type: 'test'
+      ...
+    # Subtest: K6.1 doğrulama: tarihten önce, biçimsiz ya da takvimde olmayan gün → 400 (field); hiçbir satır yazılmaz
+    ok 3 - K6.1 doğrulama: tarihten önce, biçimsiz ya da takvimde olmayan gün → 400 (field); hiçbir satır yazılmaz
+      ---
+      duration_ms: 53.96246
+      type: 'test'
+      ...
+    # Subtest: K6.1 düzeltme: anahtar yoksa tarih kalır, boş metin siler; yön değişince kalır; tarih vadeden sonraya alınırsa 400
+    ok 4 - K6.1 düzeltme: anahtar yoksa tarih kalır, boş metin siler; yön değişince kalır; tarih vadeden sonraya alınırsa 400
+      ---
+      duration_ms: 102.687604
+      type: 'test'
+      ...
+    # Subtest: K6.1 Açılış Bakiyesi: POST'ta openingDueDate / openingExpectedDate; tedarikçide alacak yönlü; açılış yoksa ya da tarihten önceyse 400; PUT günceller
+    ok 5 - K6.1 Açılış Bakiyesi: POST'ta openingDueDate / openingExpectedDate; tedarikçide alacak yönlü; açılış yoksa ya da tarihten önceyse 400; PUT günceller
+      ---
+      duration_ms: 70.655393
+      type: 'test'
+      ...
+    # Subtest: S1 FIFO: aynı gün iki borç + tahsilat → önce yazılan kapanır (yazım sırası); Vade Tarihi sırayı değiştirmez
+    ok 6 - S1 FIFO: aynı gün iki borç + tahsilat → önce yazılan kapanır (yazım sırası); Vade Tarihi sırayı değiştirmez
+      ---
+      duration_ms: 104.751961
+      type: 'test'
+      ...
+    # Subtest: S1 karışık kuyruk: vadeli borç + taksitsiz satış faturası tarih sırasıyla; faturanın açığı aynı kuraldan
+    ok 7 - S1 karışık kuyruk: vadeli borç + taksitsiz satış faturası tarih sırasıyla; faturanın açığı aynı kuraldan
+      ---
+      duration_ms: 118.945056
+      type: 'test'
+      ...
+    # Subtest: S1 bağlı ödeme: Kapatılacak Fatura seçilen tahsilat borç kaydını kapatmaz
+    not ok 8 - S1 bağlı ödeme: Kapatılacak Fatura seçilen tahsilat borç kaydını kapatmaz
+      ---
+      duration_ms: 74.757928
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-cari-vade/mut-494cd99/test/cari-vade-245.test.mjs:189:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        faturaya bağlı tahsilat FIFO'ya girmez
+        
+        600 !== 1000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1000
+      actual: 600
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-cari-vade/mut-494cd99/test/cari-vade-245.test.mjs:194:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S1 taksit kartı: ayrı kartın tahsilatı borç kaydını kapatmaz; Mevcut Borç kartının kapsadığı borç takvimden düşer (taksitlerle bir kez)
+    ok 9 - S1 taksit kartı: ayrı kartın tahsilatı borç kaydını kapatmaz; Mevcut Borç kartının kapsadığı borç takvimden düşer (taksitlerle bir kez)
+      ---
+      duration_ms: 137.654333
+      type: 'test'
+      ...
+    # Subtest: tahsilat silinince kalem geri açılır, Silinenler'den dönünce yine kapanır; silinen borç tarihleriyle geri gelir
+    ok 10 - tahsilat silinince kalem geri açılır, Silinenler'den dönünce yine kapanır; silinen borç tarihleriyle geri gelir
+      ---
+      duration_ms: 158.200878
+      type: 'test'
+      ...
+    # Subtest: çek karşılıksız dönünce kapattığı borç kaydı yeniden açılır
+    ok 11 - çek karşılıksız dönünce kapattığı borç kaydı yeniden açılır
+      ---
+      duration_ms: 98.171148
+      type: 'test'
+      ...
+    # Subtest: borç düzenlenip tutar küçülünce Kalan küçülür; tutar tahsilatın altına inince kalem kapanır
+    ok 12 - borç düzenlenip tutar küçülünce Kalan küçülür; tutar tahsilatın altına inince kalem kapanır
+      ---
+      duration_ms: 113.362764
+      type: 'test'
+      ...
+    # Subtest: K6.3 kalem sözleşmesi: id, source, accountId, entryId, direction, person, label, dueDate, amount, days, state; Beklenen Ödeme Tarihi önce gelir
+    ok 13 - K6.3 kalem sözleşmesi: id, source, accountId, entryId, direction, person, label, dueDate, amount, days, state; Beklenen Ödeme Tarihi önce gelir
+      ---
+      duration_ms: 117.086553
+      type: 'test'
+      ...
+    # Subtest: K6.3 ufuk: geçmişin tamamı + bugünden 7 gün (8. gün yok); tarihsiz borç kalem değildir
+    ok 14 - K6.3 ufuk: geçmişin tamamı + bugünden 7 gün (8. gün yok); tarihsiz borç kalem değildir
+      ---
+      duration_ms: 88.303825
+      type: 'test'
+      ...
+    # Subtest: K6.3 Vade Takip aynı kalemleri gösterir (kaynak 'account', tarih, tutar, etiket); aralık dışı (8. gün) Vade Takip'te 30 günlükte var
+    ok 15 - K6.3 Vade Takip aynı kalemleri gösterir (kaynak 'account', tarih, tutar, etiket); aralık dışı (8. gün) Vade Takip'te 30 günlükte var
+      ---
+      duration_ms: 62.612062
+      type: 'test'
+      ...
+    # Subtest: K6.3 yetki: Cari görüntüleme yetkisi olmayan kişi kalemi görmez (zil, takvim, Vade Takip); sürüm yetkiyle değişir
+    ok 16 - K6.3 yetki: Cari görüntüleme yetkisi olmayan kişi kalemi görmez (zil, takvim, Vade Takip); sürüm yetkiyle değişir
+      ---
+      duration_ms: 164.249052
+      type: 'test'
+      ...
+    # Subtest: Ödendi Say yok: settle 'account|…' kalemini reddeder (400); kalem yerinde kalır
+    ok 17 - Ödendi Say yok: settle 'account|…' kalemini reddeder (400); kalem yerinde kalır
+      ---
+      duration_ms: 34.268465
+      type: 'test'
+      ...
+    # Subtest: önbellek: durağan saatte yalnız Beklenen Ödeme Tarihi değişince kalem o güne kayar (sürüm değişir)
+    ok 18 - önbellek: durağan saatte yalnız Beklenen Ödeme Tarihi değişince kalem o güne kayar (sürüm değişir)
+      ---
+      duration_ms: 91.977059
+      type: 'test'
+      ...
+    # Subtest: cari silinince kalem yok; geri yüklenince döner
+    ok 19 - cari silinince kalem yok; geri yüklenince döner
+      ---
+      duration_ms: 78.534899
+      type: 'test'
+      ...
+    # Subtest: yevmiye ve mizan değişmez: tarih eklemek / silmek Ana Defter'i değiştirmez
+    ok 20 - yevmiye ve mizan değişmez: tarih eklemek / silmek Ana Defter'i değiştirmez
+      ---
+      duration_ms: 95.177023
+      type: 'test'
+      ...
+    # Subtest: 002 şirketi: göç orada da; kalemler şirkete ayrı
+    ok 21 - 002 şirketi: göç orada da; kalemler şirkete ayrı
+      ---
+      duration_ms: 293.23878
+      type: 'test'
+      ...
+    1..21
+not ok 1 - 2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi)
+  ---
+  duration_ms: 2740.978485
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-cari-vade/mut-494cd99/test/cari-vade-245.test.mjs:35:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 21
+# suites 1
+# pass 20
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3161.074965

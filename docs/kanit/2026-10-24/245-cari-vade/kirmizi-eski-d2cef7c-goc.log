@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: 2.4.5 madde 6 göç: v2.4.4 verisi güncel kodla (Vade Tarihi / Beklenen Ödeme Tarihi boş, Kalan aynı kuyruktan)
+    # Subtest: v2.4.4 verisi: göç boş alan ekler, bakiye ve faturalar aynı, kalem yok; eski borca vade verilince kalem doğar
+    not ok 1 - v2.4.4 verisi: göç boş alan ekler, bakiye ve faturalar aynı, kalem yok; eski borca vade verilince kalem doğar
+      ---
+      duration_ms: 1198.387416
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-cari-vade/eski-wt-d2cef7c/test/goc-245-cari-vade.test.mjs:28:3'
+      failureType: 'testCodeFailure'
+      error: 'no such column: due_date'
+      code: 'ERR_SQLITE_ERROR'
+      stack: |-
+        prepare (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-cari-vade/eski-wt-d2cef7c/server/lib/db.mjs:18:22)
+        Object.get (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-cari-vade/eski-wt-d2cef7c/server/lib/db.mjs:244:28)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-cari-vade/eski-wt-d2cef7c/test/goc-245-cari-vade.test.mjs:70:39)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - 2.4.5 madde 6 göç: v2.4.4 verisi güncel kodla (Vade Tarihi / Beklenen Ödeme Tarihi boş, Kalan aynı kuyruktan)
+  ---
+  duration_ms: 1207.640826
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-cari-vade/eski-wt-d2cef7c/test/goc-245-cari-vade.test.mjs:23:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1722.284432

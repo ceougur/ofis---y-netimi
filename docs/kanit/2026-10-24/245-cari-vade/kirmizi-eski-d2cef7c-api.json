@@ -1,0 +1,138 @@
+{
+  "ad": "245-cari-vade/kirmizi-eski-d2cef7c-api",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/cari-vade-245.test.mjs",
+  "commit": "d2cef7ce21b0776e2767f8fb610c9be8a4159f5d",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:01:44.453Z",
+  "sure_sn": 2.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 21,
+    "gecen": 0,
+    "basarisiz": 21,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 21 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › K6.4 göç: account_entries'te due_date ve expected_date (TEXT, varsayılan '')",
+      "konum": "test/cari-vade-245.test.mjs:79:3",
+      "hata": "due_date kolonu yok"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › K6.1 alanlar: Borç ve Alacak'ta saklanır, kartta döner; tahsilat / ödemede gönderilse de kaydedilmez",
+      "konum": "test/cari-vade-245.test.mjs:89:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › K6.1 doğrulama: tarihten önce, biçimsiz ya da takvimde olmayan gün → 400 (field); hiçbir satır yazılmaz",
+      "konum": "test/cari-vade-245.test.mjs:107:3",
+      "hata": "vade < tarih: 200 {\"id\":\"account-0d0712b0-ed4f-4171-8a35-2a15e50af8c4\",\"refNo\":\"2\",\"type\":\"customer\",\"name\":\"Vade Dogrulama\",\"phone\":\"0500 245 00 02\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-15\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\", · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › K6.1 düzeltme: anahtar yoksa tarih kalır, boş metin siler; yön değişince kalır; tarih vadeden sonraya alınırsa 400",
+      "konum": "test/cari-vade-245.test.mjs:121:3",
+      "hata": "no such column: due_date"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › K6.1 Açılış Bakiyesi: POST'ta openingDueDate / openingExpectedDate; tedarikçide alacak yönlü; açılış yoksa ya da tarihten önceyse 400; PUT günceller",
+      "konum": "test/cari-vade-245.test.mjs:136:3",
+      "hata": "openingEntryId açılış satırını gösterir"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › S1 FIFO: aynı gün iki borç + tahsilat → önce yazılan kapanır (yazım sırası); Vade Tarihi sırayı değiştirmez",
+      "konum": "test/cari-vade-245.test.mjs:160:3",
+      "hata": "en eski tarihli borç önce kapanır · undefined !== 0"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › S1 karışık kuyruk: vadeli borç + taksitsiz satış faturası tarih sırasıyla; faturanın açığı aynı kuraldan",
+      "konum": "test/cari-vade-245.test.mjs:174:3",
+      "hata": "en eski borç (elle) kapandı · undefined !== 0"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › S1 bağlı ödeme: Kapatılacak Fatura seçilen tahsilat borç kaydını kapatmaz",
+      "konum": "test/cari-vade-245.test.mjs:189:3",
+      "hata": "faturaya bağlı tahsilat FIFO'ya girmez · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › S1 taksit kartı: ayrı kartın tahsilatı borç kaydını kapatmaz; Mevcut Borç kartının kapsadığı borç takvimden düşer (taksitlerle bir kez)",
+      "konum": "test/cari-vade-245.test.mjs:198:3",
+      "hata": "ayrı kartın tahsilatı kartın kendi defterinde · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › tahsilat silinince kalem geri açılır, Silinenler'den dönünce yine kapanır; silinen borç tarihleriyle geri gelir",
+      "konum": "test/cari-vade-245.test.mjs:214:3",
+      "hata": "Expected values to be strictly equal: · undefined !== 0"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › çek karşılıksız dönünce kapattığı borç kaydı yeniden açılır",
+      "konum": "test/cari-vade-245.test.mjs:233:3",
+      "hata": "çek borcu kapattı · undefined !== 0"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › borç düzenlenip tutar küçülünce Kalan küçülür; tutar tahsilatın altına inince kalem kapanır",
+      "konum": "test/cari-vade-245.test.mjs:244:3",
+      "hata": "Expected values to be strictly equal: · undefined !== 700"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › K6.3 kalem sözleşmesi: id, source, accountId, entryId, direction, person, label, dueDate, amount, days, state; Beklenen Ödeme Tarihi önce gelir",
+      "konum": "test/cari-vade-245.test.mjs:257:3",
+      "hata": "Cannot read properties of undefined (reading 'id')"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › K6.3 ufuk: geçmişin tamamı + bugünden 7 gün (8. gün yok); tarihsiz borç kalem değildir",
+      "konum": "test/cari-vade-245.test.mjs:276:3",
+      "hata": "7 gün sonra vadeli kalem var (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › K6.3 Vade Takip aynı kalemleri gösterir (kaynak 'account', tarih, tutar, etiket); aralık dışı (8. gün) Vade Takip'te 30 günlükte var",
+      "konum": "test/cari-vade-245.test.mjs:289:3",
+      "hata": "yönetici 'account' kaynağını görür (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › K6.3 yetki: Cari görüntüleme yetkisi olmayan kişi kalemi görmez (zil, takvim, Vade Takip); sürüm yetkiyle değişir",
+      "konum": "test/cari-vade-245.test.mjs:305:3",
+      "hata": "yetkili kişi görür (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › Ödendi Say yok: settle 'account|…' kalemini reddeder (400); kalem yerinde kalır",
+      "konum": "test/cari-vade-245.test.mjs:327:3",
+      "hata": "kalem duruyor (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › önbellek: durağan saatte yalnız Beklenen Ödeme Tarihi değişince kalem o güne kayar (sürüm değişir)",
+      "konum": "test/cari-vade-245.test.mjs:334:3",
+      "hata": "Cannot read properties of undefined (reading 'dueDate')"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › cari silinince kalem yok; geri yüklenince döner",
+      "konum": "test/cari-vade-245.test.mjs:348:3",
+      "hata": "geri gelen carinin kalemi döner (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › yevmiye ve mizan değişmez: tarih eklemek / silmek Ana Defter'i değiştirmez",
+      "konum": "test/cari-vade-245.test.mjs:361:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › 002 şirketi: göç orada da; kalemler şirkete ayrı",
+      "konum": "test/cari-vade-245.test.mjs:376:3",
+      "hata": "002'de yalnız kendi kalemi · + actual - expected · + [] (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/cari-vade/docs/kanit/2026-10-24/245-cari-vade/kirmizi-eski-d2cef7c-api.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-cari-vade/eski-wt-d2cef7c",
+  "ham_cikti_sha256": "8a9241091d3caeec293cb5abb635c12dcaba329f25954bc199cf4b2d6785b266",
+  "ham_cikti_bayt": 25408
+}
