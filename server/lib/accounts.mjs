@@ -67,6 +67,9 @@ export function accountLedger(entries = [], plans = []) {
       method: meta.cash ? entry.method || "cash" : "",
       note: entry.note || "",
       receiptNo: entry.receiptNo || null,
+      // 2.4.5 KS7 (a): stoktan gelen satırın hareket nedeni (stock_moves.reason: '' alış / satış, 'return' satıştan iade, 'preturn' alıştan iade) —
+      // faturasız stok iadesi fatura kapamasında bağsız ödemedir (lib/invoice-settle.mjs classifyLine).
+      ...(origin === "stock" ? { stockReason: entry.stockReason || "" } : {}),
       debit: meta.side === "debit" ? amount : 0,
       credit: meta.side === "credit" ? amount : 0,
     });

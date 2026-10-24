@@ -1,0 +1,152 @@
+TAP version 13
+# Subtest: KS7 classifyLine (saf): faturasız stok iadesi ve Değersiz Alacak bağsız ödemedir; satış, alım, elle borç / alacak yükümlülüktür
+    # Subtest: (a) stoktan satıştan iade (alacak) alacak tarafında ödeme; alıştan iade (borç) borç tarafında ödeme
+    ok 1 - (a) stoktan satıştan iade (alacak) alacak tarafında ödeme; alıştan iade (borç) borç tarafında ödeme
+      ---
+      duration_ms: 1.521845
+      type: 'test'
+      ...
+    # Subtest: (c) stoktan veresiye satış ve açık hesaba alım yükümlülük KALIR (nedeni boş)
+    ok 2 - (c) stoktan veresiye satış ve açık hesaba alım yükümlülük KALIR (nedeni boş)
+      ---
+      duration_ms: 0.207534
+      type: 'test'
+      ...
+    # Subtest: (b) Değersiz Alacak satırı alacak tarafında ödeme; (c) elle Borç / Alacak yükümlülük (KS2)
+    not ok 3 - (b) Değersiz Alacak satırı alacak tarafında ödeme; (c) elle Borç / Alacak yükümlülük (KS2)
+      ---
+      duration_ms: 1.440719
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-d1-kapama/mut2/test/kapama-ks7-245.test.mjs:44:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   payDue: true,
+        -   payDue: false,
+            payPay: false,
+            recvDue: false,
+        +   recvPay: false
+        -   recvPay: true
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        recvDue: false
+        recvPay: true
+        payDue: false
+        payPay: false
+      actual:
+        recvDue: false
+        recvPay: false
+        payDue: true
+        payPay: false
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-d1-kapama/mut2/test/kapama-ks7-245.test.mjs:45:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 1 - KS7 classifyLine (saf): faturasız stok iadesi ve Değersiz Alacak bağsız ödemedir; satış, alım, elle borç / alacak yükümlülüktür
+  ---
+  duration_ms: 4.255155
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-d1-kapama/mut2/test/kapama-ks7-245.test.mjs:34:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: KS7 API: Değersiz Alacak ve faturasız stok iadesi carinin en eski açık borcunu (vadeli elle borç, fatura) kapatır
+    # Subtest: (b) şüpheliye alma KAPATMAZ (alacak sürer); Değersiz Alacak Yaz en eskiden kapatır — vadeli borç ve fatura; takvim / Vade Takip boşalır, bakiye 0
+    not ok 1 - (b) şüpheliye alma KAPATMAZ (alacak sürer); Değersiz Alacak Yaz en eskiden kapatır — vadeli borç ve fatura; takvim / Vade Takip boşalır, bakiye 0
+      ---
+      duration_ms: 166.125421
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-d1-kapama/mut2/test/kapama-ks7-245.test.mjs:104:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        değersiz: vadeli borç kapandı
+        
+        1000 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 1000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-d1-kapama/mut2/test/kapama-ks7-245.test.mjs:115:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (b) kısmi değersiz en eskiden kapatır; değersiz satırı silinince borç ve fatura yeniden açılır
+    not ok 2 - (b) kısmi değersiz en eskiden kapatır; değersiz satırı silinince borç ve fatura yeniden açılır
+      ---
+      duration_ms: 94.998915
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-d1-kapama/mut2/test/kapama-ks7-245.test.mjs:128:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        en eski (elle borç) 600 kapandı
+        
+        1000 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 1000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-d1-kapama/mut2/test/kapama-ks7-245.test.mjs:134:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (a) faturasız stok Satış İadesi (açık hesap) en eskiden kapatır: vadeli borç ve fatura; iade silinince yeniden açılır; bakiye ve Kasa değişmez
+    ok 3 - (a) faturasız stok Satış İadesi (açık hesap) en eskiden kapatır: vadeli borç ve fatura; iade silinince yeniden açılır; bakiye ve Kasa değişmez
+      ---
+      duration_ms: 130.127299
+      type: 'test'
+      ...
+    # Subtest: (c) stoktan veresiye satış ödeme DEĞİLDİR (yükümlülük); elle Alacak müşterinin borcunu kapatmaz (KS2)
+    ok 4 - (c) stoktan veresiye satış ödeme DEĞİLDİR (yükümlülük); elle Alacak müşterinin borcunu kapatmaz (KS2)
+      ---
+      duration_ms: 121.301224
+      type: 'test'
+      ...
+    # Subtest: (a) tedarikçide açık hesaba alım yükümlülüktür: alış faturasını kapatmaz, ödeme kapatır
+    ok 5 - (a) tedarikçide açık hesaba alım yükümlülüktür: alış faturasını kapatmaz, ödeme kapatır
+      ---
+      duration_ms: 110.765591
+      type: 'test'
+      ...
+    1..5
+not ok 2 - KS7 API: Değersiz Alacak ve faturasız stok iadesi carinin en eski açık borcunu (vadeli elle borç, fatura) kapatır
+  ---
+  duration_ms: 1295.579221
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-d1-kapama/mut2/test/kapama-ks7-245.test.mjs:51:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 8
+# suites 2
+# pass 5
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1672.941629

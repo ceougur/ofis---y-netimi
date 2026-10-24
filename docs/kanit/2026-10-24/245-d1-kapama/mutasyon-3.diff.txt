@@ -1,0 +1,20 @@
+--- /home/user/wt/d1-kapama/server/routes/invoices.mjs	2026-10-24 19:49:14.941822088 +0000
++++ /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-d1-kapama/mut3/server/routes/invoices.mjs	2026-10-24 19:59:31.889807977 +0000
+@@ -723,7 +723,7 @@
+     chequeLinks(tables.eventsOf.get(accountId) || [], tables.planned, links, chequeEvents, reversals);
+     const offsets = (tables.offsetsOf.get(accountId) || []).map(({ accountId: _, ...offset }) => ({ ...offset, label: offsetLabel(offset) }));
+     const invoices = (tables.invoicesOf.get(accountId) || []).map(({ accountId: _, ...item }) => (item.planId ? { ...item, planTotal: tables.planTotals.get(item.planId) || 0, schedule: (tables.scheduleOf.get(item.planId) || []).map(({ planId: __, ...row }) => row) } : item));
+-    return { lines, invoices, links, chequeEvents, reversals, offsets, today: day };
++    return { lines: [...lines, ...store.all("SELECT id, date, amount_minor AS m, created_at AS at FROM doubtful_receivables WHERE account_id = ?", accountId).map(r => ({ id: "m3-" + r.id, origin: "doubtful", kind: "credit", date: r.date, at: r.at, label: "", note: "", debit: 0, credit: r.m / 100 }))].sort((a, b) => (a.date === b.date ? String(a.at || "").localeCompare(String(b.at || "")) : a.date < b.date ? -1 : 1)), invoices, links, chequeEvents, reversals, offsets, today: day };
+   }
+   // Veri tabanı işleminin içinde (yazmalar henüz kesinleşmemiş, geri alınabilir) önbellek ne okunur ne yazılır: geri
+   // alınan işlemin durumu saklanıp sonra gösterilmesin (total_changes() geri alınca azalmaz).
+@@ -765,7 +765,7 @@
+       const schedule = store.all("SELECT due_date AS dueDate, amount FROM plan_items WHERE plan_id = ? ORDER BY due_date", invoice.planId);
+       plansById.set(invoice.id, { planTotal: Number(plan?.total) || 0, schedule });
+     }
+-    return { lines: ledger, invoices: all.map(item => ({ ...item, ...(plansById.get(item.id) || {}) })), links, chequeEvents, reversals, offsets, today: day };
++    return { lines: [...ledger, ...store.all("SELECT id, date, amount_minor AS m, created_at AS at FROM doubtful_receivables WHERE account_id = ?", accountId).map(r => ({ id: "m3-" + r.id, origin: "doubtful", kind: "credit", date: r.date, at: r.at, label: "", note: "", debit: 0, credit: r.m / 100 }))].sort((a, b) => (a.date === b.date ? String(a.at || "").localeCompare(String(b.at || "")) : a.date < b.date ? -1 : 1)), invoices: all.map(item => ({ ...item, ...(plansById.get(item.id) || {}) })), links, chequeEvents, reversals, offsets, today: day };
+   }
+   function paymentStates(rows) {
+     const out = new Map();
