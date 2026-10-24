@@ -3402,6 +3402,8 @@
       ${problems.length ? `<ul class="hof-inv-problems">${problems.map(item => `<li>${esc(item)}</li>`).join("")}</ul>` : ""}
       <section class="hof-inv-settings"><h4>Firma Bilgisi</h4><div class="hof-inv-head">
         ${input("seller.name", "Unvan / Ad Soyad", seller.name, 'maxlength="200"')}
+        <label class="hof-field"><span>Tabela Adı</span><input data-s="reportHeader.signName" value="${esc(s.reportHeader?.signName || "")}" maxlength="120" placeholder="ör. Yıldız Market"><small>Rapor ve ekstre başlığında unvan yerine yazılır. Fatura ve makbuzda unvan değişmez.</small></label>
+        <label class="hof-field"><span>Rapor ve Ekstre Başlığı</span><select data-s="reportHeader.mode"><option value="sign" ${s.reportHeader?.mode !== "full" ? "selected" : ""}>Yalnız Tabela Adı</option><option value="full" ${s.reportHeader?.mode === "full" ? "selected" : ""}>Tabela Adı ve Firma Bilgileri</option></select><small>Firma bilgileri: unvan, VKN / TCKN, vergi dairesi ve adres. Tabela Adı boşsa başlıkta unvan yazar.</small></label>
         <label class="hof-field"><span>Kişi Türü</span><select data-s="seller.partyKind"><option value="company" ${seller.partyKind !== "person" ? "selected" : ""}>Tüzel Kişi (Şirket)</option><option value="person" ${seller.partyKind === "person" ? "selected" : ""}>Gerçek Kişi (Şahıs)</option></select></label>
         ${input("seller.firstName", "Adı (Gerçek Kişi)", seller.firstName, 'maxlength="80"')}
         ${input("seller.familyName", "Soyadı (Gerçek Kişi)", seller.familyName, 'maxlength="80"')}

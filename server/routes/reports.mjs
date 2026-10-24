@@ -8,6 +8,7 @@ import { cariEkstre, dayText, flattenTable, nakitAkis, normalizeFilters, normali
 import { canUser } from "../lib/permissions.mjs";
 import { fromCents, roundMoney, toCents } from "../lib/money.mjs";
 import { isoDay } from "../lib/plans.mjs";
+import { createReportHeader } from "../lib/report-header.mjs";
 import { reportFileBase, reportPdf, reportXlsx } from "../lib/report-files.mjs";
 import { columnOrder } from "../lib/sources.mjs";
 import { titleCase } from "../lib/text-case.mjs";
@@ -199,17 +200,9 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
 
   // Şirket etiketi "001 · Unvan" (Rapor Merkezi'nin kuralı, routes/report-center.mjs companyLabel): PDF ve Excel başlık bloğunda.
   const office = () => store.setting("office.name", "");
-  const companyLabel = () => {
-    let entry = null;
-    try {
-      entry = typeof company === "function" ? company() : null;
-    } catch {
-      entry = null;
-    }
-    const name = String(office() || entry?.name || "").trim();
-    const code = String(entry?.code || "").trim();
-    return code && name ? `${code} · ${name}` : name || code;
-  };
+  // 2.4.5 madde 6c: etiket ve Tabela Adı başlığı tek yardımcıda (lib/report-header.mjs; önceden üç rotada aynı kopya).
+  const header = createReportHeader({ store, company: company });
+  const companyLabel = header.companyLabel;
 
   // 2.4.4 U3: dışa aktarım programın öbür raporlarıyla AYNI üreticiden (lib/report-files.mjs — Rapor Merkezi ve Banka): başlık bloğu (şirket, rapor adı, kapsam,
   // oluşturma, hazırlayan), alt TOPLAM satırı, Excel'de Özet sayfası, dosya adı "<Rapor Adı> gg.aa.yyyy" YEREL günle (önceden toISOString: gece yarısından
@@ -236,7 +229,7 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
       optional: table.columns.map((column, index) => (column.dynamic ? index : -1)).filter(index => index >= 0),
       optionalNote: count => `${count} özel alan kolonu sayfaya sığmadı (tamamı Excel'de)`,
     };
-    const ctx = { now: clock(), companyLabel: companyLabel(), userName: user.display_name || user.username || "", brand: office() || "DestekOfis" };
+    const ctx = { now: clock(), companyLabel: companyLabel(), userName: user.display_name || user.username || "", brand: office() || "DestekOfis", header };
     const name = reportFileBase(title, isoDay(clock()));
     if (format === "xlsx") return sendBuffer(res, reportXlsx(data, ctx), { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `${name}.xlsx` });
     return sendBuffer(res, reportPdf(data, ctx), { type: "application/pdf", name: `${name}.pdf`, inline: body.inline === true });

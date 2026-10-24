@@ -642,7 +642,7 @@ try {
     await page.click(`${TOP} [data-act="settings"]`);
     await page.waitForSelector(`${TOP} [data-s="seller.name"]`);
     d = topDialog(page);
-    const setSel = { name: '[data-s="seller.name"]', address: '[data-s="seller.address"]', city: '[data-s="seller.city"]', phone: '[data-s="seller.phone"]', iban: '[data-bank="0"][data-k="iban"]', bank: '[data-bank="0"][data-k="name"]', footer: '[data-s="defaults.footer"]', dueDays: '[data-s="defaults.dueDays"]', track: '[data-s="defaults.itemTracking"]' };
+    const setSel = { name: '[data-s="seller.name"]', address: '[data-s="seller.address"]', city: '[data-s="seller.city"]', phone: '[data-s="seller.phone"]', iban: '[data-bank="0"][data-k="iban"]', bank: '[data-bank="0"][data-k="name"]', footer: '[data-s="defaults.footer"]', dueDays: '[data-s="defaults.dueDays"]', track: '[data-s="defaults.itemTracking"]', sign: '[data-s="reportHeader.signName"]', headerMode: '[data-s="reportHeader.mode"]' };
     await typeInto(page, d.locator(setSel.name), "Izole Firma A.Ş.");
     await typeInto(page, d.locator(setSel.address), "Kızılay Mah. 12. Sok. No 3");
     await typeInto(page, d.locator(setSel.city), "Ankara");
@@ -652,6 +652,9 @@ try {
     await typeInto(page, d.locator(setSel.footer), "İade 14 gün içinde.", { tab: false });
     await typeInto(page, d.locator(setSel.dueDays), "45");
     await d.locator(setSel.track).click();
+    // 2.4.5 madde 6c: Tabela Adı + Rapor ve Ekstre Başlığı (Firma Bilgisi kartında) da aynı formun alanı: Logo / Kaşe seçince silinmez, kaydedilir, yeniden açınca dolu gelir.
+    await typeInto(page, d.locator(setSel.sign), "Izole Market");
+    await d.locator(setSel.headerMode).selectOption("full");
     const settingsTyped = await valuesOf(d, setSel);
     await d.locator("[data-logo-file]").setInputFiles(path.join(here, "..", "fixtures", "logo.png"));
     await page.waitForSelector(`${TOP} [data-logo-preview] img`, { timeout: 8000 });
@@ -668,8 +671,19 @@ try {
     await sleep(1800);
     const settingsSaved = await must("fatura ayarları", admin.get("/api/workspace/invoices/settings"));
     ok(settingsSaved.seller.name === "Izole Firma A.Ş." && settingsSaved.seller.address === "Kızılay Mah. 12. Sok. No 3" && settingsSaved.seller.city === "Ankara" && settingsSaved.seller.phone === "0312 555 44 33" && (settingsSaved.seller.banks || []).some(bank => bank.iban.replace(/\s/g, "") === "TR330006100519786457841326") && settingsSaved.defaults.footer === "İade 14 gün içinde." && Number(settingsSaved.defaults.dueDays) === 45 && settingsSaved.defaults.itemTracking === true && /^data:image\/jpeg/.test(settingsSaved.seller.logo || "") && !settingsSaved.seller.stamp, `D8 kaydedilen = girilen (logo var, kaşe yok)`);
+    ok(settingsSaved.reportHeader?.signName === "Izole Market" && settingsSaved.reportHeader?.mode === "full", `D8 Tabela Adı ve Rapor ve Ekstre Başlığı kaydedildi: ${JSON.stringify(settingsSaved.reportHeader)}`);
     await page.keyboard.press("Escape");
     ok(!(await confirmShown(page)), "D8 kaydedilmiş ayarlar Esc ile sorusuz kapanır");
+    await closeClean(page);
+    // Yeniden aç: Tabela Adı ve seçim kayıtlı değerle dolu gelir (2.4.5 madde 6c).
+    await page.evaluate(() => window.HOF.invoices.open({ account: {} }));
+    await page.waitForSelector(`${TOP} [data-act="settings"]`);
+    await page.click(`${TOP} [data-act="settings"]`);
+    await page.waitForSelector(`${TOP} [data-s="reportHeader.signName"]`);
+    const reopened = await valuesOf(topDialog(page), { sign: setSel.sign, headerMode: setSel.headerMode });
+    ok(reopened.sign === "Izole Market" && reopened.headerMode === "full", `D8 yeniden açınca Tabela Adı ve seçim dolu: ${JSON.stringify(reopened)}`);
+    await page.keyboard.press("Escape");
+    ok(!(await confirmShown(page)), "D8 değişmemiş ayarlar Esc ile sorusuz kapanır");
     await closeClean(page);
     covered.push("Fatura Ayarları (hof-invoices renderSettings)");
 

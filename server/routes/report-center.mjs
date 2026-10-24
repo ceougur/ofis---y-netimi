@@ -16,6 +16,7 @@ import { roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { allocate, dayText, isoDay } from "../lib/plans.mjs";
 import { tl } from "../lib/report-pdf.mjs";
+import { createReportHeader } from "../lib/report-header.mjs";
 import { reportFileBase, reportPdf, reportXlsx } from "../lib/report-files.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { K10_LABELS } from "../lib/bank/accounts.mjs";
@@ -186,17 +187,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
   // Rapor başlığındaki şirket (2.2.0 İz 1.1; 2.0.17 m2 kararı "rapor/PDF/Excel başlığında 001 · Unvan"): bu örneğin şirketinin kodu (kayıt defteri)
   // ve unvanı (office.name; PDF'in başlığında da bu yazıyordu; boşsa şirketin adı). İstek pencerenin şirketine gider (?hofCompany=, app.mjs
   // dispatch), dolayısıyla etiket de o şirketindir. Önceden Excel'de şirket hiç yoktu, PDF'te yalnız unvan vardı.
-  const companyLabel = () => {
-    let entry = null;
-    try {
-      entry = typeof company === "function" ? company() : null;
-    } catch {
-      entry = null;
-    }
-    const name = String(office() || entry?.name || "").trim();
-    const code = String(entry?.code || "").trim();
-    return code && name ? `${code} · ${name}` : name || code;
-  };
+  // 2.4.5 madde 6c: etiket ve Tabela Adı başlığı tek yardımcıda (lib/report-header.mjs; önceden üç rotada aynı kopya).
+  const header = createReportHeader({ store, company: company });
+  const companyLabel = header.companyLabel;
   const admin = { id: "", role: "admin" };
 
   // ---------- Ortak yardımcılar ----------
@@ -2856,7 +2849,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
     ok(res, { ...data, rows: data.rows.slice(0, PREVIEW_ROWS), total: data.total });
   });
   // PDF ve Excel üretimi tek yerden (lib/report-files.mjs; 2.3.0 İz 5.1): Banka → Hareketler'in PDF / Excel düğmeleri de aynı üreticiyi kullanır.
-  const fileCtx = user => ({ now: clock(), companyLabel: companyLabel(), userName: user.display_name || user.username || "", brand: office() || "DestekOfis" });
+  const fileCtx = user => ({ now: clock(), companyLabel: companyLabel(), userName: user.display_name || user.username || "", brand: office() || "DestekOfis", header });
   router.get("/api/workspace/report-center/:id/pdf", async ({ req, res, params, url }) => {
     const user = enter(req);
     // PDF_ROWS + 1: kırpılıp kırpılmadığı (alt başlık) satır sayısından anlaşılır; kırpılsa da TOPLAM satırı TÜM satırların toplamıdır.

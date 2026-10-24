@@ -35,6 +35,7 @@ import { posMetaOf } from "../lib/bank/pos.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { createSecretBox } from "../lib/secret-box.mjs";
 import { addMonths, dayText, isoDay } from "../lib/plans.mjs";
+import { createReportHeader, readReportHeader, REPORT_HEADER_KEY, reportHeaderInput } from "../lib/report-header.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { ANONYMOUS_TCKN, classifyTaxId, isValidIban, isValidMersis, normalizeIban, partyIssues, partyProblems, splitPersonName } from "../lib/tax-id.mjs";
 import { UNITS, unitLabel } from "../lib/units.mjs";
@@ -244,6 +245,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
   // İstek kimliği (v2.1.0): şirketin veri tabanında (request_keys), belge yazımıyla aynı işlemde; yeniden başlatmada da hatırlanır.
   const requests = createIdempotency({ store, now: clock });
+  // 2.4.5 madde 6c: Tabela Adı ve Rapor ve Ekstre Başlığı (Fatura Ayarları → Firma Bilgisi). Yalnız rapor / ekstre başlığı; fatura, e-Belge ve makbuz unvanı DEĞİŞMEZ.
+  const reportHeader = createReportHeader({ store });
 
   // ---------- Ayarlar ----------
   function settings() {
@@ -2640,21 +2643,28 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   router.get("/api/workspace/invoices/settings", async ({ req, res }) => {
     const user = requireView(req);
     const s = settings();
-    ok(res, { ...publicSettings(s, canUser(user, "invoices.settings")), edocEnabled, esmmAvailable: esmmEnabled, nextNumbers: nextNumbers(s), testNumbers: testNumbers(s), testSeries: TEST_SERIES, bankAccounts: bankAccountsState(s), problems: { KAGIT: sellerProblems("KAGIT", s), EARSIVFATURA: sellerProblems("EARSIVFATURA", s), TEMELFATURA: sellerProblems("TEMELFATURA", s) } });
+    ok(res, { ...publicSettings(s, canUser(user, "invoices.settings")), reportHeader: readReportHeader(store), edocEnabled, esmmAvailable: esmmEnabled, nextNumbers: nextNumbers(s), testNumbers: testNumbers(s), testSeries: TEST_SERIES, bankAccounts: bankAccountsState(s), problems: { KAGIT: sellerProblems("KAGIT", s), EARSIVFATURA: sellerProblems("EARSIVFATURA", s), TEMELFATURA: sellerProblems("TEMELFATURA", s) } });
   });
   router.put("/api/workspace/invoices/settings", async ({ req, res }) => {
     const user = auth.requirePermission(req, "invoices.settings");
     const body = await readJson(req);
     const previous = settings();
     const next = settingsInput(body, previous);
+    // 2.4.5 madde 6c: Tabela Adı ve Rapor ve Ekstre Başlığı ayrı ayarda (şirketin kendi verisi; gövdede yoksa — Entegratör Ayarları — değişmez).
+    const headerBefore = readReportHeader(store);
+    const headerNext = body.reportHeader === undefined ? null : reportHeaderInput(body.reportHeader, headerBefore);
     store.tx(() => {
       store.setSetting(SETTINGS_KEY, JSON.stringify(next), user.id);
+      if (headerNext && (headerNext.signName !== headerBefore.signName || headerNext.mode !== headerBefore.mode)) {
+        store.setSetting(REPORT_HEADER_KEY, JSON.stringify(headerNext), user.id);
+        audit(user, "office.report_header.updated", "settings", { from: headerBefore, to: headerNext });
+      }
       // Günlüğe parola yazılmaz; yalnız değişip değişmediği.
       const integratorLog = { id: next.integrator.id, env: next.integrator.env, username: next.integrator.username, passwordChanged: next.integrator.passwordSealed !== previous.integrator.passwordSealed, autoSend: next.integrator.autoSend };
       audit(user, "invoice.settings.updated", "settings", { efatura: next.efatura, earsiv: next.earsiv, series: next.series, integrator: integratorLog });
     });
     publish(user, { kind: "invoices", settings: true });
-    ok(res, { ...publicSettings(next), edocEnabled, esmmAvailable: esmmEnabled, nextNumbers: nextNumbers(next), testNumbers: testNumbers(next), testSeries: TEST_SERIES, bankAccounts: bankAccountsState(next), problems: { KAGIT: sellerProblems("KAGIT", next), EARSIVFATURA: sellerProblems("EARSIVFATURA", next), TEMELFATURA: sellerProblems("TEMELFATURA", next) } });
+    ok(res, { ...publicSettings(next), reportHeader: readReportHeader(store), edocEnabled, esmmAvailable: esmmEnabled, nextNumbers: nextNumbers(next), testNumbers: testNumbers(next), testSeries: TEST_SERIES, bankAccounts: bankAccountsState(next), problems: { KAGIT: sellerProblems("KAGIT", next), EARSIVFATURA: sellerProblems("EARSIVFATURA", next), TEMELFATURA: sellerProblems("TEMELFATURA", next) } });
   });
   router.get("/api/workspace/invoices", async ({ req, res, url }) => {
     const user = requireView(req);
@@ -4696,7 +4706,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       types: ["", "", "", "", "", "money", "money", "money", "money"],
       rows: data.invoices.slice(0, 20_000).map(row => [dayText(row.issueDate), row.displayNo, row.kindLabel, row.accountName, row.payStateLabel || row.statusLabel, tl(row.tryNet), tl(row.tryVat), tl(row.tryPayable), tl(row.open)]),
       summary: [["Satış", tl(data.totals.sale)], ["Alış", tl(data.totals.purchase)], ["KDV", tl(data.totals.vat)], ["Açık", tl(data.totals.open)]],
-      officeName: store.setting("office.name", "") || "",
+      ...reportHeader.pdf(),
       userName: user.display_name || user.username || "",
     });
     sendBuffer(res, pdf, { type: "application/pdf", name: "Fatura Listesi.pdf", inline: url.searchParams.get("download") !== "1" });

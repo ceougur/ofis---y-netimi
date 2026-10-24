@@ -16,6 +16,7 @@ import { bankForm } from "../lib/bank/module-ref.mjs";
 import { BANK_ACTIONS, collectionsFingerprint, createChequeCollections } from "../lib/bank/collections.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay, parseDay } from "../lib/plans.mjs";
+import { createReportHeader } from "../lib/report-header.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { systemClock } from "../lib/clock.mjs";
@@ -38,6 +39,8 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   const today = () => isoDay(clock());
   const newId = prefix => `${prefix}-${randomUUID()}`;
   const office = () => store.setting("office.name", "");
+  // 2.4.5 madde 6c: rapor / ekstre PDF başlığı Tabela Adı ayarından (boşsa bugünkü unvan); makbuz ve belge unvanı değişmez.
+  const header = createReportHeader({ store });
   const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
   const changed = (user, { chequeId = "", accountIds = [], planIds = [], cash = false } = {}) => {
     publish(user, { kind: "cheques", chequeId });
@@ -715,7 +718,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
         ["Bankada Tahsilde", `${data.summary.deposited.count} · ${tl(data.summary.deposited.amount)}`],
         ["Ödenecek (verilen)", `${data.summary.out.open.count} · ${tl(data.summary.out.open.amount)}`],
       ],
-      officeName: office(),
+      ...header.pdf(),
       userName: user.display_name || user.username || "",
     });
     audit(user, "cheque.exported", "pdf", { count: rows.length });

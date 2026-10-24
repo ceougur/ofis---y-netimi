@@ -15,6 +15,7 @@ import { matrixText, parseAmount, roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { receiptPdf } from "../lib/plan-report.mjs";
 import { dayText, isoDay, parseDay } from "../lib/plans.mjs";
+import { createReportHeader } from "../lib/report-header.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { readSheetMatrices } from "../lib/sheets.mjs";
 import { inferRolesByValues, findHeaderRow, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
@@ -40,6 +41,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   const today = () => isoDay(clock());
   const newId = prefix => `${prefix}-${randomUUID()}`;
   const office = () => store.setting("office.name", "");
+  // 2.4.5 madde 6c: rapor / ekstre PDF başlığı Tabela Adı ayarından (boşsa bugünkü unvan); makbuz ve belge unvanı değişmez.
+  const header = createReportHeader({ store });
   const currentSource = () => (dataset?.currentKey ? dataset.currentKey() : "");
   const changed = (user, detail = {}) => events?.publish("workspace.changed", { kind: "accounts", actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
   const touched = (user, account, extra = {}) => {
@@ -896,9 +899,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       // 2.4.3 (keşif A22; kalıcı karar "her raporda alt TOPLAM satırı"): satırların borç/alacak toplamı ve son bakiye (ekrandaki kart tablosuyla aynı).
       footer: account.ledger.length ? ["", "TOPLAM", "", tl(roundMoney(account.ledger.reduce((sum, line) => sum + line.debit, 0))), tl(roundMoney(account.ledger.reduce((sum, line) => sum + line.credit, 0))), `${tl(Math.abs(t.balance))} ${sideText(t.balance)}`.trim()] : null,
       summary: [["Borç Toplamı", tl(t.debit)], ["Alacak Toplamı", tl(t.credit)], ["Bakiye", `${tl(Math.abs(t.balance))} ${sideText(t.balance)}`.trim()], ...(t.planRemaining ? [["Taksitlerden Kalan (bakiyeye dahil)", tl(t.planRemaining)]] : []), ...(t.overdueCount ? [["Geciken", `${tl(t.overdue)} · ${t.overdueCount} taksit`]] : [])],
-      officeName: office(),
       userName: user.display_name || user.username || "",
-      brand: office(),
+      ...header.pdf({ brand: office() }),
     });
     audit(user, "account.statement.exported", account.id, { name: account.name });
     sendBuffer(res, pdf, { type: "application/pdf", name: `Cari-ekstre ${account.name}.pdf`, inline: url.searchParams.get("download") !== "1" });
@@ -933,9 +935,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       types: ["text", "text", "text", "text", "text", "text", "money", "money", "money", "money", "text"],
       rows: data.accounts.map(item => [item.refNo, item.name, ACCOUNT_TYPES[item.type] || "", [item.groupName, item.subgroupName].filter(Boolean).join(" › "), item.phone, dayText(item.registeredOn), tl(item.debit), tl(item.credit), `${tl(Math.abs(item.balance))} ${sideText(item.balance)}`.trim(), item.planRemaining ? tl(item.planRemaining) : "", item.note || ""]),
       summary: [["Cari", String(data.totals.count)], ["Borçlular", tl(data.totals.debtor)], ["Alacaklılar", tl(data.totals.creditor)], ["Geciken Taksit", `${tl(data.totals.overdue)} · ${data.totals.overdueCount}`]],
-      officeName: office(),
       userName: user.display_name || user.username || "",
-      brand: office(),
+      ...header.pdf({ brand: office() }),
     });
     audit(user, "account.list.exported", "list", { ...query, count: data.totals.count });
     sendBuffer(res, pdf, { type: "application/pdf", name: `${title}-listesi ${dayText(today())}.pdf`, inline: url.searchParams.get("download") !== "1" });

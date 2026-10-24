@@ -50,9 +50,10 @@ function columnMeasures(doc, { headers, rows, types, totals, fontSize, W }) {
 const totalsOf = ({ footer = null, footers = null }) => (Array.isArray(footers) && footers.length ? footers : footer ? [footer] : []);
 
 /**
- * @param {{ title: string, subtitle?: string, headers: string[], rows: string[][], types?: string[], summary?: Array<[string, string]>, footer?: string[] | null, footers?: string[][] | null, officeName?: string, userName?: string, brand?: string, now?: Date, optional?: number[], optionalNote?: (count: number) => string }} input
+ * @param {{ title: string, subtitle?: string, headers: string[], rows: string[][], types?: string[], summary?: Array<[string, string]>, footer?: string[] | null, footers?: string[][] | null, officeName?: string, officeLines?: string[] | null, userName?: string, brand?: string, now?: Date, optional?: number[], optionalNote?: (count: number) => string }} input
  * footer (v2.0.20): tablonun altındaki kalın TOPLAM satırı (rapor merkezi hesaplar; yoksa çizilmez). footers (2.4.3 UX24): birden çok
  * TOPLAM satırı (yönü karışık raporda "TOPLAM Satış", "TOPLAM Alış", "Net"); verilirse footer yerine bunlar sırayla çizilir.
+ * officeLines (2.4.5 madde 6c): Tabela Adı açıkken sol üstteki başlık satırları (lib/report-header.mjs); verilmezse tek satır officeName.
  * brand: altbilgideki ad (varsayılan "DestekOfis"); boş metin yalnız başlığı yazar (müşteriye verilen belgeler, v2.0.6).
  *
  * optional (2.4.4 U3): sayfaya sığmazsa bırakılabilecek kolonların sırası (tablo raporlarının özel alan kolonları; Excel'de hepsi var). Bölünmez kolonların
@@ -89,7 +90,7 @@ export function tablePdf(input) {
   return drawTablePdf({ ...pick(keep), subtitle: [input.subtitle, note].filter(Boolean).join(" · ") });
 }
 
-function drawTablePdf({ title, subtitle = "", headers, rows, types = [], summary = [], footer = null, footers = null, officeName = "", userName = "", brand = "DestekOfis", now = new Date() }) {
+function drawTablePdf({ title, subtitle = "", headers, rows, types = [], summary = [], footer = null, footers = null, officeName = "", officeLines = null, userName = "", brand = "DestekOfis", now = new Date() }) {
   const M = MARGIN;
   const { size, W, fontSize } = layoutOf(headers.length);
   const doc = new PdfDocument({ fonts: loadFonts(), size, title, author: officeName || "DestekOfis", subject: title });
@@ -150,15 +151,18 @@ function drawTablePdf({ title, subtitle = "", headers, rows, types = [], summary
     page = doc.addPage();
     top = M;
     if (first) {
-      if (officeName) page.text(M, top + 8, doc.fit(officeName, W * 0.6, "bold", 9), { font: "bold", size: 9, color: muted });
+      // 2.4.5 madde 6c: Tabela Adı açıkken başlık satırları (lib/report-header.mjs; ilki koyu, gerisi firma bilgisi); kapalıyken tek satır unvan (bugünkü).
+      const heads = Array.isArray(officeLines) && officeLines.length ? officeLines : officeName ? [officeName] : [];
+      heads.forEach((line, index) => page.text(M, top + 8 + index * 10, doc.fit(line, W * 0.6, index ? "regular" : "bold", index ? 8 : 9), { font: index ? "regular" : "bold", size: index ? 8 : 9, color: muted }));
+      top += Math.max(0, heads.length - 1) * 10;
       page.text(M, top + 30, title, { font: "bold", size: 18, color: ink });
       // m6 (10.10.2026): uzun alt başlık kesilmez, sözcük sınırından en çok üç satıra iner (Nakit Akış'ın başlangıç tanımı "… Gerçek Banka…" diye
       // kesiliyordu). Sığan alt başlık bugünkü gibi tek satırdır (yerleşim aynı).
       const subLines = subtitle ? doc.wrap(subtitle, W, "regular", 10) : [];
       const shownSub = subLines.length > 3 ? [...subLines.slice(0, 2), doc.fit(subLines.slice(2).join(" "), W, "regular", 10)] : subLines;
       shownSub.forEach((line, index) => page.text(M, top + 46 + index * 12, line, { size: 10, color: "#374151" }));
-      page.text(M, top + 8, `Oluşturma: ${created}`, { size: 8, color: muted, align: "right", width: W });
-      if (userName) page.text(M, top + 20, `Hazırlayan: ${doc.fit(userName, W * 0.35, "regular", 8)}`, { size: 8, color: muted, align: "right", width: W });
+      page.text(M, M + 8, `Oluşturma: ${created}`, { size: 8, color: muted, align: "right", width: W });
+      if (userName) page.text(M, M + 20, `Hazırlayan: ${doc.fit(userName, W * 0.35, "regular", 8)}`, { size: 8, color: muted, align: "right", width: W });
       top += shownSub.length ? 58 + (shownSub.length - 1) * 12 : 44;
       if (summary.length) {
         const gap = 6;

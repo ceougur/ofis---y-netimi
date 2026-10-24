@@ -28,6 +28,7 @@
 //   GET  /bank/plans · POST · /:id/execute · /:id/skip · DELETE /:id   view · move  Planlı İşlemler (deftere girmez; Gerçekleştir fiş yazar)
 //   GET  /bank/reports/fees?from=&to=&account=&format=xlsx  bank.reports  Banka Masraf Raporu verisi (Excel: metin hücreleri)
 import { HttpError, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
+import { createReportHeader } from "../lib/report-header.mjs";
 import { reportFileBase, reportPdf, reportXlsx } from "../lib/report-files.mjs";
 import { footerRow } from "./report-center.mjs";
 import { canUser } from "../lib/permissions.mjs";
@@ -336,18 +337,10 @@ export function registerBankRoutes(router, context) {
     data.footer = footerRow(data);
     return data;
   }
-  const companyLabel = () => {
-    let entry = null;
-    try {
-      entry = typeof context.company === "function" ? context.company() : null;
-    } catch {
-      entry = null;
-    }
-    const name = String(store.setting("office.name", "") || entry?.name || "").trim();
-    const code = String(entry?.code || "").trim();
-    return code && name ? `${code} · ${name}` : name || code;
-  };
-  const fileCtx = user => ({ now: context.now(), companyLabel: companyLabel(), userName: user.display_name || user.username || "", brand: store.setting("office.name", "") || "DestekOfis" });
+  // 2.4.5 madde 6c: etiket ve Tabela Adı başlığı tek yardımcıda (lib/report-header.mjs; önceden üç rotada aynı kopya).
+  const header = createReportHeader({ store, company: () => (typeof context.company === "function" ? context.company() : null) });
+  const companyLabel = header.companyLabel;
+  const fileCtx = user => ({ now: context.now(), companyLabel: companyLabel(), userName: user.display_name || user.username || "", brand: store.setting("office.name", "") || "DestekOfis", header });
   router.get(`${BASE}/movements.pdf`, async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "bank.view");
     const data = movementsTable(url.searchParams);
