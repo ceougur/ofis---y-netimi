@@ -24,6 +24,7 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
   dökülemedi (huggingface.co ağ izni yok) — kullanıcı izin verirse ya da metni yapıştırırsa.
 - SONRA: DEVİR 2.5.0 Aralık'ta (en geç 1 Aralık başla, ~20 Aralık yayın); hatırlatıcı trig_01DE8bFDurzMRT6thbptBrQM 23.11.2026 09:00 TR.
 - KAPSAYICI: Wine 9.0 + mingw windres kurulu; depo derin (unshallow); imza anahtarı uploads'ta; EDM test parolası bağlamda YOK (gerekirse kullanıcıdan dosya olarak istenir).
+- SÜRÜYOR (24.10.2026 ~16:55 UTC): kullanıcı "yapılacak işleri maddele, yapıldıkça üstünü çiz, 30 dk bir ara rapor ver" → rapor işi CronCreate fdff7836 (:07/:37, oturum içi). Taban d2cef7c (BAŞ MİMAR KARARLARI iş listesinde). Ortak ajan kuralları <nd>/ajan-ortak-245.md. DALGA 0+1 AYNI ANDA, 8 ajan, worktree /home/user/wt/<ad> dal is/<ad>: kahin-245 (0b, XH), pil-karti (6a + madde 3 zil/takvim, XH), tablo-hucre (6b, M), tabela (6c, H), ekstre-ayrinti (6d, H), kapi-para (1+2+3, XH), kapi-uyari (4+5, XH), cari-vade (6, XH). Birleşim sırası: kapi-uyari → cari-vade; tabela → ekstre-ayrinti; kâhin dalı adaya ilk. CI 3c7f6f5 (madde 0a) bekleniyor. Eski 2.4.4 worktree'leri (18) kaldırıldı (dallar duruyor; aday ve r31e-b-eski izlenmeyen dosyalı, kaldı).
 - BEKLEYEN YAMA YOK (7bf3691 uygulandı). Not defterinde 2.4.4 teslim klasörü `<nd>/teslim-2.4.4/` (yayındakiyle aynı; silinebilir).
 
 ### 00. 2.4.4 SÜRÜYOR — DEVAM NOTU (22.10.2026 14:40 UTC; kullanıcının /compact talimatından ÖNCE yazıldı — ÖNCE BUNU OKU)
