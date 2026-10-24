@@ -1312,9 +1312,11 @@ try {
       expect(firstForm.title === "Yeni Cari" && /Önce cari açın/.test(firstForm.intro) && firstForm.name === target, `carisi olmayan kayıtta önce cari açılır, ad kayıttan: ${JSON.stringify(firstForm).slice(0, 200)}`);
       await page.click('.hof-modal-backdrop.is-visible button[type="submit"]');
       await page.waitForFunction(() => document.querySelector(".hof-modal-backdrop.is-visible:last-of-type .hof-modal-title")?.textContent.trim() === "Tahsilat", null, { timeout: 10000 });
-      const amount = await page.inputValue('.hof-modal-backdrop.is-visible:last-of-type input[name="amount"]');
-      expect(amount === "" && pillAmount > 0, `tutar boş gelmeli (2.4.5 madde 3): “${amount}” (pil ${pillAmount})`);
-      await page.fill('.hof-modal-backdrop.is-visible:last-of-type input[name="amount"]', String(pillAmount).replace(".", ","));
+      const shown = await page.inputValue('.hof-modal-backdrop.is-visible:last-of-type input[name="amount"]');
+      expect(shown === "" && pillAmount > 0, `tutar boş gelmeli (2.4.5 madde 3): “${shown}” (pil ${pillAmount})`);
+      // Kullanıcı pildeki tutarı kendisi yazar (aşağıdaki Tablodan Aktar ön izlemesi bu tutarı arar).
+      const amount = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(pillAmount);
+      await page.fill('.hof-modal-backdrop.is-visible:last-of-type input[name="amount"]', amount);
       await page.click('.hof-modal-backdrop.is-visible:last-of-type button[type="submit"]');
       await page.waitForFunction(count => document.querySelectorAll(".hof-payment-pill:not([aria-hidden])").length === count - 1, before, { timeout: 10000 });
       const pillAccount = (await page.evaluate(key => fetch(`/api/workspace/cases/${encodeURIComponent(key)}/account`).then(response => response.json()), pillKey)).data?.account;

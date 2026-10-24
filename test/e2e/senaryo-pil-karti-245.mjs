@@ -5,6 +5,7 @@
 //   S2 Fatura Kartını Aç → o faturanın kartı açılır ("bulunamadı" iletisi yok, seçili kayıt yerinde).
 //   S3 Tahsilat Gir → faturanın KENDİ "Tahsilat Ekle" formu (belge no başlıkta, açık tutar) → insan hızında yazım + Tab → veri tabanında tahsilat faturanın carisine
 //      (No 2), bu faturaya bağlı (invoice_id); seçili kaydın carisine (No 1) hiçbir şey yazılmaz; fatura kapanır, pil kalkar.
+//   S3b bayat pil: kapanmış faturada Tahsilat Gir (payDoc) kartı açar, form açılmaz, "kapandı" iletisi; ikinci tahsilat yazılmaz.
 //   S4 alış faturası pili: Ödeme Gir → "Ödeme Yap" formu → ödeme (out) tedarikçiye, faturaya bağlı.
 //   S5 planlı banka pili: tahsilat ve Ödendi Say yok; "Planlı İşlemleri Aç →" → Banka → Hareketler → Planlı İşlemler (plan listede).
 //   S6 zil listesi: fatura satırında Tahsilat Gir + Fatura Kartını Aç (Kayda Git / Gerçekleştirildi yok); planlı banka satırında Planlı İşlemleri Aç (Tahsilat Gir yok);
@@ -237,6 +238,17 @@ try {
     ok(rows.length === 1 && rows[0].kind === "in" && rows[0].amount === 1200 && rows[0].invoiceId === sale.id, `faturanın carisi (No ${twin.refNo}): ${JSON.stringify(rows)}`);
     ok(entriesOf(ali.id).length === aliBefore, `seçili kaydın carisine (No ${ali.refNo}) hiçbir şey yazılmadı (${aliBefore} → ${entriesOf(ali.id).length})`);
     ok((await openOf(sale.id)) === 0, "fatura kapandı (açık 0)");
+    await closeAll(page);
+  });
+
+  await step("S3b bayat pil (fatura bu arada kapandı): Tahsilat Gir kartı açar, form AÇILMAZ, nedeni söylenir", async () => {
+    await page.evaluate(id => window.HOF.invoices.payDoc(id), sale.id);
+    ok(await invoiceCardOpen(page, sale.displayNo), `kart açıldı: ${sale.displayNo}`);
+    await page.waitForTimeout(700);
+    ok(!(await page.$(`${MODAL} input[name="amount"]`)), "ödeme formu açılmadı");
+    const said = await toasts(page);
+    ok(/kapandı; açık tutarı yok/.test(said), `ileti: “${said.slice(0, 160)}”`);
+    ok(entriesOf(twin.id).length === 1, "ikinci tahsilat yazılmadı");
     await closeAll(page);
   });
 
