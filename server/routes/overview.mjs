@@ -40,13 +40,19 @@ const SOURCE_TEXT = { unbilled: "Faturasız Cari Alacağı", plan: "Taksit", che
 // Satırın kaynak adı (PDF/Excel): akışın kendi kaynağı (flow; ör. bankada tahsildeki evrak "deposit", plan §8.9) varsa o, yoksa süzgeç kaynağı.
 const sourceText = row => SOURCE_TEXT[row.flow] || SOURCE_TEXT[row.source] || row.source;
 // Vade takip kaynakları (v2.0.9) ve görme koşulu: çek/senet ve Kasa, ANLIK DURUM yetkisi ya da o modülün yetkisiyle.
-const DUE_SOURCES = ["plan", "cheque", "note", "invoice", "cash", "bank", "table", "promise", "deadline"];
+// 2.4.5 madde 4 (uyarı kapısı): tablonun ödeme günleri ("table") ve ödeme sözleri ("promise") kaynak değildir; tablodan yalnız tutarsız son tarihler
+// ("deadline"). Eski davranış (config.legacyTableDues, yalnız testler): LEGACY_TABLE_SOURCES de.
+const DUE_SOURCES = ["plan", "cheque", "note", "invoice", "cash", "bank", "deadline"];
+const LEGACY_TABLE_SOURCES = ["table", "promise"];
 const STATE_TEXT = { overdue: "Gecikmiş", today: "Bugün", month: "Bu Ay", upcoming: "Yaklaşan" };
 const GROUPS = new Set(["day", "week", "month"]);
 
 const MONEY_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-export function registerOverviewRoutes(router, { store, auth, audit, events, dataset = null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, tables = () => null, doubtful: doubtfulApi = () => null, money: moneyApi = null, bankAccounts = null, now: clock = systemClock }) {
+export function registerOverviewRoutes(router, { store, auth, audit, events, dataset = null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, tables = () => null, doubtful: doubtfulApi = () => null, money: moneyApi = null, bankAccounts = null, config = {}, now: clock = systemClock }) {
+  // 2.4.5 madde 4: Nakit Akış Projeksiyonu ve Vade Takip'te tablonun tutarlı kalemleri yok (lib/config.mjs legacyTableDues; yalnız testler açar).
+  const legacyTable = config?.legacyTableDues === true;
+  const dueSourceList = legacyTable ? [...DUE_SOURCES.slice(0, -1), ...LEGACY_TABLE_SOURCES, "deadline"] : DUE_SOURCES;
   const today = () => isoDay(clock());
   const office = () => store.setting("office.name", "");
   const userName = user => user.display_name || user.username || "";
@@ -358,7 +364,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const range = rangeOf(params, { preset: "next30" });
     const day = today();
     const includeOverdue = params.get("overdue") === "1";
-    const withTable = params.get("table") !== "0";
+    // 2.4.5 madde 4: "Tablo" seçeneği kalktı — tablolardaki ödeme günleri ve sözleri projeksiyona girmez (eski istemcinin `table` parametresi yok sayılır).
+    const withTable = legacyTable && params.get("table") !== "0";
     const group = GROUPS.has(text(params.get("group"))) ? text(params.get("group")) : "";
     const flows = [];
     if (plans()?.openItems) flows.push(...plans().openItems(day));
@@ -495,8 +502,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
   //   Taksit      : açık kartların kalanı olan taksitleri (Taksitler ekranıyla aynı dağıtım, allocate)
   //   Çek / Senet : portföydeki alınan (tahsil edilecek) ve ödenecek verilen evrak
   //   Kasa        : Kasa'ya ileri tarihle girilmiş giriş/çıkış (kira, maaş…)
-  //   Tablo       : Excel/Sheets tablolarındaki ödeme günleri ve ödeme sözleri (tahsilat takvimiyle aynı kalemler; taksit
-  //                 kartı olan kişinin tablodaki ödeme kalemleri ikinci kez sayılmaz) ve son tarihler (tutarsız)
+  //   Son Tarih   : Excel/Sheets tablolarındaki son tarihler (tutarsız; sözleşme bitiş, duruşma…). 2.4.5 madde 4: tablonun ödeme günleri ve ödeme
+  //                 sözleri (tutarlı kalemler) listede yok (eski davranışta — legacyTableDues — "Tablo" ve "Ödeme Sözü" kaynakları).
   // Görme: ANLIK DURUM yetkisi ya da rapor yetkisi (yönetici, uzman). Çek/senet ve Kasa kalemleri yalnız ANLIK DURUM ya
   // da o modülün yetkisi olana gider (ekranında göremediği rakamı raporda da görmez).
   const canDues = user => canUser(user, "overview.view") || canUser(user, "reports.view");
@@ -506,7 +513,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     return user;
   };
   // 2.3.0 İz 3.3: planlı banka işlemleri (bank) yalnız banka rakamını görebilene (plan §8.9 "Vade Takip / Zil / Takvim: … bank.view ile").
-  const visibleSources = user => DUE_SOURCES.filter(source => (source === "cheque" || source === "note" ? canUser(user, "overview.view") || canUser(user, "cheques.view") : source === "cash" ? canUser(user, "overview.view") || canUser(user, "cash.view") : source === "invoice" ? canUser(user, "overview.view") || canUser(user, "invoices.view") : source === "bank" ? canSeeBank(user) : true));
+  const visibleSources = user => dueSourceList.filter(source => (source === "cheque" || source === "note" ? canUser(user, "overview.view") || canUser(user, "cheques.view") : source === "cash" ? canUser(user, "overview.view") || canUser(user, "cash.view") : source === "invoice" ? canUser(user, "overview.view") || canUser(user, "invoices.view") : source === "bank" ? canSeeBank(user) : true));
   // Açık fatura → nakit akışı / vade takip kalemi (fatura modülünün kapama hesabından; tek kaynak).
   const invoiceFlow = item => ({
     date: item.dueDate,
@@ -606,6 +613,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
           if (sources.has("deadline")) items.push({ date: item.due, direction: "", amount: null, source: "deadline", label: item.label, party: item.person || item.caseNo || "", phone: item.phone || "", detail: tableDetail(item), ref: recordRef(item) });
         } else if (sources.has(item.promise ? "promise" : "table")) items.push(tableFlow(item));
       }
+      // "Ödemesi kesilmiş olabilir" (tablo ay matrisinden): 2.4.5'te "table" kaynağı yok → boş (Tablo Raporları → Tablodaki Vadeler'de durur).
       if (sources.has("table")) dormant = (calendar.dormant || []).map(item => ({ party: item.person || item.caseNo || "", lastPaid: item.lastPaid, lastPaidText: item.lastPaidText, emptyMonths: item.emptyMonths, detail: tableDetail(item), ref: recordRef(item) }));
     }
     const matches = item => {

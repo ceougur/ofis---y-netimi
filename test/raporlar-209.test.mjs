@@ -2,6 +2,7 @@
 // Kasa, tablo takvimi), nakit akışına tablo kaynağı ve dönem toplamları, mizanda telefonla arama, yeni modül raporları
 // (aylık kasa, cari bazında tahsilat, taksit performansı, çek/senet vade dağılımı, stok özeti) ve sektöre uygun taslak
 // Excel (143 sektörün her taslağı programın kendi tanıyıcısıyla doğru okunur).
+// 2.4.5 madde 4 (uyarı kapısı): bu dosya tablo takvim motorunu zil / Tahsilat Takvimi / Vade Takip / Projeksiyon uçlarından sınar → 2.4.4 davranışı (legacyTableDues, yalnız testler).
 import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
 import { dueList, groupFlows, projection } from "../server/lib/finance-report.mjs";
@@ -72,7 +73,7 @@ describe("Raporlar penceresi uçları (tam yığın)", () => {
   let tedarik;
   const excel = (fileName, sheet, matrix) => ({ kind: "excel", fileName, sheets: [{ name: sheet, matrix }] });
   before(async () => {
-    server = await startTestServer();
+    server = await startTestServer({ legacyTableDues: true });
     admin = await loginAdmin(server);
     // Tablo: ödeme sözleri +3 gün (takvimde) ve +40 gün (takvimin 30 günlük söz penceresinin dışında, raporun 90 günlük
     // aralığında). Tek tarih kolonu: kalan borç o tarihin tutarıdır (iki tarih kolonunda tutar belirsizdir, yazılmaz).
@@ -238,7 +239,7 @@ describe("Raporlar penceresi uçları (tam yığın)", () => {
 describe("rapor ekranı kuralı: boş veri, geçmiş/gelecek dönem, tek kayıt, yetkisiz kullanıcı", () => {
   const NEW_REPORTS = ["kasa-aylik", "cari-tahsilat", "taksit-performans", "cek-vade-dagilimi", "stok-ozet"];
   it("boş kurulumda her yeni rapor ve Vade takip hatasız, sıfır satır; geçmiş ve gelecek dönem; tek kayıt; personel 403", async () => {
-    const server = await startTestServer();
+    const server = await startTestServer({ legacyTableDues: true });
     try {
       const admin = await loginAdmin(server);
       const ranges = ["", `from=${shift(-800)}&to=${shift(-700)}`, `from=${shift(400)}&to=${shift(500)}`];
@@ -350,7 +351,7 @@ describe("sektöre uygun taslak Excel", () => {
   });
 
   it("uçlar: katalog, dosya adı, bilinmeyen sektör, giriş gerekir", async () => {
-    const server = await startTestServer();
+    const server = await startTestServer({ legacyTableDues: true });
     try {
       const admin = await loginAdmin(server);
       const catalog = (await admin.get("/api/workspace/templates")).data.data;

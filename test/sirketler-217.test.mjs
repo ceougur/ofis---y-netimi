@@ -1,4 +1,5 @@
 // Çoklu şirket 2.0.17 (CLAUDE.md madde 2, 3, 6, 13): her şirket ayrı veri tabanı; ortak katman lisans/kullanıcı/şirket listesi.
+// 2.4.5 madde 4 (uyarı kapısı): bu dosya tablo takvim motorunu zil / Tahsilat Takvimi / Vade Takip / Projeksiyon uçlarından sınar → 2.4.4 davranışı (legacyTableDues, yalnız testler).
 import assert from "node:assert/strict";
 import { existsSync, readdirSync } from "node:fs";
 import path from "node:path";
@@ -23,7 +24,7 @@ describe("Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, s�
   let aliRoot; // 001'deki Ali Veli
 
   before(async () => {
-    server = await startTestServer();
+    server = await startTestServer({ legacyTableDues: true });
     admin = await loginAdmin(server);
     api = apiOf(admin);
     // Mevcut veri (göç provası): 001'de cari + Kasa açılışı + tahsilat.
@@ -182,7 +183,7 @@ describe("Sayfalar (madde 13): öbür sayfanın tarih uyarıları zile/takvime g
   let server;
   let api;
   before(async () => {
-    server = await startTestServer();
+    server = await startTestServer({ legacyTableDues: true });
     api = apiOf(await loginAdmin(server));
   });
   after(() => server.close());

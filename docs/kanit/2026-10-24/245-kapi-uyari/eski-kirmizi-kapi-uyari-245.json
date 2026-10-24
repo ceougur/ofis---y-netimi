@@ -1,0 +1,93 @@
+{
+  "ad": "245-kapi-uyari/eski-kirmizi-kapi-uyari-245",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs",
+  "commit": "d2cef7ce21b0776e2767f8fb610c9be8a4159f5d",
+  "dal": "is/kapi-uyari",
+  "kirli": 32,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T18:18:54.732Z",
+  "sure_sn": 2.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 1,
+    "basarisiz": 12,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 12 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.5 madde 4: dueSources = computeDues(...).sources (son tarihlerin exclude'u aynı kural) › tahsilat ve okul servisi örneklerinde aynı kolonlar; exclude olmadan Söz Tarihi son tarihe düşerdi",
+      "konum": "test/kapi-uyari-245.test.mjs:90:3",
+      "hata": "insight/dues.mjs dueSources yok (2.4.5 madde 4: takvim kalemleri hesaplanmadan son tarihlerin exclude'u) · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "2.4.5 madde 4: dueSources = computeDues(...).sources (son tarihlerin exclude'u aynı kural) › KS6: 'Son Ödeme' son tarih değil; 'Duruşma Tarihi' ve 'Sözleşme Bitiş' son tarih",
+      "konum": "test/kapi-uyari-245.test.mjs:107:3",
+      "hata": "dueSources is not a function"
+    },
+    {
+      "ad": "2.4.5 madde 4: kaynak — tablo kalemleri (computeDues) yalnız eski davranış anahtarıyla bir listeye girer › routes/dues.mjs: computeDues yalnız legacyTable dalında; öbür sayfanın tablo kalemi yalnız legacyTable ile",
+      "konum": "test/kapi-uyari-245.test.mjs:118:3",
+      "hata": "dues.mjs: legacyTable anahtarı yok (beklenen , gelen |-)"
+    },
+    {
+      "ad": "2.4.5 madde 4: kaynak — tablo kalemleri (computeDues) yalnız eski davranış anahtarıyla bir listeye girer › routes/overview.mjs: Vade Takip kaynaklarında table / promise yok; Projeksiyon withTable yalnız legacyTable ile",
+      "konum": "test/kapi-uyari-245.test.mjs:134:3",
+      "hata": "DUE_SOURCES: plan, cheque, note, invoice, cash, bank, table, promise, deadline (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.5 madde 4: kaynak — tablo kalemleri (computeDues) yalnız eski davranış anahtarıyla bir listeye girer › anahtar üretimde kapalı: varsayılan false, ortam değişkeni yok, üretim girişi vermiyor",
+      "konum": "test/kapi-uyari-245.test.mjs:140:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.4.5 madde 4 + 5 (API): ürün = v2.4.4 − tablo kalemleri; son tarihler ve modül kalemleri aynı › Tahsilat Takvimi / zil: tablo kalemi YOK (açık sayfa, öbür sayfa, kartlı kişinin sözü); yan alanlar boş",
+      "konum": "test/kapi-uyari-245.test.mjs:170:3",
+      "hata": "takvimde tablo kalemi kalmamalı (zil de bu listeden okur) · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.5 madde 4 + 5 (API): ürün = v2.4.4 − tablo kalemleri; son tarihler ve modül kalemleri aynı › modül kalemleri aynı: 1 gecikmiş taksit, 1 çek, 1 vadeli fatura, 1 planlı banka (senaryodan); eski davranış ve v2.4.4 ile birebir",
+      "konum": "test/kapi-uyari-245.test.mjs:183:3",
+      "hata": "takvimde yalnız modül kalemleri · 20 !== 4 (beklenen 4, gelen 20)"
+    },
+    {
+      "ad": "2.4.5 madde 4 + 5 (API): ürün = v2.4.4 − tablo kalemleri; son tarihler ve modül kalemleri aynı › yetkisiz kullanıcı (personel): tablo kalemi yok; çek / fatura / banka süzgeci 2.4.4 gibi; son tarihler aynı",
+      "konum": "test/kapi-uyari-245.test.mjs:202:3",
+      "hata": "personelin takviminde tablo kalemi yok (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.5 madde 4 + 5 (API): ürün = v2.4.4 − tablo kalemleri; son tarihler ve modül kalemleri aynı › Anlık Durum Vade Takip: Tablo / Ödeme Sözü kaynağı ve satırı yok; öbür kaynaklar ve son tarihler aynı; dormant boş",
+      "konum": "test/kapi-uyari-245.test.mjs:211:3",
+      "hata": "kaynaklar: plan, cheque, note, invoice, cash, bank, table, promise, deadline (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.5 madde 4 + 5 (API): ürün = v2.4.4 − tablo kalemleri; son tarihler ve modül kalemleri aynı › Nakit Akış Projeksiyonu: tablo kalemi yok, 'Tablo' seçeneği yok (table=0 / table=1 aynı); v2.4.4'ün table=0 sonucuyla aynı",
+      "konum": "test/kapi-uyari-245.test.mjs:223:3",
+      "hata": "projeksiyonda tablo kalemi yok (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.5 madde 4 + 5 (API): ürün = v2.4.4 − tablo kalemleri; son tarihler ve modül kalemleri aynı › madde 5: Tablo Raporları satırları aynı motor (v2.4.4 ile aynı); tablodan gelen tutar 'Muhasebe Kaydı Değil'; Nakit Akışı'nda Kasa sütunu yok",
+      "konum": "test/kapi-uyari-245.test.mjs:234:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'Tutar' (beklenen Tablodaki Tutar (Muhasebe Kaydı Değil), gelen Tutar)"
+    },
+    {
+      "ad": "2.4.5 madde 4 + 5 (API): ürün = v2.4.4 − tablo kalemleri; son tarihler ve modül kalemleri aynı › önbellek: tablo yeniden yüklenince (aynı dosya) yine tablo kalemi yok; son tarih değişince takvim yenilenir",
+      "konum": "test/kapi-uyari-245.test.mjs:249:3",
+      "hata": "yeniden yüklemeden sonra da tablo kalemi yok (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-24/245-kapi-uyari/eski-kirmizi-kapi-uyari-245.log",
+  "klasor": "/home/user/wt/kapi-uyari",
+  "ham_cikti_sha256": "ca118041d57e3a8ca9b43a841cb5b94c2de8db8a96075c7cff2f30cb2f94eb14",
+  "ham_cikti_bayt": 28224
+}

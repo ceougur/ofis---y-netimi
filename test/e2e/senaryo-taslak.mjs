@@ -6,8 +6,8 @@
 //      ay kolonları, sabit başlık satırı) denetlenir.
 //   C. Kullanıcı taslağı doldurur (Excel'de yazar gibi: indirilen dosyanın kendisine satır eklenir; biçimler ve açılır
 //      listeler korunur) ve aynı ekrandan yükler.
-//   D. Program sektörü, kişiyi, telefonu, tutarı kendiliğinden tanır; ödenmemiş ay tahsilat takvimine ve Vade takibe
-//      girer; ödenmiş ay ve ayrılmış öğrenci girmez.
+//   D. Program sektörü, kişiyi, telefonu, tutarı kendiliğinden tanır; ödenmemiş ay Raporlar → Tablo Raporları → Tablodaki Vadeler'e girer (2.4.5 madde 4:
+//      Tahsilat Takvimi'ne ve Anlık Durum Vade Takip'e GİRMEZ — 2.4.4'te girerdi); ödenmiş ay ve ayrılmış öğrenci girmez.
 //   E. Veri varken de taslak "Veri ve eşitleme" penceresinden indirilebilir.
 import fs, { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -168,28 +168,36 @@ try {
     ok(profile.sector?.id === "okul-servisi", `sektör uygulandı: ${profile.sector?.name}`);
   });
 
-  await step("D. Kişi, telefon, tutar tanındı; ödenmeyen ay takvimde ve Vade takipte", async () => {
+  await step("D. Kişi, telefon, tutar tanındı; ödenmeyen ay Tablodaki Vadeler'de (takvimde ve Vade Takip'te tablo kalemi yok)", async () => {
     const insight = (await api("/api/workspace/insight")).data.analysis;
     const role = label => insight.columns.find(column => column.column === label)?.role;
     ok(insight.rowCount === students.length, `${insight.rowCount} öğrenci okundu (boş şablon satırı sayılmadı)`);
     ok(role("Öğrenci") === "person" && role("Veli Telefon") === "phone" && role("Aylık Ücret") === "money", "Öğrenci = kişi, Veli Telefon = telefon, Aylık Ücret = tutar");
+    // 2.4.5 madde 4 (uyarı kapısı; bilerek değişti): tablonun aylık ücret kalemi zile / Tahsilat Takvimi'ne / Vade Takip'e girmez.
     const dues = (await api("/api/workspace/dues")).data.items;
-    const first = dues.filter(item => item.label === firstMonth || item.column === firstMonth);
-    const people = first.map(item => item.person).sort((a, b) => a.localeCompare(b, "tr"));
-    ok(people.join(", ") === "Ali Çelik, Mehmet Demir", `${firstMonth}: yalnız ödemeyen aktif öğrenciler takvimde (${people.join(", ")})`);
-    ok(first.every(item => item.amount === (item.person === "Ali Çelik" ? 3000 : 2500)), "tutar Aylık Ücret kolonundan (3.000 / 2.500)");
-    ok(!dues.some(item => item.person === "Elif Şahin"), "ayrılan öğrenci (Durum: Ayrıldı) takvime girmez");
-    ok(!first.some(item => item.person === "Ayşe Yılmaz" || item.person === "Zeynep Kaya"), `“Ödendi” yazılan ${firstMonth} takvime girmez`);
-    const vade = (await api("/api/workspace/overview/vade-takip?preset=open&sources=table")).data;
-    const vadeFirst = vade.rows.filter(row => row.label.startsWith(`${firstMonth.split(" ")[0]} ödemesi`) && (row.state === "month" || row.state === "today"));
-    ok(vadeFirst.length === 2 && vadeFirst.reduce((sum, row) => sum + row.amount, 0) === 5500, `Vade takip (tablo): “${firstMonth.split(" ")[0]} ödemesi” 2 kalem, 5.500,00, durum “bu ay” (gecikmiş değil)`);
-    ok(vade.rows.find(row => row.party === "Mehmet Demir")?.phone === "0533 420 20 20", "Vade takipte veli telefonu (telefonla aranabilir)");
+    ok(!dues.some(item => !item.source), `Tahsilat Takvimi'nde tablo kalemi yok (${dues.length} kalem)`);
+    const vade = (await api("/api/workspace/overview/vade-takip?preset=open")).data;
+    ok(!vade.allowed.includes("table") && !vade.rows.some(row => row.source === "table" || row.source === "promise"), `Vade Takip'te tablo kalemi ve Tablo süzgeci yok (${vade.allowed.join(", ")})`);
+    // Tablonun kendi raporu (Tablo Raporları → Tablodaki Vadeler) aynı motoru kullanır: ödemeyen aktif öğrenciler, Aylık Ücret tutarıyla.
+    const month = firstMonth.split(" ")[0];
+    const report = (await api("/api/workspace/reports/vade-takip")).data.report;
+    const first = report.rows.filter(row => String(row.label || "").startsWith(`${month} ödemesi`));
+    const people = first.map(row => row.cari).sort((a, b) => a.localeCompare(b, "tr"));
+    ok(people.join(", ") === "Ali Çelik, Mehmet Demir", `${firstMonth}: Tablodaki Vadeler'de yalnız ödemeyen aktif öğrenciler (${people.join(", ")})`);
+    ok(first.every(row => row.amount === (row.cari === "Ali Çelik" ? 3000 : 2500)), `tutar Aylık Ücret kolonundan (3.000 / 2.500): ${first.map(row => row.amount).join(", ")}`);
+    ok(!report.rows.some(row => row.cari === "Elif Şahin"), "ayrılan öğrenci (Durum: Ayrıldı) Tablodaki Vadeler'e girmez");
+    ok(!first.some(row => row.cari === "Ayşe Yılmaz" || row.cari === "Zeynep Kaya"), `“Ödendi” yazılan ${firstMonth} Tablodaki Vadeler'e girmez`);
     await page.click('.hof-side-item[data-action="analytics"]');
     await page.waitForSelector(`${modal} .hof-rep .hof-rep-tabs`, { timeout: 10000 });
-    await page.click(`${modal} .hof-rep [data-tab="vade"]`);
-    await page.waitForSelector(`${modal} .hof-rep-vade tbody tr[data-due-row]`, { timeout: 15000 });
-    const table = await page.$eval(`${modal} .hof-rep-vade tbody`, node => node.innerText);
-    ok(/Mehmet Demir/.test(table) && /Ali Çelik/.test(table) && !/Elif Şahin/.test(table), "Raporlar › Vade takip ekranında ödemeyenler var, ayrılan yok");
+    await page.click(`${modal} .hof-rep [data-tab="table"]`);
+    await page.waitForSelector(`${modal} .hof-report-kinds`, { timeout: 10000 });
+    await page.click(`${modal} [data-kind="vade-takip"]`);
+    await page.waitForFunction(() => /Kalem/.test(document.querySelector(".hof-modal-backdrop.is-visible .hof-report-summary")?.textContent || ""), null, { timeout: 15000 });
+    // textContent (innerText CSS büyük harf dönüşümünü uygular; başlık "MUHASEBE KAYDI DEĞİL" görünebilir).
+    const table = await page.$eval(`${modal} [data-report-body]`, node => node.textContent.replace(/\s+/g, " "));
+    ok(/Mehmet Demir/.test(table) && /Ali Çelik/.test(table) && !/Elif Şahin/.test(table), `Raporlar › Tablo Raporları › Tablodaki Vadeler ekranında ödemeyenler var, ayrılan yok: ${table.slice(0, 300)}`);
+    const heads = await page.$$eval(`${modal} [data-report-body] thead th`, nodes => nodes.map(node => node.textContent.trim()));
+    ok(heads.includes("Tablodaki Tutar (Muhasebe Kaydı Değil)"), `tutar başlığı “Tablodaki Tutar (Muhasebe Kaydı Değil)”: ${heads.join(" | ")}`);
     await shot("taslak-vade-takip");
     await escClose(page);
     await page.waitForTimeout(300);

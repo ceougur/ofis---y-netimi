@@ -1,0 +1,32 @@
+{
+  "ad": "245-kapi-uyari/yesil-kaynak-tarayan",
+  "komut": "node --test --test-concurrency=2 test/banka-210-arayuz.test.mjs test/banka-210-saat.test.mjs test/edoc-uretim.test.mjs test/raporlar-224.test.mjs test/vekil-sunucu-uygulama.test.mjs test/workspace.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/kanit-araci.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "d2cef7ce21b0776e2767f8fb610c9be8a4159f5d",
+  "dal": "is/kapi-uyari",
+  "kirli": 31,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:18:05.972Z",
+  "sure_sn": 41,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 164,
+    "gecen": 164,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-kapi-uyari/yesil-kaynak-tarayan.log",
+  "klasor": "/home/user/wt/kapi-uyari",
+  "ham_cikti_sha256": "3c39b0e7a6281b500b2a565adadf3557e69c7b181203e6fea9c4730c7a6d8322",
+  "ham_cikti_bayt": 49832
+}

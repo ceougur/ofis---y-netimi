@@ -12,6 +12,8 @@
 //   S9 (2.4.4 5b) carisi olmayan kayıtta "Kalan" kolonu varsa Yeni Cari'nin Açılış Bakiyesi kayıttaki Kalan Borç ile dolu (kaynağı yazar); cari borçla açılır,
 //      tahsilat borçtan düşer (veri tabanından: açılış borcu + tahsilat).
 // Çıkış: "N geçti, M kaldı" (kaldıysa çıkış kodu 1).
+// 2.4.5 madde 4 (uyarı kapısı): bu senaryo tablonun ödeme kalemlerini (şerit / zil / takvim) kullanan 2.4.4 yolunu sınar — üründe kapalı; sunucu
+// legacyTableDues (yalnız testler) ile 2.4.4 davranışında açılır. Ürünün kapısı test/e2e/run.mjs "2.4.5 uyarı kapısı" ve test/kapi-uyari-245.test.mjs.
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -35,7 +37,7 @@ const day = offset => {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 };
 const money = value => new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
-const server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups") });
+const server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), legacyTableDues: true });
 const api = await server.login();
 const BASE = server.base;
 const db = server.app.store;

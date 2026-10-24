@@ -42,10 +42,11 @@ describe("2.4.4 30e: Nakit Akışı Sekme süzgeci (birim)", () => {
     assert.equal(run(["Yok Böyle Sekme"]).expected, 400, "olmayan sekme: yalnız sekmesiz kalem");
   });
 
-  test("Gerçekleşen tahsilat ve Kasa giriş/çıkış sekme süzgecinden bağımsız (sekme taşımaz; Sayfa süzgecindeki gibi)", () => {
+  // 2.4.5 madde 5 (bilerek): Kasa giriş / çıkış kolonları kalktı; verilen Kasa satırları yok sayılır.
+  test("Gerçekleşen tahsilat sekme süzgecinden bağımsız (sekme taşımaz; Sayfa süzgecindeki gibi); Kasa toplamı yok", () => {
     for (const tabs of [[], ["Borçlular"], ["Kira"]]) {
       const totals = run(tabs);
-      assert.deepEqual([totals.collected, totals.cashIn, totals.cashOut], [1000, 250, 50], `sekme ${JSON.stringify(tabs)}`);
+      assert.deepEqual(totals, { expected: totals.expected, collected: 1000 }, `sekme ${JSON.stringify(tabs)}`);
     }
   });
 });

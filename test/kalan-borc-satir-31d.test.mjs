@@ -5,6 +5,7 @@
 // E3: "Kalan Gün" gibi gün / adet / sayı / ay / yıl / oran / yüzde / % başlıklı kolon borç tutarı sayılıyordu (gerçek borç 19.500, rapor 17).
 // Beklenen sayılar tablonun kendi hücrelerinden (ders 5). "Nasıl bozulur?": B1 Kalan boş · B2 Kalan metin · B3 Kalan 0 · B4 hepsi dolu · B5 yalnız Toplam ·
 // B6 gün/adet/oran kolonu · B7 para başlıkları dışlanmaz · B9 çok sekme · B10 tek yer.
+// 2.4.5 madde 4 (uyarı kapısı): bu dosya tablo takvim motorunu zil / Tahsilat Takvimi / Vade Takip / Projeksiyon uçlarından sınar → 2.4.4 davranışı (legacyTableDues, yalnız testler).
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -121,7 +122,7 @@ describe("31d E2/E3: ekranların okuduğu uçlar aynı toplamı gösterir (API)"
   const RANGE = "from=2000-01-01&to=2099-12-31";
   before(async () => {
     const clock = createClock({ time: new Date(`${TODAY}T10:00:00`), fixed: true });
-    server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, now: clock });
+    server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, now: clock, legacyTableDues: true });
     api = await server.login();
     const staged = await must("tablo", api.post("/api/workspace/dataset/stage", { kind: "excel", fileName: "borclular.xlsx", sheets: [{ name: "Borçlular", matrix: T13 }, { name: "Kira", matrix: KIRA }] }));
     await must("tablo kaydet", api.post("/api/workspace/dataset/commit", { stageId: staged.stageId, mode: "replace" }));

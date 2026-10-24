@@ -3,6 +3,8 @@
 // Senaryo A: okul servisi Excel'i → yükleme sonrası soru → "Ön izle ve aktar" → Aktar → Taksitler / cari / Kasa / takvim / zil
 //            → yeniden "Tablodan aktar" (çift kart açılmaz) → Geri al (kartlar, cariler, tahsilat geri) → yeniden aktar.
 // Senaryo B: Stok → Yeni ürün: "Kasa'ya yansıt" işaretsiz → Kasa değişmez; işaretli → miktar × birim fiyat "Stok ödemesi (alım)".
+// 2.4.5 madde 4 (uyarı kapısı): bu senaryo tablonun ödeme kalemlerini (şerit / zil / takvim) kullanan 2.4.4 yolunu sınar — üründe kapalı; sunucu
+// legacyTableDues (yalnız testler) ile 2.4.4 davranışında açılır. Ürünün kapısı test/e2e/run.mjs "2.4.5 uyarı kapısı" ve test/kapi-uyari-245.test.mjs.
 import fs, { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -18,7 +20,7 @@ const MACHINE = "a1b2c3d4e5f60718293a4b5c6d7e8f90";
 const root = mkdtempSync(path.join(tmpdir(), "destekofis-prova-208-"));
 const excel = path.join(root, "okul-servisi-ornek.xlsx");
 writeFileSync(excel, okulServisiXlsx());
-const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: MACHINE } });
+const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: MACHINE }, legacyTableDues: true });
 const { port } = await app.listen(0, "127.0.0.1");
 const BASE = `http://127.0.0.1:${port}`;
 const browser = await chromium.launch();

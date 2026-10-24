@@ -848,14 +848,30 @@ try {
     expect(notes.some(item => item.note === "Merkezi not denemesi"), `notlar: ${JSON.stringify(notes)}`);
   });
 
-  await step("tahsilat takvimi şeridi ödeme sözlerini gösterir; söz 'ödendi say' ile kapanır", async () => {
-    await admin.waitForSelector(".hof-payment-promises .hof-payment-pill");
+  // 2.4.5 madde 4 (UYARI KAPISI; kullanıcı kararı 23.10.2026, bilerek değişti): tablodaki "Ödeme Sözü" tarihleri (bu dosyada 3 söz) Tahsilat Takvimi şeridine,
+  // zile, Vade Takip'e ve Nakit Akış Projeksiyonu'na GİRMEZ (2.4.4'te şeritte 3 söz pili vardı, "Ödendi Say" ile kapanıyordu). Hatırlatma Cari / Taksit /
+  // Fatura / Çek'ten gelir; tablonun tutarsız son tarihleri (bu dosyada yok) kalır.
+  await step("2.4.5 uyarı kapısı: tablodaki ödeme sözleri şeritte, takvimde, Vade Takip ve Nakit Akış'ta yok; Tablo / Ödeme Sözü seçenekleri yok", async () => {
+    const dues = (await admin.evaluate(() => fetch("/api/workspace/dues").then(response => response.json()))).data;
+    const tableItems = dues.items.filter(item => String(item.id || "").startsWith("due|") || item.promise || (!item.source && item.caseKey));
+    expect(tableItems.length === 0, `takvimde tablo kalemi yok: ${JSON.stringify(tableItems.slice(0, 2)).slice(0, 200)}`);
+    expect(Array.isArray(dues.deadlines) && Array.isArray(dues.notes) && dues.notes.length === 0 && Array.isArray(dues.dormant) && dues.dormant.length === 0, "yan alanlar boş (notes, dormant)");
     const pills = await admin.$$eval(".hof-payment-promises .hof-payment-pill:not([aria-hidden])", nodes => nodes.map(node => node.innerText.replace(/\s+/g, " ")));
-    expect(pills.length === 3 && pills.every(text => text.includes("Ödeme sözü")), `söz pilleri: ${pills.join(" | ")}`);
-    await admin.hover(".hof-payment-promises-viewport");
-    await admin.$eval(".hof-payment-promises .hof-payment-pill:not([aria-hidden])", node => node.click());
-    await admin.click('.hof-payment-action-card [data-act="paid"]');
-    await admin.waitForFunction(() => document.querySelectorAll(".hof-payment-promises .hof-payment-pill:not([aria-hidden])").length === 2, null, { timeout: 10000 });
+    expect(!pills.some(text => /Ödeme sözü/i.test(text)), `şeritte tablo söz pili yok: ${pills.join(" | ")}`);
+    const vade = (await admin.evaluate(() => fetch("/api/workspace/overview/vade-takip?preset=open").then(response => response.json()))).data;
+    expect(!vade.allowed.includes("table") && !vade.allowed.includes("promise") && !vade.rows.some(row => row.source === "table" || row.source === "promise"), `Vade Takip kaynakları: ${vade.allowed.join(", ")}`);
+    const flow = (await admin.evaluate(() => fetch("/api/workspace/overview/nakit-akisi?preset=next90&table=1").then(response => response.json()))).data;
+    expect(![...flow.rows, ...flow.overdue].some(row => row.source === "table" || row.source === "promise"), "Nakit Akış'ta (eski table=1 parametresiyle de) tablo kalemi yok");
+    await admin.evaluate(() => window.HOF.overview.openReports("vade"));
+    // Süzgeç seçenekleri sunucunun yanıtından (allowed) çizildikten sonra okunur (tablo yanıtla gelir).
+    await admin.waitForSelector(".hof-modal-backdrop.is-visible .hof-rep-vade", { timeout: 10000 });
+    const chips = await admin.$$eval(".hof-modal-backdrop.is-visible .hof-rep-sources [data-source]", nodes => nodes.map(node => node.dataset.source));
+    expect(chips.length > 0 && !chips.includes("table") && !chips.includes("promise"), `Vade Takip süzgeci: ${chips.join(", ")}`);
+    await admin.click('.hof-modal-backdrop.is-visible .hof-rep [data-tab="flow"]');
+    await admin.waitForSelector('.hof-modal-backdrop.is-visible [data-field="overdue"]', { timeout: 10000 });
+    expect(!(await admin.$('.hof-modal-backdrop.is-visible [data-field="table"]')), "Nakit Akış'ta “Tablodaki ödeme günlerini ekle” seçeneği yok");
+    await escClose(admin);
+    await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop.is-visible"), null, { timeout: 5000 });
   });
 
   await step("yönetici personel hesabı oluşturur (yönetim paneli)", async () => {
@@ -1242,7 +1258,9 @@ try {
     const schoolRoot = mkdtempSync(path.join(tmpdir(), "destekofis-e2e-okul-"));
     const schoolFile = path.join(schoolRoot, "okul-servisi-ornek.xlsx");
     writeFileSync(schoolFile, okulServisiXlsx());
-    const schoolApp = createApp({ dataDir: path.join(schoolRoot, "data"), backupDir: path.join(schoolRoot, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0" }, license: unlicensed });
+    // 2.4.5 madde 4: bu blok tablo takvim motorunun ay matrisini (şerit, sağ alt bildirim, zil, pilden tahsilat) ve Tablodan Aktar'ı sınar — üründe kapalı
+    // yollar; 2.4.4 davranışı legacyTableDues (yalnız testler) ile açılır. Ürünün kapısı yukarıdaki "2.4.5 uyarı kapısı" adımında.
+    const schoolApp = createApp({ dataDir: path.join(schoolRoot, "data"), backupDir: path.join(schoolRoot, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0" }, license: unlicensed, legacyTableDues: true });
     const schoolPort = (await schoolApp.listen(0, "127.0.0.1")).port;
     const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: "tr-TR", acceptDownloads: true });
     try {

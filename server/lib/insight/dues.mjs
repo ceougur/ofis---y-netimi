@@ -575,6 +575,27 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
   return { items: out, sources, dormant, debtSplit, debtUnresolved };
 }
 
+// 2.4.5 madde 4 (uyarı kapısı): zil ve Tahsilat Takvimi tablonun TUTARLI kalemlerini (ödeme günü, aidat, ödeme sözü) artık göstermez; ama o kalemleri
+// doğuran ödeme takvimi kolonları son tarih (computeDeadlines `exclude`) de sayılmaz — para tarihi ajandaya dönüşmez. computeDues'un `sources`'ıyla AYNI
+// kural (tabContext → due, recurring, monthly), kalem ve tahsilat hesabı yapılmadan. Eşitlik: test/kapi-uyari-245.test.mjs.
+export function dueSources({ rows, tabs = [], now = new Date(), forced = null }) {
+  const groups = new Map();
+  for (const row of rows) {
+    if (!row || !row.__hofKey) continue;
+    const tab = String(row.__sheet || "");
+    if (!groups.has(tab)) groups.set(tab, []);
+    groups.get(tab).push(row);
+  }
+  const order = [...tabs.filter(tab => groups.has(tab)), ...[...groups.keys()].filter(tab => !tabs.includes(tab))];
+  const sources = [];
+  for (const tab of order) {
+    const { due, recurring, monthly } = tabContext(groups.get(tab), { now, forced });
+    if (!due.length && !recurring.length && !monthly.length) continue;
+    sources.push({ tab, columns: [...due, ...recurring, ...monthly].map(item => item.column) });
+  }
+  return sources;
+}
+
 // Son tarihi yaklaşan işler (bildirim için): ödeme takvimi dışındaki son tarih kolonları (yenileme, bitiş, teslim,
 // duruşma…) bugünden itibaren `aheadDays` gün içinde.
 export function computeDeadlines({ rows, tabs = [], now = new Date(), aheadDays = DUE_WINDOW.aheadDays, pastDays = 30, exclude = [], forced = null }) {
