@@ -14,6 +14,7 @@ import { foldText } from "../lib/insight/validators.mjs";
 import { roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay } from "../lib/plans.mjs";
+import { createReportHeader } from "../lib/report-header.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { systemClock } from "../lib/clock.mjs";
@@ -36,19 +37,28 @@ const TYPE_TEXT = Object.freeze(Object.assign(Object.create(null), { customer: "
 // legacy (2.1.0 temel sürüm, küçük düzeltmeler): eski sürümden kalan, hesaba atanmamış İLERİ TARİHLİ havale / POS satırı (102.00 / 108.00).
 // Önceden "Kasa (ileri tarihli)" yazılıyordu (Nakit Kasa'da olmayan bir hareket). Ekran (hof-overview.js ROW_LABELS), PDF ve Excel aynı adı yazar.
 // 2.3.0 İz 3.3 (plan §8.9 "Planlı Banka"; eşleme 301): planlı banka işlemleri (bank_plans; deftere girmemiş) kaynak "bank".
-const SOURCE_TEXT = { unbilled: "Faturasız Cari Alacağı", plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa (ileri tarihli)", legacy: "Hesabı Atanmamış (ileri tarihli)", table: "Tablo", promise: "Ödeme Sözü", deadline: "Son Tarih", pos: "POS", posBlocked: "Blokeli POS", posFee: "Komisyon Tahsili", deposit: "Tahsildeki Çek ve Senet", bank: "Planlı Banka İşlemi" };
+const SOURCE_TEXT = { unbilled: "Faturasız Cari Alacağı", plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", account: "Cari (vadeli)", cash: "Kasa (ileri tarihli)", legacy: "Hesabı Atanmamış (ileri tarihli)", table: "Tablo", promise: "Ödeme Sözü", deadline: "Son Tarih", pos: "POS", posBlocked: "Blokeli POS", posFee: "Komisyon Tahsili", deposit: "Tahsildeki Çek ve Senet", bank: "Planlı Banka İşlemi" };
 // Satırın kaynak adı (PDF/Excel): akışın kendi kaynağı (flow; ör. bankada tahsildeki evrak "deposit", plan §8.9) varsa o, yoksa süzgeç kaynağı.
 const sourceText = row => SOURCE_TEXT[row.flow] || SOURCE_TEXT[row.source] || row.source;
 // Vade takip kaynakları (v2.0.9) ve görme koşulu: çek/senet ve Kasa, ANLIK DURUM yetkisi ya da o modülün yetkisiyle.
-const DUE_SOURCES = ["plan", "cheque", "note", "invoice", "cash", "bank", "table", "promise", "deadline"];
+// 2.4.5 madde 4 (uyarı kapısı): tablonun ödeme günleri ("table") ve ödeme sözleri ("promise") kaynak değildir; tablodan yalnız tutarsız son tarihler
+// ("deadline"). Eski davranış (config.legacyTableDues, yalnız testler): LEGACY_TABLE_SOURCES de.
+// 2.4.5 madde 6 (K6.3): "account" — carideki vadeli / sözlü borç kaydı (Cari görüntüleme yetkisiyle).
+const DUE_SOURCES = ["plan", "cheque", "note", "invoice", "account", "cash", "bank", "deadline"];
+const LEGACY_TABLE_SOURCES = ["table", "promise"];
 const STATE_TEXT = { overdue: "Gecikmiş", today: "Bugün", month: "Bu Ay", upcoming: "Yaklaşan" };
 const GROUPS = new Set(["day", "week", "month"]);
 
 const MONEY_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-export function registerOverviewRoutes(router, { store, auth, audit, events, dataset = null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, tables = () => null, doubtful: doubtfulApi = () => null, money: moneyApi = null, bankAccounts = null, now: clock = systemClock }) {
+export function registerOverviewRoutes(router, { store, auth, audit, events, dataset = null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, tables = () => null, doubtful: doubtfulApi = () => null, money: moneyApi = null, bankAccounts = null, config = {}, now: clock = systemClock }) {
+  // 2.4.5 madde 4: Nakit Akış Projeksiyonu ve Vade Takip'te tablonun tutarlı kalemleri yok (lib/config.mjs legacyTableDues; yalnız testler açar).
+  const legacyTable = config?.legacyTableDues === true;
+  const dueSourceList = legacyTable ? [...DUE_SOURCES.slice(0, -1), ...LEGACY_TABLE_SOURCES, "deadline"] : DUE_SOURCES;
   const today = () => isoDay(clock());
   const office = () => store.setting("office.name", "");
+  // 2.4.5 madde 6c: rapor / ekstre PDF başlığı Tabela Adı ayarından (boşsa bugünkü unvan); makbuz ve belge unvanı değişmez.
+  const header = createReportHeader({ store });
   const userName = user => user.display_name || user.username || "";
 
   // ---------- Canlı olay: para/stok değişince herkese tek "overview.changed" ----------
@@ -285,7 +295,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const data = mizan(url.searchParams);
     const clipped = data.rows.length > PDF_ROWS;
     const table = mizanTable({ ...data, rows: data.rows.slice(0, PDF_ROWS) });
-    const pdf = tablePdf({ now: clock(), title: "Cari Mizanı", subtitle: [rangeText(data), data.type ? TYPE_TEXT[data.type] : "Tüm cariler", SIDE_FILTER[data.side] || "", clipped ? "ilk 20.000 satır (tamamı Excel'de)" : ""].filter(Boolean).join(" · "), ...table, officeName: office(), userName: userName(user), brand: office() || "DestekOfis" });
+    const pdf = tablePdf({ now: clock(), title: "Cari Mizanı", subtitle: [rangeText(data), data.type ? TYPE_TEXT[data.type] : "Tüm cariler", SIDE_FILTER[data.side] || "", clipped ? "ilk 20.000 satır (tamamı Excel'de)" : ""].filter(Boolean).join(" · "), ...table, userName: userName(user), ...header.pdf({ brand: office() || "DestekOfis" }) });
     audit(user, "overview.exported", "mizan.pdf", { from: data.from, to: data.to, count: data.rows.length });
     sendBuffer(res, pdf, { type: "application/pdf", name: `Mizan ${fileRange(data)}.pdf`, inline: url.searchParams.get("download") !== "1" });
   });
@@ -297,7 +307,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const rows = data.rows.map(row => ({ "Cari No": row.refNo, Cari: row.name, Tür: TYPE_TEXT[row.type] || "", Grup: [row.groupName, row.subgroupName].filter(Boolean).join(" › "), Devir: money(row.opening), "Dönem Borç": money(row.debit), "Dönem Alacak": money(row.credit), Bakiye: money(row.closing), Durum: sideText(row.closing) }));
     // TOPLAM satırı (v2.0.20): kalın, süzgeç alanı dışında (sıralayınca yerinden oynamaz).
     const footer = { "Cari No": "", Cari: "TOPLAM", Tür: "", Grup: "", Devir: money(data.totals.opening), "Dönem Borç": money(data.totals.debit), "Dönem Alacak": money(data.totals.credit), Bakiye: money(data.totals.closing), Durum: `Borçlular ${money(data.totals.closingDebtor)} · Alacaklılar ${money(data.totals.closingCreditor)}` };
-    const buffer = buildXlsx([{ name: "Mizan", columns, rows, footer }], { now: clock(), title: `Cari Mizanı ${rangeText(data)}` });
+    const buffer = buildXlsx([{ name: "Mizan", columns, rows, footer, preamble: header.extraPreamble(`Cari Mizanı · ${rangeText(data)}`) }], { now: clock(), title: `Cari Mizanı ${rangeText(data)}` });
     audit(user, "overview.exported", "mizan.xlsx", { from: data.from, to: data.to, count: data.rows.length });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `Mizan ${fileRange(data)}.xlsx` });
   });
@@ -331,9 +341,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       rows: ekstreRows(data),
       summary: [["Devir", tl(data.opening)], ["Dönem Borç", tl(data.debit)], ["Dönem Alacak", tl(data.credit)], ["Dönem Sonu Bakiye", `${tl(Math.abs(data.closing))} ${sideText(data.closing)}`]],
       footer: [dayText(data.to), "TOPLAM", "Dönem sonu", tl(data.debit), tl(data.credit), tl(Math.abs(data.closing)) + (data.closing > 0.005 ? " B" : data.closing < -0.005 ? " A" : "")],
-      officeName: office(),
       userName: userName(user),
-      brand: office() || "DestekOfis",
+      ...header.pdf({ brand: office() || "DestekOfis" }),
     });
     audit(user, "overview.exported", "ekstre.pdf", { accountId: data.account.id, from: data.from, to: data.to });
     sendBuffer(res, pdf, { type: "application/pdf", name: `Ekstre ${data.account.name} ${fileRange(data)}.pdf`, inline: url.searchParams.get("download") !== "1" });
@@ -348,7 +357,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       ...data.lines.map(line => ({ Tarih: dayText(line.date), İşlem: line.label, Açıklama: line.note, "Makbuz No": line.receiptNo ? String(line.receiptNo) : "", Borç: line.debit ? money(line.debit) : "", Alacak: line.credit ? money(line.credit) : "", Bakiye: money(line.balance) })),
     ];
     const footer = { Tarih: dayText(data.to), İşlem: "TOPLAM", Açıklama: `Dönem sonu · ${sideText(data.closing)}`, "Makbuz No": "", Borç: money(data.debit), Alacak: money(data.credit), Bakiye: money(data.closing) };
-    const buffer = buildXlsx([{ name: "Ekstre", columns, rows, footer }], { now: clock(), title: `Cari Ekstre ${data.account.name}` });
+    const buffer = buildXlsx([{ name: "Ekstre", columns, rows, footer, preamble: header.extraPreamble(`Cari Ekstre · ${data.account.name}`) }], { now: clock(), title: `Cari Ekstre ${data.account.name}` });
     audit(user, "overview.exported", "ekstre.xlsx", { accountId: data.account.id, from: data.from, to: data.to });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `Ekstre ${data.account.name} ${fileRange(data)}.xlsx` });
   });
@@ -358,7 +367,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const range = rangeOf(params, { preset: "next30" });
     const day = today();
     const includeOverdue = params.get("overdue") === "1";
-    const withTable = params.get("table") !== "0";
+    // 2.4.5 madde 4: "Tablo" seçeneği kalktı — tablolardaki ödeme günleri ve sözleri projeksiyona girmez (eski istemcinin `table` parametresi yok sayılır).
+    const withTable = legacyTable && params.get("table") !== "0";
     const group = GROUPS.has(text(params.get("group"))) ? text(params.get("group")) : "";
     const flows = [];
     if (plans()?.openItems) flows.push(...plans().openItems(day));
@@ -457,9 +467,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
         ? { headers: [GROUP_HEAD[data.group], "Hareket", "Giriş", "Çıkış", "Net", "Dönem Sonu Nakit ve Banka"], types: ["", "number", "money", "money", "money", "money"], rows: periodRows(data) }
         : { headers: ["Vade", "Kaynak", "Açıklama", "Kimden / Kime", "Giriş", "Çıkış", "Beklenen Nakit ve Banka"], types: ["", "", "", "", "money", "money", "money"], rows: flowRows(data) }),
       summary: flowSummary(data),
-      officeName: office(),
       userName: userName(user),
-      brand: office() || "DestekOfis",
+      ...header.pdf({ brand: office() || "DestekOfis" }),
     });
     audit(user, "overview.exported", "nakit-akisi.pdf", { from: data.from, to: data.to, count: data.rows.length });
     sendBuffer(res, pdf, { type: "application/pdf", name: `Nakit-akisi ${dayText(data.from)}-${dayText(data.to)}.pdf`, inline: url.searchParams.get("download") !== "1" });
@@ -480,7 +489,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const buffer = buildXlsx(
       [
         ...(data.group ? [{ name: `${GROUP_TEXT[data.group]} Toplamlar`.slice(0, 31), columns: periodColumns, rows: periods }] : []),
-        { name: "Nakit Akışı", columns, rows },
+        { name: "Nakit Akışı", columns, rows, preamble: header.extraPreamble("Nakit Akış Projeksiyonu") },
         { name: "Gecikmiş", columns, rows: overdue },
         { name: "Özet", columns: ["Kalem", "Tutar"], rows: summary },
       ],
@@ -495,8 +504,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
   //   Taksit      : açık kartların kalanı olan taksitleri (Taksitler ekranıyla aynı dağıtım, allocate)
   //   Çek / Senet : portföydeki alınan (tahsil edilecek) ve ödenecek verilen evrak
   //   Kasa        : Kasa'ya ileri tarihle girilmiş giriş/çıkış (kira, maaş…)
-  //   Tablo       : Excel/Sheets tablolarındaki ödeme günleri ve ödeme sözleri (tahsilat takvimiyle aynı kalemler; taksit
-  //                 kartı olan kişinin tablodaki ödeme kalemleri ikinci kez sayılmaz) ve son tarihler (tutarsız)
+  //   Son Tarih   : Excel/Sheets tablolarındaki son tarihler (tutarsız; sözleşme bitiş, duruşma…). 2.4.5 madde 4: tablonun ödeme günleri ve ödeme
+  //                 sözleri (tutarlı kalemler) listede yok (eski davranışta — legacyTableDues — "Tablo" ve "Ödeme Sözü" kaynakları).
   // Görme: ANLIK DURUM yetkisi ya da rapor yetkisi (yönetici, uzman). Çek/senet ve Kasa kalemleri yalnız ANLIK DURUM ya
   // da o modülün yetkisi olana gider (ekranında göremediği rakamı raporda da görmez).
   const canDues = user => canUser(user, "overview.view") || canUser(user, "reports.view");
@@ -506,7 +515,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     return user;
   };
   // 2.3.0 İz 3.3: planlı banka işlemleri (bank) yalnız banka rakamını görebilene (plan §8.9 "Vade Takip / Zil / Takvim: … bank.view ile").
-  const visibleSources = user => DUE_SOURCES.filter(source => (source === "cheque" || source === "note" ? canUser(user, "overview.view") || canUser(user, "cheques.view") : source === "cash" ? canUser(user, "overview.view") || canUser(user, "cash.view") : source === "invoice" ? canUser(user, "overview.view") || canUser(user, "invoices.view") : source === "bank" ? canSeeBank(user) : true));
+  const visibleSources = user => dueSourceList.filter(source => (source === "cheque" || source === "note" ? canUser(user, "overview.view") || canUser(user, "cheques.view") : source === "cash" ? canUser(user, "overview.view") || canUser(user, "cash.view") : source === "invoice" ? canUser(user, "overview.view") || canUser(user, "invoices.view") : source === "bank" ? canSeeBank(user) : source === "account" ? canUser(user, "accounts.view") : true));
   // Açık fatura → nakit akışı / vade takip kalemi (fatura modülünün kapama hesabından; tek kaynak).
   const invoiceFlow = item => ({
     date: item.dueDate,
@@ -518,6 +527,21 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     phone: item.phone || "",
     detail: `Fatura tarihi ${dayText(item.issueDate)}`,
     ref: { type: "invoice", id: item.id },
+  });
+  // 2.4.5 madde 6: carinin vadeli borç kaydı → vade takip kalemi (etiket, tarih ve tutar zil / takvimle aynı; tıklanınca cari kartı açılır).
+  const accountDueFlow = item => ({
+    date: item.dueDate,
+    direction: item.direction,
+    amount: item.amount,
+    source: "account",
+    label: item.label,
+    party: item.person,
+    phone: item.phone || "",
+    detail: [`Kayıt ${dayText(item.entryDate)} · ${tl(item.entryAmount)}`, item.expectedDate && item.entryDueDate ? `Vade ${dayText(item.entryDueDate)}` : "", item.partial ? "kalan" : ""].filter(Boolean).join(" · "),
+    // Kalem takvimdeki kimliğiyle (account|<entryId>) izlenir; tıklanınca carinin kartı açılır (ref.id cari).
+    id: item.id,
+    entryId: item.entryId,
+    ref: { type: "account", id: item.accountId, entryId: item.entryId },
   });
   async function tableItems() {
     try {
@@ -598,6 +622,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     if (sources.has("cash")) items.push(...aheadFlows(day, { bank: canSeeBank(user) }));
     // 2.3.0 İz 3.3: planlı banka işlemleri kendi tarihinde (planlı transfer yönsüz ve tutarsız kalem: adında tutar ve iki hesap).
     if (sources.has("bank")) items.push(...bankPlanFlows());
+    // 2.4.5 madde 6 (K6.3): carinin vadeli / sözlü borç kayıtları — zil ve takvimle aynı kalemler (routes/accounts.mjs openDueItems; ufuk raporun aralığı).
+    if (sources.has("account") && accounts()?.openDueItems) for (const item of accounts().openDueItems(day)) items.push(accountDueFlow(item));
     let dormant = [];
     if (sources.has("table") || sources.has("promise") || sources.has("deadline")) {
       const calendar = tables()?.calendar ? await tables().calendar(clock()) : { items: [], dormant: [] };
@@ -606,6 +632,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
           if (sources.has("deadline")) items.push({ date: item.due, direction: "", amount: null, source: "deadline", label: item.label, party: item.person || item.caseNo || "", phone: item.phone || "", detail: tableDetail(item), ref: recordRef(item) });
         } else if (sources.has(item.promise ? "promise" : "table")) items.push(tableFlow(item));
       }
+      // "Ödemesi kesilmiş olabilir" (tablo ay matrisinden): 2.4.5'te "table" kaynağı yok → boş (Tablo Raporları → Tablodaki Vadeler'de durur).
       if (sources.has("table")) dormant = (calendar.dormant || []).map(item => ({ party: item.person || item.caseNo || "", lastPaid: item.lastPaid, lastPaidText: item.lastPaidText, emptyMonths: item.emptyMonths, detail: tableDetail(item), ref: recordRef(item) }));
     }
     const matches = item => {
@@ -654,9 +681,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       types: ["", "", "", "", "", "money", "money"],
       rows: vadeRows({ rows: data.rows.slice(0, PDF_ROWS) }),
       summary: vadeSummary(data),
-      officeName: office(),
       userName: userName(user),
-      brand: office() || "DestekOfis",
+      ...header.pdf({ brand: office() || "DestekOfis" }),
     });
     audit(user, "overview.exported", "vade-takip.pdf", { from: data.from, to: data.to, count: data.rows.length });
     sendBuffer(res, pdf, { type: "application/pdf", name: `Vade-takip ${dayText(data.today)}.pdf`, inline: url.searchParams.get("download") !== "1" });
@@ -667,7 +693,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const columns = ["Vade", "Gün", "Durum", "Kimden / Kime", "Kaynak", "Açıklama", "Ayrıntı", "Tahsil Edilecek", "Ödenecek"];
     const money = value => MONEY_FORMAT.format(value || 0);
     const rows = data.rows.map(row => ({ Vade: dayText(row.date), Gün: String(row.days), Durum: STATE_TEXT[row.state], "Kimden / Kime": row.party || "", Kaynak: sourceText(row), Açıklama: row.label || "", Ayrıntı: row.detail || "", "Tahsil Edilecek": row.direction === "in" && row.amount !== null ? money(row.amount) : "", Ödenecek: row.direction === "out" && row.amount !== null ? money(row.amount) : "" }));
-    const sheets = [{ name: "Vade Takip", columns, rows }];
+    const sheets = [{ name: "Vade Takip", columns, rows, preamble: header.extraPreamble("Vade Takip") }];
     if (data.dormant.length) sheets.push({ name: "Ödemesi kesilmiş olabilir", columns: ["Kişi", "Son Ödeme", "Boş Ay", "Kaynak"], rows: data.dormant.map(item => ({ Kişi: item.party, "Son Ödeme": item.lastPaidText, "Boş Ay": String(item.emptyMonths), Kaynak: item.detail })) });
     sheets.push({ name: "Özet", columns: ["Kalem", "Değer"], rows: [{ Kalem: "Kapsam", Değer: vadeRange(data) }, ...vadeSummary(data).map(([label, value]) => ({ Kalem: label.trim(), Değer: value }))] });
     const buffer = buildXlsx(sheets, { now: clock(), title: "Vade Takip" });

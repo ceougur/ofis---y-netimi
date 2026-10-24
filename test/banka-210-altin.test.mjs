@@ -149,8 +149,10 @@ async function fetchOne(api, request, side = "eski", company = null) {
     if (side === "yeni" && response.status === 200 && request.url.includes("/report-center/banka-pos-hareketleri")) data = legacyBankPos(data);
     if (side === "yeni" && response.status === 200) data = legacyDocuments(request.url, data);
     // 2.3.0 İz 3.3 (plan §8.9, eşleme 301; bilerek): Vade Takip'e "bank" kaynağı (planlı banka işlemleri) geldi; eski veride planlı işlem yok, satırlar aynı.
+    // 2.4.5 madde 6 (K6.3; bilerek): "account" kaynağı (carinin vadeli borç kaydı) geldi; 2.0.26 verisinde vade alanı yok (göçle boş), satırlar aynı.
     if (side === "yeni" && response.status === 200 && request.url.split("?")[0] === "/api/workspace/overview/vade-takip" && Array.isArray(data.allowed)) {
-      data = { ...data, allowed: data.allowed.filter(item => item !== "bank"), sources: Array.isArray(data.sources) ? data.sources.filter(item => item !== "bank") : data.sources };
+      const added = new Set(["bank", "account"]);
+      data = { ...data, allowed: data.allowed.filter(item => !added.has(item)), sources: Array.isArray(data.sources) ? data.sources.filter(item => !added.has(item)) : data.sources };
     }
     // 2.4.3 UX24 (bilerek): Rapor Merkezi yanıtında "footers" (yönü karışık raporda birden çok TOPLAM satırı). Tek TOPLAM'lı raporda footers = [footer]
     // (burada denetlenir); alan atılır, footer 2.0.26 ile birebir karşılaştırılır. Çok satırlı TOPLAM test/defter-243-ux24-toplam.test.mjs'te.
@@ -173,6 +175,16 @@ async function fetchOne(api, request, side = "eski", company = null) {
         if (data.rowTotal !== data.rows.length) k10Problems.push(`MM5: ${request.url} kesilmiş satırlar (${data.rows.length}/${data.rowTotal}) normalleştirilemedi`);
         data = { ...data, ...again, from: data.from, cashToday: data.cashToday, carried: data.carried, rowTotal: again.rows.length };
       }
+    }
+    // 2.4.5 madde 4 (bilerek, uyarı kapısı): Vade Takip'in "Tablo" ve "Ödeme Sözü" kaynakları ve Nakit Akış'ın "Tablo" seçeneği (withTable) kalktı — tablonun
+    // tutarlı kalemleri bu görünümlere girmez. İki tarafta da kaynak listesinden ve yanıttan atılır; eski tarafta tablo kalemi (kaynak table / promise)
+    // varsa karşılaştırma normalleştirilemez (bu verilerde yok; varsa sorun yazılır, sessizce atılmaz).
+    if (response.status === 200 && ["/api/workspace/overview/vade-takip", "/api/workspace/overview/nakit-akisi"].includes(request.url.split("?")[0]) && data && typeof data === "object") {
+      const tableRows = [...(data.rows || []), ...(data.overdue || [])].filter(item => item.source === "table" || item.source === "promise");
+      if (tableRows.length) k10Problems.push(`2.4.5 madde 4: ${side} ${request.url} ${tableRows.length} tablo kalemi; normalleştirilemedi`);
+      const dropTable = list => (Array.isArray(list) ? list.filter(item => item !== "table" && item !== "promise") : list);
+      const { withTable, ...rest } = data;
+      data = "allowed" in rest ? { ...rest, allowed: dropTable(rest.allowed), sources: dropTable(rest.sources) } : rest;
     }
     // 2.1.0 temel sürüm (K10, plan §8.9, bilerek): Nakit Akış başlangıcı Nakit + Gerçek Banka; 2.0.26 karşılığına aynı satırlardan çevrilir.
     if (side === "yeni" && response.status === 200 && request.url.split("?")[0] === "/api/workspace/overview/nakit-akisi") {

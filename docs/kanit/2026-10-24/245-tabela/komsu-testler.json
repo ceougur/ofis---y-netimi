@@ -1,0 +1,32 @@
+{
+  "ad": "245-tabela/komsu-testler",
+  "komut": "node --test --test-concurrency=3 test/accounts-stock.test.mjs test/bulgu-223.test.mjs test/cari-243.test.mjs test/cheques-overview.test.mjs test/plans.test.mjs test/rapor-220.test.mjs test/raporlar-209.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-230-banka.test.mjs test/raporlar-224.test.mjs test/tablo-raporlari-u3-244.test.mjs test/fatura-215.test.mjs test/baslarken-244.test.mjs test/banka-210-kabul-mizan.test.mjs test/banka-210-nakit-akis-k10.test.mjs test/vade-takip-kaynak-yetki-210.test.mjs test/defter-243-raporlar.test.mjs test/fatura-liste-243-fark.test.mjs test/banka-210-raporlar.test.mjs test/ebelge-240-gorunum.test.mjs test/kullanici-yetki-210.test.mjs test/is-akisi.test.mjs test/tabela-adi-245.test.mjs test/yazim-duzeni.test.mjs test/kilavuz-surum.test.mjs",
+  "commit": "d2cef7ce21b0776e2767f8fb610c9be8a4159f5d",
+  "dal": "is/tabela",
+  "kirli": 16,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T16:47:17.080Z",
+  "sure_sn": 102,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 359,
+    "gecen": 359,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-tabela/komsu-testler.log",
+  "klasor": "/home/user/wt/tabela",
+  "ham_cikti_sha256": "da3819ee73a28a8885de4c488a3df382cbfb23f04da5ce4e401faf273b720545",
+  "ham_cikti_bayt": 125924
+}

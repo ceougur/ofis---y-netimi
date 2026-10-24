@@ -1,6 +1,8 @@
 // 2.4.4 madde 5 EKRANDAN (E8; kullanıcı kararı 21.10.2026: "orta tablodaki Excel'deki kayıttan taksit olmasın, cariye kaydedip oradan yapsın; kasa hareketlerini,
 // fatura, rapor gibi kısımları bozar" + zil / Ödeme Sözü şeridi için "önerilerin uygun"). Tahsilat Takvimi şeridi ve zildeki "Tahsilat Gir" CARİ'ye gider:
-//   S1 kayda bağlı carisi olan söz → carinin tahsilat formu (Cari No + ad başlıkta, tutar ve açıklama hazır); insan hızında yazım + Tab; para carinin
+//   2.4.5 madde 3 (ürün sahibi: "tablo verisinden hiçbir para kaydı, borç tutarı, açılış bakiyesi doğmaz"): tablodan açılan tahsilat formunda TUTAR BOŞ, "önce cari
+//   açın" formunda AÇILIŞ BAKİYESİ BOŞ (kişi ve açıklama dolu); kullanıcı tutarı kendisi yazar (S1, S2, S4, S9 beklentileri buna göre güncellendi).
+//   S1 kayda bağlı carisi olan söz → carinin tahsilat formu (Cari No + ad başlıkta, açıklama hazır, tutar boş); insan hızında yazım + Tab; para carinin
 //      defterine, Kasa'ya bir kez; kayıt tahsilatı (payments) YOK; pil kalkar.
 //   S2 carisi olmayan kayıt → "önce cari açın" + ad ve telefonu kayıttan dolu Yeni Cari (kayda bağlı) → kaydedince tahsilat formu → para yeni cariye; pil kalkar.
 //   S3 kartlı kişinin sözü → cari "+ Tahsilat" ile aynı seçim (Taksite Yaz / Taksit Dışı) → Taksite Yaz → taksit kartına; söz kalkar.
@@ -9,9 +11,11 @@
 //   S6 kayda bağlı kartı olup carisi kayda bağlı olmayan kayıt → taksit seçimi; "Plansız Tahsilat Kaydet" (Kasa'ya doğrudan) yok.
 //   S7 personel (cari açma yetkisi yok): carisi olmayan kayıtta yol söylenir, form açılmaz, hiçbir şey yazılmaz.
 //   S8 elle kâhin: Kasa = girilen tutarların toplamı; payments 0.
-//   S9 (2.4.4 5b) carisi olmayan kayıtta "Kalan" kolonu varsa Yeni Cari'nin Açılış Bakiyesi kayıttaki Kalan Borç ile dolu (kaynağı yazar); cari borçla açılır,
-//      tahsilat borçtan düşer (veri tabanından: açılış borcu + tahsilat).
+//   S9 (2.4.5 madde 3; 2.4.4 5b'nin yerine) carisi olmayan kayıtta "Kalan" kolonu olsa da Yeni Cari'nin Açılış Bakiyesi BOŞ; kullanıcı borcu yazınca cari borçla
+//      açılır, tahsilat (tutarı kullanıcı yazar) borçtan düşer (veri tabanından: açılış borcu + tahsilat).
 // Çıkış: "N geçti, M kaldı" (kaldıysa çıkış kodu 1).
+// 2.4.5 madde 4 (uyarı kapısı): bu senaryo tablonun ödeme kalemlerini (şerit / zil / takvim) kullanan 2.4.4 yolunu sınar — üründe kapalı; sunucu
+// legacyTableDues (yalnız testler) ile 2.4.4 davranışında açılır. Ürünün kapısı test/e2e/run.mjs "2.4.5 uyarı kapısı" ve test/kapi-uyari-245.test.mjs.
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -35,7 +39,7 @@ const day = offset => {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 };
 const money = value => new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
-const server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups") });
+const server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), legacyTableDues: true });
 const api = await server.login();
 const BASE = server.base;
 const db = server.app.store;
@@ -173,7 +177,7 @@ try {
     const eyebrow = await textOf(page, `${top} .hof-eyebrow`);
     ok(title === "Tahsilat" && new RegExp(`No ${ali.refNo}`).test(eyebrow) && /Ali Veli/.test(eyebrow), `carinin tahsilat formu: “${title}” · “${eyebrow}”`);
     ok(!(await page.$(`${top} [data-new-plan]`)) && !/Tahsilat İşle/.test(title), "kayıt tahsilatı penceresi ve Taksit planı kısa yolu yok");
-    ok((await amountValue(page)) === "5.000,00", `tutar hazır: ${await amountValue(page)}`);
+    ok((await amountValue(page)) === "", `tutar boş (2.4.5 madde 3; şeritte 5.000,00): “${await amountValue(page)}”`);
     const note = await page.$eval(`${top} [name="note"]`, node => node.value);
     ok(/^Ödeme sözü · \d{2}\.\d{2}\.\d{4}$/.test(note), `açıklama takvim kaleminden: “${note}”`);
     await shot(page, "s1-cari-tahsilat");
@@ -198,9 +202,10 @@ try {
     await page.waitForSelector(`${top} input[name="name"]`);
     const form = await page.evaluate(sel => {
       const box = document.querySelector(sel);
-      return { title: box.querySelector(".hof-modal-title")?.textContent.trim(), intro: box.querySelector(".hof-modal-text")?.textContent || "", name: box.querySelector('input[name="name"]').value, phone: box.querySelector('input[name="phone"]').value, caseKey: box.querySelector('input[name="caseKey"]')?.value || "" };
+      return { title: box.querySelector(".hof-modal-title")?.textContent.trim(), intro: box.querySelector(".hof-modal-text")?.textContent || "", name: box.querySelector('input[name="name"]').value, phone: box.querySelector('input[name="phone"]').value, caseKey: box.querySelector('input[name="caseKey"]')?.value || "", opening: box.querySelector('input[name="openingBalance"]')?.value ?? null };
     }, top);
     ok(form.title === "Yeni Cari" && /Önce cari açın/.test(form.intro), `“${form.title}” + “önce cari açın” iletisi`);
+    ok(form.opening === "", `Açılış Bakiyesi boş (2.4.5 madde 3): “${form.opening}”`);
     ok(form.name === "Selin Arslan" && form.phone === "0532 600 30 30" && form.caseKey === keys.selin, `ad, telefon ve kayıt bağı kayıttan: ${JSON.stringify({ name: form.name, phone: form.phone, caseKey: form.caseKey })}`);
     ok(!(await page.$(`${top} [data-new-plan]`)), "Taksit planı kısa yolu yok");
     await shot(page, "s2-once-cari");
@@ -208,7 +213,8 @@ try {
     await page.waitForFunction(sel => document.querySelector(`${sel} .hof-modal-title`)?.textContent.trim() === "Tahsilat", top, { timeout: 10000 });
     selinAccount = one("SELECT id, ref_no AS refNo, case_key AS caseKey, phone FROM accounts WHERE name = 'Selin Arslan' AND deleted_at IS NULL");
     ok(accountCount() === before.accounts + 1 && selinAccount?.caseKey === keys.selin, `yeni cari No ${selinAccount?.refNo} kayda bağlı (${selinAccount?.caseKey})`);
-    ok((await amountValue(page)) === money(expected), `tahsilat formunda tutar hazır: ${await amountValue(page)} (pil ${money(expected)})`);
+    ok(expected > 0 && (await amountValue(page)) === "", `tahsilat formunda tutar boş (2.4.5 madde 3; pil ${money(expected)}): “${await amountValue(page)}”`);
+    await typeAmount(page, String(expected).replace(".", ","));
     await shot(page, "s2-tahsilat");
     await page.click(`${top} button[type="submit"]`);
     ok(await waitGone(page, "Selin Arslan", label), `pil kalktı (${label})`);
@@ -249,7 +255,7 @@ try {
     await page.waitForSelector(`${top} input[name="amount"]`);
     const eyebrow = await textOf(page, `${top} .hof-eyebrow`);
     ok(new RegExp(`No ${zeynep.refNo}`).test(eyebrow) && /Zeynep Şahin/.test(eyebrow), `carinin tahsilat formu: “${eyebrow}”`);
-    ok((await amountValue(page)) === "7.500,00", `tutar hazır: ${await amountValue(page)}`);
+    ok((await amountValue(page)) === "", `tutar boş (2.4.5 madde 3; söz 7.500,00): “${await amountValue(page)}”`);
     await typeAmount(page, "2500");
     await page.click(`${top} button[type="submit"]`);
     await page.waitForTimeout(1500);
@@ -300,7 +306,7 @@ try {
     await staff.context.close();
   });
 
-  await step("S9 (5b) Açılış Bakiyesi kayıttaki Kalan Borç ile dolu; cari borçla açılır, tahsilat borçtan düşer", async () => {
+  await step("S9 (2.4.5 madde 3) Açılış Bakiyesi boş (tablo borcu yazılmaz); kullanıcı borcu yazınca cari borçla açılır, tahsilat borçtan düşer", async () => {
     await openPill(page, "Hasan Er");
     await page.click('.hof-payment-action-card [data-act="pay"]');
     await page.waitForSelector(`${top} input[name="openingBalance"]`);
@@ -309,12 +315,16 @@ try {
       const field = box.querySelector('input[name="openingBalance"]');
       return { value: field.value, help: field.closest(".hof-field")?.querySelector("small")?.textContent || "", name: box.querySelector('input[name="name"]').value };
     }, top);
-    ok(form.name === "Hasan Er" && form.value === "12.000,00", `Açılış Bakiyesi kayıttaki Kalan Borç: “${form.value}” (Alacak Tutarı 20.000 değil)`);
-    ok(/“Kalan” kolonundan/.test(form.help), `kaynağı yazar: “${form.help}”`);
+    ok(form.name === "Hasan Er" && form.value === "", `Açılış Bakiyesi boş (kayıttaki Kalan Borç 12.000 yazılmaz): “${form.value}”`);
+    ok(!/kolonundan/.test(form.help), `tablo kaynağı yazılmaz: “${form.help}”`);
     await shot(page, "s9-acilis-bakiyesi");
+    // Kullanıcı borcu kendisi yazar (insan hızında + Tab).
+    await page.click(`${top} input[name="openingBalance"]`);
+    await typeSlow(page, "12000");
+    await page.keyboard.press("Tab");
     await page.click(`${top} button[type="submit"]`);
     await page.waitForFunction(sel => document.querySelector(`${sel} .hof-modal-title`)?.textContent.trim() === "Tahsilat", top, { timeout: 10000 });
-    ok((await amountValue(page)) === "12.000,00", `tahsilat formunda tutar: ${await amountValue(page)}`);
+    ok((await amountValue(page)) === "", `tahsilat formunda tutar boş: “${await amountValue(page)}”`);
     await typeAmount(page, "2000");
     await page.click(`${top} button[type="submit"]`);
     await page.waitForTimeout(1500);

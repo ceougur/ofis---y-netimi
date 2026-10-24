@@ -1,0 +1,20 @@
+[20:48:28] tohum 1: AYNI · {"cari":17,"fatura":80,"faturaliCari":11,"vadeliCariSayisi":12,"degersizSatir":3,"stokIadeSatir":8,"supheli":8,"cek":25,"kart":20} · vade 18 (beklenen 5, ret 0) · fatura durumu 80, elle satır 51 · 61.7 sn
+[20:48:28]   sha A eski/yeni 4188a64d940b6e4a / 4188a64d940b6e4a · B f5016d3408967f61 / f5016d3408967f61
+[20:49:23] tohum 2: AYNI · {"cari":17,"fatura":70,"faturaliCari":11,"vadeliCariSayisi":13,"degersizSatir":4,"stokIadeSatir":2,"supheli":8,"cek":28,"kart":22} · vade 16 (beklenen 4, ret 0) · fatura durumu 70, elle satır 60 · 54.3 sn
+[20:49:23]   sha A eski/yeni 95ac37b53bbfb50b / 95ac37b53bbfb50b · B 4539ea21c47efca1 / 4539ea21c47efca1
+[20:50:22] tohum 3: AYNI · {"cari":17,"fatura":89,"faturaliCari":11,"vadeliCariSayisi":13,"degersizSatir":2,"stokIadeSatir":3,"supheli":4,"cek":34,"kart":22} · vade 17 (beklenen 8, ret 0) · fatura durumu 89, elle satır 60 · 59.6 sn
+[20:50:22]   sha A eski/yeni b7e4c711f0eb08b3 / b7e4c711f0eb08b3 · B fe055cdb52928775 / fe055cdb52928775
+[20:51:20] tohum 4: AYNI · {"cari":17,"fatura":85,"faturaliCari":11,"vadeliCariSayisi":6,"degersizSatir":2,"stokIadeSatir":3,"supheli":3,"cek":33,"kart":22} · vade 6 (beklenen 1, ret 0) · fatura durumu 85, elle satır 29 · 58.2 sn
+[20:51:20]   sha A eski/yeni d21fd5b83854a71e / d21fd5b83854a71e · B 2875767439d04dfd / 2875767439d04dfd
+[20:52:22] tohum 5: AYNI · {"cari":17,"fatura":65,"faturaliCari":11,"vadeliCariSayisi":12,"degersizSatir":2,"stokIadeSatir":6,"supheli":4,"cek":23,"kart":21} · vade 14 (beklenen 5, ret 0) · fatura durumu 65, elle satır 53 · 61.1 sn
+[20:52:22]   sha A eski/yeni 145a1e16e8757aad / 145a1e16e8757aad · B 2ccd2eb9229deacf / 2ccd2eb9229deacf
+[20:53:28] tohum 6: AYNI · {"cari":17,"fatura":82,"faturaliCari":11,"vadeliCariSayisi":12,"degersizSatir":3,"stokIadeSatir":1,"supheli":5,"cek":26,"kart":26} · vade 16 (beklenen 7, ret 0) · fatura durumu 82, elle satır 66 · 66.1 sn
+[20:53:28]   sha A eski/yeni a438a1b493404835 / a438a1b493404835 · B 6b5d12a0d2be542f / 6b5d12a0d2be542f
+
+Sonuç: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-g8-tek-gecis/esdeger/sonuc.json
+# tests 6
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

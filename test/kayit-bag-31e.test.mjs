@@ -5,6 +5,7 @@
 // "Nasıl bozulur?" (N1–N17) listesi: hücre değişir, kolon eklenir, sıra değişir, satır silinir (kayma), aynı adlı iki kişi, ad + tutar değişir, kimlik
 // kolonu eklenir/silinir, Devamı'nda farklı kişi, Devamı'nda çift satır, Sheets eşitlemesi, iki kullanıcı aynı anda, yarıda kesilme, başka veri sayfası,
 // onaysız API, hedefte çakışan düzeltme. Sahte saat (config.now; ders 13).
+// 2.4.5 madde 4 (uyarı kapısı): bu dosya tablo takvim motorunu zil / Tahsilat Takvimi / Vade Takip / Projeksiyon uçlarından sınar → 2.4.4 davranışı (legacyTableDues, yalnız testler).
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { createUser, loginAdmin, startTestServer } from "./helpers.mjs";
@@ -26,7 +27,7 @@ const excel = matrix => ({ kind: "excel", fileName: "musteriler.xlsx", sheets: [
 const RANGE = "from=2000-01-01&to=2099-12-31";
 
 async function boot(options = {}) {
-  const server = await startTestServer({ now: { time: TODAY, fixed: true }, ...options });
+  const server = await startTestServer({ now: { time: TODAY, fixed: true }, legacyTableDues: true, ...options });
   const admin = await loginAdmin(server);
   await admin.post("/api/workspace/bank/setup/dismiss", {});
   return { server, admin, store: server.app.store };

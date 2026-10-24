@@ -36,7 +36,7 @@ const describe = entry => {
 };
 
 // report: /api/workspace/cash yanıtıyla aynı biçim ({ entries, opening, period, totals }).
-export function cashPdf(report, { from = "", to = "", officeName = "", userName = "", now = new Date() } = {}) {
+export function cashPdf(report, { from = "", to = "", officeName = "", officeLines = null, userName = "", now = new Date() } = {}) {
   const range = rangeLabel(from, to);
   // v2.0.13: yola göre döküm (Nakit Kasa, Banka, Kredi Kartı) ya da hepsi (Kasa ve Banka).
   // v2.0.17: Kasa dökümü yalnız nakit; banka tarafı "Banka ve POS" (Raporlar).
@@ -73,12 +73,15 @@ export function cashPdf(report, { from = "", to = "", officeName = "", userName 
     page = doc.addPage();
     top = M;
     if (first) {
-      if (officeName) page.text(M, top + 9, doc.fit(officeName, W * 0.6, "bold", 9), { font: "bold", size: 9, color: muted });
-      page.text(M, top + 34, `${which} Dökümü`, { font: "bold", size: 20, color: ink });
-      page.text(M, top + 54, range, { size: 11, color: "#374151" });
+      // 2.4.5 madde 6c: Tabela Adı açıkken başlık satırları (lib/report-header.mjs; ilki koyu); kapalıyken tek satır unvan (bugünkü yerleşim).
+      const heads = Array.isArray(officeLines) && officeLines.length ? officeLines : officeName ? [officeName] : [];
+      heads.forEach((line, index) => page.text(M, top + 9 + index * 10, doc.fit(line, W * 0.6, index ? "regular" : "bold", index ? 8 : 9), { font: index ? "regular" : "bold", size: index ? 8 : 9, color: muted }));
+      const lift = Math.max(0, heads.length - 1) * 10;
+      page.text(M, top + lift + 34, `${which} Dökümü`, { font: "bold", size: 20, color: ink });
+      page.text(M, top + lift + 54, range, { size: 11, color: "#374151" });
       page.text(M, top + 9, `Oluşturma: ${created}`, { size: 8, color: muted, align: "right", width: W });
       if (userName) page.text(M, top + 21, `Hazırlayan: ${doc.fit(userName, W * 0.35, "regular", 8)}`, { size: 8, color: muted, align: "right", width: W });
-      top += 72;
+      top += 72 + lift;
       const cards = [
         // 2.4.3 (uzman UI7): rapor/PDF başlıkları ve göstergeler yazım düzeninde (öbür PDF'ler "Borç Toplamı", "TOPLAM").
         ["Devreden Kasa", report.opening || 0, ink],

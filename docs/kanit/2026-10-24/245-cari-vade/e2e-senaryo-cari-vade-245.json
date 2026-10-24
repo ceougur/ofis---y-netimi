@@ -1,0 +1,32 @@
+{
+  "ad": "245-cari-vade/e2e-senaryo-cari-vade-245",
+  "komut": "npm run test:senaryo-cari-vade-245",
+  "commit": "494cd99ec18ebc6e59cfadb4c80ce8587f081ffe",
+  "dal": "is/cari-vade",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:30:26.229Z",
+  "sure_sn": 27.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 30,
+    "gecen": 30,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-cari-vade/e2e-senaryo-cari-vade-245.log",
+  "klasor": "/home/user/wt/cari-vade",
+  "ham_cikti_sha256": "9e950b7de96bfa55c458e83ae95b5adb9f322da1e9bfd5322c289c472a674847",
+  "ham_cikti_bayt": 3177
+}

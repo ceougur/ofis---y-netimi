@@ -1,0 +1,38 @@
+{
+  "ad": "245-g8-tek-gecis/mutasyon-3-test",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/kapama-tek-gecis-245.test.mjs",
+  "commit": "6992e5989c7cbd08de573b56156397a60a5a7b58",
+  "dal": "HEAD",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T20:54:07.415Z",
+  "sure_sn": 1.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 3,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı aynı kapama geçişinden; sonuç cari başına yolla aynı › bayatlık: yazımdan sonra yeni değer; işlem içinde hesaplanan sonuç önbelleğe yazılmaz (geri alınınca eski değer)",
+      "konum": "test/kapama-tek-gecis-245.test.mjs:155:3",
+      "hata": "geri alınan işlemin değeri önbellekten dönmez · 50 !== 500 (beklenen 500, gelen 50)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/d1-kapama/docs/kanit/2026-10-24/245-g8-tek-gecis/mutasyon-3-test.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-g8-tek-gecis/mut3",
+  "ham_cikti_sha256": "d2a8c92eabfdcf68ba47b3657c2a71a97622ebc16bbda4bc20545f5ab22705a3",
+  "ham_cikti_bayt": 2953
+}

@@ -1,0 +1,26 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "c2-tablodan-aktar-kapisi",
+ "aciklama": "2.4.5 madde 2: anahtar AÇIK sunucuda Ayşe'nin kaydı Tablodan Aktar ile karta aktarılır (taksit dışı 400 karta taşınır); program anahtar KAPALI yeniden açılır → Burak'ın aktarımı ve Ayşe'nin geri alındıktan sonra yeniden aktarımı 410 table-transfer-closed, kart açılmaz, tahsilat taşınmaz; eski aktarımın Geri Al'ı AÇIK (kart kalkar, 400 cariye taksit dışı döner).",
+ "dayanak": "KARARLAR.md C2 (madde 2 + K1 'aynı düzen' BAŞ MİMAR; KULLANICI KARAR ~21:35 UTC (2) 'Tablodan Aktar kapalı (Geri Al açık)'; B1.2/B1.6)",
+ "bugun": "2026-06-15",
+ "anahtar": {"legacyTableTransfer": true},
+ "adimlar": [
+  {"id": "t", "islem": "tablo_yukle", "sekmeler": [{"ad": "Taksitler", "tur": "taksit", "kayitlar": [
+   {"no": "M-1", "isim": "Ayşe Kara", "taksitler": [["2026-06-20", "1000"], ["2026-07-20", "1000"], ["2026-08-20", "1000"]]},
+   {"no": "M-2", "isim": "Burak Ak", "taksitler": [["2026-06-25", "500"], ["2026-07-25", "500"]]}]}]},
+  {"id": "ca", "islem": "cari_ac", "ad": "A", "isim": "Ayşe Kara", "kayit": "M-1", "tarih": "2026-06-01"},
+  {"id": "cb", "islem": "cari_ac", "ad": "B", "isim": "Burak Ak", "kayit": "M-2", "tarih": "2026-06-01"},
+  {"id": "ta", "islem": "tahsilat", "cari": "A", "tutar": "400", "tarih": "2026-06-10"},
+  {"id": "tb", "islem": "tahsilat", "cari": "B", "tutar": "200", "tarih": "2026-06-11"},
+  {"id": "x1", "islem": "aktar", "ad": "X1", "kayitlar": ["M-1"], "hesapIci": true, "mevcutBorc": false},
+  {"id": "k1", "islem": "kontrol"},
+  {"id": "r1", "islem": "sunucu_yeniden", "anahtar": {}},
+  {"id": "x2", "islem": "aktar", "ad": "X2", "kayitlar": ["M-2"], "hesapIci": true, "mevcutBorc": false},
+  {"id": "k2", "islem": "kontrol"},
+  {"id": "g1", "islem": "geri_al", "aktar": "X1"},
+  {"id": "k3", "islem": "kontrol"},
+  {"id": "x3", "islem": "aktar", "ad": "X3", "kayitlar": ["M-1"], "hesapIci": true, "mevcutBorc": false},
+  {"id": "k4", "islem": "kontrol"}
+ ]
+}

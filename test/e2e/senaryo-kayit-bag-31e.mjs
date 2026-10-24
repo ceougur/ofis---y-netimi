@@ -8,6 +8,8 @@
 //    Ali Veli."; Vazgeç → veri durur; onay → kalkar, tahsilat ve not silinmez. E) Google Sheets: Sheet'te olmayan satır listede "Bağlı: not"; Seçilenleri
 //    Kaldır adıyla sorar. F) Sayfayı Sil: yalnız o sayfada olan kaydın notu adıyla söylenir.
 // Çalıştırma: npm run test:senaryo-kayit-bag-31e (ekran görüntüleri test/e2e/artifacts/kayit-bag-31e/).
+// 2.4.5 madde 4 (uyarı kapısı): bu senaryo tablonun ödeme kalemlerini (şerit / zil / takvim) kullanan 2.4.4 yolunu sınar — üründe kapalı; sunucu
+// legacyTableDues (yalnız testler) ile 2.4.4 davranışında açılır. Ürünün kapısı test/e2e/run.mjs "2.4.5 uyarı kapısı" ve test/kapi-uyari-245.test.mjs.
 import fs, { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -43,7 +45,8 @@ const file = (name, people, { dosya = false } = {}) => {
 // E adımı: bağlı Google Sheets yerine sahte yanıt (ağ yok); CSV adım içinde değişir.
 const sheet = { csv: "" };
 const fetchImpl = async target => (String(target).includes("/edit") ? new Response('<script>"gid":"0","name":"Müşteriler"</script>') : new Response(sheet.csv, { headers: { "content-type": "text/csv" } }));
-const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, fetchImpl, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0", HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f90" } });
+// 2.4.5 madde 1: kayıt tahsilatı programda kapalı (410); bu senaryo eski sürümden gelen kayıt tahsilatını API'den üretir → anahtar açık (üretimde yok).
+const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, fetchImpl, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0", HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f90" }, legacyCasePayments: true, legacyTableDues: true });
 const { port } = await app.listen(0, "127.0.0.1");
 const BASE = `http://127.0.0.1:${port}`;
 const browser = await chromium.launch();

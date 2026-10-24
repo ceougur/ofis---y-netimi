@@ -1,0 +1,11 @@
+--- /home/user/wt/d1-kapama/server/lib/invoice-settle.mjs	2026-10-24 19:53:49.787315566 +0000
++++ /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-d1-kapama/mut1/server/lib/invoice-settle.mjs	2026-10-24 19:59:20.813808230 +0000
+@@ -104,7 +104,7 @@
+       // (müşteride alacak satırı) alacak tarafında, alıştan iade (tedarikçide borç satırı) borç tarafında; en eski açık borcu (fatura, elle borç)
+       // kapatır. Önceden (2.0.13'ten) karşı tarafta yükümlülük sayılıyordu: bakiye 0 iken fatura ve vadeli borç "Açık / gecikmiş" görünüyordu (D1).
+       // Stoktan veresiye satış (borç) ve açık hesaba alım (alacak) yükümlülüktür.
+-      if (line.stockReason === "return" || line.stockReason === "preturn") {
++      if (false) {
+         if (credit) role.recvPay = true;
+         else role.payPay = true;
+       } else if (debit) role.recvDue = true;

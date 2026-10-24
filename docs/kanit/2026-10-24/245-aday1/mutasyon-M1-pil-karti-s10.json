@@ -1,0 +1,68 @@
+{
+  "ad": "245-aday1/mutasyon-M1-pil-karti-s10",
+  "komut": "npm run test:senaryo-pil-karti-245",
+  "commit": "b417ab57376bfde53ba81efaaaa48110aedaf392",
+  "dal": "aday245-1",
+  "kirli": 6,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T18:40:46.804Z",
+  "sure_sn": 49.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 74,
+    "gecen": 67,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "tutar = Kalan: “”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ikinci form: tutar = yeni Kalan “” · “No 1 · Ali Veli · 0533 999 99 99”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kalem kapandı, pil kalktı",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "veri tabanı: ikinci tahsilat 1.250 No 1'ye: {\"kind\":\"in\",\"amount\":750,\"invoiceId\":\"\"}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "takvimde account| kalemi yok",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "tedarikçinin ödeme formu: “Ödeme” · “No 4 · Pil Tedarikçi · 0533 666 66 66” ·",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: yanlış form açıldı; kaydedilmedi",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-24/245-aday1/mutasyon-M1-pil-karti-s10.log",
+  "klasor": "/home/user/wt/aday245-1",
+  "ham_cikti_sha256": "392545a54d7655b98a26155aa2dcdf40c8d8bdc5ce7bd6120b9be266cd6c3fa6",
+  "ham_cikti_bayt": 6627
+}

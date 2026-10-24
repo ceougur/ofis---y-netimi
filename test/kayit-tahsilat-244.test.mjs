@@ -9,6 +9,7 @@
 //       bağlı cari tahsilatı → yeni kodla açılınca Kasa, cari bakiyeleri, kart kalanları, İşlem Geçmişi toplamları ve Kayıt Tahsilatları raporu AYNI;
 //       eski kayıt tahsilatı ve eski kart düzeltilir/silinir; sunucu ucu (POST cases/:key/payments) durur.
 // Beklenen sayılar programdan bağımsız: örnek tablodaki söz tutarları (test/fixtures/tahsilat-ornek.mjs) ve burada girilen tutarların elle toplamı.
+// 2.4.5 madde 4 (uyarı kapısı): bu dosya tablo takvim motorunu zil / Tahsilat Takvimi / Vade Takip / Projeksiyon uçlarından sınar → 2.4.4 davranışı (legacyTableDues, yalnız testler).
 import assert from "node:assert/strict";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -47,7 +48,7 @@ describe("2.4.4 E8: kaydın tahsilatı cariden; takvim kalemi carinin ve taksiti
   let keys = {};
 
   before(async () => {
-    server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups") });
+    server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), legacyTableDues: true });
     api = await server.login();
     db = server.app.store;
     await must("kurulum geç", api.post("/api/workspace/bank/setup/dismiss", {}));
@@ -167,7 +168,7 @@ describe(`2.4.4 E8: eski sürüm verisi (${OLD} gerçek kodu) yeni kodla aynı s
   after(() => rmSync(root, { recursive: true, force: true }));
 
   test("T6 sayılar aynı; eski kayıt tahsilatı ve kart düzeltilir / silinir; sunucu ucu durur", async () => {
-    const server = await bootVersion(CURRENT, dirs);
+    const server = await bootVersion(CURRENT, { ...dirs, legacyTableDues: true });
     try {
       const api = await server.login();
       const db = server.app.store;

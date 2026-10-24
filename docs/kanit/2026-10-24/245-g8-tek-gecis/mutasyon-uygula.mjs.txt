@@ -1,0 +1,19 @@
+// G8 mutasyon uygulayıcı: node uygula.mjs <kök> <1|2|3>. Her değişiklik tam bir kez eşleşmeli.
+import fs from "node:fs";
+import path from "node:path";
+const [root, n] = process.argv.slice(2);
+const file = path.join(root, "server/routes/invoices.mjs");
+const swap = (from, to) => {
+  const text = fs.readFileSync(file, "utf8");
+  const count = text.split(from).length - 1;
+  if (count !== 1) throw new Error(`eşleşme ${count} (1 beklenir): ${from.slice(0, 80)}`);
+  fs.writeFileSync(file, text.replace(from, to));
+  console.log(`mutasyon ${n}: invoices.mjs değişti`);
+};
+// 1: elle satırlar yanlış kümeden (faturası olan carilerden) okunur — faturasız vadeli cari düşer.
+if (n === "1") swap("for (const accountId of ledgers.keys()) if (dated.has(accountId)) for (const [id, state] of settled(accountId).entries)", "for (const accountId of tables.invoicesOf.keys()) if (dated.has(accountId)) for (const [id, state] of settled(accountId).entries)");
+// 2: vadeli küme süzgeci düşer — vadesiz carinin satırları haritaya sızar.
+else if (n === "2") swap("for (const accountId of ledgers.keys()) if (dated.has(accountId)) for", "for (const accountId of ledgers.keys()) if (dated.has(accountId) || true) for");
+// 3: işlem içinde hesaplanan sonuç önbelleğe yazılır.
+else if (n === "3") swap("    if (!inTx) settledCache = out;", "    settledCache = out;");
+else throw new Error("mutasyon 1|2|3");

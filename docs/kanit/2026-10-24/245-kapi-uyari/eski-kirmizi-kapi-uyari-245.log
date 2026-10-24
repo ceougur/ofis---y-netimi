@@ -1,0 +1,504 @@
+TAP version 13
+# (node:21863) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.5 madde 4: dueSources = computeDues(...).sources (son tarihlerin exclude'u aynı kural)
+    # Subtest: tahsilat ve okul servisi örneklerinde aynı kolonlar; exclude olmadan Söz Tarihi son tarihe düşerdi
+    not ok 1 - tahsilat ve okul servisi örneklerinde aynı kolonlar; exclude olmadan Söz Tarihi son tarihe düşerdi
+      ---
+      duration_ms: 2.096106
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:90:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        insight/dues.mjs dueSources yok (2.4.5 madde 4: takvim kalemleri hesaplanmadan son tarihlerin exclude'u)
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:92:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: KS6: 'Son Ödeme' son tarih değil; 'Duruşma Tarihi' ve 'Sözleşme Bitiş' son tarih
+    not ok 2 - KS6: 'Son Ödeme' son tarih değil; 'Duruşma Tarihi' ve 'Sözleşme Bitiş' son tarih
+      ---
+      duration_ms: 0.484502
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:107:3'
+      failureType: 'testCodeFailure'
+      error: 'dueSources is not a function'
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:110:79)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - 2.4.5 madde 4: dueSources = computeDues(...).sources (son tarihlerin exclude'u aynı kural)
+  ---
+  duration_ms: 3.688261
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:89:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.5 madde 4: kaynak — tablo kalemleri (computeDues) yalnız eski davranış anahtarıyla bir listeye girer
+    # Subtest: routes/dues.mjs: computeDues yalnız legacyTable dalında; öbür sayfanın tablo kalemi yalnız legacyTable ile
+    not ok 1 - routes/dues.mjs: computeDues yalnız legacyTable dalında; öbür sayfanın tablo kalemi yalnız legacyTable ile
+      ---
+      duration_ms: 1.025523
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:118:3'
+      failureType: 'testCodeFailure'
+      error: 'dues.mjs: legacyTable anahtarı yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: |-
+        import { createHash } from "node:crypto";
+        import { HttpError, ok, readJson, text } from "../lib/http.mjs";
+        import { caseCollections, caseCollectionsState } from "../lib/insight/case-collections.mjs";
+        import { computeDeadlines, computeDues, DUE_WINDOW } from "../lib/insight/dues.mjs";
+        import { canUser } from "../lib/permissions.mjs";
+        import { tableNotes } from "../lib/reports.mjs";
+        import { systemClock } from "../lib/clock.mjs";
+        
+        const SETTLED_KEY = "dues.settled";
+        const MAX_SETTLED = 5000;
+        
+        export function registerDueRoutes(router, { auth, store, dataset, profile, events, audit, plans, cheques, invoices, bankAccounts = null, calendar = null, now: clock = systemClock }) {
+          const bankPlans = () => (typeof bankAccounts === "function" ? bankAccounts() : bankAccounts)?.plans || null;
+          const cache = new Map(); // oturum → { key, result }
+          const settingKey = () => (dataset.settingKey ? dataset.settingKey(SETTLED_KEY) : SETTLED_KEY);
+          const readSettled = () => {
+            try {
+              const value = JSON.parse(store.setting(settingKey(), "{}") || "{}");
+              return value && typeof value === "object" ? value : {};
+            } catch {
+              return {};
+            }
+          };
+          const paymentsState = () => {
+            const row = store.get("SELECT COUNT(*) AS count, COALESCE(MAX(COALESCE(updated_at, created_at)), '') AS at FROM payments");
+            return `${row.count}/${row.at}`;
+          };
+        
+          const tableCache = new Map(); // oturum → { key, value: { computed, deadlines } }
+          async function compute() {
+            const now = clock();
+            const settledRaw = store.setting(settingKey(), "{}") || "{}";
+            const tabState = ["dataset.tabs.alias", "dataset.tabs.hidden"].map(name => store.setting(dataset.settingKey ? dataset.settingKey(name) : name, "") || "").join("|");
+            const pages = dataset.sessions ? dataset.sessions() : [];
+            const pagesState = pages.length > 1 ? pages.map(page => `${page.key}:${page.rowCount}:${page.recordCount}:${page.changedAt || ""}`).join("|") : "";
+            const planState = plans?.fingerprint ? plans.fingerprint() : "";
+            const tableKey = [pagesState, profile.fingerprint(), paymentsState(), caseCollectionsState(store), planState, settledRaw.length, settledRaw.slice(-64), tabState, now.toDateString()].join("|");
+            const key = [tableKey, cheques?.fingerprint ? cheques.fingerprint() : "", invoices?.fingerprint ? invoices.fingerprint() : "", bankPlans()?.fingerprint ? bankPlans().fingerprint() : ""].join("|");
+            const session = dataset.currentKey();
+            const hit = cache.get(session);
+            if (hit && hit.key === key) return hit.result;
+            let table = tableCache.get(session);
+            if (!table || table.key !== tableKey) {
+              const view = await dataset.view();
+              const rows = view.rows || [];
+              const tabs = (view.tabs || []).map(item => item.title);
+              const keys = new Set(rows.map(row => row.__hofKey).filter(Boolean));
+              const payments = caseCollections(store, session, { plans: true }).filter(item => keys.has(item.caseKey));
+              const forced = profile.roles ? profile.roles() : null;
+              const computed = computeDues({ rows, tabs, payments, settled: readSettled(), now, forced });
+              const deadlines = computeDeadlines({ rows, tabs, now, exclude: computed.sources, forced });
+              table = { key: tableKey, value: { computed, deadlines } };
+              tableCache.set(session, table);
+            }
+            const { computed, deadlines } = table.value;
+            const carded = plans?.linkedCases ? plans.linkedCases(session) : new Set();
+            const items = carded.size ? computed.items.filter(item => item.promise || !carded.has(item.caseKey)) : computed.items;
+            const dormant = carded.size ? computed.dormant.filter(item => !carded.has(item.caseKey)) : computed.dormant;
+            const { sources } = computed;
+            const local = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+            const planItems = plans?.dueItems ? plans.dueItems(local) : [];
+            const chequeItems = cheques?.dueItems ? cheques.dueItems(local) : [];
+            const invoiceItems = invoices?.dueItems ? invoices.dueItems(local) : [];
+            const bankItems = bankPlans()?.dueItems ? bankPlans().dueItems(local) : [];
+            const foreignItems = [];
+            const foreignDeadlines = [];
+            const calendarFn = typeof calendar === "function" ? calendar() : null;
+            if (pages.length > 1 && typeof calendarFn === "function") {
+              try {
+                const all = await calendarFn(now);
+                for (const item of all.items || []) {
+                  if (!item.session || item.session === session) continue;
+                  const tagged = { ...item, foreign: true, pageName: item.sessionName || "" };
+                  if (item.deadline) {
+                    if (item.days <= DUE_WINDOW.aheadDays) foreignDeadlines.push(tagged);
+                  } else if (!item.carded) foreignItems.push(tagged);
+                }
+              } catch (error) {
+              }
+            }
+            const notes = tableNotes({ split: (computed.debtSplit || []).filter(item => !carded.has(item.key)), unresolved: computed.debtUnresolved || [] });
+            const result = { items: [...items, ...planItems, ...chequeItems, ...invoiceItems, ...bankItems, ...foreignItems], deadlines: [...deadlines, ...foreignDeadlines], sources, dormant, notes, today: local, generatedAt: now.toISOString() };
+            const { generatedAt: _, ...content } = result;
+            result.version = createHash("sha256").update(JSON.stringify(content)).digest("base64url").slice(0, 22);
+            cache.set(session, { key, result });
+            return result;
+          }
+        
+          router.get("/api/workspace/dues", async ({ req, res, url }) => {
+            const user = auth.requireUser(req);
+            const data = await compute();
+            const see = { cheque: canUser(user, "cheques.view"), invoice: canUser(user, "invoices.view"), bank: canUser(user, "bank.view") || canUser(user, "overview.view") };
+            const version = `${data.version}.${Number(see.cheque)}${Number(see.invoice)}${Number(see.bank)}`;
+            if (url.searchParams.get("since") === version) return ok(res, { unchanged: true, version, today: data.today });
+            ok(res, { ...data, items: data.items.filter(item => (item.source !== "cheque" || see.cheque) && (item.source !== "invoice" || see.invoice) && (item.source !== "bank" || see.bank)), version });
+          });
+        
+          router.post("/api/workspace/dues/settle", async ({ req, res }) => {
+            const user = auth.requirePermission(req, "records.edit");
+            const body = await readJson(req);
+            const id = text(body.id).slice(0, 600);
+            if (!id.startsWith("due|")) throw new HttpError(400, "Kalem tanınmadı.");
+            const reason = body.reason === "cancelled" ? "cancelled" : "paid";
+            const pageKey = text(body.session);
+            const write = () => {
+              const map = readSettled();
+              if (body.undo) delete map[id];
+              else map[id] = { reason, by: user.id, at: clock().toISOString() };
+              let entries = Object.entries(map);
+              if (entries.length > MAX_SETTLED) entries = entries.sort((a, b) => String(a[1].at).localeCompare(String(b[1].at))).slice(-MAX_SETTLED);
+              store.setSetting(settingKey(), JSON.stringify(Object.fromEntries(entries)), user.id);
+            };
+            if (pageKey && pageKey !== dataset.currentKey() && dataset.withKey) dataset.withKey(pageKey, write);
+            else write();
+            cache.clear();
+            tableCache.clear();
+            const caseKey = id.split("|")[2] || "";
+            audit(user, body.undo ? "dues.reopened" : reason === "paid" ? "dues.settled" : "dues.cancelled", caseKey, { id });
+            events?.publish("workspace.changed", { kind: "dues", caseKey, actorId: user.id, actorName: user.display_name, datasetKey: dataset.currentKey() }, { except: user.id });
+            ok(res, { ok: true });
+          });
+        
+          const dismissedKey = user => `alerts.dismissed.${user.id}`;
+          const readDismissed = user => {
+            try {
+              const value = JSON.parse(store.setting(dismissedKey(user), "{}") || "{}");
+              return value && typeof value === "object" && !Array.isArray(value) ? value : {};
+            } catch {
+              return {};
+            }
+          };
+          router.get("/api/workspace/alerts/dismissed", async ({ req, res }) => {
+            const user = auth.requireUser(req);
+            ok(res, { ids: Object.keys(readDismissed(user)) });
+          });
+          router.post("/api/workspace/alerts/dismiss", async ({ req, res }) => {
+            const user = auth.requireUser(req);
+            const body = await readJson(req);
+            const id = text(body.id).slice(0, 700);
+            if (!id) throw new HttpError(400, "Bildirim seçilmedi.");
+            const map = readDismissed(user);
+            if (body.undo) delete map[id];
+            else map[id] = clock().toISOString();
+            const cutoff = new Date(clock().getTime() - 400 * 86_400_000).toISOString();
+            const entries = Object.entries(map).filter(([, at]) => at >= cutoff).sort((a, b) => a[1].localeCompare(b[1])).slice(-3000);
+            store.setSetting(dismissedKey(user), JSON.stringify(Object.fromEntries(entries)), user.id);
+            ok(res, { ids: entries.map(([key]) => key) });
+          });
+        }
+        
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:120:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: routes/overview.mjs: Vade Takip kaynaklarında table / promise yok; Projeksiyon withTable yalnız legacyTable ile
+    not ok 2 - routes/overview.mjs: Vade Takip kaynaklarında table / promise yok; Projeksiyon withTable yalnız legacyTable ile
+      ---
+      duration_ms: 0.928424
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:134:3'
+      failureType: 'testCodeFailure'
+      error: 'DUE_SOURCES: plan, cheque, note, invoice, cash, bank, table, promise, deadline'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:137:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: anahtar üretimde kapalı: varsayılan false, ortam değişkeni yok, üretim girişi vermiyor
+    not ok 3 - anahtar üretimde kapalı: varsayılan false, ortam değişkeni yok, üretim girişi vermiyor
+      ---
+      duration_ms: 1.619468
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:140:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + undefined
+        - false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:142:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 2 - 2.4.5 madde 4: kaynak — tablo kalemleri (computeDues) yalnız eski davranış anahtarıyla bir listeye girer
+  ---
+  duration_ms: 3.949546
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:116:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.5 madde 4 + 5 (API): ürün = v2.4.4 − tablo kalemleri; son tarihler ve modül kalemleri aynı
+    # Subtest: Tahsilat Takvimi / zil: tablo kalemi YOK (açık sayfa, öbür sayfa, kartlı kişinin sözü); yan alanlar boş
+    not ok 1 - Tahsilat Takvimi / zil: tablo kalemi YOK (açık sayfa, öbür sayfa, kartlı kişinin sözü); yan alanlar boş
+      ---
+      duration_ms: 2.200532
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:170:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        takvimde tablo kalemi kalmamalı (zil de bu listeden okur)
+        + actual - expected
+        
+        + [
+        +   'Burak Koç · 1. taksit',
+        +   'Hakan Kurt · Kira',
+        +   'Elif Aydın · 1. taksit',
+        +   'Deniz Öztürk · Kira',
+        +   'Selin Arslan · 1. taksit',
+        +   'Gizem Polat · Kira',
+        +   'Hakan Kurt · Kira',
+        +   'Ali Veli · Ödeme sözü',
+        +   'Elif Aydın · 2. taksit',
+        +   'Deniz Öztürk · Kira',
+        +   'Burak Koç · 2. taksit',
+        +   'Ayşe Kaya · Ödeme sözü',
+        +   'Selin Arslan · 2. taksit',
+        +   'Zeynep Şahin · Ödeme sözü',
+        +   'Gizem Polat · Kira',
+        +   'Öbür Söz Kişisi · Ödeme sözü'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'Burak Koç · 1. taksit'
+        1: 'Hakan Kurt · Kira'
+        2: 'Elif Aydın · 1. taksit'
+        3: 'Deniz Öztürk · Kira'
+        4: 'Selin Arslan · 1. taksit'
+        5: 'Gizem Polat · Kira'
+        6: 'Hakan Kurt · Kira'
+        7: 'Ali Veli · Ödeme sözü'
+        8: 'Elif Aydın · 2. taksit'
+        9: 'Deniz Öztürk · Kira'
+        10: 'Burak Koç · 2. taksit'
+        11: 'Ayşe Kaya · Ödeme sözü'
+        12: 'Selin Arslan · 2. taksit'
+        13: 'Zeynep Şahin · Ödeme sözü'
+        14: 'Gizem Polat · Kira'
+        15: 'Öbür Söz Kişisi · Ödeme sözü'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:173:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: modül kalemleri aynı: 1 gecikmiş taksit, 1 çek, 1 vadeli fatura, 1 planlı banka (senaryodan); eski davranış ve v2.4.4 ile birebir
+    not ok 2 - modül kalemleri aynı: 1 gecikmiş taksit, 1 çek, 1 vadeli fatura, 1 planlı banka (senaryodan); eski davranış ve v2.4.4 ile birebir
+      ---
+      duration_ms: 0.607918
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:183:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        takvimde yalnız modül kalemleri
+        
+        20 !== 4
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 4
+      actual: 20
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:188:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: son tarihler KALIR ve aynı: Sözleşme bitiş + Sigorta yenileme (açık sayfa), Lisans Bitiş (öbür sayfa); Söz Tarihi son tarih değil
+    ok 3 - son tarihler KALIR ve aynı: Sözleşme bitiş + Sigorta yenileme (açık sayfa), Lisans Bitiş (öbür sayfa); Söz Tarihi son tarih değil
+      ---
+      duration_ms: 0.297483
+      type: 'test'
+      ...
+    # Subtest: yetkisiz kullanıcı (personel): tablo kalemi yok; çek / fatura / banka süzgeci 2.4.4 gibi; son tarihler aynı
+    not ok 4 - yetkisiz kullanıcı (personel): tablo kalemi yok; çek / fatura / banka süzgeci 2.4.4 gibi; son tarihler aynı
+      ---
+      duration_ms: 0.426322
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:202:3'
+      failureType: 'testCodeFailure'
+      error: 'personelin takviminde tablo kalemi yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:204:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Anlık Durum Vade Takip: Tablo / Ödeme Sözü kaynağı ve satırı yok; öbür kaynaklar ve son tarihler aynı; dormant boş
+    not ok 5 - Anlık Durum Vade Takip: Tablo / Ödeme Sözü kaynağı ve satırı yok; öbür kaynaklar ve son tarihler aynı; dormant boş
+      ---
+      duration_ms: 0.314679
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:211:3'
+      failureType: 'testCodeFailure'
+      error: 'kaynaklar: plan, cheque, note, invoice, cash, bank, table, promise, deadline'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:213:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Nakit Akış Projeksiyonu: tablo kalemi yok, 'Tablo' seçeneği yok (table=0 / table=1 aynı); v2.4.4'ün table=0 sonucuyla aynı
+    not ok 6 - Nakit Akış Projeksiyonu: tablo kalemi yok, 'Tablo' seçeneği yok (table=0 / table=1 aynı); v2.4.4'ün table=0 sonucuyla aynı
+      ---
+      duration_ms: 0.357147
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:223:3'
+      failureType: 'testCodeFailure'
+      error: 'projeksiyonda tablo kalemi yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:226:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: madde 5: Tablo Raporları satırları aynı motor (v2.4.4 ile aynı); tablodan gelen tutar 'Muhasebe Kaydı Değil'; Nakit Akışı'nda Kasa sütunu yok
+    not ok 7 - madde 5: Tablo Raporları satırları aynı motor (v2.4.4 ile aynı); tablodan gelen tutar 'Muhasebe Kaydı Değil'; Nakit Akışı'nda Kasa sütunu yok
+      ---
+      duration_ms: 0.687926
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:234:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'Tutar'
+        - 'Tablodaki Tutar (Muhasebe Kaydı Değil)'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Tablodaki Tutar (Muhasebe Kaydı Değil)'
+      actual: 'Tutar'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:241:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: önbellek: tablo yeniden yüklenince (aynı dosya) yine tablo kalemi yok; son tarih değişince takvim yenilenir
+    not ok 8 - önbellek: tablo yeniden yüklenince (aynı dosya) yine tablo kalemi yok; son tarih değişince takvim yenilenir
+      ---
+      duration_ms: 109.977223
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:249:3'
+      failureType: 'testCodeFailure'
+      error: 'yeniden yüklemeden sonra da tablo kalemi yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:257:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 3 - 2.4.5 madde 4 + 5 (API): ürün = v2.4.4 − tablo kalemleri; son tarihler ve modül kalemleri aynı
+  ---
+  duration_ms: 1892.69761
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-uyari/eski-d2cef7c/test/kapi-uyari-245.test.mjs:148:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 13
+# suites 3
+# pass 1
+# fail 12
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2311.271463

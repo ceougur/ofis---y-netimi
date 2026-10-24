@@ -1,0 +1,16 @@
+#!/bin/bash
+# Her mutasyon: ayrı git worktree (d2cef7c) + çalışma ağacındaki 245-kapi-para farkı + mutasyon → test/kapi-para-245.test.mjs. Sonuç: mutasyon-ozet.txt
+WT=/home/user/wt/kapi-para
+ND=/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+git -C $WT diff d2cef7c > $ND/fark.patch || exit 1
+for m in "$@"; do
+  dir=$ND/mut-$m
+  git -C $WT worktree add --detach $dir d2cef7c > /dev/null 2>&1 || { echo "$m worktree-hatasi" >> $ND/mutasyon-ozet.txt; continue; }
+  git -C $dir apply $ND/fark.patch || { echo "$m patch-hatasi" >> $ND/mutasyon-ozet.txt; continue; }
+  cp $WT/test/kapi-para-245.test.mjs $dir/test/ && cp -r $WT/node_modules $dir/ || { echo "$m kopya-hatasi" >> $ND/mutasyon-ozet.txt; continue; }
+  python3 $ND/mutasyon.py $dir $m >> $ND/mutasyon-ozet.txt 2>&1 || { echo "$m mutasyon-uygulanamadi" >> $ND/mutasyon-ozet.txt; continue; }
+  (cd $dir && KANIT_DIR=$WT/docs/kanit timeout 600 node $WT/tools/kanit.mjs kos 245-kapi-para/mutasyon-$m -- node --disable-warning=ExperimentalWarning --test test/kapi-para-245.test.mjs > $ND/mut-$m.log 2>&1)
+  echo "$m exit $? :: $(grep -m1 '^\[kanit\] 245-kapi-para/mutasyon' $ND/mut-$m.log)" >> $ND/mutasyon-ozet.txt
+done
+echo BITTI >> $ND/mutasyon-ozet.txt

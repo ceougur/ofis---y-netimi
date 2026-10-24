@@ -4,6 +4,7 @@
 // Beklenen sayılar tablonun KENDİ hücrelerinden (ders 5): Toplam 11.500, Ödenen 3.900, Kalan 7.600 → borç 7.600.
 // "Nasıl bozulur?" (işe başlarken yazıldı): N1 kolon sırası · N2 yalnız Toplam · N3 yalnız Kalan · N4 Bakiye / Kalan Tutar / Ödenecek · N5 Toplam + Ödenen, Kalan yok ·
 // N6 Kalan 0 / boş · N7 birden çok sekme · N8 aynı dosya no iki sekmede (5c) · N9 Excel dışa aktarım · N10 Açılış Bakiyesi / 5b (komşu testler) · N11 tek yer.
+// 2.4.5 madde 4 (uyarı kapısı): bu dosya tablo takvim motorunu zil / Tahsilat Takvimi / Vade Takip / Projeksiyon uçlarından sınar → 2.4.4 davranışı (legacyTableDues, yalnız testler).
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -156,7 +157,7 @@ describe("2.4.4 30a: Tablodaki Kişiler, Tahsilat Takvimi, Vade Takip, Nakit Ak�
 
   before(async () => {
     const clock = createClock({ time: new Date(`${TODAY}T10:00:00`), fixed: true });
-    server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, now: clock });
+    server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, now: clock, legacyTableDues: true });
     api = await server.login();
     const staged = await must("tablo", api.post("/api/workspace/dataset/stage", { kind: "excel", fileName: "kalan-borc.xlsx", sheets: workbook }));
     await must("tablo kaydet", api.post("/api/workspace/dataset/commit", { stageId: staged.stageId, mode: "replace" }));

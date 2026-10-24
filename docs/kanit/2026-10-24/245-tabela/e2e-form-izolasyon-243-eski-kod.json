@@ -1,0 +1,38 @@
+{
+  "ad": "245-tabela/e2e-form-izolasyon-243-eski-kod",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-tabela/eski-d2cef7c && npm run test:senaryo-form-izolasyon-243",
+  "commit": "d2cef7ce21b0776e2767f8fb610c9be8a4159f5d",
+  "dal": "is/tabela",
+  "kirli": 17,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T16:56:40.851Z",
+  "sure_sn": 237.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 170,
+    "gecen": 169,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "D8: beklenmeyen hata: locator.click: Timeout 12000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-24/245-tabela/e2e-form-izolasyon-243-eski-kod.log",
+  "klasor": "/home/user/wt/tabela",
+  "ham_cikti_sha256": "6c288d9157f4d2c35d8a15a1f475292693f7cce3fc5e40f82105f15b9ad012f0",
+  "ham_cikti_bayt": 27324
+}

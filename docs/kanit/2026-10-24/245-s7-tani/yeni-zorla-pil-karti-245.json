@@ -1,0 +1,32 @@
+{
+  "ad": "245-s7-tani/yeni-zorla-pil-karti-245",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-pil-karti-245.mjs",
+  "commit": "201ffef9a010d68d735b1e3aaa678144a8e84c3d",
+  "dal": "is/s7-tani",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T20:26:09.941Z",
+  "sure_sn": 46,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 76,
+    "gecen": 76,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-s7-tani/yeni-zorla-pil-karti-245.log",
+  "klasor": "/home/user/wt/s7-tani",
+  "ham_cikti_sha256": "76357d289630877b489448d8a0b18ea1466ececc9affe457216a4ee68dd24c63",
+  "ham_cikti_bayt": 6891
+}

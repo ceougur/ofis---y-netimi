@@ -1,0 +1,32 @@
+{
+  "ad": "245-aday1/birlesim-dar",
+  "komut": "node --test test/banka-210-altin.test.mjs test/cari-vade-245.test.mjs test/dues.test.mjs test/ekstre-ayrinti-245.test.mjs test/goc-245-cari-vade.test.mjs test/kalan-borc-ortak-30a.test.mjs test/kalan-borc-satir-31d.test.mjs test/kapi-para-245.test.mjs test/kapi-uyari-245.test.mjs test/kayit-bag-31e.test.mjs test/kayit-tahsilat-244.test.mjs test/nakit-akis-kasa-mm6.test.mjs test/nakit-akis-sekme-30e.test.mjs test/plan-transfer.test.mjs test/raporlar-209.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-224.test.mjs test/reports.test.mjs test/schema-flex.test.mjs test/sirketler-217.test.mjs test/tabela-adi-245.test.mjs test/tablo-borc-dosya-u2.test.mjs test/tablo-borc-r31e.test.mjs test/tablo-hucre-bicim.test.mjs test/tablo-raporlari-u3-244.test.mjs test/takvim-pil-kaynak.test.mjs test/yazim-duzeni.test.mjs test/platform-tasinabilirlik.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/ci-kapi-listesi.test.mjs test/kanit-araci.test.mjs test/banka-210-post-statik.test.mjs test/banka-210-statik.test.mjs",
+  "commit": "b417ab57376bfde53ba81efaaaa48110aedaf392",
+  "dal": "aday245-1",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T18:33:26.019Z",
+  "sure_sn": 67.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 522,
+    "gecen": 522,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-aday1/birlesim-dar.log",
+  "klasor": "/home/user/wt/aday245-1",
+  "ham_cikti_sha256": "38f57920098506ada317573090a82a7cdb0d2f0501c6156ae83c0fcdbe68b1bc",
+  "ham_cikti_bayt": 192231
+}

@@ -34,7 +34,8 @@ const PASS = "Prova-Admin-2026!";
 const NOW = "2026-10-08T12:00:00+03:00";
 const TODAY = "2026-10-08";
 const root = mkdtempSync(path.join(tmpdir(), "destekofis-banka-210b-"));
-const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, now: NOW, maxCompanies: 2, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f41" } });
+// 2.4.5 madde 1: kayıt tahsilatı programda kapalı (410); bu senaryo eski sürümden gelen kayıt tahsilatını API'den üretir → anahtar açık (üretimde yok).
+const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, now: NOW, maxCompanies: 2, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f41" } , legacyCasePayments: true });
 const { port } = await app.listen(0, "127.0.0.1");
 const BASE = `http://127.0.0.1:${port}`;
 const browser = await chromium.launch();

@@ -1,0 +1,38 @@
+{
+  "ad": "245-cari-vade/kirmizi-eski-d2cef7c-goc",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/goc-245-cari-vade.test.mjs",
+  "commit": "d2cef7ce21b0776e2767f8fb610c9be8a4159f5d",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:02:04.029Z",
+  "sure_sn": 1.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.5 madde 6 göç: v2.4.4 verisi güncel kodla (Vade Tarihi / Beklenen Ödeme Tarihi boş, Kalan aynı kuyruktan) › v2.4.4 verisi: göç boş alan ekler, bakiye ve faturalar aynı, kalem yok; eski borca vade verilince kalem doğar",
+      "konum": "test/goc-245-cari-vade.test.mjs:28:3",
+      "hata": "no such column: due_date"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/cari-vade/docs/kanit/2026-10-24/245-cari-vade/kirmizi-eski-d2cef7c-goc.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-cari-vade/eski-wt-d2cef7c",
+  "ham_cikti_sha256": "e496e75fe997111878baed9cf017fd9a6e9299b1b99f7d194344fc8afe397609",
+  "ham_cikti_bayt": 2111
+}

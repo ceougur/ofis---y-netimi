@@ -33,11 +33,12 @@
 
   // 2.4.4 (E8; kullanıcı 21.10.2026: "orta tablodaki Excel'deki kayıttan taksit olmasın, cariye kaydedip oradan yapsın; kasa hareketlerini, fatura, rapor
   // gibi kısımları bozar, muhasebe mantığını kaybeder"): kayıttan Kasa'ya doğrudan tahsilat penceresi ("Tahsilat İşle") ve içindeki "Taksit planı oluşturun"
-  // kısa yolu kalktı. Tahsilat kaydın carisine (ya da taksit kartına) girilir: actions.payment aşağıda. Sunucu ucu (POST cases/:key/payments) ve eski kayıt
-  // tahsilatlarının İşlem Geçmişi'nde görünmesi, düzeltilmesi (editPayment) ve silinmesi durur.
+  // kısa yolu kalktı. Tahsilat kaydın carisine (ya da taksit kartına) girilir: actions.payment aşağıda. 2.4.5 madde 1 (K1): sunucu ucu (POST cases/:key/payments)
+  // ve eski kayıt tahsilatının düzeltmesi (PUT payments/:id) 410 "case-payments-closed"; eski tahsilatlar İşlem Geçmişi'nde ve Kasa'da görünür, yalnız silinir
+  // (Silinenler'den geri yüklenir). editPayment eski satıra artık sunulmaz (kod sonraki sürümde silinir).
 
   // Kayda bağlı carisi olmayan kayıt: tahsilat cariye yazılır, önce cari açılır (ad, telefon ve Kayıt Tarihi kayıttan gelir; cari bu kayda bağlanır);
-  // kaydedince tahsilat formu açılır (tutar ve açıklama takvim kaleminden). Cari açma yetkisi olmayana yol söylenir.
+  // kaydedince tahsilat formu açılır (açıklama takvim kaleminden; tutar BOŞ — 2.4.5 madde 3). Cari açma yetkisi olmayana yol söylenir.
   function accountFirst(selected, target, preset) {
     const row = (HOF.data?.rows || []).find(item => item.__hofKey === selected.key) || null;
     const plans = HOF.plans || {};
@@ -45,15 +46,14 @@
     const phone = (row && plans.phoneOf ? plans.phoneOf(row) : "") || target?.phone || "";
     const caseTitle = row && plans.recordLabel ? plans.recordLabel(row) : selected.title || name;
     const registeredOn = row && plans.recordDay ? plans.recordDay(row) || "" : "";
-    // 2.4.4 (5b): Açılış Bakiyesi kayıttaki Kalan Borç ile dolu gelir (takvim kaleminin "Kalan Borç"u; değiştirilebilir, kaynağı alanın altında yazar).
-    // Sonra Tablodan Aktar bu borcu ikinci kez yazmaz (kart "Carinin Mevcut Borcu" olarak açılır; routes/plan-transfer.mjs).
-    const openingBalance = Number(target?.debt) > 0 ? Number(target.debt) : null;
+    // 2.4.5 madde 3 (ürün sahibi: "tablo verisinden hiçbir para kaydı, borç tutarı, açılış bakiyesi doğmaz"): Açılış Bakiyesi BOŞ gelir — tablonun sezgisel
+    // "Kalan Borç"u (target.debt) yazılmaz; borcu kullanıcı kendisi yazar (2.4.4 5b'deki ön dolum kalktı).
     if (!HOF.accounts?.newFor || !HOF.can("accounts.manage")) {
       HOF.toast(`Tahsilat carinin hesabına yazılır; “${name || selected.title}” kaydının carisi yok. Cari açmak yönetici, uzman ve muhasebe yetkisidir: yöneticinizden bu kişiye cari açıp kayda bağlamasını isteyin.`, { type: "error" });
       return;
     }
     HOF.accounts.newFor(
-      { name, phone, caseKey: selected.key, caseTitle, registeredOn, ...(openingBalance ? { openingBalance, openingSource: target?.debtColumn || "Kalan Borç" } : {}) },
+      { name, phone, caseKey: selected.key, caseTitle, registeredOn },
       {
         intro: "Önce cari açın: tahsilat carinin hesabına yazılır, bu kaydın carisi yok. Ad, telefon ve Kayıt Tarihi kayıttan geldi; cari bu kayda bağlanır, kaydedince tahsilat formu açılır. Kişinin borcu varsa Açılış Bakiyesi'ne yazın (yoksa tahsilat carinin alacağı olur). Carisi zaten varsa yeni cari açmayın; o carinin kartında Tablodaki Kayıt alanından bu kayda bağlayın.",
         onSaved: account => {
@@ -242,14 +242,15 @@
     // target: kayan ödeme şeridinden ya da bildirimden gelinince { key, title, person, phone, amount, note } (kayıt seçili olmasa da).
     // 2.4.4 (E8; kullanıcı kararı 21.10.2026 "önerilerin uygun"): tahsilat CARİ'ye gider, kayıttan Kasa'ya doğrudan yazılmaz.
     //   1. kayda bağlı cari varsa o carinin tahsilatı — cari "+ Tahsilat" ile aynı yol (açık taksit kartı varsa Taksite Yaz / Taksit Dışı Tahsilat,
-    //      Kapatılacak Fatura); takvim kaleminin tutarı ve açıklaması forma gelir;
+    //      Kapatılacak Fatura); takvim kaleminin açıklaması forma gelir, TUTAR BOŞ (2.4.5 madde 3: tablo tutarı para formuna yazılmaz; kullanıcı girer);
     //   2. carisi yoksa kayda bağlı açık taksit kartı (kart da bir cariye aittir; tahsilat taksitten düşer);
     //   3. ikisi de yoksa "önce cari açın" + ad/telefonu kayıttan dolu "+ Yeni Cari" (kaydedince tahsilat formu).
     // Takvim kalemi (ödeme sözü, taksit, kira) carinin ya da taksitin tahsilatıyla kapanır (sunucu lib/insight/case-collections.mjs).
     async payment(target) {
       const selected = target && target.key ? target : requireCase();
       if (!selected) return;
-      const preset = target && (Number(target.amount) > 0 || target.note) ? { amount: Number(target.amount) > 0 ? Number(target.amount) : null, note: target.note || "" } : null;
+      // 2.4.5 madde 3: tablo kaydından açılan tahsilat formunda tutar boş (kalemin tutarı tablonun sezgisi; yazılmaz); kişi ve not dolu.
+      const preset = target && target.note ? { amount: null, note: target.note } : null;
       if (HOF.accounts?.forCase && HOF.can("accounts.view")) {
         let linked = null;
         try {
@@ -661,9 +662,10 @@
       const text = payment ? `Tahsilat${title ? ` · ${title}` : ""}${entry.description ? ` · ${entry.description}` : ""}` : plan ? `${entry.kind === "in" ? "Taksit Tahsilatı" : "Taksit Ödemesi / İadesi"} · ${entry.planName}${entry.description ? ` · ${entry.description}` : ""}` : entry.description;
       const origin = payment ? "Detay kartından" : plan ? "Taksit kartından" : entry.transferId ? (entry.kind === "in" ? "Bankadan kasaya aktarım" : "Kasadan bankaya yatırma") : entry.opening ? "Kasa açılışı (devreden nakit)" : entry.kind === "in" ? "Kasaya elle" : "Ödeme";
       // Taksit kartı hareketleri (v2.0.4) kartın kendisinden düzeltilir; buradan kart açılır.
+      // 2.4.5 madde 1: eski kayıt tahsilatı (payment) Kasa'dan da düzeltilmez (sunucu 410), yalnız silinir.
       const actions = plan
         ? `<button type="button" class="hof-mini" data-plan="${esc(entry.planId)}" title="Taksit kartını aç" aria-label="Taksit kartını aç">↗</button>`
-        : entry.editable ? `<button type="button" class="hof-mini" data-edit="${esc(entry.id)}" title="Düzelt" aria-label="Düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete="${esc(entry.id)}" title="Sil" aria-label="Sil">×</button>` : "";
+        : entry.editable ? `${payment ? "" : `<button type="button" class="hof-mini" data-edit="${esc(entry.id)}" title="Düzelt" aria-label="Düzelt">✎</button>`}<button type="button" class="hof-mini hof-mini-danger" data-delete="${esc(entry.id)}" title="Sil" aria-label="Sil">×</button>` : "";
       return `<tr data-kind="${esc(entry.kind)}"><td>${esc(HOF.formatDate(entry.date))}</td><td><b>${esc(text)}</b><small>${esc(origin)} · ${esc(entry.actorName || "—")}${methodTag(entry)}</small></td><td class="num hof-cash-in">${entry.kind === "in" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num hof-cash-out">${entry.kind === "out" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num"><b>${esc(HOF.formatMoney(entry.balance))}</b></td><td class="hof-cash-actions">${actions}</td></tr>`;
     };
     const render = () => {
@@ -1187,7 +1189,8 @@
       activityItems = new Map(shown.map(item => [item.id, item]));
       const tool = (attr, id, label, danger = false) => `<button type="button" class="hof-mini${danger ? " hof-mini-danger" : ""}" ${attr}="${esc(id)}" title="${esc(label)}" aria-label="${esc(label)}">${danger ? "×" : "✎"}</button>`;
       const itemActions = item => {
-        if (item.type === "payment") return canEditPayment(item) ? `<span class="hof-activity-tools">${tool("data-edit", item.id, "Tahsilatı düzelt")}${tool("data-delete", item.id, "Tahsilatı sil", true)}</span>` : "";
+        // 2.4.5 madde 1: eski kayıt tahsilatı düzeltilmez (sunucu 410), yalnız silinir (Silinenler'den geri yüklenir).
+        if (item.type === "payment") return canEditPayment(item) ? `<span class="hof-activity-tools">${tool("data-delete", item.id, "Tahsilatı sil", true)}</span>` : "";
         if (HISTORY_PATH[item.type]) return canEditHistory(item) ? `<span class="hof-activity-tools">${tool("data-edit", item.id, `${HISTORY_LABEL[item.type]} düzelt`)}${tool("data-delete", item.id, `${HISTORY_LABEL[item.type]} sil`, true)}</span>` : "";
         // Taksit hareketi ve görev kendi modülünden düzenlenir: "Kayda Git".
         if (item.type === "plan-entry")
@@ -1212,7 +1215,7 @@
     if (!header) return;
     let row = panel.querySelector(".hof-case-actions");
     if (!row) {
-      row = HOF.el("div", { class: "hof-case-actions", role: "toolbar", "aria-label": "Kayıt işlemleri" }, `<button type="button" class="hof-whatsapp" data-case-action="whatsapp">WhatsApp</button><button type="button" data-case-action="note" data-requires="notes.write">Not</button><button type="button" data-case-action="phone" data-requires="phones.create">Telefon</button><button type="button" data-case-action="payment" data-requires="payments.create">Tahsilat</button><button type="button" data-case-action="task" data-requires="tasks.create">Görev</button><button type="button" data-case-action="lien" data-requires="liens.create">Haciz</button>`);
+      row = HOF.el("div", { class: "hof-case-actions", role: "toolbar", "aria-label": "Kayıt işlemleri" }, `<button type="button" class="hof-whatsapp" data-case-action="whatsapp">WhatsApp</button><button type="button" data-case-action="note" data-requires="notes.write">Not</button><button type="button" data-case-action="phone" data-requires="phones.create">Telefon</button><button type="button" data-case-action="task" data-requires="tasks.create">Görev</button><button type="button" data-case-action="lien" data-requires="liens.create">Haciz</button>`);
       row.addEventListener("click", event => {
         const action = event.target.closest("[data-case-action]")?.dataset.caseAction;
         if (action && actions[action]) actions[action]();

@@ -2,6 +2,11 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.4.5 — İyileştirmeler
+
+- Excel / Sheets tablolarından para girişi, açılış bakiyesi ön dolumu ve tutarlı hatırlatmalar kaldırıldı; tahsilat ve hatırlatmalar Cari, Taksit, Fatura ve Çek'ten gelir. Nakit Akış Projeksiyonu tablo kalemlerini artık katmaz (toplam düşebilir).
+- Yeni: carideki borca Vade ve Beklenen Ödeme Tarihi, raporlarda Tabela Adı, Ayrıntılı Cari Ekstre; Tahsilat Takvimi'nde fatura pili ve tablodaki telefon sütunu düzeltildi. Ayrıntı: docs/2.4.5-DEGISIKLIKLER.md.
+
 ## 2.4.4 — İyileştirmeler ve e-SMM
 
 - İyileştirmeler ve hata düzeltmeleri (e-Fatura / e-Arşiv gönderimi ve iptal süresi, çek/senetle fatura kapama, tablo raporları, cari ve taksit). Excel / Sheets tablolarında borç ve ödeme sözü sütunları daha doğru tanınır; tablo yeniden yüklenince kayıt bağları korunur.

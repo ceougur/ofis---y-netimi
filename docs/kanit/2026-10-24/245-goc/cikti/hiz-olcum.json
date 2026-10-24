@@ -1,0 +1,256 @@
+{
+ "day": "2026-10-24",
+ "manifest": {
+  "version": "v2.4.4",
+  "commit": "5187561baacedf65562d1615d79a8fa0c5632132",
+  "seed": 5,
+  "startDay": "2025-10-24",
+  "endDay": "2026-10-24",
+  "counts": {
+   "cari-musteri": 2000,
+   "cari-tedarikci": 100,
+   "fatura-satis-vadeli": 4844,
+   "fatura-satis-kismi": 1777,
+   "fatura-satis-pesin": 2186,
+   "elle-borc": 4000,
+   "cari-tahsilat": 2000,
+   "fatura-alis": 1193
+  },
+  "requests": 18100,
+  "ms": 335324,
+  "vade": {
+   "debts": 4000,
+   "puts": 1997,
+   "vade": 1402,
+   "vadeBeklenen": 595
+  }
+ },
+ "repeat": 3,
+ "table": {
+  "A": {
+   "label": "2.4.4 (v2.4.4), vadeli veri (kolonları görmez)",
+   "bootMs": 1107,
+   "coldMs": 927.8,
+   "warmMedianMs": 65.2,
+   "unchangedMedianMs": 12.8,
+   "afterWriteFirstMedianMs": 908.7,
+   "afterWriteFirstMaxMs": 1098.8,
+   "afterWriteSecondMedianMs": 63.4,
+   "postMedianMs": 20.9,
+   "items": 7205,
+   "bySource": {
+    "invoice": 7205
+   },
+   "bytes": 2809772
+  },
+  "B": {
+   "label": "2.4.5 adayı, vadeli veri",
+   "bootMs": 1021.3,
+   "coldMs": 1354,
+   "warmMedianMs": 89.3,
+   "unchangedMedianMs": 20.1,
+   "afterWriteFirstMedianMs": 1324.6,
+   "afterWriteFirstMaxMs": 1435.6,
+   "afterWriteSecondMedianMs": 92.3,
+   "postMedianMs": 40.2,
+   "items": 8846,
+   "bySource": {
+    "invoice": 7205,
+    "account": 1641
+   },
+   "bytes": 3732204
+  },
+  "C": {
+   "label": "2.4.5 adayı, aynı veri, Vade / Beklenen boş",
+   "bootMs": 1067.5,
+   "coldMs": 978.5,
+   "warmMedianMs": 70.3,
+   "unchangedMedianMs": 18.5,
+   "afterWriteFirstMedianMs": 928.2,
+   "afterWriteFirstMaxMs": 1015,
+   "afterWriteSecondMedianMs": 74.2,
+   "postMedianMs": 38,
+   "items": 7205,
+   "bySource": {
+    "invoice": 7205
+   },
+   "bytes": 2809773
+  }
+ },
+ "results": [
+  {
+   "round": 1,
+   "variant": "A",
+   "label": "2.4.4 (v2.4.4), vadeli veri (kolonları görmez)",
+   "bootMs": 1321.7,
+   "coldMs": 1115.2,
+   "warmMedianMs": 65.2,
+   "warmMaxMs": 90.1,
+   "unchangedMedianMs": 12.4,
+   "afterWriteFirstMedianMs": 936.2,
+   "afterWriteFirstMaxMs": 1098.8,
+   "afterWriteSecondMedianMs": 62,
+   "postMedianMs": 20.9,
+   "bytes": 2809772,
+   "items": 7205,
+   "bySource": {
+    "invoice": 7205
+   }
+  },
+  {
+   "round": 1,
+   "variant": "B",
+   "label": "2.4.5 adayı, vadeli veri",
+   "bootMs": 1087.6,
+   "coldMs": 1589,
+   "warmMedianMs": 90.3,
+   "warmMaxMs": 111.2,
+   "unchangedMedianMs": 20.1,
+   "afterWriteFirstMedianMs": 1335.5,
+   "afterWriteFirstMaxMs": 1425.4,
+   "afterWriteSecondMedianMs": 92.1,
+   "postMedianMs": 40.5,
+   "bytes": 3732204,
+   "items": 8846,
+   "bySource": {
+    "invoice": 7205,
+    "account": 1641
+   }
+  },
+  {
+   "round": 1,
+   "variant": "C",
+   "label": "2.4.5 adayı, aynı veri, Vade / Beklenen boş",
+   "bootMs": 1032.1,
+   "coldMs": 884.4,
+   "warmMedianMs": 73.8,
+   "warmMaxMs": 87.8,
+   "unchangedMedianMs": 18.6,
+   "afterWriteFirstMedianMs": 891.1,
+   "afterWriteFirstMaxMs": 997.3,
+   "afterWriteSecondMedianMs": 74.2,
+   "postMedianMs": 37.6,
+   "bytes": 2809773,
+   "items": 7205,
+   "bySource": {
+    "invoice": 7205
+   }
+  },
+  {
+   "round": 2,
+   "variant": "A",
+   "label": "2.4.4 (v2.4.4), vadeli veri (kolonları görmez)",
+   "bootMs": 1107,
+   "coldMs": 927.8,
+   "warmMedianMs": 69.3,
+   "warmMaxMs": 95.1,
+   "unchangedMedianMs": 16.2,
+   "afterWriteFirstMedianMs": 872.6,
+   "afterWriteFirstMaxMs": 1104.1,
+   "afterWriteSecondMedianMs": 65.7,
+   "postMedianMs": 21.5,
+   "bytes": 2809772,
+   "items": 7205,
+   "bySource": {
+    "invoice": 7205
+   }
+  },
+  {
+   "round": 2,
+   "variant": "B",
+   "label": "2.4.5 adayı, vadeli veri",
+   "bootMs": 934.8,
+   "coldMs": 1347.5,
+   "warmMedianMs": 84,
+   "warmMaxMs": 119.3,
+   "unchangedMedianMs": 20.1,
+   "afterWriteFirstMedianMs": 1324.6,
+   "afterWriteFirstMaxMs": 1459.8,
+   "afterWriteSecondMedianMs": 92.9,
+   "postMedianMs": 40.2,
+   "bytes": 3732204,
+   "items": 8846,
+   "bySource": {
+    "invoice": 7205,
+    "account": 1641
+   }
+  },
+  {
+   "round": 2,
+   "variant": "C",
+   "label": "2.4.5 adayı, aynı veri, Vade / Beklenen boş",
+   "bootMs": 1104,
+   "coldMs": 996.7,
+   "warmMedianMs": 67.7,
+   "warmMaxMs": 72.6,
+   "unchangedMedianMs": 18.5,
+   "afterWriteFirstMedianMs": 928.2,
+   "afterWriteFirstMaxMs": 1170.2,
+   "afterWriteSecondMedianMs": 80.3,
+   "postMedianMs": 38.3,
+   "bytes": 2809773,
+   "items": 7205,
+   "bySource": {
+    "invoice": 7205
+   }
+  },
+  {
+   "round": 3,
+   "variant": "A",
+   "label": "2.4.4 (v2.4.4), vadeli veri (kolonları görmez)",
+   "bootMs": 1072.4,
+   "coldMs": 857.3,
+   "warmMedianMs": 60.5,
+   "warmMaxMs": 68.4,
+   "unchangedMedianMs": 12.8,
+   "afterWriteFirstMedianMs": 908.7,
+   "afterWriteFirstMaxMs": 977.3,
+   "afterWriteSecondMedianMs": 63.4,
+   "postMedianMs": 20.9,
+   "bytes": 2809772,
+   "items": 7205,
+   "bySource": {
+    "invoice": 7205
+   }
+  },
+  {
+   "round": 3,
+   "variant": "B",
+   "label": "2.4.5 adayı, vadeli veri",
+   "bootMs": 1021.3,
+   "coldMs": 1354,
+   "warmMedianMs": 89.3,
+   "warmMaxMs": 119.9,
+   "unchangedMedianMs": 20.4,
+   "afterWriteFirstMedianMs": 1237.4,
+   "afterWriteFirstMaxMs": 1435.6,
+   "afterWriteSecondMedianMs": 92.3,
+   "postMedianMs": 37.9,
+   "bytes": 3732204,
+   "items": 8846,
+   "bySource": {
+    "invoice": 7205,
+    "account": 1641
+   }
+  },
+  {
+   "round": 3,
+   "variant": "C",
+   "label": "2.4.5 adayı, aynı veri, Vade / Beklenen boş",
+   "bootMs": 1067.5,
+   "coldMs": 978.5,
+   "warmMedianMs": 70.3,
+   "warmMaxMs": 101.6,
+   "unchangedMedianMs": 18,
+   "afterWriteFirstMedianMs": 932.3,
+   "afterWriteFirstMaxMs": 1015,
+   "afterWriteSecondMedianMs": 73.4,
+   "postMedianMs": 38,
+   "bytes": 2809773,
+   "items": 7205,
+   "bySource": {
+    "invoice": 7205
+   }
+  }
+ ]
+}

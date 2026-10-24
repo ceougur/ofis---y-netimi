@@ -1,0 +1,58 @@
+
+> destekofis@2.4.4 test:senaryo
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-tablodan-aktar.mjs
+
+
+■ Giriş ve Excel yükleme (sıfır kurulum)
+✓ sektör önerisi: Okul Servisi
+
+■ Yükleme sonrası 'Taksitler'e aktarılsın mı?' sorusu yok (2.4.5 madde 2; eski kodda gelirdi)
+✓ analiz penceresi kapandıktan sonra da aktarma sorusu sorulmaz
+
+■ Eski sürüm verisi (anahtar açık sunucu, API'den): bir kayıt tahsilatı + 6 kişinin Tablodan Aktar'ı
+✓ kayıt tahsilatı (eski sürüm gibi, API): 200 · Mert Çelik 4.500,00
+✓ ön izlemede 6 öğrenci (6)
+✓ Tablodan Aktar (eski sürüm gibi, API): {"importId":"import-1a12bc95-1860-4f9c-a5f8-ff03a746c72b","created":6,"linked":0,"accountsCreated":6,"accountsLinked":0,"paymentsMoved":1,"paymentsAmount":4500,"accountEntriesMoved":0,"accountEntriesA
+
+■ Program üretim varsayılanıyla (anahtarsız) aynı veriyle yeniden açılır
+✓ Kasa 4.500,00 (eski tahsilat artık taksit tahsilatı)
+✓ yükleme sonrası özet sormaz: {"count":0,"tabs":[],"ask":false}
+
+■ Taksitler: 'Tablodan Aktar' düğmesi yok, 'Son Aktarımlar' var; uçlar 410, veri değişmez
+✓ Tablodan Aktar düğmesi yok
+✓ Son Aktarımlar düğmesi
+✓ Tablodan Aktar ucu 410: {"status":410,"ok":false,"error":"Tablodan Aktar kapatıldı; taksit kartı Cari'den ya da Taksitler → Excel / Sheets’ten Yükle ile açılır.","code":"table-transfer
+✓ kayıt tahsilatı ucu 410: {"status":410,"ok":false,"error":"Kayıt tahsilatı kapatıldı; tahsilat Cari'den girilir.","code":"case-payments-closed"}
+✓ 6 kart, Kasa aynı, yeni kayıt tahsilatı yok
+
+■ Son Aktarımlar → Geri Al: kartlar ve cariler kalkar; tahsilat kayıt kartına döner; Kasa aynı
+✓ listede eski aktarım: × TAKSİTLER Son Aktarımlar Excel / Sheets’ten yüklenen ve önceki sürümlerde tablodan aktarılan kartlar. Yanlış bir aktarımı buradan geri alabilirsiniz; aktarımdan sonra kartta işlem yapıldıysa geri alma durur ve hangi kartlar olduğunu söyle
+✓ geri alma bildirimi: Aktarım geri alındı: 6 kart kaldırıldı, 1 tahsilat kayıt kartına döndü. ×
+✓ Son Aktarımlar listesi yenilendi: aktarım 'geri alındı', Geri Al düğmesi kalmadı
+✓ taksit kartı kalmadı
+✓ aktarımın açtığı cariler kaldırıldı
+✓ tahsilat kayıt kartına döndü; Kasa bakiyesi aynı
+
+■ Şeritten Tahsilat Gir → önce cari açın: Açılış Bakiyesi boş (2.4.5 madde 3); Esc sorusuz kapanır
+✓ önce cari açın, ad kayıttan, Açılış Bakiyesi boş: {"title":"Yeni Cari","opening":"","name":"Zeynep Demir"}
+
+■ Kayıt kartı: Tahsilat düğmesi yok; dönen eski kayıt tahsilatı düzeltilmez (✎ yok), silinebilir (× var)
+✓ kayıt tabloda açıldı
+✓ kayıt kartında Tahsilat düğmesi yok, Not var
+✓ İşlem Geçmişi'nde eski kayıt tahsilatı: düzelt yok, sil var
+
+■ Stok → Yeni ürün: 'Kasa'ya yansıt' işaretsiz → Kasa değişmez
+✓ birim listesi 33 seçenek, baş harfi büyük ve tekrarsız (v2.0.11)
+✓ işaretsiz: 2 Adet × ₺850,00 = ₺1.700,00 · stoğa girer; Kasa’ya yazılmaz (yansıtmak için kutuyu işaretleyin).
+✓ Kasa değişmedi (stok gideri yazılmadı)
+✓ Toner stoğa 2 adet girdi
+
+■ Stok → Yeni ürün: 'Kasa'ya yansıt' işaretli → 10 × 120 = 1.200 'Stok ödemesi (alım)' gideri
+✓ işaretli: 10 Paket × ₺120,00 = ₺1.200,00 · Kasa’dan ₺1.200,00 “Stok ödemesi” gideri yazılır.
+✓ Kasa gideri: Stok ödemesi (alım) · Fotokopi kağıdı 10 Paket · İlk alım 1200
+✓ Kasa bakiyesi 4.500,00 → 3.300,00
+
+■ Tarayıcı konsolu
+✓ konsolda hata yok
+
+30/30 denetim geçti

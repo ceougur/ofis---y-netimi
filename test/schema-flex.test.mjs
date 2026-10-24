@@ -1,5 +1,6 @@
 // Şemaya esnek uyum ve Veri Sağlık Kontrolü, tam yığın (v2.0.2): kolon adı değişen dosya eşlenir, düzeltme ve saklı
 // satırlar yeni ada taşınır; toplu düzeltme uygulanır ve geri alınır.
+// 2.4.5 madde 4 (uyarı kapısı): bu dosya tablo takvim motorunu zil / Tahsilat Takvimi / Vade Takip / Projeksiyon uçlarından sınar → 2.4.4 davranışı (legacyTableDues, yalnız testler).
 import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
 import { loginAdmin, startTestServer } from "./helpers.mjs";
@@ -12,7 +13,7 @@ describe("şemaya esnek uyum ve toplu düzeltme (tam yığın)", () => {
   let server;
   let admin;
   before(async () => {
-    server = await startTestServer();
+    server = await startTestServer({ legacyTableDues: true });
     admin = await loginAdmin(server);
   });
   after(async () => {
@@ -87,7 +88,7 @@ describe("ekip çakışma önleme (v2.0.2)", () => {
   let server;
   let admin;
   before(async () => {
-    server = await startTestServer();
+    server = await startTestServer({ legacyTableDues: true });
     admin = await loginAdmin(server);
     const staged = await admin.post("/api/workspace/dataset/stage", excel("Dosyalar.xlsx", [["DOSYA NO", "MÜVEKKİL", "TUTAR"], ["2026/1", "Ali Veli", "1.500"], ["2026/2", "Ayşe Kaya", "2.000"]]));
     await admin.post("/api/workspace/dataset/commit", { stageId: staged.data.data.stageId, mode: "replace" });
@@ -127,7 +128,7 @@ describe("hata toleransı: işaretlenen hatalar (v2.0.2)", () => {
   let server;
   let admin;
   before(async () => {
-    server = await startTestServer();
+    server = await startTestServer({ legacyTableDues: true });
     admin = await loginAdmin(server);
   });
   after(async () => {
@@ -170,7 +171,7 @@ describe("ön izleme ve eşleme (v2.0.2)", () => {
   let server;
   let admin;
   before(async () => {
-    server = await startTestServer();
+    server = await startTestServer({ legacyTableDues: true });
     admin = await loginAdmin(server);
   });
   after(async () => {

@@ -1,0 +1,148 @@
+{
+  "ad": "245-pil-karti/e2e-senaryo-pil-karti-245-eski-d2cef7c",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-pil-karti/eski-d2cef7c/test/e2e/senaryo-pil-karti-245.mjs",
+  "commit": "810e337ca120a06d28c39cf6234e5d60fa47a3f2",
+  "dal": "is/pil-karti",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T18:21:02.146Z",
+  "sure_sn": 51.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 32,
+    "gecen": 9,
+    "basarisiz": 23,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 23 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "kart düğmeleri: [Tahsilat Gir, Ödendi Say]",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Ödendi Say yok (fatura para kaydıyla kapanır)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kartın alt düğmesi: “Kayda Git →” (beklenen “Fatura Kartını Aç →”, “Kayda Git” değil)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "fatura kartı açıldı: FIS2026000000001",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "faturanın formu: “Tahsilat” · “No 5 · Ali Veli · 0532 111 11 11” (seçili kaydın carisinin formu değil)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: yanlış form açıldı; kaydedilmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.evaluate: TypeError: window.HOF.invoices.payDoc is not a function",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kart: [Tahsilat Gir, Ödendi Say] · “Kayda Git →”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "alış faturasının formu: “Tahsilat” · “No 5 · Ali Veli · 0532 111 11 11” · 600,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: yanlış form açıldı; kaydedilmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kartta tahsilat / Ödendi Say yok: [Tahsilat Gir, Ödendi Say]",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "alt düğme: “Kayda Git →”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Banka → Hareketler → Planlı İşlemler açıldı, plan listede",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "zilde fatura satırı: [Tahsilat Gir] (Kayda Git / Gerçekleştirildi yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "zilde planlı banka satırı: [Planlı İşlemler] (Tahsilat Gir yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "zilde Fatura Kartını Aç yok",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "zilden faturanın formu: “Tahsilat” · “No 5 · Ali Veli · 0532 111 11 11” · 800,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: yanlış form açıldı; kaydedilmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "bildirim düğmeleri: [Tahsilat Gir]",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "satır tıklanınca fatura kartı açıldı",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Vade Takip'te planlı banka satırı",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "satır tıklanınca Planlı İşlemler açıldı",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.evaluate: TypeError: window.HOF.dues.actions is not a function",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-24/245-pil-karti/e2e-senaryo-pil-karti-245-eski-d2cef7c.log",
+  "klasor": "/home/user/wt/pil-karti",
+  "ham_cikti_sha256": "00fd65ee0c0805966ea9600bccb8419cce7f197c15cd25556a2396b54c37367d",
+  "ham_cikti_bayt": 3284
+}

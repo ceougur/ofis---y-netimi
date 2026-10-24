@@ -1,0 +1,48 @@
+{
+  "ad": "245-g8-tek-gecis/mutasyon-1-test",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/kapama-tek-gecis-245.test.mjs",
+  "commit": "6992e5989c7cbd08de573b56156397a60a5a7b58",
+  "dal": "HEAD",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T20:54:03.203Z",
+  "sure_sn": 1.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 1,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı aynı kapama geçişinden; sonuç cari başına yolla aynı › toplu yol = cari başına yol: her fatura durumu ve her vadeli carinin her satırı (D1 olayları dahil)",
+      "konum": "test/kapama-tek-gecis-245.test.mjs:124:3",
+      "hata": "elle satırların Kalan'ı: toplu = cari başına · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı aynı kapama geçişinden; sonuç cari başına yolla aynı › kapsam: elle satır haritası yalnız vadeli satırı olan carilerin satırlarını taşır (faturasız vadeli cari dahil, vadesiz cari yok)",
+      "konum": "test/kapama-tek-gecis-245.test.mjs:146:3",
+      "hata": "harita carileri = vadeli satırı olan cariler · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı aynı kapama geçişinden; sonuç cari başına yolla aynı › bayatlık: yazımdan sonra yeni değer; işlem içinde hesaplanan sonuç önbelleğe yazılmaz (geri alınınca eski değer)",
+      "konum": "test/kapama-tek-gecis-245.test.mjs:155:3",
+      "hata": "Cannot read properties of undefined (reading 'remaining')"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/d1-kapama/docs/kanit/2026-10-24/245-g8-tek-gecis/mutasyon-1-test.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-g8-tek-gecis/mut1",
+  "ham_cikti_sha256": "66f761c4b0caa2707b449e09d4f2d385edf3ff15d31de21a854c80cf08b3860b",
+  "ham_cikti_bayt": 7865
+}

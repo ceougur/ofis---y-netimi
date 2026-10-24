@@ -1,0 +1,158 @@
+{
+  "ad": "245-kahin/taban-d2cef7c-ks",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kahin-245/cikti-ks",
+  "commit": "549b6a8f07dabb6c7dd7f254c45c90857232860a",
+  "dal": "is/kahin-245",
+  "kirli": 4,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:26:34.027Z",
+  "sure_sn": 72,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 5497,
+    "gecen": 3981,
+    "basarisiz": 1516,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1516 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:nakit:kasaCikis: program 0 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:nakit:kasaGiris: program 30000 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:nakit:kasaCikis: program 0 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:nakit:kasaGiris: program 30000 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k3:nakit:kasaCikis: program 0 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k3:nakit:kasaGiris: program 30000 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k4:nakit:kasaCikis: program 0 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k4:nakit:kasaGiris: program 30000 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k5:nakit:kasaCikis: program 0 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k5:nakit:kasaGiris: program 30000 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k6:nakit:kasaCikis: program 0 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k6:nakit:kasaGiris: program 30000 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:nakit:kasaCikis: program 0 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:nakit:kasaGiris: program 0 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:nakit:kasaCikis: program 0 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:nakit:kasaGiris: program 0 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k3:nakit:kasaCikis: program 0 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k3:nakit:kasaGiris: program 0 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:nakit:kasaCikis: program 0 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:nakit:kasaGiris: program 0 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:nakit:kasaCikis: program 0 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:nakit:kasaGiris: program 0 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k3:nakit:kasaCikis: program 0 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k3:nakit:kasaGiris: program 100000 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k4:nakit:kasaCikis: program 0 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-24/245-kahin/taban-d2cef7c-ks.log",
+  "klasor": "/home/user/wt/kahin-245",
+  "ham_cikti_sha256": "b84697205d84772726015b9d06ea2e869ab0b8d5e68dab8314b616320f86c246",
+  "ham_cikti_bayt": 272765
+}

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+// 2.4.5 madde 4 (uyarı kapısı): bu dosya tablo takvim motorunu zil / Tahsilat Takvimi / Vade Takip / Projeksiyon uçlarından sınar → 2.4.4 davranışı (legacyTableDues, yalnız testler).
 import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -257,7 +258,7 @@ describe("tahsilat takvimi ve kasa PDF uç noktaları (v2.0.1)", () => {
   let dues;
 
   before(async () => {
-    server = await startTestServer();
+    server = await startTestServer({ legacyTableDues: true });
     admin = await loginAdmin(server);
     personel = await createUser(server, admin, { username: "selin", name: "Selin Kaya", role: "personel" });
     muhasebe = await createUser(server, admin, { username: "muh", name: "Muhasebe", role: "muhasebe" });
@@ -531,7 +532,7 @@ describe("ay hücresinde taksit: kart detayındaki tahsilat (tam yığın, v2.0.
   let server;
   let admin;
   before(async () => {
-    server = await startTestServer();
+    server = await startTestServer({ legacyTableDues: true });
     admin = await loginAdmin(server);
   });
   after(() => server.close());

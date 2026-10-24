@@ -1,0 +1,32 @@
+{
+  "ad": "245-not-taraf/e2e-cari-vade",
+  "komut": "npm run test:senaryo-cari-vade-245",
+  "commit": "8d73aadbd871be4e5f6584703b82c3065e91ffde",
+  "dal": "is/not-taraf",
+  "kirli": 3,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T21:34:45.157Z",
+  "sure_sn": 30.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 31,
+    "gecen": 31,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-not-taraf/e2e-cari-vade.log",
+  "klasor": "/home/user/wt/not-taraf",
+  "ham_cikti_sha256": "5ecede968dd1acd468051b439cabdd83a70328b6017f0d2acdb20149020bc09a",
+  "ham_cikti_bayt": 3278
+}

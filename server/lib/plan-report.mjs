@@ -60,7 +60,7 @@ const card = (page, doc, left, top, width, label, value, color = ink) => {
 };
 
 /** plan: /api/workspace/plans/:id yanıtı ({ name, phone, note, groupName, subgroupName, items, entries, totals, state }). */
-export function planStatementPdf(plan, { officeName = "", userName = "", now = new Date() } = {}) {
+export function planStatementPdf(plan, { officeName = "", officeLines = null, userName = "", now = new Date() } = {}) {
   const doc = new PdfDocument({ fonts: loadFonts(), title: `Taksit ekstresi · ${plan.name}`, author: officeName, subject: "Taksit ekstresi" });
   const M = 40;
   const W = A4.width - M * 2;
@@ -72,12 +72,15 @@ export function planStatementPdf(plan, { officeName = "", userName = "", now = n
     page = doc.addPage();
     top = M;
     if (first) {
-      if (officeName) page.text(M, top + 9, doc.fit(officeName, W * 0.6, "bold", 9), { font: "bold", size: 9, color: muted });
-      page.text(M, top + 34, "Taksit ekstresi", { font: "bold", size: 20, color: ink });
-      page.text(M, top + 54, doc.fit(`${plan.refNo ? `No ${plan.refNo} · ` : ""}${plan.name}${where ? ` · ${where}` : ""}${plan.phone ? ` · ${plan.phone}` : ""}${plan.registeredOn ? ` · kayıt ${dayText(plan.registeredOn)}` : ""}`, W, "regular", 11), { size: 11, color: "#374151" });
+      // 2.4.5 madde 6c: Tabela Adı açıkken başlık satırları (lib/report-header.mjs; ilki koyu); kapalıyken tek satır unvan (bugünkü yerleşim).
+      const heads = Array.isArray(officeLines) && officeLines.length ? officeLines : officeName ? [officeName] : [];
+      heads.forEach((line, index) => page.text(M, top + 9 + index * 10, doc.fit(line, W * 0.6, index ? "regular" : "bold", index ? 8 : 9), { font: index ? "regular" : "bold", size: index ? 8 : 9, color: muted }));
+      const lift = Math.max(0, heads.length - 1) * 10;
+      page.text(M, top + lift + 34, "Taksit ekstresi", { font: "bold", size: 20, color: ink });
+      page.text(M, top + lift + 54, doc.fit(`${plan.refNo ? `No ${plan.refNo} · ` : ""}${plan.name}${where ? ` · ${where}` : ""}${plan.phone ? ` · ${plan.phone}` : ""}${plan.registeredOn ? ` · kayıt ${dayText(plan.registeredOn)}` : ""}`, W, "regular", 11), { size: 11, color: "#374151" });
       page.text(M, top + 9, `Oluşturma: ${stamp(now)}`, { size: 8, color: muted, align: "right", width: W });
       if (userName) page.text(M, top + 21, `Hazırlayan: ${doc.fit(userName, W * 0.35, "regular", 8)}`, { size: 8, color: muted, align: "right", width: W });
-      top += 70;
+      top += 70 + lift;
       if (plan.note) {
         const lines = doc.wrap(plan.note, W, "regular", 9).slice(0, 3);
         lines.forEach((line, index) => page.text(M, top + index * 12, line, { size: 9, color: "#374151" }));

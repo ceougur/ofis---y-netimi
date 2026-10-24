@@ -3,13 +3,15 @@
 // (a) → A1 (DEĞİŞTİ, 23.10.2026 04:09 UTC): FARKLI sekmelerde aynı Dosya No ayrı borç ve ayrı vade kalemidir (2.4.3 gibi); rapor ve Tahsilat Takvimi bunu
 //     görünür not olarak söyler; Sekme süzgeci seçilince her sekme kendi borcunu gösterir.
 // T1  Kalan / Borç başlığı yoksa ve ödenen + toplam sütunu varsa satır borcu = toplam − ödenen (negatifse 0 + not); ödenen tutar borç sayılmaz.
-// Y1  Tablodaki Nakit Akışı'nda Kasa sütunları yalnız Kasa'yı görme yetkisi (cash.view) olana; Tablo Raporları yetkisi tek başına Kasa'yı açmaz.
+// Y1  Tablodaki Nakit Akışı'nda Kasa sütunları yalnız Kasa'yı görme yetkisi (cash.view) olana; Tablo Raporları yetkisi tek başına Kasa'yı açmaz. (2.4.5 madde 5: Kasa sütunları
+//     bu rapordan bütünüyle kalktı.)
 // Beklenen sayılar tablo hücrelerinden ve girilen tutarlardan (ders 5); kâhin değil, kodu yazan elin testi.
 // "Nasıl bozulur?" (not defteri r31e-nasil-bozulur.md R1–R10): R1 aynı sekmede satırlar tek borca katlanır (2.4.4 aday 11: Ali 1.500, Ayşe 700) · R2 takvim
 // kalemleri birleşir · R3 Sekme süzgeci bir kez sayılan sekmeyi seçince öbür sekmenin borcu kaybolur · R4 not yalnız ekranda (PDF/Excel'de yok) · R5 ödenen
 // tutar borç sayılır (2.4.3: Satışlar 10.000 + 8.000 + 6.000) ya da hiç borç yok (aday 11: "Tutar" + "Tahsil Edilen" tablosu Kişiler'de yok) · R6 ödenen > toplam
 // eksi borç · R7 Kalan varken net hesaplanır · R8 Kasa yetkisi olmayan Kasa toplamlarını görür (2.4.3'te de) · R9 yetkili kişide Kasa sütunu kaybolur ·
 // R10 Tablodan Aktar ile Tablodaki Kişiler aynı dosyada farklı kalan gösterir.
+// 2.4.5 madde 4 (uyarı kapısı): bu dosya tablo takvim motorunu zil / Tahsilat Takvimi / Vade Takip / Projeksiyon uçlarından sınar → 2.4.4 davranışı (legacyTableDues, yalnız testler).
 import "./fixtures/saat-dilimi-istanbul.mjs";
 import assert from "node:assert/strict";
 import { after, before, describe, test } from "node:test";
@@ -32,7 +34,7 @@ const RANGE = "from=2000-01-01&to=2099-12-31";
 const setup = sheets => {
   const ctx = {};
   before(async () => {
-    ctx.server = await startTestServer({ now: NOW });
+    ctx.server = await startTestServer({ now: NOW, legacyTableDues: true });
     ctx.admin = await loginAdmin(ctx.server);
     const must = async (label, promise) => {
       const res = await promise;
@@ -291,7 +293,8 @@ describe("31e C2: kuruş altı hücre — TOPLAM satırı = özet (ekran, Excel)
     const data = await ctx.report("cari-ekstre");
     assert.equal(data.report.totals.debit, 1000.3);
     assert.equal(data.report.table.footer.borc, 1000.3, `TOPLAM satırı: ${JSON.stringify(data.report.table.footer)}`);
-    assert.ok(data.summary.some(([label, value]) => label === "Toplam Borç" && value === "1.000,30 TL"), JSON.stringify(data.summary));
+    // 2.4.5 madde 5: özet adı tablodaki tutarın muhasebe kaydı olmadığını söyler.
+    assert.ok(data.summary.some(([label, value]) => label === "Tablodaki Toplam Borç (Muhasebe Kaydı Değil)" && value === "1.000,30 TL"), JSON.stringify(data.summary));
   });
 
   test("Vadeler TOPLAM satırı = özet (1.000,30)", async () => {
@@ -392,10 +395,13 @@ describe("31e V2: iki kimlikli adın kimliksiz satırı aynı dosya no'nun kişi
   });
 });
 
-describe("31e Y1: Tablodaki Nakit Akışı'nda Kasa sütunları yalnız Kasa yetkisiyle", () => {
+// 2.4.5 madde 5 (bilerek değişti): Tablodaki Nakit Akışı'nda Kasa sütunları HİÇ KİMSEDE yok (yetkili yönetici dahil; Kasa, Kasa raporlarında). Y1'in yetkisiz
+// kişi kuralı kendiliğinden sağlanır (R8); yetkili kişide sütunun "kaybolması" (R9) artık beklenen davranıştır. Yetki notu da gereksizdir (yazılmaz).
+describe("31e Y1 → 2.4.5 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu kimsede yok (yetkili ve yetkisiz)", () => {
   const ctx = setup(null);
   let staff;
   const NOTE = "Kasa sütunları Kasa yetkisi gerektirir; bu raporda Kasa giriş, çıkış ve bakiye gösterilmiyor.";
+  const CASH = ["cashIn", "cashOut", "net", "cumulative", "projected"];
   before(async () => {
     const account = await ctx.must("cari", ctx.admin.post("/api/workspace/accounts", { name: "Y1 Cari", type: "customer", phone: "0500 031 00 11" }));
     await ctx.must("borç", ctx.admin.post(`/api/workspace/accounts/${account.id}/entries`, { kind: "debt", amount: 2000, date: iso(-3), note: "borç" }));
@@ -406,29 +412,21 @@ describe("31e Y1: Tablodaki Nakit Akışı'nda Kasa sütunları yalnız Kasa yet
     assert.equal((await staff.login("rapor1", "Rapor-Parola-1234")).status, 200);
   });
 
-  test("yetkili (yönetici): Kasa Giriş 1.000 (cari nakit) + 500 (elle) = 1.500; Kasa sütunları ve özeti var, not yok (R9)", async () => {
-    const data = await ctx.report("nakit-akis");
-    assert.equal(data.report.totals.cashIn, 1500);
-    assert.ok(data.report.table.columns.some(column => column.key === "cashIn"));
-    assert.ok(data.summary.some(([label]) => label === "Kasa Giriş"));
-    assert.ok(!(data.report.notes || []).includes(NOTE));
-  });
-
-  test("Kasa yetkisi olmayan (yalnız Tablo Raporları): Kasa'ya 403; Nakit Akışı'nda Kasa sütunu, toplamı, özeti yok; not var — ekran, PDF, Excel (R8)", async () => {
-    assert.equal((await staff.get("/api/workspace/cash")).status, 403, "Kasa ekranı yetkisiz");
-    const data = await ctx.report("nakit-akis", "", staff);
-    for (const key of ["cashIn", "cashOut", "net"]) assert.ok(!(key in data.report.totals), `toplamda ${key} yok`);
-    assert.deepEqual(data.report.table.columns.filter(column => ["cashIn", "cashOut", "net", "cumulative", "projected"].includes(column.key)), [], "Kasa sütunu yok");
-    assert.ok(data.report.table.rows.every(row => !("cashIn" in row) && !("cashOut" in row)), "satırlarda Kasa yok");
-    assert.ok(!data.summary.some(([label]) => /Kasa|Net/.test(label)), `özet: ${JSON.stringify(data.summary)}`);
-    assert.ok(data.report.notes.includes(NOTE));
-    const pdf = flat(pdfText(await ctx.exportOf("nakit-akis", "pdf", {}, staff)));
-    assert.ok(pdf.includes("Kasa sütunları Kasa yetkisi gerektirir"), "PDF notu");
-    assert.ok(!pdf.includes("Kasa Giriş"), "PDF'te Kasa Giriş yok");
-    const xlsx = xlsxText(await ctx.exportOf("nakit-akis", "xlsx", {}, staff));
-    assert.ok(xlsx.includes("Kasa sütunları Kasa yetkisi gerektirir"), "Excel notu");
-    assert.ok(!xlsx.includes("Kasa Giriş") && !xlsx.includes("1500"), "Excel'de Kasa Giriş ve 1.500 yok");
-  });
+  for (const [who, client] of [["yetkili (yönetici)", () => null], ["Kasa yetkisi olmayan (yalnız Tablo Raporları)", () => staff]]) {
+    test(`${who}: Nakit Akışı'nda Kasa sütunu, toplamı, özeti ve Kasa notu yok — ekran, PDF, Excel (R8; R9 artık beklenen)`, async () => {
+      if (client()) assert.equal((await client().get("/api/workspace/cash")).status, 403, "Kasa ekranı yetkisiz");
+      const data = await ctx.report("nakit-akis", "", client() || undefined);
+      for (const key of CASH) assert.ok(!(key in data.report.totals), `toplamda ${key} yok`);
+      assert.deepEqual(data.report.table.columns.filter(column => CASH.includes(column.key)), [], "Kasa sütunu yok");
+      assert.ok(data.report.table.rows.every(row => CASH.every(key => !(key in row))), "satırlarda Kasa yok");
+      assert.ok(!data.summary.some(([label]) => /Kasa|Net/.test(label)), `özet: ${JSON.stringify(data.summary)}`);
+      assert.ok(!(data.report.notes || []).includes(NOTE), "yetki notu yok");
+      const pdf = flat(pdfText(await ctx.exportOf("nakit-akis", "pdf", {}, client() || undefined)));
+      assert.ok(!pdf.includes("Kasa sütunları Kasa yetkisi gerektirir") && !pdf.includes("Kasa Giriş"), "PDF'te Kasa Giriş ve not yok");
+      const xlsx = xlsxText(await ctx.exportOf("nakit-akis", "xlsx", {}, client() || undefined));
+      assert.ok(!xlsx.includes("Kasa sütunları Kasa yetkisi gerektirir") && !xlsx.includes("Kasa Giriş") && !xlsx.includes("1500"), "Excel'de Kasa Giriş, 1.500 ve not yok");
+    });
+  }
 });
 
 // 31e tur 7 N4 (karar): vergi başlıklı kolon YALNIZ sekmede başka bir tutar kolonu varken borç adayından çıkar; tek tutar kolonu vergi başlıklıysa borç odur.

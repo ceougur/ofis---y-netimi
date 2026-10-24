@@ -1,0 +1,9 @@
+# 6d mutasyon (server/lib/statement-detail.mjs; komut: node --test test/ekstre-ayrinti-245.test.mjs; çalışma ağacının kopyası, dal is/ekstre-ayrinti, taban d2cef7c)
+mutasyonsuz: çıkış 0 ['# pass 8', '# fail 0']
+mutasyon 1 tevkifat satırı yazılmaz: çıkış 1 ['# fail 3'] -> YAKALANDI
+mutasyon 2 stopaj artı yazılır: çıkış 1 ['# fail 3'] -> YAKALANDI
+mutasyon 3 kalem Toplam = KDV hariç: çıkış 1 ['# fail 4'] -> YAKALANDI
+mutasyon 4 Genel Toplam devri katmaz: çıkış 1 ['# fail 1'] -> YAKALANDI
+mutasyon 5 devir Borç kolonuna yazılmaz: çıkış 1 ['# fail 1'] -> YAKALANDI
+mutasyon 6 hareket satırı yanlış faturanın kalemini alır: çıkış 1 ['# fail 4'] -> YAKALANDI
+mutasyon 7 son bakiye kapanışı yanlış (açılışsız): çıkış 1 ['# fail 1'] -> YAKALANDI

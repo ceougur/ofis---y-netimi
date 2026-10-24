@@ -1,0 +1,32 @@
+{
+  "ad": "245-kapi/cidisi-ui-ux-217",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/ui-ux-217.mjs",
+  "commit": "c9575d8a80f749ccfeda257bb58c8cd6cd0d6620",
+  "dal": "aday245-2",
+  "kirli": 0,
+  "izlenmeyen": 14,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T22:57:19.215Z",
+  "sure_sn": 194.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 407,
+    "gecen": 407,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-kapi/cidisi-ui-ux-217.log",
+  "klasor": "/home/user/wt/aday245-2",
+  "ham_cikti_sha256": "edab52e36cb5473bc3a62a0228a98ad0e4765e4bce13b66b018bb897440ae5ef",
+  "ham_cikti_bayt": 3960
+}

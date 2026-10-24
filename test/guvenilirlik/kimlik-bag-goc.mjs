@@ -113,7 +113,9 @@ async function observe(api, store, keys0) {
 }
 async function run(name, sc, first, second) {
   const root = mkdtempSync(path.join(NB, `destekofis-kimlik-bag-${name}-`));
-  const dirs = { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, fetchImpl, now: createClock({ time: new Date(2026, 9, 23, 10), fixed: true }) };
+  // 2.4.5 madde 4: bağ sürekliliği Takvim'deki tablo kalemiyle ("Ödendi Say", Ali'nin kalanı) de gözlenir → güncel kod 2.4.4 davranışıyla (legacyTableDues; eski
+  // sürümler seçeneği tanımaz, etkisiz).
+  const dirs = { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, fetchImpl, now: createClock({ time: new Date(2026, 9, 23, 10), fixed: true }), legacyTableDues: true };
   const out = { senaryo: name, surum: `${first}→${second === CURRENT ? "aday16" : second}`, mod: sc.mode };
   try {
     let server = await bootVersion(first, dirs);

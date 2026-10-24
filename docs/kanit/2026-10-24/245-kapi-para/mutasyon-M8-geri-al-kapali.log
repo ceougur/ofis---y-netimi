@@ -1,0 +1,286 @@
+TAP version 13
+# Subtest: 2.4.5 madde 1–2: anahtar üretimde kapalı
+    # Subtest: varsayılan kapalı; ortam değişkeniyle açılmaz; üretim girişi (server/server.mjs) anahtar vermez
+    ok 1 - varsayılan kapalı; ortam değişkeniyle açılmaz; üretim girişi (server/server.mjs) anahtar vermez
+      ---
+      duration_ms: 2.983736
+      type: 'test'
+      ...
+    1..1
+ok 1 - 2.4.5 madde 1–2: anahtar üretimde kapalı
+  ---
+  duration_ms: 4.157524
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 1–2: eski sürüm verisi (v2.4.4 gerçek kodu) yeni kodla — kapılar kapalı, eski satırlar aynen, sil / geri yükle / geri al açık
+    # Subtest: eski satırlar aynen: kayıt tahsilatı, Kasa, cari/kart satırları, işlem başlıkları, mizan ve yevmiye madde sayısı
+    ok 1 - eski satırlar aynen: kayıt tahsilatı, Kasa, cari/kart satırları, işlem başlıkları, mizan ve yevmiye madde sayısı
+      ---
+      duration_ms: 55.029986
+      type: 'test'
+      ...
+    # Subtest: POST kayıt tahsilatı 410 (istek kimliğiyle de); veri değişmez
+    ok 2 - POST kayıt tahsilatı 410 (istek kimliğiyle de); veri değişmez
+      ---
+      duration_ms: 41.501263
+      type: 'test'
+      ...
+    # Subtest: PUT eski kayıt tahsilatı 410; satırın tutarı, tarihi ve yolu aynı
+    ok 3 - PUT eski kayıt tahsilatı 410; satırın tutarı, tarihi ve yolu aynı
+      ---
+      duration_ms: 52.934704
+      type: 'test'
+      ...
+    # Subtest: oturumsuz 401; personel de 410 alır (Tablodan Aktar yetkisi olmasa da 410: kapı yetkiden önce); veri değişmez
+    ok 4 - oturumsuz 401; personel de 410 alır (Tablodan Aktar yetkisi olmasa da 410: kapı yetkiden önce); veri değişmez
+      ---
+      duration_ms: 312.700739
+      type: 'test'
+      ...
+    # Subtest: Tablodan Aktar POST 410; yükleme sonrası özet sormaz; veri değişmez; eski aktarım listede
+    ok 5 - Tablodan Aktar POST 410; yükleme sonrası özet sormaz; veri değişmez; eski aktarım listede
+      ---
+      duration_ms: 20.145688
+      type: 'test'
+      ...
+    # Subtest: DELETE açık (→ Silinenler), Silinenler'den geri yükleme açık: Kasa ve mizan eski hâline döner
+    ok 6 - DELETE açık (→ Silinenler), Silinenler'den geri yükleme açık: Kasa ve mizan eski hâline döner
+      ---
+      duration_ms: 97.071037
+      type: 'test'
+      ...
+    # Subtest: eski aktarımın Geri Al'ı açık: kartlar kalkar, karta taşınan kayıt tahsilatı kayda döner, Kasa aynı
+    not ok 7 - eski aktarımın Geri Al'ı açık: kartlar kalkar, karta taşınan kayıt tahsilatı kayda döner, Kasa aynı
+      ---
+      duration_ms: 13.989112
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/mut-M8-geri-al-kapali/test/kapi-para-245.test.mjs:176:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"error":"kapalı","code":"table-transfer-closed"}
+        
+        410 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 410
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/mut-M8-geri-al-kapali/test/kapi-para-245.test.mjs:178:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..7
+not ok 2 - 2.4.5 madde 1–2: eski sürüm verisi (v2.4.4 gerçek kodu) yeni kodla — kapılar kapalı, eski satırlar aynen, sil / geri yükle / geri al açık
+  ---
+  duration_ms: 2968.784553
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/mut-M8-geri-al-kapali/test/kapi-para-245.test.mjs:78:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.5 madde 1–2: istek kimliği yinelemesi kapıyı aşmaz; anahtar açıkken eski davranış (testlerin ve üreticilerin yolu)
+    # Subtest: açıkken POST / PUT / Tablodan Aktar 200 ve yineleme 'replayed'; kapalı sunucuda aynı istek kimliği 410, satır sayısı aynı
+    ok 1 - açıkken POST / PUT / Tablodan Aktar 200 ve yineleme 'replayed'; kapalı sunucuda aynı istek kimliği 410, satır sayısı aynı
+      ---
+      duration_ms: 1230.910477
+      type: 'test'
+      ...
+    1..1
+ok 3 - 2.4.5 madde 1–2: istek kimliği yinelemesi kapıyı aşmaz; anahtar açıkken eski davranış (testlerin ve üreticilerin yolu)
+  ---
+  duration_ms: 1255.028295
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 1–2: 002 şirketi de kapalı (alt şirket aynı yapılandırmayla açılır)
+    # Subtest: 002'de POST / PUT / Tablodan Aktar 410; 002'nin Kasa'sı ve kaydın işlem geçmişi boş
+    ok 1 - 002'de POST / PUT / Tablodan Aktar 410; 002'nin Kasa'sı ve kaydın işlem geçmişi boş
+      ---
+      duration_ms: 1143.483332
+      type: 'test'
+      ...
+    1..1
+ok 4 - 2.4.5 madde 1–2: 002 şirketi de kapalı (alt şirket aynı yapılandırmayla açılır)
+  ---
+  duration_ms: 1199.785408
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 1–3: kaynakta kapılar
+    # Subtest: payments'a satır ekleyen her yer izinli: kapılı POST, Silinenler'den geri yükleme, eski aktarımın Geri Al'ı
+    ok 1 - payments'a satır ekleyen her yer izinli: kapılı POST, Silinenler'den geri yükleme, eski aktarımın Geri Al'ı
+      ---
+      duration_ms: 92.892642
+      type: 'test'
+      ...
+    # Subtest: payments'ın tutarını / tarihini değiştiren UPDATE yalnız kapılı PUT'ta (B1 bağ taşıma yalnız case_key, banka eşlemesi yalnız fin_ref değiştirir)
+    ok 2 - payments'ın tutarını / tarihini değiştiren UPDATE yalnız kapılı PUT'ta (B1 bağ taşıma yalnız case_key, banka eşlemesi yalnız fin_ref değiştirir)
+      ---
+      duration_ms: 55.621461
+      type: 'test'
+      ...
+    # Subtest: POST /cases/:key/payments ve PUT /payments/:id ilk iş kapıya bakar; DELETE kapısız; kapı 410 case-payments-closed
+    ok 3 - POST /cases/:key/payments ve PUT /payments/:id ilk iş kapıya bakar; DELETE kapısız; kapı 410 case-payments-closed
+      ---
+      duration_ms: 1.024064
+      type: 'test'
+      ...
+    # Subtest: POST /plans/from-table analizden önce kapıya bakar; özet kapalıyken sormaz; Geri Al kapısız
+    not ok 4 - POST /plans/from-table analizden önce kapıya bakar; özet kapalıyken sormaz; Geri Al kapısız
+      ---
+      duration_ms: 0.871022
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/mut-M8-geri-al-kapali/test/kapi-para-245.test.mjs:314:3'
+      failureType: 'testCodeFailure'
+      error: 'Geri Al açık kalmalı'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: |-
+        router.post("/api/workspace/plans/imports/:id/undo", async ({ req, res, params }) => {
+            if (!tableTransferOpen) throw new HttpError(410, "kapalı", { code: "table-transfer-closed" });
+            const user = auth.requirePermission(req, "plans.manage");
+            const batch = store.get("SELECT id, kind, title, undo_json AS undoJson, undone_at AS undoneAt FROM plan_imports WHERE id = ?", limited(params.id, 120, "Aktarım"));
+            if (!batch) throw new HttpError(404, "Aktarım bulunamadı.");
+            if (batch.undoneAt) throw new HttpError(409, "Bu aktarım zaten geri alındı.");
+            let undo;
+            try {
+              undo = JSON.parse(batch.undoJson || "{}");
+            } catch {
+              throw new HttpError(409, "Aktarımın geri alma bilgisi okunamadı.");
+            }
+            const blocked = blockers(undo);
+            if (blocked.length) throw new HttpError(409, `Aktarımdan sonra ${blocked.length} kartta işlem yapılmış (${blocked.slice(0, 5).join(", ")}${blocked.length > 5 ? "…" : ""}). Geri almak için önce bu işlemleri kaldırın ya da kartları tek tek silin.`, { code: "touched", names: blocked.slice(0, 50) });
+            // v2.0.26 (gözden geçirme G6): aktarımın açtığı kartın Kayıt Tarihi, açılışı ya da taşınan kayıt tahsilatı kapanmış dönemdeyse geri
+            // alınmaz (kilitli dönemin cari borcu, taksit hareketi ve kayıt tahsilatı değişirdi; önceden kapıda nedensiz 409).
+            const lock = period?.lockedUntil?.() || "";
+            if (lock) {
+              const hits = [];
+              for (const planId of undo.plans || []) {
+                const plan = store.get("SELECT name, registered_on AS registeredOn, covers_balance AS covers FROM plans WHERE id = ?", planId);
+                const entry = store.get("SELECT MIN(date) AS day FROM plan_entries WHERE plan_id = ?", planId)?.day || "";
+                const day = [plan && !plan.covers ? plan.registeredOn : "", entry].filter(Boolean).sort()[0] || "";
+                if (plan && day && day <= lock) hits.push(`${plan.name}, ${dayText(day)}`);
+              }
+              for (const moved of undo.payments || []) {
+                if (moved.row?.date && moved.row.date <= lock) hits.push(`${moved.row.case_title || "kayıt tahsilatı"}, ${dayText(moved.row.date)}`);
+                // 2. gözden geçirme İ1: tahsilat kapanmış dönemde kapatılmış (bağlanan bağsız) karta taşındıysa geri almak kartın vazgeçilen
+                // kalanını (689, kilitli mizan) değiştirir; önceden kapıda nedensiz 409 ledger-integrity.
+                const entry = moved.entryId ? store.get("SELECT e.plan_id AS planId, p.name FROM plan_entries e JOIN plans p ON p.id = e.plan_id WHERE e.id = ?", moved.entryId) : null;
+                const closedOn = entry ? plans()?.closeDayOf?.(entry.planId) || "" : "";
+                if (closedOn && closedOn <= lock) hits.push(`${entry.name}, ${dayText(closedOn)} tarihinde kapatıldı`);
+              }
+              for (const moved of undo.accountEntries || []) if (moved.row?.date && moved.row.date <= lock) hits.push(`cari tahsilatı, ${dayText(moved.row.date)}`);
+              if (hits.length) throw new HttpError(409, `Bu aktarımın kartlarında ya da taşınan tahsilatlarında kapatılmış (kilitli) döneme (${dayText(lock)} ve öncesi) düşen kayıt var (${[...new Set(hits)].slice(0, 5).join("; ")}); aktarım geri alınamaz. Gerekirse yönetici dönem kilidini açmalı.`, { code: "period-locked", lockedUntil: lock });
+            }
+            const report = { plans: 0, links: 0, payments: 0, accountEntries: 0, accounts: 0, accountsKept: 0 };
+            // v2.1.0 (bank.post op 'move'): geri dönen kayıt tahsilatı karttaki satırın işlem başlığıyla döner (İşlem No ve yol aynı).
+            bank.post({ user, module: "plan", op: "move", prev: { importId: batch.id, payments: undo.payments || [], accountEntries: (undo.accountEntries || []).map(item => item.row?.id || "") }, write: () => {
+              // 2.4.4 (5a): karta yazılan cari tahsilatları carinin hesabına aynen döner (kimlik, tutar, tarih, yol, makbuz no, giren kişi; işlem başlığı ve banka
+              // hesabı bağı karttaki satırdan).
+              const accountColumns = new Set(store.all("PRAGMA table_info(account_entries)").map(column => column.name));
+              for (const moved of undo.accountEntries || []) {
+                const moving = store.get("SELECT event_id AS e, fin_ref AS f FROM plan_entries WHERE id = ?", moved.entryId) || {};
+                store.run("DELETE FROM plan_entries WHERE id = ?", moved.entryId);
+                const row = moved.row || {};
+                if (!row.id || store.get("SELECT 1 AS found FROM account_entries WHERE id = ?", row.id)) continue;
+                const method = methodInput(row.method);
+                const back = { ...row, method, fin_ref: bank.keepRef(moving.f ?? row.fin_ref, { method, date: row.date }).ref };
+                back.event_id = bank.eventFor("account_entries", { ...back, event_id: moving.e || row.event_id || "" });
+                const columns = Object.keys(back).filter(name => accountColumns.has(name));
+                store.run(`INSERT INTO account_entries (${columns.join(", ")}) VALUES (${columns.map(() => "?").join(", ")})`, ...columns.map(name => back[name] ?? null));
+                report.accountEntries += 1;
+              }
+              // Karta taşınan kayıt tahsilatları kayıt kartına aynen döner (kimlik, tarih, giren kişi).
+              for (const moved of undo.payments || []) {
+                const moving = store.get("SELECT event_id AS e, fin_ref AS f FROM plan_entries WHERE id = ?", moved.entryId) || {};
+                const movedEvent = moving.e || "";
+                store.run("DELETE FROM plan_entries WHERE id = ?", moved.entryId);
+                const row = moved.row || {};
+                if (row.id && !store.get("SELECT 1 AS found FROM payments WHERE id = ?", row.id)) {
+                  // v2.0.26 (A2): ödeme yolu da döner (önceden yazılmıyor, havale/POS tahsilatı kayda nakit olarak dönüyordu).
+                  const method = methodInput(row.method);
+                  // GG2 (K13/7): banka hesabı bağı da döner (karttaki satırın bugünkü bağı; kart silindiyse aktarımdaki satırınki).
+                  const finRef = bank.keepRef(moving.f ?? row.fin_ref, { method, date: row.date }).ref;
+                  store.run(
+                    "INSERT INTO payments (id, case_key, case_title, amount, date, note, method, fin_ref, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    row.id, row.case_key, row.case_title || "", row.amount, row.date, row.note || "", method, finRef, bank.eventFor("payments", { date: row.date, method, event_id: movedEvent || row.event_id || "" }), row.created_by, row.created_at, row.updated_by || null, row.updated_at || null,
+                  );
+                  report.payments += 1;
+                }
+              }
+              for (const planId of undo.plans || []) {
+                store.run("DELETE FROM plan_entries WHERE plan_id = ?", planId);
+                store.run("DELETE FROM plan_items WHERE plan_id = ?", planId);
+                store.run("DELETE FROM plans WHERE id = ? AND import_id = ?", planId, batch.id);
+                report.plans += 1;
+              }
+              for (const link of undo.links || []) {
+                store.run(`UPDATE plans SET ${FREEZE_CLOSE}, case_key = '', case_source = '', case_title = '', updated_by = ?, updated_at = ? WHERE id = ? AND case_key = ?`, user.id, now(), link.planId, link.caseKey);
+                report.links += 1;
+              }
+              for (const link of undo.accountLinks || []) store.run("UPDATE accounts SET case_key = '', case_source = '', case_title = '', updated_by = ?, updated_at = ? WHERE id = ? AND case_key = ?", user.id, now(), link.accountId, link.caseKey);
+              // Aktarımın açtığı cari: başka hareketi, kartı ya da evrakı yoksa kaldırılır; varsa kalır.
+              for (const accountId of undo.accounts || []) {
+                const used = store.get("SELECT (SELECT COUNT(*) FROM account_entries WHERE account_id = ?) + (SELECT COUNT(*) FROM plans WHERE account_id = ?) + (SELECT COUNT(*) FROM cheques WHERE account_id = ? OR endorse_account_id = ?) AS n", accountId, accountId, accountId, accountId).n;
+                if (used) report.accountsKept += 1;
+                else {
+                  store.run("DELETE FROM accounts WHERE id = ?", accountId);
+                  report.accounts += 1;
+                }
+              }
+              for (const groupIdValue of [...(undo.groups || [])].reverse()) {
+                const used = store.get("SELECT (SELECT COUNT(*) FROM plans WHERE group_id = ? OR subgroup_id = ?) + (SELECT COUNT(*) FROM plan_groups WHERE parent_id = ?) AS n", groupIdValue, groupIdValue, groupIdValue).n;
+                if (!used) store.run("DELETE FROM plan_groups WHERE id = ?", groupIdValue);
+              }
+              store.run("UPDATE plan_imports SET undone_by = ?, undone_at = ? WHERE id = ?", user.id, now(), batch.id);
+              audit(user, "plan.import-undone", batch.id, { ...report, title: batch.title });
+            } });
+            publish(user, { kind: "plans" });
+            publish(user, { kind: "accounts" });
+            publish(user, { kind: "cash" });
+            publish(user, { kind: "dues", datasetKey: undo.source || "" });
+            ok(res, report);
+          });
+        
+          return { analyze: options => analyze(optionsOf(options || {})) };
+        }
+        
+      operator: 'doesNotMatch'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/mut-M8-geri-al-kapali/test/kapi-para-245.test.mjs:321:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: istemci: kayıt kartında Tahsilat düğmesi yok; Tablodan Aktar düğmesi yok (Son Aktarımlar var); ön dolumlar boş; eski tahsilatta düzelt yok
+    ok 5 - istemci: kayıt kartında Tahsilat düğmesi yok; Tablodan Aktar düğmesi yok (Son Aktarımlar var); ön dolumlar boş; eski tahsilatta düzelt yok
+      ---
+      duration_ms: 7.907318
+      type: 'test'
+      ...
+    1..5
+not ok 5 - 2.4.5 madde 1–3: kaynakta kapılar
+  ---
+  duration_ms: 158.684333
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/mut-M8-geri-al-kapali/test/kapi-para-245.test.mjs:258:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..5
+# tests 15
+# suites 5
+# pass 13
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6118.396292

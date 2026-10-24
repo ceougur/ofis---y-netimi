@@ -4,10 +4,10 @@ import { HttpError, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { caseCollections, caseCollectionsState } from "../lib/insight/case-collections.mjs";
 import { analyzeColumns } from "../lib/insight/columns.mjs";
 import { computeDeadlines, computeDues } from "../lib/insight/dues.mjs";
-import { cariEkstre, dayText, flattenTable, nakitAkis, normalizeFilters, normalizeRecords, REPORT_KINDS, tableNotes, vadeTakip } from "../lib/reports.mjs";
-import { canUser } from "../lib/permissions.mjs";
+import { cariEkstre, dayText, flattenTable, nakitAkis, normalizeFilters, normalizeRecords, REPORT_KINDS, TABLE_AMOUNT_NOTE, tableNotes, vadeTakip } from "../lib/reports.mjs";
 import { fromCents, roundMoney, toCents } from "../lib/money.mjs";
 import { isoDay } from "../lib/plans.mjs";
+import { createReportHeader } from "../lib/report-header.mjs";
 import { reportFileBase, reportPdf, reportXlsx } from "../lib/report-files.mjs";
 import { columnOrder } from "../lib/sources.mjs";
 import { titleCase } from "../lib/text-case.mjs";
@@ -20,9 +20,9 @@ const AHEAD = Object.freeze({ aheadDays: 366, promiseDays: 366 });
 // 2.4.3'e kadar defter raporlarının adını taşıyordu ("Cari Ekstre", "Vade Takip", "Nakit Akış"); aynı penceredeki gerçek Cari Ekstre'yle karışıyordu.
 export const TABLE_REPORT_TITLES = Object.freeze({ "cari-ekstre": "Tablodaki Kişiler", "vade-takip": "Tablodaki Vadeler", "nakit-akis": "Tablodaki Nakit Akışı" });
 // Alt TOPLAM satırı (2.4.4 U3; kalıcı karar "her raporda alt TOPLAM satırı, ekran/PDF/Excel aynı"): bütün satırlardan, tutar ve sayı kolonları toplanır.
-// Toplanmaz: Gün (vadeye kalan gün), Birikimli ve Beklenenle Birlikte (yürüyen tutar), özel alan kolonları (kullanıcının verisi). Bakiye kişi başına yürüyen
-// bakiyedir; TOPLAM'da net bakiye (Borç − Alacak = özetteki Bakiye). Boş raporda TOPLAM yok.
-const NO_SUM = new Set(["days", "cumulative", "projected", "bakiye"]);
+// Toplanmaz: Gün (vadeye kalan gün), özel alan kolonları (kullanıcının verisi). Bakiye kişi başına yürüyen bakiyedir; TOPLAM'da net bakiye (Borç − Alacak =
+// özetteki Bakiye). Boş raporda TOPLAM yok. (2.4.5 madde 5: Nakit Akışı'nın yürüyen Birikimli / Beklenenle Birlikte kolonları kalktı.)
+const NO_SUM = new Set(["days", "bakiye"]);
 export function tableFooter(table) {
   const rows = table?.rows || [];
   if (!rows.length) return null;
@@ -47,14 +47,14 @@ export function tableSummary(report) {
   const money = value => `${MONEY.format(value || 0)} TL`;
   const count = value => COUNT.format(value || 0);
   const totals = report.totals || {};
-  if (report.kind === "cari-ekstre") return [["Cari", count(totals.caris)], ["Toplam Borç", money(totals.debit)], ["Toplam Alacak", money(totals.credit)], ["Bakiye", money(totals.balance)], ...(totals.crossMatched ? [["Birden Çok Dosyada", count(totals.crossMatched)]] : [])];
-  if (report.kind === "vade-takip") return [["Kalem", count(totals.count)], ["Gecikmiş", `${count(totals.overdue)} · ${money(totals.overdueAmount)}`], ["Yaklaşan / Bugün", count(totals.upcoming)], ["Toplam Tutar", money(totals.amount)], ...(totals.dormant ? [["Ödeme Kesilmiş Olabilir", count(totals.dormant)]] : [])];
-  // 31e Y1: Kasa'yı görme yetkisi olmayan kişide Kasa satırları yok (ekran, PDF ve Excel aynı).
-  if (report.cashHidden) return [["Beklenen Tahsilat", money(totals.expected)], ["Gerçekleşen Tahsilat", money(totals.collected)]];
-  return [["Beklenen Tahsilat", money(totals.expected)], ["Gerçekleşen Tahsilat", money(totals.collected)], ["Kasa Giriş", money(totals.cashIn)], ["Kasa Çıkış", money(totals.cashOut)], ["Net", money(totals.net)]];
+  // 2.4.5 madde 5: tablodan gelen tutar ve ondan program tahsilatı düşülerek bulunan bakiye "Muhasebe Kaydı Değil" adıyla (kolon başlıklarıyla aynı).
+  if (report.kind === "cari-ekstre") return [["Cari", count(totals.caris)], [`Tablodaki Toplam Borç ${TABLE_AMOUNT_NOTE}`, money(totals.debit)], ["Toplam Tahsil Edilen", money(totals.credit)], [`Tablodaki Bakiye ${TABLE_AMOUNT_NOTE}`, money(totals.balance)], ...(totals.crossMatched ? [["Birden Çok Dosyada", count(totals.crossMatched)]] : [])];
+  if (report.kind === "vade-takip") return [["Kalem", count(totals.count)], ["Gecikmiş", `${count(totals.overdue)} · ${money(totals.overdueAmount)}`], ["Yaklaşan / Bugün", count(totals.upcoming)], [`Tablodaki Toplam Tutar ${TABLE_AMOUNT_NOTE}`, money(totals.amount)], ...(totals.dormant ? [["Ödeme Kesilmiş Olabilir", count(totals.dormant)]] : [])];
+  // 2.4.5 madde 5: Kasa giriş/çıkış/net bu raporda yok (Kasa, Kasa raporlarında; tablo tahmini Kasa ile aynı tabloda toplanmaz).
+  return [[`Tablodan Beklenen Tahsilat ${TABLE_AMOUNT_NOTE}`, money(totals.expected)], ["Gerçekleşen Tahsilat", money(totals.collected)]];
 }
 
-export function registerReportRoutes(router, { auth, store, dataset, profile, plans, cash, company = () => null, now: clock = systemClock }) {
+export function registerReportRoutes(router, { auth, store, dataset, profile, plans, company = () => null, now: clock = systemClock }) {
   const parseSettled = key => {
     try {
       const value = JSON.parse(store.setting(key, "{}") || "{}");
@@ -133,43 +133,31 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
       throw error;
     }
   }
-  async function backbone(filters, now, { cashVisible = true } = {}) {
+  async function backbone(filters, now) {
     const data = filters.sessions.length ? await calendar(filters, now) : await allCalendar(now);
     // Tablodaki Kişiler ve Nakit Akışı: kaydın tahsilatı takvimle AYNI küme — kayıt tahsilatı (eski) + kayda bağlı carinin tahsilatı (2.4.3 A2; 2.4.4 E8: zil ve
     // Tahsilat Takvimi'ndeki tahsilat cariye yazılır) + kayda (ya da kayda bağlı cariye) bağlı taksit kartının tahsilatı (31a F1/F5: Tablodan Aktar'ın karta
     // taşıdığı cari tahsilatı ve karta doğrudan girilen tahsilat; önceden rapordan düşüyordu). Bir para hareketi tek satırdadır (K11): iki kez sayılmaz.
     // Cari / kart tahsilatı bağın veri oturumunu (session) taşır; yalnız o sayfanın kaydına sayılır.
     const payments = [...store.all("SELECT case_key AS caseKey, amount, date, note FROM payments"), ...dataset.sessions().flatMap(item => caseCollections(store, item.key, { plans: true }).filter(row => row.session))];
-    // 2.4.4 (31b MM6): Kasa giriş/çıkış Kasa defterinin KENDİSİNDEN — Kasa raporuyla (Kasa Hareketleri, Aylık Kasa Özeti) aynı satırlar ve aynı kural:
-    // yalnız Nakit Kasa (2.0.17 m9), bütün kaynaklar (cari tahsilat/ödeme, fatura peşini, taksit kartı, kayıt tahsilatı, stok, çek/senet, elle, banka transferi);
-    // açılış/devir düzeltmesi (adjust) dönem giriş/çıkışı sayılmaz. Önceden yalnız elle Kasa (cash_entries, her yol) + taksit kartı okunuyordu; cari ve fatura
-    // nakit tahsilatı "Kasa giriş"te 0 görünüyordu (2.4.3'te de). Sekme / Sayfa süzgeci bunlara uygulanmaz (şirket geneli, 30e).
-    // 31e Y1: Kasa satırları yalnız Kasa'yı görme yetkisi (cash.view) olana okunur; Tablo Raporları yetkisi (reports.view) tek başına Kasa'yı açmaz.
-    const cashEntries = cashVisible ? cash.report({ id: "", role: "admin" }, "", "", "cash").entries.filter(entry => !entry.adjust).map(entry => ({ kind: entry.kind, amount: entry.amount, date: entry.date, source: entry.source })) : [];
-    return { ...data, payments, cashEntries };
+    // 2.4.5 madde 5: Tablodaki Nakit Akışı Kasa defterini okumaz (2.4.4 31b MM6 / 31e Y1'deki Kasa giriş/çıkış kolonları kalktı; Kasa, Kasa raporlarında).
+    return { ...data, payments };
   }
 
-  const CASH_COLUMNS = new Set(["cashIn", "cashOut", "net", "cumulative", "projected"]);
   async function build(kind, input, user) {
     if (!REPORT_KINDS.includes(kind)) throw new HttpError(400, "Bilinmeyen rapor türü.");
     const now = clock();
     const filters = normalizeFilters(input);
-    const cashVisible = canUser(user, "cash.view");
-    const data = await backbone(filters, now, { cashVisible });
+    const data = await backbone(filters, now);
     let report;
     if (kind === "cari-ekstre") report = cariEkstre({ records: data.records, payments: data.payments, filters, now });
     else if (kind === "vade-takip") report = vadeTakip({ records: data.records, items: data.items, dormant: data.dormant, filters, now });
-    else report = nakitAkis({ items: data.items, payments: data.payments, cashEntries: data.cashEntries, filters, now });
+    else report = nakitAkis({ items: data.items, payments: data.payments, filters, now });
     // 31e A1 / T1: sekme ve hesap notları — Tablodaki Kişiler kendi kayıtlarından, Vadeler ve Nakit Akışı takvimden (aynı kural).
     // Sekme süzgecinde not yalnız seçili sekmelerin ikisinde (ya da daha çoğunda) borcu olan dosya no için (Tablodaki Kişiler ile aynı).
     const inTabs = tab => !filters.tabs.length || filters.tabs.includes(tab);
     const split = (data.split || []).map(item => ({ ...item, tabs: item.tabs.filter(entry => inTabs(entry.tab)) })).filter(item => item.tabs.length > 1);
     if (kind !== "cari-ekstre") report = { ...report, notes: tableNotes({ split, overpaid: data.records.filter(record => record.overpaid && inTabs(record.tab)).length, unresolved: data.records.filter(record => (record.debtUnresolved || record.debtMissing) && inTabs(record.tab)) }) };
-    // 31e Y1: Kasa yetkisi yoksa Nakit Akışı'nın Kasa kolonları (giriş, çıkış, net, birikimli, beklenenle birlikte) ve toplamları yok; not söyler.
-    if (kind === "nakit-akis" && !cashVisible) {
-      const strip = row => Object.fromEntries(Object.entries(row).filter(([key]) => !CASH_COLUMNS.has(key)));
-      report = { ...report, cashHidden: true, rows: report.rows.map(strip), totals: strip(report.totals), table: { ...report.table, columns: report.table.columns.filter(column => !CASH_COLUMNS.has(column.key)), rows: report.table.rows.map(strip) }, notes: [...(report.notes || []), "Kasa sütunları Kasa yetkisi gerektirir; bu raporda Kasa giriş, çıkış ve bakiye gösterilmiyor."] };
-    }
     // 2.4.4 U3: programın kolon adları başlık düzeninde (Yazım düzeni; lib/reports.mjs'te cümle düzeninde yazılı: "Beklenen tahsilat"); özel alan kolonları
     // kullanıcının verisidir, olduğu gibi. Alt TOPLAM satırı bütün satırlardan (ekran, PDF ve Excel bunu yazar).
     const columns = report.table.columns.map(column => (column.dynamic ? column : { ...column, label: titleCase(column.label) }));
@@ -199,17 +187,9 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
 
   // Şirket etiketi "001 · Unvan" (Rapor Merkezi'nin kuralı, routes/report-center.mjs companyLabel): PDF ve Excel başlık bloğunda.
   const office = () => store.setting("office.name", "");
-  const companyLabel = () => {
-    let entry = null;
-    try {
-      entry = typeof company === "function" ? company() : null;
-    } catch {
-      entry = null;
-    }
-    const name = String(office() || entry?.name || "").trim();
-    const code = String(entry?.code || "").trim();
-    return code && name ? `${code} · ${name}` : name || code;
-  };
+  // 2.4.5 madde 6c: etiket ve Tabela Adı başlığı tek yardımcıda (lib/report-header.mjs; önceden üç rotada aynı kopya).
+  const header = createReportHeader({ store, company: company });
+  const companyLabel = header.companyLabel;
 
   // 2.4.4 U3: dışa aktarım programın öbür raporlarıyla AYNI üreticiden (lib/report-files.mjs — Rapor Merkezi ve Banka): başlık bloğu (şirket, rapor adı, kapsam,
   // oluşturma, hazırlayan), alt TOPLAM satırı, Excel'de Özet sayfası, dosya adı "<Rapor Adı> gg.aa.yyyy" YEREL günle (önceden toISOString: gece yarısından
@@ -236,7 +216,7 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
       optional: table.columns.map((column, index) => (column.dynamic ? index : -1)).filter(index => index >= 0),
       optionalNote: count => `${count} özel alan kolonu sayfaya sığmadı (tamamı Excel'de)`,
     };
-    const ctx = { now: clock(), companyLabel: companyLabel(), userName: user.display_name || user.username || "", brand: office() || "DestekOfis" };
+    const ctx = { now: clock(), companyLabel: companyLabel(), userName: user.display_name || user.username || "", brand: office() || "DestekOfis", header };
     const name = reportFileBase(title, isoDay(clock()));
     if (format === "xlsx") return sendBuffer(res, reportXlsx(data, ctx), { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `${name}.xlsx` });
     return sendBuffer(res, reportPdf(data, ctx), { type: "application/pdf", name: `${name}.pdf`, inline: body.inline === true });

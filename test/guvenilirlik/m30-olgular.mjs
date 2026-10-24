@@ -26,9 +26,15 @@ const soft = async promise => {
   return res.status === 200 ? res.data : { __status: res.status, __error: res.data?.error || res.data?.code || "" };
 };
 const pick = (obj, keys) => Object.fromEntries(keys.filter(key => obj && Object.hasOwn(obj, key)).map(key => [key, obj[key]]));
+/** Güncel kodun veri dosyası şema sürümü (göç araçlarının beklentisi; 2.4.4 = 32, 2.4.5 = 33 — server/lib/migrations.mjs son göç). */
+export const SCHEMA = 33;
+// 2.4.5 madde 6 (K6.1, K6.2): carinin hareketlerine eklenen alanlar. Eski sürümde yok; göçten sonra eski satırlarda BOŞ olmalı (K6.4). Karşılaştırmada bu
+// alanlar ayrı sayılır (newFields), hareketin geri kalanı eski sürümle birebir.
+export const ENTRY_NEW_FIELDS = Object.freeze(["dueDate", "expectedDate", "remaining"]);
+const without = (obj, keys) => Object.fromEntries(Object.entries(obj || {}).filter(([key]) => !keys.includes(key)));
 
 /** Seçili şirketin olguları (api: şirket kapsamlı). */
-export async function companyFacts(api, { reportsFrom = "2000-01-01", reportsTo = "2099-12-31", detailCap = 2000 } = {}) {
+export async function companyFacts(api, { reportsFrom = "2000-01-01", reportsTo = "2099-12-31", detailCap = 2000, entryDetail = true } = {}) {
   const out = {};
   // Cariler
   const accounts = [];
@@ -38,6 +44,32 @@ export async function companyFacts(api, { reportsFrom = "2000-01-01", reportsTo 
     if (!page.hasMore) break;
   }
   out.accounts = Object.fromEntries(accounts.map(a => [a.id, { ref: a.refNo, name: a.name, type: a.type, status: a.status, balance: cents(a.balance), caseKey: a.caseKey || "", eInvoice: a.eInvoice || 0, eAlias: a.eAlias || "" }]));
+  // 2.4.5 göç (v33): her carinin kartı — hareketler (yeni alanlar hariç birebir), defter satırları, toplamlar; yeni alanlar (Vade Tarihi, Beklenen Ödeme
+  // Tarihi, Kalan) ayrı: dolu sayısı ve Kalan'ın 0 ≤ Kalan ≤ tutar sınırı. entryDetail: false → okunmaz (hızlı ölçüm).
+  if (entryDetail) {
+    out.accountCards = {};
+    const fields = { dueDate: 0, expectedDate: 0, remaining: 0, remainingOutOfRange: [], entries: 0 };
+    for (const a of accounts) {
+      const card = await soft(api.get(`/api/workspace/accounts/${a.id}`));
+      if (card.__status) {
+        out.accountCards[a.id] = card;
+        continue;
+      }
+      const entries = (card.entries || []).map(e => without(e, ENTRY_NEW_FIELDS));
+      for (const e of card.entries || []) {
+        fields.entries += 1;
+        if (e.dueDate) fields.dueDate += 1;
+        if (e.expectedDate) fields.expectedDate += 1;
+        if (e.remaining !== undefined) {
+          fields.remaining += 1;
+          if (!(cents(e.remaining) >= 0 && cents(e.remaining) <= cents(e.amount))) fields.remainingOutOfRange.push([a.id, e.id, e.amount, e.remaining]);
+        }
+      }
+      out.accountCards[a.id] = { totals: Object.fromEntries(Object.entries(card.totals || {}).map(([k, v]) => [k, typeof v === "number" ? cents(v) : v])), entries: digest(entries), entryCount: entries.length, ledger: digest((card.ledger || []).map(line => without(line, ENTRY_NEW_FIELDS))) };
+    }
+    fields.remainingOutOfRange = fields.remainingOutOfRange.slice(0, 20);
+    out.entryNewFields = fields;
+  }
   // Defter
   const ledger = await must("Ana Defter", api.get("/api/workspace/ledger"));
   out.trial = Object.fromEntries(ledger.trial.accounts.map(row => [String(row.code), { name: row.name, debit: cents(row.debit), credit: cents(row.credit), balance: cents(row.balance) }]));
@@ -129,6 +161,20 @@ export async function companyFacts(api, { reportsFrom = "2000-01-01", reportsTo 
   const trash = await soft(api.get("/api/admin/trash"));
   const trashItems = trash.__status ? null : Array.isArray(trash) ? trash : trash.items || [];
   out.trash = trashItems ? { count: trashItems.length, byKind: trashItems.reduce((m, t) => ({ ...m, [t.kind]: (m[t.kind] || 0) + 1 }), {}), invoices: trashItems.filter(t => t.kind === "invoice").map(t => ({ id: t.id, title: t.title, restorable: t.restorable ?? null })).sort((a, b) => a.id.localeCompare(b.id)) } : trash;
+  // 2.4.5 madde 4 (uyarı kapısı): Anlık Durum'un Nakit Akış Projeksiyonu ve Vade Takip ekranları (varsayılan süzgeç, kullanıcının açtığı gibi) — satırlar
+  // kaynak türüyle (yürüyen bakiye ayrı; satır çıkınca kayar), dökümler ve toplamlar. Satır üst sınırı (5.000) aşılırsa satır listesi karşılaştırılmaz.
+  const flowRow = row => [row.date, row.source, row.label || "", row.party || "", row.direction, cents(row.amount), row.detail || ""];
+  const projection = await soft(api.get("/api/workspace/overview/nakit-akisi"));
+  out.projection = projection.__status ? projection : { from: projection.from, to: projection.to, withTable: projection.withTable ?? null, start: projection.start, totals: projection.totals, rowTotal: projection.rowTotal, rows: projection.rowTotal <= 5000 ? (projection.rows || []).map(flowRow) : null, overdue: (projection.overdue || []).map(flowRow), closing: projection.rows?.length ? cents(projection.rows.at(-1).balance) : null };
+  // Tablosuz projeksiyon (2.4.4'te "Tablo" seçeneği kapalı, ?table=0; 2.4.5'te seçenek yok, parametre etkisiz): madde 4'ün kuralı = 2.4.5'in projeksiyonu bu.
+  const projectionNoTable = await soft(api.get("/api/workspace/overview/nakit-akisi?table=0"));
+  out.projectionNoTable = projectionNoTable.__status ? projectionNoTable : { totals: projectionNoTable.totals, rowTotal: projectionNoTable.rowTotal, rows: projectionNoTable.rowTotal <= 5000 ? (projectionNoTable.rows || []).map(flowRow) : null, overdue: (projectionNoTable.overdue || []).map(flowRow), closing: projectionNoTable.rows?.length ? cents(projectionNoTable.rows.at(-1).balance) : null };
+  const trackOf = track => (track.__status ? track : { preset: track.preset, sources: track.sources, allowed: track.allowed, totals: track.totals, rowTotal: track.rowTotal, rows: track.rowTotal <= 5000 ? (track.rows || []).map(row => [...flowRow(row), row.state]) : null, dormant: (track.dormant || []).length, doubtful: track.doubtful });
+  const track = await soft(api.get("/api/workspace/overview/vade-takip"));
+  out.dueTrack = trackOf(track);
+  // Kaynak başına (Vade Takip'in kendi Kaynak süzgeci, ?sources=): satır üst sınırına takılmadan kaynak kaynak karşılaştırma.
+  out.dueTrackBySource = {};
+  for (const source of track.__status ? [] : track.allowed || []) out.dueTrackBySource[source] = trackOf(await soft(api.get(`/api/workspace/overview/vade-takip?sources=${encodeURIComponent(source)}`)));
   const dues = await soft(api.get("/api/workspace/dues"));
   out.dues = dues.__status ? dues : dues;
   const vat = await soft(api.get("/api/workspace/tax/vat-offset"));
@@ -171,7 +217,10 @@ export function fileFacts(file) {
           return null;
         }
       };
-      return { version: db.prepare("PRAGMA user_version").get().user_version, integrity: db.prepare("PRAGMA integrity_check").get().integrity_check, tables, counts, numberFloor: setting("invoice.numberFloor"), lockedUntil: setting("ledger.lockedUntil") };
+      // 2.4.5 v33 (K6.4): account_entries'in kolonları ve yeni iki kolonun dolu satır sayısı (eski satırlar boş kalmalı).
+      const entryColumns = tables.includes("account_entries") ? db.prepare("PRAGMA table_info(account_entries)").all().map(row => row.name) : [];
+      const filled = column => (entryColumns.includes(column) ? db.prepare(`SELECT COUNT(*) AS n FROM account_entries WHERE ${column} <> ''`).get().n : null);
+      return { version: db.prepare("PRAGMA user_version").get().user_version, integrity: db.prepare("PRAGMA integrity_check").get().integrity_check, tables, counts, numberFloor: setting("invoice.numberFloor"), lockedUntil: setting("ledger.lockedUntil"), entryColumns, entryDatesFilled: { due_date: filled("due_date"), expected_date: filled("expected_date") } };
     } finally {
       db.close();
     }

@@ -1,0 +1,32 @@
+{
+  "ad": "245-son-ekler/birim-surum-kilavuz",
+  "komut": "node --test test/kilavuz-surum.test.mjs test/banka-220-kredi-karti-metin.test.mjs test/banka-bakiye-ileri-tarihli.test.mjs test/disa-aktarim-dugmeleri.test.mjs test/kanit-araci.test.mjs test/updater.test.mjs test/yazim-duzeni.test.mjs test/packaging.test.mjs test/static.test.mjs test/guncelleme-hazir.test.mjs test/ci-kapi-listesi.test.mjs test/yedek-denetim-221.test.mjs test/platform-tasinabilirlik.test.mjs",
+  "commit": "201ffef9a010d68d735b1e3aaa678144a8e84c3d",
+  "dal": "is/son-ekler",
+  "kirli": 10,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T19:44:18.922Z",
+  "sure_sn": 65.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 131,
+    "gecen": 131,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-son-ekler/birim-surum-kilavuz.log",
+  "klasor": "/home/user/wt/son-ekler",
+  "ham_cikti_sha256": "0b1c96d48a7624efc208484abcf8dbfb5b687a4b9b65e5595cf4f6b2884c2e27",
+  "ham_cikti_bayt": 42927
+}

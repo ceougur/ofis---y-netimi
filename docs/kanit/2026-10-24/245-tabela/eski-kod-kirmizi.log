@@ -1,0 +1,182 @@
+TAP version 13
+# (node:27726) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.5 madde 6c: Tabela Adı ve Rapor ve Ekstre Başlığı
+    # Subtest: Tabela Adı boşken başlık bugünkü gibi: PDF'te unvan, Finans Excel'inde ön satır yok, Rapor Merkezi'nde "001 · Unvan"
+    ok 1 - Tabela Adı boşken başlık bugünkü gibi: PDF'te unvan, Finans Excel'inde ön satır yok, Rapor Merkezi'nde "001 · Unvan"
+      ---
+      duration_ms: 144.354526
+      type: 'test'
+      ...
+    # Subtest: Yalnız Tabela Adı: bütün rapor / ekstre PDF + Excel başlığı Tabela Adı; unvan başlıkta yok; kaydedilip yeniden okununca dolu
+    not ok 2 - Yalnız Tabela Adı: bütün rapor / ekstre PDF + Excel başlığı Tabela Adı; unvan başlıkta yok; kaydedilip yeniden okununca dolu
+      ---
+      duration_ms: 8.374569
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-tabela/eski-d2cef7c/test/tabela-adi-245.test.mjs:108:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kayıtlı ayar yok: boş + Yalnız Tabela Adı
+        + actual - expected
+        
+        + undefined
+        - {
+        -   mode: 'sign',
+        -   signName: ''
+        - }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        signName: ''
+        mode: 'sign'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-tabela/eski-d2cef7c/test/tabela-adi-245.test.mjs:110:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Tabela Adı ve Firma Bilgileri: Tabela Adı + unvan + VKN · Vergi Dairesi + adres; Özet sayfasında da
+    not ok 3 - Tabela Adı ve Firma Bilgileri: Tabela Adı + unvan + VKN · Vergi Dairesi + adres; Özet sayfasında da
+      ---
+      duration_ms: 97.548081
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-tabela/eski-d2cef7c/test/tabela-adi-245.test.mjs:128:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        cari PDF başlığı: Merkez Ofis | Cari Ekstre · Ayşe Demir | Cari No 1 · Müşteri | Oluşturma: 24.10.2026 16:50 | Hazırlayan: Ofis yöneticisi | Borç Toplamı | 3.100,00 TL | Alacak Toplamı | 400,00 TL | Bakiye | 2.700,00 TL borçlu | Taksitlerden Kalan (bakiyeye
+        + actual - expected
+        
+          [
+        +   'Merkez Ofis',
+        +   'Cari Ekstre · Ayşe Demir',
+        +   'Cari No 1 · Müşteri',
+        +   'Oluşturma: 24.10.2026 16:50'
+        -   'Yıldız Market',
+        -   'Yıldız Gıda Ticaret Ltd. Şti.',
+        -   'VKN: 4840847211 · Vergi Dairesi: Kadıköy',
+        -   'Bağdat Cad. No 5 Kadıköy / İstanbul'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Yıldız Market'
+        1: 'Yıldız Gıda Ticaret Ltd. Şti.'
+        2: 'VKN: 4840847211 · Vergi Dairesi: Kadıköy'
+        3: 'Bağdat Cad. No 5 Kadıköy / İstanbul'
+      actual:
+        0: 'Merkez Ofis'
+        1: 'Cari Ekstre · Ayşe Demir'
+        2: 'Cari No 1 · Müşteri'
+        3: 'Oluşturma: 24.10.2026 16:50'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-tabela/eski-d2cef7c/test/tabela-adi-245.test.mjs:132:156)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: YASAL BELGE DEĞİŞMEZ: fatura PDF'i ve makbuz tabela açıkken de unvanla; Tabela Adı basılmaz
+    not ok 4 - YASAL BELGE DEĞİŞMEZ: fatura PDF'i ve makbuz tabela açıkken de unvanla; Tabela Adı basılmaz
+      ---
+      duration_ms: 89.912639
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-tabela/eski-d2cef7c/test/tabela-adi-245.test.mjs:140:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ön koşul: tabela açık (rapor başlığında görünüyor)
+        + actual - expected
+        
+        + 'Merkez Ofis'
+        - 'Yıldız Market'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Yıldız Market'
+      actual: 'Merkez Ofis'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-tabela/eski-d2cef7c/test/tabela-adi-245.test.mjs:143:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kısmi kayıt (reportHeader yok) ayarı silmez; geçersiz seçim ve uzun ad 400 (ayar değişmez); yetkisiz kişi 403
+    not ok 5 - kısmi kayıt (reportHeader yok) ayarı silmez; geçersiz seçim ve uzun ad 400 (ayar değişmez); yetkisiz kişi 403
+      ---
+      duration_ms: 8.651568
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-tabela/eski-d2cef7c/test/tabela-adi-245.test.mjs:150:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + undefined
+        - {
+        -   mode: 'full',
+        -   signName: 'Yıldız Market'
+        - }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        signName: 'Yıldız Market'
+        mode: 'full'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-tabela/eski-d2cef7c/test/tabela-adi-245.test.mjs:152:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iki şirket ayrı ayar: 002'nin Tabela Adı 001'in raporuna sızmaz; boşaltınca 001 bugünkü başlığa döner
+    not ok 6 - iki şirket ayrı ayar: 002'nin Tabela Adı 001'in raporuna sızmaz; boşaltınca 001 bugünkü başlığa döner
+      ---
+      duration_ms: 152.249339
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-tabela/eski-d2cef7c/test/tabela-adi-245.test.mjs:163:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeni şirket ayarı boş başlar
+        + actual - expected
+        
+        + undefined
+        - {
+        -   mode: 'sign',
+        -   signName: ''
+        - }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        signName: ''
+        mode: 'sign'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-tabela/eski-d2cef7c/test/tabela-adi-245.test.mjs:166:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 1 - 2.4.5 madde 6c: Tabela Adı ve Rapor ve Ekstre Başlığı
+  ---
+  duration_ms: 1105.994149
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-tabela/eski-d2cef7c/test/tabela-adi-245.test.mjs:40:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 1
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1451.113198

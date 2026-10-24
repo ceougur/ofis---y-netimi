@@ -3,6 +3,7 @@
 // İş akışı (CLAUDE.md): boş veri; yükle → ön izle → aktar; Kasa değişmez; cari bakiyesi = Excel'deki kalan; takvimde çift
 // kalem yok; kayıt tahsilatı karta taşınır; tekrar aktarım çift kart açmaz; bağsız kart bağlanır; aynı adlı iki kişi;
 // yetkisiz kullanıcı; ön izlemeden sonra değişen tablo; geri alma; açılış kaydının makbuzu/silinmesi/geri yüklenmesi.
+// 2.4.5 madde 4 (uyarı kapısı): bu dosya tablo takvim motorunu zil / Tahsilat Takvimi / Vade Takip / Projeksiyon uçlarından sınar → 2.4.4 davranışı (legacyTableDues, yalnız testler).
 import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
 import { computeDues } from "../server/lib/insight/dues.mjs";
@@ -185,7 +186,7 @@ describe("tablodan taksit kartına aktarma (iş akışı)", () => {
   const preview = async (query = "") => (await get(`/api/workspace/plans/from-table${query}`)).data;
 
   before(async () => {
-    server = await startTestServer();
+    server = await startTestServer({ legacyTableDues: true });
     admin = await loginAdmin(server);
     staff = await createUser(server, admin, { username: "vezne", name: "Vezne", role: "personel" });
   });
@@ -431,7 +432,7 @@ describe("Taksitler → Excel/Sheets'ten yükle (v2.0.8): gerçek vadeler, Öden
   };
   const dmy = value => value.split("-").reverse().join(".");
   before(async () => {
-    server = await startTestServer();
+    server = await startTestServer({ legacyTableDues: true });
     admin = await loginAdmin(server);
   });
   after(() => server.close());

@@ -1,0 +1,32 @@
+{
+  "ad": "245-son-ekler/birim-istemci-komsu",
+  "komut": "node --test test/banka-210-arayuz.test.mjs test/banka-210-nakit-akis-k10.test.mjs test/kapi-para-245.test.mjs test/nakit-akis-ileri-tarihli-yol.test.mjs test/personel-ozluk-244.test.mjs test/takvim-pil-kaynak.test.mjs test/uiux-244-ux9.test.mjs test/vade-takip-kaynak-yetki-210.test.mjs test/yetki-gorunurluk.test.mjs",
+  "commit": "201ffef9a010d68d735b1e3aaa678144a8e84c3d",
+  "dal": "is/son-ekler",
+  "kirli": 10,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T19:45:43.735Z",
+  "sure_sn": 10,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 85,
+    "gecen": 85,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-son-ekler/birim-istemci-komsu.log",
+  "klasor": "/home/user/wt/son-ekler",
+  "ham_cikti_sha256": "1191c884af55da964c8ab5f830e87ec3406dfdf3397b9a0553f1b7cd434daee5",
+  "ham_cikti_bayt": 33134
+}

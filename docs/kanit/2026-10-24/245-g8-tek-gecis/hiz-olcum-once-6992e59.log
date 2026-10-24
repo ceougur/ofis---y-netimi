@@ -1,0 +1,19 @@
+[21:03:02] A tur 1: soğuk 1069.5 ms · sıcak 67.1 · değişmedi 12.3 · tahsilattan sonra ilk 971.4 (en çok 1162.3) · ikinci 67.8 · 7205 kalem {"invoice":7205} · 2744 KB
+[21:03:18] B tur 1: soğuk 1329.2 ms · sıcak 85.9 · değişmedi 21.3 · tahsilattan sonra ilk 1334.3 (en çok 1399) · ikinci 90.8 · 8846 kalem {"invoice":7205,"account":1641} · 3645 KB
+[21:03:30] C tur 1: soğuk 1130.1 ms · sıcak 72.9 · değişmedi 19.6 · tahsilattan sonra ilk 914.1 (en çok 1023) · ikinci 72.3 · 7205 kalem {"invoice":7205} · 2744 KB
+[21:03:42] A tur 2: soğuk 939.5 ms · sıcak 62.3 · değişmedi 13 · tahsilattan sonra ilk 904.6 (en çok 946.4) · ikinci 66.6 · 7205 kalem {"invoice":7205} · 2744 KB
+[21:03:58] B tur 2: soğuk 1269.3 ms · sıcak 86 · değişmedi 21.5 · tahsilattan sonra ilk 1365 (en çok 1520.4) · ikinci 90.9 · 8846 kalem {"invoice":7205,"account":1641} · 3645 KB
+[21:04:11] C tur 2: soğuk 1106.7 ms · sıcak 71.1 · değişmedi 29.5 · tahsilattan sonra ilk 931.5 (en çok 1009.6) · ikinci 73 · 7205 kalem {"invoice":7205} · 2744 KB
+[21:04:23] A tur 3: soğuk 1046 ms · sıcak 63.7 · değişmedi 12.9 · tahsilattan sonra ilk 923.2 (en çok 1188.3) · ikinci 66.2 · 7205 kalem {"invoice":7205} · 2744 KB
+[21:04:39] B tur 3: soğuk 1393.9 ms · sıcak 93.3 · değişmedi 20.5 · tahsilattan sonra ilk 1343.3 (en çok 1410.8) · ikinci 107.6 · 8846 kalem {"invoice":7205,"account":1641} · 3645 KB
+[21:04:52] C tur 3: soğuk 913.6 ms · sıcak 71.4 · değişmedi 20.1 · tahsilattan sonra ilk 934.6 (en çok 1165.9) · ikinci 75.3 · 7205 kalem {"invoice":7205} · 2744 KB
+[21:04:52] ÖZET A (2.4.4 (v2.4.4), vadeli veri (kolonları görmez)): soğuk 1046 · sıcak 63.7 · değişmedi 12.9 · tahsilattan sonra ilk 923.2 (en çok 1162.3) · ikinci 66.6 ms · 7205 kalem
+[21:04:52] ÖZET B (2.4.5 adayı, vadeli veri): soğuk 1329.2 · sıcak 86 · değişmedi 21.3 · tahsilattan sonra ilk 1343.3 (en çok 1410.8) · ikinci 90.9 ms · 8846 kalem
+[21:04:52] ÖZET C (2.4.5 adayı, aynı veri, Vade / Beklenen boş): soğuk 1106.7 · sıcak 71.4 · değişmedi 20.1 · tahsilattan sonra ilk 931.5 (en çok 1023) · ikinci 73 ms · 7205 kalem
+# 9 ölçüm turu (değişken × tekrar); süreler ölçüm, eşik denetimi değil
+# tests 9
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

@@ -71,7 +71,11 @@ jobs:
       - run: npm run test:senaryo-personel-244
       - run: npm run test:senaryo-portal-244
       - run: npm run test:senaryo-kayit-tahsilat-244
+      - run: npm run test:senaryo-cari-vade-245
       - run: npm run test:senaryo-kayit-bag-31e
+      - run: npm run test:senaryo-pil-karti-245
+      - run: npm run test:senaryo-serit-sira-245
+      - run: npm run test:senaryo-ekstre-ayrinti-245
       - run: npm run test:senaryo-netten-brute-244
       - run: npm run test:senaryo-ux18-244
       - run: npm run test:senaryo-banka-rapor-243

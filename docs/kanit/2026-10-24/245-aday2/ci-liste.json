@@ -1,0 +1,32 @@
+{
+  "ad": "245-aday2/ci-liste",
+  "komut": "node --test test/ci-kapi-listesi.test.mjs test/kanit-araci.test.mjs test/yazim-duzeni.test.mjs test/platform-tasinabilirlik.test.mjs",
+  "commit": "df6654d2d0086fe027fb1293bc4b9ede0d3a8191",
+  "dal": "aday245-2",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T20:29:58.727Z",
+  "sure_sn": 2.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 64,
+    "gecen": 64,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-aday2/ci-liste.log",
+  "klasor": "/home/user/wt/aday245-2",
+  "ham_cikti_sha256": "03009f126d68fc3f3a7a2dd8188c0173c387a1791b04baf9dd7b57594e51e3c3",
+  "ham_cikti_bayt": 18965
+}

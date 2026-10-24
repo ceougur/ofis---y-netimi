@@ -1,0 +1,38 @@
+{
+  "ad": "245-s211-yaris/eski-d2cef7c-zorla-400",
+  "komut": "flock /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kos.lock bash -c cd /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-s211-yaris/eski-d2cef7c && node test/e2e/senaryo-211-yaris-zorla.mjs --gecikme 400",
+  "commit": "d2cef7ce21b0776e2767f8fb610c9be8a4159f5d",
+  "dal": "is/s211-yaris",
+  "kirli": 3,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T18:32:13.179Z",
+  "sure_sn": 94.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 56,
+    "gecen": 55,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "küçük harfle başlayan ad kaldı: ana ekran: “Kaynağı değiştir” ; ana ekran: “Sheet'te aç”",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-24/245-s211-yaris/eski-d2cef7c-zorla-400.log",
+  "klasor": "/home/user/wt/s211-yaris",
+  "ham_cikti_sha256": "ae8f5cf1447d0c8486a6419a21d217f07fd7496f2afa87de0b4304ecf1fe9b39",
+  "ham_cikti_bayt": 7807
+}

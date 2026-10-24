@@ -1,0 +1,27 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "c1-kayit-tahsilat-kapisi",
+ "aciklama": "2.4.5 madde 1 (K1): anahtar AÇIK sunucuda iki eski kayıt tahsilatı girilir; program anahtar KAPALI yeniden açılır → yeni giriş (POST) ve düzeltme (PUT /payments/:id) 410 case-payments-closed + ileti, PUT /cases/:key/payments ret; Kasa, defter (B 100 / A 602) ve Tablodaki Kişiler değişmez; eski tahsilatın silinmesi ve Silinenler'den geri yüklenmesi AÇIK (Kasa ve A 602 buna göre).",
+ "dayanak": "KARARLAR.md C1 (K1 BAŞ MİMAR; KULLANICI KARAR ~21:35 UTC (1) 'kayıt tahsilatı yeni giriş/düzeltme kapalı, silme/geri yükleme açık'; madde 1 'eski satırlar Kasa'da ve defterde (A 602) aynen')",
+ "bugun": "2026-06-15",
+ "anahtar": {"legacyCasePayments": true},
+ "adimlar": [
+  {"id": "t", "islem": "tablo_yukle", "sekmeler": [{"ad": "İcra", "tur": "icra", "kayitlar": [
+   {"no": "2026/1", "isim": "Kemal Kaya", "alacak": "5000", "kalan": "5000"},
+   {"no": "2026/2", "isim": "Leyla Ak", "alacak": "3000", "kalan": "3000"}]}]},
+  {"id": "p1", "islem": "kayit_tahsilat", "kayit": "2026/1", "tutar": "700", "tarih": "2026-06-12"},
+  {"id": "p2", "islem": "kayit_tahsilat", "kayit": "2026/2", "tutar": "200", "tarih": "2026-06-13"},
+  {"id": "k1", "islem": "kontrol"},
+  {"id": "r1", "islem": "sunucu_yeniden", "anahtar": {}},
+  {"id": "p3", "islem": "kayit_tahsilat", "kayit": "2026/1", "tutar": "300", "tarih": "2026-06-14"},
+  {"id": "p4", "islem": "kayit_tahsilat_duzenle", "odeme": "p1", "tutar": "900", "tarih": "2026-06-12"},
+  {"id": "p5", "islem": "kayit_tahsilat_put", "kayit": "2026/1", "tutar": "100", "tarih": "2026-06-14"},
+  {"id": "k2", "islem": "kontrol"},
+  {"id": "p6", "islem": "kayit_tahsilat_sil", "odeme": "p1"},
+  {"id": "k3", "islem": "kontrol"},
+  {"id": "p7", "islem": "kayit_tahsilat_geri_yukle", "odeme": "p1"},
+  {"id": "k4", "islem": "kontrol"},
+  {"id": "p8", "islem": "kayit_tahsilat_sil", "odeme": "p2"},
+  {"id": "k5", "islem": "kontrol"}
+ ]
+}

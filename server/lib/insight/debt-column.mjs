@@ -77,7 +77,7 @@ export const isPersonAttributeHeader = column => {
   const folded = foldText(column);
   return PERSON_ATTRIBUTE_HEADER.test(folded) && !AMOUNT_WORD.test(folded);
 };
-const IDENTIFIER_HEADER = /\b(no|numara\w*|kod|kodu|tel|telefon\w*|gsm|cep|tc|tckn|vkn|kimlik|iban)\b/;
+export const IDENTIFIER_HEADER = /\b(no|numara\w*|kod|kodu|tel|telefon\w*|gsm|cep|tc|tckn|vkn|kimlik|iban)\b/;
 export const NOT_AMOUNT_ROLES = new Set(["phone", "tckn", "vkn", "iban", "id", "date", "person", "org", "email", "address", "url"]);
 
 /** Tutar kolonu adayları (kolon analizinden; iki yol aynı kümeyi kullanır): tutar rolü, ya da kalem tutarı başlıklı sayı; gün / adet / oran ve yalın söz kolonu değil. */

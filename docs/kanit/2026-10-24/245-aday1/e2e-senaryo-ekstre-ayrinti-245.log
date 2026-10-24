@@ -1,0 +1,30 @@
+
+> destekofis@2.4.4 test:senaryo-ekstre-ayrinti-245
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-ekstre-ayrinti-245.mjs
+
+1) Cari kartı → Ayrıntılı Ekstre
+  ✓ cari kartında "Ayrıntılı Ekstre" düğmesi
+  ✓ başlık: Ayrıntılı Cari Ekstre · Deniz Yapı Ltd.
+  ✓ seçenek işaretli (Fatura Kalemlerini Göster)
+  ✓ cari seçili (Deniz Yapı Ltd.)
+  ✓ kolonlar: Tarih | Belge No | İşlem | Yol | Açıklama / Ürün - Hizmet | Miktar | Birim | Birim Fiyat | İsk. % | KDV'siz Tutar | KDV % | Toplam | Borç | Alacak | Bakiye
+  ✓ kalem satırı girintili (› Montaj Hizmeti, Saat, %5)
+  ✓ genel iskonto satırı
+  ✓ kalem satırı ekranda girintili (padding-left 22px)
+  ✓ FIS2026000000001: kalem toplamı 483903 = borç 483903
+  ✓ FIS2026000000002: kalem toplamı 200000 = borç 200000
+  ✓ iki fatura satırı (2)
+  ✓ tahsilat: Yol Nakit + Belge No makbuz
+  ✓ TOPLAM satırları: DÖNEM TOPLAMI, GENEL TOPLAM
+2) Ekrandaki PDF ve Excel bağlantıları: aynı satırlar, aynı Genel Toplam
+  ✓ Excel satırı 12 = ekran 10 + TOPLAM 2
+  ✓ Excel Genel Toplam borç/alacak = ekran (7339.03 / 1500)
+  ✓ PDF: başlık, kalem, Genel Toplam tutarı
+3) İşaret kaldırılınca bugünkü ekstre
+  ✓ kolonlar: Tarih | İşlem | Açıklama | Borç | Alacak | Bakiye
+  ✓ kalem satırı yok
+4) Finans Raporları yetkisi olmayan: kartta düğme yok
+  ✓ personelin cari kartında Ayrıntılı Ekstre yok
+  ✓ sayfa hatası yok
+
+20 geçti, 0 kaldı
