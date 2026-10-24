@@ -1,0 +1,56 @@
+
+■ S0 tabloda başka bir kayıt seçili (Ali Veli, carisi No 1)
+  ✓ seçili kayıt 2026/1101
+  ✓ şeritte satış faturası pili (FIS2026000000001)
+
+■ S1 satış faturası pili: Tahsilat Gir + Fatura Kartını Aç; Ödendi Say yok
+  ✗ kart düğmeleri: [Tahsilat Gir, Ödendi Say]
+  ✗ Ödendi Say yok (fatura para kaydıyla kapanır)
+  ✗ kartın alt düğmesi: “Kayda Git →” (beklenen “Fatura Kartını Aç →”, “Kayda Git” değil)
+
+■ S2 Fatura Kartını Aç → o faturanın kartı; "bulunamadı" yok, seçili kayıt yerinde
+  ✗ fatura kartı açıldı: FIS2026000000001
+  ✓ "Kayıt tabloda bulunamadı" yok (“Yönetici parolanızı unutursanız programa kurtarma anahtarıyla girersiniz. Henüz oluşturmadınız.Oluştur×”)
+  ✓ seçili kayıt değişmedi
+
+■ S3 Tahsilat Gir → faturanın kendi formu; para faturanın carisine (No 2), faturaya bağlı; seçili kaydın carisine (No 1) yazılmaz
+  ✗ faturanın formu: “Tahsilat” · “No 5 · Ali Veli · 0532 111 11 11” (seçili kaydın carisinin formu değil)
+  ✓ açık tutar hazır: 1.200,00
+  ✗ adım yarıda kaldı: yanlış form açıldı; kaydedilmedi
+
+■ S3b bayat pil (fatura bu arada kapandı): Tahsilat Gir kartı açar, form AÇILMAZ, nedeni söylenir
+  ✗ adım yarıda kaldı: page.evaluate: TypeError: window.HOF.invoices.payDoc is not a function
+
+■ S4 alış faturası pili: Ödeme Gir → Ödeme Yap formu; ödeme tedarikçiye, faturaya bağlı
+  ✗ kart: [Tahsilat Gir, Ödendi Say] · “Kayda Git →”
+  ✗ alış faturasının formu: “Tahsilat” · “No 5 · Ali Veli · 0532 111 11 11” · 600,00
+  ✗ adım yarıda kaldı: yanlış form açıldı; kaydedilmedi
+
+■ S5 planlı banka pili: tahsilat / Ödendi Say yok; Planlı İşlemleri Aç → Planlı İşlemler
+  ✗ kartta tahsilat / Ödendi Say yok: [Tahsilat Gir, Ödendi Say]
+  ✗ alt düğme: “Kayda Git →”
+  ✗ Banka → Hareketler → Planlı İşlemler açıldı, plan listede
+
+■ S6 zil: fatura satırı Tahsilat Gir + Fatura Kartını Aç; planlı banka satırı Planlı İşlemleri Aç; aynı yoldan kayıt
+  ✗ zilde fatura satırı: [Tahsilat Gir] (Kayda Git / Gerçekleştirildi yok)
+  ✗ zilde planlı banka satırı: [Planlı İşlemler] (Tahsilat Gir yok)
+  ✗ zilde Fatura Kartını Aç yok
+  ✗ zilden faturanın formu: “Tahsilat” · “No 5 · Ali Veli · 0532 111 11 11” · 800,00
+  ✗ adım yarıda kaldı: yanlış form açıldı; kaydedilmedi
+
+■ S7 sağ alt bildirim: fatura bildiriminde Tahsilat Gir + Fatura Kartını Aç (Kayda Git yok)
+  ✓ bildirim listesinde fatura kalemi
+  ✓ fatura bildirimi sağ altta
+  ✗ bildirim düğmeleri: [Tahsilat Gir]
+
+■ S8 Anlık Durum → Vade Takip: fatura satırı Fatura Kartını, planlı banka satırı Planlı İşlemler'i açar
+  ✓ Vade Takip'te fatura satırı (FIS2026000000003)
+  ✗ satır tıklanınca fatura kartı açıldı
+  ✗ Vade Takip'te planlı banka satırı
+  ✗ satır tıklanınca Planlı İşlemler açıldı
+
+■ S9 madde 3: tablo kaleminin Tahsilat Gir'i tutarsız (kişi ve not dolu); Ödendi Say yalnız due| kaleminde
+  ✗ adım yarıda kaldı: page.evaluate: TypeError: window.HOF.dues.actions is not a function
+  ✓ sayfa hatası yok ()
+
+9 geçti, 23 kaldı

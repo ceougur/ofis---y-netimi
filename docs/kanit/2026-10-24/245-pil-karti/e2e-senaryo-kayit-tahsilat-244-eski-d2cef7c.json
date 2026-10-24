@@ -1,0 +1,73 @@
+{
+  "ad": "245-pil-karti/e2e-senaryo-kayit-tahsilat-244-eski-d2cef7c",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-pil-karti/eski-d2cef7c/test/e2e/senaryo-kayit-tahsilat-244.mjs",
+  "commit": "26d9d795804c65fa4b871689e043d3c38b8d35ba",
+  "dal": "is/pil-karti",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:31:50.934Z",
+  "sure_sn": 21,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 46,
+    "gecen": 38,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "tutar boş (2.4.5 madde 3; tablodaki 5.000 forma gelmez): “5.000,00”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "tahsilat formunda tutar boş (2.4.5 madde 3; pil 1.500,00): “1.500,00”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "tutar boş (2.4.5 madde 3): “7.500,00”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Açılış Bakiyesi boş (tablodaki Kalan 12.000 forma gelmez): “12.000,00”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "tablo kaynağı yazılmaz: “Kayıttaki “Kalan” kolonundan geldi; değiştirebilir ya da silebilirsiniz. Tablodan Aktar bu borcu ikinci kez yazmaz.”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "tahsilat formunda tutar boş: “12.000,00”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "carinin defteri: in:2000",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cari bakiyesi 12.000 − 2.000 = -2000",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-24/245-pil-karti/e2e-senaryo-kayit-tahsilat-244-eski-d2cef7c.log",
+  "klasor": "/home/user/wt/pil-karti",
+  "ham_cikti_sha256": "cc34d1515f464f9271b2677f8a9797e810177ed87581227693be2c40be55a2ed",
+  "ham_cikti_bayt": 4006
+}
