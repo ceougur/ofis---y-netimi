@@ -1,0 +1,158 @@
+{
+  "ad": "245-cari-vade/kahin-c6-c6b-birlesim",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs test/bagimsiz/cari/senaryolar/c6-cari-vade-fifo.json test/bagimsiz/cari/senaryolar/c6b-cari-vade-dogrulama.json --mutasyonsuz --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-cari-vade/kahin-cikti",
+  "commit": "494cd99ec18ebc6e59cfadb4c80ce8587f081ffe",
+  "dal": "HEAD",
+  "kirli": 23,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:30:12.438Z",
+  "sure_sn": 4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 982,
+    "gecen": 899,
+    "basarisiz": 83,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 83 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:nakit:kasaCikis: program 90000 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:nakit:kasaGiris: program 240000 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:vadeTakip:hareket:a1: program \"yok\" · kâhin {\"amount\":25000,\"date\":\"2026-06-14\",\"direction\":\"out\"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k10:vadeTakip:hareket:b4: program \"yok\" · kâhin {\"amount\":40000,\"date\":\"2026-06-19\",\"direction\":\"in\"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k10:vadeTakip:hareket:b5: program \"yok\" · kâhin {\"amount\":15000,\"date\":\"2026-06-17\",\"direction\":\"in\"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k11:nakit:kasaCikis: program 90000 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k11:nakit:kasaGiris: program 240000 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k11:vadeTakip:hareket:a1: program \"yok\" · kâhin {\"amount\":25000,\"date\":\"2026-06-14\",\"direction\":\"out\"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k11:vadeTakip:hareket:b2: program \"yok\" · kâhin {\"amount\":20000,\"date\":\"2026-06-16\",\"direction\":\"in\"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k11:vadeTakip:hareket:b4: program \"yok\" · kâhin {\"amount\":40000,\"date\":\"2026-06-19\",\"direction\":\"in\"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k11:vadeTakip:hareket:b5: program \"yok\" · kâhin {\"amount\":15000,\"date\":\"2026-06-17\",\"direction\":\"in\"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k12:nakit:kasaCikis: program 90000 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k12:nakit:kasaGiris: program 240000 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k12:vadeTakip:hareket:a1: program \"yok\" · kâhin {\"amount\":25000,\"date\":\"2026-06-14\",\"direction\":\"out\"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k12:vadeTakip:hareket:b2: program \"yok\" · kâhin {\"amount\":20000,\"date\":\"2026-06-16\",\"direction\":\"in\"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k12:vadeTakip:hareket:b4: program \"yok\" · kâhin {\"amount\":40000,\"date\":\"2026-06-19\",\"direction\":\"in\"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k12:vadeTakip:hareket:b5: program \"yok\" · kâhin {\"amount\":15000,\"date\":\"2026-06-17\",\"direction\":\"in\"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:nakit:kasaCikis: program 90000 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:nakit:kasaGiris: program 120000 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:vadeTakip:hareket:a1: program \"yok\" · kâhin {\"amount\":25000,\"date\":\"2026-06-14\",\"direction\":\"out\"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:vadeTakip:hareket:b1: program \"yok\" · kâhin {\"amount\":30000,\"date\":\"2026-06-18\",\"direction\":\"in\"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:vadeTakip:hareket:b2: program \"yok\" · kâhin {\"amount\":30000,\"date\":\"2026-06-20\",\"direction\":\"in\"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:vadeTakip:hareket:b5: program \"yok\" · kâhin {\"amount\":15000,\"date\":\"2026-06-17\",\"direction\":\"in\"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:nakit:kasaCikis: program 90000 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:nakit:kasaGiris: program 230000 · kâhin \"yok\" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/cari-vade/docs/kanit/2026-10-24/245-cari-vade/kahin-c6-c6b-birlesim.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-cari-vade/kahin-birlesim",
+  "ham_cikti_sha256": "d8b7f12a619417692249813cb5db1e1a9915643299aed2d72c518aba68a45451",
+  "ham_cikti_bayt": 14852
+}

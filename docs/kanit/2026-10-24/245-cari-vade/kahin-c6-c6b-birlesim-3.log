@@ -1,0 +1,40 @@
+c6-cari-vade-fifo: 873/897 tuttu
+  ✗ [BULGU BAŞ MİMAR] k10:nakit:kasaCikis: program 90000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k10:nakit:kasaGiris: program 240000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k11:nakit:kasaCikis: program 90000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k11:nakit:kasaGiris: program 240000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k12:nakit:kasaCikis: program 90000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k12:nakit:kasaGiris: program 240000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k1:nakit:kasaCikis: program 90000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k1:nakit:kasaGiris: program 120000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k2:nakit:kasaCikis: program 90000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k2:nakit:kasaGiris: program 230000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k3:nakit:kasaCikis: program 90000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k3:nakit:kasaGiris: program 110000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k4:nakit:kasaCikis: program 90000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k4:nakit:kasaGiris: program 230000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k5:nakit:kasaCikis: program 90000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k5:nakit:kasaGiris: program 230000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k6:nakit:kasaCikis: program 90000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k6:nakit:kasaGiris: program 230000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k7:nakit:kasaCikis: program 90000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k7:nakit:kasaGiris: program 230000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k8:nakit:kasaCikis: program 90000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k8:nakit:kasaGiris: program 240000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k9:nakit:kasaCikis: program 90000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k9:nakit:kasaGiris: program 240000 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+c6b-cari-vade-dogrulama: 81/85 tuttu
+  ✗ [BULGU BAŞ MİMAR] k1:nakit:kasaCikis: program 0 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k1:nakit:kasaGiris: program 0 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k2:nakit:kasaCikis: program 0 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  ✗ [BULGU BAŞ MİMAR] k2:nakit:kasaGiris: program 0 · kâhin "yok" (KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok)
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+ATLANAN (2.4.5 kararıyla geçersiz — --legacy ile koşar): 0
+
+ÖZET [2.4.5]: 2 senaryo, 982 denetim, 28 fark (BULGU 28), 0 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 okuma hatası, 0 yakalanmayan mutasyon, 0 atlanan senaryo. Ham çıktı: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-cari-vade/kahin-cikti
+954/982 denetim geçti

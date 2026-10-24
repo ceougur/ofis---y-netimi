@@ -344,7 +344,15 @@
       const stock = entry.source === "stock" ? '<small class="hof-muted" title="Stok hareketinden gelir; Stok’tan düzeltilir">stoktan</small>' : entry.source === "doubtful" ? '<small class="hof-muted" title="Değersiz alacak yazımından gelir; Şüpheli Alacak bölümündeki satırdan silinir">şüpheli alacaktan</small>' : entry.source === "cheque" ? (HOF.can("cheques.view") ? `<button type="button" class="hof-mini" data-open-cheque="${esc(entry.sourceId)}" title="Çek / senetten gelir; evrak kartından geri alınır" aria-label="Çek / senet kartını aç">↗</button>` : '<small class="hof-muted" title="Çek / senetten gelir; evrak kartından geri alınır">çek / senet</small>') : "";
       return `${receipt}${stock}${entry.editable ? `<button type="button" class="hof-mini" data-edit-entry="${esc(entry.id)}" title="Düzelt" aria-label="Düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete-entry="${esc(entry.id)}" title="Sil" aria-label="Sil">×</button>` : ""}`;
     };
-    const ledgerRow = line => `<tr class="is-${esc(line.kind)}"><td>${esc(HOF.formatDate(line.date))}</td><td><b>${esc(line.label)}${line.method ? ` <span class="hof-method-tag is-${esc(line.method)}">${esc(HOF.methodLabel(line.method, line.kind === "in" || line.kind === "out" ? line.kind : ""))}</span>` : ""}${line.receiptNo ? ` <span class="hof-plan-receipt">Makbuz ${esc(line.receiptNo)}</span>` : ""}${line.invoiceId && line.origin === "account" ? ` <a href="#" class="hof-plan-receipt" data-open-invoice="${esc(line.invoiceId)}" title="Bu kayıt seçilen faturayı kapatır">Faturaya Bağlı</a>` : ""}${line.doubtfulNormal ? ` <span class="hof-plan-receipt" data-doubtful-normal title="Şüpheli alacaktan düşmedi; normal cari hesaba (120) işlendi">Normal Cariye İşlendi</span>` : ""}</b>${line.note ? `<small>${esc(line.note)}</small>` : ""}</td><td class="num">${line.debit ? esc(money(line.debit)) : ""}</td><td class="num">${line.credit ? esc(money(line.credit)) : ""}</td><td class="num">${balanceHtml(line.balance)}</td><td class="hof-cash-actions">${lineActions(line)}</td></tr>`;
+    // 2.4.5 madde 6: vadeli / sözlü borç kaydında Vade, Beklenen Ödeme ve Kalan (fatura kapamasıyla aynı kuyruk; sade, satırın altında).
+    const dueNote = line => {
+      const entry = line.origin === "account" ? entryById.get(line.id) : null;
+      if (!entry || (!entry.dueDate && !entry.expectedDate)) return "";
+      const left = Number(entry.remaining);
+      const parts = [entry.dueDate ? `Vade ${HOF.formatDate(entry.dueDate)}` : "", entry.expectedDate ? `Beklenen Ödeme ${HOF.formatDate(entry.expectedDate)}` : "", Number.isFinite(left) ? (left > 0.004 ? `Kalan ${money(left)}` : "Kapandı") : ""].filter(Boolean);
+      return `<small class="hof-acc-due" data-entry-due="${esc(entry.id)}">${esc(parts.join(" · "))}</small>`;
+    };
+    const ledgerRow = line => `<tr class="is-${esc(line.kind)}"><td>${esc(HOF.formatDate(line.date))}</td><td><b>${esc(line.label)}${line.method ? ` <span class="hof-method-tag is-${esc(line.method)}">${esc(HOF.methodLabel(line.method, line.kind === "in" || line.kind === "out" ? line.kind : ""))}</span>` : ""}${line.receiptNo ? ` <span class="hof-plan-receipt">Makbuz ${esc(line.receiptNo)}</span>` : ""}${line.invoiceId && line.origin === "account" ? ` <a href="#" class="hof-plan-receipt" data-open-invoice="${esc(line.invoiceId)}" title="Bu kayıt seçilen faturayı kapatır">Faturaya Bağlı</a>` : ""}${line.doubtfulNormal ? ` <span class="hof-plan-receipt" data-doubtful-normal title="Şüpheli alacaktan düşmedi; normal cari hesaba (120) işlendi">Normal Cariye İşlendi</span>` : ""}</b>${line.note ? `<small>${esc(line.note)}</small>` : ""}${dueNote(line)}</td><td class="num">${line.debit ? esc(money(line.debit)) : ""}</td><td class="num">${line.credit ? esc(money(line.credit)) : ""}</td><td class="num">${balanceHtml(line.balance)}</td><td class="hof-cash-actions">${lineActions(line)}</td></tr>`;
     const planRow = plan => `<tr data-open-plan="${esc(plan.id)}" tabindex="0" class="is-${esc(plan.state)}"><td class="hof-plan-no">${esc(plan.refNo || "")}</td><td><b>${esc(plan.name)}</b><small>${plan.itemCount ? `${plan.itemCount} taksit` : "Taksit kurulmadı"}${plan.next ? ` · sıradaki ${esc(HOF.formatDate(plan.next.dueDate))}` : ""}</small></td><td class="num">${esc(money(plan.totals.total))}</td><td class="num hof-cash-in">${esc(money(plan.totals.paid))}</td><td class="num${plan.totals.remaining > 0 ? " hof-cash-out" : ""}">${esc(money(plan.totals.remaining))}</td><td>${plan.status === "closed" ? '<span class="hof-plan-badge is-muted">Kapalı</span>' : plan.state === "overdue" ? `<span class="hof-plan-badge is-late">${plan.totals.overdueCount} taksit gecikti</span>` : plan.state === "done" ? '<span class="hof-plan-badge is-done">Tamamlandı</span>' : '<span class="hof-plan-badge is-info">Devam Ediyor</span>'}</td></tr>`;
     const caseCell = account.caseKey
       ? account.caseSource && HOF.datasetKey && account.caseSource !== HOF.datasetKey
@@ -562,6 +570,26 @@
     { value: "debt", label: "Borçlu (cari bize borçlu)" },
     { value: "credit", label: "Alacaklı (biz cariye borçluyuz)" },
   ];
+  // 2.4.5 madde 6 (BAŞ MİMAR KARARI K6.1): elle Borç / Alacak ve Açılış Bakiyesi'nde isteğe bağlı Vade Tarihi ve Beklenen Ödeme Tarihi. Kalan > 0 iken
+  // kayıt Tahsilat Takvimi'nde, zilde ve Vade Takip'te görünür (Beklenen Ödeme Tarihi varsa o gün, "Ödeme Sözü"); tarih kaydın tarihinden önce olamaz.
+  const DUE_HELP = "İsteğe bağlı. Kalan tutar bu tarihte Tahsilat Takvimi'nde ve zilde görünür.";
+  const EXPECTED_HELP = "İsteğe bağlı (ödeme sözü). Girilirse hatırlatma bu güne kayar.";
+  const dueFields = ({ due = "dueDate", expected = "expectedDate", dueLabel = "Vade Tarihi", expectedLabel = "Beklenen Ödeme Tarihi", values = {} } = {}) => [
+    { name: due, label: dueLabel, type: "date", value: values.dueDate || "", help: DUE_HELP },
+    { name: expected, label: expectedLabel, type: "date", value: values.expectedDate || "", help: EXPECTED_HELP },
+  ];
+  // Vade alanlarının en erken günü kaydın tarihidir (sunucu da reddeder); tarih değişince sınır izler.
+  const wireDueMin = (dialog, dateName, names) => {
+    const date = dialog.querySelector(`input[name="${dateName}"]`);
+    const sync = () => {
+      for (const name of names) {
+        const node = dialog.querySelector(`input[name="${name}"]`);
+        if (node && date?.value) node.min = date.value;
+      }
+    };
+    date?.addEventListener("change", sync);
+    sync();
+  };
   // Aynı kişi uyarısı (v2.0.13): yeni caride aynı ad (ve telefon) varsa yazarken gösterilir, kaydederken sorulur.
   const sameDigits = (a, b) => String(a || "").replace(/\D/g, "").slice(-10) === String(b || "").replace(/\D/g, "").slice(-10);
   async function samePeople(name) {
@@ -778,6 +806,7 @@
   // açıklama ve kayıt bildirimi (fatura formundan "Cariyi Düzenle": cari kartının güncellendiği ve kesilmiş belgelerin değişmediği söylenir).
   async function editAccount(account, preset = null, options = {}) {
     const groups = await groupsNow();
+    const openingEntry = account?.openingEntryId ? (account.entries || []).find(entry => entry.id === account.openingEntryId) || null : null;
     const link = { caseKey: account?.caseKey || preset?.caseKey || "", caseSource: account?.caseSource || "", caseTitle: account?.caseTitle || preset?.caseTitle || "" };
     let fieldsBox = null;
     HOF.formModal({
@@ -807,13 +836,18 @@
                 ? { name: "openingBalance", label: "Açılış Bakiyesi (₺)", inputmode: "decimal", value: office().amountText?.(preset.openingBalance) || String(preset.openingBalance), help: `Kayıttaki “${preset.openingSource || "Kalan Borç"}” kolonundan geldi; değiştirebilir ya da silebilirsiniz. Tablodan Aktar bu borcu ikinci kez yazmaz.` }
                 : { name: "openingBalance", label: "Açılış Bakiyesi (₺)", inputmode: "decimal", placeholder: "Örn. 1.500", help: "Önceki defterden devreden bakiye. Boş bırakılabilir." },
               { name: "openingSide", label: "Bakiye Yönü", type: "select", value: "auto", options: OPENING_SIDES, help: "Tedarikçi listesindeki bakiye çoğunlukla bizim borcumuzdur (Alacaklı)." },
+              ...dueFields({ due: "openingDueDate", expected: "openingExpectedDate" }),
             ]),
+        // 2.4.5 madde 6: Düzenle'de açılış bakiyesi satırı varsa onun tarihleri (tutarı ve yönü Hareketler'deki satırın Düzelt'inden).
+        ...(openingEntry ? dueFields({ due: "openingDueDate", expected: "openingExpectedDate", dueLabel: "Açılış Bakiyesi Vade Tarihi", expectedLabel: "Açılış Bakiyesi Beklenen Ödeme Tarihi", values: openingEntry }) : []),
       ], options),
       submitLabel: account ? "Kaydet" : "Cariyi Aç",
       onOpen: dialog => {
         dialog.classList.add("hof-plan-form", "hof-acc-form");
         office().wireGroupFields?.(dialog, groups);
         wireTaxFields(dialog);
+        if (!account) wireDueMin(dialog, "registeredOn", ["openingDueDate", "openingExpectedDate"]);
+        else if (openingEntry) for (const name of ["openingDueDate", "openingExpectedDate"]) dialog.querySelector(`input[name="${name}"]`)?.setAttribute("min", openingEntry.date);
         // UX9: odak verilen zorunlu alan (ör. İl) formun aşağısında kalıyordu (odak kaydırmasız) — alan görünür yere getirilir.
         if (options.require?.length) requestAnimationFrame(() => dialog.querySelector("[autofocus]")?.closest(".hof-field")?.scrollIntoView({ block: "center" }));
         if (HOF.plans?.casePicker) {
@@ -928,7 +962,8 @@
           }
         }
         const payload = { ...taxPayload(data), name: data.name, type: data.type, refNo: data.refNo, registeredOn: data.registeredOn, phone: data.phone, email: data.email, address: data.address, note: data.note, fields: fieldsBox ? fieldsBox.read() : [], caseKey: data.caseKey || "", caseSource: data.caseSource || "", caseTitle: data.caseKey ? data.caseTitle : "", ...(office().groupBody ? office().groupBody(data) : {}) };
-        if (!account) Object.assign(payload, { openingBalance: data.openingBalance, openingSide: data.openingSide || "auto" });
+        if (!account) Object.assign(payload, { openingBalance: data.openingBalance, openingSide: data.openingSide || "auto", openingDueDate: data.openingDueDate || "", openingExpectedDate: data.openingExpectedDate || "" });
+        else if (openingEntry) Object.assign(payload, { openingDueDate: data.openingDueDate || "", openingExpectedDate: data.openingExpectedDate || "" });
         let result;
         try {
           // 2.4.3 (uzman UX1): düzenlemede formun açıldığı andaki sürüm (updatedAt) gider; arada başka biri kaydettiyse sunucu 409 account-stale
@@ -998,11 +1033,14 @@
         // v2.0.13: yanlış yönde yazılan borç/alacak düzeltilirken yön değiştirilebilir (açılış bakiyesi gibi).
         ...(entry && (type === "debt" || type === "credit") ? [{ name: "kind", label: "Yön", type: "select", value: type, options: [{ value: "debt", label: "Borç (cari bize borçlanır)" }, { value: "credit", label: "Alacak (biz cariye borçlanırız)" }] }] : []),
         { name: "date", label: "Tarih", type: "date", max: "today", value: entry?.date || office().todayIso?.() || "" },
+        // 2.4.5 madde 6: Borç / Alacak kaydının Vade Tarihi ve Beklenen Ödeme Tarihi (tahsilat / ödemede yok).
+        ...(type === "debt" || type === "credit" ? dueFields({ values: entry || {} }) : []),
         ...(invoiceOptions.length ? [{ name: "invoiceId", label: "Kapatılacak Fatura", type: "select", value: entry?.invoiceId || "", options: [{ value: "", label: "Otomatik (En Eski Açık Fatura)" }, ...invoiceOptions], help: "Seçilen fatura bu kayıtla kapanır; fazlası en eski açık faturaya gider. Bakiye ve Kasa değişmez. Faturaya bağlı tahsilat şüpheli alacaktan düşmez (yeni satışın parası); çek / senet evrakı ise şüpheli alacaktan düşer." }] : []),
         { name: "note", label: "Açıklama", maxlength: 300, value: entry?.note || (!entry && preset?.note ? String(preset.note).slice(0, 300) : ""), placeholder: type === "in" ? "Ör. Eylül ödemesi" : type === "debt" ? "Ör. Eylül aidatı, 3 adet ürün" : "" },
       ],
       submitLabel: entry ? "Kaydet" : ENTRY_LABEL[type],
       onOpen: dialog => {
+        if (type === "debt" || type === "credit") wireDueMin(dialog, "date", ["dueDate", "expectedDate"]);
         // K2 (plan §3.7 #3, §8.9): ödemede "Kredi Kartı" seçilince Kurumsal Kart (tahsilatta kart yolu POS'tur; seçici yok).
         const card = type === "out" ? { value: entry?.method === "card" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "card" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "" } : type === "in" ? { value: entry?.cardRefund === true ? entry.finRef || "" : "", keepLabel: "" } : null;
         // 2.7: seçicide bakiye — tahsilat hesaba girer, ödeme çıkar (kartla ödeme kart borcunu artırır); düzeltmede eski tutar bakiyede (original).

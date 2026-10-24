@@ -299,7 +299,7 @@ export function createApp(overrides = {}) {
   // "/api/workspace/plans/:id" kalıbından önce kaydedilir (yönlendirici ilk eşleşeni seçer).
   context.planTransfer = registerPlanTransfer(router, { ...context, plans: () => context.plans, accounts: () => context.accounts });
   context.plans = registerPlanRoutes(router, { ...context, accounts: () => context.accounts, cheques: () => context.cheques, invoices: () => context.invoices, bankModule: () => context.bankAccounts?.module });
-  context.accounts = registerAccountRoutes(router, { ...context, plans: () => context.plans, cheques: () => context.cheques, bankModule: () => context.bankAccounts?.module, doubtful: () => context.doubtful });
+  context.accounts = registerAccountRoutes(router, { ...context, plans: () => context.plans, cheques: () => context.cheques, invoices: () => context.invoices, bankModule: () => context.bankAccounts?.module, doubtful: () => context.doubtful });
   // Şüpheli Ticari Alacaklar (2.3.0 İz 1; plan §3.11b): cari kartının 128/129 işlemleri; cari servisine (bakiye, Değersiz Alacak satırı) istek anında ulaşır.
   context.doubtful = registerDoubtfulRoutes(router, { ...context, accounts: () => context.accounts, bankModule: () => context.bankAccounts?.module });
   context.stock = registerStockRoutes(router, { ...context, accounts: () => context.accounts, plans: () => context.plans, bankModule: () => context.bankAccounts?.module });

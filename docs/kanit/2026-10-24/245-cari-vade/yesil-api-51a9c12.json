@@ -1,0 +1,32 @@
+{
+  "ad": "245-cari-vade/yesil-api-51a9c12",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/cari-vade-245.test.mjs test/goc-245-cari-vade.test.mjs test/vade-takip-kaynak-yetki-210.test.mjs test/dues.test.mjs test/banka-210-post-statik.test.mjs",
+  "commit": "51a9c127ad8a9de449438561885064bde6db234f",
+  "dal": "is/cari-vade",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:35:36.812Z",
+  "sure_sn": 10.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 74,
+    "gecen": 74,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-cari-vade/yesil-api-51a9c12.log",
+  "klasor": "/home/user/wt/cari-vade",
+  "ham_cikti_sha256": "b0f711d46bf459c8b99aa3cf7f3dd9f727cc3b38577ad8dfc4df8ce7ef790d1e",
+  "ham_cikti_bayt": 24473
+}

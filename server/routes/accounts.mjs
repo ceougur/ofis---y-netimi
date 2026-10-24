@@ -4,7 +4,7 @@
 // Excel'den toplu alım: bilinen kolonlar (ad, telefon, adres, kayıt tarihi, grup…) alanlara, kalan her kolon kartta
 // aynı adla "ek alan" olur; taksit sorulmaz. Toplu taksitlendirme: seçilen carilere tek seferde taksit kartı.
 // Hesap kuralı server/lib/accounts.mjs içinde (saf, testli); burada doğrulama, kayıt ve yetki vardır.
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { methodInput } from "../lib/pay-method.mjs";
 import { doubtfulSkipOf } from "../lib/doubtful-gl.mjs";
 import { negativeConfirmed } from "../lib/bank/module-ref.mjs";
@@ -18,6 +18,7 @@ import { dayText, isoDay, parseDay } from "../lib/plans.mjs";
 import { createReportHeader } from "../lib/report-header.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { readSheetMatrices } from "../lib/sheets.mjs";
+import { DUE_WINDOW } from "../lib/insight/dues.mjs";
 import { inferRolesByValues, findHeaderRow, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { ANONYMOUS_TCKN, RETAIL_NAME, classifyTaxId, isRetailName, isValidIban, isValidMersis, normalizeIban } from "../lib/tax-id.mjs";
@@ -25,6 +26,13 @@ import { systemClock } from "../lib/clock.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
+// 2.4.5 madde 6: Vade Tarihi / Beklenen Ödeme Tarihi takvimde gerçek gün olmalı (2026-02-30 gibi kayan gün reddedilir).
+// (Kâhin 2.4.5 c6b v3: "2026-13-01" geçersiz Date'tir — toISOString atar; önce sayı denetlenir, 500 yerine 400.)
+const realDay = value => {
+  if (!DATE.test(value)) return false;
+  const time = Date.parse(`${value}T00:00:00Z`);
+  return Number.isFinite(time) && new Date(time).toISOString().slice(0, 10) === value;
+};
 // Tek seferde en çok bu kadar satır (100 bin cari ~ 7 sn); fazlası raporda "kesildi" olarak bildirilir.
 const MAX_IMPORT = 250_000;
 const MAX_FIELDS = 60;
@@ -36,6 +44,7 @@ const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" })
 const MONEY_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export function registerAccountRoutes(router, { store, bank, auth, audit, events, trash, config = {}, dataset = null, cash = null, period = null, plans = () => null, cheques = () => null, invoices = () => null, bankModule = () => null, doubtful = () => null, now: clock = systemClock }) {
+  const invoiceModule = () => (typeof invoices === "function" ? invoices() : invoices) || null;
   // İş saati (v2.1.0): context.now (config.now); sahte saatli testlerde de tek kaynak.
   const now = () => clock().toISOString();
   const today = () => isoDay(clock());
@@ -60,6 +69,27 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     return date;
   };
   const digits = value => String(value || "").replace(/\D/g, "");
+  // 2.4.5 madde 6 (BAŞ MİMAR KARARI K6.1): Vade Tarihi (dueDate) ve Beklenen Ödeme Tarihi (expectedDate) yalnız elle girilen Borç / Alacak kaydında ve
+  // Açılış Bakiyesi'nde (kaynağı boş, tür debt / credit). Tahsilat / ödeme ve faturadan, stoktan, çekten, şüpheli alacaktan gelen satır alan taşımaz.
+  const DUE_KINDS = new Set(["debt", "credit"]);
+  const isManualDue = entry => !entry.source && DUE_KINDS.has(entry.kind);
+  const dueDateOf = (value, label, field) => {
+    const day = text(value);
+    if (!day) return "";
+    if (!realDay(day)) throw new HttpError(400, `${label} için geçerli bir tarih seçin.`, { code: "due-date-invalid", field });
+    return day;
+  };
+  // Biçim YYYY-MM-DD, boş = yok; ikisi de kaydın tarihinden ÖNCE olamaz (400, field). Gövdede anahtar yoksa önceki değer kalır (düzeltme); tür borç /
+  // alacak değilse ikisi de boştur (gönderilse de kaydedilmez). Beklenen Ödeme Tarihi Vade Tarihi'nden önce olabilir (müşteri erken ödeme sözü verir).
+  function dueInput(body, { kind, date, previous = null, fields = { due: "dueDate", expected: "expectedDate" }, what = "kaydın" }) {
+    if (!DUE_KINDS.has(kind)) return { dueDate: "", expectedDate: "" };
+    const pick = (key, keep) => (body && Object.hasOwn(body, key) && body[key] !== undefined && body[key] !== null ? body[key] : previous?.[keep] ?? "");
+    const dueDate = dueDateOf(pick(fields.due, "dueDate"), "Vade Tarihi", fields.due);
+    const expectedDate = dueDateOf(pick(fields.expected, "expectedDate"), "Beklenen Ödeme Tarihi", fields.expected);
+    if (dueDate && dueDate < date) throw new HttpError(400, `Vade Tarihi (${dayText(dueDate)}) ${what} tarihinden (${dayText(date)}) önce olamaz.`, { code: "due-date-before", field: fields.due });
+    if (expectedDate && expectedDate < date) throw new HttpError(400, `Beklenen Ödeme Tarihi (${dayText(expectedDate)}) ${what} tarihinden (${dayText(date)}) önce olamaz.`, { code: "due-date-before", field: fields.expected });
+    return { dueDate, expectedDate };
+  }
 
   // ---------- Okuma ----------
   const ACCOUNT_SQL = `SELECT a.id, a.ref_no AS refNo, a.type, a.name, a.phone, a.email, a.address, a.registered_on AS registeredOn, a.group_id AS groupId, a.subgroup_id AS subgroupId,
@@ -90,12 +120,13 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   const entriesOf = accountId =>
     store.all(
       `SELECT e.id, e.kind, e.amount, e.date, e.note, e.method, e.receipt_no AS receiptNo, e.source, e.source_id AS sourceId, e.invoice_id AS invoiceId, e.fin_ref AS finRef, e.created_by AS createdBy, e.created_at AS createdAt, e.updated_at AS updatedAt,
-              e.doubtful_skip AS doubtfulSkip, COALESCE(u.display_name, '') AS actorName
+              e.doubtful_skip AS doubtfulSkip, e.due_date AS dueDate, e.expected_date AS expectedDate, COALESCE(u.display_name, '') AS actorName
        FROM account_entries e LEFT JOIN users u ON u.id = e.created_by WHERE e.account_id = ? ORDER BY e.date, e.created_at, e.rowid`,
       accountId,
     );
 
-  function detail(id, user) {
+  // withRemaining (2.4.5 madde 6): false → borç kayıtlarının Kalan'ı hesaplanmaz (fatura kapaması yalnız defteri ister; aynı kapama iki kez koşmasın).
+  function detail(id, user, { withRemaining = true } = {}) {
     const account = accountRow(id);
     const manage = canUser(user, "accounts.manage");
     // Stok ve çek/senetten gelen satırlar (v2.0.6, v2.0.7) kendi kartlarından düzeltilir.
@@ -114,6 +145,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const entries = entriesOf(account.id).map(entry => ({ ...entry, doubtfulSkip: Number(entry.doubtfulSkip) === 1, doubtfulNormal: hasDoubtful && doubtfulSkipOf(entry), editable: entry.source === "" && (manage || (entry.createdBy === user.id && entry.kind === "in")), ...(entry.kind === "in" && entry.method === "card" && cardIds.has(entry.finRef) ? { cardRefund: true } : {}) }));
     const planList = plans()?.forAccount ? plans().forAccount(account.id, user) : [];
     const ledger = accountLedger(entries, planList);
+    // 2.4.5 madde 6 (BAŞ MİMAR KARARI K6.2): elle Borç / Alacak ve Açılış Bakiyesi satırının Kalan'ı (TL, kuruşa yuvarlı) — fatura kapamasıyla aynı
+    // kuyruktan (routes/invoices.mjs entryStates → lib/invoice-settle.mjs settleLedger). Kalan > 0 olan satır açıktır; Vade Tarihi sırayı değiştirmez.
+    const remaining = withRemaining && invoiceModule()?.entryStates ? invoiceModule().entryStates(account.id, ledger.lines) : null;
+    if (remaining) for (const entry of entries) if (isManualDue(entry)) entry.remaining = remaining.get(entry.id)?.remaining ?? roundMoney(Number(entry.amount) || 0);
     return {
       ...account,
       typeLabel: ACCOUNT_TYPES[account.type] || "",
@@ -129,6 +164,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       canDoubtful: manage && canUser(user, "accounts.doubtful"),
       // 2.4.3 (keşif A5): silinemeyen caride Sil pasif, nedeni kartta yazılı (silme ucuyla aynı denetim).
       deleteBlock: manage ? deleteBlock(account)?.message || "" : "",
+      // 2.4.5 madde 6: Açılış Bakiyesi satırı (Düzenle formundaki açılış Vade Tarihi / Beklenen Ödeme Tarihi; PUT openingDueDate / openingExpectedDate).
+      openingEntryId: openingEntryOf(account.id)?.id || "",
     };
   }
 
@@ -482,16 +519,45 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     return amount > 0 ? natural : natural === "debt" ? "credit" : "debt";
   };
   const sideOf = value => (["debt", "credit"].includes(text(value)) ? text(value) : "auto");
+  // 2.4.5 madde 6 (K6.1): Açılış Bakiyesi'nin vade alanları (POST / PUT /api/workspace/accounts). Açılış satırı programın yazdığı açıklamadan tanınır
+  // (POST bu adla yazar; Excel'den cari yükleme de) — ilk yazılan; kullanıcı açıklamasını değiştirdiyse satır cari kartındaki Borç / Alacak düzeltmesinden.
+  const OPENING_NOTE = "Açılış bakiyesi";
+  const OPENING_DUE_FIELDS = Object.freeze({ due: "openingDueDate", expected: "openingExpectedDate" });
+  const openingEntryOf = accountId => store.get("SELECT id, kind, date, due_date AS dueDate, expected_date AS expectedDate FROM account_entries WHERE account_id = ? AND source = '' AND kind IN ('debt', 'credit') AND note = ? ORDER BY rowid LIMIT 1", accountId, OPENING_NOTE);
+  const assertNoOpeningDue = due => {
+    if (due.dueDate || due.expectedDate) throw new HttpError(400, "Vade Tarihi ve Beklenen Ödeme Tarihi açılış bakiyesiyle birlikte girilir; Açılış Bakiyesi'ni yazın ya da tarihleri silin.", { code: "opening-missing", field: due.dueDate ? OPENING_DUE_FIELDS.due : OPENING_DUE_FIELDS.expected });
+  };
+  // Düzenle (PUT): gövdede openingDueDate / openingExpectedDate anahtarı varsa açılış satırına yazılır (bilgi alanı; tutar, tarih, yön değişmez).
+  // Kapanmış dönemdeki açılışın tarihleri cari hareketi gibi kilitlidir. Dönüş: değişti mi.
+  function setOpeningDue(user, accountId, body) {
+    if (!body || ![OPENING_DUE_FIELDS.due, OPENING_DUE_FIELDS.expected].some(key => Object.hasOwn(body, key))) return false;
+    const opening = openingEntryOf(accountId);
+    if (!opening) {
+      assertNoOpeningDue(dueInput(body, { kind: "debt", date: "", fields: OPENING_DUE_FIELDS }));
+      return false;
+    }
+    const next = dueInput(body, { kind: opening.kind, date: opening.date, previous: opening, fields: OPENING_DUE_FIELDS, what: "açılış bakiyesinin" });
+    if (next.dueDate === opening.dueDate && next.expectedDate === opening.expectedDate) return false;
+    period?.assertOpen(opening.date, "Açılış bakiyesi");
+    store.run("UPDATE account_entries SET due_date = ?, expected_date = ?, updated_by = ?, updated_at = ? WHERE id = ?", next.dueDate, next.expectedDate, user.id, now(), opening.id);
+    audit(user, "account.entry.due", opening.id, { accountId, previous: { dueDate: opening.dueDate, expectedDate: opening.expectedDate }, ...next });
+    return true;
+  }
   router.post("/api/workspace/accounts", async ({ req, res }) => {
     const user = auth.requirePermission(req, "accounts.manage");
     const body = await readJson(req);
     const result = store.tx(() => {
       const input = accountInput(body, user);
       if (input.refNo && !freeRef(input.refNo)) throw new HttpError(409, `${input.refNo} numarası başka bir caride kullanılıyor.`);
-      const id = insertAccount(user, input);
       // Açılış bakiyesi: ör. önceki programdan devreden borç (+) ya da alacak (−).
       const opening = parseAmount(body.openingBalance);
-      if (Number.isFinite(opening) && roundMoney(Math.abs(opening)) > 0) addEntry(user, id, { kind: openingKind(opening, input.type, sideOf(body.openingSide)), amount: roundMoney(Math.abs(opening)), date: input.registeredOn, note: "Açılış bakiyesi" });
+      const hasOpening = Number.isFinite(opening) && roundMoney(Math.abs(opening)) > 0;
+      const kind = hasOpening ? openingKind(opening, input.type, sideOf(body.openingSide)) : "";
+      // 2.4.5 madde 6 (K6.1): Açılış Bakiyesi'nin Vade Tarihi / Beklenen Ödeme Tarihi (openingDueDate, openingExpectedDate); açılış yoksa tarih girilmez.
+      const due = dueInput(body, { kind: kind || "debt", date: input.registeredOn, fields: OPENING_DUE_FIELDS, what: "açılış bakiyesinin" });
+      if (!hasOpening) assertNoOpeningDue(due);
+      const id = insertAccount(user, input);
+      if (hasOpening) addEntry(user, id, { kind, amount: roundMoney(Math.abs(opening)), date: input.registeredOn, note: OPENING_NOTE, ...due });
       audit(user, "account.created", id, { name: input.name, type: input.type });
       return detail(id, user);
     });
@@ -502,6 +568,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const user = auth.requirePermission(req, "accounts.manage");
     const previous = accountRow(params.id);
     const body = await readJson(req);
+    let dueChanged = false;
     const result = store.tx(() => {
       // 2.4.3 (uzman UX1): iyimser eşzamanlılık (çek: routes/cheques.mjs "cheque-stale"; tablo hücresi: workspace.mjs). Form, açıldığı andaki
       // sürümü (updatedAt) gönderir; arada başka biri (ya da gönderimde mükellefiyeti düzelten sunucu) kaydettiyse 409 — ikinci kaydeden ilkinin
@@ -526,6 +593,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       writeTax(previous.id, input);
       plans()?.followAccount?.(previous.id, { name: previous.name, phone: previous.phone }, { name: input.name, phone: input.phone });
       audit(user, "account.updated", previous.id, { previous: { name: previous.name, phone: previous.phone, status: previous.status }, name: input.name, phone: input.phone, status: input.status });
+      dueChanged = setOpeningDue(user, previous.id, body);
       return detail(previous.id, user);
     });
     // Para defterini etkileyen değişiklik (tür, durum) ya da başka pencerelerde görünen ad/telefon/Cari No (taksit kartı,
@@ -533,7 +601,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     // tetiklenmez (routes/overview.mjs).
     const money = result.type !== previous.type || result.status !== previous.status;
     const followed = result.name !== previous.name || result.phone !== previous.phone || result.refNo !== previous.refNo;
-    touched(user, result, money || followed ? {} : { info: true });
+    touched(user, result, money || followed || dueChanged ? {} : { info: true });
     if (money || followed) changed(user, { kind: "plans" });
     ok(res, result);
   });
@@ -617,7 +685,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     store.setSetting("plans.receiptSeq", String(current + 1));
     return current + 1;
   };
-  function addEntry(user, accountId, { kind, amount, date, note, source = "", sourceId = "", method = "cash", invoiceId = "", eventId: keepEvent = "", finRef = "", pos = null, doubtfulSkip = false }) {
+  function addEntry(user, accountId, { kind, amount, date, note, source = "", sourceId = "", method = "cash", invoiceId = "", eventId: keepEvent = "", finRef = "", pos = null, doubtfulSkip = false, dueDate = "", expectedDate = "" }) {
     // Açılış bakiyesi, stoktan ve çekten gelen satırlar dahil: kapanmış döneme cari satırı yazılmaz.
     period?.assertOpen(date, "Cari hareketi");
     const id = newId("aentry");
@@ -632,8 +700,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     // finRef (v2.1.0 Aşama 4): banka hesabına bağlı satır (şimdilik yalnız Banka → KDV'li masrafın faturasının havale ödemesi; modül formlarındaki
     // hesap seçimi Aşama 5/7).
     store.run(
-      "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at, doubtful_skip) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at, doubtful_skip, due_date, expected_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       id, accountId, kind, amount, date, note || "", receiptNo, source, sourceId, way, invoiceId || "", finRef || "", eventId, user.id, now(), doubtfulSkip === true ? 1 : 0,
+      // 2.4.5 madde 6: Vade Tarihi / Beklenen Ödeme Tarihi yalnız elle Borç / Alacak ve açılışta (dueInput); başka satırda boş.
+      source === "" && DUE_KINDS.has(kind) ? dueDate || "" : "", source === "" && DUE_KINDS.has(kind) ? expectedDate || "" : "",
     );
     return { id, receiptNo };
   }
@@ -694,10 +764,12 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const amount = amountOf(body.amount);
     if (!(amount > 0)) throw new HttpError(400, "Tutar sıfırdan büyük olmalı.");
     // v2.0.13: tahsilat/ödemenin yolu (nakit, havale/EFT, kredi kartı); borç/alacak yazmada para hareketi yoktur.
-    return { kind, amount, date: period ? period.movementDate(body) : dateOf(body.date, "Tarih", today()), note: limited(body.note, 300, "Açıklama"), method: methodInput(body.method), invoiceId: invoiceLink(accountId, kind, body.invoiceId, previous?.invoiceId || ""), doubtfulSkip: doubtfulSkipInput(body, kind, previous) };
+    const date = period ? period.movementDate(body) : dateOf(body.date, "Tarih", today());
+    // 2.4.5 madde 6 (K6.1): borç / alacakta Vade Tarihi ve Beklenen Ödeme Tarihi (tahsilat / ödemede boş).
+    return { kind, amount, date, note: limited(body.note, 300, "Açıklama"), method: methodInput(body.method), invoiceId: invoiceLink(accountId, kind, body.invoiceId, previous?.invoiceId || ""), doubtfulSkip: doubtfulSkipInput(body, kind, previous), ...dueInput(body, { kind, date, previous }) };
   };
   const entryOf = (accountId, entryId) => {
-    const entry = store.get("SELECT id, kind, amount, date, note, method, receipt_no AS receiptNo, source, source_id AS sourceId, invoice_id AS invoiceId, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt, doubtful_skip AS doubtfulSkip FROM account_entries WHERE account_id = ? AND id = ?", accountId, limited(entryId, 120, "Hareket"));
+    const entry = store.get("SELECT id, kind, amount, date, note, method, receipt_no AS receiptNo, source, source_id AS sourceId, invoice_id AS invoiceId, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt, doubtful_skip AS doubtfulSkip, due_date AS dueDate, expected_date AS expectedDate FROM account_entries WHERE account_id = ? AND id = ?", accountId, limited(entryId, 120, "Hareket"));
     if (!entry) throw new HttpError(404, "Hareket bulunamadı. Başka biri silmiş olabilir.");
     return entry;
   };
@@ -841,7 +913,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         k7.capture();
         const meta = finRef && !corporateOf(input, body, previous) ? posMetaOf(body) : null;
         const eventId = bank.eventFor("account_entries", { kind: input.kind, source: previous.source, date: input.date, method: input.method, event_id: previous.eventId, fin_ref: finRef, ...(meta ? { pos: meta } : {}) });
-        store.run("UPDATE account_entries SET kind = ?, amount = ?, date = ?, note = ?, method = ?, invoice_id = ?, fin_ref = ?, event_id = ?, doubtful_skip = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.amount, input.date, input.note, input.method, input.invoiceId, finRef, eventId, input.doubtfulSkip ? 1 : 0, user.id, now(), previous.id);
+        store.run("UPDATE account_entries SET kind = ?, amount = ?, date = ?, note = ?, method = ?, invoice_id = ?, fin_ref = ?, event_id = ?, doubtful_skip = ?, due_date = ?, expected_date = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.amount, input.date, input.note, input.method, input.invoiceId, finRef, eventId, input.doubtfulSkip ? 1 : 0, previous.source ? "" : input.dueDate, previous.source ? "" : input.expectedDate, user.id, now(), previous.id);
         audit(user, "account.entry.updated", previous.id, { accountId: account.id, previous, ...input, finRef });
         return { id: previous.id };
       },
@@ -1188,7 +1260,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         const opening = parseAmount(cell(row, col.balance));
         // 31e N1: eşik kuruşa yuvarlanmış tutarla (0,005 → 0,01 yazılır, 0,004 yazılmaz) — öbür içe alma yollarıyla aynı.
         if (Number.isFinite(opening) && roundMoney(Math.abs(opening)) > 0) {
-          addEntry(user, id, { kind: openingKind(opening, person.type, openingSide), amount: roundMoney(Math.abs(opening)), date: person.registeredOn, note: "Açılış bakiyesi" });
+          addEntry(user, id, { kind: openingKind(opening, person.type, openingSide), amount: roundMoney(Math.abs(opening)), date: person.registeredOn, note: OPENING_NOTE });
           report.balances += 1;
         }
         report.created += 1;
@@ -1325,12 +1397,15 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // kuraldan (accountLedger) gelir; mizan bakiyesi = Cari listesindeki bakiye.
   // invoiced (v2.0.22, bağımsız gözden geçirme bulgusu): fatura ödeme durumu yalnız faturası olan carilerin defterini ister;
   // 20.000 carili kurulumda hepsinin defterini kurmak her yazmadan sonraki ilk listeyi 0,6 sn'ye çıkarıyordu.
-  function allLedgers({ invoiced = false } = {}) {
-    const only = invoiced ? " AND a.id IN (SELECT DISTINCT account_id FROM invoices)" : "";
+  // dated (2.4.5 madde 6): yalnız Vade Tarihi ya da Beklenen Ödeme Tarihi girilmiş elle borç / alacak satırı olan cariler (takvim, zil, Vade Takip).
+  const DATED_SQL = "SELECT DISTINCT account_id FROM account_entries WHERE source = '' AND kind IN ('debt', 'credit') AND (due_date <> '' OR expected_date <> '')";
+  function allLedgers({ invoiced = false, dated = false } = {}) {
+    const scope = invoiced ? "SELECT DISTINCT account_id FROM invoices" : dated ? DATED_SQL : "";
+    const only = scope ? ` AND a.id IN (${scope})` : "";
     const rows = store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL${only} ORDER BY a.name COLLATE NOCASE`).map(({ fieldsJson, ...row }) => row);
     const entries = new Map();
     // v2.0.22: yol ve "Kapatılacak Fatura" bağı da (Cari kartındaki defterle aynı satır; fatura kapamada kullanılır).
-    for (const entry of store.all(`SELECT id, account_id AS accountId, kind, amount, date, note, method, receipt_no AS receiptNo, source, source_id AS sourceId, invoice_id AS invoiceId, created_at AS createdAt FROM account_entries${invoiced ? " WHERE account_id IN (SELECT DISTINCT account_id FROM invoices)" : ""} ORDER BY date, created_at, rowid`)) {
+    for (const entry of store.all(`SELECT id, account_id AS accountId, kind, amount, date, note, method, receipt_no AS receiptNo, source, source_id AS sourceId, invoice_id AS invoiceId, created_at AS createdAt FROM account_entries${scope ? ` WHERE account_id IN (${scope})` : ""} ORDER BY date, created_at, rowid`)) {
       if (!entries.has(entry.accountId)) entries.set(entry.accountId, []);
       entries.get(entry.accountId).push(entry);
     }
@@ -1490,6 +1565,70 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       return result;
     },
   };
+  // ---------- 2.4.5 madde 6: carinin vadeli / sözlü borç kayıtları (BAŞ MİMAR KARARI K6.3) ----------
+  // Kalan > 0 olan VE Vade Tarihi ya da Beklenen Ödeme Tarihi girilmiş elle Borç / Alacak ve Açılış Bakiyesi bir kalemdir: tarih Beklenen Ödeme Tarihi
+  // varsa o ("(Ödeme Sözü)"), yoksa Vade Tarihi; tutar Kalan (fatura kapamasıyla aynı kuyruk, routes/invoices.mjs allEntryStates). Kalanın Mevcut Borç
+  // kartınca kapsanan kısmı (covered) kartın taksitleriyle gelir, burada düşülür (birleşik listelerde bir kez — açık faturadaki covered kuralı). Silinmiş
+  // carinin satırı kalem değildir. openDueItems ufuksuzdur (Vade Takip kendi aralığını süzer); dueItems takvim / zil ufku (faturayla aynı: geçmişin
+  // tamamı + bugünden DUE_WINDOW.aheadDays gün). "Ödendi Say" yoktur: kalem para kaydıyla (tahsilat / ödeme) kapanır.
+  const DUE_SQL = `SELECT e.id, e.account_id AS accountId, e.kind, e.amount, e.date, e.due_date AS dueDate, e.expected_date AS expectedDate, a.name, a.phone, a.ref_no AS refNo
+    FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
+    WHERE e.source = '' AND e.kind IN ('debt', 'credit') AND (e.due_date <> '' OR e.expected_date <> '') ORDER BY e.rowid`;
+  const dayGap = (from, to) => Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000);
+  function openDueItems(day = today()) {
+    const rows = store.all(DUE_SQL);
+    const states = rows.length && invoiceModule()?.allEntryStates ? invoiceModule().allEntryStates() : null;
+    if (!states) return [];
+    const out = [];
+    for (const row of rows) {
+      const state = states.get(row.id);
+      if (!state) continue;
+      const amount = roundMoney(state.remaining - (state.covered || 0));
+      if (!(amount > EPS)) continue;
+      const promise = Boolean(row.expectedDate);
+      const dueDate = row.expectedDate || row.dueDate;
+      const days = dayGap(day, dueDate);
+      const incoming = row.kind === "debt";
+      out.push({
+        id: `account|${row.id}`,
+        source: "account",
+        accountId: row.accountId,
+        entryId: row.id,
+        direction: incoming ? "in" : "out",
+        person: row.name,
+        label: `${incoming ? "Tahsil Edilecek Borç" : "Ödenecek Borç"}${promise ? " (Ödeme Sözü)" : ""}`,
+        dueDate,
+        dueText: dayText(dueDate),
+        amount,
+        days,
+        state: days === 0 ? "today" : days < 0 ? "overdue" : "upcoming",
+        // Bilgi (ekran): kaydın tarihi, tutarı, kendi vade ve beklenen ödeme tarihi; kısmen kapanmış mı.
+        entryDate: row.date,
+        entryAmount: roundMoney(Number(row.amount) || 0),
+        entryDueDate: row.dueDate,
+        expectedDate: row.expectedDate,
+        partial: amount < roundMoney(Number(row.amount) || 0) - EPS,
+        phone: row.phone || "",
+        // Aynı adlı iki cari takvimde ve zilde Cari No ile ayrılır (taksit kalemindeki accountRef ile aynı alan; 2.4.3 keşif A21).
+        accountRef: row.refNo || "",
+        caseNo: "",
+        caseKey: "",
+        tab: "",
+        kind: "date",
+      });
+    }
+    return out;
+  }
+  const dueItems = (day = today()) => openDueItems(day).filter(item => item.days <= DUE_WINDOW.aheadDays);
+  // Takvim önbelleğinin anahtarı (routes/dues.mjs): satır sayısı / son damga / tutar toplamı + tarihli satırların tarihleri (durağan sahte saatte de
+  // yalnız tarih değişince ayırt eder) + carilerin silinmesi / adı + mahsup fişleri (Kalan'ı değiştirir).
+  const dueFingerprint = () => {
+    const row = store.get("SELECT COUNT(*) AS n, COALESCE(MAX(COALESCE(updated_at, created_at)), '') AS at, TOTAL(amount) AS total FROM account_entries");
+    const dated = store.get("SELECT COALESCE(group_concat(id || '=' || kind || '=' || due_date || '/' || expected_date, ','), '') AS d FROM (SELECT id, kind, due_date, expected_date FROM account_entries WHERE source = '' AND (due_date <> '' OR expected_date <> '') ORDER BY rowid)").d;
+    const people = store.get("SELECT COUNT(*) || '/' || COUNT(deleted_at) || '/' || COALESCE(MAX(updated_at), '') AS f FROM accounts").f;
+    const offsets = hasOffsets() ? store.get("SELECT COUNT(*) || '/' || TOTAL(amount) AS f FROM invoice_offsets").f : "";
+    return createHash("sha256").update([row.n, row.at, row.total, dated, people, offsets].join("|")).digest("base64url").slice(0, 22);
+  };
   const fingerprint = () => {
     const row = store.get("SELECT (SELECT COUNT(*) || '/' || COALESCE(MAX(COALESCE(updated_at, created_at)), '') FROM account_entries) AS e, (SELECT COUNT(*) || '/' || COALESCE(MAX(updated_at), '') || '/' || COUNT(deleted_at) FROM accounts) AS a");
     return `${row.e}|${row.a}`;
@@ -1522,6 +1661,12 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     changed(user, { kind: "cash" });
     return `“${account.name}” carisi geri geldi.`;
   }
+  // Silinenler'den dönen borç / alacağın tarihleri: yükteki değer gerçek gün ve kaydın tarihinden önce değilse (bozuk yükte boş döner).
+  const restoredDue = payload => {
+    if (!DUE_KINDS.has(payload.kind)) return ["", ""];
+    const keep = value => (realDay(text(value)) && text(value) >= String(payload.date || "") ? text(value) : "");
+    return [keep(payload.dueDate), keep(payload.expectedDate)];
+  };
   function restoreEntry(user, item, payload, { force = false, banking = null } = {}) {
     if (!KIND_TEXT[payload.kind]) throw new HttpError(409, "Hareketin bilgisi eksik; geri yüklenemez.");
     const account = store.get("SELECT id, deleted_at AS deletedAt FROM accounts WHERE id = ?", payload.accountId);
@@ -1560,10 +1705,12 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         if (!store.get("SELECT 1 AS found FROM account_entries WHERE id = ?", item.ref)) {
           store.run(
             // Karar 15.10.2026: "Normal Cari Hesaba İşle" işareti (doubtful_skip) silinmeden önceki hâliyle döner.
-            "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at, updated_by, updated_at, doubtful_skip) VALUES (?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at, updated_by, updated_at, doubtful_skip, due_date, expected_date) VALUES (?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             item.ref, account.id, payload.kind, amount, payload.date, payload.note || "", payload.receiptNo || null, method, invoiceId, kept.ref,
             bank.eventFor("account_entries", { kind: payload.kind, source: "", date: payload.date, method, event_id: payload.eventId || "" }), payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
             payload.kind === "in" && (payload.doubtfulSkip === true || Number(payload.doubtfulSkip) === 1) ? 1 : 0,
+            // 2.4.5 madde 6: Vade Tarihi / Beklenen Ödeme Tarihi silinmeden önceki hâliyle (2.4.4'te silinen satırın yükünde yok → boş).
+            ...restoredDue(payload),
           );
         }
         trash.markRestored(item.id, user);
@@ -1582,5 +1729,5 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     return `Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.${kept.dropped ? ` ${bank.droppedText(kept.dropped)}` : ""}`;
   }
 
-  return { exists, accountRow, createFromPlan, matchPerson, stockEntry, invoiceEntry, posEntry, doubtfulEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers, assertUnlocked, invoiceLink };
+  return { exists, accountRow, createFromPlan, matchPerson, stockEntry, invoiceEntry, posEntry, doubtfulEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers, assertUnlocked, invoiceLink, dueItems, openDueItems, dueFingerprint };
 }

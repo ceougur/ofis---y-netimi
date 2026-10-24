@@ -1,0 +1,32 @@
+{
+  "ad": "245-cari-vade/e2e-banka-210-ekran-aciklama",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/banka-210-ekran-aciklama-yetki.mjs",
+  "commit": "51a9c127ad8a9de449438561885064bde6db234f",
+  "dal": "is/cari-vade",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T18:11:47.747Z",
+  "sure_sn": 11.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 11,
+    "gecen": 11,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-cari-vade/e2e-banka-210-ekran-aciklama.log",
+  "klasor": "/home/user/wt/cari-vade",
+  "ham_cikti_sha256": "ebec3b7b05b675046b49970735e0e3b9b01f9e04cc5c1aefa462943f00312659",
+  "ham_cikti_bayt": 2102
+}

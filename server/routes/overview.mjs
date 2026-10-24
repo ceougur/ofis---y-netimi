@@ -37,13 +37,14 @@ const TYPE_TEXT = Object.freeze(Object.assign(Object.create(null), { customer: "
 // legacy (2.1.0 temel sürüm, küçük düzeltmeler): eski sürümden kalan, hesaba atanmamış İLERİ TARİHLİ havale / POS satırı (102.00 / 108.00).
 // Önceden "Kasa (ileri tarihli)" yazılıyordu (Nakit Kasa'da olmayan bir hareket). Ekran (hof-overview.js ROW_LABELS), PDF ve Excel aynı adı yazar.
 // 2.3.0 İz 3.3 (plan §8.9 "Planlı Banka"; eşleme 301): planlı banka işlemleri (bank_plans; deftere girmemiş) kaynak "bank".
-const SOURCE_TEXT = { unbilled: "Faturasız Cari Alacağı", plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa (ileri tarihli)", legacy: "Hesabı Atanmamış (ileri tarihli)", table: "Tablo", promise: "Ödeme Sözü", deadline: "Son Tarih", pos: "POS", posBlocked: "Blokeli POS", posFee: "Komisyon Tahsili", deposit: "Tahsildeki Çek ve Senet", bank: "Planlı Banka İşlemi" };
+const SOURCE_TEXT = { unbilled: "Faturasız Cari Alacağı", plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", account: "Cari (vadeli)", cash: "Kasa (ileri tarihli)", legacy: "Hesabı Atanmamış (ileri tarihli)", table: "Tablo", promise: "Ödeme Sözü", deadline: "Son Tarih", pos: "POS", posBlocked: "Blokeli POS", posFee: "Komisyon Tahsili", deposit: "Tahsildeki Çek ve Senet", bank: "Planlı Banka İşlemi" };
 // Satırın kaynak adı (PDF/Excel): akışın kendi kaynağı (flow; ör. bankada tahsildeki evrak "deposit", plan §8.9) varsa o, yoksa süzgeç kaynağı.
 const sourceText = row => SOURCE_TEXT[row.flow] || SOURCE_TEXT[row.source] || row.source;
 // Vade takip kaynakları (v2.0.9) ve görme koşulu: çek/senet ve Kasa, ANLIK DURUM yetkisi ya da o modülün yetkisiyle.
 // 2.4.5 madde 4 (uyarı kapısı): tablonun ödeme günleri ("table") ve ödeme sözleri ("promise") kaynak değildir; tablodan yalnız tutarsız son tarihler
 // ("deadline"). Eski davranış (config.legacyTableDues, yalnız testler): LEGACY_TABLE_SOURCES de.
-const DUE_SOURCES = ["plan", "cheque", "note", "invoice", "cash", "bank", "deadline"];
+// 2.4.5 madde 6 (K6.3): "account" — carideki vadeli / sözlü borç kaydı (Cari görüntüleme yetkisiyle).
+const DUE_SOURCES = ["plan", "cheque", "note", "invoice", "account", "cash", "bank", "deadline"];
 const LEGACY_TABLE_SOURCES = ["table", "promise"];
 const STATE_TEXT = { overdue: "Gecikmiş", today: "Bugün", month: "Bu Ay", upcoming: "Yaklaşan" };
 const GROUPS = new Set(["day", "week", "month"]);
@@ -514,7 +515,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     return user;
   };
   // 2.3.0 İz 3.3: planlı banka işlemleri (bank) yalnız banka rakamını görebilene (plan §8.9 "Vade Takip / Zil / Takvim: … bank.view ile").
-  const visibleSources = user => dueSourceList.filter(source => (source === "cheque" || source === "note" ? canUser(user, "overview.view") || canUser(user, "cheques.view") : source === "cash" ? canUser(user, "overview.view") || canUser(user, "cash.view") : source === "invoice" ? canUser(user, "overview.view") || canUser(user, "invoices.view") : source === "bank" ? canSeeBank(user) : true));
+  const visibleSources = user => dueSourceList.filter(source => (source === "cheque" || source === "note" ? canUser(user, "overview.view") || canUser(user, "cheques.view") : source === "cash" ? canUser(user, "overview.view") || canUser(user, "cash.view") : source === "invoice" ? canUser(user, "overview.view") || canUser(user, "invoices.view") : source === "bank" ? canSeeBank(user) : source === "account" ? canUser(user, "accounts.view") : true));
   // Açık fatura → nakit akışı / vade takip kalemi (fatura modülünün kapama hesabından; tek kaynak).
   const invoiceFlow = item => ({
     date: item.dueDate,
@@ -526,6 +527,21 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     phone: item.phone || "",
     detail: `Fatura tarihi ${dayText(item.issueDate)}`,
     ref: { type: "invoice", id: item.id },
+  });
+  // 2.4.5 madde 6: carinin vadeli borç kaydı → vade takip kalemi (etiket, tarih ve tutar zil / takvimle aynı; tıklanınca cari kartı açılır).
+  const accountDueFlow = item => ({
+    date: item.dueDate,
+    direction: item.direction,
+    amount: item.amount,
+    source: "account",
+    label: item.label,
+    party: item.person,
+    phone: item.phone || "",
+    detail: [`Kayıt ${dayText(item.entryDate)} · ${tl(item.entryAmount)}`, item.expectedDate && item.entryDueDate ? `Vade ${dayText(item.entryDueDate)}` : "", item.partial ? "kalan" : ""].filter(Boolean).join(" · "),
+    // Kalem takvimdeki kimliğiyle (account|<entryId>) izlenir; tıklanınca carinin kartı açılır (ref.id cari).
+    id: item.id,
+    entryId: item.entryId,
+    ref: { type: "account", id: item.accountId, entryId: item.entryId },
   });
   async function tableItems() {
     try {
@@ -606,6 +622,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     if (sources.has("cash")) items.push(...aheadFlows(day, { bank: canSeeBank(user) }));
     // 2.3.0 İz 3.3: planlı banka işlemleri kendi tarihinde (planlı transfer yönsüz ve tutarsız kalem: adında tutar ve iki hesap).
     if (sources.has("bank")) items.push(...bankPlanFlows());
+    // 2.4.5 madde 6 (K6.3): carinin vadeli / sözlü borç kayıtları — zil ve takvimle aynı kalemler (routes/accounts.mjs openDueItems; ufuk raporun aralığı).
+    if (sources.has("account") && accounts()?.openDueItems) for (const item of accounts().openDueItems(day)) items.push(accountDueFlow(item));
     let dormant = [];
     if (sources.has("table") || sources.has("promise") || sources.has("deadline")) {
       const calendar = tables()?.calendar ? await tables().calendar(clock()) : { items: [], dormant: [] };
