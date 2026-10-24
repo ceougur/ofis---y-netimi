@@ -1,0 +1,5 @@
+cari bakiye: 0 (borç 1500, alacak 1500)
+elle borç Kalan: (alan yok) · Vade (alan yok)
+fatura açık: 500 (overdue)
+takvim/zil kalemleri: invoice:Tahsil Edilecek Fatura FIS2026000000001:500:overdue
+Vade Takip satırları: invoice:Satış faturası FIS2026000000001:500:overdue · şüpheli ayrı: {"amount":0,"accountCount":0}

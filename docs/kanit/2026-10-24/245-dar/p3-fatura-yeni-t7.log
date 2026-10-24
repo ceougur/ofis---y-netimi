@@ -1,0 +1,165 @@
+FATURA AL-210635029|Rastgele 3|813.93|390.99|overdue
+FATURA AL-293798854|Rastgele 3|1212.3|1212.3|open
+FATURA AL-313556801|Rastgele 3|607.28|607.28|overdue
+FATURA AL-852056794|Rastgele 3|156.9|156.9|overdue
+FATURA AL-926981459|Rastgele 3|124.01|124.01|overdue
+FATURA FIS2026000000001|Rastgele 0|988.36|0|paid
+FATURA FIS2026000000002|Rastgele 1|1356.23|1356.23|overdue
+FATURA FIS2026000000003|Rastgele 2|1568.17|0|paid
+FATURA FIS2026000000004|Rastgele 2|1678.25|0|paid
+BAKIYE Rastgele 0|-323.24
+BAKIYE Rastgele 1|4170.41
+BAKIYE Rastgele 2|1196.47
+BAKIYE Rastgele 3|-1394.73
+ADIM 0: fatura Rastgele 3 200 
+ADIM 1: sil yok
+ADIM 2: borç/alacak Rastgele 0 debt 200
+ADIM 3: çek al Rastgele 2 200
+ADIM 4: sil Rastgele 0 200 
+ADIM 5: borç/alacak Rastgele 2 debt 200
+ADIM 6: kart tahsilatı yok
+ADIM 7: tahsilat/ödeme Rastgele 2 in  200
+ADIM 8: düzelt yok
+ADIM 9: kart tahsilatı yok
+ADIM 10: fatura Rastgele 0 200 
+ADIM 11: düzelt Rastgele 2 debt 200 
+ADIM 12: düzelt Rastgele 2 debt 200 
+ADIM 13: taksit kartı Rastgele 0 mevcut borç 400 {"ok":false,"error":"Carinin taksitlendirilebilecek borcu 988,36 TL; toplam bundan büyük olamaz. Fazlası yeni borçsa ayr
+ADIM 14: tahsilat/ödeme Rastgele 2 in  200
+ADIM 15: taksit kartı Rastgele 1 ayrı 200 
+ADIM 16: sil Rastgele 2 200 
+ADIM 17: sil Rastgele 2 200 
+ADIM 18: düzelt Rastgele 2 in 200 
+ADIM 19: fatura Rastgele 3 200 
+ADIM 20: karşılıksız Rastgele 2 200 
+ADIM 21: fatura Rastgele 1 200 
+ADIM 22: karşılıksız yok
+ADIM 23: taksit kartı Rastgele 0 ayrı 200 
+ADIM 24: taksit kartı Rastgele 1 ayrı 200 
+ADIM 25: fatura Rastgele 2 400 {"ok":false,"error":"FIS serisinde son belge FIS2026000000002 02.10.2026 tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı). B
+ADIM 26: sil Rastgele 2 200 
+ADIM 27: borç/alacak Rastgele 2 debt 200
+ADIM 28: sil Rastgele 2 200 
+ADIM 29: düzelt yok
+ADIM 30: sil yok
+ADIM 31: düzelt yok
+ADIM 32: düzelt yok
+ADIM 33: çek al Rastgele 1 200
+ADIM 34: borç/alacak Rastgele 0 credit 200
+ADIM 35: kart tahsilatı Rastgele 1 409 {"ok":false,"error":"Tutar kartın kalanını aşıyor: kalan 772,72 TL, girilen 857,32 TL, fazlası 84,60 TL; yeni tahsilat y
+ADIM 36: karşılıksız Rastgele 1 200 
+ADIM 37: taksit kartı Rastgele 0 ayrı 200 
+ADIM 38: tahsilat/ödeme Rastgele 3 out bağlı 409
+ADIM 39: taksit kartı Rastgele 1 mevcut borç 200 
+ADIM 40: karşılıksız yok
+ADIM 41: borç/alacak Rastgele 3 credit 200
+ADIM 42: düzelt Rastgele 3 credit 200 
+ADIM 43: kart tahsilatı Rastgele 1 409 {"ok":false,"error":"Tutar kartın kalanını aşıyor: kalan 1.210,70 TL, girilen 1.430,41 TL, fazlası 219,71 TL; yeni tahsi
+ADIM 44: düzelt Rastgele 0 credit 200 
+ADIM 45: tahsilat/ödeme Rastgele 3 out bağlı 409
+ADIM 46: tahsilat/ödeme Rastgele 2 in  200
+ADIM 47: sil Rastgele 2 200 
+ADIM 48: kart tahsilatı Rastgele 1 200 
+ADIM 49: sil Rastgele 3 200 
+ADIM 50: borç/alacak Rastgele 0 debt 200
+ADIM 51: karşılıksız yok
+ADIM 52: çek al Rastgele 0 200
+ADIM 53: taksit kartı Rastgele 2 ayrı 200 
+ADIM 54: taksit kartı Rastgele 2 ayrı 200 
+ADIM 55: düzelt Rastgele 0 credit 200 
+ADIM 56: sil Rastgele 0 200 
+ADIM 57: karşılıksız Rastgele 0 200 
+ADIM 58: kart tahsilatı Rastgele 0 409 {"ok":false,"error":"Tutar kartın kalanını aşıyor: kalan 200,75 TL, girilen 624,03 TL, fazlası 423,28 TL; yeni tahsilat 
+ADIM 59: karşılıksız yok
+ADIM 60: taksit kartı Rastgele 0 ayrı 200 
+ADIM 61: sil Rastgele 0 200 
+ADIM 62: karşılıksız yok
+ADIM 63: taksit kartı Rastgele 1 mevcut borç 200 
+ADIM 64: fatura Rastgele 2 200 
+ADIM 65: karşılıksız yok
+ADIM 66: çek al Rastgele 2 200
+ADIM 67: taksit kartı Rastgele 0 ayrı 200 
+ADIM 68: taksit kartı Rastgele 1 mevcut borç 200 
+ADIM 69: karşılıksız Rastgele 2 200 
+ADIM 70: çek al Rastgele 1 200
+ADIM 71: taksit kartı Rastgele 2 ayrı 200 
+ADIM 72: tahsilat/ödeme Rastgele 0 in  200
+ADIM 73: karşılıksız Rastgele 1 200 
+ADIM 74: tahsilat/ödeme Rastgele 2 in  200
+ADIM 75: karşılıksız yok
+ADIM 76: tahsilat/ödeme Rastgele 1 in bağlı 200
+ADIM 77: fatura Rastgele 3 200 
+ADIM 78: kart tahsilatı Rastgele 1 409 {"ok":false,"error":"Tutar kartın kalanını aşıyor: kalan 564,25 TL, girilen 1.226,60 TL, fazlası 662,35 TL; yeni tahsila
+ADIM 79: çek al Rastgele 2 200
+ADIM 80: düzelt Rastgele 2 in 200 
+ADIM 81: sil Rastgele 0 200 
+ADIM 82: fatura Rastgele 3 200 
+ADIM 83: borç/alacak Rastgele 2 debt 200
+ADIM 84: borç/alacak Rastgele 3 debt 200
+ADIM 85: kart tahsilatı Rastgele 2 409 {"ok":false,"error":"Tutar kartın kalanını aşıyor: kalan 479,83 TL, girilen 778,08 TL, fazlası 298,25 TL; yeni tahsilat 
+ADIM 86: kart tahsilatı Rastgele 2 409 {"ok":false,"error":"Tutar kartın kalanını aşıyor: kalan 56,06 TL, girilen 389,18 TL, fazlası 333,12 TL; yeni tahsilat y
+ADIM 87: düzelt Rastgele 1 in 200 
+ADIM 88: tahsilat/ödeme Rastgele 1 in  200
+ADIM 89: borç/alacak Rastgele 2 debt 200
+ADIM 90: taksit kartı Rastgele 0 mevcut borç 200 
+ADIM 91: çek al Rastgele 0 200
+ADIM 92: tahsilat/ödeme Rastgele 3 out  409
+ADIM 93: taksit kartı Rastgele 2 mevcut borç 200 
+ADIM 94: fatura Rastgele 2 400 {"ok":false,"error":"FIS serisinde son belge FIS2026000000003 14.10.2026 tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı). B
+ADIM 95: borç/alacak Rastgele 0 credit 200
+ADIM 96: fatura Rastgele 2 400 {"ok":false,"error":"FIS serisinde son belge FIS2026000000003 14.10.2026 tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı). B
+ADIM 97: çek al Rastgele 0 200
+ADIM 98: borç/alacak Rastgele 3 credit 200
+ADIM 99: çek al Rastgele 2 200
+ADIM 100: karşılıksız Rastgele 0 200 
+ADIM 101: tahsilat/ödeme Rastgele 0 in bağlı 200
+ADIM 102: kart tahsilatı Rastgele 2 200 
+ADIM 103: taksit kartı Rastgele 0 ayrı 200 
+ADIM 104: düzelt Rastgele 3 credit 200 
+ADIM 105: çek al Rastgele 0 200
+ADIM 106: sil Rastgele 1 200 
+ADIM 107: çek al Rastgele 2 200
+ADIM 108: taksit kartı Rastgele 1 mevcut borç 400 {"ok":false,"error":"Carinin taksitlendirilebilecek borcu 324,77 TL; toplam bundan büyük olamaz. Fazlası yeni borçsa ayr
+ADIM 109: tahsilat/ödeme Rastgele 0 in  200
+ADIM 110: fatura Rastgele 1 400 {"ok":false,"error":"FIS serisinde son belge FIS2026000000003 14.10.2026 tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı). B
+ADIM 111: borç/alacak Rastgele 3 debt 200
+ADIM 112: taksit kartı Rastgele 2 mevcut borç 400 {"ok":false,"error":"Bu carinin taksitlendirilecek borcu yok (bakiye sıfır ya da borcun tamamı zaten bir taksit kartında
+ADIM 113: karşılıksız Rastgele 0 200 
+ADIM 114: kart tahsilatı Rastgele 1 409 {"ok":false,"error":"Tutar kartın kalanını aşıyor: kalan 128,72 TL, girilen 1.401,63 TL, fazlası 1.272,91 TL; yeni tahsi
+ADIM 115: çek al Rastgele 0 200
+ADIM 116: borç/alacak Rastgele 0 debt 200
+ADIM 117: tahsilat/ödeme Rastgele 0 in  200
+ADIM 118: çek al Rastgele 2 200
+ADIM 119: kart tahsilatı Rastgele 1 409 {"ok":false,"error":"Tutar kartın kalanını aşıyor: kalan 719,48 TL, girilen 1.062,17 TL, fazlası 342,69 TL; yeni tahsila
+ADIM 120: karşılıksız Rastgele 0 200 
+ADIM 121: tahsilat/ödeme Rastgele 3 out  200
+ADIM 122: fatura Rastgele 2 200 
+ADIM 123: kart tahsilatı Rastgele 0 200 
+ADIM 124: taksit kartı Rastgele 0 ayrı 200 
+ADIM 125: tahsilat/ödeme Rastgele 2 in  200
+ADIM 126: düzelt Rastgele 1 in 200 
+ADIM 127: taksit kartı Rastgele 0 mevcut borç 200 
+ADIM 128: sil Rastgele 1 200 
+ADIM 129: taksit kartı Rastgele 0 mevcut borç 200 
+ADIM 130: sil Rastgele 0 200 
+ADIM 131: düzelt Rastgele 2 debt 200 
+ADIM 132: borç/alacak Rastgele 2 debt 200
+ADIM 133: karşılıksız Rastgele 0 200 
+ADIM 134: düzelt Rastgele 2 in 200 
+ADIM 135: taksit kartı Rastgele 2 mevcut borç 400 {"ok":false,"error":"Carinin taksitlendirilebilecek borcu 215,93 TL; toplam bundan büyük olamaz. Fazlası yeni borçsa ayr
+ADIM 136: borç/alacak Rastgele 3 credit 200
+ADIM 137: kart tahsilatı Rastgele 0 409 {"ok":false,"error":"Tutar kartın kalanını aşıyor: kalan 200,75 TL, girilen 579,33 TL, fazlası 378,58 TL; yeni tahsilat 
+ADIM 138: çek al Rastgele 0 200
+ADIM 139: fatura Rastgele 3 200 
+ADIM 140: tahsilat/ödeme Rastgele 2 in bağlı 200
+ADIM 141: taksit kartı Rastgele 1 ayrı 200 
+ADIM 142: düzelt Rastgele 2 debt 200 
+ADIM 143: çek al Rastgele 0 200
+ADIM 144: kart tahsilatı Rastgele 0 409 {"ok":false,"error":"Tutar kartın kalanını aşıyor: kalan 836,91 TL, girilen 1.107,82 TL, fazlası 270,91 TL; yeni tahsila
+ADIM 145: sil Rastgele 3 200 
+ADIM 146: taksit kartı Rastgele 2 ayrı 200 
+ADIM 147: borç/alacak Rastgele 2 debt 200
+ADIM 148: düzelt Rastgele 0 in 200 
+ADIM 149: tahsilat/ödeme Rastgele 2 in bağlı 200
+HATA SAYISI 0
+

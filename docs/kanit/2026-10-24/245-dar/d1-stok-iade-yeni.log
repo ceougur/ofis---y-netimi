@@ -1,0 +1,5 @@
+stok iade: 200 
+cari bakiye: 0 · hareketler: debt/elle/1000 | credit/stock/1000
+elle borç Kalan: 1000
+takvim kalemleri: account:Tahsil Edilecek Borç:1000:overdue
+BULGU: bakiye 0 (müşteri iadesi) ama takvimde "Tahsil Edilecek Borç" 1000 TL (overdue)
