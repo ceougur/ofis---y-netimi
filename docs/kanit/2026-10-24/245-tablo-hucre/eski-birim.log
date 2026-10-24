@@ -1,0 +1,90 @@
+TAP version 13
+# Subtest: 6b: kimlik / iletişim başlıklı kolon metindir; hücre ham değeri gösterir (telefon WhatsApp için okunur)
+not ok 1 - 6b: kimlik / iletişim başlıklı kolon metindir; hücre ham değeri gösterir (telefon WhatsApp için okunur)
+  ---
+  duration_ms: 4.066247
+  type: 'test'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-tablo-hucre/eski-d2cef7c/test/tablo-hucre-bicim.test.mjs:36:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Borçlu Telefon kolon türü
+    
+    'money' !== 'text'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'text'
+  actual: 'money'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-tablo-hucre/eski-d2cef7c/test/tablo-hucre-bicim.test.mjs:48:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: 6b: tutar kolonları para kalır ve biçimlenir (komşular: Alacak Tutarı, Kalan Borç, Toplam Borç, Bakiye, TUTAR)
+ok 2 - 6b: tutar kolonları para kalır ve biçimlenir (komşular: Alacak Tutarı, Kalan Borç, Toplam Borç, Bakiye, TUTAR)
+  ---
+  duration_ms: 26.617297
+  type: 'test'
+  ...
+# Subtest: 6b: tutar kolonunda 10 haneden uzun ayraçsız rakam dizisi para biçimine çevrilmez; 10 hane ve ayraçlı tutar biçimlenir
+not ok 3 - 6b: tutar kolonunda 10 haneden uzun ayraçsız rakam dizisi para biçimine çevrilmez; 10 hane ve ayraçlı tutar biçimlenir
+  ---
+  duration_ms: 0.954297
+  type: 'test'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-tablo-hucre/eski-d2cef7c/test/tablo-hucre-bicim.test.mjs:68:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + '12.345.678.950,00'
+    - '12345678950'
+         ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '12345678950'
+  actual: '12.345.678.950,00'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-tablo-hucre/eski-d2cef7c/test/tablo-hucre-bicim.test.mjs:69:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 6b: paketteki kimlik başlığı listesi sunucunun IDENTIFIER_HEADER'ı ile aynı (tek liste)
+not ok 4 - 6b: paketteki kimlik başlığı listesi sunucunun IDENTIFIER_HEADER'ı ile aynı (tek liste)
+  ---
+  duration_ms: 0.342851
+  type: 'test'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-tablo-hucre/eski-d2cef7c/test/tablo-hucre-bicim.test.mjs:75:1'
+  failureType: 'testCodeFailure'
+  error: 'pakette kimlik başlığı kuralı (hofIdHeader) yok'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-tablo-hucre/eski-d2cef7c/test/tablo-hucre-bicim.test.mjs:77:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 1
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 130.946321

@@ -1,0 +1,32 @@
+{
+  "ad": "245-tablo-hucre/e2e-senaryo-213",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-213.mjs",
+  "commit": "d2cef7ce21b0776e2767f8fb610c9be8a4159f5d",
+  "dal": "is/tablo-hucre",
+  "kirli": 3,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T16:45:34.620Z",
+  "sure_sn": 57.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 64,
+    "gecen": 64,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-tablo-hucre/e2e-senaryo-213.log",
+  "klasor": "/home/user/wt/tablo-hucre",
+  "ham_cikti_sha256": "8ffbae1d5f05358805c93a24871ec1183b9b01404ec13525a6418e297d1ab4e3",
+  "ham_cikti_bayt": 5110
+}
