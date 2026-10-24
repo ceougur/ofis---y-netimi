@@ -1068,9 +1068,13 @@
           syncEntryHelp(dialog, type);
           // 2.4.5 (kullanıcı kararı 24.10.2026 "sadece bilgi notu"): Kapatılacak Fatura seçilmemişken tahsilat / ödeme carinin en eski açık
           // borcundan başlayarak kapatır (S1); yalnız bilgi notu — kural ya da bağ değişmez. Fatura seçilince not gizlenir.
+          // DB2 (ikinci dar kontrol): sunucu (invoice-settle.mjs classifyLine) Tahsilat'ı yalnız carinin alacak tarafında (müşterinin borcu),
+          // Ödeme'yi yalnız borç tarafında (bizim borcumuz) kapatma sayar → müşteriye Ödeme'de ve tedarikçiden Tahsilat'ta not yanlış olurdu;
+          // not yalnız o tarafta açık yükümlülük olabilecek caride: Tahsilat → Müşteri / Diğer, Ödeme → Tedarikçi / Diğer (tür yoksa çıkar).
+          const fifoSide = type === "in" ? account.type !== "supplier" : account.type !== "customer";
           const form = dialog.querySelector("form");
           const noteField = form?.querySelector('[name="note"]')?.closest(".hof-field");
-          if (noteField) {
+          if (noteField && fifoSide) {
             noteField.insertAdjacentHTML("beforebegin", `<p class="hof-acc-fifo-note" data-fifo-note>Bu ${type === "in" ? "tahsilat" : "ödeme"} carinin en eski açık borcundan başlayarak kapatır.</p>`);
             const fifoNote = form.querySelector("[data-fifo-note]");
             const syncFifo = () => {
