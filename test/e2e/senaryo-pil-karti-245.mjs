@@ -560,6 +560,9 @@ try {
     const form = await formInfo(page);
     await shot(page, "s10d-odeme-formu");
     const right = ok(form.title === "Ödeme" && form.eyebrow.includes(`No ${supplier.refNo}`) && amountOf(form.amount) === 450, `tedarikçinin ödeme formu: “${form.title}” · “${form.eyebrow}” · ${form.amount}`);
+    // 2.4.5 DB2: tedarikçiye Ödeme bizim borcumuzu kapatır → bilgi notu VAR (müşteriye Ödeme'de yok: senaryo-ekstre-ayrinti-245).
+    const fifo = await page.$eval(`${TOP} [data-fifo-note]`, node => (node.hidden ? "" : node.textContent.trim())).catch(() => "");
+    ok(fifo === "Bu ödeme carinin en eski açık borcundan başlayarak kapatır.", `bilgi notu: “${fifo}”`);
     if (!right) {
       await closeAll(page);
       throw new Error("yanlış form açıldı; kaydedilmedi");

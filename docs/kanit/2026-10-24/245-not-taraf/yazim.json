@@ -1,0 +1,32 @@
+{
+  "ad": "245-not-taraf/yazim",
+  "komut": "node --test test/yazim-duzeni.test.mjs",
+  "commit": "8d73aadbd871be4e5f6584703b82c3065e91ffde",
+  "dal": "is/not-taraf",
+  "kirli": 3,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T21:35:21.857Z",
+  "sure_sn": 0.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-not-taraf/yazim.log",
+  "klasor": "/home/user/wt/not-taraf",
+  "ham_cikti_sha256": "fe81009f81cbe58cc56397b46da9a979201e7e36950c176807d102c3202857d3",
+  "ham_cikti_bayt": 1215
+}

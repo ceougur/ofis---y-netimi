@@ -39,6 +39,7 @@ await must("açılış", api.post(`/api/workspace/accounts/${deniz.id}/entries`,
 await must("fatura 1", api.post("/api/workspace/invoices", { kind: "sale", scenario: "service_sale", accountId: deniz.id, issueDate: "2026-11-10", discountRate: 10, lines: [{ name: "Montaj Hizmeti", qty: 3, unitPrice: 1250.5, discountRate: 5, vatRate: 20, unit: "Saat" }, { name: "Keşif", qty: 1, unitPrice: 999.99, vatRate: 10 }], payment: { rest: "open" } }));
 await must("fatura 2", api.post("/api/workspace/invoices", { kind: "sale", scenario: "service_sale", accountId: deniz.id, issueDate: "2026-11-15", pricesIncludeVat: true, lines: [{ name: "Bakım Paketi", qty: 2, unitPrice: 1000, vatRate: 20 }], payment: { cash: [{ amount: 500, method: "cash" }], rest: "open" } }));
 await must("tahsilat", api.post(`/api/workspace/accounts/${deniz.id}/entries`, { kind: "in", amount: "1000", method: "cash", date: "2026-11-20", note: "Elden" }));
+const kaya = await must("tedarikçi", api.post("/api/workspace/accounts", { name: "Kaya Tedarik", type: "supplier", registeredOn: "2026-01-01" }));
 await must("personel", api.post("/api/admin/users", { username: "personel6d", name: "Personel Altı", role: "personel", password: "Personel-2026!", mustChangePassword: false }));
 
 const browser = await chromium.launch();
@@ -192,9 +193,27 @@ try {
   await page2.click(`${TOP} [data-entry="out"]`);
   await page2.waitForSelector(`${TOP} input[name="amount"]`, { state: "visible" });
   await page2.waitForTimeout(150);
-  ok((await fifoOf()) === "Bu ödeme carinin en eski açık borcundan başlayarak kapatır.", `ödeme formunda not: “${await fifoOf()}”`);
+  // DB2: sunucu müşteriye Ödeme'yi müşterinin borcunu kapatma saymaz (invoice-settle classifyLine) → müşteride Ödeme formunda not YOK.
+  ok((await fifoOf()) === null, `müşteriye ödeme formunda not yok: “${await fifoOf()}”`);
   for (let index = 0; index < 6 && (await page2.$(MODAL)); index += 1) await escClose(page2, { step: "kapat" });
   ok(entryCount() === entriesBefore, `formlar kaydetmeden kapandı (cari hareketi ${entryCount()} = ${entriesBefore})`);
+  // DB2: tedarikçide tersi — Ödeme'de not VAR, Tahsilat'ta YOK.
+  const kayaCount = () => app.store.get("SELECT COUNT(*) AS n FROM account_entries WHERE account_id = ?", kaya.id).n;
+  const kayaBefore = kayaCount();
+  await page2.evaluate(id => window.HOF.accounts.open(id), kaya.id);
+  await page2.waitForSelector(`${TOP} [data-entry="out"]`, { state: "visible" });
+  await page2.click(`${TOP} [data-entry="out"]`);
+  await page2.waitForSelector(`${TOP} input[name="amount"]`, { state: "visible" });
+  await page2.waitForTimeout(150);
+  ok((await fifoOf()) === "Bu ödeme carinin en eski açık borcundan başlayarak kapatır.", `tedarikçiye ödeme formunda not: “${await fifoOf()}”`);
+  await escClose(page2, { step: "tedarikçi ödeme formu" });
+  await page2.waitForSelector(`${TOP} [data-entry="in"]`, { state: "visible" });
+  await page2.click(`${TOP} [data-entry="in"]`);
+  await page2.waitForSelector(`${TOP} input[name="amount"]`, { state: "visible" });
+  await page2.waitForTimeout(150);
+  ok((await fifoOf()) === null, `tedarikçiden tahsilat formunda not yok: “${await fifoOf()}”`);
+  for (let index = 0; index < 6 && (await page2.$(MODAL)); index += 1) await escClose(page2, { step: "kapat" });
+  ok(kayaCount() === kayaBefore, `tedarikçi formları kaydetmeden kapandı (${kayaCount()} = ${kayaBefore})`);
   await page.close();
 
   console.log("4) Finans Raporları yetkisi olmayan: kartta düğme yok");
