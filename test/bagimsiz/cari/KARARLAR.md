@@ -22,7 +22,7 @@ Koşucu: `kos.mjs` · Rastgele üretici: `uretici.py` · Elle senaryolar: `senar
 | AJAN | kodu yazan ajanın raporladığı ayrıntı (KURALLAR-244 "Ajan kural metinleri") | İNCELE |
 | YAYGIN | kaynak susuyor; yaygın muhasebe/ERP uygulaması (gerekçesi kuralda) | İNCELE |
 | BAŞ MİMAR | /3: `docs/2.4.5-IS-LISTESI.md` "BAŞ MİMAR KARARLARI" (S1, K6.1–K6.4, K1) — kod yazılmadan önce yazılmış karar metni (ders 40) | **BULGU** |
-| YORUM | /3: karar metni var ama iki okumaya açık; kâhin harfiyen okumayı uygular, raporda SORU (§8 C11) | İNCELE |
+| YORUM | /3: karar metni var ama iki okumaya açık; kâhin harfiyen okumayı uygular, raporda SORU (§8 C11). KS1–KS6 kararından (24.10.2026) sonra KULLANILMIYOR | İNCELE |
 
 Bir denetimin etiketi, o carinin geçmişinde yalnız AJAN/YAYGIN kuralına dayanan bir olay varsa (ör. evrak faturanın açığından büyük, fatura
 iptalinde bağ düştü, evrak çöp kutusundan geri yüklendi, bağ değiştirildi, bağsız evrak karşılıksız döndü) o cari için AJAN'a düşer
@@ -425,8 +425,9 @@ Geçersiz DENETİMLER (senaryo koşar; `/2` `kontrol {raporlar: true}` — b3b, 
 - `acilis:<no>` ("önce cari açın" Açılış Bakiyesi = takvim kaleminin `debt`'i) → ÇATAL `[0, "boş"]` [YAYGIN — madde 3 ön dolum BOŞ; kara kutu vekili, asıl denetim ekranda].
 - Yeni (her `raporlar` kontrolünde): `takvim:tabloTutarli`, `takvim:kalemTutar:<no>`, `vadeTakip:tablo`, `projeksiyon:tablo`, `projeksiyon:tabloSecenek` = 0 [KULLANICI madde 4].
 - DEĞİŞMEYEN: `k4:kisiler`, `k4:vade`, `k4:akis` (Tablodaki Kişiler / Vadeler / Nakit Akışı tablo raporlarıdır — madde 5 bu sürümde YALNIZ etiketler), `rapor:*`.
-- Bütün senaryolar: `nakit:kasaGiris/Cikis` (Tablodaki Nakit Akışı Kasa sütunu) → ÇATAL `[Kasa raporu, "yok"]` (madde 5 öneri "Kasa sütunları Tablodaki Nakit Akışı'nda
-  kalmaz (öneri; ek madde değilse yalnız etiket)" — SORU 4).
+- Bütün senaryolar: `nakit:kasaGiris/Cikis` (Tablodaki Nakit Akışı Kasa sütunu) = **"yok"** [BAŞ MİMAR KS4: madde 5 önerisi uygulanır, Kasa sütunları KALKAR]; Kasa raporu
+  (`kasaRapor:*`, MM6 kaynakları) aynen denetlenir. K5 `yetkisiz:<ad>:not` = **false** [KS4: gösterilecek Kasa sütunu yok → "Kasa yetkisi" notu da kalkar]; `yetkisiz:<ad>:kasa`
+  "gizli" kalır (K5). `--legacy` (2.4.4 kuralları) eski MM6 / K5 denetimlerini aynen koşar.
 - `BILINEN.json`: b3y'nin dört kaydı (`k1:acilis:2026/1012`, `k1:acilis:2026/1013`, `k1:kalem:2026/1013`, `k1:k4:takvim`) `"kural": "2.4.4"` — yalnız `--legacy`'de uygulanır.
 - Mutasyon kümesi: geçersiz senaryolar 2.4.4 kipinde, öbür `/1 /2` senaryoları İKİ kipte, `/3` 2.4.5 kipinde değerlendirilir. 2.4.5'te konusu kalkan kuralların mutantları
   (1–5, 22, 38–50, 55, 56) yalnız 2.4.4 değerlendirmesinde yakalanır (koşucu "[2.4.4]" diye yazar).
@@ -435,7 +436,8 @@ Geçersiz DENETİMLER (senaryo koşar; `/2` `kontrol {raporlar: true}` — b3b, 
 - **C1.1** [BAŞ MİMAR K1 + KULLANICI KARAR ~21:35 UTC (1) "yeni giriş/düzeltme kapalı"] `config.legacyCasePayments` KAPALIYKEN `POST /api/workspace/cases/:key/payments` →
   **410**, gövde `code: "case-payments-closed"`, `error: "Kayıt tahsilatı kapatıldı; tahsilat Cari'den girilir."`; hiçbir satır yazılmaz (Kasa, mizan, Tablodaki Kişiler tahsilatı aynı).
 - **C1.2** [KULLANICI "düzeltme kapalı" + K1 kodu] eski kayıt tahsilatının düzeltmesi `PUT /api/workspace/payments/:id` (testlerin düzeltme ucu) → 410 + aynı `code` ve `error`.
-  [YAYGIN] K1 metnindeki `PUT /api/workspace/cases/:key/payments` → ret, http ÇATAL `[405, 410]` (2.4.4'te yol yok: 405; SORU 1).
+  [BAŞ MİMAR KS1] kayıt tahsilatını yaratan ya da değiştiren HER uç 410 `case-payments-closed`; K1 metnindeki `PUT /api/workspace/cases/:key/payments` 2.4.4'te yok (405) →
+  ret, http ÇATAL `[404, 405, 410]` ("405/404 kalabilir").
 - **C1.3** [KULLANICI "silme/geri yükleme açık"] `DELETE /api/workspace/payments/:id` AÇIK: Kasa ve Tablodaki Kişiler tahsilatı düşer; Silinenler'den geri yükleme AÇIK: geri gelir.
 - **C1.4** [BAŞ MİMAR madde 1 "eski satırlar Kasa'da ve defterde (A 602) aynen"] `/3`'te kayıt tahsilatı (nakit) **B 100 / A 602**; mizan denetlenir (`/1 /2`'de denetlenmiyordu).
 - **C1.5** Anahtar AÇIKKEN (senaryo `anahtar: {legacyCasePayments: true}` ya da `--legacy`) 2.4.4 davranışı (B1.8, N6). Koşucu `startTestServer`'a `legacyCasePayments` /
@@ -453,7 +455,8 @@ Geçersiz DENETİMLER (senaryo koşar; `/2` `kontrol {raporlar: true}` — b3b, 
 - **C4.1** [KULLANICI KARAR ~21:35 UTC (4) + madde 4] `/dues` `items`'ta tablodan TUTARLI kalem YOK — ödeme günü (tutarlı tarih sütunu), aidat, ödeme sözü; carisi olan kaydınki de
   (`takvim:tabloTutarli` = 0: kimliği `due|…` ya da kaynak alanı boş / table / promise ve tutarı > 0 kalem sayısı; `takvim:kalemTutar:<no>` = 0).
 - **C4.2** [KULLANICI ~21:25 UTC "kalacaklarda önerin uygun"] tablonun TUTARSIZ tarih hatırlatmaları KALIR: `deadlines`'ta kayıt başına sütun listesi = tablodaki "Duruşma Tarihi",
-  "Sözleşme Bitiş", "İcra Son Tarihi" hücrelerinden tarihi bugün..bugün+6 olanlar (ufuk sınırı denetlenmez); "Son Ödeme", söz tarihi gibi ödeme tarihleri listede YOK.
+  "Sözleşme Bitiş", "İcra Son Tarihi" hücrelerinden tarihi bugün..bugün+6 olanlar (deadlines ufku KS5'in konusu değil — denetlenmez); [BAŞ MİMAR KS6] "Son Ödeme", söz tarihi gibi
+  tutarlı kalem doğuran ödeme tarihi sütunları `deadlines`'a DÜŞMEZ (para tarihi ajandaya dönüşmez).
 - **C4.3** Anlık Durum Vade Takip (`overview/vade-takip?preset=open`): kaynak table / promise (ya da kayıt bağlı, deadline olmayan) satır 0; deadline satırları C4.2 listesiyle aynı.
 - **C4.4** Nakit Akış Projeksiyonu (`overview/nakit-akisi?from=bugün&to=+30&overdue=1`): tablo satırı 0; "Tablo" seçeneği kalkar → `&table=1` ile de 0.
 - **C4.5** [YAYGIN — "taksit, çek, fatura … aynen"] fatura kalemi `invoice|<id>`: açık > 0 ise `{amount = açık, direction}` (satış in, alış out), değilse yok; portföydeki alınan
@@ -466,17 +469,18 @@ Geçersiz DENETİMLER (senaryo koşar; `/2` `kontrol {raporlar: true}` — b3b, 
   ödemeler (faturaya bağlı tahsilat / ödeme / evrak, faturanın kendi evrakı) yalnız kendi kalemini kapatır ([AJAN B2.1] fazlası havuza); bağsız ödemeler (tahsilat / ödeme, çek/senet,
   iade artanı, [YAYGIN] tedarikçiye ciro edilen evrak) en eskiden dağıtılır; karşılıksız evrak kapatmaz (B2.2). Elle kaydın **Kalan**'ı = tutar − dağıtılan; Kalan > 0 → açık.
   Faturaların kapaması aynı kuyruktan (elle kayıt yokken `/1–/2` B2.1 ile bayt bayt aynı — bütün eski senaryolarda doğrulandı). Cari bakiyesi ve yevmiye DEĞİŞMEZ.
-  Taksit kartlı caride Kalan tanımsız (denetlenmez). Aynı caride iki tarafta da elle kayıt → etiket YORUM (SORU 2).
+  Taksit kartlı caride Kalan tanımsız (denetlenmez). [BAŞ MİMAR KS2] müşterideki elle **Alacak** HARFİYEN S1: karşı taraf yükümlülüğü ("Ödenecek Borç" kalemi, vadesi
+  varsa), müşterinin borcuna mahsup EDİLMEZ (2.0.17 "elle yazılan Alacak ödeme değildir"; karşılıklı kapama yalnız açık "Mahsup Et" ile); bakiye zaten net.
 - **K6.1** [BAŞ MİMAR] `dueDate` (Vade Tarihi), `expectedDate` (Beklenen Ödeme Tarihi), `YYYY-AA-GG`, boş = yok; elle Borç / Alacak (`POST/PUT …/entries`, kind debt / credit) ve
   Açılış (`openingDueDate`, `openingExpectedDate`). Kaydın tarihinden ÖNCE → **400** + `field`; biçimsiz (13. ay, 30 Şubat, gg.aa.yyyy) → 400; hiçbir satır yazılmaz; eşit tarih
   geçerli. Düzenle'de yeni durum denetlenir (vadeyi tarihten öne alma; tarihi vadeden sonraya alma → 400). `field` değeri [YAYGIN] gövde anahtarının adı (`dueDate`, `expectedDate`,
   `openingDueDate`, `openingExpectedDate`). Tahsilat / ödeme (in / out) alan TAŞIMAZ: gönderilirse kaydedilmez (hareketin alanı boş ya da yanıtta yok — ÇATAL).
-- **K6.2** [BAŞ MİMAR] `GET /api/workspace/accounts/:id` `entries[]`: elle Borç / Alacak ve Açılış satırında `dueDate`, `expectedDate` (boş = "") ve `remaining` (Kalan; kâhin
-  `amount` ile AYNI birimde TL okur — SORU 3). Alan yoksa "alan yok" (fark).
+- **K6.2** [BAŞ MİMAR] `GET /api/workspace/accounts/:id` `entries[]`: elle Borç / Alacak ve Açılış satırında `dueDate`, `expectedDate` (boş = "") ve `remaining` (Kalan; [KS3] TL,
+  `amount` ile AYNI birim, 2 ondalık — kuruş tamsayı DEĞİL). Alan yoksa "alan yok" (fark).
 - **K6.3** [BAŞ MİMAR] `/dues` `items`: Kalan > 0 VE Vade ya da Beklenen Ödeme Tarihi'li elle kayıt / açılış → `{id "account|<entryId>", source "account", accountId, entryId,
   direction (in: carinin borcu / out: carinin alacağı), person = cari adı, label "Tahsil Edilecek Borç" / "Ödenecek Borç" (+ " (Ödeme Sözü)" Beklenen varsa), dueDate =
-  Beklenen varsa o yoksa Vade, amount = Kalan, days, state overdue / today / upcoming}`; ufuk geçmişin tamamı + bugünden 7 gün (sınır günü bugün+7 denetlenmez — dahil mi metinde
-  kesin değil). Yalnız `accounts.view` yetkisi olana (yetkisi kaldırılmış kullanıcıda 0; kurulum denetimi: o kullanıcıya Cari listesi 403 olmalı). "Ödendi Say" YOK
+  Beklenen varsa o yoksa Vade, amount = Kalan, days, state overdue / today / upcoming}`; ufuk [KS5] geçmişin tamamı + bugün + 7 gün DAHİL (`days <= 7`;
+  bugün+7 kalem VAR, bugün+8 YOK — c6 b6 / b7; rastgele üretici sınır gününü de üretir). Yalnız `accounts.view` yetkisi olana (yetkisi kaldırılmış kullanıcıda 0; kurulum denetimi: o kullanıcıya Cari listesi 403 olmalı). "Ödendi Say" YOK
   (`settle {id: "account|…"}` ret, kalem durur). Vade Takip (Anlık Durum) aynı kalemleri `{amount, date, direction}` gösterir (bugün+6'ya kadar denetlenir). Nakit Akış
   Projeksiyonu cari vadesini KATMAZ (satır 0; BİLİNEN SINIR 2.5.x). Silinen kayıt kalem değildir; Kalan 0 / tarihsiz kayıt kalem değildir.
 - **K6.4** [BAŞ MİMAR] Düzenle verilmeyen alanı korur (kısmi PUT); Silinenler'den geri yükleme ve yedekten geri yükleme Vade / Beklenen Ödeme Tarihi'ni TAŞIR; vade değişikliği
@@ -509,11 +513,14 @@ tabloTutarli, kalemTutar:<no>, deadline:<no>}`, `<k>:vadeTakip:{hareket:<ad>, ta
 | Z10 | Rastgele sıra (ders 17): fatura + elle kayıt + tahsilat + silme / geri yükleme + düzenleme karışık | rastgele-s1-<t> |
 
 ### C10 Mutasyonlar (2.4.5)
-73–105 (`model.py --mutasyonlar`; 79 yok — karşılıksızın kapatması eski mutant 7'de, artık elle kayda da uygulanır). Her biri en az bir senaryoda kâhin çıktısını değiştirir
+73–108 (`model.py --mutasyonlar`; 106–108 KS4/KS5'ten; 79 yok — karşılıksızın kapatması eski mutant 7'de, artık elle kayda da uygulanır). Her biri en az bir senaryoda kâhin çıktısını değiştirir
 (model tek başına doğrulandı: yakalanmayan 0). Koşucu mutantları tek Python sürecinde tarar (`model.py - --mutasyon-tara <liste>`; her mutantta ilk 3 yakalayan) —
 eski "her mutant × her dosya ayrı süreç" yolu ~20 dk sürüyordu, yeni yol ~10 sn.
 
-### C11 SORU (ana oturuma; kâhin karar vermedi — harfiyen / yaygın okuma uygulandı)
+### C11 SORU → KARARA BAĞLANDI (BAŞ MİMAR KARARI KS1–KS6, 24.10.2026 ~17:30 UTC, `docs/2.4.5-IS-LISTESI.md` "KÂHİN SORULARI"; kâhine işlendi)
+KS1 → C1.2 (her yaratan / değiştiren uç 410; `PUT /cases/:key/payments` 405/404 kalabilir) · KS2 → S1 (müşteride elle Alacak harfiyen, etiket YORUM → BAŞ MİMAR) · KS3 → K6.2
+(`remaining` TL) · KS4 → C0 (Tablodaki Nakit Akışı'nda Kasa sütunu ve yetkisiz notu YOK; mutant 107, 108) · KS5 → K6.3 (bugün+7 DAHİL; mutant 106) · KS6 → C4.2.
+Sorulan metin (kayıt için aynen):
 1. K1 "POST ve PUT `/cases/:key/payments`": PUT bu yolda 2.4.4'te yok (405); gerçek düzeltme ucu `PUT /api/workspace/payments/:id`. Kâhin: ikincisi 410 + kod [KULLANICI "düzeltme
    kapalı"], birincisi ret ÇATAL [405, 410]. Kod iki yolu da kapatmalı mı?
 2. S1 "tarafa göre" iki kuyruk: müşteride elle **Alacak** (ör. iskonto / iade dekontu) harfiyen borç tarafı kalemidir ("Ödenecek Borç", müşteri borçlarını kapatmaz). Yaygın açık

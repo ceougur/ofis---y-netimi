@@ -1,0 +1,32 @@
+{
+  "ad": "245-kahin/taban-d2cef7c-ks-legacy",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --legacy --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kahin-245/cikti-ks-legacy",
+  "commit": "549b6a8f07dabb6c7dd7f254c45c90857232860a",
+  "dal": "is/kahin-245",
+  "kirli": 4,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:27:46.163Z",
+  "sure_sn": 22.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 1139,
+    "gecen": 1139,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-kahin/taban-d2cef7c-ks-legacy.log",
+  "klasor": "/home/user/wt/kahin-245",
+  "ham_cikti_sha256": "21888865dcebc775a4cf6a0897809923fcacb1ffdc6452e7a6b38f559009ae1e",
+  "ham_cikti_bayt": 17309
+}

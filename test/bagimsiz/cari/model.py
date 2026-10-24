@@ -147,6 +147,9 @@ MUTASYONLAR = {
     103: "K6.4: yedekten geri yüklemede vade alanları boş gelir",
     104: "K6.4: Silinenler'den geri yüklenen elle kayıt vade alanlarını yitirir",
     105: "K1: kayıt tahsilatı düzeltmesi (PUT /payments/:id) açık",
+    106: "KS5: ufkun sınır günü (bugün + 7) takvimde yok (hariç)",
+    107: "KS4: Kasa sütunları Tablodaki Nakit Akışı'nda kalır (Kasa raporuyla aynı)",
+    108: "KS4: Kasa yetkisi olmayan kullanıcıya Tablodaki Nakit Akışı'nda Kasa notu kalır",
 }
 
 
@@ -1328,8 +1331,8 @@ class Model:
 
     def kayit_tahsilat_put(self, a):
         """K1 metni "POST ve PUT /api/workspace/cases/:key/payments kapalı": bu yolda düzeltme yazılmaz. [YAYGIN] yol programda hiç yoksa 405 (yoklama 2.4.4: 405) — ikisi de ret."""
-        self.d("adim:%s:http" % a["id"], {"catal": [405, 410]}, "YAYGIN", "K1 PUT /cases/:key/payments: 410 (kapı) ya da 405 (yol yok) — veri değişmez")
-        return ("ret", "YAYGIN")
+        self.d("adim:%s:http" % a["id"], {"catal": [404, 405, 410]}, "BAŞ MİMAR", "KS1: PUT /cases/:key/payments 2.4.4'te yok — 405/404 kalabilir (410 da kapalı) — veri değişmez")
+        return ("ret", "BAŞ MİMAR")
 
     def kayit_tahsilat_sil(self, a):
         """K1: DELETE AÇIK (eski veri düzeltilebilsin) — Kasa'dan ve defterden düşer, kaydın tahsilatı azalır. Mutant 92: kapalı."""
@@ -1607,7 +1610,7 @@ class Model:
         proj_son = (bugun + datetime.timedelta(days=30)).isoformat()
         ajan_neden = {"ux18-fazla", "iptal-bag-duser", "geri-yukle", "bag-degisti", "iade", "kendi-evrak-iptal", "bagsiz-karsiliksiz"}
         kalan_cache = {}
-        kalem_say, sayim_kesin, capraz_var, proj_mut = 0, True, False, 0
+        kalem_say, sayim_kesin, proj_mut = 0, True, 0
         for hn, h in self.hareketler.items():
             c = self.cariler.get(h["cari"])
             if not c or c.get("silindi"):
@@ -1630,10 +1633,9 @@ class Model:
                 kalan_cache[h["cari"]] = self.kalanlar(h["cari"])
             kalan = kalan_cache[h["cari"]].get(hn, h["tutar"])
             capraz = self.elle_kuyrukta(h["cari"], "borc") and self.elle_kuyrukta(h["cari"], "alacak")
-            capraz_var = capraz_var or capraz
-            et = "YORUM" if capraz else ("AJAN" if self.etiketCari[h["cari"]] & ajan_neden else "BAŞ MİMAR")
+            et = "AJAN" if self.etiketCari[h["cari"]] & ajan_neden else "BAŞ MİMAR"
             self.d("%s:hareket:%s:kalan" % (k, hn), kalan, et, "S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası)"
-                   + (" · YORUM: aynı caride iki taraf (elle Alacak müşteride) — S1 harfiyen ayrı kuyruk (SORU)" if capraz else ""))
+                   + (" · KS2: aynı caride iki taraf — elle Alacak karşı taraf yükümlülüğü, mahsup yok" if capraz else ""))
             self.d("%s:hareket:%s:vade" % (k, hn), h["vade"], "BAŞ MİMAR", "K6.2 hareketlerde Vade Tarihi (boş = yok)")
             self.d("%s:hareket:%s:beklenen" % (k, hn), h["beklenen"], "BAŞ MİMAR", "K6.2 hareketlerde Beklenen Ödeme Tarihi (boş = yok)")
             # K6.3 takvim / zil kalemi
@@ -1646,10 +1648,8 @@ class Model:
             acik_mi = kalan > 0 or self.mut == 84
             if tarih and kalan > 0 and tarih <= proj_son:
                 proj_mut += 1
-            if acik_mi and tarih and tarih == ufuk and self.mut != 83:
-                sayim_kesin = False
-                continue  # ufkun sınır günü (bugün + 7): dahil mi kararda kesin değil — denetlenmez
-            if acik_mi and tarih and (tarih <= ufuk or self.mut == 83) and not h.get("odendiSay"):
+            # KS5 [BAŞ MİMAR]: ufuk geçmişin tamamı + bugün + 7 gün DAHİL (days <= 7); mutant 106: bugün+7 hariç
+            if acik_mi and tarih and (tarih <= ufuk or self.mut == 83) and not (self.mut == 106 and tarih == ufuk) and not h.get("odendiSay"):
                 yon = "in" if h["yon"] == "borc" else "out"
                 etiket = ("Tahsil Edilecek Borç" if yon == "in" else "Ödenecek Borç") + (" (Ödeme Sözü)" if h["beklenen"] and self.mut != 82 else "")
                 if self.mut == 100:
@@ -1667,7 +1667,7 @@ class Model:
             elif kalem == "yok" and not (acik_mi and tarih):
                 self.d("%s:vadeTakip:hareket:%s" % (k, hn), "yok", et, "K6.3 kalem olmayan kayıt Vade Takip'te yok")
         if sayim_kesin:
-            self.d("%s:takvim:cariKalemSayisi" % k, kalem_say, "YORUM" if capraz_var else "BAŞ MİMAR", "K6.3 takvimdeki cari kalemlerinin sayısı")
+            self.d("%s:takvim:cariKalemSayisi" % k, kalem_say, "BAŞ MİMAR", "K6.3 takvimdeki cari kalemlerinin sayısı")
         self.d("%s:projeksiyon:cari" % k, proj_mut if self.mut == 99 else 0, "BAŞ MİMAR", "K6.3 Nakit Akış Projeksiyonu cari vadesini KATMAZ (BİLİNEN SINIR 2.5.x)")
         for ad, u in self.kullanicilar.items():
             if "accounts.view" in u["kaldir"]:
@@ -1679,11 +1679,10 @@ class Model:
                 continue
             if any(kt["aktif"] and kt["cari"] == f["cari"] for kt in self.kartlar.values()):
                 continue
-            capraz = self.elle_kuyrukta(f["cari"], "borc") and self.elle_kuyrukta(f["cari"], "alacak")
             if f["tur"] == "alis" and f["durum"] == "kesildi":
                 acik = self.kuyruk_borc(f["cari"]).get(fad, 0)
                 s1 = self.elle_kuyrukta(f["cari"], "alacak")
-                self.d("%s:fatura:%s:acik" % (k, fad), acik, "YORUM" if capraz else ("BAŞ MİMAR" if s1 else "PLAN"),
+                self.d("%s:fatura:%s:acik" % (k, fad), acik, "BAŞ MİMAR" if s1 else "PLAN",
                        "S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme")
             elif f["durum"] == "kesildi":
                 acik = self.aciklar(f["cari"]).get(fad, 0)
@@ -1693,7 +1692,7 @@ class Model:
                 v = {"amount": acik, "direction": "in" if f["tur"] == "satis" else "out"}
             else:
                 v = "yok"
-            self.d("%s:takvim:fatura:%s" % (k, fad), v, "YORUM" if capraz else "YAYGIN", "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)")
+            self.d("%s:takvim:fatura:%s" % (k, fad), v, "YAYGIN", "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)")
         if a.get("uyari"):
             for ead, e in self.evraklar.items():
                 if e["cari"] is None:
@@ -1730,7 +1729,7 @@ class Model:
                             if h in sk["basliklar"] and t and self.bugun <= t <= son:
                                 lst.add(h)
                 v = [] if self.mut == 97 else sorted(lst)
-                self.d("%s:takvim:deadline:%s" % (k, no), v, "KULLANICI", "madde 4: tablonun tutarsız tarih hatırlatmaları KALIR (yalnız duruşma / sözleşme bitiş / icra son tarihi; ödeme günü değil)")
+                self.d("%s:takvim:deadline:%s" % (k, no), v, "KULLANICI", "madde 4 + KS6: tutarsız tarih hatırlatmaları KALIR (duruşma / sözleşme bitiş / icra son tarihi); ödeme tarihi sütunları (Son Ödeme, söz tarihi) deadlines'a DÜŞMEZ")
                 self.d("%s:vadeTakip:deadline:%s" % (k, no), v, "KULLANICI", "madde 4: Vade Takip'te tutarsız tablo tarihleri KALIR")
 
     # ───────────────────────── kontrol
@@ -1989,14 +1988,20 @@ class Model:
         # /2 B5b (K5 [KULLANICI] Y1): Kasa'yı görme yetkisi olmayan kullanıcı Nakit Akışı'nda Kasa giriş/çıkışını görmez (boş/gizli + not)
         for ad in [u for u, v in self.kullanicilar.items() if "cash.view" in v["kaldir"]]:
             self.d("%s:yetkisiz:%s:kasa" % (k, ad), "gorunur" if self.mut == 27 else "gizli", "KULLANICI", "B5b K5 Kasa giriş/çıkışı gizli")
-            self.d("%s:yetkisiz:%s:not" % (k, ad), self.mut != 27, "KULLANICI", "B5b K5 gizlilik notu")
+            if self.kural == "2.4.4":
+                self.d("%s:yetkisiz:%s:not" % (k, ad), self.mut != 27, "KULLANICI", "B5b K5 gizlilik notu")
+            else:
+                # KS4 [BAŞ MİMAR]: gösterilecek Kasa sütunu yok → "Kasa yetkisi" notu da kalkar; mutant 108: not kalır
+                self.d("%s:yetkisiz:%s:not" % (k, ad), self.mut == 108, "BAŞ MİMAR", "KS4 madde 5: yetkisiz kullanıcıya Kasa notu yok")
         # /2 B4 (MM6 [KULLANICI] 22.10 21:27 UTC "Nakit Akışı Kasa giriş bütün nakit hareketleri"): yıl başından bugüne Kasa giriş/çıkış
         bas = self.bugun[:4] + "-01-01"
         giris = sum(g for t, g, _, _r in self.kasa_hareket if bas <= t <= self.bugun)
         cikis = sum(c for t, _, c, _r in self.kasa_hareket if bas <= t <= self.bugun)
         for anahtar, v in (("nakit:kasaGiris", giris), ("nakit:kasaCikis", cikis), ("kasaRapor:giris", giris), ("kasaRapor:cikis", cikis)):
             if anahtar.startswith("nakit:") and self.kural != "2.4.4":
-                v = {"catal": [v, "yok"]}  # 2.4.5 madde 5 (öneri): Kasa sütunları Tablodaki Nakit Akışı'nda kalmayabilir — kalırsa Kasa raporuyla aynı (SORU)
+                # KS4 [BAŞ MİMAR] (madde 5 öneri uygulanır): Kasa sütunları Tablodaki Nakit Akışı'ndan KALKAR → alan yok; mutant 107: kalır (Kasa raporuyla aynı)
+                self.d("%s:%s" % (k, anahtar), v if self.mut == 107 else "yok", "BAŞ MİMAR", "KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok")
+                continue
             self.d("%s:%s" % (k, anahtar), v, "KULLANICI", "B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar)")
         if self.v3:
             self.kontrol_v3(a, k)

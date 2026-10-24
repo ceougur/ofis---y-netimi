@@ -8,7 +8,7 @@
 --tur s1 (24.10.2026, 2.4.5 kâhini): iki müşteri (D, E) + bir tedarikçi (S); Açılış Bakiyesi (vadeli/vadesiz, tedarikçide alacak yönlü), satış ve alış
 faturaları, elle Borç / Alacak (Vade Tarihi, Beklenen Ödeme Tarihi; ara sıra kaydın tarihinden önce ya da biçimsiz → 400 beklenir), bağsız ve faturaya bağlı
 tahsilat / ödeme, bağsız alınan çek + karşılıksız, hareket silme / Silinenler'den geri yükleme, Düzenle (tutar / vade / beklenen), Cari görüntüleme yetkisi
-kaldırılmış kullanıcı (yarı tohumda). UX18 akışından AYRI (rastgele-ux18-<t> değişmez). Ufkun sınır günü (bugün + 7) üretilmez.
+kaldırılmış kullanıcı (yarı tohumda). UX18 akışından AYRI (rastgele-ux18-<t> değişmez). Ufkun sınır günü (bugün + 7, KS5 dahil) de üretilir.
 
 Üç müşteri + bir tedarikçi; satış faturaları (bazısı kendi çekiyle), bağsız/bağlı nakit tahsilat, faturaya bağlı/bağsız alınan
 çek/senet, karşılıksız, tahsil, ciro, evrak sil / geri yükle, bağ değiştir, fatura iptali; her ~10 adımda kontrol.
@@ -273,8 +273,9 @@ def uret_s1(tohum, islem):
     gun = date(2026, 3, 2)
 
     def ileri(t, en_cok):
+        # KS5 (24.10.2026): ufkun sınır günü (bugün + 7) DAHİL — o gün de üretilir (önceki sürüm kaçınıyordu); sınır günü olasılığı artırılır
         x = (date.fromisoformat(t) + timedelta(days=rnd.randint(0, en_cok))).isoformat()
-        return (date.fromisoformat(x) + timedelta(days=1)).isoformat() if x == sinir else x
+        return sinir if rnd.random() < 0.05 and sinir >= t else x
 
     def vadeler(t, bozuk=0.0):
         out = {}
