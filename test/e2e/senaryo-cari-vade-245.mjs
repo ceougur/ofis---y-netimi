@@ -33,7 +33,8 @@ const must = async (label, promise) => {
   if (res.status !== 200) throw new Error(`${label}: ${res.status} ${JSON.stringify(res.data).slice(0, 300)}`);
   return res.data;
 };
-const server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), now: clock, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+// K1.2 (aday 1): 2.4.5 davranışını sınayan senaryo — kayıt tahsilatı ve Tablodan Aktar üretim varsayılanında (kapalı); bootVersion güncel kodda ikisini açar.
+const server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), now: clock, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, legacyCasePayments: false, legacyTableTransfer: false });
 const api = await server.login();
 const db = server.app.store;
 const one = (sql, ...args) => db.get(sql, ...args);

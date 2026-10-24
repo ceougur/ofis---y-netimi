@@ -13,6 +13,12 @@
 //   S7 sağ alt bildirim: fatura bildiriminde Tahsilat Gir + Fatura Kartını Aç (Kayda Git yok) → kart açılır.
 //   S8 Anlık Durum → Vade Takip: fatura satırı tıklanınca Fatura Kartı, planlı banka satırı tıklanınca Planlı İşlemler.
 //   S9 madde 3: tablo kaleminin Tahsilat Gir'i kaydın carisinin formunu TUTARSIZ açar (kişi ve not dolu); Ödendi Say yalnız due| kaleminde, sunucu fatura kalemine 400.
+//   S10 (aday 1; madde 6 × 6a kesişimi, K6.3) carinin vadeli borcu (account|): aynı adlı iki cari (Ali Veli No 1 seçili kayıtta, No 2'nin elle Borç kaydı Vade
+//      Tarihli) → şerit pili "Tahsil Edilecek Borç": kartta Tahsilat Gir + "Cariyi Aç →", Ödendi Say YOK; Cariyi Aç → No 2'nin kartı; zilde Tahsilat Gir + Cariyi Aç;
+//      Tahsilat Gir → No 2'nin tahsilat formu, tutar = Kalan → kısmi (insan hızında) → veri tabanında tahsilat No 2'ye (bağsız), kalem Kalan kadar küçülür; ikinci
+//      tahsilat (hazır Kalan) → kalem kapanır, pil kalkar; No 1'e hiçbir şey yazılmaz; sunucu account| kalemine Ödendi Say'ı 400 ile reddeder. Tedarikçinin elle
+//      Alacak kaydı (Beklenen Ödeme Tarihli) → "Ödenecek Borç (Ödeme Sözü)" → Ödeme Gir → "Ödeme" formu, tutar = Kalan → ödeme (out) tedarikçiye, pil kalkar.
+//      Vade Takip'te cari satırı tıklanınca o carinin kartı açılır.
 // Çıkış: "N geçti, M kaldı" (kaldıysa çıkış kodu 1).
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -36,7 +42,8 @@ const day = offset => {
   date.setDate(date.getDate() + offset);
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 };
-const server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+// K1.2 (aday 1): 2.4.5 davranışını sınayan senaryo — kayıt tahsilatı ve Tablodan Aktar üretim varsayılanında (kapalı); bootVersion güncel kodda ikisini açar.
+const server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, legacyCasePayments: false, legacyTableTransfer: false });
 const api = await server.login();
 const BASE = server.base;
 const db = server.app.store;
@@ -402,6 +409,136 @@ try {
     const settle = await page.evaluate(id => fetch("/api/workspace/dues/settle", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, reason: "paid" }) }).then(response => response.status), `invoice|${noticeSale.id}`);
     ok(settle === 400, `sunucu fatura kalemine Ödendi Say'ı reddeder (${settle})`);
     ok(entriesOf(ali.id).length === aliBefore, "hiçbir şey yazılmadı");
+    await closeAll(page);
+  });
+
+  // ---------- S10 (aday 1): carinin vadeli borcu (account|) — madde 6 kalemi 6a pil kartında ----------
+  const accountItem = async entryId => (await must("takvim", api.get("/api/workspace/dues"))).items.find(item => item.id === `account|${entryId}`) || null;
+  const lastEntry = (accountId, kind) => db.get("SELECT id FROM account_entries WHERE account_id = ? AND kind = ? ORDER BY rowid DESC LIMIT 1", accountId, kind)?.id || "";
+  const accountCardOpen = (page, refNo) =>
+    page
+      .waitForFunction(no => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-accounts-modal .hof-plan-title h3")].some(node => node.textContent.includes(`No ${no}`)) && Boolean(document.querySelector('.hof-modal-backdrop.is-visible .hof-accounts-modal [data-entry="debt"]')), refNo, { timeout: 10000 })
+      .then(() => true)
+      .catch(() => false);
+  const accountCardTitle = page => page.evaluate(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-accounts-modal .hof-plan-title h3")].map(node => node.textContent.replace(/\s+/g, " ").trim()).join(" | "));
+  let debtId = "";
+  let creditId = "";
+  await step("S10 carinin vadeli borcu (account|): pil kartı Tahsilat Gir + Cariyi Aç, Ödendi Say yok; Cariyi Aç doğru cari (aynı adlı iki cari)", async () => {
+    // Ali Veli No 2'nin (twin) S3'teki tahsilatı faturaya bağlıydı ve fatura kapandı; elle Borç (2.000, Vade dün) kuyruğun tek açık kalemi (S1 FIFO).
+    await must("Borç Yaz (vadeli)", api.post(`/api/workspace/accounts/${twin.id}/entries`, { kind: "debt", amount: "2000", date: day(-3), dueDate: day(-1), note: "Pil vadeli borç" }));
+    debtId = lastEntry(twin.id, "debt");
+    await must("Alacak Yaz (sözlü)", api.post(`/api/workspace/accounts/${supplier.id}/entries`, { kind: "credit", amount: "450", date: day(-2), expectedDate: day(1), note: "Pil tedarikçi alacağı" }));
+    creditId = lastEntry(supplier.id, "credit");
+    const item = await accountItem(debtId);
+    ok(item?.source === "account" && item?.accountId === twin.id && item?.direction === "in" && item?.amount === 2000 && item?.state === "overdue" && item?.label === "Tahsil Edilecek Borç", `takvim kalemi: ${JSON.stringify(item && { id: item.id, accountId: item.accountId, direction: item.direction, amount: item.amount, state: item.state, label: item.label })}`);
+    await closeAll(page);
+    await page.evaluate(() => window.HOF.dues.reload());
+    await page.waitForFunction(() => [...document.querySelectorAll(".hof-payment-promises .hof-payment-pill:not([aria-hidden])")].some(node => node.textContent.includes("Tahsil Edilecek Borç")), null, { timeout: 12000 });
+    await selectAli(page, aliKey);
+    const card = await openPill(page, "Tahsil Edilecek Borç");
+    await shot(page, "s10-cari-vade-pili");
+    ok(card.buttons.join(",") === "Tahsilat Gir", `kart düğmeleri: [${card.buttons.join(", ")}]`);
+    ok(!card.paid, "Ödendi Say yok (kalem para kaydıyla kapanır; settle yalnız due|)");
+    ok(card.go === "Cariyi Aç →", `kartın alt düğmesi: “${card.go}”`);
+    await page.$eval(".hof-payment-action-card .hof-payment-go", node => node.click());
+    ok(await accountCardOpen(page, twin.refNo), `Cariyi Aç → No ${twin.refNo}'nin kartı (“${await accountCardTitle(page)}”; seçili kaydın carisi No ${ali.refNo} değil)`);
+    ok((await page.evaluate(() => window.HOF.selectedCase()?.key)) === aliKey, "seçili kayıt değişmedi");
+    await shot(page, "s10-cariyi-ac");
+    await closeAll(page);
+  });
+
+  await step("S10b zil: carinin vadeli borcu satırında Tahsilat Gir + Cariyi Aç (Kayda Git / Gerçekleştirildi yok)", async () => {
+    await openBell(page);
+    const buttons = await panelRow(page, "Tahsil Edilecek Borç");
+    await shot(page, "s10b-zil");
+    ok(buttons?.join(",") === "Tahsilat Gir,Cariyi Aç", `zilde cari vadesi satırı: [${buttons?.join(", ")}]`);
+    if (buttons?.includes("Cariyi Aç")) {
+      await clickInRow(page, "Tahsil Edilecek Borç", "Cariyi Aç");
+      ok(await accountCardOpen(page, twin.refNo), `zilden Cariyi Aç → No ${twin.refNo}`);
+    }
+    await closeAll(page);
+  });
+
+  await step("S10c Tahsilat Gir → carinin formu, tutar = Kalan; kısmi tahsilat → kalem küçülür; ikinci tahsilat → kalem kapanır; No 1'e yazılmaz", async () => {
+    const before = entriesOf(twin.id).length;
+    await selectAli(page, aliKey);
+    await openPill(page, "Tahsil Edilecek Borç");
+    await page.click('.hof-payment-action-card [data-act="pay"]');
+    let form = await formInfo(page);
+    await shot(page, "s10c-tahsilat-formu");
+    const right = ok(form.title === "Tahsilat" && form.eyebrow.includes(`No ${twin.refNo}`) && form.eyebrow.includes("Ali Veli"), `carinin tahsilat formu: “${form.title}” · “${form.eyebrow}”`);
+    ok(amountOf(form.amount) === 2000, `tutar = Kalan: “${form.amount}”`);
+    ok(form.note.startsWith("Tahsil Edilecek Borç · "), `not kalemden: “${form.note}”`);
+    if (!right) {
+      await closeAll(page);
+      throw new Error("yanlış form açıldı; kaydedilmedi");
+    }
+    await typeAmount(page, "750");
+    await page.click(`${TOP} button[type="submit"]`);
+    await page.waitForSelector(`${TOP} input[name="amount"]`, { state: "detached", timeout: 8000 }).catch(() => null);
+    await page.waitForTimeout(1200);
+    let rows = entriesOf(twin.id);
+    ok(rows.length === before + 1 && rows.at(-1).kind === "in" && rows.at(-1).amount === 750 && !rows.at(-1).invoiceId, `veri tabanı: No ${twin.refNo}'ye 750 tahsilat (bağsız): ${JSON.stringify(rows.at(-1))}`);
+    ok(entriesOf(ali.id).length === aliBefore, `No ${ali.refNo}'ye hiçbir şey yazılmadı`);
+    const after = await accountItem(debtId);
+    ok(after?.amount === 1250 && after?.partial === true, `kalem küçüldü: ${JSON.stringify(after && { amount: after.amount, partial: after.partial })}`);
+    const detail = await must("cari", api.get(`/api/workspace/accounts/${twin.id}`));
+    const debtRow = (detail.entries || detail.ledger || []).find(entry => entry.id === debtId);
+    ok(debtRow?.remaining === 1250 && debtRow?.dueDate === day(-1), `Hareketler'de Kalan 1.250 (K6.2): ${JSON.stringify(debtRow && { remaining: debtRow.remaining, dueDate: debtRow.dueDate })}`);
+    await page.waitForFunction(() => [...document.querySelectorAll(".hof-payment-promises .hof-payment-pill:not([aria-hidden])")].some(node => node.textContent.includes("Tahsil Edilecek Borç") && node.textContent.includes("1.250,00")), null, { timeout: 12000 }).then(() => ok(true, "şeritte pil 1.250,00")).catch(() => ok(false, "şeritte pil 1.250,00 değil"));
+    await closeAll(page);
+    await openPill(page, "Tahsil Edilecek Borç");
+    await page.click('.hof-payment-action-card [data-act="pay"]');
+    form = await formInfo(page);
+    ok(amountOf(form.amount) === 1250 && form.eyebrow.includes(`No ${twin.refNo}`), `ikinci form: tutar = yeni Kalan “${form.amount}” · “${form.eyebrow}”`);
+    await page.click(`${TOP} button[type="submit"]`);
+    ok(await waitPillGone(page, "Tahsil Edilecek Borç"), "kalem kapandı, pil kalktı");
+    rows = entriesOf(twin.id);
+    ok(rows.length === before + 2 && rows.at(-1).kind === "in" && rows.at(-1).amount === 1250, `veri tabanı: ikinci tahsilat 1.250 No ${twin.refNo}'ye: ${JSON.stringify(rows.at(-1))}`);
+    ok((await accountItem(debtId)) === null, "takvimde account| kalemi yok");
+    ok(entriesOf(ali.id).length === aliBefore, `No ${ali.refNo}'ye hiçbir şey yazılmadı`);
+    const settle = await page.evaluate(id => fetch("/api/workspace/dues/settle", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, reason: "paid" }) }).then(response => response.status), `account|${creditId}`);
+    ok(settle === 400, `sunucu account| kalemine Ödendi Say'ı reddeder (${settle})`);
+    await closeAll(page);
+  });
+
+  await step("S10d tedarikçinin sözlü alacağı: Ödenecek Borç (Ödeme Sözü) → Ödeme Gir → Ödeme formu, tutar = Kalan → ödeme tedarikçiye", async () => {
+    const before = entriesOf(supplier.id).length;
+    const card = await openPill(page, "Ödenecek Borç (Ödeme Sözü)");
+    ok(card.buttons.join(",") === "Ödeme Gir" && !card.paid && card.go === "Cariyi Aç →", `kart: [${card.buttons.join(", ")}] · “${card.go}”`);
+    await page.click('.hof-payment-action-card [data-act="pay"]');
+    const form = await formInfo(page);
+    await shot(page, "s10d-odeme-formu");
+    const right = ok(form.title === "Ödeme" && form.eyebrow.includes(`No ${supplier.refNo}`) && amountOf(form.amount) === 450, `tedarikçinin ödeme formu: “${form.title}” · “${form.eyebrow}” · ${form.amount}`);
+    if (!right) {
+      await closeAll(page);
+      throw new Error("yanlış form açıldı; kaydedilmedi");
+    }
+    await page.click(`${TOP} button[type="submit"]`);
+    ok(await waitPillGone(page, "Ödenecek Borç (Ödeme Sözü)"), "pil kalktı");
+    const rows = entriesOf(supplier.id);
+    ok(rows.length === before + 1 && rows.at(-1).kind === "out" && rows.at(-1).amount === 450 && !rows.at(-1).invoiceId, `tedarikçiye ödeme (out, bağsız): ${JSON.stringify(rows.at(-1))}`);
+    ok((await accountItem(creditId)) === null, "takvimde kalem yok");
+    await closeAll(page);
+  });
+
+  await step("S10e Vade Takip: carinin vadeli borç satırı tıklanınca o carinin kartı açılır", async () => {
+    // Yeni bir vadeli borç (kapanmamış) — No 2'de 300, Vade 3 gün sonra.
+    await must("Borç Yaz (vadeli 2)", api.post(`/api/workspace/accounts/${twin.id}/entries`, { kind: "debt", amount: "300", date: day(0), dueDate: day(3), note: "Pil vade takip" }));
+    await page.click('.hof-side-item[data-action="analytics"]');
+    await page.waitForSelector(`${MODAL} .hof-rep .hof-rep-tabs`, { timeout: 10000 });
+    await page.click(`${MODAL} .hof-rep [data-tab="vade"]`);
+    await page.waitForSelector(`${MODAL} .hof-rep-vade tbody tr[data-due-row]`, { timeout: 15000 });
+    await page.waitForTimeout(500);
+    const clicked = await page.evaluate(() => {
+      const row = [...document.querySelectorAll(".hof-rep-vade tbody tr[data-due-row]")].find(node => node.textContent.includes("Cari (vadeli)") && node.textContent.includes("Ali Veli"));
+      if (!row) return false;
+      row.click();
+      return true;
+    });
+    ok(clicked, "Vade Takip'te Cari (vadeli) satırı");
+    ok(await accountCardOpen(page, twin.refNo), `satır tıklanınca No ${twin.refNo}'nin kartı (“${await accountCardTitle(page)}”)`);
+    await shot(page, "s10e-vade-cari");
     await closeAll(page);
   });
 } catch (error) {

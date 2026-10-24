@@ -100,7 +100,7 @@ describe("6d K — kâhin senaryosu: Genel Toplam = kâhinin cari bakiyesi, kale
   const reddedilen = [];
   const satirKimlikleri = {};
   before(async () => {
-    server = await startTestServer({ now: senaryo.simdi, env: LICENSE, startLicenseTimers: false });
+    server = await startTestServer({ now: senaryo.simdi, env: LICENSE, startLicenseTimers: false, legacyCasePayments: false, legacyTableTransfer: false }); // K1.2 (aday 1)
     api = server.client();
     assert.equal((await api.login("admin", ADMIN_PASSWORD)).status, 200);
     await api.post("/api/workspace/bank/setup/dismiss", {});
@@ -303,7 +303,7 @@ describe("6d B/E/Y/G — genel iskonto, SMM, taslak, iptal, Düzenle, aynı ad, 
   const id = {};
   const sale = (accountId, lines, extra = {}) => ({ kind: "sale", scenario: "service_sale", accountId, issueDate: "2026-11-20", lines, payment: { rest: "open" }, ...extra });
   before(async () => {
-    server = await startTestServer({ now: "2026-11-27T12:00:00+03:00", env: LICENSE, startLicenseTimers: false });
+    server = await startTestServer({ now: "2026-11-27T12:00:00+03:00", env: LICENSE, startLicenseTimers: false, legacyCasePayments: false, legacyTableTransfer: false }); // K1.2 (aday 1)
     admin = await loginAdmin(server);
     id.a1 = (await must("cari 1", admin.post("/api/workspace/accounts", { name: "Aynı Ad Ticaret", type: "customer", registeredOn: "2026-01-01" }))).id;
     id.a2 = (await must("cari 2", admin.post("/api/workspace/accounts", { name: "Aynı Ad Ticaret", type: "customer", registeredOn: "2026-01-01", phone: "05321112233", similarOk: true }))).id;

@@ -73,7 +73,7 @@ describe("2.4.5 madde 6c: Tabela Adı ve Rapor ve Ekstre Başlığı", () => {
   });
 
   before(async () => {
-    server = await startTestServer();
+    server = await startTestServer({ legacyCasePayments: false, legacyTableTransfer: false }); // K1.2: 2.4.5 davranışı (aday 1)
     admin = await loginAdmin(server);
     await ok200("kurulum", api.post("/api/workspace/bank/setup/dismiss", {}));
     await ok200("şirket adı", api.put("/api/admin/office", { name: OFFICE }));

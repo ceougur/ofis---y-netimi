@@ -38,7 +38,7 @@ describe("2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi,
   let n = 0;
   let item;
   before(async () => {
-    server = await startTestServer({ now: { time: NOW, fixed: true } });
+    server = await startTestServer({ now: { time: NOW, fixed: true }, legacyCasePayments: false, legacyTableTransfer: false }); // K1.2: 2.4.5 davranışı (aday 1)
     api = apiOf(await loginAdmin(server));
     await api.post("/api/workspace/bank/setup/dismiss", {});
     item = (await api.post("/api/workspace/stock", { kind: "service", code: "HZM-245", name: "Hizmet", unit: "Adet", salePrice: "1000" })).data;
