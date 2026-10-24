@@ -1,0 +1,32 @@
+{
+  "ad": "245-aday1/e2e-senaryo-cari-243",
+  "komut": "npm run test:senaryo-cari-243",
+  "commit": "63413944fd803cf73e3d958b4e0947a61a8b6089",
+  "dal": "aday245-1",
+  "kirli": 0,
+  "izlenmeyen": 14,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T19:19:02.726Z",
+  "sure_sn": 56.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 53,
+    "gecen": 53,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-aday1/e2e-senaryo-cari-243.log",
+  "klasor": "/home/user/wt/aday245-1",
+  "ham_cikti_sha256": "20b7a70302c8e7a2fee9af4557950606c8b2fe4dc0135d0558bb1d99de10e555",
+  "ham_cikti_bayt": 5981
+}
