@@ -35,9 +35,46 @@ const errors = [];
 const newPage = async () => {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: "tr-TR", acceptDownloads: true });
   await context.addInitScript(() => document.addEventListener("DOMContentLoaded", () => document.head.appendChild(Object.assign(document.createElement("style"), { textContent: "#hof-license-bar,.hof-license-notice{display:none!important}" }))));
+  // Ders 20 (2.4.5): S211_RAF_GECIKME=ms verilirse paketin detay düğmesi DOM'a her girdiğinde sayfanın requestAnimationFrame'i
+  // o kadar geciktirilir (HOF.onDom ve dolayısıyla gateControls bir kare sonra değil ms sonra koşar) ve düğme girdiği anda görünür mü
+  // diye günlüğe yazılır ("[s211-zorla] …"). Yarışın ön koşulunu zorla üretir: test/e2e/senaryo-211-yaris-zorla.mjs.
+  const rafDelay = Number(process.env.S211_RAF_GECIKME) || 0;
+  if (rafDelay > 0) {
+    await context.addInitScript(delay => {
+      // Gecikme yalnız paketin detay düğmesi yeni eklendiğinde (yarışın penceresi) uygulanır; öbür kareler olağan akar.
+      // Bu izleyici hof-core'unkinden önce kurulur, dolayısıyla aynı mutasyonda önce o "bekle" der.
+      let holdUntil = 0;
+      const raf = window.requestAnimationFrame.bind(window);
+      // Bekleme kare ATEŞLENİRKEN denetlenir: düğme eklenmeden önce istenmiş kare de bekletilir.
+      const run = callback => stamp => {
+        const wait = holdUntil - performance.now();
+        if (wait > 0) setTimeout(() => raf(run(callback)), wait);
+        else callback(stamp);
+      };
+      window.requestAnimationFrame = callback => raf(run(callback));
+      const report = (button, phase) => {
+        const box = button.getBoundingClientRect();
+        const shown = getComputedStyle(button).display !== "none" && box.width > 0 && box.height > 0;
+        console.log(`[s211-zorla] ${phase} "${button.textContent.trim()}" görünür=${shown ? "evet" : "hayır"} t=${Math.round(performance.now())}`);
+      };
+      new MutationObserver(mutations => {
+        for (const mutation of mutations)
+          for (const node of mutation.addedNodes) {
+            if (node.nodeType !== 1) continue;
+            const buttons = node.matches(".detail-actions > button") ? [node] : [...node.querySelectorAll(".detail-actions > button")];
+            if (buttons.length) holdUntil = performance.now() + delay;
+            buttons.forEach(button => {
+              report(button, "eklendi");
+              setTimeout(() => button.isConnected && report(button, "sonra"), delay * 3);
+            });
+          }
+      }).observe(document, { childList: true, subtree: true });
+    }, rafDelay);
+  }
   const page = await context.newPage();
   page.on("pageerror", error => errors.push(`pageerror ${error.message}`));
   page.on("console", message => {
+    if (message.type() === "log" && message.text().startsWith("[s211-zorla]")) console.log(message.text());
     if (message.type() === "error" && !/api\/auth\/me|Failed to load resource/.test(`${message.location().url} ${message.text()}`)) errors.push(`${message.text()} @ ${message.location().url}`);
   });
   return page;
@@ -73,7 +110,7 @@ const login = async (page, username, password) => {
   await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
 };
 const modal = ".hof-modal-backdrop.is-visible";
-const top = `${modal}:last-of-type`;
+const top = `${modal}:nth-last-child(1 of ${modal})`; // ders 39: konuma bağlı :last-of-type değil
 const pad = value => String(value).padStart(2, "0");
 const today = () => {
   const d = new Date();
@@ -148,6 +185,22 @@ try {
       return { settings: Boolean(settings), belowUser: settings && settings.top >= box("#hof-sidecard .hof-user").bottom, aboveSync: settings && settings.bottom <= box(".sidebar-bottom").top, oldHidden: [...document.querySelectorAll(".sidebar .nav-item")].every(node => getComputedStyle(node).display === "none"), text: document.querySelector("#hof-side-settings")?.textContent.trim() };
     });
     ok(place.settings && place.belowUser && place.aboveSync && place.oldHidden && place.text === "Ayarlar", "m8: Ayarlar kullanıcı kartının altında, Senkron kartının üstünde; üstteki eski düğme yok");
+    // 2.4.5 (ders 20): paketin detay düğmeleri gizli doğar; gateControls bağlı Sheet varsa yalnız "Sheet'te aç"ı gösterir.
+    const detail = await admin.evaluate(async () => {
+      const read = () => [...document.querySelectorAll(".detail-actions > button")].map(button => `${button.textContent.trim()}=${getComputedStyle(button).display === "none" ? "gizli" : "görünür"}`).join(", ");
+      const settle = () => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      const before = read();
+      const saved = HOF.settings.linkedSheetUrl;
+      HOF.settings.linkedSheetUrl = "https://docs.google.com/spreadsheets/d/S211-DENEME/edit";
+      document.body.append(Object.assign(document.createElement("i"), { id: "s211-tetik" }));
+      await settle();
+      const linked = read();
+      HOF.settings.linkedSheetUrl = saved;
+      document.getElementById("s211-tetik").remove();
+      await settle();
+      return { before, linked, after: read() };
+    });
+    ok(detail.before === "Kaynağı değiştir=gizli, Sheet'te aç=gizli" && detail.linked === "Kaynağı değiştir=gizli, Sheet'te aç=görünür" && detail.after === detail.before, `detay düğmeleri: bağlı Sheet yokken ${detail.before}; bağlıyken ${detail.linked}; geri alınınca ${detail.after}`);
     await shot(admin, "kenar-cubugu", { clip: { x: 0, y: 0, width: 262, height: 1000 } });
     await admin.click("#hof-side-settings");
     await admin.waitForSelector(`${modal} .hof-modal-title`);
@@ -207,8 +260,10 @@ try {
     await admin.fill(`${top} input[name="firstDue"]`, today());
     await auditLabels(admin, "Toplu taksit formu");
     await admin.click(`${top} button[type="submit"]`);
-    await admin.waitForFunction(() => [...document.querySelectorAll(".hof-modal-title")].some(node => node.textContent.includes("Taksit Kartları Açılsın mı?")));
-    const confirmText = await admin.$$eval(".hof-modal-backdrop.is-visible", list => list.at(-1).innerText.replace(/\s+/g, " "));
+    // Ders 39 (2.4.5, senaryo-211-yaris-zorla ile görüldü): başlık "is-visible"dan bir kare önce gelir; o arada en üstteki
+    // görünür pencere hâlâ form olur. Okuma, onay penceresinin KENDİSİ görünür olunca ve o pencereden yapılır.
+    await admin.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible")].some(node => node.querySelector(".hof-modal-title")?.textContent.includes("Taksit Kartları Açılsın mı?")));
+    const confirmText = await admin.$$eval(".hof-modal-backdrop.is-visible", list => list.filter(node => node.querySelector(".hof-modal-title")?.textContent.includes("Taksit Kartları Açılsın mı?")).at(-1).innerText.replace(/\s+/g, " "));
     ok(confirmText.includes("3 cariye taksit kartı açılacak") && confirmText.includes(tl(27000)) && confirmText.includes("3 taksit"), `m3: ön izleme — ${confirmText.slice(confirmText.indexOf("3 cariye"), confirmText.indexOf("her ay") + 6)}`);
     const beforeConfirm = (await call(admin, "/api/workspace/plans?status=all")).data.plans.length;
     ok(beforeConfirm === 0, "m3: ön izleme hiçbir kart açmadı");

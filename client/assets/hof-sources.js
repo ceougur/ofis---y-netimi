@@ -769,6 +769,9 @@
         const label = navLabel(button);
         const hidden = label.includes("Kaynağı değiştir") || (label.includes("Sheet'te aç") && !HOF.settings.linkedSheetUrl);
         setHidden(button, hidden);
+        // 2.4.5 (ders 20): paketin düğmesi hof-ui.css'te ilk boyamadan önce gizli doğar; yalnız burada izin verilen görünür.
+        if (hidden) button.removeAttribute("data-hof-show");
+        else if (!button.hasAttribute("data-hof-show")) button.setAttribute("data-hof-show", "");
         if (!hidden) visible += 1;
       });
       setHidden(row, visible === 0);
