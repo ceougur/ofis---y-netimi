@@ -38,7 +38,7 @@ console.log(`\n# s211-zorla gecikme=${delay}ms senaryo-cikis=${code}`);
 console.log(`# on-kosul eklendi=${added.length} eklendiginde-gorunur=${shownAtAdd.length} sonra-olculen=${later.length} sonra-gorunur=${later.filter(line => line.includes("görünür=evet")).length}`);
 if (m7) console.log(`# m7: ${m7.trim()}`);
 if (added.length === 0) {
-  console.log("# HÜKÜM: GEÇERSİZ — ön koşul oluşmadı (detay düğmesi geciktirilmiş gizleme sırasında DOM'a girmedi)");
+  console.log("# HÜKÜM: GEÇERSİZ — ön koşul oluşmadı (paket düğmesi geciktirilmiş gizleme sırasında DOM'a girmedi)");
   process.exit(2);
 }
 console.log(code === 0 ? "# HÜKÜM: YEŞİL (ön koşul oluştu)" : "# HÜKÜM: KIRMIZI");

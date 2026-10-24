@@ -1,0 +1,48 @@
+
+■ Kurulum: yönetici girer, okul servisi Excel'i yüklenir, sektör önerisi uygulanır
+[s211-zorla] eklendi "Tabloyu değiştir" görünür=hayır t=264
+[s211-zorla] eklendi "Ayarlar" görünür=hayır t=264
+[s211-zorla] eklendi "Dışa aktar" görünür=hayır t=265
+[s211-zorla] eklendi "Yeni tablo yükle" görünür=hayır t=265
+[s211-zorla] eklendi "Tabloyu değiştir" görünür=hayır t=265
+[s211-zorla] sonra "Tabloyu değiştir" görünür=hayır t=1465
+[s211-zorla] sonra "Ayarlar" görünür=hayır t=1470
+[s211-zorla] sonra "Dışa aktar" görünür=hayır t=1470
+[s211-zorla] sonra "Yeni tablo yükle" görünür=hayır t=1470
+[s211-zorla] sonra "Tabloyu değiştir" görünür=hayır t=1471
+[s211-zorla] eklendi "Tabloyu değiştir" görünür=hayır t=181
+[s211-zorla] eklendi "Ayarlar" görünür=hayır t=182
+[s211-zorla] eklendi "Dışa aktar" görünür=hayır t=182
+[s211-zorla] eklendi "Yeni tablo yükle" görünür=hayır t=186
+[s211-zorla] eklendi "Tabloyu değiştir" görünür=hayır t=186
+[s211-zorla] eklendi "Kaynağı değiştir" görünür=hayır t=289
+[s211-zorla] eklendi "Sheet'te aç" görünür=hayır t=290
+[s211-zorla] sonra "Tabloyu değiştir" görünür=hayır t=1384
+[s211-zorla] sonra "Ayarlar" görünür=hayır t=1384
+[s211-zorla] sonra "Dışa aktar" görünür=hayır t=1386
+[s211-zorla] sonra "Yeni tablo yükle" görünür=hayır t=1387
+[s211-zorla] sonra "Tabloyu değiştir" görünür=hayır t=1387
+[s211-zorla] sonra "Kaynağı değiştir" görünür=hayır t=1490
+[s211-zorla] sonra "Sheet'te aç" görünür=hayır t=1491
+[s211-zorla] eklendi "Tabloyu değiştir" görünür=hayır t=143
+[s211-zorla] eklendi "Ayarlar" görünür=hayır t=143
+[s211-zorla] eklendi "Dışa aktar" görünür=hayır t=143
+[s211-zorla] eklendi "Yeni tablo yükle" görünür=hayır t=143
+[s211-zorla] eklendi "Tabloyu değiştir" görünür=hayır t=143
+[s211-zorla] eklendi "Kaynağı değiştir" görünür=hayır t=187
+[s211-zorla] eklendi "Sheet'te aç" görünür=hayır t=187
+✓ 6 öğrenci kaydı tabloda
+
+■ A. Ayarlar yeri (m8) ve arama kutusu (m1)
+✗ m8: Ayarlar kullanıcı kartının altında, Senkron kartının üstünde; üstteki eski düğme yok
+Error: BAŞARISIZ: m8: Ayarlar kullanıcı kartının altında, Senkron kartının üstünde; üstteki eski düğme yok
+    at ok (file:///home/user/wt/s211-yaris/test/e2e/senaryo-211.mjs:93:20)
+    at file:///home/user/wt/s211-yaris/test/e2e/senaryo-211.mjs:189:5
+    at async step (file:///home/user/wt/s211-yaris/test/e2e/senaryo-211.mjs:97:3)
+    at async file:///home/user/wt/s211-yaris/test/e2e/senaryo-211.mjs:183:3
+
+1/2 denetim geçti. Ekran görüntüleri: /home/user/wt/s211-yaris/test/e2e/artifacts/senaryo-211
+
+# s211-zorla gecikme=400ms senaryo-cikis=1
+# on-kosul eklendi=19 eklendiginde-gorunur=0 sonra-olculen=12 sonra-gorunur=0
+# HÜKÜM: KIRMIZI

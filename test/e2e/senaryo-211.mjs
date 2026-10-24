@@ -43,6 +43,8 @@ const newPage = async () => {
     await context.addInitScript(delay => {
       // Gecikme yalnız paketin detay düğmesi yeni eklendiğinde (yarışın penceresi) uygulanır; öbür kareler olağan akar.
       // Bu izleyici hof-core'unkinden önce kurulur, dolayısıyla aynı mutasyonda önce o "bekle" der.
+      // Paketin, hof-sources.js'nin gizlediği düğmeleri: kenar çubuğu, bilgi şeridi, başlık satırı, detay.
+      const PACKAGE = ".sidebar .nav-item[data-loc], .banner-link[data-loc], .button-row > button[data-loc], .detail-actions > button";
       let holdUntil = 0;
       const raf = window.requestAnimationFrame.bind(window);
       // Bekleme kare ATEŞLENİRKEN denetlenir: düğme eklenmeden önce istenmiş kare de bekletilir.
@@ -61,7 +63,7 @@ const newPage = async () => {
         for (const mutation of mutations)
           for (const node of mutation.addedNodes) {
             if (node.nodeType !== 1) continue;
-            const buttons = node.matches(".detail-actions > button") ? [node] : [...node.querySelectorAll(".detail-actions > button")];
+            const buttons = node.matches(PACKAGE) ? [node] : [...node.querySelectorAll(PACKAGE)];
             if (buttons.length) holdUntil = performance.now() + delay;
             buttons.forEach(button => {
               report(button, "eklendi");
@@ -179,12 +181,14 @@ try {
   });
 
   await step("A. Ayarlar yeri (m8) ve arama kutusu (m1)", async () => {
+    // Bizim Ayarlar düğmemiz HOF.onDom karesinde yerleşir (yavaş karede gecikebilir; ders 20 zorlaması): önce beklenir.
+    await admin.waitForSelector("#hof-side-settings");
     const place = await admin.evaluate(() => {
       const box = selector => document.querySelector(selector)?.getBoundingClientRect();
       const settings = box("#hof-side-settings");
-      return { settings: Boolean(settings), belowUser: settings && settings.top >= box("#hof-sidecard .hof-user").bottom, aboveSync: settings && settings.bottom <= box(".sidebar-bottom").top, oldHidden: [...document.querySelectorAll(".sidebar .nav-item")].every(node => getComputedStyle(node).display === "none"), text: document.querySelector("#hof-side-settings")?.textContent.trim() };
+      return { settings: Boolean(settings), belowUser: settings && settings.top >= box("#hof-sidecard .hof-user").bottom, aboveSync: settings && settings.bottom <= box(".sidebar-bottom").top, oldHidden: [...document.querySelectorAll(".sidebar .nav-item")].every(node => getComputedStyle(node).display === "none"), oldVisible: [...document.querySelectorAll(".sidebar .nav-item")].filter(node => getComputedStyle(node).display !== "none").map(node => node.textContent.trim()).join(", "), text: document.querySelector("#hof-side-settings")?.textContent.trim() };
     });
-    ok(place.settings && place.belowUser && place.aboveSync && place.oldHidden && place.text === "Ayarlar", "m8: Ayarlar kullanıcı kartının altında, Senkron kartının üstünde; üstteki eski düğme yok");
+    ok(place.settings && place.belowUser && place.aboveSync && place.oldHidden && place.text === "Ayarlar", `m8: Ayarlar kullanıcı kartının altında, Senkron kartının üstünde; üstteki eski düğme yok${place.oldHidden ? "" : ` — görünen eski düğme: ${place.oldVisible}`} (${JSON.stringify({ ...place, oldVisible: undefined })})`);
     // 2.4.5 (ders 20): paketin detay düğmeleri gizli doğar; gateControls bağlı Sheet varsa yalnız "Sheet'te aç"ı gösterir.
     const detail = await admin.evaluate(async () => {
       const read = () => [...document.querySelectorAll(".detail-actions > button")].map(button => `${button.textContent.trim()}=${getComputedStyle(button).display === "none" ? "gizli" : "görünür"}`).join(", ");

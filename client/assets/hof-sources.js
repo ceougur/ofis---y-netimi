@@ -751,27 +751,27 @@
     if (card.nextElementSibling !== button) card.after(button);
   }
 
+  // 2.4.5 (ders 20, senaryo-211): paketin bu düğmeleri hof-ui.css'te ilk boyamadan önce gizli doğar; yalnız burada izin
+  // verilen (data-hof-show) görünür. Önceden React çizdiği anda görünür, bu işlev bir kare sonra gizliyordu.
+  const gate = (element, hidden) => {
+    setHidden(element, hidden);
+    if (hidden) element.removeAttribute("data-hof-show");
+    else if (!element.hasAttribute("data-hof-show")) element.setAttribute("data-hof-show", "");
+  };
   function gateControls() {
     document.querySelectorAll(".sidebar .nav-item").forEach(button => {
       const label = navLabel(button);
-      if (label === "Tabloyu değiştir" || label === "Ayarlar") setHidden(button, true);
+      gate(button, label === "Tabloyu değiştir" || label === "Ayarlar");
     });
     placeSettings();
-    document.querySelectorAll(".button-row button").forEach(button => {
-      if (navLabel(button).includes("Yeni tablo yükle")) setHidden(button, true);
-    });
-    document.querySelectorAll(".banner-link").forEach(link => {
-      if (navLabel(link).includes("Tabloyu değiştir")) setHidden(link, true);
-    });
+    document.querySelectorAll(".button-row button").forEach(button => gate(button, navLabel(button).includes("Yeni tablo yükle")));
+    document.querySelectorAll(".banner-link").forEach(link => gate(link, navLabel(link).includes("Tabloyu değiştir")));
     document.querySelectorAll(".detail-actions").forEach(row => {
       let visible = 0;
       row.querySelectorAll("button").forEach(button => {
         const label = navLabel(button);
         const hidden = label.includes("Kaynağı değiştir") || (label.includes("Sheet'te aç") && !HOF.settings.linkedSheetUrl);
-        setHidden(button, hidden);
-        // 2.4.5 (ders 20): paketin düğmesi hof-ui.css'te ilk boyamadan önce gizli doğar; yalnız burada izin verilen görünür.
-        if (hidden) button.removeAttribute("data-hof-show");
-        else if (!button.hasAttribute("data-hof-show")) button.setAttribute("data-hof-show", "");
+        gate(button, hidden);
         if (!hidden) visible += 1;
       });
       setHidden(row, visible === 0);
