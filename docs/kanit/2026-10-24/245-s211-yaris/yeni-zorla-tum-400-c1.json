@@ -1,0 +1,32 @@
+{
+  "ad": "245-s211-yaris/yeni-zorla-tum-400-c1",
+  "komut": "flock /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kos.lock node test/e2e/senaryo-211-yaris-zorla.mjs --gecikme 400",
+  "commit": "eab64a746a10c7edbba9683dce5cb0f95eecf352",
+  "dal": "is/s211-yaris",
+  "kirli": 4,
+  "izlenmeyen": 14,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T18:55:10.034Z",
+  "sure_sn": 100.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 58,
+    "gecen": 58,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-s211-yaris/yeni-zorla-tum-400-c1.log",
+  "klasor": "/home/user/wt/s211-yaris",
+  "ham_cikti_sha256": "511fe4e76df5e657840b1db26acffd38efaf68c554a001f8db20fe72afbc553d",
+  "ham_cikti_bayt": 12390
+}

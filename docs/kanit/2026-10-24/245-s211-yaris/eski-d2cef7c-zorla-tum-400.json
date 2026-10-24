@@ -1,0 +1,38 @@
+{
+  "ad": "245-s211-yaris/eski-d2cef7c-zorla-tum-400",
+  "komut": "flock /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kos.lock bash -c cd /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-s211-yaris/eski-d2cef7c && node test/e2e/senaryo-211-yaris-zorla.mjs --gecikme 400",
+  "commit": "eab64a746a10c7edbba9683dce5cb0f95eecf352",
+  "dal": "is/s211-yaris",
+  "kirli": 4,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T18:48:31.090Z",
+  "sure_sn": 10.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 2,
+    "gecen": 1,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "m8: Ayarlar kullanıcı kartının altında, Senkron kartının üstünde; üstteki eski düğme yok",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-24/245-s211-yaris/eski-d2cef7c-zorla-tum-400.log",
+  "klasor": "/home/user/wt/s211-yaris",
+  "ham_cikti_sha256": "d24bb5e135ede9ec4ed8b4999b62cf70ef14274b0619ff559d8311fe077213d7",
+  "ham_cikti_bayt": 3224
+}

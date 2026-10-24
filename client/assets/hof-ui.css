@@ -5062,6 +5062,20 @@ body > .hof-payment-action-card { position: fixed; z-index: 99960; transform: no
 .sidebar > nav.mt-10:not(:has(.nav-item:not([style*="display: none"]))) {
   display: none;
 }
+/* 2.4.5 (ders 20, senaryo-211): paketin düğmeleri (kenar çubuğundaki "Tabloyu değiştir" / "Ayarlar", bilgi şeridindeki
+   "Tabloyu değiştir", başlık satırındaki "Yeni tablo yükle", detaydaki "Kaynağı değiştir" / "Sheet'te aç") React çizdiği
+   anda görünürdü; hof-sources.js gateControls onları bir kare sonra gizliyordu. Artık gizli doğarlar; yalnız gateControls'ün
+   izin verdiği (data-hof-show) görünür. Paketin öğeleri data-loc taşır, bizimkiler taşımaz. */
+.sidebar .nav-item[data-loc]:not([data-hof-show]),
+.banner-link[data-loc]:not([data-hof-show]),
+.button-row > button[data-loc]:not([data-hof-show]),
+.detail-actions > button:not([data-hof-show]) {
+  display: none !important;
+}
+.sidebar > nav.mt-10:not(:has(.nav-item[data-hof-show], .nav-item:not([data-loc]))),
+.detail-actions:not(:has(> button[data-hof-show])) {
+  display: none !important;
+}
 /* Ayarlar (v2.0.11): kullanıcı kartının altında, Senkron kartının üstünde; Operasyon merkezi kartıyla aynı genişlik. */
 .sidebar .hof-side-settings {
   display: flex;
