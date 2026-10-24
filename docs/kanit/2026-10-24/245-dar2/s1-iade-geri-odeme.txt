@@ -1,0 +1,92 @@
+=== yeni 8d73aad
+{
+ "Stok İadesi + Cari Ödeme": {
+  "mode": "stok",
+  "bakiye": 800,
+  "A": "0 paid",
+  "B": "200 overdue",
+  "iade": "-",
+  "borcKalan": 300,
+  "acikToplam": 500,
+  "takvim": [
+   "invoice:Tahsil Edilecek Fatura FIS2026000000002:200",
+   "account:Tahsil Edilecek Borç:300"
+  ],
+  "esit": false
+ },
+ "Fatura İadesi + Cari Ödeme": {
+  "mode": "fatura-cari",
+  "bakiye": 800,
+  "A": "0 paid",
+  "B": "200 overdue",
+  "iade": "0 return",
+  "borcKalan": 300,
+  "acikToplam": 500,
+  "takvim": [
+   "invoice:Tahsil Edilecek Fatura FIS2026000000002:200",
+   "account:Tahsil Edilecek Borç:300"
+  ],
+  "esit": false
+ },
+ "Fatura İadesi + Kendi Geri Ödemesi": {
+  "mode": "fatura-kendi",
+  "bakiye": 800,
+  "A": "0 paid",
+  "B": "500 overdue",
+  "iade": "0 return",
+  "borcKalan": 300,
+  "acikToplam": 800,
+  "takvim": [
+   "invoice:Tahsil Edilecek Fatura FIS2026000000002:500",
+   "account:Tahsil Edilecek Borç:300"
+  ],
+  "esit": true
+ }
+}
+cikis 1
+=== eski 201ffef
+{
+ "Stok İadesi + Cari Ödeme": {
+  "mode": "stok",
+  "bakiye": 800,
+  "A": "0 paid",
+  "B": "500 overdue",
+  "iade": "-",
+  "borcKalan": 300,
+  "acikToplam": 800,
+  "takvim": [
+   "invoice:Tahsil Edilecek Fatura FIS2026000000002:500",
+   "account:Tahsil Edilecek Borç:300"
+  ],
+  "esit": true
+ },
+ "Fatura İadesi + Cari Ödeme": {
+  "mode": "fatura-cari",
+  "bakiye": 800,
+  "A": "0 paid",
+  "B": "200 overdue",
+  "iade": "0 return",
+  "borcKalan": 300,
+  "acikToplam": 500,
+  "takvim": [
+   "invoice:Tahsil Edilecek Fatura FIS2026000000002:200",
+   "account:Tahsil Edilecek Borç:300"
+  ],
+  "esit": false
+ },
+ "Fatura İadesi + Kendi Geri Ödemesi": {
+  "mode": "fatura-kendi",
+  "bakiye": 800,
+  "A": "0 paid",
+  "B": "500 overdue",
+  "iade": "0 return",
+  "borcKalan": 300,
+  "acikToplam": 800,
+  "takvim": [
+   "invoice:Tahsil Edilecek Fatura FIS2026000000002:500",
+   "account:Tahsil Edilecek Borç:300"
+  ],
+  "esit": true
+ }
+}
+cikis 1

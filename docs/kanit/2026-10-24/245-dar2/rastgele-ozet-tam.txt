@@ -1,0 +1,87 @@
+# p-rastgele: tohum 1–8 × 150 işlem, eski 201ffef ve yeni 8d73aad aynı dizi; çıkış kodları:
+yeni t7 cikis 0
+yeni t8 cikis 0
+eski t7 cikis 0
+eski t8 cikis 0
+## tohum 1
+yeni-t1.log:HATA SAYISI 0
+eski-t1.log:HATA SAYISI 0
+islem dizisi ayni: True; adim 150; KS7 carisinde fark (beklenen sinif) 274; KS7 gormemis caride fark 0
+## tohum 2
+yeni-t2.log:HATA SAYISI 0
+eski-t2.log:HATA SAYISI 0
+islem dizisi ayni: True; adim 150; KS7 carisinde fark (beklenen sinif) 229; KS7 gormemis caride fark 0
+## tohum 3
+yeni-t3.log:HATA SAYISI 0
+eski-t3.log:HATA SAYISI 0
+islem dizisi ayni: True; adim 150; KS7 carisinde fark (beklenen sinif) 230; KS7 gormemis caride fark 0
+## tohum 4
+yeni-t4.log:HATA SAYISI 0
+eski-t4.log:HATA SAYISI 0
+islem dizisi ayni: True; adim 150; KS7 carisinde fark (beklenen sinif) 242; KS7 gormemis caride fark 0
+## tohum 5
+yeni-t5.log:HATA SAYISI 0
+eski-t5.log:HATA SAYISI 0
+islem dizisi ayni: True; adim 150; KS7 carisinde fark (beklenen sinif) 390; KS7 gormemis caride fark 0
+## tohum 6
+yeni-t6.log:HATA SAYISI 0
+eski-t6.log:HATA SAYISI 0
+islem dizisi ayni: True; adim 150; KS7 carisinde fark (beklenen sinif) 348; KS7 gormemis caride fark 0
+## tohum 7
+yeni-t7.log:HATA SAYISI 0
+eski-t7.log:HATA SAYISI 0
+islem dizisi ayni: True; adim 151; KS7 carisinde fark (beklenen sinif) 364; KS7 gormemis caride fark 0
+## tohum 8
+yeni-t8.log:HATA SAYISI 0
+eski-t8.log:HATA SAYISI 0
+islem dizisi ayni: True; adim 151; KS7 carisinde fark (beklenen sinif) 303; KS7 gormemis caride fark 0
+trial AYNI 1601
+reconciliation AYNI 1941
+cash AYNI 113
+trial AYNI 1607
+reconciliation AYNI 1945
+cash AYNI 116
+## işlem sayıları (yeni, 8 tohum)
+    115 stok satış iadesi (açık hesap)  200
+    103 fatura  200 
+     86 borç/alacak  debt 200
+     80 stok sil 200 
+     70 değersiz yaz yok
+     59 stok satış (açık hesap)  200
+     49 değersiz yaz  açık yok
+     48 tahsilat/ödeme  in  200
+     44 sil  200 
+     43 stok düzelt (miktar) 200 
+     39 stok çıkışı tedarikçiye (KS7.1)  200
+     39 müşteriye ödeme  200
+     37 şüpheliye al  200 
+     35 değersiz sil  yok
+     33 stok alımı (tedarikçi)  200
+     31 geri yükle stock-move 200 
+     30 borç/alacak  credit 200
+     25 stok düzelt (neden değişti) 200 
+     25 sil yok
+     25 değersiz yaz  200 
+     22 tahsilat/ödeme  out  200
+     21 şüpheliye al  bakiye yok
+     20 mevcut borç kartı  400
+     19 geri yükle account-entry 200 
+     16 mevcut borç kartı  200 
+     14 tahsilat/ödeme  in bağlı 200
+     12 şüpheliye al  400
+      8 tahsilat/ödeme  in  409
+      6 tahsilat/ödeme  out bağlı 200
+      6 sil  409
+      6 değersiz sil  200 
+      5 stok sil yok
+      5 stok satış iadesi (açık hesap)  409
+      5 geri yükle yok
+      3 geri yükle stock-move 409
+      3 geri yükle doubtful-writeoff 200 
+      3 değersiz yaz  400
+      2 tahsilat/ödeme  in bağlı 409
+      2 stok sil 409
+      2 stok düzelt yok
+      2 borç/alacak  credit 409
+      1 geri yükle doubtful-writeoff 409
+      1 değersiz sil  409
