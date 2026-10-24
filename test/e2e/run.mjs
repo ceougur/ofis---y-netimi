@@ -1299,9 +1299,11 @@ try {
       await page.evaluate(() => document.querySelectorAll(".hof-notice").forEach(node => node.remove()));
 
       // Pilden tahsilat (2.4.4 E8: kaydın CARİSİNE yazılır, kayıttan Kasa'ya doğrudan değil). Öğrencinin carisi yok → "önce cari açın": ad kayıttan, cari
-      // kayda bağlı açılır → kaydedince tahsilat formu (tutar hazır) → kaydedince pil kaybolur (takvim carinin tahsilatını sayar).
+      // kayda bağlı açılır → kaydedince tahsilat formu (2.4.5 madde 3: tutar BOŞ, tablodaki tutar muhasebe kaydı değil; kullanıcı yazar) → kaydedince pil
+      // kaybolur (takvim carinin tahsilatını sayar).
       const target = await page.$eval(".hof-payment-pill:not([aria-hidden])", node => node.querySelector("b").textContent);
       const pillKey = await page.evaluate(name => (window.HOF.dues?.data?.()?.items || []).find(item => item.person === name)?.caseKey || "", target);
+      const pillAmount = await page.evaluate(name => (window.HOF.dues?.data?.()?.items || []).find(item => item.person === name)?.amount || 0, target);
       const before = pills.length;
       await page.$eval(".hof-payment-pill:not([aria-hidden])", node => node.click());
       await page.click('.hof-payment-action-card [data-act="pay"]');
@@ -1311,7 +1313,8 @@ try {
       await page.click('.hof-modal-backdrop.is-visible button[type="submit"]');
       await page.waitForFunction(() => document.querySelector(".hof-modal-backdrop.is-visible:last-of-type .hof-modal-title")?.textContent.trim() === "Tahsilat", null, { timeout: 10000 });
       const amount = await page.inputValue('.hof-modal-backdrop.is-visible:last-of-type input[name="amount"]');
-      expect(Number(amount.replace(/\./g, "").replace(",", ".")) > 0, `tutar hazır gelmeli: ${amount}`);
+      expect(amount === "" && pillAmount > 0, `tutar boş gelmeli (2.4.5 madde 3): “${amount}” (pil ${pillAmount})`);
+      await page.fill('.hof-modal-backdrop.is-visible:last-of-type input[name="amount"]', String(pillAmount).replace(".", ","));
       await page.click('.hof-modal-backdrop.is-visible:last-of-type button[type="submit"]');
       await page.waitForFunction(count => document.querySelectorAll(".hof-payment-pill:not([aria-hidden])").length === count - 1, before, { timeout: 10000 });
       const pillAccount = (await page.evaluate(key => fetch(`/api/workspace/cases/${encodeURIComponent(key)}/account`).then(response => response.json()), pillKey)).data?.account;

@@ -1724,5 +1724,13 @@
         HOF.toastError(error);
       }
     },
+    // 2.4.5 madde 6a: Tahsilat Takvimi / zildeki carinin ödenecek borç kalemi (account|…, yön out) → carinin "− Ödeme" formu (preset { amount, note }).
+    pay: async (accountId, preset = null) => {
+      try {
+        await editEntry(await HOF.api(`/api/workspace/accounts/${encodeURIComponent(accountId)}`), { kind: "out", preset });
+      } catch (error) {
+        HOF.toastError(error);
+      }
+    },
   };
 })();

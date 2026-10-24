@@ -127,28 +127,102 @@
     }
   }
 
-  // Tahsilat penceresi: kayıt seçili olmasa da açılır; kalan tutar ve açıklama hazır gelir.
+  // ---------- Kaynağa göre işlemler (2.4.5 madde 6a; kullanıcı bulgusu 24.10.2026) ----------
+  // Takvim kalemi tablodaki bir kayıt, taksit, çek/senet, fatura, planlı banka işlemi ya da carinin vadeli borcu (madde 6) olabilir. Pil kartı, zil
+  // (hof-alerts.js) ve Anlık Durum → Vade Takip (hof-overview.js openRef) hangi düğmenin görüneceğini ve neyi açacağını BURADAN alır (tek yardımcı).
+  // Önceden pil kartı ve zil tanımadığı kaynağı (fatura, planlı banka) tablo kaydı sayıyordu: "Kayda Git" → "Kayıt tabloda bulunamadı", "Ödendi Say" → 400
+  // "Kalem tanınmadı", "Tahsilat Gir" → SEÇİLİ tablo kaydının carisine fatura tutarıyla dolu form (alış faturasında yön de ters). Kaynağı tanınmayan kalemde
+  // düğme yoktur (tablo kaydı gibi işlenmez). Sunucunun ürettiği her kaynak burada bir dal ister: test/takvim-pil-kaynak.test.mjs.
+  const can = permission => Boolean(HOF.can?.(permission));
+  const sourceOf = item => (item?.source ? String(item.source) : String(item?.id || "").startsWith("due|") ? "table" : "");
+  const noteOf = item => [item.label, item.dueText].filter(Boolean).join(" · ");
+  // go.allowed: kişinin o kaynağı görme yetkisi (yoksa pil kartında / zilde düğme çıkmaz; Vade Takip'te modül kendi iletisini verir).
+  const DUE_SOURCES = {
+    // Tablodaki kayıt (Excel / Sheets): tahsilat kaydın carisine (ya da kayda bağlı taksit kartına) girilir (hof-workspace.js actions.payment). 2.4.5 madde 3:
+    // tutar ve tablo borcu forma GELMEZ (tablodaki tutar muhasebe kaydı değildir); kişi, telefon ve not gelir. Kayıt anahtarı yoksa düğme yok (seçili kayda
+    // düşmez). Öbür sayfanın kalemi: tahsilat o sayfaya geçince girilir; Ödendi Say buradan çalışır.
+    table: {
+      settle: true,
+      pay: item =>
+        !item.foreign && item.caseKey && (can("accounts.collect") || can("plans.collect")) && HOF.workspace?.payment
+          ? { label: "Tahsilat Gir", run: () => HOF.workspace.payment({ key: item.caseKey, title: who(item), person: item.person || "", phone: item.phone || "", note: noteOf(item) }) }
+          : null,
+      go: item =>
+        item.foreign
+          ? { label: `Kayda Git (“${item.pageName || "Sayfa"}”)`, allowed: true, run: () => HOF.sessions?.select?.(item.session, { reveal: { caseKey: item.caseKey, tab: item.tab || "" } }) }
+          : item.caseKey
+            ? { label: "Kayda Git", allowed: true, run: () => HOF.revealRecord?.(item.caseKey, { tab: item.tab || "" }) }
+            : null,
+    },
+    // Taksit kartı (v2.0.4): tahsilat kartın üstünden.
+    plan: {
+      pay: item => (can("plans.collect") && HOF.plans?.pay ? { label: "Tahsilat Gir", run: () => HOF.plans.pay(item) } : null),
+      go: item => (item.planId && HOF.plans?.open ? { label: "Taksit Kartını Aç", allowed: true, run: () => HOF.plans.open(item.planId) } : null),
+    },
+    // Çek / senet (v2.0.7): tahsil / ödeme evrak kartından.
+    cheque: {
+      pay: item => (can("cheques.manage") && HOF.cheques?.open ? { label: item.direction === "out" ? "Ödeme Gir" : "Tahsil Et", run: () => HOF.cheques.open({ id: item.chequeId, action: item.direction === "out" ? "pay" : "collect" }) } : null),
+      go: item => (item.chequeId && HOF.cheques?.open ? { label: "Çek / Senet Kartını Aç", allowed: can("cheques.view"), run: () => (can("cheques.view") ? HOF.cheques.open({ id: item.chequeId }) : HOF.toast("Çek/senet kartı kasa yetkisi olanlara açılır.", { type: "error" })) } : null),
+    },
+    // Fatura (v2.0.15): faturanın KENDİ ödeme formu (kartındaki "+ Tahsilat Ekle" / "+ Ödeme Yap"; taksitli faturada taksit kartı) — tahsilat bu faturaya bağlı,
+    // faturanın carisine yazılır. Satışta Tahsilat Gir, alışta Ödeme Gir (yetki kartla aynı). Ödendi Say yok (fatura para kaydıyla kapanır).
+    invoice: {
+      pay: item =>
+        item.invoiceId && can("invoices.view") && can(item.direction === "out" ? "accounts.manage" : "accounts.collect") && HOF.invoices?.payDoc
+          ? { label: item.direction === "out" ? "Ödeme Gir" : "Tahsilat Gir", run: () => HOF.invoices.payDoc(item.invoiceId) }
+          : null,
+      go: item => (item.invoiceId && HOF.invoices?.openDoc ? { label: "Fatura Kartını Aç", allowed: can("invoices.view"), run: () => HOF.invoices.openDoc(item.invoiceId) } : null),
+    },
+    // Planlı banka işlemi (2.3.0 İz 3.3): deftere girmez; Banka → Hareketler → Planlı İşlemler'den gerçekleştirilir (tahsilat formu yok).
+    bank: {
+      pay: () => null,
+      go: () => (HOF.bank?.openPlans ? { label: "Planlı İşlemleri Aç", allowed: can("bank.view"), run: () => HOF.bank.openPlans() } : null),
+    },
+    // Carinin vadeli borç / alacak kaydı (2.4.5 madde 6, sözleşme K6.3): carinin tahsilat / ödeme formu; tutar = kaydın Kalan'ı (programın kendi kaydı).
+    account: {
+      pay: item => {
+        if (!item.accountId) return null;
+        const preset = { amount: Number(item.amount) > 0 ? Number(item.amount) : null, note: noteOf(item) };
+        if (item.direction === "out") return can("accounts.manage") && HOF.accounts?.pay ? { label: "Ödeme Gir", run: () => HOF.accounts.pay(item.accountId, preset) } : null;
+        return can("accounts.collect") && HOF.accounts?.collect ? { label: "Tahsilat Gir", run: () => HOF.accounts.collect(item.accountId, preset) } : null;
+      },
+      go: item => (item.accountId && HOF.accounts?.open ? { label: "Cariyi Aç", allowed: can("accounts.view"), run: () => HOF.accounts.open(item.accountId) } : null),
+    },
+  };
+  /** Kalemin düğmeleri: { kind, pay: {label, run} | null, go: {label, allowed, run} | null, settle (Ödendi Say), cancel (Söz İptal) }. */
+  function actionsOf(item) {
+    const kind = sourceOf(item);
+    const spec = Object.hasOwn(DUE_SOURCES, kind) ? DUE_SOURCES[kind] : null;
+    if (!spec) return { kind, pay: null, go: null, settle: false, cancel: false };
+    // "Ödendi Say" / "Söz İptal" yalnız tablo kalemi (due|) içindir; sunucu (routes/dues.mjs settle) başkasını 400 ile reddeder.
+    const settle = Boolean(spec.settle) && String(item.id || "").startsWith("due|") && can("records.edit");
+    return { kind, pay: spec.pay(item) || null, go: spec.go(item) || null, settle, cancel: settle && Boolean(item.promise) };
+  }
+  // Vade Takip satırının kaynağı (sunucu routes/overview.mjs ref.type) → takvim kalemi; aynı "go" yolu açılır. Kayıt (record) ve Kasa (cash) hof-overview.js'te.
+  const DUE_REFS = {
+    plan: ref => ({ source: "plan", planId: ref.id }),
+    cheque: ref => ({ source: "cheque", chequeId: ref.id }),
+    invoice: ref => ({ source: "invoice", invoiceId: ref.id }),
+    bankPlan: ref => ({ source: "bank", bankPlanId: ref.id }),
+    account: ref => ({ source: "account", accountId: ref.id, entryId: ref.entryId || "" }),
+  };
+  /** Vade Takip satırını açar; bu kaynak burada tanınıyorsa true. */
+  function openRef(ref) {
+    const make = ref?.id && Object.hasOwn(DUE_REFS, ref.type) ? DUE_REFS[ref.type] : null;
+    if (!make) return false;
+    const go = actionsOf(make(ref)).go;
+    if (go) go.run();
+    return true;
+  }
+
   function pay(item) {
     closeCard();
-    // Taksit kartı kalemi (v2.0.4): tahsilat kartın üstünden girilir.
-    if (item.source === "plan") return HOF.plans?.pay(item);
-    // Çek / senet (v2.0.7): tahsil / ödeme evrak kartından.
-    if (item.source === "cheque") return HOF.cheques?.open({ id: item.chequeId, action: item.direction === "out" ? "pay" : "collect" });
-    if (!HOF.workspace?.payment) return;
-    // 2.4.4 (E8): tablodaki kaydın kalemi kaydın CARİSİNE yazılır (carisi yoksa önce cari açılır; hof-workspace.js actions.payment); tutar ve açıklama
-    // hazır gelir, kalem carinin ya da taksitin tahsilatıyla kapanır. Önceden kayıttan doğrudan Kasa'ya yazılıyordu.
-    HOF.workspace.payment({ key: item.caseKey, title: who(item), person: item.person || "", phone: item.phone || "", amount: item.amount, note: `${item.label} · ${item.dueText}`, debt: item.debt || null, debtColumn: item.debtColumn || "" });
+    actionsOf(item).pay?.run();
   }
 
   function openCard(item, pillNode) {
     closeCard();
-    const plan = item.source === "plan";
-    const cheque = item.source === "cheque";
-    // Öbür sayfanın kalemi: tahsilat o sayfaya geçince girilir (kayıt orada); Ödendi Say buradan çalışır.
-    // 2.4.4 (E8): tablodaki kaydın tahsilatı cariden (ya da kayda bağlı taksit kartından) girilir; Kayıt Tahsilatı yetkisi (payments.create) artık yalnız eski
-    // kayıt tahsilatlarını düzeltir.
-    const canPay = item.foreign ? false : cheque ? HOF.can("cheques.manage") : plan ? HOF.can("plans.collect") : HOF.can("accounts.collect") || HOF.can("plans.collect");
-    const canSettle = !plan && !cheque && HOF.can("records.edit");
+    const acts = actionsOf(item);
     const card = HOF.el(
       "div",
       { class: "hof-payment-action-card", role: "dialog", "aria-label": `${who(item)} tahsilatı` },
@@ -163,11 +237,11 @@
         ${item.foreign ? `<div><dt>Sayfa</dt><dd>${esc(item.pageName || "Başka sayfa")}</dd></div>` : ""}
       </dl>
       <div class="hof-payment-action-buttons">
-        ${canPay ? `<button type="button" data-act="pay" class="hof-payment-paid">${cheque ? (item.direction === "out" ? "Ödeme Gir" : "Tahsil Et") : "Tahsilat Gir"}</button>` : ""}
-        ${canSettle ? `<button type="button" data-act="paid" class="hof-payment-mark" title="Tahsilat girmeden kapatır (ör. başka yoldan ödendi)">Ödendi Say</button>` : ""}
-        ${canSettle && item.promise ? '<button type="button" data-act="cancelled" class="hof-payment-cancelled">Söz İptal</button>' : ""}
+        ${acts.pay ? `<button type="button" data-act="pay" class="hof-payment-paid">${esc(acts.pay.label)}</button>` : ""}
+        ${acts.settle ? `<button type="button" data-act="paid" class="hof-payment-mark" title="Tahsilat girmeden kapatır (ör. başka yoldan ödendi)">Ödendi Say</button>` : ""}
+        ${acts.cancel ? '<button type="button" data-act="cancelled" class="hof-payment-cancelled">Söz İptal</button>' : ""}
       </div>
-      <button type="button" class="hof-payment-go" data-act="go">${cheque ? "Çek / Senet Kartını Aç →" : plan ? "Taksit Kartını Aç →" : item.foreign ? `Kayda Git (“${esc(item.pageName || "Sayfa")}”) →` : "Kayda Git →"}</button>`,
+      ${acts.go?.allowed ? `<button type="button" class="hof-payment-go" data-act="go">${esc(acts.go.label)} →</button>` : ""}`,
     );
     card.addEventListener("click", event => {
       const button = event.target.closest("[data-act]");
@@ -176,11 +250,8 @@
       if (act === "pay") pay(item);
       else if (act === "go") {
         closeCard();
-        if (cheque) HOF.cheques?.open({ id: item.chequeId });
-        else if (plan) HOF.plans?.open(item.planId);
-        else if (item.foreign) HOF.sessions?.select?.(item.session, { reveal: { caseKey: item.caseKey, tab: item.tab || "" } });
-        else HOF.revealRecord?.(item.caseKey, { tab: item.tab });
-      } else settle(item, act, button);
+        acts.go?.run();
+      } else if ((act === "paid" || act === "cancelled") && acts.settle) settle(item, act, button);
     });
     card.querySelector(".hof-payment-action-close").onclick = closeCard;
     // Kart tıklanan pilin hemen altında açılır (ekranın kenarlarına taşmadan); sayfa kaydırılınca ya da dışarı
@@ -272,7 +343,7 @@
     anchor.after(band);
   }
 
-  HOF.dues = { data: () => data, reload: load, reloadSoon, drop, who };
+  HOF.dues = { data: () => data, reload: load, reloadSoon, drop, who, actions: actionsOf, openRef };
   HOF.whenReady(() => {
     load();
     // Şerit özet kartlarının altında durur; ekran yeniden çizilince yerine döner.

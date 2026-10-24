@@ -724,11 +724,11 @@
     if (report && report.tab === tab) renderReport();
   }
   // Vade takip satırı: kaynağı açılır. Tablodaki kayıt açık veri oturumundaysa pencere kapanır ve kayıt tabloda seçilir.
+  // 2.4.5 madde 6a: taksit, çek / senet, fatura, planlı banka ve cari satırları Tahsilat Takvimi pil kartı ve zille AYNI yardımcıdan açılır (hof-promises.js
+  // HOF.dues.openRef: Taksit Kartı, Çek / Senet Kartı, Fatura Kartı, Banka → Planlı İşlemler, Cari). Önceden fatura ve planlı banka satırına tıklanınca hiçbir şey olmuyordu.
   function openRef(ref) {
     if (!ref) return;
-    if (ref.type === "plan" && ref.id) return HOF.plans?.open(ref.id);
-    if (ref.type === "cheque" && ref.id) return HOF.can("cheques.view") ? HOF.cheques?.open({ id: ref.id }) : HOF.toast("Çek/senet kartı kasa yetkisi olanlara açılır.", { type: "error" });
-    if (ref.type === "account" && ref.id) return HOF.accounts?.open(ref.id);
+    if (HOF.dues?.openRef?.(ref)) return;
     if (ref.type === "cash") return HOF.can("cash.view") ? document.querySelector('#hof-sidecard [data-action="cash"]')?.click() : null;
     if (ref.type === "record" && ref.key) {
       if (ref.current === false) return HOF.toast(`Bu kayıt “${ref.sessionName || "başka bir"}” sayfasında. Ortadaki sayfa şeridinden o sayfayı açıp bakın.`, { type: "info" });
