@@ -1,0 +1,75 @@
+
+> destekofis@2.4.4 test:senaryo-pil-karti-245
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-pil-karti-245.mjs
+
+
+■ S0 tabloda başka bir kayıt seçili (Ali Veli, carisi No 1)
+  ✓ seçili kayıt 2026/1101
+  ✓ şeritte satış faturası pili (FIS2026000000001)
+
+■ S1 satış faturası pili: Tahsilat Gir + Fatura Kartını Aç; Ödendi Say yok
+  ✓ kart düğmeleri: [Tahsilat Gir]
+  ✓ Ödendi Say yok (fatura para kaydıyla kapanır)
+  ✓ kartın alt düğmesi: “Fatura Kartını Aç →” (beklenen “Fatura Kartını Aç →”, “Kayda Git” değil)
+
+■ S2 Fatura Kartını Aç → o faturanın kartı; "bulunamadı" yok, seçili kayıt yerinde
+  ✓ fatura kartı açıldı: FIS2026000000001
+  ✓ "Kayıt tabloda bulunamadı" yok (“”)
+  ✓ seçili kayıt değişmedi
+
+■ S3 Tahsilat Gir → faturanın kendi formu; para faturanın carisine (No 2), faturaya bağlı; seçili kaydın carisine (No 1) yazılmaz
+  ✓ faturanın formu: “Tahsilat Ekle” · “Satış Faturası FIS2026000000001” (seçili kaydın carisinin formu değil)
+  ✓ açık tutar hazır: 1200
+  ✓ pil kalktı (fatura kapandı)
+  ✓ faturanın carisi (No 1): [{"kind":"in","amount":1200,"invoiceId":"invoice-868b5474-26ab-40b9-8ce3-3ad4f9b443dd"}]
+  ✓ seçili kaydın carisine (No 5) hiçbir şey yazılmadı (0 → 0)
+  ✓ fatura kapandı (açık 0)
+
+■ S3b bayat pil (fatura bu arada kapandı): Tahsilat Gir kartı açar, form AÇILMAZ, nedeni söylenir
+  ✓ kart açıldı: FIS2026000000001
+  ✓ ödeme formu açılmadı
+  ✓ ileti: “Satış Faturası FIS2026000000001 kapandı; açık tutarı yok.×”
+  ✓ ikinci tahsilat yazılmadı
+
+■ S4 alış faturası pili: Ödeme Gir → Ödeme Yap formu; ödeme tedarikçiye, faturaya bağlı
+  ✓ kart: [Ödeme Gir] · “Fatura Kartını Aç →”
+  ✓ alış faturasının formu: “Ödeme Yap” · “Alış Faturası PIL-A1” · 600
+  ✓ pil kalktı
+  ✓ tedarikçiye ödeme (out), faturaya bağlı: [{"kind":"out","amount":600,"invoiceId":"invoice-6cf8b974-e4e8-44f2-9f05-905ce6ff49a1"}]
+
+■ S5 planlı banka pili: tahsilat / Ödendi Say yok; Planlı İşlemleri Aç → Planlı İşlemler
+  ✓ kartta tahsilat / Ödendi Say yok: []
+  ✓ alt düğme: “Planlı İşlemleri Aç →”
+  ✓ Banka → Hareketler → Planlı İşlemler açıldı, plan listede
+
+■ S6 zil: fatura satırı Tahsilat Gir + Fatura Kartını Aç; planlı banka satırı Planlı İşlemleri Aç; aynı yoldan kayıt
+  ✓ zilde fatura satırı: [Tahsilat Gir, Fatura Kartını Aç] (Kayda Git / Gerçekleştirildi yok)
+  ✓ zilde planlı banka satırı: [Planlı İşlemleri Aç] (Tahsilat Gir yok)
+  ✓ zilden fatura kartı: FIS2026000000002
+  ✓ zilden faturanın formu: “Tahsilat Ekle” · “Satış Faturası FIS2026000000002” · 800
+  ✓ Zil Müşteri'ye tahsilat, faturaya bağlı: [{"kind":"in","amount":800,"invoiceId":"invoice-272e88a8-9ddc-4c65-bf7e-0b1a7a0c66e2"}]
+  ✓ seçili kaydın carisine yazılmadı
+
+■ S7 sağ alt bildirim: fatura bildiriminde Tahsilat Gir + Fatura Kartını Aç (Kayda Git yok)
+  ✓ bildirim listesinde fatura kalemi
+  ✓ fatura bildirimi sağ altta
+  ✓ bildirim düğmeleri: [Tahsilat Gir, Fatura Kartını Aç]
+  ✓ bildirimden fatura kartı: FIS2026000000003
+
+■ S8 Anlık Durum → Vade Takip: fatura satırı Fatura Kartını, planlı banka satırı Planlı İşlemler'i açar
+  ✓ Vade Takip'te fatura satırı (FIS2026000000003)
+  ✓ satır tıklanınca fatura kartı açıldı
+  ✓ Vade Takip'te planlı banka satırı
+  ✓ satır tıklanınca Planlı İşlemler açıldı
+
+■ S9 madde 3: tablo kaleminin Tahsilat Gir'i tutarsız (kişi ve not dolu); Ödendi Say yalnız due| kaleminde
+  ✓ tablo kalemi: {"pay":"Tahsilat Gir","settle":true,"cancel":true,"invoiceSettle":false}
+  ✓ fatura kaleminde Ödendi Say yok
+  ✓ kaydın carisinin formu: “Tahsilat” · “No 5 · Ali Veli · 0532 111 11 11”
+  ✓ tutar BOŞ (tablodaki tutar muhasebe kaydı değil): “”
+  ✓ not dolu: “Ödeme sözü · 01.01.2026”
+  ✓ sunucu fatura kalemine Ödendi Say'ı reddeder (400)
+  ✓ hiçbir şey yazılmadı
+  ✓ sayfa hatası yok ()
+
+47 geçti, 0 kaldı

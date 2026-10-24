@@ -1,0 +1,461 @@
+TAP version 13
+# Subtest: Takvim kalemi kaynağı — sunucu ↔ istemci dalları (kaynak tarama)
+    # Subtest: sunucu taraması boş değil: taksit, çek / senet, fatura ve planlı banka kaynakları bulundu (ders 4)
+    ok 1 - sunucu taraması boş değil: taksit, çek / senet, fatura ve planlı banka kaynakları bulundu (ders 4)
+      ---
+      duration_ms: 0.861728
+      type: 'test'
+      ...
+    # Subtest: Tahsilat Takvimi pil kartı (hof-promises.js) sunucunun her takvim kaynağı için ayrı dal taşır
+    not ok 2 - Tahsilat Takvimi pil kartı (hof-promises.js) sunucunun her takvim kaynağı için ayrı dal taşır
+      ---
+      duration_ms: 2.379209
+      type: 'test'
+      location: '/home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:82:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Tahsilat Takvimi pil kartında "account", "bank", "invoice" kaynakları için dal yok: bu kalemler tablo kaydı gibi işlenir (Kayda Git → revealRecord(""), Ödendi Say → 400, Tahsilat Gir → workspace.payment({ key: "" }) seçili kaydın carisine). Dal bulunanlar: plan, cheque
+        + actual - expected
+        
+        + [
+        +   'account',
+        +   'bank',
+        +   'invoice'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'account'
+        1: 'bank'
+        2: 'invoice'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:86:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: zil (hof-alerts.js) pil kartının yardımcısını kullanır ya da her kaynak için kendi dalını taşır; kalemi kendi başına workspace.payment'a göndermez
+    not ok 3 - zil (hof-alerts.js) pil kartının yardımcısını kullanır ya da her kaynak için kendi dalını taşır; kalemi kendi başına workspace.payment'a göndermez
+      ---
+      duration_ms: 1.095295
+      type: 'test'
+      location: '/home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:90:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        zilde "account", "invoice" kaynakları için dal yok (ortak yardımcı kullanılmıyor): "Tahsilat Gir" bu kalemi tablo kaydı sayıp seçili kaydın carisine gönderir
+        + actual - expected
+        
+        + [
+        +   'account',
+        +   'invoice'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'account'
+        1: 'invoice'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:95:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: madde 3: tablo kaleminin Tahsilat Gir'i (pil kartı ve zil) tutar ve tablo borcu taşımaz
+    not ok 4 - madde 3: tablo kaleminin Tahsilat Gir'i (pil kartı ve zil) tutar ve tablo borcu taşımaz
+      ---
+      duration_ms: 0.562049
+      type: 'test'
+      location: '/home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:99:3'
+      failureType: 'testCodeFailure'
+      error: 'client/assets/hof-promises.js: workspace.payment\'a tablodan tutar / borç gidiyor (key: item.caseKey, title: who(item), person: item.person || "", phone: item.phone || "", amount: item.amount, note: `${item.label)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:102:16)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Vade Takip openRef (hof-overview.js) sunucunun Vade Takip satırlarındaki her kaynak türünü açar
+    not ok 5 - Vade Takip openRef (hof-overview.js) sunucunun Vade Takip satırlarındaki her kaynak türünü açar
+      ---
+      duration_ms: 2.340669
+      type: 'test'
+      location: '/home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:107:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Vade Takip'te "bankPlan", "invoice" satırı tıklanınca hiçbir şey açılmaz (openRef dalı yok). Dal bulunanlar: plan, cheque, account, cash, record
+        + actual - expected
+        
+        + [
+        +   'bankPlan',
+        +   'invoice'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'bankPlan'
+        1: 'invoice'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:117:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - Takvim kalemi kaynağı — sunucu ↔ istemci dalları (kaynak tarama)
+  ---
+  duration_ms: 8.371957
+  type: 'suite'
+  location: '/home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:77:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Takvim kalemi kaynağı — ortak yardımcının düğmeleri (pil kartı = zil = Vade Takip)
+    # Subtest: sunucunun her kaynağı (ve sözleşmedeki account) için bu testte bir örnek var
+    ok 1 - sunucunun her kaynağı (ve sözleşmedeki account) için bu testte bir örnek var
+      ---
+      duration_ms: 0.405897
+      type: 'test'
+      ...
+    # Subtest: satış faturası: Fatura Kartını Aç + Tahsilat Gir faturanın kendi formu; Ödendi Say yok; seçili kayda gitmez
+    not ok 2 - satış faturası: Fatura Kartını Aç + Tahsilat Gir faturanın kendi formu; Ödendi Say yok; seçili kayda gitmez
+      ---
+      duration_ms: 1.139547
+      type: 'test'
+      location: '/home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:171:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        hof-promises.js HOF.dues.actions (ortak yardımcı) yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        helper (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:147:10)
+        TestContext.<anonymous> (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:172:15)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: alış faturası: Ödeme Gir (yetki: accounts.manage); tahsilat yetkisi yetmez
+    not ok 3 - alış faturası: Ödeme Gir (yetki: accounts.manage); tahsilat yetkisi yetmez
+      ---
+      duration_ms: 0.933626
+      type: 'test'
+      location: '/home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:184:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        hof-promises.js HOF.dues.actions (ortak yardımcı) yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        helper (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:147:10)
+        TestContext.<anonymous> (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:186:15)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: planlı banka işlemi: yalnız Planlı İşlemleri Aç (tahsilat formu ve Ödendi Say yok)
+    not ok 4 - planlı banka işlemi: yalnız Planlı İşlemleri Aç (tahsilat formu ve Ödendi Say yok)
+      ---
+      duration_ms: 0.658616
+      type: 'test'
+      location: '/home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:197:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        hof-promises.js HOF.dues.actions (ortak yardımcı) yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        helper (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:147:10)
+        TestContext.<anonymous> (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:198:15)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tablodaki kayıt (madde 3): Tahsilat Gir kaydın carisine — tutar ve tablo borcu YOK, kişi/telefon/not var; Ödendi Say ve Söz İptal var
+    not ok 5 - tablodaki kayıt (madde 3): Tahsilat Gir kaydın carisine — tutar ve tablo borcu YOK, kişi/telefon/not var; Ödendi Say ve Söz İptal var
+      ---
+      duration_ms: 0.610178
+      type: 'test'
+      location: '/home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:207:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        hof-promises.js HOF.dues.actions (ortak yardımcı) yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        helper (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:147:10)
+        TestContext.<anonymous> (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:208:15)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kayıt anahtarı boş tablo kalemi seçili kayda düşmez: Tahsilat Gir ve Kayda Git yok
+    not ok 6 - kayıt anahtarı boş tablo kalemi seçili kayda düşmez: Tahsilat Gir ve Kayda Git yok
+      ---
+      duration_ms: 0.506142
+      type: 'test'
+      location: '/home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:224:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        hof-promises.js HOF.dues.actions (ortak yardımcı) yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        helper (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:147:10)
+        TestContext.<anonymous> (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:225:18)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: öbür sayfanın tablo kalemi: tahsilat o sayfada; Kayda Git sayfa adıyla o sayfaya geçer; Ödendi Say çalışır
+    not ok 7 - öbür sayfanın tablo kalemi: tahsilat o sayfada; Kayda Git sayfa adıyla o sayfaya geçer; Ödendi Say çalışır
+      ---
+      duration_ms: 0.387581
+      type: 'test'
+      location: '/home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:230:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        hof-promises.js HOF.dues.actions (ortak yardımcı) yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        helper (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:147:10)
+        TestContext.<anonymous> (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:231:15)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: taksit ve çek / senet bugünkü yollarında
+    not ok 8 - taksit ve çek / senet bugünkü yollarında
+      ---
+      duration_ms: 0.372673
+      type: 'test'
+      location: '/home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:239:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        hof-promises.js HOF.dues.actions (ortak yardımcı) yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        helper (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:147:10)
+        TestContext.<anonymous> (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:240:15)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: carinin vadeli borcu (madde 6, K6.3): Cariyi Aç + Tahsilat Gir / Ödeme Gir carinin formu, tutar = Kalan
+    not ok 9 - carinin vadeli borcu (madde 6, K6.3): Cariyi Aç + Tahsilat Gir / Ödeme Gir carinin formu, tutar = Kalan
+      ---
+      duration_ms: 0.319437
+      type: 'test'
+      location: '/home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:258:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        hof-promises.js HOF.dues.actions (ortak yardımcı) yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        helper (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:147:10)
+        TestContext.<anonymous> (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:259:15)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tanınmayan kaynak tablo kaydı gibi işlenmez: hiçbir düğme yok
+    not ok 10 - tanınmayan kaynak tablo kaydı gibi işlenmez: hiçbir düğme yok
+      ---
+      duration_ms: 0.438449
+      type: 'test'
+      location: '/home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:272:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        hof-promises.js HOF.dues.actions (ortak yardımcı) yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        helper (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:147:10)
+        TestContext.<anonymous> (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:273:18)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Vade Takip openRef aynı yolu açar: fatura → Fatura Kartı, planlı banka → Planlı İşlemler, cari, taksit, çek; kayıt ve Kasa hof-overview'da kalır
+    not ok 11 - Vade Takip openRef aynı yolu açar: fatura → Fatura Kartı, planlı banka → Planlı İşlemler, cari, taksit, çek; kayıt ve Kasa hof-overview'da kalır
+      ---
+      duration_ms: 0.364123
+      type: 'test'
+      location: '/home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:277:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        hof-promises.js HOF.dues.actions (ortak yardımcı) yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        helper (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:147:10)
+        TestContext.<anonymous> (file:///home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:278:15)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..11
+not ok 2 - Takvim kalemi kaynağı — ortak yardımcının düğmeleri (pil kartı = zil = Vade Takip)
+  ---
+  duration_ms: 6.714849
+  type: 'suite'
+  location: '/home/user/wt/pil-karti/test/takvim-pil-kaynak.test.mjs:165:1'
+  failureType: 'subtestsFailed'
+  error: '10 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 16
+# suites 2
+# pass 2
+# fail 14
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 432.498886

@@ -1,0 +1,103 @@
+{
+  "ad": "245-pil-karti/birim-eski-d2cef7c",
+  "komut": "env PIL_KAYNAK_KOK=/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-pil-karti/eski-d2cef7c node --test test/takvim-pil-kaynak.test.mjs",
+  "commit": "26d9d795804c65fa4b871689e043d3c38b8d35ba",
+  "dal": "is/pil-karti",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:12:49.004Z",
+  "sure_sn": 0.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 16,
+    "gecen": 2,
+    "basarisiz": 14,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 14 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Takvim kalemi kaynağı — sunucu ↔ istemci dalları (kaynak tarama) › Tahsilat Takvimi pil kartı (hof-promises.js) sunucunun her takvim kaynağı için ayrı dal taşır",
+      "konum": "test/takvim-pil-kaynak.test.mjs:82:3",
+      "hata": "Tahsilat Takvimi pil kartında \"account\", \"bank\", \"invoice\" kaynakları için dal yok: bu kalemler tablo kaydı gibi işlenir (Kayda Git → revealRecord(\"\"), Ödendi Say → 400, Tahsilat Gir → workspace.payment({ key: \"\" }) seçili kaydın carisine). Dal bulunanlar: plan, cheque · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Takvim kalemi kaynağı — sunucu ↔ istemci dalları (kaynak tarama) › zil (hof-alerts.js) pil kartının yardımcısını kullanır ya da her kaynak için kendi dalını taşır; kalemi kendi başına workspace.payment'a göndermez",
+      "konum": "test/takvim-pil-kaynak.test.mjs:90:3",
+      "hata": "zilde \"account\", \"invoice\" kaynakları için dal yok (ortak yardımcı kullanılmıyor): \"Tahsilat Gir\" bu kalemi tablo kaydı sayıp seçili kaydın carisine gönderir · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Takvim kalemi kaynağı — sunucu ↔ istemci dalları (kaynak tarama) › madde 3: tablo kaleminin Tahsilat Gir'i (pil kartı ve zil) tutar ve tablo borcu taşımaz",
+      "konum": "test/takvim-pil-kaynak.test.mjs:99:3",
+      "hata": "client/assets/hof-promises.js: workspace.payment\\'a tablodan tutar / borç gidiyor (key: item.caseKey, title: who(item), person: item.person || \"\", phone: item.phone || \"\", amount: item.amount, note: `${item.label) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Takvim kalemi kaynağı — sunucu ↔ istemci dalları (kaynak tarama) › Vade Takip openRef (hof-overview.js) sunucunun Vade Takip satırlarındaki her kaynak türünü açar",
+      "konum": "test/takvim-pil-kaynak.test.mjs:107:3",
+      "hata": "Vade Takip'te \"bankPlan\", \"invoice\" satırı tıklanınca hiçbir şey açılmaz (openRef dalı yok). Dal bulunanlar: plan, cheque, account, cash, record · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Takvim kalemi kaynağı — ortak yardımcının düğmeleri (pil kartı = zil = Vade Takip) › satış faturası: Fatura Kartını Aç + Tahsilat Gir faturanın kendi formu; Ödendi Say yok; seçili kayda gitmez",
+      "konum": "test/takvim-pil-kaynak.test.mjs:171:3",
+      "hata": "hof-promises.js HOF.dues.actions (ortak yardımcı) yok · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "Takvim kalemi kaynağı — ortak yardımcının düğmeleri (pil kartı = zil = Vade Takip) › alış faturası: Ödeme Gir (yetki: accounts.manage); tahsilat yetkisi yetmez",
+      "konum": "test/takvim-pil-kaynak.test.mjs:184:3",
+      "hata": "hof-promises.js HOF.dues.actions (ortak yardımcı) yok · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "Takvim kalemi kaynağı — ortak yardımcının düğmeleri (pil kartı = zil = Vade Takip) › planlı banka işlemi: yalnız Planlı İşlemleri Aç (tahsilat formu ve Ödendi Say yok)",
+      "konum": "test/takvim-pil-kaynak.test.mjs:197:3",
+      "hata": "hof-promises.js HOF.dues.actions (ortak yardımcı) yok · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "Takvim kalemi kaynağı — ortak yardımcının düğmeleri (pil kartı = zil = Vade Takip) › tablodaki kayıt (madde 3): Tahsilat Gir kaydın carisine — tutar ve tablo borcu YOK, kişi/telefon/not var; Ödendi Say ve Söz İptal var",
+      "konum": "test/takvim-pil-kaynak.test.mjs:207:3",
+      "hata": "hof-promises.js HOF.dues.actions (ortak yardımcı) yok · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "Takvim kalemi kaynağı — ortak yardımcının düğmeleri (pil kartı = zil = Vade Takip) › kayıt anahtarı boş tablo kalemi seçili kayda düşmez: Tahsilat Gir ve Kayda Git yok",
+      "konum": "test/takvim-pil-kaynak.test.mjs:224:3",
+      "hata": "hof-promises.js HOF.dues.actions (ortak yardımcı) yok · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "Takvim kalemi kaynağı — ortak yardımcının düğmeleri (pil kartı = zil = Vade Takip) › öbür sayfanın tablo kalemi: tahsilat o sayfada; Kayda Git sayfa adıyla o sayfaya geçer; Ödendi Say çalışır",
+      "konum": "test/takvim-pil-kaynak.test.mjs:230:3",
+      "hata": "hof-promises.js HOF.dues.actions (ortak yardımcı) yok · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "Takvim kalemi kaynağı — ortak yardımcının düğmeleri (pil kartı = zil = Vade Takip) › taksit ve çek / senet bugünkü yollarında",
+      "konum": "test/takvim-pil-kaynak.test.mjs:239:3",
+      "hata": "hof-promises.js HOF.dues.actions (ortak yardımcı) yok · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "Takvim kalemi kaynağı — ortak yardımcının düğmeleri (pil kartı = zil = Vade Takip) › carinin vadeli borcu (madde 6, K6.3): Cariyi Aç + Tahsilat Gir / Ödeme Gir carinin formu, tutar = Kalan",
+      "konum": "test/takvim-pil-kaynak.test.mjs:258:3",
+      "hata": "hof-promises.js HOF.dues.actions (ortak yardımcı) yok · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "Takvim kalemi kaynağı — ortak yardımcının düğmeleri (pil kartı = zil = Vade Takip) › tanınmayan kaynak tablo kaydı gibi işlenmez: hiçbir düğme yok",
+      "konum": "test/takvim-pil-kaynak.test.mjs:272:3",
+      "hata": "hof-promises.js HOF.dues.actions (ortak yardımcı) yok · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "Takvim kalemi kaynağı — ortak yardımcının düğmeleri (pil kartı = zil = Vade Takip) › Vade Takip openRef aynı yolu açar: fatura → Fatura Kartı, planlı banka → Planlı İşlemler, cari, taksit, çek; kayıt ve Kasa hof-overview'da kalır",
+      "konum": "test/takvim-pil-kaynak.test.mjs:277:3",
+      "hata": "hof-promises.js HOF.dues.actions (ortak yardımcı) yok · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-24/245-pil-karti/birim-eski-d2cef7c.log",
+  "klasor": "/home/user/wt/pil-karti",
+  "ham_cikti_sha256": "f62378e0d4ea0804bde54588e25298682853f1e2609abca9c03a9afa5a2e2a3d",
+  "ham_cikti_bayt": 20708
+}

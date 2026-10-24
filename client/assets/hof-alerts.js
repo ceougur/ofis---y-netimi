@@ -267,24 +267,18 @@
     show(queue.shift());
   }
 
-  // Tahsilat penceresi tutar ve açıklama hazır açılır; kaydedince kalem takvimden düşer.
-  // Taksit kartı kalemi (v2.0.4): tahsilat kartın üstünden girilir (hof-plans.js).
-  const isPlan = item => item?.source === "plan";
-  // Çek / senet kalemi (v2.0.7): tahsil ve ödeme evrak kartından yapılır (hof-cheques.js).
-  const isCheque = item => item?.source === "cheque";
-  // Planlı banka işlemi (2.3.0 İz 3.3; plan §8.9 "Zil … planlı ödemeler"): deftere girmez; Banka → Hareketler → Planlı İşlemler'den Gerçekleştir.
-  const isBank = item => item?.source === "bank";
-  // 2.4.4 (E8): tablodaki kaydın kalemi kaydın CARİSİNE yazılır (carisi yoksa önce cari açılır; hof-workspace.js actions.payment); önceden kayıttan doğrudan
-  // Kasa'ya yazılıyordu. Öbür sayfanın kalemi (foreign) o sayfaya geçince girilir (Tahsilat Takvimi şeridindeki kuralla aynı; cari bağı sayfaya göredir).
-  const canPay = item => (isBank(item) ? HOF.can("bank.move") && Boolean(HOF.bank?.openPlans) : isCheque(item) ? HOF.can("cheques.manage") && Boolean(HOF.cheques) : isPlan(item) ? HOF.can("plans.collect") && Boolean(HOF.plans) : !item.foreign && (HOF.can("accounts.collect") || HOF.can("plans.collect")) && Boolean(HOF.workspace?.payment));
-  const pay = item =>
-    isBank(item)
-      ? HOF.bank.openPlans()
-      : isCheque(item)
-      ? HOF.cheques.open({ id: item.chequeId, action: item.direction === "out" ? "pay" : "collect" })
-      : isPlan(item)
-      ? HOF.plans.pay(item)
-      : HOF.workspace.payment({ key: item.caseKey, title: who(item), person: item.person || "", phone: item.phone || "", amount: item.amount, note: `${item.label} · ${item.dueText}`, debt: item.debt || null, debtColumn: item.debtColumn || "" });
+  // 2.4.5 madde 6a: kalemin düğmeleri ve ne açtıkları Tahsilat Takvimi pil kartıyla AYNI yardımcıdan (hof-promises.js HOF.dues.actions): tablodaki kayıt carisine
+  // (tutar boş, madde 3), taksit kartı, çek / senet kartı, faturanın kendi ödeme formu, Planlı İşlemler, carinin tahsilat / ödeme formu. Önceden zil fatura kalemini
+  // tablo kaydı sayıp "Tahsilat Gir"de SEÇİLİ kaydın carisine fatura tutarıyla dolu form açıyordu (kullanıcı bulgusu 24.10.2026).
+  const NO_ACTIONS = { kind: "", pay: null, go: null, settle: false, cancel: false };
+  const actionsOf = item => (item && HOF.dues?.actions ? HOF.dues.actions(item) : NO_ACTIONS);
+  // Kaydın kendisine (Kayda Git) ve taksit kartına (Taksit Kartı) zil kendi düğmeleriyle gider; öbür kaynaklarda kaynağın kartını açan düğme.
+  const openAction = item => {
+    const acts = actionsOf(item);
+    return acts.kind && acts.kind !== "table" && acts.kind !== "plan" && acts.go?.allowed ? acts.go : null;
+  };
+  const canPay = item => Boolean(actionsOf(item).pay);
+  const pay = item => actionsOf(item).pay?.run();
 
   // ---------- Gerçekleştirildi (v2.0.2) ----------
   const DONE_TEXT = "Gerçekleştirildi";
@@ -302,7 +296,8 @@
   };
   const canDone = alert => {
     if (alert.type === "task") return Boolean(alert.taskId) && HOF.can("tasks.complete");
-    if (!alert.item || !HOF.can("records.edit") || isPlan(alert.item) || isCheque(alert.item) || isBank(alert.item)) return false;
+    // Yalnız tablodaki kaydın kalemi ve son tarihi: kaynağı olan kalem (taksit, çek / senet, fatura, planlı banka, cari) para kaydıyla kapanır.
+    if (!alert.item || !HOF.can("records.edit") || alert.item.source) return false;
     // Başka sayfanın kaydı (2.0.25): işaret açık sayfaya yazılırdı (yanlış sayfa, uyarı kapanmazdı); "Kayda Git" ile o
     // sayfaya geçilip orada işaretlenir.
     if (alert.item.foreign) return false;
@@ -381,7 +376,8 @@
   function show(alert) {
     showing = alert;
     const index = alert.summary ? "" : `${alert.position}/${alert.total}`;
-    const canPayNow = alert.type === "unpaid" && canPay(alert.due);
+    const payNow = alert.type === "unpaid" ? actionsOf(alert.due).pay : null;
+    const source = alert.due ? openAction(alert.due) : null;
     const node = HOF.el(
       "div",
       { class: `hof-notice is-${alert.tone}`, role: alert.tone === "late" ? "alert" : "status" },
@@ -391,10 +387,11 @@
         <b class="hof-notice-title">${esc(alert.title)}</b>
         <p class="hof-notice-text">${esc(alert.text)}</p>
         <div class="hof-notice-actions">
-          ${canPayNow ? '<button type="button" data-act="pay">Tahsilat Gir</button>' : ""}
+          ${payNow ? `<button type="button" data-act="pay">${esc(payNow.label)}</button>` : ""}
           ${canDone(alert) ? `<button type="button" class="is-done" data-act="done" title="${esc(doneHint(alert))}">✓ Gerçekleştirildi</button>` : ""}
           ${alert.caseKey ? '<button type="button" data-act="go">Kayda Git</button>' : ""}
           ${alert.planId ? '<button type="button" data-act="plan">Taksit Kartı</button>' : ""}
+          ${source ? `<button type="button" data-act="open">${esc(source.label)}</button>` : ""}
           ${alert.summary ? '<button type="button" data-act="list">Tümünü Gör</button>' : ""}
           ${alert.type === "task" && !alert.caseKey ? '<button type="button" data-act="tasks">Görevler</button>' : ""}
           ${alert.admin ? '<button type="button" data-act="admin">Yönetim → Sistem</button>' : ""}
@@ -413,6 +410,7 @@
       const act = button.dataset.act;
       if (act === "done") markDone(alert);
       else if (act === "pay") pay(alert.due);
+      else if (act === "open") openAction(alert.due)?.run();
       else if (act === "go") (alert.item?.foreign || alert.due?.foreign ? HOF.sessions?.select?.((alert.item || alert.due).session, { reveal: { caseKey: alert.caseKey, tab: alert.tab || (alert.item || alert.due).tab || "" } }) : HOF.revealRecord?.(alert.caseKey, { tab: alert.tab || "" }));
       else if (act === "plan") HOF.plans?.open(alert.planId);
       else if (act === "list") openPanel();
@@ -565,7 +563,7 @@
           .map(
             ([title, items]) => `<section class="hof-alert-group"><h3>${esc(title)} <span>${items.length}</span></h3><ul>${items
               .map(
-                (item, index) => `<li class="is-${esc(item.tone)}"><span class="hof-alert-when">${esc(item.when || "")}</span><span class="hof-alert-main"><b>${esc(item.title)}</b><small>${esc(item.text)}</small></span><span class="hof-alert-buttons"><button type="button" class="hof-alert-dismiss" data-dismiss="${esc(title)}|${index}" title="Bu bildirimi listemden kaldır" aria-label="Bildirimi kaldır">✕</button>${canDone(item) ? `<button type="button" class="hof-button hof-button-small hof-button-done" data-done="${esc(title)}|${index}" title="${esc(doneHint(item))}">✓ Gerçekleştirildi</button>` : ""}${item.due && canPay(item.due) ? `<button type="button" class="hof-button hof-button-small" data-pay="${esc(title)}|${index}">${isBank(item.due) ? "Planlı İşlemler" : "Tahsilat Gir"}</button>` : ""}${item.caseKey ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-go="${esc(title)}|${index}">Kayda Git</button>` : ""}${item.planId ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-plan="${esc(title)}|${index}">Taksit Kartı</button>` : ""}${item.admin ? '<a class="hof-button hof-button-small hof-button-ghost" href="/admin.html#system">Yönetim → Sistem</a>' : ""}</span></li>`,
+                (item, index) => `<li class="is-${esc(item.tone)}"><span class="hof-alert-when">${esc(item.when || "")}</span><span class="hof-alert-main"><b>${esc(item.title)}</b><small>${esc(item.text)}</small></span><span class="hof-alert-buttons"><button type="button" class="hof-alert-dismiss" data-dismiss="${esc(title)}|${index}" title="Bu bildirimi listemden kaldır" aria-label="Bildirimi kaldır">✕</button>${canDone(item) ? `<button type="button" class="hof-button hof-button-small hof-button-done" data-done="${esc(title)}|${index}" title="${esc(doneHint(item))}">✓ Gerçekleştirildi</button>` : ""}${item.due && canPay(item.due) ? `<button type="button" class="hof-button hof-button-small" data-pay="${esc(title)}|${index}">${esc(actionsOf(item.due).pay.label)}</button>` : ""}${item.caseKey ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-go="${esc(title)}|${index}">Kayda Git</button>` : ""}${item.planId ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-plan="${esc(title)}|${index}">Taksit Kartı</button>` : ""}${item.due && openAction(item.due) ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-open="${esc(title)}|${index}">${esc(openAction(item.due).label)}</button>` : ""}${item.admin ? '<a class="hof-button hof-button-small hof-button-ghost" href="/admin.html#system">Yönetim → Sistem</a>' : ""}</span></li>`,
               )
               .join("")}</ul></section>`,
           )
@@ -578,9 +576,9 @@
       body: `<div class="hof-alert-list">${body}</div><label class="hof-check hof-alert-mute"><input type="checkbox" ${muted() ? "" : "checked"}><span>Sağ altta açılır bildirim göster (her biri 20 saniye, aralarında 10 saniye; tahsilat girilene ya da iş bitene kadar 3 saatte bir)</span></label>`,
     });
     modal.dialog.addEventListener("click", async event => {
-      const button = event.target.closest("[data-go], [data-pay], [data-dismiss], [data-done], [data-plan]");
+      const button = event.target.closest("[data-go], [data-pay], [data-dismiss], [data-done], [data-plan], [data-open]");
       if (!button) return;
-      const [title, index] = (button.dataset.go || button.dataset.pay || button.dataset.dismiss || button.dataset.done || button.dataset.plan).split("|");
+      const [title, index] = (button.dataset.go || button.dataset.pay || button.dataset.dismiss || button.dataset.done || button.dataset.plan || button.dataset.open).split("|");
       const item = groups.find(([name]) => name === title)?.[1][Number(index)];
       if (!item) return;
       if (button.dataset.dismiss || button.dataset.done) {
@@ -608,6 +606,7 @@
       }
       modal.close();
       if (button.dataset.pay) pay(item.due);
+      else if (button.dataset.open) openAction(item.due)?.run();
       else if (button.dataset.plan) HOF.plans?.open(item.planId);
       else if (item.item?.foreign || item.due?.foreign) HOF.sessions?.select?.((item.item || item.due).session, { reveal: { caseKey: item.caseKey, tab: item.tab || (item.item || item.due).tab || "" } });
       else HOF.revealRecord?.(item.caseKey, { tab: item.tab || "" });
