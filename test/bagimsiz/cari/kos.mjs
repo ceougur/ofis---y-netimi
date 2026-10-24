@@ -1,11 +1,16 @@
 #!/usr/bin/env node
-// Bağımsız CARİ / EVRAK kâhini — kara kutu koşucusu (2.4.4 madde 31a, B1–B2; dil "destekofis-cari/2" ve /1, KARARLAR.md).
+// Bağımsız CARİ / EVRAK kâhini — kara kutu koşucusu (2.4.4 madde 31a, B1–B2; dil "destekofis-cari/3", /2 ve /1, KARARLAR.md).
+// /3 (2.4.5 madde 0b, 24.10.2026): kayıt tahsilatı kapısı (K1; POST/PUT 410 case-payments-closed, DELETE + Silinenler açık), Tablodan Aktar kapısı (410
+// table-transfer-closed; eski aktarımın Geri Al'ı açık), uyarı kapısı (madde 4: /dues, Anlık Durum Vade Takip, Nakit Akış Projeksiyonu'nda tablo tutar kalemi yok;
+// tutarsız tablo tarihleri `deadlines` KALIR), cari borç vadesi (madde 6: dueDate / expectedDate, S1 FIFO `remaining`, `account|<entryId>` kalemleri). Sunucu anahtarları
+// startTestServer seçenekleri `legacyCasePayments` / `legacyTableTransfer` ile verilir (varsayılan KAPALI; senaryonun `anahtar`ı ve `sunucu_yeniden` adımı açar).
+//   --legacy: yalnız "2.4.5 kararıyla geçersiz" /1 /2 senaryoları (kayıt tahsilatı POST / Tablodan Aktar içeren), anahtarlar AÇIK sunucuda, 2.4.4 kurallarıyla.
 // /2 (23.10.2026): B3 Tablodaki Kişiler borcu (sekme türü "serbest": başlıklar ve hücre metinleri senaryodan aynen), B4 Nakit Akışı / Kasa raporu Kasa
 // giriş-çıkışı (GET /api/workspace/reports/nakit-akis → report.totals.cashIn/cashOut; GET /api/workspace/cash?method=cash → totals.in/out), B5 Nihai
 // Tüketici (POST /api/workspace/invoices/retail-account → {id, name, created}); uçlar test/nakit-akis-kasa-mm6, test/nihai-tuketici-u1-244 ÇAĞRI
 // satırlarından, yanıt biçimi kara kutu yoklamasından (not defteri yokla3.mjs).
 //
-//   node test/bagimsiz/cari/kos.mjs [senaryo.json …] [--tohum 1-3 --islem 60] [--cikti <klasör>] [--mutasyonsuz]
+//   node test/bagimsiz/cari/kos.mjs [senaryo.json …] [--tohum 1-3 --islem 60] [--tur ux18|s1] [--cikti <klasör>] [--mutasyonsuz] [--legacy]
 //
 // Ne yapar:
 //   1. Her senaryoyu ayrı, boş bir programda koşar (test/helpers.mjs startTestServer; sahte saat = senaryonun "bugun"ü 09:00'dan akar;
@@ -28,25 +33,41 @@ const ROOT = path.resolve(HERE, "..", "..", "..");
 const PROGRAM_KOKU = process.env.KAHIN_PROGRAM_KOKU ? path.resolve(process.env.KAHIN_PROGRAM_KOKU) : ROOT;
 const { startTestServer, ADMIN_PASSWORD } = await import(pathToFileURL(path.join(PROGRAM_KOKU, "test", "helpers.mjs")).href);
 const PYTHON = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
-const BIRINCIL = new Set(["KULLANICI", "PLAN", "GIB", "EDM"]);
+const BIRINCIL = new Set(["KULLANICI", "PLAN", "GIB", "EDM", "BAŞ MİMAR"]);
 
 const argv = process.argv.slice(2);
 const opt = name => (argv.includes(name) ? argv[argv.indexOf(name) + 1] : null);
 const OUT = opt("--cikti") ? path.resolve(opt("--cikti")) : mkdtempSync(path.join(tmpdir(), "kahin-cari-"));
 mkdirSync(OUT, { recursive: true });
 let dosyalar = argv.filter((a, i) => a.endsWith(".json") && argv[i - 1] !== "--cikti");
-// Bağımsız çağrı (dosya ve tohum verilmeden): bütün elle senaryolar + rastgele tohum 1–2 × 60 işlem.
+// Bağımsız çağrı (dosya ve tohum verilmeden): bütün elle senaryolar + rastgele tohum 1–2 × 60 işlem (UX18 /2 ve S1 /3; --legacy'de rastgele yok).
+const LEGACY = argv.includes("--legacy");
 const VARSAYILAN = !dosyalar.length && !opt("--tohum");
 if (VARSAYILAN) dosyalar = readdirSync(path.join(HERE, "senaryolar")).filter(f => f.endsWith(".json")).sort().map(f => path.join(HERE, "senaryolar", f));
-const TOHUM = opt("--tohum") || (VARSAYILAN ? "1-2" : null);
+const TOHUM = opt("--tohum") || (VARSAYILAN && !LEGACY ? "1-2" : null);
 if (TOHUM) {
   const [bas, son] = TOHUM.split("-").map(Number);
+  const turler = opt("--tur") ? [opt("--tur")] : ["ux18", "s1"];
   for (let t = bas; t <= (son || bas); t += 1) {
-    const yol = path.join(OUT, `rastgele-ux18-${t}.json`);
-    writeFileSync(yol, execFileSync(PYTHON, ["-I", path.join(HERE, "uretici.py"), "--tohum", String(t), "--islem", opt("--islem") || "60"], { encoding: "utf8" }));
-    dosyalar.push(yol);
+    for (const tur of turler) {
+      const yol = path.join(OUT, `rastgele-${tur}-${t}.json`);
+      writeFileSync(yol, execFileSync(PYTHON, ["-I", path.join(HERE, "uretici.py"), "--tur", tur, "--tohum", String(t), "--islem", opt("--islem") || "60"], { encoding: "utf8" }));
+      dosyalar.push(yol);
+    }
   }
 }
+// 2.4.5 kararıyla geçersiz (/1 /2 senaryosu tablo para yoluna bağlı — KARARLAR.md C0): varsayılan kipte atlanır (sayısı yazılır); --legacy'de YALNIZ bunlar koşar.
+const gecersizOnbellek = new Map();
+const gecersizMi = dosya => {
+  if (!gecersizOnbellek.has(dosya)) gecersizOnbellek.set(dosya, JSON.parse(execFileSync(PYTHON, ["-I", path.join(HERE, "model.py"), dosya, "--gecersiz-mi"], { encoding: "utf8" })));
+  return gecersizOnbellek.get(dosya);
+};
+const ATLANAN = [];
+dosyalar = dosyalar.filter(d => {
+  const g = gecersizMi(d);
+  if (g !== LEGACY) ATLANAN.push(path.basename(d, ".json"));
+  return g === LEGACY;
+});
 
 const kurus = x => (x === null || x === undefined || x === "" ? null : Math.round(Number(x) * 100));
 const tlMetin = k => `${Math.trunc(k / 100)},${String(k % 100).padStart(2, "0")}`;
@@ -85,10 +106,18 @@ function tabloMatrisi(sk) {
   throw new Error(`sekme türü bilinmiyor: ${sk.tur}`);
 }
 
+// Anahtarlar (config.legacyCasePayments / legacyTableTransfer; K1): --legacy'de ikisi AÇIK; değilse senaryonun `anahtar`ı / sunucu_yeniden adımı (verilmeyen KAPALI).
+// startTestServer'a AÇIKÇA false da verilir: test yardımcısının varsayılanı ne olursa olsun kâhin kapalı kapıyı sınar (eski kodda seçenek yok sayılır).
+const anahtarlar = verilen => (LEGACY ? { legacyCasePayments: true, legacyTableTransfer: true }
+  : { legacyCasePayments: Boolean(verilen?.legacyCasePayments), legacyTableTransfer: Boolean(verilen?.legacyTableTransfer) });
+const sirali = o => Object.fromEntries(Object.entries(o).sort(([x], [y]) => (x < y ? -1 : x > y ? 1 : 0)));
+const gunEkle = (iso, n) => { const d = new Date(`${iso}T12:00:00Z`); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+
 async function kos(senaryo) {
   const veri = mkdtempSync(path.join(tmpdir(), "kahin-cari-veri-"));
-  const server = await startTestServer({ dataDir: path.join(veri, "data"), now: `${senaryo.bugun}T09:00:00`, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
-  const c = server.client();
+  const baslat = verilen => startTestServer({ dataDir: path.join(veri, "data"), now: `${senaryo.bugun}T09:00:00`, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, ...anahtarlar(verilen) });
+  let server = await baslat(senaryo.anahtar);
+  let c = server.client();
   const gunluk = [];
   const api = async (method, url, body) => {
     const r = method === "GET" ? await c.get(url) : method === "DELETE" ? await c.del(url) : await c[method.toLowerCase()](url, body);
@@ -99,15 +128,105 @@ async function kos(senaryo) {
   const P = {};
   const ham = {};
   const hatalar = [];
-  const ids = { cari: {}, fatura: {}, evrak: {}, seri: {}, aktar: {}, anahtar: {} };
+  const ids = { cari: {}, fatura: {}, evrak: {}, seri: {}, aktar: {}, anahtar: {}, hareket: {}, kayitOdeme: {}, yedek: {}, giris: {}, mizan: {}, anahtarSimdi: senaryo.anahtar };
   let urun = null;
   let seri = 0;
   const durum = (adim, r) => {
     P[`adim:${adim.id}:durum`] = r.status === 200 ? "ok" : r.status >= 500 ? "hata" : "ret";
     P[`adim:${adim.id}:http`] = r.status;
-    if (r.status !== 200) P[`adim:${adim.id}:yanit`] = `${r.data?.code || ""} ${String(r.data?.error || "").slice(0, 200)}`;
+    if (r.status !== 200) {
+      P[`adim:${adim.id}:yanit`] = `${r.data?.code || ""} ${String(r.data?.error || "").slice(0, 200)}`;
+      // /3: kapı / doğrulama yanıtının gövdesi (K1 code + error; K6.1 field)
+      P[`adim:${adim.id}:kod`] = r.data?.code ?? "yok";
+      P[`adim:${adim.id}:ileti`] = r.data?.error ?? "yok";
+      P[`adim:${adim.id}:alan`] = r.data?.field ?? "yok";
+    }
+  };
+  // /3: hareketin cari kimliği — POST yanıtından sonra cari kartından `note` (= adım id) ile bulunur
+  const hareketKaydet = async (ad, cariAd, bul) => {
+    const r = await api("GET", `/api/workspace/accounts/${ids.cari[cariAd]}`);
+    const e = (r.data?.entries || []).find(bul);
+    if (e) ids.hareket[ad] = { cari: cariAd, id: e.id };
+    else hatalar.push(`${ad}: carinin hareketlerinde bulunamadı (kimlik okunamadı)`);
+  };
+  const copBul = async (tur, ref) => {
+    const cop = (await api("GET", "/api/admin/trash")).data;
+    return (Array.isArray(cop) ? cop : cop?.items || []).find(x => x.kind === tur && (x.ref === ref || JSON.stringify(x).includes(ref)));
   };
   const evrakOku = async ad => (await api("GET", `/api/workspace/cheques?q=${encodeURIComponent(ids.seri[ad])}`)).data?.cheques?.find(x => x.id === ids.evrak[ad]);
+  const cariAdi = id => Object.entries(ids.cari).find(([, v]) => v === id)?.[0] ?? `?${id}`;
+  // /3 okumaları (2.4.5 madde 4 + madde 6): hareket alanları, takvim kalemleri, Anlık Durum Vade Takip, Nakit Akış Projeksiyonu, yetkisiz kullanıcının takvimi.
+  // Koşucu beklenen değer HESAPLAMAZ; alan adları K6.1–K6.3 metninden ve kara kutu yoklamasından (yokla1–3.mjs, not defteri) — yoksa "alan yok" (ders 4).
+  async function kontrolV3(k, a, girisler) {
+    const alan = (e, f) => (!(f in e) ? "alan yok" : e[f] === null || e[f] === undefined ? "" : e[f]);
+    for (const [ad, h] of Object.entries(ids.hareket)) {
+      const e = (girisler[h.cari] || []).find(x => x.id === h.id);
+      P[`${k}:hareket:${ad}:var`] = Boolean(e);
+      if (!e) continue;
+      P[`${k}:hareket:${ad}:kalan`] = "remaining" in e ? (e.remaining === null ? "boş" : kurus(e.remaining)) : "alan yok";
+      P[`${k}:hareket:${ad}:vade`] = alan(e, "dueDate");
+      P[`${k}:hareket:${ad}:beklenen`] = alan(e, "expectedDate");
+    }
+    const takvimR = (await api("GET", "/api/workspace/dues")).data || {};
+    const items = Array.isArray(takvimR.items) ? takvimR.items : [];
+    const cariKalem = items.filter(x => x.source === "account" || String(x.id || "").startsWith("account|"));
+    P[`${k}:takvim:cariKalemSayisi`] = cariKalem.length;
+    for (const [ad, h] of Object.entries(ids.hareket)) {
+      const x = cariKalem.find(y => (y.entryId ?? String(y.id).slice("account|".length)) === h.id);
+      P[`${k}:takvim:hareket:${ad}`] = x ? sirali({ amount: kurus(x.amount), dueDate: x.dueDate ?? x.due ?? "alan yok", direction: x.direction ?? "alan yok", label: x.label ?? "alan yok",
+        state: x.state ?? "alan yok", days: x.days ?? "alan yok", cari: cariAdi(x.accountId), person: x.person ?? "alan yok" }) : "yok";
+    }
+    for (const [ad, id] of Object.entries(ids.fatura)) {
+      const x = items.find(y => y.id === `invoice|${id}`);
+      P[`${k}:takvim:fatura:${ad}`] = x ? sirali({ amount: kurus(x.amount), direction: x.direction }) : "yok";
+    }
+    for (const [ad, id] of Object.entries(ids.evrak)) {
+      const x = items.find(y => y.id === `cheque|${id}`);
+      P[`${k}:takvim:cek:${ad}`] = x ? sirali({ amount: kurus(x.amount), direction: x.direction }) : "yok";
+    }
+    // madde 4: tablodan gelen tutarlı kalem (2.4.4: kimliği "due|…", kaynak alanı yok) ve kayıt başına tablo tutarı; tutarsız tarihler `deadlines`
+    const tabloKalemi = x => String(x.id || "").startsWith("due|") || ((!x.source || x.source === "table" || x.source === "promise") && (kurus(x.amount) || 0) > 0);
+    P[`${k}:takvim:tabloTutarli`] = items.filter(tabloKalemi).length;
+    for (const [no, anahtar] of Object.entries(ids.anahtar)) {
+      P[`${k}:takvim:kalemTutar:${no}`] = items.filter(x => (x.caseKey ?? x.key) === anahtar && (!x.source || x.source === "table" || x.source === "promise")).reduce((t, x) => t + (kurus(x.amount) || 0), 0);
+      P[`${k}:takvim:deadline:${no}`] = Array.isArray(takvimR.deadlines) ? [...new Set(takvimR.deadlines.filter(x => x.caseKey === anahtar).map(x => x.column ?? x.label))].sort() : "alan yok";
+    }
+    ham[`${k}:takvimV3`] = { items: items.map(x => Object.fromEntries(Object.entries(x).filter(([, v]) => v === null || typeof v !== "object"))), deadlines: takvimR.deadlines ?? null };
+    // Anlık Durum → Vade Takip (GET /overview/vade-takip?preset=open — test çağrı satırları; satır biçimi yoklamadan: source, ref, date, amount, direction)
+    const vt = (await api("GET", "/api/workspace/overview/vade-takip?preset=open")).data || {};
+    const vtRows = Array.isArray(vt.rows) ? vt.rows : null;
+    if (!vtRows) hatalar.push(`${k} Vade Takip okunamadı`);
+    else {
+      P[`${k}:vadeTakip:tablo`] = vtRows.filter(r => ["table", "promise"].includes(r.source) || (r.ref?.type === "record" && r.source !== "deadline")).length;
+      for (const [no, anahtar] of Object.entries(ids.anahtar)) P[`${k}:vadeTakip:deadline:${no}`] = [...new Set(vtRows.filter(r => r.source === "deadline" && r.ref?.key === anahtar).map(r => r.label))].sort();
+      for (const [ad, h] of Object.entries(ids.hareket)) {
+        const r = vtRows.find(y => JSON.stringify(y).includes(h.id));
+        P[`${k}:vadeTakip:hareket:${ad}`] = r ? sirali({ amount: kurus(r.amount), date: r.date ?? r.dueDate ?? "alan yok", direction: r.direction ?? "alan yok" }) : "yok";
+      }
+      ham[`${k}:vadeTakip`] = vtRows.slice(0, 200);
+    }
+    // Nakit Akış Projeksiyonu (GET /overview/nakit-akisi; gecikenler dahil, bugün → +30); "Tablo" seçeneği (table=1) de denenir
+    const projeksiyon = async ek => {
+      const d = (await api("GET", `/api/workspace/overview/nakit-akisi?from=${senaryo.bugun}&to=${gunEkle(senaryo.bugun, 30)}&overdue=1${ek}`)).data || {};
+      return [...(Array.isArray(d.rows) ? d.rows : []), ...(Array.isArray(d.overdue) ? d.overdue : [])];
+    };
+    const tabloSatiri = r => ["table", "promise"].includes(r.source) || r.ref?.type === "record";
+    const hIds = Object.values(ids.hareket).map(h => h.id);
+    const pr = await projeksiyon("");
+    P[`${k}:projeksiyon:tablo`] = pr.filter(tabloSatiri).length;
+    P[`${k}:projeksiyon:cari`] = pr.filter(r => r.source === "account" || hIds.some(id => JSON.stringify(r).includes(id))).length;
+    P[`${k}:projeksiyon:tabloSecenek`] = (await projeksiyon("&table=1")).filter(tabloSatiri).length;
+    ham[`${k}:projeksiyon`] = pr.slice(0, 200);
+    // K6.3: cari görüntüleme yetkisi kaldırılmış kullanıcının takvimi (kurulum denetimi: Cari listesi 403 olmalı — ders 38)
+    for (const [ad, g] of Object.entries(ids.giris)) {
+      if (!g.kaldir.includes("accounts.view")) continue;
+      const kc = ids.kullanici[ad];
+      if ((await kc.get("/api/workspace/accounts")).status === 200) hatalar.push(`${k} ${ad}: cari görüntüleme yetkisi kaldırılamadı (Cari listesi açık) — denetim geçersiz`);
+      const yr = await kc.get("/api/workspace/dues");
+      const yi = unwrap(yr)?.items;
+      P[`${k}:yetkisizTakvim:${ad}:cariKalem`] = Array.isArray(yi) ? yi.filter(x => x.source === "account" || String(x.id || "").startsWith("account|")).length : `erisim-${yr.status}`;
+    }
+  }
   try {
     if ((await c.login("admin", ADMIN_PASSWORD)).status !== 200) throw new Error("giriş olmadı");
     await api("POST", "/api/workspace/bank/setup/dismiss", {});
@@ -232,26 +351,128 @@ async function kos(senaryo) {
           const body = { name: a.isim, type: a.tur === "tedarikci" ? "supplier" : "customer", phone: a.tel || "", registeredOn: a.tarih || senaryo.bugun };
           if (a.kayit) Object.assign(body, { caseKey: ids.anahtar[a.kayit], caseTitle: a.isim });
           if (a.tckn) Object.assign(body, { partyKind: "person", firstName: a.isim.split(" ")[0], familyName: a.isim.split(" ").slice(1).join(" ") || a.isim, taxNo: a.tckn, city: "Ankara", district: "Çankaya", similarOk: true });
-          if (a.acilis) Object.assign(body, { openingBalance: tlMetin(kurusOf(a.acilis)), openingSide: "auto" });
+          if (a.acilis) Object.assign(body, { openingBalance: tlMetin(kurusOf(a.acilis)), openingSide: a.acilisYon === "alacak" ? "credit" : "auto" });
+          // /3 K6.1: Açılış Bakiyesi'nin Vade Tarihi / Beklenen Ödeme Tarihi
+          if ("acilisVade" in a) body.openingDueDate = a.acilisVade;
+          if ("acilisBeklenen" in a) body.openingExpectedDate = a.acilisBeklenen;
           const r = await api("POST", "/api/workspace/accounts", body);
           durum(a, r);
-          ids.cari[a.ad] = r.data?.id;
+          ids.cari[a.ad] = r.status === 200 ? r.data?.id : undefined;
+          if (r.status === 200 && a.acilis) {
+            const e = (r.data?.entries || []).find(x => /açılış/i.test(String(x.note || ""))) || (r.data?.entries || [])[0];
+            if (e) ids.hareket[`acilis:${a.ad}`] = { cari: a.ad, id: e.id };
+            else hatalar.push(`${a.id}: açılış hareketi bulunamadı`);
+          }
           break;
         }
         case "tahsilat": {
-          const r = await api("POST", `/api/workspace/accounts/${ids.cari[a.cari]}/entries`, { kind: "in", amount: tlMetin(kurusOf(a.tutar)), date: t, method: a.yol === "havale" ? "bank" : "cash", cashForce: true, similarOk: true, note: a.id, ...(a.fatura ? { invoiceId: ids.fatura[a.fatura] } : {}) });
+          // /3 K6.1: tahsilata gönderilen Vade / Beklenen Ödeme Tarihi kaydedilmez (`vade`, `beklenen` yalnız denemek için)
+          const r = await api("POST", `/api/workspace/accounts/${ids.cari[a.cari]}/entries`, { kind: "in", amount: tlMetin(kurusOf(a.tutar)), date: t, method: a.yol === "havale" ? "bank" : "cash", cashForce: true, similarOk: true, note: a.id, ...(a.fatura ? { invoiceId: ids.fatura[a.fatura] } : {}), ...("vade" in a ? { dueDate: a.vade } : {}), ...("beklenen" in a ? { expectedDate: a.beklenen } : {}) });
           durum(a, r);
+          if (r.status === 200) await hareketKaydet(a.id, a.cari, e => e.note === a.id);
           break;
         }
-        case "borc": {
-          const r = await api("POST", `/api/workspace/accounts/${ids.cari[a.cari]}/entries`, { kind: "debt", amount: tlMetin(kurusOf(a.tutar)), date: t, note: a.id });
+        case "borc":
+        case "alacak": {
+          // /3 K6.1: elle Borç (debt) / Alacak (credit) + Vade Tarihi (dueDate) + Beklenen Ödeme Tarihi (expectedDate)
+          const r = await api("POST", `/api/workspace/accounts/${ids.cari[a.cari]}/entries`, { kind: a.islem === "borc" ? "debt" : "credit", amount: tlMetin(kurusOf(a.tutar)), date: t, note: a.id, ...("vade" in a ? { dueDate: a.vade } : {}), ...("beklenen" in a ? { expectedDate: a.beklenen } : {}) });
           durum(a, r);
+          if (r.status === 200) await hareketKaydet(a.id, a.cari, e => e.note === a.id);
+          break;
+        }
+        case "odeme": {
+          const r = await api("POST", `/api/workspace/accounts/${ids.cari[a.cari]}/entries`, { kind: "out", amount: tlMetin(kurusOf(a.tutar)), date: t, method: "cash", cashForce: true, similarOk: true, note: a.id, ...(a.fatura ? { invoiceId: ids.fatura[a.fatura] } : {}), ...("vade" in a ? { dueDate: a.vade } : {}) });
+          durum(a, r);
+          if (r.status === 200) await hareketKaydet(a.id, a.cari, e => e.note === a.id);
+          break;
+        }
+        case "hareket_sil": {
+          const h = ids.hareket[a.hareket];
+          durum(a, await api("DELETE", `/api/workspace/accounts/${ids.cari[h?.cari]}/entries/${h?.id}?cashForce=1`));
+          break;
+        }
+        case "hareket_geri_yukle": {
+          const h = ids.hareket[a.hareket];
+          const kalem = await copBul("account-entry", h?.id);
+          durum(a, await api("POST", "/api/admin/trash/restore", { id: kalem?.id || `account-entry:${h?.id}`, cashForce: true }));
+          break;
+        }
+        case "hareket_duzenle": {
+          // Düzenle: yalnız adımda verilen alanlar gönderilir (kısmi PUT — test çağrı satırları); verilmeyen alanların korunması K6.4
+          const h = ids.hareket[a.hareket];
+          const govde = { ...("tutar" in a ? { amount: tlMetin(kurusOf(a.tutar)) } : {}), ...("tarih" in a ? { date: a.tarih } : {}), ...("vade" in a ? { dueDate: a.vade } : {}), ...("beklenen" in a ? { expectedDate: a.beklenen } : {}) };
+          durum(a, await api("PUT", `/api/workspace/accounts/${ids.cari[h?.cari]}/entries/${h?.id}`, govde));
+          break;
+        }
+        case "cari_kalem_odendi": {
+          durum(a, await api("POST", "/api/workspace/dues/settle", { id: `account|${ids.hareket[a.hareket]?.id}` }));
+          break;
+        }
+        case "sunucu_yeniden": {
+          // /3: program kapanır, AYNI veriyle yeniden açılır; anahtarlar adımdakiler (K1: config.legacyCasePayments / legacyTableTransfer)
+          await server.app.close();
+          server = await baslat(a.anahtar);
+          ids.anahtarSimdi = a.anahtar;
+          c = server.client();
+          const ok = (await c.login("admin", ADMIN_PASSWORD)).status === 200;
+          if (!ok) hatalar.push(`${a.id}: yeniden açılışta giriş olmadı`);
+          for (const [ad, g] of Object.entries(ids.giris)) {
+            const kc = server.client();
+            if ((await kc.login(g.kadi, g.parola)).status !== 200) hatalar.push(`${a.id}: ${ad} yeniden giriş olmadı`);
+            ids.kullanici[ad] = kc;
+          }
+          P[`adim:${a.id}:durum`] = ok ? "ok" : "hata";
+          break;
+        }
+        case "yedek_al": {
+          const r = await api("POST", "/api/admin/backups", {});
+          durum(a, r);
+          ids.yedek[a.ad] = { name: r.data?.name, company: r.data?.company?.id, code: r.data?.company?.code };
+          break;
+        }
+        case "yedek_geri_yukle": {
+          const y = ids.yedek[a.yedek] || {};
+          const r = await api("POST", "/api/admin/backups/restore", { name: y.name, company: y.company, confirm: y.code, password: ADMIN_PASSWORD });
+          durum(a, r);
+          // Geri yükleme hazırlanır ve programın yeniden açılışında uygulanır (yoklama 4: { staged: true, restartRequired: true }) → aynı veriyle yeniden aç
+          if (r.status === 200 && (r.data?.restartRequired || r.data?.staged)) {
+            await server.app.close();
+            server = await baslat(ids.anahtarSimdi);
+          }
+          // geri yüklemeden sonra oturumlar yenilenir (kullanıcı tablosu da yedekten gelebilir)
+          c = server.client();
+          if ((await c.login("admin", ADMIN_PASSWORD)).status !== 200) hatalar.push(`${a.id}: geri yüklemeden sonra giriş olmadı`);
+          for (const [ad, g] of Object.entries(ids.giris)) {
+            const kc = server.client();
+            await kc.login(g.kadi, g.parola);
+            ids.kullanici[ad] = kc;
+          }
           break;
         }
         case "kayit_tahsilat": {
           (ids.odemeli ||= new Set()).add(a.kayit);
           const r = await api("POST", `/api/workspace/cases/${encodeURIComponent(ids.anahtar[a.kayit] || a.kayit)}/payments`, { amount: tlMetin(kurusOf(a.tutar)), date: t, method: "cash" });
           durum(a, r);
+          if (r.status === 200) ids.kayitOdeme[a.id] = r.data?.id;
+          break;
+        }
+        case "kayit_tahsilat_duzenle": {
+          // K1: eski kayıt tahsilatının düzeltmesi — PUT /api/workspace/payments/:id (test çağrı satırları)
+          durum(a, await api("PUT", `/api/workspace/payments/${ids.kayitOdeme[a.odeme]}`, { amount: tlMetin(kurusOf(a.tutar)), date: t, method: "cash" }));
+          break;
+        }
+        case "kayit_tahsilat_put": {
+          // K1 metnindeki "PUT /api/workspace/cases/:key/payments" (2.4.4 yoklaması: 405)
+          durum(a, await api("PUT", `/api/workspace/cases/${encodeURIComponent(ids.anahtar[a.kayit] || a.kayit)}/payments`, { amount: tlMetin(kurusOf(a.tutar)), date: t, method: "cash" }));
+          break;
+        }
+        case "kayit_tahsilat_sil": {
+          durum(a, await api("DELETE", `/api/workspace/payments/${ids.kayitOdeme[a.odeme]}?cashForce=1`));
+          break;
+        }
+        case "kayit_tahsilat_geri_yukle": {
+          const kalem = await copBul("payment", ids.kayitOdeme[a.odeme]);
+          durum(a, await api("POST", "/api/admin/trash/restore", { id: kalem?.id || `payment:${ids.kayitOdeme[a.odeme]}`, cashForce: true }));
           break;
         }
         case "aktar": {
@@ -350,6 +571,7 @@ async function kos(senaryo) {
           const kc = server.client();
           if ((await kc.login(kadi, parola)).status !== 200) hatalar.push(`${a.id} kullanıcı girişi olmadı`);
           (ids.kullanici ||= {})[a.ad] = kc;
+          ids.giris[a.ad] = { kadi, parola, kaldir: a.kaldir || ["cash.view"] };
           break;
         }
         case "nihai_tuketici": {
@@ -389,9 +611,11 @@ async function kos(senaryo) {
             const ac = hesaplar.find(h => h.caseKey === anahtar && !Object.values(ids.cari).includes(h.id));
             if (ac) ids.cari[`@${no}`] = ac.id;
           }
+          const girisler = {}; // /3: cari takma adı → hareketler (entries)
           for (const [ad, id] of Object.entries(ids.cari)) {
             if (!id) continue;
             const r = await api("GET", `/api/workspace/accounts/${id}`);
+            if (r.status === 200) girisler[ad] = r.data?.entries || [];
             if (ids.silinen?.has(ad)) {
               P[`${k}:cari:${ad}:var`] = r.status === 200 && !r.data?.deletedAt;
               continue;
@@ -430,13 +654,18 @@ async function kos(senaryo) {
             // Mizan okundu: bakiyesi sıfır olan hesap programın listesinde yer almayabilir → 0 (okunamadı değil).
             for (const kod of ["100", "101", "120", "121", "320", "600", "610", "770"]) P[`${k}:mizan:${kod}`] = 0;
             for (const h of led.data.trial.accounts) if (Math.round(h.balance * 100)) P[`${k}:mizan:${h.code}`] = Math.round(h.balance * 100);
+            ids.mizan[k] = Object.fromEntries(led.data.trial.accounts.map(h => [h.code, Math.round(h.balance * 100)]).filter(([, v]) => v).sort());
+            // /3: "Yevmiye DEĞİŞMEZ" — mizan önceki kontroldekiyle aynı mı (vade alanı değişikliğinden sonra)
+            if (a.mizanKarsilastir) P[`${k}:mizanEsit`] = ids.mizan[a.mizanKarsilastir] ? JSON.stringify(ids.mizan[k]) === JSON.stringify(ids.mizan[a.mizanKarsilastir]) : "okunamadı";
           } else hatalar.push(`${k} mizan okunamadı (${led.status})`);
           {
             // /2 B4 (MM6): yıl başından bugüne Nakit Akışı Kasa giriş/çıkışı ve Kasa raporu (yalnız nakit)
             const aralik = `from=${senaryo.bugun.slice(0, 4)}-01-01&to=${senaryo.bugun}`;
             const na = await api("GET", `/api/workspace/reports/nakit-akis?${aralik}`);
             const tot = na.data?.report?.totals;
-            if (tot) Object.assign(P, { [`${k}:nakit:kasaGiris`]: kurus(tot.cashIn), [`${k}:nakit:kasaCikis`]: kurus(tot.cashOut) });
+            // 2.4.5 madde 5 (öneri): Kasa sütunları Tablodaki Nakit Akışı'nda kalmayabilir — alan yok / null → "yok"
+            const kasaAlani = v => (v === null || v === undefined ? "yok" : kurus(v));
+            if (tot) Object.assign(P, { [`${k}:nakit:kasaGiris`]: kasaAlani(tot.cashIn), [`${k}:nakit:kasaCikis`]: kasaAlani(tot.cashOut) });
             else ham[`${k}:nakit`] = { status: na.status, data: na.data };
             const kr = await api("GET", `/api/workspace/cash?${aralik}&method=cash`);
             if (kr.data?.totals) Object.assign(P, { [`${k}:kasaRapor:giris`]: kurus(kr.data.totals.in), [`${k}:kasaRapor:cikis`]: kurus(kr.data.totals.out) });
@@ -491,11 +720,13 @@ async function kos(senaryo) {
               tara(yd);
               P[`${k}:yetkisiz:${ad}:not`] = metinler.some(m => /kasa/i.test(m) && /(yetki|göreme|görüntüle|gizli)/i.test(m));
               // Kurulum denetimi (ders 38): yetki gerçekten kalktı mı — Kasa sayfası bu kullanıcıya açılıyorsa K5 denetimi geçersizdir (okuma hatası).
+              // /3: yalnız Kasa yetkisi kaldırılan kullanıcıda (cari görüntüleme yetkisi kaldırılanın Kasa'sı açıktır)
               const ks = (await kc.get("/api/workspace/cash")).status;
-              if (ks === 200) hatalar.push(`${k} ${ad}: Kasa yetkisi kaldırılamadı (Kasa sayfası açık) — K5 denetimi geçersiz`);
+              if (ks === 200 && (ids.giris[ad]?.kaldir || ["cash.view"]).includes("cash.view")) hatalar.push(`${k} ${ad}: Kasa yetkisi kaldırılamadı (Kasa sayfası açık) — K5 denetimi geçersiz`);
               ham[`${k}:yetkisiz:${ad}`] = { status: yr.status, kasaSayfasi: ks, totals: yt ?? null, notlar: metinler.filter(m => /kasa/i.test(m)).slice(0, 5) };
             }
           }
+          await kontrolV3(k, a, girisler);
           if (Object.keys(ids.anahtar).length) {
             const rp = await api("GET", `/api/workspace/reports/cari-ekstre?from=${senaryo.bugun.slice(0, 4)}-01-01&to=${senaryo.bugun}`);
             const rep = rp.data?.report;
@@ -566,7 +797,7 @@ async function kos(senaryo) {
   return { program: P, hatalar, gunluk, ham };
 }
 
-const model = (dosya, mut = 0) => JSON.parse(execFileSync(PYTHON, ["-I", path.join(HERE, "model.py"), dosya, "--mutasyon", String(mut)], { encoding: "utf8" }));
+const model = (dosya, mut = 0, legacy = LEGACY) => JSON.parse(execFileSync(PYTHON, ["-I", path.join(HERE, "model.py"), dosya, "--mutasyon", String(mut), ...(legacy ? ["--legacy"] : [])], { encoding: "utf8" }));
 const esit = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 // /2 B3 K2 ([KULLANICI] 23.10.2026 04:09 UTC): "N dosya no birden çok sekmede; ayrı sayıldı" → N. Not yoksa 0; 03:12 metni ("bir kez sayıldı") ya da sonu
 // okunamayan not "bir-kez:N" / "metin:N" olarak yazılır (beklenenle tutmaz — fark; ders 38: hangi metin göründüğü raporda okunur).
@@ -670,7 +901,8 @@ for (const dosya of dosyalar) {
   writeFileSync(path.join(OUT, `${senaryo.ad}.ham.json`), JSON.stringify(ham, null, 1));
   const beklenen = model(dosya);
   const { toplam, farklar: tumFarklar } = karsilastir(beklenen, program);
-  const { kalan: farklar, bilinen } = bilinenAyir(senaryo.ad, beklenen.denetimler, tumFarklar, BILINEN.kayitlar);
+  // /3: BILINEN kaydının `kural` alanı varsa yalnız o kural setinde uygulanır (2.4.5'te konusu kalkan Takvim / Açılış Bakiyesi kayıtları "2.4.4")
+  const { kalan: farklar, bilinen } = bilinenAyir(senaryo.ad, beklenen.denetimler, tumFarklar, BILINEN.kayitlar.filter(e => !e.kural || e.kural === (LEGACY ? "2.4.4" : "2.4.5")));
   genelToplam += toplam;
   genelFark += farklar.length;
   genelBilinen += bilinen.length;
@@ -693,12 +925,21 @@ if (!argv.includes("--mutasyonsuz")) {
   // Mutasyon kümesi: koşulan dosyalar + BÜTÜN elle senaryolar (yalnız kâhin modeli koşar, program açılmaz). Böylece --tohum ile yalnız rastgele UX18 dizileri
   // koşulduğunda da (Uzun Doğrulama) /2 kurallarının (U1/U2/MM6) mutantları elle senaryolarda yakalanır (23.10.2026).
   const elle = readdirSync(path.join(HERE, "senaryolar")).filter(f => f.endsWith(".json")).sort().map(f => path.join(HERE, "senaryolar", f));
+  // /3: her dosya kendi kural setinde değerlendirilir — geçersiz /1 /2 → 2.4.4 (legacy); /3 → 2.4.5; öbür /1 /2 → İKİSİ (2.4.5'te konusu kalkan 2.4.4 kurallarının — ör.
+  // takvim kalemi, Açılış Bakiyesi ön dolumu — mutantları legacy değerlendirmesinde yakalanır). Program açılmaz.
   const mutKume = [...new Set([...dosyalar, ...elle])];
-  const taban = Object.fromEntries(mutKume.map(d => [d, model(d)]));
+  const kipler = d => {
+    if (gecersizMi(d)) return [true];
+    return JSON.parse(readFileSync(d, "utf8")).dil === "destekofis-cari/3" ? [false] : [false, true];
+  };
+  // Tek Python sürecinde (model.py --mutasyon-tara): her mutant için ilk 3 yakalayan (dosya, kip) — 100+ mutant × 40+ dosya × 1–2 kip, süreç başlatma maliyeti yok
+  const liste = path.join(OUT, "mutasyon-listesi.json");
+  writeFileSync(liste, JSON.stringify(mutKume.map(d => ({ dosya: d, kipler: kipler(d).map(l => (l ? "2.4.4" : "2.4.5")) }))));
+  const tarama = JSON.parse(execFileSync(PYTHON, ["-I", path.join(HERE, "model.py"), "-", "--mutasyon-tara", liste], { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 }));
   for (const [n, ad] of Object.entries(mutasyonlar)) {
-    const yakalayan = mutKume.filter(d => !esit(model(d, Number(n)).denetimler, taban[d].denetimler)).map(d => path.basename(d, ".json"));
+    const yakalayan = (tarama[n]?.yakalayan || []).map(y => `${path.basename(y.dosya, ".json")}${y.kip === "2.4.4" && !LEGACY && !gecersizMi(y.dosya) ? "[2.4.4]" : ""}`);
     if (!yakalayan.length) kacan += 1;
-    console.log(`  mutasyon ${n} (${ad}): ${yakalayan.length ? `YAKALANDI (${yakalayan.slice(0, 3).join(", ")}${yakalayan.length > 3 ? ` +${yakalayan.length - 3}` : ""})` : "YAKALANMADI"}`);
+    console.log(`  mutasyon ${n} (${ad}): ${yakalayan.length ? `YAKALANDI (${yakalayan.join(", ")}${yakalayan.length >= 3 ? " …" : ""})` : "YAKALANMADI"}`);
   }
 }
 // BİLİNEN listesi: geçersiz kayıt BAŞARISIZ; liste mutantları her koşuda (program açılmaz)
@@ -708,8 +949,9 @@ for (const m of bilinenMutantlari()) {
   if (!m.yakalandi) kacan += 1;
   console.log(`  liste mutasyonu ${m.n} (${m.ad}): ${m.yakalandi ? "YAKALANDI" : "YAKALANMADI"}`);
 }
-writeFileSync(path.join(OUT, "ozet.json"), JSON.stringify({ ozet, genelToplam, genelFark, okumaHatasi, kacan, bilinen: genelBilinen, bilinenKayitlar: bilinenHepsi, bilinenListesiHatalari: BILINEN.hatalar }, null, 1));
-console.log(`\nÖZET: ${dosyalar.length} senaryo, ${genelToplam} denetim, ${genelFark} fark (BULGU ${ozet.reduce((s, o) => s + o.bulgu, 0)}), ${genelBilinen} bilinen sınır (BILINEN.json; başarısız sayılmaz), ${okumaHatasi} okuma hatası, ${kacan} yakalanmayan mutasyon. Ham çıktı: ${OUT}`);
+writeFileSync(path.join(OUT, "ozet.json"), JSON.stringify({ kip: LEGACY ? "legacy (2.4.4 kuralları, anahtarlar açık)" : "2.4.5", ozet, genelToplam, genelFark, okumaHatasi, kacan, bilinen: genelBilinen, bilinenKayitlar: bilinenHepsi, bilinenListesiHatalari: BILINEN.hatalar, atlanan: ATLANAN }, null, 1));
+console.log(`\nATLANAN (${LEGACY ? "2.4.5 kurallarıyla geçerli — varsayılan kipte koşar" : "2.4.5 kararıyla geçersiz — --legacy ile koşar"}): ${ATLANAN.length}${ATLANAN.length ? ` — ${ATLANAN.join(", ")}` : ""}`);
+console.log(`\nÖZET [${LEGACY ? "legacy" : "2.4.5"}]: ${dosyalar.length} senaryo, ${genelToplam} denetim, ${genelFark} fark (BULGU ${ozet.reduce((s, o) => s + o.bulgu, 0)}), ${genelBilinen} bilinen sınır (BILINEN.json; başarısız sayılmaz), ${okumaHatasi} okuma hatası, ${kacan} yakalanmayan mutasyon, ${ATLANAN.length} atlanan senaryo. Ham çıktı: ${OUT}`);
 if (genelBilinen) console.log(`BİLİNEN SINIRLAR (${genelBilinen}): ${bilinenHepsi.map(b => `${b.senaryo} ${b.anahtar}`).join("; ")}`);
 // "geçti" sayısı bilinen sınırları içerir (başarısız sayılmaz — CI kapısı); ayrıntısı yukarıdaki BİLİNEN satırlarında ve ozet.json "bilinen" alanında
 console.log(`${Math.max(0, genelToplam - genelFark - okumaHatasi - kacan)}/${genelToplam} denetim geçti${genelBilinen ? ` (${genelBilinen} bilinen sınır dahil)` : ""}`);

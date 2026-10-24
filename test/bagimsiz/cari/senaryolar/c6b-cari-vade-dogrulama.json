@@ -1,0 +1,25 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "c6b-cari-vade-dogrulama",
+ "aciklama": "2.4.5 K6.1 doğrulaması: Vade / Beklenen Ödeme Tarihi kaydın tarihinden önce, biçimsiz (13. ay, gg.aa.yyyy, 30 Şubat) → 400 + field, hiçbir satır yazılmaz; kaydın tarihine eşit Vade geçerli; Düzenle'de vadeyi tarihten öne alma ve tarihi vadeden sonraya alma 400; Açılış'ta tarihten önce Vade → 400 (cari açılmaz), eşit Beklenen geçerli (Ödeme Sözü kalemi). YORUM: müşteride elle Alacak (S1 harfiyen borç tarafı kuyruğu, ayrı 'Ödenecek Borç' kalemi).",
+ "dayanak": "KARARLAR.md C6 (K6.1 BAŞ MİMAR; YORUM — SORU)",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {"id": "ch", "islem": "cari_ac", "ad": "H", "isim": "Hasan Hata", "tarih": "2026-06-01"},
+  {"id": "v1", "islem": "borc", "cari": "H", "tutar": "100", "tarih": "2026-06-10", "vade": "2026-06-09"},
+  {"id": "v2", "islem": "borc", "cari": "H", "tutar": "100", "tarih": "2026-06-10", "beklenen": "2026-06-01"},
+  {"id": "v3", "islem": "borc", "cari": "H", "tutar": "100", "tarih": "2026-06-10", "vade": "2026-13-01"},
+  {"id": "v4", "islem": "borc", "cari": "H", "tutar": "100", "tarih": "2026-06-10", "vade": "15.06.2026"},
+  {"id": "v5", "islem": "alacak", "cari": "H", "tutar": "100", "tarih": "2026-06-10", "beklenen": "2026-02-30"},
+  {"id": "v6", "islem": "borc", "cari": "H", "tutar": "100", "tarih": "2026-06-10", "vade": "2026-06-10"},
+  {"id": "v7", "islem": "hareket_duzenle", "hareket": "v6", "vade": "2026-06-05"},
+  {"id": "v8", "islem": "hareket_duzenle", "hareket": "v6", "tarih": "2026-06-12"},
+  {"id": "cx", "islem": "cari_ac", "ad": "X", "isim": "Xenon Hatalı Açılış", "tarih": "2026-06-01", "acilis": "500", "acilisVade": "2026-05-20"},
+  {"id": "cz", "islem": "cari_ac", "ad": "Z", "isim": "Zeki Açılış", "tarih": "2026-06-01", "acilis": "500", "acilisBeklenen": "2026-06-01"},
+  {"id": "k1", "islem": "kontrol"},
+  {"id": "ce", "islem": "cari_ac", "ad": "E", "isim": "Ece Er", "tarih": "2026-06-01"},
+  {"id": "eb", "islem": "borc", "cari": "E", "tutar": "400", "tarih": "2026-06-02", "vade": "2026-06-12"},
+  {"id": "ea", "islem": "alacak", "cari": "E", "tutar": "150", "tarih": "2026-06-03", "vade": "2026-06-13"},
+  {"id": "k2", "islem": "kontrol"}
+ ]
+}
