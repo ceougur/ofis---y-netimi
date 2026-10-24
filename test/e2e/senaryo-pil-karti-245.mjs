@@ -112,10 +112,25 @@ const closeAll = async page => {
     await page.waitForTimeout(250);
   }
 };
+// Bildirimi DOM'dan silmek yerine ürünün Kapat (×) düğmesi: hof-alerts.js "showing"i ancak hide() ile bırakır.
+const closeNotices = async page => {
+  await page.evaluate(() => document.querySelectorAll("#hof-notices .hof-notice:not(.is-leaving) [data-act=close]").forEach(button => button.click()));
+  await page.waitForFunction(() => !document.querySelector("#hof-notices .hof-notice"), null, { timeout: 5000 }).catch(() => null);
+};
 const toasts = page => page.evaluate(() => [...document.querySelectorAll(".hof-toast")].map(node => node.textContent.replace(/\s+/g, " ").trim()).join(" | "));
 async function openPage() {
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: "tr-TR" });
   await context.addInitScript(() => document.addEventListener("DOMContentLoaded", () => document.head.appendChild(Object.assign(document.createElement("style"), { textContent: "#hof-license-bar,.hof-license-notice{display:none!important}" }))));
+  // s7-tani (24.10.2026): sağ alt bildirimler belge BAŞINDAN susturulur (S7'de window.__hofNoticesOn ile açılır). Önceden susturma oturum açıldıktan
+  // sonra yazılıyor, ekrandaki bildirim DOM'dan elle siliniyordu: yüklü makinede açılış turu susturmadan önce gelince hof-alerts.js'in "showing"i
+  // takılı kalıyor (hide() bağlı olmayan düğümde erken döner), S7'de hiçbir bildirim gösterilmiyordu ("bildirim düğmeleri: []").
+  await context.addInitScript(() => {
+    const get = Storage.prototype.getItem;
+    Storage.prototype.getItem = function (key) {
+      if (!window.__hofNoticesOn && String(key).startsWith("hof-notices-off:")) return "true";
+      return get.call(this, key);
+    };
+  });
   const page = await context.newPage();
   page.setDefaultTimeout(15000);
   page.on("pageerror", error => errors.push(error.message));
@@ -126,11 +141,14 @@ async function openPage() {
   await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
   await page.waitForFunction(() => Boolean(window.HOF?.accounts?.open && window.HOF?.invoices?.openDoc && window.HOF?.dues?.data), null, { timeout: 20000 });
   await page.waitForSelector(".dynamic-table tbody tr", { timeout: 20000 });
-  // Sağ alt bildirimler şeridi kapatmasın (S7'de ayrıca açılır).
-  await page.evaluate(() => {
-    localStorage.setItem(`hof-notices-off:${window.HOF.user.id}`, "true");
-    document.querySelectorAll("#hof-notices .hof-notice").forEach(node => node.remove());
-  });
+  if (process.env.S7_ZORLA) {
+    // Zorla üretme (ders 20): yüklü makinedeki sıra — programın kendi açılış bildirim turu (hof-alerts.js loadTasks, ~2,5 sn) testin susturma
+    // adımından ÖNCE koşsun. Eski düzende bildirim ekrana çıkar ve S7 boş kalırdı; susturma belge başından olduğu için artık çıkmaz.
+    const early = await page.waitForSelector("#hof-notices .hof-notice.is-visible", { timeout: 8000 }).catch(() => null);
+    console.log(`  [S7 zorla] 8 sn beklendi; açılış bildirimi susturmadan önce ekranda: ${early ? "EVET (ön koşul oluştu)" : "hayır"}`);
+  }
+  // Sağ alt bildirimler şeridi kapatmasın (S7'de ayrıca açılır); ekrandaki bildirim ürünün kendi Kapat (×) düğmesiyle kapanır.
+  await closeNotices(page);
   await page.waitForSelector(".hof-payment-promises .hof-payment-pill", { timeout: 20000 });
   await page.waitForTimeout(600);
   return { context, page };
@@ -347,11 +365,39 @@ try {
       const shown = Object.fromEntries(list.filter(alert => alert !== item).map(alert => [alert.id, now]));
       localStorage.setItem(`hof-notices:${window.HOF.user.id}`, JSON.stringify({ shown }));
       localStorage.removeItem(`hof-notices-off:${window.HOF.user.id}`);
+      window.__hofNoticesOn = true;
       window.HOF.alerts.enqueue();
       return item?.id || "";
     }, noticeSale.displayNo);
     ok(Boolean(target), "bildirim listesinde fatura kalemi");
-    const node = await page.waitForSelector(`#hof-notices .hof-notice.is-visible:has-text("${noticeSale.displayNo}")`, { timeout: 30000 }).catch(() => null);
+    // Kuyrukta önceden bekleyen başka bildirim varsa (ör. açılış turu) ürünün Kapat düğmesiyle geçilir; hedef bildirim beklenir.
+    let node = null;
+    const until = Date.now() + 90000;
+    while (!node && Date.now() < until) {
+      const shown = await page.$("#hof-notices .hof-notice.is-visible:not(.is-leaving)");
+      const text = shown ? (await shown.textContent()).replace(/\s+/g, " ").trim() : "";
+      if (shown && text.includes(noticeSale.displayNo)) {
+        node = shown;
+        break;
+      }
+      if (shown) {
+        console.log(`  [S7] önce başka bildirim kapatıldı: ${text.slice(0, 100)}`);
+        await shown.$eval("[data-act=close]", button => button.click());
+      }
+      await page.waitForTimeout(300);
+    }
+    if (!node || process.env.S7_TANI) {
+      // Tanılama (s7-tani): bildirim kabının durumu, ekrandaki bildirimler, açık pencereler, saat.
+      const tani = await page.evaluate(no => ({
+        clientNow: new Date().toString(),
+        notices: [...document.querySelectorAll("#hof-notices .hof-notice")].map(item => ({ cls: item.className, display: getComputedStyle(item).display, text: item.textContent.replace(/\s+/g, " ").trim().slice(0, 140) })),
+        backdrops: [...document.querySelectorAll(".hof-modal-backdrop")].map(item => item.className),
+        muted: localStorage.getItem(`hof-notices-off:${window.HOF.user.id}`),
+        target: window.HOF.alerts.list().filter(alert => alert.text?.includes(no) || alert.due?.label?.includes(no)).map(alert => ({ id: alert.id, type: alert.type })),
+        total: window.HOF.alerts.list().length,
+      }), noticeSale.displayNo);
+      console.log(`  [S7 tanı] ${JSON.stringify(tani)}`);
+    }
     ok(Boolean(node), "fatura bildirimi sağ altta");
     const buttons = node ? await node.$$eval(".hof-notice-actions button", nodes => nodes.map(item => item.textContent.trim())) : [];
     await shot(page, "s7-bildirim");
@@ -362,8 +408,9 @@ try {
     }
     await page.evaluate(() => {
       localStorage.setItem(`hof-notices-off:${window.HOF.user.id}`, "true");
-      document.querySelectorAll("#hof-notices .hof-notice").forEach(item => item.remove());
+      window.__hofNoticesOn = false;
     });
+    await closeNotices(page);
     await closeAll(page);
   });
 
