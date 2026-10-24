@@ -1,0 +1,123 @@
+===== cari-listesi-tam.pdf (pdftotext, ilk 6 satır)
+Yıldız Yapı Market   Oluşturma: 21.10.2026 07:25
+Yıldız Yapı Malzemeleri Ticaret Ltd. Şti.   Hazırlayan: Ofis yöneticisi
+VKN: 1234567890 · Vergi Dairesi: Kadıköy
+Bağdat Cad. No: 12 Kadıköy / İstanbul
+
+Cari Listesi ve Bakiyeler
+===== cari-listesi-yalniz-tabela.pdf (pdftotext, ilk 6 satır)
+Yıldız Yapı Market   Oluşturma: 21.10.2026 07:25
+   Hazırlayan: Ofis yöneticisi
+Cari Listesi ve Bakiyeler
+Tüm cariler · 3 cari
+
+  Cari   Toplam Borç   Toplam Alacak   Müşteri Alacakları (Borçlu Cariler)
+===== ekstre-tam.pdf (pdftotext, ilk 6 satır)
+Yıldız Yapı Market   Oluşturma: 21.10.2026 07:25
+Yıldız Yapı Malzemeleri Ticaret Ltd. Şti.   Hazırlayan: Ofis yöneticisi
+VKN: 1234567890 · Vergi Dairesi: Kadıköy
+Bağdat Cad. No: 12 Kadıköy / İstanbul
+
+Ayrıntılı Cari Ekstre · Ayşe Demir
+===== ekstre-yalniz-tabela.pdf (pdftotext, ilk 6 satır)
+Yıldız Yapı Market   Oluşturma: 21.10.2026 07:24
+   Hazırlayan: Ofis yöneticisi
+Ayrıntılı Cari Ekstre · Ayşe Demir
+Cari No 1 · 01.01.2026 – 31.12.2026 · Fatura kalemleriyle · B: borçlu · A: alacaklı
+
+  Devir   Dönem Borç   Dönem Alacak   Genel Toplam (Bakiye)
+===== fatura-tam.pdf (pdftotext, ilk 6 satır)
+Yıldız Yapı Malzemeleri Ticaret Ltd. Şti.   MÜŞTERİ FİŞİ
+Bağdat Cad. No: 12 Kadıköy / İstanbul
+Vergi Dairesi: Kadıköy VKN: 1234567890   Fiş No   FIS2026000000001
+   Tarih / Saat   21.10.2026 10:13
+   Vade   26.10.2026
+
+===== fatura-yalniz-tabela.pdf (pdftotext, ilk 6 satır)
+Yıldız Yapı Malzemeleri Ticaret Ltd. Şti.   MÜŞTERİ FİŞİ
+Bağdat Cad. No: 12 Kadıköy / İstanbul
+Vergi Dairesi: Kadıköy VKN: 1234567890   Fiş No   FIS2026000000001
+   Tarih / Saat   21.10.2026 10:13
+   Vade   26.10.2026
+
+===== kart-ekstre-tam.pdf (pdftotext, ilk 6 satır)
+Yıldız Yapı Market   Oluşturma: 21.10.2026 07:25
+Yıldız Yapı Malzemeleri Ticaret Ltd. Şti.   Hazırlayan: Ofis yöneticisi
+VKN: 1234567890 · Vergi Dairesi: Kadıköy
+Bağdat Cad. No: 12 Kadıköy / İstanbul
+
+Cari Ekstre · Ayşe Demir
+===== kart-ekstre-yalniz-tabela.pdf (pdftotext, ilk 6 satır)
+Yıldız Yapı Market   Oluşturma: 21.10.2026 07:25
+   Hazırlayan: Ofis yöneticisi
+Cari Ekstre · Ayşe Demir
+Cari No 1 · Müşteri · 05367715055
+
+  Borç Toplamı   Alacak Toplamı   Bakiye
+===== kasa-tam.pdf (pdftotext, ilk 6 satır)
+Yıldız Yapı Market   Oluşturma: 21.10.2026 07:26
+Yıldız Yapı Malzemeleri Ticaret Ltd. Şti.   Hazırlayan: Ofis yöneticisi
+VKN: 1234567890 · Vergi Dairesi: Kadıköy
+Bağdat Cad. No: 12 Kadıköy / İstanbul
+
+
+===== raporlar-cari-ekstre-sekmesi-tam.pdf (pdftotext, ilk 6 satır)
+Yıldız Yapı Market   Oluşturma: 21.10.2026 07:26
+Yıldız Yapı Malzemeleri Ticaret Ltd. Şti.   Hazırlayan: Ofis yöneticisi
+VKN: 1234567890 · Vergi Dairesi: Kadıköy
+Bağdat Cad. No: 12 Kadıköy / İstanbul
+
+Cari Mizanı
+===== tablo-raporu-tam.pdf (pdftotext, ilk 6 satır)
+Yıldız Yapı Market   Oluşturma: 21.10.2026 07:26
+Yıldız Yapı Malzemeleri Ticaret Ltd. Şti.   Hazırlayan: Ofis yöneticisi
+VKN: 1234567890 · Vergi Dairesi: Kadıköy
+Bağdat Cad. No: 12 Kadıköy / İstanbul
+
+Tablodaki Kişiler
+===== ekstre-tam.xlsx (ilk 6 satır)
+A=Yıldız Yapı Market
+A=Yıldız Yapı Malzemeleri Ticaret Ltd. Şti.
+A=VKN: 1234567890 · Vergi Dairesi: Kadıköy
+A=Bağdat Cad. No: 12 Kadıköy / İstanbul
+A=Ayrıntılı Cari Ekstre · Ayşe Demir
+A=Cari No 1 · 01.01.2026 – 31.12.2026 · Fatura kalemleriyle · B: borçlu · A: alacaklı
+===== ekstre-yalniz-tabela.xlsx (ilk 6 satır)
+A=Yıldız Yapı Market
+A=Ayrıntılı Cari Ekstre · Ayşe Demir
+A=Cari No 1 · 01.01.2026 – 31.12.2026 · Fatura kalemleriyle · B: borçlu · A: alacaklı
+A=Oluşturma: 21.10.2026 07:24 · Hazırlayan: Ofis yöneticisi
+A=Tarih | B=Belge No | C=İşlem | D=Yol | E=Açıklama / Ürün - Hizmet | F=Miktar | G=Birim | H=Birim Fiyat | I=İsk. % | J=KDV'siz Tutar | K=KDV % | L=Toplam | M=Borç | N=Alacak | O=Bakiye
+A=46023 | C=Devir | E=Dönem başı bakiye | O=0
+===== cari-listesi-tam.xlsx (ilk 6 satır)
+A=Yıldız Yapı Market
+A=Yıldız Yapı Malzemeleri Ticaret Ltd. Şti.
+A=VKN: 1234567890 · Vergi Dairesi: Kadıköy
+A=Bağdat Cad. No: 12 Kadıköy / İstanbul
+A=Cari Listesi ve Bakiyeler
+A=Tüm cariler · 3 cari
+===== cari-listesi-yalniz-tabela.xlsx (ilk 6 satır)
+A=Yıldız Yapı Market
+A=Cari Listesi ve Bakiyeler
+A=Tüm cariler · 3 cari
+A=Oluşturma: 21.10.2026 07:25 · Hazırlayan: Ofis yöneticisi
+A=Cari No | B=Cari | C=Tür | D=Telefon | E=Grup | F=Borç | G=Alacak | H=Bakiye | I=Durum | J=Geciken
+A=1 | B=Ayşe Demir | C=Müşteri | D=05367715055 | F=17200 | G=12000 | H=5200 | I=Borçlu
+===== ekstre-tam.xlsx (tam)
+A=Yıldız Yapı Market
+A=Yıldız Yapı Malzemeleri Ticaret Ltd. Şti.
+A=VKN: 1234567890 · Vergi Dairesi: Kadıköy
+A=Bağdat Cad. No: 12 Kadıköy / İstanbul
+A=Ayrıntılı Cari Ekstre · Ayşe Demir
+A=Cari No 1 · 01.01.2026 – 31.12.2026 · Fatura kalemleriyle · B: borçlu · A: alacaklı
+A=Oluşturma: 21.10.2026 07:25 · Hazırlayan: Ofis yöneticisi
+A=Tarih | B=Belge No | C=İşlem | D=Yol | E=Açıklama / Ürün - Hizmet | F=Miktar | G=Birim | H=Birim Fiyat | I=İsk. % | J=KDV'siz Tutar | K=KDV % | L=Toplam | M=Borç | N=Alacak | O=Bakiye
+A=46023 | C=Devir | E=Dönem başı bakiye | O=0
+A=46316 | C=Borç | E=Ekim malzeme teslimi | M=10000 | O=10.000,00 TL B
+A=46316 | B=Makbuz 1 | C=Tahsilat | D=Nakit | E=Tahsil Edilecek Borç (Ödeme Sözü) · 23.10.2026 | N=4000 | O=6.000,00 TL B
+A=46316 | B=Makbuz 2 | C=Tahsilat | D=Nakit | E=Tahsil Edilecek Borç (Ödeme Sözü) · 23.10.2026 | N=6000 | O=0
+A=46316 | B=FIS2026000000001 | C=Satış Faturası | E=Satış Faturası FIS2026000000001 | M=7200 | O=7.200,00 TL B
+E=› Montaj Hizmeti | F=2 | G=Adet | H=3000 | J=6000 | K=0.2 | L=7200
+A=46316 | B=Makbuz 3 | C=Tahsilat | D=Nakit | E=FIS2026000000001 tahsilatı | N=2000 | O=5.200,00 TL B
+A= | B= | C= | D= | E=DÖNEM TOPLAMI | F= | G= | H= | I= | J= | K= | L= | M=17200 | N=12000 | O=
+A= | B= | C= | D= | E=GENEL TOPLAM | F= | G= | H= | I= | J= | K= | L= | M=17200 | N=12000 | O=5.200,00 TL B
