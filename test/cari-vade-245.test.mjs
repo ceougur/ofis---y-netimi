@@ -13,7 +13,7 @@
 // Sahte DURAĞAN saat (ders 13; bütün satırların created_at'i aynı → aynı tarihli kayıtların sırası yazım sırasıdır, ders 31).
 import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
-import { createUser, loginAdmin, startTestServer } from "./helpers.mjs";
+import { ADMIN_PASSWORD, createUser, loginAdmin, startTestServer } from "./helpers.mjs";
 
 const NOW = "2026-10-20T12:00:00+03:00";
 const TODAY = "2026-10-20";
@@ -112,6 +112,9 @@ describe("2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi,
     await refused("beklenen < tarih", api.post(url, { kind: "debt", amount: "100", date: day(-5), expectedDate: day(-6) }), 400, "expectedDate");
     await refused("biçimsiz", api.post(url, { kind: "debt", amount: "100", date: day(-5), dueDate: "15.11.2026" }), 400, "dueDate");
     await refused("takvimde yok", api.post(url, { kind: "credit", amount: "100", date: day(-5), expectedDate: "2026-11-31" }), 400, "expectedDate");
+    // Kâhin (c6b v3) yakaladı: 13. ay geçersiz Date — sunucu 500 veriyordu.
+    await refused("13. ay", api.post(url, { kind: "debt", amount: "100", date: day(-5), dueDate: "2026-13-01" }), 400, "dueDate", "due-date-invalid");
+    await refused("açılışta 13. ay", api.post("/api/workspace/accounts", { name: "Vade Ay 13", type: "customer", registeredOn: day(-5), openingBalance: "10", openingDueDate: "2026-13-01" }), 400, "openingDueDate", "due-date-invalid");
     await refused("metin", api.post(url, { kind: "debt", amount: "100", date: day(-5), dueDate: "yarın" }), 400, "dueDate");
     assert.equal(count(), 0, "reddedilen istek satır yazmadı");
     const same = await entry(acc, { kind: "debt", amount: "100", date: day(-5), dueDate: day(-5), expectedDate: day(-5) });
@@ -193,6 +196,20 @@ describe("2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi,
     await entry(acc, { kind: "in", amount: "400", date: day(-5), invoiceId: invoice.id });
     assert.equal((await rowOf(acc, debt.id)).remaining, 1000, "faturaya bağlı tahsilat FIFO'ya girmez");
     assert.equal((await must("fatura", api.get(`/api/workspace/invoices/${invoice.id}`))).open, 0, "bağlı fatura kapandı");
+  });
+
+  it("KS2: müşterideki elle Alacak karşı taraf yükümlülüğüdür — müşterinin borcuna mahsup EDİLMEZ; vadesi varsa \"Ödenecek Borç\" kalemi", async () => {
+    const acc = await account("KS2");
+    const debt = await entry(acc, { kind: "debt", amount: "1.000", date: day(-20), dueDate: day(2) });
+    const credit = await entry(acc, { kind: "credit", amount: "300", date: day(-10), dueDate: day(3) });
+    assert.equal((await rowOf(acc, debt.id)).remaining, 1000, "elle Alacak ödeme değildir: müşterinin borcu açık kalır");
+    assert.equal((await rowOf(acc, credit.id)).remaining, 300, "elle Alacak kendi kalanıyla");
+    assert.equal((await card(acc)).totals.balance, 700, "bakiye net (değişmez)");
+    const items = (await accountItems()).filter(row => row.accountId === acc.id);
+    assert.deepEqual(items.map(row => [row.entryId, row.direction, row.label, row.amount]).sort(), [[debt.id, "in", "Tahsil Edilecek Borç", 1000], [credit.id, "out", "Ödenecek Borç", 300]].sort());
+    await entry(acc, { kind: "out", amount: "300", date: day(-1) });
+    assert.equal((await rowOf(acc, credit.id)).remaining, 0, "müşteriye yapılan ödeme elle Alacak'ı kapatır");
+    assert.equal((await rowOf(acc, debt.id)).remaining, 1000, "ödeme müşterinin borcunu açmaz / kapatmaz");
   });
 
   it("S1 taksit kartı: ayrı kartın tahsilatı borç kaydını kapatmaz; Mevcut Borç kartının kapsadığı borç takvimden düşer (taksitlerle bir kez)", async () => {
@@ -296,6 +313,7 @@ describe("2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi,
     const item = (await accountItems()).find(row => row.entryId === near.id);
     const nearRow = rows.find(row => row.amount === 333);
     assert.deepEqual([nearRow.date, nearRow.amount, nearRow.label, nearRow.direction, nearRow.ref.type, nearRow.ref.id], [item.dueDate, item.amount, item.label, item.direction, "account", acc.id]);
+    assert.deepEqual([nearRow.id, nearRow.entryId], [item.id, near.id], "Vade Takip satırı takvimdeki kalemin kimliğini taşır (kâhin satırı kayıt kimliğiyle bulur)");
     assert.ok(rows.some(row => row.amount === 444 && row.date === day(20)), "Vade Takip kendi aralığını süzer (zilin 7 günü değil)");
     assert.equal((await accountItems()).some(row => row.entryId === far.id), false);
     const only = await must("vade takip yalnız cari", api.get("/api/workspace/overview/vade-takip?preset=next30&sources=account"));
@@ -387,6 +405,17 @@ describe("2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi,
       const other = await must("002 cari", api.post("/api/workspace/accounts", { name: "Vade 002", type: "customer", registeredOn: day(-30), openingBalance: "90", openingDueDate: day(2) }));
       const items = await accountItems();
       assert.deepEqual(items.map(row => [row.accountId, row.amount, row.dueDate]), [[other.id, 90, day(2)]], "002'de yalnız kendi kalemi");
+      // Yedek tatbikatı (002 hemen geri yüklenir): yedek → söz + kısmi tahsilat → geri yükle → yedek anı → yeniden çalış.
+      const backup = (await must("002 yedek", api.post("/api/admin/backups", { scope: "one", companyId: secondId }))).backups[0].name;
+      const fresh = await card(other);
+      await must("söz", api.put(`/api/workspace/accounts/${other.id}`, { name: fresh.name, type: fresh.type, registeredOn: fresh.registeredOn, updatedAt: fresh.updatedAt, openingExpectedDate: day(1) }));
+      await entry(other, { kind: "in", amount: "40", date: day(-1) });
+      assert.deepEqual((await accountItems()).map(row => [row.amount, row.dueDate, row.label]), [[50, day(1), "Tahsil Edilecek Borç (Ödeme Sözü)"]]);
+      const second_ = (await must("şirketler", api.get("/api/companies"))).companies?.find(row => row.id === secondId) || { code: "002" };
+      await must("geri yükle", api.post("/api/admin/backups/restore", { name: backup, company: secondId, confirm: second_.code, password: ADMIN_PASSWORD }));
+      assert.deepEqual((await accountItems()).map(row => [row.amount, row.dueDate, row.label]), [[90, day(2), "Tahsil Edilecek Borç"]], "geri yüklenince yedek anının kalemi (tarih ve Kalan)");
+      await entry(other, { kind: "in", amount: "30", date: day(-1) });
+      assert.deepEqual((await accountItems()).map(row => [row.amount, row.dueDate]), [[60, day(2)]], "geri yüklenen veride yeniden çalışır");
     } finally {
       await must("001 seç", api.post("/api/companies/select", { id: first.id }));
     }

@@ -26,7 +26,12 @@ import { systemClock } from "../lib/clock.mjs";
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
 // 2.4.5 madde 6: Vade Tarihi / Beklenen Ödeme Tarihi takvimde gerçek gün olmalı (2026-02-30 gibi kayan gün reddedilir).
-const realDay = value => DATE.test(value) && new Date(`${value}T00:00:00Z`).toISOString().slice(0, 10) === value;
+// (Kâhin 2.4.5 c6b v3: "2026-13-01" geçersiz Date'tir — toISOString atar; önce sayı denetlenir, 500 yerine 400.)
+const realDay = value => {
+  if (!DATE.test(value)) return false;
+  const time = Date.parse(`${value}T00:00:00Z`);
+  return Number.isFinite(time) && new Date(time).toISOString().slice(0, 10) === value;
+};
 // Tek seferde en çok bu kadar satır (100 bin cari ~ 7 sn); fazlası raporda "kesildi" olarak bildirilir.
 const MAX_IMPORT = 250_000;
 const MAX_FIELDS = 60;

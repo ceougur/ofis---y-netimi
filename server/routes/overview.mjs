@@ -530,7 +530,10 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     party: item.person,
     phone: item.phone || "",
     detail: [`Kayıt ${dayText(item.entryDate)} · ${tl(item.entryAmount)}`, item.expectedDate && item.entryDueDate ? `Vade ${dayText(item.entryDueDate)}` : "", item.partial ? "kalan" : ""].filter(Boolean).join(" · "),
-    ref: { type: "account", id: item.accountId },
+    // Kalem takvimdeki kimliğiyle (account|<entryId>) izlenir; tıklanınca carinin kartı açılır (ref.id cari).
+    id: item.id,
+    entryId: item.entryId,
+    ref: { type: "account", id: item.accountId, entryId: item.entryId },
   });
   async function tableItems() {
     try {
