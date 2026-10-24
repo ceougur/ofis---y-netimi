@@ -483,7 +483,7 @@
     if (s.account && s.data.lines) {
       const d = s.data;
       const mark = value => `${esc(money(Math.abs(value)))}<small class="hof-rep-side">${value > 0.005 ? "B" : value < -0.005 ? "A" : ""}</small>`;
-      return `${filters}<div class="hof-rep-crumb"><button type="button" class="hof-plan-back" data-back>← Mizan</button><h3>${esc(d.account.name)} <small>${d.account.refNo ? `Cari No ${esc(d.account.refNo)} · ` : ""}ekstre · ${allTimeStart(d.from) ? `tüm hareketler, ${esc(HOF.formatDate(d.to))} tarihine kadar` : `${esc(HOF.formatDate(d.from))} – ${esc(HOF.formatDate(d.to))}`}</small></h3><button type="button" class="hof-button hof-button-small hof-button-ghost" data-open-account="${esc(d.account.id)}" title="Cari kartını aç: hareket gir, taksit ve çek/senetlerini gör">Cari Kartını Aç</button></div>
+      return `${filters}<div class="hof-rep-crumb"><button type="button" class="hof-plan-back" data-back>← Mizan</button><h3>${esc(d.account.name)} <small>${d.account.refNo ? `Cari No ${esc(d.account.refNo)} · ` : ""}ekstre · ${allTimeStart(d.from) ? `tüm hareketler, ${esc(HOF.formatDate(d.to))} tarihine kadar` : `${esc(HOF.formatDate(d.from))} – ${esc(HOF.formatDate(d.to))}`}</small></h3><button type="button" class="hof-button hof-button-small hof-button-ghost" data-open-account="${esc(d.account.id)}" title="Cari kartını aç: hareket gir, taksit ve çek/senetlerini gör">Cari Kartını Aç</button>${canSee() && HOF.reportCenter ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-detail-statement="${esc(d.account.id)}" title="Fatura kalemleri, belge no ve ödeme yoluyla ekstre (Tüm Raporlar; ekranda, PDF ve Excel)">Ayrıntılı Ekstre</button>` : ""}</div>
         ${statTiles([{ label: "Devir", html: moneyHtml(d.opening) }, { label: "Dönem Borç", html: moneyHtml(d.debit) }, { label: "Dönem Alacak", html: moneyHtml(d.credit) }, { label: "Dönem Sonu", html: moneyHtml(Math.abs(d.closing)), help: d.closing > 0.005 ? "Borçlu" : d.closing < -0.005 ? "Alacaklı" : "Kapalı", tone: d.closing > 0.005 ? "is-receivable" : d.closing < -0.005 ? "is-payable" : "" }])}
         <div class="hof-rep-table"><table class="hof-table"><thead><tr><th>Tarih</th><th>İşlem</th><th>Açıklama</th><th class="num">Borç</th><th class="num">Alacak</th><th class="num">Bakiye</th></tr></thead><tbody>
         <tr class="is-opening"><td>${allTimeStart(d.from) ? "" : esc(HOF.formatDate(d.from))}</td><td><b>Devir</b></td><td>Dönem başı bakiye</td><td></td><td></td><td class="num">${mark(d.opening)}</td></tr>
@@ -754,6 +754,8 @@
     if (target.dataset.dueRow !== undefined) return openRef(s.data?.rows?.[Number(target.dataset.dueRow)]?.ref);
     if (target.dataset.dormantRow !== undefined) return openRef(s.data?.dormant?.[Number(target.dataset.dormantRow)]?.ref);
     if (target.dataset.openAccount) return HOF.accounts?.open(target.dataset.openAccount);
+    // 2.4.5 K6d.1: Cari Ekstre'den Ayrıntılı Ekstre — cari kartındaki düğmeyle aynı yol (Tüm Raporlar → Cari Ekstre, bu cari, "Fatura Kalemlerini Göster" işaretli).
+    if (target.dataset.detailStatement) return HOF.reportCenter?.open("cari-ekstre", { account: { id: target.dataset.detailStatement, name: s.data?.account?.name || "" }, params: { items: "1" } });
     if (target.dataset.go === "accounts") return HOF.accounts?.open();
     if (target.dataset.preset) {
       Object.assign(s, { preset: target.dataset.preset }, presetRange(target.dataset.preset));

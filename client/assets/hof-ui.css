@@ -11475,3 +11475,6 @@ input[type="search"]::-webkit-search-cancel-button {
     grid-template-columns: 1fr;
   }
 }
+/* 2.4.5: tahsilat / ödeme formunda "en eski açık borçtan kapatır" bilgi notu (Kapatılacak Fatura seçilince gizli). */
+.hof-acc-fifo-note { margin: 0; color: var(--do-muted); font: 600 12px var(--do-font); }
+.hof-acc-fifo-note[hidden] { display: none; }

@@ -192,6 +192,9 @@ try {
     await page.click(`${ACC} [data-entry="in"]`);
     await waitForm("amount");
     // "+ Tahsilat" önce Taksite Yaz / Taksit Dışı sorabilir (kartı yok: doğrudan form); form başlığı Tahsilat.
+    // 2.4.5 (kullanıcı kararı "sadece bilgi notu"): Kapatılacak Fatura seçilmemişken (bu caride açık fatura yok) bilgi notu görünür.
+    const fifo = await page.$eval(`${TOP} [data-fifo-note]`, node => (node.hidden ? "" : node.textContent.trim())).catch(() => "");
+    ok(fifo === "Bu tahsilat carinin en eski açık borcundan başlayarak kapatır.", `bilgi notu: “${fifo}”`);
     await typeAmount("500");
     await page.click(`${TOP} button[type="submit"]`);
     await page.waitForSelector(`${TOP} input[name="amount"]`, { state: "detached", timeout: 8000 }).catch(() => null);

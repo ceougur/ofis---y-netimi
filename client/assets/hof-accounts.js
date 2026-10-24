@@ -34,6 +34,8 @@
     ["registered", "Sırala: Kayıt Tarihi (yeni önce)"],
   ];
   const ENTRY_LABEL = { debt: "Borç Yaz", credit: "Alacak Yaz", in: "Tahsilat", out: "Ödeme" };
+  // 2.4.5 (gezinti bulgusu B2, yazım düzeni): düzeltme penceresinin başlığı her sözcüğü büyük ("Tahsilatı Düzelt" kalıbı, hof-workspace.js).
+  const ENTRY_EDIT_LABEL = { debt: "Borç Kaydını Düzelt", credit: "Alacak Kaydını Düzelt", in: "Tahsilatı Düzelt", out: "Ödemeyi Düzelt" };
   const ENTRY_HELP = {
     debt: "Cari size borçlanır (ör. verilen hizmet, satış, aidat). Kasa'ya yazılmaz.",
     credit: "Siz cariye borçlanırsınız (ör. alınan mal, hizmet faturası). Kasa'ya yazılmaz.",
@@ -1014,7 +1016,7 @@
     const requestId = HOF.requestId();
     const money_ = type === "in" || type === "out";
     HOF.formModal({
-      title: entry ? `${ENTRY_LABEL[type]} düzelt` : ENTRY_LABEL[type],
+      title: entry ? ENTRY_EDIT_LABEL[type] : ENTRY_LABEL[type],
       // 2.4.3 (keşif A1/A21): aynı adlı cariler karışmasın — başlıkta Cari No ve telefon (kayıt kartından açılan tahsilat hangi cariye yazılacak).
       eyebrow: [account.refNo ? `No ${account.refNo}` : "", account.name, account.phone || ""].filter(Boolean).join(" · "),
       intro: ENTRY_HELP[type],
@@ -1064,6 +1066,19 @@
           });
           syncCardRefund();
           syncEntryHelp(dialog, type);
+          // 2.4.5 (kullanıcı kararı 24.10.2026 "sadece bilgi notu"): Kapatılacak Fatura seçilmemişken tahsilat / ödeme carinin en eski açık
+          // borcundan başlayarak kapatır (S1); yalnız bilgi notu — kural ya da bağ değişmez. Fatura seçilince not gizlenir.
+          const form = dialog.querySelector("form");
+          const noteField = form?.querySelector('[name="note"]')?.closest(".hof-field");
+          if (noteField) {
+            noteField.insertAdjacentHTML("beforebegin", `<p class="hof-acc-fifo-note" data-fifo-note>Bu ${type === "in" ? "tahsilat" : "ödeme"} carinin en eski açık borcundan başlayarak kapatır.</p>`);
+            const fifoNote = form.querySelector("[data-fifo-note]");
+            const syncFifo = () => {
+              fifoNote.hidden = Boolean(form.querySelector('[name="invoiceId"]')?.value);
+            };
+            form.addEventListener("change", syncFifo);
+            syncFifo();
+          }
           Promise.resolve(picker).then(() => syncEntryHelp(dialog, type)).catch(() => null);
         }
       },
