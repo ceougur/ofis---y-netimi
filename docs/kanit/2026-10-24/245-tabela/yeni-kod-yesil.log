@@ -1,0 +1,55 @@
+TAP version 13
+# (node:27772) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.5 madde 6c: Tabela Adı ve Rapor ve Ekstre Başlığı
+    # Subtest: Tabela Adı boşken başlık bugünkü gibi: PDF'te unvan, Finans Excel'inde ön satır yok, Rapor Merkezi'nde "001 · Unvan"
+    ok 1 - Tabela Adı boşken başlık bugünkü gibi: PDF'te unvan, Finans Excel'inde ön satır yok, Rapor Merkezi'nde "001 · Unvan"
+      ---
+      duration_ms: 129.642424
+      type: 'test'
+      ...
+    # Subtest: Yalnız Tabela Adı: bütün rapor / ekstre PDF + Excel başlığı Tabela Adı; unvan başlıkta yok; kaydedilip yeniden okununca dolu
+    ok 2 - Yalnız Tabela Adı: bütün rapor / ekstre PDF + Excel başlığı Tabela Adı; unvan başlıkta yok; kaydedilip yeniden okununca dolu
+      ---
+      duration_ms: 101.813106
+      type: 'test'
+      ...
+    # Subtest: Tabela Adı ve Firma Bilgileri: Tabela Adı + unvan + VKN · Vergi Dairesi + adres; Özet sayfasında da
+    ok 3 - Tabela Adı ve Firma Bilgileri: Tabela Adı + unvan + VKN · Vergi Dairesi + adres; Özet sayfasında da
+      ---
+      duration_ms: 110.933473
+      type: 'test'
+      ...
+    # Subtest: YASAL BELGE DEĞİŞMEZ: fatura PDF'i ve makbuz tabela açıkken de unvanla; Tabela Adı basılmaz
+    ok 4 - YASAL BELGE DEĞİŞMEZ: fatura PDF'i ve makbuz tabela açıkken de unvanla; Tabela Adı basılmaz
+      ---
+      duration_ms: 70.76719
+      type: 'test'
+      ...
+    # Subtest: kısmi kayıt (reportHeader yok) ayarı silmez; geçersiz seçim ve uzun ad 400 (ayar değişmez); yetkisiz kişi 403
+    ok 5 - kısmi kayıt (reportHeader yok) ayarı silmez; geçersiz seçim ve uzun ad 400 (ayar değişmez); yetkisiz kişi 403
+      ---
+      duration_ms: 134.110192
+      type: 'test'
+      ...
+    # Subtest: iki şirket ayrı ayar: 002'nin Tabela Adı 001'in raporuna sızmaz; boşaltınca 001 bugünkü başlığa döner
+    ok 6 - iki şirket ayrı ayar: 002'nin Tabela Adı 001'in raporuna sızmaz; boşaltınca 001 bugünkü başlığa döner
+      ---
+      duration_ms: 326.124759
+      type: 'test'
+      ...
+    1..6
+ok 1 - 2.4.5 madde 6c: Tabela Adı ve Rapor ve Ekstre Başlığı
+  ---
+  duration_ms: 1458.326738
+  type: 'suite'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1821.619351

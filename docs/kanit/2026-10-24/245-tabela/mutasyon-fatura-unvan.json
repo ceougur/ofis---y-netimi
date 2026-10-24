@@ -1,0 +1,38 @@
+{
+  "ad": "245-tabela/mutasyon-fatura-unvan",
+  "komut": "node --test --test-name-pattern=YASAL test/tabela-adi-245.test.mjs",
+  "commit": "d2cef7ce21b0776e2767f8fb610c9be8a4159f5d",
+  "dal": "is/tabela",
+  "kirli": 16,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T16:49:59.494Z",
+  "sure_sn": 1.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.5 madde 6c: Tabela Adı ve Rapor ve Ekstre Başlığı › YASAL BELGE DEĞİŞMEZ: fatura PDF'i ve makbuz tabela açıkken de unvanla; Tabela Adı basılmaz",
+      "konum": "test/tabela-adi-245.test.mjs:140:3",
+      "hata": "faturada satıcı unvanı (beklenen , gelen |-)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-24/245-tabela/mutasyon-fatura-unvan.log",
+  "klasor": "/home/user/wt/tabela",
+  "ham_cikti_sha256": "2400b5a3f99d8522d6696b8a1e540716f74c634ba554dba5a4dd2c2f0f00376d",
+  "ham_cikti_bayt": 2691
+}

@@ -14,6 +14,7 @@ import { posMetaOf } from "../lib/bank/pos.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay } from "../lib/plans.mjs";
 import { methodInput } from "../lib/pay-method.mjs";
+import { createReportHeader } from "../lib/report-header.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { unitLabel } from "../lib/units.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
@@ -38,6 +39,8 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
   const today = () => isoDay(clock());
   const newId = prefix => `${prefix}-${randomUUID()}`;
   const office = () => store.setting("office.name", "");
+  // 2.4.5 madde 6c: rapor / ekstre PDF başlığı Tabela Adı ayarından (boşsa bugünkü unvan); makbuz ve belge unvanı değişmez.
+  const header = createReportHeader({ store });
   const changed = (user, detail = {}) => events?.publish("workspace.changed", { kind: "stock", actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
   const dateOf = (value, label = "Tarih", fallback = "") => {
     const date = text(value) || fallback;
@@ -277,9 +280,8 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
       types: ["text", "text", "text", "text", "text", "text", "money", "money", "text", "text"],
       rows: data.items.map(item => [item.code, item.name, item.category, qtyText(item.qty), item.unit, item.minQty ? qtyText(item.minQty) : "", tl(item.unitPrice), tl(item.value), dayText(item.lastMove), item.kind === "service" ? "Hizmet" : item.qty < 0 ? `Eksi (${qtyText(item.qty)} ${item.unit})` : item.qty <= 0 ? "Tükendi" : item.low ? "Kritik" : ""]),
       summary: [["Ürün", String(data.totals.count)], ["Kritik", String(data.totals.low)], ["Tükenen", String(data.totals.out)], ["Eksi Stok", String(data.totals.negative)], ["Stok Değeri", tl(data.totals.value)]],
-      officeName: office(),
       userName: user.display_name || user.username || "",
-      brand: office(),
+      ...header.pdf({ brand: office() }),
     });
     audit(user, "stock.list.exported", "list", { ...query, count: data.totals.count });
     sendBuffer(res, pdf, { type: "application/pdf", name: `${title}-durumu ${dayText(today())}.pdf`, inline: url.searchParams.get("download") !== "1" });
@@ -544,9 +546,8 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
       types: ["text", "text", "text", "text", "text", "text", "money", "money", "text"],
       rows: item.moves.map(move => [dayText(move.date), move.reason === "return" ? "Satıştan İade" : move.reason === "preturn" ? "Alıştan İade" : move.kind === "in" ? "Giriş" : "Çıkış", move.note || "", move.kind === "in" ? qtyText(move.qty) : "", move.kind === "out" ? qtyText(move.qty) : "", qtyText(move.balance), move.unitPrice ? tl(move.unitPrice) : "", move.amount ? tl(move.amount) : "", payText(move)]),
       summary: [["Mevcut", `${qtyText(item.qty)} ${item.unit}`], ["Toplam Giriş", `${qtyText(item.qtyIn)} ${item.unit}`], ["Toplam Çıkış", `${qtyText(item.qtyOut)} ${item.unit}`], ["Değer", tl(item.value)]],
-      officeName: office(),
       userName: user.display_name || user.username || "",
-      brand: office(),
+      ...header.pdf({ brand: office() }),
     });
     sendBuffer(res, pdf, { type: "application/pdf", name: `Stok ${item.name}.pdf`, inline: url.searchParams.get("download") !== "1" });
   });
