@@ -1,0 +1,26 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "c7-ks7-bagsiz-kapaticilar",
+ "aciklama": "KS7: müşteri D'de Açılış (vadeli) + satış faturası + elle Borç (vadeli); faturasız stok Satış İadesi 600 en eskiden kapatır (Açılış 400 kalır); Şüpheli Alacağa Al 900 hiçbir şeyi kapatmaz (bakiye aynı); Değersiz Alacak Yaz 900 en eskiden kapatır (Açılış 0, fatura 300 kalır); tahsilat 300 faturayı kapatır, elle Borç 500 açık (takvimde). Tedarikçi S'de alış faturası 400 + elle Alacak 300 (vadeli); faturasız stok Alış İadesi 450 en eskiden kapatır (fatura 0, Alacak 250 — 'Ödenecek Borç'). Kasa / bakiye aynen; elle Alacak / Borç KS2 gereği yükümlülük.",
+ "dayanak": "KARARLAR.md §8 C6 KS7 (BAŞ MİMAR; S1 'bağsız ödemeler (… iade) en eskiden dağıtılır', PLAN §3.11b/3 'değersiz yazılınca cari bakiyesi o tutar kadar kapanır', §3.11b/2 şüpheliye alma bakiyeyi değiştirmez)",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {"id": "cd", "islem": "cari_ac", "ad": "D", "isim": "Dilek Değersiz", "tarih": "2026-05-01", "acilis": "1000", "acilisVade": "2026-05-31"},
+  {"id": "f1", "islem": "fatura", "ad": "F1", "cari": "D", "tutar": "800", "tarih": "2026-05-20"},
+  {"id": "b1", "islem": "borc", "cari": "D", "tutar": "500", "tarih": "2026-05-25", "vade": "2026-06-12"},
+  {"id": "cs", "islem": "cari_ac", "ad": "S", "isim": "Sedat Tedarik", "tur": "tedarikci", "tarih": "2026-05-01"},
+  {"id": "f2", "islem": "fatura", "ad": "F2", "cari": "S", "tur": "alis", "tutar": "400", "tarih": "2026-05-15"},
+  {"id": "a1", "islem": "alacak", "cari": "S", "tutar": "300", "tarih": "2026-05-20", "vade": "2026-06-14"},
+  {"id": "k1", "islem": "kontrol"},
+  {"id": "si1", "islem": "stok_iade", "cari": "D", "tutar": "600", "tarih": "2026-06-05"},
+  {"id": "k2", "islem": "kontrol"},
+  {"id": "sp1", "islem": "supheli_al", "ad": "SP1", "cari": "D", "tutar": "900", "tarih": "2026-06-08"},
+  {"id": "k3", "islem": "kontrol"},
+  {"id": "dg1", "islem": "degersiz", "supheli": "SP1", "tutar": "900", "tarih": "2026-06-09"},
+  {"id": "k4", "islem": "kontrol"},
+  {"id": "t1", "islem": "tahsilat", "cari": "D", "tutar": "300", "tarih": "2026-06-10"},
+  {"id": "k5", "islem": "kontrol"},
+  {"id": "ai1", "islem": "alis_iade", "cari": "S", "tutar": "450", "tarih": "2026-06-06"},
+  {"id": "k6", "islem": "kontrol"}
+ ]
+}

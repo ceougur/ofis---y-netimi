@@ -494,6 +494,19 @@ eski kuralla koşar; koşucu "GEÇERSİZ DENETİM" satırında senaryo başına 
   (b) Kapanmış dönemdeki (kayıt tarihi ≤ `lockedUntil`) kaydın vade alanları kilitli — Düzenle ret, alanlar aynı; dönemden sonraki kayıt düzenlenir (c6b ed1 / ed2; mutant 111).
   (c) Beklenen Ödeme Tarihi Vade Tarihi'nden ÖNCE olabilir — 400 DEĞİL (c6b v9; mutant 109). (d) Açılış satırı yokken `openingDueDate` / `openingExpectedDate` → 400
   `code: "opening-missing"`, cari açılmaz (c6b cq; mutant 110).
+- **KS7** [BAŞ MİMAR, 24.10.2026, dar kontrol D1; dayanak önceden yazılmış metin: S1 "bağsız ödemeler (… iade) en eskiden dağıtılır", PLAN §3.11b/3 "değersiz yazılınca cari bakiyesi o
+  tutar kadar kapanır", §3.11b/2 şüpheliye alma bakiyeyi değiştirmez] (a) faturasız stok **Satış İadesi** (müşteride alacak satırı; stok girişi `reason: "return"`, Cari Hesap) = BAĞSIZ
+  ödeme: en eskiden kapatır (faturalar + elle Borç + Açılış, tek kuyruk); simetriği faturasız stok **Alış İadesi** (tedarikçide borç satırı) borç tarafında bağsız ödeme —
+  ORTAM (yoklama 5): stok çıkışı `reason: "return"` + Cari Hesap tedarikçiye "Stok satışı" açıklamalı borç satırı yazıyor; kâhin bunu alış iadesi sayar → o carinin borç tarafı
+  denetimleri YAYGIN (İNCELE). (b) **Değersiz Alacak Yaz** satırı = bağsız kapatıcı (en eskiden); **Şüpheli Alacağa Al** kapatıcı DEĞİL (bakiye değişmez; 2.4.4'te cari hareketi
+  yazmıyor). (c) elle Alacak / Borç KS2 gereği yükümlülük KALIR. (d) faturalara da uygulanır — değersiz yazılmış / stoktan iade alınmış carinin faturası açık görünmez; Kasa,
+  yevmiye, bakiye DEĞİŞMEZ (stok iadesi / değersiz olan senaryoda mizan denetlenmez — 610 / 153 / 659 / 128 karşılıkları kâhinde yok). Yeni işlemler `stok_iade {cari, tutar}`,
+  `alis_iade {cari, tutar}`, `supheli_al {ad, cari, tutar}` (tutar ≤ borç bakiyesi), `degersiz {supheli, tutar}` (≤ kaydın kalanı, tarihi kayıttan önce değil); uçlar
+  `POST /api/workspace/stock/:id/moves`, `POST /api/workspace/accounts/:id/doubtful` (→ `record.id`), `POST …/doubtful/:id/write-off` (test çağrı satırları + yoklama 5; grep
+  sırasında birkaç doğrulama satırı da göründü — yalnız gövde biçimi alındı, kural türetilmedi). Senaryo `c7-ks7-bagsiz-kapaticilar` (Açılış 1.000 / fatura 800 / Borç 500:
+  satış iadesi 600 → Açılış 400; şüpheli 900 → değişmez; değersiz 900 → Açılış 0, fatura 300; tahsilat 300 → fatura 0; S: alış 400 + Alacak 300, alış iadesi 450 → fatura 0,
+  Alacak 250); rastgele üretici `stok_iade`, `alis_iade`, `supheli_al` + aynı gün tamamı `degersiz` (kayıt kapanır — açık kayıt sınırı `doubtful-normal-exceeds` dışında).
+  Mutantlar 114 (satış iadesi kapatmaz — D1 eski hata sınıfı), 115 (değersiz kapatmaz — D1), 116 (şüpheliye alma da kapatır), 117 (alış iadesi kapatmaz).
 - **K6.4** [BAŞ MİMAR] Düzenle verilmeyen alanı korur (kısmi PUT); Silinenler'den geri yükleme ve yedekten geri yükleme Vade / Beklenen Ödeme Tarihi'ni TAŞIR; vade değişikliği
   yevmiyeyi değiştirmez (`kontrol {mizanKarsilastir: "<önceki kontrol>"}` → `mizanEsit` true). Göç (eski satırlar boş) kara kutudan DENENMEDİ (v2.4.4 verisi gerekir — C12).
 - Senaryolar `c6-cari-vade-fifo` (elle elle hesaplanan beklenenler: k1 Kalan b1 300 / F1 800, k2 b1 0 / F1 0 / b2 300, k3 Açılış 400 / b1 500 / F1 300, k6 çekle b2 100, k7 karşılıksızla 300,
@@ -525,7 +538,7 @@ tabloTutarli, kalemTutar:<no>, deadline:<no>}`, `<k>:vadeTakip:{hareket:<ad>, ta
 | Z10 | Rastgele sıra (ders 17): fatura + elle kayıt + tahsilat + silme / geri yükleme + düzenleme karışık | rastgele-s1-<t> |
 
 ### C10 Mutasyonlar (2.4.5)
-73–113 (`model.py --mutasyonlar`; 106–108 KS4/KS5'ten, 109–113 K6.5'ten; 79 yok — karşılıksızın kapatması eski mutant 7'de, artık elle kayda da uygulanır). Her biri en az bir senaryoda kâhin çıktısını değiştirir
+73–117 (`model.py --mutasyonlar`; 106–108 KS4/KS5'ten, 109–113 K6.5'ten, 114–117 KS7'den; 79 yok — karşılıksızın kapatması eski mutant 7'de, artık elle kayda da uygulanır). Her biri en az bir senaryoda kâhin çıktısını değiştirir
 (model tek başına doğrulandı: yakalanmayan 0). Koşucu mutantları tek Python sürecinde tarar (`model.py - --mutasyon-tara <liste>`; her mutantta ilk 3 yakalayan) —
 eski "her mutant × her dosya ayrı süreç" yolu ~20 dk sürüyordu, yeni yol ~10 sn.
 

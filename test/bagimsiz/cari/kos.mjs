@@ -411,6 +411,27 @@ async function kos(senaryo) {
           durum(a, await api("PUT", "/api/admin/period-lock", { lockedUntil: a.tarih || "", force: true }));
           break;
         }
+        case "stok_iade":
+        case "alis_iade": {
+          // KS7: faturasız stok iadesi — POST /api/workspace/stock/:id/moves (test çağrı satırları; yoklama 5): satış iadesi kind "in" + reason "return" + Cari Hesap
+          // (müşteride alacak satırı), alış iadesi kind "out" + reason "return" + Cari Hesap (tedarikçide borç satırı). Mal kartı ilk kullanımda açılır.
+          if (!ids.mal) ids.mal = (await api("POST", "/api/workspace/stock", { kind: "goods", code: "KAHIN-MAL", name: "Kâhin Malı", unit: "Adet", openingQty: "100000", salePrice: "100" })).data?.id;
+          durum(a, await api("POST", `/api/workspace/stock/${ids.mal}/moves`, { kind: a.islem === "stok_iade" ? "in" : "out", reason: "return", qty: "1", unitPrice: tlMetin(kurusOf(a.tutar)), pay: "account", accountId: ids.cari[a.cari], date: t }));
+          break;
+        }
+        case "supheli_al": {
+          // KS7 / PLAN §3.11b/2: Şüpheli Alacağa Al — POST /api/workspace/accounts/:id/doubtful {amount, date, reason} → { record: { id } } (yoklama 5)
+          const r = await api("POST", `/api/workspace/accounts/${ids.cari[a.cari]}/doubtful`, { amount: tlMetin(kurusOf(a.tutar)), date: t, reason: "other" });
+          durum(a, r);
+          (ids.supheli ||= {})[a.ad] = { id: r.data?.record?.id ?? r.data?.id, cari: a.cari };
+          break;
+        }
+        case "degersiz": {
+          // KS7 / PLAN §3.11b/3: Değersiz Alacak Yaz — POST …/doubtful/:id/write-off {amount, date}
+          const sp = ids.supheli?.[a.supheli] || {};
+          durum(a, await api("POST", `/api/workspace/accounts/${ids.cari[sp.cari]}/doubtful/${sp.id}/write-off`, { amount: tlMetin(kurusOf(a.tutar)), date: t }));
+          break;
+        }
         case "cari_kalem_odendi": {
           durum(a, await api("POST", "/api/workspace/dues/settle", { id: `account|${ids.hareket[a.hareket]?.id}` }));
           break;
