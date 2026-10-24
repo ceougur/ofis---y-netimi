@@ -1,0 +1,32 @@
+{
+  "ad": "245-d1-kapama/e2e-senaryo-cari-vade-245",
+  "komut": "npm run test:senaryo-cari-vade-245",
+  "commit": "9ab3408b3ffb7541c2977f32bbe6ef52b4403f31",
+  "dal": "is/d1-kapama",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T20:04:19.068Z",
+  "sure_sn": 26.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 30,
+    "gecen": 30,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-d1-kapama/e2e-senaryo-cari-vade-245.log",
+  "klasor": "/home/user/wt/d1-kapama",
+  "ham_cikti_sha256": "0c54ee9bb3a2b4ff956c58635fae44a8d16ebc6a94782a0c48722270a39cd4c0",
+  "ham_cikti_bayt": 3187
+}
