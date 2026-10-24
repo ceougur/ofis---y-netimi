@@ -374,6 +374,8 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
     type: ["", "customer", "supplier", "other"],
     side: ["", "debtor", "creditor", "nonzero", "zero", "overdue"],
     payMethod: ["noncash", "bank", "card"],
+    // 2.4.5 madde 6d: Cari Ekstre → Fatura Kalemlerini Göster (Ayrıntılı Cari Ekstre); kapalı ve açık, ikisi de bağımsız defterle (Devir / Dönem Borç / Dönem Alacak).
+    items: ["", "1"],
     direction: ["", "in", "out"],
     status: ["", "open", "overdue", "soon", "collected", "endorsed", "paid", "bounced", "portfolio", "pending"],
     state: ["", "low", "out", "negative", "product", "service"],

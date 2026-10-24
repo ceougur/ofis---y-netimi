@@ -1,0 +1,374 @@
+{
+ "from=2026-01-01&to=2026-12-31": {
+  "json": {
+   "id": "cari-ekstre",
+   "group": "Cari",
+   "title": "Cari Ekstre · Fark Cari",
+   "subtitle": "Cari No 1 · 01.01.2026 – 31.12.2026 · B: borçlu · A: alacaklı",
+   "headers": [
+    "Tarih",
+    "İşlem",
+    "Açıklama",
+    "Borç",
+    "Alacak",
+    "Bakiye"
+   ],
+   "types": [
+    "",
+    "",
+    "",
+    "money",
+    "money",
+    "money"
+   ],
+   "rows": [
+    [
+     "01.01.2026",
+     "Devir",
+     "Dönem başı bakiye",
+     "",
+     "",
+     "0,00 TL"
+    ],
+    [
+     "01.02.2026",
+     "Borç",
+     "Açılış",
+     "750,00 TL",
+     "",
+     "750,00 TL B"
+    ],
+    [
+     "10.11.2026",
+     "Fatura",
+     "Satış Faturası FIS2026000000001",
+     "4.821,03 TL",
+     "",
+     "5.571,03 TL B"
+    ],
+    [
+     "10.11.2026",
+     "Tahsilat",
+     "Satış Faturası FIS2026000000001 · peşin tahsilat",
+     "",
+     "100,00 TL",
+     "5.471,03 TL B"
+    ],
+    [
+     "12.11.2026",
+     "Fatura",
+     "Satış Faturası FIS2026000000002",
+     "2.000,00 TL",
+     "",
+     "7.471,03 TL B"
+    ],
+    [
+     "20.11.2026",
+     "Tahsilat",
+     "Elden · Makbuz 1",
+     "",
+     "1.000,00 TL",
+     "6.471,03 TL B"
+    ],
+    [
+     "21.11.2026",
+     "Çek / Senet",
+     "Çek alındı · No F-1 · vade 20.12.2026",
+     "",
+     "300,00 TL",
+     "6.171,03 TL B"
+    ]
+   ],
+   "total": 7,
+   "footer": [
+    "TOPLAM",
+    "",
+    "",
+    "7.571,03 TL",
+    "1.400,00 TL",
+    ""
+   ],
+   "footers": [
+    [
+     "TOPLAM",
+     "",
+     "",
+     "7.571,03 TL",
+     "1.400,00 TL",
+     ""
+    ]
+   ],
+   "summary": [
+    [
+     "Devir",
+     "0,00 TL"
+    ],
+    [
+     "Dönem Borç",
+     "7.571,03 TL"
+    ],
+    [
+     "Dönem Alacak",
+     "1.400,00 TL"
+    ],
+    [
+     "Dönem Sonu",
+     "6.171,03 TL Borçlu"
+    ]
+   ],
+   "tabs": null,
+   "query": {
+    "from": "2026-01-01",
+    "to": "2026-12-31"
+   }
+  },
+  "pdf": "43dd7fb8595acbb95bfecbc6df41fe8debe2dffaafd6a1d5c8087ea30582ef84",
+  "xlsx": "c061fb2eb445feed08586453fdd4a0d4a57f21a1ea4454635563f7b0946d27a8"
+ },
+ "from=2026-11-01&to=2026-11-30": {
+  "json": {
+   "id": "cari-ekstre",
+   "group": "Cari",
+   "title": "Cari Ekstre · Fark Cari",
+   "subtitle": "Cari No 1 · 01.11.2026 – 30.11.2026 · B: borçlu · A: alacaklı",
+   "headers": [
+    "Tarih",
+    "İşlem",
+    "Açıklama",
+    "Borç",
+    "Alacak",
+    "Bakiye"
+   ],
+   "types": [
+    "",
+    "",
+    "",
+    "money",
+    "money",
+    "money"
+   ],
+   "rows": [
+    [
+     "01.11.2026",
+     "Devir",
+     "Dönem başı bakiye",
+     "",
+     "",
+     "750,00 TL B"
+    ],
+    [
+     "10.11.2026",
+     "Fatura",
+     "Satış Faturası FIS2026000000001",
+     "4.821,03 TL",
+     "",
+     "5.571,03 TL B"
+    ],
+    [
+     "10.11.2026",
+     "Tahsilat",
+     "Satış Faturası FIS2026000000001 · peşin tahsilat",
+     "",
+     "100,00 TL",
+     "5.471,03 TL B"
+    ],
+    [
+     "12.11.2026",
+     "Fatura",
+     "Satış Faturası FIS2026000000002",
+     "2.000,00 TL",
+     "",
+     "7.471,03 TL B"
+    ],
+    [
+     "20.11.2026",
+     "Tahsilat",
+     "Elden · Makbuz 1",
+     "",
+     "1.000,00 TL",
+     "6.471,03 TL B"
+    ],
+    [
+     "21.11.2026",
+     "Çek / Senet",
+     "Çek alındı · No F-1 · vade 20.12.2026",
+     "",
+     "300,00 TL",
+     "6.171,03 TL B"
+    ]
+   ],
+   "total": 6,
+   "footer": [
+    "TOPLAM",
+    "",
+    "",
+    "6.821,03 TL",
+    "1.400,00 TL",
+    ""
+   ],
+   "footers": [
+    [
+     "TOPLAM",
+     "",
+     "",
+     "6.821,03 TL",
+     "1.400,00 TL",
+     ""
+    ]
+   ],
+   "summary": [
+    [
+     "Devir",
+     "750,00 TL"
+    ],
+    [
+     "Dönem Borç",
+     "6.821,03 TL"
+    ],
+    [
+     "Dönem Alacak",
+     "1.400,00 TL"
+    ],
+    [
+     "Dönem Sonu",
+     "6.171,03 TL Borçlu"
+    ]
+   ],
+   "tabs": null,
+   "query": {
+    "from": "2026-11-01",
+    "to": "2026-11-30"
+   }
+  },
+  "pdf": "6e910688c38a592a97b06be36244f7d345d83b923a35ec742ab7c07ac86216e6",
+  "xlsx": "003f6ca4a0f082204420e2066dea9c1defeecc2f7ac752b7893ab3d8c67854a3"
+ },
+ "preset=all&from=1976-01-01&to=2026-11-27": {
+  "json": {
+   "id": "cari-ekstre",
+   "group": "Cari",
+   "title": "Cari Ekstre · Fark Cari",
+   "subtitle": "Cari No 1 · Tüm Zamanlar · 27.11.2026 tarihine kadar · B: borçlu · A: alacaklı",
+   "headers": [
+    "Tarih",
+    "İşlem",
+    "Açıklama",
+    "Borç",
+    "Alacak",
+    "Bakiye"
+   ],
+   "types": [
+    "",
+    "",
+    "",
+    "money",
+    "money",
+    "money"
+   ],
+   "rows": [
+    [
+     "",
+     "Devir",
+     "Dönem başı bakiye",
+     "",
+     "",
+     "0,00 TL"
+    ],
+    [
+     "01.02.2026",
+     "Borç",
+     "Açılış",
+     "750,00 TL",
+     "",
+     "750,00 TL B"
+    ],
+    [
+     "10.11.2026",
+     "Fatura",
+     "Satış Faturası FIS2026000000001",
+     "4.821,03 TL",
+     "",
+     "5.571,03 TL B"
+    ],
+    [
+     "10.11.2026",
+     "Tahsilat",
+     "Satış Faturası FIS2026000000001 · peşin tahsilat",
+     "",
+     "100,00 TL",
+     "5.471,03 TL B"
+    ],
+    [
+     "12.11.2026",
+     "Fatura",
+     "Satış Faturası FIS2026000000002",
+     "2.000,00 TL",
+     "",
+     "7.471,03 TL B"
+    ],
+    [
+     "20.11.2026",
+     "Tahsilat",
+     "Elden · Makbuz 1",
+     "",
+     "1.000,00 TL",
+     "6.471,03 TL B"
+    ],
+    [
+     "21.11.2026",
+     "Çek / Senet",
+     "Çek alındı · No F-1 · vade 20.12.2026",
+     "",
+     "300,00 TL",
+     "6.171,03 TL B"
+    ]
+   ],
+   "total": 7,
+   "footer": [
+    "TOPLAM",
+    "",
+    "",
+    "7.571,03 TL",
+    "1.400,00 TL",
+    ""
+   ],
+   "footers": [
+    [
+     "TOPLAM",
+     "",
+     "",
+     "7.571,03 TL",
+     "1.400,00 TL",
+     ""
+    ]
+   ],
+   "summary": [
+    [
+     "Devir",
+     "0,00 TL"
+    ],
+    [
+     "Dönem Borç",
+     "7.571,03 TL"
+    ],
+    [
+     "Dönem Alacak",
+     "1.400,00 TL"
+    ],
+    [
+     "Dönem Sonu",
+     "6.171,03 TL Borçlu"
+    ]
+   ],
+   "tabs": null,
+   "query": {
+    "preset": "all",
+    "from": "1976-01-01",
+    "to": "2026-11-27"
+   }
+  },
+  "pdf": "d82e1ef53f2b261ec2b4f258afcfe769b7b032bd3046eae2e14cfe620381efc5",
+  "xlsx": "cce73fd65d5a16f571a9576c0bf0acc506d584a739531f6b75a8316a060c3c3a"
+ },
+ "kart": "356efa81dd535de4b0ff6871756ecc658fdd339c8df6095d9d898d0b9cd708e8"
+}
