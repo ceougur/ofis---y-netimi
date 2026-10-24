@@ -6,7 +6,8 @@
   python3 -I test/bagimsiz/cari/uretici.py --tur s1 --tohum 3 --islem 60 > senaryo.json   # /3 (2.4.5 madde 6, S1 + K6.1–K6.4)
 
 --tur s1 (24.10.2026, 2.4.5 kâhini): iki müşteri (D, E) + bir tedarikçi (S); Açılış Bakiyesi (vadeli/vadesiz, tedarikçide alacak yönlü), satış ve alış
-faturaları, elle Borç / Alacak (Vade Tarihi, Beklenen Ödeme Tarihi; ara sıra kaydın tarihinden önce ya da biçimsiz → 400 beklenir), bağsız ve faturaya bağlı
+faturaları, elle Borç / Alacak (Vade Tarihi, Beklenen Ödeme Tarihi; ara sıra kaydın tarihinden önce ya da biçimsiz → 400 beklenir), KS7 bağsız kapatıcılar (faturasız stok
+Satış / Alış İadesi, Şüpheli Alacağa Al + Değersiz Alacak Yaz), bağsız ve faturaya bağlı
 tahsilat / ödeme, bağsız alınan çek + karşılıksız, hareket silme / Silinenler'den geri yükleme, Düzenle (tutar / vade / beklenen), Cari görüntüleme yetkisi
 kaldırılmış kullanıcı (yarı tohumda). UX18 akışından AYRI (rastgele-ux18-<t> değişmez). Ufkun sınır günü (bugün + 7, KS5 dahil) de üretilir.
 
@@ -235,6 +236,14 @@ def uret(tohum, islem):
         elif op == "bagli_tahsilat":
             f = rnd.choice(acik_f)
             adimlar.append({"id": sid, "islem": "tahsilat", "cari": cari, "tutar": tl(rnd.randint(1, acik[f])), "tarih": t, "fatura": f})
+        elif op == "stok_iade":
+            adimlar.append({"id": sid, "islem": "stok_iade", "cari": musteri, "tutar": tl(rnd.randint(100, 200000)), "tarih": t})
+        elif op == "alis_iade":
+            adimlar.append({"id": sid, "islem": "alis_iade", "cari": "S", "tutar": tl(rnd.randint(100, 150000)), "tarih": t})
+        elif op == "supheli_degersiz":
+            x = rnd.randint(1, m.bakiye(musteri))
+            adimlar.append({"id": sid, "islem": "supheli_al", "ad": "SP%s" % sid, "cari": musteri, "tutar": tl(x), "tarih": t})
+            adimlar.append({"id": sid + "d", "islem": "degersiz", "supheli": "SP%s" % sid, "tutar": tl(x), "tarih": t})
         elif op == "evrak":
             n_e += 1
             a = {"id": sid, "islem": "evrak", "ad": "E%d" % n_e, "cari": cari, "tur": rnd.choice(["cek", "senet"]),
@@ -329,7 +338,9 @@ def uret_s1(tohum, islem):
         silinen = [h for h, x in m.hareketler.items() if not x["aktif"] and x["tur"] in ("tahsilat", "borc", "alacak", "odeme")]
         elle = [h for h, x in m.hareketler.items() if x["aktif"] and x["tur"] in ("borc", "alacak")]
         portfoy = [e for e, x in m.evraklar.items() if x["durum"] == "portfoy"]
-        secenek = [("fatura", 12), ("borc", 14), ("tahsilat", 14), ("alis", 6), ("alacak", 7), ("odeme", 7), ("evrak", 4)]
+        secenek = [("fatura", 12), ("borc", 14), ("tahsilat", 14), ("alis", 6), ("alacak", 7), ("odeme", 7), ("evrak", 4), ("stok_iade", 4), ("alis_iade", 3)]
+        if m.bakiye(musteri) > 0:
+            secenek.append(("supheli_degersiz", 3))  # KS7 (b): Şüpheli Alacağa Al + aynı gün tamamını Değersiz Alacak Yaz (kayıt kapanır — açık kayıt sınırına girmez)
         if acik_s:
             secenek.append(("bagli_tahsilat", 6))
         if acik_a:
@@ -367,6 +378,14 @@ def uret_s1(tohum, islem):
         elif op == "bagli_odeme":
             f = rnd.choice(sorted(acik_a))
             adimlar.append({"id": sid, "islem": "odeme", "cari": "S", "tutar": tl(rnd.randint(1, acik_a[f])), "tarih": t, "fatura": f})
+        elif op == "stok_iade":
+            adimlar.append({"id": sid, "islem": "stok_iade", "cari": musteri, "tutar": tl(rnd.randint(100, 200000)), "tarih": t})
+        elif op == "alis_iade":
+            adimlar.append({"id": sid, "islem": "alis_iade", "cari": "S", "tutar": tl(rnd.randint(100, 150000)), "tarih": t})
+        elif op == "supheli_degersiz":
+            x = rnd.randint(1, m.bakiye(musteri))
+            adimlar.append({"id": sid, "islem": "supheli_al", "ad": "SP%s" % sid, "cari": musteri, "tutar": tl(x), "tarih": t})
+            adimlar.append({"id": sid + "d", "islem": "degersiz", "supheli": "SP%s" % sid, "tutar": tl(x), "tarih": t})
         elif op == "evrak":
             n_e += 1
             adimlar.append({"id": sid, "islem": "evrak", "ad": "EV%d" % n_e, "cari": musteri, "tur": "cek", "tutar": tl(rnd.randint(100, 200000)), "tarih": t})
