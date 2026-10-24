@@ -1,5 +1,5 @@
 {
- "aciklama": "BİLİNEN SINIR listesi (cari kâhini; ana oturum isteği 23.10.2026). Ürün sahibinin ERTELEDİĞİ farklar: kâhin beklentisi doğru kalır, koşucu bu farkları 'BİLİNEN' diye ayrı yazar ve başarısız saymaz. Her kayıt TAM ad (senaryo + denetim anahtarı; joker yok). Program değeri ya da kâhin beklentisi değişirse BAŞARISIZ (BİLİNEN DEĞİŞTİ); farkı kalmayan kayıt BAŞARISIZ (BİLİNEN KAPANDI — listeden çıkar). K4 toplamları (k1:k4:*) tur 16 ürününde (aday 24) yalnız (b) payını taşıdıkları ham kalemden gösterildikten sonra eklendi ((a) ve (c) aday 24'te kapandı). (a) 'Taahhüt Alacağı' ERTELENMEDİ (ana oturum 23.10.2026: R1 gerilemesi, tur 16 ürününde düzelir) — listede yok.",
+ "aciklama": "BİLİNEN SINIR listesi (cari kâhini; ana oturum isteği 23.10.2026). Ürün sahibinin ERTELEDİĞİ farklar: kâhin beklentisi doğru kalır, koşucu bu farkları 'BİLİNEN' diye ayrı yazar ve başarısız saymaz. Her kayıt TAM ad (senaryo + denetim anahtarı; joker yok). Program değeri ya da kâhin beklentisi değişirse BAŞARISIZ (BİLİNEN DEĞİŞTİ); farkı kalmayan kayıt BAŞARISIZ (BİLİNEN KAPANDI — listeden çıkar). K4 toplamları (k1:k4:*) tur 16 ürününde (aday 24) yalnız (b) payını taşıdıkları ham kalemden gösterildikten sonra eklendi ((a) ve (c) aday 24'te kapandı). (a) 'Taahhüt Alacağı' ERTELENMEDİ (ana oturum 23.10.2026: R1 gerilemesi, tur 16 ürününde düzelir) — listede yok. · `kural` alanı (24.10.2026, 2.4.5 kâhini): kayıt yalnız o kural setinde (\"2.4.4\" = --legacy) uygulanır; alanı olmayan kayıt her iki kipte.",
  "kayitlar": [
   {
    "senaryo": "b3y-taahhut-alacak-bakiye",
@@ -28,7 +28,9 @@
    "beklenen": 400000,
    "program": "boş",
    "neden": "Leman Er: Açılış Bakiyesi boş (kalem debt null); kâhin 4.000",
-   "dogrulama": "aday 24 (550c2b0, tur 16 ürünü) — ham takvim kalemi + rapor + not kâhin ajanınca okundu 23.10.2026: 'Aylık Taahhütler' sekmesi borçsuz + görünür not “borç sütunu seçilemedi (Aylık Ücret, Taahhüt Bakiyesi)”, kalem tutarı Aylık Ücret (1.000), kalem debt null"
+   "dogrulama": "aday 24 (550c2b0, tur 16 ürünü) — ham takvim kalemi + rapor + not kâhin ajanınca okundu 23.10.2026: 'Aylık Taahhütler' sekmesi borçsuz + görünür not “borç sütunu seçilemedi (Aylık Ücret, Taahhüt Bakiyesi)”, kalem tutarı Aylık Ücret (1.000), kalem debt null",
+   "kural": "2.4.4",
+   "kuralNotu": "2.4.5 madde 3/4: Takvim'de tablo tutar kalemi ve Açılış Bakiyesi ön dolumu kalktı — bu kayıt yalnız 2.4.4 kural setinde (--legacy) geçerli"
   },
   {
    "senaryo": "b3y-taahhut-alacak-bakiye",
@@ -57,7 +59,9 @@
    "beklenen": 30000,
    "program": "boş",
    "neden": "Mert Ay: Açılış Bakiyesi boş; kâhin 300",
-   "dogrulama": "aday 24 (550c2b0, tur 16 ürünü) — ham takvim kalemi + rapor + not kâhin ajanınca okundu 23.10.2026: 'Aylık Taahhütler' sekmesi borçsuz + görünür not “borç sütunu seçilemedi (Aylık Ücret, Taahhüt Bakiyesi)”, kalem tutarı Aylık Ücret (1.000), kalem debt null"
+   "dogrulama": "aday 24 (550c2b0, tur 16 ürünü) — ham takvim kalemi + rapor + not kâhin ajanınca okundu 23.10.2026: 'Aylık Taahhütler' sekmesi borçsuz + görünür not “borç sütunu seçilemedi (Aylık Ücret, Taahhüt Bakiyesi)”, kalem tutarı Aylık Ücret (1.000), kalem debt null",
+   "kural": "2.4.4",
+   "kuralNotu": "2.4.5 madde 3/4: Takvim'de tablo tutar kalemi ve Açılış Bakiyesi ön dolumu kalktı — bu kayıt yalnız 2.4.4 kural setinde (--legacy) geçerli"
   },
   {
    "senaryo": "b3y-taahhut-alacak-bakiye",
@@ -66,7 +70,9 @@
    "beklenen": 30000,
    "program": 100000,
    "neden": "Mert Ay: takvim kalemi Aylık Ücret 1.000; kâhin min(ücret 1.000, Kalan 300) = 300",
-   "dogrulama": "aday 24 (550c2b0, tur 16 ürünü) — ham takvim kalemi + rapor + not kâhin ajanınca okundu 23.10.2026: 'Aylık Taahhütler' sekmesi borçsuz + görünür not “borç sütunu seçilemedi (Aylık Ücret, Taahhüt Bakiyesi)”, kalem tutarı Aylık Ücret (1.000), kalem debt null"
+   "dogrulama": "aday 24 (550c2b0, tur 16 ürünü) — ham takvim kalemi + rapor + not kâhin ajanınca okundu 23.10.2026: 'Aylık Taahhütler' sekmesi borçsuz + görünür not “borç sütunu seçilemedi (Aylık Ücret, Taahhüt Bakiyesi)”, kalem tutarı Aylık Ücret (1.000), kalem debt null",
+   "kural": "2.4.4",
+   "kuralNotu": "2.4.5 madde 3/4: Takvim'de tablo tutar kalemi ve Açılış Bakiyesi ön dolumu kalktı — bu kayıt yalnız 2.4.4 kural setinde (--legacy) geçerli"
   },
   {
    "senaryo": "b3y-taahhut-alacak-bakiye",
@@ -84,7 +90,9 @@
    "beklenen": 850000,
    "program": 920000,
    "neden": "K4 Takvim toplamı: fark 70.000 kuruş = yalnız (b) — Mert Ay kalemi 1.000 − 300 (Kerem 2.200, Leman 1.000, Nazlı 5.000 kalemleri tutuyor)",
-   "dogrulama": "aday 24 (550c2b0, tur 16 ürünü) — ham takvim kalemi + rapor + not kâhin ajanınca okundu 23.10.2026: 'Aylık Taahhütler' sekmesi borçsuz + görünür not “borç sütunu seçilemedi (Aylık Ücret, Taahhüt Bakiyesi)”, kalem tutarı Aylık Ücret (1.000), kalem debt null"
+   "dogrulama": "aday 24 (550c2b0, tur 16 ürünü) — ham takvim kalemi + rapor + not kâhin ajanınca okundu 23.10.2026: 'Aylık Taahhütler' sekmesi borçsuz + görünür not “borç sütunu seçilemedi (Aylık Ücret, Taahhüt Bakiyesi)”, kalem tutarı Aylık Ücret (1.000), kalem debt null",
+   "kural": "2.4.4",
+   "kuralNotu": "2.4.5 madde 3/4: Takvim'de tablo tutar kalemi ve Açılış Bakiyesi ön dolumu kalktı — bu kayıt yalnız 2.4.4 kural setinde (--legacy) geçerli"
   },
   {
    "senaryo": "b3y-taahhut-alacak-bakiye",

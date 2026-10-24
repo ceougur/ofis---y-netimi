@@ -1,0 +1,158 @@
+{
+  "ad": "245-kahin/taban-d2cef7c",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kahin-245/cikti",
+  "commit": "d2cef7ce21b0776e2767f8fb610c9be8a4159f5d",
+  "dal": "is/kahin-245",
+  "kirli": 5,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:19:55.702Z",
+  "sure_sn": 66.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 5468,
+    "gecen": 4152,
+    "basarisiz": 1316,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1316 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[İNCELE YAYGIN] k1:acilis:2026/202: program 80000 · kâhin {\"catal\":[0,\"boş\"]} (madde 3: Açılış Bakiyesi ön dolumu boş (vekil: takvimde kayıt kalemi / Kalan Borç yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k1:acilis:2026/203: program 90000 · kâhin {\"catal\":[0,\"boş\"]} (madde 3: Açılış Bakiyesi ön dolumu boş (vekil: takvimde kayıt kalemi / Kalan Borç yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k1:acilis:2026/204: program 70000 · kâhin {\"catal\":[0,\"boş\"]} (madde 3: Açılış Bakiyesi ön dolumu boş (vekil: takvimde kayıt kalemi / Kalan Borç yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k1:acilis:2026/205: program 180000 · kâhin {\"catal\":[0,\"boş\"]} (madde 3: Açılış Bakiyesi ön dolumu boş (vekil: takvimde kayıt kalemi / Kalan Borç yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k1:acilis:2026/207: program 400000 · kâhin {\"catal\":[0,\"boş\"]} (madde 3: Açılış Bakiyesi ön dolumu boş (vekil: takvimde kayıt kalemi / Kalan Borç yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:takvim: program 1020000 · kâhin 0 (madde 4: Takvim'de tablodan TUTARLI kalem yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:projeksiyon:tablo: program 7 · kâhin 0 (madde 4: Nakit Akış Projeksiyonu tablo kalemi katmaz)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:projeksiyon:tabloSecenek: program 7 · kâhin 0 (madde 4: 'Tablo' seçeneği kalkar (table=1 de tablo kalemi yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:takvim:kalemTutar:2026/201: program 200000 · kâhin 0 (madde 4: kaydın Takvim'deki tablo tutarı 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:takvim:kalemTutar:2026/202: program 80000 · kâhin 0 (madde 4: kaydın Takvim'deki tablo tutarı 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:takvim:kalemTutar:2026/203: program 90000 · kâhin 0 (madde 4: kaydın Takvim'deki tablo tutarı 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:takvim:kalemTutar:2026/204: program 70000 · kâhin 0 (madde 4: kaydın Takvim'deki tablo tutarı 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:takvim:kalemTutar:2026/205: program 180000 · kâhin 0 (madde 4: kaydın Takvim'deki tablo tutarı 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:takvim:kalemTutar:2026/207: program 400000 · kâhin 0 (madde 4: kaydın Takvim'deki tablo tutarı 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:takvim:tabloTutarli: program 7 · kâhin 0 (madde 4: Takvim'de tablodan tutarlı kalem yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:vadeTakip:tablo: program 7 · kâhin 0 (madde 4: Vade Takip'te tablodan tutarlı kalem yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k1:acilis:2026/303: program 150000 · kâhin {\"catal\":[0,\"boş\"]} (madde 3: Açılış Bakiyesi ön dolumu boş (vekil: takvimde kayıt kalemi / Kalan Borç yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:takvim: program 630000 · kâhin 0 (madde 4: Takvim'de tablodan TUTARLI kalem yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:projeksiyon:tablo: program 7 · kâhin 0 (madde 4: Nakit Akış Projeksiyonu tablo kalemi katmaz)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:projeksiyon:tabloSecenek: program 7 · kâhin 0 (madde 4: 'Tablo' seçeneği kalkar (table=1 de tablo kalemi yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:takvim:kalemTutar:2026/301: program 270000 · kâhin 0 (madde 4: kaydın Takvim'deki tablo tutarı 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:takvim:kalemTutar:2026/302: program 80000 · kâhin 0 (madde 4: kaydın Takvim'deki tablo tutarı 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:takvim:kalemTutar:2026/303: program 150000 · kâhin 0 (madde 4: kaydın Takvim'deki tablo tutarı 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:takvim:kalemTutar:2026/304: program 130000 · kâhin 0 (madde 4: kaydın Takvim'deki tablo tutarı 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:takvim:tabloTutarli: program 7 · kâhin 0 (madde 4: Takvim'de tablodan tutarlı kalem yok)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-24/245-kahin/taban-d2cef7c.log",
+  "klasor": "/home/user/wt/kahin-245",
+  "ham_cikti_sha256": "3c0deffe90852f99d3f7561e784e144b156c9cb9e420ca70584fcf09676677e6",
+  "ham_cikti_bayt": 249075
+}

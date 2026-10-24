@@ -3,6 +3,12 @@
 """Rastgele UX18 senaryosu üretici (dil "destekofis-cari/1"; ders 17 rastgele sıra). Tohumlu, belirlenimli.
 
   python3 -I test/bagimsiz/cari/uretici.py --tohum 3 --islem 60 > senaryo.json
+  python3 -I test/bagimsiz/cari/uretici.py --tur s1 --tohum 3 --islem 60 > senaryo.json   # /3 (2.4.5 madde 6, S1 + K6.1–K6.4)
+
+--tur s1 (24.10.2026, 2.4.5 kâhini): iki müşteri (D, E) + bir tedarikçi (S); Açılış Bakiyesi (vadeli/vadesiz, tedarikçide alacak yönlü), satış ve alış
+faturaları, elle Borç / Alacak (Vade Tarihi, Beklenen Ödeme Tarihi; ara sıra kaydın tarihinden önce ya da biçimsiz → 400 beklenir), bağsız ve faturaya bağlı
+tahsilat / ödeme, bağsız alınan çek + karşılıksız, hareket silme / Silinenler'den geri yükleme, Düzenle (tutar / vade / beklenen), Cari görüntüleme yetkisi
+kaldırılmış kullanıcı (yarı tohumda). UX18 akışından AYRI (rastgele-ux18-<t> değişmez). Ufkun sınır günü (bugün + 7, KS5 dahil) de üretilir.
 
 Üç müşteri + bir tedarikçi; satış faturaları (bazısı kendi çekiyle), bağsız/bağlı nakit tahsilat, faturaya bağlı/bağsız alınan
 çek/senet, karşılıksız, tahsil, ciro, evrak sil / geri yükle, bağ değiştir, fatura iptali; her ~10 adımda kontrol.
@@ -171,7 +177,7 @@ def uret(tohum, islem):
     adimlar.insert(0, rastgele_tablo(rt, tohum))
     if rt.random() < 0.5:
         adimlar.insert(1, {"id": "u-y", "islem": "kullanici_ac", "ad": "Y%d" % tohum, "rol": "avukat", "kaldir": ["cash.view"]})
-    sen = {"dil": M.DIL, "ad": "rastgele-ux18-%d" % tohum, "aciklama": "uretici.py --tohum %d --islem %d" % (tohum, islem),
+    sen = {"dil": "destekofis-cari/2", "ad": "rastgele-ux18-%d" % tohum, "aciklama": "uretici.py --tohum %d --islem %d" % (tohum, islem),
            "dayanak": "KARARLAR.md B2, B3 (K1–K3), B3c (C3), B3d (karar A), B5b (K5); ders 17", "bugun": bugun.isoformat(), "adimlar": adimlar}
     n_f = n_e = 0
     kontrol = 0
@@ -258,10 +264,144 @@ def uret(tohum, islem):
     return sen
 
 
+def uret_s1(tohum, islem):
+    """/3 rastgele S1 dizisi (2.4.5 madde 6). Geçerlilik: fatura tarihleri artan; bağlı tahsilat/ödeme faturanın o anki açığını aşmaz; karşılıksız yalnız
+    portföydeki evrakta; silinen yalnız etkin hareket, geri yüklenen yalnız silinmiş; Açılış silinmez. Durum kâhin modeliyle (model.py) izlenir."""
+    rnd = random.Random(tohum * 104729 + 5)
+    bugun = date(2026, 6, 30)
+    sinir = (bugun + timedelta(days=M.UFUK_GUN)).isoformat()
+    gun = date(2026, 3, 2)
+
+    def ileri(t, en_cok):
+        # KS5 (24.10.2026): ufkun sınır günü (bugün + 7) DAHİL — o gün de üretilir (önceki sürüm kaçınıyordu); sınır günü olasılığı artırılır
+        x = (date.fromisoformat(t) + timedelta(days=rnd.randint(0, en_cok))).isoformat()
+        return sinir if rnd.random() < 0.05 and sinir >= t else x
+
+    def vadeler(t, bozuk=0.0):
+        out = {}
+        if rnd.random() < 0.7:
+            out["vade"] = ileri(t, 130)
+        if rnd.random() < 0.35:
+            out["beklenen"] = ileri(t, 130)
+        if rnd.random() < bozuk:
+            alan = rnd.choice(["vade", "beklenen"])
+            tur = rnd.choice(["once", "once", "bicim"])
+            out[alan] = (date.fromisoformat(t) - timedelta(days=rnd.randint(1, 20))).isoformat() if tur == "once" else "%s.%s.%s" % (t[8:], t[5:7], t[:4])
+        return out
+
+    def acilis(ad, isim, tur):
+        a = {"id": "c-" + ad.lower(), "islem": "cari_ac", "ad": ad, "isim": isim, "tarih": "2026-03-01"}
+        if tur == "tedarikci":
+            a["tur"] = "tedarikci"
+        if rnd.random() < 0.75:
+            a["acilis"] = tl(rnd.randint(100, 400000))
+            if tur == "tedarikci":
+                a["acilisYon"] = "alacak"
+            v = vadeler("2026-03-01")
+            if "vade" in v:
+                a["acilisVade"] = v["vade"]
+            if "beklenen" in v:
+                a["acilisBeklenen"] = v["beklenen"]
+        return a
+    adimlar = [acilis("D", "Rastgele Delta %d" % tohum, "musteri"), acilis("E", "Rastgele Epsilon %d" % tohum, "musteri"),
+               acilis("S", "Rastgele Sigma Tedarik %d" % tohum, "tedarikci")]
+    if rnd.random() < 0.5:
+        adimlar.append({"id": "u-v", "islem": "kullanici_ac", "ad": "V%d" % tohum, "rol": "avukat", "kaldir": ["accounts.view"]})
+    sen = {"dil": M.DIL, "ad": "rastgele-s1-%d" % tohum, "aciklama": "uretici.py --tur s1 --tohum %d --islem %d" % (tohum, islem),
+           "dayanak": "KARARLAR.md C (2.4.5 madde 6: S1, K6.1–K6.4); ders 17", "bugun": bugun.isoformat(), "adimlar": adimlar}
+    n_f = n_a = n_e = 0
+    kontrol = 0
+
+    def durum():
+        m = M.Model(dict(sen, adimlar=list(adimlar)))
+        m.kos()
+        return m
+
+    for i in range(islem):
+        gun = min(bugun, gun + timedelta(days=rnd.choice([0, 0, 1, 1, 2, 3])))
+        t = gun.isoformat()
+        m = durum()
+        sid = "s%03d" % i
+        musteri = rnd.choice(["D", "E"])
+        acik_s = {f: v for f, v in m.aciklar(musteri).items() if m.faturalar[f]["tur"] == "satis" and v > 0}
+        acik_a = {f: v for f, v in m.kuyruk_borc("S").items() if f in m.faturalar and v > 0}
+        etkin = [h for h, x in m.hareketler.items() if x["aktif"] and x["tur"] in ("tahsilat", "borc", "alacak", "odeme")]
+        silinen = [h for h, x in m.hareketler.items() if not x["aktif"] and x["tur"] in ("tahsilat", "borc", "alacak", "odeme")]
+        elle = [h for h, x in m.hareketler.items() if x["aktif"] and x["tur"] in ("borc", "alacak")]
+        portfoy = [e for e, x in m.evraklar.items() if x["durum"] == "portfoy"]
+        secenek = [("fatura", 12), ("borc", 14), ("tahsilat", 14), ("alis", 6), ("alacak", 7), ("odeme", 7), ("evrak", 4)]
+        if acik_s:
+            secenek.append(("bagli_tahsilat", 6))
+        if acik_a:
+            secenek.append(("bagli_odeme", 3))
+        if portfoy:
+            secenek.append(("karsiliksiz", 3))
+        if etkin:
+            secenek.append(("hareket_sil", 5))
+        if silinen:
+            secenek.append(("hareket_geri_yukle", 4))
+        if elle:
+            secenek.append(("hareket_duzenle", 5))
+        op = rnd.choices([o for o, _ in secenek], weights=[w for _, w in secenek])[0]
+        tutar = rnd.choice([rnd.randint(1, 50) * 10000, rnd.randint(100, 300000)])
+        if op == "fatura":
+            n_f += 1
+            adimlar.append({"id": sid, "islem": "fatura", "ad": "G%d" % n_f, "cari": musteri, "tutar": tl(tutar), "tarih": t})
+        elif op == "alis":
+            n_a += 1
+            adimlar.append({"id": sid, "islem": "fatura", "ad": "A%d" % n_a, "cari": "S", "tur": "alis", "tutar": tl(tutar), "tarih": t})
+        elif op in ("borc", "alacak"):
+            a = {"id": sid, "islem": op, "cari": musteri if op == "borc" else "S", "tutar": tl(tutar), "tarih": t}
+            a.update(vadeler(t, bozuk=0.08))
+            adimlar.append(a)
+        elif op == "tahsilat":
+            a = {"id": sid, "islem": "tahsilat", "cari": musteri, "tutar": tl(rnd.randint(100, 350000)), "tarih": t}
+            if rnd.random() < 0.12:
+                a["vade"] = ileri(t, 40)  # K6.1: tahsilat alan taşımaz — gönderilirse kaydedilmez
+            adimlar.append(a)
+        elif op == "bagli_tahsilat":
+            f = rnd.choice(sorted(acik_s))
+            adimlar.append({"id": sid, "islem": "tahsilat", "cari": musteri, "tutar": tl(rnd.randint(1, acik_s[f])), "tarih": t, "fatura": f})
+        elif op == "odeme":
+            adimlar.append({"id": sid, "islem": "odeme", "cari": "S", "tutar": tl(rnd.randint(100, 250000)), "tarih": t})
+        elif op == "bagli_odeme":
+            f = rnd.choice(sorted(acik_a))
+            adimlar.append({"id": sid, "islem": "odeme", "cari": "S", "tutar": tl(rnd.randint(1, acik_a[f])), "tarih": t, "fatura": f})
+        elif op == "evrak":
+            n_e += 1
+            adimlar.append({"id": sid, "islem": "evrak", "ad": "EV%d" % n_e, "cari": musteri, "tur": "cek", "tutar": tl(rnd.randint(100, 200000)), "tarih": t})
+        elif op == "karsiliksiz":
+            adimlar.append({"id": sid, "islem": "karsiliksiz", "evrak": rnd.choice(sorted(portfoy)), "tarih": t})
+        elif op == "hareket_sil":
+            adimlar.append({"id": sid, "islem": "hareket_sil", "hareket": rnd.choice(sorted(etkin))})
+        elif op == "hareket_geri_yukle":
+            adimlar.append({"id": sid, "islem": "hareket_geri_yukle", "hareket": rnd.choice(sorted(silinen))})
+        elif op == "hareket_duzenle":
+            h = rnd.choice(sorted(elle))
+            x = m.hareketler[h]
+            a = {"id": sid, "islem": "hareket_duzenle", "hareket": h}
+            if rnd.random() < 0.4:
+                a["tutar"] = tl(rnd.randint(100, 300000))
+            v = vadeler(x["tarih"], bozuk=0.1)
+            for alan in ("vade", "beklenen"):
+                if rnd.random() < 0.5:
+                    a[alan] = v.get(alan, "")
+            if len(a) == 3:
+                a["vade"] = ileri(x["tarih"], 60)
+            adimlar.append(a)
+        if (i + 1) % 10 == 0:
+            kontrol += 1
+            adimlar.append({"id": "k%d" % kontrol, "islem": "kontrol"})
+    adimlar.append({"id": "kson", "islem": "kontrol"})
+    return sen
+
+
 def main(argv):
     tohum = int(argv[argv.index("--tohum") + 1]) if "--tohum" in argv else 1
     islem = int(argv[argv.index("--islem") + 1]) if "--islem" in argv else 60
-    sys.stdout.write(json.dumps(uret(tohum, islem), ensure_ascii=False, indent=1) + "\n")
+    tur = argv[argv.index("--tur") + 1] if "--tur" in argv else "ux18"
+    sen = uret_s1(tohum, islem) if tur == "s1" else uret(tohum, islem)
+    sys.stdout.write(json.dumps(sen, ensure_ascii=False, indent=1) + "\n")
     return 0
 
 
