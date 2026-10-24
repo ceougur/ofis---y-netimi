@@ -8518,6 +8518,27 @@ button.hof-source-card:focus-visible {
 .hof-rc-account {
   min-width: 280px;
 }
+/* 2.4.5 madde 6d: açılıp kapanan rapor seçeneği (Fatura Kalemlerini Göster) ve Ayrıntılı Cari Ekstre'nin kalem satırları. */
+.hof-rc-check-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  color: var(--do-ink-soft);
+  font: 700 12px var(--do-font);
+  cursor: pointer;
+}
+.hof-rc-table tbody tr.is-item td {
+  color: var(--do-muted);
+  font-size: 0.94em;
+  border-top-color: transparent;
+}
+.hof-rc-table tbody tr.is-item td:nth-child(5) {
+  padding-left: 22px;
+}
+.hof-rc-table tbody tr.is-invoice td {
+  font-weight: 600;
+}
 .hof-rc-account .hof-field {
   margin: 0;
 }

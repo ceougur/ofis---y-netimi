@@ -1,0 +1,32 @@
+{
+  "ad": "245-ekstre-ayrinti/e2e-senaryo-211-eski-d2cef7c",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-ekstre-ayrinti/eski-d2cef7c && node --disable-warning=ExperimentalWarning test/e2e/senaryo-211.mjs",
+  "commit": "d2cef7ce21b0776e2767f8fb610c9be8a4159f5d",
+  "dal": "is/ekstre-ayrinti",
+  "kirli": 8,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:09:13.482Z",
+  "sure_sn": 95.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 57,
+    "gecen": 57,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-ekstre-ayrinti/e2e-senaryo-211-eski-d2cef7c.log",
+  "klasor": "/home/user/wt/ekstre-ayrinti",
+  "ham_cikti_sha256": "74694b749ccaeeb6b634c2d46ea2c944ea3c430fded01e77685ff60e12134323",
+  "ham_cikti_bayt": 4830
+}

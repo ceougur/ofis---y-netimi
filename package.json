@@ -90,6 +90,7 @@
     "test:uiux-a-243": "node --disable-warning=ExperimentalWarning test/e2e/uiux-a-243.mjs",
     "test:uiux-b-243": "node --disable-warning=ExperimentalWarning test/e2e/uiux-b-243.mjs",
     "test:uiux-ui11-244": "node --disable-warning=ExperimentalWarning test/e2e/uiux-ui11-244.mjs",
+    "test:ekstre-ayrinti-245": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-ekstre-ayrinti-245.mjs",
     "test:sirket-canli-yetki-244": "node --disable-warning=ExperimentalWarning test/e2e/sirket-canli-yetki-244.mjs",
     "test:baslarken-244": "node --disable-warning=ExperimentalWarning test/e2e/baslarken-244.mjs",
     "test:mutabakat": "node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs",

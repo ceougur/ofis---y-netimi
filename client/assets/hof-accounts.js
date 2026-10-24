@@ -358,7 +358,7 @@
           <div class="hof-plan-title"><h3>${account.refNo ? `<span class="hof-plan-refno" title="Cari No">No ${esc(account.refNo)}</span>` : ""}${esc(account.name)} ${typeBadge(account.type)}${active ? "" : badgeMuted("Pasif")}${doubtfulBadge(account.doubtful)}</h3><small>${esc(whereText(account) || "Grupsuz")}${account.phone ? ` · ${esc(account.phone)}` : ""}</small></div></div>
         <div class="hof-plan-actions" role="toolbar" aria-label="Cari işlemleri">
           <span class="hof-plan-toolgroup">${collect ? '<button type="button" class="hof-button hof-button-small" data-entry="in">+ Tahsilat</button>' : ""}${manage ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="debt" title="Cari size borçlanır">Borç Yaz</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="credit" title="Siz cariye borçlanırsınız">Alacak Yaz</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="out" title="Cariye para verildi (Kasa, banka hesabı ya da kredi kartı)">− Ödeme</button>' : ""}${canPlan() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="newPlan" title="Bu cariye taksit kartı aç">+ Taksit Planı</button>' : ""}</span>
-          <span class="hof-plan-toolgroup">${office().outputButtons ? office().outputButtons(cardPdfUrl(account), "card", "Cari Ekstre - PDF") : ""}${phone ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="whatsapp" data-wa="${esc(phone)}">WhatsApp</button>` : ""}</span>
+          <span class="hof-plan-toolgroup">${office().outputButtons ? office().outputButtons(cardPdfUrl(account), "card", "Cari Ekstre - PDF") : ""}${HOF.can("overview.view") && HOF.reportCenter ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="detailStatement" title="Fatura kalemleri, belge no ve ödeme yoluyla ekstre (Raporlar; ekranda, PDF ve Excel)">Ayrıntılı Ekstre</button>' : ""}${phone ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="whatsapp" data-wa="${esc(phone)}">WhatsApp</button>` : ""}</span>
           ${manage ? `<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="${active ? "passive" : "activate"}" title="${active ? "Pasif cari listede Pasif altında durur; hareketleri korunur" : ""}">${active ? "Pasife Al" : "Aktif Yap"}</button><button type="button" class="hof-button hof-button-small hof-button-ghost hof-button-danger-ghost" data-act="delete"${account.deleteBlock ? ` disabled aria-describedby="hof-acc-delete-why" title="${esc(account.deleteBlock)}"` : ""}>Sil</button></span>` : ""}
         </div></div>
       ${manage && account.deleteBlock ? `<ul class="hof-inv-blocks hof-acc-blocks" id="hof-acc-delete-why" data-delete-block><li><b>Silinemez:</b> ${esc(account.deleteBlock)}</li></ul>` : ""}
@@ -1615,6 +1615,11 @@
     if (act === "saleInvoice" || act === "purchaseInvoice") {
       modal.close();
       return HOF.invoices?.newFor({ side: act === "saleInvoice" ? "sale" : "purchase", account: { id: account.id, name: account.name } });
+    }
+    // 2.4.5 madde 6d (müşteri isteği M2): Raporlar → Cari Ekstre, bu cari ve "Fatura Kalemlerini Göster" işaretli (Finans Raporları yetkisiyle).
+    if (act === "detailStatement") {
+      modal.close();
+      return HOF.reportCenter?.open("cari-ekstre", { account: { id: account.id, name: account.name }, params: { items: "1" } });
     }
     if (act === "allInvoices") {
       modal.close();
