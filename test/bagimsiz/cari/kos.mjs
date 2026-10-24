@@ -412,11 +412,14 @@ async function kos(senaryo) {
           break;
         }
         case "stok_iade":
-        case "alis_iade": {
-          // KS7: faturasız stok iadesi — POST /api/workspace/stock/:id/moves (test çağrı satırları; yoklama 5): satış iadesi kind "in" + reason "return" + Cari Hesap
-          // (müşteride alacak satırı), alış iadesi kind "out" + reason "return" + Cari Hesap (tedarikçide borç satırı). Mal kartı ilk kullanımda açılır.
+        case "alis_iade":
+        case "stok_satis_hesap": {
+          // KS7 / KS7.1: faturasız stok hareketi — POST /api/workspace/stock/:id/moves (test çağrı satırları; yoklama 5), Cari Hesap: satış iadesi kind "in" + reason "return"
+          // (müşteride alacak satırı); açık alış iadesi kind "out" + reason "preturn" (KS7.1: formda yolu yok — senaryoda kullanılmaz); nedensiz stok çıkışı ("Stok satışı",
+          // tedarikçiye de olsa yükümlülük) kind "out", reason yok. Mal kartı ilk kullanımda açılır.
           if (!ids.mal) ids.mal = (await api("POST", "/api/workspace/stock", { kind: "goods", code: "KAHIN-MAL", name: "Kâhin Malı", unit: "Adet", openingQty: "100000", salePrice: "100" })).data?.id;
-          durum(a, await api("POST", `/api/workspace/stock/${ids.mal}/moves`, { kind: a.islem === "stok_iade" ? "in" : "out", reason: "return", qty: "1", unitPrice: tlMetin(kurusOf(a.tutar)), pay: "account", accountId: ids.cari[a.cari], date: t }));
+          const neden = { stok_iade: { kind: "in", reason: "return" }, alis_iade: { kind: "out", reason: "preturn" }, stok_satis_hesap: { kind: "out" } }[a.islem];
+          durum(a, await api("POST", `/api/workspace/stock/${ids.mal}/moves`, { ...neden, qty: "1", unitPrice: tlMetin(kurusOf(a.tutar)), pay: "account", accountId: ids.cari[a.cari], date: t }));
           break;
         }
         case "supheli_al": {
