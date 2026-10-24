@@ -1,0 +1,17 @@
+(node:18551) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓ sunucu 47 kalem; cari vade kalemi listenin SONUNDA (ön koşul): account
+
+■ S2 ilk piller ve görünürlük
+  ✓ şeritte 40 pil, başlıkta "ilk 40": 40 · 1 gecikmiş · 1 bugün/bu ay · 45 yaklaşan · ilk 40
+  ✓ ilk pil en gecikmiş: {"who":"Şerit Geciken","state":"20 gün gecikti"}
+  ✗ ikinci pil bugün vadeli cari borcu (listenin sonundaki kalem görünüyor): {"who":"Şerit Müşteri 45","state":"Yarın"}
+
+■ S3 gün sırası
+  ✗ pillerin günü soldan sağa azalmıyor — 4. pilde kırıldı: 7 → 3 (-20,1,4,7,3,6,2,5,1,4,7,3,6,2,5,1,4,7,3,6,2,5,1,4,7,3,6,2,5,1,4,7,3,6,2,5,1,4,7,3)
+
+■ S4 aynı günde ad sırası
+  ✓ aynı gün içinde ad sırası
+  ✓ sayfa hatası yok: 
+
+5 geçti, 2 kaldı

@@ -48,6 +48,12 @@
   };
   // Şeritte: gecikenler, bugün/bu ay, 7 gün içinde gelecekler ve 30 gün içindeki açık ödeme sözleri.
   const onStrip = item => item.state !== "upcoming" || item.days <= 7 || item.thisMonth || (item.promise && item.days <= 30);
+  // 2.4.5 B1: sunucu kalemleri kaynak sırasıyla birleştirir (tablo, taksit, çek, fatura, banka, cari vade, öbür sayfa); şerit ilk PILL_LIMIT pili
+  // gösterdiği için kesmeden ÖNCE zildeki kuralla sıralanır (hof-alerts.js: önce alınmayanlar [gecikmiş/bugün/bu ay], sonra yaklaşanlar; gün
+  // sırası; aynı günde ad; ad da aynıysa sort kararlı → sunucunun kaynak/yazım sırası; kimlikle sıralanmaz, ders 31).
+  const stripRank = item => (item.state !== "upcoming" ? 0 : 4);
+  const stripTitle = item => `${who(item)}${pageTag(item)}`;
+  const stripOrder = items => [...items].sort((a, b) => stripRank(a) - stripRank(b) || a.days - b.days || stripTitle(a).localeCompare(stripTitle(b), "tr"));
 
   let loadedAt = 0;
   async function load() {
@@ -280,7 +286,7 @@
 
   function render() {
     const existing = document.querySelector(".hof-payment-promises");
-    const items = (data.items || []).filter(onStrip);
+    const items = stripOrder((data.items || []).filter(onStrip));
     const anchor = document.getElementById("hof-summary") || document.querySelector(".welcome-row");
     if (!items.length || !anchor) {
       existing?.remove();
