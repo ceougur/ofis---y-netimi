@@ -1,0 +1,32 @@
+{
+  "ad": "245-s211-yaris/yeni-senaryo-211-d",
+  "komut": "flock /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kos.lock node --disable-warning=ExperimentalWarning test/e2e/senaryo-211.mjs",
+  "commit": "b2263568bc901640497396b7b4cb79101f4cc42c",
+  "dal": "is/s211-yaris",
+  "kirli": 1,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T19:07:58.100Z",
+  "sure_sn": 96.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 58,
+    "gecen": 58,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-s211-yaris/yeni-senaryo-211-d.log",
+  "klasor": "/home/user/wt/s211-yaris",
+  "ham_cikti_sha256": "b7352a052ca5860f66a9a59de2364c38bd019a301475334aa4b5e19ebb9b346f",
+  "ham_cikti_bayt": 4971
+}

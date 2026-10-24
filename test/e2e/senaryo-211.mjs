@@ -182,13 +182,23 @@ try {
 
   await step("A. Ayarlar yeri (m8) ve arama kutusu (m1)", async () => {
     // Bizim Ayarlar düğmemiz HOF.onDom karesinde yerleşir (yavaş karede gecikebilir; ders 20 zorlaması): önce beklenir.
-    await admin.waitForSelector("#hof-side-settings");
+    // Neden okundu (2.4.5, yeni-zorla-m8-beklemesiz): beklemesiz okuma sayfa yüklendikten t=417 ms sonra; #hof-sidecard
+    // henüz yok, #hof-side-settings "yok", paketin iki düğmesi CSS'le gizli (show=false, display none) → ürün doğru, okuma erken.
+    // S211_M8_BEKLEMESIZ=1: bekleme olmadan okunur (neden tanılaması için; ders 38).
+    if (process.env.S211_M8_BEKLEMESIZ !== "1") await admin.waitForSelector("#hof-side-settings");
     const place = await admin.evaluate(() => {
       const box = selector => document.querySelector(selector)?.getBoundingClientRect();
       const settings = box("#hof-side-settings");
-      return { settings: Boolean(settings), belowUser: settings && settings.top >= box("#hof-sidecard .hof-user").bottom, aboveSync: settings && settings.bottom <= box(".sidebar-bottom").top, oldHidden: [...document.querySelectorAll(".sidebar .nav-item")].every(node => getComputedStyle(node).display === "none"), oldVisible: [...document.querySelectorAll(".sidebar .nav-item")].filter(node => getComputedStyle(node).display !== "none").map(node => node.textContent.trim()).join(", "), text: document.querySelector("#hof-side-settings")?.textContent.trim() };
+      return { settings: Boolean(settings), belowUser: settings && settings.top >= box("#hof-sidecard .hof-user").bottom, aboveSync: settings && settings.bottom <= box(".sidebar-bottom").top, oldHidden: [...document.querySelectorAll(".sidebar .nav-item")].every(node => getComputedStyle(node).display === "none"), oldVisible: [...document.querySelectorAll(".sidebar .nav-item")].filter(node => getComputedStyle(node).display !== "none").map(node => node.textContent.trim()).join(", "), text: document.querySelector("#hof-side-settings")?.textContent.trim(),
+        // Tanılama (başarısızlıkta iletiye yazılır): zaman, bizim düğmemizin durumu, kenar çubuğundaki bütün düğmeler.
+        diag: {
+          t: Math.round(performance.now()),
+          sidecard: Boolean(document.getElementById("hof-sidecard")),
+          own: (node => (node ? { display: getComputedStyle(node).display, h: Math.round(node.getBoundingClientRect().height), afterCard: node.previousElementSibling?.id || node.previousElementSibling?.className || "" } : "yok"))(document.getElementById("hof-side-settings")),
+          buttons: [...document.querySelectorAll(".sidebar button")].map(node => `${node.id || node.className}|${node.textContent.trim()}|show=${node.hasAttribute("data-hof-show")}|loc=${node.hasAttribute("data-loc")}|${getComputedStyle(node).display}`),
+        } };
     });
-    ok(place.settings && place.belowUser && place.aboveSync && place.oldHidden && place.text === "Ayarlar", `m8: Ayarlar kullanıcı kartının altında, Senkron kartının üstünde; üstteki eski düğme yok${place.oldHidden ? "" : ` — görünen eski düğme: ${place.oldVisible}`} (${JSON.stringify({ ...place, oldVisible: undefined })})`);
+    ok(place.settings && place.belowUser && place.aboveSync && place.oldHidden && place.text === "Ayarlar", `m8: Ayarlar kullanıcı kartının altında, Senkron kartının üstünde; üstteki eski düğme yok${place.oldHidden ? "" : ` — görünen eski düğme: ${place.oldVisible}`} ${place.settings && place.belowUser && place.aboveSync && place.oldHidden && place.text === "Ayarlar" ? "" : ` (${JSON.stringify({ ...place, oldVisible: undefined })})`}`);
     // 2.4.5 (ders 20): paketin detay düğmeleri gizli doğar; gateControls bağlı Sheet varsa yalnız "Sheet'te aç"ı gösterir.
     const detail = await admin.evaluate(async () => {
       const read = () => [...document.querySelectorAll(".detail-actions > button")].map(button => `${button.textContent.trim()}=${getComputedStyle(button).display === "none" ? "gizli" : "görünür"}`).join(", ");
