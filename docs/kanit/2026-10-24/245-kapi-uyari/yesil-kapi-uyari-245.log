@@ -1,0 +1,111 @@
+TAP version 13
+# (node:21732) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.5 madde 4: dueSources = computeDues(...).sources (son tarihlerin exclude'u aynı kural)
+    # Subtest: tahsilat ve okul servisi örneklerinde aynı kolonlar; exclude olmadan Söz Tarihi son tarihe düşerdi
+    ok 1 - tahsilat ve okul servisi örneklerinde aynı kolonlar; exclude olmadan Söz Tarihi son tarihe düşerdi
+      ---
+      duration_ms: 150.822303
+      type: 'test'
+      ...
+    # Subtest: KS6: 'Son Ödeme' son tarih değil; 'Duruşma Tarihi' ve 'Sözleşme Bitiş' son tarih
+    ok 2 - KS6: 'Son Ödeme' son tarih değil; 'Duruşma Tarihi' ve 'Sözleşme Bitiş' son tarih
+      ---
+      duration_ms: 13.175003
+      type: 'test'
+      ...
+    1..2
+ok 1 - 2.4.5 madde 4: dueSources = computeDues(...).sources (son tarihlerin exclude'u aynı kural)
+  ---
+  duration_ms: 165.369025
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 4: kaynak — tablo kalemleri (computeDues) yalnız eski davranış anahtarıyla bir listeye girer
+    # Subtest: routes/dues.mjs: computeDues yalnız legacyTable dalında; öbür sayfanın tablo kalemi yalnız legacyTable ile
+    ok 1 - routes/dues.mjs: computeDues yalnız legacyTable dalında; öbür sayfanın tablo kalemi yalnız legacyTable ile
+      ---
+      duration_ms: 1.893334
+      type: 'test'
+      ...
+    # Subtest: routes/overview.mjs: Vade Takip kaynaklarında table / promise yok; Projeksiyon withTable yalnız legacyTable ile
+    ok 2 - routes/overview.mjs: Vade Takip kaynaklarında table / promise yok; Projeksiyon withTable yalnız legacyTable ile
+      ---
+      duration_ms: 1.390934
+      type: 'test'
+      ...
+    # Subtest: anahtar üretimde kapalı: varsayılan false, ortam değişkeni yok, üretim girişi vermiyor
+    ok 3 - anahtar üretimde kapalı: varsayılan false, ortam değişkeni yok, üretim girişi vermiyor
+      ---
+      duration_ms: 6.05666
+      type: 'test'
+      ...
+    1..3
+ok 2 - 2.4.5 madde 4: kaynak — tablo kalemleri (computeDues) yalnız eski davranış anahtarıyla bir listeye girer
+  ---
+  duration_ms: 9.80971
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 4 + 5 (API): ürün = v2.4.4 − tablo kalemleri; son tarihler ve modül kalemleri aynı
+    # Subtest: Tahsilat Takvimi / zil: tablo kalemi YOK (açık sayfa, öbür sayfa, kartlı kişinin sözü); yan alanlar boş
+    ok 1 - Tahsilat Takvimi / zil: tablo kalemi YOK (açık sayfa, öbür sayfa, kartlı kişinin sözü); yan alanlar boş
+      ---
+      duration_ms: 0.878746
+      type: 'test'
+      ...
+    # Subtest: modül kalemleri aynı: 1 gecikmiş taksit, 1 çek, 1 vadeli fatura, 1 planlı banka (senaryodan); eski davranış ve v2.4.4 ile birebir
+    ok 2 - modül kalemleri aynı: 1 gecikmiş taksit, 1 çek, 1 vadeli fatura, 1 planlı banka (senaryodan); eski davranış ve v2.4.4 ile birebir
+      ---
+      duration_ms: 0.411713
+      type: 'test'
+      ...
+    # Subtest: son tarihler KALIR ve aynı: Sözleşme bitiş + Sigorta yenileme (açık sayfa), Lisans Bitiş (öbür sayfa); Söz Tarihi son tarih değil
+    ok 3 - son tarihler KALIR ve aynı: Sözleşme bitiş + Sigorta yenileme (açık sayfa), Lisans Bitiş (öbür sayfa); Söz Tarihi son tarih değil
+      ---
+      duration_ms: 0.339325
+      type: 'test'
+      ...
+    # Subtest: yetkisiz kullanıcı (personel): tablo kalemi yok; çek / fatura / banka süzgeci 2.4.4 gibi; son tarihler aynı
+    ok 4 - yetkisiz kullanıcı (personel): tablo kalemi yok; çek / fatura / banka süzgeci 2.4.4 gibi; son tarihler aynı
+      ---
+      duration_ms: 0.413556
+      type: 'test'
+      ...
+    # Subtest: Anlık Durum Vade Takip: Tablo / Ödeme Sözü kaynağı ve satırı yok; öbür kaynaklar ve son tarihler aynı; dormant boş
+    ok 5 - Anlık Durum Vade Takip: Tablo / Ödeme Sözü kaynağı ve satırı yok; öbür kaynaklar ve son tarihler aynı; dormant boş
+      ---
+      duration_ms: 0.459605
+      type: 'test'
+      ...
+    # Subtest: Nakit Akış Projeksiyonu: tablo kalemi yok, 'Tablo' seçeneği yok (table=0 / table=1 aynı); v2.4.4'ün table=0 sonucuyla aynı
+    ok 6 - Nakit Akış Projeksiyonu: tablo kalemi yok, 'Tablo' seçeneği yok (table=0 / table=1 aynı); v2.4.4'ün table=0 sonucuyla aynı
+      ---
+      duration_ms: 0.213267
+      type: 'test'
+      ...
+    # Subtest: madde 5: Tablo Raporları satırları aynı motor (v2.4.4 ile aynı); tablodan gelen tutar 'Muhasebe Kaydı Değil'; Nakit Akışı'nda Kasa sütunu yok
+    ok 7 - madde 5: Tablo Raporları satırları aynı motor (v2.4.4 ile aynı); tablodan gelen tutar 'Muhasebe Kaydı Değil'; Nakit Akışı'nda Kasa sütunu yok
+      ---
+      duration_ms: 0.658536
+      type: 'test'
+      ...
+    # Subtest: önbellek: tablo yeniden yüklenince (aynı dosya) yine tablo kalemi yok; son tarih değişince takvim yenilenir
+    ok 8 - önbellek: tablo yeniden yüklenince (aynı dosya) yine tablo kalemi yok; son tarih değişince takvim yenilenir
+      ---
+      duration_ms: 95.274475
+      type: 'test'
+      ...
+    1..8
+ok 3 - 2.4.5 madde 4 + 5 (API): ürün = v2.4.4 − tablo kalemleri; son tarihler ve modül kalemleri aynı
+  ---
+  duration_ms: 3058.228671
+  type: 'suite'
+  ...
+1..3
+# tests 13
+# suites 3
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3634.846316

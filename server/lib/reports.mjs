@@ -7,8 +7,10 @@
 //
 //   Cari ekstre — cari başına: kayıtlar (borç = kalan ya da tutar), tahsilatlar (alacak), yürüyen bakiye.
 //   Vade takip  — takvim motorunun kalemleri + son tarihler; durum (gecikmiş / bugün / yaklaşan / kapalı), gün farkı.
-//   Nakit akış  — dönem (gün / hafta / ay) başına beklenen tahsilat (vadeler), gerçekleşen tahsilat, kasa giriş/çıkış,
-//                 net ve birikimli.
+//   Nakit akış  — dönem (gün / hafta / ay) başına beklenen tahsilat (vadeler) ve gerçekleşen tahsilat. 2.4.5 madde 5: Kasa giriş/çıkış, net,
+//                 birikimli ve "beklenenle birlikte" kolonları kalktı (tablo tahmini Kasa ile aynı tabloda toplanmaz; Kasa Kasa raporlarında).
+// 2.4.5 madde 5 (kullanıcı kararı 23.10.2026 "tablo ajanda/rehber"): tablodan gelen tutar (tablo borcu, tablo kalemi ve ondan program tahsilatı düşülerek
+// bulunan bakiye) muhasebe kaydı değildir; kolon ve özet adları bunu TABLE_AMOUNT_NOTE ile söyler (ekran, PDF ve Excel aynı başlığı okur).
 // Süzgeçler her raporda ortaktır: tarih aralığı, cari metni, durum, oturum, sekme, en az tutar. Dışa aktarma için
 // tablo biçimi (kolonlar + satırlar) da döner; PDF/Excel/yazdırma o tabloyu kullanır.
 import { primaryColumns } from "./insight/columns.mjs";
@@ -26,6 +28,7 @@ const BACKBONE = ["cari", "id", "amount", "debt", "deadline", "status", "phone"]
 const MONEY_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export const REPORT_KINDS = ["cari-ekstre", "vade-takip", "nakit-akis"];
+export const TABLE_AMOUNT_NOTE = "(Muhasebe Kaydı Değil)";
 
 const phoneKey = value => {
   const digits = String(value ?? "").replace(/\D/g, "");
@@ -361,7 +364,7 @@ export function cariEkstre({ records, payments = [], filters = normalizeFilters(
   const table = {
     columns: [
       { key: "cari", label: "Cari" }, { key: "date", label: "Tarih", type: "date" }, { key: "description", label: "Açıklama" }, { key: "session", label: "Kaynak" },
-      { key: "borc", label: "Borç", type: "money" }, { key: "alacak", label: "Alacak", type: "money" }, { key: "bakiye", label: "Bakiye", type: "money" }, { key: "status", label: "Durum" },
+      { key: "borc", label: `Tablodaki Borç ${TABLE_AMOUNT_NOTE}`, type: "money" }, { key: "alacak", label: "Tahsil Edilen", type: "money" }, { key: "bakiye", label: `Tablodaki Bakiye ${TABLE_AMOUNT_NOTE}`, type: "money" }, { key: "status", label: "Durum" },
       ...columns.map(column => ({ key: `f:${column}`, label: column, dynamic: true })),
     ],
     rows: out.flatMap(group => group.lines.map(line => ({ cari: group.cari, date: line.date, description: line.description, session: line.session, borc: line.borc, alacak: line.alacak, bakiye: line.bakiye, status: line.status, ...Object.fromEntries(columns.map(column => [`f:${column}`, line.fields[column] || ""])) }))),
@@ -414,7 +417,7 @@ export function vadeTakip({ records, items = [], dormant = [], filters = normali
   const table = {
     columns: [
       { key: "cari", label: "Cari" }, { key: "label", label: "Kalem" }, { key: "date", label: "Vade", type: "date" }, { key: "days", label: "Gün", type: "number" },
-      { key: "amount", label: "Tutar", type: "money" }, { key: "state", label: "Durum" }, { key: "session", label: "Kaynak" }, { key: "tab", label: "Sekme" },
+      { key: "amount", label: `Tablodaki Tutar ${TABLE_AMOUNT_NOTE}`, type: "money" }, { key: "state", label: "Durum" }, { key: "session", label: "Kaynak" }, { key: "tab", label: "Sekme" },
       ...columns.map(column => ({ key: `f:${column}`, label: column, dynamic: true })),
     ],
     rows: rows.map(row => ({ cari: row.cari, label: row.label, date: row.date, days: row.days, amount: row.amount, state: STATE_TR[row.state] || row.state, session: row.session, tab: row.tab, ...Object.fromEntries(columns.map(column => [`f:${column}`, row.fields[column] || ""])) })),
@@ -441,14 +444,14 @@ const bucketLabel = (bucket, granularity) => {
   return granularity === "week" ? `${text} haftası` : text;
 };
 /**
- * @param {{ items: object[], payments: object[], cashEntries: object[], filters: object, now: Date }} input
- *   items: açık vadeler (beklenen tahsilat); payments: girilen tahsilatlar; cashEntries: kasa hareketleri ({kind, amount, date}).
+ * @param {{ items: object[], payments: object[], filters: object, now: Date }} input
+ *   items: açık vadeler (beklenen tahsilat; tablodan); payments: girilen tahsilatlar (kayda bağlı program tahsilatı).
  */
-export function nakitAkis({ items = [], payments = [], cashEntries = [], filters = normalizeFilters(), now = new Date() }) {
+export function nakitAkis({ items = [], payments = [], filters = normalizeFilters(), now = new Date() }) {
   const granularity = filters.granularity;
   const buckets = new Map();
   const ensure = key => {
-    if (!buckets.has(key)) buckets.set(key, { period: key, label: bucketLabel(key, granularity), expected: 0, expectedCount: 0, collected: 0, collectedCount: 0, cashIn: 0, cashOut: 0 });
+    if (!buckets.has(key)) buckets.set(key, { period: key, label: bucketLabel(key, granularity), expected: 0, expectedCount: 0, collected: 0, collectedCount: 0 });
     return buckets.get(key);
   };
   for (const item of items) {
@@ -456,7 +459,7 @@ export function nakitAkis({ items = [], payments = [], cashEntries = [], filters
     if (date === null || !inRange(date, filters) || item.state === "paid" || item.settled) continue;
     if (filters.sessions.length && !filters.sessions.includes(item.session)) continue;
     // 2.4.4 (30e): Sekme süzgeci Vade Takip ile aynı kuralla (sekmesi olmayan kalem geçer). 2.4.3'ten beri pencere Sekme'yi gönderiyor, burada yok sayılıyordu.
-    // Gerçekleşen tahsilat ve Kasa giriş/çıkış sekme taşımaz; Sayfa süzgecinde olduğu gibi süzülmez.
+    // Gerçekleşen tahsilat sekme taşımaz; Sayfa süzgecinde olduğu gibi süzülmez.
     if (filters.tabs.length && item.tab && !filters.tabs.includes(item.tab)) continue;
     const amount = item.remaining ?? item.amount;
     if (amount === null || amount === undefined) continue;
@@ -471,29 +474,14 @@ export function nakitAkis({ items = [], payments = [], cashEntries = [], filters
     bucket.collected = addMoney(bucket.collected, Number(payment.amount) || 0);
     bucket.collectedCount += 1;
   }
-  for (const entry of cashEntries) {
-    const date = parseIsoDay(entry.date);
-    if (date === null || !inRange(date, filters)) continue;
-    const bucket = ensure(bucketOf(date, granularity));
-    if (entry.kind === "in") bucket.cashIn = addMoney(bucket.cashIn, Number(entry.amount) || 0);
-    else bucket.cashOut = addMoney(bucket.cashOut, Number(entry.amount) || 0);
-  }
   const rows = [...buckets.values()].sort((a, b) => a.period.localeCompare(b.period));
-  let cumulative = 0;
-  for (const row of rows) {
-    row.net = addMoney(row.cashIn, -row.cashOut);
-    cumulative = addMoney(cumulative, row.net);
-    row.cumulative = cumulative;
-    row.projected = addMoney(cumulative, row.expected);
-  }
-  const totals = Object.fromEntries(["expected", "collected", "cashIn", "cashOut"].map(key => [key, sumMoney(rows.map(row => row[key]))]));
-  totals.net = addMoney(totals.cashIn, -totals.cashOut);
+  const totals = Object.fromEntries(["expected", "collected"].map(key => [key, sumMoney(rows.map(row => row[key]))]));
   const table = {
     columns: [
-      { key: "label", label: granularity === "month" ? "Ay" : granularity === "week" ? "Hafta" : "Gün" }, { key: "expected", label: "Beklenen tahsilat", type: "money" }, { key: "expectedCount", label: "Açık kalem", type: "number" },
-      { key: "collected", label: "Gerçekleşen tahsilat", type: "money" }, { key: "cashIn", label: "Kasa giriş", type: "money" }, { key: "cashOut", label: "Kasa çıkış", type: "money" }, { key: "net", label: "Net", type: "money" }, { key: "cumulative", label: "Birikimli", type: "money" }, { key: "projected", label: "Beklenenle birlikte", type: "money" },
+      { key: "label", label: granularity === "month" ? "Ay" : granularity === "week" ? "Hafta" : "Gün" }, { key: "expected", label: `Tablodan Beklenen Tahsilat ${TABLE_AMOUNT_NOTE}`, type: "money" }, { key: "expectedCount", label: "Açık kalem", type: "number" },
+      { key: "collected", label: "Gerçekleşen tahsilat", type: "money" },
     ],
-    rows: rows.map(row => ({ label: row.label, expected: row.expected, expectedCount: row.expectedCount, collected: row.collected, cashIn: row.cashIn, cashOut: row.cashOut, net: row.net, cumulative: row.cumulative, projected: row.projected })),
+    rows: rows.map(row => ({ label: row.label, expected: row.expected, expectedCount: row.expectedCount, collected: row.collected })),
   };
   return { kind: "nakit-akis", generatedAt: now.toISOString(), granularity, rows, totals, table };
 }

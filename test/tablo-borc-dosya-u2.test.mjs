@@ -8,6 +8,7 @@
 // borç iki kez (Kişiler, Vade Takip, Nakit Akışı) · D5 iki sekmede farklı Kalan · D6 söz kaleminin Açılış Bakiyesi boş (U8) · D7 dosya no'suz satırlar
 // birleşir · D8 taksit "Toplam" / kira bedeli borç sayılır.
 // DEĞİŞTİ (31e kontrol turu 2 A1, 23.10.2026): (2) artık "aynı dosya no farklı sekmelerde AYRI borç ve ayrı kalem + görünür not; tahsilat bir kez" (2.4.3 gibi).
+// 2.4.5 madde 4 (uyarı kapısı): bu dosya tablo takvim motorunu zil / Tahsilat Takvimi / Vade Takip / Projeksiyon uçlarından sınar → 2.4.4 davranışı (legacyTableDues, yalnız testler).
 import assert from "node:assert/strict";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -31,7 +32,7 @@ const RANGE = "from=2000-01-01&to=2099-12-31";
 const matrixOf = sheet => [sheet.columns, ...sheet.rows.map(row => sheet.columns.map(column => row[column] ?? ""))];
 const boot = async root => {
   const clock = createClock({ time: new Date(`${TODAY}T10:00:00`), fixed: true });
-  const server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, now: clock });
+  const server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, now: clock, legacyTableDues: true });
   return { server, api: await server.login() };
 };
 const mustOf = async (label, promise) => {

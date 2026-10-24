@@ -37,6 +37,8 @@ export async function startTestServer(options = {}) {
     // Bu sürümde olmayan banka özelliklerinin gizli ayarlarını değiştiren testler (doğrulama kuralları, Elle Banka Fişi).
     ...(options.bankLater ? { bankLater: true } : {}),
     ...(options.bankPickLegacy ? { bankPickLegacy: true } : {}),
+    // 2.4.5 madde 4: tablonun ödeme kalemlerini zil / Takvim / Vade Takip / Projeksiyon'da gösteren 2.4.4 davranışı (tablo takvim motorunu bu uçlardan sınayan testler).
+    ...(options.legacyTableDues ? { legacyTableDues: true } : {}),
     ...(options.supervisorLink ? { supervisorLink: options.supervisorLink } : {}),
     // Yönetim → Ağ Bağlantısı → Bağlantıyı Dene adresi (vekil sunucu testleri yerel sahte sunucu verir).
     ...(options.networkTestUrl ? { networkTestUrl: options.networkTestUrl } : {}),

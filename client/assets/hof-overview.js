@@ -294,7 +294,7 @@
   // m2 (10.10.2026; plan §8.9): "invoice" eksikti — vadeli fatura satırı ekranda ham "invoice", süzgeç seçeneği adsız çiziliyordu. Ad PDF/Excel ile
   // aynı (server/routes/overview.mjs SOURCE_TEXT); "Ödeme Sözü" ve "Son Tarih" yazım düzeninde (m3).
   // 2.3.0 İz 3.3 (plan §8.9; eşleme 301): planlı banka işlemleri "bank" (sunucu SOURCE_TEXT.bank ile aynı ad; yalnız banka rakamını görebilene).
-  const SOURCE_LABELS = { plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa", bank: "Planlı Banka İşlemi", table: "Tablo", promise: "Ödeme Sözü", deadline: "Son Tarih" };
+  const SOURCE_LABELS = { plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa", bank: "Planlı Banka İşlemi", deadline: "Son Tarih" };
   // Satırın kaynak adı (süzgeç seçeneği değil): eski sürümden kalan, hesaba atanmamış ileri tarihli havale / POS (sunucu SOURCE_TEXT.legacy ile aynı
   // ad; PDF ve Excel de böyle yazar). Kasa süzgeciyle gelir; önceden "Kasa" yazıyordu (2.1.0 temel sürüm, küçük düzeltmeler).
   // MM5 (2.4.3): faturasız cari alacağı (carinin bakiyesinden açık taksit ve vadeli fatura düşülünce kalan) Nakit Akışı'nda gecikmiş giriştir.
@@ -306,8 +306,7 @@
     invoice: "Vadeli (açık hesap) satış ve alış faturalarının ödenmemiş kısmı",
     cash: "Kasa'ya ileri tarihle girilen giriş ve çıkışlar (kira, maaş…)",
     bank: "Banka → Hareketler → Planlı İşlemler'deki gerçekleştirilmemiş planlı masraf, faiz, diğer işlem, kart borcu, kredi ve transferler",
-    table: "Excel/Sheets tablolarındaki ödeme günleri (tahsilat takvimiyle aynı kalemler)",
-    promise: "Tablolarda yazılı ödeme sözleri",
+    // 2.4.5 madde 4 (uyarı kapısı): tablonun ödeme günleri ve ödeme sözleri kaynak değildir (sunucu DUE_SOURCES); tablodan yalnız son tarihler.
     deadline: "Tablolardaki son tarihler (sözleşme, sigorta, belge bitişi…); tutarı yoktur",
   };
   const PRESETS_FUTURE = [
@@ -406,7 +405,7 @@
       tab: wanted,
       mizan: { ...mizanRange, type: "", side: "", idle: false, q: "", account: null, data: null },
       vade: { preset: "next30", ...presetRange("next30", today), direction: "", sources: [], q: "", late: true, data: null },
-      flow: { preset: "next30", ...presetRange("next30", today), overdue: false, table: true, group: "", data: null },
+      flow: { preset: "next30", ...presetRange("next30", today), overdue: false, group: "", data: null },
       cheques: { direction: "", status: "open", from: "", to: "", preset: "", data: null },
       table: { data: null },
       all: { report: options.report || "", data: null },
@@ -530,7 +529,7 @@
     const dormant = d.dormant?.length
       ? `<details class="hof-rep-overdue"><summary>${ICONS.warn} Tabloda ödemesi kesilmiş olabilecek ${d.dormant.length} kayıt (son yazılı aydan sonra üst üste boş aylar)</summary><div class="hof-rep-table"><table class="hof-table"><tbody>${d.dormant.map((item, index) => `<tr data-dormant-row="${index}" tabindex="0" title="Kaydı tabloda göster"><td><b>${esc(item.party || "—")}</b><small>${esc(item.detail || "")}</small></td><td>Son ödeme: ${esc(item.lastPaidText || "—")}</td><td class="num">${esc(String(item.emptyMonths))} boş ay</td></tr>`).join("")}</tbody></table></div></details>`
       : "";
-    const tableNote = chosen.has("table") || chosen.has("promise") || chosen.has("deadline") ? " Tablodaki kalemler tahsilat takvimiyle aynı kurala göre okunur; taksit kartı olan kişinin tablodaki ödemeleri kartından gelir (iki kez sayılmaz)." : "";
+    const tableNote = chosen.has("deadline") ? " Tablolardan yalnız tutarsız son tarihler gelir (sözleşme, sigorta, duruşma…); tahsilat ve ödeme kalemleri Taksit, Fatura, Çek / Senet ve Kasa'dan." : "";
     return `${filters}
       ${statTiles([
         { label: "Gecikmiş Tahsilat", html: moneyHtml(t.in.overdue.amount), help: `${t.in.overdue.count} kalem`, tone: t.in.overdue.count ? "is-bad" : "" },
@@ -541,7 +540,7 @@
         d.doubtful?.amount > 0.005 ? { label: "Şüpheli Alacak", html: moneyHtml(d.doubtful.amount), help: `${d.doubtful.accountCount} cari · vade takibinin dışında`, tone: "is-bad" } : null,
         t.noAmount ? { label: "Tutarsız Kalem", value: t.noAmount.toLocaleString("tr-TR"), help: "son tarih ya da tutarı yazılmamış ödeme günü" } : null,
       ])}
-      <div class="hof-rep-table"><table class="hof-table hof-rep-vade"><thead><tr><th>Vade</th><th>Kimden / Kime</th><th>Kaynak</th><th>Açıklama</th><th class="num">Tahsil Edilecek</th><th class="num">Ödenecek</th></tr></thead><tbody>${rows || `<tr><td colspan="6" class="hof-empty">${d.totals.count === 0 && !s.q && !s.direction ? "Bu aralıkta vadesi gelen açık kalem yok. Taksit kartı, çek/senet ya da tablodaki ödeme günleri eklendikçe burada listelenir." : "Bu süzgeçlere uyan açık kalem yok."}</td></tr>`}</tbody></table></div>
+      <div class="hof-rep-table"><table class="hof-table hof-rep-vade"><thead><tr><th>Vade</th><th>Kimden / Kime</th><th>Kaynak</th><th>Açıklama</th><th class="num">Tahsil Edilecek</th><th class="num">Ödenecek</th></tr></thead><tbody>${rows || `<tr><td colspan="6" class="hof-empty">${d.totals.count === 0 && !s.q && !s.direction ? "Bu aralıkta vadesi gelen açık kalem yok. Taksit kartı, çek/senet ya da vadeli fatura eklendikçe burada listelenir." : "Bu süzgeçlere uyan açık kalem yok."}</td></tr>`}</tbody></table></div>
       ${d.rowTotal > d.rows.length ? `<p class="hof-rep-note">Ekranda ilk ${d.rows.length.toLocaleString("tr-TR")} kalem; tamamı (${d.rowTotal.toLocaleString("tr-TR")}) PDF ve Excel'de.</p>` : ""}
       ${dormant}
       <p class="hof-rep-note">Satıra tıklayın: kaynağı açılır (taksit kartı, çek/senet, cari ya da tablodaki kayıt). Tutarlar açık kalanlardır; kısmen ödenmiş taksitte kalan yazılır.${tableNote}</p>`;
@@ -549,11 +548,10 @@
 
   // --- Nakit akışı ---
   function flowView(s) {
-    const params = { from: s.from, to: s.to, overdue: s.overdue ? "1" : "", table: s.table ? "" : "0", group: s.group };
+    const params = { from: s.from, to: s.to, overdue: s.overdue ? "1" : "", group: s.group };
     const filters = `<div class="hof-rep-bar">${rangeBar(s, PRESETS_FUTURE)}${exportButtons(`/api/workspace/overview/nakit-akisi.pdf?${query(params)}`, `/api/workspace/overview/nakit-akisi.xlsx?${query(params)}`, "Nakit Akış")}</div>
       <div class="hof-rep-filters"><select data-field="group" aria-label="Tablo görünümü"><option value="" ${!s.group ? "selected" : ""}>Tek Tek Hareketler</option><option value="day" ${s.group === "day" ? "selected" : ""}>Günlük Toplamlar</option><option value="week" ${s.group === "week" ? "selected" : ""}>Haftalık Toplamlar</option><option value="month" ${s.group === "month" ? "selected" : ""}>Aylık Toplamlar</option></select>
-        <label class="hof-rep-check"><input type="checkbox" data-field="table" ${s.table ? "checked" : ""}> Tablodaki ödeme günlerini ekle</label>
-        <label class="hof-rep-check"><input type="checkbox" data-field="overdue" ${s.overdue ? "checked" : ""}> Vadesi geçmiş (kapanmamış) kalemleri başlangıca ekle</label><span class="hof-rep-hint">Kaynaklar: açık taksitler, portföydeki ve ödenecek çek/senet, Kasa'ya ileri tarihli girilen hareketler${s.table ? ", Excel/Sheets tablolarındaki ödeme günleri ve ödeme sözleri" : ""}.</span></div>`;
+        <label class="hof-rep-check"><input type="checkbox" data-field="overdue" ${s.overdue ? "checked" : ""}> Vadesi geçmiş (kapanmamış) kalemleri başlangıca ekle</label><span class="hof-rep-hint">Kaynaklar: açık taksitler, portföydeki ve ödenecek çek/senet, Kasa'ya ileri tarihli girilen hareketler. Excel/Sheets tablolarındaki tutarlar projeksiyona girmez.</span></div>`;
     if (!s.data) return `${filters}<p class="hof-empty">Projeksiyon hazırlanıyor…</p>`;
     const d = s.data;
     const low = d.lowest;
@@ -712,7 +710,7 @@
       if (tab === "mizan") {
         s.data = s.account ? await HOF.api(`/api/workspace/overview/ekstre?${query({ account: s.account.id, from: s.from, to: s.to })}`) : await HOF.api(`/api/workspace/overview/mizan?${query({ from: s.from, to: s.to, type: s.type, side: s.side, idle: s.idle ? "1" : "", q: s.q, limit: 1000 })}`);
       } else if (tab === "vade") s.data = await HOF.api(`/api/workspace/overview/vade-takip?${query({ ...(s.preset ? { preset: s.preset } : { from: s.from, to: s.to }), direction: s.direction, sources: s.sources.join(","), q: s.q, late: s.late ? "" : "0" })}`);
-      else if (tab === "flow") s.data = await HOF.api(`/api/workspace/overview/nakit-akisi?${query({ from: s.from, to: s.to, overdue: s.overdue ? "1" : "", table: s.table ? "" : "0", group: s.group })}`);
+      else if (tab === "flow") s.data = await HOF.api(`/api/workspace/overview/nakit-akisi?${query({ from: s.from, to: s.to, overdue: s.overdue ? "1" : "", group: s.group })}`);
       else s.data = await HOF.api(`/api/workspace/cheques?${query({ direction: s.direction, status: s.status, from: s.from, to: s.to, limit: 1000 })}`);
     } catch (error) {
       HOF.toastError(error);

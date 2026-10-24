@@ -4,8 +4,8 @@
 //   A. Boş veri: Raporlar sol menüden açılır; Cari ekstre boş durumda ne yapılacağını söyler (Cari'ye / Tablodan cari).
 //   B. Excel yüklenir (okul servisi); arayüzden cariler, taksit kartı, alınan/verilen çek, ileri tarihli kira girilir;
 //      aynı adlı iki cari açılır.
-//   C. Raporlar: mizan = Cari listesi bakiyeleri; ekstre = Cari kartındaki defter; Vade takip = taksit + çek + Kasa +
-//      tablo (takvimle aynı); Nakit akış = bugünkü kasa + beklenenler; Tablo raporları sekmesi taşmadan açılır.
+//   C. Raporlar: mizan = Cari listesi bakiyeleri; ekstre = Cari kartındaki defter; Vade takip = taksit + çek + Kasa (2.4.5 madde 4: tablonun ödeme
+//      kalemleri ve "Tablo" süzgeci yok); Nakit akış = bugünkü kasa + beklenenler (tablo kalemi yok); Tablo raporları sekmesi taşmadan açılır.
 //   D. Yetki: personel Raporlar'ı görmez (API 403); uzman (avukat) Vade takip, Tablo raporları ve (v2.0.10) Tüm raporlar'da yalnız İşlem geçmişi'ni görür.
 import fs, { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -116,8 +116,9 @@ try {
     await page.click(".hof-analysis-result [data-apply]");
     await page.waitForTimeout(1500);
     await page.evaluate(() => document.querySelectorAll(".hof-notice, .hof-toast").forEach(node => node.remove()));
+    // 2.4.5 madde 4 (bilerek değişti): tablonun aylık ücret / söz kalemleri Tahsilat Takvimi'ne girmez (2.4.4'te > 0 kalem).
     const dues = await api("/api/workspace/dues");
-    ok(dues.data.items.length > 0, `tablo takvimi: ${dues.data.items.length} kalem`);
+    ok(!dues.data.items.some(item => !item.source), `tablo takvim kalemi yok (${dues.data.items.length} kalem, hepsi modüllerden)`);
   });
 
   await step("B1b. Excel var, cari yok: Raporlar Cari ekranına yönlendirir (2.0.18: Tablodaki Kişileri Cari Yap ve Tablodan Al kalktı)", async () => {
@@ -209,24 +210,23 @@ try {
     await page.keyboard.press("Enter");
   });
 
-  await step("C2. Vade takip: taksit + çek/senet + ileri tarihli Kasa + tablo; kaynağa git", async () => {
+  await step("C2. Vade takip: taksit + çek/senet + ileri tarihli Kasa (tablo kalemi yok); kaynağa git", async () => {
     await tab("vade");
     await page.waitForSelector(`${modal} .hof-rep-vade tbody tr[data-due-row]`, { timeout: 15000 });
     const data = (await api("/api/workspace/overview/vade-takip?preset=next30")).data;
     const sources = new Set(data.rows.map(row => row.source));
-    ok(["plan", "cheque", "cash", "table"].every(source => sources.has(source)), `kaynaklar: ${[...sources].join(", ")}`);
+    ok(["plan", "cheque", "cash"].every(source => sources.has(source)) && !sources.has("table") && !sources.has("promise"), `kaynaklar: ${[...sources].join(", ")}`);
     const overduePlan = data.rows.find(row => row.source === "plan" && row.state === "overdue");
     ok(overduePlan && overduePlan.amount === 1000, "gecikmiş taksit (20 gün önce) 1.000 başta");
     ok(!data.rows.some(row => row.source === "note"), "45 gün sonraki senet 30 günlük aralıkta yok");
     const inTotal = round(data.rows.filter(row => row.direction === "in" && row.amount !== null).reduce((sum, row) => sum + row.amount, 0));
     ok(data.totals.in.total.amount === inTotal, `tahsil edilecek toplamı satırların toplamı: ${money(inTotal)}`);
     ok(data.totals.out.total.amount === 4800, `ödenecek: kira 4.000 + verilen çek 800 = ${money(data.totals.out.total.amount)}`);
-    // Tablo kalemleri takvimle aynı: takvimdeki her tablo kalemi (gecikmiş, bu ay, 7 gün) raporda aynı tarih, tutar ve
-    // durumla var; "bu ay" kalemi gecikmiş sayılmaz.
-    const calendar = (await api("/api/workspace/dues")).data.items.filter(item => !item.source && item.amount > 0);
-    const open = (await api("/api/workspace/overview/vade-takip?preset=open")).data.rows.filter(row => row.source === "table" || row.source === "promise");
-    ok(calendar.length > 0 && calendar.every(item => open.some(row => row.date === item.due && row.amount === item.amount && (item.state === "month" ? row.state === "month" : item.state === "overdue" ? row.state === "overdue" : true))), `takvimdeki ${calendar.length} tablo kalemi raporda aynı tarih/tutar/durumla (${open.length} tablo satırı)`);
-    ok(open.length === calendar.length, `tablo kalem sayısı takvimle aynı: ${open.length}`);
+    // 2.4.5 madde 4: tablo kalemi ne takvimde ne Vade Takip'te (2.4.4'te ikisi aynı kalemleri gösteriyordu); süzgeçte "Tablo" / "Ödeme Sözü" yok.
+    const calendar = (await api("/api/workspace/dues")).data.items.filter(item => !item.source);
+    const openData = (await api("/api/workspace/overview/vade-takip?preset=open")).data;
+    const open = openData.rows.filter(row => row.source === "table" || row.source === "promise");
+    ok(calendar.length === 0 && open.length === 0 && !openData.allowed.includes("table") && !openData.allowed.includes("promise"), `tablo kalemi yok: takvim ${calendar.length}, Vade Takip ${open.length}; kaynaklar ${openData.allowed.join(", ")}`);
     await shot("vade-takip");
     // Telefonla arama: carinin telefonu çek/senedi, tablodaki telefon tablo kalemini bulur.
     const visibleRows = () => page.$$eval(`${modal} .hof-rep-vade tbody tr[data-due-row]`, nodes => nodes.map(node => node.textContent));
@@ -234,12 +234,6 @@ try {
     await page.press(`${modal} [data-q]`, "Enter");
     await page.waitForFunction(() => { const rows = [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-rep-vade tbody tr[data-due-row]")]; return rows.length === 1 && /Tedarik/.test(rows[0].textContent); }, null, { timeout: 10000 });
     ok(true, "telefonla arama: 0312 555 → yalnız Tedarik Ltd.'nin verilen çeki");
-    const tableRow = data.rows.find(row => (row.source === "table" || row.source === "promise") && row.phone);
-    ok(Boolean(tableRow), `tablo kalemi telefonu taşır: ${tableRow?.party} ${tableRow?.phone}`);
-    await page.fill(`${modal} [data-q]`, tableRow.phone);
-    await page.press(`${modal} [data-q]`, "Enter");
-    await page.waitForFunction(name => { const rows = [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-rep-vade tbody tr[data-due-row]")]; return rows.length > 0 && rows.every(row => row.textContent.includes(name)); }, tableRow.party, { timeout: 10000 });
-    ok((await visibleRows()).every(row => row.includes(tableRow.party)), `telefonla arama: ${tableRow.phone} → ${tableRow.party}`);
     await page.fill(`${modal} [data-q]`, "");
     await page.press(`${modal} [data-q]`, "Enter");
     await page.waitForFunction(() => document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-rep-vade tbody tr[data-due-row]").length > 2, null, { timeout: 10000 });
@@ -249,12 +243,9 @@ try {
     ok(true, "yalnız ödenecek: 2 satır (kira, verilen çek)");
     await page.selectOption(`${modal} [data-field="direction"]`, "");
     await page.waitForFunction(() => document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-rep-vade tbody tr[data-due-row]").length > 2, null, { timeout: 10000 });
-    // Tablo kaynağını kapat: tablo satırları gider.
-    await page.click(`${modal} [data-source="table"]`);
-    await page.waitForFunction(() => ![...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-rep-vade .hof-rep-src")].some(node => node.classList.contains("is-table")), null, { timeout: 10000 });
-    ok(true, "Tablo kaynağı kapatılınca tablo satırları listeden çıkar");
-    await page.click(`${modal} [data-source="table"]`);
-    await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-rep-vade .hof-rep-src")].some(node => node.classList.contains("is-table")), null, { timeout: 10000 });
+    // 2.4.5 madde 4: "Tablo" ve "Ödeme Sözü" süzgeç seçeneği yok; satırlarda tablo kaynağı yok.
+    ok(!(await page.$(`${modal} [data-source="table"]`)) && !(await page.$(`${modal} [data-source="promise"]`)), "Tablo / Ödeme Sözü süzgeç seçeneği yok");
+    ok(!(await page.$(`${modal} .hof-rep-vade .hof-rep-src.is-table, ${modal} .hof-rep-vade .hof-rep-src.is-promise`)), "satırlarda tablo kaynağı yok");
     // Gecikmiş: yalnız vadesi geçenler.
     await page.click(`${modal} .hof-rep [data-preset="late"]`);
     await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-rep-vade tbody tr[data-due-row]")].every(row => row.classList.contains("is-overdue")), null, { timeout: 10000 });
@@ -271,7 +262,7 @@ try {
     await closeTop();
   });
 
-  await step("C3. Nakit akış: bugünkü kasa + beklenenler; tablo kaynağı; aylık toplamlar", async () => {
+  await step("C3. Nakit akış: bugünkü kasa + beklenenler; tablo kalemi yok (2.4.5); aylık toplamlar", async () => {
     await page.waitForSelector(`${modal} .hof-rep [data-tab="flow"]`);
     await tab("flow");
     await page.waitForSelector(`${modal} [data-chart] svg`, { timeout: 15000, state: "attached" });
@@ -280,11 +271,12 @@ try {
     ok(flow.cashToday === overview.cash.balance, `başlangıç = ANLIK DURUM kasası: ${money(flow.cashToday)}`);
     ok(flow.cashToday === round(1500 - 500 + 250), `bugünkü kasa = 1.500 − 500 + 250 = ${money(flow.cashToday)}`);
     const isTable = row => row.source === "table" || row.source === "promise";
-    ok([...flow.rows, ...flow.overdue].some(isTable), "tablodaki ödeme günleri beklenen girişte (bu ayınkiler bugünde, eskiler gecikmişte)");
-    ok(!flow.overdue.some(row => isTable(row) && row.date.slice(0, 7) === TODAY.slice(0, 7) && row.month), "bu ayın tablo kalemi gecikmiş listesinde değil");
+    // 2.4.5 madde 4 (bilerek değişti): tablodaki ödeme günleri ve sözleri projeksiyona girmez; "Tablodaki ödeme günlerini ekle" seçeneği kalktı, eski
+    // istemcinin table=0 parametresi sonucu değiştirmez.
+    ok(![...flow.rows, ...flow.overdue].some(isTable), "tablodaki ödeme günleri projeksiyonda yok");
     const noTable = (await api(`/api/workspace/overview/nakit-akisi?from=${TODAY}&to=${local(30)}&table=0`)).data;
-    ok(![...noTable.rows, ...noTable.overdue].some(isTable), "“Tablodaki ödeme günlerini ekle” kapalı: tablo kalemi yok");
-    ok(round(flow.closing - noTable.closing) === round(flow.rows.filter(isTable).reduce((sum, row) => sum + row.amount, 0)), `tahmini kasa farkı = aralıktaki tablo kalemleri (${money(round(flow.closing - noTable.closing))}; çift sayım yok)`);
+    ok(round(flow.closing) === round(noTable.closing) && flow.rows.length === noTable.rows.length, `table=0 aynı sonuç (${money(flow.closing)})`);
+    ok(!(await page.$(`${modal} [data-field="table"]`)), "“Tablodaki ödeme günlerini ekle” seçeneği yok");
     await page.selectOption(`${modal} [data-field="group"]`, "month");
     await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-rep-table thead")].some(node => /Dönem Sonu Nakit ve Banka/.test(node.textContent)), null, { timeout: 10000 });
     const monthly = (await api(`/api/workspace/overview/nakit-akisi?from=${TODAY}&to=${local(30)}&group=month`)).data;

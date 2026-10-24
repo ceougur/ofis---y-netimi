@@ -2,6 +2,9 @@
 // ne olursa olsun (cari tahsilat ve ödeme, fatura nakit tahsilatı, taksit kartı, kayıt tahsilatı, elle Kasa hareketi) ve Kasa raporuyla AYNI toplamı verir.
 // 2.4.3'te ve aday 7 tabanında (ee047cb) yalnız elle Kasa (cash_entries) ile taksit kartı okunuyordu: carideki 3.000 TL nakit tahsilat Kasa raporunda varken
 // Nakit Akışı'nda "Kasa giriş 0". Sekme / Sayfa süzgeci bunlara uygulanmaz (şirket geneli, 30e).
+// 2.4.5 madde 5 (kullanıcı kararı 23.10.2026, bilerek değişti): Tablodaki Nakit Akışı'nda Kasa giriş / çıkış / Net / Birikimli / Beklenenle Birlikte sütunları
+// KALKTI — tablo tahmini Kasa ile aynı tabloda toplanmaz; Kasa, Kasa raporlarında. Test artık Kasa raporunun aynı kaldığını ve Tablodaki Nakit Akışı'nın hiçbir
+// Sekme / Sayfa seçeneğinde Kasa sütunu, toplamı ya da özet satırı taşımadığını denetler.
 // Beklenen sayılar girilen tutarlardan (ders 5): giriş 3.000 (cari) + 600 (fatura peşini) + 250 (taksit kartı) + 100 (kayıt tahsilatı) + 200 (elle) = 4.150;
 // çıkış 500 (cari ödeme) + 50 (elle) = 550; Banka (Havale/EFT) yoluyla girilen 900 Kasa'da değildir, sayılmaz.
 import assert from "node:assert/strict";
@@ -20,7 +23,7 @@ const trDay = days => {
   return `${pad(date.getDate())}.${pad(date.getMonth() + 1)}.${date.getFullYear()}`;
 };
 
-describe("31b MM6: Tablodaki Nakit Akışı Kasa giriş/çıkış = Kasa raporu (bütün nakit kaynaklar)", () => {
+describe("31b MM6 → 2.4.5 madde 5: Kasa raporu bütün nakit kaynakları sayar; Tablodaki Nakit Akışı'nda Kasa sütunu yok", () => {
   const root = mkdtempSync(path.join(tmpdir(), "nakit-kasa-mm6-"));
   let server;
   let api;
@@ -56,15 +59,19 @@ describe("31b MM6: Tablodaki Nakit Akışı Kasa giriş/çıkış = Kasa raporu 
     rmSync(root, { recursive: true, force: true });
   });
 
-  test("Kasa giriş 4.150 / çıkış 550 (girilen tutarlardan) ve Kasa raporuyla aynı; her Sekme / Sayfa seçeneğinde aynı", async () => {
+  test("Kasa raporu giriş 4.150 / çıkış 550 (girilen tutarlardan); Tablodaki Nakit Akışı her Sekme / Sayfa seçeneğinde Kasa sütunu, toplamı, özeti taşımaz", async () => {
     const kasa = await must("Kasa raporu", api.get(`/api/workspace/cash?${RANGE}&method=cash`));
     assert.deepEqual([kasa.period.in, kasa.period.out], [4150, 550], `Kasa raporu dönem giriş/çıkış (girilen tutarlardan): ${JSON.stringify(kasa.period)}`);
+    const CASH = ["cashIn", "cashOut", "net", "cumulative", "projected"];
     const session = (await must("rapor", api.get("/api/workspace/reports/nakit-akis"))).sessions[0].key;
     for (const query of ["", `&tabs=${encodeURIComponent("Borçlular")}`, `&tabs=${encodeURIComponent("Kira")}`, `&sessions=${encodeURIComponent(session)}`]) {
-      const rep = (await must(`Nakit Akışı ${query}`, api.get(`/api/workspace/reports/nakit-akis?${RANGE}${query}`))).report;
-      assert.deepEqual([rep.totals.cashIn, rep.totals.cashOut], [kasa.period.in, kasa.period.out], `Nakit Akışı${query ? ` (${decodeURIComponent(query)})` : ""}: Kasa giriş ${rep.totals.cashIn} / çıkış ${rep.totals.cashOut}; Kasa raporu ${kasa.period.in} / ${kasa.period.out} olmalı`);
-      assert.equal(rep.totals.net, 3600, "Net = 4.150 − 550");
-      assert.equal(Math.round(rep.table.rows.reduce((sum, row) => sum + row.cashIn, 0) * 100) / 100, rep.totals.cashIn, "satırlar = toplam");
+      const tag = `Nakit Akışı${query ? ` (${decodeURIComponent(query)})` : ""}`;
+      const data = await must(tag, api.get(`/api/workspace/reports/nakit-akis?${RANGE}${query}`));
+      const rep = data.report;
+      assert.deepEqual(rep.table.columns.map(column => column.key), ["label", "expected", "expectedCount", "collected"], `${tag}: kolonlar`);
+      assert.deepEqual(CASH.filter(key => key in rep.totals || rep.table.rows.some(row => key in row) || (rep.table.footer && key in rep.table.footer)), [], `${tag}: Kasa alanı kalmamalı`);
+      assert.deepEqual(data.summary.map(([label]) => label), ["Tablodan Beklenen Tahsilat (Muhasebe Kaydı Değil)", "Gerçekleşen Tahsilat"], `${tag}: özet`);
+      assert.ok(!(rep.notes || []).some(note => /Kasa/.test(note)), `${tag}: Kasa notu kalmamalı: ${JSON.stringify(rep.notes)}`);
     }
   });
 });

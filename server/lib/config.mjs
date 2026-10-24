@@ -105,6 +105,10 @@ export function loadConfig(overrides = {}) {
     // zinciri aynı veride 2.0.26'nın gerçek koduyla birebir karşılaştırır; K1 iade kapanışını bilerek değiştirdiği için o karşılaştırmalar bu
     // kuralla koşar (göçün ve tek kaynağın etkisi ölçülür), K1'in etkisi ayrıca güncel kuralla denetlenir. Üretimde yok (ortam değişkeni yok).
     legacyClosing: typeof overrides.legacyClosing === "function" ? overrides.legacyClosing : null,
+    // 2.4.5 madde 4 (uyarı kapısı): tablonun tutarlı kalemleri (ödeme günü, aidat, ödeme sözü) zile, Tahsilat Takvimi'ne, Vade Takip'e ve Nakit Akış
+    // Projeksiyonu'na girmez. Açıkken 2.4.4 davranışı (tablo takvim motorunu bu uçlardan sınayan eski testler ve eski sürümle karşılaştıran altın testler).
+    // Yalnız programdan (testler); üretimde ve ortam değişkeninde yok.
+    legacyTableDues: overrides.legacyTableDues === true,
     scheduleBackups: overrides.scheduleBackups ?? true,
     // Sunucunun iş saati (v2.1.0; lib/clock.mjs): "bugün" ve iş kayıtlarının zaman damgaları tek kaynaktan. Üretimde gerçek
     // saat; sahte saat yalnız programdan (testler, kabul senaryoları) verilir — ortam değişkeni yok. Şirketler aynı saati paylaşır.

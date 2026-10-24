@@ -6,6 +6,8 @@
 //            aktarım Son Aktarımlar'dan Geri Al ile geri alınır (kartlar, cariler kalkar; tahsilat kayıt kartına döner; Kasa aynı); dönen eski kayıt tahsilatı
 //            İşlem Geçmişi'nde düzeltilmez, silinir; şeritten "önce cari açın" formunda Açılış Bakiyesi boş; yükleme sonrası "aktarılsın mı?" sorusu yok.
 // Senaryo B: Stok → Yeni ürün: "Kasa'ya yansıt" işaretsiz → Kasa değişmez; işaretli → miktar × birim fiyat "Stok ödemesi (alım)".
+// 2.4.5 madde 4 (uyarı kapısı): bu senaryo tablonun ödeme kalemlerini (şerit / zil / takvim) kullanan 2.4.4 yolunu sınar — üründe kapalı; sunucu
+// legacyTableDues (yalnız testler) ile 2.4.4 davranışında açılır. Ürünün kapısı test/e2e/run.mjs "2.4.5 uyarı kapısı" ve test/kapi-uyari-245.test.mjs.
 import fs, { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -21,7 +23,9 @@ const MACHINE = "a1b2c3d4e5f60718293a4b5c6d7e8f90";
 const root = mkdtempSync(path.join(tmpdir(), "destekofis-prova-208-"));
 const excel = path.join(root, "okul-servisi-ornek.xlsx");
 writeFileSync(excel, okulServisiXlsx());
-const common = { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0", HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, license: { enforce: false, machineId: MACHINE } };
+// 2.4.5 madde 4 ile birleşim (aday 1): şerit / takvim pili tablonun ödeme kalemidir — üründe kapalı (uyarı kapısı); bu senaryonun iki evresi de şeridi
+// kullandığı için legacyTableDues (yalnız testler) ikisinde de açık. Kayıt tahsilatı ve Tablodan Aktar anahtarları ikinci evrede ürün varsayılanında (kapalı).
+const common = { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0", HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, license: { enforce: false, machineId: MACHINE }, legacyTableDues: true };
 // Eski sürüm verisi için önce anahtar AÇIK (2.4.4 davranışı) açılır; aynı veriyle üretim varsayılanına (anahtarsız) geçilir.
 let app = createApp({ ...common, legacyCasePayments: true, legacyTableTransfer: true });
 let BASE = `http://127.0.0.1:${(await app.listen(0, "127.0.0.1")).port}`;

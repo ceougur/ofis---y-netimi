@@ -1,0 +1,32 @@
+{
+  "ad": "245-kapi-uyari/e2e-senaryo-225-uyari",
+  "komut": "npm run test:senaryo-225-uyari",
+  "commit": "d2cef7ce21b0776e2767f8fb610c9be8a4159f5d",
+  "dal": "is/kapi-uyari",
+  "kirli": 32,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:47:52.770Z",
+  "sure_sn": 136.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 36,
+    "gecen": 36,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-kapi-uyari/e2e-senaryo-225-uyari.log",
+  "klasor": "/home/user/wt/kapi-uyari",
+  "ham_cikti_sha256": "f38d99c137adbe1baf005a347eaf7502e89c2fc0187ff93ea5ae5b80c63e079b",
+  "ham_cikti_bayt": 3671
+}

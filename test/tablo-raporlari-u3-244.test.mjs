@@ -106,9 +106,10 @@ describe("2.4.4 U3 — Tablo raporları: kendi adı, alt TOPLAM satırı (ekran/
     for (const [key, value] of Object.entries(expected)) assert.equal(r2(table.footer[key]), value, `${tag}: TOPLAM ${key} = satırların toplamı`);
     for (const key of ["days", "cumulative", "projected"]) assert.equal(table.footer[key] ?? null, null, `${tag}: "${key}" toplanmaz`);
     const sum = Object.fromEntries(data.summary.map(([label, value]) => [label, value]));
-    if (data.report.kind === "cari-ekstre") assert.deepEqual([moneyOf(sum["Toplam Borç"]), moneyOf(sum["Toplam Alacak"]), moneyOf(sum.Bakiye)], [expected.borc ?? 0, expected.alacak ?? 0, expected.bakiye], `${tag}: özet = TOPLAM`);
-    if (data.report.kind === "vade-takip") assert.equal(moneyOf(sum["Toplam Tutar"]), expected.amount ?? 0, `${tag}: özet Toplam Tutar = TOPLAM`);
-    if (data.report.kind === "nakit-akis") assert.deepEqual(["Beklenen Tahsilat", "Gerçekleşen Tahsilat", "Kasa Giriş", "Kasa Çıkış", "Net"].map(label => moneyOf(sum[label])), [expected.expected, expected.collected, expected.cashIn, expected.cashOut, expected.net], `${tag}: özet = TOPLAM`);
+    // 2.4.5 madde 5 (bilerek): tablodan gelen tutarın özet adı "(Muhasebe Kaydı Değil)" der; Tablodaki Nakit Akışı'nda Kasa giriş / çıkış / Net yok.
+    if (data.report.kind === "cari-ekstre") assert.deepEqual([moneyOf(sum["Tablodaki Toplam Borç (Muhasebe Kaydı Değil)"]), moneyOf(sum["Toplam Tahsil Edilen"]), moneyOf(sum["Tablodaki Bakiye (Muhasebe Kaydı Değil)"])], [expected.borc ?? 0, expected.alacak ?? 0, expected.bakiye], `${tag}: özet = TOPLAM`);
+    if (data.report.kind === "vade-takip") assert.equal(moneyOf(sum["Tablodaki Toplam Tutar (Muhasebe Kaydı Değil)"]), expected.amount ?? 0, `${tag}: özet Toplam Tutar = TOPLAM`);
+    if (data.report.kind === "nakit-akis") assert.deepEqual(data.summary.map(([label, value]) => [label, moneyOf(value)]), [["Tablodan Beklenen Tahsilat (Muhasebe Kaydı Değil)", expected.expected ?? 0], ["Gerçekleşen Tahsilat", expected.collected ?? 0]], `${tag}: özet = TOPLAM (Kasa satırı yok)`);
   };
 
   test("Tablodaki Kişiler: TOPLAM Borç / Alacak / Bakiye elle hesapla aynı; özet aynı", async () => {
@@ -194,7 +195,7 @@ describe("2.4.4 U3 — Tablo raporları: kendi adı, alt TOPLAM satırı (ekran/
     assert.equal(table.columns.length, 20, `kolon sayısı: ${table.columns.map(column => column.label).join(", ")}`);
     const text = pdfText((await exportOf("cari-ekstre", "pdf", {})).buffer).replace(/\s+/g, " ");
     for (const row of table.rows) for (const key of ["borc", "alacak", "bakiye"]) if (typeof row[key] === "number") assert.ok(text.includes(money(row[key])), `PDF'te tutar bölünmüş: "${money(row[key])}" (${key}, ${row.cari})`);
-    for (const label of ["Cari", "Tarih", "Açıklama", "Kaynak", "Borç", "Alacak", "Bakiye", "Durum"]) assert.ok(text.includes(label), `PDF kolon başlığı bölünmüş: "${label}"`);
+    for (const label of ["Cari", "Tarih", "Açıklama", "Kaynak", "Tablodaki Borç (Muhasebe Kaydı Değil)", "Tahsil Edilen", "Tablodaki Bakiye (Muhasebe Kaydı Değil)", "Durum"]) assert.ok(text.includes(label), `PDF kolon başlığı bölünmüş: "${label}"`);
     assert.match(text, /\d+ özel alan kolonu sayfaya sığmadı \(tamamı Excel'de\)/, "sığmayan özel alan kolonu alt başlıkta");
   });
 
