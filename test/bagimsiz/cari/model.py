@@ -151,7 +151,7 @@ MUTASYONLAR = {
     114: "KS7: faturasız stok Satış İadesi bağsız kapatıcı değil (D1 eski hata sınıfı)",
     115: "KS7: Değersiz Alacak Yaz bağsız kapatıcı değil (D1 eski hata sınıfı)",
     116: "KS7: Şüpheli Alacağa Al da kapatıcı (bakiye değişmediği hâlde borçları kapatır)",
-    117: "KS7: faturasız stok Alış İadesi borç tarafında kapatıcı değil",
+    118: "KS7.1: tedarikçiye nedensiz stok çıkışı ('Stok satışı') alış iadesi gibi bağsız ödeme sayılır",
     110: "K6.5: açılış satırı yokken açılış vadesi kabul edilir (opening-missing yok)",
     111: "K6.5: kapanmış dönemdeki kaydın vade alanları değiştirilebilir",
     112: "K6.5: Mevcut Borç kartlı caride kalem tutarı kart kapsamı düşülmeden Kalan",
@@ -414,7 +414,7 @@ class Model:
                 b += o["tutar"]
         for x in self.kapaticilar.values():  # /3 KS7: satış iadesi / değersiz alacak cari alacağı (−), alış iadesi cari borcu (+); şüpheliye alma bakiyeyi DEĞİŞTİRMEZ
             if x["aktif"] and x["cari"] == cari:
-                b += x["tutar"] if x["tur"] == "alis_iade" else -x["tutar"]
+                b += x["tutar"] if x["tur"] in ("alis_iade", "stok_satis") else -x["tutar"]
         for f in self.faturalar.values():
             if f["cari"] != cari or f["durum"] != "kesildi":
                 continue
@@ -464,6 +464,11 @@ class Model:
                     continue
                 if h["tur"] == "borc" or (h["tur"] == "acilis" and h["yon"] == "borc" and self.mut != 74):
                     oge.append((self._sira_anahtari(h["tarih"], h["seq"], h.get("vade") or None), hn, h["tutar"]))
+        # KS7.1 [BAŞ MİMAR; 2.0.17 kuralı "SATIŞ faturası, elle Borç, stoktan satış ödeme değildir"]: stok formundan açık hesap çıkışı (iade nedeni yok, "Stok satışı") —
+        # tedarikçiye de olsa — carinin YÜKÜMLÜLÜĞÜDÜR (alacak tarafı kuyruğunda); mutant 118: alış iadesi gibi bağsız ödeme sayılır
+        for xn, x in self.kapaticilar.items():
+            if x["aktif"] and x["cari"] == cari and x["tur"] == "stok_satis" and self.mut != 118:
+                oge.append((self._sira_anahtari(x["tarih"], x["seq"]), xn, x["tutar"]))
         oge.sort()
         sira = [ad for _, ad, _ in oge]
         acik = {ad: t for _, ad, t in oge}
@@ -559,8 +564,10 @@ class Model:
         for e in self.evraklar.values():
             if e["durum"] == "ciro" and e["ciroCari"] == cari:
                 havuz += e["tutar"]
-        for x in self.kapaticilar.values():  # KS7 simetriği: faturasız stok Alış İadesi (tedarikçide borç satırı) = bağsız ödeme; mutant 117: kapatmaz
-            if x["aktif"] and x["cari"] == cari and x["tur"] == "alis_iade" and self.mut != 117:
+        for x in self.kapaticilar.values():
+            # KS7 simetriği: AÇIK alış iadesi nedenli ('preturn') stok çıkışı = bağsız ödeme (formda yolu yok — BİLİNEN SINIR, senaryoda yok); KS7.1: nedensiz "Stok satışı"
+            # ödeme DEĞİL (yalnız mutant 118 dünyasında ödeme sayılır)
+            if x["aktif"] and x["cari"] == cari and (x["tur"] == "alis_iade" or (x["tur"] == "stok_satis" and self.mut == 118)):
                 havuz += x["tutar"]
         for ad in sira:
             if ad in fatura_anahtar:
@@ -1292,7 +1299,7 @@ class Model:
     # ───────────────────────── /3 KS7: bağsız kapatıcılar (faturasız stok iadesi, değersiz alacak) ve şüpheli alacak
     def _kapatici(self, a, tur):
         self.kapaticilar[a["id"]] = {"cari": a["cari"], "tur": tur, "tutar": kurus(a["tutar"]), "tarih": a.get("tarih", self.bugun), "seq": self.yeni_seq(), "aktif": True}
-        self.etiketCari[a["cari"]].add("ks7-alis" if tur == "alis_iade" else "ks7")
+        self.etiketCari[a["cari"]].add("ks7")
         self.mizanBilinir = False  # stok iadesi / değersiz alacak yevmiyesi (610 / 153 / 659 / 128) bu kâhinde denetlenmez
         return "ok"
 
@@ -1301,9 +1308,13 @@ class Model:
         return self._kapatici(a, "stok_iade")
 
     def alis_iade(self, a):
-        """KS7 (a) simetriği: faturasız stok Alış İadesi (tedarikçide borç satırı) — borç tarafında bağsız ödeme. ORTAM (yoklama 5): stok çıkışı + reason return + Cari Hesap
-        tedarikçiye borç satırı yazar (açıklaması "Stok satışı"); kâhin bunu alış iadesi sayar — etiket YAYGIN (İNCELE)."""
+        """KS7 (a) simetriği: AÇIK alış iadesi nedenli ('preturn') faturasız stok çıkışı (tedarikçide borç satırı) — borç tarafında bağsız ödeme. KS7.1: formda yolu yok
+        (BİLİNEN SINIR) — kural modelde, senaryoda kullanılmaz."""
         return self._kapatici(a, "alis_iade")
+
+    def stok_satis_hesap(self, a):
+        """KS7.1 [BAŞ MİMAR]: stok formundan açık hesap çıkışı, iade nedeni YOK ("Stok satışı") — tedarikçiye de olsa carinin yükümlülüğü (borçlanır), ödeme değildir."""
+        return self._kapatici(a, "stok_satis")
 
     def supheli_al(self, a):
         """KS7 (b) + PLAN §3.11b/2: Şüpheli Alacağa Al (B 128 / A 120) — cari bakiyesi DEĞİŞMEZ, kapatıcı DEĞİL. Tutar en çok carinin borç bakiyesi."""
@@ -1724,7 +1735,7 @@ class Model:
                 kalan = kalan_cache[h["cari"]].get(hn, h["tutar"])
             etkin = kalan if (self.mut == 112 or not kartlar_c) else max(0, kalan - kapsam)  # takvim / Vade Takip tutarı
             capraz = self.elle_kuyrukta(h["cari"], "borc") and self.elle_kuyrukta(h["cari"], "alacak")
-            et = "AJAN" if self.etiketCari[h["cari"]] & ajan_neden else ("YAYGIN" if kart_odemeli or "ks7-alis" in self.etiketCari[h["cari"]] else "BAŞ MİMAR")
+            et = "AJAN" if self.etiketCari[h["cari"]] & ajan_neden else ("YAYGIN" if kart_odemeli else "BAŞ MİMAR")
             self.d("%s:hareket:%s:kalan" % (k, hn), kalan, et, "S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası)"
                    + (" · KS2: aynı caride iki taraf — elle Alacak karşı taraf yükümlülüğü, mahsup yok" if capraz else ""))
             self.d("%s:hareket:%s:vade" % (k, hn), h["vade"], "BAŞ MİMAR", "K6.2 hareketlerde Vade Tarihi (boş = yok)")
@@ -1775,7 +1786,7 @@ class Model:
             if f["tur"] == "alis" and f["durum"] == "kesildi":
                 acik = self.kuyruk_borc(f["cari"]).get(fad, 0)
                 s1 = self.elle_kuyrukta(f["cari"], "alacak")
-                self.d("%s:fatura:%s:acik" % (k, fad), acik, "YAYGIN" if "ks7-alis" in self.etiketCari[f["cari"]] else ("BAŞ MİMAR" if s1 else "PLAN"),
+                self.d("%s:fatura:%s:acik" % (k, fad), acik, "BAŞ MİMAR" if s1 or "ks7" in self.etiketCari[f["cari"]] else "PLAN",
                        "S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme")
             elif f["durum"] == "kesildi":
                 acik = self.aciklar(f["cari"]).get(fad, 0)

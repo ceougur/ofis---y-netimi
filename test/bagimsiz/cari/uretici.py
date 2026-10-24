@@ -7,7 +7,7 @@
 
 --tur s1 (24.10.2026, 2.4.5 kâhini): iki müşteri (D, E) + bir tedarikçi (S); Açılış Bakiyesi (vadeli/vadesiz, tedarikçide alacak yönlü), satış ve alış
 faturaları, elle Borç / Alacak (Vade Tarihi, Beklenen Ödeme Tarihi; ara sıra kaydın tarihinden önce ya da biçimsiz → 400 beklenir), KS7 bağsız kapatıcılar (faturasız stok
-Satış / Alış İadesi, Şüpheli Alacağa Al + Değersiz Alacak Yaz), bağsız ve faturaya bağlı
+Satış İadesi, Şüpheli Alacağa Al + Değersiz Alacak Yaz) ve KS7.1 tedarikçiye nedensiz stok çıkışı (yükümlülük), bağsız ve faturaya bağlı
 tahsilat / ödeme, bağsız alınan çek + karşılıksız, hareket silme / Silinenler'den geri yükleme, Düzenle (tutar / vade / beklenen), Cari görüntüleme yetkisi
 kaldırılmış kullanıcı (yarı tohumda). UX18 akışından AYRI (rastgele-ux18-<t> değişmez). Ufkun sınır günü (bugün + 7, KS5 dahil) de üretilir.
 
@@ -238,8 +238,8 @@ def uret(tohum, islem):
             adimlar.append({"id": sid, "islem": "tahsilat", "cari": cari, "tutar": tl(rnd.randint(1, acik[f])), "tarih": t, "fatura": f})
         elif op == "stok_iade":
             adimlar.append({"id": sid, "islem": "stok_iade", "cari": musteri, "tutar": tl(rnd.randint(100, 200000)), "tarih": t})
-        elif op == "alis_iade":
-            adimlar.append({"id": sid, "islem": "alis_iade", "cari": "S", "tutar": tl(rnd.randint(100, 150000)), "tarih": t})
+        elif op == "stok_satis_hesap":  # KS7.1: tedarikçiye nedensiz stok çıkışı — yükümlülük (ödeme değil)
+            adimlar.append({"id": sid, "islem": "stok_satis_hesap", "cari": "S", "tutar": tl(rnd.randint(100, 150000)), "tarih": t})
         elif op == "supheli_degersiz":
             x = rnd.randint(1, m.bakiye(musteri))
             adimlar.append({"id": sid, "islem": "supheli_al", "ad": "SP%s" % sid, "cari": musteri, "tutar": tl(x), "tarih": t})
@@ -338,7 +338,7 @@ def uret_s1(tohum, islem):
         silinen = [h for h, x in m.hareketler.items() if not x["aktif"] and x["tur"] in ("tahsilat", "borc", "alacak", "odeme")]
         elle = [h for h, x in m.hareketler.items() if x["aktif"] and x["tur"] in ("borc", "alacak")]
         portfoy = [e for e, x in m.evraklar.items() if x["durum"] == "portfoy"]
-        secenek = [("fatura", 12), ("borc", 14), ("tahsilat", 14), ("alis", 6), ("alacak", 7), ("odeme", 7), ("evrak", 4), ("stok_iade", 4), ("alis_iade", 3)]
+        secenek = [("fatura", 12), ("borc", 14), ("tahsilat", 14), ("alis", 6), ("alacak", 7), ("odeme", 7), ("evrak", 4), ("stok_iade", 4), ("stok_satis_hesap", 3)]
         if m.bakiye(musteri) > 0:
             secenek.append(("supheli_degersiz", 3))  # KS7 (b): Şüpheli Alacağa Al + aynı gün tamamını Değersiz Alacak Yaz (kayıt kapanır — açık kayıt sınırına girmez)
         if acik_s:
@@ -380,8 +380,8 @@ def uret_s1(tohum, islem):
             adimlar.append({"id": sid, "islem": "odeme", "cari": "S", "tutar": tl(rnd.randint(1, acik_a[f])), "tarih": t, "fatura": f})
         elif op == "stok_iade":
             adimlar.append({"id": sid, "islem": "stok_iade", "cari": musteri, "tutar": tl(rnd.randint(100, 200000)), "tarih": t})
-        elif op == "alis_iade":
-            adimlar.append({"id": sid, "islem": "alis_iade", "cari": "S", "tutar": tl(rnd.randint(100, 150000)), "tarih": t})
+        elif op == "stok_satis_hesap":  # KS7.1: tedarikçiye nedensiz stok çıkışı — yükümlülük (ödeme değil)
+            adimlar.append({"id": sid, "islem": "stok_satis_hesap", "cari": "S", "tutar": tl(rnd.randint(100, 150000)), "tarih": t})
         elif op == "supheli_degersiz":
             x = rnd.randint(1, m.bakiye(musteri))
             adimlar.append({"id": sid, "islem": "supheli_al", "ad": "SP%s" % sid, "cari": musteri, "tutar": tl(x), "tarih": t})
