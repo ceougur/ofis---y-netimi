@@ -150,6 +150,51 @@ try {
   ok((await page.$$(`${main} .hof-rc-table tbody tr.is-item`)).length === 0, "kalem satırı yok");
   await page.screenshot({ path: path.join(SHOTS, "02-secenek-kapali.png") });
   for (let index = 0; index < 6 && (await page.$(MODAL)); index += 1) await escClose(page, { step: "kapat" });
+
+  console.log("3b) Raporlar → Cari Ekstre → carinin ekstresi → Ayrıntılı Ekstre (K6d.1)");
+  await page.evaluate(() => window.HOF.overview.openReports("mizan"));
+  await page.waitForSelector(`${TOP} [data-account-row="${deniz.id}"]`, { state: "visible", timeout: 20000 });
+  await page.click(`${TOP} [data-account-row="${deniz.id}"]`);
+  await page.waitForSelector(`${TOP} .hof-rep-crumb [data-open-account]`, { state: "visible", timeout: 20000 });
+  const link = await page.$(`${TOP} .hof-rep-crumb [data-detail-statement]`);
+  ok(link && (await link.innerText()).trim() === "Ayrıntılı Ekstre", "Cari Ekstre sekmesinde \"Ayrıntılı Ekstre\" düğmesi");
+  if (!link) throw new Error("Cari Ekstre sekmesinde Ayrıntılı Ekstre yok — sonraki adımlar koşulamaz");
+  await link.click();
+  await page.waitForSelector(`${TOP} [data-rc-main][aria-busy="false"] .hof-rc-table tbody tr.is-item`, { timeout: 20000 });
+  const fromTab = await page.evaluate(sel => {
+    const node = document.querySelector(sel);
+    const check = node.querySelector('input[type="checkbox"][data-param="items"]');
+    return { title: node.querySelector(".hof-rc-head h3")?.textContent.trim(), checked: check?.checked === true, picker: node.querySelector("[data-account-slot] input")?.value || node.querySelector("[data-account-slot]")?.textContent || "" };
+  }, main);
+  ok(fromTab.title === "Ayrıntılı Cari Ekstre · Deniz Yapı Ltd." && fromTab.checked && /Deniz Yapı/.test(fromTab.picker), `Rapor Merkezi o cari + Fatura Kalemlerini Göster işaretli (${fromTab.title}; işaret ${fromTab.checked})`);
+  await page.screenshot({ path: path.join(SHOTS, "03-cari-ekstre-sekmesinden.png") });
+  for (let index = 0; index < 6 && (await page.$(MODAL)); index += 1) await escClose(page, { step: "kapat" });
+
+  console.log("3c) Tahsilat / ödeme formunda bilgi notu; Kapatılacak Fatura seçilince gizli (kullanıcı kararı \"sadece bilgi notu\")");
+  const entryCount = () => app.store.get("SELECT COUNT(*) AS n FROM account_entries WHERE account_id = ?", deniz.id).n;
+  const entriesBefore = entryCount();
+  const page2 = page;
+  const fifoOf = () => page2.$eval(`${TOP} [data-fifo-note]`, node => (node.hidden ? "" : node.textContent.trim())).catch(() => null);
+  await page2.evaluate(id => window.HOF.accounts.open(id), deniz.id);
+  await page2.waitForSelector(`${TOP} [data-entry="in"]`, { state: "visible" });
+  await page2.click(`${TOP} [data-entry="in"]`);
+  await page2.waitForSelector(`${TOP} select[name="invoiceId"]`, { state: "visible" });
+  await page2.waitForTimeout(150);
+  ok((await fifoOf()) === "Bu tahsilat carinin en eski açık borcundan başlayarak kapatır.", `Otomatik iken not: “${await fifoOf()}”`);
+  const invoiceValue = await page2.$eval(`${TOP} select[name="invoiceId"]`, node => [...node.options].find(option => option.value)?.value || "");
+  await page2.selectOption(`${TOP} select[name="invoiceId"]`, invoiceValue);
+  ok(invoiceValue && (await fifoOf()) === "", "Kapatılacak Fatura seçilince not gizli");
+  await page2.screenshot({ path: path.join(SHOTS, "04-tahsilat-fatura-secili.png") });
+  await page2.selectOption(`${TOP} select[name="invoiceId"]`, "");
+  ok((await fifoOf()) === "Bu tahsilat carinin en eski açık borcundan başlayarak kapatır.", "Otomatik'e dönünce not yeniden görünür");
+  await escClose(page2, { step: "tahsilat formu" });
+  await page2.waitForSelector(`${TOP} [data-entry="out"]`, { state: "visible" });
+  await page2.click(`${TOP} [data-entry="out"]`);
+  await page2.waitForSelector(`${TOP} input[name="amount"]`, { state: "visible" });
+  await page2.waitForTimeout(150);
+  ok((await fifoOf()) === "Bu ödeme carinin en eski açık borcundan başlayarak kapatır.", `ödeme formunda not: “${await fifoOf()}”`);
+  for (let index = 0; index < 6 && (await page2.$(MODAL)); index += 1) await escClose(page2, { step: "kapat" });
+  ok(entryCount() === entriesBefore, `formlar kaydetmeden kapandı (cari hareketi ${entryCount()} = ${entriesBefore})`);
   await page.close();
 
   console.log("4) Finans Raporları yetkisi olmayan: kartta düğme yok");

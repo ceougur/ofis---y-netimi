@@ -469,6 +469,9 @@ try {
     const right = ok(form.title === "Tahsilat" && form.eyebrow.includes(`No ${twin.refNo}`) && form.eyebrow.includes("Ali Veli"), `carinin tahsilat formu: “${form.title}” · “${form.eyebrow}”`);
     ok(amountOf(form.amount) === 2000, `tutar = Kalan: “${form.amount}”`);
     ok(form.note.startsWith("Tahsil Edilecek Borç · "), `not kalemden: “${form.note}”`);
+    // 2.4.5 (kullanıcı kararı "sadece bilgi notu"): pilden açılan tahsilat formunda da en eski açık borç notu.
+    const fifo = await page.$eval(`${TOP} [data-fifo-note]`, node => (node.hidden ? "" : node.textContent.trim())).catch(() => "");
+    ok(fifo === "Bu tahsilat carinin en eski açık borcundan başlayarak kapatır.", `bilgi notu: “${fifo}”`);
     if (!right) {
       await closeAll(page);
       throw new Error("yanlış form açıldı; kaydedilmedi");
