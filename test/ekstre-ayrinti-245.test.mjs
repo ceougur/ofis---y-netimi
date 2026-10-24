@@ -229,9 +229,11 @@ describe("6d K — kâhin senaryosu: Genel Toplam = kâhinin cari bakiyesi, kale
   const kahin = () => {
     const list = path.join(server.dataDir, "..", "yapilan-6d.json");
     // kahin.py yalnız programın kabul ettiği olaylarla (kos.mjs'teki gibi --yapilan).
+    // "-X utf8": Windows'ta borulu stdout yerel kod sayfasıdır (cp1252) — Türkçe ad yazılamaz (CI #870 Windows Node 24 UnicodeEncodeError);
+    // -I ortam değişkenlerini (PYTHONIOENCODING) yok saydığı için kodlama bayrakla verilir.
     return import("node:fs").then(fs => {
       fs.writeFileSync(list, JSON.stringify(yapilan));
-      return JSON.parse(execFileSync(PYTHON, ["-I", KAHIN, SENARYO, "--yapilan", list], { encoding: "utf8" }));
+      return JSON.parse(execFileSync(PYTHON, ["-I", "-X", "utf8", KAHIN, SENARYO, "--yapilan", list], { encoding: "utf8" }));
     });
   };
   const accountsByName = async () => {
