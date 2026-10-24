@@ -1,0 +1,7 @@
+{"sheets":[
+ {"name":"Vergiler","matrix":[["Mükellef","Vergi Türü","Vergi Tutarı","Son Ödeme"],["Ali Veli","KDV","1.500","@d-2"],["Ayşe Kaya","Muhtasar","2.500","@d-3"],["Can Er","Gelir Vergisi","3.500","@d-4"]]},
+ {"name":"Emlak","matrix":[["Ad Soyad","Emlak Vergisi","Son Ödeme"],["Deniz Ak","4.000","@d-2"],["Ece Su","5.000","@d-3"]]},
+ {"name":"KdvListe","matrix":[["Firma","KDV","Vade"],["Fırat Er","600","@d-2"],["Gül Taş","700","@d-3"]]},
+ {"name":"Stopaj","matrix":[["Ad Soyad","Stopaj Tutarı","Son Ödeme"],["Hale Ak","800","@d-2"]]},
+ {"name":"KdvBorcu","matrix":[["Ad Soyad","KDV Borcu","Son Ödeme"],["İlker Su","900","@d-2"]]}
+]}

@@ -1,0 +1,32 @@
+{
+  "ad": "244-esmm/m21-kahin-ebelge-senaryolar",
+  "komut": "python3 test/bagimsiz/ebelge/fark.py --senaryo test/bagimsiz/ebelge/senaryolar --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/kahin-cikti",
+  "commit": "dde4675ab7eb58f8e299cdf00ad57916e964f75e",
+  "dal": "is/esmm",
+  "kirli": 2,
+  "izlenmeyen": 40,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:10:29.898Z",
+  "sure_sn": 9.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 9,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-esmm/m21-kahin-ebelge-senaryolar.log",
+  "klasor": "/home/user/wt/esmm",
+  "ham_cikti_sha256": "d873abb48c9c6ce98b7f72cf0d7fd77fc586ae0d55b75d8c238a2d62ce6f078d",
+  "ham_cikti_bayt": 999
+}

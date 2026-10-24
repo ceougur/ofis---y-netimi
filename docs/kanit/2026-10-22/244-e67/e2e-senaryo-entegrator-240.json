@@ -1,0 +1,32 @@
+{
+  "ad": "244-e67/e2e-senaryo-entegrator-240",
+  "komut": "npm run test:senaryo-entegrator-240",
+  "commit": "ad865f0b04a18da1016904e0b46ffae8d5a989a7",
+  "dal": "is/e67",
+  "kirli": 7,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T21:55:27.115Z",
+  "sure_sn": 87.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 81,
+    "gecen": 81,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-e67/e2e-senaryo-entegrator-240.log",
+  "klasor": "/home/user/wt/e67",
+  "ham_cikti_sha256": "60aa9e6f7d308e80403d0d453d2d984af85daa32549df03fb44548972bce02f0",
+  "ham_cikti_bayt": 8847
+}

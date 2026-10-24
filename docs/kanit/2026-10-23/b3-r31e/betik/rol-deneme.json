@@ -1,0 +1,5 @@
+{"sheets":[
+ {"name":"A","matrix":[["Dosya No","Borçlu","Borçlu TC","Son Ödeme"],["2026/1","Ali Veli","12345678901","@d-2"],["2026/2","Ayşe Kaya","22345678902","@d-3"]]},
+ {"name":"B","matrix":[["Dosya No","Borçlu","Borçlu Sicil","Son Ödeme"],["2026/1","Ali Veli","125478","@d-2"],["2026/2","Ayşe Kaya","225479","@d-3"]]},
+ {"name":"C","matrix":[["Dosya No","Ad Soyad","Alacaklı","Son Ödeme"],["2026/1","Ali Veli","4521","@d-2"],["2026/2","Ayşe Kaya","4522","@d-3"]]}
+]}

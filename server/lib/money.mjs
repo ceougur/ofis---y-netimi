@@ -5,10 +5,25 @@ export function parseAmount(value) {
   if (typeof value === "number") return value;
   let raw = String(value ?? "").trim().replace(/[₺$€\s]|tl|try/gi, "");
   if (!raw) return Number.NaN;
-  if (raw.includes(",")) raw = raw.replace(/\./g, "").replace(",", ".");
+  // 31e N2: virgül ve nokta birlikte, virgül önce ("1,234.56") İngilizce yazımdır → 1234,56 (insight/validators.mjs ile aynı). Türkçe "1.234,56" değişmez.
+  if (raw.includes(",") && raw.includes(".") && raw.lastIndexOf(",") < raw.lastIndexOf(".")) raw = raw.replace(/,/g, "");
+  else if (raw.includes(",")) raw = raw.replace(/\./g, "").replace(",", ".");
   else if (/^-?\d{1,3}(\.\d{3})+$/.test(raw)) raw = raw.replace(/\./g, "");
   return /^-?\d+(\.\d+)?$/.test(raw) ? Number(raw) : Number.NaN;
 }
+
+// İçe alınan SAYI hücresi (JS number; API ile ya da ham okuyan istemciden gelen 12.125): metne Türkçe ondalıkla, binlik ayraçsız çevrilir — tarayıcıdaki Excel
+// okuyucusunun (hof-excel-format.js cellText, "Genel" biçim) ürettiği biçimle aynı ("12,125", "0,005"). Önceden String(12.125) = "12.125" Türkçe binlik yazım sanılıp
+// 12.125 TL 12.125.000 kuruş (12125 TL) okunuyordu (2.4.3'te de). Tam sayı (telefon, kimlik, tarih seri numarası, dosya no) olduğu gibi kalır; DİZGE hücre
+// kullanıcının yazımıdır, dokunulmaz ("12.125" dizgesi Türkçe kuralla 12125 kalır).
+export function cellText(value) {
+  if (typeof value !== "number") return value === null || value === undefined ? "" : String(value);
+  if (!Number.isFinite(value)) return "";
+  if (Number.isInteger(value)) return String(value);
+  return value.toLocaleString("en-US", { useGrouping: false, maximumFractionDigits: 20 }).replace(".", ",");
+}
+/** İçe alınan matrisin (satır × hücre) sayı hücrelerini cellText ile metne çevirir; satır olmayan öğe boş satır olur. */
+export const matrixText = matrix => (Array.isArray(matrix) ? matrix.map(line => (Array.isArray(line) ? line.map(cell => (typeof cell === "number" ? cellText(cell) : cell)) : [])) : []);
 
 // Kuruşa yuvarlama (v2.0.13): ticari kural, yarım kuruş sıfırdan uzağa (1,005 → 1,01; −1,005 → −1,01).
 // Eski `Math.round(v * 100) / 100` ikili kayan nokta yüzünden 1,005'i 1,00, 2,675'i 2,67 yapıyor, eksi yarımları

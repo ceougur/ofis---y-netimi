@@ -1,0 +1,78 @@
+{
+  "ad": "244-u1/kirmizi-e195089-e2e-uiux-b-243",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/uiux-b-243.mjs",
+  "commit": "e195089bb3bab6f4ba4f224e622b11bc83dd17c5",
+  "dal": "HEAD",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T21:57:16.919Z",
+  "sure_sn": 85.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 54,
+    "gecen": 46,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "ipucu: 11111111111 yalnız kimliği bilinmeyen nihai tüketici için (VKN / TCKNŞirkette 10 haneli vergi no, şahısta 11 haneli TC kimlik no. Kimliği bilinmeyen nihai tüketicide 11111111111.Mükellef Sorgula)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kaydetmeden önce uyarı (uyarı çıkmadı, kayıt doğrudan gitti)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Vazgeç: cari açılmadı (3 → 4), form açık, yazılanlar duruyor",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G0 bölümü yarıda kaldı: page.click: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "U1: cari kutusunda \"Nihai Tüketici\" (görülen \"Ayşe Şahin\"; ön koşul: daha eski \"Ayşe Şahin\" 11111111111 — YOK)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ilk kullanımda tek cari açıldı (null)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G bölümü yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "aynı neden iki kez yazılmadı",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "uiux-b-243: 46 geçti, 8 kaldı",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/u1/docs/kanit/2026-10-22/244-u1/kirmizi-e195089-e2e-uiux-b-243.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/u1/u1-eski-e195089",
+  "ham_cikti_sha256": "8d2973382962cc93cb8e319b0570d6c4feead445f2c88192c830c545b1785c2c",
+  "ham_cikti_bayt": 5569
+}

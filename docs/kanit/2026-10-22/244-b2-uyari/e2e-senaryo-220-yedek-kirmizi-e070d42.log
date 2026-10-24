@@ -1,0 +1,39 @@
+
+■ Kurulum: yönetici girer; 001'de 3, 002'de 2 cari
+  ✓ 001: 3 cari, 002: 2 cari
+
+■ Yönetim → Yedekler: açıklama satırı ve Şimdi Yedek Al (Tüm Şirketler)
+  ✓ açıklama: Her şirketin yedeği kendi klasöründe: …/backups/001 - Şirket 1 …/backups/002 - Şirket 2
+  ✓ kolonlar: Şirket, Yedek Dosyası, Tarih, Boyut, İşlemler
+  ✓ Yedekler ekranında Drive yok (bölüm, yazı, ayar kutusu)
+  ✓ Yedek Al seçenekleri: Tüm Şirketler (2) / Yalnız 001 · Şirket 1 (varsayılan Tüm Şirketler)
+  ✓ bildirim: 2 şirketin yedeği alındı; her biri kendi klasöründe.×
+  ✓ Şirket kolonu: 002 · Şirket 2, 001 · Şirket 1
+  ✓ dosya adında kendi şirketinin kodu
+  ✓ diskte: 001 - Şirket 1 (1), 002 - Şirket 2 (1), kökte 0
+  ✓ yedeklerin içi: 001 → 3 cari, 002 → 2 cari (karışma yok)
+
+■ Şimdi Yedek Al → Yalnız 001 · Şirket 1
+  ✓ yalnız 001 yedeklendi (001: 2, 002: 1)
+
+■ 002 yedekten geri yüklenir (onay kod + parola); 001 etkilenmez
+  ✓ 002'ye yedekten sonra bir cari eklendi (3)
+  ✓ pencere: yedek yalnız kendi şirketine yüklenir
+  ✓ bildirim: “002 · Şirket 2” yedekten geri yüklendi. Önceki veri yedeklendi: destekofis-002-2026-10-22T17-09-47-458Z-geri-yukleme-oncesi-002.sqlite×
+  ✓ 002 yedekteki hâline döndü (2 cari)
+  ✓ 001 aynı (3 cari)
+  ✓ geri yükleme öncesi yedek 002'nin klasöründe
+
+■ Fatura: geri yüklenen 002'de tek seferlik numara uyarısı; 001'de yok; Uyarıyı Kapat → bir daha çıkmaz
+  ✗ 002 uyarısı (e-Belge yok → yalnız kâğıt/fiş): 
+  ✗ uyarı düğmeleri: 
+  ✓ 002'de e-Fatura + e-Arşiv açıldı (200)
+  ✗ 002 uyarısı (e-Belge, Test Ortamı): 
+  ✓ 001'in Fatura'sında uyarı yok (geri yüklenmedi)
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-invoices] [data-restore-notice] [data-act=restore-notice-dismiss]')[22m
+
+    at /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/b2-uyari/b2-uyari-eski-e070d42/test/e2e/senaryo-220-yedek.mjs:198:14
+
+Senaryo 2.0.20 (yedek): 19 geçti, 4 kaldı. Ekranlar: test/e2e/artifacts/senaryo-220-yedek

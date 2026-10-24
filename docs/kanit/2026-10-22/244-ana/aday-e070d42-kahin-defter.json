@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-e070d42-kahin-defter",
+  "komut": "npm run test:kahin-defter",
+  "commit": "36762398d4f59510e1630ec38877cc5253072da6",
+  "dal": "aday6",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T17:06:46.198Z",
+  "sure_sn": 4.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "kahin-defter",
+    "toplam": 147,
+    "gecen": 147,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday-e070d42-kahin-defter.log",
+  "klasor": "/home/user/wt/aday6",
+  "ham_cikti_sha256": "31f69d2aac55335ae521d53f30f9a6cecd29a80cc66e40773a7cdf7298c35782",
+  "ham_cikti_bayt": 1295
+}

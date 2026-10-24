@@ -1,0 +1,101 @@
+{
+ "adim": "h-hata-kodlari",
+ "baslik": "Görülen ret / hata kodları (PACKAGE-FAIL, SEND-FAILED, EDM hata kodu, 11048)",
+ "durum": "bilgi",
+ "denetimler": [],
+ "kayit": {
+  "kodlar": [
+   {
+    "yer": "ya A01 gönderim",
+    "code": "integrator-session",
+    "error": "EDM oturumu sona ermiş. Belge TES2026128367439 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "ya A02 gönderim",
+    "code": "integrator-session",
+    "error": "EDM oturumu sona ermiş. Belge TES2026128367438 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "ya A03 gönderim",
+    "code": "integrator-session",
+    "error": "EDM oturumu sona ermiş. Belge TES2026128367441 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "ya A04 gönderim",
+    "code": "integrator-session",
+    "error": "EDM oturumu sona ermiş. Belge TES2026128367440 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "ya A05 gönderim",
+    "code": "integrator-session",
+    "error": "EDM oturumu sona ermiş. Belge TES2026128367442 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "ya A06 gönderim",
+    "code": "integrator-session",
+    "error": "EDM oturumu sona ermiş. Belge TES2026128367443 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "ya A07 gönderim",
+    "code": "integrator-session",
+    "error": "EDM oturumu sona ermiş. Belge TES2026128367444 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "ya A08 gönderim",
+    "code": "integrator-session",
+    "error": "EDM oturumu sona ermiş. Belge TES2026128367445 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "ya A09 gönderim",
+    "code": "integrator-session",
+    "error": "EDM oturumu sona ermiş. Belge TES2026128367446 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "ya A10 gönderim",
+    "code": "integrator-session",
+    "error": "EDM oturumu sona ermiş. Belge TES2026128367447 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "ya A11 gönderim",
+    "code": "integrator-session",
+    "error": "EDM oturumu sona ermiş. Belge TES2026128367448 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "ya A12 gönderim",
+    "code": "integrator-session",
+    "error": "EDM oturumu sona ermiş. Belge TES2026128367449 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "ya A14 gönderim",
+    "code": "integrator-session",
+    "error": "EDM oturumu sona ermiş. Belge TES2026128367451 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "ya A15 gönderim",
+    "code": "integrator-session",
+    "error": "EDM oturumu sona ermiş. Belge TES2026128367452 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "ya A16 gönderim",
+    "code": "integrator-session",
+    "error": "EDM oturumu sona ermiş. Belge TES2026128367453 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "ya A17 gönderim",
+    "code": "integrator-session",
+    "error": "EDM oturumu sona ermiş. Belge TES2026128367454 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "ya A18 gönderim",
+    "code": "integrator-session",
+    "error": "EDM oturumu sona ermiş. Belge TES2026128367455 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "ya A19 gönderim",
+    "code": "integrator-session",
+    "error": "EDM oturumu sona ermiş. Belge TES2026128367456 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   }
+  ],
+  "paketHatasi": "görülmedi"
+ }
+}

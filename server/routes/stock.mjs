@@ -8,7 +8,7 @@ import { randomUUID } from "node:crypto";
 import { STOCK_OPENING_NOTES, mapStockHeaders, parseQty, roundQty, stockLevel } from "../lib/accounts.mjs";
 import { inferRolesByValues, findHeaderRow, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
-import { parseAmount, roundMoney } from "../lib/money.mjs";
+import { matrixText, parseAmount, roundMoney } from "../lib/money.mjs";
 import { bankForm } from "../lib/bank/module-ref.mjs";
 import { posMetaOf } from "../lib/bank/pos.mjs";
 import { canUser } from "../lib/permissions.mjs";
@@ -557,7 +557,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
   router.post("/api/workspace/stock/import/preview", async ({ req, res }) => {
     auth.requirePermission(req, "stock.manage");
     const body = await readJson(req, { limit: 40_000_000 });
-    const matrix = Array.isArray(body.matrix) ? body.matrix : [];
+    const matrix = matrixText(body.matrix); // 31e: sayı hücresi Türkçe ondalık metin (money.mjs cellText)
     const headerAt = findHeaderRow(matrix, { mapper: mapStockHeaders });
     if (headerAt < 0) throw new HttpError(400, "Sayfada başlık satırı bulunamadı.");
     const headers = matrix[headerAt].map(sanitizeCell);
@@ -568,7 +568,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
   router.post("/api/workspace/stock/import", async ({ req, res }) => {
     const user = auth.requirePermission(req, "stock.manage");
     const body = await readJson(req, { limit: 40_000_000 });
-    const matrix = Array.isArray(body.matrix) ? body.matrix : [];
+    const matrix = matrixText(body.matrix); // 31e: sayı hücresi Türkçe ondalık metin (money.mjs cellText)
     const headerAt = Math.max(0, Math.trunc(Number(body.headerAt) || 0));
     const headers = (matrix[headerAt] || []).map(cell => String(cell ?? "").replace(/\s+/g, " ").trim());
     const roles = body.roles && typeof body.roles === "object" ? body.roles : {};

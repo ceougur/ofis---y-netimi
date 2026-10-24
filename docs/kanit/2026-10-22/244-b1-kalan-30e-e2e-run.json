@@ -1,0 +1,32 @@
+{
+  "ad": "244-b1-kalan-30e-e2e-run",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/run.mjs",
+  "commit": "7ecbbe63c40d5d60443a7c76260be4a49e822f4a",
+  "dal": "is/b1-kalan",
+  "kirli": 2,
+  "izlenmeyen": 9,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T18:16:58.895Z",
+  "sure_sn": 188.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "e2e-run",
+    "toplam": 50,
+    "gecen": 50,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-b1-kalan-30e-e2e-run.log",
+  "klasor": "/home/user/wt/b1-kalan",
+  "ham_cikti_sha256": "83c69e73b175c3a467ad8a1cf997b9e8146222d8241b38a7dcb604802d8cff36",
+  "ham_cikti_bayt": 5548
+}

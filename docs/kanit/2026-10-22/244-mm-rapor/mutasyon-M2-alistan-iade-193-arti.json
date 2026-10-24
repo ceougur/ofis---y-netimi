@@ -1,0 +1,48 @@
+{
+  "ad": "244-mm-rapor/mutasyon-M2-alistan-iade-193-arti",
+  "komut": "node --test --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/mm-rapor/mm-rapor-mutasyon/test/stopaj-tevkifat-iade-244.test.mjs",
+  "commit": "ad865f0b04a18da1016904e0b46ffae8d5a989a7",
+  "dal": "is/mm-rapor",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T21:38:13.695Z",
+  "sure_sn": 1.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 4,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 MM3 — Stopaj ve Tevkifat Özeti: iade asıl belgenin tarafında eksi; defter ve KDV Özeti ile aynı › Ekim: satıştan iade karşı tarafın kestiğinde (193) EKSİ, alıştan iade bizim kestiğimizde (360) EKSİ; tevkifatsız ve iptal edilen iade yok",
+      "konum": "test/stopaj-tevkifat-iade-244.test.mjs:125:3",
+      "hata": "alıştan kısmi iade (tevkifat) · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.4 MM3 — Stopaj ve Tevkifat Özeti: iade asıl belgenin tarafında eksi; defter ve KDV Özeti ile aynı › Bu Yıl: özet ve her tarafın TOPLAM satırı (elle hesap)",
+      "konum": "test/stopaj-tevkifat-iade-244.test.mjs:142:3",
+      "hata": "Expected values to be strictly equal: · 4000 !== 2000 (beklenen 2000, gelen 4000)"
+    },
+    {
+      "ad": "2.4.4 MM3 — Stopaj ve Tevkifat Özeti: iade asıl belgenin tarafında eksi; defter ve KDV Özeti ile aynı › defter (193 / 360 hareketi) ve KDV Özeti ile aynı sayı: Eylül, Ekim, Bu Yıl",
+      "konum": "test/stopaj-tevkifat-iade-244.test.mjs:153:3",
+      "hata": "Ekim: Bizden Kesilen Stopaj = 193 borç hareketi · 2000 !== 0 (beklenen 0, gelen 2000)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-mm-rapor/mutasyon-M2-alistan-iade-193-arti.log",
+  "klasor": "/home/user/wt/mm-rapor",
+  "ham_cikti_sha256": "4751b36ce2f509a2a77bcfc1157ff94eb9a36d00c8d8f3c90690cb212386c4be",
+  "ham_cikti_bayt": 5585
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "244-esmm-fis/yeni-esmm-gonderim",
+  "komut": "node --test test/esmm-gonderim-244.test.mjs",
+  "commit": "60a411ff74689ddcabee53d2d7ddde170ab9e4c2",
+  "dal": "is/esmm-fis",
+  "kirli": 3,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T10:51:10.081Z",
+  "sure_sn": 5.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 23,
+    "gecen": 23,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-esmm-fis/yeni-esmm-gonderim.log",
+  "klasor": "/home/user/wt/esmm-fis",
+  "ham_cikti_sha256": "f8d45c786093e9cca6fadc3fcf391b50e0defb7c5f51530d14e38dc2ec8b54b0",
+  "ham_cikti_bayt": 11287
+}

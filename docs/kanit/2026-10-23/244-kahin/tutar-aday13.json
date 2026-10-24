@@ -1,0 +1,32 @@
+{
+  "ad": "244-kahin/tutar-aday13",
+  "komut": "npm run test:kahin-tutar",
+  "commit": "f24bc418ab6c6be211e2d2ee0b829e9d7a62fa03",
+  "dal": "aday13",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T04:41:19.040Z",
+  "sure_sn": 6.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 3559,
+    "gecen": 3559,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/244-kahin/tutar-aday13.log",
+  "klasor": "/home/user/wt/aday13",
+  "ham_cikti_sha256": "79e0717f024de62b20f8187f98e4e6469646d1600c19b928eeb4ddd456717207",
+  "ham_cikti_bayt": 996
+}

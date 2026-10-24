@@ -1,0 +1,32 @@
+{
+  "ad": "v1-v2-kolon-birim",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-220-tahsile-ver-dogrulama.test.mjs test/columns.test.mjs test/fuzz-sections.test.mjs test/heal.test.mjs test/schema-flex.test.mjs test/schema-map.test.mjs test/sections.test.mjs test/table-columns.test.mjs",
+  "commit": "3e04e9b7b9c359585f1eb0d996ccdbb5a8be1b34",
+  "dal": "is/r31e-d",
+  "kirli": 4,
+  "izlenmeyen": 13,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T06:26:15.413Z",
+  "sure_sn": 13.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 73,
+    "gecen": 73,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/v1-v2-kolon-birim.log",
+  "klasor": "/home/user/wt/r31e-d",
+  "ham_cikti_sha256": "5be4cf1022eeef3c45225af4fbd4ebfae0a6f303856272491e2ad9027e5800fe",
+  "ham_cikti_bayt": 25245
+}

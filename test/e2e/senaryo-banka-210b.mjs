@@ -211,26 +211,14 @@ try {
     const cashBefore = await kasa();
     ok(await page.evaluate(() => window.HOF.revealRecord("2026/501")), "kayıt tabloda açıldı");
     await page.waitForFunction(() => window.HOF.selectedCase()?.key === "2026/501", null, { timeout: 8000 });
-    await page.click('.hof-case-actions [data-case-action="payment"]');
-    const form = `${top} .hof-form`;
-    await page.waitForSelector(`${form} input[name="amount"]`, { timeout: 8000 });
-    ok(!(await page.$(`${form} [data-bank-pick]:not([hidden])`)), "Nakit seçiliyken Banka Hesabı görünmez");
-    await page.fill(`${form} input[name="amount"]`, "1.500");
-    await page.selectOption(`${form} select[name="method"]`, "bank");
-    await page.waitForSelector(`${form} [data-bank-pick]:not([hidden]) select[name="bankAccountId"]`, { timeout: 8000 });
-    const options = await page.$$eval(`${form} select[name="bankAccountId"] option`, nodes => nodes.map(node => node.textContent.trim()));
-    // Yargıç B1 (11.10.2026): son seçenek "Hesapsız (Açılıştan Önce)".
-    ok(options[0] === "Hesap Seçin" && options.length === 4 && options[3] === "Hesapsız (Açılıştan Önce)" && !options.some(text => text.includes("Vadeli")), `seçicide iki vadesiz hesap, vadeli yok: ${options.join(" | ")}`);
-    await page.selectOption(`${form} select[name="bankAccountId"]`, "");
-    await page.click(`${form} button[type="submit"]`);
-    await pause(600);
-    const error = await textOf(`${form} .hof-form-error`);
-    ok(has(error, "Banka Hesabı") && (await balances()).z === before.z, `hesap seçilmeden kaydedilmedi: “${error}”`);
-    await page.selectOption(`${form} select[name="bankAccountId"]`, ACC.z.id);
-    await pause(500);
-    await shot("kayit-tahsilati-ziraat");
-    await page.click(`${form} button[type="submit"]`);
-    await page.waitForFunction(() => !document.querySelector('.hof-modal-backdrop.is-visible input[name="amount"]'), null, { timeout: 10000 });
+    // 2.4.4 (E8): kayıt kartında Tahsilat düğmesi yok (CSS ile gizli; eski kodda görünür → kırmızı). Kayıt tahsilatının sunucu yolu değişmedi:
+    // Havale/EFT'de Banka Hesabı seçilmeden kaydedilmez, seçilince o hesaba yazılır — API'den (yanıt kodu + gövde + bakiye; ders 3).
+    ok(!(await page.isVisible('.hof-case-actions [data-case-action="payment"]')), "kayıt kartında Tahsilat düğmesi görünmez (E8)");
+    const pay = body => api.post(`/api/workspace/cases/${encodeURIComponent("2026/501")}/payments`, { amount: "1.500", method: "bank", date: TODAY, caseTitle: "2026/501", ...body });
+    const missing = await pay({ bankAccountId: "" });
+    ok(missing.status === 400 && /Banka Hesabı/.test(JSON.stringify(missing.data)) && (await balances()).z === before.z, `hesap seçilmeden kaydedilmedi: ${missing.status} “${JSON.stringify(missing.data).slice(0, 140)}”`);
+    const saved = await pay({ bankAccountId: ACC.z.id });
+    ok(saved.status === 200, `Ziraat'e kayıt tahsilatı: ${saved.status} ${JSON.stringify(saved.data).slice(0, 140)}`);
     await pause(700);
     await expectDelta(before, { z: 1500 }, "Ziraat +1.500");
     ok((await kasa()) === cashBefore, `Kasa değişmedi (${await kasa()})`);

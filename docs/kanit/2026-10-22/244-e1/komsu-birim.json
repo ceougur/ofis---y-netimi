@@ -1,0 +1,32 @@
+{
+  "ad": "244-e1/komsu-birim",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=2 test/ebelge-240-birim.test.mjs test/ebelge-240-bitis-turu.test.mjs test/ebelge-240-ek-secenekler.test.mjs test/ebelge-240-gorunum.test.mjs test/ebelge-240-kontrol3.test.mjs test/ebelge-242-test-seri.test.mjs test/ebelge-243-gonderim.test.mjs test/ebelge-243.test.mjs test/ebelge-244-gonderim-izi.test.mjs test/ebelge-244-iptal-suresi.test.mjs test/ebelge-244-secilenleri-gonder.test.mjs test/ebelge-uygunluk.test.mjs test/edm-gercek-duzenek.test.mjs test/edm-gercek-sozlesme.test.mjs test/edm-giris-241.test.mjs test/edm-tek-ucus-giris-244.test.mjs test/edoc-uretim.test.mjs test/einvoice-240-resmi-gorunum.test.mjs test/einvoice-240-taslak.test.mjs test/einvoice-edm.test.mjs test/esmm-acik-244.test.mjs test/esmm-edm.test.mjs test/esmm-gizli-241.test.mjs test/esmm-gonderim-244.test.mjs test/esmm-ubl.test.mjs test/geri-yukleme-uyari-244.test.mjs test/gg243-cekirdek-kaynak.test.mjs test/gg243-dar-kontrol-ek.test.mjs test/gg243-dar-kontrol-gonderim.test.mjs test/gg243-dar-kontrol-stok.test.mjs test/gg243-dar2-edm.test.mjs test/gg243-dar2-gonderim.test.mjs test/gg243-dar2-iade-sira.test.mjs test/gg243-dar2-olcek.test.mjs test/gg243-dar3-stok.test.mjs test/gg243-dar3.test.mjs test/gg243-gonderim.test.mjs test/gg243-stok-excel.test.mjs test/goc-244-esmm-gonderim.test.mjs test/goc-244-iptal-suresi.test.mjs test/goc-244-numara-tabani.test.mjs test/kontrol-241.test.mjs test/numara-tekil-244.test.mjs test/soap-sozlesme-nitelik.test.mjs",
+  "commit": "ad865f0b04a18da1016904e0b46ffae8d5a989a7",
+  "dal": "is/e1",
+  "kirli": 4,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T22:06:30.292Z",
+  "sure_sn": 215.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 462,
+    "gecen": 462,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-e1/komsu-birim.log",
+  "klasor": "/home/user/wt/e1",
+  "ham_cikti_sha256": "ebaa346eff64eaff739b3142d4b6414dd7ed8d42aaa97a2954b0e0cf5b4015b5",
+  "ham_cikti_bayt": 169283
+}

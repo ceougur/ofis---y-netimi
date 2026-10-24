@@ -1,0 +1,58 @@
+{
+  "ad": "244-gezinti-g/kirmizi-158d9c0-gg244-esmm",
+  "komut": "node /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/gezinti-g/gezinti-g-eski-158d9c0/test/e2e/gg244-esmm-gonder.mjs",
+  "commit": "158d9c0178695ab205f2022a7878d148d3a26809",
+  "dal": "is/gezinti-g",
+  "kirli": 2,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T17:24:45.001Z",
+  "sure_sn": 68.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 48,
+    "gecen": 43,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "G1 kâğıt makbuzun nedeni formda: \"(satır yok)\" (gizli: true)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G3 onay makbuzda iade demiyor: …Gönderildikten sonra düzenlenemez; yanlışsa iptal ya da iade gerekir. Belge kaydedilir kaydedilmez entegratöre",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "işaret kalkınca açıklamada e-SMM cümlesi yok (pencere kapatılmadan): …örünüm. Logo ve kaşe e-SMM'de yalnız programın PDF'ine basılır; resmî görüntüyü EDM çizer.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "satış, işaretler kapalı: \"(satır yok)\" (gizli: true)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "satış, e-Fatura var e-Arşiv yok, alıcı mükellef değil: \"(satır yok)\"",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-gezinti-g/kirmizi-158d9c0-gg244-esmm.log",
+  "klasor": "/home/user/wt/gezinti-g",
+  "ham_cikti_sha256": "3a096724ebe2c56f6dd0143aa4981dab77b3a5e404ccca45dec46ec95682b6c2",
+  "ham_cikti_bayt": 5212
+}

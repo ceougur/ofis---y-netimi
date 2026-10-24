@@ -1,0 +1,200 @@
+
+■ 1. Boş veri: Personel Raporu → kartlar sıfır, boş liste ipucu, sekmeler
+  ✓ pencere başlığı Personel Raporu
+  ✓ kartlar sıfır: {"salary":"₺0,00","registered":"0","active":"0","left":"0"}
+  ✓ kart adları: Toplam Maaş, Kayıtlı Personel, Aktif Çalışan, Ayrılan Personel
+  ✓ sekmeler Çalışanlar, Ayrılanlar, Performans Özeti (active,left,performance)
+  ✓ boş liste ipucu
+
+■ 2. + Yeni Personel: bütün alanlar insan hızında + Tab, fotoğraf; kayıttan sonra veri tabanı birebir
+[zorla-A] personel formu penceresi: is-visible 1500 ms ertelendi
+  ✗ beklenmeyen hata: page.$eval: Failed to find element matching selector ".hof-modal-backdrop.is-visible:last-of-type .hof-modal-title"
+    at /home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:132:20
+    at async step (/home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:67:5)
+    at async file:///home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:129:3
+
+■ 3. Aynı adlı iki çalışan iki ayrı satır; kartlar sayılarla
+[zorla-A] is-visible geldi
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-staff-modal [data-staff-act="new"]')[22m
+[2m    - locator resolved to <button type="button" class="hof-button" data-staff-act="new" data-requires="staff.manage">+ Yeni Personel</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <input value="" type="text" placeholder="Gün" autocomplete="off" inputmode="numeric" name="usedLeaveDays" id="hof-f-usedLeaveDays-wvhf6"/> from <div data-hof-ui="" class="hof-modal-backdrop">…</div> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <input value="" type="text" placeholder="Gün" autocomplete="off" inputmode="numeric" name="usedLeaveDays" id="hof-f-usedLeaveDays-wvhf6"/> from <div data-hof-ui="" class="hof-modal-backdrop">…</div> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <input value="" type="text" placeholder="Gün" autocomplete="off" inputmode="numeric" name="usedLeaveDays" id="hof-f-usedLeaveDays-wvhf6"/> from <div data-hof-ui="" class="hof-modal-backdrop">…</div> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m      - waiting 500ms[22m
+[2m    54 × waiting for element to be visible, enabled and stable[22m
+[2m       - element is visible, enabled and stable[22m
+[2m       - scrolling into view if needed[22m
+[2m       - done scrolling[22m
+[2m       - <input value="" type="text" placeholder="Gün" autocomplete="off" inputmode="numeric" name="usedLeaveDays" id="hof-f-usedLeaveDays-wvhf6"/> from <div data-hof-ui="" class="hof-modal-backdrop is-visible">…</div> subtree intercepts pointer events[22m
+[2m     - retrying click action[22m
+[2m       - waiting 500ms[22m
+
+    at /home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:169:18
+    at step (/home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:67:11)
+    at /home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:167:9
+
+■ 4. Arama: ad, TC No, görev; uymayan arama ipucu; temizleyince hepsi
+  ✗ beklenmeyen hata: locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-staff-modal [data-q]')[22m
+[2m    - locator resolved to <input value="" data-q="" type="search" autocomplete="off" class="hof-staff-search" aria-label="Personel Ara" placeholder="Ad, görev, telefon ya da TC No ile arayın"/>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <input value="" type="date" placeholder="" name="leaveDate" autocomplete="off" id="hof-f-leaveDate-fsr9w"/> from <div data-hof-ui="" class="hof-modal-backdrop is-visible">…</div> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <input value="" type="date" placeholder="" name="leaveDate" autocomplete="off" id="hof-f-leaveDate-fsr9w"/> from <div data-hof-ui="" class="hof-modal-backdrop is-visible">…</div> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    56 × waiting for element to be visible, enabled and stable[22m
+[2m       - element is visible, enabled and stable[22m
+[2m       - scrolling into view if needed[22m
+[2m       - done scrolling[22m
+[2m       - <input value="" type="date" placeholder="" name="leaveDate" autocomplete="off" id="hof-f-leaveDate-fsr9w"/> from <div data-hof-ui="" class="hof-modal-backdrop is-visible">…</div> subtree intercepts pointer events[22m
+[2m     - retrying click action[22m
+[2m       - waiting 500ms[22m
+
+    at typeInto (/home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:77:15)
+    at /home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:191:11
+    at step (/home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:67:11)
+    at /home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:189:9
+
+■ 5. Kart: yalnız Personel Özeti; Yaş 35; fotoğraf; Evrak/Bordro/CV/İletişim yok
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-staff-modal tr[data-staff-id]:has-text("Ayşe Yılmaz")')[22m
+
+    at /home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:208:16
+    at step (/home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:67:11)
+    at /home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:207:9
+
+■ 6. Düzenle → İşten Ayrılış Tarihi → Ayrılanlar'a geçer; kartlar ve Toplam Maaş; tarih silinince döner
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-staff-card-modal [data-staff-card-act="edit"]')[22m
+
+    at /home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:222:16
+    at step (/home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:67:11)
+    at /home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:221:9
+
+■ 7. Geçersiz TC No: ekranda hata, odak TC No alanında, kayıt yazılmaz
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-staff-modal [data-staff-act="new"]')[22m
+[2m    - locator resolved to <button type="button" class="hof-button" data-staff-act="new" data-requires="staff.manage">+ Yeni Personel</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <input value="" type="text" placeholder="Gün" autocomplete="off" inputmode="numeric" name="usedLeaveDays" id="hof-f-usedLeaveDays-wvhf6"/> from <div data-hof-ui="" class="hof-modal-backdrop is-visible">…</div> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <input value="" type="text" placeholder="Gün" autocomplete="off" inputmode="numeric" name="usedLeaveDays" id="hof-f-usedLeaveDays-wvhf6"/> from <div data-hof-ui="" class="hof-modal-backdrop is-visible">…</div> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    57 × waiting for element to be visible, enabled and stable[22m
+[2m       - element is visible, enabled and stable[22m
+[2m       - scrolling into view if needed[22m
+[2m       - done scrolling[22m
+[2m       - <input value="" type="text" placeholder="Gün" autocomplete="off" inputmode="numeric" name="usedLeaveDays" id="hof-f-usedLeaveDays-wvhf6"/> from <div data-hof-ui="" class="hof-modal-backdrop is-visible">…</div> subtree intercepts pointer events[22m
+[2m     - retrying click action[22m
+[2m       - waiting 500ms[22m
+
+    at /home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:260:16
+    at step (/home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:67:11)
+    at /home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:259:9
+
+■ Performans Özeti sekmesi (yönetici: reports.view) eski özet ile
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-staff-modal [data-staff-tab="performance"]')[22m
+[2m    - locator resolved to <button role="tab" type="button" class="hof-rep-chip " aria-selected="false" data-staff-tab="performance">Performans Özeti</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <input value="" name="iban" type="text" maxlength="34" autocomplete="off" id="hof-f-iban-95jlj" placeholder="TR00 0000 0000 0000 0000 0000 00"/> from <div data-hof-ui="" class="hof-modal-backdrop is-visible">…</div> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <input value="" name="iban" type="text" maxlength="34" autocomplete="off" id="hof-f-iban-95jlj" placeholder="TR00 0000 0000 0000 0000 0000 00"/> from <div data-hof-ui="" class="hof-modal-backdrop is-visible">…</div> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    57 × waiting for element to be visible, enabled and stable[22m
+[2m       - element is visible, enabled and stable[22m
+[2m       - scrolling into view if needed[22m
+[2m       - done scrolling[22m
+[2m       - <input value="" name="iban" type="text" maxlength="34" autocomplete="off" id="hof-f-iban-95jlj" placeholder="TR00 0000 0000 0000 0000 0000 00"/> from <div data-hof-ui="" class="hof-modal-backdrop is-visible">…</div> subtree intercepts pointer events[22m
+[2m     - retrying click action[22m
+[2m       - waiting 500ms[22m
+
+    at /home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:281:16
+    at step (/home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:67:11)
+    at /home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:280:9
+
+■ 8. Yetkisiz kullanıcı: düğme görünmez, API 403; görüntüleme verilince görür, düzenleyemez
+  ✓ personelde Personel Raporu düğmesi görünmez
+  ✓ API 403 (403)
+  ✓ görüntüleme verilince düğme görünür
+  ✗ üç çalışan görünür
+  ✓ + Yeni Personel yok
+  ✓ Performans Özeti sekmesi yok (reports.view yok)
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-staff-modal tr[data-staff-id]')[22m
+
+    at /home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:311:18
+    at async step (/home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:67:5)
+    at async file:///home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:292:3
+
+■ 9. Değişiklik Geçmişi: alan adı var, değer yok
+  ✗ işlem türü ve alan adları görünür
+  ✓ TC, IBAN, maaş, ad, adres, e-posta değeri YOK
+
+■ 10. İleri tarihli ayrılış: bugün Ayrılacak notuyla Çalışanlar'da ve sayılır; ertesi gün kendiliğinden Ayrılanlar'a geçer
+  ✗ beklenmeyen hata: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-staff-modal tr[data-staff-id]:has-text("Kurye")')[22m
+
+    at /home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:336:16
+    at async step (/home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:67:5)
+    at async file:///home/user/wt/ci861/test/e2e/senaryo-personel-244.mjs:331:3
+  ✓ sayfa hatası yok
+
+✗ senaryo-personel-244: 12 geçti, 11 kaldı · depo /home/user/wt/ci861 · ekran görüntüleri /home/user/wt/ci861/test/e2e/artifacts/senaryo-personel-244

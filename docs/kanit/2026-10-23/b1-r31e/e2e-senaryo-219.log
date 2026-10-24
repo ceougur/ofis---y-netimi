@@ -1,0 +1,60 @@
+
+■ Kurulum: yönetici girer, başlangıç tablosu yüklenir
+  ✓ başlangıçta cari yok (boş veri)
+
+■ 1. Cari → Excel / Sheets’ten Yükle → Excel dosyası (müşterinin şikâyeti)
+  ✓ accounts: eşleme penceresi açıldı
+  ✓ kolonlar tanındı: name, phone, group, balance, extra
+  ✓ pencere: 4 satır bulundu; kayda bağlama yazısı yok
+  ✓ sonuç bildirimi: 4 cari açıldı, 2 açılış bakiyesi yazıldı, 2 grup tanımlandı.×
+  ✓ cari listesinde 4 cari (beklenen 4)
+  ✓ aynı adlı iki kişi iki ayrı cari (0532 111 22 33 · 0533 444 55 66)
+  ✓ Ayşe Kaya (0532…) açılış bakiyesi 1250.5 (beklenen 1.250,50)
+  ✓ Can Öztürk açılış bakiyesi 3000 (beklenen 3.000)
+  ✓ Deniz Ak (telefonsuz, bakiyesiz) açıldı, bakiye 0
+  ✓ ek alan kartta: Veli=Hasan Kaya
+  ✓ Cari penceresinde 4 satır görünüyor
+
+■ 2. Aynı Excel ikinci kez (Aynı cari zaten varsa: Atla) → telefonlu kişiler çift açılmaz
+  ✓ accounts: eşleme penceresi açıldı
+  ✓ sonuç bildirimi: 1 cari açıldı. 3 satır atlandı (Bu cari zaten var).×
+  ✓ ikinci yüklemeden sonra 5 cari; Ayşe Kaya 2, Can Öztürk 1 (çift yok)
+  ✓ telefonsuz Deniz Ak kurala göre yeniden açıldı (emin olunamayan satır)
+
+■ 3. Cari → Excel / Sheets’ten Yükle → Google Sheets bağlantısı
+  ✓ accounts: eşleme penceresi açıldı
+  ✓ sonuç bildirimi: 3 cari açıldı, 2 açılış bakiyesi yazıldı.×
+  ✓ cari listesinde 8 cari (beklenen 8)
+  ✓ Emre Yıldız: bakiye 500, telefon 0536 100 20 30
+
+■ 3b. (2.0.22) Tür kolonunda “Müşteri/Tedarikçi” ve tanınmayan değer → Tür Değerleri'nden seçim
+  ✓ accounts: eşleme penceresi açıldı
+  ✓ Tür Değerleri tablosu: Müşteri → customer · Tedarikçi → supplier · Müşteri/Tedarikçi İki Tür Birden → Varsayılan · xyz Tanınmadı → Varsayılan
+  ✓ tek türü açık yazan değerler kendi türüyle, uyarısız
+  ✓ “Müşteri/Tedarikçi” işaretli (İki Tür Birden), türü seçilmemiş — sessizce Tedarikçi değil
+  ✓ “xyz” işaretli (Tanınmadı)
+  ✓ satır raporunda 2 tür uyarısı (4 satır hazır · 2 uyarı (alınır, raporlanır))
+  ✓ seçim yapılınca o değerin uyarısı kalktı (1 uyarı kaldı: xyz)
+  ✓ sonuç bildirimi: 4 cari açıldı, 4 açılış bakiyesi yazıldı, 1 carinin türü belirsizdi, Müşteri olarak açıldı (satır 5).×
+  ✓ Tür İkisi: supplier, bakiye -100 (seçilen Tedarikçi; açılış alacak)
+  ✓ Tür Garip: customer (varsayılan Müşteri, raporlandı)
+  ✓ açık yazılan tür aynen (Müşteri)
+  ✓ “Tedarikçi” değeri için Varsayılan Tür seçildi → customer (Tür kolonu yoksa: Müşteri)
+
+■ 4. Stok → Excel / Sheets’ten Yükle
+  ✓ stock: eşleme penceresi açıldı
+  ✓ sonuç bildirimi: 2 ürün açıldı, 2 ürüne açılış stoku yazıldı.×
+  ✓ stokta 2 ürün; Çelik Raf 10 Adet
+
+■ 5. Taksitler → Excel / Sheets’ten Yükle
+  ✓ plans: eşleme penceresi açıldı
+  ✓ sonuç bildirimi: 2 kart oluşturuldu. Yanlışsa Tablodan aktar → Son aktarımlar’dan geri alınır.×
+  ✓ 2 taksit kartı; Hakan Çelik toplam 6000, 6 taksit
+
+■ 6. Çek / Senet → Excel / Sheets’ten Yükle
+  ✓ cheques: eşleme penceresi açıldı
+  ✓ sonuç bildirimi: 2 evrak portföye alındı, 1 cariye bağlandı.×
+  ✓ portföyde 2 evrak
+  ✓ sayfada JavaScript hatası yok
+
+Senaryo 2.0.19: 42 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-219

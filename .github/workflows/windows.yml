@@ -52,6 +52,15 @@ jobs:
           name: destekofis-kurulum
           path: dist
 
+      # Ders 30 (2.4.4 E9): kurulan Windows servisi (nssm) bu adımların ortamını ALMAZ (servis-kur.cmd AppEnvironmentExtra), HUKUK_LICENSE_URL
+      # verilemez; program açılıştan 3 sn sonra gerçek lisans servisine deneme atardı (Operatör Merkezi'nde Azure adresli "2.4.5" kaydı =
+      # windows-kurulum.mjs kurulu sürüm + 2). Lisans servisinin adları (server/lib/license.mjs'ten) kurulumdan ÖNCE hosts ile yerel adrese
+      # yönlendirilir ve çözümleme denetlenir; tutmazsa kurulum hiç başlamaz. Ürün kodu ve kurulum betiği değişmez.
+      - name: Lisans servisi bu koşucudan erişilemez (ders 30)
+        run: |
+          node tools/lisans-nobetci.mjs engelle
+          if ($LASTEXITCODE -ne 0) { throw 'Lisans servisi adları yerel adrese yönlendirilemedi; kurulum yapılmaz (ders 30)' }
+
       - name: Sessiz sunucu kurulumu
         run: |
           $setup = Get-ChildItem dist -Filter 'DestekOfis-Kurulum-*.exe' | Select-Object -First 1
@@ -107,6 +116,12 @@ jobs:
           if (-not $login.data.mustChangePassword) { throw 'Zorunlu parola değişimi bekleniyordu' }
           Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5123/api/auth/change-password -ContentType 'application/json' -Body '{"currentPassword":"Ofis2026!","newPassword":"Windows-Testi-2026"}' -WebSession $session | Out-Null
           Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5123/api/admin/users -ContentType 'application/json; charset=utf-8' -Body '{"username":"kalici","name":"Kalıcı Kullanıcı","role":"personel","password":"Kalici-Parola-2026","mustChangePassword":false}' -WebSession $session | Out-Null
+
+      # Lisans nöbetçisi (ders 30): kurulu program kendiliğinden denemeyi yaptı ve AĞ hatasıyla düştü (durum "none"); servise ulaştıysa iş kırmızı.
+      - name: Kurulu program lisans servisine ulaşmadı (ders 30 nöbetçisi)
+        run: |
+          node tools/lisans-nobetci.mjs denetle --adres http://127.0.0.1:5123 --kullanici admin --parola Windows-Testi-2026 --sure 90
+          if ($LASTEXITCODE -ne 0) { throw 'Kurulu program gerçek lisans servisine ulaştı ya da engel kanıtlanamadı (ders 30)' }
 
       # Müşterinin olağan kullanımı: servis ÇALIŞIRKEN Başlat → DestekOfis → "Yedek al" (yedek-al.cmd → bootstrap.mjs yedek).
       # CI 532'de (npm test, Windows) bu komut "disk I/O error" ile düşmüştü; gerçek kurulumda (servis hesabı, klasör izinleri,
@@ -210,3 +225,22 @@ jobs:
         run: |
           robocopy C:\DestekOfis\logs "$env:RUNNER_TEMP\ofis-logs" /B /E /NFL /NDL /NJH /NJS /R:0 /W:0 *> $null; $global:LASTEXITCODE = 0
           Get-ChildItem "$env:RUNNER_TEMP\ofis-logs", C:\HukukOfisiMerkezi\logs -ErrorAction SilentlyContinue | ForEach-Object { "==== $($_.FullName)"; Get-Content $_.FullName -Tail 120 }
+
+      # Lisans nöbetçisi, iş sonu (ders 30): bütün adımlarda (W2–W4 sınama sürümleri, yeniden kurulumlar dahil) programın günlüğünde servise
+      # ulaşan deneme yok; hosts engeli hâlâ yerinde. Günlük okunamazsa sonuç "bilinmiyor" sayılır (ders 4) → kırmızı.
+      - name: Günlüklerde lisans servisine ulaşan deneme yok (ders 30 nöbetçisi)
+        if: always()
+        run: |
+          $dirs = @()
+          foreach ($src in 'C:\DestekOfis\logs', 'C:\HukukOfisiMerkezi\logs') {
+            if (Test-Path $src) {
+              $dst = Join-Path $env:RUNNER_TEMP ("lisans-gunluk-" + (Split-Path (Split-Path $src) -Leaf))
+              robocopy $src $dst /B /E /NFL /NDL /NJH /NJS /R:0 /W:0 *> $null; $global:LASTEXITCODE = 0
+              $dirs += $dst
+            }
+          }
+          node tools/lisans-nobetci.mjs gunluk @dirs
+          $gunluk = $LASTEXITCODE
+          node tools/lisans-nobetci.mjs dogrula
+          $dogrula = $LASTEXITCODE
+          if ($gunluk -ne 0 -or $dogrula -ne 0) { throw "Lisans nöbetçisi: günlük $gunluk, engel $dogrula (ders 30)" }

@@ -1,0 +1,78 @@
+{
+ "dil": "destekofis-ebelge/2",
+ "ad": "hedefli-244-k22-iletim-8-9",
+ "aciklama": "K22 (düzeltildi): iletimden 8. gün dahil iptal; 9. gün İptal Et ve Yalnız Programda İptal reddedilir; geriye tarihli (kesimden 13.) belge iletimden 8. günde iptal edilir (2.4.3 kesimden sayıyordu)",
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi",
+  "K6": "ilsiz_kisi",
+  "K7": "vdsiz_mukellef",
+  "K8": "nihai"
+ },
+ "adimlar": [
+  {
+   "islem": "kaydet",
+   "belge": "B1",
+   "cari": "K1",
+   "tarih": "2026-06-12",
+   "gonder": "simdi",
+   "no": 1
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B2",
+   "cari": "K5",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 2
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B3",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 3
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 8,
+   "no": 4
+  },
+  {
+   "islem": "iptal",
+   "belge": "B1",
+   "no": 5
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 1,
+   "no": 6
+  },
+  {
+   "islem": "iptal",
+   "belge": "B2",
+   "no": 7
+  },
+  {
+   "islem": "iptal",
+   "belge": "B3",
+   "yerel": true,
+   "no": 8
+  },
+  {
+   "islem": "ag",
+   "durum": "var",
+   "no": 9
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 10
+  }
+ ]
+}

@@ -243,6 +243,30 @@ try {
     ok(state.confirm === code, `${label}: onay kutusu “${state.confirm}” (beklenen ${code})`);
     ok(state.password === "" && state.focused, `${label}: parola boş ve odakta`);
     ok(state.trap && state.trapBeforePassword && !state.trapVisible, `${label}: parolanın hemen önünde görünmeyen kullanıcı adı alanı`);
+    if (label.startsWith("Verisini")) {
+      // G6 (madde 30c): kutu yalnız tahsilat makbuzu sayacını siler; fatura/fiş numaralarının baştan başladığı açıklamada yazar. Varsayılan işaretli kalır.
+      const reset = await page.evaluate(() => {
+        const dialog = document.querySelector(".hof-modal-backdrop.is-visible");
+        const box = dialog.querySelector('input[name="resetNumbers"]');
+        const help = box?.getAttribute("aria-describedby") ? document.getElementById(box.getAttribute("aria-describedby")) : null;
+        const submit = dialog.querySelector('button[type="submit"]');
+        return { label: box?.closest("label")?.textContent.replace(/\s+/g, " ").trim() || "", checked: Boolean(box?.checked), text: dialog.textContent.replace(/\s+/g, " "), intro: dialog.querySelector(".hof-modal-text")?.textContent.replace(/\s+/g, " ") || "", help: help?.textContent.replace(/\s+/g, " ").trim() || "", helpAfterBox: Boolean(help && box.closest("label").nextElementSibling === help), submit: submit?.textContent.trim() || "", danger: Boolean(submit?.classList.contains("hof-button-danger")) };
+      });
+      ok(reset.label === "Tahsilat Makbuzu Numaraları da Sıfırlansın" && reset.checked, `${label}: G6 kutu adı “${reset.label}” (işaretli: ${reset.checked})`);
+      const g6 = "Fatura ve fiş numaraları seride baştan başlar; e-Belge gönderdiyseniz yeniden göndermeden önce Fatura Ayarları → Numaralar'dan sıradaki numarayı ileri alın.";
+      ok(reset.text.includes(g6), `${label}: G6 açıklama fatura ve fiş numaralarının baştan başladığını söyler`);
+      // 31f U11: kararın cümlesi kutunun HEMEN ALTINDA (giriş paragrafında değil, tekrar da yok); geri alınamaz eylem kırmızı.
+      ok(reset.help === g6 && reset.helpAfterBox && !reset.intro.includes("Fatura ve fiş numaraları"), `${label}: G6 cümlesi kutunun altında, girişte yok (altta: “${reset.help.slice(0, 60)}”)`);
+      ok(reset.submit === "Veriyi Sıfırla" && reset.danger, `${label}: “${reset.submit}” tehlikeli eylem rengi (hof-button-danger: ${reset.danger})`);
+    }
+    if (label.startsWith("Şirketi Sil")) {
+      // 31f ek (ana oturum kararı): geri alınamaz "Şirketi Sil" de tehlikeli eylem rengi; onay akışı (kod + parola) aynı.
+      const del = await page.evaluate(() => {
+        const submit = document.querySelector(".hof-modal-backdrop.is-visible button[type=\"submit\"]");
+        return { text: submit?.textContent.trim() || "", danger: Boolean(submit?.classList.contains("hof-button-danger")) };
+      });
+      ok(del.text === "Şirketi Sil" && del.danger, `${label}: “${del.text}” tehlikeli eylem rengi (hof-button-danger: ${del.danger})`);
+    }
     if (code === "001" && label.startsWith("Verisini")) await shot("e-sifirla-onay");
     await escClose(page);
     await page.waitForTimeout(300);

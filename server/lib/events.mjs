@@ -13,6 +13,12 @@
 import { randomBytes } from "node:crypto";
 import { SECURITY_HEADERS } from "./http.mjs";
 
+// 2.4.4 (iş listesi 29): bütün şirketleri ilgilendiren (ortak katmanın yönetim uçlarından gelen) olaylar. İstemcideki karşılıkları:
+// permissions → /api/auth/me + düğmeler (hof-workspace.js), users → kullanıcı/sohbet listesi, companies → şirket menüsü (hof-companies.js),
+// license.changed → lisans şeridi (hof-license.js). Şirkete özgü veri olayları (records, accounts, cash, reset…) bu listede YOKTUR.
+export const SHARED_WORKSPACE_KINDS = Object.freeze(["permissions", "users", "companies"]);
+export const isSharedEvent = (event, data) => event === "license.changed" || (event === "workspace.changed" && SHARED_WORKSPACE_KINDS.includes(data?.kind));
+
 export function createEventHub({ log, pingMs = 25_000, maxPerUser = 12, maxTotal = 100, isValid = null, maxAgeMs = 5 * 60_000, replayLimit = 1000, replayMs = 15 * 60_000 } = {}) {
   const clients = new Set();
   const history = []; // { seq, chunk, users, except, at } — yeniden gönderim için son olaylar
@@ -119,7 +125,8 @@ export function createEventHub({ log, pingMs = 25_000, maxPerUser = 12, maxTotal
 
   // users: yalnızca bu kullanıcılara; except: bu kullanıcı hariç herkese.
   // Yayın dinleyicileri (v2.0.7): ör. ANLIK DURUM, para/stok değişikliklerinden sonra herkese (işlemi yapan dahil) tek
-  // "overview.changed" olayı yayımlar. Dinleyici hatası yayını bozmaz.
+  // "overview.changed" olayı yayımlar. Dinleyici hatası yayını bozmaz. 2.4.4: dinleyici yayının hedefini de alır
+  // (listener(event, data, { users, except })) — şirket kanalına köprü (app.mjs) hedefli olayı aynı hedefle iletir.
   const taps = new Set();
   function tap(listener) {
     taps.add(listener);
@@ -128,7 +135,7 @@ export function createEventHub({ log, pingMs = 25_000, maxPerUser = 12, maxTotal
   function publish(event, data, { users = null, except = null } = {}) {
     for (const listener of taps) {
       try {
-        listener(event, data);
+        listener(event, data, { users, except });
       } catch (error) {
         log?.warn?.("Olay dinleyicisi hata verdi.", { error: error.message });
       }
@@ -180,5 +187,5 @@ export function createEventHub({ log, pingMs = 25_000, maxPerUser = 12, maxTotal
     log?.debug?.("Canlı olay kanalı kapatıldı.");
   }
 
-  return { connect, publish, tap, online, closeWhere, stop, size: () => clients.size };
+  return { connect, publish, tap, tapCount: () => taps.size, online, closeWhere, stop, size: () => clients.size };
 }

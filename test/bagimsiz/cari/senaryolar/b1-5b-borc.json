@@ -1,0 +1,215 @@
+{
+ "dil": "destekofis-cari/1",
+ "ad": "b1-5b-borc",
+ "aciklama": "5b: carinin borcu tablodaki kalanı karşılıyorsa mevcut borç taksitlendirilir; azsa aktarılmaz; faturalı ya da seçenek kapalı → yeni borç",
+ "dayanak": "KURALLAR-244 B1 (KULLANICI 22.10 (b), (2), (3); AJAN 5b)",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Taksitler",
+     "tur": "taksit",
+     "kayitlar": [
+      {
+       "no": "K-1",
+       "isim": "Ali Yıl",
+       "tel": "0532 700 00 01",
+       "taksitler": [
+        [
+         "2026-06-01",
+         "1000"
+        ],
+        [
+         "2026-07-01",
+         "1000"
+        ]
+       ]
+      },
+      {
+       "no": "K-2",
+       "isim": "Veli Ak",
+       "tel": "0532 700 00 02",
+       "taksitler": [
+        [
+         "2026-06-01",
+         "1000"
+        ],
+        [
+         "2026-07-01",
+         "1000"
+        ]
+       ]
+      },
+      {
+       "no": "K-3",
+       "isim": "Can Er",
+       "tel": "0532 700 00 03",
+       "taksitler": [
+        [
+         "2026-06-01",
+         "1000"
+        ],
+        [
+         "2026-07-01",
+         "1000"
+        ]
+       ]
+      },
+      {
+       "no": "K-4",
+       "isim": "Deniz Su",
+       "tel": "0532 700 00 04",
+       "taksitler": [
+        [
+         "2026-06-01",
+         "1000"
+        ],
+        [
+         "2026-07-01",
+         "1000"
+        ]
+       ]
+      },
+      {
+       "no": "K-5",
+       "isim": "Eren Taş",
+       "tel": "0532 700 00 05",
+       "taksitler": [
+        [
+         "2026-06-01",
+         "1000"
+        ],
+        [
+         "2026-07-01",
+         "1000"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "c1",
+   "islem": "cari_ac",
+   "ad": "ALI",
+   "isim": "Ali Yıl",
+   "tel": "0532 700 00 01",
+   "kayit": "K-1",
+   "acilis": "2000",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "c2",
+   "islem": "cari_ac",
+   "ad": "VELI",
+   "isim": "Veli Ak",
+   "tel": "0532 700 00 02",
+   "kayit": "K-2"
+  },
+  {
+   "id": "b2",
+   "islem": "borc",
+   "cari": "VELI",
+   "tutar": "500",
+   "tarih": "2026-05-02"
+  },
+  {
+   "id": "c3",
+   "islem": "cari_ac",
+   "ad": "CAN",
+   "isim": "Can Er",
+   "tel": "0532 700 00 03",
+   "kayit": "K-3",
+   "acilis": "3000",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "c4",
+   "islem": "cari_ac",
+   "ad": "DENIZ",
+   "isim": "Deniz Su",
+   "tel": "0532 700 00 04",
+   "kayit": "K-4"
+  },
+  {
+   "id": "f4",
+   "islem": "fatura",
+   "ad": "FD",
+   "cari": "DENIZ",
+   "tutar": "700",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "h4",
+   "islem": "tahsilat",
+   "cari": "DENIZ",
+   "tutar": "300",
+   "tarih": "2026-06-05"
+  },
+  {
+   "id": "c5",
+   "islem": "cari_ac",
+   "ad": "EREN",
+   "isim": "Eren Taş",
+   "tel": "0532 700 00 05",
+   "kayit": "K-5",
+   "acilis": "2000",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "h5",
+   "islem": "tahsilat",
+   "cari": "EREN",
+   "tutar": "500",
+   "tarih": "2026-06-03"
+  },
+  {
+   "id": "k0",
+   "islem": "kontrol"
+  },
+  {
+   "id": "a1",
+   "islem": "aktar",
+   "ad": "AK1",
+   "kayitlar": [
+    "K-1",
+    "K-2",
+    "K-3",
+    "K-4",
+    "K-5"
+   ]
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  },
+  {
+   "id": "g1",
+   "islem": "geri_al",
+   "aktar": "AK1"
+  },
+  {
+   "id": "k2",
+   "islem": "kontrol"
+  },
+  {
+   "id": "a2",
+   "islem": "aktar",
+   "ad": "AK2",
+   "kayitlar": [
+    "K-1",
+    "K-2",
+    "K-3"
+   ],
+   "mevcutBorc": false
+  },
+  {
+   "id": "k3",
+   "islem": "kontrol"
+  }
+ ]
+}

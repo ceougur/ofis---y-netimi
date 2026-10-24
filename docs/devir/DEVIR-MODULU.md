@@ -1,6 +1,8 @@
 # Devir Modülü (Yıl Sonu Devri) — Bilgi Dosyası
 
-Durum: **KARAR BEKLENİYOR.** Yöntem seçilmedi: "bizim yöntem" ya da "Wolvox yöntemi". Satışa yardım eden arkadaş düşünüp kararını
+Uygulama planı (20.10.2026): **`docs/devir/DEVIR-PLANI.md`** — yöntem kararı Wolvox yöntemi (§10); uygulama 2.4.4 sonrası.
+
+Durum (13.10.2026, ESKİ — 20.10.2026 Wolvox yöntemi seçildi, yukarıya bak): **KARAR BEKLENİYOR.** Yöntem seçilmedi: "bizim yöntem" ya da "Wolvox yöntemi". Satışa yardım eden arkadaş düşünüp kararını
 iletecek. Karar gelince plan bu dosyadan kesinleştirilir, sonra uygulanır.
 Hatırlatıcı: 22.10.2026 Perşembe 09:00 TR (trig_01NEGfcTp7hAnHG1tgw6mFAv) — yapıma başlama günü.
 Görsel özet (arkadaşa gönderilen): `DestekOfis-Devir-Plani.png` / `.pdf` (bu klasörde).
@@ -103,3 +105,32 @@ Karar ayrıca: yalnız Kip 1, yalnız Kip 2 ("Wolvox yöntemi") ya da ikisi bird
 - Arşiv yılın yedek/geri yükleme ve güncelleme (göç) davranışı; şirket sınırına sayılmaması.
 - Test: kural gereği eski sürümün gerçek verisiyle, aynı adlı iki cari, ay sonu/yıl dönümü, sahte saat (31.12 → 01.01), iki kişi aynı anda.
 - Kullanım limiti: para çekirdeğine dokunan iş; haftalık sınır sıfırlandıktan sonra başlanır.
+
+## 9. Arkadaşa sorulacaklar — "Wolvox'ta nasıl oluyor?" (20.10.2026)
+Kullanıcı: "arkadaşıma soracağım hususlar Wolvox'ta nasıl oluyor? O da onu biliyor, ona göre olsun ister." Değerlendirme (CLAUDE.md "DEVİR MODÜLÜ → BELGE")
+sonrası açık kalan noktalar; mümkünse her yanıt Wolvox ekran görüntüsüyle.
+- A. Zamanlama ve eski yıl: (1) Devir ne zaman yapılıyor (31.12 / Ocak / beyannameden sonra)? (2) Devirden sonra eski yıla (2026) kayıt girilebiliyor mu?
+  (3) Ocak'ta gelen Aralık tarihli fatura 2026'ya girilince 2027'nin açılışı nasıl düzeliyor — "devir güncelle / yeniden devir" var mı, yapılınca 2027'ye
+  girilmiş kayıtlara ne oluyor? (4) Devri geri alma var mı? (5) Eski yıl nasıl açılıyor (yıl seçimi / şirket listesi), salt okunur mu?
+  (6) Devir sırasında öbür kullanıcılar çalışabiliyor mu, ne kadar sürüyor?
+- B. Muhasebe: (7) 6'lı hesapların kapanışı (690 → 590/591) ve açılış fişi Wolvox'ta otomatik mi, muhasebeci mi yapıyor?
+- C. Cari ve fatura: (8) "Borç ve alacakları aktar"da açık faturalar yeni yıla tek tek mi geliyor, yalnız devir satırı mı? Yeni yılda eski yılın faturasına
+  tahsilat bağlanabiliyor mu? (9) Devir satırının vadesi ne oluyor (yaşlandırma/vade raporu)? (10) Minimum bakiye altı cariler: kart geliyor mu?
+- D. Stok: (11) Müşteriler gerçekte hangi fiyat seçeneğini kullanıyor; "kalan miktar" mı "kümülatif" mi?
+- E. Taksit, çek, banka: (12) Kısmen ödenmiş taksit nasıl geliyor? (13) Ciro edilmiş / bankada tahsildeki çek devirden sonra karşılıksız çıkarsa hangi
+  yılda işleniyor? (14) "Dönemsel valör yükü" ne işe yarıyor?
+- F. e-Belge: (15) Yeni yılda numara baştan mı; Ocak'ta eski yılın faturası iptal edilecekse nerede yapılıyor; Aralık tarihli gelen e-Fatura hangi yıla alınıyor?
+- G. Diğer: (16) Kullanıcılar, yetkiler, ayarlar, notlar, belgeler yeni yıla kopyalanıyor mu? (17) Devir sonunda kontrol raporu veriyor mu?
+  (18) Müşterilerin devirde en çok yaşadığı sorun / şikâyet ne? Kaçta kaçı devir yapıyor?
+
+## 10. Arkadaşın yanıtı (Ahmet Alanlı, 20.10.2026 12:07–12:08, kullanıcı iletti — aynen)
+"devirleri ocakta yapar çoğunluğu ama şubata sarkıtanda oluyor, devirden sonra eski yıla veri giremezler girselerde yeni yıla etki etmez girilmesi eski
+yıla doğru değil, devirden sonra genelde pek bi şikayet olmaz" · "devir yaparkan devir için son işlem tarihi oluyor şubat ayında yada ocak ortasında yapan
+şöyle yapıyor devir için son işlem tarihine atıyorum 31.12.2026 seçiyor ona göre yapıyor"
+
+Çıkarım (baş mimar): devir yeni yıl başında DEĞİL, Ocak–Şubat'ta, Aralık kayıtları tamamlandıktan sonra yapılır; o güne kadar herkes tek dosyada çalışır
+(Ocak kayıtları dahil). Devirde "Son İşlem Tarihi" (31.12.2026) KESİM tarihidir: o tarihe kadarki hareketler yeni yıla açılış/devir olarak, sonrası (Ocak–Şubat)
+hareket olarak yeni yıla geçer (kullanıcı teyidi 20.10.2026: "son işlem tarihi 31.12.2026 seçiliyorsa sonraki işler de yeni yıla kalıyor otomatik olarak"). Devirden sonra eski yıl kilitlenir, "Devri Güncelle" ilk sürümde GEREKMEZ (Wolvox'ta da
+yok); "Devri Geri Al" + zorunlu yedek güvence olarak kalır. Bizdeki karşılığı: "Devir Yap" = dosyayı kesim tarihinden ikiye ayırma — eski yıl: 31.12'ye kadarki
+kayıtlar, salt okunur arşiv; yeni yıl: açılış fişleri (cari, açık fatura kalanları, taksit, çek/senet, kasa, banka, stok, mizan bilanço hesapları) + kesimden
+sonraki bütün hareketler aynen.

@@ -1,0 +1,11 @@
+A) 2 eski seçilmemiş + 3 yeni seçili — soru gönderimden ÖNCE; Vazgeç → hiçbir şey; Ekle → 5 belge sırayla
+  ✓ seçim yokken Seçilenleri Gönder görünmez
+✗ beklenmeyen hata: page.waitForSelector: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible .hof-invoices-modal [data-act="send-selected"]') to be visible[22m
+
+    at /home/user/wt/secilen/test/e2e/gg244-secilenleri-gonder.mjs:124:14
+  ekran görüntüsü: /home/user/wt/secilen/test/e2e/artifacts/gg244-secilenleri-gonder-hata.png
+  ✓ sayfa hatası yok
+
+✗ gg244-secilenleri-gonder: 2 geçti, 1 kaldı

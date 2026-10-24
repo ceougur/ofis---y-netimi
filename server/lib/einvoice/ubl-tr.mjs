@@ -5,7 +5,7 @@
 // e-imza (UBLExtensions içindeki imza) ve GİB zarfı belgeyi gönderen entegratör ya da GİB portalı tarafından eklenir;
 // program imza anahtarı tutmaz. Tutarlar faturanın kendi kuruş hesabından gelir (lib/invoice-math.mjs) — ekranda, PDF'te,
 // defterde ve XML'de aynı sayı.
-import { EXEMPTIONS, exclusiveParts, normalizeExemption } from "../invoice-math.mjs";
+import { EXEMPTIONS, cents, exclusiveParts, normalizeExemption } from "../invoice-math.mjs";
 import { viewReference } from "./gorunum.mjs";
 const NS = {
   invoice: "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2",
@@ -52,13 +52,18 @@ export function tradeNameOf(p) {
   return folded(name) === folded(`${p.firstName || ""} ${p.familyName || ""}`) ? "" : name;
 }
 
-function party(p, { variant }) {
+// Taraf adı (EDM Teknik Operasyon yanıtı, 22.10.2026): tüzel kişide (VKN'li) unvan YALNIZ cac:PartyName'den alınır; şahısta (TCKN'li) ad ve soyad
+// cac:Person FirstName + FamilyName'den. e-SMM düzenleyeni de bu kurala uyar (f57245a / 32e59c0'daki "VKN'li e-SMM düzenleyeninde unvan Person'da" GERİ
+// ALINDI: EDM'nin test ortamı e-SMM şablonu VKN'li düzenleyende unvanı basmaz, canlıda karekod ve görüntü GİB standardında — EDM yanıtı).
+function party(p, { variant, esmm = false }) {
   const id = String(p.taxNo || "").replace(/\s+/g, "");
   const scheme = id.length === 11 ? "TCKN" : "VKN";
   const person = p.partyKind === "person" || id.length === 11;
   const address = [
     "<cac:PostalAddress>",
-    tag("cbc:StreetName", p.address || "-"),
+    // e-SMM: adres EDM'nin e-SMM örneğindeki gibi YALNIZ BuildingName'de (EDM GİB biçiminde caddeSokak'ı ondan doldurur; StreetName de verilirse
+    // resmî PDF'te adres iki kez yazılır — 22.10.2026 gerçek EDM: "Test Cd. 1 Test Cd. 1"). e-Fatura / e-Arşiv StreetName ile (EDM kabul ediyor).
+    esmm ? tag("cbc:BuildingName", p.address || "-") : tag("cbc:StreetName", p.address || "-"),
     tag("cbc:CitySubdivisionName", p.district || p.city || "-"),
     tag("cbc:CityName", p.city || "-"),
     tag("cbc:PostalZone", p.postalCode),
@@ -98,12 +103,63 @@ function party(p, { variant }) {
 const netUnitPrice = (line, includeVat) => (includeVat ? Math.round((exclusiveParts(line, true, 100).baseNet / (Number(line.qty) || 1)) * 10000) / 10000 : Number(line.unitPrice) || 0);
 const discountNet = (line, includeVat) => (includeVat ? exclusiveParts(line, true, 100).discountNet : Number(line.discount) || 0);
 
-function taxCategory(rate, exemptionCode, exemptionLabel, variant) {
+function taxCategory(rate, exemptionCode, exemptionLabel, variant, schemeName = "KDV") {
   if (variant === "peppol") return `<cac:TaxCategory>${tag("cbc:ID", rate > 0 ? "S" : exemptionCode && exemptionCode !== "351" ? "E" : "Z")}${tag("cbc:Percent", rate)}${rate > 0 ? "" : tag("cbc:TaxExemptionReason", exemptionLabel || "Exempt")}<cac:TaxScheme>${tag("cbc:ID", "VAT")}</cac:TaxScheme></cac:TaxCategory>`;
-  return `<cac:TaxCategory>${rate === 0 ? `${tag("cbc:TaxExemptionReasonCode", normalizeExemption(exemptionCode) || "351")}${tag("cbc:TaxExemptionReason", exemptionLabel || "")}` : ""}<cac:TaxScheme>${tag("cbc:Name", "KDV")}${tag("cbc:TaxTypeCode", "0015")}</cac:TaxScheme></cac:TaxCategory>`;
+  return `<cac:TaxCategory>${rate === 0 ? `${tag("cbc:TaxExemptionReasonCode", normalizeExemption(exemptionCode) || "351")}${tag("cbc:TaxExemptionReason", exemptionLabel || "")}` : ""}<cac:TaxScheme>${tag("cbc:Name", schemeName)}${tag("cbc:TaxTypeCode", "0015")}</cac:TaxScheme></cac:TaxCategory>`;
 }
 // İstisna adları tek kaynaktan (invoice-math EXEMPTIONS, GİB kod listesi); eski kayıttaki 308 → 304 (aynı anlam, 13/a).
 const exemptionLabel = code => EXEMPTIONS[normalizeExemption(code)] || "";
+
+// ---------- e-SMM (2.4.4, iş listesi 21) ----------
+// e-SMM'yi GİB UBL-TR profili olarak tanımlamaz (Kod Listeleri v1.43 ProfileID: e-Fatura/e-Arşiv); GİB'in e-SMM veri tanımı e-Arşiv raporudur
+// (e-Arşiv Teknik Kılavuzu V1.19 §3.3.6 serbestMeslekMakbuz: toplamTutar = "vergi hariç toplam tutar", odenecekTutar = "ödenecek tutar",
+// vergiBilgisi/vergi = matrah + vergiKodu + vergiTutari + vergiOrani, tevkifat ayrı). EDM e-SMM'yi UBL olarak (ProfileID ESMM) alır, GİB'e
+// raporu kendisi üretir; UBL'deki anlamlar EDM'nin örnek belgesinden ve Ek_bilgi'sinden (kullanıcının yüklediği EDM belgeleri, 21.10.2026):
+//   LegalMonetaryTotal: LineExtensionAmount = Brüt Ücret, TaxExclusiveAmount = Net Ücret (brüt − GV stopajı), TaxInclusiveAmount = Tahsil Edilen
+//   KDV (KDV − KDV tevkifatı), PayableAmount = Toplam Net Alınan (net ücret + tahsil edilen KDV);
+//   TaxTotal: TaxAmount = KDV; TaxSubtotal 0003 (GV stopajı, CalculationSequenceNumeric 1) + 0015 (KDV, 2) — belge ve kalem düzeyinde;
+//   InvoiceLine: InvoicedQuantity (NIU) = kalemin Net Ücreti, LineExtensionAmount = Brüt, Price = kalemin Net Tahsilatı (EDM'nin e-SMM görünümü bu
+//   alanları böyle okur).
+// Vergi kodları GİB Kod Listeleri v1.43 §1.9: 0003 Gelir Vergisi Stopajı (GV STOPAJI), 0015 Gerçek Usulde KDV (KDV GERCEK). Matrah (TaxableAmount)
+// GİB raporundaki gibi brüt ücrettir (EDM örneğindeki 0 değil). TUTARLAR programın kâğıt SMM hesabından gelir (invoice-math; ekranda, PDF'te, defterde
+// ve cari'de aynı kuruş): stopaj belge toplamından TEK kez hesaplanır (GİB raporunda belge düzeyinde matrah × oran) ve kalemlere aşağıdaki kuralla
+// kuruşu kuruşuna dağıtılır — kalem stopajlarının toplamı belge stopajına eşittir.
+const STOPPAGE_TAX = Object.freeze({ code: "0003", name: "GV STOPAJI" });
+const ESMM_VAT_NAME = "KDV GERCEK";
+/**
+ * Belge stopajının (kuruş) kalemlere dağıtımı — en büyük kalan yöntemi: her kalemin tam payı net × oran; önce kuruşa aşağı yuvarlanır, belge
+ * toplamına kalan kuruşlar kesir kısmı en büyük kalemlerden başlayarak (eşitlikte önceki kalem) birer birer eklenir. Belge stopajı programın
+ * hesabıdır (yuvarlanmış matrah × oran); dağıtım onu DEĞİŞTİRMEZ. Tutarsız girdide (kalan kuruş < 0 ya da > kalem sayısı) hata.
+ * @param {number[]} netsMinor kalem matrahları (kuruş), @param {number} rate stopaj oranı (%; en çok 2 ondalık), @param {number} totalMinor belge stopajı (kuruş)
+ */
+export function stoppageShares(netsMinor, rate, totalMinor) {
+  const bp = Math.round((Number(rate) || 0) * 100);
+  const exact = netsMinor.map(net => Math.round(Number(net) || 0) * bp);
+  const shares = exact.map(value => Math.floor(value / 10000));
+  const rest = Math.round(Number(totalMinor) || 0) - shares.reduce((sum, value) => sum + value, 0);
+  if (rest < 0 || rest > shares.length) throw new Error(`e-SMM stopajı kalemlere dağıtılamadı (belge stopajı ${totalMinor} kuruş, kalem payları toplamı ${shares.reduce((a, b) => a + b, 0)} kuruş).`);
+  const order = exact.map((value, index) => ({ index, remainder: value % 10000 })).sort((a, b) => b.remainder - a.remainder || a.index - b.index);
+  for (const { index } of order.slice(0, rest)) shares[index] += 1;
+  return shares;
+}
+// e-SMM tutarları (belgenin para biriminde, kuruş): programın kayıtlı toplamlarından; GİB kimliği Net Alınan = Net Ücret + Tahsil Edilen KDV
+// denetlenir (tutmazsa belge üretilmez — yanlış tutarlı resmî makbuz gitmesin).
+export function esmmAmounts(doc) {
+  const lines = doc.lines || [];
+  const gross = cents(doc.netTotal);
+  const stoppage = cents(doc.stoppageTotal);
+  const vat = cents(doc.vatTotal);
+  const withheld = cents(doc.withheldTotal);
+  const payable = cents(doc.payableTotal);
+  const nets = lines.map(line => cents(line.net));
+  const sum = values => values.reduce((total, value) => total + value, 0);
+  if (sum(nets) !== gross || sum(lines.map(line => cents(line.vat))) !== vat || sum(lines.map(line => cents(line.withheld))) !== withheld) throw new Error("e-SMM kalem toplamları belge toplamlarıyla tutmuyor; belge üretilmedi.");
+  const netFee = gross - stoppage;
+  const collectedVat = vat - withheld;
+  if (netFee + collectedVat !== payable) throw new Error("e-SMM tutarları tutarsız (Net Alınan ≠ Net Ücret + Tahsil Edilen KDV); belge üretilmedi.");
+  const shares = stoppageShares(nets, doc.stoppageRate, stoppage);
+  return { gross, stoppage, netFee, vat, withheld, collectedVat, payable, shares };
+}
 
 // Ödeme şekli (Wolvox karşılaştırması, kullanıcı kararı 16.10.2026: isteğe bağlı): faturanın peşin satırlarının yolu ve bağlı çek/senet → GİB kod listesi
 // PaymentMeansCodeTypeList (UN/ECE 4461) kodu. Kalan (vadeli) kısım ayrıca açık ödeme olarak yazılır (IBAN varsa 42 + son ödeme tarihi).
@@ -133,6 +189,9 @@ export function buildUbl(doc, { variant = "tr", earchiveEmail = true, xslt = "",
   const lines = doc.lines || [];
   const seller = doc.kind === "purchase" || doc.kind === "sale_return" ? doc.party : doc.seller;
   const buyer = doc.kind === "purchase" || doc.kind === "sale_return" ? doc.seller : doc.party;
+  // e-SMM (ProfileID ESMM): vergi ve dip toplamlar EDM'nin e-SMM anlamıyla (yukarıda); stopaj Not değil, 0003 vergi satırıdır.
+  const esmm = variant !== "peppol" && doc.profile === "ESMM";
+  const smm = esmm ? esmmAmounts(doc) : null;
   // KDV alt toplamı oran + istisna koduna göre (2.4.0 bitiş turu, yargıç Y4): %0'da iki ayrı istisna kodu (ör. 351 ve 301) ayrı satırda; önceden
   // ilk kalemin kodu hepsine yazılıyor, ikincisi kayboluyordu.
   const byRate = new Map();
@@ -154,7 +213,7 @@ export function buildUbl(doc, { variant = "tr", earchiveEmail = true, xslt = "",
   const taxTotal = [...byRate.values()].sort((a, b) => a.rate - b.rate);
   const discountTotal = lines.reduce((sum, line) => sum + discountNet(line, includeVat), 0);
   const lineExtension = lines.reduce((sum, line) => sum + (Number(line.net) || 0), 0);
-  const notes = [doc.amountInWords, doc.note, doc.originalNumber ? `İade edilen fatura: ${doc.originalNumber}` : "", doc.stoppageTotal > 0 ? `Gelir Vergisi Stopajı %${doc.stoppageRate}: ${amount(doc.stoppageTotal)} ${currency}` : "", ...(variant === "peppol" ? [] : extraNotes)].filter(Boolean);
+  const notes = [doc.amountInWords, doc.note, doc.originalNumber ? `İade edilen fatura: ${doc.originalNumber}` : "", doc.stoppageTotal > 0 && !esmm ? `Gelir Vergisi Stopajı %${doc.stoppageRate}: ${amount(doc.stoppageTotal)} ${currency}` : "", ...(variant === "peppol" ? [] : extraNotes)].filter(Boolean);
   const head =
     variant === "peppol"
       ? [tag("cbc:CustomizationID", "urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0"), tag("cbc:ProfileID", "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0"), tag("cbc:ID", doc.number), tag("cbc:IssueDate", doc.issueDate), tag("cbc:DueDate", doc.dueDate || doc.issueDate), tag("cbc:InvoiceTypeCode", doc.typeCode === "IADE" ? "381" : "380"), ...notes.map(note => tag("cbc:Note", note)), tag("cbc:DocumentCurrencyCode", currency), tag("cbc:TaxCurrencyCode", currency === "TRY" ? "" : "TRY")]
@@ -183,7 +242,8 @@ export function buildUbl(doc, { variant = "tr", earchiveEmail = true, xslt = "",
     // e-Arşiv gönderim şekli (GİB e-Arşiv kılavuzu): alıcının e-postası varsa ELEKTRONIK (entegratör e-postayla iletir),
     // yoksa KAGIT (çıktısı verilir).
     // Entegratör Ayarları "e-Arşiv faturasında PDF'i müşteriye e-postayla gönder" kapalıysa KAGIT (çıktısı verilir).
-    variant !== "peppol" && doc.profile === "EARSIVFATURA" ? `<cac:AdditionalDocumentReference>${tag("cbc:ID", buyer?.email && earchiveEmail ? "ELEKTRONIK" : "KAGIT")}${tag("cbc:IssueDate", doc.issueDate)}${tag("cbc:DocumentTypeCode", "SendingType")}${tag("cbc:DocumentType", buyer?.email && earchiveEmail ? "ELEKTRONIK" : "KAGIT")}</cac:AdditionalDocumentReference>` : "",
+    // e-SMM de: GİB e-SMM raporunda gonderimSekli (KAGIT/ELEKTRONIK) zorunludur (e-Arşiv Teknik Kılavuzu V1.19 §3.3.6.2); aynı kural.
+    variant !== "peppol" && (doc.profile === "EARSIVFATURA" || esmm) ? `<cac:AdditionalDocumentReference>${tag("cbc:ID", buyer?.email && earchiveEmail ? "ELEKTRONIK" : "KAGIT")}${tag("cbc:IssueDate", doc.issueDate)}${tag("cbc:DocumentTypeCode", "SendingType")}${tag("cbc:DocumentType", buyer?.email && earchiveEmail ? "ELEKTRONIK" : "KAGIT")}</cac:AdditionalDocumentReference>` : "",
     variant !== "peppol" && xslt ? viewReference({ number: doc.number, issueDate: doc.issueDate, ettn: doc.ettn, xslt }) : "",
     // İmzalayan taraf (UBL-TR'de zorunlu cac:Signature): belgeyi entegratör mali mühürle imzalar; burada imzanın kime ait
     // olduğu ve imzanın yeri (#Signature) bildirilir.
@@ -203,7 +263,16 @@ export function buildUbl(doc, { variant = "tr", earchiveEmail = true, xslt = "",
   }
   const exchange = currency !== "TRY" && variant !== "peppol" ? `<cac:PricingExchangeRate>${tag("cbc:SourceCurrencyCode", currency)}${tag("cbc:TargetCurrencyCode", "TRY")}${tag("cbc:CalculationRate", doc.rate)}${tag("cbc:Date", doc.issueDate)}</cac:PricingExchangeRate>` : "";
   const vatTotal = taxTotal.reduce((sum, item) => sum + item.vat, 0);
-  const tax = `<cac:TaxTotal>${money("cbc:TaxAmount", vatTotal, currency)}${taxTotal
+  const minor = value => value / 100;
+  const stoppageSubtotal = (taxable, stoppage) =>
+    `<cac:TaxSubtotal>${money("cbc:TaxableAmount", taxable, currency)}${money("cbc:TaxAmount", stoppage, currency)}${tag("cbc:CalculationSequenceNumeric", 1)}${tag("cbc:Percent", doc.stoppageRate)}<cac:TaxCategory><cac:TaxScheme>${tag("cbc:Name", STOPPAGE_TAX.name)}${tag("cbc:TaxTypeCode", STOPPAGE_TAX.code)}</cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal>`;
+  const vatSubtotal = (taxable, vat, rate, exemptionCode) =>
+    `<cac:TaxSubtotal>${money("cbc:TaxableAmount", taxable, currency)}${money("cbc:TaxAmount", vat, currency)}${tag("cbc:CalculationSequenceNumeric", 2)}${tag("cbc:Percent", rate)}${taxCategory(rate, exemptionCode, exemptionLabel(exemptionCode), variant, ESMM_VAT_NAME)}</cac:TaxSubtotal>`;
+  // Stopaj oranı 0 (kişi alıcı: stopaj kesilmez) ise 0003 satırı yazılmaz.
+  const withStoppage = esmm && (Number(doc.stoppageRate) > 0 || smm.stoppage > 0);
+  const tax = esmm
+    ? `<cac:TaxTotal>${money("cbc:TaxAmount", minor(smm.vat), currency)}${withStoppage ? stoppageSubtotal(minor(smm.gross), minor(smm.stoppage)) : ""}${taxTotal.map(item => vatSubtotal(item.net, item.vat, item.rate, item.exemptionCode)).join("")}</cac:TaxTotal>`
+    : `<cac:TaxTotal>${money("cbc:TaxAmount", vatTotal, currency)}${taxTotal
     .map(item => `<cac:TaxSubtotal>${money("cbc:TaxableAmount", item.net, currency)}${money("cbc:TaxAmount", item.vat, currency)}${variant === "peppol" ? "" : tag("cbc:Percent", item.rate)}${taxCategory(item.rate, item.exemptionCode, exemptionLabel(item.exemptionCode), variant)}</cac:TaxSubtotal>`)
     .join("")}</cac:TaxTotal>`;
   const withholding =
@@ -213,7 +282,9 @@ export function buildUbl(doc, { variant = "tr", earchiveEmail = true, xslt = "",
           .join("")}</cac:WithholdingTaxTotal>`
       : "";
   const gross = lineExtension + vatTotal;
-  const totals = `<cac:LegalMonetaryTotal>${money("cbc:LineExtensionAmount", lineExtension, currency)}${money("cbc:TaxExclusiveAmount", lineExtension, currency)}${money("cbc:TaxInclusiveAmount", gross, currency)}${discountTotal > 0 && variant !== "peppol" ? money("cbc:AllowanceTotalAmount", discountTotal, currency) : ""}${money("cbc:PayableAmount", variant === "peppol" ? gross : doc.payableTotal, currency)}</cac:LegalMonetaryTotal>`;
+  const totals = esmm
+    ? `<cac:LegalMonetaryTotal>${money("cbc:LineExtensionAmount", minor(smm.gross), currency)}${money("cbc:TaxExclusiveAmount", minor(smm.netFee), currency)}${money("cbc:TaxInclusiveAmount", minor(smm.collectedVat), currency)}${discountTotal > 0 ? money("cbc:AllowanceTotalAmount", discountTotal, currency) : ""}${money("cbc:PayableAmount", minor(smm.payable), currency)}</cac:LegalMonetaryTotal>`
+    : `<cac:LegalMonetaryTotal>${money("cbc:LineExtensionAmount", lineExtension, currency)}${money("cbc:TaxExclusiveAmount", lineExtension, currency)}${money("cbc:TaxInclusiveAmount", gross, currency)}${discountTotal > 0 && variant !== "peppol" ? money("cbc:AllowanceTotalAmount", discountTotal, currency) : ""}${money("cbc:PayableAmount", variant === "peppol" ? gross : doc.payableTotal, currency)}</cac:LegalMonetaryTotal>`;
   const invoiceLines = lines
     .map((line, index) => {
       const price = netUnitPrice(line, includeVat);
@@ -222,6 +293,30 @@ export function buildUbl(doc, { variant = "tr", earchiveEmail = true, xslt = "",
         line.withholdingCode && variant !== "peppol"
           ? `<cac:WithholdingTaxTotal>${money("cbc:TaxAmount", line.withheld, currency)}<cac:TaxSubtotal>${money("cbc:TaxableAmount", line.vat, currency)}${money("cbc:TaxAmount", line.withheld, currency)}${tag("cbc:Percent", percent(line.withholdingNum, line.withholdingDen))}<cac:TaxCategory><cac:TaxScheme>${tag("cbc:Name", "KDV TEVKİFAT")}${tag("cbc:TaxTypeCode", line.withholdingCode)}</cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:WithholdingTaxTotal>`
           : "";
+      if (esmm) {
+        // e-SMM kalemi (EDM düzeni): miktar alanı Net Ücret, fiyat alanı Net Tahsilat taşır; programdaki miktar × birim ücret 1'den farklıysa
+        // kalem notunda kalır (resmî makbuzda kaybolmasın).
+        const share = smm.shares[index];
+        const lineNet = cents(line.net);
+        const netFee = lineNet - share;
+        const collected = cents(line.vat) - cents(line.withheld);
+        const qty = Number(line.qty) || 0;
+        const quantityNote = qty !== 1 ? `Miktar: ${String(qty).replace(".", ",")} ${String(line.unit || "Adet").trim()} × ${priceText(line.unitPrice).replace(".", ",")} ${currency}` : "";
+        return [
+          "<cac:InvoiceLine>",
+          tag("cbc:ID", index + 1),
+          tag("cbc:Note", line.description),
+          tag("cbc:Note", quantityNote),
+          `<cbc:InvoicedQuantity unitCode="NIU">${amount(minor(netFee))}</cbc:InvoicedQuantity>`,
+          money("cbc:LineExtensionAmount", line.net, currency),
+          discount > 0 ? `<cac:AllowanceCharge>${tag("cbc:ChargeIndicator", "false")}${tag("cbc:MultiplierFactorNumeric", (Math.round((discount / ((Number(line.net) || 0) + discount || 1)) * 10000) / 10000).toString())}${money("cbc:Amount", discount, currency)}${money("cbc:BaseAmount", (Number(line.net) || 0) + discount, currency)}</cac:AllowanceCharge>` : "",
+          `<cac:TaxTotal>${money("cbc:TaxAmount", line.vat, currency)}${withStoppage ? stoppageSubtotal(line.net, minor(share)) : ""}${vatSubtotal(line.net, line.vat, line.vatRate, line.exemptionCode)}</cac:TaxTotal>`,
+          lineWithholding,
+          `<cac:Item>${tag("cbc:Name", line.name)}${line.code ? `<cac:SellersItemIdentification>${tag("cbc:ID", line.code)}</cac:SellersItemIdentification>` : ""}</cac:Item>`,
+          `<cac:Price>${money("cbc:PriceAmount", minor(netFee + collected), currency)}</cac:Price>`,
+          "</cac:InvoiceLine>",
+        ].join("");
+      }
       return [
         "<cac:InvoiceLine>",
         tag("cbc:ID", index + 1),
@@ -241,8 +336,8 @@ export function buildUbl(doc, { variant = "tr", earchiveEmail = true, xslt = "",
   const body = [
     ...head,
     ...references,
-    `<cac:AccountingSupplierParty>${party(seller || {}, { variant })}</cac:AccountingSupplierParty>`,
-    `<cac:AccountingCustomerParty>${party(buyer || {}, { variant })}</cac:AccountingCustomerParty>`,
+    `<cac:AccountingSupplierParty>${party(seller || {}, { variant, esmm })}</cac:AccountingSupplierParty>`,
+    `<cac:AccountingCustomerParty>${party(buyer || {}, { variant, esmm })}</cac:AccountingCustomerParty>`,
     payment,
     exchange,
     tax,

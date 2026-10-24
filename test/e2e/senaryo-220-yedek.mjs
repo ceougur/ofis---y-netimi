@@ -2,7 +2,7 @@
 // şirketin yedeği kendi isminde klasör açılıp buna girmeli". Arayüzden, sıfırdan: iki şirket farklı veriyle → Yönetim →
 // Yedekler: açıklama satırı, Şimdi Yedek Al (Tüm Şirketler / Yalnız), Şirket kolonu, diskte klasör ve içerik sayımı;
 // 002'yi Geri Yükle (sayılar döner); yanlış şirketin yedeği reddedilir; Yönetim → Şirketler: Veri ve Yedek Klasörleri;
-// ad değişince klasör de değişir.
+// ad değişince klasör de değişir. 2.4.4 (madde 30b): geri yüklenen 002'nin Fatura'sında tek seferlik numara uyarısı, 001'de yok, kapatılınca çıkmaz.
 // Çalıştırma: node --disable-warning=ExperimentalWarning test/e2e/senaryo-220-yedek.mjs
 import fs, { copyFileSync, existsSync, mkdtempSync, readdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -20,7 +20,7 @@ fs.mkdirSync(OUT, { recursive: true });
 const PASS = "Prova-Admin-2026!";
 const root = mkdtempSync(path.join(tmpdir(), "destekofis-220-"));
 const backupRoot = path.join(root, "backups");
-const app = createApp({ dataDir: path.join(root, "data"), backupDir: backupRoot, logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f95" } });
+const app = createApp({ dataDir: path.join(root, "data"), backupDir: backupRoot, logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f95" }, edocEnabled: true });
 const { port } = await app.listen(0, "127.0.0.1");
 const BASE = `http://127.0.0.1:${port}`;
 const browser = await chromium.launch();
@@ -164,6 +164,51 @@ try {
   ok((await accountsIn(second.id)) === 2, "002 yedekteki hâline döndü (2 cari)");
   ok((await accountsIn("sirket-001")) === 3, "001 aynı (3 cari)");
   ok(files(two).some(name => /geri-yukleme-oncesi-002/.test(name)), "geri yükleme öncesi yedek 002'nin klasöründe");
+
+  // 2.4.4 madde 30b (kullanıcı kararı 22.10.2026): geri yüklemeden sonra Fatura'da TEK SEFERLİK numara uyarısı — yalnız geri yüklenen şirkette (002),
+  // kapatılınca bir daha çıkmaz (sayfa yenilense de). 002 e-Belge kullanmıyor → yalnız kâğıt/fiş cümlesi (EDM cümlesi yok).
+  console.log("\n■ Fatura: geri yüklenen 002'de tek seferlik numara uyarısı; 001'de yok; Uyarıyı Kapat → bir daha çıkmaz");
+  const openInvoices = async companyId => {
+    await api("/api/companies/select", { id: companyId });
+    await page.goto(`${BASE}/`, { waitUntil: "load" });
+    await page.waitForFunction(() => Boolean(window.HOF?.invoices?.open), null, { timeout: 15000 });
+    await page.evaluate(() => window.HOF.invoices.open());
+    await page.waitForSelector("[data-invoices] .hof-rep-note", { timeout: 15000 });
+  };
+  const noticeText = () => page.evaluate(() => document.querySelector("[data-invoices] [data-restore-notice]")?.innerText || "");
+  await openInvoices(second.id);
+  const notice002 = await noticeText();
+  ok(/^Yedek geri yüklendi \(yedek tarihi: \d{2}\.\d{2}\.\d{4} \d{2}:\d{2}\)\. Yedekten sonra verilmiş kâğıt\/fiş numaraları programda yeniden verilebilir\. Yeni belge kaydetmeden önce Fatura Ayarları → Numaralar'dan sıradaki numarayı elinizdeki son numaranın ilerisine alın\./.test(notice002) && !/EDM/.test(notice002), `002 uyarısı (e-Belge yok → yalnız kâğıt/fiş): ${notice002.replace(/\s+/g, " ")}`);
+  const noticeButtons = await page.$$eval("[data-invoices] [data-restore-notice] button", nodes => nodes.map(node => node.textContent.trim()));
+  ok(noticeButtons.join("|") === "Fatura Ayarları|Uyarıyı Kapat" && noticeButtons.every(label => titleCase(label) === label), `uyarı düğmeleri: ${noticeButtons.join(", ")}`);
+  await shot("fatura-geri-yukleme-uyarisi-002");
+  await escClose(page, { expect: "soru-yok", step: "Fatura kapat (002)" });
+  // Aynı uyarı, şirket e-Belge kullanmaya başlayınca (e-Arşiv, Test Ortamı) EDM cümlesiyle.
+  const edocOn = await api("/api/workspace/invoices/settings", { efatura: true, earsiv: true }, "PUT");
+  ok(edocOn.status === 200, `002'de e-Fatura + e-Arşiv açıldı (${edocOn.status}${edocOn.status === 200 ? "" : ` ${JSON.stringify(edocOn.data).slice(0, 200)}`})`);
+  await openInvoices(second.id);
+  const notice002e = await noticeText();
+  ok(/^Yedek geri yüklendi \(yedek tarihi: [^)]+\)\. Yedekten sonra EDM'ye gönderilmiş e-Belge'ler ve verilmiş kâğıt\/fiş numaraları programda yeniden verilebilir; EDM aynı numarayı reddeder\. Göndermeden önce Fatura Ayarları → Numaralar'dan sıradaki numarayı EDM'deki ve elinizdeki son numaranın ilerisine alın\. Test Ortamı'nda e-Belge numarası Entegratör Ayarları → Otomatik Seriler'den ileri alınır\./.test(notice002e), `002 uyarısı (e-Belge, Test Ortamı): ${notice002e.replace(/\s+/g, " ")}`);
+  await shot("fatura-geri-yukleme-uyarisi-002-ebelge");
+  await escClose(page, { expect: "soru-yok", step: "Fatura kapat (002, e-Belge)" });
+  await openInvoices("sirket-001");
+  ok((await noticeText()) === "", "001'in Fatura'sında uyarı yok (geri yüklenmedi)");
+  await escClose(page, { expect: "soru-yok", step: "Fatura kapat (001)" });
+  await openInvoices(second.id);
+  await page.click("[data-invoices] [data-restore-notice] [data-act=restore-notice-dismiss]");
+  await page.waitForFunction(() => !document.querySelector("[data-invoices] [data-restore-notice]"), null, { timeout: 15000 }).catch(() => null);
+  ok((await noticeText()) === "", "Uyarıyı Kapat → uyarı kalktı");
+  // 31f U7c: düğme yeniden çizimle kalkar; odak BODY'ye düşmez, listenin ilk işine ("+ Yeni Fatura") geçer.
+  const afterDismiss = await page.evaluate(() => (document.activeElement === document.body ? "BODY" : `${document.activeElement?.dataset?.act || document.activeElement?.tagName}|${(document.activeElement?.textContent || "").trim().slice(0, 30)}`));
+  ok(/^new\|\+ Yeni Fatura/.test(afterDismiss), `Uyarıyı Kapat → odak “+ Yeni Fatura”da (${afterDismiss})`);
+  await shot("fatura-uyari-kapatildi-002");
+  await escClose(page, { expect: "soru-yok", step: "Fatura kapat (002, kapatıldı)" });
+  await openInvoices(second.id);
+  ok((await noticeText()) === "", "sayfa yeniden açılınca uyarı yine yok (tek seferlik)");
+  ok((await api("/api/workspace/invoices")).data.restoreNotice === null, "sunucu: 002'de uyarı işareti silindi");
+  await escClose(page, { expect: "soru-yok", step: "Fatura kapat (002, yeniden)" });
+  await api("/api/companies/select", { id: "sirket-001" });
+  await page.goto(`${BASE}/admin.html#backups`, { waitUntil: "load" });
 
   console.log("\n■ Yanlış şirket: 002'nin yedeği elle 001'in klasörüne kopyalanmış → reddedilir");
   const stray = files(two).find(name => /-manuel\.sqlite$/.test(name));

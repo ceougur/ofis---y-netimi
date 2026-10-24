@@ -1,0 +1,45 @@
+{
+ "adim": "f-bulunamadi",
+ "baslik": "EDM'de OLMAYAN makbuz: durum / iptal / görüntü — EDM'nin 'bulunamadı' kodu (madde 22 MISSING_CODES); e-Arşiv karşılığı",
+ "durum": "geçti",
+ "denetimler": [
+  {
+   "gecti": true,
+   "denetim": "e-SMM 'bulunamadı' kodu okundu: 11017 — EDM isteği reddetti: SMM bulunamadı (EDM hata kodu 11017)"
+  }
+ ],
+ "kayit": {
+  "e-SMM GetSMMStatus": {
+   "code": "integrator-rejected",
+   "integratorCode": "11017",
+   "stage": "",
+   "status": 502,
+   "message": "EDM isteği reddetti: SMM bulunamadı (EDM hata kodu 11017)",
+   "detail": ""
+  },
+  "e-SMM CancelSMM": {
+   "code": "integrator-rejected",
+   "integratorCode": "11017",
+   "stage": "",
+   "status": 502,
+   "message": "EDM isteği reddetti: SMM bulunamadı (EDM hata kodu 11017)",
+   "detail": ""
+  },
+  "e-SMM GetSMM (PDF)": {
+   "code": "integrator-not-found",
+   "integratorCode": "",
+   "stage": "",
+   "status": 404,
+   "message": "TES2026000000000 EDM'de bulunamadı (makbuz henüz işlenmemiş olabilir; birkaç dakika sonra yeniden deneyin).",
+   "detail": ""
+  },
+  "e-Arşiv GetInvoiceStatus (karşılaştırma)": {
+   "code": "integrator-rejected",
+   "integratorCode": "11017",
+   "stage": "",
+   "status": 502,
+   "message": "EDM isteği reddetti: Fatura bulunamadı (EDM hata kodu 11017)",
+   "detail": ""
+  }
+ }
+}

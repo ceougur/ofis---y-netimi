@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-8-cakisma-rapor",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/tablo-raporlari-u3-244.test.mjs test/nakit-akis-kasa-mm6.test.mjs test/tablo-borc-dosya-u2.test.mjs test/kalan-borc-satir-31d.test.mjs test/kalan-borc-ortak-30a.test.mjs test/nakit-akis-sekme-30e.test.mjs test/disa-aktarim-dugmeleri.test.mjs",
+  "commit": "5e4e86791291b5b2708a07b2b9a0ace4a4901321",
+  "dal": "aday8",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T23:23:08.575Z",
+  "sure_sn": 3.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 49,
+    "gecen": 49,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday-8-cakisma-rapor.log",
+  "klasor": "/home/user/wt/aday8",
+  "ham_cikti_sha256": "5e6b5049c8833d1b391ddafdeb092322d0c3ecef1fc50ea6066bc5b8d14ed82e",
+  "ham_cikti_bayt": 18171
+}

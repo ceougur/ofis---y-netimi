@@ -1,0 +1,32 @@
+{
+  "ad": "244-edm-eszamanli/komsu-birim",
+  "komut": "node --test test/esmm-acik-244.test.mjs test/goc-244-esmm-gonderim.test.mjs test/esmm-gonderim-244.test.mjs test/numara-tekil-244.test.mjs test/ebelge-244-iptal-suresi.test.mjs test/fatura-244-numara-tarih-onay.test.mjs test/ebelge-240-bitis-turu.test.mjs test/edoc-uretim.test.mjs test/ebelge-242-test-seri.test.mjs test/einvoice-edm.test.mjs test/ebelge-244-secilenleri-gonder.test.mjs test/edm-gercek-sozlesme.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/kanit-araci.test.mjs",
+  "commit": "02a6acd2541f752d990e100039a1ebe1dea0afae",
+  "dal": "is/edm-eszamanli",
+  "kirli": 0,
+  "izlenmeyen": 27,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T13:32:36.051Z",
+  "sure_sn": 27.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 221,
+    "gecen": 221,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-edm-eszamanli/komsu-birim.log",
+  "klasor": "/home/user/wt/edm-eszamanli",
+  "ham_cikti_sha256": "91e766f2bd427040238a96d993c0f16eeecfc4f45795c78ef4c44f1dfb1ff580",
+  "ham_cikti_bayt": 81822
+}

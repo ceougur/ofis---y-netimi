@@ -9,6 +9,10 @@
 //     aynı kişinin kartı varsa (Excel'den yüklenmiş) yeni kart açılmaz, o kart kayda bağlanır. Belirsizse tahmin edilmez.
 //   - Excel'de ödenmiş kısım açılış (devir) kaydıdır: taksiti kapatır, carinin bakiyesine sayılır, Kasa'ya girmez.
 //   - Kayıt kartından programda girilmiş tahsilatlar (isteğe bağlı) karta taşınır: Kasa toplamı ve tarihleri değişmez.
+//   - 2.4.4 (5a): kayda bağlı carinin TAKSİT DIŞI tahsilatları (isteğe bağlı, varsayılan açık) en eskiden başlayarak karta yazılır (kartın en eski
+//     açık taksitine sayılır); carinin bakiyesi ve Kasa / Banka değişmez (accountMoves).
+//   - 2.4.4 (5b): kayda bağlı carinin kart dışındaki borcu (ör. Açılış Bakiyesi = kayıttaki Kalan Borç) tablodaki kalanı karşılıyorsa kart "Carinin Mevcut
+//     Borcu" olarak açılır; aynı borç ikinci kez yazılmaz (coverDecision).
 //   - Tek işlem bloğu: yarıda kesilirse hiçbir şey yazılmaz. Aktarım kaydı tutulur; geri alınabilir (aktarımdan sonra
 //     kartlarda işlem yapılmadıysa).
 import { randomUUID } from "node:crypto";
@@ -17,6 +21,7 @@ import { HttpError, limited, ok, readJson, text } from "../lib/http.mjs";
 import { extractSchedules } from "../lib/insight/schedules.mjs";
 import { monthsInText } from "../lib/insight/installments.mjs";
 import { roundMoney } from "../lib/money.mjs";
+import { toMinor } from "../lib/minor.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay } from "../lib/plans.mjs";
 import { FREEZE_CLOSE, SkippedRow } from "./plans.mjs";
@@ -62,6 +67,10 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
       firstDue: /^\d{4}-\d{2}-\d{2}$/.test(firstDue) ? firstDue : "",
       // Kayıt kartından girilmiş tahsilatlar karta taşınsın mı (varsayılan evet: takvim de onları sayıyordu).
       payments: !(input.payments === false || input.payments === "0" || input.payments === 0 || input.payments === "false"),
+      // 2.4.4 (5a): kayda bağlı carinin taksit dışı tahsilatları karta yazılsın mı (varsayılan evet; kapalıysa 2.4.3'teki gibi carinin hesabında kalır).
+      accountIn: !(input.accountIn === false || input.accountIn === "0" || input.accountIn === 0 || input.accountIn === "false"),
+      // 2.4.4 (5b): kayda bağlı carinin mevcut borcu tablodaki kalanı karşılıyorsa kart o borçla açılsın (varsayılan evet; kapalıysa yeni borç).
+      coverDebt: !(input.coverDebt === false || input.coverDebt === "0" || input.coverDebt === 0 || input.coverDebt === "false"),
       group: ["tab", "none", "custom"].includes(text(input.group)) ? text(input.group) : "tab",
       groupName: limited(input.groupName, 80, "Grup adı"),
     };
@@ -71,18 +80,93 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
   const fingerprint = () => {
     const payments = store.get("SELECT COUNT(*) AS n, COALESCE(MAX(COALESCE(updated_at, created_at)), '') AS at, COALESCE(SUM(amount), 0) AS sum FROM payments");
     const accountsRow = store.get("SELECT COUNT(*) AS n, COALESCE(MAX(updated_at), '') AS at FROM accounts");
+    // 2.4.4 (5a): carilerin hareketleri de (karta yazılacak taksit dışı tahsilat ön izlemeyle aktarma arasında değişirse aktarım durur).
+    const entriesRow = store.get("SELECT COUNT(*) AS n, COALESCE(MAX(COALESCE(updated_at, created_at)), '') AS at, COALESCE(SUM(amount), 0) AS sum FROM account_entries");
     const settled = store.setting(settingKey(SETTLED_KEY), "") || "";
-    return [source(), profile?.fingerprint ? profile.fingerprint() : "", plans()?.fingerprint ? plans().fingerprint() : "", `${payments.n}/${payments.at}/${payments.sum}`, `${accountsRow.n}/${accountsRow.at}`, settled.length, settled.slice(-40)].join("|");
+    return [source(), profile?.fingerprint ? profile.fingerprint() : "", plans()?.fingerprint ? plans().fingerprint() : "", `${payments.n}/${payments.at}/${payments.sum}`, `${accountsRow.n}/${accountsRow.at}`, `${entriesRow.n}/${entriesRow.at}/${entriesRow.sum}`, settled.length, settled.slice(-40)].join("|");
   };
 
-  async function analyze(options) {
+  // 2.4.4 (5a; kullanıcı kararı 22.10.2026): kayda bağlı carinin TAKSİT DIŞI tahsilatları karta yazılır. Kural (ön izlemede ve aktarmada aynı):
+  //   - aday: carinin elle girilmiş tahsilatı (kind 'in', kaynak boş: fatura, stok, çek/senet, POS satırı değil), Kapatılacak Fatura bağı yok, yolu
+  //     Nakit ya da Havale / EFT (POS satırının POS kaydı satıra bağlıdır, taşınmaz), dövizsiz; kapatılmış (kilitli) dönemdeki taşınmaz;
+  //   - carinin faturası ya da şüpheli alacak kaydı varsa hiçbiri taşınmaz (taksit dışı tahsilat faturayı / şüpheli alacağı kapatır);
+  //   - iade / ödeme (kind 'out', elle) düşülür: en çok net tutar (tahsilat − iade) yazılır;
+  //   - en eskiden başlanır (tarih, giriş sırası); kartın kalanını aşan tahsilat BÖLÜNMEZ (bir işlem başlığı = bir para hareketi, K11): o tahsilat ve
+  //     sonrakiler taksit dışı kalır. Başka kartın tahsilatına (plan_entries) dokunulmaz.
+  const MOVE_SQL = `SELECT * FROM account_entries WHERE account_id = ? AND kind = 'in' AND source = '' AND COALESCE(invoice_id, '') = '' AND method IN ('cash', 'bank')
+    AND COALESCE(fx_currency, '') = '' ORDER BY date, created_at, rowid`;
+  const tableExists = name => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", name));
+  function accountMoves(accountId, budget) {
+    const totalIn = roundMoney(store.get("SELECT COALESCE(SUM(amount), 0) AS s FROM account_entries WHERE account_id = ? AND kind = 'in' AND source = ''", accountId).s);
+    const result = { ids: [], amount: 0, totalIn, keptAmount: totalIn, reasons: new Set() };
+    if (!(totalIn > EPS)) return result;
+    if (tableExists("invoices") && store.get("SELECT COUNT(*) AS n FROM invoices WHERE account_id = ? AND status <> 'cancelled'", accountId).n) {
+      result.reasons.add("invoice");
+      return result;
+    }
+    if (tableExists("doubtful_receivables") && store.get("SELECT COUNT(*) AS n FROM doubtful_receivables WHERE account_id = ?", accountId).n) {
+      result.reasons.add("doubtful");
+      return result;
+    }
+    const lock = period?.lockedUntil?.() || "";
+    const candidates = store.all(MOVE_SQL, accountId);
+    if (roundMoney(candidates.reduce((sum, entry) => sum + (Number(entry.amount) || 0), 0)) < totalIn - EPS) result.reasons.add("linked");
+    const outs = roundMoney(store.get("SELECT COALESCE(SUM(amount), 0) AS s FROM account_entries WHERE account_id = ? AND kind = 'out' AND source = '' AND method IN ('cash', 'bank')", accountId).s);
+    const net = roundMoney(candidates.reduce((sum, entry) => sum + (Number(entry.amount) || 0), 0) - outs);
+    if (outs > EPS) result.reasons.add("refund");
+    let room = toMinor(Math.max(0, Math.min(budget, net)));
+    let stopped = false;
+    for (const entry of candidates) {
+      if (lock && entry.date <= lock) {
+        result.reasons.add("locked");
+        continue;
+      }
+      const amount = toMinor(entry.amount);
+      if (stopped || amount > room) {
+        stopped = true;
+        result.reasons.add("room");
+        continue;
+      }
+      result.ids.push(entry.id);
+      room -= amount;
+      result.amount = roundMoney(result.amount + (Number(entry.amount) || 0));
+    }
+    result.keptAmount = roundMoney(totalIn - result.amount);
+    return result;
+  }
+  const KEPT_TEXT = {
+    invoice: "carinin faturası var (taksit dışı tahsilat faturayı kapatır)",
+    doubtful: "carinin şüpheli alacak kaydı var",
+    linked: "faturaya bağlı, POS ya da dövizli tahsilat",
+    refund: "carinin iadesi düşüldü",
+    locked: "kapatılmış (kilitli) dönemde",
+    room: "kartın kalanını aşan tahsilat bölünmez",
+  };
+  const keptText = reasons => [...reasons].map(reason => KEPT_TEXT[reason]).filter(Boolean).join("; ");
+  // 2.4.4 (5b; kullanıcı kararı 22.10.2026): kayda bağlı carinin kart kapsamı dışındaki borcu. Taşınacak taksit dışı tahsilatlar (moved) geri eklenir:
+  // karta yazılınca kartın ödenen kısmı olurlar (borç = açılış − tahsilat değil, açılış). Mevcut Borç kartlarının kalanı (toplam − ödenen) düşülür
+  // (routes/plans.mjs uncoveredDebt ile aynı kural). Faturalı caride fatura borcu kartın borcuyla karışır: kapsanmaz.
+  function coverDecision(accountId, remaining, moved, user) {
+    const invoiced = tableExists("invoices") && store.get("SELECT COUNT(*) AS n FROM invoices WHERE account_id = ? AND status <> 'cancelled'", accountId).n > 0;
+    const detail = accounts()?.detail ? accounts().detail(accountId, user) : null;
+    if (!detail) return { debt: 0, invoiced };
+    let covered = 0;
+    for (const plan of detail.plans || []) {
+      if (plan.status === "closed" || !store.get("SELECT covers_balance AS c FROM plans WHERE id = ?", plan.id)?.c) continue;
+      covered = roundMoney(covered + Math.max(0, (Number(plan.totals?.total) || 0) - (Number(plan.totals?.paid) || 0)));
+    }
+    const debt = roundMoney(Math.max(0, (Number(detail.totals?.balance) || 0) + moved - covered));
+    return { debt, invoiced, enough: debt >= remaining - EPS };
+  }
+
+  async function analyze(options, user = null) {
     const view = await dataset.view();
     const rows = view.rows || [];
     const tabs = (view.tabs || []).map(item => item.title);
     const key = source();
     const nowDate = clock();
     const { tabs: planTabs, records } = extractSchedules({ rows, tabs, settled: readJsonSetting(SETTLED_KEY, {}), now: nowDate, forced: profile?.roles ? profile.roles() : null, dueDay: options.dueDay, defaultFirstDue: options.firstDue });
-    if (!records.length) return { tabs: [], records: [], raw: new Map(), totals: emptyTotals(), fingerprint: fingerprint(), source: key, sessionName: sessionName() };
+    if (!records.length) return { tabs: [], records: [], raw: new Map(), decisions: new Map(), totals: emptyTotals(), fingerprint: fingerprint(), source: key, sessionName: sessionName() };
 
     // Kaydın kartı var mı (bu oturumda)?
     const linked = new Map();
@@ -127,6 +211,7 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
     const groupExisting = name => (name ? store.get("SELECT id FROM plan_groups WHERE name = ? COLLATE NOCASE AND parent_id IS NULL", name)?.id || "" : "");
 
     const totals = emptyTotals();
+    const decisions = new Map();
     const out = records.map(record => {
       const issues = [...record.issues];
       const add = (level, code, message) => issues.push({ level, code, text: message });
@@ -169,7 +254,6 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
         if (options.payments) add("info", "payments", `Kayıt kartından girilmiş ${own.length} tahsilat (${money(programPaid)}) karta taşınır; Kasa toplamı değişmez.`);
         else add("warning", "payments-left", `Kayıt kartında ${own.length} tahsilat (${money(programPaid)}) var; seçiminize göre karta sayılmaz, kayıt tahsilatı olarak kalır.`);
       }
-      const remainingAfter = status === "link" ? null : roundMoney(Math.max(0, record.total - record.paid - (countPayments ? programPaid : 0)));
       if (countPayments && status !== "link" && programPaid > record.total - record.paid + 0.01) add("warning", "payments-exceed", `Kayıt tahsilatları kalan borcu ${money(programPaid - (record.total - record.paid))} aşıyor; kartta fazla tahsilat görünür.`);
       // Cari: kayda bağlı cari, bağsız aynı kişi (ad + telefon) ya da yeni.
       let account = "new";
@@ -181,7 +265,6 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
       } else if (bound) {
         account = "bound";
         accountName = bound.name;
-        if (accountIn.get(bound.id) > EPS) add("info", "account-in", `Carisinde taksit dışı ${money(accountIn.get(bound.id))} tahsilat var; karta sayılmaz, cari bakiyesinde görünür.`);
       } else if (status !== "error" && status !== "exists") {
         const matched = accounts()?.matchPerson ? accounts().matchPerson({ name: record.name, phone: record.phone, groupId: groupExisting(groupNameFor(record, options)) || "__yeni__" }) : "";
         const owner = matched ? store.get("SELECT name, case_key AS caseKey FROM accounts WHERE id = ?", matched) : null;
@@ -190,6 +273,35 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
           accountName = owner?.name || record.name;
         }
       }
+      // 2.4.4 (5a): kayda bağlı carinin taksit dışı tahsilatları (yeni kart; bağlanan bağsız kartta değil).
+      let move = null;
+      if (bound && account === "bound" && status !== "error" && status !== "exists" && status !== "link" && accountIn.get(bound.id) > EPS) {
+        if (options.accountIn) {
+          move = accountMoves(bound.id, roundMoney(Math.max(0, record.total - record.paid - (countPayments ? programPaid : 0))));
+          if (move.ids.length) add("info", "account-in-move", `Kayda bağlı carinin taksit dışı ${move.ids.length} tahsilatı (${money(move.amount)}) en eskiden başlayarak karta yazılır (en eski açık taksite sayılır); cari bakiyesi ve Kasa değişmez.`);
+          if (move.keptAmount > EPS) add("info", "account-in-kept", `Carinin ${money(move.keptAmount)} taksit dışı tahsilatı taksit dışı kalır (${keptText(move.reasons) || "uygun değil"}).`);
+        } else add("info", "account-in", `Carisinde taksit dışı ${money(accountIn.get(bound.id))} tahsilat var; seçiminize göre karta yazılmaz, cari bakiyesinde görünür.`);
+      }
+      // 2.4.4 (5b): carinin mevcut borcu tablodaki kalanı karşılıyorsa kart o borçla açılır (borç ikinci kez yazılmaz).
+      let cover = false;
+      const tableLeft = roundMoney(Math.max(0, record.total - record.paid));
+      if (bound && account === "bound" && status !== "error" && status !== "exists" && status !== "link" && tableLeft > EPS) {
+        const decision = coverDecision(bound.id, tableLeft, move?.amount || 0, user);
+        if (decision.debt > EPS) {
+          if (!options.coverDebt || decision.invoiced) {
+            add("warning", "cover-new-debt", `Carinin kart dışında ${money(decision.debt)} borcu var; kart yeni borç olarak açılır (${decision.invoiced ? "carinin faturası olduğu için mevcut borç kapsanmaz" : "seçiminize göre"}), borç carinin bakiyesine eklenir. Aynı borçsa bu kişiyi aktarmayın; kartı cari kartından + Taksit Planı → Carinin Mevcut Borcu ile açın.`);
+          } else if (decision.enough) {
+            cover = true;
+            add("info", "cover-debt", `Carinin mevcut borcu (${money(decision.debt)}) taksitlendirilir: kart "Carinin Mevcut Borcu" olarak açılır, borç ikinci kez yazılmaz${record.paid > EPS ? `; Excel'e göre ödenen ${money(record.paid)} carinin bakiyesindedir (açılış satırı yazılmaz)` : ""}.`);
+          } else {
+            status = "error";
+            add("error", "cover-ambiguous", `Carinin kart dışında ${money(decision.debt)} borcu var, tablodaki kalan ${money(tableLeft)}: aynı borç mu belli değil, kişi aktarılmaz. Aynı borçsa carinin borcunu ${money(tableLeft)} yapın (Açılış Bakiyesi ya da Borç Yaz); ayrı borçsa "Carinin mevcut borcu varsa kartı o borçla aç" seçeneğini kapatın.`);
+          }
+        }
+      }
+      decisions.set(record.key, { moveIds: status === "error" ? [] : move?.ids || [], cover });
+      const accountMoved = status === "error" ? 0 : move?.amount || 0;
+      const remainingAfter = status === "link" ? null : roundMoney(Math.max(0, record.total - record.paid - (countPayments ? programPaid : 0) - accountMoved));
       if (status === "ready" && (record.closed || record.inactive)) status = "closed";
       if (status === "ready" && issues.some(entry => entry.level === "warning")) status = "warning";
       if (status === "closed" && record.inactive) add("info", "inactive", "Durumu “ayrıldı / pasif”: varsayılan olarak aktarılmaz.");
@@ -200,6 +312,7 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
         totals.total = roundMoney(totals.total + record.total);
         totals.paid = roundMoney(totals.paid + record.paid);
         totals.programPaid = roundMoney(totals.programPaid + (countPayments ? programPaid : 0));
+        totals.accountMoved = roundMoney(totals.accountMoved + accountMoved);
         totals.remaining = roundMoney(totals.remaining + (remainingAfter ?? 0));
       }
       return {
@@ -214,6 +327,10 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
         paid: record.paid,
         programPaid,
         paymentCount: own.length,
+        accountMoved,
+        accountMoveCount: move?.ids.length || 0,
+        accountKept: move ? move.keptAmount : roundMoney(accountIn.get(bound?.id) || 0),
+        cover,
         remaining: remainingAfter,
         excel: record.excel,
         groupName: groupNameFor(record, options),
@@ -229,7 +346,7 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
       };
     });
     // raw: sunucuda kalan tam kayıt (taksitler, not, sıra no); aktarma bunu yazar, istemciye gitmez.
-    return { tabs: planTabs, records: out, raw: new Map(records.map(record => [record.key, record])), totals, fingerprint: fingerprint(), source: key, sessionName: sessionName() };
+    return { tabs: planTabs, records: out, raw: new Map(records.map(record => [record.key, record])), decisions, totals, fingerprint: fingerprint(), source: key, sessionName: sessionName() };
   }
   // Grup: tablodaki grup kolonu (plaka, okul…) varsa o ve alt grubu; yoksa seçime göre sekme adı, verilen ad ya da grupsuz.
   function groupNameFor(record, options) {
@@ -238,12 +355,12 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
     if (options.group === "custom") return options.groupName;
     return String(record.tab || "").slice(0, 80);
   }
-  const emptyTotals = () => ({ ready: 0, warning: 0, link: 0, closed: 0, exists: 0, error: 0, selected: 0, total: 0, paid: 0, programPaid: 0, remaining: 0 });
+  const emptyTotals = () => ({ ready: 0, warning: 0, link: 0, closed: 0, exists: 0, error: 0, selected: 0, total: 0, paid: 0, programPaid: 0, accountMoved: 0, remaining: 0 });
 
   router.get("/api/workspace/plans/from-table", async ({ req, res, url }) => {
-    auth.requirePermission(req, "plans.manage");
+    const user = auth.requirePermission(req, "plans.manage");
     const options = optionsOf(Object.fromEntries(url.searchParams));
-    const { raw, ...analysis } = await analyze(options);
+    const { raw, decisions, ...analysis } = await analyze(options, user);
     ok(res, { ...analysis, options, imports: recentImports() });
   });
 
@@ -273,13 +390,13 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
     const options = optionsOf(body);
     const wanted = new Set((Array.isArray(body.keys) ? body.keys : []).map(key => limited(key, 200, "Kayıt")).filter(Boolean));
     if (!wanted.size) throw new HttpError(400, "Aktarılacak kişileri seçin.");
-    const analysis = await analyze(options);
+    const analysis = await analyze(options, user);
     if (body.fingerprint && body.fingerprint !== analysis.fingerprint) throw new HttpError(409, "Ön izlemeden sonra tablo, kartlar ya da tahsilatlar değişti. Ön izleme yenilendi; kontrol edip yeniden aktarın.", { code: "stale" });
     const byKey = new Map(analysis.records.map(record => [record.key, record]));
     const importId = `import-${randomUUID()}`;
     const key = source();
-    const report = { importId, created: 0, linked: 0, accountsCreated: 0, accountsLinked: 0, paymentsMoved: 0, paymentsAmount: 0, total: 0, opening: 0, remaining: 0, skipped: [] };
-    const undo = { plans: [], openings: [], links: [], accounts: [], accountLinks: [], payments: [], groups: [], source: key };
+    const report = { importId, created: 0, linked: 0, accountsCreated: 0, accountsLinked: 0, paymentsMoved: 0, paymentsAmount: 0, accountEntriesMoved: 0, accountEntriesAmount: 0, covered: 0, coveredAmount: 0, total: 0, opening: 0, remaining: 0, skipped: [] };
+    const undo = { plans: [], openings: [], links: [], accounts: [], accountLinks: [], payments: [], accountEntries: [], groups: [], source: key };
     const plansService = plans();
     const accountsService = accounts();
     // v2.1.0 (bank.post op 'move'): kayıt tahsilatı karta taşınırken işlem başlığını (İşlem No, yol) taşır; kart, taksitler ve
@@ -381,13 +498,19 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
             report.accountsLinked += 1;
           }
           items = full.items;
-          const created = plansService.createScheduled(user, { ...person, accountId, note: full.note, refNo: refFor(full.refNo), registeredOn: start }, { importId, items, openingDate: today(), openingNote: "Excel'de ödenmiş (açılış)" });
+          // 2.4.4 (5b): ön izlemedeki karar (carinin mevcut borcu kalanı karşılıyor) → "Carinin Mevcut Borcu" kartı; ön izlemeden sonra cari değiştiyse
+          // parmak izi aktarımı durdurdu. Kayda bağlı cari değilse (yeni ya da eşleşen) karar yoktur.
+          const covers = Boolean(analysis.decisions.get(record.key)?.cover) && options.coverDebt;
+          const created = plansService.createScheduled(user, { ...person, accountId, note: full.note, refNo: refFor(full.refNo), registeredOn: start }, { importId, items, openingDate: today(), openingNote: "Excel'de ödenmiş (açılış)", coversBalance: covers });
           planId = created.id;
           undo.plans.push(planId);
           undo.openings.push(...created.openingIds);
           report.created += 1;
-          report.total = roundMoney(report.total + record.total);
-          report.opening = roundMoney(report.opening + record.paid);
+          report.total = roundMoney(report.total + created.total);
+          if (covers) {
+            report.covered += 1;
+            report.coveredAmount = roundMoney(report.coveredAmount + created.total);
+          } else report.opening = roundMoney(report.opening + record.paid);
         }
         // Kayıt kartından girilmiş tahsilatlar karta taşınır (Kasa toplamı değişmez).
         if (options.payments) {
@@ -400,20 +523,34 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
             report.paymentsAmount = roundMoney(report.paymentsAmount + (Number(payment.amount) || 0));
           }
         }
+        // 2.4.4 (5a): kayda bağlı carinin taksit dışı tahsilatları (ön izlemedeki karar; ön izlemeden sonra değiştiyse parmak izi aktarımı durdurdu).
+        const moveIds = options.accountIn ? analysis.decisions.get(record.key)?.moveIds || [] : [];
+        if (moveIds.length) {
+          const itemRows = store.all("SELECT id, due_date AS dueDate FROM plan_items WHERE plan_id = ? ORDER BY due_date, seq", planId);
+          for (const entryRowId of moveIds) {
+            const entry = store.get("SELECT * FROM account_entries WHERE id = ? AND kind = 'in' AND source = ''", entryRowId);
+            if (!entry) continue;
+            const entryId = plansService.adoptAccountEntry(user, planId, entry, itemForNote(entry.note, itemRows));
+            store.run("DELETE FROM account_entries WHERE id = ?", entry.id);
+            undo.accountEntries.push({ row: entry, entryId });
+            report.accountEntriesMoved += 1;
+            report.accountEntriesAmount = roundMoney(report.accountEntriesAmount + (Number(entry.amount) || 0));
+          }
+        }
         if (record.remaining !== null) report.remaining = roundMoney(report.remaining + record.remaining);
       }
       if (!report.created && !report.linked) return report;
       const title = `${analysis.sessionName || "Tablo"} · ${[...new Set([...wanted].map(wantedKey => byKey.get(wantedKey)?.tab).filter(Boolean))].join(", ")}`.slice(0, 200);
-      const summary = { created: report.created, linked: report.linked, accountsCreated: report.accountsCreated, paymentsMoved: report.paymentsMoved, total: report.total, opening: report.opening, remaining: report.remaining, skipped: report.skipped.length };
+      const summary = { created: report.created, linked: report.linked, accountsCreated: report.accountsCreated, paymentsMoved: report.paymentsMoved, accountEntriesMoved: report.accountEntriesMoved, covered: report.covered, total: report.total, opening: report.opening, remaining: report.remaining, skipped: report.skipped.length };
       store.run("INSERT INTO plan_imports (id, kind, source, title, summary_json, undo_json, created_by, created_at) VALUES (?, 'table', ?, ?, ?, ?, ?, ?)", importId, key, title, JSON.stringify(summary), JSON.stringify(undo), user.id, now());
-      audit(user, "plan.table-import", importId, { ...summary, source: key, dueDay: options.dueDay, payments: options.payments });
+      audit(user, "plan.table-import", importId, { ...summary, source: key, dueDay: options.dueDay, payments: options.payments, accountIn: options.accountIn, coverDebt: options.coverDebt });
       return report;
     } });
     if (result.created || result.linked) {
       publish(user, { kind: "plans" });
       publish(user, { kind: "accounts" });
       publish(user, { kind: "dues", datasetKey: key });
-      if (result.paymentsMoved) publish(user, { kind: "cash" });
+      if (result.paymentsMoved || result.accountEntriesMoved) publish(user, { kind: "cash" });
     }
     ok(res, result);
   });
@@ -448,7 +585,7 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
 
   // Aktarımdan sonra karta işlem yapıldıysa (tahsilat, düzenleme, taksit, çek) geri alma durur ve hangi kartlar olduğunu söyler.
   function blockers(undo) {
-    const own = new Set([...(undo.openings || []), ...(undo.payments || []).map(item => item.entryId)]);
+    const own = new Set([...(undo.openings || []), ...(undo.payments || []).map(item => item.entryId), ...(undo.accountEntries || []).map(item => item.entryId)]);
     const out = [];
     for (const planId of undo.plans || []) {
       const plan = store.get("SELECT name, created_at AS createdAt, updated_at AS updatedAt FROM plans WHERE id = ?", planId);
@@ -496,11 +633,27 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
         const closedOn = entry ? plans()?.closeDayOf?.(entry.planId) || "" : "";
         if (closedOn && closedOn <= lock) hits.push(`${entry.name}, ${dayText(closedOn)} tarihinde kapatıldı`);
       }
+      for (const moved of undo.accountEntries || []) if (moved.row?.date && moved.row.date <= lock) hits.push(`cari tahsilatı, ${dayText(moved.row.date)}`);
       if (hits.length) throw new HttpError(409, `Bu aktarımın kartlarında ya da taşınan tahsilatlarında kapatılmış (kilitli) döneme (${dayText(lock)} ve öncesi) düşen kayıt var (${[...new Set(hits)].slice(0, 5).join("; ")}); aktarım geri alınamaz. Gerekirse yönetici dönem kilidini açmalı.`, { code: "period-locked", lockedUntil: lock });
     }
-    const report = { plans: 0, links: 0, payments: 0, accounts: 0, accountsKept: 0 };
+    const report = { plans: 0, links: 0, payments: 0, accountEntries: 0, accounts: 0, accountsKept: 0 };
     // v2.1.0 (bank.post op 'move'): geri dönen kayıt tahsilatı karttaki satırın işlem başlığıyla döner (İşlem No ve yol aynı).
-    bank.post({ user, module: "plan", op: "move", prev: { importId: batch.id, payments: undo.payments || [] }, write: () => {
+    bank.post({ user, module: "plan", op: "move", prev: { importId: batch.id, payments: undo.payments || [], accountEntries: (undo.accountEntries || []).map(item => item.row?.id || "") }, write: () => {
+      // 2.4.4 (5a): karta yazılan cari tahsilatları carinin hesabına aynen döner (kimlik, tutar, tarih, yol, makbuz no, giren kişi; işlem başlığı ve banka
+      // hesabı bağı karttaki satırdan).
+      const accountColumns = new Set(store.all("PRAGMA table_info(account_entries)").map(column => column.name));
+      for (const moved of undo.accountEntries || []) {
+        const moving = store.get("SELECT event_id AS e, fin_ref AS f FROM plan_entries WHERE id = ?", moved.entryId) || {};
+        store.run("DELETE FROM plan_entries WHERE id = ?", moved.entryId);
+        const row = moved.row || {};
+        if (!row.id || store.get("SELECT 1 AS found FROM account_entries WHERE id = ?", row.id)) continue;
+        const method = methodInput(row.method);
+        const back = { ...row, method, fin_ref: bank.keepRef(moving.f ?? row.fin_ref, { method, date: row.date }).ref };
+        back.event_id = bank.eventFor("account_entries", { ...back, event_id: moving.e || row.event_id || "" });
+        const columns = Object.keys(back).filter(name => accountColumns.has(name));
+        store.run(`INSERT INTO account_entries (${columns.join(", ")}) VALUES (${columns.map(() => "?").join(", ")})`, ...columns.map(name => back[name] ?? null));
+        report.accountEntries += 1;
+      }
       // Karta taşınan kayıt tahsilatları kayıt kartına aynen döner (kimlik, tarih, giren kişi).
       for (const moved of undo.payments || []) {
         const moving = store.get("SELECT event_id AS e, fin_ref AS f FROM plan_entries WHERE id = ?", moved.entryId) || {};

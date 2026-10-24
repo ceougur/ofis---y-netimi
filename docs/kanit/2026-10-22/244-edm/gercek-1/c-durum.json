@@ -1,0 +1,63 @@
+{
+ "adim": "c-durum",
+ "baslik": "Durum Sorgula: bütün gönderilen belgeler son duruma kadar",
+ "durum": "kaldı",
+ "denetimler": [
+  {
+   "gecti": false,
+   "denetim": "G1 e-SMM TES2026740556630: EDM son durum HTTP 502 "
+  },
+  {
+   "gecti": false,
+   "denetim": "G2 e-SMM TES2026740556631: EDM son durum HTTP 502 "
+  },
+  {
+   "gecti": true,
+   "denetim": "G3 e-Arşiv TEA2026402997236: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G4 e-Arşiv TEA2026402997237: EDM son durum sent (SEND - SUCCEED)"
+  },
+  {
+   "gecti": false,
+   "denetim": "G5 e-SMM TES2026740556632: EDM son durum HTTP 502 "
+  }
+ ],
+ "kayit": {
+  "G1": {
+   "eStatus": "HTTP 502",
+   "status": 502,
+   "code": "integrator-rejected",
+   "integratorCode": "11017",
+   "stage": "",
+   "error": "EDM isteği reddetti: SMM bulunamadı (EDM hata kodu 11017)"
+  },
+  "G2": {
+   "eStatus": "HTTP 502",
+   "status": 502,
+   "code": "integrator-rejected",
+   "integratorCode": "11017",
+   "stage": "",
+   "error": "EDM isteği reddetti: SMM bulunamadı (EDM hata kodu 11017)"
+  },
+  "G3": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED"
+  },
+  "G4": {
+   "eStatus": "sent",
+   "raw": "SEND - SUCCEED",
+   "message": "e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi. SUCCEED"
+  },
+  "G5": {
+   "eStatus": "HTTP 502",
+   "status": 502,
+   "code": "integrator-rejected",
+   "integratorCode": "11017",
+   "stage": "",
+   "error": "EDM isteği reddetti: SMM bulunamadı (EDM hata kodu 11017)"
+  }
+ }
+}

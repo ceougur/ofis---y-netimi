@@ -1,0 +1,5 @@
+b1-5a-bayat-ve-yeniden: 51/52 tuttu
+  ✗ [BULGU KULLANICI] k2:rapor:K-1:alacak: program 0 · kâhin 100000 (B1.8 5c tahsilat bir kez)
+
+ÖZET: 1 senaryo, 52 denetim, 1 fark (BULGU 1), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-cari-F0MlJ4
+51/52 denetim geçti

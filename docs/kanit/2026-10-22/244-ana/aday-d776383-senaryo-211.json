@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-d776383-senaryo-211",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-211.mjs",
+  "commit": "d7763831cc7cd85fbdfa55975cacfa7a5532051f",
+  "dal": "aday",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T06:42:07.796Z",
+  "sure_sn": 103.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 57,
+    "gecen": 57,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday-d776383-senaryo-211.log",
+  "klasor": "/home/user/wt/aday",
+  "ham_cikti_sha256": "eb336a2c3ca1fd426cb99e593f9bfbf473c0481f39c0b08ee84972b26fff0377",
+  "ham_cikti_bayt": 4744
+}

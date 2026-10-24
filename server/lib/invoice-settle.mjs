@@ -7,6 +7,10 @@
 //      faturaya), cari kartından "Kapatılacak Fatura" seçilerek girilen tahsilat/ödeme, mahsup fişi. Bağlı ödeme faturadan
 //      fazlaysa artanı genel havuza düşer.
 //   2. Kalan ödemeler (bağsız tahsilat, artanlar) en eski yükümlülükten başlayarak dağıtılır (FIFO).
+//   2.4.4 UX18: karşılıksız dönen evrak — faturaya bağlı (faturayla ya da "Kapatılacak Fatura" ile alınan çek-senet, faturayla ciro) ya da bağsız —
+//   hiç alınmamış (ciro edilmemiş) gibidir: alış/ciro satırı ile karşılıksız satırı kapamadan birlikte çıkar, evrakın kapattığı faturalar KENDİ
+//   tarihleriyle yeniden açılır ve en eski borç sırasındaki yerini alır; kalan ödemeler yeniden dağılır (taksitli faturanın evrakında değil).
+//   Kapatanlar listesinde evrak görünmez (ödememiştir).
 //
 // v2.0.17 (müşteri: "hayalet kısmi ödeme"): ödeme YÖNE göre sayılır. Alacak tarafında (satış, SMM) yalnız ödeme
 // niteliğindeki alacak satırları kapatır: tahsilat (Kasa/banka/POS), alınan çek/senet, satıştan iade, taksit tahsilatı.
@@ -117,19 +121,43 @@ export function classifyLine(line, { invoiceKind = "", chequeEvent = "" } = {}) 
 /**
  * @param {{ lines: Array<{ id, origin, kind, sourceId?, planId?, date, at?, label?, note?, method?, debit, credit }>,
  *           invoices: Array<{ id, kind, status, payable, originalId?, dueDate?, planId?, schedule?: Array<{ dueDate, amount }> }>,
- *           links?: Map<string, string>, chequeEvents?: Map<string, string>,
+ *           links?: Map<string, string>, chequeEvents?: Map<string, string>, reversals?: Map<string, string>,
  *           offsets?: Array<{ id, invoiceId, counterId, counterType: "invoice"|"entry", amount, date, note? }>, today: string }} input
  *   lines        : bir carinin defter satırları (accountLedger), tarih sırasında
  *   links        : defter satırı kimliği → fatura kimliği (peşin ödeme, çek/senet, ciro, seçilerek bağlanan tahsilat/ödeme)
  *   chequeEvents : çek/senet defter satırı kimliği → olay türü (receive/issue/endorse/bounce…)
+ *   reversals    : karşılıksız satırı kimliği → ters çevirdiği alış / ciro satırının kimliği (bağlı ve bağsız evrak; 2.4.4 UX18, 31a F2/F3)
  *   offsets      : mahsup fişleri (fatura ↔ karşı fatura ya da karşı cari satırı)
  * @returns {Map<string, { payable, paid, open, state, label, closers: Array<{ id, date, label, note, method, amount, mode }> }>}
  */
-export function settleInvoices({ lines, invoices, links = new Map(), chequeEvents = new Map(), offsets = [], today }) {
+export function settleInvoices({ lines, invoices, links = new Map(), chequeEvents = new Map(), reversals = new Map(), offsets = [], today }) {
   const out = new Map();
   const byId = new Map(invoices.map(invoice => [invoice.id, invoice]));
   const planOwner = new Map(invoices.filter(invoice => invoice.planId).map(invoice => [invoice.planId, invoice.id]));
-  const ordered = [...lines].sort((a, b) => (a.date === b.date ? String(a.at || "").localeCompare(String(b.at || "")) : a.date < b.date ? -1 : 1));
+  const sorted = [...lines].sort((a, b) => (a.date === b.date ? String(a.at || "").localeCompare(String(b.at || "")) : a.date < b.date ? -1 : 1));
+  // 2.4.4 UX18 (kullanıcı kararları 21–22.10.2026 "karşılıksız dönünce fatura yeniden açılır", F3 "en yaygın uygulama" — QuickBooks "Record bounced
+  // check", Xero, Sage: ödeme geri alınır, fatura ödenmemiş olur; 31a bağımsız kâhin F2/F3, PLAN §8.10 "Otomatik (En Eski)"): karşılıksız satırı ile
+  // ters çevirdiği alış / ciro satırı (reversals; routes/invoices.mjs chequeLinks) kapamadan birlikte çıkar — evrak hiç alınmamış (ciro edilmemiş)
+  // gibi: kapattığı faturalar (bağlıysa bağlı fatura, bağsızsa en eski açıklar) kendi borç satırıyla, kendi tarihiyle açılır; kalan ödemeler en eski
+  // açık borçtan yeniden dağılır (Σ açık fatura = bakiye; bakiye ve yevmiye değişmez). Önceki çözümler: 2.4.3'e kadar karşılıksız satırı faturasız
+  // yükümlülüktü (kapattığı faturalar kapalı kalıyordu — F3); 2.4.4 ilk hâli bağlı evrakta satırı faturaya ekliyordu (karşılıksız GÜNÜNE yazıldığı için
+  // bağsız tahsilat daha yeni faturayı kapatıyordu — F2). Taksitli faturanın evrakında (kendi evrakı) bugünkü gibi: taksitli fatura açığı = kartın
+  // kalanı değişmezi (taksite sayılan evrak zaten kart satırıdır). Yalnız tarafı ters (karşılıksız borç ↔ alış alacak) ve tutarı aynı çift.
+  const netted = new Map();
+  if (reversals.size) {
+    const lineById = new Map(lines.map(line => [line.id, line]));
+    for (const [bounceId, reversedId] of reversals) {
+      const bounce = lineById.get(bounceId);
+      const reversed = lineById.get(reversedId);
+      if (!bounce || !reversed || chequeEvents.get(bounceId) !== "bounce") continue;
+      if (byId.get(links.get(reversedId) || "")?.planId) continue;
+      if ((cents(bounce.debit) > 0) !== (cents(reversed.credit) > 0)) continue;
+      if ((cents(bounce.debit) || cents(bounce.credit)) !== (cents(reversed.debit) || cents(reversed.credit))) continue;
+      netted.set(bounceId, bounce);
+      netted.set(reversedId, bounce);
+    }
+  }
+  const ordered = netted.size ? sorted.filter(line => !netted.has(line.id)) : sorted;
   // v2.0.23: ayrı borç yazan (mevcut borcu taksitlendirmeyen) ve hiçbir faturanın kartı olmayan kartlar.
   const separatePlans = new Set(lines.filter(line => line.origin === "plan" && line.kind === "plan" && !line.covers && line.planId && !planOwner.has(line.planId)).map(line => line.planId));
   const kindOf = line => (line.origin === "invoice" ? byId.get(line.sourceId)?.kind || "" : "");
@@ -372,7 +400,8 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
     .map(({ item }) => item);
   const coverage = new Map();
   for (const plan of coverPlans) {
-    const known = ordered.filter(line => facts(line).born <= plan.at);
+    // Karşılıksızı kartın açıldığı anda henüz olmayan evrak o an faturayı ödemiş sayılır (kapsam o günkü açık borçtur).
+    const known = sorted.filter(line => facts(line).born <= plan.at && !(netted.has(line.id) && facts(netted.get(line.id)).born <= plan.at));
     const knownOffsets = offsets.filter(offset => String(offset.createdAt || offset.date || "") <= plan.at);
     const parts = new Map();
     let rest = plan.total;

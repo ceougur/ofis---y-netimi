@@ -1,0 +1,32 @@
+{
+  "ad": "g1-kilit-mutasyon",
+  "komut": "python3 -I /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/g1-kilit/mutasyon.py /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/g1-kilit-mutasyon",
+  "commit": "247d6a73e4c90057b634f8c41e5b2fbed9dd7131",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T02:32:36.043Z",
+  "sure_sn": 11.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 5,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../home/user/wt/g1-kilit/docs/kanit/2026-10-23/g1-kilit-mutasyon.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/g1-kilit-mutasyon",
+  "ham_cikti_sha256": "87afd23b52e64602d32d6fca6f02e4ed17e3200e3f1034aa8bb3f1901a02868d",
+  "ham_cikti_bayt": 1365
+}

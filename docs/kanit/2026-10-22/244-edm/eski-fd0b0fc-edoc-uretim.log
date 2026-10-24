@@ -1,0 +1,102 @@
+TAP version 13
+# Subtest: Üretim girişi: e-Belge açık, test ve canlı ortam açık
+    # Subtest: server/server.mjs e-Belgeyi, canlı ortamı (kullanıcı 16.10.2026: "hem testi hem canlıyı aç") ve e-SMM'yi (2.4.4 iş listesi 24) açar; config bunları ortam değişkeniyle açmaz
+    not ok 1 - server/server.mjs e-Belgeyi, canlı ortamı (kullanıcı 16.10.2026: "hem testi hem canlıyı aç") ve e-SMM'yi (2.4.4 iş listesi 24) açar; config bunları ortam değişkeniyle açmaz
+      ---
+      duration_ms: 1.670007
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm/edm-eski-fd0b0fc/test/edoc-uretim.test.mjs:24:3'
+      failureType: 'testCodeFailure'
+      error: 'üretim girişi edocEnabled, edocLive ve esmmEnabled verir'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: |-
+        
+        
+        
+        import { createApp } from "./app.mjs";
+        
+        
+        
+        
+        const app = createApp({ edocEnabled: true, edocLive: true });
+        const address = await app.listen().catch(error => {
+          app.log.error(error.code === "EADDRINUSE" ? `Port ${app.config.port} kullanımda. Başka bir DestekOfis sunucusu çalışıyor olabilir.` : "Sunucu başlatılamadı", error);
+          process.exit(1);
+        });
+        app.log.info(`${app.config.productName} ${app.config.version} merkezi sunucusu http://${app.config.host}:${address.port}`);
+        
+        let stopping = false;
+        const shutdown = async reason => {
+          if (stopping) return;
+          stopping = true;
+          app.log.info(`${reason}: sunucu kapatılıyor…`);
+          const force = setTimeout(() => process.exit(0), 5000);
+          force.unref();
+          await app.close();
+          process.exit(0);
+        };
+        process.on("SIGINT", () => shutdown("SIGINT"));
+        process.on("SIGTERM", () => shutdown("SIGTERM"));
+        process.on("SIGBREAK", () => shutdown("SIGBREAK"));
+        
+        
+        process.on("unhandledRejection", reason => {
+          app.log.error("Sahipsiz söz reddi (istek sürüyor)", reason instanceof Error ? reason : new Error(String(reason)));
+        });
+        process.on("uncaughtException", error => {
+          app.log.error("Yakalanmamış hata; sunucu yeniden başlatılmak üzere kapanıyor", error);
+          if (stopping) return;
+          stopping = true;
+          const force = setTimeout(() => process.exit(1), 3000);
+          force.unref();
+          app.close().catch(() => {}).finally(() => process.exit(1));
+        });
+        
+        if (process.send) {
+          const report = () => process.send?.({ type: "info", ...app.info() });
+          process.send({ type: "ready", port: address.port, ...app.info() });
+          app.onInfoChange(report);
+        
+        
+          app.onRestartRequest(reason => shutdown(reason || "Yeniden başlatma istendi"));
+          process.on("message", message => {
+            if (message && message.type === "shutdown") shutdown("Servis yöneticisi kapatma istedi");
+          });
+        
+          process.on("disconnect", () => shutdown("Servis yöneticisi bağlantısı koptu"));
+        }
+        
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm/edm-eski-fd0b0fc/test/edoc-uretim.test.mjs:26:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    1..1
+not ok 1 - Üretim girişi: e-Belge açık, test ve canlı ortam açık
+  ---
+  duration_ms: 2.636052
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm/edm-eski-fd0b0fc/test/edoc-uretim.test.mjs:23:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 428.997247

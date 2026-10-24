@@ -1,0 +1,16 @@
+[02:17:00]   v2.1.0: 001: şema 20, sirketler/002: şema 20, sirketler/003: şema 20, sirketler/004: şema 20 (832 ms)
+[02:17:00]   v2.2.0: 001: şema 22, sirketler/002: şema 22, sirketler/003: şema 22, sirketler/004: şema 22 (692 ms)
+[02:17:01]   v2.3.0: 001: şema 26, sirketler/002: şema 26, sirketler/003: şema 26, sirketler/004: şema 26 (708 ms)
+[02:17:02]   v2.4.3: 001: şema 30, sirketler/002: şema 30, sirketler/003: şema 30, sirketler/004: şema 30 (706 ms)
+[02:17:29] fark: 177 olgu · EŞİT 148 · BELGELİ 29 · BULGU 0
+[02:17:29] ✓ 001 yol bağımsızlığı
+[02:17:29] ✓ 002 yol bağımsızlığı
+[02:17:29] ✓ 007 yol bağımsızlığı
+[02:17:29] ✓ 004 yol bağımsızlığı
+# zincir fikstur:surum-2.0.26-turler → v2.1.0 → v2.2.0 → v2.3.0 → v2.4.3 → 2.4.4
+# tests 185
+# pass 185
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

@@ -1,0 +1,53 @@
+{
+  "ad": "244-esmm/m21-mutasyon-U10",
+  "komut": "node --test test/esmm-ubl.test.mjs",
+  "commit": "dde4675ab7eb58f8e299cdf00ad57916e964f75e",
+  "dal": "is/esmm",
+  "kirli": 2,
+  "izlenmeyen": 28,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:02:54.432Z",
+  "sure_sn": 2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 8,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "e-SMM UBL: GİB kuralından elle hesaplanan dip toplamlar (kâhin) › B — 2 × 100,03: belge stopajı matrah × oran = 40,01 (kalem yuvarlamasıyla 40,02 DEĞİL); kalemlere 20,01 + 20,00; KDV kalem başına 20,01 + 20,01",
+      "konum": "test/esmm-ubl.test.mjs:96:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "e-SMM UBL: GİB kuralından elle hesaplanan dip toplamlar (kâhin) › C — kişi alıcı, stopaj yok: 0003 satırı yazılmaz; net ücret = brüt 500, KDV 100, net alınan 600",
+      "konum": "test/esmm-ubl.test.mjs:104:3",
+      "hata": "Expected values to be strictly equal: · '500.00' !== '600.00' (beklenen 600.00, gelen 500.00)"
+    },
+    {
+      "ad": "e-SMM UBL: GİB kuralından elle hesaplanan dip toplamlar (kâhin) › D — KDV tevkifatı 5/10: tahsil edilen KDV 200 − 100 = 100; net alınan 800 + 100 = 900; tevkifat ayrı satırda",
+      "konum": "test/esmm-ubl.test.mjs:112:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + '1000.00' (beklenen 900.00, gelen 1000.00)"
+    },
+    {
+      "ad": "e-SMM UBL: program tutarlarıyla aynı, yapı EDM'nin e-SMM örneğiyle aynı, UBL 2.1 şemasına uygun › XML tutarları programın kaydettiği makbuzla kuruşu kuruşuna aynı; kalem stopajları toplamı = belge stopajı; Σ kalem fiyatı = net alınan",
+      "konum": "test/esmm-ubl.test.mjs:134:3",
+      "hata": "B Σ net tahsilat · 20006 !== 20007 (beklenen 20007, gelen 20006)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-esmm/m21-mutasyon-U10.log",
+  "klasor": "/home/user/wt/esmm",
+  "ham_cikti_sha256": "a5cd186f60d95a5ecbc4b5c0a7aaa810eaea83141ae0f9766deba9164b0ddbe2",
+  "ham_cikti_bayt": 9800
+}

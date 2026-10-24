@@ -1,0 +1,56 @@
+{
+ "dil": "destekofis-ebelge/2",
+ "ad": "hedefli-244-k22-son-deneme",
+ "aciklama": "K22 iletim günü: EDM 0. gün aldı (yanıt koptu), program 2. gün yeniden gönderdi/sordu; 9. gün (EDM'nin aldığından) iptal reddedilmeli ([GİB] §3 iletim)",
+ "bugun": "2026-06-17",
+ "cariler": {
+  "K1": "kisi",
+  "K2": "mukellef",
+  "K3": "mukellef_pksiz",
+  "K4": "gizli_mukellef",
+  "K5": "kisi",
+  "K6": "ilsiz_kisi",
+  "K7": "vdsiz_mukellef",
+  "K8": "nihai"
+ },
+ "adimlar": [
+  {
+   "islem": "ariza",
+   "tur": "kopma_sonra",
+   "no": 1
+  },
+  {
+   "islem": "kaydet",
+   "belge": "B1",
+   "cari": "K1",
+   "tarih": "2026-06-17",
+   "gonder": "simdi",
+   "no": 2
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 2,
+   "no": 3
+  },
+  {
+   "islem": "kart_gonder",
+   "belge": "B1",
+   "no": 4
+  },
+  {
+   "islem": "gun_ilerlet",
+   "gun": 7,
+   "no": 5
+  },
+  {
+   "islem": "iptal",
+   "belge": "B1",
+   "no": 6
+  },
+  {
+   "islem": "tumunu_gonder",
+   "kapsam": "hepsi",
+   "no": 7
+  }
+ ]
+}

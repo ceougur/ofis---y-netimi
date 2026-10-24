@@ -1,0 +1,48 @@
+{
+  "ad": "244-esmm2/mutasyon-M21-o1-eski-kural",
+  "komut": "node --test test/esmm-gonderim-244.test.mjs",
+  "commit": "7c36f8718bd81220e70c1441f641fa8035c11f85",
+  "dal": "HEAD",
+  "kirli": 7,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T07:06:27.925Z",
+  "sure_sn": 4.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 19,
+    "gecen": 16,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "e-SMM: numara, seri ve kronoloji (N4, N5, N14) › N4/N5: Kes, Sonra Gönder → numarasız bekler; kayıtta O1 (daha eski bekleyen makbuz varken yenisi numara almaz); Tümünü Gönder tarih sırasıyla TES, e-Arşiv TEA ayrı sayar",
+      "konum": "test/esmm-gonderim-244.test.mjs:248:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'TES2026000000001' (beklenen , gelen TES2026000000001)"
+    },
+    {
+      "ad": "e-SMM: numara, seri ve kronoloji (N4, N5, N14) › N5: seride daha yeni numara verilmişken daha eski tarihli makbuz e-SMM olarak gönderilmez (kalıcı kronoloji engeli) ve daha eski tarihli yeni makbuz kaydedilmez; e-SMM servisine gönderim yok",
+      "konum": "test/esmm-gonderim-244.test.mjs:286:3",
+      "hata": "e-SMM servisine istek yok · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "e-SMM: numara, seri ve kronoloji (N4, N5, N14) › N14: Müşteri Fişi Olarak Bırakılmış makbuz yeniden gönderilince e-SMM servisinden, TES serisinden numarayla gider (fiş numarası iz olarak kalır)",
+      "konum": "test/esmm-gonderim-244.test.mjs:306:3",
+      "hata": "Cannot read properties of undefined (reading 'slice')"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/esmm2/docs/kanit/2026-10-22/244-esmm2/mutasyon-M21-o1-eski-kural.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm2/esmm2-mut",
+  "ham_cikti_sha256": "a11833c79d8b56a75de9bc55ec1b74ed8ad625ecdc8535d934cbdd96fb6f30ab",
+  "ham_cikti_bayt": 12227
+}

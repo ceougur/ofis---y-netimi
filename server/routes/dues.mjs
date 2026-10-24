@@ -2,8 +2,10 @@
 // Sonuç; veri, tahsilatlar, elle kapatılan kalemler ve gün değişene kadar oturum başına önbellektedir.
 import { createHash } from "node:crypto";
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
+import { caseCollections, caseCollectionsState } from "../lib/insight/case-collections.mjs";
 import { computeDeadlines, computeDues, DUE_WINDOW } from "../lib/insight/dues.mjs";
 import { canUser } from "../lib/permissions.mjs";
+import { tableNotes } from "../lib/reports.mjs";
 import { systemClock } from "../lib/clock.mjs";
 
 const SETTLED_KEY = "dues.settled";
@@ -41,8 +43,11 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     const tabState = ["dataset.tabs.alias", "dataset.tabs.hidden"].map(name => store.setting(dataset.settingKey ? dataset.settingKey(name) : name, "") || "").join("|");
     const pages = dataset.sessions ? dataset.sessions() : [];
     const pagesState = pages.length > 1 ? pages.map(page => `${page.key}:${page.rowCount}:${page.recordCount}:${page.changedAt || ""}`).join("|") : "";
-    const tableKey = [pagesState, profile.fingerprint(), paymentsState(), settledRaw.length, settledRaw.slice(-64), tabState, now.toDateString()].join("|");
-    const key = [tableKey, plans?.fingerprint ? plans.fingerprint() : "", cheques?.fingerprint ? cheques.fingerprint() : "", invoices?.fingerprint ? invoices.fingerprint() : "", bankPlans()?.fingerprint ? bankPlans().fingerprint() : ""].join("|");
+    // 2.4.4 (E8): kalemleri kapatan tahsilatlar kayda bağlı carinin ve taksit kartlarının tahsilatlarını da kapsar (lib/insight/case-collections.mjs);
+    // carilerin kayıt bağı, cari tahsilatları ve taksit hareketleri değişince tablo kısmı da yeniden hesaplanır.
+    const planState = plans?.fingerprint ? plans.fingerprint() : "";
+    const tableKey = [pagesState, profile.fingerprint(), paymentsState(), caseCollectionsState(store), planState, settledRaw.length, settledRaw.slice(-64), tabState, now.toDateString()].join("|");
+    const key = [tableKey, cheques?.fingerprint ? cheques.fingerprint() : "", invoices?.fingerprint ? invoices.fingerprint() : "", bankPlans()?.fingerprint ? bankPlans().fingerprint() : ""].join("|");
     const session = dataset.currentKey();
     const hit = cache.get(session);
     if (hit && hit.key === key) return hit.result;
@@ -52,7 +57,9 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
       const rows = view.rows || [];
       const tabs = (view.tabs || []).map(item => item.title);
       const keys = new Set(rows.map(row => row.__hofKey).filter(Boolean));
-      const payments = store.all("SELECT case_key AS caseKey, amount, date, note FROM payments").filter(item => keys.has(item.caseKey));
+      // Kaydın tahsilatları: kayıt tahsilatı (eski), kayda bağlı carinin tahsilatı ve kayda bağlı / carisinin taksit kartının tahsilatı (2.4.4 E8: zil ve
+      // Tahsilat Takvimi'ndeki "Tahsilat Gir" cariye yazar; söz ve kalem carinin ya da taksitin tahsilatıyla kapanır).
+      const payments = caseCollections(store, session, { plans: true }).filter(item => keys.has(item.caseKey));
       const forced = profile.roles ? profile.roles() : null;
       const computed = computeDues({ rows, tabs, payments, settled: readSettled(), now, forced });
       const deadlines = computeDeadlines({ rows, tabs, now, exclude: computed.sources, forced });
@@ -98,7 +105,10 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
         // öbür sayfalar okunamazsa açık sayfanın takvimi yine verilir
       }
     }
-    const result = { items: [...items, ...planItems, ...chequeItems, ...invoiceItems, ...bankItems, ...foreignItems], deadlines: [...deadlines, ...foreignDeadlines], sources, dormant, today: local, generatedAt: now.toISOString() };
+    // 31e A1: borcu birden çok sekmede olan dosya no her sekmede ayrı borç ve ayrı kalemdir (2.4.3 gibi); Tahsilat Takvimi bunu raporlarla aynı notla söyler
+    // (zil söylemez). Taksit kartı olan kaydın tablo kalemleri zaten listede yok; notta da sayılmaz.
+    const notes = tableNotes({ split: (computed.debtSplit || []).filter(item => !carded.has(item.key)), unresolved: computed.debtUnresolved || [] });
+    const result = { items: [...items, ...planItems, ...chequeItems, ...invoiceItems, ...bankItems, ...foreignItems], deadlines: [...deadlines, ...foreignDeadlines], sources, dormant, notes, today: local, generatedAt: now.toISOString() };
     // 2.4.3 H2: içeriğin sürümü (üretim anı hariç her alan). Ekran elindeki sürümü gönderir; içerik değişmediyse büyük yanıt (10.000
     // faturalı veride 2,8 MB) yeniden gönderilmez. Başka personelin her kaydında anahtar değişir ama takvimin içeriği çoğu kez değişmez.
     const { generatedAt: _, ...content } = result;

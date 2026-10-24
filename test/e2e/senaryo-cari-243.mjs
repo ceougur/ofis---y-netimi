@@ -170,12 +170,14 @@ try {
     // Kayıttan tahsilat: yeni (boş) cariye değil kaydın kendi defterine.
     const no1Before = entriesOf(no1.id).paid;
     await selectRecord(page, "2026/100");
-    await page.click('.hof-case-actions [data-case-action="payment"]');
-    await page.waitForSelector(`${top} input[name="amount"]`);
-    await page.click(`${top} input[name="amount"]`);
-    await typeSlow(page, "321");
-    await page.keyboard.press("Enter");
-    await page.waitForTimeout(1500);
+    // 2.4.4 (E8): kayıt kartında Tahsilat düğmesi yok (CSS ile gizli; eski kodda görünür → kırmızı); kayıt tahsilatının sunucu yolu aynı → API'den.
+    ok(!(await page.isVisible('.hof-case-actions [data-case-action="payment"]')), "kayıt kartında Tahsilat düğmesi görünmez (E8)");
+    const recordPay = await page.evaluate(async () => {
+      const response = await fetch(`/api/workspace/cases/${encodeURIComponent("2026/100")}/payments`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ amount: "321", method: "cash", date: window.HOF.localToday() }) });
+      return { status: response.status, body: await response.json() };
+    });
+    ok(recordPay.status === 200 && recordPay.body.ok === true, `kayıt tahsilatı API'den: ${recordPay.status} ${JSON.stringify(recordPay.body).slice(0, 120)}`);
+    await page.waitForTimeout(500);
     const toNew = entriesOf(created.id);
     const paidRecord = one("SELECT COALESCE(SUM(amount), 0) AS s FROM payments WHERE case_key = '2026/100'").s;
     ok(toNew.n === 0 && toNew.paid === 0, `yeni cariye para yazılmadı (hareket ${toNew.n}, tahsilat ${toNew.paid})`);
@@ -203,7 +205,11 @@ try {
     ok(mehmet?.caseKey === "2026/101", `cari No ${mehmet?.refNo} kayda bağlı (${mehmet?.caseKey})`);
     await closeAll(page);
     await selectRecord(page, "2026/101");
-    await page.click('.hof-case-actions [data-case-action="payment"]');
+    // 2.4.4 (E8): kayıt kartında Tahsilat düğmesi yok; kayda bağlı carinin tahsilatı Cari penceresinden (+ Tahsilat) girilir, kaydın İşlem Geçmişi'nde görünür.
+    ok(!(await page.isVisible('.hof-case-actions [data-case-action="payment"]')), "kayıt kartında Tahsilat düğmesi görünmez (E8)");
+    await page.evaluate(id => window.HOF.accounts.open(id), mehmet.id);
+    await page.waitForSelector(`${accWin} [data-entry="in"]`);
+    await page.click(`${accWin} [data-entry="in"]`);
     await page.waitForSelector(`${top} input[name="amount"]`);
     const eyebrow = await textOf(page, `${top} .hof-modal-eyebrow, ${top} .eyebrow`);
     const head = await page.$eval(top, node => node.innerText.slice(0, 200)).catch(() => "");
@@ -213,6 +219,9 @@ try {
     await page.keyboard.press("Enter");
     await page.waitForTimeout(1800);
     ok(entriesOf(mehmet.id).paid === 500, `tahsilat carinin defterinde: ${entriesOf(mehmet.id).paid}`);
+    await closeAll(page);
+    await selectRecord(page, "2026/101");
+    await page.evaluate(() => window.HOF.workspace.refreshActivity());
     await page.waitForFunction(() => /cari tahsilatı/.test(document.getElementById("hof-activity")?.textContent || ""), null, { timeout: 8000 }).catch(() => null);
     const history = await textOf(page, "#hof-activity");
     ok(/500,00 cari tahsilatı/.test(history) && /Toplam Tahsilat ₺500,00/.test(history), `İşlem Geçmişi: “${history.slice(0, 160)}”`);
@@ -241,7 +250,7 @@ try {
       const select = document.querySelector('.hof-accounts-modal .hof-plans-filters select');
       return { button: Math.round(button?.getBoundingClientRect().height || 0), select: Math.round(select?.getBoundingClientRect().height || 0) };
     });
-    ok(sizes.button > 0 && sizes.button <= sizes.select + 1, `"Cari Listesi - PDF" ${sizes.button} px, seçici ${sizes.select} px (tek satır)`);
+    ok(sizes.button > 0 && sizes.button <= sizes.select + 1, `Cari Listesi PDF düğmesi ${sizes.button} px, seçici ${sizes.select} px (tek satır)`);
     await shot(page, "a12-suzgec");
     await closeAll(page);
   });

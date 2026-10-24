@@ -1,0 +1,32 @@
+{
+  "ad": "toast-e2e-gg243-tumunu-gonder",
+  "komut": "npm run test:gg243-tumunu-gonder",
+  "commit": "db468403ae739d7ddc43dc06d33808d7a538f779",
+  "dal": "is/toast-tire",
+  "kirli": 3,
+  "izlenmeyen": 10,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T06:16:02.402Z",
+  "sure_sn": 54.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 17,
+    "gecen": 17,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/toast-e2e-gg243-tumunu-gonder.log",
+  "klasor": "/home/user/wt/toast-tire",
+  "ham_cikti_sha256": "e40891be1ff98a4d7bdf338df6cc4ec3c441b1ad921c93af2aa2c31e277ea456",
+  "ham_cikti_bayt": 1802
+}

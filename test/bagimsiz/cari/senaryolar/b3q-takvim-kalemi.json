@@ -1,0 +1,113 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3q-takvim-kalemi",
+ "aciklama": "TAKVİM KALEMİ (baş mimar kararı 23.10.2026): vade kaleminin tutarı o vadede ödenmesi gereken tutardır — dönem/taksit tutarı kolonu varsa min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu. Tablodaki Kişiler ve 'önce cari açın' Açılış Bakiyesi satır borcunu (Kalan) gösterir. 'Taksitler' (Ad Soyad, Taksit Tutarı, Kalan Borç, Sonraki Taksit Tarihi): Kaan Uz 1.000 / 9.000 → kalem 1.000, Kişiler 9.000; Lale Ak 1.500 / 1.000 → kalem 1.000; Mert Oz 2.000 / boş → kalem 2.000. 'Aidat' (Aidat, Kalan Borç): Nil Su 1.000 / 400 → kalem 400; Oya Tan 1.000 / 2.500 → kalem 1.000, Kişiler 2.500. 'Kira' (yalnız Kira): Pelin Ak 5.000. Kişiler 19.900, Takvim / Vade Takip / Nakit Akışı 10.400.",
+ "dayanak": "KARARLAR.md B3i TAKVİM KALEMİ, B4b K4",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Taksitler",
+     "tur": "serbest",
+     "ilk": [
+      "Ad Soyad"
+     ],
+     "basliklar": [
+      "Taksit Tutarı",
+      "Kalan Borç",
+      "Sonraki Taksit Tarihi"
+     ],
+     "kayitlar": [
+      {
+       "no": "K1",
+       "isim": "Kaan Uz",
+       "hucreler": {
+        "Taksit Tutarı": "1.000,00 ₺",
+        "Kalan Borç": "9.000,00 ₺",
+        "Sonraki Taksit Tarihi": "20.06.2026"
+       }
+      },
+      {
+       "no": "K2",
+       "isim": "Lale Ak",
+       "hucreler": {
+        "Taksit Tutarı": "1.500,00 ₺",
+        "Kalan Borç": "1.000,00 ₺",
+        "Sonraki Taksit Tarihi": "20.06.2026"
+       }
+      },
+      {
+       "no": "K3",
+       "isim": "Mert Oz",
+       "hucreler": {
+        "Taksit Tutarı": "2.000,00 ₺",
+        "Kalan Borç": "",
+        "Sonraki Taksit Tarihi": "20.06.2026"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Aidat",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Aidat",
+      "Kalan Borç",
+      "Son Ödeme"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/901",
+       "isim": "Nil Su",
+       "hucreler": {
+        "Telefon": "",
+        "Aidat": "1.000,00 ₺",
+        "Kalan Borç": "400,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      },
+      {
+       "no": "2026/902",
+       "isim": "Oya Tan",
+       "hucreler": {
+        "Telefon": "",
+        "Aidat": "1.000,00 ₺",
+        "Kalan Borç": "2.500,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Kira",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Kira",
+      "Son Ödeme"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/903",
+       "isim": "Pelin Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Kira": "5.000,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol",
+   "raporlar": true
+  }
+ ]
+}

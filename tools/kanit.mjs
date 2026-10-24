@@ -60,7 +60,14 @@ export function parseSummary(text) {
   if (node.tests !== undefined && node.pass !== undefined && node.fail !== undefined) {
     return { bicim: "node:test", toplam: node.tests, gecen: node.pass, basarisiz: node.fail, iptal: node.cancelled ?? 0, atlanan: (node.skipped ?? 0) + (node.todo ?? 0) };
   }
-  let m = last(clean, /(\d+) geçti, (\d+) kaldı/g);
+  // test:kahin-defter (test/bagimsiz/defter/kos.mjs, 2.4.4): kâhinin kendisi atlanan/reddedilen olayı ve yakalanmayan mutasyonu da kırmızı sayar
+  // (çıkış 1); burada da başarısıza eklenir, yoksa çıkış 1 + "temiz özet" ÇELİŞKİ olurdu.
+  let m = last(clean, /ÖZET: (\d+) denetim, (\d+) fark, (\d+) atlanan olay, (\d+) reddedilen olay, (\d+) yakalanmayan mutasyon/g);
+  if (m) {
+    const [denetim, fark, atlanan, reddedilen, kacan] = m.slice(1, 6).map(Number);
+    return { bicim: "kahin-defter", toplam: denetim, gecen: denetim - fark, basarisiz: fark + atlanan + reddedilen + kacan, iptal: 0, atlanan: 0 };
+  }
+  m = last(clean, /(\d+) geçti, (\d+) kaldı/g);
   if (m) return { bicim: "senaryo", toplam: Number(m[1]) + Number(m[2]), gecen: Number(m[1]), basarisiz: Number(m[2]), iptal: 0, atlanan: 0 };
   m = last(clean, /(\d+) denetim geçti, (\d+) başarısız/g);
   if (m) return { bicim: "senaryo", toplam: Number(m[1]) + Number(m[2]), gecen: Number(m[1]), basarisiz: Number(m[2]), iptal: 0, atlanan: 0 };
@@ -212,7 +219,9 @@ async function run(name, command, minutes) {
   if (!name || !command.length) throw new Error("kullanım: kos <ad> [--sure <dk>] -- <komut> [arg…]");
   const day = new Date().toISOString().slice(0, 10);
   const dir = path.join(KANIT, day);
-  mkdirSync(dir, { recursive: true });
+  // Ad alt klasör içerebilir (ör. 244-m30/test-senaryo): klasör komuttan ÖNCE açılır; yoksa komut bitince kayıt ENOENT ile yazılamıyor, sonuç
+  // kayboluyordu (22.10.2026, madde 30).
+  mkdirSync(path.dirname(path.join(dir, name)), { recursive: true });
   const env = environment();
   const started = new Date();
   const chunks = [];
@@ -294,7 +303,7 @@ const CI_WORKFLOW = ".github/workflows/ci.yml";
 // Yalnız belge (kullanıcı kararı 13.10.2026: "sadece doküman/plan değiştiğinde CI testleri koşmasın, sadece gerçek kod değiştiğinde çalışsın").
 // ci.yml'deki push "paths-ignore" listesiyle AYNI olmalı (test/kanit-araci.test.mjs denetler). Yalnız hiçbir testin ya da aracın okumadığı
 // belgeler: plan/kanıt/kılavuz belgelerini testler okuduğu için onlar listede YOK. PR koşusu (master'a) her zaman tamdır.
-export const BELGE_YOLLARI = ["CLAUDE.md", "docs/GECMIS-KARARLAR.md", "docs/DURUM-VE-DEVAM.md", "docs/2.3.0-IS-LISTESI.md", "docs/2.4.3-IS-LISTESI.md", "docs/devir/**", "docs/fatura/**", "docs/pazarlama/**"];
+export const BELGE_YOLLARI = ["CLAUDE.md", "docs/GECMIS-KARARLAR.md", "docs/DURUM-VE-DEVAM.md", "docs/2.3.0-IS-LISTESI.md", "docs/2.4.3-IS-LISTESI.md", "docs/2.4.4-IS-LISTESI.md", "docs/devir/**", "docs/erp/**", "docs/fatura/**", "docs/pazarlama/**"];
 export const yalnizBelge = files => files.length > 0 && files.every(file => BELGE_YOLLARI.some(pattern => (pattern.endsWith("/**") ? file.startsWith(pattern.slice(0, -2)) : file === pattern)));
 const changedFiles = (gitFn, sha) => {
   const out = gitFn("diff-tree", "--no-commit-id", "--name-only", "-r", "--root", sha);

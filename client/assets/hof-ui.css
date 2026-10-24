@@ -225,6 +225,17 @@ html.hof-auth-required #root {
   height: 17px;
   accent-color: var(--do-accent);
 }
+/* 31f (G6): açıklamalı onay kutusu — açıklama kutunun hemen altında, kutunun metniyle hizalı. */
+.hof-check-field {
+  display: grid;
+  gap: 4px;
+}
+.hof-check-field small {
+  padding-left: 26px;
+  color: var(--do-faint);
+  font-size: 12px;
+  font-weight: 500;
+}
 .hof-password {
   position: relative;
   display: block;
@@ -485,6 +496,9 @@ body:has(.hof-modal-backdrop.is-visible) .hof-toasts {
 }
 .hof-toast-text {
   flex: 1;
+}
+.hof-toast-text .hof-nobreak {
+  white-space: nowrap;
 }
 .hof-toast-action {
   padding: 6px 10px;
@@ -1108,6 +1122,9 @@ body:has(.hof-modal-backdrop.is-visible) .hof-toasts {
 /* ---------- Yetkiye göre görünürlük ---------- */
 html:not(.hof-can-records-delete) .hof-float-delete,
 html:not(.hof-can-reports-view) [data-requires="reports.view"],
+/* Personel Raporu (2.4.4): performans özeti (reports.view) ya da Personel Özlük (staff.view) yetkisiyle. */
+html:not(.hof-can-reports-view):not(.hof-can-staff-view) [data-requires="reports.staff"],
+html:not(.hof-can-staff-manage) [data-requires="staff.manage"],
 /* Raporlar (v2.0.9): rapor yetkisi (yönetici, uzman), kişiye verilen finans raporları yetkisi ya da (v2.0.10)
    işlem geçmişi yetkisi (Raporlar → Tüm raporlar → İşlem geçmişi). */
 html:not(.hof-can-reports-view):not(.hof-can-overview-view):not(.hof-can-audit-view):not(.hof-can-bank-reports) [data-requires="reports.any"],
@@ -2121,6 +2138,12 @@ button.hof-summary-card:focus-visible {
 html.hof-no-haciz [data-case-action="lien"],
 html.hof-no-haciz #hof-sidecard [data-action="liens"],
 html.hof-no-tahsilat [data-case-action="payment"] {
+  display: none !important;
+}
+/* 2.4.4 (E8; kullanıcı 20.10.2026: "kayıt detay kartındaki Tahsilat düğmesi kaldırılsın; regresyon olma ihtimali varsa koda dokunmadan yalnız CSS ile"):
+   kayıttan doğrudan Kasa'ya tahsilat karttan kalkar; tahsilat Cari'den / kayda bağlı Taksit kutusundaki "+ Tahsilat" ile girilir. Sunucu yolu, eski
+   tahsilatların İşlem Geçmişi'nde görünmesi/düzeltilmesi/silinmesi değişmez. */
+.hof-case-actions [data-case-action="payment"] {
   display: none !important;
 }
 
@@ -6348,6 +6371,16 @@ body.hof-dense .dynamic-table th {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
+/* 2.4.4 U3: alt TOPLAM satırı (Rapor Merkezi'nin TOPLAM'ı gibi): kaydırınca tablonun altında kalır. */
+.hof-report-table tfoot td {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  border-top: 2px solid var(--do-ink);
+  background: #eef6f1;
+  color: var(--do-ink);
+  font-weight: 800;
+}
 .hof-state {
   padding: 1px 8px;
   border-radius: 999px;
@@ -6645,16 +6678,10 @@ body.hof-dense .dynamic-table th {
   display: inline-flex;
   gap: 6px;
 }
-.hof-plan-output .hof-button svg {
-  margin-right: 2px;
-}
 /* 2.4.3 (keşif A12): süzgeç satırındaki PDF / Yazdır / Excel düğmeleri tek satır ve seçicilerle aynı boy (36 px); Cari listesinde ikinci
-   satırda kalan genişliği kullanır ("Cari Listesi - PDF" önceden üç satıra kırılıyordu). */
-.hof-plans-filters .hof-plan-output .hof-button {
-  display: inline-flex;
-  align-items: center;
+   satırda kalan genişliği kullanır. 2.4.4 (UI11): düğmeler ortak dışa aktarım ailesinde (.hof-rep-out). */
+.hof-plans-filters .hof-plan-output .hof-rep-out {
   height: 36px;
-  white-space: nowrap;
 }
 @media (min-width: 1101px) {
   .hof-acc-filters > .hof-plan-output {
@@ -8027,21 +8054,49 @@ button.hof-source-card:focus-visible {
 .hof-rep-export.is-disabled {
   opacity: 0.5;
 }
+/* 2.4.4 (UI11): dışa aktarım düğmelerinin TEK ailesi (HOF.outputButton). Liste, rapor, kart ve belge çıktılarında PDF (kırmızı ton), Excel (yeşil ton)
+   ve Yazdır (nötr) her pencerede aynı simge, yazı, köşe ve boyda; <a> ve <button> aynı görünür. Süzgeç satırında seçicilerle aynı boy (36 px, aşağıda). */
 .hof-rep-out {
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 8px 13px;
-  border: 1px solid;
+  min-height: 32px;
+  margin: 0;
+  padding: 0 12px;
+  border: 1px solid var(--do-border-strong);
   border-radius: 10px;
+  background: #fff;
+  color: var(--do-ink);
   font: 750 12.5px/1 var(--do-display);
   text-decoration: none;
   white-space: nowrap;
+  cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.hof-rep-out svg {
+  flex: none;
 }
 .hof-rep-out:hover {
   box-shadow: 0 6px 14px rgba(20, 52, 40, 0.1);
   transform: translateY(-1px);
+}
+.hof-rep-out:focus-visible {
+  outline: none;
+  box-shadow: var(--do-focus);
+}
+.hof-rep-out:disabled,
+.hof-rep-out[aria-disabled="true"] {
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+.hof-rep-out:disabled {
+  opacity: 0.6;
+}
+.hof-rep-out.is-busy {
+  cursor: progress;
 }
 .hof-rep-out.is-pdf {
   border-color: #f0cfc8;
@@ -8052,6 +8107,11 @@ button.hof-source-card:focus-visible {
   border-color: #c7e2d2;
   background: #f1faf4;
   color: #1c6b48;
+}
+.hof-rep-out.is-print {
+  border-color: var(--do-border-strong);
+  background: #fff;
+  color: var(--do-ink);
 }
 .hof-rep-filters {
   display: flex;
@@ -9082,6 +9142,133 @@ button.hof-source-card:focus-visible {
   }
 }
 
+/* ---------- 2.4.4 (KÖ3): Başlarken — yöneticinin ilk adımlar listesi (açılış ekranında kartın üstünde; pencerede de) ---------- */
+#hof-start {
+  align-content: center;
+  gap: 18px;
+}
+.hof-gs {
+  width: min(760px, 100%);
+  box-sizing: border-box;
+  text-align: left;
+}
+#hof-start > .hof-gs {
+  padding: 20px clamp(18px, 3vw, 28px);
+  border: 1px solid var(--do-border);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: var(--do-shadow);
+}
+.hof-gs-head h3 {
+  margin: 0;
+  color: var(--do-ink);
+  font: 800 19px/1.25 var(--do-display);
+}
+.hof-gs-head small {
+  display: block;
+  margin-top: 3px;
+  color: var(--do-muted);
+  font: 500 13px/1.45 var(--do-font);
+}
+.hof-gs-progress {
+  margin: 10px 0 8px;
+  color: var(--do-ink-soft);
+  font: 700 12.5px/1.3 var(--do-font);
+}
+.hof-gs-steps {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hof-gs-step {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--do-border);
+  border-radius: 12px;
+  background: #fbfdfb;
+}
+.hof-gs-step.is-done {
+  background: var(--do-accent-soft);
+}
+.hof-gs-mark {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--do-border-strong);
+  border-radius: 50%;
+  box-sizing: border-box;
+  color: #fff;
+}
+.hof-gs-step.is-done .hof-gs-mark {
+  border-color: var(--do-accent);
+  background: var(--do-accent);
+}
+.hof-gs-text b {
+  display: block;
+  color: var(--do-ink);
+  font: 800 13.5px/1.3 var(--do-display);
+}
+.hof-gs-text small {
+  display: block;
+  color: var(--do-muted);
+  font: 500 12px/1.45 var(--do-font);
+}
+.hof-gs-side {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+.hof-gs-status {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #fbeed0;
+  color: #8a5d00;
+  font: 700 11.5px/1.5 var(--do-font);
+}
+.hof-gs-status.is-done {
+  background: #dcf2e4;
+  color: #1f6a43;
+}
+.hof-gs-noperm {
+  max-width: 220px;
+  color: var(--do-faint);
+  font-size: 11.5px;
+}
+.hof-gs-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+.hof-gs-note,
+.hof-gs-unknown {
+  margin: 10px 0 0;
+  color: var(--do-muted);
+  font-size: 12.5px;
+}
+.hof-gs-foot .hof-gs-note {
+  margin: 0;
+}
+@media (max-width: 640px) {
+  .hof-gs-step {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .hof-gs-side {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+}
+
 /* ---- Tek arama kutusu tasarımı (v2.0.10) ----
    Programdaki bütün arama kutuları (ana tablo, Cari, Taksit, Çek/Senet, Stok, Raporlar, sohbet, alan seçici) aynı
    görünür: dolgulu açık yeşil zemin, büyüteç simgesi, belirgin kenar; odakta beyaz zemin ve yeşil halka.
@@ -9848,12 +10035,14 @@ input[type="search"]::-webkit-search-cancel-button {
 .hof-inv-mini input { width: 64px; height: 30px; padding: 0 8px; border: 1px solid var(--do-border-strong); border-radius: 8px; font: 600 12.5px var(--do-font); text-align: right; }
 /* v2.0.16 (müşteri): kalem tablosu kendi içinde dikey kaydırmaz (pencere kayar); öneri listesi sabit konumlu açılır. */
 .hof-rep-table.hof-inv-lines-scroll { max-height: none; overflow-x: auto; overflow-y: visible; }
-.hof-inv-lines { min-width: 980px; }
+.hof-inv-lines { min-width: 1022px; }
 .hof-inv-lines td { vertical-align: top; padding-top: 6px; padding-bottom: 6px; }
 .hof-inv-lines input, .hof-inv-lines select { width: 100%; min-width: 0; height: 32px; padding: 0 8px; border: 1px solid var(--do-border-strong); border-radius: 8px; background: #fff; color: var(--do-ink); font: 600 12.5px var(--do-font); }
 .hof-inv-lines input.num { text-align: right; }
 .hof-inv-lines input[readonly] { background: var(--do-surface-soft); color: var(--do-ink-soft); }
-.hof-inv-lines td.hof-inv-code { width: 118px; }
+/* 2.4.4 (uzman UI3a): EAN-13 barkod ve "STK-2.0.26-001" gibi 14 karakterli stok kodu kutuda kesilmeden görünsün (önceden 118px'te 13 hane sığmıyordu). */
+.hof-inv-lines td.hof-inv-code { width: 160px; }
+.hof-inv-lines td.hof-inv-code input { padding: 0 6px; font-variant-numeric: tabular-nums; }
 .hof-inv-lines td:nth-child(4) { width: 84px; }
 .hof-inv-lines td:nth-child(5) { width: 82px; }
 .hof-inv-lines td:nth-child(6) { width: 112px; }
@@ -9925,6 +10114,10 @@ input[type="search"]::-webkit-search-cancel-button {
 .hof-inv-totals .is-payable dd { color: var(--do-accent); font-weight: 800; }
 .hof-inv-words { margin: 8px 0 0; color: var(--do-muted); font: italic 500 12px/1.4 var(--do-font); }
 .hof-inv-problems { margin: 8px 0; padding: 8px 10px 8px 26px; border-radius: 10px; background: var(--do-warn-soft); color: var(--do-warn); font: 650 12.5px/1.5 var(--do-font); }
+/* 2.4.4 (uzman UX9): sorun listesinin altında "Cariyi Düzenle" ya da ne yapılacağı. */
+.hof-inv-party-fix { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 0 0 8px; }
+.hof-inv-party-fix small, .hof-inv-party-hint { color: var(--do-muted); font: 500 12px/1.45 var(--do-font); }
+.hof-inv-party-hint { margin: 0 0 8px; }
 .hof-inv-note { margin: 6px 0 4px; }
 .hof-inv-return { margin: 4px 0 10px; padding: 12px 14px; border: 1px solid var(--do-gold); border-radius: 14px; background: var(--do-gold-soft); }
 .hof-inv-return-search input { width: 100%; }
@@ -9951,6 +10144,10 @@ input[type="search"]::-webkit-search-cancel-button {
 .hof-inv-banner small { display: block; color: inherit; opacity: 0.8; }
 .hof-inv-banner.is-cancelled { background: var(--do-danger-soft); color: var(--do-danger); }
 .hof-inv-banner.is-ok { background: #e3f2e9; color: #2d6a4b; }
+/* 2.4.4 (madde 30b): yedek geri yüklendikten sonra Fatura'daki tek seferlik numara uyarısı. */
+.hof-inv-banner.is-warn { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; background: var(--do-warn-soft); color: var(--do-warn); }
+.hof-inv-banner.is-warn > span:first-child { flex: 1 1 320px; }
+.hof-inv-banner-actions { display: inline-flex; flex-wrap: wrap; gap: 6px; }
 .hof-inv-settings { margin: 14px 0; padding: 12px 14px; border: 1px solid var(--do-border); border-radius: 14px; background: #fbfdfb; }
 .hof-inv-settings h4 { margin: 0 0 8px; color: var(--do-ink-soft); font: 800 12px/1 var(--do-display); letter-spacing: 0.12em; text-transform: uppercase; }
 .hof-inv-settings h4 small { text-transform: none; letter-spacing: 0; color: var(--do-faint); font-weight: 600; }
@@ -10402,6 +10599,14 @@ input[type="search"]::-webkit-search-cancel-button {
 .hof-chq-actions .hof-button[disabled] {
   opacity: 0.5;
   cursor: not-allowed;
+}
+/* 2.4.4 (uzman UX27): fatura kartında pasif dolu düğme ("Düzenle") dolu/vurgulu görünmesin — pasif "Sil" / "İptal Et" gibi gri ve çerçeveli;
+   nedeni düğmelerin altında yazılı (.hof-inv-blocks). Etkin düğmeler değişmez. */
+.hof-invoices-modal .hof-chq-actions .hof-button:not(.hof-button-ghost):not(.hof-button-danger-ghost)[disabled] {
+  background: var(--do-surface-soft);
+  color: var(--do-faint);
+  border-color: var(--do-border);
+  box-shadow: none;
 }
 /* Ayarlar */
 .hof-bank-settings {
@@ -10972,6 +11177,8 @@ input[type="search"]::-webkit-search-cancel-button {
 .hof-cheques .hof-rep-stats { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
 .hof-rep-stat.is-deposited strong { color: #2a4f8f; }
 .hof-chq-why { flex: 1 1 260px; align-self: center; margin: 0; color: var(--do-warn); font: 650 12px/1.4 var(--do-font); }
+/* 2.4.4 E7: e-Fatura Portalı pasifken nedeni düğmenin yanında (kalıcı karar: pasif düğmenin nedeni görünür yazı). */
+.hof-inv-portal-why { flex: 1 1 100%; margin: 0; text-align: right; color: var(--do-warn); font: 650 12px/1.4 var(--do-font); }
 .hof-chq-history li.is-deposit b { color: #2a4f8f; }
 
 /* ---------- 2.3.0 İz 5.6: işlem geçmişi — Daha Fazla Göster, Kayda Git ---------- */
@@ -11112,3 +11319,130 @@ input[type="search"]::-webkit-search-cancel-button {
 /* 2.4.3 MM3: Vergi Ödemesi ve KDV Mahsup Fişi (hof-tax.js) */
 .hof-tax-warn { margin: 6px 0; color: var(--do-warn); font-weight: 700; }
 .hof-tax-h3 { margin: 18px 0 6px; font: 700 13px var(--do-font); }
+/* 2.4.4 (E5): Web Servis Kullanıcı Adı alanına adres yazılınca görünen uyarı. */
+.hof-field small[data-integ-user-warn] {
+  color: var(--do-danger);
+  font-weight: 600;
+}
+.hof-field small[data-integ-user-warn][hidden] {
+  display: none;
+}
+
+/* ---------- Personel Özlük (2.4.4; hof-staff.js) ---------- */
+.hof-staff-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 12px;
+}
+.hof-staff-bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.hof-staff-search {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 12px;
+  border: 1px solid var(--do-border);
+  border-radius: 10px;
+  font: inherit;
+}
+.hof-staff-row {
+  cursor: pointer;
+}
+.hof-staff-row:hover,
+.hof-staff-row:focus-visible {
+  background: rgba(31, 106, 80, 0.06);
+  outline: none;
+}
+.hof-staff-total td {
+  border-top: 2px solid var(--do-border);
+  font-weight: 600;
+}
+.hof-staff-photo-mark {
+  color: var(--do-faint);
+}
+.hof-staff-card-head {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.hof-staff-card-head h3 {
+  margin: 0 0 2px;
+  font-size: 18px;
+}
+.hof-staff-card-head p {
+  margin: 0 0 6px;
+  color: var(--do-faint);
+}
+.hof-staff-photo {
+  width: 96px;
+  height: 96px;
+  flex: none;
+  border-radius: 14px;
+  object-fit: cover;
+  border: 1px solid var(--do-border);
+  background: #f3f6f4;
+}
+.hof-staff-photo.is-empty {
+  display: grid;
+  place-items: center;
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--do-faint);
+}
+.hof-staff-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 18px;
+  margin: 0 0 14px;
+}
+.hof-staff-field {
+  padding: 8px 10px;
+  border: 1px solid var(--do-border);
+  border-radius: 10px;
+  background: #fff;
+}
+.hof-staff-field dt {
+  color: var(--do-faint);
+  font-size: 11px;
+  font-weight: 700;
+}
+.hof-staff-field dd {
+  margin: 2px 0 0;
+  overflow-wrap: anywhere;
+}
+.hof-staff-field[data-field="address"] {
+  grid-column: 1 / -1;
+}
+.hof-staff-form .hof-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 16px;
+}
+.hof-staff-form .hof-form > .hof-form-error,
+.hof-staff-form .hof-form > .hof-actions,
+.hof-staff-form .hof-form > .hof-staff-photo-field,
+.hof-staff-form .hof-form > label:has(textarea) {
+  grid-column: 1 / -1;
+}
+.hof-staff-photo-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.hof-staff-photo-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+@media (max-width: 720px) {
+  .hof-staff-grid,
+  .hof-staff-form .hof-form {
+    grid-template-columns: 1fr;
+  }
+}

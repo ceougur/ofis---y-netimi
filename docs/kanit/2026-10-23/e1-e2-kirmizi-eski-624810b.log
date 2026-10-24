@@ -1,0 +1,168 @@
+TAP version 13
+# Subtest: 31e E1: 'Vergi No' (sağlamasız) kayıt kimliği adayı değil
+    # Subtest: roller: Vergi No / Vergi Numarası / Vergi Kimlik No → number (kod); Kimlik No → id, VKN / TC → number (2.4.3 gibi); tutar değil (B1/B2)
+    not ok 1 - roller: Vergi No / Vergi Numarası / Vergi Kimlik No → number (kod); Kimlik No → id, VKN / TC → number (2.4.3 gibi); tutar değil (B1/B2)
+      ---
+      duration_ms: 16.340495
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e-eski-624810b/test/tablo-borc-e1-e2.test.mjs:34:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        -   'number',
+        -   'number',
+        -   'number',
+            'id',
+        +   'id',
+        +   'id',
+        +   'id',
+        +   'id',
+        +   'id'
+        -   'number',
+        -   'number'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'number'
+        1: 'number'
+        2: 'number'
+        3: 'id'
+        4: 'number'
+        5: 'number'
+      actual:
+        0: 'id'
+        1: 'id'
+        2: 'id'
+        3: 'id'
+        4: 'id'
+        5: 'id'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e-eski-624810b/test/tablo-borc-e1-e2.test.mjs:36:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: 2.4.3'te yüklenmiş dosya no'suz tablo 'Yerine koy' ile yeniden yüklenince kayıt anahtarı ve 400 TL kayıt tahsilatı korunur (E1)
+    not ok 2 - 2.4.3'te yüklenmiş dosya no'suz tablo 'Yerine koy' ile yeniden yüklenince kayıt anahtarı ve 400 TL kayıt tahsilatı korunur (E1)
+      ---
+      duration_ms: 6.776612
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e-eski-624810b/test/tablo-borc-e1-e2.test.mjs:39:3'
+      failureType: 'testCodeFailure'
+      error: 'v2.4.3 etiketi bu depoda yok (git fetch --tags gerekir).'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        checkoutTag (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e-eski-624810b/test/guvenilirlik/surumler.mjs:33:22)
+        bootVersion (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e-eski-624810b/test/guvenilirlik/surumler.mjs:68:18)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e-eski-624810b/test/tablo-borc-e1-e2.test.mjs:46:26)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+      ...
+    1..2
+not ok 1 - 31e E1: 'Vergi No' (sağlamasız) kayıt kimliği adayı değil
+  ---
+  duration_ms: 24.145588
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e-eski-624810b/test/tablo-borc-e1-e2.test.mjs:33:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 31e E2: vergi sütunlu fatura / sipariş listesi Tablodaki Kişiler'de; borç seçilemezse not
+    # Subtest: Faturalar: borç Genel Toplam (KDV dahil; karar A) 1.200 / 2.400 / 3.600; KDV ve Vergi Tutarı sekmelerinde borç Tutar (500, 700) (B3/B4)
+    not ok 1 - Faturalar: borç Genel Toplam (KDV dahil; karar A) 1.200 / 2.400 / 3.600; KDV ve Vergi Tutarı sekmelerinde borç Tutar (500, 700) (B3/B4)
+      ---
+      duration_ms: 41.836881
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e-eski-624810b/test/tablo-borc-e1-e2.test.mjs:94:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        []
+        + actual - expected
+        
+          {
+        +   ece: undefined,
+        +   firat: undefined,
+        +   gul: undefined,
+        +   hakan: undefined,
+        +   ipek: undefined
+        -   ece: 1200,
+        -   firat: 2400,
+        -   gul: 3600,
+        -   hakan: 500,
+        -   ipek: 700
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        ece: 1200
+        firat: 2400
+        gul: 3600
+        hakan: 500
+        ipek: 700
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e-eski-624810b/test/tablo-borc-e1-e2.test.mjs:97:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Masraflar (Tutar + Masraf, borç sütunu seçilemedi): borç sayılmaz ama raporda görünür not (B5)
+    not ok 2 - Masraflar (Tutar + Masraf, borç sütunu seçilemedi): borç sayılmaz ama raporda görünür not (B5)
+      ---
+      duration_ms: 9.64368
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e-eski-624810b/test/tablo-borc-e1-e2.test.mjs:100:3'
+      failureType: 'testCodeFailure'
+      error: 'cari-ekstre notu: []'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e-eski-624810b/test/tablo-borc-e1-e2.test.mjs:103:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - 31e E2: vergi sütunlu fatura / sipariş listesi Tablodaki Kişiler'de; borç seçilemezse not
+  ---
+  duration_ms: 667.370021
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e-eski-624810b/test/tablo-borc-e1-e2.test.mjs:72:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 4
+# suites 2
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1288.823842

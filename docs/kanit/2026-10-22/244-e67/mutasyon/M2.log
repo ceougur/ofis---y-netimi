@@ -1,0 +1,139 @@
+TAP version 13
+# Subtest: Silinen numara göçü (v32 E6): v2.4.3'te silinip Silinenler'de duran belgenin numarası güncellemeden sonra verilmez
+    # Subtest: G1/G3 001: tarama Silinenler'deki son fişi (FIS…003) ve makbuzu (SMM…001) kullanılmış sayar; sıradaki FIS…004 / SMM…002
+    ok 1 - G1/G3 001: tarama Silinenler'deki son fişi (FIS…003) ve makbuzu (SMM…001) kullanılmış sayar; sıradaki FIS…004 / SMM…002
+      ---
+      duration_ms: 175.623589
+      type: 'test'
+      ...
+    # Subtest: G1 Silinenler'deki G (FIS…003) geri yüklenince kendi numarasıyla döner; numara tek belgede
+    ok 2 - G1 Silinenler'deki G (FIS…003) geri yüklenince kendi numarasıyla döner; numara tek belgede
+      ---
+      duration_ms: 78.830985
+      type: 'test'
+      ...
+    # Subtest: G2 2.4.3'te numarası yeniden verilmiş E (FIS…002, şimdi F'de) geri yüklenmez: 409, belge Silinenler'de kalır, FIS…002 tek belgede
+    not ok 3 - G2 2.4.3'te numarası yeniden verilmiş E (FIS…002, şimdi F'de) geri yüklenmez: 409, belge Silinenler'de kalır, FIS…002 tek belgede
+      ---
+      duration_ms: 7.826798
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e67/e67-mutasyon/test/goc-244-silinen-numara.test.mjs:128:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}
+        
+        500 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 500
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e67/e67-mutasyon/test/goc-244-silinen-numara.test.mjs:130:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: G4 002 ayrı taranır: 002'de silinmiş FIS…001 verilmez (FIS…002), 001'in tabanı 002'ye geçmez
+    ok 4 - G4 002 ayrı taranır: 002'de silinmiş FIS…001 verilmez (FIS…002), 001'in tabanı 002'ye geçmez
+      ---
+      duration_ms: 350.74085
+      type: 'test'
+      ...
+    1..4
+not ok 1 - Silinen numara göçü (v32 E6): v2.4.3'te silinip Silinenler'de duran belgenin numarası güncellemeden sonra verilmez
+  ---
+  duration_ms: 3250.572909
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e67/e67-mutasyon/test/goc-244-silinen-numara.test.mjs:30:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: E6: silinen kâğıt / fiş belgenin numarası kullanılmış sayılır; geri yüklenen belge kendi numarasıyla döner
+    # Subtest: S1 Müşteri Fişi: A FIS…001 → Sil → aynı cari ve içerikle B → FIS…002 (FIS…001 yeniden verilmez); A geri yüklenince kendi numarasıyla döner, iki belgede aynı numara yok
+    ok 1 - S1 Müşteri Fişi: A FIS…001 → Sil → aynı cari ve içerikle B → FIS…002 (FIS…001 yeniden verilmez); A geri yüklenince kendi numarasıyla döner, iki belgede aynı numara yok
+      ---
+      duration_ms: 300.761452
+      type: 'test'
+      ...
+    # Subtest: S2 kâğıt makbuz: e-SMM makbuzu Kâğıt Makbuz Olarak Bırak SMM…001 → Sil → yeni makbuz SMM…002; geri yüklenen SMM…001 tek
+    ok 2 - S2 kâğıt makbuz: e-SMM makbuzu Kâğıt Makbuz Olarak Bırak SMM…001 → Sil → yeni makbuz SMM…002; geri yüklenen SMM…001 tek
+      ---
+      duration_ms: 210.772362
+      type: 'test'
+      ...
+    # Subtest: S3 kâğıt kayıt (Kâğıt profil), iptal edilmiş belgeyi silme ve toplu sil: hiçbir silinen numara yeniden verilmez
+    ok 3 - S3 kâğıt kayıt (Kâğıt profil), iptal edilmiş belgeyi silme ve toplu sil: hiçbir silinen numara yeniden verilmez
+      ---
+      duration_ms: 324.846897
+      type: 'test'
+      ...
+    # Subtest: S4 numara–tarih sırası: silinen son fişin tarihi serinin son tarihidir (ileti 'belge silindi' der); taslak ve numarasız bekleyeni silmek tabanı değiştirmez
+    ok 4 - S4 numara–tarih sırası: silinen son fişin tarihi serinin son tarihidir (ileti 'belge silindi' der); taslak ve numarasız bekleyeni silmek tabanı değiştirmez
+      ---
+      duration_ms: 341.170093
+      type: 'test'
+      ...
+    1..4
+ok 2 - E6: silinen kâğıt / fiş belgenin numarası kullanılmış sayılır; geri yüklenen belge kendi numarasıyla döner
+  ---
+  duration_ms: 2032.982082
+  type: 'suite'
+  ...
+# Subtest: E6: iki oturum, 002 şirketi, eski veride arada verilmiş numara
+    # Subtest: S5 iki oturum aynı anda: biri belgeyi silerken öbürü başka belgeyi bırakır (iki sıra) → her numara tek belgede; bütün silinenler geri yüklenebilir
+    ok 1 - S5 iki oturum aynı anda: biri belgeyi silerken öbürü başka belgeyi bırakır (iki sıra) → her numara tek belgede; bütün silinenler geri yüklenebilir
+      ---
+      duration_ms: 1011.136862
+      type: 'test'
+      ...
+    # Subtest: S6 002 şirketi kendi tabanını tutar: 002'de silinen FIS…001 002'de yeniden verilmez; 001'in sırası değişmez
+    ok 2 - S6 002 şirketi kendi tabanını tutar: 002'de silinen FIS…001 002'de yeniden verilmez; 001'in sırası değişmez
+      ---
+      duration_ms: 555.438105
+      type: 'test'
+      ...
+    # Subtest: S7 eski veride (2.4.3) numara arada başka belgeye verilmişse geri yükleme reddedilir; belge Silinenler'de kalır, numara tek belgede
+    not ok 3 - S7 eski veride (2.4.3) numara arada başka belgeye verilmişse geri yükleme reddedilir; belge Silinenler'de kalır, numara tek belgede
+      ---
+      duration_ms: 115.652969
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e67/e67-mutasyon/test/numara-silinen-244.test.mjs:228:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}
+        
+        500 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 500
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e67/e67-mutasyon/test/numara-silinen-244.test.mjs:246:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 3 - E6: iki oturum, 002 şirketi, eski veride arada verilmiş numara
+  ---
+  duration_ms: 2294.083355
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e67/e67-mutasyon/test/numara-silinen-244.test.mjs:182:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 11
+# suites 3
+# pass 9
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5101.325854

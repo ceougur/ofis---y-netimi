@@ -43,6 +43,28 @@
   HOF.esc = value => String(value ?? "").replace(/[&<>"']/g, char => ESCAPES[char]);
   HOF.normalize = value => String(value ?? "").toLocaleLowerCase("tr-TR").replace(/[İI]/g, "i").replace(/ı/g, "i").replace(/\s+/g, " ").trim();
   HOF.initials = name => String(name || "?").trim().split(/\s+/).slice(0, 2).map(part => part[0] || "").join("").toLocaleUpperCase("tr-TR") || "?";
+  // 2.4.4 (UI11): dışa aktarım düğmelerinin TEK görünümü. PDF / Excel / Yazdır her pencerede aynı aile (.hof-rep-out is-pdf | is-xlsx | is-print),
+  // aynı simge, yazı ve boy (hof-ui.css "Dışa aktarım düğmeleri"). Liste ve rapor düğmesi tek ad ("PDF", "Excel"); ne indirdiği erişilebilir adda
+  // ("Fatura Listesi - PDF") ve ipucunda (title). Kart/belge çıktıları adlı kalır (2.0.16 müşteri kararı: "Cari Ekstre - PDF"; label ile verilir).
+  // Davranış öznitelikleri (href, target, download, data-pdf / data-print / data-xlsx …) çağıranda kalır; yardımcı yalnız görünümü kurar.
+  const OUT_ICONS = {
+    pdf: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>',
+    xlsx: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M3.5 9h17M3.5 14.5h17M9 3.5v17"/></svg>',
+    print: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="6" y="14" width="12" height="7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/></svg>',
+  };
+  const OUT_NAME = { pdf: "PDF", xlsx: "Excel", print: "Yazdır" };
+  const OUT_TIP = { pdf: "PDF olarak açılır; oradan kaydedebilir ya da yazdırabilirsiniz", xlsx: "Excel dosyası olarak iner", print: "Yazıcıya gönderilir" };
+  HOF.outIcon = kind => OUT_ICONS[kind] || "";
+  // kind: "pdf" | "xlsx" | "print"; what: neyin çıktısı ("Cari Listesi"); label: kart/belge çıktısında adlı yazı; tip: ipucu cümlesi;
+  // attrs: davranış öznitelikleri (ham, çağıran kaçışlar); href varsa <a>, yoksa <button>.
+  HOF.outputButton = ({ kind = "pdf", href = "", what = "", label = "", tip = "", attrs = "" } = {}) => {
+    const name = label || OUT_NAME[kind] || "PDF";
+    const aria = what && !label ? `${what} - ${name}` : name;
+    const title = tip || `${what ? `${what}: ` : ""}${OUT_TIP[kind] || OUT_TIP.pdf}`;
+    const common = `class="hof-rep-out is-${kind}" data-out="${kind}" aria-label="${HOF.esc(aria)}" title="${HOF.esc(title)}"${attrs ? ` ${attrs}` : ""}`;
+    const inner = `${OUT_ICONS[kind] || ""}${HOF.esc(name)}`;
+    return href ? `<a href="${HOF.esc(href)}" ${common}>${inner}</a>` : `<button type="button" ${common}>${inner}</button>`;
+  };
   // Rol adları ve kayıtlara verilen ad seçili sektöre göre değişir (hof-insight.js); bunlar sektör seçilmemiş hâlidir.
   HOF.roleLabels = { admin: "Yönetici", avukat: "Uzman", personel: "Personel", muhasebe: "Muhasebe" };
   HOF.vocab = { record: "kayıt", records: "kayıtlar", Record: "Kayıt", Records: "Kayıtlar", expert: "Uzman", subtitle: "Ofis Yönetimi" };
@@ -415,6 +437,17 @@
     return payload.data === undefined ? payload : payload.data;
   };
 
+  // ---------- Arama katlaması (31f; hof-chips.js zaten HOF.fold'u arar) ----------
+  // Türkçe harf duyarsız: "Ayşe" ↔ "ayse" ↔ "AYŞE", "İsmail" ↔ "ismail", "Irmak" ↔ "ırmak"; harf ve rakam dışı karakterler boşluk. hof-chips.js'in
+  // kendi yedek katlamasıyla aynı sonuç (yalnız â/î/û da a/i/u olur).
+  const FOLD_MAP = { ı: "i", İ: "i", I: "i", ş: "s", Ş: "s", ğ: "g", Ğ: "g", ü: "u", Ü: "u", ö: "o", Ö: "o", ç: "c", Ç: "c", â: "a", Â: "a", î: "i", Î: "i", û: "u", Û: "u" };
+  HOF.fold = value =>
+    String(value ?? "")
+      .replace(/[ıİIşŞğĞüÜöÖçÇâÂîÎûÛ]/g, char => FOLD_MAP[char])
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
+
   // ---------- Başlık yazımı (v2.0.11) ----------
   // Sunucudaki server/lib/text-case.mjs ile aynı kural: her sözcüğün ilk harfi büyük (Türkçe i → İ), bağlaçlar küçük,
   // parantez içi olduğu gibi. Yalnız programın ürettiği başlıklara uygulanır; kullanıcının yazdığı ada değil.
@@ -470,7 +503,7 @@
   // 2.4.3 H2 (fatura yükte hız testi): yalnız hesaplayan / ön izleyen POST istekleri (fatura toplamı, e-Belge görünüm ön izlemesi, Excel
   // ön izlemeleri) hiçbir şey yazmaz. Önceden faturada her Tab / miktar değişikliğinde (POST /invoices/calc) "bu ekranda para/stok değişti"
   // sayılıyor; kritik stok rozeti ve açık para pencereleri beklemeden yeniden isteniyordu (5 pencerede 10 dk'da 1.402 hesap → 1.619 rozet isteği).
-  const READ_ONLY_POSTS = [/^\/api\/workspace\/invoices\/(calc|view-preview)$/, /^\/api\/workspace\/[a-z-]+\/import\/preview$/];
+  const READ_ONLY_POSTS = [/^\/api\/workspace\/invoices\/(calc|view-preview|gross-from-net)$/, /^\/api\/workspace\/[a-z-]+\/import\/preview$/];
   function noteLedgerChange(path) {
     const clean = String(path || "").split("?")[0];
     if (READ_ONLY_POSTS.some(pattern => pattern.test(clean))) return;
@@ -753,6 +786,20 @@
     }
     return done;
   };
+  // 23.10.2026 (ekran gezintisi): "e-Belge", "e-Fatura", "e-Arşiv", "e-SMM", "e-Posta" gibi adlar uzun bildirimde kısa çizgiden satıra bölünüyordu
+  // ("belgenin e-" / "Belge durumu"). Ad, satır kırılmayan (white-space: nowrap) bir span'e alınır; metin yalnız metin düğümü olarak yazılır (innerHTML yok),
+  // karakter eklenmez (U+2011 gibi bölünmez tire Kopyala'nın ve aramanın metnini değiştirirdi) → textContent ve Kopyala aynı metin.
+  const NO_BREAK_NAME = /(^|[^\p{L}\p{N}])([eE]-\p{L}+)/gu;
+  const fillToastText = (target, message) => {
+    let last = 0;
+    for (const match of message.matchAll(NO_BREAK_NAME)) {
+      const start = match.index + match[1].length;
+      if (start > last) target.append(message.slice(last, start));
+      target.append(HOF.el("span", { class: "hof-nobreak", text: match[2] }));
+      last = start + match[2].length;
+    }
+    if (last < message.length) target.append(message.slice(last));
+  };
   HOF.toast = (message, { type = "info", action, timeout = 3600 } = {}) => {
     const host = toastHost();
     const sameKey = `${type}\u0001${String(message)}`;
@@ -764,7 +811,8 @@
     }
     const node = HOF.el("div", { class: `hof-toast hof-toast-${type}` });
     node.hofKey = sameKey;
-    const text = HOF.el("span", { class: "hof-toast-text", text: String(message) });
+    const text = HOF.el("span", { class: "hof-toast-text" });
+    fillToastText(text, String(message));
     node.appendChild(text);
     if (action) {
       const button = HOF.el("button", { type: "button", class: "hof-toast-action", text: action.label });
@@ -1301,7 +1349,11 @@
       const options = field.options || [];
       const known = !value || options.includes(value);
       control = `<select ${common} data-choice>${`<option value="">${HOF.esc(field.blankLabel || "— Seçin —")}</option>`}${options.map(option => `<option value="${HOF.esc(option)}" ${option === value ? "selected" : ""}>${HOF.esc(option)}</option>`).join("")}${known ? "" : `<option value="${HOF.esc(value)}" selected>${HOF.esc(value)} (listede yok)</option>`}${field.strict ? "" : `<option value="${OTHER_CHOICE}">Başka Bir Değer Yaz…</option>`}</select>`;
-    } else if (field.type === "checkbox") return `<label class="hof-check"><input type="checkbox" ${common} ${field.value ? "checked" : ""}><span>${HOF.esc(field.label)}</span></label>`;
+    } else if (field.type === "checkbox") {
+      // 31f (G6): açıklaması olan kutu — açıklama kutunun hemen altında, etiketin dışında (etiket metni değişmez), aria-describedby ile bağlı.
+      const box = help => `<label class="hof-check"><input type="checkbox" ${common} ${field.value ? "checked" : ""}${help ? ` aria-describedby="${id}-help"` : ""}><span>${HOF.esc(field.label)}</span></label>`;
+      return field.help ? `<div class="hof-check-field">${box(true)}<small id="${id}-help">${HOF.esc(field.help)}</small></div>` : box(false);
+    }
     else {
       const list = field.list && field.list.length ? `${id}-list` : "";
       control = `<input ${common} type="${field.type || "text"}" value="${HOF.esc(field.value ?? "")}" placeholder="${HOF.esc(field.placeholder || "")}" ${field.inputmode ? `inputmode="${field.inputmode}"` : ""} ${field.step ? `step="${field.step}"` : ""} ${field.min != null ? `min="${field.min}"` : ""} ${field.max != null ? `max="${field.max === "today" ? HOF.localToday() : field.max}"` : ""} ${list ? `list="${list}"` : ""} autocomplete="${field.autocomplete || "off"}">${list ? `<datalist id="${list}">${field.list.map(item => `<option value="${HOF.esc(item)}"></option>`).join("")}</datalist>` : ""}`;

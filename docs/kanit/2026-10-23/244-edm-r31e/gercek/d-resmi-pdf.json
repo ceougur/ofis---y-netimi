@@ -1,0 +1,145 @@
+{
+ "adim": "d-resmi-pdf",
+ "baslik": "Resmî görüntü: e-SMM GetSMM PDF (B1, B2, G1) ve karşılaştırma için e-Arşiv (G3)",
+ "durum": "geçti",
+ "denetimler": [
+  {
+   "gecti": true,
+   "denetim": "B1 TES2026295644875: PDF (92924 bayt ≥ 5000), indirme adı numarayı taşır"
+  },
+  {
+   "gecti": true,
+   "denetim": "B1 TES2026295644875: PDF metninde belge numarası (ETTN var)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B1 TES2026295644875: resmî PDF'te satıcı ve alıcı adresi birer kez (satıcı 1, alıcı 1)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B2 TES2026295644876: PDF (93304 bayt ≥ 5000), indirme adı numarayı taşır"
+  },
+  {
+   "gecti": true,
+   "denetim": "B2 TES2026295644876: PDF metninde belge numarası (ETTN var)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B2 TES2026295644876: resmî PDF'te satıcı ve alıcı adresi birer kez (satıcı 1, alıcı 1)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G1 TES2026295644872: PDF (93541 bayt ≥ 5000), indirme adı numarayı taşır"
+  },
+  {
+   "gecti": true,
+   "denetim": "G1 TES2026295644872: PDF metninde belge numarası (ETTN var)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G1 TES2026295644872: resmî PDF'te satıcı ve alıcı adresi birer kez (satıcı 1, alıcı 1)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G3 TEA2026426940706: PDF (84052 bayt ≥ 5000), indirme adı numarayı taşır"
+  },
+  {
+   "gecti": true,
+   "denetim": "G3 TEA2026426940706: PDF metninde belge numarası (ETTN var)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G3 TEA2026426940706: resmî PDF'te satıcı ve alıcı adresi birer kez (satıcı 1, alıcı 1)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G3 TEA2026426940706: resmî PDF'te düzenleyenin unvanı (DENEME TICARET LTD. STI.) var"
+  }
+ ],
+ "kayit": {
+  "B1": {
+   "status": 200,
+   "tur": "application/pdf",
+   "bayt": 92924,
+   "ad": "attachment; filename=\"TES2026295644875 Resmi Gorunum.pdf\"; filename*=UTF-8''TES2026295644875%20Resmi%20Gorunum.pdf",
+   "dosya": "TES2026295644875-resmi.pdf",
+   "metin": {
+    "numara": true,
+    "ettn": true,
+    "tutarlar": [
+     "20,00",
+     "1.000,00",
+     "200,00",
+     "800,00"
+    ]
+   }
+  },
+  "B2": {
+   "status": 200,
+   "tur": "application/pdf",
+   "bayt": 93304,
+   "ad": "attachment; filename=\"TES2026295644876 Resmi Gorunum.pdf\"; filename*=UTF-8''TES2026295644876%20Resmi%20Gorunum.pdf",
+   "dosya": "TES2026295644876-resmi.pdf",
+   "metin": {
+    "numara": true,
+    "ettn": true,
+    "tutarlar": [
+     "100,03",
+     "20,00",
+     "80,02",
+     "80,03",
+     "100,04",
+     "200,06",
+     "40,01",
+     "160,05",
+     "40,02",
+     "200,07"
+    ]
+   }
+  },
+  "G1": {
+   "status": 200,
+   "tur": "application/pdf",
+   "bayt": 93541,
+   "ad": "attachment; filename=\"TES2026295644872 Resmi Gorunum.pdf\"; filename*=UTF-8''TES2026295644872%20Resmi%20Gorunum.pdf",
+   "dosya": "TES2026295644872-resmi.pdf",
+   "metin": {
+    "numara": true,
+    "ettn": true,
+    "tutarlar": [
+     "20,00",
+     "500,00",
+     "100,00",
+     "400,00"
+    ]
+   }
+  },
+  "G3": {
+   "status": 200,
+   "tur": "application/pdf",
+   "bayt": 84052,
+   "ad": "attachment; filename=\"TEA2026426940706 Resmi Gorunum.pdf\"; filename*=UTF-8''TEA2026426940706%20Resmi%20Gorunum.pdf",
+   "dosya": "TEA2026426940706-resmi.pdf",
+   "metin": {
+    "numara": true,
+    "ettn": true,
+    "tutarlar": [
+     "300,00",
+     "60,00",
+     "360,00"
+    ]
+   }
+  }
+ },
+ "bilgiler": [
+  {
+   "bilgi": "B1 TES2026295644875: resmî PDF'te düzenleyenin unvanı (DENEME TICARET LTD. STI.) YOK — e-SMM, VKN'li düzenleyen: EDM test ortamı şablonu unvanı basmaz (EDM yanıtı 22.10.2026); denetim değil"
+  },
+  {
+   "bilgi": "B2 TES2026295644876: resmî PDF'te düzenleyenin unvanı (DENEME TICARET LTD. STI.) YOK — e-SMM, VKN'li düzenleyen: EDM test ortamı şablonu unvanı basmaz (EDM yanıtı 22.10.2026); denetim değil"
+  },
+  {
+   "bilgi": "G1 TES2026295644872: resmî PDF'te düzenleyenin unvanı (DENEME TICARET LTD. STI.) YOK — e-SMM, VKN'li düzenleyen: EDM test ortamı şablonu unvanı basmaz (EDM yanıtı 22.10.2026); denetim değil"
+  }
+ ]
+}

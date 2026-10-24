@@ -11,7 +11,7 @@ import { negativeConfirmed } from "../lib/bank/module-ref.mjs";
 import { posMetaOf } from "../lib/bank/pos.mjs";
 import { ACCOUNT_TYPES, TYPE_DEFAULT, accountLedger, accountTypeKey, balanceSide, classifyAccountType, isAccountType, mapAccountHeaders } from "../lib/accounts.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
-import { parseAmount, roundMoney } from "../lib/money.mjs";
+import { matrixText, parseAmount, roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { receiptPdf } from "../lib/plan-report.mjs";
 import { dayText, isoDay, parseDay } from "../lib/plans.mjs";
@@ -19,7 +19,7 @@ import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { readSheetMatrices } from "../lib/sheets.mjs";
 import { inferRolesByValues, findHeaderRow, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
-import { ANONYMOUS_TCKN, classifyTaxId, isValidIban, isValidMersis, normalizeIban } from "../lib/tax-id.mjs";
+import { ANONYMOUS_TCKN, RETAIL_NAME, classifyTaxId, isRetailName, isValidIban, isValidMersis, normalizeIban } from "../lib/tax-id.mjs";
 import { systemClock } from "../lib/clock.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -488,7 +488,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       const id = insertAccount(user, input);
       // Açılış bakiyesi: ör. önceki programdan devreden borç (+) ya da alacak (−).
       const opening = parseAmount(body.openingBalance);
-      if (Number.isFinite(opening) && Math.abs(opening) > EPS) addEntry(user, id, { kind: openingKind(opening, input.type, sideOf(body.openingSide)), amount: roundMoney(Math.abs(opening)), date: input.registeredOn, note: "Açılış bakiyesi" });
+      if (Number.isFinite(opening) && roundMoney(Math.abs(opening)) > 0) addEntry(user, id, { kind: openingKind(opening, input.type, sideOf(body.openingSide)), amount: roundMoney(Math.abs(opening)), date: input.registeredOn, note: "Açılış bakiyesi" });
       audit(user, "account.created", id, { name: input.name, type: input.type });
       return detail(id, user);
     });
@@ -668,19 +668,21 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // keep (v2.0.23): hareket düzeltilirken değişmeyen eski bağ yeni kurallara takılmaz (taksitli ya da iptal edilmiş faturaya
   // eskiden kurulmuş bağ yalnız açıklama düzeltmesini engelliyordu); fatura artık yoksa bağ düşer. Kapama böyle bir bağı
   // zaten yok sayar (taksitli fatura kendi kartıyla kapanır).
-  const invoiceLink = (accountId, kind, value, keep = "") => {
+  // 2.4.4 UX18: çek/senet formu da (routes/cheques.mjs) AYNI kuralı kullanır (alınan evrak = tahsilat, verilen evrak = ödeme); extra hata gövdesine
+  // eklenir (alan adı), planHint taksitli faturadaki yol önerisidir.
+  const invoiceLink = (accountId, kind, value, keep = "", { extra = {}, planHint = "Tahsilatı taksite yazın: cari kartında + Tahsilat → Taksite Yaz." } = {}) => {
     const invoiceId = limited(value, 120, "Fatura");
     if (!invoiceId) return "";
-    if (kind !== "in" && kind !== "out") throw new HttpError(400, "Fatura bağı yalnız tahsilat ve ödemede seçilir.");
+    if (kind !== "in" && kind !== "out") throw new HttpError(400, "Fatura bağı yalnız tahsilat ve ödemede seçilir.", extra);
     const invoice = store.get("SELECT id, kind, status, account_id AS accountId, plan_id AS planId FROM invoices WHERE id = ?", invoiceId);
     if (keep && invoiceId === keep) return invoice && invoice.accountId === accountId ? invoice.id : "";
-    if (!invoice || invoice.accountId !== accountId) throw new HttpError(404, "Kapatılacak fatura bu caride bulunamadı.");
-    if (invoice.status !== "issued") throw new HttpError(409, "Yalnız kaydedilmiş fatura kapatılır (taslak ya da iptal edilmiş fatura seçilemez).");
+    if (!invoice || invoice.accountId !== accountId) throw new HttpError(404, "Kapatılacak fatura bu caride bulunamadı.", extra);
+    if (invoice.status !== "issued") throw new HttpError(409, "Yalnız kaydedilmiş fatura kapatılır (taslak ya da iptal edilmiş fatura seçilemez).", extra);
     // v2.0.23 (Bulgu 2 F): taksitli fatura kendi taksit kartıyla kapanır; cari kartından bağ kurulursa fatura ile kartı
     // çelişirdi (fatura ödendi, kart ödenmedi). Tahsilat kartın taksitine girilir.
-    if (invoice.planId) throw new HttpError(409, "Bu fatura taksitli; kendi taksit kartıyla kapanır. Tahsilatı taksite yazın: cari kartında + Tahsilat → Taksite Yaz.");
+    if (invoice.planId) throw new HttpError(409, `Bu fatura taksitli; kendi taksit kartıyla kapanır. ${planHint}`, extra);
     const side = ["sale", "smm"].includes(invoice.kind) ? "in" : invoice.kind === "purchase" ? "out" : "";
-    if (side !== kind) throw new HttpError(409, kind === "in" ? "Tahsilat yalnız satış faturasını kapatır; alış faturası için Ödeme girin." : "Ödeme yalnız alış faturasını kapatır; satış faturası için Tahsilat girin.");
+    if (side !== kind) throw new HttpError(409, kind === "in" ? "Tahsilat yalnız satış faturasını kapatır; alış faturası için Ödeme girin." : "Ödeme yalnız alış faturasını kapatır; satış faturası için Tahsilat girin.", extra);
     return invoice.id;
   };
   const entryInput = (body, accountId = "", previous = null) => {
@@ -1005,7 +1007,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   router.post("/api/workspace/accounts/import/preview", async ({ req, res }) => {
     auth.requirePermission(req, "accounts.manage");
     const body = await readJson(req, { limit: 40_000_000 });
-    const matrix = Array.isArray(body.matrix) ? body.matrix : [];
+    const matrix = matrixText(body.matrix); // 31e: sayı hücresi Türkçe ondalık metin (money.mjs cellText)
     const headerAt = findHeaderRow(matrix, { mapper: mapAccountHeaders });
     if (headerAt < 0) throw new HttpError(400, "Sayfada başlık satırı bulunamadı.");
     const headers = matrix[headerAt].map(sanitizeCell);
@@ -1064,7 +1066,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   router.post("/api/workspace/accounts/import", async ({ req, res }) => {
     const user = auth.requirePermission(req, "accounts.manage");
     const body = await readJson(req, { limit: 40_000_000 });
-    const matrix = Array.isArray(body.matrix) ? body.matrix : [];
+    const matrix = matrixText(body.matrix); // 31e: sayı hücresi Türkçe ondalık metin (money.mjs cellText)
     const headerAt = Math.max(0, Math.trunc(Number(body.headerAt) || 0));
     const headers = (matrix[headerAt] || []).map(cell => String(cell ?? "").replace(/\s+/g, " ").trim());
     const roles = body.roles && typeof body.roles === "object" ? body.roles : {};
@@ -1183,7 +1185,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
           if (report.typeDefaulted.length < 500) report.typeDefaulted.push({ row: headerAt + index + 2, ...typed.warn });
         }
         const opening = parseAmount(cell(row, col.balance));
-        if (Number.isFinite(opening) && Math.abs(opening) > EPS) {
+        // 31e N1: eşik kuruşa yuvarlanmış tutarla (0,005 → 0,01 yazılır, 0,004 yazılmaz) — öbür içe alma yollarıyla aynı.
+        if (Number.isFinite(opening) && roundMoney(Math.abs(opening)) > 0) {
           addEntry(user, id, { kind: openingKind(opening, person.type, openingSide), amount: roundMoney(Math.abs(opening)), date: person.registeredOn, note: "Açılış bakiyesi" });
           report.balances += 1;
         }
@@ -1356,6 +1359,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   };
   // v2.0.15: e-Belge kimliği. Mükellef sorgusundan (entegratör) gelen e-Fatura kullanıcılığı ve posta kutusu etiketi; gelen
   // e-Faturanın satıcısı için cari: önce VKN/TCKN ile aranır (kişi bir kez girilir), yoksa vergi bilgileriyle açılır.
+  // 2.4.4 (31f U1): "Nihai Tüketici" carisinin kimliği (taxIdentity.retailAccount).
+  const RETAIL_ACCOUNT_KEY = "invoice.retailAccountId";
   const taxIdentity = {
     findByTaxNo: taxNo => (taxNo ? store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND tax_no = ? ORDER BY created_at LIMIT 1", String(taxNo).replace(/\s+/g, ""))?.id || "" : ""),
     setEInvoice(user, accountId, { registered, alias = "", aliases = null, title = "" }) {
@@ -1375,6 +1380,37 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       const id = insertAccount(user, input);
       audit(user, "account.created", id, { name: input.name, type, from: "einvoice" });
       return id;
+    },
+    // 2.4.4 (31f U1, YÜKSEK; 2.4.3'te de): faturadaki "Nihai Tüketici" hızlı seçeneğinin carisi. Önceden 11111111111'li EN ESKİ cari seçiliyordu;
+    // adı belli bir kişiye (ör. "Ayşe Şahin") bu numara yazılmışsa anonim perakende satışlar onun carisine borç yazılıyordu. Şimdi program kendi
+    // carisini ayar anahtarında kimliğiyle tanır (Banka Ayarları'ndaki Varsayılan Tahsilat Hesabı kalıbı; ayar şirketin veri dosyasında, yedekle
+    // birlikte gider). Kural (sırayla):
+    //   1. İşaretli cari geçerliyse o: silinmemiş, VKN/TCKN'si hâlâ 11111111111 ve adı "Nihai Tüketici" (harf büyüklüğü/boşluk gözetilmez). Pasif cari
+    //      geçerlidir (pasif cari faturayı engellemez). Adı ya da kimliği değiştirilmiş cari artık bu rolde değildir.
+    //   2. Değilse (ilk kullanım, eski sürüm verisi, silinmiş/yeniden adlandırılmış cari): silinmemiş, 11111111111'li ve adı "Nihai Tüketici" olan
+    //      carilerin EN ESKİSİ (açılış zamanı, eşitse yazım sırası) benimsenir ve işaretlenir.
+    //   3. O da yoksa yeni "Nihai Tüketici" carisi açılır ve işaretlenir. Adı belli bir cari hiçbir adımda seçilmez.
+    // Tek işlem içinde (eşzamanlı iki istek iki cari açmaz). Tutar sınırı (ANONYMOUS_LIMIT) ve e-Arşiv kuralları belge denetiminde, değişmez.
+    retailAccount(user, { city = "", district = "" } = {}) {
+      return store.tx(() => {
+        const usable = id => {
+          const row = id ? store.get("SELECT id, name, tax_no AS taxNo FROM accounts WHERE id = ? AND deleted_at IS NULL", id) : null;
+          return row && row.taxNo === ANONYMOUS_TCKN && isRetailName(row.name) ? row.id : "";
+        };
+        const previous = store.setting(RETAIL_ACCOUNT_KEY, "") || "";
+        const marked = usable(previous);
+        if (marked) return { id: marked, created: false, adopted: false };
+        const adopted = store.all("SELECT id, name FROM accounts WHERE deleted_at IS NULL AND tax_no = ? ORDER BY created_at, rowid", ANONYMOUS_TCKN).find(row => isRetailName(row.name))?.id || "";
+        let id = adopted;
+        if (!id) {
+          const input = accountInput({ name: RETAIL_NAME, type: "customer", taxNo: ANONYMOUS_TCKN, partyKind: "person", firstName: "Nihai", familyName: "Tüketici", city, district, country: "Türkiye" }, user);
+          id = insertAccount(user, input);
+          audit(user, "account.created", id, { name: input.name, type: "customer", from: "retail" });
+        }
+        store.setSetting(RETAIL_ACCOUNT_KEY, id, user.id);
+        audit(user, "account.retail.marked", id, { adopted: Boolean(adopted), previous });
+        return { id, created: !adopted, adopted: Boolean(adopted) };
+      });
     },
   };
   // 2.3.0 İz 1 (plan §3.11b/3 "Değersiz Alacak Yaz … cari bakiyesi o tutar kadar kapanır"): şüpheli alacağın değersiz yazılması cari kartına
@@ -1545,5 +1581,5 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     return `Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.${kept.dropped ? ` ${bank.droppedText(kept.dropped)}` : ""}`;
   }
 
-  return { exists, accountRow, createFromPlan, matchPerson, stockEntry, invoiceEntry, posEntry, doubtfulEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers, assertUnlocked };
+  return { exists, accountRow, createFromPlan, matchPerson, stockEntry, invoiceEntry, posEntry, doubtfulEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers, assertUnlocked, invoiceLink };
 }

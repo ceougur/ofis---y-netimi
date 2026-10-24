@@ -1,0 +1,32 @@
+{
+  "ad": "244-f1-rapor/e2e-senaryo-banka-210-temel",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210-temel.mjs",
+  "commit": "2b71feac5cce579d33b9c7d9ca5b2c0784286917",
+  "dal": "is/f1-rapor",
+  "kirli": 4,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T11:20:53.788Z",
+  "sure_sn": 67.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 80,
+    "gecen": 80,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-f1-rapor/e2e-senaryo-banka-210-temel.log",
+  "klasor": "/home/user/wt/f1-rapor",
+  "ham_cikti_sha256": "8a8649e8dc5ee96c56c263e9651410f0a2f2088a0101ae90aa11661775af1fbd",
+  "ham_cikti_bayt": 12903
+}

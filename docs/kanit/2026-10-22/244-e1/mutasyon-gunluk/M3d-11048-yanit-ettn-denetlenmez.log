@@ -1,0 +1,12 @@
+✖ E1: EDM 11048 (daha önce gönderildi) — ileti bu belgeyi gösteriyorsa önce durum sorulur (3070.139639ms)
+ℹ tests 16
+ℹ suites 6
+ℹ pass 15
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 17805.404767
+✖ failing tests:
+✖ K14 (B8) EDM'nin durum yanıtı BAŞKA bir ETTN bildiriyorsa (numarayla eşleşmiş başka belge) gönderilmiş sayılmaz → Hata (747.313059ms)
+  AssertionError [ERR_ASSERTION]: {"id":"invoice-8aee6376-70e5-4f89-8d5d-e553447c8c40","kind":"sale","kindLabel":"Satış Faturası","scenario":"service_sale","scenarioLabel":"Hizmet Satışı","status":"issued","statusLabel":"Kaydedildi","number":"TEA2026000000001","displayNo":"TEA2026000000001","internalNumber":false,"ettn":"f9c783a5-2a

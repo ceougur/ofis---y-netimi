@@ -1,0 +1,163 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3b-k1-k4-donem-raporlar",
+ "aciklama": "K1 aynı sekmede aynı dosya no'lu iki satır iki borç; dönem sekmeleri (2025 Aidat / 2026 Aidat, farklı dosya no); K3 Kalan'sız Tutar + Tahsil Edilen → toplam − ödenen (negatif → 0); tek tutar sütunu 'Aylık Ücret' + 'Kalan Gün'; K4 Tablodaki Kişiler = Tahsilat Takvimi = Vade Takip = Nakit Akışı Beklenen (bütün satırların vadesi takvim penceresinde); K5 Kasa'yı görme yetkisi kaldırılmış kullanıcı Nakit Akışı'nda Kasa giriş/çıkışını görmez + not",
+ "dayanak": "KARARLAR.md B3/B4b/B5b (KULLANICI 23.10 03:12 UTC K1–K5)",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "2025 Aidat",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar",
+      "Ödeme Sözü"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/201",
+       "isim": "Ayla Can",
+       "hucreler": {
+        "Telefon": "0532 222 22 01",
+        "Tutar": "1.000,00 ₺",
+        "Ödeme Sözü": "20.06.2026"
+       }
+      },
+      {
+       "no": "2026/201",
+       "isim": "Ayla Can",
+       "hucreler": {
+        "Telefon": "0532 222 22 01",
+        "Tutar": "1.000,00 ₺",
+        "Ödeme Sözü": "20.06.2026"
+       }
+      },
+      {
+       "no": "2026/202",
+       "isim": "Bora Er",
+       "hucreler": {
+        "Telefon": "0532 222 22 02",
+        "Tutar": "800,00 ₺",
+        "Ödeme Sözü": "20.06.2026"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "2026 Aidat",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar",
+      "Ödeme Sözü"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/203",
+       "isim": "Cem Ok",
+       "hucreler": {
+        "Telefon": "0532 222 22 03",
+        "Tutar": "900,00 ₺",
+        "Ödeme Sözü": "20.06.2026"
+       }
+      },
+      {
+       "no": "2026/204",
+       "isim": "Duru Ay",
+       "hucreler": {
+        "Telefon": "0532 222 22 04",
+        "Tutar": "700,00 ₺",
+        "Ödeme Sözü": "20.06.2026"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Okul Servisi",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar",
+      "Tahsil Edilen",
+      "Ödeme Sözü"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/205",
+       "isim": "Ece Tan",
+       "hucreler": {
+        "Telefon": "0532 222 22 05",
+        "Tutar": "3.000,00 ₺",
+        "Tahsil Edilen": "1.200,00 ₺",
+        "Ödeme Sözü": "20.06.2026"
+       }
+      },
+      {
+       "no": "2026/206",
+       "isim": "Filiz Su",
+       "hucreler": {
+        "Telefon": "0532 222 22 06",
+        "Tutar": "500,00 ₺",
+        "Tahsil Edilen": "700,00 ₺",
+        "Ödeme Sözü": "20.06.2026"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Kira",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Aylık Ücret",
+      "Kalan Gün",
+      "Ödeme Sözü"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/207",
+       "isim": "Gül Ak",
+       "hucreler": {
+        "Telefon": "0532 222 22 07",
+        "Aylık Ücret": "4.000,00 ₺",
+        "Kalan Gün": "3",
+        "Ödeme Sözü": "20.06.2026"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "u1",
+   "islem": "kullanici_ac",
+   "ad": "Y1",
+   "rol": "avukat",
+   "kaldir": [
+    "cash.view"
+   ]
+  },
+  {
+   "id": "c-z",
+   "islem": "cari_ac",
+   "ad": "Z",
+   "isim": "Zeki Nakit"
+  },
+  {
+   "id": "th1",
+   "islem": "tahsilat",
+   "cari": "Z",
+   "tutar": "300",
+   "tarih": "2026-06-16"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol",
+   "raporlar": true
+  }
+ ]
+}

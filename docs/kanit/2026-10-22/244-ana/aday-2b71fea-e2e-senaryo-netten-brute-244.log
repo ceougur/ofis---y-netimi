@@ -1,0 +1,63 @@
+
+> destekofis@2.4.3 test:senaryo-netten-brute-244
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-netten-brute-244.mjs
+
+■ 1 gerçek kişi alıcı, Stopaj % boş: stopaj kesilmez
+  ✓ ön koşul: Stopaj % kutusu boş (otomatik)
+  ✓ Birim Fiyat 1.000,00 (kutu "1.000,00")
+  ✓ toplamlarda stopaj satırı yok (Toplamlar Toplam₺1.000,00Ara Toplam₺1.000,00 KDV %20₺200,00 Genel Toplam₺1.200,00 Yalnız Bin İki Yüz Türk Lirası)
+  · onay: Ayşe Kaya için SMM2026000000001 numarasıyla serbest meslek makbuzu kaydedilecek: ₺1.200,00. Stok, cari, Kasa, çek/senet 
+  ✓ makbuz kaydedildi
+  ✓ veri tabanında kaydedilmiş SMM (smm/issued)
+  ✓ stopaj oranı %0 (veri tabanı %0)
+  ✓ brüt ücret 1000 (veri tabanı 1000)
+  ✓ stopaj 0 (veri tabanı 0)
+  ✓ KDV 200 (veri tabanı 200)
+  ✓ ödenecek 1200 (veri tabanı 1200)
+  ✓ Net Ücret = yazılan 1000 (veri tabanı 1000)
+
+■ 2 tüzel alıcı, Stopaj % boş: %20
+  ✓ Birim Fiyat 1.250,00 (kutu "1.250,00")
+  ✓ toplamlarda "Gelir Vergisi Stopajı %20" (Toplamlar Toplam₺1.250,00Ara Toplam₺1.250,00 KDV %20₺250,00 Gelir Vergisi Stopajı %20-₺250,00 Genel Toplam₺1.500,00 Tahsil Edilecek₺1.250,00 Yalnız Bin İki Yüz Elli Türk Lirası)
+  · onay: Müvekkil Ticaret A.Ş. için SMM2026000000002 numarasıyla serbest meslek makbuzu kaydedilecek: ₺1.250,00. Stok, cari, Kasa
+  ✓ makbuz kaydedildi
+  ✓ veri tabanında kaydedilmiş SMM (smm/issued)
+  ✓ stopaj oranı %20 (veri tabanı %20)
+  ✓ brüt ücret 1250 (veri tabanı 1250)
+  ✓ stopaj 250 (veri tabanı 250)
+  ✓ KDV 250 (veri tabanı 250)
+  ✓ ödenecek 1250 (veri tabanı 1250)
+  ✓ Net Ücret = yazılan 1000 (veri tabanı 1000)
+
+■ 3 tüzel alıcı, Fiyatlar KDV Dahil: birim fiyat KDV dahil
+  ✓ ön koşul: Fiyatlar KDV Dahil işaretli
+  ✓ Birim Fiyat 1.500,00 KDV dahil (kutu "1.500,00")
+  · onay: Müvekkil Ticaret A.Ş. için SMM2026000000003 numarasıyla serbest meslek makbuzu kaydedilecek: ₺1.250,00. Stok, cari, Kasa
+  ✓ makbuz kaydedildi
+  ✓ veri tabanında kaydedilmiş SMM (smm/issued)
+  ✓ stopaj oranı %20 (veri tabanı %20)
+  ✓ brüt ücret 1250 (veri tabanı 1250)
+  ✓ stopaj 250 (veri tabanı 250)
+  ✓ KDV 250 (veri tabanı 250)
+  ✓ ödenecek 1250 (veri tabanı 1250)
+  ✓ Net Ücret = yazılan 1000 (veri tabanı 1000)
+
+■ 4 gerçek kişi alıcı, Stopaj % elle 15
+  ✓ Birim Fiyat 1.000,00 (kutu "1.000,00")
+  · onay: Ayşe Kaya için SMM2026000000004 numarasıyla serbest meslek makbuzu kaydedilecek: ₺1.050,00. Stok, cari, Kasa, çek/senet 
+  ✓ makbuz kaydedildi
+  ✓ veri tabanında kaydedilmiş SMM (smm/issued)
+  ✓ stopaj oranı %15 (veri tabanı %15)
+  ✓ brüt ücret 1000 (veri tabanı 1000)
+  ✓ stopaj 150 (veri tabanı 150)
+  ✓ KDV 200 (veri tabanı 200)
+  ✓ ödenecek 1050 (veri tabanı 1050)
+  ✓ Net Ücret = yazılan 850 (veri tabanı 850)
+
+■ 5 cari seçilmeden: neden yazılır, kalem değişmez
+  ✓ pencerede neden: "Önce cariyi seçin: stopaj alıcıya göre belirlenir."
+  ✓ kalemin Birim Fiyatı boş kaldı ("")
+  · kapatırken soru yanıtlandı (kaydedilmemiş form, meşru): Kaydedilmemiş Değişiklik
+  ✓ sayfa hatası yok
+
+43 geçti, 0 kaldı

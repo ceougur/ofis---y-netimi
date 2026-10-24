@@ -1,0 +1,43 @@
+{
+  "ad": "244-iptal/mutasyon-P11",
+  "komut": "node --test test/ebelge-244-iptal-suresi.test.mjs",
+  "commit": "b54ed6bf5e7fd954e76463cea8577d9866d44de8",
+  "dal": "is/iptal",
+  "kirli": 7,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:51:29.205Z",
+  "sure_sn": 2.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 15,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "iptal süresi kuralı (lib/einvoice/iptal-suresi.mjs, saf) › e-SMM aynı kural; e-Fatura, kâğıt, taslak, Hata, belirsiz ve gönderilmemiş belge kural dışı",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:87:3",
+      "hata": "Cannot read properties of null (reading 'late')"
+    },
+    {
+      "ad": "iptal süresi: e-SMM (gönderim kapısı madde 22'de açılır; kural şimdiden e-SMM'yi kapsar) › iletilmiş e-SMM 9. gün reddedilir (e-SMM iletisiyle); süre içinde kartta son gün; iletim izi gönderim girişiminden",
+      "konum": "test/ebelge-244-iptal-suresi.test.mjs:387:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'integrator-not-configured' (beklenen einvoice-cancel-late, gelen integrator-not-configured)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-iptal/mutasyon-P11.log",
+  "klasor": "/home/user/wt/iptal",
+  "ham_cikti_sha256": "102e0578761fa82c95b1dc65eedd8d1cbbb25ab13b1f1b3c2ce7783708596afe",
+  "ham_cikti_bayt": 7930
+}

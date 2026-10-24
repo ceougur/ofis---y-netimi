@@ -1,0 +1,32 @@
+{
+  "ad": "244-mm-rapor/u3-yesil",
+  "komut": "node --test --disable-warning=ExperimentalWarning test/tablo-raporlari-u3-244.test.mjs",
+  "commit": "0f610f9508dab20e28357ee59f50e0d26c381cdd",
+  "dal": "is/mm-rapor",
+  "kirli": 5,
+  "izlenmeyen": 23,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T22:05:42.519Z",
+  "sure_sn": 1.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 10,
+    "gecen": 10,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-mm-rapor/u3-yesil.log",
+  "klasor": "/home/user/wt/mm-rapor",
+  "ham_cikti_sha256": "0b4814c88e07a4e9ccebdbcc15fdbed29221d14523493df987e635fa90f49b9d",
+  "ham_cikti_bayt": 3571
+}

@@ -10,6 +10,7 @@ import { DEFAULT_ADMIN_PASSWORD } from "./config.mjs";
 import { rowHash, rowIdentities } from "./dataset-identity.mjs";
 import { parseJson } from "./http.mjs";
 import { isFullDate } from "./insight/validators.mjs";
+import { mergeFloor } from "./number-floor.mjs";
 import { verifyPassword } from "./passwords.mjs";
 import { unitLabel } from "./units.mjs";
 
@@ -1304,7 +1305,104 @@ export const MIGRATIONS = [
       });
     },
   },
+  {
+    version: 31,
+    name: "v2.4.4 Personel Özlük (çalışan kartları; para dışı)",
+    up(store) {
+      // Kullanıcı kararı 21.10.2026 (Personel Raporu → Çalışanlar / Ayrılanlar; routes/staff.mjs): şirketin çalışan kartları. YALNIZ EKLEYİCİ: yeni tablo;
+      // eski sürüm (2.4.3) aynı dosyayı okur, tabloyu görmez. Para tablosu DEĞİL: maaş yalnız bilgi (Kasa, Banka, cari ve Ana Defter okumaz; mutabakat
+      // kapısı ve kilit izi bu tabloya bakmaz). Kişisel veri (KVKK): değerler yalnız bu tabloda; işlem geçmişine alan ADI yazılır, değer yazılmaz.
+      store.exec(STAFF_SCHEMA_V31);
+    },
+  },
+  {
+    version: 32,
+    name: "v2.4.4 seriden ayrılmış ve silinmiş belgelerin kâğıt / fiş numaraları (bir kez tarama)",
+    up(store, { now = systemClock } = {}) {
+      // Karar 22.10.2026 (verilmiş kâğıt / fiş numarası bir daha kullanılmaz; routes/invoices.mjs numberFloor). Para tablosu DEĞİL: yalnız bir ayar satırı
+      // yazılır (invoice.numberFloor); faturalar, kilit izi ve mutabakat kapısı değişmez. Eski sürüm (2.4.3) ayarı okumaz. Geri yüklenen eski yedekte de
+      // koşar (company-backups.mjs geri yüklemede göçleri uygular); işaret veri tabanının şema sürümüdür (PRAGMA user_version).
+      store.raw("migration.v32", () => scanPaperFloors(store, { now }));
+    },
+  },
 ];
+
+// 2.4.4 (karar 22.10.2026): 2.4.0–2.4.3'te "Müşteri Fişi Olarak Bırak" ile Müşteri Fişi serisinden numara alıp sonra e-Belge olarak gönderilen belgenin
+// numarası seriden ayrılınca hiçbir yere kaydedilmiyordu (seride duran belgelerin MAX(seq)'i görmez) → güncellemeden sonra ilk bırakmada / kâğıt kayıtta
+// yeniden verilirdi. Bir kezlik tarama: firmanın kâğıt serilerine (Fatura Ayarları → Kâğıt Fatura / Müşteri Fişi ve Serbest Meslek Makbuzu serisi; ayar
+// yoksa FIS / SMM) ait, programın biçimindeki (seri + yıl + 9 hane) numaralardan o seride DURMAYAN (taşınmış) belgelerde kalanlar:
+//   - Kâğıt Fatura No (numberForSend fiş numarasını, alan boşsa, buraya taşır);
+//   - işlem geçmişi "invoice.withdrawn" (alan önceden doluysa numara yalnız orada; 2.4.0'dan beri yazılır) — belge hâlâ varsa ve artık o numarada değilse;
+//   - (E6) Silinenler'de duran, geri yüklenmemiş belgenin kendi numarası (kâğıt / fiş / iç seri; aşağıda).
+// Seri + yıl başına en büyük sıra (numarası, o belgenin tarihi) routes/invoices.mjs'in numberFloor kaydına yazılır; kayıt yalnız YÜKSELİR (idempotent:
+// ikinci tarama bir şey değiştirmez). Biçim dışı ("EL-55", eksik hane) ya da başka seriye ait (e-Belge serisi, eski kâğıt serisi) elle yazılmış numara sayılmaz.
+const FLOOR_KEY = "invoice.numberFloor"; // routes/invoices.mjs FLOOR_KEY ile aynı
+const PROGRAM_NUMBER = /^([A-Z0-9]{3})(\d{4})(\d{9})$/;
+export function scanPaperFloors(store, { now = systemClock } = {}) {
+  const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
+  if (!has("invoices") || !has("settings")) return { raised: [] };
+  const settings = parseJson(store.get("SELECT value FROM settings WHERE key = 'invoice.settings'")?.value, {}) || {};
+  const paper = new Set([settings.series?.paper || "FIS", settings.series?.smm || "SMM"]);
+  const best = new Map();
+  const consider = (value, row) => {
+    const match = PROGRAM_NUMBER.exec(String(value || "").trim());
+    if (!match || !paper.has(match[1]) || row.series === match[1]) return; // biçim dışı, başka seri ya da belge o seride duruyor (MAX(seq) sayar)
+    const seq = Number(match[3]);
+    if (!(seq > 0)) return;
+    const key = `${match[1]}${Number(match[2])}`;
+    best.set(key, mergeFloor(best.get(key) || null, { seq, number: match[0], issueDate: row.issueDate }));
+  };
+  for (const row of store.all("SELECT series, number, paper_no AS paperNo, issue_date AS issueDate FROM invoices WHERE paper_no <> ''")) consider(row.paperNo, row);
+  if (has("audit_events")) {
+    const trail = store.all("SELECT a.payload_json AS payload, i.series, i.number, i.issue_date AS issueDate FROM audit_events a JOIN invoices i ON i.id = a.entity_id WHERE a.type = 'invoice.withdrawn'");
+    for (const row of trail) {
+      const number = parseJson(row.payload, {})?.number;
+      if (number && number !== row.number) consider(number, row);
+    }
+  }
+  // 2.4.4 E6 (eleştirmen 31d; karar 22.10.2026): silinen belgenin numarası da kullanılmış sayılır (routes/invoices.mjs deleteInvoice → reserveNumber).
+  // 2.4.0–2.4.3'te silinip Silinenler'de DURAN (geri yüklenmemiş) belge seride olmadığından MAX(seq) onu görmez → güncellemeden sonra numarası yeniden
+  // verilir, belge geri yüklenince iki belgede aynı numara olurdu. Kaynak belgenin silindiği andaki kendi satırı (seri, yıl, sıra; programın verdiği
+  // numara, seq > 0). Seriler programın e-Belge DIŞI serileri (paperSeriesSet ile aynı: Fiş ve Kâğıt Belge, Serbest Meslek Makbuzu, İç İade; ayar yoksa
+  // FIS / SMM / IAD). 2.4.3'te zaten yeniden verilmiş numara olduğu gibi kalır (geri yükleme reddedilir — routes/invoices.mjs restoreDeleted).
+  if (has("trash")) {
+    const deletedSeries = new Set([settings.series?.paper || "FIS", settings.series?.smm || "SMM", settings.series?.internal || "IAD"]);
+    for (const item of store.all("SELECT payload_json AS payload FROM trash WHERE kind = 'invoice' AND restored_at IS NULL")) {
+      const raw = parseJson(item.payload, {})?.invoice;
+      const seq = Number(raw?.seq);
+      if (!raw || !(seq > 0) || !raw.number || !deletedSeries.has(raw.series)) continue;
+      const key = `${raw.series}${Number(raw.year)}`;
+      best.set(key, mergeFloor(best.get(key) || null, { seq, number: raw.number, issueDate: raw.issue_date, deleted: true }));
+    }
+  }
+  // r31e N1 (23.10.2026): kayıt lib/number-floor.mjs mergeFloor'la birleşir — en büyük numara (numara tabanı) + en büyük SİLİNMEMİŞ numara (kept; sıra-tarih
+  // tabanı silinen belgenin tarihini saymaz). Önceden en büyüğü Silinenler'deki belgeyse taşınan numaranın tarihi kayboluyordu. v32 yayımlanmış hiçbir
+  // sürümde yok (v2.4.3 şeması 30): yeni şema sürümü gerekmez; aday yapılarının yazdığı kept'siz kayıt okunur (keptOf: silinmişse tarih bağlamaz).
+  const floors = parseJson(store.get("SELECT value FROM settings WHERE key = ?", FLOOR_KEY)?.value, {}) || {};
+  const raised = [];
+  for (const [key, entry] of best) {
+    let merged = floors[key] || null;
+    for (const part of [entry, ...(entry.deleted && entry.kept ? [entry.kept] : [])]) merged = mergeFloor(merged, { ...part, deleted: part === entry && entry.deleted === true });
+    if (JSON.stringify(merged) !== JSON.stringify(floors[key] ?? null)) raised.push(key);
+    floors[key] = merged;
+  }
+  if (!raised.length) return { raised };
+  store.run("INSERT INTO settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, NULL) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at", FLOOR_KEY, JSON.stringify(floors), now().toISOString());
+  return { raised };
+}
+
+// 2.4.4 Personel Özlük: tarihler YYYY-AA-GG ('' = yazılmadı); maaş kuruş; fotoğraf JPEG data URL (en çok 120 KB; '' = yok). İşten ayrılış tarihi
+// yazılıysa kart Ayrılanlar'dadır.
+const STAFF_SCHEMA_V31 = `
+  CREATE TABLE IF NOT EXISTS staff_members (
+    id TEXT PRIMARY KEY, full_name TEXT NOT NULL, birth_date TEXT NOT NULL DEFAULT '', tc_no TEXT NOT NULL DEFAULT '', address TEXT NOT NULL DEFAULT '',
+    position TEXT NOT NULL DEFAULT '', salary_minor INTEGER NOT NULL DEFAULT 0 CHECK (salary_minor >= 0), bank_name TEXT NOT NULL DEFAULT '', iban TEXT NOT NULL DEFAULT '',
+    hire_date TEXT NOT NULL DEFAULT '', leave_date TEXT NOT NULL DEFAULT '', used_leave_days INTEGER NOT NULL DEFAULT 0 CHECK (used_leave_days >= 0),
+    email TEXT NOT NULL DEFAULT '', phone TEXT NOT NULL DEFAULT '', education TEXT NOT NULL DEFAULT '', specialty TEXT NOT NULL DEFAULT '', photo TEXT NOT NULL DEFAULT '',
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+  ) STRICT;
+  CREATE INDEX IF NOT EXISTS idx_staff_members_name ON staff_members(full_name);
+`;
 
 // 2.3.0 İz 1: şüpheli alacak kaydı (cari, tarih, tutar, neden, karşılıksız evrak; open → released | cancelled; İşlem No'lu başlık) ve karşılık
 // (kayıt başına; active | cancelled). Değersiz Alacak satırı account_entries'tedir (source 'doubtful', source_id = kayıt).

@@ -1,0 +1,38 @@
+{
+  "ad": "244-ana/birlesik-personel-sonrasi",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/personel-ozluk-244.test.mjs test/license.test.mjs test/ci-kapi-listesi.test.mjs test/kanit-araci.test.mjs test/yazim-duzeni.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/sirket-canli-olay-244.test.mjs test/entegrator-kullanici-adi-244.test.mjs test/banka-210-gg-yetki.test.mjs test/banka-210-yetki-katalog.test.mjs test/banka-210-yetki-matrisi.test.mjs test/isgecmisi-230-geri-yukleme-yetki.test.mjs test/kullanici-yetki-210.test.mjs test/migrations.test.mjs test/vade-takip-kaynak-yetki-210.test.mjs test/yetki-243-muhasebe-finans.test.mjs test/yetki-gorunurluk.test.mjs",
+  "commit": "4cb0f806815949d2f0e7868f83268cd3e643566b",
+  "dal": "claude/youthful-euler-fl8ks4",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:27:27.923Z",
+  "sure_sn": 30.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 173,
+    "gecen": 172,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "lisans motoru — sunucu › katalogdaki her yazma yetkisi salt okunurda gizlenir (okuma/yönetim yetkileri açık listeyle hariç)",
+      "konum": "test/license.test.mjs:607:3",
+      "hata": "staff.view yazma yetkisi WRITE_PERMISSIONS'ta olmalı (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/birlesik-personel-sonrasi.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "840b0f0b5b9510c03d4421dcc55674e16914d463bb0f32d03ccc680bdf098c8d",
+  "ham_cikti_bayt": 55000
+}

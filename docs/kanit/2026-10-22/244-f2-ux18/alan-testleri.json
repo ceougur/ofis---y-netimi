@@ -1,0 +1,32 @@
+{
+  "ad": "244-f2-ux18/alan-testleri",
+  "komut": "node --test --test-concurrency=2 test/accounts-stock.test.mjs test/asama0-226-saat.test.mjs test/asama0-226.test.mjs test/banka-210-altin.test.mjs test/banka-210-asama78-modul.test.mjs test/banka-210-dun-bugun.test.mjs test/banka-210-ertelenen.test.mjs test/banka-210-eslesmis.test.mjs test/banka-210-gg-kapi.test.mjs test/banka-210-gg-turler.test.mjs test/banka-210-gg2-hiz.test.mjs test/banka-210-goc-zinciri.test.mjs test/banka-210-ileri-tarihli-eski.test.mjs test/banka-210-kapi-kapsam.test.mjs test/banka-210-kapi-plan.test.mjs test/banka-210-onarim.test.mjs test/banka-210-post.test.mjs test/banka-210-rapor-bulgu.test.mjs test/banka-210-raporlar.test.mjs test/banka-210-saat.test.mjs test/banka-210-tek-kaynak.test.mjs test/banka-210-yargic.test.mjs test/banka-210-yetki-matrisi.test.mjs test/banka-220-cek-hesabi.test.mjs test/banka-220-senet-121.test.mjs test/banka-220-tahsile-ver-dogrulama.test.mjs test/banka-220-tahsile-ver-isaret.test.mjs test/banka-220-tahsile-ver-tur2.test.mjs test/banka-220-tahsile-ver.test.mjs test/banka-230-k8-cek.test.mjs test/banka-230-supheli.test.mjs test/banka-alt-hesap-aciklama.test.mjs test/banka-bakiye-ileri-tarihli.test.mjs test/bulgu-223.test.mjs test/cek-ciro-217.test.mjs test/cheques-overview.test.mjs test/defter-213.test.mjs test/defter-243-raporlar.test.mjs test/defter-243-vergi.test.mjs test/dues.test.mjs test/ertelenen-224.test.mjs test/fatura-215.test.mjs test/fatura-216.test.mjs test/fatura-217.test.mjs test/fatura-230-ayarlar-banka.test.mjs test/fatura-243-stok-kdv.test.mjs test/fatura-244-numara-tarih-onay.test.mjs test/fatura-buyuk-tutar-210.test.mjs test/fatura-durum-222.test.mjs test/fatura-liste-243-fark.test.mjs test/fatura-model.test.mjs test/hakem-k4-yineleme-sirasi.test.mjs test/hiz-243-hesap-defter.test.mjs test/iade-224.test.mjs test/iade-kapama-k1.test.mjs test/inceleme-226-2.test.mjs test/inceleme-226.test.mjs test/is-akisi.test.mjs test/kapama-rastgele-223.test.mjs test/license.test.mjs test/mutabakat-213.test.mjs test/nakit-akis-ileri-tarihli-yol.test.mjs test/odeme-yolu-222.test.mjs test/rapor-220.test.mjs test/raporlar-209.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-224.test.mjs test/raporlar-230-banka.test.mjs test/supheli-230-ayni-gun-degersiz.test.mjs test/supheli-230-elestirmen.test.mjs test/supheli-230-karar.test.mjs test/supheli-230-kontrol2.test.mjs test/supheli-230-sil-cakisma.test.mjs test/supheli-230-yargic.test.mjs test/ux18-cek-fatura-244.test.mjs test/vade-takip-kaynak-yetki-210.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "2b71feac5cce579d33b9c7d9ca5b2c0784286917",
+  "dal": "is/f2-ux18",
+  "kirli": 4,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T10:52:50.595Z",
+  "sure_sn": 414.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1014,
+    "gecen": 1014,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-f2-ux18/alan-testleri.log",
+  "klasor": "/home/user/wt/f2-ux18",
+  "ham_cikti_sha256": "6b63d1400c0da56f9eef15cc322e0cc79368a679083922fdc9484a813f797863",
+  "ham_cikti_bayt": 382798
+}

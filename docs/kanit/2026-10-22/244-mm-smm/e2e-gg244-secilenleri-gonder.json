@@ -1,0 +1,32 @@
+{
+  "ad": "244-mm-smm/e2e-gg244-secilenleri-gonder",
+  "komut": "npm run test:gg244-secilenleri-gonder",
+  "commit": "d602695dcd963952a8f64e0491f85045d69bf383",
+  "dal": "is/mm-smm",
+  "kirli": 10,
+  "izlenmeyen": 17,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T22:32:44.303Z",
+  "sure_sn": 18.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 44,
+    "gecen": 44,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-mm-smm/e2e-gg244-secilenleri-gonder.log",
+  "klasor": "/home/user/wt/mm-smm",
+  "ham_cikti_sha256": "68fff01661c005fcf1e53f39a5ba292b85ab3930908e410833a938cad225322a",
+  "ham_cikti_bayt": 5670
+}

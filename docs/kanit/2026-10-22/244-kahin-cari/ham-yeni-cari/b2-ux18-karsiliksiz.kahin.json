@@ -1,0 +1,462 @@
+{
+ "ad": "b2-ux18-karsiliksiz",
+ "belirsiz": [],
+ "denetimler": {
+  "adim:bdm:durum": {
+   "b": "ret",
+   "e": "YAYGIN",
+   "k": "B2.4 bağ kurulamaz → ret, hiçbir satır yazılmaz"
+  },
+  "adim:c1:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:c2:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:e1:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:e1k:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:ekk:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:elk:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:f1:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:f2:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:f3:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:f4:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:f5:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:fik:durum": {
+   "b": "ret",
+   "e": "YAYGIN",
+   "k": "B2.4 bağ kurulamaz → ret, hiçbir satır yazılmaz"
+  },
+  "adim:fim:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:h1:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "k1:cari:A:bakiye": {
+   "b": -30000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k1:cari:B:bakiye": {
+   "b": 0,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k1:fatura:W:acik": {
+   "b": 0,
+   "e": "AJAN",
+   "k": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)"
+  },
+  "k1:fatura:X:acik": {
+   "b": 0,
+   "e": "AJAN",
+   "k": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)"
+  },
+  "k1:kasa": {
+   "b": 30000,
+   "e": "KULLANICI",
+   "k": "B1.2 Kasa değişmez / tahsilatlar Kasa'da"
+  },
+  "k1:mizan:100": {
+   "b": 30000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k1:mizan:101": {
+   "b": 100000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k1:mizan:120": {
+   "b": -30000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k1:mizan:121": {
+   "b": 0,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k1:mizan:320": {
+   "b": 0,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k1:mizan:600": {
+   "b": -100000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k2:cari:A:bakiye": {
+   "b": 70000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k2:cari:B:bakiye": {
+   "b": 0,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k2:fatura:W:acik": {
+   "b": 20000,
+   "e": "AJAN",
+   "k": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)"
+  },
+  "k2:fatura:X:acik": {
+   "b": 50000,
+   "e": "AJAN",
+   "k": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)"
+  },
+  "k2:kasa": {
+   "b": 30000,
+   "e": "KULLANICI",
+   "k": "B1.2 Kasa değişmez / tahsilatlar Kasa'da"
+  },
+  "k2:mizan:100": {
+   "b": 30000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k2:mizan:101": {
+   "b": 0,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k2:mizan:120": {
+   "b": 70000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k2:mizan:121": {
+   "b": 0,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k2:mizan:320": {
+   "b": 0,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k2:mizan:600": {
+   "b": -100000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k3:cari:A:bakiye": {
+   "b": 70000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k3:cari:B:bakiye": {
+   "b": 15000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k3:fatura:K:acik": {
+   "b": 0,
+   "e": "KULLANICI",
+   "k": "B2.1 açık = tutar − bağlı − en eski kapama"
+  },
+  "k3:fatura:L:acik": {
+   "b": 15000,
+   "e": "KULLANICI",
+   "k": "B2.1 açık = tutar − bağlı − en eski kapama"
+  },
+  "k3:fatura:W:acik": {
+   "b": 20000,
+   "e": "AJAN",
+   "k": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)"
+  },
+  "k3:fatura:X:acik": {
+   "b": 50000,
+   "e": "AJAN",
+   "k": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)"
+  },
+  "k3:kasa": {
+   "b": 30000,
+   "e": "KULLANICI",
+   "k": "B1.2 Kasa değişmez / tahsilatlar Kasa'da"
+  },
+  "k3:mizan:100": {
+   "b": 30000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k3:mizan:101": {
+   "b": 60000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k3:mizan:120": {
+   "b": 85000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k3:mizan:121": {
+   "b": 10000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k3:mizan:320": {
+   "b": 0,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k3:mizan:600": {
+   "b": -185000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k4:cari:A:bakiye": {
+   "b": 70000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k4:cari:B:bakiye": {
+   "b": 85000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k4:fatura:K:acik": {
+   "b": 60000,
+   "e": "KULLANICI",
+   "k": "B2.1 açık = tutar − bağlı − en eski kapama"
+  },
+  "k4:fatura:L:acik": {
+   "b": 25000,
+   "e": "KULLANICI",
+   "k": "B2.1 açık = tutar − bağlı − en eski kapama"
+  },
+  "k4:fatura:W:acik": {
+   "b": 20000,
+   "e": "AJAN",
+   "k": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)"
+  },
+  "k4:fatura:X:acik": {
+   "b": 50000,
+   "e": "AJAN",
+   "k": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)"
+  },
+  "k4:kasa": {
+   "b": 30000,
+   "e": "KULLANICI",
+   "k": "B1.2 Kasa değişmez / tahsilatlar Kasa'da"
+  },
+  "k4:mizan:100": {
+   "b": 30000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k4:mizan:101": {
+   "b": 0,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k4:mizan:120": {
+   "b": 155000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k4:mizan:121": {
+   "b": 0,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k4:mizan:320": {
+   "b": 0,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k4:mizan:600": {
+   "b": -185000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k5:cari:A:bakiye": {
+   "b": 70000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k5:cari:B:bakiye": {
+   "b": 85000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k5:fatura:K:acik": {
+   "b": 60000,
+   "e": "KULLANICI",
+   "k": "B2.1 açık = tutar − bağlı − en eski kapama"
+  },
+  "k5:fatura:L:acik": {
+   "b": 25000,
+   "e": "KULLANICI",
+   "k": "B2.1 açık = tutar − bağlı − en eski kapama"
+  },
+  "k5:fatura:M:acik": {
+   "b": 0,
+   "e": "KULLANICI",
+   "k": "B2.1 açık = tutar − bağlı − en eski kapama"
+  },
+  "k5:fatura:W:acik": {
+   "b": 20000,
+   "e": "AJAN",
+   "k": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)"
+  },
+  "k5:fatura:X:acik": {
+   "b": 50000,
+   "e": "AJAN",
+   "k": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)"
+  },
+  "k5:kasa": {
+   "b": 30000,
+   "e": "KULLANICI",
+   "k": "B1.2 Kasa değişmez / tahsilatlar Kasa'da"
+  },
+  "k5:mizan:100": {
+   "b": 30000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k5:mizan:101": {
+   "b": 45000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k5:mizan:120": {
+   "b": 155000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k5:mizan:121": {
+   "b": 0,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k5:mizan:320": {
+   "b": 0,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k5:mizan:600": {
+   "b": -230000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k6:cari:A:bakiye": {
+   "b": 70000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k6:cari:B:bakiye": {
+   "b": 85000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k6:fatura:K:acik": {
+   "b": 60000,
+   "e": "AJAN",
+   "k": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: kendi-evrak-iptal)"
+  },
+  "k6:fatura:L:acik": {
+   "b": 25000,
+   "e": "AJAN",
+   "k": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: kendi-evrak-iptal)"
+  },
+  "k6:fatura:M:durum": {
+   "b": "iptal",
+   "e": "PLAN",
+   "k": "B2.5 iptal"
+  },
+  "k6:fatura:W:acik": {
+   "b": 20000,
+   "e": "AJAN",
+   "k": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)"
+  },
+  "k6:fatura:X:acik": {
+   "b": 50000,
+   "e": "AJAN",
+   "k": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: ux18-fazla)"
+  },
+  "k6:kasa": {
+   "b": 30000,
+   "e": "KULLANICI",
+   "k": "B1.2 Kasa değişmez / tahsilatlar Kasa'da"
+  },
+  "k6:mizan:100": {
+   "b": 30000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k6:mizan:101": {
+   "b": 0,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k6:mizan:120": {
+   "b": 155000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k6:mizan:121": {
+   "b": 0,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k6:mizan:320": {
+   "b": 0,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  },
+  "k6:mizan:600": {
+   "b": -185000,
+   "e": "PLAN",
+   "k": "B2.6 §3.11a yevmiye"
+  }
+ },
+ "dil": "destekofis-cari/1"
+}

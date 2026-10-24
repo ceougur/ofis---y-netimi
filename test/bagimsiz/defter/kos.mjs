@@ -74,7 +74,8 @@ async function gonder(o, method, url, body, kimlik = d => d?.id) {
   return r.data;
 }
 const paraBirimi = metin => {
-  const s = String(metin ?? "").replace(/[₺\s]|TL/g, "");
+  if (typeof metin === "number") return Math.round(metin * 100);
+  const s = String(metin ?? "").replace(/[₺\s]|TL/g, "").replace(/\u2212/g, "-");
   if (!/^-?[\d.]+(,\d+)?$/.test(s)) return null;
   return Math.round(Number(s.replace(/\./g, "").replace(",", ".")) * 100);
 };
@@ -200,12 +201,49 @@ try {
   const st = await api("GET", "/api/workspace/stock");
   program.son.stok = st.status === 200 ? Object.fromEntries(st.data.items.map(i => [i.code, String(i.qty)])) : null;
   program.son.kdv = {};
-  for (const ay of ["2026-09", "2026-10"]) {
+  // Ayları kâhinin bildiği fatura aylarından değil, senaryonun olaylarından (fatura olayı olan her ay; 31b-MM3 iadeleri Kasım'da)
+  for (const ay of [...new Set(senaryo.olaylar.filter(o => o.tur === "fatura").map(o => o.tarih.slice(0, 7)))].sort()) {
     const son = new Date(Date.UTC(Number(ay.slice(0, 4)), Number(ay.slice(5)), 0)).toISOString().slice(0, 10);
     const r = await api("GET", `/api/workspace/report-center/kdv-ozeti?from=${ay}-01&to=${son}`);
     const ozet = r.status === 200 ? Object.fromEntries(r.data.summary || []) : {};
     const bul = onek => Object.entries(ozet).find(([k]) => k.startsWith(onek))?.[1];
     program.son.kdv[ay] = { hesaplanan: paraBirimi(bul("Hesaplanan KDV")), indirilecek: paraBirimi(bul("İndirilecek KDV")) };
+  }
+  // 31b-MM3 (2.4.4): Stopaj ve Tevkifat Özeti (GET report-center/stopaj-tevkifat — uç adı test/stopaj-tevkifat-iade-244.test.mjs ÇAĞRI satırından; sütun ve
+  // özet adları kara kutu yoklamasından: Tarih, Cari, Taraf, Matrah, Stopaj, KDV Tevkifatı; özet "Bizim Ödeyeceğimiz Stopaj/Tevkifat").
+  program.son.stopajOzet = {};
+  for (const ay of senaryo.stopajAylari || []) {
+    const son = new Date(Date.UTC(Number(ay.slice(0, 4)), Number(ay.slice(5)), 0)).toISOString().slice(0, 10);
+    const r = await api("GET", `/api/workspace/report-center/stopaj-tevkifat?from=${ay}-01&to=${son}`);
+    if (r.status !== 200) {
+      program.son.stopajOzet[ay] = null;
+      continue;
+    }
+    const h = r.data.headers || [];
+    const ix = ad => h.indexOf(ad);
+    const iso = d => (/^\d{2}\.\d{2}\.\d{4}$/.test(String(d)) ? `${d.slice(6, 10)}-${d.slice(3, 5)}-${d.slice(0, 2)}` : String(d));
+    const satirlar = {};
+    for (const row of r.data.rows || []) satirlar[`${iso(row[ix("Tarih")])}|${row[ix("Cari")]}`] = { taraf: row[ix("Taraf")], matrah: paraBirimi(row[ix("Matrah")]), stopaj: paraBirimi(row[ix("Stopaj")]), tevkifat: paraBirimi(row[ix("KDV Tevkifatı")]) };
+    const ozet = Object.fromEntries(r.data.summary || []);
+    program.son.stopajOzet[ay] = { satirlar, bizimStopaj: paraBirimi(ozet["Bizim Ödeyeceğimiz Stopaj"]), bizimTevkifat: paraBirimi(ozet["Bizim Ödeyeceğimiz Tevkifat"]), ham: r.data.rows };
+  }
+  // 31b-MM8 (2.4.4): yevmiyede aynı günün maddeleri — belge (fatura/iade) önce, sonra para/cari. Satırın türü "Tür" sütunundan (kara kutu yoklaması:
+  // [Tarih, Tür, Açıklama, Hesap, Borç, Alacak]); "Fatura" ya da "İade" geçen tür belge sayılır. Ham türler program.json'a yazılır.
+  program.son.yevmiyeSira = {};
+  program.son.yevmiyeTurleri = {};
+  for (const gun of senaryo.yevmiyeSiraGunleri || []) {
+    const r = await api("GET", `/api/workspace/report-center/yevmiye?from=${gun}&to=${gun}`);
+    if (r.status !== 200) {
+      program.son.yevmiyeSira[gun] = null;
+      continue;
+    }
+    program.son.yevmiyeBasliklar = r.data.headers || [];
+    const ti = (r.data.headers || []).findIndex(x => /^(T[üu]r|İşlem|Kaynak|Fiş Türü)/i.test(String(x)));
+    const turler = (r.data.rows || []).map(row => (ti >= 0 ? String(row[ti] ?? "") : row.slice(1, 3).join(" · ")));
+    const sinif = turler.map(x => (/fatura|iade/i.test(x) ? "belge" : "para"));
+    program.son.yevmiyeTurleri[gun] = turler;
+    const iki = sinif.includes("belge") && sinif.includes("para");
+    program.son.yevmiyeSira[gun] = !iki ? "tek-sinif" : sinif.lastIndexOf("belge") < sinif.indexOf("para") ? "belge-once" : "karisik";
   }
   const y = await api("GET", "/api/workspace/report-center/alacak-yaslandirma");
   if (y.status === 200) {
@@ -231,14 +269,14 @@ if (atlanan.length) console.log(`\nATLANAN OLAYLAR (${atlanan.length}) — sonu�
 // Mutasyon (testin dişi): kâhine bilerek hata → karşılaştırma sonucu (farklı denetimler kümesi) değişmeli. İki yerde denenir:
 //  a) bu koşunun gerçek program çıktısına karşı (atlanan olayların mutasyonu burada görünmeyebilir — bilgi),
 //  b) TAM senaryoda (bütün olaylar) kâhinin kendi çıktısından kurulan "kusursuz program"a karşı — her mutasyon burada YAKALANMALI.
-const MUTASYONLAR = { 1: "KDV dahil fiyatta KDV'yi brüt × oran ile hesapla", 2: "satıştan iade 610 yerine 600", 3: "stopaj 360 yerine 193", 4: "tevkifatlı satışta 391'e tam KDV", 5: "POS komisyonu yazılmaz", 6: "KDV mahsubunda devreden 190 kullanılmaz", 7: "stok açılışı deftere yazılmaz (MM4 öncesi)", 8: "yaşlandırmada faturasız bakiye atlanır (MM5 öncesi)", 9: "gecikme zammı 689 yerine 360", 10: "karşılıksız çek cariye yazılmaz" };
+const MUTASYONLAR = { 11: "31b-MM3: satıştan iade 360 tarafında", 12: "31b-MM3: iade artı yazılır", 13: "31b-MM8: yevmiyede aynı gün sınıfsız yazım sırası", 1: "KDV dahil fiyatta KDV'yi brüt × oran ile hesapla", 2: "satıştan iade 610 yerine 600", 3: "stopaj 360 yerine 193", 4: "tevkifatlı satışta 391'e tam KDV", 5: "POS komisyonu yazılmaz", 6: "KDV mahsubunda devreden 190 kullanılmaz", 7: "stok açılışı deftere yazılmaz (MM4 öncesi)", 8: "yaşlandırmada faturasız bakiye atlanır (MM5 öncesi)", 9: "gecikme zammı 689 yerine 360", 10: "karşılıksız çek cariye yazılmaz" };
 const imza = s => s.denetimler.filter(d => !d.ok).map(d => `${d.ad}=${d.program}/${d.beklenen}`).sort().join("|");
 const tam = (mut = 0) => JSON.parse(execFileSync(PYTHON, ["-I", path.join(HERE, "kahin.py"), path.join(HERE, "senaryo.json"), "--mutasyon", String(mut)], { encoding: "utf8" }));
 const kusursuz = (() => {
   const b = tam(0);
   const kontroller = {};
   for (const k of b.kontrolSirasi) Object.assign(kontroller, { [k]: b.kontroller[k], [`${k}:dengeli`]: true });
-  return { kontroller, son: { cari: b.cari, stok: b.stok, kdv: b.kdv, yaslandirma: b.yaslandirma } };
+  return { kontroller, son: { cari: b.cari, stok: b.stok, kdv: b.kdv, yaslandirma: b.yaslandirma, stopajOzet: b.stopajOzet, yevmiyeSira: b.yevmiyeSira } };
 })();
 if (karsilastir(tam(0), kusursuz).denetimler.some(d => !d.ok)) throw new Error("öz denetim: kâhin kendi çıktısıyla tutmuyor");
 const taban = imza(sonuc);

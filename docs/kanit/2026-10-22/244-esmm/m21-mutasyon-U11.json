@@ -1,0 +1,38 @@
+{
+  "ad": "244-esmm/m21-mutasyon-U11",
+  "komut": "node --test test/esmm-ubl.test.mjs",
+  "commit": "dde4675ab7eb58f8e299cdf00ad57916e964f75e",
+  "dal": "is/esmm",
+  "kirli": 2,
+  "izlenmeyen": 30,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:02:56.533Z",
+  "sure_sn": 2.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 11,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "e-SMM UBL: program tutarlarıyla aynı, yapı EDM'nin e-SMM örneğiyle aynı, UBL 2.1 şemasına uygun › stopaj artık Not değil (vergi satırında); programın fatura görünüm şablonu ve karekod gömülmez; gönderim şekli alıcının e-postasına göre",
+      "konum": "test/esmm-ubl.test.mjs:161:3",
+      "hata": "stopaj notu yok (beklenen , gelen |-)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-esmm/m21-mutasyon-U11.log",
+  "klasor": "/home/user/wt/esmm",
+  "ham_cikti_sha256": "e50a874cf98e0076df7e26e96ad125dab1af17f008ee8df939337b682e1957d4",
+  "ham_cikti_bayt": 12035
+}

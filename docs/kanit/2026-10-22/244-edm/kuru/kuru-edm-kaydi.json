@@ -1,0 +1,52 @@
+{
+ "fatura": [
+  "Login",
+  "CheckUser",
+  "CheckUser",
+  "SendInvoice",
+  "CheckUser",
+  "SendInvoice",
+  "GetInvoiceStatus",
+  "GetInvoiceStatus",
+  "GetInvoiceStatus",
+  "GetInvoiceStatus",
+  "GetInvoice",
+  "GetInvoiceStatus"
+ ],
+ "smm": [
+  "Login",
+  "SendSMM",
+  "SendSMM",
+  "SendSMM",
+  "SendSMM",
+  "SendSMM",
+  "GetSMMStatus",
+  "GetSMMStatus",
+  "GetSMMStatus",
+  "GetSMMStatus",
+  "GetSMMStatus",
+  "GetSMMStatus",
+  "GetSMMStatus",
+  "GetSMMStatus",
+  "GetSMMStatus",
+  "GetSMMStatus",
+  "GetSMM",
+  "GetSMM",
+  "GetSMM",
+  "GetSMMStatus",
+  "CancelSMM",
+  "GetSMMStatus",
+  "GetSMMStatus",
+  "CancelSMM",
+  "GetSMM"
+ ],
+ "smmGonderilen": [
+  "TES2026648892982",
+  "TES2026648892983",
+  "TES2026648892984",
+  "TES2026648892985",
+  "TES2026648892986"
+ ],
+ "smmIptal": 1,
+ "ihlaller": []
+}

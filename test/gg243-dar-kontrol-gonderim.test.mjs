@@ -27,19 +27,21 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const seqOf = number => Number(String(number).slice(7));
 const ORDER_RE = /^Bu seride daha eski tarihli gönderilmemiş (\d+) belge var; GİB sıra kuralı gereği önce onlar gönderilmeli\. Belge Gönderilecekler'(e eklendi|de bekliyor) — Tümünü Gönder ile eskiden yeniye gönderin\.$/;
 
-async function setup({ sendDelayMs = 0, checkDelayMs = sendDelayMs, slowTaxNo = "", slowMs = 0, edocSendBudgetMs = 0 } = {}) {
+async function setup({ sendDelayMs = 0, checkDelayMs = sendDelayMs, edocSendBudgetMs = 0 } = {}) {
   resetEdmCaches();
   const edm = await startMockEdm();
   // net.down: ağ yok (bağlantı reddedildi; istek EDM'ye hiç ulaşmaz) — oturum önbellekteyken de (kâhin hedefli-ag-yokken-numara).
   const net = { down: false };
+  // edmHooks: EDM'ye giden her istekten önce sırayla beklenir (D2: olay sırasını kuran kapılar; uyku yok).
+  const edmHooks = [];
   const fetchImpl = async (input, init) => {
     const url = String(typeof input === "string" || input instanceof URL ? input : input.url);
     if (!url.startsWith("http://127.0.0.1")) throw new Error(`ağa çıkılmaz (test): ${url}`);
     if (net.down) throw Object.assign(new TypeError("fetch failed"), { cause: { code: "ECONNREFUSED" } });
     const raw = String(init?.body || "");
+    for (const hook of edmHooks) await hook(raw);
     if (sendDelayMs && /SendInvoiceRequest/.test(raw)) await sleep(sendDelayMs);
     if (checkDelayMs && /CheckUserRequest/.test(raw)) await sleep(checkDelayMs);
-    if (slowTaxNo && /CheckUserRequest/.test(raw) && raw.includes(slowTaxNo)) await sleep(slowMs);
     return globalThis.fetch(input, init);
   };
   const server = await startTestServer({ edocEnabled: true, fetchImpl, now: "2026-06-17T09:00:00", edocStatusPollMs: [5, 5], ...(edocSendBudgetMs ? { edocSendBudgetMs } : {}), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
@@ -94,7 +96,7 @@ async function setup({ sendDelayMs = 0, checkDelayMs = sendDelayMs, slowTaxNo = 
     await server.close();
     await edm.close();
   };
-  return { edm, net, server, client, api, integrator, people, day, sale, card, pendingTab, sends, sentCount, sendAll, seriesOk, close };
+  return { edm, net, edmHooks, server, client, api, integrator, people, day, sale, card, pendingTab, sends, sentCount, sendAll, seriesOk, close };
 }
 
 describe("gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği", () => {
@@ -308,31 +310,106 @@ describe("gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği", (
     assert.equal(now.autoSend?.ok, true, JSON.stringify(now.autoSend));
   });
 
+  // D2 — 2.4.4 (E3, ders 20): ön koşul OLAY SIRASINA bağlı, zamanlamaya değil. CI #842 (b68aafe) kırmızısı: eski test A'nın ilk belgesini 800 ms
+  // yavaşlatıp B'yi 100 ms sonra başlatıyordu; B, A'nın arkasından releasedWithin'in 100 ms'lik yoklamasıyla yürür. A'nın belge başı süresi 100 ms'yi
+  // geçince (yavaş/yüklü koşucu) B her belgede A'yı gönderimin ORTASINDA yakalar → ürünün öbür doğru yolu (einvoice-sending → bekle → "başka oturumda
+  // gönderildi"; Ek 7, gg243-gonderim S3 ve ebelge-240-kontrol3 C2 sınar) çıkar, D2'nin sınadığı "einvoice-already-sent" yolu hiç oluşmazdı.
+  // Zorla üretme: test/gg243-d2-yaris.mjs (her SendInvoice'u geciktirir; 2.4.3 testi her denemede kırmızı, bu test yeşil).
+  // Burada sıra kapılarla kurulur (uyku yok; her adım bir önceki olayın sözüne bağlı):
+  //   1. A gönderime başlar; ilk belgenin (Ayşe) mükellef sorgusunda KAPIDA bekler — A'nın listesi seçildi, kilit A'da, belge numarasız.
+  //   2. Başka kullanıcı daha eski tarihli bir belge (X) kaydeder (Kes, Sonra Gönder); B gönderime basar. B'nin listesi X + A'nın 6 belgesi; tarih
+  //      sırasıyla önce X'i gönderir — X'in EDM isteği KAPIDA bekler (X numara aldı; B'nin listesi kesin seçildi).
+  //   3. A'nın kapısı açılır: A 6 belgeyi gönderir ve yanıtı döner (bütün kilitleri bıraktı; X A'nın listesinde yok).
+  //   4. B'nin kapısı açılır: B X'i bitirir, sonra A'nın belgelerine gelir — hepsi gönderilmiş ve kilitsiz → 6 kez "einvoice-already-sent".
+  // Bu sırada "einvoice-sending" çıkamaz (A bitti); çıkarsa ya da sonuç hata sayılırsa ürün yanlış yoldadır.
+  const ALREADY_SENT = "Bu belge başka oturumda gönderildi.";
+  const latch = () => {
+    let release;
+    const promise = new Promise(resolve => (release = resolve));
+    return { promise, open: () => release() };
+  };
+  // Beklenen olay gelmezse (ürün başka yola saptı) test asılı kalmaz: hangi adımın kurulamadığını söyler. Süre yalnız hata bildirimi içindir.
+  const within = (promise, label, ms = 30_000) => {
+    let timer;
+    return Promise.race([promise, new Promise((_, reject) => (timer = setTimeout(() => reject(new Error(`ön koşul kurulamadı: ${label} (${ms / 1000} sn)`)), ms)))]).finally(() => clearTimeout(timer));
+  };
   for (const mode of ["all", "ids"]) {
     test(`D2 (${mode}): eşzamanlı Tümünü Gönder — başka oturumda gönderilen belge hata sayılmaz, iletisi ezilmez`, async () => {
-      const ctx = await setup({ sendDelayMs: 0, checkDelayMs: 0, slowTaxNo: "10000000146", slowMs: 800 });
+      // Y1 süre bütçesi (üretimde 10 sn) B'nin turunu A'nın belgelerine gelmeden kesmesin: B, A bitene dek X'te bekler (yavaş koşucuda süre
+      // ölçümüne bağlılık olurdu). Yol aynı, yalnız sınır geniş.
+      const ctx = await setup({ edocSendBudgetMs: 60_000 });
       open.push(ctx);
       const docs = [await ctx.sale(ctx.people[0], { issueDate: ctx.day(-2), eSend: "later" })];
       for (let i = 0; i < 5; i += 1) docs.push(await ctx.sale(ctx.people[1 + (i % 2)], { issueDate: ctx.day(-2), eSend: "later" }));
+      const retailId = (await ctx.api.post("/api/workspace/accounts", retail(1))).data.id;
       const other = ctx.server.client();
       await other.login("admin", ADMIN_PASSWORD);
-      const body = mode === "all" ? { all: true } : { ids: docs.map(d => d.id) };
+      const ids = docs.map(d => d.id);
+      const gateA = latch();
+      const gateB = latch();
+      const atA = latch();
+      const atB = latch();
+      const seen = { a: false, b: false, xEttn: "" };
+      ctx.edmHooks.push(async raw => {
+        if (!seen.a && /CheckUserRequest/.test(raw) && raw.includes("10000000146")) {
+          seen.a = true;
+          atA.open();
+          await gateA.promise;
+        } else if (!seen.b && seen.xEttn && /SendInvoiceRequest/.test(raw) && raw.includes(seen.xEttn)) {
+          seen.b = true;
+          atB.open();
+          await gateB.promise;
+        }
+      });
       const before = ctx.sends();
-      const [a, b] = await Promise.all([ctx.api.post("/api/workspace/invoices/send-pending", body), sleep(100).then(async () => unwrap(await other.post("/api/workspace/invoices/send-pending", body)))]);
-      const items = [...a.data.results, ...b.data.results];
-      const raced = items.filter(item => item.code === "einvoice-already-sent");
-      assert.ok(raced.length, `ön koşul: bir istek öbürünün gönderdiği belgeye denk geldi: ${JSON.stringify(items.map(x => x.code || (x.ok ? "OK" : "")))}`);
-      for (const item of raced) {
-        assert.equal(item.done, true, `hata değil, "başka oturumda gönderildi": ${JSON.stringify(item)}`);
-        assert.equal(item.message, "Bu belge başka oturumda gönderildi.");
+      const fail = who => response => {
+        throw new Error(`ön koşul kurulamadı: ${who} kapıya gelmeden yanıt verdi: ${JSON.stringify(response.data).slice(0, 400)}`);
+      };
+      let a;
+      let b;
+      let x;
+      try {
+        const pa = ctx.api.post("/api/workspace/invoices/send-pending", mode === "all" ? { all: true } : { ids });
+        await within(Promise.race([atA.promise, pa.then(fail("A"))]), "A ilk belgenin mükellef sorgusuna gelmedi");
+        x = await ctx.sale(retailId, { issueDate: ctx.day(-3), eSend: "later" });
+        seen.xEttn = (await ctx.card(x.id)).ettn;
+        assert.ok(seen.xEttn, "X'in ETTN'si kayıtta verildi");
+        const pb = other.post("/api/workspace/invoices/send-pending", mode === "all" ? { all: true } : { ids: [x.id, ...ids] }).then(unwrap);
+        await within(Promise.race([atB.promise, pb.then(fail("B"))]), "B eski tarihli X'i göndermeye başlamadı");
+        gateA.open();
+        a = await within(pa, "A'nın yanıtı gelmedi");
+        gateB.open();
+        b = await within(pb, "B'nin yanıtı gelmedi");
+      } finally {
+        gateA.open();
+        gateB.open();
       }
-      assert.equal(a.data.failed + b.data.failed, items.filter(x => !x.ok && !x.done).length);
-      assert.ok(!items.some(x => !x.ok && !x.done && !x.busy && !x.skipped), `gerçek hata yok: ${JSON.stringify(items.filter(x => !x.ok && !x.done))}`);
-      assert.equal(ctx.sends() - before, 6, "her belge EDM'ye bir kez");
-      for (const c of await Promise.all(docs.map(d => ctx.card(d.id)))) {
-        assert.equal(ctx.sentCount(c.ettn), 1);
+      assert.equal(a.status, 200, JSON.stringify(a.data).slice(0, 400));
+      assert.equal(b.status, 200, JSON.stringify(b.data).slice(0, 400));
+      // A, 6 belgeyi kendisi gönderdi (X, A'nın listesi seçildikten sonra kaydedildi).
+      assert.deepEqual(a.data.results.map(item => [item.id, item.ok, Boolean(item.done)]), ids.map(id => [id, true, false]), JSON.stringify(a.data.results).slice(0, 600));
+      const numbers = new Map(a.data.results.map(item => [item.id, item.number]));
+      // B önce X'i gönderdi, sonra A'nın belgelerine geldi.
+      assert.deepEqual(b.data.results.map(item => item.id), [x.id, ...ids], "B'nin sırası: X, sonra A'nın belgeleri (tarih + kayıt sırası)");
+      const [bx, ...raced] = b.data.results;
+      assert.equal(bx.ok, true, JSON.stringify(bx));
+      assert.ok(!bx.done, "X'i B gönderdi");
+      for (const item of raced) {
+        assert.equal(item.code, "einvoice-already-sent", `ön koşul: B, A'nın gönderdiği belgeye gönderimden SONRA geldi: ${JSON.stringify(item)}`);
+        assert.equal(item.ok, true, `hata değil: ${JSON.stringify(item)}`);
+        assert.equal(item.done, true, `"başka oturumda gönderildi": ${JSON.stringify(item)}`);
+        assert.equal(item.message, ALREADY_SENT);
+        assert.equal(item.number, numbers.get(item.id), "A'nın verdiği numara");
+      }
+      assert.deepEqual([a.data.sent, a.data.failed, a.data.done], [6, 0, 0]);
+      assert.deepEqual([b.data.sent, b.data.failed, b.data.done], [1, 0, 6], "gönderilmiş belge B'de hata ya da gönderilen sayılmaz");
+      assert.equal(ctx.sends() - before, 7, "her belge EDM'ye bir kez (A 6, B 1)");
+      const cards = await Promise.all([x, ...docs].map(d => ctx.card(d.id)));
+      for (const c of cards) {
+        assert.equal(ctx.sentCount(c.ettn), 1, `${c.number} EDM'ye bir kez`);
         assert.doesNotMatch(c.eMessage || "", /zaten entegratöre iletildi|başka oturumda/, `gönderilmiş belgenin iletisi ezilmedi (${c.number}: ${c.eMessage})`);
       }
+      assert.equal(ctx.seriesOk(cards).length, 7, "numara sırası = tarih sırası, boşluksuz (X önce)");
     });
   }
 

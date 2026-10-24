@@ -290,6 +290,8 @@ Yetkiler: hücre ve başlık yazmayı herkes, satır/kolon/sayfa eklemeyi ekleme
 | "Veri kaynağı değiştirildi" uyarısı | Yönetici veriyi değiştirdi; *Yenile*'ye basın. |
 | Bazı satırların üstü çizili | Bağlı Google Sheets'te artık yoklar. Yönetici *Ayarlar → Veri → Listeyi gör* ile tutar veya kaldırır. |
 | "Sheet'in yapısı değişmiş görünüyor" uyarısı | Sheet'e başlık satırı eklenmiş veya sekme adı değişmiş olabilir. *İncele ve karar ver* ile "devamı olarak ekle" ya da "yerine koy" seçin. |
+| "… kaydın tahsilatı / notu … eşleşmedi" uyarısı (Excel yüklerken ya da Sheet eşitlemesi beklerken) | Yeni dosyada o kişi yok, adı değişmiş ya da aynı adlı birden çok satır var; program tahsilatı ve notu hangi satıra bağlayacağını bilemiyor. Silinmezler. Dosyadaki adı düzeltip yeniden yükleyin; bilerek kaldırdıysanız onaylayın (bağ eski kayıtta kalır). |
+| "… satır mevcut kayıtlarla aynı görünüyor" uyarısı | *Devamı olarak ekle* bu satırları ikinci kez ekler. Aynı dosyanın yenisiyse *Yerine koy* seçin. |
 | "Google Sheets'e şu an ulaşılamıyor" | İnternet veya Sheet paylaşım izni sorunu. Tablo son eşitlenen veriyle çalışmaya devam eder. |
 | "DestekOfis … sürümüne güncellendi" şeridi | Sunucu yeni sürüme geçti. Yazmakta olduğunuz notu kaydedip *Yenile*'ye basın. |
 | Önerilen sektör yanlış | *Başka sektör seç* ile listeden doğrusunu seçin ya da *Genel kullan* deyin. Sonradan *Ayarlar → Sektör ve görünüm*'den değiştirilebilir. |

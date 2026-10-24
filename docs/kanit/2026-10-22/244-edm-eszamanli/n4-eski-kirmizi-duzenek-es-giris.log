@@ -1,0 +1,119 @@
+fatal: not a git repository (or any of the parent directories): .git
+
+■ hazirlik) Kurulum: üretim bayrakları, sabit test adresi, sunucu
+  ✓ üretim girişi (server/server.mjs) e-Belgeyi ve e-SMM'yi açar: {"edocEnabled":true,"edocLive":true,"esmmEnabled":true}
+  ✓ programın test adresleri betiğin sabitleriyle aynı (https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc · https://test.edmbilisim.com.tr/EFaturaEDM21ea/ESmmEDM.svc)
+  ✓ canlı adresler bekçide reddedilir (https://portal2.edmbilisim.com.tr/EFaturaEDM/EFaturaEDM.svc · https://portal2.edmbilisim.com.tr/EFaturaEDM/ESmmEDM.svc)
+  ✓ yönetici girişi
+
+■ a-baglanti) Entegratör Ayarları (Test Ortamı) + Bağlantıyı Test Et: e-Fatura ve e-SMM servisleri
+  ✓ ayarlar kaydedildi; e-SMM kullanıcısıyım işaretli (200)
+  ✓ ortam Test, programın gideceği adresler izinli: http://127.0.0.1:39309/EFaturaEDM21ea/EFaturaEDM.svc · http://127.0.0.1:39309/EFaturaEDM21ea/ESmmEDM.svc
+  ✓ Bağlantıyı Test Et: 200 EDM'ye giriş yapıldı; bağlantı çalışıyor. Servis sözleşmesi (WSDL) okundu: SOAP 1.1, 9 işlem. EDM e-SMM servisine giriş yapıldı; bağlantı çalışıyor. Servis sözleşmesi (WSDL) okundu: SOAP 1.1, 16 işlem.
+
+■ hazirlik-cariler) Cariler: e-SMM alıcısı şirket (EDM'de e-Fatura mükellefi OLMADIĞI sorgulanmış VKN) + e-Arşiv alıcısı kişi
+  ✓ e-SMM alıcısı VKN'si EDM'de mükellef değil (Mükellef Sorgula): 8994896941
+  ✓ cari Deneme Müvekkil Danışmanlık A.Ş.: 200
+  ✓ cari Ahmet Yılmaz: 200
+
+■ hazirlik-kullanicilar) Kullanıcılar: fatura yetkili 2 kullanıcı (Muhasebe rolü) + yetkisiz 1 kullanıcı (Personel); ikinci şirket alıcı (Ankara)
+  ✓ kullanıcı fatura1 (muhasebe) açıldı, giriş yaptı (200 / 200)
+  ✓ kullanıcı fatura2 (muhasebe) açıldı, giriş yaptı (200 / 200)
+  ✓ kullanıcı personel1 (personel) açıldı, giriş yaptı (200 / 200)
+  ✓ ikinci şirket alıcının VKN'si EDM'de mükellef değil (Mükellef Sorgula): 7956876889
+  ✓ cari Deneme Hukuk Danışmanlık Ltd. Şti.: 200
+
+■ ya-eszamanli-kayit) AYNI ANDA 31 istek, 3 oturumdan: 20 e-SMM Kaydet ve Gönder + 10 e-SMM Kes, Sonra Gönder + 1 yetkisiz (Personel)
+  i BİLGİ: soğuk başlangıç: programın EDM oturum ve sözleşme önbelleği boşaltıldı (sabah ilk gönderim / program yeniden açıldı); her istek kendi girişini dener
+  ✗ A01 (yonetici, VKN) HTTP 200 446 ms: Kaydet ve Gönder → numara yok, e-Belge durumu waiting (beklenen: EDM'ye iletildi; integrator-login Entegratör girişi reddedildi (kullanıcı adı/parola): EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabını)
+  ✓ A02 (fatura1, VKN) HTTP 200 516 ms: Kaydet ve Gönder → TES2026119473240, e-Belge durumu sent (beklenen: EDM'ye iletildi)
+  ✗ A03 (fatura2, TCKN) HTTP 200 445 ms: Kaydet ve Gönder → numara yok, e-Belge durumu waiting (beklenen: EDM'ye iletildi; integrator-login Entegratör girişi reddedildi (kullanıcı adı/parola): EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabını)
+  ✗ A04 (yonetici, VKN) HTTP 200 445 ms: Kaydet ve Gönder → numara yok, e-Belge durumu waiting (beklenen: EDM'ye iletildi; integrator-login Entegratör girişi reddedildi (kullanıcı adı/parola): EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabını)
+  ✗ A05 (fatura1, VKN) HTTP 200 469 ms: Kaydet ve Gönder → numara yok, e-Belge durumu waiting (beklenen: EDM'ye iletildi; integrator-login Entegratör girişi reddedildi (kullanıcı adı/parola): EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabını)
+  ✗ A06 (fatura2, TCKN) HTTP 200 469 ms: Kaydet ve Gönder → numara yok, e-Belge durumu waiting (beklenen: EDM'ye iletildi; integrator-login Entegratör girişi reddedildi (kullanıcı adı/parola): EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabını)
+  ✗ A07 (yonetici, VKN) HTTP 200 514 ms: Kaydet ve Gönder → numara yok, e-Belge durumu waiting (beklenen: EDM'ye iletildi; integrator-login Entegratör girişi reddedildi (kullanıcı adı/parola): EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabını)
+  ✗ A08 (fatura1, VKN) HTTP 200 514 ms: Kaydet ve Gönder → numara yok, e-Belge durumu waiting (beklenen: EDM'ye iletildi; integrator-login Entegratör girişi reddedildi (kullanıcı adı/parola): EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabını)
+  ✗ A09 (fatura2, TCKN) HTTP 200 571 ms: Kaydet ve Gönder → numara yok, e-Belge durumu waiting (beklenen: EDM'ye iletildi; integrator-login Entegratör girişi reddedildi (kullanıcı adı/parola): EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabını)
+  ✗ A10 (yonetici, VKN) HTTP 200 572 ms: Kaydet ve Gönder → numara yok, e-Belge durumu waiting (beklenen: EDM'ye iletildi; integrator-login Entegratör girişi reddedildi (kullanıcı adı/parola): EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabını)
+  ✗ A11 (fatura1, VKN) HTTP 200 572 ms: Kaydet ve Gönder → numara yok, e-Belge durumu waiting (beklenen: EDM'ye iletildi; integrator-login Entegratör girişi reddedildi (kullanıcı adı/parola): EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabını)
+  ✗ A12 (fatura2, TCKN) HTTP 200 572 ms: Kaydet ve Gönder → numara yok, e-Belge durumu waiting (beklenen: EDM'ye iletildi; integrator-login Entegratör girişi reddedildi (kullanıcı adı/parola): EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabını)
+  ✗ A13 (yonetici, VKN) HTTP 200 639 ms: Kaydet ve Gönder → numara yok, e-Belge durumu waiting (beklenen: EDM'ye iletildi; integrator-login Entegratör girişi reddedildi (kullanıcı adı/parola): EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabını)
+  ✗ A14 (fatura1, VKN) HTTP 200 639 ms: Kaydet ve Gönder → numara yok, e-Belge durumu waiting (beklenen: EDM'ye iletildi; integrator-login Entegratör girişi reddedildi (kullanıcı adı/parola): EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabını)
+  ✗ A15 (fatura2, TCKN) HTTP 200 640 ms: Kaydet ve Gönder → numara yok, e-Belge durumu waiting (beklenen: EDM'ye iletildi; integrator-login Entegratör girişi reddedildi (kullanıcı adı/parola): EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabını)
+  ✗ A16 (yonetici, VKN) HTTP 200 642 ms: Kaydet ve Gönder → numara yok, e-Belge durumu waiting (beklenen: EDM'ye iletildi; integrator-login Entegratör girişi reddedildi (kullanıcı adı/parola): EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabını)
+  ✗ A17 (fatura1, VKN) HTTP 200 645 ms: Kaydet ve Gönder → numara yok, e-Belge durumu waiting (beklenen: EDM'ye iletildi; integrator-login Entegratör girişi reddedildi (kullanıcı adı/parola): EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabını)
+  ✗ A18 (fatura2, TCKN) HTTP 200 689 ms: Kaydet ve Gönder → numara yok, e-Belge durumu waiting (beklenen: EDM'ye iletildi; integrator-login Entegratör girişi reddedildi (kullanıcı adı/parola): EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabını)
+  ✗ A19 (yonetici, VKN) HTTP 200 689 ms: Kaydet ve Gönder → numara yok, e-Belge durumu waiting (beklenen: EDM'ye iletildi; integrator-login Entegratör girişi reddedildi (kullanıcı adı/parola): EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabını)
+  ✗ A20 (fatura1, VKN) HTTP 200 688 ms: Kaydet ve Gönder → numara yok, e-Belge durumu waiting (beklenen: EDM'ye iletildi; integrator-login Entegratör girişi reddedildi (kullanıcı adı/parola): EDM isteği reddetti: The caller was not authenticated by the service. Test Ortamı'nda EDM'nin test hesabını)
+  ✓ B01 (fatura1, TCKN) HTTP 200 117 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)
+  ✓ B02 (fatura2, VKN) HTTP 200 144 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)
+  ✓ B03 (yonetici, VKN) HTTP 200 171 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)
+  ✓ B04 (fatura1, TCKN) HTTP 200 197 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)
+  ✓ B05 (fatura2, VKN) HTTP 200 221 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)
+  ✓ B06 (yonetici, VKN) HTTP 200 246 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)
+  ✓ B07 (fatura1, TCKN) HTTP 200 275 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)
+  ✓ B08 (fatura2, VKN) HTTP 200 295 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)
+  ✓ B09 (yonetici, VKN) HTTP 200 315 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)
+  ✓ B10 (fatura1, TCKN) HTTP 200 347 ms: Kes, Sonra Gönder → numara yok, waiting, ESMM (beklenen: numarasız Gönderilecekler'de)
+  ✓ yetkisiz kullanıcının (Personel) Kaydet ve Gönder'i 403 ile reddedildi, belge açılmadı, numara harcanmadı (0)
+  i BİLGİ: EDM e-SMM servisine Login: 20 (en çok eşzamanlı 20); SendSMM 1 (en çok eşzamanlı 1); sözleşme (WSDL) okuma 2
+  ✗ e-SMM servisine giriş tek uçuş (N4): soğuk başta tam 1 Login — Login 20, en çok eşzamanlı 20
+  i BİLGİ: süreler: Kaydet ve Gönder {"en":445,"medyan":572,"enCok":689} ms, Kes, Sonra Gönder {"en":117,"medyan":246,"enCok":347} ms; 30 sn'yi aşan Kaydet ve Gönder 0 (arayüzün kayıt zaman aşımı 30 sn: aşanlarda ekran "sunucuda sürüyor olabilir" derdi)
+13:53:11 DUR: eşzamanlı istekte 19 belgede EDM girişi reddedildi (A01, A03, A04, A05, A06, A07, A08, A09, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20): betik durdu, Tümünü Gönder / Durum Sorgula yapılmadı (hesap kilitlenmesin)
+
+# EDM Test Ortamı — eşzamanlı e-SMM (2.4.4 iş listesi 24b) — KURU KOŞU
+
+**Test portalı:** https://test.edmbilisim.com.tr/EFaturaUI21ea/ (Entegratör Ayarları'ndaki test kullanıcı adı ve parolasıyla) → e-Arşiv belgeleri portalın e-Arşiv bölümünde; e-SMM için portalda sarı "SMMM Portalı Girişi" düğmesi.
+**KURU KOŞU:** sahte EDM (yerel, ağa çıkmadı) — aşağıdaki numaralar EDM'de YOKTUR; yalnız özetin biçimini gösterir.
+
+Commit okunamadı · başlangıç 22.10.2026 16:53:09 · bitiş 22.10.2026 16:53:11 (TR) · denetim 27/47 geçti · çıkış 2 · DURDU: eşzamanlı istekte 19 belgede EDM girişi reddedildi (A01, A03, A04, A05, A06, A07, A08, A09, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20): betik durdu, Tümünü Gönder / Durum Sorgula yapılmadı (hesap kilitlenmesin)
+
+Adımlar: hazirlik geçti · a-baglanti geçti · hazirlik-cariler geçti · hazirlik-kullanicilar geçti · ya-eszamanli-kayit kaldı (20 kalan)
+
+Bilgi (denetim değil):
+- ya-eszamanli-kayit: soğuk başlangıç: programın EDM oturum ve sözleşme önbelleği boşaltıldı (sabah ilk gönderim / program yeniden açıldı); her istek kendi girişini dener
+- ya-eszamanli-kayit: EDM e-SMM servisine Login: 20 (en çok eşzamanlı 20); SendSMM 1 (en çok eşzamanlı 1); sözleşme (WSDL) okuma 2
+- ya-eszamanli-kayit: süreler: Kaydet ve Gönder {"en":445,"medyan":572,"enCok":689} ms, Kes, Sonra Gönder {"en":117,"medyan":246,"enCok":347} ms; 30 sn'yi aşan Kaydet ve Gönder 0 (arayüzün kayıt zaman aşımı 30 sn: aşanlarda ekran "sunucuda sürüyor olabilir" derdi)
+
+Eşzamanlılık: 20 Kaydet ve Gönder + 10 Kes, Sonra Gönder AYNI ANDA, 3 kullanıcı oturumundan (yönetici, fatura1, fatura2); B'yi fatura1 ve fatura2 AYNI ANDA Tümünü Gönder ile gönderdi. Soğuk başlangıç (programın EDM oturum önbelleği boştu). e-SMM servisine Login 20 (en çok eşzamanlı 20), SendSMM en çok eşzamanlı 1. Sahte EDM: zorla hayır, arıza es-giris.
+
+Belgeler İPTAL EDİLMEDİ. Portalda Not alanında "Eşzamanlı deneme ESZ-55e5f555 <kod>" yazar. Alıcılar test alıcısıdır (VKN'li iki şirket, TCKN'li kişi 10000000146), gerçek kişi değildir.
+
+| Kod | Aşama | Oturum | Belge No | ETTN / UUID | Belge Tarihi | Saat | Alıcı Türü | Alıcı | Brüt | Stopaj | KDV | Net Ödenecek | EDM Son Durum | EDM'deki No (Bağımsız Okuyucu) |
+|---|---|---|---|---|---|---|---|---|---:|---:|---:|---:|---|---|
+| A01 | A Kaydet ve Gönder | yonetici | — | 12fa8cf8-668f-4e2b-9dcb-577c31f648a3 | 22.10.2026 | 16:53 | VKN | Deneme Müvekkil Danışmanlık A.Ş. | 1.000,00 | 200,00 | 200,00 | 1.000,00 | Gönderilmedi | sorulmadı |
+| A02 | A Kaydet ve Gönder | fatura1 | TES2026119473240 | 7249772c-e134-4141-8c79-94e1847ecbd3 | 22.10.2026 | 16:53 | VKN | Deneme Hukuk Danışmanlık Ltd. Şti. | 2.500,50 | 500,10 | 500,10 | 2.500,50 | Kabul (iletildi) | sorulmadı |
+| A03 | A Kaydet ve Gönder | fatura2 | — | ac70890a-8180-4e59-8d3b-cd398382c894 | 22.10.2026 | 16:53 | TCKN | Ahmet Yılmaz | 333,33 | 0,00 | 66,67 | 400,00 | Gönderilmedi | sorulmadı |
+| A04 | A Kaydet ve Gönder | yonetici | — | 30cec0e6-4563-4ba9-bf8a-bac00e06edb8 | 22.10.2026 | 16:53 | VKN | Deneme Müvekkil Danışmanlık A.Ş. | 200,06 | 40,01 | 40,02 | 200,07 | Gönderilmedi | sorulmadı |
+| A05 | A Kaydet ve Gönder | fatura1 | — | b4fa4aff-d7f9-454e-95e9-11de6f444d47 | 22.10.2026 | 16:53 | VKN | Deneme Hukuk Danışmanlık Ltd. Şti. | 1.234,56 | 246,91 | 246,91 | 1.234,56 | Gönderilmedi | sorulmadı |
+| A06 | A Kaydet ve Gönder | fatura2 | — | 2eb8f631-2243-4946-b259-94fc45c6427f | 22.10.2026 | 16:53 | TCKN | Ahmet Yılmaz | 750,00 | 0,00 | 150,00 | 900,00 | Gönderilmedi | sorulmadı |
+| A07 | A Kaydet ve Gönder | yonetici | — | 8bf4bb17-3c48-4cc2-ba0d-84e59177b4f4 | 22.10.2026 | 16:53 | VKN | Deneme Müvekkil Danışmanlık A.Ş. | 99,99 | 20,00 | 20,00 | 99,99 | Gönderilmedi | sorulmadı |
+| A08 | A Kaydet ve Gönder | fatura1 | — | b755a4c4-7082-435b-a410-ade8edd66f9d | 22.10.2026 | 16:53 | VKN | Deneme Hukuk Danışmanlık Ltd. Şti. | 4.200,10 | 840,02 | 840,02 | 4.200,10 | Gönderilmedi | sorulmadı |
+| A09 | A Kaydet ve Gönder | fatura2 | — | 5e96be22-54ed-4e01-b39f-c17512d2b9f0 | 22.10.2026 | 16:53 | TCKN | Ahmet Yılmaz | 15.000,00 | 0,00 | 3.000,00 | 18.000,00 | Gönderilmedi | sorulmadı |
+| A10 | A Kaydet ve Gönder | yonetici | — | 190453d8-f4a7-419e-a0b2-7012ef6d3eb2 | 22.10.2026 | 16:53 | VKN | Deneme Müvekkil Danışmanlık A.Ş. | 812,47 | 162,49 | 162,49 | 812,47 | Gönderilmedi | sorulmadı |
+| A11 | A Kaydet ve Gönder | fatura1 | — | 85df0a5e-cbc3-41b8-a553-e645d704f37a | 22.10.2026 | 16:53 | VKN | Deneme Hukuk Danışmanlık Ltd. Şti. | 100,00 | 20,00 | 20,00 | 100,00 | Gönderilmedi | sorulmadı |
+| A12 | A Kaydet ve Gönder | fatura2 | — | 0e338373-be80-48fc-9936-816c521802d0 | 22.10.2026 | 16:53 | TCKN | Ahmet Yılmaz | 2.999,99 | 0,00 | 600,00 | 3.599,99 | Gönderilmedi | sorulmadı |
+| A13 | A Kaydet ve Gönder | yonetici | — | c07c6538-7b4b-4ce6-8cc7-14c40d138391 | 22.10.2026 | 16:53 | VKN | Deneme Müvekkil Danışmanlık A.Ş. | 5.000,05 | 1.000,01 | 1.000,01 | 5.000,05 | Gönderilmedi | sorulmadı |
+| A14 | A Kaydet ve Gönder | fatura1 | — | 0cd42b51-e779-4a76-a842-a443865d5f8e | 22.10.2026 | 16:53 | VKN | Deneme Hukuk Danışmanlık Ltd. Şti. | 455,45 | 91,09 | 91,09 | 455,45 | Gönderilmedi | sorulmadı |
+| A15 | A Kaydet ve Gönder | fatura2 | — | 381848e5-bc0e-4007-9d3c-1edfbde3653f | 22.10.2026 | 16:53 | TCKN | Ahmet Yılmaz | 120,00 | 0,00 | 24,00 | 144,00 | Gönderilmedi | sorulmadı |
+| A16 | A Kaydet ve Gönder | yonetici | — | 2ab841f5-fdd0-43ff-83f2-506a4d4fbe87 | 22.10.2026 | 16:53 | VKN | Deneme Müvekkil Danışmanlık A.Ş. | 7.777,77 | 1.555,55 | 1.555,55 | 7.777,77 | Gönderilmedi | sorulmadı |
+| A17 | A Kaydet ve Gönder | fatura1 | — | 698124b9-d04b-43e3-b266-b53a9388430d | 22.10.2026 | 16:53 | VKN | Deneme Hukuk Danışmanlık Ltd. Şti. | 300,30 | 60,06 | 60,06 | 300,30 | Gönderilmedi | sorulmadı |
+| A18 | A Kaydet ve Gönder | fatura2 | — | c1e4fed2-f588-48d2-85bc-3ae8555ca389 | 22.10.2026 | 16:53 | TCKN | Ahmet Yılmaz | 641,00 | 0,00 | 128,20 | 769,20 | Gönderilmedi | sorulmadı |
+| A19 | A Kaydet ve Gönder | yonetici | — | 25afb789-8b5c-42d9-b202-027b336df6e8 | 22.10.2026 | 16:53 | VKN | Deneme Müvekkil Danışmanlık A.Ş. | 18,18 | 3,64 | 3,64 | 18,18 | Gönderilmedi | sorulmadı |
+| A20 | A Kaydet ve Gönder | fatura1 | — | 1550c5e9-11af-4fc7-8d73-ba381b7b1449 | 22.10.2026 | 16:53 | VKN | Deneme Hukuk Danışmanlık Ltd. Şti. | 1.999,95 | 399,99 | 399,99 | 1.999,95 | Gönderilmedi | sorulmadı |
+| B01 | B Kes, Sonra Gönder → Tümünü Gönder | fatura1 | — | 2c78a43d-52bd-41be-84a5-317c94283c2f | 22.10.2026 | 16:53 | TCKN | Ahmet Yılmaz | 450,00 | 0,00 | 90,00 | 540,00 | Gönderilmedi | sorulmadı |
+| B02 | B Kes, Sonra Gönder → Tümünü Gönder | fatura2 | — | 880cd6bb-2fa1-4f70-9dbc-32effdb18849 | 22.10.2026 | 16:53 | VKN | Deneme Müvekkil Danışmanlık A.Ş. | 1.250,75 | 250,15 | 250,15 | 1.250,75 | Gönderilmedi | sorulmadı |
+| B03 | B Kes, Sonra Gönder → Tümünü Gönder | yonetici | — | 4e2cbd02-ebb0-4676-bb4b-808d7576f986 | 22.10.2026 | 16:53 | VKN | Deneme Hukuk Danışmanlık Ltd. Şti. | 88,88 | 17,78 | 17,78 | 88,88 | Gönderilmedi | sorulmadı |
+| B04 | B Kes, Sonra Gönder → Tümünü Gönder | fatura1 | — | ad3d548a-71ad-448b-87b7-950de93472cd | 22.10.2026 | 16:53 | TCKN | Ahmet Yılmaz | 1.000,00 | 0,00 | 200,00 | 1.200,00 | Gönderilmedi | sorulmadı |
+| B05 | B Kes, Sonra Gönder → Tümünü Gönder | fatura2 | — | 30cea1b6-df0f-429e-963c-ca08b8d0b7aa | 22.10.2026 | 16:53 | VKN | Deneme Müvekkil Danışmanlık A.Ş. | 3.333,33 | 666,67 | 666,67 | 3.333,33 | Gönderilmedi | sorulmadı |
+| B06 | B Kes, Sonra Gönder → Tümünü Gönder | yonetici | — | e27314be-a8d6-444a-a51a-b34dbeab59d0 | 22.10.2026 | 16:53 | VKN | Deneme Hukuk Danışmanlık Ltd. Şti. | 66,67 | 13,33 | 13,33 | 66,67 | Gönderilmedi | sorulmadı |
+| B07 | B Kes, Sonra Gönder → Tümünü Gönder | fatura1 | — | 2762b9e8-5929-4af3-904d-d38133af0b3f | 22.10.2026 | 16:53 | TCKN | Ahmet Yılmaz | 9.999,99 | 0,00 | 2.000,00 | 11.999,99 | Gönderilmedi | sorulmadı |
+| B08 | B Kes, Sonra Gönder → Tümünü Gönder | fatura2 | — | 22a9a06f-768e-43c7-8aa6-14504975649a | 22.10.2026 | 16:53 | VKN | Deneme Müvekkil Danışmanlık A.Ş. | 205,05 | 41,01 | 41,01 | 205,05 | Gönderilmedi | sorulmadı |
+| B09 | B Kes, Sonra Gönder → Tümünü Gönder | yonetici | — | 8a2cead9-44e3-4fb1-9bf0-02d8c5e0d088 | 22.10.2026 | 16:53 | VKN | Deneme Hukuk Danışmanlık Ltd. Şti. | 710,00 | 142,00 | 142,00 | 710,00 | Gönderilmedi | sorulmadı |
+| B10 | B Kes, Sonra Gönder → Tümünü Gönder | fatura1 | — | b47fc519-ee5e-4544-bf22-7012f5c2467f | 22.10.2026 | 16:53 | TCKN | Ahmet Yılmaz | 1.010,00 | 0,00 | 202,00 | 1.212,00 | Gönderilmedi | sorulmadı |
+
+Brüt: e-SMM'de brüt ücret, e-Arşiv'de KDV hariç tutar. Net Ödenecek: e-SMM'de brüt − stopaj + KDV (tahsil edilecek), e-Arşiv'de KDV dahil toplam.
+Bekçi: izin verilen dış istek 0, reddedilen 0. Kimlik bilgisi bu dosyalarda yoktur.
+
+kimlik bilgisi taraması: 9 dosya, eşleşme 0
+SONUÇ: 27 geçti, 21 kaldı (çıkış 2)

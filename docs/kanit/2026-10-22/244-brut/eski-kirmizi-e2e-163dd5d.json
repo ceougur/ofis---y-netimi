@@ -1,0 +1,98 @@
+{
+  "ad": "244-brut/eski-kirmizi-e2e-163dd5d",
+  "komut": "bash -c echo 'eski kod: git archive 163dd5d -> /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/brut/brut-eski-163dd5d (yalniz yeni senaryo kopyalandi)'; cd /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/brut/brut-eski-163dd5d && node --disable-warning=ExperimentalWarning test/e2e/senaryo-netten-brute-244.mjs",
+  "commit": "2581d8c7f6f9312a7b9b2804a14d24756c4e4857",
+  "dal": "is/brut",
+  "kirli": 7,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T05:28:47.881Z",
+  "sure_sn": 34.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 43,
+    "gecen": 30,
+    "basarisiz": 13,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 13 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Birim Fiyat 1.000,00 (kutu \"1250\")",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "brüt ücret 1000 (veri tabanı 1250)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "KDV 200 (veri tabanı 250)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ödenecek 1200 (veri tabanı 1500)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Net Ücret = yazılan 1000 (veri tabanı 1250)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Birim Fiyat 1.500,00 KDV dahil (kutu \"1250\")",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "brüt ücret 1250 (veri tabanı 1041.67)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "stopaj 250 (veri tabanı 208.33)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "KDV 250 (veri tabanı 208.33)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ödenecek 1250 (veri tabanı 1041.67)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Net Ücret = yazılan 1000 (veri tabanı 833.34)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "pencerede neden: \"\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım tamamlanamadı: page.$eval: Failed to find element matching selector \".hof-modal-backdrop.is-visible .hof-invoices-modal [data-l=\"0\"][data-f=\"unitPrice\"]\"",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-brut/eski-kirmizi-e2e-163dd5d.log",
+  "klasor": "/home/user/wt/brut",
+  "ham_cikti_sha256": "cdeeb981e9689f94fc1f43dc8606ef5c431db5320aa3213e59d71af17476297d",
+  "ham_cikti_bayt": 3217
+}

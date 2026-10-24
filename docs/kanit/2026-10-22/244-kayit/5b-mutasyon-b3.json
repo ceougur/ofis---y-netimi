@@ -1,0 +1,38 @@
+{
+  "ad": "244-kayit/5b-mutasyon-b3",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-5b3/test/tablodan-aktar-244.test.mjs /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-5b3/test/kayit-tahsilat-244.test.mjs",
+  "commit": "f6d38288ccceaa9cc9148c778111a9e7a562c906",
+  "dal": "is/kayit",
+  "kirli": 11,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T06:06:32.888Z",
+  "sure_sn": 3.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 13,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 5b B7: Excel'de kısmen ödenmiş plan + açılış bakiyesi = kalan → kart ödenmemiş kısımla, açılış satırı yok, bakiye aynı › B7 Can Öztürk: kart 5.700 (Mevcut Borç), açılış satırı yok, bakiye 5.700",
+      "konum": "test/tablodan-aktar-244.test.mjs:291:3",
+      "hata": "carinin bakiyesi 5.700 kalır (çift borç ya da açılış düşümü yok): 3800 · 3800 !== 5700 (beklenen 5700, gelen 3800)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kayit/5b-mutasyon-b3.log",
+  "klasor": "/home/user/wt/kayit",
+  "ham_cikti_sha256": "c1b5eaf4c34fd35c12b7c1bde892ff63363e7f5797006ae1f2c4fdfd8a893e57",
+  "ham_cikti_bayt": 8057
+}

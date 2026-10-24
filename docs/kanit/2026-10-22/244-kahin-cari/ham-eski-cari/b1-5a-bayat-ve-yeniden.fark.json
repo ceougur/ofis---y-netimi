@@ -1,0 +1,198 @@
+{
+ "toplam": 53,
+ "farklar": [
+  {
+   "anahtar": "adim:a1:durum",
+   "beklenen": "ret",
+   "program": "ok",
+   "etiket": "AJAN",
+   "kural": "B1.9",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "adim:a2:atlanan",
+   "beklenen": 0,
+   "program": 1,
+   "etiket": "AJAN",
+   "kural": "B1 aktarım özeti",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "adim:a2:kapsanan",
+   "beklenen": 1,
+   "program": "okunamadı",
+   "etiket": "AJAN",
+   "kural": "B1 aktarım özeti",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "adim:a2:olusan",
+   "beklenen": 1,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B1 aktarım özeti",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "adim:a2:tasinanAdet",
+   "beklenen": 2,
+   "program": "okunamadı",
+   "etiket": "AJAN",
+   "kural": "B1 aktarım özeti",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "adim:a2:tasinanTutar",
+   "beklenen": 100000,
+   "program": null,
+   "etiket": "AJAN",
+   "kural": "B1 aktarım özeti",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "adim:a3:kapsanan",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "etiket": "AJAN",
+   "kural": "B1 aktarım özeti",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "adim:a3:tasinanAdet",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "etiket": "AJAN",
+   "kural": "B1 aktarım özeti",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "adim:a3:tasinanTutar",
+   "beklenen": 0,
+   "program": null,
+   "etiket": "AJAN",
+   "kural": "B1 aktarım özeti",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "adim:g2:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "etiket": "PLAN",
+   "kural": "adım kabul edilir",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k1:cari:AYLA:bakiye",
+   "beklenen": 200000,
+   "program": 500000,
+   "etiket": "PLAN",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k1:mizan:120",
+   "beklenen": 200000,
+   "program": 500000,
+   "etiket": "PLAN",
+   "kural": "B2.6 §3.11a yevmiye",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k1:rapor:K-1:alacak",
+   "beklenen": 100000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B1.8 5c tahsilat bir kez",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:cari:AYLA:bakiye",
+   "beklenen": 200000,
+   "program": 500000,
+   "etiket": "PLAN",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:cari:AYLA:taksitDisi",
+   "beklenen": 0,
+   "program": 100000,
+   "etiket": "KULLANICI",
+   "kural": "B1.2 taksit dışı kalan tahsilatlar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:kart:K-1:kalan",
+   "beklenen": 200000,
+   "program": 300000,
+   "etiket": "KULLANICI",
+   "kural": "B1.2",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:kart:K-1:mevcutBorc",
+   "beklenen": true,
+   "program": false,
+   "etiket": "AJAN",
+   "kural": "B1.4 mevcut borcu taksitlendir",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k2:kart:K-1:odenen",
+   "beklenen": 100000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B1.2 taşınan tahsilatlar karta",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:kart:K-1:taksit1:odenen",
+   "beklenen": 100000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B1.2 en eski açık taksitten başlayarak",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:rapor:K-1:alacak",
+   "beklenen": 100000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B1.8 5c tahsilat bir kez",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:cari:AYLA:bakiye",
+   "beklenen": -50000,
+   "program": 250000,
+   "etiket": "PLAN",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:kart:K-1:var",
+   "beklenen": false,
+   "program": true,
+   "etiket": "KULLANICI",
+   "kural": "B1.6 geri al kartı kaldırır",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:rapor:K-1:alacak",
+   "beklenen": 350000,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B1.8 5c tahsilat bir kez",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k1:mizan:602",
+   "beklenen": 0,
+   "program": -300000,
+   "etiket": "PLAN",
+   "kural": "B2.6 kâhinin yazmadığı hesap",
+   "sinif": "BULGU"
+  }
+ ],
+ "hatalar": []
+}

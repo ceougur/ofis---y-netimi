@@ -1,0 +1,32 @@
+{
+  "ad": "v1-v2-kahin-cari",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/v-kahin-cari-cikti",
+  "commit": "3e04e9b7b9c359585f1eb0d996ccdbb5a8be1b34",
+  "dal": "is/r31e-d",
+  "kirli": 4,
+  "izlenmeyen": 15,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T06:26:29.482Z",
+  "sure_sn": 29.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 1967,
+    "gecen": 1967,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/v1-v2-kahin-cari.log",
+  "klasor": "/home/user/wt/r31e-d",
+  "ham_cikti_sha256": "50523a78ef296b2db4eaaf2bb679611612ff0b107795af17db230d4f53dce8f9",
+  "ham_cikti_bayt": 4353
+}

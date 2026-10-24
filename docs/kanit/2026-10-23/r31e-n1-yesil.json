@@ -1,0 +1,32 @@
+{
+  "ad": "r31e-n1-yesil",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/numara-silinen-tarih-244.test.mjs test/numara-silinen-244.test.mjs test/ux18-cek-fatura-244.test.mjs",
+  "commit": "39382c4f72974d1cc180a90a377076cca6f34d44",
+  "dal": "is/r31e-n1",
+  "kirli": 4,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T03:24:43.555Z",
+  "sure_sn": 14.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 35,
+    "gecen": 35,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/r31e-n1-yesil.log",
+  "klasor": "/home/user/wt/r31e-n1",
+  "ham_cikti_sha256": "a003ba78df584d9bd0bec6f0b61a523957ca5284259d0dd444bae6fddef96edb",
+  "ham_cikti_bayt": 15858
+}

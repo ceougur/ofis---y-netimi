@@ -1,0 +1,7 @@
+✓ deneme 1 (eski, /api/auth/me +0 ms): yenilenmeden hemen sonra işaret okunmuştu; ikinci yüklemede "Veriniz hazır" açılmadı
+✓ deneme 2 (eski, /api/auth/me +0 ms): yenilenmeden hemen sonra işaret okunmuştu; ikinci yüklemede "Veriniz hazır" açılmadı
+✓ deneme 3 (eski, /api/auth/me +0 ms): yenilenmeden hemen sonra işaret okunmuştu; ikinci yüklemede "Veriniz hazır" açılmadı
+✓ deneme 4 (eski, /api/auth/me +0 ms): yenilenmeden hemen sonra işaret okunmuştu; ikinci yüklemede "Veriniz hazır" açılmadı
+✓ deneme 5 (eski, /api/auth/me +0 ms): yenilenmeden hemen sonra işaret okunmuştu; ikinci yüklemede "Veriniz hazır" açılmadı
+
+TAMAM: 5 denetim geçti, 0 başarısız.

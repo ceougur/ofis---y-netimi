@@ -1,0 +1,11 @@
+# ui-son — Nasıl bozulur? (işe başlamadan, 22.10.2026)
+1. U5: 11111111111'li carinin (Nihai Tüketici ya da yanlış girilmiş gerçek kişi) TEK eksiği il → ipucu tutar sınırı der, düğme yok (asıl bug).
+2. U5: tutar sınırı (30.000 TL üstü) aşılınca hem sınır hem il eksik → paylaşılan Nihai Tüketici carisi faturadan düzenlenmemeli (ipucu kalır, düğme yok).
+3. U5: tutar sınırın altındayken sorunsuz 11111111111 carisi → hiç ipucu/düğme yok. Yetkisiz kullanıcı → yetki ipucu (değişmez).
+4. U7a: UX15 çakışması + parti sorunu birlikte → odak önce "Cariyi Düzenle"; yalnız tarih çakışmasında → Tarih alanı (odak BODY değil).
+5. U7b: listeden fareyle ya da klavyeyle (Enter) seçim → ilk boş kalem adı; kalemler doluysa kaydet düğmesi; seçimi kaldır (×) → odak cari kutusunda kalır; dışarıdan setAccount (Yeni Cari) ikinci kez odak çalmaz.
+6. U7c: Uyarıyı Kapat → banner yeniden çizilir, odak BODY'ye düşer; düzeltmede "+ Yeni Fatura"ya; yetkisiz (Fatura Ayarları yok) kullanıcıda da çalışmalı.
+7. Personel: "ayse"/"AYŞE"/"Ayse" ↔ "Ayşe", "ismail" ↔ "İsmail", "ırmak" ↔ "Irmak"; telefon/TCKN rakam araması bozulmamalı; öbür sekme ipucu yalnız sonuç yokken; sekmeye geçince arama korunur; HOF.fold eklemek hof-chips'in davranışını değiştirmemeli.
+8. G6: kutu adı (senaryo-225 tam metin) değişmemeli; cümle kutunun altında ve girişte TEKRAR değil; Veriyi Sıfırla kırmızı; Esc/Vazgeç değişmez.
+9. Seçilenleri Gönder: Enter (varsayılan odak) → Vazgeç (hiçbir şey gönderilmez, numara verilmez); fareyle "Onları da Ekle ve Gönder" yine çalışır.
+10. UX17: kısmi ödemede büyük rakam Kalan; tam ödenmiş "Genel Toplam" (değişmez); iptal/iade etiketleri değişmez; döviz faturada TL karşılığı; e-SMM kısmi.

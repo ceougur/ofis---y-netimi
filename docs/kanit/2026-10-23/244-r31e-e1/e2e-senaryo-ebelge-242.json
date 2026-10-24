@@ -1,0 +1,32 @@
+{
+  "ad": "244-r31e-e1/e2e-senaryo-ebelge-242",
+  "komut": "npm run test:senaryo-ebelge-242",
+  "commit": "88aaf093aac2e878051d902ee6cf6ad44ae9dc7f",
+  "dal": "is/r31e-e1",
+  "kirli": 2,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T03:16:41.635Z",
+  "sure_sn": 50.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 21,
+    "gecen": 21,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/244-r31e-e1/e2e-senaryo-ebelge-242.log",
+  "klasor": "/home/user/wt/r31e-e1",
+  "ham_cikti_sha256": "742239b4ad6f12216e855df6feb19c15a4b27ee33428515c7e5a7c5b2a950d1a",
+  "ham_cikti_bayt": 2365
+}

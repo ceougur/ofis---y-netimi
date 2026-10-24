@@ -8,8 +8,10 @@ import path from "node:path";
 
 const PREFIX = "sb1:";
 
-export function createSecretBox(dataDir) {
-  const file = path.join(dataDir, "secret.key");
+// fileName: anahtar dosyasının adı (varsayılan secret.key). 2.4.4: vekil sunucu parolası makine geneli ağ ayarı dosyasının yanında ayrı
+// anahtarla (ag-ayari.key) mühürlenir — şirketin veri anahtarına bağlanmaz, servis yöneticisi ve bütün şirketler aynı anahtarı okur.
+export function createSecretBox(dataDir, { fileName = "secret.key" } = {}) {
+  const file = path.join(dataDir, fileName);
   let key = null;
   const load = () => {
     if (key) return key;

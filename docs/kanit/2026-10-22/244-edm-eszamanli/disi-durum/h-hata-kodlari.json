@@ -1,0 +1,24 @@
+{
+ "adim": "h-hata-kodlari",
+ "baslik": "Görülen ret / hata kodları (PACKAGE-FAIL, SEND-FAILED, EDM hata kodu, 11048)",
+ "durum": "bilgi",
+ "denetimler": [],
+ "kayit": {
+  "kodlar": [
+   {
+    "yer": "yc A01 durum",
+    "eStatus": "error",
+    "raw": "PACKAGE - FAIL",
+    "error": "Paketleme hatası: EDM'nin yönergesine göre makbuz iptal edilip yeniden gönderilir — İptal Et ile iptal edin, Kopyala ile yeniden kesin (yeni numara alır). BASARIYLA TAMAMLANDI"
+   },
+   {
+    "yer": "yd A01 resmî görüntü",
+    "status": 409,
+    "ok": false,
+    "error": "Bu belge henüz entegratöre ulaşmadı; resmî görüntüsü yok.",
+    "code": "einvoice-not-sent"
+   }
+  ],
+  "paketHatasi": "görüldü"
+ }
+}

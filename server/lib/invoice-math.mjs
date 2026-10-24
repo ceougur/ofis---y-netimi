@@ -275,6 +275,10 @@ export function computeInvoice(lines, { pricesIncludeVat = false, discountRate =
   }
   const net = sum("net");
   // Stopaj belge toplamından hesaplanır (makbuzda tek satır: "Gelir Vergisi Stopajı %20").
+  // 2.4.4 (mali müşavir MM10 incelendi, ana oturum kararı 22.10.2026: DEĞİŞMEZ): KDV kalem başına (UBL-TR kalem yapısı; KDV K. md. 20), stopaj ödemenin
+  // tamamı üzerinden (GVK md. 94: makbuz toplamı × oran) — iki ayrı dayanak. Çok kalemli makbuzda aynı matrah ve oranla KDV ile stopaj arasında ≤ 1 kuruş
+  // fark beklenir (2 × 100,03: KDV 20,01 + 20,01 = 40,02; stopaj 200,06 × %20 = 40,01); hata değildir. Plandan yazılmış bağımsız modeller (mutabakat
+  // fatura-model.mjs, test/bagimsiz/tutar) da stopajı belge düzeyinde hesaplar. Sabitleyen test: test/mm-smm-244.test.mjs T1.
   const stoppageTotal = stoppage > 0 ? mulDiv(net, Math.round(stoppage * 100), 10000) : 0;
   const totals = {
     base: sum("base"),
@@ -323,12 +327,54 @@ export function toTry(totals, rate = 1) {
   return { rate: r, byAccount, net, vat, withheld, stoppage, payable: net + vat - withheld - stoppage };
 }
 
-/** SMM'de alıcının ödeyeceği net tutardan brüt ücret: brüt = net ÷ (1 − stopaj) (KDV ayrıca eklenir). */
-export function grossFromNet(netAmount, stoppageRate = STOPPAGE_DEFAULT) {
-  const net = Number(netAmount);
-  const r = Number(stoppageRate);
-  if (!Number.isFinite(net) || net <= 0 || !Number.isFinite(r) || r < 0 || r >= 100) return 0;
-  return roundMoney(net / (1 - r / 100));
+/**
+ * SMM "Netten Brüte" (2.4.4 madde 26): makbuzun Net Ücreti (brüt ücret − gelir vergisi stopajı; KDV hariç) `targetNet` (kuruş) olacak şekilde
+ * `index`. kalemin birim fiyatı (miktar 1). Hesap computeInvoice'un KENDİSİYLE yapılır — kayıtta ne hesaplanacaksa o: stopaj oranı, KDV dahil
+ * fiyat, kalem ve genel iskonto, öbür kalemler ve belge düzeyinde stopaj yuvarlaması. (Önceki grossFromNet brüt = net ÷ (1 − oran) idi: KDV dahil
+ * fiyatı, iskontoyu, öbür kalemleri bilmiyordu.) Fiyat kuruş adımıyla aranır: Net Ücret fiyatla azalmaz ve her kuruşta en çok 1 kuruş artar
+ * (stopaj ≤ %40, iskonto < %100) → öbür kalemlerin Net Ücreti hedefi aşmıyorsa hedefe tam eşit fiyat vardır. Birden çok fiyat aynı Net Ücreti
+ * veriyorsa en küçüğü; KDV dahil fiyatta KDV'si matrah × oran (GİB: kalem KDV'si matrahtan) olan en küçüğü. Dönüş { unitPrice (TL), totals, lines }
+ * ya da null (hedefe ulaşılamıyor). Girdi hatası (öbür kalemler, oranlar) InvoiceInputError olarak atılır.
+ */
+export function priceForNetFee(lines, index, targetNet, options = {}) {
+  const target = Math.round(Number(targetNet));
+  if (!Array.isArray(lines) || !lines[index] || !Number.isFinite(target) || target <= 0) return null;
+  const MAX = 100_000_000_000_000; // 1 trilyon TL (sunucunun birim fiyat sınırı) kuruş
+  const trial = price => computeInvoice(lines.map((line, i) => (i === index ? { ...line, qty: 1, unitPrice: price / 100 } : line)), options);
+  const fee = price => {
+    try {
+      const { totals } = trial(price);
+      return totals.net - totals.stoppage;
+    } catch (error) {
+      // Yalnız düşük fiyatta "ödenecek tutar sıfırdan büyük olmalı" düşer (Net Ücret fiyatla azalmaz); öbür girdi hataları aşağıdaki üst sınır denemesinde atılır.
+      if (error instanceof InvoiceInputError) return -1;
+      throw error;
+    }
+  };
+  let high = Math.max(target, 1);
+  trial(MAX); // girdi hatası (tanınmayan tevkifat kodu, KDV oranı, kalem sayısı…) burada atılır
+  while (fee(high) < target) {
+    if (high >= MAX) return null;
+    high = Math.min(MAX, high * 2);
+  }
+  // En küçük fiyat: fee(fiyat) ≥ hedef.
+  let low = 0;
+  while (high - low > 1) {
+    const mid = Math.floor((low + high) / 2);
+    if (fee(mid) >= target) high = mid;
+    else low = mid;
+  }
+  if (fee(high) !== target) return null; // öbür kalemlerin Net Ücreti hedefi aşıyor
+  let chosen = high;
+  for (let price = high; price < high + 1000 && fee(price) === target; price += 1) {
+    const line = trial(price).lines[index];
+    if (line.vat === mulDiv(line.net, line.vatRate, 100)) {
+      chosen = price;
+      break;
+    }
+  }
+  const { totals, lines: out } = trial(chosen);
+  return { unitPrice: chosen / 100, totals, lines: out };
 }
 
 /** GİB fatura tipi: iade → IADE; tevkifatlı → TEVKIFAT; istisna kodlu (%0, 351 dışı) kalemi olan → ISTISNA; yoksa SATIS. */

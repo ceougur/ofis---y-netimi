@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-7-e2e-senaryo-pos-220",
+  "komut": "npm run test:senaryo-pos-220",
+  "commit": "489bfb77ad8b3536c2f109d28e1fd75b040f0402",
+  "dal": "aday7",
+  "kirli": 0,
+  "izlenmeyen": 40,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T20:06:05.893Z",
+  "sure_sn": 117.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 113,
+    "gecen": 113,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday-7-e2e-senaryo-pos-220.log",
+  "klasor": "/home/user/wt/aday7",
+  "ham_cikti_sha256": "d27571056b0f1c48adc31e6adc6a1a029880e77a11e28cc22863af8b08f8ba6f",
+  "ham_cikti_bayt": 10300
+}

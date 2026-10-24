@@ -1,0 +1,129 @@
+// e-Belge İPTAL SÜRESİ (2.4.4 madde 23; kullanıcı kararı 21.10.2026 — CLAUDE.md "KARARLAR" (5)). Kural TEK yerde: bu dosya.
+//
+// Kaynak: GİB "e-Arşiv Uygulamaları (e-Arşiv Fatura, e-Serbest Meslek Makbuzu) İptal, İhtar/İtiraz Bildirim Kılavuzu" V1.1 §3 (depoda
+// docs/kanit/2026-10-22/244-iptal/kaynak/, sha256 KAYNAK.md'de): "e-Arşiv Fatura ve e-SMM belgelerinin iptal işlemlerinde 8 günlük sürenin tespiti
+// e-belgenin alıcıya iletilme tarihinden itibaren başlar. İptal işlemi her durumda 8 günlük süre içinde yapılmalıdır." (dayanak TTK 21/2).
+// Sayım TBK 92: başlangıç günü sayılmaz, 8. gün dahildir (iletim 14.10 → son iptal günü 22.10). Son günün tatile denk gelmesi süreyi UZATMAZ
+// (kılavuz "her durumda" diyor; katı olan seçildi). Gün sınırı programın "bugün"üyle aynı: sunucunun yerel günü (Türkiye kurulumunda UTC+3).
+//
+// e-Fatura bu kılavuzun konusu değildir (ayrı kılavuz): entegratörden iptal edilmez (adapters.mjs cancel → einvoice-cancel-unsupported); bugünkü
+// davranışı değişmez. Yalnız sonucu BELİRSİZ gönderimde "Yalnız Programda İptal"den önce EDM'ye sorma sınırı e-Faturayı da kapsar (uncertainWindow, aşağıda).
+import { dayText, isoDay } from "../plans.mjs";
+
+export const CANCEL_WINDOW_DAYS = 8;
+
+// Kuralın kapsadığı belge türleri (profil) ve iletide görünen adı (yalın / -in hâli).
+const WINDOW_PROFILES = Object.freeze({ EARSIVFATURA: ["e-Arşiv fatura", "e-Arşiv faturanın"], ESMM: ["e-SMM", "e-SMM'nin"] });
+
+// Alıcıya iletilmiş sayılan e-Belge durumları (entegratör belgeyi kabul etti). Portaldaki taslak (GİB'e gitmedi), Hata (entegratör kabul etmedi),
+// sonucu belirsiz ve gönderilmemiş belge bu kurala girmez.
+export const TRANSMITTED = Object.freeze(new Set(["processing", "sent", "accepted"]));
+
+// İsteği entegratöre HİÇ gitmemiş gönderim hataları (routes/invoices.mjs sendInvoiceOnce "notSent" sınıfı): iletim girişimi sayılmaz.
+export const NOT_SENT_CODES = Object.freeze(new Set(["integrator-channel", "integrator-url", "integrator-credentials", "integrator-login", "integrator-session"]));
+
+export const windowLabel = profile => WINDOW_PROFILES[profile]?.[0] || "";
+
+// 2.4.4 (31d E1): gönderim izi — ağa çıkmadan ÖNCE yazılan "gönderim başladı" kaydı (routes/invoices.mjs sendInvoiceOnce). Ardından bir SONUÇ kaydı
+// (aşağıdaki türler) gelirse iz kendi başına girişim sayılmaz: sonucun kuralı geçer (kabul / taslak / sonucu belirsiz girişimdir; hiç gitmeyen istek,
+// ret, numaranın geri bırakılması ve "EDM bu belgeyi zaten almış" (11048) girişim değildir). Sonuç kaydı yoksa (program yanıt gelmeden kesildi) iz
+// girişimdir: belge entegratöre o anda ya da sonra ulaşmış olabilir (iz, gerçek iletimden önce ya da onunla aynı anda yazılır).
+export const SEND_INTENT = "invoice.e.sending";
+export const SEND_DUPLICATE = "invoice.e.duplicate";
+export const SEND_OUTCOMES = Object.freeze(new Set(["invoice.e.sent", "invoice.e.draft", "invoice.e.send-failed", "invoice.e.draft-failed", SEND_DUPLICATE, "invoice.unnumbered"]));
+
+/**
+ * İletim anı, belgenin İşlem Geçmişi kayıtlarından (audit_events: { type, payload, at }, yazım sırasıyla). Belgeyi entegratöre ulaştırmış
+ * OLABİLECEK SON girişimin zamanı:
+ *   - invoice.e.sent — gönderim (ya da portal taslağının gönderimi) entegratörce kabul edildi;
+ *   - invoice.e.draft — portala taslak yüklendi (belge sonra portaldan gönderilmiş olabilir; gönderim bu andan önce olamaz);
+ *   - invoice.e.send-failed { status: "none", adapter } ve kod "hiç gitmedi" sınıfında değil — sonucu belirsiz (entegratör almış olabilir).
+ * "SON" girişim: iletilmiş belge yeniden gönderilemez (gönderilebilir durumlar dışında; belirsizde önce durum sorulur), bu yüzden iletimden sonra yeni
+ * girişim yazılmaz; Hata ya da "bulunamadı" sonrası yeniden gönderilen belgede önceki girişimler eskide kalır. Girişim anı gerçek iletimden önce ya da
+ * onunla aynıdır → süre hiçbir zaman gerçek yasal sürenin ötesine uzamaz. Durum sorgusu (invoice.e.status) girişim değildir.
+ * 2.4.3 ve önceki sürümler aynı kayıtları aynı anlamla yazdığı için kural eski veride de aynı çalışır. İz yoksa "" (çağıran kesim gününe düşer).
+ * 2.4.4 (31d E1): gönderim izi (SEND_INTENT) yalnız ardından sonuç kaydı (SEND_OUTCOMES) gelmediyse girişimdir — program yanıt gelmeden kesildi.
+ */
+export function transmissionOf(events = []) {
+  let at = "";
+  let open = "";
+  for (const event of events) {
+    const payload = event.payload || {};
+    if (event.type === SEND_INTENT) {
+      open = event.at || "";
+      continue;
+    }
+    if (SEND_OUTCOMES.has(event.type)) open = "";
+    const attempt =
+      event.type === "invoice.e.sent" ||
+      event.type === "invoice.e.draft" ||
+      (event.type === "invoice.e.send-failed" && payload.status === "none" && Boolean(payload.adapter) && !NOT_SENT_CODES.has(payload.code || ""));
+    if (attempt && event.at) at = event.at;
+  }
+  return open || at;
+}
+
+const addDays = (iso, days) => new Date(Date.parse(`${iso}T00:00:00Z`) + days * 86_400_000).toISOString().slice(0, 10);
+
+/**
+ * Belgenin iptal penceresi. Kural dışı (tür kapsamda değil, belge iletilmemiş) → null.
+ * @param {{ profile: string, eStatus: string, issueDate: string, transmittedAt?: string, today: string }} input
+ *   transmittedAt: iletim anı (ISO zaman damgası; transmissionOf). Boşsa kesim günü esas alınır: ileri tarihli belge kaydedilmediği için kesim günü
+ *   iletim gününden sonra olamaz — süre uzamaz (2.4.3'ün davranışı).
+ * @returns {null | { days, start, source: "iletim" | "kesim", lastDay, late, label }}
+ */
+export function cancelWindow({ profile, eStatus, issueDate, transmittedAt = "", today }) {
+  if (!TRANSMITTED.has(eStatus)) return null;
+  return attemptWindow({ profile, issueDate, transmittedAt, today });
+}
+
+/**
+ * Durumdan bağımsız pencere: belge iletilmiş OLSAYDI süresi (e-Arşiv / e-SMM; cancelWindow bunu kullanır). Kural dışı tür → null.
+ */
+export function attemptWindow({ profile, issueDate, transmittedAt = "", today }) {
+  return windowFrom(windowLabel(profile), { issueDate, transmittedAt, today });
+}
+
+// 2.4.4 (bağımsız kâhin İNCELE 1; kullanıcı kararı 23.10.2026, 5 dk yetkisiyle — 22.10.2026 madde 23 ekinin e-Faturaya uygulanması): sonucu BELİRSİZ
+// gönderimde "Yalnız Programda İptal" kapısı e-Faturayı (Temel / Ticari) da kapsar. e-Faturanın İPTAL SÜRESİ DEĞİLDİR: programda e-Fatura için iptal
+// süresi yoktur (cancelWindow e-Faturada null; e-Fatura entegratörden iptal edilmez — adapters.mjs einvoice-cancel-unsupported: Ticari faturayı alıcı
+// reddeder, Temel faturada iade faturası ya da GİB'in iptal yolu). Buradaki 8 gün yalnız "EDM'ye sormadan yerel iptal" sınırıdır (e-Arşiv / e-SMM ile aynı
+// sayı): son gönderim girişiminden 8 gün geçtiyse önce EDM'ye sorulur — belge EDM'de varsa (alıcıya gitmiş olabilir, GİB'de geçerli) programda iptal
+// görünmesin (22.10.2026 kararının gerekçesi).
+const UNCERTAIN_PROFILES = Object.freeze({ ...WINDOW_PROFILES, TEMELFATURA: ["e-Fatura", "e-Faturanın"], TICARIFATURA: ["e-Fatura", "e-Faturanın"] });
+export const EINVOICE_PROFILES = Object.freeze(new Set(["TEMELFATURA", "TICARIFATURA"]));
+
+/**
+ * Sonucu belirsiz gönderimde yalnız programda iptalden önce EDM'ye sorma sınırı (routes/invoices.mjs uncertainLocalCheck). e-Arşiv / e-SMM'de
+ * attemptWindow ile aynı; e-Faturada da (yukarıda). Kural dışı tür → null.
+ */
+export function uncertainWindow({ profile, issueDate, transmittedAt = "", today }) {
+  return windowFrom(UNCERTAIN_PROFILES[profile]?.[0] || "", { issueDate, transmittedAt, today });
+}
+
+function windowFrom(label, { issueDate, transmittedAt = "", today }) {
+  if (!label || !issueDate) return null;
+  const sentDay = transmittedAt ? isoDay(new Date(transmittedAt)) : "";
+  // Kesimden önce iletim olamaz; olursa (saat geri alınmış vb.) geç olan gün esas alınmaz — erken olan kesim günü de iletimden önce değildir.
+  const fromSend = Boolean(sentDay) && sentDay >= issueDate;
+  const start = fromSend ? sentDay : issueDate;
+  const lastDay = addDays(start, CANCEL_WINDOW_DAYS);
+  return { days: CANCEL_WINDOW_DAYS, start, source: fromSend ? "iletim" : "kesim", lastDay, late: today > lastDay, label };
+}
+
+/** Süre dolduysa iptal düğmesinin altında ve 409 yanıtında görünen ileti (son gün tarihiyle). */
+export function cancelLateText(window) {
+  const of = (Object.values(WINDOW_PROFILES).find(([label]) => label === window.label) || [window.label, window.label])[1];
+  const from = window.source === "iletim" ? `alıcıya iletildiği ${dayText(window.start)}` : `kesildiği ${dayText(window.start)}`;
+  const basis = window.source === "iletim" ? "" : " İletim günü programda kayıtlı olmadığı için kesim günü esas alındı.";
+  const remedy = window.label === "e-SMM"
+    ? "Makbuz geçerli kalır; düzeltme için mali müşavirinize danışın."
+    : "İade faturası kesin; gerekirse doğrusunu yeniden kesin.";
+  return `${of} iptal süresi doldu: ${from} gününden sonraki ${window.days} gün içinde (en geç ${dayText(window.lastDay)}) iptal edilebilirdi.${basis} ${remedy}`;
+}
+
+/** Süre içindeyse kartta görünen bilgi ("Son İptal Günü"). */
+export function cancelDeadlineText(window) {
+  const from = window.source === "iletim" ? `alıcıya iletildiği ${dayText(window.start)}` : `kesildiği ${dayText(window.start)}`;
+  return `${dayText(window.lastDay)} (${from} gününden sonraki ${window.days} gün${window.source === "iletim" ? "" : "; iletim günü kayıtlı değil"})`;
+}

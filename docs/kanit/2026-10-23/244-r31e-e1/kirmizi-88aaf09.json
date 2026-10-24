@@ -1,0 +1,53 @@
+{
+  "ad": "244-r31e-e1/kirmizi-88aaf09",
+  "komut": "node --test --test-reporter=spec --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/r31e-e1/r31e-e1-eski-88aaf09/test/ebelge-244-gonderim-izi.test.mjs",
+  "commit": "88aaf093aac2e878051d902ee6cf6ad44ae9dc7f",
+  "dal": "is/r31e-e1",
+  "kirli": 2,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T03:21:51.603Z",
+  "sure_sn": 14.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 21,
+    "gecen": 17,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "R1 (Y1) Durum Sorgula'nın 'bulunamadı' yanıtı yoldayken başka oturum Gönder'e basar: geç yanıt izi SİLMEZ (409 değişti), kesinti penceresinde belge Sonucu Belirsiz kalır",
+      "konum": "test/ebelge-244-gonderim-izi.test.mjs:689:3",
+      "hata": "AssertionError [ERR_ASSERTION]: gönderim yoldayken iz silinmemeli: o anda program kesilseydi EDM'deki makbuz programda 'Gönderilmedi' kalırdı · + actual - expected"
+    },
+    {
+      "ad": "R3 (Y4) e-SMM: 11048 + durum yanıtında ETTN YOK → belge 'gönderildi' sayılmaz; Sonucu Belirsiz (Durum Sorgula önerilir), Hata / İptal Et yönlendirmesi de değil",
+      "konum": "test/ebelge-244-gonderim-izi.test.mjs:735:5",
+      "hata": "AssertionError [ERR_ASSERTION]: gönderilmiş sayılmamalı: {\"id\":\"invoice-36ce2bae-ac46-4cec-9637-43d7b7468c43\",\"kind\":\"smm\",\"kindLabel\":\"Serbest Meslek Makbuzu\",\"scenario\":\"smm\",\"scenarioLabel\":\"Serbest Meslek Makbuzu\",\"status\":\"issued\",\"statusLabel\":\"Kaydedildi\",\"number\":\"TES2026000000001\",\"displayNo\":\"TES2026000000001\",\"internalNumber\":false,\"ettn\":\"16ad · at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/r31e-e1/r31e-e1-eski-88aaf09/test/ebelge-244-gonderim-izi.test.mjs:751:16)"
+    },
+    {
+      "ad": "R3 (Y4) e-Arşiv: 11048 + durum yanıtında ETTN YOK → belge 'gönderildi' sayılmaz; Sonucu Belirsiz (Durum Sorgula önerilir), Hata / İptal Et yönlendirmesi de değil",
+      "konum": "test/ebelge-244-gonderim-izi.test.mjs:735:5",
+      "hata": "AssertionError [ERR_ASSERTION]: gönderilmiş sayılmamalı: {\"id\":\"invoice-145d00e4-6485-4217-b500-daadd0abcc2e\",\"kind\":\"sale\",\"kindLabel\":\"Satış Faturası\",\"scenario\":\"service_sale\",\"scenarioLabel\":\"Hizmet Satışı\",\"status\":\"issued\",\"statusLabel\":\"Kaydedildi\",\"number\":\"TEA2026000000001\",\"displayNo\":\"TEA2026000000001\",\"internalNumber\":false,\"ettn\":\"a561e159-7d · at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/r31e-e1/r31e-e1-eski-88aaf09/test/ebelge-244-gonderim-izi.test.mjs:751:16)"
+    },
+    {
+      "ad": "R4 (Y6, Y8) iptal EDM'de KESİN reddedildi → iptal izi kapanır (8 gün sonra 'süre doldu', EDM'ye sorulmaz); sonraki iptal denemesi koparsa iz yeniden açılır (süre dolunca EDM'ye sorar)",
+      "konum": "test/ebelge-244-gonderim-izi.test.mjs:765:3",
+      "hata": "AssertionError [ERR_ASSERTION]: kesin ret iptal izini kapattı · true !== false"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-23/244-r31e-e1/kirmizi-88aaf09.log",
+  "klasor": "/home/user/wt/r31e-e1",
+  "ham_cikti_sha256": "f2a5c0ac807089a0a1b70fc989b3a3afbc7b182e5464943da9b490ff02ea86f9",
+  "ham_cikti_bayt": 10893
+}

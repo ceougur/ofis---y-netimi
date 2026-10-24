@@ -1,0 +1,35 @@
+{
+ "adim": "yd-resmi-pdf",
+ "baslik": "Resmî görüntü (GetSMM PDF): VKN'li bir A, TCKN'li bir A, bir B",
+ "durum": "kaldı",
+ "denetimler": [
+  {
+   "gecti": false,
+   "denetim": "A01 TES2026814147978: resmî görüntü 404 TES2026814147978 EDM'de bulunamadı (makbuz henüz işlenmemiş olabilir; birkaç dakika sonra yeniden deneyin)."
+  },
+  {
+   "gecti": true,
+   "denetim": "A03 TES2026814147980 (TCKN): PDF 64 bayt ≥ 10, indirme adı numarayı taşır"
+  },
+  {
+   "gecti": true,
+   "denetim": "B01 TES2026814147997 (TCKN): PDF 64 bayt ≥ 10, indirme adı numarayı taşır"
+  }
+ ],
+ "kayit": {
+  "A03": {
+   "tur": "application/pdf",
+   "bayt": 64,
+   "ad": "attachment; filename=\"TES2026814147980 Resmi Gorunum.pdf\"; filename*=UTF-8''TES2026814147980%20Resmi%20Gorunum.pdf",
+   "dosya": "TES2026814147980-resmi.pdf",
+   "numaraMetinde": "okunamadı"
+  },
+  "B01": {
+   "tur": "application/pdf",
+   "bayt": 64,
+   "ad": "attachment; filename=\"TES2026814147997 Resmi Gorunum.pdf\"; filename*=UTF-8''TES2026814147997%20Resmi%20Gorunum.pdf",
+   "dosya": "TES2026814147997-resmi.pdf",
+   "numaraMetinde": "okunamadı"
+  }
+ }
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "244-r31e-a3/yesil",
+  "komut": "node --test --test-reporter=spec --disable-warning=ExperimentalWarning test/ebelge-244-gonderim-izi.test.mjs",
+  "commit": "2fd232a8484cdcd6b0283afb00a81f6af42dfed9",
+  "dal": "is/r31e-a3",
+  "kirli": 2,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T04:13:31.244Z",
+  "sure_sn": 15.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 23,
+    "gecen": 23,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/244-r31e-a3/yesil.log",
+  "klasor": "/home/user/wt/r31e-a3",
+  "ham_cikti_sha256": "a3e5746dd97cd2492d5af078e89bd6320821d95d60a7da4f863f4b044c4bf3e0",
+  "ham_cikti_bayt": 5912
+}

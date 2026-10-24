@@ -1,0 +1,8 @@
+{"g1":[{"geriYukleme":[200,"Satış Faturası FIS2026000000001 geri geldi (iptal edilmiş, etkisiz)."],"mutabakatOnce":[],"mutabakatSonra":["period-lock"],"kasaGirisi":[200,""],"pesinSatis":[200,""]},{"geriYukleme":[200,"Satış Faturası FIS2026000000001 geri geldi (iptal edilmiş, etkisiz)."],"mutabakatOnce":[],"mutabakatSonra":["period-lock"],"kasaGirisi":[500,"gate-equivalence"],"pesinSatis":[500,"gate-equivalence"]}]}
+✓ G1 yeniden üretildi: kapanmış dönem tarihli silinmiş fatura Silinenler'den geri yüklenir (beklenen 409), Mutabakat Testi period-lock sapması (iki sürümde de) {"old":{"geriYukleme":[200,"Satış Faturası FIS2026000000001 geri geldi (iptal edilmiş, etkisiz)."],"mutabakatOnce":[],"mutabakatSonra":["period-lock"],"kasaGirisi":[200,""],"pesinSatis":[200,""]},"cur":{"geriYukleme":[200,"Satış Faturası FIS2026000000001 geri geldi (iptal edilmiş, etkisiz)."],"mutabakatOnce":[],"mutabakatSonra":["period-lock"],"kasaGirisi":[500,"gate-equivalence"],"pesinSatis":[500,"gate-equivalence"]}}
+# tests 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

@@ -1,0 +1,16 @@
+r31e mutasyonlari (taban: is/r31e-rapor calisma agaci, 39382c4 + r31e degisiklikleri; komut: node --test test/tablo-borc-r31e.test.mjs)
+m1a debt-column.mjs debtByRecord sekme anahtari sabit ('*') -> farkli sekmeler toplanir
+m1b debt-column.mjs ayni sekmede satirlar toplanmaz (son satir)
+m2 debt-column.mjs net katmaninda odenen cikarilmaz
+m3 routes/reports.mjs cashVisible = true (cash.view denetimi atlanir)
+--- m1a: # tests 11 # pass 9 # fail 2 
+    not ok 1 - süzgeçsiz: bir kez (ilk sekme) — Ali Veli 1.200, Ayşe Kaya 600, toplam 1.800; not hangi kaydın sayıldığını ve uyuşmazlığı söyler (üç raporda)
+    not ok 3 - PDF ve Excel aynı notu taşır (R4)
+--- m1b: # tests 11 # pass 10 # fail 1 
+    not ok 2 - Tahsilat Takvimi: 6 kalem, tutarları satır satır (1.000, 1.500, 700, 700, 400, 600); söz / zil ön dolumunun Kalan Borç'u dosyanın Kalan toplamı
+--- m2: # tests 11 # pass 8 # fail 3 
+    not ok 1 - Tablodaki Kişiler: 10.000 − 4.000, 8.000 − 8.000, 6.000 − 1.000, 1.000 − 1.200 → 0; senet 5.000 − 2.000, 3.000 − 0; gün sütunu tutar değil; Kalan varsa Kalan (5.000) — toplam 24.500
+    not ok 2 - Vadeler ve Nakit Akışı Beklenen aynı kuraldan: 24.500; not aynı
+    not ok 1 - Elif Aydın: Kişiler borcu 4.500; Tablodan Aktar ön izlemesinde kalan 4.500 (R10)
+--- m3: # tests 11 # pass 10 # fail 1 
+    not ok 2 - Kasa yetkisi olmayan (yalnız Tablo Raporları): Kasa'ya 403; Nakit Akışı'nda Kasa sütunu, toplamı, özeti yok; not var — ekran, PDF, Excel (R8)

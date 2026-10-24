@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 import { after, before, describe, it } from "node:test";
 import { evaluateLicense, normalizeLicenseKey, WRITE_PERMISSIONS } from "../server/lib/license.mjs";
 import { TRUSTED_LICENSE_KEYS } from "../server/lib/license-keys.mjs";
+import { PERMISSIONS } from "../server/lib/permissions.mjs";
 import { decodeCode, encodeCode, formatInstallCode, normalizeMachineId, signToken, verifyToken } from "../server/lib/license-token.mjs";
 import { resolveMachineId } from "../server/lib/machine.mjs";
 import { createReferenceLicenseService, keyIdForLicense, newLicenseKey } from "../tools/lib/license-service.mjs";
@@ -599,5 +600,39 @@ describe("lisans motoru — sunucu", () => {
     assert.ok(WRITE_PERMISSIONS.includes("records.create"));
     assert.ok(!WRITE_PERMISSIONS.includes("users.manage"));
     assert.ok(!WRITE_PERMISSIONS.includes("reports.view"));
+  });
+
+  // 2.4.4 madde 25 (a): kataloğa yeni yazma yetkisi eklenip WRITE_PERMISSIONS unutulmasın (2.4.3 MM3 tax.manage böyle kaçtı; 2.1.0'da da
+  // invoices.manage). Okuma ya da salt okunurda da açık kalan yönetim yetkileri AÇIK listeyle hariç tutulur; geri kalan her yetki yazmadır.
+  it("katalogdaki her yazma yetkisi salt okunurda gizlenir (okuma/yönetim yetkileri açık listeyle hariç)", () => {
+    const NOT_WRITE = ["records.export", "cash.view", "plans.view", "accounts.view", "stock.view", "bank.view", "bank.reports", "cheques.view", "invoices.view", "overview.view", "overview.card", "tasks.viewAll", "reports.view", "staff.view", "audit.view", "users.manage", "system.manage", "license.manage"];
+    for (const key of Object.keys(PERMISSIONS)) {
+      if (NOT_WRITE.includes(key)) assert.ok(!WRITE_PERMISSIONS.includes(key), `${key} okuma/yönetim yetkisi, salt okunurda gizlenmez`);
+      else assert.ok(WRITE_PERMISSIONS.includes(key), `${key} yazma yetkisi WRITE_PERMISSIONS'ta olmalı`);
+    }
+    for (const key of WRITE_PERMISSIONS) assert.ok(Object.hasOwn(PERMISSIONS, key), `${key} katalogda yok`);
+  });
+
+  it("salt okunur lisansta Vergi Ödemesi / KDV Mahsubu yetkisi ekrana gitmez, yazım reddedilir, veri değişmez", async () => {
+    clock.now = T0;
+    const server = await start();
+    const admin = await loginAdmin(server);
+    const me = await admin.get("/api/auth/me");
+    assert.equal(me.status, 200);
+    assert.equal(me.data.data.license.writable, false, "lisans salt okunur");
+    assert.ok(!me.data.data.permissions.includes("tax.manage"), "tax.manage salt okunurda ekrana gönderilmez (Vergi Ödemesi düğmeleri gizlenir)");
+    const count = table => server.app.store.get(`SELECT COUNT(*) AS n FROM ${table}`).n;
+    const before = { cash: count("cash_entries"), vat: count("vat_offsets") };
+    const cashPay = await admin.post("/api/workspace/tax/payments", { way: "cash", taxType: "kdv", amount: "100" });
+    assert.equal(cashPay.status, 403, JSON.stringify(cashPay.data));
+    assert.equal(cashPay.data.code, "LICENSE_READ_ONLY");
+    const bankPay = await admin.post("/api/workspace/tax/payments", { way: "bank", taxType: "kdv", amount: "100" });
+    assert.equal(bankPay.status, 403, JSON.stringify(bankPay.data));
+    assert.equal(bankPay.data.code, "LICENSE_READ_ONLY");
+    const offset = await admin.post("/api/workspace/tax/vat-offset", { month: new Date(clock.now).toISOString().slice(0, 7) });
+    assert.equal(offset.status, 403, JSON.stringify(offset.data));
+    assert.equal(offset.data.code, "LICENSE_READ_ONLY");
+    assert.deepEqual({ cash: count("cash_entries"), vat: count("vat_offsets") }, before, "Kasa ve KDV mahsup kayıtları değişmedi");
+    assert.equal((await admin.get("/api/workspace/tax")).status, 200, "vergi özeti okunur");
   });
 });

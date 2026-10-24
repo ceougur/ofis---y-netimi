@@ -352,6 +352,8 @@ try {
     await page.waitForSelector(`${modal} .hof-rep-tablepane .hof-report-filters`, { timeout: 10000 });
     // "Rapor hazırlanıyor…" yer tutucusu sonuç değildir; özet kartları ve tablo gelene kadar beklenir.
     await page.waitForSelector(`${modal} .hof-rep-tablepane [data-report-body] .hof-report-summary`, { timeout: 15000 });
+    // 31f U2 daraltılmış karar (22.10.2026): okul servisinin tek tutar sütunu "Aylık Ücret" 2.4.3'teki gibi borçtur → Tablodaki Kişiler öğrencileri gösterir.
+    ok(await page.$eval(`${modal} .hof-rep-tablepane [data-report-body]`, body => /Yılmaz/.test(body.textContent) && !/satır bulunamadı/.test(body.textContent)), "Tablodaki Kişiler okul servisinde öğrencileri gösterir (Aylık Ücret borç; boş açılmaz)");
     await page.waitForSelector(`${modal} .hof-rep-tablepane .hof-report-scroll table`, { timeout: 15000 });
     // Taşma: sekmedeki her kutu (açıklama, süzgeç kartı, özet, tablo çerçevesi) Raporlar kutusunun sağ kenarı içinde.
     const overflow = await page.$eval(`${modal} .hof-rep`, rep => {
@@ -368,6 +370,56 @@ try {
     });
     ok(filters, "süzgeç kutuları kartın içinde (Durum taşmıyor)");
     await shot("tablo-raporlari");
+    await closeTop();
+  });
+
+  // 2.4.4 (30f): Tablodaki Nakit Akışı kişi, durum ve en az tutar süzgecini kullanmaz → alanlar gizli, değerleri isteğe ve dışa aktarıma girmez, başka
+  // rapora dönünce yerinde. En üstteki pencere: is-visible olanların sonuncusu (ders 39; konuma bağlı :last-of-type değil).
+  await step("C6. Tablodaki Nakit Akışı: Kişi / Durum / En Az Tutar gizli; değerler korunur; istek ve Excel onlarsız", async () => {
+    const top = ".hof-modal-backdrop.is-visible:nth-last-child(1 of .hof-modal-backdrop.is-visible)";
+    const shown = name => page.$eval(`${top} .hof-report-filters`, (form, name) => {
+      const label = form.querySelector(`[data-filter="${name}"]`)?.closest("label");
+      return Boolean(label && !label.hidden && label.getClientRects().length > 0);
+    }, name);
+    const fields = async () => ({ cari: await shown("cari"), status: await shown("status"), minAmount: await shown("minAmount"), tabs: await shown("tabs"), granularity: await shown("granularity"), from: await shown("from") });
+    const summary = async () => page.waitForFunction(top => !/hazırlanıyor/.test(document.querySelector(`${top} [data-report-body]`)?.textContent || "x") && document.querySelector(`${top} [data-report-body] .hof-report-summary, ${top} [data-report-body] .hof-empty`), top, { timeout: 15000 });
+    await openReports();
+    await page.waitForSelector(`${top} .hof-rep [data-tab="table"]`, { timeout: 10000 });
+    await page.click(`${top} .hof-rep [data-tab="table"]`);
+    await page.waitForSelector(`${top} .hof-report-kinds [data-kind="vade-takip"]`, { timeout: 10000 });
+    await summary();
+    await page.click(`${top} [data-kind="vade-takip"]`);
+    await summary();
+    await page.fill(`${top} [data-filter="cari"]`, "Ahmet");
+    await page.fill(`${top} [data-filter="minAmount"]`, "10");
+    await page.fill(`${top} [data-filter="from"]`, local(-60));
+    const vade = await fields();
+    ok(vade.cari && vade.status && vade.minAmount && vade.tabs && !vade.granularity, `Tablodaki Vadeler: Kişi / Durum / En Az Tutar / Sekme görünür, Dönem gizli: ${JSON.stringify(vade)}`);
+    const [request] = await Promise.all([page.waitForRequest(req => req.url().includes("/api/workspace/reports/nakit-akis?"), { timeout: 15000 }), page.click(`${top} [data-kind="nakit-akis"]`)]);
+    await summary();
+    const flow = await fields();
+    ok(!flow.cari && !flow.status && !flow.minAmount, `Tablodaki Nakit Akışı seçiliyken Kişi / Durum / En Az Tutar GİZLİ olmalı (rapor bunları kullanmaz); görünür: ${JSON.stringify(flow)}`);
+    ok(flow.tabs && flow.granularity && flow.from, `Nakit Akışı'nda Sekme, Dönem ve Başlangıç görünür: ${JSON.stringify(flow)}`);
+    const params = new URL(request.url()).searchParams;
+    ok(!params.has("cari") && !params.has("minAmount") && !params.has("status") && params.get("from") === local(-60), `Nakit Akışı isteğinde gizli süzgeç yok, son dönem korunur: ${request.url().split("?")[1]}`);
+    const [exported] = await Promise.all([page.waitForRequest(req => req.url().includes("/api/workspace/reports/nakit-akis/export"), { timeout: 15000 }), page.click(`${top} [data-export="xlsx"]`)]);
+    const body = JSON.parse(exported.postData() || "{}").filters || {};
+    ok(!("cari" in body) && !("minAmount" in body) && !(body.status || []).length && body.from === local(-60), `Excel dışa aktarımında gizli süzgeç yok (alt başlığa "cari:" yazılmaz): ${JSON.stringify(body)}`);
+    await shot("tablo-nakit-akisi-suzgecler");
+    await page.click(`${top} [data-kind="vade-takip"]`);
+    await summary();
+    const back = await fields();
+    const values = await page.$eval(`${top} .hof-report-filters`, form => [form.querySelector('[data-filter="cari"]').value, form.querySelector('[data-filter="minAmount"]').value]);
+    ok(back.cari && back.status && back.minAmount && !back.granularity && values.join("|") === "Ahmet|10", `Tablodaki Vadeler'e dönünce alanlar görünür, değerler yerinde: ${JSON.stringify(back)} ${values.join("|")}`);
+    await page.click(`${top} [data-kind="nakit-akis"]`);
+    await summary();
+    await page.click(`${top} [data-clear]`);
+    await summary();
+    await page.click(`${top} [data-kind="cari-ekstre"]`);
+    await summary();
+    const people = await fields();
+    const cleared = await page.$eval(`${top} .hof-report-filters`, form => [form.querySelector('[data-filter="cari"]').value, form.querySelector('[data-filter="minAmount"]').value]);
+    ok(people.cari && people.status && people.minAmount && cleared.join("|") === "|", `Süzgeçleri Temizle gizli alanları da boşaltır; Tablodaki Kişiler'de alanlar görünür: ${JSON.stringify(people)} "${cleared.join("|")}"`);
     await closeTop();
   });
 

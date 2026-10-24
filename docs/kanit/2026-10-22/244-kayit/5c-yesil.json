@@ -1,0 +1,32 @@
+{
+  "ad": "244-kayit/5c-yesil",
+  "komut": "node --test test/rapor-tablodaki-kisiler-244.test.mjs test/reports.test.mjs test/raporlar-209.test.mjs test/kayit-tahsilat-244.test.mjs test/vade-takip-kaynak-yetki-210.test.mjs",
+  "commit": "6aeb05c711d4824f67f20d939161ae459b2b867d",
+  "dal": "is/kayit",
+  "kirli": 1,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T05:48:51.128Z",
+  "sure_sn": 8.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 32,
+    "gecen": 32,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kayit/5c-yesil.log",
+  "klasor": "/home/user/wt/kayit",
+  "ham_cikti_sha256": "4826180f03e4208a1ea6d0c7b0c49ac6861b57646b2c8de20e41f4b09fe20bc0",
+  "ham_cikti_bayt": 12792
+}

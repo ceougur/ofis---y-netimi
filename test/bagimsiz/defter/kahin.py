@@ -19,6 +19,14 @@
 #                           fark ≤ 0 → B 190 (İ − H) devreden. Geri alma: ters kayıt.
 #   yaşlandırma (MM5)     : müşteri başına Toplam = cari kartı bakiyesi (borçlu ise) + portföydeki alınan çek/senet; faturasız bakiye de
 #                           (devir, karşılıksız çek) "Faturasız" kalem olarak girer → Toplam = kart bakiyesi + portföy evrakı.
+#   31b-MM3 (2.4.4, 22.10.2026; mali müşavir turu — 18.10'daki MM3 ile karıştırılmasın) Stopaj ve Tevkifat Özeti: satış ve SMM "Bizden kesilen (193)"
+#                           tarafında (müşterinin bizden kestiği stopaj, KDV tevkifatı), alış "Bizim kestiğimiz (360)" tarafında; İADE ASIL BELGENİN TARAFINDA
+#                           EKSİ: satıştan iade 193 tarafında −, alıştan iade 360 tarafında −. Kaynak: TDHP (193 Peşin Ödenen Vergiler, 360 Ödenecek Vergi ve
+#                           Fonlar), KDV GUT I/C-2.1.3, KDVK 35 (iadede vergi düzeltmesi); [KULLANICI] 22.10 21:27 UTC "MM3 … satıştan iadeyi 'bizim kestiğimiz'
+#                           sayıyor → ters yön". Özet satırları (Bizim Ödeyeceğimiz Stopaj / Tevkifat) 360 tarafının toplamı (iade eksiyle).
+#   31b-MM8 yevmiye sırası  : aynı günün maddeleri tarih → olay sınıfı (BELGE önce, sonra para/cari hareketleri) → yazım sırası (ders 31; [KULLANICI] 22.10
+#                           21:27 UTC "MM8 yevmiye aynı gün sırası"). Belge = fatura / iade; para/cari = tahsilat, ödeme, evrak, banka, kasa. Para/cari sınıfının
+#                           kendi içindeki alt sırası kaynakta yok → denetlenmez; senaryonun yevmiyeSiraGunleri günlerinde yalnız "belge önce" denetlenir.
 # Yuvarlama: kalem başına kuruş, yarım yukarı. Tutarlar kuruş tamsayısı.
 #
 # Kullanım: python3 -I kahin.py senaryo.json [--yapilan yapilan.json] [--mutasyon N] > beklenen.json
@@ -68,6 +76,9 @@ def main(argv):
     pos_oran = {}
     kontroller = {}
     kontrol_sirasi = []
+    stopaj_ozet = defaultdict(lambda: {"satirlar": {}, "bizimStopaj": 0, "bizimTevkifat": 0})  # 31b-MM3
+    sinif_gun = defaultdict(list)  # 31b-MM8: gün → [olay sınıfı yazım sırasıyla]
+    PARA = {"tahsilat", "odeme", "cek", "ciro", "tahsile_ver", "karsiliksiz", "masraf", "faiz_gelir", "faiz_gider", "virman", "kasa_gider", "taksit_tahsil", "vergi_odeme"}
 
     def bakiye():
         out = defaultdict(int)
@@ -175,6 +186,18 @@ def main(argv):
                 for k in kalemler:
                     if k["urun"]: stok[k["urun"]] -= k["miktar"]
             fis(t, oid, *satirlar)
+            sinif_gun[t].append("belge")
+            # 31b-MM3: Stopaj ve Tevkifat Özeti satırı (stopaj ya da tevkifat varsa; iade asıl belgenin tarafında eksi)
+            if tev or stopaj:
+                taraf = "Bizden kesilen (193)" if ft in ("satis", "satis_iade") else "Bizim kestiğimiz (360)"
+                if mut == 11 and ft == "satis_iade":
+                    taraf = "Bizim kestiğimiz (360)"  # 31b-MM3 öncesi hata: satıştan iade 360 tarafında
+                isaret = -1 if ft in ("satis_iade", "alis_iade") and mut != 12 else 1
+                ad_ = by[c]["ad"]
+                stopaj_ozet[ay]["satirlar"]["%s|%s" % (t, ad_)] = {"taraf": taraf, "matrah": isaret * net, "stopaj": isaret * stopaj, "tevkifat": isaret * tev}
+                if taraf.startswith("Bizim"):
+                    stopaj_ozet[ay]["bizimStopaj"] += isaret * stopaj
+                    stopaj_ozet[ay]["bizimTevkifat"] += isaret * tev
             od = o.get("odeme") or {}
             pesin = []
             for yol, hesap in (("nakit", "100"), ("havale", "102")):
@@ -278,6 +301,8 @@ def main(argv):
             kontrol_sirasi.append(oid)
         else:
             raise SystemExit(f"tanınmayan olay türü: {tur}")
+        if tur in PARA:
+            sinif_gun[t].append("para")
 
     bugun = sen["bugun"]
     # Yaşlandırma (MM5): müşteri başına Toplam = borçlu kart bakiyesi + portföydeki alınan evrak.
@@ -295,6 +320,11 @@ def main(argv):
         "stok": {urun[u]["kod"]: format(q.normalize(), "f") for u, q in stok.items()},
         "kdv": {ay: v for ay, v in sorted(kdv_ay.items())},
         "yaslandirma": {"cariler": yas, "toplam": sum(yas.values())},
+        # 31b-MM3: yalnız senaryonun stopajAylari (ay → satırlar "tarih|cari" + 360 tarafı özetleri)
+        "stopajOzet": {ay: stopaj_ozet[ay] for ay in sen.get("stopajAylari", [])},
+        # 31b-MM8: gün → "belge-once" (gün iki sınıfı da içeriyorsa; mutasyon 13 sınıfsız yazım sırası)
+        "yevmiyeSira": {g: (("belge-once" if mut != 13 else ("belge-once" if sinif_gun[g] == sorted(sinif_gun[g]) else "karisik"))
+                            if {"belge", "para"} <= set(sinif_gun[g]) else "tek-sinif") for g in sen.get("yevmiyeSiraGunleri", [])},
         "mutasyon": mut,
     }
     json.dump(out, sys.stdout, ensure_ascii=False, indent=1)

@@ -1,0 +1,1767 @@
+{
+  "worktree": "/home/user/wt/aday16",
+  "today": "2026-06-17",
+  "passed": 124,
+  "failed": 0,
+  "steps": [
+    {
+      "title": "Ö1a. Excel (3 sekme) arayüzden yüklenir; Tablodaki Kişiler / Vadeler / Nakit Akışı notu ve TOPLAM",
+      "ok": true
+    },
+    {
+      "title": "Ö1b. Tahsilat Takvimi şeridi (ana sayfa): not, 6 kalem",
+      "ok": true
+    },
+    {
+      "title": "Ö2. Nakit Akışı: Kasa yetkisi olmayan avukat (cash.view kaldırıldı) ve yönetici; Kasa Hareketleri ile karşılaştırma",
+      "ok": true
+    },
+    {
+      "title": "Ö3. Silinenler'den fatura geri yükleme: sıra-tarih → kilit → numara iletileri, ret sırası, başarılı geri yükleme",
+      "ok": true
+    },
+    {
+      "title": "Ö4. A3: Durum Sorgula ↔ başka sorgu (status-updated) ve ↔ yeni gönderim (send-started) — arayüzden",
+      "ok": true
+    },
+    {
+      "title": "Ö3d. Yedek geri yüklemesi (002) → Fatura'da tek seferlik uyarı; yeniden açılışta durur, Uyarıyı Kapat'tan sonra çıkmaz",
+      "ok": true
+    },
+    {
+      "title": "Ö1c. Tek sekmede tekrar eden Dosya No (002'ye yüklenir): not yok, ayrı kalemler, TOPLAM",
+      "ok": true
+    }
+  ],
+  "results": [
+    {
+      "oge": "Ö1",
+      "denetim": "Excel yüklenince açılan pencere (eşleme) — kendiliğinden yanıtlanmadı",
+      "beklenen": "Ön izleme/eşleme penceresi",
+      "okunan": [
+        "Yeni veri: aidat-cok-sekme.xlsx"
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "analiz öneri kutusu (bilgi; uygulanmadı)",
+      "beklenen": "bilgi",
+      "okunan": {
+        "analysisShown": false
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "API Tablodaki Kişiler: kişi başına borç (hücrelerden elle hesap)",
+      "beklenen": {
+        "Ali Veli": 2000,
+        "Ayşe Kaya": 1200,
+        "Can Yıldız": 1000
+      },
+      "okunan": {
+        "Ali Veli": 2000,
+        "Ayşe Kaya": 1200,
+        "Can Yıldız": 1000
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "API Tablodaki Kişiler: toplam borç",
+      "beklenen": 4200,
+      "okunan": 4200,
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "Tablodaki Kişiler ekranda not (tam metin)",
+      "beklenen": [
+        "2 dosya no birden çok sekmede; ayrı sayıldı (2025 Aidat, 2026 Aidat). Aynı borçsa kopya sekmeyi kaldırın ya da Sekme süzgeciyle bakın. Dosya No: D-5 (Ali Veli), D-7 (Ayşe Kaya)."
+      ],
+      "okunan": [
+        "2 dosya no birden çok sekmede; ayrı sayıldı (2025 Aidat, 2026 Aidat). Aynı borçsa kopya sekmeyi kaldırın ya da Sekme süzgeciyle bakın. Dosya No: D-5 (Ali Veli), D-7 (Ayşe Kaya)."
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "Tablodaki Kişiler TOPLAM satırı (Borç) = 4.200,00 ₺",
+      "beklenen": "4.200,00 ₺",
+      "okunan": [
+        "TOPLAM",
+        "",
+        "",
+        "",
+        "4.200,00 ₺",
+        "",
+        "4.200,00 ₺",
+        ""
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "özet kartı Toplam Borç = 4.200,00 ₺",
+      "beklenen": "4.200,00 ₺",
+      "okunan": [
+        [
+          "Cari",
+          "3"
+        ],
+        [
+          "Toplam Borç",
+          "4.200,00 ₺"
+        ],
+        [
+          "Toplam Alacak",
+          "0,00 ₺"
+        ],
+        [
+          "Bakiye",
+          "4.200,00 ₺"
+        ]
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "Tablodaki Kişiler kolon başlıkları başlık düzeninde (Yazım düzeni)",
+      "beklenen": "her biri titleCase",
+      "okunan": [
+        "Cari",
+        "Tarih",
+        "Açıklama",
+        "Kaynak",
+        "Borç",
+        "Alacak",
+        "Bakiye",
+        "Durum"
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "not cümle düzeninde (her sözcük büyük değil)",
+      "beklenen": "cümle düzeni",
+      "okunan": "2 dosya no birden çok sekmede; ayrı sayıldı (2025 Aidat, 2026 Aidat). Aynı borçsa kopya sekmeyi kaldırın ya da Sekme süzgeciyle bakın. Dosya No: D-5 (Ali Veli), D-7 (Ayşe Kaya).",
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "o1-tablodaki-kisiler-not 1366×768: metin kesilmiyor / taşmıyor (.hof-modal-backdrop.is-visible [data-report-notes])",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1253,
+          "height": 20,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "o1-tablodaki-kisiler-not 1920×1080: metin kesilmiyor / taşmıyor (.hof-modal-backdrop.is-visible [data-report-notes])",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1702,
+          "height": 20,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "Tablodaki Vadeler ekranda not",
+      "beklenen": [
+        "2 dosya no birden çok sekmede; ayrı sayıldı (2025 Aidat, 2026 Aidat). Aynı borçsa kopya sekmeyi kaldırın ya da Sekme süzgeciyle bakın. Dosya No: D-5 (Ali Veli), D-7 (Ayşe Kaya)."
+      ],
+      "okunan": [
+        "2 dosya no birden çok sekmede; ayrı sayıldı (2025 Aidat, 2026 Aidat). Aynı borçsa kopya sekmeyi kaldırın ya da Sekme süzgeciyle bakın. Dosya No: D-5 (Ali Veli), D-7 (Ayşe Kaya)."
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "Tablodaki Vadeler satır sayısı (6 ayrı kalem: aynı sekmedeki T-100 iki kalem, D-5 / D-7 her sekmede ayrı)",
+      "beklenen": 6,
+      "okunan": 6,
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "Tablodaki Vadeler TOPLAM (Tutar) = 4.200,00 ₺ ve satırların toplamı",
+      "beklenen": "4.200,00 ₺",
+      "okunan": {
+        "foot": "4.200,00 ₺",
+        "satirToplami": 4200
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "o1-tablodaki-vadeler-not 1366×768: metin kesilmiyor / taşmıyor (.hof-modal-backdrop.is-visible [data-report-notes])",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1253,
+          "height": 20,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "o1-tablodaki-vadeler-not 1920×1080: metin kesilmiyor / taşmıyor (.hof-modal-backdrop.is-visible [data-report-notes])",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1702,
+          "height": 20,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "Tablodaki Nakit Akışı ekranda not (yönetici: yalnız sekme notu)",
+      "beklenen": [
+        "2 dosya no birden çok sekmede; ayrı sayıldı (2025 Aidat, 2026 Aidat). Aynı borçsa kopya sekmeyi kaldırın ya da Sekme süzgeciyle bakın. Dosya No: D-5 (Ali Veli), D-7 (Ayşe Kaya)."
+      ],
+      "okunan": [
+        "2 dosya no birden çok sekmede; ayrı sayıldı (2025 Aidat, 2026 Aidat). Aynı borçsa kopya sekmeyi kaldırın ya da Sekme süzgeciyle bakın. Dosya No: D-5 (Ali Veli), D-7 (Ayşe Kaya)."
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "Tablodaki Nakit Akışı TOPLAM Beklenen Tahsilat = 4.200,00 ₺",
+      "beklenen": "4.200,00 ₺",
+      "okunan": "4.200,00 ₺",
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "o1-tablodaki-nakit-akisi-not 1366×768: metin kesilmiyor / taşmıyor (.hof-modal-backdrop.is-visible [data-report-notes])",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1253,
+          "height": 20,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "o1-tablodaki-nakit-akisi-not 1920×1080: metin kesilmiyor / taşmıyor (.hof-modal-backdrop.is-visible [data-report-notes])",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1702,
+          "height": 20,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "Sekme süzgeci 2026 Aidat: not yok",
+      "beklenen": [],
+      "okunan": [],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "Sekme süzgeci 2026 Aidat: TOPLAM Borç 1.400,00 ₺ (800 + 600)",
+      "beklenen": "1.400,00 ₺",
+      "okunan": [
+        "TOPLAM",
+        "",
+        "",
+        "",
+        "1.400,00 ₺",
+        "",
+        "1.400,00 ₺",
+        ""
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "Sekme seçenekleri bütün sekmelerden",
+      "beklenen": [
+        "Tüm Sekmeler",
+        "2025 Aidat",
+        "2026 Aidat",
+        "Taksitler"
+      ],
+      "okunan": [
+        "Tüm Sekmeler",
+        "2025 Aidat",
+        "2026 Aidat",
+        "Taksitler"
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "o1-sekme-suzgeci-2026-not-yok 1366×768: metin kesilmiyor / taşmıyor (.hof-modal-backdrop.is-visible .hof-report-table)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1251,
+          "height": 123,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "o1-sekme-suzgeci-2026-not-yok 1920×1080: metin kesilmiyor / taşmıyor (.hof-modal-backdrop.is-visible .hof-report-table)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1700,
+          "height": 123,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "API takvim: 6 ayrı kalem (sekme, kişi, tutar)",
+      "beklenen": [
+        [
+          "2025 Aidat",
+          "Ali Veli",
+          1200
+        ],
+        [
+          "2025 Aidat",
+          "Ayşe Kaya",
+          600
+        ],
+        [
+          "2026 Aidat",
+          "Ali Veli",
+          800
+        ],
+        [
+          "2026 Aidat",
+          "Ayşe Kaya",
+          600
+        ],
+        [
+          "Taksitler",
+          "Can Yıldız",
+          400
+        ],
+        [
+          "Taksitler",
+          "Can Yıldız",
+          600
+        ]
+      ],
+      "okunan": [
+        [
+          "2025 Aidat",
+          "Ali Veli",
+          1200
+        ],
+        [
+          "2025 Aidat",
+          "Ayşe Kaya",
+          600
+        ],
+        [
+          "2026 Aidat",
+          "Ali Veli",
+          800
+        ],
+        [
+          "2026 Aidat",
+          "Ayşe Kaya",
+          600
+        ],
+        [
+          "Taksitler",
+          "Can Yıldız",
+          400
+        ],
+        [
+          "Taksitler",
+          "Can Yıldız",
+          600
+        ]
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "API takvim notu",
+      "beklenen": [
+        "2 dosya no birden çok sekmede; ayrı sayıldı (2025 Aidat, 2026 Aidat). Aynı borçsa kopya sekmeyi kaldırın ya da Sekme süzgeciyle bakın. Dosya No: D-5 (Ali Veli), D-7 (Ayşe Kaya)."
+      ],
+      "okunan": [
+        "2 dosya no birden çok sekmede; ayrı sayıldı (2025 Aidat, 2026 Aidat). Aynı borçsa kopya sekmeyi kaldırın ya da Sekme süzgeciyle bakın. Dosya No: D-5 (Ali Veli), D-7 (Ayşe Kaya)."
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "Tahsilat Takvimi şeridi notu (tam metin)",
+      "beklenen": "2 dosya no birden çok sekmede; ayrı sayıldı (2025 Aidat, 2026 Aidat). Aynı borçsa kopya sekmeyi kaldırın ya da Sekme süzgeciyle bakın. Dosya No: D-5 (Ali Veli), D-7 (Ayşe Kaya).",
+      "okunan": "2 dosya no birden çok sekmede; ayrı sayıldı (2025 Aidat, 2026 Aidat). Aynı borçsa kopya sekmeyi kaldırın ya da Sekme süzgeciyle bakın. Dosya No: D-5 (Ali Veli), D-7 (Ayşe Kaya).",
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "şeritte 6 pil (her kalem ayrı)",
+      "beklenen": 6,
+      "okunan": 6,
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "şerit başlığı",
+      "beklenen": "Tahsilat Takvimi …",
+      "okunan": "Tahsilat Takvimi3 gecikmiş · 3 yaklaşan",
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "pil metinleri (bilgi)",
+      "beklenen": "bilgi",
+      "okunan": [
+        "Can YıldızSon Ödeme · 14.06.2026 · ₺400,00",
+        "Ali VeliSon Ödeme · 15.06.2026 · ₺1.200,00",
+        "Ayşe KayaSon Ödeme · 16.06.2026 · ₺600,00",
+        "Ali VeliSon Ödeme · 20.06.2026 · ₺800,00",
+        "Ayşe KayaSon Ödeme · 21.06.2026 · ₺600,00",
+        "Can YıldızSon Ödeme · 22.06.2026 · ₺600,00",
+        "Can YıldızSon Ödeme · 14.06.2026 · ₺400,00",
+        "Ali VeliSon Ödeme · 15.06.2026 · ₺1.200,00",
+        "Ayşe KayaSon Ödeme · 16.06.2026 · ₺600,00",
+        "Ali VeliSon Ödeme · 20.06.2026 · ₺800,00",
+        "Ayşe KayaSon Ödeme · 21.06.2026 · ₺600,00",
+        "Can YıldızSon Ödeme · 22.06.2026 · ₺600,00"
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "o1-tahsilat-takvimi-serit-not 1366×768: metin kesilmiyor / taşmıyor (.hof-payment-promises [data-dues-notes])",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 994,
+          "height": 15,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "o1-tahsilat-takvimi-serit-not 1920×1080: metin kesilmiyor / taşmıyor (.hof-payment-promises [data-dues-notes])",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1548,
+          "height": 15,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "Kasa Hareketleri (Rapor Merkezi) özeti — bilgi",
+      "beklenen": "bilgi",
+      "okunan": {
+        "Devir": "0,00 TL",
+        "Dönem Giriş": "5.750,00 TL",
+        "Dönem Çıkış": "1.250,00 TL",
+        "Dönem Net": "4.500,00 TL",
+        "Dönem Sonu Kasa": "4.500,00 TL",
+        "Güncel Kasa (tüm hareketler)": "4.500,00 TL"
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "yönetici: Kasa sütunları var",
+      "beklenen": [
+        "Kasa Giriş",
+        "Kasa Çıkış",
+        "Net",
+        "Birikimli",
+        "Beklenenle Birlikte"
+      ],
+      "okunan": [
+        "Ay",
+        "Beklenen Tahsilat",
+        "Açık Kalem",
+        "Gerçekleşen Tahsilat",
+        "Kasa Giriş",
+        "Kasa Çıkış",
+        "Net",
+        "Birikimli",
+        "Beklenenle Birlikte"
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "yönetici: TOPLAM Kasa Giriş = Kasa Hareketleri Dönem Giriş (5.000 + 750)",
+      "beklenen": [
+        "5.750,00 ₺",
+        "5.750,00 ₺"
+      ],
+      "okunan": [
+        "5.750,00 ₺",
+        "5.750,00 ₺"
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "yönetici: TOPLAM Kasa Çıkış = Kasa Hareketleri Dönem Çıkış (1.250)",
+      "beklenen": [
+        "1.250,00 ₺",
+        "1.250,00 ₺"
+      ],
+      "okunan": [
+        "1.250,00 ₺",
+        "1.250,00 ₺"
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "yönetici: özet kartları",
+      "beklenen": [
+        "Beklenen Tahsilat",
+        "Gerçekleşen Tahsilat",
+        "Kasa Giriş",
+        "Kasa Çıkış",
+        "Net"
+      ],
+      "okunan": [
+        "Beklenen Tahsilat",
+        "Gerçekleşen Tahsilat",
+        "Kasa Giriş",
+        "Kasa Çıkış",
+        "Net"
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "yönetici: Kasa notu yok (yalnız sekme notu)",
+      "beklenen": [
+        "2 dosya no birden çok sekmede; ayrı sayıldı (2025 Aidat, 2026 Aidat). Aynı borçsa kopya sekmeyi kaldırın ya da Sekme süzgeciyle bakın. Dosya No: D-5 (Ali Veli), D-7 (Ayşe Kaya)."
+      ],
+      "okunan": [
+        "2 dosya no birden çok sekmede; ayrı sayıldı (2025 Aidat, 2026 Aidat). Aynı borçsa kopya sekmeyi kaldırın ya da Sekme süzgeciyle bakın. Dosya No: D-5 (Ali Veli), D-7 (Ayşe Kaya)."
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "Nakit Akışı süzgeçleri: Kişi / Kimlik, Durum, En Az Tutar gizli; Sekme ve Dönem görünür",
+      "beklenen": {
+        "Kişi / Kimlik": true,
+        "Durum": true,
+        "En Az Tutar": true,
+        "Sekme": false,
+        "Dönem": false
+      },
+      "okunan": {
+        "Kişi / Kimlik": true,
+        "Durum": true,
+        "En Az Tutar": true,
+        "Sekme": false,
+        "Dönem": false
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "süzgeç ve kolon adları başlık düzeninde",
+      "beklenen": "titleCase",
+      "okunan": [
+        "Başlangıç",
+        "Bitiş",
+        "Kişi / Kimlik",
+        "Durum",
+        "Sekme",
+        "En Az Tutar",
+        "Dönem",
+        "Ay",
+        "Beklenen Tahsilat",
+        "Açık Kalem",
+        "Gerçekleşen Tahsilat",
+        "Kasa Giriş",
+        "Kasa Çıkış",
+        "Net",
+        "Birikimli",
+        "Beklenenle Birlikte"
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "o2-nakit-akisi-yonetici-kasa-sutunlari 1366×768: metin kesilmiyor / taşmıyor (.hof-modal-backdrop.is-visible .hof-report-table)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1251,
+          "height": 92,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "o2-nakit-akisi-yonetici-kasa-sutunlari 1920×1080: metin kesilmiyor / taşmıyor (.hof-modal-backdrop.is-visible .hof-report-table)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1700,
+          "height": 92,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "Kasa Hareketleri ekranda Dönem Giriş 5.750 / Dönem Çıkış 1.250",
+      "beklenen": "5.750,00 ve 1.250,00",
+      "okunan": "63 hazır rapor 10 bölüm · her biri PDF ve Excel ☰ CARİ Cari Mizanı Cari Listesi ve Bakiyeler Cari Ekstre Tüm Cari Hareketleri Cari Bazında Tahsilat Alacak Yaşlandırma Şüpheli Alacaklar ₺ KASA Kasa Hareketleri Günlük Kasa Özeti Gelir / Gider Kaynağa Göre Aylık Kasa Özeti ▦ STOK Stok Durumu Stok Hareketleri Stok Hareket Özeti (envanter) Kategoriye Göre Stok Değeri • FATURA Satış Faturaları Alış Faturaları İade Faturaları KDV Özeti (Beyanname Hazırlığı) Ba-Bs Formu Ürün Bazında Satış ve Kârlılık Cari Bazında Satış ve Alış Gider Raporu (Türüne Göre) Stopaj ve Tevkifat Özeti Açık Faturalar ve Yaşla",
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "avukat API: cashHidden ve Kasa kolonu yok",
+      "beklenen": {
+        "cashHidden": true,
+        "kolon": []
+      },
+      "okunan": {
+        "cashHidden": true,
+        "kolon": []
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "avukat ekran: Kasa sütunları yok",
+      "beklenen": "Kasa Giriş/Çıkış/Net/Birikimli/Beklenenle Birlikte yok",
+      "okunan": [
+        "Ay",
+        "Beklenen Tahsilat",
+        "Açık Kalem",
+        "Gerçekleşen Tahsilat"
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "avukat ekran notları (sekme notu + Kasa notu)",
+      "beklenen": [
+        "2 dosya no birden çok sekmede; ayrı sayıldı (2025 Aidat, 2026 Aidat). Aynı borçsa kopya sekmeyi kaldırın ya da Sekme süzgeciyle bakın. Dosya No: D-5 (Ali Veli), D-7 (Ayşe Kaya).",
+        "Kasa sütunları Kasa yetkisi gerektirir; bu raporda Kasa giriş, çıkış ve bakiye gösterilmiyor."
+      ],
+      "okunan": [
+        "2 dosya no birden çok sekmede; ayrı sayıldı (2025 Aidat, 2026 Aidat). Aynı borçsa kopya sekmeyi kaldırın ya da Sekme süzgeciyle bakın. Dosya No: D-5 (Ali Veli), D-7 (Ayşe Kaya).",
+        "Kasa sütunları Kasa yetkisi gerektirir; bu raporda Kasa giriş, çıkış ve bakiye gösterilmiyor."
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "avukat özet kartları (Kasa yok)",
+      "beklenen": [
+        "Beklenen Tahsilat",
+        "Gerçekleşen Tahsilat"
+      ],
+      "okunan": [
+        "Beklenen Tahsilat",
+        "Gerçekleşen Tahsilat"
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "avukat ekranında Kasa tutarı (5.750 / 1.250) görünmüyor",
+      "beklenen": "yok",
+      "okunan": "BEKLENEN TAHSİLAT 4.200,00 ₺ GERÇEKLEŞEN TAHSİLAT 0,00 ₺ 2 dosya no birden çok sekmede; ayrı sayıldı (2025 Aidat, 2026 Aidat). Aynı borçsa kopya sekmeyi kaldırın ya da Sekme süzgeciyle bakın. Dosya No: D-5 (Ali Veli), D-7 (Ayşe Kaya). Kasa sütunları Kasa yetkisi gerektirir; bu raporda Kasa giriş, çı",
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "Kasa notu cümle düzeninde",
+      "beklenen": "cümle düzeni",
+      "okunan": "Kasa sütunları Kasa yetkisi gerektirir; bu raporda Kasa giriş, çıkış ve bakiye gösterilmiyor.",
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "o2-nakit-akisi-avukat-kasa-notu 1366×768: metin kesilmiyor / taşmıyor (.hof-modal-backdrop.is-visible [data-report-notes])",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1253,
+          "height": 52,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "o2-nakit-akisi-avukat-kasa-notu 1920×1080: metin kesilmiyor / taşmıyor (.hof-modal-backdrop.is-visible [data-report-notes])",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1702,
+          "height": 52,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "avukat Sekme süzgeci 2026 Aidat: Beklenen Tahsilat TOPLAM 1.400,00 ₺",
+      "beklenen": "1.400,00 ₺",
+      "okunan": "1.400,00 ₺",
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "avukat Sekme süzgeci: yalnız Kasa notu",
+      "beklenen": [
+        "Kasa sütunları Kasa yetkisi gerektirir; bu raporda Kasa giriş, çıkış ve bakiye gösterilmiyor."
+      ],
+      "okunan": [
+        "Kasa sütunları Kasa yetkisi gerektirir; bu raporda Kasa giriş, çıkış ve bakiye gösterilmiyor."
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "o2-nakit-akisi-avukat-sekme-2026 1366×768: metin kesilmiyor / taşmıyor (.hof-modal-backdrop.is-visible [data-report-notes])",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1253,
+          "height": 20,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "o2-nakit-akisi-avukat-sekme-2026 1920×1080: metin kesilmiyor / taşmıyor (.hof-modal-backdrop.is-visible [data-report-notes])",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1702,
+          "height": 20,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö2",
+      "denetim": "avukat Excel dışa aktarımı açılır (200)",
+      "beklenen": 200,
+      "okunan": {
+        "status": 200,
+        "size": 5041
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "kurulum numaraları (bilgi)",
+      "beklenen": "FIS…1, FIS…2 (silindi), FIS…3",
+      "okunan": {
+        "a": "FIS2026000000001",
+        "x": "FIS2026000000002",
+        "c": "FIS2026000000003"
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "(c) sıra-tarih: 409 invoice-restore-chronology",
+      "beklenen": {
+        "status": 409,
+        "code": "invoice-restore-chronology"
+      },
+      "okunan": {
+        "status": 409,
+        "code": "invoice-restore-chronology"
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "(c) ekrandaki ileti = sunucunun iletisi (tam metin)",
+      "beklenen": "Satış Faturası FIS2026000000002 (16.06.2026) geri yüklenmez: geri yüklenirse numara ve tarih sırası bozulur — FIS2026000000003 14.06.2026 tarihli (sonraki numara, daha eski tarih). Belge Silinenler'de kalır.",
+      "okunan": [
+        "Satış Faturası FIS2026000000002 (16.06.2026) geri yüklenmez: geri yüklenirse numara ve tarih sırası bozulur — FIS2026000000003 14.06.2026 tarihli (sonraki numara, daha eski tarih). Belge Silinenler'de kalır."
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "(c) ileti içeriği: belge, tarih, sonraki numara daha eski tarih, Silinenler'de kalır",
+      "beklenen": "Satış Faturası FIS2026000000002 (16.06.2026) geri yüklenmez: geri yüklenirse numara ve tarih sırası bozulur — … 14.06.2026 tarihli (sonraki numara, daha eski tarih). Belge Silinenler'de kalır.",
+      "okunan": "Satış Faturası FIS2026000000002 (16.06.2026) geri yüklenmez: geri yüklenirse numara ve tarih sırası bozulur — FIS2026000000003 14.06.2026 tarihli (sonraki numara, daha eski tarih). Belge Silinenler'de kalır.",
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "(c) Kopyala düğmesi ve pencere yok (ders 34)",
+      "beklenen": {
+        "buttons": [
+          "Kopyala"
+        ],
+        "dialogs": []
+      },
+      "okunan": {
+        "buttons": [
+          "Kopyala",
+          "×"
+        ],
+        "dialogs": []
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "(c) belge Silinenler'de kaldı, Fatura'ya dönmedi",
+      "beklenen": {
+        "trash": true,
+        "invoices": 2
+      },
+      "okunan": {
+        "trash": true,
+        "invoices": 2
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "o3c-sira-tarih-iletisi 1366×768: metin kesilmiyor / taşmıyor (.hof-toast-error .hof-toast-text)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 238,
+          "height": 127,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "o3c-sira-tarih-iletisi 1920×1080: metin kesilmiyor / taşmıyor (.hof-toast-error .hof-toast-text)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 238,
+          "height": 127,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "(b) kilit + sıra-tarih: 409 period-locked (sıra-tarihten ÖNCE)",
+      "beklenen": {
+        "status": 409,
+        "code": "period-locked"
+      },
+      "okunan": {
+        "status": 409,
+        "code": "period-locked"
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "(b) ekrandaki ileti = sunucunun iletisi",
+      "beklenen": "Bu satış faturası 16.06.2026 tarihli; 16.06.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı.",
+      "okunan": [
+        "Bu satış faturası 16.06.2026 tarihli; 16.06.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı."
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "(b) ileti metni (kilit)",
+      "beklenen": "Bu satış faturası 16.06.2026 tarihli; 16.06.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı.",
+      "okunan": "Bu satış faturası 16.06.2026 tarihli; 16.06.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı.",
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "(b) belge Silinenler'de kaldı",
+      "beklenen": {
+        "trash": true,
+        "invoices": 2
+      },
+      "okunan": {
+        "trash": true,
+        "invoices": 2
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "o3b-donem-kilidi-iletisi 1366×768: metin kesilmiyor / taşmıyor (.hof-toast-error .hof-toast-text)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 238,
+          "height": 73,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "o3b-donem-kilidi-iletisi 1920×1080: metin kesilmiyor / taşmıyor (.hof-toast-error .hof-toast-text)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 238,
+          "height": 73,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "numarayı alan belge (bilgi)",
+      "beklenen": "FIS2026000000002",
+      "okunan": {
+        "number": "FIS2026000000004",
+        "paperNo": "FIS2026000000002"
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "(a) numara + kilit + sıra-tarih: 409 invoice-number-taken (ilk ret)",
+      "beklenen": {
+        "status": 409,
+        "code": "invoice-number-taken"
+      },
+      "okunan": {
+        "status": 409,
+        "code": "invoice-number-taken"
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "(a) ekrandaki ileti = sunucunun iletisi",
+      "beklenen": "Satış Faturası FIS2026000000002 geri yüklenmez: bu numara belge silindikten sonra başka bir belgeye verildi (şimdi FIS2026000000004 numaralı, 17.06.2026 tarihli, Geri Yükleme Cari). Aynı numara iki belgede olamaz; belge Silinenler'de kalır.",
+      "okunan": [
+        "Satış Faturası FIS2026000000002 geri yüklenmez: bu numara belge silindikten sonra başka bir belgeye verildi (şimdi FIS2026000000004 numaralı, 17.06.2026 tarihli, Geri Yükleme Cari). Aynı numara iki belgede olamaz; belge Silinenler'de kalır."
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "(a) ileti metni (numara)",
+      "beklenen": "Satış Faturası FIS2026000000002 geri yüklenmez: bu numara belge silindikten sonra başka bir belgeye verildi (… 17.06.2026 tarihli, Geri Yükleme Cari). Aynı numara iki belgede olamaz; belge Silinenler'de kalır.",
+      "okunan": "Satış Faturası FIS2026000000002 geri yüklenmez: bu numara belge silindikten sonra başka bir belgeye verildi (şimdi FIS2026000000004 numaralı, 17.06.2026 tarihli, Geri Yükleme Cari). Aynı numara iki belgede olamaz; belge Silinenler'de kalır.",
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "o3a-numara-baskasinda-iletisi 1366×768: metin kesilmiyor / taşmıyor (.hof-toast-error .hof-toast-text)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 238,
+          "height": 146,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "o3a-numara-baskasinda-iletisi 1920×1080: metin kesilmiyor / taşmıyor (.hof-toast-error .hof-toast-text)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 238,
+          "height": 146,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "başarılı geri yükleme: 200, ileti",
+      "beklenen": "Satış Faturası FIS2026000000005 geri geldi (iptal edilmiş, etkisiz).",
+      "okunan": {
+        "status": 200,
+        "message": "Satış Faturası FIS2026000000005 geri geldi (iptal edilmiş, etkisiz).",
+        "toast": [
+          "Satış Faturası FIS2026000000005 geri geldi (iptal edilmiş, etkisiz)."
+        ]
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "geri yüklenen belge kendi numarasıyla, İptal Edildi",
+      "beklenen": {
+        "number": "FIS2026000000005",
+        "status": "cancelled"
+      },
+      "okunan": {
+        "number": "FIS2026000000005",
+        "status": "cancelled"
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "o3-basarili-geri-yukleme 1366×768: metin kesilmiyor / taşmıyor (.hof-toast .hof-toast-text)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 316,
+          "height": 36,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "o3-basarili-geri-yukleme 1920×1080: metin kesilmiyor / taşmıyor (.hof-toast .hof-toast-text)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 316,
+          "height": 36,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "Silinenler'den geri yüklemeden sonra Fatura'da yedek uyarısı yok (uyarı yedek geri yüklemesine ait)",
+      "beklenen": "",
+      "okunan": "",
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "o3-fatura-listesi-silinenler-sonrasi 1366×768: metin kesilmiyor / taşmıyor ([data-invoices] .hof-rep-note)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1222,
+          "height": 17,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "o3-fatura-listesi-silinenler-sonrasi 1920×1080: metin kesilmiyor / taşmıyor ([data-invoices] .hof-rep-note)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1222,
+          "height": 17,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö4",
+      "denetim": "kurulum: makbuz gönderildi (bilgi)",
+      "beklenen": "sent/processing",
+      "okunan": {
+        "number": "TES2026000000001",
+        "eStatus": "sent"
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö4",
+      "denetim": "B'nin Durum Sorgula'sı 200 (bilgi)",
+      "beklenen": 200,
+      "okunan": 200,
+      "gecti": true
+    },
+    {
+      "oge": "Ö4",
+      "denetim": "ekrandaki Durum Sorgula: 409 einvoice-status-stale, reason status-updated",
+      "beklenen": {
+        "status": 409,
+        "code": "einvoice-status-stale",
+        "reason": "status-updated"
+      },
+      "okunan": {
+        "status": 409,
+        "code": "einvoice-status-stale",
+        "reason": "status-updated"
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö4",
+      "denetim": "ekrandaki ileti (tam metin)",
+      "beklenen": "Belgenin durumu bu sırada başka bir sorguyla güncellendi; kartı yenileyip gerekirse yeniden sorgulayın.",
+      "okunan": [
+        "Belgenin durumu bu sırada başka bir sorguyla güncellendi; kartı yenileyip gerekirse yeniden sorgulayın."
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö4",
+      "denetim": "ileti 'gönderim' demiyor; Kopyala var; pencere yok",
+      "beklenen": {
+        "gonderim": false,
+        "kopyala": true,
+        "pencere": []
+      },
+      "okunan": {
+        "toast": [
+          "Belgenin durumu bu sırada başka bir sorguyla güncellendi; kartı yenileyip gerekirse yeniden sorgulayın."
+        ],
+        "pencere": [
+          "Fatura"
+        ]
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö4",
+      "denetim": "o4-a3-baska-sorgu-iletisi 1366×768: metin kesilmiyor / taşmıyor (.hof-toast-error .hof-toast-text)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 238,
+          "height": 55,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö4",
+      "denetim": "o4-a3-baska-sorgu-iletisi 1920×1080: metin kesilmiyor / taşmıyor (.hof-toast-error .hof-toast-text)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 238,
+          "height": 55,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö4",
+      "denetim": "kurulum: makbuz Sonucu Belirsiz",
+      "beklenen": "Sonucu Belirsiz",
+      "okunan": "Sonucu Belirsiz",
+      "gecti": true
+    },
+    {
+      "oge": "Ö4",
+      "denetim": "ekrandaki Durum Sorgula: 409 einvoice-status-stale, reason send-started",
+      "beklenen": {
+        "status": 409,
+        "code": "einvoice-status-stale",
+        "reason": "send-started"
+      },
+      "okunan": {
+        "status": 409,
+        "code": "einvoice-status-stale",
+        "reason": "send-started"
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö4",
+      "denetim": "ekrandaki ileti (tam metin)",
+      "beklenen": "Durum sorgulanırken belgenin e-Belge durumu başka bir oturumda değişti (ör. yeniden gönderim başladı); sorgunun sonucu yazılmadı. Birkaç saniye sonra kartı yenileyin, gerekirse yeniden Durum Sorgula'ya basın.",
+      "okunan": [
+        "Durum sorgulanırken belgenin e-Belge durumu başka bir oturumda değişti (ör. yeniden gönderim başladı); sorgunun sonucu yazılmadı. Birkaç saniye sonra kartı yenileyin, gerekirse yeniden Durum Sorgula'ya basın."
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö4",
+      "denetim": "geç 'bulunamadı' izi silmedi (gönderim yolda: kart Sonucu Belirsiz)",
+      "beklenen": "Sonucu Belirsiz",
+      "okunan": "Sonucu Belirsiz",
+      "gecti": true
+    },
+    {
+      "oge": "Ö4",
+      "denetim": "o4-a3-yeni-gonderim-iletisi 1366×768: metin kesilmiyor / taşmıyor (.hof-toast-error .hof-toast-text)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 238,
+          "height": 127,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö4",
+      "denetim": "o4-a3-yeni-gonderim-iletisi 1920×1080: metin kesilmiyor / taşmıyor (.hof-toast-error .hof-toast-text)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 238,
+          "height": 127,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö4",
+      "denetim": "B'nin gönderimi bitti (200)",
+      "beklenen": 200,
+      "okunan": 200,
+      "gecti": true
+    },
+    {
+      "oge": "Ö4",
+      "denetim": "son durum gönderildi / işleniyor; kart yenilenince ekranda",
+      "beklenen": "sent | processing",
+      "okunan": {
+        "eStatus": "sent",
+        "label": "Gönderildi"
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö4",
+      "denetim": "o4-son-kart 1366×768: metin kesilmiyor / taşmıyor ([data-invoices] [data-act=\"e-refresh\"])",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 112,
+          "height": 32,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö4",
+      "denetim": "o4-son-kart 1920×1080: metin kesilmiyor / taşmıyor ([data-invoices] [data-act=\"e-refresh\"])",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 112,
+          "height": 32,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "002 yedekten geri yüklendi (bilgi)",
+      "beklenen": "200",
+      "okunan": {
+        "restored": true,
+        "company": "002 · İkinci Büro",
+        "name": "destekofis-002-2026-10-23T06-35-15-416Z-manuel.sqlite",
+        "safety": "destekofis-002-2026-10-23T06-35-15-523Z-geri-yukleme-oncesi-002.sqlite"
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "geri yüklemeden sonra Fatura'da uyarı (e-Belge kullanan şirket: EDM cümlesi)",
+      "beklenen": "Yedek geri yüklendi (yedek tarihi: …). Yedekten sonra EDM'ye gönderilmiş e-Belge'ler …",
+      "okunan": "Yedek geri yüklendi (yedek tarihi: 23.10.2026 09:35). Yedekten sonra EDM'ye gönderilmiş e-Belge'ler ve verilmiş kâğıt/fiş numaraları programda yeniden verilebilir; EDM aynı numarayı reddeder. Göndermeden önce Fatura Ayarları → Numaralar'dan sıradaki numarayı EDM'deki ve elinizdeki son numaranın ilerisine alın. Test Ortamı'nda e-Belge numarası Entegratör Ayarları → Otomatik Seriler'den ileri alınır. Fatura Ayarları Uyarıyı Kapat",
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "uyarı düğmeleri başlık düzeninde",
+      "beklenen": [
+        "Fatura Ayarları",
+        "Uyarıyı Kapat"
+      ],
+      "okunan": [
+        "Fatura Ayarları",
+        "Uyarıyı Kapat"
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "o3d-yedek-geri-yukleme-uyarisi 1366×768: metin kesilmiyor / taşmıyor ([data-invoices] [data-restore-notice])",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1222,
+          "height": 74,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "o3d-yedek-geri-yukleme-uyarisi 1920×1080: metin kesilmiyor / taşmıyor ([data-invoices] [data-restore-notice])",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1222,
+          "height": 74,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "ikinci açılışta (kapatılmadan) uyarı DURUR — tasarım: 'kapatılınca bir daha çıkmaz'",
+      "beklenen": "uyarı var",
+      "okunan": "Yedek geri yüklendi (yedek tarihi: 23.10.2026 09:35). Yedekt",
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "Uyarıyı Kapat'tan sonra yeniden açılışta uyarı yok",
+      "beklenen": "",
+      "okunan": "",
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "o3d-uyari-kapatildi-yeniden-acilis 1366×768: metin kesilmiyor / taşmıyor ([data-invoices] .hof-rep-note)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1222,
+          "height": 17,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö3",
+      "denetim": "o3d-uyari-kapatildi-yeniden-acilis 1920×1080: metin kesilmiyor / taşmıyor ([data-invoices] .hof-rep-note)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1222,
+          "height": 17,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "Excel yüklenince açılan pencere (eşleme) — kendiliğinden yanıtlanmadı",
+      "beklenen": "Ön izleme/eşleme penceresi",
+      "okunan": [
+        "Yeni veri: taksit-tek-sekme.xlsx"
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "002 analiz öneri kutusu (bilgi)",
+      "beklenen": "bilgi",
+      "okunan": {
+        "analysisShown": false
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "002 Tahsilat Takvimi: not yok; tablo kalemleri 3 (T-100 iki ayrı kalem: Ali Veli 2, Ayşe Kaya 1)",
+      "beklenen": {
+        "note": "",
+        "hasNote": false,
+        "tabloPil": 3
+      },
+      "okunan": {
+        "note": "",
+        "hasNote": false,
+        "tabloPil": 3
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "002 şeridindeki bütün piller (bilgi; e-SMM makbuzlarının vadesi de şeritte)",
+      "beklenen": "bilgi",
+      "okunan": [
+        "Ali VeliSon Ödeme · 15.06.2026 · ₺1.000,00",
+        "Ayşe KayaSon Ödeme · 16.06.2026 · ₺700,00",
+        "Ali VeliSon Ödeme · 20.06.2026 · ₺1.500,00",
+        "Müvekkil Ticaret A.Ş.Tahsil Edilecek Fatura TES2026000000001 · 17.06.2026 · ₺1.000,00",
+        "Müvekkil Ticaret A.Ş.Tahsil Edilecek Fatura TES2026000000002 · 17.06.2026 · ₺1.000,00"
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "002 API takvim: tablo kalemleri ayrı, not yok",
+      "beklenen": {
+        "items": [
+          [
+            "Ali Veli",
+            1000
+          ],
+          [
+            "Ali Veli",
+            1500
+          ],
+          [
+            "Ayşe Kaya",
+            700
+          ]
+        ],
+        "notes": []
+      },
+      "okunan": {
+        "items": [
+          [
+            "Ali Veli",
+            1000
+          ],
+          [
+            "Ali Veli",
+            1500
+          ],
+          [
+            "Ayşe Kaya",
+            700
+          ]
+        ],
+        "notes": []
+      },
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "o1c-tek-sekme-serit-not-yok 1366×768: metin kesilmiyor / taşmıyor (.hof-payment-promises)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1024,
+          "height": 70,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "o1c-tek-sekme-serit-not-yok 1920×1080: metin kesilmiyor / taşmıyor (.hof-payment-promises)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1578,
+          "height": 70,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "002 Tablodaki Kişiler: not yok",
+      "beklenen": [],
+      "okunan": [],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "002 Tablodaki Kişiler TOPLAM Borç 3.200,00 ₺ (1.000 + 1.500 + 700)",
+      "beklenen": "3.200,00 ₺",
+      "okunan": [
+        "TOPLAM",
+        "",
+        "",
+        "",
+        "3.200,00 ₺",
+        "",
+        "3.200,00 ₺",
+        "",
+        ""
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "o1c-tek-sekme-kisiler-not-yok 1366×768: metin kesilmiyor / taşmıyor (.hof-modal-backdrop.is-visible .hof-report-table)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1251,
+          "height": 154,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "o1c-tek-sekme-kisiler-not-yok 1920×1080: metin kesilmiyor / taşmıyor (.hof-modal-backdrop.is-visible .hof-report-table)",
+      "beklenen": "kesilme yok, pencere içinde",
+      "okunan": [
+        {
+          "clipped": false,
+          "outside": false,
+          "width": 1700,
+          "height": 154,
+          "whiteSpace": "normal"
+        }
+      ],
+      "gecti": true
+    },
+    {
+      "oge": "Ö1",
+      "denetim": "002 Tablodaki Vadeler: not yok, 3 satır",
+      "beklenen": {
+        "notes": [],
+        "rows": 3
+      },
+      "okunan": {
+        "notes": [],
+        "rows": 3
+      },
+      "gecti": true
+    },
+    {
+      "oge": "genel",
+      "denetim": "konsol hatası yok (beklenen 409 retleri ve girişteki /api/auth/me 401 hariç)",
+      "beklenen": [],
+      "okunan": [],
+      "gecti": true
+    },
+    {
+      "oge": "genel",
+      "denetim": "tarayıcı yerel pencere (alert/confirm) açılmadı",
+      "beklenen": [],
+      "okunan": [],
+      "gecti": true
+    }
+  ],
+  "console": [
+    {
+      "page": "admin",
+      "type": "console.error",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "url": "http://127.0.0.1:41465/api/auth/me"
+    },
+    {
+      "page": "avukat1",
+      "type": "console.error",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "url": "http://127.0.0.1:41465/api/auth/me"
+    },
+    {
+      "page": "admin",
+      "type": "console.error",
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:41465/api/admin/trash/restore?hofCompany=sirket-001"
+    },
+    {
+      "page": "admin",
+      "type": "console.error",
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:41465/api/admin/trash/restore?hofCompany=sirket-001"
+    },
+    {
+      "page": "admin",
+      "type": "console.error",
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:41465/api/admin/trash/restore?hofCompany=sirket-001"
+    },
+    {
+      "page": "admin",
+      "type": "console.error",
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:41465/api/workspace/invoices/invoice-39e2a734-35e2-4960-bf0d-a967e27ffb49/e-refresh?hofCompany=sirket-12cab457-e869-47f0-a268-96a8c42670a5&hofPage=dataset%3A%2F%2Fofis"
+    },
+    {
+      "page": "admin",
+      "type": "console.error",
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "url": "http://127.0.0.1:41465/api/workspace/invoices/invoice-75d031c2-48ce-41a4-b7de-9da2d72e6f84/e-refresh?hofCompany=sirket-12cab457-e869-47f0-a268-96a8c42670a5&hofPage=dataset%3A%2F%2Fofis"
+    }
+  ],
+  "dialogs": [],
+  "shots": [
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/01-o1-tablodaki-kisiler-not-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/02-o1-tablodaki-kisiler-not-1920x1080.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/02-o1-tablodaki-kisiler-toplam-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/04-o1-tablodaki-vadeler-not-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/05-o1-tablodaki-vadeler-not-1920x1080.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/06-o1-tablodaki-nakit-akisi-not-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/07-o1-tablodaki-nakit-akisi-not-1920x1080.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/08-o1-sekme-suzgeci-2026-not-yok-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/09-o1-sekme-suzgeci-2026-not-yok-1920x1080.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/10-o1-tahsilat-takvimi-serit-not-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/11-o1-tahsilat-takvimi-serit-not-1920x1080.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/12-o2-nakit-akisi-yonetici-kasa-sutunlari-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/13-o2-nakit-akisi-yonetici-kasa-sutunlari-1920x1080.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/14-o2-kasa-hareketleri-raporu-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/15-o2-kasa-hareketleri-raporu-1920x1080.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/16-o2-nakit-akisi-avukat-kasa-notu-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/17-o2-nakit-akisi-avukat-kasa-notu-1920x1080.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/18-o2-nakit-akisi-avukat-sekme-2026-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/19-o2-nakit-akisi-avukat-sekme-2026-1920x1080.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/20-o3c-sira-tarih-iletisi-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/21-o3c-sira-tarih-iletisi-1920x1080.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/22-o3b-donem-kilidi-iletisi-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/23-o3b-donem-kilidi-iletisi-1920x1080.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/24-o3a-numara-baskasinda-iletisi-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/25-o3a-numara-baskasinda-iletisi-1920x1080.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/26-o3-basarili-geri-yukleme-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/27-o3-basarili-geri-yukleme-1920x1080.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/28-o3-fatura-listesi-silinenler-sonrasi-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/29-o3-fatura-listesi-silinenler-sonrasi-1920x1080.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/30-o4-a3-baska-sorgu-iletisi-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/31-o4-a3-baska-sorgu-iletisi-1920x1080.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/32-o4-sonucu-belirsiz-kart-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/33-o4-a3-yeni-gonderim-iletisi-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/34-o4-a3-yeni-gonderim-iletisi-1920x1080.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/35-o4-son-kart-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/36-o4-son-kart-1920x1080.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/37-o3d-yedek-geri-yukleme-uyarisi-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/38-o3d-yedek-geri-yukleme-uyarisi-1920x1080.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/39-o3d-uyari-kapatildi-yeniden-acilis-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/40-o3d-uyari-kapatildi-yeniden-acilis-1920x1080.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/41-o1c-tek-sekme-serit-not-yok-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/42-o1c-tek-sekme-serit-not-yok-1920x1080.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/43-o1c-tek-sekme-kisiler-not-yok-1366x768.png",
+    "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ekran-g/aday16/44-o1c-tek-sekme-kisiler-not-yok-1920x1080.png"
+  ]
+}

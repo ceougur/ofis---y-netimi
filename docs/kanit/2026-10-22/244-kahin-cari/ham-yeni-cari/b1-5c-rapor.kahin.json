@@ -1,0 +1,572 @@
+{
+ "ad": "b1-5c-rapor",
+ "belirsiz": [],
+ "denetimler": {
+  "adim:a1:atlanan": {
+   "b": 0,
+   "e": "AJAN",
+   "k": "B1 aktarım özeti"
+  },
+  "adim:a1:durum": {
+   "b": "ok",
+   "e": "KULLANICI",
+   "k": "B1 aktarım"
+  },
+  "adim:a1:kapsanan": {
+   "b": 3,
+   "e": "AJAN",
+   "k": "B1 aktarım özeti"
+  },
+  "adim:a1:olusan": {
+   "b": 3,
+   "e": "AJAN",
+   "k": "B1 aktarım özeti"
+  },
+  "adim:a1:tasinanAdet": {
+   "b": 3,
+   "e": "AJAN",
+   "k": "B1 aktarım özeti"
+  },
+  "adim:a1:tasinanTutar": {
+   "b": 240000,
+   "e": "AJAN",
+   "k": "B1 aktarım özeti"
+  },
+  "adim:c1:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:c2:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:c3:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:c4:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:h1:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:h2:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:h3:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:h4:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:kt1:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:p1:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "adim:t1:durum": {
+   "b": "ok",
+   "e": "PLAN",
+   "k": "adım kabul edilir"
+  },
+  "k1:cari:DENIZ:bakiye": {
+   "b": -25000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k1:cari:DENIZ:taksitDisi": {
+   "b": 25000,
+   "e": "KULLANICI",
+   "k": "B1.2 taksit dışı kalan tahsilatlar"
+  },
+  "k1:cari:ELIF1:bakiye": {
+   "b": 250000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k1:cari:ELIF1:taksitDisi": {
+   "b": 50000,
+   "e": "KULLANICI",
+   "k": "B1.2 taksit dışı kalan tahsilatlar"
+  },
+  "k1:cari:ELIF2:bakiye": {
+   "b": 230000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k1:cari:ELIF2:taksitDisi": {
+   "b": 70000,
+   "e": "KULLANICI",
+   "k": "B1.2 taksit dışı kalan tahsilatlar"
+  },
+  "k1:cari:TUNA:bakiye": {
+   "b": 280000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k1:cari:TUNA:taksitDisi": {
+   "b": 120000,
+   "e": "KULLANICI",
+   "k": "B1.2 taksit dışı kalan tahsilatlar"
+  },
+  "k1:kasa": {
+   "b": 275000,
+   "e": "KULLANICI",
+   "k": "B1.2 Kasa değişmez / tahsilatlar Kasa'da"
+  },
+  "k1:rapor:2026/77:ad": {
+   "b": "Deniz Beş",
+   "e": "YAYGIN",
+   "k": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir"
+  },
+  "k1:rapor:2026/77:alacak": {
+   "b": 35000,
+   "e": "KULLANICI",
+   "k": "B1.8 5c tahsilat bir kez"
+  },
+  "k1:rapor:K-1:ad": {
+   "b": "Elif Kaya",
+   "e": "YAYGIN",
+   "k": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir"
+  },
+  "k1:rapor:K-1:alacak": {
+   "b": 50000,
+   "e": "YAYGIN",
+   "k": "B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN)"
+  },
+  "k1:rapor:K-2:ad": {
+   "b": "Elif Kaya",
+   "e": "YAYGIN",
+   "k": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir"
+  },
+  "k1:rapor:K-2:alacak": {
+   "b": 70000,
+   "e": "YAYGIN",
+   "k": "B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN)"
+  },
+  "k1:rapor:K-3:ad": {
+   "b": "Tuna Sarı",
+   "e": "YAYGIN",
+   "k": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir"
+  },
+  "k1:rapor:K-3:alacak": {
+   "b": 120000,
+   "e": "KULLANICI",
+   "k": "B1.8 5c tahsilat bir kez"
+  },
+  "k1:rapor:tutarli": {
+   "b": true,
+   "e": "KULLANICI",
+   "k": "B1.8 ders 11 toplam = satırlar"
+  },
+  "k2:cari:DENIZ:bakiye": {
+   "b": -25000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k2:cari:DENIZ:taksitDisi": {
+   "b": 25000,
+   "e": "KULLANICI",
+   "k": "B1.2 taksit dışı kalan tahsilatlar"
+  },
+  "k2:cari:ELIF1:bakiye": {
+   "b": 250000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k2:cari:ELIF1:taksitDisi": {
+   "b": 0,
+   "e": "KULLANICI",
+   "k": "B1.2 taksit dışı kalan tahsilatlar"
+  },
+  "k2:cari:ELIF2:bakiye": {
+   "b": 230000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k2:cari:ELIF2:taksitDisi": {
+   "b": 0,
+   "e": "KULLANICI",
+   "k": "B1.2 taksit dışı kalan tahsilatlar"
+  },
+  "k2:cari:TUNA:bakiye": {
+   "b": 280000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k2:cari:TUNA:taksitDisi": {
+   "b": 0,
+   "e": "KULLANICI",
+   "k": "B1.2 taksit dışı kalan tahsilatlar"
+  },
+  "k2:kart:K-1:kalan": {
+   "b": 250000,
+   "e": "KULLANICI",
+   "k": "B1.2"
+  },
+  "k2:kart:K-1:mevcutBorc": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B1.4 mevcut borcu taksitlendir"
+  },
+  "k2:kart:K-1:odenen": {
+   "b": 50000,
+   "e": "KULLANICI",
+   "k": "B1.2 taşınan tahsilatlar karta"
+  },
+  "k2:kart:K-1:taksit1:odenen": {
+   "b": 50000,
+   "e": "KULLANICI",
+   "k": "B1.2 en eski açık taksitten başlayarak"
+  },
+  "k2:kart:K-1:taksit2:odenen": {
+   "b": 0,
+   "e": "KULLANICI",
+   "k": "B1.2 en eski açık taksitten başlayarak"
+  },
+  "k2:kart:K-1:toplam": {
+   "b": 300000,
+   "e": "AJAN",
+   "k": "B1.3 kart tutarı = tablodaki kalan"
+  },
+  "k2:kart:K-1:var": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B1.3 kart açıldı"
+  },
+  "k2:kart:K-2:kalan": {
+   "b": 230000,
+   "e": "KULLANICI",
+   "k": "B1.2"
+  },
+  "k2:kart:K-2:mevcutBorc": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B1.4 mevcut borcu taksitlendir"
+  },
+  "k2:kart:K-2:odenen": {
+   "b": 70000,
+   "e": "KULLANICI",
+   "k": "B1.2 taşınan tahsilatlar karta"
+  },
+  "k2:kart:K-2:taksit1:odenen": {
+   "b": 70000,
+   "e": "KULLANICI",
+   "k": "B1.2 en eski açık taksitten başlayarak"
+  },
+  "k2:kart:K-2:taksit2:odenen": {
+   "b": 0,
+   "e": "KULLANICI",
+   "k": "B1.2 en eski açık taksitten başlayarak"
+  },
+  "k2:kart:K-2:toplam": {
+   "b": 300000,
+   "e": "AJAN",
+   "k": "B1.3 kart tutarı = tablodaki kalan"
+  },
+  "k2:kart:K-2:var": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B1.3 kart açıldı"
+  },
+  "k2:kart:K-3:kalan": {
+   "b": 280000,
+   "e": "KULLANICI",
+   "k": "B1.2"
+  },
+  "k2:kart:K-3:mevcutBorc": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B1.4 mevcut borcu taksitlendir"
+  },
+  "k2:kart:K-3:odenen": {
+   "b": 120000,
+   "e": "KULLANICI",
+   "k": "B1.2 taşınan tahsilatlar karta"
+  },
+  "k2:kart:K-3:taksit1:odenen": {
+   "b": 120000,
+   "e": "KULLANICI",
+   "k": "B1.2 en eski açık taksitten başlayarak"
+  },
+  "k2:kart:K-3:taksit2:odenen": {
+   "b": 0,
+   "e": "KULLANICI",
+   "k": "B1.2 en eski açık taksitten başlayarak"
+  },
+  "k2:kart:K-3:toplam": {
+   "b": 400000,
+   "e": "AJAN",
+   "k": "B1.3 kart tutarı = tablodaki kalan"
+  },
+  "k2:kart:K-3:var": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B1.3 kart açıldı"
+  },
+  "k2:kasa": {
+   "b": 275000,
+   "e": "KULLANICI",
+   "k": "B1.2 Kasa değişmez / tahsilatlar Kasa'da"
+  },
+  "k2:rapor:2026/77:ad": {
+   "b": "Deniz Beş",
+   "e": "YAYGIN",
+   "k": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir"
+  },
+  "k2:rapor:2026/77:alacak": {
+   "b": 35000,
+   "e": "KULLANICI",
+   "k": "B1.8 5c tahsilat bir kez"
+  },
+  "k2:rapor:K-1:ad": {
+   "b": "Elif Kaya",
+   "e": "YAYGIN",
+   "k": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir"
+  },
+  "k2:rapor:K-1:alacak": {
+   "b": 50000,
+   "e": "YAYGIN",
+   "k": "B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN)"
+  },
+  "k2:rapor:K-2:ad": {
+   "b": "Elif Kaya",
+   "e": "YAYGIN",
+   "k": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir"
+  },
+  "k2:rapor:K-2:alacak": {
+   "b": 70000,
+   "e": "YAYGIN",
+   "k": "B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN)"
+  },
+  "k2:rapor:K-3:ad": {
+   "b": "Tuna Sarı",
+   "e": "YAYGIN",
+   "k": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir"
+  },
+  "k2:rapor:K-3:alacak": {
+   "b": 120000,
+   "e": "KULLANICI",
+   "k": "B1.8 5c tahsilat bir kez"
+  },
+  "k2:rapor:tutarli": {
+   "b": true,
+   "e": "KULLANICI",
+   "k": "B1.8 ders 11 toplam = satırlar"
+  },
+  "k3:cari:DENIZ:bakiye": {
+   "b": -25000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k3:cari:DENIZ:taksitDisi": {
+   "b": 25000,
+   "e": "KULLANICI",
+   "k": "B1.2 taksit dışı kalan tahsilatlar"
+  },
+  "k3:cari:ELIF1:bakiye": {
+   "b": 250000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k3:cari:ELIF1:taksitDisi": {
+   "b": 0,
+   "e": "KULLANICI",
+   "k": "B1.2 taksit dışı kalan tahsilatlar"
+  },
+  "k3:cari:ELIF2:bakiye": {
+   "b": 230000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k3:cari:ELIF2:taksitDisi": {
+   "b": 0,
+   "e": "KULLANICI",
+   "k": "B1.2 taksit dışı kalan tahsilatlar"
+  },
+  "k3:cari:TUNA:bakiye": {
+   "b": 250000,
+   "e": "PLAN",
+   "k": "B1.1/B2.7 bakiye = borçlar − alacaklar"
+  },
+  "k3:cari:TUNA:taksitDisi": {
+   "b": 0,
+   "e": "KULLANICI",
+   "k": "B1.2 taksit dışı kalan tahsilatlar"
+  },
+  "k3:kart:K-1:kalan": {
+   "b": 250000,
+   "e": "KULLANICI",
+   "k": "B1.2"
+  },
+  "k3:kart:K-1:mevcutBorc": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B1.4 mevcut borcu taksitlendir"
+  },
+  "k3:kart:K-1:odenen": {
+   "b": 50000,
+   "e": "KULLANICI",
+   "k": "B1.2 taşınan tahsilatlar karta"
+  },
+  "k3:kart:K-1:taksit1:odenen": {
+   "b": 50000,
+   "e": "KULLANICI",
+   "k": "B1.2 en eski açık taksitten başlayarak"
+  },
+  "k3:kart:K-1:taksit2:odenen": {
+   "b": 0,
+   "e": "KULLANICI",
+   "k": "B1.2 en eski açık taksitten başlayarak"
+  },
+  "k3:kart:K-1:toplam": {
+   "b": 300000,
+   "e": "AJAN",
+   "k": "B1.3 kart tutarı = tablodaki kalan"
+  },
+  "k3:kart:K-1:var": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B1.3 kart açıldı"
+  },
+  "k3:kart:K-2:kalan": {
+   "b": 230000,
+   "e": "KULLANICI",
+   "k": "B1.2"
+  },
+  "k3:kart:K-2:mevcutBorc": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B1.4 mevcut borcu taksitlendir"
+  },
+  "k3:kart:K-2:odenen": {
+   "b": 70000,
+   "e": "KULLANICI",
+   "k": "B1.2 taşınan tahsilatlar karta"
+  },
+  "k3:kart:K-2:taksit1:odenen": {
+   "b": 70000,
+   "e": "KULLANICI",
+   "k": "B1.2 en eski açık taksitten başlayarak"
+  },
+  "k3:kart:K-2:taksit2:odenen": {
+   "b": 0,
+   "e": "KULLANICI",
+   "k": "B1.2 en eski açık taksitten başlayarak"
+  },
+  "k3:kart:K-2:toplam": {
+   "b": 300000,
+   "e": "AJAN",
+   "k": "B1.3 kart tutarı = tablodaki kalan"
+  },
+  "k3:kart:K-2:var": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B1.3 kart açıldı"
+  },
+  "k3:kart:K-3:kalan": {
+   "b": 250000,
+   "e": "KULLANICI",
+   "k": "B1.2"
+  },
+  "k3:kart:K-3:mevcutBorc": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B1.4 mevcut borcu taksitlendir"
+  },
+  "k3:kart:K-3:odenen": {
+   "b": 150000,
+   "e": "KULLANICI",
+   "k": "B1.2 taşınan tahsilatlar karta"
+  },
+  "k3:kart:K-3:taksit1:odenen": {
+   "b": 150000,
+   "e": "KULLANICI",
+   "k": "B1.2 en eski açık taksitten başlayarak"
+  },
+  "k3:kart:K-3:taksit2:odenen": {
+   "b": 0,
+   "e": "KULLANICI",
+   "k": "B1.2 en eski açık taksitten başlayarak"
+  },
+  "k3:kart:K-3:toplam": {
+   "b": 400000,
+   "e": "AJAN",
+   "k": "B1.3 kart tutarı = tablodaki kalan"
+  },
+  "k3:kart:K-3:var": {
+   "b": true,
+   "e": "AJAN",
+   "k": "B1.3 kart açıldı"
+  },
+  "k3:kasa": {
+   "b": 305000,
+   "e": "KULLANICI",
+   "k": "B1.2 Kasa değişmez / tahsilatlar Kasa'da"
+  },
+  "k3:rapor:2026/77:ad": {
+   "b": "Deniz Beş",
+   "e": "YAYGIN",
+   "k": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir"
+  },
+  "k3:rapor:2026/77:alacak": {
+   "b": 35000,
+   "e": "KULLANICI",
+   "k": "B1.8 5c tahsilat bir kez"
+  },
+  "k3:rapor:K-1:ad": {
+   "b": "Elif Kaya",
+   "e": "YAYGIN",
+   "k": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir"
+  },
+  "k3:rapor:K-1:alacak": {
+   "b": 50000,
+   "e": "YAYGIN",
+   "k": "B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN)"
+  },
+  "k3:rapor:K-2:ad": {
+   "b": "Elif Kaya",
+   "e": "YAYGIN",
+   "k": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir"
+  },
+  "k3:rapor:K-2:alacak": {
+   "b": 70000,
+   "e": "YAYGIN",
+   "k": "B1.8 5c tahsilat bir kez (aynı adlı iki kişi ayrı satırda: YAYGIN)"
+  },
+  "k3:rapor:K-3:ad": {
+   "b": "Tuna Sarı",
+   "e": "YAYGIN",
+   "k": "B1.8b Tablodaki Kişiler kişiyi adıyla gösterir"
+  },
+  "k3:rapor:K-3:alacak": {
+   "b": 150000,
+   "e": "YAYGIN",
+   "k": "B1.8 5c tahsilat bir kez"
+  },
+  "k3:rapor:tutarli": {
+   "b": true,
+   "e": "KULLANICI",
+   "k": "B1.8 ders 11 toplam = satırlar"
+  }
+ },
+ "dil": "destekofis-cari/1"
+}

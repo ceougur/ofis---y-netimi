@@ -1,0 +1,48 @@
+{
+  "ad": "244-f1-rapor/mutasyon-m1",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m1/test/rapor-tablodaki-kisiler-f1.test.mjs /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m1/test/rapor-tablodaki-kisiler-244.test.mjs /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/f1-rapor/f1-mutasyon-m1/test/reports.test.mjs",
+  "commit": "2b71feac5cce579d33b9c7d9ca5b2c0784286917",
+  "dal": "is/f1-rapor",
+  "kirli": 3,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T10:54:12.816Z",
+  "sure_sn": 2.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 16,
+    "gecen": 13,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 31a F1/F5/F4: Tablodaki Kişiler ve Nakit Akışı karta taşınan ve karta girilen tahsilatı sayar; kişi adıyla görünür › N1/N3 (F1): Tablodan Aktar iki tahsilatı karta taşır → alacak 3.500 KALIR, Nakit Akışı gerçekleşen aynı",
+      "konum": "test/rapor-tablodaki-kisiler-f1.test.mjs:89:3",
+      "hata": "taşınan tahsilat rapordan düşmez · 0 !== 3500 (beklenen 3500, gelen 0)"
+    },
+    {
+      "ad": "2.4.4 31a F1/F5/F4: Tablodaki Kişiler ve Nakit Akışı karta taşınan ve karta girilen tahsilatı sayar; kişi adıyla görünür › N2 (F5): karta doğrudan girilen 700 tahsilat alacağa ve Nakit Akışı'na girer (3.500 + 700 = 4.200)",
+      "konum": "test/rapor-tablodaki-kisiler-f1.test.mjs:100:3",
+      "hata": "Expected values to be strictly equal: · 0 !== 4200 (beklenen 4200, gelen 0)"
+    },
+    {
+      "ad": "2.4.4 31a F1/F5/F4: Tablodaki Kişiler ve Nakit Akışı karta taşınan ve karta girilen tahsilatı sayar; kişi adıyla görünür › N6: her süzgeçte toplam = satırlar; Elif'in tahsilatları bir kez",
+      "konum": "test/rapor-tablodaki-kisiler-f1.test.mjs:107:3",
+      "hata": "bugün: yalnız karta girilen 700 · 0 !== 700 (beklenen 700, gelen 0)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-f1-rapor/mutasyon-m1.log",
+  "klasor": "/home/user/wt/f1-rapor",
+  "ham_cikti_sha256": "fc4ba308f55ea2dcaa29b758600c462dacae4f0874a27f0844339fb3204d086f",
+  "ham_cikti_bayt": 9535
+}

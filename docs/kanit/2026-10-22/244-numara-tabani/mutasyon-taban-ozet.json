@@ -1,0 +1,34 @@
+{
+ "T1-tarama-kapali": {
+  "exit": 1,
+  "ozet": "[kanit] mutasyon-T1-tarama-kapali: BAŞARISIZ (çıkış 1; 4 başarısız, 0 iptal) · çıkış 1 · 2/6 geçti, 4 başarısız, 0 iptal, 0 atlanan · commit 45fef3c +1 değişmiş dosya +2 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+ },
+ "T2-is-gecmisi-taranmaz": {
+  "exit": 1,
+  "ozet": "[kanit] mutasyon-T2-is-gecmisi-taranmaz: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 4/6 geçti, 2 başarısız, 0 iptal, 0 atlanan · commit 45fef3c +1 değişmiş dosya +2 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+ },
+ "T3-kagit-fatura-no-taranmaz": {
+  "exit": 1,
+  "ozet": "[kanit] mutasyon-T3-kagit-fatura-no-taranmaz: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 5/6 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 45fef3c +1 değişmiş dosya +2 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+ },
+ "T4-seride-duran-sayilir": {
+  "exit": 1,
+  "ozet": "[kanit] mutasyon-T4-seride-duran-sayilir: BAŞARISIZ (çıkış 1; 4 başarısız, 0 iptal) · çıkış 1 · 2/6 geçti, 4 başarısız, 0 iptal, 0 atlanan · commit 45fef3c +1 değişmiş dosya +2 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+ },
+ "T5-her-seri-sayilir": {
+  "exit": 1,
+  "ozet": "[kanit] mutasyon-T5-her-seri-sayilir: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 5/6 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 45fef3c +1 değişmiş dosya +2 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+ },
+ "T6-bicim-gevsek": {
+  "exit": 1,
+  "ozet": "[kanit] mutasyon-T6-bicim-gevsek: BAŞARISIZ (çıkış 1; 3 başarısız, 0 iptal) · çıkış 1 · 3/6 geçti, 3 başarısız, 0 iptal, 0 atlanan · commit 45fef3c +1 değişmiş dosya +2 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+ },
+ "T7-kucultur": {
+  "exit": 1,
+  "ozet": "[kanit] mutasyon-T7-kucultur: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 5/6 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 45fef3c +1 değişmiş dosya +2 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+ },
+ "T8-sifirlamada-taban-kalir": {
+  "exit": 1,
+  "ozet": "[kanit] mutasyon-T8-sifirlamada-taban-kalir: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 4/6 geçti, 2 başarısız, 0 iptal, 0 atlanan · commit 45fef3c +2 değişmiş dosya +2 izlenmeyen · linux 6.18.44-fc-v140 x64 · Node v22.22.0"
+ }
+}

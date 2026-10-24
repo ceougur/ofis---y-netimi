@@ -1,0 +1,88 @@
+{
+  "ad": "244-edm/gercek",
+  "komut": "node --disable-warning=ExperimentalWarning tools/edm-gercek.mjs --gercek",
+  "commit": "0c1035d6738ebe041d8bfc7b2204583a06b5415a",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T10:07:17.259Z",
+  "sure_sn": 69.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 36,
+    "gecen": 25,
+    "basarisiz": 11,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 11 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Seçilenleri Gönder (G1, G2, G3): üçü numara aldı ve EDM'ye iletildi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Tümünü Gönder (G4, G5): bekleyen kalmadı, 5 belgenin hepsi iletildi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B1 (tek kalem): TES2026740556633 EDM'ye iletildi (error)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B2 (çok kalem 2 × 100,03): TES2026740556634 EDM'ye iletildi (error)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G1 e-SMM TES2026740556630: EDM son durum HTTP 502",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G2 e-SMM TES2026740556631: EDM son durum HTTP 502",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G5 e-SMM TES2026740556632: EDM son durum HTTP 502",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B1: belge gönderilemediği için resmî görüntü denenmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B2: belge gönderilemediği için resmî görüntü denenmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G1 TES2026740556630: resmî görüntü 409 Bu belge henüz entegratöre ulaşmadı; resmî görüntüsü yok.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B1 gönderilemediği için iptal denenmedi",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-edm/gercek.log",
+  "klasor": "/home/user/wt/edm-gercek",
+  "ham_cikti_sha256": "dff962ba9deea6511e3fd7f69e5a0a8662cfdcd8a7846b6da8cb4bf49e0e84a2",
+  "ham_cikti_bayt": 6952
+}

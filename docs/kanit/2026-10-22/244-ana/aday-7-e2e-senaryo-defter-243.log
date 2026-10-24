@@ -1,0 +1,42 @@
+
+> destekofis@2.4.3 test:senaryo-defter-243
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-defter-243.mjs
+
+
+■ MM3b KDV Özeti → KDV Mahsup Fişi Oluştur (Eylül): ön izleme, onay, liste
+  ✓ düğme: KDV Mahsup Fişi Oluştur
+  ✓ ön izleme satırları [["391","Hesaplanan KDV","₺2.000,00",""],["191","İndirilecek KDV","","₺1.200,00"],["360","Ödenecek Vergi ve Fonlar","","₺800,00"]]
+  ✓ Eylül sonu 391 0, 191 0, 360 -3160 (kâhin −3.160)
+  ✓ KDV Özeti özeti: KDV Mahsup Fişi = Eylül 2026
+  ✓ Mutabakat Testi temiz
+
+■ UX24 KDV Özeti ve Açık Faturalar: yönler ayrı TOPLAM satırında, altta Net (ekranda)
+  ✓ KDV Özeti TOPLAM satırları ["TOPLAM Satış","TOPLAM Alış","Net KDV (Ödenecek)"]
+  ✓ TOPLAM Satış ["","TOPLAM Satış","","1","₺10.000,00","₺2.000,00","₺0,00"]
+  ✓ TOPLAM Alış ["","TOPLAM Alış","","3","₺16.000,00","₺1.200,00","₺360,00"]
+  ✓ Net KDV ["","Net KDV (Ödenecek)","","","","₺800,00",""] (kâhin 800)
+  ✓ Açık Faturalar TOPLAM satırları ["TOPLAM Alacak","TOPLAM Borç","Net (Borç Fazlası)"]
+  ✓ TOPLAM Alacak ₺12.000,00 = ₺12.000,00; TOPLAM Borç ₺14.840,00 = ₺14.840,00
+
+■ MM3a Banka → Hareketler → + Vergi Ödemesi: Muhtasar ve Stopaj 2.000 + gecikme 50; 360'ı aşan KDV 5.000 sorulur, Vazgeç → yazılmaz
+  ✓ 360 -1160 (−3.160 + 2.000), 689 50, 102 97950
+  ✓ soru: × ONAY Ödenecek Vergiyi Aşıyor KDV için ödenecek vergi bakiyesi (360) 1.160,00 TL; ödenen 5.000,00 TL bu bakiyeyi aşıyor. Tahakkuk programa girilmemiş olabilir 
+  ✓ Vazgeç: yazılmadı
+  ✓ Mutabakat Testi temiz
+
+■ MM3a Kasa → Vergi Ödemesi: KDV 800 nakit; Kasa eksi sorusu → Yine de Kaydet; 360 ve 100
+  ✓ Kasa sorusu: × ONAY Kasa Eksiye Düşecek Nakit kasada 0,00 TL var; 800,00 TL çıkış bakiyeyi -800,00 TL eksiye düşürür. Ödeme bankadan 
+  ✓ 360 -360 (yalnız tevkifat kaldı), 100 -800
+  ✓ Mutabakat Testi temiz
+
+■ MM5 Alacak Yaşlandırma: Faturasız Alacak kolonu (Eski Müşteri 5.000 → 90+); MM9 Cari Listesi kartları
+  ✓ Faturasız Alacak kolonu
+  ✓ Eski Müşteri 90+ = ₺5.000,00
+  ✓ kartlar: Cari | Toplam Borç | Toplam Alacak | Müşteri Alacakları (Borçlu Cariler) | Tedarikçi Borçları (Alacaklı Cariler) | Net Bakiye (Müşteri Alacakları − Tedarikçi Borçları) | Geciken Taksit
+
+■ yetki: Uzman (Kasa ve Banka yetkili, vergi yetkisi yok) Vergi Ödemesi ve KDV Mahsup düğmesini görmez
+  ✓ Kasa'da Vergi Ödemesi yok
+  ✓ Banka Hareketler'de + Vergi Ödemesi yok
+  ✓ sayfa hatası yok
+
+✓ senaryo-defter-243: 24 geçti, 0 kaldı · depo /home/user/wt/aday7 · ekran görüntüleri /home/user/wt/aday7/test/e2e/artifacts/senaryo-defter-243

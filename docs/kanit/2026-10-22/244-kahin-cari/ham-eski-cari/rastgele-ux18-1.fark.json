@@ -1,0 +1,222 @@
+{
+ "toplam": 259,
+ "farklar": [
+  {
+   "anahtar": "k1:fatura:F2:acik",
+   "beklenen": 316525,
+   "program": 116664,
+   "etiket": "KULLANICI",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k2:fatura:F2:acik",
+   "beklenen": 136261,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:fatura:F2:acik",
+   "beklenen": 112248,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k3:fatura:F3:acik",
+   "beklenen": 374791,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k3:fatura:F5:acik",
+   "beklenen": 308161,
+   "program": 156774,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k4:fatura:F11:acik",
+   "beklenen": 86257,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: geri-yukle,ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k4:fatura:F2:acik",
+   "beklenen": 112248,
+   "program": 0,
+   "etiket": "KULLANICI",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k4:fatura:F5:acik",
+   "beklenen": 95223,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz,ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k4:fatura:F6:acik",
+   "beklenen": 54776,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz,ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k4:fatura:F7:acik",
+   "beklenen": 161858,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz,ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k4:fatura:F8:acik",
+   "beklenen": 100,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz,ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k5:fatura:F5:acik",
+   "beklenen": 60975,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz,ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k5:fatura:F6:acik",
+   "beklenen": 54776,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz,ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k5:fatura:F7:acik",
+   "beklenen": 161858,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz,ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k5:fatura:F8:acik",
+   "beklenen": 100,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz,ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k6:fatura:F17:acik",
+   "beklenen": 100,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz,ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k6:fatura:F22:acik",
+   "beklenen": 410042,
+   "program": 113312,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: geri-yukle,ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k6:fatura:F23:acik",
+   "beklenen": 3800,
+   "program": 1011,
+   "etiket": "KULLANICI",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "k6:fatura:F6:acik",
+   "beklenen": 53937,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz,ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k6:fatura:F7:acik",
+   "beklenen": 161858,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz,ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "k6:fatura:F8:acik",
+   "beklenen": 100,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz,ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "kson:fatura:F17:acik",
+   "beklenen": 100,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz,ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "kson:fatura:F22:acik",
+   "beklenen": 410042,
+   "program": 113312,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: geri-yukle,ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "kson:fatura:F23:acik",
+   "beklenen": 3800,
+   "program": 1011,
+   "etiket": "KULLANICI",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama",
+   "sinif": "BULGU"
+  },
+  {
+   "anahtar": "kson:fatura:F6:acik",
+   "beklenen": 53937,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz,ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "kson:fatura:F7:acik",
+   "beklenen": 161858,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz,ux18-fazla)",
+   "sinif": "İNCELE"
+  },
+  {
+   "anahtar": "kson:fatura:F8:acik",
+   "beklenen": 100,
+   "program": 0,
+   "etiket": "AJAN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz,ux18-fazla)",
+   "sinif": "İNCELE"
+  }
+ ],
+ "hatalar": []
+}

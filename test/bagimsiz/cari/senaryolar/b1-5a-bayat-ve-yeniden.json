@@ -1,0 +1,110 @@
+{
+ "dil": "destekofis-cari/1",
+ "ad": "b1-5a-bayat-ve-yeniden",
+ "aciklama": "Ön izlemeden sonra cariye tahsilat girilirse aktarım reddedilir, kart açılmaz; yeniden ön izleme ile iki tahsilat da taşınır; geri al + yeniden aktar",
+ "dayanak": "KURALLAR-244 B1 (AJAN 5a A9); Nasıl bozulur: yarıda kesilme / iki kişi aynı anda",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Taksitler",
+     "tur": "taksit",
+     "kayitlar": [
+      {
+       "no": "K-1",
+       "isim": "Ayla Gün",
+       "tel": "0532 900 00 01",
+       "taksitler": [
+        [
+         "2026-05-10",
+         "1000"
+        ],
+        [
+         "2026-06-10",
+         "1000"
+        ],
+        [
+         "2026-07-10",
+         "1000"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "c1",
+   "islem": "cari_ac",
+   "ad": "AYLA",
+   "isim": "Ayla Gün",
+   "tel": "0532 900 00 01",
+   "kayit": "K-1",
+   "acilis": "3000",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "h1",
+   "islem": "tahsilat",
+   "cari": "AYLA",
+   "tutar": "800",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "a1",
+   "islem": "aktar",
+   "ad": "AK1",
+   "kayitlar": [
+    "K-1"
+   ],
+   "araya": {
+    "cari": "AYLA",
+    "tutar": "200",
+    "tarih": "2026-06-14"
+   }
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  },
+  {
+   "id": "a2",
+   "islem": "aktar",
+   "ad": "AK2",
+   "kayitlar": [
+    "K-1"
+   ]
+  },
+  {
+   "id": "k2",
+   "islem": "kontrol"
+  },
+  {
+   "id": "g2",
+   "islem": "geri_al",
+   "aktar": "AK2"
+  },
+  {
+   "id": "h2",
+   "islem": "tahsilat",
+   "cari": "AYLA",
+   "tutar": "2500",
+   "tarih": "2026-06-14"
+  },
+  {
+   "id": "a3",
+   "islem": "aktar",
+   "ad": "AK3",
+   "kayitlar": [
+    "K-1"
+   ]
+  },
+  {
+   "id": "k3",
+   "islem": "kontrol"
+  }
+ ]
+}

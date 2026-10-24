@@ -1,0 +1,43 @@
+{
+  "ad": "244-personel/ayrilacak-eski-4cb0f80-kirmizi",
+  "komut": "node --test --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/personel/personel-eski-4cb0f80/test/personel-ozluk-244.test.mjs",
+  "commit": "4fbb9f1d9f60b73c6e35069cc02d8a30f2eebc12",
+  "dal": "is/personel",
+  "kirli": 4,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:53:22.355Z",
+  "sure_sn": 2.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 15,
+    "gecen": 13,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 Personel Özlük: ileri tarihli İşten Ayrılış Tarihi (Ayrılacak) › kural tek yerde: dün / bugün → Ayrılanlar; yarın / ileri tarih → Çalışanlar + Ayrılacak; tarih yok → Çalışanlar",
+      "konum": "test/personel-ozluk-244.test.mjs:306:3",
+      "hata": "staffStatus yok (eski kod)"
+    },
+    {
+      "ad": "2.4.4 Personel Özlük: ileri tarihli İşten Ayrılış Tarihi (Ayrılacak) › API + sahte saat: yarın ayrılacak çalışan bugün sayılır, gün ilerleyince kendiliğinden Ayrılanlar'a geçer",
+      "konum": "test/personel-ozluk-244.test.mjs:316:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-personel/ayrilacak-eski-4cb0f80-kirmizi.log",
+  "klasor": "/home/user/wt/personel",
+  "ham_cikti_sha256": "7ca1acc977336bcd1d67438ded30d8a2dbd01c59dcc53e99d7b1978158dc7aa5",
+  "ham_cikti_bayt": 8825
+}

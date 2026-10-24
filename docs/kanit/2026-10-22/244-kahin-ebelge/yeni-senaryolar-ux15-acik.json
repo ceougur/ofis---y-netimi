@@ -1,0 +1,32 @@
+{
+  "ad": "244-kahin-ebelge/yeni-senaryolar-ux15-acik",
+  "komut": "python3 test/bagimsiz/ebelge/fark.py --senaryo test/bagimsiz/ebelge/senaryolar --ux15 acik --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-ebelge/kosu-senaryolar-acik",
+  "commit": "fd0b0fc6ebac15c9ebde3715179f88b0a9e774f3",
+  "dal": "is/kahin-ebelge",
+  "kirli": 7,
+  "izlenmeyen": 12,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T10:34:17.796Z",
+  "sure_sn": 29,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 19,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kahin-ebelge/yeni-senaryolar-ux15-acik.log",
+  "klasor": "/home/user/wt/kahin-ebelge",
+  "ham_cikti_sha256": "01cc42af6d25f0f04b41ef73775e3651dc4b1589d29070329a8faaee9910326e",
+  "ham_cikti_bayt": 3067
+}

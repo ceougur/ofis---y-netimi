@@ -3,13 +3,14 @@
  * akış. Sabit şablon yoktur; kolonlar sunucunun ortak omurgadan (cari, tutar, vade, durum + özel alanlar) ürettiği
  * tablodan gelir. Farklı Excel dosyalarındaki (oturumlardaki) kayıtlar cari adıyla birleştirilir. Cari, Kasa, Taksit ve
  * Çek/Senet defterlerinden gelen raporlar aynı penceredeki diğer sekmelerdedir (hof-overview.js).
- * Süzgeçler: tarih aralığı, cari, durum, oturum, sekme, en az tutar, dönem (nakit akış).
+ * Süzgeçler: tarih aralığı, cari, durum, oturum, sekme, en az tutar, dönem (nakit akış). Nakit akışta cari, durum ve en az tutar yok (2.4.4 30f).
  * Dışa aktarma: Excel (.xlsx), PDF; yazdırma tarayıcının yazdırma penceresiyle (rapor tablosu temiz bir sayfada). */
 (() => {
   const HOF = window.HOF;
   if (!HOF) return;
   const { esc } = HOF;
-  // Adlar Raporlar penceresinin defter sekmelerinden (Cari ekstre, Vade takip, Nakit akış) ayrılsın diye "tablodaki" ile.
+  // Adlar Raporlar penceresinin defter sekmelerinden (Cari ekstre, Vade takip, Nakit akış) ayrılsın diye "tablodaki" ile. PDF/Excel başlığı ve dosya adı
+  // da bu adlardır (2.4.4 U3; server/routes/reports.mjs TABLE_REPORT_TITLES, aynılığı test/tablo-raporlari-u3-244.test.mjs denetler).
   const KINDS = [
     ["cari-ekstre", "Tablodaki Kişiler", "Kişi başına tablodaki tutar (borç), kayıt kartından tahsilat ve yürüyen bakiye"],
     ["vade-takip", "Tablodaki Vadeler", "Tablodaki vadeler ve son tarihler: gecikmiş, bugün, yaklaşan"],
@@ -37,6 +38,18 @@
       sessions: sessions.join(","),
     };
   }
+  // 2.4.4 (30f): Tablodaki Nakit Akışı kişi, durum ve en az tutar süzgeçlerini kullanmaz (dönem başına toplam); alanlar bu raporda gizlenir, değerleri
+  // isteğe ve dışa aktarıma (Excel/PDF alt başlığı) girmez, formda yerinde kalır (başka rapora dönünce aynen görünür). Sayfa ve Sekme süzgeci kalır.
+  const UNUSED = { "nakit-akis": ["cari", "status", "minAmount"] };
+  const forKind = (filters, kind = state.kind) => Object.fromEntries(Object.entries(filters).filter(([key]) => !(UNUSED[kind] || []).includes(key)));
+  function applyKind(dialog) {
+    for (const name of ["cari", "status", "minAmount"]) {
+      const field = dialog.querySelector(`[data-filter="${name}"]`)?.closest("label");
+      if (field) field.hidden = (UNUSED[state.kind] || []).includes(name);
+    }
+    const granularity = dialog.querySelector("[data-granularity-row]");
+    if (granularity) granularity.hidden = state.kind !== "nakit-akis";
+  }
   const query = filters => Object.entries(filters).filter(([, value]) => value !== "" && value !== undefined).map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join("&");
 
   function cell(column, row) {
@@ -47,18 +60,26 @@
     if (column.key === "state") return `<span class="hof-state hof-state-${esc(String(value || "").toLocaleLowerCase("tr-TR").replace(/ş/g, "s").replace(/ı/g, "i").replace(/ğ/g, "g").replace(/ü/g, "u"))}">${esc(String(value ?? ""))}</span>`;
     return esc(String(value ?? ""));
   }
+  // 2.4.4 U3: alt TOPLAM satırı (sunucu bütün satırlardan hesaplar: report.table.footer; PDF ve Excel aynı satırı yazar). Kaydırınca tablonun altında kalır.
+  const footHtml = table => (table.footer ? `<tfoot><tr class="hof-report-total">${table.columns.map(column => `<td class="${column.type === "money" || column.type === "number" ? "is-num" : ""}">${table.footer[column.key] === undefined || table.footer[column.key] === null ? "" : cell(column, table.footer)}</td>`).join("")}</tr></tfoot>` : "");
   function tableHtml(table) {
     if (!table?.columns?.length) return '<p class="hof-empty">Rapor üretilemedi.</p>';
     if (!table.rows.length) return '<p class="hof-empty">Bu süzgeçlerle satır bulunamadı. Tarih aralığını genişletin ya da süzgeçleri temizleyin.</p>';
     return `<div class="hof-report-scroll"><table class="hof-report-table"><thead><tr>${table.columns.map(column => `<th class="${column.type === "money" || column.type === "number" ? "is-num" : ""} ${column.dynamic ? "is-dynamic" : ""}" title="${column.dynamic ? "Verinizden gelen özel alan" : ""}">${esc(column.label)}</th>`).join("")}</tr></thead><tbody>${table.rows
       .map(row => `<tr>${table.columns.map(column => `<td class="${column.type === "money" || column.type === "number" ? "is-num" : ""}">${cell(column, row)}</td>`).join("")}</tr>`)
-      .join("")}</tbody></table></div>`;
+      .join("")}</tbody>${footHtml(table)}</table></div>`;
   }
-  function summaryHtml(report) {
+  // Özet kartları sunucunun özetinden (data.summary; PDF'in özeti ve Excel'in Özet sayfası aynı, 2.4.4 U3). Tutar ekranda "1.234,56 ₺".
+  function summaryHtml(data) {
     const card = (label, value) => `<div class="hof-report-card"><small>${esc(label)}</small><b>${esc(value)}</b></div>`;
-    if (report.kind === "cari-ekstre") return card("Cari", number(report.totals.caris)) + card("Toplam borç", money(report.totals.debit)) + card("Toplam alacak", money(report.totals.credit)) + card("Bakiye", money(report.totals.balance)) + (report.totals.crossMatched ? card("Birden çok dosyada", number(report.totals.crossMatched)) : "");
-    if (report.kind === "vade-takip") return card("Kalem", number(report.totals.count)) + card("Gecikmiş", `${number(report.totals.overdue)} · ${money(report.totals.overdueAmount)}`) + card("Yaklaşan / bugün", number(report.totals.upcoming)) + card("Toplam tutar", money(report.totals.amount)) + (report.totals.dormant ? card("Ödeme kesilmiş olabilir", number(report.totals.dormant)) : "");
-    return card("Beklenen tahsilat", money(report.totals.expected)) + card("Gerçekleşen tahsilat", money(report.totals.collected)) + card("Kasa giriş", money(report.totals.cashIn)) + card("Kasa çıkış", money(report.totals.cashOut)) + card("Net", money(report.totals.net));
+    return (data.summary || []).map(([label, value]) => card(label, String(value ?? "").replace(/ TL$/, " ₺"))).join("");
+  }
+
+  // 2.4.4 (31b MM5 / 31e): sunucunun notları — aynı dosya no birden çok sekmede (bir kez sayıldı, hangisi), farklı kalan borç, ödenen toplamı aşan satır, Kasa
+  // yetkisi. Ekran, yazdırma, PDF ve Excel aynı metni yazar.
+  function notesHtml(report) {
+    const list = report.notes || [];
+    return list.length ? `<div class="hof-report-notes" data-report-notes>${list.map(note => `<p class="hof-modal-text hof-report-note">${esc(note)}</p>`).join("")}</div>` : "";
   }
 
   async function load() {
@@ -69,10 +90,10 @@
     body.innerHTML = '<p class="hof-empty">Rapor hazırlanıyor…</p>';
     state.busy = true;
     try {
-      const data = await HOF.api(`/api/workspace/reports/${state.kind}?${query(state.filters)}`, { timeoutMs: 120_000 });
+      const data = await HOF.api(`/api/workspace/reports/${state.kind}?${query(forKind(state.filters))}`, { timeoutMs: 120_000 });
       state.data = data;
       renderFilters(dialog, data);
-      body.innerHTML = `<div class="hof-report-summary">${summaryHtml(data.report)}</div>${tableHtml(data.report.table)}`;
+      body.innerHTML = `<div class="hof-report-summary">${summaryHtml(data)}</div>${notesHtml(data.report)}${tableHtml(data.report.table)}`;
       dialog.querySelector("[data-report-meta]").textContent = `${number(data.report.table.rows.length)} satır · ${data.sessions.length > 1 && !state.filters.sessions ? `${data.sessions.length} oturum birleşik` : data.sessions.map(item => item.name).join(", ")}${data.report.table.columns.some(column => column.dynamic) ? ` · ${data.report.table.columns.filter(column => column.dynamic).length} özel alan kolonu` : ""}`;
     } catch (error) {
       body.innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
@@ -100,12 +121,12 @@
       const options = state.kind === "vade-takip" ? [["gecikmis", "Gecikmiş"], ["bugun", "Bugün"], ["yaklasan", "Yaklaşan"], ["kapali", "Kapalı"], ["durgun", "Durgun (ödeme kesilmiş olabilir)"]] : data.statuses.map(item => [item, item]);
       status.innerHTML = `<option value="">Tüm Durumlar</option>${options.map(([value, label]) => `<option value="${esc(value)}">${esc(label)}</option>`).join("")}`;
     }
-    dialog.querySelector("[data-granularity-row]").hidden = state.kind !== "nakit-akis";
+    applyKind(dialog);
   }
 
   async function exportReport(format) {
     if (!host) return;
-    const response = await fetch(`/api/workspace/reports/${state.kind}/export`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ format, filters: { ...state.filters, sessions: state.filters.sessions ? state.filters.sessions.split(",") : [], status: state.filters.status ? [state.filters.status] : [], tabs: state.filters.tabs ? [state.filters.tabs] : [] } }) });
+    const response = await fetch(`/api/workspace/reports/${state.kind}/export`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ format, filters: { ...forKind(state.filters), sessions: state.filters.sessions ? state.filters.sessions.split(",") : [], status: forKind(state.filters).status ? [state.filters.status] : [], tabs: state.filters.tabs ? [state.filters.tabs] : [] } }) });
     if (!response.ok) {
       let message = "Dışa aktarma başarısız.";
       try {
@@ -131,17 +152,18 @@
     if (!state.data) return;
     const { report } = state.data;
     const title = KINDS.find(([id]) => id === state.kind)?.[1] || "Rapor";
+    const printCell = (column, row) => (column.type === "money" ? esc(money(row[column.key])) : column.type === "date" ? esc(day(row[column.key])) : esc(String(row[column.key] ?? "")));
     const frame = document.createElement("iframe");
     frame.className = "hof-print-frame";
     frame.setAttribute("aria-hidden", "true");
     const html = `<!doctype html><html lang="tr"><head><meta charset="utf-8"><title>${esc(title)}</title><style>
       body{font:11px/1.35 Arial,sans-serif;color:#111;margin:18mm 12mm}h1{font-size:18px;margin:0 0 4px}p.meta{color:#555;margin:0 0 12px;font-size:10px}
       .cards{display:flex;gap:8px;margin:0 0 12px}.cards div{border:1px solid #ddd;border-radius:6px;padding:6px 10px;min-width:110px}.cards small{display:block;color:#666;font-size:9px}.cards b{font-size:12px}
-      table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:4px 6px;text-align:left;vertical-align:top;font-size:10px}th{background:#f2f2f2}td.num,th.num{text-align:right;white-space:nowrap}
+      table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:4px 6px;text-align:left;vertical-align:top;font-size:10px}th{background:#f2f2f2}td.num,th.num{text-align:right;white-space:nowrap}tr.total td{font-weight:700;border-top:2px solid #111;background:#f2f7f4}
       @page{size:${report.table.columns.length > 7 ? "A4 landscape" : "A4"};margin:10mm}
-    </style></head><body><h1>${esc(title)}</h1><p class="meta">DestekOfis · ${esc(new Date().toLocaleString("tr-TR"))}${state.filters.from || state.filters.to ? ` · ${esc(state.filters.from || "başlangıç")} – ${esc(state.filters.to || "bugün")}` : ""}</p>
-      <div class="cards">${summaryHtml(report).replace(/hof-report-card/g, "")}</div>
-      <table><thead><tr>${report.table.columns.map(column => `<th class="${column.type === "money" || column.type === "number" ? "num" : ""}">${esc(column.label)}</th>`).join("")}</tr></thead><tbody>${report.table.rows.map(row => `<tr>${report.table.columns.map(column => `<td class="${column.type === "money" || column.type === "number" ? "num" : ""}">${column.type === "money" ? esc(money(row[column.key])) : column.type === "date" ? esc(day(row[column.key])) : esc(String(row[column.key] ?? ""))}</td>`).join("")}</tr>`).join("")}</tbody></table></body></html>`;
+    </style></head><body><h1>${esc(title)}</h1><p class="meta">DestekOfis · ${esc(new Date().toLocaleString("tr-TR"))}${state.filters.from || state.filters.to ? ` · ${esc(state.filters.from || "başlangıç")} – ${esc(state.filters.to || "bugün")}` : ""}</p>${(report.notes || []).map(note => `<p class="meta">${esc(note)}</p>`).join("")}
+      <div class="cards">${summaryHtml(state.data).replace(/hof-report-card/g, "")}</div>
+      <table><thead><tr>${report.table.columns.map(column => `<th class="${column.type === "money" || column.type === "number" ? "num" : ""}">${esc(column.label)}</th>`).join("")}</tr></thead><tbody>${report.table.rows.map(row => `<tr>${report.table.columns.map(column => `<td class="${column.type === "money" || column.type === "number" ? "num" : ""}">${printCell(column, row)}</td>`).join("")}</tr>`).join("")}</tbody>${report.table.footer ? `<tfoot><tr class="total">${report.table.columns.map(column => `<td class="${column.type === "money" || column.type === "number" ? "num" : ""}">${report.table.footer[column.key] === undefined || report.table.footer[column.key] === null ? "" : printCell(column, report.table.footer)}</td>`).join("")}</tr></tfoot>` : ""}</table></body></html>`;
     document.body.appendChild(frame);
     frame.srcdoc = html;
     frame.onload = () => {
@@ -175,9 +197,10 @@
           <div class="hof-report-sessions"><span>Sayfalar</span><div data-filter="sessions"></div></div>
           <div class="hof-report-actions"><button type="submit" class="hof-button">Raporu Getir</button><button type="button" class="hof-button hof-button-ghost" data-clear>Süzgeçleri Temizle</button></div>
         </form>
-        <div class="hof-report-toolbar"><span data-report-meta class="hof-muted"></span><span><button type="button" class="hof-button hof-button-small hof-button-ghost" data-export="xlsx">Excel</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-export="pdf">PDF</button><button type="button" class="hof-button hof-button-small" data-print>Yazdır</button></span></div>
+        <div class="hof-report-toolbar"><span data-report-meta class="hof-muted"></span><span>${HOF.outputButton({ kind: "xlsx", what: "Tablo Raporu", attrs: 'data-export="xlsx"' })}${HOF.outputButton({ kind: "pdf", what: "Tablo Raporu", attrs: 'data-export="pdf"' })}${HOF.outputButton({ kind: "print", what: "Tablo Raporu", attrs: "data-print" })}</span></div>
         <div data-report-body></div>`;
     const dialog = node;
+    applyKind(dialog);
     dialog.querySelector("[data-filters]").addEventListener("submit", event => {
       event.preventDefault();
       load();
@@ -200,6 +223,7 @@
         delete status.dataset.ready;
         status.value = "";
       }
+      applyKind(dialog);
       load();
     });
     dialog.querySelectorAll("[data-export]").forEach(button =>

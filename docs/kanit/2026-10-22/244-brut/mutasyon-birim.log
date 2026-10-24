@@ -1,0 +1,53 @@
+YAKALANDI · M1 varsayılan oranı geri koy (kutu boşsa her alıcıya ayar oranı) · çıkış 1 · tests 21 fail 5
+     yakalayan test: gerçek kişi alıcı, oran boş, KDV %20
+     yakalayan test: nihai tüketici (kimliksiz kişi), oran boş
+     yakalayan test: gerçek kişi alıcı, Fiyatlar KDV Dahil
+     yakalayan test: gerçek kişi alıcı, KDV dahil, KDV kuruşu matrahtan
+     yakalayan test: Netten Brüte — kaydedilen makbuzun Net Ücreti yazılan tutardır (veri tabanından)
+     yakalayan test: 300 makbuz: Net Ücret = yazılan, oran = alıcı kuralı
+     yakalayan test: Netten Brüte — rastgele formlar (tohum 2026_1022)
+YAKALANDI · M2 KDV'yi atla (KDV dahil fiyat yok sayılır) · çıkış 1 · tests 21 fail 4
+     yakalayan test: tüzel alıcı, Fiyatlar KDV Dahil
+     yakalayan test: gerçek kişi alıcı, Fiyatlar KDV Dahil
+     yakalayan test: gerçek kişi alıcı, KDV dahil, KDV kuruşu matrahtan
+     yakalayan test: Netten Brüte — kaydedilen makbuzun Net Ücreti yazılan tutardır (veri tabanından)
+     yakalayan test: 300 makbuz: Net Ücret = yazılan, oran = alıcı kuralı
+     yakalayan test: Netten Brüte — rastgele formlar (tohum 2026_1022)
+YAKALANDI · M3 KDV kuruşu matrahtan seçilmez (en küçük fiyat) · çıkış 1 · tests 21 fail 1
+     yakalayan test: gerçek kişi alıcı, KDV dahil, KDV kuruşu matrahtan
+     yakalayan test: Netten Brüte — kaydedilen makbuzun Net Ücreti yazılan tutardır (veri tabanından)
+YAKALANDI · M4 öbür kalemler yok sayılır · çıkış 1 · tests 21 fail 3
+     yakalayan test: tüzel alıcı, iki kalem (net makbuzun tamamı)
+     yakalayan test: Netten Brüte — kaydedilen makbuzun Net Ücreti yazılan tutardır (veri tabanından)
+     yakalayan test: öbür kalemlerin net ücreti hedefi aşıyorsa yazılmaz
+     yakalayan test: Netten Brüte — reddedilen istekler
+     yakalayan test: 300 makbuz: Net Ücret = yazılan, oran = alıcı kuralı
+     yakalayan test: Netten Brüte — rastgele formlar (tohum 2026_1022)
+YAKALANDI · M5 kalem iskontosu yok sayılır · çıkış 1 · tests 21 fail 2
+     yakalayan test: tüzel alıcı, kalem iskontosu %10
+     yakalayan test: Netten Brüte — kaydedilen makbuzun Net Ücreti yazılan tutardır (veri tabanından)
+     yakalayan test: 300 makbuz: Net Ücret = yazılan, oran = alıcı kuralı
+     yakalayan test: Netten Brüte — rastgele formlar (tohum 2026_1022)
+YAKALANDI · M6 eski formül (brüt = net ÷ (1 − oran), doğru oranla) · çıkış 1 · tests 21 fail 7
+     yakalayan test: tüzel alıcı, Fiyatlar KDV Dahil
+     yakalayan test: gerçek kişi alıcı, Fiyatlar KDV Dahil
+     yakalayan test: gerçek kişi alıcı, KDV dahil, KDV kuruşu matrahtan
+     yakalayan test: tüzel alıcı, iki kalem (net makbuzun tamamı)
+     yakalayan test: tüzel alıcı, kalem iskontosu %10
+     yakalayan test: tüzel alıcı, genel iskonto %10
+     yakalayan test: Netten Brüte — kaydedilen makbuzun Net Ücreti yazılan tutardır (veri tabanından)
+     yakalayan test: 300 makbuz: Net Ücret = yazılan, oran = alıcı kuralı
+     yakalayan test: Netten Brüte — rastgele formlar (tohum 2026_1022)
+YAKALANDI · M7 genel iskonto yok sayılır · çıkış 1 · tests 21 fail 2
+     yakalayan test: tüzel alıcı, genel iskonto %10
+     yakalayan test: Netten Brüte — kaydedilen makbuzun Net Ücreti yazılan tutardır (veri tabanından)
+     yakalayan test: 300 makbuz: Net Ücret = yazılan, oran = alıcı kuralı
+     yakalayan test: Netten Brüte — rastgele formlar (tohum 2026_1022)
+
+7/7 mutasyon yakalandı
+# tests 7
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

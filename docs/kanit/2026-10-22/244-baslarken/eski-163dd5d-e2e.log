@@ -1,0 +1,35 @@
+
+■ A. Boş kurulum: açılış ekranında Başlarken, 5 adım eksik; açılış kartı aynı
+  ✗ Başlarken listesi açılış ekranında görünür
+  ✗ adım hata verdi: page.textContent: Timeout 15000ms exceeded.
+
+■ B1. Şirket Adını Yazın → Şirketler → Adını / Kodunu Değiştir
+  ✗ adım hata verdi: page.waitForURL: Timeout 15000ms exceeded.
+
+■ B2. Firma Bilgilerini Girin → Fatura Ayarları (Tab ve insan hızında yazım)
+  ✗ adım hata verdi: page.click: Timeout 15000ms exceeded.
+
+■ B3. İlk Banka Hesabını Açın → Banka → Kurulum Sihirbazı
+  ✗ adım hata verdi: page.click: Timeout 15000ms exceeded.
+
+■ B4. İlk Cariyi Açın → + Yeni Cari; hepsi tamamlanınca liste kendiliğinden kalkar
+  ✗ adım hata verdi: page.click: Timeout 15000ms exceeded.
+
+■ C. 002: kendi durumu; Gizle kalıcı; menüden “Açılış Ekranında Göster”
+  ✓ pencere 002'yi gösteriyor
+  ✗ 002'de liste görünür (001 tamamlandığı hâlde)
+  ✗ 002: 1/5 (yalnız Şirket Adı; null)
+  ✗ adım hata verdi: page.click: Timeout 15000ms exceeded.
+
+■ D. Yetkisiz kullanıcı (personel): liste, menü girişi ve Hızlı Arama'da Başlarken yok
+  ✓ personelde liste yok
+  ✓ personelin menüsünde Başlarken yok
+  ✗ adım hata verdi: page.evaluate: ApiError: Endpoint bulunamadı.
+  ✓ yönetici sayfasında hata yok
+
+■ E. 2.4.3'ten gelen veri (v2.4.3'ün gerçek kodu): liste çıkmaz
+  ✗ 001 “zaten kurulu” (null)
+  ✓ açılış ekranı var, Başlarken listesi yok
+  ✗ adım hata verdi: page.click: Timeout 15000ms exceeded.
+
+5 geçti, 12 kaldı

@@ -1,0 +1,41 @@
+EDM örneğinde olup programda OLMAYAN yollar:
+  - /Invoice/AccountingCustomerParty/Party/Person
+  - /Invoice/AccountingCustomerParty/Party/Person/FamilyName
+  - /Invoice/AccountingCustomerParty/Party/Person/FirstName
+  - /Invoice/AccountingCustomerParty/Party/PostalAddress/BuildingName
+  - /Invoice/AccountingCustomerParty/Party/PostalAddress/Country/IdentificationCode
+  - /Invoice/AccountingCustomerParty/Party/WebsiteURI
+  - /Invoice/AccountingSupplierParty/Party/Contact
+  - /Invoice/AccountingSupplierParty/Party/Contact/ElectronicMail
+  - /Invoice/AccountingSupplierParty/Party/PostalAddress/BuildingName
+  - /Invoice/AccountingSupplierParty/Party/PostalAddress/Country/IdentificationCode
+  - /Invoice/AccountingSupplierParty/Party/WebsiteURI
+Programda olup EDM örneğinde OLMAYAN yollar:
+  + /Invoice/AccountingCustomerParty/Party/PostalAddress/StreetName
+  + /Invoice/AccountingSupplierParty/Party/Person
+  + /Invoice/AccountingSupplierParty/Party/Person/FamilyName
+  + /Invoice/AccountingSupplierParty/Party/Person/FirstName
+  + /Invoice/AccountingSupplierParty/Party/PostalAddress/StreetName
+  + /Invoice/AdditionalDocumentReference
+  + /Invoice/AdditionalDocumentReference/DocumentType
+  + /Invoice/AdditionalDocumentReference/DocumentTypeCode
+  + /Invoice/AdditionalDocumentReference/ID
+  + /Invoice/AdditionalDocumentReference/IssueDate
+  + /Invoice/PaymentMeans
+  + /Invoice/PaymentMeans/PaymentDueDate
+  + /Invoice/PaymentMeans/PaymentMeansCode
+  + /Invoice/Signature
+  + /Invoice/Signature/DigitalSignatureAttachment
+  + /Invoice/Signature/DigitalSignatureAttachment/ExternalReference
+  + /Invoice/Signature/DigitalSignatureAttachment/ExternalReference/URI
+  + /Invoice/Signature/ID
+  + /Invoice/Signature/SignatoryParty
+  + /Invoice/Signature/SignatoryParty/PartyIdentification
+  + /Invoice/Signature/SignatoryParty/PartyIdentification/ID
+  + /Invoice/Signature/SignatoryParty/PostalAddress
+  + /Invoice/Signature/SignatoryParty/PostalAddress/CityName
+  + /Invoice/Signature/SignatoryParty/PostalAddress/CitySubdivisionName
+  + /Invoice/Signature/SignatoryParty/PostalAddress/Country
+  + /Invoice/Signature/SignatoryParty/PostalAddress/Country/Name
+  + /Invoice/Signature/SignatoryParty/PostalAddress/StreetName
+Ortak yol: 80; yalnız EDM: 11; yalnız program: 27

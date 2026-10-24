@@ -1,0 +1,5 @@
+{"sheets": [
+ {"name": "Sozler", "matrix": [["Ad Soyad", "Söz Tutarı", "Söz Tarihi"], ["Ali Söz", "1000", "@d2"], ["Ayşe Söz", "1100", "@d3"], ["Can Söz", "1200", "@d4"]]},
+ {"name": "Seyrek", "matrix": [["Ad Soyad", "Kalan Borç", "Son Ödeme", "Açıklama"], ["Ali Seyrek", "500", "@d-2", "a"], ["Ayşe Seyrek", "görüşülecek", "@d-3", "b"], ["Can Seyrek", "belirsiz", "@d-4", "c"], ["Deniz Seyrek", "sorulacak", "@d-5", "d"], ["Ece Seyrek", "yok", "@d-6", "e"]]},
+ {"name": "Iki", "matrix": [["Ad Soyad", "Ödenecek", "Peşinat", "Son Ödeme"], ["Ali İki", "2000", "500", "@d-2"], ["Ayşe İki", "2100", "600", "@d-3"], ["Can İki", "2200", "700", "@d-4"]]}
+]}

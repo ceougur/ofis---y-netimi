@@ -1,0 +1,32 @@
+{
+  "ad": "244-personel/ayrilacak-ilgili-testler",
+  "komut": "node --test --disable-warning=ExperimentalWarning test/personel-ozluk-244.test.mjs test/yazim-duzeni.test.mjs test/yetki-gorunurluk.test.mjs test/license.test.mjs test/platform-tasinabilirlik.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/kilavuz-surum.test.mjs test/ci-kapi-listesi.test.mjs",
+  "commit": "4fbb9f1d9f60b73c6e35069cc02d8a30f2eebc12",
+  "dal": "is/personel",
+  "kirli": 5,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T05:02:41.730Z",
+  "sure_sn": 6.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 67,
+    "gecen": 67,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-personel/ayrilacak-ilgili-testler.log",
+  "klasor": "/home/user/wt/personel",
+  "ham_cikti_sha256": "8d97eb6221181744f42aee3943d92c05abed1ddef634b295e691b438f2ecd3df",
+  "ham_cikti_bayt": 21053
+}

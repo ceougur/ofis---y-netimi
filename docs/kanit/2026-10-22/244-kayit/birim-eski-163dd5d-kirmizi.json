@@ -1,0 +1,58 @@
+{
+  "ad": "244-kayit/birim-eski-163dd5d-kirmizi",
+  "komut": "env GIT_DIR=/home/user/ofis---y-netimi/.git node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-eski-163dd5d/test/kayit-tahsilat-244.test.mjs",
+  "commit": "04803b115bd739243da1c7f0dff1f14bd8dac719",
+  "dal": "is/kayit",
+  "kirli": 10,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:11:56.083Z",
+  "sure_sn": 2.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 0,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.4 E8: kaydın tahsilatı cariden; takvim kalemi carinin ve taksitin tahsilatıyla kapanır › T1 + T5 kayda bağlı carinin tahsilatı sözü kapatır (tam / kısmi / silinince döner); Kasa'ya bir kez, kayıt tahsilatına hiç yazılmaz",
+      "konum": "test/kayit-tahsilat-244.test.mjs:64:3",
+      "hata": "carinin 5.000 tahsilatı sözü kapattı · + actual - expected · + { (beklenen ~, gelen )"
+    },
+    {
+      "ad": "2.4.4 E8: kaydın tahsilatı cariden; takvim kalemi carinin ve taksitin tahsilatıyla kapanır › T2 bağsız aynı adlı carinin tahsilatı sayılmaz; bağlanınca kapanır, bağ kalkınca döner",
+      "konum": "test/kayit-tahsilat-244.test.mjs:87:3",
+      "hata": "cari kayda bağlanınca tahsilatı sözü kapattı · + actual - expected · + { (beklenen ~, gelen )"
+    },
+    {
+      "ad": "2.4.4 E8: kaydın tahsilatı cariden; takvim kalemi carinin ve taksitin tahsilatıyla kapanır › T3 kartlı kişinin ödeme sözü taksit kartı tahsilatıyla (Taksite Yaz) kapanır",
+      "konum": "test/kayit-tahsilat-244.test.mjs:100:3",
+      "hata": "Cannot read properties of undefined (reading 'id')"
+    },
+    {
+      "ad": "2.4.4 E8: kaydın tahsilatı cariden; takvim kalemi carinin ve taksitin tahsilatıyla kapanır › T4 Tablodaki Vadeler aynı kuralla; Tablodaki Kişiler kayda bağlı carinin tahsilatını alacak yazar",
+      "konum": "test/kayit-tahsilat-244.test.mjs:111:3",
+      "hata": "Zeynep'in sözü (cari 2.500 + taksit 5.000) raporda kapalı (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.4 E8: eski sürüm verisi (v2.4.3 gerçek kodu) yeni kodla aynı sayılar; eski kayıt tahsilatı ve kayda bağlı kart düzeltilir / silinir › T6 sayılar aynı; eski kayıt tahsilatı ve kart düzeltilir / silinir; sunucu ucu durur",
+      "konum": "test/kayit-tahsilat-244.test.mjs:168:3",
+      "hata": "yeni kod: Zeynep sözü 5.500 (kayda bağlı carinin 2.000'i sayılır) · 7500 !== 5500 (beklenen 5500, gelen 7500)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kayit/birim-eski-163dd5d-kirmizi.log",
+  "klasor": "/home/user/wt/kayit",
+  "ham_cikti_sha256": "a94e0cfa3a159e9d1bdcc8ccbdeeb64761b81a7a61242dd31b15e9f2032b1609",
+  "ham_cikti_bayt": 9757
+}

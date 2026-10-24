@@ -1,0 +1,20 @@
+
+> destekofis@2.4.4 test:kahin-defter
+> node --disable-warning=ExperimentalWarning test/bagimsiz/defter/kos.mjs
+
+176/176 denetim tuttu.
+  mutasyon 1 (KDV dahil fiyatta KDV'yi brüt × oran ile hesapla): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 2 (satıştan iade 610 yerine 600): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 3 (stopaj 360 yerine 193): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 4 (tevkifatlı satışta 391'e tam KDV): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 5 (POS komisyonu yazılmaz): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 6 (KDV mahsubunda devreden 190 kullanılmaz): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 7 (stok açılışı deftere yazılmaz (MM4 öncesi)): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 8 (yaşlandırmada faturasız bakiye atlanır (MM5 öncesi)): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 9 (gecikme zammı 689 yerine 360): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 10 (karşılıksız çek cariye yazılmaz): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 11 (31b-MM3: satıştan iade 360 tarafında): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 12 (31b-MM3: iade artı yazılır): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 13 (31b-MM8: yevmiyede aynı gün sınıfsız yazım sırası): tam senaryoda YAKALANDI · bu koşuda yakalandı
+
+ÖZET: 176 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-n1blx6

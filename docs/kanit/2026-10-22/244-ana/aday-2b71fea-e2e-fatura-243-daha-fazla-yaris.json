@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-2b71fea-e2e-fatura-243-daha-fazla-yaris",
+  "komut": "npm run test:fatura-243-daha-fazla-yaris",
+  "commit": "9aa34697360963beeea08779e0fc3cd98b18c903",
+  "dal": "aday4",
+  "kirli": 0,
+  "izlenmeyen": 94,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T12:28:49.280Z",
+  "sure_sn": 54,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 9,
+    "gecen": 9,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday-2b71fea-e2e-fatura-243-daha-fazla-yaris.log",
+  "klasor": "/home/user/wt/aday4",
+  "ham_cikti_sha256": "44ea4820292fd9d4a3b080ffbfd3e1ca3072a88996c306f6fa2f3f47ba9a13fa",
+  "ham_cikti_bayt": 1051
+}

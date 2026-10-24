@@ -1,0 +1,38 @@
+{
+  "ad": "244-ui-son/eski-6edb866-senaryo-225-sirketi-sil",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ui-son/ui-son-eski-6edb866/test/e2e/senaryo-225.mjs",
+  "commit": "6edb866668e300acd511a613f44e1497bbc0bb97",
+  "dal": "is/ui-son",
+  "kirli": 2,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T23:28:23.746Z",
+  "sure_sn": 31.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 55,
+    "gecen": 54,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Şirketi Sil · 002: “Şirketi Sil” tehlikeli eylem rengi (hof-button-danger: false)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ui-son/eski-6edb866-senaryo-225-sirketi-sil.log",
+  "klasor": "/home/user/wt/ui-son",
+  "ham_cikti_sha256": "26f1656f414cfee5389bc4090daad97ceb2236b0e9c47f2d3d696e1cc9628b80",
+  "ham_cikti_bayt": 4977
+}

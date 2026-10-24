@@ -10,6 +10,13 @@
 //         "numarasız Gönderilecekler'e eklendi" der; belge Gönderilecekler'de "Gönderilecek" rozetiyle; bağlantı düzelince Tümünü Gönder numara
 //         verip bir kez gönderir.
 //   8 B3  Taslaklar → Seçilenleri Kaydet: onay e-Belgeyi söyler; belge numarasız Gönderilecekler'e düşer.
+//   (2.4.4 — 2.4.3'ten ertelenen uzman UI/UX bulguları; iş listesi madde 9, 10, 12 UX16, 13, 14)
+//   7 UX20 (ek) EDM'ye ulaşılamazken kayıt + gönderim sonucu TEK bildirim; "Gönderilecek kaydedildi" yazmaz.
+//   9 UI9 Birim Fiyat ürün seçilince "1.249,90" (Tab ile bozulmaz, veri tabanında 1249,9).  UI3a EAN-13 ve 14 karakterli stok kodu kutuda kesilmez.
+//     UI5 Kaydet ve Gönder (pencere en alta kaydırılmışken) → kart başa kayar, belge no ve durum görünür.  UX20 başarıda tek bildirim, numaralı.
+//  10 UX17 Ödenmiş faturanın üstünde "Tahsil Edilecek" yok ("Genel Toplam"); kısmi ödenmişte büyük rakam "Kalan", altında Genel Toplam (31f U13).  UX27 Pasif "Düzenle" gri, nedeni yazılı.
+//  11 UX16 Faturadan "+ Yeni Cari": seçicide yazılan ad formda dolu; klavyeyle kaydedilince cari açılır ve faturada seçili gelir.
+//  12 UX25 Belge Türü süzgecinde e-SMM kapalıyken yok, açıkken (meta.settings.esmm) var; her seçenek açılır, satır sayısı = alt sayı.
 // Çıkış: "N geçti, M kaldı".
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -278,6 +285,9 @@ try {
     const h1 = (await toasts(page)).join(" | ");
     ok(unsent.number === "" && unsent.eStatus === "waiting", `numara verilmedi, Gönderilecekler'de (${unsent.number || "numarasız"} ${unsent.eStatus})`);
     ok(h1.includes("EDM'ye ulaşılamadı; belge numarasız Gönderilecekler'e eklendi, bağlantı gelince Tümünü Gönder ile gönderin."), `bildirim numarasız Gönderilecekler der: ${h1.slice(0, 200)}`);
+    const h1Saved = (await toasts(page)).filter(text => /Bakım|Satış Faturası|EDM'ye/.test(text));
+    ok(h1Saved.length === 1, `UX20 kayıt + gönderim sonucu tek bildirim (${h1Saved.length}: ${h1Saved.join(" | ").slice(0, 220)})`);
+    ok(!/Gönderilecek kaydedildi/.test(h1), "UX20 bildirim durum adını numara gibi yazmaz (\"Gönderilecek kaydedildi\" yok)");
     await shot(page, "fatura-243-7-h1");
     await closeAll(page);
     await integrator(edm.url);
@@ -307,6 +317,158 @@ try {
     await page.click(`${dialog} [data-answer="yes"]`);
     await page.waitForTimeout(1500);
     ok(row(draft.id).status === "issued" && row(draft.id).eStatus === "waiting" && !row(draft.id).number, `numarasız bekliyor (${JSON.stringify(row(draft.id))})`);
+  });
+  // ---------- 2.4.4 (UI5, UI9, UI3a, UX16, UX17, UX20, UX25, UX27) ----------
+  const EAN = "8690123456789";
+  const LONG_CODE = "STK-2.0.26-001";
+  const barkodlu = await must("stok", admin.post("/api/workspace/stock", { name: "Barkodlu Termos", code: EAN, unit: "Adet", unitPrice: "800", salePrice: "1249,9", vatRate: "20", openingQty: "10" }));
+  const kodlu = await must("stok", admin.post("/api/workspace/stock", { name: "Kodlu Kalemlik", code: LONG_CODE, unit: "Adet", unitPrice: "10", salePrice: "45", vatRate: "20", openingQty: "10" }));
+  const fits = (page, index) => page.$eval(`${pageInv} [data-l="${index}"][data-f="code"]`, node => ({ value: node.value, client: node.clientWidth, scroll: node.scrollWidth }));
+
+  await step("\n■ 9 UI9 birim fiyat biçimi; UI3a kod kesilmez; UI5 Kaydet ve Gönder sonrası kart başta; UX20 tek bildirim", async () => {
+    await newForm(page, "goods_sale", "Mehmet");
+    await pickItem(page, 0, "Termos", barkodlu.id || barkodlu.item?.id);
+    const price = await page.$eval(`${pageInv} [data-l="0"][data-f="unitPrice"]`, node => node.value);
+    ok(price === "1.249,90", `UI9 ürün seçilince Birim Fiyat "1.249,90" (${price})`);
+    const chip = await textOf(page, `${pageInv} [data-line="0"]`);
+    ok(chip.includes("1.249,90"), "UI9 kutu ile satırdaki tutar aynı biçimde");
+    await page.click(`${pageInv} [data-l="0"][data-f="unitPrice"]`);
+    await page.keyboard.press("End");
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Shift+Tab");
+    await page.keyboard.press("Tab");
+    await page.waitForTimeout(500);
+    ok((await page.$eval(`${pageInv} [data-l="0"][data-f="unitPrice"]`, node => node.value)) === "1.249,90", "UI9 Tab ile girip çıkınca biçim bozulmaz");
+    const ean = await fits(page, 0);
+    ok(ean.value === EAN && ean.scroll <= ean.client, `UI3a EAN-13 kutuda kesilmez (${ean.value} · görünen ${ean.client} / içerik ${ean.scroll})`);
+    await page.click(`${pageInv} [data-act="add-line"]`);
+    await pickItem(page, 1, "Kalemlik", kodlu.id || kodlu.item?.id);
+    const longCode = await fits(page, 1);
+    ok(longCode.value === LONG_CODE && longCode.scroll <= longCode.client, `UI3a 14 karakterli kod kesilmez (${longCode.value} · ${longCode.client} / ${longCode.scroll})`);
+    const hScroll = await page.$eval(`${pageInv} .hof-inv-lines-scroll`, node => node.scrollWidth > node.clientWidth);
+    console.log(`  · bilgi: 1366 genişlikte kalem tablosunda yatay kaydırma ${hScroll ? "VAR" : "yok"}`);
+    await page.waitForTimeout(1200);
+    // Ön koşul (ders 20): pencere gerçekten aşağı kaydırılmış olmalı — kullanıcı en alttaki düğmeye inmiş.
+    await page.$eval(pageInv, node => (node.scrollTop = node.scrollHeight));
+    await page.waitForTimeout(200);
+    const before = await page.$eval(pageInv, node => node.scrollTop);
+    ok(before > 100, `ön koşul: pencere aşağı kaydırıldı (scrollTop ${before})`);
+    await page.click(`${pageInv} [data-act="issue-now"]`);
+    await page.waitForSelector(`${dialog} [data-answer="yes"]`);
+    await page.click(`${dialog} [data-answer="yes"]`);
+    await page.waitForSelector(`${pageInv} .hof-plan-title h3`, { timeout: 15000 });
+    await page.waitForTimeout(1500);
+    const id9 = lastId();
+    const r9 = row(id9);
+    const card = await page.$eval(pageInv, node => {
+      const head = node.querySelector(".hof-plan-title h3");
+      const box = head.getBoundingClientRect();
+      const win = node.getBoundingClientRect();
+      return { top: node.scrollTop, text: head.textContent.replace(/\s+/g, " ").trim(), visible: box.top >= win.top && box.bottom <= win.bottom };
+    });
+    ok(card.top === 0 && card.visible, `UI5 kart başta açıldı, başlık görünür (scrollTop ${card.top}, görünür ${card.visible})`);
+    ok(Boolean(r9.number) && card.text.includes(r9.number), `UI5 başlıkta belge no ve durum: ${card.text}`);
+    const unit = server.app.store.get("SELECT unit_price AS p FROM invoice_lines WHERE invoice_id = ? AND seq = (SELECT MIN(seq) FROM invoice_lines WHERE invoice_id = ?)", id9, id9).p;
+    ok(Math.abs(unit - 1249.9) < 0.00001, `UI9 kaydedilen birim fiyat 1249,9 (${unit})`);
+    const saveToasts = (await toasts(page)).filter(text => /kaydedildi|gönder/i.test(text));
+    ok(saveToasts.length === 1 && saveToasts[0].includes(r9.number), `UX20 başarıda tek bildirim, numaralı (${saveToasts.length}: ${saveToasts.join(" | ").slice(0, 200)})`);
+    await shot(page, "fatura-244-9-kart-basta");
+  });
+
+  await step("\n■ 10 UX17 ödenmiş faturada \"Genel Toplam\", kısmide \"Kalan\"; UX27 pasif Düzenle gri ve nedeni yazılı", async () => {
+    const paid = await must("ödenmiş", admin.post("/api/workspace/invoices", { scenario: "service_sale", accountId: ayse.id, lines: [{ name: "Danışmanlık", qty: 1, unitPrice: 500, vatRate: 20 }], payment: { cash: [{ amount: 600, method: "cash" }], rest: "open" }, eSend: "now" }));
+    const part = await must("kısmi", admin.post("/api/workspace/invoices", { scenario: "service_sale", accountId: zeynep.id, lines: [{ name: "Danışmanlık", qty: 1, unitPrice: 500, vatRate: 20 }], payment: { cash: [{ amount: 200, method: "cash" }], rest: "open" }, eSend: "now" }));
+    await page.evaluate(id => window.HOF.invoices.open({ id }), paid.id);
+    await page.waitForSelector(`${pageInv} .hof-chq-amount`);
+    await page.waitForTimeout(400);
+    const head = await textOf(page, `${pageInv} .hof-chq-amount span`);
+    ok(head === "Genel Toplam", `UX17 ödenmiş faturanın üstü "Genel Toplam" (${head}; açık ${paid.open})`);
+    ok(!(await textOf(page, `${pageInv} .hof-plan-head`)).includes("Tahsil Edilecek"), "UX17 başlıkta \"Tahsil Edilecek\" yok");
+    const modify = await page.$(`${pageInv} [data-act="modify"]`);
+    ok(Boolean(modify) && (await modify.isDisabled()), "UX27 gönderilmiş belgede Düzenle pasif");
+    if (modify) {
+      const look = await page.evaluate(([sel]) => {
+        const m = document.querySelector(`${sel} [data-act="modify"]`);
+        const css = getComputedStyle(m);
+        const probe = document.createElement("span");
+        probe.style.color = getComputedStyle(document.documentElement).getPropertyValue("--do-surface-soft");
+        document.body.append(probe);
+        const soft = getComputedStyle(probe).color;
+        probe.remove();
+        return { bg: css.backgroundColor, soft };
+      }, [pageInv]);
+      ok(look.bg === look.soft, `UX27 pasif Düzenle dolu değil, gri zemin (${look.bg} ↔ ${look.soft})`);
+    }
+    const why = await textOf(page, `${pageInv} .hof-inv-blocks`);
+    ok(/Düzenle kapalı:/.test(why), `UX27 nedeni görünür yazı: ${why.slice(0, 140)}`);
+    await shot(page, "fatura-244-10-odenmis");
+    await page.evaluate(id => window.HOF.invoices.open({ id }), part.id);
+    await page.waitForFunction(([sel, id]) => document.querySelector(`${sel} .hof-plan-title h3`) && window.HOF && document.querySelector(`${sel} [data-act="back"]`), [pageInv, part.id]);
+    await page.waitForTimeout(600);
+    const partHead = await textOf(page, `${pageInv} .hof-chq-amount`);
+    // 31f U13: kısmi ödenmişte büyük rakam KALAN (QuickBooks/Xero "Balance Due"); belgenin Genel Toplam'ı altında küçük. Tutar hesabı değişmez.
+    const partLabel = await textOf(page, `${pageInv} .hof-chq-amount span`);
+    const partBig = await textOf(page, `${pageInv} .hof-chq-amount strong`);
+    const partSmall = await textOf(page, `${pageInv} .hof-chq-amount small`);
+    ok(partLabel === "Kalan" && partBig === "₺400,00", `UX17 kısmi ödenmişte büyük rakam Kalan (${partLabel} ${partBig}; açık ${part.open})`);
+    ok(partSmall.includes("Genel Toplam ₺600,00") && partSmall.includes("ödenen ₺200,00"), `UX17 kısmi ödenmişte altında Genel Toplam ve ödenen (${partSmall})`);
+    ok(!partHead.includes("Tahsil Edilecek"), `UX17 kısmi ödenmişte başlık "Tahsil Edilecek" değil (${partHead})`);
+  });
+
+  await step("\n■ 11 UX16 faturadan + Yeni Cari yazılan adı taşır (klavyeyle)", async () => {
+    await page.evaluate(() => window.HOF.invoices.open({ account: {} }));
+    await page.waitForSelector(`${pageInv} [data-act="new"]`);
+    await page.click(`${pageInv} [data-act="new"]`);
+    await page.click(`${pageInv} [data-scenario="service_sale"]`);
+    await page.waitForSelector(`${pageInv} [data-lines]`);
+    await page.click(`${pageInv} [data-acc-query]`);
+    await page.keyboard.type("Yeni Müşteri A", { delay: 70 });
+    await page.waitForTimeout(500);
+    await page.click(`${pageInv} .hof-inv-account-new`);
+    await page.waitForSelector(`${dialog} input[name="name"]`);
+    const carried = await page.$eval(`${dialog} input[name="name"]`, node => node.value);
+    ok(carried === "Yeni Müşteri A", `UX16 yazılan ad yeni cari formunda (${carried || "boş"})`);
+    await page.focus(`${dialog} input[name="name"]`);
+    await page.keyboard.press("Enter");
+    await page.waitForTimeout(1500);
+    const made = server.app.store.all("SELECT id, name, type FROM accounts WHERE name = 'Yeni Müşteri A'");
+    ok(made.length === 1 && made[0].type === "customer", `cari bir kez açıldı, müşteri (${JSON.stringify(made)})`);
+    const picked = await page.$eval(`${pageInv} .hof-acc-picker`, node => ({ name: node.querySelector("[data-acc-query]")?.value, id: node.querySelector('input[type="hidden"]')?.value })).catch(() => ({}));
+    ok(made.length === 1 && picked.id === made[0].id && picked.name === "Yeni Müşteri A", `faturada yeni cari seçili (${JSON.stringify(picked)})`);
+  });
+
+  await step("\n■ 12 UX25 Belge Türü süzgecinde e-SMM yalnız açıkken; her seçenek", async () => {
+    await page.evaluate(() => window.HOF.invoices.open({ tab: "sale" }));
+    await page.waitForSelector(`${pageInv} select[data-filter="profile"]`);
+    const options = await page.$$eval(`${pageInv} select[data-filter="profile"] option`, nodes => nodes.map(node => [node.value, node.textContent]));
+    ok(!options.some(([value]) => value === "ESMM"), `UX25 e-SMM kapalıyken seçenek yok (${options.map(([, text]) => text).join(", ")})`);
+    for (const [value, text] of options) {
+      await page.selectOption(`${pageInv} select[data-filter="profile"]`, value);
+      await page.waitForTimeout(700);
+      const rows = await page.$$eval(`${pageInv} tr[data-inv]`, nodes => nodes.length);
+      const note = Number(((await textOf(page, `${pageInv} .hof-rep-note`)).match(/^([\d.]+) belge/) || [])[1]?.replace(/\./g, "") ?? -1);
+      ok(rows === note, `süzgeç "${text}": ${rows} satır = alt sayı ${note}`);
+    }
+    await closeAll(page);
+    const page2 = await context.newPage();
+    page2.setDefaultTimeout(10000);
+    page2.on("pageerror", error => errors.push(error.message));
+    let metaRouted = 0;
+    await page2.route(/\/api\/workspace\/invoices\/meta(\?|$)/, async route => {
+      metaRouted += 1;
+      const response = await route.fetch();
+      const json = await response.json();
+      json.data.settings = { ...json.data.settings, esmm: true };
+      await route.fulfill({ response, json });
+    });
+    await page2.goto(`${BASE}/`);
+    await page2.waitForSelector("#hof-sidecard", { timeout: 60000 });
+    await page2.waitForFunction(() => Boolean(window.HOF?.invoices?.open));
+    await page2.evaluate(() => window.HOF.invoices.open({ tab: "sale" }));
+    await page2.waitForSelector(`${pageInv} select[data-filter="profile"]`);
+    const on = await page2.$$eval(`${pageInv} select[data-filter="profile"] option`, nodes => nodes.map(node => node.value));
+    ok(metaRouted > 0 && on.includes("ESMM"), `UX25 e-SMM açıkken seçenek var (${on.join(", ")}; meta ${metaRouted} kez)`);
+    await page2.close();
   });
   ok(!errors.length, `sayfa hatası yok${errors.length ? `: ${errors.join(" | ")}` : ""}`);
 } catch (error) {

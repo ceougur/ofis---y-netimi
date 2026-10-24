@@ -184,7 +184,7 @@ describe("gg243 dar kontrol 2: Kes, Sonra Gönder kronolojisi (B5) ve kronoloji 
     for (const ctx of open) await ctx.close();
   });
 
-  test("B5: serinin son numaralısından eski tarihli Kes, Sonra Gönder kaydedilmez (D4 iletisi); aynı gün ve daha yeni kaydedilir", async () => {
+  test("B5: serinin son numaralısından eski tarihli Kes, Sonra Gönder kaydedilmez (ön hesapla aynı ileti); aynı gün ve daha yeni kaydedilir", async () => {
     const ctx = await setup();
     open.push(ctx);
     const numbered = await ctx.must("Kaydet ve Gönder", ctx.post("/api/workspace/invoices", { scenario: "service_sale", accountId: ctx.ids.ayse, issueDate: ctx.day(-2), lines: LINES, payment: { rest: "open" }, eSend: "now" }));
@@ -193,7 +193,8 @@ describe("gg243 dar kontrol 2: Kes, Sonra Gönder kronolojisi (B5) ve kronoloji 
     const old = await ctx.post("/api/workspace/invoices", { scenario: "service_sale", accountId: ctx.ids.ayse, issueDate: ctx.day(-5), lines: LINES, payment: { rest: "open" }, eSend: "later" });
     assert.equal(old.status, 400, JSON.stringify(old.data));
     assert.equal(old.data.code, "chronology");
-    assert.equal(old.data.error, "TEA serisinde son gönderilen belge TEA2026000000001 16.10.2026 tarihli; numarası gönderimde verilecek bu belge ondan eski tarihli olamaz (numara ve tarih sırası).");
+    // 2.4.4 (UX15): ileti ne yapılacağını da söyler; formun ön hesabı kayıttan önce AYNI iletiyi verir (düğmeye göre değişmez — kâhin I23).
+    assert.equal(old.data.error, "TEA serisinde son belge TEA2026000000001 16.10.2026 tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı). Belge tarihini 16.10.2026 ya da sonrası yapın.");
     assert.equal(ctx.count(), before, "kayıt açılmadı");
     for (const offset of [-2, -1]) await ctx.must(`Kes, Sonra Gönder ${offset}`, ctx.post("/api/workspace/invoices", { scenario: "service_sale", accountId: ctx.ids.ayse, issueDate: ctx.day(offset), lines: LINES, payment: { rest: "open" }, eSend: "later" }));
     // Başka seri (TEF) etkilenmez: TEF'de numara yok, eski tarih serbest.

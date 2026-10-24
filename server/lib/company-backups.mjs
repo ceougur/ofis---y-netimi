@@ -40,6 +40,13 @@ const EVENT_COUNTERS = "key LIKE 'meta.bank.seq.%'";
 const maxCounterSql = schema => `INSERT INTO main.settings (key, value, updated_at) SELECT key, value, updated_at FROM ${schema}.settings WHERE ${EVENT_COUNTERS} AND true
   ON CONFLICT(key) DO UPDATE SET value = CASE WHEN CAST(excluded.value AS INTEGER) > CAST(main.settings.value AS INTEGER) THEN excluded.value ELSE main.settings.value END`;
 
+// 2.4.4 (madde 30b, kullanıcı kararı 22.10.2026): geri yüklenen veri tabanına "yedek geri yüklendi" işareti. Yedekten SONRA EDM'ye gönderilmiş e-Belge
+// numaraları ve verilmiş kâğıt/fiş numaraları programda yeniden verilebilir (numaralama değişmez); Fatura bunu bir kez söyler, kapatılınca işaret silinir
+// (routes/invoices.mjs). İşaret her geri yüklemede YENİDEN yazılır (göçten sonra): yedeğin içinde kalmış eski işaret (kapatılmış ya da bekleyen) sonucu
+// belirlemez. Hazırlık dosyasına yazılır; dosya canlıya ancak takas başarılıysa geçer (yarıda kalan geri yüklemede işaret yok). Önek "invoice":
+// ortak katman (COMMON_SETTINGS) aktarımı ezmez, "Tümünü Sıfırla" silmez (app.mjs KEEP_SETTINGS) — sıfırlama yeniden numara riskini kaldırmaz.
+export const RESTORE_NOTICE_KEY = "invoice.restoreNotice";
+
 const identityOf = company => ({ id: company.id, code: company.code, name: company.name });
 const labelOf = company => `${company.code} · ${company.name}`;
 // Windows (NTFS) klasör adlarını yerel ayarsız büyük harfle karşılaştırır: "MAVI" = "Mavi", ama "İ" ≠ "i".
@@ -179,6 +186,9 @@ export function prepareRestoreFile({ source, dbPath, transplantFrom = null, clie
       const own = Number.parseInt(db.prepare("SELECT value FROM settings WHERE key = ?").get(key)?.value || "0", 10) || 0;
       if (Number.parseInt(value, 10) > own) db.prepare("INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at").run(key, String(Number.parseInt(value, 10)), new Date().toISOString());
     }
+    const restoredAt = new Date().toISOString();
+    const backupAt = stampToIso(parseBackupName(path.basename(source))?.stamp || "");
+    db.prepare("INSERT INTO settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, NULL) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at, updated_by = NULL").run(RESTORE_NOTICE_KEY, JSON.stringify({ at: restoredAt, backupAt }), restoredAt);
     const current = Number(db.prepare("SELECT value FROM settings WHERE key = 'meta.clientStateVersion'").get()?.value || 0) || 0;
     const next = Math.max(current, Number(clientStateFloor) || 0) + 1;
     db.prepare("INSERT INTO settings (key, value, updated_at, updated_by) VALUES ('meta.clientStateVersion', ?, ?, NULL) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at").run(String(next), new Date().toISOString());

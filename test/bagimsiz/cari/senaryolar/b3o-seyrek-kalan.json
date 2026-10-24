@@ -1,0 +1,97 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3o-seyrek-kalan",
+ "aciklama": "Y3 (karar sahibi 23.10.2026, seyrek Kalan Borç): Kalan hücresi BOŞ satırda borç satırın ana tutarıdır (Toplam/Genel Toplam; yoksa tek tutar kolonu). 'Aidatlar' (Aidat, Kalan Borç): İpek Ay Kalan 400; Jale Er ve Kemal Su Kalan boş → Aidat (1.200, 900). 'Faizli' (Aidat, Gecikme Faizi, Kalan Borç): Leyla Ok Kalan 700; Murat Al Kalan boş → iki aday (Aidat + Gecikme Faizi), ana tutar belirlenemez → görünür not, borç yok. Bütün raporlar aynı: toplam 3.200; Açılış Bakiyesi satır borcu (Murat Al 0).",
+ "dayanak": "KARARLAR.md B3h Y3, B4b K4",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Aidatlar",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Aidat",
+      "Kalan Borç",
+      "Son Ödeme"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/801",
+       "isim": "İpek Ay",
+       "hucreler": {
+        "Telefon": "",
+        "Aidat": "1.000,00 ₺",
+        "Kalan Borç": "400,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      },
+      {
+       "no": "2026/802",
+       "isim": "Jale Er",
+       "hucreler": {
+        "Telefon": "",
+        "Aidat": "1.200,00 ₺",
+        "Kalan Borç": "",
+        "Son Ödeme": "20.06.2026"
+       }
+      },
+      {
+       "no": "2026/803",
+       "isim": "Kemal Su",
+       "hucreler": {
+        "Telefon": "",
+        "Aidat": "900,00 ₺",
+        "Kalan Borç": "",
+        "Son Ödeme": "20.06.2026"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Faizli",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Aidat",
+      "Gecikme Faizi",
+      "Kalan Borç",
+      "Son Ödeme"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/804",
+       "isim": "Leyla Ok",
+       "hucreler": {
+        "Telefon": "",
+        "Aidat": "1.000,00 ₺",
+        "Gecikme Faizi": "50,00 ₺",
+        "Kalan Borç": "700,00 ₺",
+        "Son Ödeme": "20.06.2026"
+       }
+      },
+      {
+       "no": "2026/805",
+       "isim": "Murat Al",
+       "hucreler": {
+        "Telefon": "",
+        "Aidat": "800,00 ₺",
+        "Gecikme Faizi": "40,00 ₺",
+        "Kalan Borç": "",
+        "Son Ödeme": "20.06.2026"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol",
+   "raporlar": true
+  }
+ ]
+}

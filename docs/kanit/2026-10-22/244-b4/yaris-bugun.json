@@ -1,0 +1,32 @@
+{
+  "ad": "244-b4/yaris-bugun",
+  "komut": "bash -c MODE=gec-fare,yeni-gec,yeni,kurtarma-eski,kurtarma-sira,kurtarma-yeni TRIALS=10 node --disable-warning=ExperimentalWarning test/e2e/form-izolasyon-b4-yaris.mjs",
+  "commit": "cf64b0981db76edd0b97a0a1fd4ef26c661dd9a5",
+  "dal": "is/b4",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T08:55:02.881Z",
+  "sure_sn": 549.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-b4/yaris-bugun.log",
+  "klasor": "/home/user/wt/b4",
+  "ham_cikti_sha256": "1de3e730a0ed71060c9f5382b06962e85894fde6a34b7b3727c4a8c285d7a5e0",
+  "ham_cikti_bayt": 4052
+}

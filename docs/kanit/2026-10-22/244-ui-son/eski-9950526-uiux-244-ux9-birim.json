@@ -1,0 +1,43 @@
+{
+  "ad": "244-ui-son/eski-9950526-uiux-244-ux9-birim",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/ui-son/ui-son-eski-9950526/test/uiux-244-ux9.test.mjs",
+  "commit": "99505264d4a99189642e711f12ba00cb8ea48b70",
+  "dal": "is/ui-son",
+  "kirli": 15,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T22:39:17.183Z",
+  "sure_sn": 1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 1,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "uiux-244 UX9 sunucu › ön hesap partyFields döner: e-Arşiv ilsiz alıcıda ['city'], sorunsuz alıcıda [] (kâğıt belgede [] — e-Arşiv kullanıcısı kâğıt kesemez; partyIssues KAGIT durumu birinci testte)",
+      "konum": "test/uiux-244-ux9.test.mjs:47:3",
+      "hata": "tutar sınırı sorunu yok · + actual - expected · + undefined"
+    },
+    {
+      "ad": "uiux-244 UX9 sunucu › partyIssues: tutar sınırından doğan sorunlar limit işaretli, öbürleri değil (31f U5)",
+      "konum": "test/uiux-244-ux9.test.mjs:92:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ui-son/eski-9950526-uiux-244-ux9-birim.log",
+  "klasor": "/home/user/wt/ui-son",
+  "ham_cikti_sha256": "456e9d143913af0176db0d7a9e228a48d684cdfa2c5f33bde615789d4d756d4f",
+  "ham_cikti_bayt": 4218
+}

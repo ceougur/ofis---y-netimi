@@ -1,0 +1,107 @@
+{
+ "adim": "h-hata-kodlari",
+ "baslik": "Görülen ret / hata kodları (PACKAGE-FAIL, SEND-FAILED, EDM hata kodu)",
+ "durum": "bilgi",
+ "denetimler": [],
+ "kayit": {
+  "kodlar": [
+   {
+    "yer": "g toplu gönderim",
+    "code": "integrator-rejected",
+    "error": "EDM isteği reddetti: Ubl yapısı hatalı (Schema hatası) : Şema Hatası:<br/>Results from XML Schema validation:\r\n  Error: The element 'Person'  has incomplete content. List of possible elements expected: 'FamilyName'.\r\n  At: (Line: 91, Column: 815) (EDM hata kodu 11029)"
+   },
+   {
+    "yer": "g toplu gönderim",
+    "code": "integrator-rejected",
+    "error": "EDM isteği reddetti: Ubl yapısı hatalı (Schema hatası) : Şema Hatası:<br/>Results from XML Schema validation:\r\n  Error: The element 'Person'  has incomplete content. List of possible elements expected: 'FamilyName'.\r\n  At: (Line: 91, Column: 815) (EDM hata kodu 11029)"
+   },
+   {
+    "yer": "g toplu gönderim",
+    "code": "integrator-rejected",
+    "error": "EDM isteği reddetti: Ubl yapısı hatalı (Schema hatası) : Şema Hatası:<br/>Results from XML Schema validation:\r\n  Error: The element 'Person'  has incomplete content. List of possible elements expected: 'FamilyName'.\r\n  At: (Line: 91, Column: 815) (EDM hata kodu 11029)"
+   },
+   {
+    "yer": "g toplu gönderim",
+    "code": "integrator-rejected",
+    "error": "EDM isteği reddetti: Ubl yapısı hatalı (Schema hatası) : Şema Hatası:<br/>Results from XML Schema validation:\r\n  Error: The element 'Person'  has incomplete content. List of possible elements expected: 'FamilyName'.\r\n  At: (Line: 91, Column: 815) (EDM hata kodu 11029)"
+   },
+   {
+    "yer": "g toplu gönderim",
+    "code": "integrator-rejected",
+    "error": "EDM isteği reddetti: Ubl yapısı hatalı (Schema hatası) : Şema Hatası:<br/>Results from XML Schema validation:\r\n  Error: The element 'Person'  has incomplete content. List of possible elements expected: 'FamilyName'.\r\n  At: (Line: 91, Column: 815) (EDM hata kodu 11029)"
+   },
+   {
+    "yer": "b B1 gönderim",
+    "code": "integrator-rejected",
+    "error": "EDM isteği reddetti: Ubl yapısı hatalı (Schema hatası) : Şema Hatası:<br/>Results from XML Schema validation:\r\n  Error: The element 'Person'  has incomplete content. List of possible elements expected: 'FamilyName'.\r\n  At: (Line: 91, Column: 815) (EDM hata kodu 11029) Belge TES2026282855498 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "b B2 gönderim",
+    "code": "integrator-rejected",
+    "error": "EDM isteği reddetti: Ubl yapısı hatalı (Schema hatası) : Şema Hatası:<br/>Results from XML Schema validation:\r\n  Error: The element 'Person'  has incomplete content. List of possible elements expected: 'FamilyName'.\r\n  At: (Line: 91, Column: 815) (EDM hata kodu 11029) Belge TES2026282855499 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "c G1 durum",
+    "eStatus": "HTTP 502",
+    "integratorCode": "11017",
+    "code": "integrator-rejected"
+   },
+   {
+    "yer": "c G2 durum",
+    "eStatus": "HTTP 502",
+    "integratorCode": "11017",
+    "code": "integrator-rejected"
+   },
+   {
+    "yer": "c G5 durum",
+    "eStatus": "HTTP 502",
+    "integratorCode": "11017",
+    "code": "integrator-rejected"
+   },
+   {
+    "yer": "d G1 resmî görüntü",
+    "status": 409,
+    "ok": false,
+    "error": "Bu belge henüz entegratöre ulaşmadı; resmî görüntüsü yok.",
+    "code": "einvoice-not-sent"
+   },
+   {
+    "yer": "f e-SMM GetSMMStatus",
+    "code": "integrator-rejected",
+    "integratorCode": "11017",
+    "stage": "",
+    "status": 502,
+    "message": "EDM isteği reddetti: SMM bulunamadı (EDM hata kodu 11017)",
+    "detail": "ID=TES2026000000000 UUID=486b86c0-ecf4-42f1-9341-ca8f2787e787 kriterine uyan SMM bulunamadı. Session ID:dc5255e8-9519-4e84-8639-52644f5dd135"
+   },
+   {
+    "yer": "f e-SMM CancelSMM",
+    "code": "integrator-rejected",
+    "integratorCode": "11017",
+    "stage": "",
+    "status": 502,
+    "message": "EDM isteği reddetti: SMM bulunamadı (EDM hata kodu 11017)",
+    "detail": "SMM bulunamadı. Session ID:dc5255e8-9519-4e84-8639-52644f5dd135"
+   },
+   {
+    "yer": "f e-SMM GetSMM (PDF)",
+    "code": "integrator-not-found",
+    "integratorCode": "",
+    "stage": "",
+    "status": 404,
+    "message": "TES2026000000000 EDM'de bulunamadı (makbuz henüz işlenmemiş olabilir; birkaç dakika sonra yeniden deneyin).",
+    "detail": ""
+   },
+   {
+    "yer": "f e-Arşiv GetInvoiceStatus (karşılaştırma)",
+    "code": "integrator-rejected",
+    "integratorCode": "11017",
+    "stage": "",
+    "status": 502,
+    "message": "EDM isteği reddetti: Fatura bulunamadı (EDM hata kodu 11017)",
+    "detail": "ID=TEA2026000000000 UUID=122be4a3-0bd3-46f5-abd0-1f540eb5c067 kriterine uyan fatura bulunamadı. Session ID:dc5255e8-9519-4e84-8639-52644f5dd135"
+   }
+  ],
+  "paketHatasi": "görülmedi"
+ }
+}

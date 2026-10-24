@@ -31,45 +31,38 @@
   };
   const openWhatsApp = number => window.open(`https://wa.me/${number}`, "_blank", "noopener");
 
-  // Plansız tahsilat penceresi (kaydın kendi tahsilat defteri). Kart yöneten kişiye taksit planı kısa yolu gösterilir.
-  function paymentForm(selected, target, { plain = false } = {}) {
-    const suggested = target && Number(target.amount) > 0 ? new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(target.amount) : "";
-    const offerPlan = !plain && !(target && Number(target.amount) > 0) && Boolean(HOF.plans?.openNew) && HOF.can("plans.manage");
-    // v2.1.0 Aşama 8: istek kimliği form açılışında; Havale / EFT seçilince Banka Hesabı (tek hesapta gizli).
-    const requestId = HOF.requestId();
-    HOF.formModal({
-      title: "Tahsilat İşle",
-      eyebrow: selected.title,
-      intro: target && target.intro ? target.intro : "",
-      fields: [
-        { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", placeholder: "Örn. 1.250,00", value: suggested },
-        { name: "date", label: "Tahsilat Tarihi", type: "date", max: "today", value: HOF.localToday() },
-        HOF.methodField("cash", { incoming: true }),
-        { name: "note", label: "Açıklama", placeholder: "Ör. Ekim ödemesi", maxlength: 500, value: (target && target.note) || "" },
-      ],
-      extraHtml: offerPlan ? '<p class="hof-form-aside">Bu kişi taksitle mi ödüyor? <button type="button" class="hof-link" data-new-plan>Taksit planı oluşturun</button>; sonra tahsilatlar taksitten düşer ve kartında görünür.</p>' : "",
-      submitLabel: "Tahsilatı Kaydet",
-      onOpen: (dialog, modal) => {
-        // 2.2.0 (İz 3.2): kart yolu POS'tur (POS, taksit sayısı, provizyon, önizleme).
-        if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", direction: "in", pos: {} });
-        dialog.querySelector("[data-new-plan]")?.addEventListener("click", () => {
-          modal.close();
-          const row = (HOF.data?.rows || []).find(item => item.__hofKey === selected.key) || null;
-          HOF.plans.openNew({ caseKey: selected.key, caseTitle: row ? HOF.plans.recordLabel(row) : selected.title, name: row ? HOF.plans.personOf(row) || selected.title : selected.title, phone: row ? HOF.plans.phoneOf(row) : "", registeredOn: row && HOF.plans.recordDay ? HOF.plans.recordDay(row) : "" });
-        });
+  // 2.4.4 (E8; kullanıcı 21.10.2026: "orta tablodaki Excel'deki kayıttan taksit olmasın, cariye kaydedip oradan yapsın; kasa hareketlerini, fatura, rapor
+  // gibi kısımları bozar, muhasebe mantığını kaybeder"): kayıttan Kasa'ya doğrudan tahsilat penceresi ("Tahsilat İşle") ve içindeki "Taksit planı oluşturun"
+  // kısa yolu kalktı. Tahsilat kaydın carisine (ya da taksit kartına) girilir: actions.payment aşağıda. Sunucu ucu (POST cases/:key/payments) ve eski kayıt
+  // tahsilatlarının İşlem Geçmişi'nde görünmesi, düzeltilmesi (editPayment) ve silinmesi durur.
+
+  // Kayda bağlı carisi olmayan kayıt: tahsilat cariye yazılır, önce cari açılır (ad, telefon ve Kayıt Tarihi kayıttan gelir; cari bu kayda bağlanır);
+  // kaydedince tahsilat formu açılır (tutar ve açıklama takvim kaleminden). Cari açma yetkisi olmayana yol söylenir.
+  function accountFirst(selected, target, preset) {
+    const row = (HOF.data?.rows || []).find(item => item.__hofKey === selected.key) || null;
+    const plans = HOF.plans || {};
+    const name = (row && plans.personOf ? plans.personOf(row) : "") || target?.person || selected.title || "";
+    const phone = (row && plans.phoneOf ? plans.phoneOf(row) : "") || target?.phone || "";
+    const caseTitle = row && plans.recordLabel ? plans.recordLabel(row) : selected.title || name;
+    const registeredOn = row && plans.recordDay ? plans.recordDay(row) || "" : "";
+    // 2.4.4 (5b): Açılış Bakiyesi kayıttaki Kalan Borç ile dolu gelir (takvim kaleminin "Kalan Borç"u; değiştirilebilir, kaynağı alanın altında yazar).
+    // Sonra Tablodan Aktar bu borcu ikinci kez yazmaz (kart "Carinin Mevcut Borcu" olarak açılır; routes/plan-transfer.mjs).
+    const openingBalance = Number(target?.debt) > 0 ? Number(target.debt) : null;
+    if (!HOF.accounts?.newFor || !HOF.can("accounts.manage")) {
+      HOF.toast(`Tahsilat carinin hesabına yazılır; “${name || selected.title}” kaydının carisi yok. Cari açmak yönetici, uzman ve muhasebe yetkisidir: yöneticinizden bu kişiye cari açıp kayda bağlamasını isteyin.`, { type: "error" });
+      return;
+    }
+    HOF.accounts.newFor(
+      { name, phone, caseKey: selected.key, caseTitle, registeredOn, ...(openingBalance ? { openingBalance, openingSource: target?.debtColumn || "Kalan Borç" } : {}) },
+      {
+        intro: "Önce cari açın: tahsilat carinin hesabına yazılır, bu kaydın carisi yok. Ad, telefon ve Kayıt Tarihi kayıttan geldi; cari bu kayda bağlanır, kaydedince tahsilat formu açılır. Kişinin borcu varsa Açılış Bakiyesi'ne yazın (yoksa tahsilat carinin alacağı olur). Carisi zaten varsa yeni cari açmayın; o carinin kartında Tablodaki Kayıt alanından bu kayda bağlayın.",
+        onSaved: account => {
+          if (!account?.id) return;
+          afterCaseChange();
+          if (HOF.can("accounts.collect")) setTimeout(() => HOF.accounts.collect(account.id, preset), 150);
+        },
       },
-      onSubmit: async data => {
-        const body = { ...data, caseTitle: selected.title };
-        if (HOF.bank?.accountBody) HOF.bank.accountBody(body, data.method);
-        else if (data.method !== "bank") delete body.bankAccountId;
-        const send = flags => HOF.api(caseUrl(selected.key, "payments"), { method: "POST", body: { ...body, ...flags }, requestId });
-        const result = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
-        if (result?.replayed) return HOF.toast("Bu tahsilat zaten kaydedildi; ikinci kez yazılmadı.", { type: "info" });
-        HOF.toast(`Tahsilat kaydedildi (${HOF.methodLabel(data.method, "in")}).`, { type: "success" });
-        afterCaseChange();
-        HOF.emit("payment-saved", { key: selected.key });
-      },
-    });
+    );
   }
 
   // ---------- Kayda bağlı taksit planı (v2.0.6) ----------
@@ -92,17 +85,14 @@
       title: "Tahsilat",
       eyebrow: selected.title,
       size: "wide",
-      body: `<p class="hof-modal-text">Bu kaydın taksit planı var. Taksitin yanındaki <b>Tahsil Et</b> tutarı o taksite yazar; Kasa'ya tek tahsilat olarak düşer, makbuzu alınır.</p>${plans.map(block).join("")}<div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-plain title="Taksit planına bağlı olmayan tahsilat (kaydın kendi defterine)">Plansız Tahsilat Kaydet</button><button type="button" class="hof-button" data-close>Kapat</button></div>`,
+      // 2.4.4 (E8): "Plansız Tahsilat Kaydet" (kaydın kendi defterine, Kasa'ya doğrudan) kalktı; taksit dışı tahsilat kartın carisinden girilir.
+      body: `<p class="hof-modal-text">Bu kaydın taksit planı var. Taksitin yanındaki <b>Tahsil Et</b> tutarı o taksite yazar; Kasa'ya tek tahsilat olarak düşer, makbuzu alınır. Taksit dışı tahsilat kartın carisinden girilir.</p>${plans.map(block).join("")}<div class="hof-actions"><button type="button" class="hof-button" data-close>Kapat</button></div>`,
     });
     modal.dialog.classList.add("hof-plan-collect-modal");
     modal.dialog.addEventListener("click", event => {
-      const button = event.target.closest("[data-collect], [data-open-plan], [data-plain], [data-close]");
+      const button = event.target.closest("[data-collect], [data-open-plan], [data-close]");
       if (!button) return;
       if ("close" in button.dataset) return modal.close();
-      if ("plain" in button.dataset) {
-        modal.close();
-        return paymentForm(selected, null, { plain: true });
-      }
       if (button.dataset.openPlan) {
         modal.close();
         return HOF.plans.open(button.dataset.openPlan);
@@ -249,32 +239,41 @@
         },
       });
     },
-    // target: kayan ödeme şeridinden ya da bildirimden gelinince { key, title, amount, note } (kayıt seçili olmasa da).
-    // v2.0.6: kayda bağlı taksit kartı varsa tahsilat taksitten düşer (taksit seçici); Excel takviminden tutarla gelen
-    // istek ve plansız kayıtlar eski pencereye gider.
+    // target: kayan ödeme şeridinden ya da bildirimden gelinince { key, title, person, phone, amount, note } (kayıt seçili olmasa da).
+    // 2.4.4 (E8; kullanıcı kararı 21.10.2026 "önerilerin uygun"): tahsilat CARİ'ye gider, kayıttan Kasa'ya doğrudan yazılmaz.
+    //   1. kayda bağlı cari varsa o carinin tahsilatı — cari "+ Tahsilat" ile aynı yol (açık taksit kartı varsa Taksite Yaz / Taksit Dışı Tahsilat,
+    //      Kapatılacak Fatura); takvim kaleminin tutarı ve açıklaması forma gelir;
+    //   2. carisi yoksa kayda bağlı açık taksit kartı (kart da bir cariye aittir; tahsilat taksitten düşer);
+    //   3. ikisi de yoksa "önce cari açın" + ad/telefonu kayıttan dolu "+ Yeni Cari" (kaydedince tahsilat formu).
+    // Takvim kalemi (ödeme sözü, taksit, kira) carinin ya da taksitin tahsilatıyla kapanır (sunucu lib/insight/case-collections.mjs).
     async payment(target) {
       const selected = target && target.key ? target : requireCase();
       if (!selected) return;
-      const fromStrip = Boolean(target && Number(target.amount) > 0);
-      if (!fromStrip && HOF.plans?.forCase && HOF.can("plans.view")) {
+      const preset = target && (Number(target.amount) > 0 || target.note) ? { amount: Number(target.amount) > 0 ? Number(target.amount) : null, note: target.note || "" } : null;
+      if (HOF.accounts?.forCase && HOF.can("accounts.view")) {
+        let linked = null;
         try {
-          const linked = await HOF.plans.forCase(selected.key);
-          const active = (linked.plans || []).filter(plan => plan.status === "active");
-          if (active.length) return openPlanCollect(selected, active, linked);
-        } catch {
-          // kartlar okunamadıysa eski pencere
+          linked = await HOF.accounts.forCase(selected.key);
+        } catch (error) {
+          // Bağ okunamadıysa tahsilat başka yere yazılmaz (önceden Kasa'ya düşüyordu).
+          return HOF.toastError(error);
+        }
+        if (linked?.account?.id) {
+          if (!HOF.can("accounts.collect")) return HOF.toast("Tahsilat bu kaydın carisine yazılır; Cariden Tahsilat Girme yetkiniz yok.", { type: "error" });
+          return HOF.accounts.collect(linked.account.id, preset);
         }
       }
-      // Kayıt bir cariye bağlıysa tahsilat cari defterine yazılır (Kasa'ya iki kez düşmesin, cari borçlu kalmasın).
-      if (!fromStrip && HOF.accounts?.forCase && HOF.can("accounts.collect")) {
+      if (HOF.plans?.forCase && HOF.can("plans.view")) {
+        let linked = null;
         try {
-          const linked = await HOF.accounts.forCase(selected.key);
-          if (linked?.account?.id) return HOF.accounts.collect(linked.account.id);
-        } catch {
-          // cari okunamadıysa eski pencere
+          linked = await HOF.plans.forCase(selected.key);
+        } catch (error) {
+          return HOF.toastError(error);
         }
+        const active = (linked?.plans || []).filter(plan => plan.status === "active");
+        if (active.length) return openPlanCollect(selected, active, linked);
       }
-      paymentForm(selected, target);
+      accountFirst(selected, target, preset);
     },
     lien() {
       const selected = requireCase();
@@ -625,7 +624,7 @@
       size: "wide",
       body: `<div class="hof-kpis hof-cash-kpis" data-kpis></div>
         <div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Dönem">${PERIODS.map(item => `<button type="button" data-period="${item.id}">${item.label}</button>`).join("")}</div>
-        <div class="hof-cash-add"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-pdf title="Seçili dönemin nakit kasa hareketlerini PDF olarak indir">Kasa Dökümü - PDF</button>${manage ? `<button type="button" class="hof-button hof-button-small" data-add="in">+ Tahsilat</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-add="out">− Ödeme</button>${HOF.can("bank.transfer") ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-transfer="to-cash" title="Bankadan çekilen nakit kasaya girer">Bankadan Kasaya Aktar</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-transfer="to-bank" title="Kasadaki nakit bankaya yatırılır">Kasadan Bankaya Yatır</button>' : ""}${HOF.can("tax.manage") ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-tax title="Ödenecek vergiyi (KDV, muhtasar, diğer) Kasa\'dan nakit öder; gider değil, 360\'ı kapatır">Vergi Ödemesi</button>' : ""}` : ""}${HOF.can("system.manage") ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-opening title="Kasaya devreden nakit; bir kez girilir, buradan düzeltilir">Açılış Bakiyesi</button>' : ""}</div>
+        <div class="hof-cash-add">${HOF.outputButton({ kind: "pdf", label: "Kasa Dökümü - PDF", tip: "Seçili dönemin nakit kasa hareketlerini PDF olarak indir", attrs: "data-pdf" })}${manage ? `<button type="button" class="hof-button hof-button-small" data-add="in">+ Tahsilat</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-add="out">− Ödeme</button>${HOF.can("bank.transfer") ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-transfer="to-cash" title="Bankadan çekilen nakit kasaya girer">Bankadan Kasaya Aktar</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-transfer="to-bank" title="Kasadaki nakit bankaya yatırılır">Kasadan Bankaya Yatır</button>' : ""}${HOF.can("tax.manage") ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-tax title="Ödenecek vergiyi (KDV, muhtasar, diğer) Kasa\'dan nakit öder; gider değil, 360\'ı kapatır">Vergi Ödemesi</button>' : ""}` : ""}${HOF.can("system.manage") ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-opening title="Kasaya devreden nakit; bir kez girilir, buradan düzeltilir">Açılış Bakiyesi</button>' : ""}</div>
         <div class="hof-cash-range" data-range hidden><label><span>Başlangıç</span><input type="date" data-from value="${custom.from}"></label><span aria-hidden="true">–</span><label><span>Bitiş</span><input type="date" data-to value="${custom.to}"></label></div></div>
         <div class="hof-cash-list" data-list><p class="hof-empty">Yükleniyor…</p></div>
         <p class="hof-edit-meta">Kasa'da yalnız nakit hareketler görünür. Havale/EFT, POS ve kredi kartıyla yapılan tahsilat ve ödemeler cari, fatura, taksit, stok ve çek/senet ekranlarından girilir ve Raporlar → Banka ve POS Hareketleri'nde izlenir. Bankayla para geçişi için Bankadan Kasaya Aktar / Kasadan Bankaya Yatır kullanılır. Hareketler eskiden yeniye sıralıdır; en yeni en altta.</p>
@@ -805,16 +804,18 @@
   // Eski "Mesajlar" penceresinin yerini sağdan açılan sohbet paneli aldı (hof-chat.js).
   const openMessages = () => HOF.chat?.open();
 
+  // Personel Performans Özeti (görev, not, telefon, tahsilat, işlem): reports.view. Personel Özlük yetkisi olan (staff.view) Personel Raporu'nu
+  // çalışan kartlarıyla açar (hof-staff.js); performans orada "Performans Özeti" sekmesidir.
+  async function performanceHtml() {
+    const result = await HOF.api("/api/workspace/reports");
+    const rows = result.report.map(item => `<tr><td>${esc(item.userName)}<br><small>${esc(item.roleLabel || HOF.roleLabels[item.role] || item.role)}</small></td><td class="num">${item.tasksCompleted}</td><td class="num">${item.notes}</td><td class="num">${item.calls}</td><td class="num">${esc(HOF.formatMoney(item.collections))}</td><td class="num">${item.dataEntries}</td></tr>`).join("");
+    return `<div class="hof-kpis"><div><strong>${result.totals.tasks}</strong><span>Toplam Görev</span></div><div><strong>${result.totals.completedTasks}</strong><span>Tamamlanan</span></div><div><strong>${result.totals.notes}</strong><span>Not</span></div><div><strong>${esc(HOF.formatMoney(result.totals.payments))}</strong><span>Tahsilat</span></div></div><div style="overflow:auto"><table class="hof-table"><thead><tr><th>Personel</th><th>Görev</th><th>Not</th><th>Telefon</th><th>Tahsilat</th><th>İşlem</th></tr></thead><tbody>${rows || '<tr><td colspan="6">Henüz işlem yok.</td></tr>'}</tbody></table></div><p class="hof-edit-meta">Oluşturulma: ${esc(HOF.formatDateTime(result.generatedAt))}</p>`;
+  }
+
   async function openReports() {
+    if (HOF.can("staff.view") && HOF.staff) return HOF.staff.open({ performance: HOF.can("reports.view") ? performanceHtml : null });
     try {
-      const result = await HOF.api("/api/workspace/reports");
-      const rows = result.report.map(item => `<tr><td>${esc(item.userName)}<br><small>${esc(item.roleLabel || HOF.roleLabels[item.role] || item.role)}</small></td><td class="num">${item.tasksCompleted}</td><td class="num">${item.notes}</td><td class="num">${item.calls}</td><td class="num">${esc(HOF.formatMoney(item.collections))}</td><td class="num">${item.dataEntries}</td></tr>`).join("");
-      HOF.modal({
-        title: "Personel Performans Özeti",
-        eyebrow: "RAPOR",
-        size: "wide",
-        body: `<div class="hof-kpis"><div><strong>${result.totals.tasks}</strong><span>Toplam Görev</span></div><div><strong>${result.totals.completedTasks}</strong><span>Tamamlanan</span></div><div><strong>${result.totals.notes}</strong><span>Not</span></div><div><strong>${esc(HOF.formatMoney(result.totals.payments))}</strong><span>Tahsilat</span></div></div><div style="overflow:auto"><table class="hof-table"><thead><tr><th>Personel</th><th>Görev</th><th>Not</th><th>Telefon</th><th>Tahsilat</th><th>İşlem</th></tr></thead><tbody>${rows || '<tr><td colspan="6">Henüz işlem yok.</td></tr>'}</tbody></table></div><p class="hof-edit-meta">Oluşturulma: ${esc(HOF.formatDateTime(result.generatedAt))}</p>`,
-      });
+      HOF.modal({ title: "Personel Performans Özeti", eyebrow: "RAPOR", size: "wide", body: await performanceHtml() });
     } catch (error) {
       HOF.toastError(error);
     }
@@ -876,7 +877,8 @@
     // Raporlar (v2.0.9): ANLIK DURUM'daki "Rapor Al" ile aynı pencere (Cari ekstre, Vade takip, Nakit akış, Çek/Senet,
     // modül raporları, Tablo raporları). Rapor yetkisi ya da kişiye verilen ANLIK DURUM yetkisiyle görünür.
     { action: "analytics", icon: "▤", key: "side.analytics", label: () => "Raporlar", requires: "reports.any" },
-    { action: "reports", icon: "↗", key: "side.reports", label: () => "Personel Raporu", requires: "reports.view" },
+    // Personel Raporu: performans özeti (reports.view) ya da Personel Özlük (staff.view, 2.4.4; varsayılan yalnız yönetici) yetkisiyle görünür.
+    { action: "reports", icon: "↗", key: "side.reports", label: () => "Personel Raporu", requires: "reports.staff" },
     { action: "guide", icon: "?", key: "side.guide", label: () => "Kullanım Kılavuzu" },
   ];
   const sideTitle = () => HOF.uiLabel?.("side.title", "OPERASYON MERKEZİ") || "OPERASYON MERKEZİ";
@@ -895,7 +897,7 @@
     ["license", "Lisans", "license.manage"],
   ];
   HOF.search?.register(() => [
-    ...SIDE_ITEMS.filter(item => (!item.module || HOF.modules[item.module]) && (!item.requires || HOF.can(item.requires))).map(item => ({
+    ...SIDE_ITEMS.filter(item => (!item.module || HOF.modules[item.module]) && (!item.requires || (item.requires === "reports.staff" ? HOF.can("reports.view") || HOF.can("staff.view") : HOF.can(item.requires)))).map(item => ({
       group: item.action === "newTask" ? "İşlem" : "Sayfa",
       label: sideLabel(item),
       path: item.action === "guide" ? "PDF" : "",
@@ -1175,7 +1177,8 @@
     try {
       const result = await HOF.api(caseUrl(selected.key, "activity"));
       if (request !== activityRequest) return;
-      const tools = ["not", "telefon", HOF.modules.tahsilat ? "tahsilat" : "", HOF.modules.haciz ? "haciz" : ""].filter(Boolean);
+      // 2.4.4 (E8): kartta Tahsilat düğmesi yok (CSS) → boş geçmiş metni yalnız karttaki düğmeleri sayar.
+      const tools = ["not", "telefon", HOF.modules.haciz ? "haciz" : ""].filter(Boolean);
       const toolsText = `${tools.slice(0, -1).join(", ")} veya ${tools[tools.length - 1]}`;
       // Eskiden yeniye (v2.0.1): yeni eklenen işlem en altta. 2.3.0 İz 5.6: ilk 3 satır (en yeniler) görünür; "Daha Fazla Göster (n)"
       // tamamını açar.
@@ -1371,5 +1374,5 @@
     });
     setInterval(() => badges(), 120_000);
   });
-  HOF.workspace = { openTasks, openMessages, openReports, openLiens, openCash, refreshBadges, refreshActivity, extractPhones, payment: target => actions.payment(target) };
+  HOF.workspace = { openTasks, openMessages, openReports, performanceHtml, openLiens, openCash, refreshBadges, refreshActivity, extractPhones, payment: target => actions.payment(target) };
 })();

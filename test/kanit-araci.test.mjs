@@ -34,6 +34,17 @@ describe("kanıt aracı: özet satırları", () => {
     const guv = "\n✓ Tohum 1 · taban bos: 1000 işlem\n\n✗ değişmez kural bozuldu\n";
     assert.deepEqual(parseSummary(guv), { bicim: "guvenilirlik", toplam: 2, gecen: 1, basarisiz: 1, iptal: 0, atlanan: 0 });
   });
+  it("defter kâhini (test:kahin-defter): fark, atlanan/reddedilen olay ve yakalanmayan mutasyon başarısız sayılır", () => {
+    const ozet = (fark, atlanan, red, kacan) => `147/147 denetim tuttu.\n  mutasyon 1 (x): tam senaryoda YAKALANDI\n\nÖZET: 147 denetim, ${fark} fark, ${atlanan} atlanan olay, ${red} reddedilen olay, ${kacan} yakalanmayan mutasyon. Ham çıktı: /tmp/x\n`;
+    assert.deepEqual(parseSummary(ozet(0, 0, 0, 0)), { bicim: "kahin-defter", toplam: 147, gecen: 147, basarisiz: 0, iptal: 0, atlanan: 0 });
+    assert.equal(verdict({ exitCode: 0, summary: parseSummary(ozet(0, 0, 0, 0)) }).hukum, "GEÇTİ");
+    assert.equal(parseSummary(ozet(2, 0, 0, 0)).gecen, 145);
+    for (const [fark, atlanan, red, kacan] of [[2, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]) {
+      const summary = parseSummary(ozet(fark, atlanan, red, kacan));
+      assert.ok(summary.basarisiz > 0, `${fark}/${atlanan}/${red}/${kacan}`);
+      assert.equal(verdict({ exitCode: 1, summary }).hukum, "BAŞARISIZ");
+    }
+  });
   it("tanınmayan ya da boş çıktı özet sayılmaz", () => {
     assert.equal(parseSummary(""), null);
     assert.equal(parseSummary("her şey yolunda ✓"), null);
@@ -96,6 +107,22 @@ describe("kanıt aracı: gerçek koşu kaydı", () => {
     const day = readdirSync(dir)[0];
     return JSON.parse(readFileSync(path.join(dir, day, `${name}.json`), "utf8"));
   };
+
+  // 22.10.2026 (madde 30): adı alt klasör içeren kayıtta (ör. 244-m30/test-senaryo) klasör yoksa komut koşup bitiyor, kayıt ENOENT ile yazılamıyordu
+  // (sonuç kayboluyordu); araç alt klasörü komuttan önce açar.
+  it("alt klasörlü ad: klasör yoksa açılır, kayıt ve ham çıktı alt klasöre yazılır", () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), "kanit-"));
+    try {
+      const result = runTool(dir, "alt-klasor/iyi", "console.log('# tests 1\\n# pass 1\\n# fail 0\\n# cancelled 0')");
+      assert.equal(result.status, 0, result.stdout + result.stderr);
+      const record = recordOf(dir, "alt-klasor/iyi");
+      assert.equal(record.hukum, "GEÇTİ");
+      assert.equal(record.ad, "alt-klasor/iyi");
+      assert.match(record.ham_cikti, /alt-klasor\/iyi\.log$/);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
 
   it("geçen komut: çıkış 0, kayıt GEÇTİ, ham çıktı ve sha256 yazılır", () => {
     const dir = mkdtempSync(path.join(os.tmpdir(), "kanit-"));
@@ -216,6 +243,7 @@ describe("yalnız belge değişen commit (ci.yml paths-ignore, kullanıcı karar
     assert.equal(yalnizBelge(["docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html"]), false);
     assert.equal(yalnizBelge([]), false);
     assert.equal(yalnizBelge(["docs/fatura/E-BELGE-EDM.md", "CLAUDE.md"]), true);
+    assert.equal(yalnizBelge(["docs/2.4.4-IS-LISTESI.md", "docs/erp/ERP-YOL-HARITASI.md"]), true);
   });
   it("ci.yml push paths-ignore listesi BELGE_YOLLARI ile aynı; pull_request süzgeçsiz", () => {
     const yml = readFileSync(path.join(ROOT, ".github", "workflows", "ci.yml"), "utf8");

@@ -1,0 +1,43 @@
+{
+  "ad": "244-b2-uyari/mutasyon-M6-sifirlama-uyari-yazar",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/geri-yukleme-uyari-244.test.mjs",
+  "commit": "e070d4247567174ee1bf1b5efe142dfafba6cdb8",
+  "dal": "is/b2-uyari",
+  "kirli": 6,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T17:03:01.900Z",
+  "sure_sn": 5.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 9,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Geri yüklemeden sonra Fatura'da tek seferlik numara uyarısı; 11048 iletisi geri yüklemeyi söyler › N4 Şirket Verisini Sıfırla geri yükleme değildir: uyarı çıkarmaz (002) ve bekleyen uyarıyı silmez (001 Tümünü Sıfırla)",
+      "konum": "test/geri-yukleme-uyari-244.test.mjs:168:3",
+      "hata": "sıfırlama uyarı yazmaz · + actual - expected · + { (beklenen ~, gelen )"
+    },
+    {
+      "ad": "Geri yüklemeden sonra Fatura'da tek seferlik numara uyarısı; 11048 iletisi geri yüklemeyi söyler › N9 yarıda kalan geri yükleme uyarı yazmaz: bozuk yedek (002), vazgeçilen 001, açılışta uygulanamayan 001",
+      "konum": "test/geri-yukleme-uyari-244.test.mjs:177:3",
+      "hata": "002'de uyarı yok · + actual - expected · + { (beklenen ~, gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-b2-uyari/mutasyon-M6-sifirlama-uyari-yazar.log",
+  "klasor": "/home/user/wt/b2-uyari",
+  "ham_cikti_sha256": "f937c97962256d46d7f91cf6fa91b1046da9139b938413eeb8cff98d8c1d6dc3",
+  "ham_cikti_bayt": 6876
+}

@@ -1,0 +1,195 @@
+TAP version 13
+# (node:11207) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.4 E8: kaydın tahsilatı cariden; takvim kalemi carinin ve taksitin tahsilatıyla kapanır
+    # Subtest: T1 + T5 kayda bağlı carinin tahsilatı sözü kapatır (tam / kısmi / silinince döner); Kasa'ya bir kez, kayıt tahsilatına hiç yazılmaz
+    not ok 1 - T1 + T5 kayda bağlı carinin tahsilatı sözü kapatır (tam / kısmi / silinince döner); Kasa'ya bir kez, kayıt tahsilatına hiç yazılmaz
+      ---
+      duration_ms: 54.304987
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-m4/test/kayit-tahsilat-244.test.mjs:64:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        carinin 5.000 tahsilatı sözü kapattı
+        + actual - expected
+        
+        + {
+        +   amount: 5000,
+        +   caseKey: '2026/1101',
+        +   caseNo: '2026/1101',
+        +   column: 'Söz Tarihi',
+        +   days: -6,
+        +   debt: null,
+        +   due: '2026-10-16',
+        +   dueText: '16.10.2026',
+        +   fullAmount: 5000,
+        +   id: 'due|Ödeme Sözleri|2026/1101|Söz Tarihi|2026-10-16',
+        +   kind: 'date',
+        +   label: 'Ödeme sözü',
+        +   partial: false,
+        +   person: 'Ali Veli',
+        +   phone: '',
+        +   promise: true,
+        +   recurring: false,
+        +   state: 'overdue',
+        +   tab: 'Ödeme Sözleri',
+        +   thisMonth: true
+        + }
+        - null
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ~
+      actual:
+        id: 'due|Ödeme Sözleri|2026/1101|Söz Tarihi|2026-10-16'
+        caseKey: '2026/1101'
+        tab: 'Ödeme Sözleri'
+        person: 'Ali Veli'
+        caseNo: '2026/1101'
+        phone: ''
+        label: 'Ödeme sözü'
+        column: 'Söz Tarihi'
+        promise: true
+        kind: 'date'
+        recurring: false
+        due: '2026-10-16'
+        dueText: '16.10.2026'
+        days: -6
+        state: 'overdue'
+        amount: 5000
+        fullAmount: 5000
+        partial: false
+        debt: ~
+        thisMonth: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-m4/test/kayit-tahsilat-244.test.mjs:70:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: T2 bağsız aynı adlı carinin tahsilatı sayılmaz; bağlanınca kapanır, bağ kalkınca döner
+    not ok 2 - T2 bağsız aynı adlı carinin tahsilatı sayılmaz; bağlanınca kapanır, bağ kalkınca döner
+      ---
+      duration_ms: 37.218374
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-m4/test/kayit-tahsilat-244.test.mjs:87:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        cari kayda bağlanınca tahsilatı sözü kapattı
+        + actual - expected
+        
+        + {
+        +   amount: 3000,
+        +   caseKey: '2026/1102',
+        +   caseNo: '2026/1102',
+        +   column: 'Söz Tarihi',
+        +   days: 0,
+        +   debt: null,
+        +   due: '2026-10-22',
+        +   dueText: '22.10.2026',
+        +   fullAmount: 3000,
+        +   id: 'due|Ödeme Sözleri|2026/1102|Söz Tarihi|2026-10-22',
+        +   kind: 'date',
+        +   label: 'Ödeme sözü',
+        +   partial: false,
+        +   person: 'Ayşe Kaya',
+        +   phone: '',
+        +   promise: true,
+        +   recurring: false,
+        +   state: 'today',
+        +   tab: 'Ödeme Sözleri',
+        +   thisMonth: true
+        + }
+        - null
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ~
+      actual:
+        id: 'due|Ödeme Sözleri|2026/1102|Söz Tarihi|2026-10-22'
+        caseKey: '2026/1102'
+        tab: 'Ödeme Sözleri'
+        person: 'Ayşe Kaya'
+        caseNo: '2026/1102'
+        phone: ''
+        label: 'Ödeme sözü'
+        column: 'Söz Tarihi'
+        promise: true
+        kind: 'date'
+        recurring: false
+        due: '2026-10-22'
+        dueText: '22.10.2026'
+        days: 0
+        state: 'today'
+        amount: 3000
+        fullAmount: 3000
+        partial: false
+        debt: ~
+        thisMonth: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-m4/test/kayit-tahsilat-244.test.mjs:94:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T3 kartlı kişinin ödeme sözü taksit kartı tahsilatıyla (Taksite Yaz) kapanır
+    ok 3 - T3 kartlı kişinin ödeme sözü taksit kartı tahsilatıyla (Taksite Yaz) kapanır
+      ---
+      duration_ms: 73.955521
+      type: 'test'
+      ...
+    # Subtest: T4 Tablodaki Vadeler aynı kuralla; Tablodaki Kişiler kayda bağlı carinin tahsilatını alacak yazar
+    not ok 4 - T4 Tablodaki Vadeler aynı kuralla; Tablodaki Kişiler kayda bağlı carinin tahsilatını alacak yazar
+      ---
+      duration_ms: 19.604349
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-m4/test/kayit-tahsilat-244.test.mjs:112:3'
+      failureType: 'testCodeFailure'
+      error: "Ali'nin sözü (tahsilatı silindi) raporda açık"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-m4/test/kayit-tahsilat-244.test.mjs:115:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 1 - 2.4.4 E8: kaydın tahsilatı cariden; takvim kalemi carinin ve taksitin tahsilatıyla kapanır
+  ---
+  duration_ms: 540.19024
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kayit/kayit-mutasyon-m4/test/kayit-tahsilat-244.test.mjs:41:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.4 E8: eski sürüm verisi (v2.4.3 gerçek kodu) yeni kodla aynı sayılar; eski kayıt tahsilatı ve kayda bağlı kart düzeltilir / silinir
+    # Subtest: T6 sayılar aynı; eski kayıt tahsilatı ve kart düzeltilir / silinir; sunucu ucu durur
+    ok 1 - T6 sayılar aynı; eski kayıt tahsilatı ve kart düzeltilir / silinir; sunucu ucu durur
+      ---
+      duration_ms: 213.288056
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.4.4 E8: eski sürüm verisi (v2.4.3 gerçek kodu) yeni kodla aynı sayılar; eski kayıt tahsilatı ve kayda bağlı kart düzeltilir / silinir
+  ---
+  duration_ms: 736.704332
+  type: 'suite'
+  ...
+1..2
+# tests 5
+# suites 2
+# pass 2
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1536.314048

@@ -1,0 +1,12 @@
+b2-ux18-sira: 68/76 tuttu
+  ✗ [BULGU KULLANICI] k3:fatura:F1:acik: program 100000 · kâhin 0 (B2.1 açık = tutar − bağlı − en eski kapama)
+  ✗ [BULGU KULLANICI] k3:fatura:F2:acik: program 0 · kâhin 100000 (B2.1 açık = tutar − bağlı − en eski kapama)
+  ✗ [BULGU KULLANICI] k4:fatura:F1:acik: program 100000 · kâhin 0 (B2.1 açık = tutar − bağlı − en eski kapama)
+  ✗ [BULGU KULLANICI] k4:fatura:F2:acik: program 0 · kâhin 100000 (B2.1 açık = tutar − bağlı − en eski kapama)
+  ✗ [BULGU KULLANICI] k5:fatura:F1:acik: program 100000 · kâhin 0 (B2.1 açık = tutar − bağlı − en eski kapama)
+  ✗ [BULGU KULLANICI] k5:fatura:F2:acik: program 0 · kâhin 100000 (B2.1 açık = tutar − bağlı − en eski kapama)
+  ✗ [İNCELE AJAN] k5:fatura:G1:acik: program 0 · kâhin 100000 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz))
+  ✗ [İNCELE AJAN] k5:fatura:G2:acik: program 50000 · kâhin 100000 (B2.1 açık = tutar − bağlı − en eski kapama (ajan ayrıntısı: bagsiz-karsiliksiz))
+
+ÖZET: 1 senaryo, 76 denetim, 8 fark (BULGU 6), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-cari-d5ctpc
+68/76 denetim geçti

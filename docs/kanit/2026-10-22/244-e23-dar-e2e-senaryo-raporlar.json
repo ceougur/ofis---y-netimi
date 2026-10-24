@@ -1,0 +1,32 @@
+{
+  "ad": "244-e23-dar-e2e-senaryo-raporlar",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-raporlar.mjs",
+  "commit": "f53aaab23733f54abb3eafd6bda1912cc556ed76",
+  "dal": "is/e23",
+  "kirli": 14,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T23:37:58.975Z",
+  "sure_sn": 35.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 90,
+    "gecen": 90,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-e23-dar-e2e-senaryo-raporlar.log",
+  "klasor": "/home/user/wt/e23",
+  "ham_cikti_sha256": "f82eb1fd0adae7600eb9636413e1a47ffbfb4c2036b8ce5f6f1a45db32a19ab4",
+  "ham_cikti_bayt": 7652
+}

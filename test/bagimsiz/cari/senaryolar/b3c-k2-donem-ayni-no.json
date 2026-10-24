@@ -1,0 +1,118 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3c-k2-donem-ayni-no",
+ "aciklama": "K2 ([KULLANICI] 23.10.2026 04:09 UTC): FARKLI SEKMEDE (2025 Aidat / 2026 Aidat) aynı dosya no AYRI borç ve ayrı vade kalemi (2026/301: 1.200 + 1.500 = 2.700; 2026/304: 600 + 700 = 1.300), Tablodaki Kişiler'de ve Tahsilat Takvimi'nde '2 dosya no birden çok sekmede; ayrı sayıldı' notu; K1 aynı sekmede tekrar eden dosya no (400 + 400 = 800); K3 Kalan'sız Ödenecek Tutar − Ödenen Tutar (2.500 − 1.000 = 1.500); K4 dört rapor aynı toplam (6.300; bütün vadeler takvim penceresinde)",
+ "dayanak": "KARARLAR.md B3 (KULLANICI 23.10 03:12 UTC K1, K3; 04:09 UTC K2), B4b (K4)",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "2025 Aidat",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar",
+      "Ödeme Sözü"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/301",
+       "isim": "Hale Öz",
+       "hucreler": {
+        "Telefon": "0532 333 33 01",
+        "Tutar": "1.200,00 ₺",
+        "Ödeme Sözü": "20.06.2026"
+       }
+      },
+      {
+       "no": "2026/304",
+       "isim": "Kaan Er",
+       "hucreler": {
+        "Telefon": "0532 333 33 04",
+        "Tutar": "600,00 ₺",
+        "Ödeme Sözü": "20.06.2026"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "2026 Aidat",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar",
+      "Ödeme Sözü"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/301",
+       "isim": "Hale Öz",
+       "hucreler": {
+        "Telefon": "0532 333 33 01",
+        "Tutar": "1.500,00 ₺",
+        "Ödeme Sözü": "20.06.2026"
+       }
+      },
+      {
+       "no": "2026/302",
+       "isim": "İlker Su",
+       "hucreler": {
+        "Telefon": "0532 333 33 02",
+        "Tutar": "400,00 ₺",
+        "Ödeme Sözü": "20.06.2026"
+       }
+      },
+      {
+       "no": "2026/302",
+       "isim": "İlker Su",
+       "hucreler": {
+        "Telefon": "0532 333 33 02",
+        "Tutar": "400,00 ₺",
+        "Ödeme Sözü": "20.06.2026"
+       }
+      },
+      {
+       "no": "2026/304",
+       "isim": "Kaan Er",
+       "hucreler": {
+        "Telefon": "0532 333 33 04",
+        "Tutar": "700,00 ₺",
+        "Ödeme Sözü": "20.06.2026"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Taksit Planı",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Ödenecek Tutar",
+      "Ödenen Tutar",
+      "Ödeme Sözü"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/303",
+       "isim": "Jale Ay",
+       "hucreler": {
+        "Telefon": "0532 333 33 03",
+        "Ödenecek Tutar": "2.500,00 ₺",
+        "Ödenen Tutar": "1.000,00 ₺",
+        "Ödeme Sözü": "20.06.2026"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol",
+   "raporlar": true
+  }
+ ]
+}

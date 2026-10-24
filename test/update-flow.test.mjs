@@ -46,7 +46,7 @@ async function prepareInstall(name, { versions = ["9.0.0"], current = { version:
     writeFileSync(path.join(installRoot, "config", "guncelleme.json"), JSON.stringify(config));
   }
   if (seedUser) {
-    const app = createApp({ dataDir: path.join(installRoot, "data"), backupDir: path.join(installRoot, "backups"), logLevel: "silent", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD } });
+    const app = createApp({ dataDir: path.join(installRoot, "data"), backupDir: path.join(installRoot, "backups"), logLevel: "silent", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD }, startLicenseTimers: false }); // ders 30: tohum lisans servisine deneme atmaz
     const { hashPassword } = await import("../server/lib/passwords.mjs");
     const timestamp = new Date().toISOString();
     app.store.run("INSERT INTO users (id, username, display_name, role, password_hash, must_change_password, created_at, updated_at) VALUES ('user-kalici', 'kalici', 'Kalıcı Kullanıcı', 'personel', ?, 0, ?, ?)", hashPassword("Kalici-Parola-2026"), timestamp, timestamp);

@@ -1,0 +1,209 @@
+TAP version 13
+# Subtest: e-SMM servis adresi e-Fatura servis adresinden türetilir (kullanıcı kararı 21.10.2026 (6))
+    # Subtest: test ve canlı adres EDM'nin verdiği e-SMM adresleriyle aynı; yerel sahte servis adresi de türetilir
+    ok 1 - test ve canlı adres EDM'nin verdiği e-SMM adresleriyle aynı; yerel sahte servis adresi de türetilir
+      ---
+      duration_ms: 0.521086
+      type: 'test'
+      ...
+    # Subtest: …/EFaturaEDM.svc ile bitmeyen adresten tahmin yürütülmez: integrator-url
+    ok 2 - …/EFaturaEDM.svc ile bitmeyen adresten tahmin yürütülmez: integrator-url
+      ---
+      duration_ms: 0.47406
+      type: 'test'
+      ...
+    1..2
+ok 1 - e-SMM servis adresi e-Fatura servis adresinden türetilir (kullanıcı kararı 21.10.2026 (6))
+  ---
+  duration_ms: 1.764555
+  type: 'suite'
+  ...
+# Subtest: e-SMM istemcisi (ESmmEDM.svc) gerçek sözleşmeye uygun istek kurar
+    # Subtest: bağlantı testi: sözleşme okunur (SOAP 1.1, tempuri.org), programın kullandığı 5 işlem var; giriş e-SMM adresine gider
+    ok 1 - bağlantı testi: sözleşme okunur (SOAP 1.1, tempuri.org), programın kullandığı 5 işlem var; giriş e-SMM adresine gider
+      ---
+      duration_ms: 28.850233
+      type: 'test'
+      ...
+    # Subtest: gönderim: SendSMM — SMM'de ID/UUID ÇOCUK öğe + TRXID, CONTENT = UBL (base64), SMM_CONTENT_TYPE XML, gönderici/alıcı iki yerde
+    ok 2 - gönderim: SendSMM — SMM'de ID/UUID ÇOCUK öğe + TRXID, CONTENT = UBL (base64), SMM_CONTENT_TYPE XML, gönderici/alıcı iki yerde
+      ---
+      duration_ms: 7.330298
+      type: 'test'
+      ...
+    # Subtest: alıcının e-postası yoksa TO gitmez (kâğıt teslim)
+    ok 3 - alıcının e-postası yoksa TO gitmez (kâğıt teslim)
+      ---
+      duration_ms: 5.510043
+      type: 'test'
+      ...
+    # Subtest: kanal: ProfileID ESMM değilse ya da numara/ETTN içerikle uyuşmazsa istek HİÇ gitmez
+    ok 4 - kanal: ProfileID ESMM değilse ya da numara/ETTN içerikle uyuşmazsa istek HİÇ gitmez
+      ---
+      duration_ms: 1.323184
+      type: 'test'
+      ...
+    # Subtest: durum: GetSMMStatus SMM'de ID/UUID çocuk öğe; yanıtta SMM_STATUS'un KENDİ durumu okunur (HEADER/STATUS değil); e-SMM metinleri
+    not ok 5 - durum: GetSMMStatus SMM'de ID/UUID çocuk öğe; yanıtta SMM_STATUS'un KENDİ durumu okunur (HEADER/STATUS değil); e-SMM metinleri
+      ---
+      duration_ms: 7.08144
+      type: 'test'
+      location: '/home/user/wt/esmm/test/esmm-edm.test.mjs:154:3'
+      failureType: 'testCodeFailure'
+      error: "EDM sözleşmesi programın gönderdiği alanla uyuşmuyor (GetSMMStatusRequest/SMM/@ID, GetSMMStatusRequest/SMM/@UUID). İstek gönderilmedi. Entegratör Ayarları'nda Bağlantıyı Test Et'in sonucunu destek hattına iletin."
+      code: 'integrator-contract'
+      stack: |-
+        call (file:///home/user/wt/esmm/server/lib/einvoice/edm.mjs:269:39)
+        async file:///home/user/wt/esmm/server/lib/einvoice/edm.mjs:598:22
+        async withSession (file:///home/user/wt/esmm/server/lib/einvoice/edm.mjs:329:14)
+        async TestContext.<anonymous> (file:///home/user/wt/esmm/test/esmm-edm.test.mjs:156:20)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: durum eşlemesi EDM e-SMM tablosuna göre (xlsx): kabul/red yok, PACKAGE-FAIL iptal + yeniden gönderim yönergesi, LOAD-FAIL hata
+    ok 6 - durum eşlemesi EDM e-SMM tablosuna göre (xlsx): kabul/red yok, PACKAGE-FAIL iptal + yeniden gönderim yönergesi, LOAD-FAIL hata
+      ---
+      duration_ms: 1.052793
+      type: 'test'
+      ...
+    # Subtest: iptal: CancelSMM SMM'de ID/UUID çocuk öğe
+    not ok 7 - iptal: CancelSMM SMM'de ID/UUID çocuk öğe
+      ---
+      duration_ms: 7.642901
+      type: 'test'
+      location: '/home/user/wt/esmm/test/esmm-edm.test.mjs:184:3'
+      failureType: 'testCodeFailure'
+      error: "EDM sözleşmesi programın gönderdiği alanla uyuşmuyor (CancelSMMRequest/SMM/@ID, CancelSMMRequest/SMM/@UUID). İstek gönderilmedi. Entegratör Ayarları'nda Bağlantıyı Test Et'in sonucunu destek hattına iletin."
+      code: 'integrator-contract'
+      stack: |-
+        call (file:///home/user/wt/esmm/server/lib/einvoice/edm.mjs:269:39)
+        async file:///home/user/wt/esmm/server/lib/einvoice/edm.mjs:610:9
+        async withSession (file:///home/user/wt/esmm/server/lib/einvoice/edm.mjs:329:14)
+        async TestContext.<anonymous> (file:///home/user/wt/esmm/test/esmm-edm.test.mjs:186:20)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: resmî PDF: GetSMM (UUID + giden yön + PDF); ZIP'li içerik açılır; PDF değilse integrator-no-pdf; makbuz yoksa integrator-not-found
+    ok 8 - resmî PDF: GetSMM (UUID + giden yön + PDF); ZIP'li içerik açılır; PDF değilse integrator-no-pdf; makbuz yoksa integrator-not-found
+      ---
+      duration_ms: 8.151119
+      type: 'test'
+      ...
+    # Subtest: kopan bağlantı: yan etkisiz GetSMMStatus bir kez yinelenir; SendSMM ve CancelSMM YİNELENMEZ (sonuç belirsiz)
+    not ok 9 - kopan bağlantı: yan etkisiz GetSMMStatus bir kez yinelenir; SendSMM ve CancelSMM YİNELENMEZ (sonuç belirsiz)
+      ---
+      duration_ms: 2.595237
+      type: 'test'
+      location: '/home/user/wt/esmm/test/esmm-edm.test.mjs:209:3'
+      failureType: 'testCodeFailure'
+      error: "EDM sözleşmesi programın gönderdiği alanla uyuşmuyor (GetSMMStatusRequest/SMM/@ID, GetSMMStatusRequest/SMM/@UUID). İstek gönderilmedi. Entegratör Ayarları'nda Bağlantıyı Test Et'in sonucunu destek hattına iletin."
+      code: 'integrator-contract'
+      stack: |-
+        call (file:///home/user/wt/esmm/server/lib/einvoice/edm.mjs:269:39)
+        async file:///home/user/wt/esmm/server/lib/einvoice/edm.mjs:598:22
+        async withSession (file:///home/user/wt/esmm/server/lib/einvoice/edm.mjs:329:14)
+        async TestContext.<anonymous> (file:///home/user/wt/esmm/test/esmm-edm.test.mjs:211:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: EDM hatası (RequestFault) e-SMM'de de reddedildi olarak gelir; EDM kodu korunur
+    not ok 10 - EDM hatası (RequestFault) e-SMM'de de reddedildi olarak gelir; EDM kodu korunur
+      ---
+      duration_ms: 4.537285
+      type: 'test'
+      location: '/home/user/wt/esmm/test/esmm-edm.test.mjs:221:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'integrator-contract'
+        - 'integrator-rejected'
+                      ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'integrator-rejected'
+      actual: 'integrator-contract'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/esmm/test/esmm-edm.test.mjs:225:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..10
+not ok 2 - e-SMM istemcisi (ESmmEDM.svc) gerçek sözleşmeye uygun istek kurar
+  ---
+  duration_ms: 74.780616
+  type: 'suite'
+  location: '/home/user/wt/esmm/test/esmm-edm.test.mjs:88:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Bağdaştırıcı belge türüne göre servisi seçer (e-SMM → ESmmEDM.svc; e-Fatura/e-Arşiv → EFaturaEDM.svc)
+    # Subtest: ensureSession belgenin servisinde giriş yapar; e-Fatura oturumu e-SMM için erişim kanıtı sayılmaz; argümansız çağrı e-Fatura (eski davranış)
+    ok 1 - ensureSession belgenin servisinde giriş yapar; e-Fatura oturumu e-SMM için erişim kanıtı sayılmaz; argümansız çağrı e-Fatura (eski davranış)
+      ---
+      duration_ms: 16.137702
+      type: 'test'
+      ...
+    # Subtest: e-SMM belgesinde gönder / durum / iptal / resmî PDF ESmmEDM.svc'ye gider; e-posta ayarı kapalıysa alıcıya e-posta verilmez
+    not ok 2 - e-SMM belgesinde gönder / durum / iptal / resmî PDF ESmmEDM.svc'ye gider; e-posta ayarı kapalıysa alıcıya e-posta verilmez
+      ---
+      duration_ms: 3.396633
+      type: 'test'
+      location: '/home/user/wt/esmm/test/esmm-edm.test.mjs:242:3'
+      failureType: 'testCodeFailure'
+      error: "EDM sözleşmesi programın gönderdiği alanla uyuşmuyor (GetSMMStatusRequest/SMM/@ID, GetSMMStatusRequest/SMM/@UUID). İstek gönderilmedi. Entegratör Ayarları'nda Bağlantıyı Test Et'in sonucunu destek hattına iletin."
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        toHttp (file:///home/user/wt/esmm/server/lib/einvoice/adapters.mjs:41:48)
+        Object.status (file:///home/user/wt/esmm/server/lib/einvoice/adapters.mjs:70:13)
+        async TestContext.<anonymous> (file:///home/user/wt/esmm/test/esmm-edm.test.mjs:246:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: e-Arşiv belgesi (eski davranış) e-Fatura servisinden gider
+    ok 3 - e-Arşiv belgesi (eski davranış) e-Fatura servisinden gider
+      ---
+      duration_ms: 12.702702
+      type: 'test'
+      ...
+    # Subtest: e-SMM'de portala taslak yok: 409 einvoice-draft-unsupported, ağa çıkılmaz
+    ok 4 - e-SMM'de portala taslak yok: 409 einvoice-draft-unsupported, ağa çıkılmaz
+      ---
+      duration_ms: 0.492763
+      type: 'test'
+      ...
+    # Subtest: e-SMM adresi türetilemezse yalnız e-SMM işlemi düşer (integrator-url, ağa çıkılmaz); e-Fatura bağlantısı bozulmaz
+    ok 5 - e-SMM adresi türetilemezse yalnız e-SMM işlemi düşer (integrator-url, ağa çıkılmaz); e-Fatura bağlantısı bozulmaz
+      ---
+      duration_ms: 3.060873
+      type: 'test'
+      ...
+    # Subtest: testSmm: e-SMM servisine bağlantı testi (Entegratör Ayarları → Bağlantıyı Test Et için hazır)
+    ok 6 - testSmm: e-SMM servisine bağlantı testi (Entegratör Ayarları → Bağlantıyı Test Et için hazır)
+      ---
+      duration_ms: 3.188938
+      type: 'test'
+      ...
+    1..6
+not ok 3 - Bağdaştırıcı belge türüne göre servisi seçer (e-SMM → ESmmEDM.svc; e-Fatura/e-Arşiv → EFaturaEDM.svc)
+  ---
+  duration_ms: 39.254226
+  type: 'suite'
+  location: '/home/user/wt/esmm/test/esmm-edm.test.mjs:230:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 18
+# suites 3
+# pass 13
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 211.971912

@@ -1,0 +1,107 @@
+{
+ "adim": "h-hata-kodlari",
+ "baslik": "Görülen ret / hata kodları (PACKAGE-FAIL, SEND-FAILED, EDM hata kodu)",
+ "durum": "bilgi",
+ "denetimler": [],
+ "kayit": {
+  "kodlar": [
+   {
+    "yer": "g toplu gönderim",
+    "code": "integrator-rejected",
+    "error": "EDM isteği reddetti: UUID=8f84a18d-dadf-41f2-bb53-594beb388f9a ID=TES2026740556630 SMMsı gönderilemedi (Şema hatası: Şema Hatası:<br/>Results from XML Schema validation:\r\n  Error: The element 'adres' in namespace 'http://earsiv.efatura.gov.tr' has invalid child element 'binaAd' in namespace 'http://earsiv.efatura.gov.tr'. List of possible elements expected: 'http://earsiv.efatura.gov.tr:caddeSokak'.\r\n  At: (Line: 40, Column: 10)\r\n\r\n) Session ID : dc5255e8-9519-4e84-8639-52644f5dd135 (EDM hata kodu 11032)"
+   },
+   {
+    "yer": "g toplu gönderim",
+    "code": "integrator-rejected",
+    "error": "EDM isteği reddetti: UUID=36fd0d8d-e7a2-4fe8-ae09-2797302f5736 ID=TES2026740556631 SMMsı gönderilemedi (Şema hatası: Şema Hatası:<br/>Results from XML Schema validation:\r\n  Error: The element 'adres' in namespace 'http://earsiv.efatura.gov.tr' has invalid child element 'binaAd' in namespace 'http://earsiv.efatura.gov.tr'. List of possible elements expected: 'http://earsiv.efatura.gov.tr:caddeSokak'.\r\n  At: (Line: 40, Column: 10)\r\n\r\n) Session ID : dc5255e8-9519-4e84-8639-52644f5dd135 (EDM hata kodu 11032)"
+   },
+   {
+    "yer": "g toplu gönderim",
+    "code": "integrator-rejected",
+    "error": "EDM isteği reddetti: UUID=8f84a18d-dadf-41f2-bb53-594beb388f9a ID=TES2026740556630 SMMsı gönderilemedi (Şema hatası: Şema Hatası:<br/>Results from XML Schema validation:\r\n  Error: The element 'adres' in namespace 'http://earsiv.efatura.gov.tr' has invalid child element 'binaAd' in namespace 'http://earsiv.efatura.gov.tr'. List of possible elements expected: 'http://earsiv.efatura.gov.tr:caddeSokak'.\r\n  At: (Line: 40, Column: 10)\r\n\r\n) Session ID : dc5255e8-9519-4e84-8639-52644f5dd135 (EDM hata kodu 11032)"
+   },
+   {
+    "yer": "g toplu gönderim",
+    "code": "integrator-rejected",
+    "error": "EDM isteği reddetti: UUID=36fd0d8d-e7a2-4fe8-ae09-2797302f5736 ID=TES2026740556631 SMMsı gönderilemedi (Şema hatası: Şema Hatası:<br/>Results from XML Schema validation:\r\n  Error: The element 'adres' in namespace 'http://earsiv.efatura.gov.tr' has invalid child element 'binaAd' in namespace 'http://earsiv.efatura.gov.tr'. List of possible elements expected: 'http://earsiv.efatura.gov.tr:caddeSokak'.\r\n  At: (Line: 40, Column: 10)\r\n\r\n) Session ID : dc5255e8-9519-4e84-8639-52644f5dd135 (EDM hata kodu 11032)"
+   },
+   {
+    "yer": "g toplu gönderim",
+    "code": "integrator-rejected",
+    "error": "EDM isteği reddetti: UUID=56d56213-51ff-4b7a-95a1-377f8418d284 ID=TES2026740556632 SMMsı gönderilemedi (Şema hatası: Şema Hatası:<br/>Results from XML Schema validation:\r\n  Error: The element 'adres' in namespace 'http://earsiv.efatura.gov.tr' has invalid child element 'binaAd' in namespace 'http://earsiv.efatura.gov.tr'. List of possible elements expected: 'http://earsiv.efatura.gov.tr:caddeSokak'.\r\n  At: (Line: 40, Column: 10)\r\n\r\n) Session ID : dc5255e8-9519-4e84-8639-52644f5dd135 (EDM hata kodu 11032)"
+   },
+   {
+    "yer": "b B1 gönderim",
+    "code": "integrator-rejected",
+    "error": "EDM isteği reddetti: UUID=ecfc3b11-d177-485a-94d9-059277b2d430 ID=TES2026740556633 SMMsı gönderilemedi (Şema hatası: Şema Hatası:<br/>Results from XML Schema validation:\r\n  Error: The element 'adres' in namespace 'http://earsiv.efatura.gov.tr' has invalid child element 'binaAd' in namespace 'http://earsiv.efatura.gov.tr'. List of possible elements expected: 'http://earsiv.efatura.gov.tr:caddeSokak'.\r\n  At: (Line: 40, Column: 10)\r\n\r\n) Session ID : dc5255e8-9519-4e84-8639-52644f5dd135 (EDM hata kodu 11032) Belge TES2026740556633 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "b B2 gönderim",
+    "code": "integrator-rejected",
+    "error": "EDM isteği reddetti: UUID=18ece4fa-eace-4243-8907-956d60ac49dd ID=TES2026740556634 SMMsı gönderilemedi (Şema hatası: Şema Hatası:<br/>Results from XML Schema validation:\r\n  Error: The element 'adres' in namespace 'http://earsiv.efatura.gov.tr' has invalid child element 'binaAd' in namespace 'http://earsiv.efatura.gov.tr'. List of possible elements expected: 'http://earsiv.efatura.gov.tr:caddeSokak'.\r\n  At: (Line: 40, Column: 10)\r\n\r\n) Session ID : dc5255e8-9519-4e84-8639-52644f5dd135 (EDM hata kodu 11032) Belge TES2026740556634 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "c G1 durum",
+    "eStatus": "HTTP 502",
+    "integratorCode": "11017",
+    "code": "integrator-rejected"
+   },
+   {
+    "yer": "c G2 durum",
+    "eStatus": "HTTP 502",
+    "integratorCode": "11017",
+    "code": "integrator-rejected"
+   },
+   {
+    "yer": "c G5 durum",
+    "eStatus": "HTTP 502",
+    "integratorCode": "11017",
+    "code": "integrator-rejected"
+   },
+   {
+    "yer": "d G1 resmî görüntü",
+    "status": 409,
+    "ok": false,
+    "error": "Bu belge henüz entegratöre ulaşmadı; resmî görüntüsü yok.",
+    "code": "einvoice-not-sent"
+   },
+   {
+    "yer": "f e-SMM GetSMMStatus",
+    "code": "integrator-rejected",
+    "integratorCode": "11017",
+    "stage": "",
+    "status": 502,
+    "message": "EDM isteği reddetti: SMM bulunamadı (EDM hata kodu 11017)",
+    "detail": "ID=TES2026000000000 UUID=f33bd304-f7ad-46c4-9108-ff34cdee6ae7 kriterine uyan SMM bulunamadı. Session ID:dc5255e8-9519-4e84-8639-52644f5dd135"
+   },
+   {
+    "yer": "f e-SMM CancelSMM",
+    "code": "integrator-rejected",
+    "integratorCode": "11017",
+    "stage": "",
+    "status": 502,
+    "message": "EDM isteği reddetti: SMM bulunamadı (EDM hata kodu 11017)",
+    "detail": "SMM bulunamadı. Session ID:dc5255e8-9519-4e84-8639-52644f5dd135"
+   },
+   {
+    "yer": "f e-SMM GetSMM (PDF)",
+    "code": "integrator-not-found",
+    "integratorCode": "",
+    "stage": "",
+    "status": 404,
+    "message": "TES2026000000000 EDM'de bulunamadı (makbuz henüz işlenmemiş olabilir; birkaç dakika sonra yeniden deneyin).",
+    "detail": ""
+   },
+   {
+    "yer": "f e-Arşiv GetInvoiceStatus (karşılaştırma)",
+    "code": "integrator-rejected",
+    "integratorCode": "11017",
+    "stage": "",
+    "status": 502,
+    "message": "EDM isteği reddetti: Fatura bulunamadı (EDM hata kodu 11017)",
+    "detail": "ID=TEA2026000000000 UUID=9d51cfdc-4c94-4a4a-b38b-3c378c1b9863 kriterine uyan fatura bulunamadı. Session ID:dc5255e8-9519-4e84-8639-52644f5dd135"
+   }
+  ],
+  "paketHatasi": "görülmedi"
+ }
+}

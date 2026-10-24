@@ -1,0 +1,107 @@
+{
+ "adim": "h-hata-kodlari",
+ "baslik": "Görülen ret / hata kodları (PACKAGE-FAIL, SEND-FAILED, EDM hata kodu)",
+ "durum": "bilgi",
+ "denetimler": [],
+ "kayit": {
+  "kodlar": [
+   {
+    "yer": "g toplu gönderim",
+    "code": "integrator-rejected",
+    "error": "EDM isteği reddetti: UUID=a0f662f0-5aa3-4906-8791-94be76ec50a1 ID=TES2026589829651 SMMsı gönderilemedi (Object reference not set to an instance of an object.) Session ID : dc5255e8-9519-4e84-8639-52644f5dd135 (EDM hata kodu 11032)"
+   },
+   {
+    "yer": "g toplu gönderim",
+    "code": "integrator-rejected",
+    "error": "EDM isteği reddetti: UUID=76ca868c-8132-4aed-b78d-39bfaf55dd77 ID=TES2026589829652 SMMsı gönderilemedi (Object reference not set to an instance of an object.) Session ID : dc5255e8-9519-4e84-8639-52644f5dd135 (EDM hata kodu 11032)"
+   },
+   {
+    "yer": "g toplu gönderim",
+    "code": "integrator-rejected",
+    "error": "EDM isteği reddetti: UUID=a0f662f0-5aa3-4906-8791-94be76ec50a1 ID=TES2026589829651 SMMsı gönderilemedi (Object reference not set to an instance of an object.) Session ID : dc5255e8-9519-4e84-8639-52644f5dd135 (EDM hata kodu 11032)"
+   },
+   {
+    "yer": "g toplu gönderim",
+    "code": "integrator-rejected",
+    "error": "EDM isteği reddetti: UUID=76ca868c-8132-4aed-b78d-39bfaf55dd77 ID=TES2026589829652 SMMsı gönderilemedi (Object reference not set to an instance of an object.) Session ID : dc5255e8-9519-4e84-8639-52644f5dd135 (EDM hata kodu 11032)"
+   },
+   {
+    "yer": "g toplu gönderim",
+    "code": "integrator-rejected",
+    "error": "EDM isteği reddetti: UUID=b3773650-c722-4293-8563-8bc38d49e41e ID=TES2026589829653 SMMsı gönderilemedi (Object reference not set to an instance of an object.) Session ID : dc5255e8-9519-4e84-8639-52644f5dd135 (EDM hata kodu 11032)"
+   },
+   {
+    "yer": "b B1 gönderim",
+    "code": "integrator-rejected",
+    "error": "EDM isteği reddetti: UUID=0368bc43-6bed-4935-b200-3ff5d2b5b0ca ID=TES2026589829654 SMMsı gönderilemedi (Object reference not set to an instance of an object.) Session ID : dc5255e8-9519-4e84-8639-52644f5dd135 (EDM hata kodu 11032) Belge TES2026589829654 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "b B2 gönderim",
+    "code": "integrator-rejected",
+    "error": "EDM isteği reddetti: UUID=06d4126c-631e-4be2-a9ca-7114c26b4256 ID=TES2026589829655 SMMsı gönderilemedi (Object reference not set to an instance of an object.) Session ID : dc5255e8-9519-4e84-8639-52644f5dd135 (EDM hata kodu 11032) Belge TES2026589829655 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gönderilecekler'den (Tümünü Gönder) ya da kartındaki e-Belge Gönder ile gönderin."
+   },
+   {
+    "yer": "c G1 durum",
+    "eStatus": "HTTP 502",
+    "integratorCode": "11017",
+    "code": "integrator-rejected"
+   },
+   {
+    "yer": "c G2 durum",
+    "eStatus": "HTTP 502",
+    "integratorCode": "11017",
+    "code": "integrator-rejected"
+   },
+   {
+    "yer": "c G5 durum",
+    "eStatus": "HTTP 502",
+    "integratorCode": "11017",
+    "code": "integrator-rejected"
+   },
+   {
+    "yer": "d G1 resmî görüntü",
+    "status": 409,
+    "ok": false,
+    "error": "Bu belge henüz entegratöre ulaşmadı; resmî görüntüsü yok.",
+    "code": "einvoice-not-sent"
+   },
+   {
+    "yer": "f e-SMM GetSMMStatus",
+    "code": "integrator-rejected",
+    "integratorCode": "11017",
+    "stage": "",
+    "status": 502,
+    "message": "EDM isteği reddetti: SMM bulunamadı (EDM hata kodu 11017)",
+    "detail": "ID=TES2026000000000 UUID=ef882e5f-389d-4599-a10b-e89ac574f857 kriterine uyan SMM bulunamadı. Session ID:dc5255e8-9519-4e84-8639-52644f5dd135"
+   },
+   {
+    "yer": "f e-SMM CancelSMM",
+    "code": "integrator-rejected",
+    "integratorCode": "11017",
+    "stage": "",
+    "status": 502,
+    "message": "EDM isteği reddetti: SMM bulunamadı (EDM hata kodu 11017)",
+    "detail": "SMM bulunamadı. Session ID:dc5255e8-9519-4e84-8639-52644f5dd135"
+   },
+   {
+    "yer": "f e-SMM GetSMM (PDF)",
+    "code": "integrator-not-found",
+    "integratorCode": "",
+    "stage": "",
+    "status": 404,
+    "message": "TES2026000000000 EDM'de bulunamadı (makbuz henüz işlenmemiş olabilir; birkaç dakika sonra yeniden deneyin).",
+    "detail": ""
+   },
+   {
+    "yer": "f e-Arşiv GetInvoiceStatus (karşılaştırma)",
+    "code": "integrator-rejected",
+    "integratorCode": "11017",
+    "stage": "",
+    "status": 502,
+    "message": "EDM isteği reddetti: Fatura bulunamadı (EDM hata kodu 11017)",
+    "detail": "ID=TEA2026000000000 UUID=73f1ab6a-8657-479d-9c2c-fbe55e01e1a3 kriterine uyan fatura bulunamadı. Session ID:dc5255e8-9519-4e84-8639-52644f5dd135"
+   }
+  ],
+  "paketHatasi": "görülmedi"
+ }
+}

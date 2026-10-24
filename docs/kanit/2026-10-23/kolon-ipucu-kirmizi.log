@@ -1,0 +1,122 @@
+TAP version 13
+# Subtest: kolon eşleme ipucu değer adlarını yazar
+    # Subtest: kategori kolonu (Yerel Mahkeme): değer adları var, [object Object] yok
+    not ok 1 - kategori kolonu (Yerel Mahkeme): değer adları var, [object Object] yok
+      ---
+      duration_ms: 29.415248
+      type: 'test'
+      location: '/home/user/wt/kolon-ipucu/test/kolon-ipucu-244.test.mjs:13:3'
+      failureType: 'testCodeFailure'
+      error: 'ipucu nesne metni taşıyor: başlık kelimesi: kategori · 50 farklı değer: [object Object], [object Object], [object Object], [object Object]…'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'başlık kelimesi: kategori · 50 farklı değer: [object Object], [object Object], [object Object], [object Object]…'
+      operator: 'doesNotMatch'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/kolon-ipucu/test/kolon-ipucu-244.test.mjs:19:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: durum kolonu: değer adları sayılarıyla değil adıyla, sıklık sırasıyla
+    not ok 2 - durum kolonu: değer adları sayılarıyla değil adıyla, sıklık sırasıyla
+      ---
+      duration_ms: 2.831719
+      type: 'test'
+      location: '/home/user/wt/kolon-ipucu/test/kolon-ipucu-244.test.mjs:24:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input was expected to not match the regular expression /\[object Object\]/. Input:
+        
+        'başlık kelimesi: durum · 3 farklı değer: [object Object], [object Object], [object Object]'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'başlık kelimesi: durum · 3 farklı değer: [object Object], [object Object], [object Object]'
+      operator: 'doesNotMatch'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/kolon-ipucu/test/kolon-ipucu-244.test.mjs:28:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: sorumlu kolonu: tekrar eden kişi adları yazılır
+    not ok 3 - sorumlu kolonu: tekrar eden kişi adları yazılır
+      ---
+      duration_ms: 1.65305
+      type: 'test'
+      location: '/home/user/wt/kolon-ipucu/test/kolon-ipucu-244.test.mjs:32:3'
+      failureType: 'testCodeFailure'
+      error: 'ipucu: başlık kelimesi: sorumlu · az sayıda kişi tekrar ediyor: [object Object], [object Object], [object Object]'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'başlık kelimesi: sorumlu · az sayıda kişi tekrar ediyor: [object Object], [object Object], [object Object]'
+      operator: 'doesNotMatch'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/kolon-ipucu/test/kolon-ipucu-244.test.mjs:37:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: değer metni olduğu gibi gelir (kaçırma istemcide esc ile)
+    not ok 4 - değer metni olduğu gibi gelir (kaçırma istemcide esc ile)
+      ---
+      duration_ms: 1.34167
+      type: 'test'
+      location: '/home/user/wt/kolon-ipucu/test/kolon-ipucu-244.test.mjs:41:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /<b>x<\/b>/. Input:
+        
+        'başlık kelimesi: kategori · 2 farklı değer: [object Object], [object Object]'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'başlık kelimesi: kategori · 2 farklı değer: [object Object], [object Object]'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/kolon-ipucu/test/kolon-ipucu-244.test.mjs:44:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 1 - kolon eşleme ipucu değer adlarını yazar
+  ---
+  duration_ms: 36.372964
+  type: 'suite'
+  location: '/home/user/wt/kolon-ipucu/test/kolon-ipucu-244.test.mjs:12:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 112.2408

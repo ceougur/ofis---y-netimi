@@ -1,0 +1,53 @@
+{
+ "adim": "d-resmi-pdf",
+ "baslik": "Resmî görüntü: e-SMM GetSMM PDF (B1, B2, G1) ve karşılaştırma için e-Arşiv (G3)",
+ "durum": "kaldı",
+ "denetimler": [
+  {
+   "gecti": false,
+   "denetim": "B1: belge gönderilemediği için resmî görüntü denenmedi"
+  },
+  {
+   "gecti": false,
+   "denetim": "B2: belge gönderilemediği için resmî görüntü denenmedi"
+  },
+  {
+   "gecti": false,
+   "denetim": "G1 TES2026589829651: resmî görüntü 409 Bu belge henüz entegratöre ulaşmadı; resmî görüntüsü yok."
+  },
+  {
+   "gecti": true,
+   "denetim": "G3 TEA2026560394035: PDF (84036 bayt ≥ 5000), indirme adı numarayı taşır"
+  },
+  {
+   "gecti": true,
+   "denetim": "G3 TEA2026560394035: PDF metninde belge numarası (ETTN var)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G3 TEA2026560394035: resmî PDF'te satıcı ve alıcı adresi birer kez (satıcı 1, alıcı 1)"
+  },
+  {
+   "gecti": true,
+   "denetim": "G3 TEA2026560394035: resmî PDF'te düzenleyenin unvanı (DENEME TICARET LTD. STI.) var"
+  }
+ ],
+ "kayit": {
+  "G3": {
+   "status": 200,
+   "tur": "application/pdf",
+   "bayt": 84036,
+   "ad": "attachment; filename=\"TEA2026560394035 Resmi Gorunum.pdf\"; filename*=UTF-8''TEA2026560394035%20Resmi%20Gorunum.pdf",
+   "dosya": "TEA2026560394035-resmi.pdf",
+   "metin": {
+    "numara": true,
+    "ettn": true,
+    "tutarlar": [
+     "300,00",
+     "60,00",
+     "360,00"
+    ]
+   }
+  }
+ }
+}

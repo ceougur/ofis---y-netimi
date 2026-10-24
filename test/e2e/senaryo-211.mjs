@@ -487,7 +487,19 @@ try {
     });
     await open("tasks", "Görevler");
     await open("newTask", "Görev Ata");
-    await open("reports", "Personel Raporu");
+    // 2.4.4 Personel Özlük: Personel Raporu (Çalışanlar / Ayrılanlar / Performans Özeti) ve "+ Yeni Personel" formu da gezilir.
+    await open("reports", "Personel Raporu", async () => {
+      for (const tab of ["left", "performance", "active"]) {
+        const chip = await admin.$(`.hof-staff-modal [data-staff-tab="${tab}"]`);
+        if (!chip) continue;
+        await chip.click();
+        await admin.waitForTimeout(500);
+        await auditLabels(admin, `Personel Raporu › ${tab}`);
+      }
+      await form('.hof-staff-modal [data-staff-act="new"]', "Yeni Personel");
+    });
+    // 2.4.4 (KÖ3): kullanıcı menüsündeki Başlarken penceresi (adım adları, durum ve düğmeler).
+    await open("gettingStarted", "Başlarken");
     await admin.click('#hof-sidecard [data-action="analytics"]');
     await admin.waitForSelector(".hof-rep-tab");
     for (const tab of await admin.$$eval(".hof-rep-tab", list => list.map(node => node.dataset.tab))) {

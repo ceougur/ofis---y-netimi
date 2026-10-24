@@ -1,0 +1,38 @@
+{
+  "ad": "erp-belge-yollari-eski-kod-kirmizi",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/erp-belge-eski-95a2f58/test/kanit-araci.test.mjs",
+  "commit": "95a2f587b0c8ae024b60908dbdaf090cce96b4f2",
+  "dal": "claude/youthful-euler-fl8ks4",
+  "kirli": 3,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-21T14:04:41.954Z",
+  "sure_sn": 3.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 48,
+    "gecen": 47,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "yalnız belge değişen commit (ci.yml paths-ignore, kullanıcı kararı 13.10.2026) › testlerin okuduğu plan/kanıt belgesi yalnız belge sayılmaz",
+      "konum": "test/kanit-araci.test.mjs:213:3",
+      "hata": "Expected values to be strictly equal: · false !== true (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-21/erp-belge-yollari-eski-kod-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "9abaa7cbd2776791d040a58b0e6cf1c3e8188ed6971bfc80d480f79086c2c5e0",
+  "ham_cikti_bayt": 14980
+}

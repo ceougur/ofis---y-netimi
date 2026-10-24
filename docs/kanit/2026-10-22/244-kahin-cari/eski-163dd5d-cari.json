@@ -1,0 +1,158 @@
+{
+  "ad": "244-kahin-cari/eski-163dd5d-cari",
+  "komut": "env KAHIN_PROGRAM_KOKU=/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-cari/kahin-cari-eski-163dd5d node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --mutasyonsuz --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-cari/k-eski-cari",
+  "commit": "94c9016d667610ac178a50ff76b02013b3671803",
+  "dal": "is/kahin-cari",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T10:24:11.881Z",
+  "sure_sn": 10.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 1365,
+    "gecen": 1096,
+    "basarisiz": 269,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 269 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[İNCELE AJAN] adim:a1:durum: program \"ok\" · kâhin \"ret\" (B1.9)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] adim:a2:atlanan: program 1 · kâhin 0 (B1 aktarım özeti)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] adim:a2:kapsanan: program \"okunamadı\" · kâhin 1 (B1 aktarım özeti)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] adim:a2:olusan: program 0 · kâhin 1 (B1 aktarım özeti)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] adim:a2:tasinanAdet: program \"okunamadı\" · kâhin 2 (B1 aktarım özeti)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] adim:a2:tasinanTutar: program null · kâhin 100000 (B1 aktarım özeti)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] adim:a3:kapsanan: program \"okunamadı\" · kâhin 0 (B1 aktarım özeti)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] adim:a3:tasinanAdet: program \"okunamadı\" · kâhin 0 (B1 aktarım özeti)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] adim:a3:tasinanTutar: program null · kâhin 0 (B1 aktarım özeti)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN] adim:g2:durum: program \"ret\" · kâhin \"ok\" (adım kabul edilir) · yanıt:  Aktarım bulunamadı.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN] k1:cari:AYLA:bakiye: program 500000 · kâhin 200000 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN] k1:mizan:120: program 500000 · kâhin 200000 (B2.6 §3.11a yevmiye)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:K-1:alacak: program 0 · kâhin 100000 (B1.8 5c tahsilat bir kez)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN] k2:cari:AYLA:bakiye: program 500000 · kâhin 200000 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:cari:AYLA:taksitDisi: program 100000 · kâhin 0 (B1.2 taksit dışı kalan tahsilatlar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:kart:K-1:kalan: program 300000 · kâhin 200000 (B1.2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k2:kart:K-1:mevcutBorc: program false · kâhin true (B1.4 mevcut borcu taksitlendir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:kart:K-1:odenen: program 0 · kâhin 100000 (B1.2 taşınan tahsilatlar karta)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:kart:K-1:taksit1:odenen: program 0 · kâhin 100000 (B1.2 en eski açık taksitten başlayarak)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:rapor:K-1:alacak: program 0 · kâhin 100000 (B1.8 5c tahsilat bir kez)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN] k3:cari:AYLA:bakiye: program 250000 · kâhin -50000 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k3:kart:K-1:var: program true · kâhin false (B1.6 geri al kartı kaldırır)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k3:rapor:K-1:alacak: program 0 · kâhin 350000 (B1.8 5c tahsilat bir kez)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN] k1:mizan:602: program -300000 · kâhin 0 (B2.6 kâhinin yazmadığı hesap)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] adim:a1:kapsanan: program \"okunamadı\" · kâhin 3 (B1 aktarım özeti)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kahin-cari/eski-163dd5d-cari.log",
+  "klasor": "/home/user/wt/kahin-cari",
+  "ham_cikti_sha256": "efedfd06fbd941baf6e22a9b0ecb1dadba780cb98940aef89b3469b4f2a8c5a8",
+  "ham_cikti_bayt": 32437
+}

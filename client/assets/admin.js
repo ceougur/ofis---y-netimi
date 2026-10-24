@@ -34,6 +34,9 @@
     "source.excel.uploaded": "Excel tablosu yükledi",
     "dataset.imported": "Veri içeri aldı",
     "dataset.removed": "Veriyi kaldırdı",
+    // 2.4.4 31e: yükleme/eşitlemede kayda bağlı veriler (tahsilat, not, düzeltme, "Ödendi Say", cari bağı…).
+    "dataset.bonds.moved": "Kayıt bağlarını yeni satırlara taşıdı",
+    "dataset.bonds.unmatched": "Eşleşmeyen kayıt bağlarını onayladı",
     "dataset.unlinked": "Sheet bağlantısını kaldırdı",
     "dataset.missing.remove": "Sheet'te olmayan kayıtları kaldırdı",
     "dataset.missing.keep": "Sheet'te olmayan kayıtları tuttu",
@@ -47,6 +50,10 @@
     "company.deleted": "Şirketi sildi",
     "company.access": "Şirket yetkisini değiştirdi",
     "company.reset": "Şirket verisini sıfırladı",
+    // 2.4.4 Personel Özlük (KVKK): yalnız değişen alanların adları gösterilir; değer işlem geçmişine yazılmaz.
+    "staff.created": "Personel kartı ekledi",
+    "staff.updated": "Personel kartını düzeltti",
+    "staff.deleted": "Personel kartını sildi",
     "case.document.created": "Belge ekledi",
     "case.document.deleted": "Belgeyi sildi",
     "case.document.restored": "Belgeyi geri yükledi",
@@ -877,6 +884,11 @@
       parts.push(`${payload.label || ""} · ${modes[payload.mode] || payload.mode} · ${payload.rows} kayıt (${payload.added || 0} yeni, ${payload.updated || 0} güncellendi${payload.removed ? `, ${payload.removed} kaldırıldı` : ""})`);
     }
     if (event.type === "dataset.removed") parts.push(`${payload.removed} kayıt`);
+    if (event.type.startsWith("dataset.bonds.")) {
+      const list = payload.moves || payload.unmatched || [];
+      const names = [...new Set(list.map(item => item.name).filter(Boolean))];
+      parts.push(`${payload.count} kayıt${names.length ? `: ${names.slice(0, 12).join(", ")}${names.length > 12 ? "…" : ""}` : ""}`);
+    }
     if (event.type.startsWith("profile.sector.custom")) parts.push(payload.name || "");
     if (event.type === "profile.sector") parts.push(`${payload.name}${payload.source === "confirmed" ? " (analiz önerisi onaylandı)" : ""}`);
     if (event.type === "profile.label") parts.push(`${payload.name}: "${payload.previous || "varsayılan"}" → "${payload.value || "varsayılan"}"`);
@@ -886,6 +898,7 @@
     if (payload.recipient) parts.push(`Alıcı: ${payload.recipient}`);
     if (payload.key && event.type.startsWith("settings.")) parts.push(payload.key);
     if (payload.ip) parts.push(`IP ${payload.ip}`);
+    if (event.type.startsWith("staff.") && Array.isArray(payload.fields) && payload.fields.length) parts.push(`Alanlar: ${payload.fields.join(", ")}`);
     return parts.join(" · ");
   };
   async function loadAudit() {
@@ -1398,6 +1411,9 @@
   // ---------- Sekmeler ----------
   // ---------- Şirketler (v2.0.17) ----------
   let companyData = null;
+  // 2.4.4 (madde 30c G5): Başlarken'deki "Şirket Adını Yaz" admin.html#companies/rename açar — liste yüklenince açık şirketin ad penceresi
+  // kendiliğinden açılır; kaydedilince ana ekrana (Başlarken) dönülür. Vazgeçilirse Şirketler sekmesinde kalınır.
+  let renameFromStart = false;
   async function loadCompanies() {
     const body = $("#adm-companies");
     try {
@@ -1424,6 +1440,11 @@
           </tr>`,
         )
         .join("") || '<tr><td colspan="4" class="adm-muted">Şirket yok.</td></tr>';
+      if (renameFromStart) {
+        renameFromStart = false;
+        const current = list.find(item => item.current);
+        if (current) editCompany(current, { backToStart: true });
+      }
       renderCompanyConflicts(data.conflicts || []);
       renderCompanyAccess(access);
       renderCompanyReportPick(data.companies);
@@ -1554,7 +1575,7 @@
       },
     });
   }
-  function editCompany(item) {
+  function editCompany(item, { backToStart = false } = {}) {
     HOF.formModal({
       title: "Şirketin Adı ve Kodu",
       eyebrow: "ŞİRKET",
@@ -1567,6 +1588,7 @@
       onSubmit: async values => {
         await HOF.api(`/api/companies/${encodeURIComponent(item.id)}`, { method: "PUT", body: { code: values.code, name: values.name } });
         HOF.toast("Şirket bilgisi güncellendi.", { type: "success" });
+        if (backToStart) return window.location.assign("/");
         loadCompanies();
       },
     });
@@ -1578,10 +1600,15 @@
       intro: "Önce zorunlu yedek alınır (Yedekler'den geri yüklenebilir). Lisans, kullanıcılar ve öbür şirketler etkilenmez. Dönem kilidi varsa o da kaldırılır; kapatılmış dönemin hareketleri de silinir, yeniden girdikten sonra kilidi yeniden koyun. Geri alınamaz; onay için şirket kodunu ve parolanızı yazın.",
       fields: [
         { name: "mode", label: "Ne Silinsin", type: "select", value: "movements", options: [{ value: "movements", label: "Tüm Hareketleri Sil (cari/stok kartları, Kasa hesapları ve ayarlar kalır; bakiyeler sıfır)" }, { value: "all", label: "Tümünü Sıfırla (şirket ilk açıldığı gibi boş; ad/kod, unvan/VKN/logo, fatura serisi kalır)" }] },
-        { name: "resetNumbers", label: "Fatura Serisi Sayaçları da Sıfırlansın", type: "checkbox", value: true },
+        // 2.4.4 (madde 30c G6): kutu yalnız tahsilat makbuzu sayacını (plans.receiptSeq, app.mjs) siler; fatura/fiş serileri kutudan bağımsız baştan başlar
+        // (faturalar ve invoice.numberFloor silinir) — ad buna göre, fatura numaralarının durumu açıklamada.
+        // 31f U11: kararın tek cümlesi kutunun ALTINDA (önceden giriş paragrafındaydı).
+        { name: "resetNumbers", label: "Tahsilat Makbuzu Numaraları da Sıfırlansın", type: "checkbox", value: true, help: "Fatura ve fiş numaraları seride baştan başlar; e-Belge gönderdiyseniz yeniden göndermeden önce Fatura Ayarları → Numaralar'dan sıradaki numarayı ileri alın." },
         ...confirmFields(item.code),
       ],
       submitLabel: "Veriyi Sıfırla",
+      // 31f U11: geri alınamaz eylem — programın öbür yıkıcı onayları gibi kırmızı (Kullanıcıyı Sil ile aynı kalıp).
+      onOpen: dialog => dialog.querySelector('button[type="submit"]').classList.add("hof-button-danger"),
       onSubmit: async values => {
         const result = await HOF.api(`/api/companies/${encodeURIComponent(item.id)}/reset`, { method: "POST", body: { mode: values.mode, confirm: values.confirm, password: values.password, resetNumbers: Boolean(values.resetNumbers) } });
         const unlocked = result.unlocked ? ` Dönem kilidi (${result.unlocked.split("-").reverse().join(".")}) kaldırıldı.` : "";
@@ -1599,6 +1626,8 @@
         ...confirmFields(item.code),
       ],
       submitLabel: "Şirketi Sil",
+      // Ana oturum kararı (31f ek): geri alınamaz eylem — Veriyi Sıfırla ve Kullanıcıyı Sil gibi kırmızı; onay akışı aynı.
+      onOpen: dialog => dialog.querySelector('button[type="submit"]').classList.add("hof-button-danger"),
       onSubmit: async values => {
         const result = await HOF.api(`/api/companies/${encodeURIComponent(item.id)}`, { method: "DELETE", body: { confirm: values.confirm, password: values.password } });
         HOF.toast(`“${item.code} · ${item.name}” silindi. Yedek: ${result.backup || "—"}`, { type: "success", timeout: 8000 });
@@ -1697,7 +1726,9 @@
     }
     $("#adm-app").hidden = false;
     const visible = [...document.querySelectorAll(".adm-tabs [data-tab]")].filter(button => getComputedStyle(button).display !== "none").map(button => button.dataset.tab);
-    const requested = location.hash.slice(1) === "recovery" ? "users" : location.hash.slice(1);
+    const [hashTab, hashIntent] = location.hash.slice(1).split("/");
+    const requested = hashTab === "recovery" ? "users" : hashTab;
+    renameFromStart = hashTab === "companies" && hashIntent === "rename" && visible.includes("companies");
     // Lisans etkinleştirilmemiş veya salt okunurken yönetici önce Lisans sekmesini görür.
     const needsLicense = me.license && !me.license.writable && visible.includes("license");
     selectTab(visible.includes(requested) ? requested : needsLicense ? "license" : visible[0]);

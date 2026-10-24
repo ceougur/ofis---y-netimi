@@ -1,0 +1,32 @@
+{
+  "ad": "244-sunucu/29-olay-kanali",
+  "komut": "node --test test/banka-210-arayuz.test.mjs test/banka-210-raporlar.test.mjs test/cari-bilgi-222.test.mjs test/chat.test.mjs test/cheques-overview.test.mjs test/events.test.mjs test/inceleme-222.test.mjs test/supervisor.test.mjs",
+  "commit": "741caf9bb967e57188e4daa48f9d607e0411fd4c",
+  "dal": "is/sunucu",
+  "kirli": 2,
+  "izlenmeyen": 12,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T03:45:04.506Z",
+  "sure_sn": 18.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 79,
+    "gecen": 79,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-sunucu/29-olay-kanali.log",
+  "klasor": "/home/user/wt/sunucu",
+  "ham_cikti_sha256": "e955fe7379da9fb97447f875cd8654b095d9e623ef2d813ec517b0c5bc1cfa0c",
+  "ham_cikti_bayt": 26942
+}

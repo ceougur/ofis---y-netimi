@@ -1,0 +1,118 @@
+{
+  "ad": "244-kahin/kirmizi-aday17-cari-n3-n4-n6",
+  "komut": "node test/bagimsiz/cari/kos.mjs --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-244/k39-aday17",
+  "commit": "949ac682d109d43602eaae239b22c3c396dad9c4",
+  "dal": "is/kahin-244",
+  "kirli": 2,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T09:27:47.672Z",
+  "sure_sn": 86.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 3270,
+    "gecen": 3253,
+    "basarisiz": 17,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 17 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU KULLANICI] adim:t2:onay: program false · kâhin true (bağ sürekliliği (3) güvenli eşleşme yoksa onay; hepsi güvenliyse onaysız)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] adim:t2:uyariAdlari: program [] · kâhin [\"Ali Veli\"] (bağ sürekliliği (3) önizleme eşleşmeyen kayıtları adıyla söyler)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:rapor:R3:alacak: program 3000 · kâhin 2000 (B1.8 5c · N3 eşleşmeyen bağ hiçbir satıra taşınmaz (yanlış kişiye gitmez))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:rapor:R4:alacak: program 3000 · kâhin 2000 (B1.8 5c · N3 eşleşmeyen bağ hiçbir satıra taşınmaz (yanlış kişiye gitmez))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k3:rapor:R3:alacak: program 3000 · kâhin 2000 (B1.8 5c · N3 eşleşmeyen bağ hiçbir satıra taşınmaz (yanlış kişiye gitmez))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k3:rapor:R4:alacak: program 3000 · kâhin 2000 (B1.8 5c · N3 eşleşmeyen bağ hiçbir satıra taşınmaz (yanlış kişiye gitmez))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k4:rapor:R3:alacak: program 3000 · kâhin 2000 (B1.8 5c · N3 eşleşmeyen bağ hiçbir satıra taşınmaz (yanlış kişiye gitmez))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k4:rapor:R4:alacak: program 3000 · kâhin 2000 (B1.8 5c · N3 eşleşmeyen bağ hiçbir satıra taşınmaz (yanlış kişiye gitmez))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] adim:t2:onay: program false · kâhin true (bağ sürekliliği (3) güvenli eşleşme yoksa onay; hepsi güvenliyse onaysız)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] adim:t2:uyariAdlari: program [] · kâhin [\"Ali Veli\"] (bağ sürekliliği (3) önizleme eşleşmeyen kayıtları adıyla söyler)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:rapor:Q1:alacak: program 3000 · kâhin 0 (B1.8 5c · N3 eşleşmeyen bağ hiçbir satıra taşınmaz (yanlış kişiye gitmez))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:rapor:Q2:alacak: program 3000 · kâhin 0 (B1.8 5c · N3 eşleşmeyen bağ hiçbir satıra taşınmaz (yanlış kişiye gitmez))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:k4:kisiler: program 100000 · kâhin 500000 (B4b K4 dört rapor aynı satır borcunu kullanır (dönem süzgeci içinde))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:2026/601:borc: program 0 · kâhin 150000 (B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu · C3 kişi toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:2026/601:grup: program [] · kâhin [\"2026/601\"] (C3 kişi gruplaması: farklı ad aynı kimlik ayrı kişi; aynı ad farklı kimlik ayrı; kimliksiz aynı adın tek kimliğine katılır)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:2026/602:borc: program 0 · kâhin 250000 (B3 K1 satır başına (aynı sekme ayrı borç) · K2 (04:09) farklı sekme de ayrı borç · K3 satır borcu · C3 kişi toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:rapor:2026/602:grup: program [] · kâhin [\"2026/602\"] (C3 kişi gruplaması: farklı ad aynı kimlik ayrı kişi; aynı ad farklı kimlik ayrı; kimliksiz aynı adın tek kimliğine katılır)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-23/244-kahin/kirmizi-aday17-cari-n3-n4-n6.log",
+  "klasor": "/home/user/wt/kahin-244",
+  "ham_cikti_sha256": "ad252fabc9820734216a3e5b4d0d5c135daca607727e9c3a00cd95d242bd718c",
+  "ham_cikti_bayt": 10932
+}

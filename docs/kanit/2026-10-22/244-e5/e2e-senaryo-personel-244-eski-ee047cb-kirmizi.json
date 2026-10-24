@@ -1,0 +1,58 @@
+{
+  "ad": "244-e5/e2e-senaryo-personel-244-eski-ee047cb-kirmizi",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-personel-244.mjs",
+  "commit": "ee047cb245ba5d15db4c04713198cc6d50a612bd",
+  "dal": "is/e5",
+  "kirli": 4,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T21:32:15.958Z",
+  "sure_sn": 47.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 73,
+    "gecen": 69,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "B'nin formunda bayat kayıt iletisi, form açık (form kapandı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "veri tabanında A'nın maaşı korundu, IBAN değişmedi (maaş 4500050, IBAN DEĞİŞTİ)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "iki değişiklik birden: maaş 4500050, IBAN TR320010009999901234567890",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "silinmiş karta kayıt: formda ileti (Personel kartı bulunamadı. Silinmiş olabilir.)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-personel-244: 69 geçti, 4 kaldı · depo /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e5/e5-eski-ee047cb · ekran görüntüleri /home/user/wt/e5/test/e2e/artifacts/senaryo-personel-244",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-e5/e2e-senaryo-personel-244-eski-ee047cb-kirmizi.log",
+  "klasor": "/home/user/wt/e5",
+  "ham_cikti_sha256": "96281add32dacce53a9d39946c69383b8f78d078fa742269a08c481c352ff8c3",
+  "ham_cikti_bayt": 5405
+}

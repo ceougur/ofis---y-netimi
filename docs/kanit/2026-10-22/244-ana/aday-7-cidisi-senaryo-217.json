@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-7-cidisi-senaryo-217",
+  "komut": "npm run test:senaryo-217",
+  "commit": "846365c6d9048c9cf97c4d35970793cf86929fb9",
+  "dal": "aday7",
+  "kirli": 0,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T21:16:02.068Z",
+  "sure_sn": 82.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 65,
+    "gecen": 65,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday-7-cidisi-senaryo-217.log",
+  "klasor": "/home/user/wt/aday7",
+  "ham_cikti_sha256": "dd561e94b0b65cbb4883f393d24d40f733ccf4d61fccfbc0366d29d8272e7507",
+  "ham_cikti_bayt": 6822
+}

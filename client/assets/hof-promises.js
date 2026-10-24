@@ -135,13 +135,9 @@
     // Çek / senet (v2.0.7): tahsil / ödeme evrak kartından.
     if (item.source === "cheque") return HOF.cheques?.open({ id: item.chequeId, action: item.direction === "out" ? "pay" : "collect" });
     if (!HOF.workspace?.payment) return;
-    HOF.workspace.payment({
-      key: item.caseKey,
-      title: who(item),
-      amount: item.amount,
-      note: `${item.label} · ${item.dueText}`,
-      intro: `<b>${esc(item.label)}</b> · vade ${esc(item.dueText)}${item.amount ? ` · beklenen <b>${esc(money(item.amount))}</b>` : ""}. Kaydedince kalem kapanır ve tutar Kasa'ya tahsilat olarak düşer.`,
-    });
+    // 2.4.4 (E8): tablodaki kaydın kalemi kaydın CARİSİNE yazılır (carisi yoksa önce cari açılır; hof-workspace.js actions.payment); tutar ve açıklama
+    // hazır gelir, kalem carinin ya da taksitin tahsilatıyla kapanır. Önceden kayıttan doğrudan Kasa'ya yazılıyordu.
+    HOF.workspace.payment({ key: item.caseKey, title: who(item), person: item.person || "", phone: item.phone || "", amount: item.amount, note: `${item.label} · ${item.dueText}`, debt: item.debt || null, debtColumn: item.debtColumn || "" });
   }
 
   function openCard(item, pillNode) {
@@ -149,7 +145,9 @@
     const plan = item.source === "plan";
     const cheque = item.source === "cheque";
     // Öbür sayfanın kalemi: tahsilat o sayfaya geçince girilir (kayıt orada); Ödendi Say buradan çalışır.
-    const canPay = item.foreign ? false : cheque ? HOF.can("cheques.manage") : plan ? HOF.can("plans.collect") : HOF.can("payments.create");
+    // 2.4.4 (E8): tablodaki kaydın tahsilatı cariden (ya da kayda bağlı taksit kartından) girilir; Kayıt Tahsilatı yetkisi (payments.create) artık yalnız eski
+    // kayıt tahsilatlarını düzeltir.
+    const canPay = item.foreign ? false : cheque ? HOF.can("cheques.manage") : plan ? HOF.can("plans.collect") : HOF.can("accounts.collect") || HOF.can("plans.collect");
     const canSettle = !plan && !cheque && HOF.can("records.edit");
     const card = HOF.el(
       "div",
@@ -218,7 +216,8 @@
       signature = "";
       return;
     }
-    const nextSignature = JSON.stringify(items.map(item => [item.id, item.amount, item.state, item.days]));
+    const notes = data.notes || [];
+    const nextSignature = JSON.stringify([items.map(item => [item.id, item.amount, item.state, item.days]), notes]);
     if (existing && existing.isConnected && signature === nextSignature && existing.previousElementSibling === anchor) return;
     existing?.remove();
     signature = nextSignature;
@@ -227,8 +226,10 @@
     const soon = items.length - overdue - now;
     const shown = items.slice(0, PILL_LIMIT);
     const parts = [overdue ? `${overdue} gecikmiş` : "", now ? `${now} bugün/bu ay` : "", soon ? `${soon} yaklaşan` : ""].filter(Boolean).join(" · ");
-    const band = HOF.el("section", { class: "hof-payment-promises", "aria-label": "Tahsilat takvimi" });
-    band.innerHTML = `<div class="hof-payment-promises-heading"><span class="hof-payment-promises-dot${overdue ? " is-late" : ""}"></span><strong>Tahsilat Takvimi</strong><small>${esc(parts)}${shown.length < items.length ? ` · ilk ${shown.length}` : ""}</small></div><div class="hof-payment-promises-viewport"><div class="hof-payment-promises-track"></div></div>`;
+    const band = HOF.el("section", { class: `hof-payment-promises${notes.length ? " has-note" : ""}`, "aria-label": "Tahsilat takvimi" });
+    // 31e A1: borcu birden çok sekmede olan dosya no ayrı kalem sayıldı — raporlarla aynı not (zil söylemez).
+    const noteHtml = notes.length ? `<p class="hof-payment-promises-note" data-dues-notes>${notes.map(note => esc(note)).join(" ")}</p>` : "";
+    band.innerHTML = `<div class="hof-payment-promises-heading"><span class="hof-payment-promises-dot${overdue ? " is-late" : ""}"></span><strong>Tahsilat Takvimi</strong><small>${esc(parts)}${shown.length < items.length ? ` · ilk ${shown.length}` : ""}</small></div><div class="hof-payment-promises-viewport"><div class="hof-payment-promises-track"></div></div>${noteHtml}`;
     const track = band.querySelector(".hof-payment-promises-track");
     const pill = item => {
       const button = HOF.el(

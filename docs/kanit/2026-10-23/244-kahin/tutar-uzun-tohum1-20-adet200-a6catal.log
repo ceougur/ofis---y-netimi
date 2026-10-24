@@ -1,0 +1,32 @@
+tutar tohum 1: 3975/3975 tuttu
+tutar tohum 2: 3990/3990 tuttu
+tutar tohum 3: 4268/4268 tuttu
+tutar tohum 4: 4089/4089 tuttu
+tutar tohum 5: 4117/4117 tuttu
+  · not: s053:not:a6Tabani (A6 30.000 TL tabanı belirsiz: vergiler dahil toplam 3010243 kuruş > eşik ≥ ödenecek 2413462 kuruş — kayıt sonucu denetlenmez)
+tutar tohum 6: 4100/4100 tuttu
+tutar tohum 7: 4078/4078 tuttu
+tutar tohum 8: 4243/4243 tuttu
+tutar tohum 9: 4204/4204 tuttu
+tutar tohum 10: 4221/4221 tuttu
+tutar tohum 11: 4121/4121 tuttu
+  · not: s037:not:a6Tabani (A6 30.000 TL tabanı belirsiz: vergiler dahil toplam 3033299 kuruş > eşik ≥ ödenecek 2999812 kuruş — kayıt sonucu denetlenmez)
+tutar tohum 12: 4142/4142 tuttu
+tutar tohum 13: 4263/4263 tuttu
+tutar tohum 14: 4272/4272 tuttu
+tutar tohum 15: 4207/4207 tuttu
+tutar tohum 16: 4040/4040 tuttu
+tutar tohum 17: 4195/4195 tuttu
+tutar tohum 18: 4383/4383 tuttu
+tutar tohum 19: 4190/4190 tuttu
+tutar tohum 20: 4021/4021 tuttu
+  mutasyon 1 (Gerçek kişi alıcıya da %20 stopaj (GVK 94/1 yok sayılır)): YAKALANDI
+  mutasyon 2 (Birden çok brüt aynı Net Ücreti verirse en BÜYÜĞÜ seçilir): YAKALANDI
+  mutasyon 3 (KDV dahil fiyatlı makbuzda Netten Brüte KDV hariç matrahı birim fiyat sanır): YAKALANDI
+  mutasyon 4 (Stopaj kalem kalem yuvarlanır (ÇATAL B tek dal sanılır)): YAKALANDI
+  mutasyon 5 (602 tevkifatı 5/10 sanılır): YAKALANDI
+  mutasyon 6 (XML TaxInclusiveAmount = Net Ücret + KDV sanılır (EDM 'Tahsil Edilen KDV' yerine)): YAKALANDI
+  mutasyon 7 (Ödenecek = Net Ücret + KDV (tevkifat düşülmez)): YAKALANDI
+
+ÖZET: 20 tohum × 200 satır, 83119 denetim, 0 fark (BULGU 0), 0 yakalanmayan mutasyon. Ham çıktı: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-244/kanit-tutar-uzun2
+83119/83119 denetim geçti

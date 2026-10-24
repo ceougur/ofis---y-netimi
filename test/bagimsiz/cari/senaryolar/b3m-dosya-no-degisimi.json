@@ -1,0 +1,207 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3m-dosya-no-degisimi",
+ "aciklama": "N1 (kullanıcı kararı A, 23.10.2026): Dosya No'lu tabloda her kayıt kendi dosya numarasıyla tanınır. 2026/101 kapanıp aynı kişiye (Gül Ak) 2026/150 açılınca kayıt tahsilatı yeni dosyaya TAŞINMAZ, eski dosyada kalır — Yerine Koy önizlemesinde 'Gül Ak' + onay; 2026/150'nin tahsilatı 0. Aynı dosyada tutar değişimi (Hakan Er 2026/102: 2.000 → 2.500) bağı yerinde bırakır. 2026/101 geri gelince bağı (100) yeniden görünür; bağsız 2026/150'nin kalkması onay istemez. Kimlik kolonlu tabloda da kayıt kendi geçerli kimliğiyle tanınır: Rana Ok'un TC'si 10000000146 → 12345678950 olunca tahsilatı (50) taşınmaz (uyarı + onay), eski TC geri gelince yeniden görünür.",
+ "dayanak": "KARARLAR.md B3g N1",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "İcra Dosyaları",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/101",
+       "isim": "Gül Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "1.000,00 ₺"
+       }
+      },
+      {
+       "no": "2026/102",
+       "isim": "Hakan Er",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "2.000,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Üyeler",
+     "tur": "serbest",
+     "ilk": [
+      "Müşteri"
+     ],
+     "basliklar": [
+      "Telefon",
+      "TC Kimlik No",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "K1",
+       "isim": "Rana Ok",
+       "hucreler": {
+        "Telefon": "",
+        "TC Kimlik No": "10000000146",
+        "Tutar": "500,00 ₺"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "p1",
+   "islem": "kayit_tahsilat",
+   "kayit": "2026/101",
+   "tutar": "100",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "p2",
+   "islem": "kayit_tahsilat",
+   "kayit": "2026/102",
+   "tutar": "200",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "p3",
+   "islem": "kayit_tahsilat",
+   "kayit": "K1",
+   "tutar": "50",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  },
+  {
+   "id": "t2",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "İcra Dosyaları",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/150",
+       "isim": "Gül Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "1.000,00 ₺"
+       }
+      },
+      {
+       "no": "2026/102",
+       "isim": "Hakan Er",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "2.500,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Üyeler",
+     "tur": "serbest",
+     "ilk": [
+      "Müşteri"
+     ],
+     "basliklar": [
+      "Telefon",
+      "TC Kimlik No",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "K1",
+       "isim": "Rana Ok",
+       "hucreler": {
+        "Telefon": "",
+        "TC Kimlik No": "12345678950",
+        "Tutar": "500,00 ₺"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k2",
+   "islem": "kontrol"
+  },
+  {
+   "id": "t3",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "İcra Dosyaları",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/101",
+       "isim": "Gül Ak",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "1.000,00 ₺"
+       }
+      },
+      {
+       "no": "2026/102",
+       "isim": "Hakan Er",
+       "hucreler": {
+        "Telefon": "",
+        "Tutar": "2.500,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Üyeler",
+     "tur": "serbest",
+     "ilk": [
+      "Müşteri"
+     ],
+     "basliklar": [
+      "Telefon",
+      "TC Kimlik No",
+      "Tutar"
+     ],
+     "kayitlar": [
+      {
+       "no": "K1",
+       "isim": "Rana Ok",
+       "hucreler": {
+        "Telefon": "",
+        "TC Kimlik No": "10000000146",
+        "Tutar": "500,00 ₺"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k3",
+   "islem": "kontrol"
+  }
+ ]
+}

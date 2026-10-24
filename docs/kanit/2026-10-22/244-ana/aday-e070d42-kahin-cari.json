@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-e070d42-kahin-cari",
+  "komut": "npm run test:kahin-cari",
+  "commit": "36762398d4f59510e1630ec38877cc5253072da6",
+  "dal": "aday6",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T17:06:50.551Z",
+  "sure_sn": 22.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 1364,
+    "gecen": 1364,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday-e070d42-kahin-cari.log",
+  "klasor": "/home/user/wt/aday6",
+  "ham_cikti_sha256": "a9d63f43293d8ea1665dd6c204d13573115be8bc83f4b8a3d76c71cc0ee16eb8",
+  "ham_cikti_bayt": 2246
+}

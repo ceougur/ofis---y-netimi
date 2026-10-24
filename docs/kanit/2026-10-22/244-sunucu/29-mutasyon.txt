@@ -1,0 +1,22 @@
+Mutasyonlar (ayrı kopya, HEAD+yeni kod):
+1) isSharedEvent her olaya true (şirket verisi de köprülenir) -> beklenen: sızma testi kırmızı
+2) close() içinde unbridgeHubEvents?.() kaldırıldı -> beklenen: geri yükleme/dinleyici testi kırmızı
+3) köprü hedefi (users/except) atılır -> beklenen: hedefli yetki testi kırmızı
+== mutasyon 1
+    not ok 5 - şirkete özgü veri olayı sızmaz: 001'de açılan cari 001 akışına gelir, 002 akışına gelmez (ve tersi)
+not ok 1 - Şirket kanalları: ortak olaylar 002 ekranına ulaşır, şirket verisi sızmaz
+# tests 6
+# pass 5
+# fail 1
+== mutasyon 2
+    not ok 6 - geri yüklemede 002 örneği kapanıp yeniden açılır: eski köprü kalkar (dinleyici birikmez), yeni örnek ortak olayı yine alır
+not ok 1 - Şirket kanalları: ortak olaylar 002 ekranına ulaşır, şirket verisi sızmaz
+# tests 6
+# pass 5
+# fail 1
+== mutasyon 3
+    not ok 2 - yetki olayı yalnız ilgili kullanıcıya gider (002'de de): yöneticinin 002 akışı başkasının yetki olayını almaz
+not ok 1 - Şirket kanalları: ortak olaylar 002 ekranına ulaşır, şirket verisi sızmaz
+# tests 6
+# pass 5
+# fail 1

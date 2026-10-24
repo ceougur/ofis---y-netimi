@@ -1,0 +1,32 @@
+{
+  "ad": "244-kucuk-m4-senaryo-banka-210b",
+  "komut": "npm run test:senaryo-banka-210b",
+  "commit": "332cf511ad331937476bf8cd6edfdd3fc4d54afd",
+  "dal": "is/kucuk",
+  "kirli": 5,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T03:40:44.088Z",
+  "sure_sn": 91.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 90,
+    "gecen": 90,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kucuk-m4-senaryo-banka-210b.log",
+  "klasor": "/home/user/wt/kucuk",
+  "ham_cikti_sha256": "6e416d3bc7ddced1145b248748cbaa331fd024ce5270f525de5238fe60cd7ed3",
+  "ham_cikti_bayt": 8900
+}

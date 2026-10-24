@@ -1,0 +1,62 @@
+A) Geriye tarih: TEA serisinde son belge TEA2026000000001 (12.06.2026); form 11.06.2026
+  ✓ tarih klavyeyle yazıldı (ay/gün/yıl: 2026-06-11)
+  ✗ Toplamlar kutusunda uyarı (Toplamlar Toplam₺100,00Ara Toplam₺100,00 KDV %20₺20,00 Genel Toplam₺120,00 Yalnız Yüz Yirmi Türk Lirası)
+  ✗ "Kaydedilince Verilecek No" gösterilmez (Kaydedilince Verilecek NoTEA2026000000002)
+  ✗ Kaydet ve Gönder: numaralı onay açılmadı
+    [soru] "Faturayı Kaydet" → Vazgeç (eski kod: onay çakışmayı söylemeden açıldı — kaydetme)
+  ✗ Kaydet ve Gönder: neden form satırında ()
+  ✗ Kes, Sonra Gönder: numaralı onay açılmadı
+    [soru] "Faturayı Kaydet" → Vazgeç (eski kod: onay çakışmayı söylemeden açıldı — kaydetme)
+  ✗ Kes, Sonra Gönder: neden form satırında ()
+  ✓ belge yazılmadı, EDM'ye istek yok (0, 0)
+
+B) Tarih 12.06.2026 (son belgeyle aynı gün): uyarı kalkar; onay numarayı söyler
+  ✓ uyarı kalktı
+  ✓ sıradaki numara görünür (Kaydedilince Verilecek NoTEA2026000000002)
+  ✓ onay açıldı
+    [soru] "Faturayı Kaydet" → Evet (çakışmasız geçerli belge: kaydedilip gönderilmeli)
+  ✓ onay numarayı söyler (Ayşe Kaya için TEA2026000000002 numarasıyla satış faturası kaydedilecek: ₺120,00. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. Gönderildikt)
+  ✓ kaydedilen numara onaydaki (TEA2026000000002 2026-06-12)
+
+C) Daha eski bekleyen (14.06.2026, numarasız) varken bugünün belgesi: onay numara göstermez
+  ✗ Toplamlar kutusunda bilgi (Toplamlar Toplam₺250,00Ara Toplam₺250,00 KDV %20₺50,00 Genel Toplam₺300,00 Yalnız Üç Yüz Türk Lirası)
+  ✗ sıradaki numara gösterilmez (Kaydedilince Verilecek NoTEA2026000000003)
+  ✓ onay açıldı (kayıt yapılabilir; numara sonra)
+    [soru] "Faturayı Kaydet" → Evet (belge numarasız Gönderilecekler'e girmeli — onayın dediği gerçekleşiyor mu)
+  ✗ onay numara göstermez, nedeni söyler (Ayşe Kaya için TEA2026000000003 numarasıyla satış faturası kaydedilecek: ₺300,00. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. Gönderildikten sonra düzenlenemez; yanlışsa iptal ya da iade gerekir. Belge kaydedilir kaydedilmez entegratöre ()
+  ✓ belge numarasız Gönderilecekler'de (numarasız waiting)
+
+D) İki kullanıcı: e-Fatura formu 16.06.2026 açıkken muhasebe1 bugünün e-Faturasını kaydeder
+  ✓ form açıkken çakışma yok (Kaydedilince Verilecek NoTEF2026000000001)
+  ✓ muhasebe1 kaydetti (TEF2026000000001)
+  ✗ Kaydet ve Gönder: onay açılmadı (Kaydet öncesi yeniden hesap çakışmayı gördü)
+    [soru] "Faturayı Kaydet" → Vazgeç (eski kod: onay eski numarayla açıldı — kaydetme)
+  ✗ neden form satırında ()
+  ✗ uyarı Toplamlar kutusunda da
+  ✓ belge yazılmadı
+    [soru] "Kaydedilmemiş Değişiklik" → Evet (adım bitti; kaydedilmemiş deneme formu kapatılıyor (meşru soru))
+
+E) Düzenle: numarasız bekleyenin (14.06.2026) tarihi serinin son numaralısından (12.06.2026) eskiye
+  ✓ tarih değişmeden uyarı yok
+  ✗ Düzenle kuralıyla uyarı (Toplamlar Toplam₺100,00Ara Toplam₺100,00 KDV %20₺20,00 Genel Toplam₺120,00 Yalnız Yüz Yirmi Türk Lirası)
+  ✗ Değişiklikleri Kaydet: onay açılmadı
+    [soru] "Değişiklikler Kaydedilsin mi?" → Vazgeç (eski kod: onay çakışmayı söylemeden açıldı — kaydetme)
+  ✓ belgenin tarihi değişmedi
+  ✓ alışın Düzenle'sinde kendi numarası çakışma sayılmaz
+
+F) Alış: aynı tedarikçide kayıtlı numara, dönem kilidi; düzeltilince onay açılır
+  ✗ çift numara uyarısı (Toplamlar Toplam₺40,00Ara Toplam₺40,00 KDV %20₺8,00 Genel Toplam₺48,00 Yalnız Kırk Sekiz Türk Lirası)
+  ✗ Kaydet: onay açılmadı (çift numara)
+    [soru] "Faturayı Kaydet" → Vazgeç (eski kod: onay çift numarayı söylemeden açıldı — kaydetme)
+  ✓ numara düzelince uyarı kalktı
+  ✗ dönem kilidi uyarısı (Toplamlar Toplam₺40,00Ara Toplam₺40,00 KDV %20₺8,00 Genel Toplam₺48,00 Yalnız Kırk Sekiz Türk Lirası)
+  ✗ Kaydet: onay açılmadı (kilitli dönem)
+    [soru] "Faturayı Kaydet" → Vazgeç (eski kod: onay kilidi söylemeden açıldı — kaydetme)
+  ✓ kilidin ertesi günü uyarı yok
+  ✓ çakışmasız alışta onay açıldı
+    [soru] "Faturayı Kaydet" → Vazgeç (yalnız onayın açıldığı denetleniyor; kaydetmeye gerek yok)
+  ✓ F adımında belge yazılmadı
+    [soru] "Kaydedilmemiş Değişiklik" → Evet (adım bitti; kaydedilmemiş deneme formu kapatılıyor (meşru soru))
+  ✓ sayfa hatası yok
+
+✗ gg244-numara-tarih-onay: 20 geçti, 18 kaldı

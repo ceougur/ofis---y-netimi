@@ -1,0 +1,43 @@
+{
+  "ad": "244-esmm/m20-mutasyon-M2",
+  "komut": "node --test test/esmm-edm.test.mjs",
+  "commit": "1f6ad99df7ef569af9ed772e1e8e053c216d565c",
+  "dal": "is/esmm",
+  "kirli": 5,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T03:51:42.913Z",
+  "sure_sn": 0.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 18,
+    "gecen": 16,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Bağdaştırıcı belge türüne göre servisi seçer (e-SMM → ESmmEDM.svc; e-Fatura/e-Arşiv → EFaturaEDM.svc) › ensureSession belgenin servisinde giriş yapar; e-Fatura oturumu e-SMM için erişim kanıtı sayılmaz; argümansız çağrı e-Fatura (eski davranış)",
+      "konum": "test/esmm-edm.test.mjs:233:3",
+      "hata": "her servise bir giriş; taze oturum yeniden giriş istemez · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Bağdaştırıcı belge türüne göre servisi seçer (e-SMM → ESmmEDM.svc; e-Fatura/e-Arşiv → EFaturaEDM.svc) › e-SMM adresi türetilemezse yalnız e-SMM işlemi düşer (integrator-url, ağa çıkılmaz); e-Fatura bağlantısı bozulmaz",
+      "konum": "test/esmm-edm.test.mjs:275:3",
+      "hata": "hata bekleniyordu"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-esmm/m20-mutasyon-M2.log",
+  "klasor": "/home/user/wt/esmm",
+  "ham_cikti_sha256": "a77453088f888db3a267a36aa0c5d3c8a7a5b3f59bbae9b1b3689a41a5a68fce",
+  "ham_cikti_bayt": 8384
+}

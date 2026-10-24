@@ -50,6 +50,10 @@ export const WRITE_PERMISSIONS = Object.freeze([
   // görünüyordu) ve banka yazma yetkileri.
   "invoices.manage", "invoices.settings",
   "bank.accounts", "bank.move", "bank.cancel", "bank.transfer", "bank.pos", "bank.commission", "bank.statement", "bank.reconcile", "bank.settings",
+  // 2.4.4 (madde 25 a): Vergi Ödemesi / KDV Mahsubu (2.4.3 MM3) listeye girmemişti; sunucu yazımı reddediyordu, düğmeler görünüyordu.
+  "tax.manage",
+  // 2.4.4 Personel Özlük: kart ekleme/düzeltme/silme.
+  "staff.manage",
 ]);
 
 // Salt okunur modda da izin verilen değiştirici istekler: giriş/çıkış/parola, lisans işlemleri, yönetim (kullanıcılar,
@@ -60,6 +64,8 @@ const READ_ONLY_ALLOWED = [
   /^\/api\/admin\//,
   /^\/api\/chat\/conversations\/[^/]+\/read$/,
   /^\/api\/workspace\/insight\/intro$/,
+  // 2.4.4 (KÖ3): Başlarken listesini gizlemek / yeniden göstermek (görünüm tercihi; veri değiştirmez).
+  /^\/api\/workspace\/getting-started$/,
   // Oturumlar arasında geçiş veri değiştirmez (v2.0.1).
   /^\/api\/workspace\/sessions\/select$/,
 ];

@@ -1,0 +1,59 @@
+
+> destekofis@2.4.3 test:kahin-cari
+> node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --tohum 1-30 --islem 120 --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-244/kanit-cari-uzun
+
+rastgele-ux18-1: 661/661 tuttu
+rastgele-ux18-2: 676/676 tuttu
+rastgele-ux18-3: 610/610 tuttu
+rastgele-ux18-4: 591/591 tuttu
+rastgele-ux18-5: 699/699 tuttu
+rastgele-ux18-6: 649/649 tuttu
+rastgele-ux18-7: 670/670 tuttu
+rastgele-ux18-8: 649/649 tuttu
+rastgele-ux18-9: 704/704 tuttu
+rastgele-ux18-10: 653/653 tuttu
+rastgele-ux18-11: 677/677 tuttu
+rastgele-ux18-12: 641/641 tuttu
+rastgele-ux18-13: 655/655 tuttu
+rastgele-ux18-14: 717/717 tuttu
+rastgele-ux18-15: 614/614 tuttu
+rastgele-ux18-16: 638/638 tuttu
+rastgele-ux18-17: 611/611 tuttu
+rastgele-ux18-18: 711/711 tuttu
+rastgele-ux18-19: 664/664 tuttu
+rastgele-ux18-20: 617/617 tuttu
+rastgele-ux18-21: 653/653 tuttu
+rastgele-ux18-22: 662/662 tuttu
+rastgele-ux18-23: 624/624 tuttu
+rastgele-ux18-24: 669/669 tuttu
+rastgele-ux18-25: 625/625 tuttu
+rastgele-ux18-26: 603/603 tuttu
+rastgele-ux18-27: 685/685 tuttu
+rastgele-ux18-28: 611/611 tuttu
+rastgele-ux18-29: 696/696 tuttu
+rastgele-ux18-30: 701/701 tuttu
+  mutasyon 1 (5a: sığmayan tahsilat bölünür (kartı doldurana kadar parçası taşınır)): YAKALANDI (b1-5a-tasima)
+  mutasyon 2 (5a: sığmayan tahsilat atlanır, sonraki küçükler taşınmaya devam eder): YAKALANDI (b1-5a-tasima)
+  mutasyon 3 (5b: carinin borcuna taşınan tahsilatlar geri eklenmez (D = bakiye)): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc +1)
+  mutasyon 4 (5b: borç kalandan azsa kişi aktarılmaz yerine yeni borç yazılır): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc)
+  mutasyon 5 (5c: aynı dosya no her sekmede ayrı sayılır (çift sayım)): YAKALANDI (b1-5c-rapor)
+  mutasyon 6 (UX18: bağlı evrakın fazlası en eski açık faturaya gitmez (avans kalır)): YAKALANDI (rastgele-ux18-1, rastgele-ux18-2, rastgele-ux18-3 +28)
+  mutasyon 7 (UX18: karşılıksız evrak faturayı yeniden açmaz): YAKALANDI (rastgele-ux18-1, rastgele-ux18-2, rastgele-ux18-3 +29)
+  mutasyon 8 (UX18: fatura iptalinde evrakın bağı düşmez (evrak hiçbir faturayı kapatmaz)): YAKALANDI (rastgele-ux18-1, rastgele-ux18-6, rastgele-ux18-7 +9)
+  mutasyon 9 (Otomatik kapama en YENİ faturadan başlar): YAKALANDI (rastgele-ux18-1, rastgele-ux18-2, rastgele-ux18-3 +29)
+  mutasyon 10 (Geri al: taşınan tahsilatlar cariye dönmez): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc)
+  mutasyon 11 (5a: taşıma Kasa'yı azaltır): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc +1)
+  mutasyon 12 (Kart: tahsilat en yeni taksitten başlayarak sayılır): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc +1)
+  mutasyon 13 (Mizan: alınan senet 101'e yazılır (121 yerine)): YAKALANDI (rastgele-ux18-1, rastgele-ux18-2, rastgele-ux18-3 +29)
+  mutasyon 14 (U2: Kalan/Bakiye önceliği yok (borç başlıklı sütun önce)): YAKALANDI (b3-u2-tablo-borcu)
+  mutasyon 15 (U2: söz tutarı borç sayılır): YAKALANDI (b3-u2-tablo-borcu)
+  mutasyon 16 (E3: gün/adet sütunu tutar sayılır): YAKALANDI (b3-u2-tablo-borcu)
+  mutasyon 17 (E2: Kalan boşsa borç 0 (Toplam Borç'a düşmez)): YAKALANDI (b3-u2-tablo-borcu)
+  mutasyon 18 (U2: aynı dosya no her sekmede ayrı borç (çift sayım)): YAKALANDI (b3-u2-tablo-borcu)
+  mutasyon 19 (MM6: Nakit Akışı Kasa girişi yalnız cari tahsilatı sayar (evrak tahsili ve kayıt tahsilatı dışarıda)): YAKALANDI (rastgele-ux18-1, rastgele-ux18-2, rastgele-ux18-3 +30)
+  mutasyon 20 (U1: Nihai Tüketici 11111111111'li en eski cariyi (adı belli olsa da) seçer): YAKALANDI (b5-u1-nihai-tuketici)
+  mutasyon 21 (U1: işaretli cari adı/kimliği değişse de kullanılır): YAKALANDI (b5-u1-nihai-tuketici)
+  mutasyon 22 (MM6: elle Kasa çıkışı Nakit Akışı'nda sayılmaz): YAKALANDI (b3-u2-tablo-borcu)
+
+ÖZET: 30 senaryo, 19636 denetim, 0 fark (BULGU 0), 0 okuma hatası, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-244/kanit-cari-uzun
+19636/19636 denetim geçti

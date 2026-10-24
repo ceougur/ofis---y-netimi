@@ -1,0 +1,119 @@
+▶ E1: gönderim EDM'ye ulaştı, yanıt gelmeden program kesildi (SIGKILL) → yeniden açılışta Sonucu Belirsiz; Gönder önce durumu sorar
+  ✔ K2 e-SMM (Kes, Sonra Gönder → Gönder): Sonucu Belirsiz; Sil / Düzenle / İptal Et 409; Gönder makbuzu ikinci kez göndermez; iletim günü gönderim izinden (1111.736798ms)
+  ✔ K3 e-Arşiv (Kaydet ve Gönder — numara kayıtta): Sonucu Belirsiz; Durum Sorgula gönderildi der; sonra Sil 409 (gönderildi) (1116.161975ms)
+  ✔ K4 e-Fatura (Temel Fatura, Kes, Sonra Gönder → Gönder): Sonucu Belirsiz; Düzenle 409; Gönder ikinci kez göndermez (1066.707491ms)
+  ✔ K5 (B2b) istek EDM'ye ULAŞMADAN kesinti: Sonucu Belirsiz → Durum Sorgula 'bulunamadı' izi temizler (Gönderilmedi, Sil açık) → Gönder aynı numarayla (952.525676ms)
+  ✔ K1 (B1) giriş yanıtı beklerken kesinti: belge numarasız Gönderilecekler'de, iz yok (yanlış Sonucu Belirsiz yok); EDM'ye makbuz gitmedi (922.487082ms)
+  ✔ K6 (B6) Tümünü Gönder ortasında kesinti: 1. gitti, 2. yolda, 3. bekliyor → yeniden Tümünü Gönder 2.'yi tanır (ikinci kez göndermez), 3.'ye sıradaki numara (1125.182755ms)
+✔ E1: gönderim EDM'ye ulaştı, yanıt gelmeden program kesildi (SIGKILL) → yeniden açılışta Sonucu Belirsiz; Gönder önce durumu sorar (6296.867755ms)
+▶ E1: iz yalnız belge entegratörde oluşabilecekse kalır (B4, B5)
+  ✔ K7 (B4) hiç gitmeyen istek (oturum iki kez reddedildi → integrator-session): iz geri alınır — Gönderilmedi, Sil açık, Sonucu Belirsiz değil (429.119159ms)
+  ✔ K8 (B4) bağlantı hiç kurulamadı (numara bu istekte verildi): numara geri bırakılır, iz de — belge numarasız Gönderilecekler'de, entegratör izi yok (391.306231ms)
+  ✔ K9 (B5) gönderim sürerken Durum Sorgula 409 'gönderiliyor' (izi silmez); gönderim bitince iz sonuca döner (372.071809ms)
+✔ E1: iz yalnız belge entegratörde oluşabilecekse kalır (B4, B5) (1193.196788ms)
+▶ E4: iptal EDM'de tamamlandı, yanıt gelmeden program kesildi
+  ✔ K10 süre dolduktan sonra (10 gün): iptal izi olan makbuzda İptal Et açık, önce EDM'ye sorar → EDM'de iptal → programda iptal; izsiz makbuzda kural aynen (süre doldu, EDM'ye sorulmaz) (1099.377987ms)
+  ✔ K11 süre içinde (aynı gün): İptal Et EDM'de iptal olduğunu görür, ikinci iptal göndermez, programda iptal eder (1105.158656ms)
+✔ E4: iptal EDM'de tamamlandı, yanıt gelmeden program kesildi (2204.837379ms)
+▶ E1: EDM 11048 (daha önce gönderildi) — ileti bu belgeyi gösteriyorsa önce durum sorulur
+  ✔ K12 (B8, B9, B10) 002 şirketi: numaralı e-Arşiv → yedek → gönder → yedeği geri yükle (belge yine 'Gönderilmedi') → Gönder: 11048 → durum → gönderilmiş sayılır; iletim günü bilinmiyor → kesim günü (830.084987ms)
+  ✔ K13 (B8) numara başka belgenin (EDM'de bu ETTN yok — ortak test hesabı / yedekten sonra başka belge): durum sorulur, bulunamadı → Hata + İptal Et iletisi (bugünkü yol) (398.614123ms)
+  ✔ K14 (B8) EDM'nin durum yanıtı BAŞKA bir ETTN bildiriyorsa (numarayla eşleşmiş başka belge) gönderilmiş sayılmaz → Hata (419.942949ms)
+✔ E1: EDM 11048 (daha önce gönderildi) — ileti bu belgeyi gösteriyorsa önce durum sorulur (1649.107029ms)
+▶ B11 eski sürüm verisi: v2.4.3'ün GERÇEK koduyla kesinti (izsiz belge), güncel kodla açılış
+  ✔ K15 v2.4.3'te e-Arşiv gönderimi EDM'ye ulaştı, program kesildi → 2.4.4'te belge izsiz (Gönderilmedi; bilinen sınır: Sil açık) → Gönder: 11048 → durum → gönderilmiş sayılır, Hata değil (1252.306559ms)
+✔ B11 eski sürüm verisi: v2.4.3'ün GERÇEK koduyla kesinti (izsiz belge), güncel kodla açılış (1252.673737ms)
+▶ U birim: 11048 iletisinin gösterdiği belge ve iletim günü
+  ✔ U1 iletideki numara ve ETTN'nin hepsi belgeninkiyse (büyük/küçük harf farkı önemsiz) bu belge; biri farklıysa ya da ikisi de yoksa değil (0.84846ms)
+  ✔ U2 iletim günü: gönderim izi yalnız ardından sonuç kaydı gelmediyse girişimdir (kesinti); sonuç gelince sonucun kuralı (0.55659ms)
+✔ U birim: 11048 iletisinin gösterdiği belge ve iletim günü (1.613325ms)
+▶ 31e: Durum Sorgula ↔ Gönder yarışı, 11048 ETTN doğrulaması, iptal izi kesin ret
+  ✖ R1 (Y1) Durum Sorgula'nın 'bulunamadı' yanıtı yoldayken başka oturum Gönder'e basar: geç yanıt izi SİLMEZ (409 değişti), kesinti penceresinde belge Sonucu Belirsiz kalır (511.386407ms)
+  ✖ R3 (Y4) e-SMM: 11048 + durum yanıtında ETTN YOK → belge 'gönderildi' sayılmaz; Sonucu Belirsiz (Durum Sorgula önerilir), Hata / İptal Et yönlendirmesi de değil (367.398353ms)
+  ✖ R3 (Y4) e-Arşiv: 11048 + durum yanıtında ETTN YOK → belge 'gönderildi' sayılmaz; Sonucu Belirsiz (Durum Sorgula önerilir), Hata / İptal Et yönlendirmesi de değil (416.704534ms)
+  ✖ R4 (Y6, Y8) iptal EDM'de KESİN reddedildi → iptal izi kapanır (8 gün sonra 'süre doldu', EDM'ye sorulmaz); sonraki iptal denemesi koparsa iz yeniden açılır (süre dolunca EDM'ye sorar) (513.244502ms)
+✖ 31e: Durum Sorgula ↔ Gönder yarışı, 11048 ETTN doğrulaması, iptal izi kesin ret (1809.455393ms)
+ℹ Error: Test "R1 (Y1) Durum Sorgula'nın 'bulunamadı' yanıtı yoldayken başka oturum Gönder'e basar: geç yanıt izi SİLMEZ (409 değişti), kesinti penceresinde belge Sonucu Belirsiz kalır" at ../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/r31e-e1/r31e-e1-eski-88aaf09/test/ebelge-244-gonderim-izi.test.mjs:689:3 generated asynchronous activity after the test ended. This activity created the error "TypeError: fetch failed" and would have caused the test to fail, but instead triggered an unhandledRejection event.
+ℹ tests 21
+ℹ suites 7
+ℹ pass 17
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14831.929598
+
+✖ failing tests:
+
+test at ../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/r31e-e1/r31e-e1-eski-88aaf09/test/ebelge-244-gonderim-izi.test.mjs:689:3
+✖ R1 (Y1) Durum Sorgula'nın 'bulunamadı' yanıtı yoldayken başka oturum Gönder'e basar: geç yanıt izi SİLMEZ (409 değişti), kesinti penceresinde belge Sonucu Belirsiz kalır (511.386407ms)
+  AssertionError [ERR_ASSERTION]: gönderim yoldayken iz silinmemeli: o anda program kesilseydi EDM'deki makbuz programda 'Gönderilmedi' kalırdı
+  + actual - expected
+  
+    {
+  +   adapter: '',
+  -   adapter: 'edm',
+      status: 'none'
+    }
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/r31e-e1/r31e-e1-eski-88aaf09/test/ebelge-244-gonderim-izi.test.mjs:718:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { status: 'none', adapter: '' },
+    expected: { status: 'none', adapter: 'edm' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/r31e-e1/r31e-e1-eski-88aaf09/test/ebelge-244-gonderim-izi.test.mjs:735:5
+✖ R3 (Y4) e-SMM: 11048 + durum yanıtında ETTN YOK → belge 'gönderildi' sayılmaz; Sonucu Belirsiz (Durum Sorgula önerilir), Hata / İptal Et yönlendirmesi de değil (367.398353ms)
+  AssertionError [ERR_ASSERTION]: gönderilmiş sayılmamalı: {"id":"invoice-36ce2bae-ac46-4cec-9637-43d7b7468c43","kind":"smm","kindLabel":"Serbest Meslek Makbuzu","scenario":"smm","scenarioLabel":"Serbest Meslek Makbuzu","status":"issued","statusLabel":"Kaydedildi","number":"TES2026000000001","displayNo":"TES2026000000001","internalNumber":false,"ettn":"16ad
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/r31e-e1/r31e-e1-eski-88aaf09/test/ebelge-244-gonderim-izi.test.mjs:751:16)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 200,
+    expected: 200,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/r31e-e1/r31e-e1-eski-88aaf09/test/ebelge-244-gonderim-izi.test.mjs:735:5
+✖ R3 (Y4) e-Arşiv: 11048 + durum yanıtında ETTN YOK → belge 'gönderildi' sayılmaz; Sonucu Belirsiz (Durum Sorgula önerilir), Hata / İptal Et yönlendirmesi de değil (416.704534ms)
+  AssertionError [ERR_ASSERTION]: gönderilmiş sayılmamalı: {"id":"invoice-145d00e4-6485-4217-b500-daadd0abcc2e","kind":"sale","kindLabel":"Satış Faturası","scenario":"service_sale","scenarioLabel":"Hizmet Satışı","status":"issued","statusLabel":"Kaydedildi","number":"TEA2026000000001","displayNo":"TEA2026000000001","internalNumber":false,"ettn":"a561e159-7d
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/r31e-e1/r31e-e1-eski-88aaf09/test/ebelge-244-gonderim-izi.test.mjs:751:16)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 200,
+    expected: 200,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/r31e-e1/r31e-e1-eski-88aaf09/test/ebelge-244-gonderim-izi.test.mjs:765:3
+✖ R4 (Y6, Y8) iptal EDM'de KESİN reddedildi → iptal izi kapanır (8 gün sonra 'süre doldu', EDM'ye sorulmaz); sonraki iptal denemesi koparsa iz yeniden açılır (süre dolunca EDM'ye sorar) (513.244502ms)
+  AssertionError [ERR_ASSERTION]: kesin ret iptal izini kapattı
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e1/r31e-e1/r31e-e1-eski-88aaf09/test/ebelge-244-gonderim-izi.test.mjs:790:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

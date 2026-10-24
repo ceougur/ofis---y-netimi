@@ -1,0 +1,32 @@
+{
+  "ad": "244-ci861/yeni-div-tum",
+  "komut": "node --disable-warning=ExperimentalWarning --import ./test/e2e/pencere-yaris-zorla.mjs test/e2e/senaryo-personel-244.mjs",
+  "commit": "b5fcdaaa521734d4868aa862ff209f30ce6896a3",
+  "dal": "is/ci861",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T18:47:06.041Z",
+  "sure_sn": 37.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 64,
+    "gecen": 64,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ci861/yeni-div-tum.log",
+  "klasor": "/home/user/wt/ci861",
+  "ham_cikti_sha256": "20b4c3b07b56bd0848ec65f2867dceda86ec6d9d694bdad557f7b197a6e07e14",
+  "ham_cikti_bayt": 5737
+}

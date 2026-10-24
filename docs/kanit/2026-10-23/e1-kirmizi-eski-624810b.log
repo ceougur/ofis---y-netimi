@@ -1,0 +1,72 @@
+TAP version 13
+# Subtest: 31e E1: 'Vergi No' (sağlamasız) kayıt kimliği adayı değil
+    # Subtest: 2.4.3'te yüklenmiş dosya no'suz tablo 'Yerine koy' ile yeniden yüklenince kayıt anahtarı ve 400 TL kayıt tahsilatı korunur (E1)
+    not ok 1 - 2.4.3'te yüklenmiş dosya no'suz tablo 'Yerine koy' ile yeniden yüklenince kayıt anahtarı ve 400 TL kayıt tahsilatı korunur (E1)
+      ---
+      duration_ms: 1075.195885
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e-eski-wt-624810b/test/tablo-borc-e1-e2.test.mjs:39:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kayıt anahtarları değişmemeli: [["satir:8d6f75caa36359d8","satir:2e10ec73b4b1bd0e"],["1234567890","2234567890"]]
+        + actual - expected
+        
+          [
+        +   '1234567890',
+        +   '2234567890',
+        +   '3234567890',
+        +   '4234567890',
+        +   '5234567890',
+        +   '6234567890'
+        -   'satir:8d6f75caa36359d8',
+        -   'satir:2e10ec73b4b1bd0e',
+        -   'satir:570e9d872f6f7f8f',
+        -   'satir:2c1b61fb00f6eff8',
+        -   'satir:358374c4d4a3acf9',
+        -   'satir:61c3a8e973fac1b8'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'satir:8d6f75caa36359d8'
+        1: 'satir:2e10ec73b4b1bd0e'
+        2: 'satir:570e9d872f6f7f8f'
+        3: 'satir:2c1b61fb00f6eff8'
+        4: 'satir:358374c4d4a3acf9'
+        5: 'satir:61c3a8e973fac1b8'
+      actual:
+        0: '1234567890'
+        1: '2234567890'
+        2: '3234567890'
+        3: '4234567890'
+        4: '5234567890'
+        5: '6234567890'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e-eski-wt-624810b/test/tablo-borc-e1-e2.test.mjs:63:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 1)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - 31e E1: 'Vergi No' (sağlamasız) kayıt kimliği adayı değil
+  ---
+  duration_ms: 1077.276178
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/e-eski-wt-624810b/test/tablo-borc-e1-e2.test.mjs:33:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1557.873447

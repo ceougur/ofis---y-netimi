@@ -20,7 +20,8 @@ export function registerDatasetRoutes(router, { auth, dataset, clientState, prof
   router.post("/api/workspace/dataset/commit", async ({ req, res }) => {
     const user = auth.requirePermission(req, "sources.manage");
     const body = await readJson(req);
-    const result = dataset.commit(user, text(body.stageId), { mode: text(body.mode), link: body.link !== false, name: text(body.name) });
+    // 31e: confirm — yönetici önizlemedeki "eşleşmeyen bağ" / "aynı görünen satır" uyarısını onayladı (yoksa 409; dataset.mjs assertBondsConfirmed).
+    const result = dataset.commit(user, text(body.stageId), { mode: text(body.mode), link: body.link !== false, name: text(body.name), confirm: body.confirm === true });
     // Eşleme ekranında seçilen kolon rolleri (v2.0.2): veri kaydedildikten sonra oturuma yazılır; analiz ve takvim uyar.
     let roles = null;
     if (body.roles && typeof body.roles === "object" && profile?.setRoles) {
@@ -46,9 +47,10 @@ export function registerDatasetRoutes(router, { auth, dataset, clientState, prof
     ok(res, dataset.unlink(user));
   });
 
-  router.delete("/api/workspace/dataset", async ({ req, res }) => {
+  router.delete("/api/workspace/dataset", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "sources.manage");
-    const result = dataset.remove(user);
+    // 31e tur 7 N5: kalkacak kayıtlara bağlı veri varsa 409 bonds-unmatched; ?confirm=1 yönetici onayıdır.
+    const result = dataset.remove(user, { confirm: url.searchParams.get("confirm") === "1" });
     ok(res, { ...result, state: clientState.read() });
   });
 
@@ -76,7 +78,8 @@ export function registerDatasetRoutes(router, { auth, dataset, clientState, prof
   router.post("/api/workspace/sessions/delete", async ({ req, res }) => {
     const user = auth.requirePermission(req, "sources.manage");
     const body = await readJson(req);
-    const result = dataset.deleteSession(user, text(body.key));
+    // 31e tur 7 N5: sayfadaki kayıtlara bağlı veri varsa 409 bonds-unmatched; body.confirm === true yönetici onayıdır.
+    const result = dataset.deleteSession(user, text(body.key), { confirm: body.confirm === true });
     ok(res, { ...result, current: dataset.currentKey() });
   });
 
@@ -88,6 +91,6 @@ export function registerDatasetRoutes(router, { auth, dataset, clientState, prof
   router.post("/api/workspace/dataset/missing", async ({ req, res }) => {
     const user = auth.requirePermission(req, "sources.manage");
     const body = await readJson(req, { limit: 20_000_000 });
-    ok(res, dataset.resolveMissing(user, text(body.action), body.rowIds));
+    ok(res, dataset.resolveMissing(user, text(body.action), body.rowIds, { confirm: body.confirm === true }));
   });
 }

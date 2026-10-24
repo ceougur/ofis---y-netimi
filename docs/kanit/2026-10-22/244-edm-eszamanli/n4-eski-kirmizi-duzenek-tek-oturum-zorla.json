@@ -1,0 +1,133 @@
+{
+  "ad": "244-edm-eszamanli/n4-eski-kirmizi-duzenek-tek-oturum-zorla",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-eski-0289fe3/tools/edm-gercek.mjs --kuru --eszamanli --zorla --ariza tek-oturum --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/edm-eszamanli-not/eski-duzenek-tek-oturum-zorla",
+  "commit": "e80a7f549728389e13d7fe49915dd75147551dab",
+  "dal": "is/edm-eszamanli",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T13:53:11.684Z",
+  "sure_sn": 24.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 136,
+    "gecen": 116,
+    "basarisiz": 20,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 20 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "A01 (yonetici, VKN) HTTP 200 1796 ms: Kaydet ve Gönder → TES2026276929840, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026276929840 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince G",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A02 (fatura1, VKN) HTTP 200 1913 ms: Kaydet ve Gönder → TES2026276929839, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026276929839 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gö",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A03 (fatura2, TCKN) HTTP 200 2296 ms: Kaydet ve Gönder → TES2026276929842, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026276929842 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince G",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A04 (yonetici, VKN) HTTP 200 2112 ms: Kaydet ve Gönder → TES2026276929841, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026276929841 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince G",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A05 (fatura1, VKN) HTTP 200 1919 ms: Kaydet ve Gönder → TES2026276929843, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026276929843 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gö",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A06 (fatura2, TCKN) HTTP 200 2666 ms: Kaydet ve Gönder → TES2026276929844, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026276929844 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince G",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A07 (yonetici, VKN) HTTP 200 1609 ms: Kaydet ve Gönder → TES2026276929845, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026276929845 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince G",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A08 (fatura1, VKN) HTTP 200 2735 ms: Kaydet ve Gönder → TES2026276929846, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026276929846 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gö",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A09 (fatura2, TCKN) HTTP 200 2310 ms: Kaydet ve Gönder → TES2026276929847, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026276929847 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince G",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A10 (yonetici, VKN) HTTP 200 2120 ms: Kaydet ve Gönder → TES2026276929848, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026276929848 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince G",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A11 (fatura1, VKN) HTTP 200 2121 ms: Kaydet ve Gönder → TES2026276929849, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026276929849 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gö",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A12 (fatura2, TCKN) HTTP 200 2557 ms: Kaydet ve Gönder → TES2026276929850, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026276929850 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince G",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A13 (yonetici, VKN) HTTP 200 2120 ms: Kaydet ve Gönder → TES2026276929851, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026276929851 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince G",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A14 (fatura1, VKN) HTTP 200 2265 ms: Kaydet ve Gönder → TES2026276929852, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026276929852 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gö",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A15 (fatura2, TCKN) HTTP 200 2439 ms: Kaydet ve Gönder → TES2026276929853, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026276929853 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince G",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A16 (yonetici, VKN) HTTP 200 2438 ms: Kaydet ve Gönder → TES2026276929854, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026276929854 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince G",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A17 (fatura1, VKN) HTTP 200 2304 ms: Kaydet ve Gönder → TES2026276929855, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026276929855 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince Gö",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "A19 (yonetici, VKN) HTTP 200 1679 ms: Kaydet ve Gönder → TES2026276929857, e-Belge durumu none (beklenen: EDM'ye iletildi; integrator-session EDM oturumu sona ermiş. Belge TES2026276929857 numarasıyla kaydedildi, entegratöre gönderilmedi; Gönderilecekler'de bekliyor. Bağlantı ya da sorun düzelince G",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "e-SMM servisine giriş tek uçuş (N4): soğuk başta tam 1 Login — Login 39, en çok eşzamanlı 20",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "gönderim sürerken Durum Sorgula (A, 20 belge): hepsi HTTP 200, askı yok (409 200)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-edm-eszamanli/n4-eski-kirmizi-duzenek-tek-oturum-zorla.log",
+  "klasor": "/home/user/wt/edm-eszamanli",
+  "ham_cikti_sha256": "bd4b93911980434bbd44a91b94e52cf5a32cc82f92890a60e6acbbd251888d1d",
+  "ham_cikti_bayt": 30265
+}

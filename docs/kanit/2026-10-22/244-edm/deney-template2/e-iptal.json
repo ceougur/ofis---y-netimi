@@ -1,0 +1,56 @@
+{
+ "adim": "e-iptal",
+ "baslik": "İptal (8 gün içinde): B1 önce EDM'de (CancelSMM) sonra programda; ardından EDM durumu",
+ "durum": "geçti",
+ "denetimler": [
+  {
+   "gecti": true,
+   "denetim": "iptal süresi dolmadı (son gün 2026-10-30)"
+  },
+  {
+   "gecti": true,
+   "denetim": "B1 TES2026634450826: EDM'de ve programda iptal (200 ; vt cancelled/cancelled)"
+  },
+  {
+   "gecti": true,
+   "denetim": "iptal sonrası EDM durumu: cancelled CANCELLED - SUCCEED"
+  }
+ ],
+ "kayit": {
+  "oncesi": {
+   "eStatus": "sent",
+   "cancelWindow": {
+    "start": "2026-10-22",
+    "source": "iletim",
+    "lastDay": "2026-10-30",
+    "late": false
+   },
+   "canCancel": true
+  },
+  "iptal": {
+   "status": "cancelled",
+   "eStatus": "cancelled",
+   "eMessage": "e-SMM EDM'de iptal edildi; iptal GİB'e raporlanır."
+  },
+  "vt": {
+   "status": "cancelled",
+   "eStatus": "cancelled",
+   "cancelledAt": "2026-10-22T11:17:37.208Z",
+   "olaylar": [
+    "invoice.created",
+    "invoice.e.sent",
+    "invoice.e.status",
+    "invoice.e.status",
+    "invoice.e.status",
+    "invoice.e.official",
+    "invoice.e.cancelled",
+    "invoice.cancelled"
+   ]
+  },
+  "sonra": {
+   "eStatus": "cancelled",
+   "raw": "CANCELLED - SUCCEED",
+   "message": "e-SMM EDM'de iptal edildi. SUCCEED"
+  }
+ }
+}

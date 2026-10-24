@@ -1,0 +1,9 @@
+M1 Toplam Maaş ayrılanı da sayar: çıkış 1 # fail 1 -> YAKALANDI
+M2 işlem geçmişine değer yazılır: çıkış 1 # fail 1 -> YAKALANDI
+M3 düzenleme görüntülemesiz yazar: çıkış 1 # fail 3 -> YAKALANDI
+M4 TC denetimi kapalı: çıkış 1 # fail 5 -> YAKALANDI
+M5 ayrılış < giriş serbest: çıkış 1 # fail 5 -> YAKALANDI
+M6 yaş doğum gününü beklemez: çıkış 1 # fail 1 -> YAKALANDI
+M7 aynı TC serbest: çıkış 1 # fail 5 -> YAKALANDI
+M8 durum ayrılış tarihinden türemez: çıkış 1 # fail 1 -> YAKALANDI
+geri alınmış kod: çıkış 0 ['# fail 0']

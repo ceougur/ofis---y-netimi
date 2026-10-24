@@ -1,0 +1,32 @@
+{
+  "ad": "244-e23-yesil",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/kalan-borc-satir-31d.test.mjs test/kalan-borc-ortak-30a.test.mjs test/nakit-akis-sekme-30e.test.mjs test/nakit-akis-kasa-mm6.test.mjs test/tablo-borc-dosya-u2.test.mjs",
+  "commit": "f53aaab23733f54abb3eafd6bda1912cc556ed76",
+  "dal": "is/e23",
+  "kirli": 15,
+  "izlenmeyen": 34,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T23:56:27.535Z",
+  "sure_sn": 5.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 37,
+    "gecen": 37,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-e23-yesil.log",
+  "klasor": "/home/user/wt/e23",
+  "ham_cikti_sha256": "9a1301c93d1309a5a6bc08ccde74413bd83cadd2dfccebcc85e12ed2efb4dfea",
+  "ham_cikti_bayt": 14667
+}

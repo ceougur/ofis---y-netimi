@@ -1,0 +1,31 @@
+{
+  "ad": "244-kucuk-m4-eski-kirmizi-run",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kucuk/kucuk-eski-163dd5d/test/e2e/run.mjs",
+  "commit": "332cf511ad331937476bf8cd6edfdd3fc4d54afd",
+  "dal": "is/kucuk",
+  "kirli": 5,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T03:45:34.106Z",
+  "sure_sn": 22.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": null,
+  "hukum": "BAŞARISIZ",
+  "neden": "özet satırı tanınmadı",
+  "basarisiz_testler": [
+    {
+      "ad": "tahsilat işlenir (en altta), düzeltilir ve silinir; kasaya düşer, kasadan ödeme girilir",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-kucuk-m4-eski-kirmizi-run.log",
+  "klasor": "/home/user/wt/kucuk",
+  "ham_cikti_sha256": "0e496c794e3455ab92a09c4cd872643356223be95ae03e369ae4c57ab83bf37e",
+  "ham_cikti_bayt": 3090
+}

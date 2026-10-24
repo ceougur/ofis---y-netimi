@@ -1,0 +1,509 @@
+TAP version 13
+# Subtest: 31e sayı hücresi: içe alma yolları (API)
+    # Subtest: Tablo (dataset stage) → Tablodaki Kişiler satırı: 12.125 → 12,125; 0.005 → 0,005; 1500 → 1500; '1.500' → 1500; '12.125' dizgesi → 12125 (S1/S2/S4)
+    ok 1 - Tablo (dataset stage) → Tablodaki Kişiler satırı: 12.125 → 12,125; 0.005 → 0,005; 1500 → 1500; '1.500' → 1500; '12.125' dizgesi → 12125 (S1/S2/S4)
+      ---
+      duration_ms: 106.12884
+      type: 'test'
+      ...
+    # Subtest: Tablodan Aktar: sayı hücreli Toplam Tutar 3000.125 → kalan 3.000,13 (3.000.125 değil) (S5)
+    ok 2 - Tablodan Aktar: sayı hücreli Toplam Tutar 3000.125 → kalan 3.000,13 (3.000.125 değil) (S5)
+      ---
+      duration_ms: 51.078251
+      type: 'test'
+      ...
+    # Subtest: Excel'den cari: Bakiye 12.125 (sayı) → 12,13; '12.125' (dizge) → 12.125 TL (Türkçe kural) (S1/S2/S5)
+    ok 3 - Excel'den cari: Bakiye 12.125 (sayı) → 12,13; '12.125' (dizge) → 12.125 TL (Türkçe kural) (S1/S2/S5)
+      ---
+      duration_ms: 43.76293
+      type: 'test'
+      ...
+    # Subtest: N1: açılış bakiyesi 0,005 (sayı hücresi ve Yeni Cari dizgesi) 0,01 yazılır, 0,004 yazılmaz — öbür yollarla aynı; '1,234.56' (İngilizce) 1.234,56 (B8/B9/B10)
+    not ok 4 - N1: açılış bakiyesi 0,005 (sayı hücresi ve Yeni Cari dizgesi) 0,01 yazılır, 0,004 yazılmaz — öbür yollarla aynı; '1,234.56' (İngilizce) 1.234,56 (B8/B9/B10)
+      ---
+      duration_ms: 36.94607
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/d-eski-db46840/test/ice-alma-sayi-hucre-api.test.mjs:65:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        -   0.01,
+            0,
+        +   0,
+        +   1.23,
+        +   0
+        -   1234.56,
+        -   0.01
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 0.01
+        1: 0
+        2: 1234.56
+        3: 0.01
+      actual:
+        0: 0
+        1: 0
+        2: 1.23
+        3: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/d-eski-db46840/test/ice-alma-sayi-hucre-api.test.mjs:72:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Excel'den taksit kartı: Toplam Tutar 1200.125 (sayı) → kart 1.200,13 (S5)
+    ok 5 - Excel'den taksit kartı: Toplam Tutar 1200.125 (sayı) → kart 1.200,13 (S5)
+      ---
+      duration_ms: 33.272093
+      type: 'test'
+      ...
+    # Subtest: Excel'den çek / senet: Tutar 2500.125 (sayı) → 2.500,13 (S5)
+    ok 6 - Excel'den çek / senet: Tutar 2500.125 (sayı) → 2.500,13 (S5)
+      ---
+      duration_ms: 20.401134
+      type: 'test'
+      ...
+    # Subtest: Excel'den stok: Birim Fiyat 12.125 (sayı) × 10 → değer 121,25 civarı (121.250 değil) (S5)
+    ok 7 - Excel'den stok: Birim Fiyat 12.125 (sayı) × 10 → değer 121,25 civarı (121.250 değil) (S5)
+      ---
+      duration_ms: 25.722224
+      type: 'test'
+      ...
+    1..7
+not ok 1 - 31e sayı hücresi: içe alma yolları (API)
+  ---
+  duration_ms: 809.173805
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/d-eski-db46840/test/ice-alma-sayi-hucre-api.test.mjs:21:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 31e N2: İngilizce yazım '1,234.56' iki çözümleyicide aynı (1234,56); Türkçe kurallar aynen (birim)
+    # Subtest: money.parseAmount = insight parseAmount (B10/B11)
+    not ok 1 - money.parseAmount = insight parseAmount (B10/B11)
+      ---
+      duration_ms: 1.628462
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/d-eski-db46840/test/ice-alma-sayi-hucre.test.mjs:18:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        money.parseAmount(1,234.56)
+        + actual - expected
+        
+        + 1.23456
+        - 1234.56
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1234.56
+      actual: 1.23456
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/d-eski-db46840/test/ice-alma-sayi-hucre.test.mjs:21:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    1..1
+not ok 2 - 31e N2: İngilizce yazım '1,234.56' iki çözümleyicide aynı (1234,56); Türkçe kurallar aynen (birim)
+  ---
+  duration_ms: 2.770077
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/d-eski-db46840/test/ice-alma-sayi-hucre.test.mjs:17:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 31e sayı hücresi: dönüşüm ve ayrıştırma (birim)
+    # Subtest: cellText: 12.125 → '12,125', 0.005 → '0,005', -12.5 → '-12,5', 333.3333333 → '333,3333333'; tam sayı ve dizge olduğu gibi (S1/S3/S4/S6)
+    ok 1 - cellText: 12.125 → '12,125', 0.005 → '0,005', -12.5 → '-12,5', 333.3333333 → '333,3333333'; tam sayı ve dizge olduğu gibi (S1/S3/S4/S6)
+      ---
+      duration_ms: 1.91989
+      type: 'test'
+      ...
+    # Subtest: ayrıştırma: sayı türü sayıdır; dizgede Türkçe kural aynen (S2)
+    ok 2 - ayrıştırma: sayı türü sayıdır; dizgede Türkçe kural aynen (S2)
+      ---
+      duration_ms: 2.319304
+      type: 'test'
+      ...
+    1..2
+ok 3 - 31e sayı hücresi: dönüşüm ve ayrıştırma (birim)
+  ---
+  duration_ms: 4.598868
+  type: 'suite'
+  ...
+# Subtest: 31e T4: aynı sekmede aynı dosya no'lu satırlar ayrı borç ve ayrı takvim kalemi (2.4.3 gibi)
+    # Subtest: Tablodaki Kişiler: Ali Veli 1.000 + 1.500 = 2.500, Ayşe Kaya 700 + 700 = 1.400, Can Yıldız 400 + 600 = 1.000; toplam 4.900; birleştirme notu yok
+    ok 1 - Tablodaki Kişiler: Ali Veli 1.000 + 1.500 = 2.500, Ayşe Kaya 700 + 700 = 1.400, Can Yıldız 400 + 600 = 1.000; toplam 4.900; birleştirme notu yok
+      ---
+      duration_ms: 43.604118
+      type: 'test'
+      ...
+    # Subtest: Tahsilat Takvimi: 6 kalem, tutarları satır satır (1.000, 1.500, 700, 700, 400, 600); söz / zil ön dolumunun Kalan Borç'u dosyanın Kalan toplamı
+    ok 2 - Tahsilat Takvimi: 6 kalem, tutarları satır satır (1.000, 1.500, 700, 700, 400, 600); söz / zil ön dolumunun Kalan Borç'u dosyanın Kalan toplamı
+      ---
+      duration_ms: 15.057248
+      type: 'test'
+      ...
+    # Subtest: Vadeler ve Nakit Akışı: 6 kalem, 4.900; Gecikmiş 1.000 + 700 + 400 = 2.100
+    ok 3 - Vadeler ve Nakit Akışı: 6 kalem, 4.900; Gecikmiş 1.000 + 700 + 400 = 2.100
+      ---
+      duration_ms: 12.011492
+      type: 'test'
+      ...
+    1..3
+ok 4 - 31e T4: aynı sekmede aynı dosya no'lu satırlar ayrı borç ve ayrı takvim kalemi (2.4.3 gibi)
+  ---
+  duration_ms: 541.045315
+  type: 'suite'
+  ...
+# Subtest: 31e T1: Kalan / Borç başlığı yoksa borç = toplam − ödenen; ödenen > toplam ise 0 ve not
+    # Subtest: Tablodaki Kişiler: 10.000 − 4.000, 8.000 − 8.000, 6.000 − 1.000, 1.000 − 1.200 → 0; senet 5.000 − 2.000, 3.000 − 0; gün sütunu tutar değil; Kalan varsa Kalan (5.000) — toplam 24.500
+    ok 1 - Tablodaki Kişiler: 10.000 − 4.000, 8.000 − 8.000, 6.000 − 1.000, 1.000 − 1.200 → 0; senet 5.000 − 2.000, 3.000 − 0; gün sütunu tutar değil; Kalan varsa Kalan (5.000) — toplam 24.500
+      ---
+      duration_ms: 31.945723
+      type: 'test'
+      ...
+    # Subtest: Vadeler ve Nakit Akışı Beklenen aynı kuraldan: 24.500; not aynı
+    ok 2 - Vadeler ve Nakit Akışı Beklenen aynı kuraldan: 24.500; not aynı
+      ---
+      duration_ms: 11.057644
+      type: 'test'
+      ...
+    1..2
+ok 5 - 31e T1: Kalan / Borç başlığı yoksa borç = toplam − ödenen; ödenen > toplam ise 0 ve not
+  ---
+  duration_ms: 404.713836
+  type: 'suite'
+  ...
+# Subtest: 31e T1: Tablodan Aktar ile Tablodaki Kişiler aynı dosyada aynı kalan (toplam − ödenen)
+    # Subtest: Elif Aydın: Kişiler borcu 4.500; Tablodan Aktar ön izlemesinde kalan 4.500 (R10)
+    ok 1 - Elif Aydın: Kişiler borcu 4.500; Tablodan Aktar ön izlemesinde kalan 4.500 (R10)
+      ---
+      duration_ms: 25.438893
+      type: 'test'
+      ...
+    1..1
+ok 6 - 31e T1: Tablodan Aktar ile Tablodaki Kişiler aynı dosyada aynı kalan (toplam − ödenen)
+  ---
+  duration_ms: 328.31754
+  type: 'suite'
+  ...
+# Subtest: 31e A1: dönem sekmeleri (2025 / 2026 Aidat) aynı dosya no — her sekme ayrı borç (2.4.3 gibi), not; Sekme süzgeciyle her sekme kendi borcu
+    # Subtest: süzgeçsiz: Ali Veli 1.200 + 800 = 2.000, Ayşe Kaya 600 + 600 = 1.200, toplam 3.200 (2.4.3 ile aynı); not üç raporda (B2)
+    ok 1 - süzgeçsiz: Ali Veli 1.200 + 800 = 2.000, Ayşe Kaya 600 + 600 = 1.200, toplam 3.200 (2.4.3 ile aynı); not üç raporda (B2)
+      ---
+      duration_ms: 21.673739
+      type: 'test'
+      ...
+    # Subtest: Sekme süzgeci: 2026 Aidat → Ali Veli 800, Ayşe Kaya 600 (1.400), not yok; 2025 Aidat → 1.800; seçenekler iki sekme (B10)
+    ok 2 - Sekme süzgeci: 2026 Aidat → Ali Veli 800, Ayşe Kaya 600 (1.400), not yok; 2025 Aidat → 1.800; seçenekler iki sekme (B10)
+      ---
+      duration_ms: 13.543734
+      type: 'test'
+      ...
+    # Subtest: PDF ve Excel aynı notu taşır (B5)
+    ok 3 - PDF ve Excel aynı notu taşır (B5)
+      ---
+      duration_ms: 68.471524
+      type: 'test'
+      ...
+    1..3
+ok 7 - 31e A1: dönem sekmeleri (2025 / 2026 Aidat) aynı dosya no — her sekme ayrı borç (2.4.3 gibi), not; Sekme süzgeciyle her sekme kendi borcu
+  ---
+  duration_ms: 394.58783
+  type: 'suite'
+  ...
+# Subtest: 31e A1: Tahsilat Takvimi — dönem sekmesinin kalemleri düşmez (aday 12: 2 kalem; 2.4.3: 4), not takvim yanıtında (B1/B5/B7)
+    # Subtest: 4 kalem: 2025 Ali 1.200 / Ayşe 600, 2026 Ali 800 / Ayşe 600; her kalemin Kalan Borç'u kendi sekmesinden; not
+    ok 1 - 4 kalem: 2025 Ali 1.200 / Ayşe 600, 2026 Ali 800 / Ayşe 600; her kalemin Kalan Borç'u kendi sekmesinden; not
+      ---
+      duration_ms: 10.812312
+      type: 'test'
+      ...
+    1..1
+ok 8 - 31e A1: Tahsilat Takvimi — dönem sekmesinin kalemleri düşmez (aday 12: 2 kalem; 2.4.3: 4), not takvim yanıtında (B1/B5/B7)
+  ---
+  duration_ms: 315.061788
+  type: 'suite'
+  ...
+# Subtest: 31e A1: kopya sekme iki kez sayılır + not; söz sekmesi (borç değil) not açmaz, söz kaleminin Kalan Borç'u borç sekmesinden (B3/B4/B6)
+    # Subtest: Tablodaki Kişiler: Can Yıldız 500 + 500 = 1.000 (kopya iki kez), Ece Ak 900 (söz borç değil); yalnız K-1 notu
+    ok 1 - Tablodaki Kişiler: Can Yıldız 500 + 500 = 1.000 (kopya iki kez), Ece Ak 900 (söz borç değil); yalnız K-1 notu
+      ---
+      duration_ms: 16.630812
+      type: 'test'
+      ...
+    # Subtest: Tahsilat Takvimi: Can iki kalem (500, 500), Ece Liste 900 + söz 300 (Kalan Borç 900, Liste'den); not
+    ok 2 - Tahsilat Takvimi: Can iki kalem (500, 500), Ece Liste 900 + söz 300 (Kalan Borç 900, Liste'den); not
+      ---
+      duration_ms: 10.279713
+      type: 'test'
+      ...
+    1..2
+ok 9 - 31e A1: kopya sekme iki kez sayılır + not; söz sekmesi (borç değil) not açmaz, söz kaleminin Kalan Borç'u borç sekmesinden (B3/B4/B6)
+  ---
+  duration_ms: 348.662071
+  type: 'suite'
+  ...
+# Subtest: 31e aday 13: dönem sekmesinde tekrarlanan ad — kişi adı oturumun kişi kolonundan, aynı kişinin sekmelerdeki borcu tek grupta
+    # Subtest: Tablodaki Kişiler: Kişi 2-1 79 + 3.686,48 = 3.765,48 tek grup; Kişi 2-2 69 + 4.787,25 + 2.324,10 + 60 + 36 = 7.276,35; dosya no adlı grup yok
+    ok 1 - Tablodaki Kişiler: Kişi 2-1 79 + 3.686,48 = 3.765,48 tek grup; Kişi 2-2 69 + 4.787,25 + 2.324,10 + 60 + 36 = 7.276,35; dosya no adlı grup yok
+      ---
+      duration_ms: 11.356535
+      type: 'test'
+      ...
+    1..1
+ok 10 - 31e aday 13: dönem sekmesinde tekrarlanan ad — kişi adı oturumun kişi kolonundan, aynı kişinin sekmelerdeki borcu tek grupta
+  ---
+  duration_ms: 315.598933
+  type: 'suite'
+  ...
+# Subtest: 31e aday 13 yan bulgu: tablo raporlarında para toplamları kuruşta (kayan nokta kalıntısı yok)
+    # Subtest: Tablodaki Kişiler: Ali Veli 0,10 + 0,20 = 0,30 (borç, bakiye, satır bakiyesi), toplam 0,30 — tam eşitlik
+    ok 1 - Tablodaki Kişiler: Ali Veli 0,10 + 0,20 = 0,30 (borç, bakiye, satır bakiyesi), toplam 0,30 — tam eşitlik
+      ---
+      duration_ms: 8.039307
+      type: 'test'
+      ...
+    # Subtest: Vadeler toplamı 0,10 + 0,20 = 0,30 — tam eşitlik
+    ok 2 - Vadeler toplamı 0,10 + 0,20 = 0,30 — tam eşitlik
+      ---
+      duration_ms: 3.567534
+      type: 'test'
+      ...
+    # Subtest: Nakit Akışı Beklenen 0,30 ve her kova kuruşta — tam eşitlik
+    ok 3 - Nakit Akışı Beklenen 0,30 ve her kova kuruşta — tam eşitlik
+      ---
+      duration_ms: 3.954027
+      type: 'test'
+      ...
+    1..3
+ok 11 - 31e aday 13 yan bulgu: tablo raporlarında para toplamları kuruşta (kayan nokta kalıntısı yok)
+  ---
+  duration_ms: 296.990043
+  type: 'suite'
+  ...
+# Subtest: 31e C1: Sekme süzgeçli Vadeler / Nakit Akışı — öbür sekmenin tahsilatı bu sekmenin kalemini kapatmaz (2.4.3 gibi)
+    # Subtest: süzgeçsiz: 2025 Ayşe kalemi kapanır, 2026 açık — 4 kalem (1.200 + 800 + 600 + 500 = 3.100)
+    ok 1 - süzgeçsiz: 2025 Ayşe kalemi kapanır, 2026 açık — 4 kalem (1.200 + 800 + 600 + 500 = 3.100)
+      ---
+      duration_ms: 10.541695
+      type: 'test'
+      ...
+    # Subtest: Sekme 2026 Aidat: 3 kalem / 1.900 (Ali 800, Ayşe 600, Can 500); Nakit Akışı Beklenen 1.900; not yok (B1/B3)
+    ok 2 - Sekme 2026 Aidat: 3 kalem / 1.900 (Ali 800, Ayşe 600, Can 500); Nakit Akışı Beklenen 1.900; not yok (B1/B3)
+      ---
+      duration_ms: 6.125289
+      type: 'test'
+      ...
+    # Subtest: Sekme 2025 Aidat: 1 kalem (Ali 1.200; Ayşe ödendi, Can 0); öbür sekmenin kalemi sızmaz (B2); seçenekler iki sekme (B5)
+    ok 3 - Sekme 2025 Aidat: 1 kalem (Ali 1.200; Ayşe ödendi, Can 0); öbür sekmenin kalemi sızmaz (B2); seçenekler iki sekme (B5)
+      ---
+      duration_ms: 2.961069
+      type: 'test'
+      ...
+    1..3
+ok 12 - 31e C1: Sekme süzgeçli Vadeler / Nakit Akışı — öbür sekmenin tahsilatı bu sekmenin kalemini kapatmaz (2.4.3 gibi)
+  ---
+  duration_ms: 360.756585
+  type: 'suite'
+  ...
+# Subtest: 31e C2: kuruş altı hücre — TOPLAM satırı = özet (ekran, Excel)
+    # Subtest: Tablodaki Kişiler: satırlar 333,33 × 3 + 0,01 + 0,10 + 0,20 = 1.000,30; TOPLAM satırı, toplam ve özet aynı (B7)
+    ok 1 - Tablodaki Kişiler: satırlar 333,33 × 3 + 0,01 + 0,10 + 0,20 = 1.000,30; TOPLAM satırı, toplam ve özet aynı (B7)
+      ---
+      duration_ms: 9.925982
+      type: 'test'
+      ...
+    # Subtest: Vadeler TOPLAM satırı = özet (1.000,30)
+    ok 2 - Vadeler TOPLAM satırı = özet (1.000,30)
+      ---
+      duration_ms: 3.982836
+      type: 'test'
+      ...
+    # Subtest: Excel: TOPLAM satırının borç hücresi 1000.3, özet 1.000,30; 1000.31 yok
+    ok 3 - Excel: TOPLAM satırının borç hücresi 1000.3, özet 1.000,30; 1000.31 yok
+      ---
+      duration_ms: 11.313178
+      type: 'test'
+      ...
+    1..3
+ok 13 - 31e C2: kuruş altı hücre — TOPLAM satırı = özet (ekran, Excel)
+  ---
+  duration_ms: 315.405256
+  type: 'suite'
+  ...
+# Subtest: 31e C3: aynı adlı iki kişi — farklı T.C. Kimlik No ayrı, aynı kimlik tek kişi; Vadeler aynı adı yazar
+    # Subtest: Ali Veli üç kişi: TC 10000000146 700, TC 22222222222 900, kimliksiz Kiracılar 5.000 (iki kimliğe uyuyor, tahmin edilmez); Ayşe tek kimlik → 300 + 3.000 (B10/B11)
+    ok 1 - Ali Veli üç kişi: TC 10000000146 700, TC 22222222222 900, kimliksiz Kiracılar 5.000 (iki kimliğe uyuyor, tahmin edilmez); Ayşe tek kimlik → 300 + 3.000 (B10/B11)
+      ---
+      duration_ms: 15.365085
+      type: 'test'
+      ...
+    # Subtest: aynı kimlik, farklı ad yazımı ('A. Can Er' / 'Can Er'): iki ayrı kişi 400 / 250 (D1, v2.4.3 gibi)
+    not ok 2 - aynı kimlik, farklı ad yazımı ('A. Can Er' / 'Can Er'): iki ayrı kişi 400 / 250 (D1, v2.4.3 gibi)
+      ---
+      duration_ms: 5.290048
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/d-eski-db46840/test/tablo-borc-r31e.test.mjs:329:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        [["A. Can Er",650]]
+        + actual - expected
+        
+          [
+            [
+        -     'Can Er',
+        -     250
+        -   ],
+        -   [
+              'A. Can Er',
+        +     650
+        -     400
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'Can Er'
+          1: 250
+        1:
+          0: 'A. Can Er'
+          1: 400
+      actual:
+        0:
+          0: 'A. Can Er'
+          1: 650
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/d-eski-db46840/test/tablo-borc-r31e.test.mjs:332:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Vadeler: iki Ali Veli kalemi kimlik ekiyle, Tablodaki Kişiler ile aynı ad (B14)
+    ok 3 - Vadeler: iki Ali Veli kalemi kimlik ekiyle, Tablodaki Kişiler ile aynı ad (B14)
+      ---
+      duration_ms: 4.358666
+      type: 'test'
+      ...
+    1..3
+not ok 14 - 31e C3: aynı adlı iki kişi — farklı T.C. Kimlik No ayrı, aynı kimlik tek kişi; Vadeler aynı adı yazar
+  ---
+  duration_ms: 307.290809
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/d-eski-db46840/test/tablo-borc-r31e.test.mjs:312:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 31e D1: aynı kimlik farklı ad — ayrı kişiler (v2.4.3 gibi); aynı ad aynı kimlik tek kişi
+    # Subtest: Tablodaki Kişiler: 7 kişi, her biri kendi adıyla (Ali 100, Ayşe 200, Can 300, Deniz 400, Ece 500, Fırat 600, Gül Ay iki satır tek kişi 120); kimlik eki yok (B1/B3/B7)
+    not ok 1 - Tablodaki Kişiler: 7 kişi, her biri kendi adıyla (Ali 100, Ayşe 200, Can 300, Deniz 400, Ece 500, Fırat 600, Gül Ay iki satır tek kişi 120); kimlik eki yok (B1/B3/B7)
+      ---
+      duration_ms: 13.504262
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/d-eski-db46840/test/tablo-borc-r31e.test.mjs:349:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        [["Ali Veli",600],["Deniz Ak",400],["Ece Su",1100],["Gül Ay",120]]
+        + actual - expected
+        
+          {
+        +   'Ali Veli': 600,
+        -   'Ali Veli': 100,
+        -   'Ayşe Kaya': 200,
+        -   'Can Er': 300,
+            'Deniz Ak': 400,
+        +   'Ece Su': 1100,
+        -   'Ece Su': 500,
+        -   'Fırat Er': 600,
+            'Gül Ay': 120
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        Ali Veli: 100
+        Ayşe Kaya: 200
+        Can Er: 300
+        Deniz Ak: 400
+        Ece Su: 500
+        Fırat Er: 600
+        Gül Ay: 120
+      actual:
+        Ali Veli: 600
+        Deniz Ak: 400
+        Ece Su: 1100
+        Gül Ay: 120
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/d-eski-db46840/test/tablo-borc-r31e.test.mjs:351:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Vadeler aynı adlar (8 kalem)
+    ok 2 - Vadeler aynı adlar (8 kalem)
+      ---
+      duration_ms: 4.887066
+      type: 'test'
+      ...
+    1..2
+not ok 15 - 31e D1: aynı kimlik farklı ad — ayrı kişiler (v2.4.3 gibi); aynı ad aynı kimlik tek kişi
+  ---
+  duration_ms: 326.761257
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/e23/d-eski-db46840/test/tablo-borc-r31e.test.mjs:343:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 31e Y1: Tablodaki Nakit Akışı'nda Kasa sütunları yalnız Kasa yetkisiyle
+    # Subtest: yetkili (yönetici): Kasa Giriş 1.000 (cari nakit) + 500 (elle) = 1.500; Kasa sütunları ve özeti var, not yok (R9)
+    ok 1 - yetkili (yönetici): Kasa Giriş 1.000 (cari nakit) + 500 (elle) = 1.500; Kasa sütunları ve özeti var, not yok (R9)
+      ---
+      duration_ms: 10.307693
+      type: 'test'
+      ...
+    # Subtest: Kasa yetkisi olmayan (yalnız Tablo Raporları): Kasa'ya 403; Nakit Akışı'nda Kasa sütunu, toplamı, özeti yok; not var — ekran, PDF, Excel (R8)
+    ok 2 - Kasa yetkisi olmayan (yalnız Tablo Raporları): Kasa'ya 403; Nakit Akışı'nda Kasa sütunu, toplamı, özeti yok; not var — ekran, PDF, Excel (R8)
+      ---
+      duration_ms: 21.875344
+      type: 'test'
+      ...
+    1..2
+ok 16 - 31e Y1: Tablodaki Nakit Akışı'nda Kasa sütunları yalnız Kasa yetkisiyle
+  ---
+  duration_ms: 608.132871
+  type: 'suite'
+  ...
+1..16
+# tests 39
+# suites 16
+# pass 35
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5238.948595

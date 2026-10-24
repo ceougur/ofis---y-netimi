@@ -1,0 +1,32 @@
+{
+  "ad": "244-b1-kalan-yesil",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/kalan-borc-ortak-30a.test.mjs",
+  "commit": "e070d4247567174ee1bf1b5efe142dfafba6cdb8",
+  "dal": "is/b1-kalan",
+  "kirli": 2,
+  "izlenmeyen": 10,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T17:01:58.596Z",
+  "sure_sn": 1.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 14,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-b1-kalan-yesil.log",
+  "klasor": "/home/user/wt/b1-kalan",
+  "ham_cikti_sha256": "51c7287858bea2c828733085f898473fb712af3afe7e38b5032c8732019eae43",
+  "ham_cikti_bayt": 4840
+}

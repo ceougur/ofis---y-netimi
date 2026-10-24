@@ -90,6 +90,10 @@ export const PERMISSIONS = Object.freeze({
   "messages.create": ALL,
   "reports.view": ["admin", "avukat"],
   "audit.view": ["admin", "avukat"],
+  // Personel Özlük (2.4.4; kullanıcı kararı 21.10.2026): çalışan kartları (TC No, IBAN, maaş, adres — KVKK kişisel verisi). Varsayılan YALNIZ
+  // yönetici; yönetici kişiye ya da özel role verebilir. Düzenleme görüntülemeyle BİRLİKTE istenir (routes/staff.mjs ikisini de arar).
+  "staff.view": ["admin"],
+  "staff.manage": ["admin"],
   "sources.manage": ["admin"],
   // Sektör seçimi ve kalemle başlık değiştirme (v1.6.0).
   "profile.manage": ["admin"],
@@ -137,7 +141,9 @@ export const PERMISSION_GROUPS = Object.freeze([
     id: "cash",
     label: "Tahsilat ve Kasa",
     items: [
-      ["payments.create", "Kayda Tahsilat Girme", "Kişi kartından tahsilat girer; tutar Kasa'ya düşer."],
+      // 2.4.4 (E8): kayıttan Kasa'ya doğrudan tahsilat ekrandan kalktı (tahsilat cariden ya da taksit kartından girilir); yetki eski kayıt tahsilatlarının
+      // düzeltilmesi ve silinmesi için durur (kimlik ve sunucu ucu aynı; özel rol ve kişi ayarları bozulmaz).
+      ["payments.create", "Kayıt Tahsilatını Düzeltme", "Eski sürümlerde kayıt kartından girilen tahsilatı düzeltir ve siler; yeni tahsilat cariden ya da taksit kartından girilir."],
       ["cash.view", "Kasa'yı Görme", "Kasa hareketleri, bakiye ve dökümü."],
       ["cash.manage", "Kasa Yönetimi", "Kasa'ya giriş/çıkış ekler; başkasının hareketini düzeltir, siler."],
     ],
@@ -213,6 +219,14 @@ export const PERMISSION_GROUPS = Object.freeze([
       ["overview.view", "Finans Raporları", "Raporlar penceresi: mizan, ekstre, nakit akış, Kasa ve tüm raporlar."],
       ["reports.view", "Tablo ve Personel Raporları", "Vade takip, tablo raporları ve personel performansı."],
       ["audit.view", "İşlem Geçmişi", "Kim, neyi, ne zaman değiştirdi."],
+    ],
+  },
+  {
+    id: "staff",
+    label: "Personel Özlük",
+    items: [
+      ["staff.view", "Personel Özlük Görüntüleme", "Personel Raporu'nda çalışan kartları: TC No, IBAN, maaş, adres, izin (kişisel veri)."],
+      ["staff.manage", "Personel Özlük Düzenleme", "Çalışan kartı ekler, düzeltir, siler (Personel Özlük Görüntüleme ile birlikte)."],
     ],
   },
   {

@@ -1,0 +1,53 @@
+{
+  "ad": "244-esmm/m21-mutasyon-U2",
+  "komut": "node --test test/esmm-ubl.test.mjs",
+  "commit": "dde4675ab7eb58f8e299cdf00ad57916e964f75e",
+  "dal": "is/esmm",
+  "kirli": 2,
+  "izlenmeyen": 12,
+  "platform": "linux 6.18.44-fc-v139 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T04:02:39.136Z",
+  "sure_sn": 1.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 8,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "e-SMM UBL: GİB kuralından elle hesaplanan dip toplamlar (kâhin) › B — 2 × 100,03: belge stopajı matrah × oran = 40,01 (kalem yuvarlamasıyla 40,02 DEĞİL); kalemlere 20,01 + 20,00; KDV kalem başına 20,01 + 20,01",
+      "konum": "test/esmm-ubl.test.mjs:96:3",
+      "hata": "kalan kuruş kesri büyük (eşitse önceki) kaleme · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "e-SMM UBL: program tutarlarıyla aynı, yapı EDM'nin e-SMM örneğiyle aynı, UBL 2.1 şemasına uygun › XML tutarları programın kaydettiği makbuzla kuruşu kuruşuna aynı; kalem stopajları toplamı = belge stopajı; Σ kalem fiyatı = net alınan",
+      "konum": "test/esmm-ubl.test.mjs:134:3",
+      "hata": "B Σ kalem stopajı · 4002 !== 4001 (beklenen 4001, gelen 4002)"
+    },
+    {
+      "ad": "Stopajın kalemlere dağıtımı (en büyük kalan) › Σ pay = belge stopajı; her pay tam payın aşağı yuvarlaması ya da bir fazlası; aynı girdi aynı sonuç",
+      "konum": "test/esmm-ubl.test.mjs:189:3",
+      "hata": "koşu 1 · 128508 !== 128509 (beklenen 128509, gelen 128508)"
+    },
+    {
+      "ad": "Stopajın kalemlere dağıtımı (en büyük kalan) › tutarsız girdide (kalan kuruş kalem sayısını aşar ya da eksi) belge üretilmez",
+      "konum": "test/esmm-ubl.test.mjs:210:3",
+      "hata": "Missing expected exception."
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-esmm/m21-mutasyon-U2.log",
+  "klasor": "/home/user/wt/esmm",
+  "ham_cikti_sha256": "d1e2447db007b14838032296faccf6eda8f34ccd42514775af2def25b488c7b4",
+  "ham_cikti_bayt": 9609
+}

@@ -110,7 +110,10 @@ describe("Vekil sunucu: program uçları ve EDM trafiği", () => {
     assert.ok(!JSON.stringify(saved.data).includes("Vekil-Parola-9"), "parola yanıtta yok");
     const again = await api.put("/api/admin/network", { mode: "manual", address: `127.0.0.1:${proxyPort}`, username: "ofis", password: "", bypass: "" });
     assert.equal(again.data.manual.hasPassword, true, "boş parola kayıtlı parolayı korur");
-    assert.match(readFileSync(path.join(root, "ag-ayari.json"), "utf8"), /Vekil-Parola-9/, "dosyada korunmuş");
+    // 2.4.4 (iş listesi 28): parola dosyada açık metin değil, mühürlü; kayıtlı parola korunur (hasPassword yukarıda).
+    const onDisk = readFileSync(path.join(root, "ag-ayari.json"), "utf8");
+    assert.doesNotMatch(onDisk, /Vekil-Parola-9/, "dosyada açık metin parola yok");
+    assert.match(JSON.parse(onDisk).passwordSealed, /^sb1:/, "parola mühürlü saklanır");
     const auditRows = server.app.store.all("SELECT payload_json AS payload FROM audit_events WHERE type = 'system.network_settings'");
     assert.equal(auditRows.length, 2);
     assert.ok(auditRows.every(row => !String(row.payload).includes("Vekil-Parola-9")), "işlem kaydında parola yok");

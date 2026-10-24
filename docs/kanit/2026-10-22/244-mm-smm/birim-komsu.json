@@ -1,0 +1,32 @@
+{
+  "ad": "244-mm-smm/birim-komsu",
+  "komut": "node --test test/mm-smm-244.test.mjs test/esmm-ubl.test.mjs test/esmm-gonderim-244.test.mjs test/esmm-acik-244.test.mjs test/esmm-edm.test.mjs test/esmm-gizli-241.test.mjs test/goc-244-esmm-gonderim.test.mjs test/netten-brute-244.test.mjs test/numara-tekil-244.test.mjs test/goc-244-numara-tabani.test.mjs test/ebelge-244-iptal-suresi.test.mjs test/edoc-uretim.test.mjs test/fatura-215.test.mjs test/fatura-216.test.mjs test/fatura-217.test.mjs test/fatura-model.test.mjs test/documents.test.mjs test/uiux-244-ux9.test.mjs test/uiux-a-243.test.mjs test/yazim-duzeni.test.mjs test/ebelge-uygunluk.test.mjs test/ebelge-240-gorunum.test.mjs test/karekod.test.mjs test/fatura-buyuk-tutar-210.test.mjs test/kontrol-241.test.mjs test/iade-kapama-k1.test.mjs test/fatura-244-numara-tarih-onay.test.mjs test/edm-tek-ucus-giris-244.test.mjs test/soap-sozlesme-nitelik.test.mjs test/einvoice-edm.test.mjs test/ebelge-240-bitis-turu.test.mjs test/kapama-rastgele-223.test.mjs test/kilavuz-surum.test.mjs test/banka-220-kredi-karti-metin.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs",
+  "commit": "d602695dcd963952a8f64e0491f85045d69bf383",
+  "dal": "is/mm-smm",
+  "kirli": 10,
+  "izlenmeyen": 13,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T22:27:51.326Z",
+  "sure_sn": 151.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 412,
+    "gecen": 412,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-mm-smm/birim-komsu.log",
+  "klasor": "/home/user/wt/mm-smm",
+  "ham_cikti_sha256": "924c971508c4246dc269689dd8917157fb5b1d4feddf14e2bc9d29d58ca98bb1",
+  "ham_cikti_bayt": 146247
+}

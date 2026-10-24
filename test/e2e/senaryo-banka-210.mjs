@@ -121,12 +121,16 @@ const step = async (title, fn, { after = null } = {}) => {
   // Ders 20: NET_LATENCY=ms ve NET_STEPS="41.,48." verilirse bu adımlarda yönetici sayfasının ağı yavaşlatılır (CDP; istek gerçekten yolda
   // kalır — page.route gecikmesi sayfa betiğine "Failed to fetch" düşürmüyordu). Gezinti, açılıştaki tablo isteğini yolda keser mi?
   const slow = Number(process.env.NET_LATENCY) > 0 && String(process.env.NET_STEPS || "").split(",").includes(stepNow) && admin;
-  const cdp = slow ? await admin.context().newCDPSession(admin) : null;
-  if (cdp) await cdp.send("Network.emulateNetworkConditions", { offline: false, latency: Number(process.env.NET_LATENCY), downloadThroughput: -1, uploadThroughput: -1 });
+  // Ders 20 (24.10.2026, CI #864 adım 15): CPU_THROTTLE=N ve NET_STEPS verilirse bu adımlarda yönetici sayfası N kat yavaşlatılır (yavaş CI koşucusu).
+  const cpu = Number(process.env.CPU_THROTTLE) > 1 && String(process.env.NET_STEPS || "").split(",").includes(stepNow) && admin;
+  const cdp = slow || cpu ? await admin.context().newCDPSession(admin) : null;
+  if (slow) await cdp.send("Network.emulateNetworkConditions", { offline: false, latency: Number(process.env.NET_LATENCY), downloadThroughput: -1, uploadThroughput: -1 });
+  if (cpu) await cdp.send("Emulation.setCPUThrottlingRate", { rate: Number(process.env.CPU_THROTTLE) });
   try {
     await stepBody(fn, after);
   } finally {
-    if (cdp) await cdp.send("Network.emulateNetworkConditions", { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 }).catch(() => null);
+    if (slow) await cdp.send("Network.emulateNetworkConditions", { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 }).catch(() => null);
+    if (cpu) await cdp.send("Emulation.setCPUThrottlingRate", { rate: 1 }).catch(() => null);
   }
 };
 const stepBody = async (fn, after) => {
@@ -809,7 +813,20 @@ try {
   let GARANTI = null;
   const moveRows = (page, scope = bankWin) =>
     page.$$eval(`${scope} .hof-bank-moves tbody tr[data-event]`, list => list.map(node => ({ id: node.dataset.event, no: node.dataset.no, type: node.dataset.type, status: node.dataset.state, signed: Number(node.dataset.signed), balance: node.dataset.balance === "" ? null : Number(node.dataset.balance), text: node.textContent.replace(/\s+/g, " ").trim() })));
-  const waitMoves = (page, test, arg = null, timeout = 10000) => page.waitForFunction(test, arg, { timeout });
+  // Zaman aşımında ekranın o anki hâli iletiye eklenir (CI #864: yalnız "Timeout 10000ms exceeded" okunabildi; neden günlükte görünsün — ders 21/38).
+  const waitMoves = (page, test, arg = null, timeout = 10000) =>
+    page.waitForFunction(test, arg, { timeout }).catch(async error => {
+      const state = await page
+        .evaluate(() => {
+          const win = document.querySelector(".hof-bank-modal");
+          const filters = Object.fromEntries([...(win?.querySelectorAll("[data-mv-filters] [data-mv]") || [])].map(node => [node.dataset.mv, node.value]));
+          const rows = [...(win?.querySelectorAll(".hof-bank-moves tbody tr[data-event]") || [])].map(node => `${node.dataset.no}:${node.dataset.type}`);
+          const list = win?.querySelector("[data-moves]");
+          return { filters, rows, focus: document.activeElement?.dataset?.mv || document.activeElement?.tagName || "", list: (list?.textContent || "").replace(/\s+/g, " ").trim().slice(0, 200) };
+        })
+        .catch(stateError => ({ okunamadi: stateError.message }));
+      throw new Error(`${error.message} · ekran: ${JSON.stringify(state)}`);
+    });
   const fillVoucher = async (page, values) => {
     for (const [name, value] of Object.entries(values)) {
       const selector = `form.hof-bank-voucher [name="${name}"]`;
@@ -2575,7 +2592,7 @@ try {
     const rows = await moveRows(admin);
     ok(rows.length >= 5, `Ziraat hareketleri ekranda (${rows.length})`);
     const links = await admin.$$eval(`${bankWin} [data-mv-export] a`, nodes => nodes.map(node => [node.textContent.trim(), node.getAttribute("href")]));
-    ok(links.length === 2 && links[0][0] === "PDF İndir" && links[1][0] === "Excel İndir" && links.every(([, href]) => href.includes(`account=${R6.ziraat.id}`)), `düğmeler süzgeçli bağ taşır: ${JSON.stringify(links)}`);
+    ok(links.length === 2 && links[0][0] === "PDF" && links[1][0] === "Excel" && links.every(([, href]) => href.includes(`account=${R6.ziraat.id}`)), `düğmeler süzgeçli bağ taşır: ${JSON.stringify(links)}`);
     const xlsx = await fileText(admin, links[1][1]);
     const book = Object.values(xlsxSheets(xlsx.buffer))[0];
     const sheet = book.slice(Math.max(0, book.findIndex(row => row.length > 1)));

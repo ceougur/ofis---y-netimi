@@ -1,0 +1,32 @@
+{
+  "ad": "244-kahin/kirmizi-aday8-ebelge-senaryo-k43-k45-n1",
+  "komut": "python3 test/bagimsiz/ebelge/fark.py --senaryo test/bagimsiz/ebelge/senaryolar --ux15 acik --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-244/k20-ebelge",
+  "commit": "4d62cb037d50fd43ba2f0890b0582bf8b789bfc5",
+  "dal": "is/kahin-244",
+  "kirli": 12,
+  "izlenmeyen": 9,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T03:59:29.267Z",
+  "sure_sn": 41.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 27,
+    "gecen": 22,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/244-kahin/kirmizi-aday8-ebelge-senaryo-k43-k45-n1.log",
+  "klasor": "/home/user/wt/kahin-244",
+  "ham_cikti_sha256": "0839b914343f8e241f9b44892a08bbe561cd9cd5c6340d1469df04372a49f0ad",
+  "ham_cikti_bayt": 4934
+}

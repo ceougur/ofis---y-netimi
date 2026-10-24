@@ -1,0 +1,94 @@
+[
+ {
+  "id": "Q1",
+  "desc": "e-Arşiv'de 'bulunamadı' de bilinmiyor sayılır",
+  "exit": 1,
+  "tests": "25",
+  "pass": "24",
+  "fail": "1",
+  "caught": true
+ },
+ {
+  "id": "Q2",
+  "desc": "e-SMM'de 11017'ye güvenilir",
+  "exit": 1,
+  "tests": "25",
+  "pass": "24",
+  "fail": "1",
+  "caught": true
+ },
+ {
+  "id": "Q3",
+  "desc": "belirsizde EDM'ye hiç sorulmaz (6bde995 davranışı)",
+  "exit": 1,
+  "tests": "25",
+  "pass": "19",
+  "fail": "6",
+  "caught": true
+ },
+ {
+  "id": "Q4",
+  "desc": "EDM'ye ulaşılamazsa iptal serbest",
+  "exit": 1,
+  "tests": "25",
+  "pass": "24",
+  "fail": "1",
+  "caught": true
+ },
+ {
+  "id": "Q5",
+  "desc": "8 gün dolmadan da sorulur",
+  "exit": 1,
+  "tests": "25",
+  "pass": "23",
+  "fail": "2",
+  "caught": true
+ },
+ {
+  "id": "Q6",
+  "desc": "EDM'de var (iletilmemiş durum) → iptal serbest",
+  "exit": 1,
+  "tests": "25",
+  "pass": "24",
+  "fail": "1",
+  "caught": true
+ },
+ {
+  "id": "Q7",
+  "desc": "EDM'de var ve iletilmiş → iptal serbest",
+  "exit": 1,
+  "tests": "25",
+  "pass": "23",
+  "fail": "2",
+  "caught": true
+ }
+]
+# tests 7
+# pass 7
+# fail 0
+git diff (mutasyon sonrası değişmemeli):  M server/lib/einvoice/iptal-suresi.mjs
+ M server/routes/invoices.mjs
+ M test/ebelge-244-iptal-suresi.test.mjs
+?? docs/kanit/2026-10-22/244-iptal/belirsiz-eski-6bde995-kirmizi.json
+?? docs/kanit/2026-10-22/244-iptal/belirsiz-eski-6bde995-kirmizi.log
+?? docs/kanit/2026-10-22/244-iptal/belirsiz-yeni-yesil-tz-istanbul.json
+?? docs/kanit/2026-10-22/244-iptal/belirsiz-yeni-yesil-tz-istanbul.log
+?? docs/kanit/2026-10-22/244-iptal/belirsiz-yeni-yesil.json
+?? docs/kanit/2026-10-22/244-iptal/belirsiz-yeni-yesil.log
+?? docs/kanit/2026-10-22/244-iptal/betikler/mutasyon-belirsiz.json
+?? docs/kanit/2026-10-22/244-iptal/mutasyon-belirsiz-Q1.json
+?? docs/kanit/2026-10-22/244-iptal/mutasyon-belirsiz-Q1.log
+?? docs/kanit/2026-10-22/244-iptal/mutasyon-belirsiz-Q2.json
+?? docs/kanit/2026-10-22/244-iptal/mutasyon-belirsiz-Q2.log
+?? docs/kanit/2026-10-22/244-iptal/mutasyon-belirsiz-Q3.json
+?? docs/kanit/2026-10-22/244-iptal/mutasyon-belirsiz-Q3.log
+?? docs/kanit/2026-10-22/244-iptal/mutasyon-belirsiz-Q4.json
+?? docs/kanit/2026-10-22/244-iptal/mutasyon-belirsiz-Q4.log
+?? docs/kanit/2026-10-22/244-iptal/mutasyon-belirsiz-Q5.json
+?? docs/kanit/2026-10-22/244-iptal/mutasyon-belirsiz-Q5.log
+?? docs/kanit/2026-10-22/244-iptal/mutasyon-belirsiz-Q6.json
+?? docs/kanit/2026-10-22/244-iptal/mutasyon-belirsiz-Q6.log
+?? docs/kanit/2026-10-22/244-iptal/mutasyon-belirsiz-Q7.json
+?? docs/kanit/2026-10-22/244-iptal/mutasyon-belirsiz-Q7.log
+?? docs/kanit/2026-10-22/244-iptal/mutasyon-belirsiz-ozet.txt
+

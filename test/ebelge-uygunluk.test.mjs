@@ -10,7 +10,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { after, before, describe, test } from "node:test";
 import { EXEMPTIONS, WITHHOLDING } from "../server/lib/invoice-math.mjs";
-import { SEMA, renderView, schematronErrors, validateInvoice, xsdErrors } from "../tools/ebelge/dogrula.mjs";
+import { SEMA, oasisXsdErrors, renderView, schematronErrors, ublTrXsdErrors, validateInvoice, withSignatureSlot, xsdErrors } from "../tools/ebelge/dogrula.mjs";
 import { ADMIN_PASSWORD, startTestServer } from "./helpers.mjs";
 
 // VKN denetim hanesi (GİB algoritması) ile geçerli VKN.
@@ -98,6 +98,27 @@ describe("Kâhin aracı: GİB şematronu ve UBL 2.1 XSD bozuk belgeyi yakalar (a
     assert.ok((await xsdErrors(emptyTime)).some(error => /IssueTime/.test(error)));
     const emptyExtension = good.replace("<cbc:UBLVersionID>", "<ext:UBLExtensions><ext:UBLExtension><ext:ExtensionContent/></ext:UBLExtension></ext:UBLExtensions><cbc:UBLVersionID>");
     assert.ok((await xsdErrors(emptyExtension)).some(error => /ExtensionContent/.test(error)));
+  });
+  // 2.4.4 madde 24 (22.10.2026): EDM e-SMM'yi kendi UBL-TR şemasıyla reddetti (Person/FamilyName zorunlu, 11029); OASIS UBL 2.1 şeması geçirmişti — kâhin
+  // GİB'in UBL-TR 1.2.1 XSD'siyle de denetler (tools/ebelge/sema/ubl-tr-1.2.1, KAYNAK.md).
+  test("UBL-TR 1.2.1 XSD düşürür, OASIS geçirir: cac:Person'da FamilyName yok (EDM'nin 11029 ile reddettiği hâl)", async () => {
+    const person = await xmlOf((await issue({ scenario: "service_sale", accountId: ids.person, lines: [line({ name: "Bakım" })], payment: { rest: "open" } })).id);
+    assert.match(person, /<cac:Person><cbc:FirstName>[^<]+<\/cbc:FirstName><cbc:FamilyName>[^<]+<\/cbc:FamilyName>/, "ön koşul: kişi alıcıda Person");
+    assert.deepEqual(await xsdErrors(person), [], "bozulmamış belge iki şemaya da uygun");
+    const broken = person.replace(/<cbc:FamilyName>[^<]*<\/cbc:FamilyName>/, "");
+    assert.notEqual(broken, person);
+    assert.deepEqual(await oasisXsdErrors(broken), [], "OASIS UBL 2.1'de FamilyName isteğe bağlı");
+    assert.ok((await ublTrXsdErrors(broken)).some(error => /FamilyName/.test(error)), "UBL-TR'de zorunlu");
+    assert.ok((await xsdErrors(broken)).some(error => /^UBL-TR 1\.2\.1: .*FamilyName/.test(error)), "birleşik denetim de yakalar");
+  });
+  test("UBL-TR 1.2.1 XSD: imza yeri yalnız eklenir (belgenin başka yeri değişmez); UBL-TR'de zorunlu cac:Signature silinirse düşer", async () => {
+    const slotted = withSignatureSlot(good);
+    assert.equal(slotted.replace(/<ext:UBLExtensions\b[\s\S]*?<\/ext:UBLExtensions>/, ""), good, "yalnız imza yeri eklendi");
+    assert.equal(withSignatureSlot(slotted), slotted, "imza yeri varsa ikinci kez eklenmez");
+    const unsigned = good.replace(/<cac:Signature>[\s\S]*?<\/cac:Signature>/, "");
+    assert.notEqual(unsigned, good, "ön koşul: belgede cac:Signature var");
+    assert.deepEqual(await oasisXsdErrors(unsigned), [], "OASIS'te cac:Signature isteğe bağlı");
+    assert.ok((await ublTrXsdErrors(unsigned)).some(error => /Signature|AccountingSupplierParty/.test(error)), "UBL-TR'de cac:Signature zorunlu");
   });
   test("e-Arşiv kipi: e-Fatura profili e-Arşiv kuralında, e-Arşiv profili e-Fatura kuralında düşer", () => {
     assert.ok(schematronErrors(good, { type: "earsiv" }).some(error => /ProfileIDTypeEarchive/.test(error.text)));

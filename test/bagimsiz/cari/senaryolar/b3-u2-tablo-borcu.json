@@ -1,0 +1,188 @@
+{
+ "dil": "destekofis-cari/2",
+ "ad": "b3-u2-tablo-borcu",
+ "aciklama": "K3 Tablodaki Kişiler borcu: Kalan önceliği, Kalan 0 → 0, Kalan boş → Toplam Borç, söz borç dışı (aynı dosyada ve yalnız sözü olan dosyada), 'Kalan Gün' tutar değil (tek tutar sütunu borç); K2 (04:09) aynı dosya no iki sekmede ayrı borç + 'ayrı sayıldı' notu; MM6 Kasa giriş: cari nakit + kayıt tahsilatı + çek tahsili, havale hariç; Kasa çıkış: elle Kasa çıkışı",
+ "dayanak": "KARARLAR.md B3 (KULLANICI 23.10 03:12 UTC K1, K3; 04:09 UTC K2), B4 (KULLANICI MM6)",
+ "bugun": "2026-06-17",
+ "adimlar": [
+  {
+   "id": "t1",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Borçlular",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Toplam Borç",
+      "Kalan Borç"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/101",
+       "isim": "Ali Ak",
+       "hucreler": {
+        "Telefon": "0532 111 11 01",
+        "Toplam Borç": "10.000,00 ₺",
+        "Kalan Borç": "6.000,00 ₺"
+       }
+      },
+      {
+       "no": "2026/102",
+       "isim": "Can Ay",
+       "hucreler": {
+        "Telefon": "0532 111 11 02",
+        "Toplam Borç": "5.000,00 ₺",
+        "Kalan Borç": "0,00 ₺"
+       }
+      },
+      {
+       "no": "2026/103",
+       "isim": "Ece Su",
+       "hucreler": {
+        "Telefon": "0532 111 11 03",
+        "Toplam Borç": "7.000,00 ₺",
+        "Kalan Borç": ""
+       }
+      },
+      {
+       "no": "2026/106",
+       "isim": "Deniz Ay",
+       "hucreler": {
+        "Telefon": "0532 111 11 06",
+        "Toplam Borç": "4.500,00 ₺",
+        "Kalan Borç": "4.000,00 ₺"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "Ödeme Sözleri",
+     "tur": "soz",
+     "kayitlar": [
+      {
+       "no": "2026/101",
+       "isim": "Ali Ak",
+       "tarih": "2026-06-20",
+       "tutar": "1000"
+      },
+      {
+       "no": "2026/109",
+       "isim": "Naz Er",
+       "tarih": "2026-06-21",
+       "tutar": "2500"
+      }
+     ]
+    },
+    {
+     "ad": "Kira",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Tutar",
+      "Kalan Gün"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/105",
+       "isim": "Oya Tan",
+       "hucreler": {
+        "Telefon": "0532 111 11 05",
+        "Tutar": "8.000,00 ₺",
+        "Kalan Gün": "12"
+       }
+      },
+      {
+       "no": "2026/107",
+       "isim": "Selin Öz",
+       "hucreler": {
+        "Telefon": "0532 111 11 07",
+        "Tutar": "2.000,00 ₺",
+        "Kalan Gün": "3"
+       }
+      }
+     ]
+    },
+    {
+     "ad": "İkinci Liste",
+     "tur": "serbest",
+     "basliklar": [
+      "Telefon",
+      "Kalan"
+     ],
+     "kayitlar": [
+      {
+       "no": "2026/106",
+       "isim": "Deniz Ay",
+       "hucreler": {
+        "Telefon": "0532 111 11 06",
+        "Kalan": "3.000,00 ₺"
+       }
+      },
+      {
+       "no": "2026/107",
+       "isim": "Selin Öz",
+       "hucreler": {
+        "Telefon": "0532 111 11 07",
+        "Kalan": "1.500,00 ₺"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "kt1",
+   "islem": "kayit_tahsilat",
+   "kayit": "2026/103",
+   "tutar": "500",
+   "tarih": "2026-06-16"
+  },
+  {
+   "id": "c-z",
+   "islem": "cari_ac",
+   "ad": "Z",
+   "isim": "Zeki Nakit"
+  },
+  {
+   "id": "th1",
+   "islem": "tahsilat",
+   "cari": "Z",
+   "tutar": "300",
+   "tarih": "2026-06-15"
+  },
+  {
+   "id": "th2",
+   "islem": "tahsilat",
+   "cari": "Z",
+   "tutar": "900",
+   "tarih": "2026-06-15",
+   "yol": "havale"
+  },
+  {
+   "id": "e1",
+   "islem": "evrak",
+   "ad": "E1",
+   "cari": "Z",
+   "tur": "cek",
+   "tutar": "400",
+   "tarih": "2026-06-16"
+  },
+  {
+   "id": "e1t",
+   "islem": "tahsil",
+   "evrak": "E1",
+   "tarih": "2026-06-17"
+  },
+  {
+   "id": "kc1",
+   "islem": "kasa_cikis",
+   "tutar": "50",
+   "tarih": "2026-06-16"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  }
+ ]
+}

@@ -1,0 +1,68 @@
+{
+  "ad": "244-b2-uyari/mutasyon-M7-kapatma-silmez",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/geri-yukleme-uyari-244.test.mjs",
+  "commit": "e070d4247567174ee1bf1b5efe142dfafba6cdb8",
+  "dal": "is/b2-uyari",
+  "kirli": 5,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T17:03:07.902Z",
+  "sure_sn": 5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 4,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Geri yüklemeden sonra Fatura'da tek seferlik numara uyarısı; 11048 iletisi geri yüklemeyi söyler › N8 iki oturum: eski işaretle kapatma yeni uyarıyı kapatmaz; birinci kapatır, ikincinin kapatması hata vermez; liste yenilenince ikisinde de yok",
+      "konum": "test/geri-yukleme-uyari-244.test.mjs:108:3",
+      "hata": "Expected values to be strictly equal: · true !== false (beklenen false, gelen true)"
+    },
+    {
+      "ad": "Geri yüklemeden sonra Fatura'da tek seferlik numara uyarısı; 11048 iletisi geri yüklemeyi söyler › N5 kapatılan uyarı program yeniden açılınca geri gelmez",
+      "konum": "test/geri-yukleme-uyari-244.test.mjs:123:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + { (beklenen ~, gelen )"
+    },
+    {
+      "ad": "Geri yüklemeden sonra Fatura'da tek seferlik numara uyarısı; 11048 iletisi geri yüklemeyi söyler › N1/N10 001 geri yüklenince (sunucu yeniden açılırken, ortak katman aktarılır) uyarı 001'de, edoc=true + Test Ortamı; 002'de yok",
+      "konum": "test/geri-yukleme-uyari-244.test.mjs:130:3",
+      "hata": "002'de uyarı yok · + actual - expected · + { (beklenen ~, gelen )"
+    },
+    {
+      "ad": "Geri yüklemeden sonra Fatura'da tek seferlik numara uyarısı; 11048 iletisi geri yüklemeyi söyler › N7 yetki: Fatura Ayarları yetkisi olmayan (avukat) uyarıyı görür ama kapatamaz (403); Fatura'yı görmeyen (personel) listeyi alamaz",
+      "konum": "test/geri-yukleme-uyari-244.test.mjs:142:3",
+      "hata": "Cannot read properties of undefined (reading 'at')"
+    },
+    {
+      "ad": "Geri yüklemeden sonra Fatura'da tek seferlik numara uyarısı; 11048 iletisi geri yüklemeyi söyler › N2 uyarı beklerken alınan yedek (içinde eski işaret) geri yüklenince işaret YENİDEN yazılır; kapatıldıktan sonraki geri yükleme uyarıyı yeniden çıkarır",
+      "konum": "test/geri-yukleme-uyari-244.test.mjs:154:3",
+      "hata": "Cannot read properties of undefined (reading 'at')"
+    },
+    {
+      "ad": "Geri yüklemeden sonra Fatura'da tek seferlik numara uyarısı; 11048 iletisi geri yüklemeyi söyler › N4 Şirket Verisini Sıfırla geri yükleme değildir: uyarı çıkarmaz (002) ve bekleyen uyarıyı silmez (001 Tümünü Sıfırla)",
+      "konum": "test/geri-yukleme-uyari-244.test.mjs:168:3",
+      "hata": "sıfırlama uyarı yazmaz · + actual - expected · + { (beklenen ~, gelen )"
+    },
+    {
+      "ad": "Geri yüklemeden sonra Fatura'da tek seferlik numara uyarısı; 11048 iletisi geri yüklemeyi söyler › N9 yarıda kalan geri yükleme uyarı yazmaz: bozuk yedek (002), vazgeçilen 001, açılışta uygulanamayan 001",
+      "konum": "test/geri-yukleme-uyari-244.test.mjs:177:3",
+      "hata": "002'de uyarı yok · + actual - expected · + { (beklenen ~, gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-b2-uyari/mutasyon-M7-kapatma-silmez.log",
+  "klasor": "/home/user/wt/b2-uyari",
+  "ham_cikti_sha256": "befc015bc9ec357c3002dac5a5a33daf955faf19769451ac8ee22404e14c9f40",
+  "ham_cikti_bayt": 10990
+}

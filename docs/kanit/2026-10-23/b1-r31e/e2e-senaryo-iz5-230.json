@@ -1,0 +1,32 @@
+{
+  "ad": "b1-r31e/e2e-senaryo-iz5-230",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-iz5-230.mjs",
+  "commit": "2653fff161d8a950bd536a4148b3d6b64ae07a08",
+  "dal": "is/r31e-b",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T08:37:18.506Z",
+  "sure_sn": 36.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 44,
+    "gecen": 44,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-23/b1-r31e/e2e-senaryo-iz5-230.log",
+  "klasor": "/home/user/wt/r31e-b",
+  "ham_cikti_sha256": "dca62a5c8ae33759da4d0bbd929579a44d02d8aa48f61d382b0c6b9ce448d65b",
+  "ham_cikti_bayt": 3516
+}

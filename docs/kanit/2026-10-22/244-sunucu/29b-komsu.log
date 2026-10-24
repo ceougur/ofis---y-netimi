@@ -1,0 +1,920 @@
+TAP version 13
+# (node:9552) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: kimlik doğrulama
+    # Subtest: sağlık ucu oturumsuz çalışır ve sürümü döndürür
+    ok 1 - sağlık ucu oturumsuz çalışır ve sürümü döndürür
+      ---
+      duration_ms: 39.455601
+      type: 'test'
+      ...
+    # Subtest: doğru parolayla giriş yapar, yetkileri döndürür
+    ok 2 - doğru parolayla giriş yapar, yetkileri döndürür
+      ---
+      duration_ms: 65.263394
+      type: 'test'
+      ...
+    # Subtest: kullanıcı adı büyük/küçük harf duyarsız eşleşir
+    ok 3 - kullanıcı adı büyük/küçük harf duyarsız eşleşir
+      ---
+      duration_ms: 58.867767
+      type: 'test'
+      ...
+    # Subtest: hatalı parolada 401, 5 denemeden sonra 429 döner
+    ok 4 - hatalı parolada 401, 5 denemeden sonra 429 döner
+      ---
+      duration_ms: 243.530158
+      type: 'test'
+      ...
+    # Subtest: yönetici parolayı sıfırlayınca kilit hemen kalkar
+    ok 5 - yönetici parolayı sıfırlayınca kilit hemen kalkar
+      ---
+      duration_ms: 408.757887
+      type: 'test'
+      ...
+    # Subtest: oturumsuz korumalı uçlar 401 döner
+    ok 6 - oturumsuz korumalı uçlar 401 döner
+      ---
+      duration_ms: 2.829706
+      type: 'test'
+      ...
+    # Subtest: çıkış oturumu kapatır
+    ok 7 - çıkış oturumu kapatır
+      ---
+      duration_ms: 47.014214
+      type: 'test'
+      ...
+    # Subtest: başka siteden gelen değiştirici istekleri reddeder
+    ok 8 - başka siteden gelen değiştirici istekleri reddeder
+      ---
+      duration_ms: 47.337723
+      type: 'test'
+      ...
+    # Subtest: JSON olmayan gövdeyi reddeder
+    ok 9 - JSON olmayan gövdeyi reddeder
+      ---
+      duration_ms: 48.138946
+      type: 'test'
+      ...
+    # Subtest: çok büyük gövdeyi 413 ile reddeder
+    ok 10 - çok büyük gövdeyi 413 ile reddeder
+      ---
+      duration_ms: 61.882732
+      type: 'test'
+      ...
+    1..10
+ok 1 - kimlik doğrulama
+  ---
+  duration_ms: 1265.289916
+  type: 'suite'
+  ...
+# Subtest: varsayılan parola zorunlu değişimi
+    # Subtest: varsayılan parolayla açılan yönetici önce parolasını değiştirmek zorunda
+    ok 1 - varsayılan parolayla açılan yönetici önce parolasını değiştirmek zorunda
+      ---
+      duration_ms: 303.612891
+      type: 'test'
+      ...
+    1..1
+ok 2 - varsayılan parola zorunlu değişimi
+  ---
+  duration_ms: 504.652172
+  type: 'suite'
+  ...
+# Subtest: ilk kurulum güvenliği
+    # Subtest: varsayılan parolayla ilk giriş yalnızca sunucu bilgisayarından yapılabilir
+    ok 1 - varsayılan parolayla ilk giriş yalnızca sunucu bilgisayarından yapılabilir
+      ---
+      duration_ms: 90.152654
+      type: 'test'
+      ...
+    1..1
+ok 3 - ilk kurulum güvenliği
+  ---
+  duration_ms: 272.750049
+  type: 'suite'
+  ...
+# (node:9553) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ofis içi sohbet
+    # Subtest: özet: ofis kanalı ve kişiler listesi (kendisi hariç)
+    ok 1 - özet: ofis kanalı ve kişiler listesi (kendisi hariç)
+      ---
+      duration_ms: 10.342598
+      type: 'test'
+      ...
+    # Subtest: özel yazışmayı yalnızca iki taraf görür; üçüncü kişi ve yönetici göremez
+    ok 2 - özel yazışmayı yalnızca iki taraf görür; üçüncü kişi ve yönetici göremez
+      ---
+      duration_ms: 28.905867
+      type: 'test'
+      ...
+    # Subtest: okundu bilgisi: okununca sayaç sıfırlanır, karşı taraf okunma zamanını görür
+    ok 3 - okundu bilgisi: okununca sayaç sıfırlanır, karşı taraf okunma zamanını görür
+      ---
+      duration_ms: 11.740766
+      type: 'test'
+      ...
+    # Subtest: ofis kanalını herkes görür; her kişinin okunmamış sayısı ayrıdır
+    ok 4 - ofis kanalını herkes görür; her kişinin okunmamış sayısı ayrıdır
+      ---
+      duration_ms: 8.034573
+      type: 'test'
+      ...
+    # Subtest: geçersiz istekleri reddeder
+    ok 5 - geçersiz istekleri reddeder
+      ---
+      duration_ms: 12.361107
+      type: 'test'
+      ...
+    # Subtest: eski Mesajlar uçları sohbete yazar ve yalnızca kişinin yazışmalarını döndürür
+    ok 6 - eski Mesajlar uçları sohbete yazar ve yalnızca kişinin yazışmalarını döndürür
+      ---
+      duration_ms: 16.572727
+      type: 'test'
+      ...
+    # Subtest: canlı kanal: mesaj, okundu ve çalışma alanı değişikliği anında iletilir
+    ok 7 - canlı kanal: mesaj, okundu ve çalışma alanı değişikliği anında iletilir
+      ---
+      duration_ms: 684.415663
+      type: 'test'
+      ...
+    # Subtest: görev olayı yalnızca görevi görebilenlere gider (atanan ve tüm görevleri görenler)
+    ok 8 - görev olayı yalnızca görevi görebilenlere gider (atanan ve tüm görevleri görenler)
+      ---
+      duration_ms: 420.427423
+      type: 'test'
+      ...
+    # Subtest: oturum kapanınca canlı bağlantı da kapanır
+    ok 9 - oturum kapanınca canlı bağlantı da kapanır
+      ---
+      duration_ms: 140.831883
+      type: 'test'
+      ...
+    1..9
+ok 4 - ofis içi sohbet
+  ---
+  duration_ms: 1874.261233
+  type: 'suite'
+  ...
+# Subtest: canlı kanal oturum güvenliği
+    # Subtest: çıkış yapınca yalnızca o oturumun bağlantısı anında kapanır
+    ok 1 - çıkış yapınca yalnızca o oturumun bağlantısı anında kapanır
+      ---
+      duration_ms: 120.506658
+      type: 'test'
+      ...
+    # Subtest: yönetici oturumları kapatınca veya hesabı pasifleştirince bağlantılar anında kapanır
+    ok 2 - yönetici oturumları kapatınca veya hesabı pasifleştirince bağlantılar anında kapanır
+      ---
+      duration_ms: 138.190925
+      type: 'test'
+      ...
+    1..2
+ok 5 - canlı kanal oturum güvenliği
+  ---
+  duration_ms: 504.583217
+  type: 'suite'
+  ...
+# (node:9559) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: canlı kanal: kaldığı yerden devam ve bağlantı yenileme
+    # Subtest: kopan sekme Last-Event-ID ile bağlanınca arada kaçan olaylar gelir (eşitlemeye gerek kalmaz)
+    ok 1 - kopan sekme Last-Event-ID ile bağlanınca arada kaçan olaylar gelir (eşitlemeye gerek kalmaz)
+      ---
+      duration_ms: 348.424887
+      type: 'test'
+      ...
+    # Subtest: başka bir sunucu oturumunun (ör. güncelleme öncesi) kimliğiyle gelen sekme eşitleme yapar
+    ok 2 - başka bir sunucu oturumunun (ör. güncelleme öncesi) kimliğiyle gelen sekme eşitleme yapar
+      ---
+      duration_ms: 23.177247
+      type: 'test'
+      ...
+    # Subtest: süresi dolan akış kısa bekleme süresi bildirip kapanır; yanıt Connection: close taşır
+    ok 3 - süresi dolan akış kısa bekleme süresi bildirip kapanır; yanıt Connection: close taşır
+      ---
+      duration_ms: 434.667325
+      type: 'test'
+      ...
+    1..3
+ok 6 - canlı kanal: kaldığı yerden devam ve bağlantı yenileme
+  ---
+  duration_ms: 1242.408295
+  type: 'suite'
+  ...
+# Subtest: 1.3.x servis yöneticisi kapısı arkasında
+    # Subtest: kapanan sekmelerin bağlantıları kapının soket havuzunda birikmez
+    ok 1 - kapanan sekmelerin bağlantıları kapının soket havuzunda birikmez
+      ---
+      duration_ms: 681.903065
+      type: 'test'
+      ...
+    1..1
+ok 7 - 1.3.x servis yöneticisi kapısı arkasında
+  ---
+  duration_ms: 935.615441
+  type: 'suite'
+  ...
+# (node:9592) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: İz 1.1 — Rapor Merkezi Excel'inde şirket kodu ve unvanı (PDF ile aynı)
+    # Subtest: 1, 6, 9: 001'in Excel'i başta '001 · Unvan' + rapor adı + kapsam; tablo ekranla birebir; süzgeç ve dondurma başlık satırında; PDF aynı şirket
+    ok 1 - 1, 6, 9: 001'in Excel'i başta '001 · Unvan' + rapor adı + kapsam; tablo ekranla birebir; süzgeç ve dondurma başlık satırında; PDF aynı şirket
+      ---
+      duration_ms: 44.797296
+      type: 'test'
+      ...
+    # Subtest: 2, 5: 002'nin Excel'i ve PDF'i '002 · Unvan' (özel karakterler metin olarak, formül değil); 001'in adı geçmez
+    ok 2 - 2, 5: 002'nin Excel'i ve PDF'i '002 · Unvan' (özel karakterler metin olarak, formül değil); 001'in adı geçmez
+      ---
+      duration_ms: 19.458424
+      type: 'test'
+      ...
+    # Subtest: 3: sunucuda 002 seçiliyken 001'i gösteren pencerenin Excel'i (?hofCompany=001) '001 · Unvan' der
+    ok 3 - 3: sunucuda 002 seçiliyken 001'i gösteren pencerenin Excel'i (?hofCompany=001) '001 · Unvan' der
+      ---
+      duration_ms: 13.246888
+      type: 'test'
+      ...
+    # Subtest: 4: şirketin adı değişince Excel yeni adı yazar
+    ok 4 - 4: şirketin adı değişince Excel yeni adı yazar
+      ---
+      duration_ms: 17.998543
+      type: 'test'
+      ...
+    # Subtest: 7, 8: boş raporda (çek portföyü) başlık bloğu ve kolon başlıkları var, süzgeç yok; Özet sayfasında Şirket satırı
+    ok 5 - 7, 8: boş raporda (çek portföyü) başlık bloğu ve kolon başlıkları var, süzgeç yok; Özet sayfasında Şirket satırı
+      ---
+      duration_ms: 10.861236
+      type: 'test'
+      ...
+    1..5
+ok 8 - İz 1.1 — Rapor Merkezi Excel'inde şirket kodu ve unvanı (PDF ile aynı)
+  ---
+  duration_ms: 655.388262
+  type: 'suite'
+  ...
+# (node:9601) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: yetki modeli (birim)
+    # Subtest: havuz her yetkiyi bir kez, açıklamasıyla listeler
+    ok 1 - havuz her yetkiyi bir kez, açıklamasıyla listeler
+      ---
+      duration_ms: 1.914243
+      type: 'test'
+      ...
+    # Subtest: v2.0.7 dizi biçimi eklenen sayılır; yönetime özgü ve bilinmeyen yetkiler atılır
+    ok 2 - v2.0.7 dizi biçimi eklenen sayılır; yönetime özgü ve bilinmeyen yetkiler atılır
+      ---
+      duration_ms: 0.676292
+      type: 'test'
+      ...
+    # Subtest: yönetici her zaman tüm yetkilere sahip; kişiye özel ayar yöneticiye uygulanmaz
+    ok 3 - yönetici her zaman tüm yetkilere sahip; kişiye özel ayar yöneticiye uygulanmaz
+      ---
+      duration_ms: 0.298298
+      type: 'test'
+      ...
+    # Subtest: personel: rol + eklenen − kaldırılan; yönetime özgü yetki eklenemez
+    ok 4 - personel: rol + eklenen − kaldırılan; yönetime özgü yetki eklenemez
+      ---
+      duration_ms: 0.622301
+      type: 'test'
+      ...
+    1..4
+ok 9 - yetki modeli (birim)
+  ---
+  duration_ms: 5.038787
+  type: 'suite'
+  ...
+# Subtest: yetki havuzu ve kullanıcı yönetimi (API)
+    # Subtest: roller: 4 yerleşik rol ve gruplu havuz; yönetim yetkileri kilitli
+    ok 1 - roller: 4 yerleşik rol ve gruplu havuz; yönetim yetkileri kilitli
+      ---
+      duration_ms: 7.420373
+      type: 'test'
+      ...
+    # Subtest: özel rol: oluşturulur, yönetim yetkisi verilemez, ad çakışmaz; kullanıcıya atanınca yetkileri uygulanır
+    ok 2 - özel rol: oluşturulur, yönetim yetkisi verilemez, ad çakışmaz; kullanıcıya atanınca yetkileri uygulanır
+      ---
+      duration_ms: 150.762747
+      type: 'test'
+      ...
+    # Subtest: kişiye özel: rolden yetki kaldırılır ve yetki eklenir; sunucu her uçta uygular
+    ok 3 - kişiye özel: rolden yetki kaldırılır ve yetki eklenir; sunucu her uçta uygular
+      ---
+      duration_ms: 109.884259
+      type: 'test'
+      ...
+    # Subtest: ANLIK DURUM kartı yalnız yönetici; yeni kullanıcı formunda kişiye özel yetkiyle oluşturulur
+    ok 4 - ANLIK DURUM kartı yalnız yönetici; yeni kullanıcı formunda kişiye özel yetkiyle oluşturulur
+      ---
+      duration_ms: 129.879762
+      type: 'test'
+      ...
+    # Subtest: ✎ düzeltme: görünen ad ve kullanıcı adı değişir; yeni adla girilir, eski adla girilmez, oturum açık kalır
+    ok 5 - ✎ düzeltme: görünen ad ve kullanıcı adı değişir; yeni adla girilir, eski adla girilmez, oturum açık kalır
+      ---
+      duration_ms: 210.21073
+      type: 'test'
+      ...
+    # Subtest: silme: kendini ve son yöneticiyi silemez; açık görevde devir sorulur; geçmiş korunur; ad ve kullanıcı adı yeniden kullanılır; geri alınır
+    ok 6 - silme: kendini ve son yöneticiyi silemez; açık görevde devir sorulur; geçmiş korunur; ad ve kullanıcı adı yeniden kullanılır; geri alınır
+      ---
+      duration_ms: 449.410358
+      type: 'test'
+      ...
+    # Subtest: yetkisiz kullanıcı yönetim uçlarına erişemez
+    ok 7 - yetkisiz kullanıcı yönetim uçlarına erişemez
+      ---
+      duration_ms: 107.656921
+      type: 'test'
+      ...
+    # Subtest: Yönetim paneli yalnız yöneticide; işlem geçmişi yetkisi olan uzman denetim kaydını Raporlar'dan görür, finans raporlarını görmez
+    ok 8 - Yönetim paneli yalnız yöneticide; işlem geçmişi yetkisi olan uzman denetim kaydını Raporlar'dan görür, finans raporlarını görmez
+      ---
+      duration_ms: 290.067904
+      type: 'test'
+      ...
+    1..8
+ok 10 - yetki havuzu ve kullanıcı yönetimi (API)
+  ---
+  duration_ms: 1804.994213
+  type: 'suite'
+  ...
+# Subtest: v2.0.7 ek yetki kayıtları göçü
+    # Subtest: ['overview.view'] → { add: ['overview.view'] }: raporlar açık kalır, kart kapanır
+    ok 1 - ['overview.view'] → { add: ['overview.view'] }: raporlar açık kalır, kart kapanır
+      ---
+      duration_ms: 300.845027
+      type: 'test'
+      ...
+    1..1
+ok 11 - v2.0.7 ek yetki kayıtları göçü
+  ---
+  duration_ms: 314.929325
+  type: 'suite'
+  ...
+# (node:9624) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: lisans belirteci
+    # Subtest: imzalı belirteci doğrular, değiştirilmiş veya tanınmayan anahtarla imzalanmışı reddeder
+    ok 1 - imzalı belirteci doğrular, değiştirilmiş veya tanınmayan anahtarla imzalanmışı reddeder
+      ---
+      duration_ms: 7.133095
+      type: 'test'
+      ...
+    # Subtest: biçim denetimi: deneme belirtecinin bitişi zorunlu, bilinmeyen tür ve durum reddedilir
+    ok 2 - biçim denetimi: deneme belirtecinin bitişi zorunlu, bilinmeyen tür ve durum reddedilir
+      ---
+      duration_ms: 2.350971
+      type: 'test'
+      ...
+    # Subtest: internetsiz etkinleştirme kodu zarfı taşır; bozuk kod anlaşılır hata verir
+    ok 3 - internetsiz etkinleştirme kodu zarfı taşır; bozuk kod anlaşılır hata verir
+      ---
+      duration_ms: 1.04693
+      type: 'test'
+      ...
+    # Subtest: kurulum kodu ve lisans anahtarı biçimleri
+    ok 4 - kurulum kodu ve lisans anahtarı biçimleri
+      ---
+      duration_ms: 0.478603
+      type: 'test'
+      ...
+    # Subtest: bilgisayar kimliği kalıcıdır; ham değer dışarı verilmez
+    ok 5 - bilgisayar kimliği kalıcıdır; ham değer dışarı verilmez
+      ---
+      duration_ms: 5.998436
+      type: 'test'
+      ...
+    1..5
+ok 12 - lisans belirteci
+  ---
+  duration_ms: 18.000612
+  type: 'suite'
+  ...
+# Subtest: lisans durumu (saf değerlendirme)
+    # Subtest: etkinleştirilmemiş kurulum salt okunurdur
+    ok 1 - etkinleştirilmemiş kurulum salt okunurdur
+      ---
+      duration_ms: 0.989894
+      type: 'test'
+      ...
+    # Subtest: deneme: kalan gün, son 7 günde uyarı, süre dolunca salt okunur
+    ok 2 - deneme: kalan gün, son 7 günde uyarı, süre dolunca salt okunur
+      ---
+      duration_ms: 5.876863
+      type: 'test'
+      ...
+    # Subtest: lisans: süresiz, bitişe yakın uyarı, engellenmiş lisans salt okunur
+    ok 3 - lisans: süresiz, bitişe yakın uyarı, engellenmiş lisans salt okunur
+      ---
+      duration_ms: 2.513505
+      type: 'test'
+      ...
+    # Subtest: 7 günden uzun internetsiz kalınca doğrulama ister; son 3 günde uyarır; internetsiz lisansta süre yok
+    ok 4 - 7 günden uzun internetsiz kalınca doğrulama ister; son 3 günde uyarır; internetsiz lisansta süre yok
+      ---
+      duration_ms: 1.787672
+      type: 'test'
+      ...
+    # Subtest: saat geri alınınca süre geri gelmez ve program salt okunur olur
+    ok 5 - saat geri alınınca süre geri gelmez ve program salt okunur olur
+      ---
+      duration_ms: 1.385584
+      type: 'test'
+      ...
+    # Subtest: geçiş dönemi 30 gün yazılabilir, sonra salt okunur; başka bilgisayarın lisansı sayılmaz
+    ok 6 - geçiş dönemi 30 gün yazılabilir, sonra salt okunur; başka bilgisayarın lisansı sayılmaz
+      ---
+      duration_ms: 0.586747
+      type: 'test'
+      ...
+    1..6
+ok 13 - lisans durumu (saf değerlendirme)
+  ---
+  duration_ms: 13.747167
+  type: 'suite'
+  ...
+# Subtest: lisans motoru — sunucu
+    # Subtest: yeni kurulum etkinleştirilmeden salt okunurdur; yönetim, yedek ve giriş çalışır
+    ok 1 - yeni kurulum etkinleştirilmeden salt okunurdur; yönetim, yedek ve giriş çalışır
+      ---
+      duration_ms: 462.97082
+      type: 'test'
+      ...
+    # Subtest: ücretsiz deneme 30 gün açar; süre dolunca durur, okuma ve yedek sürer
+    ok 2 - ücretsiz deneme 30 gün açar; süre dolunca durur, okuma ve yedek sürer
+      ---
+      duration_ms: 59.830483
+      type: 'test'
+      ...
+    # Subtest: aynı bilgisayara ikinci deneme verilmez (yeniden kurulum dahil)
+    ok 3 - aynı bilgisayara ikinci deneme verilmez (yeniden kurulum dahil)
+      ---
+      duration_ms: 230.195596
+      type: 'test'
+      ...
+    # Subtest: lisans anahtarı bilgisayara bağlanır; başka bilgisayarda reddedilir; engellenince salt okunur
+    ok 4 - lisans anahtarı bilgisayara bağlanır; başka bilgisayarda reddedilir; engellenince salt okunur
+      ---
+      duration_ms: 320.601185
+      type: 'test'
+      ...
+    # Subtest: internetsiz 7 gün tolerans: servis yoksa uyarır, 7 gün sonra durur, bağlantı gelince açılır
+    ok 5 - internetsiz 7 gün tolerans: servis yoksa uyarır, 7 gün sonra durur, bağlantı gelince açılır
+      ---
+      duration_ms: 23.509653
+      type: 'test'
+      ...
+    # Subtest: saat geri alınırsa durur; servisin saati güvenilir zamandır
+    ok 6 - saat geri alınırsa durur; servisin saati güvenilir zamandır
+      ---
+      duration_ms: 7.79689
+      type: 'test'
+      ...
+    # Subtest: internetsiz etkinleştirme kodu: yalnızca kendi bilgisayarında, doğrulama gerektirmez
+    ok 7 - internetsiz etkinleştirme kodu: yalnızca kendi bilgisayarında, doğrulama gerektirmez
+      ---
+      duration_ms: 244.971427
+      type: 'test'
+      ...
+    # Subtest: ileri alınıp düzeltilen saat takılı kalmaz: daha yeni imzalı kod zamanı düzeltir, eski kod geri alamaz
+    ok 8 - ileri alınıp düzeltilen saat takılı kalmaz: daha yeni imzalı kod zamanı düzeltir, eski kod geri alamaz
+      ---
+      duration_ms: 270.365443
+      type: 'test'
+      ...
+    # Subtest: 2.0 öncesinden gelen kullanılmış kurulum 30 günlük geçiş döneminde yazılabilir
+    ok 9 - 2.0 öncesinden gelen kullanılmış kurulum 30 günlük geçiş döneminde yazılabilir
+      ---
+      duration_ms: 296.288938
+      type: 'test'
+      ...
+    # Subtest: yerel kayıt elle değiştirilirse en sıkı varsayım kullanılır
+    ok 10 - yerel kayıt elle değiştirilirse en sıkı varsayım kullanılır
+      ---
+      duration_ms: 227.352459
+      type: 'test'
+      ...
+    # Subtest: demo program açılınca kendiliğinden başlar; internet yoksa kendiliğinden yeniden dener
+    ok 11 - demo program açılınca kendiliğinden başlar; internet yoksa kendiliğinden yeniden dener
+      ---
+      duration_ms: 261.115605
+      type: 'test'
+      ...
+    # Subtest: geçiş dönemindeki (2.0 öncesi) kuruluma deneme kendiliğinden başlatılmaz
+    ok 12 - geçiş dönemindeki (2.0 öncesi) kuruluma deneme kendiliğinden başlatılmaz
+      ---
+      duration_ms: 359.120568
+      type: 'test'
+      ...
+    # Subtest: denemenin 3. gününde yöneticiden firma bilgisi istenir; gönderilince bir daha sorulmaz
+    ok 13 - denemenin 3. gününde yöneticiden firma bilgisi istenir; gönderilince bir daha sorulmaz
+      ---
+      duration_ms: 392.515414
+      type: 'test'
+      ...
+    # Subtest: deneme süresi güncellemede (aynı data klasörüyle yeniden açılış) ve yeniden kurulumda sıfırlanmaz; süre dolunca öyle kalır
+    ok 14 - deneme süresi güncellemede (aynı data klasörüyle yeniden açılış) ve yeniden kurulumda sıfırlanmaz; süre dolunca öyle kalır
+      ---
+      duration_ms: 723.453579
+      type: 'test'
+      ...
+    # Subtest: geçiş dönemi (2.0 öncesi kurulum) güncellemede sıfırlanmaz; bütünlük özeti bozulsa da başlangıç ileri alınmaz
+    ok 15 - geçiş dönemi (2.0 öncesi kurulum) güncellemede sıfırlanmaz; bütünlük özeti bozulsa da başlangıç ileri alınmaz
+      ---
+      duration_ms: 358.882189
+      type: 'test'
+      ...
+    # Subtest: lisans durumu bilgisayar kimliğinin kaynağını söyler (Windows/Linux kimliği ya da veri klasöründeki dosya)
+    ok 16 - lisans durumu bilgisayar kimliğinin kaynağını söyler (Windows/Linux kimliği ya da veri klasöründeki dosya)
+      ---
+      duration_ms: 222.473115
+      type: 'test'
+      ...
+    # Subtest: salt okunur modda yazma yetkileri gizlenir, okuma yetkileri kalır
+    ok 17 - salt okunur modda yazma yetkileri gizlenir, okuma yetkileri kalır
+      ---
+      duration_ms: 0.184662
+      type: 'test'
+      ...
+    # Subtest: katalogdaki her yazma yetkisi salt okunurda gizlenir (okuma/yönetim yetkileri açık listeyle hariç)
+    ok 18 - katalogdaki her yazma yetkisi salt okunurda gizlenir (okuma/yönetim yetkileri açık listeyle hariç)
+      ---
+      duration_ms: 0.254534
+      type: 'test'
+      ...
+    # Subtest: salt okunur lisansta Vergi Ödemesi / KDV Mahsubu yetkisi ekrana gitmez, yazım reddedilir, veri değişmez
+    ok 19 - salt okunur lisansta Vergi Ödemesi / KDV Mahsubu yetkisi ekrana gitmez, yazım reddedilir, veri değişmez
+      ---
+      duration_ms: 226.384455
+      type: 'test'
+      ...
+    1..19
+ok 14 - lisans motoru — sunucu
+  ---
+  duration_ms: 4799.850653
+  type: 'suite'
+  ...
+# (node:9634) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: rol bazlı yetkiler
+    # Subtest: personel dosya işlemi yapabilir ama kayıt silemez
+    ok 1 - personel dosya işlemi yapabilir ama kayıt silemez
+      ---
+      duration_ms: 18.097887
+      type: 'test'
+      ...
+    # Subtest: personel raporları, değişiklik geçmişini ve yönetimi göremez
+    ok 2 - personel raporları, değişiklik geçmişini ve yönetimi göremez
+      ---
+      duration_ms: 11.500723
+      type: 'test'
+      ...
+    # Subtest: personel veri kaynağını değiştiremez
+    ok 3 - personel veri kaynağını değiştiremez
+      ---
+      duration_ms: 6.282356
+      type: 'test'
+      ...
+    # Subtest: performans raporunu yalnızca avukat ve yönetici görür; avukat kayıt silebilir ama veri yükleyemez
+    ok 4 - performans raporunu yalnızca avukat ve yönetici görür; avukat kayıt silebilir ama veri yükleyemez
+      ---
+      duration_ms: 21.056585
+      type: 'test'
+      ...
+    # Subtest: görev atama ve herkesin görevleri yalnızca avukat ve yöneticide; personel kendi görevini görür ve tamamlar
+    ok 5 - görev atama ve herkesin görevleri yalnızca avukat ve yöneticide; personel kendi görevini görür ve tamamlar
+      ---
+      duration_ms: 38.78925
+      type: 'test'
+      ...
+    # Subtest: yönetici kendini pasifleştiremez ve son yönetici korunur
+    ok 6 - yönetici kendini pasifleştiremez ve son yönetici korunur
+      ---
+      duration_ms: 6.663698
+      type: 'test'
+      ...
+    # Subtest: yönetici rol değiştirir; pasifleştirilen kullanıcının oturumu kapanır
+    ok 7 - yönetici rol değiştirir; pasifleştirilen kullanıcının oturumu kapanır
+      ---
+      duration_ms: 12.662629
+      type: 'test'
+      ...
+    # Subtest: yönetici parola sıfırlar; kullanıcı ilk girişte değiştirmek zorunda kalır
+    ok 8 - yönetici parola sıfırlar; kullanıcı ilk girişte değiştirmek zorunda kalır
+      ---
+      duration_ms: 102.73586
+      type: 'test'
+      ...
+    # Subtest: zayıf parola ve tekrar eden kullanıcı adı reddedilir
+    ok 9 - zayıf parola ve tekrar eden kullanıcı adı reddedilir
+      ---
+      duration_ms: 4.915918
+      type: 'test'
+      ...
+    1..9
+ok 15 - rol bazlı yetkiler
+  ---
+  duration_ms: 813.428922
+  type: 'suite'
+  ...
+# (node:9642) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.0.21 · aynı veri dosyasını paylaşan iki şirket: bulunur, bildirilir, ayrılır
+    # Subtest: çakışma bulunur: dosyayı koruyan en eski şirket, ayrılacak yeni şirket
+    ok 1 - çakışma bulunur: dosyayı koruyan en eski şirket, ayrılacak yeni şirket
+      ---
+      duration_ms: 9.044575
+      type: 'test'
+      ...
+    # Subtest: hata yeniden üretilir: birine girilen kayıt öbüründe görünür (ayırmadan önce)
+    ok 2 - hata yeniden üretilir: birine girilen kayıt öbüründe görünür (ayırmadan önce)
+      ---
+      duration_ms: 252.701967
+      type: 'test'
+      ...
+    # Subtest: onaysız, yanlış parolalı, dosyayı koruyan şirkette ya da çakışmasız şirkette Ayır yapılmaz
+    ok 3 - onaysız, yanlış parolalı, dosyayı koruyan şirkette ya da çakışmasız şirkette Ayır yapılmaz
+      ---
+      duration_ms: 144.589802
+      type: 'test'
+      ...
+    # Subtest: Ayır: önce yedek, yeni boş klasöre kopya; ayırma anındaki kayıtlar ikisinde de durur, sonrası ayrı
+    ok 4 - Ayır: önce yedek, yeni boş klasöre kopya; ayırma anındaki kayıtlar ikisinde de durur, sonrası ayrı
+      ---
+      duration_ms: 161.166004
+      type: 'test'
+      ...
+    # Subtest: ikinci kez Ayır yapılmaz; işlem geçmişine yazılır
+    ok 5 - ikinci kez Ayır yapılmaz; işlem geçmişine yazılır
+      ---
+      duration_ms: 46.058051
+      type: 'test'
+      ...
+    1..5
+ok 16 - 2.0.21 · aynı veri dosyasını paylaşan iki şirket: bulunur, bildirilir, ayrılır
+  ---
+  duration_ms: 966.988061
+  type: 'suite'
+  ...
+# Subtest: 2.0.21 · 001'in veri klasörünü gösteren şirket (bozuk kayıt) açılmaz; Ayır ile kendi klasörüne alınır
+    # Subtest: çakışma bildirilir; şirket seçilince 001'in verisi gösterilmez, açık hata verilir
+    ok 1 - çakışma bildirilir; şirket seçilince 001'in verisi gösterilmez, açık hata verilir
+      ---
+      duration_ms: 12.659736
+      type: 'test'
+      ...
+    # Subtest: Ayır sonrası şirket açılır (001'in o günkü kopyasıyla); 001 ve kullanıcılar etkilenmez
+    ok 2 - Ayır sonrası şirket açılır (001'in o günkü kopyasıyla); 001 ve kullanıcılar etkilenmez
+      ---
+      duration_ms: 194.174243
+      type: 'test'
+      ...
+    1..2
+ok 17 - 2.0.21 · 001'in veri klasörünü gösteren şirket (bozuk kayıt) açılmaz; Ayır ile kendi klasörüne alınır
+  ---
+  duration_ms: 485.587989
+  type: 'suite'
+  ...
+# (node:9650) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Şirket kanalları: ortak olaylar 002 ekranına ulaşır, şirket verisi sızmaz
+    # Subtest: yönetici yetkiyi değiştirince 002 penceresi (personel) 'permissions' olayını alır; /api/auth/me 002'de yeni yetkiyi verir
+    ok 1 - yönetici yetkiyi değiştirince 002 penceresi (personel) 'permissions' olayını alır; /api/auth/me 002'de yeni yetkiyi verir
+      ---
+      duration_ms: 36.598815
+      type: 'test'
+      ...
+    # Subtest: yetki olayı yalnız ilgili kullanıcıya gider (002'de de): yöneticinin 002 akışı başkasının yetki olayını almaz
+    ok 2 - yetki olayı yalnız ilgili kullanıcıya gider (002'de de): yöneticinin 002 akışı başkasının yetki olayını almaz
+      ---
+      duration_ms: 333.084371
+      type: 'test'
+      ...
+    # Subtest: lisans değişikliği (Denetle) 002 penceresine 'license.changed' olarak ulaşır
+    ok 3 - lisans değişikliği (Denetle) 002 penceresine 'license.changed' olarak ulaşır
+      ---
+      duration_ms: 34.174146
+      type: 'test'
+      ...
+    # Subtest: kullanıcı adı değişikliği ('users') ve şirket listesi değişikliği ('companies') 002 penceresine ulaşır
+    ok 4 - kullanıcı adı değişikliği ('users') ve şirket listesi değişikliği ('companies') 002 penceresine ulaşır
+      ---
+      duration_ms: 66.650271
+      type: 'test'
+      ...
+    # Subtest: şirkete özgü veri olayı sızmaz: 001'de açılan cari 001 akışına gelir, 002 akışına gelmez (ve tersi)
+    ok 5 - şirkete özgü veri olayı sızmaz: 001'de açılan cari 001 akışına gelir, 002 akışına gelmez (ve tersi)
+      ---
+      duration_ms: 490.125717
+      type: 'test'
+      ...
+    # Subtest: geri yüklemede 002 örneği kapanıp yeniden açılır: eski köprü kalkar (dinleyici birikmez), yeni örnek ortak olayı yine alır
+    ok 6 - geri yüklemede 002 örneği kapanıp yeniden açılır: eski köprü kalkar (dinleyici birikmez), yeni örnek ortak olayı yine alır
+      ---
+      duration_ms: 185.682308
+      type: 'test'
+      ...
+    # Subtest: şirket erişimi kaldırılınca: kişinin 002 penceresi 'companies' olayını alır ve 002 canlı bağlantısı kapanır; 001 bağlantısı sürer
+    ok 7 - şirket erişimi kaldırılınca: kişinin 002 penceresi 'companies' olayını alır ve 002 canlı bağlantısı kapanır; 001 bağlantısı sürer
+      ---
+      duration_ms: 224.190718
+      type: 'test'
+      ...
+    # Subtest: hesap pasifleşince 002 canlı bağlantısı da hemen kapanır (ping turu beklenmez)
+    ok 8 - hesap pasifleşince 002 canlı bağlantısı da hemen kapanır (ping turu beklenmez)
+      ---
+      duration_ms: 10.588553
+      type: 'test'
+      ...
+    1..8
+ok 18 - Şirket kanalları: ortak olaylar 002 ekranına ulaşır, şirket verisi sızmaz
+  ---
+  duration_ms: 2042.752695
+  type: 'suite'
+  ...
+# (node:9658) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.0.21 · şirket listesi bozulursa şirketler kaybolmaz
+    # Subtest: asıl dosya bozuk → ikinci kopyadan; bozuk dosya yanına alınır
+    ok 1 - asıl dosya bozuk → ikinci kopyadan; bozuk dosya yanına alınır
+      ---
+      duration_ms: 998.708558
+      type: 'test'
+      ...
+    # Subtest: asıl dosya ve ikinci kopya bozuk → ortak veri tabanındaki kopyadan
+    ok 2 - asıl dosya ve ikinci kopya bozuk → ortak veri tabanındaki kopyadan
+      ---
+      duration_ms: 895.338198
+      type: 'test'
+      ...
+    # Subtest: üçü de yok → diskteki şirket klasörlerinden; asıl kimlik, kod ve ad yedeklerinden
+    ok 3 - üçü de yok → diskteki şirket klasörlerinden; asıl kimlik, kod ve ad yedeklerinden
+      ---
+      duration_ms: 930.427491
+      type: 'test'
+      ...
+    # Subtest: dosya hiç yoksa ve kopya varsa yeni liste yazılmaz, kopyadan kurulur
+    ok 4 - dosya hiç yoksa ve kopya varsa yeni liste yazılmaz, kopyadan kurulur
+      ---
+      duration_ms: 874.55726
+      type: 'test'
+      ...
+    1..4
+ok 19 - 2.0.21 · şirket listesi bozulursa şirketler kaybolmaz
+  ---
+  duration_ms: 3701.300619
+  type: 'suite'
+  ...
+# (node:9693) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.0.21 · aynı hesap iki pencerede: kayıt sayfanın şirketine yazılır
+    # Subtest: hata yeniden üretilir (şirketsiz istek = eski istemci): B 002'ye geçince A'nın kaydı 002'ye düşer
+    ok 1 - hata yeniden üretilir (şirketsiz istek = eski istemci): B 002'ye geçince A'nın kaydı 002'ye düşer
+      ---
+      duration_ms: 34.958375
+      type: 'test'
+      ...
+    # Subtest: düzeltme: A'nın isteği sayfasının şirketini (001) taşır; B'nin seçimi etkilemez
+    ok 2 - düzeltme: A'nın isteği sayfasının şirketini (001) taşır; B'nin seçimi etkilemez
+      ---
+      duration_ms: 68.747663
+      type: 'test'
+      ...
+    # Subtest: yetkisiz şirket istenirse 403; silinmiş şirket istenirse 409 (kayıt başka şirkete düşmez)
+    ok 3 - yetkisiz şirket istenirse 403; silinmiş şirket istenirse 409 (kayıt başka şirkete düşmez)
+      ---
+      duration_ms: 314.721305
+      type: 'test'
+      ...
+    1..3
+ok 20 - 2.0.21 · aynı hesap iki pencerede: kayıt sayfanın şirketine yazılır
+  ---
+  duration_ms: 924.119875
+  type: 'suite'
+  ...
+# (node:9701) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Şirket sınırı: en fazla 2
+    # Subtest: çalışıyor mu: 001 tek başına → 002 açılır; sınırda liste nedeni söyler; silince yenisi açılır
+    ok 1 - çalışıyor mu: 001 tek başına → 002 açılır; sınırda liste nedeni söyler; silince yenisi açılır
+      ---
+      duration_ms: 805.472144
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: başka kodla, aynı anda iki istekle, personel olarak 3. şirket açılmaz
+    ok 2 - nasıl bozarım: başka kodla, aynı anda iki istekle, personel olarak 3. şirket açılmaz
+      ---
+      duration_ms: 544.154692
+      type: 'test'
+      ...
+    # Subtest: eski kurulum: sınırdan önce açılmış 3 şirket kalır ve çalışır; yenisi açılmaz
+    ok 3 - eski kurulum: sınırdan önce açılmış 3 şirket kalır ve çalışır; yenisi açılmaz
+      ---
+      duration_ms: 1056.251246
+      type: 'test'
+      ...
+    1..3
+ok 21 - Şirket sınırı: en fazla 2
+  ---
+  duration_ms: 2483.473195
+  type: 'suite'
+  ...
+# (node:9709) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: R4 — yalnız büyük/küçük harf farkıyla ad değişince silinmiş şirketin yedek klasörü verilmez
+    # Subtest: A silinir, B aynı kod + küçük harfli adla açılır, B'nin adı A'nın yazımına çevrilir → B'nin klasörü A'nınki değil; A'nın yedekleri yerinde, B'ninkiler B'de
+    ok 1 - A silinir, B aynı kod + küçük harfli adla açılır, B'nin adı A'nın yazımına çevrilir → B'nin klasörü A'nınki değil; A'nın yedekleri yerinde, B'ninkiler B'de
+      ---
+      duration_ms: 471.449037
+      type: 'test'
+      ...
+    1..1
+ok 22 - R4 — yalnız büyük/küçük harf farkıyla ad değişince silinmiş şirketin yedek klasörü verilmez
+  ---
+  duration_ms: 845.97512
+  type: 'suite'
+  ...
+# (node:9717) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme
+    # Subtest: göç: mevcut veri 001 kodlu ilk şirkettir, sayılar aynı; /api/auth/me şirketi söyler
+    ok 1 - göç: mevcut veri 001 kodlu ilk şirkettir, sayılar aynı; /api/auth/me şirketi söyler
+      ---
+      duration_ms: 14.308788
+      type: 'test'
+      ...
+    # Subtest: yeni şirket 002: sıfırdan; aynı adlı cari iki şirkette; birinde tahsilat öbürünü değiştirmez
+    ok 2 - yeni şirket 002: sıfırdan; aynı adlı cari iki şirkette; birinde tahsilat öbürünü değiştirmez
+      ---
+      duration_ms: 207.340844
+      type: 'test'
+      ...
+    # Subtest: sayfalar şirkete aittir: 001'de sayfa adı değişir, 002'de görünmez
+    ok 3 - sayfalar şirkete aittir: 001'de sayfa adı değişir, 002'de görünmez
+      ---
+      duration_ms: 23.443492
+      type: 'test'
+      ...
+    # Subtest: yetki: personel yetkisiz şirketi göremez/seçemez (403); yönetici yetki verince seçer; yönetici daraltılamaz
+    ok 4 - yetki: personel yetkisiz şirketi göremez/seçemez (403); yönetici yetki verince seçer; yönetici daraltılamaz
+      ---
+      duration_ms: 155.489016
+      type: 'test'
+      ...
+    # Subtest: şirket kodu/adı değişir; kod tekil ve üç hane; 001 silinemez
+    ok 5 - şirket kodu/adı değişir; kod tekil ve üç hane; 001 silinemez
+      ---
+      duration_ms: 32.034214
+      type: 'test'
+      ...
+    # Subtest: birleşik rapor: seçilen şirketler yan yana + toplam; PDF ve Excel iner; yetkisiz şirket rapora girmez
+    ok 6 - birleşik rapor: seçilen şirketler yan yana + toplam; PDF ve Excel iner; yetkisiz şirket rapora girmez
+      ---
+      duration_ms: 66.959643
+      type: 'test'
+      ...
+    # Subtest: şirket verisini sıfırla: zorunlu yedek, onay (kod + parola); hareketler silinir, kartlar kalır; lisans ve öbür şirket aynı; kullanıcı girer
+    ok 7 - şirket verisini sıfırla: zorunlu yedek, onay (kod + parola); hareketler silinir, kartlar kalır; lisans ve öbür şirket aynı; kullanıcı girer
+      ---
+      duration_ms: 323.682516
+      type: 'test'
+      ...
+    # Subtest: şirket silme: onay + parola, önce yedek, klasör silinen-sirketler altına; seçmiş kullanıcılar 001'e döner
+    ok 8 - şirket silme: onay + parola, önce yedek, klasör silinen-sirketler altına; seçmiş kullanıcılar 001'e döner
+      ---
+      duration_ms: 133.0727
+      type: 'test'
+      ...
+    1..8
+ok 23 - Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme
+  ---
+  duration_ms: 1403.638273
+  type: 'suite'
+  ...
+# Subtest: Sayfalar (madde 13): öbür sayfanın tarih uyarıları zile/takvime girer; Ödendi Say o sayfaya yazılır
+    # Subtest: ikinci sayfadaki yarın vadeli kalem, ilk sayfa açıkken /api/workspace/dues içinde sayfa adıyla (foreign) gelir
+    ok 1 - ikinci sayfadaki yarın vadeli kalem, ilk sayfa açıkken /api/workspace/dues içinde sayfa adıyla (foreign) gelir
+      ---
+      duration_ms: 101.413573
+      type: 'test'
+      ...
+    1..1
+ok 24 - Sayfalar (madde 13): öbür sayfanın tarih uyarıları zile/takvime girer; Ödendi Say o sayfaya yazılır
+  ---
+  duration_ms: 341.163949
+  type: 'suite'
+  ...
+1..24
+# tests 119
+# suites 24
+# pass 119
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12872.372941

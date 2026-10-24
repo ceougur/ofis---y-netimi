@@ -1,0 +1,25 @@
+(node:20448) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+b3y-taahhut-alacak-bakiye: 24/38 tuttu · BİLİNEN 14
+  ≈ [BİLİNEN] k1:acilis:2026/1011: program "boş" · kâhin 220000 (YALNIZ MEKANİZMA DENEMESİ)
+  ≈ [BİLİNEN] k1:acilis:2026/1012: program 100000 · kâhin 400000 (YALNIZ MEKANİZMA DENEMESİ)
+  ≈ [BİLİNEN] k1:acilis:2026/1013: program 100000 · kâhin 30000 (YALNIZ MEKANİZMA DENEMESİ)
+  ≈ [BİLİNEN] k1:k4:akis: program 200600 · kâhin 850000 (YALNIZ MEKANİZMA DENEMESİ)
+  ≈ [BİLİNEN] k1:k4:kisiler: program 700000 · kâhin 1150000 (YALNIZ MEKANİZMA DENEMESİ)
+  ≈ [BİLİNEN] k1:k4:takvim: program 200600 · kâhin 850000 (YALNIZ MEKANİZMA DENEMESİ)
+  ≈ [BİLİNEN] k1:k4:vade: program 200600 · kâhin 850000 (YALNIZ MEKANİZMA DENEMESİ)
+  ≈ [BİLİNEN] k1:kalem:2026/1011: program 0 · kâhin 220000 (YALNIZ MEKANİZMA DENEMESİ)
+  ≈ [BİLİNEN] k1:kalem:2026/1013: program 100000 · kâhin 30000 (YALNIZ MEKANİZMA DENEMESİ)
+  ≈ [BİLİNEN] k1:kalem:2026/1014: program 600 · kâhin 500000 (YALNIZ MEKANİZMA DENEMESİ)
+  ≈ [BİLİNEN] k1:rapor:2026/1011:borc: program 0 · kâhin 220000 (YALNIZ MEKANİZMA DENEMESİ)
+  ≈ [BİLİNEN] k1:rapor:2026/1011:grup: program [] · kâhin ["2026/1011"] (YALNIZ MEKANİZMA DENEMESİ)
+  ≈ [BİLİNEN] k1:rapor:2026/1012:borc: program 100000 · kâhin 400000 (YALNIZ MEKANİZMA DENEMESİ)
+  ≈ [BİLİNEN] k1:rapor:2026/1013:borc: program 100000 · kâhin 30000 (YALNIZ MEKANİZMA DENEMESİ)
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+BİLİNEN SINIRLAR (14): b3y-taahhut-alacak-bakiye k1:acilis:2026/1011; b3y-taahhut-alacak-bakiye k1:acilis:2026/1012; b3y-taahhut-alacak-bakiye k1:acilis:2026/1013; b3y-taahhut-alacak-bakiye k1:k4:akis; b3y-taahhut-alacak-bakiye k1:k4:kisiler; b3y-taahhut-alacak-bakiye k1:k4:takvim; b3y-taahhut-alacak-bakiye k1:k4:vade; b3y-taahhut-alacak-bakiye k1:kalem:2026/1011; b3y-taahhut-alacak-bakiye k1:kalem:2026/1013; b3y-taahhut-alacak-bakiye k1:kalem:2026/1014; b3y-taahhut-alacak-bakiye k1:rapor:2026/1011:borc; b3y-taahhut-alacak-bakiye k1:rapor:2026/1011:grup; b3y-taahhut-alacak-bakiye k1:rapor:2026/1012:borc; b3y-taahhut-alacak-bakiye k1:rapor:2026/1013:borc
+38/38 denetim geçti (14 bilinen sınır dahil)

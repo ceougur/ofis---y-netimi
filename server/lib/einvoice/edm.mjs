@@ -16,6 +16,14 @@
 // Oturum: EDM belgesine göre Logout, aynı kullanıcının başka yerlerdeki (EDM portalı, başka kurulum) oturumlarını da
 // kapatır. Bu yüzden program çıkış yapmaz; oturumu bellekte tutar, "Aktif session bulunamadı" (10011) gelince yeniden
 // giriş yapıp isteği bir kez tekrarlar.
+//
+// e-SMM (2.4.4, iş listesi 20): EDM e-Serbest Meslek Makbuzu'nu AYRI bir uç noktadan sunar (ESmmEDM.svc; e-Fatura ile aynı kullanıcı
+// adı/parola, ayrı oturum). Adres Entegratör Ayarları'ndaki e-Fatura servis adresinden türetilir (…/EFaturaEDM.svc → …/ESmmEDM.svc; test ve
+// canlı aynı düzen — kullanıcı kararı 21.10.2026 (6)). Sözleşme EDM'nin GERÇEK test WSDL'idir (tools/ebelge/sema/edm/ESmmEDM-test-singleWsdl.xml,
+// 22.10.2026; ad alanı http://tempuri.org/, SOAP 1.1). e-Fatura'dan farkları: SMM öğesinde ID ve UUID NİTELİK DEĞİL, ÇOCUK ÖĞEDİR (SMM'nin tek
+// niteliği TRXID); gönderim SendSMM ile, UBL (ProfileID ESMM) SMM/CONTENT'te ve SMM_CONTENT_TYPE "XML" ile gider — EDM'nin C# örneğindeki
+// SendSMMPrepared bugünkü sözleşmede YOK (kılavuz v4.4.1 §5.4 da UBL'yi SendSMM'e koyar); numarayı program verir (ID dolu gönderilir,
+// INVOICESERIAL_REQUESTED / "ABC2009123456789" seri talebi kullanılmaz) — kronoloji, kopma ve belirsiz gönderim güvenceleri e-Fatura ile tek yerde.
 import { createHash, randomUUID } from "node:crypto";
 import { hostname } from "node:os";
 import { readZip } from "../zip.mjs";
@@ -27,12 +35,34 @@ export const EDM_URLS = Object.freeze({
   test: "https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc",
   live: "https://portal2.edmbilisim.com.tr/EFaturaEDM/EFaturaEDM.svc",
 });
+// EDM web portalı (e-Fatura / e-Arşiv arayüzü; 2.4.4 E7 "e-Fatura Portalı" düğmesi). SABİT liste: düğme yalnız bu iki adresten ortamınkini açar;
+// adres Servis Adresi'nden ya da istemciden alınmaz. Kaynak: test portalı kullanıcının verdiği adres (20.10.2026), canlı portal edmbilisim.com.tr →
+// Müşteri Girişi → "E-Fatura Portal Girişi" (kullanıcı ekranı, 20.10.2026). Giriş web servis kullanıcısıyla (kullanıcı teyidi); program giriş
+// yapmaz, parola istemciye çıkmaz, Turnstile'a dokunulmaz.
+export const EDM_PORTAL_URLS = Object.freeze({
+  test: "https://test.edmbilisim.com.tr/EFaturaUI21ea/",
+  live: "https://portal4.edmbilisim.com.tr/EFaturaUI/",
+});
 export const EDM_DEFAULT_NS = "http://schemas.i2i.com/ei/wsdl";
 export const EDM_OPERATIONS = Object.freeze(["Login", "SendInvoice", "LoadInvoice", "GetInvoiceStatus", "GetInvoice", "CheckUser", "CancelInvoice", "MarkInvoice"]);
 const APP = "DestekOfis";
 // Yan etkisiz EDM işlemleri: bağlantı koparsa bir kez yinelenebilir (aynı istek ikinci kez işlense de sonuç değişmez). SendInvoice, LoadInvoice ve
 // CancelInvoice burada YOK.
 const SAFE_OPERATIONS = new Set(["Login", "CheckUser", "GetInvoiceStatus", "GetInvoice", "MarkInvoice"]);
+// e-SMM servisi (ESmmEDM.svc): gerçek WSDL'in ad alanı (sözleşme okunamazsa varsayılan) ve programın kullandığı işlemler.
+export const EDM_SMM_DEFAULT_NS = "http://tempuri.org/";
+export const EDM_SMM_OPERATIONS = Object.freeze(["Login", "SendSMM", "GetSMMStatus", "GetSMM", "CancelSMM"]);
+// e-SMM'de yan etkisiz işlemler. SendSMM, LoadSMM ve CancelSMM burada YOK (yinelenmez; belge "Sonucu Belirsiz" yoluna düşer).
+const SMM_SAFE_OPERATIONS = new Set(["Login", "CheckUser", "GetSMMStatus", "GetSMM", "MarkSMM", "CheckCounter", "GetSessionInfo"]);
+// e-SMM servis adresi e-Fatura servis adresinden: …/EFaturaEDM.svc → …/ESmmEDM.svc (büyük/küçük harf duyarsız; sorgu ve sondaki "/" atılır).
+// Başka biçimdeki adresten tahmin yürütülmez: açık hata (integrator-url), ağa çıkılmaz.
+export function esmmUrlOf(url) {
+  const base = String(url || "").trim().replace(/\?.*$/, "").replace(/\/+$/, "");
+  const match = /^(.*\/)EFaturaEDM\.svc$/i.exec(base);
+  if (!match) throw new IntegratorError("e-SMM servis adresi Servis Adresi'nden türetilemedi: adres EDM'nin e-Fatura adresi gibi …/EFaturaEDM.svc ile bitmeli (Entegratör Ayarları → Servis Adresi'ni boş bırakın ya da EDM'nin verdiği adresi yazın).", { code: "integrator-url", status: 400 });
+  return `${match[1]}ESmmEDM.svc`;
+}
+export const EDM_SMM_URLS = Object.freeze({ test: esmmUrlOf(EDM_URLS.test), live: esmmUrlOf(EDM_URLS.live) });
 // Kopan bağlantı sınıfı (Node fetch / undici): ECONNRESET, EPIPE, UND_ERR_SOCKET ("other side closed"), "socket hang up".
 const connectionReset = error => /ECONNRESET|EPIPE|UND_ERR_SOCKET/.test(`${error?.cause?.code || ""} ${error?.code || ""}`) || /other side closed|socket hang up/i.test(`${error?.cause?.message || ""} ${error?.message || ""}`);
 // Dar kontrol 2 (2.4.3, B2): bağlantı HİÇ KURULAMADI (istek EDM'ye kesin ulaşmadı) sınıfı — ad çözülemedi, bağlantı reddedildi, ağ/ana makine
@@ -53,6 +83,12 @@ const CONTRACT_TTL = 12 * 60 * 60 * 1000;
 const CONTRACT_FAIL_TTL = 60 * 1000;
 const SESSION_TTL = 20 * 60 * 1000;
 const sessions = new Map();
+// 2.4.4 (iş listesi 24b, N4 — gerçek EDM test ortamı 22.10.2026, docs/kanit/2026-10-22/244-edm-eszamanli): oturum önbelleği boşken 20 eşzamanlı gönderim 20 ayrı
+// giriş yaptı (en çok 18 aynı anda) ve EDM birini "The caller was not authenticated by the service." ile reddetti — aynı kimlikle 19 giriş başarılıyken belge
+// "kullanıcı adı/parola" iletisiyle Gönderilecekler'e düştü. TEK UÇUŞ: oturum anahtarı başına en çok bir giriş sürer; o sırada gelen her çağıran (oturum
+// isteyen işlem, numara öncesi erişim denetimi, Bağlantıyı Test Et) aynı girişi bekler. Giriş bitince (başarılı ya da değil) kayıt silinir: başarısızlık bütün
+// bekleyenlere aynı hatayla döner (numara ancak giriş başarılıysa verilir — B3), sonraki çağrı yeniden dener.
+const logins = new Map();
 const contracts = new Map();
 // Dar kontrol 2.4.3 (kâhin BEKLENEN-AG): EDM'den son yanıt alınan an (oturum anahtarı başına). Önbellekteki oturum ağın hâlâ açık olduğunu
 // göstermez; numara vermeden önceki denetim (ensureSession) son yanıt eskiyse EDM'ye gerçekten ulaşır.
@@ -79,23 +115,46 @@ const EDM_STATES = Object.freeze({
   "CANCEL-SUCCEED": ["cancelled", "Fatura EDM'de iptal edildi."],
   "UNKNOWN-UNKNOWN": ["processing", "Durum henüz belli değil; biraz sonra yeniden sorgulayın."],
 });
-export function mapEdmStatus({ status = "", description = "", gibCode = "", gibDescription = "", responseCode = "", responseDescription = "", earchive = false }) {
+// e-SMM durumları (EDM "e-SMM WebServis durum kodları ve açıklamaları" tablosu, kullanıcının yüklediği xlsx, 21.10.2026). e-Fatura'dan farkları:
+// alıcının kabul/red yanıtı YOK (e-SMM e-Arşiv gibi; SEND-SUCCEED son durumdur); PACKAGE-FAIL'de EDM'nin yönergesi "SMM iptal edilir ve tekrar
+// gönderilir" (e-Fatura'da "aynı numarayla yeniden gönder"); LOAD-FAIL "taslak yüklendi ama gönderime uygun değil".
+const ESMM_STATES = Object.freeze({
+  "LOAD-SUCCEED": ["draft", "Taslak olarak EDM'ye yüklendi; gönderilmeyi bekliyor."],
+  "LOAD-FAIL": ["error", "Taslak yüklendi ancak makbuz gönderime uygun değil: makbuzu düzeltip yeniden gönderin."],
+  "SEND-PROCESSING": ["processing", "Gönderiliyor; sonuç bekleniyor."],
+  "SEND-WAIT_GIB_RESPONSE": ["processing", "GİB yanıtı bekleniyor."],
+  "SEND-WAIT_SYSTEM_RESPONSE": ["processing", "EDM sisteminin yanıtı bekleniyor."],
+  "UNKNOWN-UNKNOWN": ["processing", "Durum henüz belli değil; biraz sonra yeniden sorgulayın."],
+  "SEND-FAILED": ["error", "Gönderim başarısız: makbuzu düzeltip aynı numarayla yeniden gönderin."],
+  "SEND-SUCCEED": ["sent", "e-SMM oluşturuldu; alıcının e-posta adresi verildiyse e-postayla gönderildi."],
+  "CANCELLED-SUCCEED": ["cancelled", "e-SMM EDM'de iptal edildi."],
+  "CANCEL-SUCCEED": ["cancelled", "e-SMM EDM'de iptal edildi."],
+  "PACKAGE-PROCESSING": ["processing", "EDM'de paketleniyor."],
+  // Program numarayı kendiliğinden değiştirmez (e-Fatura / e-Arşiv'deki kural: "Hata"daki belge aynı numarayla yeniden gönderilir; yeni numara ancak
+  // belge iptal edilip yeniden kesilince — iş listesi 22): EDM'nin yönergesi İptal Et + Kopyala ile uygulanır.
+  "PACKAGE-FAIL": ["error", "Paketleme hatası: EDM'nin yönergesine göre makbuz iptal edilip yeniden gönderilir — İptal Et ile iptal edin, Kopyala ile yeniden kesin (yeni numara alır)."],
+  "PACKAGE-FAILED": ["error", "Paketleme hatası: EDM'nin yönergesine göre makbuz iptal edilip yeniden gönderilir — İptal Et ile iptal edin, Kopyala ile yeniden kesin (yeni numara alır)."],
+});
+export function mapEdmStatus({ status = "", description = "", gibCode = "", gibDescription = "", responseCode = "", responseDescription = "", earchive = false, esmm = false }) {
   const normalized = String(status).replace(/\s+/g, "").toUpperCase();
   const extra = [description && description !== status ? description : "", gibDescription, responseDescription].filter(Boolean).join(" · ");
   // Gerçek EDM test ortamı (16.10.2026, docs/kanit/2026-10-16/edm-arayuz): alıcının posta kutusu da aynı hesaptaysa (kendine gönderim) EDM giden
   // belgenin durumunu alıcı tarafından da verebiliyor ("RECEIVE - WAIT_APPLICATION_RESPONSE"); program bunu "işleniyor"da bırakıyordu. Alıcı
   // tarafının durumu belgenin alıcıya ulaştığını gösterir: gönderen tarafın karşılığıyla aynı eşlenir.
-  const known = EDM_STATES[normalized] || (normalized.startsWith("RECEIVE-") ? EDM_STATES[`SEND-${normalized.slice(8)}`] : undefined);
+  const table = esmm ? ESMM_STATES : EDM_STATES;
+  const known = table[normalized] || (normalized.startsWith("RECEIVE-") ? table[`SEND-${normalized.slice(8)}`] : undefined);
   const response = `${responseCode} ${responseDescription}`.toLocaleUpperCase("tr-TR");
+  const noun = esmm ? "Makbuz" : "Fatura";
   let state;
   let text;
   if (known) [state, text] = known;
-  else if (/CANCEL/.test(normalized)) [state, text] = ["cancelled", "Fatura EDM'de iptal edildi."];
+  else if (/CANCEL/.test(normalized)) [state, text] = ["cancelled", `${noun} EDM'de iptal edildi.`];
   else if (/FAIL|ERROR/.test(normalized)) [state, text] = ["error", "Belge hata aldı."];
   else if (/SUCCEED/.test(normalized)) [state, text] = ["sent", "İşlem tamamlandı."];
   else [state, text] = ["processing", "EDM'de işleniyor."];
-  if (state === "sent" && /RED|REJECT/.test(response)) [state, text] = ["rejected", "Alıcı faturayı reddetti."];
-  else if (state === "sent" && /KABUL|ACCEPT/.test(response)) [state, text] = ["accepted", "Alıcı faturayı kabul etti."];
+  // e-SMM'de alıcı yanıtı (kabul/red) yoktur: yanıt alanındaki metin durumu değiştirmez.
+  if (!esmm && state === "sent" && /RED|REJECT/.test(response)) [state, text] = ["rejected", "Alıcı faturayı reddetti."];
+  else if (!esmm && state === "sent" && /KABUL|ACCEPT/.test(response)) [state, text] = ["accepted", "Alıcı faturayı kabul etti."];
   if (earchive && normalized === "SEND-SUCCEED") text = "e-Arşiv fatura oluşturuldu; alıcının e-posta adresi varsa gönderildi.";
   return { status: state, message: [text, extra].filter(Boolean).join(" "), raw: String(status).trim(), gibCode: String(gibCode || "") };
 }
@@ -105,7 +164,17 @@ export function mapEdmStatus({ status = "", description = "", gibCode = "", gibD
 function assertChannel(xml, earchive) {
   const profile = (String(xml || "").match(/<cbc:ProfileID>([^<]*)<\/cbc:ProfileID>/) || [])[1] || "";
   if (!profile) return;
+  if (profile === "ESMM") throw new IntegratorError("e-SMM (ProfileID ESMM) e-Fatura servisinden gönderilmez; belge gönderilmedi.", { code: "integrator-channel", status: 400 });
   if ((profile === "EARSIVFATURA") !== Boolean(earchive)) throw new IntegratorError(`Belge türü (${profile}) ile gönderim kanalı (${earchive ? "e-Arşiv" : "e-Fatura"}) uyuşmuyor; belge gönderilmedi.`, { code: "integrator-channel", status: 400 });
+}
+// e-SMM servisine yalnız ProfileID'si ESMM olan, numarası ve ETTN'si zarftakiyle AYNI belge gider (zarfta ID/UUID ayrı öğe: içerikle ayrışırsa
+// EDM'de bir numarayla kayıtlı, GİB'e başka numarayla raporlanan makbuz oluşabilirdi). Uyuşmazlık isteğe dönüşmeden reddedilir.
+function assertSmmDocument(xml, { number, uuid }) {
+  const text = String(xml || "");
+  const read = name => (text.match(new RegExp(`<cbc:${name}>([^<]*)</cbc:${name}>`)) || [])[1] || "";
+  const profile = read("ProfileID");
+  if (profile !== "ESMM") throw new IntegratorError(`Belge türü (${profile || "yok"}) e-SMM değil; e-SMM servisine yalnız ProfileID ESMM olan makbuz gider. Belge gönderilmedi.`, { code: "integrator-channel", status: 400 });
+  if (!number || !uuid || read("ID") !== number || read("UUID").toLowerCase() !== String(uuid).toLowerCase()) throw new IntegratorError("e-SMM belgesindeki numara ya da ETTN gönderim bilgisiyle uyuşmuyor; belge gönderilmedi.", { code: "integrator-channel", status: 400 });
 }
 const pad = value => String(value).padStart(2, "0");
 const localStamp = (date = new Date()) => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
@@ -121,10 +190,11 @@ const decodeContent = base64 => {
 };
 const sessionError = (code, message) => String(code) === "10011" || /aktif\s*session|session\s*bulunamad|session.*(expired|not\s*found)|oturum.*(bulunamad|sona)/i.test(String(message || ""));
 
-/**
- * @param {{ baseUrl: string, username: string, password: string, env?: "test"|"live", fetchImpl?: Function, timeoutMs?: number, useWsdl?: boolean, appName?: string }} options
- */
-export function createEdmClient({ baseUrl, username, password, env = "", fetchImpl = (...args) => globalThis.fetch(...args), timeoutMs = 45_000, useWsdl = true, appName = APP }) {
+// Ortak taşıma katmanı (2.4.4): HTTP + hata sınıflaması (B2/B3), sözleşme (WSDL) önbelleği, SOAP çağrısı, istek başlığı, giriş ve oturum. e-Fatura
+// (EFaturaEDM.svc) ve e-SMM (ESmmEDM.svc) istemcileri aynı katmanı kullanır; farkları yalnız varsayılan ad alanı (WSDL okunamazsa) ve yinelenebilir
+// (yan etkisiz) işlem listesidir. Oturum, sözleşme ve "son EDM yanıtı" kayıtları servis adresine göre ayrıdır: e-Fatura oturumu e-SMM için erişim
+// kanıtı sayılmaz (ayrı uç nokta).
+function edmTransport({ baseUrl, username, password, env = "", fetchImpl = (...args) => globalThis.fetch(...args), timeoutMs = 45_000, useWsdl = true, appName = APP, defaultNs = EDM_DEFAULT_NS, safeOperations = SAFE_OPERATIONS }) {
   const base = String(baseUrl || "").trim().replace(/\/+$/, "").replace(/\?.*$/, "");
   if (!/^https:\/\//i.test(base) && !/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\//i.test(`${base}/`)) throw new IntegratorError("EDM servis adresi https:// ile başlamalı.", { code: "integrator-url", status: 400 });
   if (!username || !password) throw new IntegratorError("EDM web servis kullanıcı adı ve parolası girilmemiş (Fatura → Entegratör Ayarları).", { code: "integrator-credentials", status: 400 });
@@ -211,12 +281,12 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
   // ---------- Çağrı ----------
   async function call(operation, payload, { session = "", wait } = {}) {
     const { contract } = await loadContract();
-    const shaped = shape(contract, operation, payload, { defaultNs: EDM_DEFAULT_NS });
+    const shaped = shape(contract, operation, payload, { defaultNs });
     if (shaped.warnings.length) throw new IntegratorError(`EDM sözleşmesi programın gönderdiği alanla uyuşmuyor (${shaped.warnings.join(", ")}). İstek gönderilmedi. Entegratör Ayarları'nda Bağlantıyı Test Et'in sonucunu destek hattına iletin.`, { code: "integrator-contract", status: 409, detail: shaped.warnings.join(", ") });
     const action = contract?.operations?.[operation]?.action ?? "";
     const endpoint = endpointOf(contract);
     const request = soapRequest({ version: contract?.version || "1.1", action, body: renderTree(shaped.tree), addressing: contract?.addressing, to: endpoint });
-    const response = await http(endpoint, { method: "POST", headers: request.headers, body: request.xml }, wait, { retry: SAFE_OPERATIONS.has(operation) });
+    const response = await http(endpoint, { method: "POST", headers: request.headers, body: request.xml }, wait, { retry: safeOperations.has(operation) });
     contacts.set(sessionKey, Date.now());
     let tree;
     try {
@@ -268,15 +338,31 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
     sessions.set(sessionKey, { id: session, at: Date.now() });
     return session;
   }
+  // Tek uçuş giriş (N4): bu anahtarın süren girişi varsa onu bekler, yoksa başlatır.
+  function sharedLogin() {
+    const pending = logins.get(sessionKey);
+    if (pending) return pending;
+    const started = login().finally(() => {
+      if (logins.get(sessionKey) === started) logins.delete(sessionKey);
+    });
+    logins.set(sessionKey, started);
+    return started;
+  }
   async function withSession(work) {
     const cached = sessions.get(sessionKey);
-    let session = cached && Date.now() - cached.at < SESSION_TTL ? cached.id : await login();
+    let session = cached && Date.now() - cached.at < SESSION_TTL ? cached.id : await sharedLogin();
     try {
       return await work(session);
     } catch (error) {
       if (!error?.sessionExpired) throw error;
-      sessions.delete(sessionKey);
-      session = await login();
+      // N4: önbellek YALNIZ hata veren oturumu tutuyorsa silinip yeniden girilir; başka çağıranın daha yeni geçerli oturumu varsa girişsiz o kullanılır (tek
+      // oturumlu EDM'de eşzamanlı yeniden girişler birbirini düşürmesin). Süren giriş varsa onu bekler.
+      const now = sessions.get(sessionKey);
+      if (now && now.id !== session && Date.now() - now.at < SESSION_TTL) session = now.id;
+      else {
+        if (now?.id === session) sessions.delete(sessionKey);
+        session = await sharedLogin();
+      }
       return work(session);
     }
   }
@@ -284,44 +370,66 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
     const cached = sessions.get(sessionKey);
     if (cached) cached.at = Date.now();
   };
-
-  // ---------- İşlemler ----------
-  async function contractReport({ refresh = false } = {}) {
+  // Dar kontrol 2.4.3 (ek 1): oturum (geçerli önbellekte yoksa giriş). Numara ancak giriş başarılıysa verilir.
+  // Dar kontrol 2 (B3): önbellekteki oturum geçerli (aynı adres, kullanıcı adı ve parola) VE EDM'den son 5 dk içinde yanıt alındıysa (ve o
+  // zamandan beri bağlantı hatası olmadıysa) ağa çıkılmaz; değilse yeniden giriş yapılır (erişim + hesap denetimi). Önceden her çağıran
+  // `since: şimdi` veriyordu: her tekil gönderimde fazladan giriş.
+  async function ensureSession() {
+    const cached = sessions.get(sessionKey);
+    if (cached && Date.now() - cached.at < SESSION_TTL && Date.now() - (contacts.get(sessionKey) || 0) < CONTACT_FRESH_MS) return;
+    // N4: süren giriş varsa (erişim + hesap denetimini o yapıyor) beklenir; yoksa önbellek atılıp tek uçuş giriş.
+    if (!logins.has(sessionKey)) sessions.delete(sessionKey);
+    await sharedLogin();
+  }
+  // Sözleşme raporu: hangi işlemler var, hangileri eksik (operations: programın bu serviste kullandığı işlemler).
+  async function contractReport({ refresh = false, operations = [] } = {}) {
     const entry = await loadContract({ refresh });
     const contract = entry.contract;
     return {
-      source: entry.source,
-      error: entry.error,
-      namespace: contract ? Object.values(contract.operations).find(op => op.input)?.input.ns || contract.targetNamespace : EDM_DEFAULT_NS,
-      soap: contract?.version || "1.1",
-      endpoint: endpointOf(contract),
-      operations: contract ? Object.keys(contract.operations).sort() : [],
-      missing: contract ? EDM_OPERATIONS.filter(name => !contract.operations[name]) : [],
-      earchiveHeader: contract ? fieldPaths(contract, "SendInvoice").includes("INVOICE/HEADER/EARCHIVE") : false,
+      entry,
+      report: {
+        source: entry.source,
+        error: entry.error,
+        namespace: contract ? Object.values(contract.operations).find(op => op.input)?.input.ns || contract.targetNamespace : defaultNs,
+        soap: contract?.version || "1.1",
+        endpoint: endpointOf(contract),
+        operations: contract ? Object.keys(contract.operations).sort() : [],
+        missing: contract ? operations.filter(name => !contract.operations[name]) : [],
+      },
     };
+  }
+  // Bağlantı testi: sözleşme yeniden okunur, oturum önbelleği atılıp gerçek giriş yapılır.
+  async function test(report, intro = "EDM'ye giriş yapıldı; bağlantı çalışıyor.") {
+    // N4: o sırada süren giriş varsa (ör. aynı anda gönderim) gerçek giriştir, beklenir; ikinci giriş yapılmaz.
+    if (!logins.has(sessionKey)) sessions.delete(sessionKey);
+    await sharedLogin();
+    const parts = [intro];
+    parts.push(report.source === "wsdl" ? `Servis sözleşmesi (WSDL) okundu: SOAP ${report.soap}, ${report.operations.length} işlem.` : `Servis sözleşmesi okunamadı (${report.error}); varsayılan sözleşmeyle çalışılıyor.`);
+    if (report.missing.length) parts.push(`Sözleşmede bulunmayan işlemler: ${report.missing.join(", ")}.`);
+    return { ok: true, message: parts.join(" "), contract: report };
+  }
+  return { base, call, header, withSession, touch, ensureSession, contractReport, test };
+}
+
+/**
+ * e-Fatura / e-Arşiv istemcisi (EFaturaEDM.svc).
+ * @param {{ baseUrl: string, username: string, password: string, env?: "test"|"live", fetchImpl?: Function, timeoutMs?: number, useWsdl?: boolean, appName?: string }} options
+ */
+export function createEdmClient(options) {
+  const { base, call, header, withSession, touch, ensureSession, contractReport: report, test } = edmTransport({ ...options, defaultNs: EDM_DEFAULT_NS, safeOperations: SAFE_OPERATIONS });
+
+  // ---------- İşlemler ----------
+  async function contractReport({ refresh = false } = {}) {
+    const { entry, report: out } = await report({ refresh, operations: EDM_OPERATIONS });
+    return { ...out, earchiveHeader: entry.contract ? fieldPaths(entry.contract, "SendInvoice").includes("INVOICE/HEADER/EARCHIVE") : false };
   }
 
   return {
     endpoint: base,
     contractReport,
-    // Dar kontrol 2.4.3 (ek 1): oturum (geçerli önbellekte yoksa giriş). Numara ancak giriş başarılıysa verilir.
-    // Dar kontrol 2 (B3): önbellekteki oturum geçerli (aynı adres, kullanıcı adı ve parola) VE EDM'den son 5 dk içinde yanıt alındıysa (ve o
-    // zamandan beri bağlantı hatası olmadıysa) ağa çıkılmaz; değilse yeniden giriş yapılır (erişim + hesap denetimi). Önceden her çağıran
-    // `since: şimdi` veriyordu: her tekil gönderimde fazladan giriş.
-    async ensureSession() {
-      const cached = sessions.get(sessionKey);
-      if (cached && Date.now() - cached.at < SESSION_TTL && Date.now() - (contacts.get(sessionKey) || 0) < CONTACT_FRESH_MS) return;
-      sessions.delete(sessionKey);
-      await login();
-    },
+    ensureSession,
     async test() {
-      const report = await contractReport({ refresh: true });
-      sessions.delete(sessionKey);
-      await login();
-      const parts = ["EDM'ye giriş yapıldı; bağlantı çalışıyor."];
-      parts.push(report.source === "wsdl" ? `Servis sözleşmesi (WSDL) okundu: SOAP ${report.soap}, ${report.operations.length} işlem.` : `Servis sözleşmesi okunamadı (${report.error}); varsayılan sözleşmeyle çalışılıyor.`);
-      if (report.missing.length) parts.push(`Sözleşmede bulunmayan işlemler: ${report.missing.join(", ")}.`);
-      return { ok: true, message: parts.join(" "), contract: report };
+      return test(await contractReport({ refresh: true }));
     },
     // GİB e-Fatura kullanıcısı mı? Posta kutusu (PK) etiketleri (alıcı olarak) döner.
     async checkUser(taxNo) {
@@ -408,7 +516,8 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
         touch();
         const status = deep(body, "INVOICE_STATUS");
         const read = name => textOf(find(status, name));
-        return mapEdmStatus({ status: read("STATUS"), description: read("STATUS_DESCRIPTION"), gibCode: read("GIB_STATUS_CODE"), gibDescription: read("GIB_STATUS_DESCRIPTION"), responseCode: read("RESPONSE_CODE"), responseDescription: read("RESPONSE_DESCRIPTION"), earchive });
+        // 2.4.4 (31d E1): yanıttaki ETTN (INVOICE_STATUS, tns:INVOICE'tan türer: UUID niteliği) — 11048'de "bu belge mi" denetimi için; yoksa "".
+        return { ...mapEdmStatus({ status: read("STATUS"), description: read("STATUS_DESCRIPTION"), gibCode: read("GIB_STATUS_CODE"), gibDescription: read("GIB_STATUS_DESCRIPTION"), responseCode: read("RESPONSE_CODE"), responseDescription: read("RESPONSE_DESCRIPTION"), earchive }), uuid: String(status?.attrs?.UUID || read("UUID") || "") };
       });
     },
     // e-Arşiv iptali (EDM: taslak, hatalı ya da Send-Succeed durumundaki e-Arşiv fatura iptal edilebilir). e-Fatura
@@ -475,9 +584,91 @@ export function createEdmClient({ baseUrl, username, password, env = "", fetchIm
   };
 }
 
+/**
+ * e-SMM istemcisi (ESmmEDM.svc; 2.4.4, iş listesi 20). baseUrl e-SMM servisinin adresidir (esmmUrlOf ile e-Fatura adresinden türetilir).
+ * Gönderim yolu (EDM e-SMM Web API v4.4.1 §5.4 "GÖNDERİM YÖNTEMİ" + gerçek test WSDL'i 22.10.2026): UBL — SendSMM, SMM/CONTENT = base64 UBL
+ * (ProfileID ESMM; içerik türü verilmezse EDM XML sayar, §3.4), SMM_CONTENT_TYPE = "XML" (zorunlu; "vermediğiniz takdirde çağrı olumsuz olacaktır").
+ * NESNE yolu (SMM_LINE_ITEMS + EXCEL şablonu) kullanılmaz: belge, defterle aynı kuruş hesabından (invoice-math) programın ürettiği UBL'dir.
+ * Numarayı program verir (SMM/ID dolu); EDM'nin seri üretimi (INVOICESERIAL_REQUESTED) istenmez.
+ * Gönderici/alıcı (§5.4): istek düzeyinde SENDER/RECEIVER (vkn, alias) ve SMM/HEADER (SENDER, RECEIVER, FROM, TO) — ikisi verilince HEADER geçer;
+ * EDM'nin C# örneği gibi ikisi de doldurulur: FROM = göndericinin GB etiketi, TO = alıcının e-posta adresi (yoksa boş: kâğıt teslim).
+ * @param {{ baseUrl: string, username: string, password: string, env?: "test"|"live", fetchImpl?: Function, timeoutMs?: number, useWsdl?: boolean, appName?: string }} options
+ */
+export function createEdmSmmClient(options) {
+  const { base, call, header, withSession, touch, ensureSession, contractReport: report, test } = edmTransport({ ...options, defaultNs: EDM_SMM_DEFAULT_NS, safeOperations: SMM_SAFE_OPERATIONS });
+  // SMM nesnesi (gerçek WSDL tns:SMM): ID ve UUID ÇOCUK öğe; tek niteliği TRXID (use="required", xs:long) — EDM'nin örneklerinde ve C# istemcisinde
+  // isteklerde "0" gider.
+  const smmRef = (number, uuid) => E("SMM", [E("ID", number), E("UUID", uuid)], { TRXID: "0" });
+  async function contractReport({ refresh = false } = {}) {
+    return (await report({ refresh, operations: EDM_SMM_OPERATIONS })).report;
+  }
+  return {
+    endpoint: base,
+    contractReport,
+    ensureSession,
+    async test() {
+      return test(await contractReport({ refresh: true }), "EDM e-SMM servisine giriş yapıldı; bağlantı çalışıyor.");
+    },
+    async send({ xml, number, uuid, issueDate = "", senderVkn = "", senderAlias = "", receiverVkn = "", receiverEmail = "" }) {
+      assertSmmDocument(xml, { number, uuid });
+      return withSession(async session => {
+        const head = E("HEADER", [E("SENDER", senderVkn), E("RECEIVER", receiverVkn), E("SMM_DATE", issueDate), E("FROM", senderAlias), E("TO", receiverEmail)]);
+        const smm = E("SMM", [E("ID", number), E("UUID", uuid), head, E("CONTENT", base64Text(xml))], { TRXID: "0" });
+        const request = E("SendSMMRequest", [header(session), E("SENDER", "", { vkn: senderVkn, alias: senderAlias }), E("RECEIVER", "", { vkn: receiverVkn }), smm, E("SMM_CONTENT_TYPE", "XML")]);
+        const body = await call("SendSMM", request, { session, wait: 90_000 });
+        touch();
+        const sent = deepAll(body, "SMM")[0];
+        return {
+          status: "sent",
+          message: "e-SMM EDM'ye iletildi; sonucu Durum Sorgula ile görün.",
+          // EDM'nin döndürdüğü numara (programın verdiğiyle aynı olmalı; farklıysa çağıran ayrımı görür).
+          reference: textOf(find(sent, "ID")) || number,
+          uuid: textOf(find(sent, "UUID")) || uuid,
+          edmStatus: textOf(find(sent, "HEADER/STATUS")),
+        };
+      });
+    },
+    async status({ uuid, number = "" }) {
+      return withSession(async session => {
+        const body = await call("GetSMMStatus", E("GetSMMStatusRequest", [header(session), smmRef(number, uuid)]), { session });
+        touch();
+        // Yanıt SMM_STATUS (tns:SMM'den türer): STATUS, STATUS_DESCRIPTION, GIB_STATUS_* doğrudan çocuk (SMM/HEADER/STATUS değil).
+        const status = deep(body, "SMM_STATUS");
+        const read = name => textOf(find(status, name));
+        // 2.4.4 (31d E1): yanıttaki ETTN (SMM_STATUS, tns:SMM'den türer: UUID öğesi) — 11048'de "bu belge mi" denetimi için; yoksa "".
+        return { ...mapEdmStatus({ status: read("STATUS"), description: read("STATUS_DESCRIPTION"), gibCode: read("GIB_STATUS_CODE"), gibDescription: read("GIB_STATUS_DESCRIPTION"), esmm: true }), uuid: String(read("UUID") || status?.attrs?.UUID || "") };
+      });
+    },
+    // e-SMM iptali (EDM §5.13: e-Arşiv senaryosundaki gibi; başarısız ve taslak SMM'ler de iptale çekilebilir). Süre kuralı çağıranın işidir
+    // (iş listesi 23: 8 gün, iletimden).
+    async cancel({ uuid, number = "" }) {
+      return withSession(async session => {
+        await call("CancelSMM", E("CancelSMMRequest", [header(session), smmRef(number, uuid)]), { session });
+        touch();
+        return { status: "cancelled", message: "e-SMM EDM'de iptal edildi; iptal GİB'e raporlanır." };
+      });
+    },
+    // Resmî görüntü: GetSMM, giden yön, ETTN ile; SMM_CONTENT_TYPE PDF; içerik base64 PDF (ZIP'liyse içindeki .pdf).
+    async officialPdf({ uuid, number = "" }) {
+      return withSession(async session => {
+        const key = E("SMM_SEARCH_KEY", [E("LIMIT", 1), E("UUID", uuid), E("DIRECTION", "OUT")]);
+        const body = await call("GetSMM", E("GetSMMRequest", [header(session), key, E("HEADER_ONLY", "N"), E("SMM_CONTENT_TYPE", "PDF")]), { session, wait: 120_000 });
+        touch();
+        const smm = children(find(body, "GetSMMResponse") || deep(body, "GetSMMResponse") || body, "SMM").find(item => textOf(find(item, "UUID")).toLowerCase() === String(uuid).toLowerCase());
+        if (!smm) throw new IntegratorError(`${number || uuid} EDM'de bulunamadı (makbuz henüz işlenmemiş olabilir; birkaç dakika sonra yeniden deneyin).`, { code: "integrator-not-found", status: 404 });
+        let data = Buffer.from(textOf(find(smm, "CONTENT")).replace(/\s+/g, ""), "base64");
+        if (data.length > 4 && data.readUInt32LE(0) === 0x04034b50) data = (readZip(data).find(item => !item.directory && /\.pdf$/i.test(item.name)) || {}).data || Buffer.alloc(0);
+        if (data.subarray(0, 5).toString("latin1") !== "%PDF-") throw new IntegratorError(`EDM ${number || uuid} için PDF görüntüsü vermedi (görüntü henüz hazır olmayabilir; birkaç dakika sonra yeniden deneyin).`, { code: "integrator-no-pdf", status: 409 });
+        return { data, mime: "application/pdf" };
+      });
+    },
+  };
+}
+
 /** Testler için: bellekteki oturum ve sözleşme önbelleğini boşaltır. */
 export function resetEdmCaches() {
   sessions.clear();
+  logins.clear();
   contracts.clear();
   contacts.clear();
 }

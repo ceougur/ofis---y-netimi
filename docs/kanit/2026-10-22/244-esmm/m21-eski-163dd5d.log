@@ -1,0 +1,515 @@
+TAP version 13
+# (node:18827) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: e-SMM UBL: GİB kuralından elle hesaplanan dip toplamlar (kâhin)
+    # Subtest: A — 1.000 TL brüt, stopaj %20, KDV %20: stopaj 200, net ücret 800, KDV 200, tahsil edilen KDV 200, net alınan 1.000
+    not ok 1 - A — 1.000 TL brüt, stopaj %20, KDV %20: stopaj 200, net ücret 800, KDV 200, tahsil edilen KDV 200, net alınan 1.000
+      ---
+      duration_ms: 4.427007
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:79:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            {
+              amount: '200.00',
+        -     code: '0003',
+        -     name: 'GV STOPAJI',
+        -     percent: '20',
+        -     seq: '1',
+        -     taxable: '1000.00'
+        -   },
+        -   {
+        -     amount: '200.00',
+              code: '0015',
+        +     name: 'KDV',
+        -     name: 'KDV GERCEK',
+              percent: '20',
+        +     seq: '',
+        -     seq: '2',
+              taxable: '1000.00'
+            }
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          code: '0003'
+          name: 'GV STOPAJI'
+          taxable: '1000.00'
+          amount: '200.00'
+          seq: '1'
+          percent: '20'
+        1:
+          code: '0015'
+          name: 'KDV GERCEK'
+          taxable: '1000.00'
+          amount: '200.00'
+          seq: '2'
+          percent: '20'
+      actual:
+        0:
+          code: '0015'
+          name: 'KDV'
+          taxable: '1000.00'
+          amount: '200.00'
+          seq: ''
+          percent: '20'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:87:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: B — 2 × 100,03: belge stopajı matrah × oran = 40,01 (kalem yuvarlamasıyla 40,02 DEĞİL); kalemlere 20,01 + 20,00; KDV kalem başına 20,01 + 20,01
+    not ok 2 - B — 2 × 100,03: belge stopajı matrah × oran = 40,01 (kalem yuvarlamasıyla 40,02 DEĞİL); kalemlere 20,01 + 20,00; KDV kalem başına 20,01 + 20,01
+      ---
+      duration_ms: 1.238767
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:96:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+        -     '0003',
+        -     '200.06',
+        -     '40.01'
+        -   ],
+        -   [
+              '0015',
+              '200.06',
+              '40.02'
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: '0003'
+          1: '200.06'
+          2: '40.01'
+        1:
+          0: '0015'
+          1: '200.06'
+          2: '40.02'
+      actual:
+        0:
+          0: '0015'
+          1: '200.06'
+          2: '40.02'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:98:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: C — kişi alıcı, stopaj yok: 0003 satırı yazılmaz; net ücret = brüt 500, KDV 100, net alınan 600
+    not ok 3 - C — kişi alıcı, stopaj yok: 0003 satırı yazılmaz; net ücret = brüt 500, KDV 100, net alınan 600
+      ---
+      duration_ms: 0.951678
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:104:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            LineExtensionAmount: '500.00',
+            PayableAmount: '600.00',
+            TaxExclusiveAmount: '500.00',
+        +   TaxInclusiveAmount: '600.00'
+        -   TaxInclusiveAmount: '100.00'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        LineExtensionAmount: '500.00'
+        TaxExclusiveAmount: '500.00'
+        TaxInclusiveAmount: '100.00'
+        PayableAmount: '600.00'
+      actual:
+        LineExtensionAmount: '500.00'
+        TaxExclusiveAmount: '500.00'
+        TaxInclusiveAmount: '600.00'
+        PayableAmount: '600.00'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:108:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: D — KDV tevkifatı 5/10: tahsil edilen KDV 200 − 100 = 100; net alınan 800 + 100 = 900; tevkifat ayrı satırda
+    not ok 4 - D — KDV tevkifatı 5/10: tahsil edilen KDV 200 − 100 = 100; net alınan 800 + 100 = 900; tevkifat ayrı satırda
+      ---
+      duration_ms: 0.648118
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:112:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            LineExtensionAmount: '1000.00',
+            PayableAmount: '900.00',
+        +   TaxExclusiveAmount: '1000.00',
+        +   TaxInclusiveAmount: '1200.00'
+        -   TaxExclusiveAmount: '800.00',
+        -   TaxInclusiveAmount: '100.00'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        LineExtensionAmount: '1000.00'
+        TaxExclusiveAmount: '800.00'
+        TaxInclusiveAmount: '100.00'
+        PayableAmount: '900.00'
+      actual:
+        LineExtensionAmount: '1000.00'
+        TaxExclusiveAmount: '1000.00'
+        TaxInclusiveAmount: '1200.00'
+        PayableAmount: '900.00'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:115:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: E — elle %15 stopaj, iki KDV oranı: stopaj (1.500 + 333,33) × %15 = 274,9995 → 275,00; KDV 300 + 33,33; net alınan 1.891,66
+    not ok 5 - E — elle %15 stopaj, iki KDV oranı: stopaj (1.500 + 333,33) × %15 = 274,9995 → 275,00; KDV 300 + 33,33; net alınan 1.891,66
+      ---
+      duration_ms: 0.807823
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:120:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+        -     '0003',
+        -     '1833.33',
+        -     '275.00',
+        -     '15'
+        -   ],
+        -   [
+              '0015',
+              '333.33',
+              '33.33',
+              '10'
+            ],
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: '0003'
+          1: '1833.33'
+          2: '275.00'
+          3: '15'
+        1:
+          0: '0015'
+          1: '333.33'
+          2: '33.33'
+          3: '10'
+        2:
+          0: '0015'
+          1: '1500.00'
+          2: '300.00'
+          3: '20'
+      actual:
+        0:
+          0: '0015'
+          1: '333.33'
+          2: '33.33'
+          3: '10'
+        1:
+          0: '0015'
+          1: '1500.00'
+          2: '300.00'
+          3: '20'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:123:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - e-SMM UBL: GİB kuralından elle hesaplanan dip toplamlar (kâhin)
+  ---
+  duration_ms: 463.981434
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:78:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: e-SMM UBL: program tutarlarıyla aynı, yapı EDM'nin e-SMM örneğiyle aynı, UBL 2.1 şemasına uygun
+    # Subtest: XML tutarları programın kaydettiği makbuzla kuruşu kuruşuna aynı; kalem stopajları toplamı = belge stopajı; Σ kalem fiyatı = net alınan
+    not ok 1 - XML tutarları programın kaydettiği makbuzla kuruşu kuruşuna aynı; kalem stopajları toplamı = belge stopajı; Σ kalem fiyatı = net alınan
+      ---
+      duration_ms: 0.884915
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:134:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        A net ücret
+        
+        100000 !== 80000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 80000
+      actual: 100000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:139:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: yapı: EDM e-SMM örneğindeki sıra ve öğeler (TaxTotal → 0003 sıra 1 + 0015 sıra 2; dip toplam dörtlüsü; kalemde NIU, vergi, ad, fiyat)
+    not ok 2 - yapı: EDM e-SMM örneğindeki sıra ve öğeler (TaxTotal → 0003 sıra 1 + 0015 sıra 2; dip toplam dörtlüsü; kalemde NIU, vergi, ad, fiyat)
+      ---
+      duration_ms: 0.764837
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:149:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            'TaxAmount',
+            'TaxSubtotal',
+        -   'TaxSubtotal'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'TaxAmount'
+        1: 'TaxSubtotal'
+        2: 'TaxSubtotal'
+      actual:
+        0: 'TaxAmount'
+        1: 'TaxSubtotal'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:155:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: stopaj artık Not değil (vergi satırında); programın fatura görünüm şablonu ve karekod gömülmez; gönderim şekli alıcının e-postasına göre
+    not ok 3 - stopaj artık Not değil (vergi satırında); programın fatura görünüm şablonu ve karekod gömülmez; gönderim şekli alıcının e-postasına göre
+      ---
+      duration_ms: 0.728294
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:161:3'
+      failureType: 'testCodeFailure'
+      error: 'stopaj notu yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"><cbc:UBLVersionID>2.1</cbc:UBLVersionID><cbc:CustomizationID>TR1.2</cbc:CustomizationID><cbc:ProfileID>ESMM</cbc:ProfileID><cbc:ID>TES2026000000001</cbc:ID><cbc:CopyIndicator>false</cbc:CopyIndicator><cbc:UUID>380b2844-8c50-497f-ab4d-484162a5587a</cbc:UUID><cbc:IssueDate>2026-10-22</cbc:IssueDate><cbc:IssueTime>04:15:00</cbc:IssueTime><cbc:InvoiceTypeCode>SATIS</cbc:InvoiceTypeCode><cbc:Note>Yalnız Bin Türk Lirası</cbc:Note><cbc:Note>Gelir Vergisi Stopajı %20: 200.00 TRY</cbc:Note><cbc:DocumentCurrencyCode>TRY</cbc:DocumentCurrencyCode><cbc:LineCountNumeric>1</cbc:LineCountNumeric><cac:AdditionalDocumentReference><cbc:ID>c66f5945-a875-46e7-a046-198f61616367</cbc:ID><cbc:IssueDate>2026-10-22</cbc:IssueDate><cac:Attachment><cbc:EmbeddedDocumentBinaryObject characterSetCode="UTF-8" encodingCode="Base64" filename="TES2026000000001.xslt" mimeCode="application/xml">PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHhzbDpzdHlsZXNoZWV0IHZlcnNpb249IjEuMCIgeG1sbnM6eHNsPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L1hTTC9UcmFuc2Zvcm0iCiAgeG1sbnM6bjE9InVybjpvYXNpczpuYW1lczpzcGVjaWZpY2F0aW9uOnVibDpzY2hlbWE6eHNkOkludm9pY2UtMiIKICB4bWxuczpjYWM9InVybjpvYXNpczpuYW1lczpzcGVjaWZpY2F0aW9uOnVibDpzY2hlbWE6eHNkOkNvbW1vbkFnZ3JlZ2F0ZUNvbXBvbmVudHMtMiIKICB4bWxuczpjYmM9InVybjpvYXNpczpuYW1lczpzcGVjaWZpY2F0aW9uOnVibDpzY2hlbWE6eHNkOkNvbW1vbkJhc2ljQ29tcG9uZW50cy0yIgogIGV4Y2x1ZGUtcmVzdWx0LXByZWZpeGVzPSJuMSBjYWMgY2JjIj4KPHhzbDpvdXRwdXQgbWV0aG9kPSJodG1sIiBlbmNvZGluZz0iVVRGLTgiIGluZGVudD0ibm8iLz4KPCEtLSBFbnRlZ3JhdMO2csO8biBQREYgw6dpemljaXNpIChFRE06IElyb25QZGYvQ2hyb21pdW0pIMOnxLFrdMSxecSxIERPQ1RZUEUnc8SxeiwgdXl1bWx1bHVrIGtpcGluZGUgYcOnYXI7IG8ga2lwdGUgdGFibG9sYXIgeWF6xLEgYm95dW51IGRldnJhbG1hegogICAgIChFRE0gdGVzdCBvcnRhbcSxIDE2LjEwLjIwMjY6IGFkcmVzIHNhdMSxcmxhcsSxIGFkZGFuIGLDvHnDvGsgw6fEsWt0xLEpIOKAlCB0YWJsZXtmb250LXNpemU6aW5oZXJpdH0gYnVudSBnaWRlcmlyLiAtLT4KPHhzbDpkZWNpbWFsLWZvcm1hdCBuYW1lPSJ0ciIgZGVjaW1hbC1zZXBhcmF0b3I9IiwiIGdyb3VwaW5nLXNlcGFyYXRvcj0iLiIvPgo8eHNsOnRlbXBsYXRlIG5hbWU9ImN1cnJlbmN5Ij48eHNsOnBhcmFtIG5hbWU9ImNvZGUiLz48eHNsOmNob29zZT48eHNsOndoZW4gdGVzdD0iJGNvZGU9J1RSWScgb3IgJGNvZGU9J1RSTCcgb3IgJGNvZGU9JyciPlRMPC94c2w6d2hlbj48eHNsOm90aGVyd2lzZT48eHNsOnZhbHVlLW9mIHNlbGVjdD0iJGNvZGUiLz48L3hzbDpvdGhlcndpc2U+PC94c2w6Y2hvb3NlPjwveHNsOnRlbXBsYXRlPgo8eHNsOnRlbXBsYXRlIG5hbWU9ImRhdGUiPjx4c2w6cGFyYW0gbmFtZT0idmFsdWUiLz48eHNsOmlmIHRlc3Q9InN0cmluZy1sZW5ndGgoJHZhbHVlKSAmZ3Q7PSAxMCI+PHhzbDp2YWx1ZS1vZiBzZWxlY3Q9ImNvbmNhdChzdWJzdHJpbmcoJHZhbHVlLDksMiksJy4nLHN1YnN0cmluZygkdmFsdWUsNiwyKSwnLicsc3Vic3RyaW5nKCR2YWx1ZSwxLDQpKSIvPjwveHNsOmlmPjwveHNsOnRlbXBsYXRlPgo8eHNsOnRlbXBsYXRlIG5hbWU9InVuaXQiPjx4c2w6cGFyYW0gbmFtZT0iY29kZSIvPjx4c2w6Y2hvb3NlPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nQzYyJyI+QWRldDwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9IiRjb2RlPSdLR00nIj5LZzwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9IiRjb2RlPSdHUk0nIj5HcjwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9IiRjb2RlPSdUTkUnIj5Ub248L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nTFRSJyI+THQ8L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nTUxUJyI+TWw8L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nTVRSJyI+TTwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9IiRjb2RlPSdDTVQnIj5DbTwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9IiRjb2RlPSdNTVQnIj5NbTwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9IiRjb2RlPSdNVEsnIj5NwrI8L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nTVRRJyI+TcKzPC94c2w6d2hlbj48eHNsOndoZW4gdGVzdD0iJGNvZGU9J1BBJyI+UGFrZXQ8L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nQlgnIj5LdXR1PC94c2w6d2hlbj48eHNsOndoZW4gdGVzdD0iJGNvZGU9J0NUJyI+S29saTwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9IiRjb2RlPSdQUiciPsOHaWZ0PC94c2w6d2hlbj48eHNsOndoZW4gdGVzdD0iJGNvZGU9J1NFVCciPlRha8SxbTwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9IiRjb2RlPSdIVVInIj5TYWF0PC94c2w6d2hlbj48eHNsOndoZW4gdGVzdD0iJGNvZGU9J0RBWSciPkfDvG48L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nTU9OJyI+QXk8L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nQU5OJyI+WcSxbDwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9IiRjb2RlPSdNSU4nIj5EYWtpa2E8L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nV0VFJyI+SGFmdGE8L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nUk8nIj5SdWxvPC94c2w6d2hlbj48eHNsOndoZW4gdGVzdD0iJGNvZGU9J0JPJyI+xZ5pxZ9lPC94c2w6d2hlbj48eHNsOndoZW4gdGVzdD0iJGNvZGU9J0JHJyI+VG9yYmE8L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nU0EnIj7Dh3V2YWw8L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nRFpOJyI+RMO8emluZTwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9IiRjb2RlPSdOSVUnIj5BZGV0PC94c2w6d2hlbj48eHNsOndoZW4gdGVzdD0iJGNvZGU9J1BLJyI+UGFrZXQ8L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSIkY29kZT0nQ01RJyI+Q23CszwveHNsOndoZW4+PHhzbDpvdGhlcndpc2U+PHhzbDp2YWx1ZS1vZiBzZWxlY3Q9IiRjb2RlIi8+PC94c2w6b3RoZXJ3aXNlPjwveHNsOmNob29zZT48L3hzbDp0ZW1wbGF0ZT4KPHhzbDp0ZW1wbGF0ZSBuYW1lPSJwYXJ0eSI+PHhzbDpwYXJhbSBuYW1lPSJwIi8+CiAgPHhzbDpjaG9vc2U+CiAgICA8eHNsOndoZW4gdGVzdD0iJHAvY2FjOlBhcnR5TmFtZS9jYmM6TmFtZSBhbmQgJHAvY2FjOlBlcnNvbiI+PGRpdiBjbGFzcz0iYWQiPjx4c2w6dmFsdWUtb2Ygc2VsZWN0PSIkcC9jYWM6UGFydHlOYW1lL2NiYzpOYW1lIi8+PC9kaXY+PGRpdj48eHNsOnZhbHVlLW9mIHNlbGVjdD0iY29uY2F0KCRwL2NhYzpQZXJzb24vY2JjOkZpcnN0TmFtZSwnICcsJHAvY2FjOlBlcnNvbi9jYmM6RmFtaWx5TmFtZSkiLz48L2Rpdj48L3hzbDp3aGVuPgogICAgPHhzbDp3aGVuIHRlc3Q9IiRwL2NhYzpQYXJ0eU5hbWUvY2JjOk5hbWUiPjxkaXYgY2xhc3M9ImFkIj48eHNsOnZhbHVlLW9mIHNlbGVjdD0iJHAvY2FjOlBhcnR5TmFtZS9jYmM6TmFtZSIvPjwvZGl2PjwveHNsOndoZW4+CiAgICA8eHNsOm90aGVyd2lzZT48ZGl2IGNsYXNzPSJhZCI+PHhzbDp2YWx1ZS1vZiBzZWxlY3Q9ImNvbmNhdCgkcC9jYWM6UGVyc29uL2NiYzpGaXJzdE5hbWUsJyAnLCRwL2NhYzpQZXJzb24vY2JjOkZhbWlseU5hbWUpIi8+PC9kaXY+PC94c2w6b3RoZXJ3aXNlPgogIDwveHNsOmNob29zZT4KICA8ZGl2Pjx4c2w6dmFsdWUtb2Ygc2VsZWN0PSIkcC9jYWM6UG9zdGFsQWRkcmVzcy9jYmM6U3RyZWV0TmFtZSIvPjwvZGl2PgogIDxkaXY+PHhzbDppZiB0ZXN0PSIkcC9jYWM6UG9zdGFsQWRkcmVzcy9jYmM6UG9zdGFsWm9uZSI+PHhzbDp2YWx1ZS1vZiBzZWxlY3Q9IiRwL2NhYzpQb3N0YWxBZGRyZXNzL2NiYzpQb3N0YWxab25lIi8+JiMxNjA7PC94c2w6aWY+PHhzbDp2YWx1ZS1vZiBzZWxlY3Q9IiRwL2NhYzpQb3N0YWxBZGRyZXNzL2NiYzpDaXR5U3ViZGl2aXNpb25OYW1lIi8+IC8gPHhzbDp2YWx1ZS1vZiBzZWxlY3Q9IiRwL2NhYzpQb3N0YWxBZGRyZXNzL2NiYzpDaXR5TmFtZSIvPjwvZGl2PgogIDx4c2w6aWYgdGVzdD0iJHAvY2FjOkNvbnRhY3QvY2JjOlRlbGVwaG9uZSI+PGRpdj5UZWw6IDx4c2w6dmFsdWUtb2Ygc2VsZWN0PSIkcC9jYWM6Q29udGFjdC9jYmM6VGVsZXBob25lIi8+PC9kaXY+PC94c2w6aWY+CiAgPHhzbDppZiB0ZXN0PSIkcC9jYWM6Q29udGFjdC9jYmM6RWxlY3Ryb25pY01haWwiPjxkaXY+RS1Qb3N0YTogPHhzbDp2YWx1ZS1vZiBzZWxlY3Q9IiRwL2NhYzpDb250YWN0L2NiYzpFbGVjdHJvbmljTWFpbCIvPjwvZGl2PjwveHNsOmlmPgogIDx4c2w6aWYgdGVzdD0iJHAvY2JjOldlYnNpdGVVUkkiPjxkaXY+V2ViIFNpdGVzaTogPHhzbDp2YWx1ZS1vZiBzZWxlY3Q9IiRwL2NiYzpXZWJzaXRlVVJJIi8+PC9kaXY+PC94c2w6aWY+CiAgPGRpdj5WZXJnaSBEYWlyZXNpOiA8eHNsOnZhbHVlLW9mIHNlbGVjdD0iJHAvY2FjOlBhcnR5VGF4U2NoZW1lL2NhYzpUYXhTY2hlbWUvY2JjOk5hbWUiLz48L2Rpdj4KICA8eHNsOmZvci1lYWNoIHNlbGVjdD0iJHAvY2FjOlBhcnR5SWRlbnRpZmljYXRpb24vY2JjOklEIj48ZGl2Pjx4c2w6Y2hvb3NlPjx4c2w6d2hlbiB0ZXN0PSJAc2NoZW1lSUQ9J01FUlNJU05PJyI+TUVSU8SwUyBObzwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9IkBzY2hlbWVJRD0nVElDQVJFVFNJQ0lMTk8nIj5UaWNhcmV0IFNpY2lsIE5vPC94c2w6d2hlbj48eHNsOm90aGVyd2lzZT48eHNsOnZhbHVlLW9mIHNlbGVjdD0iQHNjaGVtZUlEIi8+PC94c2w6b3RoZXJ3aXNlPjwveHNsOmNob29zZT46IDx4c2w6dmFsdWUtb2Ygc2VsZWN0PSIuIi8+PC9kaXY+PC94c2w6Zm9yLWVhY2g+CjwveHNsOnRlbXBsYXRlPgo8eHNsOnRlbXBsYXRlIG1hdGNoPSIvIj4KPGh0bWw+PGhlYWQ+PG1ldGEgaHR0cC1lcXVpdj0iQ29udGVudC1UeXBlIiBjb250ZW50PSJ0ZXh0L2h0bWw7IGNoYXJzZXQ9VVRGLTgiLz48dGl0bGU+PHhzbDp2YWx1ZS1vZiBzZWxlY3Q9Im4xOkludm9pY2UvY2JjOklEIi8+PC90aXRsZT4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KYm9keXtmb250LWZhbWlseTpBcmlhbCxIZWx2ZXRpY2Esc2Fucy1zZXJpZjtmb250LXNpemU6MTFweDtjb2xvcjojMWQyNjIyO21hcmdpbjowO2JhY2tncm91bmQ6I2ZmZn0KLnNheWZhe21heC13aWR0aDo4MDBweDttYXJnaW46MTJweCBhdXRvO3BhZGRpbmc6MCA4cHh9CnRhYmxle2JvcmRlci1jb2xsYXBzZTpjb2xsYXBzZTtmb250LXNpemU6aW5oZXJpdH0KLnVzdHt3aWR0aDoxMDAlfS51c3QgdGR7dmVydGljYWwtYWxpZ246dG9wfQoubG9nb3ttYXJnaW4tYm90dG9tOjZweH0ubG9nbyBpbWd7bWF4LXdpZHRoOjE4MHB4O21heC1oZWlnaHQ6ODBweH0KLmFke2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHh9Ci5iYXNsaWt7dGV4dC1hbGlnbjpjZW50ZXI7Zm9udC1zaXplOjIwcHg7Zm9udC13ZWlnaHQ6Ym9sZDtsZXR0ZXItc3BhY2luZzoxcHg7Y29sb3I6IzFmNWY0YTtwYWRkaW5nLXRvcDo0cHh9Ci5iaWxnaXtib3JkZXI6MXB4IHNvbGlkICM5YWE4YTI7bWFyZ2luLWxlZnQ6YXV0b30uYmlsZ2kgdGgsLmJpbGdpIHRke2JvcmRlcjoxcHggc29saWQgIzlhYThhMjtwYWRkaW5nOjNweCA2cHg7dGV4dC1hbGlnbjpsZWZ0fS5iaWxnaSB0aHtiYWNrZ3JvdW5kOiNlZWYzZjA7d2hpdGUtc3BhY2U6bm93cmFwfQouYWxpY2l7bWFyZ2luOjQ0cHggMTJweCAwIDA7Ym9yZGVyLXRvcDoxcHggc29saWQgIzFmNWY0YTtib3JkZXItYm90dG9tOjFweCBzb2xpZCAjMWY1ZjRhO3BhZGRpbmc6NnB4IDB9Ci5ldHRue21hcmdpbjoxMnB4IDAgMTBweH0KLmthbGVte3dpZHRoOjEwMCV9LmthbGVtIHRoLC5rYWxlbSB0ZHtib3JkZXI6MXB4IHNvbGlkICM5YWE4YTI7cGFkZGluZzozcHggNXB4fS5rYWxlbSB0aHtiYWNrZ3JvdW5kOiNlZWYzZjA7dGV4dC1hbGlnbjpjZW50ZXJ9LmthbGVtIHRkLnN7dGV4dC1hbGlnbjpyaWdodDt3aGl0ZS1zcGFjZTpub3dyYXB9Ci5rYWxlbSAuYWNpa2xhbWF7Y29sb3I6IzU1NjE1Yjtmb250LXNpemU6MTBweH0KLnRvcGxhbXttYXJnaW4tbGVmdDphdXRvO21hcmdpbi10b3A6OHB4fS50b3BsYW0gdGgsLnRvcGxhbSB0ZHtib3JkZXI6MXB4IHNvbGlkICM5YWE4YTI7cGFkZGluZzozcHggNnB4fS50b3BsYW0gdGh7dGV4dC1hbGlnbjpyaWdodDtiYWNrZ3JvdW5kOiNlZWYzZjB9LnRvcGxhbSB0ZHt0ZXh0LWFsaWduOnJpZ2h0O3doaXRlLXNwYWNlOm5vd3JhcDttaW4td2lkdGg6MTEwcHh9Ci5vZGVuZWNlayB0aCwub2RlbmVjZWsgdGR7Zm9udC13ZWlnaHQ6Ym9sZDtmb250LXNpemU6MTJweH0KLm5vdGxhcnttYXJnaW4tdG9wOjEwcHg7Ym9yZGVyOjFweCBzb2xpZCAjOWFhOGEyO3BhZGRpbmc6NnB4fQouYmFua2FsYXJ7bWFyZ2luLXRvcDoxMHB4fS5iYW5rYWxhciB0aCwuYmFua2FsYXIgdGR7Ym9yZGVyOjFweCBzb2xpZCAjOWFhOGEyO3BhZGRpbmc6M3B4IDZweDt0ZXh0LWFsaWduOmxlZnR9LmJhbmthbGFyIHRoe2JhY2tncm91bmQ6I2VlZjNmMH0KLmFsdHttYXJnaW4tdG9wOjEwcHg7Y29sb3I6IzU1NjE1Yjt3aGl0ZS1zcGFjZTpwcmUtbGluZX0KLmthcmVrb2R7dGV4dC1hbGlnbjpyaWdodDttYXJnaW4tYm90dG9tOjRweH0ua2FyZWtvZCBpbWd7d2lkdGg6MTIwcHg7aGVpZ2h0OjEyMHB4fS5naWIgaW1ne3dpZHRoOjgwcHg7aGVpZ2h0OjgwcHh9Lmthc2V7bWFyZ2luLXRvcDo2cHh9Lmthc2UgaW1ne21heC13aWR0aDoxNzBweDttYXgtaGVpZ2h0OjkwcHh9Ci50ZXN0e2JvcmRlcjoycHggc29saWQgI2I0MjMxODtjb2xvcjojYjQyMzE4O2ZvbnQtd2VpZ2h0OmJvbGQ7dGV4dC1hbGlnbjpjZW50ZXI7cGFkZGluZzo2cHg7bWFyZ2luLWJvdHRvbToxMHB4fQo8L3N0eWxlPjwvaGVhZD4KPGJvZHk+PGRpdiBjbGFzcz0ic2F5ZmEiPjxkaXYgY2xhc3M9InRlc3QiPlRFU1QgT1JUQU1JIOKAlCBCdSBiZWxnZSBkZW5lbWUgYW1hw6dsxLFkxLFyOyB5YXNhbCBnZcOnZXJsaWxpxJ9pIHlva3R1ci48L2Rpdj48eHNsOmZvci1lYWNoIHNlbGVjdD0ibjE6SW52b2ljZSI+Cjx0YWJsZSBjbGFzcz0idXN0Ij48dHI+CiAgPHRkIHN0eWxlPSJ3aWR0aDozOCUiPjx4c2w6Y2FsbC10ZW1wbGF0ZSBuYW1lPSJwYXJ0eSI+PHhzbDp3aXRoLXBhcmFtIG5hbWU9InAiIHNlbGVjdD0iY2FjOkFjY291bnRpbmdTdXBwbGllclBhcnR5L2NhYzpQYXJ0eSIvPjwveHNsOmNhbGwtdGVtcGxhdGU+PGRpdiBjbGFzcz0iYWxpY2kiPjxkaXY+PGI+U0FZSU48L2I+PC9kaXY+PHhzbDpjYWxsLXRlbXBsYXRlIG5hbWU9InBhcnR5Ij48eHNsOndpdGgtcGFyYW0gbmFtZT0icCIgc2VsZWN0PSJjYWM6QWNjb3VudGluZ0N1c3RvbWVyUGFydHkvY2FjOlBhcnR5Ii8+PC94c2w6Y2FsbC10ZW1wbGF0ZT48L2Rpdj48L3RkPgogIDx0ZCBzdHlsZT0id2lkdGg6MjQlIiBjbGFzcz0iYmFzbGlrIj48ZGl2IGNsYXNzPSJnaWIiPjxpbWcgYWx0PSJHxLBCIiBzcmM9ImRhdGE6aW1hZ2UvanBlZztiYXNlNjQsLzlqLzRBQVFTa1pKUmdBQkFRQUFBUUFCQUFELzRRQm9SWGhwWmdBQVNVa3FBQWdBQUFBREFCSUJBd0FCQUFBQUFRQUFBREVCQWdBUUFBQUFNZ0FBQUdtSEJBQUJBQUFBUWdBQUFBQUFBQUJUYUc5MGQyVnNiQ0F3TGpJeUxqQUFBZ0FDb0FrQUFRQUFBS1lCQUFBRG9Ba0FBUUFBQUtZQkFBQUFBQUFBLytFSjlHaDBkSEE2THk5dWN5NWhaRzlpWlM1amIyMHZlR0Z3THpFdU1DOEFQRDk0Y0dGamEyVjBJR0psWjJsdVBTTHZ1NzhpSUdsa1BTSlhOVTB3VFhCRFpXaHBTSHB5WlZONlRsUmplbXRqT1dRaVB6NGdQSGc2ZUcxd2JXVjBZU0I0Yld4dWN6cDRQU0poWkc5aVpUcHVjenB0WlhSaEx5SWdlRHA0YlhCMGF6MGlXRTFRSUVOdmNtVWdOQzQwTGpBdFJYaHBkaklpUGlBOGNtUm1PbEpFUmlCNGJXeHVjenB5WkdZOUltaDBkSEE2THk5M2QzY3Vkek11YjNKbkx6RTVPVGt2TURJdk1qSXRjbVJtTFhONWJuUmhlQzF1Y3lNaVBpQThjbVJtT2tSbGMyTnlhWEIwYVc5dUlISmtaanBoWW05MWREMGlJaUI0Yld4dWN6cGxlR2xtUFNKb2RIUndPaTh2Ym5NdVlXUnZZbVV1WTI5dEwyVjRhV1l2TVM0d0x5SWdlRzFzYm5NNmRHbG1aajBpYUhSMGNEb3ZMMjV6TG1Ga2IySmxMbU52YlM5MGFXWm1MekV1TUM4aUlHVjRhV1k2VUdsNFpXeFlSR2x0Wlc1emFXOXVQU0kwTWpJaUlHVjRhV1k2VUdsNFpXeFpSR2x0Wlc1emFXOXVQU0kwTWpJaUlIUnBabVk2U1cxaFoyVlhhV1IwYUQwaU5ESXlJaUIwYVdabU9rbHRZV2RsU0dWcFoyaDBQU0kwTWpJaUlIUnBabVk2VDNKcFpXNTBZWFJwYjI0OUlqRWlMejRnUEM5eVpHWTZVa1JHUGlBOEwzZzZlRzF3YldWMFlUNGdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBOFAzaHdZV05yWlhRZ1pXNWtQU0ozSWo4Ky85c0FRd0FEQWdJREFnSURBd01EQkFNREJBVUlCUVVFQkFVS0J3Y0dDQXdLREF3TENnc0xEUTRTRUEwT0VRNExDeEFXRUJFVEZCVVZGUXdQRnhnV0ZCZ1NGQlVVLzlzQVF3RURCQVFGQkFVSkJRVUpGQTBMRFJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVUvOEFBRVFnQWFRQnBBd0VpQUFJUkFRTVJBZi9FQUI4QUFBRUZBUUVCQVFFQkFBQUFBQUFBQUFBQkFnTUVCUVlIQ0FrS0MvL0VBTFVRQUFJQkF3TUNCQU1GQlFRRUFBQUJmUUVDQXdBRUVRVVNJVEZCQmhOUllRY2ljUlF5Z1pHaENDTkNzY0VWVXRId0pETmljb0lKQ2hZWEdCa2FKU1luS0NrcU5EVTJOemc1T2tORVJVWkhTRWxLVTFSVlZsZFlXVnBqWkdWbVoyaHBhbk4wZFhaM2VIbDZnNFNGaG9lSWlZcVNrNVNWbHBlWW1acWlvNlNscHFlb3FhcXlzN1MxdHJlNHVickN3OFRGeHNmSXljclMwOVRWMXRmWTJkcmg0dVBrNWVibjZPbnE4Zkx6OVBYMjkvajUrdi9FQUI4QkFBTUJBUUVCQVFFQkFRRUFBQUFBQUFBQkFnTUVCUVlIQ0FrS0MvL0VBTFVSQUFJQkFnUUVBd1FIQlFRRUFBRUNkd0FCQWdNUkJBVWhNUVlTUVZFSFlYRVRJaktCQ0JSQ2thR3h3UWtqTTFMd0ZXSnkwUW9XSkRUaEpmRVhHQmthSmljb0tTbzFOamM0T1RwRFJFVkdSMGhKU2xOVVZWWlhXRmxhWTJSbFptZG9hV3B6ZEhWMmQzaDVlb0tEaElXR2g0aUppcEtUbEpXV2w1aVptcUtqcEtXbXA2aXBxckt6dExXMnQ3aTV1c0xEeE1YR3g4akp5dExUMU5YVzE5aloydUxqNU9YbTUranA2dkx6OVBYMjkvajUrdi9hQUF3REFRQUNFUU1SQUQ4QS9WT2lpb0w2K3R0TXNwN3k4bmp0YlNCR2xtbm1jSWthS01zek1lQUFCa2swYmdUMTQ1OFFQMm5mRHZoYnhESjRXOE4yRi84QUVIeHN2QjBIdzZnbGEzUFROek1mM2NDNTY3amtlbGNKcUhqSHhUKzFGSmVMNFoxYTQ4Qi9CcTAzaTg4VmcrVGZhMHFaOHdXcGIvVXdEQnpNZVRqaitJVlRsK0pIaHo0UWVBclBUL2dmNGR0SjdTRy9GdHFFajZkY3VWTFFtU0dhWDdzc2lUNHd0eVBNVS93aVFrTFh1VWNDb08xVmMwLzVka3Y4VDZQKzZ0ZWwwOUR6cW1JdXJ3ZGwzNnYwWDYvbWREZGFKOGMvSGRwSmZlSi9HV2gvQjdRZ056Mk9od3BmWHFJZjRaYnViRWFOL3RScmlzVFN2MmV2aEo0djhYWG5ocnhENHc4Vy9FSHhEYXE3VHdhOXI5NFVPelo1Z1R5ekhHMnd5UjdsVE96ZW9ZRElyMVA0bC9DZUw0MWFEb2Q0MTVlZUdOVWpFVHV5cHVaN2RtamttdEpveVFHQjJMejFWbEJIY0hXMEQ0TCtHZkRQeEMxWHhscDBFOXZxMnBsM3VGV1VpRm5jSUhmYjNKOHRlcElCM0ZRQ3paRmplU0Q1WmNrdGRJcEt6MHRlVzdXL1ZzSFE1cGFybVhkdS93Q0d5KzQrS1BpMzRlK0N2d3Q4VytOUERTZkJmU3IrNjBwN1ZOTGFUVXJrRy96QkhjWGhZN2lWOHFLUlc0em5QT0s5YjFmNEgvQW53bjRwMUxRTkh2UEZQZ1RYdE9zWmRTZHRCMWJVTFllVkZHc2tqUnU3TkV4VldVa0QxSTZnNCtnZkVId1c4RWVLOVZ1ZFMxYnc1YVgxL2NHUXkzRXU3ZTNtUUpBL0lQRzZLS05EanNvckQxLzltN3dWcjJwZUl0UWEzdmJPL3dCZXM3eXl2WjdhOGZsTHBZMW5aRVlzaU13aFFaQzlqNjExdk5JempDTHFUVFMxOTV1NzA2TjdhTjdkVEg2bTR0dmxpOWROTGFhK1cvOEFrZVllRnRFK0xlazI4TS9nUDRsUDR0aCt3V3Vvbnc5OFJOTS9leHhUcVdSRGYyNEdaY0tRVitiYndUd3dKNnJ3L3dEdFQybWthM2JlSGZpbjRjdmZoZHI4N2VYQk5xTWl6YVZlTjZRM3EvSm52aDlwR1FPVFZIeC84TnZGMWw0c3M0ZkJQbnBxT3ErSVYxbTgxNjRSRnN0UHRZN0I3UklOZ2szU01uN3QxajI3V1luSkEzWWs4RytMNzM0bytNdkVudzA4VitGWXRZOEw2YkZOYVRYV3ErWExQTjVUSkhITGNJTUFHZjhBZVNKaEZ3cUJsTForWE9mc3E4ZWVjVkpXdTJyUmt2dTBldmRYZmRGUjU2Y3VXTGFkK3VxZjZyNU94NytqcktpdWpCa1laREE1QkZPcjVRZHRYL1phOFNYOXA0SzFSL0hmdy8wNUV1Tlg4RHRjaTQxYnc5QStTSjdYSjN2RGdFK1UzSUF5RHlTUHBUd1g0MDBYNGgrR0xEeEQ0ZTFDSFZOSHZveExCY3dISVlkd1IxQkJ5Q3B3UVFRUmtWNU5mQ3VpbFVpK2FEMmY2TmRIK2ZSdEhiU3JLYjVYcEpkUDh1LzlYTnVpaWl1STZBcjVtOFgzTTM3VS93QVJOUjhJVzl5OXQ4SS9DdHdFOFIzc1RsQnJWNm1HK3dxNC93Q1dNZkJsSVBKd1BRMTNYN1RmeEQxVHdkNEZ0ZEU4TU1QK0UxOFczaWFGb3ZQTVVzdjM3ZytpeFI3bnowQkM1NjE1TDl2OFArR1BES2ZCbnc3cFo4WGVFN1N5eGZYM2h0eGVYOWxkUVhDZWM5L2FFRHpFbG1PU2lzek92bURZVjVIdVlHaEtFUGJyNG50NUpieTlWdEh6dmJWSTg3RVZFMzdON0xmejdML1B5OVRvL0VmaXJVTlMrS1o4RjZQcE52NFQxclM3U0NUdzNHWWhQYjZycDVhNGp1SXJwSWd3aHREOW5RS1J5cGVGaU1rUjE3TjhQL2hab1h3NnRJWXRNdDJNc01CdElaNXlIbGl0Zk5lU08yVjhBbUtNeUZVQnlRdUJtc3I0SGZDV1A0UitDTFBTSmJvYWpmUmhsYTRIbWJJa0xFckRDSkhka2lYc200akpZakdjVjZMWEhpYTZiOWxSZnVyOGZQdjUydTkyYjBhVFh2ejMvSUsrWmYydnYyczQvZ25ZTDRlOE55UTNQalM2UVBsMURwWVJIbzdqb1hQOEtuNm5qQVBvL3dDMGQ4Y0xINEQvQUE1dXRjbUVjK3F6NXQ5TnMyUCt1bkk0SkhYYXYzbVBvTWRTSy9JZnhMNGsxSHhkcjEvck9yM2NsOXFWOU0wOXhjU0hKZGllZm9QUWRBT0JYdzJkWm84SkgyRkYrKy93WCtaL1FmaGx3TEhpQ3M4MHpHTjhOVGRrbjl1UzZmNFYxN3ZUdWU2ZjhONy9BQmwvNkdDMC93REJiQi84UlIvdzN0OFpmK2hndFA4QXdXd2YvRVY4OGdWOWlmc2Evc2VqeDZiWHh4NDF0U1BEaU1IMC9UWlJqN2VRZjlZNC93Q2VRUFFmeGY3djN2a3NKV3pIR1ZWU3BWWlg5WHA1cy9vVGlETGVEdUdzRExINDdBMGxGYUpLRWJ5ZlNLVnQzK0MxZWg2eCt6TDRvK1AvQU1hR2cxM1gvRU1XaGVEc2hsbC9zdUFUM3c5SWdVNFgvYkl4NkE4NCt2SjQ1SHRwRWpsTVVySVZXWGFEdE9PRGpvYTh5OFkvdElmREg0WGVJTGZ3enJYaVcwMHpVRkNKOWtpaWQxdHdRTm9jb3BXTVl4d3hHQmc5SzlOdHJtSzh0NHA0SkVtaGxVT2trYkJsZFNNZ2dqcUNLL1JzSEdOS0xwcXB6eVc5M2QzOU9oL0dIRWRldmpxOGNhOEVzTlJuL0RVWWNzWEh1blpjNzd2N3JJK1B0RThBei9BTDRnUWVKL0hHcHkzSzI3WE4zYXkyZDBzcyt2YWc4VHJQY1NlWkd2MmFQeU5tNk5waENyeHhuSUNpdGk1MUsxK0FPcWFkOFdQQndrbCtEZmpEeWJyWDlLampJWFM1SndQTDFLR1ArRlR1VVNvQjNCd2VOdjBaNDc4QjZMOFJOQmZTOWMwMjAxUzNEck5GSGV4ZVpHc3FuS2tnRUVqUEJHUnVVc3A0SkZlQS9EYlQwMER4ajRwMC93Q0tmaXZTdGQxVFhaVzBhSFI1clpsbWlzbmZ5NEZNY2NyeFc5dk1WYllwUlNUSkVHa1oyQXI3V25pbGlJdWRUVjJ0S1A4QU12SmRHdDc5SDVPeS9PNVVYU2tveDIzVDdQei9BQ3QxUHB1MnVZYjIyaXVMZVZKb0pVRWtjc2JCbGRTTWdnanFDTzlTMTgvL0FMTStvM253L3dCZDhUL0JiV2JtUzVuOExGTHZRYm1jNWU2MGFVbnllZTVoWUdJbnB3b3I2QXJ3OFJSOWhVY0wzVzZmZFBWUDdqMGFWVDJrRkxaOWZYcWZQdWpJUGliKzJIcm1vUy92ZEwrSE9qeGFkYUtlVkdvWG84eWFSVDZyQ3FJZlRkWHA5ejRLOEk2dDhSWXRaL3M1SS9GMm1RcEkxL2JySkJJOFVna1JVa2RjTE12eVA4akZnQ0FjRGcxODVmQ0x3cnJ2anY0ZjZ4NDAwUzJnMVc1dnZpUHFIaUdYU3JxOWUwajFHM2hhUzNoaE1xcTJQTFpJNUZEQXFXaUFQQnlQb0w0TzJmaUNIU2RjdmZFTWlwUHFPcnozZHZweWFnYjRhZEdRaW0zODdBemlSSlgyamhQTTJEaFJYcDQyUHNuYU03Y2lVYlgrL3dBOVhkN1cxM3ZvY2RCOCs4ZDNlLzVmb2p2cVFrQUVrNEFwYThhL2E2K0k3L0RMNERlSTcrM2w4clVMMk1hYmFNRGdpU1g1U1I3cW05aC91MTg3V3F4b1U1VlpiSlhQb3N1d05YTThaUndWSDRxa2xGZXJkdndQejMvYSsrTmtueG0rTGQ5TGF6bC9EK2tGckhUVUIrVmxVL1BLUGQyR2MvM1FvN1Y0ZFNrNU5QZ2hlNW1qaWlScEpYWUtpS01saVRnQWU5ZmpWZXRQRTFaVlo3dG4rbGVWNWJoOG13TkxBNFpXaFRpa3ZsdTM1dDZ2elBlLzJQZjJlRytPUGovN1JxY0xmOElubzVXYS9QSUZ3eCs1QUQvdFl5Mk9pZzlDUlg2WmZFZnhFbnczK0YvaUxXclNDT05kRzB1ZTR0NEZYQ0F4eGtvZ0E2RElBeFhQL3M2L0NpMitDM3dtMFR3OEZSZFE4c1hPb1NER1pMbHdDL1BjRGhCN0lLN0x4bjRicy9HM2hIV3ZEOTVKdHRkVXM1Yk9WbEl5cXlJVkpIdU01cjlPeTdBL1VzTHl4K09TMTllaStSL0RIR2ZGUzRtejVWYXJid3RLWExGZDRwKzlMMWxhL3BaZEQ4U05WMVM3MXZVN3JVTCtlUzZ2YnFWcDU1NVRscEhZNVppZlVrbXYxdjhBMlA3bTl1LzJiZkF6Nmd6Tk9MTmtVdWVmS1dWMWkvRFlGcjR5OE4vOEU4Zkg5NTQ3R25heFBZV1hodUtiOTVxOE53cm1hSUgvQUpaeC9lREVkbUFBOVQzL0FFZzhQYURaZUZ0QzAvUjlOaEZ2cDloYnBiVzhRL2dqUlFxajhoWGtaRGdzUlFxMUt0Wk5hVzE2NjduNkw0czhUNVJtbUJ3dVg1WlVqVWFmUGVPMFZ5dEplVGQ5dWx0YmFHaFhnUDdRL2cvUmREMWpTdkh6NmZwRStwMjAwYXBKcnQ5Y1IyY2R3dk1Nd3RvSTNhNW5HQXFqZ2dLTUhnWTkrcm1QaVdyeWVDTlZTSzZuczdob3dJWkxXK1N5bGFUY05xSk00SVFzY0xuSDhYSE5mZllXbzZWVk5kZEhyYlJuOHYxb0tjR2p3YjRuNjNlYVRxWHdQK00xMVlUYVBlL2FZZEQxKzJtaWFGa3RMOVFwOHhXK1pWam5DTUZia2J1ZWErbnR3cjQrOFQ2SG9ualA5bEg0cnkyTjVwOTNxa2xuTGNtV3g4WHplSXBHYXpVWENiNXBNYkpBd0oySU1BRlRubmppUCtIZzh2OEFlaC9TdmVsbDliRzAwcUVidURjZmxvMTM2dHJmWkhuUnhNS0VtNXY0clA1N1A4a2R4K3k3b0hqL0FGWDRMZkN1NzhIYTVaYUpZUTJuaUJkU2ZVN1I3eUNTZDlVUXhBd0pQRVM0Q1hHSHlRbzNESHppdnFid1hwR29hSDRkdDdYVnB0T3VOVDN5eTNFK2sySnM3ZVIza1p5eXhGM0trN3NzU3h5MjQ5OFY0LzhBc1puK3kvaDc0cDhMdHhKNFo4VzZ2cFpYMFg3UVpsUDBLekFqNjE3NVhuWm5XbFBFVklXVnVadGFhNnR0YTc5VHB3a0VxVVpkYkw4a3YwQ3ZoNy9ncHo0a2VMUnZBMmdJL3dBazl4YzMwaSs2S2lJZi9JajE5dzErZVgvQlRjdWZIWGdzSFBsLzJkTmo2K2FNL3dCSytMenVUamdLbHV0dnpSK3llRjFDTmZpekNjLzJlZC9OUWxiOGRUNHVyMm45anZ3VW5qcjlvYnduYVR4aVMwczUyMUdZRVpHSVZMcm4yTGhCK05lTFY5Yy84RTFMQkovak5yOTB3eTF2b2NnWDJMVHc4L2tQMXI4N3kybXF1TXBRZTExK0dwL1pIR3VNbmdPSE1kWHB1MGxUa2w1T1h1MytWenFQMjZ2aHY4UlBpVjhYN1NUdzk0VTFqVk5IMC9USXJkTGkwZ1pvM2tMTzdrRWY3eWovQUlEWHh6NG84TzY3NEsxbWJTTmRzcnJTdFRoQ21TMHVnVWtRTUF5NUhiSUlQNDErNGRmamgrMDU0ay80U3o0LytPOVFEYjAvdFNXMlJ2VlljUXIra1lyNkRQc0ZDaC90Q2szS2IyNkg1QjRUOFRZbk5Vc21sUWhHbGg2ZnhLL00zZFd2ZDIxdTJkZCt4Qm84bXY4QTdTZmhiZVdlS3pGeGVPQ1NjYklYMm4vdm9yWDZ3MStjUC9CTkxRZnRueFg4U2FzeTVXeDBqeVFjZEdsbFRINlJ0WDZQVjdmRDhPWEJjejZ0L3dDWDZINWY0d1lsVnVKZll4MnAwNHgrKzh2L0FHNUJYRS9HTDRkV254UDhDM3VqWFVsNUhncmN4R3dFSm1NaVpJVlJNREdkM0svTU1mTm5JeGtkdFJYMU1KeXB5VTQ3by9EcFJVNHVMMlo4eGFIOE4yMEw0WGZFalZOYjB2eFZhYW4vQU1JOWMyYVhQaW1iVEM3VzR0V1VwR0xCdG13QkV5Sk9jZ0Vkelg0NmVhM3FmenI5MGYycmZFUytGdjJiL2lOZnN3VW5SYmkxUS83Y3krU240N3BCWHhSL3c3ODFUL254SDVHdjBuaDdOS1dHcDFhMkpkdWRwTC90MWEvbWo1Yk1zSE9yS0VLV3ZLdnpmL0FQcFpScXZ3Ny9BR2pmaWY0ZTBaMHRydng1NGZYWDlBZVhIbExxVnZFWUprNTRKUDdtUTU0eFhvWHdWMDd4UGF6WHQxcXk2dmFhWGNRcVlySHhCcUF1N3habG1sQmtKR1JHcnhlU1NnT0EyUUFNWk9WKzFMNE8xVys4TDZQNDY4TVc1dVBGL2dXOC90bXloVDcxMUFGMjNWcnh6aVNMUEE1SlZSV1A0Y1RSTHZYTEg0dWVGZjdYOFczZml5MTNXRmpheHFFVlNpQXJQTzNFU1JrTU5wSXdjZ0s3S0svT3NmRjFJMHNZdGJlN0x5YVZrL25HM3E3OWo3L0txa1hTeEdYU3NuTDNvdHE3ZlhsdmRLS3ZkOHorRmRycytnNitGLzhBZ3Axb0ROYWVBOWJWZmtSN3F6a2IzWVJ1Zy84QUhYcjdWMERXVTFteTNHUzJlOGdJaHZJN1Nielk0Wjlxc3lCOERPTnc1d1BvT2xlSmZ0emVCVzhiZnM5YTFMREg1bDFvc2tlcXhnRG5haEt5ZmxHN244SzhMTktmdDhGVWpIdGY3dGYwUHJPQmNiL1pQRStEclZkRno4ci9BTzMwNC9kNzF6OG9hK3RQK0NiR3BMYS9HeldiUmlBYnJRNWR2dVZtaE9QeXorVmZKaHIyUDlrTHhpbmdqOW9id2RlVFNlWGJYTjBkUGxKT0JpZFRHdWZZTXluOEsvTTh1cUtsaTZVMzNYNDZIOXY4WjRPV1A0ZHgySGhxM1RrMTZ4WE1sODdINjJhN3EwV2c2SnFHcDNCeEJaMjhseElmUlVVc2YwRmZoenFWOUxxbW8zTjVPMjZlNGxhYVJ2Vm1KSi9VMSt2WDdXSGlUL2hGZjJkdkhWNXUyUExwN1dTbnZtZGhEeC8zOHI4ZkIxcjZUaVdwZXBUcGRrMzkvd0R3eCtNZUNHQzVjSGpjYTE4VW94WC9BRzZtMy82VWo5QnYrQ1kvaC95UENYamJXeXYvQUI5WHNGbXJZLzU1UnM1LzlIQ3Z0ZXZtL3dENEovYUYvWkg3T1duWE8zYTJwMzkxZGsrdUg4b2ZwRlgwaFgxT1ZVL1o0S2xIeXY4QWZyK3ArQzhlNHY2N3hQanF0OXB1UC9nQ1VmMEN1SCtLUGp5MjhJV0Z2WnpXV3JYVTJxNzdhQnRKVlJLSDI1SVIzS3FIQ0NSd001UGxuR1RnSHR5Y0N2SmJuVmo0L3dCVWxzdGJ0Ykd6MCt4aUQ2MTRYOFQyQ1NvSTFMRVhVRS8zSFhqcjh5L0x6c1lHdTZ0SjI1WTd2K3Y2L0krVnkrbENWVDJ0WlhoRFY2L2R0cnY2SzlrNUs2UEtQaVA0aHMvaTVwM3dwK0gybGVJYjN4VGJlSjlmWFVyKzQxRzNXQ2RkTnNTSjVZNVVXTk1FdUlsQktqT2UvV3ZxL3dBcGZRVjgyZnNzK0dyUHhqNHQ4VC9GbTIwOGFmb1Y0RzBUd3BiRlN1elRZNVdlVzR3ZWN6emxuNTV3bzdZcjZXcjFjVEYwWVU4TExlQzk3L0U5WDkyaStSNVU1MDY5ZXJpS1Nhakp2bHZhL0wwdlpKZWVpdHFKMXI1WTFqVDQvd0JtUHhwcVdsNmcxeGIvQUFUOGJYTEg3VGJUUEQvd2ptb3luNTFMb1FZN2VZOGhnUUVZNDRCeWZxaXMzeEg0YzB6eGRvVjlvMnMyVU9wYVhleE5CY1d0d3U1SkVQVUVmNXhVWWV0R25lRlJYaExScjlWNXJwOTJ6Wm5PTXJxZE4ybEhWTTVyd05vR3VhSGYzRWU3UjlQOEpSSWJmVE5GMDIzSmFHTlQ4a3BteUFTNExGazI0SHk0WW5jVzJ2N1UwZnhlK3VhRUhXK1MzWDdKZnhoU1l3WkVPWWkzVGR0SUpYcUF5NTZpdm5rM25pdjlrZUdYUzlTZlUvRkh3YlpTbG5yZHN2MmpVL0RDbmdKTXVDWnJkT3F2Z2xBTUVFWUI2RFRMZlhiaHZEZHA4TWRhRW5nTzlpaVk2N1ptMnVsa1ptbGU4bnVKSHpJWm14R0VLakc5MjM5TURteFdIbGhJeGxCYzlON05mbGJvKzZlM1RUVTl2QnpobWRTYnExRlRxcEo2NkxUZDNTYmsrMXJ1VGJiZDFaL0NQam45a2Y0aytIdkdPczZicG5oRFY5VzAyMnVwSTdXK3Q3WXVrOFc0N0hCSHF1TSsrYXg3YjltcjR1V2R4RlBCNEQ4UVJUUk9IUjF0R0JWZ2NnajhhL1VUd3Q4ZHZESGllMTErODgrVFRkTTBkb2ZOMUcvQWl0NVk1YytWSWprL2RiZ2pPRGhsUFJoWGYydDVCZlFSVDI4MGM4TXFMSkhKRXdaWFFqSVlFZFFSME5mR0xoL0NWSHpRcVA1V1AzcWZpOW4rQ2dxR0t3Y0xwSk50UzFkazlkYlhhYWJYbWZMSDdVbHI0NStLbjdNUGhxejA3d3Jxa3ZpTFU3aTFmVk5OU0FpUzMySTVrM0w2ZVlxNDlRUWErSWYrR1hQaXovMElHdWYrQXByOWhiaTdndFFobW1TSVNPSTAzc0YzTWVpalBVbjByRjhYZVBORDhDd1c4dXRYalczMmdzSVk0b0pKNUpOcTdtMnBHck1jTGtuQTRBelhkamNvbzR1ZnRhMVJxeVM2SHkvREhpTG1QRCtHZVg1ZGhJU1VweWtsN3pldlJXZXRra3ZSSE9mczkrRXJqd0w4RS9CbWlYbHUxcmUyMm14RzRnY1lhT1ZodmRTUFVNeEJyMEptQ2dra0FEbm11UjFUNHIrR3RJMVB3N1kzRjh3azEvWjlnbFdGekRKdkg3dkw0MmpkMEFKeWNpdkg5ZXZMMzQyRHhGb2V1TEw0RTEzdzVMOXF0OVJXWlZoTm9YS3l4dTVZaDBJanl6WUFHWTJ4a2Mrc3FrYU1JMHFYdk5hSmVpL3lQejE0VEVabGlhbU54bjd1TTI1U2sxdHpTYWJTM2FVdEhhOXZ6NjM0aCtMNHZIV3Y2bjhOTFJyL0FFYlYyampuaHZMaTNKczczYWQ3UU9VTzlZMkNsU3cya2dOZ25HRzgyOFZQcVB4ZzFPSDRIZUdOVnZialFkTkMvd0RDYitJamNHWnJlQW5jTkxpbndDOGpmY0xINWxSZm15eFlVNlR4dHJ2eDExTjlBK0ZGd2ZzVVVYOW5hMzhXN3EwalNSNGcyV2dzU3FxSlpNay9Pb0NLZVJ5UWE5KytHUHd4OFA4QXdpOElXbmh6dzVhZlpyR0RMdkpJZDAxeEtmdnl5djFkMlBKSitnd0FBUGNvMGY3UGJyMS80citGZnlybzVlYTZMNXZwZndjWGpJNHVsSEI0WldwTFdUL21sYXphZGs3TzNYYnB2cHY2UHBGbm9HazJlbWFkYlIyZGhad3BiMjl2Q3UxSW8xQVZWVWRnQUFLdVVVVnd0dHU3T1pLMmlDaWlpa01hNkxJaFZnR1ZoZ2dqSUlyd254RCt5OE5BMXk2OFNmQ1h4SFA4TmRjdUg4MjVzTGVJVDZQZk42eldod3FrOU44ZTBqSk9DYTk0b3JvbzRpcGgyM1RlKzYzVDlVOUg4ektkT0ZUNGwvbjk1OHVUK01QRi9nYTNObDhSdmd2TGVXSXY0dFNtMXY0Y0FYbHRjM0VSVXBMTGEvTE1NRkVKM2J2dWowcWo0YytOdndYdXZpL3FmakZ2aVRiNlRxZDNibUE2YnIxdFBZUzJ6ZVhISHNMU2xGOHNlWHUyYmZ2T3gzZE1mV05mT243WVgvSXF4LzdocnNvMHNIamFzWVZLWEs3N3hkbGYwYWY0TkkxK3Y0N0JVNXVuV2JUVFRUVjlIYTZ2NTJYbm9aZmdueFo0UDBId1ZiYWJlL0czd2pxTTl2cnR0cWEzVCtJb25QMmVOb3k4UlpwT1MyeCt3Kzk4eFk3bmFUNDZmSEQ0SGVNOU4wdXp2L2lYb1R6V0Y4THVOYkdJYXQ1djd0NDJqTVVZY01HV1E4RUVaQTROZm1ycWYvSWVIKzkvV3Z2cjloL29QOXcveXIzTWJ3NWc4Qmh1ZVRsSlcydWwrTm1jdEhpWEg0bkZxdEZxTTAyN3BkWG85UFRvYTJuZU5KZkZtaytITk8rSDN3ZThSK00yME9EN1BZK0lQR29HbDJJWEtNSkQ1bUdtQWFOR0NpTWJTaTdjWUdPdGcvWnA4UWZGSFVVMVg0MCtLVThReEFxeStFOUFSclBTRTJrbFJLYytiYzRKSkc4Z0RKNHdhK2h4MEZMWHpzY1RHaHBoYWFoNTd5Kzk3ZkpJNktycllwM3hWUnozMGUycnU5UE42K3BVMHZTckxROU90N0RUclNDd3NiZEJIRGJXMFlqampVZEZWUndBUFFWYm9vcmliYmQyVnRvZ29vb3BBZi9aIi8+PC9kaXY+PHhzbDpjaG9vc2U+PHhzbDp3aGVuIHRlc3Q9ImNiYzpQcm9maWxlSUQ9J0VBUlNJVkZBVFVSQSciPmUtQXLFn2l2IEZhdHVyYTwveHNsOndoZW4+PHhzbDpvdGhlcndpc2U+ZS1GQVRVUkE8L3hzbDpvdGhlcndpc2U+PC94c2w6Y2hvb3NlPjwvdGQ+CiAgPHRkIHN0eWxlPSJ3aWR0aDozOCUiPjx0YWJsZSBjbGFzcz0iYmlsZ2kiPgogICAgPHRyPjx0aD7DlnplbGxlxZ90aXJtZSBObzwvdGg+PHRkPjx4c2w6dmFsdWUtb2Ygc2VsZWN0PSJjYmM6Q3VzdG9taXphdGlvbklEIi8+PC90ZD48L3RyPgogICAgPHRyPjx0aD5TZW5hcnlvPC90aD48dGQ+PHhzbDpjaG9vc2U+PHhzbDp3aGVuIHRlc3Q9ImNiYzpQcm9maWxlSUQ9J1RFTUVMRkFUVVJBJyI+VGVtZWwgRmF0dXJhPC94c2w6d2hlbj48eHNsOndoZW4gdGVzdD0iY2JjOlByb2ZpbGVJRD0nVElDQVJJRkFUVVJBJyI+VGljYXJpIEZhdHVyYTwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9ImNiYzpQcm9maWxlSUQ9J0VBUlNJVkZBVFVSQSciPmUtQXLFn2l2IEZhdHVyYTwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9ImNiYzpQcm9maWxlSUQ9J0lIUkFDQVQnIj7EsGhyYWNhdDwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9ImNiYzpQcm9maWxlSUQ9J1lPTENVQkVSQUJFUkZBVFVSQSciPllvbGN1IEJlcmFiZXIgRmF0dXJhPC94c2w6d2hlbj48eHNsOm90aGVyd2lzZT48eHNsOnZhbHVlLW9mIHNlbGVjdD0iY2JjOlByb2ZpbGVJRCIvPjwveHNsOm90aGVyd2lzZT48L3hzbDpjaG9vc2U+PC90ZD48L3RyPgogICAgPHRyPjx0aD5GYXR1cmEgVGlwaTwvdGg+PHRkPjx4c2w6Y2hvb3NlPjx4c2w6d2hlbiB0ZXN0PSJjYmM6SW52b2ljZVR5cGVDb2RlPSdTQVRJUyciPlNhdMSxxZ88L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSJjYmM6SW52b2ljZVR5cGVDb2RlPSdJQURFJyI+xLBhZGU8L3hzbDp3aGVuPjx4c2w6d2hlbiB0ZXN0PSJjYmM6SW52b2ljZVR5cGVDb2RlPSdURVZLSUZBVCciPlRldmtpZmF0PC94c2w6d2hlbj48eHNsOndoZW4gdGVzdD0iY2JjOkludm9pY2VUeXBlQ29kZT0nSVNUSVNOQSciPsSwc3Rpc25hPC94c2w6d2hlbj48eHNsOndoZW4gdGVzdD0iY2JjOkludm9pY2VUeXBlQ29kZT0nT1pFTE1BVFJBSCciPsOWemVsIE1hdHJhaDwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9ImNiYzpJbnZvaWNlVHlwZUNvZGU9J0lIUkFDS0FZSVRMSSciPsSwaHJhw6cgS2F5xLF0bMSxPC94c2w6d2hlbj48eHNsOndoZW4gdGVzdD0iY2JjOkludm9pY2VUeXBlQ29kZT0nU0dLJyI+U0dLPC94c2w6d2hlbj48eHNsOndoZW4gdGVzdD0iY2JjOkludm9pY2VUeXBlQ29kZT0nS09NSVNZT05DVSciPktvbWlzeW9uY3U8L3hzbDp3aGVuPjx4c2w6b3RoZXJ3aXNlPjx4c2w6dmFsdWUtb2Ygc2VsZWN0PSJjYmM6SW52b2ljZVR5cGVDb2RlIi8+PC94c2w6b3RoZXJ3aXNlPjwveHNsOmNob29zZT48L3RkPjwvdHI+CiAgICA8dHI+PHRoPkZhdHVyYSBObzwvdGg+PHRkPjx4c2w6dmFsdWUtb2Ygc2VsZWN0PSJjYmM6SUQiLz48L3RkPjwvdHI+CiAgICA8dHI+PHRoPkZhdHVyYSBUYXJpaGk8L3RoPjx0ZD48eHNsOmNhbGwtdGVtcGxhdGUgbmFtZT0iZGF0ZSI+PHhzbDp3aXRoLXBhcmFtIG5hbWU9InZhbHVlIiBzZWxlY3Q9ImNiYzpJc3N1ZURhdGUiLz48L3hzbDpjYWxsLXRlbXBsYXRlPjx4c2w6aWYgdGVzdD0iY2JjOklzc3VlVGltZSI+JiMxNjA7PHhzbDp2YWx1ZS1vZiBzZWxlY3Q9InN1YnN0cmluZyhjYmM6SXNzdWVUaW1lLDEsNSkiLz48L3hzbDppZj48L3RkPjwvdHI+CiAgICA8eHNsOmlmIHRlc3Q9ImNhYzpEZXNwYXRjaERvY3VtZW50UmVmZXJlbmNlIj48dHI+PHRoPsSwcnNhbGl5ZSBObzwvdGg+PHRkPjx4c2w6dmFsdWUtb2Ygc2VsZWN0PSJjYWM6RGVzcGF0Y2hEb2N1bWVudFJlZmVyZW5jZS9jYmM6SUQiLz48L3RkPjwvdHI+PC94c2w6aWY+CiAgICA8eHNsOmlmIHRlc3Q9ImNhYzpEZXNwYXRjaERvY3VtZW50UmVmZXJlbmNlL2NiYzpJc3N1ZURhdGUiPjx0cj48dGg+xLByc2FsaXllIFRhcmloaTwvdGg+PHRkPjx4c2w6Y2FsbC10ZW1wbGF0ZSBuYW1lPSJkYXRlIj48eHNsOndpdGgtcGFyYW0gbmFtZT0idmFsdWUiIHNlbGVjdD0iY2FjOkRlc3BhdGNoRG9jdW1lbnRSZWZlcmVuY2UvY2JjOklzc3VlRGF0ZSIvPjwveHNsOmNhbGwtdGVtcGxhdGU+PC90ZD48L3RyPjwveHNsOmlmPgogICAgPHhzbDppZiB0ZXN0PSJjYWM6T3JkZXJSZWZlcmVuY2UiPjx0cj48dGg+U2lwYXJpxZ8gTm88L3RoPjx0ZD48eHNsOnZhbHVlLW9mIHNlbGVjdD0iY2FjOk9yZGVyUmVmZXJlbmNlL2NiYzpJRCIvPjwvdGQ+PC90cj48L3hzbDppZj4KICAgIDx4c2w6aWYgdGVzdD0iY2FjOk9yZGVyUmVmZXJlbmNlL2NiYzpJc3N1ZURhdGUiPjx0cj48dGg+U2lwYXJpxZ8gVGFyaWhpPC90aD48dGQ+PHhzbDpjYWxsLXRlbXBsYXRlIG5hbWU9ImRhdGUiPjx4c2w6d2l0aC1wYXJhbSBuYW1lPSJ2YWx1ZSIgc2VsZWN0PSJjYWM6T3JkZXJSZWZlcmVuY2UvY2JjOklzc3VlRGF0ZSIvPjwveHNsOmNhbGwtdGVtcGxhdGU+PC90ZD48L3RyPjwveHNsOmlmPgogICAgPHhzbDppZiB0ZXN0PSJjYWM6QmlsbGluZ1JlZmVyZW5jZS9jYWM6SW52b2ljZURvY3VtZW50UmVmZXJlbmNlIj48dHI+PHRoPsSwYWRlIEVkaWxlbiBGYXR1cmE8L3RoPjx0ZD48eHNsOnZhbHVlLW9mIHNlbGVjdD0iY2FjOkJpbGxpbmdSZWZlcmVuY2UvY2FjOkludm9pY2VEb2N1bWVudFJlZmVyZW5jZS9jYmM6SUQiLz4mIzE2MDs8eHNsOmNhbGwtdGVtcGxhdGUgbmFtZT0iZGF0ZSI+PHhzbDp3aXRoLXBhcmFtIG5hbWU9InZhbHVlIiBzZWxlY3Q9ImNhYzpCaWxsaW5nUmVmZXJlbmNlL2NhYzpJbnZvaWNlRG9jdW1lbnRSZWZlcmVuY2UvY2JjOklzc3VlRGF0ZSIvPjwveHNsOmNhbGwtdGVtcGxhdGU+PC90ZD48L3RyPjwveHNsOmlmPgogICAgPHhzbDppZiB0ZXN0PSJjYWM6UGF5bWVudE1lYW5zW2NiYzpQYXltZW50RHVlRGF0ZSAhPSAuLi9jYmM6SXNzdWVEYXRlXSI+PHRyPjx0aD5Tb24gw5ZkZW1lIFRhcmloaTwvdGg+PHRkPjx4c2w6Y2FsbC10ZW1wbGF0ZSBuYW1lPSJkYXRlIj48eHNsOndpdGgtcGFyYW0gbmFtZT0idmFsdWUiIHNlbGVjdD0iY2FjOlBheW1lbnRNZWFuc1tjYmM6UGF5bWVudER1ZURhdGUgIT0gLi4vY2JjOklzc3VlRGF0ZV1bMV0vY2JjOlBheW1lbnREdWVEYXRlIi8+PC94c2w6Y2FsbC10ZW1wbGF0ZT48L3RkPjwvdHI+PC94c2w6aWY+CiAgICA8eHNsOmlmIHRlc3Q9ImNhYzpQYXltZW50TWVhbnMvY2JjOlBheW1lbnRNZWFuc0NvZGU9JzEwJyBvciBjYWM6UGF5bWVudE1lYW5zL2NiYzpQYXltZW50TWVhbnNDb2RlPScyMCcgb3IgY2FjOlBheW1lbnRNZWFucy9jYmM6UGF5bWVudE1lYW5zQ29kZT0nNDInIG9yIGNhYzpQYXltZW50TWVhbnMvY2JjOlBheW1lbnRNZWFuc0NvZGU9JzQ4JyBvciBjYWM6UGF5bWVudE1lYW5zL2NiYzpQYXltZW50TWVhbnNDb2RlPSc2MCciPjx0cj48dGg+w5ZkZW1lIMWeZWtsaTwvdGg+PHRkPjx4c2w6Zm9yLWVhY2ggc2VsZWN0PSJjYWM6UGF5bWVudE1lYW5zW2NiYzpQYXltZW50TWVhbnNDb2RlPScxMCcgb3IgY2JjOlBheW1lbnRNZWFuc0NvZGU9JzIwJyBvciBjYmM6UGF5bWVudE1lYW5zQ29kZT0nNDInIG9yIGNiYzpQYXltZW50TWVhbnNDb2RlPSc0OCcgb3IgY2JjOlBheW1lbnRNZWFuc0NvZGU9JzYwJ10iPjx4c2w6aWYgdGVzdD0icG9zaXRpb24oKSA+IDEiPiwgPC94c2w6aWY+PHhzbDpjaG9vc2U+PHhzbDp3aGVuIHRlc3Q9ImNiYzpQYXltZW50TWVhbnNDb2RlPScxMCciPk5ha2l0PC94c2w6d2hlbj48eHNsOndoZW4gdGVzdD0iY2JjOlBheW1lbnRNZWFuc0NvZGU9JzIwJyI+w4dlazwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9ImNiYzpQYXltZW50TWVhbnNDb2RlPSc0MiciPkhhdmFsZSAvIEVGVDwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9ImNiYzpQYXltZW50TWVhbnNDb2RlPSc0OCciPktyZWRpIEthcnTEsTwveHNsOndoZW4+PHhzbDp3aGVuIHRlc3Q9ImNiYzpQYXltZW50TWVhbnNDb2RlPSc2MCciPlNlbmV0PC94c2w6d2hlbj48eHNsOm90aGVyd2lzZT48eHNsOnZhbHVlLW9mIHNlbGVjdD0iY2JjOlBheW1lbnRNZWFuc0NvZGUiLz48L3hzbDpvdGhlcndpc2U+PC94c2w6Y2hvb3NlPjwveHNsOmZvci1lYWNoPjwvdGQ+PC90cj48L3hzbDppZj4KICAgIDx4c2w6aWYgdGVzdD0iY2JjOlByb2ZpbGVJRD0nRUFSU0lWRkFUVVJBJyI+PHRyPjx0aD5Hw7ZuZGVyaW0gxZ5la2xpPC90aD48dGQ+PHhzbDpjaG9vc2U+PHhzbDp3aGVuIHRlc3Q9ImNhYzpBZGRpdGlvbmFsRG9jdW1lbnRSZWZlcmVuY2VbY2JjOkRvY3VtZW50VHlwZUNvZGU9J1NlbmRpbmdUeXBlJ10vY2JjOkRvY3VtZW50VHlwZT0nRUxFS1RST05JSyciPkVsZWt0cm9uaWs8L3hzbDp3aGVuPjx4c2w6b3RoZXJ3aXNlPkvDosSfxLF0PC94c2w6b3RoZXJ3aXNlPjwveHNsOmNob29zZT48L3RkPjwvdHI+PC94c2w6aWY+CiAgPC90YWJsZT48L3RkPgo8L3RyPjwvdGFibGU+CjxkaXYgY2xhc3M9ImV0dG4iPjxiPkVUVE46PC9iPiYjMTYwOzx4c2w6dmFsdWUtb2Ygc2VsZWN0PSJjYmM6VVVJRCIvPjwvZGl2Pgo8dGFibGUgY2xhc3M9ImthbGVtIj48dHI+PHRoPlPEsXJhIE5vPC90aD48dGg+TWFsIEhpem1ldDwvdGg+PHRoPk1pa3RhcjwvdGg+PHRoPkJpcmltIEZpeWF0PC90aD48dGg+xLBza29udG8gT3JhbsSxPC90aD48dGg+xLBza29udG8gVHV0YXLEsTwvdGg+PHRoPktEViBPcmFuxLE8L3RoPjx0aD5LRFYgVHV0YXLEsTwvdGg+PHRoPkRpxJ9lciBWZXJnaWxlcjwvdGg+PHRoPk1hbCBIaXptZXQgVHV0YXLEsTwvdGg+PC90cj4KPHhzbDpmb3ItZWFjaCBzZWxlY3Q9ImNhYzpJbnZvaWNlTGluZSI+PHRyPgogIDx0ZCBjbGFzcz0icyI+PHhzbDp2YWx1ZS1vZiBzZWxlY3Q9ImNiYzpJRCIvPjwvdGQ+CiAgPHRkPjx4c2w6dmFsdWUtb2Ygc2VsZWN0PSJjYWM6SXRlbS9jYmM6TmFtZSIvPjx4c2w6aWYgdGVzdD0iY2FjOkl0ZW0vY2FjOlNlbGxlcnNJdGVtSWRlbnRpZmljYXRpb24vY2JjOklEIj4gKDx4c2w6dmFsdWUtb2Ygc2VsZWN0PSJjYWM6SXRlbS9jYWM6U2VsbGVyc0l0ZW1JZGVudGlmaWNhdGlvbi9jYmM6SUQiLz4pPC94c2w6aWY+PHhzbDpmb3ItZWFjaCBzZWxlY3Q9ImNiYzpOb3RlIj48ZGl2IGNsYXNzPSJhY2lrbGFtYSI+PHhzbDp2YWx1ZS1vZiBzZWxlY3Q9Ii4iLz48L2Rpdj48L3hzbDpmb3ItZWFjaD48eHNsOmZvci1lYWNoIHNlbGVjdD0iY2FjOkl0ZW0vY2FjOkl0ZW1JbnN0YW5jZSI+PGRpdiBjbGFzcz0iYWNpa2xhbWEiPjx4c2w6aWYgdGVzdD0iY2JjOlNlcmlhbElEIj5TZXJpIE5vOiA8eHNsOnZhbHVlLW9mIHNlbGVjdD0iY2JjOlNlcmlhbElEIi8+PC94c2w6aWY+PHhzbDppZiB0ZXN0PSJjYmM6U2VyaWFsSUQgYW5kIGNhYzpMb3RJZGVudGlmaWNhdGlvbi9jYmM6TG90TnVtYmVySUQiPiDCtyA8L3hzbDppZj48eHNsOmlmIHRlc3Q9ImNhYzpMb3RJZGVudGlmaWNhdGlvbi9jYmM6TG90TnVtYmVySUQiPkxvdCBObzogPHhzbDp2YWx1ZS1vZiBzZWxlY3Q9ImNhYzpMb3RJZGVudGlmaWNhdGlvbi9jYmM6TG90TnVtYmVySUQiLz48L3hzbDppZj48L2Rpdj48L3hzbDpmb3ItZWFjaD48L3RkPgogIDx0ZCBjbGFzcz0icyI+PHhzbDp2YWx1ZS1vZiBzZWxlY3Q9ImZvcm1hdC1udW1iZXIobnVtYmVyKGNiYzpJbnZvaWNlZFF1YW50aXR5KSwgJyMjIy4jIzAsIyMjIycsICd0cicpIi8+JiMxNjA7PHhzbDpjYWxsLXRlbXBsYXRlIG5hbWU9InVuaXQiPjx4c2w6d2l0aC1wYXJhbSBuYW1lPSJjb2RlIiBzZWxlY3Q9ImNiYzpJbnZvaWNlZFF1YW50aXR5L0B1bml0Q29kZSIvPjwveHNsOmNhbGwtdGVtcGxhdGU+PC90ZD4KICA8dGQgY2xhc3M9InMiPjx4c2w6dmFsdWUtb2Ygc2VsZWN0PSJmb3JtYXQtbnVtYmVyKG51bWJlcihjYWM6UHJpY2UvY2JjOlByaWNlQW1vdW50KSwgJyMjIy4jIzAsMDAjIycsICd0cicpIi8+JiMxNjA7PHhzbDpjYWxsLXRlbXBsYXRlIG5hbWU9ImN1cnJlbmN5Ij48eHNsOndpdGgtcGFyYW0gbmFtZT0iY29kZSIgc2VsZWN0PSJjYWM6UHJpY2UvY2JjOlByaWNlQW1vdW50L0BjdXJyZW5jeUlEIi8+PC94c2w6Y2FsbC10ZW1wbGF0ZT48L3RkPgogIDx0ZCBjbGFzcz0icyI+PHhzbDppZiB0ZXN0PSJjYWM6QWxsb3dhbmNlQ2hhcmdlL2NiYzpNdWx0aXBsaWVyRmFjdG9yTnVtZXJpYyI+JTx4c2w6dmFsdWUtb2Ygc2VsZWN0PSJmb3JtYXQtbnVtYmVyKG51bWJlcihjYWM6QWxsb3dhbmNlQ2hhcmdlL2NiYzpNdWx0aXBsaWVyRmFjdG9yTnVtZXJpYyAqIDEwMCksICcjIzAsIyMnLCAndHInKSIvPjwveHNsOmlmPjwvdGQ+CiAgPHRkIGNsYXNzPSJzIj48eHNsOmlmIHRlc3Q9ImNhYzpBbGxvd2FuY2VDaGFyZ2UvY2JjOkFtb3VudCI+PHhzbDp2YWx1ZS1vZiBzZWxlY3Q9ImZvcm1hdC1udW1iZXIobnVtYmVyKGNhYzpBbGxvd2FuY2VDaGFyZ2UvY2JjOkFtb3VudCksICcjIyMuIyMwLDAwJywgJ3RyJykiLz4mIzE2MDs8eHNsOmNhbGwtdGVtcGxhdGUgbmFtZT0iY3VycmVuY3kiPjx4c2w6d2l0aC1wYXJhbSBuYW1lPSJjb2RlIiBzZWxlY3Q9ImNhYzpBbGxvd2FuY2VDaGFyZ2UvY2JjOkFtb3VudC9AY3VycmVuY3lJRCIvPjwveHNsOmNhbGwtdGVtcGxhdGU+PC94c2w6aWY+PC90ZD4KICA8dGQgY2xhc3M9InMiPiU8eHNsOnZhbHVlLW9mIHNlbGVjdD0iZm9ybWF0LW51bWJlcihudW1iZXIoY2FjOlRheFRvdGFsL2NhYzpUYXhTdWJ0b3RhbC9jYmM6UGVyY2VudCksICcjIzAsIyMnLCAndHInKSIvPjwvdGQ+CiAgPHRkIGNsYXNzPSJzIj48eHNsOnZhbHVlLW9mIHNlbGVjdD0iZm9ybWF0LW51bWJlcihudW1iZXIoY2FjOlRheFRvdGFsL2NiYzpUYXhBbW91bnQpLCAnIyMjLiMjMCwwMCcsICd0cicpIi8+JiMxNjA7PHhzbDpjYWxsLXRlbXBsYXRlIG5hbWU9ImN1cnJlbmN5Ij48eHNsOndpdGgtcGFyYW0gbmFtZT0iY29kZSIgc2VsZWN0PSJjYWM6VGF4VG90YWwvY2JjOlRheEFtb3VudC9AY3VycmVuY3lJRCIvPjwveHNsOmNhbGwtdGVtcGxhdGU+PC90ZD4KICA8dGQ+PHhzbDpmb3ItZWFjaCBzZWxlY3Q9ImNhYzpXaXRoaG9sZGluZ1RheFRvdGFsL2NhYzpUYXhTdWJ0b3RhbCI+S0RWIFRldmtpZmF0xLEgKCU8eHNsOnZhbHVlLW9mIHNlbGVjdD0iY2JjOlBlcmNlbnQiLz4pIDx4c2w6dmFsdWUtb2Ygc2VsZWN0PSJmb3JtYXQtbnVtYmVyKG51bWJlcihjYmM6VGF4QW1vdW50KSwgJyMjIy4jIzAsMDAnLCAndHInKSIvPjwveHNsOmZvci1lYWNoPjx4c2w6Zm9yLWVhY2ggc2VsZWN0PSJjYWM6VGF4VG90YWwvY2FjOlRheFN1YnRvdGFsL2NhYzpUYXhDYXRlZ29yeVtjYmM6VGF4RXhlbXB0aW9uUmVhc29uQ29kZV0iPjxkaXYgY2xhc3M9ImFjaWtsYW1hIj7EsHN0aXNuYSA8eHNsOnZhbHVlLW9mIHNlbGVjdD0iY2JjOlRheEV4ZW1wdGlvblJlYXNvbkNvZGUiLz46IDx4c2w6dmFsdWUtb2Ygc2VsZWN0PSJjYmM6VGF4RXhlbXB0aW9uUmVhc29uIi8+PC9kaXY+PC94c2w6Zm9yLWVhY2g+PC90ZD4KICA8dGQgY2xhc3M9InMiPjx4c2w6dmFsdWUtb2Ygc2VsZWN0PSJmb3JtYXQtbnVtYmVyKG51bWJlcihjYmM6TGluZUV4dGVuc2lvbkFtb3VudCksICcjIyMuIyMwLDAwJywgJ3RyJykiLz4mIzE2MDs8eHNsOmNhbGwtdGVtcGxhdGUgbmFtZT0iY3VycmVuY3kiPjx4c2w6d2l0aC1wYXJhbSBuYW1lPSJjb2RlIiBzZWxlY3Q9ImNiYzpMaW5lRXh0ZW5zaW9uQW1vdW50L0BjdXJyZW5jeUlEIi8+PC94c2w6Y2FsbC10ZW1wbGF0ZT48L3RkPgo8L3RyPjwveHNsOmZvci1lYWNoPjwvdGFibGU+Cjx0YWJsZSBjbGFzcz0idG9wbGFtIj4KICA8dHI+PHRoPk1hbCBIaXptZXQgVG9wbGFtIFR1dGFyxLE8L3RoPjx0ZD48eHNsOnZhbHVlLW9mIHNlbGVjdD0iZm9ybWF0LW51bWJlcihudW1iZXIoY2FjOkxlZ2FsTW9uZXRhcnlUb3RhbC9jYmM6TGluZUV4dGVuc2lvbkFtb3VudCksICcjIyMuIyMwLDAwJywgJ3RyJykiLz4mIzE2MDs8eHNsOmNhbGwtdGVtcGxhdGUgbmFtZT0iY3VycmVuY3kiPjx4c2w6d2l0aC1wYXJhbSBuYW1lPSJjb2RlIiBzZWxlY3Q9ImNhYzpMZWdhbE1vbmV0YXJ5VG90YWwvY2JjOkxpbmVFeHRlbnNpb25BbW91bnQvQGN1cnJlbmN5SUQiLz48L3hzbDpjYWxsLXRlbXBsYXRlPjwvdGQ+PC90cj4KICA8eHNsOmlmIHRlc3Q9ImNhYzpMZWdhbE1vbmV0YXJ5VG90YWwvY2JjOkFsbG93YW5jZVRvdGFsQW1vdW50Ij48dHI+PHRoPlRvcGxhbSDEsHNrb250bzwvdGg+PHRkPjx4c2w6dmFsdWUtb2Ygc2VsZWN0PSJmb3JtYXQtbnVtYmVyKG51bWJlcihjYWM6TGVnYWxNb25ldGFyeVRvdGFsL2NiYzpBbGxvd2FuY2VUb3RhbEFtb3VudCksICcjIyMuIyMwLDAwJywgJ3RyJykiLz4mIzE2MDs8eHNsOmNhbGwtdGVtcGxhdGUgbmFtZT0iY3VycmVuY3kiPjx4c2w6d2l0aC1wYXJhbSBuYW1lPSJjb2RlIiBzZWxlY3Q9ImNhYzpMZWdhbE1vbmV0YXJ5VG90YWwvY2JjOkFsbG93YW5jZVRvdGFsQW1vdW50L0BjdXJyZW5jeUlEIi8+PC94c2w6Y2FsbC10ZW1wbGF0ZT48L3RkPjwvdHI+PC94c2w6aWY+CiAgPHhzbDpmb3ItZWFjaCBzZWxlY3Q9ImNhYzpUYXhUb3RhbC9jYWM6VGF4U3VidG90YWwiPjx0cj48dGg+S0RWIE1hdHJhaMSxICglPHhzbDp2YWx1ZS1vZiBzZWxlY3Q9ImNiYzpQZXJjZW50Ii8+KTwvdGg+PHRkPjx4c2w6dmFsdWUtb2Ygc2VsZWN0PSJmb3JtYXQtbnVtYmVyKG51bWJlcihjYmM6VGF4YWJsZUFtb3VudCksICcjIyMuIyMwLDAwJywgJ3RyJykiLz4mIzE2MDs8eHNsOmNhbGwtdGVtcGxhdGUgbmFtZT0iY3VycmVuY3kiPjx4c2w6d2l0aC1wYXJhbSBuYW1lPSJjb2RlIiBzZWxlY3Q9ImNiYzpUYXhhYmxlQW1vdW50L0BjdXJyZW5jeUlEIi8+PC94c2w6Y2FsbC10ZW1wbGF0ZT48L3RkPjwvdHI+PHRyPjx0aD5IZXNhcGxhbmFuIEtEViAoJTx4c2w6dmFsdWUtb2Ygc2VsZWN0PSJjYmM6UGVyY2VudCIvPik8L3RoPjx0ZD48eHNsOnZhbHVlLW9mIHNlbGVjdD0iZm9ybWF0LW51bWJlcihudW1iZXIoY2JjOlRheEFtb3VudCksICcjIyMuIyMwLDAwJywgJ3RyJykiLz4mIzE2MDs8eHNsOmNhbGwtdGVtcGxhdGUgbmFtZT0iY3VycmVuY3kiPjx4c2w6d2l0aC1wYXJhbSBuYW1lPSJjb2RlIiBzZWxlY3Q9ImNiYzpUYXhBbW91bnQvQGN1cnJlbmN5SUQiLz48L3hzbDpjYWxsLXRlbXBsYXRlPjwvdGQ+PC90cj48L3hzbDpmb3ItZWFjaD4KICA8eHNsOmZvci1lYWNoIHNlbGVjdD0iY2FjOldpdGhob2xkaW5nVGF4VG90YWwvY2FjOlRheFN1YnRvdGFsIj48dHI+PHRoPkhlc2FwbGFuYW4gS0RWIFRldmtpZmF0xLEgKCU8eHNsOnZhbHVlLW9mIHNlbGVjdD0iY2JjOlBlcmNlbnQiLz4pPC90aD48dGQ+PHhzbDp2YWx1ZS1vZiBzZWxlY3Q9ImZvcm1hdC1udW1iZXIobnVtYmVyKGNiYzpUYXhBbW91bnQpLCAnIyMjLiMjMCwwMCcsICd0cicpIi8+JiMxNjA7PHhzbDpjYWxsLXRlbXBsYXRlIG5hbWU9ImN1cnJlbmN5Ij48eHNsOndpdGgtcGFyYW0gbmFtZT0iY29kZSIgc2VsZWN0PSJjYmM6VGF4QW1vdW50L0BjdXJyZW5jeUlEIi8+PC94c2w6Y2FsbC10ZW1wbGF0ZT48L3RkPjwvdHI+PC94c2w6Zm9yLWVhY2g+CiAgPHRyPjx0aD5WZXJnaWxlciBEYWhpbCBUb3BsYW0gVHV0YXI8L3RoPjx0ZD48eHNsOnZhbHVlLW9mIHNlbGVjdD0iZm9ybWF0LW51bWJlcihudW1iZXIoY2FjOkxlZ2FsTW9uZXRhcnlUb3RhbC9jYmM6VGF4SW5jbHVzaXZlQW1vdW50KSwgJyMjIy4jIzAsMDAnLCAndHInKSIvPiYjMTYwOzx4c2w6Y2FsbC10ZW1wbGF0ZSBuYW1lPSJjdXJyZW5jeSI+PHhzbDp3aXRoLXBhcmFtIG5hbWU9ImNvZGUiIHNlbGVjdD0iY2FjOkxlZ2FsTW9uZXRhcnlUb3RhbC9jYmM6VGF4SW5jbHVzaXZlQW1vdW50L0BjdXJyZW5jeUlEIi8+PC94c2w6Y2FsbC10ZW1wbGF0ZT48L3RkPjwvdHI+CiAgPHRyIGNsYXNzPSJvZGVuZWNlayI+PHRoPsOWZGVuZWNlayBUdXRhcjwvdGg+PHRkPjx4c2w6dmFsdWUtb2Ygc2VsZWN0PSJmb3JtYXQtbnVtYmVyKG51bWJlcihjYWM6TGVnYWxNb25ldGFyeVRvdGFsL2NiYzpQYXlhYmxlQW1vdW50KSwgJyMjIy4jIzAsMDAnLCAndHInKSIvPiYjMTYwOzx4c2w6Y2FsbC10ZW1wbGF0ZSBuYW1lPSJjdXJyZW5jeSI+PHhzbDp3aXRoLXBhcmFtIG5hbWU9ImNvZGUiIHNlbGVjdD0iY2FjOkxlZ2FsTW9uZXRhcnlUb3RhbC9jYmM6UGF5YWJsZUFtb3VudC9AY3VycmVuY3lJRCIvPjwveHNsOmNhbGwtdGVtcGxhdGU+PC90ZD48L3RyPgogIDx4c2w6aWYgdGVzdD0iY2FjOlByaWNpbmdFeGNoYW5nZVJhdGUvY2JjOkNhbGN1bGF0aW9uUmF0ZSI+PHRyPjx0aD5Ew7Z2aXogS3VydTwvdGg+PHRkPjx4c2w6dmFsdWUtb2Ygc2VsZWN0PSJmb3JtYXQtbnVtYmVyKG51bWJlcihjYWM6UHJpY2luZ0V4Y2hhbmdlUmF0ZS9jYmM6Q2FsY3VsYXRpb25SYXRlKSwgJyMjIy4jIzAsMDAwMCcsICd0cicpIi8+PC90ZD48L3RyPjx0ciBjbGFzcz0ib2RlbmVjZWsiPjx0aD7DlmRlbmVjZWsgVHV0YXIgKFRMKTwvdGg+PHRkPjx4c2w6dmFsdWUtb2Ygc2VsZWN0PSJmb3JtYXQtbnVtYmVyKG51bWJlcihjYWM6TGVnYWxNb25ldGFyeVRvdGFsL2NiYzpQYXlhYmxlQW1vdW50ICogY2FjOlByaWNpbmdFeGNoYW5nZVJhdGUvY2JjOkNhbGN1bGF0aW9uUmF0ZSksICcjIyMuIyMwLDAwJywgJ3RyJykiLz4mIzE2MDtUTDwvdGQ+PC90cj48L3hzbDppZj4KPC90YWJsZT4KPHhzbDppZiB0ZXN0PSJjYmM6Tm90ZSI+PGRpdiBjbGFzcz0ibm90bGFyIj48eHNsOmZvci1lYWNoIHNlbGVjdD0iY2JjOk5vdGUiPjxkaXY+PHhzbDp2YWx1ZS1vZiBzZWxlY3Q9Ii4iLz48L2Rpdj48L3hzbDpmb3ItZWFjaD48L2Rpdj48L3hzbDppZj4KPHhzbDppZiB0ZXN0PSJjYmM6UHJvZmlsZUlEPSdFQVJTSVZGQVRVUkEnIGFuZCBjYWM6QWRkaXRpb25hbERvY3VtZW50UmVmZXJlbmNlW2NiYzpEb2N1bWVudFR5cGVDb2RlPSdTZW5kaW5nVHlwZSddL2NiYzpEb2N1bWVudFR5cGU9J0VMRUtUUk9OSUsnIj48ZGl2IGNsYXNzPSJub3RsYXIiPmUtQXLFn2l2IGl6bmkga2Fwc2FtxLFuZGEgZWxla3Ryb25payBvcnRhbWRhIGlsZXRpbG1pxZ90aXIuPC9kaXY+PC94c2w6aWY+CgoKPC94c2w6Zm9yLWVhY2g+PC9kaXY+PC9ib2R5PjwvaHRtbD4KPC94c2w6dGVtcGxhdGU+CjwveHNsOnN0eWxlc2hlZXQ+Cg==</cbc:EmbeddedDocumentBinaryObject></cac:Attachment></cac:AdditionalDocumentReference><cac:Signature><cbc:ID schemeID="VKN_TCKN">10000000146</cbc:ID><cac:SignatoryParty><cac:PartyIdentification><cbc:ID schemeID="TCKN">10000000146</cbc:ID></cac:PartyIdentification><cac:PostalAddress><cbc:StreetName>Moda Cd. 1</cbc:StreetName><cbc:CitySubdivisionName>Kadıköy</cbc:CitySubdivisionName><cbc:CityName>İstanbul</cbc:CityName><cac:Country><cbc:Name>Türkiye</cbc:Name></cac:Country></cac:PostalAddress></cac:SignatoryParty><cac:DigitalSignatureAttachment><cac:ExternalReference><cbc:URI>#Signature_TES2026000000001</cbc:URI></cac:ExternalReference></cac:DigitalSignatureAttachment></cac:Signature><cac:AccountingSupplierParty><cac:Party><cac:PartyIdentification><cbc:ID schemeID="TCKN">10000000146</cbc:ID></cac:PartyIdentification><cac:PartyName><cbc:Name>Av. Deneme Ali</cbc:Name></cac:PartyName><cac:PostalAddress><cbc:StreetName>Moda Cd. 1</cbc:StreetName><cbc:CitySubdivisionName>Kadıköy</cbc:CitySubdivisionName><cbc:CityName>İstanbul</cbc:CityName><cac:Country><cbc:Name>Türkiye</cbc:Name></cac:Country></cac:PostalAddress><cac:PartyTaxScheme><cac:TaxScheme><cbc:Name>Kadıköy</cbc:Name></cac:TaxScheme></cac:PartyTaxScheme><cac:Contact><cbc:ElectronicMail>ali@avukat.com</cbc:ElectronicMail></cac:Contact><cac:Person><cbc:FirstName>Ali</cbc:FirstName><cbc:FamilyName>Deneme</cbc:FamilyName></cac:Person></cac:Party></cac:AccountingSupplierParty><cac:AccountingCustomerParty><cac:Party><cac:PartyIdentification><cbc:ID schemeID="VKN">1234567890</cbc:ID></cac:PartyIdentification><cac:PartyName><cbc:Name>Müvekkil Ticaret A.Ş.</cbc:Name></cac:PartyName><cac:PostalAddress><cbc:StreetName>Atatürk Blv. 1</cbc:StreetName><cbc:CitySubdivisionName>Çankaya</cbc:CitySubdivisionName><cbc:CityName>Ankara</cbc:CityName><cac:Country><cbc:Name>Türkiye</cbc:Name></cac:Country></cac:PostalAddress><cac:PartyTaxScheme><cac:TaxScheme><cbc:Name>Çankaya</cbc:Name></cac:TaxScheme></cac:PartyTaxScheme><cac:Contact><cbc:ElectronicMail>muhasebe@muvekkil.com</cbc:ElectronicMail></cac:Contact></cac:Party></cac:AccountingCustomerParty><cac:PaymentMeans><cbc:PaymentMeansCode>1</cbc:PaymentMeansCode><cbc:PaymentDueDate>2026-10-22</cbc:PaymentDueDate></cac:PaymentMeans><cac:TaxTotal><cbc:TaxAmount currencyID="TRY">200.00</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID="TRY">1000.00</cbc:TaxableAmount><cbc:TaxAmount currencyID="TRY">200.00</cbc:TaxAmount><cbc:Percent>20</cbc:Percent><cac:TaxCategory><cac:TaxScheme><cbc:Name>KDV</cbc:Name><cbc:TaxTypeCode>0015</cbc:TaxTypeCode></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:LegalMonetaryTotal><cbc:LineExtensionAmount currencyID="TRY">1000.00</cbc:LineExtensionAmount><cbc:TaxExclusiveAmount currencyID="TRY">1000.00</cbc:TaxExclusiveAmount><cbc:TaxInclusiveAmount currencyID="TRY">1200.00</cbc:TaxInclusiveAmount><cbc:PayableAmount currencyID="TRY">1000.00</cbc:PayableAmount></cac:LegalMonetaryTotal><cac:InvoiceLine><cbc:ID>1</cbc:ID><cbc:InvoicedQuantity unitCode="C62">1</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID="TRY">1000.00</cbc:LineExtensionAmount><cac:TaxTotal><cbc:TaxAmount currencyID="TRY">200.00</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID="TRY">1000.00</cbc:TaxableAmount><cbc:TaxAmount currencyID="TRY">200.00</cbc:TaxAmount><cbc:Percent>20</cbc:Percent><cac:TaxCategory><cac:TaxScheme><cbc:Name>KDV</cbc:Name><cbc:TaxTypeCode>0015</cbc:TaxTypeCode></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:Item><cbc:Name>Avukatlık Ücreti</cbc:Name></cac:Item><cac:Price><cbc:PriceAmount currencyID="TRY">1000.00</cbc:PriceAmount></cac:Price></cac:InvoiceLine></Invoice>
+        
+      operator: 'doesNotMatch'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:163:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: UBL 2.1 XSD'sine (OASIS; tools/ebelge/sema) uygun — GİB şematronu e-SMM'yi tanımlamaz (ESMM GİB UBL-TR profili değil)
+    ok 4 - UBL 2.1 XSD'sine (OASIS; tools/ebelge/sema) uygun — GİB şematronu e-SMM'yi tanımlamaz (ESMM GİB UBL-TR profili değil)
+      ---
+      duration_ms: 1322.478711
+      type: 'test'
+      ...
+    1..4
+not ok 2 - e-SMM UBL: program tutarlarıyla aynı, yapı EDM'nin e-SMM örneğiyle aynı, UBL 2.1 şemasına uygun
+  ---
+  duration_ms: 1325.706405
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:133:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: e-SMM dışı belgeler değişmedi
+    # Subtest: kâğıt SMM (e-SMM işareti kapalı): stopaj Not'ta, 0003 satırı yok, dip toplamlar e-Fatura anlamında
+    ok 1 - kâğıt SMM (e-SMM işareti kapalı): stopaj Not'ta, 0003 satırı yok, dip toplamlar e-Fatura anlamında
+      ---
+      duration_ms: 52.770181
+      type: 'test'
+      ...
+    1..1
+ok 3 - e-SMM dışı belgeler değişmedi
+  ---
+  duration_ms: 53.132922
+  type: 'suite'
+  ...
+# Subtest: Stopajın kalemlere dağıtımı (en büyük kalan)
+    # Subtest: Σ pay = belge stopajı; her pay tam payın aşağı yuvarlaması ya da bir fazlası; aynı girdi aynı sonuç
+    not ok 1 - Σ pay = belge stopajı; her pay tam payın aşağı yuvarlaması ya da bir fazlası; aynı girdi aynı sonuç
+      ---
+      duration_ms: 1.191238
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:189:3'
+      failureType: 'testCodeFailure'
+      error: 'ubl.stoppageShares is not a function'
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:201:26)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: kayıtlı tutarlar GİB kimliğini (Net Alınan = Net Ücret + Tahsil Edilen KDV) ya da kalem toplamlarını tutmazsa belge üretilmez
+    not ok 2 - kayıtlı tutarlar GİB kimliğini (Net Alınan = Net Ücret + Tahsil Edilen KDV) ya da kalem toplamlarını tutmazsa belge üretilmez
+      ---
+      duration_ms: 0.21522
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:210:3'
+      failureType: 'testCodeFailure'
+      error: 'ubl.esmmAmounts is not a function'
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:212:22)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tutarsız girdide (kalan kuruş kalem sayısını aşar ya da eksi) belge üretilmez
+    not ok 3 - tutarsız girdide (kalan kuruş kalem sayısını aşar ya da eksi) belge üretilmez
+      ---
+      duration_ms: 0.566537
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:216:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /dağıtılamadı/. Input:
+        
+        'TypeError: ubl.stoppageShares is not a function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+      error: 'ubl.stoppageShares is not a function'
+      name: 'TypeError'
+      stack: |-
+        file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:217:29
+        getActual (node:assert:609:5)
+        Function.throws (node:assert:757:24)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:217:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      operator: 'throws'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:217:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 4 - Stopajın kalemlere dağıtımı (en büyük kalan)
+  ---
+  duration_ms: 2.149908
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm/esmm-eski-163dd5d/test/esmm-ubl.test.mjs:188:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..4
+# tests 13
+# suites 4
+# pass 2
+# fail 11
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2701.363132

@@ -1,0 +1,63 @@
+{
+  "ad": "244-esmm2/mutasyon-M12-sonra-gonder-eski-kural",
+  "komut": "node --test test/esmm-gonderim-244.test.mjs",
+  "commit": "7c36f8718bd81220e70c1441f641fa8035c11f85",
+  "dal": "HEAD",
+  "kirli": 7,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T07:05:43.610Z",
+  "sure_sn": 4.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 19,
+    "gecen": 13,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "e-SMM açık: makbuz ESmmEDM.svc'den gider; e-Arşiv e-Fatura servisinden (N2, N3, N10, N13, N15) › N2: e-SMM girişi reddedilirken (e-Fatura oturumu taze) numara VERİLMEZ — erişim/giriş denetimi belgenin servisinde (Kaydet ve Gönder ve Tümünü Gönder)",
+      "konum": "test/esmm-gonderim-244.test.mjs:137:3",
+      "hata": "numara verilmedi: {\"ok\":false,\"pending\":true,\"held\":true,\"code\":\"integrator-login\",\"number\":\"\",\"message\":\"Entegratör girişi reddedildi (kullanıcı adı/parola): EDM isteği reddetti: Kullanıcı adı veya şifre hatalı (EDM hata kodu 2001). Test Ortamı'nda EDM'nin test hesabının kullanıcı adı ve parolası girilir (canlı hesap testte geçmez). Belge numara verilmeden Gönderilecekler'e eklendi; Entegratör Ayarları'nı düzeltip Tümünü Gönder ile gönderin.\"} · + actual - expected · + 'TES2026000000002' (beklenen , gelen TES2026000000002)"
+    },
+    {
+      "ad": "e-SMM açık: makbuz ESmmEDM.svc'den gider; e-Arşiv e-Fatura servisinden (N2, N3, N10, N13, N15) › N13: portala taslak ayarı açıkken de makbuz doğrudan gönderilir (taslak yolu yok); /e-draft ağa çıkmadan reddedilir, belge belirsize düşmez",
+      "konum": "test/esmm-gonderim-244.test.mjs:196:3",
+      "hata": "Expected values to be strictly equal: · 'none' !== 'waiting' (beklenen waiting, gelen none)"
+    },
+    {
+      "ad": "e-SMM: numara, seri ve kronoloji (N4, N5, N14) › N4/N5: Kes, Sonra Gönder → numarasız bekler; kayıtta O1 (daha eski bekleyen makbuz varken yenisi numara almaz); Tümünü Gönder tarih sırasıyla TES, e-Arşiv TEA ayrı sayar",
+      "konum": "test/esmm-gonderim-244.test.mjs:248:3",
+      "hata": "{\"id\":\"invoice-4de43e38-6113-45a4-96d1-052438dd041f\",\"kind\":\"smm\",\"kindLabel\":\"Serbest Meslek Makbuzu\",\"scenario\":\"smm\",\"scenarioLabel\":\"Serbest Meslek Makbuzu\",\"status\":\"issued\",\"statusLabel\":\"Kaydedildi\",\"number\":\"TES2026000000001\",\"displayNo\":\"TES2026000000001\",\"internalNumber\":false,\"ettn\":\"38bb · 'none' !== 'waiting' (beklenen waiting, gelen none)"
+    },
+    {
+      "ad": "e-SMM: numara, seri ve kronoloji (N4, N5, N14) › N5: seride daha yeni numara verilmişken daha eski tarihli makbuz e-SMM olarak gönderilmez (kalıcı kronoloji engeli) ve daha eski tarihli yeni makbuz kaydedilmez; e-SMM servisine gönderim yok",
+      "konum": "test/esmm-gonderim-244.test.mjs:286:3",
+      "hata": "Cannot read properties of undefined (reading 'id')"
+    },
+    {
+      "ad": "e-SMM: numara, seri ve kronoloji (N4, N5, N14) › N14: Müşteri Fişi Olarak Bırakılmış makbuz yeniden gönderilince e-SMM servisinden, TES serisinden numarayla gider (fiş numarası iz olarak kalır)",
+      "konum": "test/esmm-gonderim-244.test.mjs:306:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "e-SMM: kopma, belirsiz gönderim, başka numara, iki oturum, iptal süresi (N6, N7, N8, N9, N10) › N9: EDM makbuzu başka numarayla kaydederse sessizce 'gönderildi' denmez — hata, ileti farkı söyler; durum yazılır (iptal açık); Tümünü Gönder durur, kalan makbuza numara verilmez",
+      "konum": "test/esmm-gonderim-244.test.mjs:388:3",
+      "hata": "kalan makbuza numara verilmedi · + actual - expected · + 'TES2026000000006' (beklenen , gelen TES2026000000006)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/esmm2/docs/kanit/2026-10-22/244-esmm2/mutasyon-M12-sonra-gonder-eski-kural.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/esmm2/esmm2-mut",
+  "ham_cikti_sha256": "0ffc39219116610b9ca768fb5914cce5901d624a09b6ab37573e2a2d0377c907",
+  "ham_cikti_bayt": 15968
+}

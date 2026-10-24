@@ -1,0 +1,32 @@
+{
+  "ad": "244-ana/aday-7-e2e-senaryo-personel-244",
+  "komut": "npm run test:senaryo-personel-244",
+  "commit": "489bfb77ad8b3536c2f109d28e1fd75b040f0402",
+  "dal": "aday7",
+  "kirli": 0,
+  "izlenmeyen": 64,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T20:20:14.167Z",
+  "sure_sn": 37.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 64,
+    "gecen": 64,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-22/244-ana/aday-7-e2e-senaryo-personel-244.log",
+  "klasor": "/home/user/wt/aday7",
+  "ham_cikti_sha256": "e76a35f5f7720f0663d673f649171485aeee2b16ab5bcfbb97c49cb6103e23eb",
+  "ham_cikti_bayt": 4631
+}

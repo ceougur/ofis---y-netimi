@@ -1,0 +1,93 @@
+{
+  "ad": "244-iptal/eski-163dd5d-kirmizi",
+  "komut": "node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/iptal/iptal-eski-163dd5d/test/ebelge-244-iptal-suresi-eski.test.mjs",
+  "commit": "b54ed6bf5e7fd954e76463cea8577d9866d44de8",
+  "dal": "is/iptal",
+  "kirli": 8,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-22T05:01:43.330Z",
+  "sure_sn": 2.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 0,
+    "basarisiz": 12,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 12 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › gün sınırı programın yerel günüdür: 23:59'da gönderilen belgenin son günü 8 gün sonra, 00:00 geçince 9. gün; 00:30'da gönderilen o gün sayılır",
+      "konum": "test/ebelge-244-iptal-suresi-eski.test.mjs:111:3",
+      "hata": "Cannot read properties of undefined (reading 'start')"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › iletimden 8. gün iptal edilir (kesimden 11. gün): EDM'de ve programda",
+      "konum": "test/ebelge-244-iptal-suresi-eski.test.mjs:135:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › iletimden 9. gün reddedilir: ileti son günü yazar, belge ve EDM değişmez, kartta neden görünür",
+      "konum": "test/ebelge-244-iptal-suresi-eski.test.mjs:154:3",
+      "hata": "Expected values to be strictly equal: · true !== false (beklenen false, gelen true)"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › yalnız programda iptal (localOnly) süresi dolmuş gönderilmiş belgede de reddedilir; süre içinde çıkış yolu sürer",
+      "konum": "test/ebelge-244-iptal-suresi-eski.test.mjs:178:3",
+      "hata": "{\"id\":\"invoice-3b1b5940-af6a-4b7e-acc0-c6340790a1ae\",\"kind\":\"sale\",\"kindLabel\":\"Satış Faturası\",\"scenario\":\"service_sale\",\"scenarioLabel\":\"Hizmet Satışı\",\"status\":\"cancelled\",\"statusLabel\":\"İptal Edildi\",\"number\":\"TEA2026000000004\",\"displayNo\":\"TEA2026000000004\",\"internalNumber\":false,\"ettn\":\"752eb740-d77a-4df6-9844-de4aecf3a73a\",\"issueDate\":\"2026-06-17\",\"issueTime\":\"10:00\",\"accountId\":\"account-90b1aef8-3af0-4691-b6c0-b3a2a0ee7762\",\"accountName\":\"Ayşe Yılmaz\",\"accountRef\":\"1\",\"accountPhone\":\"\",\"profile\":\"EARSIVFATURA\",\"profileLabel\":\"e-Arşiv Fatura\",\"typeCode\":\"SATIS\",\"currency\":\"TRY\",\"rate\":1,\"netTotal\":300,\"vatTotal\":60,\"withheldTotal\":0,\"stoppageTotal\":0,\"payableTotal\":360,\"tryNet\":300,\"tryVat\":60,\"tryPayable\":360,\"dueDate\":\"2026-06-17\",\"planId\":\"\",\"originalId\":\"\",\"originalNumber\":\"\",\"originalDate\":\"\",\"note\":\"\",\"eStatus\":\"sent\",\"eStatusLabel\":\"Gönderildi\",\"eUnsent\":false,\"eTestLive\":false,\"eTest\":true,\"actorName\":\"Ofis yöneticisi\",\"createdAt\":\"2026-06-17T10:00:00.000Z\",\"payState\":\"cancelled\",\"payStateLabel\":\"İptal\",\"paid\":0,\"open\":0,\"closers\":[],\"party\":{\"id\":\"account-90b1aef8-3af0-4691-b6c0-b3a2a0ee7762\",\"name\":\"Ayşe Yılmaz\",\"partyKind\":\"person\",\"firstName\":\"Ayşe\",\"familyName\":\"Yılmaz\",\"taxNo\":\"10000000146\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"address\":\"\",\"district\":\"\",\"city\":\"İzmir\",\"postalCode\":\"\",\"country\":\"Türkiye\",\"phone\":\"\",\"email\":\"ayse@example.com\",\"website\":\"\",\"iban\":\"\",\"eInvoice\":false,\"eAlias\":\"\"},\"seller\":{\"name\":\"Deneme Ofis Ltd.\",\"partyKind\":\"company\",\"firstName\":\"\",\"familyName\":\"\",\"taxNo\":\"1234567890\",\"taxOffice\":\"Çankaya\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"address\":\"Atatürk Blv. 1\",\"district\":\"Çankaya\",\"city\":\"Ankara\",\"postalCode\":\"\",\"country\":\"Türkiye\",\"phone\":\"\",\"email\":\"bilgi@deneme.com.tr\",\"website\":\"\",\"banks\":[]},\"pricesIncludeVat\":false,\"discountRate\":0,\"stoppageRate\":0,\"baseTotal\":300,\"discountTotal\":0,\"baseNetTotal\":300,\"discountNetTotal\":0,\"goodsNet\":0,\"serviceNet\":300,\"grossTotal\":360,\"tryWithheld\":0,\"tryStoppage\":0,\"gl\":[{\"account\":\"600\",\"net\":30000}],\"orderNo\":\"\",\"orderDate\":\"\",\"despatchNo\":\"\",\"despatchDate\":\"\",\"paperNo\":\"\",\"returnRef\":\"\",\"payment\":{\"cash\":[],\"cheques\":[],\"endorse\":[],\"mode\":\"open\",\"installments\":null,\"rest\":360},\"eMessage\":\"Yalnız programda iptal edildi (entegratöre iptal gönderilmedi). Entegratörde belge varsa orada ayrıca iptal edin.\",\"eAt\":\"2026-06-17T10:00:00.000Z\",\"eAdapter\":\"edm\",\"cancelledAt\":\"2026-06-26T10:00:00.000Z\",\"cancelReason\":\"EDM'ye ulaşılamıyor\",\"amountInWords\":\"Yalnız Üç Yüz Altmış Türk Lirası\",\"byRate\":[{\"rate\":20,\"net\":300,\"vat\":60,\"withheld\":0}],\"lines\":[{\"id\":\"iline-2b558302-fe9b-49cb-8819-e1a939ee7479\",\"invoiceId\":\"invoice-3b1b5940-af6a-4b7e-acc0-c6340790a1ae\",\"seq\":1,\"itemId\":\"\",\"goods\":false,\"code\":\"\",\"name\":\"Bakım\",\"description\":\"\",\"unit\":\"Adet\",\"qty\":1,\"unitPrice\":300,\"discountRate\":0,\"base\":300,\"discount\":0,\"net\":300,\"vatRate\":20,\"vat\":60,\"withholdingCode\":\"\",\"withholdingNum\":0,\"withholdingDen\":0,\"withheld\":0,\"exemptionCode\":\"\",\"gross\":360,\"payable\":360,\"glAccount\":\"600\",\"expenseCode\":\"\",\"unitCost\":0,\"originLineId\":\"\",\"moveId\":\"\",\"serialNo\":\"\",\"lotNo\":\"\",\"returned\":0,\"expenseLabel\":\"\"}],\"returnable\":[{\"id\":\"iline-2b558302-fe9b-49cb-8819-e1a939ee7479\",\"left\":1}],\"returns\":[],\"cheques\":[],\"plan\":null,\"payments\":[],\"posCash\":false,\"canManage\":true,\"canEdit\":false,\"canModify\":false,\"modifyBlock\":\"\",\"canIssue\":false,\"canDelete\":false,\"deleteBlock\":\"Bu belgenin numarası entegratörde (EDM) kullanıldı; e-Belge numarası yeniden verilemeyeceği için belge silinmez, “İptal Edildi” olarak kalır.\",\"canCancel\":false,\"canLocalCancel\":false,\"cancelNotice\":\"\",\"cancelBlock\":\"\",\"canReturn\":false,\"returnBlock\":\"\",\"repeat\":null,\"canRepeat\":false,\"canSend\":false,\"canWithdraw\":false,\"sendBlock\":\"\",\"canRefresh\":true,\"canDraft\":false,\"draftStale\":false,\"canOfficial\":true,\"edocEnabled\":true,\"notices\":[]} · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › sonucu belirsiz gönderim (EDM işledi, yanıt koptu): süre girişim gününden, Durum Sorgula gününden değil",
+      "konum": "test/ebelge-244-iptal-suresi-eski.test.mjs:198:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › EDM reddetti (Hata) → yeniden gönderim: süre yeniden gönderim gününden",
+      "konum": "test/ebelge-244-iptal-suresi-eski.test.mjs:217:3",
+      "hata": "Hata iletilmiş sayılmaz · + actual - expected · + undefined"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › Hata görünen belge iptalde EDM'de oluşturulmuş çıkarsa süre ona da uygulanır (EDM'ye iptal gitmez)",
+      "konum": "test/ebelge-244-iptal-suresi-eski.test.mjs:233:3",
+      "hata": "{\"id\":\"invoice-6f8710cc-a278-4e66-a444-2970a4fc379c\",\"kind\":\"sale\",\"kindLabel\":\"Satış Faturası\",\"scenario\":\"service_sale\",\"scenarioLabel\":\"Hizmet Satışı\",\"status\":\"cancelled\",\"statusLabel\":\"İptal Edildi\",\"number\":\"TEA2026000000008\",\"displayNo\":\"TEA2026000000008\",\"internalNumber\":false,\"ettn\":\"9ea2b2c9-86d4-4334-afd5-408a38de13a1\",\"issueDate\":\"2026-06-17\",\"issueTime\":\"10:00\",\"accountId\":\"account-90b1aef8-3af0-4691-b6c0-b3a2a0ee7762\",\"accountName\":\"Ayşe Yılmaz\",\"accountRef\":\"1\",\"accountPhone\":\"\",\"profile\":\"EARSIVFATURA\",\"profileLabel\":\"e-Arşiv Fatura\",\"typeCode\":\"SATIS\",\"currency\":\"TRY\",\"rate\":1,\"netTotal\":300,\"vatTotal\":60,\"withheldTotal\":0,\"stoppageTotal\":0,\"payableTotal\":360,\"tryNet\":300,\"tryVat\":60,\"tryPayable\":360,\"dueDate\":\"2026-06-17\",\"planId\":\"\",\"originalId\":\"\",\"originalNumber\":\"\",\"originalDate\":\"\",\"note\":\"\",\"eStatus\":\"cancelled\",\"eStatusLabel\":\"Entegratörde İptal\",\"eUnsent\":false,\"eTestLive\":false,\"eTest\":true,\"actorName\":\"Ofis yöneticisi\",\"createdAt\":\"2026-06-17T10:00:00.000Z\",\"payState\":\"cancelled\",\"payStateLabel\":\"İptal\",\"paid\":0,\"open\":0,\"closers\":[],\"party\":{\"id\":\"account-90b1aef8-3af0-4691-b6c0-b3a2a0ee7762\",\"name\":\"Ayşe Yılmaz\",\"partyKind\":\"person\",\"firstName\":\"Ayşe\",\"familyName\":\"Yılmaz\",\"taxNo\":\"10000000146\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"address\":\"\",\"district\":\"\",\"city\":\"İzmir\",\"postalCode\":\"\",\"country\":\"Türkiye\",\"phone\":\"\",\"email\":\"ayse@example.com\",\"website\":\"\",\"iban\":\"\",\"eInvoice\":false,\"eAlias\":\"\"},\"seller\":{\"name\":\"Deneme Ofis Ltd.\",\"partyKind\":\"company\",\"firstName\":\"\",\"familyName\":\"\",\"taxNo\":\"1234567890\",\"taxOffice\":\"Çankaya\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"address\":\"Atatürk Blv. 1\",\"district\":\"Çankaya\",\"city\":\"Ankara\",\"postalCode\":\"\",\"country\":\"Türkiye\",\"phone\":\"\",\"email\":\"bilgi@deneme.com.tr\",\"website\":\"\",\"banks\":[]},\"pricesIncludeVat\":false,\"discountRate\":0,\"stoppageRate\":0,\"baseTotal\":300,\"discountTotal\":0,\"baseNetTotal\":300,\"discountNetTotal\":0,\"goodsNet\":0,\"serviceNet\":300,\"grossTotal\":360,\"tryWithheld\":0,\"tryStoppage\":0,\"gl\":[{\"account\":\"600\",\"net\":30000}],\"orderNo\":\"\",\"orderDate\":\"\",\"despatchNo\":\"\",\"despatchDate\":\"\",\"paperNo\":\"\",\"returnRef\":\"\",\"payment\":{\"cash\":[],\"cheques\":[],\"endorse\":[],\"mode\":\"open\",\"installments\":null,\"rest\":360},\"eMessage\":\"e-Arşiv fatura EDM'de iptal edildi; iptal GİB'e raporlanır.\",\"eAt\":\"2026-06-26T10:00:00.000Z\",\"eAdapter\":\"edm\",\"cancelledAt\":\"2026-06-26T10:00:00.000Z\",\"cancelReason\":\"geç\",\"amountInWords\":\"Yalnız Üç Yüz Altmış Türk Lirası\",\"byRate\":[{\"rate\":20,\"net\":300,\"vat\":60,\"withheld\":0}],\"lines\":[{\"id\":\"iline-0ba9dfc8-1482-4a2d-88fd-3a14fd2009ca\",\"invoiceId\":\"invoice-6f8710cc-a278-4e66-a444-2970a4fc379c\",\"seq\":1,\"itemId\":\"\",\"goods\":false,\"code\":\"\",\"name\":\"Bakım\",\"description\":\"\",\"unit\":\"Adet\",\"qty\":1,\"unitPrice\":300,\"discountRate\":0,\"base\":300,\"discount\":0,\"net\":300,\"vatRate\":20,\"vat\":60,\"withholdingCode\":\"\",\"withholdingNum\":0,\"withholdingDen\":0,\"withheld\":0,\"exemptionCode\":\"\",\"gross\":360,\"payable\":360,\"glAccount\":\"600\",\"expenseCode\":\"\",\"unitCost\":0,\"originLineId\":\"\",\"moveId\":\"\",\"serialNo\":\"\",\"lotNo\":\"\",\"returned\":0,\"expenseLabel\":\"\"}],\"returnable\":[{\"id\":\"iline-0ba9dfc8-1482-4a2d-88fd-3a14fd2009ca\",\"left\":1}],\"returns\":[],\"cheques\":[],\"plan\":null,\"payments\":[],\"posCash\":false,\"canManage\":true,\"canEdit\":false,\"canModify\":false,\"modifyBlock\":\"\",\"canIssue\":false,\"canDelete\":false,\"deleteBlock\":\"Bu belgenin numarası entegratörde (EDM) kullanıldı; e-Belge numarası yeniden verilemeyeceği için belge silinmez, “İptal Edildi” olarak kalır.\",\"canCancel\":false,\"canLocalCancel\":false,\"cancelNotice\":\"\",\"cancelBlock\":\"\",\"canReturn\":false,\"returnBlock\":\"\",\"repeat\":null,\"canRepeat\":false,\"canSend\":false,\"canWithdraw\":false,\"sendBlock\":\"\",\"canRefresh\":true,\"canDraft\":false,\"draftStale\":false,\"canOfficial\":true,\"edocEnabled\":true,\"integratorResult\":{\"status\":\"cancelled\",\"message\":\"e-Arşiv fatura EDM'de iptal edildi; iptal GİB'e raporlanır.\"},\"notices\":[]} · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › EDM'ye ulaşmamış girişim (bulunamadı) → yeniden gönderim: süre yeniden gönderim gününden",
+      "konum": "test/ebelge-244-iptal-suresi-eski.test.mjs:253:3",
+      "hata": "Cannot read properties of undefined (reading 'start')"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › portal taslağı portaldan gönderildi: süre taslak yükleme gününden (gönderim ondan önce olamaz)",
+      "konum": "test/ebelge-244-iptal-suresi-eski.test.mjs:270:3",
+      "hata": "taslak iletilmiş sayılmaz · + actual - expected · + undefined"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › e-Fatura kuralın dışında: süre bilgisi yok, bugünkü iptal yanıtı değişmez",
+      "konum": "test/ebelge-244-iptal-suresi-eski.test.mjs:291:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "iptal süresi: program uçları (sahte EDM, sahte saat) › ay sonu ve yıl dönümü: 28.12 iletim → 05.01 iptal edilir, 06.01 reddedilir",
+      "konum": "test/ebelge-244-iptal-suresi-eski.test.mjs:310:3",
+      "hata": "Cannot read properties of undefined (reading 'lastDay')"
+    },
+    {
+      "ad": "iptal süresi: e-SMM (gönderim kapısı madde 22'de açılır; kural şimdiden e-SMM'yi kapsar) › iletilmiş e-SMM 9. gün reddedilir (e-SMM iletisiyle); süre içinde kartta son gün; iletim izi gönderim girişiminden",
+      "konum": "test/ebelge-244-iptal-suresi-eski.test.mjs:346:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'einvoice-sent' (beklenen einvoice-cancel-late, gelen einvoice-sent)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-22/244-iptal/eski-163dd5d-kirmizi.log",
+  "klasor": "/home/user/wt/iptal",
+  "ham_cikti_sha256": "6571cd607f62fae19babd73e6ef77f88434a1563ad6f585cdec689ca6e37d008",
+  "ham_cikti_bayt": 23646
+}

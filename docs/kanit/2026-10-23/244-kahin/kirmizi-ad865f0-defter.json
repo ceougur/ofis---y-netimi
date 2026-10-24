@@ -1,0 +1,73 @@
+{
+  "ad": "244-kahin/kirmizi-ad865f0-defter",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kahin-244/kahin244-eski-ad865f0 && node --disable-warning=ExperimentalWarning test/bagimsiz/defter/kos.mjs",
+  "commit": "7123816fa43f717621b2fc399383e171ffe8d7c7",
+  "dal": "is/kahin-244",
+  "kirli": 0,
+  "izlenmeyen": 28,
+  "platform": "linux 6.18.44-fc-v140 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-23T01:11:56.900Z",
+  "sure_sn": 3.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "kahin-defter",
+    "toplam": 176,
+    "gecen": 168,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "stopaj 2026-11 2026-11-27|Alfa Ticaret A.Ş. taraf: program Bizim kestiğimiz (360) · kâhin Bizden kesilen (193)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "stopaj 2026-11 2026-11-27|Alfa Ticaret A.Ş. matrah: program 5.000,00 · kâhin -5.000,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "stopaj 2026-11 2026-11-27|Alfa Ticaret A.Ş. tevkifat: program 200,00 · kâhin -200,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "stopaj 2026-11 2026-11-27|Pırıl Temizlik Ltd. Şti. taraf: program Bizden kesilen (193) · kâhin Bizim kestiğimiz (360)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "stopaj 2026-11 2026-11-27|Pırıl Temizlik Ltd. Şti. matrah: program 2.000,00 · kâhin -2.000,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "stopaj 2026-11 2026-11-27|Pırıl Temizlik Ltd. Şti. tevkifat: program 360,00 · kâhin -360,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "stopaj 2026-11 Bizim Ödeyeceğimiz Tevkifat: program 200,00 · kâhin -360,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yevmiye sırası 2026-10-05: program karisik · kâhin belge-once",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-23/244-kahin/kirmizi-ad865f0-defter.log",
+  "klasor": "/home/user/wt/kahin-244",
+  "ham_cikti_sha256": "85ad68b2769bf1f8ca0f2ea8af423fb6d5da1a0ff7a692600d1fd5d8da2ce8f8",
+  "ham_cikti_bayt": 2323
+}
