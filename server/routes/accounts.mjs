@@ -34,6 +34,8 @@ const realDay = value => {
   return Number.isFinite(time) && new Date(time).toISOString().slice(0, 10) === value;
 };
 // Tek seferde en çok bu kadar satır (100 bin cari ~ 7 sn); fazlası raporda "kesildi" olarak bildirilir.
+// 2.4.5 KS7 (a): stoktan gelen cari satırının hareket nedeni (satıştan / alıştan iade bağsız ödemedir; lib/invoice-settle.mjs classifyLine).
+const STOCK_REASON_SQL = "CASE WHEN e.source = 'stock' THEN COALESCE((SELECT m.reason FROM stock_moves m WHERE m.id = e.source_id), '') ELSE '' END";
 const MAX_IMPORT = 250_000;
 const MAX_FIELDS = 60;
 const EPS = 0.005;
@@ -120,7 +122,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   const entriesOf = accountId =>
     store.all(
       `SELECT e.id, e.kind, e.amount, e.date, e.note, e.method, e.receipt_no AS receiptNo, e.source, e.source_id AS sourceId, e.invoice_id AS invoiceId, e.fin_ref AS finRef, e.created_by AS createdBy, e.created_at AS createdAt, e.updated_at AS updatedAt,
-              e.doubtful_skip AS doubtfulSkip, e.due_date AS dueDate, e.expected_date AS expectedDate, COALESCE(u.display_name, '') AS actorName
+              e.doubtful_skip AS doubtfulSkip, e.due_date AS dueDate, e.expected_date AS expectedDate, COALESCE(u.display_name, '') AS actorName,
+              ${STOCK_REASON_SQL} AS stockReason
        FROM account_entries e LEFT JOIN users u ON u.id = e.created_by WHERE e.account_id = ? ORDER BY e.date, e.created_at, e.rowid`,
       accountId,
     );
@@ -1399,20 +1402,21 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // 20.000 carili kurulumda hepsinin defterini kurmak her yazmadan sonraki ilk listeyi 0,6 sn'ye çıkarıyordu.
   // dated (2.4.5 madde 6): yalnız Vade Tarihi ya da Beklenen Ödeme Tarihi girilmiş elle borç / alacak satırı olan cariler (takvim, zil, Vade Takip).
   const DATED_SQL = "SELECT DISTINCT account_id FROM account_entries WHERE source = '' AND kind IN ('debt', 'credit') AND (due_date <> '' OR expected_date <> '')";
+  // İkisi birlikte (2.4.5 G8, routes/invoices.mjs allSettled): iki kümenin birleşimi tek geçişte; dated = vadeli satırı olan carilerin kümesi.
   function allLedgers({ invoiced = false, dated = false } = {}) {
-    const scope = invoiced ? "SELECT DISTINCT account_id FROM invoices" : dated ? DATED_SQL : "";
+    const scope = [invoiced ? "SELECT DISTINCT account_id FROM invoices" : "", dated ? DATED_SQL : ""].filter(Boolean).join(" UNION ");
     const only = scope ? ` AND a.id IN (${scope})` : "";
     const rows = store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL${only} ORDER BY a.name COLLATE NOCASE`).map(({ fieldsJson, ...row }) => row);
     const entries = new Map();
     // v2.0.22: yol ve "Kapatılacak Fatura" bağı da (Cari kartındaki defterle aynı satır; fatura kapamada kullanılır).
-    for (const entry of store.all(`SELECT id, account_id AS accountId, kind, amount, date, note, method, receipt_no AS receiptNo, source, source_id AS sourceId, invoice_id AS invoiceId, created_at AS createdAt FROM account_entries${scope ? ` WHERE account_id IN (${scope})` : ""} ORDER BY date, created_at, rowid`)) {
+    for (const entry of store.all(`SELECT e.id, e.account_id AS accountId, e.kind, e.amount, e.date, e.note, e.method, e.receipt_no AS receiptNo, e.source, e.source_id AS sourceId, e.invoice_id AS invoiceId, e.created_at AS createdAt, ${STOCK_REASON_SQL} AS stockReason FROM account_entries e${scope ? ` WHERE e.account_id IN (${scope})` : ""} ORDER BY e.date, e.created_at, e.rowid`)) {
       if (!entries.has(entry.accountId)) entries.set(entry.accountId, []);
       entries.get(entry.accountId).push(entry);
     }
     const planMap = plans()?.ledgerPlansByAccount ? plans().ledgerPlansByAccount() : new Map();
     const lines = new Map();
     for (const row of rows) lines.set(row.id, accountLedger(entries.get(row.id) || [], planMap.get(row.id) || []).lines);
-    return { accounts: rows, lines };
+    return { accounts: rows, lines, ...(dated ? { dated: new Set(store.all(DATED_SQL).map(row => row.account_id)) } : {}) };
   }
   // Kasa (v2.1.0, K5): cari tahsilat ve ödemeleri Kasa'ya tek kaynaktan (lib/bank/money-lines.mjs, kaynak 3) düşer; silinen carinin
   // hareketi orada da düşer.

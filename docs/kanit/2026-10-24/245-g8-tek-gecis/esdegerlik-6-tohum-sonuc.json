@@ -1,0 +1,326 @@
+[
+  {
+    "seed": 1,
+    "seconds": 61.7,
+    "shape": {
+      "cari": 17,
+      "fatura": 80,
+      "faturaliCari": 11,
+      "vadeliCariSayisi": 12,
+      "degersizSatir": 3,
+      "stokIadeSatir": 8,
+      "supheli": 8,
+      "cek": 25,
+      "kart": 20
+    },
+    "counts": {
+      "vade": 18,
+      "beklenen": 5,
+      "vadeRet": 0,
+      "vadeliCari": 3,
+      "stokIade": 1,
+      "degersiz": 1,
+      "ekRet": 0,
+      "elle": 11
+    },
+    "sizes": {
+      "fatura": 80,
+      "elleSatir": 51
+    },
+    "sha": {
+      "eski-fatura-once": {
+        "A": "4188a64d940b6e4a3e06a026105f4e62e9afc9394687723ed88ac807d5a32e17",
+        "B": "f5016d3408967f610934b31afea928552ca8854e26f76035b08deeac4d41853e"
+      },
+      "eski-elle-once": {
+        "A": "4188a64d940b6e4a3e06a026105f4e62e9afc9394687723ed88ac807d5a32e17",
+        "B": "f5016d3408967f610934b31afea928552ca8854e26f76035b08deeac4d41853e"
+      },
+      "yeni-fatura-once": {
+        "A": "4188a64d940b6e4a3e06a026105f4e62e9afc9394687723ed88ac807d5a32e17",
+        "B": "f5016d3408967f610934b31afea928552ca8854e26f76035b08deeac4d41853e"
+      },
+      "yeni-elle-once": {
+        "A": "4188a64d940b6e4a3e06a026105f4e62e9afc9394687723ed88ac807d5a32e17",
+        "B": "f5016d3408967f610934b31afea928552ca8854e26f76035b08deeac4d41853e"
+      }
+    },
+    "invariant": {
+      "faturalar": 80,
+      "elleSatir": 51,
+      "toplu_cariBasina_fatura_farki": 0,
+      "elle_ayni": true
+    },
+    "problems": []
+  },
+  {
+    "seed": 2,
+    "seconds": 54.3,
+    "shape": {
+      "cari": 17,
+      "fatura": 70,
+      "faturaliCari": 11,
+      "vadeliCariSayisi": 13,
+      "degersizSatir": 4,
+      "stokIadeSatir": 2,
+      "supheli": 8,
+      "cek": 28,
+      "kart": 22
+    },
+    "counts": {
+      "vade": 16,
+      "beklenen": 4,
+      "vadeRet": 0,
+      "vadeliCari": 3,
+      "stokIade": 1,
+      "degersiz": 1,
+      "ekRet": 0,
+      "elle": 9
+    },
+    "sizes": {
+      "fatura": 70,
+      "elleSatir": 60
+    },
+    "sha": {
+      "eski-fatura-once": {
+        "A": "95ac37b53bbfb50bdc9c111aa72cf862379c8c04176f43c6f25578576fd30c87",
+        "B": "4539ea21c47efca1a672ce7312d7ee982276a7bfb6de3c35d12ddd599d903009"
+      },
+      "eski-elle-once": {
+        "A": "95ac37b53bbfb50bdc9c111aa72cf862379c8c04176f43c6f25578576fd30c87",
+        "B": "4539ea21c47efca1a672ce7312d7ee982276a7bfb6de3c35d12ddd599d903009"
+      },
+      "yeni-fatura-once": {
+        "A": "95ac37b53bbfb50bdc9c111aa72cf862379c8c04176f43c6f25578576fd30c87",
+        "B": "4539ea21c47efca1a672ce7312d7ee982276a7bfb6de3c35d12ddd599d903009"
+      },
+      "yeni-elle-once": {
+        "A": "95ac37b53bbfb50bdc9c111aa72cf862379c8c04176f43c6f25578576fd30c87",
+        "B": "4539ea21c47efca1a672ce7312d7ee982276a7bfb6de3c35d12ddd599d903009"
+      }
+    },
+    "invariant": {
+      "faturalar": 70,
+      "elleSatir": 60,
+      "toplu_cariBasina_fatura_farki": 0,
+      "elle_ayni": true
+    },
+    "problems": []
+  },
+  {
+    "seed": 3,
+    "seconds": 59.6,
+    "shape": {
+      "cari": 17,
+      "fatura": 89,
+      "faturaliCari": 11,
+      "vadeliCariSayisi": 13,
+      "degersizSatir": 2,
+      "stokIadeSatir": 3,
+      "supheli": 4,
+      "cek": 34,
+      "kart": 22
+    },
+    "counts": {
+      "vade": 17,
+      "beklenen": 8,
+      "vadeRet": 0,
+      "vadeliCari": 3,
+      "stokIade": 1,
+      "degersiz": 1,
+      "ekRet": 0,
+      "elle": 10
+    },
+    "sizes": {
+      "fatura": 89,
+      "elleSatir": 60
+    },
+    "sha": {
+      "eski-fatura-once": {
+        "A": "b7e4c711f0eb08b3346e6a3ccb7909c471b366c99e11f76454314ff3c5ee7893",
+        "B": "fe055cdb52928775e495e1def2a8de11d35629055e9f42b851e9af6f09f6ce9d"
+      },
+      "eski-elle-once": {
+        "A": "b7e4c711f0eb08b3346e6a3ccb7909c471b366c99e11f76454314ff3c5ee7893",
+        "B": "fe055cdb52928775e495e1def2a8de11d35629055e9f42b851e9af6f09f6ce9d"
+      },
+      "yeni-fatura-once": {
+        "A": "b7e4c711f0eb08b3346e6a3ccb7909c471b366c99e11f76454314ff3c5ee7893",
+        "B": "fe055cdb52928775e495e1def2a8de11d35629055e9f42b851e9af6f09f6ce9d"
+      },
+      "yeni-elle-once": {
+        "A": "b7e4c711f0eb08b3346e6a3ccb7909c471b366c99e11f76454314ff3c5ee7893",
+        "B": "fe055cdb52928775e495e1def2a8de11d35629055e9f42b851e9af6f09f6ce9d"
+      }
+    },
+    "invariant": {
+      "faturalar": 89,
+      "elleSatir": 60,
+      "toplu_cariBasina_fatura_farki": 0,
+      "elle_ayni": true
+    },
+    "problems": []
+  },
+  {
+    "seed": 4,
+    "seconds": 58.2,
+    "shape": {
+      "cari": 17,
+      "fatura": 85,
+      "faturaliCari": 11,
+      "vadeliCariSayisi": 6,
+      "degersizSatir": 2,
+      "stokIadeSatir": 3,
+      "supheli": 3,
+      "cek": 33,
+      "kart": 22
+    },
+    "counts": {
+      "vade": 6,
+      "beklenen": 1,
+      "vadeRet": 0,
+      "vadeliCari": 3,
+      "stokIade": 1,
+      "degersiz": 0,
+      "ekRet": 1,
+      "elle": 10
+    },
+    "sizes": {
+      "fatura": 85,
+      "elleSatir": 29
+    },
+    "sha": {
+      "eski-fatura-once": {
+        "A": "d21fd5b83854a71e890b3e3a4af30a1630874eba94059f97def084ab6a6d292e",
+        "B": "2875767439d04dfd3107b62c68b43115392e71d991aae53ff539495e73feedea"
+      },
+      "eski-elle-once": {
+        "A": "d21fd5b83854a71e890b3e3a4af30a1630874eba94059f97def084ab6a6d292e",
+        "B": "2875767439d04dfd3107b62c68b43115392e71d991aae53ff539495e73feedea"
+      },
+      "yeni-fatura-once": {
+        "A": "d21fd5b83854a71e890b3e3a4af30a1630874eba94059f97def084ab6a6d292e",
+        "B": "2875767439d04dfd3107b62c68b43115392e71d991aae53ff539495e73feedea"
+      },
+      "yeni-elle-once": {
+        "A": "d21fd5b83854a71e890b3e3a4af30a1630874eba94059f97def084ab6a6d292e",
+        "B": "2875767439d04dfd3107b62c68b43115392e71d991aae53ff539495e73feedea"
+      }
+    },
+    "invariant": {
+      "faturalar": 85,
+      "elleSatir": 29,
+      "toplu_cariBasina_fatura_farki": 0,
+      "elle_ayni": true
+    },
+    "problems": []
+  },
+  {
+    "seed": 5,
+    "seconds": 61.1,
+    "shape": {
+      "cari": 17,
+      "fatura": 65,
+      "faturaliCari": 11,
+      "vadeliCariSayisi": 12,
+      "degersizSatir": 2,
+      "stokIadeSatir": 6,
+      "supheli": 4,
+      "cek": 23,
+      "kart": 21
+    },
+    "counts": {
+      "vade": 14,
+      "beklenen": 5,
+      "vadeRet": 0,
+      "vadeliCari": 3,
+      "stokIade": 1,
+      "degersiz": 1,
+      "ekRet": 0,
+      "elle": 11
+    },
+    "sizes": {
+      "fatura": 65,
+      "elleSatir": 53
+    },
+    "sha": {
+      "eski-fatura-once": {
+        "A": "145a1e16e8757aad764a16a15431f5de21a82c041939d9b9734e522d2f7561ea",
+        "B": "2ccd2eb9229deacfb61938d5c1b02b67c062a1d0c755152286d545d0d448d15d"
+      },
+      "eski-elle-once": {
+        "A": "145a1e16e8757aad764a16a15431f5de21a82c041939d9b9734e522d2f7561ea",
+        "B": "2ccd2eb9229deacfb61938d5c1b02b67c062a1d0c755152286d545d0d448d15d"
+      },
+      "yeni-fatura-once": {
+        "A": "145a1e16e8757aad764a16a15431f5de21a82c041939d9b9734e522d2f7561ea",
+        "B": "2ccd2eb9229deacfb61938d5c1b02b67c062a1d0c755152286d545d0d448d15d"
+      },
+      "yeni-elle-once": {
+        "A": "145a1e16e8757aad764a16a15431f5de21a82c041939d9b9734e522d2f7561ea",
+        "B": "2ccd2eb9229deacfb61938d5c1b02b67c062a1d0c755152286d545d0d448d15d"
+      }
+    },
+    "invariant": {
+      "faturalar": 65,
+      "elleSatir": 53,
+      "toplu_cariBasina_fatura_farki": 0,
+      "elle_ayni": true
+    },
+    "problems": []
+  },
+  {
+    "seed": 6,
+    "seconds": 66.1,
+    "shape": {
+      "cari": 17,
+      "fatura": 82,
+      "faturaliCari": 11,
+      "vadeliCariSayisi": 12,
+      "degersizSatir": 3,
+      "stokIadeSatir": 1,
+      "supheli": 5,
+      "cek": 26,
+      "kart": 26
+    },
+    "counts": {
+      "vade": 16,
+      "beklenen": 7,
+      "vadeRet": 0,
+      "vadeliCari": 3,
+      "stokIade": 1,
+      "degersiz": 1,
+      "ekRet": 0,
+      "elle": 11
+    },
+    "sizes": {
+      "fatura": 82,
+      "elleSatir": 66
+    },
+    "sha": {
+      "eski-fatura-once": {
+        "A": "a438a1b493404835aaee30b72c2d8df9ea94f5ea5986cacbc5c3665981679f28",
+        "B": "6b5d12a0d2be542ff461e23cc15b440020e5573ae88447ecca58cbee3abec121"
+      },
+      "eski-elle-once": {
+        "A": "a438a1b493404835aaee30b72c2d8df9ea94f5ea5986cacbc5c3665981679f28",
+        "B": "6b5d12a0d2be542ff461e23cc15b440020e5573ae88447ecca58cbee3abec121"
+      },
+      "yeni-fatura-once": {
+        "A": "a438a1b493404835aaee30b72c2d8df9ea94f5ea5986cacbc5c3665981679f28",
+        "B": "6b5d12a0d2be542ff461e23cc15b440020e5573ae88447ecca58cbee3abec121"
+      },
+      "yeni-elle-once": {
+        "A": "a438a1b493404835aaee30b72c2d8df9ea94f5ea5986cacbc5c3665981679f28",
+        "B": "6b5d12a0d2be542ff461e23cc15b440020e5573ae88447ecca58cbee3abec121"
+      }
+    },
+    "invariant": {
+      "faturalar": 82,
+      "elleSatir": 66,
+      "toplu_cariBasina_fatura_farki": 0,
+      "elle_ayni": true
+    },
+    "problems": []
+  }
+]

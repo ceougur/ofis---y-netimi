@@ -1,0 +1,32 @@
+{
+  "ad": "245-d1-kapama/komsu",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/accounts-stock.test.mjs test/banka-210-altin.test.mjs test/banka-210-arayuz.test.mjs test/banka-210-asama6-kasa.test.mjs test/banka-210-asama78-modul.test.mjs test/banka-210-ertelenen.test.mjs test/banka-210-gg2-gosterge.test.mjs test/banka-210-goc-zinciri.test.mjs test/banka-210-ileri-tarihli-eski.test.mjs test/banka-210-kurumsal-kart.test.mjs test/banka-210-nakit-akis-k10.test.mjs test/banka-210-post-statik.test.mjs test/banka-210-rapor-bulgu.test.mjs test/banka-210-raporlar.test.mjs test/banka-210-saat.test.mjs test/banka-210-tek-kaynak.test.mjs test/banka-220-pos-moduller.test.mjs test/banka-220-tahsile-ver-dogrulama.test.mjs test/banka-220-tahsile-ver-tur2.test.mjs test/banka-220-tahsile-ver.test.mjs test/banka-230-supheli-ayni-gun.test.mjs test/banka-230-supheli-bozma.test.mjs test/banka-230-supheli-ekran.test.mjs test/banka-230-supheli.test.mjs test/bulgu-223.test.mjs test/cari-vade-245.test.mjs test/cheques-overview.test.mjs test/defter-213.test.mjs test/defter-243-raporlar.test.mjs test/defter-243-ux24-toplam.test.mjs test/dues.test.mjs test/eksi-stok-217.test.mjs test/ekstre-ayrinti-245.test.mjs test/elestirmen-220.test.mjs test/ertelenen-224.test.mjs test/fatura-215.test.mjs test/fatura-216.test.mjs test/fatura-217.test.mjs test/fatura-230-ayarlar-banka.test.mjs test/fatura-243-stok-kdv.test.mjs test/fatura-244-numara-tarih-onay.test.mjs test/fatura-buyuk-tutar-210.test.mjs test/fatura-durum-222.test.mjs test/fatura-liste-243-fark.test.mjs test/fatura-model.test.mjs test/goc-245-cari-vade.test.mjs test/iade-210-fazla-tahsilat.test.mjs test/iade-210-onarim.test.mjs test/iade-210.test.mjs test/iade-224.test.mjs test/iade-kapama-k1.test.mjs test/is-akisi.test.mjs test/kalan-borc-ortak-30a.test.mjs test/kalan-borc-satir-31d.test.mjs test/kapama-ks7-245.test.mjs test/kapama-rastgele-223.test.mjs test/kapi-uyari-245.test.mjs test/kayit-bag-31e-birim.test.mjs test/kayit-bag-31e.test.mjs test/kayit-tahsilat-244.test.mjs test/kullanici-yetki-210.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/mutabakat-213.test.mjs test/nakit-akis-ileri-tarihli-yol.test.mjs test/plan-transfer.test.mjs test/platform-tasinabilirlik.test.mjs test/rapor-220.test.mjs test/raporlar-209.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-224.test.mjs test/raporlar-230-banka.test.mjs test/reports.test.mjs test/supheli-230-ayni-gun-degersiz.test.mjs test/supheli-230-elestirmen.test.mjs test/supheli-230-karar.test.mjs test/supheli-230-kontrol2.test.mjs test/supheli-230-sil-cakisma.test.mjs test/supheli-230-yargic.test.mjs test/supheli-240-k4-iptal.test.mjs test/tabela-adi-245.test.mjs test/tablo-borc-dosya-u2.test.mjs test/tablo-borc-e1-e2.test.mjs test/tablo-borc-r31e.test.mjs test/tablo-raporlari-u3-244.test.mjs test/takvim-pil-kaynak.test.mjs test/uiux-a-243.test.mjs test/ux18-cek-fatura-244.test.mjs test/uyari-ufku-225.test.mjs test/vade-takip-kaynak-yetki-210.test.mjs test/yazim-duzeni.test.mjs test/yetki-243-muhasebe-finans.test.mjs test/yevmiye-sira-244.test.mjs",
+  "commit": "201ffef9a010d68d735b1e3aaa678144a8e84c3d",
+  "dal": "is/d1-kapama",
+  "kirli": 3,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T19:58:15.093Z",
+  "sure_sn": 254.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1137,
+    "gecen": 1137,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-d1-kapama/komsu.log",
+  "klasor": "/home/user/wt/d1-kapama",
+  "ham_cikti_sha256": "7db3043713512e9c52daf7ffa925e83c0127a1782b12925bb39e9ceb594eccc0",
+  "ham_cikti_bayt": 424762
+}

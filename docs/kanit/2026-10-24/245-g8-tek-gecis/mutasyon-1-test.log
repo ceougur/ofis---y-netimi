@@ -1,0 +1,195 @@
+TAP version 13
+# Subtest: G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı aynı kapama geçişinden; sonuç cari başına yolla aynı
+    # Subtest: tek geçiş: yazımdan sonra iki harita için carilerin defteri BİR KEZ kurulur; ikinci çağrılar önbellekten
+    ok 1 - tek geçiş: yazımdan sonra iki harita için carilerin defteri BİR KEZ kurulur; ikinci çağrılar önbellekten
+      ---
+      duration_ms: 23.790027
+      type: 'test'
+      ...
+    # Subtest: toplu yol = cari başına yol: her fatura durumu ve her vadeli carinin her satırı (D1 olayları dahil)
+    not ok 2 - toplu yol = cari başına yol: her fatura durumu ve her vadeli carinin her satırı (D1 olayları dahil)
+      ---
+      duration_ms: 24.283746
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-g8-tek-gecis/mut1/test/kapama-tek-gecis-245.test.mjs:124:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        elle satırların Kalan'ı: toplu = cari başına
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            [
+              'aentry-37f9d013-04c9-4b2f-b2f5-7c3d9a5a9d2f',
+              {
+                covered: 0,
+        ...
+            [
+        -     'aentry-83892506-97f9-464d-86a5-a61557367016',
+        -     {
+        -       covered: 0,
+        -       remaining: 500,
+        -       side: 'receivable'
+        -     }
+        -   ],
+        -   [
+              'aentry-aa289532-994b-47a8-ad9d-d1335312c19c',
+              {
+                covered: 0,
+                remaining: 350,
+                side: 'payable'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'aentry-37f9d013-04c9-4b2f-b2f5-7c3d9a5a9d2f'
+          1:
+            side: 'receivable'
+            remaining: 300
+            covered: 0
+        1:
+          0: 'aentry-6b27bcde-1996-4d82-bf92-ec5f5f0a69e1'
+          1:
+            side: 'receivable'
+            remaining: 0
+            covered: 0
+        2:
+          0: 'aentry-83892506-97f9-464d-86a5-a61557367016'
+          1:
+            side: 'receivable'
+            remaining: 500
+            covered: 0
+        3:
+          0: 'aentry-aa289532-994b-47a8-ad9d-d1335312c19c'
+          1:
+            side: 'payable'
+            remaining: 350
+            covered: 0
+        4:
+          0: 'aentry-b188b4de-4bce-4108-8b0a-199653122e3b'
+          1:
+            side: 'receivable'
+            remaining: 0
+            covered: 0
+        5:
+          0: 'aentry-bd7a14f5-a8ae-403f-8f97-c7c2e5e3c8a6'
+          1:
+            side: 'receivable'
+            remaining: 300
+            covered: 0
+      actual:
+        0:
+          0: 'aentry-37f9d013-04c9-4b2f-b2f5-7c3d9a5a9d2f'
+          1:
+            side: 'receivable'
+            remaining: 300
+            covered: 0
+        1:
+          0: 'aentry-6b27bcde-1996-4d82-bf92-ec5f5f0a69e1'
+          1:
+            side: 'receivable'
+            remaining: 0
+            covered: 0
+        2:
+          0: 'aentry-aa289532-994b-47a8-ad9d-d1335312c19c'
+          1:
+            side: 'payable'
+            remaining: 350
+            covered: 0
+        3:
+          0: 'aentry-b188b4de-4bce-4108-8b0a-199653122e3b'
+          1:
+            side: 'receivable'
+            remaining: 0
+            covered: 0
+        4:
+          0: 'aentry-bd7a14f5-a8ae-403f-8f97-c7c2e5e3c8a6'
+          1:
+            side: 'receivable'
+            remaining: 300
+            covered: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-g8-tek-gecis/mut1/test/kapama-tek-gecis-245.test.mjs:132:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kapsam: elle satır haritası yalnız vadeli satırı olan carilerin satırlarını taşır (faturasız vadeli cari dahil, vadesiz cari yok)
+    not ok 3 - kapsam: elle satır haritası yalnız vadeli satırı olan carilerin satırlarını taşır (faturasız vadeli cari dahil, vadesiz cari yok)
+      ---
+      duration_ms: 17.529251
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-g8-tek-gecis/mut1/test/kapama-tek-gecis-245.test.mjs:146:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        harita carileri = vadeli satırı olan cariler
+        + actual - expected
+        
+          [
+            'account-08b0f68c-14b3-4e4d-9e0b-5d0e22d579b3',
+        -   'account-269987e2-e5d6-4f51-9424-217aa6718220',
+            'account-3073a700-c54b-40e3-93bd-f0aa1bdc5216',
+            'account-7ea110f9-caaa-44a8-8b84-711e540c268a',
+            'account-b1066df8-5c1d-4e94-b704-0c72ccc77461'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'account-08b0f68c-14b3-4e4d-9e0b-5d0e22d579b3'
+        1: 'account-269987e2-e5d6-4f51-9424-217aa6718220'
+        2: 'account-3073a700-c54b-40e3-93bd-f0aa1bdc5216'
+        3: 'account-7ea110f9-caaa-44a8-8b84-711e540c268a'
+        4: 'account-b1066df8-5c1d-4e94-b704-0c72ccc77461'
+      actual:
+        0: 'account-08b0f68c-14b3-4e4d-9e0b-5d0e22d579b3'
+        1: 'account-3073a700-c54b-40e3-93bd-f0aa1bdc5216'
+        2: 'account-7ea110f9-caaa-44a8-8b84-711e540c268a'
+        3: 'account-b1066df8-5c1d-4e94-b704-0c72ccc77461'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-g8-tek-gecis/mut1/test/kapama-tek-gecis-245.test.mjs:150:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: bayatlık: yazımdan sonra yeni değer; işlem içinde hesaplanan sonuç önbelleğe yazılmaz (geri alınınca eski değer)
+    not ok 4 - bayatlık: yazımdan sonra yeni değer; işlem içinde hesaplanan sonuç önbelleğe yazılmaz (geri alınınca eski değer)
+      ---
+      duration_ms: 1.118515
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-g8-tek-gecis/mut1/test/kapama-tek-gecis-245.test.mjs:155:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'remaining')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-g8-tek-gecis/mut1/test/kapama-tek-gecis-245.test.mjs:157:58)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 1 - G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı aynı kapama geçişinden; sonuç cari başına yolla aynı
+  ---
+  duration_ms: 1053.980906
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-g8-tek-gecis/mut1/test/kapama-tek-gecis-245.test.mjs:30:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 1
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1455.417119

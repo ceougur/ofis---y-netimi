@@ -1,0 +1,43 @@
+{
+  "ad": "245-d1-kapama/mutasyon-1",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/kapama-ks7-245.test.mjs",
+  "commit": "201ffef9a010d68d735b1e3aaa678144a8e84c3d",
+  "dal": "HEAD",
+  "kirli": 3,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T20:02:45.408Z",
+  "sure_sn": 1.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 6,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "KS7 classifyLine (saf): faturasız stok iadesi ve Değersiz Alacak bağsız ödemedir; satış, alım, elle borç / alacak yükümlülüktür › (a) stoktan satıştan iade (alacak) alacak tarafında ödeme; alıştan iade (borç) borç tarafında ödeme",
+      "konum": "test/kapama-ks7-245.test.mjs:36:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "KS7 API: Değersiz Alacak ve faturasız stok iadesi carinin en eski açık borcunu (vadeli elle borç, fatura) kapatır › (a) faturasız stok Satış İadesi (açık hesap) en eskiden kapatır: vadeli borç ve fatura; iade silinince yeniden açılır; bakiye ve Kasa değişmez",
+      "konum": "test/kapama-ks7-245.test.mjs:144:3",
+      "hata": "en eski borç kapandı · 1000 !== 0 (beklenen 0, gelen 1000)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/d1-kapama/docs/kanit/2026-10-24/245-d1-kapama/mutasyon-1.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-d1-kapama/mut1",
+  "ham_cikti_sha256": "7d51d3b95323ff1a410e51a1ab23496da7204ecfc7f025fd06b996d5ca003c4b",
+  "ham_cikti_bayt": 6115
+}

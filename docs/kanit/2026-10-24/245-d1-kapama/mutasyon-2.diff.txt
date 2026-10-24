@@ -1,0 +1,11 @@
+--- /home/user/wt/d1-kapama/server/lib/invoice-settle.mjs	2026-10-24 19:53:49.787315566 +0000
++++ /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-d1-kapama/mut2/server/lib/invoice-settle.mjs	2026-10-24 19:59:26.129808109 +0000
+@@ -110,7 +110,7 @@
+       } else if (debit) role.recvDue = true;
+       else role.payDue = true;
+       break;
+-    case "doubtful":
++    case "doubtful-mutasyon":
+       // 2.4.5 KS7 (b) (BANKA-MODULU-PLAN §3.11b/3 "değersiz yazılınca cari bakiyesi o tutar kadar kapanır"): Değersiz Alacak Yaz satırı (alacak) bağsız
+       // kapatıcıdır — alacak tarafında en eski açık borçtan kapatır. Şüpheliye alma (128'e aktarım) cari satırı yazmaz: kapatmaz, alacak sürer.
+       // Önceden elle Alacak gibi yükümlülük sayılıyordu (bakiye 0, fatura / vadeli borç açık — D1).

@@ -1,0 +1,32 @@
+{
+  "ad": "245-g8-tek-gecis/esdegerlik-6-tohum",
+  "komut": "node --disable-warning=ExperimentalWarning tools/kapama-tek-gecis-esdegerlik.mjs --eski /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-g8-tek-gecis/eski-6992e59 --kok /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-g8-tek-gecis/esdeger --tohum 1 --tohumlar 6 --islem 600",
+  "commit": "6992e5989c7cbd08de573b56156397a60a5a7b58",
+  "dal": "is/d1-kapama",
+  "kirli": 2,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T20:47:26.987Z",
+  "sure_sn": 361.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-g8-tek-gecis/esdegerlik-6-tohum.log",
+  "klasor": "/home/user/wt/d1-kapama",
+  "ham_cikti_sha256": "15c12bd582c8dc73153bc99c703ac6ab1f4251ee927a53300f1f114820e5b3c3",
+  "ham_cikti_bayt": 2237
+}

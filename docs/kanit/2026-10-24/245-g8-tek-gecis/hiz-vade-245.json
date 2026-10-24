@@ -1,0 +1,32 @@
+{
+  "ad": "245-g8-tek-gecis/hiz-vade-245",
+  "komut": "node --disable-warning=ExperimentalWarning tools/goc245-hiz.mjs vade --kok /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-g8-tek-gecis/hiz",
+  "commit": "b4df43827b38dbaeab026893372a154c94f75910",
+  "dal": "is/d1-kapama",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T21:01:30.926Z",
+  "sure_sn": 64.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1997,
+    "gecen": 1997,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-g8-tek-gecis/hiz-vade-245.log",
+  "klasor": "/home/user/wt/d1-kapama",
+  "ham_cikti_sha256": "c1c90e83d6c672d7cc5b712e002bb1eeef0297a8c1ca19a843fd3d35f039c21b",
+  "ham_cikti_bayt": 192
+}

@@ -100,8 +100,22 @@ export function classifyLine(line, { invoiceKind = "", chequeEvent = "" } = {}) 
       else role.recvDue = true; // plan (borç), plan-out (taksit iadesi: borç yeniden açılır)
       break;
     case "stock":
-      if (debit) role.recvDue = true;
+      // 2.4.5 KS7 (a) (BAŞ MİMAR KARARI; S1 "bağsız ödemeler (… iade) en eskiden dağıtılır"): faturasız stok İADESİ bağsız ÖDEMEDİR — satıştan iade
+      // (müşteride alacak satırı) alacak tarafında, alıştan iade (tedarikçide borç satırı) borç tarafında; en eski açık borcu (fatura, elle borç)
+      // kapatır. Önceden (2.0.13'ten) karşı tarafta yükümlülük sayılıyordu: bakiye 0 iken fatura ve vadeli borç "Açık / gecikmiş" görünüyordu (D1).
+      // Stoktan veresiye satış (borç) ve açık hesaba alım (alacak) yükümlülüktür.
+      if (line.stockReason === "return" || line.stockReason === "preturn") {
+        if (credit) role.recvPay = true;
+        else role.payPay = true;
+      } else if (debit) role.recvDue = true;
       else role.payDue = true;
+      break;
+    case "doubtful":
+      // 2.4.5 KS7 (b) (BANKA-MODULU-PLAN §3.11b/3 "değersiz yazılınca cari bakiyesi o tutar kadar kapanır"): Değersiz Alacak Yaz satırı (alacak) bağsız
+      // kapatıcıdır — alacak tarafında en eski açık borçtan kapatır. Şüpheliye alma (128'e aktarım) cari satırı yazmaz: kapatmaz, alacak sürer.
+      // Önceden elle Alacak gibi yükümlülük sayılıyordu (bakiye 0, fatura / vadeli borç açık — D1).
+      if (credit) role.recvPay = true;
+      else role.recvDue = true;
       break;
     case "pos-fee":
       // 2.2.0 (plan §4.3/2): POS komisyon kesintisi (çıkış) ve komisyon iadesi (giriş) yalnız borç tarafında ödeme rolündedir; iade eksi tutarlı
