@@ -437,6 +437,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   numarası karttan GELMEZ; API'siz yollar (Windows Paylaş / wa.me / tek "Portföy Sunumu" dosyası) ve Yol B (Meta API, Pro) ayrıntısı arşivde (21.10).
 - DEVİR MODÜLÜ (sürüm 2.5.0, 2.4.4'ten SONRA): YÖNTEM KARARI Wolvox (kesim tarihinde ikiye ayır; eski yıl salt okunur arşiv); TEK BAŞINA YETERLİ plan
   `docs/devir/DEVIR-PLANI.md` (§11 kararları verildi, 20.10.2026); arka plan `docs/devir/DEVIR-MODULU.md`; ilk adım D0 (planı koda karşı yeniden doğrula). KÂHİN ÖNCE (kullanıcı, 23.10.2026 ~13:10 UTC: "önerin uygun" — cari kâhininin başarısı üzerine): devir kâhini D0'da, kod yazılmadan, planın kendisinden (kodu görmeyen ayrı ajan) kurulur; her D adımı ona karşı geliştirilir (plan D0 satırı).
+  SIRA (kullanıcı, 24.10.2026: "devir modülünü bu işlerden sonra aralık ayında yaparız"): 2.4.5 → Maliyet Hesap Kartı sürümü → devir 2.5.0 Aralık'ta. Baş mimar uyarısı verildi: plan ~4–6 iş günü; en geç 1 Aralık'ta başla, ~20 Aralık'ta yayında. Hatırlatıcı trig_01DE8bFDurzMRT6thbptBrQM 23.11.2026 09:00 TR'ye alındı (istem güncellendi).
   HATIRLATICI (kullanıcı, 21.10.2026: "kapat ama ileride bana hatırlat"): eski 22.10 hatırlatıcısı (trig_01NEGfcTp7hAnHG1tgw6mFAv, eski oturuma bağlı, istemi
   eskimişti) KAPATILDI; yenisi 29.10.2026 09:00 TR (trig_01DE8bFDurzMRT6thbptBrQM, oturum session_01JyhFmK2mfqMV3KTwvTZdhs). O oturum kapanmışsa: 2.4.4
   bitince kullanıcıya devri hatırlat (devir Ocak–Şubat'ta kullanılır → 2.5.0 Aralık başına kadar yayında olmalı).
