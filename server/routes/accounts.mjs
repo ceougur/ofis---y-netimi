@@ -1402,8 +1402,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // 20.000 carili kurulumda hepsinin defterini kurmak her yazmadan sonraki ilk listeyi 0,6 sn'ye çıkarıyordu.
   // dated (2.4.5 madde 6): yalnız Vade Tarihi ya da Beklenen Ödeme Tarihi girilmiş elle borç / alacak satırı olan cariler (takvim, zil, Vade Takip).
   const DATED_SQL = "SELECT DISTINCT account_id FROM account_entries WHERE source = '' AND kind IN ('debt', 'credit') AND (due_date <> '' OR expected_date <> '')";
+  // İkisi birlikte (2.4.5 G8, routes/invoices.mjs allSettled): iki kümenin birleşimi tek geçişte; dated = vadeli satırı olan carilerin kümesi.
   function allLedgers({ invoiced = false, dated = false } = {}) {
-    const scope = invoiced ? "SELECT DISTINCT account_id FROM invoices" : dated ? DATED_SQL : "";
+    const scope = [invoiced ? "SELECT DISTINCT account_id FROM invoices" : "", dated ? DATED_SQL : ""].filter(Boolean).join(" UNION ");
     const only = scope ? ` AND a.id IN (${scope})` : "";
     const rows = store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL${only} ORDER BY a.name COLLATE NOCASE`).map(({ fieldsJson, ...row }) => row);
     const entries = new Map();
@@ -1415,7 +1416,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const planMap = plans()?.ledgerPlansByAccount ? plans().ledgerPlansByAccount() : new Map();
     const lines = new Map();
     for (const row of rows) lines.set(row.id, accountLedger(entries.get(row.id) || [], planMap.get(row.id) || []).lines);
-    return { accounts: rows, lines };
+    return { accounts: rows, lines, ...(dated ? { dated: new Set(store.all(DATED_SQL).map(row => row.account_id)) } : {}) };
   }
   // Kasa (v2.1.0, K5): cari tahsilat ve ödemeleri Kasa'ya tek kaynaktan (lib/bank/money-lines.mjs, kaynak 3) düşer; silinen carinin
   // hareketi orada da düşer.

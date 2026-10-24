@@ -639,7 +639,6 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // ya da gün dönene kadar saklanır (total_changes(): bu bağlantının her INSERT/UPDATE/DELETE'inde artar; data_version: başka
   // bir bağlantının kesinleşen yazmasında değişir — veri dosyasını paylaşan şirket, 2.0.21 "Ayır" öncesi). Tek carili
   // istek (fatura kartı) aşağıdaki cari başına yoldan hesaplanır; iki yolun aynı sonucu verdiği testle denetlenir.
-  let statesCache = { key: "", map: null };
   const BATCH_ACCOUNTS = 8;
   // Çek/senet olaylarının kapama girdisi (iki yol da bu tek kuralla): satırın olay türü (chequeEvents), faturaya bağı (links) ve karşılıksızın ters
   // çevirdiği satır (reversals). events: { chequeId, kind, invoiceId, own (cheques.invoice_id), effects } — olay sırasında (rowid). planned: taksitli faturalar.
@@ -728,21 +727,36 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // Veri tabanı işleminin içinde (yazmalar henüz kesinleşmemiş, geri alınabilir) önbellek ne okunur ne yazılır: geri
   // alınan işlemin durumu saklanıp sonra gösterilmesin (total_changes() geri alınca azalmaz).
   const settleKey = day => `${store.get("SELECT total_changes() AS n").n}|${store.get("PRAGMA data_version").data_version}|${day}`;
-  function allPaymentStates() {
+  // 2.4.5 G8 (ölçüm: 2.100 cari / 10.000 fatura / 4.000 elle borçta takvim soğuk 928 → 1.354 ms): fatura durumları (allPaymentStates) ve carinin vadeli
+  // elle satırlarının Kalan'ı (allEntryStates) TEK geçişte — bir allLedgers (faturası olan ∪ vadeli satırı olan cariler), bir settleTables, cari başına bir
+  // settleLedger (invoices + entries aynı sonuçtan). Önceden ikisi aynı kuyruğu ayrı ayrı kuruyordu. Önbellek ve bayatlık kuralı değişmedi (settleKey;
+  // işlem içinde okunmaz, yazılmaz). Sonuçlar iki ayrı geçişin çıktısıyla bayt bayt aynıdır (tools/kapama-tek-gecis-esdegerlik.mjs; toplu ↔ cari başına
+  // yol: test/kapama-tek-gecis-245.test.mjs). config.legacyClosing (yalnız testler) fatura durumlarını kendi kuralıyla ayrıca hesaplar.
+  let settledCache = { key: "", pay: null, entries: null };
+  function allSettled() {
     const day = today();
     const inTx = store.inTransaction;
     const key = settleKey(day);
-    if (!inTx && statesCache.key === key && statesCache.map) return statesCache.map;
-    const ledgers = accounts()?.allLedgers ? accounts().allLedgers({ invoiced: true }).lines : new Map();
+    if (!inTx && settledCache.key === key && settledCache.pay) return settledCache;
+    const both = accounts()?.allLedgers ? accounts().allLedgers({ invoiced: true, dated: true }) : null;
+    const ledgers = both ? both.lines : new Map();
+    const dated = both?.dated || new Set();
     const tables = settleTables();
-    const map = new Map();
-    for (const accountId of tables.invoicesOf.keys()) {
-      const states = settle(batchSettleInput(accountId, ledgers.get(accountId) || [], tables, day));
-      for (const [id, state] of states) map.set(id, state);
-    }
-    if (!inTx) statesCache = { key, map };
-    return map;
+    const results = new Map();
+    const inputOf = accountId => batchSettleInput(accountId, ledgers.get(accountId) || [], tables, day);
+    const settled = accountId => {
+      if (!results.has(accountId)) results.set(accountId, settleLedger(inputOf(accountId)));
+      return results.get(accountId);
+    };
+    const pay = new Map();
+    for (const accountId of tables.invoicesOf.keys()) for (const [id, state] of legacyClosing ? settle(inputOf(accountId)) : settled(accountId).invoices) pay.set(id, state);
+    const entries = new Map();
+    for (const accountId of ledgers.keys()) if (dated.has(accountId)) for (const [id, state] of settled(accountId).entries) entries.set(id, state);
+    const out = { key, pay, entries };
+    if (!inTx) settledCache = out;
+    return out;
   }
+  const allPaymentStates = () => allSettled().pay;
   // Bir carinin kapama girdisi (tek carili yol): carinin defteri + faturaları + bağlar (paymentStates ve entryStates aynı kuralla).
   function accountSettleInput(accountId, ledger, day) {
     // Bu carinin bütün faturaları (listede olmayanlar da kapamada yer tutar).
@@ -798,19 +812,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // satırı olan bütün cariler (takvim, zil, Vade Takip); önbellek fatura durumlarıyla aynı anahtarla (işlem içinde okunmaz, yazılmaz).
   // Dönüş: defter satırı kimliği → { side, remaining, covered } (TL).
   const entryStates = (accountId, ledger) => settleLedger(accountSettleInput(accountId, ledger || [], today())).entries;
-  let entryCache = { key: "", map: null };
-  function allEntryStates() {
-    const day = today();
-    const inTx = store.inTransaction;
-    const key = settleKey(day);
-    if (!inTx && entryCache.key === key && entryCache.map) return entryCache.map;
-    const ledgers = accounts()?.allLedgers ? accounts().allLedgers({ dated: true }).lines : new Map();
-    const tables = ledgers.size ? settleTables() : null;
-    const map = new Map();
-    for (const [accountId, lines] of ledgers) for (const [id, state] of settleLedger(batchSettleInput(accountId, lines, tables, day)).entries) map.set(id, state);
-    if (!inTx) entryCache = { key, map };
-    return map;
-  }
+  // allSettled (yukarıda) fatura durumlarıyla aynı geçişte üretir.
+  const allEntryStates = () => allSettled().entries;
 
   const unsentNumbered = row => row.status === "issued" && sendKind(row.kind, row.profile) && row.profile !== "KAGIT" && Boolean(row.number) && ["", "none", "error"].includes(row.eStatus || "");
   // unsentSql ile aynı kural: canlı ortamda test serisinden numara almış, gönderilmemiş belge (gönderilemez; iptal edilir).

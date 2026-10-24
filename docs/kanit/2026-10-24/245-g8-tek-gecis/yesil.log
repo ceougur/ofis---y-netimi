@@ -1,0 +1,41 @@
+TAP version 13
+# Subtest: G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı aynı kapama geçişinden; sonuç cari başına yolla aynı
+    # Subtest: tek geçiş: yazımdan sonra iki harita için carilerin defteri BİR KEZ kurulur; ikinci çağrılar önbellekten
+    ok 1 - tek geçiş: yazımdan sonra iki harita için carilerin defteri BİR KEZ kurulur; ikinci çağrılar önbellekten
+      ---
+      duration_ms: 27.290095
+      type: 'test'
+      ...
+    # Subtest: toplu yol = cari başına yol: her fatura durumu ve her vadeli carinin her satırı (D1 olayları dahil)
+    ok 2 - toplu yol = cari başına yol: her fatura durumu ve her vadeli carinin her satırı (D1 olayları dahil)
+      ---
+      duration_ms: 24.187719
+      type: 'test'
+      ...
+    # Subtest: kapsam: elle satır haritası yalnız vadeli satırı olan carilerin satırlarını taşır (faturasız vadeli cari dahil, vadesiz cari yok)
+    ok 3 - kapsam: elle satır haritası yalnız vadeli satırı olan carilerin satırlarını taşır (faturasız vadeli cari dahil, vadesiz cari yok)
+      ---
+      duration_ms: 15.32281
+      type: 'test'
+      ...
+    # Subtest: bayatlık: yazımdan sonra yeni değer; işlem içinde hesaplanan sonuç önbelleğe yazılmaz (geri alınınca eski değer)
+    ok 4 - bayatlık: yazımdan sonra yeni değer; işlem içinde hesaplanan sonuç önbelleğe yazılmaz (geri alınınca eski değer)
+      ---
+      duration_ms: 51.703031
+      type: 'test'
+      ...
+    1..4
+ok 1 - G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı aynı kapama geçişinden; sonuç cari başına yolla aynı
+  ---
+  duration_ms: 1322.223495
+  type: 'suite'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1697.837973

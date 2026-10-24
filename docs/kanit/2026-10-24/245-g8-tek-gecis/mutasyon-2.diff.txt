@@ -1,0 +1,11 @@
+--- /home/user/wt/d1-kapama/server/routes/invoices.mjs	2026-10-24 20:32:21.117772232 +0000
++++ /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-g8-tek-gecis/mut2/server/routes/invoices.mjs	2026-10-24 20:53:54.997733342 +0000
+@@ -751,7 +751,7 @@
+     const pay = new Map();
+     for (const accountId of tables.invoicesOf.keys()) for (const [id, state] of legacyClosing ? settle(inputOf(accountId)) : settled(accountId).invoices) pay.set(id, state);
+     const entries = new Map();
+-    for (const accountId of ledgers.keys()) if (dated.has(accountId)) for (const [id, state] of settled(accountId).entries) entries.set(id, state);
++    for (const accountId of ledgers.keys()) if (dated.has(accountId) || true) for (const [id, state] of settled(accountId).entries) entries.set(id, state);
+     const out = { key, pay, entries };
+     if (!inTx) settledCache = out;
+     return out;
