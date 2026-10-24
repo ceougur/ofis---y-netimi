@@ -10,7 +10,7 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
   (PR birleştiği için dal master'dan yeniden başlatıldı — merged PR kuralı; bundan sonraki PR yeni PR'dır).
 - "BAŞLA" VERİLDİ (kullanıcı, 24.10.2026 ~16:40 UTC: "sohbeti sıkıştır, sonra anayasamızı ve derslerimizi oku sonra başla"): sıkıştırmadan SONRA önce CLAUDE.md (anayasa, kalite çıtası, test kuralı, KANIT KURALI, doğrulama kapısı, dersler 1–41, verimlilik, ajan eforu) baştan okunur, sonra aşağıdaki ilk adımlarla 2.4.5 başlar.
 - "BAŞLA"DA İLK ADIMLAR (sırayla):
-  1. `docs/erp/2.4.5-IS-LISTESI.md` → `docs/2.4.5-IS-LISTESI.md` taşı + BELGE_YOLLARI'na ekle (madde 0a: tools/kanit.mjs + ci.yml paths-ignore + test/kanit-araci.test.mjs; eski araçta kırmızı).
+  1. ~~`docs/2.4.5-IS-LISTESI.md` → `docs/2.4.5-IS-LISTESI.md` taşı + BELGE_YOLLARI'na ekle (madde 0a: tools/kanit.mjs + ci.yml paths-ignore + test/kanit-araci.test.mjs; eski araçta kırmızı)~~ YAPILDI 24.10 (kanıt docs/kanit/2026-10-24/245-0a: kırmızı 49/50 false!==true, yeşil 50/50).
   2. 30 dk rapor işi (CronCreate; RAPOR DÜZENİ arşivde 24.10) + iş listesi çizme düzeni.
   3. DALGA 0: 0b kâhin önce [XH] (kodu görmeyen ajan). DALGA 1: 6a pil kartı [XH] · 6b tablo kimlik sütunu [M] · 6c tabela adı [H] · 6d ayrıntılı ekstre [H] · kapi-para (1+2+3) [XH] ·
      kapi-uyari (4+5) [XH] · cari-vade (6) [XH] (dues.mjs çakışması: kapi-uyari önce). Her iş ayrı worktree /home/user/wt/<ad>, dal is/<ad>. Sonra madde 8 (kılavuz/sürüm notu), 9 (doğrulama).

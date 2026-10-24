@@ -12,6 +12,7 @@ on:
       - "docs/2.3.0-IS-LISTESI.md"
       - "docs/2.4.3-IS-LISTESI.md"
       - "docs/2.4.4-IS-LISTESI.md"
+      - "docs/2.4.5-IS-LISTESI.md"
       - "docs/devir/**"
       - "docs/erp/**"
       - "docs/fatura/**"
