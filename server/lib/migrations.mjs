@@ -1325,6 +1325,19 @@ export const MIGRATIONS = [
       store.raw("migration.v32", () => scanPaperFloors(store, { now }));
     },
   },
+  {
+    version: 33,
+    name: "v2.4.5 cari borç kaydında Vade Tarihi ve Beklenen Ödeme Tarihi",
+    up(store) {
+      // 2.4.5 madde 6 (BAŞ MİMAR KARARI K6.4): elle Borç / Alacak kaydının ve Açılış Bakiyesi'nin isteğe bağlı Vade Tarihi (due_date) ve Beklenen Ödeme
+      // Tarihi (expected_date), YYYY-MM-DD, boş = yok. YALNIZ EKLEYİCİ: eski satırlar boş kalır; eski sürüm (2.4.4) kolonları görmez. Bilgi alanıdır: tutar,
+      // bakiye, Kasa ve Ana Defter okumaz (lib/bank/money-lines.mjs FREE_COLUMNS); takvim / zil / Vade Takip kalemi doğurur (routes/accounts.mjs dueItems).
+      store.raw("migration.v33", () => {
+        addColumn(store, "account_entries", "due_date", "TEXT NOT NULL DEFAULT ''");
+        addColumn(store, "account_entries", "expected_date", "TEXT NOT NULL DEFAULT ''");
+      });
+    },
+  },
 ];
 
 // 2.4.4 (karar 22.10.2026): 2.4.0–2.4.3'te "Müşteri Fişi Olarak Bırak" ile Müşteri Fişi serisinden numara alıp sonra e-Belge olarak gönderilen belgenin

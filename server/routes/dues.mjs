@@ -14,7 +14,7 @@ const MAX_SETTLED = 5000;
 // calendar (v2.0.17): raporların tüm sayfalar takvimi (routes/reports.mjs allCalendar; tembel, çünkü raporlar sonra kaydolur).
 // Sayfa düzeninde şirketin BÜTÜN sayfalarının tarih uyarıları zile/takvime girer: öbür sayfaların kalemleri "foreign"
 // işaretiyle ve sayfa adıyla eklenir (madde 13: "tarih uyarısı vermiyor" şikâyeti kökten kapanır).
-export function registerDueRoutes(router, { auth, store, dataset, profile, events, audit, plans, cheques, invoices, bankAccounts = null, calendar = null, now: clock = systemClock }) {
+export function registerDueRoutes(router, { auth, store, dataset, profile, events, audit, plans, cheques, invoices, accounts = null, bankAccounts = null, calendar = null, now: clock = systemClock }) {
   // 2.3.0 İz 3.3 (plan §8.9 "Vade Takip / Zil / Takvim: … planlı ödemeler … bank.view ile"; eşleme 301): planlı banka işlemleri (lib/bank/vouchers.mjs).
   const bankPlans = () => (typeof bankAccounts === "function" ? bankAccounts() : bankAccounts)?.plans || null;
   const cache = new Map(); // oturum → { key, result }
@@ -36,6 +36,16 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
   // ayrı saklanır. Personel sürekli tahsilat/fatura girerken her kayıtta yalnız taksit, çek/senet ve fatura kalemleri
   // yeniden hesaplanır (önceden binlerce satırlık tablo her kayıtta baştan işleniyordu). Sonuç aynıdır.
   const tableCache = new Map(); // oturum → { key, value: { computed, deadlines } }
+  // 2.4.5 madde 6 (BAŞ MİMAR KARARI K6.3): carinin vadeli / sözlü borç kayıtları — "account|<entryId>" (routes/accounts.mjs dueItems: Kalan > 0, Vade
+  // Tarihi ya da Beklenen Ödeme Tarihi girilmiş elle Borç / Alacak ve açılış; ufuk faturayla aynı). Şeride ve zile yalnız Cari görüntüleme yetkisi
+  // (accounts.view) olana gider; önbellek anahtarında cari satırlarının parmak izi (Kalan ve tarihler değişince takvim yenilenir). "Ödendi Say" yok:
+  // settle yalnız "due|" kalemini kapatır (kalem tahsilat / ödemeyle kapanır).
+  const accountDues = {
+    SOURCE: "account",
+    items: day => (accounts?.dueItems ? accounts.dueItems(day) : []),
+    fingerprint: () => (accounts?.dueFingerprint ? accounts.dueFingerprint() : ""),
+    visible: user => canUser(user, "accounts.view"),
+  };
   async function compute() {
     const now = clock();
     const settledRaw = store.setting(settingKey(), "{}") || "{}";
@@ -47,7 +57,7 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     // carilerin kayıt bağı, cari tahsilatları ve taksit hareketleri değişince tablo kısmı da yeniden hesaplanır.
     const planState = plans?.fingerprint ? plans.fingerprint() : "";
     const tableKey = [pagesState, profile.fingerprint(), paymentsState(), caseCollectionsState(store), planState, settledRaw.length, settledRaw.slice(-64), tabState, now.toDateString()].join("|");
-    const key = [tableKey, cheques?.fingerprint ? cheques.fingerprint() : "", invoices?.fingerprint ? invoices.fingerprint() : "", bankPlans()?.fingerprint ? bankPlans().fingerprint() : ""].join("|");
+    const key = [tableKey, cheques?.fingerprint ? cheques.fingerprint() : "", invoices?.fingerprint ? invoices.fingerprint() : "", bankPlans()?.fingerprint ? bankPlans().fingerprint() : "", accountDues.fingerprint()].join("|");
     const session = dataset.currentKey();
     const hit = cache.get(session);
     if (hit && hit.key === key) return hit.result;
@@ -108,7 +118,7 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     // 31e A1: borcu birden çok sekmede olan dosya no her sekmede ayrı borç ve ayrı kalemdir (2.4.3 gibi); Tahsilat Takvimi bunu raporlarla aynı notla söyler
     // (zil söylemez). Taksit kartı olan kaydın tablo kalemleri zaten listede yok; notta da sayılmaz.
     const notes = tableNotes({ split: (computed.debtSplit || []).filter(item => !carded.has(item.key)), unresolved: computed.debtUnresolved || [] });
-    const result = { items: [...items, ...planItems, ...chequeItems, ...invoiceItems, ...bankItems, ...foreignItems], deadlines: [...deadlines, ...foreignDeadlines], sources, dormant, notes, today: local, generatedAt: now.toISOString() };
+    const result = { items: [...items, ...planItems, ...chequeItems, ...invoiceItems, ...bankItems, ...accountDues.items(local), ...foreignItems], deadlines: [...deadlines, ...foreignDeadlines], sources, dormant, notes, today: local, generatedAt: now.toISOString() };
     // 2.4.3 H2: içeriğin sürümü (üretim anı hariç her alan). Ekran elindeki sürümü gönderir; içerik değişmediyse büyük yanıt (10.000
     // faturalı veride 2,8 MB) yeniden gönderilmez. Başka personelin her kaydında anahtar değişir ama takvimin içeriği çoğu kez değişmez.
     const { generatedAt: _, ...content } = result;
@@ -123,11 +133,11 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     // Çek/senet kalemleri yalnız çekleri görebilenlere (kasa yetkisi olanlar) gider.
     // Fatura kalemleri yalnız faturaları görebilenlere.
     // Planlı banka işlemleri yalnız banka rakamını görebilene (bank.view ∨ overview.view; routes/overview.mjs canSeeBank ile aynı kural).
-    const see = { cheque: canUser(user, "cheques.view"), invoice: canUser(user, "invoices.view"), bank: canUser(user, "bank.view") || canUser(user, "overview.view") };
+    const see = { cheque: canUser(user, "cheques.view"), invoice: canUser(user, "invoices.view"), bank: canUser(user, "bank.view") || canUser(user, "overview.view"), account: accountDues.visible(user) };
     // 2.4.3 H2: sürüm, kişinin görebildiği kalem türlerini de taşır (yetkisi değişen kişi takvimi yeniden alır).
-    const version = `${data.version}.${Number(see.cheque)}${Number(see.invoice)}${Number(see.bank)}`;
+    const version = `${data.version}.${Number(see.cheque)}${Number(see.invoice)}${Number(see.bank)}${Number(see.account)}`;
     if (url.searchParams.get("since") === version) return ok(res, { unchanged: true, version, today: data.today });
-    ok(res, { ...data, items: data.items.filter(item => (item.source !== "cheque" || see.cheque) && (item.source !== "invoice" || see.invoice) && (item.source !== "bank" || see.bank)), version });
+    ok(res, { ...data, items: data.items.filter(item => (item.source !== "cheque" || see.cheque) && (item.source !== "invoice" || see.invoice) && (item.source !== "bank" || see.bank) && (item.source !== accountDues.SOURCE || see.account)), version });
   });
 
   // "Ödendi say" / "İptal": kalem, tahsilat girilmeden kapatılır (veri değişmez; kim, ne zaman kaydedilir).

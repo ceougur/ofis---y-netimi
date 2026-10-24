@@ -62,6 +62,7 @@
     "test:senaryo-personel-244": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-personel-244.mjs",
     "test:senaryo-portal-244": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-portal-244.mjs",
     "test:senaryo-kayit-tahsilat-244": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-kayit-tahsilat-244.mjs",
+    "test:senaryo-cari-vade-245": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-cari-vade-245.mjs",
     "test:senaryo-kayit-bag-31e": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-kayit-bag-31e.mjs",
     "test:uiux-244-ux9-ux10": "node --disable-warning=ExperimentalWarning test/e2e/uiux-244-ux9-ux10.mjs",
     "test:senaryo-ux18-244": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-ux18-244.mjs",

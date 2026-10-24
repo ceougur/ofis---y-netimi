@@ -127,7 +127,8 @@ const COMMON_FREE = ["note", "updated_by", "updated_at"];
 export const FREE_COLUMNS = Object.freeze({
   payments: new Set([...COMMON_FREE, "case_title"]),
   cash_entries: new Set([...COMMON_FREE, "description"]),
-  account_entries: new Set([...COMMON_FREE, "receipt_no", "invoice_id"]),
+  // 2.4.5 madde 6 (K6.4): borç kaydının Vade Tarihi ve Beklenen Ödeme Tarihi bilgi alanıdır (tutar, yön, tarih, yol değişmez; Ana Defter okumaz).
+  account_entries: new Set([...COMMON_FREE, "receipt_no", "invoice_id", "due_date", "expected_date"]),
   plan_entries: new Set([...COMMON_FREE, "receipt_no", "item_id"]),
   stock_moves: new Set([...COMMON_FREE]),
   cheque_events: new Set([...COMMON_FREE, "effects_json"]),

@@ -294,7 +294,8 @@
   // m2 (10.10.2026; plan §8.9): "invoice" eksikti — vadeli fatura satırı ekranda ham "invoice", süzgeç seçeneği adsız çiziliyordu. Ad PDF/Excel ile
   // aynı (server/routes/overview.mjs SOURCE_TEXT); "Ödeme Sözü" ve "Son Tarih" yazım düzeninde (m3).
   // 2.3.0 İz 3.3 (plan §8.9; eşleme 301): planlı banka işlemleri "bank" (sunucu SOURCE_TEXT.bank ile aynı ad; yalnız banka rakamını görebilene).
-  const SOURCE_LABELS = { plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa", bank: "Planlı Banka İşlemi", table: "Tablo", promise: "Ödeme Sözü", deadline: "Son Tarih" };
+  // 2.4.5 madde 6: "account" — carideki vadeli / sözlü borç kaydı (sunucu SOURCE_TEXT.account ile aynı ad).
+  const SOURCE_LABELS = { plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", account: "Cari (vadeli)", cash: "Kasa", bank: "Planlı Banka İşlemi", table: "Tablo", promise: "Ödeme Sözü", deadline: "Son Tarih" };
   // Satırın kaynak adı (süzgeç seçeneği değil): eski sürümden kalan, hesaba atanmamış ileri tarihli havale / POS (sunucu SOURCE_TEXT.legacy ile aynı
   // ad; PDF ve Excel de böyle yazar). Kasa süzgeciyle gelir; önceden "Kasa" yazıyordu (2.1.0 temel sürüm, küçük düzeltmeler).
   // MM5 (2.4.3): faturasız cari alacağı (carinin bakiyesinden açık taksit ve vadeli fatura düşülünce kalan) Nakit Akışı'nda gecikmiş giriştir.
@@ -304,6 +305,7 @@
     cheque: "Portföydeki alınan ve ödenecek verilen çekler",
     note: "Portföydeki alınan ve ödenecek verilen senetler",
     invoice: "Vadeli (açık hesap) satış ve alış faturalarının ödenmemiş kısmı",
+    account: "Carideki Borç / Alacak kayıtlarının ve açılış bakiyesinin Vade Tarihi ya da Beklenen Ödeme Tarihi girilmiş, kapanmamış kısmı",
     cash: "Kasa'ya ileri tarihle girilen giriş ve çıkışlar (kira, maaş…)",
     bank: "Banka → Hareketler → Planlı İşlemler'deki gerçekleştirilmemiş planlı masraf, faiz, diğer işlem, kart borcu, kredi ve transferler",
     table: "Excel/Sheets tablolarındaki ödeme günleri (tahsilat takvimiyle aynı kalemler)",
