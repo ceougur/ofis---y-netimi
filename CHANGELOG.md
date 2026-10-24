@@ -4,7 +4,7 @@ Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar
 
 ## 2.4.4 — İyileştirmeler ve e-SMM
 
-- İyileştirmeler ve hata düzeltmeleri (e-Fatura / e-Arşiv gönderimi ve iptal süresi, çek/senetle fatura kapama, tablo raporları, cari ve taksit).
+- İyileştirmeler ve hata düzeltmeleri (e-Fatura / e-Arşiv gönderimi ve iptal süresi, çek/senetle fatura kapama, tablo raporları, cari ve taksit). Excel / Sheets tablolarında borç ve ödeme sözü sütunları daha doğru tanınır; tablo yeniden yüklenince kayıt bağları korunur.
 - Yeni: e-SMM (serbest meslek makbuzu) gönderimi, Seçilenleri Gönder, e-Fatura Portalı, Personel Özlük, Başlarken, Netten Brüte; taksit artık cariden açılır. Ayrıntı: docs/2.4.4-DEGISIKLIKLER.md.
 
 ## 2.4.3 — İyileştirmeler
