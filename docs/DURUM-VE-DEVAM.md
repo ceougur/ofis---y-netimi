@@ -8,7 +8,7 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
 - DURUM: 2.4.4 YAYIMLANDI ve KAPANDI (v2.4.4 = master 5187561; PR #34; master CI #867 + Sürüm yayımla #37 yeşil; 5 dosya bayt bayt; eski güncelleyiciler "available"; site
   ceougur/destekofis#20 birleşti). Ayrıntı CLAUDE.md Açık iş "2.4.4 YAYIMLANDI". Kod değişikliği YOK; çalışma dalı `claude/youthful-euler-fl8ks4` = master + yalnız belge commit'leri
   (PR birleştiği için dal master'dan yeniden başlatıldı — merged PR kuralı; bundan sonraki PR yeni PR'dır).
-- BEKLENEN: kullanıcı "başla" der (yeni müşteri kurulumu sonrası, akşam). O zamana dek kod yazılmaz.
+- "BAŞLA" VERİLDİ (kullanıcı, 24.10.2026 ~16:40 UTC: "sohbeti sıkıştır, sonra anayasamızı ve derslerimizi oku sonra başla"): sıkıştırmadan SONRA önce CLAUDE.md (anayasa, kalite çıtası, test kuralı, KANIT KURALI, doğrulama kapısı, dersler 1–41, verimlilik, ajan eforu) baştan okunur, sonra aşağıdaki ilk adımlarla 2.4.5 başlar.
 - "BAŞLA"DA İLK ADIMLAR (sırayla):
   1. `docs/erp/2.4.5-IS-LISTESI.md` → `docs/2.4.5-IS-LISTESI.md` taşı + BELGE_YOLLARI'na ekle (madde 0a: tools/kanit.mjs + ci.yml paths-ignore + test/kanit-araci.test.mjs; eski araçta kırmızı).
   2. 30 dk rapor işi (CronCreate; RAPOR DÜZENİ arşivde 24.10) + iş listesi çizme düzeni.
