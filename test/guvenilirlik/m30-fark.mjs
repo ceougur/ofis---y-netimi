@@ -18,10 +18,22 @@
 //     tahsilat bir kez. Denetim: değişen her kaydın (anahtarın) eski veride bu durumlardan biri var.
 //   K-5 metin: rapor adı "Kayıt Tahsilatları". K-19: Personel Özlük (yeni tablo boş; yeni yetkiler yalnız yöneticide). K-16: Başlarken taban işareti.
 //   K-24: e-SMM açık (sıradaki ESM numarası, test serisi TES başlangıcı).
+//
+// 2.4.5 (profile "244-245"; önce = v2.4.4'ün GERÇEK kodu, sonra = 2.4.5 adayı, aynı veri, göç v33). Kurallar docs/2.4.5-IS-LISTESI.md madde 4, 5, 6 ve
+// BAŞ MİMAR KARARLARI K6.1–K6.4 METNİNDEN (2.4.5 kodundan türetilmez; ders 5); her BEKLENEN fark "K4.1"/"K5"/"K6" adıyla ayrı sınıflanır, başka her fark BULGU:
+//   K4.1 (madde 4 UYARI KAPISI): zil / Tahsilat Takvimi, Anlık Durum Vade Takip ve Nakit Akış Projeksiyonu'nda tablodan gelen TUTARLI kalem yok; tablonun
+//     tutarsız tarih hatırlatmaları (son tarihler) kalır; taksit, çek, fatura, planlı banka aynen; Projeksiyon "Tablo" seçeneği kalkar. Denetim:
+//     takvim kalemleri = 2.4.4'ün kalemlerinden kaynağı tablo OLMAYANLAR (birebir), son tarihler birebir; projeksiyon = 2.4.4'ün TABLOSUZ projeksiyonu
+//     (?table=0) birebir; Vade Takip'in kaynak başına sonucu tablo / söz dışındaki her kaynakta birebir, tablo ve söz kaynağı yok, toplam farkı = o ikisi.
+//   K5 (madde 5): Tablo Raporları'nda yalnız etiket ("Muhasebe Kaydı Değil", "Tahsil Edilen"); Tablodaki Nakit Akışı'nda Kasa sütunları (giriş, çıkış,
+//     net, birikimli, beklenenle birlikte) yok. Denetim: etiketler dışında rapor birebir (Kasa sütunları çıkarılınca).
+//   K6 (madde 6, K6.2, K6.4): account_entries'e iki boş kolon (due_date, expected_date); eski satırlarda boş; carinin kartında yeni alanlar dışında her şey
+//     birebir; Kalan yalnız elle borç/alacak/açılışta ve 0 ≤ Kalan ≤ tutar; eski veride vade yok → takvimde cari kalemi yok.
 import { copyFileSync, existsSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
+import { SCHEMA } from "./m30-olgular.mjs";
 
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const minorOf = cell => {
@@ -129,7 +141,8 @@ export function oldDataMap(file) {
  * before/after: tools/m30-goc.mjs measure() çıktıları. maps: { [şirket kodu]: oldDataMap(...) } (göçten önceki dosyadan).
  * Dönüş: { rows: [{ şirket, alan, sınıf, karar, ayrıntı }], bulgu: [...], summaryLines }.
  */
-export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}) {
+export function diffFacts(before, after, { maps = {}, expectEqual = false, profile = "243-244" } = {}) {
+  const p245 = profile === "244-245";
   const rows = [];
   const add = (company, area, klass, decision, detail) => rows.push({ company, area, klass, decision, detail });
   const day = after.day;
@@ -172,7 +185,7 @@ export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}
     const newBad = A.integrity.checksBad.filter(c => !B.integrity.checksBad.includes(c));
     const newOk = A.integrity.checksOk.filter(c => !B.integrity.checksOk.includes(c));
     if (newBad.length) add(code, "Mutabakat Testi denetimleri", "BULGU", "", { newBad });
-    else add(code, "Mutabakat Testi denetimleri", newOk.length ? "BELGELİ" : "EŞİT", newOk.length ? "2.4.4'ün yeni denetimleri (tamam)" : "", { ok: A.integrity.checksOk.length, newOk });
+    else add(code, "Mutabakat Testi denetimleri", newOk.length ? "BELGELİ" : "EŞİT", newOk.length ? `${p245 ? "2.4.5" : "2.4.4"}'in yeni denetimleri (tamam)` : "", { ok: A.integrity.checksOk.length, newOk });
     mustEqual("dönem kilidi", B.lockedUntil, A.lockedUntil, { lockedUntil: B.lockedUntil });
     mustEqual("Kasa (toplam, yol başına, satırlar)", B.cash, A.cash, { totals: B.cash.totals, rows: B.cash.allCount });
     mustEqual("banka hesapları (tek tek)", B.bank, A.bank, { accounts: Object.keys(B.bank.accounts || {}).length });
@@ -189,6 +202,14 @@ export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}
     // Aday 9: Silinenler (göç çöp kutusuna dokunmaz), geri yükleme uyarısı (30b: göçte yok; 2.4.3'te alan yok → null).
     mustEqual("Silinenler (çöp kutusu)", B.trash, A.trash, { count: B.trash?.count, byKind: B.trash?.byKind, faturaSilinen: M?.deleted?.length, faturaSilinenNumarasiCanlida: M?.deletedTaken });
     mustEqual("geri yükleme uyarısı (30b; göçte yok)", B.restoreNotice ?? null, A.restoreNotice ?? null);
+    // 2.4.5 göç (v33): carinin kartı (hareketler yeni alanlar hariç, defter satırları, toplamlar) birebir; yeni alanlar K6.
+    if (B.accountCards && A.accountCards) mustEqual("cari kartları (hareketler, defter, toplamlar; yeni alanlar hariç)", B.accountCards, A.accountCards, { count: Object.keys(B.accountCards).length });
+    if (A.entryNewFields) {
+      const f = A.entryNewFields;
+      const old = B.entryNewFields || {};
+      const ok = f.dueDate === 0 && f.expectedDate === 0 && !f.remainingOutOfRange.length && !old.dueDate && !old.expectedDate;
+      add(code, "cari hareketlerinin yeni alanları (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan)", ok ? (f.remaining ? "BELGELİ" : "EŞİT") : "BULGU", ok ? "K6.4 eski satırlarda Vade / Beklenen boş; K6.2 Kalan yalnız elle borç / alacak / açılışta, 0 ≤ Kalan ≤ tutar" : "K6 kuralı tutmuyor", { after: f, before: old });
+    }
     let journalOk = false;
     // Yevmiye (MM8, karar 22.10.2026 "aynı gün sırası belge → tahsilat/ödeme"; ders 31): BÜTÜN satırlar (Excel çıktısı). Her günün satır kümesi aynı kalmalı;
     // yalnız gün içi sıra değişebilir ve sonrasında o gün belge maddeleri tahsilat/ödeme maddelerinden önce gelir.
@@ -345,7 +366,7 @@ export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}
       const x = B.reports[id];
       const y = A.reports[id];
       if (!x) {
-        add(code, `rapor ${id}`, "BELGELİ", "2.4.4'te yeni rapor", { title: y.title });
+        add(code, `rapor ${id}`, "BELGELİ", `${p245 ? "2.4.5" : "2.4.4"}'te yeni rapor`, { title: y.title });
         continue;
       }
       if (!y) {
@@ -373,6 +394,10 @@ export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}
       add(code, `rapor ${id}`, "BULGU", "", { diffKeys, before: pickSummary(x), after: pickSummary(y) });
     }
     add(code, "rapor merkezi (öbür raporlar)", "EŞİT", "", { equalReports: reportsEqual });
+    if (p245) {
+      table245(code, B, A, add);
+      continue;
+    }
     // ---------- tablo raporları ve tahsilat takvimi (K-5, K-31a, K-5c) ----------
     const changedIds = new Set(changed.map(d => d.id));
     const why = key => {
@@ -587,13 +612,104 @@ export function diffFacts(before, after, { maps = {}, expectEqual = false } = {}
     const newTables = a.tables.filter(t => !b.tables.includes(t));
     const lostTables = b.tables.filter(t => !a.tables.includes(t));
     const counts = Object.keys(b.counts).filter(t => b.counts[t] !== a.counts[t]).map(t => [t, b.counts[t], a.counts[t]]);
-    add(code, "veri dosyası: şema sürümü", a.version === 32 ? "BELGELİ" : "BULGU", "göç v31 + v32", { before: b.version, after: a.version, integrity: a.integrity });
+    add(code, "veri dosyası: şema sürümü", a.version === SCHEMA && a.integrity === "ok" ? "BELGELİ" : "BULGU", p245 ? "göç v33 (K6.4)" : "göç v31 + v32", { before: b.version, after: a.version, integrity: a.integrity });
     const okCounts = counts.every(([t, x, y]) => (t === "settings" && y - x <= 3 && y >= x) || (expectEqual ? false : ["audit_events", "sessions", "auth_sessions", "integrity_log", "login_attempts"].includes(t) && y >= x));
+    if (p245) {
+      // K6.4: yeni tablo yok; account_entries'e yalnız due_date, expected_date (eski satırlarda boş); satır sayıları aynı (ayar / oturum kayıtları hariç).
+      const addedColumns = (a.entryColumns || []).filter(c => !(b.entryColumns || []).includes(c));
+      const lostColumns = (b.entryColumns || []).filter(c => !(a.entryColumns || []).includes(c));
+      const okV33 = !lostTables.length && !newTables.length && same(addedColumns, ["due_date", "expected_date"]) && !lostColumns.length && a.entryDatesFilled?.due_date === 0 && a.entryDatesFilled?.expected_date === 0 && okCounts;
+      add(code, "veri dosyası: tablolar, kolonlar ve satır sayıları", okV33 ? "BELGELİ" : "BULGU", "K6.4 account_entries + due_date, expected_date (boş)", { newTables, lostTables, addedColumns, lostColumns, filled: a.entryDatesFilled, counts });
+      continue;
+    }
     add(code, "veri dosyası: tablolar ve satır sayıları", !lostTables.length && newTables.every(t => t === "staff_members") && (a.counts.staff_members || 0) === 0 && okCounts ? "BELGELİ" : "BULGU", "K-19 staff_members (boş) + ayar satırları (K-v32 numberFloor, K-16 Başlarken)", { newTables, lostTables, counts, numberFloor: a.numberFloor });
   }
   const bulgu = rows.filter(r => r.klass === "BULGU");
   const summaryLines = [`fark: ${rows.length} olgu · EŞİT ${rows.filter(r => r.klass === "EŞİT").length} · BELGELİ ${rows.filter(r => r.klass === "BELGELİ").length} · BULGU ${bulgu.length}`, ...bulgu.map(r => `  BULGU ${r.company} ${r.area}: ${JSON.stringify(r.detail).slice(0, 400)}`)];
   return { day, before: { version: before.version, commit: before.commit }, after: { version: after.version, commit: after.commit }, rows, bulgu, summaryLines };
+}
+
+// 2.4.5 (profile "244-245") tablo raporları, takvim, Vade Takip ve projeksiyon — kurallar dosya başındaki K4.1 / K5 metninden.
+const CASH_KEYS = ["cashIn", "cashOut", "net", "cumulative", "projected"];
+const NON_TABLE_SOURCES = new Set(["plan", "cheque", "invoice", "bank", "account"]);
+function table245(code, B, A, add) {
+  const area = (name, ok, decision, detail, equal = false) => add(code, name, ok ? (equal ? "EŞİT" : "BELGELİ") : "BULGU", ok ? (equal ? "" : decision) : `${decision} — kural tutmuyor`, detail);
+  // ---------- K5 Tablo Raporları ----------
+  const stripCash = value => {
+    if (Array.isArray(value)) return value.map(stripCash);
+    if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).filter(([k]) => !CASH_KEYS.includes(k)).map(([k, v]) => [k, stripCash(v)]));
+    return value;
+  };
+  for (const kind of ["cari-ekstre", "vade-takip", "nakit-akis"]) {
+    const x = B.tableReports?.[kind]?.report;
+    const y = A.tableReports?.[kind]?.report;
+    if (!x || !y) {
+      area(`Tablo Raporları · ${kind}`, false, "K5", { before: B.tableReports?.[kind], after: A.tableReports?.[kind] });
+      continue;
+    }
+    const colsB = (x.table?.columns || []).filter(c => kind !== "nakit-akis" || !CASH_KEYS.includes(c.key));
+    const colsA = y.table?.columns || [];
+    const dropped = (x.table?.columns || []).filter(c => !colsA.some(d => d.key === c.key)).map(c => c.key);
+    const relabeled = colsA.map((c, i) => [colsB[i]?.key, colsB[i]?.label, c.key, c.label]).filter(([kb, lb, ka, la]) => kb !== ka || lb !== la);
+    const labelOk = colsA.length === colsB.length && relabeled.every(([kb, , ka, la]) => kb === ka && (/Muhasebe Kaydı Değil/.test(la) || la === "Tahsil Edilen"));
+    const dropOk = dropped.every(k => kind === "nakit-akis" && CASH_KEYS.includes(k));
+    // Kasa sütunları kalkınca yalnız Kasa hareketi olan dönem satırının (beklenen ve gerçekleşen 0) gösterecek bir şeyi kalmaz: iki tarafta da süzülür, sayısı yazılır
+    // (madde 5 "Kasa sütunları kalmaz"ın sonucu; zincir v2.3.0 verisinde 001 Eylül 2025 böyle — 22.10'da 2.4.4 madde 31b MM6 Kasa sütunlarını eklemişti).
+    const cashOnly = row => row && typeof row === "object" && !Array.isArray(row) && row.label !== "TOPLAM" && ["expected", "expectedCount", "collected", "collectedCount"].every(k => !row[k]);
+    let cashOnlyRows = 0;
+    const norm = r => {
+      const { table, ...rest } = kind === "nakit-akis" ? stripCash(r) : r;
+      if (kind === "nakit-akis") rest.rows = (rest.rows || []).filter(row => !cashOnly(row));
+      const rows = kind === "nakit-akis" && table?.rows ? table.rows.filter(row => !cashOnly(row)) : table?.rows;
+      // Bütün dönemleri yalnız Kasa'dan olan rapor boş kalır; boş raporda TOPLAM yok (kalıcı karar "her raporda alt TOPLAM satırı … Boş raporda TOPLAM yok").
+      const footer = kind === "nakit-akis" && table && Array.isArray(rows) && !rows.length ? null : table?.footer;
+      return { ...rest, table: table ? { ...table, rows, footer, columns: (table.columns || []).filter(c => kind !== "nakit-akis" || !CASH_KEYS.includes(c.key)).map(c => c.key) } : null };
+    };
+    if (kind === "nakit-akis") cashOnlyRows = (x.rows || []).filter(row => cashOnly(stripCash(row))).length - (y.rows || []).filter(row => cashOnly(row)).length;
+    const restSame = same(norm(x), norm(y));
+    area(`Tablo Raporları · ${kind} (rakamlar, satırlar)`, restSame, `K5 yalnız etiket / Kasa sütunları${cashOnlyRows ? ` (yalnız Kasa hareketli ${cashOnlyRows} dönem satırı kalktı)` : ""}`, { firstDiff: restSame ? null : firstDiff(norm(x), norm(y)), cashOnlyRows }, !dropped.length && !relabeled.length && restSame);
+    if (dropped.length || relabeled.length) area(`Tablo Raporları · ${kind} (kolon adları)`, labelOk && dropOk, kind === "nakit-akis" ? "K5 \"Muhasebe Kaydı Değil\" etiketi + Kasa sütunları kalktı (madde 5)" : "K5 \"Muhasebe Kaydı Değil\" / \"Tahsil Edilen\" etiketi (madde 5)", { dropped, relabeled });
+  }
+  // ---------- K4.1 Tahsilat Takvimi / zil ----------
+  const d = B.dues;
+  const e = A.dues;
+  if (!d || !e || d.__status || e.__status) area("Tahsilat Takvimi", false, "K4.1", { before: d?.__status, after: e?.__status });
+  else {
+    const sortById = list => [...list].sort((p, q) => String(p.id).localeCompare(String(q.id)));
+    const isTable = item => !NON_TABLE_SOURCES.has(item.source);
+    const kept = sortById(d.items.filter(item => !isTable(item)));
+    const removed = d.items.filter(isTable);
+    const keptSame = same(kept, sortById(e.items));
+    const ok = keptSame && same(d.deadlines, e.deadlines) && !e.sources.length && !e.dormant.length && !e.notes.length;
+    const bySource = list => countBy(list, item => item.source || "(tablo)");
+    area("Tahsilat Takvimi / zil (kalemler, son tarihler)", ok, "K4.1 tablonun tutarlı kalemleri yok; taksit / çek / fatura / planlı banka birebir; son tarihler birebir (madde 4)", { before: bySource(d.items), after: bySource(e.items), removed: removed.length, removedMinor: removed.reduce((t, item) => t + Math.round((item.amount || 0) * 100), 0), deadlines: [d.deadlines.length, e.deadlines.length], sources: [d.sources.length, e.sources.length], dormant: [d.dormant.length, e.dormant.length], notes: [d.notes.length, e.notes.length], firstDiff: keptSame ? null : firstDiff(kept, sortById(e.items)) }, !removed.length && keptSame && same(d, { ...e, version: d.version }));
+  }
+  // ---------- K4.1 Nakit Akış Projeksiyonu ----------
+  const pn = B.projectionNoTable;
+  const pa = A.projection;
+  if (!pn || !pa || pn.__status || pa.__status) area("Nakit Akış Projeksiyonu", false, "K4.1", { before: pn?.__status, after: pa?.__status });
+  else {
+    const pick = p => ({ totals: p.totals, rowTotal: p.rowTotal, rows: p.rows, overdue: p.overdue, closing: p.closing });
+    const ok = same(pick(pn), pick(pa)) && pa.withTable === false && B.projection.from === pa.from && B.projection.to === pa.to && same(B.projection.start, pa.start);
+    const tableIn = Math.round(((B.projection.totals?.in || 0) - (pn.totals?.in || 0)) * 100);
+    area("Nakit Akış Projeksiyonu (= 2.4.4'ün tablosuz projeksiyonu)", ok, "K4.1 \"Tablo\" seçeneği kalktı, tablo kalemi yok (madde 4; toplam düşer)", { tabloIleGiris: B.projection.totals, tablosuz244: pn.totals, sonra: pa.totals, tabloPayiMinor: tableIn, satir: [B.projection.rowTotal, pn.rowTotal, pa.rowTotal], firstDiff: ok ? null : firstDiff(pick(pn), pick(pa)) });
+  }
+  // ---------- K4.1 Anlık Durum Vade Takip ----------
+  const tb = B.dueTrackBySource;
+  const ta = A.dueTrackBySource;
+  if (!tb || !ta) area("Vade Takip", false, "K4.1", {});
+  else {
+    const strip = t => (t?.__status ? t : { ...t, sources: null, allowed: null });
+    const gone = Object.keys(tb).filter(s => !ta[s]);
+    const added = Object.keys(ta).filter(s => !tb[s]);
+    const bad = Object.keys(ta).filter(s => tb[s] && !same(strip(tb[s]), strip(ta[s])));
+    const addedEmpty = added.every(s => s === "account" && ta[s].totals?.count === 0);
+    const goneOk = same([...gone].sort(), ["promise", "table"].filter(s => tb[s]).sort());
+    const removedCount = gone.reduce((t, s) => t + (tb[s].totals?.count || 0), 0);
+    const removedIn = gone.reduce((t, s) => t + Math.round((tb[s].totals?.in?.total?.amount || 0) * 100), 0);
+    const totalOk = B.dueTrack.totals.count - removedCount === A.dueTrack.totals.count && Math.round(B.dueTrack.totals.in.total.amount * 100) - removedIn === Math.round(A.dueTrack.totals.in.total.amount * 100);
+    area("Anlık Durum · Vade Takip (kaynak başına)", !bad.length && addedEmpty && goneOk && totalOk, "K4.1 tablo ve ödeme sözü kaynağı yok; öbür kaynaklar birebir; toplam farkı = o iki kaynak (madde 4); cari vadesi kaynağı (K6.3) eski veride boş", { gone, added, bad: bad.map(s => [s, firstDiff(strip(tb[s]), strip(ta[s]))]), removed: { count: removedCount, inMinor: removedIn }, totals: [B.dueTrack.totals, A.dueTrack.totals] });
+  }
 }
 
 function ux18Report(x, y, { changedNumbers, changedAccounts, saleDelta, purchaseDelta, id, openCount }) {

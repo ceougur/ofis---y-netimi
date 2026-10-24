@@ -1,0 +1,11 @@
+[20:16:35]   v2.4.4: 001: şema 32, sirketler/002: şema 32 (856 ms)
+[20:17:09] fark: 98 olgu · EŞİT 74 · BELGELİ 24 · BULGU 0
+[20:17:09] ✓ 001 yol bağımsızlığı
+[20:17:09] ✓ 002 yol bağımsızlığı
+# zincir zc-taban → v2.4.4 → güncel
+# tests 102
+# pass 102
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

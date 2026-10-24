@@ -9,6 +9,7 @@ import { createServer } from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { DatabaseSync } from "node:sqlite";
+import { SCHEMA } from "../test/guvenilirlik/m30-olgular.mjs";
 
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 // Windows'ta sinyal yoktur (process.kill süreci sonlandırır, signal null, çıkış kodu sıfırdan farklı); Linux/macOS'ta SIGKILL.
@@ -48,7 +49,7 @@ export async function run({ root, value, log, measure, summary, writeJson, readJ
     for (const code of Object.keys(goc.companies)) {
       const diff = stableDiff(goc.companies[code], facts.companies[code]);
       check(`${label}: yeniden açılınca ${code} olguları göç ölçüsüyle aynı`, !diff.length, { diff });
-      check(`${label}: ${code} şema 32, bütünlük ok, numara tabanı göçtekiyle aynı`, facts.files[code].version === 32 && facts.files[code].integrity === "ok" && facts.files[code].numberFloor === goc.files[code].numberFloor, { file: facts.files[code], expectedFloor: goc.files[code].numberFloor });
+      check(`${label}: ${code} şema ${SCHEMA}, bütünlük ok, numara tabanı göçtekiyle aynı`, facts.files[code].version === SCHEMA && facts.files[code].integrity === "ok" && facts.files[code].numberFloor === goc.files[code].numberFloor, { file: facts.files[code], expectedFloor: goc.files[code].numberFloor });
     }
     return facts;
   };
@@ -70,7 +71,7 @@ export async function run({ root, value, log, measure, summary, writeJson, readJ
     const added = after.filter(f => !before.includes(f));
     const state = fileFacts(c.file);
     const partial = added.filter(f => f.endsWith(".yaziliyor"));
-    const premig = added.filter(f => /pre-migration-v32\.sqlite$/.test(f));
+    const premig = added.filter(f => new RegExp(`pre-migration-v${SCHEMA}\\.sqlite$`).test(f));
     const detail = { signal: child.signal, status: child.status, stdout: child.stdout.trim().slice(0, 300), stderr: child.stderr.trim().slice(-300), version: state.version, integrity: state.integrity, added, numberFloor: state.numberFloor };
     if (point === "disk-dolu") {
       check(`kesinti ${point}: göç öncesi yedek yazılamayınca göç YAPILMAZ (şema 30, yarım yedek silinir, hata bildirilir)`, child.status === 3 && state.version === 30 && state.integrity === "ok" && !added.length && /disk is full/.test(child.stdout), detail);
@@ -82,7 +83,7 @@ export async function run({ root, value, log, measure, summary, writeJson, readJ
     }
     await reopen(dir, `kesinti ${point}`);
     const finalList = backupsOf(c.backupDir).filter(f => !before.includes(f));
-    check(`kesinti ${point}: yeniden açılış göçü tamamlar; yedek klasöründe ${finalList.length} yeni dosya`, finalList.filter(f => /pre-migration-v32\.sqlite$/.test(f)).length >= 1, { added: finalList });
+    check(`kesinti ${point}: yeniden açılış göçü tamamlar; yedek klasöründe ${finalList.length} yeni dosya`, finalList.filter(f => new RegExp(`pre-migration-v${SCHEMA}\\.sqlite$`).test(f)).length >= 1, { added: finalList });
     rmSync(dir, { recursive: true, force: true });
   }
 
@@ -106,8 +107,8 @@ export async function run({ root, value, log, measure, summary, writeJson, readJ
       const ended = await exited;
       const state = fileFacts(c.file);
       const added = backupsOf(c.backupDir).filter(f => !before.includes(f));
-      const stage = state.version === 32 ? "göç bitmişti" : state.version === 31 ? "v31 ile v32 arası" : added.some(f => f.endsWith(".yaziliyor")) ? "göç öncesi yedek yazılırken" : added.some(f => /pre-migration/.test(f)) ? "yedekten sonra, v31'den önce" : "göç başlamadan";
-      check(`gerçek süreç SIGKILL ${delay} ms (pid ${pid}, ${stage}): dosya tutarlı`, killed(ended) && state.integrity === "ok" && [30, 31, 32].includes(state.version), { ended, version: state.version, added, log: output.split(/\r?\n/).filter(line => /göç|Göç|yedek/.test(line)).slice(0, 6) });
+      const stage = state.version === SCHEMA ? "göç bitmişti" : state.version === 31 ? "v31 ile v32 arası" : added.some(f => f.endsWith(".yaziliyor")) ? "göç öncesi yedek yazılırken" : added.some(f => /pre-migration/.test(f)) ? "yedekten sonra, v31'den önce" : "göç başlamadan";
+      check(`gerçek süreç SIGKILL ${delay} ms (pid ${pid}, ${stage}): dosya tutarlı`, killed(ended) && state.integrity === "ok" && [30, 31, 32, SCHEMA].includes(state.version), { ended, version: state.version, added, log: output.split(/\r?\n/).filter(line => /göç|Göç|yedek/.test(line)).slice(0, 6) });
       await reopen(dir, `gerçek süreç SIGKILL ${delay} ms`);
       rmSync(dir, { recursive: true, force: true });
     }
@@ -132,7 +133,7 @@ export async function run({ root, value, log, measure, summary, writeJson, readJ
       outcome = { opened: false, ms: Math.round(performance.now() - started), error: String(error.message || error).slice(0, 300) };
     }
     const state = fileFacts(c.file);
-    check(`kilitli dosya (${holdMs} ms yazma kilidi): 2.4.4 yarım göç bırakmaz (sonuç: ${outcome.opened ? `açıldı ${outcome.ms} ms` : "açılmadı"})`, state.integrity === "ok" && [30, 32].includes(state.version), { outcome, version: state.version });
+    check(`kilitli dosya (${holdMs} ms yazma kilidi): 2.4.4 yarım göç bırakmaz (sonuç: ${outcome.opened ? `açıldı ${outcome.ms} ms` : "açılmadı"})`, state.integrity === "ok" && [30, SCHEMA].includes(state.version), { outcome, version: state.version });
     await new Promise(resolve => (holder.exitCode !== null ? resolve() : holder.once("exit", resolve)));
     await reopen(dir, "kilit kalktıktan sonra");
     rmSync(dir, { recursive: true, force: true });

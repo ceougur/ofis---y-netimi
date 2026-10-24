@@ -1,0 +1,13 @@
+import { readFileSync } from "node:fs";
+const p = JSON.parse(readFileSync(process.argv[2], "utf8"));
+const byId = new Map(p.nodes.map(n => [n.id, n]));
+const self = new Map();
+for (let i = 0; i < p.samples.length; i++) self.set(p.samples[i], (self.get(p.samples[i]) || 0) + (p.timeDeltas[i] || 0) / 1000);
+const incl = new Map();
+const calc = id => { const n = byId.get(id); let t = self.get(id) || 0; for (const c of n.children || []) t += calc(c); incl.set(id, t); return t; };
+calc(p.nodes[0].id);
+const names = process.argv.slice(3);
+const agg = {};
+const walk = (id, seen) => { const n = byId.get(id); const name = n.callFrame.functionName; const key = names.find(x => x === name); let s = seen; if (key && !seen.has(key)) { agg[key] = (agg[key] || 0) + incl.get(id); s = new Set(seen); s.add(key); } for (const c of n.children || []) walk(c, s); };
+walk(p.nodes[0].id, new Set());
+console.log(Object.entries(agg).map(([k, v]) => `${k}: ${v.toFixed(0)} ms`).join("\n"));
