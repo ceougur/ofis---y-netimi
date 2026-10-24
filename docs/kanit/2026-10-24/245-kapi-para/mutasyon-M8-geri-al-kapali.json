@@ -1,0 +1,43 @@
+{
+  "ad": "245-kapi-para/mutasyon-M8-geri-al-kapali",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/kapi-para-245.test.mjs",
+  "commit": "d2cef7ce21b0776e2767f8fb610c9be8a4159f5d",
+  "dal": "HEAD",
+  "kirli": 19,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:14:34.193Z",
+  "sure_sn": 6.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 15,
+    "gecen": 13,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.5 madde 1–2: eski sürüm verisi (v2.4.4 gerçek kodu) yeni kodla — kapılar kapalı, eski satırlar aynen, sil / geri yükle / geri al açık › eski aktarımın Geri Al'ı açık: kartlar kalkar, karta taşınan kayıt tahsilatı kayda döner, Kasa aynı",
+      "konum": "test/kapi-para-245.test.mjs:176:3",
+      "hata": "{\"ok\":false,\"error\":\"kapalı\",\"code\":\"table-transfer-closed\"} · 410 !== 200 (beklenen 200, gelen 410)"
+    },
+    {
+      "ad": "2.4.5 madde 1–3: kaynakta kapılar › POST /plans/from-table analizden önce kapıya bakar; özet kapalıyken sormaz; Geri Al kapısız",
+      "konum": "test/kapi-para-245.test.mjs:314:3",
+      "hata": "Geri Al açık kalmalı (beklenen , gelen |-)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/kapi-para/docs/kanit/2026-10-24/245-kapi-para/mutasyon-M8-geri-al-kapali.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/mut-M8-geri-al-kapali",
+  "ham_cikti_sha256": "f3e21cf151b2d0c29a69e6d8d442f534a00c2704e96b08448ac016338ec938b9",
+  "ham_cikti_bayt": 18364
+}

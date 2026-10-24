@@ -1,0 +1,1805 @@
+TAP version 13
+# Subtest: 2.4.5 madde 1–2: anahtar üretimde kapalı
+    # Subtest: varsayılan kapalı; ortam değişkeniyle açılmaz; üretim girişi (server/server.mjs) anahtar vermez
+    not ok 1 - varsayılan kapalı; ortam değişkeniyle açılmaz; üretim girişi (server/server.mjs) anahtar vermez
+      ---
+      duration_ms: 2.706131
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:66:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        legacyCasePayments varsayılanı kapalı olmalı
+        + actual - expected
+        
+        + undefined
+        - false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:68:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    1..1
+not ok 1 - 2.4.5 madde 1–2: anahtar üretimde kapalı
+  ---
+  duration_ms: 3.637673
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:65:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.5 madde 1–2: test/helpers.mjs startTestServer anahtarı config'e iletir
+    # Subtest: { legacyCasePayments: false, legacyTableTransfer: false } → 410; seçenek verilmezse yardımcının varsayılanı açık (eski testler)
+    not ok 1 - { legacyCasePayments: false, legacyTableTransfer: false } → 410; seçenek verilmezse yardımcının varsayılanı açık (eski testler)
+      ---
+      duration_ms: 537.608002
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:82:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   undefined,
+        +   undefined
+        -   false,
+        -   false
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: false
+        1: false
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:86:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - 2.4.5 madde 1–2: test/helpers.mjs startTestServer anahtarı config'e iletir
+  ---
+  duration_ms: 537.937665
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:81:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.5 madde 1–2: eski sürüm verisi (v2.4.4 gerçek kodu) yeni kodla — kapılar kapalı, eski satırlar aynen, sil / geri yükle / geri al açık
+    # Subtest: eski satırlar aynen: kayıt tahsilatı, Kasa, cari/kart satırları, işlem başlıkları, mizan ve yevmiye madde sayısı
+    ok 1 - eski satırlar aynen: kayıt tahsilatı, Kasa, cari/kart satırları, işlem başlıkları, mizan ve yevmiye madde sayısı
+      ---
+      duration_ms: 13.603309
+      type: 'test'
+      ...
+    # Subtest: POST kayıt tahsilatı 410 (istek kimliğiyle de); veri değişmez
+    not ok 2 - POST kayıt tahsilatı 410 (istek kimliğiyle de); veri değişmez
+      ---
+      duration_ms: 41.397287
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:152:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POST: 410 bekleniyordu, 200 geldi ({"ok":true,"data":{"id":"payment-87cf25c2-27d9-4c1a-ade5-cfc2b2dbcc09"}})
+        
+        200 !== 410
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 410
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        closed (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:40:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:153:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: PUT eski kayıt tahsilatı 410; satırın tutarı, tarihi ve yolu aynı
+    not ok 3 - PUT eski kayıt tahsilatı 410; satırın tutarı, tarihi ve yolu aynı
+      ---
+      duration_ms: 27.514501
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:158:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        PUT: 410 bekleniyordu, 200 geldi ({"ok":true,"data":{"id":"payment-99a45007-3740-41be-b919-fa2138e75be4"}})
+        
+        200 !== 410
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 410
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        closed (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:40:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:160:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: oturumsuz 401; personel de 410 alır (Tablodan Aktar yetkisi olmasa da 410: kapı yetkiden önce); veri değişmez
+    not ok 4 - oturumsuz 401; personel de 410 alır (Tablodan Aktar yetkisi olmasa da 410: kapı yetkiden önce); veri değişmez
+      ---
+      duration_ms: 152.642411
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:166:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        personel POST: 410 bekleniyordu, 200 geldi ({"ok":true,"data":{"id":"payment-0b573492-7066-4302-8c7e-0087dfc50d95"}})
+        
+        200 !== 410
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 410
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        closed (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:40:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:171:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Tablodan Aktar POST 410; yükleme sonrası özet sormaz; veri değişmez; eski aktarım listede
+    not ok 5 - Tablodan Aktar POST 410; yükleme sonrası özet sormaz; veri değişmez; eski aktarım listede
+      ---
+      duration_ms: 66.917758
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:177:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Tablodan Aktar: 410 bekleniyordu, 200 geldi ({"ok":true,"data":{"importId":"import-0ce26228-f8d2-4dce-9021-01ca8ebbd7f9","created":1,"linked":0,"accountsCreated":1,"accountsLinked":0,"paymentsMoved":3,"paymentsAmount":2000,"accountEntriesMoved":)
+        
+        200 !== 410
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 410
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        closed (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:40:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:178:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: DELETE açık (→ Silinenler), Silinenler'den geri yükleme açık: Kasa ve mizan eski hâline döner
+    not ok 6 - DELETE açık (→ Silinenler), Silinenler'den geri yükleme açık: Kasa ve mizan eski hâline döner
+      ---
+      duration_ms: 24.876499
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:187:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:191:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: eski aktarımın Geri Al'ı açık: kartlar kalkar, karta taşınan kayıt tahsilatı kayda döner, Kasa aynı
+    not ok 7 - eski aktarımın Geri Al'ı açık: kartlar kalkar, karta taşınan kayıt tahsilatı kayda döner, Kasa aynı
+      ---
+      duration_ms: 36.741597
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:201:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aktarımın iki kartı kalktı
+        
+        1 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:205:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..7
+not ok 3 - 2.4.5 madde 1–2: eski sürüm verisi (v2.4.4 gerçek kodu) yeni kodla — kapılar kapalı, eski satırlar aynen, sil / geri yükle / geri al açık
+  ---
+  duration_ms: 1426.037773
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:103:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.5 madde 1–2: istek kimliği yinelemesi kapıyı aşmaz; anahtar açıkken eski davranış (testlerin ve üreticilerin yolu)
+    # Subtest: açıkken POST / PUT / Tablodan Aktar 200 ve yineleme 'replayed'; kapalı sunucuda aynı istek kimliği 410, satır sayısı aynı
+    not ok 1 - açıkken POST / PUT / Tablodan Aktar 200 ve yineleme 'replayed'; kapalı sunucuda aynı istek kimliği 410, satır sayısı aynı
+      ---
+      duration_ms: 513.956134
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:221:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aynı istek kimliği (POST) kapalı sunucuda: 410 bekleniyordu, 200 geldi ({"ok":true,"data":{"id":"payment-fd35432d-4cd1-48df-8558-bddc74df023f","replayed":true}})
+        
+        200 !== 410
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 410
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        closed (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:40:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:252:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 4 - 2.4.5 madde 1–2: istek kimliği yinelemesi kapıyı aşmaz; anahtar açıkken eski davranış (testlerin ve üreticilerin yolu)
+  ---
+  duration_ms: 521.799246
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:212:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.5 madde 1–2: 002 şirketi de kapalı (alt şirket aynı yapılandırmayla açılır)
+    # Subtest: 002'de POST / PUT / Tablodan Aktar 410; 002'nin Kasa'sı ve kaydın işlem geçmişi boş
+    not ok 1 - 002'de POST / PUT / Tablodan Aktar 410; 002'nin Kasa'sı ve kaydın işlem geçmişi boş
+      ---
+      duration_ms: 463.964029
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:267:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        002 POST: 410 bekleniyordu, 200 geldi ({"ok":true,"data":{"id":"payment-710c4169-a893-4731-8726-e9b684ff6f2c"}})
+        
+        200 !== 410
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 410
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        closed (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:40:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:273:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 5 - 2.4.5 madde 1–2: 002 şirketi de kapalı (alt şirket aynı yapılandırmayla açılır)
+  ---
+  duration_ms: 504.453884
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:259:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.5 madde 1–3: kaynakta kapılar
+    # Subtest: payments'a satır ekleyen her yer izinli: kapılı POST, Silinenler'den geri yükleme, eski aktarımın Geri Al'ı
+    ok 1 - payments'a satır ekleyen her yer izinli: kapılı POST, Silinenler'den geri yükleme, eski aktarımın Geri Al'ı
+      ---
+      duration_ms: 44.936896
+      type: 'test'
+      ...
+    # Subtest: payments'ın tutarını / tarihini değiştiren UPDATE yalnız kapılı PUT'ta (B1 bağ taşıma yalnız case_key, banka eşlemesi yalnız fin_ref değiştirir)
+    ok 2 - payments'ın tutarını / tarihini değiştiren UPDATE yalnız kapılı PUT'ta (B1 bağ taşıma yalnız case_key, banka eşlemesi yalnız fin_ref değiştirir)
+      ---
+      duration_ms: 37.669495
+      type: 'test'
+      ...
+    # Subtest: POST /cases/:key/payments ve PUT /payments/:id ilk iş kapıya bakar; DELETE kapısız; kapı 410 case-payments-closed
+    not ok 3 - POST /cases/:key/payments ve PUT /payments/:id ilk iş kapıya bakar; DELETE kapısız; kapı 410 case-payments-closed
+      ---
+      duration_ms: 1.086591
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:327:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POST /api/workspace/cases/:key/payments ilk satırı kapı olmalı: const user = auth.requirePermission(req, "payments.create");
+        + actual - expected
+        
+        + 'const user = auth.requirePermission(req, "payments.create");'
+        - 'assertCasePaymentsOpen(req);'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'assertCasePaymentsOpen(req);'
+      actual: 'const user = auth.requirePermission(req, "payments.create");'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:332:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: POST /plans/from-table analizden önce kapıya bakar; özet kapalıyken sormaz; Geri Al kapısız
+    not ok 4 - POST /plans/from-table analizden önce kapıya bakar; özet kapalıyken sormaz; Geri Al kapısız
+      ---
+      duration_ms: 0.837446
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:339:3'
+      failureType: 'testCodeFailure'
+      error: 'kapı analizden önce'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:343:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: istemci: kayıt kartında Tahsilat düğmesi yok; Tablodan Aktar düğmesi yok (Son Aktarımlar var); ön dolumlar boş; eski tahsilatta düzelt yok
+    not ok 5 - istemci: kayıt kartında Tahsilat düğmesi yok; Tablodan Aktar düğmesi yok (Son Aktarımlar var); ön dolumlar boş; eski tahsilatta düzelt yok
+      ---
+      duration_ms: 1.280397
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:349:3'
+      failureType: 'testCodeFailure'
+      error: "kayıt kartındaki Tahsilat düğmesi HTML'den kalkmalı"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: |-
+        /* DestekOfis — operasyon merkezi: kenar çubuğu kartı, kullanıcı menüsü, dosya işlemleri ve işlem geçmişi. */
+        (() => {
+          "use strict";
+          const HOF = window.HOF;
+          const { esc } = HOF;
+          let users = [];
+          let activityKey = "";
+          let activityRequest = 0;
+        
+          const loadUsers = async () => {
+            try {
+              users = await HOF.api("/api/workspace/users");
+            } catch {
+              users = [];
+            }
+            return users;
+          };
+          // Atanacak kişi (v2.0.10): tüm aktif kullanıcılar, rolüyle; görev kişiye kimliğiyle bağlanır (aynı adlı iki kullanıcı
+          // karışmaz). Önceden ad önerisi (datalist) kutudaki adla süzüldüğü için yalnız yönetici görünüyordu.
+          const assigneeOptions = () =>
+            users.map(user => ({ value: user.id, label: `${user.name}${user.id === HOF.user?.id ? " (siz)" : ""} · ${user.roleLabel || HOF.roleLabels?.[user.role] || user.role}` }));
+          const priorityLabel = { normal: "Normal", high: "Yüksek", urgent: "Acil" };
+        
+          // Türk cep telefonlarını wa.me biçimine çevirir (90XXXXXXXXXX).
+          const extractPhones = text => {
+            const matches = String(text || "").match(/(?:\+?90[\s().-]*)?(?:0?5\d{2}|5\d{2})[\s().-]*\d{3}[\s().-]*\d{2}[\s().-]*\d{2}/g) || [];
+            return [...new Set(matches.map(value => {
+              const digits = value.replace(/\D/g, "");
+              return digits.startsWith("90") ? digits : digits.startsWith("0") ? `9${digits}` : `90${digits}`;
+            }).filter(value => value.length === 12))];
+          };
+          const openWhatsApp = number => window.open(`https://wa.me/${number}`, "_blank", "noopener");
+        
+          // 2.4.4 (E8; kullanıcı 21.10.2026: "orta tablodaki Excel'deki kayıttan taksit olmasın, cariye kaydedip oradan yapsın; kasa hareketlerini, fatura, rapor
+          // gibi kısımları bozar, muhasebe mantığını kaybeder"): kayıttan Kasa'ya doğrudan tahsilat penceresi ("Tahsilat İşle") ve içindeki "Taksit planı oluşturun"
+          // kısa yolu kalktı. Tahsilat kaydın carisine (ya da taksit kartına) girilir: actions.payment aşağıda. Sunucu ucu (POST cases/:key/payments) ve eski kayıt
+          // tahsilatlarının İşlem Geçmişi'nde görünmesi, düzeltilmesi (editPayment) ve silinmesi durur.
+        
+          // Kayda bağlı carisi olmayan kayıt: tahsilat cariye yazılır, önce cari açılır (ad, telefon ve Kayıt Tarihi kayıttan gelir; cari bu kayda bağlanır);
+          // kaydedince tahsilat formu açılır (tutar ve açıklama takvim kaleminden). Cari açma yetkisi olmayana yol söylenir.
+          function accountFirst(selected, target, preset) {
+            const row = (HOF.data?.rows || []).find(item => item.__hofKey === selected.key) || null;
+            const plans = HOF.plans || {};
+            const name = (row && plans.personOf ? plans.personOf(row) : "") || target?.person || selected.title || "";
+            const phone = (row && plans.phoneOf ? plans.phoneOf(row) : "") || target?.phone || "";
+            const caseTitle = row && plans.recordLabel ? plans.recordLabel(row) : selected.title || name;
+            const registeredOn = row && plans.recordDay ? plans.recordDay(row) || "" : "";
+            // 2.4.4 (5b): Açılış Bakiyesi kayıttaki Kalan Borç ile dolu gelir (takvim kaleminin "Kalan Borç"u; değiştirilebilir, kaynağı alanın altında yazar).
+            // Sonra Tablodan Aktar bu borcu ikinci kez yazmaz (kart "Carinin Mevcut Borcu" olarak açılır; routes/plan-transfer.mjs).
+            const openingBalance = Number(target?.debt) > 0 ? Number(target.debt) : null;
+            if (!HOF.accounts?.newFor || !HOF.can("accounts.manage")) {
+              HOF.toast(`Tahsilat carinin hesabına yazılır; “${name || selected.title}” kaydının carisi yok. Cari açmak yönetici, uzman ve muhasebe yetkisidir: yöneticinizden bu kişiye cari açıp kayda bağlamasını isteyin.`, { type: "error" });
+              return;
+            }
+            HOF.accounts.newFor(
+              { name, phone, caseKey: selected.key, caseTitle, registeredOn, ...(openingBalance ? { openingBalance, openingSource: target?.debtColumn || "Kalan Borç" } : {}) },
+              {
+                intro: "Önce cari açın: tahsilat carinin hesabına yazılır, bu kaydın carisi yok. Ad, telefon ve Kayıt Tarihi kayıttan geldi; cari bu kayda bağlanır, kaydedince tahsilat formu açılır. Kişinin borcu varsa Açılış Bakiyesi'ne yazın (yoksa tahsilat carinin alacağı olur). Carisi zaten varsa yeni cari açmayın; o carinin kartında Tablodaki Kayıt alanından bu kayda bağlayın.",
+                onSaved: account => {
+                  if (!account?.id) return;
+                  afterCaseChange();
+                  if (HOF.can("accounts.collect")) setTimeout(() => HOF.accounts.collect(account.id, preset), 150);
+                },
+              },
+            );
+          }
+        
+          // ---------- Kayda bağlı taksit planı (v2.0.6) ----------
+          const ITEM_STATE = { paid: "Ödendi", partial: "Kısmen", overdue: "Gecikti", today: "Bugün", upcoming: "Yaklaşıyor", open: "Bekliyor", closed: "Kapalı" };
+          const itemState = item => (item.state === "overdue" && item.days < 0 ? `${-item.days} gün gecikti` : ITEM_STATE[item.state] || item.state);
+          // Tahsilat penceresi: kaydın açık kartlarındaki taksitler; "Tahsil et" o taksite, serbest tutar en eski açık taksite.
+          function openPlanCollect(selected, plans, linked) {
+            const money = HOF.formatMoney;
+            const canCollect = Boolean(linked.canCollect) && HOF.can("plans.collect");
+            const block = plan => {
+              const openItems = plan.items.filter(item => item.remaining > 0.005);
+              const rows = plan.items
+                .map(item => `<tr class="is-${esc(item.state)}${item.remaining > 0.005 ? "" : " is-paid"}"><td>${item.seq}.</td><td>${esc(HOF.formatDate(item.dueDate))}<small>${esc(itemState(item))}</small></td><td class="num">${esc(money(item.amount))}</td><td class="num">${esc(money(item.paid))}</td><td class="num${item.remaining > 0.005 ? " hof-cash-out" : ""}">${esc(money(item.remaining))}</td><td class="hof-right">${canCollect && item.remaining > 0.005 ? `<button type="button" class="hof-button hof-button-small" data-collect="${esc(item.id)}" data-plan="${esc(plan.id)}">Tahsil Et</button>` : ""}</td></tr>`)
+                .join("");
+              return `<section class="hof-plan-collect" data-plan-block="${esc(plan.id)}"><header><div><b>${esc(plan.name)}</b><small>${esc([plan.groupName, plan.subgroupName].filter(Boolean).join(" › ") || "Taksit kartı")}${plan.refNo ? ` · No ${esc(plan.refNo)}` : ""}</small></div><div class="hof-plan-collect-sums"><span>Toplam<b>${esc(money(plan.totals.total))}</b></span><span>Ödenen<b class="hof-cash-in">${esc(money(plan.totals.paid))}</b></span><span>Kalan<b class="hof-cash-out">${esc(money(plan.totals.remaining))}</b></span>${plan.next ? `<span>Sıradaki<b>${plan.next.seq}. taksit · ${esc(HOF.formatDate(plan.next.dueDate))}</b></span>` : ""}</div></header>
+                ${plan.items.length ? `<div class="hof-cash-list"><table class="hof-table hof-cash-table hof-plan-items"><thead><tr><th>No</th><th>Vade</th><th class="num">Tutar</th><th class="num">Ödenen</th><th class="num">Kalan</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="hof-empty">Bu kartta taksit kurulmamış; tahsilat kalan tutardan düşer.</p>'}
+                <div class="hof-plan-collect-tools">${canCollect ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-collect="" data-plan="${esc(plan.id)}">${openItems.length ? "Serbest Tutar (en eski açık taksite)" : "Tahsilat Gir"}</button>` : ""}<button type="button" class="hof-button hof-button-small hof-button-ghost" data-open-plan="${esc(plan.id)}">Taksit Kartını Aç</button></div></section>`;
+            };
+            const modal = HOF.modal({
+              title: "Tahsilat",
+              eyebrow: selected.title,
+              size: "wide",
+              // 2.4.4 (E8): "Plansız Tahsilat Kaydet" (kaydın kendi defterine, Kasa'ya doğrudan) kalktı; taksit dışı tahsilat kartın carisinden girilir.
+              body: `<p class="hof-modal-text">Bu kaydın taksit planı var. Taksitin yanındaki <b>Tahsil Et</b> tutarı o taksite yazar; Kasa'ya tek tahsilat olarak düşer, makbuzu alınır. Taksit dışı tahsilat kartın carisinden girilir.</p>${plans.map(block).join("")}<div class="hof-actions"><button type="button" class="hof-button" data-close>Kapat</button></div>`,
+            });
+            modal.dialog.classList.add("hof-plan-collect-modal");
+            modal.dialog.addEventListener("click", event => {
+              const button = event.target.closest("[data-collect], [data-open-plan], [data-close]");
+              if (!button) return;
+              if ("close" in button.dataset) return modal.close();
+              if (button.dataset.openPlan) {
+                modal.close();
+                return HOF.plans.open(button.dataset.openPlan);
+              }
+              const plan = plans.find(item => item.id === button.dataset.plan);
+              const item = plan?.items.find(row => row.id === button.dataset.collect) || null;
+              modal.close();
+              if (plan) HOF.plans.collect(plan, item);
+            });
+          }
+          // Kişinin kartındaki "Taksit planı" bölümü: kartın hemen altında; taksitler, ödenen, kalan, sıradaki vade.
+          let casePlanKey = "";
+          let casePlanStamp = 0;
+          let casePlans = [];
+          function casePlanHtml(plan, data) {
+            const money = HOF.formatMoney;
+            const t = plan.totals;
+            const share = t.total > 0 ? Math.max(0, Math.min(100, Math.round((t.paid / t.total) * 100))) : 0;
+            const canCollect = Boolean(data.canCollect) && HOF.can("plans.collect");
+            const rows = plan.items
+              .map(item => `<tr class="is-${esc(item.state)}${item.remaining > 0.005 ? "" : " is-paid"}"><td>${item.seq}.</td><td>${esc(HOF.formatDate(item.dueDate))}</td><td class="num">${esc(money(item.amount))}</td><td class="num${item.remaining > 0.005 ? " hof-cash-out" : ""}">${esc(money(item.remaining))}</td><td><span class="hof-chip hof-chip-${esc(item.state)}">${esc(itemState(item))}</span></td><td class="hof-right">${canCollect && item.remaining > 0.005 ? `<button type="button" class="hof-mini" data-case-collect="${esc(item.id)}" data-plan="${esc(plan.id)}" title="Bu taksite tahsilat gir" aria-label="Bu taksite tahsilat gir">₺</button>` : ""}</td></tr>`)
+              .join("");
+            return `<div class="hof-case-plan-head"><h3>TAKSİT PLANI</h3><span>${esc(plan.name)}${plan.refNo ? ` · No ${esc(plan.refNo)}` : ""}${t.overdueCount ? ` · <b class="is-late">${t.overdueCount} taksit gecikti</b>` : ""}</span></div>
+              <div class="hof-case-plan-kpis"><div><b>${esc(money(t.total))}</b><span>Taksitlendirilen Tutar</span></div><div><b class="hof-cash-in">${esc(money(t.paid))}</b><span>Ödenen · %${share}</span></div><div><b class="hof-cash-out">${esc(money(t.remaining))}</b><span>Güncel Bakiye</span></div><div><b>${plan.next ? `${plan.next.seq}. taksit` : "—"}</b><span>${plan.next ? `${esc(HOF.formatDate(plan.next.dueDate))} · ${esc(money(plan.next.remaining))}` : "Sıradaki taksit yok"}</span></div></div>
+              <span class="hof-plan-progress" aria-hidden="true"><i style="width:${share}%"></i></span>
+              ${plan.items.length ? `<div class="hof-case-plan-list"><table class="hof-table hof-cash-table"><thead><tr><th>No</th><th>Vade</th><th class="num">Tutar</th><th class="num">Kalan</th><th>Durum</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="hof-empty">Taksit kurulmamış; tahsilat kalan tutardan düşer.</p>'}
+              <div class="hof-case-plan-tools">${canCollect ? `<button type="button" class="hof-button hof-button-small" data-case-collect="" data-plan="${esc(plan.id)}">+ Tahsilat</button>` : ""}<button type="button" class="hof-button hof-button-small hof-button-ghost" data-open-plan="${esc(plan.id)}">Taksit Kartını Aç</button></div>`;
+          }
+          async function renderCasePlan(force = false) {
+            const selected = HOF.selectedCase();
+            const panel = HOF.detailPanel();
+            let box = document.getElementById("hof-case-plan");
+            if (!selected || !panel || !HOF.plans?.forCase || !HOF.can("plans.view")) {
+              if (box) box.hidden = true;
+              casePlanKey = "";
+              return;
+            }
+            // v2.0.14: sıra sabit — işlem düğmeleri → denetim bölümü (#hof-checks) → taksit/cari bölümü. Önceden iki bölüm de
+            // "düğmelerin hemen altı"nı istiyor, her DOM değişiminde birbirinin yerini alıyordu; her taşınma bölümdeki odağı
+            // düşürüyor, tıklama sırasında taşınınca düğme (Cari Kartı) tepki vermiyordu.
+            const anchor = panel.querySelector("#hof-checks") || panel.querySelector(".hof-case-actions");
+            if (!box) {
+              box = HOF.el("section", { id: "hof-case-plan", class: "hof-case-plan", "data-hof-ui": "", "aria-label": "Taksit planı" });
+              box.addEventListener("click", onCasePlanClick, true);
+            }
+            if (!box.innerHTML) box.hidden = true;
+            if (anchor && anchor.nextSibling !== box && !box.contains(document.activeElement)) anchor.after(box);
+            if (!force && casePlanKey === selected.key) return;
+            // Başka kayda geçildiyse önceki kaydın planı bir an bile görünmez: bölüm hemen boşaltılır, sonuç geldiğinde
+            // seçili kayıt hâlâ aynıysa yazılır (yarış koruması: damga + kayıt anahtarı).
+            if (casePlanKey !== selected.key) {
+              box.hidden = true;
+              box.innerHTML = "";
+              casePlans = [];
+            }
+            casePlanKey = selected.key;
+            box.dataset.caseKey = selected.key;
+            const stamp = ++casePlanStamp;
+            // 2.0.18 (kullanıcı kararı): detay kartında CARİ kutusu / Cari Kartı pili yok; yalnız kayda bağlı taksit kartları.
+            const data = await HOF.plans.forCase(selected.key).catch(() => ({ plans: [] }));
+            if (stamp !== casePlanStamp || HOF.selectedCase()?.key !== selected.key || box.dataset.caseKey !== selected.key) return;
+            casePlans = (data.plans || []).filter(plan => plan.status === "active" && plan.caseKey === selected.key);
+            if (!casePlans.length) {
+              box.hidden = true;
+              box.innerHTML = "";
+              return;
+            }
+            box.innerHTML = casePlans.map(plan => casePlanHtml(plan, data)).join("");
+            box.hidden = false;
+          }
+          // v2.0.14: dinleyici bölümün kendi üstünde ve yakalama aşamasında — panelin başka bir dinleyicisi (React, eklenti)
+          // tıklamayı yutsa da "+ Tahsilat" ve "Taksit Kartını Aç" çalışır (müşteri: Cari Kartı düğmesi tepki vermiyordu).
+          function onCasePlanClick(event) {
+            const button = event.target.closest("[data-case-collect], [data-open-plan]");
+            if (!button || !event.currentTarget.contains(button)) return;
+            event.preventDefault();
+            event.stopPropagation();
+            if (button.dataset.openPlan) {
+              if (!HOF.plans?.open) return HOF.toast("Taksit modülü yüklenemedi; sayfayı yenileyin.", { type: "error" });
+              return HOF.plans.open(button.dataset.openPlan);
+            }
+            const plan = casePlans.find(item => item.id === button.dataset.plan);
+            if (!plan || plan.caseKey !== HOF.selectedCase()?.key) return;
+            HOF.plans.collect(plan, plan.items.find(item => item.id === button.dataset.caseCollect) || null);
+          }
+        
+          const requireCase = () => {
+            const selected = HOF.selectedCase();
+            if (!selected) HOF.toast(`Önce tablodan bir ${HOF.vocab.record} seçin.`, { type: "error" });
+            return selected;
+          };
+          const caseUrl = (key, suffix) => `/api/workspace/cases/${encodeURIComponent(key)}/${suffix}`;
+          const afterCaseChange = () => {
+            activityKey = "";
+            renderActivity();
+            HOF.emit("case-activity");
+          };
+        
+          // ---------- Dosya işlem pencereleri ----------
+          const actions = {
+            note() {
+              const selected = requireCase();
+              if (!selected) return;
+              HOF.formModal({
+                title: "Not Ekle",
+                eyebrow: selected.title,
+                fields: [{ name: "note", label: "Not", type: "textarea", required: true, maxlength: 5000, placeholder: "Yapılan son işlemi yazın…" }],
+                submitLabel: "Notu Kaydet",
+                onSubmit: async data => {
+                  await HOF.api(caseUrl(selected.key, "notes"), { method: "POST", body: data });
+                  HOF.toast("Not kaydedildi.", { type: "success" });
+                  afterCaseChange();
+                },
+              });
+            },
+            // Telefon (v2.0.4): kayıttaki numaralar (tablodaki telefon kolonu + programda eklenenler) ara/WhatsApp
+            // düğmeleriyle listelenir; altında yeni numara ekleme formu. Önceden düğme yalnız "numara ekle" formu açıyordu;
+            // kullanıcı tabloya yazdığı numarayı burada göremiyordu.
+            phone() {
+              const selected = requireCase();
+              if (!selected) return;
+              const numbers = extractPhones(selected.panel.innerText);
+              const pretty = number => `0${number.slice(2, 5)} ${number.slice(5, 8)} ${number.slice(8, 10)} ${number.slice(10)}`;
+              const list = numbers.length
+                ? `<ul class="hof-phone-list">${numbers.map(number => `<li><strong>${HOF.esc(pretty(number))}</strong><span><a class="hof-button hof-button-small" href="tel:+${number}">Ara</a><button type="button" class="hof-button hof-button-small hof-whatsapp" data-wa="${number}">WhatsApp</button></span></li>`).join("")}</ul>`
+                : '<p class="hof-modal-text">Bu kayıtta telefon numarası yok. Aşağıdan ekleyin; numara kartta ve WhatsApp düğmesinde kullanılır.</p>';
+              HOF.formModal({
+                title: "Telefon",
+                eyebrow: selected.title,
+                introHtml: list,
+                fields: [
+                  { name: "phone", label: "Telefon", type: "tel", required: true, inputmode: "tel", placeholder: "05xx xxx xx xx" },
+                  { name: "label", label: "Etiket", placeholder: "Cep / iş / vekil", list: ["Cep", "İş", "Ev", "Vekil", "Yakını"] },
+                ],
+                submitLabel: "Yeni Numara Ekle",
+                onOpen: dialog => dialog.addEventListener("click", event => {
+                  const button = event.target.closest("[data-wa]");
+                  if (button) openWhatsApp(button.dataset.wa);
+                }),
+                onSubmit: async data => {
+                  await HOF.api(caseUrl(selected.key, "phones"), { method: "POST", body: data });
+                  HOF.toast("Telefon bilgisi kaydedildi.", { type: "success" });
+                  afterCaseChange();
+                },
+              });
+            },
+            // target: kayan ödeme şeridinden ya da bildirimden gelinince { key, title, person, phone, amount, note } (kayıt seçili olmasa da).
+            // 2.4.4 (E8; kullanıcı kararı 21.10.2026 "önerilerin uygun"): tahsilat CARİ'ye gider, kayıttan Kasa'ya doğrudan yazılmaz.
+            //   1. kayda bağlı cari varsa o carinin tahsilatı — cari "+ Tahsilat" ile aynı yol (açık taksit kartı varsa Taksite Yaz / Taksit Dışı Tahsilat,
+            //      Kapatılacak Fatura); takvim kaleminin tutarı ve açıklaması forma gelir;
+            //   2. carisi yoksa kayda bağlı açık taksit kartı (kart da bir cariye aittir; tahsilat taksitten düşer);
+            //   3. ikisi de yoksa "önce cari açın" + ad/telefonu kayıttan dolu "+ Yeni Cari" (kaydedince tahsilat formu).
+            // Takvim kalemi (ödeme sözü, taksit, kira) carinin ya da taksitin tahsilatıyla kapanır (sunucu lib/insight/case-collections.mjs).
+            async payment(target) {
+              const selected = target && target.key ? target : requireCase();
+              if (!selected) return;
+              const preset = target && (Number(target.amount) > 0 || target.note) ? { amount: Number(target.amount) > 0 ? Number(target.amount) : null, note: target.note || "" } : null;
+              if (HOF.accounts?.forCase && HOF.can("accounts.view")) {
+                let linked = null;
+                try {
+                  linked = await HOF.accounts.forCase(selected.key);
+                } catch (error) {
+                  // Bağ okunamadıysa tahsilat başka yere yazılmaz (önceden Kasa'ya düşüyordu).
+                  return HOF.toastError(error);
+                }
+                if (linked?.account?.id) {
+                  if (!HOF.can("accounts.collect")) return HOF.toast("Tahsilat bu kaydın carisine yazılır; Cariden Tahsilat Girme yetkiniz yok.", { type: "error" });
+                  return HOF.accounts.collect(linked.account.id, preset);
+                }
+              }
+              if (HOF.plans?.forCase && HOF.can("plans.view")) {
+                let linked = null;
+                try {
+                  linked = await HOF.plans.forCase(selected.key);
+                } catch (error) {
+                  return HOF.toastError(error);
+                }
+                const active = (linked?.plans || []).filter(plan => plan.status === "active");
+                if (active.length) return openPlanCollect(selected, active, linked);
+              }
+              accountFirst(selected, target, preset);
+            },
+            lien() {
+              const selected = requireCase();
+              if (!selected) return;
+              HOF.formModal({
+                title: "Haciz Kaydı",
+                eyebrow: selected.title,
+                intro: "Sistem haczin bir yıl sonraki düşüm tarihini hesaplar ve son 7 gün kala uyarır.",
+                fields: [
+                  { name: "title", label: "Haciz Başlığı", required: true, list: ["Araç haczi", "Taşınmaz Haczi", "Banka haczi", "Maaş haczi", "Menkul haczi"] },
+                  { name: "placedAt", label: "Konulduğu Tarih", type: "date", required: true },
+                ],
+                submitLabel: "Haczi Kaydet",
+                onSubmit: async data => {
+                  const result = await HOF.api(caseUrl(selected.key, "liens"), { method: "POST", body: data });
+                  HOF.toast(`Haciz kaydedildi. Düşüm tarihi: ${HOF.formatDate(result.expiresAt)}`, { type: "success" });
+                  afterCaseChange();
+                },
+              });
+            },
+            async task() {
+              if (!HOF.can("tasks.create")) {
+                HOF.toast(`Görev atama yalnızca yönetici ve ${HOF.roleLabels.avukat.toLocaleLowerCase("tr-TR")} hesaplarında kullanılabilir.`, { type: "error" });
+                return;
+              }
+              const selected = HOF.selectedCase();
+              await loadUsers();
+              HOF.formModal({
+                title: "Görev Ata",
+                eyebrow: selected ? selected.title : "OPERASYON",
+                fields: [
+                  { name: "title", label: "Görev", required: true, maxlength: 300, placeholder: HOF.modules.haciz ? "Örn. haciz yenileme evrakını kontrol et" : "Örn. eksik belgeleri tamamla ve bilgi ver" },
+                  { name: "assigneeId", label: "Atanacak Kişi", type: "select", options: assigneeOptions(), value: HOF.user.id },
+                  { name: "dueDate", label: "Son Tarih", type: "date" },
+                  { name: "priority", label: "Öncelik", type: "select", value: "normal", options: [{ value: "normal", label: "Normal" }, { value: "high", label: "Yüksek" }, { value: "urgent", label: "Acil" }] },
+                  ...(selected ? [{ name: "linkCase", label: `Görevi "${selected.title}" kaydına bağla`, type: "checkbox", value: true }] : []),
+                ],
+                submitLabel: "Görevi Ata",
+                onSubmit: async data => {
+                  const person = users.find(user => user.id === data.assigneeId);
+                  const body = { title: data.title, assigneeId: data.assigneeId, assignee: person?.name || "", dueDate: data.dueDate, priority: data.priority, caseKey: selected && data.linkCase ? selected.key : "" };
+                  await HOF.api("/api/workspace/tasks", { method: "POST", body });
+                  HOF.toast("Görev atandı.", { type: "success" });
+                  refreshBadges();
+                  if (body.caseKey) afterCaseChange();
+                },
+              });
+            },
+            whatsapp() {
+              const selected = requireCase();
+              if (!selected) return;
+              const number = extractPhones(selected.panel.innerText)[0];
+              if (!number) return HOF.toast("Bu kayıtta cep telefonu bulunamadı.", { type: "error" });
+              openWhatsApp(number);
+            },
+          };
+        
+          // ---------- Tahsilat düzeltme ve silme (v2.0.1) ----------
+          // Herkes kendi girdiği tahsilatı; kasa yetkisi olanlar (yönetici, muhasebe) tüm tahsilatları düzeltip silebilir.
+          const canEditPayment = item => HOF.can("cash.manage") || (HOF.can("payments.create") && item.actorId === HOF.user?.id);
+          const isoDate = value => String(value || "").slice(0, 10);
+          const AMOUNT_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          const amountText = value => AMOUNT_FORMAT.format(Number(value) || 0);
+        
+          function editPayment(item, { title = "", after } = {}) {
+            const requestId = HOF.requestId();
+            HOF.formModal({
+              title: "Tahsilatı Düzelt",
+              eyebrow: title || "TAHSİLAT",
+              intro: "Düzeltme kasaya da yansır. Eski ve yeni değer işlem kayıtlarında saklanır.",
+              fields: [
+                { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: amountText(item.amount) },
+                { name: "date", label: "Tahsilat Tarihi", type: "date", required: true, max: "today", value: isoDate(item.date) },
+                HOF.methodField(item.method || "cash", { incoming: true }),
+                { name: "note", label: "Açıklama", maxlength: 500, value: item.note ?? item.description ?? "" },
+              ],
+              submitLabel: "Düzeltmeyi Kaydet",
+              onOpen: dialog => {
+                // 2.7: düzeltilen tahsilat seçilen hesabın bakiyesinde zaten var (original): "İşlemden Sonra" yeni − eski.
+                // 2.2.0 (İz 3.2): POS'lu tahsilatın POS'u, taksit sayısı, provizyonu ve son 4 hanesi satırın POS kaydından gelir.
+                if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: item.finRef || "", keepLabel: item.method === "bank" && !item.finRef ? "Atanmamış (Eski Hareket)" : "", pos: { value: item.method === "card" ? item.finRef || "" : "", row: `payments:${item.id}` }, direction: "in", original: item.method === "bank" && item.finRef ? { ref: item.finRef, amount: item.amount, date: isoDate(item.date) } : null });
+              },
+              onSubmit: async data => {
+                const body = { ...data };
+                if (HOF.bank?.accountBody) HOF.bank.accountBody(body, data.method);
+                else if (data.method !== "bank") delete body.bankAccountId;
+                const send = flags => HOF.api(`/api/workspace/payments/${encodeURIComponent(item.id)}`, { method: "PUT", body: { ...body, ...flags }, requestId });
+                await (HOF.bank?.withConfirms ? HOF.bank.withConfirms(send) : send({}));
+                HOF.toast("Tahsilat düzeltildi.", { type: "success" });
+                HOF.emit("payment-saved", { key: item.caseKey || "" });
+                after?.();
+              },
+            });
+          }
+        
+          async function deletePayment(item, { title = "", after } = {}) {
+            const ok = await HOF.confirm({
+              title: "Tahsilatı Sil",
+              message: `${HOF.formatMoney(item.amount)} tutarındaki tahsilat${title ? ` (${title})` : ""} silinecek ve kasadan düşülecek. Silme işlem kayıtlarında saklanır.`,
+              confirmLabel: "Sil",
+              danger: true,
+            });
+            if (!ok) return;
+            try {
+              const path = `/api/workspace/payments/${encodeURIComponent(item.id)}`;
+              const send = flags => HOF.api(flags.negativeOk ? `${path}?negativeOk=1` : path, { method: "DELETE" });
+              await (HOF.bank?.withConfirms ? HOF.bank.withConfirms(send) : send({}));
+              HOF.toast("Tahsilat silindi.", { type: "success" });
+              HOF.emit("payment-saved", { key: item.caseKey || "" });
+              after?.();
+            } catch (error) {
+              HOF.toastError(error);
+            }
+          }
+        
+          // ---------- Kasa (v2.0.1) ----------
+          const pad2 = value => String(value).padStart(2, "0");
+          const dayText = date => `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
+          const PERIODS = [
+            { id: "month", label: "Bu Ay" },
+            { id: "last", label: "Geçen Ay" },
+            { id: "year", label: "Bu Yıl" },
+            { id: "all", label: "Tümü" },
+            // "Aralık" aynı zamanda ay adı (December); karışmasın diye "Tarih aralığı".
+            { id: "range", label: "Tarih Aralığı" },
+          ];
+          // "01.09–27.09" (bu yıl içinde), yoksa yıllarıyla "01.09.2025–27.09.2026".
+          const rangeText = ({ from, to }) => {
+            const short = iso => `${iso.slice(8, 10)}.${iso.slice(5, 7)}`;
+            const full = iso => `${short(iso)}.${iso.slice(0, 4)}`;
+            const year = String(new Date().getFullYear());
+            if (!from || !to) return "Tarih aralığı";
+            return from.startsWith(year) && to.startsWith(year) ? `${short(from)}–${short(to)}` : `${full(from)}–${full(to)}`;
+          };
+          const periodRange = (id, custom) => {
+            const today = new Date();
+            if (id === "range") return custom;
+            if (id === "month") return { from: dayText(new Date(today.getFullYear(), today.getMonth(), 1)), to: dayText(new Date(today.getFullYear(), today.getMonth() + 1, 0)) };
+            if (id === "last") return { from: dayText(new Date(today.getFullYear(), today.getMonth() - 1, 1)), to: dayText(new Date(today.getFullYear(), today.getMonth(), 0)) };
+            if (id === "year") return { from: `${today.getFullYear()}-01-01`, to: `${today.getFullYear()}-12-31` };
+            return { from: "", to: "" };
+          };
+          let cashModal = null;
+          // v2.0.17 (müşteri): Kasa penceresi YALNIZ NAKİT. Havale/EFT, POS ve kredi kartı hareketleri Raporlar → Banka ve POS
+          // Hareketleri'nde; Kasa ile banka arasındaki para geçişi Aktar / Yatır (transfer). Yol seçici kalktı.
+          const cashView = { method: "cash" };
+          const methodTag = entry => (entry.method && entry.method !== "cash" ? ` · <span class="hof-method-tag is-${esc(entry.method)}">${esc(HOF.methodLabel(entry.method, entry.kind))}</span>` : "");
+          const TRANSFER_TITLE = { "to-cash": "Bankadan Kasaya Aktar", "to-bank": "Kasadan Bankaya Yatır" };
+          /**
+           * Transfer formunun açıklaması: account — banka hesabı tanımlı mı (seçici var mı); none — "Hesapsız (Açılıştan Önce)" seçili (11.10.2026: hareket
+           * hiçbir hesaba yazılmaz, Hesabı Atanmamış Eski Hareketler'de kalır; önceden yine "seçilen banka hesabına girer" yazıyordu).
+           */
+          const transferIntro = (toCash, account, none = false) => {
+            const bank = none ? `banka hesabının açılışından önceki hareket olduğu için banka tarafı hiçbir ${toCash ? "hesaptan çıkmaz" : "hesaba girmez"}, Hesabı Atanmamış Eski Hareketler'de kalır` : account ? (toCash ? "seçilen banka hesabından aynı tutar çıkar (Banka → Hareketler)" : "seçilen banka hesabına aynı tutar girer (Banka → Hareketler)") : "banka hesabı tanımlanmadığı için banka tarafı Hesabı Atanmamış Eski Hareketler'e yazılır";
+            return toCash ? `Bankadan çekilen nakit Kasa'ya girer; ${bank}.` : `Kasadaki nakit bankaya yatırılır; ${bank}. Nakit Kasa yetmiyorsa program sorar.`;
+          };
+        
+          // Kasa ↔ Banka transferi: tek işlemde Kasa'da nakit giriş/çıkış + banka tarafında karşı hareket.
+          // v2.1.0 Aşama 6: banka tarafının hesabı (Banka Hesabı; tek hesapta gizli, hiç hesap yoksa bugünkü görünüm), istek kimliği (aynı gönderim
+          // ikinci kez yazılmaz), Benzer İşlem ve banka hesabının eksi bakiye sorusu (HOF.bank.withConfirms).
+          function transferForm(direction, after) {
+            const toCash = direction === "to-cash";
+            const requestId = HOF.requestId();
+            HOF.formModal({
+              title: TRANSFER_TITLE[direction] || "Transfer",
+              eyebrow: "KASA",
+              // m4 (10.10.2026): banka tarafı artık seçilen banka hesabına yazılır (Banka → Hareketler); hesap tanımlanmamışsa Hesabı Atanmamış Eski Hareketler'e.
+              // Önceki metin "Raporlar → Banka ve POS Hareketleri" diyordu (banka modülünden önceki yer).
+              intro: transferIntro(toCash, true),
+              fields: [
+                { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", placeholder: "Örn. 5.000,00", autofocus: true },
+                { name: "date", label: "Tarih", type: "date", required: true, max: "today", value: dayText(new Date()) },
+                { name: "description", label: "Açıklama", maxlength: 300, placeholder: toCash ? "Ör. ATM'den nakit çekildi" : "Ör. Günlük hasılat bankaya" },
+              ],
+              submitLabel: toCash ? "Kasaya Aktar" : "Bankaya Yatır",
+              onOpen: dialog => {
+                const form = dialog.querySelector("form");
+                // 2.7: seçicide banka hesabının bakiyesi ve tutarın altında Nakit Kasa bakiyesi (Yatır'da Kasa'dan çıkar, Aktar'da girer).
+                Promise.resolve(HOF.bank?.attachPicker?.(form, { anchor: form.querySelector('[name="amount"]')?.closest(".hof-field"), label: toCash ? "Çekilen Banka Hesabı" : "Yatırılan Banka Hesabı", direction: toCash ? "out" : "in", cash: toCash ? "in" : "out" }))
+                  .then(mode => {
+                    const intro = dialog.querySelector(".hof-modal-text");
+                    if (intro && mode === "none") intro.textContent = transferIntro(toCash, false);
+                    // 2.4.3 (keşif A7): hiç banka hesabı yokken aktarım kaydedilmez (önceden onaysız yazılıp "Hesabı Atanmamış Eski Hareketler"e düşüyor,
+                    // hiçbir toplama girmiyordu). Form "Banka Hesabı Tanımla" yolunu gösterir (yetkisizde "tanımlı değil, yöneticinize başvurun").
+                    if (mode === "define") {
+                      if (intro) intro.textContent = `Banka hesabı tanımlı değil. ${toCash ? "Bankadan kasaya aktarım" : "Kasadan bankaya yatırma"} tanımlı bir banka hesabına yazılır; önce aşağıdan banka hesabını tanımlayın, form kapanmaz.`;
+                      form.querySelector("[data-bank-define-box] .hof-bank-pick-note")?.remove();
+                    }
+                  })
+                  .catch(() => null);
+                form.addEventListener("change", event => {
+                  if (event.target.name !== "bankAccountId") return;
+                  const intro = dialog.querySelector(".hof-modal-text");
+                  if (intro) intro.textContent = transferIntro(toCash, true, event.target.value === "none");
+                });
+                // Tanımlanan hesap seçiciye gelince açıklama hesaplı metne döner.
+                form.addEventListener("hof-bank-defined", () => {
+                  const intro = dialog.querySelector(".hof-modal-text");
+                  if (intro) intro.textContent = transferIntro(toCash, true);
+                });
+              },
+              onSubmit: async (data, modal) => {
+                if (modal?.dialog?.querySelector("form [data-bank-define-box]")) throw new Error("Banka hesabı tanımlı değil. Önce “Banka Hesabı Tanımla” ile hesabı tanımlayın; aktarım o hesaba yazılır.");
+                const send = flags => HOF.api("/api/workspace/cash/transfer", { method: "POST", body: { ...data, direction, ...flags }, requestId });
+                const result = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
+                HOF.toast(result?.replayed ? "Bu transfer zaten kaydedildi; ikinci kez yazılmadı." : toCash ? "Bankadan kasaya aktarım yazıldı." : "Kasadan bankaya yatırma yazıldı.", { type: result?.replayed ? "info" : "success" });
+                HOF.emit("cash-changed");
+                after?.();
+              },
+            });
+          }
+        
+          function editCashEntry(entry, kind, after) {
+            const incoming = (entry?.kind || kind) === "in";
+            const transfer = Boolean(entry?.transferId);
+            // v2.0.17: yol seçilmez — Kasa'ya yalnız nakit. Eski (2.0.16 öncesi) nakit dışı kayıt düzeltilirken yolu salt okunur.
+            const methodText = transfer ? `Nakit (${entry.kind === "in" ? "bankadan kasaya aktarım" : "kasadan bankaya yatırma"})` : HOF.methodName(entry?.method || "cash", incoming ? "in" : "out");
+            // Hakem K3 (plan §3.10/1): istek kimliği form açılışında üretilir; yanıt gecikip yeniden Kaydet'e basılırsa (ya da ağ isteği yinelerse) sunucu
+            // ikinci kez yazmaz. Başarılı kayıttan sonra form kapanır; yeni form yeni kimlik alır.
+            const requestId = HOF.requestId();
+            HOF.formModal({
+              title: transfer ? "Transferi Düzelt" : entry ? (incoming ? "Tahsilatı Düzelt" : "Ödemeyi Düzelt") : incoming ? "Kasaya Tahsilat Ekle" : "Kasadan Ödeme Ekle",
+              eyebrow: "KASA",
+              intro: incoming ? "Bir kayda bağlı olmayan tahsilatlar için (ör. danışmanlık ücreti). Kayda bağlı tahsilatı detay kartındaki Tahsilat düğmesiyle girin; kasaya kendiliğinden düşer." : "Kira, fatura, maaş, masraf gibi kasadan çıkan ödemeler.",
+              fields: [
+                { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", placeholder: "Örn. 1.250,00", value: entry ? amountText(entry.amount) : "" },
+                { name: "date", label: "Tarih", type: "date", required: true, max: "today", value: entry ? isoDate(entry.date) : dayText(new Date()) },
+                { name: "description", label: "Açıklama", required: true, maxlength: 300, placeholder: incoming ? "Kimden / ne için" : "Kime / ne için", value: entry?.description || "", list: incoming ? [] : ["Kira", "Elektrik Faturası", "Su faturası", "İnternet", "Maaş", "Kırtasiye", "Vergi", "Masraf", "Bankaya Yatırılan", "Bankadan Çekilen"] },
+                { name: "methodLabel", label: incoming ? "Tahsilat Yolu" : "Ödeme Yolu", value: methodText, readonly: true, help: transfer ? "Düzeltme banka tarafındaki karşı hareketi de günceller." : "Kasa'ya yalnız nakit girilir. Havale/EFT ve POS hareketleri cari, fatura, taksit, stok ve çek/senet ekranlarından girilir." },
+              ],
+              submitLabel: entry ? "Düzeltmeyi Kaydet" : incoming ? "Tahsilatı Ekle" : "Ödemeyi Ekle",
+              // v2.1.0 Aşama 6: transferin banka hesabı değiştirilebilir ("Değiştirme" = mevcut hesap; hesabı atanmamış eski transferde tutar ya da tarih
+              // değişirse program hesap ister).
+              onOpen: dialog => {
+                if (!transfer) return;
+                const form = dialog.querySelector("form");
+                HOF.bank?.attachPicker?.(form, { anchor: form.querySelector('[name="methodLabel"]')?.closest(".hof-field"), keepLabel: "Değiştirme (Mevcut Hesap)", label: "Banka Hesabı" });
+              },
+              onSubmit: async data => {
+                const { methodLabel: _ignored, ...rest } = data;
+                const body = { ...rest, kind: entry?.kind || kind };
+                let result;
+                if (entry && transfer) result = await HOF.bank.withConfirms(flags => HOF.api(`/api/workspace/cash/${encodeURIComponent(entry.id)}`, { method: "PUT", body: { ...body, ...flags }, requestId }));
+                else if (entry) result = await HOF.api(`/api/workspace/cash/${encodeURIComponent(entry.id)}`, { method: "PUT", body, requestId });
+                else result = await HOF.api("/api/workspace/cash", { method: "POST", body, requestId });
+                if (result?.replayed) HOF.toast(`Bu işlem zaten kaydedildi${result.no ? ` (${result.no})` : ""}; ikinci kez yazılmadı.`, { type: "info" });
+                else HOF.toast(entry ? "Kasa hareketi düzeltildi." : incoming ? "Tahsilat kasaya eklendi." : "Ödeme kasaya işlendi.", { type: "success" });
+                HOF.emit("cash-changed");
+                after?.();
+              },
+            });
+          }
+        
+          // Kasa açılışı / devir (2.2.0 İz 1.3): Kasa'ya devreden nakit bir kez girilir, buradan düzeltilir; yalnız yönetici. Gelir değildir (Ana
+          // Defter'de açılış ve devir bakiyeleri, banka hesabı açılışı gibi). Tarihi Kasa'nın ilk hareketinin günü ya da öncesi.
+          async function cashOpeningForm(after) {
+            let state;
+            try {
+              state = await HOF.api("/api/workspace/cash/opening");
+            } catch (error) {
+              HOF.toastError(error);
+              return;
+            }
+            const current = state.opening;
+            const first = state.firstMovement || "";
+            const requestId = HOF.requestId();
+            HOF.formModal({
+              title: current ? "Kasa Açılış Bakiyesini Düzelt" : "Kasa Açılış Bakiyesi",
+              eyebrow: "KASA",
+              intro: `Programa başlarken kasada bulunan (devreden) nakit. Bir kez girilir; yanlışsa buradan düzeltilir. Gelir sayılmaz, açılış ve devir bakiyesi olarak yazılır.${first ? ` Tarihi Kasa'nın ilk hareketinin günü (${HOF.formatDate(first)}) ya da öncesi olmalıdır.` : ""}`,
+              fields: [
+                { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", placeholder: "Örn. 25.000,00", value: current ? amountText(current.amount) : "", autofocus: true },
+                { name: "date", label: "Tarih", type: "date", required: true, max: "today", value: current ? isoDate(current.date) : first ? isoDate(first) : dayText(new Date()) },
+              ],
+              submitLabel: current ? "Düzeltmeyi Kaydet" : "Açılışı Kaydet",
+              onSubmit: async data => {
+                const result = await HOF.api("/api/workspace/cash/opening", { method: "POST", body: data, requestId });
+                HOF.toast(result?.unchanged ? "Açılış bakiyesi aynı; değişiklik yok." : current ? "Kasa açılış bakiyesi düzeltildi." : "Kasa açılış bakiyesi kaydedildi.", { type: result?.unchanged ? "info" : "success" });
+                HOF.emit("cash-changed");
+                after?.();
+              },
+            });
+          }
+        
+          async function deleteCashEntry(entry, after) {
+            const ok = await HOF.confirm({ title: entry.transferId ? "Transferi Sil" : "Kasa Hareketini Sil", message: entry.transferId ? `${HOF.formatMoney(entry.amount)} tutarındaki transfer (${entry.description}) iki tarafıyla birlikte silinecek: Kasa'daki nakit hareket ve banka tarafındaki karşı hareket. ${HOF.trashHint()}` : `${HOF.formatMoney(entry.amount)} tutarındaki ${entry.kind === "in" ? "tahsilat" : "ödeme"} (${entry.description}) silinecek. Silme işlem kayıtlarında saklanır.`, confirmLabel: "Sil", danger: true });
+            if (!ok) return;
+            try {
+              const path = `/api/workspace/cash/${encodeURIComponent(entry.id)}`;
+              const send = flags => HOF.api(flags.negativeOk ? `${path}?negativeOk=1` : path, { method: "DELETE" });
+              await (HOF.bank?.withConfirms ? HOF.bank.withConfirms(send) : send({}));
+              HOF.toast("Kasa hareketi silindi.", { type: "success" });
+              HOF.emit("cash-changed");
+              after?.();
+            } catch (error) {
+              HOF.toastError(error);
+            }
+          }
+        
+          // Kasa dökümü PDF: sunucu hazırlar (Türkçe harfler gömülü yazı tipiyle), tarayıcı dosyayı indirir.
+          async function downloadCashPdf(range, invalid, button) {
+            if (invalid) return HOF.toast(invalid, { type: "error" });
+            button.disabled = true;
+            button.classList.add("is-busy");
+            try {
+              const query = new URLSearchParams({ from: range.from, to: range.to, download: "1", method: "cash" });
+              const response = await HOF.nativeFetch(HOF.apiUrl(`/api/workspace/cash.pdf?${query}`), { credentials: "same-origin" });
+              if (!response.ok) {
+                const payload = await response.json().catch(() => ({}));
+                throw new Error(payload.error || "PDF hazırlanamadı.");
+              }
+              const blob = await response.blob();
+              const header = response.headers.get("content-disposition") || "";
+              const encoded = /filename\*=UTF-8''([^;]+)/i.exec(header)?.[1];
+              let name = "Kasa-dokumu.pdf";
+              try {
+                name = encoded ? decodeURIComponent(encoded) : /filename="([^"]+)"/i.exec(header)?.[1] || name;
+              } catch {
+                // ad çözülemezse varsayılan ad kullanılır
+              }
+              const url = URL.createObjectURL(blob);
+              const link = HOF.el("a", { href: url, download: name, hidden: true });
+              document.body.appendChild(link);
+              link.click();
+              link.remove();
+              setTimeout(() => URL.revokeObjectURL(url), 30_000);
+              HOF.toast(`Kasa dökümü indirildi: ${name}`, { type: "success" });
+            } catch (error) {
+              HOF.toastError(error);
+            } finally {
+              button.disabled = false;
+              button.classList.remove("is-busy");
+            }
+          }
+        
+          function openCash() {
+            if (!HOF.can("cash.view")) return HOF.toast(`Kasayı yalnızca yönetici, ${HOF.roleLabels.avukat.toLocaleLowerCase("tr-TR")} ve muhasebe hesapları görebilir.`, { type: "error" });
+            if (cashModal) return;
+            let period = "month";
+            let data = null;
+            const today = new Date();
+            // "Tarih aralığı": ör. 01.09.2026 – 25.09.2026; ilk açılışta bu ayın başından bugüne.
+            const custom = { from: dayText(new Date(today.getFullYear(), today.getMonth(), 1)), to: dayText(today) };
+            const manage = HOF.can("cash.manage");
+            const modal = HOF.modal({
+              title: "Kasa",
+              eyebrow: "OPERASYON",
+              size: "wide",
+              body: `<div class="hof-kpis hof-cash-kpis" data-kpis></div>
+                <div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Dönem">${PERIODS.map(item => `<button type="button" data-period="${item.id}">${item.label}</button>`).join("")}</div>
+                <div class="hof-cash-add">${HOF.outputButton({ kind: "pdf", label: "Kasa Dökümü - PDF", tip: "Seçili dönemin nakit kasa hareketlerini PDF olarak indir", attrs: "data-pdf" })}${manage ? `<button type="button" class="hof-button hof-button-small" data-add="in">+ Tahsilat</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-add="out">− Ödeme</button>${HOF.can("bank.transfer") ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-transfer="to-cash" title="Bankadan çekilen nakit kasaya girer">Bankadan Kasaya Aktar</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-transfer="to-bank" title="Kasadaki nakit bankaya yatırılır">Kasadan Bankaya Yatır</button>' : ""}${HOF.can("tax.manage") ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-tax title="Ödenecek vergiyi (KDV, muhtasar, diğer) Kasa\'dan nakit öder; gider değil, 360\'ı kapatır">Vergi Ödemesi</button>' : ""}` : ""}${HOF.can("system.manage") ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-opening title="Kasaya devreden nakit; bir kez girilir, buradan düzeltilir">Açılış Bakiyesi</button>' : ""}</div>
+                <div class="hof-cash-range" data-range hidden><label><span>Başlangıç</span><input type="date" data-from value="${custom.from}"></label><span aria-hidden="true">–</span><label><span>Bitiş</span><input type="date" data-to value="${custom.to}"></label></div></div>
+                <div class="hof-cash-list" data-list><p class="hof-empty">Yükleniyor…</p></div>
+                <p class="hof-edit-meta">Kasa'da yalnız nakit hareketler görünür. Havale/EFT, POS ve kredi kartıyla yapılan tahsilat ve ödemeler cari, fatura, taksit, stok ve çek/senet ekranlarından girilir ve Raporlar → Banka ve POS Hareketleri'nde izlenir. Bankayla para geçişi için Bankadan Kasaya Aktar / Kasadan Bankaya Yatır kullanılır. Hareketler eskiden yeniye sıralıdır; en yeni en altta.</p>
+                <div class="hof-actions"><button type="button" class="hof-button" data-close>Kapat</button></div>`,
+              onClose: () => {
+                cashModal = null;
+                cashView.method = "cash";
+              },
+            });
+            // Canlı yenileme (v2.0.11): seçili dönem ve tarih aralığı korunur; kullanıcı listeyi yukarı kaydırdıysa yeri de.
+            cashModal = { modal, reload: () => load({ keepScroll: true }) };
+            const kpis = modal.dialog.querySelector("[data-kpis]");
+            const list = modal.dialog.querySelector("[data-list]");
+            const row = entry => {
+              const payment = entry.source === "payment";
+              const plan = entry.source === "plan";
+              // Cari ve stok hareketleri (v2.0.6) kendi kartlarından düzeltilir; buradan kart açılır.
+              // Çek / senet (v2.0.7): tahsil edilen alınan evrak ve ödenen verilen evrak; evrak kartından geri alınır.
+              if (entry.source === "cheque") {
+                return `<tr data-kind="${esc(entry.kind)}"><td>${esc(HOF.formatDate(entry.date))}</td><td><b>${esc(entry.description)}</b><small>Çek / senet kartından · ${esc(entry.actorName || "—")}${methodTag(entry)}</small></td><td class="num hof-cash-in">${entry.kind === "in" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num hof-cash-out">${entry.kind === "out" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num"><b>${esc(HOF.formatMoney(entry.balance))}</b></td><td class="hof-cash-actions"><button type="button" class="hof-mini" data-cheque="${esc(entry.chequeId)}" title="Çek / senet kartını aç" aria-label="Çek / senet kartını aç">↗</button></td></tr>`;
+              }
+              // Fatura (v2.0.15): peşin tahsilat / ödeme faturadan gelir; fatura kartından iptal edilir ya da iade kesilir.
+              if (entry.source === "invoice") {
+                const open = `${HOF.can("invoices.view") ? `<button type="button" class="hof-mini hof-mini-text" data-invoice="${esc(entry.invoiceId)}" title="Faturayı aç">Fatura</button>` : ""}<button type="button" class="hof-mini" data-account="${esc(entry.accountId)}" title="Cari kartını aç" aria-label="Cari kartını aç">↗</button>`;
+                return `<tr data-kind="${esc(entry.kind)}"><td>${esc(HOF.formatDate(entry.date))}</td><td><b>${esc(entry.description)}</b><small>Faturadan · ${esc(entry.actorName || "—")}${methodTag(entry)}</small></td><td class="num hof-cash-in">${entry.kind === "in" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num hof-cash-out">${entry.kind === "out" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num"><b>${esc(HOF.formatMoney(entry.balance))}</b></td><td class="hof-cash-actions">${open}</td></tr>`;
+              }
+              if (entry.source === "account" || entry.source === "stock") {
+                const account = entry.source === "account";
+                const label = account ? `${entry.kind === "in" ? "Cari Tahsilat" : "Cariye Ödeme"} · ${entry.accountName}${entry.description ? ` · ${entry.description}` : ""}` : entry.description;
+                const open = account ? `<button type="button" class="hof-mini" data-account="${esc(entry.accountId)}" title="Cari kartını aç" aria-label="Cari kartını aç">↗</button>` : `<button type="button" class="hof-mini" data-stock="${esc(entry.itemId)}" title="Stok kartını aç" aria-label="Stok kartını aç">↗</button>`;
+                return `<tr data-kind="${esc(entry.kind)}"><td>${esc(HOF.formatDate(entry.date))}</td><td><b>${esc(label)}</b><small>${account ? "Cari kartından" : "Stok hareketinden"} · ${esc(entry.actorName || "—")}${methodTag(entry)}</small></td><td class="num hof-cash-in">${entry.kind === "in" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num hof-cash-out">${entry.kind === "out" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num"><b>${esc(HOF.formatMoney(entry.balance))}</b></td><td class="hof-cash-actions">${open}</td></tr>`;
+              }
+              const title = payment ? entry.caseTitle || (String(entry.caseKey).startsWith("satir:") ? "" : entry.caseKey) : "";
+              const text = payment ? `Tahsilat${title ? ` · ${title}` : ""}${entry.description ? ` · ${entry.description}` : ""}` : plan ? `${entry.kind === "in" ? "Taksit Tahsilatı" : "Taksit Ödemesi / İadesi"} · ${entry.planName}${entry.description ? ` · ${entry.description}` : ""}` : entry.description;
+              const origin = payment ? "Detay kartından" : plan ? "Taksit kartından" : entry.transferId ? (entry.kind === "in" ? "Bankadan kasaya aktarım" : "Kasadan bankaya yatırma") : entry.opening ? "Kasa açılışı (devreden nakit)" : entry.kind === "in" ? "Kasaya elle" : "Ödeme";
+              // Taksit kartı hareketleri (v2.0.4) kartın kendisinden düzeltilir; buradan kart açılır.
+              const actions = plan
+                ? `<button type="button" class="hof-mini" data-plan="${esc(entry.planId)}" title="Taksit kartını aç" aria-label="Taksit kartını aç">↗</button>`
+                : entry.editable ? `<button type="button" class="hof-mini" data-edit="${esc(entry.id)}" title="Düzelt" aria-label="Düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete="${esc(entry.id)}" title="Sil" aria-label="Sil">×</button>` : "";
+              return `<tr data-kind="${esc(entry.kind)}"><td>${esc(HOF.formatDate(entry.date))}</td><td><b>${esc(text)}</b><small>${esc(origin)} · ${esc(entry.actorName || "—")}${methodTag(entry)}</small></td><td class="num hof-cash-in">${entry.kind === "in" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num hof-cash-out">${entry.kind === "out" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num"><b>${esc(HOF.formatMoney(entry.balance))}</b></td><td class="hof-cash-actions">${actions}</td></tr>`;
+            };
+            const render = () => {
+              modal.dialog.querySelectorAll("[data-period]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.period === period)));
+              rangeBox.hidden = period !== "range";
+              if (!data) return;
+              // Göstergelerde dönemin adı; tarih aralığında tarihlerin kendisi (ör. 01.09–27.09).
+              const label = period === "range" ? rangeText(custom) : PERIODS.find(item => item.id === period)?.label || "";
+              kpis.innerHTML = `<div class="hof-cash-balance ${data.totals.balance < 0 ? "is-late" : ""}" title="Nakit kasanın tüm hareketlerden hesaplanan bakiyesi"><strong>${esc(HOF.formatMoney(data.totals.balance))}</strong><span>Nakit Kasa</span></div><div><strong>${esc(HOF.formatMoney(data.period.in))}</strong><span>Tahsilat · ${esc(label)}</span></div><div><strong>${esc(HOF.formatMoney(data.period.out))}</strong><span>Ödeme · ${esc(label)}</span></div><div><strong>${esc(HOF.formatMoney(data.period.net))}</strong><span>Fark · ${esc(label)}</span></div>`;
+              const opening = period !== "all" ? `<tr class="hof-cash-opening"><td></td><td><b>Devreden Kasa</b><small>Dönem başındaki bakiye</small></td><td></td><td></td><td class="num"><b>${esc(HOF.formatMoney(data.opening))}</b></td><td></td></tr>` : "";
+              list.innerHTML = data.entries.length || opening
+                ? `<table class="hof-table hof-cash-table"><thead><tr><th>Tarih</th><th>Açıklama</th><th class="num">Tahsilat</th><th class="num">Ödeme</th><th class="num">Kasa</th><th></th></tr></thead><tbody>${opening}${data.entries.map(row).join("")}</tbody></table>${data.entries.length ? "" : '<p class="hof-empty">Bu dönemde kasa hareketi yok.</p>'}`
+                : '<p class="hof-empty">Henüz kasa hareketi yok. Detay kartında tahsilat girildiğinde ya da yukarıdan tahsilat/ödeme eklendiğinde burada görünür.</p>';
+              if (keep == null) list.scrollTop = list.scrollHeight; // en yeni hareket en altta: listeyi oraya kaydır
+              else list.scrollTop = keep;
+              keep = null;
+            };
+            const rangeBox = modal.dialog.querySelector("[data-range]");
+            const rangeError = () => {
+              if (period !== "range") return "";
+              if (!custom.from || !custom.to) return "Başlangıç ve bitiş tarihini seçin.";
+              if (custom.from > custom.to) return "Başlangıç tarihi bitiş tarihinden sonra olamaz.";
+              return "";
+            };
+            rangeBox.addEventListener("change", event => {
+              const input = event.target.closest("input");
+              if (!input) return;
+              custom[input.matches("[data-from]") ? "from" : "to"] = input.value;
+              load();
+            });
+            // keep: canlı yenilemede kaydırma yeri (en alttaysa en altta kalır, yeni hareket görünür).
+            let keep = null;
+            async function load({ keepScroll = false } = {}) {
+              keep = keepScroll && list.scrollHeight - list.scrollTop - list.clientHeight > 4 ? list.scrollTop : null;
+              const range = periodRange(period, custom);
+              const invalid = rangeError();
+              if (invalid) {
+                list.innerHTML = `<p class="hof-empty">${esc(invalid)}</p>`;
+                return;
+              }
+              try {
+                data = await HOF.api(`/api/workspace/cash?from=${range.from}&to=${range.to}&method=cash`);
+                render();
+              } catch (error) {
+                list.innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
+              }
+            }
+            const byId = id => data?.entries.find(entry => entry.id === id);
+            const afterChange = () => {
+              load();
+              refreshActivity();
+            };
+            modal.dialog.addEventListener("click", event => {
+              const target = event.target.closest("button");
+              if (!target) return;
+              if (target.dataset.transfer) transferForm(target.dataset.transfer, load);
+              // 2.4.3 MM3: Kasa'dan nakit Vergi Ödemesi (hof-tax.js).
+              else if ("tax" in target.dataset) HOF.taxPayment?.({ way: "cash", onDone: afterChange });
+              else if ("opening" in target.dataset) cashOpeningForm(load);
+              else if (target.dataset.period) {
+                period = target.dataset.period;
+                render();
+                load();
+              } else if ("pdf" in target.dataset) downloadCashPdf(periodRange(period, custom), rangeError(), target);
+              else if (target.dataset.add) editCashEntry(null, target.dataset.add, load);
+              else if (target.dataset.plan) HOF.plans?.open(target.dataset.plan);
+              else if (target.dataset.account) HOF.accounts?.open(target.dataset.account);
+              else if (target.dataset.stock) HOF.stock?.open(target.dataset.stock);
+              else if (target.dataset.cheque) HOF.cheques?.open({ id: target.dataset.cheque });
+              else if (target.dataset.invoice) HOF.invoices?.openDoc(target.dataset.invoice);
+              else if (target.dataset.edit) {
+                const entry = byId(target.dataset.edit);
+                if (!entry) return;
+                if (entry.source === "payment") editPayment({ ...entry, note: entry.description }, { title: entry.caseTitle, after: afterChange });
+                else if (entry.opening) cashOpeningForm(load);
+                else editCashEntry(entry, entry.kind, load);
+              } else if (target.dataset.delete) {
+                const entry = byId(target.dataset.delete);
+                if (!entry) return;
+                if (entry.source === "payment") deletePayment(entry, { title: entry.caseTitle, after: afterChange });
+                else deleteCashEntry(entry, load);
+              } else if ("close" in target.dataset) modal.close();
+            });
+            render();
+            load();
+          }
+        
+          // ---------- Operasyon pencereleri ----------
+          async function openTasks(initial = "mine", { focus = "" } = {}) {
+            let view = initial;
+            // Herkesin görevlerini yalnızca avukat ve yönetici görür; diğerleri kendi görevlerini (sunucu da süzer).
+            const everyone = HOF.can("tasks.viewAll");
+            const tabs = everyone
+              ? '<button type="button" data-view="mine">Bana Atananlar</button><button type="button" data-view="open">Tüm Açık Görevler</button><button type="button" data-view="completed">Tamamlananlar</button>'
+              : '<button type="button" data-view="mine">Açık Görevlerim</button><button type="button" data-view="completed">Tamamladıklarım</button>';
+            const modal = HOF.modal({ title: "Görevler", eyebrow: "OPERASYON", size: "wide", body: `<div class="hof-tabs" role="group" aria-label="Görev filtresi">${tabs}</div><div class="hof-list" data-list><p class="hof-empty">Yükleniyor…</p></div><div class="hof-actions">${HOF.can("tasks.create") ? '<button type="button" class="hof-button hof-button-ghost" data-new>Yeni Görev</button>' : ""}<button type="button" class="hof-button" data-close>Kapat</button></div>` });
+            const list = modal.dialog.querySelector("[data-list]");
+            const render = async () => {
+              modal.dialog.querySelectorAll("[data-view]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.view === view)));
+              list.innerHTML = '<p class="hof-empty">Yükleniyor…</p>';
+              try {
+                const query = view === "mine" ? "status=open&mine=1" : `status=${view}`;
+                const tasks = await HOF.api(`/api/workspace/tasks?${query}`);
+                list.innerHTML = tasks.length
+                  ? tasks.map(task => `<article class="hof-list-item${task.status === "open" && task.priority !== "normal" ? ` is-${esc(task.priority)}` : ""}${focus && task.id === focus ? " is-highlight" : ""}"${focus && task.id === focus ? ' data-task-focus="1"' : ""}><header><b>${task.status === "open" && task.priority === "urgent" ? '<span class="hof-urgent-mark" aria-hidden="true">!</span>' : ""}${esc(task.title)}</b><span class="hof-chip ${task.priority !== "normal" ? `hof-chip-${esc(task.priority)}` : ""}">${esc(priorityLabel[task.priority] || task.priority)}</span></header><small>${esc(task.assignee)}${task.dueDate ? ` · son tarih ${esc(HOF.formatDate(task.dueDate))}` : ""}${task.caseKey ? ` · ${esc(HOF.vocab.record)} ${esc(task.caseKey)}` : ""} · ${esc(task.actorName)} tarafından</small>${task.status === "open" && HOF.can("tasks.complete") ? `<div class="hof-actions"><button type="button" class="hof-button hof-button-small" data-complete="${esc(task.id)}">Tamamlandı</button></div>` : task.completedAt ? `<small>✓ ${esc(task.completedByName || "")} · ${esc(HOF.formatDateTime(task.completedAt))}</small>` : ""}</article>`).join("")
+                  : `<p class="hof-empty">${view === "mine" ? "Size atanmış açık görev yok." : "Görev bulunmuyor."}</p>`;
+                // Kayıt detay kartındaki "Kayda Git" (eleştirmen E13): ilgili görev vurgulanır ve görünür alana getirilir.
+                list.querySelector("[data-task-focus]")?.scrollIntoView?.({ block: "center" });
+              } catch (error) {
+                list.innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
+              }
+            };
+            modal.dialog.addEventListener("click", async event => {
+              const target = event.target.closest("button");
+              if (!target) return;
+              if (target.dataset.view) {
+                view = target.dataset.view;
+                render();
+              } else if (target.dataset.complete) {
+                target.disabled = true;
+                try {
+                  await HOF.api(`/api/workspace/tasks/${encodeURIComponent(target.dataset.complete)}/complete`, { method: "POST" });
+                  HOF.toast("Görev tamamlandı.", { type: "success" });
+                  refreshBadges();
+                  render();
+                } catch (error) {
+                  HOF.toastError(error);
+                  target.disabled = false;
+                }
+              } else if ("new" in target.dataset) {
+                modal.close();
+                actions.task();
+              } else if ("close" in target.dataset) modal.close();
+            });
+            render();
+          }
+        
+          // Eski "Mesajlar" penceresinin yerini sağdan açılan sohbet paneli aldı (hof-chat.js).
+          const openMessages = () => HOF.chat?.open();
+        
+          // Personel Performans Özeti (görev, not, telefon, tahsilat, işlem): reports.view. Personel Özlük yetkisi olan (staff.view) Personel Raporu'nu
+          // çalışan kartlarıyla açar (hof-staff.js); performans orada "Performans Özeti" sekmesidir.
+          async function performanceHtml() {
+            const result = await HOF.api("/api/workspace/reports");
+            const rows = result.report.map(item => `<tr><td>${esc(item.userName)}<br><small>${esc(item.roleLabel || HOF.roleLabels[item.role] || item.role)}</small></td><td class="num">${item.tasksCompleted}</td><td class="num">${item.notes}</td><td class="num">${item.calls}</td><td class="num">${esc(HOF.formatMoney(item.collections))}</td><td class="num">${item.dataEntries}</td></tr>`).join("");
+            return `<div class="hof-kpis"><div><strong>${result.totals.tasks}</strong><span>Toplam Görev</span></div><div><strong>${result.totals.completedTasks}</strong><span>Tamamlanan</span></div><div><strong>${result.totals.notes}</strong><span>Not</span></div><div><strong>${esc(HOF.formatMoney(result.totals.payments))}</strong><span>Tahsilat</span></div></div><div style="overflow:auto"><table class="hof-table"><thead><tr><th>Personel</th><th>Görev</th><th>Not</th><th>Telefon</th><th>Tahsilat</th><th>İşlem</th></tr></thead><tbody>${rows || '<tr><td colspan="6">Henüz işlem yok.</td></tr>'}</tbody></table></div><p class="hof-edit-meta">Oluşturulma: ${esc(HOF.formatDateTime(result.generatedAt))}</p>`;
+          }
+        
+          async function openReports() {
+            if (HOF.can("staff.view") && HOF.staff) return HOF.staff.open({ performance: HOF.can("reports.view") ? performanceHtml : null });
+            try {
+              HOF.modal({ title: "Personel Performans Özeti", eyebrow: "RAPOR", size: "wide", body: await performanceHtml() });
+            } catch (error) {
+              HOF.toastError(error);
+            }
+          }
+        
+          async function openLiens() {
+            try {
+              const result = await HOF.api("/api/workspace/liens?days=30");
+              const urgent = result.upcoming.filter(item => new Date(item.expiresAt).getTime() - Date.now() <= 7 * 86_400_000);
+              const list = result.upcoming.map(item => {
+                const days = Math.max(0, Math.ceil((new Date(item.expiresAt).getTime() - Date.now()) / 86_400_000));
+                return `<article class="hof-list-item ${days <= 7 ? "is-highlight" : ""}"><header><b>${esc(item.title)} · ${esc(item.caseKey)}</b><span class="hof-chip ${days <= 7 ? "hof-chip-urgent" : "hof-chip-high"}">${days} gün</span></header><small>Düşüm: ${esc(HOF.formatDate(item.expiresAt))} · kaydı giren ${esc(item.actorName || "—")}</small></article>`;
+              }).join("");
+              HOF.modal({ title: "Yaklaşan Haciz Düşümleri", eyebrow: "UYARI", body: `<div class="hof-alert">Bir yılını dolduracak aktif hacizler. ${urgent.length ? `${urgent.length} haciz 7 gün içinde düşüyor.` : "Önümüzdeki 7 gün içinde düşecek haciz yok."}</div><div class="hof-list">${list || '<p class="hof-empty">Önümüzdeki 30 gün içinde düşecek haciz yok.</p>'}</div>` });
+            } catch (error) {
+              HOF.toastError(error);
+            }
+          }
+        
+          function openProfile() {
+            HOF.formModal({
+              title: "Profilim",
+              eyebrow: HOF.user.roleLabel || HOF.roleLabels[HOF.user.role] || HOF.user.role,
+              intro: "Bu ad not, tahsilat, görev ve mesaj kayıtlarında görünür. Rolünüzü yalnızca yönetici değiştirebilir.",
+              fields: [{ name: "name", label: "Ad Soyad", required: true, value: HOF.user.name, maxlength: 120 }],
+              submitLabel: "Kaydet",
+              onSubmit: async data => {
+                const result = await HOF.api("/api/workspace/profile", { method: "POST", body: data });
+                HOF.user.name = result.name;
+                renderUser();
+                HOF.toast("Profiliniz güncellendi.", { type: "success" });
+              },
+            });
+          }
+        
+          // ---------- Kenar çubuğu ----------
+          const sideItem = (action, icon, label, badge = "", requires = "") => `<button type="button" class="hof-side-item" data-action="${action}" ${requires ? `data-requires="${requires}"` : ""}><span class="hof-side-icon" aria-hidden="true">${icon}</span><span class="hof-side-text">${label}</span><span class="hof-badge ${badge === "warn" ? "hof-badge-warn" : ""}" data-badge="${action}"></span></button>`;
+          // Operasyon merkezi düğmeleri. Adları yönetici kartın köşesindeki kalemle değiştirebilir (ofis geneli, v2.0.1).
+          const SIDE_ITEMS = [
+            { action: "tasks", icon: "✓", key: "side.tasks", label: () => "Görevler" },
+            { action: "messages", icon: "✉", key: "side.messages", label: () => "Mesajlar" },
+            { action: "newTask", icon: "+", key: "side.newTask", label: () => "Görev Ata", requires: "tasks.create" },
+            // v2.0.15 (müşteri): "Yeni Kayıt" menüden kalktı; tablo başlığında "Dışa Aktar"ın yanında (hof-export.js).
+            // Finans düğmeleri alt alta ve müşterinin istediği sırayla (02.10.2026): Cari, Kasa, Stok, Fatura, Çek / Senet, Taksitler.
+            // Cari ve Stok (v2.0.6): müşteri/tedarikçi kartları (taksitler cariye bağlı) ve Kasa mantığıyla stok.
+            { action: "accounts", icon: "☰", key: "side.accounts", label: () => "Cari", requires: "accounts.view" },
+            { action: "cash", icon: "₺", key: "side.cash", label: () => "Kasa", requires: "cash.view" },
+            { action: "stock", icon: "▦", key: "side.stock", label: () => "Stok", requires: "stock.view", badge: "warn" },
+            // Fatura (v2.0.15): satış, alış, iade, serbest meslek makbuzu; rozet = vadesi geçmiş satış faturası sayısı.
+            { action: "invoices", icon: "≡", key: "side.invoices", label: () => "Fatura", requires: "invoices.view", badge: "warn" },
+            // Çek / Senet (v2.0.7): alınan portföy ve verilen evrak; rozet = vadesi geçen ve bugün vadesi gelen açık evrak.
+            { action: "cheques", icon: "✎", key: "side.cheques", label: () => "Çek / Senet", requires: "cheques.view", badge: "warn" },
+            // Taksitler (v2.0.4): grup › alt grup, taksit kartı, tahsilat, gecikme uyarısı (hof-plans.js).
+            { action: "plans", icon: "▤", key: "side.plans", label: () => "Taksitler", requires: "plans.view", badge: "warn" },
+            // Banka (v2.1.0, kullanıcı kararı: Taksitler'in hemen altında): hesaplar, açılış, Kurulum Sihirbazı, Ayarlar (hof-bank.js); rozet =
+            // Hesabı Belirsiz Yeni Hareketler (eski sürümün yazdığı, hesabı belli olmayan banka hareketi).
+            { action: "bank", icon: "▣", key: "side.bank", label: () => "Banka", requires: "bank.view", badge: "warn" },
+            { action: "liens", icon: "!", key: "side.liens", label: () => "Haciz Uyarıları", badge: "warn", module: "haciz" },
+            // Raporlar (v2.0.9): ANLIK DURUM'daki "Rapor Al" ile aynı pencere (Cari ekstre, Vade takip, Nakit akış, Çek/Senet,
+            // modül raporları, Tablo raporları). Rapor yetkisi ya da kişiye verilen ANLIK DURUM yetkisiyle görünür.
+            { action: "analytics", icon: "▤", key: "side.analytics", label: () => "Raporlar", requires: "reports.any" },
+            // Personel Raporu: performans özeti (reports.view) ya da Personel Özlük (staff.view, 2.4.4; varsayılan yalnız yönetici) yetkisiyle görünür.
+            { action: "reports", icon: "↗", key: "side.reports", label: () => "Personel Raporu", requires: "reports.staff" },
+            { action: "guide", icon: "?", key: "side.guide", label: () => "Kullanım Kılavuzu" },
+          ];
+          const sideTitle = () => HOF.uiLabel?.("side.title", "OPERASYON MERKEZİ") || "OPERASYON MERKEZİ";
+          const sideLabel = item => HOF.uiLabel?.(item.key, item.label()) || item.label();
+          // 2.3.0 İz 5.5 Hızlı Arama (hof-palette.js): Operasyon Merkezi düğmeleri SIDE_ITEMS'tan (yöneticinin verdiği adla; varsayılan ad eş
+          // ad olarak aranır), tablo başlığındaki Yeni Kayıt, kenar çubuğundaki Ayarlar ve Yönetim panelinin sekmeleri (admin.html; yetkiye göre).
+          const ADMIN_SECTIONS = [
+            ["users", "Kullanıcılar ve Yetkiler", "users.manage"],
+            ["backups", "Yedekler", "system.manage"],
+            ["audit", "Değişiklik Geçmişi", "audit.view"],
+            // 2.4.3 (uzman UX7): Silinenler yönetim panelindedir; panel yalnız yöneticiye açılır (silme yetkisi olan ikinci rol "Bu sayfa
+            // yöneticiler içindir" sayfasına düşüyordu).
+            ["trash", "Silinenler", "users.manage"],
+            ["companies", "Şirketler", "system.manage"],
+            ["system", "Sistem Ayarları", "system.manage"],
+            ["license", "Lisans", "license.manage"],
+          ];
+          HOF.search?.register(() => [
+            ...SIDE_ITEMS.filter(item => (!item.module || HOF.modules[item.module]) && (!item.requires || (item.requires === "reports.staff" ? HOF.can("reports.view") || HOF.can("staff.view") : HOF.can(item.requires)))).map(item => ({
+              group: item.action === "newTask" ? "İşlem" : "Sayfa",
+              label: sideLabel(item),
+              path: item.action === "guide" ? "PDF" : "",
+              keywords: [item.label(), item.action === "analytics" ? "Rapor Merkezi" : "", item.action === "liens" ? "Haciz Düşümü" : ""],
+              run: () => document.querySelector(`#hof-sidecard [data-action="${item.action}"]`)?.click(),
+            })),
+            ...(document.getElementById("hof-toolbar-new") && HOF.can("records.create") ? [{ group: "İşlem", label: "Yeni Kayıt", path: "Tablo", keywords: ["Kişi Ekle", "Satır Ekle"], run: () => document.getElementById("hof-toolbar-new")?.click() }] : []),
+            ...(document.getElementById("hof-side-settings") ? [{ group: "Ayar", label: "Ayarlar", path: "Veri Kaynağı ve Görünüm", keywords: ["Excel", "Google Sheets", "Sektör", "Eşitleme"], run: () => document.getElementById("hof-side-settings")?.click() }] : []),
+            ...ADMIN_SECTIONS.filter(([, , permission]) => HOF.can(permission)).map(([tab, label]) => ({ group: "Ayar", label, path: "Yönetim", keywords: ["Yönetim Paneli"], run: () => window.location.assign(`/admin.html#${tab}`) })),
+          ]);
+          const PENCIL = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>';
+        
+          function renderSideLabels() {
+            const card = document.getElementById("hof-sidecard");
+            if (!card) return;
+            const title = card.querySelector(".hof-sidecard-label");
+            if (title && title.textContent !== sideTitle()) title.textContent = sideTitle();
+            for (const item of SIDE_ITEMS) {
+              const text = card.querySelector(`[data-action="${item.action}"] .hof-side-text`);
+              const value = sideLabel(item);
+              if (text && text.textContent !== value) text.textContent = value;
+            }
+          }
+        
+          // Kalem: kartın başlığı ve düğme adları tek pencerede. Boş bırakılan ya da varsayılana eşit alan varsayılana döner.
+          function openSideEditor() {
+            if (!HOF.can("profile.manage")) return;
+            const items = SIDE_ITEMS.filter(item => !item.module || HOF.modules[item.module]);
+            const rows = [{ key: "side.title", label: "Kartın Başlığı", fallback: "OPERASYON MERKEZİ" }, ...items.map(item => ({ key: item.key, label: item.label(), fallback: item.label(), icon: item.icon }))];
+            const current = HOF.profile?.()?.labels || {};
+            const modal = HOF.formModal({
+              title: "Operasyon Merkezini Düzenle",
+              eyebrow: "GÖRÜNÜM",
+              size: "wide",
+              intro: "Düğmelerin adlarını ofisinize göre değiştirin (ör. <b>Kasa</b> yerine <b>Vezne</b>). Değişiklik tüm bilgisayarlarda görünür; boş bırakılan ad varsayılana döner.",
+              fields: rows.map((row, index) => ({
+                name: `l${index}`,
+                label: row.icon ? `${row.icon}  ${row.fallback}` : row.label,
+                value: current[row.key] || "",
+                placeholder: row.fallback,
+                maxlength: row.key === "side.title" ? 40 : 32,
+                autofocus: index === 1,
+              })),
+              extraHtml: '<div class="hof-side-editor-reset"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-reset-all>Tümünü Varsayılana Döndür</button></div>',
+              submitLabel: "Adları Kaydet",
+              onSubmit: async data => {
+                const labels = {};
+                rows.forEach((row, index) => {
+                  const value = String(data[`l${index}`] || "").replace(/\s+/g, " ").trim();
+                  const normalized = value.toLocaleLowerCase("tr-TR") === row.fallback.toLocaleLowerCase("tr-TR") ? "" : value;
+                  if ((current[row.key] || "") !== normalized) labels[row.key] = normalized;
+                });
+                if (!Object.keys(labels).length) return;
+                const next = await HOF.api("/api/workspace/labels/batch", { method: "PUT", body: { labels } });
+                HOF.applyProfile?.(next);
+                renderSideLabels();
+                HOF.toast("Operasyon merkezi güncellendi; tüm bilgisayarlarda görünür.", { type: "success" });
+              },
+            });
+            modal.dialog.classList.add("hof-side-editor");
+            modal.dialog.querySelector("[data-reset-all]")?.addEventListener("click", () => {
+              modal.dialog.querySelectorAll('.hof-form input[name^="l"]').forEach(input => (input.value = ""));
+              modal.dialog.querySelector('.hof-form input[name^="l"]')?.focus();
+            });
+          }
+        
+          function renderUser() {
+            const target = document.querySelector("#hof-sidecard .hof-user");
+            if (!target || !HOF.user) return;
+            target.innerHTML = `<span class="hof-user-avatar" aria-hidden="true">${esc(HOF.initials(HOF.user.name))}</span><span class="hof-user-info"><strong title="${esc(HOF.user.name)}">${esc(HOF.user.name)}</strong><span>${esc(HOF.user.roleLabel || HOF.roleLabels[HOF.user.role] || HOF.user.role)}</span></span><span class="hof-user-menu"><button type="button" data-action="profile">Profil</button><button type="button" data-action="password">Parola</button>${HOF.can("users.manage") ? '<a href="/admin.html">Yönetim</a>' : ""}<button type="button" data-action="logout">Çıkış</button></span>`;
+          }
+        
+          function installSidebar() {
+            if (!HOF.user || document.getElementById("hof-sidecard")) return;
+            const sidebar = document.querySelector(".sidebar");
+            if (!sidebar) return;
+            const card = HOF.el(
+              "div",
+              { id: "hof-sidecard", class: "hof-sidecard" },
+              `<div class="hof-sidecard-head"><p class="hof-sidecard-label">${esc(sideTitle())}</p><button type="button" class="hof-sidecard-edit" data-action="editSide" data-requires="profile.manage" title="Düğme adlarını değiştir" aria-label="Operasyon merkezindeki düğme adlarını değiştir">${PENCIL}</button></div>
+              ${SIDE_ITEMS.map(item => sideItem(item.action, item.icon, esc(sideLabel(item)), item.badge || "", item.requires || "")).join("")}
+              <div class="hof-user"></div>`,
+            );
+            const bottom = sidebar.querySelector(".sidebar-bottom");
+            if (bottom && bottom.parentNode === sidebar) sidebar.insertBefore(card, bottom);
+            else sidebar.appendChild(card);
+            // Hızlı Arama kutusu kartın hemen üstünde (2.3.0 İz 5.5).
+            HOF.search?.mount(card);
+            renderUser();
+            card.addEventListener("click", event => {
+              const action = event.target.closest("[data-action]")?.dataset.action;
+              if (!action) return;
+              if (action === "tasks") openTasks();
+              else if (action === "messages") HOF.chat ? HOF.chat.toggle() : openMessages();
+              else if (action === "newTask") actions.task();
+              else if (action === "liens") openLiens();
+              else if (action === "cash") openCash();
+              else if (action === "plans") HOF.plans?.open();
+              else if (action === "accounts") HOF.accounts?.open();
+              else if (action === "stock") HOF.stock?.open();
+              else if (action === "cheques") HOF.cheques?.open();
+              else if (action === "bank") HOF.bank?.open();
+              else if (action === "invoices") HOF.invoices?.open({ account: {} });
+              else if (action === "editSide") openSideEditor();
+              else if (action === "guide") window.open("/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf", "_blank", "noopener");
+              else if (action === "reports") openReports();
+              else if (action === "analytics") HOF.overview?.openReports();
+              else if (action === "profile") openProfile();
+              else if (action === "password") HOF.changePassword();
+              else if (action === "logout") HOF.logout();
+            });
+            refreshBadges();
+          }
+        
+          // Bu ekrandaki işlemden sonra rozetler hemen; başka bilgisayardaki değişiklikte en sık 3 sn'de bir (HOF.refresher).
+          function refreshBadges() {
+            badges.now();
+          }
+          async function loadBadges() {
+            const setBadge = (name, value) => {
+              const node = document.querySelector(`[data-badge="${name}"]`);
+              if (node) node.textContent = value ? String(value) : "";
+            };
+            const background = { background: true };
+            try {
+              const [tasks, liens, plans, cheques, invoices, bank] = await Promise.all([
+                HOF.api("/api/workspace/tasks?status=open&mine=1", background),
+                HOF.api("/api/workspace/liens?days=7", background),
+                HOF.can("plans.view") ? HOF.api("/api/workspace/plans?status=overdue&count=1", background).catch(() => null) : null,
+                HOF.can("cheques.view") ? HOF.api("/api/workspace/cheques?status=open&limit=1", background).catch(() => null) : null,
+                HOF.can("invoices.view") ? HOF.api("/api/workspace/invoices?tab=sale&pay=overdue&limit=1", background).catch(() => null) : null,
+                HOF.can("bank.view") ? HOF.api("/api/workspace/bank/badge?count=1", background).catch(() => null) : null,
+              ]);
+              // Banka rozeti (v2.1.0): Hesabı Belirsiz Yeni Hareketler ve vadesi gelen Planlı İşlemler sayısı.
+              if (bank) setBadge("bank", bank.count);
+              // Fatura rozeti (v2.0.15): vadesi geçmiş, tahsil edilmemiş satış faturası sayısı.
+              if (invoices) setBadge("invoices", invoices.total);
+              // Çek / Senet rozeti: vadesi geçmiş ya da bugün vadesi gelen açık evrak sayısı (v2.0.7).
+              if (cheques) setBadge("cheques", cheques.summary.in.overdue.count + cheques.summary.in.today.count + cheques.summary.out.overdue.count + cheques.summary.out.today.count);
+              setBadge("tasks", tasks.length);
+              // Açık acil görev varsa Görevler rozeti kırmızıdır (v2.0.5).
+              document.querySelector('[data-badge="tasks"]')?.classList.toggle("hof-badge-danger", tasks.some(task => task.priority === "urgent"));
+              setBadge("liens", liens.total);
+              // Taksitler rozeti: geciken taksiti olan kart sayısı (v2.0.22: sunucu yalnız sayıyı gönderir — count=1).
+              setBadge("plans", plans ? (plans.total ?? plans.plans.length) : 0);
+              HOF.stock?.refreshAlerts?.();
+            } catch {
+              // Rozetler kritik değil; bir sonraki turda yeniden denenir.
+            }
+          }
+          const badges = HOF.refresher(loadBadges, { delay: 600, gap: 3000 });
+        
+          // ---------- Detay paneli: işlem düğmeleri ve geçmiş ----------
+          const ACTIVITY_ICONS = { note: "✎", phone: "☎", payment: "₺", "plan-entry": "₺", "account-entry": "₺", lien: "⚖", task: "✓" };
+          const describe = item => {
+            if (item.type === "note") return esc(item.text);
+            if (item.type === "phone") return `${esc(item.label)}: ${esc(item.phone)}`;
+            if (item.type === "payment") return `${esc(HOF.formatMoney(item.amount))} tahsilat${item.note ? ` · ${esc(item.note)}` : ""} (${esc(HOF.formatDate(item.date))})`;
+            // Kayda bağlı taksit kartının hareketi (v2.0.6): Kasa'ya kart üzerinden düşmüştür, burada ayrıca sayılmaz.
+            if (item.type === "plan-entry")
+              return item.kind === "in"
+                ? `${esc(HOF.formatMoney(item.amount))} ${item.opening ? "açılış (devir; Excel'de ödenmiş, Kasa'da yok)" : "taksit tahsilatı"}${item.itemSeq ? ` · ${esc(item.itemSeq)}. taksit` : ""}${item.note ? ` · ${esc(item.note)}` : ""}${item.receiptNo ? ` · Makbuz No ${esc(item.receiptNo)}` : ""} (${esc(HOF.formatDate(item.date))})`
+                : `${esc(HOF.formatMoney(item.amount))} taksit ödemesi / iadesi${item.note ? ` · ${esc(item.note)}` : ""} (${esc(HOF.formatDate(item.date))})`;
+            // 2.4.3 (keşif A2): kayda bağlı carinin tahsilat / ödemesi (kayıt kartından girilen tahsilat cari defterine yazılır).
+            if (item.type === "account-entry") return `${esc(HOF.formatMoney(item.amount))} ${item.kind === "in" ? "cari tahsilatı" : "cariye ödeme"}${item.method && item.method !== "cash" ? ` (${esc(HOF.methodLabel(item.method, item.kind))})` : ""} · ${item.accountRefNo ? `No ${esc(item.accountRefNo)} ` : ""}${esc(item.accountName || "")}${item.note ? ` · ${esc(item.note)}` : ""}${item.receiptNo ? ` · Makbuz No ${esc(item.receiptNo)}` : ""} (${esc(HOF.formatDate(item.date))})`;
+            if (item.type === "lien") return `${esc(item.title)} · düşüm ${esc(HOF.formatDate(item.expiresAt))}`;
+            if (item.type === "task") return `${item.priority === "urgent" && item.status !== "completed" ? '<span class="hof-chip hof-chip-urgent">Acil</span> ' : item.priority === "high" && item.status !== "completed" ? '<span class="hof-chip hof-chip-high">Yüksek</span> ' : ""}Görev: ${esc(item.title)} → ${esc(item.assignee)}${item.status === "completed" ? " ✓" : ""}`;
+            return "";
+          };
+        
+          let activityItems = new Map();
+          // 2.3.0 İz 5.6 (müşteri talebi 6): geçmişte ilk 3 satır (en yeniler) görünür, "Daha Fazla Göster (n)" tamamını açar; tercih kart
+          // kapanınca ya da başka kayıt seçilince sıfırlanır.
+          let activityExpanded = false;
+          const ACTIVITY_SHOWN = 3;
+          // İşlem geçmişindeki düzelt/sil/Kayda Git/Daha Fazla düğmeleri (liste her çizimde yenilendiği için tek dinleyici).
+          document.addEventListener("click", event => {
+            const button = event.target.closest("#hof-activity [data-edit], #hof-activity [data-delete], #hof-activity [data-goto], #hof-activity [data-more]");
+            if (!button) return;
+            if (button.dataset.more !== undefined) {
+              activityExpanded = true;
+              activityKey = "";
+              renderActivity();
+              return;
+            }
+            const item = activityItems.get(button.dataset.edit || button.dataset.delete || button.dataset.goto);
+            if (!item) return;
+            const title = HOF.selectedCase()?.title || "";
+            if (button.dataset.goto !== undefined) return gotoActivityRecord(item);
+            if (item.type === "payment") {
+              if (button.dataset.edit !== undefined) editPayment(item, { title, after: afterCaseChange });
+              else deletePayment(item, { title, after: afterCaseChange });
+              return;
+            }
+            if (button.dataset.edit !== undefined) editHistoryItem(item, title);
+            else deleteHistoryItem(item, title);
+          });
+          // Not / telefon / haciz düzeltme ve silme (sunucu: PUT/DELETE /api/workspace/notes|phones|liens/:id; silinen Silinenler'e gider).
+          const HISTORY_PATH = { note: "notes", phone: "phones", lien: "liens" };
+          const HISTORY_LABEL = { note: "Not", phone: "Telefon", lien: "Haciz" };
+          const canEditHistory = item => Boolean(HISTORY_PATH[item.type]) && HOF.can("records.edit") && HOF.can(item.type === "note" ? "notes.write" : item.type === "phone" ? "phones.create" : "liens.create");
+          function editHistoryItem(item, title = "") {
+            const fields =
+              item.type === "note"
+                ? [{ name: "note", label: "Not", type: "textarea", required: true, maxlength: 5000, value: item.text || "" }]
+                : item.type === "phone"
+                  ? [
+                      { name: "phone", label: "Telefon", type: "tel", required: true, inputmode: "tel", value: item.phone || "" },
+                      { name: "label", label: "Etiket", value: item.label || "", list: ["Cep", "İş", "Ev", "Vekil", "Yakını"] },
+                    ]
+                  : [
+                      { name: "title", label: "Haciz Başlığı", required: true, value: item.title || "", list: ["Araç haczi", "Taşınmaz Haczi", "Banka haczi", "Maaş haczi", "Menkul haczi"] },
+                      { name: "placedAt", label: "Konulduğu Tarih", type: "date", required: true, value: isoDate(item.placedAt) },
+                    ];
+            HOF.formModal({
+              title: `${HISTORY_LABEL[item.type]} Düzelt`,
+              eyebrow: title || "İŞLEM GEÇMİŞİ",
+              intro: item.type === "lien" ? "Düşüm tarihi konulduğu tarihten bir yıl sonrası olarak yeniden hesaplanır; Haciz Uyarıları buna göre güncellenir." : "",
+              fields,
+              submitLabel: "Kaydet",
+              onSubmit: async data => {
+                const result = await HOF.api(`/api/workspace/${HISTORY_PATH[item.type]}/${encodeURIComponent(item.id)}`, { method: "PUT", body: data });
+                HOF.toast(item.type === "lien" ? `Haciz düzeltildi. Düşüm tarihi: ${HOF.formatDate(result.expiresAt)}` : `${HISTORY_LABEL[item.type]} düzeltildi.`, { type: "success" });
+                afterCaseChange();
+              },
+            });
+          }
+          async function deleteHistoryItem(item, title = "") {
+            const what = item.type === "note" ? `“${String(item.text || "").slice(0, 80)}${String(item.text || "").length > 80 ? "…" : ""}” notu` : item.type === "phone" ? `${item.label}: ${item.phone} telefonu` : `“${item.title}” haczi`;
+            const ok = await HOF.confirm({
+              title: `${HISTORY_LABEL[item.type]} Sil`,
+              message: `${what}${title ? ` (${title})` : ""} işlem geçmişinden silinecek. ${HOF.trashHint()} Silme işlem kayıtlarında saklanır.`,
+              confirmLabel: "Sil",
+              danger: true,
+            });
+            if (!ok) return;
+            try {
+              await HOF.api(`/api/workspace/${HISTORY_PATH[item.type]}/${encodeURIComponent(item.id)}`, { method: "DELETE" });
+              HOF.toast(`${HISTORY_LABEL[item.type]} silindi.`, { type: "success" });
+              afterCaseChange();
+            } catch (error) {
+              HOF.toastError(error);
+            }
+          }
+          // Taksit hareketi ve görev kendi modülünde düzenlenir: satırdaki "Kayda Git" kartı / görev listesini açar.
+          function gotoActivityRecord(item) {
+            if (item.type === "plan-entry") return item.planId && HOF.plans?.open ? HOF.plans.open(item.planId) : HOF.toast("Taksit kartı bulunamadı.", { type: "error" });
+            if (item.type === "task") return openTasks(item.status === "completed" ? "completed" : HOF.can("tasks.viewAll") ? "open" : "mine", { focus: item.id });
+            if (item.type === "account-entry") return item.accountId && HOF.accounts?.open ? HOF.accounts.open(item.accountId) : HOF.toast("Cari bulunamadı.", { type: "error" });
+            return null;
+          }
+        
+          async function renderActivity() {
+            const selected = HOF.selectedCase();
+            const panel = HOF.detailPanel();
+            let box = document.getElementById("hof-activity");
+            if (!selected || !panel) {
+              if (box) box.hidden = true;
+              activityExpanded = false;
+              return;
+            }
+            if (!box) {
+              box = HOF.el("section", { id: "hof-activity", class: "hof-activity", "aria-live": "polite" });
+              panel.appendChild(box);
+            } else if (box.parentNode !== panel) panel.appendChild(box);
+            box.hidden = false;
+            if (activityKey === selected.key) return;
+            activityKey = selected.key;
+            const request = ++activityRequest;
+            // v2.1.0: aynı kaydın geçmişi yeniden yüklenirken (kendi notu, başka bilgisayardaki işlem — canlı olay) eski liste
+            // yeni liste gelene kadar yerinde kalır; kutu bir an boşalıp "Yükleniyor…" yazmaz (titreme). Kayıt değişince boşalır.
+            if (box.dataset.hofKey !== selected.key) {
+              box.innerHTML = '<div class="hof-activity-head"><h3>İŞLEM GEÇMİŞİ</h3></div><p class="hof-empty">Yükleniyor…</p>';
+              activityExpanded = false;
+            }
+            box.dataset.hofKey = selected.key;
+            try {
+              const result = await HOF.api(caseUrl(selected.key, "activity"));
+              if (request !== activityRequest) return;
+              // 2.4.4 (E8): kartta Tahsilat düğmesi yok (CSS) → boş geçmiş metni yalnız karttaki düğmeleri sayar.
+              const tools = ["not", "telefon", HOF.modules.haciz ? "haciz" : ""].filter(Boolean);
+              const toolsText = `${tools.slice(0, -1).join(", ")} veya ${tools[tools.length - 1]}`;
+              // Eskiden yeniye (v2.0.1): yeni eklenen işlem en altta. 2.3.0 İz 5.6: ilk 3 satır (en yeniler) görünür; "Daha Fazla Göster (n)"
+              // tamamını açar.
+              const shown = activityExpanded ? result.items : result.items.slice(-ACTIVITY_SHOWN);
+              const hidden = result.items.length - shown.length;
+              activityItems = new Map(shown.map(item => [item.id, item]));
+              const tool = (attr, id, label, danger = false) => `<button type="button" class="hof-mini${danger ? " hof-mini-danger" : ""}" ${attr}="${esc(id)}" title="${esc(label)}" aria-label="${esc(label)}">${danger ? "×" : "✎"}</button>`;
+              const itemActions = item => {
+                if (item.type === "payment") return canEditPayment(item) ? `<span class="hof-activity-tools">${tool("data-edit", item.id, "Tahsilatı düzelt")}${tool("data-delete", item.id, "Tahsilatı sil", true)}</span>` : "";
+                if (HISTORY_PATH[item.type]) return canEditHistory(item) ? `<span class="hof-activity-tools">${tool("data-edit", item.id, `${HISTORY_LABEL[item.type]} düzelt`)}${tool("data-delete", item.id, `${HISTORY_LABEL[item.type]} sil`, true)}</span>` : "";
+                // Taksit hareketi ve görev kendi modülünden düzenlenir: "Kayda Git".
+                if (item.type === "plan-entry")
+                  return `<span class="hof-activity-tools">${item.kind === "in" && !item.opening ? `<a class="hof-mini hof-mini-text" href="/api/workspace/plans/${encodeURIComponent(item.planId)}/entries/${encodeURIComponent(item.id)}/makbuz.pdf" target="_blank" rel="noopener" title="Makbuz PDF">Makbuz</a>` : ""}${item.planId && HOF.can("plans.view") ? `<button type="button" class="hof-mini hof-mini-text" data-goto="${esc(item.id)}" title="Taksit kartını aç">Kayda Git</button>` : ""}</span>`;
+                if (item.type === "task") return `<span class="hof-activity-tools"><button type="button" class="hof-mini hof-mini-text" data-goto="${esc(item.id)}" title="Görevler listesini aç">Kayda Git</button></span>`;
+                // Cari hareketi cari kartından düzeltilir: Makbuz + "Kayda Git" (cari kartı).
+                if (item.type === "account-entry")
+                  return `<span class="hof-activity-tools"><a class="hof-mini hof-mini-text" href="/api/workspace/accounts/${encodeURIComponent(item.accountId)}/entries/${encodeURIComponent(item.id)}/makbuz.pdf" target="_blank" rel="noopener" title="Makbuz PDF">Makbuz</a>${HOF.accounts?.open ? `<button type="button" class="hof-mini hof-mini-text" data-goto="${esc(item.id)}" title="Cari kartını aç">Kayda Git</button>` : ""}</span>`;
+                return "";
+              };
+              const edited = item => (item.updatedAt ? ` · düzeltildi${item.updatedByName ? ` (${esc(item.updatedByName)})` : ""}` : "");
+              const more = hidden ? `<p class="hof-activity-more"><button type="button" class="hof-link-button" data-more>Daha Fazla Göster (${hidden})</button></p>` : "";
+              box.innerHTML = `<div class="hof-activity-head"><h3>İŞLEM GEÇMİŞİ</h3>${result.paidTotal ? `<span>Toplam Tahsilat ${esc(HOF.formatMoney(result.paidTotal))}</span>` : ""}</div>${result.items.length ? `${more}<ol>${shown.map(item => `<li data-type="${esc(item.type)}" data-id="${esc(item.id)}"${item.type === "task" && item.priority === "urgent" && item.status !== "completed" ? ' data-urgent=""' : ""}><span class="hof-activity-icon" aria-hidden="true">${ACTIVITY_ICONS[item.type] || "•"}</span><span class="hof-activity-main"><b>${describe(item)}</b><small>${esc(item.actorName || "—")} · ${esc(HOF.formatDateTime(item.createdAt))}${edited(item)}</small></span>${itemActions(item)}</li>`).join("")}</ol>` : `<p class="hof-empty">Bu kayıtta henüz işlem yok. Yukarıdaki düğmelerle ${toolsText} ekleyebilirsiniz.</p>`}`;
+            } catch (error) {
+              if (request === activityRequest) box.innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
+            }
+          }
+        
+          function installDetailActions() {
+            const panel = HOF.detailPanel();
+            const header = panel?.querySelector(".detail-header");
+            if (!header) return;
+            let row = panel.querySelector(".hof-case-actions");
+            if (!row) {
+              row = HOF.el("div", { class: "hof-case-actions", role: "toolbar", "aria-label": "Kayıt işlemleri" }, `<button type="button" class="hof-whatsapp" data-case-action="whatsapp">WhatsApp</button><button type="button" data-case-action="note" data-requires="notes.write">Not</button><button type="button" data-case-action="phone" data-requires="phones.create">Telefon</button><button type="button" data-case-action="payment" data-requires="payments.create">Tahsilat</button><button type="button" data-case-action="task" data-requires="tasks.create">Görev</button><button type="button" data-case-action="lien" data-requires="liens.create">Haciz</button>`);
+              row.addEventListener("click", event => {
+                const action = event.target.closest("[data-case-action]")?.dataset.caseAction;
+                if (action && actions[action]) actions[action]();
+              });
+            }
+            if (header.nextSibling !== row) header.after(row);
+          }
+        
+          let selectedAtPress = "";
+          document.addEventListener("pointerdown", () => (selectedAtPress = HOF.selectedCase()?.key || ""), true);
+          // Tablo veya detaydaki telefon hücresine tıklayınca WhatsApp açılır.
+          document.addEventListener("click", event => {
+            const target = event.target.closest(".dynamic-table td, .dynamic-detail-grid > div");
+            if (!target || event.target.closest("button, a, [data-hof-ui]")) return;
+            const cell = target.closest("td");
+            // Tabloda ilk tıklama satırı seçer; WhatsApp yalnızca zaten seçili olan satırın telefonuna tıklanınca açılır
+            // (v2.0.1). Seçim, tıklama başlamadan önceki hâlinden okunur (arayüz seçimi tıklama sırasında günceller).
+            if (cell) {
+              const row = cell.closest("tr");
+              const key = row?.dataset.hofKey || HOF.rowKey?.(row) || "";
+              if (!key || selectedAtPress !== key) return;
+            }
+            const header = cell ? HOF.tableHeaders(cell.closest("table"))[cell.cellIndex] || "" : "";
+            const label = HOF.columnOf(target.querySelector?.(".detail-label"));
+            if (!/(telefon|tel\b|gsm|cep)/i.test(`${header} ${label}`)) return;
+            const number = extractPhones(target.textContent)[0];
+            if (!number) return;
+            event.preventDefault();
+            openWhatsApp(number);
+            HOF.toast("WhatsApp açılıyor…");
+          });
+        
+          // Açık dosyanın işlem geçmişini yeniden çeker (başka bir bilgisayar not/işlem eklediğinde).
+          function refreshActivity() {
+            activityKey = "";
+            renderActivity();
+            HOF.emit("activity-changed");
+          }
+        
+          // ---------- Canlı değişiklikler (hof-live.js) ----------
+          HOF.on("live:workspace.changed", change => {
+            if (!change) return;
+            if (change.kind === "task") {
+              refreshBadges();
+              // Kişiye kimliğiyle bağlı görevde kimlik, serbest yazılmış görevde ad karşılaştırılır.
+              const mine = change.assigneeId ? change.assigneeId === HOF.user?.id : Boolean(change.assignee) && HOF.normalize(change.assignee) === HOF.normalize(HOF.user?.name || "");
+              if (mine && change.priority === "urgent") {
+                // Acil görev: kırmızı ve uzun süre görünen bildirim (sağ alttaki kırmızı "ACİL GÖREV" uyarısı da gelir).
+                HOF.toast(`ACİL GÖREV · ${change.actorName || "Bir kullanıcı"} size acil görev atadı: ${change.title || ""}`, { type: "error", action: { label: "Görevler", onClick: () => openTasks("mine") }, timeout: 15000 });
+              } else if (mine) {
+                HOF.toast(`${change.actorName || "Bir kullanıcı"} size görev atadı: ${change.title || ""}`, { action: { label: "Görevler", onClick: () => openTasks("mine") }, timeout: 8000 });
+              }
+            }
+            if ((change.kind === "activity" || change.kind === "task") && change.caseKey && HOF.selectedCase()?.key === change.caseKey) refreshActivity();
+            // v2.0.22: yalnız bilgi düzeltmesi (cari notu, adresi…) taksit bölümünü ve rozetleri değiştirmez.
+            if (change.info) return;
+            if (change.kind === "plans" || change.kind === "accounts" || (change.kind === "activity" && change.caseKey && HOF.selectedCase()?.key === change.caseKey)) casePlanSoon();
+            if (change.kind === "plans" || change.kind === "cash" || change.kind === "bank") badges();
+          });
+          HOF.on("plans-changed", refreshBadges);
+          // v2.1.0 Aşama 4: banka yazımı (fiş, ters kayıt, planlı işlem) menüdeki Banka rozetini (vadesi gelen planlı işlemler) hemen yeniler.
+          HOF.on("bank-changed", refreshBadges);
+          // Detay kartındaki taksit bölümü: başka bilgisayardaki değişiklikte birleştirilerek (kayıt seçiliyse) yenilenir.
+          const casePlanSoon = HOF.refresher(() => (HOF.selectedCase() ? renderCasePlan(true) : null));
+          // v2.0.11: Kasa'ya yazan her kaynak (Kasa, detay kartı tahsilatı, cari, taksit, stok, çek/senet, geri yükleme) değişince
+          // açık Kasa penceresi yenilenir — işlem bu ekranda (ör. Kasa'dan açılan çek kartında) ya da başka bilgisayarda yapılmış olsun.
+          // v2.0.22: bu ekrandaki işlemde hemen, başka bilgisayardakinde birleştirilerek (en sık 1,5 sn'de bir).
+          const cashSoon = HOF.refresher(() => cashModal?.reload());
+          HOF.onLedger(["cash", "cheques", "accounts", "plans", "stock"], detail => (detail?.local ? cashSoon.now() : cashSoon()));
+          HOF.on("plans-changed", () => renderCasePlan(true));
+          HOF.on("accounts-changed", () => renderCasePlan(true));
+          HOF.on("payment-saved", detail => {
+            if (!detail?.planId) return;
+            afterCaseChange();
+            renderCasePlan(true);
+          });
+          HOF.on("live:resync", () => {
+            badges();
+            refreshActivity();
+          });
+          // v2.0.10: yönetici bu kişinin rolünü ya da kişiye özel yetkisini değiştirdi → menü, düğmeler ve kartlar yeniden
+          // açmadan güncellenir. Başka kullanıcının adı değişti ya da silindi → sohbet listesi yenilenir.
+          HOF.on("live:workspace.changed", async change => {
+            if (change?.kind === "users") {
+              loadUsers();
+              return HOF.chat?.refresh?.();
+            }
+            if (change?.kind !== "permissions") return;
+            try {
+              const me = await HOF.api("/api/auth/me");
+              HOF.user = { ...HOF.user, ...me, permissions: me.permissions };
+              HOF.applyPermissions?.(HOF.user);
+              renderUser();
+              HOF.emit("user-changed", HOF.user);
+              HOF.toast("Yöneticiniz yetkilerinizi güncelledi; ekranınız buna göre düzenlendi.", { timeout: 6000 });
+            } catch {
+              // oturum düştüyse giriş ekranı zaten açılır
+            }
+          });
+          // Sektör değişince (bu veya başka bir bilgisayarda) kenar çubuğu ve işlem geçmişi yeni dili kullanır.
+          HOF.on("profile", () => {
+            renderSideLabels();
+            renderUser();
+            refreshActivity();
+          });
+        
+          // Kurtarma anahtarı hatırlatması (v2.0.10): yöneticinin anahtarı yoksa 3 günde bir kısa bildirim; "Oluştur" Yönetim'e götürür.
+          // Açık bir pencere (Excel analizi, ön izleme, form) varken hatırlatma çıkmaz: kullanıcının o anki işiyle yarışmaz ve
+          // pencerenin altında kalıp sönmez. Pencere kapanana kadar 20 sn arayla (en çok 30 kez) yeniden bakılır.
+          async function nudgeRecovery(attempt = 0) {
+            if (!HOF.can("users.manage")) return;
+            if (document.querySelector(".hof-modal-backdrop.is-visible, .hof-modal")) {
+              if (attempt < 30) setTimeout(() => nudgeRecovery(attempt + 1), 20_000);
+              return;
+            }
+            const key = `hof.recovery.nudge.${HOF.user?.id || ""}`;
+            try {
+              if (Date.now() - Number(localStorage.getItem(key) || 0) < 3 * 86_400_000) return;
+            } catch {
+              return;
+            }
+            try {
+              const status = await HOF.api("/api/admin/recovery");
+              if (status.exists) return;
+              localStorage.setItem(key, String(Date.now()));
+              HOF.toast("Yönetici parolanızı unutursanız programa kurtarma anahtarıyla girersiniz. Henüz oluşturmadınız.", { timeout: 15000, action: { label: "Oluştur", onClick: () => location.assign("/admin.html#recovery") } });
+            } catch {
+              // hatırlatma yardımcıdır
+            }
+          }
+          // 2.4.3 (keşif A17): klavyeyle gezen kullanıcı için sayfanın en başında "Tabloya Atla" ve "Menüye Atla" (yalnız odaklanınca görünür);
+          // önceden Tab ana alanın üstünden başlıyor, sol menüye ve kayıt tablosuna onlarca duraktan sonra ulaşılıyordu.
+          function installSkipLinks() {
+            if (document.getElementById("hof-skip")) return;
+            const nav = HOF.el("nav", { id: "hof-skip", class: "hof-skip", "aria-label": "Hızlı Geçiş", "data-hof-ui": "" }, '<a href="#" data-skip="table">Tabloya Atla</a><a href="#" data-skip="menu">Menüye Atla</a>');
+            nav.addEventListener("click", event => {
+              const link = event.target.closest("[data-skip]");
+              if (!link) return;
+              event.preventDefault();
+              const target =
+                link.dataset.skip === "menu"
+                  ? document.querySelector("#hof-sidecard [data-action]") || document.querySelector(".sidebar a, .sidebar button")
+                  : document.querySelector(".cases-panel .search-field input") || document.querySelector(".dynamic-table tbody tr") || document.querySelector(".dynamic-table");
+              if (!target) return;
+              if (!target.matches("a, button, input, select, textarea, [tabindex]")) target.tabIndex = -1;
+              target.focus();
+            });
+            document.body.prepend(nav);
+          }
+          HOF.whenReady(() => {
+            loadUsers();
+            setTimeout(() => nudgeRecovery(), 6000);
+            installSkipLinks();
+            HOF.onDom(() => {
+              installSidebar();
+              installDetailActions();
+              renderActivity();
+              renderCasePlan();
+            });
+            setInterval(() => badges(), 120_000);
+          });
+          HOF.workspace = { openTasks, openMessages, openReports, performanceHtml, openLiens, openCash, refreshBadges, refreshActivity, extractPhones, payment: target => actions.payment(target) };
+        })();
+        
+      operator: 'doesNotMatch'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:351:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 6 - 2.4.5 madde 1–3: kaynakta kapılar
+  ---
+  duration_ms: 86.191438
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/eski-d2cef7c/test/kapi-para-245.test.mjs:283:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..6
+# tests 16
+# suites 6
+# pass 3
+# fail 13
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3512.891016

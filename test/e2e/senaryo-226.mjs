@@ -6,8 +6,8 @@
 //  G1. Kilitli günde kapatılmış taksit kartında Yeniden Aç → ekranda nedenli ret ("… kapatıldı … Kart yeniden açılamaz."); kart Kapalı.
 // İkinci bağımsız gözden geçirme (docs/2.0.26-KANIT.md 4. bölüm):
 //  İ3. Kilitli dönemdeki çekin kartında Sil düğmesi yok; nedeni kartta yazılı (form giriş metni sunucudan, doğru yolu söyler).
-//  İ5. Kasa'da kayıt tahsilatını düzeltirken eksi bakiye sorusu düzeltmeyi anlatır ("… düzeltilince Nakit Kasa'dan … düşer");
-//      "yolu değiştirin" önerisi ve "çıkış" yok.
+//  İ5. (2.4.5 madde 1) Kasa'da eski kayıt tahsilatı düzeltilmez (✎ yok, × var); önceki "düzeltilince Nakit Kasa'dan … düşer" sorusu bu satırda ekrandan
+//      açılamaz (sunucuda PUT 410; anahtar açık testlerde test/inceleme-226*.test.mjs).
 //  İ6. Silmede soruya "Vazgeç" → bildirim "Silinmedi: …" (kırmızı hata değil); tahsilat yerinde.
 //  İ8. Eski sürümden kalan ileri tarihli çek/senet: Yönetim'de Mutabakat satırı sarı uyarı, ne yapılacağını söyler, tablo adı yok.
 // Çalıştırma: npm run test:senaryo-226
@@ -31,7 +31,8 @@ const TODAY = iso(new Date());
 const LOCK = "2025-06-30";
 const LOCKED_DAY = "2025-03-10";
 const OPEN_DAY = "2025-09-10";
-const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f26" } });
+// 2.4.5 madde 1: kayıt tahsilatı programda kapalı (410); bu senaryo eski sürümden gelen kayıt tahsilatını API'den üretir → anahtar açık (üretimde yok).
+const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f26" } , legacyCasePayments: true });
 const { port } = await app.listen(0, "127.0.0.1");
 const BASE = `http://127.0.0.1:${port}`;
 const browser = await chromium.launch();
@@ -178,29 +179,17 @@ try {
     ok(cash === -800, `onaylanınca silindi; Nakit Kasa ${cash}`);
   });
 
-  await step("İ5. Kasa'da kayıt tahsilatı düzeltilirken Kasa eksiye düşecek: soru düzeltmeyi anlatır; Vazgeç ile yazılmaz", async () => {
+  // 2.4.5 madde 1: eski kayıt tahsilatı düzeltilmez (PUT 410, ✎ kalktı); v2.0.26 İ5'in "düzeltme eksiye düşürür" sorusu bu satırda artık ekrandan açılamaz.
+  // Eksi bakiye sorusunun silme yolu İ6'da aynen sınanır.
+  await step("İ5. Kasa'da eski kayıt tahsilatı: düzelt (✎) yok, sil (×) var (2.4.5 madde 1)", async () => {
     const pay = await must("kayıt tahsilatı", api.post("/api/workspace/cases/K-226/payments", { amount: "1000", date: TODAY, method: "cash", caseTitle: "Ali Kayıt" }));
     ctxUi.pay = pay.id;
     ok((await cashApi()) === 200, `Nakit Kasa 200 (${await cashApi()})`);
     await closeAll();
     await page.click('#hof-sidecard [data-action="cash"]');
-    await page.waitForSelector(`${top} button[data-edit="${pay.id}"]`, { timeout: 15000 });
-    await page.click(`${top} button[data-edit="${pay.id}"]`);
-    await page.waitForSelector(`${top} form input[name="amount"]`);
-    await page.fill(`${top} form input[name="amount"]`, "500");
-    await page.click(`${top} form button[type="submit"]`);
-    await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible")].some(m => /Eksiye Düşecek/.test(m.textContent)), null, { timeout: 10000 });
-    const text = await page.$eval(top, n => n.innerText.replace(/\s+/g, " "));
-    await shot("i5-duzeltme-sorusu");
-    ok(/Bu tahsilat 1\.000,00 TL'den 500,00 TL'ye düzeltilince Nakit Kasa'dan 500,00 TL düşer/.test(text), `soru düzeltmeyi anlatıyor: "${text.slice(0, 220)}"`);
-    ok(/200,00 TL iken [−-]300,00 TL olur/.test(text) && /Yine de kaydedilsin mi\?/.test(text), "önce/sonra bakiye ve kaydetme sorusu");
-    ok(!/yolu değiştirin/.test(text) && !/çıkış/.test(text), "yol önerisi ve 'çıkış' yok");
-    await page.click(`${top} [data-answer="no"]`);
-    await page.waitForTimeout(500);
-    const amount = (await must("tahsilat oku", api.get("/api/workspace/cash?method=cash"))).entries.find(entry => entry.id === pay.id)?.amount;
-    ok(amount === 1000, `Vazgeç: tahsilat değişmedi (${amount})`);
-    await page.click(`${top} [data-cancel]`).catch(() => null);
-    await page.waitForTimeout(300);
+    await page.waitForSelector(`${top} button[data-delete="${pay.id}"]`, { timeout: 15000 });
+    ok(!(await page.$(`${top} button[data-edit="${pay.id}"]`)), "Kasa'da eski kayıt tahsilatında düzelt düğmesi yok");
+    await shot("i5-eski-tahsilat-duzeltilmez");
   });
 
   await step("İ6. Kasa'da kayıt tahsilatı silinirken soruya Vazgeç: 'Silinmedi' bilgisi (kırmızı hata değil); tahsilat yerinde", async () => {

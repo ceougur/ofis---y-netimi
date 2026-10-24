@@ -1,0 +1,32 @@
+{
+  "ad": "245-kapi-para/e2e-senaryo-banka-210b",
+  "komut": "npm run test:senaryo-banka-210b",
+  "commit": "d2cef7ce21b0776e2767f8fb610c9be8a4159f5d",
+  "dal": "is/kapi-para",
+  "kirli": 19,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:27:30.447Z",
+  "sure_sn": 97.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 90,
+    "gecen": 90,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-kapi-para/e2e-senaryo-banka-210b.log",
+  "klasor": "/home/user/wt/kapi-para",
+  "ham_cikti_sha256": "bdee30942e12347a35043044414dd95b5e5477836863d7fb424420c753bdfa1c",
+  "ham_cikti_bayt": 8904
+}

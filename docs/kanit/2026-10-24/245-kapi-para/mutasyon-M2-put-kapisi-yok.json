@@ -1,0 +1,73 @@
+{
+  "ad": "245-kapi-para/mutasyon-M2-put-kapisi-yok",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/kapi-para-245.test.mjs",
+  "commit": "d2cef7ce21b0776e2767f8fb610c9be8a4159f5d",
+  "dal": "HEAD",
+  "kirli": 19,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:13:30.813Z",
+  "sure_sn": 7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 15,
+    "gecen": 7,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.5 madde 1–2: eski sürüm verisi (v2.4.4 gerçek kodu) yeni kodla — kapılar kapalı, eski satırlar aynen, sil / geri yükle / geri al açık › PUT eski kayıt tahsilatı 410; satırın tutarı, tarihi ve yolu aynı",
+      "konum": "test/kapi-para-245.test.mjs:133:3",
+      "hata": "PUT: 410 bekleniyordu, 200 geldi ({\"ok\":true,\"data\":{\"id\":\"payment-06c9c841-c80b-4384-be45-400a60e89540\"}}) · 200 !== 410 (beklenen 410, gelen 200)"
+    },
+    {
+      "ad": "2.4.5 madde 1–2: eski sürüm verisi (v2.4.4 gerçek kodu) yeni kodla — kapılar kapalı, eski satırlar aynen, sil / geri yükle / geri al açık › oturumsuz 401; personel de 410 alır (Tablodan Aktar yetkisi olmasa da 410: kapı yetkiden önce); veri değişmez",
+      "konum": "test/kapi-para-245.test.mjs:141:3",
+      "hata": "personel PUT: 410 bekleniyordu, 403 geldi ({\"ok\":false,\"error\":\"Başkasının girdiği tahsilatı yalnızca kasa yetkisi olanlar (yönetici, muhasebe) değiştirebilir.\"}) · 403 !== 410 (beklenen 410, gelen 403)"
+    },
+    {
+      "ad": "2.4.5 madde 1–2: eski sürüm verisi (v2.4.4 gerçek kodu) yeni kodla — kapılar kapalı, eski satırlar aynen, sil / geri yükle / geri al açık › Tablodan Aktar POST 410; yükleme sonrası özet sormaz; veri değişmez; eski aktarım listede",
+      "konum": "test/kapi-para-245.test.mjs:152:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.5 madde 1–2: eski sürüm verisi (v2.4.4 gerçek kodu) yeni kodla — kapılar kapalı, eski satırlar aynen, sil / geri yükle / geri al açık › DELETE açık (→ Silinenler), Silinenler'den geri yükleme açık: Kasa ve mizan eski hâline döner",
+      "konum": "test/kapi-para-245.test.mjs:162:3",
+      "hata": "Expected values to be strictly equal: · 1300 !== 1050 (beklenen 1050, gelen 1300)"
+    },
+    {
+      "ad": "2.4.5 madde 1–2: eski sürüm verisi (v2.4.4 gerçek kodu) yeni kodla — kapılar kapalı, eski satırlar aynen, sil / geri yükle / geri al açık › eski aktarımın Geri Al'ı açık: kartlar kalkar, karta taşınan kayıt tahsilatı kayda döner, Kasa aynı",
+      "konum": "test/kapi-para-245.test.mjs:176:3",
+      "hata": "Zeynep'in kayıt tahsilatı kayıt kartına döndü (geri alma eski veriyi geri koyar, yeni giriş değil) · 2 !== 3 (beklenen 3, gelen 2)"
+    },
+    {
+      "ad": "2.4.5 madde 1–2: istek kimliği yinelemesi kapıyı aşmaz; anahtar açıkken eski davranış (testlerin ve üreticilerin yolu) › açıkken POST / PUT / Tablodan Aktar 200 ve yineleme 'replayed'; kapalı sunucuda aynı istek kimliği 410, satır sayısı aynı",
+      "konum": "test/kapi-para-245.test.mjs:196:3",
+      "hata": "aynı istek kimliği (PUT) kapalı sunucuda: 410 bekleniyordu, 200 geldi ({\"ok\":true,\"data\":{\"id\":\"payment-f7abdc8c-0856-40cc-afe2-cf5d0ccac04e\"}}) · 200 !== 410 (beklenen 410, gelen 200)"
+    },
+    {
+      "ad": "2.4.5 madde 1–2: 002 şirketi de kapalı (alt şirket aynı yapılandırmayla açılır) › 002'de POST / PUT / Tablodan Aktar 410; 002'nin Kasa'sı ve kaydın işlem geçmişi boş",
+      "konum": "test/kapi-para-245.test.mjs:242:3",
+      "hata": "002 PUT: 410 bekleniyordu, 404 geldi ({\"ok\":false,\"error\":\"Tahsilat bulunamadı. Başka biri silmiş olabilir.\"}) · 404 !== 410 (beklenen 410, gelen 404)"
+    },
+    {
+      "ad": "2.4.5 madde 1–3: kaynakta kapılar › POST /cases/:key/payments ve PUT /payments/:id ilk iş kapıya bakar; DELETE kapısız; kapı 410 case-payments-closed",
+      "konum": "test/kapi-para-245.test.mjs:302:3",
+      "hata": "PUT /api/workspace/payments/:id ilk satırı kapı olmalı: const { user, payment } = editablePayment(req, params.id); · + actual - expected · + 'const { user, payment } = editablePayment(req, params.id);' (beklenen assertCasePaymentsOpen(req);, gelen const { user, payment } = editablePayment(req, params.id);)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/kapi-para/docs/kanit/2026-10-24/245-kapi-para/mutasyon-M2-put-kapisi-yok.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kapi-para/mut-M2-put-kapisi-yok",
+  "ham_cikti_sha256": "911c05449ebe8cf639988b09f2c51a6d902329cd8e1339137af50f62d95177bc",
+  "ham_cikti_bayt": 18907
+}
