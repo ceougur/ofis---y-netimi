@@ -1,0 +1,13 @@
+[19:43:35] ✓ 001 göçten sonra v2.4.4 açınca gösterdiği = göçten önce gösterdiği
+[19:43:35] ✓ 001 v2.4.4 açılışı şemayı geri almaz (33 kalır)
+[19:43:35] ✓ 001 v2.4.4'ten sonra yeniden güncel: gösterdiği = göç ölçüsü
+[19:43:35] ✓ 002 göçten sonra v2.4.4 açınca gösterdiği = göçten önce gösterdiği
+[19:43:35] ✓ 002 v2.4.4 açılışı şemayı geri almaz (33 kalır)
+[19:43:35] ✓ 002 v2.4.4'ten sonra yeniden güncel: gösterdiği = göç ölçüsü
+# geri dönüş denetimleri
+# tests 6
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

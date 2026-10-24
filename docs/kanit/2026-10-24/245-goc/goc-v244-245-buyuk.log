@@ -1,0 +1,15 @@
+2026-10-24T19:36:46.934Z [INFO] Göç öncesi yedek alındı: destekofis-001-2026-10-24T19-36-46-845Z-pre-migration-v33.sqlite
+2026-10-24T19:36:46.941Z [INFO] Veritabanı göçü uygulandı: 33 (v2.4.5 cari borç kaydında Vade Tarihi ve Beklenen Ödeme Tarihi)
+2026-10-24T19:37:21.561Z [INFO] Göç öncesi yedek alındı: destekofis-002-2026-10-24T19-37-21-513Z-pre-migration-v33.sqlite
+2026-10-24T19:37:21.566Z [INFO] Veritabanı göçü uygulandı: 33 (v2.4.5 cari borç kaydında Vade Tarihi ve Beklenen Ödeme Tarihi)
+2026-10-24T19:37:21.802Z [INFO] Şirket açıldı: 002 · Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti.
+[19:37:33] göç + ölçü: 001 açılışı (göç dahil) 743 ms; ilk erişim {"001":6,"002":300}; yeni yedek 001 - Merkez Ticaret ve Danışmanlık A.Ş/destekofis-001-2026-10-24T19-36-46-845Z-pre-migration-v33.sqlite, 002 - Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti/destekofis-002-2026-10-24T19-37-21-513Z-pre-migration-v33.sqlite
+[19:37:33]   001: şema 33, bütünlük ok, numara tabanı {"FIS2025":{"seq":97,"number":"FIS2025000000097","issueDate":"2025-11-20","deleted":true},"FIS2026":{"seq":303,"number":"FIS2026000000303","issueDate":"2026-10-15"},"SMM2026":{"seq":74,"number":"SMM2026000000074","issueDate":"2026-10-24","deleted":true}}, account_entries yeni kolon dolu {"due_date":0,"expected_date":0}
+[19:37:33]   002: şema 33, bütünlük ok, numara tabanı {"FIS2025":{"seq":55,"number":"FIS2025000000055","issueDate":"2025-11-13","deleted":true},"FIS2026":{"seq":130,"number":"FIS2026000000130","issueDate":"2026-09-30"},"SMM2026":{"seq":104,"number":"SMM2026000000104","issueDate":"2026-10-24","deleted":true}}, account_entries yeni kolon dolu {"due_date":0,"expected_date":0}
+# göç: 2 şirket şema 33 + göç öncesi yedek; sorunlu yok
+# tests 2
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

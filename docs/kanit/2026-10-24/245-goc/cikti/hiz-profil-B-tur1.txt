@@ -1,0 +1,8 @@
+compute: 11064 ms
+allPaymentStates: 4484 ms
+allLedgers: 4180 ms
+settleTables: 1192 ms
+settleLedger: 1183 ms
+openDueItems: 3043 ms
+allEntryStates: 2865 ms
+dueFingerprint: 479 ms

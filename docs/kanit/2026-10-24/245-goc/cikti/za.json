@@ -1,0 +1,823 @@
+{
+ "source": "fikstur:surum-2.0.26-turler",
+ "pathVersions": [
+  "v2.1.0",
+  "v2.2.0",
+  "v2.3.0",
+  "v2.4.3",
+  "v2.4.4"
+ ],
+ "timings": {
+  "v2.1.0": 928,
+  "v2.2.0": 777,
+  "v2.3.0": 848,
+  "v2.4.3": 802,
+  "v2.4.4": 779
+ },
+ "checks": [
+  {
+   "name": "* şirket listesi",
+   "ok": true
+  },
+  {
+   "name": "* kullanıcı ali",
+   "ok": true
+  },
+  {
+   "name": "* kullanıcı ayse",
+   "ok": true
+  },
+  {
+   "name": "* kullanıcı fatma",
+   "ok": true
+  },
+  {
+   "name": "* kullanıcı kasa1",
+   "ok": true
+  },
+  {
+   "name": "* kullanıcı mehmet",
+   "ok": true
+  },
+  {
+   "name": "* kullanıcı admin",
+   "ok": true
+  },
+  {
+   "name": "* kullanıcı zeynep",
+   "ok": true
+  },
+  {
+   "name": "* roller",
+   "ok": true
+  },
+  {
+   "name": "001 cari bakiyeleri (tek tek)",
+   "ok": true
+  },
+  {
+   "name": "001 mizan (her hesap)",
+   "ok": true
+  },
+  {
+   "name": "001 mizan toplamı",
+   "ok": true
+  },
+  {
+   "name": "001 defter mutabakatı",
+   "ok": true
+  },
+  {
+   "name": "001 Mutabakat Testi sapmaları",
+   "ok": true
+  },
+  {
+   "name": "001 Mutabakat Testi denetimleri",
+   "ok": true
+  },
+  {
+   "name": "001 dönem kilidi",
+   "ok": true
+  },
+  {
+   "name": "001 Kasa (toplam, yol başına, satırlar)",
+   "ok": true
+  },
+  {
+   "name": "001 banka hesapları (tek tek)",
+   "ok": true
+  },
+  {
+   "name": "001 Banka özeti",
+   "ok": true
+  },
+  {
+   "name": "001 çek/senet (tek tek: durum, tutar, cari, fatura)",
+   "ok": true
+  },
+  {
+   "name": "001 taksit kartları (tek tek)",
+   "ok": true
+  },
+  {
+   "name": "001 taksit toplamları",
+   "ok": true
+  },
+  {
+   "name": "001 stok (tek tek)",
+   "ok": true
+  },
+  {
+   "name": "001 KDV mahsup fişleri",
+   "ok": true
+  },
+  {
+   "name": "001 tablo (veri oturumu)",
+   "ok": true
+  },
+  {
+   "name": "001 şüpheli alacaklar",
+   "ok": true
+  },
+  {
+   "name": "001 Gönderilecekler",
+   "ok": true
+  },
+  {
+   "name": "001 seri adları",
+   "ok": true
+  },
+  {
+   "name": "001 Silinenler (çöp kutusu)",
+   "ok": true
+  },
+  {
+   "name": "001 geri yükleme uyarısı (30b; göçte yok)",
+   "ok": true
+  },
+  {
+   "name": "001 cari kartları (hareketler, defter, toplamlar; yeni alanlar hariç)",
+   "ok": true
+  },
+  {
+   "name": "001 cari hareketlerinin yeni alanları (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan)",
+   "ok": true
+  },
+  {
+   "name": "001 Yevmiye (bütün satırlar)",
+   "ok": true
+  },
+  {
+   "name": "001 faturalar (tür, durum, numara, ETTN, tarih, cari, profil, e-Belge durumu, tutar)",
+   "ok": true
+  },
+  {
+   "name": "001 faturaların ödeme durumu",
+   "ok": true
+  },
+  {
+   "name": "001 ANLIK DURUM",
+   "ok": true
+  },
+  {
+   "name": "001 e-Belge kartları (İptal Et / Gönder / Bırak düğmeleri)",
+   "ok": true
+  },
+  {
+   "name": "001 sıradaki numara · paper",
+   "ok": true
+  },
+  {
+   "name": "001 sıradaki numara · earsiv",
+   "ok": true
+  },
+  {
+   "name": "001 sıradaki numara · efatura",
+   "ok": true
+  },
+  {
+   "name": "001 sıradaki numara · smm",
+   "ok": true
+  },
+  {
+   "name": "001 sıradaki numara · esmm",
+   "ok": true
+  },
+  {
+   "name": "001 sıradaki numara · internal",
+   "ok": true
+  },
+  {
+   "name": "001 rapor merkezi (öbür raporlar)",
+   "ok": true
+  },
+  {
+   "name": "001 Tablo Raporları · cari-ekstre (rakamlar, satırlar)",
+   "ok": true
+  },
+  {
+   "name": "001 Tablo Raporları · cari-ekstre (kolon adları)",
+   "ok": true
+  },
+  {
+   "name": "001 Tablo Raporları · vade-takip (rakamlar, satırlar)",
+   "ok": true
+  },
+  {
+   "name": "001 Tablo Raporları · vade-takip (kolon adları)",
+   "ok": true
+  },
+  {
+   "name": "001 Tablo Raporları · nakit-akis (rakamlar, satırlar)",
+   "ok": true
+  },
+  {
+   "name": "001 Tablo Raporları · nakit-akis (kolon adları)",
+   "ok": true
+  },
+  {
+   "name": "001 Tahsilat Takvimi / zil (kalemler, son tarihler)",
+   "ok": true
+  },
+  {
+   "name": "001 Nakit Akış Projeksiyonu (= 2.4.4'ün tablosuz projeksiyonu)",
+   "ok": true
+  },
+  {
+   "name": "001 Anlık Durum · Vade Takip (kaynak başına)",
+   "ok": true
+  },
+  {
+   "name": "002 cari bakiyeleri (tek tek)",
+   "ok": true
+  },
+  {
+   "name": "002 mizan (her hesap)",
+   "ok": true
+  },
+  {
+   "name": "002 mizan toplamı",
+   "ok": true
+  },
+  {
+   "name": "002 defter mutabakatı",
+   "ok": true
+  },
+  {
+   "name": "002 Mutabakat Testi sapmaları",
+   "ok": true
+  },
+  {
+   "name": "002 Mutabakat Testi denetimleri",
+   "ok": true
+  },
+  {
+   "name": "002 dönem kilidi",
+   "ok": true
+  },
+  {
+   "name": "002 Kasa (toplam, yol başına, satırlar)",
+   "ok": true
+  },
+  {
+   "name": "002 banka hesapları (tek tek)",
+   "ok": true
+  },
+  {
+   "name": "002 Banka özeti",
+   "ok": true
+  },
+  {
+   "name": "002 çek/senet (tek tek: durum, tutar, cari, fatura)",
+   "ok": true
+  },
+  {
+   "name": "002 taksit kartları (tek tek)",
+   "ok": true
+  },
+  {
+   "name": "002 taksit toplamları",
+   "ok": true
+  },
+  {
+   "name": "002 stok (tek tek)",
+   "ok": true
+  },
+  {
+   "name": "002 KDV mahsup fişleri",
+   "ok": true
+  },
+  {
+   "name": "002 tablo (veri oturumu)",
+   "ok": true
+  },
+  {
+   "name": "002 şüpheli alacaklar",
+   "ok": true
+  },
+  {
+   "name": "002 Gönderilecekler",
+   "ok": true
+  },
+  {
+   "name": "002 seri adları",
+   "ok": true
+  },
+  {
+   "name": "002 Silinenler (çöp kutusu)",
+   "ok": true
+  },
+  {
+   "name": "002 geri yükleme uyarısı (30b; göçte yok)",
+   "ok": true
+  },
+  {
+   "name": "002 cari kartları (hareketler, defter, toplamlar; yeni alanlar hariç)",
+   "ok": true
+  },
+  {
+   "name": "002 cari hareketlerinin yeni alanları (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan)",
+   "ok": true
+  },
+  {
+   "name": "002 Yevmiye (bütün satırlar)",
+   "ok": true
+  },
+  {
+   "name": "002 faturalar (tür, durum, numara, ETTN, tarih, cari, profil, e-Belge durumu, tutar)",
+   "ok": true
+  },
+  {
+   "name": "002 faturaların ödeme durumu",
+   "ok": true
+  },
+  {
+   "name": "002 ANLIK DURUM",
+   "ok": true
+  },
+  {
+   "name": "002 e-Belge kartları (İptal Et / Gönder / Bırak düğmeleri)",
+   "ok": true
+  },
+  {
+   "name": "002 sıradaki numara · paper",
+   "ok": true
+  },
+  {
+   "name": "002 sıradaki numara · earsiv",
+   "ok": true
+  },
+  {
+   "name": "002 sıradaki numara · efatura",
+   "ok": true
+  },
+  {
+   "name": "002 sıradaki numara · smm",
+   "ok": true
+  },
+  {
+   "name": "002 sıradaki numara · esmm",
+   "ok": true
+  },
+  {
+   "name": "002 sıradaki numara · internal",
+   "ok": true
+  },
+  {
+   "name": "002 rapor merkezi (öbür raporlar)",
+   "ok": true
+  },
+  {
+   "name": "002 Tablo Raporları · cari-ekstre (rakamlar, satırlar)",
+   "ok": true
+  },
+  {
+   "name": "002 Tablo Raporları · cari-ekstre (kolon adları)",
+   "ok": true
+  },
+  {
+   "name": "002 Tablo Raporları · vade-takip (rakamlar, satırlar)",
+   "ok": true
+  },
+  {
+   "name": "002 Tablo Raporları · vade-takip (kolon adları)",
+   "ok": true
+  },
+  {
+   "name": "002 Tablo Raporları · nakit-akis (rakamlar, satırlar)",
+   "ok": true
+  },
+  {
+   "name": "002 Tablo Raporları · nakit-akis (kolon adları)",
+   "ok": true
+  },
+  {
+   "name": "002 Tahsilat Takvimi / zil (kalemler, son tarihler)",
+   "ok": true
+  },
+  {
+   "name": "002 Nakit Akış Projeksiyonu (= 2.4.4'ün tablosuz projeksiyonu)",
+   "ok": true
+  },
+  {
+   "name": "002 Anlık Durum · Vade Takip (kaynak başına)",
+   "ok": true
+  },
+  {
+   "name": "007 cari bakiyeleri (tek tek)",
+   "ok": true
+  },
+  {
+   "name": "007 mizan (her hesap)",
+   "ok": true
+  },
+  {
+   "name": "007 mizan toplamı",
+   "ok": true
+  },
+  {
+   "name": "007 defter mutabakatı",
+   "ok": true
+  },
+  {
+   "name": "007 Mutabakat Testi sapmaları",
+   "ok": true
+  },
+  {
+   "name": "007 Mutabakat Testi denetimleri",
+   "ok": true
+  },
+  {
+   "name": "007 dönem kilidi",
+   "ok": true
+  },
+  {
+   "name": "007 Kasa (toplam, yol başına, satırlar)",
+   "ok": true
+  },
+  {
+   "name": "007 banka hesapları (tek tek)",
+   "ok": true
+  },
+  {
+   "name": "007 Banka özeti",
+   "ok": true
+  },
+  {
+   "name": "007 çek/senet (tek tek: durum, tutar, cari, fatura)",
+   "ok": true
+  },
+  {
+   "name": "007 taksit kartları (tek tek)",
+   "ok": true
+  },
+  {
+   "name": "007 taksit toplamları",
+   "ok": true
+  },
+  {
+   "name": "007 stok (tek tek)",
+   "ok": true
+  },
+  {
+   "name": "007 KDV mahsup fişleri",
+   "ok": true
+  },
+  {
+   "name": "007 tablo (veri oturumu)",
+   "ok": true
+  },
+  {
+   "name": "007 şüpheli alacaklar",
+   "ok": true
+  },
+  {
+   "name": "007 Gönderilecekler",
+   "ok": true
+  },
+  {
+   "name": "007 seri adları",
+   "ok": true
+  },
+  {
+   "name": "007 Silinenler (çöp kutusu)",
+   "ok": true
+  },
+  {
+   "name": "007 geri yükleme uyarısı (30b; göçte yok)",
+   "ok": true
+  },
+  {
+   "name": "007 cari kartları (hareketler, defter, toplamlar; yeni alanlar hariç)",
+   "ok": true
+  },
+  {
+   "name": "007 cari hareketlerinin yeni alanları (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan)",
+   "ok": true
+  },
+  {
+   "name": "007 Yevmiye (bütün satırlar)",
+   "ok": true
+  },
+  {
+   "name": "007 faturalar (tür, durum, numara, ETTN, tarih, cari, profil, e-Belge durumu, tutar)",
+   "ok": true
+  },
+  {
+   "name": "007 faturaların ödeme durumu",
+   "ok": true
+  },
+  {
+   "name": "007 ANLIK DURUM",
+   "ok": true
+  },
+  {
+   "name": "007 e-Belge kartları (İptal Et / Gönder / Bırak düğmeleri)",
+   "ok": true
+  },
+  {
+   "name": "007 sıradaki numara · paper",
+   "ok": true
+  },
+  {
+   "name": "007 sıradaki numara · earsiv",
+   "ok": true
+  },
+  {
+   "name": "007 sıradaki numara · efatura",
+   "ok": true
+  },
+  {
+   "name": "007 sıradaki numara · smm",
+   "ok": true
+  },
+  {
+   "name": "007 sıradaki numara · esmm",
+   "ok": true
+  },
+  {
+   "name": "007 sıradaki numara · internal",
+   "ok": true
+  },
+  {
+   "name": "007 rapor merkezi (öbür raporlar)",
+   "ok": true
+  },
+  {
+   "name": "007 Tablo Raporları · cari-ekstre (rakamlar, satırlar)",
+   "ok": true
+  },
+  {
+   "name": "007 Tablo Raporları · cari-ekstre (kolon adları)",
+   "ok": true
+  },
+  {
+   "name": "007 Tablo Raporları · vade-takip (rakamlar, satırlar)",
+   "ok": true
+  },
+  {
+   "name": "007 Tablo Raporları · vade-takip (kolon adları)",
+   "ok": true
+  },
+  {
+   "name": "007 Tablo Raporları · nakit-akis (rakamlar, satırlar)",
+   "ok": true
+  },
+  {
+   "name": "007 Tablo Raporları · nakit-akis (kolon adları)",
+   "ok": true
+  },
+  {
+   "name": "007 Tahsilat Takvimi / zil (kalemler, son tarihler)",
+   "ok": true
+  },
+  {
+   "name": "007 Nakit Akış Projeksiyonu (= 2.4.4'ün tablosuz projeksiyonu)",
+   "ok": true
+  },
+  {
+   "name": "007 Anlık Durum · Vade Takip (kaynak başına)",
+   "ok": true
+  },
+  {
+   "name": "004 cari bakiyeleri (tek tek)",
+   "ok": true
+  },
+  {
+   "name": "004 mizan (her hesap)",
+   "ok": true
+  },
+  {
+   "name": "004 mizan toplamı",
+   "ok": true
+  },
+  {
+   "name": "004 defter mutabakatı",
+   "ok": true
+  },
+  {
+   "name": "004 Mutabakat Testi sapmaları",
+   "ok": true
+  },
+  {
+   "name": "004 Mutabakat Testi denetimleri",
+   "ok": true
+  },
+  {
+   "name": "004 dönem kilidi",
+   "ok": true
+  },
+  {
+   "name": "004 Kasa (toplam, yol başına, satırlar)",
+   "ok": true
+  },
+  {
+   "name": "004 banka hesapları (tek tek)",
+   "ok": true
+  },
+  {
+   "name": "004 Banka özeti",
+   "ok": true
+  },
+  {
+   "name": "004 çek/senet (tek tek: durum, tutar, cari, fatura)",
+   "ok": true
+  },
+  {
+   "name": "004 taksit kartları (tek tek)",
+   "ok": true
+  },
+  {
+   "name": "004 taksit toplamları",
+   "ok": true
+  },
+  {
+   "name": "004 stok (tek tek)",
+   "ok": true
+  },
+  {
+   "name": "004 KDV mahsup fişleri",
+   "ok": true
+  },
+  {
+   "name": "004 tablo (veri oturumu)",
+   "ok": true
+  },
+  {
+   "name": "004 şüpheli alacaklar",
+   "ok": true
+  },
+  {
+   "name": "004 Gönderilecekler",
+   "ok": true
+  },
+  {
+   "name": "004 seri adları",
+   "ok": true
+  },
+  {
+   "name": "004 Silinenler (çöp kutusu)",
+   "ok": true
+  },
+  {
+   "name": "004 geri yükleme uyarısı (30b; göçte yok)",
+   "ok": true
+  },
+  {
+   "name": "004 cari kartları (hareketler, defter, toplamlar; yeni alanlar hariç)",
+   "ok": true
+  },
+  {
+   "name": "004 cari hareketlerinin yeni alanları (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan)",
+   "ok": true
+  },
+  {
+   "name": "004 Yevmiye (bütün satırlar)",
+   "ok": true
+  },
+  {
+   "name": "004 faturalar (tür, durum, numara, ETTN, tarih, cari, profil, e-Belge durumu, tutar)",
+   "ok": true
+  },
+  {
+   "name": "004 faturaların ödeme durumu",
+   "ok": true
+  },
+  {
+   "name": "004 ANLIK DURUM",
+   "ok": true
+  },
+  {
+   "name": "004 e-Belge kartları (İptal Et / Gönder / Bırak düğmeleri)",
+   "ok": true
+  },
+  {
+   "name": "004 sıradaki numara · paper",
+   "ok": true
+  },
+  {
+   "name": "004 sıradaki numara · earsiv",
+   "ok": true
+  },
+  {
+   "name": "004 sıradaki numara · efatura",
+   "ok": true
+  },
+  {
+   "name": "004 sıradaki numara · smm",
+   "ok": true
+  },
+  {
+   "name": "004 sıradaki numara · esmm",
+   "ok": true
+  },
+  {
+   "name": "004 sıradaki numara · internal",
+   "ok": true
+  },
+  {
+   "name": "004 rapor merkezi (öbür raporlar)",
+   "ok": true
+  },
+  {
+   "name": "004 Tablo Raporları · cari-ekstre (rakamlar, satırlar)",
+   "ok": true
+  },
+  {
+   "name": "004 Tablo Raporları · cari-ekstre (kolon adları)",
+   "ok": true
+  },
+  {
+   "name": "004 Tablo Raporları · vade-takip (rakamlar, satırlar)",
+   "ok": true
+  },
+  {
+   "name": "004 Tablo Raporları · vade-takip (kolon adları)",
+   "ok": true
+  },
+  {
+   "name": "004 Tablo Raporları · nakit-akis (rakamlar, satırlar)",
+   "ok": true
+  },
+  {
+   "name": "004 Tablo Raporları · nakit-akis (kolon adları)",
+   "ok": true
+  },
+  {
+   "name": "004 Tahsilat Takvimi / zil (kalemler, son tarihler)",
+   "ok": true
+  },
+  {
+   "name": "004 Nakit Akış Projeksiyonu (= 2.4.4'ün tablosuz projeksiyonu)",
+   "ok": true
+  },
+  {
+   "name": "004 Anlık Durum · Vade Takip (kaynak başına)",
+   "ok": true
+  },
+  {
+   "name": "001 veri dosyası: şema sürümü",
+   "ok": true
+  },
+  {
+   "name": "001 veri dosyası: tablolar, kolonlar ve satır sayıları",
+   "ok": true
+  },
+  {
+   "name": "002 veri dosyası: şema sürümü",
+   "ok": true
+  },
+  {
+   "name": "002 veri dosyası: tablolar, kolonlar ve satır sayıları",
+   "ok": true
+  },
+  {
+   "name": "007 veri dosyası: şema sürümü",
+   "ok": true
+  },
+  {
+   "name": "007 veri dosyası: tablolar, kolonlar ve satır sayıları",
+   "ok": true
+  },
+  {
+   "name": "004 veri dosyası: şema sürümü",
+   "ok": true
+  },
+  {
+   "name": "004 veri dosyası: tablolar, kolonlar ve satır sayıları",
+   "ok": true
+  },
+  {
+   "name": "001 yol bağımsızlığı: v2.1.0 → v2.2.0 → v2.3.0 → v2.4.3 → v2.4.4 → güncel = doğrudan güncel",
+   "ok": true
+  },
+  {
+   "name": "001 şema 33 (adım adım ve doğrudan)",
+   "ok": true
+  },
+  {
+   "name": "002 yol bağımsızlığı: v2.1.0 → v2.2.0 → v2.3.0 → v2.4.3 → v2.4.4 → güncel = doğrudan güncel",
+   "ok": true
+  },
+  {
+   "name": "002 şema 33 (adım adım ve doğrudan)",
+   "ok": true
+  },
+  {
+   "name": "007 yol bağımsızlığı: v2.1.0 → v2.2.0 → v2.3.0 → v2.4.3 → v2.4.4 → güncel = doğrudan güncel",
+   "ok": true
+  },
+  {
+   "name": "007 şema 33 (adım adım ve doğrudan)",
+   "ok": true
+  },
+  {
+   "name": "004 yol bağımsızlığı: v2.1.0 → v2.2.0 → v2.3.0 → v2.4.3 → v2.4.4 → güncel = doğrudan güncel",
+   "ok": true
+  },
+  {
+   "name": "004 şema 33 (adım adım ve doğrudan)",
+   "ok": true
+  }
+ ]
+}
