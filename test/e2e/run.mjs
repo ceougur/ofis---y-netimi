@@ -49,7 +49,9 @@ const licenseOptions = { trustedKeys: LICENSE_TRUST, services: ["https://lisans.
 const unlicensed = { enforce: false, machineId: E2E_MACHINE };
 
 const root = mkdtempSync(path.join(tmpdir(), "destekofis-e2e-"));
-const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD }, license: licenseOptions });
+// 2.4.5 madde 1: kayıt tahsilatı programda kapalı (410); bu ana senaryo eski sürümden gelen kayıt tahsilatını (silme, Kasa) API'den üretir → anahtar açık
+// (üretimde yok). Kapalı davranış okul servisi adımında (ayrı sunucu, üretim varsayılanı) denetlenir.
+const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD }, license: licenseOptions, legacyCasePayments: true });
 const { port } = await app.listen(0, "127.0.0.1");
 const BASE = `http://127.0.0.1:${port}`;
 const browser = await chromium.launch();
@@ -484,10 +486,10 @@ try {
     await admin.screenshot({ path: path.join(artifacts, "04-detay-gecmis.png") });
   });
 
-  await step("tahsilat işlenir (en altta), düzeltilir ve silinir; kasaya düşer, kasadan ödeme girilir", async () => {
-    // 2.4.4 (E8): kayıt kartında Tahsilat düğmesi yok (CSS ile gizli; eski kodda görünür → kırmızı). Kayıt tahsilatının sunucu yolu ve eski
-    // tahsilatların İşlem Geçmişi'nde düzeltilmesi/silinmesi değişmedi: tahsilat API'den girilir, düzeltme ve silme ekrandan.
-    expect(!(await admin.isVisible('.hof-case-actions [data-case-action="payment"]')), "kayıt kartında Tahsilat düğmesi görünmez (E8)");
+  await step("eski kayıt tahsilatı (en altta) düzeltilmez, silinir; kasaya düşer, kasadan ödeme girilir", async () => {
+    // 2.4.4 (E8) kayıt kartındaki Tahsilat düğmesi CSS ile gizliydi; 2.4.5 madde 1'de HTML'den de kalktı. Eski sürümden gelen kayıt tahsilatı (anahtar açık
+    // sunucuda API'den) İşlem Geçmişi'nde görünür, düzeltilemez (✎ yok; sunucu PUT 410), silinir.
+    expect(!(await admin.$('.hof-case-actions [data-case-action="payment"]')), "kayıt kartında Tahsilat düğmesi yok (2.4.5 madde 1)");
     expect(await admin.isVisible('.hof-case-actions [data-case-action="note"]'), "Not düğmesi yerinde");
     const entered = await admin.evaluate(async () => {
       const key = window.HOF.selectedCase().key;
@@ -499,26 +501,24 @@ try {
     await admin.waitForFunction(() => document.querySelector("#hof-activity li:last-child")?.textContent.includes("1.250,00"), null, { timeout: 10000 });
     const order = await admin.$$eval("#hof-activity li", items => items.map(item => item.dataset.type));
     expect(order.at(-1) === "payment" && order.includes("note") && order.indexOf("note") < order.indexOf("payment"), `yeni işlem en altta olmalı: ${order}`);
-    await admin.click("#hof-activity li[data-type=payment] [data-edit]");
-    await admin.waitForSelector('.hof-modal-backdrop.is-visible input[name="amount"]');
-    await admin.fill('.hof-modal input[name="amount"]', "1.500,00");
-    await admin.click('.hof-modal button[type="submit"]');
-    await admin.waitForFunction(() => /1\.500,00/.test(document.querySelector("#hof-activity")?.textContent || "") && document.querySelector("#hof-activity")?.textContent.includes("düzeltildi"), null, { timeout: 10000 });
+    expect(!(await admin.$("#hof-activity li[data-type=payment] [data-edit]")) && Boolean(await admin.$("#hof-activity li[data-type=payment] [data-delete]")), "eski kayıt tahsilatında düzelt yok, sil var (2.4.5 madde 1)");
     await admin.click('#hof-sidecard [data-action="cash"]');
-    await admin.waitForFunction(() => document.querySelector(".hof-cash-balance strong")?.textContent.includes("1.500,00"), null, { timeout: 10000 });
+    await admin.waitForFunction(() => document.querySelector(".hof-cash-balance strong")?.textContent.includes("1.250,00"), null, { timeout: 10000 });
+    const paymentRow = await admin.$$eval(".hof-cash-table tbody tr:not(.hof-cash-opening)", rows => rows.filter(row => /Tahsilat/.test(row.innerText)).map(row => ({ edit: Boolean(row.querySelector("[data-edit]")), del: Boolean(row.querySelector("[data-delete]")) })));
+    expect(paymentRow.length === 1 && !paymentRow[0].edit && paymentRow[0].del, `Kasa'da eski kayıt tahsilatı düzeltilmez, silinir: ${JSON.stringify(paymentRow)}`);
     await admin.click('.hof-modal [data-add="out"]');
     await admin.waitForSelector('.hof-modal-backdrop.is-visible input[name="description"]');
     await admin.fill('.hof-modal input[name="amount"]', "200");
     await admin.fill('.hof-modal input[name="description"]', "Kırtasiye");
     await admin.click('.hof-modal button[type="submit"]');
-    await admin.waitForFunction(() => document.querySelector(".hof-cash-balance strong")?.textContent.includes("1.300,00"), null, { timeout: 10000 });
+    await admin.waitForFunction(() => document.querySelector(".hof-cash-balance strong")?.textContent.includes("1.050,00"), null, { timeout: 10000 });
     const ledger = await admin.$$eval(".hof-cash-table tbody tr:not(.hof-cash-opening)", rows => rows.map(row => row.innerText.replace(/\s+/g, " ")));
     expect(ledger.length === 2 && ledger[1].includes("Kırtasiye"), `kasa hareketleri eskiden yeniye: ${ledger.join(" | ")}`);
     await admin.screenshot({ path: path.join(artifacts, "04b-kasa.png") });
     await admin.click('.hof-modal [data-close]');
     await admin.click("#hof-activity li[data-type=payment] [data-delete]");
     await admin.click('.hof-modal [data-answer="yes"]');
-    // 2.0.26 (A1): tahsilat silme de eksi bakiye denetiminden geçer. Kasa 1.300; 1.500 tahsilat silinince −200 olur → program
+    // 2.0.26 (A1): tahsilat silme de eksi bakiye denetiminden geçer. Kasa 1.050; 1.250 tahsilat silinince −200 olur → program
     // "Kasa Eksiye Düşecek" diye sorar (Uyar); "Yine de Sil" ile silinir.
     await admin.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible")].some(modal => /Kasa Eksiye Düşecek/.test(modal.textContent) && /-200,00|−200,00/.test(modal.textContent)), null, { timeout: 10000 });
     await admin.click('.hof-modal-backdrop.is-visible [data-answer="yes"]');
@@ -1258,15 +1258,16 @@ try {
       await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
       const result = await page.$eval(".hof-analysis-result", node => node.innerText.replace(/\s+/g, " "));
       expect(result.includes("Okul Servisi"), `okul servisi önerisi: ${result}`);
-      // v2.0.8: yükleme sonrası "ödeme planları Taksitler'e aktarılsın mı?" bildirimi (engellemeyen; düğmesi pencereyi açar).
-      // Bildirimler pencerelerin altında kaldığından soru, akıllı analiz penceresi kapanınca gelir.
+      // v2.0.8'deki yükleme sonrası "ödeme planları Taksitler'e aktarılsın mı?" bildirimi 2.4.5 madde 2'de kalktı (Tablodan Aktar kapalı): analiz penceresi
+      // kapandıktan sonra da sorulmaz (eski kodda 2,5 sn sonra gelirdi → kırmızı); sunucu özeti de sormaz (ask: false).
       await page.waitForTimeout(3500);
       expect(!(await page.evaluate(() => [...document.querySelectorAll(".hof-toast")].some(node => /Taksitler'e aktarılsın mı/.test(node.textContent)))), "analiz penceresi açıkken aktarma sorusu sorulmaz");
       await page.click(".hof-analysis-result [data-apply]");
       await page.waitForFunction(() => document.querySelector(".brand-subtitle")?.firstChild?.nodeValue === "Okul Servisi Yönetimi", null, { timeout: 5000 });
-      await page.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => /Taksitler'e aktarılsın mı/.test(node.textContent) && /6 kişinin ödeme planı/.test(node.textContent)), null, { timeout: 20000 });
-      expect(await page.$('.hof-toast:has-text("Taksitler\'e aktarılsın mı") .hof-toast-action'), "bildirimde 'Ön izle ve aktar' düğmesi var");
-      await page.evaluate(() => document.querySelectorAll(".hof-toast").forEach(node => node.remove()));
+      await page.waitForTimeout(6000);
+      expect(!(await page.evaluate(() => [...document.querySelectorAll(".hof-toast")].some(node => /Taksitler'e aktarılsın mı/.test(node.textContent)))), "pencere kapandıktan sonra da aktarma sorusu sorulmaz (2.4.5 madde 2)");
+      const askSummary = (await page.evaluate(() => fetch("/api/workspace/plans/from-table/summary").then(response => response.json()))).data;
+      expect(askSummary?.count === 0 && askSummary?.ask === false, `sunucu özeti sormaz: ${JSON.stringify(askSummary)}`);
 
       // v2.0.2: durum/kategori hücreleri renkli nokta alır (analiz gelince); sık görünüm düğmesi satırları daraltır ve hatırlanır.
       await page.waitForSelector(".dynamic-table td[data-tone]", { timeout: 15000 });
@@ -1306,12 +1307,17 @@ try {
       await page.$eval(".hof-payment-pill:not([aria-hidden])", node => node.click());
       await page.click('.hof-payment-action-card [data-act="pay"]');
       await page.waitForSelector('.hof-modal-backdrop.is-visible input[name="name"]');
-      const firstForm = await page.$eval(".hof-modal-backdrop.is-visible", node => ({ title: node.querySelector(".hof-modal-title")?.textContent.trim(), intro: node.querySelector(".hof-modal-text")?.textContent || "", name: node.querySelector('input[name="name"]').value }));
+      const firstForm = await page.$eval(".hof-modal-backdrop.is-visible", node => ({ title: node.querySelector(".hof-modal-title")?.textContent.trim(), intro: node.querySelector(".hof-modal-text")?.textContent || "", name: node.querySelector('input[name="name"]').value, opening: node.querySelector('input[name="openingBalance"]')?.value ?? null }));
       expect(firstForm.title === "Yeni Cari" && /Önce cari açın/.test(firstForm.intro) && firstForm.name === target, `carisi olmayan kayıtta önce cari açılır, ad kayıttan: ${JSON.stringify(firstForm).slice(0, 200)}`);
+      expect(firstForm.opening === "", `Açılış Bakiyesi boş (2.4.5 madde 3: tablo borcu yazılmaz): ${JSON.stringify(firstForm.opening)}`);
       await page.click('.hof-modal-backdrop.is-visible button[type="submit"]');
       await page.waitForFunction(() => document.querySelector(".hof-modal-backdrop.is-visible:last-of-type .hof-modal-title")?.textContent.trim() === "Tahsilat", null, { timeout: 10000 });
-      const amount = await page.inputValue('.hof-modal-backdrop.is-visible:last-of-type input[name="amount"]');
-      expect(Number(amount.replace(/\./g, "").replace(",", ".")) > 0, `tutar hazır gelmeli: ${amount}`);
+      // 2.4.5 madde 3: tahsilat formunda tutar BOŞ (tablo tutarı para formuna yazılmaz); kullanıcı pilin tutarını kendisi yazar.
+      expect((await page.inputValue('.hof-modal-backdrop.is-visible:last-of-type input[name="amount"]')) === "", "tahsilat formunda tutar boş (2.4.5 madde 3)");
+      const pillAmount = await page.evaluate(key => (window.HOF.dues?.data?.()?.items || []).find(item => item.caseKey === key)?.amount || 0, pillKey);
+      expect(pillAmount > 0, `pilin tutarı ${pillAmount}`);
+      const amount = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(pillAmount);
+      await page.fill('.hof-modal-backdrop.is-visible:last-of-type input[name="amount"]', amount);
       await page.click('.hof-modal-backdrop.is-visible:last-of-type button[type="submit"]');
       await page.waitForFunction(count => document.querySelectorAll(".hof-payment-pill:not([aria-hidden])").length === count - 1, before, { timeout: 10000 });
       const pillAccount = (await page.evaluate(key => fetch(`/api/workspace/cases/${encodeURIComponent(key)}/account`).then(response => response.json()), pillKey)).data?.account;
@@ -1343,55 +1349,25 @@ try {
       await escClose(page);
       await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 8000 });
 
-      // v2.0.8: Taksitler → Tablodan aktar. Ay kolonlu öğrenci tablosu (aylık ücret + ödenen) gerçek taksitlerle karta;
-      // eski sürümde kayıttan girilmiş tahsilat (2.4.4 E8'den beri ekranda yolu yok; sunucu ucu durur → API'den) karta taşınır, Kasa değişmez; takvimde
-      // tablodan ikinci kez gelmez. Pilden girilen (carinin) tahsilatı taksit dışı kalır, ön izleme bunu söyler.
+      // 2.4.5 madde 1–2 (üretim varsayılanı; bu sunucu anahtar vermez): kayıttan tahsilat (API) 410 "case-payments-closed"; Taksitler'de Tablodan Aktar düğmesi yok,
+      // yerinde Son Aktarımlar; yazım ucu 410 "table-transfer-closed"; Kasa, kartlar ve kayıt tahsilatı sayısı değişmez (v2.0.8'deki aktarım senaryosunun yerine).
       const oldKey = await page.evaluate(name => (window.HOF.data?.rows || []).find(row => row.__sheet === "Öğrenciler" && !Object.values(row).includes(name))?.__hofKey || "", target);
-      const oldPay = await page.evaluate(key => fetch(`/api/workspace/cases/${encodeURIComponent(key)}/payments`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ amount: "500", method: "cash", date: window.HOF.localToday(), note: "Eski kayıt tahsilatı" }) }).then(response => response.status), oldKey);
-      expect(oldKey && oldPay === 200, `eski kayıt tahsilatı (API) ${oldKey}: ${oldPay}`);
       const cashBefore = (await page.evaluate(() => fetch("/api/workspace/cash?period=all").then(response => response.json()))).data.totals.balance;
+      const oldPay = await page.evaluate(key => fetch(`/api/workspace/cases/${encodeURIComponent(key)}/payments`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ amount: "500", method: "cash", date: window.HOF.localToday(), note: "Kayıt tahsilatı" }) }).then(async response => ({ status: response.status, body: await response.json() })), oldKey);
+      expect(oldKey && oldPay.status === 410 && oldPay.body.code === "case-payments-closed" && /Cari'den girilir/.test(oldPay.body.error), `kayıt tahsilatı kapalı (API) ${oldKey}: ${JSON.stringify(oldPay)}`);
       await page.click('#hof-sidecard [data-action="plans"]');
-      await page.waitForSelector('.hof-plans [data-act="transfer"]', { timeout: 10000 });
-      await page.click('.hof-plans [data-act="transfer"]');
-      await page.waitForSelector(".hof-transfer-modal .hof-transfer-table", { timeout: 30000 });
-      const transferText = await page.$eval(".hof-transfer-modal", node => node.innerText.replace(/\s+/g, " "));
-      expect(/Öğrenciler/.test(transferText) && /aylık ücret \+ ödenen/.test(transferText), `sekme ve biçim: ${transferText.slice(0, 300)}`);
-      const rowsShown = await page.$$eval(".hof-transfer-table tbody tr[data-key]", nodes => nodes.map(node => node.innerText.replace(/\s+/g, " ")));
-      expect(rowsShown.length === 6, `6 öğrenci listelendi (${rowsShown.length})`);
-      // Can Öztürk: 3.800 × 4 ay (geçen 2 ay ödendi, bu ay 1.900 kısmi, gelecek ay açık) → ödenen 9.500, kalan 5.700.
-      const can = rowsShown.find(text => /Can Öztürk/.test(text)) || "";
-      expect(/4 taksit/.test(can) && /15\.200,00/.test(can) && /9\.500,00/.test(can) && /5\.700,00/.test(can), `Can Öztürk satırı: ${can}`);
-      const sumText = await page.$eval(".hof-transfer-sum", node => node.innerText.replace(/\s+/g, " "));
-      expect(/kayıt tahsilatı ₺500,00/.test(sumText), `eski kayıt tahsilatı karta taşınacak olarak sayılır: ${sumText}`);
-      // 2.4.4 (5a): pilden carisine girilen (taksit dışı) tahsilat ön izlemede o kişinin kartına yazılacak tutar olarak görünür (programın ön izleme ucundan).
-      const preview = (await page.evaluate(() => fetch("/api/workspace/plans/from-table").then(response => response.json()))).data;
-      const pillRecord = (preview.records || []).find(record => record.key === pillKey);
-      expect(pillRecord?.account === "bound" && new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(pillRecord.accountMoved) === amount && pillRecord.issues.some(issue => issue.code === "account-in-move"), `pilden carisine girilen ${amount} ön izlemede karta yazılacak: ${JSON.stringify({ moved: pillRecord?.accountMoved, issues: pillRecord?.issues })?.slice(0, 240)}`);
-      await page.click(".hof-transfer-table tbody tr[data-key] [data-expand]");
-      await page.waitForSelector(".hof-transfer-detail .hof-transfer-items", { timeout: 5000 });
-      await page.screenshot({ path: path.join(artifacts, "10d-tablodan-aktar.png"), fullPage: true });
-      const commitText = await page.textContent(".hof-transfer-modal [data-commit]");
-      expect(/6 kişiyi aktar/.test(commitText), `aktar düğmesi: ${commitText}`);
-      await page.click(".hof-transfer-modal [data-commit]");
-      await page.waitForSelector('.hof-modal-backdrop.is-visible [data-answer="yes"]', { timeout: 8000 });
-      await page.click('.hof-modal-backdrop.is-visible [data-answer="yes"]');
-      await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-title")].some(node => node.textContent === "Aktarım tamamlandı"), null, { timeout: 60000 });
-      const resultText = await page.$eval(".hof-transfer-result", node => node.innerText.replace(/\s+/g, " "));
-      expect(/6 taksit kartı açıldı/.test(resultText) && /1 tahsilat/.test(resultText), `sonuç: ${resultText}`);
-      await page.screenshot({ path: path.join(artifacts, "10e-aktarim-sonucu.png") });
-      await page.click(".hof-modal-backdrop.is-visible [data-result-close]");
-      // "Tamam" aktarım penceresini de kapatır; yenilenmiş Taksitler listesinde 6 kart görünür.
-      await page.waitForFunction(() => !document.querySelector(".hof-transfer-modal"), null, { timeout: 8000 });
-      await page.waitForFunction(() => document.querySelectorAll(".hof-plans tr[data-plan]").length === 6, null, { timeout: 10000 });
+      await page.waitForSelector('.hof-plans [data-act="imports"]', { timeout: 10000 });
+      expect(!(await page.$('.hof-plans [data-act="transfer"]')), "Taksitler'de Tablodan Aktar düğmesi yok (2.4.5 madde 2)");
+      const transfer = await page.evaluate(() => fetch("/api/workspace/plans/from-table", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ keys: (window.HOF.data?.rows || []).filter(row => row.__sheet === "Öğrenciler").map(row => row.__hofKey) }) }).then(async response => ({ status: response.status, body: await response.json() })));
+      expect(transfer.status === 410 && transfer.body.code === "table-transfer-closed", `Tablodan Aktar kapalı (API): ${JSON.stringify(transfer).slice(0, 200)}`);
+      await page.click('.hof-plans [data-act="imports"]');
+      await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-modal-title")].some(node => node.textContent.trim() === "Son Aktarımlar") && /Henüz aktarım yok/.test(document.querySelector(".hof-imports-modal")?.textContent || ""), null, { timeout: 10000 });
+      await page.screenshot({ path: path.join(artifacts, "10d-son-aktarimlar.png") });
+      await page.click(".hof-imports-modal [data-close]");
       const cashAfter = (await page.evaluate(() => fetch("/api/workspace/cash?period=all").then(response => response.json()))).data;
-      expect(cashAfter.totals.balance === cashBefore, `Kasa değişmedi: ${cashBefore} → ${cashAfter.totals.balance}`);
-      // 2.4.4 (5a): pilden carisine girilen tahsilat da (taksit dışı) karta yazıldı: ikisi de Kasa'da artık taksit tahsilatı, her biri tek kayıt.
-      expect(cashAfter.entries.filter(entry => entry.source === "plan").length === 2 && !cashAfter.entries.some(entry => entry.source === "payment" || entry.source === "account"), "eski kayıt tahsilatı ve pilden girilen cari tahsilatı Kasa'da artık taksit tahsilatı (iki kayıt)");
+      expect(cashAfter.totals.balance === cashBefore && !cashAfter.entries.some(entry => entry.source === "payment"), `Kasa değişmedi, kayıt tahsilatı yok: ${cashBefore} → ${cashAfter.totals.balance}`);
       const plansNow = (await page.evaluate(() => fetch("/api/workspace/plans?status=all").then(response => response.json()))).data;
-      expect(plansNow.plans.length === 6 && plansNow.plans.every(plan => plan.caseKey && plan.accountId), "6 kart, hepsi kayda ve cariye bağlı");
-      const dues = (await page.evaluate(() => fetch("/api/workspace/dues").then(response => response.json()))).data;
-      expect(!dues.items.some(item => item.source !== "plan" && item.tab === "Öğrenciler"), "takvimde tablodan gelen öğrenci kalemi kalmadı (çift sayım yok)");
-      expect(dues.items.some(item => item.source === "plan"), "takvim kartların taksitlerini gösteriyor");
+      expect(plansNow.plans.length === 0, `kart açılmadı: ${plansNow.plans.length}`);
       await escClose(page);
     } finally {
       await context.close();

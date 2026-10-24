@@ -1,7 +1,10 @@
-// Gerçek kullanıcı senaryosu (v2.0.8): sıfır kurulum, arayüzden, uçtan uca. Sayılar (bakiye, Kasa, kart, takvim) karşılaştırılır.
+// Gerçek kullanıcı senaryosu (v2.0.8; 2.4.5'te yeniden yazıldı): sıfır kurulum, arayüzden, uçtan uca. Sayılar (bakiye, Kasa, kart, takvim) karşılaştırılır.
 // Çalıştırma: npm run test:senaryo   (ekran görüntüleri test/e2e/artifacts/senaryo/ altına yazılır)
-// Senaryo A: okul servisi Excel'i → yükleme sonrası soru → "Ön izle ve aktar" → Aktar → Taksitler / cari / Kasa / takvim / zil
-//            → yeniden "Tablodan aktar" (çift kart açılmaz) → Geri al (kartlar, cariler, tahsilat geri) → yeniden aktar.
+// 2.4.5 madde 1–3 (ürün sahibi: "tablo verisinden hiçbir para kaydı, borç tutarı, açılış bakiyesi doğmaz"): Tablodan Aktar ve kayıttan tahsilat programda KAPALI.
+// Senaryo A: okul servisi Excel'i yüklenir; ESKİ SÜRÜM VERİSİ (anahtar açık sunucu = 2.4.4 davranışı, API'den): bir kayıt tahsilatı + 6 kişinin Tablodan Aktar'ı.
+//            Program üretim varsayılanıyla (anahtarsız) aynı veriyle yeniden açılır → Taksitler'de "Tablodan Aktar" yok, "Son Aktarımlar" var; uçlar 410; eski
+//            aktarım Son Aktarımlar'dan Geri Al ile geri alınır (kartlar, cariler kalkar; tahsilat kayıt kartına döner; Kasa aynı); dönen eski kayıt tahsilatı
+//            İşlem Geçmişi'nde düzeltilmez, silinir; şeritten "önce cari açın" formunda Açılış Bakiyesi boş; yükleme sonrası "aktarılsın mı?" sorusu yok.
 // Senaryo B: Stok → Yeni ürün: "Kasa'ya yansıt" işaretsiz → Kasa değişmez; işaretli → miktar × birim fiyat "Stok ödemesi (alım)".
 import fs, { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -18,16 +21,19 @@ const MACHINE = "a1b2c3d4e5f60718293a4b5c6d7e8f90";
 const root = mkdtempSync(path.join(tmpdir(), "destekofis-prova-208-"));
 const excel = path.join(root, "okul-servisi-ornek.xlsx");
 writeFileSync(excel, okulServisiXlsx());
-const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: MACHINE } });
-const { port } = await app.listen(0, "127.0.0.1");
-const BASE = `http://127.0.0.1:${port}`;
+const common = { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0", HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, license: { enforce: false, machineId: MACHINE } };
+// Eski sürüm verisi için önce anahtar AÇIK (2.4.4 davranışı) açılır; aynı veriyle üretim varsayılanına (anahtarsız) geçilir.
+let app = createApp({ ...common, legacyCasePayments: true, legacyTableTransfer: true });
+let BASE = `http://127.0.0.1:${(await app.listen(0, "127.0.0.1")).port}`;
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1440, height: 1020 }, locale: "tr-TR" });
 const page = await context.newPage();
 const console_ = [];
 page.on("pageerror", e => console_.push("pageerror " + e.message));
-// Giriş ekranı açılırken oturum yoklaması (401 /api/auth/me) beklenen bir yanıttır; hata sayılmaz.
-page.on("console", m => { if (m.type() === "error" && !/api\/auth\/me/.test(m.location().url || "")) console_.push(`${m.text()} @ ${m.location().url}`); });
+// Giriş ekranı açılırken oturum yoklaması (401 /api/auth/me) beklenen bir yanıttır; hata sayılmaz. 2.4.5: senaryonun kapalı uçlara BİLEREK gönderdiği
+// istekler (Tablodan Aktar, kayıt tahsilatı → 410) de beklenen yanıttır; başka her 410 hata sayılır.
+const expected410 = (text, url) => /status of 410/.test(text) && /\/api\/workspace\/(plans\/from-table|cases\/[^/?]+\/payments)(\?|$)/.test(url);
+page.on("console", m => { if (m.type() === "error" && !/api\/auth\/me/.test(m.location().url || "") && !expected410(m.text(), m.location().url || "")) console_.push(`${m.text()} @ ${m.location().url}`); });
 const results = [];
 let n = 0;
 const shot = async (name, jpeg = false) => { n += 1; const file = path.join(OUT, `${String(n).padStart(2, "0")}-${name}.${jpeg ? "jpg" : "png"}`); await page.screenshot(jpeg ? { path: file, type: "jpeg", quality: 86 } : { path: file }); return file; };
@@ -38,12 +44,16 @@ const text = sel => page.$eval(sel, node => node.innerText.replace(/\s+/g, " ").
 const closeTop = async () => { await escClose(page); await page.waitForTimeout(300); };
 const step = async (title, fn) => { console.log(`\n■ ${title}`); await fn(); };
 
+const login = async () => {
+  await page.goto(BASE + "/");
+  await page.fill("#hof-auth input[name=username]", "admin");
+  await page.fill("#hof-auth input[name=password]", PASS);
+  await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
+};
+
 try {
   await step("Giriş ve Excel yükleme (sıfır kurulum)", async () => {
-    await page.goto(BASE + "/");
-    await page.fill("#hof-auth input[name=username]", "admin");
-    await page.fill("#hof-auth input[name=password]", PASS);
-    await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
+    await login();
     await page.waitForSelector("#hof-start .hof-drop");
     const input = await page.$("#hof-start .hof-drop input[type=file]");
     await input.setInputFiles(excel);
@@ -53,229 +63,111 @@ try {
     ok((await text(".hof-analysis-result")).includes("Okul Servisi"), "sektör önerisi: Okul Servisi");
   });
 
-  await step("Yükleme sonrası soru (engellemeyen bildirim) → 'Ön izle ve aktar'", async () => {
-    await page.waitForTimeout(4000);
-    ok(!(await page.$$eval(".hof-toast", nodes => nodes.some(node => /Taksitler'e aktarılsın mı/.test(node.textContent)))), "analiz penceresi açıkken soru sorulmaz (pencerenin altında kalıp sönmez)");
-    // Kullanıcı sektör önerisini uygular; pencere kapanınca soru gelir.
+  await step("Yükleme sonrası 'Taksitler'e aktarılsın mı?' sorusu yok (2.4.5 madde 2; eski kodda gelirdi)", async () => {
     await page.click(".hof-analysis-result [data-apply]");
     await page.waitForFunction(() => document.querySelector(".brand-subtitle")?.firstChild?.nodeValue === "Okul Servisi Yönetimi", null, { timeout: 5000 });
-    await page.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => /Taksitler'e aktarılsın mı/.test(node.textContent)), null, { timeout: 20000 });
-    const toast = await page.$$eval(".hof-toast", nodes => nodes.map(node => node.innerText.replace(/\s+/g, " ")).join(" | "));
-    ok(/6 kişinin ödeme planı/.test(toast), `bildirim metni: ${toast}`);
-    await page.evaluate(() => document.querySelectorAll(".hof-notice").forEach(node => node.remove()));
-    await shot("yukleme-sonrasi-soru");
-    const action = '.hof-toast:has-text("Taksitler\'e aktarılsın mı") .hof-toast-action';
-    ok(await page.$(action), "bildirimde 'Ön izle ve aktar' düğmesi var");
-    await page.click(action);
-    await page.waitForSelector(".hof-transfer-modal .hof-transfer-table", { timeout: 30000 });
+    await page.waitForTimeout(6000);
+    ok(!(await page.$$eval(".hof-toast", nodes => nodes.some(node => /Taksitler'e aktarılsın mı/.test(node.textContent)))), "analiz penceresi kapandıktan sonra da aktarma sorusu sorulmaz");
   });
 
   let pillAmount = 0;
   let pillName = "";
-  await step("Ön izleme kapatılır; önce kayıt tahsilatı (eski sürüm verisi) girilir — şeritten Tahsilat Gir artık cariye gider", async () => {
-    await page.click(".hof-transfer-modal [data-close]");
-    await page.waitForFunction(() => !document.querySelector(".hof-transfer-modal"), null, { timeout: 5000 });
+  let pillKey = "";
+  let importId = "";
+  await step("Eski sürüm verisi (anahtar açık sunucu, API'den): bir kayıt tahsilatı + 6 kişinin Tablodan Aktar'ı", async () => {
     await page.waitForSelector(".hof-payment-promises .hof-payment-pill", { timeout: 10000 });
     await page.evaluate(() => document.querySelectorAll(".hof-notice, .hof-toast").forEach(node => node.remove()));
-    const heading = await text(".hof-payment-promises-heading");
-    ok(/2 gecikmiş/.test(heading) && /4 bugün\/bu ay/.test(heading), `şerit (aktarımdan önce, tablodan): ${heading}`);
     pillName = await page.$eval(".hof-payment-pill:not([aria-hidden])", node => node.querySelector("b").textContent);
     const item = await page.evaluate(name => (window.HOF.dues.data().items || []).find(entry => entry.person === name && entry.source !== "plan") || null, pillName);
-    // 2.4.4 (E8): şeritten Tahsilat Gir kayıttan Kasa'ya doğrudan yazmaz; kaydın carisi yok → "önce cari açın" (dolu Yeni Cari). Burada açılmadan kapatılır.
-    await page.$eval(".hof-payment-pill:not([aria-hidden])", node => node.click());
-    await page.click('.hof-payment-action-card [data-act="pay"]');
-    await page.waitForSelector('.hof-modal-backdrop.is-visible input[name="name"]', { timeout: 8000 });
-    ok((await text(".hof-modal-backdrop.is-visible .hof-modal-title")) === "Yeni Cari" && !(await page.$(".hof-modal-backdrop.is-visible [data-new-plan]")), "şeritten Tahsilat Gir: kayıt tahsilatı penceresi yok, önce cari açılır");
-    await escClose(page, { expect: "soru-yok", step: "şerit tahsilatı → Yeni Cari" });
-    await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop.is-visible"), null, { timeout: 5000 });
-    // Eski sürümlerde kayıttan girilmiş tahsilat (sunucu ucu durur): Tablodan Aktar onu karta taşır.
     pillAmount = item?.amount || 0;
-    const paid = await api(`/api/workspace/cases/${encodeURIComponent(item.caseKey)}/payments`, { amount: money(pillAmount), date: await page.evaluate(() => window.HOF.localToday()), method: "cash", note: `${item.label} · ${item.dueText}`, caseTitle: pillName });
-    ok(paid.status === 200, `kayıt tahsilatı (API): ${paid.status}`);
-    await page.evaluate(() => window.HOF.emit("payment-saved", {}));
-    await page.waitForFunction(() => document.querySelectorAll(".hof-payment-pill:not([aria-hidden])").length === 5, null, { timeout: 10000 });
-    ok(pillAmount > 0, `${pillName} için ${money(pillAmount)} ₺ kayıt tahsilatı girildi; pil kayboldu`);
+    pillKey = item?.caseKey || "";
+    const paid = await api(`/api/workspace/cases/${encodeURIComponent(pillKey)}/payments`, { amount: money(pillAmount), date: await page.evaluate(() => window.HOF.localToday()), method: "cash", note: `${item.label} · ${item.dueText}`, caseTitle: pillName });
+    ok(paid.status === 200 && pillAmount > 0, `kayıt tahsilatı (eski sürüm gibi, API): ${paid.status} · ${pillName} ${money(pillAmount)}`);
+    const preview = (await api("/api/workspace/plans/from-table")).data;
+    ok(preview.records.length === 6, `ön izlemede 6 öğrenci (${preview.records.length})`);
+    const moved = await api("/api/workspace/plans/from-table", { keys: preview.records.filter(record => record.selectable).map(record => record.key), fingerprint: preview.fingerprint });
+    ok(moved.status === 200 && moved.data.created === 6 && moved.data.paymentsMoved === 1, `Tablodan Aktar (eski sürüm gibi, API): ${JSON.stringify(moved.data || moved).slice(0, 200)}`);
+    importId = moved.data.importId;
   });
 
-  const cashBefore = (await api("/api/workspace/cash?period=all")).data.totals.balance;
-  await step("Taksitler → Tablodan aktar: ön izleme (kılavuz görseli)", async () => {
+  let cashBefore = 0;
+  await step("Program üretim varsayılanıyla (anahtarsız) aynı veriyle yeniden açılır", async () => {
+    await app.close();
+    app = createApp({ ...common });
+    BASE = `http://127.0.0.1:${(await app.listen(0, "127.0.0.1")).port}`;
+    // Çerez bağlantı noktasına bağlı değil; aynı veri klasöründe oturum geçerli kalır. Yeni açılış gibi oturum çerezi temizlenip yeniden girilir.
+    await context.clearCookies();
+    await login();
+    await page.waitForSelector(".dynamic-table tbody tr", { timeout: 20000 });
+    await page.evaluate(() => document.querySelectorAll(".hof-notice, .hof-toast").forEach(node => node.remove()));
+    cashBefore = (await api("/api/workspace/cash?period=all")).data.totals.balance;
+    ok(cashBefore === pillAmount, `Kasa ${money(cashBefore)} (eski tahsilat artık taksit tahsilatı)`);
+    const summary = (await api("/api/workspace/plans/from-table/summary")).data;
+    ok(summary.count === 0 && summary.ask === false, `yükleme sonrası özet sormaz: ${JSON.stringify(summary)}`);
+  });
+
+  await step("Taksitler: 'Tablodan Aktar' düğmesi yok, 'Son Aktarımlar' var; uçlar 410, veri değişmez", async () => {
     await page.click('#hof-sidecard [data-action="plans"]');
-    await page.waitForSelector('.hof-plans [data-act="transfer"]', { timeout: 10000 });
-    await page.click('.hof-plans [data-act="transfer"]');
-    await page.waitForSelector(".hof-transfer-modal .hof-transfer-table", { timeout: 30000 });
-    const rows = await page.$$eval(".hof-transfer-table tbody tr[data-key]", nodes => nodes.map(node => node.innerText.replace(/\s+/g, " ")));
-    ok(rows.length === 6, "6 öğrenci listelendi");
-    const can = rows.find(r => /Can Öztürk/.test(r));
-    ok(/4 taksit/.test(can) && /15\.200,00/.test(can) && /9\.500,00/.test(can) && /5\.700,00/.test(can), `Can Öztürk: 4 taksit, toplam 15.200, ödenen 9.500, kalan 5.700 → ${can}`);
-    const sum = await text(".hof-transfer-sum");
-    ok(new RegExp(money(pillAmount).replace(/\./g, "\\.")).test(sum) && /kayıt tahsilatı/.test(sum), `özet satırı kayıt tahsilatını sayıyor: ${sum}`);
-    await page.click(`.hof-transfer-table tbody tr[data-key]:has-text("Can Öztürk") [data-expand]`);
-    await page.waitForSelector(".hof-transfer-detail .hof-transfer-items", { timeout: 5000 });
-    const detail = await text(".hof-transfer-detail");
-    ok(/1\.900,00/.test(detail), `taksit ayrıntısı bu ayın kısmi ödemesini gösteriyor: ${detail.slice(0, 200)}`);
-    await page.click(`.hof-transfer-table tbody tr[data-key]:has-text("Can Öztürk") [data-expand]`);
-    await page.click(`.hof-transfer-table tbody tr[data-key]:has-text("Ada Yılmaz") [data-expand]`);
-    await page.waitForSelector(".hof-transfer-detail .hof-transfer-items", { timeout: 5000 });
-    await shot("tablodan-aktar-on-izleme", true);
-  });
-
-  await step("Aktar → sonuç", async () => {
-    ok(/6 kişiyi aktar/.test(await text(".hof-transfer-modal [data-commit]")), "düğme: 6 kişiyi aktar");
-    await page.click(".hof-transfer-modal [data-commit]");
-    await page.waitForSelector('.hof-modal-backdrop.is-visible [data-answer="yes"]', { timeout: 8000 });
-    await shot("aktar-onay");
-    await page.click('.hof-modal-backdrop.is-visible [data-answer="yes"]');
-    await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-title")].some(node => node.textContent === "Aktarım tamamlandı"), null, { timeout: 60000 });
-    const result = await text(".hof-transfer-result");
-    ok(/6 taksit kartı açıldı/.test(result) && /6 cari açıldı/.test(result) && /1 tahsilat/.test(result) && /Kasa toplamı değişmedi/.test(result), `sonuç: ${result}`);
-    await shot("aktarim-sonucu");
-    await page.click(".hof-modal-backdrop.is-visible [data-result-close]");
-    await page.waitForFunction(() => ![...document.querySelectorAll(".hof-modal-title")].some(node => node.textContent === "Aktarım tamamlandı"), null, { timeout: 8000 });
-    await page.waitForFunction(() => !document.querySelector(".hof-transfer-modal"), null, { timeout: 8000 });
-    ok(true, "'Tamam' aktarım penceresini de kapattı; Taksitler listesine dönüldü");
-  });
-
-  await step("Taksitler listesi ve Can Öztürk kartı (açılış/devir Kasa dışı, makbuzsuz)", async () => {
+    await page.waitForSelector('.hof-plans [data-act="imports"]', { timeout: 10000 });
     await page.waitForFunction(() => document.querySelectorAll(".hof-plans tr[data-plan]").length === 6, null, { timeout: 10000 });
-    await shot("taksitler-listesi");
-    await page.click('.hof-plans tr[data-plan]:has-text("Can Öztürk")');
-    await page.waitForSelector(".hof-plans-entries", { timeout: 10000 });
-    const card = await text(".hof-modal-backdrop.is-visible:last-of-type .hof-modal, .hof-plans-modal");
-    const entries = await page.$$eval(".hof-plans-entries tr[data-entry]", nodes => nodes.map(node => ({ opening: node.hasAttribute("data-opening"), text: node.innerText.replace(/\s+/g, " "), makbuz: Boolean(node.querySelector('a[href*="makbuz"]')) })));
-    const openings = entries.filter(e => e.opening);
-    ok(openings.length === 3 && openings.every(e => /Açılış \(devir\)/.test(e.text) && /Kasa dışı/i.test(e.text) && !e.makbuz), `3 açılış (devir) hareketi: Kasa dışı rozetli, makbuz bağlantısı yok`);
-    ok(entries.filter(e => !e.opening).length === 0, "Can Öztürk'te program tahsilatı yok (şeritten alınan Mert Çelik'indi)");
-    ok(/5\.700,00/.test(card), "kartta kalan 5.700,00");
-    await shot("taksit-karti-can-ozturk");
-    await page.click('.hof-plans [data-act="back"]');
-    // Şeritten tahsilat alınan kişinin kartı: taşınan tahsilat makbuzlu, açılışlar makbuzsuz.
-    await page.waitForFunction(() => document.querySelectorAll(".hof-plans tr[data-plan]").length === 6, null, { timeout: 10000 });
-    await page.click(`.hof-plans tr[data-plan]:has-text("${pillName}")`);
-    await page.waitForSelector(".hof-plans-entries tr[data-entry]", { timeout: 10000 });
-    const mertEntries = await page.$$eval(".hof-plans-entries tr[data-entry]", nodes => nodes.map(node => ({ opening: node.hasAttribute("data-opening"), text: node.innerText.replace(/\s+/g, " "), makbuz: Boolean(node.querySelector('a[href*="makbuz"]')) })));
-    const moved = mertEntries.filter(e => !e.opening);
-    ok(moved.length === 1 && moved[0].makbuz && new RegExp(money(pillAmount).replace(/\./g, "\\.")).test(moved[0].text), `${pillName}: taşınan kayıt tahsilatı kartta, makbuzlu: ${moved[0]?.text}`);
-    ok(mertEntries.filter(e => e.opening).every(e => !e.makbuz), "açılış (devir) satırlarında makbuz yok");
-    await shot("taksit-karti-tahsilat-tasinan");
-    await closeTop();
-  });
-
-  await step("Cari kartı: bakiye ve 'Açılış (devir)' satırları", async () => {
-    await page.waitForFunction(() => !document.querySelector(".hof-plans-modal"), null, { timeout: 8000 }).catch(() => {});
-    await page.click('#hof-sidecard [data-action="accounts"]');
-    await page.waitForSelector(".hof-accounts-modal tr[data-account]", { timeout: 10000 });
-    const accRows = await page.$$eval(".hof-accounts-modal tr[data-account]", nodes => nodes.map(node => node.innerText.replace(/\s+/g, " ")));
-    ok(accRows.length === 6 && accRows.every(r => /tabloda kayıtlı/.test(r)), "6 cari, hepsi tablodaki kayda bağlı (çift cari yok)");
-    await page.click('.hof-accounts-modal tr[data-account]:has-text("Can Öztürk") b');
-    await page.waitForFunction(() => [...document.querySelectorAll(".hof-accounts-modal")].some(node => /Açılış \(devir\)/.test(node.innerText)), null, { timeout: 10000 }).catch(async error => {
-      const all = await page.$$eval(".hof-accounts-modal", nodes => nodes.map(node => [node.innerText.length, node.innerText.indexOf("Hareketler"), node.innerText.replace(/\s+/g, " ").slice(-300)]));
-      console.log("CARİ PENCERE:", JSON.stringify(all));
-      throw error;
-    });
-    const ledger = await page.$$eval(".hof-accounts-modal", nodes => nodes.map(node => node.innerText.replace(/\s+/g, " ")).join(" "));
-    ok(/Açılış \(devir\)/.test(ledger) && /5\.700,00/.test(ledger), "cari ekstresinde açılış (devir) satırları ve 5.700,00 bakiye");
-    await shot("cari-can-ozturk");
-    await page.click(".hof-accounts-modal [data-close]");
-    await page.waitForFunction(() => !document.querySelector(".hof-accounts-modal"), null, { timeout: 5000 });
-  });
-
-  await step("Kasa: aktarım Kasa'yı değiştirmedi; tek tahsilat artık taksit tahsilatı", async () => {
+    ok(!(await page.$('.hof-plans [data-act="transfer"]')), "Tablodan Aktar düğmesi yok");
+    ok((await text('.hof-plans [data-act="imports"]')) === "Son Aktarımlar", "Son Aktarımlar düğmesi");
+    await shot("taksitler-son-aktarimlar-dugmesi");
+    const transfer = await api("/api/workspace/plans/from-table", { keys: [pillKey] });
+    ok(transfer.status === 410 && transfer.code === "table-transfer-closed", `Tablodan Aktar ucu 410: ${JSON.stringify(transfer).slice(0, 160)}`);
+    const pay = await api(`/api/workspace/cases/${encodeURIComponent(pillKey)}/payments`, { amount: "100", method: "cash", date: await page.evaluate(() => window.HOF.localToday()) });
+    ok(pay.status === 410 && pay.code === "case-payments-closed" && pay.error === "Kayıt tahsilatı kapatıldı; tahsilat Cari'den girilir.", `kayıt tahsilatı ucu 410: ${JSON.stringify(pay).slice(0, 160)}`);
+    const plans = (await api("/api/workspace/plans?status=all")).data;
     const cash = (await api("/api/workspace/cash?period=all")).data;
-    ok(cash.totals.balance === cashBefore && cashBefore === pillAmount, `Kasa bakiyesi ${money(cash.totals.balance)} (aktarımdan önce ${money(cashBefore)})`);
-    ok(cash.entries.filter(e => e.source === "plan").length === 1 && !cash.entries.some(e => e.source === "payment") && !cash.entries.some(e => /Açılış/.test(e.description || "")), "Kasa'da tek kayıt (taksit tahsilatı); açılış/devir Kasa'ya yazılmadı");
-    await page.evaluate(() => HOF.workspace.openCash());
-    await page.waitForSelector(".hof-cash-table", { timeout: 10000 });
-    await shot("kasa");
-    await closeTop();
+    ok(plans.plans.length === 6 && cash.totals.balance === cashBefore && !cash.entries.some(e => e.source === "payment"), "6 kart, Kasa aynı, yeni kayıt tahsilatı yok");
   });
 
-  await step("Takvim ve zil: tablodan ikinci kez gelmez (çift sayım yok)", async () => {
-    const dues = (await api("/api/workspace/dues")).data;
-    ok(!dues.items.some(i => i.source !== "plan" && i.tab === "Öğrenciler"), "takvimde tablodan gelen öğrenci kalemi yok");
-    ok(dues.items.filter(i => i.source === "plan").length >= 4, `takvim kart taksitlerini gösteriyor (${dues.items.filter(i => i.source === "plan").length} kalem)`);
-    await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop.is-visible"), null, { timeout: 8000 });
-    await page.waitForSelector(".hof-payment-promises .hof-payment-pill", { timeout: 10000 });
-    const heading = await text(".hof-payment-promises-heading");
-    const pills = await page.$$eval(".hof-payment-pill:not([aria-hidden])", nodes => nodes.map(n => n.innerText.replace(/\s+/g, " ")));
-    // Kartlar her açık taksiti ayrı gösterir; aynı kişi+ay iki kez yok. Sayılar ayın gününe bağlıdır (ayın 1'inde bu ayın
-    // taksiti "bugün", sonraki ayınki henüz 7 günlük pencerede değil), bu yüzden beklenen şerit takvimin kendisinden okunur.
-    console.log("piller:", JSON.stringify(pills));
-    const keys = pills.map(p => p.replace(/₺[\d.,]+/g, "").replace(/\s+/g, " ").trim());
-    const planDues = dues.items.filter(i => i.source === "plan");
-    const overdue = planDues.filter(i => i.state === "overdue").length;
-    const upcoming = planDues.filter(i => i.state === "upcoming").length;
-    ok(pills.length === planDues.length && (!overdue || new RegExp(`${overdue} gecikmiş`).test(heading)) && (!upcoming || new RegExp(`${upcoming} yaklaşan`).test(heading)) && new Set(keys).size === keys.length, `şerit (aktarımdan sonra, kartlardan): ${heading} — ${pills.length} pil = takvimdeki ${planDues.length} kart kalemi, çift yok`);
-    // Fikstür: Zeynep geçen ayı ödemedi (gecikmiş); Efe, Zeynep, Can (kısmi) ve Mert bu ayı ödemedi. Ada ve Deniz hiç görünmez.
-    const who = name => pills.filter(p => p.includes(name)).length;
-    ok(who("Zeynep Demir") >= 2 && who("Efe Kaya") >= 1 && who("Can Öztürk") >= 1 && who("Ada Yılmaz") === 0 && who("Deniz Arslan") === 0, "şeritte doğru kişiler: Zeynep (geçen ay + bu ay), Efe, Can; tamamını ödeyen Ada ve Deniz yok");
-    ok(!pills.some(p => new RegExp(pillName).test(p) && /Ağustos/.test(p)), `${pillName} için ödenen Ağustos taksiti şeritte değil`);
-    await shot("serit-kartlardan");
-    await page.click(".topbar .top-actions > .icon-button");
-    await page.waitForSelector(".hof-alert-list");
-    const bellItems = await page.$$eval(".hof-alert-list li, .hof-alert-list .hof-alert-item, .hof-alert-list [data-alert]", nodes => nodes.map(node => node.innerText.replace(/\s+/g, " ").trim()).filter(Boolean));
-    const canItems = bellItems.filter(item => /Can Öztürk/.test(item));
-    console.log("zil (Can Öztürk):", JSON.stringify(canItems));
-    // Aynı kişi + aynı vade iki kez görünmez (tablodan ve karttan çift kalem yok); farklı taksitler ayrı satırdır.
-    const canKeys = canItems.map(item => (item.match(/\d{2}\.\d{2}\.\d{4}|Eylül|Ekim|Ağustos|Temmuz/g) || []).join("|"));
-    ok(canItems.length >= 1 && new Set(canKeys).size === canKeys.length && !/Öğrenciler/.test(canItems.join(" ")), `zil listesinde Can Öztürk ${canItems.length} satır, hepsi farklı vade, tablodan gelen yok`);
-    await closeTop();
-  });
-
-  let importId = "";
-  await step("Yeniden 'Tablodan aktar': herkes 'kartı var', aktarılacak kimse yok (çift kart açılmaz)", async () => {
-    await page.click('#hof-sidecard [data-action="plans"]');
-    await page.waitForSelector('.hof-plans [data-act="transfer"]', { timeout: 10000 });
-    await page.click('.hof-plans [data-act="transfer"]');
-    await page.waitForSelector(".hof-transfer-modal", { timeout: 30000 });
-    await page.waitForFunction(() => /Son aktarımlar \(1\)/i.test(document.querySelector(".hof-transfer-modal")?.innerText || ""), null, { timeout: 10000 });
-    const modal = await text(".hof-transfer-modal");
-    const commit = await page.$(".hof-transfer-modal [data-commit]");
-    const commitDisabled = commit ? await commit.evaluate(n => n.disabled || /0 kişi/.test(n.textContent)) : true;
-    ok(/Kartı var 6|6 kartı var|Kartı var/i.test(modal) && commitDisabled, `ikinci açılışta aktarılacak kimse yok: ${modal.slice(0, 260)}`);
-    await shot("ikinci-acilis-karti-var");
-    importId = await page.$eval(".hof-transfer-modal [data-undo]", n => n.dataset.undo);
-    ok(importId, "Son aktarımlar listesinde Geri al düğmesi var");
-  });
-
-  await step("Geri al: kartlar, cariler kaldırılır; tahsilat kayıt kartına döner; takvim tabloya döner", async () => {
-    await page.click(".hof-transfer-modal .hof-transfer-imports summary");
-    await page.waitForSelector(".hof-transfer-modal [data-undo]:visible", { timeout: 5000 });
+  await step("Son Aktarımlar → Geri Al: kartlar ve cariler kalkar; tahsilat kayıt kartına döner; Kasa aynı", async () => {
+    await page.click('.hof-plans [data-act="imports"]');
+    await page.waitForSelector(`.hof-modal-backdrop.is-visible .hof-imports-modal [data-undo="${importId}"]`, { timeout: 10000 });
+    const list = await text(".hof-imports-modal");
+    ok(/6 kart/.test(list) && /1 tahsilat taşındı/.test(list), `listede eski aktarım: ${list.slice(0, 240)}`);
     await shot("son-aktarimlar-geri-al");
-    await page.click(".hof-transfer-modal [data-undo]");
+    await page.click(`.hof-imports-modal [data-undo="${importId}"]`);
     await page.waitForSelector('.hof-modal-backdrop.is-visible [data-answer="yes"]', { timeout: 8000 });
     await page.click('.hof-modal-backdrop.is-visible [data-answer="yes"]');
     await page.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => /Aktarım geri alındı/i.test(node.textContent)), null, { timeout: 15000 });
     const undoToast = await page.evaluate(() => [...document.querySelectorAll(".hof-toast")].map(node => node.innerText.replace(/\s+/g, " ")).find(t => /Aktarım geri alındı/i.test(t)));
     ok(/6 kart kaldırıldı/.test(undoToast) && /1 tahsilat kayıt kartına döndü/.test(undoToast), `geri alma bildirimi: ${undoToast}`);
-    await page.waitForTimeout(1200);
+    await page.waitForFunction(() => /geri alındı/.test(document.querySelector(".hof-imports-modal")?.textContent || "") && !document.querySelector(".hof-imports-modal [data-undo]"), null, { timeout: 10000 });
+    ok(true, "Son Aktarımlar listesi yenilendi: aktarım 'geri alındı', Geri Al düğmesi kalmadı");
     const plans = (await api("/api/workspace/plans?status=all")).data;
     ok(plans.plans.length === 0, "taksit kartı kalmadı");
     const accounts = (await api("/api/workspace/accounts")).data;
     ok((accounts.items || accounts.accounts || []).length === 0, "aktarımın açtığı cariler kaldırıldı");
     const cash = (await api("/api/workspace/cash?period=all")).data;
     ok(cash.totals.balance === pillAmount && cash.entries.some(e => e.source === "payment") && !cash.entries.some(e => e.source === "plan"), "tahsilat kayıt kartına döndü; Kasa bakiyesi aynı");
-    const dues = (await api("/api/workspace/dues")).data;
-    ok(dues.items.some(i => i.source !== "plan" && i.tab === "Öğrenciler") && !dues.items.some(i => i.source === "plan"), "takvim yeniden tablodan besleniyor");
-    await shot("geri-alindi");
+    await page.click(".hof-imports-modal [data-close]");
+    await closeTop();
+    await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop.is-visible"), null, { timeout: 8000 });
   });
 
-  await step("Yeniden aktar (Tablodan aktar düğmesiyle): aynı sonuç", async () => {
-    await page.waitForSelector('.hof-plans [data-act="transfer"]', { timeout: 10000 });
-    await page.click('.hof-plans [data-act="transfer"]').catch(() => {});
-    await page.waitForSelector(".hof-transfer-modal .hof-transfer-table tbody tr[data-key]", { timeout: 30000 });
-    await page.click(".hof-transfer-modal [data-commit]");
-    await page.waitForSelector('.hof-modal-backdrop.is-visible [data-answer="yes"]', { timeout: 8000 });
-    await page.click('.hof-modal-backdrop.is-visible [data-answer="yes"]');
-    await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-title")].some(node => node.textContent === "Aktarım tamamlandı"), null, { timeout: 60000 });
-    const result = await text(".hof-transfer-result");
-    ok(/6 taksit kartı açıldı/.test(result) && /1 tahsilat/.test(result), `ikinci aktarım sonucu: ${result}`);
-    await page.click(".hof-modal-backdrop.is-visible [data-result-close]");
-    await page.waitForFunction(() => !document.querySelector(".hof-transfer-modal"), null, { timeout: 8000 });
-    await page.waitForFunction(() => document.querySelectorAll(".hof-plans tr[data-plan]").length === 6, null, { timeout: 10000 });
-    await closeTop();
-    await page.waitForFunction(() => !document.querySelector(".hof-plans-modal"), null, { timeout: 8000 }).catch(() => {});
-    const cash = (await api("/api/workspace/cash?period=all")).data;
-    ok(cash.totals.balance === pillAmount, "Kasa yine değişmedi");
+  await step("Şeritten Tahsilat Gir → önce cari açın: Açılış Bakiyesi boş (2.4.5 madde 3); Esc sorusuz kapanır", async () => {
+    // Kayıt seçilmeden, sayfa başındayken (pil kartı sayfa kaydırılınca kapanır).
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.waitForSelector(".hof-payment-promises .hof-payment-pill", { timeout: 10000 });
+    await page.evaluate(() => document.querySelectorAll(".hof-notice, .hof-toast").forEach(node => node.remove()));
+    await page.$eval(".hof-payment-pill:not([aria-hidden])", node => node.click());
+    await page.click('.hof-payment-action-card [data-act="pay"]');
+    await page.waitForSelector('.hof-modal-backdrop.is-visible input[name="name"]', { timeout: 8000 });
+    const form = await page.$eval(".hof-modal-backdrop.is-visible", node => ({ title: node.querySelector(".hof-modal-title")?.textContent.trim(), opening: node.querySelector('input[name="openingBalance"]')?.value ?? null, name: node.querySelector('input[name="name"]').value }));
+    ok(form.title === "Yeni Cari" && form.name && form.opening === "", `önce cari açın, ad kayıttan, Açılış Bakiyesi boş: ${JSON.stringify(form)}`);
+    await escClose(page, { expect: "soru-yok", step: "şerit tahsilatı → Yeni Cari" });
+    await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop.is-visible"), null, { timeout: 5000 });
+  });
+
+  await step("Kayıt kartı: Tahsilat düğmesi yok; dönen eski kayıt tahsilatı düzeltilmez (✎ yok), silinebilir (× var)", async () => {
+    ok(await page.evaluate(key => window.HOF.revealRecord(key), pillKey), "kayıt tabloda açıldı");
+    await page.waitForFunction(key => window.HOF.selectedCase()?.key === key, pillKey, { timeout: 8000 });
+    await page.waitForSelector("#hof-activity li[data-type=payment]", { timeout: 10000 });
+    ok(!(await page.$('.hof-case-actions [data-case-action="payment"]')) && Boolean(await page.$('.hof-case-actions [data-case-action="note"]')), "kayıt kartında Tahsilat düğmesi yok, Not var");
+    ok(!(await page.$("#hof-activity li[data-type=payment] [data-edit]")) && Boolean(await page.$("#hof-activity li[data-type=payment] [data-delete]")), "İşlem Geçmişi'nde eski kayıt tahsilatı: düzelt yok, sil var");
+    await shot("kayit-karti-eski-tahsilat");
   });
 
   await step("Stok → Yeni ürün: 'Kasa'ya yansıt' işaretsiz → Kasa değişmez", async () => {
@@ -338,7 +230,7 @@ try {
   process.exitCode = 1;
 } finally {
   await browser.close();
-  await app.close();
+  await app.close().catch(() => {});
   rmSync(root, { recursive: true, force: true });
 }
 console.log(`\n${results.filter(r => r.ok).length}/${results.length} denetim geçti`);

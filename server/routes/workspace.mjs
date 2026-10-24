@@ -66,6 +66,15 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
   };
   // Kasa etkisi (eksi bakiye denetimi): kayıt tahsilatı her zaman Kasa'ya/bankaya giriştir.
   const cashSide = payment => (payment ? { kind: "in", amount: payment.amount, method: payment.method || "cash", date: payment.date } : null);
+  // 2.4.5 madde 1 (K1; ürün sahibi: "tablo verisinden hiçbir para kaydı doğmaz"): tablodaki kayıttan yeni tahsilat ve eski kayıt tahsilatının düzeltmesi
+  // KAPALI → 410 "case-payments-closed"; tahsilat Cari'den girilir. Silme (→ Silinenler) ve Silinenler'den geri yükleme AÇIK (eski veri düzeltilebilsin); eski
+  // satırlar Kasa'da, Banka'da ve defterde (A 602) aynen durur. Kapı her şeyden ÖNCE (yalnız oturum denetiminden sonra): yetki, gövde, tarih, istek kimliği
+  // yinelemesi (bank.post) ona ulaşmaz — anahtar açıkken işlenmiş bir isteğin yinelemesi de 410 alır, veri değişmez. Anahtar yalnız testlerde açık (config.mjs).
+  const casePaymentsOpen = config?.legacyCasePayments === true;
+  const assertCasePaymentsOpen = req => {
+    auth.requireUser(req);
+    if (!casePaymentsOpen) throw new HttpError(410, "Kayıt tahsilatı kapatıldı; tahsilat Cari'den girilir.", { code: "case-payments-closed" });
+  };
 
 
   // ---- Geriye dönük uyumlu toplu durum ----
@@ -392,6 +401,7 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
   // ve silmede hesaptan para çıkar). Bağ kuralları (K4, geri yükleme, kapı) bank.post'ta kendiliğinden.
   const banking = bankForm(bankModule);
   router.post("/api/workspace/cases/:key/payments", async ({ req, res, params }) => {
+    assertCasePaymentsOpen(req);
     const user = auth.requirePermission(req, "payments.create");
     const body = await readJson(req);
     const key = liveCaseKey(caseKeyOf(params.key));
@@ -439,6 +449,7 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
   // v2.0.26 (A1): düzeltme ve silme dönem kilidine (kilitli dönemdeki tahsilat değişmez, kilitli tarihe taşınmaz) ve eksi
   // bakiye denetimine (Uyar/Engelle; nakitten çıkan tahsilat Kasa'yı eksiye düşürecekse sorulur) bağlı.
   router.put("/api/workspace/payments/:id", async ({ req, res, params }) => {
+    assertCasePaymentsOpen(req);
     const { user, payment } = editablePayment(req, params.id);
     period?.assertOpen(payment.date, "Bu tahsilat");
     const body = await readJson(req);

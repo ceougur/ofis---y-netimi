@@ -1,0 +1,53 @@
+# 245-kapi-para dar mutasyon: kapıyı bilerek boz → test/kapi-para-245.test.mjs yakalamalı. Her mutasyon ayrı git worktree kopyasında (ders 23).
+# Kullanım: python3 mutasyon.py <worktree-kopyası> <mutasyon-adı>   (kopya önceden `git worktree add --detach` ile açılır)
+import sys, pathlib
+root = pathlib.Path(sys.argv[1]); name = sys.argv[2]
+def edit(rel, old, new):
+    p = root / rel
+    s = p.read_text(encoding="utf-8")
+    assert s.count(old) == 1, f"{name}: bulunamadı {old[:60]}"
+    p.write_text(s.replace(old, new), encoding="utf-8")
+W = "server/routes/workspace.mjs"; T = "server/routes/plan-transfer.mjs"; C = "server/lib/config.mjs"
+if name == "M1-post-kapisi-yok":
+    edit(W, '''  router.post("/api/workspace/cases/:key/payments", async ({ req, res, params }) => {
+    assertCasePaymentsOpen(req);
+''', '''  router.post("/api/workspace/cases/:key/payments", async ({ req, res, params }) => {
+''')
+elif name == "M2-put-kapisi-yok":
+    edit(W, '''  router.put("/api/workspace/payments/:id", async ({ req, res, params }) => {
+    assertCasePaymentsOpen(req);
+''', '''  router.put("/api/workspace/payments/:id", async ({ req, res, params }) => {
+''')
+elif name == "M3-varsayilan-acik":
+    edit(C, "legacyCasePayments: overrides.legacyCasePayments === true,", "legacyCasePayments: overrides.legacyCasePayments !== false,")
+elif name == "M4-aktar-kapisi-yok":
+    edit(T, '''    if (!tableTransferOpen) throw new HttpError(410,''', '''    if (false) throw new HttpError(410,''')
+elif name == "M5-ozet-soruyor":
+    edit(T, '''    if (!tableTransferOpen || !canUser(user, "plans.manage")) return ok(res, { count: 0, tabs: [], ask: false });''', '''    if (!canUser(user, "plans.manage")) return ok(res, { count: 0, tabs: [], ask: false });''')
+elif name == "M6-kapi-yazimin-icinde":
+    # Kapı istek kimliği yinelemesinden SONRA (bank.post write içinde): yeni yazım durur ama yineleme 200 "replayed" döner.
+    edit(W, '''  router.post("/api/workspace/cases/:key/payments", async ({ req, res, params }) => {
+    assertCasePaymentsOpen(req);
+''', '''  router.post("/api/workspace/cases/:key/payments", async ({ req, res, params }) => {
+''')
+    edit(W, '''      write: () => {
+        k7.capture();
+        store.run(
+          "INSERT INTO payments''', '''      write: () => {
+        assertCasePaymentsOpen(req);
+        k7.capture();
+        store.run(
+          "INSERT INTO payments''')
+elif name == "M7-silme-de-kapali":
+    edit(W, '''  router.delete("/api/workspace/payments/:id", async ({ req, res, params, url }) => {
+''', '''  router.delete("/api/workspace/payments/:id", async ({ req, res, params, url }) => {
+    assertCasePaymentsOpen(req);
+''')
+elif name == "M8-geri-al-kapali":
+    edit(T, '''  router.post("/api/workspace/plans/imports/:id/undo", async ({ req, res, params }) => {
+''', '''  router.post("/api/workspace/plans/imports/:id/undo", async ({ req, res, params }) => {
+    if (!tableTransferOpen) throw new HttpError(410, "kapalı", { code: "table-transfer-closed" });
+''')
+else:
+    raise SystemExit(f"bilinmeyen mutasyon {name}")
+print(f"{name}: uygulandı")
