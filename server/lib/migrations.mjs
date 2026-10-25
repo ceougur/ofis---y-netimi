@@ -1338,7 +1338,44 @@ export const MIGRATIONS = [
       });
     },
   },
+  {
+    version: 34,
+    name: "v2.4.6 Maliyet Hesap Kartı (Duşakabin Üretimi; para dışı)",
+    up(store) {
+      // 2.4.6 madde 1 (kullanıcı kararları 24–25.10.2026; lib/maliyet/*, routes/maliyet.mjs): Stok penceresindeki Maliyet Hesap Kartı'nın sekmeleri, kartları,
+      // satırları, adımları (etiket + oran / bölen / elle değer), matris hücreleri (taban / fark) ve adları. YALNIZ EKLEYİCİ: yeni tablolar; eski sürüm (2.4.5)
+      // aynı dosyayı okur, tabloları görmez. Para tablosu DEĞİL: hiçbir yere bağlı değil (Kasa, Banka, cari, stok, fatura, Ana Defter okumaz; mutabakat kapısı ve
+      // kilit izi bakmaz). Şablon kod içinde; tablolar BOŞ kurulur, sektör "Duşakabin Üretimi" iken ilk açılışta şablon bir kez yazılır.
+      store.exec(MALIYET_SCHEMA_V34);
+    },
+  },
 ];
+
+// 2.4.6 Maliyet Hesap Kartı: sayılar ham (REAL; yuvarlanmaz), boş = NULL. Satır tablosu zincir (ad = malzeme, birim, miktar, fiyat), gramaj (ad = parça,
+// birim = cins, giden_mt … alis_ft, elle = Giden Kğ girdisi) ve bilgi (degerler_json) kartlarınca paylaşılır. rev: iyimser eşzamanlılık sürümü.
+const MALIYET_SCHEMA_V34 = `
+  CREATE TABLE IF NOT EXISTS maliyet_sekmeler (
+    kod TEXT PRIMARY KEY, ad TEXT NOT NULL, sira INTEGER NOT NULL, rev INTEGER NOT NULL DEFAULT 1, updated_by TEXT, updated_at TEXT
+  ) STRICT;
+  CREATE TABLE IF NOT EXISTS maliyet_kartlar (
+    kod TEXT PRIMARY KEY, sekme TEXT NOT NULL, tur TEXT NOT NULL, ad TEXT NOT NULL, sira INTEGER NOT NULL, rev INTEGER NOT NULL DEFAULT 1,
+    created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+  ) STRICT;
+  CREATE TABLE IF NOT EXISTS maliyet_satirlar (
+    kart TEXT NOT NULL, id TEXT NOT NULL, sira INTEGER NOT NULL, ad TEXT NOT NULL DEFAULT '', birim TEXT NOT NULL DEFAULT '',
+    miktar REAL, fiyat REAL, giden_mt REAL, boy REAL, br_gramaj REAL, giden_kg REAL, alis_ft REAL, elle INTEGER NOT NULL DEFAULT 0,
+    degerler_json TEXT NOT NULL DEFAULT '[]', PRIMARY KEY (kart, id)
+  ) STRICT;
+  CREATE TABLE IF NOT EXISTS maliyet_adimlar (
+    kart TEXT NOT NULL, kod TEXT NOT NULL, etiket TEXT NOT NULL DEFAULT '', deger REAL, PRIMARY KEY (kart, kod)
+  ) STRICT;
+  CREATE TABLE IF NOT EXISTS maliyet_hucreler (
+    kart TEXT NOT NULL, hucre TEXT NOT NULL, deger REAL, PRIMARY KEY (kart, hucre)
+  ) STRICT;
+  CREATE TABLE IF NOT EXISTS maliyet_basliklar (
+    kart TEXT NOT NULL, kod TEXT NOT NULL, ad TEXT NOT NULL DEFAULT '', PRIMARY KEY (kart, kod)
+  ) STRICT;
+`;
 
 // 2.4.4 (karar 22.10.2026): 2.4.0–2.4.3'te "Müşteri Fişi Olarak Bırak" ile Müşteri Fişi serisinden numara alıp sonra e-Belge olarak gönderilen belgenin
 // numarası seriden ayrılınca hiçbir yere kaydedilmiyordu (seride duran belgelerin MAX(seq)'i görmez) → güncellemeden sonra ilk bırakmada / kâğıt kayıtta
