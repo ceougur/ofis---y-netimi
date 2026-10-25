@@ -1,0 +1,263 @@
+TAP version 13
+# Subtest: 2.4.6 Maliyet Hesap Kartı bağsızlığı (kaynak taraması)
+    # Subtest: maliyet modülü SQL'de yalnız maliyet_* tablolarını anar (para / stok / cari / kasa / fatura / defter yok)
+    ok 1 - maliyet modülü SQL'de yalnız maliyet_* tablolarını anar (para / stok / cari / kasa / fatura / defter yok)
+      ---
+      duration_ms: 10.345387
+      type: 'test'
+      ...
+    # Subtest: maliyet modülü yalnız izinli yardımcıları içe alır (cari, kasa, stok, fatura, banka, defter, taksit, çek modülü yok)
+    ok 2 - maliyet modülü yalnız izinli yardımcıları içe alır (cari, kasa, stok, fatura, banka, defter, taksit, çek modülü yok)
+      ---
+      duration_ms: 5.372412
+      type: 'test'
+      ...
+    # Subtest: programın geri kalanı maliyet_* tablolarını anmaz (yalnız göç ve Şirket Verisini Sıfırla listesi)
+    ok 3 - programın geri kalanı maliyet_* tablolarını anmaz (yalnız göç ve Şirket Verisini Sıfırla listesi)
+      ---
+      duration_ms: 123.358842
+      type: 'test'
+      ...
+    # Subtest: mutabakat kapısı ve para tabloları listesi maliyet tablolarını içermez (para tablosu değil)
+    ok 4 - mutabakat kapısı ve para tabloları listesi maliyet tablolarını içermez (para tablosu değil)
+      ---
+      duration_ms: 0.875947
+      type: 'test'
+      ...
+    1..4
+ok 1 - 2.4.6 Maliyet Hesap Kartı bağsızlığı (kaynak taraması)
+  ---
+  duration_ms: 142.05875
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 Maliyet Hesap Kartı: şablon (boş yapı) ve hesap zinciri
+    # Subtest: 4 sekme Excel sırasıyla, nötr adlarla; marka ve yıl yok; miktar / fiyat / taban / fark yok
+    ok 1 - 4 sekme Excel sırasıyla, nötr adlarla; marka ve yıl yok; miktar / fiyat / taban / fark yok
+      ---
+      duration_ms: 3.555172
+      type: 'test'
+      ...
+    # Subtest: Excel tutarsızlıkları AYNEN: 130 / 150'lik 1S1Ç ÷120, Cam 130 1S2Ç CM elle (sonuç %20 Maliyet), Mika 120 1S2Ç etiketsiz, yan panel %20 etiketi / %15 oran
+    ok 2 - Excel tutarsızlıkları AYNEN: 130 / 150'lik 1S1Ç ÷120, Cam 130 1S2Ç CM elle (sonuç %20 Maliyet), Mika 120 1S2Ç etiketsiz, yan panel %20 etiketi / %15 oran
+      ---
+      duration_ms: 0.436662
+      type: 'test'
+      ...
+    # Subtest: zincir: tutar = miktar × fiyat → ARA → %18 → toplama → %20 ekle → ÷200; ara değer yuvarlanmaz; boş girdi 0 sayılır
+    ok 3 - zincir: tutar = miktar × fiyat → ARA → %18 → toplama → %20 ekle → ÷200; ara değer yuvarlanmaz; boş girdi 0 sayılır
+      ---
+      duration_ms: 0.712876
+      type: 'test'
+      ...
+    # Subtest: matris: liste-1 tesettür parlaktan, B7 zinciri, yan panel ayrı parlak farkı; liste-2 elle hücreler TABAN
+    ok 4 - matris: liste-1 tesettür parlaktan, B7 zinciri, yan panel ayrı parlak farkı; liste-2 elle hücreler TABAN
+      ---
+      duration_ms: 0.754008
+      type: 'test'
+      ...
+    # Subtest: sektör: Duşakabin Üretimi mevcut Üretim ve Sanayi grubunda, maliyet modülü yalnız onda
+    ok 5 - sektör: Duşakabin Üretimi mevcut Üretim ve Sanayi grubunda, maliyet modülü yalnız onda
+      ---
+      duration_ms: 0.178892
+      type: 'test'
+      ...
+    1..5
+ok 2 - 2.4.6 Maliyet Hesap Kartı: şablon (boş yapı) ve hesap zinciri
+  ---
+  duration_ms: 6.762583
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 Maliyet Hesap Kartı: göç v34 (yalnız ekleyici)
+    # Subtest: v33 veri dosyası v34'e geçer: yalnız maliyet_* tabloları (STRICT, boş) eklenir; ikinci açılış bir şey yapmaz
+    ok 1 - v33 veri dosyası v34'e geçer: yalnız maliyet_* tabloları (STRICT, boş) eklenir; ikinci açılış bir şey yapmaz
+      ---
+      duration_ms: 103.196827
+      type: 'test'
+      ...
+    1..1
+ok 3 - 2.4.6 Maliyet Hesap Kartı: göç v34 (yalnız ekleyici)
+  ---
+  duration_ms: 103.437359
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 Maliyet Hesap Kartı: API
+    # Subtest: sektör dışında kapalı (403 maliyet-sector, şablon kurulmaz); Duşakabin Üretimi seçilince açılır, boş şablon bir kez kurulur
+    ok 1 - sektör dışında kapalı (403 maliyet-sector, şablon kurulmaz); Duşakabin Üretimi seçilince açılır, boş şablon bir kez kurulur
+      ---
+      duration_ms: 119.104326
+      type: 'test'
+      ...
+    # Subtest: Kaydet: miktar / fiyat, satır ekle / sil, ✎ adlar, oran / bölen; eklenen satır yalnız ARA'ya girer; etiket ile oran ayrı
+    ok 2 - Kaydet: miktar / fiyat, satır ekle / sil, ✎ adlar, oran / bölen; eklenen satır yalnız ARA'ya girer; etiket ile oran ayrı
+      ---
+      duration_ms: 57.345946
+      type: 'test'
+      ...
+    # Subtest: K1: bölen 0, boş ya da sayı değilse reddedilir ("Bölen 0 olamaz."); kayıt değişmez; ön izleme de reddeder
+    ok 3 - K1: bölen 0, boş ya da sayı değilse reddedilir ("Bölen 0 olamaz."); kayıt değişmez; ön izleme de reddeder
+      ---
+      duration_ms: 130.845231
+      type: 'test'
+      ...
+    # Subtest: ön izleme yazmaz; değişmeyen kart sürüm denetimine girmez ve yazılmaz
+    ok 4 - ön izleme yazmaz; değişmeyen kart sürüm denetimine girmez ve yazılmaz
+      ---
+      duration_ms: 45.085834
+      type: 'test'
+      ...
+    # Subtest: matris / gramaj / bilgi: taban hücresine fark yazılmaz, ölçü satırı ve bilgi satırı eklenmez; ✎ sütun / ölçü / parça; elle Giden Kğ
+    ok 5 - matris / gramaj / bilgi: taban hücresine fark yazılmaz, ölçü satırı ve bilgi satırı eklenmez; ✎ sütun / ölçü / parça; elle Giden Kğ
+      ---
+      duration_ms: 105.615688
+      type: 'test'
+      ...
+    # Subtest: iki kişi aynı anda: aynı kartta ikinci kaydeden 409 (ilkinin değişikliği korunur); farklı kartlar ikisi de yazılır; eşzamanlı iki PUT'tan biri geçer
+    not ok 6 - iki kişi aynı anda: aynı kartta ikinci kaydeden 409 (ilkinin değişikliği korunur); farklı kartlar ikisi de yazılır; eşzamanlı iki PUT'tan biri geçer
+      ---
+      duration_ms: 231.596433
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-mut-832573f-m12-yazim-kucuk-harf/test/maliyet-cekirdek-246.test.mjs:261:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        409'da aynı istekteki öbür kart da yazılmadı (tek işlem)
+        + actual - expected
+        
+        + '100X100 oval Kabin'
+        - '100X100 Oval Kabin'
+                   ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '100X100 Oval Kabin'
+      actual: '100X100 oval Kabin'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-mut-832573f-m12-yazim-kucuk-harf/test/maliyet-cekirdek-246.test.mjs:274:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yetki: stock.view okur, stock.manage yazar; Personel yazamaz; stock.view kaldırılınca kapanır
+    ok 7 - yetki: stock.view okur, stock.manage yazar; Personel yazamaz; stock.view kaldırılınca kapanır
+      ---
+      duration_ms: 181.907925
+      type: 'test'
+      ...
+    # Subtest: sektör değişince veri silinmez (yalnız kapanır); yeniden seçilince aynen döner; yeniden başlatınca kalır
+    ok 8 - sektör değişince veri silinmez (yalnız kapanır); yeniden seçilince aynen döner; yeniden başlatınca kalır
+      ---
+      duration_ms: 515.20918
+      type: 'test'
+      ...
+    # Subtest: şirket kapsamı: 002'nin sektörü ayrı; 002 Duşakabin değilken kapalı, seçilince kendi boş şablonu; yedek → geri yükle; Tüm Hareketleri Sil dokunmaz, Tümünü Sıfırla siler
+    not ok 9 - şirket kapsamı: 002'nin sektörü ayrı; 002 Duşakabin değilken kapalı, seçilince kendi boş şablonu; yedek → geri yükle; Tüm Hareketleri Sil dokunmaz, Tümünü Sıfırla siler
+      ---
+      duration_ms: 463.046021
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-mut-832573f-m12-yazim-kucuk-harf/test/maliyet-cekirdek-246.test.mjs:321:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        002'nin kendi boş şablonu (001'in değişikliği gelmez)
+        + actual - expected
+        
+        + '100X100 oval Kabin'
+        - '100X100 Oval Kabin'
+                   ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '100X100 Oval Kabin'
+      actual: '100X100 oval Kabin'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-mut-832573f-m12-yazim-kucuk-harf/test/maliyet-cekirdek-246.test.mjs:328:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..9
+not ok 4 - 2.4.6 Maliyet Hesap Kartı: API
+  ---
+  duration_ms: 2593.694548
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-mut-832573f-m12-yazim-kucuk-harf/test/maliyet-cekirdek-246.test.mjs:127:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 176.659375
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 5.758018
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 10.557138
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    not ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 6.402388
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-mut-832573f-m12-yazim-kucuk-harf/test/yazim-duzeni.test.mjs:200:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Maliyet şablonu adları başlık yazımıyla yazılmalı:
+        “100X100 oval Kabin” → “100X100 Oval Kabin”
+        + actual - expected
+        
+        + [
+        +   '“100X100 oval Kabin” → “100X100 Oval Kabin”'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '“100X100 oval Kabin” → “100X100 Oval Kabin”'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-mut-832573f-m12-yazim-kucuk-harf/test/yazim-duzeni.test.mjs:204:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 5 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 83.976772
+      type: 'test'
+      ...
+    1..5
+not ok 5 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 284.964213
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-mut-832573f-m12-yazim-kucuk-harf/test/yazim-duzeni.test.mjs:149:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..5
+# tests 24
+# suites 5
+# pass 21
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3934.036523

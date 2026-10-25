@@ -1,0 +1,144 @@
+TAP version 13
+# Subtest: 2.4.6 Maliyet Hesap Kartı bağsızlığı (kaynak taraması)
+    # Subtest: maliyet modülü SQL'de yalnız maliyet_* tablolarını anar (para / stok / cari / kasa / fatura / defter yok)
+    not ok 1 - maliyet modülü SQL'de yalnız maliyet_* tablolarını anar (para / stok / cari / kasa / fatura / defter yok)
+      ---
+      duration_ms: 1.22478
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/test/maliyet-bagsizlik.test.mjs:53:3'
+      failureType: 'testCodeFailure'
+      error: "ENOENT: no such file or directory, scandir '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/server/lib/maliyet'"
+      code: 'ENOENT'
+      stack: |-
+        readdirSync (node:fs:1597:26)
+        listMjs (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/test/maliyet-bagsizlik.test.mjs:22:22)
+        moduleFiles (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/test/maliyet-bagsizlik.test.mjs:47:21)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/test/maliyet-bagsizlik.test.mjs:56:24)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+      ...
+    # Subtest: maliyet modülü yalnız izinli yardımcıları içe alır (cari, kasa, stok, fatura, banka, defter, taksit, çek modülü yok)
+    not ok 2 - maliyet modülü yalnız izinli yardımcıları içe alır (cari, kasa, stok, fatura, banka, defter, taksit, çek modülü yok)
+      ---
+      duration_ms: 0.253324
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/test/maliyet-bagsizlik.test.mjs:68:3'
+      failureType: 'testCodeFailure'
+      error: "ENOENT: no such file or directory, scandir '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/server/lib/maliyet'"
+      code: 'ENOENT'
+      stack: |-
+        readdirSync (node:fs:1597:26)
+        listMjs (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/test/maliyet-bagsizlik.test.mjs:22:22)
+        moduleFiles (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/test/maliyet-bagsizlik.test.mjs:47:21)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/test/maliyet-bagsizlik.test.mjs:71:24)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+      ...
+    # Subtest: programın geri kalanı maliyet_* tablolarını anmaz (yalnız göç ve Şirket Verisini Sıfırla listesi)
+    not ok 3 - programın geri kalanı maliyet_* tablolarını anmaz (yalnız göç ve Şirket Verisini Sıfırla listesi)
+      ---
+      duration_ms: 0.468312
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/test/maliyet-bagsizlik.test.mjs:82:3'
+      failureType: 'testCodeFailure'
+      error: "ENOENT: no such file or directory, scandir '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/server/lib/maliyet'"
+      code: 'ENOENT'
+      stack: |-
+        readdirSync (node:fs:1597:26)
+        listMjs (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/test/maliyet-bagsizlik.test.mjs:22:22)
+        moduleFiles (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/test/maliyet-bagsizlik.test.mjs:47:21)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/test/maliyet-bagsizlik.test.mjs:83:26)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: mutabakat kapısı ve para tabloları listesi maliyet tablolarını içermez (para tablosu değil)
+    ok 4 - mutabakat kapısı ve para tabloları listesi maliyet tablolarını içermez (para tablosu değil)
+      ---
+      duration_ms: 2.05163
+      type: 'test'
+      ...
+    1..4
+not ok 1 - 2.4.6 Maliyet Hesap Kartı bağsızlığı (kaynak taraması)
+  ---
+  duration_ms: 9.30969
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/test/maliyet-bagsizlik.test.mjs:52:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# node:internal/modules/esm/resolve:274
+#     throw new ERR_MODULE_NOT_FOUND(
+#           ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/server/lib/maliyet/sablon.mjs' imported from /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/test/maliyet-cekirdek-246.test.mjs
+#     at finalizeResolution (node:internal/modules/esm/resolve:274:11)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:10)
+#     at defaultResolve (node:internal/modules/esm/resolve:983:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:731:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:708:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:310:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49) {
+#   code: 'ERR_MODULE_NOT_FOUND',
+#   url: 'file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/server/lib/maliyet/sablon.mjs'
+# }
+# Node.js v22.22.0
+# Subtest: test/maliyet-cekirdek-246.test.mjs
+not ok 2 - test/maliyet-cekirdek-246.test.mjs
+  ---
+  duration_ms: 430.981154
+  type: 'test'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/test/maliyet-cekirdek-246.test.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# node:internal/modules/esm/resolve:274
+#     throw new ERR_MODULE_NOT_FOUND(
+#           ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/server/lib/maliyet/sablon.mjs' imported from /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/test/yazim-duzeni.test.mjs
+#     at finalizeResolution (node:internal/modules/esm/resolve:274:11)
+#     at moduleResolve (node:internal/modules/esm/resolve:859:10)
+#     at defaultResolve (node:internal/modules/esm/resolve:983:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:731:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:708:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:310:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49) {
+#   code: 'ERR_MODULE_NOT_FOUND',
+#   url: 'file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/server/lib/maliyet/sablon.mjs'
+# }
+# Node.js v22.22.0
+# Subtest: test/yazim-duzeni.test.mjs
+not ok 3 - test/yazim-duzeni.test.mjs
+  ---
+  duration_ms: 112.774448
+  type: 'test'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-e77447a/test/yazim-duzeni.test.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 6
+# suites 1
+# pass 1
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 823.289924

@@ -1,0 +1,108 @@
+uyarlayıcı (uyarlayici.mjs): node /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-mut-832573f-m4-excel-duzeltildi-130/test/bagimsiz/maliyet/uyarlayici.mjs
+kabul: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-mut-832573f-m4-excel-duzeltildi-130/test/bagimsiz/maliyet/kabul.json — 391 senaryo gönderiliyor
+program: destekofis-api sürüm 2.4.5 commit okunamadı
+✗ sablon: adım 0 sablon_oku kartlar/cam/130-1s1c-h182-kabin/bolen: beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/bos: adım 1 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/tek-satir: adım 3 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/tek-satir: adım 3 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 4.369776 program 4.033639384615384
+✗ cam/130-1s1c-h182-kabin/tek-satir: adım 3 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 4.369776 program 4.033639384615384
+✗ cam/130-1s1c-h182-kabin/dolu/t1: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/dolu/t1: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 1651.3775761960003 program 1524.3485318732312
+✗ cam/130-1s1c-h182-kabin/dolu/t1: adım 9 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 1651.3775761960003 program 1524.3485318732312
+✗ cam/130-1s1c-h182-kabin/dolu/t2: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/dolu/t2: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 1288.250471132 program 1189.1542810449232
+✗ cam/130-1s1c-h182-kabin/dolu/t2: adım 9 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 1288.250471132 program 1189.1542810449232
+✗ cam/130-1s1c-h182-kabin/dolu/t3: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/dolu/t3: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 1186.3109480425398 program 1095.0562597315752
+✗ cam/130-1s1c-h182-kabin/dolu/t3: adım 9 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 1186.3109480425398 program 1095.0562597315752
+✗ cam/130-1s1c-h182-kabin/yari-bos: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/yari-bos: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 2.7836369625 program 2.569511042307693
+✗ cam/130-1s1c-h182-kabin/yari-bos: adım 9 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 2.7836369625 program 2.569511042307693
+✗ cam/130-1s1c-h182-kabin/satir-ekle: adım 7 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/satir-ekle: adım 7 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 1825.6444888699998 program 1685.2102974184613
+✗ cam/130-1s1c-h182-kabin/satir-ekle: adım 7 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 1825.6444888699998 program 1685.2102974184613
+✗ cam/130-1s1c-h182-kabin/satir-ekle: adım 10 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/satir-ekle: adım 10 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 1836.0731518700002 program 1694.8367555723078
+✗ cam/130-1s1c-h182-kabin/satir-ekle: adım 10 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 1836.0731518700002 program 1694.8367555723078
+✗ cam/130-1s1c-h182-kabin/satir-sil: adım 10 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/satir-sil: adım 10 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 2665.5932757965998 program 2460.5476391968614
+✗ cam/130-1s1c-h182-kabin/satir-sil: adım 10 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 2665.5932757965998 program 2460.5476391968614
+✗ cam/130-1s1c-h182-kabin/satir-sil: adım 14 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/satir-sil: adım 14 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 1333.3377200366 program 1230.7732800337847
+✗ cam/130-1s1c-h182-kabin/satir-sil: adım 14 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 1333.3377200366 program 1230.7732800337847
+✗ cam/130-1s1c-h182-kabin/hepsini-sil: adım 16 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/hepsini-sil: adım 19 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/hepsini-sil: adım 19 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 1553.400616 program 1433.9082609230768
+✗ cam/130-1s1c-h182-kabin/hepsini-sil: adım 19 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 1553.400616 program 1433.9082609230768
+✗ cam/130-1s1c-h182-kabin/sil-ayni-adla-ekle: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/sil-ayni-adla-ekle: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 486.43138029399995 program 449.01358180984613
+✗ cam/130-1s1c-h182-kabin/sil-ayni-adla-ekle: adım 9 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 486.43138029399995 program 449.01358180984613
+✗ cam/130-1s1c-h182-kabin/sil-ayni-adla-ekle: adım 13 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/sil-ayni-adla-ekle: adım 13 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 659.1646418939999 program 608.4596694406154
+✗ cam/130-1s1c-h182-kabin/sil-ayni-adla-ekle: adım 13 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 659.1646418939999 program 608.4596694406154
+✗ cam/130-1s1c-h182-kabin/ad-degistir: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/ad-degistir: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 478.59270801892006 program 441.77788432515695
+✗ cam/130-1s1c-h182-kabin/ad-degistir: adım 9 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 478.59270801892006 program 441.77788432515695
+✗ cam/130-1s1c-h182-kabin/ad-degistir: adım 15 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/ad-degistir: adım 15 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 478.59270801892006 program 441.77788432515695
+✗ cam/130-1s1c-h182-kabin/ad-degistir: adım 15 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 478.59270801892006 program 441.77788432515695
+✗ cam/130-1s1c-h182-kabin/oran-degistir: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/oran-degistir: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 431.8726472666 program 398.65167439993843
+✗ cam/130-1s1c-h182-kabin/oran-degistir: adım 9 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 431.8726472666 program 398.65167439993843
+✗ cam/130-1s1c-h182-kabin/oran-degistir: adım 13 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/oran-degistir: adım 13 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 494.16478672827395 program 456.15211082609903
+✗ cam/130-1s1c-h182-kabin/oran-degistir: adım 13 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 494.16478672827395 program 456.15211082609903
+✗ cam/130-1s1c-h182-kabin/oran-sifir: adım 11 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/oran-sifir: adım 11 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 399.54203291666664 program 368.8080303846154
+✗ cam/130-1s1c-h182-kabin/oran-sifir: adım 11 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 399.54203291666664 program 368.8080303846154
+✗ cam/130-1s1c-h182-kabin/bolen-degistir: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/bolen-degistir: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 967.0501628198399 program 892.6616887567753
+✗ cam/130-1s1c-h182-kabin/bolen-degistir: adım 9 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 967.0501628198399 program 892.6616887567753
+✗ cam/130-1s1c-h182-kabin/bolen-sifir: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/bolen-sifir: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 1351.547531402 program 1247.5823366787693
+✗ cam/130-1s1c-h182-kabin/bolen-sifir: adım 9 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 1351.547531402 program 1247.5823366787693
+✗ cam/130-1s1c-h182-kabin/bolen-sifir: adım 12 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/bolen-sifir: adım 12 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 1351.547531402 program 1247.5823366787693
+✗ cam/130-1s1c-h182-kabin/bolen-sifir: adım 12 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 1351.547531402 program 1247.5823366787693
+✗ cam/130-1s1c-h182-kabin/bolen-bos: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/bolen-bos: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 1036.82798689 program 957.0719878984615
+✗ cam/130-1s1c-h182-kabin/bolen-bos: adım 9 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 1036.82798689 program 957.0719878984615
+✗ cam/130-1s1c-h182-kabin/bolen-bos: adım 12 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/bolen-bos: adım 12 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 1036.82798689 program 957.0719878984615
+✗ cam/130-1s1c-h182-kabin/bolen-bos: adım 12 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 1036.82798689 program 957.0719878984615
+✗ cam/130-1s1c-h182-kabin/buyuk: adım 10 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/buyuk: adım 10 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 1.1814388038672877e+17 program 109055889587749630
+✗ cam/130-1s1c-h182-kabin/buyuk: adım 10 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 1.1814388038672877e+17 program 109055889587749630
+✗ cam/130-1s1c-h182-kabin/kaydet-yeniden-ac: adım 10 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/kaydet-yeniden-ac: adım 10 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 1564.4042317969402 program 1444.0654447356371
+✗ cam/130-1s1c-h182-kabin/kaydet-yeniden-ac: adım 10 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 1564.4042317969402 program 1444.0654447356371
+✗ cam/130-1s1c-h182-kabin/kaydet-yeniden-ac: adım 14 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/130-1s1c-h182-kabin/kaydet-yeniden-ac: adım 14 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 1885.1561139779997 program 1740.1441052104612
+✗ cam/130-1s1c-h182-kabin/kaydet-yeniden-ac: adım 14 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 1885.1561139779997 program 1740.1441052104612
+✗ cam/sekme-dolu/t1: adım 37 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130
+✗ cam/sekme-dolu/t1: adım 37 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 1210.7924658 program 1117.6545838153845
+… 19 fark daha (--cikti ile tamamı)
+koşulmayan senaryo: 25
+  cam/100x100-oval-kabin/arayuz/canli: katman arayuz uyarlayıcıda yok
+  cam/100x100-oval-kabin/arayuz/cik-kaydetmeden: katman arayuz uyarlayıcıda yok
+  cam/100x100-oval-kabin/arayuz/cik-kaydet: katman arayuz uyarlayıcıda yok
+  cam/100x100-oval-kabin/arayuz/cik-degisiksiz: katman arayuz uyarlayıcıda yok
+  cam/100x100-oval-kabin/arayuz/ad-kaydetmeden: katman arayuz uyarlayıcıda yok
+  mika/170-2s2c-h182/arayuz/canli: katman arayuz uyarlayıcıda yok
+  mika/170-2s2c-h182/arayuz/cik-kaydetmeden: katman arayuz uyarlayıcıda yok
+  mika/170-2s2c-h182/arayuz/cik-kaydet: katman arayuz uyarlayıcıda yok
+  mika/170-2s2c-h182/arayuz/cik-degisiksiz: katman arayuz uyarlayıcıda yok
+  mika/170-2s2c-h182/arayuz/ad-kaydetmeden: katman arayuz uyarlayıcıda yok
+  mika/80-lik-yan-panel/arayuz/canli: katman arayuz uyarlayıcıda yok
+  mika/80-lik-yan-panel/arayuz/cik-kaydetmeden: katman arayuz uyarlayıcıda yok
+  mika/80-lik-yan-panel/arayuz/cik-kaydet: katman arayuz uyarlayıcıda yok
+  mika/80-lik-yan-panel/arayuz/cik-degisiksiz: katman arayuz uyarlayıcıda yok
+  mika/80-lik-yan-panel/arayuz/ad-kaydetmeden: katman arayuz uyarlayıcıda yok
+  mika/profil-agirliklari/arayuz/canli: katman arayuz uyarlayıcıda yok
+  mika/profil-agirliklari/arayuz/cik-kaydetmeden: katman arayuz uyarlayıcıda yok
+  mika/profil-agirliklari/arayuz/cik-kaydet: katman arayuz uyarlayıcıda yok
+  mika/profil-agirliklari/arayuz/cik-degisiksiz: katman arayuz uyarlayıcıda yok
+  mika/profil-agirliklari/arayuz/ad-kaydetmeden: katman arayuz uyarlayıcıda yok
+koşulan denetim: 41306, geçen: 41207, fark: 99
+BELİRSİZ — 25 senaryo koşulmadı; kâhin kabulü tamamlanmadı
+Hiçbir sonuç GEÇTİ sayılmaz (ders 4: okunamayan veri boş değildir).
