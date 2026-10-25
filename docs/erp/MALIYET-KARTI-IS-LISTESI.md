@@ -1,0 +1,57 @@
+# 2.4.6 İş Listesi — Duşakabin Maliyet Hesap Kartı (M3) + 2.4.5'ten Kalanlar (TASLAK 25.10.2026)
+
+> Hazırlandı: 25.10.2026 ~09:00 UTC (kod değişmedi). Kaynak kararlar: `docs/DURUM-VE-DEVAM.md` "### 0000" (KARAR 08:25, 08:30, 08:35 ×2, 08:40 UTC)
+> + kullanıcı 25.10 ~08:55 UTC: "sürüm numarası dediğin olsun" (→ **2.4.6**), "sadece duşakabin sektörü seçilince çıksın bu yapacağımız analiz kartı".
+> Bu dosya "başla" ile `docs/2.4.6-IS-LISTESI.md`'ye taşınır (madde 0a). Biten madde kanıtla üstü çizilir; 30 dk ara rapor (2.4.5 RAPOR DÜZENİ aynen).
+
+## Amaç
+- Duşakabin üreticisi müşteri: "sektörde böyle bir maliyet kartı eksikmiş, yaparsak o sektörde yayılırız". Excel'deki alıştıkları düzen programda.
+- Ürünle yalnız BOŞ YAPI gelir: 4 sekme düğmesi, kartlar, kart adları ve malzeme adları (Excel'deki gibi, ✎ ile değişir), birimler, oranlar/bölenler ve
+  formül düzeni. Miktar ve fiyat BOŞ; müşteri kendisi doldurur, biz destek oluruz. Müşterinin fiyatı/miktarı ürüne, depoya, teste GİRMEZ.
+- Formüller programın tahminine bırakılmaz: her kart türünün hesap zinciri aşağıdaki FORMÜL TABLOSU'ndan bire bir koda yazılır.
+
+## Kapsam dışı (bilerek)
+- "Excel'den Al" (içe alma) YOK (karar 08:25). Sipariş, stok kaydı, satış fiyatı, cari, kasa, fatura, defter bağı YOK (karar 08:40).
+- Serbest formül motoru YOK (6 işlem türü yeter; RAPOR analizi). İstemci paketi (app-*.js) kaynağının yeniden kurulması → ayrı sürüm (karar 08:40).
+
+## Maddeler
+
+| # | Sınıf | İş | Kod yeri | Tahmin |
+|---|---|---|---|---|
+| 0a | [M] | Bu dosya `docs/2.4.6-IS-LISTESI.md`'ye; BELGE_YOLLARI'na eklenir (`tools/kanit.mjs` + ci.yml `paths-ignore` + `test/kanit-araci.test.mjs`; eski araçta kırmızı) | `tools/kanit.mjs:306` | 0,25 s |
+| 0b | [H] | FORMÜL TABLOSU kart kart yeniden doğrulanır (müşterinin Excel'i, 554 formül; bağımsız yeniden hesap 0 fark) ve aşağıya yazılır (fiyatsız) | not defteri (müşteri verisi depoya girmez) | 0,25 g |
+| 0c | [H] | KÂHİN ÖNCE (kodu görmeyen ajan, Python, `test/bagimsiz/maliyet/`): yalnız FORMÜL TABLOSU'ndan; türetilmiş girdi → satır tutarı → ARA → oran/bölen adımları → sonuç; ✎ ad değişikliği, satır ekle/sil, Kaydet/Çık sonrası değerler. Cari/kasa/stok/fatura/defter DENETLEMEZ. Kabul: kâhin = Excel'in kendi değerleri (müşteri dosyasıyla yalnız yerelde, 0 fark; depoya yalnız türetilmiş çiftler) | `test/bagimsiz/maliyet/*` | 0,5 g |
+| 1 | [H] | VERİ MODELİ + GÖÇ: şirket veri dosyasında maliyet tabloları (sekme, kart, satır, kart adımları); boş şablon kod içinde (müşteri verisi yok), sektör ilk seçilince bir kez kurulur; yedek/geri yükleme, şirket sıfırlama dahil | `server/lib/migrations.mjs`, yeni `server/lib/maliyet/*`, yeni route | 0,5 g |
+| 2 | [H] | HESAP ÇEKİRDEĞİ: kart türlerine göre sabit zincir (FORMÜL TABLOSU); oran/bölen değeri düzenlenir, İŞLEM SIRASI ve hangi satırın hangi toplama girdiği sabit; eklenen satır yalnız kartın satır kuralına (miktar × fiyat → ARA); 10 tutarsızlık AYNEN; kuruş yuvarlama Excel'deki gibi (gösterimde) | yeni `server/lib/maliyet/hesap.mjs` | 0,5 g |
+| 3 | [M] | SEKTÖR: "Duşakabin Üretimi" sektörü; Maliyet Hesap Kartı YALNIZ bu sektör seçiliyken görünür (kullanıcı 25.10: "sadece duşakabin sektörü seçilince çıksın"); sektör değişince veri SİLİNMEZ, yalnız gizlenir; API de sektör dışında 404/403 | `server/lib/insight/sectors.mjs`, `server/lib/profile.mjs` | 0,25 g |
+| 4 | [H] | EKRAN: Stok penceresinde "Maliyet Hesap Kartı"; üstte 4 sekme düğmesi (Excel sekme adlarıyla), her bölüm ayrı kart; kart ve malzeme adının yanında ✎; satır ekle/sil; miktar, birim, fiyat, oran/bölen düzenlenir; altta **Kaydet** ve **Çık**; kaydedilmemiş değişiklikle çıkışta "kaydedilsin mi?" (esc-kapat düzeni, ders 34); yazım düzeni (her sözcük büyük, ölçü/kod aynen); bayi listeleri matris tablo | `client/assets/` (yeni hof-maliyet.js), Stok penceresi | 1 g |
+| 5 | [M] | BAĞSIZLIK TESTİ: kaynak tarayan test — maliyet modülü para/stok/cari/fatura/defter tablolarına yazmaz, onlardan okumaz; o tablolara giden kod maliyet tablolarını okumaz (eski kodda kırmızı: kasıtlı bağ enjekte) | `test/maliyet-bagsizlik.test.mjs` | 0,25 g |
+| 6 | [M] | KILAVUZ + PDF (ders 42): kısa "nasıl yapılır" (sektör seç, kartı aç, doldur, ✎, Kaydet) + PDF yeniden üretim + pdf-denetle; sürüm notu kısa | `docs/kilavuz/`, `client/kilavuz/`, CHANGELOG | 0,25 g |
+| 7 | [M] | 2.4.5 KALANLAR — METİN/GÖRÜNÜM: B3 iki "Cari Ekstre" adı; B4 Ayrıntılı Ekstre 15 kolon 1366'da kesik / PDF Belge No kırılması; B5 Ayrıntılı Ekstre Excel'inde Bakiye metin; B6 cari vade kaleminde borç açıklaması; B7 metinler; B8 kapıyla çelişen eski metinler; B9 zil rozeti upcoming; zilde alış faturası / verilen çek başlığı "TAHSİLAT ALINMADI" (yön metni) | `docs/2.4.5-IS-LISTESI.md:83,112` | 0,5 g |
+| 8 | [M] | K-DB2: bilgi notu cari türü yerine açık bakiye tarafına baksın (DÜŞÜK) | `hof-accounts.js` | 0,1 g |
+| 9 | [XH] | DB1 (PARA ÇEKİRDEĞİ — cari kâhini KS + dar kontrol + tam test): faturasız stok / fatura iadesinin cari "Ödeme" ile geri ödenmesi → "iade geri ödemesi" bağı | `server/lib/invoice-settle.mjs`, `docs/2.4.5-IS-LISTESI.md:124` | 0,5 g |
+| 10 | [H] | Stok formunda faturasız Alış İadesi yolu ('preturn'; bugün yalnız birim testte) | stok formu, `invoice-settle.mjs` classifyLine | 0,25 g |
+| 11 | [XH] | Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri (cari kâhini ile) | `server/routes/overview.mjs` | 0,5 g |
+| 12 | [M] | Açılış satırı için sağlam işaret (kolon) — K6.5 (2) (DÜŞÜK) | `migrations.mjs`, `routes/accounts.mjs` | 0,25 g |
+| 13 | [M] | CI'ye "kılavuz PDF sürümü = HTML sürümü" denetimi (ders 42) | `test/` + ci.yml | 0,1 g |
+| 14 | [M] | Takvim +~100 ms (büyük veride): ölç, gerekirse düzelt; değilse BİLİNEN SINIR | `routes/dues.mjs` | 0,25 g |
+| 15 | [XH] | Doğrulama: aday → kâhinler (maliyet + cari) → dar kontrol (9, 11) → TAM KAPI → CI → windows.yml ×2 → Uzun Doğrulama → imzalı paket → teslim | — | ~1 g |
+
+**Tahmin:** geliştirme ~3,5–4 iş günü (paralel ajanlarla ~2–2,5 takvim günü) + doğrulama ~1 gün → **~3–3,5 takvim günü**. Devir 2.5.0 en geç 1 Aralık'ta başlar (hatırlatıcı 23.11).
+
+## Çalışma düzeni (2.4.5'teki gibi)
+- DALGA 0: 0a ∥ 0b (formül tablosu) → 0c maliyet kâhini [H] ∥ cari kâhinine 9 ve 11 kuralları (KS, [XH]).
+- DALGA 1 (aynı anda): `maliyet-cekirdek` (1+2+3+5) [H] · `kalan-metin` (7+8) [M] · `db1` (9+10) [XH] · `projeksiyon-vade` (11) [XH] · `acilis-isaret` (12) [M] · `ci-pdf` (13) [M].
+- DALGA 2: `maliyet-ekran` (4) [H] (çekirdek API'si kesinleşince) · 14 ölçüm · 6 kılavuz → aday 1 → madde 15.
+- Her ajan: eski kodda kırmızı (nedeni iletide, ders 38) + yeni kodda yeşil + komşu testler + değiştirdiği e2e flock altında (ders 28) + `HUKUK_LICENSE_URL=http://127.0.0.1:9`
+  (ders 30) + eski kod ayrı kopyada (ders 23) + benzersiz not defteri klasörü (ders 25) + kendi süreçleri (ders 36). Kanıt `docs/kanit/<gün>/246-<iş>/`.
+
+## FORMÜL TABLOSU (madde 0b; fiyatsız — yalnız işlem, oran, bölen)
+_(Bağımsız yeniden doğrulama sürüyor; sonuç buraya yazılır.)_
+
+## BAŞ MİMAR KARARLARI (ders 40)
+- (henüz yok)
+
+## Başlamadan önce açık soru (yoksa öneri uygulanır)
+- S1: Sektör "Duşakabin Üretimi" hangi grupta (öneri: Üretim / İmalat grubu; yoksa yeni grup "Üretim")?
+- S2: Maliyet kartı Pro'ya özel mi (öneri HAYIR — Standart/Pro kuralı: yalnız kullanıcı "Pro'ya özel" derse)?
