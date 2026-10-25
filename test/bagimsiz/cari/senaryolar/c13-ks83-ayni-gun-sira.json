@@ -1,7 +1,7 @@
 {
  "dil": "destekofis-cari/3",
  "ad": "c13-ks83-ayni-gun-sira",
- "aciklama": "Aynı gün sıra (ders 31 + KS8.2 + KS8.3): her caride satış 500 (05-01); 06-01'de AYNI GÜN elle Alacak 300 (vade 06-18), faturasız stok Satış İadesi 300 ve bağsız Ödeme 300 farklı YAZIM SIRALARIYLA (S1: Alacak → iade → Ödeme; S2: Ödeme → iade → Alacak; S3: iade → Ödeme → Alacak). Kural sıradan bağımsız: Ödeme önce iadenin geri ödemesi (KS8.3; tarih koşulu yok KS8.2) → her caride fatura 500 açık, Alacak 300 açık ('Ödenecek Borç'), bakiye 200 = Σ açık. S4 Serap: Ödeme 300 iadeden ÖNCE (05-20), iade 06-01 → yine geri ödeme (KS8.2) → fatura 500. Önceki kâhin okuması (tarih + yazım FIFO'su, mutant 133) S1'de Alacak'ı kapatıp faturayı 200'e indirirdi. S5 Sinan (K-e [KULLANICI, 5 dk yetkisi]: müşteriye her ödeme yolu geri ödemedir): satış 500, carisiz alınan çek 300 müşteriye ciro edilir (iade 300'ün geri ödemesi) → fatura 500 açık, bakiye 500 (mutant 138: ciro geri ödeme sayılmaz → fatura 200).",
+ "aciklama": "Aynı gün sıra (ders 31 + KS8.2 + KS8.3): her caride satış 500 (05-01); 06-01'de AYNI GÜN elle Alacak 300 (vade 06-18), faturasız stok Satış İadesi 300 ve bağsız Ödeme 300 farklı YAZIM SIRALARIYLA (S1: Alacak → iade → Ödeme; S2: Ödeme → iade → Alacak; S3: iade → Ödeme → Alacak). Kural sıradan bağımsız: Ödeme önce iadenin geri ödemesi (KS8.3; tarih koşulu yok KS8.2) → her caride fatura 500 açık, Alacak 300 açık ('Ödenecek Borç'), bakiye 200 = Σ açık. S4 Serap: Ödeme 300 iadeden ÖNCE (05-20), iade 06-01 → yine geri ödeme (KS8.2) → fatura 500. Önceki kâhin okuması (tarih + yazım FIFO'su, mutant 133) S1'de Alacak'ı kapatıp faturayı 200'e indirirdi. S5 Sinan (K-e [KULLANICI, 5 dk yetkisi]: müşteriye her ödeme yolu geri ödemedir): satış 500, başka cariden (Zeki Çekveren) alınan çek 300 müşteriye ciro edilir (iade 300'ün geri ödemesi) → fatura 500 açık, bakiye 500 (mutant 138: ciro geri ödeme sayılmaz → fatura 200).",
  "dayanak": "KARARLAR.md §10: KS8.2, KS8.3 [BAŞ MİMAR]; ders 31 (aynı tarihte olay sınıfı → yazım sırası); K-e [KULLANICI, 5 dk yetkisi]",
  "bugun": "2026-06-15",
  "adimlar": [
@@ -38,6 +38,13 @@
    "islem": "cari_ac",
    "ad": "S5",
    "isim": "Sinan Ciro",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "cz",
+   "islem": "cari_ac",
+   "ad": "Z",
+   "isim": "Zeki Çekveren",
    "tarih": "2026-04-01"
   },
   {
@@ -84,7 +91,7 @@
    "id": "e5",
    "islem": "evrak",
    "ad": "E5",
-   "cari": null,
+   "cari": "Z",
    "tur": "cek",
    "tutar": "300",
    "tarih": "2026-05-10"
