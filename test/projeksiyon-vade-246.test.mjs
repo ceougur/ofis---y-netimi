@@ -309,6 +309,34 @@ describe("2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemle
     assert.deepEqual(rows.filter(row => row.source === "plan").map(row => [row.date, row.amount]), [[day(20), 500]], "kartın kapsadığı kısım kartın taksidiyle bir kez");
   });
 
+  it("bir kez (açık alış faturası; 2.4.3 MM5'ten kalan çift sayım): alış faturası kendi vadesinde çıkış, faturasız alacakta ikinci kez düşülmez; tedarikçinin vadesiz borcu kaybolmaz", async () => {
+    const purchase = async (acc, number, amount, date, dueDate) => must(`alış ${number}`, t.api.post("/api/workspace/invoices", { scenario: "expense_purchase", accountId: acc.id, number, issueDate: date, lines: [{ name: "Danışmanlık", expenseCode: "advisory", qty: 1, unitPrice: amount, vatRate: 0 }], payment: { rest: "open", dueDate } }));
+    const rowsOf = list => list.map(row => [row.source, row.date, row.direction, row.amount]).sort((a, b) => a.join("|").localeCompare(b.join("|")));
+    const sorted = list => [...list].sort((a, b) => a.join("|").localeCompare(b.join("|")));
+    // Müşteri: vadesiz Borç 1.000 + açık vadeli alış faturası 300 → bakiye 700; projeksiyon: faturasız alacak 1.000 (300 düşülmeden) + alış çıkışı 300 = net 700.
+    const customer = await t.account("Karma Musteri");
+    await t.entry(customer, { kind: "debt", amount: "1.000", date: day(-19) });
+    const p1 = await purchase(customer, "AL-246-1", 300, day(-15), day(16));
+    let mine = t.mine(await t.flow("preset=next30"), customer, [p1.id]);
+    assert.equal(net(mine), (await t.card(customer)).totals.balance, `müşteri carisinde net = bakiye (alış faturası bir kez): ${show(mine)}`);
+    assert.deepEqual(rowsOf(mine), sorted([["invoice", day(16), "out", 300], ["unbilled", day(-19), "in", 1000]]), show(mine));
+    // Tedarikçi: açık vadeli alış 1.000 + vadesiz elle Borç 200 (tedarikçinin bize borcu) → bakiye −800; faturasız alacak 200 artık kaybolmaz.
+    const supplier = await t.account("Karma Tedarikci", { type: "supplier" });
+    const p2 = await purchase(supplier, "AL-246-2", 1000, day(-12), day(20));
+    await t.entry(supplier, { kind: "debt", amount: "200", date: day(-5) });
+    mine = t.mine(await t.flow("preset=next30"), supplier, [p2.id]);
+    assert.equal(net(mine), (await t.card(supplier)).totals.balance, `tedarikçide net = bakiye: ${show(mine)}`);
+    assert.deepEqual(rowsOf(mine), sorted([["invoice", day(20), "out", 1000], ["unbilled", day(-5), "in", 200]]), show(mine));
+    // İkisi birlikte: vadesiz Borç 500 + açık alış 100 + vadeli elle Alacak 50 → bakiye 350; çıkışlar 100 + 50, faturasız alacak 500.
+    const both = await t.account("Karma Iki Cikis");
+    await t.entry(both, { kind: "debt", amount: "500", date: day(-10) });
+    const p3 = await purchase(both, "AL-246-3", 100, day(-9), day(10));
+    await t.entry(both, { kind: "credit", amount: "50", date: day(-8), dueDate: day(5) });
+    mine = t.mine(await t.flow("preset=next30"), both, [p3.id]);
+    assert.equal(net(mine), (await t.card(both)).totals.balance, `alış + vadeli elle Alacak birlikte: net = bakiye: ${show(mine)}`);
+    assert.deepEqual(rowsOf(mine), sorted([["account", day(5), "out", 50], ["invoice", day(10), "out", 100], ["unbilled", day(-10), "in", 500]]), show(mine));
+  });
+
   it("gecikmiş vadeli kalem takvimdeki gibi görünür: 'Vadesi geçmiş, kapanmamış' listesinde (gün, tutar, kimlik takvimle aynı); 'başlangıca ekle' ile başlangıca girer", async () => {
     const acc = await t.account("Gecikmis");
     const late = await t.entry(acc, { kind: "debt", amount: "815", date: day(-30), dueDate: day(-12) });

@@ -1,36 +1,19 @@
 TAP version 13
-# (node:31903) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (node:8135) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
-# {"balance":700,"net":400,"rows":[["invoice","2026-11-05","out",300],["unbilled","2026-10-01","in",700]]}
+# {"balance":700,"net":700,"rows":[["invoice","2026-11-05","out",300],["unbilled","2026-10-01","in",1000]]}
 # Subtest: müşteri carisinde açık alış faturası: projeksiyon net = bakiye mi?
-not ok 1 - müşteri carisinde açık alış faturası: projeksiyon net = bakiye mi?
+ok 1 - müşteri carisinde açık alış faturası: projeksiyon net = bakiye mi?
   ---
-  duration_ms: 1055.270075
+  duration_ms: 544.750007
   type: 'test'
-  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/betik/alis-cift-sayim.test.mjs:8:1'
-  failureType: 'testCodeFailure'
-  error: |-
-    projeksiyon net 400 ≠ bakiye 700
-    
-    400 !== 700
-    
-  code: 'ERR_ASSERTION'
-  name: 'AssertionError'
-  expected: 700
-  actual: 400
-  operator: 'strictEqual'
-  stack: |-
-    TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/betik/alis-cift-sayim.test.mjs:24:12)
-    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
-    async Test.run (node:internal/test_runner/test:1054:7)
-    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
   ...
 1..1
 # tests 1
 # suites 0
-# pass 0
-# fail 1
+# pass 1
+# fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 1490.558519
+# duration_ms 1012.52865

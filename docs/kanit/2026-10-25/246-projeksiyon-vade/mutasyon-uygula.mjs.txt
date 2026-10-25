@@ -25,6 +25,7 @@ const MUTATIONS = [
   { id: "M8", what: "yardımcı skip'i yok sayar", file: RA, from: "      if (skip?.has(row.id)) continue;\n", to: "", tests: T },
   { id: "M9", what: "kısmi tahsilat yerine kayıt tutarı (FIFO kalanı yok sayılır)", file: OV, from: "    flows.push(...accountDue.map(accountDueFlow));", to: "    flows.push(...accountDue.map(item => ({ ...accountDueFlow(item), amount: item.entryAmount })));", tests: T },
   { id: "M10", what: "Cari görüntüleme yetkisi denetlenmez (yetkisiz kullanıcı cari kalemini görür)", file: OV, from: "const accountDue = canUser(user, \"accounts.view\") && accounts()?.openDueItems ? accounts().openDueItems(day) : [];", to: "const accountDue = accounts()?.openDueItems ? accounts().openDueItems(day) : [];", tests: T },
+  { id: "M12", what: "açık alış faturası faturasız alacakta bakiyeye geri eklenmez (2.4.3 MM5 çift sayımı geri gelir)", file: OV, from: "      else if (item.side === \"purchase\" && item.accountId) owe(item.accountId, item.open);\n", to: "", tests: T },
   { id: "M11", what: "pencerenin son günü dışarıda (iki ucu kapalı değil; K-P1)", file: "server/lib/finance-report.mjs", from: "else if (!to || flow.date <= to) inRange.push(item);", to: "else if (!to || flow.date < to) inRange.push(item);", tests: T },
 ];
 const results = [];

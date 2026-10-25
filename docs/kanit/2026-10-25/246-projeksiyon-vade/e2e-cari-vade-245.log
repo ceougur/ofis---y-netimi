@@ -12,7 +12,7 @@
 
 ■ V2 Tahsilat Takvimi şeridinde ve zilde kalem (Tahsil Edilecek Borç, Kalan)
   ✓ şeritte: ["₺ Vade Müşteri Tahsil Edilecek Borç · 23.10.2026 · ₺1.250,00 3 gün kaldı"]
-  ✓ takvim kalemi: {"id":"account|aentry-ee3ea598-b1d7-49bb-a240-e90d57448353","amount":1250,"state":"upcoming","days":3}
+  ✓ takvim kalemi: {"id":"account|aentry-019fee7e-434e-4ff2-83b5-fd198ec2a774","amount":1250,"state":"upcoming","days":3}
   ✓ zilde: ["3 gün kaldıVade MüşteriTahsil Edilecek Borç · vade 23.10.2026 · ₺1.250,00✕Tahsilat GirCariyi Aç"]
 
 ■ V3 Düzelt → Beklenen Ödeme Tarihi: kalem o güne kayar, "(Ödeme Sözü)"

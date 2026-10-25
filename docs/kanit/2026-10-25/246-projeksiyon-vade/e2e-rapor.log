@@ -28,7 +28,7 @@
 ✓ alınan çek 1.000 (+10 gün)
 ✓ verilen çek 800 (+20 gün)
 ✓ alınan senet 700 (+45 gün)
-2026-10-25T10:14:21.375Z [WARN] Mutabakat: güncelleme öncesinden kalan 2 sapma var (İleri tarihli hareket (Kasa Hareketleri); İşlem Başlığı Olmayan Para Satırı (v20'den sonra)). Yeni işlemler bu sapmayı büyütemez.
+2026-10-25T11:36:44.427Z [WARN] Mutabakat: güncelleme öncesinden kalan 2 sapma var (İleri tarihli hareket (Kasa Hareketleri); İşlem Başlığı Olmayan Para Satırı (v20'den sonra)). Yeni işlemler bu sapmayı büyütemez.
 ✓ bugün Kasa girişi 250
 
 ■ C1. Cari ekstre: mizan bakiyeleri = Cari listesi; ekstre = Cari kartı

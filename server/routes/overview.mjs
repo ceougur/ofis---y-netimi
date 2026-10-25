@@ -418,13 +418,20 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     if (!accounts()?.list) return [];
     const items = [];
     for (const item of plans()?.openItems ? plans().openItems(day) : []) if (item.accountId) items.push({ accountId: item.accountId, date: item.date, amount: item.amount });
-    for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true }) : []) if (item.side === "sale") items.push({ accountId: item.accountId, date: item.dueDate, amount: item.open });
     const owed = new Map();
+    const owe = (accountId, amount) => owed.set(accountId, roundMoney((owed.get(accountId) || 0) + amount));
+    // 2.4.6 madde 11 düzeltmesi (2.4.3 MM5'ten kalan çift sayım; ana oturum kararı, KARAR REVİZYONU ORTA): açık vadeli ALIŞ faturası projeksiyonda kendi vadesinde
+    // çıkıştır (invoiceFlow); bakiyeyi de küçülttüğü için faturasız alacağın hesabında bakiyeye geri eklenir — müşteri carisinde açık alış faturası varken ödeme iki
+    // kez düşülüyordu (bakiye 700 → projeksiyon net 400). İade belgesi projeksiyonda ayrı kalem değildir (openItems returns olmadan; bakiye zaten net) → eklenmez.
+    for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true }) : []) {
+      if (item.side === "sale") items.push({ accountId: item.accountId, date: item.dueDate, amount: item.open });
+      else if (item.side === "purchase" && item.accountId) owe(item.accountId, item.open);
+    }
     const skip = new Set();
     for (const item of accountDue) {
       skip.add(item.entryId);
       if (item.direction === "in") items.push({ accountId: item.accountId, date: item.dueDate, amount: item.amount });
-      else owed.set(item.accountId, roundMoney((owed.get(item.accountId) || 0) + item.amount));
+      else owe(item.accountId, item.amount);
     }
     const live = accounts().list({ id: "", role: "admin" }, { status: "all" }).accounts.map(account => ({ id: account.id, name: account.name, balance: owed.has(account.id) ? roundMoney(account.balance + owed.get(account.id)) : account.balance }));
     return reconcileReceivables(store, { accounts: live, items, day, skip })

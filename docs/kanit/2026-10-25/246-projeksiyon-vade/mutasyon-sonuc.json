@@ -5,8 +5,8 @@
     "file": "server/routes/overview.mjs",
     "applied": true,
     "exit": 1,
-    "tests": 17,
-    "fail": 17,
+    "tests": 18,
+    "fail": 18,
     "caught": true,
     "failed": [
       "vadeli elle Borç: Vade Tarihi'nde giriş kalemi (Cari (vadeli), Tahsil Edilecek Borç); faturasız cari alacağı olarak ikinci kez yok; carinin Σ = bakiye",
@@ -23,7 +23,7 @@
     "file": "server/routes/overview.mjs",
     "applied": true,
     "exit": 1,
-    "tests": 17,
+    "tests": 18,
     "fail": 1,
     "caught": true,
     "failed": [
@@ -36,11 +36,12 @@
     "file": "server/routes/overview.mjs",
     "applied": true,
     "exit": 1,
-    "tests": 17,
-    "fail": 1,
+    "tests": 18,
+    "fail": 2,
     "caught": true,
     "failed": [
-      "KS2: müşterideki vadeli elle Alacak çıkış kalemidir, müşterinin borcundan düşülmez; bakiyede ikinci kez düşülmez (carinin net = bakiye)"
+      "KS2: müşterideki vadeli elle Alacak çıkış kalemidir, müşterinin borcundan düşülmez; bakiyede ikinci kez düşülmez (carinin net = bakiye)",
+      "bir kez (açık alış faturası; 2.4.3 MM5'ten kalan çift sayım): alış faturası kendi vadesinde çıkış, faturasız alacakta ikinci kez düşülmez; tedarikçinin vadesiz borcu kaybolmaz"
     ]
   },
   {
@@ -49,7 +50,7 @@
     "file": "server/routes/overview.mjs",
     "applied": true,
     "exit": 1,
-    "tests": 17,
+    "tests": 18,
     "fail": 11,
     "caught": true,
     "failed": [
@@ -67,7 +68,7 @@
     "file": "server/routes/overview.mjs",
     "applied": true,
     "exit": 1,
-    "tests": 17,
+    "tests": 18,
     "fail": 6,
     "caught": true,
     "failed": [
@@ -85,8 +86,8 @@
     "file": "server/routes/overview.mjs",
     "applied": true,
     "exit": 1,
-    "tests": 17,
-    "fail": 10,
+    "tests": 18,
+    "fail": 11,
     "caught": true,
     "failed": [
       "vadeli elle Borç: Vade Tarihi'nde giriş kalemi (Cari (vadeli), Tahsil Edilecek Borç); faturasız cari alacağı olarak ikinci kez yok; carinin Σ = bakiye",
@@ -103,7 +104,7 @@
     "file": "server/routes/accounts.mjs",
     "applied": true,
     "exit": 1,
-    "tests": 17,
+    "tests": 18,
     "fail": 2,
     "caught": true,
     "failed": [
@@ -117,7 +118,7 @@
     "file": "server/lib/receivable-aging.mjs",
     "applied": true,
     "exit": 1,
-    "tests": 17,
+    "tests": 18,
     "fail": 1,
     "caught": true,
     "failed": [
@@ -130,7 +131,7 @@
     "file": "server/routes/overview.mjs",
     "applied": true,
     "exit": 1,
-    "tests": 17,
+    "tests": 18,
     "fail": 5,
     "caught": true,
     "failed": [
@@ -147,11 +148,24 @@
     "file": "server/routes/overview.mjs",
     "applied": true,
     "exit": 1,
-    "tests": 17,
+    "tests": 18,
     "fail": 1,
     "caught": true,
     "failed": [
       "yetki: Finans Raporları (overview.view) yoksa 403 (ekran, PDF, Excel); cari kalemi yalnız Cari görüntüleme (accounts.view) yetkisi olana — yoksa aynı borç bir kez, faturasız alacakta"
+    ]
+  },
+  {
+    "id": "M12",
+    "what": "açık alış faturası faturasız alacakta bakiyeye geri eklenmez (2.4.3 MM5 çift sayımı geri gelir)",
+    "file": "server/routes/overview.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 18,
+    "fail": 1,
+    "caught": true,
+    "failed": [
+      "bir kez (açık alış faturası; 2.4.3 MM5'ten kalan çift sayım): alış faturası kendi vadesinde çıkış, faturasız alacakta ikinci kez düşülmez; tedarikçinin vadesiz borcu kaybolmaz"
     ]
   },
   {
@@ -160,7 +174,7 @@
     "file": "server/lib/finance-report.mjs",
     "applied": true,
     "exit": 1,
-    "tests": 17,
+    "tests": 18,
     "fail": 2,
     "caught": true,
     "failed": [

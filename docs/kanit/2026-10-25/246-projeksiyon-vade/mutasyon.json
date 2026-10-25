@@ -1,23 +1,23 @@
 {
   "ad": "246-projeksiyon-vade/mutasyon",
   "komut": "node /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/betik/mutasyon.mjs /home/user/wt/projeksiyon-vade /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/mutasyon-kopya",
-  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "commit": "97d20d4ca021c3b10efeb471d3ae6cb34b519662",
   "dal": "is/projeksiyon-vade",
-  "kirli": 4,
-  "izlenmeyen": 2,
+  "kirli": 2,
+  "izlenmeyen": 4,
   "platform": "linux 6.18.44-fc-v153 x64",
   "node": "v22.22.0",
   "cpu": 4,
   "bellek_gb": 16,
-  "basladi": "2026-10-25T10:50:42.507Z",
-  "sure_sn": 37.8,
+  "basladi": "2026-10-25T11:30:10.522Z",
+  "sure_sn": 43.5,
   "cikis_kodu": 0,
   "sinyal": null,
   "zaman_asimi": false,
   "ozet": {
     "bicim": "node:test",
-    "toplam": 11,
-    "gecen": 11,
+    "toplam": 12,
+    "gecen": 12,
     "basarisiz": 0,
     "iptal": 0,
     "atlanan": 0
@@ -27,6 +27,6 @@
   "basarisiz_testler": [],
   "ham_cikti": "docs/kanit/2026-10-25/246-projeksiyon-vade/mutasyon.log",
   "klasor": "/home/user/wt/projeksiyon-vade",
-  "ham_cikti_sha256": "c0d272d9ce1ab5ed8b80e79aca3dd27e2c5048b6c5e432f4e24df5af9b5069f4",
-  "ham_cikti_bayt": 4780
+  "ham_cikti_sha256": "26f5c05dcf37b0aedf80757329c5544593c0bf78cbd275b5a26289c9a43201af",
+  "ham_cikti_bayt": 5332
 }

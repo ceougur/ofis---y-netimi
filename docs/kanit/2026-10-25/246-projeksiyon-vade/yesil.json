@@ -1,23 +1,23 @@
 {
   "ad": "246-projeksiyon-vade/yesil",
   "komut": "node --disable-warning=ExperimentalWarning --test test/projeksiyon-vade-246.test.mjs",
-  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "commit": "97d20d4ca021c3b10efeb471d3ae6cb34b519662",
   "dal": "is/projeksiyon-vade",
-  "kirli": 4,
-  "izlenmeyen": 2,
+  "kirli": 14,
+  "izlenmeyen": 4,
   "platform": "linux 6.18.44-fc-v153 x64",
   "node": "v22.22.0",
   "cpu": 4,
   "bellek_gb": 16,
-  "basladi": "2026-10-25T10:46:53.534Z",
-  "sure_sn": 3.6,
+  "basladi": "2026-10-25T11:39:12.699Z",
+  "sure_sn": 4,
   "cikis_kodu": 0,
   "sinyal": null,
   "zaman_asimi": false,
   "ozet": {
     "bicim": "node:test",
-    "toplam": 17,
-    "gecen": 17,
+    "toplam": 18,
+    "gecen": 18,
     "basarisiz": 0,
     "iptal": 0,
     "atlanan": 0
@@ -27,6 +27,6 @@
   "basarisiz_testler": [],
   "ham_cikti": "docs/kanit/2026-10-25/246-projeksiyon-vade/yesil.log",
   "klasor": "/home/user/wt/projeksiyon-vade",
-  "ham_cikti_sha256": "4dc294a7f0adf0a8132ed566c83c11a58280a372825dfc15f1768ed9b9229eb6",
-  "ham_cikti_bayt": 7135
+  "ham_cikti_sha256": "230c93fb99e468fa43e500021f2e1b2b088cdbc1d0f236c22267facaffee2078",
+  "ham_cikti_bayt": 7624
 }

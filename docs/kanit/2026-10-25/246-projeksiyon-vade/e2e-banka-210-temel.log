@@ -74,7 +74,7 @@
   ✓ Yönetim → Eksi Bakiye Denetimi metni: “Eksi Bakiye Denetimi Bir ödeme, iade ya da düzeltme nakit kasayı eksiye düşürecekse ne olsun? Uyar: program sorar, onaylarsanız kaydeder. Engelle: kaydetmez. Kontrol Yok: sormaz. Bu ayar yalnız Nakit Kasa içindir. Banka hesapları ve kurumsal kartlar için denetim Banka → Ayarlar → Eksi Bakiye'dedir (KMH ve kart limitine kadar serbest); bir hesap için ayrıca Banka → Hesaplar → hesap → Düzenle → Eksi Bakiye Denetimi'nden değiştirilir. Açılış bakiyesi doğrulanana kadar o hesapta denetim kapalıdır. Nakit KasaUyar (Sorulur)EngelleKontrol Yok Kaydet”
 
 ■ 10. İleri tarihli eski hesapsız havale (GERÇEK v2.0.23 verisi): liste 'Tarihi Gelince Atanabilir', sihirbaz atlar ve söyler, tarih gelince atanır
-2026-10-25T10:17:50.610Z [WARN] Mutabakat: güncelleme öncesinden kalan 1 sapma var (İleri tarihli hareket (Çek/Senet Hareketleri)). Yeni işlemler bu sapmayı büyütemez.
+2026-10-25T11:37:54.077Z [WARN] Mutabakat: güncelleme öncesinden kalan 1 sapma var (İleri tarihli hareket (Çek/Senet Hareketleri)). Yeni işlemler bu sapmayı büyütemez.
   ✓ Nakit Akış: 20.10 eski havale bir kez, kaynağı "Hesabı Atanmamış (ileri tarihli)" (Kasa değil): 20.10.2026 Hesabı Atanmamış (ileri tarihli) Çek tahsili · No ILR-E2E · Çekli Müşteri ₺1.000,00 ₺11.000,00 · kaynak Hesabı Atanmamış (ileri tarihli)
   ✓ başlangıç 10.000 (eski havale girmez): Bugünkü Nakit ve Banka ₺10.000,00 Nakit Kasa ₺0,00 · Gerçek Banka ₺10.000,00
   ✓ Genel Bakış: Hesabı Atanmamış 250 (ileri tarihli 1.000 toplama girmez): Hesabı Atanmamış Eski Hareketler ₺250,00 Havale / EFT (102.00) ₺250,00 · POS / Kart (108.00) ₺0,00 — Gerçek Banka'ya ve hiçbir toplama girmez. Tarihi gelmemiş 1 eski hareket (+₺1.000,00, ilk 20.10.2026) bu toplama girmez
