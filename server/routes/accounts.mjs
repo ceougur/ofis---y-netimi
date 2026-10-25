@@ -760,6 +760,11 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // zaten yok sayar (taksitli fatura kendi kartıyla kapanır).
   // 2.4.4 UX18: çek/senet formu da (routes/cheques.mjs) AYNI kuralı kullanır (alınan evrak = tahsilat, verilen evrak = ödeme); extra hata gövdesine
   // eklenir (alan adı), planHint taksitli faturadaki yol önerisidir.
+  // 2.4.6: taksitli faturanın iadesi (asıl fatura kendi kartıyla kapanır; iade kartı küçültür). Geri ödemesi cari kartından / evrakla iadeye bağlanmaz — cari
+  // satırı kartı eşitlemez (v2.0.24: taksitli faturanın açığı = kartın kalanı); taksit kartından (Ödeme / İade) ya da iade belgesinin ödemesinden girilir.
+  const RETURN_KINDS = new Set(["sale_return", "purchase_return"]);
+  const plannedReturn = returnId => Boolean(store.get("SELECT o.plan_id AS planId FROM invoices r JOIN invoices o ON o.id = r.original_id WHERE r.id = ? AND o.plan_id <> ''", returnId)?.planId);
+  const PLANNED_RETURN_TEXT = "Bu iade taksitli bir faturanın; geri ödemesi buradan iadeye bağlanmaz (taksit kartı faturayla birlikte izlenir). Geri ödemeyi faturanın taksit kartından (Ödeme / İade) ya da iade belgesinin ödemesinden girin.";
   const invoiceLink = (accountId, kind, value, keep = "", { extra = {}, planHint = "Tahsilatı taksite yazın: cari kartında + Tahsilat → Taksite Yaz." } = {}) => {
     const invoiceId = limited(value, 120, "Fatura");
     if (!invoiceId) return "";
@@ -775,6 +780,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     // İADEYİ de kapatır — iadenin geri ödemesidir (lib/invoice-settle.mjs: iadenin alacağıyla kapanır, fazlası avans). Öbür yönler aynen reddedilir.
     const side = ["sale", "smm"].includes(invoice.kind) ? "in" : invoice.kind === "purchase" ? "out" : invoice.kind === "sale_return" ? "out" : invoice.kind === "purchase_return" ? "in" : "";
     if (side !== kind) throw new HttpError(409, kind === "in" ? "Tahsilat yalnız satış faturasını ya da alıştan iadeyi (tedarikçinin geri ödemesi) kapatır; alış faturası ve satıştan iade için Ödeme girin." : "Ödeme yalnız alış faturasını ya da satıştan iadeyi (müşteriye geri ödeme) kapatır; satış faturası ve alıştan iade için Tahsilat girin.", extra);
+    if (RETURN_KINDS.has(invoice.kind) && plannedReturn(invoice.id)) throw new HttpError(409, PLANNED_RETURN_TEXT, { ...extra, code: extra.code || "refund-planned" });
     return invoice.id;
   };
   // 2.4.6 madde 9 (DB1; v2.1.0 R1 düzeni — iade belgesinin kendi geri ödemesi): cari kartından girilen Ödeme / Tahsilat'ın geri ödediği iade (formda
@@ -789,7 +795,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     if (invoice) {
       if (invoice.accountId !== accountId) return null;
       const refundKind = invoice.kind === "sale_return" ? "out" : invoice.kind === "purchase_return" ? "in" : "";
-      return { id: invoice.id, type: "invoice", kind: invoice.kind, refundKind, valid: invoice.status === "issued", status: invoice.status, date: invoice.date, amount: Number(invoice.amount) || 0, no: invoice.number || "" };
+      return { id: invoice.id, type: "invoice", kind: invoice.kind, refundKind, valid: invoice.status === "issued", status: invoice.status, date: invoice.date, amount: Number(invoice.amount) || 0, no: invoice.number || "", planned: Boolean(refundKind && plannedReturn(invoice.id)) };
     }
     const move = store.get("SELECT m.id, m.kind, m.reason, m.pay, m.account_id AS accountId, m.amount, m.date, COALESCE(i.name, '') AS itemName FROM stock_moves m LEFT JOIN stock_items i ON i.id = m.item_id WHERE m.id = ?", id);
     if (!move || move.accountId !== accountId) return null;
@@ -819,6 +825,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       if (!target.refundKind) throw new HttpError(409, "Seçilen kayıt bir iade değil; yalnız satıştan / alıştan iade geri ödenir.", { code: "refund-not-return", field: "refundOf" });
       throw new HttpError(409, kind === "out" ? "Ödeme yalnız satıştan iadeyi (müşteriye geri ödeme) karşılar; alıştan iadenin geri ödemesi için Tahsilat girin." : "Tahsilat yalnız alıştan iadeyi (tedarikçinin geri ödemesi) karşılar; satıştan iadenin geri ödemesi için Ödeme girin.", { code: "refund-side", field: "refundOf" });
     }
+    if (target.planned) {
+      if (keep) return id;
+      throw new HttpError(409, PLANNED_RETURN_TEXT, { code: "refund-planned", field: "refundOf" });
+    }
     if (!target.valid) {
       if (keep) return id;
       throw new HttpError(409, target.type === "invoice" ? "Yalnız kaydedilmiş iade faturası geri ödenir (taslak ya da iptal edilmiş iade seçilemez)." : "Bu stok iadesi cariye yazılmadı (para iade anında ödendi ya da yalnız miktar girildi); geri ödenecek alacağı yok.", { code: "refund-invalid", field: "refundOf" });
@@ -839,7 +849,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     ];
     return rows
       .map(row => refundTargetOf(accountId, row.id))
-      .filter(Boolean)
+      .filter(target => target && !target.planned)
       .map(target => {
         const leftMinor = Math.max(0, Math.round(target.amount * 100) - refundedMinor(target));
         return { id: target.id, type: target.type, refundKind: target.refundKind, date: target.date, amount: roundMoney(target.amount), left: roundMoney(leftMinor / 100), label: refundLabelOf(target, false) };

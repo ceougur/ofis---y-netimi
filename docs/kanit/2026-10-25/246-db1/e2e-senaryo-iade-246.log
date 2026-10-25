@@ -13,22 +13,22 @@
   ✓ İade Yolu klavyeyle “Açık Hesap (tedarikçiye borcumuzdan düş)”
   ✓ Tab → Tedarikçi Carisi seçicisi
   ✓ Enter ile tedarikçi seçildi
-  ✓ veri tabanı: {"id":"smove-4bdef842-924b-4474-aab2-9f4078b9d6fe","kind":"out","reason":"preturn","pay":"account","qty":2,"amount":200,"accountId":"account-3c4fb11e-1442-4bbf-8cb4-88842eda7f4d","note":"kusurlu parti"}
+  ✓ veri tabanı: {"id":"smove-1d4b4efd-09d7-4f12-8e1b-b5652e9b7fa2","kind":"out","reason":"preturn","pay":"account","qty":2,"amount":200,"accountId":"account-9880f1b1-66da-45c6-9cd7-a750169209f0","note":"kusurlu parti"}
   ✓ tedarikçide Borç satırı: {"kind":"debt","amount":200,"note":"Alış iadesi: Cam Panel E246 2 Adet × 100,00 TL · kusurlu parti"}
   ✓ stok 2 azaldı
   ✓ alış faturası P: 500 → 300 açık (bağsız ödeme, en eski)
   ✓ ürün kartının hareketlerinde “Tedarikçiye İade”
 
 ■ S2 Tedarikçi kartı → Tahsilat → Geri Ödenen İade
-  ✓ Kapatılacak Fatura seçenekleri: [["","Otomatik (En Eski Açık Fatura)"],["smove-4bdef842-924b-4474-aab2-9f4078b9d6fe","İade Geri Ödemesi · Alış İadesi (Faturasız) · Cam Panel E246 · 25.10.2026 · ₺200,00 · kalan ₺200,00"]]
-  ✓ veri tabanı: {"kind":"in","amount":200,"refundOf":"smove-4bdef842-924b-4474-aab2-9f4078b9d6fe","invoiceId":""}
+  ✓ Kapatılacak Fatura seçenekleri: [["","Otomatik (En Eski Açık Fatura)"],["smove-1d4b4efd-09d7-4f12-8e1b-b5652e9b7fa2","İade Geri Ödemesi · Alış İadesi (Faturasız) · Cam Panel E246 · 25.10.2026 · ₺200,00 · kalan ₺200,00"]]
+  ✓ veri tabanı: {"kind":"in","amount":200,"refundOf":"smove-1d4b4efd-09d7-4f12-8e1b-b5652e9b7fa2","invoiceId":""}
   ✓ iade geri ödendi: P 500 açık
 
 ■ S3 Müşteri kartı → Ödeme → Geri Ödenen İade (DB1)
-  ✓ müşteriye Ödeme'de Kapatılacak Fatura: Otomatik + iade (["","smove-a7d514f9-61c9-411e-ae79-c7b0b079274c"])
+  ✓ müşteriye Ödeme'de Kapatılacak Fatura: Otomatik + iade (["","smove-18ac5f5b-a0cd-42fb-a5f7-a1d36e52cbb4"])
   ✓ Tab ile Kapatılacak Fatura
   ✓ Kapatılacak Fatura klavyeyle: İade Geri Ödemesi (faturasız Satış İadesi)
-  ✓ veri tabanı: {"kind":"out","amount":300,"refundOf":"smove-a7d514f9-61c9-411e-ae79-c7b0b079274c","invoiceId":""}
+  ✓ veri tabanı: {"kind":"out","amount":300,"refundOf":"smove-18ac5f5b-a0cd-42fb-a5f7-a1d36e52cbb4","invoiceId":""}
   ✓ B 500 açık (DB1 öncesi 200)
   ✓ hareketlerde “İadeye Bağlı” etiketi
   ✓ takvim / zil: [["account",300],["invoice",500]]

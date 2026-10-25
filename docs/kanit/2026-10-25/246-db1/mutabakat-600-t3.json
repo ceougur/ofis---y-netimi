@@ -1,16 +1,16 @@
 {
   "ad": "246-db1/mutabakat-600-t3",
   "komut": "node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs --islem 600 --tohum 3 --tohumlar 1",
-  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "commit": "5fa544cc740440f425668c8999b460fc36067d19",
   "dal": "is/db1",
   "kirli": 15,
-  "izlenmeyen": 5,
+  "izlenmeyen": 9,
   "platform": "linux 6.18.44-fc-v153 x64",
   "node": "v22.22.0",
   "cpu": 4,
   "bellek_gb": 16,
-  "basladi": "2026-10-25T11:31:06.253Z",
-  "sure_sn": 78.6,
+  "basladi": "2026-10-25T13:22:47.603Z",
+  "sure_sn": 70.3,
   "cikis_kodu": 0,
   "sinyal": null,
   "zaman_asimi": false,
@@ -27,6 +27,6 @@
   "basarisiz_testler": [],
   "ham_cikti": "docs/kanit/2026-10-25/246-db1/mutabakat-600-t3.log",
   "klasor": "/home/user/wt/db1",
-  "ham_cikti_sha256": "961a7080f939ed62253d4c21c6400183261955666d47f6ed088de1c83c5b2c54",
+  "ham_cikti_sha256": "0acfd98a4736babdff8a4b3b2b4a7d341df8329f80bb89d5bf94ecde56f99ec5",
   "ham_cikti_bayt": 2291
 }
