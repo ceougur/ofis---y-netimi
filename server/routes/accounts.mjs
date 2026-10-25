@@ -526,7 +526,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // (POST bu adla yazar; Excel'den cari yükleme de) — ilk yazılan; kullanıcı açıklamasını değiştirdiyse satır cari kartındaki Borç / Alacak düzeltmesinden.
   const OPENING_NOTE = "Açılış bakiyesi";
   const OPENING_DUE_FIELDS = Object.freeze({ due: "openingDueDate", expected: "openingExpectedDate" });
-  const openingEntryOf = accountId => store.get("SELECT id, kind, date, due_date AS dueDate, expected_date AS expectedDate FROM account_entries WHERE account_id = ? AND source = '' AND kind IN ('debt', 'credit') AND note = ? ORDER BY rowid LIMIT 1", accountId, OPENING_NOTE);
+  // 2.4.6 madde 12 (K6.5 (2)): açılış satırı işaretinden (is_opening, göç v35) tanınır, açıklamasından değil — kullanıcı açıklamayı değiştirse de açılış kalır.
+  const openingEntryOf = accountId => store.get("SELECT id, kind, date, due_date AS dueDate, expected_date AS expectedDate FROM account_entries WHERE account_id = ? AND is_opening = 1 AND source = '' AND kind IN ('debt', 'credit') ORDER BY rowid LIMIT 1", accountId);
   const assertNoOpeningDue = due => {
     if (due.dueDate || due.expectedDate) throw new HttpError(400, "Vade Tarihi ve Beklenen Ödeme Tarihi açılış bakiyesiyle birlikte girilir; Açılış Bakiyesi'ni yazın ya da tarihleri silin.", { code: "opening-missing", field: due.dueDate ? OPENING_DUE_FIELDS.due : OPENING_DUE_FIELDS.expected });
   };
@@ -560,7 +561,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       const due = dueInput(body, { kind: kind || "debt", date: input.registeredOn, fields: OPENING_DUE_FIELDS, what: "açılış bakiyesinin" });
       if (!hasOpening) assertNoOpeningDue(due);
       const id = insertAccount(user, input);
-      if (hasOpening) addEntry(user, id, { kind, amount: roundMoney(Math.abs(opening)), date: input.registeredOn, note: OPENING_NOTE, ...due });
+      if (hasOpening) addEntry(user, id, { kind, amount: roundMoney(Math.abs(opening)), date: input.registeredOn, note: OPENING_NOTE, opening: true, ...due });
       audit(user, "account.created", id, { name: input.name, type: input.type });
       return detail(id, user);
     });
@@ -688,7 +689,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     store.setSetting("plans.receiptSeq", String(current + 1));
     return current + 1;
   };
-  function addEntry(user, accountId, { kind, amount, date, note, source = "", sourceId = "", method = "cash", invoiceId = "", eventId: keepEvent = "", finRef = "", pos = null, doubtfulSkip = false, dueDate = "", expectedDate = "" }) {
+  function addEntry(user, accountId, { kind, amount, date, note, source = "", sourceId = "", method = "cash", invoiceId = "", eventId: keepEvent = "", finRef = "", pos = null, doubtfulSkip = false, dueDate = "", expectedDate = "", opening = false }) {
     // Açılış bakiyesi, stoktan ve çekten gelen satırlar dahil: kapanmış döneme cari satırı yazılmaz.
     period?.assertOpen(date, "Cari hareketi");
     const id = newId("aentry");
@@ -703,10 +704,12 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     // finRef (v2.1.0 Aşama 4): banka hesabına bağlı satır (şimdilik yalnız Banka → KDV'li masrafın faturasının havale ödemesi; modül formlarındaki
     // hesap seçimi Aşama 5/7).
     store.run(
-      "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at, doubtful_skip, due_date, expected_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at, doubtful_skip, due_date, expected_date, is_opening) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       id, accountId, kind, amount, date, note || "", receiptNo, source, sourceId, way, invoiceId || "", finRef || "", eventId, user.id, now(), doubtfulSkip === true ? 1 : 0,
       // 2.4.5 madde 6: Vade Tarihi / Beklenen Ödeme Tarihi yalnız elle Borç / Alacak ve açılışta (dueInput); başka satırda boş.
       source === "" && DUE_KINDS.has(kind) ? dueDate || "" : "", source === "" && DUE_KINDS.has(kind) ? expectedDate || "" : "",
+      // 2.4.6 madde 12: Açılış Bakiyesi işareti yalnız elle Borç / Alacak satırında (Yeni Cari, Excel'den cari yükleme).
+      opening === true && source === "" && DUE_KINDS.has(kind) ? 1 : 0,
     );
     return { id, receiptNo };
   }
@@ -772,7 +775,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     return { kind, amount, date, note: limited(body.note, 300, "Açıklama"), method: methodInput(body.method), invoiceId: invoiceLink(accountId, kind, body.invoiceId, previous?.invoiceId || ""), doubtfulSkip: doubtfulSkipInput(body, kind, previous), ...dueInput(body, { kind, date, previous }) };
   };
   const entryOf = (accountId, entryId) => {
-    const entry = store.get("SELECT id, kind, amount, date, note, method, receipt_no AS receiptNo, source, source_id AS sourceId, invoice_id AS invoiceId, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt, doubtful_skip AS doubtfulSkip, due_date AS dueDate, expected_date AS expectedDate FROM account_entries WHERE account_id = ? AND id = ?", accountId, limited(entryId, 120, "Hareket"));
+    const entry = store.get("SELECT id, kind, amount, date, note, method, receipt_no AS receiptNo, source, source_id AS sourceId, invoice_id AS invoiceId, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt, doubtful_skip AS doubtfulSkip, due_date AS dueDate, expected_date AS expectedDate, is_opening AS isOpening FROM account_entries WHERE account_id = ? AND id = ?", accountId, limited(entryId, 120, "Hareket"));
     if (!entry) throw new HttpError(404, "Hareket bulunamadı. Başka biri silmiş olabilir.");
     return entry;
   };
@@ -1263,7 +1266,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         const opening = parseAmount(cell(row, col.balance));
         // 31e N1: eşik kuruşa yuvarlanmış tutarla (0,005 → 0,01 yazılır, 0,004 yazılmaz) — öbür içe alma yollarıyla aynı.
         if (Number.isFinite(opening) && roundMoney(Math.abs(opening)) > 0) {
-          addEntry(user, id, { kind: openingKind(opening, person.type, openingSide), amount: roundMoney(Math.abs(opening)), date: person.registeredOn, note: OPENING_NOTE });
+          addEntry(user, id, { kind: openingKind(opening, person.type, openingSide), amount: roundMoney(Math.abs(opening)), date: person.registeredOn, note: OPENING_NOTE, opening: true });
           report.balances += 1;
         }
         report.created += 1;
@@ -1671,6 +1674,13 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const keep = value => (realDay(text(value)) && text(value) >= String(payload.date || "") ? text(value) : "");
     return [keep(payload.dueDate), keep(payload.expectedDate)];
   };
+  // 2.4.6 madde 12: Silinenler'den dönen satırın Açılış Bakiyesi işareti — yükte isOpening varsa o (2.4.6+), yoksa (2.4.5 ve öncesinde silinen) 2.4.5'in
+  // kuralı: açıklaması "Açılış bakiyesi" olan Borç / Alacak. Carinin bu arada başka açılış satırı olduysa işaretsiz döner (cari başına bir açılış).
+  const restoredOpening = (payload, accountId) => {
+    if (!DUE_KINDS.has(payload.kind)) return 0;
+    const flagged = Object.hasOwn(payload, "isOpening") ? Number(payload.isOpening) === 1 || payload.isOpening === true : payload.note === OPENING_NOTE;
+    return flagged && !openingEntryOf(accountId) ? 1 : 0;
+  };
   function restoreEntry(user, item, payload, { force = false, banking = null } = {}) {
     if (!KIND_TEXT[payload.kind]) throw new HttpError(409, "Hareketin bilgisi eksik; geri yüklenemez.");
     const account = store.get("SELECT id, deleted_at AS deletedAt FROM accounts WHERE id = ?", payload.accountId);
@@ -1709,12 +1719,13 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         if (!store.get("SELECT 1 AS found FROM account_entries WHERE id = ?", item.ref)) {
           store.run(
             // Karar 15.10.2026: "Normal Cari Hesaba İşle" işareti (doubtful_skip) silinmeden önceki hâliyle döner.
-            "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at, updated_by, updated_at, doubtful_skip, due_date, expected_date) VALUES (?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at, updated_by, updated_at, doubtful_skip, due_date, expected_date, is_opening) VALUES (?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             item.ref, account.id, payload.kind, amount, payload.date, payload.note || "", payload.receiptNo || null, method, invoiceId, kept.ref,
             bank.eventFor("account_entries", { kind: payload.kind, source: "", date: payload.date, method, event_id: payload.eventId || "" }), payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
             payload.kind === "in" && (payload.doubtfulSkip === true || Number(payload.doubtfulSkip) === 1) ? 1 : 0,
             // 2.4.5 madde 6: Vade Tarihi / Beklenen Ödeme Tarihi silinmeden önceki hâliyle (2.4.4'te silinen satırın yükünde yok → boş).
             ...restoredDue(payload),
+            restoredOpening(payload, account.id),
           );
         }
         trash.markRestored(item.id, user);

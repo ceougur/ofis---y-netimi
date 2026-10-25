@@ -1349,7 +1349,30 @@ export const MIGRATIONS = [
       store.exec(MALIYET_SCHEMA_V34);
     },
   },
+  {
+    version: 35,
+    name: "v2.4.6 cari Açılış Bakiyesi satırının işareti (is_opening)",
+    up(store) {
+      // 2.4.6 madde 12 (2.4.5 K6.5 (2)): Açılış Bakiyesi satırı açıklamasıyla ("Açılış bakiyesi") değil kolonla tanınır (routes/accounts.mjs openingEntryOf);
+      // kullanıcı açıklamayı değiştirince de açılış kalır. Mevcut satırlar 2.4.5'in kuralıyla işaretlenir: carinin elle (source '') Borç / Alacak satırlarından
+      // açıklaması "Açılış bakiyesi" olan İLK satır (rowid). Para alanı DEĞİL: tutar, yön, tarih, bakiye, Kasa ve Ana Defter değişmez; eski sürüm (2.4.5)
+      // kolonu görmez. Cari başına en çok bir işaret.
+      store.raw("migration.v35", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'account_entries'")) return;
+        addColumn(store, "account_entries", "is_opening", "INTEGER NOT NULL DEFAULT 0");
+        store.run(
+          `UPDATE account_entries SET is_opening = 1 WHERE id IN (
+             SELECT (SELECT e.id FROM account_entries e WHERE e.account_id = a.account_id AND e.source = '' AND e.kind IN ('debt', 'credit') AND e.note = ? ORDER BY e.rowid LIMIT 1)
+             FROM (SELECT DISTINCT account_id FROM account_entries WHERE source = '' AND kind IN ('debt', 'credit') AND note = ?) a)`,
+          OPENING_ENTRY_NOTE,
+          OPENING_ENTRY_NOTE,
+        );
+      });
+    },
+  },
 ];
+// routes/accounts.mjs OPENING_NOTE ile aynı (programın açılış satırına yazdığı açıklama; v35 göçü yalnız eski satırları işaretlerken okur).
+const OPENING_ENTRY_NOTE = "Açılış bakiyesi";
 
 // 2.4.6 Maliyet Hesap Kartı: sayılar ham (REAL; yuvarlanmaz), boş = NULL. Satır tablosu zincir (ad = malzeme, birim, miktar, fiyat), gramaj (ad = parça,
 // birim = cins, giden_mt … alis_ft, elle = Giden Kğ girdisi) ve bilgi (degerler_json) kartlarınca paylaşılır. rev: iyimser eşzamanlılık sürümü.
