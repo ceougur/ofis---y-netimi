@@ -1,0 +1,32 @@
+{
+  "ad": "245-ud/kahin-cari-tohum1-30-islem120-ana-oturum",
+  "komut": "npm run test:kahin-cari -- --tohum 1-30 --islem 120",
+  "commit": "aee08941d0a020e770fbf1540d65b8233c2663ff",
+  "dal": "claude/youthful-euler-fl8ks4",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T02:12:26.019Z",
+  "sure_sn": 741.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 103850,
+    "gecen": 103850,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/245-ud/kahin-cari-tohum1-30-islem120-ana-oturum.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "77d9495613ad78b8acdeb52aa6d1f9e5035a7b3090a058693a904786580487fd",
+  "ham_cikti_bayt": 22316
+}
