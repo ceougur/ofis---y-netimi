@@ -32,6 +32,9 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
   ürünle yalnız BOŞ YAPI gelir (4 sekme düğmesi, kartlar, satır/malzeme adları, birimler, oranlar ve formül düzeni — Excel'deki gibi, FİYATSIZ/miktarsız); müşteri kendisi doldurur, biz destek
   oluruz. "Excel'den Al" YAPILMAZ (baş mimar gerekçesi: Excel'de başlık satırı yok, bloklar sabit hücre adreslerinde → içe alma ya o tek dosyanın adreslerine bağlı kırılgan kod ya da sezgi olur;
   2.4.5'te paradan kopardığımız "programın tahmini" riski). Sonuç: müşteri fiyatı ürüne gömülmez; kâhin testleri türetilmiş girdilerle Excel'in formül düzenine karşı.
+- KARAR (kullanıcı, 25.10.2026 ~08:30 UTC: "kartlar exceldeki gibi '100X100 Köşe Kabin' adıyla olacak değil mi, yanına kalem ikonu koy, isterse değiştirsin. sabit malzeme isimleri de öyle olsun"):
+  kart adları Excel'deki adlarıyla HAZIR gelir (ör. "100X100 Köşe Kabin", "100X100 Oval Kabin", "170 2S2Ç H:182" …; yazım düzeni: her sözcük büyük, ölçü/kod aynen), adın yanında ✎ → değiştirilebilir;
+  malzeme adları da Excel'deki gibi hazır (Alüminyum, Cam, Fitil, Mıknatıs, Plastik Malz., Tekerlek, Vida …) ve her birinin yanında ✎. Boş gelen yalnız sayılar (miktar, fiyat); birimler hazır ve düzenlenebilir.
 
 ### 000. 2.4.5 BAŞLANGIÇ — DEVAM NOTU (24.10.2026 ~16:30 UTC; kullanıcının sıkıştırma talimatından ÖNCE yazıldı — ÖNCE BUNU OKU)
 - DURUM: 2.4.4 YAYIMLANDI ve KAPANDI (v2.4.4 = master 5187561; PR #34; master CI #867 + Sürüm yayımla #37 yeşil; 5 dosya bayt bayt; eski güncelleyiciler "available"; site
