@@ -1,0 +1,20 @@
+ok - göç sürümleri ardışık (33, 34, 35, 36)
+ok - LATEST_VERSION = 36
+(node:21776) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok - boş veri: user_version = 36
+ok - boş veri: account_entries.is_opening var
+ok - boş veri: account_entries.refund_of var
+ok - boş veri: maliyet tabloları 6 (maliyet_adimlar, maliyet_basliklar, maliyet_hucreler, maliyet_kartlar, maliyet_satirlar, maliyet_sekmeler)
+ok - v2.4.5 açılışlı cari 200
+ok - v2.4.5 ödeme 200
+ok - v2.4.5 user_version = 33
+ok - v2.4.5 verisi: user_version = 36
+ok - v2.4.5 verisi: account_entries.is_opening var
+ok - v2.4.5 verisi: account_entries.refund_of var
+ok - v2.4.5 verisi: maliyet tabloları 6 (maliyet_adimlar, maliyet_basliklar, maliyet_hucreler, maliyet_kartlar, maliyet_satirlar, maliyet_sekmeler)
+ok - v35: v2.4.5 açılış satırı işaretli (tek)
+ok - v36: eski satırlar bağsız
+ok - bakiye aynı (1350 → 1350)
+ok - kart açılışı tanıyor
+# fail 0

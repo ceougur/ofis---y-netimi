@@ -1,0 +1,27 @@
+uyarlayıcı (uyarlayici.mjs): node /home/user/wt/aday246-1/test/bagimsiz/maliyet/uyarlayici.mjs
+kabul: /home/user/wt/aday246-1/test/bagimsiz/maliyet/kabul.json — 391 senaryo gönderiliyor
+program: destekofis-api sürüm 2.4.5 commit cf27e39a1583356bab1681762223993503260a98
+koşulmayan senaryo: 25
+  cam/100x100-oval-kabin/arayuz/canli: katman arayuz uyarlayıcıda yok
+  cam/100x100-oval-kabin/arayuz/cik-kaydetmeden: katman arayuz uyarlayıcıda yok
+  cam/100x100-oval-kabin/arayuz/cik-kaydet: katman arayuz uyarlayıcıda yok
+  cam/100x100-oval-kabin/arayuz/cik-degisiksiz: katman arayuz uyarlayıcıda yok
+  cam/100x100-oval-kabin/arayuz/ad-kaydetmeden: katman arayuz uyarlayıcıda yok
+  mika/170-2s2c-h182/arayuz/canli: katman arayuz uyarlayıcıda yok
+  mika/170-2s2c-h182/arayuz/cik-kaydetmeden: katman arayuz uyarlayıcıda yok
+  mika/170-2s2c-h182/arayuz/cik-kaydet: katman arayuz uyarlayıcıda yok
+  mika/170-2s2c-h182/arayuz/cik-degisiksiz: katman arayuz uyarlayıcıda yok
+  mika/170-2s2c-h182/arayuz/ad-kaydetmeden: katman arayuz uyarlayıcıda yok
+  mika/80-lik-yan-panel/arayuz/canli: katman arayuz uyarlayıcıda yok
+  mika/80-lik-yan-panel/arayuz/cik-kaydetmeden: katman arayuz uyarlayıcıda yok
+  mika/80-lik-yan-panel/arayuz/cik-kaydet: katman arayuz uyarlayıcıda yok
+  mika/80-lik-yan-panel/arayuz/cik-degisiksiz: katman arayuz uyarlayıcıda yok
+  mika/80-lik-yan-panel/arayuz/ad-kaydetmeden: katman arayuz uyarlayıcıda yok
+  mika/profil-agirliklari/arayuz/canli: katman arayuz uyarlayıcıda yok
+  mika/profil-agirliklari/arayuz/cik-kaydetmeden: katman arayuz uyarlayıcıda yok
+  mika/profil-agirliklari/arayuz/cik-kaydet: katman arayuz uyarlayıcıda yok
+  mika/profil-agirliklari/arayuz/cik-degisiksiz: katman arayuz uyarlayıcıda yok
+  mika/profil-agirliklari/arayuz/ad-kaydetmeden: katman arayuz uyarlayıcıda yok
+koşulan denetim: 41306, geçen: 41306, fark: 0
+BELİRSİZ — 25 senaryo koşulmadı; kâhin kabulü tamamlanmadı
+Hiçbir sonuç GEÇTİ sayılmaz (ders 4: okunamayan veri boş değildir).
