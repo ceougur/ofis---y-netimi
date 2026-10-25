@@ -1,0 +1,353 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "c8-ks8-iade-geri-odemesi",
+ "aciklama": "KS8 (2.4.6 madde 9 / DB1) + KS9 (madde 10). A: DB1 örneği aynen — fatura 500 + vadeli borç 300; faturasız stok Satış İadesi 300 en eskiden kapatır (fatura 200); iade bedeli cari 'Ödeme' 300 ile geri ödenince fatura 500 + borç 300 = 800 (bakiye). Ödeme silinince iade yine kapatır (200), geri yüklenince 500. A2: iade 500 fatura 200 + borç 300'ü kapatır; Ödeme 500 geri ödeyince borç 400 takvimde (Beklenen) ve projeksiyonda tam. B: fatura iadesi (FB2 200 tamamı) + cari Ödeme 200 → FB2 200 açık (geri ödenen iade asıl faturaya düşmez). C: aynı durum iadenin KENDİ geri ödemesiyle (geri nakit — R1 düzeni, K1 İADE KAPANIŞI) — B ile aynı sonuç. (İade belgesine BAĞLI Ödeme: c8b.) D [YAYGIN K-a]: kısmi geri ödeme 100 → yalnız geri ödenmeyen 200 kapatır (fatura 300); ikinci Ödeme 250 → 200'ü geri ödeme, 50 fazla (avans). E [YAYGIN K-b]: müşteride elle Alacak 300 (05-12, daha eski) + iade 300 + Ödeme 300 → FIFO: Ödeme Alacak'ı kapatır, iade faturayı kapatır (fatura 200, Alacak 0). S [KS9 + YAYGIN K-c]: tedarikçide alış 500 + Alacak 300; faturasız Alış İadesi (preturn) 300 alışı kapatır (200); tedarikçi iade bedelini Tahsilat 300 ile geri ödeyince alış 500 + Alacak 300 açık. S2 [KS9]: alış 400; Alış İadesi 150 + bağsız Ödeme 100 → alış 150. Kasa ve cari bakiye her adımda kâhinin defterinden.",
+ "dayanak": "KARARLAR.md §9 KS8 (BAŞ MİMAR: docs/2.4.6-IS-LISTESI.md madde 9 + docs/2.4.5-IS-LISTESI.md DB1 'geri ödeme iadeye bağlanır (R1 düzeni)', örnek 500 + 300 = 800), R1 / K1 İADE KAPANIŞI (GECMIS-KARARLAR 10.10.2026), KS9 (madde 10; KS7 simetri), KARAR GEREKİR K-a/K-b/K-c (YAYGIN)",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {
+   "id": "ca",
+   "islem": "cari_ac",
+   "ad": "A",
+   "isim": "Ayla İadeci",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "ca2",
+   "islem": "cari_ac",
+   "ad": "A2",
+   "isim": "Arda Büyükiade",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "cb",
+   "islem": "cari_ac",
+   "ad": "B",
+   "isim": "Bora Faturaiade",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "cc",
+   "islem": "cari_ac",
+   "ad": "C",
+   "isim": "Cem Kendigeri",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "cdd",
+   "islem": "cari_ac",
+   "ad": "D",
+   "isim": "Deniz Kısmi",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "ce",
+   "islem": "cari_ac",
+   "ad": "E",
+   "isim": "Ece Karışık",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "cs",
+   "islem": "cari_ac",
+   "ad": "S",
+   "isim": "Sedat Tedarik",
+   "tur": "tedarikci",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "cs2",
+   "islem": "cari_ac",
+   "ad": "S2",
+   "isim": "Selin Tedarik",
+   "tur": "tedarikci",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "fa1",
+   "islem": "fatura",
+   "ad": "FA1",
+   "cari": "A",
+   "tutar": "500",
+   "tarih": "2026-05-10"
+  },
+  {
+   "id": "fa2",
+   "islem": "fatura",
+   "ad": "FA2",
+   "cari": "A2",
+   "tutar": "200",
+   "tarih": "2026-05-10"
+  },
+  {
+   "id": "fb1",
+   "islem": "fatura",
+   "ad": "FB1",
+   "cari": "B",
+   "tutar": "500",
+   "tarih": "2026-05-10"
+  },
+  {
+   "id": "fc1",
+   "islem": "fatura",
+   "ad": "FC1",
+   "cari": "C",
+   "tutar": "500",
+   "tarih": "2026-05-10"
+  },
+  {
+   "id": "fd1",
+   "islem": "fatura",
+   "ad": "FD1",
+   "cari": "D",
+   "tutar": "500",
+   "tarih": "2026-05-10"
+  },
+  {
+   "id": "fe1",
+   "islem": "fatura",
+   "ad": "FE1",
+   "cari": "E",
+   "tutar": "500",
+   "tarih": "2026-05-10"
+  },
+  {
+   "id": "fb2",
+   "islem": "fatura",
+   "ad": "FB2",
+   "cari": "B",
+   "tutar": "200",
+   "tarih": "2026-05-12"
+  },
+  {
+   "id": "fc2",
+   "islem": "fatura",
+   "ad": "FC2",
+   "cari": "C",
+   "tutar": "200",
+   "tarih": "2026-05-12"
+  },
+  {
+   "id": "as1",
+   "islem": "fatura",
+   "ad": "AS1",
+   "cari": "S",
+   "tur": "alis",
+   "tutar": "500",
+   "tarih": "2026-05-10"
+  },
+  {
+   "id": "as2",
+   "islem": "fatura",
+   "ad": "AS2",
+   "cari": "S2",
+   "tur": "alis",
+   "tutar": "400",
+   "tarih": "2026-05-11"
+  },
+  {
+   "id": "ba1",
+   "islem": "borc",
+   "cari": "A",
+   "tutar": "300",
+   "tarih": "2026-05-20",
+   "vade": "2026-06-12"
+  },
+  {
+   "id": "ba2",
+   "islem": "borc",
+   "cari": "A2",
+   "tutar": "400",
+   "tarih": "2026-05-20",
+   "vade": "2026-06-25",
+   "beklenen": "2026-06-18"
+  },
+  {
+   "id": "bb1",
+   "islem": "borc",
+   "cari": "B",
+   "tutar": "300",
+   "tarih": "2026-05-15",
+   "vade": "2026-06-20"
+  },
+  {
+   "id": "bc1",
+   "islem": "borc",
+   "cari": "C",
+   "tutar": "300",
+   "tarih": "2026-05-15",
+   "vade": "2026-06-20"
+  },
+  {
+   "id": "bd1",
+   "islem": "borc",
+   "cari": "D",
+   "tutar": "300",
+   "tarih": "2026-05-20",
+   "vade": "2026-06-20"
+  },
+  {
+   "id": "ae1",
+   "islem": "alacak",
+   "cari": "E",
+   "tutar": "300",
+   "tarih": "2026-05-12",
+   "vade": "2026-06-14"
+  },
+  {
+   "id": "aa1",
+   "islem": "alacak",
+   "cari": "S",
+   "tutar": "300",
+   "tarih": "2026-05-20",
+   "vade": "2026-06-20"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  },
+  {
+   "id": "sa1",
+   "islem": "stok_iade",
+   "cari": "A",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "sa2",
+   "islem": "stok_iade",
+   "cari": "A2",
+   "tutar": "500",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "sd1",
+   "islem": "stok_iade",
+   "cari": "D",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "se1",
+   "islem": "stok_iade",
+   "cari": "E",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "ib2",
+   "islem": "iade",
+   "ad": "IB2",
+   "fatura": "FB2",
+   "tarih": "2026-06-02"
+  },
+  {
+   "id": "ic2",
+   "islem": "iade",
+   "ad": "IC2",
+   "fatura": "FC2",
+   "tarih": "2026-06-02",
+   "geri": "nakit"
+  },
+  {
+   "id": "ais1",
+   "islem": "alis_iade",
+   "cari": "S",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "ais2",
+   "islem": "alis_iade",
+   "cari": "S2",
+   "tutar": "150",
+   "tarih": "2026-06-02"
+  },
+  {
+   "id": "k2",
+   "islem": "kontrol"
+  },
+  {
+   "id": "oa1",
+   "islem": "odeme",
+   "cari": "A",
+   "tutar": "300",
+   "tarih": "2026-06-05"
+  },
+  {
+   "id": "oa2",
+   "islem": "odeme",
+   "cari": "A2",
+   "tutar": "500",
+   "tarih": "2026-06-05"
+  },
+  {
+   "id": "ob1",
+   "islem": "odeme",
+   "cari": "B",
+   "tutar": "200",
+   "tarih": "2026-06-06"
+  },
+  {
+   "id": "od1",
+   "islem": "odeme",
+   "cari": "D",
+   "tutar": "100",
+   "tarih": "2026-06-05"
+  },
+  {
+   "id": "oe1",
+   "islem": "odeme",
+   "cari": "E",
+   "tutar": "300",
+   "tarih": "2026-06-05"
+  },
+  {
+   "id": "ts1",
+   "islem": "tahsilat",
+   "cari": "S",
+   "tutar": "300",
+   "tarih": "2026-06-05"
+  },
+  {
+   "id": "os2",
+   "islem": "odeme",
+   "cari": "S2",
+   "tutar": "100",
+   "tarih": "2026-06-03"
+  },
+  {
+   "id": "k3",
+   "islem": "kontrol"
+  },
+  {
+   "id": "od2",
+   "islem": "odeme",
+   "cari": "D",
+   "tutar": "250",
+   "tarih": "2026-06-08"
+  },
+  {
+   "id": "k4",
+   "islem": "kontrol"
+  },
+  {
+   "id": "xa1",
+   "islem": "hareket_sil",
+   "hareket": "oa1"
+  },
+  {
+   "id": "k5",
+   "islem": "kontrol"
+  },
+  {
+   "id": "ga1",
+   "islem": "hareket_geri_yukle",
+   "hareket": "oa1"
+  },
+  {
+   "id": "k6",
+   "islem": "kontrol"
+  }
+ ]
+}
