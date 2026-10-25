@@ -1,0 +1,159 @@
+
+> destekofis@2.4.5 test:kahin-cari
+> node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --tohum 1-30 --islem 120 --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kahin-ud/cikti
+
+rastgele-ux18-1: 1533/1533 tuttu
+rastgele-s1-1: 1603/1603 tuttu
+rastgele-ux18-2: 1639/1639 tuttu
+rastgele-s1-2: 1409/1409 tuttu
+rastgele-ux18-3: 1548/1548 tuttu
+rastgele-s1-3: 2040/2040 tuttu
+rastgele-ux18-4: 1464/1464 tuttu
+rastgele-s1-4: 2166/2166 tuttu
+rastgele-ux18-5: 1494/1494 tuttu
+rastgele-s1-5: 1726/1726 tuttu
+rastgele-ux18-6: 1664/1664 tuttu
+rastgele-s1-6: 1812/1812 tuttu
+rastgele-ux18-7: 1634/1634 tuttu
+rastgele-s1-7: 2002/2002 tuttu
+rastgele-ux18-8: 1600/1600 tuttu
+rastgele-s1-8: 1569/1569 tuttu
+rastgele-ux18-9: 1576/1576 tuttu
+rastgele-s1-9: 1622/1622 tuttu
+rastgele-ux18-10: 1734/1734 tuttu
+rastgele-s1-10: 1826/1826 tuttu
+rastgele-ux18-11: 1693/1693 tuttu
+rastgele-s1-11: 2226/2226 tuttu
+rastgele-ux18-12: 1501/1501 tuttu
+rastgele-s1-12: 2187/2187 tuttu
+rastgele-ux18-13: 1501/1501 tuttu
+rastgele-s1-13: 1624/1624 tuttu
+rastgele-ux18-14: 1706/1706 tuttu
+rastgele-s1-14: 2014/2014 tuttu
+rastgele-ux18-15: 1395/1395 tuttu
+rastgele-s1-15: 2060/2060 tuttu
+rastgele-ux18-16: 1485/1485 tuttu
+rastgele-s1-16: 1865/1865 tuttu
+rastgele-ux18-17: 1549/1549 tuttu
+rastgele-s1-17: 1874/1874 tuttu
+rastgele-ux18-18: 1648/1648 tuttu
+rastgele-s1-18: 2304/2304 tuttu
+rastgele-ux18-19: 1511/1511 tuttu
+rastgele-s1-19: 2182/2182 tuttu
+rastgele-ux18-20: 1463/1463 tuttu
+rastgele-s1-20: 1811/1811 tuttu
+rastgele-ux18-21: 1591/1591 tuttu
+rastgele-s1-21: 1565/1565 tuttu
+rastgele-ux18-22: 1470/1470 tuttu
+rastgele-s1-22: 1803/1803 tuttu
+rastgele-ux18-23: 1548/1548 tuttu
+rastgele-s1-23: 1955/1955 tuttu
+rastgele-ux18-24: 1503/1503 tuttu
+rastgele-s1-24: 2086/2086 tuttu
+rastgele-ux18-25: 1550/1550 tuttu
+rastgele-s1-25: 1935/1935 tuttu
+rastgele-ux18-26: 1528/1528 tuttu
+rastgele-s1-26: 2309/2309 tuttu
+rastgele-ux18-27: 1545/1545 tuttu
+rastgele-s1-27: 1973/1973 tuttu
+rastgele-ux18-28: 1535/1535 tuttu
+rastgele-s1-28: 1618/1618 tuttu
+rastgele-ux18-29: 1542/1542 tuttu
+rastgele-s1-29: 1840/1840 tuttu
+rastgele-ux18-30: 1613/1613 tuttu
+rastgele-s1-30: 2081/2081 tuttu
+Traceback (most recent call last):
+  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 2254, in <module>
+    sys.exit(main(sys.argv))
+             ~~~~^^^^^^^^^^
+  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 2235, in main
+    kip = next((k for k in x["kipler"] if Model(senaryolar[x["dosya"]], n, k).kos()["denetimler"] != taban[(x["dosya"], k)]), None)
+  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 2235, in <genexpr>
+    kip = next((k for k in x["kipler"] if Model(senaryolar[x["dosya"]], n, k).kos()["denetimler"] != taban[(x["dosya"], k)]), None)
+                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 2193, in kos
+    sonuc = fn(a)
+  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 1378, in supheli_al
+    if kurus(a["tutar"]) > self.bakiye(a["cari"]) - acik:
+                           ~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 410, in bakiye
+    c = self.cariler[cari]
+        ~~~~~~~~~~~~^^^^^^
+KeyError: 'D'
+node:internal/errors:983
+  const err = new Error(message);
+              ^
+
+Error: Command failed: python3 -I /home/user/wt/kahin-ud/test/bagimsiz/cari/model.py - --mutasyon-tara /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kahin-ud/cikti/mutasyon-listesi.json
+Traceback (most recent call last):
+  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 2254, in <module>
+    sys.exit(main(sys.argv))
+             ~~~~^^^^^^^^^^
+  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 2235, in main
+    kip = next((k for k in x["kipler"] if Model(senaryolar[x["dosya"]], n, k).kos()["denetimler"] != taban[(x["dosya"], k)]), None)
+  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 2235, in <genexpr>
+    kip = next((k for k in x["kipler"] if Model(senaryolar[x["dosya"]], n, k).kos()["denetimler"] != taban[(x["dosya"], k)]), None)
+                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 2193, in kos
+    sonuc = fn(a)
+  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 1378, in supheli_al
+    if kurus(a["tutar"]) > self.bakiye(a["cari"]) - acik:
+                           ~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 410, in bakiye
+    c = self.cariler[cari]
+        ~~~~~~~~~~~~^^^^^^
+KeyError: 'D'
+
+    at genericNodeError (node:internal/errors:983:15)
+    at wrappedFn (node:internal/errors:537:14)
+    at checkExecSyncError (node:child_process:916:11)
+    at execFileSync (node:child_process:952:15)
+    at file:///home/user/wt/kahin-ud/test/bagimsiz/cari/kos.mjs:979:29
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  status: 1,
+  signal: null,
+  output: [
+    null,
+    '',
+    'Traceback (most recent call last):\n' +
+      '  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 2254, in <module>\n' +
+      '    sys.exit(main(sys.argv))\n' +
+      '             ~~~~^^^^^^^^^^\n' +
+      '  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 2235, in main\n' +
+      '    kip = next((k for k in x["kipler"] if Model(senaryolar[x["dosya"]], n, k).kos()["denetimler"] != taban[(x["dosya"], k)]), None)\n' +
+      '  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 2235, in <genexpr>\n' +
+      '    kip = next((k for k in x["kipler"] if Model(senaryolar[x["dosya"]], n, k).kos()["denetimler"] != taban[(x["dosya"], k)]), None)\n' +
+      '                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^\n' +
+      '  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 2193, in kos\n' +
+      '    sonuc = fn(a)\n' +
+      '  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 1378, in supheli_al\n' +
+      '    if kurus(a["tutar"]) > self.bakiye(a["cari"]) - acik:\n' +
+      '                           ~~~~~~~~~~~^^^^^^^^^^^\n' +
+      '  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 410, in bakiye\n' +
+      '    c = self.cariler[cari]\n' +
+      '        ~~~~~~~~~~~~^^^^^^\n' +
+      "KeyError: 'D'\n"
+  ],
+  pid: 9611,
+  stdout: '',
+  stderr: 'Traceback (most recent call last):\n' +
+    '  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 2254, in <module>\n' +
+    '    sys.exit(main(sys.argv))\n' +
+    '             ~~~~^^^^^^^^^^\n' +
+    '  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 2235, in main\n' +
+    '    kip = next((k for k in x["kipler"] if Model(senaryolar[x["dosya"]], n, k).kos()["denetimler"] != taban[(x["dosya"], k)]), None)\n' +
+    '  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 2235, in <genexpr>\n' +
+    '    kip = next((k for k in x["kipler"] if Model(senaryolar[x["dosya"]], n, k).kos()["denetimler"] != taban[(x["dosya"], k)]), None)\n' +
+    '                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^\n' +
+    '  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 2193, in kos\n' +
+    '    sonuc = fn(a)\n' +
+    '  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 1378, in supheli_al\n' +
+    '    if kurus(a["tutar"]) > self.bakiye(a["cari"]) - acik:\n' +
+    '                           ~~~~~~~~~~~^^^^^^^^^^^\n' +
+    '  File "/home/user/wt/kahin-ud/test/bagimsiz/cari/model.py", line 410, in bakiye\n' +
+    '    c = self.cariler[cari]\n' +
+    '        ~~~~~~~~~~~~^^^^^^\n' +
+    "KeyError: 'D'\n"
+}
+
+Node.js v22.22.0

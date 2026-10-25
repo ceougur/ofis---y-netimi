@@ -510,6 +510,17 @@ eski kuralla koşar; koşucu "GEÇERSİZ DENETİM" satırında senaryo başına 
   fatura 400 ve Alacak 300 AÇIK, bakiye −250); rastgele üretici `stok_iade`, `stok_satis_hesap` (tedarikçiye), `supheli_al` + aynı gün tamamı `degersiz` (kayıt kapanır — açık kayıt sınırı `doubtful-normal-exceeds` dışında).
   Mutantlar 114 (satış iadesi kapatmaz — D1 eski hata sınıfı), 115 (değersiz kapatmaz — D1), 116 (şüpheliye alma da kapatır), 118 (KS7.1: nedensiz stok çıkışı alış iadesi sayılır);
   117 (preturn alış iadesi kapatmaz) KS7.1 ile kaldırıldı — senaryosu yok (formda yol yok).
+- **ŞÜPHELİ KALAN** [PLAN §3.11b/2 (a)–(c), §3.11b/3; `docs/2.3.0-SUPHELI-KABUL.md` K1, K3, K7 — kod yazılmadan yazılmış kâhin belgesi (ders 40); Uzun Doğrulama #640 bulgusu, 25.10.2026]:
+  şüpheli kaydın KALANI = alınan − şüpheliden düşen alacak satırları − değersiz. Kayıt tarihinden sonra (AYNI GÜN DAHİL — "aynı günde alınan kayda o günün tahsilatı düşer") gelen
+  alacak satırı (serbest tahsilat, alınan evrak, elle Alacak, iade faturası, satış iadesi, taksit tahsilatı) önce şüpheliden düşer, en eski kayıttan; faturaya bağlı tahsilat
+  ((b) "Kapatılacak Fatura") KENDİLİĞİNDEN normal (düşmez); kayıt tarihinden ÖNCE tarihli satır düşmez (sonradan girilse de); aynı gün sırası al → değersiz → alacak satırı.
+  Değersiz Alacak Yaz tutarı ≤ girildiği andaki kalan (K7) — aşarsa ret `doubtful-writeoff-exceeds`, kalan 0 ise ret `doubtful-closed` (yalnız `code` denetlenir; etiket PLAN);
+  Şüpheli Alacağa Al tutarı ≤ cari borç bakiyesi − açık kayıtların kalanı (K1). Önceki kâhin şüpheliyi "kalan = alınan − değersiz" sayıyordu ve üretici aynı gün tahsilatı
+  olan carilerde tamamını değersiz yazdırıyordu (kâhin hatası — UD #640'ta 9 tohumda ilk fark). Üretici artık değersiz tutarını kâhinin kalanıyla sınırlar, %20 olasılıkla
+  önce bilerek aşan adım (ret), kalan 0'da adım (ret) üretir; kayıt her durumda kapanır. Senaryo `c7b-supheli-kalan` (kayıttan önce 300 düşmez; aynı gün 400 düşer → kalan
+  1.600; bağlı 500 düşmez; sonradan girilen önceki tarihli 200 düşmez; 1.700 ret aşan; 1.600 ok; 1 ret kapalı; ikinci kayıt 500 + aynı gün 600 → 100 ret kapalı).
+  Mutantlar 119 (tahsilat düşmez), 120 (önceki tarihli satır da düşer), 121 (bağlı tahsilat da düşer). DENENMEYEN: karşılık / Şüpheliden Çıkar, açık kayıtla bağlı tahsilat
+  sınırı (`doubtful-normal-exceeds` — üretici kaydı hep kapatır), taksit kartlı (c) yolu, karşılıksız dönen evrakın şüpheliye etkisi.
 - **K6.4** [BAŞ MİMAR] Düzenle verilmeyen alanı korur (kısmi PUT); Silinenler'den geri yükleme ve yedekten geri yükleme Vade / Beklenen Ödeme Tarihi'ni TAŞIR; vade değişikliği
   yevmiyeyi değiştirmez (`kontrol {mizanKarsilastir: "<önceki kontrol>"}` → `mizanEsit` true). Göç (eski satırlar boş) kara kutudan DENENMEDİ (v2.4.4 verisi gerekir — C12).
 - Senaryolar `c6-cari-vade-fifo` (elle elle hesaplanan beklenenler: k1 Kalan b1 300 / F1 800, k2 b1 0 / F1 0 / b2 300, k3 Açılış 400 / b1 500 / F1 300, k6 çekle b2 100, k7 karşılıksızla 300,
@@ -541,9 +552,11 @@ tabloTutarli, kalemTutar:<no>, deadline:<no>}`, `<k>:vadeTakip:{hareket:<ad>, ta
 | Z10 | Rastgele sıra (ders 17): fatura + elle kayıt + tahsilat + silme / geri yükleme + düzenleme karışık | rastgele-s1-<t> |
 
 ### C10 Mutasyonlar (2.4.5)
-73–118 (`model.py --mutasyonlar`; 106–108 KS4/KS5'ten, 109–113 K6.5'ten, 114–116 KS7'den, 118 KS7.1'den; 79 ve 117 yok — karşılıksızın kapatması eski mutant 7'de, artık elle kayda da uygulanır). Her biri en az bir senaryoda kâhin çıktısını değiştirir
+73–121 (`model.py --mutasyonlar`; 106–108 KS4/KS5'ten, 109–113 K6.5'ten, 114–116 KS7'den, 118 KS7.1'den, 119–121 şüpheli kalandan; 79 ve 117 yok — karşılıksızın kapatması eski mutant 7'de, artık elle kayda da uygulanır). Her biri en az bir senaryoda kâhin çıktısını değiştirir
 (model tek başına doğrulandı: yakalanmayan 0). Koşucu mutantları tek Python sürecinde tarar (`model.py - --mutasyon-tara <liste>`; her mutantta ilk 3 yakalayan) —
-eski "her mutant × her dosya ayrı süreç" yolu ~20 dk sürüyordu, yeni yol ~10 sn.
+eski "her mutant × her dosya ayrı süreç" yolu ~20 dk sürüyordu, yeni yol ~10 sn. Elle senaryolar önce taranır (çoğu mutantı onlar yakalar; 25.10.2026). Mutant modeli
+çökertirse (ör. açılışı reddedilen cariye şüpheli kaydı) o dosyada YAKALANDI sayılır — davranış zaten değişmiştir; mutasyonsuz taban koşusu sarmalın dışındadır, çökerse
+koşu durur (25.10.2026: Uzun Doğrulama #640 koşusunda tarama böyle çöktü; `supheli_al` artık cari yoksa ret verir, kanıt `docs/kanit/2026-10-25/245-kahin-ud/`).
 
 ### C11 SORU → KARARA BAĞLANDI (BAŞ MİMAR KARARI KS1–KS6, 24.10.2026 ~17:30 UTC, `docs/2.4.5-IS-LISTESI.md` "KÂHİN SORULARI"; kâhine işlendi)
 KS1 → C1.2 (her yaratan / değiştiren uç 410; `PUT /cases/:key/payments` 405/404 kalabilir) · KS2 → S1 (müşteride elle Alacak harfiyen, etiket YORUM → BAŞ MİMAR) · KS3 → K6.2
