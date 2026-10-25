@@ -1,0 +1,32 @@
+{
+  "ad": "246-maliyet-cekirdek/tam-npm-test",
+  "komut": "npm test",
+  "commit": "c5515688f5385d1cf72c06de4b0ee174747262bd",
+  "dal": "is/maliyet-cekirdek",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T10:34:07.734Z",
+  "sure_sn": 1997.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3558,
+    "gecen": 3558,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-maliyet-cekirdek/tam-npm-test.log.gz",
+  "klasor": "/home/user/wt/maliyet-cekirdek",
+  "ham_cikti_sha256": "f977e66f6c08b587a3b69d3909c8c5d5f4813cc100d6219a2f0b8fb43e5e0bdc",
+  "ham_cikti_bayt": 1281555
+}
