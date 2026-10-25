@@ -997,6 +997,13 @@ for (const dosya of dosyalar) {
       const c = anahtarCarisi(senaryo, f.anahtar);
       f.sinif246 = degisen.has(f.anahtar) ? "2.4.6 kararıyla değişen" : c && ks9.has(c) ? "KS9 madde 10 yolu" : "SINIF DIŞI";
     }
+    // Genel sayaçlar (takvimdeki / projeksiyondaki cari kalemi sayısı) carisiz anahtardır: aynı kontrolde o listenin kalem farkı varsa onun sınıfını alır (türev sayım)
+    for (const f of tumFarklar.filter(x => x.sinif246 === "SINIF DIŞI")) {
+      const [k, ...r] = f.anahtar.split(":");
+      const liste = { "takvim:cariKalemSayisi": ":takvim:hareket:", "projeksiyon:cari": ":projeksiyon:hareket:" }[r.join(":")];
+      const kaynak = liste && tumFarklar.find(x => x !== f && x.anahtar.startsWith(`${k}:`) && x.anahtar.includes(liste) && x.sinif246 !== "SINIF DIŞI");
+      if (kaynak) f.sinif246 = kaynak.sinif246;
+    }
   }
   // /3: BILINEN kaydının `kural` alanı varsa yalnız o kural setinde uygulanır (2.4.5'te konusu kalkan Takvim / Açılış Bakiyesi kayıtları "2.4.4")
   const { kalan: farklar, bilinen } = bilinenAyir(senaryo.ad, beklenen.denetimler, tumFarklar, BILINEN.kayitlar.filter(e => !e.kural || e.kural === KURAL));
