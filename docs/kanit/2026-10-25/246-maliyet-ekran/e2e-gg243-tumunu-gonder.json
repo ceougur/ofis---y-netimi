@@ -1,0 +1,32 @@
+{
+  "ad": "246-maliyet-ekran/e2e-gg243-tumunu-gonder",
+  "komut": "npm run test:gg243-tumunu-gonder",
+  "commit": "9ac6abd74d29b4fb30115b6c567472fffd30db7b",
+  "dal": "is/maliyet-ekran",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T13:10:15.131Z",
+  "sure_sn": 57.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 17,
+    "gecen": 17,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-maliyet-ekran/e2e-gg243-tumunu-gonder.log",
+  "klasor": "/home/user/wt/maliyet-ekran",
+  "ham_cikti_sha256": "1a82f0e3c716c35cd24fdb36b83d4cff03a10dd10ae75d9ee99ff66913f34259",
+  "ham_cikti_bayt": 1776
+}

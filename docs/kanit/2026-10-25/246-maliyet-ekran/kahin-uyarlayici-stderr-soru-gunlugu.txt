@@ -1,0 +1,17 @@
+(node:17192) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[uyarlayici] Çık sorusu: senaryo cam/100x100-oval-kabin/arayuz/cik-kaydetmeden → Kaydetmeden Kapat
+[uyarlayici] Çık sorusu: senaryo cam/100x100-oval-kabin/arayuz/cik-kaydet → Kaydet
+[uyarlayici] Çık sorusu: senaryo cam/100x100-oval-kabin/arayuz/ad-kaydetmeden → Kaydetmeden Kapat
+[uyarlayici] Çık sorusu: senaryo mika/170-2s2c-h182/arayuz/cik-kaydetmeden → Kaydetmeden Kapat
+[uyarlayici] Çık sorusu: senaryo mika/170-2s2c-h182/arayuz/cik-kaydet → Kaydet
+[uyarlayici] Çık sorusu: senaryo mika/170-2s2c-h182/arayuz/ad-kaydetmeden → Kaydetmeden Kapat
+[uyarlayici] Çık sorusu: senaryo mika/80-lik-yan-panel/arayuz/cik-kaydetmeden → Kaydetmeden Kapat
+[uyarlayici] Çık sorusu: senaryo mika/80-lik-yan-panel/arayuz/cik-kaydet → Kaydet
+[uyarlayici] Çık sorusu: senaryo mika/80-lik-yan-panel/arayuz/ad-kaydetmeden → Kaydetmeden Kapat
+[uyarlayici] Çık sorusu: senaryo mika/profil-agirliklari/arayuz/cik-kaydetmeden → Kaydetmeden Kapat
+[uyarlayici] Çık sorusu: senaryo mika/profil-agirliklari/arayuz/cik-kaydet → Kaydet
+[uyarlayici] Çık sorusu: senaryo mika/profil-agirliklari/arayuz/ad-kaydetmeden → Kaydetmeden Kapat
+[uyarlayici] Çık sorusu: senaryo liste-1/seri-2-sabit-2-acilir/arayuz/cik-kaydetmeden → Kaydetmeden Kapat
+[uyarlayici] Çık sorusu: senaryo liste-1/seri-2-sabit-2-acilir/arayuz/cik-kaydet → Kaydet
+[uyarlayici] Çık sorusu: senaryo liste-1/seri-2-sabit-2-acilir/arayuz/ad-kaydetmeden → Kaydetmeden Kapat

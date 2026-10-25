@@ -1,0 +1,32 @@
+{
+  "ad": "246-maliyet-ekran/e2e-gg243-arka-plan-yazma",
+  "komut": "npm run test:gg243-arka-plan-yazma",
+  "commit": "9ac6abd74d29b4fb30115b6c567472fffd30db7b",
+  "dal": "is/maliyet-ekran",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T13:09:18.992Z",
+  "sure_sn": 30.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 13,
+    "gecen": 13,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-maliyet-ekran/e2e-gg243-arka-plan-yazma.log",
+  "klasor": "/home/user/wt/maliyet-ekran",
+  "ham_cikti_sha256": "925d919f066b5a1c4b970436114293065650a9a82e765e2ce0628e9eb6a33b66",
+  "ham_cikti_bayt": 1125
+}

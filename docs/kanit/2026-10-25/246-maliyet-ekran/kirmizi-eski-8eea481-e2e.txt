@@ -1,0 +1,54 @@
+
+■ M1 sektör Genel: Stok penceresinde Maliyet Hesap Kartı girişi yok
+  ✓ API durum acik=false (sektör genel)
+  ✓ Stok penceresinde giriş YOK
+  ✓ API 403 (maliyet-sector)
+
+■ M2 Ayarlar → Sektörü Değiştir → Duşakabin Üretimi → giriş var
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.
+
+■ M3 kart açılır: 4 sekme (sunucu sırası), kartlar, ipucu satırı yok, yazım düzeni
+  ✗ adım yarıda kaldı: page.click: Timeout 15000ms exceeded.
+
+■ M4 miktar / fiyat insan hızında + Tab → canlı hesap; veri tabanına yazılmadı
+  ✗ adım yarıda kaldı: page.click: Timeout 15000ms exceeded.
+
+■ M5 ✎ kart adı ve ✎ malzeme adı
+  ✗ adım yarıda kaldı: page.click: Timeout 15000ms exceeded.
+
+■ M6 satır ekle (ad, birim, miktar, fiyat) ve satır sil
+  ✗ adım yarıda kaldı: page.click: Timeout 15000ms exceeded.
+
+■ M7 Kaydet → veri tabanında aynı değerler
+  ✗ adım yarıda kaldı: page.click: Timeout 15000ms exceeded.
+
+■ M8 değişiklik yokken Esc → soru YOK; kapat / aç → değerler aynı
+  ✓ Esc sorusuz kapattı
+  ✗ adım yarıda kaldı: page.click: Timeout 15000ms exceeded.
+
+■ M9 değiştir + Çık → soru → Kaydetmeden Kapat / Kaydet; geri alınca soru yok
+  ✗ adım yarıda kaldı: page.click: Timeout 15000ms exceeded.
+
+■ M10 bölen 0 → ileti, alan eski değere döner, yazılmaz
+  ✗ adım yarıda kaldı: page.click: Timeout 15000ms exceeded.
+
+■ M11 iki kişi aynı anda → 409; ileti kartın adını söyler; taslak durur; Güncel Hâli Yükle
+  ✗ adım yarıda kaldı: page.click: Timeout 15000ms exceeded.
+
+■ M12 yetkisiz (Personel) → giriş yok, API 403; görüntüleme verilince salt okunur
+  ✗ Personel: API 403 (maliyet.view yok)
+  ✓ Personel: Stok penceresinde giriş YOK
+  ✗ yönetici kişiye “Maliyet Hesap Kartı Görüntüleme” verdi (400)
+  ✗ adım yarıda kaldı: page.click: Timeout 15000ms exceeded.
+
+■ M13 dar pencere (1366 px) + büyük tutar → kart taşmaz
+  ✗ adım yarıda kaldı: page.click: Timeout 15000ms exceeded.
+
+■ M14 başka sektöre geç → giriş kaybolur, veri durur; geri dönünce aynen
+  ✗ adım yarıda kaldı: kayıtlı: 403 {"ok":false,"error":"Maliyet Hesap Kartı yalnız sektörü Duşakabin Üretimi olan şirkette açılır.","code":"maliyet-sector","sektor":"genel"}
+  ✓ sayfa hatası yok
+
+Ekran görüntüleri: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-ekran/kirmizi-e2e-ekran
+Soru günlüğü: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-ekran/kirmizi-e2e-ekran/esc-kapat-gunluk.jsonl
+
+6 geçti, 15 kaldı

@@ -1,0 +1,32 @@
+{
+  "ad": "246-maliyet-ekran/kahin-maliyet-api-arayuz",
+  "komut": "sh -c python3 -I test/bagimsiz/maliyet/kos.py --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-ekran/kahin-rapor.json -- sh -c 'node test/bagimsiz/maliyet/uyarlayici.mjs 2>/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-ekran/kahin-uyarlayici-stderr.txt'",
+  "commit": "ce0e2e6ac0c9093e89b9b395075f073bc0d1042c",
+  "dal": "is/maliyet-ekran",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T12:03:52.459Z",
+  "sure_sn": 491.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 43758,
+    "gecen": 43758,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-maliyet-ekran/kahin-maliyet-api-arayuz.log",
+  "klasor": "/home/user/wt/maliyet-ekran",
+  "ham_cikti_sha256": "1ff623a858d9b1642962c1cb93ac78e19997109278e944d8edd864ac52d27bc7",
+  "ham_cikti_bayt": 417
+}

@@ -1,0 +1,4 @@
+uyarlayıcı (komut satırı): sh -c node test/bagimsiz/maliyet/uyarlayici.mjs 2>/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-ekran/kahin-uyarlayici-stderr.txt
+kabul: /home/user/wt/maliyet-ekran/test/bagimsiz/maliyet/kabul.json — 391 senaryo gönderiliyor
+program: destekofis-api-ekran sürüm 2.4.5 commit ce0e2e6ac0c9093e89b9b395075f073bc0d1042c
+43758/43758 denetim geçti

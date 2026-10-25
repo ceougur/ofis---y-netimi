@@ -2,7 +2,8 @@
 // "sadece duşakabin sektörü seçilince çıksın"); Pro kilidi YOK. Sektör şirketin kendi veri dosyasındadır (lib/profile.mjs insight.sector; her şirket ayrı).
 // Sektör dışında uçlar 403 "maliyet-sector" verir; veri SİLİNMEZ, sektör yeniden seçilince aynen döner.
 //
-// Yetki: görüntüleme stock.view, Kaydet stock.manage (ürün kartı / fiyat yönetimiyle aynı). Hiçbir para / stok / cari / kasa / fatura / defter tablosuna
+// Yetki (kullanıcı kararı 25.10.2026, Personel Özlük düzeni): görüntüleme maliyet.view, Kaydet maliyet.manage (görüntülemeyle birlikte); varsayılan YALNIZ
+// yönetici, kişiye ya da özel role verilir. Yetkisiz kullanıcıda bütün uçlar (durum dahil) 403; Stok penceresindeki giriş görünmez. Hiçbir para / stok / cari / kasa / fatura / defter tablosuna
 // dokunmaz (lib/maliyet/depo.mjs; test/maliyet-bagsizlik.test.mjs).
 //
 // Uçlar:
@@ -25,7 +26,7 @@ export function registerMaliyetRoutes(router, { auth, store, audit, events, acce
     const current = profile.profile().sector;
     return { id: current.id, ad: current.name, acik: Boolean(sectorById(current.id)?.modules?.maliyet) };
   };
-  const canManage = user => (user.perms instanceof Set ? user.perms.has("stock.manage") : Boolean(access?.can(user, "stock.manage")));
+  const canManage = user => (user.perms instanceof Set ? user.perms.has("maliyet.manage") : Boolean(access?.can(user, "maliyet.manage")));
   const acikOlmali = () => {
     const current = sektor();
     if (!current.acik) throw new HttpError(403, "Maliyet Hesap Kartı yalnız sektörü Duşakabin Üretimi olan şirkette açılır.", { code: "maliyet-sector", sektor: current.id });
@@ -33,19 +34,19 @@ export function registerMaliyetRoutes(router, { auth, store, audit, events, acce
     depo.kur();
   };
   const viewer = req => {
-    const user = auth.requirePermission(req, "stock.view");
+    const user = auth.requirePermission(req, "maliyet.view");
     acikOlmali();
     return user;
   };
   const editor = req => {
-    const user = auth.requirePermission(req, "stock.manage");
-    auth.requirePermission(req, "stock.view");
+    const user = auth.requirePermission(req, "maliyet.manage");
+    auth.requirePermission(req, "maliyet.view");
     acikOlmali();
     return user;
   };
 
   router.get(`${BASE}/durum`, async ({ req, res }) => {
-    const user = auth.requirePermission(req, "stock.view");
+    const user = auth.requirePermission(req, "maliyet.view");
     const current = sektor();
     ok(res, { acik: current.acik, sektor: { id: current.id, ad: current.ad }, canManage: canManage(user) });
   });
