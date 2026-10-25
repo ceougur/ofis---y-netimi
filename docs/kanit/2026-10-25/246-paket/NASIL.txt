@@ -1,0 +1,29 @@
+DestekOfis 2.4.6 — imzalı paket ve teslim dosyaları kanıtı (25.10.2026, paket ajanı)
+
+Paketlenen ağaç: 8e4793e (dal claude/youthful-euler-fl8ks4; 657efe2'den farkı yalnız docs/2.4.6-IS-LISTESI.md — pakete girmez).
+CI: PR CI #883 657efe2 YEŞİL 7/7 (ci-657efe2.out); 8e4793e yalnız belge → hüküm 657efe2'den (ci-8e4793e.out). Kod CI'si 151a716 #882 YEŞİL.
+master d31b486 (PR #36) ağacı 657efe2 ile aynı (ana oturum bildirdi).
+
+1) Kılavuz PDF (ders 42): client/kilavuz PDF'i 2.4.6 (41 sayfa, sha256 996fb081…). kilavuz-pdf-surum 4/4, pdf-denetle 39/39 (53401d5'te koşuldu;
+   PDF ve denetlenen dosyalar 8e4793e'de aynı). docs/kilavuz/*.pdf (.gitignore) yerelde 2.4.5'ten kalmıştı → client kopyası oraya kopyalandı, sonra denetlendi.
+2) Güncelleme paketi: node tools/release.mjs --anahtar /root/.claude/uploads/456ebc12-8183-520e-989e-af270fef8a58/80fa74b5-destekofis-imza-anahtari-GIZLI.pem
+   (anahtar kopyalanmadı, içeriği hiçbir dosyada yok). Üç kez koşuldu (53401d5 → 657efe2 → 8e4793e, HEAD ana oturumca ilerletildi);
+   zip üçünde de aynı 4246d701… (272 dosya, 7.346.569 B); bildirge her koşuda releasedAt yüzünden farklı — TESLİM EDİLEN: release-8e4793e.log,
+   destekofis-guncelleme.json sha256 7d917137….
+   İmza: imza-dogrula.mjs programın kendi verifyEnvelope + TRUSTED_UPDATE_KEYS ile → ok, anahtar destekofis-2026-1, sürüm 2.4.6; zip özeti/boyutu
+   bildirgeyle aynı; assessManifest 2.4.5/2.4.4/2.4.3/2.1.0 ok, 2.4.6 NOT_NEWER; payload tahrifi ve imza baytı bozulması reddedildi.
+3) Kurulum: npm run build:windows (657efe2 ağacında; uygulama dosyaları 8e4793e ile aynı) → DestekOfis-Kurulum-2.4.6.exe 37.279.810 B
+   sha256 c1f9f9bc…; windres var, "simgesiz" uyarısı yok; başlatıcı DestekOfis.exe kaynak dizini: ICON 9, GROUP_ICON 1, VERSION 1, MANIFEST 1.
+   30 MB üstü → split -n 2: parca0 + parca1 (her biri 18.639.905 B); cat parca0 parca1 | sha256sum = c1f9f9bc… (A-SHA256SUMS.txt).
+4) BIRLESTIR.bat (CRLF, UTF-8; 2.4.5 dosyası örnek; ek olarak klasördeki .sha256 dosyasının özeti beklenenle aynı değilse durur).
+   Wine 9.0 (32 bit önek) cmd /c ile beş durum: (1) Wine'ın kendi certutil'i -hashfile'ı uygulamıyor → "Özet hesaplanamadı" dalı, birleşen dosya
+   Linux'ta doğru özet; (2) gerçek SHA-256 hesaplayan certutil taklidi (certutil-taklit-main.go.txt; YALNIZ sınama, A'ya girmez) → "TAMAM: Özet eşleşti",
+   Bulunan = Beklenen c1f9f9bc…; (3) parca1'de 1 bayt bozuk → "HATA: Özet TUTMUYOR"; (4) parca1 yok → HATA; (5) yanlış .sha256 → HATA.
+   Wine konsolu Türkçe harfleri bozuk gösteriyor (Wine konsol kod sayfası; 2.4.5'teki aynı düzen gerçek Windows'ta kullanıcıda çalıştı).
+5) Güncelleyici: guncelleyici-denetle.mjs — eski sürümlerin GERÇEK updater.mjs'i (git worktree: v2.4.5 d0fd8b0, v2.4.4 5187561) yerel sahte yayın
+   sunucusuna karşı (GitHub API düzeni + API 403 iken latest/download yedek yolu); HUKUK_LICENSE_URL=http://127.0.0.1:9; gerçek GitHub'a istek YOK.
+   Sonuç (guncelleyici-246.out): 2.4.5 ve 2.4.4 her iki yolda available 2.4.6, anahtar destekofis-2026-1, paket indirildi + özet doğrulandı;
+   2.4.6 kendisi up-to-date. Diş (guncelleyici-246-tahrif.out): tahrifli bildirge → error (API yolunda "imzası doğrulanamadı"; yedek yolda
+   ekranda birincil API hatası "istek sınırı" yazılıyor, güncelleme yine reddediliyor); zip'te 1 bayt → HASH_MISMATCH, betik çıkış 1.
+DENENMEYEN: kurulumun Wine'da sessiz kurulumu/açılışı/kaldırılması — kurulum x64 (ArchitecturesAllowed=x64compatible), bu kapsayıcıda yalnız wine32
+   var; 2.4.5'te de yapılmamıştı. Gerçek Windows kurulum/servis/kaldırma testi windows.yml (#57, #58 bu kodda yeşil) ve etiketten sonra release.yml'de.

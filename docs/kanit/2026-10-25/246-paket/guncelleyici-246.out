@@ -1,0 +1,23 @@
+[api] kurulu 2.4.5 (kod wt-v2.4.5) → available 2.4.6 anahtar destekofis-2026-1 · indirildi + özet doğrulandı (7346569 B) · beklenen available TAMAM
+[api403] kurulu 2.4.5 (kod wt-v2.4.5) → available 2.4.6 (yedek yol) anahtar destekofis-2026-1 · indirildi + özet doğrulandı (7346569 B) · beklenen available TAMAM
+[api] kurulu 2.4.4 (kod wt-v2.4.4) → available 2.4.6 anahtar destekofis-2026-1 · indirildi + özet doğrulandı (7346569 B) · beklenen available TAMAM
+[api403] kurulu 2.4.4 (kod wt-v2.4.4) → available 2.4.6 (yedek yol) anahtar destekofis-2026-1 · indirildi + özet doğrulandı (7346569 B) · beklenen available TAMAM
+[api] kurulu 2.4.6 (kod ofis---y-netimi) → up-to-date (en yeni 2.4.6) · beklenen up-to-date TAMAM
+[api403] kurulu 2.4.6 (kod ofis---y-netimi) → up-to-date (en yeni 2.4.6) · beklenen up-to-date TAMAM
+sunucuya gelen istekler:
+  api GET /api/repos/ceougur/ofis---y-netimi/releases
+  api GET /dl/destekofis-guncelleme.json
+  api GET /dl/destekofis-guncelleme-2.4.6.zip
+  api403 GET /api/repos/ceougur/ofis---y-netimi/releases
+  api403 GET /web/ceougur/ofis---y-netimi/releases/latest/download/destekofis-guncelleme.json
+  api403 GET /web/ceougur/ofis---y-netimi/releases/latest/download/destekofis-guncelleme-2.4.6.zip
+  api GET /api/repos/ceougur/ofis---y-netimi/releases
+  api GET /dl/destekofis-guncelleme.json
+  api GET /dl/destekofis-guncelleme-2.4.6.zip
+  api403 GET /api/repos/ceougur/ofis---y-netimi/releases
+  api403 GET /web/ceougur/ofis---y-netimi/releases/latest/download/destekofis-guncelleme.json
+  api403 GET /web/ceougur/ofis---y-netimi/releases/latest/download/destekofis-guncelleme-2.4.6.zip
+  api GET /api/repos/ceougur/ofis---y-netimi/releases
+  api403 GET /api/repos/ceougur/ofis---y-netimi/releases
+  api403 GET /web/ceougur/ofis---y-netimi/releases/latest/download/destekofis-guncelleme.json
+SONUÇ: hepsi beklendiği gibi

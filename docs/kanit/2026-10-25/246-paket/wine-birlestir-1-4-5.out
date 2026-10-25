@@ -1,0 +1,24 @@
+=== 1-gercek-wine-certutil
+DestekOfis 2.4.6 - kurulum dosyas- par+alardan birle+tiriliyor...
+
+Birle+tirildi: DestekOfis-Kurulum.exe
+SHA-256 +zeti denetleniyor...
+HATA: +zet hesaplanamad- (certutil +al-+mad-). Dosyay- kullanmadan +nce +zeti elle denetleyin:
+  certutil -hashfile "DestekOfis-Kurulum.exe" SHA256
+Beklenen: c1f9f9bcb38a73d173b01cf13833b586766d5651937e637e8b5ba2df70da8c51
+
+Press any key to continue... [linux] birlesen: c1f9f9bcb38a73d173b01cf13833b586766d5651937e637e8b5ba2df70da8c51  -
+=== 4-eksik-parca
+DestekOfis 2.4.6 - kurulum dosyas- par+alardan birle+tiriliyor...
+
+HATA: "DestekOfis-Kurulum.exe.parca1" bu klas+rde bulunamad-. -ki par+ay- ve bu dosyay- ayn- klas+re koyun.
+
+Press any key to continue... === 5-yanlis-sha256
+DestekOfis 2.4.6 - kurulum dosyas- par+alardan birle+tiriliyor...
+
+HATA: "DestekOfis-Kurulum.exe.sha256" dosyas-ndaki +zet bu birle+tirme dosyas-n-n bekledi-iyle ayn- de-il.
+  Dosyadaki: 0000000000000000000000000000000000000000000000000000000000000000
+  Beklenen : c1f9f9bcb38a73d173b01cf13833b586766d5651937e637e8b5ba2df70da8c51
+Dosyalar farkl- s++r++mlerden olabilir; hepsini ayn- yerden yeniden indirin.
+
+Press any key to continue... 
