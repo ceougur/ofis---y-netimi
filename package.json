@@ -1,6 +1,6 @@
 {
   "name": "destekofis",
-  "version": "2.4.5",
+  "version": "2.4.6",
   "private": true,
   "description": "DestekOfis — ofisler için merkezi kayıt takip ve yönetim sunucusu (server/client); yüklenen veriye göre sektöre uyum sağlar",
   "type": "module",
@@ -14,6 +14,7 @@
     "test:kahin-defter": "node --disable-warning=ExperimentalWarning test/bagimsiz/defter/kos.mjs",
     "test:kahin-cari": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs",
     "test:kahin-tutar": "node --disable-warning=ExperimentalWarning test/bagimsiz/tutar/kos.mjs --tohum 1-3 --adet 50",
+    "test:kahin-maliyet": "python3 -I test/bagimsiz/maliyet/kos.py --katman api",
     "test:e2e": "node --disable-warning=ExperimentalWarning test/e2e/run.mjs",
     "test:senaryo": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-tablodan-aktar.mjs",
     "test:senaryo-rapor": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-raporlar.mjs",

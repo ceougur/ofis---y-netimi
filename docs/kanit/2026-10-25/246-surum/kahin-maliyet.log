@@ -1,0 +1,8 @@
+
+> destekofis@2.4.6 test:kahin-maliyet
+> python3 -I test/bagimsiz/maliyet/kos.py --katman api
+
+uyarlayıcı (uyarlayici.mjs): node /home/user/wt/aday246-2/test/bagimsiz/maliyet/uyarlayici.mjs
+kabul: /home/user/wt/aday246-2/test/bagimsiz/maliyet/kabul.json — 366 senaryo gönderiliyor (katman api; 25 senaryo seçilmedi)
+program: destekofis-api-ekran sürüm 2.4.6 commit 5ec7d3907fbb5f0c26945981f67360f75b5a8868
+41306/41306 denetim geçti

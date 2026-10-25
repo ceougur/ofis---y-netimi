@@ -11,7 +11,7 @@
 <section class="cover">
   <div class="brand"><b>D</b> DestekOfis</div>
   <h1>Kısa Kullanım Kılavuzu</h1>
-  <p class="sub">Sürüm 2.4.5 · Yalnızca bilmeniz gerekenler · 10 dakikada okunur</p>
+  <p class="sub">Sürüm 2.4.6 · Yalnızca bilmeniz gerekenler · 10 dakikada okunur</p>
 </section>
 
 <p>DestekOfis, Excel'de ya da Google Sheets'te tuttuğunuz tabloyu ofisteki herkesin aynı anda kullandığı bir çalışma alanına dönüştürür. Tablonuzu yüklersiniz; program kolonlarınızı tanır, ekranları ona göre kurar. Siz kayıtlara not, tahsilat, görev ve belge eklersiniz; <b>Excel dosyanız hiç bozulmaz</b>.</p>
@@ -249,6 +249,7 @@
   <li><b>Çıktı:</b> listede PDF, Yazdır ve Excel (süzgeç varsa yalnız süzülenler); kartta cari ekstre PDF'i.</li>
   <li><b>Ayrıntılı Ekstre:</b> kartta ya da <b>Raporlar → Cari Mizanı ve Ekstresi</b>'nde carinin ekstresinde <b>Ayrıntılı Ekstre</b>'ye basın (ya da <b>Raporlar → Tüm Raporlar → Cari Ekstre</b>'de <b>Fatura Kalemlerini Göster</b>'i işaretleyin): her faturanın altında kalemleri (miktar, birim fiyat, iskonto, KDV'siz tutar, KDV, toplam; varsa tevkifat ve stopaj), her harekette belge no ve ödeme yolu, en altta <b>DÖNEM TOPLAMI</b> ve <b>GENEL TOPLAM</b>. PDF ve Excel ekrandakiyle aynıdır. Finans Raporları yetkisi gerekir.</li>
   <li><b>Vade Tarihi ve Beklenen Ödeme Tarihi:</b> <b>Borç Yaz</b>, <b>Alacak Yaz</b> ve <b>Açılış Bakiyesi</b>'nde isteğe bağlı iki tarih: <b>Vade Tarihi</b> gelince borç Tahsilat Takvimi'nde ve zilde görünür; müşteri ödeme sözü verdiyse <b>Beklenen Ödeme Tarihi</b>'ni yazın, hatırlatma o güne kayar (<i>Ödeme Sözü</i>). Tahsilat girildikçe kalan tutar küçülür; borç kapanınca hatırlatma kalkar.</li>
+  <li><b>İade bedelini geri ödeme:</b> iade ettiğiniz malın parasını müşteriye geri verirken cari kartında <b>− Ödeme</b> (tedarikçiden geri alıyorsanız <b>+ Tahsilat</b>) → <b>Kapatılacak Fatura</b>'da o iadeyi seçin. Taksitli faturanın iadesinin parası taksit kartından ya da iade belgesinden verilir.</li>
   <li><b>Açılış bakiyesi:</b> tedarikçinin bakiyesi <b>Alacaklı</b> (sizin borcunuz), müşterininki <b>Borçlu</b> yazılır. Yanlış yönde girdiğiniz harekette ✎ ile <b>Yön</b>'ü değiştirin.</li>
   <li><b>Aynı kişi iki kez açılmaz:</b> ad yazarken aynı adlı cari varsa altında gösterilir; kaydederken <b>Mevcut Cariyi Aç</b> diyebilirsiniz.</li>
   <li><b>Cariyi iki kişi aynı anda düzenlerse:</b> ikinci kaydeden uyarılır (“Bu cari siz düzenlerken başka biri tarafından değiştirildi”); formda güncel bilgi yüklenir, sizin değiştirdiğiniz alanlar yerinde kalır. Kontrol edip yeniden <b>Kaydet</b>; kimsenin değişikliği sessizce silinmez.</li>
@@ -300,6 +301,7 @@
   <li><b>Alış ve satış fiyatı:</b> ürün kartında ikisini ayrı yazın; <b>− Çıkış</b> satış fiyatıyla, <b>+ Giriş</b> alış fiyatıyla açılır.</li>
   <li><b>+ Giriş / − Çıkış:</b> miktar ve birim fiyatı yazınca tutar hesaplanır. Para <b>Nakit</b> (Kasa), <b>Havale / EFT</b> (seçtiğiniz banka hesabı), satışta <b>POS</b>, alımda <b>Kredi Kartı</b> (şirket kartınızın borcu) ile yazılır ya da <b>Açık Hesap</b> ile cariye.</li>
   <li><b>↩ Müşteri İadesi:</b> geri gelen ürün stoğa girer; parası müşteriye geri ödenir ya da borcundan düşülür. Taksitlendirilmiş satıştan iade borçtan düşülürse taksit kartı da o kadar küçülür; para geri verilirse kart değişmez.</li>
+  <li><b>↪ Tedarikçiye İade:</b> ürünü seçip <b>↪ Tedarikçiye İade</b>: ürün stoktan çıkar; parası tedarikçiden geri alınır (Nakit, Havale / EFT) ya da <b>Açık Hesap</b> ile tedarikçiye olan borcunuzdan düşer.</li>
   <li><b>Kasiyer:</b> <i>Yönetim → Yeni Rol</i>'de <b>Satış Yapma</b> yetkisi verilen kişi ürün kartına dokunmadan satış ve iade girer.</li>
   <li><b>Kritik seviye:</b> ürün bu miktara inince listede üstte kırmızı görünür, sol menüde rozet çıkar.</li>
 </ol>
@@ -364,7 +366,7 @@
 <ul>
   <li><b>Cari Mizanı ve Ekstresi:</b> tarih aralığı → <b>Raporu Getir</b>: her cari için devir, dönem borç ve alacak, bakiye. Cariye tıklayınca ekstresi açılır; fatura kalemleri için <b>Ayrıntılı Ekstre</b>. Henüz cari yoksa <b>Cari Ekranını Aç</b>.</li>
   <li><b>Vade Takip:</b> vadesi olan her açık kalem tek listede (taksit, çek/senet, ileri tarihli Kasa, tablodaki ödeme günleri). Gecikmiş, Bugün, 7 / 30 / 90 Gün; satıra tıklayınca kaynağı açılır.</li>
-  <li><b>Nakit Akış:</b> bugünkü nakit kasa ve banka bakiyesinden (<b>Bugünkü Nakit ve Banka</b>) başlayıp beklenen tahsilat ve ödemelerle ilerleyen tahmini bakiye; en düşük günü gösterir.</li>
+  <li><b>Nakit Akış:</b> bugünkü nakit kasa ve banka bakiyesinden (<b>Bugünkü Nakit ve Banka</b>) başlayıp beklenen tahsilat ve ödemelerle ilerleyen tahmini bakiye; en düşük günü gösterir. Carideki vadeli borcun kalanı Vade Tarihi (varsa Beklenen Ödeme Tarihi) gününde görünür.</li>
   <li><b>Çek / Senet:</b> portföy raporu.</li>
   <li><b>Tüm Raporlar:</b> Kasa, Banka, Cari, Taksit, Çek / Senet, Stok, Fatura ve kayıt raporları (ör. <i>Cari Listesi ve Bakiyeler</i>, <i>Tüm Cari Hareketleri</i>, <i>Cari Bazında Tahsilat</i>, <i>Taksit Kartları</i>). Soldan raporu, üstten dönemi seçin; ön izleme gelir.</li>
   <li><b>Tablo Raporları:</b> yalnız Excel tablonuza dayalı raporlar: <i>Tablodaki Kişiler</i> (kişi başına tablodaki tutar, kayda bağlı tahsilat ve yürüyen bakiye), <i>Tablodaki Vadeler</i> (gecikmiş, bugün, yaklaşan) ve <i>Tablodaki Nakit Akışı</i> (dönem başına beklenen ve gerçekleşen tahsilat; <b>Sayfa</b> ve <b>Sekme</b> ile süzülür). Tabloda hem Toplam Borç hem Kalan Borç kolonu varsa borç <b>Kalan Borç</b>'tan okunur; o satırda Kalan boşsa Toplam Borç alınır. Tablodaki tutarlar muhasebe kaydı değildir; zile, Tahsilat Takvimi'ne ve Nakit Akış'a girmez. <i>Kalan Gün</i> gibi gün ve adet kolonları tutar sayılmaz; ödeme sözü tutarı borç değil, beklenen tahsilattır (2. bölüm, Borç Sütunu Nasıl Tanınır). Aynı dosya numarası birden çok sekmede borç taşıyorsa her sekme ayrı sayılır ve rapor bunu notla söyler (aynı borçsa kopya sekmeyi kaldırın ya da <b>Sekme</b> süzgeciyle bakın); tahsilatı bir kez sayılır.</li>
@@ -434,7 +436,7 @@
 </table>
 <div class="box tip"><b class="t">Teknik Destek ve Satın Alımlar İçin</b>Telefon: <b>0536 771 50 55</b> · E-posta: <b>destekofis@proton.me</b></div>
 
-<p class="foot">DestekOfis 2.4.5 · Kısa Kullanım Kılavuzu · Ekran görüntüleri örnek verilerle hazırlanmıştır.</p>
+<p class="foot">DestekOfis 2.4.6 · Kısa Kullanım Kılavuzu · Ekran görüntüleri örnek verilerle hazırlanmıştır.</p>
 </main>
 </body>
 </html>

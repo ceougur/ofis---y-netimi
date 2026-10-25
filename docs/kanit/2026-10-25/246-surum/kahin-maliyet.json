@@ -1,0 +1,32 @@
+{
+  "ad": "246-surum/kahin-maliyet",
+  "komut": "npm run test:kahin-maliyet",
+  "commit": "5ec7d3907fbb5f0c26945981f67360f75b5a8868",
+  "dal": "aday246-2",
+  "kirli": 6,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T14:06:53.119Z",
+  "sure_sn": 137.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 41306,
+    "gecen": 41306,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-surum/kahin-maliyet.log",
+  "klasor": "/home/user/wt/aday246-2",
+  "ham_cikti_sha256": "d34040f6fc781d72e8dd71d7a8d2131ada1d7526fe0cc0c28a727f89437f07fd",
+  "ham_cikti_bayt": 441
+}
