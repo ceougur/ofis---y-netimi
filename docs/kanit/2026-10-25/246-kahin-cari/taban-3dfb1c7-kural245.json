@@ -1,0 +1,158 @@
+{
+  "ad": "246-kahin-cari/taban-3dfb1c7-kural245",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --kural 2.4.5 --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-kahin-cari/r2-245",
+  "commit": "3dfb1c7f6c9a45b9adee57f8a159acc03065fa32",
+  "dal": "is/kahin-cari-246",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T10:21:41.326Z",
+  "sure_sn": 131,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 6594,
+    "gecen": 6518,
+    "basarisiz": 76,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 76 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:fatura:AS1:acik: program 50000 · kâhin 20000 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:fatura:AS2:acik: program 40000 · kâhin 25000 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k2:takvim:fatura:AS1: program {\"amount\":50000,\"direction\":\"out\"} · kâhin {\"amount\":20000,\"direction\":\"out\"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k2:takvim:fatura:AS2: program {\"amount\":40000,\"direction\":\"out\"} · kâhin {\"amount\":25000,\"direction\":\"out\"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k3:fatura:AS1:acik: program 50000 · kâhin 20000 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k3:fatura:AS2:acik: program 30000 · kâhin 15000 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k3:takvim:fatura:AS1: program {\"amount\":50000,\"direction\":\"out\"} · kâhin {\"amount\":20000,\"direction\":\"out\"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k3:takvim:fatura:AS2: program {\"amount\":30000,\"direction\":\"out\"} · kâhin {\"amount\":15000,\"direction\":\"out\"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k4:fatura:AS1:acik: program 50000 · kâhin 20000 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k4:fatura:AS2:acik: program 30000 · kâhin 15000 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k4:takvim:fatura:AS1: program {\"amount\":50000,\"direction\":\"out\"} · kâhin {\"amount\":20000,\"direction\":\"out\"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k4:takvim:fatura:AS2: program {\"amount\":30000,\"direction\":\"out\"} · kâhin {\"amount\":15000,\"direction\":\"out\"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k5:fatura:AS1:acik: program 50000 · kâhin 20000 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k5:fatura:AS2:acik: program 30000 · kâhin 15000 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k5:takvim:fatura:AS1: program {\"amount\":50000,\"direction\":\"out\"} · kâhin {\"amount\":20000,\"direction\":\"out\"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k5:takvim:fatura:AS2: program {\"amount\":30000,\"direction\":\"out\"} · kâhin {\"amount\":15000,\"direction\":\"out\"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k6:fatura:AS1:acik: program 50000 · kâhin 20000 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k6:fatura:AS2:acik: program 30000 · kâhin 15000 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k6:takvim:fatura:AS1: program {\"amount\":50000,\"direction\":\"out\"} · kâhin {\"amount\":20000,\"direction\":\"out\"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k6:takvim:fatura:AS2: program {\"amount\":30000,\"direction\":\"out\"} · kâhin {\"amount\":15000,\"direction\":\"out\"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:hareket:acilis:S:kalan: program 78546 · kâhin 54783 (S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:hareket:acilis:S:kalan: program 78546 · kâhin 54783 (S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k3:fatura:A1:acik: program 370000 · kâhin 353681 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k3:hareket:acilis:S:kalan: program 78546 · kâhin 0 (S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k3:takvim:fatura:A1: program {\"amount\":370000,\"direction\":\"out\"} · kâhin {\"amount\":353681,\"direction\":\"out\"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık))",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-25/246-kahin-cari/taban-3dfb1c7-kural245.log",
+  "klasor": "/home/user/wt/kahin-cari-246",
+  "ham_cikti_sha256": "773726029377051beb262aa7815ff4bc30d6fbd05326e4a6677f04605b85baba",
+  "ham_cikti_bayt": 43841
+}

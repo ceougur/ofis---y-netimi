@@ -679,3 +679,16 @@ farklı çıkan denetimler ÇATAL, etiket YAYGIN; adımın durumu ÇATAL ok / re
 - Stok FORMUNDAN Alış İadesi (madde 10'un arayüzü — kâhin API düzeyinde; e2e işi); Ödeme formundaki bilgi notu; yevmiyenin 2.4.5 ↔ 2.4.6 aynılığı (kâhin bu senaryolarda mizanı
   denetlemez — öneri: c8'in `program.json` `k*:mizan:*` değerleri iki kodda karşılaştırılır); kısmi fatura iadesi (kâhinde iade tam); alış faturası iadesi (purchase_return) + tedarikçi
   geri tahsilatı; projeksiyon yetkisiz kullanıcı (K-P3); Mevcut Borç kartlı caride Ödeme / iade; şüpheli kayıtlı caride iade geri ödemesi; ciro ile geri ödeme (K-e).
+
+### C13b 2.4.5 kodunda (değişmemiş program, bu dalın tabanı) sonuç — 25.10.2026, kâhin 3dfb1c7, kanıt `docs/kanit/2026-10-25/246-kahin-cari/`
+- **2.4.6 kural seti (varsayılan çağrı: 36 senaryo + 2 tohum × 60):** 7.006 denetim, 408 fark — KS8 77, KS9 53, KS10 278; **SINIF DIŞI 0**; okuma hatası 0; 134 mutantın hepsi yakalandı.
+  Ek rastgele s1 tohum 3–10 × 120: 15.583 denetim, 939 fark (KS8 328, KS9 112, KS10 499), SINIF DIŞI 0. Kırmızının nedeni iletide (ders 38): c8 A "FA1 program 200 · kâhin 500"
+  (DB1 örneği aynen), A2 borç kalemi takvim / Vade Takip "100 · 400", B "FB2 0 · 200" (fatura iadesi + Ödeme), D kısmi; c10 / c6 projeksiyonda cari kalemi "yok"; tedarikçi T'nin
+  projeksiyon toplamı 0 (2.4.5'te borç tarafı hiç yok); S / S2 Alış İadesi alış faturasını kapatmıyor (KS9 yolu).
+- **2.4.5 kural seti (`--kural 2.4.5`):** 6.594 denetim, 76 fark — HEPSİ faturasız Alış İadesi olan tedarikçi carilerinde (73) + aynı kontrolün türev sayacı (3). Yani 2.4.5 kuralları
+  2.4.5 koduyla bu yol dışında birebir; KS7 simetrisinin (preturn) 2.4.5'te uçta karşılığı yok — madde 10 tam bu.
+- **Legacy (`--legacy`):** 183 fark — eski kâhinin (e77447a) aynı koşusuyla fark kümesi BAYT BAYT aynı (ayrık 0): 2.4.5'in bilerek kaldırdığı denetimler (B4 MM6 Kasa sütunu …).
+- **Eşdeğerlik:** yeni `model.py --kural 2.4.5` / `--legacy` = eski model, 53 senaryo × 2 kip (106/106).
+- **Gözlem (BULGU değil):** iadenin KENDİ geri ödemesi (R1, c8 C) 2.4.5'te doğru — FC2 200 açık; Ödeme yoluyla (B) 2.4.6'da aynı sonuç beklenir. E (elle Alacak + iade + Ödeme) 2.4.5'te
+  kâhinin K-b önerisiyle aynı (Ödeme Alacak'ı kapatır). H'nin "bir kez" toplamı 2.4.5'te TUTUYOR (Faturasız Cari Alacağı 650) — 2.4.6'da vadeli kalem eklenip bu satır kalırsa
+  1.300 okunur (K-P2'nin bekçisi). Bağlı Ödeme (c8b) 2.4.5'te 409 ret ("Ödeme yalnız alış faturasını kapatır; satış faturası için Tahsilat girin.") — ÇATAL'ın "ret" dünyası tuttu.
