@@ -1370,6 +1370,22 @@ export const MIGRATIONS = [
       });
     },
   },
+  // v34 ve v35 2.4.6'da başka işlere ayrıldı (Maliyet Hesap Kartı, Açılış işareti). DİKKAT: göçler sürüm numarasına göre süzülür (runMigrations: version >
+  // user_version); v34 / v35 bu dosyaya v36'dan SONRA girerse v36'ya geçmiş veri tabanında hiç koşmaz → üçü aynı adayda (ya da öncekiler önce) birleşir.
+  {
+    version: 36,
+    name: "v2.4.6 iade geri ödemesi bağı (cari Ödeme / Tahsilat → iade)",
+    up(store) {
+      // 2.4.6 madde 9 (DB1; v2.1.0 R1 düzeni): cari kartından girilen Ödeme / Tahsilat'ın geri ödediği iade — satıştan / alıştan iade faturasının kimliği
+      // (invoices.id) ya da faturasız stok iadesinin hareket kimliği (stock_moves.id); boş = bağsız. YALNIZ EKLEYİCİ: eski satırlar boş (bağsız) kalır, eski
+      // sürüm (2.4.5) kolonu görmez. Para alanı DEĞİL: tutar, yön, tarih, yol, bakiye, Kasa ve Ana Defter okumaz (lib/bank/money-lines.mjs FREE_COLUMNS);
+      // yalnız fatura / borç kapaması okur (lib/invoice-settle.mjs: geri ödeme iadenin alacağıyla kapanan yükümlülüktür).
+      store.raw("migration.v36", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'account_entries'")) return;
+        addColumn(store, "account_entries", "refund_of", "TEXT NOT NULL DEFAULT ''");
+      });
+    },
+  },
 ];
 // routes/accounts.mjs OPENING_NOTE ile aynı (programın açılış satırına yazdığı açıklama; v35 göçü yalnız eski satırları işaretlerken okur).
 const OPENING_ENTRY_NOTE = "Açılış bakiyesi";

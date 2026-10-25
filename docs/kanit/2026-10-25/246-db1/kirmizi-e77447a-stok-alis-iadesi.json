@@ -1,0 +1,58 @@
+{
+  "ad": "246-db1/kirmizi-e77447a-stok-alis-iadesi",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/stok-alis-iadesi-246.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T11:01:31.364Z",
+  "sure_sn": 1.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 1,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Madde 10 API: Tedarikçiye İade (faturasız Alış İadesi, 'preturn') › Açık Hesap: tedarikçide Borç 'Alış iadesi'; en eski açık alış faturası kapanır; stok azalır; yevmiye B 320 / A 153 (600 yok); Kasa değişmez",
+      "konum": "test/stok-alis-iadesi-246.test.mjs:79:3",
+      "hata": "bağsız ödeme (KS7 a): en eski açık alış P1 300 → 200 kapandı, 100 açık · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Madde 10 API: Tedarikçiye İade (faturasız Alış İadesi, 'preturn') › Nakit / Havale: para tedarikçiden geri alınır — Kasa / banka girişi, yevmiye B 100 (102) / A 153; kart yolu 400 (hiçbir şey yazılmaz)",
+      "konum": "test/stok-alis-iadesi-246.test.mjs:111:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Madde 10 API: Tedarikçiye İade (faturasız Alış İadesi, 'preturn') › taksitlendirilmez; Satış Yapma yetkisi para yazdıramaz (yalnız miktar); satış yine yazdırır",
+      "konum": "test/stok-alis-iadesi-246.test.mjs:133:3",
+      "hata": "tedarikçiye iade taksit kartı açmaz · 1 !== 0 (beklenen 0, gelen 1)"
+    },
+    {
+      "ad": "Madde 10 API: Tedarikçiye İade (faturasız Alış İadesi, 'preturn') › Düzelt nedeni korur; Sil → Silinenler'den geri yükle 'preturn' olarak döner (alış faturası yeniden kapanır)",
+      "konum": "test/stok-alis-iadesi-246.test.mjs:149:3",
+      "hata": "düzeltme nedeni korur · '' !== 'preturn' (beklenen preturn, gelen )"
+    },
+    {
+      "ad": "Madde 10 API: Tedarikçiye İade (faturasız Alış İadesi, 'preturn') › madde 9 ile: tedarikçi iade bedelini geri öderse (Tahsilat → Geri Ödenen İade: bu iade) alış faturası yeniden açılır; bakiye tutarlı",
+      "konum": "test/stok-alis-iadesi-246.test.mjs:168:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/db1/docs/kanit/2026-10-25/246-db1/kirmizi-e77447a-stok-alis-iadesi.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-db1/eski-e77447a",
+  "ham_cikti_sha256": "bb7d7d148dd39e0b1900472db597be4a9e903bfe9a338c6b8e484ad30d5844d4",
+  "ham_cikti_bayt": 7534
+}

@@ -1,0 +1,53 @@
+TAP version 13
+# Subtest: Madde 10 API: Tedarikçiye İade (faturasız Alış İadesi, 'preturn')
+    # Subtest: Açık Hesap: tedarikçide Borç 'Alış iadesi'; en eski açık alış faturası kapanır; stok azalır; yevmiye B 320 / A 153 (600 yok); Kasa değişmez
+    ok 1 - Açık Hesap: tedarikçide Borç 'Alış iadesi'; en eski açık alış faturası kapanır; stok azalır; yevmiye B 320 / A 153 (600 yok); Kasa değişmez
+      ---
+      duration_ms: 215.099669
+      type: 'test'
+      ...
+    # Subtest: KS7.1 aynen: tedarikçiye NEDENSİZ açık hesap çıkışı yükümlülüktür (alış faturasını kapatmaz; yevmiye 600)
+    ok 2 - KS7.1 aynen: tedarikçiye NEDENSİZ açık hesap çıkışı yükümlülüktür (alış faturasını kapatmaz; yevmiye 600)
+      ---
+      duration_ms: 69.433308
+      type: 'test'
+      ...
+    # Subtest: Nakit / Havale: para tedarikçiden geri alınır — Kasa / banka girişi, yevmiye B 100 (102) / A 153; kart yolu 400 (hiçbir şey yazılmaz)
+    ok 3 - Nakit / Havale: para tedarikçiden geri alınır — Kasa / banka girişi, yevmiye B 100 (102) / A 153; kart yolu 400 (hiçbir şey yazılmaz)
+      ---
+      duration_ms: 80.396933
+      type: 'test'
+      ...
+    # Subtest: taksitlendirilmez; Satış Yapma yetkisi para yazdıramaz (yalnız miktar); satış yine yazdırır
+    ok 4 - taksitlendirilmez; Satış Yapma yetkisi para yazdıramaz (yalnız miktar); satış yine yazdırır
+      ---
+      duration_ms: 203.782548
+      type: 'test'
+      ...
+    # Subtest: Düzelt nedeni korur; Sil → Silinenler'den geri yükle 'preturn' olarak döner (alış faturası yeniden kapanır)
+    ok 5 - Düzelt nedeni korur; Sil → Silinenler'den geri yükle 'preturn' olarak döner (alış faturası yeniden kapanır)
+      ---
+      duration_ms: 136.335057
+      type: 'test'
+      ...
+    # Subtest: madde 9 ile: tedarikçi iade bedelini geri öderse (Tahsilat → Geri Ödenen İade: bu iade) alış faturası yeniden açılır; bakiye tutarlı
+    ok 6 - madde 9 ile: tedarikçi iade bedelini geri öderse (Tahsilat → Geri Ödenen İade: bu iade) alış faturası yeniden açılır; bakiye tutarlı
+      ---
+      duration_ms: 112.151748
+      type: 'test'
+      ...
+    1..6
+ok 1 - Madde 10 API: Tedarikçiye İade (faturasız Alış İadesi, 'preturn')
+  ---
+  duration_ms: 1415.505075
+  type: 'suite'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1818.86879

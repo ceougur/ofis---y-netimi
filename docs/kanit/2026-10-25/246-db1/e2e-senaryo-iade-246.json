@@ -1,0 +1,32 @@
+{
+  "ad": "246-db1/e2e-senaryo-iade-246",
+  "komut": "npm run test:senaryo-iade-246",
+  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "dal": "is/db1",
+  "kirli": 15,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T11:30:54.934Z",
+  "sure_sn": 11.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 26,
+    "gecen": 26,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-db1/e2e-senaryo-iade-246.log",
+  "klasor": "/home/user/wt/db1",
+  "ham_cikti_sha256": "ec414b2f2fdce13b4df8a4e22dc5f03c4c2ef40a7ce9beba84a3b0ad3b7bad29",
+  "ham_cikti_bayt": 2441
+}

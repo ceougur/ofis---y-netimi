@@ -1,0 +1,128 @@
+{
+  "ad": "246-db1/kirmizi-e77447a-iade-geri-odeme",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/iade-geri-odeme-246.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T11:05:48.525Z",
+  "sure_sn": 3.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 23,
+    "gecen": 4,
+    "basarisiz": 19,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 19 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "DB1 classifyLine (saf): iadeye bağlı geri ödeme yükümlülüktür; bağsız Ödeme / Tahsilat değişmedi › müşteriye bağlı Ödeme (çıkış) alacak tarafında yükümlülük; tedarikçiden bağlı Tahsilat (giriş) borç tarafında yükümlülük",
+      "konum": "test/iade-geri-odeme-246.test.mjs:39:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "DB1 settleLedger (saf): faturasız stok iadesinin bağlı geri ödemesi iadenin alacağıyla kapanır › bağlı: fatura 500 ve borç 300 açık kalır (Σ 800 = bakiye); geri ödeme kapandı",
+      "konum": "test/iade-geri-odeme-246.test.mjs:60:3",
+      "hata": "Expected values to be strictly equal: · 200 !== 500 (beklenen 500, gelen 200)"
+    },
+    {
+      "ad": "DB1 settleLedger (saf): faturasız stok iadesinin bağlı geri ödemesi iadenin alacağıyla kapanır › kısmi: 100 bağlı geri ödeme → iadenin 200'ü en eski açık borcu (fatura) kapatır",
+      "konum": "test/iade-geri-odeme-246.test.mjs:66:3",
+      "hata": "Expected values to be strictly equal: · 200 !== 300 (beklenen 300, gelen 200)"
+    },
+    {
+      "ad": "DB1 settleLedger (saf): faturasız stok iadesinin bağlı geri ödemesi iadenin alacağıyla kapanır › K-a: iadeden fazla (500 > 300) — 300 geri ödeme, 200 avans: B 500, borç 300; avans önce elle Alacak'ı kapatır, kalanı bakiyede",
+      "konum": "test/iade-geri-odeme-246.test.mjs:80:3",
+      "hata": "Cannot read properties of undefined (reading 'remaining')"
+    },
+    {
+      "ad": "K-b settleLedger (saf): iadeye bağlanmamış Ödeme açık iadeler ve elle Alacak arasında tek sıra, en eskiden › açık iade (10-01) elle Alacak'tan (10-05) eski: Ödeme 300 önce iadeyi kapatır → Alacak 200 açık kalır (eski kural: Alacak kapanıyordu)",
+      "konum": "test/iade-geri-odeme-246.test.mjs:94:3",
+      "hata": "Expected values to be strictly equal: · 0 !== 200 (beklenen 200, gelen 0)"
+    },
+    {
+      "ad": "K-b settleLedger (saf): iadeye bağlanmamış Ödeme açık iadeler ve elle Alacak arasında tek sıra, en eskiden › Tahsilat simetriği: açık Alış İadesi (preturn) elle Borç'tan eski → bağsız Tahsilat önce iadeyi kapatır, borç açık kalır",
+      "konum": "test/iade-geri-odeme-246.test.mjs:102:3",
+      "hata": "Expected values to be strictly equal: · 0 !== 200 (beklenen 200, gelen 0)"
+    },
+    {
+      "ad": "DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ödenen İade) › faturasız stok Satış İadesi + bağlı Ödeme: fatura B 500 ve borç 300 açık (Σ 800 = bakiye), takvim / Vade Takip aynı; bakiye, Kasa, mizan bağla değişmez",
+      "konum": "test/iade-geri-odeme-246.test.mjs:175:3",
+      "hata": "bağlı: iadenin alacağı geri ödemeyi kapatır, B'yi kapatmaz · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ödenen İade) › K-d: fatura iadesi (satıştan iade belgesi) Ödeme'de Kapatılacak Fatura olarak seçilir: B 500, borç 300; bağ refund_of'ta (invoice_id boş); iadenin kapatanı bu geri ödeme",
+      "konum": "test/iade-geri-odeme-246.test.mjs:200:3",
+      "hata": "Kapatılacak Fatura: iade: 409 {\"ok\":false,\"error\":\"Ödeme yalnız alış faturasını kapatır; satış faturası için Tahsilat girin.\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ödenen İade) › K-a kısmi + fazla: bağlı 100 → iadenin kalan 200'ü B'yi kapatır (B 300); ikinci bağlı 250 → 200 geri ödeme + 50 avans (reddedilmez): B 500",
+      "konum": "test/iade-geri-odeme-246.test.mjs:216:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ödenen İade) › iade belgesinin kendi geri ödemesi (100) kalanı düşürür: cari kartından bağlanan 250'nin 200'ü geri ödeme, 50'si avans (K-a); B 500",
+      "konum": "test/iade-geri-odeme-246.test.mjs:230:3",
+      "hata": "Cannot read properties of undefined (reading 'map')"
+    },
+    {
+      "ad": "DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ödenen İade) › reddedilen bağlar (öbür yönler aynen, K-d): ters yön (refundOf ve Kapatılacak Fatura yolu), başka carinin iadesi, satış faturası + iade birlikte, Borç Yaz'da, peşin iade, iptal edilmiş iade",
+      "konum": "test/iade-geri-odeme-246.test.mjs:243:3",
+      "hata": "Tahsilat → satıştan iade: beklenen 409, gelen 200 {\"id\":\"account-11e0edab-8ebc-4131-b8b0-735c926caad6\",\"refNo\":\"5\",\"type\":\"customer\",\"name\":\"DB1 Ret\",\"phone\":\"0500 246 00 05\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2024-01-24\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOff · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ödenen İade) › geri ödeme silinir → bağsız iade B'yi kapatır; Silinenler'den geri gelince bağ korunur",
+      "konum": "test/iade-geri-odeme-246.test.mjs:264:3",
+      "hata": "geri yüklenen geri ödeme yine iadeye bağlı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ödenen İade) › iade silinince bağlı geri ödemenin tamamı avans olur (K-a; B 500, borç 300 açık); iade geri yüklenince yeniden eşleşir",
+      "konum": "test/iade-geri-odeme-246.test.mjs:277:3",
+      "hata": "Cannot read properties of undefined (reading 'refundLabel')"
+    },
+    {
+      "ad": "DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ödenen İade) › bağlı geri ödemesi olan stok iadesi düzeltilir (K-a): küçülünce fazlası avans (B 500), büyüyünce artanı B'yi kapatır (B 400), Kasa'ya çevrilince tamamı avans (B 500)",
+      "konum": "test/iade-geri-odeme-246.test.mjs:293:3",
+      "hata": "iade 200 → geri ödeme 200, avans 100 · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ödenen İade) › iade belgesi düzenlenip kendi geri ödemesi + cari kartından bağlı geri ödeme iadeyi aşarsa (150 + 200 > 300) kaydedilir; belgeninki önce, bağlının fazlası avans (K-a): B 500",
+      "konum": "test/iade-geri-odeme-246.test.mjs:305:3",
+      "hata": "iade 300'ün 150'si belgede, 150'si bağlı geri ödemede; bağlının 50'si avans · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ödenen İade) › K-e: verilen çek (Kapatılacak Fatura: satıştan iade) iadenin geri ödemesidir — B 500; alınan çek iadeye bağlanmaz (409)",
+      "konum": "test/iade-geri-odeme-246.test.mjs:316:3",
+      "hata": "verilen çek: iade geri ödemesi: 409 {\"ok\":false,\"error\":\"Ödeme yalnız alış faturasını kapatır; satış faturası için Tahsilat girin.\",\"code\":\"cheque-invoice\",\"field\":\"invoiceId\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ödenen İade) › K-f: kural cari türüne bakmaz — Tedarikçi türündeki caride de satıştan iadenin geri ödemesi bağlanır (B 500)",
+      "konum": "test/iade-geri-odeme-246.test.mjs:326:3",
+      "hata": "bağlı geri ödeme: 404 {\"ok\":false,\"error\":\"Kapatılacak fatura bu caride bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ödenen İade) › K-b: iadeye bağlanmamış Ödeme açık iade belgesi (eski) ile elle Alacak (yeni) arasında en eskiden: iade açığı 0, Alacak 200 açık (eski kural: Alacak 0, iade açığı 200)",
+      "konum": "test/iade-geri-odeme-246.test.mjs:332:3",
+      "hata": "eski açık iade önce kapandı · 200 !== 0 (beklenen 0, gelen 200)"
+    },
+    {
+      "ad": "DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ödenen İade) › tedarikçi simetriği: alıştan iade faturası + tedarikçiden bağlı Tahsilat → açık alış faturası kapanmaz",
+      "konum": "test/iade-geri-odeme-246.test.mjs:350:3",
+      "hata": "Kapatılacak Fatura + Geri Ödenen İade: beklenen 400, gelen 200 {\"id\":\"account-f28e7b9e-88b5-4121-a3c5-f6dabc865b81\",\"refNo\":\"14\",\"type\":\"supplier\",\"name\":\"DB1 Tedarikçi\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2025-09-15\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\" · 200 !== 400 (beklenen 400, gelen 200)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/db1/docs/kanit/2026-10-25/246-db1/kirmizi-e77447a-iade-geri-odeme.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-db1/eski-e77447a",
+  "ham_cikti_sha256": "ae0c31dd784b530caf60556de7c4a890d086cf48f5ad4144232af6be674735fb",
+  "ham_cikti_bayt": 30791
+}

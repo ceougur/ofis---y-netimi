@@ -1,0 +1,23 @@
+TAP version 13
+# Subtest: 2.4.6 madde 9 göç: v2.4.5 verisi güncel kodla (iade geri ödemeleri bağsız kalır; bağ elle kurulur)
+    # Subtest: v2.4.5 verisi: göç boş bağ ekler, sayılar aynı; Düzelt ile bağlanınca fatura açığı iade kadar döner; geri dönüş v2.4.5 ile açılır
+    ok 1 - v2.4.5 verisi: göç boş bağ ekler, sayılar aynı; Düzelt ile bağlanınca fatura açığı iade kadar döner; geri dönüş v2.4.5 ile açılır
+      ---
+      duration_ms: 1608.97205
+      type: 'test'
+      ...
+    1..1
+ok 1 - 2.4.6 madde 9 göç: v2.4.5 verisi güncel kodla (iade geri ödemeleri bağsız kalır; bağ elle kurulur)
+  ---
+  duration_ms: 1617.761424
+  type: 'suite'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2136.356445
