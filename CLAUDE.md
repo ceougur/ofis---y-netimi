@@ -231,6 +231,9 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
 42. KILAVUZ PDF'İ KAYNAKLA BİRLİKTE ÜRETİLİR. Kılavuz HTML'i değişen sürümde PDF (`docs/kilavuz/pdf-uret.mjs` → `client/kilavuz/`) aynı adayda yeniden üretilir ve `docs/kilavuz/pdf-denetle.mjs`
     ile denetlenir; güncelleme zip'i ve kurulum `client/` klasörünü taşır, CI yalnız HTML'i denetler. (25.10.2026: 2.4.5'te HTML 2.4.5'e güncellendi, PDF "Sürüm 2.4.4" kaldı; tam kapı ve
     CI #871 yeşildi — paket ajanı imzalamadan önce yakaladı; yeniden üretildi, pdf-denetle 39/39.)
+43. FARK GÖRÜLDÜKTEN SONRA PARA KURALI KULLANICIYA SORULUR. Kâhin ile program ayrıştıktan sonra para / kapama sırasını belirleyen bir netleştirme gerekiyorsa baş mimar karar vermez;
+    soruyu kullanıcıya iki seçenekli (öneriyle) yazar, yanıt gelene kadar o kural ne kâhinde ne kodda kesinleşir; 5 dk yetkisi bu sorulara uygulanmaz. (25.10.2026: K-c yanlış okunup
+    kâhinin beklentisi iki kez değiştirildi — KS8.3 üretildi, geri alındı; kullanıcı "anayasamızı ve derslerimize göz at" deyince öz denetimde görüldü, kullanıcı "önerini uygula".)
 ### Verimlilik (kullanıcı, 12.10.2026: "geçmişte yaptığın hatalardan aldığın dersleri göz önüne al; gereksiz zaman ve kullanım limitimi
 harcayacak işlemlerden uzak dur!")
 - Dersler 1–24 her işte uygulanır; ama kanıt için GEREKEN kadar koşulur, fazlası değil: geliştirme sırasında yalnız değişen alanın testleri;
