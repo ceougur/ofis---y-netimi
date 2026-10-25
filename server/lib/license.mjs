@@ -54,6 +54,8 @@ export const WRITE_PERMISSIONS = Object.freeze([
   "tax.manage",
   // 2.4.4 Personel Özlük: kart ekleme/düzeltme/silme.
   "staff.manage",
+  // 2.4.6 Maliyet Hesap Kartı: kaydetme.
+  "maliyet.manage",
 ]);
 
 // Salt okunur modda da izin verilen değiştirici istekler: giriş/çıkış/parola, lisans işlemleri, yönetim (kullanıcılar,

@@ -11478,3 +11478,55 @@ input[type="search"]::-webkit-search-cancel-button {
 /* 2.4.5: tahsilat / ödeme formunda "en eski açık borçtan kapatır" bilgi notu (Kapatılacak Fatura seçilince gizli). */
 .hof-acc-fifo-note { margin: 0; color: var(--do-muted); font: 600 12px var(--do-font); }
 .hof-acc-fifo-note[hidden] { display: none; }
+
+/* ---------- 2.4.6 madde 4: Maliyet Hesap Kartı (hof-maliyet.js) ---------- */
+.hof-modal.hof-maliyet-modal { width: min(1320px, 100%); }
+.hof-maliyet { display: grid; gap: 12px; min-width: 0; }
+.hof-maliyet-sekmeler { flex-wrap: wrap; margin: 0; }
+.hof-maliyet-sekme { display: inline-flex; align-items: center; gap: 2px; }
+.hof-maliyet-kalem { width: 22px; height: 22px; font-size: 11px; flex: none; vertical-align: middle; margin-left: 4px; }
+.hof-maliyet-kartlar { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 540px), 1fr)); gap: 12px; align-items: start; min-width: 0; }
+.hof-maliyet-kart { min-width: 0; border: 1px solid var(--do-border); border-radius: var(--do-radius-small); background: var(--do-surface); padding: 10px 12px 12px; display: grid; gap: 8px; }
+.hof-maliyet-kart.hof-maliyet-matris, .hof-maliyet-kart.hof-maliyet-gramaj { grid-column: 1 / -1; }
+.hof-maliyet-kart-bas { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.hof-maliyet-kart-bas h4 { margin: 0; font: 800 14px var(--do-display); color: var(--do-ink); overflow-wrap: anywhere; }
+.hof-maliyet-tablo { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 12.5px; }
+.hof-maliyet-tablo th, .hof-maliyet-tablo td { padding: 4px 5px; vertical-align: middle; overflow-wrap: anywhere; word-break: break-word; }
+.hof-maliyet-tablo thead th { font-size: 11.5px; color: var(--do-muted); }
+.hof-maliyet-zincir col.c-ad { width: 30%; } .hof-maliyet-zincir col.c-birim { width: 12%; } .hof-maliyet-zincir col.c-sayi { width: 17%; }
+.hof-maliyet-zincir col.c-tutar { width: 19%; } .hof-maliyet-zincir col.c-islem { width: 34px; }
+.hof-maliyet-kaydir { overflow-x: auto; min-width: 0; }
+.hof-maliyet-gramaj { min-width: 860px; }
+.hof-maliyet-matris { min-width: 720px; }
+.hof-maliyet-tablo input { width: 100%; min-width: 0; box-sizing: border-box; padding: 4px 6px; border: 1px solid var(--do-border); border-radius: 7px; background: #fff; font: 600 12.5px var(--do-font); color: var(--do-ink); }
+.hof-maliyet-tablo input.hof-maliyet-sayi, .hof-maliyet-param input { text-align: right; font-variant-numeric: tabular-nums; }
+.hof-maliyet input:focus { outline: none; border-color: var(--do-accent); box-shadow: var(--do-focus); }
+.hof-maliyet input[aria-invalid="true"] { border-color: var(--do-danger); background: var(--do-danger-soft); }
+.hof-maliyet-adhucre { display: flex; align-items: center; gap: 2px; min-width: 0; }
+.hof-maliyet-ad { min-width: 0; overflow-wrap: anywhere; }
+.hof-maliyet-hesap { display: block; text-align: right; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; color: var(--do-ink); }
+.hof-maliyet-hesap.is-hata { color: var(--do-danger); }
+.hof-maliyet-islem { text-align: right; }
+.hof-maliyet-ekle { display: flex; }
+.hof-maliyet-adimlar { display: grid; gap: 4px; border-top: 1px solid var(--do-border); padding-top: 6px; }
+.hof-maliyet-adim { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.9fr) minmax(0, 1fr); align-items: center; gap: 8px; padding: 3px 4px; border-radius: 7px; font-size: 12.5px; }
+.hof-maliyet-adim-ad { display: flex; align-items: center; min-width: 0; font-weight: 700; color: var(--do-ink-soft); }
+.hof-maliyet-adim.is-sonuc { background: var(--do-accent-soft); }
+.hof-maliyet-adim.is-sonuc .hof-maliyet-hesap { font-size: 14px; color: var(--do-accent); }
+.hof-maliyet-param { display: flex; align-items: center; gap: 4px; min-width: 0; color: var(--do-muted); font-weight: 700; }
+.hof-maliyet-param input { width: 100%; min-width: 0; box-sizing: border-box; padding: 4px 6px; border: 1px solid var(--do-border); border-radius: 7px; font: 600 12.5px var(--do-font); }
+.hof-maliyet-hucre { min-width: 0; }
+.hof-maliyet-hucre input { margin-bottom: 2px; }
+.hof-maliyet-hucre.is-taban input { border-color: var(--do-border-strong); background: var(--do-gold-soft); }
+.hof-maliyet-matris tbody th { text-align: left; font-weight: 700; color: var(--do-ink-soft); }
+.hof-maliyet-matris tbody th, .hof-maliyet-matris thead th { white-space: normal; }
+.hof-maliyet-deger { display: block; text-align: right; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.hof-maliyet-deger.is-metin { text-align: left; }
+.hof-maliyet-hata { margin: 0; color: var(--do-danger); font: 700 12px var(--do-font); }
+.hof-maliyet-hata[hidden] { display: none; }
+.hof-maliyet-bayat { border: 1px solid #e4b4ac; background: var(--do-danger-soft); border-radius: var(--do-radius-small); padding: 8px 12px; color: var(--do-ink); font-size: 13px; }
+.hof-maliyet-bayat p { margin: 0 0 6px; font-weight: 700; }
+.hof-maliyet-bayat .hof-actions { margin: 0; justify-content: flex-start; }
+.hof-maliyet-alt { position: sticky; bottom: -1px; background: var(--do-surface); padding-top: 8px; margin-top: 0; z-index: 2; }
+.hof-tabs.hof-maliyet-sekmeler button.hof-maliyet-kalem { width: 22px; height: 22px; padding: 0; border-radius: 8px; background: #fff; color: var(--do-soft, #4c6158); font-size: 11px; }
+.hof-tabs.hof-maliyet-sekmeler button.hof-maliyet-kalem:hover { border-color: #9cc5ad; color: var(--do-accent); }

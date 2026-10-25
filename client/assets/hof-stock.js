@@ -165,6 +165,10 @@
       renderList();
       loadList();
     }
+    // Maliyet Hesap Kartı girişinin görünürlüğü her açılışta sunucudan (sektör ve yetki başka bilgisayarda değişmiş olabilir).
+    HOF.maliyet?.refresh().then(() => {
+      if (modal && view.mode === "list") renderList();
+    });
   }
 
   // ---------- Liste ----------
@@ -177,7 +181,7 @@
     const filtered = Boolean(view.q || view.category || view.state !== "all");
     const row = item => `<tr data-item="${esc(item.id)}" class="${item.low ? "is-overdue" : ""}" tabindex="0"><td class="hof-plan-no">${esc(item.code || "")}</td><td><b>${esc(item.name)}</b> ${stateBadge(item)}<small>${esc(item.category || "Kategorisiz")}${item.note ? ` · ${esc(item.note)}` : ""}</small></td><td class="num"><b class="hof-stock-qty${item.qty <= 0 ? " is-out" : item.low ? " is-low" : ""}">${esc(qtyText(item.qty))}</b> <small>${esc(item.unit)}</small></td><td class="num">${item.minQty ? `${esc(qtyText(item.minQty))} <small>${esc(item.unit)}</small>` : '<small class="hof-muted">—</small>'}</td><td class="num">${item.unitPrice ? esc(money(item.unitPrice)) : '<small class="hof-muted">—</small>'}</td><td class="num">${esc(money(item.value))}</td><td>${item.lastMove ? esc(HOF.formatDate(item.lastMove)) : '<small class="hof-muted">—</small>'}</td><td class="hof-cash-actions">${move ? `<button type="button" class="hof-mini hof-mini-text" data-quick="in" data-id="${esc(item.id)}" title="Giriş (alım, gelen)">+ Giriş</button><button type="button" class="hof-mini hof-mini-text" data-quick="out" data-id="${esc(item.id)}" title="Çıkış (kullanım, satış)">− Çıkış</button>` : ""}</td></tr>`;
     HOF.swap(root, `<div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Durum">${STATES.map(item => `<button type="button" data-state="${item.id}" aria-pressed="${String(item.id === view.state)}">${item.label}${data && item.id !== "all" ? ` <b>${item.id === "low" ? data.totals.low : item.id === "negative" && data.totals.negative ? data.totals.negative : ""}</b>` : ""}</button>`).join("")}</div>
-      <div class="hof-cash-add">${manage ? '<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni Ürün</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import" title="Excel dosyasından ya da Google Sheets’ten ürünleri ve mevcut miktarları tek seferde aç">Excel / Sheets’ten Yükle</button>' : ""}</div></div>
+      <div class="hof-cash-add">${HOF.maliyet?.durum()?.acik ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="maliyet">Maliyet Hesap Kartı</button>' : ""}${manage ? '<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni Ürün</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import" title="Excel dosyasından ya da Google Sheets’ten ürünleri ve mevcut miktarları tek seferde aç">Excel / Sheets’ten Yükle</button>' : ""}</div></div>
       <div class="hof-plans-filters"><input type="search" data-filter="q" value="${esc(view.q)}" placeholder="Ürün adı, Stok Kodu (barkod), kategori ara…" aria-label="Ara"><select data-filter="category" aria-label="Kategori"><option value="">Tüm Kategoriler</option>${(data?.categories || []).map(name => `<option value="${esc(name)}" ${name === view.category ? "selected" : ""}>${esc(name)}</option>`).join("")}</select><select data-filter="sort" aria-label="Sıralama">${SORTS.map(([id, label]) => `<option value="${id}" ${id === view.sort ? "selected" : ""}>${label}</option>`).join("")}</select>${office().outputButtons ? office().outputButtons(listPdfUrl(), "list", "", "Stok Listesi").replace(/<\/span>$/, `${HOF.outputButton({ kind: "xlsx", href: listXlsxUrl(), what: "Stok Listesi", tip: "Stok durumunu Excel olarak indir", attrs: "data-xlsx" })}</span>`) : ""}</div>
       <div class="hof-kpis hof-plans-kpis hof-stock-kpis">${data ? `<div><strong>${data.totals.count.toLocaleString("tr-TR")}</strong><span>Ürün</span></div><div class="${data.totals.low ? "is-late" : ""}"><strong>${data.totals.low}</strong><span>Kritik Seviyede</span></div><div class="${data.totals.out ? "is-late" : ""}"><strong>${data.totals.out}</strong><span>Tükenen</span></div><div class="${data.totals.negative ? "is-late" : ""}"><strong>${data.totals.negative || 0}</strong><span>Eksi Stokta</span></div><div class="hof-cash-balance"><strong>${esc(money(data.totals.value))}</strong><span>Stok Değeri</span></div>` : ""}</div>
       <div class="hof-cash-list hof-plans-list">${
@@ -579,6 +583,8 @@
       renderList();
       return loadList();
     }
+    // 2.4.6 madde 4: Maliyet Hesap Kartı (hof-maliyet.js) — giriş yalnız sektör "Duşakabin Üretimi" ve kişide maliyet.view varken görünür.
+    if (act === "maliyet") return HOF.maliyet?.open();
     if (act === "more") return loadList({ more: true });
     if (act === "retryList") {
       view.listError = "";
@@ -625,6 +631,9 @@
   });
   HOF.whenReady(() => {
     setTimeout(alertsSoon, 1500);
+    HOF.on("maliyet-durum", () => {
+      if (modal && view.mode === "list") renderList();
+    });
     HOF.on("live:workspace.changed", change => {
       if (change?.kind !== "stock") return;
       alertsSoon();

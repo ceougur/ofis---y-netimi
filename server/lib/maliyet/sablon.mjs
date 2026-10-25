@@ -73,7 +73,7 @@ const MIKA = [
   // Tutarsızlık 5: CM satırında etiket yok (Excel'de etiket yerinde bir sayı duruyordu); 25: "Masraf %" boşluklu.
   zincir("mika/120-1s2c-h182-kabin", "120 1S2Ç H:182 Kabin", mikaSatirlari(), { yuzde: ["Masraf %", 16], yuzdeEkle: ["%15 Maliyet", 15], bolme: ["", 120] }),
   // Yan panel: bölme yok; etiketler başka; tutarsızlık 11: "%20 Maliyet" etiketi, oran 15.
-  zincir("mika/80-lik-yan-panel", "80 Lik Yan Panel", [["Alüminyum", "Kğ"], ["Mıka", "Kğ"], ["Plastık ve Vıda", "Ad"], ["Fitil", "Kğ"]], { yuzde: ["Masraf", 15], toplama: "Genel", yuzdeEkle: ["%20 Maliyet", 15] }),
+  zincir("mika/80-lik-yan-panel", "80'lik Yan Panel", [["Alüminyum", "Kğ"], ["Mıka", "Kğ"], ["Plastık ve Vıda", "Ad"], ["Fitil", "Kğ"]], { yuzde: ["Masraf", 15], toplama: "Genel", yuzdeEkle: ["%20 Maliyet", 15] }),
 ];
 
 // ---------- Profil gramaj tablosu ----------

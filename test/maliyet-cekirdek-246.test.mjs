@@ -12,6 +12,14 @@ import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
 import { DatabaseSync } from "node:sqlite";
 import { ADMIN_PASSWORD, createUser, loginAdmin, removeTestDir, startTestServer } from "./helpers.mjs";
+
+// 2.4.6 (kullanıcı kararı 25.10.2026): Maliyet Hesap Kartı kendi iki yetkisiyle (maliyet.view / maliyet.manage; varsayılan yalnız yönetici).
+async function grant(admin, username, add, remove = []) {
+  const users = (await admin.get("/api/admin/users")).data.data;
+  const target = (Array.isArray(users) ? users : users.users).find(user => user.username === username);
+  const res = await admin.patch(`/api/admin/users/${target.id}`, { grants: { add, remove } });
+  assert.equal(res.status, 200, `yetki ${username}: ${JSON.stringify(res.data).slice(0, 200)}`);
+}
 import { createStore } from "../server/lib/db.mjs";
 import { LATEST_VERSION, MIGRATIONS, runMigrations } from "../server/lib/migrations.mjs";
 import { MALIYET_KARTLAR, MALIYET_SEKMELER, sablonKart } from "../server/lib/maliyet/sablon.mjs";
@@ -260,6 +268,7 @@ describe("2.4.6 Maliyet Hesap Kartı: API", () => {
 
   it("iki kişi aynı anda: aynı kartta ikinci kaydeden 409 (ilkinin değişikliği korunur); farklı kartlar ikisi de yazılır; eşzamanlı iki PUT'tan biri geçer", async () => {
     const other = await createUser(server, admin, { username: "muh246", role: "muhasebe" });
+    await grant(admin, "muh246", ["maliyet.view", "maliyet.manage"]);
     const a = data(await admin.get(BASE));
     const b = data(await other.get(BASE));
     const kod = "cam/130-1s1c-h182-kabin";
@@ -281,20 +290,35 @@ describe("2.4.6 Maliyet Hesap Kartı: API", () => {
     assert.equal(data(await admin.get(BASE)).kartlar[otherCard].ad, `Eşzamanlı ${winner}`);
   });
 
-  it("yetki: stock.view okur, stock.manage yazar; Personel yazamaz; stock.view kaldırılınca kapanır", async () => {
+  it("yetki: maliyet.view / maliyet.manage (varsayılan yalnız yönetici); Muhasebe ve Personel rolü görmez; izin verilince görür / yazar; kaldırılınca kapanır", async () => {
     const personel = await createUser(server, admin, { username: "per246", role: "personel" });
+    const muhasebe = await createUser(server, admin, { username: "muhy246", role: "muhasebe" });
+    for (const [client, name] of [[personel, "Personel"], [muhasebe, "Muhasebe"]]) {
+      for (const res of [await client.get(`${BASE}/durum`), await client.get(BASE), await client.post(`${BASE}/onizle`, { kartlar: [] })]) assert.equal(res.status, 403, `${name} rolü varsayılan olarak göremez`);
+      const me = (await client.get("/api/auth/me")).data.data;
+      const perms = me?.permissions;
+      assert.ok(Array.isArray(perms) && perms.includes("stock.view"), `${name}: yetki listesi okundu`);
+      assert.ok(!perms.includes("maliyet.view") && !perms.includes("maliyet.manage"), `${name}: yetki listesinde maliyet yok`);
+    }
+    await grant(admin, "per246", ["maliyet.view"]);
     const read = data(await personel.get(BASE));
     assert.equal(read.canManage, false);
+    assert.equal(data(await personel.get(`${BASE}/durum`)).canManage, false);
     assert.equal(data(await personel.post(`${BASE}/onizle`, { kartlar: [] })).degisti, false);
     const kart = read.kartlar["cam/100x100-oval-kabin"];
     const put = await personel.put(BASE, { kartlar: [{ kod: kart.kod, rev: kart.rev, ad: "Yetkisiz" }] });
     assert.equal(put.status, 403);
-    const users = data(await admin.get("/api/admin/users"));
-    const target = (Array.isArray(users) ? users : users.users).find(user => user.username === "per246");
-    assert.equal((await admin.patch(`/api/admin/users/${target.id}`, { grants: { add: [], remove: ["stock.view"] } })).status, 200);
+    assert.equal(data(await admin.get(BASE)).kartlar[kart.kod].ad, kart.ad);
+    // Düzenleme görüntülemesiz yetmez.
+    await grant(admin, "per246", ["maliyet.manage"], ["maliyet.view"]);
+    assert.equal((await personel.put(BASE, { kartlar: [{ kod: kart.kod, rev: kart.rev, ad: "Yetkisiz" }] })).status, 403);
     assert.equal((await personel.get(BASE)).status, 403);
     assert.equal((await personel.get(`${BASE}/durum`)).status, 403);
-    assert.equal(data(await admin.get(BASE)).kartlar[kart.kod].ad, kart.ad);
+    await grant(admin, "per246", ["maliyet.view", "maliyet.manage"]);
+    assert.equal(data(await personel.get(BASE)).canManage, true);
+    const saved = data(await personel.put(BASE, { kartlar: [{ kod: kart.kod, rev: kart.rev, ad: "İzinli Ad" }] }));
+    assert.equal(saved.kartlar[kart.kod].ad, "İzinli Ad");
+    data(await admin.put(BASE, { kartlar: [{ kod: kart.kod, rev: saved.kartlar[kart.kod].rev, ad: kart.ad }] }));
   });
 
   it("sektör değişince veri silinmez (yalnız kapanır); yeniden seçilince aynen döner; yeniden başlatınca kalır", async () => {
