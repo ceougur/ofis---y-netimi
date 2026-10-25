@@ -1,0 +1,19 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "c8b-ks8-bagli-iade-odemesi",
+ "aciklama": "KS8 bağlı geri ödeme (KARAR GEREKİR K-d): F carisinde satış faturası FF1 500 + FF2 200 + vadeli borç 300; faturasız stok Satış İadesi 200 (06-01) FF1'i 300'e indirir; FF2'nin tamamı iade edilir (IF2, 06-02) → FF2 0. Ödeme 200 'Kapatılacak Fatura' = IF2 (iade belgesi): kabul edilirse yalnız IF2 geri ödenir (FF2 200 açık, stok iadesi FF1'i kapatmaya devam eder — FF1 300; bakiye 800); reddedilirse (2.4.5: 'Ödeme yalnız alış faturasını kapatır') hiçbir satır yazılmaz (FF2 0, bakiye 600, Kasa 0). Karar metni bağlı Ödeme'nin kabulünü söylemediği için adım ÇATAL (iki dünya). Bağsız sayılsaydı en eski iade (stok) geri ödenirdi: FF1 500, FF2 0 (mutant 136).",
+ "dayanak": "KARARLAR.md §9 KS8 + K-d (YAYGIN, ÇATAL); PLAN SENARYO-DILI §4.16 'kapatilacakFatura: alış faturası ya da satıştan iade'; CLAUDE.md 'fatura kapama yöne göre'",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {"id": "cf", "islem": "cari_ac", "ad": "F", "isim": "Fikret Bağlı", "tarih": "2026-05-01"},
+  {"id": "ff1", "islem": "fatura", "ad": "FF1", "cari": "F", "tutar": "500", "tarih": "2026-05-10"},
+  {"id": "ff2", "islem": "fatura", "ad": "FF2", "cari": "F", "tutar": "200", "tarih": "2026-05-12"},
+  {"id": "bf1", "islem": "borc", "cari": "F", "tutar": "300", "tarih": "2026-05-15", "vade": "2026-06-20"},
+  {"id": "k1", "islem": "kontrol"},
+  {"id": "sf1", "islem": "stok_iade", "cari": "F", "tutar": "200", "tarih": "2026-06-01"},
+  {"id": "if2", "islem": "iade", "ad": "IF2", "fatura": "FF2", "tarih": "2026-06-02"},
+  {"id": "k2", "islem": "kontrol"},
+  {"id": "of1", "islem": "odeme", "cari": "F", "tutar": "200", "tarih": "2026-06-06", "fatura": "IF2", "catal": true},
+  {"id": "k3", "islem": "kontrol"}
+ ]
+}

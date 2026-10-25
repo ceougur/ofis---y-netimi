@@ -10,6 +10,8 @@ faturaları, elle Borç / Alacak (Vade Tarihi, Beklenen Ödeme Tarihi; ara sıra
 Satış İadesi, Şüpheli Alacağa Al + Değersiz Alacak Yaz) ve KS7.1 tedarikçiye nedensiz stok çıkışı (yükümlülük), bağsız ve faturaya bağlı
 tahsilat / ödeme, bağsız alınan çek + karşılıksız, hareket silme / Silinenler'den geri yükleme, Düzenle (tutar / vade / beklenen), Cari görüntüleme yetkisi
 kaldırılmış kullanıcı (yarı tohumda). UX18 akışından AYRI (rastgele-ux18-<t> değişmez). Ufkun sınır günü (bugün + 7, KS5 dahil) de üretilir.
+2.4.6 (25.10.2026, KS8–KS10): müşteriye cari Ödeme (iade geri ödemesi — geri ödenmemiş stok iadesi varken: tam / kısmi / fazla), tedarikçiye faturasız Alış İadesi
+(preturn; madde 10) ve tedarikçiden geri Tahsilat (KS9 simetri); Projeksiyon denetimleri (KS10) her kontrolde kâhinden.
 
 Üç müşteri + bir tedarikçi; satış faturaları (bazısı kendi çekiyle), bağsız/bağlı nakit tahsilat, faturaya bağlı/bağsız alınan
 çek/senet, karşılıksız, tahsil, ciro, evrak sil / geri yükle, bağ değiştir, fatura iptali; her ~10 adımda kontrol.
@@ -350,7 +352,17 @@ def uret_s1(tohum, islem):
         silinen = [h for h, x in m.hareketler.items() if not x["aktif"] and x["tur"] in ("tahsilat", "borc", "alacak", "odeme")]
         elle = [h for h, x in m.hareketler.items() if x["aktif"] and x["tur"] in ("borc", "alacak")]
         portfoy = [e for e, x in m.evraklar.items() if x["durum"] == "portfoy"]
-        secenek = [("fatura", 12), ("borc", 14), ("tahsilat", 14), ("alis", 6), ("alacak", 7), ("odeme", 7), ("evrak", 4), ("stok_iade", 4), ("stok_satis_hesap", 3)]
+        secenek = [("fatura", 12), ("borc", 14), ("tahsilat", 14), ("alis", 6), ("alacak", 7), ("odeme", 7), ("evrak", 4), ("stok_iade", 4), ("stok_satis_hesap", 3),
+                   ("alis_iade", 3)]
+        # 2.4.6 KS8 / KS9: geri ödenmemiş iade kalemi (müşteride stok iadesi / tedarikçide alış iadesi) varsa geri ödeme adımı (kâhinin hesabıyla)
+        G, _ = m._geri_odemeler(musteri)
+        iade_kalan = sum(t - G.get(ad, 0) for _, ad, t in m._iade_kalemleri(musteri))
+        _, Gp = m._geri_odemeler("S")
+        alis_kalan = sum(x["tutar"] - Gp.get(xn, 0) for xn, x in m.kapaticilar.items() if x["aktif"] and x["cari"] == "S" and x["tur"] == "alis_iade")
+        if iade_kalan > 0:
+            secenek.append(("musteri_odeme", 5))
+        if alis_kalan > 0:
+            secenek.append(("tedarikci_tahsilat", 3))
         if m.bakiye(musteri) - sum(v for v in m.supheli_durum(musteri).values() if v > 0) > 0:
             secenek.append(("supheli_degersiz", 3))  # KS7 (b): Şüpheli Alacağa Al + aynı gün tamamını Değersiz Alacak Yaz (kayıt kapanır — açık kayıt sınırına girmez)
         if acik_s:
@@ -390,6 +402,13 @@ def uret_s1(tohum, islem):
         elif op == "bagli_odeme":
             f = rnd.choice(sorted(acik_a))
             adimlar.append({"id": sid, "islem": "odeme", "cari": "S", "tutar": tl(rnd.randint(1, acik_a[f])), "tarih": t, "fatura": f})
+        elif op == "alis_iade":  # KS9 (madde 10): tedarikçiye faturasız Alış İadesi (preturn) — borç tarafında bağsız ödeme
+            adimlar.append({"id": sid, "islem": "alis_iade", "cari": "S", "tutar": tl(rnd.randint(100, 150000)), "tarih": t})
+        elif op in ("musteri_odeme", "tedarikci_tahsilat"):
+            # KS8 / KS9 simetri: iade bedelinin geri ödenmesi — tam, kısmi ya da fazla (fazlası avans)
+            kalan = iade_kalan if op == "musteri_odeme" else alis_kalan
+            x = rnd.choice([kalan, rnd.randint(1, kalan), kalan + rnd.randint(1, 50000)])
+            adimlar.append({"id": sid, "islem": "odeme" if op == "musteri_odeme" else "tahsilat", "cari": musteri if op == "musteri_odeme" else "S", "tutar": tl(x), "tarih": t})
         elif op == "stok_iade":
             adimlar.append({"id": sid, "islem": "stok_iade", "cari": musteri, "tutar": tl(rnd.randint(100, 200000)), "tarih": t})
         elif op == "stok_satis_hesap":  # KS7.1: tedarikçiye nedensiz stok çıkışı — yükümlülük (ödeme değil)

@@ -1,0 +1,19 @@
+status 200 üst anahtarlar [
+  'today',          'from',
+  'to',             'cashToday',
+  'carried',        'opening',
+  'rows',           'days',
+  'totals',         'closing',
+  'lowest',         'negative',
+  'overdue',        'overdueTotals',
+  'includeOverdue', 'bySource',
+  'start',          'requested',
+  'withTable',      'group',
+  'periods',        'rowTotal'
+]
+rows satır sayısı 0
+overdue satır sayısı 2
+  {"date":"string","direction":"string","amount":"number","source":"string","label":"string","party":"string","ref":["type","id"]}
+  {"date":"string","direction":"string","amount":"number","source":"string","label":"string","party":"string","phone":"string","detail":"string","ref":["type","id"]}
+  örnek {"date":"2026-06-01","direction":"in","amount":300,"source":"unbilled","label":"Faturasız Cari Alacağı","party":"Yoklama Müşteri","ref":{"type":"account","id":"account-287e6183-615a-49da-8c0c-4459b6f6f0b2"}}
+  örnek {"date":"2026-06-10","direction":"in","amount":500,"source":"invoice","label":"Satış faturası FIS2026000000001","party":"Yoklama Müşteri","phone":"","detail":"Fatura tarihi 10.06.2026","ref":{"type":"invoice","id":"invoice-0233b9e0-4646-4eca-a406-a86e3ea0543b"}}

@@ -1,0 +1,184 @@
+{
+ "commit": "3dfb1c7 (kâhin 63a6537 + koşucu sınıflama); program = 2.4.5 kodu (bu dalın tabanı e77447a, server/ client/ değişmedi)",
+ "kosular": {
+  "r1-246-varsayilan": {
+   "kip": "2.4.6",
+   "toplamDenetim": 7006,
+   "fark": 408,
+   "okumaHatasi": 0,
+   "yakalanmayanMutasyon": 0,
+   "bilinen": 7,
+   "farkSinifi246": {
+    "2.4.6 kararıyla değişen": 355,
+    "KS9 madde 10 yolu": 53
+   },
+   "farkKurala": {
+    "KS10": 278,
+    "KS9": 53,
+    "KS8": 77
+   },
+   "farkEtiket": {
+    "İNCELE YAYGIN": 235,
+    "BULGU BAŞ MİMAR": 142,
+    "İNCELE AJAN": 31
+   },
+   "senaryoBasina": {
+    "c10-ks10-projeksiyon-cari-vade": {
+     "KS10": 44
+    },
+    "c6-cari-vade-fifo": {
+     "KS10": 82
+    },
+    "c6b-cari-vade-dogrulama": {
+     "KS10": 16
+    },
+    "c6c-mevcut-borc-karti": {
+     "KS10": 6
+    },
+    "c7-ks7-bagsiz-kapaticilar": {
+     "KS10": 21
+    },
+    "c8-ks8-iade-geri-odemesi": {
+     "KS10": 44,
+     "KS9": 12,
+     "KS8": 42
+    },
+    "c8b-ks8-bagli-iade-odemesi": {
+     "KS10": 6
+    },
+    "rastgele-s1-1": {
+     "KS10": 20,
+     "KS8": 35,
+     "KS9": 2
+    },
+    "rastgele-s1-2": {
+     "KS10": 39,
+     "KS9": 39
+    }
+   },
+   "ornek": {
+    "KS10": "c10-ks10-projeksiyon-cari-vade k1:projeksiyon:cari: program 0 · kâhin {\"catal\": [7, 8]}",
+    "KS9": "c8-ks8-iade-geri-odemesi k2:fatura:AS1:acik: program 50000 · kâhin 20000",
+    "KS8": "c8-ks8-iade-geri-odemesi k3:fatura:FA1:acik: program 20000 · kâhin 50000"
+   }
+  },
+  "r4-s1-tohum3-10": {
+   "kip": "2.4.6",
+   "toplamDenetim": 15583,
+   "fark": 939,
+   "okumaHatasi": 0,
+   "yakalanmayanMutasyon": 0,
+   "bilinen": 0,
+   "farkSinifi246": {
+    "2.4.6 kararıyla değişen": 827,
+    "KS9 madde 10 yolu": 112
+   },
+   "farkKurala": {
+    "KS8": 328,
+    "KS10": 499,
+    "KS9": 112
+   },
+   "farkEtiket": {
+    "İNCELE YAYGIN": 558,
+    "BULGU BAŞ MİMAR": 220,
+    "İNCELE AJAN": 161
+   },
+   "senaryoBasina": {
+    "rastgele-s1-10": {
+     "KS8": 12,
+     "KS10": 44,
+     "KS9": 22
+    },
+    "rastgele-s1-3": {
+     "KS8": 57,
+     "KS10": 54,
+     "KS9": 4
+    },
+    "rastgele-s1-4": {
+     "KS8": 61,
+     "KS10": 63
+    },
+    "rastgele-s1-5": {
+     "KS8": 14,
+     "KS10": 70,
+     "KS9": 16
+    },
+    "rastgele-s1-6": {
+     "KS9": 13,
+     "KS8": 27,
+     "KS10": 30
+    },
+    "rastgele-s1-7": {
+     "KS8": 100,
+     "KS10": 84
+    },
+    "rastgele-s1-8": {
+     "KS8": 8,
+     "KS9": 46,
+     "KS10": 99
+    },
+    "rastgele-s1-9": {
+     "KS8": 49,
+     "KS10": 55,
+     "KS9": 11
+    }
+   },
+   "ornek": {
+    "KS8": "rastgele-s1-10 k10:fatura:A1:acik: program 86471 · kâhin 8573",
+    "KS10": "rastgele-s1-10 k10:projeksiyon:cari: program 0 · kâhin 1",
+    "KS9": "rastgele-s1-10 k1:hareket:acilis:S:kalan: program 174375 · kâhin 98009"
+   }
+  },
+  "r2-kural245": {
+   "kip": "2.4.5",
+   "toplamDenetim": 6594,
+   "fark": 76,
+   "okumaHatasi": 0,
+   "yakalanmayanMutasyon": 0,
+   "bilinen": 7,
+   "farkSinifi246": {
+    "yok": 76
+   },
+   "farkKurala": {
+    "SINIF DIŞI": 76
+   },
+   "farkEtiket": {
+    "BULGU BAŞ MİMAR": 52,
+    "İNCELE YAYGIN": 24
+   },
+   "senaryoBasina": {
+    "c8-ks8-iade-geri-odemesi": {
+     "SINIF DIŞI": 20
+    },
+    "rastgele-s1-1": {
+     "SINIF DIŞI": 17
+    },
+    "rastgele-s1-2": {
+     "SINIF DIŞI": 39
+    }
+   },
+   "ornek": {
+    "SINIF DIŞI": "c8-ks8-iade-geri-odemesi k2:fatura:AS1:acik: program 50000 · kâhin 20000"
+   }
+  }
+ },
+ "r2_kural245_ayrinti": {
+  "c8-ks8-iade-geri-odemesi · Alış İadesi olan tedarikçi (KS9 yolu)": 20,
+  "rastgele-s1-1 · Alış İadesi olan tedarikçi (KS9 yolu)": 17,
+  "rastgele-s1-2 · Alış İadesi olan tedarikçi (KS9 yolu)": 36,
+  "rastgele-s1-2 · carisiz sayaç (takvim:cariKalemSayisi — aynı kontrolde KS9 kalemi)": 3
+ },
+ "r3_legacy_eski_kahinle": {
+  "eski_e77447a_fark": 183,
+  "yeni_3dfb1c7_fark": 183,
+  "yalniz_eskide": 0,
+  "yalniz_yenide": 0,
+  "aciklama": "legacy (2.4.4 kural seti) 2.4.5 koduna karşı: B4 MM6 Tablodaki Nakit Akışı Kasa sütunu vb. 2.4.5 kararıyla bilerek kalkan denetimler — eski ve yeni kâhinde bayt bayt aynı fark kümesi"
+ },
+ "yeniden_uretim": [
+  "HUKUK_LICENSE_URL=http://127.0.0.1:9 node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs            # 2.4.6 (varsayılan)",
+  "… kos.mjs --kural 2.4.5 · … kos.mjs --legacy · … kos.mjs --tohum 3-10 --tur s1 --islem 120",
+  "git archive e77447a test/bagimsiz/cari | tar -x -C <eski>; python3 -I docs/kanit/2026-10-25/246-kahin-cari/esdeger.py <eski>/test/bagimsiz/cari test/bagimsiz/cari 6",
+  "KAHIN_PROGRAM_KOKU=<depo> node <eski>/test/bagimsiz/cari/kos.mjs --legacy   # eski kâhinin legacy fark kümesi"
+ ]
+}

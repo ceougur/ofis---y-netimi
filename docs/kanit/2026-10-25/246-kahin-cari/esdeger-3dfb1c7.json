@@ -1,0 +1,32 @@
+{
+  "ad": "246-kahin-cari/esdeger-3dfb1c7",
+  "komut": "python3 -I docs/kanit/2026-10-25/246-kahin-cari/esdeger.py /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-kahin-cari/esdeger-eski-e77447a/test/bagimsiz/cari test/bagimsiz/cari 6",
+  "commit": "3dfb1c7f6c9a45b9adee57f8a159acc03065fa32",
+  "dal": "is/kahin-cari-246",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T10:27:26.794Z",
+  "sure_sn": 25.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 106,
+    "gecen": 106,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-kahin-cari/esdeger-3dfb1c7.log",
+  "klasor": "/home/user/wt/kahin-cari-246",
+  "ham_cikti_sha256": "b69359afa6f2b92569ef3bfe915657bfb20ad02da0f530c2b369e58dd18814ee",
+  "ham_cikti_bayt": 102
+}
