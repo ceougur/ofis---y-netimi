@@ -12,9 +12,10 @@
   // Adlar Raporlar penceresinin defter sekmelerinden (Cari ekstre, Vade takip, Nakit akış) ayrılsın diye "tablodaki" ile. PDF/Excel başlığı ve dosya adı
   // da bu adlardır (2.4.4 U3; server/routes/reports.mjs TABLE_REPORT_TITLES, aynılığı test/tablo-raporlari-u3-244.test.mjs denetler).
   const KINDS = [
-    ["cari-ekstre", "Tablodaki Kişiler", "Kişi başına tablodaki tutar (borç), kayıt kartından tahsilat ve yürüyen bakiye"],
-    ["vade-takip", "Tablodaki Vadeler", "Tablodaki vadeler ve son tarihler: gecikmiş, bugün, yaklaşan"],
-    ["nakit-akis", "Tablodaki Nakit Akışı", "Dönem başına tablodan beklenen ve gerçekleşen tahsilat, kasa"],
+    // 2.4.5 madde 5: tablodaki tutar muhasebe kaydı değildir (kolon adları da söyler); Tablodaki Nakit Akışı'nda Kasa kolonları yok.
+    ["cari-ekstre", "Tablodaki Kişiler", "Kişi başına tablodaki tutar (borç; muhasebe kaydı değil), kayda bağlı tahsilat ve yürüyen bakiye"],
+    ["vade-takip", "Tablodaki Vadeler", "Tablodaki vadeler ve son tarihler (tutarlar muhasebe kaydı değil): gecikmiş, bugün, yaklaşan"],
+    ["nakit-akis", "Tablodaki Nakit Akışı", "Dönem başına tablodan beklenen (muhasebe kaydı değil) ve gerçekleşen tahsilat"],
   ];
   const money = value => (value === null || value === undefined ? "" : `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)} ₺`);
   const day = ms => (ms === null || ms === undefined || ms === "" ? "" : new Date(ms).toLocaleDateString("tr-TR", { timeZone: "UTC" }));
@@ -185,7 +186,7 @@
     const monthStart = new Date(today.getFullYear(), today.getMonth() - 2, 1);
     const previous = state.filters || {};
     node.innerHTML = `<div class="hof-report-kinds" role="tablist" aria-label="Tablo raporları">${KINDS.map(([id, label, hint]) => `<button type="button" role="tab" data-kind="${id}" aria-selected="${id === state.kind}" title="${esc(hint)}">${esc(label)}</button>`).join("")}</div>
-        <p class="hof-modal-text hof-report-intro">Yalnız <b>Excel/Sheets tablolarınızdaki</b> tutar, vade ve durum kolonlarından üretilir (tüm sayfalar). Aynı kişi birden çok dosyada varsa tek kişi olarak birleşir. Cari, Kasa, Taksit ve Çek/Senet defterlerindeki hareketler için diğer sekmeleri kullanın.</p>
+        <p class="hof-modal-text hof-report-intro">Yalnız <b>Excel/Sheets tablolarınızdaki</b> tutar, vade ve durum kolonlarından üretilir (tüm sayfalar); tablodaki tutarlar muhasebe kaydı değildir. Aynı kişi birden çok dosyada varsa tek kişi olarak birleşir. Cari, Kasa, Taksit ve Çek/Senet defterlerindeki hareketler için diğer sekmeleri kullanın.</p>
         <form class="hof-report-filters" data-filters>
           <label><span>Başlangıç</span><input type="date" data-filter="from" value="${esc(previous.from ?? isoOf(monthStart))}"></label>
           <label><span>Bitiş</span><input type="date" data-filter="to" value="${esc(previous.to || "")}"></label>

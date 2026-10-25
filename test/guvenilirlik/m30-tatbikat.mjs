@@ -22,7 +22,7 @@
 //       kalır); ardından Mutabakat Testi'nde yeni sapma yok ve aynı oturumda Kasa girişi 200
 import { BUYER_VKN } from "../einvoice-mock.mjs";
 import { ADMIN_PASSWORD } from "../helpers.mjs";
-import { companyFacts, digest, fileFacts } from "./m30-olgular.mjs";
+import { companyFacts, digest, fileFacts, SCHEMA } from "./m30-olgular.mjs";
 import { scoped, sendAll } from "./m30-uretici.mjs";
 import { companyDbFile, readRegistry } from "./uretici.mjs";
 
@@ -260,7 +260,7 @@ export async function runDrill({ dir, day, maps, baseline, oldBackups, bootCurre
     const file = fileFacts(companyDbFile(`${dir}/data`, registry.find(e => e.id === company.id) || { id: company.id, dir: "" }));
     const restored = await factsOf(company);
     const diff = stableDiff(baseline.companies[company.code], restored);
-    check(`C9 ${company.code} 2.4.3 yedeği (${last.name}) 2.4.4'e geri yüklendi: şema 32, numara tabanı göçtekiyle aynı`, file.version === 32 && file.tables.includes("staff_members") && file.numberFloor === baseline.files[company.code].numberFloor, { version: file.version, numberFloor: file.numberFloor, expected: baseline.files[company.code].numberFloor });
+    check(`C9 ${company.code} 2.4.3 yedeği (${last.name}) 2.4.4'e geri yüklendi: şema ${SCHEMA}, numara tabanı göçtekiyle aynı`, file.version === SCHEMA && file.tables.includes("staff_members") && file.numberFloor === baseline.files[company.code].numberFloor, { version: file.version, numberFloor: file.numberFloor, expected: baseline.files[company.code].numberFloor });
     check(`C9 ${company.code} geri yüklenen 2.4.3 yedeğinin olguları göç ölçüsüyle (aynı veri, göç açılışta) aynı`, !diff.length, { diff });
     const notice = await noticeOf(company);
     check(`C10 ${company.code} 2.4.3 yedeği geri yüklenince de uyarı VAR; kapatılınca gider`, Boolean(notice?.at) && (await dismissNotice(company, notice)).dismissed === true && (await noticeOf(company)) === null, { notice });

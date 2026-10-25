@@ -1,0 +1,32 @@
+{
+  "ad": "245-son-ekler/birim-yazim",
+  "komut": "node --test test/yazim-duzeni.test.mjs test/static.test.mjs",
+  "commit": "201ffef9a010d68d735b1e3aaa678144a8e84c3d",
+  "dal": "is/son-ekler",
+  "kirli": 11,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T20:03:54.063Z",
+  "sure_sn": 1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 9,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-son-ekler/birim-yazim.log",
+  "klasor": "/home/user/wt/son-ekler",
+  "ham_cikti_sha256": "f21e7fb9a15128b30ee8b8d84a725b08bbe2f511e54057a23440ea31f737f36d",
+  "ham_cikti_bayt": 2538
+}

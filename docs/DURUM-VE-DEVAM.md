@@ -4,6 +4,29 @@
 Önceki oturum: 2.4.3 YAYIMLANDI (v2.4.3, master 163dd5d, PR ceougur/ofis---y-netimi#33; site kılavuzu ceougur/destekofis#19). Kod o günden beri DEĞİŞMEDİ;
 yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
 
+### 000. 2.4.5 BAŞLANGIÇ — DEVAM NOTU (24.10.2026 ~16:30 UTC; kullanıcının sıkıştırma talimatından ÖNCE yazıldı — ÖNCE BUNU OKU)
+- DURUM: 2.4.4 YAYIMLANDI ve KAPANDI (v2.4.4 = master 5187561; PR #34; master CI #867 + Sürüm yayımla #37 yeşil; 5 dosya bayt bayt; eski güncelleyiciler "available"; site
+  ceougur/destekofis#20 birleşti). Ayrıntı CLAUDE.md Açık iş "2.4.4 YAYIMLANDI". Kod değişikliği YOK; çalışma dalı `claude/youthful-euler-fl8ks4` = master + yalnız belge commit'leri
+  (PR birleştiği için dal master'dan yeniden başlatıldı — merged PR kuralı; bundan sonraki PR yeni PR'dır).
+- "BAŞLA" VERİLDİ (kullanıcı, 24.10.2026 ~16:40 UTC: "sohbeti sıkıştır, sonra anayasamızı ve derslerimizi oku sonra başla"): sıkıştırmadan SONRA önce CLAUDE.md (anayasa, kalite çıtası, test kuralı, KANIT KURALI, doğrulama kapısı, dersler 1–41, verimlilik, ajan eforu) baştan okunur, sonra aşağıdaki ilk adımlarla 2.4.5 başlar.
+- "BAŞLA"DA İLK ADIMLAR (sırayla):
+  1. ~~`docs/2.4.5-IS-LISTESI.md` → `docs/2.4.5-IS-LISTESI.md` taşı + BELGE_YOLLARI'na ekle (madde 0a: tools/kanit.mjs + ci.yml paths-ignore + test/kanit-araci.test.mjs; eski araçta kırmızı)~~ YAPILDI 24.10 (kanıt docs/kanit/2026-10-24/245-0a: kırmızı 49/50 false!==true, yeşil 50/50).
+  2. 30 dk rapor işi (CronCreate; RAPOR DÜZENİ arşivde 24.10) + iş listesi çizme düzeni.
+  3. DALGA 0: 0b kâhin önce [XH] (kodu görmeyen ajan). DALGA 1: 6a pil kartı [XH] · 6b tablo kimlik sütunu [M] · 6c tabela adı [H] · 6d ayrıntılı ekstre [H] · kapi-para (1+2+3) [XH] ·
+     kapi-uyari (4+5) [XH] · cari-vade (6) [XH] (dues.mjs çakışması: kapi-uyari önce). Her iş ayrı worktree /home/user/wt/<ad>, dal is/<ad>. Sonra madde 8 (kılavuz/sürüm notu), 9 (doğrulama).
+  4. Açık soru S1 (FIFO; öneri evet) — yanıt yoksa öneri.
+- 2.4.5 KAPSAMI (tek yer: iş listesi): kapı kapatma (1)–(4), Tablodaki Kişiler/Projeksiyon etiketi (5), cari borç Vade + Beklenen Ödeme Tarihi (6), 6a fatura/banka pili (kullanıcı bulgusu:
+  Kayda Git "bulunamadı", Ödendi Say 400, Tahsilat Gir SEÇİLİ kaydın carisine form = PARA RİSKİ; kullanıcı uyarıldı), 6b "Borçlu Telefon" 5.367.715.055,00 (2.4.3 A18 gerilemesi; tablodan WhatsApp
+  açılmıyor), 6c Tabela Adı (müşteri M1; seçenek: yalnız tabela / tabela + firma bilgileri; rapor + ekstre PDF/Excel), 6d Ayrıntılı Cari Ekstre (müşteri M2; fatura kalemleri + ödemeler + genel toplam),
+  madde 7 isteğe bağlı. Tahmin ~3,5–4,5 takvim günü.
+- SONRAKİ SÜRÜM: duşakabin MALİYET HESAP KARTI (müşteri M3; kapsam ve "Excel'deki gibi aynen" kararı CLAUDE.md Açık iş MÜŞTERİ İSTEKLERİ). Excel analizi yalnız not defterinde
+  (`<nd>/dusakabin-analiz/RAPOR.md`, kahin-ciftleri.json; MÜŞTERİ VERİSİ — depoya girmez; kapsayıcı yenilenirse uploads'taki şifreli dosyadan yeniden üretilir, şifreyi kullanıcı verir). Ses kaydı
+  dökülemedi (huggingface.co ağ izni yok) — kullanıcı izin verirse ya da metni yapıştırırsa.
+- SONRA: DEVİR 2.5.0 Aralık'ta (en geç 1 Aralık başla, ~20 Aralık yayın); hatırlatıcı trig_01DE8bFDurzMRT6thbptBrQM 23.11.2026 09:00 TR.
+- KAPSAYICI: Wine 9.0 + mingw windres kurulu; depo derin (unshallow); imza anahtarı uploads'ta; EDM test parolası bağlamda YOK (gerekirse kullanıcıdan dosya olarak istenir).
+- SÜRÜYOR (24.10.2026 ~16:55 UTC): kullanıcı "yapılacak işleri maddele, yapıldıkça üstünü çiz, 30 dk bir ara rapor ver" → rapor işi CronCreate fdff7836 (:07/:37, oturum içi). Taban d2cef7c (BAŞ MİMAR KARARLARI iş listesinde). Ortak ajan kuralları <nd>/ajan-ortak-245.md. DALGA 0+1 AYNI ANDA, 8 ajan, worktree /home/user/wt/<ad> dal is/<ad>: kahin-245 (0b, XH), pil-karti (6a + madde 3 zil/takvim, XH), tablo-hucre (6b, M), tabela (6c, H), ekstre-ayrinti (6d, H), kapi-para (1+2+3, XH), kapi-uyari (4+5, XH), cari-vade (6, XH). Birleşim sırası: kapi-uyari → cari-vade; tabela → ekstre-ayrinti; kâhin dalı adaya ilk. CI 3c7f6f5 (madde 0a) bekleniyor. Eski 2.4.4 worktree'leri (18) kaldırıldı (dallar duruyor; aday ve r31e-b-eski izlenmeyen dosyalı, kaldı).
+- BEKLEYEN YAMA YOK (7bf3691 uygulandı). Not defterinde 2.4.4 teslim klasörü `<nd>/teslim-2.4.4/` (yayındakiyle aynı; silinebilir).
+
 ### 00. 2.4.4 SÜRÜYOR — DEVAM NOTU (22.10.2026 14:40 UTC; kullanıcının /compact talimatından ÖNCE yazıldı — ÖNCE BUNU OKU)
 - KAYNAKLAR: durum tablosu `docs/2.4.4-IS-LISTESI.md` (biten üstü çizili + "Teslim notları": her maddenin sınırı, KÂHİN KURALI, koşu sonuçları); kararlar ve kullanıcı
   soruları CLAUDE.md Açık iş (22.10 satırları; YANIT BEKLEYEN SORU YOK). Ajan kimlikleri ve görevleri: <not defteri>/devam-ajanlar.md. Not defteri:

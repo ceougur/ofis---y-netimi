@@ -1,0 +1,32 @@
+{
+  "ad": "245-tablo-hucre/birim",
+  "komut": "node --test test/tablo-hucre-bicim.test.mjs test/yazim-duzeni.test.mjs test/platform-tasinabilirlik.test.mjs test/kalan-borc-ortak-30a.test.mjs test/kalan-borc-satir-31d.test.mjs test/tablo-borc-e1-e2.test.mjs test/tablo-borc-r31e.test.mjs test/tablo-hucre-bicim.test.mjs",
+  "commit": "d2cef7ce21b0776e2767f8fb610c9be8a4159f5d",
+  "dal": "is/tablo-hucre",
+  "kirli": 3,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T16:41:52.678Z",
+  "sure_sn": 17.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 110,
+    "gecen": 110,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-tablo-hucre/birim.log",
+  "klasor": "/home/user/wt/tablo-hucre",
+  "ham_cikti_sha256": "490e6ff43cee82e98be8f326da742c468ef51c57ceb45e525e4a7c21443253cb",
+  "ham_cikti_bayt": 47172
+}

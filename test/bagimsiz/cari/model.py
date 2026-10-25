@@ -5,7 +5,8 @@
 Programın kodunu GÖRMEDEN, yalnız KARARLAR.md'deki kurallarla (kaynakları: CLAUDE.md "Açık iş" kullanıcı kararları, docs/BANKA-MODULU-PLAN.md,
 KURALLAR-244.md'deki ajan kural metinleri) bir senaryonun (dil "destekofis-cari/1") beklenen sonuçlarını hesaplar.
 
-  python3 -I test/bagimsiz/cari/model.py <senaryo.json> [--mutasyon N] > beklenen.json
+  python3 -I test/bagimsiz/cari/model.py <senaryo.json> [--mutasyon N] [--legacy] > beklenen.json
+  (--legacy: 2.4.4 kural seti — anahtarlar açık sunucuda "2.4.5 kararıyla geçersiz" /1 /2 senaryoları; --gecersiz-mi: senaryo bu sınıfta mı)
 
 Çıktı: {"ad", "denetimler": {anahtar: {"b": beklenen, "e": etiket, "k": kural}}, "belirsiz": [..]}. Anahtarlar koşucunun (kos.mjs) programdan
 okuduğu anahtarlarla aynıdır (KARARLAR.md §4). Yalnız tamsayı kuruş; ağ, saat ve programın hiçbir dosyası kullanılmaz; aynı girdiye bayt bayt
@@ -15,11 +16,24 @@ import json
 import sys
 from collections import defaultdict
 
-DIL = "destekofis-cari/2"
+DIL = "destekofis-cari/3"
 # /2 (2.4.4 31a tur 2, 23.10.2026; kodu görmeyen el): B3 Tablodaki Kişiler BORÇ (U2/E2/E3 — sütun önceliği, söz borç dışı, gün/adet tutar değil, Kalan boş →
 # Toplam Borç, aynı dosya no bir kez), B4 Nakit Akışı Kasa giriş/çıkış = Kasa raporu (MM6), B5 Nihai Tüketici carisi (U1). /1 senaryoları değişmeden koşar.
-DILLER = ("destekofis-cari/1", DIL)
-BIRINCIL = {"KULLANICI", "PLAN", "GIB", "EDM"}
+# /3 (2.4.5 madde 0b, 24.10.2026; kodu görmeyen el — KARARLAR.md §3 "C — 2.4.5"): kayıt tahsilatı kapısı (madde 1, K1), Tablodan Aktar kapısı (madde 2), tablo uyarı
+# kapısı (madde 4), cari borç vadesi + Beklenen Ödeme Tarihi + S1 FIFO Kalan + takvim/zil kalemi (madde 6, K6.1–K6.4). Kural seti "2.4.5" (varsayılan) ya da
+# "2.4.4" (--legacy: anahtarlar açık sunucuda eski kurallar; yalnız "2.4.5 kararıyla geçersiz" /1 /2 senaryoları bu kipte koşar).
+DILLER = ("destekofis-cari/1", "destekofis-cari/2", DIL)
+BIRINCIL = {"KULLANICI", "PLAN", "GIB", "EDM", "BAŞ MİMAR"}
+# 2.4.5 kararıyla geçersiz (/1 /2): tablo para yoluna bağlı işlem içeren senaryo (kayıt tahsilatı POST, Tablodan Aktar) varsayılan kipte koşulmaz (KARARLAR.md C0).
+GECERSIZ_ISLEM = ("kayit_tahsilat", "aktar")
+UFUK_GUN = 7  # K6.3: takvim/zil ufku faturayla aynı — geçmişin tamamı + bugünden 7 gün
+TABLO_TARIH_HATIRLATMA = ("Duruşma Tarihi", "Sözleşme Bitiş", "İcra Son Tarihi")  # madde 4: tutarsız tablo tarihleri KALIR (kullanıcı: duruşma, sözleşme bitiş, icra son tarihi)
+K1_ILETI = "Kayıt tahsilatı kapatıldı; tahsilat Cari'den girilir."
+
+
+def gecersiz_245(senaryo):
+    """/1 /2 senaryosu 2.4.5 kararıyla geçersiz mi (tablo para yolu: kayıt tahsilatı POST ya da Tablodan Aktar)."""
+    return senaryo.get("dil") != DIL and any(a.get("islem") in GECERSIZ_ISLEM for a in senaryo.get("adimlar", []))
 
 MUTASYONLAR = {
     1: "5a: sığmayan tahsilat bölünür (kartı doldurana kadar parçası taşınır)",
@@ -100,6 +114,54 @@ MUTASYONLAR = {
     70: "A1 + Z6: yalın sayı değerli 'Ödeme Sözü' / 'Söz' / 'Taahhüt' sütunu tutar sayılır (borç olur)",
     71: "Y1/N4/K3 muafiyeti öncesi: borç/alacak/kalan/bakiye/toplam sözcüklü söz-ailesi başlığı ('Taahhüt Alacağı', 'Taahhüt Bakiyesi') yalın söz sayılır",
     72: "K3 gün/adet/ay: '(Ay)' söz-ailesi miktar sütunu ('Taahhüt Miktarı (Ay)') söz tutarı sayılır",
+    # /3 (2.4.5; KARARLAR.md C)
+    73: "S1: elle Borç/Alacak ve Açılış kuyruğa girmez (bağsız ödeme yalnız faturaları kapatır; elle kaydın Kalan'ı tutarı)",
+    74: "S1: Açılış Bakiyesi kuyruğa girmez",
+    75: "S1: kuyruk Vade Tarihi'ne göre dizilir (kayıt tarihi yerine)",
+    76: "S1: aynı tarihte yazım sırası ters",
+    77: "S1: bağlı ödeme (Kapatılacak Fatura) de en eskiden dağıtılır",
+    78: "S1: silinen tahsilat Kalan'ı geri açmaz (kuyrukta kalır)",
+    80: "K6.3: kalem tutarı kaydın tutarı (Kalan değil)",
+    81: "K6.3: kalem tarihi Vade Tarihi (Beklenen Ödeme Tarihi'ne kaymaz)",
+    82: "K6.3: Beklenen Ödeme Tarihi'nde etikete ' (Ödeme Sözü)' eklenmez",
+    83: "K6.3: ufuk yok (bugünden 7 günden sonraki kalem de görünür)",
+    84: "K6.3: Kalan'ı 0 olan kayıt da kalem",
+    85: "K6.3: yalnız Vade Tarihi kalem açar (Beklenen Ödeme Tarihi tek başına açmaz)",
+    86: "K6.3: cari görüntüleme yetkisi olmayan kullanıcı cari kalemlerini görür",
+    87: "K6.3: 'Ödendi Say' (settle) cari kalemini kabul eder ve kapatır",
+    88: "K6.1: Vade / Beklenen Ödeme Tarihi kaydın tarihinden önce olabilir (400 yok)",
+    89: "K6.1: tahsilat (in) gönderilen Vade Tarihi'ni kaydeder",
+    90: "K6.4: Düzenle (yalnız tutar/tarih) vade alanlarını siler",
+    91: "K1: kayıt tahsilatı kapısı yok (POST 200, Kasa'ya girer)",
+    92: "K1: eski kayıt tahsilatının silinmesi de kapalı (DELETE ret)",
+    93: "K1: Silinenler'den geri yüklenen kayıt tahsilatı Kasa'ya dönmez",
+    94: "Madde 2: Tablodan Aktar kapısı yok (POST 200, kart açılır)",
+    95: "Madde 2: eski aktarımın Geri Al'ı da kapalı",
+    96: "Madde 4: tablonun tutarlı kalemleri (ödeme günü, aidat, söz) Takvim'de kalır",
+    97: "Madde 4: tablonun tutarsız tarih hatırlatmaları (duruşma, sözleşme bitiş, icra son tarihi) da kalkar",
+    98: "Madde 4: Vade Takip'te tablo tutarlı kalemleri kalır",
+    99: "K6.3: Nakit Akış Projeksiyonu cari vadesini katar",
+    100: "K6.3: yön ters (carinin borcu 'out')",
+    101: "S1 borç tarafı: elle Alacak / alacak yönlü Açılış ödemelerle kapanmaz (yalnız alış faturaları)",
+    102: "K6.1: biçimsiz tarih kabul edilir",
+    103: "K6.4: yedekten geri yüklemede vade alanları boş gelir",
+    104: "K6.4: Silinenler'den geri yüklenen elle kayıt vade alanlarını yitirir",
+    105: "K1: kayıt tahsilatı düzeltmesi (PUT /payments/:id) açık",
+    109: "K6.5: Beklenen Ödeme Tarihi Vade Tarihi'nden önce → 400",
+    114: "KS7: faturasız stok Satış İadesi bağsız kapatıcı değil (D1 eski hata sınıfı)",
+    115: "KS7: Değersiz Alacak Yaz bağsız kapatıcı değil (D1 eski hata sınıfı)",
+    116: "KS7: Şüpheli Alacağa Al da kapatıcı (bakiye değişmediği hâlde borçları kapatır)",
+    118: "KS7.1: tedarikçiye nedensiz stok çıkışı ('Stok satışı') alış iadesi gibi bağsız ödeme sayılır",
+    119: "§3.11b (a): tahsilat şüpheli kaydın kalanını düşürmez (değersiz sınırı alınan − değersiz)",
+    120: "§3.11b / K3: kayıt tarihinden ÖNCE tarihli alacak satırı da şüpheliden düşer",
+    121: "§3.11b (b): faturaya bağlı tahsilat da şüpheliden düşer",
+    110: "K6.5: açılış satırı yokken açılış vadesi kabul edilir (opening-missing yok)",
+    111: "K6.5: kapanmış dönemdeki kaydın vade alanları değiştirilebilir",
+    112: "K6.5: Mevcut Borç kartlı caride kalem tutarı kart kapsamı düşülmeden Kalan",
+    113: "K6.5: Mevcut Borç kartlı caride Kalan kart kapsamını içermez (Kalan − kapsam)",
+    106: "KS5: ufkun sınır günü (bugün + 7) takvimde yok (hariç)",
+    107: "KS4: Kasa sütunları Tablodaki Nakit Akışı'nda kalır (Kasa raporuyla aynı)",
+    108: "KS4: Kasa yetkisi olmayan kullanıcıya Tablodaki Nakit Akışı'nda Kasa notu kalır",
 }
 
 
@@ -278,11 +340,25 @@ NOT = "not"  # Y1/Y3: borç kolonu yok ya da ana tutar belirlenemiyor — borç 
 
 
 class Model:
-    def __init__(self, senaryo, mut=0):
+    def __init__(self, senaryo, mut=0, kural="2.4.5"):
         if senaryo.get("dil") not in DILLER:
             raise SystemExit("senaryo dili %s değil" % "/".join(DILLER))
         self.s = senaryo
         self.mut = mut
+        # /3: kural seti — "2.4.5" (varsayılan; kapılar anahtarla açılır) ya da "2.4.4" (--legacy: geçersiz /1 /2 senaryoları anahtarlar açık sunucuda eski kurallarla)
+        self.kural = kural
+        self.v3 = senaryo.get("dil") == DIL
+        acik_hepsi = kural == "2.4.4"
+        # K1 + K4.1 (BAŞ MİMAR 24.10.2026): config.legacyCasePayments / legacyTableTransfer / legacyTableDues — ürün varsayılanı KAPALI; --legacy'de üçü AÇIK
+        self.anahtar = {"legacyCasePayments": acik_hepsi, "legacyTableTransfer": acik_hepsi, "legacyTableDues": acik_hepsi}
+        if not acik_hepsi:
+            self.anahtar.update({k: bool(v) for k, v in (senaryo.get("anahtar") or {}).items()})
+        self.hareketler = {}       # /3: ad -> {cari, tur: acilis|borc|alacak|tahsilat|odeme, tutar, tarih, seq, vade, beklenen, aktif, gonderilen}
+        self.odemeler = {}         # /3: adım id -> {cari, tutar, tarih, seq, fatura, aktif} (kind out)
+        self.kayitOdeme = {}       # /3: kayıt tahsilatı adım id -> {kayit, tutar, tarih, aktif}
+        self.yedekler = {}         # /3: yedek adı -> durum kopyası
+        self.kapaticilar = {}      # /3 KS7: adım id -> {cari, tur: stok_iade|degersiz|alis_iade, tutar, tarih, seq, aktif} (bağsız kapatıcılar)
+        self.supheliler = {}       # /3 KS7: şüpheli kaydı adı -> {cari, tutar, tarih, kalan}
         SOZ_ONEK[0] = mut == 62
         SOZ_DAR[0] = mut == 64
         SOZ_TAM_TAAHHUT[0] = mut == 65
@@ -332,7 +408,16 @@ class Model:
 
     def bakiye(self, cari):
         c = self.cariler[cari]
-        b = c["acilis"] + self.borclar[cari]
+        b = c["acilis"] if c.get("acilisYon", "borc") == "borc" else -c["acilis"]
+        for h in self.hareketler.values():  # /3: elle Borç (+) / Alacak (−); açılış yukarıda; tahsilat aşağıda (tahsilatlar)
+            if h["cari"] == cari and h["aktif"]:
+                b += h["tutar"] if h["tur"] == "borc" else -h["tutar"] if h["tur"] == "alacak" else 0
+        for o in self.odemeler.values():  # /3: cariye ödeme (kind out) borç tarafını kapatır → bakiye artar
+            if o["aktif"] and o["cari"] == cari:
+                b += o["tutar"]
+        for x in self.kapaticilar.values():  # /3 KS7: satış iadesi / değersiz alacak cari alacağı (−), alış iadesi cari borcu (+); şüpheliye alma bakiyeyi DEĞİŞTİRMEZ
+            if x["aktif"] and x["cari"] == cari:
+                b += x["tutar"] if x["tur"] in ("alis_iade", "stok_satis") else -x["tutar"]
         for f in self.faturalar.values():
             if f["cari"] != cari or f["durum"] != "kesildi":
                 continue
@@ -361,17 +446,43 @@ class Model:
         return [t for t in sorted(self.tahsilatlar.values(), key=lambda x: (x["tarih"], x["seq"]))
                 if t["aktif"] and t["cari"] == cari and t["kart"] is None and t["fatura"] is None]
 
-    # ───────────────────────── fatura açıkları (§7 + UX18)
-    def aciklar(self, cari):
-        hedef = sorted([(f["tarih"], f["seq"], ad) for ad, f in self.faturalar.items()
-                        if f["cari"] == cari and f["durum"] == "kesildi" and f["tur"] == "satis" and not f["taksitli"]])
-        acik = {ad: self.faturalar[ad]["tutar"] for _, _, ad in hedef}
+    # ───────────────────────── fatura açıkları (§7 + UX18) ve /3 S1 tek yükümlülük kuyruğu
+    def _sira_anahtari(self, tarih, seq, vade=None):
+        """S1: kayıt tarihine, aynı tarihte yazım sırasına göre (Vade / Beklenen Ödeme Tarihi sırayı DEĞİŞTİRMEZ). Mutant 75: vadeye göre; 76: yazım sırası ters."""
+        t = (vade or tarih) if self.mut == 75 else tarih
+        return (t, -seq if self.mut == 76 else seq)
+
+    def kuyruk(self, cari):
+        """S1 ([KULLANICI 5 dk yetkisi] + BAŞ MİMAR KARARI 24.10.2026; PLAN §8.10 "Otomatik (En Eski)", §4.3/2 "en eski yükümlülük"): carinin ALACAK tarafı
+        (carinin borçları) tek kuyrukta — taksitsiz satış faturası, elle Borç, borç yönlü Açılış Bakiyesi — kayıt tarihine, aynı tarihte yazım sırasına göre. Bağlı ödemeler
+        (faturaya bağlı tahsilat / evrak, faturanın kendi evrakı) yalnız kendi kalemini kapatır ([AJAN] fazlası havuza); bağsız ödemeler (tahsilat, çek/senet, iade artanı)
+        en eskiden dağıtılır. Karşılıksız evrak hiçbir şeyi kapatmaz (B2.2). Elle kayıt yoksa sonuç /1–/2 kâhininin fatura açığıyla AYNI (faturaların bugünkü kapaması
+        DEĞİŞMEZ). Dönüş: anahtar (fatura adı / iade adı / hareket adı) → kalan (kuruş)."""
+        oge = [(self._sira_anahtari(f["tarih"], f["seq"]), ad, f["tutar"]) for ad, f in self.faturalar.items()
+               if f["cari"] == cari and f["durum"] == "kesildi" and f["tur"] == "satis" and not f["taksitli"]]
+        fatura_anahtar = {ad for _, ad, _ in oge}
+        if self.mut != 73:
+            for hn, h in self.hareketler.items():
+                if h["cari"] != cari or not h["aktif"]:
+                    continue
+                if h["tur"] == "borc" or (h["tur"] == "acilis" and h["yon"] == "borc" and self.mut != 74):
+                    oge.append((self._sira_anahtari(h["tarih"], h["seq"], h.get("vade") or None), hn, h["tutar"]))
+        # KS7.1 [BAŞ MİMAR; 2.0.17 kuralı "SATIŞ faturası, elle Borç, stoktan satış ödeme değildir"]: stok formundan açık hesap çıkışı (iade nedeni yok, "Stok satışı") —
+        # tedarikçiye de olsa — carinin YÜKÜMLÜLÜĞÜDÜR (alacak tarafı kuyruğunda); mutant 118: alış iadesi gibi bağsız ödeme sayılır
+        for xn, x in self.kapaticilar.items():
+            if x["aktif"] and x["cari"] == cari and x["tur"] == "stok_satis" and self.mut != 118:
+                oge.append((self._sira_anahtari(x["tarih"], x["seq"]), xn, x["tutar"]))
+        oge.sort()
+        sira = [ad for _, ad, _ in oge]
+        acik = {ad: t for _, ad, t in oge}
         bagli = defaultdict(int)
         havuz = 0
         for t in self.tahsilatlar.values():
-            if not t["aktif"] or t["cari"] != cari or t["kart"] is not None:
+            if t["cari"] != cari or t["kart"] is not None:
                 continue
-            if t["fatura"] and t["fatura"] in acik:
+            if not t["aktif"] and not (self.mut == 78 and t.get("silindi")):
+                continue
+            if t["fatura"] and t["fatura"] in fatura_anahtar and self.mut != 77:
                 bagli[t["fatura"]] += t["tutar"]
             else:
                 havuz += t["tutar"]
@@ -381,21 +492,31 @@ class Model:
             if e["durum"] == "karsiliksiz" and self.mut != 7:
                 continue
             f = e["fatura"]
-            if f and f in acik:
+            if f and f in fatura_anahtar:
                 bagli[f] += e["tutar"]
             elif f and f in self.faturalar and self.faturalar[f]["durum"] == "iptal" and self.mut == 8:
                 continue
             else:
                 havuz += e["tutar"]
-        for _, _, ad in hedef:
+        # KS7 [BAŞ MİMAR] (a) faturasız stok Satış İadesi ve (b) Değersiz Alacak Yaz = BAĞSIZ kapatıcı (en eskiden; faturalar dahil tek kuyruk — (d));
+        # Şüpheli Alacağa Al kapatıcı DEĞİL (bakiye değişmez). Mutant 114: satış iadesi kapatmaz; 115: değersiz kapatmaz; 116: şüpheliye alma da kapatır.
+        for x in self.kapaticilar.values():
+            if x["aktif"] and x["cari"] == cari and x["tur"] in ("stok_iade", "degersiz"):
+                if (x["tur"] == "stok_iade" and self.mut == 114) or (x["tur"] == "degersiz" and self.mut == 115):
+                    continue
+                havuz += x["tutar"]
+        if self.mut == 116:
+            havuz += sum(sp["tutar"] for sp in self.supheliler.values() if sp["cari"] == cari)
+        for ad in sira:
+            if ad not in fatura_anahtar:
+                continue
             kapanan = min(acik[ad], bagli[ad])
             acik[ad] -= kapanan
             if self.mut != 6:
                 havuz += bagli[ad] - kapanan
-        # satıştan iade (§7 kural 5–6): asıl faturanın açığından düşer, artanı en eski açık satış faturasına
+        # satıştan iade (§7 kural 5–6): asıl faturanın açığından düşer, artanı kuyruğun en eskisine
         iadeler = sorted([(f["tarih"], f["seq"], ad) for ad, f in self.faturalar.items()
                           if f["cari"] == cari and f["durum"] == "kesildi" and f["tur"] == "iade"])
-        sira = [ad for _, _, ad in hedef]
         if self.mut == 9:
             sira = list(reversed(sira))
         for _, _, iad in iadeler:
@@ -418,6 +539,65 @@ class Model:
             if f["cari"] == cari and f["durum"] == "kesildi" and f["tur"] == "satis" and f["taksitli"]:
                 acik[ad] = f["tutar"]
         return acik
+
+    def kuyruk_borc(self, cari):
+        """S1 BORÇ tarafı (simetrik; carinin alacakları): alış faturası, elle Alacak, alacak yönlü Açılış Bakiyesi — aynı sıra. Bağlı ödeme (faturaya bağlı kind out)
+        kendi faturasını, bağsız ödeme ve cariye ciro edilen evrak [YAYGIN] en eskiden kapatır. Mutant 101: elle Alacak / açılış kuyruğa girmez."""
+        oge = [(self._sira_anahtari(f["tarih"], f["seq"]), ad, f["tutar"]) for ad, f in self.faturalar.items()
+               if f["cari"] == cari and f["durum"] == "kesildi" and f["tur"] == "alis"]
+        fatura_anahtar = {ad for _, ad, _ in oge}
+        if self.mut not in (73, 101):
+            for hn, h in self.hareketler.items():
+                if h["cari"] != cari or not h["aktif"]:
+                    continue
+                if h["tur"] == "alacak" or (h["tur"] == "acilis" and h["yon"] == "alacak" and self.mut != 74):
+                    oge.append((self._sira_anahtari(h["tarih"], h["seq"], h.get("vade") or None), hn, h["tutar"]))
+        oge.sort()
+        sira = [ad for _, ad, _ in oge]
+        acik = {ad: t for _, ad, t in oge}
+        bagli = defaultdict(int)
+        havuz = 0
+        for o in self.odemeler.values():
+            if o["cari"] != cari or not o["aktif"]:
+                continue
+            if o["fatura"] and o["fatura"] in fatura_anahtar and self.mut != 77:
+                bagli[o["fatura"]] += o["tutar"]
+            else:
+                havuz += o["tutar"]
+        for e in self.evraklar.values():
+            if e["durum"] == "ciro" and e["ciroCari"] == cari:
+                havuz += e["tutar"]
+        for x in self.kapaticilar.values():
+            # KS7 simetriği: AÇIK alış iadesi nedenli ('preturn') stok çıkışı = bağsız ödeme (formda yolu yok — BİLİNEN SINIR, senaryoda yok); KS7.1: nedensiz "Stok satışı"
+            # ödeme DEĞİL (yalnız mutant 118 dünyasında ödeme sayılır)
+            if x["aktif"] and x["cari"] == cari and (x["tur"] == "alis_iade" or (x["tur"] == "stok_satis" and self.mut == 118)):
+                havuz += x["tutar"]
+        for ad in sira:
+            if ad in fatura_anahtar:
+                kapanan = min(acik[ad], bagli[ad])
+                acik[ad] -= kapanan
+                havuz += bagli[ad] - kapanan
+        if self.mut == 9:
+            sira = list(reversed(sira))
+        for ad in sira:
+            d = min(acik[ad], havuz)
+            acik[ad] -= d
+            havuz -= d
+        return acik
+
+    def aciklar(self, cari):
+        """Satış faturası (ve iade) açıkları — /1–/2 kâhininin B2.1 sonucu; kuyruğun fatura anahtarları."""
+        return {k: v for k, v in self.kuyruk(cari).items() if k in self.faturalar}
+
+    def kalanlar(self, cari):
+        """/3 K6.2: carinin elle Borç/Alacak ve Açılış kayıtlarının Kalan'ı (iki taraf). Mutant 73: dağıtım yok (Kalan = tutar)."""
+        out = {}
+        for taraf in (self.kuyruk(cari), self.kuyruk_borc(cari)):
+            out.update({k: v for k, v in taraf.items() if k in self.hareketler})
+        for hn, h in self.hareketler.items():
+            if h["cari"] == cari and h["aktif"] and h["tur"] in ("acilis", "borc", "alacak") and hn not in out:
+                out[hn] = h["tutar"]  # mutant 73/74/101: kuyruğa girmeyen kayıt kapanmaz
+        return out
 
     def satir_borcu(self, sk, hucre):
         """K3 satırın borcu (kuruş), YOK (borç tutarı sütunu yok) ya da None (kural tanımsız — denetlenmez)."""
@@ -886,9 +1066,62 @@ class Model:
         self.d("adim:%s:onay" % a["id"], bool(adlar), "KULLANICI", "bağ sürekliliği (3) güvenli eşleşme yoksa onay; hepsi güvenliyse onaysız")
         self.d("adim:%s:uyariAdlari" % a["id"], adlar, "KULLANICI", "bağ sürekliliği (3) önizleme eşleşmeyen kayıtları adıyla söyler")
 
+    # ───────────────────────── /3 K6.1: Vade Tarihi / Beklenen Ödeme Tarihi doğrulaması
+    @staticmethod
+    def tarih_gecerli(v):
+        """K6.1 biçim: YYYY-AA-GG ve gerçek bir gün."""
+        import datetime
+        import re
+        if not isinstance(v, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", v):
+            return False
+        try:
+            datetime.date.fromisoformat(v)
+        except ValueError:
+            return False
+        return True
+
+    def vade_hatasi(self, tarih, alanlar):
+        """K6.1 [BAŞ MİMAR]: Vade Tarihi ya da Beklenen Ödeme Tarihi kaydın tarihinden ÖNCE olamaz → 400 (`field`); biçimsiz tarih → 400. Boş = yok.
+        alanlar: [(değer, alan adı)]. Dönüş: hatalı alanın adı ya da None. Mutant 88: önce olabilir; 102: biçim denetlenmez."""
+        for deger, alan in alanlar:
+            if deger in (None, ""):
+                continue
+            if not self.tarih_gecerli(deger):
+                if self.mut == 102:
+                    continue
+                return alan
+            if deger < tarih and self.mut != 88:
+                return alan
+        # K6.5 [BAŞ MİMAR]: Beklenen Ödeme Tarihi Vade Tarihi'nden ÖNCE olabilir (erken ödeme sözü; Xero/Sage expected date serbest) — mutant 109: 400
+        if self.mut == 109 and len(alanlar) == 2 and alanlar[0][0] and alanlar[1][0] and alanlar[1][0] < alanlar[0][0]:
+            return alanlar[1][1]
+        return None
+
+    def _ret_400(self, a, alan, kod=None):
+        self.d("adim:%s:http" % a["id"], 400, "BAŞ MİMAR", "K6.1 Vade / Beklenen Ödeme Tarihi kaydın tarihinden önce ya da biçimsiz → 400")
+        if alan:
+            self.d("adim:%s:alan" % a["id"], alan, "YAYGIN", "K6.1 400 yanıtının `field`'ı hatalı alanın adı (alanın değeri kararda yazılı değil — İNCELE)")
+        if kod:
+            self.d("adim:%s:kod" % a["id"], kod, "BAŞ MİMAR", "K6.5 açılış satırı yokken açılış vadesi → 400 opening-missing")
+        return ("ret", "BAŞ MİMAR")
+
     def cari_ac(self, a):
+        tarih = a.get("tarih", self.bugun)
+        if self.v3 and a.get("acilis"):
+            alan = self.vade_hatasi(tarih, [(a.get("acilisVade"), "openingDueDate"), (a.get("acilisBeklenen"), "openingExpectedDate")])
+            if alan:
+                return self._ret_400(a, alan)
+        elif self.v3 and (a.get("acilisVade") or a.get("acilisBeklenen")) and self.mut != 110:
+            return self._ret_400(a, None, kod="opening-missing")  # K6.5 [BAŞ MİMAR]: açılış satırı yoksa açılış vadesi → 400 opening-missing; cari açılmaz
+        yon = a.get("acilisYon", "borc")
         self.cariler[a["ad"]] = {"tur": a.get("tur", "musteri"), "isim": a["isim"], "kayit": a.get("kayit"),
-                                 "acilis": kurus(a["acilis"]) if a.get("acilis") else 0, "tckn": a.get("tckn")}
+                                 "acilis": kurus(a["acilis"]) if a.get("acilis") else 0, "tckn": a.get("tckn"), "acilisYon": yon}
+        if a.get("acilis"):
+            self.hareketler["acilis:" + a["ad"]] = {"cari": a["ad"], "tur": "acilis", "yon": yon, "tutar": kurus(a["acilis"]), "tarih": tarih, "seq": self.yeni_seq(),
+                                                     "vade": a.get("acilisVade") or "", "beklenen": a.get("acilisBeklenen") or "", "aktif": True}
+            if yon == "alacak":
+                self.mizanBilinir = False  # alacak yönlü açılışın TDHP karşılığı bu kâhinde yok
+        return "ok"
 
     # ───────────────────────── /2 B5: Nihai Tüketici carisi (U1)
     NT_AD = "Nihai Tüketici"
@@ -945,13 +1178,17 @@ class Model:
 
     def tahsilat(self, a):
         f = a.get("fatura")
+        nakit = a.get("yol", "nakit") != "havale"
         self.tahsilatlar[a["id"]] = {"cari": a["cari"], "tutar": kurus(a["tutar"]), "tarih": a.get("tarih", self.bugun),
-                                     "seq": self.yeni_seq(), "fatura": f, "kart": None, "aktif": True}
-        if a.get("yol", "nakit") == "havale":
+                                     "seq": self.yeni_seq(), "fatura": f, "kart": None, "aktif": True, "nakit": nakit}
+        # /3: hareket kaydı (silme / geri yükleme; K6.1 tahsilat Vade alanı taşımaz — gönderilirse kaydedilmez)
+        self.hareketler[a["id"]] = {"cari": a["cari"], "tur": "tahsilat", "ref": self.tahsilatlar[a["id"]], "aktif": True,
+                                    "gonderilen": bool(a.get("vade") or a.get("beklenen"))}
+        if not nakit:
             self.mizanBilinir = False  # havalenin karşı hesabı (banka alt hesabı) bu kâhinde yok
             return "ok"
         self.kasa += kurus(a["tutar"])
-        self.kasa_hareket.append((a.get("tarih", self.bugun), kurus(a["tutar"]), 0))
+        self.kasa_hareket.append((a.get("tarih", self.bugun), kurus(a["tutar"]), 0, a["id"]))
         return "ok"
 
     def kasa_cikis(self, a):
@@ -959,13 +1196,243 @@ class Model:
         x = kurus(a["tutar"])
         self.kasa -= x
         if self.mut != 22:
-            self.kasa_hareket.append((a.get("tarih", self.bugun), 0, x))
+            self.kasa_hareket.append((a.get("tarih", self.bugun), 0, x, None))
         self.kasa_gider = getattr(self, "kasa_gider", 0) + x
         return "ok"
 
-    def borc(self, a):
-        self.borclar[a["cari"]] += kurus(a["tutar"])
+    def borc(self, a, tur="borc"):
+        """Elle Borç (kind debt) / /3 elle Alacak (kind credit) — K6.1 Vade Tarihi (`vade`) ve Beklenen Ödeme Tarihi (`beklenen`), isteğe bağlı."""
+        t = a.get("tarih", self.bugun)
+        if self.v3:
+            alan = self.vade_hatasi(t, [(a.get("vade"), "dueDate"), (a.get("beklenen"), "expectedDate")])
+            if alan:
+                return self._ret_400(a, alan)
+        if tur == "borc":
+            self.borclar[a["cari"]] += kurus(a["tutar"])
+        self.hareketler[a["id"]] = {"cari": a["cari"], "tur": tur, "yon": tur, "tutar": kurus(a["tutar"]), "tarih": t, "seq": self.yeni_seq(),
+                                    "vade": a.get("vade") or "", "beklenen": a.get("beklenen") or "", "aktif": True}
         self.mizanBilinir = False  # elle borç dekontunun karşı hesabı planda yok
+        return "ok"
+
+    def alacak(self, a):
+        return self.borc(a, tur="alacak")
+
+    def odeme(self, a):
+        """/3: cariye ödeme (kind out, nakit) — borç tarafında bağlı (fatura) ya da bağsız (S1)."""
+        x = kurus(a["tutar"])
+        t = a.get("tarih", self.bugun)
+        self.odemeler[a["id"]] = {"cari": a["cari"], "tutar": x, "tarih": t, "seq": self.yeni_seq(), "fatura": a.get("fatura"), "aktif": True}
+        self.hareketler[a["id"]] = {"cari": a["cari"], "tur": "odeme", "ref": self.odemeler[a["id"]], "aktif": True, "gonderilen": bool(a.get("vade") or a.get("beklenen"))}
+        self.kasa -= x
+        self.kasa_hareket.append((t, 0, x, a["id"]))
+        self.mizanBilinir = False  # ödemenin TDHP karşılığı (B 320 / A 100) bu kâhinde denetlenmez
+        return "ok"
+
+    def _hareket_ref(self, h):
+        return h.get("ref")
+
+    def hareket_sil(self, a):
+        """/3: carideki hareketi sil (Silinenler'e gider). Tahsilat/ödeme Kasa'dan düşer; elle kayıt kuyruktan çıkar."""
+        h = self.hareketler.get(a["hareket"])
+        if h is None or not h["aktif"] or h["tur"] == "acilis":
+            return ("ret", "YAYGIN")
+        h["aktif"] = False
+        r = self._hareket_ref(h)
+        if r is not None:
+            r["aktif"] = False
+            r["silindi"] = True
+            if h["tur"] == "tahsilat" and r.get("nakit", True):
+                self.kasa -= r["tutar"]
+            elif h["tur"] == "odeme":
+                self.kasa += r["tutar"]
+            self.kasa_hareket = [x for x in self.kasa_hareket if x[3] != a["hareket"]]
+        return "ok"
+
+    def hareket_geri_yukle(self, a):
+        """/3: Silinenler'den geri yükle — aynı tutar, tarih ve (K6.4) aynı Vade / Beklenen Ödeme Tarihi; kimlik aynı kalır (ORTAM yoklama)."""
+        h = self.hareketler.get(a["hareket"])
+        if h is None or h["aktif"]:
+            return ("ret", "YAYGIN")
+        h["aktif"] = True
+        if self.mut == 104 and h["tur"] in ("borc", "alacak"):
+            h["vade"], h["beklenen"] = "", ""
+        r = self._hareket_ref(h)
+        if r is not None:
+            r["aktif"] = True
+            r.pop("silindi", None)
+            if h["tur"] == "tahsilat" and r.get("nakit", True):
+                self.kasa += r["tutar"]
+                self.kasa_hareket.append((r["tarih"], r["tutar"], 0, a["hareket"]))
+            elif h["tur"] == "odeme":
+                self.kasa -= r["tutar"]
+                self.kasa_hareket.append((r["tarih"], 0, r["tutar"], a["hareket"]))
+        return "ok"
+
+    def hareket_duzenle(self, a):
+        """/3 Düzenle (K6.4 taşır): adımda verilen alanlar değişir (tutar, tarih, vade, beklenen); verilmeyenler AYNEN kalır. Doğrulama K6.1 (yeni durum üzerinden)."""
+        h = self.hareketler.get(a["hareket"])
+        if h is None or not h["aktif"] or h["tur"] not in ("borc", "alacak"):
+            return ("ret", "YAYGIN")
+        kilit = getattr(self, "kilit", "")
+        if kilit and (h["tarih"] <= kilit or a.get("tarih", "9999") <= kilit) and self.mut != 111:
+            return ("ret", "BAŞ MİMAR")  # K6.5 [BAŞ MİMAR]: kapanmış dönemdeki kaydın vade alanları kilitli (hareket düzeltmesi kuralı) — ret, alanlar aynı
+        yeni = dict(h)
+        if "tutar" in a:
+            yeni["tutar"] = kurus(a["tutar"])
+        if "tarih" in a:
+            yeni["tarih"] = a["tarih"]
+        for alan in ("vade", "beklenen"):
+            if alan in a:
+                yeni[alan] = a[alan] or ""
+            elif self.mut == 90:
+                yeni[alan] = ""
+        hata = self.vade_hatasi(yeni["tarih"], [(yeni["vade"], "dueDate"), (yeni["beklenen"], "expectedDate")]) if any(k in a for k in ("tarih", "vade", "beklenen")) else None
+        if hata:
+            return self._ret_400(a, hata)
+        h.update(yeni)
+        if h["tur"] == "borc":
+            self.borclar[h["cari"]] += 0
+        return "ok"
+
+    def donem_kilitle(self, a):
+        """/3 K6.5: dönem kilidi (PUT /api/admin/period-lock {lockedUntil}); boş tarih kilidi açar."""
+        self.kilit = a.get("tarih") or ""
+        return "ok"
+
+    # ───────────────────────── /3 KS7: bağsız kapatıcılar (faturasız stok iadesi, değersiz alacak) ve şüpheli alacak
+    def _kapatici(self, a, tur):
+        self.kapaticilar[a["id"]] = {"cari": a["cari"], "tur": tur, "tutar": kurus(a["tutar"]), "tarih": a.get("tarih", self.bugun), "seq": self.yeni_seq(), "aktif": True}
+        self.etiketCari[a["cari"]].add("ks7")
+        self.mizanBilinir = False  # stok iadesi / değersiz alacak yevmiyesi (610 / 153 / 659 / 128) bu kâhinde denetlenmez
+        return "ok"
+
+    def stok_iade(self, a):
+        """KS7 (a): faturasız stok Satış İadesi (müşteri carisinde alacak satırı; ödeme şekli Cari Hesap) — bağsız kapatıcı."""
+        return self._kapatici(a, "stok_iade")
+
+    def alis_iade(self, a):
+        """KS7 (a) simetriği: AÇIK alış iadesi nedenli ('preturn') faturasız stok çıkışı (tedarikçide borç satırı) — borç tarafında bağsız ödeme. KS7.1: formda yolu yok
+        (BİLİNEN SINIR) — kural modelde, senaryoda kullanılmaz."""
+        return self._kapatici(a, "alis_iade")
+
+    def stok_satis_hesap(self, a):
+        """KS7.1 [BAŞ MİMAR]: stok formundan açık hesap çıkışı, iade nedeni YOK ("Stok satışı") — tedarikçiye de olsa carinin yükümlülüğü (borçlanır), ödeme değildir."""
+        return self._kapatici(a, "stok_satis")
+
+    def supheli_durum(self, cari):
+        """PLAN §3.11b/2 (a)–(c) + 2.3.0-SUPHELI-KABUL K3/K7 (kâhin belgesi, kod yazılmadan; ders 40): carinin şüpheli kayıtlarının KALANI. Kayıt tarihinden SONRA (aynı gün
+        dahil) gelen alacak satırı — serbest tahsilat, alınan evrak, elle Alacak (Alacak Yaz), iade faturası, satış iadesi, taksit tahsilatı — ÖNCE şüpheli tutardan düşer (en eski
+        kayıttan); faturaya bağlı tahsilat (Kapatılacak Fatura, (b)) KENDİLİĞİNDEN normal cari hesaba işlenir (düşmez); kayıt tarihinden ÖNCE tarihli satır düşmez. Aynı gün sırası:
+        al → değersiz (kendi kaydından) → alacak satırı. Değersiz Alacak Yaz kendi kaydından düşer. Kalan = alınan − düşen tahsilatlar − değersiz. Mutant 119: tahsilat düşmez;
+        120: kayıttan önce tarihli satır da düşer; 121: faturaya bağlı tahsilat da düşer. Dönüş: kayıt adı → kalan (kuruş)."""
+        olay = []
+        for ad, sp in self.supheliler.items():
+            if sp["cari"] == cari:
+                olay.append((sp["tarih"], 0, sp["seq"], "al", ad, sp["tutar"]))
+        for x in self.kapaticilar.values():
+            if x["aktif"] and x["cari"] == cari and x["tur"] == "degersiz":
+                olay.append((x["tarih"], 2, x["seq"], "deg", x["supheli"], x["tutar"]))
+        alacak = []
+        for t in self.tahsilatlar.values():
+            if t["aktif"] and t["cari"] == cari and not (t["fatura"] and self.mut != 121):
+                alacak.append((t["tarih"], t["seq"], t["tutar"]))
+        for e in self.evraklar.values():
+            if e["cari"] == cari and e["durum"] not in ("silindi", "karsiliksiz"):
+                alacak.append((e["tarih"], e["seq"], e["tutar"]))
+        for h in self.hareketler.values():
+            if h["cari"] == cari and h["aktif"] and h["tur"] == "alacak":
+                alacak.append((h["tarih"], h["seq"], h["tutar"]))
+        for f in self.faturalar.values():
+            if f["cari"] == cari and f["durum"] == "kesildi" and f["tur"] == "iade":
+                alacak.append((f["tarih"], f["seq"], f["tutar"]))
+        for x in self.kapaticilar.values():
+            if x["aktif"] and x["cari"] == cari and x["tur"] == "stok_iade":
+                alacak.append((x["tarih"], x["seq"], x["tutar"]))
+        if self.mut != 119:
+            for tarih, seq, tutar in alacak:
+                olay.append(("0000-00-00" if self.mut == 120 else tarih, 3, seq, "alacak", None, tutar))
+        kalan, sira = {}, []
+        for _tarih, _sinif, _seq, tur, ad, tutar in sorted(olay, key=lambda o: (o[0], o[1], o[2])):
+            if tur == "al":
+                kalan.setdefault(ad, tutar)
+                sira.append(ad)
+            elif tur == "deg":
+                kalan[ad] -= tutar
+            else:
+                hedefler = list(sira) if self.mut != 120 else [n for n in self.supheliler if self.supheliler[n]["cari"] == cari]
+                for n in hedefler:
+                    kalan.setdefault(n, self.supheliler[n]["tutar"])
+                    d = min(kalan[n], tutar)
+                    kalan[n] -= d
+                    tutar -= d
+                    if not tutar:
+                        break
+        for n, sp in self.supheliler.items():
+            if sp["cari"] == cari:
+                kalan.setdefault(n, sp["tutar"])
+        return kalan
+
+    def supheli_al(self, a):
+        """KS7 (b) + PLAN §3.11b/2 + K1: Şüpheli Alacağa Al (B 128 / A 120) — cari bakiyesi DEĞİŞMEZ, kapatıcı DEĞİL. Tutar en çok carinin borç bakiyesi − zaten şüphelide olan."""
+        if a["cari"] not in self.cariler:
+            return ("ret", "PLAN")  # cari açılmadıysa (ör. açılışı reddedildi) kayıt yok — program 404; mutant koşularında da çökmeden ret
+        acik = sum(v for v in self.supheli_durum(a["cari"]).values() if v > 0)
+        if kurus(a["tutar"]) > self.bakiye(a["cari"]) - acik:
+            return ("ret", "PLAN")
+        self.supheliler[a["ad"]] = {"cari": a["cari"], "tutar": kurus(a["tutar"]), "tarih": a.get("tarih", self.bugun), "seq": self.yeni_seq()}
+        self.mizanBilinir = False
+        return "ok"
+
+    def supheli_kalan(self, ad):
+        sp = self.supheliler.get(ad)
+        return None if sp is None else self.supheli_durum(sp["cari"]).get(ad, 0)
+
+    def degersiz(self, a):
+        """KS7 (b) + PLAN §3.11b/3 + K7: Değersiz Alacak Yaz — "cari bakiyesi o tutar kadar kapanır"; bağsız kapatıcı (en eskiden). Tutar ≤ kaydın KALAN şüpheli tutarı (girildiği
+        andaki kalan: düşen tahsilatlardan sonra) — aşarsa ret `doubtful-writeoff-exceeds`; kalan 0 (tamamı tahsil / değersiz) → ret `doubtful-closed`; tarih kayıttan önce olamaz."""
+        sp = self.supheliler.get(a["supheli"])
+        if sp is None or a.get("tarih", self.bugun) < sp["tarih"]:
+            return ("ret", "PLAN")
+        kalan = self.supheli_kalan(a["supheli"])
+        if kalan <= 0 or kurus(a["tutar"]) > kalan:
+            kod = "doubtful-closed" if kalan <= 0 else "doubtful-writeoff-exceeds"
+            self.d("adim:%s:kod" % a["id"], kod, "PLAN", "§3.11b/3 + K7: değersiz tutarı ≤ kalan şüpheli (kalan = alınan − şüpheliden düşen tahsilatlar − değersiz); kalan 0 → kayıt kapalı")
+            return ("ret", "PLAN")
+        r = self._kapatici(dict(a, cari=sp["cari"]), "degersiz")
+        self.kapaticilar[a["id"]]["supheli"] = a["supheli"]
+        return r
+
+    def cari_kalem_odendi(self, a):
+        """K6.3 [BAŞ MİMAR]: cari kaleminde "Ödendi Say" YOK — settle yalnız `due|` kalemini tanır; cari kalemi para kaydıyla kapanır → ret, kalem durur. Mutant 87."""
+        if self.mut == 87:
+            h = self.hareketler.get(a["hareket"])
+            if h:
+                h["odendiSay"] = True
+            return "ok"
+        return ("ret", "BAŞ MİMAR")
+
+    def sunucu_yeniden(self, a):
+        """/3: program kapanıp aynı veriyle yeniden açılır; anahtarlar (config.legacyCasePayments / legacyTableTransfer) adımdakiler (verilmeyen KAPALI)."""
+        if self.kural != "2.4.4":
+            self.anahtar = {"legacyCasePayments": False, "legacyTableTransfer": False, "legacyTableDues": False}
+            self.anahtar.update({k: bool(v) for k, v in (a.get("anahtar") or {}).items()})
+        return "ok"
+
+    def yedek_al(self, a):
+        """/3 K6.4: yerel yedek — o anki bütün durum."""
+        import copy
+        self.yedekler[a["ad"]] = copy.deepcopy({k: v for k, v in self.__dict__.items() if k not in ("s", "out", "belirsiz", "yedekler", "mut", "kural", "v3", "anahtar", "seq", "kullanicilar")})
+        return "ok"
+
+    def yedek_geri_yukle(self, a):
+        """/3 K6.4: yedekten geri yükleme — durum yedekteki gibi; Vade / Beklenen Ödeme Tarihi taşınır (mutant 103: boş gelir)."""
+        import copy
+        y = copy.deepcopy(self.yedekler[a["yedek"]])
+        self.__dict__.update(y)
+        if self.mut == 103:
+            for h in self.hareketler.values():
+                if h["tur"] in ("acilis", "borc", "alacak"):
+                    h["vade"], h["beklenen"] = "", ""
         return "ok"
 
     def kart_tahsilat(self, a):
@@ -977,10 +1444,20 @@ class Model:
                                  "fatura": None, "kart": a["kayit"], "aktif": True, "dogrudanKart": True}
         kt["tasinan"].append(self.tahsilatlar[tid])
         self.kasa += kurus(a["tutar"])
-        self.kasa_hareket.append((a.get("tarih", self.bugun), kurus(a["tutar"]), 0))
+        self.kasa_hareket.append((a.get("tarih", self.bugun), kurus(a["tutar"]), 0, None))
         return "ok"
 
+    def _k1_kapali(self, a, kod="case-payments-closed", ileti=True):
+        """K1 [BAŞ MİMAR] (madde 1; kullanıcı KARAR ~21:35 UTC (1) "kayıt tahsilatı yeni giriş/düzeltme kapalı"): 410 + kod (+ ileti). Veri değişmez."""
+        self.d("adim:%s:http" % a["id"], 410, "BAŞ MİMAR", "K1 kapı yanıtı 410")
+        self.d("adim:%s:kod" % a["id"], kod, "BAŞ MİMAR", "K1 gövde `code`")
+        if ileti:
+            self.d("adim:%s:ileti" % a["id"], K1_ILETI, "BAŞ MİMAR", "K1 gövde `error` (Türkçe ileti)")
+        return ("ret", "BAŞ MİMAR")
+
     def kayit_tahsilat(self, a):
+        if not self.anahtar["legacyCasePayments"] and self.mut != 91:
+            return self._k1_kapali(a)
         if self.sekmeler and a["kayit"] not in self.kayitlar and self.mut != 48:
             # N6 (karar sahibi 23.10.2026): tabloda artık olmayan (eski karttaki) kayda yazım reddedilir (409), sessizce kaybolmaz
             return ("ret", "KULLANICI")
@@ -988,11 +1465,64 @@ class Model:
         self.kayitTahsilat[a["kayit"]] += kurus(a["tutar"]) * max(1, n)
         self.kasa += kurus(a["tutar"])
         if self.mut != 19:
-            self.kasa_hareket.append((a.get("tarih", self.bugun), kurus(a["tutar"]), 0))
-        self.mizanBilinir = False
+            self.kasa_hareket.append((a.get("tarih", self.bugun), kurus(a["tutar"]), 0, a["id"]))
+        self.kayitOdeme[a["id"]] = {"kayit": a["kayit"], "tutar": kurus(a["tutar"]), "tarih": a.get("tarih", self.bugun), "aktif": True}
+        if not self.v3:
+            self.mizanBilinir = False  # /1–/2: karşı hesap o kâhinde yoktu; /3: B 100 / A 602 (madde 1 "defterde (A 602)")
+        return "ok"
+
+    def kayit_tahsilat_duzenle(self, a):
+        """K1: eski kayıt tahsilatının düzeltmesi (PUT /api/workspace/payments/:id) KAPALI — kullanıcı "düzeltme kapalı" + K1 kodu. Mutant 105: açık."""
+        o = self.kayitOdeme.get(a["odeme"])
+        if not self.anahtar["legacyCasePayments"] and self.mut != 105:
+            return self._k1_kapali(a)
+        if o is None or not o["aktif"]:
+            return ("ret", "YAYGIN")
+        fark = kurus(a["tutar"]) - o["tutar"]
+        o["tutar"] += fark
+        self.kayitTahsilat[o["kayit"]] += fark
+        self.kasa += fark
+        self.kasa_hareket = [(t, (o["tutar"] if r == a["odeme"] else g), c, r) for t, g, c, r in self.kasa_hareket]
+        return "ok"
+
+    def kayit_tahsilat_put(self, a):
+        """K1 metni "POST ve PUT /api/workspace/cases/:key/payments kapalı": bu yolda düzeltme yazılmaz. [YAYGIN] yol programda hiç yoksa 405 (yoklama 2.4.4: 405) — ikisi de ret."""
+        self.d("adim:%s:http" % a["id"], {"catal": [404, 405, 410]}, "BAŞ MİMAR", "KS1: PUT /cases/:key/payments 2.4.4'te yok — 405/404 kalabilir (410 da kapalı) — veri değişmez")
+        return ("ret", "BAŞ MİMAR")
+
+    def kayit_tahsilat_sil(self, a):
+        """K1: DELETE AÇIK (eski veri düzeltilebilsin) — Kasa'dan ve defterden düşer, kaydın tahsilatı azalır. Mutant 92: kapalı."""
+        o = self.kayitOdeme.get(a["odeme"])
+        if o is None or not o["aktif"]:
+            return ("ret", "YAYGIN")
+        if self.mut == 92:
+            return ("ret", "BAŞ MİMAR")
+        o["aktif"] = False
+        self.kayitTahsilat[o["kayit"]] -= o["tutar"]
+        self.kasa -= o["tutar"]
+        self.kasa_hareket = [x for x in self.kasa_hareket if x[3] != a["odeme"]]
+        return "ok"
+
+    def kayit_tahsilat_geri_yukle(self, a):
+        """K1: Silinenler'den geri yükleme AÇIK — Kasa'ya ve defterine (A 602) aynen döner. Mutant 93: Kasa'ya dönmez."""
+        o = self.kayitOdeme.get(a["odeme"])
+        if o is None or o["aktif"]:
+            return ("ret", "YAYGIN")
+        o["aktif"] = True
+        self.kayitTahsilat[o["kayit"]] += o["tutar"]
+        if self.mut != 93:
+            self.kasa += o["tutar"]
+            self.kasa_hareket.append((o["tarih"], o["tutar"], 0, a["odeme"]))
         return "ok"
 
     def aktar(self, a):
+        if not self.anahtar["legacyTableTransfer"] and self.mut != 94:
+            # Madde 2 [BAŞ MİMAR K1 "aynı düzen"]: Tablodan Aktar yazım ucu 410 + code "table-transfer-closed"; kart açılmaz, tahsilat taşınmaz
+            if a.get("araya"):
+                self.tahsilat(dict(a["araya"], id=a["id"] + "-araya"))
+            self._k1_kapali(a, kod="table-transfer-closed", ileti=False)
+            self.d("adim:%s:durum" % a["id"], "ret", "BAŞ MİMAR", "madde 2 Tablodan Aktar kapalı")
+            return None
         hesap_ici = a.get("hesapIci", True)
         mevcut_borc = a.get("mevcutBorc", True)
         if a.get("araya"):
@@ -1068,6 +1598,10 @@ class Model:
         return sonuc
 
     def geri_al(self, a):
+        if self.mut == 95:
+            return ("ret", "KULLANICI")
+        if a["aktar"] not in self.aktarimlar:
+            return ("ret", "YAYGIN")  # aktarım hiç olmadı (kapı kapalıydı)
         for ad in [c for c, v in self.cariler.items() if v.get("ortuk") == a["aktar"]]:
             self.cariler[ad]["silindi"] = True  # aktarımın açtığı cari geri almayla kalkar [YAYGIN]
         for no in self.aktarimlar[a["aktar"]]["kartlar"]:
@@ -1150,7 +1684,7 @@ class Model:
         e["durum"] = "tahsil"
         self.kasa += e["tutar"]
         if self.mut != 19:
-            self.kasa_hareket.append((a.get("tarih", self.bugun), e["tutar"], 0))
+            self.kasa_hareket.append((a.get("tarih", self.bugun), e["tutar"], 0, None))
         return "ok"
 
     def ciro(self, a):
@@ -1200,6 +1734,178 @@ class Model:
             self.etiketCari[f["cari"]].add("iptal-bag-duser")
         return "ok"
 
+    # ───────────────────────── /3 kontrol yardımcıları
+    def elle_kuyrukta(self, cari, taraf):
+        """S1: carinin o tarafının kuyruğunda elle kayıt (Borç/Alacak) ya da Açılış var mı."""
+        for h in self.hareketler.values():
+            if h["cari"] != cari or not h["aktif"]:
+                continue
+            if taraf == "borc" and (h["tur"] == "borc" or (h["tur"] == "acilis" and h["yon"] == "borc")):
+                return True
+            if taraf == "alacak" and (h["tur"] == "alacak" or (h["tur"] == "acilis" and h["yon"] == "alacak")):
+                return True
+        return False
+
+    @staticmethod
+    def _gun(iso):
+        import datetime
+        return datetime.date.fromisoformat(iso)
+
+    def _iso_hucre(self, metin):
+        t = str(metin or "").strip()
+        if len(t) == 10 and t[2] == "." and t[5] == ".":
+            return "%s-%s-%s" % (t[6:], t[3:5], t[:2])
+        return t if tarih_mi(t) else None
+
+    def kontrol_v3(self, a, k):
+        """/3 madde 6 (K6.1–K6.4 + S1) denetimleri ve fatura/evrak takvim kalemleri."""
+        import datetime
+        bugun = self._gun(self.bugun)
+        ufuk = (bugun + datetime.timedelta(days=UFUK_GUN)).isoformat()
+        vt_ufuk = (bugun + datetime.timedelta(days=UFUK_GUN - 1)).isoformat()  # Vade Takip "open": ufkun kesin içi (sınır günü denetlenmez)
+        proj_son = (bugun + datetime.timedelta(days=30)).isoformat()
+        ajan_neden = {"ux18-fazla", "iptal-bag-duser", "geri-yukle", "bag-degisti", "iade", "kendi-evrak-iptal", "bagsiz-karsiliksiz"}
+        kalan_cache = {}
+        kalem_say, sayim_kesin, proj_mut = 0, True, 0
+        for hn, h in self.hareketler.items():
+            c = self.cariler.get(h["cari"])
+            if not c or c.get("silindi"):
+                continue
+            if h["tur"] in ("tahsilat", "odeme"):
+                if h["aktif"] and h.get("gonderilen"):
+                    # K6.1: tahsilat/ödeme alan taşımaz — gönderilirse kaydedilmez (alan boş ya da yanıtta hiç yok)
+                    for alan in ("vade", "beklenen"):
+                        self.d("%s:hareket:%s:%s" % (k, hn, alan), "gönderildi" if self.mut == 89 else {"catal": ["", "alan yok"]}, "BAŞ MİMAR",
+                               "K6.1 tahsilat/ödeme Vade / Beklenen Ödeme Tarihi taşımaz (gönderilirse kaydedilmez)")
+                continue
+            self.d("%s:hareket:%s:var" % (k, hn), bool(h["aktif"]), "BAŞ MİMAR", "K6.4 Silinenler / geri yükleme (kayıt kimliği aynı)")
+            if not h["aktif"]:
+                self.d("%s:takvim:hareket:%s" % (k, hn), "yok", "BAŞ MİMAR", "K6.3 silinen kayıt kalem değildir")
+                continue
+            kartlar_c = [kt for kt in self.kartlar.values() if kt["aktif"] and kt["cari"] == h["cari"]]
+            kapsam, kart_odemeli = 0, False
+            if kartlar_c:
+                # K6.5 [BAŞ MİMAR] "Carinin Mevcut Borcu" kartı: Kalan kapsanan kısmı İÇERİR (defter kalanı — kartın ödemeleri de kapamada [YAYGIN PLAN §4.3/2 1b]);
+                # takvim / Vade Takip tutarı = Kalan − kartın açık kapsamı (kapsanan borç kartın taksitleriyle bir kez). Tanımlı yalnız: kartların hepsi mevcut borç kartı,
+                # carinin tek etkin elle kaydı / açılışı (borç yönlü), faturasız — öbür durumlar tanımsız (denetlenmez).
+                tek = [x for x, y in self.hareketler.items() if y["cari"] == h["cari"] and y["aktif"] and y["tur"] in ("acilis", "borc", "alacak")]
+                faturali = any(f["cari"] == h["cari"] and f["durum"] == "kesildi" for f in self.faturalar.values())
+                if not (all(kt["mevcut"] for kt in kartlar_c) and len(tek) == 1 and not faturali and h["yon"] == "borc"):
+                    sayim_kesin = False
+                    continue
+                odenen = [sum(t["tutar"] for t in kt["tasinan"]) + kt.get("parca", 0) for kt in kartlar_c]
+                kapsam = sum(max(0, kt["toplam"] - o) for kt, o in zip(kartlar_c, odenen))
+                kart_odemeli = any(odenen)
+                kalan = max(0, h["tutar"] - sum(t["tutar"] for t in self.tahsilatlar.values() if t["aktif"] and t["cari"] == h["cari"]))
+                if self.mut == 113:
+                    kalan = max(0, kalan - kapsam)
+            else:
+                if h["cari"] not in kalan_cache:
+                    kalan_cache[h["cari"]] = self.kalanlar(h["cari"])
+                kalan = kalan_cache[h["cari"]].get(hn, h["tutar"])
+            etkin = kalan if (self.mut == 112 or not kartlar_c) else max(0, kalan - kapsam)  # takvim / Vade Takip tutarı
+            capraz = self.elle_kuyrukta(h["cari"], "borc") and self.elle_kuyrukta(h["cari"], "alacak")
+            et = "AJAN" if self.etiketCari[h["cari"]] & ajan_neden else ("YAYGIN" if kart_odemeli else "BAŞ MİMAR")
+            self.d("%s:hareket:%s:kalan" % (k, hn), kalan, et, "S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası)"
+                   + (" · KS2: aynı caride iki taraf — elle Alacak karşı taraf yükümlülüğü, mahsup yok" if capraz else ""))
+            self.d("%s:hareket:%s:vade" % (k, hn), h["vade"], "BAŞ MİMAR", "K6.2 hareketlerde Vade Tarihi (boş = yok)")
+            self.d("%s:hareket:%s:beklenen" % (k, hn), h["beklenen"], "BAŞ MİMAR", "K6.2 hareketlerde Beklenen Ödeme Tarihi (boş = yok)")
+            # K6.3 takvim / zil kalemi
+            if self.mut == 81:
+                tarih = h["vade"] or h["beklenen"]
+            elif self.mut == 85:
+                tarih = h["vade"]
+            else:
+                tarih = h["beklenen"] or h["vade"]
+            acik_mi = etkin > 0 or self.mut == 84
+            if tarih and etkin > 0 and tarih <= proj_son:
+                proj_mut += 1
+            # KS5 [BAŞ MİMAR]: ufuk geçmişin tamamı + bugün + 7 gün DAHİL (days <= 7); mutant 106: bugün+7 hariç
+            if acik_mi and tarih and (tarih <= ufuk or self.mut == 83) and not (self.mut == 106 and tarih == ufuk) and not h.get("odendiSay"):
+                yon = "in" if h["yon"] == "borc" else "out"
+                etiket = ("Tahsil Edilecek Borç" if yon == "in" else "Ödenecek Borç") + (" (Ödeme Sözü)" if h["beklenen"] and self.mut != 82 else "")
+                if self.mut == 100:
+                    yon = "out" if yon == "in" else "in"
+                gun = (self._gun(tarih) - bugun).days if self.tarih_gecerli(tarih) else 0  # biçimsiz tarih yalnız mutant 102 dünyasında
+                kalem = {"amount": h["tutar"] if self.mut == 80 else etkin, "dueDate": tarih, "direction": yon, "label": etiket,
+                         "state": "overdue" if gun < 0 else "today" if gun == 0 else "upcoming", "days": gun, "cari": h["cari"], "person": c["isim"]}
+                kalem_say += 1
+            else:
+                kalem = "yok"
+            et_k = "BAŞ MİMAR" if kartlar_c and et == "YAYGIN" else et  # K6.5: kart kapsamı düşülmüş tutar kartın ödemelerinden bağımsız (Σ = bakiye)
+            self.d("%s:takvim:hareket:%s" % (k, hn), kalem, et_k, "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan"
+                   + (" − Mevcut Borç kartının açık kapsamı (K6.5)" if kartlar_c else "") + "; ufuk geçmiş + 7 gün")
+            if kalem != "yok" and tarih <= vt_ufuk:
+                self.d("%s:vadeTakip:hareket:%s" % (k, hn), {"amount": kalem["amount"], "date": tarih, "direction": kalem["direction"]}, et_k,
+                       "K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir")
+            elif kalem == "yok" and not (acik_mi and tarih):
+                self.d("%s:vadeTakip:hareket:%s" % (k, hn), "yok", et_k, "K6.3 kalem olmayan kayıt Vade Takip'te yok")
+        if sayim_kesin:
+            self.d("%s:takvim:cariKalemSayisi" % k, kalem_say, "BAŞ MİMAR", "K6.3 takvimdeki cari kalemlerinin sayısı")
+        self.d("%s:projeksiyon:cari" % k, proj_mut if self.mut == 99 else 0, "BAŞ MİMAR", "K6.3 Nakit Akış Projeksiyonu cari vadesini KATMAZ (BİLİNEN SINIR 2.5.x)")
+        for ad, u in self.kullanicilar.items():
+            if "accounts.view" in u["kaldir"]:
+                self.d("%s:yetkisizTakvim:%s:cariKalem" % (k, ad), kalem_say if self.mut == 86 else 0, "BAŞ MİMAR", "K6.3 cari kalemleri yalnız accounts.view yetkisi olana")
+        # fatura kalemleri (aynen; [YAYGIN] vadesi gelen açık fatura kalemi açık tutarıdır, vade = belge tarihi (vade günü 0), ufuk aynı)
+        for fad, f in self.faturalar.items():
+            c = self.cariler.get(f["cari"])
+            if not c or c.get("silindi") or f["tur"] not in ("satis", "alis") or f["taksitli"]:
+                continue
+            if any(kt["aktif"] and kt["cari"] == f["cari"] for kt in self.kartlar.values()):
+                continue
+            if f["tur"] == "alis" and f["durum"] == "kesildi":
+                acik = self.kuyruk_borc(f["cari"]).get(fad, 0)
+                s1 = self.elle_kuyrukta(f["cari"], "alacak")
+                self.d("%s:fatura:%s:acik" % (k, fad), acik, "BAŞ MİMAR" if s1 or "ks7" in self.etiketCari[f["cari"]] else "PLAN",
+                       "S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme")
+            elif f["durum"] == "kesildi":
+                acik = self.aciklar(f["cari"]).get(fad, 0)
+            else:
+                acik = 0
+            if acik > 0 and f["tarih"] <= ufuk:
+                v = {"amount": acik, "direction": "in" if f["tur"] == "satis" else "out"}
+            else:
+                v = "yok"
+            self.d("%s:takvim:fatura:%s" % (k, fad), v, "YAYGIN", "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)")
+        if a.get("uyari"):
+            for ead, e in self.evraklar.items():
+                if e["cari"] is None:
+                    continue
+                v = {"amount": e["tutar"], "direction": "in"} if e["durum"] == "portfoy" and e["tarih"] <= ufuk else "yok"
+                self.d("%s:takvim:cek:%s" % (k, ead), v, "YAYGIN", "madde 4 'çek kalemleri aynen': portföydeki alınan evrak vadesinde kalem")
+        if a.get("mizanKarsilastir"):
+            self.d("%s:mizanEsit" % k, True, "BAŞ MİMAR", "S1/K6: Yevmiye DEĞİŞMEZ (vade bilgi alanı) — mizan %s ile aynı" % a["mizanKarsilastir"])
+
+    def kontrol_tablo_245(self, a, k):
+        """2.4.5 madde 4 [KULLANICI KARAR ~21:35 UTC (4)]: zil / Tahsilat Takvimi / Vade Takip / Projeksiyon'da tablodan TUTARLI kalem (ödeme günü, aidat, ödeme sözü) YOK;
+        tablonun TUTARSIZ tarih hatırlatmaları (duruşma, sözleşme bitiş, icra son tarihi) KALIR."""
+        import datetime
+        tarihli = [no for no in self.kayitlar if any(n == no and (sk["basliklar"] is None or self.vade_tarihli(sk, c)) for sk in self.sekmeler for n, c in sk["satirlar"])]
+        self.d("%s:takvim:tabloTutarli" % k, len(tarihli) if self.mut == 96 else 0, "KULLANICI", "madde 4: Takvim'de tablodan tutarlı kalem yok")
+        for no in self.kayitlar:
+            self.d("%s:takvim:kalemTutar:%s" % (k, no), (1 if no in tarihli else 0) if self.mut == 96 else 0, "KULLANICI", "madde 4: kaydın Takvim'deki tablo tutarı 0")
+        self.d("%s:vadeTakip:tablo" % k, len(tarihli) if self.mut == 98 else 0, "KULLANICI", "madde 4: Vade Takip'te tablodan tutarlı kalem yok")
+        self.d("%s:projeksiyon:tablo" % k, 0, "KULLANICI", "madde 4: Nakit Akış Projeksiyonu tablo kalemi katmaz")
+        self.d("%s:projeksiyon:tabloSecenek" % k, len(tarihli) if self.mut == 96 else 0, "KULLANICI", "madde 4: 'Tablo' seçeneği kalkar (table=1 de tablo kalemi yok)")
+        if a.get("uyari"):
+            bugun = self._gun(self.bugun)
+            son = (bugun + datetime.timedelta(days=UFUK_GUN - 1)).isoformat()
+            for no in self.kayitlar:
+                lst = set()
+                for sk in self.sekmeler:
+                    if sk["tur"] != "serbest" or not sk["basliklar"]:
+                        continue
+                    for n, c in sk["satirlar"]:
+                        if n != no:
+                            continue
+                        for h in TABLO_TARIH_HATIRLATMA:
+                            t = self._iso_hucre((c or {}).get(h))
+                            if h in sk["basliklar"] and t and self.bugun <= t <= son:
+                                lst.add(h)
+                v = [] if self.mut == 97 else sorted(lst)
+                self.d("%s:takvim:deadline:%s" % (k, no), v, "KULLANICI", "madde 4 + KS6: tutarsız tarih hatırlatmaları KALIR (duruşma / sözleşme bitiş / icra son tarihi); ödeme tarihi sütunları (Son Ödeme, söz tarihi) deadlines'a DÜŞMEZ")
+                self.d("%s:vadeTakip:deadline:%s" % (k, no), v, "KULLANICI", "madde 4: Vade Takip'te tutarsız tablo tarihleri KALIR")
+
     # ───────────────────────── kontrol
     def kontrol(self, a):
         k = a["id"]
@@ -1218,9 +1924,10 @@ class Model:
                        "AJAN" if self.etiketCari[ad] & {"5a-sonraki-kucuk"} else "KULLANICI", "B1.2 taksit dışı kalan tahsilatlar")
             acik = self.aciklar(ad)
             ajan = self.etiketCari[ad] & {"ux18-fazla", "iptal-bag-duser", "geri-yukle", "bag-degisti", "iade", "kendi-evrak-iptal", "bagsiz-karsiliksiz"}
+            s1 = self.v3 and (self.elle_kuyrukta(ad, "borc") or "ks7" in self.etiketCari[ad])  # KS7 (d): kapatıcılar faturaları da kapatır (tek kuyruk)
             for fad, v in acik.items():
-                self.d("%s:fatura:%s:acik" % (k, fad), v, "AJAN" if ajan else "KULLANICI",
-                       "B2.1 açık = tutar − bağlı − en eski kapama" + (" (ajan ayrıntısı: %s)" % ",".join(sorted(ajan)) if ajan else ""))
+                self.d("%s:fatura:%s:acik" % (k, fad), v, "AJAN" if ajan else ("BAŞ MİMAR" if s1 else "KULLANICI"),
+                       "B2.1 açık = tutar − bağlı − en eski kapama" + (" · S1 elle kayıtla tek kuyruk" if s1 else "") + (" (ajan ayrıntısı: %s)" % ",".join(sorted(ajan)) if ajan else ""))
             for fad, f in self.faturalar.items():
                 if f["cari"] == ad and f["durum"] == "iptal":
                     self.d("%s:fatura:%s:durum" % (k, fad), "iptal", "PLAN", "B2.5 iptal")
@@ -1275,6 +1982,10 @@ class Model:
             if getattr(self, "kasa_gider", 0):
                 m["770"] += self.kasa_gider
                 m["100"] -= self.kasa_gider
+            for o in self.kayitOdeme.values():  # /3 madde 1: eski kayıt tahsilatı Kasa'da ve defterde (A 602) aynen [BAŞ MİMAR]
+                if o["aktif"]:
+                    m["100"] += o["tutar"]
+                    m["602"] -= o["tutar"]
             for e in self.evraklar.values():
                 if e["durum"] == "silindi":
                     continue
@@ -1291,6 +2002,9 @@ class Model:
                     m["320"] += e["tutar"]
                     m[h] -= e["tutar"]
             for kod in sorted(set(m) | {"100", "101", "120", "121", "320", "600"}):
+                if kod == "602":
+                    self.d("%s:mizan:%s" % (k, kod), m.get(kod, 0), "BAŞ MİMAR", "madde 1: kayıt tahsilatı B 100 / A 602 (eski satırlar defterde aynen)")
+                    continue
                 self.d("%s:mizan:%s" % (k, kod), m.get(kod, 0), "PLAN", "B2.6 §3.11a yevmiye")
         # 5c: Tablodaki Kişiler — bir dosya no'nun tahsilatı bir kez (kayıt tahsilatı + bağlı carinin bütün tahsilatları, kartta olanlar dahil)
         kisiler_a = self.kisiler()
@@ -1307,7 +2021,7 @@ class Model:
             if cari:
                 alacak += sum(t["tutar"] for t in self.tahsilatlar.values() if t["aktif"] and t["cari"] == cari)
                 dogrudan = any(t.get("dogrudanKart") for t in self.tahsilatlar.values() if t["aktif"] and t["cari"] == cari)
-            if alacak or len(kay["sekmeler"]) > 1 or kay["isim"] in self.bag_kopan_adlar:
+            if alacak or len(kay["sekmeler"]) > 1 or kay["isim"] in self.bag_kopan_adlar or (self.v3 and any(x["kayit"] == no for x in self.kayitOdeme.values())):
                 ayni_ad = sum(1 for x in self.kayitlar.values() if x["isim"] == kay["isim"]) > 1
                 if ayni_ad and kay["kimlikler"] and self.ad_cok_kimlikli(kay["isim"]):
                     ayni_ad = False  # C3 [KULLANICI]: aynı ad farklı geçerli kimlik ayrı kişidir — kişinin tahsilatı ayrı satırda (Y2 senaryosu)
@@ -1392,7 +2106,12 @@ class Model:
                 b = self.tablo_borcu(no)
                 if not tarihli and isinstance(b, int) and any("sözleşme" in kelimeler(h) for h in sk["basliklar"]):
                     # SÖZLEŞME TARİHİ: yalnız Sözleşme Tarihi dolu satırda vade kalemi YOK (Takvim'de görünmez); Açılış Bakiyesi kalemden dolduğundan denetlenmez
-                    self.d("%s:kalemVar:%s" % (k, no), False, "KULLANICI", "SÖZLEŞME TARİHİ vade tarihi değildir — vade kalemi açmaz")
+                    if self.kural == "2.4.4":
+                        self.d("%s:kalemVar:%s" % (k, no), False, "KULLANICI", "SÖZLEŞME TARİHİ vade tarihi değildir — vade kalemi açmaz")
+                    continue
+                if self.kural != "2.4.4":
+                    # 2.4.5 madde 3/4 + K4.1 (BAŞ MİMAR): /2'nin takvimden okuyan denetimleri (kalem / kalemVar / kalemSoz / acilis — "önce cari açın" Açılış Bakiyesi = takvim
+                    # kaleminin Kalan Borç'u) 2.4.5 kararıyla GEÇERSİZ (C0); madde 4'ü kontrol_tablo_245 denetler. --legacy'de (legacyTableDues açık) eski kuralla koşar.
                     continue
                 if not tarihli or not (isinstance(b, int) or b == NOT):
                     continue
@@ -1427,23 +2146,38 @@ class Model:
                 k4_toplam = kalem[0]
             self.d("%s:k4:kisiler" % k, {"catal": [k4_toplam, k4_toplam - k4_negatif]} if k4_negatif else k4_toplam, "KULLANICI",
                    "B4b K4 + TAKVİM KALEMİ: Tablodaki Kişiler satır borcunu gösterir" + (" (Z2 eksi Kalan: eksi ya da 0 — ÇATAL)" if k4_negatif else ""))
+            # 2.4.5 (K4.1): k4:takvim (/2 B4b, takvim) GEÇERSİZ — Takvim'de tablo tutarı yok (madde 4: takvim:tabloTutarli / kalemTutar). Tablodaki Vadeler / Nakit Akışı
+            # (tablo raporları — madde 5 yalnız etiket) TAKVİM KALEMİ toplamını gösterir.
             if kalem is not None:
-                for anahtar in ("k4:takvim", "k4:vade", "k4:akis"):
+                for anahtar in (("k4:takvim", "k4:vade", "k4:akis") if self.kural == "2.4.4" else ("k4:vade", "k4:akis")):
                     self.d("%s:%s" % (k, anahtar), kalem[0] if len(kalem) == 1 else {"catal": kalem}, "KULLANICI",
                            "TAKVİM KALEMİ: kalem tutarı = min(dönem tutarı, Kalan Borç); Kalan boşsa dönem tutarı; dönem kolonu yoksa satır borcu")
-            if not_n is not None:
-                # K2 (04:09): not Tahsilat Takvimi'nde de çıkar — yalnız bütün satırların vadesi takvim penceresindeyken (K4 koşulu) denetlenir
+            if not_n is not None and self.kural == "2.4.4":
+                # K2 (04:09): not Tahsilat Takvimi'nde de çıkar — yalnız bütün satırların vadesi takvim penceresindeyken (K4 koşulu) denetlenir. 2.4.5: Takvim'de tablo tutarı yok → GEÇERSİZ (C0)
                 self.d("%s:takvim:cokSekmeNotu" % k, not_n, "KULLANICI", "B3 K2 (04:09) Tahsilat Takvimi 'N dosya no birden çok sekmede; ayrı sayıldı' notu (0 = not yok)")
         # /2 B5b (K5 [KULLANICI] Y1): Kasa'yı görme yetkisi olmayan kullanıcı Nakit Akışı'nda Kasa giriş/çıkışını görmez (boş/gizli + not)
-        for ad in self.kullanicilar:
-            self.d("%s:yetkisiz:%s:kasa" % (k, ad), "gorunur" if self.mut == 27 else "gizli", "KULLANICI", "B5b K5 Kasa giriş/çıkışı gizli")
-            self.d("%s:yetkisiz:%s:not" % (k, ad), self.mut != 27, "KULLANICI", "B5b K5 gizlilik notu")
+        for ad in [u for u, v in self.kullanicilar.items() if "cash.view" in v["kaldir"]]:
+            if self.kural == "2.4.4":
+                self.d("%s:yetkisiz:%s:kasa" % (k, ad), "gorunur" if self.mut == 27 else "gizli", "KULLANICI", "B5b K5 Kasa giriş/çıkışı gizli")
+                self.d("%s:yetkisiz:%s:not" % (k, ad), self.mut != 27, "KULLANICI", "B5b K5 gizlilik notu")
+            else:
+                # B5b (K5) 2.4.5 kararıyla GEÇERSİZ (K4.1; --legacy'de koşar). KS4 [BAŞ MİMAR]: gösterilecek Kasa sütunu yok → "Kasa yetkisi" notu da kalkar; mutant 108: not kalır
+                self.d("%s:yetkisiz:%s:kasaNotu" % (k, ad), self.mut == 108, "BAŞ MİMAR", "KS4 madde 5: yetkisiz kullanıcıya Tablodaki Nakit Akışı'nda Kasa notu yok")
         # /2 B4 (MM6 [KULLANICI] 22.10 21:27 UTC "Nakit Akışı Kasa giriş bütün nakit hareketleri"): yıl başından bugüne Kasa giriş/çıkış
         bas = self.bugun[:4] + "-01-01"
-        giris = sum(g for t, g, _ in self.kasa_hareket if bas <= t <= self.bugun)
-        cikis = sum(c for t, _, c in self.kasa_hareket if bas <= t <= self.bugun)
+        giris = sum(g for t, g, _, _r in self.kasa_hareket if bas <= t <= self.bugun)
+        cikis = sum(c for t, _, c, _r in self.kasa_hareket if bas <= t <= self.bugun)
         for anahtar, v in (("nakit:kasaGiris", giris), ("nakit:kasaCikis", cikis), ("kasaRapor:giris", giris), ("kasaRapor:cikis", cikis)):
+            if anahtar.startswith("nakit:") and self.kural != "2.4.4":
+                continue  # B4 (MM6) Tablodaki Nakit Akışı Kasa sütunu 2.4.5 kararıyla GEÇERSİZ (K4.1; --legacy'de koşar) — KS4 aşağıda
             self.d("%s:%s" % (k, anahtar), v, "KULLANICI", "B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar)")
+        if self.kural != "2.4.4":
+            # KS4 [BAŞ MİMAR] (madde 5 öneri uygulanır): Kasa sütunları Tablodaki Nakit Akışı'ndan KALKAR (cashIn/cashOut yok); mutant 107: kalır
+            self.d("%s:nakit:kasaSutunu" % k, "var" if self.mut == 107 else "yok", "BAŞ MİMAR", "KS4 madde 5: Tablodaki Nakit Akışı'nda Kasa sütunu yok")
+        if self.v3:
+            self.kontrol_v3(a, k)
+        if self.kural != "2.4.4" and self.sekmeler and (self.v3 or a.get("raporlar")) and not self.anahtar.get("legacyTableDues"):
+            self.kontrol_tablo_245(a, k)
         if self.kayitlar:
             self.d("%s:rapor:tutarli" % k, True, "KULLANICI", "B1.8 ders 11 toplam = satırlar")
             for no, kay in self.kayitlar.items():
@@ -1459,7 +2193,7 @@ class Model:
                 continue
             fn = getattr(self, islem)
             sonuc = fn(a)
-            if islem == "tablo_yukle" or islem == "cari_ac":
+            if (islem == "tablo_yukle" or islem == "cari_ac") and not isinstance(sonuc, tuple):
                 self.d("adim:%s:durum" % a["id"], "ok", "PLAN", "adım kabul edilir")
                 continue
             if islem == "aktar":
@@ -1474,7 +2208,16 @@ class Model:
                 self.d("adim:%s:durum" % a["id"], "ret", sonuc[1], "B2.4 bağ kurulamaz → ret, hiçbir satır yazılmaz")
             else:
                 self.d("adim:%s:durum" % a["id"], "ok", "PLAN", "adım kabul edilir")
-        return {"ad": self.s["ad"], "dil": DIL, "denetimler": dict(sorted(self.out.items())), "belirsiz": self.belirsiz}
+        return {"ad": self.s["ad"], "dil": DIL, "kural": self.kural, "denetimler": dict(sorted(self.out.items())), "belirsiz": self.belirsiz}
+
+
+def _mutant_farkli(senaryo, n, kip, taban):
+    """Mutant koşusu tabandan farklı mı. Mutant modeli çökertirse (ör. cari açılmadı, sonraki adım onu arıyor) davranış zaten değişmiştir — yakalandı sayılır;
+    taban (mutasyonsuz) koşusu bu sarmalın DIŞINDA hesaplanır, onun çökmesi koşuyu durdurur."""
+    try:
+        return Model(senaryo, n, kip).kos()["denetimler"] != taban
+    except Exception:
+        return True
 
 
 def main(argv):
@@ -1487,9 +2230,34 @@ def main(argv):
     if "--mutasyonlar" in argv:
         sys.stdout.write(json.dumps(MUTASYONLAR, ensure_ascii=False, indent=2) + "\n")
         return 0
+    if "--mutasyon-tara" in argv:
+        # Koşucunun mutasyon denetimi tek süreçte (kos.mjs): girdi [{"dosya", "kipler": ["2.4.5"|"2.4.4", …]}]; her mutant için ilk 3 yakalayan dosya (ve kip)
+        with open(argv[argv.index("--mutasyon-tara") + 1], encoding="utf-8") as f:
+            liste = json.load(f)
+        senaryolar = {}
+        for x in liste:
+            with open(x["dosya"], encoding="utf-8") as g:
+                senaryolar[x["dosya"]] = json.load(g)
+        taban = {(x["dosya"], k): Model(senaryolar[x["dosya"]], 0, k).kos()["denetimler"] for x in liste for k in x["kipler"]}
+        out = {}
+        for n, ad in MUTASYONLAR.items():
+            yak = []
+            for x in liste:
+                kip = next((k for k in x["kipler"] if _mutant_farkli(senaryolar[x["dosya"]], n, k, taban[(x["dosya"], k)])), None)
+                if kip:
+                    yak.append({"dosya": x["dosya"], "kip": kip})
+                if len(yak) >= 3:
+                    break
+            out[str(n)] = {"ad": ad, "yakalayan": yak}
+        sys.stdout.write(json.dumps(out, ensure_ascii=False) + "\n")
+        return 0
     with open(argv[1], encoding="utf-8") as f:
         senaryo = json.load(f)
-    sys.stdout.write(json.dumps(Model(senaryo, mut).kos(), ensure_ascii=False, indent=2, sort_keys=True) + "\n")
+    if "--gecersiz-mi" in argv:
+        sys.stdout.write(json.dumps(gecersiz_245(senaryo)) + "\n")
+        return 0
+    kural = "2.4.4" if "--legacy" in argv else "2.4.5"
+    sys.stdout.write(json.dumps(Model(senaryo, mut, kural).kos(), ensure_ascii=False, indent=2, sort_keys=True) + "\n")
     return 0
 
 

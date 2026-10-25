@@ -1,0 +1,32 @@
+{
+  "ad": "245-g8-tek-gecis/yesil",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/kapama-tek-gecis-245.test.mjs",
+  "commit": "6992e5989c7cbd08de573b56156397a60a5a7b58",
+  "dal": "is/d1-kapama",
+  "kirli": 2,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T20:38:04.352Z",
+  "sure_sn": 1.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-g8-tek-gecis/yesil.log",
+  "klasor": "/home/user/wt/d1-kapama",
+  "ham_cikti_sha256": "e8d87d6f7c5d9b9c9f28e920fe55ed2d56f773052ccff93e567af2b34dc51d33",
+  "ham_cikti_bayt": 1809
+}

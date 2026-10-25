@@ -3,7 +3,10 @@
  * ilk vade) Taksitler'e kart olarak aktarılır. Pencere: seçenekler (vade günü, ilk vade, kayıt tahsilatları, grup),
  * göstergeler, süzgeçler, kişi kişi ön izleme (taksitler, Excel'e göre ödenen, kayıt tahsilatı, kalan, cari, bulgular),
  * seçim ve Aktar; sonuç raporu ve geri alma. Veri yüklenince "N kişinin ödeme planı var, aktarılsın mı?" sorusu.
- * Sunucu: server/routes/plan-transfer.mjs (her şeyi yeniden hesaplar; ön izlemeden sonra tablo değiştiyse aktarmaz). */
+ * Sunucu: server/routes/plan-transfer.mjs (her şeyi yeniden hesaplar; ön izlemeden sonra tablo değiştiyse aktarmaz).
+ * 2.4.5 madde 2 (ürün sahibi: "tablo verisinden hiçbir para kaydı, borç tutarı, açılış bakiyesi doğmaz"): Tablodan Aktar KAPALI — Taksitler'deki düğme ve
+ * yükleme sonrası soru kalktı, sunucu yazım ucu 410 "table-transfer-closed". Yalnız "Son Aktarımlar" (openImports) açık: Excel / Sheets'ten yüklemeler ve
+ * eski tablodan aktarımlar listelenir, Geri Al çalışır. Aktarım penceresinin kodu (open) sonraki sürümde silinir. */
 (() => {
   "use strict";
   const HOF = window.HOF;
@@ -29,6 +32,8 @@
   ];
   const ACCOUNT_TEXT = { new: () => "Yeni cari açılır", match: record => `Mevcut cari bağlanır: ${record.accountName}`, bound: record => `Kayda bağlı cari: ${record.accountName}${record.cover ? " · mevcut borç taksitlendirilir" : ""}`, card: record => `Kartın carisi: ${record.accountName}` };
   const PAGE = 300;
+  // 2.4.5 madde 2: Tablodan Aktar kapalı (ekranda giriş yok; sunucu 410). Kod sonraki sürümde silinir.
+  const TRANSFER_OPEN = false;
   // 2.4.4 (5a): accountIn — kayda bağlı carinin taksit dışı tahsilatları karta yazılsın (varsayılan açık; sunucu routes/plan-transfer.mjs accountMoves).
   // 2.4.4 (5b): coverDebt — kayda bağlı carinin mevcut borcu tablodaki kalanı karşılıyorsa kart o borçla açılır (varsayılan açık).
   const state = { data: null, options: { dueDay: 1, firstDue: "", payments: true, accountIn: true, coverDebt: true, group: "tab", groupName: "" }, selected: new Set(), selectable: new Set(), filter: "all", q: "", open: new Set(), limit: PAGE, loading: false };
@@ -229,6 +234,7 @@
       HOF.emit("cash-changed");
       HOF.plans?.refresh?.();
       if (modal) await load();
+      if (importsModal) await loadImports();
       return true;
     } catch (error) {
       HOF.toast(error.message, { type: "error", timeout: 12000 });
@@ -326,7 +332,8 @@
   // Veri yüklendikten sonra (sayfa yeniden açılınca bir kez): tabloda aktarılabilir ödeme planı varsa kısa bir bildirimle
   // sorulur — pencere açmaz, hiçbir işi engellemez; Taksitler'deki "Tablodan aktar" her zaman açıktır.
   async function askAfterUpload() {
-    if (!HOF.can("plans.manage")) return;
+    // 2.4.5 madde 2: Tablodan Aktar kapalı; yükleme sonrası "aktarılsın mı?" sorusu sorulmaz (sunucu özeti de ask: false döner).
+    if (!TRANSFER_OPEN || !HOF.can("plans.manage")) return;
     let summary;
     try {
       summary = await HOF.api("/api/workspace/plans/from-table/summary", { timeoutMs: 120_000 });
@@ -343,7 +350,60 @@
   // Taksitler penceresinde ipucu şeridi için (aktarılmamış plan sayısı).
   const summary = () => HOF.api("/api/workspace/plans/from-table/summary", { timeoutMs: 120_000 });
 
-  HOF.planTransfer = { open, askAfterUpload, summary };
+  // ---------- Son Aktarımlar (2.4.5 madde 2) ----------
+  // Taksitler → "Son Aktarımlar": Excel / Sheets'ten yüklenen kartlar ve önceki sürümlerde tablodan aktarılanlar; "Geri Al" sunucuda aynı kurallarla
+  // (aktarımdan sonra kartta işlem yapıldıysa durur, kilitli dönem). Yeni aktarım buradan yapılmaz.
+  let importsModal = null;
+  let importsList = null;
+  function renderImports() {
+    const node = importsModal?.dialog.querySelector("[data-imports]");
+    if (!node) return;
+    if (!importsList) {
+      node.innerHTML = '<p class="hof-empty">Aktarımlar okunuyor…</p>';
+      return;
+    }
+    const body = importsList.length
+      ? `<div class="hof-transfer-imports"><ul>${importsList
+          .map(item => {
+            const s = item.summary || {};
+            return `<li data-import="${esc(item.id)}"><span><b>${esc(item.title || "Aktarım")}</b><small>${esc(HOF.formatDateTime(item.createdAt))} · ${esc(item.actorName || "—")} · ${number(s.created)} kart${s.linked ? `, ${number(s.linked)} bağlama` : ""}${s.paymentsMoved ? `, ${number(s.paymentsMoved)} tahsilat taşındı` : ""}${s.accountEntriesMoved ? `, ${number(s.accountEntriesMoved)} cari tahsilatı yazıldı` : ""}${item.undoneAt ? ` · <b>geri alındı</b> ${esc(HOF.formatDateTime(item.undoneAt))}` : ""}</small></span>${item.undoneAt ? "" : `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-button-danger-ghost" data-undo="${esc(item.id)}">Geri Al</button>`}</li>`;
+          })
+          .join("")}</ul></div>`
+      : '<p class="hof-empty">Henüz aktarım yok.</p>';
+    node.innerHTML = `<p class="hof-modal-text">Excel / Sheets’ten yüklenen ve önceki sürümlerde tablodan aktarılan kartlar. Yanlış bir aktarımı buradan geri alabilirsiniz; aktarımdan sonra kartta işlem yapıldıysa geri alma durur ve hangi kartlar olduğunu söyler. Yeni taksit kartı Cari'den ya da Excel / Sheets’ten Yükle ile açılır.</p>${body}<div class="hof-actions"><button type="button" class="hof-button" data-close>Kapat</button></div>`;
+  }
+  async function loadImports() {
+    try {
+      importsList = (await HOF.api("/api/workspace/plans/imports")).imports || [];
+    } catch (error) {
+      importsList = [];
+      HOF.toastError(error);
+    }
+    renderImports();
+  }
+  function openImports() {
+    if (!HOF.can("plans.manage")) return HOF.toast("Aktarımları geri almak yönetici, uzman ve muhasebe yetkisidir.", { type: "error" });
+    if (importsModal) return;
+    importsList = null;
+    importsModal = HOF.modal({
+      title: "Son Aktarımlar",
+      eyebrow: (HOF.uiLabel?.("side.plans", "Taksitler") || "Taksitler").toLocaleUpperCase("tr-TR"),
+      body: '<div class="hof-transfer" data-imports></div>',
+      onClose: () => {
+        importsModal = null;
+      },
+    });
+    importsModal.dialog.classList.add("hof-imports-modal");
+    importsModal.dialog.addEventListener("click", event => {
+      if (event.target.closest("[data-close]")) return importsModal.close();
+      const undoId = event.target.closest("[data-undo]")?.dataset.undo;
+      if (undoId) undo(undoId);
+    });
+    renderImports();
+    loadImports();
+  }
+
+  HOF.planTransfer = { open, openImports, askAfterUpload, summary };
   HOF.whenReady(() => {
     let pending = false;
     try {

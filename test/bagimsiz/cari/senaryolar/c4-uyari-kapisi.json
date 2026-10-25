@@ -1,0 +1,23 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "c4-uyari-kapisi",
+ "aciklama": "2.4.5 madde 4: tablonun tutarlı kalemleri (Son Ödeme + Tutar, Ödeme Sözü, Aidat — carili kayıt dahil) Tahsilat Takvimi / zil (/dues items), Anlık Durum Vade Takip ve Nakit Akış Projeksiyonu'nda (Tablo seçeneği dahil) YOK; tutarsız tablo tarihleri (Duruşma Tarihi, Sözleşme Bitiş, İcra Son Tarihi — bugün..+6) /dues deadlines ve Vade Takip'te KALIR; fatura (satış/alış) ve portföydeki alınan çek kalemleri aynen.",
+ "dayanak": "KARARLAR.md C4 (KULLANICI KARAR ~21:25/~21:35 UTC (4); madde 4)",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {"id": "t", "islem": "tablo_yukle", "sekmeler": [
+   {"ad": "Takip", "tur": "serbest", "basliklar": ["Telefon", "Tutar", "Son Ödeme", "Duruşma Tarihi", "Sözleşme Bitiş", "İcra Son Tarihi"], "kayitlar": [
+    {"no": "2026/1", "isim": "Kemal Kaya", "hucreler": {"Telefon": "", "Tutar": "2.000,00 ₺", "Son Ödeme": "17.06.2026", "Duruşma Tarihi": "19.06.2026", "Sözleşme Bitiş": "20.06.2026", "İcra Son Tarihi": "21.06.2026"}},
+    {"no": "2026/3", "isim": "Nail Er", "hucreler": {"Telefon": "", "Tutar": "1.500,00 ₺", "Son Ödeme": "12.06.2026", "Duruşma Tarihi": "16.06.2026"}}]},
+   {"ad": "Sözler", "tur": "soz", "kayitlar": [{"no": "2026/2", "isim": "Leyla Ak", "tarih": "2026-06-16", "tutar": "300"}]},
+   {"ad": "Aidat", "tur": "serbest", "basliklar": ["Telefon", "Aidat", "Son Ödeme"], "kayitlar": [
+    {"no": "2026/4", "isim": "Mert Ay", "hucreler": {"Telefon": "", "Aidat": "800,00 ₺", "Son Ödeme": "18.06.2026"}}]}]},
+  {"id": "cn", "islem": "cari_ac", "ad": "N", "isim": "Nail Er", "kayit": "2026/3", "tarih": "2026-06-01"},
+  {"id": "ca", "islem": "cari_ac", "ad": "A", "isim": "Ali Alıcı", "tarih": "2026-05-01"},
+  {"id": "f1", "islem": "fatura", "ad": "F1", "cari": "A", "tutar": "400", "tarih": "2026-06-05"},
+  {"id": "e1", "islem": "evrak", "ad": "E1", "cari": "A", "tur": "cek", "tutar": "100", "tarih": "2026-06-14"},
+  {"id": "ct", "islem": "cari_ac", "ad": "T", "isim": "Tuna Tedarik", "tur": "tedarikci", "tarih": "2026-05-01"},
+  {"id": "f2", "islem": "fatura", "ad": "F2", "cari": "T", "tur": "alis", "tutar": "150", "tarih": "2026-06-06"},
+  {"id": "k1", "islem": "kontrol", "uyari": true}
+ ]
+}

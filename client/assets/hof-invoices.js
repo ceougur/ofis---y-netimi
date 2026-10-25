@@ -2703,7 +2703,7 @@
       </div>
       <div class="hof-chq-actions" role="toolbar" aria-label="Belge işlemleri">
         <span class="hof-plan-toolgroup">${office().outputButtons ? office().outputButtons(pdfUrl(doc), "card", `${doc.status === "draft" ? "Proforma" : kindLabel(doc.kind)} - PDF`) : `<a class="hof-button hof-button-small hof-button-ghost" href="${esc(pdfUrl(doc))}" target="_blank" rel="noopener">PDF</a>`}${phone && doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="whatsapp" data-wa="${esc(phone)}">WhatsApp</button>` : ""}${doc.status === "issued" && isOwn(doc.kind) ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="email" data-mail="${esc(email)}" title="${email ? `${esc(email)} adresine e-posta penceresi açılır; PDF indirilir` : "Cari kartında e-posta adresi yok"}">E-Posta</button>` : ""}</span>
-        ${doc.status === "issued" && doc.open > 0.004 && !ret && HOF.can(sideOf(doc.kind) === "sale" ? "accounts.collect" : "accounts.manage") ? `<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small" data-act="pay">${sideOf(doc.kind) === "sale" ? "+ Tahsilat Ekle" : "+ Ödeme Yap"}</button></span>` : ""}
+        ${canPayDoc(doc) ? `<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small" data-act="pay">${sideOf(doc.kind) === "sale" ? "+ Tahsilat Ekle" : "+ Ödeme Yap"}</button></span>` : ""}
         ${doc.canManage ? `<span class="hof-plan-toolgroup">${doc.canEdit ? '<button type="button" class="hof-button hof-button-small" data-act="edit">Düzenle ve Kaydet</button>' : ""}${doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small" data-act="modify" ${doc.canModify ? "" : "disabled"} title="${esc(doc.modifyBlock || "Belgeyi düzeltip yeniden kaydedin; numara değişmez, stok, cari, Kasa ve taksit kayıtları yeni hale göre yazılır")}">Düzenle</button>` : ""}${!ret ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="copy" title="Aynı cari ve kalemlerle yeni belge">Kopyala</button>' : ""}${doc.canRepeat ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="${doc.repeat ? "repeat-stop" : "repeat"}" title="${doc.repeat ? "Tekrar emrini durdur" : "Abonelik, kira, aidat: her dönem taslak hazırlanır"}">${doc.repeat ? "Tekrarı Durdur" : "Tekrarla"}</button>` : ""}${doc.status === "draft" || doc.status === "cancelled" || doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="delete" ${doc.canDelete ? "" : "disabled"} title="${esc(doc.deleteBlock || (doc.status === "draft" ? "Taslağı Silinenler'e gönder" : "Bütün etkileri geri alınır, belge Silinenler'e gider"))}">Sil</button>` : ""}${doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="cancel" ${doc.canCancel ? "" : "disabled"} title="${esc(doc.cancelBlock || "Bütün etkileri geri alınır; numara korunur")}">İptal Et</button>` : ""}${doc.canLocalCancel ? '<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="local-cancel" title="Entegratöre ulaşılamıyorsa: belge yalnız programda iptal edilir (yetkili)">Yalnız Programda İptal Et</button>' : ""}</span>` : ""}
         ${eTools}
       </div>
@@ -2773,6 +2773,8 @@
     if (act === "e-withdraw") return withdrawDoc(doc);
     if (act === "e-refresh") return eAction(doc, "e-refresh");
   }
+  // Kartın "+ Tahsilat Ekle" / "+ Ödeme Yap" düğmesi (ve Tahsilat Takvimi / zilden payDoc) ancak kaydedilmiş, açığı olan, iade olmayan faturada ve yetkiyle.
+  const canPayDoc = doc => doc.status === "issued" && doc.open > 0.004 && !isReturn(doc.kind) && HOF.can(sideOf(doc.kind) === "sale" ? "accounts.collect" : "accounts.manage");
   // Faturaya tahsilat / ödeme: taksitli faturada taksit kartından (taksitten düşer), değilse cariye Kasa hareketi. Cari
   // ödemeleri faturalara en eski açık faturadan başlayarak sayılır (bu faturadan önce açık fatura varsa önce o kapanır).
   function payForm(doc) {
@@ -3402,6 +3404,8 @@
       ${problems.length ? `<ul class="hof-inv-problems">${problems.map(item => `<li>${esc(item)}</li>`).join("")}</ul>` : ""}
       <section class="hof-inv-settings"><h4>Firma Bilgisi</h4><div class="hof-inv-head">
         ${input("seller.name", "Unvan / Ad Soyad", seller.name, 'maxlength="200"')}
+        <label class="hof-field"><span>Tabela Adı</span><input data-s="reportHeader.signName" value="${esc(s.reportHeader?.signName || "")}" maxlength="120" placeholder="ör. Yıldız Market"><small>Rapor ve ekstre başlığında unvan yerine yazılır. Fatura ve makbuzda unvan değişmez.</small></label>
+        <label class="hof-field"><span>Rapor ve Ekstre Başlığı</span><select data-s="reportHeader.mode"><option value="sign" ${s.reportHeader?.mode !== "full" ? "selected" : ""}>Yalnız Tabela Adı</option><option value="full" ${s.reportHeader?.mode === "full" ? "selected" : ""}>Tabela Adı ve Firma Bilgileri</option></select><small>Firma bilgileri: unvan, VKN / TCKN, vergi dairesi ve adres. Tabela Adı boşsa başlıkta unvan yazar.</small></label>
         <label class="hof-field"><span>Kişi Türü</span><select data-s="seller.partyKind"><option value="company" ${seller.partyKind !== "person" ? "selected" : ""}>Tüzel Kişi (Şirket)</option><option value="person" ${seller.partyKind === "person" ? "selected" : ""}>Gerçek Kişi (Şahıs)</option></select></label>
         ${input("seller.firstName", "Adı (Gerçek Kişi)", seller.firstName, 'maxlength="80"')}
         ${input("seller.familyName", "Soyadı (Gerçek Kişi)", seller.familyName, 'maxlength="80"')}
@@ -3981,12 +3985,25 @@
   // Cari kartındaki "Satış Faturası" / "Alış Faturası" pilleri: cari dolu, senaryo seçimiyle açılır.
   const newFor = ({ side = "sale", account = null } = {}) => open({ side, account: account || {} });
   const openDoc = id => open({ id });
+  // 2.4.5 madde 6a (kullanıcı bulgusu 24.10.2026): Tahsilat Takvimi pil kartı ve zildeki fatura kaleminin "Tahsilat Gir" / "Ödeme Gir"i — faturanın KENDİ
+  // ödeme formu (kartın + Tahsilat Ekle / + Ödeme Yap'ı; taksitli faturada taksit kartı). Önce kart açılır (hangi fatura olduğu görünür); fatura bu arada
+  // kapandıysa, iptal edildiyse ya da yetki yoksa form açılmaz, nedeni söylenir. Önceden bu düğme SEÇİLİ tablo kaydının carisine dolu form açıyordu.
+  const payDoc = async id => {
+    await open({ id });
+    const doc = view.doc;
+    if (!modal || view.mode !== "card" || doc?.id !== id) return;
+    if (canPayDoc(doc)) return payForm(doc);
+    const sale = sideOf(doc.kind) === "sale";
+    if (doc.status !== "issued" || isReturn(doc.kind)) return HOF.toast(`${docTitle(doc)} ${sale ? "tahsilat" : "ödeme"} beklemiyor (${doc.status === "cancelled" ? "iptal edildi" : doc.status === "draft" ? "taslak" : "iade belgesi"}).`, { type: "info" });
+    if (!(doc.open > 0.004)) return HOF.toast(`${docTitle(doc)} kapandı; açık tutarı yok.`, { type: "info" });
+    return HOF.toast(sale ? "Faturaya tahsilat girme yetkiniz yok." : "Faturaya ödeme girmek yönetici, uzman ve muhasebe yetkisidir.", { type: "error" });
+  };
   const forAccount = account => {
     view.tab = "all";
     return open({ account: account || {}, tab: "all" });
   };
   // sendPendingTimeoutMs: Tümünü Gönder isteğinin zaman aşımı (0 = 150 sn); ekran testi (gg243-tumunu-gonder) kısaltır.
-  HOF.invoices = { open, newFor, openDoc, forAccount, sendPendingTimeoutMs: 0, eUnitAsAdet: unit => Boolean(meta) && eUnitAsAdet(unit), edocEnabled: () => meta?.edocEnabled === true, autoCheckUser: () => meta?.edocEnabled === true && meta?.settings?.integrator?.autoCheckUser === true };
+  HOF.invoices = { open, newFor, openDoc, payDoc, forAccount, sendPendingTimeoutMs: 0, eUnitAsAdet: unit => Boolean(meta) && eUnitAsAdet(unit), edocEnabled: () => meta?.edocEnabled === true, autoCheckUser: () => meta?.edocEnabled === true && meta?.settings?.integrator?.autoCheckUser === true };
   // 2.3.0 İz 5.5 Hızlı Arama: sekmeler TABS'tan (purchase sekmesi "Alınan" — müşteri "alış f" yazar: Alış Faturaları eş adı), işlemler
   // yetkiye göre (Yeni Satış / Alış Faturası → senaryo seçimi; Yeni İade → İadeler sekmesi).
   HOF.search?.register(() => {

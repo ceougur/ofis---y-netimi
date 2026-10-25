@@ -1,0 +1,32 @@
+{
+  "ad": "245-ekstre-ayrinti/komsu-birim",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/ekstre-ayrinti-245.test.mjs test/reports.test.mjs test/raporlar-224.test.mjs test/yazim-duzeni.test.mjs test/kilavuz-surum.test.mjs test/banka-220-kredi-karti-metin.test.mjs test/platform-tasinabilirlik.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/raporlar-210-banka.test.mjs test/kalan-borc-satir-31d.test.mjs test/kayit-tahsilat-244.test.mjs",
+  "commit": "d2cef7ce21b0776e2767f8fb610c9be8a4159f5d",
+  "dal": "is/ekstre-ayrinti",
+  "kirli": 7,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T16:59:43.156Z",
+  "sure_sn": 56.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 151,
+    "gecen": 151,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-ekstre-ayrinti/komsu-birim.log",
+  "klasor": "/home/user/wt/ekstre-ayrinti",
+  "ham_cikti_sha256": "ce3c316fe6bf88f8c88553f226fd3b69187c7df80fdf888e2d001202bb00ea36",
+  "ham_cikti_bayt": 49386
+}

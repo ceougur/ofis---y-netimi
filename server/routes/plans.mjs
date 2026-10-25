@@ -13,6 +13,7 @@ import { allocate, dayText, distribute, isoDay, mapHeaders, parseDay } from "../
 import { extractSchedules, spreadPaid } from "../lib/insight/schedules.mjs";
 import { tabContext } from "../lib/insight/dues.mjs";
 import { planStatementPdf, receiptPdf } from "../lib/plan-report.mjs";
+import { createReportHeader } from "../lib/report-header.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { methodInput } from "../lib/pay-method.mjs";
 import { systemClock } from "../lib/clock.mjs";
@@ -366,10 +367,9 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
         plan.note || "",
       ]),
       summary: [["Kart", String(data.totals.count)], ["Kalan Alacak", tl(data.totals.remaining)], ["Geciken", `${tl(data.totals.overdue)} · ${data.totals.overdueCount} taksit`], ["Bu Ay Beklenen", tl(data.totals.month)], ["Tahsil Edilen", tl(data.totals.paid)]],
-      officeName: office(),
       userName: user.display_name || user.username || "",
       // Liste okula ya da veliye verilebilir: altbilgide program adı değil firma adı (v2.0.6).
-      brand: office(),
+      ...header.pdf({ brand: office() }),
     });
     audit(user, "plan.list.exported", "list", { ...query, count: data.totals.count });
     sendBuffer(res, pdf, { type: "application/pdf", name: `${title}-listesi ${dayText(today())}.pdf`, inline: url.searchParams.get("download") !== "1" });
@@ -965,10 +965,12 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
 
   // ---------- PDF: ekstre ve makbuz ----------
   const office = () => store.setting("office.name", "");
+  // 2.4.5 madde 6c: rapor / ekstre PDF başlığı Tabela Adı ayarından (boşsa bugünkü unvan); makbuz ve belge unvanı değişmez.
+  const header = createReportHeader({ store });
   router.get("/api/workspace/plans/:id/ekstre.pdf", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "plans.view");
     const plan = detail(params.id, user);
-    const pdf = planStatementPdf(plan, { officeName: office(), userName: user.display_name || user.username || "", now: clock() });
+    const pdf = planStatementPdf(plan, { ...header.pdf(), userName: user.display_name || user.username || "", now: clock() });
     audit(user, "plan.statement.exported", plan.id, { name: plan.name });
     sendBuffer(res, pdf, { type: "application/pdf", name: `Taksit-ekstresi ${plan.name}.pdf`, inline: url.searchParams.get("download") !== "1" });
   });

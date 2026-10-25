@@ -69,8 +69,10 @@ export async function bootVersion(version, { dataDir, backupDir, env = {}, ...ov
     commit = code.commit;
     ({ createApp } = await import(pathToFileURL(path.join(code.dir, "server", "app.mjs")).href));
   }
-  // Güncel kod test/helpers.mjs'teki gibi para yazımı denetiminin (K6) test kipinde açılır; eski sürümler bu seçeneği tanımaz.
-  const strict = version === CURRENT ? { moneyStrict: true, gateVerify: true } : {};
+  // Güncel kod test/helpers.mjs'teki gibi para yazımı denetiminin (K6) test kipinde açılır; eski sürümler bu seçeneği tanımaz. 2.4.5: kayıt tahsilatı ve
+  // Tablodan Aktar (üretimde kapalı, 410) test/helpers.mjs'teki gibi açık — üreticiler ve göç karşılaştırmaları eski veriyi aynı API'den üretir; kapıyı
+  // sınayan testler { legacyCasePayments: false, legacyTableTransfer: false } verir (overrides sonra gelir).
+  const strict = version === CURRENT ? { moneyStrict: true, gateVerify: true, legacyCasePayments: true, legacyTableTransfer: true } : {};
   const app = createApp({ dataDir, backupDir, logLevel: "silent", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0", ...env }, license: LICENSE, startLicenseTimers: false, ...strict, ...overrides });
   const address = await app.listen(0, "127.0.0.1");
   const base = `http://127.0.0.1:${address.port}`;

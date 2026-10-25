@@ -1,0 +1,31 @@
+
+> destekofis@2.4.4 test:senaryo-211
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-211.mjs
+
+
+■ Kurulum: yönetici girer, okul servisi Excel'i yüklenir, sektör önerisi uygulanır
+✓ 6 öğrenci kaydı tabloda
+
+■ A. Ayarlar yeri (m8) ve arama kutusu (m1)
+✓ m8: Ayarlar kullanıcı kartının altında, Senkron kartının üstünde; üstteki eski düğme yok
+✓ m8: Ayarlar Veri ve Eşitleme penceresini açar
+✓ m1: arama kutusunun her noktası yazmayı başlatır (sol alt köşe, alttaki ipucu, sağ üst köşe, büyüteç)
+✓ m1: yazılan ad Enter ile kayda gider
+
+■ B. Taksitler: boş görünen grup → Cari Seç → toplu taksitlendirme (m3, m4)
+✓ cari açıldı: Ali Çelik (42 C 0079)
+✓ cari açıldı: Mehmet Demir (42 C 0079)
+✓ cari açıldı: Zeynep Kara (42 C 0079)
+✓ cari açıldı: Elif Şahin (42 C 0348)
+✓ m4: grup süzgecinde kart ve cari sayısı (42 C 0079 · 0 kart · 3 cari | 42 C 0348 · 0 kart · 1 cari | 34 AB 111 · 0 kart · boş)
+✓ m4: kartsız grupta boş liste yerine ne yapılacağı yazar
+✓ m3: Cari Seç o gruptaki carileri listeler (Ali Çelik, Mehmet Demir, Zeynep Kara)
+✓ m3: başlıktaki kutu üçünü seçer
+✗ m3: ön izleme — 
+Error: BAŞARISIZ: m3: ön izleme — 
+    at ok (file:///home/user/wt/ekstre-ayrinti/test/e2e/senaryo-211.mjs:54:20)
+    at file:///home/user/wt/ekstre-ayrinti/test/e2e/senaryo-211.mjs:212:5
+    at async step (file:///home/user/wt/ekstre-ayrinti/test/e2e/senaryo-211.mjs:58:3)
+    at async file:///home/user/wt/ekstre-ayrinti/test/e2e/senaryo-211.mjs:175:3
+
+13/14 denetim geçti. Ekran görüntüleri: /home/user/wt/ekstre-ayrinti/test/e2e/artifacts/senaryo-211

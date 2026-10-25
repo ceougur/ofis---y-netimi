@@ -1,0 +1,32 @@
+{
+  "ad": "245-kapi/ci-e2e-senaryo-222",
+  "komut": "npm run test:senaryo-222",
+  "commit": "430b1fba4de38b8ecefb15796fa49d82edc4ea59",
+  "dal": "aday245-2",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T21:47:44.307Z",
+  "sure_sn": 121.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 60,
+    "gecen": 60,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-kapi/ci-e2e-senaryo-222.log",
+  "klasor": "/home/user/wt/aday245-2",
+  "ham_cikti_sha256": "554a86e93d54a0ed11c0549d9fa6fadc6b65db50bcba6f7acf86eded0f6b974e",
+  "ham_cikti_bayt": 6619
+}

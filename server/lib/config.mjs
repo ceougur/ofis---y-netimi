@@ -84,6 +84,12 @@ export function loadConfig(overrides = {}) {
     // "esmm: true" kaydında makbuz kâğıt kalır (test/esmm-gizli-241.test.mjs). 2.4.4'te (iş listesi 24) üretim girişi (server/server.mjs) AÇAR; testler
     // vermedikçe kapalı. Ortam değişkeniyle açılmaz.
     esmmEnabled: overrides.esmmEnabled === true,
+    // 2.4.5 madde 1–2 (ürün sahibi 23.10.2026: "Excel'den / Sheets'ten gelen verileri programın analizine bırakarak muhasebesel işleri riske atamayız"):
+    // tablodaki kayıttan yeni kayıt tahsilatı (POST /cases/:key/payments) ve düzeltmesi (PUT /payments/:id) ile Tablodan Aktar (POST /plans/from-table)
+    // programda KAPALI → 410. Kod sonraki sürümde silinir; o güne dek yalnız testler ve mutabakat/güvenilirlik üreticileri (test/helpers.mjs,
+    // test/guvenilirlik/surumler.mjs) eski veriyi kendi API'sinden üretebilsin diye açar. Üretim girişi (server/server.mjs) VERMEZ; ortam değişkeniyle açılmaz.
+    legacyCasePayments: overrides.legacyCasePayments === true,
+    legacyTableTransfer: overrides.legacyTableTransfer === true,
     // Test serisi (TEF/TEA/TES) başlangıcı (2.4.2): üretimde boş → firmaya özgü rastgele büyük numara (EDM test hesabı ortak; 1'den başlayan numara
     // başka firmanınkiyle çakışır). Testler sabit başlangıç verir (test/helpers.mjs).
     testSeriesStart: typeof overrides.testSeriesStart === "function" ? overrides.testSeriesStart : null,
@@ -99,6 +105,10 @@ export function loadConfig(overrides = {}) {
     // zinciri aynı veride 2.0.26'nın gerçek koduyla birebir karşılaştırır; K1 iade kapanışını bilerek değiştirdiği için o karşılaştırmalar bu
     // kuralla koşar (göçün ve tek kaynağın etkisi ölçülür), K1'in etkisi ayrıca güncel kuralla denetlenir. Üretimde yok (ortam değişkeni yok).
     legacyClosing: typeof overrides.legacyClosing === "function" ? overrides.legacyClosing : null,
+    // 2.4.5 madde 4 (uyarı kapısı): tablonun tutarlı kalemleri (ödeme günü, aidat, ödeme sözü) zile, Tahsilat Takvimi'ne, Vade Takip'e ve Nakit Akış
+    // Projeksiyonu'na girmez. Açıkken 2.4.4 davranışı (tablo takvim motorunu bu uçlardan sınayan eski testler ve eski sürümle karşılaştıran altın testler).
+    // Yalnız programdan (testler); üretimde ve ortam değişkeninde yok.
+    legacyTableDues: overrides.legacyTableDues === true,
     scheduleBackups: overrides.scheduleBackups ?? true,
     // Sunucunun iş saati (v2.1.0; lib/clock.mjs): "bugün" ve iş kayıtlarının zaman damgaları tek kaynaktan. Üretimde gerçek
     // saat; sahte saat yalnız programdan (testler, kabul senaryoları) verilir — ortam değişkeni yok. Şirketler aynı saati paylaşır.

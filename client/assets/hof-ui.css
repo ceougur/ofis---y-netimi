@@ -2136,16 +2136,10 @@ button.hof-summary-card:focus-visible {
 
 /* ---------- 1.6.0: modüller verinin sektörüne göre ---------- */
 html.hof-no-haciz [data-case-action="lien"],
-html.hof-no-haciz #hof-sidecard [data-action="liens"],
-html.hof-no-tahsilat [data-case-action="payment"] {
+html.hof-no-haciz #hof-sidecard [data-action="liens"] {
   display: none !important;
 }
-/* 2.4.4 (E8; kullanıcı 20.10.2026: "kayıt detay kartındaki Tahsilat düğmesi kaldırılsın; regresyon olma ihtimali varsa koda dokunmadan yalnız CSS ile"):
-   kayıttan doğrudan Kasa'ya tahsilat karttan kalkar; tahsilat Cari'den / kayda bağlı Taksit kutusundaki "+ Tahsilat" ile girilir. Sunucu yolu, eski
-   tahsilatların İşlem Geçmişi'nde görünmesi/düzeltilmesi/silinmesi değişmez. */
-.hof-case-actions [data-case-action="payment"] {
-  display: none !important;
-}
+/* 2.4.4 (E8) kayıt kartındaki Tahsilat düğmesi CSS ile gizliydi; 2.4.5 madde 1'de HTML'den de kalktı (hof-workspace.js installDetailActions). */
 
 /* ---------- 1.6.0: kalemle değiştirilen başlıklar ---------- */
 .hof-label-pencil {
@@ -5067,6 +5061,20 @@ body > .hof-payment-action-card { position: fixed; z-index: 99960; transform: no
 }
 .sidebar > nav.mt-10:not(:has(.nav-item:not([style*="display: none"]))) {
   display: none;
+}
+/* 2.4.5 (ders 20, senaryo-211): paketin düğmeleri (kenar çubuğundaki "Tabloyu değiştir" / "Ayarlar", bilgi şeridindeki
+   "Tabloyu değiştir", başlık satırındaki "Yeni tablo yükle", detaydaki "Kaynağı değiştir" / "Sheet'te aç") React çizdiği
+   anda görünürdü; hof-sources.js gateControls onları bir kare sonra gizliyordu. Artık gizli doğarlar; yalnız gateControls'ün
+   izin verdiği (data-hof-show) görünür. Paketin öğeleri data-loc taşır, bizimkiler taşımaz. */
+.sidebar .nav-item[data-loc]:not([data-hof-show]),
+.banner-link[data-loc]:not([data-hof-show]),
+.button-row > button[data-loc]:not([data-hof-show]),
+.detail-actions > button:not([data-hof-show]) {
+  display: none !important;
+}
+.sidebar > nav.mt-10:not(:has(.nav-item[data-hof-show], .nav-item:not([data-loc]))),
+.detail-actions:not(:has(> button[data-hof-show])) {
+  display: none !important;
 }
 /* Ayarlar (v2.0.11): kullanıcı kartının altında, Senkron kartının üstünde; Operasyon merkezi kartıyla aynı genişlik. */
 .sidebar .hof-side-settings {
@@ -8518,6 +8526,27 @@ button.hof-source-card:focus-visible {
 .hof-rc-account {
   min-width: 280px;
 }
+/* 2.4.5 madde 6d: açılıp kapanan rapor seçeneği (Fatura Kalemlerini Göster) ve Ayrıntılı Cari Ekstre'nin kalem satırları. */
+.hof-rc-check-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  color: var(--do-ink-soft);
+  font: 700 12px var(--do-font);
+  cursor: pointer;
+}
+.hof-rc-table tbody tr.is-item td {
+  color: var(--do-muted);
+  font-size: 0.94em;
+  border-top-color: transparent;
+}
+.hof-rc-table tbody tr.is-item td:nth-child(5) {
+  padding-left: 22px;
+}
+.hof-rc-table tbody tr.is-invoice td {
+  font-weight: 600;
+}
 .hof-rc-account .hof-field {
   margin: 0;
 }
@@ -11446,3 +11475,6 @@ input[type="search"]::-webkit-search-cancel-button {
     grid-template-columns: 1fr;
   }
 }
+/* 2.4.5: tahsilat / ödeme formunda "en eski açık borçtan kapatır" bilgi notu (Kapatılacak Fatura seçilince gizli). */
+.hof-acc-fifo-note { margin: 0; color: var(--do-muted); font: 600 12px var(--do-font); }
+.hof-acc-fifo-note[hidden] { display: none; }

@@ -1,0 +1,20 @@
+[20:55:12] tohum 1: UYUŞMAZLIK · {"cari":17,"fatura":80,"faturaliCari":11,"vadeliCariSayisi":12,"degersizSatir":3,"stokIadeSatir":8,"supheli":8,"cek":25,"kart":20} · vade 18 (beklenen 5, ret 0) · fatura durumu 80, elle satır 42 · 55.8 sn
+[20:55:12]   sha A eski/yeni 9392dc5e0d2447bc / 8ca30f0f6311b898 · B 7bccda0f2a10d1a2 / 8ca30f0f6311b898
+[20:55:12]   ✗ A (açılış) fatura-once entries: eski ≠ yeni (ilk fark 497. karakter: eski ",{"side":"receivable","remaining":0,"covered":0}],["aentry-0ac58596-1a4c-42f1-8c63-84e03874e698",{"side":"receivable","r" · yeni ",{"side":"receivable","remaining":0,"covered":0}],["aentry-0f5b085a-93ab-4e10-8b4a-578aac8192d2",{"side":"receivable","r")
+[20:55:12]   ✗ A (açılış) fatura-once entriesRaw: eski ≠ yeni (ilk fark 10. karakter: eski "[["aentry-097722e2-11f5-4353-8305-ea763b4f7c07",{"side":"receivable","" · yeni "[["aentry-1ca12e68-be62-48c9-9df0-1de5cdd63dae",{"side":"payable","rem")
+[20:55:12]   ✗ A (açılış) elle-once entries: eski ≠ yeni (ilk fark 497. karakter: eski ",{"side":"receivable","remaining":0,"covered":0}],["aentry-0ac58596-1a4c-42f1-8c63-84e03874e698",{"side":"receivable","r" · yeni ",{"side":"receivable","remaining":0,"covered":0}],["aentry-0f5b085a-93ab-4e10-8b4a-578aac8192d2",{"side":"receivable","r")
+[20:55:12]   ✗ A (açılış) elle-once entriesRaw: eski ≠ yeni (ilk fark 10. karakter: eski "[["aentry-097722e2-11f5-4353-8305-ea763b4f7c07",{"side":"receivable","" · yeni "[["aentry-1ca12e68-be62-48c9-9df0-1de5cdd63dae",{"side":"payable","rem")
+[20:55:12]   ✗ B (tahsilattan sonra) fatura-once entries: eski ≠ yeni (ilk fark 497. karakter: eski ",{"side":"receivable","remaining":0,"covered":0}],["aentry-0ac58596-1a4c-42f1-8c63-84e03874e698",{"side":"receivable","r" · yeni ",{"side":"receivable","remaining":0,"covered":0}],["aentry-0f5b085a-93ab-4e10-8b4a-578aac8192d2",{"side":"receivable","r")
+[20:55:12]   ✗ B (tahsilattan sonra) fatura-once entriesRaw: eski ≠ yeni (ilk fark 10. karakter: eski "[["aentry-097722e2-11f5-4353-8305-ea763b4f7c07",{"side":"receivable","" · yeni "[["aentry-1ca12e68-be62-48c9-9df0-1de5cdd63dae",{"side":"payable","rem")
+[20:55:12]   ✗ B (tahsilattan sonra) elle-once entries: eski ≠ yeni (ilk fark 497. karakter: eski ",{"side":"receivable","remaining":0,"covered":0}],["aentry-0ac58596-1a4c-42f1-8c63-84e03874e698",{"side":"receivable","r" · yeni ",{"side":"receivable","remaining":0,"covered":0}],["aentry-0f5b085a-93ab-4e10-8b4a-578aac8192d2",{"side":"receivable","r")
+[20:55:12]   ✗ B (tahsilattan sonra) elle-once entriesRaw: eski ≠ yeni (ilk fark 10. karakter: eski "[["aentry-097722e2-11f5-4353-8305-ea763b4f7c07",{"side":"receivable","" · yeni "[["aentry-1ca12e68-be62-48c9-9df0-1de5cdd63dae",{"side":"payable","rem")
+[20:55:12]   ✗ B yeni: tahsilattan sonra elle satır haritası değişmedi (bayatlık sınanamadı)
+[20:55:12]   ✗ yeni kod toplu ↔ cari başına: elle satır haritası farklı
+
+Sonuç: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-g8-tek-gecis/mut1-esdeger/sonuc.json
+# tests 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0

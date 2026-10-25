@@ -1,0 +1,32 @@
+{
+  "ad": "245-kapi/ci-e2e-senaryo-serit-sira-245",
+  "komut": "npm run test:senaryo-serit-sira-245",
+  "commit": "744f0ec0ab19f70e95feb683e55c8f40a8a0fbd0",
+  "dal": "aday245-2",
+  "kirli": 0,
+  "izlenmeyen": 10,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T22:22:45.248Z",
+  "sure_sn": 5.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 7,
+    "gecen": 7,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-kapi/ci-e2e-senaryo-serit-sira-245.log",
+  "klasor": "/home/user/wt/aday245-2",
+  "ham_cikti_sha256": "87060f76e993d3691d46c9e3fed4c20cef0a84a2e6d54ea6b5b726717adab5ba",
+  "ham_cikti_bayt": 828
+}

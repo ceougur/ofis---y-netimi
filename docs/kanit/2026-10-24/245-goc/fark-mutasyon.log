@@ -1,0 +1,27 @@
+✓ hatasız (yanlış alarm yok): BULGU 0
+✓ bir carinin bakiyesi 1 kuruş: BULGU 1 (001 cari bakiyeleri (tek tek))
+✓ cari kartında bir hareket değişti: BULGU 1 (001 cari kartları (hareketler, defter, toplamlar; yeni alanlar hariç))
+✓ eski satıra Vade Tarihi yazıldı (K6.4): BULGU 1 (001 cari hareketlerinin yeni alanları (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan))
+✓ Kalan tutardan büyük (K6.2): BULGU 1 (002 cari hareketlerinin yeni alanları (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan))
+✓ veri dosyasında due_date dolu (K6.4): BULGU 1 (001 veri dosyası: tablolar, kolonlar ve satır sayıları)
+✓ takvimde tablo kalemi kaldı (K4.1): BULGU 1 (001 Tahsilat Takvimi / zil (kalemler, son tarihler))
+✓ takvimden fatura kalemi düştü (K4.1): BULGU 1 (001 Tahsilat Takvimi / zil (kalemler, son tarihler))
+✓ takvimde taksit tutarı değişti: BULGU 1 (002 Tahsilat Takvimi / zil (kalemler, son tarihler))
+✓ projeksiyonda taksit satırı değişti (K4.1): BULGU 1 (001 Nakit Akış Projeksiyonu (= 2.4.4'ün tablosuz projeksiyonu))
+✓ projeksiyonda tablo kalemi kaldı (K4.1): BULGU 1 (001 Nakit Akış Projeksiyonu (= 2.4.4'ün tablosuz projeksiyonu))
+✓ Vade Takip fatura kaynağı değişti (K4.1): BULGU 1 (001 Anlık Durum · Vade Takip (kaynak başına))
+✓ Vade Takip toplamı tablo farkından başka (K4.1): BULGU 1 (002 Anlık Durum · Vade Takip (kaynak başına))
+✓ Tablodaki Kişiler borcu değişti (K5): BULGU 1 (001 Tablo Raporları · cari-ekstre (rakamlar, satırlar))
+✓ Tablo raporunda belgesiz kolon adı (K5): BULGU 1 (002 Tablo Raporları · vade-takip (kolon adları))
+✓ Tablodaki Nakit Akışı Beklenen değişti (K5): BULGU 1 (001 Tablo Raporları · nakit-akis (rakamlar, satırlar))
+✓ Tablodaki Nakit Akışı beklenenli dönem satırı düştü (K5): BULGU 1 (001 Tablo Raporları · nakit-akis (rakamlar, satırlar))
+✓ mizan bir hesap: BULGU 1 (002 mizan (her hesap))
+✓ Kasa satırları: BULGU 1 (001 Kasa (toplam, yol başına, satırlar))
+✓ fatura ödeme durumu: BULGU 1 (001 faturaların ödeme durumu)
+# mutasyon: 19 hata + 1 hatasız; yakalanmayan 0
+# tests 20
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

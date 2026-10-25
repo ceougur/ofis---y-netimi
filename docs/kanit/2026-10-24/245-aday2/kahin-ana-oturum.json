@@ -1,0 +1,32 @@
+{
+  "ad": "245-aday2/kahin-ana-oturum",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-aday1/kahin2",
+  "commit": "94e064f6e4817479d6cf9c94a840b325797ca2a2",
+  "dal": "aday245-2",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T21:40:32.595Z",
+  "sure_sn": 78,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 5351,
+    "gecen": 5351,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-aday2/kahin-ana-oturum.log",
+  "klasor": "/home/user/wt/aday245-2",
+  "ham_cikti_sha256": "0b114a0c84840f85a8a00fc07c4e0f5c08ce3f578f2071062a1b99ea801c49c7",
+  "ham_cikti_bayt": 23136
+}

@@ -86,6 +86,10 @@
     doubtfulReason: { label: "Neden", options: [["", "Tüm Nedenler"], ["cheque", "Karşılıksız Çek"], ["note", "Protestolu Senet"], ["lawsuit", "Dava"], ["enforcement", "İcra"], ["other", "Diğer"]] },
   };
   const DYNAMIC = { bankAccount: "Banka Hesabı", feeAccount: "Banka Hesabı", posTerminal: "POS", anyAccount: "Hesap" };
+  // 2.4.5 madde 6d (müşteri isteği M2): açılıp kapanan seçenekler (işaretliyse "1" gider). Cari Ekstre → Fatura Kalemlerini Göster (Ayrıntılı Cari Ekstre).
+  const CHECKS = { items: "Fatura Kalemlerini Göster" };
+  // Başka ekrandan belirli cari ve seçenekle açılış (cari kartı → Ayrıntılı Ekstre): select() bir kez okur.
+  let pending = null;
 
   // Raporlar penceresindeki "Tüm raporlar" sekmesine kurulur (hof-overview.js). Sekme her açılışta yeni düğüm verir.
   async function mount(host, reportId = "") {
@@ -119,9 +123,10 @@
     }
   }
   // Eski giriş noktası (ANLIK DURUM kutucukları, kısayollar): Raporlar penceresi "Tüm raporlar" sekmesinde açılır.
-  function open(reportId = "") {
+  function open(reportId = "", preset = null) {
     // Banka grubu (bank.reports; 2.2.0 ve 2.3.0 İz 3.3 raporları dahil) Finans Raporları olmadan da açılır.
     if (!HOF.can("overview.view") && !(HOF.can("bank.reports") && /^(banka-|alt-hesap-mizani$|tahsildeki-cekler$|pos-odeme-takvimi$|faturasi-beklenen-komisyonlar$|para-birimi-bazinda-bakiye$|bankalar-arasi-transfer$|kasa-banka-transfer$|cari-banka-hareketleri$|fatura-banka-hareketleri$|taksit-banka-hareketleri$)/.test(reportId))) return HOF.toast("Raporlar yalnız yönetici ve yönetici yetki verdiği kişilere açıktır.", { type: "error" });
+    pending = preset && reportId ? { id: reportId, account: preset.account?.id ? { id: preset.account.id, name: preset.account.name || "" } : null, params: { ...(preset.params || {}) } } : null;
     return HOF.overview?.openReports ? HOF.overview.openReports("all", { report: reportId }) : null;
   }
   const root = () => center?.host?.querySelector("[data-rc]");
@@ -203,8 +208,13 @@
     if (report.params.includes("bankGroup")) params.bankGroup = "real";
     if (report.params.includes("doubtfulStatus")) params.doubtfulStatus = "open";
     if (report.id === "cek-portfoy") params.status = "open";
-    center.params = params;
     center.account = null;
+    if (pending && pending.id === id) {
+      Object.assign(params, pending.params);
+      center.account = pending.account;
+    }
+    pending = null;
+    center.params = params;
     // 2.4.3 (C4): yer tutucu önceki sonucun yüksekliğinde (rapor değişince pencere çöküp açılmaz).
     center.holdHeight = root()?.querySelector("[data-rc-result]")?.offsetHeight || 0;
     center.preview = null;
@@ -240,7 +250,8 @@
       } else if (SELECTS[name]) {
         const spec = SELECTS[name];
         parts.push(`<label class="hof-rc-param"><span>${esc(spec.label)}</span><select data-param="${name}">${spec.options.map(([value, label]) => `<option value="${esc(value)}" ${String(p[name] || "") === value ? "selected" : ""}>${esc(label)}</option>`).join("")}</select></label>`);
-      } else if (name === "category") parts.push(`<label class="hof-rc-param"><span>Kategori</span><input type="text" data-param="category" value="${esc(p.category || "")}" placeholder="Tümü" maxlength="80"></label>`);
+      } else if (CHECKS[name]) parts.push(`<label class="hof-rc-param hof-rc-check"><span class="hof-rc-check-row"><input type="checkbox" data-param="${name}" ${p[name] === "1" ? "checked" : ""}> ${esc(CHECKS[name])}</span></label>`);
+      else if (name === "category") parts.push(`<label class="hof-rc-param"><span>Kategori</span><input type="text" data-param="category" value="${esc(p.category || "")}" placeholder="Tümü" maxlength="80"></label>`);
       else if (name === "tab") {
         const tabs = center.preview?.tabs || [];
         parts.push(`<label class="hof-rc-param"><span>Sekme</span><select data-param="tab"><option value="">Tüm Sekmeler</option>${tabs.map(tab => `<option value="${esc(tab)}" ${p.tab === tab ? "selected" : ""}>${esc(tab)}</option>`).join("")}</select></label>`);
@@ -313,7 +324,7 @@
       ? `<div class="hof-rc-summary">${(preview.summary || []).map(([label, value]) => `<span><small>${esc(label)}</small><b>${esc(screenMoney(value))}</b></span>`).join("")}</div>
         <div class="hof-rep-table hof-rc-table"><table class="hof-table"><thead><tr>${preview.headers.map((header, index) => `<th class="${isNum(index) ? "num" : ""}">${esc(header)}</th>`).join("")}</tr></thead><tbody>${
           preview.rows.length
-            ? preview.rows.map(row => `<tr>${row.map((cell, index) => `<td class="${cellClass(preview, index)}">${esc(shown(cell, index))}</td>`).join("")}</tr>`).join("")
+            ? preview.rows.map((row, rowIndex) => `<tr${preview.rowMarks?.[rowIndex] ? ` class="is-${esc(preview.rowMarks[rowIndex])}"` : ""}>${row.map((cell, index) => `<td class="${cellClass(preview, index)}">${esc(shown(cell, index))}</td>`).join("")}</tr>`).join("")
             : `<tr><td colspan="${preview.headers.length}" class="hof-empty">${emptyText(report)}</td></tr>`
         }</tbody>${
           totals.length && preview.rows.length
@@ -449,7 +460,7 @@
     if (!name || !center) return;
     if (name === "from" || name === "to") return; // tarih "Ön izle" ile uygulanır (yazarken rapor tekrar tekrar hazırlanmasın)
     if (name === "category") return;
-    center.params[name] = event.target.value;
+    center.params[name] = event.target.type === "checkbox" ? (event.target.checked ? "1" : "") : event.target.value;
     run();
   }
 

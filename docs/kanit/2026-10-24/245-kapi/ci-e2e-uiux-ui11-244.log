@@ -1,0 +1,169 @@
+
+> destekofis@2.4.5 test:uiux-ui11-244
+> node --disable-warning=ExperimentalWarning test/e2e/uiux-ui11-244.mjs
+
+
+■ A. Liste pencereleri
+  ✓ Taksitler listesi: 2 dışa aktarım düğmesi (PDF · Yazdır)
+  ✓ Taksitler listesi: pdf düğmesi ortak ailede
+  ✓ Taksitler listesi: print düğmesi ortak ailede
+  ✓ Taksitler listesi: hepsi ortak sınıfta (.hof-rep-out is-pdf|is-xlsx|is-print) []
+  ✓ Taksitler listesi: hepsi simgeli
+  ✓ Taksitler listesi: ipucu ve erişilebilir ad dolu, ad görünen yazıyı içerir [["PDF","Taksit Listesi - PDF","Taksit Listesi: PDF olarak açılır; oradan kaydedebilir ya da yazdırabilirsiniz"],["Yazdır","Taksit Listesi - Yazdır","Taksit Listesi: Yazıcıya gönderilir"]]
+  ✓ Taksitler listesi: liste/rapor düğmeleri tek ad ["PDF","Yazdır"]
+  ✓ Taksitler listesi: pencere içinde aynı boy (36 px)
+  ✓ Taksitler: PDF bağlantısı aynı adres, yeni sekme
+  ✓ Cari listesi: 3 dışa aktarım düğmesi (PDF · Yazdır · Excel)
+  ✓ Cari listesi: pdf düğmesi ortak ailede
+  ✓ Cari listesi: print düğmesi ortak ailede
+  ✓ Cari listesi: xlsx düğmesi ortak ailede
+  ✓ Cari listesi: hepsi ortak sınıfta (.hof-rep-out is-pdf|is-xlsx|is-print) []
+  ✓ Cari listesi: hepsi simgeli
+  ✓ Cari listesi: ipucu ve erişilebilir ad dolu, ad görünen yazıyı içerir [["PDF","Cari Listesi - PDF","Cari Listesi: PDF olarak açılır; oradan kaydedebilir ya da yazdırabilirsiniz"],["Yazdır","Cari Listesi - Yazdır","Cari Listesi: Yazıcıya gönderilir"],["Excel","Cari Listesi - Excel","Ekrandaki listeyi (ek alanlarıyla) Excel olarak indir"]]
+  ✓ Cari listesi: liste/rapor düğmeleri tek ad ["PDF","Yazdır","Excel"]
+  ✓ Cari listesi: pencere içinde aynı boy (36 px)
+  ✓ Cari: PDF ve Excel bağlantıları korunur
+  ✓ Cari: süzgeç satırında düğme seçiciyle aynı boy (36 / 36 px)
+
+■ B. Kart pencereleri (adlı kalır)
+  ✓ Cari kartı: 2 dışa aktarım düğmesi (Cari Ekstre - PDF · Yazdır)
+  ✓ Cari kartı: pdf düğmesi ortak ailede
+  ✓ Cari kartı: print düğmesi ortak ailede
+  ✓ Cari kartı: hepsi ortak sınıfta (.hof-rep-out is-pdf|is-xlsx|is-print) []
+  ✓ Cari kartı: hepsi simgeli
+  ✓ Cari kartı: ipucu ve erişilebilir ad dolu, ad görünen yazıyı içerir [["Cari Ekstre - PDF","Cari Ekstre - PDF","PDF olarak açılır; oradan kaydedebilir ya da yazdırabilirsiniz"],["Yazdır","Cari Ekstre - Yazdır","Cari Ekstre: Yazıcıya gönderilir"]]
+  ✓ Cari kartı: kart/belge çıktısı adlı kalır ["Cari Ekstre - PDF","Yazdır"]
+  ✓ Cari kartı: pencere içinde aynı boy (32 px)
+  ✓ Cari kartı: “Cari Ekstre - PDF”
+  ✓ Stok listesi: 3 dışa aktarım düğmesi (PDF · Yazdır · Excel)
+  ✓ Stok listesi: pdf düğmesi ortak ailede
+  ✓ Stok listesi: print düğmesi ortak ailede
+  ✓ Stok listesi: xlsx düğmesi ortak ailede
+  ✓ Stok listesi: hepsi ortak sınıfta (.hof-rep-out is-pdf|is-xlsx|is-print) []
+  ✓ Stok listesi: hepsi simgeli
+  ✓ Stok listesi: ipucu ve erişilebilir ad dolu, ad görünen yazıyı içerir [["PDF","Stok Listesi - PDF","Stok Listesi: PDF olarak açılır; oradan kaydedebilir ya da yazdırabilirsiniz"],["Yazdır","Stok Listesi - Yazdır","Stok Listesi: Yazıcıya gönderilir"],["Excel","Stok Listesi - Excel","Stok durumunu Excel olarak indir"]]
+  ✓ Stok listesi: liste/rapor düğmeleri tek ad ["PDF","Yazdır","Excel"]
+  ✓ Stok listesi: pencere içinde aynı boy (36 px)
+  ✓ Stok kartı: 2 dışa aktarım düğmesi (Stok Kartı - PDF · Yazdır)
+  ✓ Stok kartı: pdf düğmesi ortak ailede
+  ✓ Stok kartı: print düğmesi ortak ailede
+  ✓ Stok kartı: hepsi ortak sınıfta (.hof-rep-out is-pdf|is-xlsx|is-print) []
+  ✓ Stok kartı: hepsi simgeli
+  ✓ Stok kartı: ipucu ve erişilebilir ad dolu, ad görünen yazıyı içerir [["Stok Kartı - PDF","Stok Kartı - PDF","PDF olarak açılır; oradan kaydedebilir ya da yazdırabilirsiniz"],["Yazdır","Stok Kartı - Yazdır","Stok Kartı: Yazıcıya gönderilir"]]
+  ✓ Stok kartı: kart/belge çıktısı adlı kalır ["Stok Kartı - PDF","Yazdır"]
+  ✓ Stok kartı: pencere içinde aynı boy (32 px)
+  ✓ Taksit kartı: 2 dışa aktarım düğmesi (Taksit Ekstresi - PDF · Yazdır)
+  ✓ Taksit kartı: pdf düğmesi ortak ailede
+  ✓ Taksit kartı: print düğmesi ortak ailede
+  ✓ Taksit kartı: hepsi ortak sınıfta (.hof-rep-out is-pdf|is-xlsx|is-print) []
+  ✓ Taksit kartı: hepsi simgeli
+  ✓ Taksit kartı: ipucu ve erişilebilir ad dolu, ad görünen yazıyı içerir [["Taksit Ekstresi - PDF","Taksit Ekstresi - PDF","PDF olarak açılır; oradan kaydedebilir ya da yazdırabilirsiniz"],["Yazdır","Taksit Ekstresi - Yazdır","Taksit Ekstresi: Yazıcıya gönderilir"]]
+  ✓ Taksit kartı: kart/belge çıktısı adlı kalır ["Taksit Ekstresi - PDF","Yazdır"]
+  ✓ Taksit kartı: pencere içinde aynı boy (32 px)
+  ✓ Fatura listesi: 2 dışa aktarım düğmesi (PDF · Excel)
+  ✓ Fatura listesi: pdf düğmesi ortak ailede
+  ✓ Fatura listesi: xlsx düğmesi ortak ailede
+  ✓ Fatura listesi: hepsi ortak sınıfta (.hof-rep-out is-pdf|is-xlsx|is-print) []
+  ✓ Fatura listesi: hepsi simgeli
+  ✓ Fatura listesi: ipucu ve erişilebilir ad dolu, ad görünen yazıyı içerir [["PDF","Fatura Listesi - PDF","Fatura Listesi: PDF olarak açılır; oradan kaydedebilir ya da yazdırabilirsiniz"],["Excel","Fatura Listesi - Excel","Fatura Listesi: Excel dosyası olarak iner"]]
+  ✓ Fatura listesi: liste/rapor düğmeleri tek ad ["PDF","Excel"]
+  ✓ Fatura listesi: pencere içinde aynı boy (32 px)
+  ✓ Fatura: PDF/Excel adresi ve indirme özniteliği korunur
+  ✓ Fatura başlığı bir kez (1)
+  ✓ Fatura seçim çubuğu: Seçilenleri PDF / Excel ortak ailede ["Seçilenleri PDF","Seçilenleri Excel"]
+  ✓ Fatura kartı: 2 dışa aktarım düğmesi (Satış Faturası - PDF · Yazdır)
+  ✓ Fatura kartı: pdf düğmesi ortak ailede
+  ✓ Fatura kartı: print düğmesi ortak ailede
+  ✓ Fatura kartı: hepsi ortak sınıfta (.hof-rep-out is-pdf|is-xlsx|is-print) []
+  ✓ Fatura kartı: hepsi simgeli
+  ✓ Fatura kartı: ipucu ve erişilebilir ad dolu, ad görünen yazıyı içerir [["Satış Faturası - PDF","Satış Faturası - PDF","PDF olarak açılır; oradan kaydedebilir ya da yazdırabilirsiniz"],["Yazdır","Satış Faturası - Yazdır","Satış Faturası: Yazıcıya gönderilir"]]
+  ✓ Fatura kartı: kart/belge çıktısı adlı kalır ["Satış Faturası - PDF","Yazdır"]
+  ✓ Fatura kartı: pencere içinde aynı boy (32 px)
+  ✓ Çek / Senet listesi: 2 dışa aktarım düğmesi (PDF · Excel)
+  ✓ Çek / Senet listesi: pdf düğmesi ortak ailede
+  ✓ Çek / Senet listesi: xlsx düğmesi ortak ailede
+  ✓ Çek / Senet listesi: hepsi ortak sınıfta (.hof-rep-out is-pdf|is-xlsx|is-print) []
+  ✓ Çek / Senet listesi: hepsi simgeli
+  ✓ Çek / Senet listesi: ipucu ve erişilebilir ad dolu, ad görünen yazıyı içerir [["PDF","Çek / Senet Listesi - PDF","Çek / Senet Listesi: PDF olarak açılır; oradan kaydedebilir ya da yazdırabilirsiniz"],["Excel","Çek / Senet Listesi - Excel","Çek / Senet Listesi: Excel dosyası olarak iner"]]
+  ✓ Çek / Senet listesi: liste/rapor düğmeleri tek ad ["PDF","Excel"]
+  ✓ Çek / Senet listesi: pencere içinde aynı boy (32 px)
+
+■ C. Kasa (belge çıktısı adlı kalır)
+  ✓ Kasa: 1 dışa aktarım düğmesi (Kasa Dökümü - PDF)
+  ✓ Kasa: pdf düğmesi ortak ailede
+  ✓ Kasa: hepsi ortak sınıfta (.hof-rep-out is-pdf|is-xlsx|is-print) []
+  ✓ Kasa: hepsi simgeli
+  ✓ Kasa: ipucu ve erişilebilir ad dolu, ad görünen yazıyı içerir [["Kasa Dökümü - PDF","Kasa Dökümü - PDF","Seçili dönemin nakit kasa hareketlerini PDF olarak indir"]]
+  ✓ Kasa: kart/belge çıktısı adlı kalır ["Kasa Dökümü - PDF"]
+  ✓ Kasa: pencere içinde aynı boy (40 px)
+  ✓ Kasa: “Kasa Dökümü - PDF”
+  ✓ Kasa: PDF düğmesi satırdaki düğmelerle aynı boy (40, 40, 40, 40, 40, 40, 40 px)
+
+■ D. Rapor pencereleri
+  ✓ Raporlar → Cari Ekstre: 2 dışa aktarım düğmesi (PDF · Excel)
+  ✓ Raporlar → Cari Ekstre: pdf düğmesi ortak ailede
+  ✓ Raporlar → Cari Ekstre: xlsx düğmesi ortak ailede
+  ✓ Raporlar → Cari Ekstre: hepsi ortak sınıfta (.hof-rep-out is-pdf|is-xlsx|is-print) []
+  ✓ Raporlar → Cari Ekstre: hepsi simgeli
+  ✓ Raporlar → Cari Ekstre: ipucu ve erişilebilir ad dolu, ad görünen yazıyı içerir [["PDF","Cari Ekstre - PDF","Cari Ekstre: PDF olarak açılır; oradan kaydedebilir ya da yazdırabilirsiniz"],["Excel","Cari Ekstre - Excel","Cari Ekstre: Excel dosyası olarak iner"]]
+  ✓ Raporlar → Cari Ekstre: liste/rapor düğmeleri tek ad ["PDF","Excel"]
+  ✓ Raporlar → Cari Ekstre: pencere içinde aynı boy (32 px)
+  ✓ Raporlar → Vade Takip: 2 dışa aktarım düğmesi (PDF · Excel)
+  ✓ Raporlar → Vade Takip: pdf düğmesi ortak ailede
+  ✓ Raporlar → Vade Takip: xlsx düğmesi ortak ailede
+  ✓ Raporlar → Vade Takip: hepsi ortak sınıfta (.hof-rep-out is-pdf|is-xlsx|is-print) []
+  ✓ Raporlar → Vade Takip: hepsi simgeli
+  ✓ Raporlar → Vade Takip: ipucu ve erişilebilir ad dolu, ad görünen yazıyı içerir [["PDF","Vade Takip - PDF","Vade Takip: PDF olarak açılır; oradan kaydedebilir ya da yazdırabilirsiniz"],["Excel","Vade Takip - Excel","Vade Takip: Excel dosyası olarak iner"]]
+  ✓ Raporlar → Vade Takip: liste/rapor düğmeleri tek ad ["PDF","Excel"]
+  ✓ Raporlar → Vade Takip: pencere içinde aynı boy (32 px)
+  ✓ Raporlar → Nakit Akış: 2 dışa aktarım düğmesi (PDF · Excel)
+  ✓ Raporlar → Nakit Akış: pdf düğmesi ortak ailede
+  ✓ Raporlar → Nakit Akış: xlsx düğmesi ortak ailede
+  ✓ Raporlar → Nakit Akış: hepsi ortak sınıfta (.hof-rep-out is-pdf|is-xlsx|is-print) []
+  ✓ Raporlar → Nakit Akış: hepsi simgeli
+  ✓ Raporlar → Nakit Akış: ipucu ve erişilebilir ad dolu, ad görünen yazıyı içerir [["PDF","Nakit Akış - PDF","Nakit Akış: PDF olarak açılır; oradan kaydedebilir ya da yazdırabilirsiniz"],["Excel","Nakit Akış - Excel","Nakit Akış: Excel dosyası olarak iner"]]
+  ✓ Raporlar → Nakit Akış: liste/rapor düğmeleri tek ad ["PDF","Excel"]
+  ✓ Raporlar → Nakit Akış: pencere içinde aynı boy (32 px)
+  ✓ Raporlar → Çek / Senet Raporu: 2 dışa aktarım düğmesi (PDF · Excel)
+  ✓ Raporlar → Çek / Senet Raporu: pdf düğmesi ortak ailede
+  ✓ Raporlar → Çek / Senet Raporu: xlsx düğmesi ortak ailede
+  ✓ Raporlar → Çek / Senet Raporu: hepsi ortak sınıfta (.hof-rep-out is-pdf|is-xlsx|is-print) []
+  ✓ Raporlar → Çek / Senet Raporu: hepsi simgeli
+  ✓ Raporlar → Çek / Senet Raporu: ipucu ve erişilebilir ad dolu, ad görünen yazıyı içerir [["PDF","Çek / Senet Raporu - PDF","Çek / Senet Raporu: PDF olarak açılır; oradan kaydedebilir ya da yazdırabilirsiniz"],["Excel","Çek / Senet Raporu - Excel","Çek / Senet Raporu: Excel dosyası olarak iner"]]
+  ✓ Raporlar → Çek / Senet Raporu: liste/rapor düğmeleri tek ad ["PDF","Excel"]
+  ✓ Raporlar → Çek / Senet Raporu: pencere içinde aynı boy (32 px)
+  ✓ Rapor Merkezi: 2 dışa aktarım düğmesi (PDF · Excel)
+  ✓ Rapor Merkezi: pdf düğmesi ortak ailede
+  ✓ Rapor Merkezi: xlsx düğmesi ortak ailede
+  ✓ Rapor Merkezi: hepsi ortak sınıfta (.hof-rep-out is-pdf|is-xlsx|is-print) []
+  ✓ Rapor Merkezi: hepsi simgeli
+  ✓ Rapor Merkezi: ipucu ve erişilebilir ad dolu, ad görünen yazıyı içerir [["PDF","Cari Mizanı - PDF","Cari Mizanı: PDF olarak açılır; oradan kaydedebilir ya da yazdırabilirsiniz"],["Excel","Cari Mizanı - Excel","Cari Mizanı: Excel dosyası olarak iner"]]
+  ✓ Rapor Merkezi: liste/rapor düğmeleri tek ad ["PDF","Excel"]
+  ✓ Rapor Merkezi: pencere içinde aynı boy (32 px)
+  ✓ Rapor Merkezi: PDF adresi korunur
+  ✓ Tablo Raporları: 3 dışa aktarım düğmesi (Excel · PDF · Yazdır)
+  ✓ Tablo Raporları: pdf düğmesi ortak ailede
+  ✓ Tablo Raporları: xlsx düğmesi ortak ailede
+  ✓ Tablo Raporları: print düğmesi ortak ailede
+  ✓ Tablo Raporları: hepsi ortak sınıfta (.hof-rep-out is-pdf|is-xlsx|is-print) []
+  ✓ Tablo Raporları: hepsi simgeli
+  ✓ Tablo Raporları: ipucu ve erişilebilir ad dolu, ad görünen yazıyı içerir [["Excel","Tablo Raporu - Excel","Tablo Raporu: Excel dosyası olarak iner"],["PDF","Tablo Raporu - PDF","Tablo Raporu: PDF olarak açılır; oradan kaydedebilir ya da yazdırabilirsiniz"],["Yazdır","Tablo Raporu - Yazdır","Tablo Raporu: Yazıcıya gönderilir"]]
+  ✓ Tablo Raporları: liste/rapor düğmeleri tek ad ["Excel","PDF","Yazdır"]
+  ✓ Tablo Raporları: pencere içinde aynı boy (32 px)
+  ✓ Banka → Hareketler: 2 dışa aktarım düğmesi (PDF · Excel)
+  ✓ Banka → Hareketler: pdf düğmesi ortak ailede
+  ✓ Banka → Hareketler: xlsx düğmesi ortak ailede
+  ✓ Banka → Hareketler: hepsi ortak sınıfta (.hof-rep-out is-pdf|is-xlsx|is-print) []
+  ✓ Banka → Hareketler: hepsi simgeli
+  ✓ Banka → Hareketler: ipucu ve erişilebilir ad dolu, ad görünen yazıyı içerir [["PDF","Banka Hareketleri - PDF","Süzgeçteki hareketleri PDF olarak aç"],["Excel","Banka Hareketleri - Excel","Süzgeçteki hareketleri Excel olarak indir"]]
+  ✓ Banka → Hareketler: liste/rapor düğmeleri tek ad ["PDF","Excel"]
+  ✓ Banka → Hareketler: pencere içinde aynı boy (32 px)
+  ✓ Banka: hareket PDF/Excel adresleri korunur
+
+■ E. Tek görünüm (bütün pencerelerde tür başına aynı yazı tipi, köşe, renk)
+  ✓ is-pdf: 1 farklı görünüm 
+  ✓ is-print: 1 farklı görünüm 
+  ✓ is-xlsx: 1 farklı görünüm 
+  ✓ sayfa hatası yok []
+
+153 geçti, 0 kaldı

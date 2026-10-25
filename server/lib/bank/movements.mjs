@@ -44,7 +44,8 @@ const SOURCE_LABELS = Object.freeze({
   cheque_events: "Çek ve Senet Hareketi",
 });
 const MODULE_REASONS = Object.freeze({
-  payments: "Bu tahsilat tablodaki kayıttan girildi; kaydın detay kartından düzeltilir ya da silinir.",
+  // 2.4.5 madde 1: kayıt tahsilatı düzeltilmez (PUT 410), yalnız silinir (Silinenler'den geri yüklenir).
+  payments: "Bu tahsilat tablodaki kayıttan girildi (eski kayıt tahsilatı); düzeltilemez, kaydın detay kartından silinebilir. Yeni tahsilat Cari'den girilir.",
   cash_entries: "Bu hareket Kasa penceresinden girildi; Kasa penceresinden düzeltilir ya da silinir.",
   account_entries: "Bu hareket Cari kartından girildi; Cari penceresinden düzeltilir ya da silinir.",
   invoice: "Bu ödeme bir faturanın peşin tahsilatı/ödemesi; Fatura penceresinden düzenlenir ya da iptal edilir.",

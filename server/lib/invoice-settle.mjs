@@ -100,8 +100,22 @@ export function classifyLine(line, { invoiceKind = "", chequeEvent = "" } = {}) 
       else role.recvDue = true; // plan (borç), plan-out (taksit iadesi: borç yeniden açılır)
       break;
     case "stock":
-      if (debit) role.recvDue = true;
+      // 2.4.5 KS7 (a) (BAŞ MİMAR KARARI; S1 "bağsız ödemeler (… iade) en eskiden dağıtılır"): faturasız stok İADESİ bağsız ÖDEMEDİR — satıştan iade
+      // (müşteride alacak satırı) alacak tarafında, alıştan iade (tedarikçide borç satırı) borç tarafında; en eski açık borcu (fatura, elle borç)
+      // kapatır. Önceden (2.0.13'ten) karşı tarafta yükümlülük sayılıyordu: bakiye 0 iken fatura ve vadeli borç "Açık / gecikmiş" görünüyordu (D1).
+      // Stoktan veresiye satış (borç) ve açık hesaba alım (alacak) yükümlülüktür.
+      if (line.stockReason === "return" || line.stockReason === "preturn") {
+        if (credit) role.recvPay = true;
+        else role.payPay = true;
+      } else if (debit) role.recvDue = true;
       else role.payDue = true;
+      break;
+    case "doubtful":
+      // 2.4.5 KS7 (b) (BANKA-MODULU-PLAN §3.11b/3 "değersiz yazılınca cari bakiyesi o tutar kadar kapanır"): Değersiz Alacak Yaz satırı (alacak) bağsız
+      // kapatıcıdır — alacak tarafında en eski açık borçtan kapatır. Şüpheliye alma (128'e aktarım) cari satırı yazmaz: kapatmaz, alacak sürer.
+      // Önceden elle Alacak gibi yükümlülük sayılıyordu (bakiye 0, fatura / vadeli borç açık — D1).
+      if (credit) role.recvPay = true;
+      else role.recvDue = true;
       break;
     case "pos-fee":
       // 2.2.0 (plan §4.3/2): POS komisyon kesintisi (çıkış) ve komisyon iadesi (giriş) yalnız borç tarafında ödeme rolündedir; iade eksi tutarlı
@@ -130,8 +144,22 @@ export function classifyLine(line, { invoiceKind = "", chequeEvent = "" } = {}) 
  *   offsets      : mahsup fişleri (fatura ↔ karşı fatura ya da karşı cari satırı)
  * @returns {Map<string, { payable, paid, open, state, label, closers: Array<{ id, date, label, note, method, amount, mode }> }>}
  */
-export function settleInvoices({ lines, invoices, links = new Map(), chequeEvents = new Map(), reversals = new Map(), offsets = [], today }) {
+export function settleInvoices(input) {
+  return settleLedger(input).invoices;
+}
+
+/**
+ * 2.4.5 madde 6 (BAŞ MİMAR KARARI S1, K6.2): aynı kapama, faturasız yükümlülüklerin kalanıyla birlikte. Carinin TEK yükümlülük kuyruğu (taksitsiz fatura,
+ * elle Borç / Alacak, Açılış Bakiyesi, stok borcu, karşılıksız evrak…) yukarıdaki kuralla kapanır; ikinci bir dağıtım yoktur. Faturaların sonucu
+ * settleInvoices ile AYNIDIR (o bu işlevin invoices alanıdır).
+ * @returns {{ invoices: Map<string, object>, entries: Map<string, { side: "receivable"|"payable", remaining: number, covered: number }> }}
+ *   entries: fatura kimliği taşımayan her yükümlülük satırı (defter satırı kimliği → kalan): remaining = bağlı ödemeler, mahsup, Mevcut Borç kartının
+ *   tahsilatı ve en eski borçtan dağıtılan bağsız ödemelerden sonra açık kalan (TL); covered = kalanın Mevcut Borç kartınca kapsanan kısmı (kartın
+ *   taksitleriyle görünür; birleşik listelerde bir kez sayılır).
+ */
+export function settleLedger({ lines, invoices, links = new Map(), chequeEvents = new Map(), reversals = new Map(), offsets = [], today }) {
   const out = new Map();
+  const entries = new Map();
   const byId = new Map(invoices.map(invoice => [invoice.id, invoice]));
   const planOwner = new Map(invoices.filter(invoice => invoice.planId).map(invoice => [invoice.planId, invoice.id]));
   const sorted = [...lines].sort((a, b) => (a.date === b.date ? String(a.at || "").localeCompare(String(b.at || "")) : a.date < b.date ? -1 : 1));
@@ -415,8 +443,14 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
   }
   const pools = {};
   for (const side of ["receivable", "payable"]) {
-    const { target, overpaid, pool } = runSide(side, ordered, side === "receivable" ? coverage : new Map(), offsets);
+    const { obligations, target, overpaid, pool } = runSide(side, ordered, side === "receivable" ? coverage : new Map(), offsets);
     pools[side] = pool;
+    // 2.4.5 madde 6: faturasız yükümlülüğün kalanı (elle Borç / Alacak, açılış…) aynı dağıtımdan; Vade Tarihi sırayı değiştirmez (bilgi alanı).
+    for (const item of obligations) {
+      if (item.invoiceId) continue;
+      const covered = [...item.covered.values()].reduce((sum, value) => sum + value, 0);
+      entries.set(item.lineId, { side, remaining: roundMoney(partsLeft(item) / 100), covered: roundMoney(covered / 100) });
+    }
     for (const [invoiceId, items] of target) {
       const invoice = byId.get(invoiceId);
       const payable = cents(invoice.payable);
@@ -496,5 +530,5 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
     else state = row.paid > 0 ? "partial" : "open";
     out.set(invoice.id, { ...row, state, label: PAY_STATES[state] });
   }
-  return out;
+  return { invoices: out, entries };
 }

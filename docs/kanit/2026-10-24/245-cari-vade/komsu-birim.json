@@ -1,0 +1,32 @@
+{
+  "ad": "245-cari-vade/komsu-birim",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-post-statik.test.mjs test/yazim-duzeni.test.mjs test/dues.test.mjs test/accounts-stock.test.mjs test/bulgu-223.test.mjs test/iade-kapama-k1.test.mjs test/fatura-217.test.mjs test/ux18-cek-fatura-244.test.mjs test/vade-takip-kaynak-yetki-210.test.mjs test/cheques-overview.test.mjs test/uyari-ufku-225.test.mjs test/kapama-rastgele-223.test.mjs test/cari-243.test.mjs test/cari-tur-222.test.mjs test/cari-bilgi-222.test.mjs test/banka-210-asama5-cari.test.mjs test/banka-210-gg-cari.test.mjs test/kalan-borc-ortak-30a.test.mjs test/kalan-borc-satir-31d.test.mjs test/plans.test.mjs test/raporlar-209.test.mjs test/hiz-243-arka-plan.test.mjs test/sirketler-217.test.mjs test/kayit-bag-31e.test.mjs test/plan-transfer.test.mjs test/schema-flex.test.mjs test/table-columns.test.mjs test/banka-210-rapor-bulgu.test.mjs test/tablo-borc-dosya-u2.test.mjs test/tablo-borc-r31e.test.mjs test/kayit-tahsilat-244.test.mjs test/plan-case-link.test.mjs test/backup.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/banka-220-tahsile-ver-dogrulama.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-230-banka.test.mjs test/banka-220-tahsile-ver-tur2.test.mjs test/ci-kapi-listesi.test.mjs test/kanit-araci.test.mjs test/banka-210-goc.test.mjs test/fatura-model.test.mjs test/mm-smm-244.test.mjs test/tablodan-aktar-244.test.mjs",
+  "commit": "494cd99ec18ebc6e59cfadb4c80ce8587f081ffe",
+  "dal": "is/cari-vade",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:28:15.095Z",
+  "sure_sn": 227.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 701,
+    "gecen": 701,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-cari-vade/komsu-birim.log",
+  "klasor": "/home/user/wt/cari-vade",
+  "ham_cikti_sha256": "935441f62d09b240ecd2fcab184f771474eb95862666ddd2e4f18ad9ff277fbf",
+  "ham_cikti_bayt": 257524
+}

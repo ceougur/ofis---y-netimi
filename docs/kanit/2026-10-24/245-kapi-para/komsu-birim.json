@@ -1,0 +1,38 @@
+{
+  "ad": "245-kapi-para/komsu-birim",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=2 --test-timeout=900000 test/asama0-226-kesinti.test.mjs test/asama0-226-saat.test.mjs test/asama0-226.test.mjs test/banka-210-acilis.test.mjs test/banka-210-arayuz-hareket.test.mjs test/banka-210-arayuz.test.mjs test/banka-210-ariza.test.mjs test/banka-210-asama6-kasa.test.mjs test/banka-210-asama78-modul.test.mjs test/banka-210-bozarim.test.mjs test/banka-210-dun-bugun.test.mjs test/banka-210-eslesmis.test.mjs test/banka-210-fis.test.mjs test/banka-210-gg-eski.test.mjs test/banka-210-gg-geri-yukle.test.mjs test/banka-210-gg-olay.test.mjs test/banka-210-gg2-bag.test.mjs test/banka-210-gg2-hiz.test.mjs test/banka-210-gg3-bag.test.mjs test/banka-210-goc.test.mjs test/banka-210-hareketler.test.mjs test/banka-210-hesap.test.mjs test/banka-210-hiz-esdegerlik.test.mjs test/banka-210-islem-no.test.mjs test/banka-210-kurumsal-kart.test.mjs test/banka-210-planli.test.mjs test/banka-210-post.test.mjs test/banka-210-saat.test.mjs test/banka-210-sihirbaz.test.mjs test/banka-210-sira.test.mjs test/banka-210-tek-kaynak.test.mjs test/banka-210-transfer.test.mjs test/banka-210-yargic.test.mjs test/banka-210-yetki-matrisi.test.mjs test/banka-220-pos-iz3.test.mjs test/banka-220-pos-moduller.test.mjs test/banka-220-senet-121.test.mjs test/banka-220-tahsile-ver.test.mjs test/banka-230-supheli-bozma.test.mjs test/cari-243.test.mjs test/cash.test.mjs test/defter-213.test.mjs test/defter-243-vergi.test.mjs test/dues.test.mjs test/duzeltmeler-212.test.mjs test/ebelge-242-test-seri.test.mjs test/form-izolasyon.test.mjs test/geri-yukleme-uyari-244.test.mjs test/goc-244-numara-tabani.test.mjs test/ice-alma-sayi-hucre-api.test.mjs test/inceleme-226-2.test.mjs test/inceleme-226.test.mjs test/kalan-borc-ortak-30a.test.mjs test/kapi-para-245.test.mjs test/kayit-bag-31e.test.mjs test/kayit-tahsilat-244.test.mjs test/kullanici-yetki-210.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/nakit-akis-kasa-mm6.test.mjs test/numara-tekil-244.test.mjs test/personel-ozluk-244.test.mjs test/plan-transfer.test.mjs test/platform-tasinabilirlik.test.mjs test/rapor-230-iz5.test.mjs test/rapor-tablodaki-kisiler-244.test.mjs test/rapor-tablodaki-kisiler-f1.test.mjs test/raporlar-209.test.mjs test/raporlar-210-banka.test.mjs test/reasoning.test.mjs test/sessions.test.mjs test/silinenler-donem-kilidi-244.test.mjs test/sirketler-217.test.mjs test/tablo-borc-e1-e2.test.mjs test/tablo-borc-r31e.test.mjs test/tablo-raporlari-u3-244.test.mjs test/tablodan-aktar-244.test.mjs test/trash.test.mjs test/workspace.test.mjs test/yazim-duzeni.test.mjs test/yedek-220-inceleme.test.mjs test/yedek-220.test.mjs test/yetki-gorunurluk.test.mjs",
+  "commit": "d2cef7ce21b0776e2767f8fb610c9be8a4159f5d",
+  "dal": "is/kapi-para",
+  "kirli": 19,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:11:11.329Z",
+  "sure_sn": 365.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1064,
+    "gecen": 1063,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz",
+      "konum": "test/lisans-servisi-izolasyonu.test.mjs:72:1",
+      "hata": "lisans uygulaması açık, zamanlayıcısı açık createApp çağrıları (startLicenseTimers: false ya da license: { enforce: false } verin) · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-24/245-kapi-para/komsu-birim.log",
+  "klasor": "/home/user/wt/kapi-para",
+  "ham_cikti_sha256": "d71c9616a99cabf3546c37644647b498b928d9eb9448dc44b5f91b2097cdc190",
+  "ham_cikti_bayt": 399136
+}

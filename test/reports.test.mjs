@@ -64,7 +64,9 @@ describe("raporlama motoru", () => {
     assert.equal(report.table.rows[0].state, "Gecikmiş");
   });
 
-  it("nakit akış: dönem başına beklenen, gerçekleşen, kasa ve birikimli; gün / hafta / ay", () => {
+  // 2.4.5 madde 5 (bilerek): Kasa giriş / çıkış / Net / Birikimli / Beklenenle Birlikte kalktı (tablo tahmini Kasa ile aynı tabloda toplanmaz); verilen Kasa
+  // satırları yok sayılır (eski çağıran kırılmaz) — 10.03'teki yalnız Kasa çıkışı olan gün artık satır açmaz.
+  it("nakit akış: dönem başına beklenen ve gerçekleşen (Kasa kolonu yok); gün / hafta / ay", () => {
     const items = [
       { caseKey: "a", session: "s1", time: Date.UTC(2026, 9, 5), amount: 1000, state: "upcoming" },
       { caseKey: "b", session: "s1", time: Date.UTC(2026, 9, 20), amount: 500, state: "upcoming" },
@@ -74,15 +76,16 @@ describe("raporlama motoru", () => {
     const cashEntries = [{ kind: "in", amount: 300, date: iso(2026, 9, 28) }, { kind: "out", amount: 100, date: iso(2026, 10, 3) }, { kind: "in", amount: 200, date: iso(2026, 10, 2) }];
     const monthly = nakitAkis({ items, payments, cashEntries, filters: normalizeFilters({ granularity: "month" }), now: NOW });
     assert.deepEqual(monthly.rows.map(row => [row.period, row.expected, row.collected, row.cashIn, row.cashOut, row.net, row.cumulative, row.projected]), [
-      ["2026-09", 0, 300, 300, 0, 300, 300, 300],
-      ["2026-10", 1500, 200, 200, 100, 100, 400, 1900],
+      ["2026-09", 0, 300, undefined, undefined, undefined, undefined, undefined],
+      ["2026-10", 1500, 200, undefined, undefined, undefined, undefined, undefined],
     ]);
-    assert.deepEqual(monthly.totals, { expected: 1500, collected: 500, cashIn: 500, cashOut: 100, net: 400 });
+    assert.deepEqual(monthly.totals, { expected: 1500, collected: 500 });
+    assert.deepEqual(monthly.table.columns.map(column => column.key), ["label", "expected", "expectedCount", "collected"]);
     const weekly = nakitAkis({ items, payments, cashEntries, filters: normalizeFilters({ granularity: "week", from: iso(2026, 10, 1), to: iso(2026, 10, 31) }), now: NOW });
     assert.deepEqual(weekly.rows.map(row => row.period), ["2026-09-28", "2026-10-05", "2026-10-19"]);
     assert.ok(/haftası$/.test(weekly.rows[0].label));
     const daily = nakitAkis({ items, payments, cashEntries, filters: normalizeFilters({ granularity: "day" }), now: NOW });
-    assert.equal(daily.rows.length, 5);
+    assert.equal(daily.rows.length, 4, "09.28 ve 10.02 tahsilat, 10.05 ve 10.20 vade (10.03 yalnız Kasa çıkışıydı)");
   });
 
   it("dışa aktarma tablosu: tarih gg.aa.yyyy, tutar Türkçe yazım, boşlar boş", () => {

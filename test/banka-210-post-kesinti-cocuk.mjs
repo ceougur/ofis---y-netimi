@@ -13,6 +13,9 @@ const app = createApp({
   env: { HUKUK_ADMIN_PASSWORD: password, HUKUK_DATASET_AUTOSYNC: "0" },
   license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" },
   startLicenseTimers: false,
+  // 2.4.5 madde 1–2: kayıt tahsilatı ve Tablodan Aktar programda kapalı (410); bu çocuk süreç eski veriyi kendi API'sinden üretir (test/helpers.mjs ile aynı).
+  legacyCasePayments: true,
+  legacyTableTransfer: true,
 });
 const address = await app.listen(0, "127.0.0.1");
 const freeze = new Int32Array(new SharedArrayBuffer(4));

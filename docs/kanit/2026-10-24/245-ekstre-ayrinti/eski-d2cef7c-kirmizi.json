@@ -1,0 +1,68 @@
+{
+  "ad": "245-ekstre-ayrinti/eski-d2cef7c-kirmizi",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-ekstre-ayrinti/eski-d2cef7c && node --disable-warning=ExperimentalWarning --test test/ekstre-ayrinti-245.test.mjs",
+  "commit": "d2cef7ce21b0776e2767f8fb610c9be8a4159f5d",
+  "dal": "is/ekstre-ayrinti",
+  "kirli": 7,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:00:52.802Z",
+  "sure_sn": 3.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 1,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "6d K — kâhin senaryosu: Genel Toplam = kâhinin cari bakiyesi, kalem toplamı = defter › K1 ret yok; her carinin Ayrıntılı Ekstre Genel Toplam bakiyesi = kâhin; kalem toplamı = defter",
+      "konum": "test/ekstre-ayrinti-245.test.mjs:242:3",
+      "hata": "kolon yok: Toplam (Tarih, İşlem, Açıklama, Borç, Alacak, Bakiye) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "6d K — kâhin senaryosu: Genel Toplam = kâhinin cari bakiyesi, kalem toplamı = defter › K2 dönem sınırı: devir (dönem öncesi) + dönem = kâhin; dönem öncesi faturanın kalemi görünmez",
+      "konum": "test/ekstre-ayrinti-245.test.mjs:261:3",
+      "hata": "kolon yok: Toplam (Tarih, İşlem, Açıklama, Borç, Alacak, Bakiye) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "6d K — kâhin senaryosu: Genel Toplam = kâhinin cari bakiyesi, kalem toplamı = defter › K3 yol ve belge no: tahsilat Nakit / Havale / EFT / POS, ödeme Kredi Kartı, çek / senet evrak no, fatura numarası",
+      "konum": "test/ekstre-ayrinti-245.test.mjs:281:3",
+      "hata": "kolon yok: Yol (Tarih, İşlem, Açıklama, Borç, Alacak, Bakiye) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "6d B/E/Y/G — genel iskonto, SMM, taslak, iptal, Düzenle, aynı ad, 002, PDF/Excel, yetki, seçenek kapalı › B1 genel iskonto, KDV dahil, SMM stopajı: kalem toplamı = defter; taslak / iptal / eski kalem / öbür cari görünmez",
+      "konum": "test/ekstre-ayrinti-245.test.mjs:335:3",
+      "hata": "kolon yok: Toplam (Tarih, İşlem, Açıklama, Borç, Alacak, Bakiye) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "6d B/E/Y/G — genel iskonto, SMM, taslak, iptal, Düzenle, aynı ad, 002, PDF/Excel, yetki, seçenek kapalı › E1 ekran = PDF = Excel: aynı satırlar, aynı Dönem Toplamı / Genel Toplam",
+      "konum": "test/ekstre-ayrinti-245.test.mjs:357:3",
+      "hata": "Excel başlık satırı (beklenen true, gelen false)"
+    },
+    {
+      "ad": "6d B/E/Y/G — genel iskonto, SMM, taslak, iptal, Düzenle, aynı ad, 002, PDF/Excel, yetki, seçenek kapalı › G1 seçenek kapalı: bugünkü ekstre (6 kolon, rowMarks yok, tek TOPLAM, aynı özet)",
+      "konum": "test/ekstre-ayrinti-245.test.mjs:395:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "6d B/E/Y/G — genel iskonto, SMM, taslak, iptal, Düzenle, aynı ad, 002, PDF/Excel, yetki, seçenek kapalı › B2 002 şirketi: kalemler o şirketin faturasından",
+      "konum": "test/ekstre-ayrinti-245.test.mjs:408:3",
+      "hata": "kolon yok: Toplam (Tarih, İşlem, Açıklama, Borç, Alacak, Bakiye) (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-24/245-ekstre-ayrinti/eski-d2cef7c-kirmizi.log",
+  "klasor": "/home/user/wt/ekstre-ayrinti",
+  "ham_cikti_sha256": "c59c495cfc9f5a9df392a4e485579f5d913474169c47151dc7c8927c22a2de45",
+  "ham_cikti_bayt": 12138
+}

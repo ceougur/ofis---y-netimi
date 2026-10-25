@@ -1,0 +1,20 @@
+=== yeni 8d73aad
+{"label":"ilk","code":"001","bakiye":1300,"faturaKart":800,"faturaListe":800,"borcKalan":500,"takvim":"account:500 invoice:800"}
+{"label":"ilk","code":"002","bakiye":3900,"faturaKart":2400,"faturaListe":2400,"borcKalan":1500,"takvim":"account:1500 invoice:2400"}
+{"label":"002 okunduktan sonra","code":"001","bakiye":1300,"faturaKart":800,"faturaListe":800,"borcKalan":500,"takvim":"account:500 invoice:800"}
+{"label":"tahsilattan sonra","code":"002","bakiye":0,"faturaKart":0,"faturaListe":0,"borcKalan":0,"takvim":""}
+{"label":"002 tahsilatından sonra 001","code":"001","bakiye":1300,"faturaKart":800,"faturaListe":800,"borcKalan":500,"takvim":"account:500 invoice:800"}
+{"label":"geri yüklemeden sonra","code":"002","bakiye":3900,"faturaKart":2400,"faturaListe":2400,"borcKalan":1500,"takvim":"account:1500 invoice:2400"}
+{"label":"geri yüklemeden sonra 001","code":"001","bakiye":1300,"faturaKart":800,"faturaListe":800,"borcKalan":500,"takvim":"account:500 invoice:800"}
+UYUŞMAZLIK 0
+cikis 0
+=== eski 201ffef
+{"label":"ilk","code":"001","bakiye":1300,"faturaKart":1000,"faturaListe":1000,"borcKalan":500,"takvim":"account:500 invoice:1000"}
+{"label":"ilk","code":"002","bakiye":3900,"faturaKart":3000,"faturaListe":3000,"borcKalan":1500,"takvim":"account:1500 invoice:3000"}
+{"label":"002 okunduktan sonra","code":"001","bakiye":1300,"faturaKart":1000,"faturaListe":1000,"borcKalan":500,"takvim":"account:500 invoice:1000"}
+{"label":"tahsilattan sonra","code":"002","bakiye":0,"faturaKart":0,"faturaListe":0,"borcKalan":600,"takvim":"account:600"}
+{"label":"002 tahsilatından sonra 001","code":"001","bakiye":1300,"faturaKart":1000,"faturaListe":1000,"borcKalan":500,"takvim":"account:500 invoice:1000"}
+{"label":"geri yüklemeden sonra","code":"002","bakiye":3900,"faturaKart":3000,"faturaListe":3000,"borcKalan":1500,"takvim":"account:1500 invoice:3000"}
+{"label":"geri yüklemeden sonra 001","code":"001","bakiye":1300,"faturaKart":1000,"faturaListe":1000,"borcKalan":500,"takvim":"account:500 invoice:1000"}
+UYUŞMAZLIK 0
+cikis 0

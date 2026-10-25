@@ -1,0 +1,32 @@
+{
+  "ad": "245-pil-karti/e2e-senaryo-cari-243",
+  "komut": "npm run test:senaryo-cari-243",
+  "commit": "26d9d795804c65fa4b871689e043d3c38b8d35ba",
+  "dal": "is/pil-karti",
+  "kirli": 2,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T18:01:17.791Z",
+  "sure_sn": 54.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 48,
+    "gecen": 48,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-pil-karti/e2e-senaryo-cari-243.log",
+  "klasor": "/home/user/wt/pil-karti",
+  "ham_cikti_sha256": "904b032a31c680adf988c3010f8f9895f6728e08a660cec4f7441a64318a1da3",
+  "ham_cikti_bayt": 5538
+}

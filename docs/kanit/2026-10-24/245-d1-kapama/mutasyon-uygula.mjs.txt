@@ -1,0 +1,20 @@
+// Mutasyon uygulayıcı: node uygula.mjs <kök> <1|2|3>. Her değişiklik tam bir kez eşleşmeli.
+import fs from "node:fs";
+import path from "node:path";
+const [root, n] = process.argv.slice(2);
+const swap = (rel, from, to) => {
+  const file = path.join(root, rel);
+  const text = fs.readFileSync(file, "utf8");
+  const count = text.split(from).length - 1;
+  if (count !== 1) throw new Error(`${rel}: eşleşme ${count} (1 beklenir): ${from.slice(0, 80)}`);
+  fs.writeFileSync(file, text.replace(from, to));
+  console.log(`mutasyon ${n}: ${rel} değişti`);
+};
+const M3 = acc => `...store.all("SELECT id, date, amount_minor AS m, created_at AS at FROM doubtful_receivables WHERE account_id = ?", ${acc}).map(r => ({ id: "m3-" + r.id, origin: "doubtful", kind: "credit", date: r.date, at: r.at, label: "", note: "", debit: 0, credit: r.m / 100 }))`;
+const SORT = `.sort((a, b) => (a.date === b.date ? String(a.at || "").localeCompare(String(b.at || "")) : a.date < b.date ? -1 : 1))`;
+if (n === "1") swap("server/lib/invoice-settle.mjs", `if (line.stockReason === "return" || line.stockReason === "preturn") {`, `if (false) {`);
+else if (n === "2") swap("server/lib/invoice-settle.mjs", `case "doubtful":`, `case "doubtful-mutasyon":`);
+else if (n === "3") {
+  swap("server/routes/invoices.mjs", `return { lines: ledger, invoices: all.map(`, `return { lines: [...ledger, ${M3("accountId")}]${SORT}, invoices: all.map(`);
+  swap("server/routes/invoices.mjs", `return { lines, invoices, links, chequeEvents, reversals, offsets, today: day };`, `return { lines: [...lines, ${M3("accountId")}]${SORT}, invoices, links, chequeEvents, reversals, offsets, today: day };`);
+} else throw new Error("mutasyon 1|2|3");

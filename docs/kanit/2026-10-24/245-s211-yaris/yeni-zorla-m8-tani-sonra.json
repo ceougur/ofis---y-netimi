@@ -1,0 +1,32 @@
+{
+  "ad": "245-s211-yaris/yeni-zorla-m8-tani-sonra",
+  "komut": "flock /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kos.lock node test/e2e/senaryo-211-yaris-zorla.mjs --gecikme 400",
+  "commit": "b2263568bc901640497396b7b4cb79101f4cc42c",
+  "dal": "is/s211-yaris",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T19:06:17.811Z",
+  "sure_sn": 100.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 58,
+    "gecen": 58,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-s211-yaris/yeni-zorla-m8-tani-sonra.log",
+  "klasor": "/home/user/wt/s211-yaris",
+  "ham_cikti_sha256": "1a8bd66e7f68d0c6e7a586438175d1cb24e18e5019b69ea7921653088d9fb10d",
+  "ham_cikti_bayt": 12303
+}

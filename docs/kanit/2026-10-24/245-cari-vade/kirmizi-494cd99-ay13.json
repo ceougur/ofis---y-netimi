@@ -1,0 +1,38 @@
+{
+  "ad": "245-cari-vade/kirmizi-494cd99-ay13",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/cari-vade-245.test.mjs",
+  "commit": "494cd99ec18ebc6e59cfadb4c80ce8587f081ffe",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:32:54.266Z",
+  "sure_sn": 3.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 22,
+    "gecen": 21,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › K6.1 doğrulama: tarihten önce, biçimsiz ya da takvimde olmayan gün → 400 (field); hiçbir satır yazılmaz",
+      "konum": "test/cari-vade-245.test.mjs:107:3",
+      "hata": "13. ay: 500 {\"ok\":false,\"error\":\"Sunucu işlemi tamamlayamadı.\"} · 500 !== 400 (beklenen 400, gelen 500)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/cari-vade/docs/kanit/2026-10-24/245-cari-vade/kirmizi-494cd99-ay13.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-cari-vade/mut-494cd99",
+  "ham_cikti_sha256": "d42e885a8a29c4e0b54292e6beb69af8cf46b41ffb05c2a57f2c84044d6ea32a",
+  "ham_cikti_bayt": 8532
+}

@@ -6,6 +6,7 @@
 // kredi kartı hareketleri cari, fatura, taksit, stok ve çek ekranlarından gelir ve Raporlar → Banka ve POS Hareketleri'nde
 // görünür. Kasa ile banka arasındaki para geçişi "transfer"dir: tek işlemde iki bağlı hareket (nakit tarafı + banka tarafı).
 import { cashPdf, cashPdfName, rangeLabel } from "../lib/cash-report.mjs";
+import { createReportHeader } from "../lib/report-header.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
@@ -222,7 +223,7 @@ export function registerCashRoutes(router, context) {
     const from = text(url.searchParams.get("from"));
     const to = text(url.searchParams.get("to"));
     const data = report(user, from, to, methodParam(url));
-    const pdf = cashPdf(data, { from, to, officeName: store.setting("office.name", ""), userName: user.display_name || user.username || "", now: clock() });
+    const pdf = cashPdf(data, { from, to, ...createReportHeader({ store }).pdf(), userName: user.display_name || user.username || "", now: clock() });
     audit(user, "cash.exported", rangeLabel(from, to), { from, to, count: data.entries.length });
     sendBuffer(res, pdf, { type: "application/pdf", name: cashPdfName(from, to), inline: url.searchParams.get("download") !== "1" });
   });

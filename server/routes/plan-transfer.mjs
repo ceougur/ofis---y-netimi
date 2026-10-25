@@ -36,7 +36,11 @@ const digits = value => String(value ?? "").replace(/\D/g, "");
 const MONEY = new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const money = value => MONEY.format(Number(value) || 0);
 
-export function registerPlanTransfer(router, { store, bank, auth, audit, events, dataset, profile, period = null, plans = () => null, accounts = () => null, now: clock = systemClock }) {
+export function registerPlanTransfer(router, { store, bank, auth, audit, events, dataset, profile, config = null, period = null, plans = () => null, accounts = () => null, now: clock = systemClock }) {
+  // 2.4.5 madde 2 (K1; ürün sahibi: "tablo verisinden hiçbir para kaydı, borç tutarı, açılış bakiyesi doğmaz"): Tablodan Aktar KAPALI — yazım ucu 410
+  // "table-transfer-closed", yükleme sonrası "aktarılsın mı?" özeti boş (ask: false). ESKİ aktarımların listesi ve "Geri Al"ı (POST /imports/:id/undo; Taksitler →
+  // Excel'den Yükle'nin geri alması da bu uçtan) AÇIK. Kod sonraki sürümde silinir; anahtar yalnız testlerde açık (config.mjs legacyTableTransfer).
+  const tableTransferOpen = config?.legacyTableTransfer === true;
   // İş saati (v2.1.0): context.now (config.now).
   const now = () => clock().toISOString();
   const today = () => isoDay(clock());
@@ -367,7 +371,7 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
   // Yükleme sonrası soru (v2.0.8): "Bu veride N kişinin ödeme planı var, aktarılsın mı?" Yalnız kart yöneten rollere.
   router.get("/api/workspace/plans/from-table/summary", async ({ req, res }) => {
     const user = auth.requireUser(req);
-    if (!canUser(user, "plans.manage")) return ok(res, { count: 0, tabs: [], ask: false });
+    if (!tableTransferOpen || !canUser(user, "plans.manage")) return ok(res, { count: 0, tabs: [], ask: false });
     const analysis = await analyze(optionsOf({}));
     const dismissed = new Set(readJsonSetting(DISMISSED_KEY, { tabs: [] }).tabs || []);
     const tabs = analysis.tabs.map(tab => ({ tab: tab.tab, shapeText: tab.shapeText, count: analysis.records.filter(record => record.tab === tab.tab && record.selected).length })).filter(tab => tab.count);
@@ -385,6 +389,9 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
   });
 
   router.post("/api/workspace/plans/from-table", async ({ req, res }) => {
+    // Kapı her şeyden önce (yalnız oturum denetiminden sonra): yetki, gövde, ön izleme izi ona ulaşmaz; veri değişmez.
+    auth.requireUser(req);
+    if (!tableTransferOpen) throw new HttpError(410, "Tablodan Aktar kapatıldı; taksit kartı Cari'den ya da Taksitler → Excel / Sheets’ten Yükle ile açılır.", { code: "table-transfer-closed" });
     const user = auth.requirePermission(req, "plans.manage");
     const body = await readJson(req, { limit: 8_000_000 });
     const options = optionsOf(body);

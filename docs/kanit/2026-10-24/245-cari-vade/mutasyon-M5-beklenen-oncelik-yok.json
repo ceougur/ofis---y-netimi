@@ -1,0 +1,43 @@
+{
+  "ad": "245-cari-vade/mutasyon-M5-beklenen-oncelik-yok",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/cari-vade-245.test.mjs",
+  "commit": "494cd99ec18ebc6e59cfadb4c80ce8587f081ffe",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:29:11.101Z",
+  "sure_sn": 3.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 21,
+    "gecen": 19,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › K6.3 kalem sözleşmesi: id, source, accountId, entryId, direction, person, label, dueDate, amount, days, state; Beklenen Ödeme Tarihi önce gelir",
+      "konum": "test/cari-vade-245.test.mjs:257:3",
+      "hata": "Beklenen Ödeme Tarihi varsa o gün · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › önbellek: durağan saatte yalnız Beklenen Ödeme Tarihi değişince kalem o güne kayar (sürüm değişir)",
+      "konum": "test/cari-vade-245.test.mjs:334:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/cari-vade/docs/kanit/2026-10-24/245-cari-vade/mutasyon-M5-beklenen-oncelik-yok.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-cari-vade/mut-494cd99",
+  "ham_cikti_sha256": "daaa71f7751a91c84bc8b766c6ee2a3cd33228c1dc311eaa6e3890ef365490ce",
+  "ham_cikti_bayt": 9481
+}

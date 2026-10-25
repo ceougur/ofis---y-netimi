@@ -1,0 +1,32 @@
+{
+  "ad": "245-cari-vade/banka-210-altin",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/banka-210-altin.test.mjs",
+  "commit": "51a9c127ad8a9de449438561885064bde6db234f",
+  "dal": "is/cari-vade",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T18:18:51.419Z",
+  "sure_sn": 28.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-cari-vade/banka-210-altin.log",
+  "klasor": "/home/user/wt/cari-vade",
+  "ham_cikti_sha256": "9fb8e0ade1420315e03cd11e66e32f8ee7f0889eaef18eb82d9f0a610ebcdbd2",
+  "ham_cikti_bayt": 2846
+}

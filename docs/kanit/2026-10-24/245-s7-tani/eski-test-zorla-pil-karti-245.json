@@ -1,0 +1,43 @@
+{
+  "ad": "245-s7-tani/eski-test-zorla-pil-karti-245",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/zz-s7-eski-zorla.mjs",
+  "commit": "201ffef9a010d68d735b1e3aaa678144a8e84c3d",
+  "dal": "is/s7-tani",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T20:18:22.577Z",
+  "sure_sn": 66.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 75,
+    "gecen": 73,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "fatura bildirimi sağ altta",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "bildirim düğmeleri: []",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-24/245-s7-tani/eski-test-zorla-pil-karti-245.log",
+  "klasor": "/home/user/wt/s7-tani",
+  "ham_cikti_sha256": "f1d0798a81f90251d1183cdd53ddafd4ebf8a2795d56df7fb3b119630499de46",
+  "ham_cikti_bayt": 6628
+}

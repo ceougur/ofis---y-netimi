@@ -1,0 +1,40 @@
+
+> destekofis@2.4.5 test:senaryo-ebelge-242
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-ebelge-242.mjs
+
+■ 1 İşaretler kapalı: kâğıt belge, “Kaydet ve Gönder” yok
+  ✓ kâğıt belgede “Kaydet ve Gönder” / “Kaydet, Sonra Gönder” yok
+  ✓ “Kaydet” düğmesi var
+  ✓ onay: “Faturayı Kaydet” · × ONAY Faturayı Kaydet Ayşe Demir için FIS2026000000001 numarasıyla satış faturası (Kâğıt …
+  ✓ kâğıt belge kaydedildi, EDM'ye gitmedi (FIS2026000000001)
+
+■ 2 İşaretler açık: e-Arşiv, test numarası 1'den başlamaz
+  ✓ e-Arşivde “Kaydet ve Gönder” görünür
+  ✓ onaydaki numara TEA2026642719271 (1'den değil)
+  ✓ EDM'ye bu numarayla gitti (TEA2026642719271)
+
+■ 2b Fiyatı değiştirip HEMEN düğmeye basmak (gözden geçirme 2.4.2: düğmeler her hesaplamada yeniden çizilip tıklama kayboluyordu)
+  ✓ deneme 1: onay penceresi açıldı (tıklama kaybolmadı)
+  ✓ deneme 2: onay penceresi açıldı (tıklama kaybolmadı)
+  ✓ deneme 3: onay penceresi açıldı (tıklama kaybolmadı)
+  ✓ hesaplamadan sonra klavye odağı düğmede kalır (issue-now)
+
+■ 3 Numara EDM'de başkasınca kullanılmış (11048): ileti + İptal Et
+  ✓ Hata + ileti: onra siz göndermiş olabilirsiniz. Bu belgeyi İptal Et ile iptal edip yeniden kesin; yeni belge bir sonraki numarayı alır (gerekirse Entegratör Ayarlar
+  ✓ İptal Et çalıştı (cancelled; EDM belgeyi kabul etmemişti (EDM'de yok); yalnız programda iptal edildi.)
+
+■ 5 Test belgeleri kesildikten sonra Fatura Ayarları kaydedilir (kontrol turu K1: tam başlangıç haritası 400 alıyordu)
+  ✓ Fatura Ayarları kaydedildi (Vade Günü 15)
+  ✓ test başlangıcı değişmedi (TEA2026642719273)
+
+■ 4 Otomatik Seriler: Test Ortamında Sıradaki No
+  ✓ alan sıradaki test numarasını gösterir (642719273)
+  ✓ kaydedildi: TEA2026642719773
+  ✓ öbür test serisi korunur: TEF2026529921408
+
+■ 6 Tarayıcının "kaydet" önerileri (kullanıcı 17.10.2026): giriş dışındaki formlarda parola alanı yok, otomatik doldurma kapalı
+  ✓ açık pencerelerdeki 9 alanda type="password" 0, otomatik doldurması açık: yok
+  ✓ giriş formu olduğu gibi (tarayıcı giriş parolasını hatırlayabilir): {"type":"password","autocomplete":"current-password"}
+  ✓ sayfa hatası yok
+
+21 geçti, 0 kaldı

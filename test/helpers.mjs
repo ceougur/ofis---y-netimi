@@ -37,6 +37,8 @@ export async function startTestServer(options = {}) {
     // Bu sürümde olmayan banka özelliklerinin gizli ayarlarını değiştiren testler (doğrulama kuralları, Elle Banka Fişi).
     ...(options.bankLater ? { bankLater: true } : {}),
     ...(options.bankPickLegacy ? { bankPickLegacy: true } : {}),
+    // 2.4.5 madde 4: tablonun ödeme kalemlerini zil / Takvim / Vade Takip / Projeksiyon'da gösteren 2.4.4 davranışı (tablo takvim motorunu bu uçlardan sınayan testler).
+    ...(options.legacyTableDues ? { legacyTableDues: true } : {}),
     ...(options.supervisorLink ? { supervisorLink: options.supervisorLink } : {}),
     // Yönetim → Ağ Bağlantısı → Bağlantıyı Dene adresi (vekil sunucu testleri yerel sahte sunucu verir).
     ...(options.networkTestUrl ? { networkTestUrl: options.networkTestUrl } : {}),
@@ -56,6 +58,10 @@ export async function startTestServer(options = {}) {
     // Büyük banka raporlarının iş parçacığı (11.10.2026 hız düzeltmesi): testlerde hız için kapalı (rapor yerinde, aynı kodla hazırlanır);
     // iş parçacığı yolunu sınayan testler (test/banka-210-hiz-esdegerlik, banka-210-rapor-is-parcacigi) { reportWorker: true } verir.
     reportWorker: options.reportWorker ?? false,
+    // 2.4.5 madde 1–2: kayıt tahsilatı (POST/PUT) ve Tablodan Aktar programda KAPALI (410; üretimde anahtar yok). Eski veriyi programın kendi API'sinden üreten
+    // testler (45+ dosya) için varsayılan AÇIK; 2.4.5 davranışını (kapı) sınayan testler { legacyCasePayments: false, legacyTableTransfer: false } verir.
+    legacyCasePayments: options.legacyCasePayments ?? true,
+    legacyTableTransfer: options.legacyTableTransfer ?? true,
   });
   const address = await app.listen(0, "127.0.0.1");
   const base = `http://127.0.0.1:${address.port}`;

@@ -1,0 +1,12 @@
+--- yeni 8d73aad
+{"name":"İade 300","bakiye":1200,"fatura":"200 overdue","kart":"1000/1000","acikToplam":1200,"takvim":"plan:500 invoice:200","esit":true}
+{"name":"İade 800","bakiye":700,"fatura":"0 paid","kart":"700/700","acikToplam":700,"takvim":"plan:500","esit":true}
+{"name":"Değersiz 300","bakiye":1200,"fatura":"200 overdue","kart":"1000/1000","acikToplam":1200,"takvim":"plan:500 invoice:200","esit":true}
+{"name":"Değersiz 800","bakiye":700,"fatura":"0 paid","kart":"1000/1000","acikToplam":1000,"takvim":"plan:500","esit":false}
+cikis 0
+--- eski 201ffef
+{"name":"İade 300","bakiye":1200,"fatura":"500 overdue","kart":"1000/1000","acikToplam":1500,"takvim":"plan:500 invoice:500","esit":false}
+{"name":"İade 800","bakiye":700,"fatura":"500 overdue","kart":"700/700","acikToplam":1200,"takvim":"plan:500 invoice:500","esit":false}
+{"name":"Değersiz 300","bakiye":1200,"fatura":"500 overdue","kart":"1000/1000","acikToplam":1500,"takvim":"plan:500 invoice:500","esit":false}
+{"name":"Değersiz 800","bakiye":700,"fatura":"500 overdue","kart":"1000/1000","acikToplam":1500,"takvim":"plan:500 invoice:500","esit":false}
+cikis 0

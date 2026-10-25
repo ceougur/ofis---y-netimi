@@ -1,0 +1,6 @@
+cari bakiye: 0 (borç 1500, alacak 1500)
+elle borç Kalan: 1000 · Vade 2026-09-20
+fatura açık: 500 (overdue)
+takvim/zil kalemleri: invoice:Tahsil Edilecek Fatura FIS2026000000001:500:overdue | account:Tahsil Edilecek Borç:1000:overdue
+Vade Takip satırları: invoice:Satış faturası FIS2026000000001:500:overdue | account:Tahsil Edilecek Borç:1000:overdue · şüpheli ayrı: {"amount":0,"accountCount":0}
+BULGU: bakiye 0 (değersiz yazıldı) ama takvimde "Tahsil Edilecek Borç" 1000 TL (overdue)

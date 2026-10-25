@@ -1,0 +1,86 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "c6c-mevcut-borc-karti",
+ "aciklama": "K6.5: 'Carinin Mevcut Borcu' kartı (anahtar açık sunucuda Tablodan Aktar, mevcut borcu taksitlendir) Açılış Bakiyesi'nin 3.000'ini kapsar. Açılış'ın Kalan'ı kapsanan kısmı İÇERİR (5.000); takvim / Vade Takip tutarı = Kalan − kartın açık kapsamı (2.000). Karta 1.000 tahsilattan sonra Kalan 4.000 [YAYGIN: kartın ödemesi defter kalanını düşürür — PLAN §4.3/2 1b], kalem yine 2.000 (kapsanan borç kartın taksitleriyle bir kez). Program anahtar kapalı yeniden açılınca kart ve sonuç aynı.",
+ "dayanak": "KARARLAR.md C6 (K6.5 BAŞ MİMAR; B1.4 mevcut borç kartı; PLAN §4.3/2)",
+ "bugun": "2026-06-15",
+ "anahtar": {
+  "legacyTableTransfer": true
+ },
+ "adimlar": [
+  {
+   "id": "t",
+   "islem": "tablo_yukle",
+   "sekmeler": [
+    {
+     "ad": "Taksitler",
+     "tur": "taksit",
+     "kayitlar": [
+      {
+       "no": "M-1",
+       "isim": "Ayşe Kara",
+       "taksitler": [
+        [
+         "2026-06-20",
+         "1000"
+        ],
+        [
+         "2026-07-20",
+         "1000"
+        ],
+        [
+         "2026-08-20",
+         "1000"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ca",
+   "islem": "cari_ac",
+   "ad": "A",
+   "isim": "Ayşe Kara",
+   "kayit": "M-1",
+   "tarih": "2026-05-01",
+   "acilis": "5000",
+   "acilisVade": "2026-06-01"
+  },
+  {
+   "id": "x1",
+   "islem": "aktar",
+   "ad": "X1",
+   "kayitlar": [
+    "M-1"
+   ],
+   "hesapIci": false,
+   "mevcutBorc": true
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol"
+  },
+  {
+   "id": "kt1",
+   "islem": "kart_tahsilat",
+   "kayit": "M-1",
+   "tutar": "1000",
+   "tarih": "2026-06-10"
+  },
+  {
+   "id": "k2",
+   "islem": "kontrol"
+  },
+  {
+   "id": "r1",
+   "islem": "sunucu_yeniden",
+   "anahtar": {}
+  },
+  {
+   "id": "k3",
+   "islem": "kontrol"
+  }
+ ]
+}

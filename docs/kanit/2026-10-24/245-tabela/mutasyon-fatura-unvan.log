@@ -1,0 +1,87 @@
+TAP version 13
+# (node:27449) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.5 madde 6c: Tabela Adı ve Rapor ve Ekstre Başlığı
+    # Subtest: YASAL BELGE DEĞİŞMEZ: fatura PDF'i ve makbuz tabela açıkken de unvanla; Tabela Adı basılmaz
+    not ok 1 - YASAL BELGE DEĞİŞMEZ: fatura PDF'i ve makbuz tabela açıkken de unvanla; Tabela Adı basılmaz
+      ---
+      duration_ms: 134.731642
+      type: 'test'
+      location: '/home/user/wt/tabela/test/tabela-adi-245.test.mjs:140:3'
+      failureType: 'testCodeFailure'
+      error: 'faturada satıcı unvanı'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: |-
+        Yıldız Market
+        Bağdat Cad. No 5 Kadıköy / İstanbul
+        Vergi Dairesi: Kadıköy VKN: 4840847211
+        MÜŞTERİ FİŞİ
+        Fiş No
+        FIS2026000000001
+        Tarih / Saat
+        21.10.2026 16:50
+        SAYIN
+        Ayşe Demir
+        Sıra
+        Mal / Hizmet
+        Miktar
+        Birim Fiyat
+        İsk. %
+        KDV %
+        KDV
+        Tutar
+        1
+        Hizmet
+        1 Adet
+        1.000,00
+        20
+        166,67
+        833,33
+        Mal / Hizmet Toplamı
+        1.000,00 TL
+        Matrah (KDV Hariç)
+        833,33 TL
+        KDV %20 (Matrah 833,33)
+        166,67 TL
+        Vergiler Dahil Toplam
+        1.000,00 TL
+        Ödenecek Tutar
+        1.000,00 TL
+        Yalnız Bin Türk Lirası
+        Ödeme: kalan vadeli (vade 21.10.2026)
+        Bu belge bilgi amaçlıdır; resmî fatura yerine geçmez ve mali değeri yoktur.
+        TESLİM ALAN
+        Ad Soyad / İmza
+        DÜZENLEYEN
+        Kaşe / İmza
+        FIS2026000000001 · Sayfa 1 / 1
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/wt/tabela/test/tabela-adi-245.test.mjs:144:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 3)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - 2.4.5 madde 6c: Tabela Adı ve Rapor ve Ekstre Başlığı
+  ---
+  duration_ms: 665.939905
+  type: 'suite'
+  location: '/home/user/wt/tabela/test/tabela-adi-245.test.mjs:40:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1043.018035

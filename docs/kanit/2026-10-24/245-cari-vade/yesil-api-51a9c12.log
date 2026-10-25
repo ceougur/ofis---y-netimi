@@ -1,0 +1,573 @@
+TAP version 13
+# Subtest: K6 statik: para tablosuna yazan her yer bank.post içinde ya da izinli listede
+    # Subtest: tarayıcı kendini sınar
+    ok 1 - tarayıcı kendini sınar
+      ---
+      duration_ms: 6.782311
+      type: 'test'
+      ...
+    # Subtest: izinli liste geçerli: her girdinin dosyası, işlevi, türü ve gerekçesi var
+    ok 2 - izinli liste geçerli: her girdinin dosyası, işlevi, türü ve gerekçesi var
+      ---
+      duration_ms: 0.563735
+      type: 'test'
+      ...
+    # Subtest: gerçek kod: liste dışında ham yazım yeri yok; listede eskimiş girdi yok
+    ok 3 - gerçek kod: liste dışında ham yazım yeri yok; listede eskimiş girdi yok
+      ---
+      duration_ms: 704.907712
+      type: 'test'
+      ...
+    # Subtest: 'para-disi' yazıcılar yazdıkları satırı assertWrittenNonMoney ile denetletir, 'yardimci' yazıcılar olayı eventFor ile yazar; 'bag' yalnız para alanı olmayan kolona
+    ok 4 - 'para-disi' yazıcılar yazdıkları satırı assertWrittenNonMoney ile denetletir, 'yardimci' yazıcılar olayı eventFor ile yazar; 'bag' yalnız para alanı olmayan kolona
+      ---
+      duration_ms: 974.381586
+      type: 'test'
+      ...
+    # Subtest: olay türleri sözlükte (CHECK yerine kod sözlüğü, §3.6)
+    ok 5 - olay türleri sözlükte (CHECK yerine kod sözlüğü, §3.6)
+      ---
+      duration_ms: 0.719717
+      type: 'test'
+      ...
+    # Subtest: cheque_events.kind'e yazılan her değer göçteki CHECK listesinde (plan Aşama 8)
+    ok 6 - cheque_events.kind'e yazılan her değer göçteki CHECK listesinde (plan Aşama 8)
+      ---
+      duration_ms: 65.910463
+      type: 'test'
+      ...
+    1..6
+ok 1 - K6 statik: para tablosuna yazan her yer bank.post içinde ya da izinli listede
+  ---
+  duration_ms: 1754.864983
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi)
+    # Subtest: K6.4 göç: account_entries'te due_date ve expected_date (TEXT, varsayılan '')
+    ok 1 - K6.4 göç: account_entries'te due_date ve expected_date (TEXT, varsayılan '')
+      ---
+      duration_ms: 1.751598
+      type: 'test'
+      ...
+    # Subtest: K6.1 alanlar: Borç ve Alacak'ta saklanır, kartta döner; tahsilat / ödemede gönderilse de kaydedilmez
+    ok 2 - K6.1 alanlar: Borç ve Alacak'ta saklanır, kartta döner; tahsilat / ödemede gönderilse de kaydedilmez
+      ---
+      duration_ms: 150.710392
+      type: 'test'
+      ...
+    # Subtest: K6.1 doğrulama: tarihten önce, biçimsiz ya da takvimde olmayan gün → 400 (field); hiçbir satır yazılmaz
+    ok 3 - K6.1 doğrulama: tarihten önce, biçimsiz ya da takvimde olmayan gün → 400 (field); hiçbir satır yazılmaz
+      ---
+      duration_ms: 62.90679
+      type: 'test'
+      ...
+    # Subtest: K6.1 düzeltme: anahtar yoksa tarih kalır, boş metin siler; yön değişince kalır; tarih vadeden sonraya alınırsa 400
+    ok 4 - K6.1 düzeltme: anahtar yoksa tarih kalır, boş metin siler; yön değişince kalır; tarih vadeden sonraya alınırsa 400
+      ---
+      duration_ms: 99.978538
+      type: 'test'
+      ...
+    # Subtest: K6.1 Açılış Bakiyesi: POST'ta openingDueDate / openingExpectedDate; tedarikçide alacak yönlü; açılış yoksa ya da tarihten önceyse 400; PUT günceller
+    ok 5 - K6.1 Açılış Bakiyesi: POST'ta openingDueDate / openingExpectedDate; tedarikçide alacak yönlü; açılış yoksa ya da tarihten önceyse 400; PUT günceller
+      ---
+      duration_ms: 67.84709
+      type: 'test'
+      ...
+    # Subtest: S1 FIFO: aynı gün iki borç + tahsilat → önce yazılan kapanır (yazım sırası); Vade Tarihi sırayı değiştirmez
+    ok 6 - S1 FIFO: aynı gün iki borç + tahsilat → önce yazılan kapanır (yazım sırası); Vade Tarihi sırayı değiştirmez
+      ---
+      duration_ms: 133.121906
+      type: 'test'
+      ...
+    # Subtest: S1 karışık kuyruk: vadeli borç + taksitsiz satış faturası tarih sırasıyla; faturanın açığı aynı kuraldan
+    ok 7 - S1 karışık kuyruk: vadeli borç + taksitsiz satış faturası tarih sırasıyla; faturanın açığı aynı kuraldan
+      ---
+      duration_ms: 113.492843
+      type: 'test'
+      ...
+    # Subtest: S1 bağlı ödeme: Kapatılacak Fatura seçilen tahsilat borç kaydını kapatmaz
+    ok 8 - S1 bağlı ödeme: Kapatılacak Fatura seçilen tahsilat borç kaydını kapatmaz
+      ---
+      duration_ms: 84.00771
+      type: 'test'
+      ...
+    # Subtest: KS2: müşterideki elle Alacak karşı taraf yükümlülüğüdür — müşterinin borcuna mahsup EDİLMEZ; vadesi varsa "Ödenecek Borç" kalemi
+    ok 9 - KS2: müşterideki elle Alacak karşı taraf yükümlülüğüdür — müşterinin borcuna mahsup EDİLMEZ; vadesi varsa "Ödenecek Borç" kalemi
+      ---
+      duration_ms: 86.970735
+      type: 'test'
+      ...
+    # Subtest: S1 taksit kartı: ayrı kartın tahsilatı borç kaydını kapatmaz; Mevcut Borç kartının kapsadığı borç takvimden düşer (taksitlerle bir kez)
+    ok 10 - S1 taksit kartı: ayrı kartın tahsilatı borç kaydını kapatmaz; Mevcut Borç kartının kapsadığı borç takvimden düşer (taksitlerle bir kez)
+      ---
+      duration_ms: 132.454005
+      type: 'test'
+      ...
+    # Subtest: tahsilat silinince kalem geri açılır, Silinenler'den dönünce yine kapanır; silinen borç tarihleriyle geri gelir
+    ok 11 - tahsilat silinince kalem geri açılır, Silinenler'den dönünce yine kapanır; silinen borç tarihleriyle geri gelir
+      ---
+      duration_ms: 129.695276
+      type: 'test'
+      ...
+    # Subtest: çek karşılıksız dönünce kapattığı borç kaydı yeniden açılır
+    ok 12 - çek karşılıksız dönünce kapattığı borç kaydı yeniden açılır
+      ---
+      duration_ms: 75.906689
+      type: 'test'
+      ...
+    # Subtest: borç düzenlenip tutar küçülünce Kalan küçülür; tutar tahsilatın altına inince kalem kapanır
+    ok 13 - borç düzenlenip tutar küçülünce Kalan küçülür; tutar tahsilatın altına inince kalem kapanır
+      ---
+      duration_ms: 89.989979
+      type: 'test'
+      ...
+    # Subtest: K6.3 kalem sözleşmesi: id, source, accountId, entryId, direction, person, label, dueDate, amount, days, state; Beklenen Ödeme Tarihi önce gelir
+    ok 14 - K6.3 kalem sözleşmesi: id, source, accountId, entryId, direction, person, label, dueDate, amount, days, state; Beklenen Ödeme Tarihi önce gelir
+      ---
+      duration_ms: 97.532098
+      type: 'test'
+      ...
+    # Subtest: K6.3 ufuk: geçmişin tamamı + bugünden 7 gün (8. gün yok); tarihsiz borç kalem değildir
+    ok 15 - K6.3 ufuk: geçmişin tamamı + bugünden 7 gün (8. gün yok); tarihsiz borç kalem değildir
+      ---
+      duration_ms: 83.40075
+      type: 'test'
+      ...
+    # Subtest: K6.3 Vade Takip aynı kalemleri gösterir (kaynak 'account', tarih, tutar, etiket); aralık dışı (8. gün) Vade Takip'te 30 günlükte var
+    ok 16 - K6.3 Vade Takip aynı kalemleri gösterir (kaynak 'account', tarih, tutar, etiket); aralık dışı (8. gün) Vade Takip'te 30 günlükte var
+      ---
+      duration_ms: 65.113753
+      type: 'test'
+      ...
+    # Subtest: K6.3 yetki: Cari görüntüleme yetkisi olmayan kişi kalemi görmez (zil, takvim, Vade Takip); sürüm yetkiyle değişir
+    ok 17 - K6.3 yetki: Cari görüntüleme yetkisi olmayan kişi kalemi görmez (zil, takvim, Vade Takip); sürüm yetkiyle değişir
+      ---
+      duration_ms: 158.92972
+      type: 'test'
+      ...
+    # Subtest: Ödendi Say yok: settle 'account|…' kalemini reddeder (400); kalem yerinde kalır
+    ok 18 - Ödendi Say yok: settle 'account|…' kalemini reddeder (400); kalem yerinde kalır
+      ---
+      duration_ms: 36.981518
+      type: 'test'
+      ...
+    # Subtest: önbellek: durağan saatte yalnız Beklenen Ödeme Tarihi değişince kalem o güne kayar (sürüm değişir)
+    ok 19 - önbellek: durağan saatte yalnız Beklenen Ödeme Tarihi değişince kalem o güne kayar (sürüm değişir)
+      ---
+      duration_ms: 79.638845
+      type: 'test'
+      ...
+    # Subtest: cari silinince kalem yok; geri yüklenince döner
+    ok 20 - cari silinince kalem yok; geri yüklenince döner
+      ---
+      duration_ms: 80.748924
+      type: 'test'
+      ...
+    # Subtest: yevmiye ve mizan değişmez: tarih eklemek / silmek Ana Defter'i değiştirmez
+    ok 21 - yevmiye ve mizan değişmez: tarih eklemek / silmek Ana Defter'i değiştirmez
+      ---
+      duration_ms: 87.162921
+      type: 'test'
+      ...
+    # Subtest: 002 şirketi: göç orada da; kalemler şirkete ayrı
+    ok 22 - 002 şirketi: göç orada da; kalemler şirkete ayrı
+      ---
+      duration_ms: 513.501008
+      type: 'test'
+      ...
+    1..22
+ok 2 - 2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi)
+  ---
+  duration_ms: 2935.418481
+  type: 'suite'
+  ...
+# Subtest: tahsilat takvimi motoru (v2.0.1)
+    # Subtest: tarih, ay ve ödendi yazımlarını okur
+    ok 1 - tarih, ay ve ödendi yazımlarını okur
+      ---
+      duration_ms: 2.354233
+      type: 'test'
+      ...
+    # Subtest: icra + ödeme sözü + taksit + kira tablosunda ödenmemiş kalemleri bulur
+    ok 2 - icra + ödeme sözü + taksit + kira tablosunda ödenmemiş kalemleri bulur
+      ---
+      duration_ms: 39.957793
+      type: 'test'
+      ...
+    # Subtest: programda girilen tahsilat kalemleri vade sırasıyla kapatır; artan tutar sonrakine sayılır
+    ok 3 - programda girilen tahsilat kalemleri vade sırasıyla kapatır; artan tutar sonrakine sayılır
+      ---
+      duration_ms: 29.449887
+      type: 'test'
+      ...
+    # Subtest: sözleşme bitişi ve sigorta yenilemesi 1 hafta önceden son gün olarak gelir
+    ok 4 - sözleşme bitişi ve sigorta yenilemesi 1 hafta önceden son gün olarak gelir
+      ---
+      duration_ms: 20.392443
+      type: 'test'
+      ...
+    # Subtest: okul servisi: aylık ücret sütunlarında ödenmeyen ve kısmi ödenen aylar, araç ve şoför belgeleri
+    ok 5 - okul servisi: aylık ücret sütunlarında ödenmeyen ve kısmi ödenen aylar, araç ve şoför belgeleri
+      ---
+      duration_ms: 15.448188
+      type: 'test'
+      ...
+    1..5
+ok 3 - tahsilat takvimi motoru (v2.0.1)
+  ---
+  duration_ms: 108.85607
+  type: 'suite'
+  ...
+# Subtest: tahsilat takvimi: şablon satırları ve hizmet dönemi (v2.0.2)
+    # Subtest: ay kolonlarının yılı kolon sırasından: Eylül–Ağustos okul yılında Temmuz ve Ağustos gelecek yılın
+    ok 1 - ay kolonlarının yılı kolon sırasından: Eylül–Ağustos okul yılında Temmuz ve Ağustos gelecek yılın
+      ---
+      duration_ms: 0.737137
+      type: 'test'
+      ...
+    # Subtest: boş şablon satırı, başlamadan önceki aylar, ayrılan öğrenci ve '–' işaretli ay borç sayılmaz
+    ok 2 - boş şablon satırı, başlamadan önceki aylar, ayrılan öğrenci ve '–' işaretli ay borç sayılmaz
+      ---
+      duration_ms: 5.093073
+      type: 'test'
+      ...
+    1..2
+ok 4 - tahsilat takvimi: şablon satırları ve hizmet dönemi (v2.0.2)
+  ---
+  duration_ms: 6.233768
+  type: 'suite'
+  ...
+# Subtest: tahsilat takvimi: gerçek plan ile yapılmış işlem ayrımı (v2.0.2)
+    # Subtest: yapılmış ödemelerin listesi ('Ödeme Tarihi', son günlerde de olsa) ödeme planı sayılmaz
+    ok 1 - yapılmış ödemelerin listesi ('Ödeme Tarihi', son günlerde de olsa) ödeme planı sayılmaz
+      ---
+      duration_ms: 1.322259
+      type: 'test'
+      ...
+    # Subtest: aynı başlık ileri tarihliyse (plan) takvime girer
+    ok 2 - aynı başlık ileri tarihliyse (plan) takvime girer
+      ---
+      duration_ms: 1.780413
+      type: 'test'
+      ...
+    # Subtest: ay kolonlu satış ya da devam tablosu (ödeme kanıtı yok) aidat planı sayılmaz
+    ok 3 - ay kolonlu satış ya da devam tablosu (ödeme kanıtı yok) aidat planı sayılmaz
+      ---
+      duration_ms: 1.657919
+      type: 'test'
+      ...
+    # Subtest: satır bağlamı: kalan borcu 0 olan kayıttan tahsilat beklenmez
+    ok 4 - satır bağlamı: kalan borcu 0 olan kayıttan tahsilat beklenmez
+      ---
+      duration_ms: 1.812702
+      type: 'test'
+      ...
+    # Subtest: ay kolonlarında ödeme işareti varsa ya da ücret kolonu varsa aidat planıdır
+    ok 5 - ay kolonlarında ödeme işareti varsa ya da ücret kolonu varsa aidat planıdır
+      ---
+      duration_ms: 1.467654
+      type: 'test'
+      ...
+    1..5
+ok 5 - tahsilat takvimi: gerçek plan ile yapılmış işlem ayrımı (v2.0.2)
+  ---
+  duration_ms: 8.51393
+  type: 'suite'
+  ...
+# Subtest: PDF yazıcı ve kasa dökümü (v2.0.1)
+    # Subtest: yazı tipi alt kümesi geçerli bir TrueType dosyasıdır ve kullanılan glifleri korur
+    ok 1 - yazı tipi alt kümesi geçerli bir TrueType dosyasıdır ve kullanılan glifleri korur
+      ---
+      duration_ms: 6.012996
+      type: 'test'
+      ...
+    # Subtest: metni ölçer, satırlara böler ve Türkçe metni ToUnicode ile gömer
+    ok 2 - metni ölçer, satırlara böler ve Türkçe metni ToUnicode ile gömer
+      ---
+      duration_ms: 7.020573
+      type: 'test'
+      ...
+    # Subtest: kasa dökümü: devreden kasa, hareketler, toplam ve sayfa numarası
+    ok 3 - kasa dökümü: devreden kasa, hareketler, toplam ve sayfa numarası
+      ---
+      duration_ms: 25.673298
+      type: 'test'
+      ...
+    1..3
+ok 6 - PDF yazıcı ve kasa dökümü (v2.0.1)
+  ---
+  duration_ms: 38.921207
+  type: 'suite'
+  ...
+# Subtest: tahsilat takvimi ve kasa PDF uç noktaları (v2.0.1)
+    # Subtest: takvim ödenmemiş kalemleri ve son günleri döndürür
+    ok 1 - takvim ödenmemiş kalemleri ve son günleri döndürür
+      ---
+      duration_ms: 39.206426
+      type: 'test'
+      ...
+    # Subtest: tahsilat girilince kalem kapanır
+    ok 2 - tahsilat girilince kalem kapanır
+      ---
+      duration_ms: 55.227647
+      type: 'test'
+      ...
+    # Subtest: ödendi say / iptal / geri al; denetim kaydı yazılır
+    ok 3 - ödendi say / iptal / geri al; denetim kaydı yazılır
+      ---
+      duration_ms: 53.63096
+      type: 'test'
+      ...
+    # Subtest: kasa PDF: yetki, tarih denetimi ve dosya
+    ok 4 - kasa PDF: yetki, tarih denetimi ve dosya
+      ---
+      duration_ms: 18.608959
+      type: 'test'
+      ...
+    1..4
+ok 7 - tahsilat takvimi ve kasa PDF uç noktaları (v2.0.1)
+  ---
+  duration_ms: 903.395265
+  type: 'suite'
+  ...
+# Subtest: seyrek belge kolonları (v2.0.6)
+    # Subtest: araç listesinde tek kayda yazılan sigorta, emisyon, takograf tarihi de uyarı verir
+    ok 1 - araç listesinde tek kayda yazılan sigorta, emisyon, takograf tarihi de uyarı verir
+      ---
+      duration_ms: 3.178176
+      type: 'test'
+      ...
+    # Subtest: belge başlığında tarih olmayan değer (şirket adı) tarih sayılmaz; geçmiş tek tarih uyarı vermez
+    ok 2 - belge başlığında tarih olmayan değer (şirket adı) tarih sayılmaz; geçmiş tek tarih uyarı vermez
+      ---
+      duration_ms: 0.941669
+      type: 'test'
+      ...
+    1..2
+ok 8 - seyrek belge kolonları (v2.0.6)
+  ---
+  duration_ms: 4.294176
+  type: 'suite'
+  ...
+# Subtest: bildirimde “Gerçekleştirildi” (v2.0.2)
+    # Subtest: hücreye yazılan “Gerçekleştirildi” kalemi kapatır; tarih hücrede kalır; aylık kısmi ödeme de kapanır
+    ok 1 - hücreye yazılan “Gerçekleştirildi” kalemi kapatır; tarih hücrede kalır; aylık kısmi ödeme de kapanır
+      ---
+      duration_ms: 3.275943
+      type: 'test'
+      ...
+    # Subtest: her ay tekrarlayan ödeme günü kalemi ‘recurring’ olarak işaretlenir (ayar hücresine yazılmaz)
+    ok 2 - her ay tekrarlayan ödeme günü kalemi ‘recurring’ olarak işaretlenir (ayar hücresine yazılmaz)
+      ---
+      duration_ms: 0.880163
+      type: 'test'
+      ...
+    1..2
+ok 9 - bildirimde “Gerçekleştirildi” (v2.0.2)
+  ---
+  duration_ms: 4.262445
+  type: 'suite'
+  ...
+# Subtest: ay kolonu yazımları ve tek vadeli tutar (v2.0.2)
+    # Subtest: Eyl.26, Ekim'26, 2026-11, 12/2026 ay kolonu sayılır; 'Marka' ve 'Ara toplam' sayılmaz
+    ok 1 - Eyl.26, Ekim'26, 2026-11, 12/2026 ay kolonu sayılır; 'Marka' ve 'Ara toplam' sayılmaz
+      ---
+      duration_ms: 0.211987
+      type: 'test'
+      ...
+    # Subtest: tek vade kolonlu tabloda beklenen tutar borç/tutar kolonundan gelir
+    ok 2 - tek vade kolonlu tabloda beklenen tutar borç/tutar kolonundan gelir
+      ---
+      duration_ms: 1.120972
+      type: 'test'
+      ...
+    1..2
+ok 10 - ay kolonu yazımları ve tek vadeli tutar (v2.0.2)
+  ---
+  duration_ms: 1.468981
+  type: 'suite'
+  ...
+# Subtest: eşleme ekranı ve takvim (v2.0.2)
+    # Subtest: 'Son tarih / Vade' seçilen kolon başlığı ne olursa olsun takvime girer; 'Yok Say' seçilen kolon girmez
+    ok 1 - 'Son tarih / Vade' seçilen kolon başlığı ne olursa olsun takvime girer; 'Yok Say' seçilen kolon girmez
+      ---
+      duration_ms: 2.102777
+      type: 'test'
+      ...
+    1..1
+ok 11 - eşleme ekranı ve takvim (v2.0.2)
+  ---
+  duration_ms: 2.183896
+  type: 'suite'
+  ...
+# Subtest: ay matrisi → taksit defteri (v2.0.2)
+    # Subtest: girişten önceki ve çıkıştan sonraki boş aylar taksit değildir; aradaki boş ay ödenmemiştir; durgun kayıt uyarı üretmez
+    ok 1 - girişten önceki ve çıkıştan sonraki boş aylar taksit değildir; aradaki boş ay ödenmemiştir; durgun kayıt uyarı üretmez
+      ---
+      duration_ms: 3.47996
+      type: 'test'
+      ...
+    # Subtest: defter: aralık dışı için satır açılmaz; 2 tam boş ay hâlâ aktiftir, 3 tam boş ay durgundur
+    ok 2 - defter: aralık dışı için satır açılmaz; 2 tam boş ay hâlâ aktiftir, 3 tam boş ay durgundur
+      ---
+      duration_ms: 0.563674
+      type: 'test'
+      ...
+    1..2
+ok 12 - ay matrisi → taksit defteri (v2.0.2)
+  ---
+  duration_ms: 4.157589
+  type: 'suite'
+  ...
+# Subtest: ay hücresinde ödenecek taksit (plan kipi, v2.0.2)
+    # Subtest: Eylül 10.000 + Ekim 10.000 = Toplam 20.000: Eylül bu ay beklenir (ekrandaki örnek)
+    ok 1 - Eylül 10.000 + Ekim 10.000 = Toplam 20.000: Eylül bu ay beklenir (ekrandaki örnek)
+      ---
+      duration_ms: 3.305878
+      type: 'test'
+      ...
+    # Subtest: programda tahsilat girilince, 'Ödenen' ya da Toplam − Kalan ile Eylül kapanır
+    ok 2 - programda tahsilat girilince, 'Ödenen' ya da Toplam − Kalan ile Eylül kapanır
+      ---
+      duration_ms: 10.326774
+      type: 'test'
+      ...
+    # Subtest: aylar geçince ödenmeyen taksitler gecikir; planda boş ay ve plan bitişi borç sayılmaz
+    ok 3 - aylar geçince ödenmeyen taksitler gecikir; planda boş ay ve plan bitişi borç sayılmaz
+      ---
+      duration_ms: 4.901346
+      type: 'test'
+      ...
+    # Subtest: başlıkta yazım hatası ('NİSAN TAKSTİ', 'Mayıs taksit') ay kolonu sayılır; tahsilat Eylül'ü kapatır
+    ok 4 - başlıkta yazım hatası ('NİSAN TAKSTİ', 'Mayıs taksit') ay kolonu sayılır; tahsilat Eylül'ü kapatır
+      ---
+      duration_ms: 4.898201
+      type: 'test'
+      ...
+    # Subtest: uyarıdaki 'Gerçekleştirildi' Eylül'ü kapatır, tutar hücrede kalır; Ekim'de Ekim beklenir
+    ok 5 - uyarıdaki 'Gerçekleştirildi' Eylül'ü kapatır, tutar hücrede kalır; Ekim'de Ekim beklenir
+      ---
+      duration_ms: 8.010713
+      type: 'test'
+      ...
+    # Subtest: kart detayındaki tahsilat notunda ay yazıyorsa tahsilat o aya sayılır (kullanıcı önerisi, v2.0.3)
+    ok 6 - kart detayındaki tahsilat notunda ay yazıyorsa tahsilat o aya sayılır (kullanıcı önerisi, v2.0.3)
+      ---
+      duration_ms: 15.71441
+      type: 'test'
+      ...
+    # Subtest: bütün planlı aylar geçince de hücredeki tutar ödendi sayılmaz (tabloda aylık ücret kolonu yok)
+    ok 7 - bütün planlı aylar geçince de hücredeki tutar ödendi sayılmaz (tabloda aylık ücret kolonu yok)
+      ---
+      duration_ms: 6.346034
+      type: 'test'
+      ...
+    # Subtest: tahsilat notundaki aylar okunur
+    ok 8 - tahsilat notundaki aylar okunur
+      ---
+      duration_ms: 0.268209
+      type: 'test'
+      ...
+    # Subtest: aylık ücret kolonu varken gelecek aya yazılan tutar peşin ödemedir (plan sayılmaz)
+    ok 9 - aylık ücret kolonu varken gelecek aya yazılan tutar peşin ödemedir (plan sayılmaz)
+      ---
+      duration_ms: 1.064506
+      type: 'test'
+      ...
+    # Subtest: ödeme kipi korunur: aylık ücret kolonu varken ay hücresindeki tutar ödemedir
+    ok 10 - ödeme kipi korunur: aylık ücret kolonu varken ay hücresindeki tutar ödemedir
+      ---
+      duration_ms: 1.034316
+      type: 'test'
+      ...
+    1..10
+ok 13 - ay hücresinde ödenecek taksit (plan kipi, v2.0.2)
+  ---
+  duration_ms: 56.384952
+  type: 'suite'
+  ...
+# Subtest: ay hücresinde taksit: kart detayındaki tahsilat (tam yığın, v2.0.3)
+    # Subtest: yüklenen tabloda bu ayın taksiti uyarı verir; notu o ayı söyleyen tahsilat girilince kalkar, başka ayı söyleyen kapatmaz
+    ok 1 - yüklenen tabloda bu ayın taksiti uyarı verir; notu o ayı söyleyen tahsilat girilince kalkar, başka ayı söyleyen kapatmaz
+      ---
+      duration_ms: 68.565404
+      type: 'test'
+      ...
+    1..1
+ok 14 - ay hücresinde taksit: kart detayındaki tahsilat (tam yığın, v2.0.3)
+  ---
+  duration_ms: 381.780752
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 6 göç: v2.4.4 verisi güncel kodla (Vade Tarihi / Beklenen Ödeme Tarihi boş, Kalan aynı kuyruktan)
+    # Subtest: v2.4.4 verisi: göç boş alan ekler, bakiye ve faturalar aynı, kalem yok; eski borca vade verilince kalem doğar
+    ok 1 - v2.4.4 verisi: göç boş alan ekler, bakiye ve faturalar aynı, kalem yok; eski borca vade verilince kalem doğar
+      ---
+      duration_ms: 1068.617175
+      type: 'test'
+      ...
+    1..1
+ok 15 - 2.4.5 madde 6 göç: v2.4.4 verisi güncel kodla (Vade Tarihi / Beklenen Ödeme Tarihi boş, Kalan aynı kuyruktan)
+  ---
+  duration_ms: 1073.841423
+  type: 'suite'
+  ...
+# Subtest: m2 Vade Takip kaynak adları: istemci sunucuyla aynı (fatura dahil)
+    # Subtest: sunucunun her kaynağının istemcide adı var; 'invoice' adı PDF/Excel'deki gibi
+    ok 1 - sunucunun her kaynağının istemcide adı var; 'invoice' adı PDF/Excel'deki gibi
+      ---
+      duration_ms: 2.079225
+      type: 'test'
+      ...
+    1..1
+ok 16 - m2 Vade Takip kaynak adları: istemci sunucuyla aynı (fatura dahil)
+  ---
+  duration_ms: 3.137795
+  type: 'suite'
+  ...
+# Subtest: m6 + m7 Nakit Akış PDF alt başlığı ve Vade Takip banka satırı yetkisi (gerçek v2.0.23 verisi)
+    # Subtest: ön koşul: yönetici Vade Takip'te nakit ve hesapsız eski banka satırını görür (bağımsız defter)
+    ok 1 - ön koşul: yönetici Vade Takip'te nakit ve hesapsız eski banka satırını görür (bağımsız defter)
+      ---
+      duration_ms: 9.35087
+      type: 'test'
+      ...
+    # Subtest: m7 API: banka yetkisiz kişi Kasa satırını görür, hesapsız eski banka satırını görmez (süzgeçli ve süzgeçsiz)
+    ok 2 - m7 API: banka yetkisiz kişi Kasa satırını görür, hesapsız eski banka satırını görmez (süzgeçli ve süzgeçsiz)
+      ---
+      duration_ms: 21.107801
+      type: 'test'
+      ...
+    # Subtest: m7 PDF ve Excel: banka yetkisiz kişinin dışa aktarımında da eski banka satırı yok
+    ok 3 - m7 PDF ve Excel: banka yetkisiz kişinin dışa aktarımında da eski banka satırı yok
+      ---
+      duration_ms: 46.17572
+      type: 'test'
+      ...
+    # Subtest: m7 aşırı düzeltme yok: banka yetkili avukat eski banka satırını görür; Nakit Akış ucu banka yetkisiz kişiye kapalı kalır
+    ok 4 - m7 aşırı düzeltme yok: banka yetkili avukat eski banka satırını görür; Nakit Akış ucu banka yetkisiz kişiye kapalı kalır
+      ---
+      duration_ms: 6.411167
+      type: 'test'
+      ...
+    # Subtest: m6 Nakit Akış PDF alt başlığı kesilmez (başlangıç tanımı tam)
+    ok 5 - m6 Nakit Akış PDF alt başlığı kesilmez (başlangıç tanımı tam)
+      ---
+      duration_ms: 44.028005
+      type: 'test'
+      ...
+    1..5
+ok 17 - m6 + m7 Nakit Akış PDF alt başlığı ve Vade Takip banka satırı yetkisi (gerçek v2.0.23 verisi)
+  ---
+  duration_ms: 1297.841954
+  type: 'suite'
+  ...
+1..17
+# tests 74
+# suites 17
+# pass 74
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10277.413564

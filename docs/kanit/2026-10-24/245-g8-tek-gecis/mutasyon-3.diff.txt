@@ -1,0 +1,11 @@
+--- /home/user/wt/d1-kapama/server/routes/invoices.mjs	2026-10-24 20:32:21.117772232 +0000
++++ /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-g8-tek-gecis/mut3/server/routes/invoices.mjs	2026-10-24 20:53:56.765733302 +0000
+@@ -753,7 +753,7 @@
+     const entries = new Map();
+     for (const accountId of ledgers.keys()) if (dated.has(accountId)) for (const [id, state] of settled(accountId).entries) entries.set(id, state);
+     const out = { key, pay, entries };
+-    if (!inTx) settledCache = out;
++    settledCache = out;
+     return out;
+   }
+   const allPaymentStates = () => allSettled().pay;

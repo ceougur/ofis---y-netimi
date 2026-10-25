@@ -16,6 +16,7 @@ import { roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { allocate, dayText, isoDay } from "../lib/plans.mjs";
 import { tl } from "../lib/report-pdf.mjs";
+import { createReportHeader } from "../lib/report-header.mjs";
 import { reportFileBase, reportPdf, reportXlsx } from "../lib/report-files.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { K10_LABELS } from "../lib/bank/accounts.mjs";
@@ -24,6 +25,8 @@ import { waysFor } from "../lib/bank/money-lines.mjs";
 import { TRANSFER_CHANNELS } from "../lib/bank/vouchers.mjs";
 import { TAX_LABELS, taxChoiceOf } from "../lib/bank/pos-math.mjs";
 import { CHART, stockOpeningValue } from "../lib/general-ledger.mjs";
+import { INVOICE_KINDS } from "../lib/invoice-math.mjs";
+import { detailedStatement } from "../lib/statement-detail.mjs";
 import { reconcileReceivables } from "../lib/receivable-aging.mjs";
 import { DOUBTFUL_REASONS, DOUBTFUL_STATUS_LABELS } from "../lib/doubtful-gl.mjs";
 
@@ -186,17 +189,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
   // Rapor başlığındaki şirket (2.2.0 İz 1.1; 2.0.17 m2 kararı "rapor/PDF/Excel başlığında 001 · Unvan"): bu örneğin şirketinin kodu (kayıt defteri)
   // ve unvanı (office.name; PDF'in başlığında da bu yazıyordu; boşsa şirketin adı). İstek pencerenin şirketine gider (?hofCompany=, app.mjs
   // dispatch), dolayısıyla etiket de o şirketindir. Önceden Excel'de şirket hiç yoktu, PDF'te yalnız unvan vardı.
-  const companyLabel = () => {
-    let entry = null;
-    try {
-      entry = typeof company === "function" ? company() : null;
-    } catch {
-      entry = null;
-    }
-    const name = String(office() || entry?.name || "").trim();
-    const code = String(entry?.code || "").trim();
-    return code && name ? `${code} · ${name}` : name || code;
-  };
+  // 2.4.5 madde 6c: etiket ve Tabela Adı başlığı tek yardımcıda (lib/report-header.mjs; önceden üç rotada aynı kopya).
+  const header = createReportHeader({ store, company: company });
+  const companyLabel = header.companyLabel;
   const admin = { id: "", role: "admin" };
 
   // ---------- Ortak yardımcılar ----------
@@ -1708,8 +1703,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
       id: "cari-ekstre",
       group: "Cari",
       title: "Cari Ekstre",
-      description: "Seçilen carinin tarih aralıklı ekstresi: devir satırı, hareketler ve yürüyen bakiye.",
-      params: ["account", "range"],
+      description: "Seçilen carinin tarih aralıklı ekstresi: devir satırı, hareketler ve yürüyen bakiye. Fatura Kalemlerini Göster işaretlenince faturaların kalemleri, belge no ve ödeme yolu da yazar.",
+      // 2.4.5 madde 6d (müşteri isteği M2): "items" = Fatura Kalemlerini Göster (Ayrıntılı Cari Ekstre). Seçenek kapalıyken ekstre değişmez.
+      params: ["account", "range", "items"],
       // Ekstre tek bir carinin defteridir: cari seçilmeden çalışmaz. Öbür raporlarda cari isteğe bağlı süzgeçtir.
       accountRequired: true,
       preset: "thisYear",
@@ -1719,6 +1715,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
         const account = accounts().detail(query.account, user);
         const result = statement(account.ledger, range);
         const mark = value => `${tl(Math.abs(value))}${value > 0.005 ? " B" : value < -0.005 ? " A" : ""}`;
+        if (query.items === "1") return detailedEkstre(account, range, result, mark);
         return {
           title: `Cari Ekstre · ${account.name}`,
           subtitle: [account.refNo ? `Cari No ${account.refNo}` : "", rangeText(range), "B: borçlu · A: alacaklı"].filter(Boolean).join(" · "),
@@ -2721,6 +2718,64 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
   ];
   const REGISTRY = new Map(REPORTS.map(report => [report.id, report]));
 
+  // Ayrıntılı Cari Ekstre (2.4.5 madde 6d; müşteri isteği M2): Cari Ekstre + "Fatura Kalemlerini Göster". Hareketler ve yürüyen bakiye seçeneği kapalı
+  // ekstreyle AYNI defterden (statement); her satıra Belge No ve ödeme yolu, faturanın satırının altına kalemleri (lib/statement-detail.mjs). Kalemler
+  // faturanın kendi kayıtlı satırlarıdır (invoice_lines; Düzenle'den sonra güncel); iptal edilen ve taslak faturanın defter satırı olmadığından kalemi de
+  // görünmez (seçenek kapalı ekstreyle aynı).
+  function detailedEkstre(account, range, result, mark) {
+    const chunks = (ids, size = 400) => {
+      const list = [...new Set(ids.filter(Boolean))];
+      const out = [];
+      for (let index = 0; index < list.length; index += size) out.push(list.slice(index, index + size));
+      return out;
+    };
+    const marks = list => list.map(() => "?").join(", ");
+    const invoiceIds = result.lines.filter(line => line.origin === "invoice").map(line => line.sourceId);
+    const heads = new Map();
+    const items = new Map();
+    for (const chunk of chunks(invoiceIds)) {
+      for (const row of store.all(`SELECT id, kind, number, currency, prices_include_vat AS pricesIncludeVat, discount_rate AS discountRate, stoppage_rate AS stoppageRate, stoppage_total AS stoppage FROM invoices WHERE id IN (${marks(chunk)})`, ...chunk)) heads.set(row.id, row);
+      for (const line of store.all(`SELECT invoice_id AS invoiceId, name, code, qty, unit, unit_price AS unitPrice, discount_rate AS discountRate, net, vat_rate AS vatRate, gross, withheld FROM invoice_lines WHERE invoice_id IN (${marks(chunk)}) ORDER BY invoice_id, seq`, ...chunk)) {
+        if (!items.has(line.invoiceId)) items.set(line.invoiceId, []);
+        items.get(line.invoiceId).push(line);
+      }
+    }
+    const invoices = new Map([...heads.values()].map(row => [row.id, { number: row.number || "", kindLabel: INVOICE_KINDS[row.kind]?.label || "Fatura", currency: row.currency || "TRY", pricesIncludeVat: Number(row.pricesIncludeVat) === 1, discountRate: Number(row.discountRate) || 0, stoppageRate: Number(row.stoppageRate) || 0, stoppage: Number(row.stoppage) || 0, lines: items.get(row.id) || [] }]));
+    // Taksit tahsilatının yolu ve evrakı (defter satırı "plan-entry:<kimlik>"); çek / senet satırının evrakı (kaynak kimliği = evrak).
+    const planEntryIds = result.lines.filter(line => String(line.id).startsWith("plan-entry:")).map(line => String(line.id).slice("plan-entry:".length));
+    const planEntries = new Map();
+    for (const chunk of chunks(planEntryIds)) for (const row of store.all(`SELECT id, method, cheque_id AS chequeId FROM plan_entries WHERE id IN (${marks(chunk)})`, ...chunk)) planEntries.set(row.id, row);
+    const chequeIds = [...result.lines.filter(line => line.origin === "cheque").map(line => line.sourceId), ...[...planEntries.values()].map(row => row.chequeId)];
+    const cheques = new Map();
+    for (const chunk of chunks(chequeIds)) for (const row of store.all(`SELECT id, instrument, serial_no AS serialNo FROM cheques WHERE id IN (${marks(chunk)})`, ...chunk)) cheques.set(row.id, row);
+    const instrument = cheque => (cheque ? (cheque.instrument === "note" ? "Senet" : "Çek") : "Çek / Senet");
+    const receipt = line => (line.receiptNo ? `Makbuz ${line.receiptNo}` : "");
+    const extras = new Map();
+    for (const line of result.lines) {
+      const cash = line.kind === "in" || line.kind === "out";
+      if (line.origin === "invoice") extras.set(line.id, { docNo: invoices.get(line.sourceId)?.number || "", way: cash ? methodLabel(line.method, line.kind) : "" });
+      else if (line.origin === "cheque") {
+        const cheque = cheques.get(line.sourceId);
+        extras.set(line.id, { docNo: cheque?.serialNo || "", way: instrument(cheque) });
+      } else if (String(line.id).startsWith("plan-entry:")) {
+        const entry = planEntries.get(String(line.id).slice("plan-entry:".length));
+        const cheque = entry?.chequeId ? cheques.get(entry.chequeId) : null;
+        extras.set(line.id, { docNo: receipt(line) || cheque?.serialNo || "", way: entry?.chequeId ? instrument(cheque) : entry ? methodLabel(entry.method || "cash", line.kind === "plan-in" ? "in" : "out") : "" });
+      } else extras.set(line.id, { docNo: receipt(line), way: cash ? methodLabel(line.method, line.kind) : "" });
+    }
+    const model = detailedStatement({ opening: result.opening, openingDay: openingDay(range.from), lines: result.lines, invoices, extras, dayText, money, mark });
+    return {
+      title: `Ayrıntılı Cari Ekstre · ${account.name}`,
+      subtitle: [account.refNo ? `Cari No ${account.refNo}` : "", rangeText(range), "Fatura kalemleriyle", "B: borçlu · A: alacaklı"].filter(Boolean).join(" · "),
+      headers: model.headers,
+      types: model.types,
+      rows: model.rows,
+      rowMarks: model.marks,
+      footers: model.footers,
+      summary: [["Devir", money(result.opening)], ["Dönem Borç", money(result.debit)], ["Dönem Alacak", money(result.credit)], ["Genel Toplam (Bakiye)", `${tl(Math.abs(result.closing))} ${sideText(result.closing)}`]],
+    };
+  }
+
   // Fatura listesi raporları (satış / alış / iade): rakamlar fatura modülünün listesiyle aynı (ödenen ve kalan kapamadan).
   function invoiceListReport(query, kinds, label) {
     const range = rangeOf(query, "thisYear");
@@ -2794,7 +2849,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
     // v2.1.0 Aşama 14: Banka raporlarının süzgeçleri (bankAccount, bankMove, bankGroup, feeAccount) — Bulgu 4 dersi: listede olmayan parametre düşer.
     // 2.2.0 (İz 3.5): POS raporlarının süzgeçleri (posTerminal, posKind). 2.3.0 (İz 1.7): Şüpheli Alacaklar (doubtfulStatus, doubtfulReason).
     // 2.3.0 İz 3.3: anyAccount (Banka ve POS Hareketleri, Cari / Fatura / Taksit ve Banka Hareketleri: Hesap süzgeci).
-    for (const key of ["preset", "from", "to", "account", "type", "side", "status", "direction", "category", "state", "planStatus", "taskStatus", "tab", "payMethod", "bankAccount", "bankMove", "bankGroup", "feeAccount", "posTerminal", "posKind", "anyAccount", "posSale", "posPeriod", "doubtfulStatus", "doubtfulReason"]) {
+    for (const key of ["preset", "from", "to", "account", "type", "side", "status", "direction", "category", "state", "planStatus", "taskStatus", "tab", "payMethod", "bankAccount", "bankMove", "bankGroup", "feeAccount", "posTerminal", "posKind", "anyAccount", "posSale", "posPeriod", "doubtfulStatus", "doubtfulReason", "items"]) {
       const value = text(params.get(key));
       if (value) query[key] = value.slice(0, 200);
     }
@@ -2814,9 +2869,11 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
     const result = await report.build(query, user);
     const rows = result.rows.slice(0, MAX_ROWS);
     // 2.4.3 UX24: footers (bir ya da birden çok TOPLAM satırı); footer yalnız tek satırlık TOPLAM için (eski okurlar).
-    const footers = footerRows({ headers: result.headers, types: result.types || [], rows, footer: result.footer, footerUniform: result.footerUniform, footerGroups: result.footerGroups });
+    // 2.4.5 madde 6d: rapor kendi TOPLAM satırlarını verebilir (Ayrıntılı Cari Ekstre: Dönem Toplamı + Genel Toplam; kalem satırları toplanmaz).
+    const footers = Array.isArray(result.footers) ? (rows.length ? result.footers : []) : footerRows({ headers: result.headers, types: result.types || [], rows, footer: result.footer, footerUniform: result.footerUniform, footerGroups: result.footerGroups });
     const footer = footers.length === 1 ? footers[0] : null;
-    return { id: report.id, group: report.group, title: result.title || report.title, subtitle: result.subtitle || "", headers: result.headers, types: result.types || [], rows, total: result.rows.length, footer, footers, summary: result.summary || [], tabs: result.tabs || null, query };
+    // rowMarks (2.4.5 madde 6d): satır türü ("item" = fatura kalemi; ekranda girintili). Yalnız veren raporda döner.
+    return { id: report.id, group: report.group, title: result.title || report.title, subtitle: result.subtitle || "", headers: result.headers, types: result.types || [], rows, total: result.rows.length, footer, footers, summary: result.summary || [], tabs: result.tabs || null, query, ...(Array.isArray(result.rowMarks) ? { rowMarks: result.rowMarks.slice(0, MAX_ROWS) } : {}) };
   }
   router.get("/api/workspace/report-center", async ({ req, res }) => {
     const user = enter(req);
@@ -2853,10 +2910,10 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
   router.get("/api/workspace/report-center/:id", async ({ req, res, params, url }) => {
     const user = enter(req);
     const data = await run(user, params.id, url.searchParams, { limit: PREVIEW_ROWS });
-    ok(res, { ...data, rows: data.rows.slice(0, PREVIEW_ROWS), total: data.total });
+    ok(res, { ...data, rows: data.rows.slice(0, PREVIEW_ROWS), ...(data.rowMarks ? { rowMarks: data.rowMarks.slice(0, PREVIEW_ROWS) } : {}), total: data.total });
   });
   // PDF ve Excel üretimi tek yerden (lib/report-files.mjs; 2.3.0 İz 5.1): Banka → Hareketler'in PDF / Excel düğmeleri de aynı üreticiyi kullanır.
-  const fileCtx = user => ({ now: clock(), companyLabel: companyLabel(), userName: user.display_name || user.username || "", brand: office() || "DestekOfis" });
+  const fileCtx = user => ({ now: clock(), companyLabel: companyLabel(), userName: user.display_name || user.username || "", brand: office() || "DestekOfis", header });
   router.get("/api/workspace/report-center/:id/pdf", async ({ req, res, params, url }) => {
     const user = enter(req);
     // PDF_ROWS + 1: kırpılıp kırpılmadığı (alt başlık) satır sayısından anlaşılır; kırpılsa da TOPLAM satırı TÜM satırların toplamıdır.

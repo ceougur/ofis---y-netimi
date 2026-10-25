@@ -10,6 +10,7 @@
 //   A12 Cari listesi süzgeç satırında PDF düğmesi tek satır.   A13 "Toplam Borç" kesilmez.   A20 Personel ana sayfasında üst boşluk yok.
 //   A14 Sayfalar şeridi geç gelse de tablo itilmez (yer tutucu; istek zorla geciktirilir — ders 20).   A17 "Tabloya Atla" + takvim tek Tab durağı.
 //   A18 1366'da kayıt tablosu yana kaymaz; tutar "25.000,00" (ham değer title'da, arama ham değeri bulur).   A19 Personele olmayan yol gösterilmez.
+//   A18 (2.4.5 6b) "Borçlu Telefon" / "Borçlu TC Kimlik No" kolonu ham kalır (para biçimine çevrilmez), seçili satırın telefon hücresinden WhatsApp açılır; "Alacak Tutarı" 25.000,00.
 //   A21 Aynı adlı iki carinin taksiti takvimde Cari No ile ayrılır.   A9 Bildirim turu 1 + özet (dönmez), dizüstünde küçük.   A15 yazım düzeni.
 // Çıkış: "N geçti, M kaldı" (kaldıysa çıkış kodu 1).
 import { mkdtempSync, rmSync } from "node:fs";
@@ -429,6 +430,46 @@ try {
     const wideCount = wideNotice ? await wideNotice.evaluate(node => node.querySelector(".hof-notice-count")?.textContent || "") : "";
     ok(/^1\/[2-5]$/.test(wideCount), `1440×900'de ilk bildirimin sırası “${wideCount}” (tek tek gelir; gerileme yok)`);
     await wide.context.close();
+  });
+
+  // 2.4.5 madde 6b (A18 gerilemesi): "borç" sözcüğü taşıyan kimlik / iletişim kolonu ("Borçlu Telefon", "Borçlu TC Kimlik No") para biçimine çevrilmez
+  // (önceden 5367715055 → "5.367.715.055,00"; hücreden WhatsApp açılmıyordu); "Alacak Tutarı" para biçiminde kalır. Yeni kolonlar diğer adımları etkilemesin diye son adım.
+  await step("A18 (6b) kimlik / iletişim kolonu ham kalır, hücreden WhatsApp açılır; Alacak Tutarı biçimli", async () => {
+    await must("kimlik kolonlu kayıt", api.post("/api/workspace/records", { values: { "DOSYA NO": "2026/200", BORÇLU: "Telefonlu Kişi", "Borçlu Telefon": "5367715055", "Borçlu TC Kimlik No": "12345678950", "Alacak Tutarı": "25000,00" }, caseKey: "2026/200" }));
+    await page.reload();
+    await page.waitForSelector('.dynamic-table tbody tr[data-hof-key="2026/200"]', { timeout: 20000 });
+    await page.waitForTimeout(800);
+    const cells = await page.evaluate(() => {
+      const table = document.querySelector(".dynamic-table");
+      const heads = [...table.querySelectorAll("thead th")].map(th => th.textContent.trim());
+      const row = table.querySelector('tbody tr[data-hof-key="2026/200"]');
+      const at = name => row.children[heads.findIndex(head => head.toLocaleLowerCase("tr-TR") === name.toLocaleLowerCase("tr-TR"))]?.textContent.trim();
+      return { heads, phone: at("Borçlu Telefon"), tc: at("Borçlu TC Kimlik No"), amount: at("Alacak Tutarı") };
+    });
+    ok(cells.phone === "5367715055", `Borçlu Telefon hücresi ham “${cells.phone}” (önceden 5.367.715.055,00)`);
+    ok(cells.tc === "12345678950", `Borçlu TC Kimlik No hücresi ham “${cells.tc}”`);
+    ok(cells.amount === "25.000,00", `Alacak Tutarı biçimli “${cells.amount}”`);
+    await page.evaluate(() => {
+      window.__opened = [];
+      window.open = url => (window.__opened.push(String(url)), null);
+    });
+    // Kullanıcının yolu: telefon hücresine ilk tıklama satırı seçer, ikincisi WhatsApp'ı açar (hof-workspace.js). Hücrenin sol kenarına tıklanır: üzerine gelinen
+    // hücrenin sağında "Değeri Düzenle" (✎) düğmesi belirir ve ortadaki tıklamayı karşılar.
+    const index = cells.heads.findIndex(head => head.toLocaleLowerCase("tr-TR") === "borçlu telefon");
+    const phoneCell = `.dynamic-table tbody tr[data-hof-key="2026/200"] td:nth-child(${index + 1})`;
+    // Yenilemeden sonra ilk satır kendiliğinden seçili olabilir: önce başka bir kayıt seçilir, böylece ilk tıklamanın yalnız seçtiği de denenir.
+    await page.click('.dynamic-table tbody tr[data-hof-key="2026/100"] td:nth-child(2)', { position: { x: 6, y: 8 } }); // ilk hücrenin solunda "Kaydı Sil" (×) belirir
+    await page.waitForFunction(() => window.HOF.selectedCase()?.key === "2026/100", null, { timeout: 10000 });
+    await page.click(phoneCell, { position: { x: 6, y: 8 } });
+    await page.waitForFunction(() => window.HOF.selectedCase()?.key === "2026/200", null, { timeout: 10000 });
+    await page.waitForTimeout(400);
+    const afterSelect = await page.evaluate(() => window.__opened.length);
+    ok(afterSelect === 0, `ilk tıklama yalnız satırı seçer (açılan ${afterSelect})`);
+    await page.click(phoneCell, { position: { x: 6, y: 8 } });
+    await page.waitForFunction(() => window.__opened.length > 0, null, { timeout: 5000 }).catch(() => null);
+    const opened = await page.evaluate(() => window.__opened);
+    ok(opened.length === 1 && opened[0] === "https://wa.me/905367715055", `seçili satırın telefon hücresine tıklayınca WhatsApp: ${JSON.stringify(opened)}`);
+    await shot(page, "a18-6b-kimlik-kolonu");
   });
 } catch (error) {
   ok(false, `senaryo yarıda kaldı: ${error.message}`);

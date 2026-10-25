@@ -1,0 +1,279 @@
+{
+ "aciklama": "245-kahin taban (d2cef7c = 2.4.4 ürün kodu) varsayılan 2.4.5 kipinin farkları, kök nedene göre (ders 38). Ham: taban-d2cef7c.log. Sınıflama kâhin anahtar adından.",
+ "toplam": {
+  "senaryo": 30,
+  "denetim": 5468,
+  "fark": 1316,
+  "bilinen": 7,
+  "okumaHatasi": 0,
+  "yakalanmayanMutasyon": 0,
+  "atlanan": [
+   "b1-5a-bayat-ve-yeniden",
+   "b1-5a-tasima",
+   "b1-5b-borc",
+   "b1-5c-rapor",
+   "b3-u2-tablo-borcu",
+   "b3f-kayit-anahtari",
+   "b3g-tablo-bag-surekliligi",
+   "b3h-dosya-no-ve-devam",
+   "b3i-devam-ayni-icerik",
+   "b3j-ayni-ad-takas",
+   "b3m-dosya-no-degisimi",
+   "b3p-ayni-ad-telefon"
+  ]
+ },
+ "siniflar": {
+  "M6-K6.2 hareket alanı yok (remaining/dueDate/expectedDate)": 807,
+  "M6-K6.3 cari kalemi yok (/dues account|, Vade Takip)": 246,
+  "M4 tablo tutar kalemi duruyor (/dues, Vade Takip, Projeksiyon)": 141,
+  "M3 vekil: takvim kaleminde tablo Kalan Borç (debt) duruyor": 42,
+  "M6-K6.1 400 yok (önce / biçimsiz tarih kabul) + zincir (bakiye, FIFO fatura açığı)": 33,
+  "M1 kayıt tahsilatı POST/PUT 200 (410 + case-payments-closed yok) + zincir (Kasa, A 602, Tablodaki Kişiler)": 32,
+  "M2 Tablodan Aktar 200 (410 + table-transfer-closed yok) + zincir (kart, bakiye, taksit dışı)": 15
+ },
+ "senaryolar": {
+  "b2-ux18-karsiliksiz": {
+   "denetim": 115,
+   "fark": 0,
+   "bilinen": 0,
+   "siniflar": {}
+  },
+  "b2-ux18-retler": {
+   "denetim": 91,
+   "fark": 0,
+   "bilinen": 0,
+   "siniflar": {}
+  },
+  "b2-ux18-sira": {
+   "denetim": 96,
+   "fark": 0,
+   "bilinen": 0,
+   "siniflar": {}
+  },
+  "b2-ux18-temel": {
+   "denetim": 198,
+   "fark": 0,
+   "bilinen": 0,
+   "siniflar": {}
+  },
+  "b3b-k1-k4-donem-raporlar": {
+   "denetim": 54,
+   "fark": 16,
+   "bilinen": 0,
+   "siniflar": {
+    "M3 vekil: takvim kaleminde tablo Kalan Borç (debt) duruyor": 5,
+    "M4 tablo tutar kalemi duruyor (/dues, Vade Takip, Projeksiyon)": 11
+   }
+  },
+  "b3c-k2-donem-ayni-no": {
+   "denetim": 37,
+   "fark": 10,
+   "bilinen": 0,
+   "siniflar": {
+    "M3 vekil: takvim kaleminde tablo Kalan Borç (debt) duruyor": 1,
+    "M4 tablo tutar kalemi duruyor (/dues, Vade Takip, Projeksiyon)": 9
+   }
+  },
+  "b3d-c3-kisi-gruplama": {
+   "denetim": 69,
+   "fark": 0,
+   "bilinen": 0,
+   "siniflar": {}
+  },
+  "b3e-vergi-sutunu": {
+   "denetim": 30,
+   "fark": 0,
+   "bilinen": 0,
+   "siniflar": {}
+  },
+  "b3k-vergi-tek-kolon": {
+   "denetim": 34,
+   "fark": 11,
+   "bilinen": 0,
+   "siniflar": {
+    "M3 vekil: takvim kaleminde tablo Kalan Borç (debt) duruyor": 3,
+    "M4 tablo tutar kalemi duruyor (/dues, Vade Takip, Projeksiyon)": 8
+   }
+  },
+  "b3n-borc-kolonu-kisi-ozniteligi": {
+   "denetim": 38,
+   "fark": 7,
+   "bilinen": 0,
+   "siniflar": {
+    "M3 vekil: takvim kaleminde tablo Kalan Borç (debt) duruyor": 1,
+    "M4 tablo tutar kalemi duruyor (/dues, Vade Takip, Projeksiyon)": 6
+   }
+  },
+  "b3o-seyrek-kalan": {
+   "denetim": 41,
+   "fark": 14,
+   "bilinen": 0,
+   "siniflar": {
+    "M3 vekil: takvim kaleminde tablo Kalan Borç (debt) duruyor": 4,
+    "M4 tablo tutar kalemi duruyor (/dues, Vade Takip, Projeksiyon)": 10
+   }
+  },
+  "b3q-takvim-kalemi": {
+   "denetim": 46,
+   "fark": 17,
+   "bilinen": 0,
+   "siniflar": {
+    "M3 vekil: takvim kaleminde tablo Kalan Borç (debt) duruyor": 6,
+    "M4 tablo tutar kalemi duruyor (/dues, Vade Takip, Projeksiyon)": 11
+   }
+  },
+  "b3r-kalan-sifir-eksi": {
+   "denetim": 34,
+   "fark": 9,
+   "bilinen": 0,
+   "siniflar": {
+    "M3 vekil: takvim kaleminde tablo Kalan Borç (debt) duruyor": 2,
+    "M4 tablo tutar kalemi duruyor (/dues, Vade Takip, Projeksiyon)": 7
+   }
+  },
+  "b3s-soz-tutari-kalemi": {
+   "denetim": 32,
+   "fark": 9,
+   "bilinen": 0,
+   "siniflar": {
+    "M3 vekil: takvim kaleminde tablo Kalan Borç (debt) duruyor": 2,
+    "M4 tablo tutar kalemi duruyor (/dues, Vade Takip, Projeksiyon)": 7
+   }
+  },
+  "b3t-sozlesme-tutari": {
+   "denetim": 40,
+   "fark": 13,
+   "bilinen": 0,
+   "siniflar": {
+    "M3 vekil: takvim kaleminde tablo Kalan Borç (debt) duruyor": 4,
+    "M4 tablo tutar kalemi duruyor (/dues, Vade Takip, Projeksiyon)": 9
+   }
+  },
+  "b3u-sozlesme-tarihi-soz-basliklari": {
+   "denetim": 39,
+   "fark": 11,
+   "bilinen": 0,
+   "siniflar": {
+    "M3 vekil: takvim kaleminde tablo Kalan Borç (debt) duruyor": 3,
+    "M4 tablo tutar kalemi duruyor (/dues, Vade Takip, Projeksiyon)": 8
+   }
+  },
+  "b3v-taahhut-soz-miktari": {
+   "denetim": 42,
+   "fark": 13,
+   "bilinen": 0,
+   "siniflar": {
+    "M3 vekil: takvim kaleminde tablo Kalan Borç (debt) duruyor": 4,
+    "M4 tablo tutar kalemi duruyor (/dues, Vade Takip, Projeksiyon)": 9
+   }
+  },
+  "b3w-yalniz-soz-tutari": {
+   "denetim": 42,
+   "fark": 13,
+   "bilinen": 0,
+   "siniflar": {
+    "M3 vekil: takvim kaleminde tablo Kalan Borç (debt) duruyor": 2,
+    "M4 tablo tutar kalemi duruyor (/dues, Vade Takip, Projeksiyon)": 11
+   }
+  },
+  "b3x-yalin-soz-ve-tutar": {
+   "denetim": 46,
+   "fark": 11,
+   "bilinen": 0,
+   "siniflar": {
+    "M3 vekil: takvim kaleminde tablo Kalan Borç (debt) duruyor": 3,
+    "M4 tablo tutar kalemi duruyor (/dues, Vade Takip, Projeksiyon)": 8
+   }
+  },
+  "b3y-taahhut-alacak-bakiye": {
+   "denetim": 38,
+   "fark": 11,
+   "bilinen": 7,
+   "siniflar": {
+    "M3 vekil: takvim kaleminde tablo Kalan Borç (debt) duruyor": 2,
+    "M4 tablo tutar kalemi duruyor (/dues, Vade Takip, Projeksiyon)": 9
+   }
+  },
+  "b5-u1-nihai-tuketici": {
+   "denetim": 34,
+   "fark": 0,
+   "bilinen": 0,
+   "siniflar": {}
+  },
+  "c1-kayit-tahsilat-kapisi": {
+   "denetim": 165,
+   "fark": 32,
+   "bilinen": 0,
+   "siniflar": {
+    "M1 kayıt tahsilatı POST/PUT 200 (410 + case-payments-closed yok) + zincir (Kasa, A 602, Tablodaki Kişiler)": 32
+   }
+  },
+  "c2-tablodan-aktar-kapisi": {
+   "denetim": 129,
+   "fark": 25,
+   "bilinen": 0,
+   "siniflar": {
+    "M2 Tablodan Aktar 200 (410 + table-transfer-closed yok) + zincir (kart, bakiye, taksit dışı)": 15,
+    "M4 tablo tutar kalemi duruyor (/dues, Vade Takip, Projeksiyon)": 10
+   }
+  },
+  "c4-uyari-kapisi": {
+   "denetim": 53,
+   "fark": 8,
+   "bilinen": 0,
+   "siniflar": {
+    "M4 tablo tutar kalemi duruyor (/dues, Vade Takip, Projeksiyon)": 8
+   }
+  },
+  "c6-cari-vade-fifo": {
+   "denetim": 775,
+   "fark": 389,
+   "bilinen": 0,
+   "siniflar": {
+    "M6-K6.2 hareket alanı yok (remaining/dueDate/expectedDate)": 285,
+    "M6-K6.3 cari kalemi yok (/dues account|, Vade Takip)": 104
+   }
+  },
+  "c6b-cari-vade-dogrulama": {
+   "denetim": 85,
+   "fark": 58,
+   "bilinen": 0,
+   "siniflar": {
+    "M6-K6.1 400 yok (önce / biçimsiz tarih kabul) + zincir (bakiye, FIFO fatura açığı)": 26,
+    "M6-K6.2 hareket alanı yok (remaining/dueDate/expectedDate)": 18,
+    "M6-K6.3 cari kalemi yok (/dues account|, Vade Takip)": 14
+   }
+  },
+  "rastgele-ux18-1": {
+   "denetim": 764,
+   "fark": 0,
+   "bilinen": 0,
+   "siniflar": {}
+  },
+  "rastgele-s1-1": {
+   "denetim": 819,
+   "fark": 355,
+   "bilinen": 0,
+   "siniflar": {
+    "M6-K6.1 400 yok (önce / biçimsiz tarih kabul) + zincir (bakiye, FIFO fatura açığı)": 7,
+    "M6-K6.2 hareket alanı yok (remaining/dueDate/expectedDate)": 273,
+    "M6-K6.3 cari kalemi yok (/dues account|, Vade Takip)": 75
+   }
+  },
+  "rastgele-ux18-2": {
+   "denetim": 810,
+   "fark": 0,
+   "bilinen": 0,
+   "siniflar": {}
+  },
+  "rastgele-s1-2": {
+   "denetim": 672,
+   "fark": 284,
+   "bilinen": 0,
+   "siniflar": {
+    "M6-K6.2 hareket alanı yok (remaining/dueDate/expectedDate)": 231,
+    "M6-K6.3 cari kalemi yok (/dues account|, Vade Takip)": 53
+   }
+  }
+ }
+}

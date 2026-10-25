@@ -1,0 +1,32 @@
+{
+  "ad": "245-kahin-ud/tohum1-30-islem120",
+  "komut": "npm run test:kahin-cari -- --tohum 1-30 --islem 120 --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kahin-ud/cikti",
+  "commit": "37bdf4dc1511c90df06b84741e387ce8b41c71f5",
+  "dal": "is/kahin-ud",
+  "kirli": 4,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T01:58:55.619Z",
+  "sure_sn": 738.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 103850,
+    "gecen": 103850,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/245-kahin-ud/tohum1-30-islem120.log",
+  "klasor": "/home/user/wt/kahin-ud",
+  "ham_cikti_sha256": "ddc096fb36e7327c62a9033f760d30e2321185aba88cfc54604362016165bd59",
+  "ham_cikti_bayt": 22485
+}

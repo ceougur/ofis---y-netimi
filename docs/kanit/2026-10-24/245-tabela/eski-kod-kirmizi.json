@@ -1,0 +1,58 @@
+{
+  "ad": "245-tabela/eski-kod-kirmizi",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-tabela/eski-d2cef7c && node --test test/tabela-adi-245.test.mjs",
+  "commit": "d2cef7ce21b0776e2767f8fb610c9be8a4159f5d",
+  "dal": "is/tabela",
+  "kirli": 16,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T16:50:09.232Z",
+  "sure_sn": 1.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 1,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.5 madde 6c: Tabela Adı ve Rapor ve Ekstre Başlığı › Yalnız Tabela Adı: bütün rapor / ekstre PDF + Excel başlığı Tabela Adı; unvan başlıkta yok; kaydedilip yeniden okununca dolu",
+      "konum": "test/tabela-adi-245.test.mjs:108:3",
+      "hata": "kayıtlı ayar yok: boş + Yalnız Tabela Adı · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.4.5 madde 6c: Tabela Adı ve Rapor ve Ekstre Başlığı › Tabela Adı ve Firma Bilgileri: Tabela Adı + unvan + VKN · Vergi Dairesi + adres; Özet sayfasında da",
+      "konum": "test/tabela-adi-245.test.mjs:128:3",
+      "hata": "cari PDF başlığı: Merkez Ofis | Cari Ekstre · Ayşe Demir | Cari No 1 · Müşteri | Oluşturma: 24.10.2026 16:50 | Hazırlayan: Ofis yöneticisi | Borç Toplamı | 3.100,00 TL | Alacak Toplamı | 400,00 TL | Bakiye | 2.700,00 TL borçlu | Taksitlerden Kalan (bakiyeye · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.5 madde 6c: Tabela Adı ve Rapor ve Ekstre Başlığı › YASAL BELGE DEĞİŞMEZ: fatura PDF'i ve makbuz tabela açıkken de unvanla; Tabela Adı basılmaz",
+      "konum": "test/tabela-adi-245.test.mjs:140:3",
+      "hata": "ön koşul: tabela açık (rapor başlığında görünüyor) · + actual - expected · + 'Merkez Ofis' (beklenen Yıldız Market, gelen Merkez Ofis)"
+    },
+    {
+      "ad": "2.4.5 madde 6c: Tabela Adı ve Rapor ve Ekstre Başlığı › kısmi kayıt (reportHeader yok) ayarı silmez; geçersiz seçim ve uzun ad 400 (ayar değişmez); yetkisiz kişi 403",
+      "konum": "test/tabela-adi-245.test.mjs:150:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.4.5 madde 6c: Tabela Adı ve Rapor ve Ekstre Başlığı › iki şirket ayrı ayar: 002'nin Tabela Adı 001'in raporuna sızmaz; boşaltınca 001 bugünkü başlığa döner",
+      "konum": "test/tabela-adi-245.test.mjs:163:3",
+      "hata": "yeni şirket ayarı boş başlar · + actual - expected · + undefined"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-24/245-tabela/eski-kod-kirmizi.log",
+  "klasor": "/home/user/wt/tabela",
+  "ham_cikti_sha256": "89d53bd0959fbdd6a3bc191edc86b4eb61aa00f3df911730588b871997081929",
+  "ham_cikti_bayt": 8330
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "245-goc/tatbikat-245",
+  "komut": "node --disable-warning=ExperimentalWarning tools/m30-goc.mjs tatbikat-245 --kok /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-goc-245/kok",
+  "commit": "6e58c0a7890889b4f38601f9f2b952de1298adb4",
+  "dal": "is/goc-245",
+  "kirli": 5,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T19:39:12.435Z",
+  "sure_sn": 167.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 19,
+    "gecen": 19,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-goc/tatbikat-245.log",
+  "klasor": "/home/user/wt/goc-245",
+  "ham_cikti_sha256": "680fb4cf5224ab2ad93e5c4dea06572fbf6c4757c253da821a21d654aa6ebc0a",
+  "ham_cikti_bayt": 2398
+}

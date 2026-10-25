@@ -1,0 +1,38 @@
+{
+  "ad": "245-g8-tek-gecis/kirmizi-eski-6992e59",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/kapama-tek-gecis-245.test.mjs",
+  "commit": "6992e5989c7cbd08de573b56156397a60a5a7b58",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T20:37:53.825Z",
+  "sure_sn": 1.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 3,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı aynı kapama geçişinden; sonuç cari başına yolla aynı › tek geçiş: yazımdan sonra iki harita için carilerin defteri BİR KEZ kurulur; ikinci çağrılar önbellekten",
+      "konum": "test/kapama-tek-gecis-245.test.mjs:110:3",
+      "hata": "elle satırlar + fatura durumları için allLedgers 2 kez (1 beklenir) · 2 !== 1 (beklenen 1, gelen 2)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/d1-kapama/docs/kanit/2026-10-24/245-g8-tek-gecis/kirmizi-eski-6992e59.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-g8-tek-gecis/eski-6992e59",
+  "ham_cikti_sha256": "af4242f141ab58a85ca13c981959c96d41673b386975f48b14933243436a6389",
+  "ham_cikti_bayt": 3093
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "245-pil-karti/birim-komsu",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-arayuz.test.mjs test/banka-210-nakit-akis-k10.test.mjs test/ebelge-240-bitis-turu.test.mjs test/ebelge-244-secilenleri-gonder.test.mjs test/esmm-acik-244.test.mjs test/form-izolasyon.test.mjs test/gg243-dar-kontrol-gonderim.test.mjs test/gg243-dar2-gonderim.test.mjs test/gg243-gonderim.test.mjs test/nakit-akis-ileri-tarihli-yol.test.mjs test/netten-brute-244.test.mjs test/uiux-244-ux9.test.mjs test/vade-takip-kaynak-yetki-210.test.mjs test/platform-tasinabilirlik.test.mjs test/lisans-servisi-izolasyonu.test.mjs",
+  "commit": "26d9d795804c65fa4b871689e043d3c38b8d35ba",
+  "dal": "is/pil-karti",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-24T17:12:49.776Z",
+  "sure_sn": 199.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 149,
+    "gecen": 149,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-24/245-pil-karti/birim-komsu.log",
+  "klasor": "/home/user/wt/pil-karti",
+  "ham_cikti_sha256": "defc64799e95d3943c0af52cf65712350a00b97f7b76463a61a22c6d3639d593",
+  "ham_cikti_bayt": 52749
+}
