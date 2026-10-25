@@ -1,0 +1,551 @@
+[
+ {
+  "id": "M1a",
+  "desc": "classifyLine: bağlı Ödeme yükümlülük değil (eski)",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 1,
+  "failed": [
+   "müşteriye bağlı Ödeme (çıkış) alacak tarafında yükümlülük; tedarikçiden bağlı Tahsilat (giriş) borç tarafında yükümlülük"
+  ],
+  "sn": 8.1
+ },
+ {
+  "id": "M1b",
+  "desc": "classifyLine: bağlı Tahsilat yükümlülük değil",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 1,
+  "failed": [
+   "müşteriye bağlı Ödeme (çıkış) alacak tarafında yükümlülük; tedarikçiden bağlı Tahsilat (giriş) borç tarafında yükümlülük"
+  ],
+  "sn": 9.0
+ },
+ {
+  "id": "M2",
+  "desc": "adım R yalnız iade belgesini eşler (stok iadesi eşleşmez)",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 18,
+  "failed": [
+   "v2.4.5 verisi: göç boş bağ ekler, para aynı; fatura açıkları iade kadar döner (bağsız geri ödeme); Düzelt ile bağlamak sayıları değiştirmez; geri dönüş v2.4.5 ile açılır",
+   "bağlı: fatura 500 ve borç 300 açık kalır (Σ 800 = bakiye); geri ödeme kapandı",
+   "kısmi: 100 bağlı geri ödeme → iadenin 200'ü en eski açık borcu (fatura) kapatır",
+   "bağsız (seçilmedi; BAŞ MİMAR KARARI 25.10): yükümlülüklerden artan Ödeme, B'yi kapatmış iadenin geri ödemesi sayılır — B 500, borç 300 (Σ 800 = bakiye; 2.4.5'te B 200)",
+   "K-a: iadeden fazla (500 > 300) — 300 geri ödeme, 200 avans: B 500, borç 300; avans önce elle Alacak'ı kapatır, kalanı bakiyede",
+   "kısmi bağsız 100: iadenin 200'ü kapatıcı kalır → B 300 (Σ 600 = bakiye)"
+  ],
+  "sn": 8.6
+ },
+ {
+  "id": "M3",
+  "desc": "stok iadesinin anahtarı boş",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 20,
+  "failed": [
+   "v2.4.5 verisi: göç boş bağ ekler, para aynı; fatura açıkları iade kadar döner (bağsız geri ödeme); Düzelt ile bağlamak sayıları değiştirmez; geri dönüş v2.4.5 ile açılır",
+   "bağlı: fatura 500 ve borç 300 açık kalır (Σ 800 = bakiye); geri ödeme kapandı",
+   "kısmi: 100 bağlı geri ödeme → iadenin 200'ü en eski açık borcu (fatura) kapatır",
+   "bağsız (seçilmedi; BAŞ MİMAR KARARI 25.10): yükümlülüklerden artan Ödeme, B'yi kapatmış iadenin geri ödemesi sayılır — B 500, borç 300 (Σ 800 = bakiye; 2.4.5'te B 200)",
+   "K-a: iadeden fazla (500 > 300) — 300 geri ödeme, 200 avans: B 500, borç 300; avans önce elle Alacak'ı kapatır, kalanı bakiyede",
+   "kısmi bağsız 100: iadenin 200'ü kapatıcı kalır → B 300 (Σ 600 = bakiye)"
+  ],
+  "sn": 7.7
+ },
+ {
+  "id": "M4",
+  "desc": "bağlı geri ödemenin iade kısmı yükümlülük olmaz",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 24,
+  "failed": [
+   "v2.4.5 verisi: göç boş bağ ekler, para aynı; fatura açıkları iade kadar döner (bağsız geri ödeme); Düzelt ile bağlamak sayıları değiştirmez; geri dönüş v2.4.5 ile açılır",
+   "bağlı: fatura 500 ve borç 300 açık kalır (Σ 800 = bakiye); geri ödeme kapandı",
+   "kısmi: 100 bağlı geri ödeme → iadenin 200'ü en eski açık borcu (fatura) kapatır",
+   "bağsız (seçilmedi; BAŞ MİMAR KARARI 25.10): yükümlülüklerden artan Ödeme, B'yi kapatmış iadenin geri ödemesi sayılır — B 500, borç 300 (Σ 800 = bakiye; 2.4.5'te B 200)",
+   "K-a: iadeden fazla (500 > 300) — 300 geri ödeme, 200 avans: B 500, borç 300; avans önce elle Alacak'ı kapatır, kalanı bakiyede",
+   "kısmi bağsız 100: iadenin 200'ü kapatıcı kalır → B 300 (Σ 600 = bakiye)"
+  ],
+  "sn": 8.4
+ },
+ {
+  "id": "M5",
+  "desc": "bağlı geri ödeme yanlış tarafta",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 18,
+  "failed": [
+   "v2.4.5 verisi: göç boş bağ ekler, para aynı; fatura açıkları iade kadar döner (bağsız geri ödeme); Düzelt ile bağlamak sayıları değiştirmez; geri dönüş v2.4.5 ile açılır",
+   "bağlı: fatura 500 ve borç 300 açık kalır (Σ 800 = bakiye); geri ödeme kapandı",
+   "kısmi: 100 bağlı geri ödeme → iadenin 200'ü en eski açık borcu (fatura) kapatır",
+   "K-a: iadesi silinmiş bağlı geri ödemenin kalanı 0 → tamamı avans (yükümlülük değil); B 500",
+   "K-a: iadeden fazla (500 > 300) — 300 geri ödeme, 200 avans: B 500, borç 300; avans önce elle Alacak'ı kapatır, kalanı bakiyede",
+   "en eski iade önce ve açık bağ önce: R1 300 açık bağla geri ödendi, bağsız 100 R2'nin (200) geri ödemesi → R2'nin 100'ü kapatıcı → B 400 (Σ 700)"
+  ],
+  "sn": 8.7
+ },
+ {
+  "id": "Ka1",
+  "desc": "K-a: iadeden fazlası da geri ödeme (avans değil)",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 3,
+  "failed": [
+   "K-a: iadesi silinmiş bağlı geri ödemenin kalanı 0 → tamamı avans (yükümlülük değil); B 500",
+   "K-a: iadeden fazla (500 > 300) — 300 geri ödeme, 200 avans: B 500, borç 300; avans önce elle Alacak'ı kapatır, kalanı bakiyede",
+   "iade belgesinin kendi geri ödemesi (100) kalanı düşürür: cari kartından bağlanan 250'nin 200'ü geri ödeme, 50'si avans (K-a); B 500"
+  ],
+  "sn": 9.2
+ },
+ {
+  "id": "Ka2",
+  "desc": "K-a: avans kaybolur (bağsız ödeme olmaz)",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 2,
+  "failed": [
+   "K-a: iadeden fazla (500 > 300) — 300 geri ödeme, 200 avans: B 500, borç 300; avans önce elle Alacak'ı kapatır, kalanı bakiyede",
+   "önce kendi tarafı (K-b): elle Alacak 100 kapanır, artan 200 iadenin geri ödemesi → B 400, Alacak 0 (Σ 700 = bakiye)"
+  ],
+  "sn": 8.1
+ },
+ {
+  "id": "Ka3",
+  "desc": "K-a: iade belgesinin kendi geri ödemesi kalandan düşmez",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 1,
+  "failed": [
+   "iade belgesinin kendi geri ödemesi (100) kalanı düşürür: cari kartından bağlanan 250'nin 200'ü geri ödeme, 50'si avans (K-a); B 500"
+  ],
+  "sn": 8.1
+ },
+ {
+  "id": "Kb1",
+  "desc": "K-b: açık iade sıraya girmez",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 3,
+  "failed": [
+   "açık iade (10-01) elle Alacak'tan (10-05) eski: Ödeme 300 önce iadeyi kapatır → Alacak 200 açık kalır (eski kural: Alacak kapanıyordu)",
+   "Tahsilat simetriği: açık Alış İadesi (preturn) elle Borç'tan eski → bağsız Tahsilat önce iadeyi kapatır, borç açık kalır",
+   "K-b: iadeye bağlanmamış Ödeme açık iade belgesi (eski) ile elle Alacak (yeni) arasında en eskiden: iade açığı 0, Alacak 200 açık (eski kural: Alacak 0, iade açığı 200)"
+  ],
+  "sn": 8.1
+ },
+ {
+  "id": "Kb2",
+  "desc": "K-b: açık iade tarih sırasına değil sona girer",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 3,
+  "failed": [
+   "açık iade (10-01) elle Alacak'tan (10-05) eski: Ödeme 300 önce iadeyi kapatır → Alacak 200 açık kalır (eski kural: Alacak kapanıyordu)",
+   "Tahsilat simetriği: açık Alış İadesi (preturn) elle Borç'tan eski → bağsız Tahsilat önce iadeyi kapatır, borç açık kalır",
+   "K-b: iadeye bağlanmamış Ödeme açık iade belgesi (eski) ile elle Alacak (yeni) arasında en eskiden: iade açığı 0, Alacak 200 açık (eski kural: Alacak 0, iade açığı 200)"
+  ],
+  "sn": 8.4
+ },
+ {
+  "id": "Ke1",
+  "desc": "K-e: çekle geri ödeme iadeye bağlanmaz",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "KAÇTI",
+  "exit": 0,
+  "tests": 38,
+  "fail": 0,
+  "failed": [],
+  "sn": 8.0
+ },
+ {
+  "id": "Ke2",
+  "desc": "K-e: kapı iadeye bağlı evrakı bozuk sayar",
+  "file": "server/lib/integrity-scope.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 1,
+  "failed": [
+   "K-e: verilen çek (Kapatılacak Fatura: satıştan iade) iadenin geri ödemesidir — B 500; alınan çek iadeye bağlanmaz (409)"
+  ],
+  "sn": 9.5
+ },
+ {
+  "id": "Kd1",
+  "desc": "K-d: Kapatılacak Fatura iade kabul etmez (evrak formu)",
+  "file": "server/routes/accounts.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 1,
+  "failed": [
+   "K-e: verilen çek (Kapatılacak Fatura: satıştan iade) iadenin geri ödemesidir — B 500; alınan çek iadeye bağlanmaz (409)"
+  ],
+  "sn": 9.3
+ },
+ {
+  "id": "Kd2",
+  "desc": "K-d: cari formunda iade seçimi refund_of'a yönlenmez",
+  "file": "server/routes/accounts.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 3,
+  "failed": [
+   "K-d: fatura iadesi (satıştan iade belgesi) Ödeme'de Kapatılacak Fatura olarak seçilir: B 500, borç 300; bağ refund_of'ta (invoice_id boş); iadenin kapatanı bu geri ödeme",
+   "reddedilen bağlar (öbür yönler aynen, K-d): ters yön (refundOf ve Kapatılacak Fatura yolu), başka carinin iadesi, satış faturası + iade birlikte, Borç Yaz'da, peşin iade, iptal edilmiş iade",
+   "K-f: kural cari türüne bakmaz — Tedarikçi türündeki caride de satıştan iadenin geri ödemesi bağlanır (B 500)"
+  ],
+  "sn": 10.6
+ },
+ {
+  "id": "M7",
+  "desc": "seçenek kalanı iade belgesinin kendi geri ödemesini saymaz",
+  "file": "server/routes/accounts.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 1,
+  "failed": [
+   "iade belgesinin kendi geri ödemesi (100) kalanı düşürür: cari kartından bağlanan 250'nin 200'ü geri ödeme, 50'si avans (K-a); B 500"
+  ],
+  "sn": 10.5
+ },
+ {
+  "id": "M8",
+  "desc": "yön denetimi yok",
+  "file": "server/routes/accounts.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 2,
+  "failed": [
+   "reddedilen bağlar (öbür yönler aynen, K-d): ters yön (refundOf ve Kapatılacak Fatura yolu), başka carinin iadesi, satış faturası + iade birlikte, Borç Yaz'da, peşin iade, iptal edilmiş iade",
+   "tedarikçi simetriği: alıştan iade faturası + tedarikçiden bağlı Tahsilat → açık alış faturası kapanmaz"
+  ],
+  "sn": 10.5
+ },
+ {
+  "id": "M9",
+  "desc": "defter satırı bağı taşımaz",
+  "file": "server/lib/accounts.mjs",
+  "status": "KAÇTI",
+  "exit": 0,
+  "tests": 38,
+  "fail": 0,
+  "failed": [],
+  "sn": 10.7
+ },
+ {
+  "id": "M11",
+  "desc": "geri yüklemede bağ düşer",
+  "file": "server/routes/accounts.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 1,
+  "failed": [
+   "geri ödeme silinir → bağsız iade B'yi kapatır; Silinenler'den geri gelince bağ korunur"
+  ],
+  "sn": 10.1
+ },
+ {
+  "id": "M12",
+  "desc": "tedarikçiye iade nedeni yok sayılır",
+  "file": "server/routes/stock.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 5,
+  "failed": [
+   "Açık Hesap: tedarikçide Borç 'Alış iadesi'; en eski açık alış faturası kapanır; stok azalır; yevmiye B 320 / A 153 (600 yok); Kasa değişmez",
+   "Nakit / Havale: para tedarikçiden geri alınır — Kasa / banka girişi, yevmiye B 100 (102) / A 153; kart yolu 400 (hiçbir şey yazılmaz)",
+   "taksitlendirilmez; Satış Yapma yetkisi para yazdıramaz (yalnız miktar); satış yine yazdırır",
+   "Düzelt nedeni korur; Sil → Silinenler'den geri yükle 'preturn' olarak döner (alış faturası yeniden kapanır)",
+   "madde 9 ile: tedarikçi iade bedelini geri öderse (Tahsilat → Geri Ödenen İade: bu iade) alış faturası yeniden açılır; bakiye tutarlı"
+  ],
+  "sn": 9.0
+ },
+ {
+  "id": "M13",
+  "desc": "açık hesap alış iadesi 600'e (satış) yazılır",
+  "file": "server/lib/general-ledger.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 1,
+  "failed": [
+   "Açık Hesap: tedarikçide Borç 'Alış iadesi'; en eski açık alış faturası kapanır; stok azalır; yevmiye B 320 / A 153 (600 yok); Kasa değişmez"
+  ],
+  "sn": 10.6
+ },
+ {
+  "id": "M14",
+  "desc": "peşin alış iadesi 600'e yazılır",
+  "file": "server/lib/general-ledger.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 1,
+  "failed": [
+   "Nakit / Havale: para tedarikçiden geri alınır — Kasa / banka girişi, yevmiye B 100 (102) / A 153; kart yolu 400 (hiçbir şey yazılmaz)"
+  ],
+  "sn": 10.1
+ },
+ {
+  "id": "M15",
+  "desc": "geri yüklemede neden düşer",
+  "file": "server/routes/stock.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 1,
+  "failed": [
+   "Düzelt nedeni korur; Sil → Silinenler'den geri yükle 'preturn' olarak döner (alış faturası yeniden kapanır)"
+  ],
+  "sn": 9.9
+ },
+ {
+  "id": "M16",
+  "desc": "Satış Yapma yetkisi alış iadesine para yazdırır",
+  "file": "server/routes/stock.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 1,
+  "failed": [
+   "taksitlendirilmez; Satış Yapma yetkisi para yazdıramaz (yalnız miktar); satış yine yazdırır"
+  ],
+  "sn": 10.6
+ },
+ {
+  "id": "M17",
+  "desc": "tedarikçiye iade taksitlendirilir",
+  "file": "server/routes/stock.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 1,
+  "failed": [
+   "taksitlendirilmez; Satış Yapma yetkisi para yazdıramaz (yalnız miktar); satış yine yazdırır"
+  ],
+  "sn": 10.0
+ },
+ {
+  "id": "M18",
+  "desc": "kart yolu reddedilmez",
+  "file": "server/routes/stock.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 1,
+  "failed": [
+   "Nakit / Havale: para tedarikçiden geri alınır — Kasa / banka girişi, yevmiye B 100 (102) / A 153; kart yolu 400 (hiçbir şey yazılmaz)"
+  ],
+  "sn": 9.7
+ },
+ {
+  "id": "M19",
+  "desc": "Kapatılacak Fatura ile birlikte kabul",
+  "file": "server/routes/accounts.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 1,
+  "failed": [
+   "tedarikçi simetriği: alıştan iade faturası + tedarikçiden bağlı Tahsilat → açık alış faturası kapanmaz"
+  ],
+  "sn": 8.2
+ },
+ {
+  "id": "M20",
+  "desc": "modül satırı da bağ okur (kaynak denetimi yok)",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 1,
+  "failed": [
+   "bağsız Ödeme borç tarafında, bağsız Tahsilat alacak tarafında ödeme (R1c, değişmedi); Borç / Alacak Yaz yükümlülük"
+  ],
+  "sn": 9.0
+ },
+ {
+  "id": "M21",
+  "desc": "takvim önbelleği bağ değişimini görmez",
+  "file": "server/routes/accounts.mjs",
+  "status": "KAÇTI",
+  "exit": 0,
+  "tests": 38,
+  "fail": 0,
+  "failed": [],
+  "sn": 8.5
+ },
+ {
+  "id": "M23",
+  "desc": "başka carinin / olmayan iadesi kabul edilir",
+  "file": "server/routes/accounts.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 1,
+  "failed": [
+   "reddedilen bağlar (öbür yönler aynen, K-d): ters yön (refundOf ve Kapatılacak Fatura yolu), başka carinin iadesi, satış faturası + iade birlikte, Borç Yaz'da, peşin iade, iptal edilmiş iade"
+  ],
+  "sn": 10.3
+ },
+ {
+  "id": "Im1",
+  "desc": "BAŞ MİMAR: bağsız geri ödeme iadenin geri ödemesi sayılmaz (5fa544c)",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 10,
+  "failed": [
+   "v2.4.5 verisi: göç boş bağ ekler, para aynı; fatura açıkları iade kadar döner (bağsız geri ödeme); Düzelt ile bağlamak sayıları değiştirmez; geri dönüş v2.4.5 ile açılır",
+   "bağsız (seçilmedi; BAŞ MİMAR KARARI 25.10): yükümlülüklerden artan Ödeme, B'yi kapatmış iadenin geri ödemesi sayılır — B 500, borç 300 (Σ 800 = bakiye; 2.4.5'te B 200)",
+   "kısmi bağsız 100: iadenin 200'ü kapatıcı kalır → B 300 (Σ 600 = bakiye)",
+   "önce kendi tarafı (K-b): elle Alacak 100 kapanır, artan 200 iadenin geri ödemesi → B 400, Alacak 0 (Σ 700 = bakiye)",
+   "iadeden fazla bağsız 500: 300 geri ödeme, 200 avans (K-a gibi) → B 500, borç 300",
+   "en eski iade önce ve açık bağ önce: R1 300 açık bağla geri ödendi, bağsız 100 R2'nin (200) geri ödemesi → R2'nin 100'ü kapatıcı → B 400 (Σ 700)"
+  ],
+  "sn": 10.6
+ },
+ {
+  "id": "Im2",
+  "desc": "üst sınır iadenin kapattığı değil tamamı",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "KAÇTI",
+  "exit": 0,
+  "tests": 38,
+  "fail": 0,
+  "failed": [],
+  "sn": 10.9
+ },
+ {
+  "id": "Im3",
+  "desc": "yükümlülüklerden artan değil ödemenin tamamı (K-b önce gelmez)",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 1,
+  "failed": [
+   "önce kendi tarafı (K-b): elle Alacak 100 kapanır, artan 200 iadenin geri ödemesi → B 400, Alacak 0 (Σ 700 = bakiye)"
+  ],
+  "sn": 10.9
+ },
+ {
+  "id": "Im4",
+  "desc": "üst sınıra iadenin geri ödemeleri de girer",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 3,
+  "failed": [
+   "K-a: iadeden fazla (500 > 300) — 300 geri ödeme, 200 avans: B 500, borç 300; avans önce elle Alacak'ı kapatır, kalanı bakiyede",
+   "en eski iade önce ve açık bağ önce: R1 300 açık bağla geri ödendi, bağsız 100 R2'nin (200) geri ödemesi → R2'nin 100'ü kapatıcı → B 400 (Σ 700)",
+   "iade belgesinin kendi geri ödemesi (100) kalanı düşürür: cari kartından bağlanan 250'nin 200'ü geri ödeme, 50'si avans (K-a); B 500"
+  ],
+  "sn": 11.0
+ },
+ {
+  "id": "Im5",
+  "desc": "taksitli faturaya mahsup da üst sınırda (kart çelişir)",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 1,
+  "failed": [
+   "taksitli faturanın iadesi: geri ödemesi iadeye bağlanmaz (409 refund-planned; cari Ödeme iki yolla ve verilen çek), seçeneklerde yok; bağsız Ödeme taksitli faturayı açmaz (açık = kartın kalanı)"
+  ],
+  "sn": 11.1
+ },
+ {
+  "id": "Im6",
+  "desc": "en yeni iade önce",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "KAÇTI",
+  "exit": 0,
+  "tests": 38,
+  "fail": 0,
+  "failed": [],
+  "sn": 9.8
+ },
+ {
+  "id": "Im7",
+  "desc": "bağsız olmayan para (iade notu, bağlı) da geri ödeme sayılır",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "KAÇTI",
+  "exit": 0,
+  "tests": 38,
+  "fail": 0,
+  "failed": [],
+  "sn": 8.6
+ },
+ {
+  "id": "Im8",
+  "desc": "taksitli faturanın iadesi seçeneklerde",
+  "file": "server/routes/accounts.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 1,
+  "failed": [
+   "taksitli faturanın iadesi: geri ödemesi iadeye bağlanmaz (409 refund-planned; cari Ödeme iki yolla ve verilen çek), seçeneklerde yok; bağsız Ödeme taksitli faturayı açmaz (açık = kartın kalanı)"
+  ],
+  "sn": 8.5
+ },
+ {
+  "id": "Im9",
+  "desc": "taksitli faturanın iadesine cari bağı kurulur",
+  "file": "server/routes/accounts.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 1,
+  "failed": [
+   "taksitli faturanın iadesi: geri ödemesi iadeye bağlanmaz (409 refund-planned; cari Ödeme iki yolla ve verilen çek), seçeneklerde yok; bağsız Ödeme taksitli faturayı açmaz (açık = kartın kalanı)"
+  ],
+  "sn": 9.2
+ },
+ {
+  "id": "Im10",
+  "desc": "taksitli faturanın iadesine evrak bağı kurulur",
+  "file": "server/routes/accounts.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 38,
+  "fail": 1,
+  "failed": [
+   "taksitli faturanın iadesi: geri ödemesi iadeye bağlanmaz (409 refund-planned; cari Ödeme iki yolla ve verilen çek), seçeneklerde yok; bağsız Ödeme taksitli faturayı açmaz (açık = kartın kalanı)"
+  ],
+  "sn": 9.0
+ }
+]

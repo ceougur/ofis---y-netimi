@@ -7,6 +7,8 @@
 // "KARAR — 5 DK YETKİSİYLE UYGULANDI", 25.10.2026): K-d Ödeme'de "Kapatılacak Fatura" olarak müşteriye ait İADE seçilir (öbür yönler aynen reddedilir); K-c tedarikçinin
 // Tahsilat ile geri ödemesi alış iadesine bağlanır; K-a yalnız iade kadarı geri ödeme, fazlası avans (alacak tarafında yükümlülük değil); K-b iadeye bağlanmamış
 // Ödeme açık iadeler ve elle Alacak arasında TEK FIFO (en eskiden); K-e her ödeme yolu (nakit, havale, kart, çek) geri ödeme sayılır; K-f cari türüne bakılmaz.
+// BAŞ MİMAR KARARI (ana oturum, 25.10.2026, DB1 metninin düz "Ödeme" örneğinden; kâhin c8 BULGU'ları): bağsız müşteriye Ödeme / tedarikçiden Tahsilat önce K-b ile
+// açık iadeleri ve kendi tarafını kapatır; artanı, alacağı bir faturayı / borcu kapatmış iadenin (en eski önce) geri ödemesi sayılır (Σ açık = bakiye); açık bağ önce.
 // Cari bakiye, Kasa ve yevmiye DEĞİŞMEZ. Beklenen sayılar programdan değil, bu metinlerden elle (ders 5).
 // "Nasıl bozulur?": bağ yok sayılır (eski); bağ yanlış tarafta (Tahsilat → satıştan iade); geri ödeme iadeden fazla (fazlası avans olmalı, reddedilmemeli); başka
 // carinin iadesi; Kapatılacak Fatura ile birlikte; kısmi geri ödeme; bağ sonradan eklenir / kaldırılır (bakiye, Kasa, mizan aynı kalmalı); geri ödeme silinip geri
@@ -68,9 +70,9 @@ describe("DB1 settleLedger (saf): faturasız stok iadesinin bağlı geri ödemes
     assert.equal(out.invoices.get("B").open, 300);
     assert.equal(out.entries.get("lD").remaining, 300);
   });
-  it("bağsız (seçilmedi): eski düzen — iade faturayı kapatır, geri ödeme açmaz (B 200)", () => {
+  it("bağsız (seçilmedi; BAŞ MİMAR KARARI 25.10): yükümlülüklerden artan Ödeme, B'yi kapatmış iadenin geri ödemesi sayılır — B 500, borç 300 (Σ 800 = bakiye; 2.4.5'te B 200)", () => {
     const out = settleLedger({ lines: [...base, refund({})], invoices, today: TODAY });
-    assert.equal(out.invoices.get("B").open, 200);
+    assert.deepEqual([out.invoices.get("B").open, out.entries.get("lD").remaining], [500, 300]);
   });
   it("K-a: iadesi silinmiş bağlı geri ödemenin kalanı 0 → tamamı avans (yükümlülük değil); B 500", () => {
     const out = settleLedger({ lines: [base[0], base[1], refund({ refundOf: "smove-1" })], invoices, today: TODAY });
@@ -84,6 +86,122 @@ describe("DB1 settleLedger (saf): faturasız stok iadesinin bağlı geri ödemes
     const credit = { id: "lA", origin: "account", kind: "credit", date: "2026-09-28", at: "2026-09-28T10:00:00", debit: 0, credit: 150 };
     out = settleLedger({ lines: [...base, credit, over], invoices, today: TODAY });
     assert.deepEqual([out.invoices.get("B").open, out.entries.get("lA").remaining], [500, 0], "avans 200: elle Alacak 150 kapandı (50 bakiyede)");
+  });
+});
+
+// BAŞ MİMAR KARARI (ana oturum, 25.10.2026; önceden yazılmış metinden — docs/2.4.5-IS-LISTESI.md DB1: örnek DÜZ cari "Ödeme" ile kurulur, doğru sonuç 800;
+// değişmez Σ açık = cari bakiye): bağsız müşteriye Ödeme (tedarikçiden bağsız Tahsilat simetrisi) önce K-b ile açık iadeleri / kendi tarafının yükümlülüklerini
+// kapatır; artanı, alacağı bir faturayı / borcu kapatmış iadenin (en eski önce) geri ödemesi sayılır; iade o kadar kapatıcı olmaktan çıkar. Açık bağ önceliklidir.
+// Beklenenler karar metninden elle (ders 5, 40).
+describe("BAŞ MİMAR KARARI settleLedger (saf): bağsız geri ödeme, faturayı / borcu kapatmış iadenin geri ödemesi sayılır", () => {
+  const invoices = [{ id: "B", kind: "sale", status: "issued", payable: 500, dueDate: "2026-09-30", issuedAt: "2026-09-20T10:00:00" }];
+  const at = date => ({ date, at: `${date}T10:00:00` });
+  const lB = { id: "lB", origin: "invoice", kind: "debt", sourceId: "B", ...at("2026-09-20"), debit: 500, credit: 0 };
+  const lD = { id: "lD", origin: "account", kind: "debt", ...at("2026-09-25"), debit: 300, credit: 0 };
+  const ret = (id, date, amount) => ({ id, origin: "stock", kind: "credit", sourceId: `smove-${id}`, stockReason: "return", ...at(date), debit: 0, credit: amount });
+  const pay = (id, date, amount, extra = {}) => ({ id, origin: "account", kind: "out", ...at(date), debit: amount, credit: 0, ...extra });
+  const run = lines => settleLedger({ lines, invoices, today: TODAY });
+  it("kısmi bağsız 100: iadenin 200'ü kapatıcı kalır → B 300 (Σ 600 = bakiye)", () => {
+    const out = run([lB, lD, ret("r1", "2026-10-15", 300), pay("p1", "2026-10-16", 100)]);
+    assert.deepEqual([out.invoices.get("B").open, out.entries.get("lD").remaining], [300, 300]);
+  });
+  it("önce kendi tarafı (K-b): elle Alacak 100 kapanır, artan 200 iadenin geri ödemesi → B 400, Alacak 0 (Σ 700 = bakiye)", () => {
+    const credit = { id: "lA", origin: "account", kind: "credit", ...at("2026-10-14"), debit: 0, credit: 100 };
+    const out = run([lB, lD, credit, ret("r1", "2026-10-15", 300), pay("p1", "2026-10-16", 300)]);
+    assert.deepEqual([out.invoices.get("B").open, out.entries.get("lD").remaining, out.entries.get("lA").remaining], [400, 300, 0]);
+  });
+  it("iadeden fazla bağsız 500: 300 geri ödeme, 200 avans (K-a gibi) → B 500, borç 300", () => {
+    const out = run([lB, lD, ret("r1", "2026-10-15", 300), pay("p1", "2026-10-16", 500)]);
+    assert.deepEqual([out.invoices.get("B").open, out.entries.get("lD").remaining], [500, 300]);
+  });
+  it("en eski iade önce ve açık bağ önce: R1 300 açık bağla geri ödendi, bağsız 100 R2'nin (200) geri ödemesi → R2'nin 100'ü kapatıcı → B 400 (Σ 700)", () => {
+    const lines = [lB, lD, ret("r1", "2026-10-10", 300), ret("r2", "2026-10-12", 200), pay("p1", "2026-10-16", 300, { refundOf: "smove-r1" }), pay("p2", "2026-10-17", 100)];
+    const out = run(lines);
+    assert.deepEqual([out.invoices.get("B").open, out.entries.get("lD").remaining], [400, 300]);
+    // Bağsız iki ödeme: en eski iade (R1 300) önce, sonra R2 → ikisi de kapatıcı değil: B 500, borç 300 (Σ 800).
+    const both = run([lB, lD, ret("r1", "2026-10-10", 300), ret("r2", "2026-10-12", 200), pay("p1", "2026-10-16", 300), pay("p2", "2026-10-17", 200)]);
+    assert.deepEqual([both.invoices.get("B").open, both.entries.get("lD").remaining], [500, 300]);
+  });
+  it("fatura iadesi (K1 asıl faturaya mahsup): bağsız Ödeme 300 → asıl fatura A yeniden tahsilatla kapanır, B 500 açık", () => {
+    const docs = [
+      { id: "A", kind: "sale", status: "issued", payable: 1000, dueDate: "2026-09-10", issuedAt: "2026-09-01T10:00:00" },
+      ...invoices,
+      { id: "R", kind: "sale_return", status: "issued", payable: 300, originalId: "A", issuedAt: "2026-10-15T10:00:00" },
+    ];
+    const lines = [
+      { id: "lA1", origin: "invoice", kind: "debt", sourceId: "A", ...at("2026-09-01"), debit: 1000, credit: 0 },
+      { id: "lT", origin: "account", kind: "in", ...at("2026-09-05"), debit: 0, credit: 1000 },
+      lB,
+      { id: "lR", origin: "invoice", kind: "credit", sourceId: "R", ...at("2026-10-15"), debit: 0, credit: 300 },
+      pay("p1", "2026-10-16", 300),
+    ];
+    const out = settleLedger({ lines, invoices: docs, today: TODAY });
+    assert.deepEqual([out.invoices.get("A").open, out.invoices.get("B").open, out.invoices.get("R").open], [0, 500, 0]);
+  });
+  it("tedarikçi simetriği: Alış İadesi (preturn) alış faturasını kapattı, bağsız Tahsilat 200 → alış faturası P yeniden 500", () => {
+    const docs = [{ id: "P", kind: "purchase", status: "issued", payable: 500, dueDate: "2026-09-30", issuedAt: "2026-09-20T10:00:00" }];
+    const lines = [
+      { id: "lP", origin: "invoice", kind: "credit", sourceId: "P", ...at("2026-09-20"), debit: 0, credit: 500 },
+      { id: "lQ", origin: "stock", kind: "debt", sourceId: "smove-q", stockReason: "preturn", ...at("2026-10-01"), debit: 200, credit: 0 },
+      { id: "lT", origin: "account", kind: "in", ...at("2026-10-05"), debit: 0, credit: 200 },
+    ];
+    const out = settleLedger({ lines, invoices: docs, today: TODAY });
+    assert.equal(out.invoices.get("P").open, 500);
+  });
+  // Fatura iadeleri (K1): A1 peşin ödendi (bağlı), A2 açık; iadeler R1 (A1'in, eski) ve R2 (A2'nin, yeni) — iki iade de A2'yi kapatır.
+  const twoReturns = () => {
+    const docs = [
+      { id: "A1", kind: "sale", status: "issued", payable: 1000, dueDate: "2026-09-10", issuedAt: "2026-09-01T10:00:00" },
+      { id: "A2", kind: "sale", status: "issued", payable: 500, dueDate: "2026-09-12", issuedAt: "2026-09-02T10:00:00" },
+      { id: "R1", kind: "sale_return", status: "issued", payable: 300, originalId: "A1", issuedAt: "2026-10-10T10:00:00" },
+      { id: "R2", kind: "sale_return", status: "issued", payable: 200, originalId: "A2", issuedAt: "2026-10-12T10:00:00" },
+    ];
+    const lines = [
+      { id: "lA1", origin: "invoice", kind: "debt", sourceId: "A1", ...at("2026-09-01"), debit: 1000, credit: 0 },
+      { id: "lC1", origin: "invoice", kind: "in", sourceId: "A1", ...at("2026-09-01"), debit: 0, credit: 1000 },
+      { id: "lA2", origin: "invoice", kind: "debt", sourceId: "A2", ...at("2026-09-02"), debit: 500, credit: 0 },
+      { id: "lR1", origin: "invoice", kind: "credit", sourceId: "R1", ...at("2026-10-10"), debit: 0, credit: 300 },
+      { id: "lR2", origin: "invoice", kind: "credit", sourceId: "R2", ...at("2026-10-12"), debit: 0, credit: 200 },
+    ];
+    return { docs, lines };
+  };
+  it("en eski iade önce (kapatanlarda görünür): bağsız Ödeme 200 R1'in (eski) geri ödemesi — R1'in kapatanlarında, R2'ninkinde değil; A2 200 açık (Σ = bakiye)", () => {
+    const { docs, lines } = twoReturns();
+    const out = settleLedger({ lines: [...lines, pay("p1", "2026-10-16", 200)], invoices: docs, today: TODAY });
+    const closers = id => (out.invoices.get(id).closers || []).map(row => row.id);
+    assert.deepEqual([closers("R1").includes("p1"), closers("R2").includes("p1")], [true, false], `R1 ${closers("R1")} · R2 ${closers("R2")}`);
+    assert.equal(out.invoices.get("A2").open, 200, "bakiye 500 − 300 − 200 + 200 = 200");
+  });
+  it("iade belgesinin kendi geri ödemesi üst sınırı düşürür: belge 100 geri ödedi, bağsız 300'ün 200'ü geri ödeme, 100 avans — geri ödeme satırı açık kalmaz", () => {
+    const { docs, lines } = twoReturns();
+    const own = { id: "lO", origin: "invoice", kind: "out", sourceId: "R1", ...at("2026-10-10"), debit: 100, credit: 0 };
+    const out = settleLedger({ lines: [...lines.filter(line => line.id !== "lR2"), own, pay("p1", "2026-10-16", 300)], invoices: docs.filter(doc => doc.id !== "R2"), today: TODAY });
+    assert.equal(out.entries.get("p1")?.remaining ?? 0, 0, "bağsız geri ödemenin geri ödeme kısmı iadeyle kapandı");
+    assert.deepEqual([out.invoices.get("A2").open, out.invoices.get("R1").open], [500, 0], "R1 tamamen geri ödendi (100 belge + 200 cari): A2 500 açık");
+  });
+  it("bağsız olmayan alacak geri ödeme sayılmaz: açık satış iadesi (para değil) Alış İadesinin kapattığı alış faturasını açmaz", () => {
+    const docs = [{ id: "P", kind: "purchase", status: "issued", payable: 500, dueDate: "2026-09-30", issuedAt: "2026-09-20T10:00:00" }];
+    const mixed = [
+      { id: "lP", origin: "invoice", kind: "credit", sourceId: "P", ...at("2026-09-20"), debit: 0, credit: 500 },
+      { id: "lQ", origin: "stock", kind: "debt", sourceId: "smove-q", stockReason: "preturn", ...at("2026-10-01"), debit: 200, credit: 0 },
+      ret("r9", "2026-10-05", 300),
+    ];
+    const out = settleLedger({ lines: mixed, invoices: docs, today: TODAY });
+    assert.equal(out.invoices.get("P").open, 300, "alış faturası 500 − Alış İadesi 200 = 300 (satış iadesi açık kalır)");
+  });
+  it("değişmez (Σ açık = bakiye) iade + bağsız Ödeme sıraları: iade önce / ödeme önce / iki iade / kısmi", () => {
+    const cases = [
+      [lB, lD, ret("r1", "2026-10-15", 300), pay("p1", "2026-10-16", 300)],
+      [lB, lD, pay("p1", "2026-10-01", 300), ret("r1", "2026-10-15", 300)],
+      [lB, lD, ret("r1", "2026-10-10", 100), ret("r2", "2026-10-11", 250), pay("p1", "2026-10-16", 200), pay("p2", "2026-10-17", 150)],
+      [lB, lD, ret("r1", "2026-10-15", 300), pay("p1", "2026-10-16", 120)],
+    ];
+    for (const lines of cases) {
+      const balance = lines.reduce((sum, line) => sum + line.debit - line.credit, 0);
+      const out = run(lines);
+      const open = out.invoices.get("B").open + out.entries.get("lD").remaining;
+      assert.equal(open, balance, `Σ açık ${open} = bakiye ${balance}: ${lines.map(line => line.id).join(", ")}`);
+    }
   });
 });
 
@@ -138,7 +256,7 @@ describe("DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ö
     return [doc.payState, doc.open];
   };
   const duesOf = async acc => (await must("takvim", api.get("/api/workspace/dues"))).items.filter(row => row.accountId === acc.id || row.person === acc.name).map(row => [row.source, row.amount]).sort();
-  const vadeOf = async acc => (await must("vade takip", api.get(`/api/workspace/overview/vade-takip?from=${day(-1100)}&to=${day(30)}`))).rows.filter(row => row.party === acc.name).map(row => [row.source, row.amount]).sort();
+  const vadeOf = async acc => (await must("vade takip", api.get(`/api/workspace/overview/vade-takip?from=${day(-2100)}&to=${day(30)}`))).rows.filter(row => row.party === acc.name).map(row => [row.source, row.amount]).sort();
   const facts = async acc => {
     const ledger = await must("defter", api.get("/api/workspace/ledger"));
     const cash = await must("kasa", api.get("/api/workspace/cash"));
@@ -148,12 +266,12 @@ describe("DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ö
   const lastEntry = acc => server.app.store.get("SELECT id FROM account_entries WHERE account_id = ? ORDER BY rowid DESC LIMIT 1", acc.id);
   const refundOfDb = id => server.app.store.get("SELECT refund_of AS refundOf FROM account_entries WHERE id = ?", id).refundOf;
   // dar2 S1 akışı (göreli günlerle): A 1.000 (t, tahsil edildi) → B 500 (t+30, vade t+40) → elle Borç 300 (t+35, vade t+50) → iade 300 (t+55) → geri ödeme
-  // 300 (t+56, testte). Bakiye 800. Fatura serisi tarih sırası ister: her kurulum bir öncekinden sonraki 60 günü kullanır (t = −960, −900, …; hepsi geçmişte).
-  let cursor = -960;
+  // 300 (t+56, testte). Bakiye 800. Fatura serisi tarih sırası ister: her kurulum bir öncekinden sonraki 60 günü kullanır (t = −1560, −1500, …; hepsi geçmişte).
+  let cursor = -1560;
   async function setup(label, { mode = "stock", docRefund = 0, type = "customer" } = {}) {
     const t = cursor;
     cursor += 60;
-    const acc = await must("cari", api.post("/api/workspace/accounts", { name: `DB1 ${label}`, type, registeredOn: day(-1000), phone: `0500 246 00 ${String((n += 1)).padStart(2, "0")}` }));
+    const acc = await must("cari", api.post("/api/workspace/accounts", { name: `DB1 ${label}`, type, registeredOn: day(-2000), phone: `0500 246 00 ${String((n += 1)).padStart(2, "0")}` }));
     const a = await must("fatura A", api.post("/api/workspace/invoices", { scenario: "goods_sale", accountId: acc.id, issueDate: day(t), lines: [{ itemId: goods.id, qty: 10, unitPrice: "100", vatRate: 0 }], payment: { rest: "open", dueDate: day(t + 10) } }));
     await must("tahsilat", api.post(`/api/workspace/accounts/${acc.id}/entries`, { kind: "in", amount: "1000", date: day(t + 5), method: "cash" }));
     const b = await must("fatura B", api.post("/api/workspace/invoices", { scenario: "goods_sale", accountId: acc.id, issueDate: day(t + 30), lines: [{ itemId: goods.id, qty: 5, unitPrice: "100", vatRate: 0 }], payment: { rest: "open", dueDate: day(t + 40) } }));
@@ -174,10 +292,13 @@ describe("DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ö
 
   it("faturasız stok Satış İadesi + bağlı Ödeme: fatura B 500 ve borç 300 açık (Σ 800 = bakiye), takvim / Vade Takip aynı; bakiye, Kasa, mizan bağla değişmez", async () => {
     const { acc, a, b, debt, target, at } = await setup("Stok");
-    // Önce bağsız (eski düzen) — sonra aynı satıra bağ eklenir: para kaydı aynı, yalnız kapama değişir.
+    // Önce bağsız — BAŞ MİMAR KARARI (25.10): artan bağsız Ödeme, B'yi kapatmış iadenin geri ödemesi sayılır (2.4.5'te B 200). Sonra aynı satıra açık bağ:
+    // para kaydı da kapama da aynı kalır (açık bağ yalnız hangi iadenin geri ödendiğini kesinleştirir).
     await must("geri ödeme (bağsız)", api.post(`/api/workspace/accounts/${acc.id}/entries`, { kind: "out", amount: "300", date: at(56), method: "cash", cashForce: true }));
     const pay = lastEntry(acc);
-    assert.deepEqual(await invoice(b), ["overdue", 200], "bağsız: eski düzen (R1c) — B 200");
+    assert.deepEqual(await invoice(b), ["overdue", 500], "bağsız: iadenin geri ödemesi sayılır — B 500 (2.4.5'te 200)");
+    assert.equal(await remaining(acc, debt.id), 300, "bağsız: vadeli borç açık");
+    assert.deepEqual(await duesOf(acc), [["account", 300], ["invoice", 500]], "bağsız: takvim / zil B 500 + borç 300");
     const before_ = await facts(acc);
     const linked = await must("bağ ekle", api.put(`/api/workspace/accounts/${acc.id}/entries/${pay.id}`, { refundOf: target }));
     assert.equal(linked.totals.balance, 800, "bakiye 1.000 + 500 + 300 − 1.000 − 300 + 300");
@@ -192,7 +313,8 @@ describe("DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ö
     assert.equal(await facts(acc), before_, "bakiye, Kasa ve mizan bağ eklenince değişmez");
     assert.deepEqual((await card(acc)).refundables, [], "iadenin tamamı geri ödendi: seçenek kalmadı");
     await must("bağı kaldır", api.put(`/api/workspace/accounts/${acc.id}/entries/${pay.id}`, { refundOf: "" }));
-    assert.deepEqual(await invoice(b), ["overdue", 200], "bağ kaldırılınca bağsız düzen");
+    assert.deepEqual(await invoice(b), ["overdue", 500], "bağ kaldırılınca bağsız: yine iadenin geri ödemesi (B 500)");
+    // Seçenek listesi yalnız açık bağları sayar (bağsız geri ödemenin geri ödeme sayılan kısmı listeye yansımaz — BİLİNEN SINIR, para etkisi yok).
     assert.deepEqual((await card(acc)).refundables.map(item => [item.id, item.refundKind, item.left]), [[target, "out", 300]], "Ödeme formunun seçeneği yeniden: iade, kalan 300");
     assert.equal(await facts(acc), before_, "bağ kaldırılınca da bakiye, Kasa ve mizan aynı");
   });
@@ -332,7 +454,7 @@ describe("DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ö
   it("K-b: iadeye bağlanmamış Ödeme açık iade belgesi (eski) ile elle Alacak (yeni) arasında en eskiden: iade açığı 0, Alacak 200 açık (eski kural: Alacak 0, iade açığı 200)", async () => {
     const t = cursor;
     cursor += 60;
-    const acc = await must("cari", api.post("/api/workspace/accounts", { name: "DB1 Tek Sıra", type: "customer", registeredOn: day(-1000), phone: "0500 246 09 99" }));
+    const acc = await must("cari", api.post("/api/workspace/accounts", { name: "DB1 Tek Sıra", type: "customer", registeredOn: day(-2000), phone: "0500 246 09 99" }));
     // A peşin ödendi (faturaya bağlı): iadenin alacağı asıl faturaya mahsup edilemez → iade belgesi açık 300 (K1).
     const a = await must("fatura A (peşin)", api.post("/api/workspace/invoices", { scenario: "goods_sale", accountId: acc.id, issueDate: day(t), lines: [{ itemId: goods.id, qty: 10, unitPrice: "100", vatRate: 0 }], payment: { cash: [{ amount: "1000", method: "cash", date: day(t) }], rest: "open", dueDate: day(t + 10) } }));
     const full = await must("A oku", api.get(`/api/workspace/invoices/${a.id}`));
@@ -345,6 +467,55 @@ describe("DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ö
     assert.equal((await must("iade oku", api.get(`/api/workspace/invoices/${ret.id}`))).open, 0, "eski açık iade önce kapandı");
     assert.equal(await remaining(acc, credit.id), 200, "yeni elle Alacak açık kalır");
     assert.equal((await card(acc)).totals.balance, -200, "bakiye 1.000 − 1.000 − 300 − 200 + 300 = Alacak 200");
+  });
+
+  it("açık bağ bağsızdan önce gelir (elle Alacak varken): bağsız Ödeme önce Alacak'ı kapatır (B 200); iadeye bağlanınca iadeyi geri öder (B 500, Alacak açık), takvim de; verilen çekte aynı (K-e)", async () => {
+    const { acc, b, target, at } = await setup("Önce Bağ");
+    const entries = `/api/workspace/accounts/${acc.id}/entries`;
+    const before_ = new Set((await card(acc)).entries.map(row => row.id));
+    const credited = await must("elle Alacak", api.post(entries, { kind: "credit", amount: "300", date: at(55) }));
+    const credit = credited.entries.find(row => !before_.has(row.id));
+    await must("bağsız Ödeme", api.post(entries, { kind: "out", amount: "300", date: at(56), method: "cash", cashForce: true }));
+    const pay = lastEntry(acc);
+    assert.deepEqual(await invoice(b), ["overdue", 200], "bağsız: K-b önce kendi tarafı — Alacak kapandı, artan yok, iade B'yi kapatır");
+    assert.deepEqual(await duesOf(acc), [["account", 300], ["invoice", 200]], "takvim: B 200 + borç 300");
+    const facts0 = await facts(acc);
+    await must("iadeye bağla", api.put(`${entries}/${pay.id}`, { refundOf: target }));
+    assert.deepEqual(await invoice(b), ["overdue", 500], "bağlı: iadenin geri ödemesi — B 500");
+    assert.equal(await remaining(acc, credit.id), 300, "elle Alacak yeniden açık (bağlı geri ödeme onu kapatmaz)");
+    assert.deepEqual(await duesOf(acc), [["account", 300], ["invoice", 500]], "takvim bağ değişimini görür: B 500 + borç 300");
+    assert.equal(await facts(acc), facts0, "bakiye, Kasa, mizan değişmez");
+    const other = await setup("Önce Bağ Çek", { mode: "invoice" });
+    const ob = new Set((await card(other.acc)).entries.map(row => row.id));
+    const oc = (await must("elle Alacak", api.post(`/api/workspace/accounts/${other.acc.id}/entries`, { kind: "credit", amount: "300", date: other.at(55) }))).entries.find(row => !ob.has(row.id));
+    await must("verilen çek (iadeye bağlı)", api.post("/api/workspace/cheques", { instrument: "cheque", direction: "out", accountId: other.acc.id, amount: 300, issueDate: other.at(56), dueDate: day(30), serialNo: "DB1-ONCE", invoiceId: other.target }));
+    assert.deepEqual(await invoice(other.b), ["overdue", 500], "çek iadeye bağlı: B 500");
+    assert.equal(await remaining(other.acc, oc.id), 300, "elle Alacak açık (çek onu kapatmaz)");
+  });
+
+  it("taksitli faturanın iadesi: geri ödemesi iadeye bağlanmaz (409 refund-planned; cari Ödeme iki yolla ve verilen çek), seçeneklerde yok; bağsız Ödeme taksitli faturayı açmaz (açık = kartın kalanı)", async () => {
+    const t = cursor;
+    cursor += 60;
+    const acc = await must("cari", api.post("/api/workspace/accounts", { name: "DB1 Taksitli", type: "customer", registeredOn: day(-2000), phone: `0500 246 00 ${String((n += 1)).padStart(2, "0")}` }));
+    const sale = await must("taksitli satış", api.post("/api/workspace/invoices", { scenario: "goods_sale", accountId: acc.id, issueDate: day(t), lines: [{ itemId: goods.id, qty: 9, unitPrice: "100", vatRate: 0 }], payment: { cash: [], cheques: [], endorse: [], rest: "installments", installments: { count: 3, firstDue: day(t + 30), everyMonths: 1 } } }));
+    const full = await must("oku", api.get(`/api/workspace/invoices/${sale.id}`));
+    assert.ok(full.planId || full.plan?.id, "ön koşul: fatura taksitli (kendi kartı var)");
+    const ret = await must("iade", api.post("/api/workspace/invoices", { kind: "sale_return", accountId: acc.id, originalId: sale.id, issueDate: day(t + 20), issueTime: "11:00", currency: "TRY", rate: 1, lines: [{ originLineId: full.lines[0].id, qty: 3 }], payment: { cash: [], cheques: [], endorse: [], rest: "open" }, force: true, cashForce: true }));
+    const planOf = async () => (await must("kart", api.get(`/api/workspace/plans/${full.planId || full.plan.id}`))).totals.remaining;
+    const before_ = [(await invoice(sale.id))[1], await planOf()];
+    assert.equal(before_[0], before_[1], "ön koşul: fatura açığı = kartın kalanı");
+    assert.deepEqual((await card(acc)).refundables, [], "taksitli faturanın iadesi Geri Ödenen İade seçeneklerinde yok");
+    const entries = `/api/workspace/accounts/${acc.id}/entries`;
+    const count = () => server.app.store.get("SELECT COUNT(*) AS n FROM account_entries WHERE account_id = ?", acc.id).n;
+    const was = count();
+    await refused("Ödeme → taksitli faturanın iadesi (Kapatılacak Fatura)", api.post(entries, { kind: "out", amount: "300", date: day(t + 21), method: "cash", cashForce: true, invoiceId: ret.id }), 409, "refund-planned");
+    await refused("Ödeme → taksitli faturanın iadesi (refundOf)", api.post(entries, { kind: "out", amount: "300", date: day(t + 21), method: "cash", cashForce: true, refundOf: ret.id }), 409, "refund-planned");
+    const cheques = () => server.app.store.get("SELECT COUNT(*) AS n FROM cheques WHERE account_id = ?", acc.id).n;
+    await refused("verilen çek → taksitli faturanın iadesi", api.post("/api/workspace/cheques", { instrument: "cheque", direction: "out", accountId: acc.id, amount: 300, issueDate: day(t + 21), dueDate: day(30), serialNo: "DB1-TK1", invoiceId: ret.id }), 409);
+    assert.deepEqual([count(), cheques()], [was, 0], "reddedilenler veri tabanına yazılmadı");
+    await must("bağsız Ödeme", api.post(entries, { kind: "out", amount: "300", date: day(t + 22), method: "cash", cashForce: true }));
+    const after_ = [(await invoice(sale.id))[1], await planOf()];
+    assert.deepEqual(after_, before_, "bağsız Ödeme taksitli faturanın açığını ve kartını değiştirmez (açık = kartın kalanı)");
   });
 
   it("tedarikçi simetriği: alıştan iade faturası + tedarikçiden bağlı Tahsilat → açık alış faturası kapanmaz", async () => {

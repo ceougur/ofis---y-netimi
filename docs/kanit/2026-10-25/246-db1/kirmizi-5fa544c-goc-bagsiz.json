@@ -1,0 +1,38 @@
+{
+  "ad": "246-db1/kirmizi-5fa544c-goc-bagsiz",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/goc-246-iade-bagi.test.mjs",
+  "commit": "5fa544cc740440f425668c8999b460fc36067d19",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T13:02:45.544Z",
+  "sure_sn": 2.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.6 madde 9 göç: v2.4.5 verisi güncel kodla (bağ yazılmaz; bağsız geri ödeme iadenin geri ödemesi sayılır, para aynı) › v2.4.5 verisi: göç boş bağ ekler, para aynı; fatura açıkları iade kadar döner (bağsız geri ödeme); Düzelt ile bağlamak sayıları değiştirmez; geri dönüş v2.4.5 ile açılır",
+      "konum": "test/goc-246-iade-bagi.test.mjs:32:3",
+      "hata": "bağsız eski geri ödeme iadenin geri ödemesi: B 500, B2 500, borç 300 (v2.4.5'te 200 / 200) · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/db1/docs/kanit/2026-10-25/246-db1/kirmizi-5fa544c-goc-bagsiz.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-db1/eski-5fa544c-wt",
+  "ham_cikti_sha256": "65499be9e833387aff4caf6bcca496b63666585ba5a79bda488a1edb6edbd479",
+  "ham_cikti_bayt": 2431
+}

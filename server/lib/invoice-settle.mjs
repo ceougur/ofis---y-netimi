@@ -235,8 +235,9 @@ export function settleLedger({ lines, invoices, links = new Map(), chequeEvents 
     const kind = byId.get(target)?.kind;
     return (kind === "sale_return" && cents(line.debit) > 0) || (kind === "purchase_return" && cents(line.credit) > 0) ? target : "";
   };
-  // K-a bölmesi: satır kimliği → { target, refund, excess (kuruş), refundSide }.
-  const splitOf = lineList => {
+  // K-a bölmesi: satır kimliği → { parts: [{ target, refund }], excess (kuruş), refundSide }. implicit (2.4.6 BAŞ MİMAR KARARI, aşağıda): bağsız paranın
+  // yükümlülüklerden artanının iadenin geri ödemesi sayılan kısımları (satır kimliği → [{ target, refund }]); açık bağdan sonra eklenir.
+  const splitOf = (lineList, implicit = new Map()) => {
     const out = new Map();
     const credit = new Map();
     for (const line of lineList) {
@@ -255,7 +256,20 @@ export function settleLedger({ lines, invoices, links = new Map(), chequeEvents 
       const left = credit.get(target) || 0;
       const refund = Math.min(amount, left);
       credit.set(target, left - refund);
-      out.set(line.id, { target, refund, excess: amount - refund, refundSide: cents(line.debit) > 0 ? "receivable" : "payable" });
+      out.set(line.id, { parts: [{ target, refund }], excess: amount - refund, refundSide: cents(line.debit) > 0 ? "receivable" : "payable" });
+    }
+    for (const line of lineList) {
+      const pieces = implicit.get(line.id);
+      if (!pieces?.length) continue;
+      const amount = cents(line.debit) || cents(line.credit);
+      const part = out.get(line.id) || { parts: [], excess: amount, refundSide: cents(line.debit) > 0 ? "receivable" : "payable" };
+      for (const piece of pieces) {
+        const refund = Math.min(piece.refund, part.excess);
+        if (!(refund > 0)) continue;
+        part.parts.push({ target: piece.target, refund });
+        part.excess -= refund;
+      }
+      out.set(line.id, part);
     }
     return out;
   };
@@ -348,8 +362,9 @@ export function settleLedger({ lines, invoices, links = new Map(), chequeEvents 
       // K-a / K-d / K-e: iadeye bağlı geri ödeme — iadenin kalanı kadarı yükümlülük (adım R, iadenin alacağıyla), fazlası bağsız ödeme (avans).
       const part = split.get(line.id);
       if (part) {
-        if (part.refundSide === side && part.refund > 0) obligations.push({ invoiceId: "", lineId: line.id, line, bornAt: born, free: part.refund, covered: new Map(), closers: [], planned: false, refundOf: part.target });
-        else if (part.refundSide !== side && part.excess > 0) pool.push({ line, owner: "", returnId: "", refundKey: "", uses: [], cover: "", amount: part.excess, left: part.excess, mode: "" });
+        if (part.refundSide === side) {
+          for (const piece of part.parts) if (piece.refund > 0) obligations.push({ invoiceId: "", lineId: line.id, line, bornAt: born, free: piece.refund, covered: new Map(), closers: [], planned: false, refundOf: piece.target });
+        } else if (part.excess > 0) pool.push({ line, owner: "", returnId: "", refundKey: "", uses: [], cover: "", amount: part.excess, left: part.excess, mode: "" });
         continue;
       }
       if (role[dueKey]) {
@@ -414,6 +429,10 @@ export function settleLedger({ lines, invoices, links = new Map(), chequeEvents 
       if (track) item.closers.push({ id: payment.line.id, date: payment.line.date, label: payment.line.label || "", note: payment.line.note || "", method: payment.line.method || "", amount: roundMoney(take / 100), mode });
       // K1: iade belgesinin alacağının nereye kullanıldığı (iade belgesinin kendi kapatanları: geri ödeme, asıl fatura, en eski borç).
       if (track && payment.returnId) payment.uses.push({ item, take, mode });
+      // 2.4.6: iade alacağının geri ödeme DIŞINDA kapattığı (asıl fatura, en eski borçlar) — bağsız geri ödemenin üst sınırı (aşağıda implicitOf). Taksitli
+      // faturaya mahsup sayılmaz: o iade faturanın kendi kartını küçültür (routes/invoices.mjs ownCard) ve cari kartı satırı kartı eşitlemez (v2.0.24 değişmezi:
+      // taksitli faturanın açığı = kartın kalanı); bu iadenin geri ödemesi taksit kartından ya da iade belgesinden girilir.
+      if (payment.refundKey && !item.refundOf && !item.planned) payment.closing = (payment.closing || 0) + take;
     };
     // Faturaya bağlı ödeme: önce açık (kapsanmamış) kısım, sonra kartların kapsadığı kısımlar.
     const closeInvoice = (items, payment, mode) => {
@@ -543,7 +562,7 @@ export function settleLedger({ lines, invoices, links = new Map(), chequeEvents 
   // K-a bölmesi bir kez; K-b: önce iki taraf açık iadesiz kapanır (iade notlarının kalanı), karşı tarafta iadeye bağlanmamış para varsa ikinci geçişte açık
   // iadeler o tarafın sırasına girer. İkinci geçiş yalnız gerektiğinde koşar (iadesiz carilerde maliyet aynı). BİLİNEN SINIR: aynı caride iki yönde de açık iade
   // ve iki yönde de bağsız para varsa açık iadelerin boyu ilk geçişten alınır (ikinci geçiş kendi notunu küçültebilir; iade belgesinin açığı 0'da kırpılır).
-  const split = splitOf(ordered);
+  let split = splitOf(ordered);
   const runAll = pseudoBySide => Object.fromEntries(["receivable", "payable"].map(side => [side, runSide(side, ordered, side === "receivable" ? coverage : new Map(), offsets, true, { split, pseudo: pseudoBySide[side] || [] })]));
   let runs = runAll({});
   const other = { receivable: "payable", payable: "receivable" };
@@ -551,6 +570,36 @@ export function settleLedger({ lines, invoices, links = new Map(), chequeEvents 
   const hasFree = side => runs[side].pool.some(item => item.amount > 0 && freeMoney(item));
   const pseudoBySide = { payable: hasFree("payable") ? openNotes("receivable") : [], receivable: hasFree("receivable") ? openNotes("payable") : [] };
   if (pseudoBySide.payable.length || pseudoBySide.receivable.length) runs = runAll(pseudoBySide);
+  // 2.4.6 BAŞ MİMAR KARARI (DB1, bağsız geri ödeme; Σ açık = cari bakiye): iadeye bağlanmamış para (müşteriye Ödeme / tedarikçiden Tahsilat, evrak dahil) önce
+  // K-b ile açık iadeleri ve kendi tarafının yükümlülüklerini kapatır; ARTANI, karşı tarafta alacağı bir faturayı / borcu kapatmış iadelerin (en eski önce) geri
+  // ödemesi sayılır — iade o kadar kapatıcı olmaktan çıkar, kapattığı açık yeniden açılır. Açık bağ (refund_of, çek bağı) önce gelir (bölmede önce düşer);
+  // üst sınır iadenin geri ödeme dışında kapattığı tutar (closing). Tarih koşulu yok (iadeden önce verilen para da sayılır). Yalnız gerektiğinde bir geçiş daha.
+  const implicitOf = () => {
+    const out = new Map();
+    for (const side of ["receivable", "payable"]) {
+      const notes = runs[other[side]].pool.filter(item => item.refundKey && item.closing > 0).map(item => ({ key: item.refundKey, cap: item.closing }));
+      if (!notes.length) continue;
+      for (const payment of runs[side].pool) {
+        if (!(payment.left > 0) || !freeMoney(payment)) continue;
+        let rest = payment.left;
+        for (const note of notes) {
+          if (rest <= 0) break;
+          const take = Math.min(rest, note.cap);
+          if (!(take > 0)) continue;
+          note.cap -= take;
+          rest -= take;
+          if (!out.has(payment.line.id)) out.set(payment.line.id, []);
+          out.get(payment.line.id).push({ target: note.key, refund: take });
+        }
+      }
+    }
+    return out;
+  };
+  const implicit = implicitOf();
+  if (implicit.size) {
+    split = splitOf(ordered, implicit);
+    runs = runAll(pseudoBySide);
+  }
   const pools = {};
   for (const side of ["receivable", "payable"]) {
     const { obligations, target, overpaid, pool } = runs[side];
@@ -559,7 +608,10 @@ export function settleLedger({ lines, invoices, links = new Map(), chequeEvents 
     for (const item of obligations) {
       if (item.invoiceId || item.pseudo) continue;
       const covered = [...item.covered.values()].reduce((sum, value) => sum + value, 0);
-      entries.set(item.lineId, { side, remaining: roundMoney(partsLeft(item) / 100), covered: roundMoney(covered / 100) });
+      // Birden çok iadeye bölünen geri ödeme satırı (açık bağ + bağsız kısmın geri ödemesi) tek satırdır: kalanlar toplanır.
+      const was = entries.get(item.lineId);
+      if (was && was.side === side && item.refundOf) entries.set(item.lineId, { side, remaining: roundMoney(was.remaining + partsLeft(item) / 100), covered: roundMoney(was.covered + covered / 100) });
+      else entries.set(item.lineId, { side, remaining: roundMoney(partsLeft(item) / 100), covered: roundMoney(covered / 100) });
     }
     for (const [invoiceId, items] of target) {
       const invoice = byId.get(invoiceId);

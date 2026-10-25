@@ -2,9 +2,10 @@
 // kopyada — test/guvenilirlik/surumler.mjs checkoutTag):
 //   v2.4.5 (gerçek kod): müşteri — fatura A 1.000 (tahsil edildi), fatura B 500, vadeli elle Borç 300, faturasız stok Satış İadesi 300 (açık hesap), iade bedeli
 //   cari kartından BAĞSIZ Ödeme 300 (v2.4.5'te bağ yolu yok); ikinci müşteri — fatura iadesi + bağsız Ödeme; bir bağsız Ödeme Silinenler'e.
-//   Güncel kod aynı veri klasöründe: göç v36 refund_of kolonunu BOŞ ekler (eski geri ödemeler bağsız kalır — kendiliğinden bağlanmaz); bakiye, mizan, Kasa, fatura
-//   açıkları, takvim v2.4.5 ile AYNI; kullanıcı eski Ödeme'yi Düzelt ile iadeye bağlayınca B 500'e döner, para kaydı değişmez; Silinenler'den dönen eski Ödeme
-//   (yükünde bağ yok) bağsız döner. Geri dönüş: aynı veri v2.4.5 ile yeniden açılır (fazla kolonu görmez), bakiye ve mizan aynı.
+//   Güncel kod aynı veri klasöründe: göç v36 refund_of kolonunu BOŞ ekler (eski satırlara bağ yazılmaz); bakiye, mizan ve Kasa v2.4.5 ile AYNI. BAŞ MİMAR KARARI
+//   (25.10): bağsız geri ödeme, faturayı kapatmış iadenin geri ödemesi sayılır → eski veride de fatura açıkları kendiliğinden düzelir (B 200 → 500, B2 200 → 500;
+//   takvim de); kullanıcı eski Ödeme'yi Düzelt ile iadeye bağlarsa sayılar değişmez; Silinenler'den dönen eski Ödeme (yükünde bağ yok) bağsız döner.
+//   Geri dönüş: aynı veri v2.4.5 ile yeniden açılır (fazla kolonu görmez), bakiye ve mizan aynı, eski kural (B 200).
 // Sahte durağan saat (ders 13); ders 30 lisans adresi.
 import assert from "node:assert/strict";
 import { mkdtempSync, rmSync } from "node:fs";
@@ -23,12 +24,12 @@ const day = offset => {
   return at.toISOString().slice(0, 10);
 };
 
-describe("2.4.6 madde 9 göç: v2.4.5 verisi güncel kodla (iade geri ödemeleri bağsız kalır; bağ elle kurulur)", { skip: tagsAvailable([OLD]) ? false : `${OLD} etiketi yok (git fetch --tags)` }, () => {
+describe("2.4.6 madde 9 göç: v2.4.5 verisi güncel kodla (bağ yazılmaz; bağsız geri ödeme iadenin geri ödemesi sayılır, para aynı)", { skip: tagsAvailable([OLD]) ? false : `${OLD} etiketi yok (git fetch --tags)` }, () => {
   const root = mkdtempSync(path.join(tmpdir(), "goc-246-iade-"));
   const dirs = { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } };
   after(() => rmSync(root, { recursive: true, force: true }));
 
-  test("v2.4.5 verisi: göç boş bağ ekler, sayılar aynı; Düzelt ile bağlanınca fatura açığı iade kadar döner; geri dönüş v2.4.5 ile açılır", async () => {
+  test("v2.4.5 verisi: göç boş bağ ekler, para aynı; fatura açıkları iade kadar döner (bağsız geri ödeme); Düzelt ile bağlamak sayıları değiştirmez; geri dönüş v2.4.5 ile açılır", async () => {
     const clock = createClock({ time: `${TODAY}T12:00:00+03:00`, fixed: true });
     const ok = async (label, promise) => {
       const res = await promise;
@@ -100,16 +101,17 @@ describe("2.4.6 madde 9 göç: v2.4.5 verisi güncel kodla (iade geri ödemeleri
       const store = current.app.store;
       assert.equal(store.get("PRAGMA user_version").user_version, LATEST_VERSION);
       assert.equal(store.get("SELECT COUNT(*) AS n FROM account_entries WHERE refund_of <> ''").n, 0, "eski satırlar bağsız (kendiliğinden bağlanmaz)");
-      assert.deepEqual(await snapshot(api), before, "bakiye, fatura açıkları, borç Kalan'ı, mizan, Kasa ve takvim v2.4.5 ile aynı");
+      const migrated = await snapshot(api);
+      assert.deepEqual([migrated.balances, migrated.trial, migrated.cash, migrated.reconciled], [before.balances, before.trial, before.cash, before.reconciled], "bakiye, mizan, Kasa v2.4.5 ile aynı");
+      assert.deepEqual([migrated.open.B, migrated.debt, migrated.open.B2, migrated.open.A2], [500, 300, 500, before.open.A2], "bağsız eski geri ödeme iadenin geri ödemesi: B 500, B2 500, borç 300 (v2.4.5'te 200 / 200)");
+      assert.deepEqual(migrated.dues.filter(row => row[0] === "c1"), [["c1", "account", 300], ["c1", "invoice", 500]], "takvim: B 500 + borç 300");
       const card1 = await ok("kart 1", api.get(`/api/workspace/accounts/${ids.c1}`));
-      assert.deepEqual(card1.refundables.map(item => [item.id, item.refundKind, item.left]), [[ids.move, "out", 300]], "eski bağsız geri ödeme iadeyi tüketmez: seçenekte kalan 300");
-      // Kullanıcı eski geri ödemeleri Düzelt ile bağlar: para kaydı aynı, yalnız kapama değişir.
+      // Seçenek listesi yalnız açık bağları sayar (BİLİNEN SINIR, para etkisi yok).
+      assert.deepEqual(card1.refundables.map(item => [item.id, item.refundKind, item.left]), [[ids.move, "out", 300]], "seçenekte kalan 300 (açık bağ yok)");
+      // Kullanıcı eski geri ödemeleri Düzelt ile bağlar: para kaydı ve kapama aynı kalır.
       await ok("eski ödemeyi bağla 1", api.put(`/api/workspace/accounts/${ids.c1}/entries/${ids.pay1}`, { refundOf: ids.move }));
       await ok("eski ödemeyi bağla 2", api.put(`/api/workspace/accounts/${ids.c2}/entries/${ids.pay2}`, { refundOf: ids.ret }));
-      const linked = await snapshot(api);
-      assert.deepEqual([linked.open.B, linked.debt, linked.open.B2], [500, 300, 500], "bağlanınca iade alacağı geri ödemeyi kapatır: B 500, B2 500, borç 300");
-      assert.deepEqual([linked.balances, linked.trial, linked.cash, linked.reconciled], [before.balances, before.trial, before.cash, before.reconciled], "bakiye, mizan, Kasa değişmez");
-      assert.deepEqual(linked.dues.filter(row => row[0] === "c1"), [["c1", "account", 300], ["c1", "invoice", 500]], "takvim: B 500 + borç 300");
+      assert.deepEqual(await snapshot(api), migrated, "açık bağ sayıları değiştirmez (bakiye, fatura açıkları, borç, mizan, Kasa, takvim)");
       // v2.4.5'te silinen geri ödeme (yükünde bağ yok) bağsız döner.
       const item = store.get("SELECT id FROM trash WHERE ref = ? ORDER BY rowid DESC LIMIT 1", ids.doomed);
       await ok("eski silineni geri yükle", api.post("/api/admin/trash/restore", { id: `trash:${item.id}` }));

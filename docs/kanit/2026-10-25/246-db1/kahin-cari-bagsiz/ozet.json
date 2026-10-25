@@ -1,0 +1,54 @@
+{
+ "kip": "2.4.6",
+ "ozet": [
+  {
+   "ad": "c8-ks8-iade-geri-odemesi",
+   "toplam": 551,
+   "fark": 44,
+   "bulgu": 24,
+   "bilinen": 0
+  },
+  {
+   "ad": "c8b-ks8-bagli-iade-odemesi",
+   "toplam": 63,
+   "fark": 6,
+   "bulgu": 5,
+   "bilinen": 0
+  },
+  {
+   "ad": "rastgele-s1-1",
+   "toplam": 613,
+   "fark": 35,
+   "bulgu": 1,
+   "bilinen": 0
+  }
+ ],
+ "degisen246": [
+  {
+   "senaryo": "c8-ks8-iade-geri-odemesi",
+   "adet": 98
+  },
+  {
+   "senaryo": "c8b-ks8-bagli-iade-odemesi",
+   "adet": 8
+  },
+  {
+   "senaryo": "rastgele-s1-1",
+   "adet": 100
+  }
+ ],
+ "farkSinifi246": {
+  "ic": 85,
+  "ks9": 0,
+  "dis": 0
+ },
+ "genelToplam": 1227,
+ "genelFark": 85,
+ "okumaHatasi": 0,
+ "kacan": 0,
+ "bilinen": 0,
+ "bilinenKayitlar": [],
+ "bilinenListesiHatalari": [],
+ "atlanan": [],
+ "gecersizDenetim": []
+}
