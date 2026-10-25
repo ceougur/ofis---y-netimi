@@ -1,7 +1,7 @@
 {
  "dil": "destekofis-cari/3",
  "ad": "c12-ks81-sb-kalan-dagilimi",
- "aciklama": "S-b (ana oturum, dar kontrol B2; KS8.1: bağsız para ÖNCE iadenin geri ödenmemiş kısmının geri ödemesi — önce açık iade notu, sonra iadenin kapattığı borç yeniden açılır; fazlası carinin karşı taraftaki açıklarına; ondan fazlası avans). B1 Berk: elle Borç 200 (−30, vade −5) → stok iadesi 500 (−25; Borç 0, açık not 300, bakiye −300) → bağsız Ödeme 400 (−10): not 300 geri ödenir + 100 Borç'u yeniden açar → Borç 100 = bakiye. B2 Burcu: satış FB 1.000 (2 × 500) → Tahsilat 600 Kapatılacak Fatura FB (FB 400) → FB'nin iadesi 500 (1 adet; FB 0, iade açığı 100, bakiye −100) → bağsız Ödeme 300: iade notu 100 + FB 200 yeniden açılır → FB 200 = bakiye. B3 Bülent (tedarikçi simetriği, K-c): elle Alacak 200 → faturasız Alış İadesi 500 (Alacak 0, bakiye +300) → bağsız Tahsilat 400 → Alacak 100, bakiye −100. B4 Bora (fazla): Borç 200 + elle Alacak 150 → stok iadesi 300 → Ödeme 500: 300 iadenin geri ödemesi (Borç 200 açık), 150 Alacak'ı kapatır, 50 avans (bakiye 250, Σ açık 200 ≠ bakiye).",
+ "aciklama": "S-b (ana oturum, dar kontrol B2; 25.10 ~15:30 düzeltmesiyle: K-b — bağsız para karşı taraftaki yükümlülükler ve iadelerin AÇIK notları arasında tek FIFO, en eski önce; KS8.1 — ARTANI alacağı bir borcu kapatmış iadenin geri ödemesi, en eski iade önce, kapattığı açık yeniden açılır; fazlası avans — K-a). B1 Berk: elle Borç 200 (−30, vade −5) → stok iadesi 500 (−25; Borç 0, açık not 300, bakiye −300) → bağsız Ödeme 400 (−10): not 300 (K-b) + artan 100 Borç'u yeniden açar (KS8.1) → Borç 100 = bakiye. B2 Burcu: satış FB 1.000 (2 × 500) → Tahsilat 600 Kapatılacak Fatura FB (FB 400) → FB'nin iadesi 500 (1 adet; FB 0, iade açığı 100, bakiye −100) → bağsız Ödeme 300: iade notu 100 + FB 200 yeniden açılır → FB 200 = bakiye. B3 Bülent (tedarikçi simetriği, K-c): elle Alacak 200 → faturasız Alış İadesi 500 (Alacak 0, not 300, bakiye +300) → bağsız Tahsilat 400 → not 300 + Alacak 100 yeniden açılır, bakiye −100. B4 Bora (fazla): Borç 200 (05-16) + elle Alacak 150 (05-18) → stok iadesi 300 (05-21; Borç 0, not 100) → Ödeme 500: K-b FIFO'su Alacak 150 + not 100, artan 250'nin 200'ü KS8.1 ile Borç'u açar, 50 avans (Borç 200, Alacak 0, bakiye 250, Σ açık 200 ≠ bakiye). B5 Berna (KS8.1 'en eski iade önce'): FA5 500 (05-01) + FB5 300 (05-02) → stok iadesi 200 (05-20; en eski FA5'i 300'e indirir) → FB5'in tam iadesi IB5 (05-21; FB5 0) → bağsız Ödeme 200: açık not yok, artan en eski iadenin (stok, 05-20) geri ödemesi → FA5 500, FB5 0 (mutant 143, en yeni önce: FA5 300, FB5 200).",
  "dayanak": "KARARLAR.md §10: KS8.1, KS8.2, KS8.3 [BAŞ MİMAR]; K-a, K-c [KULLANICI, 5 dk yetkisi]",
  "bugun": "2026-06-15",
  "adimlar": [
@@ -35,6 +35,13 @@
    "tarih": "2026-04-01"
   },
   {
+   "id": "cb5",
+   "islem": "cari_ac",
+   "ad": "B5",
+   "isim": "Berna İkiiade",
+   "tarih": "2026-04-01"
+  },
+  {
    "id": "ffb",
    "islem": "fatura",
    "ad": "FB",
@@ -42,6 +49,22 @@
    "tutar": "1000",
    "adet": 2,
    "tarih": "2026-05-01"
+  },
+  {
+   "id": "ffa5",
+   "islem": "fatura",
+   "ad": "FA5",
+   "cari": "B5",
+   "tutar": "500",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "ffb5",
+   "islem": "fatura",
+   "ad": "FB5",
+   "cari": "B5",
+   "tutar": "300",
+   "tarih": "2026-05-02"
   },
   {
    "id": "tfb",
@@ -113,6 +136,20 @@
    "tarih": "2026-05-21"
   },
   {
+   "id": "sb5",
+   "islem": "stok_iade",
+   "cari": "B5",
+   "tutar": "200",
+   "tarih": "2026-05-20"
+  },
+  {
+   "id": "ifb5",
+   "islem": "iade",
+   "ad": "IB5",
+   "fatura": "FB5",
+   "tarih": "2026-05-21"
+  },
+  {
    "id": "k1",
    "islem": "kontrol",
    "gorunumToplam": true,
@@ -144,6 +181,13 @@
    "islem": "odeme",
    "cari": "B4",
    "tutar": "500",
+   "tarih": "2026-06-05"
+  },
+  {
+   "id": "ob5",
+   "islem": "odeme",
+   "cari": "B5",
+   "tutar": "200",
    "tarih": "2026-06-05"
   },
   {
