@@ -1,0 +1,67 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "c11-ks81-sa-mevcut-borc-karti",
+ "aciklama": "S-a (ana oturum, dar kontrol B1): satış SA 1.000 (gün −60) → faturasız stok Satış İadesi 300 (−40; SA 700) → bağsız müşteriye Ödeme 300 (−30; KS8.1 iadenin geri ödemesi, SA yeniden 1.000) → Mevcut Borcu Taksitlendir kartı 1.000, 2 taksit (−20; ilk vade −10, aylık). Kart yeni borç yazmaz: bakiye 1.000, SA açık 1.000 (K6.5 (1): açık kapsanan kısmı içerir); takvim / Vade Takip / projeksiyonda fatura kalemi NET 0, kalem yalnız taksitler — carinin projeksiyon toplamı 1.000 = bakiye (taksit 2 de pencerede), takvim 500 (yalnız taksit 1; eşit taksit [YAYGIN]), Vade Takip 500 ya da 1.000 (ufuk sonrası bilinmiyor). Hata sınıfı: 1.300 (taksitler + yeniden açılan 300, B1) ya da 2.000 (fatura + taksitler).",
+ "dayanak": "KARARLAR.md §10: K6.5 (1) [BAŞ MİMAR, 2.4.5 iş listesi: 'kapsanan borç kartın taksitleriyle BİR kez; fatura dueItems net'], KS8.1 + KS8.2 [BAŞ MİMAR], KS10 + K-P1",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {
+   "id": "cm",
+   "islem": "cari_ac",
+   "ad": "M",
+   "isim": "Mira Taksitli",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "fsa",
+   "islem": "fatura",
+   "ad": "SA",
+   "cari": "M",
+   "tutar": "1000",
+   "tarih": "2026-04-16"
+  },
+  {
+   "id": "sim",
+   "islem": "stok_iade",
+   "cari": "M",
+   "tutar": "300",
+   "tarih": "2026-05-06"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol",
+   "gorunumToplam": true,
+   "acikToplam": true
+  },
+  {
+   "id": "om",
+   "islem": "odeme",
+   "cari": "M",
+   "tutar": "300",
+   "tarih": "2026-05-16"
+  },
+  {
+   "id": "k2",
+   "islem": "kontrol",
+   "gorunumToplam": true,
+   "acikToplam": true
+  },
+  {
+   "id": "km",
+   "islem": "kart_ac",
+   "ad": "KM",
+   "cari": "M",
+   "tutar": "1000",
+   "taksit": 2,
+   "ilkVade": "2026-06-05",
+   "tarih": "2026-05-26",
+   "mevcut": true
+  },
+  {
+   "id": "k3",
+   "islem": "kontrol",
+   "gorunumToplam": true,
+   "acikToplam": true
+  }
+ ]
+}

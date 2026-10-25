@@ -1,0 +1,193 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "c13-ks83-ayni-gun-sira",
+ "aciklama": "Aynı gün sıra (ders 31 + KS8.2 + KS8.3): her caride satış 500 (05-01); 06-01'de AYNI GÜN elle Alacak 300 (vade 06-18), faturasız stok Satış İadesi 300 ve bağsız Ödeme 300 farklı YAZIM SIRALARIYLA (S1: Alacak → iade → Ödeme; S2: Ödeme → iade → Alacak; S3: iade → Ödeme → Alacak). Kural sıradan bağımsız: Ödeme önce iadenin geri ödemesi (KS8.3; tarih koşulu yok KS8.2) → her caride fatura 500 açık, Alacak 300 açık ('Ödenecek Borç'), bakiye 200 = Σ açık. S4 Serap: Ödeme 300 iadeden ÖNCE (05-20), iade 06-01 → yine geri ödeme (KS8.2) → fatura 500. Önceki kâhin okuması (tarih + yazım FIFO'su, mutant 133) S1'de Alacak'ı kapatıp faturayı 200'e indirirdi. S5 Sinan (K-e [KULLANICI, 5 dk yetkisi]: müşteriye her ödeme yolu geri ödemedir): satış 500, carisiz alınan çek 300 müşteriye ciro edilir (iade 300'ün geri ödemesi) → fatura 500 açık, bakiye 500 (mutant 138: ciro geri ödeme sayılmaz → fatura 200).",
+ "dayanak": "KARARLAR.md §10: KS8.2, KS8.3 [BAŞ MİMAR]; ders 31 (aynı tarihte olay sınıfı → yazım sırası); K-e [KULLANICI, 5 dk yetkisi]",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {
+   "id": "cs1",
+   "islem": "cari_ac",
+   "ad": "S1",
+   "isim": "Sena Sıra",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "cs2",
+   "islem": "cari_ac",
+   "ad": "S2",
+   "isim": "Selim Sıra",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "cs3",
+   "islem": "cari_ac",
+   "ad": "S3",
+   "isim": "Sezen Sıra",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "cs4",
+   "islem": "cari_ac",
+   "ad": "S4",
+   "isim": "Serap Önce",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "cs5",
+   "islem": "cari_ac",
+   "ad": "S5",
+   "isim": "Sinan Ciro",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "f1",
+   "islem": "fatura",
+   "ad": "F1",
+   "cari": "S1",
+   "tutar": "500",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "f2",
+   "islem": "fatura",
+   "ad": "F2",
+   "cari": "S2",
+   "tutar": "500",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "f3",
+   "islem": "fatura",
+   "ad": "F3",
+   "cari": "S3",
+   "tutar": "500",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "f4",
+   "islem": "fatura",
+   "ad": "F4",
+   "cari": "S4",
+   "tutar": "500",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "f5",
+   "islem": "fatura",
+   "ad": "F5",
+   "cari": "S5",
+   "tutar": "500",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "e5",
+   "islem": "evrak",
+   "ad": "E5",
+   "cari": null,
+   "tur": "cek",
+   "tutar": "300",
+   "tarih": "2026-05-10"
+  },
+  {
+   "id": "o4",
+   "islem": "odeme",
+   "cari": "S4",
+   "tutar": "300",
+   "tarih": "2026-05-20"
+  },
+  {
+   "id": "a1",
+   "islem": "alacak",
+   "cari": "S1",
+   "tutar": "300",
+   "tarih": "2026-06-01",
+   "vade": "2026-06-18"
+  },
+  {
+   "id": "i1",
+   "islem": "stok_iade",
+   "cari": "S1",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "o1",
+   "islem": "odeme",
+   "cari": "S1",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "o2",
+   "islem": "odeme",
+   "cari": "S2",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "i2",
+   "islem": "stok_iade",
+   "cari": "S2",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "a2",
+   "islem": "alacak",
+   "cari": "S2",
+   "tutar": "300",
+   "tarih": "2026-06-01",
+   "vade": "2026-06-18"
+  },
+  {
+   "id": "i3",
+   "islem": "stok_iade",
+   "cari": "S3",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "o3",
+   "islem": "odeme",
+   "cari": "S3",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "a3",
+   "islem": "alacak",
+   "cari": "S3",
+   "tutar": "300",
+   "tarih": "2026-06-01",
+   "vade": "2026-06-18"
+  },
+  {
+   "id": "i4",
+   "islem": "stok_iade",
+   "cari": "S4",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "i5",
+   "islem": "stok_iade",
+   "cari": "S5",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "c5",
+   "islem": "ciro",
+   "evrak": "E5",
+   "cari": "S5",
+   "tarih": "2026-06-05"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol",
+   "gorunumToplam": true,
+   "acikToplam": true
+  }
+ ]
+}

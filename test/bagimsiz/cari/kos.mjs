@@ -136,7 +136,7 @@ async function kos(senaryo) {
   const P = {};
   const ham = {};
   const hatalar = [];
-  const ids = { cari: {}, fatura: {}, faturaTutar: {}, evrak: {}, seri: {}, aktar: {}, anahtar: {}, hareket: {}, kayitOdeme: {}, yedek: {}, giris: {}, mizan: {}, anahtarSimdi: senaryo.anahtar };
+  const ids = { cari: {}, fatura: {}, faturaTutar: {}, faturaAdet: {}, faturaCari: {}, faturaTur: {}, kart: {}, evrak: {}, seri: {}, aktar: {}, anahtar: {}, hareket: {}, kayitOdeme: {}, yedek: {}, giris: {}, mizan: {}, anahtarSimdi: senaryo.anahtar };
   let urun = null;
   let seri = 0;
   const durum = (adim, r) => {
@@ -165,6 +165,13 @@ async function kos(senaryo) {
   const cariAdi = id => Object.entries(ids.cari).find(([, v]) => v === id)?.[0] ?? `?${id}`;
   // /3 okumaları (2.4.5 madde 4 + madde 6): hareket alanları, takvim kalemleri, Anlık Durum Vade Takip, Nakit Akış Projeksiyonu, yetkisiz kullanıcının takvimi.
   // Koşucu beklenen değer HESAPLAMAZ; alan adları K6.1–K6.3 metninden ve kara kutu yoklamasından (yokla1–3.mjs, not defteri) — yoksa "alan yok" (ders 4).
+  // 2.4.6: satırın bu cariye ait olup olmadığı — cari adı herhangi bir alanın TAM değeri, ya da cari / hareket / fatura / kart kimliği satırda geçiyor
+  const cariAit = (ad, id, adlar) => {
+    const kimlikler = [id, ...Object.values(ids.hareket).filter(h => h.cari === ad).map(h => h.id), ...Object.entries(ids.faturaCari).filter(([, c]) => c === ad).map(([f]) => ids.fatura[f]),
+      ...Object.values(ids.kart).filter(x => x.cari === ad).map(x => x.id)].filter(Boolean);
+    const isim = adlar[ad] ? JSON.stringify(adlar[ad]) : null;
+    return r => { const j = JSON.stringify(r); return (isim && j.includes(`:${isim}`)) || kimlikler.some(x => j.includes(x)); };
+  };
   async function kontrolV3(k, a, girisler, adlar = {}) {
     const alan = (e, f) => (!(f in e) ? "alan yok" : e[f] === null || e[f] === undefined ? "" : e[f]);
     for (const [ad, h] of Object.entries(ids.hareket)) {
@@ -229,12 +236,21 @@ async function kos(senaryo) {
       const rs = pr.filter(y => JSON.stringify(y).includes(h.id)).map(r => sirali({ amount: kurus(r.amount), date: r.date ?? r.dueDate ?? "alan yok", direction: r.direction ?? "alan yok" }));
       P[`${k}:projeksiyon:hareket:${ad}`] = rs.length === 0 ? "yok" : rs.length === 1 ? rs[0] : rs;
     }
-    // KS10 "bir kez": carinin projeksiyon satırlarının işaretli toplamı (cari adı `party`, cari kimliği ya da hareket kimliği taşıyan bütün satırlar — kaynağı ne olursa olsun)
+    // KS10 "bir kez" + 2.4.6 görünüm toplamları: carinin satırlarının işaretli toplamı — cari adını (tam değer), cari kimliğini, hareket / fatura / Mevcut Borç kartı kimliğini
+    // taşıyan bütün satırlar, kaynağı ne olursa olsun (takvim `items`, Vade Takip `rows`, projeksiyon `rows` + `overdue`)
+    const toplam = liste => liste.reduce((t, r) => t + (r.direction === "out" ? -1 : 1) * (kurus(r.amount) || 0), 0);
     for (const [ad, id] of Object.entries(ids.cari)) {
       if (!id) continue;
-      const hk = Object.values(ids.hareket).filter(h => h.cari === ad).map(h => h.id);
-      const ait = r => { const j = JSON.stringify(r); return (adlar[ad] && r.party === adlar[ad]) || j.includes(id) || hk.some(x => j.includes(x)); };
-      P[`${k}:projeksiyon:cariToplam:${ad}`] = pr.filter(ait).reduce((t, r) => t + (r.direction === "out" ? -1 : 1) * (kurus(r.amount) || 0), 0);
+      const ait = cariAit(ad, id, adlar);
+      P[`${k}:projeksiyon:cariToplam:${ad}`] = toplam(pr.filter(ait));
+      P[`${k}:takvim:cariToplam:${ad}`] = toplam(items.filter(ait));
+      if (vtRows) P[`${k}:vadeTakip:cariToplam:${ad}`] = toplam(vtRows.filter(ait));
+    }
+    for (const [ad, id] of Object.entries(ids.fatura)) {
+      if (!id) continue;
+      const bul = liste => { const x = liste.find(y => JSON.stringify(y).includes(id)); return x ? sirali({ amount: kurus(x.amount), direction: x.direction }) : "yok"; };
+      P[`${k}:projeksiyon:fatura:${ad}`] = bul(pr);
+      if (vtRows) P[`${k}:vadeTakip:fatura:${ad}`] = bul(vtRows);
     }
     P[`${k}:projeksiyon:tabloSecenek`] = (await projeksiyon("&table=1")).filter(tabloSatiri).length;
     ham[`${k}:projeksiyon`] = pr.slice(0, 200);
@@ -539,6 +555,15 @@ async function kos(senaryo) {
           }
           break;
         }
+        case "kart_ac": {
+          // 2.4.6: Taksitler'den "Carinin Mevcut Borcunu Taksitlendir" — POST /api/workspace/plans {name, registeredOn, total, accountId, mode: "auto", count, firstDue,
+          // coversBalance: true} (test çağrı satırları); kart kimliği yanıttan
+          const r = await api("POST", "/api/workspace/plans", { name: senaryo.adimlar.find(x => x.islem === "cari_ac" && x.ad === a.cari)?.isim, registeredOn: t, total: tlMetin(kurusOf(a.tutar)),
+            accountId: ids.cari[a.cari], mode: "auto", count: String(a.taksit || 1), firstDue: a.ilkVade, coversBalance: a.mevcut !== false });
+          durum(a, r);
+          ids.kart[a.ad] = { id: r.data?.id ?? r.data?.plan?.id, cari: a.cari };
+          break;
+        }
         case "kart_tahsilat": {
           const planlar = (await api("GET", "/api/workspace/plans")).data?.plans || [];
           const pl = planlar.find(x => x.caseKey === ids.anahtar[a.kayit]);
@@ -557,11 +582,14 @@ async function kos(senaryo) {
               : { rest: "open" };
           const base = a.tur === "alis"
             ? { kind: "purchase", scenario: "expense_purchase", lines: [{ name: "Kâhin Gideri", qty: 1, unitPrice: tlMetin(kurusOf(a.tutar)), vatRate: 0, expenseCode: "general" }], number: `KH-A${(seri += 1)}` }
-            : { kind: "sale", scenario: "service_sale", lines: [{ itemId: urun, qty: 1, unitPrice: tlMetin(kurusOf(a.tutar)), vatRate: 0 }] };
+            : { kind: "sale", scenario: "service_sale", lines: [{ itemId: urun, qty: a.adet || 1, unitPrice: tlMetin(kurusOf(a.tutar) / (a.adet || 1)), vatRate: 0 }] }; // 2.4.6 `adet`: kısmi iade için
           const r = await api("POST", "/api/workspace/invoices", { ...base, accountId: ids.cari[a.cari], issueDate: t, payment, ...(a.taslak ? { status: "draft" } : {}) });
           durum(a, r);
           ids.fatura[a.ad] = r.data?.id;
           ids.faturaTutar[a.ad] = kurusOf(a.tutar);
+          ids.faturaAdet[a.ad] = a.adet || 1;
+          ids.faturaCari[a.ad] = a.cari;
+          ids.faturaTur[a.ad] = a.tur === "alis" ? "alis" : "satis";
           if (a.evrak && r.status === 200) {
             ids.seri[a.evrak.ad] = `KH-${seri}`;
             ids.evrak[a.evrak.ad] = (await api("GET", `/api/workspace/cheques?q=${encodeURIComponent(`KH-${seri}`)}`)).data?.cheques?.[0]?.id;
@@ -572,10 +600,14 @@ async function kos(senaryo) {
           const asil = (await api("GET", `/api/workspace/invoices/${ids.fatura[a.fatura]}`)).data;
           // 2.4.6 dil eki `geri: "nakit"`: iade bedeli iade belgesinin KENDİ ödeme bölümünden geri ödenir (R1 düzeni) — gövde biçimi test/bagimsiz/surucu.mjs `iade`
           // (payment.cash[{amount, method, lineKey}]); tutar asıl faturanın tutarı (tek kalem, KDV 0, tamamı iade)
-          const payment = a.geri === "nakit" ? { cash: [{ amount: tlMetin(ids.faturaTutar[a.fatura]), method: "cash", lineKey: "g1" }] } : {};
-          const r = await api("POST", "/api/workspace/invoices", { kind: "sale_return", originalId: asil?.id, issueDate: t, lines: [{ originLineId: asil?.lines?.[0]?.id, qty: 1 }], payment, ...(a.geri ? { cashForce: true, similarOk: true } : {}) });
+          const adet = a.adet || ids.faturaAdet[a.fatura] || 1; // 2.4.6 `adet`: asıl kalemin bu kadarı (yoksa tamamı)
+          const iadeTutar = Math.round((ids.faturaTutar[a.fatura] * adet) / (ids.faturaAdet[a.fatura] || 1));
+          const payment = a.geri === "nakit" ? { cash: [{ amount: tlMetin(iadeTutar), method: "cash", lineKey: "g1" }] } : {};
+          const r = await api("POST", "/api/workspace/invoices", { kind: "sale_return", originalId: asil?.id, issueDate: t, lines: [{ originLineId: asil?.lines?.[0]?.id, qty: adet }], payment, ...(a.geri ? { cashForce: true, similarOk: true } : {}) });
           durum(a, r);
           ids.fatura[a.ad] = r.data?.id;
+          ids.faturaCari[a.ad] = ids.faturaCari[a.fatura];
+          ids.faturaTur[a.ad] = "iade";
           break;
         }
         case "evrak": {
@@ -704,6 +736,14 @@ async function kos(senaryo) {
             Object.assign(P, { [`${k}:kart:${no}:toplam`]: kurus(d?.totals?.total), [`${k}:kart:${no}:odenen`]: kurus(d?.totals?.paid), [`${k}:kart:${no}:kalan`]: kurus(d?.totals?.remaining), [`${k}:kart:${no}:mevcutBorc`]: Boolean(d?.coversBalance) });
             (d?.items || []).forEach((it, i) => (P[`${k}:kart:${no}:taksit${i + 1}:odenen`] = kurus(it.paid)));
           }
+          for (const [ad, kt] of Object.entries(ids.kart)) {
+            // 2.4.6 kart_ac kartları (kayıt anahtarı yok — kimlikle)
+            const d = kt.id ? (await api("GET", `/api/workspace/plans/${kt.id}`)).data : null;
+            P[`${k}:kart:${ad}:var`] = Boolean(d && !d.deletedAt);
+            if (!d) continue;
+            Object.assign(P, { [`${k}:kart:${ad}:toplam`]: kurus(d?.totals?.total), [`${k}:kart:${ad}:odenen`]: kurus(d?.totals?.paid), [`${k}:kart:${ad}:kalan`]: kurus(d?.totals?.remaining), [`${k}:kart:${ad}:mevcutBorc`]: Boolean(d?.coversBalance) });
+            (d?.items || []).forEach((it, i) => (P[`${k}:kart:${ad}:taksit${i + 1}:odenen`] = kurus(it.paid)));
+          }
           P[`${k}:kasa`] = kurus((await api("GET", "/api/workspace/cash")).data?.totals?.balance);
           const led = await api("GET", "/api/workspace/ledger");
           if (led.status === 200) {
@@ -786,6 +826,31 @@ async function kos(senaryo) {
             }
           }
           await kontrolV3(k, a, girisler, adlar);
+          if (a.acikToplam) {
+            // 2.4.6 KS8.1 değişmezi: programın açık kalemlerinin işaretli toplamı (fatura `open`: satış +, alış / iade −; elle kaydın `remaining`: Borç / borç yönlü Açılış +,
+            // Alacak / alacak yönlü Açılış −) ve bakiyeye eşitliği
+            for (const [ad] of Object.entries(ids.cari)) {
+              if (ad.startsWith("@") || P[`${k}:cari:${ad}:bakiye`] === undefined) continue;
+              let t = 0, okunamadi = false;
+              for (const [f, c] of Object.entries(ids.faturaCari)) {
+                if (c !== ad) continue;
+                const v = P[`${k}:fatura:${f}:acik`];
+                if (v === undefined || v === null) { okunamadi = true; continue; }
+                t += ids.faturaTur[f] === "satis" ? v : -v;
+              }
+              for (const [hn, h] of Object.entries(ids.hareket)) {
+                if (h.cari !== ad) continue;
+                const st = senaryo.adimlar.find(x => x.id === hn);
+                const yon = hn.startsWith("acilis:") ? (senaryo.adimlar.find(x => x.islem === "cari_ac" && x.ad === ad)?.acilisYon === "alacak" ? -1 : 1) : st?.islem === "borc" ? 1 : st?.islem === "alacak" ? -1 : 0;
+                if (!yon) continue;
+                const v = P[`${k}:hareket:${hn}:kalan`];
+                if (v === "alan yok" || v === "boş") { okunamadi = true; continue; }
+                if (typeof v === "number") t += yon * v;
+              }
+              P[`${k}:cari:${ad}:acikToplam`] = okunamadi ? "okunamadı" : t;
+              P[`${k}:cari:${ad}:acikEsitBakiye`] = okunamadi ? "okunamadı" : t === P[`${k}:cari:${ad}:bakiye`];
+            }
+          }
           if (Object.keys(ids.anahtar).length) {
             const rp = await api("GET", `/api/workspace/reports/cari-ekstre?from=${senaryo.bugun.slice(0, 4)}-01-01&to=${senaryo.bugun}`);
             const rep = rp.data?.report;
