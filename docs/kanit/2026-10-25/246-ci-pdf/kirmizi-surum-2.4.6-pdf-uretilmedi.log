@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: Kılavuz PDF sürümü (client/kilavuz)
+    # Subtest: PDF metni okunur (boş değil, bilinen başlık var)
+    ok 1 - PDF metni okunur (boş değil, bilinen başlık var)
+      ---
+      duration_ms: 228.456362
+      type: 'test'
+      ...
+    # Subtest: PDF kapağı ve dip notu = HTML sürümü = program sürümü
+    not ok 2 - PDF kapağı ve dip notu = HTML sürümü = program sürümü
+      ---
+      duration_ms: 1.235638
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-ci-pdf/kopya-surum-246/test/kilavuz-pdf-surum.test.mjs:39:3'
+      failureType: 'testCodeFailure'
+      error: 'PDF sürümü 2.4.5 ≠ HTML 2.4.6 ya da program 2.4.6 (kapak: 2.4.5; dip not: 2.4.5). Kılavuzu yeniden üretin: node docs/kilavuz/pdf-uret.mjs docs/kilavuz DestekOfis-Kullanim-Kilavuzu && cp docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf client/kilavuz/ && node docs/kilavuz/pdf-denetle.mjs'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-ci-pdf/kopya-surum-246/test/kilavuz-pdf-surum.test.mjs:47:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..2
+not ok 1 - Kılavuz PDF sürümü (client/kilavuz)
+  ---
+  duration_ms: 231.212312
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-ci-pdf/kopya-surum-246/test/kilavuz-pdf-surum.test.mjs:27:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Kullanım kılavuzu sürümü
+    # Subtest: kapakta “Sürüm <program sürümü>” yazar
+    ok 1 - kapakta “Sürüm <program sürümü>” yazar
+      ---
+      duration_ms: 3.32048
+      type: 'test'
+      ...
+    # Subtest: dip notta “DestekOfis <program sürümü> · Kısa Kullanım Kılavuzu” yazar
+    ok 2 - dip notta “DestekOfis <program sürümü> · Kısa Kullanım Kılavuzu” yazar
+      ---
+      duration_ms: 0.372891
+      type: 'test'
+      ...
+    1..2
+ok 2 - Kullanım kılavuzu sürümü
+  ---
+  duration_ms: 5.263194
+  type: 'suite'
+  ...
+1..2
+# tests 4
+# suites 2
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 323.643592

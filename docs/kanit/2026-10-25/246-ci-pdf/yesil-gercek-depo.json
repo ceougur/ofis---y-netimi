@@ -1,0 +1,32 @@
+{
+  "ad": "246-ci-pdf/yesil-gercek-depo",
+  "komut": "node --test test/kilavuz-pdf-surum.test.mjs test/kilavuz-surum.test.mjs",
+  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "dal": "is/ci-pdf",
+  "kirli": 1,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T09:40:56.677Z",
+  "sure_sn": 0.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-ci-pdf/yesil-gercek-depo.log",
+  "klasor": "/home/user/wt/ci-pdf",
+  "ham_cikti_sha256": "111b69ee347f9c7e95e3b6389fb8ee9448c6c0633e88b01680bb87dc32185b8f",
+  "ham_cikti_bayt": 1280
+}

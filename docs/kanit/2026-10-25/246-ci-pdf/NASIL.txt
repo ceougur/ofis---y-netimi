@@ -1,0 +1,14 @@
+2.4.6 madde 13 (ders 42) — kılavuz PDF sürümü = HTML sürümü = package.json sürümü; test/kilavuz-pdf-surum.test.mjs + test/pdf-metin.mjs (bağımlılıksız PDF metin okuyucu, node:zlib).
+Taban commit e77447a (dal is/ci-pdf). Bütün koşular: node tools/kanit.mjs kos <ad> -- node --test <dosyalar>.
+
+yesil-gercek-depo            gerçek depo (package 2.4.5, HTML 2.4.5, PDF 2.4.5)                     → GEÇTİ 4/4
+kirmizi-surum-2.4.6-pdf-uretilmedi  AYRI KOPYA (git archive HEAD; ders 23/25): package.json + HTML 2.4.6'ya çıkarıldı, PDF 2.4.5 bırakıldı
+                             → BAŞARISIZ: "PDF sürümü 2.4.5 ≠ HTML 2.4.6 ya da program 2.4.6" (kayıtta "commit undefined": kopya git deposu değil)
+kirmizi-eski-pdf-v2.4.4      gerçek depo, KILAVUZ_PDF = git show v2.4.4:client/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf
+                             → BAŞARISIZ: "PDF sürümü 2.4.4 ≠ HTML 2.4.5 ya da program 2.4.5" (ders 42'deki hatanın kendisi)
+kirmizi-okunamayan-pdf       KILAVUZ_PDF = 5 baytlık bozuk dosya → BAŞARISIZ 2/2 "PDF nesnesi bulunamadı" (okunamayan ≠ geçti; ders 4)
+yesil-crlf-kopya             AYRI KOPYA: HTML, package.json ve iki test dosyası CRLF'e çevrildi (Windows checkout benzetimi; ders 27) → GEÇTİ 2/2
+kapi-testleri                ci-kapi-listesi, platform-tasinabilirlik, kanit-araci, yazim-duzeni, lisans-servisi-izolasyonu, kilavuz-surum, kilavuz-pdf-surum → GEÇTİ 73/73
+
+Okuyucu doğrulaması (kanıt dışı, elle): gerçek PDF'te okuyucunun metni ile pdftotext metni boşluksuz karşılaştırıldı; karakter sayıları
+yalnız "-" (55/57, pdftotext'in satır sonu tirelemesi) farkıyla aynı. Gerçek Windows koşusu: CI'nin Windows işlerinde (npm test) okunur — ders 18.

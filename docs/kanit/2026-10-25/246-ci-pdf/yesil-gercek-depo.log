@@ -1,0 +1,48 @@
+TAP version 13
+# Subtest: Kılavuz PDF sürümü (client/kilavuz)
+    # Subtest: PDF metni okunur (boş değil, bilinen başlık var)
+    ok 1 - PDF metni okunur (boş değil, bilinen başlık var)
+      ---
+      duration_ms: 250.350962
+      type: 'test'
+      ...
+    # Subtest: PDF kapağı ve dip notu = HTML sürümü = program sürümü
+    ok 2 - PDF kapağı ve dip notu = HTML sürümü = program sürümü
+      ---
+      duration_ms: 0.349637
+      type: 'test'
+      ...
+    1..2
+ok 1 - Kılavuz PDF sürümü (client/kilavuz)
+  ---
+  duration_ms: 251.6845
+  type: 'suite'
+  ...
+# Subtest: Kullanım kılavuzu sürümü
+    # Subtest: kapakta “Sürüm <program sürümü>” yazar
+    ok 1 - kapakta “Sürüm <program sürümü>” yazar
+      ---
+      duration_ms: 2.98011
+      type: 'test'
+      ...
+    # Subtest: dip notta “DestekOfis <program sürümü> · Kısa Kullanım Kılavuzu” yazar
+    ok 2 - dip notta “DestekOfis <program sürümü> · Kısa Kullanım Kılavuzu” yazar
+      ---
+      duration_ms: 0.374029
+      type: 'test'
+      ...
+    1..2
+ok 2 - Kullanım kılavuzu sürümü
+  ---
+  duration_ms: 4.542686
+  type: 'suite'
+  ...
+1..2
+# tests 4
+# suites 2
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 356.734018

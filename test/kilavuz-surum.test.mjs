@@ -2,7 +2,7 @@
 // (13.10.2026: yayımlanan 2.2.0 kılavuzunun kapağında "Sürüm 2.1.0" kaldı — sürüm elle yazılıyordu, denetim yoktu.)
 //
 // NASIL BOZARIM: (1) sürüm yükseltilir, kılavuz kaynağı unutulur; (2) kapak güncellenir, dip not unutulur; (3) kaynak güncellenir, PDF
-// yeniden üretilmez. (1) ve (2) burada (kaynak HTML) yakalanır; (3) docs/kilavuz/pdf-denetle.mjs'te (PDF metni) yakalanır.
+// yeniden üretilmez. (1) ve (2) burada (kaynak HTML) yakalanır; (3) test/kilavuz-pdf-surum.test.mjs (CI, Linux + Windows) ve docs/kilavuz/pdf-denetle.mjs (PDF metni).
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import path from "node:path";
