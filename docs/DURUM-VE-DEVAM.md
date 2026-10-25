@@ -57,6 +57,11 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
   (j) takvim +~100 ms (büyük veride) — ölçülüp gerekirse.
   BAŞ MİMAR NOTU: (d), (f) para/hatırlatma çekirdeğine dokunur → kâhin önce + dar kontrol; (i) büyük ve riskli → ayrı sürüm önerilir. Sürüm tahmini ve sıra iş listesinde verilir; devir 2.5.0 Aralık
   başı tarihini kaydırmamalı (en geç 1 Aralık'ta devire başla).
+- KARAR (kullanıcı, 25.10.2026 ~08:40 UTC): (1) "program arayüz kararın uygun" → (i) istemci paketi kaynağının yeniden kurulması bu sürümde YOK, ayrı sürüm. (2) "bu duşakabin sektörü maliyet modülü
+  ve tabloları hiçbir yere bağlanmayacak; baştan yazacağın kâhin sadece bu alanla olan kontrolünü bu alanla kısıtlı tutsun" → Maliyet Hesap Kartı kâhini YENİ ve AYRI (ör. test/bagimsiz/maliyet/),
+  yalnız kartın kendi hesabını denetler (girdi → satır tutarı → ARA → oranlar/bölenler → sonuç; ✎ ad değişikliği, satır ekle/sil, Kaydet/Çık sonrası değerler); cari/kasa/stok/fatura/defter
+  denetimi YAPMAZ (modül bağsız). Mevcut cari kâhini (test/bagimsiz/cari) bu modül için genişletilmez; yalnız 2.4.5 kalan bulgularından para çekirdeğine dokunanlar ((d) DB1, (f) Projeksiyon) için o kâhin
+  kullanılır. Bağsızlık ayrıca kaynak tarayan bir testle sınanır (maliyet modülü para/stok tablolarına yazmaz, onlardan okumaz).
 
 ### 000. 2.4.5 BAŞLANGIÇ — DEVAM NOTU (24.10.2026 ~16:30 UTC; kullanıcının sıkıştırma talimatından ÖNCE yazıldı — ÖNCE BUNU OKU)
 - DURUM: 2.4.4 YAYIMLANDI ve KAPANDI (v2.4.4 = master 5187561; PR #34; master CI #867 + Sürüm yayımla #37 yeşil; 5 dosya bayt bayt; eski güncelleyiciler "available"; site
