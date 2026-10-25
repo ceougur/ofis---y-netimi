@@ -1,0 +1,30 @@
+[09:54:41] veri: {"cari-musteri":2000,"cari-tedarikci":100,"fatura-satis-vadeli":4912,"fatura-satis-kismi":1734,"fatura-satis-pesin":2178,"elle-borc":4000,"cari-tahsilat":2000,"fatura-alis":1176} · vade {"debts":4000,"puts":1997,"vade":1402,"vadeBeklenen":595} · gün 2026-10-25
+[09:54:49] DEĞİŞMEZ: 1667 cari · net aynı 1667 · farklı 0 (Σ fark 0) · A {"rows":587,"overdue":10856,"in":7441521.82,"out":286036.8,"overdueIn":102806273.82,"overdueOut":4110031.2,"accountRows":0,"accountIn":0,"accountOut":0,"unbilledRows":3783,"unbilledIn":16984490.56,"totalNet":105851727.64} · B {"rows":857,"overdue":10586,"in":8680444.34,"out":286036.8,"overdueIn":101567351.3,"overdueOut":4110031.2,"accountRows":1897,"accountIn":8496634.16,"accountOut":0,"unbilledRows":1886,"unbilledIn":8487856.4,"totalNet":105851727.64,"check":{"inEqRows":true,"outEqRows":true,"closing":true}}
+[09:55:26] A flow tur 1: soğuk 1980.7 · sıcak 1116.9 (en çok 1412.9) · yazımdan sonra 1857.7 (en çok 2295.2) ms · 11333 satır {"invoice":7550,"unbilled":3783}
+[09:56:04] B flow tur 1: soğuk 2037.6 · sıcak 1182.5 (en çok 1319.6) · yazımdan sonra 2059.8 (en çok 2287.2) ms · 11221 satır {"invoice":7550,"account":1785,"unbilled":1886}
+[09:56:21] A dues tur 1: soğuk 1535.9 · sıcak 122.4 (en çok 153.2) · yazımdan sonra 1387.2 (en çok 1528.8) ms · 8907 satır {"invoice":7237,"account":1670}
+[09:56:36] B dues tur 1: soğuk 1400.2 · sıcak 111.9 (en çok 138.8) · yazımdan sonra 1320.3 (en çok 1557.4) ms · 8907 satır {"invoice":7237,"account":1670}
+[09:56:48] A vade tur 1: soğuk 1373.3 · sıcak 567.7 (en çok 727.8) · yazımdan sonra null (en çok null) ms · 5000 satır {"invoice":4118,"account":882}
+[09:56:59] B vade tur 1: soğuk 1278.3 · sıcak 534.3 (en çok 607.3) · yazımdan sonra null (en çok null) ms · 5000 satır {"invoice":4118,"account":882}
+[09:57:35] B flow tur 2: soğuk 2088 · sıcak 1051.3 (en çok 1261.5) · yazımdan sonra 1918.6 (en çok 2263.1) ms · 11221 satır {"invoice":7550,"account":1785,"unbilled":1886}
+[09:58:14] A flow tur 2: soğuk 2207.9 · sıcak 1238.4 (en çok 1415.2) · yazımdan sonra 2154.7 (en çok 2464.7) ms · 11333 satır {"invoice":7550,"unbilled":3783}
+[09:58:30] B dues tur 2: soğuk 1384.9 · sıcak 99.2 (en çok 180.1) · yazımdan sonra 1401.6 (en çok 1579.8) ms · 8907 satır {"invoice":7237,"account":1670}
+[09:58:48] A dues tur 2: soğuk 1654.9 · sıcak 135.4 (en çok 149.1) · yazımdan sonra 1408.1 (en çok 1810.6) ms · 8907 satır {"invoice":7237,"account":1670}
+[09:59:02] B vade tur 2: soğuk 1865.5 · sıcak 655.5 (en çok 818.1) · yazımdan sonra null (en çok null) ms · 5000 satır {"invoice":4118,"account":882}
+[09:59:16] A vade tur 2: soğuk 1800.3 · sıcak 659.6 (en çok 771.2) · yazımdan sonra null (en çok null) ms · 5000 satır {"invoice":4118,"account":882}
+[09:59:51] A flow tur 3: soğuk 1884.2 · sıcak 1128.4 (en çok 1377.6) · yazımdan sonra 1764 (en çok 1889.1) ms · 11333 satır {"invoice":7550,"unbilled":3783}
+[10:00:30] B flow tur 3: soğuk 1933.1 · sıcak 1334.2 (en çok 1851.9) · yazımdan sonra 1644.5 (en çok 2156.4) ms · 11221 satır {"invoice":7550,"account":1785,"unbilled":1886}
+[10:00:45] A dues tur 3: soğuk 1253.2 · sıcak 92.9 (en çok 141.7) · yazımdan sonra 1186.2 (en çok 1422.7) ms · 8907 satır {"invoice":7237,"account":1670}
+[10:00:58] B dues tur 3: soğuk 1077 · sıcak 101.4 (en çok 149.9) · yazımdan sonra 1052.5 (en çok 1089.5) ms · 8907 satır {"invoice":7237,"account":1670}
+[10:01:09] A vade tur 3: soğuk 1343.2 · sıcak 550.1 (en çok 693.5) · yazımdan sonra null (en çok null) ms · 5000 satır {"invoice":4118,"account":882}
+[10:01:19] B vade tur 3: soğuk 1258.3 · sıcak 500 (en çok 649.7) · yazımdan sonra null (en çok null) ms · 5000 satır {"invoice":4118,"account":882}
+[10:01:19] ÖZET flow: soğuk A 1980.7 → B 2037.6 (Δ 56.9) · sıcak A 1128.4 → B 1182.5 (Δ 54.1) · yazımdan sonra A 1857.7 → B 1918.6 ms
+[10:01:19] ÖZET dues: soğuk A 1535.9 → B 1384.9 (Δ -151) · sıcak A 122.4 → B 101.4 (Δ -21) · yazımdan sonra A 1387.2 → B 1320.3 ms
+[10:01:19] ÖZET vade: soğuk A 1373.3 → B 1278.3 (Δ -95) · sıcak A 567.7 → B 534.3 (Δ -33.4) · yazımdan sonra A null → B null ms
+# 18 ölçüm (değişken × uç × tur); süreler ölçüm, eşik denetimi değil; değişmez: B satır toplamları {"inEqRows":true,"outEqRows":true,"closing":true}
+# tests 19
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

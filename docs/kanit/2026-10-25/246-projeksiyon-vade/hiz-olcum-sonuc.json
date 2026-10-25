@@ -1,0 +1,457 @@
+{
+ "day": "2026-10-25",
+ "manifest": {
+  "version": "v2.4.4",
+  "commit": "5187561baacedf65562d1615d79a8fa0c5632132",
+  "seed": 5,
+  "startDay": "2025-10-25",
+  "endDay": "2026-10-25",
+  "counts": {
+   "cari-musteri": 2000,
+   "cari-tedarikci": 100,
+   "fatura-satis-vadeli": 4912,
+   "fatura-satis-kismi": 1734,
+   "fatura-satis-pesin": 2178,
+   "elle-borc": 4000,
+   "cari-tahsilat": 2000,
+   "fatura-alis": 1176
+  },
+  "requests": 18100,
+  "ms": 345894,
+  "vade": {
+   "debts": 4000,
+   "puts": 1997,
+   "vade": 1402,
+   "vadeBeklenen": 595
+  }
+ },
+ "repeat": 3,
+ "invariant": {
+  "accounts": 1667,
+  "equal": 1667,
+  "differ": 0,
+  "diffSample": [],
+  "deltaSum": 0,
+  "totals": {
+   "A": {
+    "rows": 587,
+    "overdue": 10856,
+    "in": 7441521.82,
+    "out": 286036.8,
+    "overdueIn": 102806273.82,
+    "overdueOut": 4110031.2,
+    "accountRows": 0,
+    "accountIn": 0,
+    "accountOut": 0,
+    "unbilledRows": 3783,
+    "unbilledIn": 16984490.56,
+    "totalNet": 105851727.64
+   },
+   "B": {
+    "rows": 857,
+    "overdue": 10586,
+    "in": 8680444.34,
+    "out": 286036.8,
+    "overdueIn": 101567351.3,
+    "overdueOut": 4110031.2,
+    "accountRows": 1897,
+    "accountIn": 8496634.16,
+    "accountOut": 0,
+    "unbilledRows": 1886,
+    "unbilledIn": 8487856.4,
+    "totalNet": 105851727.64,
+    "check": {
+     "inEqRows": true,
+     "outEqRows": true,
+     "closing": true
+    }
+   }
+  }
+ },
+ "table": {
+  "flow-A": {
+   "label": "v2.4.5 (gerçek kod; taban)",
+   "coldMs": 1980.7,
+   "warmMedianMs": 1128.4,
+   "afterWriteMedianMs": 1857.7,
+   "afterWriteMaxMs": 2295.2,
+   "rows": 11333,
+   "bySource": {
+    "invoice": 7550,
+    "unbilled": 3783
+   }
+  },
+  "flow-B": {
+   "label": "2.4.6 madde 11 (bu dal)",
+   "coldMs": 2037.6,
+   "warmMedianMs": 1182.5,
+   "afterWriteMedianMs": 1918.6,
+   "afterWriteMaxMs": 2263.1,
+   "rows": 11221,
+   "bySource": {
+    "invoice": 7550,
+    "account": 1785,
+    "unbilled": 1886
+   }
+  },
+  "dues-A": {
+   "label": "v2.4.5 (gerçek kod; taban)",
+   "coldMs": 1535.9,
+   "warmMedianMs": 122.4,
+   "afterWriteMedianMs": 1387.2,
+   "afterWriteMaxMs": 1528.8,
+   "rows": 8907,
+   "bySource": {
+    "invoice": 7237,
+    "account": 1670
+   }
+  },
+  "dues-B": {
+   "label": "2.4.6 madde 11 (bu dal)",
+   "coldMs": 1384.9,
+   "warmMedianMs": 101.4,
+   "afterWriteMedianMs": 1320.3,
+   "afterWriteMaxMs": 1557.4,
+   "rows": 8907,
+   "bySource": {
+    "invoice": 7237,
+    "account": 1670
+   }
+  },
+  "vade-A": {
+   "label": "v2.4.5 (gerçek kod; taban)",
+   "coldMs": 1373.3,
+   "warmMedianMs": 567.7,
+   "afterWriteMedianMs": null,
+   "afterWriteMaxMs": null,
+   "rows": 5000,
+   "bySource": {
+    "invoice": 4118,
+    "account": 882
+   }
+  },
+  "vade-B": {
+   "label": "2.4.6 madde 11 (bu dal)",
+   "coldMs": 1278.3,
+   "warmMedianMs": 534.3,
+   "afterWriteMedianMs": null,
+   "afterWriteMaxMs": null,
+   "rows": 5000,
+   "bySource": {
+    "invoice": 4118,
+    "account": 882
+   }
+  }
+ },
+ "results": [
+  {
+   "round": 1,
+   "variant": "A",
+   "kind": "flow",
+   "commit": "d0fd8b05aa42499c2d207a72d58a669c55d7d8fe",
+   "coldMs": 1980.7,
+   "warmMedianMs": 1116.9,
+   "warmMaxMs": 1412.9,
+   "afterWriteMedianMs": 1857.7,
+   "afterWriteMaxMs": 2295.2,
+   "bytes": 2941186,
+   "rows": 11333,
+   "bySource": {
+    "invoice": 7550,
+    "unbilled": 3783
+   }
+  },
+  {
+   "round": 1,
+   "variant": "B",
+   "kind": "flow",
+   "commit": "çalışma kopyası",
+   "coldMs": 2037.6,
+   "warmMedianMs": 1182.5,
+   "warmMaxMs": 1319.6,
+   "afterWriteMedianMs": 2059.8,
+   "afterWriteMaxMs": 2287.2,
+   "bytes": 3355167,
+   "rows": 11221,
+   "bySource": {
+    "invoice": 7550,
+    "account": 1785,
+    "unbilled": 1886
+   }
+  },
+  {
+   "round": 1,
+   "variant": "A",
+   "kind": "dues",
+   "commit": "d0fd8b05aa42499c2d207a72d58a669c55d7d8fe",
+   "coldMs": 1535.9,
+   "warmMedianMs": 122.4,
+   "warmMaxMs": 153.2,
+   "afterWriteMedianMs": 1387.2,
+   "afterWriteMaxMs": 1528.8,
+   "bytes": 3761552,
+   "rows": 8907,
+   "bySource": {
+    "invoice": 7237,
+    "account": 1670
+   }
+  },
+  {
+   "round": 1,
+   "variant": "B",
+   "kind": "dues",
+   "commit": "çalışma kopyası",
+   "coldMs": 1400.2,
+   "warmMedianMs": 111.9,
+   "warmMaxMs": 138.8,
+   "afterWriteMedianMs": 1320.3,
+   "afterWriteMaxMs": 1557.4,
+   "bytes": 3761552,
+   "rows": 8907,
+   "bySource": {
+    "invoice": 7237,
+    "account": 1670
+   }
+  },
+  {
+   "round": 1,
+   "variant": "A",
+   "kind": "vade",
+   "commit": "d0fd8b05aa42499c2d207a72d58a669c55d7d8fe",
+   "coldMs": 1373.3,
+   "warmMedianMs": 567.7,
+   "warmMaxMs": 727.8,
+   "afterWriteMedianMs": null,
+   "afterWriteMaxMs": null,
+   "bytes": 1715113,
+   "rows": 5000,
+   "bySource": {
+    "invoice": 4118,
+    "account": 882
+   }
+  },
+  {
+   "round": 1,
+   "variant": "B",
+   "kind": "vade",
+   "commit": "çalışma kopyası",
+   "coldMs": 1278.3,
+   "warmMedianMs": 534.3,
+   "warmMaxMs": 607.3,
+   "afterWriteMedianMs": null,
+   "afterWriteMaxMs": null,
+   "bytes": 1715113,
+   "rows": 5000,
+   "bySource": {
+    "invoice": 4118,
+    "account": 882
+   }
+  },
+  {
+   "round": 2,
+   "variant": "B",
+   "kind": "flow",
+   "commit": "çalışma kopyası",
+   "coldMs": 2088,
+   "warmMedianMs": 1051.3,
+   "warmMaxMs": 1261.5,
+   "afterWriteMedianMs": 1918.6,
+   "afterWriteMaxMs": 2263.1,
+   "bytes": 3355167,
+   "rows": 11221,
+   "bySource": {
+    "invoice": 7550,
+    "account": 1785,
+    "unbilled": 1886
+   }
+  },
+  {
+   "round": 2,
+   "variant": "A",
+   "kind": "flow",
+   "commit": "d0fd8b05aa42499c2d207a72d58a669c55d7d8fe",
+   "coldMs": 2207.9,
+   "warmMedianMs": 1238.4,
+   "warmMaxMs": 1415.2,
+   "afterWriteMedianMs": 2154.7,
+   "afterWriteMaxMs": 2464.7,
+   "bytes": 2941186,
+   "rows": 11333,
+   "bySource": {
+    "invoice": 7550,
+    "unbilled": 3783
+   }
+  },
+  {
+   "round": 2,
+   "variant": "B",
+   "kind": "dues",
+   "commit": "çalışma kopyası",
+   "coldMs": 1384.9,
+   "warmMedianMs": 99.2,
+   "warmMaxMs": 180.1,
+   "afterWriteMedianMs": 1401.6,
+   "afterWriteMaxMs": 1579.8,
+   "bytes": 3761552,
+   "rows": 8907,
+   "bySource": {
+    "invoice": 7237,
+    "account": 1670
+   }
+  },
+  {
+   "round": 2,
+   "variant": "A",
+   "kind": "dues",
+   "commit": "d0fd8b05aa42499c2d207a72d58a669c55d7d8fe",
+   "coldMs": 1654.9,
+   "warmMedianMs": 135.4,
+   "warmMaxMs": 149.1,
+   "afterWriteMedianMs": 1408.1,
+   "afterWriteMaxMs": 1810.6,
+   "bytes": 3761552,
+   "rows": 8907,
+   "bySource": {
+    "invoice": 7237,
+    "account": 1670
+   }
+  },
+  {
+   "round": 2,
+   "variant": "B",
+   "kind": "vade",
+   "commit": "çalışma kopyası",
+   "coldMs": 1865.5,
+   "warmMedianMs": 655.5,
+   "warmMaxMs": 818.1,
+   "afterWriteMedianMs": null,
+   "afterWriteMaxMs": null,
+   "bytes": 1715113,
+   "rows": 5000,
+   "bySource": {
+    "invoice": 4118,
+    "account": 882
+   }
+  },
+  {
+   "round": 2,
+   "variant": "A",
+   "kind": "vade",
+   "commit": "d0fd8b05aa42499c2d207a72d58a669c55d7d8fe",
+   "coldMs": 1800.3,
+   "warmMedianMs": 659.6,
+   "warmMaxMs": 771.2,
+   "afterWriteMedianMs": null,
+   "afterWriteMaxMs": null,
+   "bytes": 1715113,
+   "rows": 5000,
+   "bySource": {
+    "invoice": 4118,
+    "account": 882
+   }
+  },
+  {
+   "round": 3,
+   "variant": "A",
+   "kind": "flow",
+   "commit": "d0fd8b05aa42499c2d207a72d58a669c55d7d8fe",
+   "coldMs": 1884.2,
+   "warmMedianMs": 1128.4,
+   "warmMaxMs": 1377.6,
+   "afterWriteMedianMs": 1764,
+   "afterWriteMaxMs": 1889.1,
+   "bytes": 2941186,
+   "rows": 11333,
+   "bySource": {
+    "invoice": 7550,
+    "unbilled": 3783
+   }
+  },
+  {
+   "round": 3,
+   "variant": "B",
+   "kind": "flow",
+   "commit": "çalışma kopyası",
+   "coldMs": 1933.1,
+   "warmMedianMs": 1334.2,
+   "warmMaxMs": 1851.9,
+   "afterWriteMedianMs": 1644.5,
+   "afterWriteMaxMs": 2156.4,
+   "bytes": 3355167,
+   "rows": 11221,
+   "bySource": {
+    "invoice": 7550,
+    "account": 1785,
+    "unbilled": 1886
+   }
+  },
+  {
+   "round": 3,
+   "variant": "A",
+   "kind": "dues",
+   "commit": "d0fd8b05aa42499c2d207a72d58a669c55d7d8fe",
+   "coldMs": 1253.2,
+   "warmMedianMs": 92.9,
+   "warmMaxMs": 141.7,
+   "afterWriteMedianMs": 1186.2,
+   "afterWriteMaxMs": 1422.7,
+   "bytes": 3761552,
+   "rows": 8907,
+   "bySource": {
+    "invoice": 7237,
+    "account": 1670
+   }
+  },
+  {
+   "round": 3,
+   "variant": "B",
+   "kind": "dues",
+   "commit": "çalışma kopyası",
+   "coldMs": 1077,
+   "warmMedianMs": 101.4,
+   "warmMaxMs": 149.9,
+   "afterWriteMedianMs": 1052.5,
+   "afterWriteMaxMs": 1089.5,
+   "bytes": 3761552,
+   "rows": 8907,
+   "bySource": {
+    "invoice": 7237,
+    "account": 1670
+   }
+  },
+  {
+   "round": 3,
+   "variant": "A",
+   "kind": "vade",
+   "commit": "d0fd8b05aa42499c2d207a72d58a669c55d7d8fe",
+   "coldMs": 1343.2,
+   "warmMedianMs": 550.1,
+   "warmMaxMs": 693.5,
+   "afterWriteMedianMs": null,
+   "afterWriteMaxMs": null,
+   "bytes": 1715113,
+   "rows": 5000,
+   "bySource": {
+    "invoice": 4118,
+    "account": 882
+   }
+  },
+  {
+   "round": 3,
+   "variant": "B",
+   "kind": "vade",
+   "commit": "çalışma kopyası",
+   "coldMs": 1258.3,
+   "warmMedianMs": 500,
+   "warmMaxMs": 649.7,
+   "afterWriteMedianMs": null,
+   "afterWriteMaxMs": null,
+   "bytes": 1715113,
+   "rows": 5000,
+   "bySource": {
+    "invoice": 4118,
+    "account": 882
+   }
+  }
+ ]
+}

@@ -1,0 +1,28 @@
+// Önceden var olan (MM5, 2.4.3) olası çift sayımın yeniden üretimi: müşteri carisinde vadesiz elle Borç 1.000 + açık vadeli ALIŞ faturası 300.
+// Gerçek net (müşteri bize 1.000 borçlu, biz ona 300 borçluyuz) = 700. Projeksiyon: faturasız alacak (bakiye 700) + alış faturası çıkışı 300 → net 400?
+import assert from "node:assert/strict";
+import { it } from "node:test";
+const REPO = process.env.REPO;
+const { loginAdmin, startTestServer } = await import(`${REPO}/test/helpers.mjs`);
+const unwrap = r => ({ ...r, data: r.data && typeof r.data === "object" && "ok" in r.data ? (r.data.ok ? r.data.data : r.data) : r.data });
+it("müşteri carisinde açık alış faturası: projeksiyon net = bakiye mi?", async () => {
+  const server = await startTestServer({ now: { time: "2026-10-20T12:00:00+03:00", fixed: true }, legacyCasePayments: false, legacyTableTransfer: false });
+  try {
+    const c = await loginAdmin(server);
+    const api = { get: async u => unwrap(await c.get(u)), post: async (u, b) => unwrap(await c.post(u, b)) };
+    await api.post("/api/workspace/bank/setup/dismiss", {});
+    const acc = (await api.post("/api/workspace/accounts", { name: "Karma Cari", type: "customer", registeredOn: "2026-01-01" })).data;
+    const e = await api.post(`/api/workspace/accounts/${acc.id}/entries`, { kind: "debt", amount: "1.000", date: "2026-10-01", method: "cash" });
+    assert.equal(e.status, 200, JSON.stringify(e.data));
+    const inv = await api.post("/api/workspace/invoices", { scenario: "expense_purchase", accountId: acc.id, number: "AL-K1", issueDate: "2026-10-05", lines: [{ name: "Danışmanlık", expenseCode: "advisory", qty: 1, unitPrice: 300, vatRate: 0 }], payment: { rest: "open", dueDate: "2026-11-05" } });
+    assert.equal(inv.status, 200, JSON.stringify(inv.data));
+    const balance = (await api.get(`/api/workspace/accounts/${acc.id}`)).data.totals.balance;
+    const flow = (await api.get("/api/workspace/overview/nakit-akisi?preset=next30")).data;
+    const rows = [...flow.rows, ...flow.overdue].filter(r => r.party === acc.name || r.ref?.id === acc.id || r.ref?.id === inv.data.id);
+    const net = rows.reduce((s, r) => s + (r.direction === "out" ? -r.amount : r.amount), 0);
+    console.log(JSON.stringify({ balance, net, rows: rows.map(r => [r.source, r.date, r.direction, r.amount]) }));
+    assert.equal(net, balance, `projeksiyon net ${net} ≠ bakiye ${balance}`);
+  } finally {
+    await server.close();
+  }
+});

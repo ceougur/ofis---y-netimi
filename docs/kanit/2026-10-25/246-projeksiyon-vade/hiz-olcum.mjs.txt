@@ -1,0 +1,149 @@
+// 2.4.6 madde 11 hız ölçümü + büyük veride değişmez denetimi (ders 15: çağıran flock altında koşar; her ölçüm taze veri kopyasında, ayrı açılışta).
+//   node olcum.mjs <kök (goc245-hiz veri+vade çıktısı)> <tekrar>
+// Değişkenler: A = v2.4.5 etiketinin GERÇEK kodu (ürün kodu bu dalın tabanı e77447a ile aynı), B = bu dal (2.4.6 madde 11). Veri: v2.4.4'ün gerçek koduyla üretilip
+// 2.4.5 API'siyle vadelenen veri (tools/goc245-hiz.mjs veri + vade; 2.000 müşteri, 100 tedarikçi, ~9.800 fatura, 4.000 elle borç, 1.997'si vadeli).
+// Her değişken, her turda: (1) Nakit Akış Projeksiyonu (30 gün) soğuk + sıcak ×15 + tahsilattan sonraki ilk istek ×8; (2) ayrı açılışta Tahsilat Takvimi (zil) aynı
+// düzende; (3) ayrı açılışta Vade Takip soğuk + sıcak. İlk turda ayrıca bütün ufuk (bugün → +10 yıl, gecikmişler dahil) cari başına net karşılaştırması.
+import { cpSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import path from "node:path";
+
+const [rootArg, repeatArg = "3"] = process.argv.slice(2);
+const root = path.resolve(rootArg);
+const REPO = process.env.REPO;
+const { createClock } = await import(`${REPO}/server/lib/clock.mjs`);
+const { bootVersion, CURRENT } = await import(`${REPO}/test/guvenilirlik/surumler.mjs`);
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const manifest = JSON.parse(readFileSync(path.join(root, "manifest.json"), "utf8"));
+const day = manifest.endDay;
+const repeat = Number(repeatArg);
+const median = list => {
+  const s = [...list].sort((a, b) => a - b);
+  return s.length ? (s.length % 2 ? s[(s.length - 1) / 2] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2) : null;
+};
+const r1 = v => (v === null ? null : Math.round(v * 10) / 10);
+const log = line => console.log(`[${new Date().toISOString().slice(11, 19)}] ${line}`);
+const flags = { edocEnabled: true, edocLive: true, esmmEnabled: true };
+const VARIANTS = [
+  { id: "A", label: "v2.4.5 (gerçek kod; taban)", version: "v2.4.5" },
+  { id: "B", label: "2.4.6 madde 11 (bu dal)", version: CURRENT },
+];
+const PATHS = {
+  flow: "/api/workspace/overview/nakit-akisi?preset=next30",
+  dues: "/api/workspace/dues",
+  vade: "/api/workspace/overview/vade-takip?preset=next30",
+};
+const far = (() => {
+  const d = new Date(`${day}T00:00:00Z`);
+  d.setUTCFullYear(d.getUTCFullYear() + 10);
+  return d.toISOString().slice(0, 10);
+})();
+async function boot(variant, tag) {
+  const dir = path.join(root, `olc-${variant.id}-${tag}`);
+  rmSync(dir, { recursive: true, force: true });
+  cpSync(path.join(root, "vadeli"), dir, { recursive: true });
+  const clock = createClock({ time: new Date(Number(day.slice(0, 4)), Number(day.slice(5, 7)) - 1, Number(day.slice(8, 10)), 12, 0, 0), fixed: true });
+  const extra = variant.version === CURRENT ? { legacyCasePayments: false, legacyTableTransfer: false, legacyTableDues: false, moneyStrict: false, gateVerify: false } : {};
+  const server = await bootVersion(variant.version, { dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, now: clock, ...flags, ...extra });
+  const api = await server.login();
+  const timed = async url => {
+    const t = performance.now();
+    const res = await api.client.raw("GET", url);
+    const ms = performance.now() - t;
+    if (res.status !== 200) throw new Error(`${variant.id} ${url}: ${res.status} ${res.buffer.toString("utf8").slice(0, 200)}`);
+    const body = res.data || {};
+    return { ms, bytes: res.buffer.length, data: body && "ok" in body ? body.data : body };
+  };
+  const close = async () => {
+    await server.close();
+    rmSync(dir, { recursive: true, force: true });
+  };
+  return { server, api, timed, close, commit: server.commit };
+}
+async function measure(variant, kind, round) {
+  const run = await boot(variant, `${kind}-${round}`);
+  try {
+    const url = PATHS[kind];
+    const cold = await run.timed(url);
+    const warm = [];
+    for (let i = 0; i < 15; i += 1) warm.push((await run.timed(url)).ms);
+    const after = [];
+    if (kind !== "vade") {
+      const accounts = await run.api.get("/api/workspace/accounts?limit=1");
+      const accountId = (accounts.data?.accounts || accounts.data?.data?.accounts || [])[0]?.id;
+      for (let i = 0; i < 8; i += 1) {
+        const res = await run.api.post(`/api/workspace/accounts/${accountId}/entries`, { kind: "in", amount: 10, date: day, method: "cash", note: `Ölçüm ${i + 1}` });
+        if (res.status !== 200) throw new Error(`tahsilat ${res.status}`);
+        after.push((await run.timed(url)).ms);
+      }
+    }
+    const rows = kind === "flow" ? cold.data.rows.length + cold.data.overdue.length : kind === "dues" ? cold.data.items.length : cold.data.rows.length;
+    const bySource = {};
+    for (const row of kind === "flow" ? [...cold.data.rows, ...cold.data.overdue] : kind === "dues" ? cold.data.items : cold.data.rows) bySource[row.source || "(tablo)"] = (bySource[row.source || "(tablo)"] || 0) + 1;
+    return { round, variant: variant.id, kind, commit: run.commit || "çalışma kopyası", coldMs: r1(cold.ms), warmMedianMs: r1(median(warm)), warmMaxMs: r1(Math.max(...warm)), afterWriteMedianMs: r1(median(after)), afterWriteMaxMs: after.length ? r1(Math.max(...after)) : null, bytes: cold.bytes, rows, bySource };
+  } finally {
+    await run.close();
+  }
+}
+// Büyük veride değişmez: bütün ufuk (gecikmişler + bugün → 10 yıl). Cari başına net (giriş − çıkış) A ↔ B: kalem toplamı değişmez, yalnız tarih kayar (beklenen);
+// fark çıkan her cari listelenir (KS2: müşterideki vadesiz elle Alacak artık vadeli borçtan düşülmez — beklenen sınıf; başka fark = BULGU).
+async function invariant() {
+  const per = {};
+  const totals = {};
+  for (const variant of VARIANTS) {
+    const run = await boot(variant, "degismez");
+    try {
+      const data = (await run.timed(`/api/workspace/overview/nakit-akisi?from=${day}&to=${far}`)).data;
+      const all = [...data.rows, ...data.overdue];
+      const map = new Map();
+      for (const row of all) {
+        if (row.ref?.type !== "account") continue;
+        map.set(row.ref.id, Math.round(((map.get(row.ref.id) || 0) + (row.direction === "out" ? -row.amount : row.amount)) * 100) / 100);
+      }
+      per[variant.id] = map;
+      const sum = (list, dir) => Math.round(list.filter(r => r.direction === dir).reduce((s, r) => s + r.amount * 100, 0)) / 100;
+      totals[variant.id] = { rows: data.rows.length, overdue: data.overdue.length, in: data.totals.in, out: data.totals.out, overdueIn: data.overdueTotals.in, overdueOut: data.overdueTotals.out, accountRows: all.filter(r => r.source === "account").length, accountIn: sum(all.filter(r => r.source === "account"), "in"), accountOut: sum(all.filter(r => r.source === "account"), "out"), unbilledRows: all.filter(r => r.source === "unbilled").length, unbilledIn: sum(all.filter(r => r.source === "unbilled"), "in"), totalNet: Math.round((data.totals.in - data.totals.out + data.overdueTotals.in - data.overdueTotals.out) * 100) / 100 };
+      if (variant.version === CURRENT) {
+        // B'de satırların toplamı = Beklenen Giriş / Çıkış ve kapanış formülü (ders 11 büyük veride).
+        totals.B.check = { inEqRows: sum(data.rows, "in") === data.totals.in, outEqRows: sum(data.rows, "out") === data.totals.out, closing: Math.round((data.opening + data.totals.in - data.totals.out) * 100) / 100 === data.closing };
+      }
+    } finally {
+      await run.close();
+    }
+  }
+  const ids = new Set([...per.A.keys(), ...per.B.keys()]);
+  const diffs = [];
+  for (const id of ids) {
+    const a = per.A.get(id) || 0;
+    const b = per.B.get(id) || 0;
+    if (Math.abs(a - b) > 0.005) diffs.push({ id, a, b, delta: Math.round((b - a) * 100) / 100 });
+  }
+  return { accounts: ids.size, equal: ids.size - diffs.length, differ: diffs.length, diffSample: diffs.slice(0, 20), deltaSum: Math.round(diffs.reduce((s, d) => s + d.delta * 100, 0)) / 100, totals };
+}
+const results = [];
+log(`veri: ${JSON.stringify(manifest.counts)} · vade ${JSON.stringify(manifest.vade)} · gün ${day}`);
+const inv = await invariant();
+log(`DEĞİŞMEZ: ${inv.accounts} cari · net aynı ${inv.equal} · farklı ${inv.differ} (Σ fark ${inv.deltaSum}) · A ${JSON.stringify(inv.totals.A)} · B ${JSON.stringify(inv.totals.B)}`);
+for (let round = 1; round <= repeat; round += 1) {
+  for (const kind of ["flow", "dues", "vade"]) {
+    for (const variant of round % 2 ? VARIANTS : [...VARIANTS].reverse()) {
+      const row = await measure(variant, kind, round);
+      results.push(row);
+      log(`${variant.id} ${kind} tur ${round}: soğuk ${row.coldMs} · sıcak ${row.warmMedianMs} (en çok ${row.warmMaxMs}) · yazımdan sonra ${row.afterWriteMedianMs} (en çok ${row.afterWriteMaxMs}) ms · ${row.rows} satır ${JSON.stringify(row.bySource)}`);
+    }
+  }
+}
+const table = {};
+for (const kind of ["flow", "dues", "vade"]) {
+  for (const variant of VARIANTS) {
+    const rows = results.filter(r => r.kind === kind && r.variant === variant.id);
+    table[`${kind}-${variant.id}`] = { label: variant.label, ...Object.fromEntries(["coldMs", "warmMedianMs", "afterWriteMedianMs", "afterWriteMaxMs"].map(k => [k, r1(median(rows.map(r => r[k]).filter(v => v !== null)))])), rows: rows[0]?.rows, bySource: rows[0]?.bySource };
+  }
+  const a = table[`${kind}-A`];
+  const b = table[`${kind}-B`];
+  log(`ÖZET ${kind}: soğuk A ${a.coldMs} → B ${b.coldMs} (Δ ${r1(b.coldMs - a.coldMs)}) · sıcak A ${a.warmMedianMs} → B ${b.warmMedianMs} (Δ ${r1(b.warmMedianMs - a.warmMedianMs)}) · yazımdan sonra A ${a.afterWriteMedianMs} → B ${b.afterWriteMedianMs} ms`);
+}
+writeFileSync(path.join(root, "olcum-246.json"), `${JSON.stringify({ day, manifest, repeat, invariant: inv, table, results }, null, 1)}\n`);
+console.log(`# ${results.length} ölçüm (değişken × uç × tur); süreler ölçüm, eşik denetimi değil; değişmez: B satır toplamları ${JSON.stringify(inv.totals.B.check)}`);
+const ok = inv.totals.B.check.inEqRows && inv.totals.B.check.outEqRows && inv.totals.B.check.closing;
+console.log(`# tests ${results.length + 1}\n# pass ${results.length + (ok ? 1 : 0)}\n# fail ${ok ? 0 : 1}\n# cancelled 0\n# skipped 0\n# todo 0`);
+process.exit(ok ? 0 : 1);

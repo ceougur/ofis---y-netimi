@@ -1,0 +1,32 @@
+{
+  "ad": "246-projeksiyon-vade/e2e-banka-210-temel",
+  "komut": "env HUKUK_LICENSE_URL=http://127.0.0.1:9 EKRAN_DIR=/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/ekran npm run test:senaryo-banka-210-temel",
+  "commit": "97d20d4ca021c3b10efeb471d3ae6cb34b519662",
+  "dal": "is/projeksiyon-vade",
+  "kirli": 10,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T11:37:14.305Z",
+  "sure_sn": 73.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 80,
+    "gecen": 80,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-projeksiyon-vade/e2e-banka-210-temel.log",
+  "klasor": "/home/user/wt/projeksiyon-vade",
+  "ham_cikti_sha256": "25401624ec3531a2599017c9b9777476eb0e8e3ee18701cd4c408b7773d93ccc",
+  "ham_cikti_bayt": 13043
+}

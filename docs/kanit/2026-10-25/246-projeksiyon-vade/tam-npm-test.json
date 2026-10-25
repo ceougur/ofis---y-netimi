@@ -1,0 +1,32 @@
+{
+  "ad": "246-projeksiyon-vade/tam-npm-test",
+  "komut": "npm test",
+  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "dal": "is/projeksiyon-vade",
+  "kirli": 4,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T10:51:29.478Z",
+  "sure_sn": 2051.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3555,
+    "gecen": 3555,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-projeksiyon-vade/tam-npm-test.log.gz",
+  "klasor": "/home/user/wt/projeksiyon-vade",
+  "ham_cikti_sha256": "11a8f6edf38d85b6af01e04ff110398164a1aeabd36febff3701a189edf93717",
+  "ham_cikti_bayt": 1281172
+}

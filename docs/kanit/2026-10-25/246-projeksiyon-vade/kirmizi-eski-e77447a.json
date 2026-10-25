@@ -1,0 +1,118 @@
+{
+  "ad": "246-projeksiyon-vade/kirmizi-eski-e77447a",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs",
+  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "dal": "is/projeksiyon-vade",
+  "kirli": 4,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T10:46:50.183Z",
+  "sure_sn": 3.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 0,
+    "basarisiz": 17,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 17 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri › vadeli elle Borç: Vade Tarihi'nde giriş kalemi (Cari (vadeli), Tahsil Edilecek Borç); faturasız cari alacağı olarak ikinci kez yok; carinin Σ = bakiye",
+      "konum": "test/projeksiyon-vade-246.test.mjs:81:3",
+      "hata": "projeksiyonda carinin vadeli borcu kendi vadesinde yok; bu carinin satırları: [{\"source\":\"unbilled\",\"date\":\"2026-10-10\",\"direction\":\"in\",\"amount\":1000,\"label\":\"Faturasız Cari Alacağı\"}] · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri › Beklenen Ödeme Tarihi girilmişse kalem o gündedir (Ödeme Sözü), Vade Tarihi'nde değil; Beklenen Ödeme Vade'den önce de olabilir (K6.5 (4))",
+      "konum": "test/projeksiyon-vade-246.test.mjs:93:3",
+      "hata": "söz günü: [{\"source\":\"unbilled\",\"date\":\"2026-10-17\",\"direction\":\"in\",\"amount\":750,\"label\":\"Faturasız Cari Alacağı\"}] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri › FIFO kalanı: kısmi tahsilat kalemi küçültür; tahsilat silinince kalem büyür ve vadesiz borcun kalanı KENDİ gününde faturasız alacak olur; tam tahsilatta kalem yok",
+      "konum": "test/projeksiyon-vade-246.test.mjs:100:3",
+      "hata": "500 tahsilat önce eski 300'ü, sonra 200 vadeliyi kapatır (FIFO): [{\"source\":\"unbilled\",\"date\":\"2026-10-20\",\"direction\":\"in\",\"amount\":800,\"label\":\"Faturasız Cari Alacağı\"}] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri › tedarikçideki elle Alacak ve alacak yönlü Açılış Bakiyesi: vadesinde ÇIKIŞ (Ödenecek Borç); ödeme kalemi küçültür",
+      "konum": "test/projeksiyon-vade-246.test.mjs:118:3",
+      "hata": "tedarikçiye borç vadesinde çıkış: [] · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri › KS2: müşterideki vadeli elle Alacak çıkış kalemidir, müşterinin borcundan düşülmez; bakiyede ikinci kez düşülmez (carinin net = bakiye)",
+      "konum": "test/projeksiyon-vade-246.test.mjs:134:3",
+      "hata": "vadeli elle Alacak çıkış kalemi: [{\"source\":\"unbilled\",\"date\":\"2026-10-05\",\"direction\":\"in\",\"amount\":700,\"label\":\"Faturasız Cari Alacağı\"}] · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri › K6.5 (1): Mevcut Borç kartının kapsadığı kısım kartın taksitleriyle BİR kez; kapsanmayan kalan cari kalemidir",
+      "konum": "test/projeksiyon-vade-246.test.mjs:150:3",
+      "hata": "kapsanmayan 400 vadesinde: [{\"source\":\"plan\",\"date\":\"2026-10-30\",\"direction\":\"in\",\"amount\":300,\"label\":\"1. taksit\"},{\"source\":\"plan\",\"date\":\"2026-11-30\",\"direction\":\"in\",\"amount\":300,\"label\":\"2. taksit\"},{\"source\":\"unbilled\",\"date\":\"2026-09-20\",\"direction\":\"in\",\"amount\":400,\"label\":\"Faturasız Cari Alacağı\"}] · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri › karışık kuyruk: vadeli borç + vadeli satış faturası + tahsilat → fatura açığı ve borç kalanı kendi vadelerinde; Σ = bakiye, faturasız alacak yok",
+      "konum": "test/projeksiyon-vade-246.test.mjs:168:3",
+      "hata": "[{\"source\":\"invoice\",\"date\":\"2026-11-14\",\"direction\":\"in\",\"amount\":1500,\"label\":\"Satış faturası FIS2026000000001 (kalan)\"},{\"source\":\"unbilled\",\"date\":\"2026-10-10\",\"direction\":\"in\",\"amount\":500,\"label\":\"Faturasız Cari Alacağı\"}] (late aentry-390a559d-7f95-44da-914c-420f394d0bbf) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri › toplam = kalemler, her süzgeç: 7/30/60/90 gün, aralık + başlangıca kadar beklenen, gecikmişleri başlangıca ekle, gün / hafta / ay toplamları",
+      "konum": "test/projeksiyon-vade-246.test.mjs:179:3",
+      "hata": "next7: aralıktaki cari kalemleri · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri › PDF ve Excel aynı satırları yazar: 'Cari (vadeli)' kaynaklı kalem Nakit Akışı ve Gecikmiş sayfalarında, tutarıyla",
+      "konum": "test/projeksiyon-vade-246.test.mjs:222:3",
+      "hata": "Excel Nakit Akışı sayfasında cari kalemi yok:  (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri › ortak yardımcı: projeksiyonun cari kalemleri = Vade Takip'in cari kalemleri (aynı aralık) = zil / takvim kalemleri (7 gün); kimlik, gün, yön, etiket, tutar",
+      "konum": "test/projeksiyon-vade-246.test.mjs:241:3",
+      "hata": "projeksiyon ↔ Vade Takip (aynı aralık: gecikmişler + 30 gün) · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri › yetki: Finans Raporları (overview.view) yoksa 403 (ekran, PDF, Excel); cari kalemi yalnız Cari görüntüleme (accounts.view) yetkisi olana — yoksa aynı borç bir kez, faturasız alacakta",
+      "konum": "test/projeksiyon-vade-246.test.mjs:258:3",
+      "hata": "muhasebe (Finans Raporları + Cari görüntüleme) cari kalemini görür · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri › bir kez: Σ (cari kalemi + faturasız cari alacağı + kartın taksitleri) = carilerin açık bakiyesi; vadeli borç faturasız alacakta YOK, vadesiz borç orada",
+      "konum": "test/projeksiyon-vade-246.test.mjs:282:3",
+      "hata": "faturasız alacakta yalnız vadesiz borçlar, kendi günleriyle: [{\"source\":\"unbilled\",\"date\":\"2026-09-10\",\"direction\":\"in\",\"amount\":400,\"label\":\"Faturasız Cari Alacağı\"},{\"source\":\"unbilled\",\"date\":\"2026-09-15\",\"direction\":\"in\",\"amount\":250,\"label\":\"Faturasız Cari Alacağı\"},{\"source\":\"unbilled\",\"date\":\"2026-09-20\",\"direction\":\"in\",\"amount\":2000,\"label\":\"Faturasız Cari Alacağı\"},{\"source\":\"unbilled\",\"date\":\"2026-09-30\",\"direction\":\"in\",\"amount\":700,\"label\":\"Faturasız Cari Alacağı\"},{\"source\":\"unbilled\",\"date\":\"2026-09-20\",\"direction\":\"in\",\"amount\":700,\"label\":\"Faturasız Cari Alacağı\"},{\"source\":\"unbilled\",\"date\":\"2026-10-18\",\"direction\":\"in\",\"amount\":90,\"label\":\"Faturasız Cari Alacağı\"}] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri › gecikmiş vadeli kalem takvimdeki gibi görünür: 'Vadesi geçmiş, kapanmamış' listesinde (gün, tutar, kimlik takvimle aynı); 'başlangıca ekle' ile başlangıca girer",
+      "konum": "test/projeksiyon-vade-246.test.mjs:312:3",
+      "hata": "gecikmişlerde takvimle aynı kalemler: [{\"source\":\"unbilled\",\"date\":\"2026-09-20\",\"direction\":\"in\",\"amount\":185,\"label\":\"Faturasız Cari Alacağı\"},{\"source\":\"unbilled\",\"date\":\"2026-09-20\",\"direction\":\"in\",\"amount\":815,\"label\":\"Faturasız Cari Alacağı\"}] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri › pencere iki ucu kapalı (K-P1): son gündeki kalem dahil, ertesi gün değil; aralığın ilk günündeki kalem dahil",
+      "konum": "test/projeksiyon-vade-246.test.mjs:327:3",
+      "hata": "30 gün: 30. gün dahil, 31. gün yok; bugünkü kalem aralıkta · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri › cari silinince kalemi de faturasız alacağı da yok; geri yüklenince döner",
+      "konum": "test/projeksiyon-vade-246.test.mjs:344:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri › 002 şirketi: boş veri (satır yok, toplamlar 0); kalemler şirkete ayrı",
+      "konum": "test/projeksiyon-vade-246.test.mjs:356:3",
+      "hata": "002'de yalnız kendi kalemi (açılış bakiyesinin vadesi) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.6 madde 11: ay sonu, yıl dönümü ve gün değişimi (sahte saat) › bugün vadeli kalem aralıktadır (gecikmiş değil); yarın (yeni yıl) aralıkta; ay sonu (31 Ocak) 30 günlükte değil 60 günlükte; gün değişince bugünkü kalem gecikmişe geçer",
+      "konum": "test/projeksiyon-vade-246.test.mjs:382:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-25/246-projeksiyon-vade/kirmizi-eski-e77447a.log",
+  "klasor": "/home/user/wt/projeksiyon-vade",
+  "ham_cikti_sha256": "f6feac6d33ce5a41dc0380386c52b51d3fe4f090518249d23d7e3eff8b25f146",
+  "ham_cikti_bayt": 34851
+}

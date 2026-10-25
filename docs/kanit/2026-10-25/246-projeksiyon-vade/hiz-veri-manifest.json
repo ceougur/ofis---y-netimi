@@ -1,0 +1,25 @@
+{
+ "version": "v2.4.4",
+ "commit": "5187561baacedf65562d1615d79a8fa0c5632132",
+ "seed": 5,
+ "startDay": "2025-10-25",
+ "endDay": "2026-10-25",
+ "counts": {
+  "cari-musteri": 2000,
+  "cari-tedarikci": 100,
+  "fatura-satis-vadeli": 4912,
+  "fatura-satis-kismi": 1734,
+  "fatura-satis-pesin": 2178,
+  "elle-borc": 4000,
+  "cari-tahsilat": 2000,
+  "fatura-alis": 1176
+ },
+ "requests": 18100,
+ "ms": 345894,
+ "vade": {
+  "debts": 4000,
+  "puts": 1997,
+  "vade": 1402,
+  "vadeBeklenen": 595
+ }
+}

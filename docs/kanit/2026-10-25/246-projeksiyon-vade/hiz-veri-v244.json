@@ -1,0 +1,32 @@
+{
+  "ad": "246-projeksiyon-vade/hiz-veri-v244",
+  "komut": "node --disable-warning=ExperimentalWarning tools/goc245-hiz.mjs veri --kok /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/hiz --tohum 5",
+  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "dal": "is/projeksiyon-vade",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T09:44:51.719Z",
+  "sure_sn": 347.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 18100,
+    "gecen": 18100,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-projeksiyon-vade/hiz-veri-v244.log",
+  "klasor": "/home/user/wt/projeksiyon-vade",
+  "ham_cikti_sha256": "9075da6cbd9c6eadc502b16f749d52b1332768a9c49b0549cc7a6e0d1c91520e",
+  "ham_cikti_bayt": 3035
+}
