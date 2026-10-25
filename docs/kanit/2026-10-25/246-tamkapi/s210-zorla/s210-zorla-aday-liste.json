@@ -1,0 +1,300 @@
+{
+ "label": "aday-46db18c-liste",
+ "repo": "/home/user/wt/aday246-3",
+ "trials": [
+  {
+   "mode": "gecikme-220",
+   "i": 1,
+   "delay": 220,
+   "routed": 1,
+   "blurAt": 614,
+   "readAt": 749,
+   "style": "|",
+   "focused": false,
+   "red": false,
+   "transitional": true,
+   "afterBlur": [
+    {
+     "t": 691,
+     "stack": "at guard (assets/hof-core.js:999:42)"
+    },
+    {
+     "t": 742,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ],
+   "focusCalls": [
+    {
+     "t": 538,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 691,
+     "stack": "at guard (assets/hof-core.js:999:42)"
+    },
+    {
+     "t": 742,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-230",
+   "i": 1,
+   "delay": 230,
+   "routed": 2,
+   "blurAt": 612,
+   "readAt": 719,
+   "style": "rgb(233, 245, 238)|rgb(183, 214, 195)",
+   "focused": true,
+   "red": true,
+   "transitional": false,
+   "afterBlur": [
+    {
+     "t": 693,
+     "stack": "at guard (assets/hof-core.js:999:42)"
+    },
+    {
+     "t": 711,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ],
+   "focusCalls": [
+    {
+     "t": 547,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 693,
+     "stack": "at guard (assets/hof-core.js:999:42)"
+    },
+    {
+     "t": 711,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-240",
+   "i": 1,
+   "delay": 240,
+   "routed": 3,
+   "blurAt": 623,
+   "readAt": 740,
+   "style": "|",
+   "focused": false,
+   "red": false,
+   "transitional": true,
+   "afterBlur": [
+    {
+     "t": 689,
+     "stack": "at guard (assets/hof-core.js:999:42)"
+    },
+    {
+     "t": 733,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ],
+   "focusCalls": [
+    {
+     "t": 563,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 689,
+     "stack": "at guard (assets/hof-core.js:999:42)"
+    },
+    {
+     "t": 733,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-250",
+   "i": 1,
+   "delay": 250,
+   "routed": 4,
+   "blurAt": 614,
+   "readAt": 724,
+   "style": "rgb(233, 245, 238)|rgb(183, 214, 195)",
+   "focused": true,
+   "red": true,
+   "transitional": false,
+   "afterBlur": [
+    {
+     "t": 691,
+     "stack": "at guard (assets/hof-core.js:999:42)"
+    }
+   ],
+   "focusCalls": [
+    {
+     "t": 567,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 691,
+     "stack": "at guard (assets/hof-core.js:999:42)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-260",
+   "i": 1,
+   "delay": 260,
+   "routed": 5,
+   "blurAt": 627,
+   "readAt": 738,
+   "style": "rgb(236, 247, 241)|rgb(160, 197, 177)",
+   "focused": true,
+   "red": true,
+   "transitional": false,
+   "afterBlur": [
+    {
+     "t": 692,
+     "stack": "at guard (assets/hof-core.js:999:42)"
+    }
+   ],
+   "focusCalls": [
+    {
+     "t": 587,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 692,
+     "stack": "at guard (assets/hof-core.js:999:42)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-220",
+   "i": 1,
+   "delay": 220,
+   "routed": 6,
+   "blurAt": 620,
+   "readAt": 733,
+   "style": "rgb(235, 246, 240)|rgb(166, 202, 182)",
+   "focused": true,
+   "red": true,
+   "transitional": false,
+   "afterBlur": [
+    {
+     "t": 691,
+     "stack": "at guard (assets/hof-core.js:999:42)"
+    },
+    {
+     "t": 705,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ],
+   "focusCalls": [
+    {
+     "t": 538,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 691,
+     "stack": "at guard (assets/hof-core.js:999:42)"
+    },
+    {
+     "t": 705,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-240",
+   "i": 1,
+   "delay": 240,
+   "routed": 7,
+   "blurAt": 621,
+   "readAt": 739,
+   "style": "|",
+   "focused": false,
+   "red": false,
+   "transitional": true,
+   "afterBlur": [
+    {
+     "t": 692,
+     "stack": "at guard (assets/hof-core.js:999:42)"
+    },
+    {
+     "t": 728,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ],
+   "focusCalls": [
+    {
+     "t": 560,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 692,
+     "stack": "at guard (assets/hof-core.js:999:42)"
+    },
+    {
+     "t": 728,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-260",
+   "i": 1,
+   "delay": 260,
+   "routed": 8,
+   "blurAt": 640,
+   "readAt": 761,
+   "style": "|",
+   "focused": false,
+   "red": false,
+   "transitional": true,
+   "afterBlur": [
+    {
+     "t": 689,
+     "stack": "at guard (assets/hof-core.js:999:42)"
+    },
+    {
+     "t": 754,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ],
+   "focusCalls": [
+    {
+     "t": 585,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 689,
+     "stack": "at guard (assets/hof-core.js:999:42)"
+    },
+    {
+     "t": 754,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  }
+ ],
+ "summary": {
+  "gecikme-220": {
+   "n": 2,
+   "red": 1
+  },
+  "gecikme-230": {
+   "n": 1,
+   "red": 1
+  },
+  "gecikme-240": {
+   "n": 2,
+   "red": 0
+  },
+  "gecikme-250": {
+   "n": 1,
+   "red": 1
+  },
+  "gecikme-260": {
+   "n": 2,
+   "red": 1
+  }
+ }
+}

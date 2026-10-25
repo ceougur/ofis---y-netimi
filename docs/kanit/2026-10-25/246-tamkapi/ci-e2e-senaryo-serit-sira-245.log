@@ -1,0 +1,19 @@
+
+> destekofis@2.4.6 test:senaryo-serit-sira-245
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-serit-sira-245.mjs
+
+  ✓ sunucu 47 kalem; cari vade kalemi listenin SONUNDA (ön koşul): account
+
+■ S2 ilk piller ve görünürlük
+  ✓ şeritte 40 pil, başlıkta "ilk 40": 40 · 1 gecikmiş · 1 bugün/bu ay · 45 yaklaşan · ilk 40
+  ✓ ilk pil en gecikmiş: {"who":"Şerit Geciken","state":"20 gün gecikti"}
+  ✓ ikinci pil bugün vadeli cari borcu (listenin sonundaki kalem görünüyor): {"who":"Şerit Vadeli Cari","state":"Bugün"}
+
+■ S3 gün sırası
+  ✓ pillerin günü soldan sağa azalmıyor (-20,0,1,1,1,1,1,1,1,2,2,2,2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,5,5,5,5,5,5,6,6,6,6,6,6)
+
+■ S4 aynı günde ad sırası
+  ✓ aynı gün içinde ad sırası
+  ✓ sayfa hatası yok: 
+
+7 geçti, 0 kaldı

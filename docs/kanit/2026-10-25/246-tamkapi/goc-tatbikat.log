@@ -1,0 +1,26 @@
+[18:33:58] ✓ V1 001 P carisinin kartı: Vade / Beklenen / Kalan (FIFO: açılış 0, D1 3.000, D2 3.000), bakiye 6.000
+[18:33:58] ✓ V1 001 takvim / zil: D1 gecikmiş kısmi 3.000, D2 Ödeme Sözü gün+2 3.000, açılış kalem değil
+[18:33:58] ✓ V2 001 Tabela Adı kaydedildi ve geri okundu; seri ve sıradaki numaralar değişmedi
+[18:33:59] ✓ V1 002 P carisinin kartı: Vade / Beklenen / Kalan (FIFO: açılış 0, D1 3.000, D2 3.000), bakiye 6.000
+[18:33:59] ✓ V1 002 takvim / zil: D1 gecikmiş kısmi 3.000, D2 Ödeme Sözü gün+2 3.000, açılış kalem değil
+[18:33:59] ✓ V2 002 Tabela Adı kaydedildi ve geri okundu; seri ve sıradaki numaralar değişmedi
+[18:34:41] ✓ V3 002 ara çalışma gerçekten yazıldı (bakiye 6.000 → 6.500, D2 Vade gün+6 / Beklenen boş, Tabela değişti)
+[18:34:51] ✓ V3 002 yedek → çalış → geri yükle: olgular (Vade / Beklenen / Kalan, takvim, Tabela Adı dahil) yedek anıyla aynı
+[18:35:19] ✓ V4 002 geri yüklemesi 001'i değiştirmedi
+[18:35:20] ✓ V5 002 geri yüklemeden sonra yeniden çalış: Kalan D1 500 / D2 3.000 / D4 2.000, bakiye 5.500, takvim aynı; Mutabakat Testi'nde yeni sapma yok, mizan dengede
+[18:35:20] ✓ V6 002 vadeli borç silindi: bakiye 2.500, takvimden çıktı, Silinenler'de
+[18:35:20] ✓ V6 002 Silinenler'den geri yüklenen vadeli borç: Vade gün+5 ve Beklenen gün+2 korundu, Kalan 3.000, takvimde yeniden "Ödeme Sözü" gün+2, bakiye 5.500
+[18:36:00] ✓ V3 001 ara çalışma gerçekten yazıldı (bakiye 6.000 → 6.500, D2 Vade gün+6 / Beklenen boş, Tabela değişti)
+[18:36:01] ✓ V3 001 geri yükleme (yeniden açılışta) uygulandı
+[18:36:32] ✓ V3 001 yedek → çalış → geri yükle: olgular (Vade / Beklenen / Kalan, takvim, Tabela Adı dahil) yedek anıyla aynı
+[18:36:41] ✓ V4 001 geri yüklemesi 002'i değiştirmedi
+[18:36:42] ✓ V5 001 geri yüklemeden sonra yeniden çalış: Kalan D1 500 / D2 3.000 / D4 2.000, bakiye 5.500, takvim aynı; Mutabakat Testi'nde yeni sapma yok, mizan dengede
+[18:36:42] ✓ V6 001 vadeli borç silindi: bakiye 2.500, takvimden çıktı, Silinenler'de
+[18:36:43] ✓ V6 001 Silinenler'den geri yüklenen vadeli borç: Vade gün+5 ve Beklenen gün+2 korundu, Kalan 3.000, takvimde yeniden "Ödeme Sözü" gün+2, bakiye 5.500
+# 2.4.5 yedek tatbikatı denetimleri
+# tests 19
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

@@ -1,0 +1,55 @@
+// Göç farkı: cari kartı hareketlerinde (entries) değişen alanlar — v2.4.5 (taban kopyası) ile aday (göç kopyası), aynı sabit gün. Yalnız okuma.
+import { cpSync, rmSync, readFileSync, writeFileSync } from "node:fs";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const [REPO, KOK, OUT] = process.argv.slice(2);
+const imp = rel => import(pathToFileURL(path.join(REPO, rel)).href);
+const { bootVersion, CURRENT } = await imp("test/guvenilirlik/surumler.mjs");
+const { createClock } = await imp("server/lib/clock.mjs");
+const { scoped } = await imp("test/guvenilirlik/m30-uretici.mjs");
+const B = JSON.parse(readFileSync(path.join(KOK, "cikti/v2.4.5-taban.json"), "utf8"));
+const A = JSON.parse(readFileSync(path.join(KOK, "cikti/guncel-goc.json"), "utf8"));
+const day = B.day;
+const ids = {};
+for (const c of B.install.companies) ids[c.id] = Object.keys(B.companies[c.code].accountCards).filter(id => B.companies[c.code].accountCards[id].entries !== A.companies[c.code].accountCards[id].entries);
+const PROD = { edocEnabled: true, edocLive: true, esmmEnabled: true, legacyCasePayments: false, legacyTableTransfer: false, legacyTableDues: false };
+const read = async (version, src) => {
+  const dir = path.join(KOK, `kart-fark-${version === CURRENT ? "aday" : "eski"}`);
+  rmSync(dir, { recursive: true, force: true });
+  cpSync(path.join(KOK, src), dir, { recursive: true });
+  const clock = createClock({ time: new Date(Number(day.slice(0, 4)), Number(day.slice(5, 7)) - 1, Number(day.slice(8, 10)), 17, 0, 0), fixed: true });
+  const server = await bootVersion(version, { dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, now: clock, logLevel: "silent", ...PROD });
+  const out = {};
+  try {
+    const api = await server.login();
+    for (const [cid, list] of Object.entries(ids)) {
+      const s = scoped(api, cid);
+      for (const id of list) out[id] = (await s.get(`/api/workspace/accounts/${id}`)).data.entries;
+    }
+  } finally { await server.close(); rmSync(dir, { recursive: true, force: true }); }
+  return out;
+};
+const old = await read("v2.4.5", "taban");
+const neu = await read(CURRENT, "goc");
+const fields = {};
+const samples = {};
+let entries = 0;
+for (const id of Object.keys(old)) {
+  const o = old[id], n = neu[id];
+  for (let i = 0; i < Math.max(o.length, n.length); i += 1) {
+    const x = o[i] || {}, y = n[i] || {};
+    for (const k of new Set([...Object.keys(x), ...Object.keys(y)])) {
+      if (["dueDate", "expectedDate"].includes(k)) continue;
+      if (JSON.stringify(x[k]) !== JSON.stringify(y[k])) {
+        const key = `${k}: ${k in x ? "var" : "YOK"} → ${k in y ? "var" : "YOK"}`;
+        fields[key] = (fields[key] || 0) + 1;
+        (samples[key] ||= []).length < 4 && samples[key].push({ id, entry: y.id || x.id, kind: y.kind || x.kind, source: y.source ?? x.source, amount: y.amount ?? x.amount, date: y.date || x.date, note: (y.note || x.note || "").slice(0, 40), before: x[k], after: y[k] });
+        entries += 1;
+      }
+    }
+  }
+}
+writeFileSync(OUT, `${JSON.stringify({ cards: Object.keys(old).length, fieldDiffs: fields, samples }, null, 1)}\n`);
+console.log(JSON.stringify({ cards: Object.keys(old).length, fieldDiffs: fields }, null, 1));
+console.log(JSON.stringify(samples, null, 1).slice(0, 4000));
