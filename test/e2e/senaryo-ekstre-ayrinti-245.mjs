@@ -40,6 +40,10 @@ await must("fatura 1", api.post("/api/workspace/invoices", { kind: "sale", scena
 await must("fatura 2", api.post("/api/workspace/invoices", { kind: "sale", scenario: "service_sale", accountId: deniz.id, issueDate: "2026-11-15", pricesIncludeVat: true, lines: [{ name: "Bakım Paketi", qty: 2, unitPrice: 1000, vatRate: 20 }], payment: { cash: [{ amount: 500, method: "cash" }], rest: "open" } }));
 await must("tahsilat", api.post(`/api/workspace/accounts/${deniz.id}/entries`, { kind: "in", amount: "1000", method: "cash", date: "2026-11-20", note: "Elden" }));
 const kaya = await must("tedarikçi", api.post("/api/workspace/accounts", { name: "Kaya Tedarik", type: "supplier", registeredOn: "2026-01-01" }));
+// 2.4.6 madde 8 (K-DB2): bilgi notu açık bakiyenin TARAFINA bakar — tedarikçinin alacağı (bizim borcumuz) olsun; müşteriye elle Alacak (iskonto dekontu).
+await must("tedarikçi alacak", api.post(`/api/workspace/accounts/${kaya.id}/entries`, { kind: "credit", amount: "400", date: "2026-11-05", note: "Alış borcu" }));
+const ece = await must("alacaklı müşteri", api.post("/api/workspace/accounts", { name: "Ece İskonto Müşterisi", type: "customer", registeredOn: "2026-01-01" }));
+await must("müşteriye alacak", api.post(`/api/workspace/accounts/${ece.id}/entries`, { kind: "credit", amount: "300", date: "2026-11-06", note: "İskonto dekontu" }));
 await must("personel", api.post("/api/admin/users", { username: "personel6d", name: "Personel Altı", role: "personel", password: "Personel-2026!", mustChangePassword: false }));
 
 const browser = await chromium.launch();
@@ -125,6 +129,24 @@ try {
   const grand = view.totals.find(row => row[label] === "GENEL TOPLAM");
   ok(view.totals.some(row => row[label] === "DÖNEM TOPLAMI") && grand, `TOPLAM satırları: ${view.totals.map(row => row[label]).join(", ")}`);
 
+  console.log("1b) 2.4.6 (2.4.5 gezinti B4): 1366 × 768 ekranda 15 kolon yatay kaydırmasız; Borç / Alacak / Bakiye görünür");
+  {
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await page.waitForTimeout(300);
+    const fit = await page.evaluate(sel => {
+      const box = document.querySelector(`${sel} .hof-rc-table`);
+      const frame = box.getBoundingClientRect();
+      const heads = [...box.querySelectorAll("thead th")];
+      const edge = name => heads.find(th => th.textContent.trim().toLocaleLowerCase("tr-TR") === name.toLocaleLowerCase("tr-TR"))?.getBoundingClientRect().right ?? Infinity;
+      return { scroll: box.scrollWidth, client: box.clientWidth, right: Math.round(frame.right), borc: Math.round(edge("Borç")), alacak: Math.round(edge("Alacak")), bakiye: Math.round(edge("Bakiye")) };
+    }, main);
+    await page.screenshot({ path: path.join(SHOTS, "01b-ayrintili-ekstre-1366.png") });
+    ok(fit.scroll <= fit.client + 1, `1366 px: yatay kaydırma yok (tablo ${fit.scroll} px, kutu ${fit.client} px)`);
+    ok([fit.borc, fit.alacak, fit.bakiye].every(right => right <= fit.right + 1), `1366 px: Borç / Alacak / Bakiye kutunun içinde (sağ kenar ${fit.right}; ${fit.borc} / ${fit.alacak} / ${fit.bakiye})`);
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.waitForTimeout(200);
+  }
+
   console.log("2) Ekrandaki PDF ve Excel bağlantıları: aynı satırlar, aynı Genel Toplam");
   const xlsx = await api.raw("GET", view.xlsx);
   const sheet = xlsxRows(xlsx.buffer);
@@ -133,6 +155,10 @@ try {
   ok(xlsx.status === 200 && body.length === view.rows.length + view.totals.length, `Excel satırı ${body.length} = ekran ${view.rows.length} + TOPLAM ${view.totals.length}`);
   const xGrand = body.find(row => row[label] === "GENEL TOPLAM");
   ok(xGrand && Math.round(xGrand[at("Borç")] * 100) === kurus(grand[at("Borç")]) && Math.round(xGrand[at("Alacak")] * 100) === kurus(grand[at("Alacak")]), `Excel Genel Toplam borç/alacak = ekran (${xGrand?.[at("Borç")]} / ${xGrand?.[at("Alacak")]})`);
+  // 2.4.6 (2.4.5 gezinti B5): Excel'de Bakiye SAYI (toplanır, süzülür) — borçlu artı, alacaklı eksi; ekrandaki "… B" ile aynı tutar.
+  const balances = body.map(row => row[at("Bakiye")]).filter(value => value !== "" && value !== undefined);
+  ok(balances.length > 0 && balances.every(value => typeof value === "number"), `Excel Bakiye kolonu sayı (${balances.length} hücre; metin: ${balances.filter(value => typeof value !== "number").slice(0, 2).join(" | ") || "yok"})`);
+  ok(xGrand && Math.round(xGrand[at("Bakiye")] * 100) === kurus(grand[at("Bakiye")]) * (/ A$/.test(grand[at("Bakiye")]) ? -1 : 1), `Excel Genel Toplam Bakiye = ekran (${xGrand?.[at("Bakiye")]} / ${grand[at("Bakiye")]})`);
   const pdf = await api.raw("GET", view.pdf);
   const text = pdfText(pdf.buffer).replace(/\s+/g, " ");
   const tl = value => `${(value / 100).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} TL`;
@@ -214,6 +240,24 @@ try {
   ok((await fifoOf()) === null, `tedarikçiden tahsilat formunda not yok: “${await fifoOf()}”`);
   for (let index = 0; index < 6 && (await page2.$(MODAL)); index += 1) await escClose(page2, { step: "kapat" });
   ok(kayaCount() === kayaBefore, `tedarikçi formları kaydetmeden kapandı (${kayaCount()} = ${kayaBefore})`);
+  // K-DB2 (2.4.6 madde 8): müşteri carisi ama bakiyesi ALACAKLI (elle Alacak 300) → Ödeme bizim borcumuzu kapatır: notu VAR; Tahsilat'ta YOK.
+  // Eski kod (cari türüne bakan) müşteride Ödeme notunu hiç göstermez.
+  const eceCount = () => app.store.get("SELECT COUNT(*) AS n FROM account_entries WHERE account_id = ?", ece.id).n;
+  const eceBefore = eceCount();
+  await page2.evaluate(id => window.HOF.accounts.open(id), ece.id);
+  await page2.waitForSelector(`${TOP} [data-entry="out"]`, { state: "visible" });
+  await page2.click(`${TOP} [data-entry="out"]`);
+  await page2.waitForSelector(`${TOP} input[name="amount"]`, { state: "visible" });
+  await page2.waitForTimeout(150);
+  ok((await fifoOf()) === "Bu ödeme carinin en eski açık borcundan başlayarak kapatır.", `alacaklı müşteriye ödeme formunda not: “${await fifoOf()}”`);
+  await escClose(page2, { step: "alacaklı müşteri ödeme formu" });
+  await page2.waitForSelector(`${TOP} [data-entry="in"]`, { state: "visible" });
+  await page2.click(`${TOP} [data-entry="in"]`);
+  await page2.waitForSelector(`${TOP} input[name="amount"]`, { state: "visible" });
+  await page2.waitForTimeout(150);
+  ok((await fifoOf()) === null, `alacaklı müşteriden tahsilat formunda not yok: “${await fifoOf()}”`);
+  for (let index = 0; index < 6 && (await page2.$(MODAL)); index += 1) await escClose(page2, { step: "kapat" });
+  ok(eceCount() === eceBefore, `alacaklı müşteri formları kaydetmeden kapandı (${eceCount()} = ${eceBefore})`);
   await page.close();
 
   console.log("4) Finans Raporları yetkisi olmayan: kartta düğme yok");

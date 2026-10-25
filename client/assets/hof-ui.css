@@ -8547,6 +8547,23 @@ button.hof-source-card:focus-visible {
 .hof-rc-table tbody tr.is-invoice td {
   font-weight: 600;
 }
+/* 2.4.6 (2.4.5 gezinti B4): Ayrıntılı Cari Ekstre 15 kolon — 1366 px ekranda Borç / Alacak / Bakiye sağda kesiliyor, yatay kaydırma gerekiyordu.
+   Satır türü taşıyan (rowMarks) tabloda sık düzen: dar hücre boşluğu, başlıklar sarılır; tutarlar yine tek satır (td.num nowrap), açıklama sarılır. */
+.hof-rc-table table.is-dense {
+  font-size: 11.5px;
+}
+.hof-rc-table table.is-dense th,
+.hof-rc-table table.is-dense td {
+  padding: 6px 4px;
+}
+.hof-rc-table table.is-dense thead th {
+  white-space: normal;
+  letter-spacing: 0.02em;
+  vertical-align: bottom;
+}
+.hof-rc-table table.is-dense td:nth-child(5) {
+  min-width: 120px;
+}
 .hof-rc-account .hof-field {
   margin: 0;
 }

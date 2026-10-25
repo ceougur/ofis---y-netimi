@@ -363,7 +363,7 @@ export function cariEkstre({ records, payments = [], filters = normalizeFilters(
   }
   const table = {
     columns: [
-      { key: "cari", label: "Cari" }, { key: "date", label: "Tarih", type: "date" }, { key: "description", label: "Açıklama" }, { key: "session", label: "Kaynak" },
+      { key: "cari", label: "Kişi" }, { key: "date", label: "Tarih", type: "date" }, { key: "description", label: "Açıklama" }, { key: "session", label: "Kaynak" },
       { key: "borc", label: `Tablodaki Borç ${TABLE_AMOUNT_NOTE}`, type: "money" }, { key: "alacak", label: "Tahsil Edilen", type: "money" }, { key: "bakiye", label: `Tablodaki Bakiye ${TABLE_AMOUNT_NOTE}`, type: "money" }, { key: "status", label: "Durum" },
       ...columns.map(column => ({ key: `f:${column}`, label: column, dynamic: true })),
     ],
@@ -416,7 +416,7 @@ export function vadeTakip({ records, items = [], dormant = [], filters = normali
   const totals = { count: rows.length, dormant: rows.filter(row => row.state === "durgun").length, overdue: rows.filter(row => row.state === "gecikmis").length, upcoming: rows.filter(row => row.state === "yaklasan" || row.state === "bugun").length, amount: sumMoney(rows.map(row => row.amount)), overdueAmount: sumMoney(rows.filter(row => row.state === "gecikmis").map(row => row.amount)) };
   const table = {
     columns: [
-      { key: "cari", label: "Cari" }, { key: "label", label: "Kalem" }, { key: "date", label: "Vade", type: "date" }, { key: "days", label: "Gün", type: "number" },
+      { key: "cari", label: "Kişi" }, { key: "label", label: "Kalem" }, { key: "date", label: "Vade", type: "date" }, { key: "days", label: "Gün", type: "number" },
       { key: "amount", label: `Tablodaki Tutar ${TABLE_AMOUNT_NOTE}`, type: "money" }, { key: "state", label: "Durum" }, { key: "session", label: "Kaynak" }, { key: "tab", label: "Sekme" },
       ...columns.map(column => ({ key: `f:${column}`, label: column, dynamic: true })),
     ],

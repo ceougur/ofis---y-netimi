@@ -163,7 +163,8 @@ const openPill = async (page, text) => {
   await page.waitForSelector(".hof-payment-action-card", { timeout: 5000 });
   return page.evaluate(() => {
     const card = document.querySelector(".hof-payment-action-card");
-    return { buttons: [...card.querySelectorAll(".hof-payment-action-buttons button")].map(node => node.textContent.trim()), go: card.querySelector(".hof-payment-go")?.textContent.trim() || "", paid: Boolean(card.querySelector('[data-act="paid"]')) };
+    // 2.4.6: help (kalemin açıklama satırı) ve facts (tutar satırının adı vb.; B6 / B7).
+    return { buttons: [...card.querySelectorAll(".hof-payment-action-buttons button")].map(node => node.textContent.trim()), go: card.querySelector(".hof-payment-go")?.textContent.trim() || "", paid: Boolean(card.querySelector('[data-act="paid"]')), help: card.querySelector(".hof-payment-action-help")?.textContent.trim() || "", facts: [...card.querySelectorAll(".hof-due-facts dt")].map(node => node.textContent.trim()) };
   });
 };
 const waitPillGone = (page, text) =>
@@ -280,6 +281,8 @@ try {
   await step("S4 alış faturası pili: Ödeme Gir → Ödeme Yap formu; ödeme tedarikçiye, faturaya bağlı", async () => {
     const card = await openPill(page, `Fatura ${purchase.displayNo}`);
     ok(card.buttons.join(",") === "Ödeme Gir" && !card.paid && card.go === "Fatura Kartını Aç →", `kart: [${card.buttons.join(", ")}] · “${card.go}”`);
+    // 2.4.6 (2.4.5 gezinti B7): ödeme kaleminde tutarın adı "Ödenecek" (önceden "Beklenen").
+    ok(card.facts[0] === "Ödenecek", `alış faturası pilinde tutar satırı: “${card.facts[0]}” (${card.facts.join(", ")})`);
     await page.click('.hof-payment-action-card [data-act="pay"]');
     const form = await formInfo(page);
     const right = ok(form.title === "Ödeme Yap" && form.eyebrow.includes(purchase.displayNo) && amountOf(form.amount) === 600, `alış faturasının formu: “${form.title}” · “${form.eyebrow}” · ${form.amount}`);
@@ -484,6 +487,9 @@ try {
     await selectAli(page, aliKey);
     const card = await openPill(page, "Tahsil Edilecek Borç");
     await shot(page, "s10-cari-vade-pili");
+    // 2.4.6 (2.4.5 gezinti B6): borç kaydının Açıklaması kalemde (aynı caride iki vadeli borç ayırt edilir); tahsilat kaleminde tutar "Tahsil Edilecek".
+    ok(card.help.includes("Pil vadeli borç"), `pil kartında borcun açıklaması: “${card.help}”`);
+    ok(card.facts[0] === "Tahsil Edilecek", `tahsilat kaleminde tutar satırı: “${card.facts[0]}”`);
     ok(card.buttons.join(",") === "Tahsilat Gir", `kart düğmeleri: [${card.buttons.join(", ")}]`);
     ok(!card.paid, "Ödendi Say yok (kalem para kaydıyla kapanır; settle yalnız due|)");
     ok(card.go === "Cariyi Aç →", `kartın alt düğmesi: “${card.go}”`);
@@ -499,6 +505,30 @@ try {
     const buttons = await panelRow(page, "Tahsil Edilecek Borç");
     await shot(page, "s10b-zil");
     ok(buttons?.join(",") === "Tahsilat Gir,Cariyi Aç", `zilde cari vadesi satırı: [${buttons?.join(", ")}]`);
+    // 2.4.6 (2.4.5 SONRAYA + B6 / B7 / B9): ödeme kalemi (tedarikçinin sözlü alacağı, yarın; alış faturası, gecikmiş) "TAHSİLAT" başlığı taşımaz; zilde
+    // açıklama görünür; rozet zil listesindeki bildirim sayısıdır (yaklaşan kalemler dahil).
+    const bell = await page.evaluate(() => {
+      const list = window.HOF.alerts.list();
+      const groupOf = needle => {
+        const li = [...document.querySelectorAll(".hof-alert-list li")].find(node => node.textContent.includes(needle));
+        return li?.closest(".hof-alert-group")?.querySelector("h3")?.firstChild?.textContent.trim() || "";
+      };
+      const badge = document.querySelector(".topbar .top-actions > .icon-button .hof-bell-badge")?.textContent || "0";
+      return {
+        count: list.length,
+        upcoming: list.filter(item => item.type === "upcoming").length,
+        badge,
+        credit: list.find(item => item.due?.source === "account" && item.due?.direction === "out"),
+        debt: list.find(item => item.due?.source === "account" && item.due?.direction === "in"),
+        purchase: list.find(item => item.due?.source === "invoice" && item.due?.direction === "out"),
+        creditGroup: groupOf("Pil tedarikçi alacağı"),
+        debtGroup: groupOf("Pil vadeli borç"),
+      };
+    });
+    ok(bell.credit && /^YARIN ÖDEME VAR$/.test(bell.credit.eyebrow) && bell.creditGroup === "Yaklaşan ödemeler (7 gün)", `tedarikçi alacağı: “${bell.credit?.eyebrow}” · grup “${bell.creditGroup}”`);
+    ok(!bell.purchase || /^ÖDEME YAPILMADI/.test(bell.purchase.eyebrow), `alış faturası: “${bell.purchase?.eyebrow || "(S4'te ödendi)"}”`);
+    ok(bell.debt && /^TAHSİLAT ALINMADI/.test(bell.debt.eyebrow) && bell.debtGroup === "Tahsilat alınmadı" && bell.debt.text.includes("Pil vadeli borç"), `carinin vadeli borcu: “${bell.debt?.eyebrow}” · grup “${bell.debtGroup}” · “${bell.debt?.text}”`);
+    ok(bell.upcoming > 0 && bell.badge === String(bell.count > 99 ? "99+" : bell.count), `rozet ${bell.badge} = zildeki ${bell.count} bildirim (${bell.upcoming} yaklaşan dahil)`);
     if (buttons?.includes("Cariyi Aç")) {
       await clickInRow(page, "Tahsil Edilecek Borç", "Cariyi Aç");
       ok(await accountCardOpen(page, twin.refNo), `zilden Cariyi Aç → No ${twin.refNo}`);

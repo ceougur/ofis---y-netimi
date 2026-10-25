@@ -1,0 +1,46 @@
+1) Cari kartı → Ayrıntılı Ekstre
+  ✓ cari kartında "Ayrıntılı Ekstre" düğmesi
+  ✓ başlık: Ayrıntılı Cari Ekstre · Deniz Yapı Ltd.
+  ✓ seçenek işaretli (Fatura Kalemlerini Göster)
+  ✓ cari seçili (Deniz Yapı Ltd.)
+  ✓ kolonlar: Tarih | Belge No | İşlem | Yol | Açıklama / Ürün - Hizmet | Miktar | Birim | Birim Fiyat | İsk. % | KDV'siz Tutar | KDV % | Toplam | Borç | Alacak | Bakiye
+  ✓ kalem satırı girintili (› Montaj Hizmeti, Saat, %5)
+  ✓ genel iskonto satırı
+  ✓ kalem satırı ekranda girintili (padding-left 22px)
+  ✓ FIS2026000000001: kalem toplamı 483903 = borç 483903
+  ✓ FIS2026000000002: kalem toplamı 200000 = borç 200000
+  ✓ iki fatura satırı (2)
+  ✓ tahsilat: Yol Nakit + Belge No makbuz
+  ✓ TOPLAM satırları: DÖNEM TOPLAMI, GENEL TOPLAM
+1b) 2.4.6 (2.4.5 gezinti B4): 1366 × 768 ekranda 15 kolon yatay kaydırmasız; Borç / Alacak / Bakiye görünür
+  ✗ 1366 px: yatay kaydırma yok (tablo 1157 px, kutu 953 px)
+  ✗ 1366 px: Borç / Alacak / Bakiye kutunun içinde (sağ kenar 1310; 1336 / 1419 / 1513)
+2) Ekrandaki PDF ve Excel bağlantıları: aynı satırlar, aynı Genel Toplam
+  ✓ Excel satırı 12 = ekran 10 + TOPLAM 2
+  ✓ Excel Genel Toplam borç/alacak = ekran (7339.03 / 1500)
+  ✗ Excel Bakiye kolonu sayı (7 hücre; metin: 500,00 TL B | 5.339,03 TL B)
+  ✗ Excel Genel Toplam Bakiye = ekran (5.839,03 TL B / ₺5.839,03 B)
+  ✓ PDF: başlık, kalem, Genel Toplam tutarı
+3) İşaret kaldırılınca bugünkü ekstre
+  ✓ kolonlar: Tarih | İşlem | Açıklama | Borç | Alacak | Bakiye
+  ✓ kalem satırı yok
+3b) Raporlar → Cari Ekstre → carinin ekstresi → Ayrıntılı Ekstre (K6d.1)
+  ✓ Cari Ekstre sekmesinde "Ayrıntılı Ekstre" düğmesi
+  ✓ Rapor Merkezi o cari + Fatura Kalemlerini Göster işaretli (Ayrıntılı Cari Ekstre · Deniz Yapı Ltd.; işaret true)
+3c) Tahsilat / ödeme formunda bilgi notu; Kapatılacak Fatura seçilince gizli (kullanıcı kararı "sadece bilgi notu")
+  ✓ Otomatik iken not: “Bu tahsilat carinin en eski açık borcundan başlayarak kapatır.”
+  ✓ Kapatılacak Fatura seçilince not gizli
+  ✓ Otomatik'e dönünce not yeniden görünür
+  ✓ müşteriye ödeme formunda not yok: “null”
+  ✓ formlar kaydetmeden kapandı (cari hareketi 5 = 5)
+  ✓ tedarikçiye ödeme formunda not: “Bu ödeme carinin en eski açık borcundan başlayarak kapatır.”
+  ✓ tedarikçiden tahsilat formunda not yok: “null”
+  ✓ tedarikçi formları kaydetmeden kapandı (1 = 1)
+  ✗ alacaklı müşteriye ödeme formunda not: “null”
+  ✗ alacaklı müşteriden tahsilat formunda not yok: “Bu tahsilat carinin en eski açık borcundan başlayarak kapatır.”
+  ✓ alacaklı müşteri formları kaydetmeden kapandı (1 = 1)
+4) Finans Raporları yetkisi olmayan: kartta düğme yok
+  ✓ personelin cari kartında Ayrıntılı Ekstre yok
+  ✓ sayfa hatası yok
+
+31 geçti, 6 kaldı

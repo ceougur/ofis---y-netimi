@@ -1091,7 +1091,11 @@
           // DB2 (ikinci dar kontrol): sunucu (invoice-settle.mjs classifyLine) Tahsilat'ı yalnız carinin alacak tarafında (müşterinin borcu),
           // Ödeme'yi yalnız borç tarafında (bizim borcumuz) kapatma sayar → müşteriye Ödeme'de ve tedarikçiden Tahsilat'ta not yanlış olurdu;
           // not yalnız o tarafta açık yükümlülük olabilecek caride: Tahsilat → Müşteri / Diğer, Ödeme → Tedarikçi / Diğer (tür yoksa çıkar).
-          const fifoSide = type === "in" ? account.type !== "supplier" : account.type !== "customer";
+          // 2.4.6 madde 8 (K-DB2): carinin TÜRÜ yerine açık bakiyesinin TARAFI — Tahsilat yalnız carinin borcunu (bakiye borçlu), Ödeme yalnız bizim
+          // borcumuzu (bakiye alacaklı) kapatır; müşteriye elle Alacak yazılmışsa Ödeme'de, tedarikçiye elle Borç yazılmışsa Tahsilat'ta da not çıkar.
+          // Bakiye kapalıysa (0) kapatılacak açık borç yoktur, not çıkmaz. S1 en eskiden kapama bakiye gibi nettir; bakiyenin işareti açık tarafı söyler.
+          const openBalance = Number(account.totals?.balance) || 0;
+          const fifoSide = type === "in" ? openBalance > 0.005 : openBalance < -0.005;
           const form = dialog.querySelector("form");
           const noteField = form?.querySelector('[name="note"]')?.closest(".hof-field");
           if (noteField && fifoSide) {

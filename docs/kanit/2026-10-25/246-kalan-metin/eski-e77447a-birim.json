@@ -1,0 +1,88 @@
+{
+  "ad": "246-kalan-metin/eski-e77447a-birim",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/kalan-metin-246.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T09:54:33.536Z",
+  "sure_sn": 1.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 0,
+    "basarisiz": 11,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 11 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.6 kalan metin — sunucu (B4, B5, B6, B7) › B4: Ayrıntılı Ekstre PDF'inde fatura numarası Belge No kolonunda bölünmez",
+      "konum": "test/kalan-metin-246.test.mjs:50:3",
+      "hata": "PDF'te bölünmüş Belge No parçası: FIS202600000000 | FIS2026000000001 · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.6 kalan metin — sunucu (B4, B5, B6, B7) › B5: Cari Ekstre Excel'inde (ayrıntılı ve düz) Bakiye sayı — borçlu artı, alacaklı eksi; ekran B / A metni kalır",
+      "konum": "test/kalan-metin-246.test.mjs:63:3",
+      "hata": "borçlu/ayrıntılı: Excel Bakiye kolonu metin olmamalı (toplanamaz): 1.000,00 TL B | 1.700,00 TL B | 5.300,00 TL B · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.6 kalan metin — sunucu (B4, B5, B6, B7) › B5 (birim): yalnız tutar kolonunda ve tam \"<tutar> TL B|A\" biçiminde çevrilir; başka metin olduğu gibi",
+      "konum": "test/kalan-metin-246.test.mjs:87:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.6 kalan metin — sunucu (B4, B5, B6, B7) › B6: carinin vadeli borç kalemi Açıklamayı taşır (takvim ve Vade Takip); etiket aynı",
+      "konum": "test/kalan-metin-246.test.mjs:95:3",
+      "hata": "kalemde borcun açıklaması: [null,null] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.6 kalan metin — sunucu (B4, B5, B6, B7) › B7: planlı banka işleminin etiketi yazım düzeninde (Planlı Diğer Gider)",
+      "konum": "test/kalan-metin-246.test.mjs:107:3",
+      "hata": "etiket: Planlı diğer gider · Ekim kirası · + actual - expected · + 'Planlı diğer gider · Ekim kirası' (beklenen Planlı Diğer Gider · Ekim kirası, gelen Planlı diğer gider · Ekim kirası)"
+    },
+    {
+      "ad": "2.4.6 kalan metin — kaynak (B3, B7, B8, B9, zil yönü, K-DB2) › B3: Raporlar'ın ilk sekmesi \"Cari Mizanı ve Ekstresi\" (Tüm Raporlar → Cari Ekstre ile iki ayrı \"Cari Ekstre\" yok)",
+      "konum": "test/kalan-metin-246.test.mjs:116:3",
+      "hata": "mizan sekmesinin adı \"Cari Mizanı ve Ekstresi\" olmalı (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.6 kalan metin — kaynak (B3, B7, B8, B9, zil yönü, K-DB2) › B7: Vade Takip alt notu Cari (vadeli) ve Planlı Banka İşlemi'ni sayar; pil kartında ödeme kalemi \"Ödenecek\"",
+      "konum": "test/kalan-metin-246.test.mjs:121:3",
+      "hata": "Vade Takip alt notu eksik kaynak sayıyor (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.6 kalan metin — kaynak (B3, B7, B8, B9, zil yönü, K-DB2) › B8: sektör önerisi \"Tahsilat … araçları açık olur\" demez; tablo şeridi \"öncelikli doğru veri\" demez",
+      "konum": "test/kalan-metin-246.test.mjs:127:3",
+      "hata": "sektör önerisinde Tahsilat aracı yazılmamalı (2.4.5 kapısı) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.6 kalan metin — kaynak (B3, B7, B8, B9, zil yönü, K-DB2) › B8: Tablo Raporları'nda kişi kolonu \"Kişi\"",
+      "konum": "test/kalan-metin-246.test.mjs:137:3",
+      "hata": "Tablo Raporları kolonu \"Cari\" olmamalı (tablodaki kişiler cari değil) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.6 kalan metin — kaynak (B3, B7, B8, B9, zil yönü, K-DB2) › B9 + zil yönü: rozet zil listesinin tamamını sayar; ödeme kalemi \"ÖDEME YAPILMADI\" / \"… ÖDEME VAR\", grupları ayrı",
+      "konum": "test/kalan-metin-246.test.mjs:142:3",
+      "hata": "rozet yaklaşan kalemleri dışarıda bırakmamalı (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.6 kalan metin — kaynak (B3, B7, B8, B9, zil yönü, K-DB2) › K-DB2: tahsilat / ödeme formundaki bilgi notu cari TÜRÜNE değil açık bakiyenin TARAFINA bakar",
+      "konum": "test/kalan-metin-246.test.mjs:148:3",
+      "hata": "not cari türüne bakmamalı (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-25/246-kalan-metin/eski-e77447a-birim.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-kalan-metin/eski-e77447a",
+  "ham_cikti_sha256": "a7bdab7f89d484fa0a04211ccfa17652927e1969271c8b2aa6da3508259d42ec",
+  "ham_cikti_bayt": 16393
+}
