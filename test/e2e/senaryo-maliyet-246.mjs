@@ -25,7 +25,8 @@ const root = mkdtempSync(path.join(tmpdir(), "senaryo-maliyet-246-"));
 const shots = process.env.EKRAN_DIR || path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-maliyet-246");
 mkdirSync(shots, { recursive: true });
 if (!process.env.ESC_KAPAT_GUNLUK) process.env.ESC_KAPAT_GUNLUK = path.join(shots, "esc-kapat-gunluk.jsonl");
-const soruGunlugu = (adim, yanit) => appendFileSync(process.env.ESC_KAPAT_GUNLUK, `${JSON.stringify({ senaryo: "senaryo-maliyet-246.mjs", adim, yanit, neden: "Çık düğmesi; taslak kaydedilmemiş (ön izleme degisti)", at: new Date().toISOString() })}\n`);
+// Ders 34: Çık düğmesiyle çıkan soruya bu senaryonun verdiği her yanıt da günlüğe (escClose'un satırlarıyla aynı dosya); hepsi BEKLENEN soru.
+const soruGunlugu = (adim, yanit) => appendFileSync(process.env.ESC_KAPAT_GUNLUK, `${JSON.stringify({ senaryo: "senaryo-maliyet-246.mjs", adim, yer: `senaryo-maliyet-246.mjs ${adim}`, beklenti: "soru-var", title: "Maliyet Hesap Kartı", yanit, neden: "cik-dugmesi: taslak kaydedilmemiş (ön izleme degisti=true)", at: new Date().toISOString() })}\n`);
 const STAFF_PASS = "Personel-Maliyet-2026!";
 const must = async (label, promise) => {
   const res = await promise;
@@ -129,6 +130,12 @@ const pickSector = async query => {
   await typeSlow(query);
   await page.waitForTimeout(250);
   await page.keyboard.press("Enter");
+};
+// Soru yanıtlanınca pencere 160 ms içinde DOM'dan kalkar; kalkmadan basılan Esc (escClose) kapanmakta olan soruyu "soru var" sanıyordu (ilk tam koşu, M14 temizlik).
+const answer = async (which, adim) => {
+  soruGunlugu(adim, which === "save" ? "Kaydet" : "Kaydetmeden Kapat");
+  await page.click(`${TOP} [data-answer="${which}"]`);
+  await page.waitForFunction(() => ![...document.querySelectorAll(".hof-modal-backdrop")].some(node => /Kaydedilmemiş Değişiklik/.test(node.textContent)), null, { timeout: 10000 });
 };
 // Çık düğmesi: soru çıkarsa ver, çıkmazsa false.
 const clickExit = async () => {
@@ -302,8 +309,7 @@ try {
     const asked = await clickExit();
     ok(asked, "değişiklik var → Çık “Kaydedilmemiş Değişiklik” sorar");
     await shot("m9-soru");
-    soruGunlugu("M9a Çık → Kaydetmeden Kapat", "Kaydetmeden Kapat");
-    await page.click(`${TOP} [data-answer="yes"]`);
+    await answer("yes", "M9a Çık → Kaydetmeden Kapat");
     await page.waitForFunction(sel => !document.querySelector(sel), ROOT);
     ok(rows(OVAL)[1].miktar === 3, "Kaydetmeden Kapat → veri tabanı eski (3)");
     await openCard();
@@ -311,8 +317,7 @@ try {
     await typeField(`${row("s2")} input[data-alan="miktar"]`, "7");
     await settle();
     ok(await clickExit(), "yeniden değiştir → Çık yine sorar");
-    soruGunlugu("M9b Çık → Kaydet", "Kaydet");
-    await page.click(`${TOP} [data-answer="save"]`);
+    await answer("save", "M9b Çık → Kaydet");
     await page.waitForFunction(sel => !document.querySelector(sel), ROOT, { timeout: 10000 });
     ok(rows(OVAL)[1].miktar === 7, "soruda Kaydet → veri tabanı yeni (7), pencere kapandı");
     await openCard();
@@ -418,8 +423,7 @@ try {
     await shot("m13-dar-buyuk-tutar");
     await page.click(`${ROOT} [data-cik]`);
     await page.waitForSelector(`${TOP} [data-answer="yes"]`);
-    soruGunlugu("M13 büyük tutar kaydedilmeden", "Kaydetmeden Kapat");
-    await page.click(`${TOP} [data-answer="yes"]`);
+    await answer("yes", "M13 büyük tutar kaydedilmeden");
     await page.waitForFunction(sel => !document.querySelector(sel), ROOT);
     await page.setViewportSize({ width: 1440, height: 900 });
   });
