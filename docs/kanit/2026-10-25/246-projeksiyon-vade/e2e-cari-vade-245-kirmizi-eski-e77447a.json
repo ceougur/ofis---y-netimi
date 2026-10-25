@@ -1,0 +1,73 @@
+{
+  "ad": "246-projeksiyon-vade/e2e-cari-vade-245-kirmizi-eski-e77447a",
+  "komut": "env HUKUK_LICENSE_URL=http://127.0.0.1:9 EKRAN_DIR=/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/ekran-eski node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/e2e/senaryo-cari-vade-245.mjs",
+  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "dal": "is/projeksiyon-vade",
+  "kirli": 4,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T10:49:39.759Z",
+  "sure_sn": 44.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 40,
+    "gecen": 32,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Vade Müşteri: 21.10.2026 · Tahsil Edilecek Borç (Ödeme Sözü) · 750,00 satırı: []",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Vade Açılış Firması: 22.10.2026 · Tahsil Edilecek Borç · 4.000,00 satırı: []",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ekrandaki cari satırları = takvim kalemleri (gün, kişi, tutar): takvim [[\"Vade Müşteri\",\"2026-10-21\",750],[\"Vade Açılış Firması\",\"2026-10-22\",4000]]",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "aynı borç faturasız alacak / gecikmiş olarak ikinci kez yok: [[\"20.10.2026\",\"Faturasız Cari Alacağı\",\"Faturasız Cari Alacağı Vade Müşteri\",\"₺750,00\",\"\",\"₺1.250,00\"],[\"20.10.2026\",\"Faturasız Cari Alacağı\",\"Faturasız Cari Alacağı Vade Açılış Firması\",\"₺4.000,00\",\"\",\"₺5.250,00\"]] Vadesi geçmiş, kapanma",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "gecikmiş cari kalemi \"Vadesi geçmiş, kapanmamış\" bölümünde: [\"10.10.2026\",\"Faturasız Cari Alacağı\",\"Faturasız Cari AlacağıVade Gecikmiş Müşteri\",\"₺300,00\",\"\"]",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "gecikmiş borç faturasız alacak olarak ikinci kez yok",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ipucu kaynakları sayar: “Kaynaklar: açık taksitler, portföydeki ve ödenecek çek/senet, Kasa'ya ileri tarihli girilen hareketler. Excel/Sheets tablolarındaki tutarlar projeksiyona girmez.”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-25/246-projeksiyon-vade/e2e-cari-vade-245-kirmizi-eski-e77447a.log",
+  "klasor": "/home/user/wt/projeksiyon-vade",
+  "ham_cikti_sha256": "be65a51c09465b31533f11d6c463065fdd2af97ace7c16ad7886b9dd90e7c44a",
+  "ham_cikti_bayt": 4750
+}

@@ -1,0 +1,38 @@
+{
+  "ad": "246-projeksiyon-vade/bulgu-alis-cift-sayim-eski-e77447a",
+  "komut": "env REPO=/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a node --test /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/betik/alis-cift-sayim.test.mjs",
+  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "dal": "is/projeksiyon-vade",
+  "kirli": 4,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T10:32:25.790Z",
+  "sure_sn": 1.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "müşteri carisinde açık alış faturası: projeksiyon net = bakiye mi?",
+      "konum": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/betik/alis-cift-sayim.test.mjs:8:1",
+      "hata": "projeksiyon net 400 ≠ bakiye 700 · 400 !== 700 (beklenen 700, gelen 400)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-25/246-projeksiyon-vade/bulgu-alis-cift-sayim-eski-e77447a.log",
+  "klasor": "/home/user/wt/projeksiyon-vade",
+  "ham_cikti_sha256": "25878ddcb301fe74d041145767e9f40aec166cb097401f7fbe3e5fb225fadbe0",
+  "ham_cikti_bayt": 1369
+}

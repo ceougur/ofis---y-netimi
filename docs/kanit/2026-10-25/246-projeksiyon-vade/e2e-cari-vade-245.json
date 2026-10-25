@@ -1,0 +1,32 @@
+{
+  "ad": "246-projeksiyon-vade/e2e-cari-vade-245",
+  "komut": "env HUKUK_LICENSE_URL=http://127.0.0.1:9 EKRAN_DIR=/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/ekran npm run test:senaryo-cari-vade-245",
+  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "dal": "is/projeksiyon-vade",
+  "kirli": 4,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T10:49:00.953Z",
+  "sure_sn": 30.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 39,
+    "gecen": 39,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-projeksiyon-vade/e2e-cari-vade-245.log",
+  "klasor": "/home/user/wt/projeksiyon-vade",
+  "ham_cikti_sha256": "4feb8fce307619439d19de303ef2fb7d65a71e7a44a152b4f722dc55ed68170d",
+  "ham_cikti_bayt": 4806
+}

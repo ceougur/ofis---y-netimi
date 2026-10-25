@@ -278,6 +278,51 @@ try {
     await escClose(page, { expect: "soru-yok", step: "V7 Düzenle" }).catch(error => ok(false, `Düzenle sorusuz kapanmalı: ${error.message}`));
     await closeAll();
   });
+
+  // 2.4.6 madde 11 (2.4.5 K6.3'teki BİLİNEN SINIR kapandı): Raporlar → Nakit Akış carinin vadeli borcunu kendi gününde (Beklenen Ödeme Tarihi varsa o gün) ve
+  // takvimdeki Kalan'la gösterir; aynı borç "Faturasız Cari Alacağı" olarak (kayıt gününde) ikinci kez yok. Ekran = takvim kalemi (API).
+  await step("V8 Raporlar → Nakit Akış: carinin vadeli borçları kendi gününde (Cari (vadeli)), takvimdeki tutarla; faturasız alacak olarak ikinci kez yok", async () => {
+    // Gecikmiş (vadesi geçmiş) vadeli borç da takvimdeki gibi görünür: "Vadesi geçmiş, kapanmamış" bölümünde (API ile girilir; formu V1–V7 sınadı).
+    const lateAccount = await must("gecikmiş cari", api.post("/api/workspace/accounts", { name: "Vade Gecikmiş Müşteri", phone: "0532 245 00 09", type: "customer", registeredOn: day(-60) }));
+    await must("gecikmiş borç", api.post(`/api/workspace/accounts/${lateAccount.id}/entries`, { kind: "debt", amount: "300", date: day(-10), dueDate: day(-3), method: "cash" }));
+    const all = await dues();
+    const items = all.filter(item => item.dueDate >= TODAY);
+    const lateItem = all.find(item => item.accountId === lateAccount.id);
+    ok(lateItem?.state === "overdue" && lateItem?.amount === 300, `takvimde gecikmiş kalem: ${JSON.stringify(lateItem && { state: lateItem.state, amount: lateItem.amount })}`);
+    await page.evaluate(() => window.HOF.overview.openReports("flow"));
+    await page.waitForSelector(`${MODAL} .hof-rep [data-tab="flow"]`);
+    await page.waitForSelector(`${MODAL} [data-chart] svg`, { timeout: 15000, state: "attached" });
+    const read = () => page.$$eval(`${MODAL} .hof-rep-table tbody tr`, rows => rows.map(row => ({ src: row.querySelector(".hof-rep-src")?.className || "", cells: [...row.querySelectorAll("td")].map(cell => cell.innerText.replace(/\s+/g, " ").trim()) })));
+    const rows = await read();
+    const account = rows.filter(row => /\bis-account\b/.test(row.src));
+    const want = [
+      { person: "Vade Müşteri", date: dmy(day(1)), label: "Tahsil Edilecek Borç (Ödeme Sözü)", money: "750,00" },
+      { person: "Vade Açılış Firması", date: dmy(day(2)), label: "Tahsil Edilecek Borç", money: "4.000,00" },
+    ];
+    for (const item of want) {
+      const row = account.find(entry => entry.cells[0] === item.date && entry.cells[2].startsWith(item.label) && entry.cells[2].includes(item.person));
+      ok(Boolean(row) && row.cells[1] === "Cari (vadeli)" && row.cells[3].includes(item.money), `${item.person}: ${item.date} · ${item.label} · ${item.money} satırı: ${JSON.stringify(row?.cells || account.map(entry => entry.cells))}`);
+    }
+    const sameAsDues = items.every(item => account.some(entry => entry.cells[0] === dmy(item.dueDate) && entry.cells[2].includes(item.person) && entry.cells[3].replace(/[^0-9,]/g, "") === item.amount.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/[^0-9,]/g, "")));
+    ok(items.length === 2 && sameAsDues, `ekrandaki cari satırları = takvim kalemleri (gün, kişi, tutar): takvim ${JSON.stringify(items.map(item => [item.person, item.dueDate, item.amount]))}`);
+    const unbilled = rows.filter(row => /\bis-unbilled\b/.test(row.src) && /Vade Müşteri|Vade Açılış Firması/.test(row.cells[2]));
+    const overdueText = await textOf(`${MODAL} .hof-rep-overdue`);
+    ok(unbilled.length === 0 && !/Vade Müşteri|Vade Açılış Firması/.test(overdueText), `aynı borç faturasız alacak / gecikmiş olarak ikinci kez yok: ${JSON.stringify(unbilled.map(row => row.cells))} ${overdueText.slice(0, 160)}`);
+    const lateRows = await page.$$eval(`${MODAL} .hof-rep-overdue tbody tr`, rows => rows.map(row => [...row.querySelectorAll("td")].map(cell => cell.textContent.replace(/\s+/g, " ").trim())));
+    const lateRow = lateRows.find(cells => cells[2]?.includes("Vade Gecikmiş Müşteri"));
+    ok(Boolean(lateRow) && lateRow[0] === dmy(day(-3)) && lateRow[1] === "Cari (vadeli)" && lateRow[2].startsWith("Tahsil Edilecek Borç") && lateRow[3].includes("300,00"), `gecikmiş cari kalemi "Vadesi geçmiş, kapanmamış" bölümünde: ${JSON.stringify(lateRow || lateRows.slice(0, 3))}`);
+    ok(!lateRows.some(cells => cells[1] === "Faturasız Cari Alacağı" && cells[2].includes("Vade Gecikmiş Müşteri")), "gecikmiş borç faturasız alacak olarak ikinci kez yok");
+    const hint = await textOf(`${MODAL} .hof-rep-hint`);
+    ok(hint.includes("carideki vadeli borç ve alacaklar"), `ipucu kaynakları sayar: “${hint.slice(0, 200)}”`);
+    // Ekran görüntüsü pencere görünür olunca (açılış geçişi bitince) alınır; satırlar DOM'da ondan önce hazırdır (ders 39).
+    // İlk .hof-rep-table kapalı "Vadesi geçmiş" bölümünde olabilir (görünmez): bekleme ana tablodaki cari rozetine bağlanır (ders 39).
+    await page.waitForSelector(`${TOP} .hof-rep-src.is-account`, { state: "visible" });
+    await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible")].some(node => Number(getComputedStyle(node).opacity) === 1), null, { timeout: 5000 }).catch(() => null);
+    await page.$eval(`${TOP} .hof-rep-src.is-account`, node => node.scrollIntoView({ block: "center" })).catch(() => null);
+    await page.waitForTimeout(400);
+    await shot("nakit-akis-cari-vade");
+    await closeAll();
+  });
 } catch (error) {
   ok(false, `senaryo yarıda kaldı: ${String(error?.stack || error).split("\n").slice(0, 3).join(" ")}`);
 } finally {

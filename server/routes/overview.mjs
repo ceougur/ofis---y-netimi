@@ -376,11 +376,21 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     if (cheques()?.flows) flows.push(...cheques().flows({ expected: true }));
     // Vadeli (açık hesap) faturaların ödenmemiş kısmı vadesinde beklenen giriş (satış) ya da çıkıştır (alış).
     for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true }) : []) flows.push(invoiceFlow(item));
+    // 2.4.6 madde 11 (2.4.5 K6.3'teki BİLİNEN SINIR kapandı): carinin vadeli / sözlü borç kayıtları — zil, Tahsilat Takvimi ve Vade Takip'teki "account|<entryId>"
+    // kalemlerinin AYNISI (ortak yardımcı routes/accounts.mjs openDueItems; tarih Beklenen Ödeme Tarihi ya da Vade Tarihi, tutar FIFO Kalan − Mevcut Borç kartının
+    // kapsadığı, yön carinin borcu → giriş / carinin alacağı → çıkış). Vadeli fatura gibi: kaleme bağlanmamış alacak kalemi küçültmez. Pencere iki ucu kapalı
+    // (son gündeki kalem dahil; K-P1). Gecikmiş (vadesi geçmiş) kalem takvimdeki gibi "Vadesi geçmiş, kapanmamış" listesindedir.
+    // Yalnız Cari görüntüleme (accounts.view) yetkisi olana — zil, takvim ve Vade Takip'le aynı kural (ana oturum kararı, 25.10.2026). Yetkisi olmayan Finans
+    // Raporları kullanıcısının projeksiyonu 2.4.5'teki gibidir: carinin vadeli borcu bir kez, faturasız cari alacağında (kayıt gününde); carinin vadeli alacağı
+    // (tedarikçiye elle borç) 2.4.5'te olduğu gibi yoktur.
+    const accountDue = canUser(user, "accounts.view") && accounts()?.openDueItems ? accounts().openDueItems(day) : [];
+    flows.push(...accountDue.map(accountDueFlow));
     // MM5 (2.4.3, uzman mali müşavir; kullanıcı kararı 18.10.2026): faturasız cari alacağı (devir, Borç Yaz, karşılıksız çek, veresiye satış — carinin
     // bakiyesinden açık taksit ve vadeli satış faturası düşülünce kalan; lib/receivable-aging.mjs, Alacak Yaşlandırma ile aynı kural) hareket tarihinde
     // beklenen giriştir (vadesi yok: hareket günü vadedir — geçmiş tarihliler gecikmiş girişlerde, Alacak Yaşlandırma'daki dilimiyle aynı). Taksit ve
     // fatura kalemleri değişmez (kaleme bağlanmamış tahsilat burada kalemi küçültmez; carinin girişi en az bakiyesi kadardır).
-    flows.push(...unbilledFlows(day));
+    // 2.4.6 madde 11: cari vade kalemleri de bakiyeden düşülür (aynı borç iki kez sayılmaz) — bkz. unbilledFlows.
+    flows.push(...unbilledFlows(day, accountDue));
     // Tablolardaki ödeme günleri ve ödeme sözleri (v2.0.9, tahsilat takvimiyle aynı kalemler) beklenen giriştir. Taksit
     // kartı olan kişinin sözü kartındaki taksitle aynı parayı anlatır; nakit tahmininde ikinci kez sayılmaz.
     if (withTable) for (const item of await tableItems()) if (!item.deadline && item.amount > 0 && !(item.promise && item.carded)) flows.push(tableFlow(item, { projection: true }));
@@ -398,13 +408,26 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const result = projection({ today: day, from: range.from, to: range.to, cashToday: start.total, flows, includeOverdue });
     return { ...result, start, requested: range, withTable, group, periods: group ? groupFlows(result, group) : null };
   }
-  function unbilledFlows(day) {
+  // 2.4.6 madde 11 — cari vade kalemleriyle (accountDue: openDueItems) birlikte, aynı borç bir kez:
+  //   - giriş kalemi (carinin vadeli borcu) taksit ve vadeli satış faturası gibi bakiyeden düşülür (faturasız alacak onun Kalan'ını taşımaz);
+  //   - çıkış kalemi (carinin vadeli alacağı: tedarikçiye borç, müşterideki elle Alacak — KS2) bakiyeyi zaten küçültmüştür; projeksiyonda kendi vadesinde çıkış
+  //     olduğu için faturasız alacağın hesabında bakiyeye geri eklenir (yoksa aynı alacak bir kez bakiyede, bir kez çıkış olarak iki kez düşerdi);
+  //   - kalemi olan kayıt, kalan faturasız alacağın tarih dayanağı değildir (skip): kalan vadesiz borçlardandır, kendi hareket günüyle yaşlanır (yoksa en yeni
+  //     vadeli kaydın gününe düşüyordu).
+  function unbilledFlows(day, accountDue = []) {
     if (!accounts()?.list) return [];
     const items = [];
     for (const item of plans()?.openItems ? plans().openItems(day) : []) if (item.accountId) items.push({ accountId: item.accountId, date: item.date, amount: item.amount });
     for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true }) : []) if (item.side === "sale") items.push({ accountId: item.accountId, date: item.dueDate, amount: item.open });
-    const live = accounts().list({ id: "", role: "admin" }, { status: "all" }).accounts.map(account => ({ id: account.id, name: account.name, balance: account.balance }));
-    return reconcileReceivables(store, { accounts: live, items, day })
+    const owed = new Map();
+    const skip = new Set();
+    for (const item of accountDue) {
+      skip.add(item.entryId);
+      if (item.direction === "in") items.push({ accountId: item.accountId, date: item.dueDate, amount: item.amount });
+      else owed.set(item.accountId, roundMoney((owed.get(item.accountId) || 0) + item.amount));
+    }
+    const live = accounts().list({ id: "", role: "admin" }, { status: "all" }).accounts.map(account => ({ id: account.id, name: account.name, balance: owed.has(account.id) ? roundMoney(account.balance + owed.get(account.id)) : account.balance }));
+    return reconcileReceivables(store, { accounts: live, items, day, skip })
       .unbilled.map(item => ({ date: item.date, direction: "in", amount: item.amount, source: "unbilled", label: "Faturasız Cari Alacağı", party: item.name, ref: { type: "account", id: item.accountId } }));
   }
   // Nakit akış başlangıcı (v2.1.0, K10; plan §8.9 ve karar 32): "Bugünkü Nakit ve Banka" = Nakit Kasa (bugüne kadar) + Gerçek Banka (Σ 102,

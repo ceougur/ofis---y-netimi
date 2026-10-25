@@ -1,0 +1,53 @@
+// 2.4.6 madde 11 mutasyon koşucusu (ders 7): çalışma kopyasının AYRI bir kopyasında (ders 23) her mutasyonu tek tek uygular, ilgili testleri koşar,
+// "yakalandı" = en az bir test kırmızı (çıkış ≠ 0 ve # fail > 0). Kaynak çalışma kopyasına dokunmaz.
+//   node mutasyon.mjs <çalışma kopyası> <hedef klasör>
+import { execFileSync, spawnSync } from "node:child_process";
+import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import path from "node:path";
+
+const [source, target] = process.argv.slice(2).map(item => path.resolve(item));
+if (!source || !target) throw new Error("kullanım: mutasyon.mjs <kaynak> <hedef>");
+if (existsSync(target)) rmSync(target, { recursive: true, force: true });
+mkdirSync(target, { recursive: true });
+for (const dir of ["server", "client", "test", "tools", "package.json"]) cpSync(path.join(source, dir), path.join(target, dir), { recursive: true });
+const OV = "server/routes/overview.mjs";
+const RA = "server/lib/receivable-aging.mjs";
+const AC = "server/routes/accounts.mjs";
+const T = ["test/projeksiyon-vade-246.test.mjs"];
+const MUTATIONS = [
+  { id: "M1", what: "projeksiyona cari vade kalemi eklenmez", file: OV, from: "    flows.push(...accountDue.map(accountDueFlow));\n", to: "\n", tests: T },
+  { id: "M2", what: "faturasız alacakta kalemi olan kayıt atlanmaz (skip verilmez)", file: OV, from: "reconcileReceivables(store, { accounts: live, items, day, skip })", to: "reconcileReceivables(store, { accounts: live, items, day })", tests: T },
+  { id: "M3", what: "çıkış kalemi bakiyeye geri eklenmez (KS2 çift düşüş)", file: OV, from: "balance: owed.has(account.id) ? roundMoney(account.balance + owed.get(account.id)) : account.balance", to: "balance: account.balance", tests: T },
+  { id: "M4", what: "giriş kalemi bakiyeden düşülmez (çift sayım)", file: OV, from: "      if (item.direction === \"in\") items.push({ accountId: item.accountId, date: item.dueDate, amount: item.amount });\n      else ", to: "      if (item.direction !== \"in\") ", tests: T },
+  { id: "M5", what: "Beklenen Ödeme Tarihi yerine Vade Tarihi", file: OV, from: "    flows.push(...accountDue.map(accountDueFlow));", to: "    flows.push(...accountDue.map(item => ({ ...accountDueFlow(item), date: item.entryDueDate || item.dueDate })));", tests: T },
+  { id: "M6", what: "yön ters (carinin borcu çıkış)", file: OV, from: "    flows.push(...accountDue.map(accountDueFlow));", to: "    flows.push(...accountDue.map(item => ({ ...accountDueFlow(item), direction: item.direction === \"in\" ? \"out\" : \"in\" })));", tests: T },
+  { id: "M7", what: "ortak yardımcı Mevcut Borç kartının kapsadığını düşmez (K6.5 (1))", file: AC, from: "const amount = roundMoney(state.remaining - (state.covered || 0));", to: "const amount = roundMoney(state.remaining);", tests: T },
+  { id: "M8", what: "yardımcı skip'i yok sayar", file: RA, from: "      if (skip?.has(row.id)) continue;\n", to: "", tests: T },
+  { id: "M9", what: "kısmi tahsilat yerine kayıt tutarı (FIFO kalanı yok sayılır)", file: OV, from: "    flows.push(...accountDue.map(accountDueFlow));", to: "    flows.push(...accountDue.map(item => ({ ...accountDueFlow(item), amount: item.entryAmount })));", tests: T },
+  { id: "M10", what: "Cari görüntüleme yetkisi denetlenmez (yetkisiz kullanıcı cari kalemini görür)", file: OV, from: "const accountDue = canUser(user, \"accounts.view\") && accounts()?.openDueItems ? accounts().openDueItems(day) : [];", to: "const accountDue = accounts()?.openDueItems ? accounts().openDueItems(day) : [];", tests: T },
+  { id: "M11", what: "pencerenin son günü dışarıda (iki ucu kapalı değil; K-P1)", file: "server/lib/finance-report.mjs", from: "else if (!to || flow.date <= to) inRange.push(item);", to: "else if (!to || flow.date < to) inRange.push(item);", tests: T },
+];
+const results = [];
+for (const mutation of MUTATIONS) {
+  const file = path.join(target, mutation.file);
+  const original = readFileSync(file, "utf8");
+  const count = original.split(mutation.from).length - 1;
+  if (count !== 1) {
+    results.push({ ...mutation, applied: false, caught: false, note: `kalıp ${count} kez bulundu (1 olmalı)` });
+    continue;
+  }
+  writeFileSync(file, original.replace(mutation.from, mutation.to));
+  const run = spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", "--test", "--test-concurrency=1", ...mutation.tests.map(item => path.join(target, item))], { cwd: target, encoding: "utf8", env: { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, maxBuffer: 64 * 1024 * 1024 });
+  writeFileSync(file, original);
+  const out = `${run.stdout}\n${run.stderr}`;
+  const num = name => Number(new RegExp(`^# ${name} (\\d+)`, "m").exec(out)?.[1] ?? NaN);
+  const failed = [...out.matchAll(/^\s+not ok \d+ - (.*)$/gm)].map(match => match[1]).slice(0, 6);
+  const caught = run.status !== 0 && num("fail") > 0;
+  results.push({ id: mutation.id, what: mutation.what, file: mutation.file, applied: true, exit: run.status, tests: num("tests"), fail: num("fail"), caught, failed });
+  console.log(`${mutation.id} ${caught ? "YAKALANDI" : "KAÇTI"} — ${mutation.what} · çıkış ${run.status} · ${num("fail")}/${num("tests")} kırmızı${failed.length ? ` · ${failed.join(" | ").slice(0, 400)}` : ""}`);
+}
+writeFileSync(path.join(path.dirname(target), "mutasyon-sonuc.json"), JSON.stringify(results, null, 2));
+const caught = results.filter(item => item.caught).length;
+console.log(`# ${results.length} mutasyon; yakalanan ${caught}, kaçan / uygulanamayan ${results.length - caught}`);
+console.log(`# tests ${results.length}\n# pass ${caught}\n# fail ${results.length - caught}\n# cancelled 0\n# skipped 0\n# todo 0`);
+process.exit(caught === results.length ? 0 : 1);

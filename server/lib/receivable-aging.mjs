@@ -14,9 +14,10 @@ const cents = value => Math.round((Number(value) || 0) * 100);
 /**
  * accounts: [{ id, name, balance }] (silinmemiş cariler; balance cari kartı bakiyesi, borç artı). items: [{ accountId, date, amount, … }] carinin
  * kalemleri (açık taksit, açık satış faturası; tutar TL). Dönüş: { items: düşülmüş kalemler (tutarı 0'a inen çıkar), unbilled: [{ accountId, name, date,
- * amount }] }. day: bugün (dağıtılacak hareket bulunamazsa faturasız kalemin tarihi).
+ * amount }] }. day: bugün (dağıtılacak hareket bulunamazsa faturasız kalemin tarihi). skip (2.4.6 madde 11; isteğe bağlı): kalanı kendi kalemi olan cari
+ * hareketleri (Nakit Akış Projeksiyonu'nda vadeli borç kaydı) — faturasız kalemin tarih dayanağı olmaz; verilmezse davranış aynı (Alacak Yaşlandırma).
  */
-export function reconcileReceivables(store, { accounts = [], items = [], day = "" } = {}) {
+export function reconcileReceivables(store, { accounts = [], items = [], day = "", skip = null } = {}) {
   const byAccount = new Map();
   for (const item of items) {
     if (!item.accountId) continue;
@@ -28,7 +29,8 @@ export function reconcileReceivables(store, { accounts = [], items = [], day = "
   const moves = new Map();
   const hasEntries = Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'account_entries'"));
   if (hasEntries) {
-    for (const row of store.all("SELECT account_id AS accountId, date, amount FROM account_entries WHERE kind IN ('debt', 'out') AND source <> 'invoice' AND amount > 0 ORDER BY date DESC, created_at DESC, rowid DESC")) {
+    for (const row of store.all("SELECT id, account_id AS accountId, date, amount FROM account_entries WHERE kind IN ('debt', 'out') AND source <> 'invoice' AND amount > 0 ORDER BY date DESC, created_at DESC, rowid DESC")) {
+      if (skip?.has(row.id)) continue;
       if (!moves.has(row.accountId)) moves.set(row.accountId, []);
       moves.get(row.accountId).push(row);
     }

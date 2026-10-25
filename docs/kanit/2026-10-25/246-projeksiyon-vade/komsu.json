@@ -1,0 +1,32 @@
+{
+  "ad": "246-projeksiyon-vade/komsu",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-altin.test.mjs test/banka-210-gg2-gosterge.test.mjs test/banka-210-ileri-tarihli-eski.test.mjs test/banka-210-nakit-akis-k10.test.mjs test/banka-210-rapor-bulgu.test.mjs test/banka-220-pos-moduller.test.mjs test/banka-220-tahsile-ver-dogrulama.test.mjs test/banka-220-tahsile-ver-tur2.test.mjs test/banka-220-tahsile-ver.test.mjs test/banka-230-supheli-ekran.test.mjs test/bulgu-223.test.mjs test/cari-vade-245.test.mjs test/cheques-overview.test.mjs test/defter-243-raporlar.test.mjs test/dues.test.mjs test/ertelenen-224.test.mjs test/goc-245-cari-vade.test.mjs test/hiz-243-arka-plan.test.mjs test/iade-210-onarim.test.mjs test/iade-210.test.mjs test/iade-224.test.mjs test/iade-kapama-k1.test.mjs test/is-akisi.test.mjs test/kalan-borc-ortak-30a.test.mjs test/kalan-borc-satir-31d.test.mjs test/kapama-ks7-245.test.mjs test/kapama-rastgele-223.test.mjs test/kapi-uyari-245.test.mjs test/kayit-bag-31e.test.mjs test/kayit-tahsilat-244.test.mjs test/nakit-akis-ileri-tarihli-yol.test.mjs test/plan-case-link.test.mjs test/plan-transfer.test.mjs test/plans.test.mjs test/projeksiyon-vade-246.test.mjs test/raporlar-209.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-224.test.mjs test/raporlar-230-banka.test.mjs test/reports.test.mjs test/schema-flex.test.mjs test/sirketler-217.test.mjs test/supheli-230-karar.test.mjs test/table-columns.test.mjs test/tablo-borc-dosya-u2.test.mjs test/tablo-borc-e1-e2.test.mjs test/tablo-borc-r31e.test.mjs test/tablo-raporlari-u3-244.test.mjs test/takvim-pil-kaynak.test.mjs test/uiux-a-243.test.mjs test/uyari-ufku-225.test.mjs test/vade-takip-kaynak-yetki-210.test.mjs test/yetki-243-muhasebe-finans.test.mjs test/yazim-duzeni.test.mjs test/kapama-tek-gecis-245.test.mjs test/platform-tasinabilirlik.test.mjs test/lisans-servisi-izolasyonu.test.mjs",
+  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "dal": "is/projeksiyon-vade",
+  "kirli": 4,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T10:04:44.019Z",
+  "sure_sn": 428.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 810,
+    "gecen": 810,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-projeksiyon-vade/komsu.log",
+  "klasor": "/home/user/wt/projeksiyon-vade",
+  "ham_cikti_sha256": "06ae29d97f02afd41c102205d5469ee0d15cd22b923f226effbd7b4dd017197d",
+  "ham_cikti_bayt": 295799
+}

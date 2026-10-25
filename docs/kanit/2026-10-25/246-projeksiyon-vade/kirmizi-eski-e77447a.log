@@ -1,0 +1,778 @@
+TAP version 13
+# Subtest: 2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri
+    # Subtest: vadeli elle Borç: Vade Tarihi'nde giriş kalemi (Cari (vadeli), Tahsil Edilecek Borç); faturasız cari alacağı olarak ikinci kez yok; carinin Σ = bakiye
+    not ok 1 - vadeli elle Borç: Vade Tarihi'nde giriş kalemi (Cari (vadeli), Tahsil Edilecek Borç); faturasız cari alacağı olarak ikinci kez yok; carinin Σ = bakiye
+      ---
+      duration_ms: 71.574829
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:81:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        projeksiyonda carinin vadeli borcu kendi vadesinde yok; bu carinin satırları: [{"source":"unbilled","date":"2026-10-10","direction":"in","amount":1000,"label":"Faturasız Cari Alacağı"}]
+        + actual - expected
+        
+        + []
+        - [
+        -   [
+        -     '2026-11-01',
+        -     'in',
+        -     1000,
+        -     'Tahsil Edilecek Borç',
+        -     'Projeksiyon Temel',
+        -     'aentry-1b3de57d-5a87-4567-8435-a4fd7f672847'
+        -   ]
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: '2026-11-01'
+          1: 'in'
+          2: 1000
+          3: 'Tahsil Edilecek Borç'
+          4: 'Projeksiyon Temel'
+          5: 'aentry-1b3de57d-5a87-4567-8435-a4fd7f672847'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:87:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Beklenen Ödeme Tarihi girilmişse kalem o gündedir (Ödeme Sözü), Vade Tarihi'nde değil; Beklenen Ödeme Vade'den önce de olabilir (K6.5 (4))
+    not ok 2 - Beklenen Ödeme Tarihi girilmişse kalem o gündedir (Ödeme Sözü), Vade Tarihi'nde değil; Beklenen Ödeme Vade'den önce de olabilir (K6.5 (4))
+      ---
+      duration_ms: 45.743299
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:93:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        söz günü: [{"source":"unbilled","date":"2026-10-17","direction":"in","amount":750,"label":"Faturasız Cari Alacağı"}]
+        + actual - expected
+        
+          [
+            [
+        +     'unbilled',
+        +     '2026-10-17',
+        -     'account',
+        -     '2026-10-25',
+              750,
+        +     'Faturasız Cari Alacağı'
+        -     'Tahsil Edilecek Borç (Ödeme Sözü)'
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'account'
+          1: '2026-10-25'
+          2: 750
+          3: 'Tahsil Edilecek Borç (Ödeme Sözü)'
+      actual:
+        0:
+          0: 'unbilled'
+          1: '2026-10-17'
+          2: 750
+          3: 'Faturasız Cari Alacağı'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:97:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: FIFO kalanı: kısmi tahsilat kalemi küçültür; tahsilat silinince kalem büyür ve vadesiz borcun kalanı KENDİ gününde faturasız alacak olur; tam tahsilatta kalem yok
+    not ok 3 - FIFO kalanı: kısmi tahsilat kalemi küçültür; tahsilat silinince kalem büyür ve vadesiz borcun kalanı KENDİ gününde faturasız alacak olur; tam tahsilatta kalem yok
+      ---
+      duration_ms: 91.798813
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:100:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        500 tahsilat önce eski 300'ü, sonra 200 vadeliyi kapatır (FIFO): [{"source":"unbilled","date":"2026-10-20","direction":"in","amount":800,"label":"Faturasız Cari Alacağı"}]
+        + actual - expected
+        
+          [
+            [
+        +     'unbilled',
+        +     '2026-10-20',
+        -     'account',
+        -     '2026-11-04',
+              800
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'account'
+          1: '2026-11-04'
+          2: 800
+      actual:
+        0:
+          0: 'unbilled'
+          1: '2026-10-20'
+          2: 800
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:106:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tedarikçideki elle Alacak ve alacak yönlü Açılış Bakiyesi: vadesinde ÇIKIŞ (Ödenecek Borç); ödeme kalemi küçültür
+    not ok 4 - tedarikçideki elle Alacak ve alacak yönlü Açılış Bakiyesi: vadesinde ÇIKIŞ (Ödenecek Borç); ödeme kalemi küçültür
+      ---
+      duration_ms: 69.61708
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:118:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tedarikçiye borç vadesinde çıkış: []
+        + actual - expected
+        
+        + []
+        - [
+        -   [
+        -     'account',
+        -     '2026-10-24',
+        -     'out',
+        -     900,
+        -     'Ödenecek Borç',
+        -     'aentry-952a0e68-aa43-4631-9a0c-0daf2857927f'
+        -   ]
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'account'
+          1: '2026-10-24'
+          2: 'out'
+          3: 900
+          4: 'Ödenecek Borç'
+          5: 'aentry-952a0e68-aa43-4631-9a0c-0daf2857927f'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:124:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: KS2: müşterideki vadeli elle Alacak çıkış kalemidir, müşterinin borcundan düşülmez; bakiyede ikinci kez düşülmez (carinin net = bakiye)
+    not ok 5 - KS2: müşterideki vadeli elle Alacak çıkış kalemidir, müşterinin borcundan düşülmez; bakiyede ikinci kez düşülmez (carinin net = bakiye)
+      ---
+      duration_ms: 46.008587
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:134:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        vadeli elle Alacak çıkış kalemi: [{"source":"unbilled","date":"2026-10-05","direction":"in","amount":700,"label":"Faturasız Cari Alacağı"}]
+        + actual - expected
+        
+        + []
+        - [
+        -   [
+        -     '2026-10-26',
+        -     'out',
+        -     300,
+        -     'aentry-15788e5e-8c0e-4f8e-962b-614bbc6d27a4'
+        -   ]
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: '2026-10-26'
+          1: 'out'
+          2: 300
+          3: 'aentry-15788e5e-8c0e-4f8e-962b-614bbc6d27a4'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:139:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: K6.5 (1): Mevcut Borç kartının kapsadığı kısım kartın taksitleriyle BİR kez; kapsanmayan kalan cari kalemidir
+    not ok 6 - K6.5 (1): Mevcut Borç kartının kapsadığı kısım kartın taksitleriyle BİR kez; kapsanmayan kalan cari kalemidir
+      ---
+      duration_ms: 99.334585
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:150:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kapsanmayan 400 vadesinde: [{"source":"plan","date":"2026-10-30","direction":"in","amount":300,"label":"1. taksit"},{"source":"plan","date":"2026-11-30","direction":"in","amount":300,"label":"2. taksit"},{"source":"unbilled","date":"2026-09-20","direction":"in","amount":400,"label":"Faturasız Cari Alacağı"}]
+        + actual - expected
+        
+        + []
+        - [
+        -   [
+        -     '2026-10-22',
+        -     400
+        -   ]
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: '2026-10-22'
+          1: 400
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:163:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: karışık kuyruk: vadeli borç + vadeli satış faturası + tahsilat → fatura açığı ve borç kalanı kendi vadelerinde; Σ = bakiye, faturasız alacak yok
+    not ok 7 - karışık kuyruk: vadeli borç + vadeli satış faturası + tahsilat → fatura açığı ve borç kalanı kendi vadelerinde; Σ = bakiye, faturasız alacak yok
+      ---
+      duration_ms: 107.824906
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:168:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        [{"source":"invoice","date":"2026-11-14","direction":"in","amount":1500,"label":"Satış faturası FIS2026000000001 (kalan)"},{"source":"unbilled","date":"2026-10-10","direction":"in","amount":500,"label":"Faturasız Cari Alacağı"}] (late aentry-390a559d-7f95-44da-914c-420f394d0bbf)
+        + actual - expected
+        
+          [
+            [
+        -     'account',
+        -     '2026-10-23',
+        -     500
+        -   ],
+        -   [
+              'invoice',
+              '2026-11-14',
+              1500
+            ],
+        +   [
+        +     'unbilled',
+        +     '2026-10-10',
+        +     500
+        +   ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'account'
+          1: '2026-10-23'
+          2: 500
+        1:
+          0: 'invoice'
+          1: '2026-11-14'
+          2: 1500
+      actual:
+        0:
+          0: 'invoice'
+          1: '2026-11-14'
+          2: 1500
+        1:
+          0: 'unbilled'
+          1: '2026-10-10'
+          2: 500
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:175:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: toplam = kalemler, her süzgeç: 7/30/60/90 gün, aralık + başlangıca kadar beklenen, gecikmişleri başlangıca ekle, gün / hafta / ay toplamları
+    not ok 8 - toplam = kalemler, her süzgeç: 7/30/60/90 gün, aralık + başlangıca kadar beklenen, gecikmişleri başlangıca ekle, gün / hafta / ay toplamları
+      ---
+      duration_ms: 80.747365
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:179:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        next7: aralıktaki cari kalemleri
+        + actual - expected
+        
+        + []
+        - [
+        -   'aentry-b3053fe7-9534-4d6e-8e05-f078b9c8f5bd'
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'aentry-b3053fe7-9534-4d6e-8e05-f078b9c8f5bd'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:197:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: PDF ve Excel aynı satırları yazar: 'Cari (vadeli)' kaynaklı kalem Nakit Akışı ve Gecikmiş sayfalarında, tutarıyla
+    not ok 9 - PDF ve Excel aynı satırları yazar: 'Cari (vadeli)' kaynaklı kalem Nakit Akışı ve Gecikmiş sayfalarında, tutarıyla
+      ---
+      duration_ms: 63.820201
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:222:3'
+      failureType: 'testCodeFailure'
+      error: 'Excel Nakit Akışı sayfasında cari kalemi yok: '
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:232:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ortak yardımcı: projeksiyonun cari kalemleri = Vade Takip'in cari kalemleri (aynı aralık) = zil / takvim kalemleri (7 gün); kimlik, gün, yön, etiket, tutar
+    not ok 10 - ortak yardımcı: projeksiyonun cari kalemleri = Vade Takip'in cari kalemleri (aynı aralık) = zil / takvim kalemleri (7 gün); kimlik, gün, yön, etiket, tutar
+      ---
+      duration_ms: 97.299514
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:241:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        projeksiyon ↔ Vade Takip (aynı aralık: gecikmişler + 30 gün)
+        + actual - expected
+        
+        + []
+        - [
+        -   'account|aentry-09904c1f-134b-4c85-a572-d137888ce673|2026-11-04|in|Tahsil Edilecek Borç|222',
+        -   'account|aentry-15788e5e-8c0e-4f8e-962b-614bbc6d27a4|2026-10-26|out|Ödenecek Borç|300',
+        -   'account|aentry-1b3de57d-5a87-4567-8435-a4fd7f672847|2026-11-01|in|Tahsil Edilecek Borç|1000',
+        -   'account|aentry-2b737b72-2a11-47cb-a8f3-7ff393dcb9b8|2026-11-08|in|Tahsil Edilecek Borç|520',
+        -   'account|aentry-390a559d-7f95-44da-914c-420f394d0bbf|2026-10-23|in|Tahsil Edilecek Borç|500',
+        -   'account|aentry-3bb416a3-42a8-4751-a5be-e4de28b76a4e|2026-11-04|in|Tahsil Edilecek Borç|800',
+        -   'account|aentry-5a84b4a4-cb4b-4775-9ec3-bbaccd9e1afa|2026-10-21|in|Tahsil Edilecek Borç (Ödeme Sözü)|600',
+        -   'account|aentry-623d8bb6-0bcc-439f-b88d-ba42fa7a3ab5|2026-10-22|in|Tahsil Edilecek Borç|400',
+        -   'account|aentry-73c5bcc0-2e41-4804-b234-4dd9509512d6|2026-10-17|in|Tahsil Edilecek Borç|444',
+        -   'account|aentry-81af1b34-b620-4b29-802d-6fa6605ce13e|2026-10-18|out|Ödenecek Borç|130',
+        -   'account|aentry-8bc19905-a7d1-4094-ade4-c142f73270b2|2026-10-25|in|Tahsil Edilecek Borç (Ödeme Sözü)|750',
+        -   'account|aentry-952a0e68-aa43-4631-9a0c-0daf2857927f|2026-10-24|out|Ödenecek Borç|900',
+        -   'account|aentry-b3053fe7-9534-4d6e-8e05-f078b9c8f5bd|2026-10-23|in|Tahsil Edilecek Borç|111',
+        -   'account|aentry-d2e4e17a-4462-40ee-8988-15397bcd826c|2026-10-16|in|Tahsil Edilecek Borç|246.8',
+        -   'account|aentry-d951391d-ac58-406e-9d7f-0d82adaf635b|2026-10-28|in|Tahsil Edilecek Borç|1357.24'
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'account|aentry-09904c1f-134b-4c85-a572-d137888ce673|2026-11-04|in|Tahsil Edilecek Borç|222'
+        1: 'account|aentry-15788e5e-8c0e-4f8e-962b-614bbc6d27a4|2026-10-26|out|Ödenecek Borç|300'
+        2: 'account|aentry-1b3de57d-5a87-4567-8435-a4fd7f672847|2026-11-01|in|Tahsil Edilecek Borç|1000'
+        3: 'account|aentry-2b737b72-2a11-47cb-a8f3-7ff393dcb9b8|2026-11-08|in|Tahsil Edilecek Borç|520'
+        4: 'account|aentry-390a559d-7f95-44da-914c-420f394d0bbf|2026-10-23|in|Tahsil Edilecek Borç|500'
+        5: 'account|aentry-3bb416a3-42a8-4751-a5be-e4de28b76a4e|2026-11-04|in|Tahsil Edilecek Borç|800'
+        6: 'account|aentry-5a84b4a4-cb4b-4775-9ec3-bbaccd9e1afa|2026-10-21|in|Tahsil Edilecek Borç (Ödeme Sözü)|600'
+        7: 'account|aentry-623d8bb6-0bcc-439f-b88d-ba42fa7a3ab5|2026-10-22|in|Tahsil Edilecek Borç|400'
+        8: 'account|aentry-73c5bcc0-2e41-4804-b234-4dd9509512d6|2026-10-17|in|Tahsil Edilecek Borç|444'
+        9: 'account|aentry-81af1b34-b620-4b29-802d-6fa6605ce13e|2026-10-18|out|Ödenecek Borç|130'
+        10: 'account|aentry-8bc19905-a7d1-4094-ade4-c142f73270b2|2026-10-25|in|Tahsil Edilecek Borç (Ödeme Sözü)|750'
+        11: 'account|aentry-952a0e68-aa43-4631-9a0c-0daf2857927f|2026-10-24|out|Ödenecek Borç|900'
+        12: 'account|aentry-b3053fe7-9534-4d6e-8e05-f078b9c8f5bd|2026-10-23|in|Tahsil Edilecek Borç|111'
+        13: 'account|aentry-d2e4e17a-4462-40ee-8988-15397bcd826c|2026-10-16|in|Tahsil Edilecek Borç|246.8'
+        14: 'account|aentry-d951391d-ac58-406e-9d7f-0d82adaf635b|2026-10-28|in|Tahsil Edilecek Borç|1357.24'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:251:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yetki: Finans Raporları (overview.view) yoksa 403 (ekran, PDF, Excel); cari kalemi yalnız Cari görüntüleme (accounts.view) yetkisi olana — yoksa aynı borç bir kez, faturasız alacakta
+    not ok 11 - yetki: Finans Raporları (overview.view) yoksa 403 (ekran, PDF, Excel); cari kalemi yalnız Cari görüntüleme (accounts.view) yetkisi olana — yoksa aynı borç bir kez, faturasız alacakta
+      ---
+      duration_ms: 264.482694
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:258:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        muhasebe (Finans Raporları + Cari görüntüleme) cari kalemini görür
+        + actual - expected
+        
+          [
+            [
+        +     'unbilled',
+        +     '2026-10-18',
+        -     'account',
+        -     '2026-10-21',
+              100
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'account'
+          1: '2026-10-21'
+          2: 100
+      actual:
+        0:
+          0: 'unbilled'
+          1: '2026-10-18'
+          2: 100
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:267:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: bir kez: Σ (cari kalemi + faturasız cari alacağı + kartın taksitleri) = carilerin açık bakiyesi; vadeli borç faturasız alacakta YOK, vadesiz borç orada
+    not ok 12 - bir kez: Σ (cari kalemi + faturasız cari alacağı + kartın taksitleri) = carilerin açık bakiyesi; vadeli borç faturasız alacakta YOK, vadesiz borç orada
+      ---
+      duration_ms: 186.308958
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:282:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        faturasız alacakta yalnız vadesiz borçlar, kendi günleriyle: [{"source":"unbilled","date":"2026-09-10","direction":"in","amount":400,"label":"Faturasız Cari Alacağı"},{"source":"unbilled","date":"2026-09-15","direction":"in","amount":250,"label":"Faturasız Cari Alacağı"},{"source":"unbilled","date":"2026-09-20","direction":"in","amount":2000,"label":"Faturasız Cari Alacağı"},{"source":"unbilled","date":"2026-09-30","direction":"in","amount":700,"label":"Faturasız Cari Alacağı"},{"source":"unbilled","date":"2026-09-20","direction":"in","amount":700,"label":"Faturasız Cari Alacağı"},{"source":"unbilled","date":"2026-10-18","direction":"in","amount":90,"label":"Faturasız Cari Alacağı"}]
+        + actual - expected
+        
+          [
+            [
+              'Projeksiyon Bir Kez A',
+        +     '2026-09-10',
+        +     400
+        +   ],
+        +   [
+        +     'Projeksiyon Bir Kez A',
+              '2026-09-15',
+              250
+            ],
+            [
+        +     'Projeksiyon Bir Kez B',
+        +     '2026-09-20',
+        +     2000
+        +   ],
+        +   [
+        +     'Projeksiyon Bir Kez B',
+        +     '2026-09-30',
+        +     700
+        +   ],
+        +   [
+              'Projeksiyon Bir Kez C',
+        +     '2026-09-20',
+        +     700
+        +   ],
+        +   [
+        +     'Projeksiyon Bir Kez C',
+              '2026-10-18',
+              90
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'Projeksiyon Bir Kez A'
+          1: '2026-09-15'
+          2: 250
+        1:
+          0: 'Projeksiyon Bir Kez C'
+          1: '2026-10-18'
+          2: 90
+      actual:
+        0:
+          0: 'Projeksiyon Bir Kez A'
+          1: '2026-09-10'
+          2: 400
+        1:
+          0: 'Projeksiyon Bir Kez A'
+          1: '2026-09-15'
+          2: 250
+        2:
+          0: 'Projeksiyon Bir Kez B'
+          1: '2026-09-20'
+          2: 2000
+        3:
+          0: 'Projeksiyon Bir Kez B'
+          1: '2026-09-30'
+          2: 700
+        4:
+          0: 'Projeksiyon Bir Kez C'
+          1: '2026-09-20'
+          2: 700
+        5:
+          0: 'Projeksiyon Bir Kez C'
+          1: '2026-10-18'
+          2: 90
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:307:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: gecikmiş vadeli kalem takvimdeki gibi görünür: 'Vadesi geçmiş, kapanmamış' listesinde (gün, tutar, kimlik takvimle aynı); 'başlangıca ekle' ile başlangıca girer
+    not ok 13 - gecikmiş vadeli kalem takvimdeki gibi görünür: 'Vadesi geçmiş, kapanmamış' listesinde (gün, tutar, kimlik takvimle aynı); 'başlangıca ekle' ile başlangıca girer
+      ---
+      duration_ms: 60.105698
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:312:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        gecikmişlerde takvimle aynı kalemler: [{"source":"unbilled","date":"2026-09-20","direction":"in","amount":185,"label":"Faturasız Cari Alacağı"},{"source":"unbilled","date":"2026-09-20","direction":"in","amount":815,"label":"Faturasız Cari Alacağı"}]
+        + actual - expected
+        
+          [
+            [
+        +     undefined,
+        +     'unbilled',
+        +     '2026-09-20',
+        -     'account|aentry-c00cfe73-882f-448d-8f51-e8f74b4cdc26',
+        -     'account',
+        -     '2026-10-19',
+              185
+            ],
+            [
+        +     undefined,
+        +     'unbilled',
+        +     '2026-09-20',
+        -     'account|aentry-e962a297-eef2-4c68-b1dc-875479decc25',
+        -     'account',
+        -     '2026-10-08',
+              815
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'account|aentry-c00cfe73-882f-448d-8f51-e8f74b4cdc26'
+          1: 'account'
+          2: '2026-10-19'
+          3: 185
+        1:
+          0: 'account|aentry-e962a297-eef2-4c68-b1dc-875479decc25'
+          1: 'account'
+          2: '2026-10-08'
+          3: 815
+      actual:
+        0:
+          1: 'unbilled'
+          2: '2026-09-20'
+          3: 185
+        1:
+          1: 'unbilled'
+          2: '2026-09-20'
+          3: 815
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:320:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: pencere iki ucu kapalı (K-P1): son gündeki kalem dahil, ertesi gün değil; aralığın ilk günündeki kalem dahil
+    not ok 14 - pencere iki ucu kapalı (K-P1): son gündeki kalem dahil, ertesi gün değil; aralığın ilk günündeki kalem dahil
+      ---
+      duration_ms: 93.102938
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:327:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        30 gün: 30. gün dahil, 31. gün yok; bugünkü kalem aralıkta
+        + actual - expected
+        
+          [
+        -   'aralık',
+            'yok',
+        +   'yok',
+        +   'yok',
+        +   'yok'
+        -   'aralık',
+        -   'aralık'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'aralık'
+        1: 'yok'
+        2: 'aralık'
+        3: 'aralık'
+      actual:
+        0: 'yok'
+        1: 'yok'
+        2: 'yok'
+        3: 'yok'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:336:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: cari silinince kalemi de faturasız alacağı da yok; geri yüklenince döner
+    not ok 15 - cari silinince kalemi de faturasız alacağı da yok; geri yüklenince döner
+      ---
+      duration_ms: 120.497984
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:344:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+        +     'unbilled',
+        -     'account',
+              55
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'account'
+          1: 55
+      actual:
+        0:
+          0: 'unbilled'
+          1: 55
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:353:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 002 şirketi: boş veri (satır yok, toplamlar 0); kalemler şirkete ayrı
+    not ok 16 - 002 şirketi: boş veri (satır yok, toplamlar 0); kalemler şirkete ayrı
+      ---
+      duration_ms: 245.989019
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:356:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        002'de yalnız kendi kalemi (açılış bakiyesinin vadesi)
+        + actual - expected
+        
+          [
+            [
+        +     'unbilled',
+        -     'account',
+              'account-0388ba26-baec-4c64-a3ef-8ae00b0b4b4d',
+              90,
+        +     '2026-09-20'
+        -     '2026-10-22'
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'account'
+          1: 'account-0388ba26-baec-4c64-a3ef-8ae00b0b4b4d'
+          2: 90
+          3: '2026-10-22'
+      actual:
+        0:
+          0: 'unbilled'
+          1: 'account-0388ba26-baec-4c64-a3ef-8ae00b0b4b4d'
+          2: 90
+          3: '2026-09-20'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:369:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..16
+not ok 1 - 2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri
+  ---
+  duration_ms: 2191.246403
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:75:1'
+  failureType: 'subtestsFailed'
+  error: '16 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.6 madde 11: ay sonu, yıl dönümü ve gün değişimi (sahte saat)
+    # Subtest: bugün vadeli kalem aralıktadır (gecikmiş değil); yarın (yeni yıl) aralıkta; ay sonu (31 Ocak) 30 günlükte değil 60 günlükte; gün değişince bugünkü kalem gecikmişe geçer
+    not ok 1 - bugün vadeli kalem aralıktadır (gecikmiş değil); yarın (yeni yıl) aralıkta; ay sonu (31 Ocak) 30 günlükte değil 60 günlükte; gün değişince bugünkü kalem gecikmişe geçer
+      ---
+      duration_ms: 123.960233
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:382:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        -   'aralık',
+        -   'aralık',
+            'yok',
+        +   'yok',
+        +   'yok',
+        +   'yok'
+        -   'gecikmiş'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'aralık'
+        1: 'aralık'
+        2: 'yok'
+        3: 'gecikmiş'
+      actual:
+        0: 'yok'
+        1: 'yok'
+        2: 'yok'
+        3: 'yok'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:391:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - 2.4.6 madde 11: ay sonu, yıl dönümü ve gün değişimi (sahte saat)
+  ---
+  duration_ms: 560.886259
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-projeksiyon/eski-e77447a/test/projeksiyon-vade-246.test.mjs:377:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 17
+# suites 2
+# pass 0
+# fail 17
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3141.149105

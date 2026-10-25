@@ -1,0 +1,171 @@
+[
+  {
+    "id": "M1",
+    "what": "projeksiyona cari vade kalemi eklenmez",
+    "file": "server/routes/overview.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 17,
+    "fail": 17,
+    "caught": true,
+    "failed": [
+      "vadeli elle Borç: Vade Tarihi'nde giriş kalemi (Cari (vadeli), Tahsil Edilecek Borç); faturasız cari alacağı olarak ikinci kez yok; carinin Σ = bakiye",
+      "Beklenen Ödeme Tarihi girilmişse kalem o gündedir (Ödeme Sözü), Vade Tarihi'nde değil; Beklenen Ödeme Vade'den önce de olabilir (K6.5 (4))",
+      "FIFO kalanı: kısmi tahsilat kalemi küçültür; tahsilat silinince kalem büyür ve vadesiz borcun kalanı KENDİ gününde faturasız alacak olur; tam tahsilatta kalem yok",
+      "tedarikçideki elle Alacak ve alacak yönlü Açılış Bakiyesi: vadesinde ÇIKIŞ (Ödenecek Borç); ödeme kalemi küçültür",
+      "KS2: müşterideki vadeli elle Alacak çıkış kalemidir, müşterinin borcundan düşülmez; bakiyede ikinci kez düşülmez (carinin net = bakiye)",
+      "K6.5 (1): Mevcut Borç kartının kapsadığı kısım kartın taksitleriyle BİR kez; kapsanmayan kalan cari kalemidir"
+    ]
+  },
+  {
+    "id": "M2",
+    "what": "faturasız alacakta kalemi olan kayıt atlanmaz (skip verilmez)",
+    "file": "server/routes/overview.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 17,
+    "fail": 1,
+    "caught": true,
+    "failed": [
+      "FIFO kalanı: kısmi tahsilat kalemi küçültür; tahsilat silinince kalem büyür ve vadesiz borcun kalanı KENDİ gününde faturasız alacak olur; tam tahsilatta kalem yok"
+    ]
+  },
+  {
+    "id": "M3",
+    "what": "çıkış kalemi bakiyeye geri eklenmez (KS2 çift düşüş)",
+    "file": "server/routes/overview.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 17,
+    "fail": 1,
+    "caught": true,
+    "failed": [
+      "KS2: müşterideki vadeli elle Alacak çıkış kalemidir, müşterinin borcundan düşülmez; bakiyede ikinci kez düşülmez (carinin net = bakiye)"
+    ]
+  },
+  {
+    "id": "M4",
+    "what": "giriş kalemi bakiyeden düşülmez (çift sayım)",
+    "file": "server/routes/overview.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 17,
+    "fail": 11,
+    "caught": true,
+    "failed": [
+      "vadeli elle Borç: Vade Tarihi'nde giriş kalemi (Cari (vadeli), Tahsil Edilecek Borç); faturasız cari alacağı olarak ikinci kez yok; carinin Σ = bakiye",
+      "Beklenen Ödeme Tarihi girilmişse kalem o gündedir (Ödeme Sözü), Vade Tarihi'nde değil; Beklenen Ödeme Vade'den önce de olabilir (K6.5 (4))",
+      "FIFO kalanı: kısmi tahsilat kalemi küçültür; tahsilat silinince kalem büyür ve vadesiz borcun kalanı KENDİ gününde faturasız alacak olur; tam tahsilatta kalem yok",
+      "KS2: müşterideki vadeli elle Alacak çıkış kalemidir, müşterinin borcundan düşülmez; bakiyede ikinci kez düşülmez (carinin net = bakiye)",
+      "K6.5 (1): Mevcut Borç kartının kapsadığı kısım kartın taksitleriyle BİR kez; kapsanmayan kalan cari kalemidir",
+      "karışık kuyruk: vadeli borç + vadeli satış faturası + tahsilat → fatura açığı ve borç kalanı kendi vadelerinde; Σ = bakiye, faturasız alacak yok"
+    ]
+  },
+  {
+    "id": "M5",
+    "what": "Beklenen Ödeme Tarihi yerine Vade Tarihi",
+    "file": "server/routes/overview.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 17,
+    "fail": 6,
+    "caught": true,
+    "failed": [
+      "Beklenen Ödeme Tarihi girilmişse kalem o gündedir (Ödeme Sözü), Vade Tarihi'nde değil; Beklenen Ödeme Vade'den önce de olabilir (K6.5 (4))",
+      "tedarikçideki elle Alacak ve alacak yönlü Açılış Bakiyesi: vadesinde ÇIKIŞ (Ödenecek Borç); ödeme kalemi küçültür",
+      "ortak yardımcı: projeksiyonun cari kalemleri = Vade Takip'in cari kalemleri (aynı aralık) = zil / takvim kalemleri (7 gün); kimlik, gün, yön, etiket, tutar",
+      "bir kez: Σ (cari kalemi + faturasız cari alacağı + kartın taksitleri) = carilerin açık bakiyesi; vadeli borç faturasız alacakta YOK, vadesiz borç orada",
+      "gecikmiş vadeli kalem takvimdeki gibi görünür: 'Vadesi geçmiş, kapanmamış' listesinde (gün, tutar, kimlik takvimle aynı); 'başlangıca ekle' ile başlangıca girer",
+      "bugün vadeli kalem aralıktadır (gecikmiş değil); yarın (yeni yıl) aralıkta; ay sonu (31 Ocak) 30 günlükte değil 60 günlükte; gün değişince bugünkü kalem gecikmişe geçer"
+    ]
+  },
+  {
+    "id": "M6",
+    "what": "yön ters (carinin borcu çıkış)",
+    "file": "server/routes/overview.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 17,
+    "fail": 10,
+    "caught": true,
+    "failed": [
+      "vadeli elle Borç: Vade Tarihi'nde giriş kalemi (Cari (vadeli), Tahsil Edilecek Borç); faturasız cari alacağı olarak ikinci kez yok; carinin Σ = bakiye",
+      "FIFO kalanı: kısmi tahsilat kalemi küçültür; tahsilat silinince kalem büyür ve vadesiz borcun kalanı KENDİ gününde faturasız alacak olur; tam tahsilatta kalem yok",
+      "tedarikçideki elle Alacak ve alacak yönlü Açılış Bakiyesi: vadesinde ÇIKIŞ (Ödenecek Borç); ödeme kalemi küçültür",
+      "KS2: müşterideki vadeli elle Alacak çıkış kalemidir, müşterinin borcundan düşülmez; bakiyede ikinci kez düşülmez (carinin net = bakiye)",
+      "K6.5 (1): Mevcut Borç kartının kapsadığı kısım kartın taksitleriyle BİR kez; kapsanmayan kalan cari kalemidir",
+      "karışık kuyruk: vadeli borç + vadeli satış faturası + tahsilat → fatura açığı ve borç kalanı kendi vadelerinde; Σ = bakiye, faturasız alacak yok"
+    ]
+  },
+  {
+    "id": "M7",
+    "what": "ortak yardımcı Mevcut Borç kartının kapsadığını düşmez (K6.5 (1))",
+    "file": "server/routes/accounts.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 17,
+    "fail": 2,
+    "caught": true,
+    "failed": [
+      "K6.5 (1): Mevcut Borç kartının kapsadığı kısım kartın taksitleriyle BİR kez; kapsanmayan kalan cari kalemidir",
+      "bir kez: Σ (cari kalemi + faturasız cari alacağı + kartın taksitleri) = carilerin açık bakiyesi; vadeli borç faturasız alacakta YOK, vadesiz borç orada"
+    ]
+  },
+  {
+    "id": "M8",
+    "what": "yardımcı skip'i yok sayar",
+    "file": "server/lib/receivable-aging.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 17,
+    "fail": 1,
+    "caught": true,
+    "failed": [
+      "FIFO kalanı: kısmi tahsilat kalemi küçültür; tahsilat silinince kalem büyür ve vadesiz borcun kalanı KENDİ gününde faturasız alacak olur; tam tahsilatta kalem yok"
+    ]
+  },
+  {
+    "id": "M9",
+    "what": "kısmi tahsilat yerine kayıt tutarı (FIFO kalanı yok sayılır)",
+    "file": "server/routes/overview.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 17,
+    "fail": 5,
+    "caught": true,
+    "failed": [
+      "FIFO kalanı: kısmi tahsilat kalemi küçültür; tahsilat silinince kalem büyür ve vadesiz borcun kalanı KENDİ gününde faturasız alacak olur; tam tahsilatta kalem yok",
+      "tedarikçideki elle Alacak ve alacak yönlü Açılış Bakiyesi: vadesinde ÇIKIŞ (Ödenecek Borç); ödeme kalemi küçültür",
+      "K6.5 (1): Mevcut Borç kartının kapsadığı kısım kartın taksitleriyle BİR kez; kapsanmayan kalan cari kalemidir",
+      "ortak yardımcı: projeksiyonun cari kalemleri = Vade Takip'in cari kalemleri (aynı aralık) = zil / takvim kalemleri (7 gün); kimlik, gün, yön, etiket, tutar",
+      "bir kez: Σ (cari kalemi + faturasız cari alacağı + kartın taksitleri) = carilerin açık bakiyesi; vadeli borç faturasız alacakta YOK, vadesiz borç orada"
+    ]
+  },
+  {
+    "id": "M10",
+    "what": "Cari görüntüleme yetkisi denetlenmez (yetkisiz kullanıcı cari kalemini görür)",
+    "file": "server/routes/overview.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 17,
+    "fail": 1,
+    "caught": true,
+    "failed": [
+      "yetki: Finans Raporları (overview.view) yoksa 403 (ekran, PDF, Excel); cari kalemi yalnız Cari görüntüleme (accounts.view) yetkisi olana — yoksa aynı borç bir kez, faturasız alacakta"
+    ]
+  },
+  {
+    "id": "M11",
+    "what": "pencerenin son günü dışarıda (iki ucu kapalı değil; K-P1)",
+    "file": "server/lib/finance-report.mjs",
+    "applied": true,
+    "exit": 1,
+    "tests": 17,
+    "fail": 2,
+    "caught": true,
+    "failed": [
+      "pencere iki ucu kapalı (K-P1): son gündeki kalem dahil, ertesi gün değil; aralığın ilk günündeki kalem dahil",
+      "bugün vadeli kalem aralıktadır (gecikmiş değil); yarın (yeni yıl) aralıkta; ay sonu (31 Ocak) 30 günlükte değil 60 günlükte; gün değişince bugünkü kalem gecikmişe geçer"
+    ]
+  }
+]
