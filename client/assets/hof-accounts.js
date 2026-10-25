@@ -354,7 +354,7 @@
       const parts = [entry.dueDate ? `Vade ${HOF.formatDate(entry.dueDate)}` : "", entry.expectedDate ? `Beklenen Ödeme ${HOF.formatDate(entry.expectedDate)}` : "", Number.isFinite(left) ? (left > 0.004 ? `Kalan ${money(left)}` : "Kapandı") : ""].filter(Boolean);
       return `<small class="hof-acc-due" data-entry-due="${esc(entry.id)}">${esc(parts.join(" · "))}</small>`;
     };
-    const ledgerRow = line => `<tr class="is-${esc(line.kind)}"><td>${esc(HOF.formatDate(line.date))}</td><td><b>${esc(line.label)}${line.method ? ` <span class="hof-method-tag is-${esc(line.method)}">${esc(HOF.methodLabel(line.method, line.kind === "in" || line.kind === "out" ? line.kind : ""))}</span>` : ""}${line.receiptNo ? ` <span class="hof-plan-receipt">Makbuz ${esc(line.receiptNo)}</span>` : ""}${line.invoiceId && line.origin === "account" ? ` <a href="#" class="hof-plan-receipt" data-open-invoice="${esc(line.invoiceId)}" title="Bu kayıt seçilen faturayı kapatır">Faturaya Bağlı</a>` : ""}${line.doubtfulNormal ? ` <span class="hof-plan-receipt" data-doubtful-normal title="Şüpheli alacaktan düşmedi; normal cari hesaba (120) işlendi">Normal Cariye İşlendi</span>` : ""}</b>${line.note ? `<small>${esc(line.note)}</small>` : ""}${dueNote(line)}</td><td class="num">${line.debit ? esc(money(line.debit)) : ""}</td><td class="num">${line.credit ? esc(money(line.credit)) : ""}</td><td class="num">${balanceHtml(line.balance)}</td><td class="hof-cash-actions">${lineActions(line)}</td></tr>`;
+    const ledgerRow = line => `<tr class="is-${esc(line.kind)}"><td>${esc(HOF.formatDate(line.date))}</td><td><b>${esc(line.label)}${line.method ? ` <span class="hof-method-tag is-${esc(line.method)}">${esc(HOF.methodLabel(line.method, line.kind === "in" || line.kind === "out" ? line.kind : ""))}</span>` : ""}${line.receiptNo ? ` <span class="hof-plan-receipt">Makbuz ${esc(line.receiptNo)}</span>` : ""}${line.invoiceId && line.origin === "account" ? ` <a href="#" class="hof-plan-receipt" data-open-invoice="${esc(line.invoiceId)}" title="Bu kayıt seçilen faturayı kapatır">Faturaya Bağlı</a>` : ""}${line.refundOf && line.origin === "account" ? ` <span class="hof-plan-receipt" data-refund-of="${esc(line.refundOf)}" title="${esc(`Geri ödenen iade: ${entryById.get(line.id)?.refundLabel || "iade"}`)}">İadeye Bağlı</span>` : ""}${line.doubtfulNormal ? ` <span class="hof-plan-receipt" data-doubtful-normal title="Şüpheli alacaktan düşmedi; normal cari hesaba (120) işlendi">Normal Cariye İşlendi</span>` : ""}</b>${line.note ? `<small>${esc(line.note)}</small>` : ""}${dueNote(line)}</td><td class="num">${line.debit ? esc(money(line.debit)) : ""}</td><td class="num">${line.credit ? esc(money(line.credit)) : ""}</td><td class="num">${balanceHtml(line.balance)}</td><td class="hof-cash-actions">${lineActions(line)}</td></tr>`;
     const planRow = plan => `<tr data-open-plan="${esc(plan.id)}" tabindex="0" class="is-${esc(plan.state)}"><td class="hof-plan-no">${esc(plan.refNo || "")}</td><td><b>${esc(plan.name)}</b><small>${plan.itemCount ? `${plan.itemCount} taksit` : "Taksit kurulmadı"}${plan.next ? ` · sıradaki ${esc(HOF.formatDate(plan.next.dueDate))}` : ""}</small></td><td class="num">${esc(money(plan.totals.total))}</td><td class="num hof-cash-in">${esc(money(plan.totals.paid))}</td><td class="num${plan.totals.remaining > 0 ? " hof-cash-out" : ""}">${esc(money(plan.totals.remaining))}</td><td>${plan.status === "closed" ? '<span class="hof-plan-badge is-muted">Kapalı</span>' : plan.state === "overdue" ? `<span class="hof-plan-badge is-late">${plan.totals.overdueCount} taksit gecikti</span>` : plan.state === "done" ? '<span class="hof-plan-badge is-done">Tamamlandı</span>' : '<span class="hof-plan-badge is-info">Devam Ediyor</span>'}</td></tr>`;
     const caseCell = account.caseKey
       ? account.caseSource && HOF.datasetKey && account.caseSource !== HOF.datasetKey
@@ -995,23 +995,42 @@
   }
   // v2.0.17: tahsilat/ödeme formunda "Kapatılacak Fatura" — Otomatik (carinin en eski açık faturası) ya da seçilen fatura.
   // Seçim yalnız fatura kapamasını belirler; bakiye ve Kasa aynı. Açık fatura yoksa alan görünmez.
-  async function openInvoiceOptions(account, type) {
-    if (!HOF.invoices || !HOF.can("invoices.view")) return [];
-    try {
-      const data = await HOF.api(`/api/workspace/invoices?tab=all&status=issued&pay=open&side=${type === "in" ? "sale" : "purchase"}&account=${encodeURIComponent(account.id)}&limit=200`);
-      return (data.invoices || [])
-        // v2.0.23: taksitli fatura kendi taksit kartıyla kapanır; burada seçilemez (tahsilat kartın taksitine girilir).
-        .filter(item => !item.kind.endsWith("_return") && !item.planId && item.open > 0.004)
-        .map(item => ({ value: item.id, label: `${item.kindLabel} ${item.displayNo} · ${HOF.formatDate(item.issueDate)} · açık ${money(item.open)}` }));
-    } catch {
-      return [];
+  // 2.4.6 madde 9 (DB1; kararlar K-d, K-c): bu yönde geri ödenmemiş kalanı olan İADELER de seçenektir — Ödeme'de müşteriye geri ödenen satıştan iade, Tahsilat'ta
+  // tedarikçinin geri ödediği alıştan iade (iade faturası; stock: true ise faturasız stok iadesi de). Seçilen iade bu kayıtla geri ödenir: açık faturaları ve borçları
+  // kapatmaz, iadeden fazlası avans sayılır (K-a). Liste sunucunun carisi için hesapladığı refundables'tan (yoksa kart okunur).
+  async function openInvoiceOptions(account, type, { stock = true } = {}) {
+    let invoices = [];
+    if (HOF.invoices && HOF.can("invoices.view")) {
+      try {
+        const data = await HOF.api(`/api/workspace/invoices?tab=all&status=issued&pay=open&side=${type === "in" ? "sale" : "purchase"}&account=${encodeURIComponent(account.id)}&limit=200`);
+        invoices = (data.invoices || [])
+          // v2.0.23: taksitli fatura kendi taksit kartıyla kapanır; burada seçilemez (tahsilat kartın taksitine girilir).
+          .filter(item => !item.kind.endsWith("_return") && !item.planId && item.open > 0.004)
+          .map(item => ({ value: item.id, label: `${item.kindLabel} ${item.displayNo} · ${HOF.formatDate(item.issueDate)} · açık ${money(item.open)}` }));
+      } catch {
+        invoices = [];
+      }
     }
+    let refundables = account.refundables;
+    if (!Array.isArray(refundables)) {
+      try {
+        refundables = (await HOF.api(`/api/workspace/accounts/${encodeURIComponent(account.id)}`)).refundables || [];
+      } catch {
+        refundables = [];
+      }
+    }
+    const returns = refundables
+      .filter(item => item.refundKind === type && (stock || item.type === "invoice"))
+      .map(item => ({ value: item.id, refund: item.type, label: `İade Geri Ödemesi · ${item.label} · ${money(item.amount)} · kalan ${money(item.left)}` }));
+    return [...invoices, ...returns];
   }
   // preset (2.4.4 E8; yalnız yeni tahsilat): zil / Tahsilat Takvimi kaleminden { amount, note } — tutar ve açıklama hazır gelir.
   async function editEntry(account, { kind = "in", entry = null, preset = null } = {}) {
     const type = entry?.kind || kind;
     const invoiceOptions = type === "in" || type === "out" ? await openInvoiceOptions(account, type) : [];
     if (entry?.invoiceId && !invoiceOptions.some(option => option.value === entry.invoiceId)) invoiceOptions.unshift({ value: entry.invoiceId, label: "Bağlı Fatura (kapanmış)" });
+    // 2.4.6 madde 9: düzeltmede bağlı iade listede yoksa (tamamı geri ödendi, iptal / silindi) adıyla eklenir; seçicinin değeri iade.
+    if (entry?.refundOf && !invoiceOptions.some(option => option.value === entry.refundOf)) invoiceOptions.unshift({ value: entry.refundOf, refund: "linked", label: `İade Geri Ödemesi · ${entry.refundLabel || "Bağlı İade"}` });
     // v2.1.0 Aşama 5: istek kimliği form açılışında (aynı gönderim ikinci kez yazılmaz); Havale / EFT seçilince Banka Hesabı (tek hesapta gizli).
     const requestId = HOF.requestId();
     const money_ = type === "in" || type === "out";
@@ -1037,7 +1056,8 @@
         { name: "date", label: "Tarih", type: "date", max: "today", value: entry?.date || office().todayIso?.() || "" },
         // 2.4.5 madde 6: Borç / Alacak kaydının Vade Tarihi ve Beklenen Ödeme Tarihi (tahsilat / ödemede yok).
         ...(type === "debt" || type === "credit" ? dueFields({ values: entry || {} }) : []),
-        ...(invoiceOptions.length ? [{ name: "invoiceId", label: "Kapatılacak Fatura", type: "select", value: entry?.invoiceId || "", options: [{ value: "", label: "Otomatik (En Eski Açık Fatura)" }, ...invoiceOptions], help: "Seçilen fatura bu kayıtla kapanır; fazlası en eski açık faturaya gider. Bakiye ve Kasa değişmez. Faturaya bağlı tahsilat şüpheli alacaktan düşmez (yeni satışın parası); çek / senet evrakı ise şüpheli alacaktan düşer." }] : []),
+        // 2.4.6 madde 9 (DB1; K-d): seçeneklerde iadeler de ("İade Geri Ödemesi · …") — iade bedelinin geri ödemesi iadeye bağlanır.
+        ...(invoiceOptions.length ? [{ name: "invoiceId", label: "Kapatılacak Fatura", type: "select", value: entry?.refundOf || entry?.invoiceId || "", options: [{ value: "", label: "Otomatik (En Eski Açık Fatura)" }, ...invoiceOptions], help: `Seçilen fatura bu kayıtla kapanır; fazlası en eski açık faturaya gider. Bakiye ve Kasa değişmez. Faturaya bağlı tahsilat şüpheli alacaktan düşmez (yeni satışın parası); çek / senet evrakı ise şüpheli alacaktan düşer.${invoiceOptions.some(option => option.refund) ? ` İade seçilirse bu ${type === "out" ? "ödeme" : "tahsilat"} o iadenin geri ödemesidir: iade açık faturaları ve borçları kapatmaz; iadeden fazlası avans sayılır.` : ""}` }] : []),
         { name: "note", label: "Açıklama", maxlength: 300, value: entry?.note || (!entry && preset?.note ? String(preset.note).slice(0, 300) : ""), placeholder: type === "in" ? "Ör. Eylül ödemesi" : type === "debt" ? "Ör. Eylül aidatı, 3 adet ürün" : "" },
       ],
       submitLabel: entry ? "Kaydet" : ENTRY_LABEL[type],
@@ -1087,6 +1107,10 @@
         }
       },
       onSubmit: async data => {
+        // 2.4.6 madde 9 (K-e): iade faturasının geri ödemesi çek / senetle de bağlanır (evrak formu Kapatılacak Fatura'yı taşır); faturasız stok iadesinin
+        // evrakla geri ödemesine bağ yolu yok — söylenir, sessizce düşmez (BİLİNEN SINIR).
+        const picked = invoiceOptions.find(option => option.value === data.invoiceId);
+        if (data.method === "cheque" && picked?.refund === "stock") throw new Error("Faturasız stok iadesinin çek / senetle geri ödemesi iadeye bağlanamaz. Nakit, havale / EFT ya da kartla girin ya da Kapatılacak Fatura'yı Otomatik bırakın.");
         if (data.method === "cheque") {
           // Çekle/senetle tahsilat ya da ödeme: evrak portföye girer, carinin borcu evrakla düşer (Kasa değişmez).
           // 2.4.4 UX18 (kullanıcı kararı 21.10.2026): seçilen Kapatılacak Fatura evrak formuna taşınır (önceden sessizce düşüyor, evrak en eski faturayı kapatıyordu).
@@ -1094,7 +1118,8 @@
           return;
         }
         const url = `/api/workspace/accounts/${encodeURIComponent(account.id)}/entries${entry ? `/${encodeURIComponent(entry.id)}` : ""}`;
-        const body = { ...data, kind: entry && data.kind ? data.kind : type };
+        // 2.4.6: iade seçimi Kapatılacak Fatura'dan gelir (sunucu iadeyi refund_of'a yazar); refundOf boş gönderilir ki Otomatik'e dönmek eski iade bağını kaldırsın.
+        const body = { ...data, kind: entry && data.kind ? data.kind : type, ...(money_ ? { refundOf: "" } : {}) };
         if (HOF.bank?.accountBody) HOF.bank.accountBody(body, data.method);
         else if (data.method !== "bank") delete body.bankAccountId;
         const send = flags => HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...body, ...flags }, requestId });

@@ -1,0 +1,32 @@
+{
+  "ad": "246-db1/e2e-senaryo-ekstre-ayrinti-245",
+  "komut": "npm run test:senaryo-ekstre-ayrinti-245",
+  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "dal": "is/db1",
+  "kirli": 15,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T11:27:03.037Z",
+  "sure_sn": 10.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 30,
+    "gecen": 30,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-db1/e2e-senaryo-ekstre-ayrinti-245.log",
+  "klasor": "/home/user/wt/db1",
+  "ham_cikti_sha256": "6fd9d654767e8fc47cc8eac8c435dad6039af5f67a282ffd90b8b2bb88608b27",
+  "ham_cikti_bayt": 2423
+}

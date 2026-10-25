@@ -1,0 +1,32 @@
+{
+  "ad": "246-db1/yesil-goc-246-iade-bagi",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/goc-246-iade-bagi.test.mjs",
+  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "dal": "is/db1",
+  "kirli": 15,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T11:05:58.552Z",
+  "sure_sn": 2.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-db1/yesil-goc-246-iade-bagi.log",
+  "klasor": "/home/user/wt/db1",
+  "ham_cikti_sha256": "87969ac31cc08a12a44919400f16f5e5ed8c76ac8f08788e3b2a83ca12ffdc66",
+  "ham_cikti_bayt": 811
+}
