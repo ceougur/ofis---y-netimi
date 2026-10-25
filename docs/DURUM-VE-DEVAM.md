@@ -35,6 +35,28 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
 - KARAR (kullanıcı, 25.10.2026 ~08:30 UTC: "kartlar exceldeki gibi '100X100 Köşe Kabin' adıyla olacak değil mi, yanına kalem ikonu koy, isterse değiştirsin. sabit malzeme isimleri de öyle olsun"):
   kart adları Excel'deki adlarıyla HAZIR gelir (ör. "100X100 Köşe Kabin", "100X100 Oval Kabin", "170 2S2Ç H:182" …; yazım düzeni: her sözcük büyük, ölçü/kod aynen), adın yanında ✎ → değiştirilebilir;
   malzeme adları da Excel'deki gibi hazır (Alüminyum, Cam, Fitil, Mıknatıs, Plastik Malz., Tekerlek, Vida …) ve her birinin yanında ✎. Boş gelen yalnız sayılar (miktar, fiyat); birimler hazır ve düzenlenebilir.
+- KARAR (kullanıcı, 25.10.2026 ~08:35 UTC: "aman formülleri doğru analiz et ve uygula. programın analize kalmasın kurallar"): FORMÜLLER AÇIK VE SABİT — her kart türünün hesap zinciri
+  Excel'in formüllerinden BİRE BİR çıkarılıp kodda (ve plan belgesinde tablo olarak) yazılır: satır tutarı = miktar × birim fiyat; ARA = satırların toplamı; sonra kartın kendi sırasıyla (cam: +KDV ÷18
+  düzeni, +%20 maliyet, ÷ cm bölen; mika: +MASRAF % (11–17), +%15; profil gramaj tablosu; bayi listeleri: taban + sabit fark matrisi) — oran ve bölen değerleri Excel'deki gibi hazır, kullanıcı
+  değiştirebilir, ama İŞLEM SIRASI ve hangi satırın hangi toplama girdiği programın tahminine bırakılmaz (hücre/başlık okuyarak formül KURULMAZ). Eklenen satır yalnız o kartın tanımlı satır kuralına
+  (miktar × fiyat → ARA) girer. 10 tutarsızlık (130/150 kabinde ÷120, elle yazılmış 1,79 vb.) AYNEN. ADIM: kod yazılmadan önce RAPOR'daki formül analizi müşterinin Excel'i yeniden verilince
+  kart kart yeniden doğrulanır (554 formül, her kart: girdi hücreleri → işlem zinciri → çıktı) ve plan belgesine "FORMÜL TABLOSU" olarak yazılır (müşteri fiyatı/miktarı OLMADAN; yalnız işlem, oran,
+  bölen); kâhin bu tablodan, kodu görmeden, Python ile; kabul = Excel'in kendi hesapladığı değerler (türetilmiş girdi çiftleri + müşterinin dosyasıyla yerelde, depoya girmeden) 0 fark.
+- KARAR (kullanıcı, aynı ileti: "2.4.5'ten kalan bulguları da ekleyelim bu sürüme"): bu sürümün kapsamına 2.4.5 SONRAYA / BİLİNEN SINIR maddeleri girer (kaynak docs/2.4.5-IS-LISTESI.md):
+  (a) B3 iki "Cari Ekstre" adı; B4 Ayrıntılı Ekstre 15 kolon 1366'da kesik / PDF Belge No kırılması; B5 Ayrıntılı Ekstre Excel'inde Bakiye metin; B6 cari vade kaleminde borç açıklaması yok;
+      B7 metinler (Vade Takip alt notu, ödeme kaleminde "Beklenen", "Yaklaşan tahsilatlar" ödemeleri içeriyor, "Planlı diğer gider" küçük harf); B8 kapıyla çelişen eski metinler (sektör önerisi
+      "Tahsilat ve Haciz araçları", tablo şeridi "ödeme kayıtları öncelikli doğru veri", "CARİ" kolonu, "önce cari açın"); B9 zil rozeti upcoming saymıyor;
+  (b) zilde alış faturası / verilen çek kalemi başlığı "TAHSİLAT ALINMADI" (yön metni);
+  (c) K-DB2: bilgi notu cari türü yerine açık bakiye tarafına baksın (DÜŞÜK);
+  (d) DB1 [XH, PARA ÇEKİRDEĞİ — kâhin + dar kontrol + tam test gerekir]: faturasız stok / fatura iadesinin cari "Ödeme" ile geri ödenmesi → "iade geri ödemesi" bağı (geri ödeme iadeye bağlanır);
+  (e) stok formunda faturasız Alış İadesi yolu ('preturn');
+  (f) Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri;
+  (g) açılış satırı için sağlam işaret (kolon) — K6.5 (2) (DÜŞÜK);
+  (h) CI'ye "kılavuz PDF sürümü = HTML sürümü" denetimi (ders 42);
+  (i) istemci paketi (app-*.js) kaynağının yeniden kurulması — BAKIM, büyük; öneri ayrı sürüm (kullanıcıya sorulur);
+  (j) takvim +~100 ms (büyük veride) — ölçülüp gerekirse.
+  BAŞ MİMAR NOTU: (d), (f) para/hatırlatma çekirdeğine dokunur → kâhin önce + dar kontrol; (i) büyük ve riskli → ayrı sürüm önerilir. Sürüm tahmini ve sıra iş listesinde verilir; devir 2.5.0 Aralık
+  başı tarihini kaydırmamalı (en geç 1 Aralık'ta devire başla).
 
 ### 000. 2.4.5 BAŞLANGIÇ — DEVAM NOTU (24.10.2026 ~16:30 UTC; kullanıcının sıkıştırma talimatından ÖNCE yazıldı — ÖNCE BUNU OKU)
 - DURUM: 2.4.4 YAYIMLANDI ve KAPANDI (v2.4.4 = master 5187561; PR #34; master CI #867 + Sürüm yayımla #37 yeşil; 5 dosya bayt bayt; eski güncelleyiciler "available"; site
