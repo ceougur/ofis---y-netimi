@@ -1,0 +1,141 @@
+TAP version 13
+# (node:21146) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.6 madde 12: Açılış Bakiyesi satırı işaretle tanınır (güncel kod)
+    # Subtest: açıklaması değiştirilen açılış satırı yine açılıştır: kart openingEntryId'si ve Düzenle'deki açılış Vade Tarihi aynı satıra gider
+    not ok 1 - açıklaması değiştirilen açılış satırı yine açılıştır: kart openingEntryId'si ve Düzenle'deki açılış Vade Tarihi aynı satıra gider
+      ---
+      duration_ms: 75.63745
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-acilis/eski-e77447a/test/acilis-isareti-246.test.mjs:64:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        açıklaması kullanıcı tarafından değiştirilmiş açılış satırı açılış olarak tanınmadı (openingEntryId boş/başka)
+        + actual - expected
+        
+        + ''
+        - 'aentry-5092bdb5-097e-4454-a644-ea9022857c68'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'aentry-5092bdb5-097e-4454-a644-ea9022857c68'
+      actual: ''
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-acilis/eski-e77447a/test/acilis-isareti-246.test.mjs:72:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: sonradan elle 'Açılış bakiyesi' açıklamasıyla yazılan Borç açılış sayılmaz (açılışlı ve açılışsız caride)
+    not ok 2 - sonradan elle 'Açılış bakiyesi' açıklamasıyla yazılan Borç açılış sayılmaz (açılışlı ve açılışsız caride)
+      ---
+      duration_ms: 111.813077
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-acilis/eski-e77447a/test/acilis-isareti-246.test.mjs:84:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        elle yazılan satır açılış işareti almaz (2.4.6 kuralı; vade kendi Düzenle'sinden verilir)
+        + actual - expected
+        
+        + 'aentry-af39570e-bdbd-435c-bc5a-2584127be22a'
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: 'aentry-af39570e-bdbd-435c-bc5a-2584127be22a'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-acilis/eski-e77447a/test/acilis-isareti-246.test.mjs:91:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Excel'den cari yüklemede Bakiye kolonu açılış işaretli satır yazar; bakiyesiz satırda işaret yok
+    not ok 3 - Excel'den cari yüklemede Bakiye kolonu açılış işaretli satır yazar; bakiyesiz satırda işaret yok
+      ---
+      duration_ms: 50.412489
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-acilis/eski-e77447a/test/acilis-isareti-246.test.mjs:98:3'
+      failureType: 'testCodeFailure'
+      error: 'no such column: e.is_opening'
+      code: 'ERR_SQLITE_ERROR'
+      stack: |-
+        prepare (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-acilis/eski-e77447a/server/lib/db.mjs:18:22)
+        Object.all (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-acilis/eski-e77447a/server/lib/db.mjs:245:28)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-acilis/eski-e77447a/test/acilis-isareti-246.test.mjs:103:35)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Silinenler: açıklaması değiştirilmiş açılış silinip geri yüklenince yine açılış; silinmişken kart açılışsız
+    not ok 4 - Silinenler: açıklaması değiştirilmiş açılış silinip geri yüklenince yine açılış; silinmişken kart açılışsız
+      ---
+      duration_ms: 83.673431
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-acilis/eski-e77447a/test/acilis-isareti-246.test.mjs:107:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        geri yüklenen açılış (açıklaması değişmiş) yine açılış
+        + actual - expected
+        
+        + ''
+        - 'aentry-4237baa3-b568-4eac-8ce4-cccdfebdecda'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'aentry-4237baa3-b568-4eac-8ce4-cccdfebdecda'
+      actual: ''
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-acilis/eski-e77447a/test/acilis-isareti-246.test.mjs:117:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Şirket Verisini Sıfırla (hareketler) sonrası yetim işaret yok; yeni açılış işaretli
+    not ok 5 - Şirket Verisini Sıfırla (hareketler) sonrası yetim işaret yok; yeni açılış işaretli
+      ---
+      duration_ms: 148.871045
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-acilis/eski-e77447a/test/acilis-isareti-246.test.mjs:122:3'
+      failureType: 'testCodeFailure'
+      error: 'no such column: is_opening'
+      code: 'ERR_SQLITE_ERROR'
+      stack: |-
+        prepare (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-acilis/eski-e77447a/server/lib/db.mjs:18:22)
+        Object.get (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-acilis/eski-e77447a/server/lib/db.mjs:244:28)
+        assertFlagShape (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-acilis/eski-e77447a/test/acilis-isareti-246.test.mjs:43:23)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-acilis/eski-e77447a/test/acilis-isareti-246.test.mjs:124:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - 2.4.6 madde 12: Açılış Bakiyesi satırı işaretle tanınır (güncel kod)
+  ---
+  duration_ms: 984.027207
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-acilis/eski-e77447a/test/acilis-isareti-246.test.mjs:49:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.6 madde 12 göç v35: v2.4.5 verisi (gerçek kod) güncel kodla — işaret 2.4.5'in kuralıyla, para aynı
+ok 2 - 2.4.6 madde 12 göç v35: v2.4.5 verisi (gerçek kod) güncel kodla — işaret 2.4.5'in kuralıyla, para aynı # SKIP v2.4.5 etiketi yok (git fetch --tags)
+  ---
+  duration_ms: 0.154373
+  type: 'suite'
+  ...
+1..2
+# tests 5
+# suites 2
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1650.439875

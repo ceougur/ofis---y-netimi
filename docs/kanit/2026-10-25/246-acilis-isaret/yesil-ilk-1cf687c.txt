@@ -1,0 +1,62 @@
+TAP version 13
+# (node:20932) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.6 madde 12: Açılış Bakiyesi satırı işaretle tanınır (güncel kod)
+    # Subtest: açıklaması değiştirilen açılış satırı yine açılıştır: kart openingEntryId'si ve Düzenle'deki açılış Vade Tarihi aynı satıra gider
+    ok 1 - açıklaması değiştirilen açılış satırı yine açılıştır: kart openingEntryId'si ve Düzenle'deki açılış Vade Tarihi aynı satıra gider
+      ---
+      duration_ms: 104.269224
+      type: 'test'
+      ...
+    # Subtest: sonradan elle 'Açılış bakiyesi' açıklamasıyla yazılan Borç açılış sayılmaz (açılışlı ve açılışsız caride)
+    ok 2 - sonradan elle 'Açılış bakiyesi' açıklamasıyla yazılan Borç açılış sayılmaz (açılışlı ve açılışsız caride)
+      ---
+      duration_ms: 127.427229
+      type: 'test'
+      ...
+    # Subtest: Excel'den cari yüklemede Bakiye kolonu açılış işaretli satır yazar; bakiyesiz satırda işaret yok
+    ok 3 - Excel'den cari yüklemede Bakiye kolonu açılış işaretli satır yazar; bakiyesiz satırda işaret yok
+      ---
+      duration_ms: 29.407974
+      type: 'test'
+      ...
+    # Subtest: Silinenler: açıklaması değiştirilmiş açılış silinip geri yüklenince yine açılış; silinmişken kart açılışsız
+    ok 4 - Silinenler: açıklaması değiştirilmiş açılış silinip geri yüklenince yine açılış; silinmişken kart açılışsız
+      ---
+      duration_ms: 129.019983
+      type: 'test'
+      ...
+    # Subtest: Şirket Verisini Sıfırla (hareketler) sonrası yetim işaret yok; yeni açılış işaretli
+    ok 5 - Şirket Verisini Sıfırla (hareketler) sonrası yetim işaret yok; yeni açılış işaretli
+      ---
+      duration_ms: 192.561306
+      type: 'test'
+      ...
+    1..5
+ok 1 - 2.4.6 madde 12: Açılış Bakiyesi satırı işaretle tanınır (güncel kod)
+  ---
+  duration_ms: 1025.016573
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 madde 12 göç v35: v2.4.5 verisi (gerçek kod) güncel kodla — işaret 2.4.5'in kuralıyla, para aynı
+    # Subtest: v2.4.5 verisi: göç açılışları işaretler (eski openingEntryId'lerle aynı), bakiye / hareket / mizan aynı; Silinenler ve v2.4.5 yedeği
+    ok 1 - v2.4.5 verisi: göç açılışları işaretler (eski openingEntryId'lerle aynı), bakiye / hareket / mizan aynı; Silinenler ve v2.4.5 yedeği
+      ---
+      duration_ms: 1600.534624
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.4.6 madde 12 göç v35: v2.4.5 verisi (gerçek kod) güncel kodla — işaret 2.4.5'in kuralıyla, para aynı
+  ---
+  duration_ms: 1608.85671
+  type: 'suite'
+  ...
+1..2
+# tests 6
+# suites 2
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3012.812391
