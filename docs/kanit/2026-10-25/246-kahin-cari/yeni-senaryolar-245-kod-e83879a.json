@@ -1,0 +1,158 @@
+{
+  "ad": "246-kahin-cari/yeni-senaryolar-245-kod-e83879a",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs test/bagimsiz/cari/senaryolar/c11-ks81-sa-mevcut-borc-karti.json test/bagimsiz/cari/senaryolar/c12-ks81-sb-kalan-dagilimi.json test/bagimsiz/cari/senaryolar/c13-ks83-ayni-gun-sira.json --mutasyonsuz --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-kahin-cari/y245",
+  "commit": "e83879ac93a5aeafb8a79686a23fd80afdd43700",
+  "dal": "is/kahin-cari-246",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T14:41:03.004Z",
+  "sure_sn": 3.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 287,
+    "gecen": 199,
+    "basarisiz": 88,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 88 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:cari:M:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:cari:M:acikToplam: program 70000 · kâhin 100000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:fatura:SA:acik: program 70000 · kâhin 100000 (B2.1 açık = tutar − bağlı − en eski kapama · S1 elle kayıtla tek kuyruk · KS8 iade geri ödemesi (madde 9): geri ödenen iade kapatıcı değil)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k2:projeksiyon:fatura:SA: program {\"amount\":70000,\"direction\":\"in\"} · kâhin {\"amount\":100000,\"direction\":\"in\"} (fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:takvim:cariToplam:M: program 70000 · kâhin 100000 (K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k2:takvim:fatura:SA: program {\"amount\":70000,\"direction\":\"in\"} · kâhin {\"amount\":100000,\"direction\":\"in\"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:vadeTakip:cariToplam:M: program 70000 · kâhin 100000 (K6.5 (1) + KS8.1 + KS10: carinin vadeTakip kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k2:vadeTakip:fatura:SA: program {\"amount\":70000,\"direction\":\"in\"} · kâhin {\"amount\":100000,\"direction\":\"in\"} (fatura kalemi açık tutarıyla (belge tarihinde, geçmiş — her görünümde))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k3:cari:M:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k3:cari:M:acikToplam: program 70000 · kâhin 100000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k3:fatura:SA:acik: program 70000 · kâhin 100000 (B2.1 açık = tutar − bağlı − en eski kapama · S1 elle kayıtla tek kuyruk · KS8 iade geri ödemesi (madde 9): geri ödenen iade kapatıcı değil)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:cari:B3:acikToplam: program -20000 · kâhin 0 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · KS9] k1:hareket:ab3:kalan: program 20000 · kâhin 0 (S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:projeksiyon:cari: program 0 · kâhin 1 (KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:projeksiyon:hareket:ab4: program \"yok\" · kâhin {\"amount\":15000,\"date\":\"2026-06-18\",\"direction\":\"out\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · KS9] k1:takvim:cariKalemSayisi: program 2 · kâhin 1 (K6.3 takvimdeki cari kalemlerinin sayısı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · KS9] k1:takvim:hareket:ab3: program {\"amount\":20000,\"cari\":\"B3\",\"days\":-5,\"direction\":\"out\",\"dueDate\":\"2026-06-10\",\"label\":\"Ödenecek Borç\",\"person\":\"Bülent Tedarik\",\"state\":\"overdue\"} · kâhin \"yok\" (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Bek",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · KS9] k1:vadeTakip:hareket:ab3: program {\"amount\":20000,\"date\":\"2026-06-10\",\"direction\":\"out\"} · kâhin \"yok\" (K6.3 kalem olmayan kayıt Vade Takip'te yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:cari:B1:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:cari:B1:acikToplam: program 0 · kâhin 10000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:cari:B2:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:cari:B2:acikToplam: program 0 · kâhin 20000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:cari:B3:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:cari:B3:acikToplam: program -20000 · kâhin -10000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:cari:B4:acikToplam: program 0 · kâhin 20000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-25/246-kahin-cari/yeni-senaryolar-245-kod-e83879a.log",
+  "klasor": "/home/user/wt/kahin-cari-246",
+  "ham_cikti_sha256": "d41687cce2f85439da18ba197c86c010add4d546cdbf05e755020f7a708a186a",
+  "ham_cikti_bayt": 20444
+}

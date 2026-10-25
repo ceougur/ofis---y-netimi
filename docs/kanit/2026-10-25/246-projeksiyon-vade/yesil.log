@@ -1,0 +1,132 @@
+TAP version 13
+# Subtest: 2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri
+    # Subtest: vadeli elle Borç: Vade Tarihi'nde giriş kalemi (Cari (vadeli), Tahsil Edilecek Borç); faturasız cari alacağı olarak ikinci kez yok; carinin Σ = bakiye
+    ok 1 - vadeli elle Borç: Vade Tarihi'nde giriş kalemi (Cari (vadeli), Tahsil Edilecek Borç); faturasız cari alacağı olarak ikinci kez yok; carinin Σ = bakiye
+      ---
+      duration_ms: 75.906572
+      type: 'test'
+      ...
+    # Subtest: Beklenen Ödeme Tarihi girilmişse kalem o gündedir (Ödeme Sözü), Vade Tarihi'nde değil; Beklenen Ödeme Vade'den önce de olabilir (K6.5 (4))
+    ok 2 - Beklenen Ödeme Tarihi girilmişse kalem o gündedir (Ödeme Sözü), Vade Tarihi'nde değil; Beklenen Ödeme Vade'den önce de olabilir (K6.5 (4))
+      ---
+      duration_ms: 64.852854
+      type: 'test'
+      ...
+    # Subtest: FIFO kalanı: kısmi tahsilat kalemi küçültür; tahsilat silinince kalem büyür ve vadesiz borcun kalanı KENDİ gününde faturasız alacak olur; tam tahsilatta kalem yok
+    ok 3 - FIFO kalanı: kısmi tahsilat kalemi küçültür; tahsilat silinince kalem büyür ve vadesiz borcun kalanı KENDİ gününde faturasız alacak olur; tam tahsilatta kalem yok
+      ---
+      duration_ms: 150.949176
+      type: 'test'
+      ...
+    # Subtest: tedarikçideki elle Alacak ve alacak yönlü Açılış Bakiyesi: vadesinde ÇIKIŞ (Ödenecek Borç); ödeme kalemi küçültür
+    ok 4 - tedarikçideki elle Alacak ve alacak yönlü Açılış Bakiyesi: vadesinde ÇIKIŞ (Ödenecek Borç); ödeme kalemi küçültür
+      ---
+      duration_ms: 152.857735
+      type: 'test'
+      ...
+    # Subtest: KS2: müşterideki vadeli elle Alacak çıkış kalemidir, müşterinin borcundan düşülmez; bakiyede ikinci kez düşülmez (carinin net = bakiye)
+    ok 5 - KS2: müşterideki vadeli elle Alacak çıkış kalemidir, müşterinin borcundan düşülmez; bakiyede ikinci kez düşülmez (carinin net = bakiye)
+      ---
+      duration_ms: 106.580281
+      type: 'test'
+      ...
+    # Subtest: K6.5 (1): Mevcut Borç kartının kapsadığı kısım kartın taksitleriyle BİR kez; kapsanmayan kalan cari kalemidir
+    ok 6 - K6.5 (1): Mevcut Borç kartının kapsadığı kısım kartın taksitleriyle BİR kez; kapsanmayan kalan cari kalemidir
+      ---
+      duration_ms: 124.719573
+      type: 'test'
+      ...
+    # Subtest: karışık kuyruk: vadeli borç + vadeli satış faturası + tahsilat → fatura açığı ve borç kalanı kendi vadelerinde; Σ = bakiye, faturasız alacak yok
+    ok 7 - karışık kuyruk: vadeli borç + vadeli satış faturası + tahsilat → fatura açığı ve borç kalanı kendi vadelerinde; Σ = bakiye, faturasız alacak yok
+      ---
+      duration_ms: 120.600525
+      type: 'test'
+      ...
+    # Subtest: toplam = kalemler, her süzgeç: 7/30/60/90 gün, aralık + başlangıca kadar beklenen, gecikmişleri başlangıca ekle, gün / hafta / ay toplamları
+    ok 8 - toplam = kalemler, her süzgeç: 7/30/60/90 gün, aralık + başlangıca kadar beklenen, gecikmişleri başlangıca ekle, gün / hafta / ay toplamları
+      ---
+      duration_ms: 160.665232
+      type: 'test'
+      ...
+    # Subtest: PDF ve Excel aynı satırları yazar: 'Cari (vadeli)' kaynaklı kalem Nakit Akışı ve Gecikmiş sayfalarında, tutarıyla
+    ok 9 - PDF ve Excel aynı satırları yazar: 'Cari (vadeli)' kaynaklı kalem Nakit Akışı ve Gecikmiş sayfalarında, tutarıyla
+      ---
+      duration_ms: 179.540238
+      type: 'test'
+      ...
+    # Subtest: ortak yardımcı: projeksiyonun cari kalemleri = Vade Takip'in cari kalemleri (aynı aralık) = zil / takvim kalemleri (7 gün); kimlik, gün, yön, etiket, tutar
+    ok 10 - ortak yardımcı: projeksiyonun cari kalemleri = Vade Takip'in cari kalemleri (aynı aralık) = zil / takvim kalemleri (7 gün); kimlik, gün, yön, etiket, tutar
+      ---
+      duration_ms: 168.069956
+      type: 'test'
+      ...
+    # Subtest: yetki: Finans Raporları (overview.view) yoksa 403 (ekran, PDF, Excel); cari kalemi yalnız Cari görüntüleme (accounts.view) yetkisi olana — yoksa aynı borç bir kez, faturasız alacakta
+    ok 11 - yetki: Finans Raporları (overview.view) yoksa 403 (ekran, PDF, Excel); cari kalemi yalnız Cari görüntüleme (accounts.view) yetkisi olana — yoksa aynı borç bir kez, faturasız alacakta
+      ---
+      duration_ms: 340.43063
+      type: 'test'
+      ...
+    # Subtest: bir kez: Σ (cari kalemi + faturasız cari alacağı + kartın taksitleri) = carilerin açık bakiyesi; vadeli borç faturasız alacakta YOK, vadesiz borç orada
+    ok 12 - bir kez: Σ (cari kalemi + faturasız cari alacağı + kartın taksitleri) = carilerin açık bakiyesi; vadeli borç faturasız alacakta YOK, vadesiz borç orada
+      ---
+      duration_ms: 231.100053
+      type: 'test'
+      ...
+    # Subtest: bir kez (açık alış faturası; 2.4.3 MM5'ten kalan çift sayım): alış faturası kendi vadesinde çıkış, faturasız alacakta ikinci kez düşülmez; tedarikçinin vadesiz borcu kaybolmaz
+    ok 13 - bir kez (açık alış faturası; 2.4.3 MM5'ten kalan çift sayım): alış faturası kendi vadesinde çıkış, faturasız alacakta ikinci kez düşülmez; tedarikçinin vadesiz borcu kaybolmaz
+      ---
+      duration_ms: 228.939752
+      type: 'test'
+      ...
+    # Subtest: gecikmiş vadeli kalem takvimdeki gibi görünür: 'Vadesi geçmiş, kapanmamış' listesinde (gün, tutar, kimlik takvimle aynı); 'başlangıca ekle' ile başlangıca girer
+    ok 14 - gecikmiş vadeli kalem takvimdeki gibi görünür: 'Vadesi geçmiş, kapanmamış' listesinde (gün, tutar, kimlik takvimle aynı); 'başlangıca ekle' ile başlangıca girer
+      ---
+      duration_ms: 73.43236
+      type: 'test'
+      ...
+    # Subtest: pencere iki ucu kapalı (K-P1): son gündeki kalem dahil, ertesi gün değil; aralığın ilk günündeki kalem dahil
+    ok 15 - pencere iki ucu kapalı (K-P1): son gündeki kalem dahil, ertesi gün değil; aralığın ilk günündeki kalem dahil
+      ---
+      duration_ms: 119.533744
+      type: 'test'
+      ...
+    # Subtest: cari silinince kalemi de faturasız alacağı da yok; geri yüklenince döner
+    ok 16 - cari silinince kalemi de faturasız alacağı da yok; geri yüklenince döner
+      ---
+      duration_ms: 110.599668
+      type: 'test'
+      ...
+    # Subtest: 002 şirketi: boş veri (satır yok, toplamlar 0); kalemler şirkete ayrı
+    ok 17 - 002 şirketi: boş veri (satır yok, toplamlar 0); kalemler şirkete ayrı
+      ---
+      duration_ms: 240.963426
+      type: 'test'
+      ...
+    1..17
+ok 1 - 2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri
+  ---
+  duration_ms: 3091.465856
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 madde 11: ay sonu, yıl dönümü ve gün değişimi (sahte saat)
+    # Subtest: bugün vadeli kalem aralıktadır (gecikmiş değil); yarın (yeni yıl) aralıkta; ay sonu (31 Ocak) 30 günlükte değil 60 günlükte; gün değişince bugünkü kalem gecikmişe geçer
+    ok 1 - bugün vadeli kalem aralıktadır (gecikmiş değil); yarın (yeni yıl) aralıkta; ay sonu (31 Ocak) 30 günlükte değil 60 günlükte; gün değişince bugünkü kalem gecikmişe geçer
+      ---
+      duration_ms: 91.287066
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.4.6 madde 11: ay sonu, yıl dönümü ve gün değişimi (sahte saat)
+  ---
+  duration_ms: 437.949017
+  type: 'suite'
+  ...
+1..2
+# tests 18
+# suites 2
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3939.064971

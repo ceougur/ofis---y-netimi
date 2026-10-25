@@ -1,0 +1,32 @@
+{
+  "ad": "246-acilis-isaret/npm-test",
+  "komut": "npm test",
+  "commit": "1cf687ca61d6385c1d8b15bf7990822ff29be28d",
+  "dal": "is/acilis-isaret",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T09:44:15.012Z",
+  "sure_sn": 2600,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3544,
+    "gecen": 3544,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-acilis-isaret/npm-test.log.gz",
+  "klasor": "/home/user/wt/acilis-isaret",
+  "ham_cikti_sha256": "a616585a6c9fef648ebc412c8a6422f7b3734babfbe88133fe6732cf6fce8cc4",
+  "ham_cikti_bayt": 1277208
+}

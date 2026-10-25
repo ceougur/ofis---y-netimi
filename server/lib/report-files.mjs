@@ -43,22 +43,41 @@ export function reportPdf(data, { now, companyLabel = "", userName = "", brand =
 }
 
 /** Excel (Buffer): tablo sayfası (başlık bloğu + kolonlar + TOPLAM) ve özet sayfası. */
+// 2.4.6 (2.4.5 gezinti B5): ekranda ve PDF'te bakiye "10.000,00 TL B" / "250,00 TL A" yazılır (Cari Ekstre, Ayrıntılı Cari Ekstre). Excel'de bu metin
+// toplanamaz, süzülemez; Excel hücresi işaretli SAYI olur — borçlu artı, alacaklı eksi (Raporlar → Cari Mizanı ve Ekstresi sekmesinin ekstre Excel'i 2.0.x'ten beri böyle
+// yazar: overview.mjs ekstre.xlsx). Yalnız tutar kolonunda ve tam bu biçimde ("<tutar> TL B|A") çevrilir; başka metin olduğu gibi kalır.
+const SIDE_MARK = /^(\d[\d.]*,\d{2}) TL ([BA])$/;
+const signedCell = value => {
+  const match = SIDE_MARK.exec(String(value ?? "").trim());
+  return match ? `${match[2] === "A" ? "-" : ""}${match[1]} TL` : null;
+};
+
 export function reportXlsx(data, { now, companyLabel = "", userName = "", header = null } = {}) {
   const unique = data.headers.map((header, index) => (data.headers.indexOf(header) === index && header ? header : `${header || "Kolon"} ${index + 1}`));
-  const rows = data.rows.map(row => Object.fromEntries(unique.map((header, index) => [header, row[index] ?? ""])));
-  const footer = data.footer ? Object.fromEntries(unique.map((header, index) => [header, data.footer[index] ?? ""])) : null;
+  const money = index => (data.types || [])[index] === "money";
+  let signed = false;
+  const cell = (value, index) => {
+    if (!money(index)) return value ?? "";
+    const converted = signedCell(value);
+    if (converted === null) return value ?? "";
+    signed = true;
+    return converted;
+  };
+  const rows = data.rows.map(row => Object.fromEntries(unique.map((header, index) => [header, cell(row[index], index)])));
+  const footer = data.footer ? Object.fromEntries(unique.map((header, index) => [header, cell(data.footer[index], index)])) : null;
   // 2.4.3 UX24: birden çok TOPLAM satırı (yönü karışık rapor) — ekran ve PDF ile aynı satırlar, aynı sıra.
-  const footers = Array.isArray(data.footers) && data.footers.length ? data.footers.map(line => Object.fromEntries(unique.map((header, index) => [header, line[index] ?? ""]))) : null;
+  const footers = Array.isArray(data.footers) && data.footers.length ? data.footers.map(line => Object.fromEntries(unique.map((header, index) => [header, cell(line[index], index)]))) : null;
   const made = stampText(now.toISOString());
   const heads = header ? header.preamble({ withCode: true }) : [{ text: companyLabel, bold: true }];
-  const preamble = [...heads, { text: data.title, bold: true }, { text: data.subtitle || "" }, { text: `Oluşturma: ${made}${userName ? ` · Hazırlayan: ${userName}` : ""}` }];
+  const subtitle = signed ? String(data.subtitle || "").replace(/ · B: borçlu · A: alacaklı$/, "").concat(" · Bakiye: artı borçlu, eksi alacaklı") : data.subtitle || "";
+  const preamble = [...heads, { text: data.title, bold: true }, { text: subtitle.replace(/^ · /, "") }, { text: `Oluşturma: ${made}${userName ? ` · Hazırlayan: ${userName}` : ""}` }];
   const sheets = [{ name: data.title.slice(0, 31), columns: unique, rows, footer, footers, preamble }];
   const summary = data.summary || [];
   if (summary.length) {
     sheets.push({
       name: "Özet",
       columns: ["Kalem", "Değer"],
-      rows: [...(header ? header.summaryRows({ withCode: true }) : companyLabel ? [["Şirket", companyLabel]] : []).map(([Kalem, Değer]) => ({ Kalem, Değer })), { Kalem: "Rapor", Değer: data.title }, { Kalem: "Kapsam", Değer: data.subtitle || "" }, { Kalem: "Hazırlanma", Değer: made }, ...summary.map(([label, value]) => ({ Kalem: label, Değer: value }))],
+      rows: [...(header ? header.summaryRows({ withCode: true }) : companyLabel ? [["Şirket", companyLabel]] : []).map(([Kalem, Değer]) => ({ Kalem, Değer })), { Kalem: "Rapor", Değer: data.title }, { Kalem: "Kapsam", Değer: subtitle.replace(/^ · /, "") }, { Kalem: "Hazırlanma", Değer: made }, ...summary.map(([label, value]) => ({ Kalem: label, Değer: value }))],
     });
   }
   return buildXlsx(sheets, { now, title: data.title, company: header ? heads[0]?.text || companyLabel : companyLabel });

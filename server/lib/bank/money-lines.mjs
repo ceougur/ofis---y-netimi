@@ -128,7 +128,8 @@ export const FREE_COLUMNS = Object.freeze({
   payments: new Set([...COMMON_FREE, "case_title"]),
   cash_entries: new Set([...COMMON_FREE, "description"]),
   // 2.4.5 madde 6 (K6.4): borç kaydının Vade Tarihi ve Beklenen Ödeme Tarihi bilgi alanıdır (tutar, yön, tarih, yol değişmez; Ana Defter okumaz).
-  account_entries: new Set([...COMMON_FREE, "receipt_no", "invoice_id", "due_date", "expected_date"]),
+  // 2.4.6 madde 9 (DB1): iade geri ödemesi bağı (refund_of) — Kapatılacak Fatura bağı gibi yalnız kapamayı belirler (Ana Defter, Kasa okumaz).
+  account_entries: new Set([...COMMON_FREE, "receipt_no", "invoice_id", "due_date", "expected_date", "refund_of"]),
   plan_entries: new Set([...COMMON_FREE, "receipt_no", "item_id"]),
   stock_moves: new Set([...COMMON_FREE]),
   cheque_events: new Set([...COMMON_FREE, "effects_json"]),
@@ -199,7 +200,7 @@ function shape(line) {
       return {
         ...head, method: line.method, amount: line.amount, date: line.date, itemId: x.itemId, itemName: x.itemName, ...tail, kind: line.kind, source: "stock",
         // Alım Kasa'dan gider: "Stok ödemesi" (v2.0.8 adı; önceden "Stok alımı").
-        description: `${x.reason === "return" ? "Satış iadesi" : x.moveKind === "in" ? "Stok ödemesi (alım)" : "Stok satışı"} · ${x.itemName} ${qtyText(x.qty)} ${x.unit}${x.note ? ` · ${x.note}` : ""}`,
+        description: `${x.reason === "return" ? "Satış iadesi" : x.reason === "preturn" ? "Alış iadesi" : x.moveKind === "in" ? "Stok ödemesi (alım)" : "Stok satışı"} · ${x.itemName} ${qtyText(x.qty)} ${x.unit}${x.note ? ` · ${x.note}` : ""}`,
       };
     case 8:
       return {

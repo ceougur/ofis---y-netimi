@@ -1,0 +1,48 @@
+{
+  "ad": "246-maliyet-cekirdek/mutasyon-m13-sablon-her-acilista-ezer",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/maliyet-cekirdek-246.test.mjs test/maliyet-bagsizlik.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T10:11:35.109Z",
+  "sure_sn": 4.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 24,
+    "gecen": 21,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.6 Maliyet Hesap Kartı: API › Kaydet: miktar / fiyat, satır ekle / sil, ✎ adlar, oran / bölen; eklenen satır yalnız ARA'ya girer; etiket ile oran ayrı",
+      "konum": "test/maliyet-cekirdek-246.test.mjs:166:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.6 Maliyet Hesap Kartı: API › iki kişi aynı anda: aynı kartta ikinci kaydeden 409 (ilkinin değişikliği korunur); farklı kartlar ikisi de yazılır; eşzamanlı iki PUT'tan biri geçer",
+      "konum": "test/maliyet-cekirdek-246.test.mjs:261:3",
+      "hata": "Expected values to be strictly equal: · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.4.6 Maliyet Hesap Kartı: API › şirket kapsamı: 002'nin sektörü ayrı; 002 Duşakabin değilken kapalı, seçilince kendi boş şablonu; yedek → geri yükle; Tüm Hareketleri Sil dokunmaz, Tümünü Sıfırla siler",
+      "konum": "test/maliyet-cekirdek-246.test.mjs:321:3",
+      "hata": "beklenen 200: 409 {\"ok\":false,\"error\":\"“100X100 Oval Kabin”: siz açtıktan sonra başka biri kaydetti; değişiklikleriniz kaydedilmedi. Pencereyi yeniden açıp değişikliği yeniden yapın.\",\"code\":\"maliyet-stale\",\"bayat\":[{\"kod\":\"cam/100x100-oval-kabin\",\"ad\":\"100X100 Oval Kabin\"}]} · 409 !== 200 (beklenen 200, gelen 409)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-25/246-maliyet-cekirdek/mutasyon-m13-sablon-her-acilista-ezer.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-mut-832573f-m13-sablon-her-acilista-ezer",
+  "ham_cikti_sha256": "2a04414fc33150c502f0bfbee7cb64f29c86cd375415c13915872fda638e38dc",
+  "ham_cikti_bayt": 19887
+}

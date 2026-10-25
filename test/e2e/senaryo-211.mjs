@@ -516,6 +516,26 @@ try {
       await form('[data-act="groups"]', "Gruplar");
     });
     await open("stock", "Stok");
+    // 2.4.6 madde 4: Maliyet Hesap Kartı (yalnız sektör Duşakabin Üretimi iken; dört sekmesi de gezilir), sonra önceki sektöre dönülür.
+    {
+      const before = (await call(admin, "/api/workspace/profile")).data?.sector?.id || "genel";
+      const set = await call(admin, "/api/workspace/insight/sector", { sectorId: "dusakabin", source: "manual" });
+      ok(set.ok !== false, `Maliyet Hesap Kartı için sektör Duşakabin Üretimi (önceki ${before})`);
+      await admin.evaluate(() => window.HOF.maliyet?.refresh());
+      await admin.click('#hof-sidecard [data-action="stock"]');
+      await admin.waitForSelector('.hof-stock-modal [data-act="maliyet"]', { timeout: 15000 });
+      await admin.click('.hof-stock-modal [data-act="maliyet"]');
+      await admin.waitForSelector(".hof-maliyet-modal [data-maliyet] [data-kart]");
+      for (const sekme of await admin.$$eval(".hof-maliyet-modal [data-sekme]", list => list.map(node => node.dataset.sekme))) {
+        await admin.click(`.hof-maliyet-modal [data-sekme="${sekme}"]`);
+        await admin.waitForTimeout(400);
+        await auditLabels(admin, `Stok › Maliyet Hesap Kartı › ${sekme}`);
+      }
+      await escClose(admin, { expect: "soru-yok", step: "211 Maliyet Hesap Kartı gezintisi" });
+      await closeTop(admin);
+      await call(admin, "/api/workspace/insight/sector", { sectorId: before, source: "manual" });
+      await admin.evaluate(() => window.HOF.maliyet?.refresh());
+    }
     await open("cheques", "Çek / Senet", async () => {
       await form('[data-act="new-in"]', "Çek / Senet Al");
     });

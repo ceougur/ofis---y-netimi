@@ -185,7 +185,7 @@ try {
   await closeAll();
 
   console.log("\n■ D. Rapor pencereleri");
-  for (const [tab, label] of [["mizan", "Cari Ekstre"], ["vade", "Vade Takip"], ["flow", "Nakit Akış"], ["cheques", "Çek / Senet Raporu"]]) {
+  for (const [tab, label] of [["mizan", "Cari Mizanı"], ["vade", "Vade Takip"], ["flow", "Nakit Akış"], ["cheques", "Çek / Senet Raporu"]]) {
     await page.evaluate(id => window.HOF.overview.openReports(id), tab);
     await page.waitForSelector(`${TOP} .hof-rep-export a`);
     await audit(`Raporlar → ${label}`, `${TOP} .hof-rep`, { expect: ["pdf", "xlsx"] });

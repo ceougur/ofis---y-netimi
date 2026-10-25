@@ -1,0 +1,80 @@
+[
+ {
+  "id": "Ke1",
+  "desc": "K-e: çekle geri ödeme iadeye bağlanmaz",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 42,
+  "fail": 1,
+  "failed": [
+   "açık bağ bağsızdan önce gelir (elle Alacak varken): bağsız Ödeme önce Alacak'ı kapatır (B 200); iadeye bağlanınca iadeyi geri öder (B 500, Alacak açık), takvim de; verilen çekte aynı (K-e)"
+  ],
+  "sn": 9.0
+ },
+ {
+  "id": "M9",
+  "desc": "defter satırı bağı taşımaz",
+  "file": "server/lib/accounts.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 42,
+  "fail": 1,
+  "failed": [
+   "açık bağ bağsızdan önce gelir (elle Alacak varken): bağsız Ödeme önce Alacak'ı kapatır (B 200); iadeye bağlanınca iadeyi geri öder (B 500, Alacak açık), takvim de; verilen çekte aynı (K-e)"
+  ],
+  "sn": 8.2
+ },
+ {
+  "id": "M21",
+  "desc": "takvim önbelleği bağ değişimini görmez",
+  "file": "server/routes/accounts.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 42,
+  "fail": 1,
+  "failed": [
+   "açık bağ bağsızdan önce gelir (elle Alacak varken): bağsız Ödeme önce Alacak'ı kapatır (B 200); iadeye bağlanınca iadeyi geri öder (B 500, Alacak açık), takvim de; verilen çekte aynı (K-e)"
+  ],
+  "sn": 7.3
+ },
+ {
+  "id": "Im2",
+  "desc": "üst sınır iadenin kapattığı değil tamamı",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 42,
+  "fail": 1,
+  "failed": [
+   "iade belgesinin kendi geri ödemesi üst sınırı düşürür: belge 100 geri ödedi, bağsız 300'ün 200'ü geri ödeme, 100 avans — geri ödeme satırı açık kalmaz"
+  ],
+  "sn": 8.0
+ },
+ {
+  "id": "Im6",
+  "desc": "en yeni iade önce",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 42,
+  "fail": 1,
+  "failed": [
+   "en eski iade önce (kapatanlarda görünür): bağsız Ödeme 200 R1'in (eski) geri ödemesi — R1'in kapatanlarında, R2'ninkinde değil; A2 200 açık (Σ = bakiye)"
+  ],
+  "sn": 7.4
+ },
+ {
+  "id": "Im7",
+  "desc": "bağsız olmayan para (iade notu, bağlı) da geri ödeme sayılır",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 42,
+  "fail": 1,
+  "failed": [
+   "bağsız olmayan alacak geri ödeme sayılmaz: açık satış iadesi (para değil) Alış İadesinin kapattığı alış faturasını açmaz"
+  ],
+  "sn": 8.0
+ }
+]

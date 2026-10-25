@@ -245,7 +245,9 @@ export function journal(rows) {
       continue;
     }
     if (row.source === "stock") {
-      if (row.kind === "debt") post(id, row.date, "Stok (veresiye satış)", row.note, control, "600", row.amount);
+      // 2.4.6 madde 10: faturasız tedarikçiye iade (açık hesap) — B 320 / A 153 (alıştan iade faturasının matrah satırı gibi; satış değil, 600'e yazılmaz).
+      if (row.kind === "debt" && row.moveReason === "preturn") post(id, row.date, "Stok (alış iadesi)", row.note, control, "153", row.amount);
+      else if (row.kind === "debt") post(id, row.date, "Stok (veresiye satış)", row.note, control, "600", row.amount);
       else post(id, row.date, row.moveReason === "return" ? "Stok (satış iadesi)" : "Stok (açık hesap alım)", row.note, row.moveReason === "return" ? "610" : "153", control, row.amount);
       continue;
     }
@@ -295,7 +297,9 @@ export function journal(rows) {
   for (const row of rows.stockMoves || []) {
     at = row.seq;
     const id = `stock:${row.id}`;
-    if (row.kind === "out") post(id, row.date, "Stok (peşin satış)", row.note, moneyOf(row), "600", row.amount);
+    // 2.4.6 madde 10: faturasız tedarikçiye iade, para geri alındı (Kasa / banka) — B para / A 153.
+    if (row.kind === "out" && row.reason === "preturn") post(id, row.date, "Stok (peşin alış iadesi)", row.note, moneyOf(row), "153", row.amount);
+    else if (row.kind === "out") post(id, row.date, "Stok (peşin satış)", row.note, moneyOf(row), "600", row.amount);
     else if (row.reason === "return") post(id, row.date, "Stok (peşin satış iadesi)", row.note, "610", moneyOf(row), row.amount);
     else post(id, row.date, "Stok (peşin alım)", row.note, "153", moneyOf(row), row.amount);
   }

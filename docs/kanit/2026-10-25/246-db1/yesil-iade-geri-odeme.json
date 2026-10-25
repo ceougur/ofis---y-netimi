@@ -1,0 +1,32 @@
+{
+  "ad": "246-db1/yesil-iade-geri-odeme",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/iade-geri-odeme-246.test.mjs",
+  "commit": "49c41f94f6595f9145cab59d346b7dbd22565636",
+  "dal": "is/db1",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T14:40:53.247Z",
+  "sure_sn": 4.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 43,
+    "gecen": 43,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-db1/yesil-iade-geri-odeme.log",
+  "klasor": "/home/user/wt/db1",
+  "ham_cikti_sha256": "0b7b7d68a80976e1e9af31966314c095e7798bafeba5baa846f60856fce64b8e",
+  "ham_cikti_bayt": 18462
+}

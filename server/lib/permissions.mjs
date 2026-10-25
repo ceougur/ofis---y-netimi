@@ -94,6 +94,10 @@ export const PERMISSIONS = Object.freeze({
   // yönetici; yönetici kişiye ya da özel role verebilir. Düzenleme görüntülemeyle BİRLİKTE istenir (routes/staff.mjs ikisini de arar).
   "staff.view": ["admin"],
   "staff.manage": ["admin"],
+  // Maliyet Hesap Kartı (2.4.6; kullanıcı kararı 25.10.2026, Personel Özlük düzeni): müşterinin maliyet ve fiyat bilgisi. Varsayılan YALNIZ yönetici;
+  // yönetici kişiye ya da özel role verebilir. Düzenleme görüntülemeyle BİRLİKTE istenir (routes/maliyet.mjs ikisini de arar).
+  "maliyet.view": ["admin"],
+  "maliyet.manage": ["admin"],
   "sources.manage": ["admin"],
   // Sektör seçimi ve kalemle başlık değiştirme (v1.6.0).
   "profile.manage": ["admin"],
@@ -228,6 +232,14 @@ export const PERMISSION_GROUPS = Object.freeze([
     items: [
       ["staff.view", "Personel Özlük Görüntüleme", "Personel Raporu'nda çalışan kartları: TC No, IBAN, maaş, adres, izin (kişisel veri)."],
       ["staff.manage", "Personel Özlük Düzenleme", "Çalışan kartı ekler, düzeltir, siler (Personel Özlük Görüntüleme ile birlikte)."],
+    ],
+  },
+  {
+    id: "maliyet",
+    label: "Maliyet Hesap Kartı",
+    items: [
+      ["maliyet.view", "Maliyet Hesap Kartı Görüntüleme", "Stok penceresindeki Maliyet Hesap Kartı: malzeme miktarları, fiyatlar, oranlar ve bayi fiyat listeleri (yalnız sektörü Duşakabin Üretimi olan şirkette)."],
+      ["maliyet.manage", "Maliyet Hesap Kartı Düzenleme", "Kartlardaki ad, miktar, fiyat, oran ve bölenleri değiştirir, satır ekler / siler ve kaydeder (Maliyet Hesap Kartı Görüntüleme ile birlikte)."],
     ],
   },
   {

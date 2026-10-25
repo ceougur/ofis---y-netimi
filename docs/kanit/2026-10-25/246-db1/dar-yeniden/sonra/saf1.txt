@@ -1,0 +1,11 @@
+STOK iade 500, Borç 200, bağsız Ödeme 200: bakiye -100 | Borç kalan 0
+STOK iade 500, Borç 200, bağsız Ödeme 300: bakiye 0 | Borç kalan 0
+STOK iade 500, Borç 200, bağsız Ödeme 350: bakiye 50 | Borç kalan 50
+STOK iade 500, Borç 200, bağsız Ödeme 400: bakiye 100 | Borç kalan 100
+STOK iade 500, Borç 200, bağsız Ödeme 500: bakiye 200 | Borç kalan 200
+STOK iade 500, Borç 200, bağsız Ödeme 600: bakiye 300 | Borç kalan 200
+FATURA iade 500 (asıl fatura başka), satış 200, bağsız Ödeme 200: bakiye -100 | S açık 0, R açık 100 → Σ -100
+FATURA iade 500 (asıl fatura başka), satış 200, bağsız Ödeme 300: bakiye 0 | S açık 0, R açık 0 → Σ 0
+FATURA iade 500 (asıl fatura başka), satış 200, bağsız Ödeme 400: bakiye 100 | S açık 100, R açık 0 → Σ 100
+FATURA iade 500 (asıl fatura başka), satış 200, bağsız Ödeme 500: bakiye 200 | S açık 200, R açık 0 → Σ 200
+FATURA iade 500 (asıl fatura başka), satış 200, bağsız Ödeme 600: bakiye 300 | S açık 200, R açık 0 → Σ 200

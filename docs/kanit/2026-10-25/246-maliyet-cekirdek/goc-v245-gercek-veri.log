@@ -1,0 +1,29 @@
+eski kod: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-eski-v2.4.5-d0fd8b0
+yeni kod: /home/user/wt/maliyet-cekirdek
+veri: /tmp/maliyet-goc-v245-chR516
+  ✓ eski program sürümü 2.4.5 (2.4.5)
+  ✓ eski veri dosyası v33
+  ✓ eski sürüm Duşakabin Üretimi sektörünü tanımaz (400)
+  ✓ eski veri üretildi (cari 300, kasa 500, stok 100)
+  ✓ eski dosyada maliyet tablosu yok
+  ✓ göç uygulandı: 34
+  ✓ veri dosyası v34
+  ✓ göç öncesi yedek alındı (destekofis-001-2026-10-25T10-33-46-240Z-pre-migration-v34.sqlite)
+  ✓ cari listesi ve bakiyeleri aynı
+  ✓ Kasa bakiyesi aynı
+  ✓ eski tabloların satır sayısı değişmedi (işlem geçmişi, ayarlar ve oturumlar hariç)
+  ✓ maliyet tabloları eklendi
+  ✓ maliyet tabloları boş (sektör Üretim)
+  ✓ sektör Üretim iken kart kapalı
+  ✓ Duşakabin Üretimi seçilince 28 kartlık boş şablon kuruldu (5 + 8 + 7 + 8)
+  ✓ göçmüş veride maliyet kaydedildi ve hesaplandı
+  ✓ 002: cari listesi aynı (açılınca göçtü)
+  ✓ 002: Kasa bakiyesi aynı
+  ✓ 002'nin sektörü ayrı (kapalı)
+  ✓ eski sürüm yeni dosyayı açtı (şema sürümü korunur)
+  ✓ eski sürüm carileri okur
+  ✓ eski sürüm maliyet tablolarına dokunmadı (satır sayıları aynı)
+  ✓ yeniden açılışta göç yok
+  ✓ maliyet değeri yerinde
+
+GEÇTİ: 24 denetim · eski 2.4.5 → yeni → eski → yeni · yedekler: 2

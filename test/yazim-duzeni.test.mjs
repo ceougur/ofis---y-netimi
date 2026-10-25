@@ -7,6 +7,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { describe, it } from "node:test";
 import { titleCase } from "../server/lib/text-case.mjs";
+import { sablonAdlari } from "../server/lib/maliyet/sablon.mjs";
 
 const ROOT = new URL("../", import.meta.url);
 const read = file => readFileSync(new URL(file, ROOT), "utf8");
@@ -193,6 +194,14 @@ describe("yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük", () 
       for (const text of texts) if (eligible(text)) found.push(`client/assets/${name}: “${text}” → “${titleCase(text)}”`);
     }
     assert.deepEqual(found, [], `Paket etiketleri başlık yazımıyla yazılmalı:\n${found.join("\n")}`);
+  });
+  // 2.4.6 (Maliyet Hesap Kartı): şablonun bütün adları — sekme düğmeleri, kart, malzeme / parça, birim, adım etiketi, sütun ve ölçü adları — yazım
+  // düzeninde (her sözcük büyük, ölçü / kod aynen: "100X100 Köşe Kabin", "170 2S2Ç H:182"). Kullanıcı ✎ ile değiştirdiği ad onun verisidir; denetlenmez.
+  it("Maliyet Hesap Kartı şablonunun adları kurala uyuyor", () => {
+    const names = sablonAdlari();
+    assert.ok(names.length > 200, "şablon adları okunamadı");
+    const found = names.filter(name => titleCase(name) !== name).map(name => `“${name}” → “${titleCase(name)}”`);
+    assert.deepEqual(found, [], `Maliyet şablonu adları başlık yazımıyla yazılmalı:\n${found.join("\n")}`);
   });
   it("rapor, PDF ve Excel başlıklarında kurala uymayan ad yok", () => {
     const files = readdirSync(new URL("server/routes/", ROOT)).map(name => `server/routes/${name}`);

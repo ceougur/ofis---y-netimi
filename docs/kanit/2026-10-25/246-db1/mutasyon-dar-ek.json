@@ -1,0 +1,15 @@
+[
+ {
+  "id": "B2m2",
+  "desc": "B2: son geçişte açık iade kalemi de kalır (aynı açık iki kez)",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 50,
+  "fail": 1,
+  "failed": [
+   "B2 açık iade bir kez tüketilir: Borç 200, iade 500, bağsız Ödeme 600, sonra elle Alacak 100 → 500 geri ödeme, artan 100 Alacak'ı kapatır: Borç 200, Alacak 0 (Σ 200 = bakiye)"
+  ],
+  "sn": 9.0
+ }
+]

@@ -1,0 +1,62 @@
+TAP version 13
+# Subtest: 2.4.6 madde 9 göç: v2.4.5 verisi güncel kodla (bağ yazılmaz; bağsız geri ödeme iadenin geri ödemesi sayılır, para aynı)
+    # Subtest: v2.4.5 verisi: göç boş bağ ekler, para aynı; fatura açıkları iade kadar döner (bağsız geri ödeme); Düzelt ile bağlamak sayıları değiştirmez; geri dönüş v2.4.5 ile açılır
+    not ok 1 - v2.4.5 verisi: göç boş bağ ekler, para aynı; fatura açıkları iade kadar döner (bağsız geri ödeme); Düzelt ile bağlamak sayıları değiştirmez; geri dönüş v2.4.5 ile açılır
+      ---
+      duration_ms: 1478.928578
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-db1/eski-5fa544c-wt/test/goc-246-iade-bagi.test.mjs:32:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bağsız eski geri ödeme iadenin geri ödemesi: B 500, B2 500, borç 300 (v2.4.5'te 200 / 200)
+        + actual - expected
+        
+          [
+        +   200,
+        -   500,
+            300,
+        +   200,
+        -   500,
+            0
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 500
+        1: 300
+        2: 500
+        3: 0
+      actual:
+        0: 200
+        1: 300
+        2: 200
+        3: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-db1/eski-5fa544c-wt/test/goc-246-iade-bagi.test.mjs:106:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - 2.4.6 madde 9 göç: v2.4.5 verisi güncel kodla (bağ yazılmaz; bağsız geri ödeme iadenin geri ödemesi sayılır, para aynı)
+  ---
+  duration_ms: 1526.659594
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-db1/eski-5fa544c-wt/test/goc-246-iade-bagi.test.mjs:27:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2012.383213

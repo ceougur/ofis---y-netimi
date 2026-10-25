@@ -1,0 +1,38 @@
+{
+  "ad": "246-maliyet-cekirdek/mutasyon-m8-bag-stok-maliyet-okur",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/maliyet-cekirdek-246.test.mjs test/maliyet-bagsizlik.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T10:10:32.842Z",
+  "sure_sn": 5.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 24,
+    "gecen": 23,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.6 Maliyet Hesap Kartı bağsızlığı (kaynak taraması) › programın geri kalanı maliyet_* tablolarını anmaz (yalnız göç ve Şirket Verisini Sıfırla listesi)",
+      "konum": "test/maliyet-bagsizlik.test.mjs:82:3",
+      "hata": "başka modül maliyet tablosuna dokunuyor: · server/routes/stock.mjs:806: export const maliyetSay = store => store.get(\"SELECT COUNT(*) AS n FROM maliyet_kartlar\"); · + actual - expected (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-25/246-maliyet-cekirdek/mutasyon-m8-bag-stok-maliyet-okur.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-mut-832573f-m8-bag-stok-maliyet-okur",
+  "ham_cikti_sha256": "618e9407ef092eb897a6e5f9c8c27291f68788de0f839730e804b8675cfc5a93",
+  "ham_cikti_bayt": 10410
+}

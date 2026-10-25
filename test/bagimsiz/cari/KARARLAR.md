@@ -1,6 +1,7 @@
 # Bağımsız CARİ / EVRAK kâhini — kurallar ve kararlar (2.4.4 madde 31a, B1–B2)
 
-Dil: **`destekofis-cari/3`** (24.10.2026, 2.4.5 kuralları — §8; `/1` `/2` senaryoları değişmeden koşar ya da 2.4.5 kararıyla geçersiz diye atlanır — §8 C0) · `/2`: 23.10.2026, B3–B5 · İlk yazıldığı gün: 22.10.2026 · Kâhin: `model.py` (Python 3, yalnız standart kütüphane, `python3 -I`) ·
+Kural seti (25.10.2026): **`2.4.6`** varsayılan (2.4.5 + KS8–KS10 — §9; dil `/3` aynı, iki ek: `iade {geri}`, adımda `catal`); `--kural 2.4.5` 2.4.5 beklentilerini bayt bayt verir,
+`--legacy` 2.4.4. Dil: **`destekofis-cari/3`** (24.10.2026, 2.4.5 kuralları — §8; `/1` `/2` senaryoları değişmeden koşar ya da 2.4.5 kararıyla geçersiz diye atlanır — §8 C0) · `/2`: 23.10.2026, B3–B5 · İlk yazıldığı gün: 22.10.2026 · Kâhin: `model.py` (Python 3, yalnız standart kütüphane, `python3 -I`) ·
 Koşucu: `kos.mjs` · Rastgele üretici: `uretici.py` · Elle senaryolar: `senaryolar/*.json` · Komut: `node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs` (npm betiği `test:kahin-cari`, iş akışına eklenirken açılır: test/ci-kapi-listesi.test.mjs her test:kahin-* betiğinin ci.yml ya da uzun-dogrulama.yml'de koşmasını ister).
 
 ## 0. Temiz oda
@@ -580,3 +581,206 @@ Sorulan metin (kayıt için aynen):
 - K6.4 göçü (v2.4.4 verisiyle açılan 2.4.5'te eski satırların boş alanları): kâhin TEK program kökünü koşar; v2.4.4 gerçek koduyla veri üreten göç takımının (madde 30) işi.
 - Excel'den cari yükleme (vade sütunu yok — madde 6); Açılış'ın sonradan Düzenle ile vadelenmesi (`PUT /accounts/:id` gövdesi kara kutudan bilinmiyor); taksit kartlı caride Kalan;
   tedarikçiye ciro edilen evrakın borç tarafı dağıtımı (rastgele üreticide yok); 002 şirketi; Sheets eşitlemesi.
+
+## 9. 2.4.6 kuralları — kural seti `2.4.6` (25.10.2026, 2.4.6 madde 0 "kâhin önce"; dil `/3` aynı)
+
+### C00b Temiz oda (2.4.6)
+- **Okunan kaynaklar (karar metinleri):** `docs/2.4.6-IS-LISTESI.md` madde 9, 10, 11 (+ Amaç, çalışma düzeni); `docs/2.4.5-IS-LISTESI.md` "BAŞ MİMAR KARARLARI" (S1, K6.1–K6.5,
+  KS1–KS7), DAR KONTROL (D1, KS7), ADAY 2 (KS7.1, DB1, DB2); `docs/GECMIS-KARARLAR.md` 10.10.2026 "R1" ve "K1 İADE KAPANIŞI" satırları (DB1'deki "R1 düzeni"nin kaynağı);
+  `test/bagimsiz/SENARYO-DILI.md` §4.14–§4.16 ve §7 (önceki temiz oda dilinin iade kuralları 2 ve 5; `kapatilacakFatura` satıştan iade); CLAUDE.md (anayasa, dersler 5/32/40,
+  kalıcı karar "fatura kapama yöne göre"); bu klasörün önceki kâhin dosyaları.
+- **Okunmayanlar:** `server/**`, `client/**`, `test/e2e/**`, `docs/kanit/**`, git farkları. Ürün kodunun 2.4.6 düzeltmeleri (başka ajanlarda) görülmedi.
+- **İstek gövdeleri:** iadenin kendi geri ödemesi (`payment.cash[{amount, method, lineKey}]`) `test/bagimsiz/surucu.mjs` `iade` adımından (kâhin aracı). `preturn` için
+  `test/*.test.mjs` yalnız İSTEK satırı arandı; grep çıktısında BİR doğrulama satırı göründü (`test/kapama-ks7-245.test.mjs:38`, `classifyLine` + `stockReason: "preturn"`) — kural
+  türetilmedi (KS7 simetri 24.10'dan beri bu dosyada), yalnız 2.4.5'teki farkın yerini anlamada not edildi (aşağıda KS9).
+- **Kara kutu yoklaması (yalnız ORTAM — alan adı / yanıt biçimi; kural türetilmedi; 2.4.5 kodu, not defteri `246-kahin-cari/yokla/yokla-proj.mjs`):** `GET /overview/nakit-akisi?…&overdue=1`
+  → `{rows[], overdue[], …}`, satır `{date, direction, amount (TL), source, label, party, ref{type, id}}`; 2.4.5'te elle borç için `source: "unbilled"` "Faturasız Cari Alacağı"
+  satırı VAR (kayıt tarihinde, `ref.id` = cari kimliği) → K-P2.
+
+### KS8 — İade geri ödemesi (madde 9 / DB1) [BAŞ MİMAR]
+- **Metin:** "faturasız stok Satış İadesi ya da fatura iadesi bedeli cari kartından 'Ödeme' ile müşteriye geri ödenince → 'iade geri ödemesi': geri ödeme iadeye bağlanır (R1 düzeni),
+  müşteri carisinde iadeyi karşılayan ödeme borç tarafında ödeme SAYILMAZ; fatura + vadeli borç açığı iade kadar eksik görünmez (örnek: B 200 + borç 300 → doğru 500 + 300 = 800).
+  Cari bakiye, Kasa, yevmiye DEĞİŞMEZ (yalnız kapama / hatırlatma)."
+- **Kâhin:** müşteriye iade kalemi = fatura iadesi (tutar − kendi geri ödemesi) ve faturasız stok Satış İadesi. Bu kalem BORÇ tarafında "iade geri ödemesi" yükümlülüğüdür; yalnız cari
+  "Ödeme" (bağsız, ya da Kapatılacak Fatura = o iade belgesi — K-d) kapatır → geri ödenen tutar G. ALACAK tarafında iadenin yalnız geri ödenmeyen kısmı (T − G) kapatıcıdır: fatura
+  iadesinde §7 kural 5–6 (önce asıl faturanın açığı, artanı en eskiden), stok iadesinde KS7 (a) (bağsız kapatıcı, en eskiden). Geri ödeme önceliklidir: sonradan gelen Ödeme, asıl
+  faturaya ya da en eski borca düşmüş iadeyi geri açar (örnekteki 200 → 500). Ödeme'nin iadeyi aşan kısmı borç tarafında bağsız ödemedir (öbür yükümlülükler / avans).
+  Bakiye, Kasa değişmez (denetlenir); mizan bu senaryolarda denetlenmez (ödeme / stok satırları — §8 KS7 (d) gibi).
+- **R1 düzeni (önceki karar):** iadenin KENDİ geri ödemesi (`iade {geri: "nakit"}`; iade belgesinin ödeme bölümü) iadeyi kapatır, asıl faturaya düşmez (K1 İADE KAPANIŞI). 2.4.5
+  ve 2.4.6 kural setlerinde aynı; c8 C carisi — Ödeme yoluyla (B) aynı sonucu vermelidir.
+- **Etiket:** caride iade + (Ödeme ya da kendi geri ödemesi) varsa sınıf; her iade TAMAMEN geri ödenmiş ya da bağsız Ödeme yok, kısmi yok, borç tarafı yükümlülüğü yok → BAŞ MİMAR
+  (örnek sınıfı; fatura iadesinin "iade" AJAN nedeni düşer — iade kural 5–6'ya girmez); kısmi / bağsız Ödeme + geri ödenmemiş iade / borç tarafı yükümlülüğü → YAYGIN (K-a, K-b).
+
+### KS9 — Faturasız Alış İadesi gerçek yol (madde 10) [BAŞ MİMAR] + simetrik geri tahsilat [YAYGIN — K-c]
+- **Metin:** "stok formunda faturasız Alış İadesi ('preturn') — KS7.1 simetri kuralı gerçek yol olur" (madde 10; KS7 (a) "simetriği faturasız stok Alış İadesi (tedarikçide borç
+  satırı) = bağsız ödeme"). Kâhinde kural 24.10'dan beri vardı, senaryosu yoktu ("formda yol yok"); 2.4.6'da c8 S / S2 ve rastgele s1 (`alis_iade`) kullanır. Mutant 117 geri geldi.
+- **Simetri (K-c):** tedarikçinin iade bedelini cari "Tahsilat" ile geri ödemesi alış iadesine bağlanır (geri tahsil edilen kısım borç tarafında ödeme değildir); yalnız 2.4.6'da. Sıra §11: K-b +
+  KS8.1 simetriği (bağsız Tahsilat önce alacak tarafı yükümlülükleri + açık alış iadesi notu, artanı kapatıcı alış iadesinin geri tahsilatı).
+- **2.4.5 kodunda (değişmemiş program):** uç (`POST /stock/:id/moves {kind: out, reason: "preturn", pay: account}`) kabul ediyor, cari bakiyesi tutuyor, ama alış faturasını KAPATMIYOR
+  (AS1 500 kalır) — 2.4.5'te bu yol yalnız birim düzeyindeydi (iş listesi "BİLİNEN SINIR"). Koşucu bu farkları "KS9 madde 10 yolu" sınıfında sayar (2.4.5 ↔ 2.4.6 kâhin beklentisi
+  aynı olduğu için "değişen beklenti" sınıfına düşmezler).
+
+### KS10 — Nakit Akış Projeksiyonu'nda cari vadeli kalemler (madde 11) [BAŞ MİMAR]
+- **Metin:** "Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri (madde 6'nın Vade / Beklenen Ödeme Tarihi; FIFO kalanı; aynı borç kartın taksitleriyle bir kez — K6.5 (1))."
+- **Kâhin:** K6.3 kalemi projeksiyonda (`<k>:projeksiyon:hareket:<ad>` = `{amount, date, direction}` ya da "yok"): tarih = Beklenen Ödeme Tarihi varsa o, yoksa Vade Tarihi; tutar =
+  FIFO Kalan − Mevcut Borç kartının açık kapsamı (takvimdeki tutar; K6.5 (1)); yön in / out (iki taraf); silinen / Kalan 0 / tarihsiz / pencere dışı → "yok". Pencere koşucunun isteği
+  (bugün → bugün + 30, `overdue=1`); sınır günü ÇATAL, vadesi geçmiş kalem YAYGIN (K-P1). `<k>:projeksiyon:cari` = kalem sayısı. "Bir kez" (K-P2, YAYGIN): temiz caride (fatura / evrak
+  / kart / kapatıcı / şüpheli / tablo kaydı yok, tek taraf, her açık kaydın tarihi pencerede, dağıtılmamış ödeme yok) `<k>:projeksiyon:cariToplam:<cari>` = carinin bütün projeksiyon
+  satırlarının işaretli toplamı = bakiye (Faturasız Cari Alacağı + vadeli kalem çift sayılmaz). 2.4.5'te H carisinde bu toplam ZATEN tutar (unbilled 650) — denetim 2.4.6'nın çift
+  sayımına karşı bekçidir.
+
+### C0b 2.4.6 kararıyla GEÇERSİZ / DEĞİŞEN denetimler (silinmedi; `--kural 2.4.5`'te eski kuralla)
+- `<k>:projeksiyon:cari` = 0 (K6.3 "Projeksiyon cari vadesini KATMAZ — BİLİNEN SINIR 2.5.x") → **2.4.6 kararıyla geçersiz**; yerine KS10 kalem sayısı. Mutant 99 ("katar") 2.4.6'da
+  doğru davranıştır → yalnız 2.4.5 değerlendirmesinde yakalanır (koşucu "[2.4.5]" yazar); tersi mutant 122.
+- Mevcut senaryolarda başka beklenen değer DEĞİŞMEDİ (41 elle + 6 s1 + 6 ux18 × 120 işlem: 2.4.6 ↔ 2.4.5 farkı yalnız `projeksiyon:hareket` (yeni), `projeksiyon:cari`, `projeksiyon:cariToplam`
+  (yeni) ve alış faturası açığının açıklama metni). `--kural 2.4.5` ve `--legacy` çıktıları eski modelle (e77447a) 106 karşılaştırmada bayt bayt aynı.
+- Koşucu her senaryoda "2.4.6 kararıyla değişen beklenti" (2.4.5 ↔ 2.4.6 kâhin çıktısı farkı) kümesini kurar ve programla her farkı sınıflar: değişen / KS9 madde 10 yolu / SINIF DIŞI.
+  2.4.5 kodunda SINIF DIŞI fark 0 beklenir.
+
+### C9b Dil ekleri (2.4.6)
+`iade {…, geri: "nakit"}` (iadenin kendi geri ödemesi; Kasa'dan çıkar; gövde `payment.cash[{amount, method: "cash", lineKey: "g1"}]`, `cashForce`) · `odeme {cari: <müşteri>, fatura:
+<iade adı>?}` (KS8) · `alis_iade` artık senaryolarda (KS9) · herhangi bir adımda `catal: true` (karar metni adımın kabulünü söylemiyor — kâhin iki dünya hesaplar: kabul ve adımsız;
+farklı çıkan denetimler ÇATAL, etiket YAYGIN; adımın durumu ÇATAL ok / ret). Yeni çıktı anahtarları: `<k>:projeksiyon:hareket:<ad>`, `<k>:projeksiyon:cariToplam:<cari>`.
+
+### C8b Nasıl bozulur? (2.4.6 — önce yazıldı; senaryo karşılıkları)
+| # | Bozulma | Senaryo |
+|---|---|---|
+| Z11 | Müşteriye Ödeme borç tarafında ödeme sayılır, iade yine kapatır (DB1) — fatura ve vadeli borç eksik, takvim / Vade Takip / Projeksiyon eksik | c8 A, A2, B; rastgele s1 |
+| Z12 | Fatura iadesinde geri ödeme yalnız stok iadesine uygulanır (FATURA iadesi asıl faturaya yine düşer) | c8 B |
+| Z13 | Kısmi geri ödemede iadenin tamamı geri ödenmiş sayılır / fazlası iadeye yazılır | c8 D; rastgele s1 (kısmi / fazla) |
+| Z14 | Ödeme silinince / geri yüklenince geri ödeme bağı kalır / dönmez | c8 A (k5, k6); rastgele s1 (hareket_sil) |
+| Z15 | Bağlı Ödeme (Kapatılacak Fatura = iade) bağsız sayılır — yanlış iade geri ödenir | c8b |
+| Z16 | Faturasız Alış İadesi alış faturasını kapatmaz; tedarikçinin geri tahsilatı alış iadesine bağlanmaz | c8 S, S2; rastgele s1 |
+| Z17 | Projeksiyon cari kalemini katmaz / Kalan yerine tutar / Beklenen'e kaymaz / pencere dışını katar / gecikmişi atar / kartla çift / Faturasız Cari Alacağı ile çift | c10, c6, c6b, c6c |
+| Z18 | Düzenle / sil / geri yükle sonrası projeksiyon eski kalemi taşır | c10 H (k3–k6) |
+
+### C10b Mutasyonlar (2.4.6)
+117 (KS9: Alış İadesi kapatmaz — geri geldi), 122–131, 133–136 (`model.py --mutasyonlar`); 99 yalnız 2.4.5 kipinde. Mutasyon taraması `/3` dosyalarını HER kipte iki kural setiyle
+(2.4.6 + 2.4.5) değerlendirir. Model tek başına: 134 mutantın hepsi yakalandı (25.10.2026).
+
+### C11b KARAR GEREKİR (ders 40 — metin susuyor; kâhin önerilen okumayı YAYGIN etiketle uygular, fark İNCELE)
+- **K-a Kısmi / fazla geri ödeme:** Ödeme < geri ödenmemiş iade → yalnız ödenen kısım geri ödemedir, kalan iade kapatıcı kalır; Ödeme > iade → fazlası borç tarafında bağsız
+  ödeme (avans). Öneri: böyle (QuickBooks / Xero kısmi "refund" — kalan kredi kullanılabilir; Logo / Mikro açık kalemde kısmi kapama). Mutant 131.
+- **K-b Sıra:** bağsız Ödeme birden çok iade ve borç tarafı yükümlülüğü (elle Alacak, alış faturası) arasında → tek FIFO (kayıt tarihi + yazım sırası, S1 gibi; iade kalemi kendi
+  tarihinde); Ödeme iadeden önce tarihli olsa da son durumdan dağıtılır. Öbür okuma: önce iade (mutant 133). Öneri: S1 FIFO (PLAN §8.10 "Otomatik (En Eski)") + formdaki bilgi notu.
+- **K-c Simetri:** tedarikçiye Alış İadesi + tedarikçinin "Tahsilat" ile geri ödemesi → alış iadesine bağlanır (DB1'in ayna sınıfı; madde 10 yolu açınca ulaşılabilir olur). Öneri: evet
+  (S1 "borç tarafı simetrik"; QuickBooks vendor credit refund, Xero supplier credit note refund). Mutant 135.
+- **K-d Bağlı geri ödeme:** cari "Ödeme"de Kapatılacak Fatura = satıştan iade belgesi seçilebilir mi? 2.4.5 reddediyor ("Ödeme yalnız alış faturasını kapatır; satış faturası için
+  Tahsilat girin"); faturasız stok iadesinde seçilecek belge yok. Kâhin ÇATAL (c8b). Öneri: kabul (SENARYO-DILI §4.16 + kalıcı karar "fatura kapama yöne göre": satıştan iade borç
+  yönlü belgedir; Xero / QuickBooks refund doğrudan iade belgesine) — ya da bilerek yalnız otomatik bağ (o zaman 2.4.5 reddi kalır).
+- **K-e Ödeme yolu:** iade bedeli ciro edilen çekle ya da havale / POS iadesiyle geri ödenirse? Kâhin yalnız cari "Ödeme"yi (kind out) geri ödeme sayar (metin "Ödeme ile"); ciro borç
+  tarafı ödemesi kalır. Öneri: müşteriye yapılan her ödeme (yolu ne olursa olsun) — karar.
+- **K-P1 Projeksiyon penceresi:** vadesi geçmiş cari kalemi "gecikenler dahil"de görünür (kâhin YAYGIN); pencere sonu günü (bugün + 30) dahil mi (kâhin ÇATAL). Öneri: fatura kalemiyle aynı.
+- **K-P2 Çift sayım:** 2.4.5'teki "Faturasız Cari Alacağı" (unbilled) satırı ile vadeli kalem aynı borcu iki kez katabilir. Kâhin: temiz caride toplam = bakiye. Öneri: vadeli kaydın Kalan'ı
+  yalnız vadeli kalem olarak; "Faturasız Cari Alacağı" vadesiz kalana iner (ya da kalkar).
+- **K-P3 Yetki:** projeksiyondaki cari kalemleri yalnız `accounts.view` yetkisi olana mı (K6.3 takvim gibi)? Kâhin denemedi. Öneri: evet.
+- **K-f Cari türü:** "müşteri carisinde" — kâhin türe bakmaz (tedarikçi / diğer türünde satış iadesi + Ödeme denenmedi).
+
+### C12b DENENMEYEN (2.4.6; neden)
+- Stok FORMUNDAN Alış İadesi (madde 10'un arayüzü — kâhin API düzeyinde; e2e işi); Ödeme formundaki bilgi notu; yevmiyenin 2.4.5 ↔ 2.4.6 aynılığı (kâhin bu senaryolarda mizanı
+  denetlemez — öneri: c8'in `program.json` `k*:mizan:*` değerleri iki kodda karşılaştırılır); kısmi fatura iadesi (kâhinde iade tam); alış faturası iadesi (purchase_return) + tedarikçi
+  geri tahsilatı; projeksiyon yetkisiz kullanıcı (K-P3); Mevcut Borç kartlı caride Ödeme / iade; şüpheli kayıtlı caride iade geri ödemesi; ciro ile geri ödeme (K-e).
+
+### C13b 2.4.5 kodunda (değişmemiş program, bu dalın tabanı) sonuç — 25.10.2026, kâhin 3dfb1c7, kanıt `docs/kanit/2026-10-25/246-kahin-cari/`
+- **2.4.6 kural seti (varsayılan çağrı: 36 senaryo + 2 tohum × 60):** 7.006 denetim, 408 fark — KS8 77, KS9 53, KS10 278; **SINIF DIŞI 0**; okuma hatası 0; 134 mutantın hepsi yakalandı.
+  Ek rastgele s1 tohum 3–10 × 120: 15.583 denetim, 939 fark (KS8 328, KS9 112, KS10 499), SINIF DIŞI 0. Kırmızının nedeni iletide (ders 38): c8 A "FA1 program 200 · kâhin 500"
+  (DB1 örneği aynen), A2 borç kalemi takvim / Vade Takip "100 · 400", B "FB2 0 · 200" (fatura iadesi + Ödeme), D kısmi; c10 / c6 projeksiyonda cari kalemi "yok"; tedarikçi T'nin
+  projeksiyon toplamı 0 (2.4.5'te borç tarafı hiç yok); S / S2 Alış İadesi alış faturasını kapatmıyor (KS9 yolu).
+- **2.4.5 kural seti (`--kural 2.4.5`):** 6.594 denetim, 76 fark — HEPSİ faturasız Alış İadesi olan tedarikçi carilerinde (73) + aynı kontrolün türev sayacı (3). Yani 2.4.5 kuralları
+  2.4.5 koduyla bu yol dışında birebir; KS7 simetrisinin (preturn) 2.4.5'te uçta karşılığı yok — madde 10 tam bu.
+- **Legacy (`--legacy`):** 183 fark — eski kâhinin (e77447a) aynı koşusuyla fark kümesi BAYT BAYT aynı (ayrık 0): 2.4.5'in bilerek kaldırdığı denetimler (B4 MM6 Kasa sütunu …).
+- **Eşdeğerlik:** yeni `model.py --kural 2.4.5` / `--legacy` = eski model, 53 senaryo × 2 kip (106/106).
+- **Gözlem (BULGU değil):** iadenin KENDİ geri ödemesi (R1, c8 C) 2.4.5'te doğru — FC2 200 açık; Ödeme yoluyla (B) 2.4.6'da aynı sonuç beklenir. E (elle Alacak + iade + Ödeme) 2.4.5'te
+  kâhinin K-b önerisiyle aynı (Ödeme Alacak'ı kapatır). H'nin "bir kez" toplamı 2.4.5'te TUTUYOR (Faturasız Cari Alacağı 650) — 2.4.6'da vadeli kalem eklenip bu satır kalırsa
+  1.300 okunur (K-P2'nin bekçisi). Bağlı Ödeme (c8b) 2.4.5'te 409 ret ("Ödeme yalnız alış faturasını kapatır; satış faturası için Tahsilat girin.") — ÇATAL'ın "ret" dünyası tuttu.
+
+## 10. 2.4.6 karar revizyonu (25.10.2026 ~13:05–14:30 UTC) — KS8.1, KS8.2, KS8.3, K-a…K-f; S-a / S-b / sıra senaryoları
+
+### C00c Kaynak (temiz oda)
+- **Okunan:** ana çalışma kopyasının `docs/2.4.6-IS-LISTESI.md` "BAŞ MİMAR KARARLARI": KS8.1, KS8.2, KARAR REVİZYONU (KS8.3), "KARAR — 5 DK YETKİSİYLE UYGULANDI" (K-a…K-f, K-P1), DAR KONTROL 1
+  B1–B5 bulgu cümleleri (yalnız beklenen sayılar: B1 "1.300, beklenen 1.000", B2 "F1a 0 ≠ 100, F1b 100 ≠ 200"), K9.1, K11.1–K11.2; `docs/2.4.5-IS-LISTESI.md` K6.5 (1); ana oturumun
+  iletisi (S-a / S-b / sıra tarifleri). Mevcut Borç kartı isteği (`POST /plans {…, coversBalance: true}`) `test/*.test.mjs` İSTEK satırlarından. **Okunmayan:** `server/**`, `client/**`.
+
+### Kurallar (önceki §9 okumalarının yerine)
+- **KS8.1 [BAŞ MİMAR]** bağsız müşteriye Ödeme (tedarikçiden bağsız Tahsilat simetrisi) önce açık iade notlarını kapatır; not kalmazsa iadenin kapattığı fatura / borç YENİDEN AÇILIR
+  (iadenin geri ödemesi, en eski önce); açık bağ (Kapatılacak Fatura = iade) önceliklidir. Değişmez Σ açık = bakiye. Kâhinde: iadenin geri ödenen kısmı kapatıcı değildir — geri ödeme
+  arttıkça önce açık not, sonra kapatılan borç geri gelir (tek iadede KS8.1 ile aynı; birden çok iadede kâhin iade başına en eskiden yazar — kısmi geri ödemede YAYGIN). Mutant 137 (B2: yalnız
+  açık not geri ödenir, kapatılan borç açılmaz).
+- **KS8.2 [BAŞ MİMAR]** tarih koşulu YOK — iadeden önce tarihli Ödeme de geri ödemedir (mutant 141). Taksitli faturanın iadesine bağ 409 "refund-planned" (kâhinde iade taksitsiz asıl ister — DENENMEDİ).
+- ~~**KS8.3 [BAŞ MİMAR]** iade varken bağsız para ÖNCE iadenin geri ödemesidir; fazlası carinin karşı taraftaki açıklarına (elle Alacak, alış faturası), ondan fazlası avans (K-a).~~
+  **GERİ ALINDI (25.10 ~15:30 UTC, §11)** — K-c'nin yanlış okumasıydı; mutant 133 artık bu okumadır. c8 E beklentisi ilk hâline döndü (fatura 200, Alacak 0).
+- **K-a / K-c / K-d / K-e / K-P1 [KULLANICI — 5 dk yetkisiyle]:** kısmi / fazla (yalnız ödenen kısım, fazlası avans); tedarikçi simetriği (alış iadesi + Tahsilat); Ödeme'de Kapatılacak Fatura =
+  iade belgesi KABUL (c8b'deki ÇATAL kalktı; mutant 136); her ödeme yolu (nakit, havale, çek ciro) geri ödeme — kâhinde müşteriye ciro da (mutant 138), tedarikçiden alınan bağsız evrak da
+  (simetri, YAYGIN); projeksiyon penceresinin son günü DAHİL (c10 bg4 ÇATAL kalktı; mutant 139). K-f: cari türüne bakılmaz (kâhin zaten bakmıyordu).
+- **K6.5 (1) [BAŞ MİMAR, 2.4.5]** Mevcut Borç kartlı caride fatura kalemi takvim / Vade Takip / projeksiyonda NET (açık − kartın açık kapsamı); kapsanan borç kartın taksitleriyle BİR kez; faturanın
+  `open`'ı kapsananı İÇERİR. Mutant 140 (B1: fatura kalemi brüt — 1.300 sınıfı).
+
+### Dil ekleri
+`fatura {…, adet}` (tek kalem, `adet` miktar) · `iade {…, adet}` (kısmi iade: tutar = asıl × adet / asıl adet) · `kart_ac {ad, cari, tutar, taksit, ilkVade, tarih, mevcut}` (Mevcut Borcu
+Taksitlendir; taksitler eşit, ayda bir [YAYGIN]) · `kontrol {gorunumToplam, acikToplam}`: `<k>:takvim|vadeTakip|projeksiyon:cariToplam:<cari>` (carinin bütün satırları — ad, cari / hareket /
+fatura / kart kimliği — işaretli toplamı; yalnız kâhinin bütün kalemlerini bildiği ve Σ kalem = bakiye olan caride), `<k>:vadeTakip|projeksiyon:fatura:<ad>`, kartlı caride `<k>:takvim:fatura:<ad>`;
+`<k>:cari:<cari>:acikToplam` (Σ açık: fatura `open` satış +, alış / iade −; elle kayıt `remaining`) ve `acikEsitBakiye`. Pencereler: takvim geçmiş + bugün + 7; Vade Takip bugün + 6'ya kadar kesin,
+sonrası ÇATAL; projeksiyon geçmiş + bugün + 30 (son gün dahil). API kartının taksit tarihi ± 4 gün kesin sayılmaz.
+
+### Senaryolar (elle tablo ↔ kâhin: 105/105)
+- **c11-ks81-sa-mevcut-borc-karti (S-a):** SA 1.000 → stok iadesi 300 (SA 700) → bağsız Ödeme 300 (SA 1.000) → kart 1.000 / 2 taksit: bakiye 1.000, SA açık 1.000, fatura kalemi her görünümde
+  "yok", projeksiyon cari toplamı 1.000 [BAŞ MİMAR], takvim 500 [YAYGIN eşit taksit], Vade Takip {500, 1.000}.
+- **c12-ks81-sb-kalan-dagilimi (S-b):** B1 Borç 200 + iade 500 + Ödeme 400 → Borç 100; B2 FB 1.000 (Tahsilat 600 bağlı) + iade 500 + Ödeme 300 → FB 200; B3 tedarikçi Alacak 200 + Alış İadesi 500
+  + Tahsilat 400 → Alacak 100; B4 Borç 200 + Alacak 150 + iade 300 + Ödeme 500 → Borç 200, Alacak 0, avans 50 (Σ açık 200 ≠ bakiye 250).
+- **c13-ks83-ayni-gun-sira:** aynı gün üç yazım sırası (Alacak/iade/Ödeme; Ödeme/iade/Alacak; iade/Ödeme/Alacak) → ~~hepsinde fatura 500, Alacak 300~~ (KS8.3 — geri alındı; §11: fatura 200,
+  Alacak 0), bakiye 200; S4 Ödeme iadeden önce → yine geri ödeme; S5 müşteriye ciro (K-e).
+
+### C13c Sonuç — aday246-2 bc1253c kodu (ayrı kopya; kâhin e83879a; kanıt `docs/kanit/2026-10-25/246-kahin-cari/aday2-bc1253c-e83879a.*`, `siniflama-aday2-e83879a.json`)
+- 39 senaryo, 7.220 denetim, 135 fark — **sınıf dışı 0**, okuma hatası 0, 139 mutantın hepsi yakalandı. Farklar:
+  c11 6 = dar kontrol **B1** (projeksiyon cari toplamı program 1.300 · kâhin 1.000; fatura kalemi her görünümde 300 · "yok"; takvim 800 · 500); c12 32 = **B2** (B1 Borç 0 · 100, B2 FB 100 · 200,
+  B3 tedarikçi Alacak 0 · 100, B4 Borç 100 · 200; programda Σ açık ≠ bakiye); c13 26 + c8 E 32 + rastgele s1 tedarikçi S 39 = **KS8.3 / K-c** (bağsız para önce iade — bc1253c'den sonra
+  karara bağlandı; programda Ödeme önce elle Alacak'ı kapatıyor: fatura 200 · 500, Alacak 0 · 300).
+- **Tutanlar:** c8b (K-d bağlı Ödeme kabul), c10 (KS10, K-P1 son gün), c8'in A / A2 / B / C / D / S2 (KS8 DB1 düzeltmesi), c13 S4 (KS8.2 — iadeden önce tarihli Ödeme) ve S5 (K-e — müşteriye ciro).
+- **Eski kodda kırmızı (ders 7):** yeni üç senaryo 2.4.5 kodunda 287 denetim, 88 fark (hepsi 2.4.6 sınıfında; 4'ü KS9 yolu).
+- Senaryo kusuru (düzeltildi, e83879a): S5'in carisiz çeki programda 400 "Çeki kimden aldığınızı yazın ya da cari seçin." — koşucu ad göndermiyor; çek artık başka cariden alınır.
+
+## 11. 2.4.6 BAŞ MİMAR KARARI DÜZELTMESİ (25.10 ~15:30 UTC) — KS8.3 GERİ ALINDI; K-b + KS8.1 iki aşama
+
+### C00d Kaynak (temiz oda; ders 40 — kaynak önceden yazılmış kullanıcı kararları, programın davranışı DEĞİL)
+- **Okunan:** ana oturumun iletisi (karar düzeltmesinin metni) ve ana çalışma kopyasının `docs/2.4.6-IS-LISTESI.md` K-b / K-c / KS8.1 / KS8.2 / K9.1 satırları. K-c'nin metni "tedarikçinin Tahsilat ile
+  geri ödemesi alış iadesine BAĞLANIR (simetri)" — K-d'nin tedarikçi simetriği (açık bağ kurulabilir), bir SIRA kuralı değildir; sıra için yazılı karar K-b. **Okunmayan:** `server/**`,
+  `client/**`; iş listesinin programın davranışını anlatan satırları kâhin kuralına girdi değildir.
+
+### Kurallar (§10 KS8.3'ün yerine; iki taraf simetrik)
+- **Birinci aşama — K-b [KULLANICI, 5 dk yetkisi]:** bağsız para (müşteriye Ödeme, K-e ile müşteriye ciro; tedarikçi tarafında bağsız Tahsilat ve alınan bağsız evrak) carinin karşı
+  taraftaki yükümlülükleri (müşteride elle Alacak, alış faturası, alacak yönlü Açılış; tedarikçide satış faturası, elle Borç, borç yönlü Açılış, KS7.1 stok satışı) ve iadelerin AÇIK
+  notları arasında TEK FIFO, en eski önce; iade kendi tarihinde; aynı tarihte yazım sırası (ders 31; olay sınıfı sırası kararda yok → YAYGIN).
+- **Açık not:** iadenin geri ödemesiz hesapta (G = {}) hiçbir borcu kapatmadan artan kısmı — fatura iadesinde §7 kural 5–6 artanı, stok iadesinde d havuzunun artanı (en yeni stok
+  iadesine önce; havuz en eskiden kapatır — paylaştırma kararda yok → başka bağsız kapatıcı varsa YAYGIN). Alış iadesinin açık notu borç tarafında aynı.
+- **İkinci aşama — KS8.1 [BAŞ MİMAR]:** K-b'den ARTAN bağsız para, alacağı bir faturayı / borcu kapatmış iadenin geri ödemesi sayılır — en eski iade önce; üst sınır iadenin geri
+  ödeme dışında kapattığı tutar; kapattığı açık yeniden açılır (kâhin en son kapatılanı önce açar — kısmi + birden çok kapama YAYGIN); fazlası avans (K-a).
+- **KS8.2 [BAŞ MİMAR]:** tarih koşulu YOK (Ödeme iadeden önce tarihli olsa da). **K-d:** açık bağ (Kapatılacak Fatura = iade) önce — önce o iadenin açık notu, sonra kapatıcı kısmı.
+- **KS9 yorumu (yeniden yazıldı):** "Alış İadesi bağsız ödeme; tedarikçinin bağsız Tahsilat'ı önce K-b FIFO'sunda (alacak tarafı + açık alış iadesi notu), artanı kapatıcı alış iadesinin
+  geri tahsilatı — KS8.1 simetri, kapattığı açık yeniden açılır". Etiket BAŞ MİMAR (önceki "YAYGIN — KARAR GEREKİR K-c" kalktı); yaklaşık durumlarda YAYGIN.
+- **Etiket (`ks8_sinif`):** "tam" → BAŞ MİMAR; "yaygin" → YAYGIN (İNCELE): aynı caride iki yönde iade (K9.1 BİLİNEN SINIR), tedarikçiden alınan evrakla geri tahsilat (K-e simetrisi),
+  açık not + başka bağsız kapatıcı kaynağı, açık not ile karşı taraf yükümlülüğü aynı tarihte, kısmen geri ödenen iade birden çok borcu kapatmıştı.
+
+### Mutantlar
+133 = eski KS8.3 okuması (önce iadeler) · 142 = §9 ilk okuması (iadenin TAMAMI kendi tarihinde FIFO'da; KS8.1 "artan" yok) · 143 = ikinci aşama en yeni iade önce · 137 = ikinci aşama yok
+(B2) · 141 / 138 / 136 / 131 / 129 / 130 / 134 / 135 aynen. Model tek başına: 141 mutantın hepsi yakalandı (elle 47 senaryo, iki kip; 25.10.2026).
+
+### Senaryolar (elle tablo ↔ kâhin: 202/202, mutant beklentileri dahil)
+- **c8 E:** fatura 200, Alacak 0, bakiye 200 (63a6537'deki ilk beklentiye dönüş; mutant 133: 500 / 300).
+- **c13:** S1–S3 aynı gün üç yazım sırası → fatura 200, Alacak 0, bakiye 200 = Σ açık (yazım sırasından bağımsız — iadenin açık notu yok); S4 (KS8.2) fatura 500; S5 (K-e) fatura 500.
+  YENİ: S6 Alacak iadeden SONRA tarihli → yine Alacak önce (fatura 200, Alacak 0; mutant 142: 500 / 300); S7 / S8 aynı gün Alacak + açık not 300 + Ödeme 300 — yazım sırası (S7 Alacak 0,
+  bakiye −300, Σ açık 0; S8 Alacak 300 = bakiye) [YAYGIN]; S9 tedarikçi simetriği (alış 500 → Alış İadesi 300 → elle Borç 300 → bağsız Tahsilat 300 → Borç 0, alış 200; mutant 133: 500 / 300).
+- **c12:** B1–B4 sayıları aynı (gerekçe K-b + KS8.1 ile yeniden yazıldı); YENİ B5 iki kapatıcı iade + bağsız Ödeme 200 → en eski iade (stok, 05-20) geri ödenir: FA5 500, FB5 0 (mutant 143: 300 / 200).
+- **c8b:** değişmedi (bağlı Ödeme; bağsız sayılsaydı K-b'de açık not yok → KS8.1 en eski iade = stok → FF1 500, FF2 0 — mutant 136).
+- Değişmeyenler: c8 A / A2 / B / C / D / S / S2, c11 (S-a).
+
+### C13d Sonuç — aday246-3 8573193 kodu (ayrı kopya; kâhin 37af13c; kanıt `docs/kanit/2026-10-25/246-kahin-cari/*-37af13c.*`)
+- **Bütün kâhin (39 senaryo: elle + rastgele ux18 / s1 tohum 1–2 + mutasyon):** 7.408 denetim, **0 fark (BULGU 0, İNCELE 0)**, yalnız 7 bilinen sınır (b3y — BILINEN.json, DONDURMA 23.10), okuma hatası 0;
+  141 mutantın hepsi yakalandı (142 c13 + rastgele-s1-1, 143 c12, 133 c13 + c8, 137 c11 / c12 / c13). c11 (B1), c12 (B2 + B5), c13 (B3 + S6–S9), c8 E, c8b, c10 tutuyor; YAYGIN etiketli S7 / S8 (aynı gün
+  yazım sırası) da programla aynı.
+- **Ek rastgele s1 tohum 3–10 × 120:** 15.619 denetim, 0 fark.
+- **2.4.5 kodunda (değişmemiş program; ders 7):** c8 / c12 / c13 889 denetim, 175 fark — 154 "2.4.6 kararıyla değişen beklenti" + 21 KS9 yolu, SINIF DIŞI 0. Nedenler iletide (ders 38): B5 "FA5 program 300 ·
+  kâhin 500" (KS8 yok), S9 "AT9 50000 · 20000" (KS9 yolu 2.4.5'te yok), S8 "a8 0 · 30000" (iade notu yok). S1–S3, S6, c8 E 2.4.5 kodunda da yeşil (2.4.5'te iade geri ödemesi yok — Ödeme Alacak'ı kapatır, yeni
+  kuralla aynı sonuç); bu senaryoların dişi eski okumalara karşıdır: mutant 133 (KS8.3) ve 142 (iadenin tamamı tarih FIFO'sunda) yakalandı. Program hiçbir adayda KS8.3'ü uygulamadı (bc1253c'de de K-b
+  sırasındaydı — C13c'deki 97 "KS8.3 / K-c" farkı kâhinin geri alınan okumasıydı).
+- **Eşdeğerlik:** `--kural 2.4.5` / `--legacy` = eski model (e77447a) 106/106. **Elle tablo:** 202/202. **Öz denetim** (Σ açık − dağıtılmamış giriş − Σ iade artanı − Σ borç açık + dağıtılmamış çıkış = bakiye):
+  elle 65 cari + yeni üreticiyle 30 rastgele s1 senaryosu 43 cari, tutmayan 0.

@@ -1,0 +1,32 @@
+{
+  "ad": "246-db1/yesil-stok-alis-iadesi",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/stok-alis-iadesi-246.test.mjs",
+  "commit": "5fa544cc740440f425668c8999b460fc36067d19",
+  "dal": "is/db1",
+  "kirli": 7,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T13:19:16.466Z",
+  "sure_sn": 1.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-db1/yesil-stok-alis-iadesi.log",
+  "klasor": "/home/user/wt/db1",
+  "ham_cikti_sha256": "3891abc60308cdb6f1dc1ec03fdc94caa22cc22cdcdd3c091beebf29114cd84a",
+  "ham_cikti_bayt": 2484
+}

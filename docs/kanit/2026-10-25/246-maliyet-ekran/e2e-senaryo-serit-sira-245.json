@@ -1,0 +1,32 @@
+{
+  "ad": "246-maliyet-ekran/e2e-senaryo-serit-sira-245",
+  "komut": "npm run test:senaryo-serit-sira-245",
+  "commit": "9ac6abd74d29b4fb30115b6c567472fffd30db7b",
+  "dal": "is/maliyet-ekran",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T12:56:43.628Z",
+  "sure_sn": 6.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 7,
+    "gecen": 7,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-maliyet-ekran/e2e-senaryo-serit-sira-245.log",
+  "klasor": "/home/user/wt/maliyet-ekran",
+  "ham_cikti_sha256": "87060f76e993d3691d46c9e3fed4c20cef0a84a2e6d54ea6b5b726717adab5ba",
+  "ham_cikti_bayt": 828
+}

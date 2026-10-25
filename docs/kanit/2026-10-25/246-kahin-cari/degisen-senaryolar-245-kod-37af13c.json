@@ -1,0 +1,158 @@
+{
+  "ad": "246-kahin-cari/degisen-senaryolar-245-kod-37af13c",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs test/bagimsiz/cari/senaryolar/c8-ks8-iade-geri-odemesi.json test/bagimsiz/cari/senaryolar/c12-ks81-sb-kalan-dagilimi.json test/bagimsiz/cari/senaryolar/c13-ks83-ayni-gun-sira.json --mutasyonsuz --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-kahin-cari/d245",
+  "commit": "37af13c6f21d7d9f821020dbed804736b4b78d66",
+  "dal": "is/kahin-cari-246",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T15:49:04.461Z",
+  "sure_sn": 5.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 889,
+    "gecen": 714,
+    "basarisiz": 175,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 175 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[İNCELE YAYGIN] k1:projeksiyon:cari: program 0 · kâhin 7 (KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:projeksiyon:hareket:aa1: program \"yok\" · kâhin {\"amount\":30000,\"date\":\"2026-06-20\",\"direction\":\"out\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k1:projeksiyon:hareket:ae1: program \"yok\" · kâhin {\"amount\":30000,\"date\":\"2026-06-14\",\"direction\":\"out\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k1:projeksiyon:hareket:ba1: program \"yok\" · kâhin {\"amount\":30000,\"date\":\"2026-06-12\",\"direction\":\"in\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:projeksiyon:hareket:ba2: program \"yok\" · kâhin {\"amount\":40000,\"date\":\"2026-06-18\",\"direction\":\"in\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:projeksiyon:hareket:bb1: program \"yok\" · kâhin {\"amount\":30000,\"date\":\"2026-06-20\",\"direction\":\"in\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:projeksiyon:hareket:bc1: program \"yok\" · kâhin {\"amount\":30000,\"date\":\"2026-06-20\",\"direction\":\"in\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:projeksiyon:hareket:bd1: program \"yok\" · kâhin {\"amount\":30000,\"date\":\"2026-06-20\",\"direction\":\"in\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · KS9] k2:fatura:AS1:acik: program 50000 · kâhin 20000 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme (KS9: Alış İadesi bağsız ödeme; tedarikçinin bağsız Tahsilat'ı önce K-b FIFO'sunda (alacak tarafı + açık alış iadesi notu), artanı ka",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · KS9] k2:fatura:AS2:acik: program 40000 · kâhin 25000 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme (KS9: Alış İadesi bağsız ödeme; tedarikçinin bağsız Tahsilat'ı önce K-b FIFO'sunda (alacak tarafı + açık alış iadesi notu), artanı ka",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k2:projeksiyon:cari: program 0 · kâhin 7 (KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:projeksiyon:hareket:aa1: program \"yok\" · kâhin {\"amount\":30000,\"date\":\"2026-06-20\",\"direction\":\"out\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k2:projeksiyon:hareket:ae1: program \"yok\" · kâhin {\"amount\":30000,\"date\":\"2026-06-14\",\"direction\":\"out\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k2:projeksiyon:hareket:ba1: program \"yok\" · kâhin {\"amount\":30000,\"date\":\"2026-06-12\",\"direction\":\"in\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:projeksiyon:hareket:ba2: program \"yok\" · kâhin {\"amount\":10000,\"date\":\"2026-06-18\",\"direction\":\"in\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k2:projeksiyon:hareket:bb1: program \"yok\" · kâhin {\"amount\":30000,\"date\":\"2026-06-20\",\"direction\":\"in\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:projeksiyon:hareket:bc1: program \"yok\" · kâhin {\"amount\":30000,\"date\":\"2026-06-20\",\"direction\":\"in\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k2:projeksiyon:hareket:bd1: program \"yok\" · kâhin {\"amount\":30000,\"date\":\"2026-06-20\",\"direction\":\"in\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN · KS9] k2:takvim:fatura:AS1: program {\"amount\":50000,\"direction\":\"out\"} · kâhin {\"amount\":20000,\"direction\":\"out\"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN · KS9] k2:takvim:fatura:AS2: program {\"amount\":40000,\"direction\":\"out\"} · kâhin {\"amount\":25000,\"direction\":\"out\"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR · KS9] k3:fatura:AS2:acik: program 30000 · kâhin 15000 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme (KS9: Alış İadesi bağsız ödeme; tedarikçinin bağsız Tahsilat'ı önce K-b FIFO'sunda (alacak tarafı + açık alış iadesi notu), artanı ka",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k3:fatura:FA1:acik: program 20000 · kâhin 50000 (B2.1 açık = tutar − bağlı − en eski kapama · S1 elle kayıtla tek kuyruk · KS8 iade geri ödemesi (madde 9; K-b FIFO + KS8.1 artan): geri ödenen iade kapatıcı değil)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k3:fatura:FA2:acik: program 0 · kâhin 20000 (B2.1 açık = tutar − bağlı − en eski kapama · S1 elle kayıtla tek kuyruk · KS8 iade geri ödemesi (madde 9; K-b FIFO + KS8.1 artan): geri ödenen iade kapatıcı değil)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k3:fatura:FB2:acik: program 0 · kâhin 20000 (B2.1 açık = tutar − bağlı − en eski kapama · S1 elle kayıtla tek kuyruk · KS8 iade geri ödemesi (madde 9; K-b FIFO + KS8.1 artan): geri ödenen iade kapatıcı değil)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k3:fatura:FD1:acik: program 20000 · kâhin 30000 (B2.1 açık = tutar − bağlı − en eski kapama · S1 elle kayıtla tek kuyruk · KS8 iade geri ödemesi (madde 9; K-b FIFO + KS8.1 artan): geri ödenen iade kapatıcı değil)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-25/246-kahin-cari/degisen-senaryolar-245-kod-37af13c.log",
+  "klasor": "/home/user/wt/kahin-cari-246",
+  "ham_cikti_sha256": "a7795cdb34747641621bf775e7235f428c4018925f6a54f4d40c33b6d4c5c32f",
+  "ham_cikti_bayt": 44884
+}

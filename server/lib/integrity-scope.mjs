@@ -82,10 +82,10 @@ const json = values => JSON.stringify([...values]);
 const IN = "(SELECT value FROM json_each(?))";
 // 2.4.4 UX18 (tam kapı lib/integrity.mjs ile aynı koşul): Kapatılacak Fatura ile bağlanmış evrakın (ev: alış/veriliş olayı, c: evrak, i: fatura) bağı
 // geçersiz mi — fatura yok / kaydedilmiş değil / başka carinin / taksitli / ters yön ya da evrak taksite sayılıyor. Faturanın kendi evrakı (c.invoice_id
-// = olay bağı) ve silinmiş evrak bu denetime girmez.
+// = olay bağı) ve silinmiş evrak bu denetime girmez. 2.4.6 K-e (DB1): verilen evrak satıştan iadeyi, alınan evrak alıştan iadeyi geri öder (yön uyumlu).
 export const CHEQUE_BOND_BAD = `ev.invoice_id <> '' AND +ev.kind IN ('receive', 'issue') AND c.invoice_id <> ev.invoice_id AND +c.deleted_at IS NULL
   AND (i.id IS NULL OR i.status <> 'issued' OR i.account_id <> c.account_id OR i.plan_id <> '' OR c.plan_id <> ''
-       OR (c.direction = 'in' AND i.kind NOT IN ('sale', 'smm')) OR (c.direction = 'out' AND i.kind <> 'purchase'))`;
+       OR (c.direction = 'in' AND i.kind NOT IN ('sale', 'smm', 'purchase_return')) OR (c.direction = 'out' AND i.kind NOT IN ('purchase', 'sale_return')))`;
 
 /** Taban sapmasının (açılışta bulunan) denetim kodu → alanı. null: denetim eski satırları kendisi ayırır (ileri tarih, yol, olay). */
 export function familyOf(code) {

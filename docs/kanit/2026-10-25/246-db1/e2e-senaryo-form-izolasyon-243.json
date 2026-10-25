@@ -1,0 +1,32 @@
+{
+  "ad": "246-db1/e2e-senaryo-form-izolasyon-243",
+  "komut": "npm run test:senaryo-form-izolasyon-243",
+  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "dal": "is/db1",
+  "kirli": 15,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T11:22:57.116Z",
+  "sure_sn": 245.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 183,
+    "gecen": 183,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-db1/e2e-senaryo-form-izolasyon-243.log",
+  "klasor": "/home/user/wt/db1",
+  "ham_cikti_sha256": "1ff799c45b5d9aa73bd10ea4515daa852893a41c38f6af751882ffb073eb50a1",
+  "ham_cikti_bayt": 28819
+}

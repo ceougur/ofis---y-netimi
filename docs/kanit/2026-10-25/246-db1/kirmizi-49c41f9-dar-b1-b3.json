@@ -1,0 +1,73 @@
+{
+  "ad": "246-db1/kirmizi-49c41f9-dar-b1-b3",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/iade-geri-odeme-246.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T14:40:48.332Z",
+  "sure_sn": 4.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 43,
+    "gecen": 35,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "DAR KONTROL 246 settleLedger (saf): kısmen açık iade + bağsız geri ödeme (B2), aynı anda yazım sırası (B3) › B2 F1a: elle Borç 200, stok iadesi 500 (300'ü açık), bağsız Ödeme 400 → 300 açık iadeye, 100 kapattığı borcu yeniden açar: Borç kalan 100 (= bakiye)",
+      "konum": "test/iade-geri-odeme-246.test.mjs:216:3",
+      "hata": "Expected values to be strictly equal: · 0 !== 100 (beklenen 100, gelen 0)"
+    },
+    {
+      "ad": "DAR KONTROL 246 settleLedger (saf): kısmen açık iade + bağsız geri ödeme (B2), aynı anda yazım sırası (B3) › B2 değişmez: Ödeme 200…500 → Σ açık (Borç kalan − iade açığı) = bakiye; 600 → iadeyi 100 aşan avans (K-a)",
+      "konum": "test/iade-geri-odeme-246.test.mjs:220:3",
+      "hata": "Ödeme 350: Borç kalan 0, iade açığı 0, bakiye 50 · 0 !== 50 (beklenen 50, gelen 0)"
+    },
+    {
+      "ad": "DAR KONTROL 246 settleLedger (saf): kısmen açık iade + bağsız geri ödeme (B2), aynı anda yazım sırası (B3) › B2 açık iade bir kez tüketilir: Borç 200, iade 500, bağsız Ödeme 600, sonra elle Alacak 100 → 500 geri ödeme, artan 100 Alacak'ı kapatır: Borç 200, Alacak 0 (Σ 200 = bakiye)",
+      "konum": "test/iade-geri-odeme-246.test.mjs:229:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "DAR KONTROL 246 settleLedger (saf): kısmen açık iade + bağsız geri ödeme (B2), aynı anda yazım sırası (B3) › B2 tedarikçi simetriği: elle Alacak 200, Alış İadesi 500, bağsız Tahsilat 400 → Alacak kalan 100",
+      "konum": "test/iade-geri-odeme-246.test.mjs:234:3",
+      "hata": "Expected values to be strictly equal: · 0 !== 100 (beklenen 100, gelen 0)"
+    },
+    {
+      "ad": "DAR KONTROL 246 settleLedger (saf): kısmen açık iade + bağsız geri ödeme (B2), aynı anda yazım sırası (B3) › B3: açık iade ile elle Alacak aynı gün ve AYNI kayıt anında — yazım sırası: iade önce → Alacak 200 açık; Alacak önce → Alacak 0 (K-b en eski önce)",
+      "konum": "test/iade-geri-odeme-246.test.mjs:241:3",
+      "hata": "iade önce yazıldı · 0 !== 200 (beklenen 200, gelen 0)"
+    },
+    {
+      "ad": "DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ödenen İade) › B1 (dar kontrol): satış 1.000 → stok iadesi 300 → bağsız Ödeme 300 → Mevcut Borcu Taksitlendir 1.000: borç kartla BİR kez — Vade Takip ve takvim 1.000 (fatura kalemi yok)",
+      "konum": "test/iade-geri-odeme-246.test.mjs:538:3",
+      "hata": "Vade Takip: kartın iki taksiti, fatura kalemi yok (5fa544c / 49c41f9: fatura 300 + kart 1.000 = 1.300) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ödenen İade) › B2 F1b (dar kontrol): satış A 1.000, Tahsilat 600 → A, A'nın iadesi 500 (100'ü açık), bağsız Ödeme 300 → A açık 200, iade açığı 0 (açık bağla aynı)",
+      "konum": "test/iade-geri-odeme-246.test.mjs:553:3",
+      "hata": "A açık 200, iade 0 (bakiye 1.000 − 600 − 500 + 300 = 200) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ödenen İade) › B3 (dar kontrol, durağan saat): açık stok iadesi ile elle Alacak aynı gün ve aynı kayıt anında — yazım sırası belirler (iade önce → Alacak 200 açık; Alacak önce → 0)",
+      "konum": "test/iade-geri-odeme-246.test.mjs:566:3",
+      "hata": "iade önce yazıldı: Ödeme önce iadeyi geri öder, Alacak açık · 0 !== 200 (beklenen 200, gelen 0)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt/db1/docs/kanit/2026-10-25/246-db1/kirmizi-49c41f9-dar-b1-b3.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-db1/eski-49c41f9",
+  "ham_cikti_sha256": "9c9f900509f888089ffd7b0283da4e71dd6fe1ba563012d24e94d33406c1628d",
+  "ham_cikti_bayt": 27442
+}

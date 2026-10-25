@@ -152,6 +152,9 @@ describe("2.4.5 madde 4 + 5 (API): ürün = v2.4.4 − tablo kalemleri; son tari
   const ctx = {};
   const dirs = name => ({ dataDir: path.join(root, name, "data"), backupDir: path.join(root, name, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, now: { time: NOW_ISO, fixed: true } });
   const withOld = tagsAvailable([OLD]);
+  // 2.4.6 (2.4.5 gezinti B7; bilerek): planlı banka etiketi yazım düzeninde ("Planlı Diğer Gider"; v2.4.4 "Planlı diğer gider") — v2.4.4 karşılaştırmasında
+  // yalnız bu adın harf büyüklüğü yok sayılır; tutar, tarih, yön, kişi ve açıklama aynen karşılaştırılır.
+  const plannedCase = key => key.replace(/Planlı [^·|]*/g, part => part.toLocaleLowerCase("tr-TR"));
 
   before(async () => {
     servers.product = await bootVersion(CURRENT, dirs("urun"));
@@ -187,7 +190,7 @@ describe("2.4.5 madde 4 + 5 (API): ürün = v2.4.4 − tablo kalemleri; son tari
     assert.deepEqual(["plan", "cheque", "invoice", "bank"].map(count), [1, 1, 1, 1], `kalemler: ${product.map(item => item.source).join(", ")}`);
     assert.equal(product.length, 4, "takvimde yalnız modül kalemleri");
     assert.deepEqual(modules(product), modules(data.legacy.dues.items), "eski davranışla aynı modül kalemleri");
-    if (withOld) assert.deepEqual(modules(product), modules(data.old.dues.items), "v2.4.4 ile aynı modül kalemleri");
+    if (withOld) assert.deepEqual(modules(product).map(plannedCase), modules(data.old.dues.items).map(plannedCase), "v2.4.4 ile aynı modül kalemleri");
   });
 
   test("son tarihler KALIR ve aynı: Sözleşme bitiş + Sigorta yenileme (açık sayfa), Lisans Bitiş (öbür sayfa); Söz Tarihi son tarih değil", () => {
@@ -204,7 +207,7 @@ describe("2.4.5 madde 4 + 5 (API): ürün = v2.4.4 − tablo kalemleri; son tari
     assert.ok(!staffDues.items.some(isTableItem), "personelin takviminde tablo kalemi yok");
     const modules = list => sorted(list.filter(item => !isTableItem(item)).map(itemKey));
     assert.deepEqual(modules(staffDues.items), modules(data.legacy.staffDues.items), "personel: eski davranışla aynı modül kalemleri");
-    if (withOld) assert.deepEqual(modules(staffDues.items), modules(data.old.staffDues.items), "personel: v2.4.4 ile aynı modül kalemleri");
+    if (withOld) assert.deepEqual(modules(staffDues.items).map(plannedCase), modules(data.old.staffDues.items).map(plannedCase), "personel: v2.4.4 ile aynı modül kalemleri");
     assert.deepEqual(sorted(staffDues.deadlines.map(deadlineKey)), sorted(data.product.dues.deadlines.map(deadlineKey)), "personel aynı son tarihleri görür");
   });
 
@@ -216,7 +219,7 @@ describe("2.4.5 madde 4 + 5 (API): ürün = v2.4.4 − tablo kalemleri; son tari
     const rest = list => sorted(list.filter(row => !TABLE_SOURCES.has(row.source)).map(rowKey));
     assert.ok(data.legacy.vade.rows.some(row => TABLE_SOURCES.has(row.source)), "eski davranışta tablo satırları vardı (testin dişi)");
     assert.deepEqual(rest(vade.rows), rest(data.legacy.vade.rows), "eski davranışla aynı öbür satırlar");
-    if (withOld) assert.deepEqual(rest(vade.rows), rest(data.old.vade.rows), "v2.4.4 ile aynı öbür satırlar");
+    if (withOld) assert.deepEqual(rest(vade.rows).map(plannedCase), rest(data.old.vade.rows).map(plannedCase), "v2.4.4 ile aynı öbür satırlar");
     assert.ok(vade.rows.some(row => row.source === "deadline"), "son tarih satırları kalır");
   });
 

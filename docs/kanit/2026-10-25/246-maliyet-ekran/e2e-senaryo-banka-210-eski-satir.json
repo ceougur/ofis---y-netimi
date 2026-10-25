@@ -1,0 +1,32 @@
+{
+  "ad": "246-maliyet-ekran/e2e-senaryo-banka-210-eski-satir",
+  "komut": "npm run test:senaryo-banka-210-eski-satir",
+  "commit": "9ac6abd74d29b4fb30115b6c567472fffd30db7b",
+  "dal": "is/maliyet-ekran",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T12:36:11.491Z",
+  "sure_sn": 28.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 29,
+    "gecen": 29,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-maliyet-ekran/e2e-senaryo-banka-210-eski-satir.log",
+  "klasor": "/home/user/wt/maliyet-ekran",
+  "ham_cikti_sha256": "cb6831b60020bd8d0aa671961dbc82cce09d2189056df8b2766f35da54b030db",
+  "ham_cikti_bayt": 5200
+}

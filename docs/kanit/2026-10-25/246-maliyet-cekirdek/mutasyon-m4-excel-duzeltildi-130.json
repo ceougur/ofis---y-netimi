@@ -1,0 +1,38 @@
+{
+  "ad": "246-maliyet-cekirdek/mutasyon-m4-excel-duzeltildi-130",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/maliyet-cekirdek-246.test.mjs test/maliyet-bagsizlik.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T10:09:50.928Z",
+  "sure_sn": 6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 24,
+    "gecen": 23,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.6 Maliyet Hesap Kartı: şablon (boş yapı) ve hesap zinciri › Excel tutarsızlıkları AYNEN: 130 / 150'lik 1S1Ç ÷120, Cam 130 1S2Ç CM elle (sonuç %20 Maliyet), Mika 120 1S2Ç etiketsiz, yan panel %20 etiketi / %15 oran",
+      "konum": "test/maliyet-cekirdek-246.test.mjs:43:3",
+      "hata": "Expected values to be strictly equal: · 130 !== 120 (beklenen 120, gelen 130)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-25/246-maliyet-cekirdek/mutasyon-m4-excel-duzeltildi-130.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-mut-832573f-m4-excel-duzeltildi-130",
+  "ham_cikti_sha256": "f3f6b5f239a54259fcd9a5039795f0ec7a38fabdad419a40c375ca62fca29b26",
+  "ham_cikti_bayt": 10078
+}

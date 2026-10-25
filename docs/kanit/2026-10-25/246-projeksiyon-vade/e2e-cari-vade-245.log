@@ -1,0 +1,61 @@
+
+> destekofis@2.4.5 test:senaryo-cari-vade-245
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-cari-vade-245.mjs
+
+
+■ V1 Borç Yaz: tutar insan hızında + Tab, Vade Tarihi → due_date; Hareketler'de Vade ve Kalan
+  ✓ Borç Yaz formunda Vade Tarihi ve Beklenen Ödeme Tarihi alanları
+  ✓ alan adları yazım düzeninde: Tarih | Tarih | Vade Tarihiİsteğe bağlı. Kalan tutar bu tarihte Tahsilat Takvimi'nde ve zilde görünür. | Vade Tarihi | Beklenen Ödeme Tarihiİsteğe bağlı (ödeme 
+  ✓ Vade Tarihi klavyeyle yazıldı
+  ✓ veri tabanı: [{"kind":"debt","amount":1250,"date":"2026-10-20","dueDate":"2026-10-23","expectedDate":""}]
+  ✓ Hareketler'de: “Vade 23.10.2026 · Kalan ₺1.250,00”
+
+■ V2 Tahsilat Takvimi şeridinde ve zilde kalem (Tahsil Edilecek Borç, Kalan)
+  ✓ şeritte: ["₺ Vade Müşteri Tahsil Edilecek Borç · 23.10.2026 · ₺1.250,00 3 gün kaldı"]
+  ✓ takvim kalemi: {"id":"account|aentry-019fee7e-434e-4ff2-83b5-fd198ec2a774","amount":1250,"state":"upcoming","days":3}
+  ✓ zilde: ["3 gün kaldıVade MüşteriTahsil Edilecek Borç · vade 23.10.2026 · ₺1.250,00✕Tahsilat GirCariyi Aç"]
+
+■ V3 Düzelt → Beklenen Ödeme Tarihi: kalem o güne kayar, "(Ödeme Sözü)"
+  ✓ düzeltme formunda Vade Tarihi dolu
+  ✓ Beklenen Ödeme Tarihi klavyeyle yazıldı
+  ✓ veri tabanı: vade 2026-10-23, beklenen 2026-10-21, tutar 1250
+  ✓ Hareketler'de: “Vade 23.10.2026 · Beklenen Ödeme 21.10.2026 · Kalan ₺1.250,00”
+  ✓ şeritte o güne kaydı: ["₺ Vade Müşteri Tahsil Edilecek Borç (Ödeme Sözü) · 21.10.2026 · ₺1.250,00 Yarın"]
+
+■ V4 + Tahsilat (kısmi): kalem tutarı küçülür; Hareketler'de Kalan
+  ✓ bilgi notu: “Bu tahsilat carinin en eski açık borcundan başlayarak kapatır.”
+  ✓ tahsilat 500, tarih alanı yok: [{"amount":500,"dueDate":""}]
+  ✓ Hareketler'de: “Vade 23.10.2026 · Beklenen Ödeme 21.10.2026 · Kalan ₺750,00”
+  ✓ şeritte 750,00: ["₺ Vade Müşteri Tahsil Edilecek Borç (Ödeme Sözü) · 21.10.2026 · ₺750,00 Yarın"]
+  ✓ takvim kalemi 750 (kısmen): {"amount":750,"partial":true}
+
+■ V5 yalnız Vade Tarihi yazılmış Borç Yaz formu Esc'te sorar; hiçbir şey yazılmaz
+  ✓ Vade Tarihi klavyeyle yazıldı: 2026-10-25
+  ✓ Kaydedilmemiş Değişiklik soruldu (Kaydetmeden Kapat ile kapandı)
+  ✓ hiçbir satır yazılmadı (2 → 2)
+
+■ V6 Vade Tarihi kaydın tarihinden önce: form açık kalır, ileti görünür, hiçbir şey yazılmaz
+  ✓ kaydın tarihinden önceki gün klavyeyle yazıldı
+  ✓ form açık kaldı
+  ✓ ileti: “Vade Tarihi (18.10.2026) kaydın tarihinden (20.10.2026) önce olamaz.”
+  ✓ hiçbir satır yazılmadı (2 → 2)
+
+■ V7 Yeni Cari: Açılış Bakiyesi + Vade Tarihi → açılış satırında due_date; şeritte kalem; Düzenle'de dolu
+  ✓ Yeni Cari'de açılışın Vade Tarihi ve Beklenen Ödeme Tarihi
+  ✓ açılışın Vade Tarihi klavyeyle yazıldı
+  ✓ açılış satırı: [{"kind":"debt","amount":4000,"dueDate":"2026-10-22"}]
+  ✓ şeritte: ["₺ Vade Açılış Firması Tahsil Edilecek Borç · 22.10.2026 · ₺4.000,00 2 gün kaldı"]
+  ✓ Düzenle'de Açılış Bakiyesi Vade Tarihi dolu: 2026-10-22
+
+■ V8 Raporlar → Nakit Akış: carinin vadeli borçları kendi gününde (Cari (vadeli)), takvimdeki tutarla; faturasız alacak olarak ikinci kez yok
+  ✓ takvimde gecikmiş kalem: {"state":"overdue","amount":300}
+  ✓ Vade Müşteri: 21.10.2026 · Tahsil Edilecek Borç (Ödeme Sözü) · 750,00 satırı: ["21.10.2026","Cari (vadeli)","Tahsil Edilecek Borç (Ödeme Sözü) Vade Müşteri","₺750,00","","₺1.250,00"]
+  ✓ Vade Açılış Firması: 22.10.2026 · Tahsil Edilecek Borç · 4.000,00 satırı: ["22.10.2026","Cari (vadeli)","Tahsil Edilecek Borç Vade Açılış Firması","₺4.000,00","","₺5.250,00"]
+  ✓ ekrandaki cari satırları = takvim kalemleri (gün, kişi, tutar): takvim [["Vade Müşteri","2026-10-21",750],["Vade Açılış Firması","2026-10-22",4000]]
+  ✓ aynı borç faturasız alacak / gecikmiş olarak ikinci kez yok: [] Vadesi geçmiş, kapanmamış: ₺300,00 alacak · ₺0,00 ödeme (1 kalem) — tahmine dahil değil17.10.2026Cari (vadeli)Tahsil Edilecek BorçVade Gecikmiş Müşteri₺300,00
+  ✓ gecikmiş cari kalemi "Vadesi geçmiş, kapanmamış" bölümünde: ["17.10.2026","Cari (vadeli)","Tahsil Edilecek BorçVade Gecikmiş Müşteri","₺300,00",""]
+  ✓ gecikmiş borç faturasız alacak olarak ikinci kez yok
+  ✓ ipucu kaynakları sayar: “Kaynaklar: açık taksitler, vadeli faturalar, carideki vadeli borç ve alacaklar (Beklenen Ödeme Tarihi varsa o gün), faturasız cari alacağı, portföydeki ve ödenecek çek/senet, planlı banka işlemleri, K”
+  ✓ sayfa hatası yok
+
+39 geçti, 0 kaldı

@@ -2,6 +2,11 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.4.6 — İyileştirmeler
+
+- İyileştirmeler ve hata düzeltmeleri (cari ekstre ve mizan, zil ve Tahsilat Takvimi, Nakit Akış Projeksiyonu, iade geri ödemesi, açılış bakiyesi).
+- Yeni: iade bedelinin geri ödemesi cari kartında iadeye bağlanır; Stok'ta Tedarikçiye İade; carideki vadeli borçlar Nakit Akış'ta. Ayrıntı: docs/2.4.6-DEGISIKLIKLER.md.
+
 ## 2.4.5 — İyileştirmeler
 
 - Excel / Sheets tablolarından para girişi, açılış bakiyesi ön dolumu ve tutarlı hatırlatmalar kaldırıldı; tahsilat ve hatırlatmalar Cari, Taksit, Fatura ve Çek'ten gelir. Nakit Akış Projeksiyonu tablo kalemlerini artık katmaz (toplam düşebilir).

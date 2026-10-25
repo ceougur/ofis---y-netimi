@@ -1,0 +1,25 @@
+{
+ "dil": "destekofis-maliyet/1",
+ "uyarlayici": {
+  "ad": "destekofis-api-ekran",
+  "program_surumu": "2.4.5",
+  "commit": "ce0e2e6ac0c9093e89b9b395075f073bc0d1042c"
+ },
+ "beyan": {
+  "katmanlar": [
+   "api",
+   "arayuz"
+  ],
+  "K-BOLEN-0": "ret",
+  "K-FARK": "hucre",
+  "bos_sifir_sayilir": false,
+  "gosterim_basamak": null
+ },
+ "kabul": "/home/user/wt/maliyet-ekran/test/bagimsiz/maliyet/kabul.json",
+ "katman": null,
+ "senaryo": 391,
+ "koşulmadı": [],
+ "denetim": 43758,
+ "fark": 0,
+ "farklar": []
+}

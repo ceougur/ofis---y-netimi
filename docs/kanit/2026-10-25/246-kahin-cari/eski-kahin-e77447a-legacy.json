@@ -1,0 +1,158 @@
+{
+  "ad": "246-kahin-cari/eski-kahin-e77447a-legacy",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-kahin-cari/taban-e77447a/test/bagimsiz/cari/kos.mjs --legacy --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-kahin-cari/r6-eski-legacy",
+  "commit": "3dfb1c7f6c9a45b9adee57f8a159acc03065fa32",
+  "dal": "is/kahin-cari-246",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T10:29:23.937Z",
+  "sure_sn": 98.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 3883,
+    "gecen": 3700,
+    "basarisiz": 183,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 183 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU KULLANICI] k1:nakit:kasaCikis: program \"yok\" · kâhin 0 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:nakit:kasaGiris: program \"yok\" · kâhin 100000 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:nakit:kasaCikis: program \"yok\" · kâhin 0 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:nakit:kasaGiris: program \"yok\" · kâhin 100000 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k3:nakit:kasaCikis: program \"yok\" · kâhin 0 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k3:nakit:kasaGiris: program \"yok\" · kâhin 350000 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:nakit:kasaCikis: program \"yok\" · kâhin 0 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:nakit:kasaGiris: program \"yok\" · kâhin 1320000 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:nakit:kasaCikis: program \"yok\" · kâhin 0 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:nakit:kasaGiris: program \"yok\" · kâhin 1320000 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:nakit:kasaCikis: program \"yok\" · kâhin 0 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:nakit:kasaGiris: program \"yok\" · kâhin 1320000 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k3:nakit:kasaCikis: program \"yok\" · kâhin 0 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k3:nakit:kasaGiris: program \"yok\" · kâhin 1320000 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:nakit:kasaCikis: program \"yok\" · kâhin 0 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:nakit:kasaGiris: program \"yok\" · kâhin 80000 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:nakit:kasaCikis: program \"yok\" · kâhin 0 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:nakit:kasaGiris: program \"yok\" · kâhin 80000 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:nakit:kasaCikis: program \"yok\" · kâhin 0 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:nakit:kasaGiris: program \"yok\" · kâhin 80000 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k3:nakit:kasaCikis: program \"yok\" · kâhin 0 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k3:nakit:kasaGiris: program \"yok\" · kâhin 80000 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:nakit:kasaCikis: program \"yok\" · kâhin 0 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:nakit:kasaGiris: program \"yok\" · kâhin 275000 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:nakit:kasaCikis: program \"yok\" · kâhin 0 (B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar))",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-25/246-kahin-cari/eski-kahin-e77447a-legacy.log",
+  "klasor": "/home/user/wt/kahin-cari-246",
+  "ham_cikti_sha256": "9e238ff03036fa7e9e4a00f3e64473a6b4288eceae53b328e7a9b8b48fb048a9",
+  "ham_cikti_bayt": 51078
+}

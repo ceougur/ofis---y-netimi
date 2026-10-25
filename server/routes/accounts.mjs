@@ -122,7 +122,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   const entriesOf = accountId =>
     store.all(
       `SELECT e.id, e.kind, e.amount, e.date, e.note, e.method, e.receipt_no AS receiptNo, e.source, e.source_id AS sourceId, e.invoice_id AS invoiceId, e.fin_ref AS finRef, e.created_by AS createdBy, e.created_at AS createdAt, e.updated_at AS updatedAt,
-              e.doubtful_skip AS doubtfulSkip, e.due_date AS dueDate, e.expected_date AS expectedDate, COALESCE(u.display_name, '') AS actorName,
+              e.doubtful_skip AS doubtfulSkip, e.due_date AS dueDate, e.expected_date AS expectedDate, e.refund_of AS refundOf, COALESCE(u.display_name, '') AS actorName,
               ${STOCK_REASON_SQL} AS stockReason
        FROM account_entries e LEFT JOIN users u ON u.id = e.created_by WHERE e.account_id = ? ORDER BY e.date, e.created_at, e.rowid`,
       accountId,
@@ -145,7 +145,13 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     // yalnız şüpheli kaydı olan caride (yoksa her peşin satırı etiketlenirdi).
     const doubtfulSummary = doubtful()?.summary ? doubtful().summary(account.id) : null;
     const hasDoubtful = Boolean(doubtfulSummary && doubtfulSummary.count > 0);
-    const entries = entriesOf(account.id).map(entry => ({ ...entry, doubtfulSkip: Number(entry.doubtfulSkip) === 1, doubtfulNormal: hasDoubtful && doubtfulSkipOf(entry), editable: entry.source === "" && (manage || (entry.createdBy === user.id && entry.kind === "in")), ...(entry.kind === "in" && entry.method === "card" && cardIds.has(entry.finRef) ? { cardRefund: true } : {}) }));
+    // 2.4.6 madde 9 (DB1): iadeye bağlı geri ödemenin iadesi (refundLabel; iade silinmişse / iptal edilmişse söylenir).
+    const refundText = id => {
+      const target = refundTargetOf(account.id, id);
+      if (!target) return "İade bulunamadı (silinmiş)";
+      return target.valid ? refundLabelOf(target) : `${refundLabelOf(target)} · ${target.type === "invoice" ? "iptal edildi" : "cariye yazılmıyor"}`;
+    };
+    const entries = entriesOf(account.id).map(entry => ({ ...entry, doubtfulSkip: Number(entry.doubtfulSkip) === 1, doubtfulNormal: hasDoubtful && doubtfulSkipOf(entry), editable: entry.source === "" && (manage || (entry.createdBy === user.id && entry.kind === "in")), ...(entry.kind === "in" && entry.method === "card" && cardIds.has(entry.finRef) ? { cardRefund: true } : {}), ...(entry.refundOf ? { refundLabel: refundText(entry.refundOf) } : {}) }));
     const planList = plans()?.forAccount ? plans().forAccount(account.id, user) : [];
     const ledger = accountLedger(entries, planList);
     // 2.4.5 madde 6 (BAŞ MİMAR KARARI K6.2): elle Borç / Alacak ve Açılış Bakiyesi satırının Kalan'ı (TL, kuruşa yuvarlı) — fatura kapamasıyla aynı
@@ -169,6 +175,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       deleteBlock: manage ? deleteBlock(account)?.message || "" : "",
       // 2.4.5 madde 6: Açılış Bakiyesi satırı (Düzenle formundaki açılış Vade Tarihi / Beklenen Ödeme Tarihi; PUT openingDueDate / openingExpectedDate).
       openingEntryId: openingEntryOf(account.id)?.id || "",
+      // 2.4.6 madde 9 (DB1): Ödeme / Tahsilat formunun "Geri Ödenen İade" seçenekleri (geri ödenmemiş kalanı olan iadeler; yalnız kart görünümünde —
+      // fatura kapamasının defter okuması withRemaining: false ile gelir).
+      refundables: withRemaining ? refundablesOf(account.id) : [],
     };
   }
 
@@ -526,7 +535,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // (POST bu adla yazar; Excel'den cari yükleme de) — ilk yazılan; kullanıcı açıklamasını değiştirdiyse satır cari kartındaki Borç / Alacak düzeltmesinden.
   const OPENING_NOTE = "Açılış bakiyesi";
   const OPENING_DUE_FIELDS = Object.freeze({ due: "openingDueDate", expected: "openingExpectedDate" });
-  const openingEntryOf = accountId => store.get("SELECT id, kind, date, due_date AS dueDate, expected_date AS expectedDate FROM account_entries WHERE account_id = ? AND source = '' AND kind IN ('debt', 'credit') AND note = ? ORDER BY rowid LIMIT 1", accountId, OPENING_NOTE);
+  // 2.4.6 madde 12 (K6.5 (2)): açılış satırı işaretinden (is_opening, göç v35) tanınır, açıklamasından değil — kullanıcı açıklamayı değiştirse de açılış kalır.
+  const openingEntryOf = accountId => store.get("SELECT id, kind, date, due_date AS dueDate, expected_date AS expectedDate FROM account_entries WHERE account_id = ? AND is_opening = 1 AND source = '' AND kind IN ('debt', 'credit') ORDER BY rowid LIMIT 1", accountId);
   const assertNoOpeningDue = due => {
     if (due.dueDate || due.expectedDate) throw new HttpError(400, "Vade Tarihi ve Beklenen Ödeme Tarihi açılış bakiyesiyle birlikte girilir; Açılış Bakiyesi'ni yazın ya da tarihleri silin.", { code: "opening-missing", field: due.dueDate ? OPENING_DUE_FIELDS.due : OPENING_DUE_FIELDS.expected });
   };
@@ -560,7 +570,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       const due = dueInput(body, { kind: kind || "debt", date: input.registeredOn, fields: OPENING_DUE_FIELDS, what: "açılış bakiyesinin" });
       if (!hasOpening) assertNoOpeningDue(due);
       const id = insertAccount(user, input);
-      if (hasOpening) addEntry(user, id, { kind, amount: roundMoney(Math.abs(opening)), date: input.registeredOn, note: OPENING_NOTE, ...due });
+      if (hasOpening) addEntry(user, id, { kind, amount: roundMoney(Math.abs(opening)), date: input.registeredOn, note: OPENING_NOTE, opening: true, ...due });
       audit(user, "account.created", id, { name: input.name, type: input.type });
       return detail(id, user);
     });
@@ -688,7 +698,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     store.setSetting("plans.receiptSeq", String(current + 1));
     return current + 1;
   };
-  function addEntry(user, accountId, { kind, amount, date, note, source = "", sourceId = "", method = "cash", invoiceId = "", eventId: keepEvent = "", finRef = "", pos = null, doubtfulSkip = false, dueDate = "", expectedDate = "" }) {
+  function addEntry(user, accountId, { kind, amount, date, note, source = "", sourceId = "", method = "cash", invoiceId = "", eventId: keepEvent = "", finRef = "", pos = null, doubtfulSkip = false, dueDate = "", expectedDate = "", opening = false, refundOf = "" }) {
     // Açılış bakiyesi, stoktan ve çekten gelen satırlar dahil: kapanmış döneme cari satırı yazılmaz.
     period?.assertOpen(date, "Cari hareketi");
     const id = newId("aentry");
@@ -703,10 +713,14 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     // finRef (v2.1.0 Aşama 4): banka hesabına bağlı satır (şimdilik yalnız Banka → KDV'li masrafın faturasının havale ödemesi; modül formlarındaki
     // hesap seçimi Aşama 5/7).
     store.run(
-      "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at, doubtful_skip, due_date, expected_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at, doubtful_skip, due_date, expected_date, is_opening, refund_of) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       id, accountId, kind, amount, date, note || "", receiptNo, source, sourceId, way, invoiceId || "", finRef || "", eventId, user.id, now(), doubtfulSkip === true ? 1 : 0,
       // 2.4.5 madde 6: Vade Tarihi / Beklenen Ödeme Tarihi yalnız elle Borç / Alacak ve açılışta (dueInput); başka satırda boş.
       source === "" && DUE_KINDS.has(kind) ? dueDate || "" : "", source === "" && DUE_KINDS.has(kind) ? expectedDate || "" : "",
+      // 2.4.6 madde 12: Açılış Bakiyesi işareti yalnız elle Borç / Alacak satırında (Yeni Cari, Excel'den cari yükleme).
+      opening === true && source === "" && DUE_KINDS.has(kind) ? 1 : 0,
+      // 2.4.6 madde 9 (DB1): iade geri ödemesi bağı yalnız elle Tahsilat / Ödeme'de (refundLink).
+      source === "" && (kind === "in" || kind === "out") ? refundOf || "" : "",
     );
     return { id, receiptNo };
   }
@@ -746,6 +760,11 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // zaten yok sayar (taksitli fatura kendi kartıyla kapanır).
   // 2.4.4 UX18: çek/senet formu da (routes/cheques.mjs) AYNI kuralı kullanır (alınan evrak = tahsilat, verilen evrak = ödeme); extra hata gövdesine
   // eklenir (alan adı), planHint taksitli faturadaki yol önerisidir.
+  // 2.4.6: taksitli faturanın iadesi (asıl fatura kendi kartıyla kapanır; iade kartı küçültür). Geri ödemesi cari kartından / evrakla iadeye bağlanmaz — cari
+  // satırı kartı eşitlemez (v2.0.24: taksitli faturanın açığı = kartın kalanı); taksit kartından (Ödeme / İade) ya da iade belgesinin ödemesinden girilir.
+  const RETURN_KINDS = new Set(["sale_return", "purchase_return"]);
+  const plannedReturn = returnId => Boolean(store.get("SELECT o.plan_id AS planId FROM invoices r JOIN invoices o ON o.id = r.original_id WHERE r.id = ? AND o.plan_id <> ''", returnId)?.planId);
+  const PLANNED_RETURN_TEXT = "Bu iade taksitli bir faturanın; geri ödemesi buradan iadeye bağlanmaz (taksit kartı faturayla birlikte izlenir). Geri ödemeyi faturanın taksit kartından (Ödeme / İade) ya da iade belgesinin ödemesinden girin.";
   const invoiceLink = (accountId, kind, value, keep = "", { extra = {}, planHint = "Tahsilatı taksite yazın: cari kartında + Tahsilat → Taksite Yaz." } = {}) => {
     const invoiceId = limited(value, 120, "Fatura");
     if (!invoiceId) return "";
@@ -757,9 +776,87 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     // v2.0.23 (Bulgu 2 F): taksitli fatura kendi taksit kartıyla kapanır; cari kartından bağ kurulursa fatura ile kartı
     // çelişirdi (fatura ödendi, kart ödenmedi). Tahsilat kartın taksitine girilir.
     if (invoice.planId) throw new HttpError(409, `Bu fatura taksitli; kendi taksit kartıyla kapanır. ${planHint}`, extra);
-    const side = ["sale", "smm"].includes(invoice.kind) ? "in" : invoice.kind === "purchase" ? "out" : "";
-    if (side !== kind) throw new HttpError(409, kind === "in" ? "Tahsilat yalnız satış faturasını kapatır; alış faturası için Ödeme girin." : "Ödeme yalnız alış faturasını kapatır; satış faturası için Tahsilat girin.", extra);
+    // 2.4.6 K-d / K-c / K-e (5 dk yetkisiyle karar): Ödeme (verilen evrak) müşteriye ait SATIŞTAN İADEYİ, Tahsilat (alınan evrak) tedarikçiye ait ALIŞTAN
+    // İADEYİ de kapatır — iadenin geri ödemesidir (lib/invoice-settle.mjs: iadenin alacağıyla kapanır, fazlası avans). Öbür yönler aynen reddedilir.
+    const side = ["sale", "smm"].includes(invoice.kind) ? "in" : invoice.kind === "purchase" ? "out" : invoice.kind === "sale_return" ? "out" : invoice.kind === "purchase_return" ? "in" : "";
+    if (side !== kind) throw new HttpError(409, kind === "in" ? "Tahsilat yalnız satış faturasını ya da alıştan iadeyi (tedarikçinin geri ödemesi) kapatır; alış faturası ve satıştan iade için Ödeme girin." : "Ödeme yalnız alış faturasını ya da satıştan iadeyi (müşteriye geri ödeme) kapatır; satış faturası ve alıştan iade için Tahsilat girin.", extra);
+    if (RETURN_KINDS.has(invoice.kind) && plannedReturn(invoice.id)) throw new HttpError(409, PLANNED_RETURN_TEXT, { ...extra, code: extra.code || "refund-planned" });
     return invoice.id;
+  };
+  // 2.4.6 madde 9 (DB1; v2.1.0 R1 düzeni — iade belgesinin kendi geri ödemesi): cari kartından girilen Ödeme / Tahsilat'ın geri ödediği iade (formda
+  // "Kapatılacak Fatura" seçeneği — K-d; saklandığı yer account_entries.refund_of, invoice_id boş kalır: şüpheli alacak kuralı ve yevmiye değişmez).
+  // Ödeme → müşteriye geri ödenen satıştan iade (iade faturası ya da faturasız stok Satış İadesi, açık hesap); Tahsilat → tedarikçinin geri ödediği alıştan
+  // iade (iade faturası ya da faturasız stok Alış İadesi, açık hesap; K-c). Bağ yalnız kapamayı belirler: iadenin geri ödenmemiş kalanı kadarı geri ödemedir
+  // (iadenin alacağı onu kapatır, asıl faturaya ve en eski borca gitmez), FAZLASI AVANSTIR (K-a; bağsız ödeme gibi) — tutar sınırı yok. Cari bakiye, Kasa ve
+  // yevmiye değişmez. Seçilmezse ödeme iadeye bağlanmaz (K-b: açık iadeler ve öbür yükümlülükler arasında tek sıra). Ödeme yolu sınırlanmaz (K-e). Kural
+  // cari türüne bakmaz (K-f). Düzeltmede değişmeyen eski bağ korunur (iade sonradan silinmiş / iptal edilmiş olsa da: kalanı 0 → tamamı avans).
+  const refundTargetOf = (accountId, id) => {
+    const invoice = store.get("SELECT id, kind, status, account_id AS accountId, number, issue_date AS date, try_payable AS amount FROM invoices WHERE id = ?", id);
+    if (invoice) {
+      if (invoice.accountId !== accountId) return null;
+      const refundKind = invoice.kind === "sale_return" ? "out" : invoice.kind === "purchase_return" ? "in" : "";
+      return { id: invoice.id, type: "invoice", kind: invoice.kind, refundKind, valid: invoice.status === "issued", status: invoice.status, date: invoice.date, amount: Number(invoice.amount) || 0, no: invoice.number || "", planned: Boolean(refundKind && plannedReturn(invoice.id)) };
+    }
+    const move = store.get("SELECT m.id, m.kind, m.reason, m.pay, m.account_id AS accountId, m.amount, m.date, COALESCE(i.name, '') AS itemName FROM stock_moves m LEFT JOIN stock_items i ON i.id = m.item_id WHERE m.id = ?", id);
+    if (!move || move.accountId !== accountId) return null;
+    const refundKind = move.reason === "return" ? "out" : move.reason === "preturn" ? "in" : "";
+    return { id: move.id, type: "stock", kind: move.reason, refundKind, valid: move.pay === "account", status: move.pay, date: move.date, amount: Number(move.amount) || 0, no: "", itemName: move.itemName };
+  };
+  // İadenin geri ödenmiş kısmı (kuruş): cari kartından bu iadeye bağlanan geri ödemeler (except: düzeltilen satır hariç) + iade faturasının kendi geri ödemesi.
+  const refundedMinor = (target, except = "") => {
+    const cents = value => Math.round((Number(value) || 0) * 100);
+    let sum = store.all("SELECT amount FROM account_entries WHERE refund_of = ? AND source = '' AND kind = ? AND id <> ?", target.id, target.refundKind, except).reduce((total, row) => total + cents(row.amount), 0);
+    if (target.type === "invoice") sum += store.all("SELECT amount FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind = ?", target.id, target.refundKind).reduce((total, row) => total + cents(row.amount), 0);
+    return sum;
+  };
+  const refundLink = (accountId, kind, value, { previous = null, invoiceId = "" } = {}) => {
+    const id = limited(value, 120, "Geri Ödenen İade");
+    if (!id) return "";
+    const keep = Boolean(previous?.refundOf) && id === previous.refundOf && previous.kind === kind;
+    if (kind !== "in" && kind !== "out") throw new HttpError(400, "İade bağı yalnız tahsilat ve ödemede seçilir.", { code: "refund-kind", field: "refundOf" });
+    if (invoiceId) throw new HttpError(400, "Geri Ödenen İade ile Kapatılacak Fatura birlikte seçilmez: iade geri ödemesi fatura kapatmaz.", { code: "refund-with-invoice", field: "refundOf" });
+    const target = refundTargetOf(accountId, id);
+    if (!target) {
+      if (keep) return id;
+      throw new HttpError(404, "Geri ödenen iade bu caride bulunamadı.", { code: "refund-missing", field: "refundOf" });
+    }
+    if (target.refundKind !== kind) {
+      if (keep) return id;
+      if (!target.refundKind) throw new HttpError(409, "Seçilen kayıt bir iade değil; yalnız satıştan / alıştan iade geri ödenir.", { code: "refund-not-return", field: "refundOf" });
+      throw new HttpError(409, kind === "out" ? "Ödeme yalnız satıştan iadeyi (müşteriye geri ödeme) karşılar; alıştan iadenin geri ödemesi için Tahsilat girin." : "Tahsilat yalnız alıştan iadeyi (tedarikçinin geri ödemesi) karşılar; satıştan iadenin geri ödemesi için Ödeme girin.", { code: "refund-side", field: "refundOf" });
+    }
+    if (target.planned) {
+      if (keep) return id;
+      throw new HttpError(409, PLANNED_RETURN_TEXT, { code: "refund-planned", field: "refundOf" });
+    }
+    if (!target.valid) {
+      if (keep) return id;
+      throw new HttpError(409, target.type === "invoice" ? "Yalnız kaydedilmiş iade faturası geri ödenir (taslak ya da iptal edilmiş iade seçilemez)." : "Bu stok iadesi cariye yazılmadı (para iade anında ödendi ya da yalnız miktar girildi); geri ödenecek alacağı yok.", { code: "refund-invalid", field: "refundOf" });
+    }
+    return target.id;
+  };
+  // Ad + tarih (withAmount: + tutar; seçenek listesinde tutar ve kalan istemcide biçimlenir).
+  const refundLabelOf = (target, withAmount = true) => {
+    const what = target.type === "invoice" ? `${target.kind === "sale_return" ? "Satıştan İade" : target.kind === "purchase_return" ? "Alıştan İade" : "Fatura"} ${target.no}`.trim() : `${target.kind === "return" ? "Satış İadesi" : target.kind === "preturn" ? "Alış İadesi" : "Stok Hareketi"} (Faturasız)${target.itemName ? ` · ${target.itemName}` : ""}`;
+    return `${what} · ${dayText(target.date)}${withAmount ? ` · ${tl(target.amount)}` : ""}`;
+  };
+  // Cari kartının "Geri Ödenen İade" seçenekleri (yalnız geri ödenmemiş kalanı olan, cariye yazılmış iadeler; en eskiden). refundKind: out = Ödeme ile müşteriye,
+  // in = Tahsilat ile tedarikçiden.
+  const refundablesOf = accountId => {
+    const rows = [
+      ...store.all("SELECT id FROM invoices WHERE account_id = ? AND status = 'issued' AND kind IN ('sale_return', 'purchase_return') ORDER BY rowid", accountId),
+      ...store.all("SELECT id FROM stock_moves WHERE account_id = ? AND pay = 'account' AND reason IN ('return', 'preturn') ORDER BY rowid", accountId),
+    ];
+    return rows
+      .map(row => refundTargetOf(accountId, row.id))
+      .filter(target => target && !target.planned)
+      .map(target => {
+        const leftMinor = Math.max(0, Math.round(target.amount * 100) - refundedMinor(target));
+        return { id: target.id, type: target.type, refundKind: target.refundKind, date: target.date, amount: roundMoney(target.amount), left: roundMoney(leftMinor / 100), label: refundLabelOf(target, false) };
+      })
+      .filter(item => item.left > 0.004)
+      // Aynı gün: yazım sırası (ders 31; sıralama kararlıdır, kimliğe bakılmaz).
+      .sort((a, b) => (a.date === b.date ? 0 : a.date < b.date ? -1 : 1));
   };
   const entryInput = (body, accountId = "", previous = null) => {
     const kind = text(body.kind);
@@ -769,10 +866,20 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     // v2.0.13: tahsilat/ödemenin yolu (nakit, havale/EFT, kredi kartı); borç/alacak yazmada para hareketi yoktur.
     const date = period ? period.movementDate(body) : dateOf(body.date, "Tarih", today());
     // 2.4.5 madde 6 (K6.1): borç / alacakta Vade Tarihi ve Beklenen Ödeme Tarihi (tahsilat / ödemede boş).
-    return { kind, amount, date, note: limited(body.note, 300, "Açıklama"), method: methodInput(body.method), invoiceId: invoiceLink(accountId, kind, body.invoiceId, previous?.invoiceId || ""), doubtfulSkip: doubtfulSkipInput(body, kind, previous), ...dueInput(body, { kind, date, previous }) };
+    // K-d: "Kapatılacak Fatura" olarak seçilen İADE (iade faturası ya da faturasız stok iadesi bu carinin) iade geri ödemesi bağıdır → refund_of (invoice_id
+    // boş); API refundOf'u da kabul eder. İade seçildiyse o geçerlidir (düzeltmede gövdeye karışan eski refundOf'un yerine).
+    let invoiceValue = text(body.invoiceId);
+    let refundValue = text(body.refundOf);
+    if (invoiceValue && refundTargetOf(accountId, invoiceValue)?.refundKind) {
+      refundValue = invoiceValue;
+      invoiceValue = "";
+    }
+    const invoiceId = invoiceLink(accountId, kind, invoiceValue, previous?.invoiceId || "");
+    const refundOf = refundLink(accountId, kind, refundValue, { previous, invoiceId });
+    return { kind, amount, date, note: limited(body.note, 300, "Açıklama"), method: methodInput(body.method), invoiceId, doubtfulSkip: doubtfulSkipInput(body, kind, previous), ...dueInput(body, { kind, date, previous }), refundOf };
   };
   const entryOf = (accountId, entryId) => {
-    const entry = store.get("SELECT id, kind, amount, date, note, method, receipt_no AS receiptNo, source, source_id AS sourceId, invoice_id AS invoiceId, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt, doubtful_skip AS doubtfulSkip, due_date AS dueDate, expected_date AS expectedDate FROM account_entries WHERE account_id = ? AND id = ?", accountId, limited(entryId, 120, "Hareket"));
+    const entry = store.get("SELECT id, kind, amount, date, note, method, receipt_no AS receiptNo, source, source_id AS sourceId, invoice_id AS invoiceId, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt, doubtful_skip AS doubtfulSkip, due_date AS dueDate, expected_date AS expectedDate, is_opening AS isOpening, refund_of AS refundOf FROM account_entries WHERE account_id = ? AND id = ?", accountId, limited(entryId, 120, "Hareket"));
     if (!entry) throw new HttpError(404, "Hareket bulunamadı. Başka biri silmiş olabilir.");
     return entry;
   };
@@ -916,7 +1023,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         k7.capture();
         const meta = finRef && !corporateOf(input, body, previous) ? posMetaOf(body) : null;
         const eventId = bank.eventFor("account_entries", { kind: input.kind, source: previous.source, date: input.date, method: input.method, event_id: previous.eventId, fin_ref: finRef, ...(meta ? { pos: meta } : {}) });
-        store.run("UPDATE account_entries SET kind = ?, amount = ?, date = ?, note = ?, method = ?, invoice_id = ?, fin_ref = ?, event_id = ?, doubtful_skip = ?, due_date = ?, expected_date = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.amount, input.date, input.note, input.method, input.invoiceId, finRef, eventId, input.doubtfulSkip ? 1 : 0, previous.source ? "" : input.dueDate, previous.source ? "" : input.expectedDate, user.id, now(), previous.id);
+        store.run("UPDATE account_entries SET kind = ?, amount = ?, date = ?, note = ?, method = ?, invoice_id = ?, fin_ref = ?, event_id = ?, doubtful_skip = ?, due_date = ?, expected_date = ?, refund_of = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.amount, input.date, input.note, input.method, input.invoiceId, finRef, eventId, input.doubtfulSkip ? 1 : 0, previous.source ? "" : input.dueDate, previous.source ? "" : input.expectedDate, previous.source ? "" : input.refundOf, user.id, now(), previous.id);
         audit(user, "account.entry.updated", previous.id, { accountId: account.id, previous, ...input, finRef });
         return { id: previous.id };
       },
@@ -1263,7 +1370,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         const opening = parseAmount(cell(row, col.balance));
         // 31e N1: eşik kuruşa yuvarlanmış tutarla (0,005 → 0,01 yazılır, 0,004 yazılmaz) — öbür içe alma yollarıyla aynı.
         if (Number.isFinite(opening) && roundMoney(Math.abs(opening)) > 0) {
-          addEntry(user, id, { kind: openingKind(opening, person.type, openingSide), amount: roundMoney(Math.abs(opening)), date: person.registeredOn, note: OPENING_NOTE });
+          addEntry(user, id, { kind: openingKind(opening, person.type, openingSide), amount: roundMoney(Math.abs(opening)), date: person.registeredOn, note: OPENING_NOTE, opening: true });
           report.balances += 1;
         }
         report.created += 1;
@@ -1409,7 +1516,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const rows = store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL${only} ORDER BY a.name COLLATE NOCASE`).map(({ fieldsJson, ...row }) => row);
     const entries = new Map();
     // v2.0.22: yol ve "Kapatılacak Fatura" bağı da (Cari kartındaki defterle aynı satır; fatura kapamada kullanılır).
-    for (const entry of store.all(`SELECT e.id, e.account_id AS accountId, e.kind, e.amount, e.date, e.note, e.method, e.receipt_no AS receiptNo, e.source, e.source_id AS sourceId, e.invoice_id AS invoiceId, e.created_at AS createdAt, ${STOCK_REASON_SQL} AS stockReason FROM account_entries e${scope ? ` WHERE e.account_id IN (${scope})` : ""} ORDER BY e.date, e.created_at, e.rowid`)) {
+    for (const entry of store.all(`SELECT e.id, e.account_id AS accountId, e.kind, e.amount, e.date, e.note, e.method, e.receipt_no AS receiptNo, e.source, e.source_id AS sourceId, e.invoice_id AS invoiceId, e.refund_of AS refundOf, e.created_at AS createdAt, ${STOCK_REASON_SQL} AS stockReason FROM account_entries e${scope ? ` WHERE e.account_id IN (${scope})` : ""} ORDER BY e.date, e.created_at, e.rowid`)) {
       if (!entries.has(entry.accountId)) entries.set(entry.accountId, []);
       entries.get(entry.accountId).push(entry);
     }
@@ -1575,7 +1682,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // kartınca kapsanan kısmı (covered) kartın taksitleriyle gelir, burada düşülür (birleşik listelerde bir kez — açık faturadaki covered kuralı). Silinmiş
   // carinin satırı kalem değildir. openDueItems ufuksuzdur (Vade Takip kendi aralığını süzer); dueItems takvim / zil ufku (faturayla aynı: geçmişin
   // tamamı + bugünden DUE_WINDOW.aheadDays gün). "Ödendi Say" yoktur: kalem para kaydıyla (tahsilat / ödeme) kapanır.
-  const DUE_SQL = `SELECT e.id, e.account_id AS accountId, e.kind, e.amount, e.date, e.due_date AS dueDate, e.expected_date AS expectedDate, a.name, a.phone, a.ref_no AS refNo
+  const DUE_SQL = `SELECT e.id, e.account_id AS accountId, e.kind, e.amount, e.date, e.note, e.due_date AS dueDate, e.expected_date AS expectedDate, a.name, a.phone, a.ref_no AS refNo
     FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
     WHERE e.source = '' AND e.kind IN ('debt', 'credit') AND (e.due_date <> '' OR e.expected_date <> '') ORDER BY e.rowid`;
   const dayGap = (from, to) => Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000);
@@ -1606,6 +1713,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         amount,
         days,
         state: days === 0 ? "today" : days < 0 ? "overdue" : "upcoming",
+        // 2.4.6 (2.4.5 gezinti B6): borç kaydının Açıklaması — aynı caride iki vadeli borç ayırt edilsin (pil kartı, zil, Vade Takip). Etiket (label)
+        // değişmez (kâhin ve göç testleri onu okur); açıklama ayrı alan, ekranda etiketin yanında.
+        note: String(row.note || "").trim(),
         // Bilgi (ekran): kaydın tarihi, tutarı, kendi vade ve beklenen ödeme tarihi; kısmen kapanmış mı.
         entryDate: row.date,
         entryAmount: roundMoney(Number(row.amount) || 0),
@@ -1631,7 +1741,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const dated = store.get("SELECT COALESCE(group_concat(id || '=' || kind || '=' || due_date || '/' || expected_date, ','), '') AS d FROM (SELECT id, kind, due_date, expected_date FROM account_entries WHERE source = '' AND (due_date <> '' OR expected_date <> '') ORDER BY rowid)").d;
     const people = store.get("SELECT COUNT(*) || '/' || COUNT(deleted_at) || '/' || COALESCE(MAX(updated_at), '') AS f FROM accounts").f;
     const offsets = hasOffsets() ? store.get("SELECT COUNT(*) || '/' || TOTAL(amount) AS f FROM invoice_offsets").f : "";
-    return createHash("sha256").update([row.n, row.at, row.total, dated, people, offsets].join("|")).digest("base64url").slice(0, 22);
+    // 2.4.6 madde 9 (DB1): iade geri ödemesi bağı fatura / borç açıklarını değiştirir; bağ değişince takvim önbelleği bayatlamasın (damga aynı kalsa da —
+    // ör. durağan saatte aynı anda yazılan satırlar).
+    const refunds = store.get("SELECT COALESCE(group_concat(id || '>' || refund_of, ','), '') AS r FROM (SELECT id, refund_of FROM account_entries WHERE refund_of <> '' ORDER BY rowid)").r;
+    return createHash("sha256").update([row.n, row.at, row.total, dated, people, offsets, refunds].join("|")).digest("base64url").slice(0, 22);
   };
   const fingerprint = () => {
     const row = store.get("SELECT (SELECT COUNT(*) || '/' || COALESCE(MAX(COALESCE(updated_at, created_at)), '') FROM account_entries) AS e, (SELECT COUNT(*) || '/' || COALESCE(MAX(updated_at), '') || '/' || COUNT(deleted_at) FROM accounts) AS a");
@@ -1671,6 +1784,13 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const keep = value => (realDay(text(value)) && text(value) >= String(payload.date || "") ? text(value) : "");
     return [keep(payload.dueDate), keep(payload.expectedDate)];
   };
+  // 2.4.6 madde 12: Silinenler'den dönen satırın Açılış Bakiyesi işareti — yükte isOpening varsa o (2.4.6+), yoksa (2.4.5 ve öncesinde silinen) 2.4.5'in
+  // kuralı: açıklaması "Açılış bakiyesi" olan Borç / Alacak. Carinin bu arada başka açılış satırı olduysa işaretsiz döner (cari başına bir açılış).
+  const restoredOpening = (payload, accountId) => {
+    if (!DUE_KINDS.has(payload.kind)) return 0;
+    const flagged = Object.hasOwn(payload, "isOpening") ? Number(payload.isOpening) === 1 || payload.isOpening === true : payload.note === OPENING_NOTE;
+    return flagged && !openingEntryOf(accountId) ? 1 : 0;
+  };
   function restoreEntry(user, item, payload, { force = false, banking = null } = {}) {
     if (!KIND_TEXT[payload.kind]) throw new HttpError(409, "Hareketin bilgisi eksik; geri yüklenemez.");
     const account = store.get("SELECT id, deleted_at AS deletedAt FROM accounts WHERE id = ?", payload.accountId);
@@ -1693,6 +1813,18 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         invoiceId = "";
       }
     }
+    // 2.4.6 madde 9 (DB1): iade geri ödemesi bağı — iade hâlâ aynı carinin, cariye yazılmış, geri ödenmemiş kalanı tutarı karşılayan iadesiyse korunur; değilse
+    // bağsız döner ve söylenir (Kapatılacak Fatura bağıyla aynı düzen).
+    let refundOf = "";
+    let refundDropped = "";
+    if (payload.refundOf) {
+      try {
+        refundOf = refundLink(account.id, payload.kind, payload.refundOf, { invoiceId });
+      } catch (error) {
+        refundOf = "";
+        refundDropped = error?.message || "iade artık bu ödemeyle karşılanamıyor";
+      }
+    }
     // v2.1.0 (bank.post op 'restore'): para satırı silinmeden önceki işlem başlığıyla döner (olay yeniden etkin). GG2 (K13/7): banka hesabı
     // bağıyla döner (önceden bağ düşüyor, tutar hesaptan Hesabı Atanmamış'a geçiyordu); hesap silinmişse bağsız döner ve söylenir.
     const kept = ["in", "out"].includes(payload.kind) ? bank.keepRef(payload.finRef, { method, date: payload.date }) : { ref: "", dropped: "" };
@@ -1709,16 +1841,19 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         if (!store.get("SELECT 1 AS found FROM account_entries WHERE id = ?", item.ref)) {
           store.run(
             // Karar 15.10.2026: "Normal Cari Hesaba İşle" işareti (doubtful_skip) silinmeden önceki hâliyle döner.
-            "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at, updated_by, updated_at, doubtful_skip, due_date, expected_date) VALUES (?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at, updated_by, updated_at, doubtful_skip, due_date, expected_date, is_opening, refund_of) VALUES (?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             item.ref, account.id, payload.kind, amount, payload.date, payload.note || "", payload.receiptNo || null, method, invoiceId, kept.ref,
             bank.eventFor("account_entries", { kind: payload.kind, source: "", date: payload.date, method, event_id: payload.eventId || "" }), payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
             payload.kind === "in" && (payload.doubtfulSkip === true || Number(payload.doubtfulSkip) === 1) ? 1 : 0,
             // 2.4.5 madde 6: Vade Tarihi / Beklenen Ödeme Tarihi silinmeden önceki hâliyle (2.4.4'te silinen satırın yükünde yok → boş).
             ...restoredDue(payload),
+            restoredOpening(payload, account.id),
+            // 2.4.6 madde 9: iade geri ödemesi bağı (2.4.5'te silinen satırın yükünde yok → bağsız).
+            refundOf,
           );
         }
         trash.markRestored(item.id, user);
-        audit(user, "account.entry.restored", item.ref, { accountId: account.id, kind: payload.kind, amount, date: payload.date, method, invoiceId, droppedInvoice: payload.invoiceId && !invoiceId ? payload.invoiceId : "" });
+        audit(user, "account.entry.restored", item.ref, { accountId: account.id, kind: payload.kind, amount, date: payload.date, method, invoiceId, droppedInvoice: payload.invoiceId && !invoiceId ? payload.invoiceId : "", refundOf, droppedRefund: payload.refundOf && !refundOf ? payload.refundOf : "" });
       },
     });
     k7.prime(result);
@@ -1730,6 +1865,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       const why = !dropped ? "silindiği için" : dropped.status === "cancelled" ? "iptal edildiği için" : dropped.status !== "issued" ? "kaydedilmiş olmadığı için" : dropped.planId ? "taksitli olduğu (kendi taksit kartıyla kapandığı) için" : "artık bu hareketle kapatılamadığı için";
       return `Cari hareketi geri eklendi. Bağlı olduğu ${dropped?.number ? `${dropped.number} faturası` : "fatura"} ${why} faturaya bağlanmadı; otomatik kapamaya girer.`;
     }
+    if (refundDropped) return `Cari hareketi geri eklendi; iade bağı kurulamadı (${refundDropped.replace(/\.$/, "")}); bağsız olarak kapamaya girer.`;
     return `Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.${kept.dropped ? ` ${bank.droppedText(kept.dropped)}` : ""}`;
   }
 

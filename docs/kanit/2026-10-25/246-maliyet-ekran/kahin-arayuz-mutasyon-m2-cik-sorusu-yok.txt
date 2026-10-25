@@ -1,0 +1,86 @@
+uyarlayıcı (uyarlayici.mjs): node /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-ekran/mut-m2/test/bagimsiz/maliyet/uyarlayici.mjs
+kabul: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-ekran/mut-m2/test/bagimsiz/maliyet/kabul.json — 25 senaryo gönderiliyor (katman arayuz; 366 senaryo seçilmedi)
+program: destekofis-api-ekran sürüm 2.4.5 commit okunamadı
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydetmeden: adım 10 cik: Çık sorusu beklenen var program False
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 8 cik: Çık sorusu beklenen var program False
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin adimlar/ara/deger: hesap beklenen 34705.143884000005 program 0
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin adimlar/bolme/deger: hesap beklenen 245.71241869872006 program 0
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin adimlar/toplama/deger: hesap beklenen 40952.06978312001 program 0
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin adimlar/yuzde/deger: hesap beklenen 6246.925899120001 program 0
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin adimlar/yuzde_ekle/deger: hesap beklenen 49142.48373974401 program 0
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin satirlar/s1/fiyat: girdi beklenen 0.2956 program None
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin satirlar/s1/miktar: girdi beklenen 1.0 program None
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin satirlar/s1/tutar: hesap beklenen 0.2956 program 0
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin satirlar/s2/fiyat: girdi beklenen 433.18 program None
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin satirlar/s2/miktar: girdi beklenen 20.5 program None
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin satirlar/s2/tutar: hesap beklenen 8880.19 program 0
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin satirlar/s3/fiyat: girdi beklenen 150.62 program None
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin satirlar/s3/miktar: girdi beklenen 45.705 program None
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin satirlar/s3/tutar: hesap beklenen 6884.0871 program 0
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin satirlar/s4/fiyat: girdi beklenen 1064.9 program None
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin satirlar/s4/miktar: girdi beklenen 3.0 program None
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin satirlar/s4/tutar: hesap beklenen 3194.7000000000003 program 0
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin satirlar/s5/fiyat: girdi beklenen 2.0268 program None
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin satirlar/s5/miktar: girdi beklenen 46.92 program None
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin satirlar/s5/tutar: hesap beklenen 95.09745600000001 program 0
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin satirlar/s6/fiyat: girdi beklenen 4.1757 program None
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin satirlar/s6/miktar: girdi beklenen 31.04 program None
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin satirlar/s6/tutar: hesap beklenen 129.613728 program 0
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin satirlar/s7/fiyat: girdi beklenen 1293.43 program None
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin satirlar/s7/miktar: girdi beklenen 12.0 program None
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin satirlar/s7/tutar: hesap beklenen 15521.16 program 0
+✗ cam/100x100-oval-kabin/arayuz/cik-kaydet: adım 10 oku cam/100x100-oval-kabin sonuc: hesap beklenen 245.71241869872006 program 0
+✗ cam/100x100-oval-kabin/arayuz/ad-kaydetmeden: adım 11 cik: Çık sorusu beklenen var program False
+✗ mika/170-2s2c-h182/arayuz/cik-kaydetmeden: adım 10 cik: Çık sorusu beklenen var program False
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 8 cik: Çık sorusu beklenen var program False
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 adimlar/ara/deger: hesap beklenen 47487.036012 program 0
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 adimlar/bolme/deger: hesap beklenen 362.996489985847 program 0
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 adimlar/toplama/deger: hesap beklenen 53660.350693559994 program 0
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 adimlar/yuzde/deger: hesap beklenen 6173.314681559999 program 0
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 adimlar/yuzde_ekle/deger: hesap beklenen 61709.40329759399 program 0
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 satirlar/s1/fiyat: girdi beklenen 3.6152 program None
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 satirlar/s1/miktar: girdi beklenen 13.385 program None
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 satirlar/s1/tutar: hesap beklenen 48.389452 program 0
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 satirlar/s2/fiyat: girdi beklenen 3.6054 program None
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 satirlar/s2/miktar: girdi beklenen 57.4 program None
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 satirlar/s2/tutar: hesap beklenen 206.94996 program 0
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 satirlar/s3/fiyat: girdi beklenen 884.65 program None
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 satirlar/s3/miktar: girdi beklenen 1.0 program None
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 satirlar/s3/tutar: hesap beklenen 884.65 program 0
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 satirlar/s4/fiyat: girdi beklenen 0.2286 program None
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 satirlar/s4/miktar: girdi beklenen 10.0 program None
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 satirlar/s4/tutar: hesap beklenen 2.286 program 0
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 satirlar/s5/fiyat: girdi beklenen 1462.3 program None
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 satirlar/s5/miktar: girdi beklenen 7.0 program None
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 satirlar/s5/tutar: hesap beklenen 10236.1 program 0
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 satirlar/s6/fiyat: girdi beklenen 1019.43 program None
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 satirlar/s6/miktar: girdi beklenen 7.0 program None
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 satirlar/s6/tutar: hesap beklenen 7136.009999999999 program 0
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 satirlar/s7/fiyat: girdi beklenen 1786.23 program None
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 satirlar/s7/miktar: girdi beklenen 16.22 program None
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 satirlar/s7/tutar: hesap beklenen 28972.650599999997 program 0
+✗ mika/170-2s2c-h182/arayuz/cik-kaydet: adım 10 oku mika/170-2s2c-h182 sonuc: hesap beklenen 362.996489985847 program 0
+✗ mika/170-2s2c-h182/arayuz/ad-kaydetmeden: adım 11 cik: Çık sorusu beklenen var program False
+✗ mika/80-lik-yan-panel/arayuz/cik-kaydetmeden: adım 7 cik: Çık sorusu beklenen var program False
+✗ mika/80-lik-yan-panel/arayuz/cik-kaydet: adım 5 cik: Çık sorusu beklenen var program False
+✗ mika/80-lik-yan-panel/arayuz/cik-kaydet: adım 7 oku mika/80-lik-yan-panel adimlar/ara/deger: hesap beklenen 137857.6614978 program 0
+✗ mika/80-lik-yan-panel/arayuz/cik-kaydet: adım 7 oku mika/80-lik-yan-panel adimlar/toplama/deger: hesap beklenen 158536.31072247 program 0
+✗ mika/80-lik-yan-panel/arayuz/cik-kaydet: adım 7 oku mika/80-lik-yan-panel adimlar/yuzde/deger: hesap beklenen 20678.64922467 program 0
+✗ mika/80-lik-yan-panel/arayuz/cik-kaydet: adım 7 oku mika/80-lik-yan-panel adimlar/yuzde_ekle/deger: hesap beklenen 182316.75733084048 program 0
+✗ mika/80-lik-yan-panel/arayuz/cik-kaydet: adım 7 oku mika/80-lik-yan-panel satirlar/s1/fiyat: girdi beklenen 4.2902 program None
+✗ mika/80-lik-yan-panel/arayuz/cik-kaydet: adım 7 oku mika/80-lik-yan-panel satirlar/s1/miktar: girdi beklenen 31.939 program None
+✗ mika/80-lik-yan-panel/arayuz/cik-kaydet: adım 7 oku mika/80-lik-yan-panel satirlar/s1/tutar: hesap beklenen 137.02469779999998 program 0
+✗ mika/80-lik-yan-panel/arayuz/cik-kaydet: adım 7 oku mika/80-lik-yan-panel satirlar/s2/fiyat: girdi beklenen 139.37 program None
+✗ mika/80-lik-yan-panel/arayuz/cik-kaydet: adım 7 oku mika/80-lik-yan-panel satirlar/s2/miktar: girdi beklenen 9.0 program None
+✗ mika/80-lik-yan-panel/arayuz/cik-kaydet: adım 7 oku mika/80-lik-yan-panel satirlar/s2/tutar: hesap beklenen 1254.33 program 0
+✗ mika/80-lik-yan-panel/arayuz/cik-kaydet: adım 7 oku mika/80-lik-yan-panel satirlar/s3/fiyat: girdi beklenen 2011.66 program None
+✗ mika/80-lik-yan-panel/arayuz/cik-kaydet: adım 7 oku mika/80-lik-yan-panel satirlar/s3/miktar: girdi beklenen 58.98 program None
+✗ mika/80-lik-yan-panel/arayuz/cik-kaydet: adım 7 oku mika/80-lik-yan-panel satirlar/s3/tutar: hesap beklenen 118647.7068 program 0
+✗ mika/80-lik-yan-panel/arayuz/cik-kaydet: adım 7 oku mika/80-lik-yan-panel satirlar/s4/fiyat: girdi beklenen 1781.86 program None
+✗ mika/80-lik-yan-panel/arayuz/cik-kaydet: adım 7 oku mika/80-lik-yan-panel satirlar/s4/miktar: girdi beklenen 10.0 program None
+✗ mika/80-lik-yan-panel/arayuz/cik-kaydet: adım 7 oku mika/80-lik-yan-panel satirlar/s4/tutar: hesap beklenen 17818.6 program 0
+✗ mika/80-lik-yan-panel/arayuz/cik-kaydet: adım 7 oku mika/80-lik-yan-panel sonuc: hesap beklenen 182316.75733084048 program 0
+✗ mika/80-lik-yan-panel/arayuz/ad-kaydetmeden: adım 8 cik: Çık sorusu beklenen var program False
+… 166 fark daha (--cikti ile tamamı)
+2206/2452 denetim geçti, 246 fark
+exit 1

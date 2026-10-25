@@ -322,7 +322,7 @@
     const hold = !preview && ready && center.holdHeight ? ` style="min-height:${Math.round(center.holdHeight)}px"` : "";
     const table = preview
       ? `<div class="hof-rc-summary">${(preview.summary || []).map(([label, value]) => `<span><small>${esc(label)}</small><b>${esc(screenMoney(value))}</b></span>`).join("")}</div>
-        <div class="hof-rep-table hof-rc-table"><table class="hof-table"><thead><tr>${preview.headers.map((header, index) => `<th class="${isNum(index) ? "num" : ""}">${esc(header)}</th>`).join("")}</tr></thead><tbody>${
+        <div class="hof-rep-table hof-rc-table"><table class="hof-table${preview.rowMarks ? " is-dense" : ""}"><thead><tr>${preview.headers.map((header, index) => `<th class="${isNum(index) ? "num" : ""}">${esc(header)}</th>`).join("")}</tr></thead><tbody>${
           preview.rows.length
             ? preview.rows.map((row, rowIndex) => `<tr${preview.rowMarks?.[rowIndex] ? ` class="is-${esc(preview.rowMarks[rowIndex])}"` : ""}>${row.map((cell, index) => `<td class="${cellClass(preview, index)}">${esc(shown(cell, index))}</td>`).join("")}</tr>`).join("")
             : `<tr><td colspan="${preview.headers.length}" class="hof-empty">${emptyText(report)}</td></tr>`

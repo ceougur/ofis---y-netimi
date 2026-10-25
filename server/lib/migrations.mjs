@@ -1338,7 +1338,83 @@ export const MIGRATIONS = [
       });
     },
   },
+  {
+    version: 34,
+    name: "v2.4.6 Maliyet Hesap Kartı (Duşakabin Üretimi; para dışı)",
+    up(store) {
+      // 2.4.6 madde 1 (kullanıcı kararları 24–25.10.2026; lib/maliyet/*, routes/maliyet.mjs): Stok penceresindeki Maliyet Hesap Kartı'nın sekmeleri, kartları,
+      // satırları, adımları (etiket + oran / bölen / elle değer), matris hücreleri (taban / fark) ve adları. YALNIZ EKLEYİCİ: yeni tablolar; eski sürüm (2.4.5)
+      // aynı dosyayı okur, tabloları görmez. Para tablosu DEĞİL: hiçbir yere bağlı değil (Kasa, Banka, cari, stok, fatura, Ana Defter okumaz; mutabakat kapısı ve
+      // kilit izi bakmaz). Şablon kod içinde; tablolar BOŞ kurulur, sektör "Duşakabin Üretimi" iken ilk açılışta şablon bir kez yazılır.
+      store.exec(MALIYET_SCHEMA_V34);
+    },
+  },
+  {
+    version: 35,
+    name: "v2.4.6 cari Açılış Bakiyesi satırının işareti (is_opening)",
+    up(store) {
+      // 2.4.6 madde 12 (2.4.5 K6.5 (2)): Açılış Bakiyesi satırı açıklamasıyla ("Açılış bakiyesi") değil kolonla tanınır (routes/accounts.mjs openingEntryOf);
+      // kullanıcı açıklamayı değiştirince de açılış kalır. Mevcut satırlar 2.4.5'in kuralıyla işaretlenir: carinin elle (source '') Borç / Alacak satırlarından
+      // açıklaması "Açılış bakiyesi" olan İLK satır (rowid). Para alanı DEĞİL: tutar, yön, tarih, bakiye, Kasa ve Ana Defter değişmez; eski sürüm (2.4.5)
+      // kolonu görmez. Cari başına en çok bir işaret.
+      store.raw("migration.v35", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'account_entries'")) return;
+        addColumn(store, "account_entries", "is_opening", "INTEGER NOT NULL DEFAULT 0");
+        store.run(
+          `UPDATE account_entries SET is_opening = 1 WHERE id IN (
+             SELECT (SELECT e.id FROM account_entries e WHERE e.account_id = a.account_id AND e.source = '' AND e.kind IN ('debt', 'credit') AND e.note = ? ORDER BY e.rowid LIMIT 1)
+             FROM (SELECT DISTINCT account_id FROM account_entries WHERE source = '' AND kind IN ('debt', 'credit') AND note = ?) a)`,
+          OPENING_ENTRY_NOTE,
+          OPENING_ENTRY_NOTE,
+        );
+      });
+    },
+  },
+  // v34 ve v35 2.4.6'da başka işlere ayrıldı (Maliyet Hesap Kartı, Açılış işareti). DİKKAT: göçler sürüm numarasına göre süzülür (runMigrations: version >
+  // user_version); v34 / v35 bu dosyaya v36'dan SONRA girerse v36'ya geçmiş veri tabanında hiç koşmaz → üçü aynı adayda (ya da öncekiler önce) birleşir.
+  {
+    version: 36,
+    name: "v2.4.6 iade geri ödemesi bağı (cari Ödeme / Tahsilat → iade)",
+    up(store) {
+      // 2.4.6 madde 9 (DB1; v2.1.0 R1 düzeni): cari kartından girilen Ödeme / Tahsilat'ın geri ödediği iade — satıştan / alıştan iade faturasının kimliği
+      // (invoices.id) ya da faturasız stok iadesinin hareket kimliği (stock_moves.id); boş = bağsız. YALNIZ EKLEYİCİ: eski satırlar boş (bağsız) kalır, eski
+      // sürüm (2.4.5) kolonu görmez. Para alanı DEĞİL: tutar, yön, tarih, yol, bakiye, Kasa ve Ana Defter okumaz (lib/bank/money-lines.mjs FREE_COLUMNS);
+      // yalnız fatura / borç kapaması okur (lib/invoice-settle.mjs: geri ödeme iadenin alacağıyla kapanan yükümlülüktür).
+      store.raw("migration.v36", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'account_entries'")) return;
+        addColumn(store, "account_entries", "refund_of", "TEXT NOT NULL DEFAULT ''");
+      });
+    },
+  },
 ];
+// routes/accounts.mjs OPENING_NOTE ile aynı (programın açılış satırına yazdığı açıklama; v35 göçü yalnız eski satırları işaretlerken okur).
+const OPENING_ENTRY_NOTE = "Açılış bakiyesi";
+
+// 2.4.6 Maliyet Hesap Kartı: sayılar ham (REAL; yuvarlanmaz), boş = NULL. Satır tablosu zincir (ad = malzeme, birim, miktar, fiyat), gramaj (ad = parça,
+// birim = cins, giden_mt … alis_ft, elle = Giden Kğ girdisi) ve bilgi (degerler_json) kartlarınca paylaşılır. rev: iyimser eşzamanlılık sürümü.
+const MALIYET_SCHEMA_V34 = `
+  CREATE TABLE IF NOT EXISTS maliyet_sekmeler (
+    kod TEXT PRIMARY KEY, ad TEXT NOT NULL, sira INTEGER NOT NULL, rev INTEGER NOT NULL DEFAULT 1, updated_by TEXT, updated_at TEXT
+  ) STRICT;
+  CREATE TABLE IF NOT EXISTS maliyet_kartlar (
+    kod TEXT PRIMARY KEY, sekme TEXT NOT NULL, tur TEXT NOT NULL, ad TEXT NOT NULL, sira INTEGER NOT NULL, rev INTEGER NOT NULL DEFAULT 1,
+    created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+  ) STRICT;
+  CREATE TABLE IF NOT EXISTS maliyet_satirlar (
+    kart TEXT NOT NULL, id TEXT NOT NULL, sira INTEGER NOT NULL, ad TEXT NOT NULL DEFAULT '', birim TEXT NOT NULL DEFAULT '',
+    miktar REAL, fiyat REAL, giden_mt REAL, boy REAL, br_gramaj REAL, giden_kg REAL, alis_ft REAL, elle INTEGER NOT NULL DEFAULT 0,
+    degerler_json TEXT NOT NULL DEFAULT '[]', PRIMARY KEY (kart, id)
+  ) STRICT;
+  CREATE TABLE IF NOT EXISTS maliyet_adimlar (
+    kart TEXT NOT NULL, kod TEXT NOT NULL, etiket TEXT NOT NULL DEFAULT '', deger REAL, PRIMARY KEY (kart, kod)
+  ) STRICT;
+  CREATE TABLE IF NOT EXISTS maliyet_hucreler (
+    kart TEXT NOT NULL, hucre TEXT NOT NULL, deger REAL, PRIMARY KEY (kart, hucre)
+  ) STRICT;
+  CREATE TABLE IF NOT EXISTS maliyet_basliklar (
+    kart TEXT NOT NULL, kod TEXT NOT NULL, ad TEXT NOT NULL DEFAULT '', PRIMARY KEY (kart, kod)
+  ) STRICT;
+`;
 
 // 2.4.4 (karar 22.10.2026): 2.4.0–2.4.3'te "Müşteri Fişi Olarak Bırak" ile Müşteri Fişi serisinden numara alıp sonra e-Belge olarak gönderilen belgenin
 // numarası seriden ayrılınca hiçbir yere kaydedilmiyordu (seride duran belgelerin MAX(seq)'i görmez) → güncellemeden sonra ilk bırakmada / kâğıt kayıtta

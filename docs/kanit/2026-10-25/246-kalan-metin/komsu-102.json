@@ -1,0 +1,32 @@
+{
+  "ad": "246-kalan-metin/komsu-102",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-altin.test.mjs test/banka-210-arayuz.test.mjs test/banka-210-ertelenen.test.mjs test/banka-210-fis.test.mjs test/banka-210-gg2-gosterge.test.mjs test/banka-210-hiz-esdegerlik.test.mjs test/banka-210-ileri-tarihli-eski.test.mjs test/banka-210-kabul-mizan.test.mjs test/banka-210-kapi-kapsam.test.mjs test/banka-210-kapi.test.mjs test/banka-210-kurumsal-kart.test.mjs test/banka-210-nakit-akis-k10.test.mjs test/banka-210-rapor-bulgu.test.mjs test/banka-210-rapor-is-parcacigi-kapanis.test.mjs test/banka-210-rapor-is-parcacigi.test.mjs test/banka-210-raporlar.test.mjs test/banka-210-saat.test.mjs test/banka-220-kredi-karti-metin.test.mjs test/banka-220-pos-iz3.test.mjs test/banka-220-pos-kdv.test.mjs test/banka-220-pos-moduller.test.mjs test/banka-220-senet-121.test.mjs test/banka-220-tahsile-ver-dogrulama.test.mjs test/banka-220-tahsile-ver-tur2.test.mjs test/banka-220-tahsile-ver.test.mjs test/banka-230-supheli-ekran.test.mjs test/banka-alt-hesap-aciklama.test.mjs test/banka-bakiye-ileri-tarihli.test.mjs test/banka-rapor-243.test.mjs test/bulgu-223.test.mjs test/cari-243.test.mjs test/cari-vade-245.test.mjs test/cheques-overview.test.mjs test/defter-213.test.mjs test/defter-243-raporlar.test.mjs test/defter-243-stok-acilis.test.mjs test/defter-243-ux24-toplam.test.mjs test/defter-243-vergi.test.mjs test/disa-aktarim-dugmeleri.test.mjs test/dues.test.mjs test/eksi-stok-217.test.mjs test/ekstre-ayrinti-245.test.mjs test/ertelenen-224.test.mjs test/goc-245-cari-vade.test.mjs test/guvenilirlik-221-tatbikat.test.mjs test/hiz-243-arka-plan.test.mjs test/iade-210-onarim.test.mjs test/iade-210.test.mjs test/iade-224.test.mjs test/iade-kapama-k1.test.mjs test/inceleme-226-2.test.mjs test/inceleme-226.test.mjs test/is-akisi.test.mjs test/iz1-excel-sirket.test.mjs test/kalan-borc-ortak-30a.test.mjs test/kalan-borc-satir-31d.test.mjs test/kanit-araci.test.mjs test/kapama-ks7-245.test.mjs test/kapama-rastgele-223.test.mjs test/kapi-para-245.test.mjs test/kapi-uyari-245.test.mjs test/kayit-bag-31e.test.mjs test/kayit-tahsilat-244.test.mjs test/kilavuz-surum.test.mjs test/kullanici-yetki-210.test.mjs test/mutabakat-213.test.mjs test/nakit-akis-ileri-tarihli-yol.test.mjs test/nakit-akis-sekme-30e.test.mjs test/personel-ozluk-244.test.mjs test/plan-case-link.test.mjs test/plan-transfer.test.mjs test/plans.test.mjs test/rapor-220.test.mjs test/rapor-230-iz5.test.mjs test/rapor-tablodaki-kisiler-f1.test.mjs test/raporlar-209.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-224.test.mjs test/raporlar-230-banka.test.mjs test/reports.test.mjs test/schema-flex.test.mjs test/sirketler-217.test.mjs test/stopaj-tevkifat-iade-244.test.mjs test/supheli-230-karar.test.mjs test/tabela-adi-245.test.mjs test/table-columns.test.mjs test/tablo-borc-dosya-u2.test.mjs test/tablo-borc-r31e.test.mjs test/tablo-hucre-bicim.test.mjs test/tablo-raporlari-u3-244.test.mjs test/takvim-pil-kaynak.test.mjs test/temporal.test.mjs test/uiux-244-ux9.test.mjs test/uiux-a-243.test.mjs test/ux18-cek-fatura-244.test.mjs test/uyari-ufku-225.test.mjs test/vade-takip-kaynak-yetki-210.test.mjs test/yazim-duzeni.test.mjs test/yetki-243-muhasebe-finans.test.mjs test/yetki-gorunurluk.test.mjs test/yevmiye-sira-244.test.mjs test/kalan-metin-246.test.mjs",
+  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "dal": "is/kalan-metin",
+  "kirli": 22,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T10:05:21.372Z",
+  "sure_sn": 813.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1352,
+    "gecen": 1352,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-kalan-metin/komsu-102.log",
+  "klasor": "/home/user/wt/kalan-metin",
+  "ham_cikti_sha256": "181e8811b74ce75b438852380aa632452cf1c685b19057ae0bfc3551b99b58e9",
+  "ham_cikti_bayt": 488615
+}

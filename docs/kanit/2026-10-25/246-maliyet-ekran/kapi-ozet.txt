@@ -1,0 +1,76 @@
+/dev/vda        252G   23G   17G  59% /
+[kanit] 246-maliyet-ekran/kahin-maliyet-api-arayuz: GEÇTİ · çıkış 0 · 43758/43758 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit ce0e2e6 · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+kahin çıkış 0
+[kanit] 246-maliyet-ekran/e2e-e2e: GEÇTİ · çıkış 0 · 50/50 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-219: GEÇTİ · çıkış 0 · 42/42 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-220: GEÇTİ · çıkış 0 · 25/25 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-220-yedek: GEÇTİ · çıkış 0 · 37/37 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-221: GEÇTİ · çıkış 0 · 28/28 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-222: GEÇTİ · çıkış 0 · 60/60 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-223: GEÇTİ · çıkış 0 · 29/29 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-224: GEÇTİ · çıkış 0 · 63/63 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-225: GEÇTİ · çıkış 0 · 55/55 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-225-uyari: GEÇTİ · çıkış 0 · 36/36 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-226: GEÇTİ · çıkış 0 · 22/22 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-iz1-sayfa: GEÇTİ · çıkış 0 · 21/21 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-iz1-kasa-acilis: GEÇTİ · çıkış 0 · 21/21 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-banka-210: GEÇTİ · çıkış 0 · 424/424 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-banka-210b: GEÇTİ · çıkış 0 · 90/90 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-banka-210-temel: GEÇTİ · çıkış 0 · 80/80 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-banka-210-eski-satir: GEÇTİ · çıkış 0 · 29/29 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-banka-220: GEÇTİ · çıkış 0 · 76/76 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-pos-220: GEÇTİ · çıkış 0 · 113/113 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-tahsile-ver-220: GEÇTİ · çıkış 0 · 140/140 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-k8-230: GEÇTİ · çıkış 0 · 17/17 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-iz32-230: GEÇTİ · çıkış 0 · 41/41 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-supheli-230: GEÇTİ · çıkış 0 · 67/67 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-iz5-230: GEÇTİ · çıkış 0 · 44/44 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-entegrator-240: GEÇTİ · çıkış 0 · 81/81 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-ebelge-242: GEÇTİ · çıkış 0 · 21/21 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-ebelge-243: GEÇTİ · çıkış 0 · 20/20 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-form-izolasyon-243: GEÇTİ · çıkış 0 · 183/183 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-fatura-243: GEÇTİ · çıkış 0 · 61/61 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-cari-243: GEÇTİ · çıkış 0 · 53/53 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-personel-244: GEÇTİ · çıkış 0 · 84/84 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-portal-244: GEÇTİ · çıkış 0 · 32/32 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-kayit-tahsilat-244: GEÇTİ · çıkış 0 · 47/47 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-cari-vade-245: GEÇTİ · çıkış 0 · 31/31 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-maliyet-246: GEÇTİ · çıkış 0 · 62/62 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-kayit-bag-31e: GEÇTİ · çıkış 0 · 43/43 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-pil-karti-245: GEÇTİ · çıkış 0 · 78/78 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-serit-sira-245: GEÇTİ · çıkış 0 · 7/7 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-ekstre-ayrinti-245: GEÇTİ · çıkış 0 · 30/30 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-netten-brute-244: GEÇTİ · çıkış 0 · 43/43 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-ux18-244: GEÇTİ · çıkış 0 · 27/27 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-banka-rapor-243: GEÇTİ · çıkış 0 · 38/38 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-senaryo-defter-243: GEÇTİ · çıkış 0 · 24/24 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-banka-210-saat: GEÇTİ · çıkış 0 · 12/12 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-banka-210-kart-onbellek: GEÇTİ · çıkış 0 · 49/49 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-banka-210-daha-fazla: GEÇTİ · çıkış 0 · 31/31 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-banka-230-hareket-yaris: GEÇTİ · çıkış 0 · 37/37 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-acilis-yanit-yaris: GEÇTİ · çıkış 0 · 12/12 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-banka-210-ekran-aciklama: GEÇTİ · çıkış 0 · 11/11 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-guncelleme-gercek: GEÇTİ · çıkış 0 · 22/22 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-hiz-243-arka-plan: GEÇTİ · çıkış 0 · 13/13 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-fatura-243-daha-fazla-yaris: GEÇTİ · çıkış 0 · 9/9 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-fatura-243-duzen-kaymasi: GEÇTİ · çıkış 0 · 7/7 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-gg243-arka-plan-yazma: GEÇTİ · çıkış 0 · 13/13 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-gg243-odak-dugme: GEÇTİ · çıkış 0 · 11/11 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-gg243-kopyala: GEÇTİ · çıkış 0 · 28/28 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-gg243-odak-kalem-sil: GEÇTİ · çıkış 0 · 16/16 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-gg243-tumunu-gonder: GEÇTİ · çıkış 0 · 17/17 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-gg244-secilenleri-gonder: GEÇTİ · çıkış 0 · 45/45 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-gg244-esmm-gonder: GEÇTİ · çıkış 0 · 66/66 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-gg244-numara-tarih-onay: GEÇTİ · çıkış 0 · 40/40 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-gg243-odak-silme-diger: GEÇTİ · çıkış 0 · 61/61 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-gg243-banka-kart-aciklama: GEÇTİ · çıkış 0 · 11/11 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-gg243-dar2-ekran: GEÇTİ · çıkış 0 · 21/21 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-uiux-a-243: GEÇTİ · çıkış 0 · 51/51 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-uiux-b-243: GEÇTİ · çıkış 0 · 58/58 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-uiux-244-ux9-ux10: GEÇTİ · çıkış 0 · 74/74 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-uiux-ui11-244: GEÇTİ · çıkış 0 · 153/153 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-sirket-canli-yetki-244: GEÇTİ · çıkış 0 · 8/8 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+[kanit] 246-maliyet-ekran/e2e-baslarken-244: GEÇTİ · çıkış 0 · 60/60 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9ac6abd +1 izlenmeyen · linux 6.18.44-fc-v153 x64 · Node v22.22.0
+E2E BİTTİ: 70 senaryo, başarısız 0
+/dev/vda        252G   25G   15G  63% /
+npm test çıkış 1

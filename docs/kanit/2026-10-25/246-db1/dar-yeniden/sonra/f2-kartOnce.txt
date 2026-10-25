@@ -1,0 +1,3 @@
+mode "kartOnce"
+projeksiyon {"satirlar":[["plan","in",350],["invoice","in",300],["plan","in",350]],"net":1000,"from":"2026-10-20","to":"2027-01-18"}
+sonuc {"bakiye":1000,"A":{"state":"overdue","open":1000,"paid":0},"kartlar":[[700,700]],"vadeTakip":[["invoice",300],["plan",350],["plan",350]],"vadeToplam":1000,"takvim":[["invoice",300,"overdue"],["plan",350,"overdue"]],"beklenenVadeToplam":1000}

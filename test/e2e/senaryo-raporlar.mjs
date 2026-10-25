@@ -96,7 +96,8 @@ try {
     ok(await page.isVisible('.hof-side-item[data-action="analytics"]'), "sol menüde Raporlar görünür (yönetici)");
     await openReports();
     const tabs = await page.$$eval(`${modal} .hof-rep [data-tab]`, nodes => nodes.map(node => node.textContent.trim()));
-    ok(tabs.join("|") === "Cari Ekstre|Vade Takip|Nakit Akış|Çek / Senet|Tüm Raporlar|Tablo Raporları", `sekmeler: ${tabs.join(", ")}`);
+    // 2.4.6 (2.4.5 gezinti B3; bilerek güncellendi): ilk sekme mizan + ekstre — "Cari Ekstre" adı Tüm Raporlar → Cari Ekstre ile karışıyordu.
+    ok(tabs.join("|") === "Cari Mizanı ve Ekstresi|Vade Takip|Nakit Akış|Çek / Senet|Tüm Raporlar|Tablo Raporları", `sekmeler: ${tabs.join(", ")}`);
     await page.waitForSelector(`${modal} .hof-rep-help`, { timeout: 10000 });
     const help = await text(`${modal} .hof-rep-help`);
     ok(/Cari defterindeki hareketlerden/.test(help) && /Cari ekranını aç/i.test(help), "boş defterde yol gösterir: Cari ekranını aç");

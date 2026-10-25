@@ -1,0 +1,645 @@
+TAP version 13
+# Subtest: 2.4.6 madde 12: Açılış Bakiyesi satırı işaretle tanınır (güncel kod)
+    # Subtest: açıklaması değiştirilen açılış satırı yine açılıştır: kart openingEntryId'si ve Düzenle'deki açılış Vade Tarihi aynı satıra gider
+    ok 1 - açıklaması değiştirilen açılış satırı yine açılıştır: kart openingEntryId'si ve Düzenle'deki açılış Vade Tarihi aynı satıra gider
+      ---
+      duration_ms: 103.89933
+      type: 'test'
+      ...
+    # Subtest: sonradan elle 'Açılış bakiyesi' açıklamasıyla yazılan Borç açılış sayılmaz (açılışlı ve açılışsız caride)
+    ok 2 - sonradan elle 'Açılış bakiyesi' açıklamasıyla yazılan Borç açılış sayılmaz (açılışlı ve açılışsız caride)
+      ---
+      duration_ms: 69.111318
+      type: 'test'
+      ...
+    # Subtest: Excel'den cari yüklemede Bakiye kolonu açılış işaretli satır yazar; bakiyesiz satırda işaret yok
+    ok 3 - Excel'den cari yüklemede Bakiye kolonu açılış işaretli satır yazar; bakiyesiz satırda işaret yok
+      ---
+      duration_ms: 26.473003
+      type: 'test'
+      ...
+    # Subtest: Silinenler: açıklaması değiştirilmiş açılış silinip geri yüklenince yine açılış; silinmişken kart açılışsız
+    ok 4 - Silinenler: açıklaması değiştirilmiş açılış silinip geri yüklenince yine açılış; silinmişken kart açılışsız
+      ---
+      duration_ms: 83.879067
+      type: 'test'
+      ...
+    # Subtest: Şirket Verisini Sıfırla (hareketler) sonrası yetim işaret yok; yeni açılış işaretli
+    ok 5 - Şirket Verisini Sıfırla (hareketler) sonrası yetim işaret yok; yeni açılış işaretli
+      ---
+      duration_ms: 162.9424
+      type: 'test'
+      ...
+    1..5
+ok 1 - 2.4.6 madde 12: Açılış Bakiyesi satırı işaretle tanınır (güncel kod)
+  ---
+  duration_ms: 878.194431
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 madde 12 göç v35: v2.4.5 verisi (gerçek kod) güncel kodla — işaret 2.4.5'in kuralıyla, para aynı
+    # Subtest: v2.4.5 verisi: göç açılışları işaretler (eski openingEntryId'lerle aynı), bakiye / hareket / mizan aynı; Silinenler ve v2.4.5 yedeği
+    ok 1 - v2.4.5 verisi: göç açılışları işaretler (eski openingEntryId'lerle aynı), bakiye / hareket / mizan aynı; Silinenler ve v2.4.5 yedeği
+      ---
+      duration_ms: 1468.472171
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.4.6 madde 12 göç v35: v2.4.5 verisi (gerçek kod) güncel kodla — işaret 2.4.5'in kuralıyla, para aynı
+  ---
+  duration_ms: 1476.372102
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 madde 9 göç: v2.4.5 verisi güncel kodla (iade geri ödemeleri bağsız kalır; bağ elle kurulur)
+    # Subtest: v2.4.5 verisi: göç boş bağ ekler, sayılar aynı; Düzelt ile bağlanınca fatura açığı iade kadar döner; geri dönüş v2.4.5 ile açılır
+    ok 1 - v2.4.5 verisi: göç boş bağ ekler, sayılar aynı; Düzelt ile bağlanınca fatura açığı iade kadar döner; geri dönüş v2.4.5 ile açılır
+      ---
+      duration_ms: 1755.853729
+      type: 'test'
+      ...
+    1..1
+ok 3 - 2.4.6 madde 9 göç: v2.4.5 verisi güncel kodla (iade geri ödemeleri bağsız kalır; bağ elle kurulur)
+  ---
+  duration_ms: 1763.177032
+  type: 'suite'
+  ...
+# Subtest: DB1 classifyLine (saf): iadeye bağlı geri ödeme yükümlülüktür; bağsız Ödeme / Tahsilat değişmedi
+    # Subtest: müşteriye bağlı Ödeme (çıkış) alacak tarafında yükümlülük; tedarikçiden bağlı Tahsilat (giriş) borç tarafında yükümlülük
+    ok 1 - müşteriye bağlı Ödeme (çıkış) alacak tarafında yükümlülük; tedarikçiden bağlı Tahsilat (giriş) borç tarafında yükümlülük
+      ---
+      duration_ms: 1.706494
+      type: 'test'
+      ...
+    # Subtest: bağsız Ödeme borç tarafında, bağsız Tahsilat alacak tarafında ödeme (R1c, değişmedi); Borç / Alacak Yaz yükümlülük
+    ok 2 - bağsız Ödeme borç tarafında, bağsız Tahsilat alacak tarafında ödeme (R1c, değişmedi); Borç / Alacak Yaz yükümlülük
+      ---
+      duration_ms: 0.428783
+      type: 'test'
+      ...
+    1..2
+ok 4 - DB1 classifyLine (saf): iadeye bağlı geri ödeme yükümlülüktür; bağsız Ödeme / Tahsilat değişmedi
+  ---
+  duration_ms: 3.255885
+  type: 'suite'
+  ...
+# Subtest: DB1 settleLedger (saf): faturasız stok iadesinin bağlı geri ödemesi iadenin alacağıyla kapanır
+    # Subtest: bağlı: fatura 500 ve borç 300 açık kalır (Σ 800 = bakiye); geri ödeme kapandı
+    ok 1 - bağlı: fatura 500 ve borç 300 açık kalır (Σ 800 = bakiye); geri ödeme kapandı
+      ---
+      duration_ms: 2.848117
+      type: 'test'
+      ...
+    # Subtest: kısmi: 100 bağlı geri ödeme → iadenin 200'ü en eski açık borcu (fatura) kapatır
+    ok 2 - kısmi: 100 bağlı geri ödeme → iadenin 200'ü en eski açık borcu (fatura) kapatır
+      ---
+      duration_ms: 0.775588
+      type: 'test'
+      ...
+    # Subtest: bağsız (seçilmedi): eski düzen — iade faturayı kapatır, geri ödeme açmaz (B 200)
+    ok 3 - bağsız (seçilmedi): eski düzen — iade faturayı kapatır, geri ödeme açmaz (B 200)
+      ---
+      duration_ms: 0.761677
+      type: 'test'
+      ...
+    # Subtest: K-a: iadesi silinmiş bağlı geri ödemenin kalanı 0 → tamamı avans (yükümlülük değil); B 500
+    ok 4 - K-a: iadesi silinmiş bağlı geri ödemenin kalanı 0 → tamamı avans (yükümlülük değil); B 500
+      ---
+      duration_ms: 0.635858
+      type: 'test'
+      ...
+    # Subtest: K-a: iadeden fazla (500 > 300) — 300 geri ödeme, 200 avans: B 500, borç 300; avans önce elle Alacak'ı kapatır, kalanı bakiyede
+    ok 5 - K-a: iadeden fazla (500 > 300) — 300 geri ödeme, 200 avans: B 500, borç 300; avans önce elle Alacak'ı kapatır, kalanı bakiyede
+      ---
+      duration_ms: 0.629911
+      type: 'test'
+      ...
+    1..5
+ok 5 - DB1 settleLedger (saf): faturasız stok iadesinin bağlı geri ödemesi iadenin alacağıyla kapanır
+  ---
+  duration_ms: 6.199568
+  type: 'suite'
+  ...
+# Subtest: K-b settleLedger (saf): iadeye bağlanmamış Ödeme açık iadeler ve elle Alacak arasında tek sıra, en eskiden
+    # Subtest: açık iade (10-01) elle Alacak'tan (10-05) eski: Ödeme 300 önce iadeyi kapatır → Alacak 200 açık kalır (eski kural: Alacak kapanıyordu)
+    ok 1 - açık iade (10-01) elle Alacak'tan (10-05) eski: Ödeme 300 önce iadeyi kapatır → Alacak 200 açık kalır (eski kural: Alacak kapanıyordu)
+      ---
+      duration_ms: 0.498802
+      type: 'test'
+      ...
+    # Subtest: elle Alacak (09-25) iadeden (10-01) eski: önce Alacak 200, kalan 100 iadeye → Alacak 0
+    ok 2 - elle Alacak (09-25) iadeden (10-01) eski: önce Alacak 200, kalan 100 iadeye → Alacak 0
+      ---
+      duration_ms: 0.344008
+      type: 'test'
+      ...
+    # Subtest: Tahsilat simetriği: açık Alış İadesi (preturn) elle Borç'tan eski → bağsız Tahsilat önce iadeyi kapatır, borç açık kalır
+    ok 3 - Tahsilat simetriği: açık Alış İadesi (preturn) elle Borç'tan eski → bağsız Tahsilat önce iadeyi kapatır, borç açık kalır
+      ---
+      duration_ms: 0.545583
+      type: 'test'
+      ...
+    1..3
+ok 6 - K-b settleLedger (saf): iadeye bağlanmamış Ödeme açık iadeler ve elle Alacak arasında tek sıra, en eskiden
+  ---
+  duration_ms: 1.73592
+  type: 'suite'
+  ...
+# Subtest: DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ödenen İade)
+    # Subtest: faturasız stok Satış İadesi + bağlı Ödeme: fatura B 500 ve borç 300 açık (Σ 800 = bakiye), takvim / Vade Takip aynı; bakiye, Kasa, mizan bağla değişmez
+    ok 1 - faturasız stok Satış İadesi + bağlı Ödeme: fatura B 500 ve borç 300 açık (Σ 800 = bakiye), takvim / Vade Takip aynı; bakiye, Kasa, mizan bağla değişmez
+      ---
+      duration_ms: 358.946572
+      type: 'test'
+      ...
+    # Subtest: K-d: fatura iadesi (satıştan iade belgesi) Ödeme'de Kapatılacak Fatura olarak seçilir: B 500, borç 300; bağ refund_of'ta (invoice_id boş); iadenin kapatanı bu geri ödeme
+    ok 2 - K-d: fatura iadesi (satıştan iade belgesi) Ödeme'de Kapatılacak Fatura olarak seçilir: B 500, borç 300; bağ refund_of'ta (invoice_id boş); iadenin kapatanı bu geri ödeme
+      ---
+      duration_ms: 184.311169
+      type: 'test'
+      ...
+    # Subtest: K-a kısmi + fazla: bağlı 100 → iadenin kalan 200'ü B'yi kapatır (B 300); ikinci bağlı 250 → 200 geri ödeme + 50 avans (reddedilmez): B 500
+    ok 3 - K-a kısmi + fazla: bağlı 100 → iadenin kalan 200'ü B'yi kapatır (B 300); ikinci bağlı 250 → 200 geri ödeme + 50 avans (reddedilmez): B 500
+      ---
+      duration_ms: 185.283505
+      type: 'test'
+      ...
+    # Subtest: iade belgesinin kendi geri ödemesi (100) kalanı düşürür: cari kartından bağlanan 250'nin 200'ü geri ödeme, 50'si avans (K-a); B 500
+    ok 4 - iade belgesinin kendi geri ödemesi (100) kalanı düşürür: cari kartından bağlanan 250'nin 200'ü geri ödeme, 50'si avans (K-a); B 500
+      ---
+      duration_ms: 176.746508
+      type: 'test'
+      ...
+    # Subtest: reddedilen bağlar (öbür yönler aynen, K-d): ters yön (refundOf ve Kapatılacak Fatura yolu), başka carinin iadesi, satış faturası + iade birlikte, Borç Yaz'da, peşin iade, iptal edilmiş iade
+    ok 5 - reddedilen bağlar (öbür yönler aynen, K-d): ters yön (refundOf ve Kapatılacak Fatura yolu), başka carinin iadesi, satış faturası + iade birlikte, Borç Yaz'da, peşin iade, iptal edilmiş iade
+      ---
+      duration_ms: 406.693976
+      type: 'test'
+      ...
+    # Subtest: geri ödeme silinir → bağsız iade B'yi kapatır; Silinenler'den geri gelince bağ korunur
+    ok 6 - geri ödeme silinir → bağsız iade B'yi kapatır; Silinenler'den geri gelince bağ korunur
+      ---
+      duration_ms: 172.418492
+      type: 'test'
+      ...
+    # Subtest: iade silinince bağlı geri ödemenin tamamı avans olur (K-a; B 500, borç 300 açık); iade geri yüklenince yeniden eşleşir
+    ok 7 - iade silinince bağlı geri ödemenin tamamı avans olur (K-a; B 500, borç 300 açık); iade geri yüklenince yeniden eşleşir
+      ---
+      duration_ms: 232.023291
+      type: 'test'
+      ...
+    # Subtest: bağlı geri ödemesi olan stok iadesi düzeltilir (K-a): küçülünce fazlası avans (B 500), büyüyünce artanı B'yi kapatır (B 400), Kasa'ya çevrilince tamamı avans (B 500)
+    ok 8 - bağlı geri ödemesi olan stok iadesi düzeltilir (K-a): küçülünce fazlası avans (B 500), büyüyünce artanı B'yi kapatır (B 400), Kasa'ya çevrilince tamamı avans (B 500)
+      ---
+      duration_ms: 233.313993
+      type: 'test'
+      ...
+    # Subtest: iade belgesi düzenlenip kendi geri ödemesi + cari kartından bağlı geri ödeme iadeyi aşarsa (150 + 200 > 300) kaydedilir; belgeninki önce, bağlının fazlası avans (K-a): B 500
+    ok 9 - iade belgesi düzenlenip kendi geri ödemesi + cari kartından bağlı geri ödeme iadeyi aşarsa (150 + 200 > 300) kaydedilir; belgeninki önce, bağlının fazlası avans (K-a): B 500
+      ---
+      duration_ms: 187.001384
+      type: 'test'
+      ...
+    # Subtest: K-e: verilen çek (Kapatılacak Fatura: satıştan iade) iadenin geri ödemesidir — B 500; alınan çek iadeye bağlanmaz (409)
+    ok 10 - K-e: verilen çek (Kapatılacak Fatura: satıştan iade) iadenin geri ödemesidir — B 500; alınan çek iadeye bağlanmaz (409)
+      ---
+      duration_ms: 175.978278
+      type: 'test'
+      ...
+    # Subtest: K-f: kural cari türüne bakmaz — Tedarikçi türündeki caride de satıştan iadenin geri ödemesi bağlanır (B 500)
+    ok 11 - K-f: kural cari türüne bakmaz — Tedarikçi türündeki caride de satıştan iadenin geri ödemesi bağlanır (B 500)
+      ---
+      duration_ms: 178.2001
+      type: 'test'
+      ...
+    # Subtest: K-b: iadeye bağlanmamış Ödeme açık iade belgesi (eski) ile elle Alacak (yeni) arasında en eskiden: iade açığı 0, Alacak 200 açık (eski kural: Alacak 0, iade açığı 200)
+    ok 12 - K-b: iadeye bağlanmamış Ödeme açık iade belgesi (eski) ile elle Alacak (yeni) arasında en eskiden: iade açığı 0, Alacak 200 açık (eski kural: Alacak 0, iade açığı 200)
+      ---
+      duration_ms: 112.782662
+      type: 'test'
+      ...
+    # Subtest: tedarikçi simetriği: alıştan iade faturası + tedarikçiden bağlı Tahsilat → açık alış faturası kapanmaz
+    ok 13 - tedarikçi simetriği: alıştan iade faturası + tedarikçiden bağlı Tahsilat → açık alış faturası kapanmaz
+      ---
+      duration_ms: 171.922169
+      type: 'test'
+      ...
+    1..13
+ok 7 - DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ödenen İade)
+  ---
+  duration_ms: 3320.826077
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 kalan metin — sunucu (B4, B5, B6, B7)
+    # Subtest: B4: Ayrıntılı Ekstre PDF'inde fatura numarası Belge No kolonunda bölünmez
+    ok 1 - B4: Ayrıntılı Ekstre PDF'inde fatura numarası Belge No kolonunda bölünmez
+      ---
+      duration_ms: 65.615279
+      type: 'test'
+      ...
+    # Subtest: B5: Cari Ekstre Excel'inde (ayrıntılı ve düz) Bakiye sayı — borçlu artı, alacaklı eksi; ekran B / A metni kalır
+    ok 2 - B5: Cari Ekstre Excel'inde (ayrıntılı ve düz) Bakiye sayı — borçlu artı, alacaklı eksi; ekran B / A metni kalır
+      ---
+      duration_ms: 73.399361
+      type: 'test'
+      ...
+    # Subtest: B5 (birim): yalnız tutar kolonunda ve tam "<tutar> TL B|A" biçiminde çevrilir; başka metin olduğu gibi
+    ok 3 - B5 (birim): yalnız tutar kolonunda ve tam "<tutar> TL B|A" biçiminde çevrilir; başka metin olduğu gibi
+      ---
+      duration_ms: 3.019456
+      type: 'test'
+      ...
+    # Subtest: B6: carinin vadeli borç kalemi Açıklamayı taşır (takvim ve Vade Takip); etiket aynı
+    ok 4 - B6: carinin vadeli borç kalemi Açıklamayı taşır (takvim ve Vade Takip); etiket aynı
+      ---
+      duration_ms: 20.72617
+      type: 'test'
+      ...
+    # Subtest: B7: planlı banka işleminin etiketi yazım düzeninde (Planlı Diğer Gider)
+    ok 5 - B7: planlı banka işleminin etiketi yazım düzeninde (Planlı Diğer Gider)
+      ---
+      duration_ms: 3.764483
+      type: 'test'
+      ...
+    1..5
+ok 8 - 2.4.6 kalan metin — sunucu (B4, B5, B6, B7)
+  ---
+  duration_ms: 855.634598
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 kalan metin — kaynak (B3, B7, B8, B9, zil yönü, K-DB2)
+    # Subtest: B3: Raporlar'ın ilk sekmesi "Cari Mizanı ve Ekstresi" (Tüm Raporlar → Cari Ekstre ile iki ayrı "Cari Ekstre" yok)
+    ok 1 - B3: Raporlar'ın ilk sekmesi "Cari Mizanı ve Ekstresi" (Tüm Raporlar → Cari Ekstre ile iki ayrı "Cari Ekstre" yok)
+      ---
+      duration_ms: 1.192344
+      type: 'test'
+      ...
+    # Subtest: B7: Vade Takip alt notu Cari (vadeli) ve Planlı Banka İşlemi'ni sayar; pil kartında ödeme kalemi "Ödenecek"
+    ok 2 - B7: Vade Takip alt notu Cari (vadeli) ve Planlı Banka İşlemi'ni sayar; pil kartında ödeme kalemi "Ödenecek"
+      ---
+      duration_ms: 0.831947
+      type: 'test'
+      ...
+    # Subtest: B8: sektör önerisi "Tahsilat … araçları açık olur" demez; tablo şeridi "öncelikli doğru veri" demez
+    ok 3 - B8: sektör önerisi "Tahsilat … araçları açık olur" demez; tablo şeridi "öncelikli doğru veri" demez
+      ---
+      duration_ms: 2.690404
+      type: 'test'
+      ...
+    # Subtest: B8: Tablo Raporları'nda kişi kolonu "Kişi"
+    ok 4 - B8: Tablo Raporları'nda kişi kolonu "Kişi"
+      ---
+      duration_ms: 0.634406
+      type: 'test'
+      ...
+    # Subtest: B9 + zil yönü: rozet zil listesinin tamamını sayar; ödeme kalemi "ÖDEME YAPILMADI" / "… ÖDEME VAR", grupları ayrı
+    ok 5 - B9 + zil yönü: rozet zil listesinin tamamını sayar; ödeme kalemi "ÖDEME YAPILMADI" / "… ÖDEME VAR", grupları ayrı
+      ---
+      duration_ms: 0.482423
+      type: 'test'
+      ...
+    # Subtest: K-DB2: tahsilat / ödeme formundaki bilgi notu cari TÜRÜNE değil açık bakiyenin TARAFINA bakar
+    ok 6 - K-DB2: tahsilat / ödeme formundaki bilgi notu cari TÜRÜNE değil açık bakiyenin TARAFINA bakar
+      ---
+      duration_ms: 1.194549
+      type: 'test'
+      ...
+    1..6
+ok 9 - 2.4.6 kalan metin — kaynak (B3, B7, B8, B9, zil yönü, K-DB2)
+  ---
+  duration_ms: 7.967692
+  type: 'suite'
+  ...
+# Subtest: Kılavuz PDF sürümü (client/kilavuz)
+    # Subtest: PDF metni okunur (boş değil, bilinen başlık var)
+    ok 1 - PDF metni okunur (boş değil, bilinen başlık var)
+      ---
+      duration_ms: 225.166588
+      type: 'test'
+      ...
+    # Subtest: PDF kapağı ve dip notu = HTML sürümü = program sürümü
+    ok 2 - PDF kapağı ve dip notu = HTML sürümü = program sürümü
+      ---
+      duration_ms: 0.365414
+      type: 'test'
+      ...
+    1..2
+ok 10 - Kılavuz PDF sürümü (client/kilavuz)
+  ---
+  duration_ms: 226.809566
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 Maliyet Hesap Kartı bağsızlığı (kaynak taraması)
+    # Subtest: maliyet modülü SQL'de yalnız maliyet_* tablolarını anar (para / stok / cari / kasa / fatura / defter yok)
+    ok 1 - maliyet modülü SQL'de yalnız maliyet_* tablolarını anar (para / stok / cari / kasa / fatura / defter yok)
+      ---
+      duration_ms: 7.363452
+      type: 'test'
+      ...
+    # Subtest: maliyet modülü yalnız izinli yardımcıları içe alır (cari, kasa, stok, fatura, banka, defter, taksit, çek modülü yok)
+    ok 2 - maliyet modülü yalnız izinli yardımcıları içe alır (cari, kasa, stok, fatura, banka, defter, taksit, çek modülü yok)
+      ---
+      duration_ms: 2.778806
+      type: 'test'
+      ...
+    # Subtest: programın geri kalanı maliyet_* tablolarını anmaz (yalnız göç ve Şirket Verisini Sıfırla listesi)
+    ok 3 - programın geri kalanı maliyet_* tablolarını anmaz (yalnız göç ve Şirket Verisini Sıfırla listesi)
+      ---
+      duration_ms: 78.054646
+      type: 'test'
+      ...
+    # Subtest: mutabakat kapısı ve para tabloları listesi maliyet tablolarını içermez (para tablosu değil)
+    ok 4 - mutabakat kapısı ve para tabloları listesi maliyet tablolarını içermez (para tablosu değil)
+      ---
+      duration_ms: 0.824417
+      type: 'test'
+      ...
+    1..4
+ok 11 - 2.4.6 Maliyet Hesap Kartı bağsızlığı (kaynak taraması)
+  ---
+  duration_ms: 90.518605
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 Maliyet Hesap Kartı: şablon (boş yapı) ve hesap zinciri
+    # Subtest: 4 sekme Excel sırasıyla, nötr adlarla; marka ve yıl yok; miktar / fiyat / taban / fark yok
+    ok 1 - 4 sekme Excel sırasıyla, nötr adlarla; marka ve yıl yok; miktar / fiyat / taban / fark yok
+      ---
+      duration_ms: 2.499063
+      type: 'test'
+      ...
+    # Subtest: Excel tutarsızlıkları AYNEN: 130 / 150'lik 1S1Ç ÷120, Cam 130 1S2Ç CM elle (sonuç %20 Maliyet), Mika 120 1S2Ç etiketsiz, yan panel %20 etiketi / %15 oran
+    ok 2 - Excel tutarsızlıkları AYNEN: 130 / 150'lik 1S1Ç ÷120, Cam 130 1S2Ç CM elle (sonuç %20 Maliyet), Mika 120 1S2Ç etiketsiz, yan panel %20 etiketi / %15 oran
+      ---
+      duration_ms: 0.436724
+      type: 'test'
+      ...
+    # Subtest: zincir: tutar = miktar × fiyat → ARA → %18 → toplama → %20 ekle → ÷200; ara değer yuvarlanmaz; boş girdi 0 sayılır
+    ok 3 - zincir: tutar = miktar × fiyat → ARA → %18 → toplama → %20 ekle → ÷200; ara değer yuvarlanmaz; boş girdi 0 sayılır
+      ---
+      duration_ms: 0.706612
+      type: 'test'
+      ...
+    # Subtest: matris: liste-1 tesettür parlaktan, B7 zinciri, yan panel ayrı parlak farkı; liste-2 elle hücreler TABAN
+    ok 4 - matris: liste-1 tesettür parlaktan, B7 zinciri, yan panel ayrı parlak farkı; liste-2 elle hücreler TABAN
+      ---
+      duration_ms: 0.827067
+      type: 'test'
+      ...
+    # Subtest: sektör: Duşakabin Üretimi mevcut Üretim ve Sanayi grubunda, maliyet modülü yalnız onda
+    ok 5 - sektör: Duşakabin Üretimi mevcut Üretim ve Sanayi grubunda, maliyet modülü yalnız onda
+      ---
+      duration_ms: 0.236628
+      type: 'test'
+      ...
+    1..5
+ok 12 - 2.4.6 Maliyet Hesap Kartı: şablon (boş yapı) ve hesap zinciri
+  ---
+  duration_ms: 5.881965
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 Maliyet Hesap Kartı: göç v34 (yalnız ekleyici)
+    # Subtest: v33 veri dosyası v34'e geçer: yalnız maliyet_* tabloları (STRICT, boş) eklenir; ikinci açılış bir şey yapmaz
+    ok 1 - v33 veri dosyası v34'e geçer: yalnız maliyet_* tabloları (STRICT, boş) eklenir; ikinci açılış bir şey yapmaz
+      ---
+      duration_ms: 107.863249
+      type: 'test'
+      ...
+    1..1
+ok 13 - 2.4.6 Maliyet Hesap Kartı: göç v34 (yalnız ekleyici)
+  ---
+  duration_ms: 108.108704
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 Maliyet Hesap Kartı: API
+    # Subtest: sektör dışında kapalı (403 maliyet-sector, şablon kurulmaz); Duşakabin Üretimi seçilince açılır, boş şablon bir kez kurulur
+    ok 1 - sektör dışında kapalı (403 maliyet-sector, şablon kurulmaz); Duşakabin Üretimi seçilince açılır, boş şablon bir kez kurulur
+      ---
+      duration_ms: 89.998868
+      type: 'test'
+      ...
+    # Subtest: Kaydet: miktar / fiyat, satır ekle / sil, ✎ adlar, oran / bölen; eklenen satır yalnız ARA'ya girer; etiket ile oran ayrı
+    ok 2 - Kaydet: miktar / fiyat, satır ekle / sil, ✎ adlar, oran / bölen; eklenen satır yalnız ARA'ya girer; etiket ile oran ayrı
+      ---
+      duration_ms: 45.521532
+      type: 'test'
+      ...
+    # Subtest: K1: bölen 0, boş ya da sayı değilse reddedilir ("Bölen 0 olamaz."); kayıt değişmez; ön izleme de reddeder
+    ok 3 - K1: bölen 0, boş ya da sayı değilse reddedilir ("Bölen 0 olamaz."); kayıt değişmez; ön izleme de reddeder
+      ---
+      duration_ms: 79.391478
+      type: 'test'
+      ...
+    # Subtest: ön izleme yazmaz; değişmeyen kart sürüm denetimine girmez ve yazılmaz
+    ok 4 - ön izleme yazmaz; değişmeyen kart sürüm denetimine girmez ve yazılmaz
+      ---
+      duration_ms: 41.651145
+      type: 'test'
+      ...
+    # Subtest: matris / gramaj / bilgi: taban hücresine fark yazılmaz, ölçü satırı ve bilgi satırı eklenmez; ✎ sütun / ölçü / parça; elle Giden Kğ
+    ok 5 - matris / gramaj / bilgi: taban hücresine fark yazılmaz, ölçü satırı ve bilgi satırı eklenmez; ✎ sütun / ölçü / parça; elle Giden Kğ
+      ---
+      duration_ms: 78.146767
+      type: 'test'
+      ...
+    # Subtest: iki kişi aynı anda: aynı kartta ikinci kaydeden 409 (ilkinin değişikliği korunur); farklı kartlar ikisi de yazılır; eşzamanlı iki PUT'tan biri geçer
+    ok 6 - iki kişi aynı anda: aynı kartta ikinci kaydeden 409 (ilkinin değişikliği korunur); farklı kartlar ikisi de yazılır; eşzamanlı iki PUT'tan biri geçer
+      ---
+      duration_ms: 224.855331
+      type: 'test'
+      ...
+    # Subtest: yetki: stock.view okur, stock.manage yazar; Personel yazamaz; stock.view kaldırılınca kapanır
+    ok 7 - yetki: stock.view okur, stock.manage yazar; Personel yazamaz; stock.view kaldırılınca kapanır
+      ---
+      duration_ms: 143.04138
+      type: 'test'
+      ...
+    # Subtest: sektör değişince veri silinmez (yalnız kapanır); yeniden seçilince aynen döner; yeniden başlatınca kalır
+    ok 8 - sektör değişince veri silinmez (yalnız kapanır); yeniden seçilince aynen döner; yeniden başlatınca kalır
+      ---
+      duration_ms: 233.92965
+      type: 'test'
+      ...
+    # Subtest: şirket kapsamı: 002'nin sektörü ayrı; 002 Duşakabin değilken kapalı, seçilince kendi boş şablonu; yedek → geri yükle; Tüm Hareketleri Sil dokunmaz, Tümünü Sıfırla siler
+    ok 9 - şirket kapsamı: 002'nin sektörü ayrı; 002 Duşakabin değilken kapalı, seçilince kendi boş şablonu; yedek → geri yükle; Tüm Hareketleri Sil dokunmaz, Tümünü Sıfırla siler
+      ---
+      duration_ms: 833.769631
+      type: 'test'
+      ...
+    1..9
+ok 14 - 2.4.6 Maliyet Hesap Kartı: API
+  ---
+  duration_ms: 2289.941133
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri
+    # Subtest: vadeli elle Borç: Vade Tarihi'nde giriş kalemi (Cari (vadeli), Tahsil Edilecek Borç); faturasız cari alacağı olarak ikinci kez yok; carinin Σ = bakiye
+    ok 1 - vadeli elle Borç: Vade Tarihi'nde giriş kalemi (Cari (vadeli), Tahsil Edilecek Borç); faturasız cari alacağı olarak ikinci kez yok; carinin Σ = bakiye
+      ---
+      duration_ms: 90.462947
+      type: 'test'
+      ...
+    # Subtest: Beklenen Ödeme Tarihi girilmişse kalem o gündedir (Ödeme Sözü), Vade Tarihi'nde değil; Beklenen Ödeme Vade'den önce de olabilir (K6.5 (4))
+    ok 2 - Beklenen Ödeme Tarihi girilmişse kalem o gündedir (Ödeme Sözü), Vade Tarihi'nde değil; Beklenen Ödeme Vade'den önce de olabilir (K6.5 (4))
+      ---
+      duration_ms: 68.584644
+      type: 'test'
+      ...
+    # Subtest: FIFO kalanı: kısmi tahsilat kalemi küçültür; tahsilat silinince kalem büyür ve vadesiz borcun kalanı KENDİ gününde faturasız alacak olur; tam tahsilatta kalem yok
+    ok 3 - FIFO kalanı: kısmi tahsilat kalemi küçültür; tahsilat silinince kalem büyür ve vadesiz borcun kalanı KENDİ gününde faturasız alacak olur; tam tahsilatta kalem yok
+      ---
+      duration_ms: 223.434174
+      type: 'test'
+      ...
+    # Subtest: tedarikçideki elle Alacak ve alacak yönlü Açılış Bakiyesi: vadesinde ÇIKIŞ (Ödenecek Borç); ödeme kalemi küçültür
+    ok 4 - tedarikçideki elle Alacak ve alacak yönlü Açılış Bakiyesi: vadesinde ÇIKIŞ (Ödenecek Borç); ödeme kalemi küçültür
+      ---
+      duration_ms: 193.986689
+      type: 'test'
+      ...
+    # Subtest: KS2: müşterideki vadeli elle Alacak çıkış kalemidir, müşterinin borcundan düşülmez; bakiyede ikinci kez düşülmez (carinin net = bakiye)
+    ok 5 - KS2: müşterideki vadeli elle Alacak çıkış kalemidir, müşterinin borcundan düşülmez; bakiyede ikinci kez düşülmez (carinin net = bakiye)
+      ---
+      duration_ms: 157.339666
+      type: 'test'
+      ...
+    # Subtest: K6.5 (1): Mevcut Borç kartının kapsadığı kısım kartın taksitleriyle BİR kez; kapsanmayan kalan cari kalemidir
+    ok 6 - K6.5 (1): Mevcut Borç kartının kapsadığı kısım kartın taksitleriyle BİR kez; kapsanmayan kalan cari kalemidir
+      ---
+      duration_ms: 154.006475
+      type: 'test'
+      ...
+    # Subtest: karışık kuyruk: vadeli borç + vadeli satış faturası + tahsilat → fatura açığı ve borç kalanı kendi vadelerinde; Σ = bakiye, faturasız alacak yok
+    ok 7 - karışık kuyruk: vadeli borç + vadeli satış faturası + tahsilat → fatura açığı ve borç kalanı kendi vadelerinde; Σ = bakiye, faturasız alacak yok
+      ---
+      duration_ms: 169.746705
+      type: 'test'
+      ...
+    # Subtest: toplam = kalemler, her süzgeç: 7/30/60/90 gün, aralık + başlangıca kadar beklenen, gecikmişleri başlangıca ekle, gün / hafta / ay toplamları
+    ok 8 - toplam = kalemler, her süzgeç: 7/30/60/90 gün, aralık + başlangıca kadar beklenen, gecikmişleri başlangıca ekle, gün / hafta / ay toplamları
+      ---
+      duration_ms: 224.650316
+      type: 'test'
+      ...
+    # Subtest: PDF ve Excel aynı satırları yazar: 'Cari (vadeli)' kaynaklı kalem Nakit Akışı ve Gecikmiş sayfalarında, tutarıyla
+    ok 9 - PDF ve Excel aynı satırları yazar: 'Cari (vadeli)' kaynaklı kalem Nakit Akışı ve Gecikmiş sayfalarında, tutarıyla
+      ---
+      duration_ms: 147.718185
+      type: 'test'
+      ...
+    # Subtest: ortak yardımcı: projeksiyonun cari kalemleri = Vade Takip'in cari kalemleri (aynı aralık) = zil / takvim kalemleri (7 gün); kimlik, gün, yön, etiket, tutar
+    ok 10 - ortak yardımcı: projeksiyonun cari kalemleri = Vade Takip'in cari kalemleri (aynı aralık) = zil / takvim kalemleri (7 gün); kimlik, gün, yön, etiket, tutar
+      ---
+      duration_ms: 161.256385
+      type: 'test'
+      ...
+    # Subtest: yetki: Finans Raporları (overview.view) yoksa 403 (ekran, PDF, Excel); cari kalemi yalnız Cari görüntüleme (accounts.view) yetkisi olana — yoksa aynı borç bir kez, faturasız alacakta
+    ok 11 - yetki: Finans Raporları (overview.view) yoksa 403 (ekran, PDF, Excel); cari kalemi yalnız Cari görüntüleme (accounts.view) yetkisi olana — yoksa aynı borç bir kez, faturasız alacakta
+      ---
+      duration_ms: 366.992826
+      type: 'test'
+      ...
+    # Subtest: bir kez: Σ (cari kalemi + faturasız cari alacağı + kartın taksitleri) = carilerin açık bakiyesi; vadeli borç faturasız alacakta YOK, vadesiz borç orada
+    ok 12 - bir kez: Σ (cari kalemi + faturasız cari alacağı + kartın taksitleri) = carilerin açık bakiyesi; vadeli borç faturasız alacakta YOK, vadesiz borç orada
+      ---
+      duration_ms: 215.854433
+      type: 'test'
+      ...
+    # Subtest: bir kez (açık alış faturası; 2.4.3 MM5'ten kalan çift sayım): alış faturası kendi vadesinde çıkış, faturasız alacakta ikinci kez düşülmez; tedarikçinin vadesiz borcu kaybolmaz
+    ok 13 - bir kez (açık alış faturası; 2.4.3 MM5'ten kalan çift sayım): alış faturası kendi vadesinde çıkış, faturasız alacakta ikinci kez düşülmez; tedarikçinin vadesiz borcu kaybolmaz
+      ---
+      duration_ms: 208.009018
+      type: 'test'
+      ...
+    # Subtest: gecikmiş vadeli kalem takvimdeki gibi görünür: 'Vadesi geçmiş, kapanmamış' listesinde (gün, tutar, kimlik takvimle aynı); 'başlangıca ekle' ile başlangıca girer
+    ok 14 - gecikmiş vadeli kalem takvimdeki gibi görünür: 'Vadesi geçmiş, kapanmamış' listesinde (gün, tutar, kimlik takvimle aynı); 'başlangıca ekle' ile başlangıca girer
+      ---
+      duration_ms: 75.692065
+      type: 'test'
+      ...
+    # Subtest: pencere iki ucu kapalı (K-P1): son gündeki kalem dahil, ertesi gün değil; aralığın ilk günündeki kalem dahil
+    ok 15 - pencere iki ucu kapalı (K-P1): son gündeki kalem dahil, ertesi gün değil; aralığın ilk günündeki kalem dahil
+      ---
+      duration_ms: 130.305051
+      type: 'test'
+      ...
+    # Subtest: cari silinince kalemi de faturasız alacağı da yok; geri yüklenince döner
+    ok 16 - cari silinince kalemi de faturasız alacağı da yok; geri yüklenince döner
+      ---
+      duration_ms: 101.081836
+      type: 'test'
+      ...
+    # Subtest: 002 şirketi: boş veri (satır yok, toplamlar 0); kalemler şirkete ayrı
+    ok 17 - 002 şirketi: boş veri (satır yok, toplamlar 0); kalemler şirkete ayrı
+      ---
+      duration_ms: 262.031181
+      type: 'test'
+      ...
+    1..17
+ok 15 - 2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemleri
+  ---
+  duration_ms: 3526.519408
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 madde 11: ay sonu, yıl dönümü ve gün değişimi (sahte saat)
+    # Subtest: bugün vadeli kalem aralıktadır (gecikmiş değil); yarın (yeni yıl) aralıkta; ay sonu (31 Ocak) 30 günlükte değil 60 günlükte; gün değişince bugünkü kalem gecikmişe geçer
+    ok 1 - bugün vadeli kalem aralıktadır (gecikmiş değil); yarın (yeni yıl) aralıkta; ay sonu (31 Ocak) 30 günlükte değil 60 günlükte; gün değişince bugünkü kalem gecikmişe geçer
+      ---
+      duration_ms: 139.000917
+      type: 'test'
+      ...
+    1..1
+ok 16 - 2.4.6 madde 11: ay sonu, yıl dönümü ve gün değişimi (sahte saat)
+  ---
+  duration_ms: 492.273401
+  type: 'suite'
+  ...
+# Subtest: Madde 10 API: Tedarikçiye İade (faturasız Alış İadesi, 'preturn')
+    # Subtest: Açık Hesap: tedarikçide Borç 'Alış iadesi'; en eski açık alış faturası kapanır; stok azalır; yevmiye B 320 / A 153 (600 yok); Kasa değişmez
+    ok 1 - Açık Hesap: tedarikçide Borç 'Alış iadesi'; en eski açık alış faturası kapanır; stok azalır; yevmiye B 320 / A 153 (600 yok); Kasa değişmez
+      ---
+      duration_ms: 145.859711
+      type: 'test'
+      ...
+    # Subtest: KS7.1 aynen: tedarikçiye NEDENSİZ açık hesap çıkışı yükümlülüktür (alış faturasını kapatmaz; yevmiye 600)
+    ok 2 - KS7.1 aynen: tedarikçiye NEDENSİZ açık hesap çıkışı yükümlülüktür (alış faturasını kapatmaz; yevmiye 600)
+      ---
+      duration_ms: 86.102795
+      type: 'test'
+      ...
+    # Subtest: Nakit / Havale: para tedarikçiden geri alınır — Kasa / banka girişi, yevmiye B 100 (102) / A 153; kart yolu 400 (hiçbir şey yazılmaz)
+    ok 3 - Nakit / Havale: para tedarikçiden geri alınır — Kasa / banka girişi, yevmiye B 100 (102) / A 153; kart yolu 400 (hiçbir şey yazılmaz)
+      ---
+      duration_ms: 110.650992
+      type: 'test'
+      ...
+    # Subtest: taksitlendirilmez; Satış Yapma yetkisi para yazdıramaz (yalnız miktar); satış yine yazdırır
+    ok 4 - taksitlendirilmez; Satış Yapma yetkisi para yazdıramaz (yalnız miktar); satış yine yazdırır
+      ---
+      duration_ms: 207.508197
+      type: 'test'
+      ...
+    # Subtest: Düzelt nedeni korur; Sil → Silinenler'den geri yükle 'preturn' olarak döner (alış faturası yeniden kapanır)
+    ok 5 - Düzelt nedeni korur; Sil → Silinenler'den geri yükle 'preturn' olarak döner (alış faturası yeniden kapanır)
+      ---
+      duration_ms: 109.69753
+      type: 'test'
+      ...
+    # Subtest: madde 9 ile: tedarikçi iade bedelini geri öderse (Tahsilat → Geri Ödenen İade: bu iade) alış faturası yeniden açılır; bakiye tutarlı
+    ok 6 - madde 9 ile: tedarikçi iade bedelini geri öderse (Tahsilat → Geri Ödenen İade: bu iade) alış faturası yeniden açılır; bakiye tutarlı
+      ---
+      duration_ms: 86.403607
+      type: 'test'
+      ...
+    1..6
+ok 17 - Madde 10 API: Tedarikçiye İade (faturasız Alış İadesi, 'preturn')
+  ---
+  duration_ms: 1211.429392
+  type: 'suite'
+  ...
+1..17
+# tests 86
+# suites 17
+# pass 86
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19488.476326

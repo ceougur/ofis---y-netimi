@@ -1,0 +1,600 @@
+{
+ "toplam": 613,
+ "farklar": [
+  {
+   "anahtar": "k1:hareket:acilis:S:kalan",
+   "beklenen": 78546,
+   "program": 54783,
+   "etiket": "YAYGIN",
+   "kural": "S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k2:hareket:acilis:S:kalan",
+   "beklenen": 78546,
+   "program": 54783,
+   "etiket": "YAYGIN",
+   "kural": "S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k3:fatura:A1:acik",
+   "beklenen": 370000,
+   "program": 353681,
+   "etiket": "YAYGIN",
+   "kural": "S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme (KS9: Alış İadesi bağsız ödeme; geri tahsil edilen kısmı değil — KARAR GEREKİR K-c)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k3:hareket:acilis:S:kalan",
+   "beklenen": 7444,
+   "program": 0,
+   "etiket": "YAYGIN",
+   "kural": "S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k3:takvim:fatura:A1",
+   "beklenen": {
+    "amount": 370000,
+    "direction": "out"
+   },
+   "program": {
+    "amount": 353681,
+    "direction": "out"
+   },
+   "etiket": "YAYGIN",
+   "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k4:fatura:A1:acik",
+   "beklenen": 370000,
+   "program": 353681,
+   "etiket": "YAYGIN",
+   "kural": "S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme (KS9: Alış İadesi bağsız ödeme; geri tahsil edilen kısmı değil — KARAR GEREKİR K-c)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k4:fatura:G3:acik",
+   "beklenen": 75658,
+   "program": 24938,
+   "etiket": "BAŞ MİMAR",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama · S1 elle kayıtla tek kuyruk · KS8 iade geri ödemesi (madde 9): geri ödenen iade kapatıcı değil",
+   "sinif": "BULGU",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k4:hareket:acilis:S:kalan",
+   "beklenen": 7444,
+   "program": 0,
+   "etiket": "YAYGIN",
+   "kural": "S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k4:hareket:s010:kalan",
+   "beklenen": 135405,
+   "program": 0,
+   "etiket": "BAŞ MİMAR",
+   "kural": "S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası)",
+   "sinif": "BULGU",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k4:projeksiyon:cari",
+   "beklenen": 2,
+   "program": 1,
+   "etiket": "YAYGIN",
+   "kural": "KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k4:projeksiyon:hareket:s010",
+   "beklenen": {
+    "amount": 135405,
+    "date": "2026-05-28",
+    "direction": "in"
+   },
+   "program": "yok",
+   "etiket": "YAYGIN",
+   "kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k4:takvim:cariKalemSayisi",
+   "beklenen": 1,
+   "program": 0,
+   "etiket": "BAŞ MİMAR",
+   "kural": "K6.3 takvimdeki cari kalemlerinin sayısı",
+   "sinif": "BULGU",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k4:takvim:fatura:A1",
+   "beklenen": {
+    "amount": 370000,
+    "direction": "out"
+   },
+   "program": {
+    "amount": 353681,
+    "direction": "out"
+   },
+   "etiket": "YAYGIN",
+   "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k4:takvim:fatura:G3",
+   "beklenen": {
+    "amount": 75658,
+    "direction": "in"
+   },
+   "program": {
+    "amount": 24938,
+    "direction": "in"
+   },
+   "etiket": "YAYGIN",
+   "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k4:takvim:hareket:s010",
+   "beklenen": {
+    "amount": 135405,
+    "cari": "E",
+    "days": -33,
+    "direction": "in",
+    "dueDate": "2026-05-28",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 1",
+    "state": "overdue"
+   },
+   "program": "yok",
+   "etiket": "BAŞ MİMAR",
+   "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün",
+   "sinif": "BULGU",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k4:vadeTakip:hareket:s010",
+   "beklenen": {
+    "amount": 135405,
+    "date": "2026-05-28",
+    "direction": "in"
+   },
+   "program": "yok",
+   "etiket": "BAŞ MİMAR",
+   "kural": "K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir",
+   "sinif": "BULGU",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k5:fatura:A1:acik",
+   "beklenen": 370000,
+   "program": 353681,
+   "etiket": "YAYGIN",
+   "kural": "S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme (KS9: Alış İadesi bağsız ödeme; geri tahsil edilen kısmı değil — KARAR GEREKİR K-c)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k5:fatura:G3:acik",
+   "beklenen": 75658,
+   "program": 12049,
+   "etiket": "YAYGIN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama · S1 elle kayıtla tek kuyruk · KS8 iade geri ödemesi (madde 9): geri ödenen iade kapatıcı değil — KARAR GEREKİR K-a/K-b",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k5:hareket:acilis:S:kalan",
+   "beklenen": 7444,
+   "program": 0,
+   "etiket": "YAYGIN",
+   "kural": "S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k5:hareket:s010:kalan",
+   "beklenen": 48880,
+   "program": 0,
+   "etiket": "YAYGIN",
+   "kural": "S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k5:projeksiyon:cari",
+   "beklenen": 2,
+   "program": 1,
+   "etiket": "YAYGIN",
+   "kural": "KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k5:projeksiyon:hareket:s010",
+   "beklenen": {
+    "amount": 48880,
+    "date": "2026-05-28",
+    "direction": "in"
+   },
+   "program": "yok",
+   "etiket": "YAYGIN",
+   "kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k5:takvim:cariKalemSayisi",
+   "beklenen": 1,
+   "program": 0,
+   "etiket": "BAŞ MİMAR",
+   "kural": "K6.3 takvimdeki cari kalemlerinin sayısı",
+   "sinif": "BULGU",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k5:takvim:fatura:A1",
+   "beklenen": {
+    "amount": 370000,
+    "direction": "out"
+   },
+   "program": {
+    "amount": 353681,
+    "direction": "out"
+   },
+   "etiket": "YAYGIN",
+   "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k5:takvim:fatura:G3",
+   "beklenen": {
+    "amount": 75658,
+    "direction": "in"
+   },
+   "program": {
+    "amount": 12049,
+    "direction": "in"
+   },
+   "etiket": "YAYGIN",
+   "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k5:takvim:hareket:s010",
+   "beklenen": {
+    "amount": 48880,
+    "cari": "E",
+    "days": -33,
+    "direction": "in",
+    "dueDate": "2026-05-28",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 1",
+    "state": "overdue"
+   },
+   "program": "yok",
+   "etiket": "YAYGIN",
+   "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k5:vadeTakip:hareket:s010",
+   "beklenen": {
+    "amount": 48880,
+    "date": "2026-05-28",
+    "direction": "in"
+   },
+   "program": "yok",
+   "etiket": "YAYGIN",
+   "kural": "K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k6:fatura:A1:acik",
+   "beklenen": 221488,
+   "program": 197725,
+   "etiket": "YAYGIN",
+   "kural": "S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme (KS9: Alış İadesi bağsız ödeme; geri tahsil edilen kısmı değil — KARAR GEREKİR K-c)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k6:fatura:G3:acik",
+   "beklenen": 75658,
+   "program": 12049,
+   "etiket": "YAYGIN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama · S1 elle kayıtla tek kuyruk · KS8 iade geri ödemesi (madde 9): geri ödenen iade kapatıcı değil — KARAR GEREKİR K-a/K-b",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k6:fatura:G4:acik",
+   "beklenen": 316894,
+   "program": 100700,
+   "etiket": "YAYGIN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama · S1 elle kayıtla tek kuyruk · KS8 iade geri ödemesi (madde 9): geri ödenen iade kapatıcı değil — KARAR GEREKİR K-a/K-b",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k6:hareket:s010:kalan",
+   "beklenen": 48880,
+   "program": 0,
+   "etiket": "YAYGIN",
+   "kural": "S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k6:projeksiyon:cari",
+   "beklenen": 4,
+   "program": 3,
+   "etiket": "YAYGIN",
+   "kural": "KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k6:projeksiyon:hareket:s010",
+   "beklenen": {
+    "amount": 48880,
+    "date": "2026-05-28",
+    "direction": "in"
+   },
+   "program": "yok",
+   "etiket": "YAYGIN",
+   "kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k6:takvim:cariKalemSayisi",
+   "beklenen": 2,
+   "program": 1,
+   "etiket": "BAŞ MİMAR",
+   "kural": "K6.3 takvimdeki cari kalemlerinin sayısı",
+   "sinif": "BULGU",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k6:takvim:fatura:A1",
+   "beklenen": {
+    "amount": 221488,
+    "direction": "out"
+   },
+   "program": {
+    "amount": 197725,
+    "direction": "out"
+   },
+   "etiket": "YAYGIN",
+   "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k6:takvim:fatura:G3",
+   "beklenen": {
+    "amount": 75658,
+    "direction": "in"
+   },
+   "program": {
+    "amount": 12049,
+    "direction": "in"
+   },
+   "etiket": "YAYGIN",
+   "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k6:takvim:fatura:G4",
+   "beklenen": {
+    "amount": 316894,
+    "direction": "in"
+   },
+   "program": {
+    "amount": 100700,
+    "direction": "in"
+   },
+   "etiket": "YAYGIN",
+   "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k6:takvim:hareket:s010",
+   "beklenen": {
+    "amount": 48880,
+    "cari": "E",
+    "days": -33,
+    "direction": "in",
+    "dueDate": "2026-05-28",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 1",
+    "state": "overdue"
+   },
+   "program": "yok",
+   "etiket": "YAYGIN",
+   "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "k6:vadeTakip:hareket:s010",
+   "beklenen": {
+    "amount": 48880,
+    "date": "2026-05-28",
+    "direction": "in"
+   },
+   "program": "yok",
+   "etiket": "YAYGIN",
+   "kural": "K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "kson:fatura:A1:acik",
+   "beklenen": 221488,
+   "program": 197725,
+   "etiket": "YAYGIN",
+   "kural": "S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme (KS9: Alış İadesi bağsız ödeme; geri tahsil edilen kısmı değil — KARAR GEREKİR K-c)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "kson:fatura:G3:acik",
+   "beklenen": 75658,
+   "program": 12049,
+   "etiket": "YAYGIN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama · S1 elle kayıtla tek kuyruk · KS8 iade geri ödemesi (madde 9): geri ödenen iade kapatıcı değil — KARAR GEREKİR K-a/K-b",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "kson:fatura:G4:acik",
+   "beklenen": 316894,
+   "program": 100700,
+   "etiket": "YAYGIN",
+   "kural": "B2.1 açık = tutar − bağlı − en eski kapama · S1 elle kayıtla tek kuyruk · KS8 iade geri ödemesi (madde 9): geri ödenen iade kapatıcı değil — KARAR GEREKİR K-a/K-b",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "kson:hareket:s010:kalan",
+   "beklenen": 48880,
+   "program": 0,
+   "etiket": "YAYGIN",
+   "kural": "S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "kson:projeksiyon:cari",
+   "beklenen": 4,
+   "program": 3,
+   "etiket": "YAYGIN",
+   "kural": "KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "kson:projeksiyon:hareket:s010",
+   "beklenen": {
+    "amount": 48880,
+    "date": "2026-05-28",
+    "direction": "in"
+   },
+   "program": "yok",
+   "etiket": "YAYGIN",
+   "kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "kson:takvim:cariKalemSayisi",
+   "beklenen": 2,
+   "program": 1,
+   "etiket": "BAŞ MİMAR",
+   "kural": "K6.3 takvimdeki cari kalemlerinin sayısı",
+   "sinif": "BULGU",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "kson:takvim:fatura:A1",
+   "beklenen": {
+    "amount": 221488,
+    "direction": "out"
+   },
+   "program": {
+    "amount": 197725,
+    "direction": "out"
+   },
+   "etiket": "YAYGIN",
+   "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "kson:takvim:fatura:G3",
+   "beklenen": {
+    "amount": 75658,
+    "direction": "in"
+   },
+   "program": {
+    "amount": 12049,
+    "direction": "in"
+   },
+   "etiket": "YAYGIN",
+   "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "kson:takvim:fatura:G4",
+   "beklenen": {
+    "amount": 316894,
+    "direction": "in"
+   },
+   "program": {
+    "amount": 100700,
+    "direction": "in"
+   },
+   "etiket": "YAYGIN",
+   "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "kson:takvim:hareket:s010",
+   "beklenen": {
+    "amount": 48880,
+    "cari": "E",
+    "days": -33,
+    "direction": "in",
+    "dueDate": "2026-05-28",
+    "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "person": "Rastgele Epsilon 1",
+    "state": "overdue"
+   },
+   "program": "yok",
+   "etiket": "YAYGIN",
+   "kural": "K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  },
+  {
+   "anahtar": "kson:vadeTakip:hareket:s010",
+   "beklenen": {
+    "amount": 48880,
+    "date": "2026-05-28",
+    "direction": "in"
+   },
+   "program": "yok",
+   "etiket": "YAYGIN",
+   "kural": "K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir",
+   "sinif": "İNCELE",
+   "sinif246": "2.4.6 kararıyla değişen"
+  }
+ ],
+ "bilinen": [],
+ "hatalar": []
+}

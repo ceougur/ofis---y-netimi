@@ -1,0 +1,32 @@
+{
+  "ad": "246-kalan-metin/yeni-run",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/run.mjs",
+  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "dal": "is/kalan-metin",
+  "kirli": 22,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T10:26:37.529Z",
+  "sure_sn": 234.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "e2e-run",
+    "toplam": 50,
+    "gecen": 50,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-kalan-metin/yeni-run.log",
+  "klasor": "/home/user/wt/kalan-metin",
+  "ham_cikti_sha256": "4d54fdd43d0903776479df5f5e46f4d0a8e470709e238c494a2080b553d72fe6",
+  "ham_cikti_bayt": 5615
+}

@@ -1,0 +1,158 @@
+{
+  "ad": "246-maliyet-cekirdek/kahin-mutasyon-m4-excel-duzeltildi-130",
+  "komut": "python3 -I test/bagimsiz/maliyet/kos.py",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T10:12:08.277Z",
+  "sure_sn": 413.2,
+  "cikis_kodu": 3,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "guvenilirlik",
+    "toplam": 80,
+    "gecen": 0,
+    "basarisiz": 80,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 3; 80 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "sablon: adım 0 sablon_oku kartlar/cam/130-1s1c-h182-kabin/bolen: beklenen 120 program 130",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/bos: adım 1 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/tek-satir: adım 3 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/tek-satir: adım 3 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 4.369776 program 4.033639384615384",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/tek-satir: adım 3 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 4.369776 program 4.033639384615384",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/dolu/t1: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/dolu/t1: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 1651.3775761960003 program 1524.3485318732312",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/dolu/t1: adım 9 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 1651.3775761960003 program 1524.3485318732312",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/dolu/t2: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/dolu/t2: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 1288.250471132 program 1189.1542810449232",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/dolu/t2: adım 9 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 1288.250471132 program 1189.1542810449232",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/dolu/t3: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/dolu/t3: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 1186.3109480425398 program 1095.0562597315752",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/dolu/t3: adım 9 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 1186.3109480425398 program 1095.0562597315752",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/yari-bos: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/yari-bos: adım 9 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 2.7836369625 program 2.569511042307693",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/yari-bos: adım 9 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 2.7836369625 program 2.569511042307693",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/satir-ekle: adım 7 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/satir-ekle: adım 7 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 1825.6444888699998 program 1685.2102974184613",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/satir-ekle: adım 7 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 1825.6444888699998 program 1685.2102974184613",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/satir-ekle: adım 10 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/satir-ekle: adım 10 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 1836.0731518700002 program 1694.8367555723078",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/satir-ekle: adım 10 oku cam/130-1s1c-h182-kabin sonuc: hesap beklenen 1836.0731518700002 program 1694.8367555723078",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/satir-sil: adım 10 oku cam/130-1s1c-h182-kabin adimlar/bolme/bolen: girdi beklenen 120 program 130",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cam/130-1s1c-h182-kabin/satir-sil: adım 10 oku cam/130-1s1c-h182-kabin adimlar/bolme/deger: hesap beklenen 2665.5932757965998 program 2460.5476391968614",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-25/246-maliyet-cekirdek/kahin-mutasyon-m4-excel-duzeltildi-130.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-maliyet-cekirdek/246-mut-832573f-m4-excel-duzeltildi-130",
+  "ham_cikti_sha256": "1174ef3303b32e1fe00d31ad2ae75e61ab2177309644c504c2cffc762c58a413",
+  "ham_cikti_bayt": 13615
+}

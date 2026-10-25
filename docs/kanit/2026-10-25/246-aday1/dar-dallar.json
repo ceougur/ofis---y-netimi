@@ -1,0 +1,32 @@
+{
+  "ad": "246-aday1/dar-dallar",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/maliyet-bagsizlik.test.mjs test/maliyet-cekirdek-246.test.mjs test/acilis-isareti-246.test.mjs test/iade-geri-odeme-246.test.mjs test/stok-alis-iadesi-246.test.mjs test/goc-246-iade-bagi.test.mjs test/projeksiyon-vade-246.test.mjs test/kalan-metin-246.test.mjs test/kilavuz-pdf-surum.test.mjs",
+  "commit": "cf27e39a1583356bab1681762223993503260a98",
+  "dal": "aday246-1",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T12:12:54.101Z",
+  "sure_sn": 19.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 86,
+    "gecen": 86,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-aday1/dar-dallar.log",
+  "klasor": "/home/user/wt/aday246-1",
+  "ham_cikti_sha256": "40b78032b702733a9b954955a0708411b5fddfaec2bf8c187fca1150e825906f",
+  "ham_cikti_bayt": 34276
+}

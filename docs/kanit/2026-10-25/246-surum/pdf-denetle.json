@@ -1,0 +1,32 @@
+{
+  "ad": "246-surum/pdf-denetle",
+  "komut": "node docs/kilavuz/pdf-denetle.mjs",
+  "commit": "5ec7d3907fbb5f0c26945981f67360f75b5a8868",
+  "dal": "aday246-2",
+  "kirli": 4,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T14:02:37.281Z",
+  "sure_sn": 11.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 39,
+    "gecen": 39,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-surum/pdf-denetle.log",
+  "klasor": "/home/user/wt/aday246-2",
+  "ham_cikti_sha256": "ef1d641361e759523767510a208bd3971c32326ad6b5629fe86c0adad41550cc",
+  "ham_cikti_bayt": 2210
+}

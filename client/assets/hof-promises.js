@@ -141,7 +141,11 @@
   // düğme yoktur (tablo kaydı gibi işlenmez). Sunucunun ürettiği her kaynak burada bir dal ister: test/takvim-pil-kaynak.test.mjs.
   const can = permission => Boolean(HOF.can?.(permission));
   const sourceOf = item => (item?.source ? String(item.source) : String(item?.id || "").startsWith("due|") ? "table" : "");
-  const noteOf = item => [item.label, item.dueText].filter(Boolean).join(" · ");
+  // 2.4.6 (2.4.5 gezinti B6): carinin vadeli borç kaleminde kaydın Açıklaması da (aynı caride iki vadeli borç ayırt edilir).
+  const noteOf = item => [item.label, item.note, item.dueText].filter(Boolean).join(" · ");
+  // 2.4.6 (B7): kalemin tutar satırının adı yöne göre — ödeme kalemi (alış faturası, verilen çek, banka gideri) "Beklenen" değil "Ödenecek".
+  // Yönsüz planlı banka transferi "Tutar".
+  const amountLabel = item => (item.direction === "out" ? "Ödenecek" : item.source === "bank" && item.direction !== "in" ? "Tutar" : "Tahsil Edilecek");
   // go.allowed: kişinin o kaynağı görme yetkisi (yoksa pil kartında / zilde düğme çıkmaz; Vade Takip'te modül kendi iletisini verir).
   const DUE_SOURCES = {
     // Tablodaki kayıt (Excel / Sheets): tahsilat kaydın carisine (ya da kayda bağlı taksit kartına) girilir (hof-workspace.js actions.payment). 2.4.5 madde 3:
@@ -231,12 +235,12 @@
     const acts = actionsOf(item);
     const card = HOF.el(
       "div",
-      { class: "hof-payment-action-card", role: "dialog", "aria-label": `${who(item)} tahsilatı` },
+      { class: "hof-payment-action-card", role: "dialog", "aria-label": `${who(item)} ${item.direction === "out" ? "ödemesi" : "tahsilatı"}` },
       `<button type="button" class="hof-payment-action-close" aria-label="Kapat">×</button>
       <div class="hof-payment-action-title">${esc(who(item))}</div>
-      <div class="hof-payment-action-help">${item.caseNo && item.person ? `${esc(item.caseNo)} · ` : ""}${esc(item.label)} · ${esc(item.dueText)}</div>
+      <div class="hof-payment-action-help">${item.caseNo && item.person ? `${esc(item.caseNo)} · ` : ""}${esc(item.label)}${item.note ? ` · ${esc(item.note)}` : ""} · ${esc(item.dueText)}</div>
       <dl class="hof-due-facts">
-        <div><dt>Beklenen</dt><dd>${item.amount ? esc(money(item.amount)) : "Tutar yazılmamış"}${item.partial ? ` <small>(kısmen ödendi)</small>` : ""}</dd></div>
+        <div><dt>${esc(amountLabel(item))}</dt><dd>${item.amount ? esc(money(item.amount)) : "Tutar yazılmamış"}${item.partial ? ` <small>(kısmen ödendi)</small>` : ""}</dd></div>
         <div><dt>Durum</dt><dd class="is-${esc(item.state)}">${esc(stateText(item))}</dd></div>
         ${item.debt ? `<div><dt>Kalan Borç</dt><dd>${esc(money(item.debt))}</dd></div>` : ""}
         ${item.tab ? `<div><dt>Sekme</dt><dd>${esc(item.tab)}</dd></div>` : ""}
