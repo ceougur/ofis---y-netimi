@@ -1,0 +1,73 @@
+{
+"toplam": 104,
+"farklar": [
+{
+"anahtar": "k1:projeksiyon:cari",
+"beklenen": 1,
+"program": 0,
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k1:projeksiyon:hareket:acilis:A",
+"beklenen": {
+"amount": 200000,
+"date": "2026-06-01",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan − Mevcut Borç kartının açık kapsamı, K6.5 (1) bir kez; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k2:projeksiyon:cari",
+"beklenen": 1,
+"program": 0,
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k2:projeksiyon:hareket:acilis:A",
+"beklenen": {
+"amount": 200000,
+"date": "2026-06-01",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan − Mevcut Borç kartının açık kapsamı, K6.5 (1) bir kez; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k3:projeksiyon:cari",
+"beklenen": 1,
+"program": 0,
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k3:projeksiyon:hareket:acilis:A",
+"beklenen": {
+"amount": 200000,
+"date": "2026-06-01",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan − Mevcut Borç kartının açık kapsamı, K6.5 (1) bir kez; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+}
+],
+"bilinen": [],
+"hatalar": []
+}

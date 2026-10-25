@@ -202,6 +202,9 @@ export function settleLedger({ lines, invoices, links = new Map(), chequeEvents 
     }
   }
   const ordered = netted.size ? sorted.filter(line => !netted.has(line.id)) : sorted;
+  // Aynı tarih + aynı kayıt anı (durağan saat, aynı milisaniye): yazım sırası (girdinin sırası; sıralama kararlı — ders 31, 2.4.6 B3).
+  const rank = new Map(sorted.map((line, index) => [line.id, index]));
+  const later = (a, b) => (a.date !== b.date ? a.date > b.date : String(a.at || "") !== String(b.at || "") ? String(a.at || "") > String(b.at || "") : (rank.get(a.id) ?? -1) > (rank.get(b.id) ?? -1));
   // v2.0.23: ayrı borç yazan (mevcut borcu taksitlendirmeyen) ve hiçbir faturanın kartı olmayan kartlar.
   const separatePlans = new Set(lines.filter(line => line.origin === "plan" && line.kind === "plan" && !line.covers && line.planId && !planOwner.has(line.planId)).map(line => line.planId));
   const kindOf = line => (line.origin === "invoice" ? byId.get(line.sourceId)?.kind || "" : "");
@@ -411,7 +414,7 @@ export function settleLedger({ lines, invoices, links = new Map(), chequeEvents 
     }
     // K-b: karşı tarafın açık iadeleri (yalnız iadeye bağlanmamış parayla kapanır) — kendi tarihiyle sıraya girer (aynı gün: önce kayıtlı satır, ders 31).
     for (const open of pseudo) {
-      const at = obligations.findIndex(item => (item.line.date === open.line.date ? String(item.line.at || "") > String(open.line.at || "") : item.line.date > open.line.date));
+      const at = obligations.findIndex(item => later(item.line, open.line));
       const item = { invoiceId: "", lineId: `open-return:${open.key}`, line: open.line, bornAt: "", free: open.left, covered: new Map(), closers: [], planned: false, refundOf: "", pseudo: open.key, taken: [] };
       if (at < 0) obligations.push(item);
       else obligations.splice(at, 0, item);
@@ -543,40 +546,32 @@ export function settleLedger({ lines, invoices, links = new Map(), chequeEvents 
     .filter(({ item }) => !item.planned && item.free > 0)
     .sort((a, b) => (a.item.bornAt === b.item.bornAt ? b.index - a.index : a.item.bornAt < b.item.bornAt ? 1 : -1))
     .map(({ item }) => item);
-  const coverage = new Map();
-  for (const plan of coverPlans) {
-    // Karşılıksızı kartın açıldığı anda henüz olmayan evrak o an faturayı ödemiş sayılır (kapsam o günkü açık borçtur).
-    const known = sorted.filter(line => facts(line).born <= plan.at && !(netted.has(line.id) && facts(netted.get(line.id)).born <= plan.at));
-    const knownOffsets = offsets.filter(offset => String(offset.createdAt || offset.date || "") <= plan.at);
-    const parts = new Map();
-    let rest = plan.total;
-    // 2.4.6: iadeye bağlı geri ödeme kapsamda da bölünür (kartın açıldığı ana kadarki satırlarla; geri ödeme borç değildir, kapsanmaz).
-    for (const item of newestFirst(runSide("receivable", known, coverage, knownOffsets, false, { split: splitOf(known) }).obligations)) {
-      if (rest <= 0) break;
-      const take = Math.min(item.free, rest);
-      parts.set(item.lineId, (parts.get(item.lineId) || 0) + take);
-      rest -= take;
-    }
-    coverage.set(plan.planId, parts);
-  }
-  // K-a bölmesi bir kez; K-b: önce iki taraf açık iadesiz kapanır (iade notlarının kalanı), karşı tarafta iadeye bağlanmamış para varsa ikinci geçişte açık
-  // iadeler o tarafın sırasına girer. İkinci geçiş yalnız gerektiğinde koşar (iadesiz carilerde maliyet aynı). BİLİNEN SINIR: aynı caride iki yönde de açık iade
-  // ve iki yönde de bağsız para varsa açık iadelerin boyu ilk geçişten alınır (ikinci geçiş kendi notunu küçültebilir; iade belgesinin açığı 0'da kırpılır).
-  let split = splitOf(ordered);
-  const runAll = pseudoBySide => Object.fromEntries(["receivable", "payable"].map(side => [side, runSide(side, ordered, side === "receivable" ? coverage : new Map(), offsets, true, { split, pseudo: pseudoBySide[side] || [] })]));
-  let runs = runAll({});
   const other = { receivable: "payable", payable: "receivable" };
-  const openNotes = side => runs[side].pool.filter(item => item.refundKey && item.left > 0).map(item => ({ key: item.refundKey, line: item.line, left: item.left }));
-  const hasFree = side => runs[side].pool.some(item => item.amount > 0 && freeMoney(item));
-  const pseudoBySide = { payable: hasFree("payable") ? openNotes("receivable") : [], receivable: hasFree("receivable") ? openNotes("payable") : [] };
-  if (pseudoBySide.payable.length || pseudoBySide.receivable.length) runs = runAll(pseudoBySide);
-  // 2.4.6 BAŞ MİMAR KARARI (DB1, bağsız geri ödeme; Σ açık = cari bakiye): iadeye bağlanmamış para (müşteriye Ödeme / tedarikçiden Tahsilat, evrak dahil) önce
-  // K-b ile açık iadeleri ve kendi tarafının yükümlülüklerini kapatır; ARTANI, karşı tarafta alacağı bir faturayı / borcu kapatmış iadelerin (en eski önce) geri
-  // ödemesi sayılır — iade o kadar kapatıcı olmaktan çıkar, kapattığı açık yeniden açılır. Açık bağ (refund_of, çek bağı) önce gelir (bölmede önce düşer);
-  // üst sınır iadenin geri ödeme dışında kapattığı tutar (closing). Tarih koşulu yok (iadeden önce verilen para da sayılır). Yalnız gerektiğinde bir geçiş daha.
-  const implicitOf = () => {
-    const out = new Map();
+  // Kapamanın geçişleri (kapsam döngüsü ve son kapama AYNI kuralla — 2.4.6 B1: kart anındaki kapsam da bağsız geri ödemeyi görür):
+  //   1. geçiş: açık bağ bölmesiyle (K-a) iki taraf.
+  //   2. geçiş (yalnız gerekirse; K-b): karşı tarafın AÇIK iadeleri (1. geçişteki boylarıyla) bağsız paranın tarafında, kendi tarihleriyle tek sıraya girer —
+  //      yalnız hangi bağsız paranın hangi açık iadeye gittiğini belirler.
+  //   3. geçiş (yalnız gerekirse): bağsız paranın iadeye giden bütün kısımları — K-b'nin açık iadeye verdiği ve (BAŞ MİMAR KARARI, KS8.1) yükümlülüklerden ARTANIN
+  //      alacağı bir faturayı / borcu kapatmış iadeye (en eski önce; üst sınır iadenin geri ödeme dışında kapattığı, taksitli faturaya mahsup hariç) giden kısmı —
+  //      açık bağ gibi iadenin GERİ ÖDEMESİDİR: adım R'de iadenin alacağıyla kapanır, iade o kadar kapatıcı olmaktan çıkar. Son geçişte açık iade kalemi yoktur
+  //      (2.4.6 B2: kalem ile adım R aynı açığı iki kez tüketiyordu). Açık bağ önce gelir (bölmede önce düşer). Σ açık = cari bakiye (avans hariç, K-a).
+  //   BİLİNEN SINIR: aynı caride iki yönde de açık iade ve iki yönde de bağsız para varsa açık iadelerin boyu 1. geçişten alınır.
+  const passes = (lineList, offsetList, coverageMap, track) => {
+    let split = splitOf(lineList);
+    const runAll = (pseudoBySide = {}) => Object.fromEntries(["receivable", "payable"].map(side => [side, runSide(side, lineList, side === "receivable" ? coverageMap : new Map(), offsetList, track, { split, pseudo: pseudoBySide[side] || [] })]));
+    let runs = runAll();
+    const openNotes = side => runs[side].pool.filter(item => item.refundKey && item.left > 0).map(item => ({ key: item.refundKey, line: item.line, left: item.left }));
+    const hasFree = side => runs[side].pool.some(item => item.amount > 0 && freeMoney(item));
+    const pseudoBySide = { payable: hasFree("payable") ? openNotes("receivable") : [], receivable: hasFree("receivable") ? openNotes("payable") : [] };
+    if (pseudoBySide.payable.length || pseudoBySide.receivable.length) runs = runAll(pseudoBySide);
+    const pieces = new Map();
+    const give = (lineId, target, refund) => {
+      if (!(refund > 0)) return;
+      if (!pieces.has(lineId)) pieces.set(lineId, []);
+      pieces.get(lineId).push({ target, refund });
+    };
     for (const side of ["receivable", "payable"]) {
+      for (const open of runs[side].pseudo) for (const { payment, take } of open.taken) give(payment.line.id, open.pseudo, take);
       const notes = runs[other[side]].pool.filter(item => item.refundKey && item.closing > 0).map(item => ({ key: item.refundKey, cap: item.closing }));
       if (!notes.length) continue;
       for (const payment of runs[side].pool) {
@@ -588,18 +583,33 @@ export function settleLedger({ lines, invoices, links = new Map(), chequeEvents 
           if (!(take > 0)) continue;
           note.cap -= take;
           rest -= take;
-          if (!out.has(payment.line.id)) out.set(payment.line.id, []);
-          out.get(payment.line.id).push({ target: note.key, refund: take });
+          give(payment.line.id, note.key, take);
         }
       }
     }
-    return out;
+    if (pieces.size) {
+      split = splitOf(lineList, pieces);
+      runs = runAll();
+    } else if (pseudoBySide.payable.length || pseudoBySide.receivable.length) runs = runAll();
+    return runs;
   };
-  const implicit = implicitOf();
-  if (implicit.size) {
-    split = splitOf(ordered, implicit);
-    runs = runAll(pseudoBySide);
+  const coverage = new Map();
+  for (const plan of coverPlans) {
+    // Karşılıksızı kartın açıldığı anda henüz olmayan evrak o an faturayı ödemiş sayılır (kapsam o günkü açık borçtur).
+    const known = sorted.filter(line => facts(line).born <= plan.at && !(netted.has(line.id) && facts(netted.get(line.id)).born <= plan.at));
+    const knownOffsets = offsets.filter(offset => String(offset.createdAt || offset.date || "") <= plan.at);
+    const parts = new Map();
+    let rest = plan.total;
+    // 2.4.6: iadeye bağlı ve bağsız geri ödeme kapsamda da aynı kuralla bölünür (kartın açıldığı ana kadarki satırlarla; geri ödeme borç değildir, kapsanmaz).
+    for (const item of newestFirst(passes(known, knownOffsets, coverage, false).receivable.obligations)) {
+      if (rest <= 0) break;
+      const take = Math.min(item.free, rest);
+      parts.set(item.lineId, (parts.get(item.lineId) || 0) + take);
+      rest -= take;
+    }
+    coverage.set(plan.planId, parts);
   }
+  const runs = passes(ordered, offsets, coverage, true);
   const pools = {};
   for (const side of ["receivable", "payable"]) {
     const { obligations, target, overpaid, pool } = runs[side];
@@ -630,19 +640,7 @@ export function settleLedger({ lines, invoices, links = new Map(), chequeEvents 
   // iade belgesinin açığıdır (satıştan iadede müşterinin alacağı, alıştan iadede tedarikçinin borcu). Karşı taraftaki iadeye bağlanmamış ödeme/tahsilat
   // (cari kartından müşteriye ödenen iade bedeli, tedarikçinin ödediği borç; verilen/alınan çek) onu kapatır (dil §7 kural 6: bağsız çıkış borç belgesini —
   // satıştan iadeyi —, bağsız giriş alacak belgesini — alıştan iadeyi — kapatır); 2.4.6 K-b: karşı tarafın yükümlülükleriyle TEK sırada, en eskiden
-  // (yukarıda runSide açık iade kalemi). Önceden yalnız yükümlülüklerden artan parayla.
-  for (const side of ["receivable", "payable"]) {
-    for (const open of runs[other[side]].pseudo) {
-      const note = pools[side].find(item => item.returnId && item.refundKey === open.pseudo);
-      if (!note) continue;
-      for (const { payment, take } of open.taken) {
-        const cut = Math.min(note.left, take);
-        if (!(cut > 0)) break;
-        note.left -= cut;
-        note.uses.push({ cross: payment, take: cut, mode: "auto" });
-      }
-    }
-  }
+  // (yukarıda passes: açık iadeye giden bağsız para da iadenin geri ödemesidir, adım R'de iadenin alacağıyla kapanır). Önceden yalnız yükümlülüklerden artan parayla.
   const returnRows = new Map();
   for (const side of ["receivable", "payable"]) {
     for (const payment of pools[side]) {
