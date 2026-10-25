@@ -772,3 +772,15 @@ sonrası ÇATAL; projeksiyon geçmiş + bugün + 30 (son gün dahil). API kartı
 - **c12:** B1–B4 sayıları aynı (gerekçe K-b + KS8.1 ile yeniden yazıldı); YENİ B5 iki kapatıcı iade + bağsız Ödeme 200 → en eski iade (stok, 05-20) geri ödenir: FA5 500, FB5 0 (mutant 143: 300 / 200).
 - **c8b:** değişmedi (bağlı Ödeme; bağsız sayılsaydı K-b'de açık not yok → KS8.1 en eski iade = stok → FF1 500, FF2 0 — mutant 136).
 - Değişmeyenler: c8 A / A2 / B / C / D / S / S2, c11 (S-a).
+
+### C13d Sonuç — aday246-3 8573193 kodu (ayrı kopya; kâhin 37af13c; kanıt `docs/kanit/2026-10-25/246-kahin-cari/*-37af13c.*`)
+- **Bütün kâhin (39 senaryo: elle + rastgele ux18 / s1 tohum 1–2 + mutasyon):** 7.408 denetim, **0 fark (BULGU 0, İNCELE 0)**, yalnız 7 bilinen sınır (b3y — BILINEN.json, DONDURMA 23.10), okuma hatası 0;
+  141 mutantın hepsi yakalandı (142 c13 + rastgele-s1-1, 143 c12, 133 c13 + c8, 137 c11 / c12 / c13). c11 (B1), c12 (B2 + B5), c13 (B3 + S6–S9), c8 E, c8b, c10 tutuyor; YAYGIN etiketli S7 / S8 (aynı gün
+  yazım sırası) da programla aynı.
+- **Ek rastgele s1 tohum 3–10 × 120:** 15.619 denetim, 0 fark.
+- **2.4.5 kodunda (değişmemiş program; ders 7):** c8 / c12 / c13 889 denetim, 175 fark — 154 "2.4.6 kararıyla değişen beklenti" + 21 KS9 yolu, SINIF DIŞI 0. Nedenler iletide (ders 38): B5 "FA5 program 300 ·
+  kâhin 500" (KS8 yok), S9 "AT9 50000 · 20000" (KS9 yolu 2.4.5'te yok), S8 "a8 0 · 30000" (iade notu yok). S1–S3, S6, c8 E 2.4.5 kodunda da yeşil (2.4.5'te iade geri ödemesi yok — Ödeme Alacak'ı kapatır, yeni
+  kuralla aynı sonuç); bu senaryoların dişi eski okumalara karşıdır: mutant 133 (KS8.3) ve 142 (iadenin tamamı tarih FIFO'sunda) yakalandı. Program hiçbir adayda KS8.3'ü uygulamadı (bc1253c'de de K-b
+  sırasındaydı — C13c'deki 97 "KS8.3 / K-c" farkı kâhinin geri alınan okumasıydı).
+- **Eşdeğerlik:** `--kural 2.4.5` / `--legacy` = eski model (e77447a) 106/106. **Elle tablo:** 202/202. **Öz denetim** (Σ açık − dağıtılmamış giriş − Σ iade artanı − Σ borç açık + dağıtılmamış çıkış = bakiye):
+  elle 65 cari + yeni üreticiyle 30 rastgele s1 senaryosu 43 cari, tutmayan 0.

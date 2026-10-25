@@ -1,0 +1,30 @@
+rastgele-s1-3: 2122/2122 tuttu
+  2.4.6 kararıyla değişen beklenti: 291 denetim · farkların 0/0'i bu sınıfta
+rastgele-s1-4: 2305/2305 tuttu
+  2.4.6 kararıyla değişen beklenti: 331 denetim · farkların 0/0'i bu sınıfta
+rastgele-s1-5: 1777/1777 tuttu
+  2.4.6 kararıyla değişen beklenti: 203 denetim · farkların 0/0'i bu sınıfta
+rastgele-s1-6: 1884/1884 tuttu
+  2.4.6 kararıyla değişen beklenti: 287 denetim · farkların 0/0'i bu sınıfta
+rastgele-s1-7: 2036/2036 tuttu
+  2.4.6 kararıyla değişen beklenti: 304 denetim · farkların 0/0'i bu sınıfta
+rastgele-s1-8: 1796/1796 tuttu
+  2.4.6 kararıyla değişen beklenti: 202 denetim · farkların 0/0'i bu sınıfta
+rastgele-s1-9: 1680/1680 tuttu
+  2.4.6 kararıyla değişen beklenti: 217 denetim · farkların 0/0'i bu sınıfta
+rastgele-s1-10: 2019/2019 tuttu
+  2.4.6 kararıyla değişen beklenti: 238 denetim · farkların 0/0'i bu sınıfta
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+GEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de koşar — KARARLAR.md §8 C0): 0 denetim, 0 senaryo
+
+ATLANAN (2.4.5 kararıyla geçersiz — --legacy ile koşar): 0
+
+2.4.6 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §9 C0b): 2073 denetim, 8 senaryo · programla farkların 0'i bu sınıfta, 0'i KS9 (madde 10: faturasız Alış İadesi yolu 2.4.5'te yok), 0'i SINIF DIŞI
+
+ÖZET [2.4.6]: 8 senaryo, 15619 denetim, 0 fark (BULGU 0), 0 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 okuma hatası, 0 yakalanmayan mutasyon, 0 atlanan senaryo. Ham çıktı: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-kahin-cari/a3-s1
+15619/15619 denetim geçti

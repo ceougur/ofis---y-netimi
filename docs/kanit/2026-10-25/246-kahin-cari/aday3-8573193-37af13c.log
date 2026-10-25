@@ -1,0 +1,215 @@
+b2-ux18-karsiliksiz: 109/109 tuttu
+b2-ux18-retler: 88/88 tuttu
+b2-ux18-sira: 91/91 tuttu
+b2-ux18-temel: 189/189 tuttu
+b3b-k1-k4-donem-raporlar: 45/45 tuttu
+b3c-k2-donem-ayni-no: 34/34 tuttu
+b3d-c3-kisi-gruplama: 68/68 tuttu
+b3e-vergi-sutunu: 29/29 tuttu
+b3k-vergi-tek-kolon: 29/29 tuttu
+b3n-borc-kolonu-kisi-ozniteligi: 31/31 tuttu
+b3o-seyrek-kalan: 34/34 tuttu
+b3q-takvim-kalemi: 38/38 tuttu
+b3r-kalan-sifir-eksi: 30/30 tuttu
+b3s-soz-tutari-kalemi: 28/28 tuttu
+b3t-sozlesme-tutari: 34/34 tuttu
+b3u-sozlesme-tarihi-soz-basliklari: 34/34 tuttu
+b3v-taahhut-soz-miktari: 36/36 tuttu
+b3w-yalniz-soz-tutari: 34/34 tuttu
+b3x-yalin-soz-ve-tutar: 38/38 tuttu
+b3y-taahhut-alacak-bakiye: 25/32 tuttu · BİLİNEN 7
+  ≈ [BİLİNEN] k1:k4:akis: program 920000 · kâhin 850000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+  ≈ [BİLİNEN] k1:k4:kisiler: program 720000 · kâhin 1150000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+  ≈ [BİLİNEN] k1:k4:vade: program 920000 · kâhin 850000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+  ≈ [BİLİNEN] k1:rapor:2026/1012:borc: program 0 · kâhin 400000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+  ≈ [BİLİNEN] k1:rapor:2026/1012:grup: program [] · kâhin ["2026/1012"] (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+  ≈ [BİLİNEN] k1:rapor:2026/1013:borc: program 0 · kâhin 30000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+  ≈ [BİLİNEN] k1:rapor:2026/1013:grup: program [] · kâhin ["2026/1013"] (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+b5-u1-nihai-tuketici: 33/33 tuttu
+c1-kayit-tahsilat-kapisi: 160/160 tuttu
+c10-ks10-projeksiyon-cari-vade: 459/459 tuttu
+  2.4.6 kararıyla değişen beklenti: 76 denetim · farkların 0/0'i bu sınıfta
+c11-ks81-sa-mevcut-borc-karti: 60/60 tuttu
+  2.4.6 kararıyla değişen beklenti: 25 denetim · farkların 0/0'i bu sınıfta
+c12-ks81-sb-kalan-dagilimi: 163/163 tuttu
+  2.4.6 kararıyla değişen beklenti: 70 denetim · farkların 0/0'i bu sınıfta
+c13-ks83-ayni-gun-sira: 175/175 tuttu
+  2.4.6 kararıyla değişen beklenti: 69 denetim · farkların 0/0'i bu sınıfta
+c2-tablodan-aktar-kapisi: 125/125 tuttu
+c4-uyari-kapisi: 52/52 tuttu
+c6-cari-vade-fifo: 1005/1005 tuttu
+  2.4.6 kararıyla değişen beklenti: 132 denetim · farkların 0/0'i bu sınıfta
+c6b-cari-vade-dogrulama: 161/161 tuttu
+  2.4.6 kararıyla değişen beklenti: 22 denetim · farkların 0/0'i bu sınıfta
+c6c-mevcut-borc-karti: 104/104 tuttu
+  2.4.6 kararıyla değişen beklenti: 6 denetim · farkların 0/0'i bu sınıfta
+c7-ks7-bagsiz-kapaticilar: 209/209 tuttu
+  2.4.6 kararıyla değişen beklenti: 24 denetim · farkların 0/0'i bu sınıfta
+c7b-supheli-kalan: 48/48 tuttu
+  2.4.6 kararıyla değişen beklenti: 2 denetim · farkların 0/0'i bu sınıfta
+c8-ks8-iade-geri-odemesi: 551/551 tuttu
+  2.4.6 kararıyla değişen beklenti: 98 denetim · farkların 0/0'i bu sınıfta
+c8b-ks8-bagli-iade-odemesi: 63/63 tuttu
+  2.4.6 kararıyla değişen beklenti: 8 denetim · farkların 0/0'i bu sınıfta
+rastgele-ux18-1: 757/757 tuttu
+rastgele-s1-1: 617/617 tuttu
+  2.4.6 kararıyla değişen beklenti: 58 denetim · farkların 0/0'i bu sınıfta
+rastgele-ux18-2: 803/803 tuttu
+rastgele-s1-2: 812/812 tuttu
+  2.4.6 kararıyla değişen beklenti: 91 denetim · farkların 0/0'i bu sınıfta
+  mutasyon 1 (5a: sığmayan tahsilat bölünür (kartı doldurana kadar parçası taşınır)): YAKALANDI (b1-5a-tasima)
+  mutasyon 2 (5a: sığmayan tahsilat atlanır, sonraki küçükler taşınmaya devam eder): YAKALANDI (b1-5a-tasima)
+  mutasyon 3 (5b: carinin borcuna taşınan tahsilatlar geri eklenmez (D = bakiye)): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc …)
+  mutasyon 4 (5b: borç kalandan azsa kişi aktarılmaz yerine yeni borç yazılır): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc …)
+  mutasyon 5 (5c: aynı dosya no her sekmede ayrı sayılır (çift sayım)): YAKALANDI (b1-5c-rapor)
+  mutasyon 6 (UX18: bağlı evrakın fazlası en eski açık faturaya gitmez (avans kalır)): YAKALANDI (b2-ux18-karsiliksiz, b2-ux18-temel, rastgele-ux18-1 …)
+  mutasyon 7 (UX18: karşılıksız evrak faturayı yeniden açmaz): YAKALANDI (b2-ux18-karsiliksiz, b2-ux18-sira, b2-ux18-temel …)
+  mutasyon 8 (UX18: fatura iptalinde evrakın bağı düşmez (evrak hiçbir faturayı kapatmaz)): YAKALANDI (b2-ux18-temel)
+  mutasyon 9 (Otomatik kapama en YENİ faturadan başlar): YAKALANDI (b2-ux18-karsiliksiz, b2-ux18-sira, b2-ux18-temel …)
+  mutasyon 10 (Geri al: taşınan tahsilatlar cariye dönmez): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc …)
+  mutasyon 11 (5a: taşıma Kasa'yı azaltır): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc …)
+  mutasyon 12 (Kart: tahsilat en yeni taksitten başlayarak sayılır): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc …)
+  mutasyon 13 (Mizan: alınan senet 101'e yazılır (121 yerine)): YAKALANDI (b2-ux18-karsiliksiz, b2-ux18-temel, rastgele-ux18-1 …)
+  mutasyon 14 (K3: Kalan önceliği yok (toplam önce)): YAKALANDI (b3-u2-tablo-borcu, b3e-vergi-sutunu, b3o-seyrek-kalan …)
+  mutasyon 15 (K3: Ödeme Sözü tutarı borç sayılır): YAKALANDI (b1-5c-rapor, b3-u2-tablo-borcu, b3w-yalniz-soz-tutari …)
+  mutasyon 16 (K3: gün/adet sütunu tutar sayılır): YAKALANDI (b3-u2-tablo-borcu, b3b-k1-k4-donem-raporlar, rastgele-ux18-1 …)
+  mutasyon 17 (K3: Kalan hücresi boşsa borç 0 (toplama düşmez)): YAKALANDI (b3-u2-tablo-borcu, b3o-seyrek-kalan, b3q-takvim-kalemi …)
+  mutasyon 18 (K2 (04:09): farklı sekmede aynı dosya no tek kayıt — yalnız ilk borçlu sekme sayılır (03:12 kuralı)): YAKALANDI (b3-u2-tablo-borcu, b3c-k2-donem-ayni-no, b3d-c3-kisi-gruplama …)
+  mutasyon 19 (MM6: Nakit Akışı Kasa girişi yalnız cari tahsilatı sayar (evrak tahsili ve kayıt tahsilatı dışarıda)): YAKALANDI (b1-5c-rapor, b2-ux18-temel, b3-u2-tablo-borcu …)
+  mutasyon 20 (U1: Nihai Tüketici 11111111111'li en eski cariyi (adı belli olsa da) seçer): YAKALANDI (b5-u1-nihai-tuketici)
+  mutasyon 21 (U1: işaretli cari adı/kimliği değişse de kullanılır): YAKALANDI (b5-u1-nihai-tuketici)
+  mutasyon 22 (MM6: elle Kasa çıkışı Nakit Akışı'nda sayılmaz): YAKALANDI (b3-u2-tablo-borcu)
+  mutasyon 23 (K1: aynı sekmede tekrar eden dosya no yalnız ilk satırla sayılır): YAKALANDI (b3b-k1-k4-donem-raporlar, b3c-k2-donem-ayni-no, rastgele-ux18-1 …)
+  mutasyon 24 (K3: Kalan'sız Tutar + Tahsil Edilen tablosunda ödenen düşülmez): YAKALANDI (b3b-k1-k4-donem-raporlar, b3c-k2-donem-ayni-no, b3e-vergi-sutunu …)
+  mutasyon 25 (K3: toplam − ödenen negatifse 0'a çekilmez): YAKALANDI (b3b-k1-k4-donem-raporlar, b3e-vergi-sutunu, rastgele-ux18-1 …)
+  mutasyon 26 (K2: 'birden çok sekmede; ayrı sayıldı' notu yok (rapor ve Tahsilat Takvimi)): YAKALANDI (b1-5c-rapor, b3-u2-tablo-borcu, b3c-k2-donem-ayni-no …)
+  mutasyon 27 (K5: Kasa'yı görme yetkisi olmayan kullanıcı Kasa giriş/çıkışını görür): YAKALANDI (b3b-k1-k4-donem-raporlar[2.4.4])
+  mutasyon 28 (C3: aynı kimlik farklı adları birleştirir (kişi kimliğe göre)): YAKALANDI (b3d-c3-kisi-gruplama, b3p-ayni-ad-telefon)
+  mutasyon 29 (C3: aynı ad farklı kimlik tek kişi (yalnız ada göre)): YAKALANDI (b3d-c3-kisi-gruplama, b3p-ayni-ad-telefon, rastgele-ux18-1 …)
+  mutasyon 30 (C3: kimliksiz satır aynı adın tek kimliğine katılmaz): YAKALANDI (b3d-c3-kisi-gruplama, rastgele-ux18-1, rastgele-ux18-2 …)
+  mutasyon 31 (C3: aynı adı paylaşan kişilerin etiketinde kimlik yok): YAKALANDI (b3d-c3-kisi-gruplama, b3p-ayni-ad-telefon, rastgele-ux18-1 …)
+  mutasyon 32 (C3 kimliksiz satır: çok kimlikli adın kimliksiz kaydı ilk kimliğe katılır (ayrı kalmaz)): YAKALANDI (b3d-c3-kisi-gruplama, rastgele-ux18-1, rastgele-ux18-2 …)
+  mutasyon 33 (C3 kimlik sütunu: sağlama hanesi tutmayan değer de kimlik sayılır): YAKALANDI (b3d-c3-kisi-gruplama, rastgele-ux18-1, rastgele-ux18-2 …)
+  mutasyon 34 (Kimlik sütunu: 'Vergi No' / 'Vergi Numarası' / 'Vergi Kimlik' tutar sayılır): YAKALANDI (b3d-c3-kisi-gruplama, b3f-kayit-anahtari, rastgele-ux18-1 …)
+  mutasyon 35 (Vergi sütunu (KDV, Vergi, Vergi Tutarı, Stopaj, Tevkifat, ÖTV) tutar sayılır ve Genel Toplam ayrı sınıf değil (eski K3: borç belirlenemez)): YAKALANDI (b3e-vergi-sutunu, b3k-vergi-tek-kolon, rastgele-ux18-1 …)
+  mutasyon 36 (Tutar + Genel Toplam tablosunda borç Tutar (KDV hariç)): YAKALANDI (b3e-vergi-sutunu)
+  mutasyon 37 (Borç sütunu belirlenemeyen kişiler raporda notsuz kaybolur): YAKALANDI (b3e-vergi-sutunu, b3n-borc-kolonu-kisi-ozniteligi, b3o-seyrek-kalan …)
+  mutasyon 38 (Yerine koy (aynı dosyayı yeniden yükle) kayda bağlı tahsilatı kayıttan koparır): YAKALANDI (b3f-kayit-anahtari, b3g-tablo-bag-surekliligi, b3h-dosya-no-ve-devam …)
+  mutasyon 39 (Sağlaması tutmayan Vergi No / TC değeri kayıt kimliğine girer (değer değişince tahsilat kopar)): YAKALANDI (b3f-kayit-anahtari, b3m-dosya-no-degisimi)
+  mutasyon 40 (Yerine koy güvenli eşleşmede de bağı koparır (satır içeriği anahtar)): YAKALANDI (b3f-kayit-anahtari, b3g-tablo-bag-surekliligi, b3h-dosya-no-ve-devam …)
+  mutasyon 41 (Güvenli eşleşme yokken uyarı ve onay yok (sessiz)): YAKALANDI (b3g-tablo-bag-surekliligi, b3j-ayni-ad-takas, b3m-dosya-no-degisimi …)
+  mutasyon 42 (N3 öncesi: aynı konum + aynı kişi eşleşmesi kişi değeri iki tabloda AYNI SAYIDA satırdayken de geçerli (bağ yanlış kişiye gidebilir)): YAKALANDI (b3g-tablo-bag-surekliligi, b3j-ayni-ad-takas)
+  mutasyon 43 (Devamı olarak ekle aynı kişi + aynı tutar satırını söylemez, onay istemez): YAKALANDI (b3h-dosya-no-ve-devam)
+  mutasyon 44 (İçeriği aynı satır yer değişince (aynı adlı iki satırın yer değiştirmesi) eşleşmez — onay ister): YAKALANDI (b3g-tablo-bag-surekliligi)
+  mutasyon 45 (Devamı olarak ekle içeriği tamamen aynı satırı ikinci kez ekler ve onay ister): YAKALANDI (b3i-devam-ayni-icerik)
+  mutasyon 46 (Devamı olarak ekle güvenli eşleşen (aynı kişi, başka hücresi farklı) satırı güncellemez, ikinci kez ekler ve onay ister): YAKALANDI (b3h-dosya-no-ve-devam)
+  mutasyon 47 (N4 öncesi: tablodaki TEK tutar kolonu vergi kolonuysa da borç sayılmaz): YAKALANDI (b3k-vergi-tek-kolon)
+  mutasyon 48 (N6 öncesi: tabloda artık olmayan kayda tahsilat yazımı kabul edilir): YAKALANDI (b3g-tablo-bag-surekliligi)
+  mutasyon 49 (N1 öncesi: Dosya No'lu tabloda dosya numarası değişen kaydın bağı kişi eşleşmesiyle yeni dosyaya taşınır): YAKALANDI (b3m-dosya-no-degisimi)
+  mutasyon 50 (N1: geri gelen dosya numarasının bağları yeniden görünmez): YAKALANDI (b3m-dosya-no-degisimi)
+  mutasyon 51 (Y1 öncesi: başlığında 'borç' geçen kişi özniteliği kolonu (Borçlu Telefon, Borçlu TC) tutar sayılır): YAKALANDI (b3g-tablo-bag-surekliligi, b3n-borc-kolonu-kisi-ozniteligi)
+  mutasyon 52 (Y1: iki tutar kolonlu (Kalan/toplam yok) tabloda ilk tutar kolonu borç sayılır (not yerine)): YAKALANDI (b3e-vergi-sutunu, b3n-borc-kolonu-kisi-ozniteligi)
+  mutasyon 53 (Y3 öncesi: Kalan hücresi boş, Toplam yok — tek tutar kolonu (Aidat) ana tutar sayılmaz (borç belirlenemez)): YAKALANDI (b3o-seyrek-kalan, b3w-yalniz-soz-tutari)
+  mutasyon 54 (Y3: Kalan hücresi boş, iki aday (Aidat + Gecikme Faizi) — ikisinin toplamı borç sayılır (not yerine)): YAKALANDI (b3o-seyrek-kalan)
+  mutasyon 55 (Y1: 'önce cari açın' Açılış Bakiyesi satırın ilk tutar hücresinden dolar (raporların borcundan değil)): YAKALANDI (b3b-k1-k4-donem-raporlar[2.4.4], b3c-k2-donem-ayni-no[2.4.4], b3n-borc-kolonu-kisi-ozniteligi[2.4.4] …)
+  mutasyon 56 (Y2 öncesi: aynı adlı iki satır telefonla ayırt edilse de güvenli eşleşme sayılmaz (kişi değeri yalnız ad + kimlik)): YAKALANDI (b3p-ayni-ad-telefon)
+  mutasyon 57 (TAKVİM KALEMİ öncesi: vade kaleminin tutarı satır borcudur (Kalan) — dönem / taksit tutarı kolonu yok sayılır): YAKALANDI (b3o-seyrek-kalan, b3q-takvim-kalemi, b3s-soz-tutari-kalemi …)
+  mutasyon 58 (TAKVİM KALEMİ: kalem tutarı dönem tutarıdır, Kalan Borç daha küçükse de (min alınmaz)): YAKALANDI (b3o-seyrek-kalan, b3q-takvim-kalemi, b3r-kalan-sifir-eksi …)
+  mutasyon 59 (TAKVİM KALEMİ: Tablodaki Kişiler de vade kaleminin tutarını (dönem tutarı) gösterir (satır borcu yerine)): YAKALANDI (b3o-seyrek-kalan, b3q-takvim-kalemi, b3r-kalan-sifir-eksi …)
+  mutasyon 60 (Z2 öncesi: Kalan Borç 0 ya da eksi satırın vade kalemi görünür (tutarı min(dönem tutarı, Kalan))): YAKALANDI (b3r-kalan-sifir-eksi)
+  mutasyon 61 (Z3 öncesi: ödeme sözü kalemi söz tutarı değil, min(dönem tutarı, Kalan)): YAKALANDI (b3s-soz-tutari-kalemi, b3t-sozlesme-tutari, b3u-sozlesme-tarihi-soz-basliklari …)
+  mutasyon 62 (SÖZ TUTARI öncesi: 'söz' ile başlayan her başlık söz sütunudur ('Sözleşme Tutarı', 'Sözleşme No' da söz)): YAKALANDI (b3t-sozlesme-tutari, b3v-taahhut-soz-miktari, b3w-yalniz-soz-tutari …)
+  mutasyon 63 (SÖZLEŞME TARİHİ öncesi: 'Sözleşme Tarihi' vade tarihi sayılır (vade kalemi açar)): YAKALANDI (b3u-sozlesme-tarihi-soz-basliklari)
+  mutasyon 64 (SÖZ TUTARI: yalnız 'Söz Tutarı' söz sütunu — 'Ödeme Sözü Tutarı', 'Taahhüt Tutarı' söz sayılmaz): YAKALANDI (b3u-sozlesme-tarihi-soz-basliklari, b3v-taahhut-soz-miktari, b3w-yalniz-soz-tutari …)
+  mutasyon 65 (ÖDEME SÖZÜ başlıkları: taahhüt ailesi tam sözcük ('Taahhütname', 'Taahhütlü' söz değil)): YAKALANDI (b3v-taahhut-soz-miktari, b3w-yalniz-soz-tutari, b3x-yalin-soz-ve-tutar …)
+  mutasyon 66 (ÖDEME SÖZÜ başlıkları: söz tutarı sütunu yalnız 'tutar' sözcüğüyle ('Söz Miktarı', 'Taahhüt Miktarı' söz tutarı değil)): YAKALANDI (b3v-taahhut-soz-miktari, b3w-yalniz-soz-tutari)
+  mutasyon 67 (5b + ÖDEME SÖZÜ: söz ailesi + dönem sözcüğü ('Taahhütlü Ücret') para kolonu sayılmaz (ücret borç / dönem tutarı olmaz)): YAKALANDI (b3w-yalniz-soz-tutari)
+  mutasyon 68 (5b + ÖDEME SÖZÜ: 'Taahhütlü Ücret' söz tutarı sayılır (ücret borç değil, kalemi ödeme sözü)): YAKALANDI (b3w-yalniz-soz-tutari)
+  mutasyon 69 (A1 + Z6: yalın sayı değerli 'Ödeme Sözü' / 'Söz' / 'Taahhüt' sütunu söz tutarıdır (söz kalemi bu sütundan tutar alır)): YAKALANDI (b3x-yalin-soz-ve-tutar)
+  mutasyon 70 (A1 + Z6: yalın sayı değerli 'Ödeme Sözü' / 'Söz' / 'Taahhüt' sütunu tutar sayılır (borç olur)): YAKALANDI (b3x-yalin-soz-ve-tutar)
+  mutasyon 71 (Y1/N4/K3 muafiyeti öncesi: borç/alacak/kalan/bakiye/toplam sözcüklü söz-ailesi başlığı ('Taahhüt Alacağı', 'Taahhüt Bakiyesi') yalın söz sayılır): YAKALANDI (b3y-taahhut-alacak-bakiye)
+  mutasyon 72 (K3 gün/adet/ay: '(Ay)' söz-ailesi miktar sütunu ('Taahhüt Miktarı (Ay)') söz tutarı sayılır): YAKALANDI (b3y-taahhut-alacak-bakiye)
+  mutasyon 73 (S1: elle Borç/Alacak ve Açılış kuyruğa girmez (bağsız ödeme yalnız faturaları kapatır; elle kaydın Kalan'ı tutarı)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c12-ks81-sb-kalan-dagilimi, c13-ks83-ayni-gun-sira …)
+  mutasyon 74 (S1: Açılış Bakiyesi kuyruğa girmez): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c6-cari-vade-fifo, c7-ks7-bagsiz-kapaticilar …)
+  mutasyon 75 (S1: kuyruk Vade Tarihi'ne göre dizilir (kayıt tarihi yerine)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c13-ks83-ayni-gun-sira, c6-cari-vade-fifo …)
+  mutasyon 76 (S1: aynı tarihte yazım sırası ters): YAKALANDI (c13-ks83-ayni-gun-sira, c6-cari-vade-fifo, rastgele-s1-1 …)
+  mutasyon 77 (S1: bağlı ödeme (Kapatılacak Fatura) de en eskiden dağıtılır): YAKALANDI (c12-ks81-sb-kalan-dagilimi, c6-cari-vade-fifo, c7b-supheli-kalan …)
+  mutasyon 78 (S1: silinen tahsilat Kalan'ı geri açmaz (kuyrukta kalır)): YAKALANDI (c6-cari-vade-fifo, rastgele-s1-2)
+  mutasyon 80 (K6.3: kalem tutarı kaydın tutarı (Kalan değil)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c12-ks81-sb-kalan-dagilimi, c6-cari-vade-fifo …)
+  mutasyon 81 (K6.3: kalem tarihi Vade Tarihi (Beklenen Ödeme Tarihi'ne kaymaz)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c6-cari-vade-fifo, c6b-cari-vade-dogrulama …)
+  mutasyon 82 (K6.3: Beklenen Ödeme Tarihi'nde etikete ' (Ödeme Sözü)' eklenmez): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c6-cari-vade-fifo, c6b-cari-vade-dogrulama …)
+  mutasyon 83 (K6.3: ufuk yok (bugünden 7 günden sonraki kalem de görünür)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c6-cari-vade-fifo, rastgele-s1-1 …)
+  mutasyon 84 (K6.3: Kalan'ı 0 olan kayıt da kalem): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c12-ks81-sb-kalan-dagilimi, c13-ks83-ayni-gun-sira …)
+  mutasyon 85 (K6.3: yalnız Vade Tarihi kalem açar (Beklenen Ödeme Tarihi tek başına açmaz)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c6-cari-vade-fifo, c6b-cari-vade-dogrulama …)
+  mutasyon 86 (K6.3: cari görüntüleme yetkisi olmayan kullanıcı cari kalemlerini görür): YAKALANDI (c6-cari-vade-fifo, rastgele-s1-1)
+  mutasyon 87 (K6.3: 'Ödendi Say' (settle) cari kalemini kabul eder ve kapatır): YAKALANDI (c6-cari-vade-fifo)
+  mutasyon 88 (K6.1: Vade / Beklenen Ödeme Tarihi kaydın tarihinden önce olabilir (400 yok)): YAKALANDI (c6b-cari-vade-dogrulama)
+  mutasyon 89 (K6.1: tahsilat (in) gönderilen Vade Tarihi'ni kaydeder): YAKALANDI (c6-cari-vade-fifo)
+  mutasyon 90 (K6.4: Düzenle (yalnız tutar/tarih) vade alanlarını siler): YAKALANDI (c6-cari-vade-fifo, c6b-cari-vade-dogrulama, rastgele-s1-2 …)
+  mutasyon 91 (K1: kayıt tahsilatı kapısı yok (POST 200, Kasa'ya girer)): YAKALANDI (c1-kayit-tahsilat-kapisi)
+  mutasyon 92 (K1: eski kayıt tahsilatının silinmesi de kapalı (DELETE ret)): YAKALANDI (c1-kayit-tahsilat-kapisi)
+  mutasyon 93 (K1: Silinenler'den geri yüklenen kayıt tahsilatı Kasa'ya dönmez): YAKALANDI (c1-kayit-tahsilat-kapisi)
+  mutasyon 94 (Madde 2: Tablodan Aktar kapısı yok (POST 200, kart açılır)): YAKALANDI (c2-tablodan-aktar-kapisi)
+  mutasyon 95 (Madde 2: eski aktarımın Geri Al'ı da kapalı): YAKALANDI (b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc …)
+  mutasyon 96 (Madde 4: tablonun tutarlı kalemleri (ödeme günü, aidat, söz) Takvim'de kalır): YAKALANDI (b3b-k1-k4-donem-raporlar, b3c-k2-donem-ayni-no, b3k-vergi-tek-kolon …)
+  mutasyon 97 (Madde 4: tablonun tutarsız tarih hatırlatmaları (duruşma, sözleşme bitiş, icra son tarihi) da kalkar): YAKALANDI (c4-uyari-kapisi)
+  mutasyon 98 (Madde 4: Vade Takip'te tablo tutarlı kalemleri kalır): YAKALANDI (b3b-k1-k4-donem-raporlar, b3c-k2-donem-ayni-no, b3k-vergi-tek-kolon …)
+  mutasyon 99 (K6.3 (yalnız 2.4.5 kural seti — 2.4.6 kararıyla geçersiz, KS10 doğrusu): Nakit Akış Projeksiyonu cari vadesini katar): YAKALANDI (c10-ks10-projeksiyon-cari-vade[2.4.5], c12-ks81-sb-kalan-dagilimi[2.4.5], c6-cari-vade-fifo[2.4.5] …)
+  mutasyon 100 (K6.3: yön ters (carinin borcu 'out')): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c12-ks81-sb-kalan-dagilimi, c13-ks83-ayni-gun-sira …)
+  mutasyon 101 (S1 borç tarafı: elle Alacak / alacak yönlü Açılış ödemelerle kapanmaz (yalnız alış faturaları)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c12-ks81-sb-kalan-dagilimi, c13-ks83-ayni-gun-sira …)
+  mutasyon 102 (K6.1: biçimsiz tarih kabul edilir): YAKALANDI (c6b-cari-vade-dogrulama, rastgele-s1-2)
+  mutasyon 103 (K6.4: yedekten geri yüklemede vade alanları boş gelir): YAKALANDI (c6-cari-vade-fifo)
+  mutasyon 104 (K6.4: Silinenler'den geri yüklenen elle kayıt vade alanlarını yitirir): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c6-cari-vade-fifo)
+  mutasyon 105 (K1: kayıt tahsilatı düzeltmesi (PUT /payments/:id) açık): YAKALANDI (c1-kayit-tahsilat-kapisi)
+  mutasyon 106 (KS5: ufkun sınır günü (bugün + 7) takvimde yok (hariç)): YAKALANDI (c6-cari-vade-fifo, rastgele-s1-2)
+  mutasyon 107 (KS4: Kasa sütunları Tablodaki Nakit Akışı'nda kalır (Kasa raporuyla aynı)): YAKALANDI (b2-ux18-karsiliksiz, b2-ux18-retler, b2-ux18-sira …)
+  mutasyon 108 (KS4: Kasa yetkisi olmayan kullanıcıya Tablodaki Nakit Akışı'nda Kasa notu kalır): YAKALANDI (b3b-k1-k4-donem-raporlar)
+  mutasyon 109 (K6.5: Beklenen Ödeme Tarihi Vade Tarihi'nden önce → 400): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c6-cari-vade-fifo, c6b-cari-vade-dogrulama …)
+  mutasyon 110 (K6.5: açılış satırı yokken açılış vadesi kabul edilir (opening-missing yok)): YAKALANDI (c6b-cari-vade-dogrulama)
+  mutasyon 111 (K6.5: kapanmış dönemdeki kaydın vade alanları değiştirilebilir): YAKALANDI (c6b-cari-vade-dogrulama)
+  mutasyon 112 (K6.5: Mevcut Borç kartlı caride kalem tutarı kart kapsamı düşülmeden Kalan): YAKALANDI (c6c-mevcut-borc-karti)
+  mutasyon 113 (K6.5: Mevcut Borç kartlı caride Kalan kart kapsamını içermez (Kalan − kapsam)): YAKALANDI (c6c-mevcut-borc-karti)
+  mutasyon 114 (KS7: faturasız stok Satış İadesi bağsız kapatıcı değil (D1 eski hata sınıfı)): YAKALANDI (c11-ks81-sa-mevcut-borc-karti, c12-ks81-sb-kalan-dagilimi, c13-ks83-ayni-gun-sira …)
+  mutasyon 115 (KS7: Değersiz Alacak Yaz bağsız kapatıcı değil (D1 eski hata sınıfı)): YAKALANDI (c7-ks7-bagsiz-kapaticilar, c7b-supheli-kalan, rastgele-s1-1 …)
+  mutasyon 116 (KS7: Şüpheli Alacağa Al da kapatıcı (bakiye değişmediği hâlde borçları kapatır)): YAKALANDI (c7-ks7-bagsiz-kapaticilar, c7b-supheli-kalan, rastgele-s1-1 …)
+  mutasyon 117 (KS9 (madde 10) / KS7 simetri: faturasız Alış İadesi (preturn) bağsız ödeme değil (alış faturasını / elle Alacak'ı kapatmaz)): YAKALANDI (c12-ks81-sb-kalan-dagilimi, c13-ks83-ayni-gun-sira, c8-ks8-iade-geri-odemesi …)
+  mutasyon 118 (KS7.1: tedarikçiye nedensiz stok çıkışı ('Stok satışı') alış iadesi gibi bağsız ödeme sayılır): YAKALANDI (c7-ks7-bagsiz-kapaticilar, rastgele-s1-1, rastgele-s1-2 …)
+  mutasyon 119 (§3.11b (a): tahsilat şüpheli kaydın kalanını düşürmez (değersiz sınırı alınan − değersiz)): YAKALANDI (c7b-supheli-kalan)
+  mutasyon 120 (§3.11b / K3: kayıt tarihinden ÖNCE tarihli alacak satırı da şüpheliden düşer): YAKALANDI (c7-ks7-bagsiz-kapaticilar, c7b-supheli-kalan, rastgele-s1-1 …)
+  mutasyon 121 (§3.11b (b): faturaya bağlı tahsilat da şüpheliden düşer): YAKALANDI (c7b-supheli-kalan)
+  mutasyon 122 (KS10: Nakit Akış Projeksiyonu cari vadesini katmaz (2.4.5 BİLİNEN SINIR davranışı)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c12-ks81-sb-kalan-dagilimi, c13-ks83-ayni-gun-sira …)
+  mutasyon 123 (KS10: Projeksiyon kalemi FIFO Kalan yerine kaydın tutarı): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c12-ks81-sb-kalan-dagilimi, c13-ks83-ayni-gun-sira …)
+  mutasyon 124 (KS10: Projeksiyon kalem tarihi Vade Tarihi (Beklenen Ödeme Tarihi'ne kaymaz)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c6-cari-vade-fifo, c6b-cari-vade-dogrulama …)
+  mutasyon 125 (KS10 + K6.5 (1): Mevcut Borç kartlı caride projeksiyon kalemi kart kapsamı düşülmeden Kalan (taksitlerle çift)): YAKALANDI (c6c-mevcut-borc-karti)
+  mutasyon 126 (KS10 'bir kez': carinin projeksiyon toplamı iki kat (Faturasız Cari Alacağı + vadeli kalem çift sayım)): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c6b-cari-vade-dogrulama)
+  mutasyon 127 (KS10: projeksiyon penceresinden (bugün + 30) sonraki kalem de görünür): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c6-cari-vade-fifo, rastgele-s1-1 …)
+  mutasyon 128 (KS10: vadesi geçmiş cari kalemi projeksiyonda (gecikenler dahil) görünmez): YAKALANDI (c10-ks10-projeksiyon-cari-vade, c12-ks81-sb-kalan-dagilimi, c6-cari-vade-fifo …)
+  mutasyon 129 (KS8 (DB1): iade geri ödemesi yok — müşteriye bağsız Ödeme borç tarafında ödeme sayılır, iade yine borçları kapatır (2.4.5 davranışı)): YAKALANDI (c11-ks81-sa-mevcut-borc-karti, c12-ks81-sb-kalan-dagilimi, c13-ks83-ayni-gun-sira …)
+  mutasyon 130 (KS8: Ödeme ile geri ödenen FATURA iadesi asıl faturanın açığından yine düşer (geri ödeme bağı yalnız stok iadesinde)): YAKALANDI (c12-ks81-sb-kalan-dagilimi, c8-ks8-iade-geri-odemesi, c8b-ks8-bagli-iade-odemesi …)
+  mutasyon 131 (KS8: kısmi geri ödemede iadenin TAMAMI geri ödenmiş sayılır): YAKALANDI (c12-ks81-sb-kalan-dagilimi, c8-ks8-iade-geri-odemesi)
+  mutasyon 133 (KS8.3 okuması (25.10 ~15:30 GERİ ALINDI): bağsız para ÖNCE iadenin geri ödemesi (açık not + kapatıcı kısım), sonra karşı taraftaki yükümlülükler (elle Alacak)): YAKALANDI (c13-ks83-ayni-gun-sira, c8-ks8-iade-geri-odemesi, rastgele-s1-1 …)
+  mutasyon 134 (R1 / K1 İADE KAPANIŞI: iadenin kendi geri ödemesi (geri nakit) iadeyi kapatmaz — iade yine asıl faturanın açığından düşer): YAKALANDI (c8-ks8-iade-geri-odemesi)
+  mutasyon 135 (KS9 simetri: tedarikçiden iade bedelinin geri tahsilatı (Tahsilat) alış iadesine bağlanmaz — alış iadesi yine alış faturasını kapatır): YAKALANDI (c12-ks81-sb-kalan-dagilimi, c8-ks8-iade-geri-odemesi)
+  mutasyon 136 (KS8: Kapatılacak Fatura = iade belgesi olan (bağlı) Ödeme iadeyi kapatmaz (havuza gider)): YAKALANDI (c8b-ks8-bagli-iade-odemesi)
+  mutasyon 137 (KS8.1 (B2): bağsız geri ödeme yalnız iadenin AÇIK notunu geri öder (ikinci aşama yok) — iadenin kapattığı borcu yeniden açmaz, artan avans): YAKALANDI (c11-ks81-sa-mevcut-borc-karti, c12-ks81-sb-kalan-dagilimi, c13-ks83-ayni-gun-sira …)
+  mutasyon 138 (K-e: ciro / tedarikçiden alınan evrak iade geri ödemesi sayılmaz (yalnız nakit Ödeme / Tahsilat)): YAKALANDI (c13-ks83-ayni-gun-sira)
+  mutasyon 139 (K-P1: projeksiyon penceresinin son günü (bugün + 30) hariç): YAKALANDI (c10-ks10-projeksiyon-cari-vade)
+  mutasyon 140 (K6.5 (1) (B1): Mevcut Borç kartlı caride fatura kalemi kart kapsamı düşülmeden açık (taksitlerle çift sayım)): YAKALANDI (c11-ks81-sa-mevcut-borc-karti)
+  mutasyon 141 (KS8.2 öncesi: iadeden ÖNCE tarihli bağsız Ödeme iade geri ödemesi sayılmaz (tarih koşulu var)): YAKALANDI (c13-ks83-ayni-gun-sira)
+  mutasyon 142 (§9 ilk okuması: iadenin TAMAMI (açık not + kapatıcı kısım) kendi tarihinde K-b FIFO'sunda — KS8.1 'artan' koşulu yok (daha eski tarihli iade elle Alacak'tan önce geri ödenir)): YAKALANDI (c13-ks83-ayni-gun-sira, rastgele-s1-1)
+  mutasyon 143 (KS8.1: ikinci aşamada (artan para) EN YENİ kapatıcı iade önce geri ödenir (karar: en eski önce)): YAKALANDI (c12-ks81-sb-kalan-dagilimi)
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+GEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de koşar — KARARLAR.md §8 C0): 276 denetim, 23 senaryo — b2-ux18-karsiliksiz 12, b2-ux18-retler 6, b2-ux18-sira 10, b2-ux18-temel 18, b3b-k1-k4-donem-raporlar 18, b3c-k2-donem-ayni-no 6, b3d-c3-kisi-gruplama 2, b3e-vergi-sutunu 2, b3k-vergi-tek-kolon 10, b3n-borc-kolonu-kisi-ozniteligi 14, b3o-seyrek-kalan 14, b3q-takvim-kalemi 16, b3r-kalan-sifir-eksi 11, b3s-soz-tutari-kalemi 9, b3t-sozlesme-tutari 13, b3u-sozlesme-tarihi-soz-basliklari 13, b3v-taahhut-soz-miktari 16, b3w-yalniz-soz-tutari 22, b3x-yalin-soz-ve-tutar 19, b3y-taahhut-alacak-bakiye 15, b5-u1-nihai-tuketici 2, rastgele-ux18-1 14, rastgele-ux18-2 14
+
+ATLANAN (2.4.5 kararıyla geçersiz — --legacy ile koşar): 12 — b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc, b1-5c-rapor, b3-u2-tablo-borcu, b3f-kayit-anahtari, b3g-tablo-bag-surekliligi, b3h-dosya-no-ve-devam, b3i-devam-ayni-icerik, b3j-ayni-ad-takas, b3m-dosya-no-degisimi, b3p-ayni-ad-telefon
+
+2.4.6 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §9 C0b): 681 denetim, 13 senaryo · programla farkların 0'i bu sınıfta, 0'i KS9 (madde 10: faturasız Alış İadesi yolu 2.4.5'te yok), 0'i SINIF DIŞI
+
+ÖZET [2.4.6]: 39 senaryo, 7408 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 okuma hatası, 0 yakalanmayan mutasyon, 12 atlanan senaryo. Ham çıktı: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-kahin-cari/a3-8573193
+BİLİNEN SINIRLAR (7): b3y-taahhut-alacak-bakiye k1:k4:akis; b3y-taahhut-alacak-bakiye k1:k4:kisiler; b3y-taahhut-alacak-bakiye k1:k4:vade; b3y-taahhut-alacak-bakiye k1:rapor:2026/1012:borc; b3y-taahhut-alacak-bakiye k1:rapor:2026/1012:grup; b3y-taahhut-alacak-bakiye k1:rapor:2026/1013:borc; b3y-taahhut-alacak-bakiye k1:rapor:2026/1013:grup
+7408/7408 denetim geçti (7 bilinen sınır dahil)
