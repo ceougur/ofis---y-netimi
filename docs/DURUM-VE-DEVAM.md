@@ -28,6 +28,10 @@ yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
 - BAŞ MİMAR UYARISI (kullanıcıya sıkıştırmadan sonra söylenecek): "Excel'deki tablolar HAZIR KAYITLI gelir" isteği müşterinin fiyat ve maliyet bilgisini programın İÇİNE (her müşteriye giden
   güncellemeye) gömmek demek → ticari sır sızar. Öneri: ürünle yalnız BOŞ yapı (sekme/kart/satır adları ve formül düzeni, fiyatsız) gelir; müşteri kendi Excel'ini bir kez "Excel'den Al" ile
   yükler ya da kurulumda verisi o müşterinin şirket dosyasına konur. Karar kullanıcıda.
+- KARAR (kullanıcı, 25.10.2026 ~08:25 UTC: "vereceğim kararda önerin uygun … büyük bir işse gerek yok. kartları oluşturalım, müşteri kendi doldursun, bizde destek oluruz"):
+  ürünle yalnız BOŞ YAPI gelir (4 sekme düğmesi, kartlar, satır/malzeme adları, birimler, oranlar ve formül düzeni — Excel'deki gibi, FİYATSIZ/miktarsız); müşteri kendisi doldurur, biz destek
+  oluruz. "Excel'den Al" YAPILMAZ (baş mimar gerekçesi: Excel'de başlık satırı yok, bloklar sabit hücre adreslerinde → içe alma ya o tek dosyanın adreslerine bağlı kırılgan kod ya da sezgi olur;
+  2.4.5'te paradan kopardığımız "programın tahmini" riski). Sonuç: müşteri fiyatı ürüne gömülmez; kâhin testleri türetilmiş girdilerle Excel'in formül düzenine karşı.
 
 ### 000. 2.4.5 BAŞLANGIÇ — DEVAM NOTU (24.10.2026 ~16:30 UTC; kullanıcının sıkıştırma talimatından ÖNCE yazıldı — ÖNCE BUNU OKU)
 - DURUM: 2.4.4 YAYIMLANDI ve KAPANDI (v2.4.4 = master 5187561; PR #34; master CI #867 + Sürüm yayımla #37 yeşil; 5 dosya bayt bayt; eski güncelleyiciler "available"; site
