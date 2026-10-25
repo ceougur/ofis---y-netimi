@@ -2540,6 +2540,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // (lib/doubtful-gl doubtfulSkipOf). Para kuralı aynı; değişiklik işlem kaydına yazılır, ekranda iptalden önce ve sonra söylenir.
       const relinked = doubtfulRelinks(invoice.id);
       store.run("UPDATE account_entries SET invoice_id = '' WHERE invoice_id = ?", invoice.id);
+      // 2.4.6 madde 9 (DB1): iptal edilen iadeye cari kartından bağlı geri ödemenin bağı (refund_of) BİLEREK kalır (iade geri yüklenir / yeniden kesilirse
+      // izi durur): iadenin kalanı 0 olduğundan geri ödemenin tamamı avanstır (K-a; lib/invoice-settle.mjs), cari kartı "iptal edildi" der. Evrak bağı
+      // (aşağıda) Kapatılacak Fatura gibi düşer — evrak bağsız ödemeye döner; kapama iki durumda da aynıdır.
       // 2.4.4 UX18 (kullanıcı kararı 21.10.2026): Kapatılacak Fatura ile bağlanan çek/senet faturanın parçası değildir — evrak portföyde (ve
       // işlem geçmişiyle) kalır, yalnız bağ düşer; kapama yeniden hesaplanır (en eski açık faturaya). Faturanın kendi evrakı voidFor'la geri alındı.
       const unbonded = store.all("SELECT ev.id, ev.cheque_id AS chequeId, c.account_id AS accountId FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id WHERE ev.invoice_id = ? AND ev.kind IN ('receive', 'issue') AND c.invoice_id <> ev.invoice_id", invoice.id);

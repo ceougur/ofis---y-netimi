@@ -1,0 +1,3 @@
+mode "bagli"
+projeksiyon {"satirlar":[["plan","in",500],["plan","in",500]],"net":1000,"from":"2026-10-20","to":"2027-01-18"}
+sonuc {"bakiye":1000,"A":{"state":"overdue","open":1000,"paid":0},"kartlar":[[1000,1000]],"vadeTakip":[["plan",500],["plan",500]],"vadeToplam":1000,"takvim":[["plan",500,"overdue"]],"beklenenVadeToplam":1000}

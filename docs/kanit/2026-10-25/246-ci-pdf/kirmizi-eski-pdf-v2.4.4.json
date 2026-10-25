@@ -1,0 +1,38 @@
+{
+  "ad": "246-ci-pdf/kirmizi-eski-pdf-v2.4.4",
+  "komut": "node --test test/kilavuz-pdf-surum.test.mjs",
+  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "dal": "is/ci-pdf",
+  "kirli": 1,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T09:40:57.665Z",
+  "sure_sn": 0.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 1,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Kılavuz PDF sürümü (client/kilavuz) › PDF kapağı ve dip notu = HTML sürümü = program sürümü",
+      "konum": "test/kilavuz-pdf-surum.test.mjs:39:3",
+      "hata": "PDF sürümü 2.4.4 ≠ HTML 2.4.5 ya da program 2.4.5 (kapak: 2.4.4; dip not: 2.4.4). Kılavuzu yeniden üretin: node docs/kilavuz/pdf-uret.mjs docs/kilavuz DestekOfis-Kullanim-Kilavuzu && cp docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf client/kilavuz/ && node docs/kilavuz/pdf-denetle.mjs (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-25/246-ci-pdf/kirmizi-eski-pdf-v2.4.4.log",
+  "klasor": "/home/user/wt/ci-pdf",
+  "ham_cikti_sha256": "5ad9582c7c1bfb0892fa5a910af7593da1432028430e9068519c61ccd42d8f8d",
+  "ham_cikti_bayt": 2013
+}

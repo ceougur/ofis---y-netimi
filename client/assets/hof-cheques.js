@@ -312,7 +312,8 @@
           bondState.shown = false;
           bondState.account = account?.id || "";
           if (!account?.id || cheque?.invoiceId || !HOF.accounts?.openInvoiceOptions) return;
-          const options = await HOF.accounts.openInvoiceOptions(account, direction === "in" ? "in" : "out");
+          // 2.4.6 K-e: verilen evrak müşteriye ait satıştan iade FATURASINI, alınan evrak tedarikçiye ait alıştan iade faturasını da geri öder (faturasız stok iadesi yok).
+          const options = await HOF.accounts.openInvoiceOptions(account, direction === "in" ? "in" : "out", { stock: false });
           if (turn !== invoiceTurn) return;
           // Evrakın (ya da açıldığı faturanın) bağı yalnız kendi carisinde seçili gelir; başka cari seçilince Otomatik.
           const wanted = account.id === bondAccount ? bondWanted : "";

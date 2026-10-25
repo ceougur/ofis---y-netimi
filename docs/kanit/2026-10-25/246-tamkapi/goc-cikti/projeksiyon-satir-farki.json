@@ -1,0 +1,2112 @@
+{
+ "001": {
+  "totals": [
+   {
+    "in": 357724.88,
+    "out": 5100,
+    "net": 352624.88
+   },
+   {
+    "in": 358677.2,
+    "out": 5100,
+    "net": 353577.2
+   }
+  ],
+  "closing": [
+   539490353,
+   539585585
+  ],
+  "rowCount": [
+   69,
+   70
+  ],
+  "overdueCount": [
+   2497,
+   2495
+  ],
+  "added": [
+   [
+    "R",
+    "2026-11-04",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Şükrü Öz",
+    "in",
+    95232,
+    "Borç kaydı · Kayıt 25.08.2026 · 952,32 TL"
+   ],
+   [
+    "O",
+    "2026-07-01",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Gökhan Yıldız",
+    "in",
+    777770,
+    "Borç kaydı · Kayıt 21.05.2026 · 7.777,70 TL · Vade 13.06.2026"
+   ],
+   [
+    "O",
+    "2026-08-09",
+    "account",
+    "Tahsil Edilecek Borç",
+    "İbrahim Şahin",
+    "in",
+    797332,
+    "Borç kaydı · Kayıt 29.06.2026 · 7.973,32 TL"
+   ],
+   [
+    "O",
+    "2026-09-10",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Hüseyin Bozkurt",
+    "in",
+    764317,
+    "Borç kaydı · Kayıt 17.08.2026 · 7.643,17 TL"
+   ],
+   [
+    "O",
+    "2026-09-29",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Ayşe Kaya",
+    "in",
+    594961,
+    "Borç kaydı · Kayıt 27.07.2026 · 5.949,61 TL · Vade 11.09.2026"
+   ],
+   [
+    "O",
+    "2026-10-23",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Hüseyin Çelik",
+    "in",
+    642773,
+    "Borç kaydı · Kayıt 19.08.2026 · 6.427,73 TL"
+   ]
+  ],
+  "removed": [
+   [
+    "O",
+    "2026-05-21",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Gökhan Yıldız",
+    "in",
+    777770,
+    ""
+   ],
+   [
+    "O",
+    "2026-06-29",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "İbrahim Şahin",
+    "in",
+    797332,
+    ""
+   ],
+   [
+    "O",
+    "2026-07-27",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ayşe Kaya",
+    "in",
+    594961,
+    ""
+   ],
+   [
+    "O",
+    "2026-08-17",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Hüseyin Bozkurt",
+    "in",
+    764317,
+    ""
+   ],
+   [
+    "O",
+    "2026-08-19",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Hüseyin Çelik",
+    "in",
+    642773,
+    ""
+   ],
+   [
+    "O",
+    "2026-08-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Şükrü Öz",
+    "in",
+    95232,
+    ""
+   ],
+   [
+    "O",
+    "2026-10-16",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Alıcı Ticaret A.Ş.",
+    "in",
+    14603,
+    ""
+   ]
+  ]
+ },
+ "002": {
+  "totals": [
+   {
+    "in": 205406.01,
+    "out": 0,
+    "net": 205406.01
+   },
+   {
+    "in": 205406.01,
+    "out": 0,
+    "net": 205406.01
+   }
+  ],
+  "closing": [
+   262929157,
+   262929157
+  ],
+  "rowCount": [
+   36,
+   36
+  ],
+  "overdueCount": [
+   1066,
+   1066
+  ],
+  "added": [
+   [
+    "O",
+    "2025-09-25",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Kübra Özdemir",
+    "in",
+    230000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 2.300,00 TL"
+   ],
+   [
+    "O",
+    "2025-09-26",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Murat Özkan",
+    "in",
+    350000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 3.500,00 TL"
+   ],
+   [
+    "O",
+    "2025-09-26",
+    "account",
+    "Tahsil Edilecek Borç",
+    "İsmail Polat",
+    "in",
+    90000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 900,00 TL"
+   ],
+   [
+    "O",
+    "2025-09-28",
+    "account",
+    "Tahsil Edilecek Borç",
+    "İbrahim Özdemir",
+    "in",
+    620000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 6.200,00 TL"
+   ],
+   [
+    "O",
+    "2025-09-28",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Sevgi Öz",
+    "in",
+    590000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 5.900,00 TL"
+   ],
+   [
+    "O",
+    "2025-09-30",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Zeynep Kara",
+    "in",
+    380000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 3.800,00 TL"
+   ],
+   [
+    "O",
+    "2025-09-30",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Sevgi Polat",
+    "in",
+    200000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 2.000,00 TL"
+   ],
+   [
+    "O",
+    "2025-09-30",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Ece Çakır",
+    "in",
+    460000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 4.600,00 TL"
+   ],
+   [
+    "O",
+    "2025-10-03",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Hasan Şimşek",
+    "in",
+    289259,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 6.400,00 TL · kalan"
+   ],
+   [
+    "O",
+    "2025-10-03",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Ahmet Kurt",
+    "in",
+    580000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 5.800,00 TL"
+   ],
+   [
+    "O",
+    "2025-10-06",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Ömer Doğan",
+    "in",
+    230000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 2.300,00 TL"
+   ],
+   [
+    "O",
+    "2025-10-09",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Tuğba Özdemir",
+    "in",
+    620000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 6.200,00 TL"
+   ],
+   [
+    "O",
+    "2025-10-11",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Hüseyin Özdemir",
+    "in",
+    650000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 6.500,00 TL"
+   ],
+   [
+    "O",
+    "2025-10-12",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Mustafa Aslan",
+    "in",
+    740000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 7.400,00 TL"
+   ],
+   [
+    "O",
+    "2025-10-15",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Tuğba Kılıç",
+    "in",
+    710000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 7.100,00 TL"
+   ],
+   [
+    "O",
+    "2025-10-17",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Ahmet Özkan",
+    "in",
+    460000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 4.600,00 TL · Vade 08.10.2025"
+   ],
+   [
+    "O",
+    "2025-10-18",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Işıl Yılmaz",
+    "in",
+    360000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 3.600,00 TL"
+   ],
+   [
+    "O",
+    "2025-10-18",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Ayşe Çelik",
+    "in",
+    90000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 900,00 TL"
+   ],
+   [
+    "O",
+    "2025-10-18",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Elif Yıldız",
+    "in",
+    150000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 1.500,00 TL"
+   ],
+   [
+    "O",
+    "2025-10-22",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Kübra Kılıç",
+    "in",
+    30000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 300,00 TL"
+   ],
+   [
+    "O",
+    "2025-10-23",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Nazlı Öz",
+    "in",
+    510000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 5.100,00 TL"
+   ],
+   [
+    "O",
+    "2025-10-25",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Ömer Bozkurt",
+    "in",
+    400000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 4.000,00 TL"
+   ],
+   [
+    "O",
+    "2025-10-25",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Mehmet Doğan",
+    "in",
+    640000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 6.400,00 TL · Vade 07.10.2025"
+   ],
+   [
+    "O",
+    "2025-10-26",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Ayşe Öz",
+    "in",
+    30000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 300,00 TL"
+   ],
+   [
+    "O",
+    "2025-10-28",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Doğan Çakır",
+    "in",
+    440000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 4.400,00 TL"
+   ],
+   [
+    "O",
+    "2025-10-28",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Tülay Çetin",
+    "in",
+    620000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 6.200,00 TL"
+   ],
+   [
+    "O",
+    "2025-10-29",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Ece Yıldırım",
+    "in",
+    430000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 4.300,00 TL"
+   ],
+   [
+    "O",
+    "2025-10-29",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Tülay Çakır",
+    "in",
+    270000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 2.700,00 TL · Vade 16.10.2025"
+   ],
+   [
+    "O",
+    "2025-11-01",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Çağrı Uğurlu",
+    "in",
+    570000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 5.700,00 TL"
+   ],
+   [
+    "O",
+    "2025-11-01",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Özge Demir",
+    "in",
+    530000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 5.300,00 TL"
+   ],
+   [
+    "O",
+    "2025-11-01",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Yağmur Güneş",
+    "in",
+    540000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 5.400,00 TL · Vade 16.10.2025"
+   ],
+   [
+    "O",
+    "2025-11-02",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Büşra Aydın",
+    "in",
+    260000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 2.600,00 TL"
+   ],
+   [
+    "O",
+    "2025-11-02",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Sevgi Erdoğan",
+    "in",
+    210000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 2.100,00 TL"
+   ],
+   [
+    "O",
+    "2025-11-03",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Hatice Ağaoğlu",
+    "in",
+    330000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 3.300,00 TL"
+   ],
+   [
+    "O",
+    "2025-11-04",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Yağmur Çetin",
+    "in",
+    580000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 5.800,00 TL"
+   ],
+   [
+    "O",
+    "2025-11-04",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Şükrü Kılıç",
+    "in",
+    160000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 2.900,00 TL · kalan"
+   ],
+   [
+    "O",
+    "2025-11-05",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Ayşe Akgül",
+    "in",
+    410000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 4.100,00 TL"
+   ],
+   [
+    "O",
+    "2025-11-05",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Özge Uğurlu",
+    "in",
+    760000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 7.600,00 TL"
+   ],
+   [
+    "O",
+    "2025-11-05",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Tülay Özdemir",
+    "in",
+    490000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 4.900,00 TL"
+   ],
+   [
+    "O",
+    "2025-11-07",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Gülşen Şimşek",
+    "in",
+    380000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 6.500,00 TL · kalan"
+   ],
+   [
+    "O",
+    "2025-11-08",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Ömer Kara",
+    "in",
+    370000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 3.700,00 TL · Vade 22.10.2025"
+   ],
+   [
+    "O",
+    "2025-11-08",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Doğan Şahin",
+    "in",
+    360000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 3.600,00 TL · Vade 06.11.2025"
+   ],
+   [
+    "O",
+    "2025-11-10",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Yağmur Kılıç",
+    "in",
+    210000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 2.100,00 TL · Vade 31.10.2025"
+   ],
+   [
+    "O",
+    "2025-11-11",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "İsmail Ağaoğlu",
+    "in",
+    300000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 3.000,00 TL · Vade 04.11.2025"
+   ],
+   [
+    "O",
+    "2025-11-12",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Emine Güneş",
+    "in",
+    650000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 6.500,00 TL"
+   ],
+   [
+    "O",
+    "2025-11-12",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Mustafa Aslan",
+    "in",
+    470000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 4.700,00 TL · Vade 26.10.2025"
+   ],
+   [
+    "O",
+    "2025-11-13",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Mustafa Doğan",
+    "in",
+    580000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 5.800,00 TL"
+   ],
+   [
+    "O",
+    "2025-11-13",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Elif Işık",
+    "in",
+    770000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 7.700,00 TL · Vade 24.10.2025"
+   ],
+   [
+    "O",
+    "2025-11-14",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Ece Kaya",
+    "in",
+    740000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 7.400,00 TL"
+   ],
+   [
+    "O",
+    "2025-11-15",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Ayşe Şimşek",
+    "in",
+    210000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 2.100,00 TL"
+   ],
+   [
+    "O",
+    "2025-11-16",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Ahmet Erdoğan",
+    "in",
+    390000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 3.900,00 TL"
+   ],
+   [
+    "O",
+    "2025-11-19",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Emine Çetin",
+    "in",
+    520000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 5.200,00 TL · Vade 03.11.2025"
+   ],
+   [
+    "O",
+    "2025-11-23",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Mehmet Yıldırım",
+    "in",
+    420000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 4.200,00 TL"
+   ],
+   [
+    "O",
+    "2025-11-23",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Oğuz Erdoğan",
+    "in",
+    190000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 1.900,00 TL · Vade 20.11.2025"
+   ],
+   [
+    "O",
+    "2025-11-25",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Yağmur Öztürk",
+    "in",
+    220000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 2.200,00 TL"
+   ],
+   [
+    "O",
+    "2025-11-25",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Işıl Aslan",
+    "in",
+    590000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 5.900,00 TL"
+   ],
+   [
+    "O",
+    "2025-11-28",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Gökhan Akgül",
+    "in",
+    640000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 6.400,00 TL"
+   ],
+   [
+    "O",
+    "2025-11-28",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Hüseyin Şahin",
+    "in",
+    480000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 4.800,00 TL · Vade 15.11.2025"
+   ],
+   [
+    "O",
+    "2025-11-29",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Gülşen Aslan",
+    "in",
+    290000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 2.900,00 TL"
+   ],
+   [
+    "O",
+    "2025-11-30",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Yağmur Akgül",
+    "in",
+    190000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 1.900,00 TL"
+   ],
+   [
+    "O",
+    "2025-11-30",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Cemile Işık",
+    "in",
+    50000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 500,00 TL · Vade 29.11.2025"
+   ],
+   [
+    "O",
+    "2025-12-01",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Sevgi Özkan",
+    "in",
+    250000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 2.500,00 TL"
+   ],
+   [
+    "O",
+    "2025-12-01",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Tülay Doğan",
+    "in",
+    690000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 6.900,00 TL"
+   ],
+   [
+    "O",
+    "2025-12-01",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Ali Güneş",
+    "in",
+    340000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 3.400,00 TL"
+   ],
+   [
+    "O",
+    "2025-12-03",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Zehra Işık",
+    "in",
+    240000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 2.400,00 TL · Vade 18.11.2025"
+   ],
+   [
+    "O",
+    "2025-12-04",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Hasan Polat",
+    "in",
+    630000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 6.300,00 TL · Vade 14.11.2025"
+   ],
+   [
+    "O",
+    "2025-12-06",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Tuğba Bozkurt",
+    "in",
+    670000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 6.700,00 TL"
+   ],
+   [
+    "O",
+    "2025-12-06",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Büşra Çelik",
+    "in",
+    520000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 5.200,00 TL"
+   ],
+   [
+    "O",
+    "2025-12-07",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Ömer Doğan",
+    "in",
+    340000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 3.400,00 TL"
+   ],
+   [
+    "O",
+    "2025-12-08",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Ece Uğurlu",
+    "in",
+    180000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 1.800,00 TL"
+   ],
+   [
+    "O",
+    "2025-12-08",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Oğuz Kaya",
+    "in",
+    420000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 4.200,00 TL"
+   ],
+   [
+    "O",
+    "2025-12-08",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Ömer Koç",
+    "in",
+    510000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 5.100,00 TL"
+   ],
+   [
+    "O",
+    "2025-12-09",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Kübra Yıldırım",
+    "in",
+    260000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 2.600,00 TL"
+   ],
+   [
+    "O",
+    "2025-12-09",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Cemile Akgül",
+    "in",
+    480000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 4.800,00 TL · Vade 26.11.2025"
+   ],
+   [
+    "O",
+    "2025-12-10",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Sevgi Öztürk",
+    "in",
+    410000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 4.100,00 TL"
+   ],
+   [
+    "O",
+    "2025-12-11",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Ayşe Akgül",
+    "in",
+    800000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 8.000,00 TL"
+   ],
+   [
+    "O",
+    "2025-12-11",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "İsmail Çakır",
+    "in",
+    510000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 5.100,00 TL · Vade 26.11.2025"
+   ],
+   [
+    "O",
+    "2025-12-13",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Ümit Çetin",
+    "in",
+    90000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 900,00 TL"
+   ],
+   [
+    "O",
+    "2025-12-14",
+    "account",
+    "Tahsil Edilecek Borç",
+    "İsmail Çakır",
+    "in",
+    740000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 7.400,00 TL"
+   ],
+   [
+    "O",
+    "2025-12-14",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Ömer Uğurlu",
+    "in",
+    390000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 3.900,00 TL"
+   ],
+   [
+    "O",
+    "2025-12-15",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Büşra Doğan",
+    "in",
+    530000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 5.300,00 TL"
+   ],
+   [
+    "O",
+    "2025-12-16",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Ali Demir",
+    "in",
+    100000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 1.000,00 TL"
+   ],
+   [
+    "O",
+    "2025-12-16",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Ayşe Aydın",
+    "in",
+    190000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 1.900,00 TL · Vade 13.12.2025"
+   ],
+   [
+    "O",
+    "2025-12-17",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Emine Yılmaz",
+    "in",
+    570000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 5.700,00 TL"
+   ],
+   [
+    "O",
+    "2025-12-18",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Mehmet Kaya",
+    "in",
+    780000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 7.800,00 TL · Vade 09.12.2025"
+   ],
+   [
+    "O",
+    "2025-12-20",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Yusuf Bozkurt",
+    "in",
+    30000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 300,00 TL"
+   ],
+   [
+    "O",
+    "2025-12-20",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Işıl Kılıç",
+    "in",
+    50000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 500,00 TL"
+   ],
+   [
+    "O",
+    "2025-12-21",
+    "account",
+    "Tahsil Edilecek Borç",
+    "İbrahim Bozkurt",
+    "in",
+    390000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 5.400,00 TL · kalan"
+   ],
+   [
+    "O",
+    "2025-12-22",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Ece Çakır",
+    "in",
+    660000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 6.600,00 TL · Vade 02.12.2025"
+   ],
+   [
+    "O",
+    "2025-12-23",
+    "account",
+    "Tahsil Edilecek Borç",
+    "Işıl Şahin",
+    "in",
+    410000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 4.100,00 TL"
+   ],
+   [
+    "O",
+    "2025-12-24",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Hatice Kurt",
+    "in",
+    90000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 900,00 TL · Vade 11.12.2025"
+   ],
+   [
+    "O",
+    "2025-12-30",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Işıl Kara",
+    "in",
+    370000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 3.700,00 TL · Vade 18.12.2025"
+   ],
+   [
+    "O",
+    "2025-12-31",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Sevgi Aslan",
+    "in",
+    260000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 2.600,00 TL · Vade 18.12.2025"
+   ],
+   [
+    "O",
+    "2025-12-31",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Oğuz Bozkurt",
+    "in",
+    550000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 5.500,00 TL · Vade 22.12.2025"
+   ],
+   [
+    "O",
+    "2026-01-01",
+    "account",
+    "Tahsil Edilecek Borç (Ödeme Sözü)",
+    "Mehmet Uğurlu",
+    "in",
+    510000,
+    "Açılış bakiyesi · Kayıt 25.09.2025 · 5.100,00 TL · Vade 22.12.2025"
+   ],
+   [
+    "O",
+    "2026-06-13",
+    "account",
+    "Tahsil Edilecek Borç",
+    "İbrahim Kılıç",
+    "in",
+    287405,
+    "Borç kaydı · Kayıt 16.04.2026 · 2.874,05 TL"
+   ]
+  ],
+  "removed": [
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ahmet Özkan",
+    "in",
+    460000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ece Uğurlu",
+    "in",
+    180000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Hatice Ağaoğlu",
+    "in",
+    330000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Sevgi Öztürk",
+    "in",
+    410000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ayşe Aydın",
+    "in",
+    190000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Zeynep Kara",
+    "in",
+    380000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Emine Güneş",
+    "in",
+    650000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Oğuz Erdoğan",
+    "in",
+    190000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Mustafa Aslan",
+    "in",
+    740000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ahmet Erdoğan",
+    "in",
+    390000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Oğuz Kaya",
+    "in",
+    420000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ömer Kara",
+    "in",
+    370000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Yağmur Öztürk",
+    "in",
+    220000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ayşe Öz",
+    "in",
+    30000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ece Çakır",
+    "in",
+    660000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Elif Işık",
+    "in",
+    770000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Tuğba Bozkurt",
+    "in",
+    670000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Mustafa Aslan",
+    "in",
+    470000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Işıl Şahin",
+    "in",
+    410000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Gülşen Aslan",
+    "in",
+    290000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ece Yıldırım",
+    "in",
+    430000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ahmet Kurt",
+    "in",
+    580000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Kübra Kılıç",
+    "in",
+    30000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Mustafa Doğan",
+    "in",
+    580000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ece Kaya",
+    "in",
+    740000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ayşe Şimşek",
+    "in",
+    210000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Hasan Polat",
+    "in",
+    630000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Cemile Akgül",
+    "in",
+    480000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Mehmet Yıldırım",
+    "in",
+    420000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Emine Çetin",
+    "in",
+    520000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Çağrı Uğurlu",
+    "in",
+    570000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Sevgi Polat",
+    "in",
+    200000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Işıl Yılmaz",
+    "in",
+    360000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Cemile Işık",
+    "in",
+    50000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Sevgi Özkan",
+    "in",
+    250000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ayşe Akgül",
+    "in",
+    800000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ayşe Akgül",
+    "in",
+    410000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ömer Doğan",
+    "in",
+    230000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "İsmail Çakır",
+    "in",
+    510000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Hüseyin Özdemir",
+    "in",
+    650000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Tuğba Kılıç",
+    "in",
+    710000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Yağmur Çetin",
+    "in",
+    580000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Gökhan Akgül",
+    "in",
+    640000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Işıl Aslan",
+    "in",
+    590000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Emine Yılmaz",
+    "in",
+    570000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Yağmur Güneş",
+    "in",
+    540000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "İbrahim Özdemir",
+    "in",
+    620000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ömer Koç",
+    "in",
+    510000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Yağmur Kılıç",
+    "in",
+    210000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Yağmur Akgül",
+    "in",
+    190000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Büşra Aydın",
+    "in",
+    260000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Mehmet Kaya",
+    "in",
+    780000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Şükrü Kılıç",
+    "in",
+    160000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Sevgi Erdoğan",
+    "in",
+    210000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Tülay Doğan",
+    "in",
+    690000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Sevgi Aslan",
+    "in",
+    260000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Hatice Kurt",
+    "in",
+    90000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "İbrahim Bozkurt",
+    "in",
+    390000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Murat Özkan",
+    "in",
+    350000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Özge Uğurlu",
+    "in",
+    760000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Gülşen Şimşek",
+    "in",
+    380000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Sevgi Öz",
+    "in",
+    590000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ömer Doğan",
+    "in",
+    340000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Doğan Çakır",
+    "in",
+    440000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Büşra Çelik",
+    "in",
+    520000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "İsmail Polat",
+    "in",
+    90000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Oğuz Bozkurt",
+    "in",
+    550000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Kübra Özdemir",
+    "in",
+    230000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ayşe Çelik",
+    "in",
+    90000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Özge Demir",
+    "in",
+    530000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Tülay Çetin",
+    "in",
+    620000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Hüseyin Şahin",
+    "in",
+    480000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ümit Çetin",
+    "in",
+    90000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Mehmet Doğan",
+    "in",
+    640000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ali Güneş",
+    "in",
+    340000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Kübra Yıldırım",
+    "in",
+    260000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Yusuf Bozkurt",
+    "in",
+    30000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Nazlı Öz",
+    "in",
+    510000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Işıl Kılıç",
+    "in",
+    50000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Işıl Kara",
+    "in",
+    370000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "İsmail Çakır",
+    "in",
+    740000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Elif Yıldız",
+    "in",
+    150000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Mehmet Uğurlu",
+    "in",
+    510000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ali Demir",
+    "in",
+    100000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ömer Uğurlu",
+    "in",
+    390000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Büşra Doğan",
+    "in",
+    530000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "İsmail Ağaoğlu",
+    "in",
+    300000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Tülay Özdemir",
+    "in",
+    490000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Doğan Şahin",
+    "in",
+    360000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ece Çakır",
+    "in",
+    460000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Tuğba Özdemir",
+    "in",
+    620000,
+    ""
+   ],
+   [
+    "O",
+    "2025-09-25",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Ömer Bozkurt",
+    "in",
+    400000,
+    ""
+   ],
+   [
+    "O",
+    "2026-04-16",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "İbrahim Kılıç",
+    "in",
+    287405,
+    ""
+   ],
+   [
+    "O",
+    "2026-05-11",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Hasan Şimşek",
+    "in",
+    289259,
+    ""
+   ],
+   [
+    "O",
+    "2026-09-24",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Tülay Çakır",
+    "in",
+    270000,
+    ""
+   ],
+   [
+    "O",
+    "2026-10-12",
+    "unbilled",
+    "Faturasız Cari Alacağı",
+    "Zehra Işık",
+    "in",
+    240000,
+    ""
+   ]
+  ]
+ }
+}

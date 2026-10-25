@@ -1,0 +1,32 @@
+{
+  "ad": "246-db1/e2e-senaryo-supheli-230",
+  "komut": "npm run test:senaryo-supheli-230",
+  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "dal": "is/db1",
+  "kirli": 15,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T11:18:00.148Z",
+  "sure_sn": 46.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 67,
+    "gecen": 67,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-db1/e2e-senaryo-supheli-230.log",
+  "klasor": "/home/user/wt/db1",
+  "ham_cikti_sha256": "95f7d40f9f76dcb96848174e89133ee2e5e1795aecee6a439fbf5334dd26413e",
+  "ham_cikti_bayt": 6909
+}

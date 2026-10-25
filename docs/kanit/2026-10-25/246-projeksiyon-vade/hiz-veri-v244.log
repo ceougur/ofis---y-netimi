@@ -1,0 +1,19 @@
+[09:45:08]   2025-10-27: {"cari-musteri":2000,"cari-tedarikci":100,"_fatura":38,"fatura-satis-vadeli":20,"fatura-satis-kismi":11,"fatura-satis-pesin":7,"_borc":15,"elle-borc":15,"_tahsilat":7,"cari-tahsilat":7}
+[09:45:26]   2025-12-01: {"cari-musteri":2000,"cari-tedarikci":100,"_fatura":999,"fatura-satis-vadeli":505,"fatura-satis-kismi":183,"fatura-satis-pesin":210,"_borc":400,"elle-borc":400,"_tahsilat":199,"cari-tahsilat":199,"fatura-alis":101}
+[09:45:48]   2026-01-05: {"cari-musteri":2000,"cari-tedarikci":100,"_fatura":1961,"fatura-satis-vadeli":963,"fatura-satis-kismi":358,"fatura-satis-pesin":409,"_borc":784,"elle-borc":784,"_tahsilat":392,"cari-tahsilat":392,"fatura-alis":231}
+[09:46:12]   2026-02-09: {"cari-musteri":2000,"cari-tedarikci":100,"_fatura":2923,"fatura-satis-vadeli":1433,"fatura-satis-kismi":507,"fatura-satis-pesin":644,"_borc":1169,"elle-borc":1169,"_tahsilat":584,"cari-tahsilat":584,"fatura-alis":339}
+[09:46:38]   2026-03-16: {"cari-musteri":2000,"cari-tedarikci":100,"_fatura":3884,"fatura-satis-vadeli":1889,"fatura-satis-kismi":675,"fatura-satis-pesin":856,"_borc":1553,"elle-borc":1553,"_tahsilat":776,"cari-tahsilat":776,"fatura-alis":464}
+[09:47:06]   2026-04-20: {"cari-musteri":2000,"cari-tedarikci":100,"_fatura":4846,"fatura-satis-vadeli":2368,"fatura-satis-kismi":846,"fatura-satis-pesin":1070,"_borc":1938,"elle-borc":1938,"_tahsilat":969,"cari-tahsilat":969,"fatura-alis":562}
+[09:47:37]   2026-05-25: {"cari-musteri":2000,"cari-tedarikci":100,"_fatura":5807,"fatura-satis-vadeli":2839,"fatura-satis-kismi":1020,"fatura-satis-pesin":1263,"_borc":2323,"elle-borc":2323,"_tahsilat":1161,"cari-tahsilat":1161,"fatura-alis":685}
+[09:48:11]   2026-06-29: {"cari-musteri":2000,"cari-tedarikci":100,"_fatura":6769,"fatura-satis-vadeli":3319,"fatura-satis-kismi":1174,"fatura-satis-pesin":1481,"_borc":2707,"elle-borc":2707,"_tahsilat":1353,"cari-tahsilat":1353,"fatura-alis":795}
+[09:48:46]   2026-08-03: {"cari-musteri":2000,"cari-tedarikci":100,"_fatura":7730,"fatura-satis-vadeli":3789,"fatura-satis-kismi":1335,"fatura-satis-pesin":1681,"_borc":3092,"elle-borc":3092,"_tahsilat":1546,"cari-tahsilat":1546,"fatura-alis":925}
+[09:49:31]   2026-09-07: {"cari-musteri":2000,"cari-tedarikci":100,"_fatura":8692,"fatura-satis-vadeli":4243,"fatura-satis-kismi":1509,"fatura-satis-pesin":1900,"_borc":3476,"elle-borc":3476,"_tahsilat":1738,"cari-tahsilat":1738,"fatura-alis":1040}
+[09:50:19]   2026-10-12: {"cari-musteri":2000,"cari-tedarikci":100,"_fatura":9653,"fatura-satis-vadeli":4735,"fatura-satis-kismi":1678,"fatura-satis-pesin":2105,"_borc":3861,"elle-borc":3861,"_tahsilat":1930,"cari-tahsilat":1930,"fatura-alis":1135}
+[09:50:39] üretildi {"cari-musteri":2000,"cari-tedarikci":100,"fatura-satis-vadeli":4912,"fatura-satis-kismi":1734,"fatura-satis-pesin":2178,"elle-borc":4000,"cari-tahsilat":2000,"fatura-alis":1176}; 18100 istek, 346 sn
+# v2.4.4 ile 18100 API isteği, hepsi 200 (200 dışı üretimi durdururdu)
+# tests 18100
+# pass 18100
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

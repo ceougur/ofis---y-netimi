@@ -1,0 +1,58 @@
+// Aday 246-1 göç sırası denetimi: (1) boş veri güncel kodla; (2) v2.4.5 gerçek koduyla üretilen veri güncel kodla. Beklenen user_version 36, üç değişiklik var.
+import { mkdtempSync, rmSync } from "node:fs";
+import path from "node:path";
+const REPO = "/home/user/wt/aday246-1";
+const { MIGRATIONS, LATEST_VERSION } = await import(`${REPO}/server/lib/migrations.mjs`);
+const { CURRENT, bootVersion } = await import(`${REPO}/test/guvenilirlik/surumler.mjs`);
+const { createClock } = await import(`${REPO}/server/lib/clock.mjs`);
+let fail = 0;
+const ok = (c, m) => { console.log(`${c ? "ok" : "BAŞARISIZ"} - ${m}`); if (!c) fail++; };
+const vs = MIGRATIONS.map(m => m.version);
+ok(vs.every((v, i) => i === 0 || v === vs[i - 1] + 1), `göç sürümleri ardışık (${vs.slice(-4).join(", ")})`);
+ok(LATEST_VERSION === 36, `LATEST_VERSION = ${LATEST_VERSION}`);
+const check = (store, label) => {
+  ok(store.get("PRAGMA user_version").user_version === 36, `${label}: user_version = ${store.get("PRAGMA user_version").user_version}`);
+  const cols = store.all("PRAGMA table_info(account_entries)").map(c => c.name);
+  ok(cols.includes("is_opening"), `${label}: account_entries.is_opening var`);
+  ok(cols.includes("refund_of"), `${label}: account_entries.refund_of var`);
+  const t = store.all("SELECT name FROM sqlite_master WHERE type = 'table' AND name LIKE 'maliyet_%' ORDER BY name").map(r => r.name);
+  ok(t.length === 6, `${label}: maliyet tabloları ${t.length} (${t.join(", ")})`);
+};
+const env = { HUKUK_LICENSE_URL: "http://127.0.0.1:9" };
+const clock = createClock({ time: "2026-10-20T12:00:00+03:00", fixed: true });
+const root = mkdtempSync(path.join(process.argv[2], "goc-"));
+try {
+  { // 1 boş veri
+    const dirs = { dataDir: path.join(root, "bos", "data"), backupDir: path.join(root, "bos", "backups"), env };
+    const cur = await bootVersion(CURRENT, { ...dirs, now: clock });
+    try { check(cur.app.store, "boş veri"); } finally { await cur.close(); }
+  }
+  { // 2 v2.4.5 verisi
+    const dirs = { dataDir: path.join(root, "v245", "data"), backupDir: path.join(root, "v245", "backups"), env };
+    const old = await bootVersion("v2.4.5", { ...dirs, now: clock });
+    let ids = {};
+    try {
+      const api = await old.login();
+      const r = await api.post("/api/workspace/accounts", { name: "Göç Sıra Bir", type: "customer", registeredOn: "2026-09-01", openingBalance: "1.250" });
+      ok(r.status === 200, `v2.4.5 açılışlı cari ${r.status}`);
+      ids.acc = r.data.id; ids.opening = r.data.openingEntryId;
+      const p = await api.post(`/api/workspace/accounts/${ids.acc}/entries`, { kind: "out", amount: "100", date: "2026-10-10", method: "cash", cashForce: true });
+      ok(p.status === 200, `v2.4.5 ödeme ${p.status}`);
+      ok(old.app.store.get("PRAGMA user_version").user_version === 33, `v2.4.5 user_version = ${old.app.store.get("PRAGMA user_version").user_version}`);
+      ids.balance = (await api.get(`/api/workspace/accounts/${ids.acc}`)).data.totals.balance;
+    } finally { await old.close(); }
+    const cur = await bootVersion(CURRENT, { ...dirs, now: clock });
+    try {
+      const s = cur.app.store;
+      check(s, "v2.4.5 verisi");
+      ok(s.get("SELECT COUNT(*) AS n FROM account_entries WHERE is_opening = 1").n === 1 && s.get("SELECT id FROM account_entries WHERE is_opening = 1").id === ids.opening, "v35: v2.4.5 açılış satırı işaretli (tek)");
+      ok(s.get("SELECT COUNT(*) AS n FROM account_entries WHERE refund_of <> ''").n === 0, "v36: eski satırlar bağsız");
+      const api = await cur.login();
+      const card = (await api.get(`/api/workspace/accounts/${ids.acc}`)).data;
+      ok(card.totals.balance === ids.balance, `bakiye aynı (${ids.balance} → ${card.totals.balance})`);
+      ok(card.openingEntryId === ids.opening, "kart açılışı tanıyor");
+    } finally { await cur.close(); }
+  }
+} finally { rmSync(root, { recursive: true, force: true }); }
+console.log(`# fail ${fail}`);
+process.exit(fail ? 1 : 0);

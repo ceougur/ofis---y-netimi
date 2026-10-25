@@ -362,17 +362,23 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     const unitPrice = priceOf(body.unitPrice);
     const amount = roundMoney(qty * unitPrice);
     if (pay !== "none" && !(amount > 0)) throw new HttpError(400, unitPrice > 0 ? "Tutar 0,00 TL çıkıyor (miktar × birim fiyat kuruşa yuvarlanınca). Miktarı ya da fiyatı kontrol edin." : "Kasa'ya ya da cariye yazmak için birim fiyat girin (tutar = miktar × birim fiyat).");
-    // Para yazan hareket (Kasa ya da cari) yönetim yetkisidir; yalnız miktar hareketini herkes girer.
-    // v2.0.13: "Satış Yapma" yetkisi (stock.sell) satış ve müşteri iadesinde para yazdırır; alım yönetim yetkisidir.
-    const selling = kind === "out" || text(body.reason) === "return";
-    if (pay !== "none" && !canUser(user, "stock.manage") && !(selling && canUser(user, "stock.sell"))) throw new HttpError(403, "Kasa'ya ya da cariye yazılan stok hareketi yönetim yetkisidir (satış ve iade için \"Satış Yapma\" yetkisi yeter). Yalnız miktarı girebilirsiniz.");
-    const accountId = pay === "account" ? limited(body.accountId, 120, "Cari") : "";
-    if (pay === "account" && !accountId) throw new HttpError(400, kind === "in" ? "Alımın yazılacağı tedarikçi carisini seçin." : "Satışın yazılacağı müşteri carisini seçin.");
-    if (accountId && !accounts()?.exists(accountId)) throw new HttpError(400, "Seçilen cari bulunamadı; silinmiş olabilir.");
     // v2.0.13: müşteri iadesi — satıştan dönen mal (yalnız girişte). Kasa'da "Satış iadesi", caride alacak "Satış iadesi"
     // olarak görünür; alım sayılmaz (ürünün maliyet fiyatı değişmez).
-    const reason = kind === "in" && text(body.reason) === "return" ? "return" : "";
+    // 2.4.6 madde 10 (KS7.1 simetrisi): tedarikçiye iade — alıştan dönen mal (yalnız çıkışta; 'preturn'). Tedarikçi carisinde borç "Alış iadesi" (borcumuz
+    // azalır; fatura kapamasında bağsız ödeme, en eski açık alış faturasını kapatır) ya da para tedarikçiden geri alınır (Kasa'ya / bankaya giriş). Satış
+    // sayılmaz (600'e yazılmaz; 153 azalır). Önceden yalnız birim testte vardı (formda yol yoktu): tedarikçiye nedensiz çıkış bugünkü gibi yükümlülüktür (KS7.1).
+    const reason = kind === "in" && text(body.reason) === "return" ? "return" : kind === "out" && text(body.reason) === "preturn" ? "preturn" : "";
+    // Para yazan hareket (Kasa ya da cari) yönetim yetkisidir; yalnız miktar hareketini herkes girer.
+    // v2.0.13: "Satış Yapma" yetkisi (stock.sell) satış ve müşteri iadesinde para yazdırır; alım ve tedarikçiye iade yönetim yetkisidir.
+    const selling = (kind === "out" && reason !== "preturn") || reason === "return";
+    if (pay !== "none" && !canUser(user, "stock.manage") && !(selling && canUser(user, "stock.sell"))) throw new HttpError(403, "Kasa'ya ya da cariye yazılan stok hareketi yönetim yetkisidir (satış ve iade için \"Satış Yapma\" yetkisi yeter). Yalnız miktarı girebilirsiniz.");
+    const accountId = pay === "account" ? limited(body.accountId, 120, "Cari") : "";
+    if (pay === "account" && !accountId) throw new HttpError(400, reason === "preturn" ? "İadenin yazılacağı tedarikçi carisini seçin." : kind === "in" ? "Alımın yazılacağı tedarikçi carisini seçin." : "Satışın yazılacağı müşteri carisini seçin.");
+    if (accountId && !accounts()?.exists(accountId)) throw new HttpError(400, "Seçilen cari bulunamadı; silinmiş olabilir.");
     // v2.0.13: para Kasa'dan/Kasa'ya geçiyorsa yolu: nakit, havale/EFT ya da kredi kartı (POS).
+    // 2.4.6 madde 10: tedarikçiye iadede kart yolu yok (kart satışı POS'tur, tedarikçinin firmanın kredi kartına iadesi değil): Açık Hesap + cari kartında
+    // Tahsilat → Kredi Kartına İade (Geri Ödenen İade: bu iade).
+    if (reason === "preturn" && pay === "cash" && methodInput(body.method) === "card") throw new HttpError(400, "Tedarikçiye iadede Kredi Kartı yolu yok. Para firmanın kredi kartına iade edildiyse Açık Hesap seçin, sonra cari kartında Tahsilat → Kredi Kartına İade girin (Geri Ödenen İade: bu iade).", { code: "preturn-card", field: "pay" });
     return { kind, qty, unitPrice, amount, date: period ? period.movementDate(body) : dateOf(body.date, "Tarih", today()), note: limited(body.note, 300, "Açıklama"), pay, reason, method: pay === "cash" ? methodInput(body.method) : "cash", accountId };
   };
   // Eksiye düşme kontrolü: çıkış mevcuttan fazlaysa sorulur (force ile kaydedilir; sayım farkı olabilir).
@@ -382,7 +388,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     const available = stockLevel(item, moves).qty;
     if (move.qty > available + 1e-9) throw new HttpError(409, `Stokta ${qtyText(available)} ${item.unit} var; ${qtyText(move.qty)} ${item.unit} çıkış stoğu eksiye düşürür. ${afterText(roundQty(available - move.qty), item.unit)}`, { code: "stock-negative", available, after: roundQty(available - move.qty) });
   }
-  const accountNote = (item, move) => `${move.reason === "return" ? "Satış iadesi" : `Stok ${move.kind === "in" ? "alımı" : "satışı"}`}: ${item.name} ${qtyText(move.qty)} ${item.unit} × ${tl(move.unitPrice)}${move.note ? ` · ${move.note}` : ""}`;
+  const accountNote = (item, move) => `${move.reason === "return" ? "Satış iadesi" : move.reason === "preturn" ? "Alış iadesi" : `Stok ${move.kind === "in" ? "alımı" : "satışı"}`}: ${item.name} ${qtyText(move.qty)} ${item.unit} × ${tl(move.unitPrice)}${move.note ? ` · ${move.note}` : ""}`;
   function syncAccount(user, item, moveId, move, previousAccountId = "") {
     const service = accounts();
     if (!service?.stockEntry) return [];
@@ -425,11 +431,12 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
       touched = syncAccount(user, item, moveId, input);
       // Alımda birim fiyat verildiyse ürünün son birim fiyatı güncellenir (stok değeri güncel kalsın).
       if (input.kind === "in" && input.reason !== "return" && input.unitPrice > 0 && canUser(user, "stock.manage")) store.run("UPDATE stock_items SET unit_price = ?, updated_at = ? WHERE id = ?", input.unitPrice, now(), item.id);
-      audit(user, input.kind === "in" ? (input.reason === "return" ? "stock.return" : "stock.in") : "stock.out", moveId, { itemId: item.id, itemName: item.name, ...input });
+      audit(user, input.kind === "in" ? (input.reason === "return" ? "stock.return" : "stock.in") : input.reason === "preturn" ? "stock.preturn" : "stock.out", moveId, { itemId: item.id, itemName: item.name, ...input });
       // v2.0.13: veresiye satışı taksitlendir — satış carinin borcunu bir kez yazar; kart bu borcu vadelere böler
       // (mevcut borcu taksitlendiren kart, ikinci kez borç yazmaz).
       const plan = body.installments && typeof body.installments === "object" ? body.installments : null;
-      if (plan && input.kind === "out" && input.pay === "account") {
+      // Tedarikçiye iade (2.4.6 madde 10) satış değildir: taksitlendirilmez.
+      if (plan && input.kind === "out" && input.pay === "account" && input.reason !== "preturn") {
         if (!canUser(user, "plans.manage")) throw new HttpError(403, "Satışı taksitlendirmek taksit yönetimi yetkisidir.");
         const account = accounts()?.detail ? accounts().detail(input.accountId, user) : null;
         const count = Math.trunc(Number(plan.count));
@@ -537,7 +544,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
   router.get("/api/workspace/stock/:id/hareketler.pdf", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "stock.view");
     const item = detail(params.id, user);
-    const payText = move => (move.pay === "cash" ? (move.kind === "in" ? (move.reason === "return" ? "Kasa'dan iade edildi" : "Kasa'dan ödendi") : "Kasa'ya tahsil") : move.pay === "account" ? `Cari: ${move.accountName}` : "");
+    const payText = move => (move.pay === "cash" ? (move.kind === "in" ? (move.reason === "return" ? "Kasa'dan iade edildi" : "Kasa'dan ödendi") : move.reason === "preturn" ? "Kasa'ya iade alındı" : "Kasa'ya tahsil") : move.pay === "account" ? `Cari: ${move.accountName}` : "");
     const pdf = tablePdf({
       now: clock(),
       title: `Stok Hareketleri · ${item.name}`,
@@ -765,7 +772,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     // 400 — önceden sessizce nakit sayılıyordu).
     period?.restoreDate(payload.date, "Bu stok hareketi");
     const pay = payload.pay === "account" && !accounts()?.exists(payload.accountId) ? "none" : PAY.has(payload.pay) ? payload.pay : "none";
-    const move = { kind: payload.kind, qty: Number(payload.qty) || 0, unitPrice: Number(payload.unitPrice) || 0, amount: roundMoney(Number(payload.amount) || 0), date: payload.date, note: payload.note || "", pay, reason: payload.reason === "return" ? "return" : "", method: pay === "cash" ? methodInput(payload.method) : "cash", accountId: pay === "account" ? payload.accountId : "", isOpening: Number(payload.isOpening) === 1 };
+    const move = { kind: payload.kind, qty: Number(payload.qty) || 0, unitPrice: Number(payload.unitPrice) || 0, amount: roundMoney(Number(payload.amount) || 0), date: payload.date, note: payload.note || "", pay, reason: payload.reason === "return" && payload.kind === "in" ? "return" : payload.reason === "preturn" && payload.kind === "out" ? "preturn" : "", method: pay === "cash" ? methodInput(payload.method) : "cash", accountId: pay === "account" ? payload.accountId : "", isOpening: Number(payload.isOpening) === 1 };
     // GG2 (K13/7): peşin satış/alışın banka hesabı bağı da döner (hesap silinmişse bağsız; söylenir).
     const kept = pay === "cash" ? bank.keepRef(payload.finRef, { method: move.method, date: move.date }) : { ref: "", dropped: "" };
     // Yargıç K2 (plan §3.8, §9.2/7, §3.9): banka bağlı satırda kaynak modül yetkisi + bank.move, pasif hesap 400, K7 son durumla.

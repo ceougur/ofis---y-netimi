@@ -1,0 +1,158 @@
+{
+  "ad": "246-kahin-cari/taban-3dfb1c7-s1-t3-10",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --tohum 3-10 --tur s1 --islem 120 --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-kahin-cari/r4-s1",
+  "commit": "3dfb1c7f6c9a45b9adee57f8a159acc03065fa32",
+  "dal": "is/kahin-cari-246",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T10:25:42.846Z",
+  "sure_sn": 103.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 15583,
+    "gecen": 14644,
+    "basarisiz": 939,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 939 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[İNCELE YAYGIN] k10:fatura:A2:acik: program 260756 · kâhin 199695 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme (KS9: Alış İadesi bağsız ödeme; geri tahsil edilen kısmı değil — KARAR GEREKİR K-c))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k10:fatura:G4:acik: program 265578 · kâhin 440000 (B2.1 açık = tutar − bağlı − en eski kapama · S1 elle kayıtla tek kuyruk · KS8 iade geri ödemesi (madde 9): geri ödenen iade kapatıcı değil (ajan ayrıntısı: bagsiz-karsiliksiz))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k10:hareket:s031:kalan: program 0 · kâhin 16876 (S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k10:hareket:s050:kalan: program 57427 · kâhin 293983 (S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k10:projeksiyon:cari: program 0 · kâhin 4 (KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k10:projeksiyon:hareket:s031: program \"yok\" · kâhin {\"amount\":16876,\"date\":\"2026-06-10\",\"direction\":\"in\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k10:projeksiyon:hareket:s058: program \"yok\" · kâhin {\"amount\":228372,\"date\":\"2026-07-07\",\"direction\":\"in\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k10:projeksiyon:hareket:s060: program \"yok\" · kâhin {\"amount\":169617,\"date\":\"2026-05-13\",\"direction\":\"out\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k10:projeksiyon:hareket:s064: program \"yok\" · kâhin {\"amount\":60726,\"date\":\"2026-07-23\",\"direction\":\"out\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:takvim:cariKalemSayisi: program 2 · kâhin 3 (K6.3 takvimdeki cari kalemlerinin sayısı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k10:takvim:fatura:A2: program {\"amount\":260756,\"direction\":\"out\"} · kâhin {\"amount\":199695,\"direction\":\"out\"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k10:takvim:fatura:G4: program {\"amount\":265578,\"direction\":\"in\"} · kâhin {\"amount\":440000,\"direction\":\"in\"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k10:takvim:hareket:s031: program \"yok\" · kâhin {\"amount\":16876,\"cari\":\"D\",\"days\":-20,\"direction\":\"in\",\"dueDate\":\"2026-06-10\",\"label\":\"Tahsil Edilecek Borç (Ödeme Sözü)\",\"person\":\"Rastgele Delta 3\",\"state\":\"overdue\"} (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k10:vadeTakip:hareket:s031: program \"yok\" · kâhin {\"amount\":16876,\"date\":\"2026-06-10\",\"direction\":\"in\"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k11:fatura:A3:acik: program 383721 · kâhin 258675 (S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan bağsız ödeme (KS9: Alış İadesi bağsız ödeme; geri tahsil edilen kısmı değil — KARAR GEREKİR K-c))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k11:fatura:G4:acik: program 265578 · kâhin 440000 (B2.1 açık = tutar − bağlı − en eski kapama · S1 elle kayıtla tek kuyruk · KS8 iade geri ödemesi (madde 9): geri ödenen iade kapatıcı değil (ajan ayrıntısı: bagsiz-karsiliksiz))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k11:fatura:G9:acik: program 0 · kâhin 209327 (B2.1 açık = tutar − bağlı − en eski kapama · S1 elle kayıtla tek kuyruk · KS8 iade geri ödemesi (madde 9): geri ödenen iade kapatıcı değil — KARAR GEREKİR K-a/K-b)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k11:hareket:s031:kalan: program 0 · kâhin 16876 (S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k11:projeksiyon:cari: program 0 · kâhin 3 (KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k11:projeksiyon:hareket:s031: program \"yok\" · kâhin {\"amount\":16876,\"date\":\"2026-06-10\",\"direction\":\"in\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k11:projeksiyon:hareket:s060: program \"yok\" · kâhin {\"amount\":169617,\"date\":\"2026-05-13\",\"direction\":\"out\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k11:projeksiyon:hareket:s064: program \"yok\" · kâhin {\"amount\":60726,\"date\":\"2026-07-23\",\"direction\":\"out\"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k11:takvim:cariKalemSayisi: program 1 · kâhin 2 (K6.3 takvimdeki cari kalemlerinin sayısı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k11:takvim:fatura:A3: program {\"amount\":383721,\"direction\":\"out\"} · kâhin {\"amount\":258675,\"direction\":\"out\"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] k11:takvim:fatura:G4: program {\"amount\":265578,\"direction\":\"in\"} · kâhin {\"amount\":440000,\"direction\":\"in\"} (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık))",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-25/246-kahin-cari/taban-3dfb1c7-s1-t3-10.log",
+  "klasor": "/home/user/wt/kahin-cari-246",
+  "ham_cikti_sha256": "3857ac89c7d4060999167cf7c968c2e513985a36b18ea64a2d33d847925ece75",
+  "ham_cikti_bayt": 263857
+}

@@ -1,0 +1,4 @@
+Kâhin (kodu görülmeden, koşucu olarak): /home/user/wt/kahin-cari-246 test/bagimsiz (commit 5e7905a) ayrı kopyada, değiştirilmeden.
+Program: KAHIN_PROGRAM_KOKU=/home/user/wt/db1 (is/db1, 5fa544c + bağsız geri ödeme değişikliği, commit öncesi çalışma ağacı).
+HUKUK_LICENSE_URL=http://127.0.0.1:9 KAHIN_PROGRAM_KOKU=/home/user/wt/db1 node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs \
+  test/bagimsiz/cari/senaryolar/c8-ks8-iade-geri-odemesi.json test/bagimsiz/cari/senaryolar/c8b-ks8-bagli-iade-odemesi.json --tohum 1 --tur s1 --cikti <dizin>

@@ -1,0 +1,3 @@
+{"order":"odeme-once","bakiye":600,"A":600,"beklenenA":600}
+{"order":"degersiz-once","bakiye":600,"A":600,"beklenenA":600}
+{"tedarikci":"F1 simetriği","bakiye":-100,"alacakKalan":100,"beklenen":"Alacak kalan 100 (bakiye −100)","takvim":[["account",100,"overdue"]]}

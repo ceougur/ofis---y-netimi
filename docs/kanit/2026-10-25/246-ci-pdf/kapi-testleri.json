@@ -1,0 +1,32 @@
+{
+  "ad": "246-ci-pdf/kapi-testleri",
+  "komut": "node --test --test-concurrency=1 test/ci-kapi-listesi.test.mjs test/platform-tasinabilirlik.test.mjs test/kanit-araci.test.mjs test/yazim-duzeni.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/kilavuz-surum.test.mjs test/kilavuz-pdf-surum.test.mjs",
+  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "dal": "is/ci-pdf",
+  "kirli": 1,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T09:41:13.760Z",
+  "sure_sn": 3.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 73,
+    "gecen": 73,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-ci-pdf/kapi-testleri.log",
+  "klasor": "/home/user/wt/ci-pdf",
+  "ham_cikti_sha256": "7d0b9ad484d370a1ad3b386c006a3388ef975eda71778de15325bdfbb8342477",
+  "ham_cikti_bayt": 21492
+}

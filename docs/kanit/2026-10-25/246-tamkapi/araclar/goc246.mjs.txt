@@ -1,0 +1,309 @@
+// 2.4.6 tam kapı adım 6–7 (yalnız ölçüm aracı; not defterinde, depoya girmez; ürün ve depo araçlarına dokunmaz).
+// Depo kütüphanelerini (m30-uretici generate, m30-olgular companyFacts, m30-fark diffFacts, surumler bootVersion) ADAY çalışma kopyasından kullanır.
+//   node goc246.mjs <adım> --repo <aday> --kok <klasör>
+//   uret   : v2.4.5 GERÇEK koduyla (git etiketi, ayrı kopya) kendi API'sinden büyük veri (2 şirket, 13 ay) → kok/taban
+//   vade   : v2.4.5 aynı klasörü açar, elle Borç satırlarının ~yarısına Vade (+%30 Beklenen) — 2.4.5'in kendi ucu (PUT entries)
+//   olcu   : v2.4.5 ile (üretim bayrakları) bütün olgular → cikti/v2.4.5-taban.json
+//   goc    : taban kopyası → kok/goc; aday aynı klasörde açılır (göç), olgular → cikti/guncel-goc.json; şema 36 + bütünlük + göç öncesi yedek
+//   fark   : diffFacts (iki profil) → cikti/fark-*.json; BULGU satırları yazılır (sınıflama elle, 2.4.6 karar metinlerinden)
+//   donus  : göçmüş verinin kopyasını v2.4.5 açar (geri dönüş): şema 36 kalır, cari/Kasa okunur; sonra aday yeniden açar
+//   hiz    : aynı veri kopyası (taban) → v2.4.5 ve aday ayrı ayrı, taze kopyada; cari kartı (en büyük 3), takvim, Vade Takip, Projeksiyon: soğuk + sıcak ortanca
+import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+import { DatabaseSync } from "node:sqlite";
+
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const args = process.argv.slice(2);
+const step = args[0];
+const value = (name, fallback) => {
+  const at = args.indexOf(`--${name}`);
+  return at >= 0 && args[at + 1] && !args[at + 1].startsWith("--") ? args[at + 1] : fallback;
+};
+const REPO = path.resolve(value("repo", ""));
+const root = path.resolve(value("kok", ""));
+const out = path.join(root, "cikti");
+mkdirSync(out, { recursive: true });
+const imp = rel => import(pathToFileURL(path.join(REPO, rel)).href);
+const log = line => console.log(`[${new Date().toISOString().slice(11, 19)}] ${line}`);
+const writeJson = (name, data) => writeFileSync(path.join(out, `${name}.json`), `${JSON.stringify(data, null, 1)}\n`);
+const readJson = name => JSON.parse(readFileSync(path.join(out, `${name}.json`), "utf8"));
+const summary = (tests, fail, note = "") => {
+  if (note) console.log(`# ${note}`);
+  console.log(`# tests ${tests}\n# pass ${tests - fail}\n# fail ${fail}\n# cancelled 0\n# skipped 0\n# todo 0`);
+};
+const must = async (what, promise) => {
+  const res = await promise;
+  if (res.status !== 200) throw new Error(`${what}: ${res.status} ${JSON.stringify(res.data).slice(0, 400)}`);
+  return res.data;
+};
+const OLD = "v2.4.5";
+const SCHEMA = 36;
+// Üretim bayrakları (2.4.5 ve 2.4.6 server.mjs: e-Belge test + canlı, e-SMM açık; kayıt tahsilatı / Tablodan Aktar / tablo takvimi KAPALI).
+const PROD = { edocEnabled: true, edocLive: true, esmmEnabled: true, legacyCasePayments: false, legacyTableTransfer: false, legacyTableDues: false };
+const { startMockEdm } = await imp("test/einvoice-mock.mjs");
+const { resetEdmCaches } = await imp("server/lib/einvoice/edm.mjs");
+const { bootVersion, CURRENT } = await imp("test/guvenilirlik/surumler.mjs");
+const { createClock } = await imp("server/lib/clock.mjs");
+const { companyDbFile, readRegistry } = await imp("test/guvenilirlik/uretici.mjs");
+const dayOf = () => readJson("manifest-taban").endDay;
+const clockAt = (day, hour, fixed) => createClock({ time: new Date(Number(day.slice(0, 4)), Number(day.slice(5, 7)) - 1, Number(day.slice(8, 10)), hour, 0, 0), fixed });
+const dbFiles = dir => {
+  const data = path.join(dir, "data");
+  const reg = readRegistry(data) || [{ id: "sirket-001", dir: "" }];
+  return reg.map(e => ({ id: e.id, code: e.code, file: companyDbFile(data, e) }));
+};
+
+async function measure({ version, dir, day }) {
+  const { companyFacts, installFacts, fileFacts } = await imp("test/guvenilirlik/m30-olgular.mjs");
+  const { scoped } = await imp("test/guvenilirlik/m30-uretici.mjs");
+  resetEdmCaches();
+  const edm = await startMockEdm();
+  const started = performance.now();
+  let server;
+  try {
+    server = await bootVersion(version, { dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, now: clockAt(day, 17, true), logLevel: "silent", ...PROD });
+  } catch (error) {
+    await edm.close();
+    throw error;
+  }
+  const result = { version: version === CURRENT ? "aday" : version, commit: server.commit, day, bootMs: Math.round(performance.now() - started), firstAccessMs: {}, companies: {}, files: {} };
+  try {
+    const api = await server.login();
+    result.install = await installFacts(api);
+    for (const company of result.install.companies) {
+      const t = performance.now();
+      const s = scoped(api, company.id);
+      await s.get("/api/workspace/ledger/lock");
+      result.firstAccessMs[company.code] = Math.round(performance.now() - t);
+      result.companies[company.code] = await companyFacts(s);
+    }
+  } finally {
+    await server.close();
+    await edm.close();
+  }
+  const reg = readRegistry(path.join(dir, "data")) || [{ id: "sirket-001", dir: "" }];
+  for (const company of result.install.companies) result.files[company.code] = fileFacts(companyDbFile(path.join(dir, "data"), reg.find(e => e.id === company.id) || { id: company.id, dir: "" }));
+  return result;
+}
+
+if (step === "uret") {
+  const { generate } = await imp("test/guvenilirlik/m30-uretici.mjs");
+  const base = path.join(root, "taban");
+  rmSync(base, { recursive: true, force: true });
+  mkdirSync(base, { recursive: true });
+  resetEdmCaches();
+  const edm = await startMockEdm();
+  try {
+    const started = performance.now();
+    // Eski kayıt tahsilatı / Tablodan Aktar verisi 2.4.4'ten göçen müşterilerde vardır; üretimde 2.4.5'in test anahtarlarıyla yazılır (surumler.mjs düzeni).
+    const { manifest } = await generate({ version: OLD, dataDir: path.join(base, "data"), backupDir: path.join(base, "backups"), edmUrl: edm.url, seed: Number(value("tohum", 7)), hacim: value("hacim", "buyuk"), log, appOptions: { esmmEnabled: true, legacyCasePayments: true, legacyTableTransfer: true } });
+    manifest.edm = { sent: edm.state.sent.length, cancelled: edm.state.cancelled.length, violations: edm.state.violations };
+    manifest.ms = Math.round(performance.now() - started);
+    writeJson("manifest-taban", manifest);
+    log(`üretildi: ${JSON.stringify(manifest.counts)}`);
+    log(`süre ${(manifest.ms / 1000).toFixed(1)} sn; EDM gönderim ${manifest.edm.sent}, iptal ${manifest.edm.cancelled}, ihlal ${manifest.edm.violations.length}`);
+    const refused = (manifest.deleteRefusals || []).length + (manifest.integrityRefusals || []).length;
+    summary(manifest.requests + 1, manifest.edm.violations.length ? 1 : 0, `${OLD}: ${manifest.requests} API isteği (${manifest.requests - refused} × 200, ${refused} × 409 beklenen ret); EDM ihlali ${manifest.edm.violations.length}`);
+  } finally {
+    await edm.close();
+  }
+} else if (step === "vade") {
+  const { rng } = await imp("test/mutabakat/motor.mjs");
+  const { scoped } = await imp("test/guvenilirlik/m30-uretici.mjs");
+  const manifest = readJson("manifest-taban");
+  const base = path.join(root, "taban");
+  const day = manifest.endDay;
+  const r = rng(manifest.seed + 1);
+  const addDays = (d, n) => { const x = new Date(Number(d.slice(0, 4)), Number(d.slice(5, 7)) - 1, Number(d.slice(8, 10)), 12); x.setDate(x.getDate() + n); return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, "0")}-${String(x.getDate()).padStart(2, "0")}`; };
+  const files = dbFiles(base);
+  const rowsBy = files.map(f => {
+    const db = new DatabaseSync(f.file, { readOnly: true });
+    try { return { ...f, rows: db.prepare("SELECT id, account_id AS accountId, date FROM account_entries WHERE source = '' AND kind = 'debt' ORDER BY rowid").all() }; } finally { db.close(); }
+  });
+  const server = await bootVersion(OLD, { dataDir: path.join(base, "data"), backupDir: path.join(base, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, now: clockAt(day, 12, true), logLevel: "silent", ...PROD });
+  let puts = 0;
+  const kinds = {};
+  try {
+    const api = await server.login();
+    for (const f of rowsBy) {
+      const s = scoped(api, f.id);
+      for (const row of f.rows) {
+        if (r.next() >= 0.5) continue;
+        const dueDate = addDays(row.date, r.int(0, 90));
+        const body = { dueDate };
+        if (r.next() < 0.3) body.expectedDate = addDays(dueDate, r.int(0, 20));
+        const res = await s.put(`/api/workspace/accounts/${row.accountId}/entries/${row.id}`, body);
+        // Dönem kilidi (üretici kilitler): kilitli tarihli satırın reddi beklenen sonuçtur (409 period-locked); sayılır, başarı yazılmaz (ders 3).
+        if (res.status === 409 && res.data?.code === "period-locked") { kinds[`${f.id}:kilitliRet`] = (kinds[`${f.id}:kilitliRet`] || 0) + 1; continue; }
+        if (res.status !== 200) throw new Error(`vade: ${res.status} ${JSON.stringify(res.data).slice(0, 400)}`);
+        puts += 1;
+        const k = `${f.id}:${body.expectedDate ? "vadeBeklenen" : "vade"}`;
+        kinds[k] = (kinds[k] || 0) + 1;
+      }
+      kinds[`${f.id}:elleBorc`] = f.rows.length;
+    }
+  } finally {
+    await server.close();
+  }
+  manifest.vade = { puts, ...kinds };
+  writeJson("manifest-taban", manifest);
+  log(`vade verildi (${OLD} kendi ucu): ${JSON.stringify(manifest.vade)}`);
+  summary(puts, 0, `${puts} PUT (Vade / Beklenen) 200; kilitli dönem reddi ayrı sayıldı: ${JSON.stringify(Object.fromEntries(Object.entries(kinds).filter(([k]) => k.endsWith("kilitliRet"))))}`);
+} else if (step === "olcu") {
+  const copy = path.join(root, "olcu-kopya");
+  rmSync(copy, { recursive: true, force: true });
+  cpSync(path.join(root, "taban"), copy, { recursive: true });
+  try {
+    const facts = await measure({ version: OLD, dir: copy, day: dayOf() });
+    writeJson(`${OLD}-taban`, facts);
+    const unread = Object.entries(facts.companies).filter(([, f]) => !f.journal || f.journal.__status).map(([c]) => c);
+    for (const [c, f] of Object.entries(facts.files)) log(`  ${c}: şema ${f.version}, bütünlük ${f.integrity}`);
+    log(`ölçüldü ${OLD}: açılış ${facts.bootMs} ms; cari ${Object.entries(facts.companies).map(([c, f]) => `${c}=${Object.keys(f.accounts).length}`).join(" ")}`);
+    summary(Object.keys(facts.companies).length, unread.length, `ölçü: ${Object.keys(facts.companies).length} şirket; yevmiye okunamayan ${unread.join(",") || "yok"}`);
+  } finally {
+    rmSync(copy, { recursive: true, force: true });
+  }
+} else if (step === "goc") {
+  const target = path.join(root, "goc");
+  rmSync(target, { recursive: true, force: true });
+  cpSync(path.join(root, "taban"), target, { recursive: true });
+  const { treeHashes } = await imp("test/guvenilirlik/olgular.mjs");
+  const before = treeHashes(path.join(target, "backups"));
+  const facts = await measure({ version: CURRENT, dir: target, day: dayOf() });
+  const after = treeHashes(path.join(target, "backups"));
+  facts.newBackups = Object.keys(after).filter(rel => !before[rel]);
+  writeJson("guncel-goc", facts);
+  log(`göç + ölçü: 001 açılışı (göç dahil) ${facts.bootMs} ms; ilk erişim ${JSON.stringify(facts.firstAccessMs)}; yeni yedek ${facts.newBackups.join(", ")}`);
+  const codes = Object.keys(facts.files);
+  const premig = new RegExp(`pre-migration-v${SCHEMA}\\.sqlite$`);
+  const checks = [];
+  for (const code of codes) {
+    const f = facts.files[code];
+    log(`  ${code}: şema ${f.version}, bütünlük ${f.integrity}, tablolar ${JSON.stringify((f.tables || []).filter(t => t.startsWith("maliyet")))}, account_entries kolonları ${JSON.stringify(f.entryColumns || null)}`);
+    checks.push([`${code} şema ${SCHEMA}`, f.version === SCHEMA]);
+    checks.push([`${code} bütünlük ok`, f.integrity === "ok"]);
+    checks.push([`${code} göç öncesi yedek v${SCHEMA}`, facts.newBackups.some(rel => rel.startsWith(`${code} - `) && premig.test(rel))]);
+  }
+  for (const [n, ok] of checks) console.log(`  ${ok ? "✓" : "✗"} ${n}`);
+  summary(checks.length, checks.filter(c => !c[1]).length, `göç: ${codes.length} şirket`);
+} else if (step === "fark") {
+  const { diffFacts, oldDataMap } = await imp("test/guvenilirlik/m30-fark.mjs");
+  const before = readJson(`${OLD}-taban`);
+  const after = readJson("guncel-goc");
+  const files = dbFiles(path.join(root, "taban"));
+  const maps = Object.fromEntries(before.install.companies.map(c => [c.code, oldDataMap(files.find(f => f.id === c.id).file)]));
+  let bulguTotal = 0;
+  let rowsTotal = 0;
+  for (const profile of ["244-245", "243-244"]) {
+    const report = diffFacts(before, after, { maps, profile });
+    writeJson(`fark-${profile}`, report);
+    log(`--- profil ${profile}: ${report.rows.length} olgu; ${JSON.stringify(report.rows.reduce((m, r) => ({ ...m, [r.klass]: (m[r.klass] || 0) + 1 }), {}))}`);
+    for (const row of report.rows.filter(r => r.klass !== "EŞİT")) log(`  [${row.klass}] ${row.company} ${row.area} ${row.decision || ""} ${JSON.stringify(row.detail).slice(0, 700)}`);
+    if (profile === "244-245") { bulguTotal = report.bulgu.length; rowsTotal = report.rows.length; }
+  }
+  summary(rowsTotal, bulguTotal, "olgu (profil 244-245 sınıflayıcısı; BULGU satırları elle 2.4.6 kararlarıyla sınıflanır)");
+} else if (step === "donus") {
+  const { scoped } = await imp("test/guvenilirlik/m30-uretici.mjs");
+  const dir = path.join(root, "donus");
+  rmSync(dir, { recursive: true, force: true });
+  cpSync(path.join(root, "goc"), dir, { recursive: true });
+  const day = dayOf();
+  const ver = () => dbFiles(dir).map(f => { const db = new DatabaseSync(f.file, { readOnly: true }); try { return [f.id, db.prepare("PRAGMA user_version").get().user_version, db.prepare("SELECT count(*) n FROM account_entries").get().n]; } finally { db.close(); } });
+  const checks = [];
+  const v0 = ver();
+  const readAll = async version => {
+    const server = await bootVersion(version, { dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, now: clockAt(day, 17, true), logLevel: "silent", ...PROD });
+    try {
+      const api = await server.login();
+      const res = {};
+      for (const [id] of v0) {
+        const s = scoped(api, id);
+        const acc = await must("cariler", s.get("/api/workspace/accounts?status=all&limit=5000&offset=0"));
+        const cash = await s.get("/api/workspace/cash");
+        res[id] = { accounts: acc.accounts.length, sum: acc.accounts.reduce((t, a) => t + Math.round(Number(a.balance) * 100), 0), cash: cash.status };
+      }
+      return res;
+    } finally { await server.close(); }
+  };
+  const a = await readAll(OLD);
+  const v1 = ver();
+  const b = await readAll(CURRENT);
+  const v2 = ver();
+  for (const [id, v, n] of v1) checks.push([`${id}: ${OLD} açılışından sonra şema ${v} (36 kalır), satır ${n}`, v === SCHEMA && n === v0.find(x => x[0] === id)[2]]);
+  for (const id of Object.keys(a)) checks.push([`${id}: ${OLD} cari ${a[id].accounts} Σ ${a[id].sum} = aday ${b[id].accounts} Σ ${b[id].sum}`, a[id].accounts === b[id].accounts && a[id].sum === b[id].sum && a[id].cash === 200 && b[id].cash === 200]);
+  for (const [id, v] of v2) checks.push([`${id}: yeniden aday, şema ${v}`, v === SCHEMA]);
+  for (const [n, ok] of checks) console.log(`  ${ok ? "✓" : "✗"} ${n}`);
+  summary(checks.length, checks.filter(c => !c[1]).length, "geri dönüş (aday → 2.4.5 → aday)");
+} else if (step === "hiz") {
+  const { scoped } = await imp("test/guvenilirlik/m30-uretici.mjs");
+  const day = dayOf();
+  const repeat = Number(value("tekrar", 3));
+  const warmN = Number(value("sicak", 10));
+  const median = list => { const s = [...list].sort((x, y) => x - y); return s.length % 2 ? s[(s.length - 1) / 2] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2; };
+  // En büyük 3 cari (hareket sayısı), şirket başına; taban dosyasından.
+  const big = dbFiles(path.join(root, "taban")).map(f => {
+    const db = new DatabaseSync(f.file, { readOnly: true });
+    try { return { id: f.id, top: db.prepare("SELECT account_id AS id, count(*) AS n FROM account_entries GROUP BY account_id ORDER BY n DESC LIMIT 3").all() }; } finally { db.close(); }
+  });
+  const targets = [];
+  for (const c of big) {
+    for (const [i, t] of c.top.entries()) targets.push({ company: c.id, name: `cari-karti-${c.id}-${i + 1} (${t.n} hareket)`, url: `/api/workspace/accounts/${t.id}` });
+    targets.push({ company: c.id, name: `takvim-${c.id}`, url: "/api/workspace/dues" });
+    targets.push({ company: c.id, name: `vade-takip-${c.id}`, url: "/api/workspace/overview/vade-takip" });
+    targets.push({ company: c.id, name: `projeksiyon-${c.id}`, url: "/api/workspace/overview/nakit-akisi" });
+  }
+  const results = [];
+  for (let round = 1; round <= repeat; round += 1) {
+    const order = round % 2 ? [OLD, CURRENT] : [CURRENT, OLD];
+    for (const version of order) {
+      const dir = path.join(root, "hiz-kopya");
+      rmSync(dir, { recursive: true, force: true });
+      cpSync(path.join(root, "taban"), dir, { recursive: true });
+      resetEdmCaches();
+      const edm = await startMockEdm();
+      const server = await bootVersion(version, { dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, now: clockAt(day, 17, true), logLevel: "silent", ...PROD });
+      try {
+        const api = await server.login();
+        // Göç (aday) ve ilk erişim süreye girmesin: her şirkette bir ısınma isteği (ledger/lock).
+        for (const c of big) await scoped(api, c.id).get("/api/workspace/ledger/lock");
+        for (const t of targets) {
+          const s = scoped(api, t.company);
+          const t0 = performance.now();
+          const first = await s.get(t.url);
+          const cold = performance.now() - t0;
+          if (first.status !== 200) throw new Error(`${version} ${t.name}: ${first.status}`);
+          const warm = [];
+          for (let i = 0; i < warmN; i += 1) {
+            const t1 = performance.now();
+            const res = await s.get(t.url);
+            warm.push(performance.now() - t1);
+            if (res.status !== 200) throw new Error(`${version} ${t.name}: ${res.status}`);
+          }
+          const size = JSON.stringify(first.data).length;
+          const items = Array.isArray(first.data?.items) ? first.data.items.length : Array.isArray(first.data?.rows) ? first.data.rows.length : Array.isArray(first.data?.entries) ? first.data.entries.length : null;
+          results.push({ round, version: version === CURRENT ? "aday" : version, name: t.name, coldMs: Math.round(cold), warmMedianMs: Math.round(median(warm) * 10) / 10, size, items });
+          log(`tur ${round} ${version === CURRENT ? "aday" : version} ${t.name}: soğuk ${Math.round(cold)} ms, sıcak ortanca ${(Math.round(median(warm) * 10) / 10)} ms, ${items ?? "-"} kalem, ${size} bayt`);
+        }
+      } finally {
+        await server.close();
+        await edm.close();
+        rmSync(dir, { recursive: true, force: true });
+      }
+    }
+  }
+  const table = {};
+  for (const r of results) {
+    const k = r.name;
+    table[k] ||= { [OLD]: { cold: [], warm: [] }, aday: { cold: [], warm: [] } };
+    table[k][r.version].cold.push(r.coldMs);
+    table[k][r.version].warm.push(r.warmMedianMs);
+  }
+  const rows = Object.entries(table).map(([name, v]) => ({ name, old_cold: median(v[OLD].cold), new_cold: median(v.aday.cold), old_warm: median(v[OLD].warm), new_warm: median(v.aday.warm) }));
+  writeJson("hiz", { day, repeat, warmN, results, rows });
+  console.log("| Ölçüm | 2.4.5 soğuk | aday soğuk | 2.4.5 sıcak ort. | aday sıcak ort. |");
+  for (const r of rows) console.log(`| ${r.name} | ${r.old_cold} | ${r.new_cold} | ${r.old_warm} | ${r.new_warm} |`);
+  summary(results.length, 0, `${results.length} ölçüm (${repeat} tur × 2 sürüm × ${targets.length} uç)`);
+} else {
+  throw new Error(`bilinmeyen adım ${step}`);
+}

@@ -1,0 +1,486 @@
+{
+"toplam": 812,
+"farklar": [
+{
+"anahtar": "k1:projeksiyon:cari",
+"beklenen": 4,
+"program": 0,
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k1:projeksiyon:hareket:acilis:D",
+"beklenen": {
+"amount": 197603,
+"date": "2026-05-13",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k1:projeksiyon:hareket:s001",
+"beklenen": {
+"amount": 30000,
+"date": "2026-06-30",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "BAŞ MİMAR",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "BULGU",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k1:projeksiyon:hareket:s003",
+"beklenen": {
+"amount": 70000,
+"date": "2026-06-14",
+"direction": "out"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k1:projeksiyon:hareket:s005",
+"beklenen": {
+"amount": 200000,
+"date": "2026-03-07",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k2:projeksiyon:cari",
+"beklenen": 4,
+"program": 0,
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k2:projeksiyon:hareket:s001",
+"beklenen": {
+"amount": 30000,
+"date": "2026-03-08",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k2:projeksiyon:hareket:s003",
+"beklenen": {
+"amount": 70000,
+"date": "2026-06-14",
+"direction": "out"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k2:projeksiyon:hareket:s005",
+"beklenen": {
+"amount": 200000,
+"date": "2026-03-07",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k2:projeksiyon:hareket:s018",
+"beklenen": {
+"amount": 90000,
+"date": "2026-07-26",
+"direction": "out"
+},
+"program": "yok",
+"etiket": "BAŞ MİMAR",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "BULGU",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k3:projeksiyon:cari",
+"beklenen": 4,
+"program": 0,
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k3:projeksiyon:hareket:s003",
+"beklenen": {
+"amount": 9265,
+"date": "2026-06-14",
+"direction": "out"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k3:projeksiyon:hareket:s005",
+"beklenen": {
+"amount": 75969,
+"date": "2026-03-07",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k3:projeksiyon:hareket:s018",
+"beklenen": {
+"amount": 90000,
+"date": "2026-07-26",
+"direction": "out"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k3:projeksiyon:hareket:s025",
+"beklenen": {
+"amount": 44648,
+"date": "2026-06-26",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k4:projeksiyon:cari",
+"beklenen": 6,
+"program": 0,
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k4:projeksiyon:hareket:s003",
+"beklenen": {
+"amount": 9265,
+"date": "2026-06-14",
+"direction": "out"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k4:projeksiyon:hareket:s005",
+"beklenen": {
+"amount": 75969,
+"date": "2026-03-07",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k4:projeksiyon:hareket:s018",
+"beklenen": {
+"amount": 90000,
+"date": "2026-07-26",
+"direction": "out"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k4:projeksiyon:hareket:s025",
+"beklenen": {
+"amount": 44648,
+"date": "2026-06-26",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k4:projeksiyon:hareket:s034",
+"beklenen": {
+"amount": 290000,
+"date": "2026-07-07",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "BAŞ MİMAR",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "BULGU",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k4:projeksiyon:hareket:s035",
+"beklenen": {
+"amount": 300000,
+"date": "2026-07-10",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "BAŞ MİMAR",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "BULGU",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k5:projeksiyon:cari",
+"beklenen": 4,
+"program": 0,
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k5:projeksiyon:hareket:s018",
+"beklenen": {
+"amount": 90000,
+"date": "2026-07-26",
+"direction": "out"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k5:projeksiyon:hareket:s025",
+"beklenen": {
+"amount": 33687,
+"date": "2026-06-26",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k5:projeksiyon:hareket:s034",
+"beklenen": {
+"amount": 290000,
+"date": "2026-07-07",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "BAŞ MİMAR",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "BULGU",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k5:projeksiyon:hareket:s035",
+"beklenen": {
+"amount": 300000,
+"date": "2026-07-10",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "BAŞ MİMAR",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "BULGU",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k6:projeksiyon:cari",
+"beklenen": 5,
+"program": 0,
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k6:projeksiyon:hareket:s018",
+"beklenen": {
+"amount": 90000,
+"date": "2026-07-26",
+"direction": "out"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k6:projeksiyon:hareket:s025",
+"beklenen": {
+"amount": 33687,
+"date": "2026-06-26",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k6:projeksiyon:hareket:s034",
+"beklenen": {
+"amount": 290000,
+"date": "2026-07-07",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "BAŞ MİMAR",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "BULGU",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k6:projeksiyon:hareket:s035",
+"beklenen": {
+"amount": 300000,
+"date": "2026-07-10",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "BAŞ MİMAR",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "BULGU",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "k6:projeksiyon:hareket:s051",
+"beklenen": {
+"amount": 62028,
+"date": "2026-06-18",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "kson:projeksiyon:cari",
+"beklenen": 5,
+"program": 0,
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "kson:projeksiyon:hareket:s018",
+"beklenen": {
+"amount": 90000,
+"date": "2026-07-26",
+"direction": "out"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "kson:projeksiyon:hareket:s025",
+"beklenen": {
+"amount": 33687,
+"date": "2026-06-26",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "kson:projeksiyon:hareket:s034",
+"beklenen": {
+"amount": 290000,
+"date": "2026-07-07",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "BAŞ MİMAR",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "BULGU",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "kson:projeksiyon:hareket:s035",
+"beklenen": {
+"amount": 300000,
+"date": "2026-07-10",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "BAŞ MİMAR",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "BULGU",
+"sinif246": "2.4.6 kararıyla değişen"
+},
+{
+"anahtar": "kson:projeksiyon:hareket:s051",
+"beklenen": {
+"amount": 62028,
+"date": "2026-06-18",
+"direction": "in"
+},
+"program": "yok",
+"etiket": "YAYGIN",
+"kural": "KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil)",
+"sinif": "İNCELE",
+"sinif246": "2.4.6 kararıyla değişen"
+}
+],
+"bilinen": [],
+"hatalar": []
+}

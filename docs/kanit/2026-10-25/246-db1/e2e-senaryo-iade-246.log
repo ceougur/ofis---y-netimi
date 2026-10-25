@@ -1,0 +1,40 @@
+
+> destekofis@2.4.5 test:senaryo-iade-246
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-iade-246.mjs
+
+  ✓ ön koşul (DB1): bağsız düzende B 200 açık (iade B'yi kapattı)
+
+■ S1 Stok → Tedarikçiye İade (Açık Hesap), insan hızı + Tab
+  ✓ ürün kartında “↪ Tedarikçiye İade” düğmesi
+  ✓ form başlığı: Tedarikçiye İade
+  ✓ İade Yolu seçenekleri (kart yok): Yalnız Miktar (para iadesi yok) | Nakit (tedarikçi geri ödedi) | Havale / EFT (tedarikçi geri ödedi) | Açık Hesap (tedarikçiye borcumuzdan düş)
+  ✓ Tab → İade Birim Fiyatı
+  ✓ Tab → İade Yolu
+  ✓ İade Yolu klavyeyle “Açık Hesap (tedarikçiye borcumuzdan düş)”
+  ✓ Tab → Tedarikçi Carisi seçicisi
+  ✓ Enter ile tedarikçi seçildi
+  ✓ veri tabanı: {"id":"smove-211e791d-7b9e-4868-b383-6a356451e967","kind":"out","reason":"preturn","pay":"account","qty":2,"amount":200,"accountId":"account-2636b279-f09b-4651-9cb6-1ef4a30dac3b","note":"kusurlu parti"}
+  ✓ tedarikçide Borç satırı: {"kind":"debt","amount":200,"note":"Alış iadesi: Cam Panel E246 2 Adet × 100,00 TL · kusurlu parti"}
+  ✓ stok 2 azaldı
+  ✓ alış faturası P: 500 → 300 açık (bağsız ödeme, en eski)
+  ✓ ürün kartının hareketlerinde “Tedarikçiye İade”
+
+■ S2 Tedarikçi kartı → Tahsilat → Geri Ödenen İade
+  ✓ Kapatılacak Fatura seçenekleri: [["","Otomatik (En Eski Açık Fatura)"],["smove-211e791d-7b9e-4868-b383-6a356451e967","İade Geri Ödemesi · Alış İadesi (Faturasız) · Cam Panel E246 · 25.10.2026 · ₺200,00 · kalan ₺200,00"]]
+  ✓ veri tabanı: {"kind":"in","amount":200,"refundOf":"smove-211e791d-7b9e-4868-b383-6a356451e967","invoiceId":""}
+  ✓ iade geri ödendi: P 500 açık
+
+■ S3 Müşteri kartı → Ödeme → Geri Ödenen İade (DB1)
+  ✓ müşteriye Ödeme'de Kapatılacak Fatura: Otomatik + iade (["","smove-2717c369-d1c6-49eb-9de5-606c3e81f05b"])
+  ✓ Tab ile Kapatılacak Fatura
+  ✓ Kapatılacak Fatura klavyeyle: İade Geri Ödemesi (faturasız Satış İadesi)
+  ✓ veri tabanı: {"kind":"out","amount":300,"refundOf":"smove-2717c369-d1c6-49eb-9de5-606c3e81f05b","invoiceId":""}
+  ✓ B 500 açık (DB1 öncesi 200)
+  ✓ hareketlerde “İadeye Bağlı” etiketi
+  ✓ takvim / zil: [["account",300],["invoice",500]]
+
+■ S4 bakiye
+  ✓ müşteri 800 (800), tedarikçi -500 (−500)
+  ✓ sayfa hatası yok: 
+
+26 geçti, 0 kaldı

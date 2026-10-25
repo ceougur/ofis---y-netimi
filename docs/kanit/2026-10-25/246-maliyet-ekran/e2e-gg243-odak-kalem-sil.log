@@ -1,0 +1,25 @@
+
+> destekofis@2.4.5 test:gg243-odak-kalem-sil
+> node --disable-warning=ExperimentalWarning test/e2e/gg243-odak-kalem-sil.mjs
+
+ilk kalem (1.) ×'ine klavyeyle Enter
+  ✓ ön koşul: üç kalem (["Kalem 1","Kalem 2","Kalem 3"])
+  ✓ 1. kalem silindi (["Kalem 2","Kalem 3"])
+  ✓ odak başka kalemin ×'inde değil (INPUT:code#0)
+  ✓ odak aynı konumdaki (1.) kalemin ilk alanında (INPUT:code#0)
+  ✓ ikinci Enter başka kalemi silmedi (["Kalem 2","Kalem 3"])
+orta kalem (2.) ×'ine klavyeyle Enter
+  ✓ ön koşul: üç kalem (["Kalem 1","Kalem 2","Kalem 3"])
+  ✓ 2. kalem silindi (["Kalem 1","Kalem 3"])
+  ✓ odak başka kalemin ×'inde değil (INPUT:code#1)
+  ✓ odak aynı konumdaki (2.) kalemin ilk alanında (INPUT:code#1)
+  ✓ ikinci Enter başka kalemi silmedi (["Kalem 1","Kalem 3"])
+son kalem (3.) ×'ine klavyeyle Enter
+  ✓ ön koşul: üç kalem (["Kalem 1","Kalem 2","Kalem 3"])
+  ✓ 3. kalem silindi (["Kalem 1","Kalem 2"])
+  ✓ odak başka kalemin ×'inde değil (INPUT:code#1)
+  ✓ odak aynı konumdaki (2.) kalemin ilk alanında (INPUT:code#1)
+  ✓ ikinci Enter başka kalemi silmedi (["Kalem 1","Kalem 2"])
+  ✓ sayfa hatası yok
+
+✓ gg243-odak-kalem-sil: 16 geçti, 0 kaldı

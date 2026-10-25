@@ -1,0 +1,32 @@
+{
+  "ad": "246-maliyet-ekran/e2e-fatura-243-daha-fazla-yaris",
+  "komut": "npm run test:fatura-243-daha-fazla-yaris",
+  "commit": "9ac6abd74d29b4fb30115b6c567472fffd30db7b",
+  "dal": "is/maliyet-ekran",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T13:08:09.407Z",
+  "sure_sn": 54.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 9,
+    "gecen": 9,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-maliyet-ekran/e2e-fatura-243-daha-fazla-yaris.log",
+  "klasor": "/home/user/wt/maliyet-ekran",
+  "ham_cikti_sha256": "c78c91ec5311e248efe3624e68315e81c36ded69ef4ef20a8d909b4acce28273",
+  "ham_cikti_bayt": 1051
+}

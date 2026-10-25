@@ -1076,8 +1076,9 @@
   }
 
   function modulesText(vocab, modules) {
-    const tools = [modules.tahsilat ? "Tahsilat" : "", modules.haciz ? "Haciz" : ""].filter(Boolean);
-    return `Kayıtlara <b>${esc(vocab.record)}</b> denir, uzman rolünün adı <b>${esc(vocab.expert)}</b> olur, kenar çubuğunda <b>${esc(vocab.subtitle)}</b> yazar${tools.length ? `; ${tools.map(item => `<b>${item}</b>`).join(" ve ")} araçları açık olur` : ""}.`;
+    // 2.4.6 (2.4.5 gezinti B8): "Tahsilat ve Haciz araçları açık olur" 2.4.5 kapısıyla çelişiyordu — tablodaki kayda tahsilat aracı yok (para Cari'den
+    // girilir; modules.tahsilat ekranda bir şey açmıyor). Yalnız gerçekten açılan araç yazılır: Haciz Takibi (kayıt kartında Haciz, kenar çubuğunda Hacizler).
+    return `Kayıtlara <b>${esc(vocab.record)}</b> denir, uzman rolünün adı <b>${esc(vocab.expert)}</b> olur, kenar çubuğunda <b>${esc(vocab.subtitle)}</b> yazar${modules.haciz ? "; <b>Haciz Takibi</b> açık olur" : ""}.`;
   }
 
   const verifiedCards = analysis => Object.values(analysis.kpis?.scopes || {}).reduce((sum, scope) => sum + scope.cards.length, 0);

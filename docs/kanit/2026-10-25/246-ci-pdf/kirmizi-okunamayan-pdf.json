@@ -1,0 +1,43 @@
+{
+  "ad": "246-ci-pdf/kirmizi-okunamayan-pdf",
+  "komut": "node --test test/kilavuz-pdf-surum.test.mjs",
+  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "dal": "is/ci-pdf",
+  "kirli": 1,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T09:40:58.210Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Kılavuz PDF sürümü (client/kilavuz) › PDF metni okunur (boş değil, bilinen başlık var)",
+      "konum": "test/kilavuz-pdf-surum.test.mjs:34:3",
+      "hata": "PDF nesnesi bulunamadı"
+    },
+    {
+      "ad": "Kılavuz PDF sürümü (client/kilavuz) › PDF kapağı ve dip notu = HTML sürümü = program sürümü",
+      "konum": "test/kilavuz-pdf-surum.test.mjs:39:3",
+      "hata": "PDF nesnesi bulunamadı"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-25/246-ci-pdf/kirmizi-okunamayan-pdf.log",
+  "klasor": "/home/user/wt/ci-pdf",
+  "ham_cikti_sha256": "9bdabd7be43b02f6340b3ccdb59cbce908db40078430e4ca88d7b9923253c883",
+  "ham_cikti_bayt": 2553
+}

@@ -1,0 +1,17 @@
+{"label":"1 v2.4.5 verisi (v2.4.5 kodu)","surum":33,"accounts":{"c1":{"bakiye":1700,"acilis":"ilk"},"c2":{"bakiye":200,"acilis":""},"c3":{"bakiye":150,"acilis":"ilk"},"c4":{"bakiye":0,"acilis":""},"c5":{"bakiye":170,"acilis":"ilk"},"c6":{"bakiye":1000,"acilis":""},"c7":{"bakiye":100,"acilis":""}},"opens":{"inv1":1000,"inv6":700},"trial":{"100":[0,1000],"120":[4420,1100],"153":[100000,0],"500":[0,100720],"600":[0,2000],"602":[0,700],"610":[1100,0]},"kasa":{"in":0,"out":1000,"balance":-1000},"mutabakat":true,"mizanDenk":true,"dues":[["M Altı","plan",500],["M Bir","account",100],["M Bir","account",300],["M Bir","invoice",1000]],"vade":[["M Altı","plan",500],["M Altı","plan",500],["M Bir","account",100],["M Bir","account",300],["M Bir","invoice",1000]]}
+{"label":"2 güncel kod göçten sonra","surum":36,"accounts":{"c1":{"bakiye":1700,"acilis":"ilk"},"c2":{"bakiye":200,"acilis":""},"c3":{"bakiye":150,"acilis":"ilk"},"c4":{"bakiye":0,"acilis":""},"c5":{"bakiye":170,"acilis":"ilk"},"c6":{"bakiye":1000,"acilis":""},"c7":{"bakiye":100,"acilis":""}},"opens":{"inv1":1000,"inv6":1000},"trial":{"100":[0,1000],"120":[4420,1100],"153":[100000,0],"500":[0,100720],"600":[0,2000],"602":[0,700],"610":[1100,0]},"kasa":{"in":0,"out":1000,"balance":-1000},"mutabakat":true,"mizanDenk":true,"dues":[["M Altı","plan",500],["M Bir","account",300],["M Bir","account",400],["M Bir","invoice",1000],["M Yedi","account",100]],"vade":[["M Altı","plan",500],["M Altı","plan",500],["M Bir","account",300],["M Bir","account",400],["M Bir","invoice",1000],["M Yedi","account",100]]}
+file:///home/user/wt/db1/server/lib/db.mjs:18
+      statement = db.prepare(sql);
+                     ^
+
+Error: no such column: e.is_opening
+    at prepare (file:///home/user/wt/db1/server/lib/db.mjs:18:22)
+    at Object.all (file:///home/user/wt/db1/server/lib/db.mjs:245:28)
+    at file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-db1/dar-betik/m-goc.mjs:89:29
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  code: 'ERR_SQLITE_ERROR',
+  errcode: 1,
+  errstr: 'SQL logic error'
+}
+
+Node.js v22.22.0

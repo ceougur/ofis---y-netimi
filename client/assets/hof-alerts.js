@@ -190,22 +190,26 @@
         });
         continue;
       }
+      // 2.4.6 (2.4.5 SONRAYA): ödeme kalemi (alış faturası, verilen çek, carinin alacağı) "TAHSİLAT ALINMADI" değil — başlık kalemin yönüne göre.
+      const paying = item.direction === "out";
+      const head = paying ? "ÖDEME YAPILMADI" : "TAHSİLAT ALINMADI";
+      const soonWord = paying ? "ÖDEME" : "TAHSİLAT";
       out.push({
         id: `${due ? "unpaid" : "soon"}|${item.id}`,
         type: due ? "unpaid" : "upcoming",
         tone: due ? (item.state === "overdue" ? "late" : "soon") : "info",
         eyebrow: due
           ? item.state === "overdue"
-            ? `TAHSİLAT ALINMADI · ${Math.abs(item.days)} GÜN GECİKTİ`
+            ? `${head} · ${Math.abs(item.days)} GÜN GECİKTİ`
             : item.state === "month"
-              ? "TAHSİLAT ALINMADI · BU AYIN ÖDEMESİ"
-              : "TAHSİLAT ALINMADI · VADESİ BUGÜN"
+              ? `${head} · BU AYIN ÖDEMESİ`
+              : `${head} · VADESİ BUGÜN`
           : item.days === 1
-            ? "YARIN TAHSİLAT VAR"
-            : `${item.days} GÜN SONRA TAHSİLAT VAR`,
+            ? `YARIN ${soonWord} VAR`
+            : `${item.days} GÜN SONRA ${soonWord} VAR`,
         title: who(item),
         when: item.state === "overdue" ? `${Math.abs(item.days)} gün gecikti` : item.state === "month" ? "Bu ay" : item.state === "today" ? "Bugün" : item.days === 1 ? "Yarın" : `${item.days} gün kaldı`,
-        text: `${item.caseNo && item.person ? `${item.caseNo} · ` : ""}${item.label} · ${item.kind === "month" ? item.dueText : `vade ${item.dueText}`} · ${amount}`,
+        text: `${item.caseNo && item.person ? `${item.caseNo} · ` : ""}${item.label}${item.note ? ` · ${item.note}` : ""} · ${item.kind === "month" ? item.dueText : `vade ${item.dueText}`} · ${amount}`,
         caseKey: item.caseKey,
         tab: item.tab,
         planId: item.planId || "",
@@ -520,7 +524,7 @@
   }
   function summaryItem(id, carried) {
     const late = carried.filter(item => item.type === "unpaid").length + carried.filter(item => item.urgent).length;
-    return { id, summary: true, carried, tone: late ? "late" : "info", type: "summary", eyebrow: "BİLDİRİMLER", title: `${carried.length} bildirim daha var`, text: late ? `${late} acil iş ya da alınmayan tahsilat; diğerleri son günü yaklaşan işler.` : "Son günü yaklaşan işler ve yaklaşan tahsilatlar." };
+    return { id, summary: true, carried, tone: late ? "late" : "info", type: "summary", eyebrow: "BİLDİRİMLER", title: `${carried.length} bildirim daha var`, text: late ? `${late} acil iş, alınmayan tahsilat ya da yapılmayan ödeme; diğerleri son günü yaklaşan işler.` : "Son günü yaklaşan işler, yaklaşan tahsilat ve ödemeler." };
   }
 
   // ---------- Zil: tüm liste ----------
@@ -530,7 +534,9 @@
   function updateBadge(list = alerts()) {
     const button = bell();
     if (!button) return;
-    const count = list.filter(item => item.type !== "upcoming").length;
+    // 2.4.6 (2.4.5 gezinti B9): rozet zil listesindeki bildirim sayısıdır — 7 gün içindeki tahsilat / ödeme de (önceden 4 gün sonraki duruşma
+    // sayılıyor, 2 gün sonraki ödeme sözü sayılmıyordu). Kırmızı rozet yine yalnız gecikmiş / acil kalemde.
+    const count = list.length;
     button.setAttribute("aria-label", count ? `Bildirimler: ${count}` : "Bildirimler");
     button.title = count ? `${count} bildirim` : "Bildirim yok";
     let badge = button.querySelector(":scope > .hof-bell-badge");
@@ -551,11 +557,13 @@
     const list = alerts();
     const groups = [
       ["Acil görevler", list.filter(item => item.urgent)],
-      ["Tahsilat alınmadı", list.filter(item => item.type === "unpaid")],
+      ["Tahsilat alınmadı", list.filter(item => item.type === "unpaid" && item.due?.direction !== "out")],
+      ["Ödeme yapılmadı", list.filter(item => item.type === "unpaid" && item.due?.direction === "out")],
       ["Son günü yaklaşan ya da geçen işler", list.filter(item => item.type === "deadline")],
       ["Yaklaşan randevu ve planlı tarihler", list.filter(item => item.type === "event")],
       ["Görevler", list.filter(item => item.type === "task" && !item.urgent)],
-      ["Yaklaşan tahsilatlar (7 gün)", list.filter(item => item.type === "upcoming")],
+      ["Yaklaşan tahsilatlar (7 gün)", list.filter(item => item.type === "upcoming" && item.due?.direction !== "out")],
+      ["Yaklaşan ödemeler (7 gün)", list.filter(item => item.type === "upcoming" && item.due?.direction === "out")],
       ["Sistem", list.filter(item => item.type === "update")],
     ].filter(([, items]) => items.length);
     const body = groups.length

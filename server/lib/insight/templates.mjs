@@ -104,6 +104,8 @@ const T = {
   bakim: ["İş Emri No|id; Ekipman No; Makine; Arıza; Bakım Türü|list:Periyodik bakım,Arıza,Kalibrasyon; Teknisyen|person; Bakım Tarihi|date; Sonraki Bakım|date; Duruş Süresi (saat)|number; Maliyet|money; Durum|list:Açık,Tamamlandı; Not"],
   matbaa: ["İş No|id; Müşteri|person; Telefon|phone; İş Tanımı; Baskı Türü|list:Ofset,Dijital baskı; Kâğıt; Gramaj|number; Adet|number; Teslim Tarihi|date; Tutar|money; Durum|list:Tasarımda,Baskıda,Teslim edildi; Not"],
   "metal-makine": ["Sipariş No|id; Müşteri|person; Telefon|phone; Parça; Teknik Resim No; Malzeme; Tolerans; İşlem|list:CNC,Torna,Freze,Kaynak,Montaj; Adet|number; Termin|date; Tutar|money; Durum|list:Planlandı,İmalatta,Sevk edildi; Not"],
+  // 2.4.6: Duşakabin Üretimi sektörünün taslak sipariş tablosu (maliyet kartı ayrı; Stok penceresinde, tabloya bağlı değil).
+  dusakabin: ["Sipariş No|id; Müşteri|person; Telefon|phone; Kabin Modeli|list:Köşe kabin,Oval kabin,2 sabit 2 açılır,1 sabit 1 çalışır,1 sabit 2 çalışır,Yan panel; Ölçü; Profil Rengi|list:Beyaz,Siyah,Parlak; Cam / Mika|list:Mika,Şeffaf cam,Tesettür cam,Kumlama; Adet|number; Termin|date; Tutar|money; Durum|list:Sipariş alındı,Üretimde,Montajda,Teslim edildi; Not"],
   // ----- Tedarik, depo ve dış ticaret -----
   depo: ["Stok Kodu|id; Ürün Adı; Depo; Lokasyon; Birim|list:Adet,Koli,Palet,Kg; Miktar|number; Minimum Stok|number; Son Sayım Tarihi|date; Birim Fiyat|money; Sorumlu|person; Durum|list:Stokta,Kritik,Tükendi; Not"],
   satinalma: ["Talep No|id; Talep Eden|person; Birim / Departman; Ürün / Hizmet; Miktar|number; Tedarikçi; Teklif Tutarı|money; Termin|date; Satınalma Tarihi|date; Durum|list:Teklif bekleniyor,Onaylandı,Teslim alındı; Not"],

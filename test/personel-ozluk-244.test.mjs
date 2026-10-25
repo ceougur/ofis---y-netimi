@@ -287,12 +287,17 @@ describe("2.4.4 Personel Özlük: göç v31 (yalnız ekleyici)", () => {
     assert.equal(store.get("PRAGMA user_version").user_version, 30);
     assert.equal(store.get("SELECT 1 AS found FROM sqlite_master WHERE name = 'staff_members'"), undefined, "v30'da tablo yok");
     const tables = store.all("SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY name").map(row => row.name);
-    const result = runMigrations(store, {});
-    assert.deepEqual(result.applied, MIGRATIONS.filter(item => item.version > 30).map(item => item.version));
+    // Yalnız v31'in etkisi ölçülür (2.4.6: sonraki göç v34 de kendi tablolarını ekler; ona maliyet-cekirdek-246 testi bakar).
+    store.tx(() => {
+      MIGRATIONS.find(item => item.version === 31).up(store, { company: null, now: () => new Date("2026-10-22T07:00:00Z") });
+      store.exec("PRAGMA user_version = 31");
+    });
     assert.ok(LATEST_VERSION >= 31);
     assert.equal(db.prepare("SELECT strict FROM pragma_table_list WHERE name = 'staff_members'").get()?.strict, 1);
     const after = store.all("SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY name").map(row => row.name);
-    assert.deepEqual(after.filter(name => !tables.includes(name)), ["staff_members"], "yalnız yeni tablo eklendi");
+    assert.deepEqual(after.filter(name => !tables.includes(name)), ["staff_members"], "v31 yalnız yeni tablo ekledi");
+    const result = runMigrations(store, {});
+    assert.deepEqual(result.applied, MIGRATIONS.filter(item => item.version > 31).map(item => item.version), "sonraki göçler sırayla uygulanır");
     assert.throws(() => store.run("INSERT INTO staff_members (id, full_name, salary_minor, created_by, created_at) VALUES ('x', 'Eksi', -1, 'u', 'z')"), /CHECK/i, "eksi maaş veri tabanında da reddedilir");
     assert.deepEqual(runMigrations(store, {}).applied, [], "ikinci açılışta göç yok");
     db.close();

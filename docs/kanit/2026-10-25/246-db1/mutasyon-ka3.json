@@ -1,0 +1,15 @@
+[
+ {
+  "id": "Ka3",
+  "desc": "K-a: iade belgesinin kendi geri ödemesi kalandan düşmez",
+  "file": "server/lib/invoice-settle.mjs",
+  "status": "YAKALANDI",
+  "exit": 1,
+  "tests": 30,
+  "fail": 1,
+  "failed": [
+   "iade belgesinin kendi geri ödemesi (100) kalanı düşürür: cari kartından bağlanan 250'nin 200'ü geri ödeme, 50'si avans (K-a); B 500"
+  ],
+  "sn": 8.5
+ }
+]

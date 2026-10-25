@@ -303,7 +303,7 @@ const CI_WORKFLOW = ".github/workflows/ci.yml";
 // Yalnız belge (kullanıcı kararı 13.10.2026: "sadece doküman/plan değiştiğinde CI testleri koşmasın, sadece gerçek kod değiştiğinde çalışsın").
 // ci.yml'deki push "paths-ignore" listesiyle AYNI olmalı (test/kanit-araci.test.mjs denetler). Yalnız hiçbir testin ya da aracın okumadığı
 // belgeler: plan/kanıt/kılavuz belgelerini testler okuduğu için onlar listede YOK. PR koşusu (master'a) her zaman tamdır.
-export const BELGE_YOLLARI = ["CLAUDE.md", "docs/GECMIS-KARARLAR.md", "docs/DURUM-VE-DEVAM.md", "docs/2.3.0-IS-LISTESI.md", "docs/2.4.3-IS-LISTESI.md", "docs/2.4.4-IS-LISTESI.md", "docs/2.4.5-IS-LISTESI.md", "docs/devir/**", "docs/erp/**", "docs/fatura/**", "docs/pazarlama/**"];
+export const BELGE_YOLLARI = ["CLAUDE.md", "docs/GECMIS-KARARLAR.md", "docs/DURUM-VE-DEVAM.md", "docs/2.3.0-IS-LISTESI.md", "docs/2.4.3-IS-LISTESI.md", "docs/2.4.4-IS-LISTESI.md", "docs/2.4.5-IS-LISTESI.md", "docs/2.4.6-IS-LISTESI.md", "docs/devir/**", "docs/erp/**", "docs/fatura/**", "docs/pazarlama/**"];
 export const yalnizBelge = files => files.length > 0 && files.every(file => BELGE_YOLLARI.some(pattern => (pattern.endsWith("/**") ? file.startsWith(pattern.slice(0, -2)) : file === pattern)));
 const changedFiles = (gitFn, sha) => {
   const out = gitFn("diff-tree", "--no-commit-id", "--name-only", "-r", "--root", sha);

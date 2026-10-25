@@ -496,6 +496,8 @@
     const data = summaryData || {};
     const minutes = Number(data.syncMinutes || 5);
     // Diğer modüllerin bölümleri (ör. "Sektör ve görünüm", hof-insight.js) veri özetinin altına eklenir.
+    // 2.4.6 madde 4 (baş mimar, kör nokta): bölüm veri yokken de görünür — tablosuz (yalnız cari kullanan) şirket de sektörünü seçebilsin
+    // (Maliyet Hesap Kartı yalnız "Duşakabin Üretimi" sektöründe açılır; önceden boş şirkette sektör hiçbir yerden seçilemiyordu).
     const extensions = (HOF.settingsExtensions || []).map(extension => {
       try {
         return extension.html() || "";
@@ -515,7 +517,7 @@
           ${data.missingCount ? `<p class="hof-alert hof-alert-soft">${number(data.missingCount)} kayıt bağlı Sheet'te artık yok; tabloda duruyor. <button type="button" class="hof-button hof-button-small hof-button-ghost" data-missing>Listeyi Gör</button></p>` : ""}
         </section>
         ${sessions?.html || ""}
-        ${data.rowCount || data.recordCount ? extensions : ""}
+        ${extensions}
         <section class="hof-data-section">
           <h3>Veri Ekle veya Değiştir</h3>
           <div class="hof-data-import">${dropHtml(true)}${linkHtml}</div>${templateHtml}

@@ -1,0 +1,47 @@
+
+> destekofis@2.4.6 test:senaryo-taslak
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-taslak.mjs
+
+
+■ A. Sıfır kurulum: açılış ekranında taslak Excel kartı
+✓ kart: “Exceliniz yok mu? Sektörünüze uygun taslak Excel'i indirin…”
+✓ Excel yükleme alanı kartın üstünde (önce yükle, yoksa taslak)
+✓ açılışta destek hattı: Teknik Destek ve Satın Alımlar İçin: 0536 771 50 55
+✓ lisans bildiriminde yeni hat; eski numara (0532) programda görünmez
+
+■ B. Taslak indirilir: sektör seçilir, dosya adı ve içi doğru
+✓ sektör seçici açıldı (başlık: Taslak Excel)
+✓ dosya adı: DestekOfis Taslak - Okul Servisi.xlsx
+✓ bildirim: “Taslak Excel indirildi. Satırları doldurup…”
+✓ başlıklar: Öğrenci, Veli Adı, Veli Telefon, Okul, Sınıf, Güzergâh, Servis Plaka, Aylık Ücret, Eylül 2026 …
+✓ sayfa adı: Öğrenciler
+✓ başlık satırı sabit (aşağı kaydırınca görünür)
+✓ Durum kolonu açılır liste: Aktif / Ayrıldı
+✓ başlığa tıklayınca ne yazılacağı görünür (Aylık Ücret notu)
+✓ ay kolonları eğitim yılıyla: Eylül 2026, Ekim 2026, Kasım 2026 …
+✓ veri satırı yok (örnek kişi yazılmaz; kullanıcının verisine karışmaz)
+
+■ C. Taslak doldurulur ve açılış ekranından yüklenir
+✓ ön izleme: taslağın kolonları okundu
+✓ program sektörü kendiliğinden önerir: Okul servisi
+✓ sektör uygulandı: Okul Servisi
+
+■ D. Kişi, telefon, tutar tanındı; ödenmeyen ay Tablodaki Vadeler'de (takvimde ve Vade Takip'te tablo kalemi yok)
+✓ 5 öğrenci okundu (boş şablon satırı sayılmadı)
+✓ Öğrenci = kişi, Veli Telefon = telefon, Aylık Ücret = tutar
+✓ Tahsilat Takvimi'nde tablo kalemi yok (0 kalem)
+✓ Vade Takip'te tablo kalemi ve Tablo süzgeci yok (plan, cheque, note, invoice, account, cash, bank, deadline)
+✓ Ekim 2026: Tablodaki Vadeler'de yalnız ödemeyen aktif öğrenciler (Ali Çelik, Mehmet Demir)
+✓ tutar Aylık Ücret kolonundan (3.000 / 2.500): 3000, 2500
+✓ ayrılan öğrenci (Durum: Ayrıldı) Tablodaki Vadeler'e girmez
+✓ “Ödendi” yazılan Ekim 2026 Tablodaki Vadeler'e girmez
+✓ Raporlar › Tablo Raporları › Tablodaki Vadeler ekranında ödemeyenler var, ayrılan yok: Kalem2Gecikmiş2 · 5.500,00 ₺Yaklaşan / Bugün0Tablodaki Toplam Tutar (Muhasebe Kaydı Değil)5.500,00 ₺KişiKalemVadeGünTablodaki Tutar (Muhasebe Kaydı Değil)DurumKaynakSekmeGüzergâhOkulServis PlakaSınıfVeli AdıAli ÇelikEkim ödemesi01.10.2026-243.000,00 ₺GecikmişOkul servisi (dolduruldu).xlsxÖğrencilerS
+✓ tutar başlığı “Tablodaki Tutar (Muhasebe Kaydı Değil)”: Kişi | Kalem | Vade | Gün | Tablodaki Tutar (Muhasebe Kaydı Değil) | Durum | Kaynak | Sekme | Güzergâh | Okul | Servis Plaka | Sınıf | Veli Adı
+
+■ E. Veri varken: Veri ve eşitleme penceresinden de taslak indirilir
+✓ seçicide mevcut sektör (Okul servisi) “Önerilen” olarak başta
+✓ önerilen sektörün taslağı indi
+✓ taslak indirmek mevcut veriye dokunmaz
+✓ tarayıcı hatası yok
+
+31/31 denetim geçti. Ekran görüntüleri: /home/user/wt/aday246-3/test/e2e/artifacts/senaryo-taslak

@@ -1,0 +1,32 @@
+{
+  "ad": "246-acilis-isaret/kahin-cari",
+  "komut": "npm run test:kahin-cari",
+  "commit": "1cf687ca61d6385c1d8b15bf7990822ff29be28d",
+  "dal": "is/acilis-isaret",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T10:28:02.874Z",
+  "sure_sn": 101,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 5397,
+    "gecen": 5397,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-acilis-isaret/kahin-cari.log",
+  "klasor": "/home/user/wt/acilis-isaret",
+  "ham_cikti_sha256": "3ae12eacac502796b7aedafce97991f7406a574f4b9f3897e853c9696c77aea6",
+  "ham_cikti_bayt": 23630
+}

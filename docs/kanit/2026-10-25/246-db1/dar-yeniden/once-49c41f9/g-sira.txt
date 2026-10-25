@@ -1,0 +1,3 @@
+iade önce yazıldı (at 10:00:00.001 < 10:00:00.002): Alacak kalan 200 (K-b: iade eski → 200)
+iade önce yazıldı, at EŞİT (durağan saat): Alacak kalan 0 (yazım sırası: 200 beklenir)
+Alacak önce yazıldı, at EŞİT: Alacak kalan 0 (yazım sırası: 0 beklenir)

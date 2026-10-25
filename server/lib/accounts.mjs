@@ -70,6 +70,9 @@ export function accountLedger(entries = [], plans = []) {
       // 2.4.5 KS7 (a): stoktan gelen satırın hareket nedeni (stock_moves.reason: '' alış / satış, 'return' satıştan iade, 'preturn' alıştan iade) —
       // faturasız stok iadesi fatura kapamasında bağsız ödemedir (lib/invoice-settle.mjs classifyLine).
       ...(origin === "stock" ? { stockReason: entry.stockReason || "" } : {}),
+      // 2.4.6 madde 9 (DB1): cari kartından girilen geri ödemenin bağlandığı iade (account_entries.refund_of; iade faturası ya da faturasız stok iadesinin
+      // hareketi) — fatura kapamasında iadenin alacağıyla kapanan yükümlülüktür (lib/invoice-settle.mjs). Yalnız elle Tahsilat / Ödeme satırında.
+      ...(origin === "account" && meta.cash && entry.refundOf ? { refundOf: entry.refundOf } : {}),
       debit: meta.side === "debit" ? amount : 0,
       credit: meta.side === "credit" ? amount : 0,
     });

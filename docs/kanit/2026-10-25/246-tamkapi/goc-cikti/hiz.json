@@ -1,0 +1,741 @@
+{
+ "day": "2026-10-25",
+ "repeat": 3,
+ "warmN": 10,
+ "results": [
+  {
+   "round": 1,
+   "version": "v2.4.5",
+   "name": "cari-karti-sirket-001-1 (122 hareket)",
+   "coldMs": 26,
+   "warmMedianMs": 15.5,
+   "size": 122412,
+   "items": 122
+  },
+  {
+   "round": 1,
+   "version": "v2.4.5",
+   "name": "cari-karti-sirket-001-2 (70 hareket)",
+   "coldMs": 16,
+   "warmMedianMs": 7.9,
+   "size": 65987,
+   "items": 70
+  },
+  {
+   "round": 1,
+   "version": "v2.4.5",
+   "name": "cari-karti-sirket-001-3 (62 hareket)",
+   "coldMs": 8,
+   "warmMedianMs": 7.4,
+   "size": 57948,
+   "items": 62
+  },
+  {
+   "round": 1,
+   "version": "v2.4.5",
+   "name": "takvim-sirket-001",
+   "coldMs": 732,
+   "warmMedianMs": 23.6,
+   "size": 899747,
+   "items": 1759
+  },
+  {
+   "round": 1,
+   "version": "v2.4.5",
+   "name": "vade-takip-sirket-001",
+   "coldMs": 1144,
+   "warmMedianMs": 74.8,
+   "size": 654544,
+   "items": 1810
+  },
+  {
+   "round": 1,
+   "version": "v2.4.5",
+   "name": "projeksiyon-sirket-001",
+   "coldMs": 225,
+   "warmMedianMs": 239.9,
+   "size": 737674,
+   "items": 69
+  },
+  {
+   "round": 1,
+   "version": "v2.4.5",
+   "name": "cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-1 (33 hareket)",
+   "coldMs": 10,
+   "warmMedianMs": 7,
+   "size": 33343,
+   "items": 33
+  },
+  {
+   "round": 1,
+   "version": "v2.4.5",
+   "name": "cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-2 (32 hareket)",
+   "coldMs": 6,
+   "warmMedianMs": 6,
+   "size": 30577,
+   "items": 32
+  },
+  {
+   "round": 1,
+   "version": "v2.4.5",
+   "name": "cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-3 (31 hareket)",
+   "coldMs": 6,
+   "warmMedianMs": 4.3,
+   "size": 29859,
+   "items": 31
+  },
+  {
+   "round": 1,
+   "version": "v2.4.5",
+   "name": "takvim-sirket-89735bf3-2dad-4967-8797-fa0224260022",
+   "coldMs": 261,
+   "warmMedianMs": 12.2,
+   "size": 475632,
+   "items": 971
+  },
+  {
+   "round": 1,
+   "version": "v2.4.5",
+   "name": "vade-takip-sirket-89735bf3-2dad-4967-8797-fa0224260022",
+   "coldMs": 372,
+   "warmMedianMs": 37.4,
+   "size": 361637,
+   "items": 993
+  },
+  {
+   "round": 1,
+   "version": "v2.4.5",
+   "name": "projeksiyon-sirket-89735bf3-2dad-4967-8797-fa0224260022",
+   "coldMs": 99,
+   "warmMedianMs": 87.4,
+   "size": 325271,
+   "items": 36
+  },
+  {
+   "round": 1,
+   "version": "aday",
+   "name": "cari-karti-sirket-001-1 (122 hareket)",
+   "coldMs": 21,
+   "warmMedianMs": 12.2,
+   "size": 124137,
+   "items": 122
+  },
+  {
+   "round": 1,
+   "version": "aday",
+   "name": "cari-karti-sirket-001-2 (70 hareket)",
+   "coldMs": 16,
+   "warmMedianMs": 8.1,
+   "size": 66984,
+   "items": 70
+  },
+  {
+   "round": 1,
+   "version": "aday",
+   "name": "cari-karti-sirket-001-3 (62 hareket)",
+   "coldMs": 8,
+   "warmMedianMs": 7.4,
+   "size": 59018,
+   "items": 62
+  },
+  {
+   "round": 1,
+   "version": "aday",
+   "name": "takvim-sirket-001",
+   "coldMs": 807,
+   "warmMedianMs": 23.8,
+   "size": 899847,
+   "items": 1759
+  },
+  {
+   "round": 1,
+   "version": "aday",
+   "name": "vade-takip-sirket-001",
+   "coldMs": 1275,
+   "warmMedianMs": 72,
+   "size": 654622,
+   "items": 1810
+  },
+  {
+   "round": 1,
+   "version": "aday",
+   "name": "projeksiyon-sirket-001",
+   "coldMs": 215,
+   "warmMedianMs": 212.3,
+   "size": 739043,
+   "items": 70
+  },
+  {
+   "round": 1,
+   "version": "aday",
+   "name": "cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-1 (33 hareket)",
+   "coldMs": 17,
+   "warmMedianMs": 5.3,
+   "size": 33822,
+   "items": 33
+  },
+  {
+   "round": 1,
+   "version": "aday",
+   "name": "cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-2 (32 hareket)",
+   "coldMs": 6,
+   "warmMedianMs": 4.1,
+   "size": 31227,
+   "items": 32
+  },
+  {
+   "round": 1,
+   "version": "aday",
+   "name": "cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-3 (31 hareket)",
+   "coldMs": 8,
+   "warmMedianMs": 3.9,
+   "size": 30310,
+   "items": 31
+  },
+  {
+   "round": 1,
+   "version": "aday",
+   "name": "takvim-sirket-89735bf3-2dad-4967-8797-fa0224260022",
+   "coldMs": 256,
+   "warmMedianMs": 12.7,
+   "size": 478027,
+   "items": 971
+  },
+  {
+   "round": 1,
+   "version": "aday",
+   "name": "vade-takip-sirket-89735bf3-2dad-4967-8797-fa0224260022",
+   "coldMs": 335,
+   "warmMedianMs": 36.6,
+   "size": 363360,
+   "items": 993
+  },
+  {
+   "round": 1,
+   "version": "aday",
+   "name": "projeksiyon-sirket-89735bf3-2dad-4967-8797-fa0224260022",
+   "coldMs": 138,
+   "warmMedianMs": 86.3,
+   "size": 350374,
+   "items": 36
+  },
+  {
+   "round": 2,
+   "version": "aday",
+   "name": "cari-karti-sirket-001-1 (122 hareket)",
+   "coldMs": 15,
+   "warmMedianMs": 11.7,
+   "size": 124137,
+   "items": 122
+  },
+  {
+   "round": 2,
+   "version": "aday",
+   "name": "cari-karti-sirket-001-2 (70 hareket)",
+   "coldMs": 14,
+   "warmMedianMs": 8.1,
+   "size": 66984,
+   "items": 70
+  },
+  {
+   "round": 2,
+   "version": "aday",
+   "name": "cari-karti-sirket-001-3 (62 hareket)",
+   "coldMs": 8,
+   "warmMedianMs": 6.9,
+   "size": 59018,
+   "items": 62
+  },
+  {
+   "round": 2,
+   "version": "aday",
+   "name": "takvim-sirket-001",
+   "coldMs": 637,
+   "warmMedianMs": 25.3,
+   "size": 899847,
+   "items": 1759
+  },
+  {
+   "round": 2,
+   "version": "aday",
+   "name": "vade-takip-sirket-001",
+   "coldMs": 1118,
+   "warmMedianMs": 74.1,
+   "size": 654622,
+   "items": 1810
+  },
+  {
+   "round": 2,
+   "version": "aday",
+   "name": "projeksiyon-sirket-001",
+   "coldMs": 222,
+   "warmMedianMs": 212.7,
+   "size": 739043,
+   "items": 70
+  },
+  {
+   "round": 2,
+   "version": "aday",
+   "name": "cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-1 (33 hareket)",
+   "coldMs": 10,
+   "warmMedianMs": 4.7,
+   "size": 33822,
+   "items": 33
+  },
+  {
+   "round": 2,
+   "version": "aday",
+   "name": "cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-2 (32 hareket)",
+   "coldMs": 5,
+   "warmMedianMs": 3.9,
+   "size": 31227,
+   "items": 32
+  },
+  {
+   "round": 2,
+   "version": "aday",
+   "name": "cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-3 (31 hareket)",
+   "coldMs": 4,
+   "warmMedianMs": 3.5,
+   "size": 30310,
+   "items": 31
+  },
+  {
+   "round": 2,
+   "version": "aday",
+   "name": "takvim-sirket-89735bf3-2dad-4967-8797-fa0224260022",
+   "coldMs": 220,
+   "warmMedianMs": 14.9,
+   "size": 478027,
+   "items": 971
+  },
+  {
+   "round": 2,
+   "version": "aday",
+   "name": "vade-takip-sirket-89735bf3-2dad-4967-8797-fa0224260022",
+   "coldMs": 378,
+   "warmMedianMs": 36.9,
+   "size": 363360,
+   "items": 993
+  },
+  {
+   "round": 2,
+   "version": "aday",
+   "name": "projeksiyon-sirket-89735bf3-2dad-4967-8797-fa0224260022",
+   "coldMs": 92,
+   "warmMedianMs": 86,
+   "size": 350374,
+   "items": 36
+  },
+  {
+   "round": 2,
+   "version": "v2.4.5",
+   "name": "cari-karti-sirket-001-1 (122 hareket)",
+   "coldMs": 23,
+   "warmMedianMs": 11.5,
+   "size": 122412,
+   "items": 122
+  },
+  {
+   "round": 2,
+   "version": "v2.4.5",
+   "name": "cari-karti-sirket-001-2 (70 hareket)",
+   "coldMs": 14,
+   "warmMedianMs": 7.4,
+   "size": 65987,
+   "items": 70
+  },
+  {
+   "round": 2,
+   "version": "v2.4.5",
+   "name": "cari-karti-sirket-001-3 (62 hareket)",
+   "coldMs": 6,
+   "warmMedianMs": 6.3,
+   "size": 57948,
+   "items": 62
+  },
+  {
+   "round": 2,
+   "version": "v2.4.5",
+   "name": "takvim-sirket-001",
+   "coldMs": 634,
+   "warmMedianMs": 24.3,
+   "size": 899747,
+   "items": 1759
+  },
+  {
+   "round": 2,
+   "version": "v2.4.5",
+   "name": "vade-takip-sirket-001",
+   "coldMs": 1136,
+   "warmMedianMs": 74.3,
+   "size": 654544,
+   "items": 1810
+  },
+  {
+   "round": 2,
+   "version": "v2.4.5",
+   "name": "projeksiyon-sirket-001",
+   "coldMs": 272,
+   "warmMedianMs": 205.1,
+   "size": 737674,
+   "items": 69
+  },
+  {
+   "round": 2,
+   "version": "v2.4.5",
+   "name": "cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-1 (33 hareket)",
+   "coldMs": 10,
+   "warmMedianMs": 6.9,
+   "size": 33343,
+   "items": 33
+  },
+  {
+   "round": 2,
+   "version": "v2.4.5",
+   "name": "cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-2 (32 hareket)",
+   "coldMs": 5,
+   "warmMedianMs": 4,
+   "size": 30577,
+   "items": 32
+  },
+  {
+   "round": 2,
+   "version": "v2.4.5",
+   "name": "cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-3 (31 hareket)",
+   "coldMs": 4,
+   "warmMedianMs": 3.6,
+   "size": 29859,
+   "items": 31
+  },
+  {
+   "round": 2,
+   "version": "v2.4.5",
+   "name": "takvim-sirket-89735bf3-2dad-4967-8797-fa0224260022",
+   "coldMs": 231,
+   "warmMedianMs": 15.3,
+   "size": 475632,
+   "items": 971
+  },
+  {
+   "round": 2,
+   "version": "v2.4.5",
+   "name": "vade-takip-sirket-89735bf3-2dad-4967-8797-fa0224260022",
+   "coldMs": 332,
+   "warmMedianMs": 39,
+   "size": 361637,
+   "items": 993
+  },
+  {
+   "round": 2,
+   "version": "v2.4.5",
+   "name": "projeksiyon-sirket-89735bf3-2dad-4967-8797-fa0224260022",
+   "coldMs": 97,
+   "warmMedianMs": 83.8,
+   "size": 325271,
+   "items": 36
+  },
+  {
+   "round": 3,
+   "version": "v2.4.5",
+   "name": "cari-karti-sirket-001-1 (122 hareket)",
+   "coldMs": 14,
+   "warmMedianMs": 10.7,
+   "size": 122412,
+   "items": 122
+  },
+  {
+   "round": 3,
+   "version": "v2.4.5",
+   "name": "cari-karti-sirket-001-2 (70 hareket)",
+   "coldMs": 17,
+   "warmMedianMs": 7.6,
+   "size": 65987,
+   "items": 70
+  },
+  {
+   "round": 3,
+   "version": "v2.4.5",
+   "name": "cari-karti-sirket-001-3 (62 hareket)",
+   "coldMs": 9,
+   "warmMedianMs": 6.8,
+   "size": 57948,
+   "items": 62
+  },
+  {
+   "round": 3,
+   "version": "v2.4.5",
+   "name": "takvim-sirket-001",
+   "coldMs": 600,
+   "warmMedianMs": 23.5,
+   "size": 899747,
+   "items": 1759
+  },
+  {
+   "round": 3,
+   "version": "v2.4.5",
+   "name": "vade-takip-sirket-001",
+   "coldMs": 1131,
+   "warmMedianMs": 76.5,
+   "size": 654544,
+   "items": 1810
+  },
+  {
+   "round": 3,
+   "version": "v2.4.5",
+   "name": "projeksiyon-sirket-001",
+   "coldMs": 233,
+   "warmMedianMs": 205,
+   "size": 737674,
+   "items": 69
+  },
+  {
+   "round": 3,
+   "version": "v2.4.5",
+   "name": "cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-1 (33 hareket)",
+   "coldMs": 7,
+   "warmMedianMs": 3.8,
+   "size": 33343,
+   "items": 33
+  },
+  {
+   "round": 3,
+   "version": "v2.4.5",
+   "name": "cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-2 (32 hareket)",
+   "coldMs": 3,
+   "warmMedianMs": 3.2,
+   "size": 30577,
+   "items": 32
+  },
+  {
+   "round": 3,
+   "version": "v2.4.5",
+   "name": "cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-3 (31 hareket)",
+   "coldMs": 3,
+   "warmMedianMs": 3,
+   "size": 29859,
+   "items": 31
+  },
+  {
+   "round": 3,
+   "version": "v2.4.5",
+   "name": "takvim-sirket-89735bf3-2dad-4967-8797-fa0224260022",
+   "coldMs": 259,
+   "warmMedianMs": 12.8,
+   "size": 475632,
+   "items": 971
+  },
+  {
+   "round": 3,
+   "version": "v2.4.5",
+   "name": "vade-takip-sirket-89735bf3-2dad-4967-8797-fa0224260022",
+   "coldMs": 322,
+   "warmMedianMs": 39.9,
+   "size": 361637,
+   "items": 993
+  },
+  {
+   "round": 3,
+   "version": "v2.4.5",
+   "name": "projeksiyon-sirket-89735bf3-2dad-4967-8797-fa0224260022",
+   "coldMs": 90,
+   "warmMedianMs": 87.4,
+   "size": 325271,
+   "items": 36
+  },
+  {
+   "round": 3,
+   "version": "aday",
+   "name": "cari-karti-sirket-001-1 (122 hareket)",
+   "coldMs": 18,
+   "warmMedianMs": 12.1,
+   "size": 124137,
+   "items": 122
+  },
+  {
+   "round": 3,
+   "version": "aday",
+   "name": "cari-karti-sirket-001-2 (70 hareket)",
+   "coldMs": 14,
+   "warmMedianMs": 6.4,
+   "size": 66984,
+   "items": 70
+  },
+  {
+   "round": 3,
+   "version": "aday",
+   "name": "cari-karti-sirket-001-3 (62 hareket)",
+   "coldMs": 6,
+   "warmMedianMs": 6.3,
+   "size": 59018,
+   "items": 62
+  },
+  {
+   "round": 3,
+   "version": "aday",
+   "name": "takvim-sirket-001",
+   "coldMs": 657,
+   "warmMedianMs": 21.8,
+   "size": 899847,
+   "items": 1759
+  },
+  {
+   "round": 3,
+   "version": "aday",
+   "name": "vade-takip-sirket-001",
+   "coldMs": 1296,
+   "warmMedianMs": 87.9,
+   "size": 654622,
+   "items": 1810
+  },
+  {
+   "round": 3,
+   "version": "aday",
+   "name": "projeksiyon-sirket-001",
+   "coldMs": 230,
+   "warmMedianMs": 216.6,
+   "size": 739043,
+   "items": 70
+  },
+  {
+   "round": 3,
+   "version": "aday",
+   "name": "cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-1 (33 hareket)",
+   "coldMs": 8,
+   "warmMedianMs": 5.1,
+   "size": 33822,
+   "items": 33
+  },
+  {
+   "round": 3,
+   "version": "aday",
+   "name": "cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-2 (32 hareket)",
+   "coldMs": 5,
+   "warmMedianMs": 3.8,
+   "size": 31227,
+   "items": 32
+  },
+  {
+   "round": 3,
+   "version": "aday",
+   "name": "cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-3 (31 hareket)",
+   "coldMs": 11,
+   "warmMedianMs": 4.6,
+   "size": 30310,
+   "items": 31
+  },
+  {
+   "round": 3,
+   "version": "aday",
+   "name": "takvim-sirket-89735bf3-2dad-4967-8797-fa0224260022",
+   "coldMs": 238,
+   "warmMedianMs": 15.4,
+   "size": 478027,
+   "items": 971
+  },
+  {
+   "round": 3,
+   "version": "aday",
+   "name": "vade-takip-sirket-89735bf3-2dad-4967-8797-fa0224260022",
+   "coldMs": 350,
+   "warmMedianMs": 38.6,
+   "size": 363360,
+   "items": 993
+  },
+  {
+   "round": 3,
+   "version": "aday",
+   "name": "projeksiyon-sirket-89735bf3-2dad-4967-8797-fa0224260022",
+   "coldMs": 109,
+   "warmMedianMs": 80.8,
+   "size": 350374,
+   "items": 36
+  }
+ ],
+ "rows": [
+  {
+   "name": "cari-karti-sirket-001-1 (122 hareket)",
+   "old_cold": 23,
+   "new_cold": 18,
+   "old_warm": 11.5,
+   "new_warm": 12.1
+  },
+  {
+   "name": "cari-karti-sirket-001-2 (70 hareket)",
+   "old_cold": 16,
+   "new_cold": 14,
+   "old_warm": 7.6,
+   "new_warm": 8.1
+  },
+  {
+   "name": "cari-karti-sirket-001-3 (62 hareket)",
+   "old_cold": 8,
+   "new_cold": 8,
+   "old_warm": 6.8,
+   "new_warm": 6.9
+  },
+  {
+   "name": "takvim-sirket-001",
+   "old_cold": 634,
+   "new_cold": 657,
+   "old_warm": 23.6,
+   "new_warm": 23.8
+  },
+  {
+   "name": "vade-takip-sirket-001",
+   "old_cold": 1136,
+   "new_cold": 1275,
+   "old_warm": 74.8,
+   "new_warm": 74.1
+  },
+  {
+   "name": "projeksiyon-sirket-001",
+   "old_cold": 233,
+   "new_cold": 222,
+   "old_warm": 205.1,
+   "new_warm": 212.7
+  },
+  {
+   "name": "cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-1 (33 hareket)",
+   "old_cold": 10,
+   "new_cold": 10,
+   "old_warm": 6.9,
+   "new_warm": 5.1
+  },
+  {
+   "name": "cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-2 (32 hareket)",
+   "old_cold": 5,
+   "new_cold": 5,
+   "old_warm": 4,
+   "new_warm": 3.9
+  },
+  {
+   "name": "cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-3 (31 hareket)",
+   "old_cold": 4,
+   "new_cold": 8,
+   "old_warm": 3.6,
+   "new_warm": 3.9
+  },
+  {
+   "name": "takvim-sirket-89735bf3-2dad-4967-8797-fa0224260022",
+   "old_cold": 259,
+   "new_cold": 238,
+   "old_warm": 12.8,
+   "new_warm": 14.9
+  },
+  {
+   "name": "vade-takip-sirket-89735bf3-2dad-4967-8797-fa0224260022",
+   "old_cold": 332,
+   "new_cold": 350,
+   "old_warm": 39,
+   "new_warm": 36.9
+  },
+  {
+   "name": "projeksiyon-sirket-89735bf3-2dad-4967-8797-fa0224260022",
+   "old_cold": 97,
+   "new_cold": 109,
+   "old_warm": 87.4,
+   "new_warm": 86
+  }
+ ]
+}

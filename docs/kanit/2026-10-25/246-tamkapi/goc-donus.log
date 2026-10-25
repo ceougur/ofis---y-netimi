@@ -1,0 +1,13 @@
+  ✓ sirket-001: v2.4.5 açılışından sonra şema 36 (36 kalır), satır 3497
+  ✓ sirket-89735bf3-2dad-4967-8797-fa0224260022: v2.4.5 açılışından sonra şema 36 (36 kalır), satır 1395
+  ✓ sirket-001: v2.4.5 cari 3211 Σ 1129115391 = aday 3211 Σ 1129115391
+  ✓ sirket-89735bf3-2dad-4967-8797-fa0224260022: v2.4.5 cari 926 Σ 586279109 = aday 926 Σ 586279109
+  ✓ sirket-001: yeniden aday, şema 36
+  ✓ sirket-89735bf3-2dad-4967-8797-fa0224260022: yeniden aday, şema 36
+# geri dönüş (aday → 2.4.5 → aday)
+# tests 6
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

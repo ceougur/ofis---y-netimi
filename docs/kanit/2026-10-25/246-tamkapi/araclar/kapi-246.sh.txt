@@ -1,0 +1,26 @@
+#!/bin/bash
+# 2.4.6 tam kapı (ders 8, 35, 37): ci.yml'nin BÜTÜN e2e listesi + CI dışı senaryolar. GEÇTİ kanıtı olanı atlar (devam edilebilir).
+# Kullanım: kapi-246.sh <worktree> [ci|cidisi|hepsi]
+W="$1"; K="${2:-hepsi}"; L=/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/kos.lock
+cd "$W" || exit 2
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+D=docs/kanit/2026-10-25/246-tamkapi; mkdir -p "$D"
+gecti() { [ -f "$D/$1.json" ] && node -e 'process.exit(require(process.argv[1]).hukum==="GEÇTİ"?0:1)' "$PWD/$D/$1.json"; }
+fail=0; n=0; kirmizi=""
+kos() { local ad="$1"; shift; n=$((n+1)); if gecti "$ad"; then echo "ATLA $ad (GEÇTİ)"; return; fi
+  local bos; bos=$(df --output=avail -BG / | tail -1 | tr -dc 0-9); if [ "$bos" -lt 5 ]; then echo "DUR: disk $bos GB (ders 24)"; exit 3; fi
+  flock $L node tools/kanit.mjs kos "246-tamkapi/$ad" -- "$@" > /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-tamkapi/son.out 2>&1
+  local c=$?; echo "$(date -u +%T) $ad cikis=$c $(tail -1 /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-tamkapi/son.out | cut -c1-200)"
+  [ "$c" = "0" ] || { fail=$((fail+1)); kirmizi="$kirmizi $ad"; }; }
+if [ "$K" = ci ] || [ "$K" = hepsi ]; then
+  for pair in $(grep -oE "kanit\.mjs kos e2e-[A-Za-z0-9_-]+ npm run [A-Za-z0-9:_-]+" .github/workflows/ci.yml | awk '{print $3"|"$6}'); do
+    kos "ci-${pair%%|*}" npm run "${pair##*|}"
+  done
+fi
+if [ "$K" = cidisi ] || [ "$K" = hepsi ]; then
+  for s in 210 211 212 213 214 215 216 217 218 rapor taslak whatsapp; do kos "cidisi-senaryo-$s" npm run "test:senaryo-$s"; done
+  kos cidisi-senaryo npm run test:senaryo
+  kos cidisi-ui-ux-217 node --disable-warning=ExperimentalWarning test/e2e/ui-ux-217.mjs
+fi
+echo "BİTTİ: $n koşu, başarısız $fail:$kirmizi"
+[ "$fail" = "0" ]

@@ -1,0 +1,32 @@
+{
+  "ad": "246-tamkapi/cidisi-senaryo-212",
+  "komut": "npm run test:senaryo-212",
+  "commit": "46db18ca52764ee0d6eecdd087ac97b6d4654577",
+  "dal": "aday246-3",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T17:43:13.365Z",
+  "sure_sn": 29.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 24,
+    "gecen": 24,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-tamkapi/cidisi-senaryo-212.log",
+  "klasor": "/home/user/wt/aday246-3",
+  "ham_cikti_sha256": "c88756afb64f9a3ed013e063bba9c0ef336729a7d3d27ba5361832caa89d5142",
+  "ham_cikti_bayt": 2188
+}

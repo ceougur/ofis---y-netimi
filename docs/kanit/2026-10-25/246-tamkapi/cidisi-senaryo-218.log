@@ -1,0 +1,64 @@
+
+> destekofis@2.4.6 test:senaryo-218
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-218.mjs
+
+
+■ Marka ve patent (müşterinin tablosu): Başvuru Sahibi kişi, Marka / Buluş Adı eşya
+  ✓ personOf(ilk satır) = "NARAN YILDIZ" (beklenen "NARAN YILDIZ"; analiz kişi kolonu: Başvuru Sahibi)
+  ✓ Yeni Kayıt formunda "cari kartı da aç" kutusu yok
+  ✓ kayıt sonrası cari açılmadı (cariler: yok)
+  ✓ "FURRA" adıyla cari açılmadı
+  ✓ yeni kaydın başlığı kişi adıyla (0003 · GÜLDAL KARE · 0001 · NARAN YILDIZ · 0002 · HİMMET ERTAŞ)
+  ✓ yeni kaydın anahtarı bulundu (case-d8506deb-10c2-4446-b0bb-df29c7dc7827)
+  ✓ detay kartında CARİ kutusu / Cari Kartı pili yok
+  ✓ Cari penceresinde "Tablodan Al" düğmesi yok
+  ✓ + Yeni Cari: ad yazılınca tablodaki kayıt önerildi, kendiliğinden seçilmedi (“Tabloda aynı adlı kayıt var: 0003 · GÜLDAL KARE. Aynı kişiys”)
+  ✓ "Bu Kayda Bağla" ile kayıt seçildi (case-d8506deb-10c2-4446-b0bb-df29c7dc7827 · Bağlı kaydın kartında (ortadaki tablo) bu carinin )
+  ✓ cari elle açıldı: "GÜLDAL KARE" (cariler: GÜLDAL KARE)
+  ✓ cari Tablodaki Kayıt alanıyla kayda bağlı (case-d8506deb-10c2-4446-b0bb-df29c7dc7827)
+  ✓ "FURRA" adıyla cari yok
+
+■ Sipariş tablosu: Ürün Adı eşya, Müşteri kişi
+  ✓ personOf(ilk satır) = "Mehmet Kaya" (beklenen "Mehmet Kaya"; analiz kişi kolonu: Müşteri)
+  ✓ Yeni Kayıt formunda "cari kartı da aç" kutusu yok
+  ✓ kayıt sonrası cari açılmadı (cariler: yok)
+  ✓ "Ahşap Masa" adıyla cari açılmadı
+  ✓ yeni kaydın başlığı kişi adıyla (S-2 · Ayşe Demir · S-1 · Mehmet Kaya)
+  ✓ yeni kaydın anahtarı bulundu (case-5375e103-2d64-4a2e-8896-71b6ffbacd83)
+  ✓ detay kartında CARİ kutusu / Cari Kartı pili yok
+  ✓ Cari penceresinde "Tablodan Al" düğmesi yok
+  ✓ + Yeni Cari: ad yazılınca tablodaki kayıt önerildi, kendiliğinden seçilmedi (“Tabloda aynı adlı kayıt var: S-2 · Ayşe Demir. Aynı kişiyse ”)
+  ✓ "Bu Kayda Bağla" ile kayıt seçildi (case-5375e103-2d64-4a2e-8896-71b6ffbacd83 · Bağlı kaydın kartında (ortadaki tablo) bu carinin )
+  ✓ cari elle açıldı: "Ayşe Demir" (cariler: Ayşe Demir)
+  ✓ cari Tablodaki Kayıt alanıyla kayda bağlı (case-5375e103-2d64-4a2e-8896-71b6ffbacd83)
+  ✓ "Ahşap Masa" adıyla cari yok
+
+■ Ad ve soyad ayrı kolonlarda: cari adı ikisinden kurulur
+  ✓ personOf(ilk satır) = "Ali Yılmaz" (beklenen "Ali Yılmaz"; analiz kişi kolonu: Adı · parçalar Adı+Soyadı)
+  ✓ Yeni Kayıt formunda "cari kartı da aç" kutusu yok
+  ✓ kayıt sonrası cari açılmadı (cariler: yok)
+  ✓ yeni kaydın başlığı kişi adıyla (Zeynep Arslan · Ali Yılmaz)
+  ✓ yeni kaydın anahtarı bulundu (case-a9638b2e-baff-484a-96bd-c953462a1ae1)
+  ✓ detay kartında CARİ kutusu / Cari Kartı pili yok
+  ✓ Cari penceresinde "Tablodan Al" düğmesi yok
+  ✓ + Yeni Cari: ad yazılınca tablodaki kayıt önerildi, kendiliğinden seçilmedi (“Tabloda aynı adlı kayıt var: Zeynep Arslan. Aynı kişiyse bağ”)
+  ✓ "Bu Kayda Bağla" ile kayıt seçildi (case-a9638b2e-baff-484a-96bd-c953462a1ae1 · Bağlı kaydın kartında (ortadaki tablo) bu carinin )
+  ✓ cari elle açıldı: "Zeynep Arslan" (cariler: Zeynep Arslan)
+  ✓ cari Tablodaki Kayıt alanıyla kayda bağlı (case-a9638b2e-baff-484a-96bd-c953462a1ae1)
+
+■ İcra tablosu (eski davranış korunur): Borçlu kişi, Dosya No kimlik
+  ✓ personOf(ilk satır) = "Veli Can" (beklenen "Veli Can"; analiz kişi kolonu: Borçlu)
+  ✓ Yeni Kayıt formunda "cari kartı da aç" kutusu yok
+  ✓ kayıt sonrası cari açılmadı (cariler: yok)
+  ✓ "2026/2" adıyla cari açılmadı
+  ✓ yeni kaydın başlığı kişi adıyla (2026/2 · Hasan Öz · 2026/1 · Veli Can)
+  ✓ yeni kaydın anahtarı bulundu (2026/2)
+  ✓ detay kartında CARİ kutusu / Cari Kartı pili yok
+  ✓ Cari penceresinde "Tablodan Al" düğmesi yok
+  ✓ + Yeni Cari: ad yazılınca tablodaki kayıt önerildi, kendiliğinden seçilmedi (“Tabloda aynı adlı kayıt var: 2026/2 · Hasan Öz. Aynı kişiyse”)
+  ✓ "Bu Kayda Bağla" ile kayıt seçildi (2026/2 · Bağlı kaydın kartında (ortadaki tablo) bu carinin )
+  ✓ cari elle açıldı: "Hasan Öz" (cariler: Hasan Öz)
+  ✓ cari Tablodaki Kayıt alanıyla kayda bağlı (2026/2)
+  ✓ "2026/2" adıyla cari yok
+
+50 / 50 denetim geçti.

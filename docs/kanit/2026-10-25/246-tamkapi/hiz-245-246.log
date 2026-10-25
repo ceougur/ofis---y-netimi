@@ -1,0 +1,92 @@
+[18:37:06] tur 1 v2.4.5 cari-karti-sirket-001-1 (122 hareket): soğuk 26 ms, sıcak ortanca 15.5 ms, 122 kalem, 122412 bayt
+[18:37:06] tur 1 v2.4.5 cari-karti-sirket-001-2 (70 hareket): soğuk 16 ms, sıcak ortanca 7.9 ms, 70 kalem, 65987 bayt
+[18:37:06] tur 1 v2.4.5 cari-karti-sirket-001-3 (62 hareket): soğuk 8 ms, sıcak ortanca 7.4 ms, 62 kalem, 57948 bayt
+[18:37:07] tur 1 v2.4.5 takvim-sirket-001: soğuk 732 ms, sıcak ortanca 23.6 ms, 1759 kalem, 899747 bayt
+[18:37:09] tur 1 v2.4.5 vade-takip-sirket-001: soğuk 1144 ms, sıcak ortanca 74.8 ms, 1810 kalem, 654544 bayt
+[18:37:11] tur 1 v2.4.5 projeksiyon-sirket-001: soğuk 225 ms, sıcak ortanca 239.9 ms, 69 kalem, 737674 bayt
+[18:37:11] tur 1 v2.4.5 cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-1 (33 hareket): soğuk 10 ms, sıcak ortanca 7 ms, 33 kalem, 33343 bayt
+[18:37:12] tur 1 v2.4.5 cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-2 (32 hareket): soğuk 6 ms, sıcak ortanca 6 ms, 32 kalem, 30577 bayt
+[18:37:12] tur 1 v2.4.5 cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-3 (31 hareket): soğuk 6 ms, sıcak ortanca 4.3 ms, 31 kalem, 29859 bayt
+[18:37:12] tur 1 v2.4.5 takvim-sirket-89735bf3-2dad-4967-8797-fa0224260022: soğuk 261 ms, sıcak ortanca 12.2 ms, 971 kalem, 475632 bayt
+[18:37:13] tur 1 v2.4.5 vade-takip-sirket-89735bf3-2dad-4967-8797-fa0224260022: soğuk 372 ms, sıcak ortanca 37.4 ms, 993 kalem, 361637 bayt
+[18:37:14] tur 1 v2.4.5 projeksiyon-sirket-89735bf3-2dad-4967-8797-fa0224260022: soğuk 99 ms, sıcak ortanca 87.4 ms, 36 kalem, 325271 bayt
+[18:37:15] tur 1 aday cari-karti-sirket-001-1 (122 hareket): soğuk 21 ms, sıcak ortanca 12.2 ms, 122 kalem, 124137 bayt
+[18:37:15] tur 1 aday cari-karti-sirket-001-2 (70 hareket): soğuk 16 ms, sıcak ortanca 8.1 ms, 70 kalem, 66984 bayt
+[18:37:15] tur 1 aday cari-karti-sirket-001-3 (62 hareket): soğuk 8 ms, sıcak ortanca 7.4 ms, 62 kalem, 59018 bayt
+[18:37:16] tur 1 aday takvim-sirket-001: soğuk 807 ms, sıcak ortanca 23.8 ms, 1759 kalem, 899847 bayt
+[18:37:19] tur 1 aday vade-takip-sirket-001: soğuk 1275 ms, sıcak ortanca 72 ms, 1810 kalem, 654622 bayt
+[18:37:21] tur 1 aday projeksiyon-sirket-001: soğuk 215 ms, sıcak ortanca 212.3 ms, 70 kalem, 739043 bayt
+[18:37:21] tur 1 aday cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-1 (33 hareket): soğuk 17 ms, sıcak ortanca 5.3 ms, 33 kalem, 33822 bayt
+[18:37:21] tur 1 aday cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-2 (32 hareket): soğuk 6 ms, sıcak ortanca 4.1 ms, 32 kalem, 31227 bayt
+[18:37:21] tur 1 aday cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-3 (31 hareket): soğuk 8 ms, sıcak ortanca 3.9 ms, 31 kalem, 30310 bayt
+[18:37:22] tur 1 aday takvim-sirket-89735bf3-2dad-4967-8797-fa0224260022: soğuk 256 ms, sıcak ortanca 12.7 ms, 971 kalem, 478027 bayt
+[18:37:22] tur 1 aday vade-takip-sirket-89735bf3-2dad-4967-8797-fa0224260022: soğuk 335 ms, sıcak ortanca 36.6 ms, 993 kalem, 363360 bayt
+[18:37:23] tur 1 aday projeksiyon-sirket-89735bf3-2dad-4967-8797-fa0224260022: soğuk 138 ms, sıcak ortanca 86.3 ms, 36 kalem, 350374 bayt
+[18:37:25] tur 2 aday cari-karti-sirket-001-1 (122 hareket): soğuk 15 ms, sıcak ortanca 11.7 ms, 122 kalem, 124137 bayt
+[18:37:25] tur 2 aday cari-karti-sirket-001-2 (70 hareket): soğuk 14 ms, sıcak ortanca 8.1 ms, 70 kalem, 66984 bayt
+[18:37:25] tur 2 aday cari-karti-sirket-001-3 (62 hareket): soğuk 8 ms, sıcak ortanca 6.9 ms, 62 kalem, 59018 bayt
+[18:37:26] tur 2 aday takvim-sirket-001: soğuk 637 ms, sıcak ortanca 25.3 ms, 1759 kalem, 899847 bayt
+[18:37:28] tur 2 aday vade-takip-sirket-001: soğuk 1118 ms, sıcak ortanca 74.1 ms, 1810 kalem, 654622 bayt
+[18:37:30] tur 2 aday projeksiyon-sirket-001: soğuk 222 ms, sıcak ortanca 212.7 ms, 70 kalem, 739043 bayt
+[18:37:30] tur 2 aday cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-1 (33 hareket): soğuk 10 ms, sıcak ortanca 4.7 ms, 33 kalem, 33822 bayt
+[18:37:30] tur 2 aday cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-2 (32 hareket): soğuk 5 ms, sıcak ortanca 3.9 ms, 32 kalem, 31227 bayt
+[18:37:30] tur 2 aday cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-3 (31 hareket): soğuk 4 ms, sıcak ortanca 3.5 ms, 31 kalem, 30310 bayt
+[18:37:31] tur 2 aday takvim-sirket-89735bf3-2dad-4967-8797-fa0224260022: soğuk 220 ms, sıcak ortanca 14.9 ms, 971 kalem, 478027 bayt
+[18:37:31] tur 2 aday vade-takip-sirket-89735bf3-2dad-4967-8797-fa0224260022: soğuk 378 ms, sıcak ortanca 36.9 ms, 993 kalem, 363360 bayt
+[18:37:32] tur 2 aday projeksiyon-sirket-89735bf3-2dad-4967-8797-fa0224260022: soğuk 92 ms, sıcak ortanca 86 ms, 36 kalem, 350374 bayt
+[18:37:34] tur 2 v2.4.5 cari-karti-sirket-001-1 (122 hareket): soğuk 23 ms, sıcak ortanca 11.5 ms, 122 kalem, 122412 bayt
+[18:37:34] tur 2 v2.4.5 cari-karti-sirket-001-2 (70 hareket): soğuk 14 ms, sıcak ortanca 7.4 ms, 70 kalem, 65987 bayt
+[18:37:34] tur 2 v2.4.5 cari-karti-sirket-001-3 (62 hareket): soğuk 6 ms, sıcak ortanca 6.3 ms, 62 kalem, 57948 bayt
+[18:37:35] tur 2 v2.4.5 takvim-sirket-001: soğuk 634 ms, sıcak ortanca 24.3 ms, 1759 kalem, 899747 bayt
+[18:37:37] tur 2 v2.4.5 vade-takip-sirket-001: soğuk 1136 ms, sıcak ortanca 74.3 ms, 1810 kalem, 654544 bayt
+[18:37:39] tur 2 v2.4.5 projeksiyon-sirket-001: soğuk 272 ms, sıcak ortanca 205.1 ms, 69 kalem, 737674 bayt
+[18:37:39] tur 2 v2.4.5 cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-1 (33 hareket): soğuk 10 ms, sıcak ortanca 6.9 ms, 33 kalem, 33343 bayt
+[18:37:39] tur 2 v2.4.5 cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-2 (32 hareket): soğuk 5 ms, sıcak ortanca 4 ms, 32 kalem, 30577 bayt
+[18:37:39] tur 2 v2.4.5 cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-3 (31 hareket): soğuk 4 ms, sıcak ortanca 3.6 ms, 31 kalem, 29859 bayt
+[18:37:40] tur 2 v2.4.5 takvim-sirket-89735bf3-2dad-4967-8797-fa0224260022: soğuk 231 ms, sıcak ortanca 15.3 ms, 971 kalem, 475632 bayt
+[18:37:40] tur 2 v2.4.5 vade-takip-sirket-89735bf3-2dad-4967-8797-fa0224260022: soğuk 332 ms, sıcak ortanca 39 ms, 993 kalem, 361637 bayt
+[18:37:41] tur 2 v2.4.5 projeksiyon-sirket-89735bf3-2dad-4967-8797-fa0224260022: soğuk 97 ms, sıcak ortanca 83.8 ms, 36 kalem, 325271 bayt
+[18:37:42] tur 3 v2.4.5 cari-karti-sirket-001-1 (122 hareket): soğuk 14 ms, sıcak ortanca 10.7 ms, 122 kalem, 122412 bayt
+[18:37:42] tur 3 v2.4.5 cari-karti-sirket-001-2 (70 hareket): soğuk 17 ms, sıcak ortanca 7.6 ms, 70 kalem, 65987 bayt
+[18:37:42] tur 3 v2.4.5 cari-karti-sirket-001-3 (62 hareket): soğuk 9 ms, sıcak ortanca 6.8 ms, 62 kalem, 57948 bayt
+[18:37:43] tur 3 v2.4.5 takvim-sirket-001: soğuk 600 ms, sıcak ortanca 23.5 ms, 1759 kalem, 899747 bayt
+[18:37:45] tur 3 v2.4.5 vade-takip-sirket-001: soğuk 1131 ms, sıcak ortanca 76.5 ms, 1810 kalem, 654544 bayt
+[18:37:48] tur 3 v2.4.5 projeksiyon-sirket-001: soğuk 233 ms, sıcak ortanca 205 ms, 69 kalem, 737674 bayt
+[18:37:48] tur 3 v2.4.5 cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-1 (33 hareket): soğuk 7 ms, sıcak ortanca 3.8 ms, 33 kalem, 33343 bayt
+[18:37:48] tur 3 v2.4.5 cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-2 (32 hareket): soğuk 3 ms, sıcak ortanca 3.2 ms, 32 kalem, 30577 bayt
+[18:37:48] tur 3 v2.4.5 cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-3 (31 hareket): soğuk 3 ms, sıcak ortanca 3 ms, 31 kalem, 29859 bayt
+[18:37:48] tur 3 v2.4.5 takvim-sirket-89735bf3-2dad-4967-8797-fa0224260022: soğuk 259 ms, sıcak ortanca 12.8 ms, 971 kalem, 475632 bayt
+[18:37:49] tur 3 v2.4.5 vade-takip-sirket-89735bf3-2dad-4967-8797-fa0224260022: soğuk 322 ms, sıcak ortanca 39.9 ms, 993 kalem, 361637 bayt
+[18:37:50] tur 3 v2.4.5 projeksiyon-sirket-89735bf3-2dad-4967-8797-fa0224260022: soğuk 90 ms, sıcak ortanca 87.4 ms, 36 kalem, 325271 bayt
+[18:37:51] tur 3 aday cari-karti-sirket-001-1 (122 hareket): soğuk 18 ms, sıcak ortanca 12.1 ms, 122 kalem, 124137 bayt
+[18:37:51] tur 3 aday cari-karti-sirket-001-2 (70 hareket): soğuk 14 ms, sıcak ortanca 6.4 ms, 70 kalem, 66984 bayt
+[18:37:51] tur 3 aday cari-karti-sirket-001-3 (62 hareket): soğuk 6 ms, sıcak ortanca 6.3 ms, 62 kalem, 59018 bayt
+[18:37:52] tur 3 aday takvim-sirket-001: soğuk 657 ms, sıcak ortanca 21.8 ms, 1759 kalem, 899847 bayt
+[18:37:54] tur 3 aday vade-takip-sirket-001: soğuk 1296 ms, sıcak ortanca 87.9 ms, 1810 kalem, 654622 bayt
+[18:37:57] tur 3 aday projeksiyon-sirket-001: soğuk 230 ms, sıcak ortanca 216.6 ms, 70 kalem, 739043 bayt
+[18:37:57] tur 3 aday cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-1 (33 hareket): soğuk 8 ms, sıcak ortanca 5.1 ms, 33 kalem, 33822 bayt
+[18:37:57] tur 3 aday cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-2 (32 hareket): soğuk 5 ms, sıcak ortanca 3.8 ms, 32 kalem, 31227 bayt
+[18:37:57] tur 3 aday cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-3 (31 hareket): soğuk 11 ms, sıcak ortanca 4.6 ms, 31 kalem, 30310 bayt
+[18:37:57] tur 3 aday takvim-sirket-89735bf3-2dad-4967-8797-fa0224260022: soğuk 238 ms, sıcak ortanca 15.4 ms, 971 kalem, 478027 bayt
+[18:37:58] tur 3 aday vade-takip-sirket-89735bf3-2dad-4967-8797-fa0224260022: soğuk 350 ms, sıcak ortanca 38.6 ms, 993 kalem, 363360 bayt
+[18:37:59] tur 3 aday projeksiyon-sirket-89735bf3-2dad-4967-8797-fa0224260022: soğuk 109 ms, sıcak ortanca 80.8 ms, 36 kalem, 350374 bayt
+| Ölçüm | 2.4.5 soğuk | aday soğuk | 2.4.5 sıcak ort. | aday sıcak ort. |
+| cari-karti-sirket-001-1 (122 hareket) | 23 | 18 | 11.5 | 12.1 |
+| cari-karti-sirket-001-2 (70 hareket) | 16 | 14 | 7.6 | 8.1 |
+| cari-karti-sirket-001-3 (62 hareket) | 8 | 8 | 6.8 | 6.9 |
+| takvim-sirket-001 | 634 | 657 | 23.6 | 23.8 |
+| vade-takip-sirket-001 | 1136 | 1275 | 74.8 | 74.1 |
+| projeksiyon-sirket-001 | 233 | 222 | 205.1 | 212.7 |
+| cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-1 (33 hareket) | 10 | 10 | 6.9 | 5.1 |
+| cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-2 (32 hareket) | 5 | 5 | 4 | 3.9 |
+| cari-karti-sirket-89735bf3-2dad-4967-8797-fa0224260022-3 (31 hareket) | 4 | 8 | 3.6 | 3.9 |
+| takvim-sirket-89735bf3-2dad-4967-8797-fa0224260022 | 259 | 238 | 12.8 | 14.9 |
+| vade-takip-sirket-89735bf3-2dad-4967-8797-fa0224260022 | 332 | 350 | 39 | 36.9 |
+| projeksiyon-sirket-89735bf3-2dad-4967-8797-fa0224260022 | 97 | 109 | 87.4 | 86 |
+# 72 ölçüm (3 tur × 2 sürüm × 12 uç)
+# tests 72
+# pass 72
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

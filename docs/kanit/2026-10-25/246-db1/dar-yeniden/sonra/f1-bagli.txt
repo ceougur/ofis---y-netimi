@@ -1,0 +1,2 @@
+F1a bağlı: bakiye 100 Borç kalan 100 takvim [["account",100,"overdue"]]
+F1b bağlı: bakiye 200 A {"state":"overdue","open":200,"paid":800} R {"state":"return","open":0,"paid":500}
