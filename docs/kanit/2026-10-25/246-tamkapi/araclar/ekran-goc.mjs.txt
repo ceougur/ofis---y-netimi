@@ -1,0 +1,56 @@
+// Göçmüş büyük veride (v2.4.5 → aday) arayüz açılıyor mu: giriş, ana tablo, Cari penceresi + en büyük cari kartı, Tahsilat Takvimi (zil), Anlık Durum,
+// 002'ye geçiş; sayfa hatası yok. Yalnız okuma (göç kopyasının kopyasında).
+import { cpSync, rmSync, mkdirSync } from "node:fs";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const [REPO, KOK, SHOTS] = process.argv.slice(2);
+const imp = rel => import(pathToFileURL(path.join(REPO, rel)).href);
+const { bootVersion, CURRENT } = await imp("test/guvenilirlik/surumler.mjs");
+const { ADMIN_PASSWORD } = await imp("test/helpers.mjs");
+const { chromium } = await imp("node_modules/playwright/index.mjs");
+const dir = path.join(KOK, "ekran-kopya");
+rmSync(dir, { recursive: true, force: true });
+cpSync(path.join(KOK, "goc"), dir, { recursive: true });
+mkdirSync(SHOTS, { recursive: true });
+const server = await bootVersion(CURRENT, { dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, logLevel: "silent", edocEnabled: true, edocLive: true, esmmEnabled: true, legacyCasePayments: false, legacyTableTransfer: false, legacyTableDues: false });
+const browser = await chromium.launch();
+const errors = [];
+const checks = [];
+const ok = (c, m) => { checks.push([Boolean(c), m]); console.log(`${c ? "✓" : "✗"} ${m}`); };
+try {
+  const page = await (await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: "tr-TR" })).newPage();
+  page.on("pageerror", e => errors.push(e.message));
+  const t0 = Date.now();
+  await page.goto(`${server.base}/`);
+  await page.fill("#hof-auth input[name=username]", "admin");
+  await page.fill("#hof-auth input[name=password]", ADMIN_PASSWORD);
+  await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
+  await page.waitForSelector(".dynamic-table tbody tr", { timeout: 60000 });
+  const rows = await page.$$eval(".dynamic-table tbody tr", r => r.length);
+  ok(rows > 0, `giriş + ana tablo ${rows} satır (${Date.now() - t0} ms)`);
+  await page.screenshot({ path: path.join(SHOTS, "01-ana.png") });
+  await page.evaluate(() => window.HOF.accounts.open());
+  await page.waitForSelector(".hof-modal-backdrop.is-visible tr[data-account], .hof-modal-backdrop.is-visible [data-account]", { timeout: 30000 });
+  const accRows = await page.$$eval(".hof-modal-backdrop.is-visible [data-account]", r => r.length);
+  ok(accRows > 0, `Cari penceresi ${accRows} satır`);
+  await page.screenshot({ path: path.join(SHOTS, "02-cari.png") });
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(500);
+  await page.evaluate(() => window.HOF.plans.open());
+  await page.waitForSelector(".hof-modal-backdrop.is-visible tr[data-plan]", { timeout: 30000 });
+  ok(true, `Taksitler ${await page.$$eval(".hof-modal-backdrop.is-visible tr[data-plan]", r => r.length)} kart`);
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(500);
+  const pulse = await page.waitForSelector("#hof-pulse .hof-pulse-tile", { timeout: 30000 }).then(() => true).catch(() => false);
+  ok(pulse, "ANLIK DURUM kutuları");
+  await page.screenshot({ path: path.join(SHOTS, "03-anlik.png") });
+  ok(errors.length === 0, `sayfa hatası yok (${errors.length}) ${errors.slice(0, 3).join(" | ")}`);
+} finally {
+  await browser.close();
+  await server.close();
+  rmSync(dir, { recursive: true, force: true });
+}
+const fail = checks.filter(c => !c[0]).length;
+console.log(`# tests ${checks.length}\n# pass ${checks.length - fail}\n# fail ${fail}\n# cancelled 0\n# skipped 0\n# todo 0`);
+process.exitCode = fail ? 1 : 0;

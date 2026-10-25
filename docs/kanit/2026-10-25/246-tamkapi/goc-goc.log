@@ -1,0 +1,16 @@
+[18:28:58] göç + ölçü: 001 açılışı (göç dahil) 779 ms; ilk erişim {"001":6,"002":248}; yeni yedek 001 - Merkez Ticaret ve Danışmanlık A.Ş/destekofis-001-2026-10-25T18-28-11-440Z-pre-migration-v36.sqlite, 002 - Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti/destekofis-002-2026-10-25T18-28-46-914Z-pre-migration-v36.sqlite
+[18:28:58]   001: şema 36, bütünlük ok, tablolar ["maliyet_adimlar","maliyet_basliklar","maliyet_hucreler","maliyet_kartlar","maliyet_satirlar","maliyet_sekmeler"], account_entries kolonları ["id","account_id","kind","amount","date","note","receipt_no","source","source_id","created_by","created_at","updated_by","updated_at","method","invoice_id","fin_ref","event_id","fx_currency","fx_minor","fx_rate_e6","fx_source","doubtful_skip","due_date","expected_date","is_opening","refund_of"]
+[18:28:58]   002: şema 36, bütünlük ok, tablolar ["maliyet_adimlar","maliyet_basliklar","maliyet_hucreler","maliyet_kartlar","maliyet_satirlar","maliyet_sekmeler"], account_entries kolonları ["id","account_id","kind","amount","date","note","receipt_no","source","source_id","created_by","created_at","updated_by","updated_at","method","invoice_id","fin_ref","event_id","fx_currency","fx_minor","fx_rate_e6","fx_source","doubtful_skip","due_date","expected_date","is_opening","refund_of"]
+  ✓ 001 şema 36
+  ✓ 001 bütünlük ok
+  ✓ 001 göç öncesi yedek v36
+  ✓ 002 şema 36
+  ✓ 002 bütünlük ok
+  ✓ 002 göç öncesi yedek v36
+# göç: 2 şirket
+# tests 6
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

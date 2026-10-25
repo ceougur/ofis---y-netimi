@@ -1,0 +1,50 @@
+{
+ "cards": 1788,
+ "fieldDiffs": {
+  "refundOf: YOK → var": 4892
+ },
+ "samples": {
+  "refundOf: YOK → var": [
+   {
+    "id": "account-680c96c0-8ce2-4faf-8d30-59cd3a33293d",
+    "entry": "aentry-69401ab6-314f-4fed-baab-a7c06da6f125",
+    "kind": "debt",
+    "source": "",
+    "amount": 5800,
+    "date": "2025-09-25",
+    "note": "Açılış bakiyesi",
+    "after": ""
+   },
+   {
+    "id": "account-0d80517a-ec59-4bed-b742-a0963861e554",
+    "entry": "aentry-a5e83f3b-daf2-464c-9420-442afaec5793",
+    "kind": "debt",
+    "source": "",
+    "amount": 1300,
+    "date": "2025-09-25",
+    "note": "Açılış bakiyesi",
+    "after": ""
+   },
+   {
+    "id": "account-0d80517a-ec59-4bed-b742-a0963861e554",
+    "entry": "aentry-39292892-84db-4ce1-8d19-98a592a2b0d8",
+    "kind": "debt",
+    "source": "invoice",
+    "amount": 19927,
+    "date": "2025-11-26",
+    "note": "Satış Faturası FIS2025000000113",
+    "after": ""
+   },
+   {
+    "id": "account-0d80517a-ec59-4bed-b742-a0963861e554",
+    "entry": "aentry-dc7d215f-e8e6-4173-86e2-96cfb57ac375",
+    "kind": "credit",
+    "source": "cheque",
+    "amount": 19129.92,
+    "date": "2025-11-26",
+    "note": "Çek alındı · No FE-001-2025-11-26-6423 ·",
+    "after": ""
+   }
+  ]
+ }
+}

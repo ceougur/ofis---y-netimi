@@ -1,0 +1,98 @@
+// senaryo-210 m15 (Taksitler arama kutusu odak rengi) ZORLA ÜRETME (ders 20). Yalnız ölçüm; not defterinde, depoya girmez (kanıt için kopyası alınır).
+// Ön koşul (koddan okunan aday): Cari penceresi Esc ile kapanınca hof-core finish() odak bekçisini 60/250/700/1500 ms'de koşar; odak body'deyse
+// ÜSTTEKİ pencerenin ilk alanına odak verir. Senaryo Cari'yi kapatıp 300 ms sonra Taksitler'i açar, arama kutusunu blur eder, 100 ms sonra rengi okur.
+// Bekçinin 700 ms (ya da 1500 ms) vuruşu blur ile okuma arasına düşerse arama kutusu odaklı (beyaz) okunur.
+// Zorlama: /api/workspace/plans/groups yanıtı GECIKME ms bekletilir → arama kutusu ~300+GECIKME ms'de gelir; blur + 100 ms okuma bekçinin vuruşunu kapsar.
+// Her denemede arama kutusuna verilen odaklar (zaman + çağrı yığını) kaydedilir: odağı KİMİN verdiği okunur (ders 20 son cümle).
+//   node s210-m15-zorla.mjs <depo kökü> <etiket> <çıktı.json>
+import fs, { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const [repoArg, label, outFile] = process.argv.slice(2);
+const REPO = path.resolve(repoArg);
+const { chromium } = await import(pathToFileURL(path.join("/home/user/wt/aday246-3/node_modules/playwright/index.mjs")).href);
+const { createApp } = await import(pathToFileURL(path.join(REPO, "server/app.mjs")).href);
+const { escClose } = await import(pathToFileURL(path.join(REPO, "test/e2e/esc-kapat.mjs")).href);
+const PASS = "Prova-Admin-2026!";
+const root = mkdtempSync(path.join(tmpdir(), "s210-zorla-"));
+const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f92" } });
+const { port } = await app.listen(0, "127.0.0.1");
+const BASE = `http://127.0.0.1:${port}`;
+const browser = await chromium.launch();
+const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: "tr-TR" });
+await context.addInitScript(() => {
+  document.addEventListener("DOMContentLoaded", () => document.head.appendChild(Object.assign(document.createElement("style"), { textContent: "#hof-license-bar,.hof-license-notice{display:none!important}" })));
+  const orig = HTMLElement.prototype.focus;
+  HTMLElement.prototype.focus = function (...a) {
+    if (this.matches?.('.hof-modal input[type="search"]')) (window.__foc ||= []).push({ t: Math.round(performance.now() - (window.__t0 || 0)), stack: String(new Error().stack).split("\n").slice(2, 5).map(s => s.trim().replace(/https?:\/\/[^/]+\//, "")).join(" | ") });
+    return orig.apply(this, a);
+  };
+});
+const page = await context.newPage();
+const modal = ".hof-modal-backdrop.is-visible";
+let delay = 0;
+let routed = 0;
+const LIST_DELAY = Number(process.env.S210_LISTE_GECIKME || 0);
+await page.route(/\/api\/workspace\/plans\?/, async route => {
+  if (delay && LIST_DELAY) await new Promise(r => setTimeout(r, LIST_DELAY));
+  await route.continue();
+});
+await page.route(/\/api\/workspace\/plans\/groups/, async route => {
+  routed += 1;
+  if (delay) await new Promise(r => setTimeout(r, delay));
+  await route.continue();
+});
+const out = { label, repo: REPO, trials: [] };
+try {
+  await page.goto(`${BASE}/`);
+  await page.fill("#hof-auth input[name=username]", "admin");
+  await page.fill("#hof-auth input[name=password]", PASS);
+  await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
+  await page.waitForFunction(() => window.HOF?.plans?.open && window.HOF?.accounts?.open, null, { timeout: 30000 });
+  await page.waitForTimeout(1500);
+  const sweep = (process.env.S210_GECIKMELER || "0,0,0,0,0,60,100,140,180,220,260,300,500,600,700,800,900,1700").split(",").map(Number);
+  const modes = sweep.map((d, k) => ({ mode: `gecikme-${d}`, delay: d, n: 1, k }));
+  for (const m of modes) {
+    for (let i = 1; i <= m.n; i += 1) {
+      delay = 0;
+      // Senaryodaki sıra: Cari aç → arama görünür → blur → oku → Esc → 300 ms → Taksitler aç → arama görünür → blur → 100 ms → oku.
+      await page.evaluate(() => window.HOF.accounts.open());
+      await page.waitForSelector(`${modal} input[type="search"]`, { timeout: 10000 });
+      await page.evaluate(() => document.activeElement?.blur());
+      await page.waitForTimeout(100);
+      delay = m.delay;
+      await page.evaluate(() => { window.__foc = []; });
+      await escClose(page);
+      await page.evaluate(() => { window.__t0 = performance.now(); });
+      await page.waitForTimeout(300);
+      await page.evaluate(() => window.HOF.plans.open());
+      await page.waitForSelector(`${modal} input[type="search"]`, { timeout: 10000 });
+      const blurAt = await page.evaluate(() => { document.activeElement?.blur(); return Math.round(performance.now() - window.__t0); });
+      await page.waitForTimeout(100);
+      const read = await page.$eval(`${modal} input[type="search"]`, node => ({ at: Math.round(performance.now() - window.__t0), style: `${getComputedStyle(node).backgroundColor}|${getComputedStyle(node).borderTopColor}`, focused: document.activeElement === node, foc: window.__foc }));
+      const red = read.focused || read.style === "rgb(255, 255, 255)|rgb(31, 106, 80)";
+      const afterBlur = read.foc.filter(f => f.t >= blurAt);
+      out.trials.push({ mode: m.mode, i, delay: m.delay, routed, blurAt, readAt: read.at, style: read.style, focused: read.focused, red, transitional: !red && !read.style.startsWith("rgb(233, 245, 238)"), afterBlur, focusCalls: read.foc });
+      console.log(`${label} ${m.mode} #${i} (yönlendirilen istek ${routed}): blur ${blurAt} ms, okuma ${read.at} ms, ${red ? "KIRMIZI (odakta)" : "odakta değil"} ${read.style}; blur SONRASI odak çağrıları ${JSON.stringify(afterBlur.map(f => [f.t, f.stack.slice(0, 120)]))}`);
+      delay = 0;
+      await escClose(page);
+      await page.waitForTimeout(1800);
+    }
+  }
+} finally {
+  await browser.close();
+  await app.close();
+  rmSync(root, { recursive: true, force: true });
+}
+const by = {};
+for (const t of out.trials) {
+  by[t.mode] ||= { n: 0, red: 0 };
+  by[t.mode].n += 1;
+  by[t.mode].red += t.red ? 1 : 0;
+}
+out.summary = by;
+writeFileSync(outFile, `${JSON.stringify(out, null, 1)}\n`);
+console.log(`ÖZET ${label}: ${JSON.stringify(by)}`);

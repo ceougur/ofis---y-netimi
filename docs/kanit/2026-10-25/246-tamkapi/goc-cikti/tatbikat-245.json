@@ -1,0 +1,731 @@
+{
+ "day": "2026-10-25",
+ "checks": [
+  {
+   "name": "V1 001 P carisinin kartı: Vade / Beklenen / Kalan (FIFO: açılış 0, D1 3.000, D2 3.000), bakiye 6.000",
+   "ok": true,
+   "detail": {
+    "cardBad": [],
+    "card": {
+     "balance": 600000,
+     "entries": [
+      {
+       "note": "Açılış bakiyesi",
+       "kind": "debt",
+       "amount": 400000,
+       "date": "2026-09-25",
+       "dueDate": "2026-10-05",
+       "expectedDate": "2026-10-15",
+       "remaining": 0
+      },
+      {
+       "note": "D1 Hizmet bedeli",
+       "kind": "debt",
+       "amount": 500000,
+       "date": "2026-10-10",
+       "dueDate": "2026-10-20",
+       "expectedDate": "",
+       "remaining": 300000
+      },
+      {
+       "note": "D2 Danışmanlık",
+       "kind": "debt",
+       "amount": 300000,
+       "date": "2026-10-23",
+       "dueDate": "2026-10-30",
+       "expectedDate": "2026-10-27",
+       "remaining": 300000
+      },
+      {
+       "note": "T1 Kısmi tahsilat",
+       "kind": "in",
+       "amount": 600000,
+       "date": "2026-10-25",
+       "dueDate": "",
+       "expectedDate": "",
+       "remaining": null
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "V1 001 takvim / zil: D1 gecikmiş kısmi 3.000, D2 Ödeme Sözü gün+2 3.000, açılış kalem değil",
+   "ok": true,
+   "detail": {
+    "dues": [
+     {
+      "label": "Tahsil Edilecek Borç",
+      "dueDate": "2026-10-20",
+      "amount": 300000,
+      "state": "overdue",
+      "partial": true
+     },
+     {
+      "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+      "dueDate": "2026-10-27",
+      "amount": 300000,
+      "state": "upcoming",
+      "partial": false
+     }
+    ],
+    "expectDues": [
+     {
+      "label": "Tahsil Edilecek Borç",
+      "dueDate": "2026-10-20",
+      "amount": 300000,
+      "state": "overdue",
+      "partial": true
+     },
+     {
+      "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+      "dueDate": "2026-10-27",
+      "amount": 300000,
+      "state": "upcoming",
+      "partial": false
+     }
+    ]
+   }
+  },
+  {
+   "name": "V2 001 Tabela Adı kaydedildi ve geri okundu; seri ve sıradaki numaralar değişmedi",
+   "ok": true,
+   "detail": {
+    "reportHeader": {
+     "signName": "Tatbikat Tabela 001",
+     "mode": "full"
+    },
+    "series": [
+     {
+      "paper": "FIS",
+      "earsiv": "EAR",
+      "efatura": "EFT",
+      "smm": "SMM",
+      "esmm": "ESM",
+      "internal": "IAD"
+     },
+     {
+      "paper": "FIS",
+      "earsiv": "EAR",
+      "efatura": "EFT",
+      "smm": "SMM",
+      "esmm": "ESM",
+      "internal": "IAD"
+     }
+    ]
+   }
+  },
+  {
+   "name": "V1 002 P carisinin kartı: Vade / Beklenen / Kalan (FIFO: açılış 0, D1 3.000, D2 3.000), bakiye 6.000",
+   "ok": true,
+   "detail": {
+    "cardBad": [],
+    "card": {
+     "balance": 600000,
+     "entries": [
+      {
+       "note": "Açılış bakiyesi",
+       "kind": "debt",
+       "amount": 400000,
+       "date": "2026-09-25",
+       "dueDate": "2026-10-05",
+       "expectedDate": "2026-10-15",
+       "remaining": 0
+      },
+      {
+       "note": "D1 Hizmet bedeli",
+       "kind": "debt",
+       "amount": 500000,
+       "date": "2026-10-10",
+       "dueDate": "2026-10-20",
+       "expectedDate": "",
+       "remaining": 300000
+      },
+      {
+       "note": "D2 Danışmanlık",
+       "kind": "debt",
+       "amount": 300000,
+       "date": "2026-10-23",
+       "dueDate": "2026-10-30",
+       "expectedDate": "2026-10-27",
+       "remaining": 300000
+      },
+      {
+       "note": "T1 Kısmi tahsilat",
+       "kind": "in",
+       "amount": 600000,
+       "date": "2026-10-25",
+       "dueDate": "",
+       "expectedDate": "",
+       "remaining": null
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "V1 002 takvim / zil: D1 gecikmiş kısmi 3.000, D2 Ödeme Sözü gün+2 3.000, açılış kalem değil",
+   "ok": true,
+   "detail": {
+    "dues": [
+     {
+      "label": "Tahsil Edilecek Borç",
+      "dueDate": "2026-10-20",
+      "amount": 300000,
+      "state": "overdue",
+      "partial": true
+     },
+     {
+      "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+      "dueDate": "2026-10-27",
+      "amount": 300000,
+      "state": "upcoming",
+      "partial": false
+     }
+    ],
+    "expectDues": [
+     {
+      "label": "Tahsil Edilecek Borç",
+      "dueDate": "2026-10-20",
+      "amount": 300000,
+      "state": "overdue",
+      "partial": true
+     },
+     {
+      "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+      "dueDate": "2026-10-27",
+      "amount": 300000,
+      "state": "upcoming",
+      "partial": false
+     }
+    ]
+   }
+  },
+  {
+   "name": "V2 002 Tabela Adı kaydedildi ve geri okundu; seri ve sıradaki numaralar değişmedi",
+   "ok": true,
+   "detail": {
+    "reportHeader": {
+     "signName": "Tatbikat Tabela 002",
+     "mode": "full"
+    },
+    "series": [
+     {
+      "paper": "FIS",
+      "earsiv": "EAR",
+      "efatura": "EFT",
+      "smm": "SMM",
+      "esmm": "ESM",
+      "internal": "IAD"
+     },
+     {
+      "paper": "FIS",
+      "earsiv": "EAR",
+      "efatura": "EFT",
+      "smm": "SMM",
+      "esmm": "ESM",
+      "internal": "IAD"
+     }
+    ]
+   }
+  },
+  {
+   "name": "V3 002 ara çalışma gerçekten yazıldı (bakiye 6.000 → 6.500, D2 Vade gün+6 / Beklenen boş, Tabela değişti)",
+   "ok": true,
+   "detail": {
+    "balance": 650000,
+    "midD2": {
+     "note": "D2 Danışmanlık",
+     "kind": "debt",
+     "amount": 300000,
+     "date": "2026-10-23",
+     "dueDate": "2026-10-31",
+     "expectedDate": "",
+     "remaining": 300000
+    },
+    "midHeader": {
+     "signName": "Ara Dönem Tabelası",
+     "mode": "sign"
+    }
+   }
+  },
+  {
+   "name": "V3 002 yedek → çalış → geri yükle: olgular (Vade / Beklenen / Kalan, takvim, Tabela Adı dahil) yedek anıyla aynı",
+   "ok": true,
+   "detail": {
+    "diff": [],
+    "backup": "destekofis-002-2026-10-25T18-33-59-918Z-manuel.sqlite",
+    "card": {
+     "balance": 600000,
+     "entries": [
+      {
+       "note": "Açılış bakiyesi",
+       "kind": "debt",
+       "amount": 400000,
+       "date": "2026-09-25",
+       "dueDate": "2026-10-05",
+       "expectedDate": "2026-10-15",
+       "remaining": 0
+      },
+      {
+       "note": "D1 Hizmet bedeli",
+       "kind": "debt",
+       "amount": 500000,
+       "date": "2026-10-10",
+       "dueDate": "2026-10-20",
+       "expectedDate": "",
+       "remaining": 300000
+      },
+      {
+       "note": "D2 Danışmanlık",
+       "kind": "debt",
+       "amount": 300000,
+       "date": "2026-10-23",
+       "dueDate": "2026-10-30",
+       "expectedDate": "2026-10-27",
+       "remaining": 300000
+      },
+      {
+       "note": "T1 Kısmi tahsilat",
+       "kind": "in",
+       "amount": 600000,
+       "date": "2026-10-25",
+       "dueDate": "",
+       "expectedDate": "",
+       "remaining": null
+      }
+     ]
+    },
+    "reportHeader": {
+     "signName": "Tatbikat Tabela 002",
+     "mode": "full"
+    }
+   }
+  },
+  {
+   "name": "V4 002 geri yüklemesi 001'i değiştirmedi",
+   "ok": true,
+   "detail": {
+    "diff": []
+   }
+  },
+  {
+   "name": "V5 002 geri yüklemeden sonra yeniden çalış: Kalan D1 500 / D2 3.000 / D4 2.000, bakiye 5.500, takvim aynı; Mutabakat Testi'nde yeni sapma yok, mizan dengede",
+   "ok": true,
+   "detail": {
+    "card5": {
+     "balance": 550000,
+     "entries": [
+      {
+       "note": "Açılış bakiyesi",
+       "kind": "debt",
+       "amount": 400000,
+       "date": "2026-09-25",
+       "dueDate": "2026-10-05",
+       "expectedDate": "2026-10-15",
+       "remaining": 0
+      },
+      {
+       "note": "D1 Hizmet bedeli",
+       "kind": "debt",
+       "amount": 500000,
+       "date": "2026-10-10",
+       "dueDate": "2026-10-20",
+       "expectedDate": "",
+       "remaining": 50000
+      },
+      {
+       "note": "D2 Danışmanlık",
+       "kind": "debt",
+       "amount": 300000,
+       "date": "2026-10-23",
+       "dueDate": "2026-10-30",
+       "expectedDate": "2026-10-27",
+       "remaining": 300000
+      },
+      {
+       "note": "D4 Yeni borç",
+       "kind": "debt",
+       "amount": 200000,
+       "date": "2026-10-25",
+       "dueDate": "2026-10-28",
+       "expectedDate": "",
+       "remaining": 200000
+      },
+      {
+       "note": "T1 Kısmi tahsilat",
+       "kind": "in",
+       "amount": 600000,
+       "date": "2026-10-25",
+       "dueDate": "",
+       "expectedDate": "",
+       "remaining": null
+      },
+      {
+       "note": "T3 Tahsilat",
+       "kind": "in",
+       "amount": 250000,
+       "date": "2026-10-25",
+       "dueDate": "",
+       "expectedDate": "",
+       "remaining": null
+      }
+     ]
+    },
+    "dues5": [
+     {
+      "label": "Tahsil Edilecek Borç",
+      "dueDate": "2026-10-20",
+      "amount": 50000,
+      "state": "overdue",
+      "partial": true
+     },
+     {
+      "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+      "dueDate": "2026-10-27",
+      "amount": 300000,
+      "state": "upcoming",
+      "partial": false
+     },
+     {
+      "label": "Tahsil Edilecek Borç",
+      "dueDate": "2026-10-28",
+      "amount": 200000,
+      "state": "upcoming",
+      "partial": false
+     }
+    ],
+    "newFailures": [],
+    "trial": {
+     "debit": 35921867.23,
+     "credit": 35921867.23,
+     "difference": 0
+    }
+   }
+  },
+  {
+   "name": "V6 002 vadeli borç silindi: bakiye 2.500, takvimden çıktı, Silinenler'de",
+   "ok": true,
+   "detail": {
+    "balance": 250000,
+    "duesDeleted": [
+     {
+      "label": "Tahsil Edilecek Borç",
+      "dueDate": "2026-10-20",
+      "amount": 50000,
+      "state": "overdue",
+      "partial": true
+     },
+     {
+      "label": "Tahsil Edilecek Borç",
+      "dueDate": "2026-10-28",
+      "amount": 200000,
+      "state": "upcoming",
+      "partial": false
+     }
+    ],
+    "item": {
+     "id": "trash:trash-f559910d-b2f0-4f80-9493-51f02568c6dd",
+     "title": "Tatbikat Vadeli Müşteri 002",
+     "detail": "₺3.000,00 · 23.10.2026 · Borç · D2 Danışmanlık"
+    }
+   }
+  },
+  {
+   "name": "V6 002 Silinenler'den geri yüklenen vadeli borç: Vade gün+5 ve Beklenen gün+2 korundu, Kalan 3.000, takvimde yeniden \"Ödeme Sözü\" gün+2, bakiye 5.500",
+   "ok": true,
+   "detail": {
+    "status": 200,
+    "message": "",
+    "d2back": {
+     "note": "D2 Danışmanlık",
+     "kind": "debt",
+     "amount": 300000,
+     "date": "2026-10-23",
+     "dueDate": "2026-10-30",
+     "expectedDate": "2026-10-27",
+     "remaining": 300000
+    },
+    "duesBack": [
+     {
+      "label": "Tahsil Edilecek Borç",
+      "dueDate": "2026-10-20",
+      "amount": 50000,
+      "state": "overdue",
+      "partial": true
+     },
+     {
+      "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+      "dueDate": "2026-10-27",
+      "amount": 300000,
+      "state": "upcoming",
+      "partial": false
+     },
+     {
+      "label": "Tahsil Edilecek Borç",
+      "dueDate": "2026-10-28",
+      "amount": 200000,
+      "state": "upcoming",
+      "partial": false
+     }
+    ]
+   }
+  },
+  {
+   "name": "V3 001 ara çalışma gerçekten yazıldı (bakiye 6.000 → 6.500, D2 Vade gün+6 / Beklenen boş, Tabela değişti)",
+   "ok": true,
+   "detail": {
+    "balance": 650000,
+    "midD2": {
+     "note": "D2 Danışmanlık",
+     "kind": "debt",
+     "amount": 300000,
+     "date": "2026-10-23",
+     "dueDate": "2026-10-31",
+     "expectedDate": "",
+     "remaining": 300000
+    },
+    "midHeader": {
+     "signName": "Ara Dönem Tabelası",
+     "mode": "sign"
+    }
+   }
+  },
+  {
+   "name": "V3 001 geri yükleme (yeniden açılışta) uygulandı",
+   "ok": true,
+   "detail": {
+    "staged": {
+     "ok": true,
+     "name": "destekofis-001-2026-10-25T18-35-20-773Z-manuel.sqlite",
+     "safety": "destekofis-001-2026-10-25T18-36-00-458Z-geri-yukleme-oncesi-001.sqlite",
+     "by": "user-9130c627-c201-4053-b96e-ec79bccd8222",
+     "byName": "Ofis yöneticisi",
+     "at": "2026-10-25T18:36:00.658Z"
+    }
+   }
+  },
+  {
+   "name": "V3 001 yedek → çalış → geri yükle: olgular (Vade / Beklenen / Kalan, takvim, Tabela Adı dahil) yedek anıyla aynı",
+   "ok": true,
+   "detail": {
+    "diff": [],
+    "backup": "destekofis-001-2026-10-25T18-35-20-773Z-manuel.sqlite",
+    "card": {
+     "balance": 600000,
+     "entries": [
+      {
+       "note": "Açılış bakiyesi",
+       "kind": "debt",
+       "amount": 400000,
+       "date": "2026-09-25",
+       "dueDate": "2026-10-05",
+       "expectedDate": "2026-10-15",
+       "remaining": 0
+      },
+      {
+       "note": "D1 Hizmet bedeli",
+       "kind": "debt",
+       "amount": 500000,
+       "date": "2026-10-10",
+       "dueDate": "2026-10-20",
+       "expectedDate": "",
+       "remaining": 300000
+      },
+      {
+       "note": "D2 Danışmanlık",
+       "kind": "debt",
+       "amount": 300000,
+       "date": "2026-10-23",
+       "dueDate": "2026-10-30",
+       "expectedDate": "2026-10-27",
+       "remaining": 300000
+      },
+      {
+       "note": "T1 Kısmi tahsilat",
+       "kind": "in",
+       "amount": 600000,
+       "date": "2026-10-25",
+       "dueDate": "",
+       "expectedDate": "",
+       "remaining": null
+      }
+     ]
+    },
+    "reportHeader": {
+     "signName": "Tatbikat Tabela 001",
+     "mode": "full"
+    }
+   }
+  },
+  {
+   "name": "V4 001 geri yüklemesi 002'i değiştirmedi",
+   "ok": true,
+   "detail": {
+    "diff": []
+   }
+  },
+  {
+   "name": "V5 001 geri yüklemeden sonra yeniden çalış: Kalan D1 500 / D2 3.000 / D4 2.000, bakiye 5.500, takvim aynı; Mutabakat Testi'nde yeni sapma yok, mizan dengede",
+   "ok": true,
+   "detail": {
+    "card5": {
+     "balance": 550000,
+     "entries": [
+      {
+       "note": "Açılış bakiyesi",
+       "kind": "debt",
+       "amount": 400000,
+       "date": "2026-09-25",
+       "dueDate": "2026-10-05",
+       "expectedDate": "2026-10-15",
+       "remaining": 0
+      },
+      {
+       "note": "D1 Hizmet bedeli",
+       "kind": "debt",
+       "amount": 500000,
+       "date": "2026-10-10",
+       "dueDate": "2026-10-20",
+       "expectedDate": "",
+       "remaining": 50000
+      },
+      {
+       "note": "D2 Danışmanlık",
+       "kind": "debt",
+       "amount": 300000,
+       "date": "2026-10-23",
+       "dueDate": "2026-10-30",
+       "expectedDate": "2026-10-27",
+       "remaining": 300000
+      },
+      {
+       "note": "D4 Yeni borç",
+       "kind": "debt",
+       "amount": 200000,
+       "date": "2026-10-25",
+       "dueDate": "2026-10-28",
+       "expectedDate": "",
+       "remaining": 200000
+      },
+      {
+       "note": "T1 Kısmi tahsilat",
+       "kind": "in",
+       "amount": 600000,
+       "date": "2026-10-25",
+       "dueDate": "",
+       "expectedDate": "",
+       "remaining": null
+      },
+      {
+       "note": "T3 Tahsilat",
+       "kind": "in",
+       "amount": 250000,
+       "date": "2026-10-25",
+       "dueDate": "",
+       "expectedDate": "",
+       "remaining": null
+      }
+     ]
+    },
+    "dues5": [
+     {
+      "label": "Tahsil Edilecek Borç",
+      "dueDate": "2026-10-20",
+      "amount": 50000,
+      "state": "overdue",
+      "partial": true
+     },
+     {
+      "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+      "dueDate": "2026-10-27",
+      "amount": 300000,
+      "state": "upcoming",
+      "partial": false
+     },
+     {
+      "label": "Tahsil Edilecek Borç",
+      "dueDate": "2026-10-28",
+      "amount": 200000,
+      "state": "upcoming",
+      "partial": false
+     }
+    ],
+    "newFailures": [],
+    "trial": {
+     "debit": 51308841.15,
+     "credit": 51308841.15,
+     "difference": 0
+    }
+   }
+  },
+  {
+   "name": "V6 001 vadeli borç silindi: bakiye 2.500, takvimden çıktı, Silinenler'de",
+   "ok": true,
+   "detail": {
+    "balance": 250000,
+    "duesDeleted": [
+     {
+      "label": "Tahsil Edilecek Borç",
+      "dueDate": "2026-10-20",
+      "amount": 50000,
+      "state": "overdue",
+      "partial": true
+     },
+     {
+      "label": "Tahsil Edilecek Borç",
+      "dueDate": "2026-10-28",
+      "amount": 200000,
+      "state": "upcoming",
+      "partial": false
+     }
+    ],
+    "item": {
+     "id": "trash:trash-7b03d2f0-4a2c-4ffc-9376-1e242650c7d0",
+     "title": "Tatbikat Vadeli Müşteri 001",
+     "detail": "₺3.000,00 · 23.10.2026 · Borç · D2 Danışmanlık"
+    }
+   }
+  },
+  {
+   "name": "V6 001 Silinenler'den geri yüklenen vadeli borç: Vade gün+5 ve Beklenen gün+2 korundu, Kalan 3.000, takvimde yeniden \"Ödeme Sözü\" gün+2, bakiye 5.500",
+   "ok": true,
+   "detail": {
+    "status": 200,
+    "message": "",
+    "d2back": {
+     "note": "D2 Danışmanlık",
+     "kind": "debt",
+     "amount": 300000,
+     "date": "2026-10-23",
+     "dueDate": "2026-10-30",
+     "expectedDate": "2026-10-27",
+     "remaining": 300000
+    },
+    "duesBack": [
+     {
+      "label": "Tahsil Edilecek Borç",
+      "dueDate": "2026-10-20",
+      "amount": 50000,
+      "state": "overdue",
+      "partial": true
+     },
+     {
+      "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+      "dueDate": "2026-10-27",
+      "amount": 300000,
+      "state": "upcoming",
+      "partial": false
+     },
+     {
+      "label": "Tahsil Edilecek Borç",
+      "dueDate": "2026-10-28",
+      "amount": 200000,
+      "state": "upcoming",
+      "partial": false
+     }
+    ]
+   }
+  }
+ ]
+}

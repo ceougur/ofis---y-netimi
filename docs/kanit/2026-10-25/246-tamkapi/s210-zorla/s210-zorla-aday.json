@@ -1,0 +1,496 @@
+{
+ "label": "aday-46db18c",
+ "repo": "/home/user/wt/aday246-3",
+ "trials": [
+  {
+   "mode": "gecikme-0",
+   "i": 1,
+   "delay": 0,
+   "routed": 1,
+   "blurAt": 339,
+   "readAt": 448,
+   "style": "rgb(233, 245, 238)|rgb(183, 214, 195)",
+   "focused": false,
+   "red": false,
+   "transitional": false,
+   "afterBlur": [],
+   "focusCalls": [
+    {
+     "t": 321,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 334,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-0",
+   "i": 1,
+   "delay": 0,
+   "routed": 2,
+   "blurAt": 332,
+   "readAt": 439,
+   "style": "rgb(233, 245, 238)|rgb(183, 214, 195)",
+   "focused": false,
+   "red": false,
+   "transitional": false,
+   "afterBlur": [],
+   "focusCalls": [
+    {
+     "t": 315,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 326,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-0",
+   "i": 1,
+   "delay": 0,
+   "routed": 3,
+   "blurAt": 368,
+   "readAt": 479,
+   "style": "rgb(233, 245, 238)|rgb(183, 214, 195)",
+   "focused": false,
+   "red": false,
+   "transitional": false,
+   "afterBlur": [],
+   "focusCalls": [
+    {
+     "t": 326,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 344,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-0",
+   "i": 1,
+   "delay": 0,
+   "routed": 4,
+   "blurAt": 343,
+   "readAt": 453,
+   "style": "rgb(233, 245, 238)|rgb(183, 214, 195)",
+   "focused": false,
+   "red": false,
+   "transitional": false,
+   "afterBlur": [],
+   "focusCalls": [
+    {
+     "t": 319,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 334,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-0",
+   "i": 1,
+   "delay": 0,
+   "routed": 5,
+   "blurAt": 359,
+   "readAt": 468,
+   "style": "rgb(233, 245, 238)|rgb(183, 214, 195)",
+   "focused": false,
+   "red": false,
+   "transitional": false,
+   "afterBlur": [],
+   "focusCalls": [
+    {
+     "t": 319,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 336,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-60",
+   "i": 1,
+   "delay": 60,
+   "routed": 6,
+   "blurAt": 409,
+   "readAt": 516,
+   "style": "rgb(233, 245, 238)|rgb(183, 214, 195)",
+   "focused": false,
+   "red": false,
+   "transitional": false,
+   "afterBlur": [],
+   "focusCalls": [
+    {
+     "t": 379,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 391,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-100",
+   "i": 1,
+   "delay": 100,
+   "routed": 7,
+   "blurAt": 506,
+   "readAt": 612,
+   "style": "rgb(234, 245, 239)|rgb(179, 211, 192)",
+   "focused": false,
+   "red": false,
+   "transitional": true,
+   "afterBlur": [],
+   "focusCalls": [
+    {
+     "t": 416,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 429,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-140",
+   "i": 1,
+   "delay": 140,
+   "routed": 8,
+   "blurAt": 509,
+   "readAt": 616,
+   "style": "rgb(233, 245, 238)|rgb(183, 214, 195)",
+   "focused": false,
+   "red": false,
+   "transitional": false,
+   "afterBlur": [],
+   "focusCalls": [
+    {
+     "t": 458,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 472,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-180",
+   "i": 1,
+   "delay": 180,
+   "routed": 9,
+   "blurAt": 530,
+   "readAt": 637,
+   "style": "rgb(233, 245, 238)|rgb(183, 214, 195)",
+   "focused": false,
+   "red": false,
+   "transitional": false,
+   "afterBlur": [],
+   "focusCalls": [
+    {
+     "t": 499,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 517,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-220",
+   "i": 1,
+   "delay": 220,
+   "routed": 10,
+   "blurAt": 613,
+   "readAt": 719,
+   "style": "rgb(240, 248, 243)|rgb(135, 180, 159)",
+   "focused": true,
+   "red": true,
+   "transitional": false,
+   "afterBlur": [
+    {
+     "t": 685,
+     "stack": "at guard (assets/hof-core.js:999:42)"
+    }
+   ],
+   "focusCalls": [
+    {
+     "t": 536,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 550,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 685,
+     "stack": "at guard (assets/hof-core.js:999:42)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-260",
+   "i": 1,
+   "delay": 260,
+   "routed": 11,
+   "blurAt": 614,
+   "readAt": 723,
+   "style": "rgb(233, 245, 238)|rgb(183, 214, 195)",
+   "focused": true,
+   "red": true,
+   "transitional": false,
+   "afterBlur": [
+    {
+     "t": 690,
+     "stack": "at guard (assets/hof-core.js:999:42)"
+    }
+   ],
+   "focusCalls": [
+    {
+     "t": 576,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 590,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 690,
+     "stack": "at guard (assets/hof-core.js:999:42)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-300",
+   "i": 1,
+   "delay": 300,
+   "routed": 12,
+   "blurAt": 1125,
+   "readAt": 1235,
+   "style": "rgb(234, 245, 239)|rgb(178, 211, 191)",
+   "focused": false,
+   "red": false,
+   "transitional": true,
+   "afterBlur": [],
+   "focusCalls": [
+    {
+     "t": 622,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 635,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-500",
+   "i": 1,
+   "delay": 500,
+   "routed": 13,
+   "blurAt": 1115,
+   "readAt": 1224,
+   "style": "rgb(235, 246, 239)|rgb(172, 206, 186)",
+   "focused": false,
+   "red": false,
+   "transitional": true,
+   "afterBlur": [],
+   "focusCalls": [
+    {
+     "t": 819,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 833,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-600",
+   "i": 1,
+   "delay": 600,
+   "routed": 14,
+   "blurAt": 1119,
+   "readAt": 1225,
+   "style": "rgb(234, 246, 239)|rgb(173, 207, 188)",
+   "focused": false,
+   "red": false,
+   "transitional": true,
+   "afterBlur": [],
+   "focusCalls": [
+    {
+     "t": 915,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 934,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-700",
+   "i": 1,
+   "delay": 700,
+   "routed": 15,
+   "blurAt": 1118,
+   "readAt": 1224,
+   "style": "rgb(233, 245, 238)|rgb(183, 214, 195)",
+   "focused": false,
+   "red": false,
+   "transitional": false,
+   "afterBlur": [],
+   "focusCalls": [
+    {
+     "t": 1016,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 1031,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-800",
+   "i": 1,
+   "delay": 800,
+   "routed": 16,
+   "blurAt": 1653,
+   "readAt": 1763,
+   "style": "rgb(247, 252, 249)|rgb(84, 143, 120)",
+   "focused": false,
+   "red": false,
+   "transitional": true,
+   "afterBlur": [],
+   "focusCalls": [
+    {
+     "t": 1124,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 1142,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-900",
+   "i": 1,
+   "delay": 900,
+   "routed": 17,
+   "blurAt": 1630,
+   "readAt": 1737,
+   "style": "rgb(236, 246, 241)|rgb(161, 198, 178)",
+   "focused": false,
+   "red": false,
+   "transitional": true,
+   "afterBlur": [],
+   "focusCalls": [
+    {
+     "t": 1218,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 1236,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  },
+  {
+   "mode": "gecikme-1700",
+   "i": 1,
+   "delay": 1700,
+   "routed": 18,
+   "blurAt": 2128,
+   "readAt": 2236,
+   "style": "rgb(233, 245, 238)|rgb(183, 214, 195)",
+   "focused": false,
+   "red": false,
+   "transitional": false,
+   "afterBlur": [],
+   "focusCalls": [
+    {
+     "t": 2017,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:163:153) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    },
+    {
+     "t": 2051,
+     "stack": "at HOF.keepFocus (assets/hof-core.js:183:10) | at HOF.swap (assets/hof-core.js:190:34) | at renderList (assets/hof-plans.js:419:9)"
+    }
+   ]
+  }
+ ],
+ "summary": {
+  "gecikme-0": {
+   "n": 5,
+   "red": 0
+  },
+  "gecikme-60": {
+   "n": 1,
+   "red": 0
+  },
+  "gecikme-100": {
+   "n": 1,
+   "red": 0
+  },
+  "gecikme-140": {
+   "n": 1,
+   "red": 0
+  },
+  "gecikme-180": {
+   "n": 1,
+   "red": 0
+  },
+  "gecikme-220": {
+   "n": 1,
+   "red": 1
+  },
+  "gecikme-260": {
+   "n": 1,
+   "red": 1
+  },
+  "gecikme-300": {
+   "n": 1,
+   "red": 0
+  },
+  "gecikme-500": {
+   "n": 1,
+   "red": 0
+  },
+  "gecikme-600": {
+   "n": 1,
+   "red": 0
+  },
+  "gecikme-700": {
+   "n": 1,
+   "red": 0
+  },
+  "gecikme-800": {
+   "n": 1,
+   "red": 0
+  },
+  "gecikme-900": {
+   "n": 1,
+   "red": 0
+  },
+  "gecikme-1700": {
+   "n": 1,
+   "red": 0
+  }
+ }
+}
