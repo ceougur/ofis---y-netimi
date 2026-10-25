@@ -49,6 +49,26 @@
   program değerleriyle vardı, bu değişiklikten değil; aday koşusundaki 28 G3 / G4 / s010 farkı bu değişiklikle kapandı).
 - Son zincir (kararla birlikte): e2e-senaryo-iade-246 26/26, e2e-e2e 50/50 (flock), mutabakat-600-t3 GEÇTİ (flock), tam npm-test 3580/3580 (çıkış 0; ders 41).
 
+## Bağımsız dar kontrol düzeltmeleri (aday246-2 bc1253c; kanıt dal is/dar-246 775161d docs/kanit/2026-10-25/246-dar) — 49c41f9 üstüne
+- Yeniden üretme (betikler 246-dar/betik, not defteri kopyası; dar-yeniden/once-49c41f9 → dar-yeniden/sonra):
+  - B1 (ORTA) f2 bağsız: Vade Takip / projeksiyon 1.300 → 1.000 (fatura kalemi yok; kart 500 + 500). Kök: kapsam döngüsü bağsız geri ödemeyi görmüyordu → kapsam ve
+    son kapama aynı `passes` (açık bağ + K-b + KS8.1) ile. m-goc (v2.4.5 gerçek kodu → güncel): M Altı 1.300 → 1.000 (betik sonra açılış dalının is_opening kolonunu
+    okurken düşer — o kolon bu dalda yok; göç adımı 2 çıktısı tam).
+  - B2 (ORTA) saf1: Ödeme 350/400/500 → Borç kalan 50/100/200 (= bakiye; 600 → 100 avans, K-a); fatura iadesi 400/500 → S açık 100/200. f1a Borç 100, f1b A 200 / iade 0,
+    e-supheli tedarikçi Alacak 100, f1-bagli aynı. Kök: son geçişte açık iade kalemi ile adım R aynı açığı iki kez tüketiyordu → K-b'nin açık iadeye verdiği bağsız para
+    da iadenin GERİ ÖDEMESİ (adım R'de), son geçişte açık iade kalemi yok; eski karşı taraf adımı kalktı. m-goc M Yedi (F1 düzeni) Borç 100.
+  - B3 (DÜŞÜK, ders 31) g-sira: aynı gün + aynı kayıt anında yazım sırası (girdinin sırası; rank) → "iade önce" Alacak 200, "Alacak önce" 0.
+- Kırmızı (49c41f9 ayrı kopyada): kirmizi-49c41f9-dar-b1-b3 35/43 (8 kırmızı: B2 F1a / değişmez / bir kez tüketim / tedarikçi, B3 saf, B1 API, B2 F1b API, B3 API —
+  nedenleri iş sayısı). Yeşil: yesil-iade-geri-odeme 43/43.
+- Mutasyon: mutasyon-dar.json 43/44 (+ B1m, B2m, B2m2, B3m; Im1 dizgesi güncellendi) — kaçan B2m2 (son geçişte açık iade kalemi kalır) → "bir kez tüketilir" testi →
+  mutasyon-dar-ek.json 1/1. 44/44.
+- Kâhin (cari, commit'li 5e7905a, varsayılan kural, kodu görülmeden; kahin-cari-varsayilan/): 7006 denetim, 293 fark, 0 okuma hatası, 0 yakalanmayan mutasyon, 7 bilinen
+  sınır: 278 projeksiyon (madde 11 bu dalda yok; dar kontrolün birleşik ağacında 0) + 15 İNCELE YAYGIN rastgele-s1-1 tedarikçi S (K-c — kc-deneme-OZET.txt; KARAR GEREKİR).
+- Son zincir (B1–B3 ile): komsu-92-dosya-dar 880/880 (mutabakat-cekirdek, taksitli fatura v2.0.24 dahil), e2e-senaryo-iade-246 26/26, e2e-e2e 50/50 (flock),
+  mutabakat-600-t3 GEÇTİ (flock), tam npm-test 3588/3588 (çıkış 0; ders 41).
+- K-c: ana oturumun "önce iadenin geri ödemesi" yönergesi K-b (tek sıra, en eski önce), KS8.1 "önce kendi tarafı" testi ve B3'ün "Alacak önce → 0" beklentisiyle
+  çelişiyor; deneme kâhinin beklentisini de karşılamadı → UYGULANMADI, karar ana oturumda (kc-deneme-OZET.txt).
+
 ## Yeniden üretme (ders 6)
 - dar2 betiği (docs/kanit/2026-10-24/245-dar2/betik/s1-iade-geri-odeme.mjs) e77447a'da koşuldu: "Stok İadesi + Cari Ödeme" B 200, Σ 500 ≠ 800;
   "Fatura İadesi + Cari Ödeme" B 200, Σ 500; "Kendi Geri Ödemesi" 500/800 (not defteri 246-db1/yeniden/s1-e77447a.json).

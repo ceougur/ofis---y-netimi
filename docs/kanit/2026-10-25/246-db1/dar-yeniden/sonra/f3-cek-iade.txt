@@ -1,0 +1,13 @@
+{"mode":"bagli","label":"alıştan iade sonrası (P 700 beklenir)","bakiye":-700,"P":700,"R":0,"sigma":-700,"esit":true,"mizan":true}
+{"mode":"bagli","label":"çek alındı, bağ R (P 1000 beklenir)","bakiye":-1000,"P":1000,"R":0,"sigma":-1000,"esit":true,"mizan":true}
+{"mode":"bagli","label":"karşılıksız (P 700 beklenir)","bakiye":-700,"P":700,"R":0,"sigma":-700,"esit":true,"mizan":true}
+{"mode":"bagli","label":"karşılıksız geri alındı 200 (P 1000 beklenir)","bakiye":-1000,"P":1000,"R":0,"sigma":-1000,"esit":true,"mizan":true}
+{"mode":"bagsiz","label":"alıştan iade sonrası (P 700 beklenir)","bakiye":-700,"P":700,"R":0,"sigma":-700,"esit":true,"mizan":true}
+{"mode":"bagsiz","label":"çek alındı, bağ yok (P 1000 beklenir)","bakiye":-1000,"P":1000,"R":0,"sigma":-1000,"esit":true,"mizan":true}
+{"mode":"bagsiz","label":"karşılıksız (P 700 beklenir)","bakiye":-700,"P":700,"R":0,"sigma":-700,"esit":true,"mizan":true}
+{"mode":"bagsiz","label":"karşılıksız geri alındı 200 (P 1000 beklenir)","bakiye":-1000,"P":1000,"R":0,"sigma":-1000,"esit":true,"mizan":true}
+{"mode":"ciro","label":"Y iade sonrası (YA 700)","bakiye":700,"YA":700,"YR":0,"sigma":700,"esit":true,"mizan":true}
+{"ciro":200,"hata":""}
+{"mode":"ciro","label":"Y'ye ciro edildi (bağsız geri ödeme → YA 1000)","bakiye":1000,"YA":1000,"YR":0,"sigma":1000,"esit":true,"mizan":true}
+{"mode":"ciro","label":"ciro edilen çek karşılıksız (YA 700)","bakiye":700,"YA":700,"YR":0,"sigma":700,"esit":true,"mizan":true}
+{"mutabakat":"{\"ok\":true}"}

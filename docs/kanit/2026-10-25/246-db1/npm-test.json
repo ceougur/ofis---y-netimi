@@ -1,23 +1,23 @@
 {
   "ad": "246-db1/npm-test",
   "komut": "npm test",
-  "commit": "5fa544cc740440f425668c8999b460fc36067d19",
+  "commit": "49c41f94f6595f9145cab59d346b7dbd22565636",
   "dal": "is/db1",
-  "kirli": 17,
+  "kirli": 11,
   "izlenmeyen": 9,
   "platform": "linux 6.18.44-fc-v153 x64",
   "node": "v22.22.0",
   "cpu": 4,
   "bellek_gb": 16,
-  "basladi": "2026-10-25T13:23:58.026Z",
-  "sure_sn": 1866.2,
+  "basladi": "2026-10-25T14:48:28.523Z",
+  "sure_sn": 1913.9,
   "cikis_kodu": 0,
   "sinyal": null,
   "zaman_asimi": false,
   "ozet": {
     "bicim": "node:test",
-    "toplam": 3580,
-    "gecen": 3580,
+    "toplam": 3588,
+    "gecen": 3588,
     "basarisiz": 0,
     "iptal": 0,
     "atlanan": 0
@@ -27,6 +27,6 @@
   "basarisiz_testler": [],
   "ham_cikti": "docs/kanit/2026-10-25/246-db1/npm-test.log.gz",
   "klasor": "/home/user/wt/db1",
-  "ham_cikti_sha256": "e65cb469f81917a147f517a3f0a01c9a72ef58ab5b94bb3946da4659b4d8f246",
-  "ham_cikti_bayt": 1291942
+  "ham_cikti_sha256": "1d9364aface1445ecfc67fde17aca517109d0a0a6b1c1c1e54ac210fb9aa3a7a",
+  "ham_cikti_bayt": 1295622
 }

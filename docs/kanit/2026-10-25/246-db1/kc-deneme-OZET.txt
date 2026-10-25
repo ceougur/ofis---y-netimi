@@ -1,0 +1,7 @@
+K-c "önce iadenin geri ödemesi" sırası — YALNIZ DENEME (dala girmedi; not defteri 246-db1/kc-deneme kopyası, KC_DENEME ortam anahtarı). Amaç: ana oturumun kararı için sayı.
+Kural denemesi A (iki yön): bağsız para önce karşı tarafın iadelerinin geri ödenmemiş kısmına (açık + kapatıcı, en eski önce), artanı kendi tarafına.
+  test/iade-geri-odeme-246 (42 test): 37/42 — düşenler: K-b "elle Alacak iadeden eski → önce Alacak", KS8.1 "önce kendi tarafı (K-b)", B3 saf + API (yazım sırası,
+  "Alacak önce yazıldı → 0"), "açık bağ bağsızdan önce (elle Alacak varken)". Kâhin (commit'li, varsayılan): projeksiyon dışı c8 24 fark (yeni), s1-1 7, s1-2 19 (yeni).
+Kural denemesi B (yalnız tedarikçi: bağsız Tahsilat → Alış İadesi önce): test 42/42; kâhin projeksiyon dışı s1-1 7 (15'ten), s1-2 19 (yeni).
+Sonuç: kâhinin K-c beklentisi ne A ne B; kural metni (sıra: açık kısım / kapatıcı kısım / kendi tarafının yükümlülüğü, tarih) yazılmadan programa uydurulmaz (ders 40).
+Dalda kalan: K-b (tek sıra, en eski önce; aynı anda yazım sırası) + KS8.1 (artan → kapatıcı iadenin geri ödemesi); kâhin s1-1 15 İNCELE (K-c), önceki koşularla aynı.

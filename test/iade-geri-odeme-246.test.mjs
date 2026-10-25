@@ -205,6 +205,48 @@ describe("BAŞ MİMAR KARARI settleLedger (saf): bağsız geri ödeme, faturayı
   });
 });
 
+// Bağımsız dar kontrol (aday246-2 bc1253c; docs/kanit/2026-10-25/246-dar, dal is/dar-246) bulguları — beklenenler KS8.1 / K-b / ders 31 metninden (ders 5, 40):
+// B2 iadenin bir kısmı açıkken bağsız geri ödeme: açık kısma giden de, kapattığı borca giden de iadenin GERİ ÖDEMESİDİR (aynı açık iki kez tüketilmez);
+// B3 aynı gün + aynı kayıt anı: yazım sırası.
+describe("DAR KONTROL 246 settleLedger (saf): kısmen açık iade + bağsız geri ödeme (B2), aynı anda yazım sırası (B3)", () => {
+  const at = date => ({ date, at: `${date}T10:00:00` });
+  const lD = { id: "lD", origin: "account", kind: "debt", ...at("2026-10-01"), debit: 200, credit: 0 };
+  const ret500 = { id: "lR", origin: "stock", kind: "credit", sourceId: "smove-1", stockReason: "return", ...at("2026-10-05"), debit: 0, credit: 500 };
+  const pay = amount => ({ id: "lP", origin: "account", kind: "out", ...at("2026-10-10"), debit: amount, credit: 0 });
+  it("B2 F1a: elle Borç 200, stok iadesi 500 (300'ü açık), bağsız Ödeme 400 → 300 açık iadeye, 100 kapattığı borcu yeniden açar: Borç kalan 100 (= bakiye)", () => {
+    const out = settleLedger({ lines: [lD, ret500, pay(400)], invoices: [], today: TODAY });
+    assert.equal(out.entries.get("lD").remaining, 100);
+  });
+  it("B2 değişmez: Ödeme 200…500 → Σ açık (Borç kalan − iade açığı) = bakiye; 600 → iadeyi 100 aşan avans (K-a)", () => {
+    for (const amount of [200, 300, 350, 400, 500, 600]) {
+      const out = settleLedger({ lines: [lD, ret500, pay(amount)], invoices: [], today: TODAY });
+      const balance = 200 - 500 + amount;
+      const open = out.entries.get("lD").remaining;
+      const returnOpen = Math.max(0, 500 - amount - (200 - open));
+      assert.equal(open - returnOpen, Math.min(balance, 200), `Ödeme ${amount}: Borç kalan ${open}, iade açığı ${returnOpen}, bakiye ${balance}`);
+    }
+  });
+  it("B2 açık iade bir kez tüketilir: Borç 200, iade 500, bağsız Ödeme 600, sonra elle Alacak 100 → 500 geri ödeme, artan 100 Alacak'ı kapatır: Borç 200, Alacak 0 (Σ 200 = bakiye)", () => {
+    const lA = { id: "lA", origin: "account", kind: "credit", ...at("2026-10-12"), debit: 0, credit: 100 };
+    const out = settleLedger({ lines: [lD, ret500, pay(600), lA], invoices: [], today: TODAY });
+    assert.deepEqual([out.entries.get("lD").remaining, out.entries.get("lA").remaining], [200, 0]);
+  });
+  it("B2 tedarikçi simetriği: elle Alacak 200, Alış İadesi 500, bağsız Tahsilat 400 → Alacak kalan 100", () => {
+    const lA = { id: "lA", origin: "account", kind: "credit", ...at("2026-10-01"), debit: 0, credit: 200 };
+    const lQ = { id: "lQ", origin: "stock", kind: "debt", sourceId: "smove-q", stockReason: "preturn", ...at("2026-10-05"), debit: 500, credit: 0 };
+    const lT = { id: "lT", origin: "account", kind: "in", ...at("2026-10-10"), debit: 0, credit: 400 };
+    const out = settleLedger({ lines: [lA, lQ, lT], invoices: [], today: TODAY });
+    assert.equal(out.entries.get("lA").remaining, 100);
+  });
+  it("B3: açık iade ile elle Alacak aynı gün ve AYNI kayıt anında — yazım sırası: iade önce → Alacak 200 açık; Alacak önce → Alacak 0 (K-b en eski önce)", () => {
+    const ret = { id: "lR", origin: "stock", kind: "credit", sourceId: "m1", stockReason: "return", date: "2026-10-05", at: "2026-10-05T10:00:00", debit: 0, credit: 300 };
+    const credit = { id: "lA", origin: "account", kind: "credit", date: "2026-10-05", at: "2026-10-05T10:00:00", debit: 0, credit: 200 };
+    const out = { id: "lP", origin: "account", kind: "out", date: "2026-10-10", at: "2026-10-10T10:00:00", debit: 300, credit: 0 };
+    assert.equal(settleLedger({ lines: [ret, credit, out], invoices: [], today: TODAY }).entries.get("lA").remaining, 200, "iade önce yazıldı");
+    assert.equal(settleLedger({ lines: [credit, ret, out], invoices: [], today: TODAY }).entries.get("lA").remaining, 0, "Alacak önce yazıldı");
+  });
+});
+
 describe("K-b settleLedger (saf): iadeye bağlanmamış Ödeme açık iadeler ve elle Alacak arasında tek sıra, en eskiden", () => {
   const ret = date => ({ id: "lR", origin: "stock", kind: "credit", sourceId: "smove-9", stockReason: "return", date, at: `${date}T10:00:00`, debit: 0, credit: 300 });
   const credit = date => ({ id: "lA", origin: "account", kind: "credit", date, at: `${date}T10:00:00`, debit: 0, credit: 200 });
@@ -491,6 +533,53 @@ describe("DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ö
     await must("verilen çek (iadeye bağlı)", api.post("/api/workspace/cheques", { instrument: "cheque", direction: "out", accountId: other.acc.id, amount: 300, issueDate: other.at(56), dueDate: day(30), serialNo: "DB1-ONCE", invoiceId: other.target }));
     assert.deepEqual(await invoice(other.b), ["overdue", 500], "çek iadeye bağlı: B 500");
     assert.equal(await remaining(other.acc, oc.id), 300, "elle Alacak açık (çek onu kapatmaz)");
+  });
+
+  it("B1 (dar kontrol): satış 1.000 → stok iadesi 300 → bağsız Ödeme 300 → Mevcut Borcu Taksitlendir 1.000: borç kartla BİR kez — Vade Takip ve takvim 1.000 (fatura kalemi yok)", async () => {
+    const t = cursor;
+    cursor += 60;
+    const acc = await must("cari", api.post("/api/workspace/accounts", { name: "DB1 Kart Kapsam", type: "customer", registeredOn: day(-2000), phone: `0500 246 00 ${String((n += 1)).padStart(2, "0")}` }));
+    const sale = await must("satış", api.post("/api/workspace/invoices", { scenario: "goods_sale", accountId: acc.id, issueDate: day(t), lines: [{ itemId: goods.id, qty: 10, unitPrice: "100", vatRate: 0 }], payment: { rest: "open", dueDate: day(t + 10) } }));
+    await must("stok iade", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "in", reason: "return", qty: "3", unitPrice: "100", pay: "account", accountId: acc.id, date: day(t + 20) }));
+    await must("bağsız Ödeme", api.post(`/api/workspace/accounts/${acc.id}/entries`, { kind: "out", amount: "300", date: day(t + 30), method: "cash", cashForce: true }));
+    assert.equal((await card(acc)).totals.balance, 1000, "ön koşul: bakiye 1.000");
+    await must("Mevcut Borcu Taksitlendir", api.post("/api/workspace/plans", { name: acc.name, registeredOn: day(t + 40), total: "1000", accountId: acc.id, mode: "auto", count: "2", firstDue: day(t + 55), everyMonths: "1", coversBalance: true }));
+    const vade = await vadeOf(acc);
+    assert.deepEqual(vade, [["plan", 500], ["plan", 500]], "Vade Takip: kartın iki taksiti, fatura kalemi yok (5fa544c / 49c41f9: fatura 300 + kart 1.000 = 1.300)");
+    assert.equal((await duesOf(acc)).filter(row => row[0] === "invoice").length, 0, "takvimde fatura kalemi yok");
+    assert.deepEqual(await invoice(sale.id), ["overdue", 1000], "fatura açığı 1.000 (iadenin geri ödemesi) — kartın kapsamında");
+  });
+
+  it("B2 F1b (dar kontrol): satış A 1.000, Tahsilat 600 → A, A'nın iadesi 500 (100'ü açık), bağsız Ödeme 300 → A açık 200, iade açığı 0 (açık bağla aynı)", async () => {
+    const t = cursor;
+    cursor += 60;
+    const acc = await must("cari", api.post("/api/workspace/accounts", { name: "DB1 Kısmen Açık", type: "customer", registeredOn: day(-2000), phone: `0500 246 00 ${String((n += 1)).padStart(2, "0")}` }));
+    const sale = await must("satış A", api.post("/api/workspace/invoices", { scenario: "goods_sale", accountId: acc.id, issueDate: day(t), lines: [{ itemId: goods.id, qty: 10, unitPrice: "100", vatRate: 0 }], payment: { rest: "open", dueDate: day(t + 10) } }));
+    await must("Tahsilat → A", api.post(`/api/workspace/accounts/${acc.id}/entries`, { kind: "in", amount: "600", date: day(t + 5), method: "cash", invoiceId: sale.id }));
+    const full = await must("A oku", api.get(`/api/workspace/invoices/${sale.id}`));
+    const ret = await must("iade", api.post("/api/workspace/invoices", { kind: "sale_return", accountId: acc.id, originalId: sale.id, issueDate: day(t + 20), issueTime: "11:00", currency: "TRY", rate: 1, lines: [{ originLineId: full.lines[0].id, qty: 5 }], payment: { cash: [], cheques: [], endorse: [], rest: "open" }, force: true, cashForce: true }));
+    assert.deepEqual([(await invoice(sale.id))[1], (await invoice(ret.id))[1]], [0, 100], "ön koşul: A kapandı (600 + iade 400), iadenin 100'ü açık");
+    await must("bağsız Ödeme", api.post(`/api/workspace/accounts/${acc.id}/entries`, { kind: "out", amount: "300", date: day(t + 25), method: "cash", cashForce: true }));
+    assert.deepEqual([(await invoice(sale.id))[1], (await invoice(ret.id))[1]], [200, 0], "A açık 200, iade 0 (bakiye 1.000 − 600 − 500 + 300 = 200)");
+  });
+
+  it("B3 (dar kontrol, durağan saat): açık stok iadesi ile elle Alacak aynı gün ve aynı kayıt anında — yazım sırası belirler (iade önce → Alacak 200 açık; Alacak önce → 0)", async () => {
+    const t = cursor;
+    cursor += 60;
+    const run = async (label, returnFirst) => {
+      const acc = await must("cari", api.post("/api/workspace/accounts", { name: `DB1 Sıra ${label}`, type: "customer", registeredOn: day(-2000), phone: `0500 246 00 ${String((n += 1)).padStart(2, "0")}` }));
+      const entries = `/api/workspace/accounts/${acc.id}/entries`;
+      const stockReturn = () => must("stok iade", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "in", reason: "return", qty: "3", unitPrice: "100", pay: "account", accountId: acc.id, date: day(t + 10) }));
+      const credit = () => must("elle Alacak", api.post(entries, { kind: "credit", amount: "200", date: day(t + 10), dueDate: day(t + 20) }));
+      if (returnFirst) { await stockReturn(); await credit(); } else { await credit(); await stockReturn(); }
+      const id = server.app.store.get("SELECT id FROM account_entries WHERE account_id = ? AND kind = 'credit' AND source = '' ORDER BY rowid DESC LIMIT 1", acc.id).id;
+      const stamps = server.app.store.all("SELECT created_at AS c FROM account_entries WHERE account_id = ? ORDER BY rowid", acc.id).map(row => row.c);
+      assert.equal(new Set(stamps).size, 1, `ön koşul: kayıt anları eşit (durağan saat) ${stamps}`);
+      await must("bağsız Ödeme", api.post(entries, { kind: "out", amount: "300", date: day(t + 15), method: "cash", cashForce: true }));
+      return remaining(acc, id);
+    };
+    assert.equal(await run("İade Önce", true), 200, "iade önce yazıldı: Ödeme önce iadeyi geri öder, Alacak açık");
+    assert.equal(await run("Alacak Önce", false), 0, "Alacak önce yazıldı: Ödeme önce Alacak'ı kapatır");
   });
 
   it("taksitli faturanın iadesi: geri ödemesi iadeye bağlanmaz (409 refund-planned; cari Ödeme iki yolla ve verilen çek), seçeneklerde yok; bağsız Ödeme taksitli faturayı açmaz (açık = kartın kalanı)", async () => {
