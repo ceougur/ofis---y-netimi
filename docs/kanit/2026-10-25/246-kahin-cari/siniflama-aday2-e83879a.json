@@ -1,0 +1,47 @@
+{
+ "aday2-bc1253c": {
+  "toplamDenetim": 7220,
+  "fark": 135,
+  "kacanMutasyon": 0,
+  "okumaHatasi": 0,
+  "farkSinifi246": {
+   "ic": 135,
+   "ks9": 0,
+   "dis": 0
+  },
+  "senaryoVeSinif": {
+   "c11-ks81-sa-mevcut-borc-karti · B1 / K6.5 (1) — Mevcut Borç kartı + geri ödeme, fatura kalemi brüt": 6,
+   "c12-ks81-sb-kalan-dagilimi · B2 / KS8.1 — kapatılan borç yeniden açılmıyor": 32,
+   "c13-ks83-ayni-gun-sira · KS8.3 — bağsız para önce iade (bc1253c sonrası karar)": 26,
+   "c8-ks8-iade-geri-odemesi · KS8.3 — bağsız para önce iade (bc1253c sonrası karar)": 32,
+   "rastgele-s1-1 · K-c + KS8.3 — tedarikçinin Tahsilat ile geri ödemesi (S)": 15,
+   "rastgele-s1-2 · K-c + KS8.3 — tedarikçinin Tahsilat ile geri ödemesi (S)": 24
+  },
+  "etiket": {
+   "BULGU BAŞ MİMAR": 90,
+   "İNCELE YAYGIN": 45
+  }
+ },
+ "yeni-senaryolar-2.4.5-kodu": {
+  "toplamDenetim": 287,
+  "fark": 88,
+  "kacanMutasyon": 0,
+  "okumaHatasi": 0,
+  "farkSinifi246": {
+   "ic": 84,
+   "ks9": 4,
+   "dis": 0
+  },
+  "senaryoVeSinif": {
+   "c11-ks81-sa-mevcut-borc-karti · 2.4.6 kararıyla değişen": 11,
+   "c12-ks81-sb-kalan-dagilimi · 2.4.6 kararıyla değişen": 35,
+   "c12-ks81-sb-kalan-dagilimi · KS9 madde 10 yolu": 4,
+   "c13-ks83-ayni-gun-sira · 2.4.6 kararıyla değişen": 38
+  },
+  "etiket": {
+   "BULGU BAŞ MİMAR": 65,
+   "İNCELE YAYGIN": 23
+  }
+ },
+ "not": "aday2 = /home/user/wt/aday246-2 bc1253c kodu (git archive kopyası); kâhin e83879a. Bütün farklar bilinen sınıflarda: dar kontrol B1, B2 ve bc1253c sonrası karar KS8.3 / K-c (düzeltme is/db1 ajanında). c8b (K-d), c10 (KS10, K-P1), c13 S4 (KS8.2) ve S5 (K-e ciro) bc1253c'de TUTUYOR."
+}

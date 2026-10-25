@@ -728,3 +728,12 @@ sonrası ÇATAL; projeksiyon geçmiş + bugün + 30 (son gün dahil). API kartı
   + Tahsilat 400 → Alacak 100; B4 Borç 200 + Alacak 150 + iade 300 + Ödeme 500 → Borç 200, Alacak 0, avans 50 (Σ açık 200 ≠ bakiye 250).
 - **c13-ks83-ayni-gun-sira:** aynı gün üç yazım sırası (Alacak/iade/Ödeme; Ödeme/iade/Alacak; iade/Ödeme/Alacak) → hepsinde fatura 500, Alacak 300, bakiye 200; S4 Ödeme iadeden önce → yine geri
   ödeme; S5 müşteriye ciro (K-e).
+
+### C13c Sonuç — aday246-2 bc1253c kodu (ayrı kopya; kâhin e83879a; kanıt `docs/kanit/2026-10-25/246-kahin-cari/aday2-bc1253c-e83879a.*`, `siniflama-aday2-e83879a.json`)
+- 39 senaryo, 7.220 denetim, 135 fark — **sınıf dışı 0**, okuma hatası 0, 139 mutantın hepsi yakalandı. Farklar:
+  c11 6 = dar kontrol **B1** (projeksiyon cari toplamı program 1.300 · kâhin 1.000; fatura kalemi her görünümde 300 · "yok"; takvim 800 · 500); c12 32 = **B2** (B1 Borç 0 · 100, B2 FB 100 · 200,
+  B3 tedarikçi Alacak 0 · 100, B4 Borç 100 · 200; programda Σ açık ≠ bakiye); c13 26 + c8 E 32 + rastgele s1 tedarikçi S 39 = **KS8.3 / K-c** (bağsız para önce iade — bc1253c'den sonra
+  karara bağlandı; programda Ödeme önce elle Alacak'ı kapatıyor: fatura 200 · 500, Alacak 0 · 300).
+- **Tutanlar:** c8b (K-d bağlı Ödeme kabul), c10 (KS10, K-P1 son gün), c8'in A / A2 / B / C / D / S2 (KS8 DB1 düzeltmesi), c13 S4 (KS8.2 — iadeden önce tarihli Ödeme) ve S5 (K-e — müşteriye ciro).
+- **Eski kodda kırmızı (ders 7):** yeni üç senaryo 2.4.5 kodunda 287 denetim, 88 fark (hepsi 2.4.6 sınıfında; 4'ü KS9 yolu).
+- Senaryo kusuru (düzeltildi, e83879a): S5'in carisiz çeki programda 400 "Çeki kimden aldığınızı yazın ya da cari seçin." — koşucu ad göndermiyor; çek artık başka cariden alınır.
