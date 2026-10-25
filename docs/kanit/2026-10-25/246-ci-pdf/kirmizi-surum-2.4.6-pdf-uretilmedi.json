@@ -1,0 +1,38 @@
+{
+  "ad": "246-ci-pdf/kirmizi-surum-2.4.6-pdf-uretilmedi",
+  "komut": "node --test test/kilavuz-pdf-surum.test.mjs test/kilavuz-surum.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T09:40:57.153Z",
+  "sure_sn": 0.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 3,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Kılavuz PDF sürümü (client/kilavuz) › PDF kapağı ve dip notu = HTML sürümü = program sürümü",
+      "konum": "test/kilavuz-pdf-surum.test.mjs:39:3",
+      "hata": "PDF sürümü 2.4.5 ≠ HTML 2.4.6 ya da program 2.4.6 (kapak: 2.4.5; dip not: 2.4.5). Kılavuzu yeniden üretin: node docs/kilavuz/pdf-uret.mjs docs/kilavuz DestekOfis-Kullanim-Kilavuzu && cp docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf client/kilavuz/ && node docs/kilavuz/pdf-denetle.mjs (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-25/246-ci-pdf/kirmizi-surum-2.4.6-pdf-uretilmedi.log",
+  "klasor": "/tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-ci-pdf/kopya-surum-246",
+  "ham_cikti_sha256": "c8871dbc3d4a900c01c4dda770c94675ad3a5f4ffeaa2314a058af0e3abb7710",
+  "ham_cikti_bayt": 2834
+}
