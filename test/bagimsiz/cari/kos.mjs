@@ -968,7 +968,7 @@ if (!argv.includes("--mutasyonsuz")) {
   const elle = readdirSync(path.join(HERE, "senaryolar")).filter(f => f.endsWith(".json")).sort().map(f => path.join(HERE, "senaryolar", f));
   // /3: her dosya kendi kural setinde değerlendirilir — geçersiz /1 /2 → 2.4.4 (legacy); /3 → 2.4.5; öbür /1 /2 → İKİSİ (2.4.5'te konusu kalkan 2.4.4 kurallarının — ör.
   // takvim kalemi, Açılış Bakiyesi ön dolumu — mutantları legacy değerlendirmesinde yakalanır). Program açılmaz.
-  const mutKume = [...new Set([...dosyalar, ...elle])];
+  const mutKume = [...new Set([...elle, ...dosyalar])]; // elle senaryolar ÖNCE (küçük; mutantların çoğunu yakalar) — büyük rastgele dosyalar yalnız gerekince model koşar
   const kipler = d => {
     if (gecersizMi(d)) return [true];
     return JSON.parse(readFileSync(d, "utf8")).dil === "destekofis-cari/3" ? [false] : [false, true];

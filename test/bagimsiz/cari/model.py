@@ -152,6 +152,9 @@ MUTASYONLAR = {
     115: "KS7: Değersiz Alacak Yaz bağsız kapatıcı değil (D1 eski hata sınıfı)",
     116: "KS7: Şüpheli Alacağa Al da kapatıcı (bakiye değişmediği hâlde borçları kapatır)",
     118: "KS7.1: tedarikçiye nedensiz stok çıkışı ('Stok satışı') alış iadesi gibi bağsız ödeme sayılır",
+    119: "§3.11b (a): tahsilat şüpheli kaydın kalanını düşürmez (değersiz sınırı alınan − değersiz)",
+    120: "§3.11b / K3: kayıt tarihinden ÖNCE tarihli alacak satırı da şüpheliden düşer",
+    121: "§3.11b (b): faturaya bağlı tahsilat da şüpheliden düşer",
     110: "K6.5: açılış satırı yokken açılış vadesi kabul edilir (opening-missing yok)",
     111: "K6.5: kapanmış dönemdeki kaydın vade alanları değiştirilebilir",
     112: "K6.5: Mevcut Borç kartlı caride kalem tutarı kart kapsamı düşülmeden Kalan",
@@ -1316,21 +1319,88 @@ class Model:
         """KS7.1 [BAŞ MİMAR]: stok formundan açık hesap çıkışı, iade nedeni YOK ("Stok satışı") — tedarikçiye de olsa carinin yükümlülüğü (borçlanır), ödeme değildir."""
         return self._kapatici(a, "stok_satis")
 
+    def supheli_durum(self, cari):
+        """PLAN §3.11b/2 (a)–(c) + 2.3.0-SUPHELI-KABUL K3/K7 (kâhin belgesi, kod yazılmadan; ders 40): carinin şüpheli kayıtlarının KALANI. Kayıt tarihinden SONRA (aynı gün
+        dahil) gelen alacak satırı — serbest tahsilat, alınan evrak, elle Alacak (Alacak Yaz), iade faturası, satış iadesi, taksit tahsilatı — ÖNCE şüpheli tutardan düşer (en eski
+        kayıttan); faturaya bağlı tahsilat (Kapatılacak Fatura, (b)) KENDİLİĞİNDEN normal cari hesaba işlenir (düşmez); kayıt tarihinden ÖNCE tarihli satır düşmez. Aynı gün sırası:
+        al → değersiz (kendi kaydından) → alacak satırı. Değersiz Alacak Yaz kendi kaydından düşer. Kalan = alınan − düşen tahsilatlar − değersiz. Mutant 119: tahsilat düşmez;
+        120: kayıttan önce tarihli satır da düşer; 121: faturaya bağlı tahsilat da düşer. Dönüş: kayıt adı → kalan (kuruş)."""
+        olay = []
+        for ad, sp in self.supheliler.items():
+            if sp["cari"] == cari:
+                olay.append((sp["tarih"], 0, sp["seq"], "al", ad, sp["tutar"]))
+        for x in self.kapaticilar.values():
+            if x["aktif"] and x["cari"] == cari and x["tur"] == "degersiz":
+                olay.append((x["tarih"], 2, x["seq"], "deg", x["supheli"], x["tutar"]))
+        alacak = []
+        for t in self.tahsilatlar.values():
+            if t["aktif"] and t["cari"] == cari and not (t["fatura"] and self.mut != 121):
+                alacak.append((t["tarih"], t["seq"], t["tutar"]))
+        for e in self.evraklar.values():
+            if e["cari"] == cari and e["durum"] not in ("silindi", "karsiliksiz"):
+                alacak.append((e["tarih"], e["seq"], e["tutar"]))
+        for h in self.hareketler.values():
+            if h["cari"] == cari and h["aktif"] and h["tur"] == "alacak":
+                alacak.append((h["tarih"], h["seq"], h["tutar"]))
+        for f in self.faturalar.values():
+            if f["cari"] == cari and f["durum"] == "kesildi" and f["tur"] == "iade":
+                alacak.append((f["tarih"], f["seq"], f["tutar"]))
+        for x in self.kapaticilar.values():
+            if x["aktif"] and x["cari"] == cari and x["tur"] == "stok_iade":
+                alacak.append((x["tarih"], x["seq"], x["tutar"]))
+        if self.mut != 119:
+            for tarih, seq, tutar in alacak:
+                olay.append(("0000-00-00" if self.mut == 120 else tarih, 3, seq, "alacak", None, tutar))
+        kalan, sira = {}, []
+        for _tarih, _sinif, _seq, tur, ad, tutar in sorted(olay, key=lambda o: (o[0], o[1], o[2])):
+            if tur == "al":
+                kalan.setdefault(ad, tutar)
+                sira.append(ad)
+            elif tur == "deg":
+                kalan[ad] -= tutar
+            else:
+                hedefler = list(sira) if self.mut != 120 else [n for n in self.supheliler if self.supheliler[n]["cari"] == cari]
+                for n in hedefler:
+                    kalan.setdefault(n, self.supheliler[n]["tutar"])
+                    d = min(kalan[n], tutar)
+                    kalan[n] -= d
+                    tutar -= d
+                    if not tutar:
+                        break
+        for n, sp in self.supheliler.items():
+            if sp["cari"] == cari:
+                kalan.setdefault(n, sp["tutar"])
+        return kalan
+
     def supheli_al(self, a):
-        """KS7 (b) + PLAN §3.11b/2: Şüpheli Alacağa Al (B 128 / A 120) — cari bakiyesi DEĞİŞMEZ, kapatıcı DEĞİL. Tutar en çok carinin borç bakiyesi."""
-        if kurus(a["tutar"]) > self.bakiye(a["cari"]):
+        """KS7 (b) + PLAN §3.11b/2 + K1: Şüpheli Alacağa Al (B 128 / A 120) — cari bakiyesi DEĞİŞMEZ, kapatıcı DEĞİL. Tutar en çok carinin borç bakiyesi − zaten şüphelide olan."""
+        if a["cari"] not in self.cariler:
+            return ("ret", "PLAN")  # cari açılmadıysa (ör. açılışı reddedildi) kayıt yok — program 404; mutant koşularında da çökmeden ret
+        acik = sum(v for v in self.supheli_durum(a["cari"]).values() if v > 0)
+        if kurus(a["tutar"]) > self.bakiye(a["cari"]) - acik:
             return ("ret", "PLAN")
-        self.supheliler[a["ad"]] = {"cari": a["cari"], "tutar": kurus(a["tutar"]), "tarih": a.get("tarih", self.bugun), "kalan": kurus(a["tutar"])}
+        self.supheliler[a["ad"]] = {"cari": a["cari"], "tutar": kurus(a["tutar"]), "tarih": a.get("tarih", self.bugun), "seq": self.yeni_seq()}
         self.mizanBilinir = False
         return "ok"
 
+    def supheli_kalan(self, ad):
+        sp = self.supheliler.get(ad)
+        return None if sp is None else self.supheli_durum(sp["cari"]).get(ad, 0)
+
     def degersiz(self, a):
-        """KS7 (b) + PLAN §3.11b/3: Değersiz Alacak Yaz — "cari bakiyesi o tutar kadar kapanır"; bağsız kapatıcı (en eskiden). Tutar en çok şüpheli kaydın kalanı, tarih kayıttan önce olamaz."""
+        """KS7 (b) + PLAN §3.11b/3 + K7: Değersiz Alacak Yaz — "cari bakiyesi o tutar kadar kapanır"; bağsız kapatıcı (en eskiden). Tutar ≤ kaydın KALAN şüpheli tutarı (girildiği
+        andaki kalan: düşen tahsilatlardan sonra) — aşarsa ret `doubtful-writeoff-exceeds`; kalan 0 (tamamı tahsil / değersiz) → ret `doubtful-closed`; tarih kayıttan önce olamaz."""
         sp = self.supheliler.get(a["supheli"])
-        if sp is None or kurus(a["tutar"]) > sp["kalan"] or a.get("tarih", self.bugun) < sp["tarih"]:
+        if sp is None or a.get("tarih", self.bugun) < sp["tarih"]:
             return ("ret", "PLAN")
-        sp["kalan"] -= kurus(a["tutar"])
-        return self._kapatici(dict(a, cari=sp["cari"]), "degersiz")
+        kalan = self.supheli_kalan(a["supheli"])
+        if kalan <= 0 or kurus(a["tutar"]) > kalan:
+            kod = "doubtful-closed" if kalan <= 0 else "doubtful-writeoff-exceeds"
+            self.d("adim:%s:kod" % a["id"], kod, "PLAN", "§3.11b/3 + K7: değersiz tutarı ≤ kalan şüpheli (kalan = alınan − şüpheliden düşen tahsilatlar − değersiz); kalan 0 → kayıt kapalı")
+            return ("ret", "PLAN")
+        r = self._kapatici(dict(a, cari=sp["cari"]), "degersiz")
+        self.kapaticilar[a["id"]]["supheli"] = a["supheli"]
+        return r
 
     def cari_kalem_odendi(self, a):
         """K6.3 [BAŞ MİMAR]: cari kaleminde "Ödendi Say" YOK — settle yalnız `due|` kalemini tanır; cari kalemi para kaydıyla kapanır → ret, kalem durur. Mutant 87."""
@@ -2141,6 +2211,15 @@ class Model:
         return {"ad": self.s["ad"], "dil": DIL, "kural": self.kural, "denetimler": dict(sorted(self.out.items())), "belirsiz": self.belirsiz}
 
 
+def _mutant_farkli(senaryo, n, kip, taban):
+    """Mutant koşusu tabandan farklı mı. Mutant modeli çökertirse (ör. cari açılmadı, sonraki adım onu arıyor) davranış zaten değişmiştir — yakalandı sayılır;
+    taban (mutasyonsuz) koşusu bu sarmalın DIŞINDA hesaplanır, onun çökmesi koşuyu durdurur."""
+    try:
+        return Model(senaryo, n, kip).kos()["denetimler"] != taban
+    except Exception:
+        return True
+
+
 def main(argv):
     if len(argv) < 2:
         sys.stderr.write(__doc__)
@@ -2164,7 +2243,7 @@ def main(argv):
         for n, ad in MUTASYONLAR.items():
             yak = []
             for x in liste:
-                kip = next((k for k in x["kipler"] if Model(senaryolar[x["dosya"]], n, k).kos()["denetimler"] != taban[(x["dosya"], k)]), None)
+                kip = next((k for k in x["kipler"] if _mutant_farkli(senaryolar[x["dosya"]], n, k, taban[(x["dosya"], k)])), None)
                 if kip:
                     yak.append({"dosya": x["dosya"], "kip": kip})
                 if len(yak) >= 3:

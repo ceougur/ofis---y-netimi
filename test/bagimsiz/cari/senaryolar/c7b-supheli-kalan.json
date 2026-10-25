@@ -1,0 +1,24 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "c7b-supheli-kalan",
+ "aciklama": "PLAN §3.11b (a)–(b) + 2.3.0-SUPHELI-KABUL K3/K7: şüpheli kaydın kalanı. Açılış 5.000, fatura 1.000; kayıt tarihinden önce tahsilat 300 (düşmez); Şüpheli Alacağa Al 2.000 (05.06); aynı gün tahsilat 400 (düşer → kalan 1.600); faturaya bağlı tahsilat 500 (normal, düşmez); kayıttan önce tarihli tahsilat 200 sonradan girilir (düşmez); Değersiz 1.700 → ret doubtful-writeoff-exceeds; Değersiz 1.600 → ok (kayıt kapanır); Değersiz 1 → ret doubtful-closed; ikinci kayıt 500 + aynı gün tahsilat 600 → tamamı tahsil; Değersiz 100 → ret doubtful-closed.",
+ "dayanak": "KARARLAR.md §8 C6 KS7 + ŞÜPHELİ KALAN (PLAN §3.11b/2–3; docs/2.3.0-SUPHELI-KABUL.md K1, K3, K7 — kod yazılmadan yazılmış kâhin belgesi)",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {"id": "cd", "islem": "cari_ac", "ad": "D", "isim": "Defne Şüpheli", "tarih": "2026-05-01", "acilis": "5000"},
+  {"id": "t0", "islem": "tahsilat", "cari": "D", "tutar": "300", "tarih": "2026-06-01"},
+  {"id": "f1", "islem": "fatura", "ad": "F1", "cari": "D", "tutar": "1000", "tarih": "2026-06-02"},
+  {"id": "sp1", "islem": "supheli_al", "ad": "SP1", "cari": "D", "tutar": "2000", "tarih": "2026-06-05"},
+  {"id": "t1", "islem": "tahsilat", "cari": "D", "tutar": "400", "tarih": "2026-06-05"},
+  {"id": "t2", "islem": "tahsilat", "cari": "D", "tutar": "500", "tarih": "2026-06-06", "fatura": "F1"},
+  {"id": "t3", "islem": "tahsilat", "cari": "D", "tutar": "200", "tarih": "2026-06-04"},
+  {"id": "dg1", "islem": "degersiz", "supheli": "SP1", "tutar": "1700", "tarih": "2026-06-07"},
+  {"id": "dg2", "islem": "degersiz", "supheli": "SP1", "tutar": "1600", "tarih": "2026-06-07"},
+  {"id": "dg3", "islem": "degersiz", "supheli": "SP1", "tutar": "1", "tarih": "2026-06-08"},
+  {"id": "k1", "islem": "kontrol"},
+  {"id": "sp2", "islem": "supheli_al", "ad": "SP2", "cari": "D", "tutar": "500", "tarih": "2026-06-09"},
+  {"id": "t4", "islem": "tahsilat", "cari": "D", "tutar": "600", "tarih": "2026-06-09"},
+  {"id": "dg4", "islem": "degersiz", "supheli": "SP2", "tutar": "100", "tarih": "2026-06-10"},
+  {"id": "k2", "islem": "kontrol"}
+ ]
+}

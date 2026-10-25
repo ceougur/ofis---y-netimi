@@ -1,0 +1,158 @@
+{
+  "ad": "245-kahin-ud/d2cef7c-tohum1-30-s1",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --tohum 1-30 --islem 120 --tur s1 --mutasyonsuz --cikti /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/245-kahin-ud/cikti-d2cef7c",
+  "commit": "37bdf4dc1511c90df06b84741e387ce8b41c71f5",
+  "dal": "is/kahin-ud",
+  "kirli": 4,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T01:53:47.624Z",
+  "sure_sn": 139.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 57087,
+    "gecen": 32041,
+    "basarisiz": 25046,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 25046 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[İNCELE YAYGIN] adim:s037:alan: program \"okunamadı\" · kâhin \"dueDate\" (K6.1 400 yanıtının `field`'ı hatalı alanın adı (alanın değeri kararda yazılı değil — İNCELE))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] adim:s037:durum: program \"ok\" · kâhin \"ret\" (B2.4 bağ kurulamaz → ret, hiçbir satır yazılmaz)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] adim:s037:http: program 200 · kâhin 400 (K6.1 Vade / Beklenen Ödeme Tarihi kaydın tarihinden önce ya da biçimsiz → 400)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN] k10:cari:S:bakiye: program -1317855 · kâhin -1290720 (B1.1/B2.7 bakiye = borçlar − alacaklar)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k10:fatura:G8:acik: program 113212 · kâhin 98046 (B2.1 açık = tutar − bağlı − en eski kapama · S1 elle kayıtla tek kuyruk (ajan ayrıntısı: bagsiz-karsiliksiz))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:hareket:acilis:D:beklenen: program \"alan yok\" · kâhin \"\" (K6.2 hareketlerde Beklenen Ödeme Tarihi (boş = yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k10:hareket:acilis:D:kalan: program \"alan yok\" · kâhin 0 (S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:hareket:acilis:D:vade: program \"alan yok\" · kâhin \"2026-04-28\" (K6.2 hareketlerde Vade Tarihi (boş = yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:hareket:acilis:E:beklenen: program \"alan yok\" · kâhin \"\" (K6.2 hareketlerde Beklenen Ödeme Tarihi (boş = yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k10:hareket:acilis:E:kalan: program \"alan yok\" · kâhin 0 (S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:hareket:acilis:E:vade: program \"alan yok\" · kâhin \"2026-05-05\" (K6.2 hareketlerde Vade Tarihi (boş = yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:hareket:acilis:S:beklenen: program \"alan yok\" · kâhin \"\" (K6.2 hareketlerde Beklenen Ödeme Tarihi (boş = yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:hareket:acilis:S:kalan: program \"alan yok\" · kâhin 0 (S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:hareket:acilis:S:vade: program \"alan yok\" · kâhin \"\" (K6.2 hareketlerde Vade Tarihi (boş = yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:hareket:s020:beklenen: program \"alan yok\" · kâhin \"\" (K6.2 hareketlerde Beklenen Ödeme Tarihi (boş = yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k10:hareket:s020:kalan: program \"alan yok\" · kâhin 0 (S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:hareket:s020:vade: program \"alan yok\" · kâhin \"2026-06-11\" (K6.2 hareketlerde Vade Tarihi (boş = yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:hareket:s028:beklenen: program \"alan yok\" · kâhin \"\" (K6.2 hareketlerde Beklenen Ödeme Tarihi (boş = yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:hareket:s028:kalan: program \"alan yok\" · kâhin 269206 (S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:hareket:s028:vade: program \"alan yok\" · kâhin \"2026-07-15\" (K6.2 hareketlerde Vade Tarihi (boş = yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:hareket:s035:beklenen: program \"alan yok\" · kâhin \"\" (K6.2 hareketlerde Beklenen Ödeme Tarihi (boş = yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k10:hareket:s035:kalan: program \"alan yok\" · kâhin 0 (S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:hareket:s035:vade: program \"alan yok\" · kâhin \"2026-07-27\" (K6.2 hareketlerde Vade Tarihi (boş = yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k10:hareket:s048:beklenen: program \"alan yok\" · kâhin \"\" (K6.2 hareketlerde Beklenen Ödeme Tarihi (boş = yok))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE AJAN] k10:hareket:s048:kalan: program \"alan yok\" · kâhin 0 (S1 FIFO: Kalan = tutar − en eskiden dağıtılan bağsız ödemeler (tek kuyruk, kayıt tarihi + yazım sırası))",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-25/245-kahin-ud/d2cef7c-tohum1-30-s1.log.gz",
+  "klasor": "/home/user/wt/kahin-ud",
+  "ham_cikti_sha256": "ed8ab889021abb5e2b7996968ed84c6545c9cdeeb9bdd47fa883fdd59ff90d8d",
+  "ham_cikti_bayt": 4318310
+}

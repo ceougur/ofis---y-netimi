@@ -241,9 +241,21 @@ def uret(tohum, islem):
         elif op == "stok_satis_hesap":  # KS7.1: tedarikçiye nedensiz stok çıkışı — yükümlülük (ödeme değil)
             adimlar.append({"id": sid, "islem": "stok_satis_hesap", "cari": "S", "tutar": tl(rnd.randint(100, 150000)), "tarih": t})
         elif op == "supheli_degersiz":
-            x = rnd.randint(1, m.bakiye(musteri))
-            adimlar.append({"id": sid, "islem": "supheli_al", "ad": "SP%s" % sid, "cari": musteri, "tutar": tl(x), "tarih": t})
-            adimlar.append({"id": sid + "d", "islem": "degersiz", "supheli": "SP%s" % sid, "tutar": tl(x), "tarih": t})
+            # PLAN §3.11b (a) + K3/K7 (24.10.2026, Uzun Doğrulama #640): aynı gün (ya da sonra) tarihli alacak satırları kaydın kalanından düşer → değersiz tutarı kâhinin
+            # hesapladığı KALANLA sınırlanır; arada bir bilerek aşan adım (ret doubtful-writeoff-exceeds) ve kalan 0'da adım (ret doubtful-closed) üretilir; kayıt her
+            # durumda kapanır (kalan tamamı değersiz yazılır) — açık kayıt sınırı (doubtful-normal-exceeds) dışında kalınır.
+            x = rnd.randint(1, max(1, m.bakiye(musteri) - sum(v for v in m.supheli_durum(musteri).values() if v > 0)))
+            ad = "SP%s" % sid
+            adimlar.append({"id": sid, "islem": "supheli_al", "ad": ad, "cari": musteri, "tutar": tl(x), "tarih": t})
+            kalan = durum().supheli_kalan(ad)
+            if kalan is None:
+                pass  # kayıt açılamadı (ret) — değersiz adımı yok
+            elif kalan <= 0:
+                adimlar.append({"id": sid + "d", "islem": "degersiz", "supheli": ad, "tutar": tl(x), "tarih": t})  # ret: doubtful-closed
+            else:
+                if rnd.random() < 0.2:
+                    adimlar.append({"id": sid + "a", "islem": "degersiz", "supheli": ad, "tutar": tl(kalan + rnd.randint(1, max(1, x))), "tarih": t})  # ret: aşan
+                adimlar.append({"id": sid + "d", "islem": "degersiz", "supheli": ad, "tutar": tl(kalan), "tarih": t})
         elif op == "evrak":
             n_e += 1
             a = {"id": sid, "islem": "evrak", "ad": "E%d" % n_e, "cari": cari, "tur": rnd.choice(["cek", "senet"]),
@@ -339,7 +351,7 @@ def uret_s1(tohum, islem):
         elle = [h for h, x in m.hareketler.items() if x["aktif"] and x["tur"] in ("borc", "alacak")]
         portfoy = [e for e, x in m.evraklar.items() if x["durum"] == "portfoy"]
         secenek = [("fatura", 12), ("borc", 14), ("tahsilat", 14), ("alis", 6), ("alacak", 7), ("odeme", 7), ("evrak", 4), ("stok_iade", 4), ("stok_satis_hesap", 3)]
-        if m.bakiye(musteri) > 0:
+        if m.bakiye(musteri) - sum(v for v in m.supheli_durum(musteri).values() if v > 0) > 0:
             secenek.append(("supheli_degersiz", 3))  # KS7 (b): Şüpheli Alacağa Al + aynı gün tamamını Değersiz Alacak Yaz (kayıt kapanır — açık kayıt sınırına girmez)
         if acik_s:
             secenek.append(("bagli_tahsilat", 6))
@@ -383,9 +395,21 @@ def uret_s1(tohum, islem):
         elif op == "stok_satis_hesap":  # KS7.1: tedarikçiye nedensiz stok çıkışı — yükümlülük (ödeme değil)
             adimlar.append({"id": sid, "islem": "stok_satis_hesap", "cari": "S", "tutar": tl(rnd.randint(100, 150000)), "tarih": t})
         elif op == "supheli_degersiz":
-            x = rnd.randint(1, m.bakiye(musteri))
-            adimlar.append({"id": sid, "islem": "supheli_al", "ad": "SP%s" % sid, "cari": musteri, "tutar": tl(x), "tarih": t})
-            adimlar.append({"id": sid + "d", "islem": "degersiz", "supheli": "SP%s" % sid, "tutar": tl(x), "tarih": t})
+            # PLAN §3.11b (a) + K3/K7 (24.10.2026, Uzun Doğrulama #640): aynı gün (ya da sonra) tarihli alacak satırları kaydın kalanından düşer → değersiz tutarı kâhinin
+            # hesapladığı KALANLA sınırlanır; arada bir bilerek aşan adım (ret doubtful-writeoff-exceeds) ve kalan 0'da adım (ret doubtful-closed) üretilir; kayıt her
+            # durumda kapanır (kalan tamamı değersiz yazılır) — açık kayıt sınırı (doubtful-normal-exceeds) dışında kalınır.
+            x = rnd.randint(1, max(1, m.bakiye(musteri) - sum(v for v in m.supheli_durum(musteri).values() if v > 0)))
+            ad = "SP%s" % sid
+            adimlar.append({"id": sid, "islem": "supheli_al", "ad": ad, "cari": musteri, "tutar": tl(x), "tarih": t})
+            kalan = durum().supheli_kalan(ad)
+            if kalan is None:
+                pass  # kayıt açılamadı (ret) — değersiz adımı yok
+            elif kalan <= 0:
+                adimlar.append({"id": sid + "d", "islem": "degersiz", "supheli": ad, "tutar": tl(x), "tarih": t})  # ret: doubtful-closed
+            else:
+                if rnd.random() < 0.2:
+                    adimlar.append({"id": sid + "a", "islem": "degersiz", "supheli": ad, "tutar": tl(kalan + rnd.randint(1, max(1, x))), "tarih": t})  # ret: aşan
+                adimlar.append({"id": sid + "d", "islem": "degersiz", "supheli": ad, "tutar": tl(kalan), "tarih": t})
         elif op == "evrak":
             n_e += 1
             adimlar.append({"id": sid, "islem": "evrak", "ad": "EV%d" % n_e, "cari": musteri, "tur": "cek", "tutar": tl(rnd.randint(100, 200000)), "tarih": t})
