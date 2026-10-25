@@ -355,9 +355,9 @@ def uret_s1(tohum, islem):
         secenek = [("fatura", 12), ("borc", 14), ("tahsilat", 14), ("alis", 6), ("alacak", 7), ("odeme", 7), ("evrak", 4), ("stok_iade", 4), ("stok_satis_hesap", 3),
                    ("alis_iade", 3)]
         # 2.4.6 KS8 / KS9: geri ödenmemiş iade kalemi (müşteride stok iadesi / tedarikçide alış iadesi) varsa geri ödeme adımı (kâhinin hesabıyla)
-        G, _ = m._geri_odemeler(musteri)
+        G = m._geri_odemeler(musteri)[0]
         iade_kalan = sum(t - G.get(ad, 0) for _, ad, t in m._iade_kalemleri(musteri))
-        _, Gp = m._geri_odemeler("S")
+        Gp = m._geri_odemeler("S")[1]
         alis_kalan = sum(x["tutar"] - Gp.get(xn, 0) for xn, x in m.kapaticilar.items() if x["aktif"] and x["cari"] == "S" and x["tur"] == "alis_iade")
         if iade_kalan > 0:
             secenek.append(("musteri_odeme", 5))

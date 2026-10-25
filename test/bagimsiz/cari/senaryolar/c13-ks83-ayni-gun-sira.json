@@ -1,0 +1,334 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "c13-ks83-ayni-gun-sira",
+ "aciklama": "Sıra (ders 31 + K-b + KS8.1 + KS8.2; 25.10 ~15:30 BAŞ MİMAR düzeltmesi — KS8.3 GERİ ALINDI, dosya adı geçmiş için kaldı): her caride satış 500 (05-01); 06-01'de AYNI GÜN elle Alacak 300 (vade 06-18), faturasız stok Satış İadesi 300 ve bağsız Ödeme 300 farklı YAZIM SIRALARIYLA (S1: Alacak → iade → Ödeme; S2: Ödeme → iade → Alacak; S3: iade → Ödeme → Alacak). İade faturayı kapattığı için AÇIK notu yok; K-b FIFO'sunda yalnız Alacak var → Ödeme Alacak'ı kapatır, KS8.1'e artan kalmaz: her caride fatura 200, Alacak 0, bakiye 200 = Σ açık — yazım sırasından bağımsız. S4 Serap: Ödeme 300 iadeden ÖNCE (05-20), karşı tarafta yükümlülük yok → artan para iadenin geri ödemesi (KS8.2 tarih koşulu yok) → fatura 500. S5 Sinan (K-e: müşteriye her ödeme yolu geri ödemedir): başka cariden (Zeki Çekveren) alınan çek 300 müşteriye ciro → fatura 500 (mutant 138: 200). S6 Sevgi: iade 06-01 faturayı kapatır, Alacak 06-03 (iadeden SONRA) → yine önce Alacak (K-b; kapatıcı iade yalnız ARTANLA geri ödenir — KS8.1) → fatura 200, Alacak 0 (mutant 142, iadenin tamamı kendi tarihinde FIFO'da: fatura 500, Alacak 300). S7 Suat / S8 Sude: faturasız; aynı gün Alacak 300 ve stok iadesi 300 (AÇIK not 300) + Ödeme 300 — K-b FIFO'su aynı tarihte yazım sırası (olay sınıfı sırası kararda yok → YAYGIN): S7 Alacak önce yazıldı → Alacak 0, not açık (bakiye −300, Σ açık 0); S8 iade önce yazıldı → not geri ödenir, Alacak 300 açık (bakiye −300 = Σ açık). S9 Tuna (tedarikçi simetriği): alış 500 → Alış İadesi 300 (alış 200) → elle Borç 300 (06-03) → bağsız Tahsilat 300 → Borç 0, alış 200 (mutant 133, eski KS8.3: alış 500, Borç 300).",
+ "dayanak": "KARARLAR.md §11: K-b [KULLANICI, 5 dk yetkisi], KS8.1 / KS8.2 [BAŞ MİMAR], K-c simetri, K-e; ders 31 (aynı tarihte olay sınıfı → yazım sırası)",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {
+   "id": "cs1",
+   "islem": "cari_ac",
+   "ad": "S1",
+   "isim": "Sena Sıra",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "cs2",
+   "islem": "cari_ac",
+   "ad": "S2",
+   "isim": "Selim Sıra",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "cs3",
+   "islem": "cari_ac",
+   "ad": "S3",
+   "isim": "Sezen Sıra",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "cs4",
+   "islem": "cari_ac",
+   "ad": "S4",
+   "isim": "Serap Önce",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "cs5",
+   "islem": "cari_ac",
+   "ad": "S5",
+   "isim": "Sinan Ciro",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "cz",
+   "islem": "cari_ac",
+   "ad": "Z",
+   "isim": "Zeki Çekveren",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "cs6",
+   "islem": "cari_ac",
+   "ad": "S6",
+   "isim": "Sevgi Sonra",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "cs7",
+   "islem": "cari_ac",
+   "ad": "S7",
+   "isim": "Suat Not",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "cs8",
+   "islem": "cari_ac",
+   "ad": "S8",
+   "isim": "Sude Not",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "cs9",
+   "islem": "cari_ac",
+   "ad": "S9",
+   "isim": "Tuna Tedarik",
+   "tur": "tedarikci",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "f1",
+   "islem": "fatura",
+   "ad": "F1",
+   "cari": "S1",
+   "tutar": "500",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "f2",
+   "islem": "fatura",
+   "ad": "F2",
+   "cari": "S2",
+   "tutar": "500",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "f3",
+   "islem": "fatura",
+   "ad": "F3",
+   "cari": "S3",
+   "tutar": "500",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "f4",
+   "islem": "fatura",
+   "ad": "F4",
+   "cari": "S4",
+   "tutar": "500",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "f5",
+   "islem": "fatura",
+   "ad": "F5",
+   "cari": "S5",
+   "tutar": "500",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "f6",
+   "islem": "fatura",
+   "ad": "F6",
+   "cari": "S6",
+   "tutar": "500",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "f9",
+   "islem": "fatura",
+   "ad": "AT9",
+   "cari": "S9",
+   "tur": "alis",
+   "tutar": "500",
+   "tarih": "2026-05-01"
+  },
+  {
+   "id": "e5",
+   "islem": "evrak",
+   "ad": "E5",
+   "cari": "Z",
+   "tur": "cek",
+   "tutar": "300",
+   "tarih": "2026-05-10"
+  },
+  {
+   "id": "o4",
+   "islem": "odeme",
+   "cari": "S4",
+   "tutar": "300",
+   "tarih": "2026-05-20"
+  },
+  {
+   "id": "a1",
+   "islem": "alacak",
+   "cari": "S1",
+   "tutar": "300",
+   "tarih": "2026-06-01",
+   "vade": "2026-06-18"
+  },
+  {
+   "id": "i1",
+   "islem": "stok_iade",
+   "cari": "S1",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "o1",
+   "islem": "odeme",
+   "cari": "S1",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "o2",
+   "islem": "odeme",
+   "cari": "S2",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "i2",
+   "islem": "stok_iade",
+   "cari": "S2",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "a2",
+   "islem": "alacak",
+   "cari": "S2",
+   "tutar": "300",
+   "tarih": "2026-06-01",
+   "vade": "2026-06-18"
+  },
+  {
+   "id": "i3",
+   "islem": "stok_iade",
+   "cari": "S3",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "o3",
+   "islem": "odeme",
+   "cari": "S3",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "a3",
+   "islem": "alacak",
+   "cari": "S3",
+   "tutar": "300",
+   "tarih": "2026-06-01",
+   "vade": "2026-06-18"
+  },
+  {
+   "id": "i4",
+   "islem": "stok_iade",
+   "cari": "S4",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "i5",
+   "islem": "stok_iade",
+   "cari": "S5",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "c5",
+   "islem": "ciro",
+   "evrak": "E5",
+   "cari": "S5",
+   "tarih": "2026-06-05"
+  },
+  {
+   "id": "i6",
+   "islem": "stok_iade",
+   "cari": "S6",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "a6",
+   "islem": "alacak",
+   "cari": "S6",
+   "tutar": "300",
+   "tarih": "2026-06-03",
+   "vade": "2026-06-18"
+  },
+  {
+   "id": "o6",
+   "islem": "odeme",
+   "cari": "S6",
+   "tutar": "300",
+   "tarih": "2026-06-05"
+  },
+  {
+   "id": "a7",
+   "islem": "alacak",
+   "cari": "S7",
+   "tutar": "300",
+   "tarih": "2026-06-01",
+   "vade": "2026-06-18"
+  },
+  {
+   "id": "i7",
+   "islem": "stok_iade",
+   "cari": "S7",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "o7",
+   "islem": "odeme",
+   "cari": "S7",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "i8",
+   "islem": "stok_iade",
+   "cari": "S8",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "a8",
+   "islem": "alacak",
+   "cari": "S8",
+   "tutar": "300",
+   "tarih": "2026-06-01",
+   "vade": "2026-06-18"
+  },
+  {
+   "id": "o8",
+   "islem": "odeme",
+   "cari": "S8",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "i9",
+   "islem": "alis_iade",
+   "cari": "S9",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "b9",
+   "islem": "borc",
+   "cari": "S9",
+   "tutar": "300",
+   "tarih": "2026-06-03",
+   "vade": "2026-06-18"
+  },
+  {
+   "id": "t9",
+   "islem": "tahsilat",
+   "cari": "S9",
+   "tutar": "300",
+   "tarih": "2026-06-05"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol",
+   "gorunumToplam": true,
+   "acikToplam": true
+  }
+ ]
+}
