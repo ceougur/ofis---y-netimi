@@ -4,6 +4,31 @@
 Önceki oturum: 2.4.3 YAYIMLANDI (v2.4.3, master 163dd5d, PR ceougur/ofis---y-netimi#33; site kılavuzu ceougur/destekofis#19). Kod o günden beri DEĞİŞMEDİ;
 yalnız belge eklendi. Aşağıdaki sırayla oku, sonra işe başla.
 
+### 0000. MALİYET HESAP KARTI (M3, duşakabin) BAŞLANGIÇ — DEVAM NOTU (25.10.2026 ~08:15 UTC; kullanıcının sıkıştırma talimatından ÖNCE yazıldı — ÖNCE BUNU OKU)
+- DURUM: 2.4.5 YAYIMLANDI (v2.4.5 = master d0fd8b0, PR #35 squash; PR CI #876 7/7; UD #648 27/27; windows.yml #54 + #55; 5 dosya bayt bayt; eski güncelleyiciler v2.4.4/2.4.3/2.4.0/2.3.0/2.1.0/2.0.12
+  "available", 2.4.5 "up-to-date"; site kılavuzu ceougur/destekofis#21 BİRLEŞTİ e38fba4). Ayrıntı CLAUDE.md Açık iş "2.4.5 YAYIMLANDI". Sıkıştırma anında master CI #877 ve "Sürüm yayımla" #38
+  SÜRÜYORDU → sıkıştırmadan sonra İLK İŞ ikisini oku (gh api repos/ceougur/ofis---y-netimi/actions/runs?head_sha=d0fd8b05aa42499c2d207a72d58a669c55d7d8fe) + canlı sitedeki kılavuz PDF'i
+  sha256 1b6d554e… mı denetle; sonuçları CLAUDE.md "2.4.5 YAYIMLANDI" satırına yaz → 2.4.5 KAPANIR.
+- İSTEK (kullanıcı, 25.10.2026 ~08:10 UTC): "duşakabin sektörü için konuştuğumuz maliyet ekranlarına başlayalım, önce compact talimatı vereceğim hazırlığını yap" → sıkıştırmadan sonra
+  önce CLAUDE.md anayasa + dersler okunur, sonra M3 başlar. Kapsam ve kararlar: CLAUDE.md Açık iş "MÜŞTERİ İSTEKLERİ … (M3)" (KAPSAM KARARI "işi derinleştirme" — stok penceresinde BİR KART,
+  hiçbir yere bağlanmaz; DÜZEN — 4 Excel sekmesi üstte düğme, her bölüm ayrı kart; KARAR "exceldeki alıştıkları neyse o olsun" — 4 sekmenin hepsi, oranlar/bölenler/fiyatlar ve 10 tutarsızlık
+  AYNEN, fiyat listeleri matris; ✎ başlık, satır ekle/sil, birim/fiyat düzenlenir; çıkarken "kaydedilsin mi?", altta Kaydet + Çık; sektör görünürlüğü öneri: yalnız "Duşakabin Üretimi" seçilince).
+- MÜŞTERİ VERİSİ: Excel ve parolası hiçbir dosyaya/depoya GİRMEZ. Kullanıcı (25.10): "exceli ve şifresini ben tekrar veririm" → sıkıştırmadan / kapsayıcı yenilenmesinden sonra Excel'i ve
+  parolayı KULLANICIDAN iste (sohbete yazdığı parola dosyaya yazılmaz). Önceki salt okuma analizi not defterinde (yalnız bu kapsayıcıda; depoya girmez — müşteri içeriği):
+  scratchpad/dusakabin-analiz/RAPOR.md (yapı, 554/554 formül bağımsız yeniden hesap, 6 işlem türü yeter — serbest formül motoru GEREKMEZ, veri modeli önerisi, 10 tutarsızlık, müşteriye 13 soru),
+  kahin-ciftleri.json (girdi→çıktı çiftleri; KÂHİN = Excel'in kendi değerleri; testlere yalnız TÜRETİLMİŞ çiftler girer), girdi/liste.xlsx (çözülmüş kopya). Kapsayıcı yenilenmişse analiz yeniden
+  (salt okuma ajanı, xhigh değil high — tek modül, para çekirdeği değil). Ses kaydı (uploads …WhatsApp_Audio…mp4) DÖKÜLEMEDİ (model indirme ağ politikasıyla 403) — kullanıcıdan metin ya da
+  huggingface.co ağ izni; döküm olmadan başlanabilir (Excel yeterli), açık soru olarak kalır.
+- İLK ADIMLAR (öneri; "başla" verildi sayılır mı kullanıcıya teyit ettir): (0a) sürüm numarası (öneri 2.4.6; 2.5.0 devire ayrılmış) + iş listesi docs/erp/MALIYET-KARTI-IS-LISTESI.md
+  (BELGE_YOLLARI içinde; başlayınca docs/<s>-IS-LISTESI.md'ye taşınır + BELGE_YOLLARI'na eklenir, 2.4.5 madde 0a düzeni); 30 dk ara rapor + "yapıldıkça üstünü çiz" düzeni 2.4.5'teki gibi.
+  (0b) KÂHİN ÖNCE: Excel'in değerlerinden (kodu görmeyen ajan) kart başına girdi→çıktı kabul tablosu, test fikstürü TÜRETİLMİŞ (müşteri değerleri değil). (1) veri modeli + göç (şirket veri
+  dosyasında tablo; hazır kayıtlı 4 sekme şablonu kod içinde müşteri verisi OLMADAN mı, müşteri Excel'inden İÇE AL mı — KARAR GEREKİR: müşteri fiyatları ürüne gömülemez, öneri: kartta
+  "Excel'den Al" ya da boş şablon + müşterinin kendi dosyası). (2) Stok penceresinde "Maliyet Hesap Kartı" ekranı (sekme düğmeleri, kartlar, ✎, satır ekle/sil, Kaydet/Çık, esc-kapat sorusu —
+  ders 34). (3) sektör "Duşakabin Üretimi" + görünürlük. (4) kılavuz + PDF (ders 42). (5) doğrulama (kâhin, e2e, Windows CI, yazım düzeni — her sözcük büyük).
+- BAŞ MİMAR UYARISI (kullanıcıya sıkıştırmadan sonra söylenecek): "Excel'deki tablolar HAZIR KAYITLI gelir" isteği müşterinin fiyat ve maliyet bilgisini programın İÇİNE (her müşteriye giden
+  güncellemeye) gömmek demek → ticari sır sızar. Öneri: ürünle yalnız BOŞ yapı (sekme/kart/satır adları ve formül düzeni, fiyatsız) gelir; müşteri kendi Excel'ini bir kez "Excel'den Al" ile
+  yükler ya da kurulumda verisi o müşterinin şirket dosyasına konur. Karar kullanıcıda.
+
 ### 000. 2.4.5 BAŞLANGIÇ — DEVAM NOTU (24.10.2026 ~16:30 UTC; kullanıcının sıkıştırma talimatından ÖNCE yazıldı — ÖNCE BUNU OKU)
 - DURUM: 2.4.4 YAYIMLANDI ve KAPANDI (v2.4.4 = master 5187561; PR #34; master CI #867 + Sürüm yayımla #37 yeşil; 5 dosya bayt bayt; eski güncelleyiciler "available"; site
   ceougur/destekofis#20 birleşti). Ayrıntı CLAUDE.md Açık iş "2.4.4 YAYIMLANDI". Kod değişikliği YOK; çalışma dalı `claude/youthful-euler-fl8ks4` = master + yalnız belge commit'leri
