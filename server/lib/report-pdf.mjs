@@ -45,7 +45,18 @@ function columnMeasures(doc, { headers, rows, types, totals, fontSize, W }) {
   });
   const rigid = index => numeric(index) || sample.every(row => !/\s/.test(String(row[index] ?? "").trim()));
   const floor = index => Math.max(48, Math.min(widths[index], doc.measure(headers[index], "bold", fontSize) + 6 + CELL_PAD * 2));
-  return { widths, rigid, floor };
+  // 2.4.6 (2.4.5 gezinti B4): sözcüklü kolonun en dar hâli en uzun SÖZCÜĞÜ de taşır — "Makbuz 1" yüzünden sözcüklü sayılan Belge No kolonu
+  // "FIS2026000000001"i "FIS20260000 / 00001" diye bölüyordu. Yalnız sayfaya sığarsa kullanılır (drawTablePdf); sığmazsa eski en dar hâl.
+  const wordFloors = new Map();
+  const wordFloor = index => {
+    if (wordFloors.has(index)) return wordFloors.get(index);
+    let longest = 0;
+    for (const row of sample) for (const word of String(row[index] ?? "").split(/\s+/)) if (word) longest = Math.max(longest, doc.measure(word, "regular", fontSize));
+    const value = Math.max(floor(index), Math.min(widths[index], longest + CELL_PAD * 2));
+    wordFloors.set(index, value);
+    return value;
+  };
+  return { widths, rigid, floor, wordFloor };
 }
 const totalsOf = ({ footer = null, footers = null }) => (Array.isArray(footers) && footers.length ? footers : footer ? [footer] : []);
 
@@ -99,7 +110,8 @@ function drawTablePdf({ title, subtitle = "", headers, rows, types = [], summary
   const ink = "#111827";
   const cellPad = CELL_PAD;
 
-  const { widths, rigid, floor } = columnMeasures(doc, { headers, rows, types, totals: totalsOf({ footer, footers }), fontSize, W });
+  const measures = columnMeasures(doc, { headers, rows, types, totals: totalsOf({ footer, footers }), fontSize, W });
+  const { widths, rigid } = measures;
   // Sayfaya sığmayınca (v2.0.6) yalnız sözcüklü metin kolonları (ad, grup, not) daralıp satır içinde sarılır; tutar, tarih,
   // telefon gibi bölünmez değerler kendi genişliğinde kalır ("03.09.202 / 6" diye kırılmasın). Yetmezse hepsi orantılanır.
   const sum = list => list.reduce((total, value) => total + value, 0);
@@ -107,6 +119,7 @@ function drawTablePdf({ title, subtitle = "", headers, rows, types = [], summary
   if (sum(widths) > W) {
     const flex = headers.map((_, index) => index).filter(index => !rigid(index));
     let room = W - sum(widths.filter((_, index) => rigid(index)));
+    const floor = flex.length && room >= sum(flex.map(measures.wordFloor)) ? measures.wordFloor : measures.floor;
     if (flex.length && room >= sum(flex.map(floor))) {
       let pool = flex;
       while (pool.length) {

@@ -48,7 +48,8 @@ export function tableSummary(report) {
   const count = value => COUNT.format(value || 0);
   const totals = report.totals || {};
   // 2.4.5 madde 5: tablodan gelen tutar ve ondan program tahsilatı düşülerek bulunan bakiye "Muhasebe Kaydı Değil" adıyla (kolon başlıklarıyla aynı).
-  if (report.kind === "cari-ekstre") return [["Cari", count(totals.caris)], [`Tablodaki Toplam Borç ${TABLE_AMOUNT_NOTE}`, money(totals.debit)], ["Toplam Tahsil Edilen", money(totals.credit)], [`Tablodaki Bakiye ${TABLE_AMOUNT_NOTE}`, money(totals.balance)], ...(totals.crossMatched ? [["Birden Çok Dosyada", count(totals.crossMatched)]] : [])];
+  // 2.4.6 (2.4.5 gezinti B8): tablodaki kişiler cari değildir (cari yalnız Cari'de açılır) — kolon ve özet "Kişi".
+  if (report.kind === "cari-ekstre") return [["Kişi", count(totals.caris)], [`Tablodaki Toplam Borç ${TABLE_AMOUNT_NOTE}`, money(totals.debit)], ["Toplam Tahsil Edilen", money(totals.credit)], [`Tablodaki Bakiye ${TABLE_AMOUNT_NOTE}`, money(totals.balance)], ...(totals.crossMatched ? [["Birden Çok Dosyada", count(totals.crossMatched)]] : [])];
   if (report.kind === "vade-takip") return [["Kalem", count(totals.count)], ["Gecikmiş", `${count(totals.overdue)} · ${money(totals.overdueAmount)}`], ["Yaklaşan / Bugün", count(totals.upcoming)], [`Tablodaki Toplam Tutar ${TABLE_AMOUNT_NOTE}`, money(totals.amount)], ...(totals.dormant ? [["Ödeme Kesilmiş Olabilir", count(totals.dormant)]] : [])];
   // 2.4.5 madde 5: Kasa giriş/çıkış/net bu raporda yok (Kasa, Kasa raporlarında; tablo tahmini Kasa ile aynı tabloda toplanmaz).
   return [[`Tablodan Beklenen Tahsilat ${TABLE_AMOUNT_NOTE}`, money(totals.expected)], ["Gerçekleşen Tahsilat", money(totals.collected)]];

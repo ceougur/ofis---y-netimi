@@ -343,7 +343,9 @@
   // Sekmeler ve görme koşulları (sunucudaki uç yetkisiyle aynı): defter raporları ANLIK DURUM yetkisiyle; Vade takip
   // ANLIK DURUM ya da rapor yetkisiyle; Çek / Senet portföyü ayrıca çek yetkisiyle; Tablo raporları rapor yetkisiyle.
   const TABS = [
-    ["mizan", "Cari Ekstre", "Cari mizanı; satıra tıklayınca o carinin ekstresi (Cari kartındaki defterle aynı)", () => canSee()],
+    // 2.4.6 (2.4.5 gezinti B3): bu sekme mizandır, satıra tıklayınca ekstre; "Cari Ekstre" adı Tüm Raporlar → Cari Ekstre ile (Fatura Kalemlerini Göster
+    // seçeneği orada) iki ayrı "Cari Ekstre" gösteriyordu.
+    ["mizan", "Cari Mizanı ve Ekstresi", "Cari mizanı; satıra tıklayınca o carinin ekstresi (Cari kartındaki defterle aynı)", () => canSee()],
     ["vade", "Vade Takip", "Vadesi olan her açık kalem: taksit, çek/senet, vadeli fatura, ileri tarihli Kasa, tablodaki ödeme günleri", () => canReports()],
     ["flow", "Nakit Akış", "Bugünkü nakit ve bankadan başlayan tahmini bakiye: beklenen giriş ve çıkışlar", () => canSee()],
     ["cheques", "Çek / Senet", "Alınan ve verilen evrak portföyü", () => canSee() && HOF.can("cheques.view")],
@@ -477,7 +479,7 @@
     const ekstre = s.account ? { account: s.account.id, from: s.from, to: s.to } : null;
     const pdf = ekstre ? `/api/workspace/overview/ekstre.pdf?${query(ekstre)}` : `/api/workspace/overview/mizan.pdf?${query(params)}`;
     const xlsx = ekstre ? `/api/workspace/overview/ekstre.xlsx?${query(ekstre)}` : `/api/workspace/overview/mizan.xlsx?${query(params)}`;
-    const filters = `<div class="hof-rep-bar">${rangeBar(s, PRESETS_PAST)}${exportButtons(pdf, xlsx, "Cari Ekstre")}</div>
+    const filters = `<div class="hof-rep-bar">${rangeBar(s, PRESETS_PAST)}${exportButtons(pdf, xlsx, ekstre ? "Cari Ekstre" : "Cari Mizanı")}</div>
       ${s.account ? "" : `<div class="hof-rep-filters"><input type="search" data-q value="${esc(s.q)}" placeholder="Cari adı, cari no ya da telefon ara…" aria-label="Cari ara"><select data-field="type" aria-label="Cari türü"><option value="">Tüm Cariler</option><option value="customer" ${s.type === "customer" ? "selected" : ""}>Müşteriler</option><option value="supplier" ${s.type === "supplier" ? "selected" : ""}>Tedarikçiler</option><option value="other" ${s.type === "other" ? "selected" : ""}>Diğer</option></select><select data-field="side" aria-label="Bakiye">${[["", "Tüm Bakiyeler"], ["debtor", "Borçlular"], ["creditor", "Alacaklılar"], ["nonzero", "Sadece Bakiyesi Olanlar"]].map(([value, label]) => `<option value="${value}" ${s.side === value ? "selected" : ""}>${label}</option>`).join("")}</select><label class="hof-rep-check"><input type="checkbox" data-field="idle" ${s.idle ? "checked" : ""}> Hareketsiz carileri de göster</label></div>`}`;
     if (!s.data) return `${filters}<p class="hof-empty">Rapor hazırlanıyor…</p>`;
     if (s.account && s.data.lines) {
@@ -531,7 +533,7 @@
     const dormant = d.dormant?.length
       ? `<details class="hof-rep-overdue"><summary>${ICONS.warn} Tabloda ödemesi kesilmiş olabilecek ${d.dormant.length} kayıt (son yazılı aydan sonra üst üste boş aylar)</summary><div class="hof-rep-table"><table class="hof-table"><tbody>${d.dormant.map((item, index) => `<tr data-dormant-row="${index}" tabindex="0" title="Kaydı tabloda göster"><td><b>${esc(item.party || "—")}</b><small>${esc(item.detail || "")}</small></td><td>Son ödeme: ${esc(item.lastPaidText || "—")}</td><td class="num">${esc(String(item.emptyMonths))} boş ay</td></tr>`).join("")}</tbody></table></div></details>`
       : "";
-    const tableNote = chosen.has("deadline") ? " Tablolardan yalnız tutarsız son tarihler gelir (sözleşme, sigorta, duruşma…); tahsilat ve ödeme kalemleri Taksit, Fatura, Çek / Senet ve Kasa'dan." : "";
+    const tableNote = chosen.has("deadline") ? " Tablolardan yalnız tutarsız son tarihler gelir (sözleşme, sigorta, duruşma…); tahsilat ve ödeme kalemleri Taksit, Fatura, Cari (vadeli), Çek / Senet, Planlı Banka İşlemi ve Kasa'dan." : "";
     return `${filters}
       ${statTiles([
         { label: "Gecikmiş Tahsilat", html: moneyHtml(t.in.overdue.amount), help: `${t.in.overdue.count} kalem`, tone: t.in.overdue.count ? "is-bad" : "" },
@@ -542,7 +544,7 @@
         d.doubtful?.amount > 0.005 ? { label: "Şüpheli Alacak", html: moneyHtml(d.doubtful.amount), help: `${d.doubtful.accountCount} cari · vade takibinin dışında`, tone: "is-bad" } : null,
         t.noAmount ? { label: "Tutarsız Kalem", value: t.noAmount.toLocaleString("tr-TR"), help: "son tarih ya da tutarı yazılmamış ödeme günü" } : null,
       ])}
-      <div class="hof-rep-table"><table class="hof-table hof-rep-vade"><thead><tr><th>Vade</th><th>Kimden / Kime</th><th>Kaynak</th><th>Açıklama</th><th class="num">Tahsil Edilecek</th><th class="num">Ödenecek</th></tr></thead><tbody>${rows || `<tr><td colspan="6" class="hof-empty">${d.totals.count === 0 && !s.q && !s.direction ? "Bu aralıkta vadesi gelen açık kalem yok. Taksit kartı, çek/senet ya da vadeli fatura eklendikçe burada listelenir." : "Bu süzgeçlere uyan açık kalem yok."}</td></tr>`}</tbody></table></div>
+      <div class="hof-rep-table"><table class="hof-table hof-rep-vade"><thead><tr><th>Vade</th><th>Kimden / Kime</th><th>Kaynak</th><th>Açıklama</th><th class="num">Tahsil Edilecek</th><th class="num">Ödenecek</th></tr></thead><tbody>${rows || `<tr><td colspan="6" class="hof-empty">${d.totals.count === 0 && !s.q && !s.direction ? "Bu aralıkta vadesi gelen açık kalem yok. Taksit kartı, çek/senet, vadeli fatura ya da vadeli cari borcu eklendikçe burada listelenir." : "Bu süzgeçlere uyan açık kalem yok."}</td></tr>`}</tbody></table></div>
       ${d.rowTotal > d.rows.length ? `<p class="hof-rep-note">Ekranda ilk ${d.rows.length.toLocaleString("tr-TR")} kalem; tamamı (${d.rowTotal.toLocaleString("tr-TR")}) PDF ve Excel'de.</p>` : ""}
       ${dormant}
       <p class="hof-rep-note">Satıra tıklayın: kaynağı açılır (taksit kartı, çek/senet, cari ya da tablodaki kayıt). Tutarlar açık kalanlardır; kısmen ödenmiş taksitte kalan yazılır.${tableNote}</p>`;

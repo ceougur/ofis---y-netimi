@@ -537,7 +537,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     label: item.label,
     party: item.person,
     phone: item.phone || "",
-    detail: [`Kayıt ${dayText(item.entryDate)} · ${tl(item.entryAmount)}`, item.expectedDate && item.entryDueDate ? `Vade ${dayText(item.entryDueDate)}` : "", item.partial ? "kalan" : ""].filter(Boolean).join(" · "),
+    detail: [item.note || "", `Kayıt ${dayText(item.entryDate)} · ${tl(item.entryAmount)}`, item.expectedDate && item.entryDueDate ? `Vade ${dayText(item.entryDueDate)}` : "", item.partial ? "kalan" : ""].filter(Boolean).join(" · "),
     // Kalem takvimdeki kimliğiyle (account|<entryId>) izlenir; tıklanınca carinin kartı açılır (ref.id cari).
     id: item.id,
     entryId: item.entryId,

@@ -1575,7 +1575,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // kartınca kapsanan kısmı (covered) kartın taksitleriyle gelir, burada düşülür (birleşik listelerde bir kez — açık faturadaki covered kuralı). Silinmiş
   // carinin satırı kalem değildir. openDueItems ufuksuzdur (Vade Takip kendi aralığını süzer); dueItems takvim / zil ufku (faturayla aynı: geçmişin
   // tamamı + bugünden DUE_WINDOW.aheadDays gün). "Ödendi Say" yoktur: kalem para kaydıyla (tahsilat / ödeme) kapanır.
-  const DUE_SQL = `SELECT e.id, e.account_id AS accountId, e.kind, e.amount, e.date, e.due_date AS dueDate, e.expected_date AS expectedDate, a.name, a.phone, a.ref_no AS refNo
+  const DUE_SQL = `SELECT e.id, e.account_id AS accountId, e.kind, e.amount, e.date, e.note, e.due_date AS dueDate, e.expected_date AS expectedDate, a.name, a.phone, a.ref_no AS refNo
     FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
     WHERE e.source = '' AND e.kind IN ('debt', 'credit') AND (e.due_date <> '' OR e.expected_date <> '') ORDER BY e.rowid`;
   const dayGap = (from, to) => Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000);
@@ -1606,6 +1606,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         amount,
         days,
         state: days === 0 ? "today" : days < 0 ? "overdue" : "upcoming",
+        // 2.4.6 (2.4.5 gezinti B6): borç kaydının Açıklaması — aynı caride iki vadeli borç ayırt edilsin (pil kartı, zil, Vade Takip). Etiket (label)
+        // değişmez (kâhin ve göç testleri onu okur); açıklama ayrı alan, ekranda etiketin yanında.
+        note: String(row.note || "").trim(),
         // Bilgi (ekran): kaydın tarihi, tutarı, kendi vade ve beklenen ödeme tarihi; kısmen kapanmış mı.
         entryDate: row.date,
         entryAmount: roundMoney(Number(row.amount) || 0),

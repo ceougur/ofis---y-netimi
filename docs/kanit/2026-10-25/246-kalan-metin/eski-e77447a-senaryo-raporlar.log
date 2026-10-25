@@ -1,0 +1,11 @@
+
+■ A. Boş veri: sol menüden Raporlar (cari yok)
+✓ sol menüde Raporlar görünür (yönetici)
+✗ sekmeler: Cari Ekstre, Vade Takip, Nakit Akış, Çek / Senet, Tüm Raporlar, Tablo Raporları
+Error: BAŞARISIZ: sekmeler: Cari Ekstre, Vade Takip, Nakit Akış, Çek / Senet, Tüm Raporlar, Tablo Raporları
+    at ok (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-kalan-metin/eski-e77447a/test/e2e/senaryo-raporlar.mjs:49:20)
+    at file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-kalan-metin/eski-e77447a/test/e2e/senaryo-raporlar.mjs:100:5
+    at async step (file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-kalan-metin/eski-e77447a/test/e2e/senaryo-raporlar.mjs:70:3)
+    at async file:///tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-kalan-metin/eski-e77447a/test/e2e/senaryo-raporlar.mjs:93:3
+
+SENARYO BAŞARISIZ — 1/2 denetim geçti. Ekran görüntüleri: /tmp/claude-0/-home-user/456ebc12-8183-520e-989e-af270fef8a58/scratchpad/246-kalan-metin/eski-e77447a/test/e2e/artifacts/senaryo-rapor

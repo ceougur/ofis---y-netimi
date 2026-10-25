@@ -195,7 +195,7 @@ describe("2.4.4 U3 — Tablo raporları: kendi adı, alt TOPLAM satırı (ekran/
     assert.equal(table.columns.length, 20, `kolon sayısı: ${table.columns.map(column => column.label).join(", ")}`);
     const text = pdfText((await exportOf("cari-ekstre", "pdf", {})).buffer).replace(/\s+/g, " ");
     for (const row of table.rows) for (const key of ["borc", "alacak", "bakiye"]) if (typeof row[key] === "number") assert.ok(text.includes(money(row[key])), `PDF'te tutar bölünmüş: "${money(row[key])}" (${key}, ${row.cari})`);
-    for (const label of ["Cari", "Tarih", "Açıklama", "Kaynak", "Tablodaki Borç (Muhasebe Kaydı Değil)", "Tahsil Edilen", "Tablodaki Bakiye (Muhasebe Kaydı Değil)", "Durum"]) assert.ok(text.includes(label), `PDF kolon başlığı bölünmüş: "${label}"`);
+    for (const label of ["Kişi", "Tarih", "Açıklama", "Kaynak", "Tablodaki Borç (Muhasebe Kaydı Değil)", "Tahsil Edilen", "Tablodaki Bakiye (Muhasebe Kaydı Değil)", "Durum"]) assert.ok(text.includes(label), `PDF kolon başlığı bölünmüş: "${label}"`);
     assert.match(text, /\d+ özel alan kolonu sayfaya sığmadı \(tamamı Excel'de\)/, "sığmayan özel alan kolonu alt başlıkta");
   });
 

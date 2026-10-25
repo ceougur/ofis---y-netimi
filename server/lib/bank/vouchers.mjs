@@ -782,7 +782,8 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
     return rows.map(row => {
       const transfer = row.kind === "transfer";
       const amount = Number(row.amountMinor) / 100;
-      const name = `Planlı ${typeLabel(row.kind).toLocaleLowerCase("tr-TR")}`;
+      // 2.4.6 (2.4.5 gezinti B7): pil / zil / Vade Takip etiketi bir ad — yazım düzeni (her sözcük büyük): "Planlı Diğer Gider".
+      const name = `Planlı ${typeLabel(row.kind)}`;
       return {
         date: row.date,
         direction: transfer ? "" : PLAN_OUT.has(row.kind) ? "out" : "in",

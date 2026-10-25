@@ -1,0 +1,38 @@
+{
+  "ad": "246-kalan-metin/yeni-senaryo-210",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-210.mjs",
+  "commit": "e77447a623f7af8a4673eb46fd87c1732c7aa6e1",
+  "dal": "is/kalan-metin",
+  "kirli": 22,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T10:26:20.806Z",
+  "sure_sn": 16.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 9,
+    "gecen": 8,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "m15: Cari, Taksitler, Stok, Çek/Senet arama kutuları aynı: Cari rgb(233, 245, 238)|rgb(183, 214, 195)|10px · Taksitler rgb(255, 255, 255)|rgb(31, 106, 80)|10px · Stok rgb(233, 245, 238)|rgb(183, 214, 195)|10px · Çek/Senet rgb(233, 245, 238)|rgb(183, 214, 195)|10px",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-25/246-kalan-metin/yeni-senaryo-210.log",
+  "klasor": "/home/user/wt/kalan-metin",
+  "ham_cikti_sha256": "6fe4fbb1f333a1ef4abd15ebcec2d6510f26b84b88a4efc59112933d81dac3f6",
+  "ham_cikti_bayt": 1632
+}
