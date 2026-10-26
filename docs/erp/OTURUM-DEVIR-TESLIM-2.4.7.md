@@ -11,17 +11,22 @@
 
 1. **Kuralları oku.** `CLAUDE.md` (oturum açılınca kendiliğinden yüklenir): anayasa, kalite çıtası, test kuralı, KANIT KURALI, test
    dersleri 1–43, Verimlilik, Güvenlik, Teslim düzeni. Kurallar pazarlıksızdır (§2'de özeti var, kaynak CLAUDE.md).
-2. **Dalı al.** Çalışma dalı İKİ depoda da `claude/youthful-euler-fl8ks4`:
-   - Program: `ceougur/ofis---y-netimi`. Bütün güncel belgeler bu dalda, master'da yok.
-   - Site + lisans servisi + Operatör Merkezi: `ceougur/destekofis`.
-
-   `git pull origin claude/youthful-euler-fl8ks4`. Eski `claude/hopeful-goodall-6nmtcj` dalından belge ALINMAZ.
-
-   **Birleştirilmiş PR kuralı.** Sistem talimatı, PR'ı birleştirilmiş dala yeni iş yığılmamasını ister: dal en son default daldan
-   (`master` / `main`) yeniden başlatılır, birleşmemiş commit'ler rebase ile korunur. Önce dalın `origin/master`'a göre durumuna bak.
-
-   Program dalının master'a göre son durumu: 2.4.6 PR #36 squash ile birleşti (d31b486). Dalda ondan sonra yalnız BELGE commit'leri var
-   (CLAUDE.md Açık iş, tanıtım görseli `docs/pazarlama/DestekOfis-Tanitim.png`, bu belge). Kod değişikliği yok.
+2. **Dal (KARAR, eski oturum 26.10.2026; yeni oturum sordu).**
+   - Yeni oturum KENDİ SİSTEM TALİMATINDA ATANAN dalda çalışır ve yalnız oraya gönderir (iki depoda da). Eski oturumun dalı
+     `claude/youthful-euler-fl8ks4` yalnız KAYNAKTIR, ona gönderilmez. Eski `claude/hopeful-goodall-6nmtcj` dalından belge ALINMAZ.
+   - Atanan dal `origin/master`'dan (site: `origin/main`) başlatılır: `git checkout -B <atanan-dal> origin/master`.
+     Gerekçe: 2.4.6 PR #36 squash ile birleşti (master d31b486). Eski dalın master'dan farkı YALNIZ BELGE (kod farkı yok, 26.10'da
+     `git diff --stat origin/master origin/claude/youthful-euler-fl8ks4` ile doğrulandı).
+   - Farkın taşınması, tek commit:
+     ```
+     git fetch origin claude/youthful-euler-fl8ks4
+     git checkout origin/claude/youthful-euler-fl8ks4 -- CLAUDE.md docs/2.4.6-IS-LISTESI.md docs/erp/OTURUM-DEVIR-TESLIM-2.4.7.md \
+       docs/kanit/2026-10-25/246-paket docs/pazarlama/DestekOfis-Tanitim.png
+     ```
+     Sonra `git diff --stat origin/master origin/claude/youthful-euler-fl8ks4` ile `git diff --stat origin/master HEAD`'in AYNI olduğunu gör.
+     `docs/kanit/` BELGE_YOLLARI dışında: bu commit ilk kod commit'iyle birlikte gönderilir (ders 26). Acil değilse beklet.
+   - Site deposu (`ceougur/destekofis`): eski dalın `main`'den farkı YOK; atanan dal doğrudan `origin/main`'den başlar.
+   - Belgede geçen "dal claude/youthful-euler-fl8ks4" ifadelerini "atanan dal" diye oku.
 3. **Kullanıcının "başla"sını bekle.** 2.4.7 kodu kullanıcı "başla" deyince başlar. Kullanıcı Claude haftalık kullanım sınırının
    29.10.2026 Per 02:00 TR'de sıfırlanmasını bekliyordu. "Başla"dan önce kod yazma, ajan başlatma. Kullanıcı bir kez "şimdi değil
    2.4.7'ye" deyip başlatılan işi durdurttu.
