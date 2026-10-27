@@ -1,0 +1,1 @@
+{"name":"DestekOfis Mobil","short_name":"DestekOfis","description":"Ofis sunucunuzdaki DestekOfis bilgilerinin telefondan görünümü","id":"/mobil/","start_url":"/mobil/","scope":"/mobil/","display":"standalone","background_color":"#f4f7f7","theme_color":"#102a36","lang":"tr","icons":[{"src":"icons/app.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}

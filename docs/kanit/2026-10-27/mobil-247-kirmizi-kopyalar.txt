@@ -1,0 +1,32 @@
+2.4.7 M1 (mobil görünüm) — kırmızı kanıtların kopyaları (ders 7, 23, 25, 38). Hepsi ayrı klasörde, git archive ile; çalışma ağacına eski kod girmedi.
+
+kirmizi-mobil-247-api-eski-d31b486-yalniz-lib
+  Kopya: git archive d31b4868 (2.4.6, master) + bu daldaki test/mobil-247.test.mjs + server/lib/mobile.mjs (yalnız saf beyaz liste; app.mjs bağı YOK).
+  Beklenen neden: program /api/mobil/ uçlarını tanımıyor. Görülen: before kancası "404 {"ok":false,"error":"Endpoint bulunamadı."}" (mobil giriş ucu),
+  sunucu testlerinin 13'ü iptal; saf kütüphane testleri (4) geçti. Sonuç 4/17.
+
+kirmizi-e2e-mobil-247-eski-d31b486
+  Kopya: aynı 2.4.6 kopyası + test/e2e/senaryo-mobil-247.mjs (node_modules bu çalışma ağacınınkine bağ; npm ci koşulmadı).
+  Görülen neden: telefon ana adreste masaüstünü aldı — "adres /mobil/ (/)", "başlık “DestekOfis · Ofis Yönetimi”"; sonraki adımlar giriş formu olmadığından
+  yarıda. 2 geçti, 13 kaldı.
+
+kirmizi-yazim-mobil-v03-ozgun
+  Kopya: git archive 3f13c716 + client/mobil/app.js ve index.html kullanıcının v0.3 ÖZGÜN dosyalarıyla değiştirildi.
+  Görülen neden: test/yazim-duzeni.test.mjs "mobil görünümde (client/mobil) kurala uymayan ad yok" 37 adı listeledi (ör. “Kasa ve banka”, “Bu yıl”,
+  “Giriş yap”, “PDF indir”, “← Listeye dön”); öbür 5 test geçti.
+
+kirmizi-e2e-mobil-247-v03-stil
+  Kopya: git archive 3f13c716 + client/mobil/styles.css v0.3 ÖZGÜN dosyası; test f2483e67'deki senaryo.
+  Görülen neden: “Özet tutarları kesilmeden görünür (₺25.000,00)” ✗ ve “Cari Ekstre raporu: yatay taşma yok (492 ≤ 390)” ✗; taşma yüzünden alt menüye
+  dokunma (T7, T8) zaman aşımı. 55/59.
+
+kirmizi-e2e-mobil-247-tek-satir-5e304a7
+  Ana oturum bulgusu (27.10): Özet'te Banka tutarı "₺25.000,0" / "0" diye iki satıra kırılıyordu; önceki "kesilmeden görünür" ölçümü bunu geçirdi
+  (yanlış şeyi ölçüyordu — ders 38). Yeni denetim (amountsOneLine): tutar metninin satır kutuları (Range.getClientRects) tek satır mı + kutuyu / simgeyi
+  aşıyor mu; Özet 4 kart, Finans, Cari ve Stok kartı, listeler; ₺12.345.678,90 büyük tutar eklendi. Kod 5e304a7 (düzeltmeden önce), yeni test.
+  Görülen neden: "Özet kartları … (₺12.370.678,90 → 2 satır)" ve "002 Özet kartları (büyük Kasa) … (₺12.345.678,90 → 2 satır)". 75/77.
+  Düzeltme c55e90f: tutar satır kırmaz (nowrap), sığmazsa app.js fitAmounts yazı boyutunu küçültür (en az 12 px) → 77/77.
+
+Yeşiller: mobil-247-api (17/17), mobil-247-yazim-platform (62/62), e2e-senaryo-mobil-247 (77/77, c55e90f; ekran görüntüleri mobil-247-ekran/).
+Yerel Chromium: Playwright 1.56'nın beklediği headless shell (1194) bu kapsayıcıda yok, indirme ağ politikasıyla düştü; /opt/pw-browsers'taki 1243
+(Chromium 153) not defterinde kurulan sembolik bağ klasörüyle (PLAYWRIGHT_BROWSERS_PATH) kullanıldı. CI kendi tarayıcısını kurar.
