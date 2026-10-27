@@ -1,0 +1,83 @@
+{
+  "ad": "edm247-e4e5-kirmizi-eski-d31b4868",
+  "komut": "node --test /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247-eski-d31b4868/test/edoc-kullanim-247.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247-eski-d31b4868/test/edoc-kullanim-birim-247.test.mjs",
+  "commit": "a161a047118a8167bffc5ad6ec3a69d16e7bc9ae",
+  "dal": "is/edm-247",
+  "kirli": 4,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v165 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-27T06:29:27.341Z",
+  "sure_sn": 1.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 1,
+    "basarisiz": 10,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 10 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler) › boş veri: sayaç boş; e-Arşiv gönderimi 1 sayılır; Durum Sorgula (2 kez) ve aynı belgeyi yeniden Gönder sayıyı artırmaz",
+      "konum": "test/edoc-kullanim-247.test.mjs:105:3",
+      "hata": "Expected values to be strictly deep-equal: · undefined !== []"
+    },
+    {
+      "ad": "2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler) › EDM reddi (Hata) sayılmaz; düzeltip yeniden gönderilen e-Fatura bir kez sayılır",
+      "konum": "test/edoc-kullanim-247.test.mjs:120:3",
+      "hata": "Cannot read properties of undefined (reading 'find')"
+    },
+    {
+      "ad": "2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler) › ay sonu: istek EDM'ye 30.06 23:5x'te ulaşıp yanıt koptu (belirsiz, sayılmaz); 01.07'de Durum Sorgula kabulü görür → HAZİRAN'a bir kez",
+      "konum": "test/edoc-kullanim-247.test.mjs:133:3",
+      "hata": "Cannot read properties of undefined (reading 'find')"
+    },
+    {
+      "ad": "2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler) › 11048 kendi ETTN'iyle: belirsiz gönderim → durum 'bulunamadı' gelir → yeniden gönderim 11048 → belge EDM'de bulunur → bir kez sayılır",
+      "konum": "test/edoc-kullanim-247.test.mjs:153:3",
+      "hata": "Cannot read properties of undefined (reading 'find')"
+    },
+    {
+      "ad": "2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler) › iptal sayıyı değiştirmez; portala taslak yükleme ve PORTALDAN gönderim sayılmaz; taslağın programdan gönderimi sayılır",
+      "konum": "test/edoc-kullanim-247.test.mjs:168:3",
+      "hata": "Cannot read properties of undefined (reading 'find')"
+    },
+    {
+      "ad": "2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler) › e-SMM esmm türünde sayılır",
+      "konum": "test/edoc-kullanim-247.test.mjs:195:3",
+      "hata": "Cannot read properties of undefined (reading 'find')"
+    },
+    {
+      "ad": "2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler) › canlı ortam ayrı sayılır; test sayıları değişmez",
+      "konum": "test/edoc-kullanim-247.test.mjs:204:3",
+      "hata": "Cannot read properties of undefined (reading 'find')"
+    },
+    {
+      "ad": "2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler) › ikinci şirket kendi sayacını tutar; lisans doğrulaması (/v1/check) iki şirketin TOPLAMINI gönderir; gövdede ETTN / VKN / belge no yok",
+      "konum": "test/edoc-kullanim-247.test.mjs:219:3",
+      "hata": "Cannot read properties of undefined (reading 'find')"
+    },
+    {
+      "ad": "2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler) › eski / katı lisans sunucusu usage alanını BAD_REQUEST ile reddederse doğrulama özetsiz bir kez yinelenir ve başarılı olur",
+      "konum": "test/edoc-kullanim-247.test.mjs:265:3",
+      "hata": "{\"ok\":false,\"error\":\"Doğrulanacak bir lisans yok. Önce denemeyi başlatın veya lisansınızı girin.\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247-eski-d31b4868/test/edoc-kullanim-birim-247.test.mjs",
+      "konum": "test/edoc-kullanim-birim-247.test.mjs:1:1",
+      "hata": "test failed"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-27/edm247-e4e5-kirmizi-eski-d31b4868.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea",
+  "ham_cikti_sha256": "46ccdde7f6c1c21349d343e9f5736d809d5f66a93aa1ddae77f378b2c0e54ec1",
+  "ham_cikti_bayt": 13560
+}

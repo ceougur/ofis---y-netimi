@@ -213,7 +213,9 @@ export function edmOkuyucu({ url, username, password, fetchImpl, waitMs = 60_000
   let session = "";
   let headerOnly = "Y";
   const stamp = () => new Date().toISOString().slice(0, 19);
-  const header = id => `<REQUEST_HEADER xmlns=""><SESSION_ID>${xmlEsc(id)}</SESSION_ID><CLIENT_TXN_ID>${randomUUID()}</CLIENT_TXN_ID><ACTION_DATE>${stamp()}</ACTION_DATE><REASON>e-SMM eszamanli denetim</REASON><APPLICATION_NAME>DestekOfis Duzenek</APPLICATION_NAME><HOSTNAME>duzenek</HOSTNAME><CHANNEL_NAME>DestekOfis</CHANNEL_NAME><COMPRESSED>N</COMPRESSED></REQUEST_HEADER>`;
+  // 2.4.7 (EDM iş ortaklığı): uygulama adı ürünle aynı "destekofis30" — düzenekteki çağrılar da EDM portalında DestekOfis'in uygulama adıyla görünsün
+  // (A3: portalda uygulama adının görünüp görünmediği okunur). Değer bilerek elle yazılır (okuyucu programın edm.mjs'ini içe aktarmaz: bağımsızlık).
+  const header = id => `<REQUEST_HEADER xmlns=""><SESSION_ID>${xmlEsc(id)}</SESSION_ID><CLIENT_TXN_ID>${randomUUID()}</CLIENT_TXN_ID><ACTION_DATE>${stamp()}</ACTION_DATE><REASON>e-SMM eszamanli denetim</REASON><APPLICATION_NAME>destekofis30</APPLICATION_NAME><HOSTNAME>duzenek</HOSTNAME><CHANNEL_NAME>DestekOfis</CHANNEL_NAME><COMPRESSED>N</COMPRESSED></REQUEST_HEADER>`;
   const post = async (op, inner) => {
     const body = `<?xml version="1.0" encoding="utf-8"?><s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><tem:${op}Request xmlns:tem="${NS}">${inner}</tem:${op}Request></s:Body></s:Envelope>`;
     const response = await fetchImpl(url, { method: "POST", headers: { "content-type": "text/xml; charset=utf-8", soapaction: `"${op}Request"` }, body, signal: AbortSignal.timeout(waitMs) });

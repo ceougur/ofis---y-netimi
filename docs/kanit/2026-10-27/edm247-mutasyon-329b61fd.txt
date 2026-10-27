@@ -1,0 +1,11 @@
+M1-durum-her-zaman-sayar cikis=1 pass=14 fail=3 ilk-hata: error: |-
+M2-kesinlesme-sayilmaz cikis=1 pass=13 fail=4 ilk-hata: error: |-
+M3-tekillik-yok cikis=1 pass=16 fail=1 ilk-hata: error: |-
+M4-ay-kabul-ani cikis=1 pass=15 fail=2 ilk-hata: error: |-
+M5-ortam-hep-test cikis=1 pass=16 fail=1 ilk-hata: error: |-
+M6-red-sayilir cikis=1 pass=16 fail=1 ilk-hata: error: |-
+M7-tek-sirket cikis=1 pass=16 fail=1 ilk-hata: error: |-
+M8-usage-suzgec-yok cikis=1 pass=16 fail=1 ilk-hata: error: |-
+M9-yineleme-yok cikis=1 pass=16 fail=1 ilk-hata: error: |-
+M10-silme-serbest cikis=1 pass=16 fail=1 ilk-hata: error: 'Missing expected exception.'
+BITTI

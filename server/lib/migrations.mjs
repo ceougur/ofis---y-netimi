@@ -1386,6 +1386,26 @@ export const MIGRATIONS = [
       });
     },
   },
+  {
+    version: 37,
+    name: "v2.4.7 e-Belge kullanım sayacı (EDM iş ortaklığı; para dışı)",
+    up(store) {
+      // 2.4.7 E4 (EDM iş ortaklığı B1; kural lib/einvoice/kullanim.mjs): EDM'nin kabul ettiği gönderimlerin kaydı — ETTN + ortam başına BİR satır
+      // (birincil anahtar), ay × tür × ortam sayısı lisans doğrulamasında toplam olarak gider. YALNIZ EKLEYİCİ: yeni tablo, boş kurulur (geriye dönük
+      // doldurma YOK — hak ediş 2.4.7 ile başlar); eski sürüm (2.4.6) tabloyu görmez. Append-only: güncelleme ve silme tetikleyiciyle reddedilir; Şirket
+      // Verisini Sıfırla listelerinde YOK (EDM'nin saydığı gönderim sıfırlamayla geri alınmaz). Para tablosu DEĞİL (Kasa, Banka, cari, Ana Defter okumaz).
+      store.exec(`
+        CREATE TABLE IF NOT EXISTS edoc_usage (
+          ettn TEXT NOT NULL, env TEXT NOT NULL CHECK (env IN ('test', 'live')), kind TEXT NOT NULL CHECK (kind IN ('efatura', 'earsiv', 'esmm')),
+          month TEXT NOT NULL CHECK (length(month) = 7), invoice_id TEXT NOT NULL DEFAULT '', source TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL,
+          PRIMARY KEY (ettn, env)
+        ) STRICT;
+        CREATE INDEX IF NOT EXISTS idx_edoc_usage_month ON edoc_usage(month, env, kind);
+        CREATE TRIGGER IF NOT EXISTS edoc_usage_no_update BEFORE UPDATE ON edoc_usage BEGIN SELECT RAISE(ABORT, 'edoc_usage yalnız eklenir'); END;
+        CREATE TRIGGER IF NOT EXISTS edoc_usage_no_delete BEFORE DELETE ON edoc_usage BEGIN SELECT RAISE(ABORT, 'edoc_usage yalnız eklenir'); END;
+      `);
+    },
+  },
 ];
 // routes/accounts.mjs OPENING_NOTE ile aynı (programın açılış satırına yazdığı açıklama; v35 göçü yalnız eski satırları işaretlerken okur).
 const OPENING_ENTRY_NOTE = "Açılış bakiyesi";
