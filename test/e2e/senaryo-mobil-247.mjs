@@ -17,7 +17,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { CURRENT, bootVersion } from "../guvenilirlik/surumler.mjs";
 import { ADMIN_PASSWORD } from "../helpers.mjs";
-import { ZIRAAT_IBAN } from "../banka-210-hesap-ortak.mjs";
+import { GARANTI_IBAN, ZIRAAT_IBAN } from "../banka-210-hesap-ortak.mjs";
 
 const root = mkdtempSync(path.join(tmpdir(), "senaryo-mobil-247-"));
 const shots = process.env.EKRAN_DIR || path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-mobil-247");
@@ -68,6 +68,25 @@ const noOverflow = async label => {
   const size = await page.evaluate(() => ({ scroll: document.documentElement.scrollWidth, screen: window.screen.width }));
   ok(size.scroll <= size.screen, `${label}: yatay taşma yok (${size.scroll} ≤ ${size.screen})`);
 };
+// Tutar TEK SATIRDA ve tam görünür (ana oturum bulgusu 27.10: "₺25.000,0" / "0" ortadan kırılıyordu; eski ölçüm bunu geçirdi — ders 38).
+// Ölçüm: tutar metninin satır kutularının (Range.getClientRects) farklı üst kenar sayısı = satır sayısı; 1'den çoksa kırık. Ayrıca metin kutusu
+// öğenin (ve yanındaki yüzen simgenin) sınırını aşıyorsa "…" ile kesik. Yalnız öğenin İLK metin düğümü ölçülür (liste satırındaki alt yazı ayrı satırdır).
+const amountsOneLine = async (selector, label) => {
+  const result = await page.$$eval(selector, items => items.map(item => {
+    const node = [...item.childNodes].find(child => child.nodeType === 3 && child.textContent.trim());
+    if (!node) return { text: item.textContent.trim(), lines: 0, clipped: false };
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    const tops = new Set([...range.getClientRects()].filter(rect => rect.width > 0).map(rect => Math.round(rect.top)));
+    const box = range.getBoundingClientRect();
+    let limit = item.getBoundingClientRect().right;
+    const icon = item.parentElement?.querySelector(".metric-icon")?.getBoundingClientRect();
+    if (icon && icon.bottom > box.top && icon.top < box.bottom) limit = Math.min(limit, icon.left);
+    return { text: node.textContent.trim(), lines: tops.size, clipped: box.right > limit + 1 };
+  }));
+  const bad = result.filter(item => item.lines !== 1 || item.clipped);
+  ok(result.length > 0 && bad.length === 0, `${label}: ${result.length} tutar tek satırda ve tam (${bad.map(item => `${item.text} → ${item.lines} satır${item.clipped ? ", kesik" : ""}`).join("; ") || result.map(item => item.text).join(", ")})`);
+};
 const download = async (target, click) => {
   const [file] = await Promise.all([target.waitForEvent("download", { timeout: 20000 }), click()]);
   const where = await file.path();
@@ -82,6 +101,8 @@ const veli = await must("cari 2", api.post("/api/workspace/accounts", { name: "V
 await must("kasa girişi", api.post("/api/workspace/cash", { kind: "in", amount: "3.000", description: "Danışmanlık" }));
 await must("kasa çıkışı", api.post("/api/workspace/cash", { kind: "out", amount: "120,25", description: "Kırtasiye" }));
 const bankAccount = await must("banka hesabı", api.post("/api/workspace/bank/accounts", { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", iban: ZIRAAT_IBAN, opening: { date: "2026-01-02", amount: "25.000", confirmed: true } }));
+// Büyük tutar (ana oturum 27.10): kartlarda ₺12.345.678,90 düzeyinde tutar tek satırda görünmeli.
+await must("büyük banka hesabı", api.post("/api/workspace/bank/accounts", { bankName: "Garanti BBVA", name: "Büyük Hesap", kind: "demand", currency: "TRY", iban: GARANTI_IBAN, opening: { date: "2026-01-02", amount: "12.345.678,90", confirmed: true } }));
 const kalem = await must("stok", api.post("/api/workspace/stock", { name: "Kurşun Kalem", unit: "Adet", unitPrice: "5", openingQty: "40", openingPay: "none" }));
 await must("stok çıkışı", api.post(`/api/workspace/stock/${kalem.id}/moves`, { kind: "out", qty: "7", note: "Ofis tüketimi" }));
 const second = (await must("ikinci şirket", api.post("/api/companies", { name: "Mobil İkinci Şirket" }))).company;
@@ -145,17 +166,7 @@ await step("T2 giriş → Özet sayıları = masaüstü API'si", async () => {
   const box = await page.$eval(".bottom-nav", nav => { const r = nav.getBoundingClientRect(); return { top: r.top, height: r.height }; });
   ok(box.height < 90 && box.top > 700, `alt menü tek satır, ekranın altında (yükseklik ${Math.round(box.height)})`);
   ok((await text("#company option:checked")) !== "", "şirket seçili");
-  // Kesik tutar: metnin dizilmiş genişliği kartın (ve sağdaki simgenin) sınırını aşıyorsa "…" ile kesilmiştir (scrollWidth yüzen simgeyi görmez).
-  const clipped = await page.$$eval(".metric-value", items => items.filter(item => {
-    const range = document.createRange();
-    range.selectNodeContents(item);
-    const textBox = range.getBoundingClientRect();
-    let limit = item.getBoundingClientRect().right;
-    const icon = item.parentElement.querySelector(".metric-icon")?.getBoundingClientRect();
-    if (icon && icon.bottom > textBox.top && icon.top < textBox.bottom) limit = Math.min(limit, icon.left);
-    return textBox.right > limit + 1;
-  }).map(item => item.textContent.trim()));
-  ok(clipped.length === 0, `Özet tutarları kesilmeden görünür (${clipped.join(", ") || "—"})`);
+  await amountsOneLine("[data-stat] .metric-value", "Özet kartları");
   await noOverflow("Özet");
   await shot("02-ozet");
 });
@@ -168,6 +179,7 @@ await step("T3 Cari: liste, arama, cari kartı, Cari Ekstre PDF", async () => {
   const deskAli = first.accounts.accounts.find(row => row.id === ali.id).balance;
   ok((await text(aliRow)).startsWith(tl(deskAli)), `Ali bakiyesi ${await text(aliRow)} = ${tl(deskAli)}`);
   ok(deskAli === 850.5, "Ali beklenen 1.250,50 − 400");
+  await amountsOneLine("#content .list-amount", "Cari listesi bakiyeleri");
   await noOverflow("Cari listesi");
   await shot("03-cari-liste");
   await page.click("#list-search");
@@ -184,6 +196,7 @@ await step("T3 Cari: liste, arama, cari kartı, Cari Ekstre PDF", async () => {
   const deskDetail = await must("masaüstü cari kartı", api.get(`/api/workspace/accounts/${ali.id}`));
   const shown = (await page.$$(".entry-row")).length;
   ok(shown === Math.min(30, deskDetail.entries.length) && shown === 2, `son hareketler ${shown} = ${deskDetail.entries.length}`);
+  await amountsOneLine("[data-detail-balance], .entry-row > strong", "Cari kartı tutarları");
   await noOverflow("Cari kartı");
   await shot("04-cari-karti");
   const pdf = await download(page, () => page.click("[data-account-statement]"));
@@ -202,7 +215,8 @@ await step("T4 Finans: Nakit Kasa, Banka ve hesap satırı = API", async () => {
   const lineSel = `[data-bank-account="${row?.id}"] strong`;
   const expected = tl(typeof row?.balanceMinor === "number" ? row.balanceMinor / 100 : row?.balance);
   ok(row && (await text(lineSel)) === expected, `hesap satırı ${row ? await text(lineSel) : "yok"} = ${expected}`);
-  ok(first.bank === 25000, "Banka beklenen açılış 25.000");
+  ok(Math.abs(first.bank - 12370678.9) < 0.005, "Banka beklenen açılışlar 25.000 + 12.345.678,90");
+  await amountsOneLine("[data-money] .big-balance, .stat-line strong", "Finans tutarları");
   await noOverflow("Finans");
   await shot("05-finans");
 });
@@ -217,6 +231,7 @@ await step("T5 Stok: miktar = API; stok kartı hareketleri", async () => {
   ok((await text("[data-detail-balance]")) === "33 Adet", `stok kartı ${await text("[data-detail-balance]")}`);
   const moves = await page.$$eval(".entry-row strong.in, .entry-row strong.out", rows => rows.map(row => row.textContent.trim()));
   ok(moves.length === 2 && moves.includes("−7 Adet") && moves.includes("+40 Adet"), `hareketler ${moves.join(", ")}`);
+  await amountsOneLine("[data-detail-balance], .entry-row > strong", "Stok kartı miktarları");
   await noOverflow("Stok kartı");
   await shot("06-stok-karti");
 });
@@ -284,15 +299,25 @@ await step("T8 iki şirket: 002 boş; veri girilince Yenile; 001'e dönüş", as
   await tapNav("accounts");
   ok((await text("#content .empty")).includes("Kayıt bulunamadı."), "002 cari listesi boş ipucu");
   await shot("10-sirket-002-bos");
-  await must("002 cari", api.post(`/api/workspace/accounts?hofCompany=${second.id}`, { name: "Ayşe Demir", type: "customer" }));
-  await must("002 kasa", api.post(`/api/workspace/cash?hofCompany=${second.id}`, { kind: "in", amount: "500", description: "Peşin satış" }));
+  const ayse = await must("002 cari", api.post(`/api/workspace/accounts?hofCompany=${second.id}`, { name: "Ayşe Demir", type: "customer" }));
+  await must("002 büyük borç", api.post(`/api/workspace/accounts/${ayse.id}/entries?hofCompany=${second.id}`, { kind: "debt", amount: "12.345.678,90", note: "Proje bedeli" }));
+  await must("002 kasa", api.post(`/api/workspace/cash?hofCompany=${second.id}`, { kind: "in", amount: "12.345.678,90", description: "Peşin satış" }));
   await page.click('[data-action="refresh"]');
   await page.waitForSelector("#content .list-item", { timeout: 10000 });
   const names = await page.$$eval("#content .list-item strong", rows => rows.map(row => row.textContent.trim()));
   ok(JSON.stringify(names) === JSON.stringify(["Ayşe Demir"]), `002 Yenile → ${names.join(", ")}`);
+  await amountsOneLine("#content .list-amount", "002 cari listesi (büyük bakiye)");
+  await page.click("#content .list-item");
+  await page.waitForSelector("[data-detail-balance]");
+  ok((await text("[data-detail-balance]")) === tl(12345678.9), `Ayşe Demir bakiyesi ${await text("[data-detail-balance]")}`);
+  await amountsOneLine("[data-detail-balance], .entry-row > strong", "002 cari kartı (büyük bakiye)");
+  await noOverflow("002 cari kartı");
+  await shot("10b-sirket-002-buyuk-bakiye");
   await tapNav("home");
   const two = await desk(second.id);
-  ok((await statText("cash")) === tl(two.cash) && two.cash === 500, `002 Nakit Kasa ${await statText("cash")} = ${tl(two.cash)}`);
+  ok((await statText("cash")) === tl(two.cash) && Math.abs(two.cash - 12345678.9) < 0.005, `002 Nakit Kasa ${await statText("cash")} = ${tl(two.cash)}`);
+  await amountsOneLine("[data-stat] .metric-value", "002 Özet kartları (büyük Kasa)");
+  await shot("10c-sirket-002-ozet-buyuk");
   await page.selectOption("#company", (await must("şirketler", api.get("/api/auth/me"))).companies.find(c => c.id !== second.id).id);
   await page.waitForSelector("#content .summary-grid");
   await page.waitForTimeout(300);

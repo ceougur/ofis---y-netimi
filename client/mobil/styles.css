@@ -15,5 +15,7 @@
 .mobile-logout{display:none}.status-dot.off{background:#a9b4b7;box-shadow:0 0 0 4px rgba(120,135,140,.12)}
 @media(max-width:760px){.mobile-logout{display:inline-flex;align-items:center;justify-content:center}}
 @media(max-width:760px){.report-filters label.wide{grid-column:1/-1}.report-filters input[type=search]{min-width:0}}
-/* Tutar kesilmez (v0.3 dar ekranda "₺25.000,..." gösteriyordu): telefonda gerekirse alt satıra iner */
-@media(max-width:760px){.metric-value{font-size:19px;white-space:normal;overflow-wrap:anywhere;text-overflow:clip}}
+/* Tutar TEK SATIRDA ve tam (v0.3 dar ekranda "₺25.000,..." kesiyordu; satıra bölmek de "₺25.000,0 / 0" yapıyordu): satır kırılmaz, sığmazsa
+   app.js fitAmounts yazı boyutunu küçültür (en az 12 px). Hesap adının uzunluğu tutarı itmez. */
+.metric-value,.big-balance,[data-detail-balance],.stat-line strong{white-space:nowrap;overflow:hidden;text-overflow:clip}
+.stat-line span{min-width:0;overflow-wrap:anywhere}
