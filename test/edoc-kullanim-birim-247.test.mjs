@@ -33,8 +33,17 @@ test("geçiş sınıfı: gönderim kabulü; belirsizin kesinleşmesi; durum yine
   assert.equal(usageTransition({ action: "invoice.e.status", previous: { eStatus: "none", eAdapter: "" }, status: "sent" }), "", "izsiz belge (belirsiz değil)");
   // Mutasyon M6 (Hata / Taslak kabul sayılsın) uçtan uca testlerde yakalanmıyordu (o yollarda eylem zaten sayılmaz); burada doğrudan denetlenir.
   for (const status of ["error", "draft", "none", "waiting", "withdrawn"]) {
-    for (const action of ["invoice.e.status", "invoice.e.duplicate", "invoice.e.sent"]) assert.equal(usageTransition({ action, previous: uncertain, status }), "", `${action} → ${status} sayılmaz`);
+    for (const action of ["invoice.e.status", "invoice.e.duplicate", "invoice.e.sent"]) {
+      if (action === "invoice.e.status" && status === "error") continue; // Y2 / S6 aşağıda
+      assert.equal(usageTransition({ action, previous: uncertain, status }), "", `${action} → ${status} sayılmaz`);
+    }
   }
+  // Y2 / S6 (U13): belirsiz → Durum Sorgula "EDM aldı, reddetti" (Hata) sayılır, ay gönderim izinin ayı; Hata'dan Hata ve izsiz belge sayılmaz.
+  assert.equal(usageTransition({ action: "invoice.e.status", previous: uncertain, status: "error" }), "confirmed", "Y2: EDM aldı, reddetti");
+  assert.equal(usageTransition({ action: "invoice.e.status", previous: { eStatus: "error", eAdapter: "edm" }, status: "error" }), "");
+  assert.equal(usageTransition({ action: "invoice.e.status", previous: { eStatus: "none", eAdapter: "" }, status: "error" }), "");
+  const u13 = [{ type: "invoice.e.sending", at: "2026-10-31T20:00:00.000Z", payload: {} }, { type: "invoice.e.send-failed", at: "2026-10-31T20:00:01.000Z", payload: { status: "none" } }];
+  assert.deepEqual(usageDecision({ action: "invoice.e.status", previous: uncertain, status: "error", at: "2026-11-01T09:00:00.000Z", history: u13 }), { count: true, at: "2026-10-31T20:00:00.000Z", reason: "confirmed" });
 });
 
 test("gönderim anı (S1): 'EDM'de değil' bilgisinden sonraki İLK gönderim izi; 11048'de yeniden gönderimin kendi izi sayılmaz, 'bulunamadı' kapatmaz", () => {

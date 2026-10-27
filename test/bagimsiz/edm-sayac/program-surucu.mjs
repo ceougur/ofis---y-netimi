@@ -11,7 +11,7 @@
 //                                         (invoice.e.sending) + invoice.e.sent. İletilmiş / iptal edilmiş belgede program göndermez (409, üretilemez).
 //   gonder_red / gonder_belirsiz        — (belirsizse önce bulunamadı) iz + invoice.e.send-failed {status: error | none}.
 //   belirsiz_kesinlesti_kabul           — Durum Sorgula kabul: setE invoice.e.status (önceki durumdan: belirsiz → sayılır; Hata → F2 sayılır).
-//   belirsiz_kesinlesti_red             — Durum Sorgula: EDM'de bulundu, EDM reddetmiş → setE invoice.e.status {status: error} (Hata; sayılmaz).
+//   belirsiz_kesinlesti_red             — Durum Sorgula: EDM'de bulundu, EDM reddetmiş → setE invoice.e.status {status: error} (Hata; Y2 / S6: sayılır, ay gönderim izi).
 //   durum_bulunamadi                    — clearE: invoice.e.status {missing}; belge bekleyen (yeniden gönderilebilir).
 //   zaten_gonderilmis_11048             — yeniden gönderim: (belirsizse önce bulunamadı) iz → 11048 kendi ETTN'i → durum bulunur → setE invoice.e.duplicate
 //                                         (önceki durum = markSending'in belirsizi). İletilmiş belgede program göndermez.
