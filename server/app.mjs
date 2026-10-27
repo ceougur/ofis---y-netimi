@@ -76,6 +76,7 @@ import { resolveDbPath } from "./lib/db-path.mjs";
 import { createReportRunner } from "./lib/report-runner.mjs";
 import { USAGE_MONTHS, journalRowsOf, summarizeUsage, windowMonths } from "./lib/einvoice/kullanim.mjs";
 import { openUsageLedger } from "./lib/einvoice/kullanim-defteri.mjs";
+import { USAGE_BACKUP_TABLE } from "./lib/backup.mjs";
 import { isoDay } from "./lib/plans.mjs";
 import { MOBILE_PREFIX, captureResponse, isPhone, resolveMobile, transformMobile } from "./lib/mobile.mjs";
 
@@ -144,15 +145,23 @@ export function createApp(overrides = {}) {
   const usageLedger = hub ? hub.usageLedger : openUsageLedger({ dir: config.dataDir, log, fault: overrides.edocUsageFault || null });
   function usageRowsOfSelf() {
     try {
-      return usageLedger.rowsOf(companyId);
+      return usageLedger.allRows();
     } catch {
       return null;
     }
   }
+  const backupLedgerRowsOf = db => {
+    try {
+      return db.prepare(`SELECT company_id, company_code, ettn, env, kind, month, invoice_id, source, created_at FROM ${USAGE_BACKUP_TABLE}`).all();
+    } catch {
+      return [];
+    }
+  };
   function syncUsageOf(company) {
     try {
-      const rows = withCompanyDb(company, db => journalRowsOf(db)) || [];
-      return usageLedger.syncFrom(company.id, company.code, rows);
+      const [rows, copy] = withCompanyDb(company, db => [journalRowsOf(db), backupLedgerRowsOf(db)]) || [[], []];
+      // V15: geri yüklenen yedekteki defter kopyası (bütün şirketler) yalnız birleştirilir; sonra şirketin kendi izi.
+      return usageLedger.mergeAll(copy) + usageLedger.syncFrom(company.id, company.code, rows);
     } catch (error) {
       log.warn?.(`e-Belge kullanım defteri: ${company?.code || company?.id} aktarılamadı (${error.message})`);
       return 0;
@@ -176,7 +185,7 @@ export function createApp(overrides = {}) {
   }
   // Geri yüklenen ya da silinen şirket o sırada açılmaz; istek 503 ile "birkaç saniye sonra" der.
   const busyCompanies = hub ? hub.busyCompanies : new Map();
-  const backups = hub ? hub.backups : createCompanyBackups({ registry: companies, dataDir: config.dataDir, keep: config.backupKeep, log, withDb: withCompanyDb, busy: busyCompanies, closeCompany: id => closeCompany(id), usageRowsFor: company => usageLedger.rowsOf(company.id), onRestored: company => syncUsageOf(company) });
+  const backups = hub ? hub.backups : createCompanyBackups({ registry: companies, dataDir: config.dataDir, keep: config.backupKeep, log, withDb: withCompanyDb, busy: busyCompanies, closeCompany: id => closeCompany(id), usageRowsFor: () => usageLedger.allRows(), onRestored: company => syncUsageOf(company) });
   if (!hub) {
     try {
       backups.migrate();

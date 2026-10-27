@@ -8,6 +8,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { after, before, describe, test } from "node:test";
 import { resetEdmCaches } from "../server/lib/einvoice/edm.mjs";
+import { openDatabase } from "../server/lib/db.mjs";
 import { USAGE_LEDGER_FILE } from "../server/lib/einvoice/kullanim-defteri.mjs";
 import { OUR_VKN, startMockEdm } from "./einvoice-mock.mjs";
 import { CURRENT, bootVersion, tagsAvailable } from "./guvenilirlik/surumler.mjs";
@@ -152,9 +153,39 @@ describe("2.4.7 kullanım defteri: yedeğe girer, geri yüklemede yalnız birle�
     try {
       const read = await usage(await server.login());
       assert.equal(earsivJune(read.months), 3, "yedek defterin 3 satırını taşıdı");
-      assert.equal(earsivJune(read.journal), 3, "yedeğin izi defterle tamamlanmıştı");
+      assert.equal(earsivJune(read.journal), 2, "şirket izi yedekteki gibi; defter yedekteki defter kopyasından");
     } finally {
       await server.close();
+    }
+  });
+
+  test("V15: 001'in yedeği defterin TAMAMINI taşır (002'nin satırları dahil); yeni kurulumda 001'i geri yüklemek 002'nin satırını da birleştirir", async () => {
+    const source = await boot(CURRENT, dirOf("iki-sirket"));
+    let name;
+    let secondId;
+    try {
+      const api = await source.login();
+      const created = await api.post("/api/companies", { name: "İkinci Büro", select: false });
+      assert.equal(created.status, 200, JSON.stringify(created.data));
+      secondId = (created.data.company || created.data).id;
+      const q = `?hofCompany=${encodeURIComponent(secondId)}`;
+      const scoped = { get: url => api.get(`${url}${url.includes("?") ? "&" : "?"}hofCompany=${encodeURIComponent(secondId)}`), post: (url, body) => api.post(`${url}${q}`, body), put: (url, body) => api.put(`${url}${q}`, body) };
+      await sendTwo(scoped, 700);
+      assert.equal(earsivJune((await usage(scoped)).months), 2, "002'nin defter satırları");
+      assert.deepEqual((await usage(api)).months, [], "001'de belge yok");
+      name = await backupOf(api);
+    } finally {
+      await source.close();
+    }
+    const fresh = dirOf("v15-yeni");
+    const server = await restoreInto(fresh, name);
+    await server.close();
+    const ledger = openDatabase(path.join(fresh, USAGE_LEDGER_FILE), { readOnly: true });
+    try {
+      const rows = ledger.prepare("SELECT company_id AS company, COUNT(*) AS n FROM usage GROUP BY company_id").all();
+      assert.deepEqual(rows.map(row => [row.company, row.n]), [[secondId, 2]], "002'nin iki satırı yeni kurulumun defterinde");
+    } finally {
+      ledger.close();
     }
   });
 
