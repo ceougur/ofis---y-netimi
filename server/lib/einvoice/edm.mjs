@@ -45,7 +45,13 @@ export const EDM_PORTAL_URLS = Object.freeze({
 });
 export const EDM_DEFAULT_NS = "http://schemas.i2i.com/ei/wsdl";
 export const EDM_OPERATIONS = Object.freeze(["Login", "SendInvoice", "LoadInvoice", "GetInvoiceStatus", "GetInvoice", "CheckUser", "CancelInvoice", "MarkInvoice"]);
-const APP = "DestekOfis";
+// İstek başlığındaki uygulama ve kanal adları (2.4.7, EDM iş ortaklığı). EDM, iş ortağının hak edişini (müşterinin kullandığı kontörün %30'u, ay
+// sonunda) YALNIZ REQUEST_HEADER/APPLICATION_NAME'den hesaplar (kullanım bazlı): DestekOfis'in EDM'deki uygulama adı "destekofis30"dur. Bu yüzden
+// APPLICATION_NAME her istekte (Login, CheckUser, e-Fatura/e-Arşiv ve e-SMM işlemlerinin hepsi) bu değeri taşır ve seçenekle DEĞİŞTİRİLEMEZ — yanlış
+// bir değer müşterinin kontör kullanımını DestekOfis'e yazdırmaz. CHANNEL_NAME (kanal) hak edişe girmez; "DestekOfis" kalır. 2.4.6 ve öncesi ikisinde de
+// "DestekOfis" gönderiyordu (o sürümlerin kullanımı hak edişe girmez).
+export const EDM_APPLICATION_NAME = "destekofis30";
+export const EDM_CHANNEL_NAME = "DestekOfis";
 // Yan etkisiz EDM işlemleri: bağlantı koparsa bir kez yinelenebilir (aynı istek ikinci kez işlense de sonuç değişmez). SendInvoice, LoadInvoice ve
 // CancelInvoice burada YOK.
 const SAFE_OPERATIONS = new Set(["Login", "CheckUser", "GetInvoiceStatus", "GetInvoice", "MarkInvoice"]);
@@ -194,7 +200,7 @@ const sessionError = (code, message) => String(code) === "10011" || /aktif\s*ses
 // (EFaturaEDM.svc) ve e-SMM (ESmmEDM.svc) istemcileri aynı katmanı kullanır; farkları yalnız varsayılan ad alanı (WSDL okunamazsa) ve yinelenebilir
 // (yan etkisiz) işlem listesidir. Oturum, sözleşme ve "son EDM yanıtı" kayıtları servis adresine göre ayrıdır: e-Fatura oturumu e-SMM için erişim
 // kanıtı sayılmaz (ayrı uç nokta).
-function edmTransport({ baseUrl, username, password, env = "", fetchImpl = (...args) => globalThis.fetch(...args), timeoutMs = 45_000, useWsdl = true, appName = APP, defaultNs = EDM_DEFAULT_NS, safeOperations = SAFE_OPERATIONS }) {
+function edmTransport({ baseUrl, username, password, env = "", fetchImpl = (...args) => globalThis.fetch(...args), timeoutMs = 45_000, useWsdl = true, channelName = EDM_CHANNEL_NAME, defaultNs = EDM_DEFAULT_NS, safeOperations = SAFE_OPERATIONS }) {
   const base = String(baseUrl || "").trim().replace(/\/+$/, "").replace(/\?.*$/, "");
   if (!/^https:\/\//i.test(base) && !/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\//i.test(`${base}/`)) throw new IntegratorError("EDM servis adresi https:// ile başlamalı.", { code: "integrator-url", status: 400 });
   if (!username || !password) throw new IntegratorError("EDM web servis kullanıcı adı ve parolası girilmemiş (Fatura → Entegratör Ayarları).", { code: "integrator-credentials", status: 400 });
@@ -314,9 +320,9 @@ function edmTransport({ baseUrl, username, password, env = "", fetchImpl = (...a
       E("CLIENT_TXN_ID", randomUUID()),
       E("ACTION_DATE", localStamp()),
       E("REASON", "e-Belge"),
-      E("APPLICATION_NAME", appName),
+      E("APPLICATION_NAME", EDM_APPLICATION_NAME),
       E("HOSTNAME", hostname().slice(0, 60) || "DestekOfis"),
-      E("CHANNEL_NAME", appName),
+      E("CHANNEL_NAME", String(channelName || EDM_CHANNEL_NAME).slice(0, 60)),
       E("COMPRESSED", "N"),
     ]);
 
@@ -413,7 +419,7 @@ function edmTransport({ baseUrl, username, password, env = "", fetchImpl = (...a
 
 /**
  * e-Fatura / e-Arşiv istemcisi (EFaturaEDM.svc).
- * @param {{ baseUrl: string, username: string, password: string, env?: "test"|"live", fetchImpl?: Function, timeoutMs?: number, useWsdl?: boolean, appName?: string }} options
+ * @param {{ baseUrl: string, username: string, password: string, env?: "test"|"live", fetchImpl?: Function, timeoutMs?: number, useWsdl?: boolean, channelName?: string }} options
  */
 export function createEdmClient(options) {
   const { base, call, header, withSession, touch, ensureSession, contractReport: report, test } = edmTransport({ ...options, defaultNs: EDM_DEFAULT_NS, safeOperations: SAFE_OPERATIONS });
@@ -592,7 +598,7 @@ export function createEdmClient(options) {
  * Numarayı program verir (SMM/ID dolu); EDM'nin seri üretimi (INVOICESERIAL_REQUESTED) istenmez.
  * Gönderici/alıcı (§5.4): istek düzeyinde SENDER/RECEIVER (vkn, alias) ve SMM/HEADER (SENDER, RECEIVER, FROM, TO) — ikisi verilince HEADER geçer;
  * EDM'nin C# örneği gibi ikisi de doldurulur: FROM = göndericinin GB etiketi, TO = alıcının e-posta adresi (yoksa boş: kâğıt teslim).
- * @param {{ baseUrl: string, username: string, password: string, env?: "test"|"live", fetchImpl?: Function, timeoutMs?: number, useWsdl?: boolean, appName?: string }} options
+ * @param {{ baseUrl: string, username: string, password: string, env?: "test"|"live", fetchImpl?: Function, timeoutMs?: number, useWsdl?: boolean, channelName?: string }} options
  */
 export function createEdmSmmClient(options) {
   const { base, call, header, withSession, touch, ensureSession, contractReport: report, test } = edmTransport({ ...options, defaultNs: EDM_SMM_DEFAULT_NS, safeOperations: SMM_SAFE_OPERATIONS });
