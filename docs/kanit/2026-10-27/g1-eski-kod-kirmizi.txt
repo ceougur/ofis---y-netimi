@@ -1,0 +1,99 @@
+# G1 kırmızı kanıt: eski kod (git archive 1b69f7a, ayrı kopya scratchpad/g1-247-eski-1b69f7a7) + yeni test/gorunen-adres-247.test.mjs
+# komut: node --test test/gorunen-adres-247.test.mjs · çıkış 1 · tests 2, pass 0, fail 2
+# neden: 10 satırda eski görünen adres + SUPPORT_CONTACT.email beklenen destek@destekofis.net
+TAP version 13
+# Subtest: ürün dosyalarında görünen eski e-posta ve site adresi kalmaz (istisnalar dışında)
+not ok 1 - ürün dosyalarında görünen eski e-posta ve site adresi kalmaz (istisnalar dışında)
+  ---
+  duration_ms: 141.13301
+  type: 'test'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g1-247-eski-1b69f7a7/test/gorunen-adres-247.test.mjs:44:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    eski görünen adres kaldı:
+    server/lib/license.mjs:25: export const SUPPORT_CONTACT = Object.freeze({ name: "Destek Ofis", label: "Teknik Destek ve Satın Alımlar İçin", phone: "0536 771 50 55", phoneHref: "tel:+9053
+    server/lib/updater.mjs:69: const userAgent = () => `DestekOfis-Guncelleyici/${installed() || "0.0.0"} (+https://destek-ofis.vercel.app)`;
+    client/admin.html:209: <p class="adm-muted">Sunucu internete bağlanamıyorsa aşağıdaki <b>kurulum kodunu</b> bize iletin (Teknik Destek ve Satın Alımlar İçin: 0536 771 50 55 · destekof
+    client/admin.html:218: <p class="adm-license-contact">Teknik Destek ve Satın Alımlar İçin: <a href="tel:+905367715055"><b>0536 771 50 55</b></a> · <a href="mailto:destekofis@proton.me
+    client/assets/hof-license.js:17: const FALLBACK_CONTACT = { name: "Destek Ofis", label: "Teknik Destek ve Satın Alımlar İçin", phone: "0536 771 50 55", phoneHref: "tel:+905367715055", email: "d
+    client/assets/hof-license.js:107: extraHtml: `<p class="hof-inline-note">Telefon veya e-postadan en az birini yazın. Bilgileriniz yalnızca size ulaşmak için kullanılır (<a href="https://destek-o
+    packaging/windows/setup.iss:19: #define AppURL "https://destekofis.vercel.app"
+    packaging/windows/setup.iss:32: AppContact=destekofis@proton.me
+    tools/build-windows.mjs:154: <body><header><img src="${mark}" alt=""><div><h1>${title}</h1><p>DestekOfis ${version} · Teknik Destek ve Satın Alımlar İçin: 0536 771 50 55 · destekofis@proton
+    docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html:437: <div class="box tip"><b class="t">Teknik Destek ve Satın Alımlar İçin</b>Telefon: <b>0536 771 50 55</b> · E-posta: <b>destekofis@proton.me</b></div>
+    + actual - expected
+    
+    + [
+    +   'server/lib/license.mjs:25: export const SUPPORT_CONTACT = Object.freeze({ name: "Destek Ofis", label: "Teknik Destek ve Satın Alımlar İçin", phone: "0536 771 50 55", phoneHref: "tel:+9053',
+    +   'server/lib/updater.mjs:69: const userAgent = () => `DestekOfis-Guncelleyici/${installed() || "0.0.0"} (+https://destek-ofis.vercel.app)`;',
+    +   'client/admin.html:209: <p class="adm-muted">Sunucu internete bağlanamıyorsa aşağıdaki <b>kurulum kodunu</b> bize iletin (Teknik Destek ve Satın Alımlar İçin: 0536 771 50 55 · destekof',
+    +   'client/admin.html:218: <p class="adm-license-contact">Teknik Destek ve Satın Alımlar İçin: <a href="tel:+905367715055"><b>0536 771 50 55</b></a> · <a href="mailto:destekofis@proton.me',
+    +   'client/assets/hof-license.js:17: const FALLBACK_CONTACT = { name: "Destek Ofis", label: "Teknik Destek ve Satın Alımlar İçin", phone: "0536 771 50 55", phoneHref: "tel:+905367715055", email: "d',
+    +   'client/assets/hof-license.js:107: extraHtml: `<p class="hof-inline-note">Telefon veya e-postadan en az birini yazın. Bilgileriniz yalnızca size ulaşmak için kullanılır (<a href="https://destek-o',
+    +   'packaging/windows/setup.iss:19: #define AppURL "https://destekofis.vercel.app"',
+    +   'packaging/windows/setup.iss:32: AppContact=destekofis@proton.me',
+    +   'tools/build-windows.mjs:154: <body><header><img src="${mark}" alt=""><div><h1>${title}</h1><p>DestekOfis ${version} · Teknik Destek ve Satın Alımlar İçin: 0536 771 50 55 · destekofis@proton',
+    +   'docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html:437: <div class="box tip"><b class="t">Teknik Destek ve Satın Alımlar İçin</b>Telefon: <b>0536 771 50 55</b> · E-posta: <b>destekofis@proton.me</b></div>'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'server/lib/license.mjs:25: export const SUPPORT_CONTACT = Object.freeze({ name: "Destek Ofis", label: "Teknik Destek ve Satın Alımlar İçin", phone: "0536 771 50 55", phoneHref: "tel:+9053'
+    1: 'server/lib/updater.mjs:69: const userAgent = () => `DestekOfis-Guncelleyici/${installed() || "0.0.0"} (+https://destek-ofis.vercel.app)`;'
+    2: 'client/admin.html:209: <p class="adm-muted">Sunucu internete bağlanamıyorsa aşağıdaki <b>kurulum kodunu</b> bize iletin (Teknik Destek ve Satın Alımlar İçin: 0536 771 50 55 · destekof'
+    3: 'client/admin.html:218: <p class="adm-license-contact">Teknik Destek ve Satın Alımlar İçin: <a href="tel:+905367715055"><b>0536 771 50 55</b></a> · <a href="mailto:destekofis@proton.me'
+    4: 'client/assets/hof-license.js:17: const FALLBACK_CONTACT = { name: "Destek Ofis", label: "Teknik Destek ve Satın Alımlar İçin", phone: "0536 771 50 55", phoneHref: "tel:+905367715055", email: "d'
+    5: 'client/assets/hof-license.js:107: extraHtml: `<p class="hof-inline-note">Telefon veya e-postadan en az birini yazın. Bilgileriniz yalnızca size ulaşmak için kullanılır (<a href="https://destek-o'
+    6: 'packaging/windows/setup.iss:19: #define AppURL "https://destekofis.vercel.app"'
+    7: 'packaging/windows/setup.iss:32: AppContact=destekofis@proton.me'
+    8: 'tools/build-windows.mjs:154: <body><header><img src="${mark}" alt=""><div><h1>${title}</h1><p>DestekOfis ${version} · Teknik Destek ve Satın Alımlar İçin: 0536 771 50 55 · destekofis@proton'
+    9: 'docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html:437: <div class="box tip"><b class="t">Teknik Destek ve Satın Alımlar İçin</b>Telefon: <b>0536 771 50 55</b> · E-posta: <b>destekofis@proton.me</b></div>'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g1-247-eski-1b69f7a7/test/gorunen-adres-247.test.mjs:57:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: destek e-postası destek@destekofis.net; lisans adresi DEĞİŞMEDİ
+not ok 2 - destek e-postası destek@destekofis.net; lisans adresi DEĞİŞMEDİ
+  ---
+  duration_ms: 0.935189
+  type: 'test'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g1-247-eski-1b69f7a7/test/gorunen-adres-247.test.mjs:62:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'destekofis@proton.me'
+    - 'destek@destekofis.net'
+             ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'destek@destekofis.net'
+  actual: 'destekofis@proton.me'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g1-247-eski-1b69f7a7/test/gorunen-adres-247.test.mjs:63:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 270.198739

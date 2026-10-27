@@ -14,7 +14,7 @@
 
   const isAdmin = () => HOF.can("license.manage");
   // Deneme/lisans bitişi, engel ve taşıma durumlarında gösterilen iletişim bilgisi (sunucudan gelir).
-  const FALLBACK_CONTACT = { name: "Destek Ofis", label: "Teknik Destek ve Satın Alımlar İçin", phone: "0536 771 50 55", phoneHref: "tel:+905367715055", email: "destekofis@proton.me" };
+  const FALLBACK_CONTACT = { name: "Destek Ofis", label: "Teknik Destek ve Satın Alımlar İçin", phone: "0536 771 50 55", phoneHref: "tel:+905367715055", email: "destek@destekofis.net" };
   const contactOf = status => ({ ...FALLBACK_CONTACT, ...(status?.contact || {}) });
   const needsContact = status => Boolean(status) && (!status.writable || status.severity === "warn" || ["trial", "expired", "blocked"].includes(status.state));
   const contactCard = status => {
@@ -104,7 +104,7 @@
         { name: "phone", label: "Telefon", type: "tel", maxlength: 40, autocomplete: "tel" },
         { name: "email", label: "E-Posta", type: "email", maxlength: 160, autocomplete: "email" },
       ],
-      extraHtml: `<p class="hof-inline-note">Telefon veya e-postadan en az birini yazın. Bilgileriniz yalnızca size ulaşmak için kullanılır (<a href="https://destek-ofis.vercel.app/kvkk" target="_blank" rel="noopener">KVKK Aydınlatma Metni</a>). Sorunuz olursa: ${HOF.esc(c.phone)} · ${HOF.esc(c.email)}</p>`,
+      extraHtml: `<p class="hof-inline-note">Telefon veya e-postadan en az birini yazın. Bilgileriniz yalnızca size ulaşmak için kullanılır (<a href="https://destekofis.net/kvkk.html" target="_blank" rel="noopener">KVKK Aydınlatma Metni</a>). Sorunuz olursa: ${HOF.esc(c.phone)} · ${HOF.esc(c.email)}</p>`,
       submitLabel: "Bilgileri Gönder",
       onSubmit: async data => {
         const next = await HOF.api("/api/license/contact", { method: "POST", body: data });
