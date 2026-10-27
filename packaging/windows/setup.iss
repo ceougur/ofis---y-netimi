@@ -16,7 +16,7 @@
 #endif
 #define AppName "DestekOfis"
 #define AppPublisher "DestekOfis"
-#define AppURL "https://destekofis.vercel.app"
+#define AppURL "https://destekofis.net"
 #define ServiceName "DestekOfis"
 #define AppExe "DestekOfis.exe"
 
@@ -29,7 +29,7 @@ AppPublisher={#AppPublisher}
 AppPublisherURL={#AppURL}
 AppSupportURL={#AppURL}
 AppUpdatesURL={#AppURL}
-AppContact=destekofis@proton.me
+AppContact=destek@destekofis.net
 ; Yeni kurulumlar sektörden bağımsız klasöre; mevcut kurulumlar (aynı AppId) önceki klasörlerinde güncellenir.
 ; Önceki kayıt yoksa (kaldırılıp yeniden kurulan sunucu, eski elle kurulum) verisi olan klasör seçilir: DefaultAppDir.
 DefaultDirName={code:DefaultAppDir}
