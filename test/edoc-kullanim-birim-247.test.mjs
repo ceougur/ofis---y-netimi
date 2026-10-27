@@ -74,9 +74,15 @@ test("karar: doğrudan kabul anında; kesinleşme gönderim izinin anında; izsi
 
 test("F2 (kullanıcı kararı): 'Hata'daki belgede sonradan görülen kabul sayılır; ay 'bulunamadı' ile kapanmamış ilk iz; F1 değişmez", () => {
   const error = { eStatus: "error", eAdapter: "edm" };
-  // Belirsiz A → yeniden gönderimde önce "bulunamadı" → B reddedildi (Hata) → Durum Sorgula kabul: A "bulunamadı" ile kapandı, B (ret) kapanmaz → B.
+  // K15 (kullanıcı kararı "a", U40): belirsiz A → "bulunamadı" → ilk yeniden gönderim B reddedildi (Hata) → kabul: "bulunamadı" geçici → A (ilk gönderim).
   const f2 = [ev("invoice.e.sending", "A"), ev("invoice.e.send-failed", "A1", { status: "none", code: "integrator-uncertain" }), ev("invoice.e.status", "A2", { status: "none", missing: true }), ev("invoice.e.sending", "B"), ev("invoice.e.send-failed", "B1", { status: "error", code: "integrator-rejected" })];
-  assert.deepEqual(usageDecision({ action: "invoice.e.status", previous: error, status: "sent", at: "C", history: f2 }), { count: true, at: "B", reason: "confirmed-error" });
+  assert.deepEqual(usageDecision({ action: "invoice.e.status", previous: error, status: "sent", at: "C", history: f2 }), { count: true, at: "A", reason: "confirmed-error" });
+  // K15 (U43): aynı dizi + yeniden belirsiz C → kabul (belirsizden): ret ve geçici "bulunamadı" kapatmaz → A.
+  const u43 = [...f2, ev("invoice.e.sending", "C"), ev("invoice.e.send-failed", "C1", { status: "none", code: "integrator-uncertain" })];
+  assert.equal(usageDecision({ action: "invoice.e.status", previous: uncertain, status: "sent", at: "D", history: u43 }).at, "A", "K15: bulunamadı sonrası ret → ilk gönderim");
+  // "bulunamadı" sonrası ilk yeniden gönderim belirsizse (ret değil) "bulunamadı" geçerli kalır (F1).
+  const f1b = [ev("invoice.e.sending", "A"), ev("invoice.e.send-failed", "A1", { status: "none" }), ev("invoice.e.status", "A2", { status: "none", missing: true }), ev("invoice.e.sending", "B"), ev("invoice.e.send-failed", "B1", { status: "none" }), ev("invoice.e.sending", "C"), ev("invoice.e.send-failed", "C1", { status: "error", code: "integrator-rejected" })];
+  assert.equal(usageDecision({ action: "invoice.e.status", previous: error, status: "sent", at: "D", history: f1b }).at, "B");
   // Doğrudan ret → sonradan kabul: ilk iz.
   assert.deepEqual(usageDecision({ action: "invoice.e.status", previous: error, status: "accepted", at: "C", history: [ev("invoice.e.sending", "A"), ev("invoice.e.send-failed", "A1", { status: "error" })] }), { count: true, at: "A", reason: "confirmed-error" });
   // İki ret: ilk açık iz (ret kapatmaz).
