@@ -7,7 +7,7 @@
 //     sonradan kesin kabul olduğu görülmesi: Durum Sorgula / yeniden Gönder'in önce sorması (invoice.e.status) ya da yeniden gönderimde EDM'nin belgenin
 //     KENDİ ETTN'iyle 11048 demesi (invoice.e.duplicate; S3). Kabul sayılan durumlar: İşleniyor, Gönderildi, Kabul Edildi, Reddedildi (alıcı/GİB reddi;
 //     EDM belgeyi almıştı), İptal Edildi.
-//   - Kesinleşme ancak ÖNCEDEN bir belirsiz gönderim izi (invoice.e.sending) varsa ve iz bu kurulumun sayacı başladıktan (edoc.usage.since, v37) SONRAysa
+//   - Kesinleşme ancak ÖNCEDEN bir belirsiz gönderim izi (invoice.e.sending) varsa ve iz bu kurulumun sayacı başladıktan (edoc_usage_meta since, v37) SONRAysa
 //     sayılır: izsiz / 2.4.6 ve öncesinde gönderilmiş belge eski APPLICATION_NAME ile gitmiştir (geriye dönük doldurma YOK).
 //   - Sayılmayan: portala taslak yükleme (GİB'e gitmedi), EDM'nin reddi (Hata), hiç gitmeyen istek, durum sorgusunun önceki durumu yinelemesi, iptal,
 //     taslaktaki belgenin portaldan gönderildiğinin durum sorgusuyla görülmesi (EDM portalından kesilen belge iş ortaklığına girmez).
@@ -27,8 +27,14 @@ export const USAGE_ENVS = Object.freeze(["test", "live"]);
 // EDM'nin belgeyi aldığını gösteren durumlar (routes/invoices.mjs E_STATES anahtarları).
 export const USAGE_ACCEPTED = Object.freeze(new Set(["processing", "sent", "accepted", "rejected", "cancelled"]));
 export const USAGE_MONTHS = 3;
-// Şirket dosyasında sayacın başladığı an (v37 göçü yazar; "edoc" önekli ayar Şirket Verisini Sıfırla'da korunur).
-export const USAGE_SINCE_KEY = "edoc.usage.since";
+// Şirket dosyasında sayacın başladığı an (v37 göçü edoc_usage_meta'ya yazar; Şirket Verisini Sıfırla listelerinde yok, korunur). Okunamazsa "".
+export function usageSinceOf(store) {
+  try {
+    return store.get("SELECT value FROM edoc_usage_meta WHERE key = 'since'")?.value || "";
+  } catch {
+    return "";
+  }
+}
 
 export const usageKindOf = profile => {
   const value = String(profile || "").toUpperCase();

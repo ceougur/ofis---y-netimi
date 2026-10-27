@@ -6,7 +6,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { test } from "node:test";
 import { createStore, openDatabase } from "../server/lib/db.mjs";
-import { USAGE_SINCE_KEY, attemptAtOf, firstMonth, journalRowsOf, recordUsage, summarizeUsage, usageDecision, usageFromTransitions, usageKindOf, usageTransition, windowMonths } from "../server/lib/einvoice/kullanim.mjs";
+import { attemptAtOf, usageSinceOf, firstMonth, journalRowsOf, recordUsage, summarizeUsage, usageDecision, usageFromTransitions, usageKindOf, usageTransition, windowMonths } from "../server/lib/einvoice/kullanim.mjs";
 import { openUsageLedger } from "../server/lib/einvoice/kullanim-defteri.mjs";
 import { createLicenseService } from "../server/lib/license.mjs";
 import { LATEST_VERSION, runMigrations } from "../server/lib/migrations.mjs";
@@ -107,7 +107,8 @@ test("v37 göçü: şirket izi boş kurulur, sayaç başlangıcı yazılır; ayn
     runMigrations(store, { backupDir: path.join(dir, "yedek"), now: () => new Date("2026-10-27T06:00:00.000Z") });
     assert.equal(store.get("PRAGMA user_version").user_version, LATEST_VERSION);
     assert.ok(LATEST_VERSION >= 37);
-    assert.equal(store.setting(USAGE_SINCE_KEY, ""), "2026-10-27T06:00:00.000Z");
+    assert.equal(usageSinceOf(store), "2026-10-27T06:00:00.000Z");
+    assert.equal(store.setting("edoc.usage.since", ""), "", "ayarlara yazılmaz (eski verinin göçü ayarları değiştirmez)");
     assert.equal(store.get("SELECT COUNT(*) AS n FROM edoc_usage").n, 0, "geriye dönük doldurma yok");
     const ettn = "AAAAAAAA-1111-4222-8333-444444444444";
     assert.ok(recordUsage(store, { ettn, env: "test", profile: "EARSIVFATURA", at: "2026-06-30T12:00:00.000Z" }));
@@ -122,7 +123,7 @@ test("v37 göçü: şirket izi boş kurulur, sayaç başlangıcı yazılır; ayn
     // Sayaç başlangıcı ikinci koşuda (geri yüklenen yedekte yeniden göç) değişmez.
     store.run("PRAGMA user_version = 36");
     runMigrations(store, { backupDir: path.join(dir, "yedek"), now: () => new Date("2027-01-01T00:00:00.000Z") });
-    assert.equal(store.setting(USAGE_SINCE_KEY, ""), "2026-10-27T06:00:00.000Z");
+    assert.equal(usageSinceOf(store), "2026-10-27T06:00:00.000Z");
   } finally {
     db.close();
     rmSync(dir, { recursive: true, force: true });

@@ -1395,8 +1395,8 @@ export const MIGRATIONS = [
       // yalnız İZdir: sayılan gönderim durum yazımıyla AYNI işlemde buraya, işlemden sonra deftere yazılır; deftere yazım düşerse açılışta / kullanım
       // özetinde izden tamamlanır (defterin birincil anahtarı çift sayımı önler). Şirket + ETTN + ortam başına bir satır. YALNIZ EKLEYİCİ: boş kurulur
       // (geriye dönük doldurma YOK); eski sürüm (2.4.6) tabloyu görmez. Güncelleme ve silme tetikleyiciyle reddedilir. Para tablosu DEĞİL.
-      // edoc.usage.since: sayacın bu dosyada başladığı an — bundan önceki belirsiz gönderimin sonradan kesinleşmesi sayılmaz (eski APPLICATION_NAME).
-      if (!store.setting("edoc.usage.since", "")) store.setSetting("edoc.usage.since", (typeof now === "function" ? now() : new Date()).toISOString());
+      // edoc_usage_meta.since: sayacın bu dosyada başladığı an — bundan önceki belirsiz gönderimin sonradan kesinleşmesi sayılmaz (eski APPLICATION_NAME).
+      // settings'e DEĞİL ayrı tabloya (eski sürüm verisinin göçü mevcut satırları ve ayarları değiştirmez — test/guvenilirlik/goc-v20.mjs); ilk yazım kalır.
       store.exec(`
         CREATE TABLE IF NOT EXISTS edoc_usage (
           ettn TEXT NOT NULL, env TEXT NOT NULL CHECK (env IN ('test', 'live')), kind TEXT NOT NULL CHECK (kind IN ('efatura', 'earsiv', 'esmm')),
@@ -1406,7 +1406,9 @@ export const MIGRATIONS = [
         CREATE INDEX IF NOT EXISTS idx_edoc_usage_month ON edoc_usage(month, env, kind);
         CREATE TRIGGER IF NOT EXISTS edoc_usage_no_update BEFORE UPDATE ON edoc_usage BEGIN SELECT RAISE(ABORT, 'edoc_usage yalnız eklenir'); END;
         CREATE TRIGGER IF NOT EXISTS edoc_usage_no_delete BEFORE DELETE ON edoc_usage BEGIN SELECT RAISE(ABORT, 'edoc_usage yalnız eklenir'); END;
+        CREATE TABLE IF NOT EXISTS edoc_usage_meta (key TEXT PRIMARY KEY, value TEXT NOT NULL) STRICT;
       `);
+      store.run("INSERT OR IGNORE INTO edoc_usage_meta (key, value) VALUES ('since', ?)", (typeof now === "function" ? now() : new Date()).toISOString());
     },
   },
 ];

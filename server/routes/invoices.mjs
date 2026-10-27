@@ -21,7 +21,7 @@ import { readUbl } from "../lib/einvoice/ubl-read.mjs";
 import { UNIT_CODE_KEYS, buildUbl, ublFileName } from "../lib/einvoice/ubl-tr.mjs";
 import { viewXslt } from "../lib/einvoice/gorunum.mjs";
 import { karekodOf } from "../lib/einvoice/karekod.mjs";
-import { ATTEMPT_EVENTS, USAGE_SINCE_KEY, journalRowsOf, recordUsage, summarizeUsage, usageDecision, usageTransition, windowMonths } from "../lib/einvoice/kullanim.mjs";
+import { ATTEMPT_EVENTS, journalRowsOf, usageSinceOf, recordUsage, summarizeUsage, usageDecision, usageTransition, windowMonths } from "../lib/einvoice/kullanim.mjs";
 import { EINVOICE_PROFILES, NOT_SENT_CODES, SEND_DUPLICATE, SEND_INTENT, SEND_OUTCOMES, TRANSMITTED, uncertainWindow, cancelDeadlineText, cancelLateText, cancelWindow, transmissionOf, windowLabel } from "../lib/einvoice/iptal-suresi.mjs";
 import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { bodyHash, createIdempotency } from "../lib/idempotency.mjs";
@@ -3645,7 +3645,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   function countUsage(id, previous, status, action, stamp) {
     if (!usageTransition({ action, previous, status })) return null;
     const history = store.all(`SELECT type, payload_json AS payload, created_at AS at FROM audit_events WHERE entity_id = ? AND type IN (${ATTEMPT_EVENTS.map(() => "?").join(", ")}) ORDER BY rowid`, id, ...ATTEMPT_EVENTS).map(row => ({ ...row, payload: parseJson(row.payload, {}) }));
-    const decision = usageDecision({ action, previous, status, at: stamp, history, since: store.setting(USAGE_SINCE_KEY, "") });
+    const decision = usageDecision({ action, previous, status, at: stamp, history, since: usageSinceOf(store) });
     if (!decision.count) return null;
     const profile = previous.profile === "KAGIT" ? previous.eProfile : previous.profile;
     return recordUsage(store, { ettn: previous.ettn, env: liveEnv(settings()) ? "live" : "test", profile, at: decision.at, invoiceId: id, source: action });
