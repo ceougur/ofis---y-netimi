@@ -60,6 +60,25 @@ test("karar: doğrudan kabul anında; kesinleşme gönderim izinin anında; izsi
   assert.equal(usageDecision({ action: "invoice.e.duplicate", previous: uncertain, status: "sent", at: "x", history: [ev("invoice.e.sending", "B")] }).reason, "orphan");
 });
 
+test("F2 (kullanıcı kararı): 'Hata'daki belgede sonradan görülen kabul sayılır; ay 'bulunamadı' ile kapanmamış ilk iz; F1 değişmez", () => {
+  const error = { eStatus: "error", eAdapter: "edm" };
+  // Belirsiz A → yeniden gönderimde önce "bulunamadı" → B reddedildi (Hata) → Durum Sorgula kabul: A "bulunamadı" ile kapandı, B (ret) kapanmaz → B.
+  const f2 = [ev("invoice.e.sending", "A"), ev("invoice.e.send-failed", "A1", { status: "none", code: "integrator-uncertain" }), ev("invoice.e.status", "A2", { status: "none", missing: true }), ev("invoice.e.sending", "B"), ev("invoice.e.send-failed", "B1", { status: "error", code: "integrator-rejected" })];
+  assert.deepEqual(usageDecision({ action: "invoice.e.status", previous: error, status: "sent", at: "C", history: f2 }), { count: true, at: "B", reason: "confirmed-error" });
+  // Doğrudan ret → sonradan kabul: ilk iz.
+  assert.deepEqual(usageDecision({ action: "invoice.e.status", previous: error, status: "accepted", at: "C", history: [ev("invoice.e.sending", "A"), ev("invoice.e.send-failed", "A1", { status: "error" })] }), { count: true, at: "A", reason: "confirmed-error" });
+  // İki ret: ilk açık iz (ret kapatmaz).
+  assert.equal(usageDecision({ action: "invoice.e.status", previous: error, status: "sent", at: "C", history: [ev("invoice.e.sending", "A"), ev("invoice.e.send-failed", "A1", { status: "error" }), ev("invoice.e.sending", "B"), ev("invoice.e.send-failed", "B1", { status: "error" })] }).at, "A");
+  // Hiç gitmeyen istek izi kapatır; izsiz Hata (yetim) ve sayaçtan önceki iz sayılmaz; Hata'dan Hata sayılmaz.
+  assert.equal(usageDecision({ action: "invoice.e.status", previous: error, status: "sent", at: "C", history: [ev("invoice.e.sending", "A"), ev("invoice.e.send-failed", "A1", { status: "error", code: "integrator-credentials" })] }).reason, "orphan");
+  assert.equal(usageDecision({ action: "invoice.e.status", previous: error, status: "sent", at: "C", history: [] }).reason, "orphan");
+  assert.equal(usageDecision({ action: "invoice.e.status", previous: error, status: "sent", at: "C", history: [ev("invoice.e.sending", "A")], since: "B" }).reason, "before-since");
+  assert.equal(usageDecision({ action: "invoice.e.status", previous: error, status: "error", at: "C", history: [ev("invoice.e.sending", "A")] }).count, false);
+  // F1: belirsiz A → "bulunamadı" → belirsiz B → kabul: B (ikinci gönderimin ayı).
+  const f1 = [ev("invoice.e.sending", "A"), ev("invoice.e.send-failed", "A1", { status: "none" }), ev("invoice.e.status", "A2", { status: "none", missing: true }), ev("invoice.e.sending", "B"), ev("invoice.e.send-failed", "B1", { status: "none" })];
+  assert.equal(usageDecision({ action: "invoice.e.status", previous: uncertain, status: "sent", at: "C", history: f1 }).at, "B");
+});
+
 test("pencere (S5): içinde bulunulan ay + önceki 2; yıl dönümü; toplayıcı ay × ortam satırı sıfırlarla", () => {
   assert.deepEqual(windowMonths("2026-07-01"), ["2026-05", "2026-06", "2026-07"]);
   assert.deepEqual(windowMonths("2026-02-15"), ["2025-12", "2026-01", "2026-02"]);

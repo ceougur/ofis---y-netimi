@@ -127,7 +127,7 @@ export function readBackupIdentity(file) {
  * Yedek alır. `company` ({ id, code, name }) verilirse adda şirket kodu olur ve kimlik dosyanın içine yazılır (v2.0.20).
  * `stamp` aynı turda alınan bütün şirket yedeklerine aynı zamanı verir.
  */
-export function createBackup(db, backupDir, { label = "", keep = 30, company = null, stamp: fixedStamp = "" } = {}) {
+export function createBackup(db, backupDir, { label = "", keep = 30, company = null, stamp: fixedStamp = "", usageRows = null } = {}) {
   mkdirSync(backupDir, { recursive: true });
   const safeLabel = String(label).toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "");
   const code = company && CODE.test(String(company.code ?? "")) ? `${company.code}-` : "";
@@ -150,6 +150,9 @@ export function createBackup(db, backupDir, { label = "", keep = 30, company = n
   let identity = false;
   try {
     db.exec(`VACUUM INTO '${partial.replace(/'/g, "''")}'`);
+    // 2.4.7 E4 (kullanıcı kararı 27.10.2026): e-Belge kullanım defterinin bu şirkete ait satırları yedeğin iz tablosuna (edoc_usage) — taşınan kurulum defteri
+    // yedekten geri kazanır. Yalnız ekler; iz tablosu yoksa (göç öncesi şema) dokunulmaz. Yazılamazsa yedek yine geçerlidir (defter asıl kayıt).
+    if (Array.isArray(usageRows) && usageRows.length) copyUsageRows(partial, usageRows);
     if (code) {
       try {
         writeBackupIdentity(partial, company, { label: safeLabel });
@@ -173,6 +176,21 @@ export function createBackup(db, backupDir, { label = "", keep = 30, company = n
   }
   pruneBackups(backupDir, keep);
   return { name, path: target, size: statSync(target).size, folder: path.basename(backupDir), company: company ? { id: company.id, code: company.code, name: company.name } : null, identity };
+}
+
+function copyUsageRows(file, rows) {
+  const copy = new DatabaseSync(file);
+  try {
+    if (!copy.prepare("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'edoc_usage'").get()) return;
+    const insert = copy.prepare("INSERT OR IGNORE INTO edoc_usage (ettn, env, kind, month, invoice_id, source, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    copy.exec("BEGIN");
+    for (const row of rows) insert.run(String(row.ettn), row.env, row.kind, row.month, String(row.invoice_id || ""), String(row.source || ""), String(row.created_at || ""));
+    copy.exec("COMMIT");
+  } catch {
+    // kopya yazılamadı: yedek defter satırları olmadan geçerli (geri yüklemede birleştirilecek satır az olur; defter etkilenmez)
+  } finally {
+    copy.close();
+  }
 }
 
 /**

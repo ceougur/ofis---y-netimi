@@ -9,6 +9,7 @@
 //     EDM belgeyi almıştı), İptal Edildi.
 //   - Kesinleşme ancak ÖNCEDEN bir belirsiz gönderim izi (invoice.e.sending) varsa ve iz bu kurulumun sayacı başladıktan (edoc_usage_meta since, v37) SONRAysa
 //     sayılır: izsiz / 2.4.6 ve öncesinde gönderilmiş belge eski APPLICATION_NAME ile gitmiştir (geriye dönük doldurma YOK).
+//   - F2: "Hata"daki belgede sonradan EDM kabulü görülürse sayılır; ay "bulunamadı" ile kapanmamış ilk gönderim izinin ayı.
 //   - Sayılmayan: portala taslak yükleme (GİB'e gitmedi), EDM'nin reddi (Hata), hiç gitmeyen istek, durum sorgusunun önceki durumu yinelemesi, iptal,
 //     taslaktaki belgenin portaldan gönderildiğinin durum sorgusuyla görülmesi (EDM portalından kesilen belge iş ortaklığına girmez).
 //   - Tekillik (S2): şirket + ETTN + ortam BİR kez. Şirket içinde şirket dosyasındaki iz tablosunun, kurulum düzeyinde kullanım defterinin
@@ -54,13 +55,16 @@ export const monthOf = at => {
  * @param {{ action: string, previous: { eStatus?: string, eAdapter?: string }, status: string }} input
  *   action: İşlem Geçmişi türü (invoice.e.sent | invoice.e.status | invoice.e.duplicate | …); previous: yazımdan ÖNCEKİ e-Belge durumu ve entegratör izi;
  *   status: yazılan yeni durum.
- * @returns {"" | "sent" | "confirmed"} "" sayılmaz; "sent" gönderimin kabulü; "confirmed" belirsiz gönderimin kabulü (usageDecision izi arar).
+ * @returns {"" | "sent" | "confirmed" | "confirmed-error"} "" sayılmaz; "sent" gönderimin kabulü; "confirmed" belirsiz gönderimin kabulü; "confirmed-error"
+ *   "Hata"daki belgenin sonradan görülen kabulü (F2). İkisinde usageDecision izi arar.
  */
 export function usageTransition({ action, previous = {}, status }) {
   if (!USAGE_ACCEPTED.has(status)) return "";
   const before = previous.eStatus || "none";
   const uncertain = before === "none" && Boolean(previous.eAdapter);
   if (action === "invoice.e.sent") return "sent";
+  // F2 (kullanıcı kararı 27.10.2026): "Hata"ya düşmüş belgede sonradan EDM kabulü görülürse SAYILIR (EDM belgeyi bir istekte almıştı).
+  if (action === "invoice.e.status" && before === "error") return "confirmed-error";
   if (action === "invoice.e.duplicate" || action === "invoice.e.status") return uncertain ? "confirmed" : "";
   return "";
 }
@@ -70,10 +74,13 @@ export function usageTransition({ action, previous = {}, status }) {
  * istek, "entegratörde bulunamadı", numaranın geri bırakılması, önceki kabul) SONRAKİ İLK gönderim izi (invoice.e.sending). SAF işlev.
  * duplicate (11048, S3): 11048'i alan yeniden gönderimin kendi izi sayılmaz (EDM onu reddetti; belgeyi daha önceki bir istekte almıştı) ve aradaki
  * "bulunamadı" yanıtı kapatmaz (11048 onu yalanlar: EDM'nin durum kaydı gecikmişti).
+ * fromError (F2, kullanıcı kararı 27.10.2026): "Hata"daki belgenin sonradan görülen kabulünde ay, EDM "bulunamadı" ile KAPANMAMIŞ ilk gönderim izinin ayı —
+ * EDM reddi (Hata) izi kapatmaz (ret yanıtına rağmen EDM belgeyi almış çıktı); "bulunamadı", hiç gitmeyen istek ve numaranın bırakılması kapatır.
+ * (F1, kullanıcı kararı: belirsiz → "bulunamadı" → yeniden belirsiz → kesinleşmede ay ikinci gönderimin ayı — "bulunamadı" ilkini kapatır; kural değişmedi.)
  * @param {{ type: string, payload?: object, at: string }[]} events belgenin İşlem Geçmişi kayıtları, yazım sırasıyla
  * @returns {string} iz anı (ISO) ya da "" (önceden belirsiz gönderim yok)
  */
-export function attemptAtOf(events = [], { duplicate = false } = {}) {
+export function attemptAtOf(events = [], { duplicate = false, fromError = false } = {}) {
   let list = events;
   if (duplicate) {
     const last = events.map(event => event.type).lastIndexOf(SEND_INTENT);
@@ -90,7 +97,7 @@ export function attemptAtOf(events = [], { duplicate = false } = {}) {
       event.type === "invoice.e.sent" ||
       event.type === "invoice.unnumbered" ||
       (!duplicate && event.type === "invoice.e.status" && payload.missing === true) ||
-      (event.type === "invoice.e.send-failed" && (payload.status === "error" || NOT_SENT_CODES.has(payload.code || "")));
+      (event.type === "invoice.e.send-failed" && ((!fromError && payload.status === "error") || NOT_SENT_CODES.has(payload.code || "")));
     if (closed) open = "";
   }
   return open;
@@ -107,10 +114,10 @@ export function usageDecision({ action, previous = {}, status, at, history = [],
   const kind = usageTransition({ action, previous, status });
   if (!kind) return { count: false, at: "", reason: "not-accepted" };
   if (kind === "sent") return { count: true, at, reason: "sent" };
-  const attempt = attemptAtOf(history, { duplicate: action === "invoice.e.duplicate" });
+  const attempt = attemptAtOf(history, { duplicate: action === "invoice.e.duplicate", fromError: kind === "confirmed-error" });
   if (!attempt) return { count: false, at: "", reason: "orphan" };
   if (since && String(attempt) < String(since)) return { count: false, at: "", reason: "before-since" };
-  return { count: true, at: attempt, reason: "confirmed" };
+  return { count: true, at: attempt, reason: kind };
 }
 
 /**

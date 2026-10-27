@@ -9,7 +9,7 @@ export const ADMIN_PASSWORD = "Test-Admin-2026!";
 export async function startTestServer(options = {}) {
   const root = mkdtempSync(path.join(tmpdir(), "destekofis-test-"));
   const dataDir = options.dataDir || path.join(root, "data");
-  const backupDir = path.join(root, "backups");
+  const backupDir = options.backupDir || path.join(root, "backups");
   if (options.prepare) options.prepare({ dataDir, backupDir });
   const app = createApp({
     dataDir,

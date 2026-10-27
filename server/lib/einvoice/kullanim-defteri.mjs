@@ -8,6 +8,9 @@
 //   2) İşlem bittikten sonra iz satırı bu deftere eklenir (add). Ekleme düşerse (disk, kilit) iz şirket dosyasında kalır; açılışta ve her kullanım
 //      özetinde bütün şirketlerin izleri deftere yeniden aktarılır (syncFrom). Anahtar (şirket, ETTN, ortam) birincil anahtardır: aktarma kaç kez
 //      yinelenirse yinelensin ÇİFT SAYIM OLMAZ.
+//   YEDEK (kullanıcı kararı 27.10.2026, kör nokta): şirket yedeği alınırken defterin o şirkete ait satırları yedeğin iz tablosuna kopyalanır (createBackup
+//   usageRows); geri yüklemeden sonra iz deftere aktarılır — yalnız BİRLEŞTİRME (INSERT OR IGNORE): geri yükleme sayacı hiç azaltmaz, yeni kuruluma taşınan yedek
+//   defteri geri kazandırır. Eski (2.4.6 ve öncesi) yedekte iz tablosu yoktur: geri yükleme olağan sürer, defter değişmez.
 //   Hata yönü: çift sayım asla; kayıp yalnız "iz yazıldı, deftere eklenemedi, ardından eklenmeden önce şirket bu andan ESKİ bir yedekten geri yüklendi"
 //   penceresinde mümkün (eksik sayım: hak ediş fazla gösterilmez).
 import { mkdirSync } from "node:fs";
@@ -67,6 +70,10 @@ export function openUsageLedger({ dir, log = console, fault = null }) {
     counts({ from = "", companyId = null } = {}) {
       const where = companyId ? "WHERE month >= ? AND company_id = ?" : "WHERE month >= ?";
       return db.prepare(`SELECT month, env, kind, COUNT(*) AS count FROM usage ${where} GROUP BY month, env, kind`).all(...(companyId ? [from, companyId] : [from]));
+    },
+    /** Bir şirketin bütün satırları (şirket yedeğine kopya: lib/backup.mjs createBackup usageRows). */
+    rowsOf(companyId) {
+      return db.prepare("SELECT ettn, env, kind, month, invoice_id, source, created_at FROM usage WHERE company_id = ? ORDER BY rowid").all(String(companyId));
     },
     has(companyId, ettn, env) {
       return Boolean(db.prepare("SELECT 1 AS found FROM usage WHERE company_id = ? AND ettn = ? AND env = ?").get(String(companyId), String(ettn).toLowerCase(), env));
