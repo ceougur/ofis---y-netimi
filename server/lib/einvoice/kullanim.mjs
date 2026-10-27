@@ -91,9 +91,24 @@ export function attemptAtOf(events = [], { duplicate = false, fromError = false 
     const tail = list[list.length - 1];
     if (tail && tail.type === "invoice.e.status" && (tail.payload || {}).missing === true) list = list.slice(0, -1);
   }
+  // K15 (kullanıcı kararı 27.10.2026, "a"): "bulunamadı"dan sonraki İLK yeniden gönderim EDM reddi alırsa o "bulunamadı" geçicidir (EDM belgeyi ilk
+  // gönderimde almıştı): ne o "bulunamadı" ne o ret izi kapatır → ay ilk gönderim. (11048 dalı yukarıda, duplicate kipinde.)
+  const transient = new Set();
+  for (let index = 0; index < list.length; index += 1) {
+    const event = list[index];
+    if (event.type !== "invoice.e.status" || (event.payload || {}).missing !== true) continue;
+    const next = list.findIndex((item, position) => position > index && item.type === SEND_INTENT);
+    if (next < 0) continue;
+    const result = list.findIndex((item, position) => position > next && item.type !== SEND_INTENT);
+    const reply = result >= 0 ? list[result] : null;
+    const rejected = reply && reply.type === "invoice.e.send-failed" && (reply.payload || {}).status === "error" && !NOT_SENT_CODES.has((reply.payload || {}).code || "")
+      && !list.slice(next + 1, result).some(item => item.type === SEND_INTENT);
+    if (rejected) transient.add(event).add(reply);
+  }
   let open = "";
   for (const event of list) {
     const payload = event.payload || {};
+    if (transient.has(event)) continue;
     if (event.type === SEND_INTENT) {
       if (!open) open = event.at || "";
       continue;

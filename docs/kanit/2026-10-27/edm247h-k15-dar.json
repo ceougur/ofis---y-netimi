@@ -1,0 +1,32 @@
+{
+  "ad": "edm247h-k15-dar",
+  "komut": "node --test test/edoc-kullanim-birim-247.test.mjs test/edoc-kullanim-247.test.mjs test/edoc-kullanim-kesinti-247.test.mjs test/edoc-kullanim-yedek-247.test.mjs test/yazim-duzeni.test.mjs test/platform-tasinabilirlik.test.mjs test/banka-210-post-statik.test.mjs",
+  "commit": "373287fcc8942d1d61c1c5f74a1f31ec9bcac3d4",
+  "dal": "is/edm-247-f",
+  "kirli": 2,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v165 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-27T09:56:28.247Z",
+  "sure_sn": 8.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 47,
+    "gecen": 47,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-27/edm247h-k15-dar.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea",
+  "ham_cikti_sha256": "e22a9b1b0b8a799bbff8b528d9419301f9a085bcf125ebced6cf863827abb556",
+  "ham_cikti_bayt": 16057
+}
