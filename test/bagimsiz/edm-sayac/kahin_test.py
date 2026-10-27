@@ -413,10 +413,10 @@ class M06(Kahin):
         return super().dogrudan_kabul(o) or o["olay"] == "gonder_belirsiz"
 
 
-@mutasyon("M07-kesinlesen-red-sayilir", "belirsiz → kesinleşti red sayılır")
+@mutasyon("M07-Y2-kesin-red-sayilmaz", "Y2 ters: EDM 'aldım, reddettim' (belirsiz → kesin red) sayım açmaz")
 class M07(Kahin):
-    def dogrudan_kabul(self, o):
-        return super().dogrudan_kabul(o) or o["olay"] == "belirsiz_kesinlesti_red"
+    def kesinlesme(self, o):
+        return o["olay"] != "belirsiz_kesinlesti_red" and super().kesinlesme(o)
 
 
 @mutasyon("M08-kesinlesen-kabul-sayilmaz", "belirsiz → kesinleşti kabul hiç sayılmaz")
@@ -582,9 +582,9 @@ M31 = mutasyon("M31-geri-yukleme-secimi-ters", "geri yükleme sayacı etkilemez 
 @mutasyon("M32-geri-yukleme-butun-sirketler", "bir şirketin geri yüklemesi bütün şirketlerin sayacını geri alır",
           lambda p: p["geri_yukleme"] == "geri_alir")
 class M32(Kahin):
-    def geri_al(self, d, sirket, sinir):
-        for s in {r["sirket"] for r in d.kayitlar.values()} | {x[2] for den in d.denemeler.values() for x in den}:
-            super().geri_al(d, s, sinir)
+    def defter_geri_al(self, d, sirket, sinir):
+        for s in {r["sirket"] for r in d.kayitlar.values()}:
+            super().defter_geri_al(d, s, sinir)
 
 
 @mutasyon("M33-silme-dusurur", "belge silinince sayaçtan düşer")
@@ -728,7 +728,9 @@ class M49(Kahin):
         super().birlestir(d, {k: r for k, r in yedek.items() if r["sirket"] == sirket}, sirket)
 
 
-@mutasyon("M50-defter-kaybi-yok-sayilir", "sayaç defterinin kaybolması yok sayılır (kurulum taşınınca eski satırlar sürer)")
+# geri_alir'de defter şirket izleriyle birlikte geri döner; kayıp + izlerden yeniden kurma (K14) defteri değiştirmez → M50 orada etkisiz.
+@mutasyon("M50-defter-kaybi-yok-sayilir", "sayaç defterinin kaybolması yok sayılır (kurulum taşınınca eski satırlar sürer)",
+          lambda p: p["geri_yukleme"] == "etkilemez")
 class M50(Kahin):
     def defter_kaybet(self, d):
         pass
@@ -738,6 +740,12 @@ class M50(Kahin):
 class M51(Kahin):
     def dogrudan_kabul(self, o):
         return super().dogrudan_kabul(o) or o["olay"] == "durum_bulunamadi"
+
+
+@mutasyon("M52-Y5-izlerden-yeniden-kurulmaz", "Y5 ters: kaybolan defter şirket dosyalarındaki izlerden yeniden kurulmaz")
+class M52(Kahin):
+    def izlerden_kur(self, d):
+        pass
 
 
 def _model_yakalar(cls, p):
