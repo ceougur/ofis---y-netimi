@@ -1,0 +1,32 @@
+{
+  "ad": "uiuxa247-yeni-normal",
+  "komut": "npm run test:uiux-a-243",
+  "commit": "f72b4e8bde7583175b3846749f2c581c60d327c9",
+  "dal": "is/uiuxa-247",
+  "kirli": 2,
+  "izlenmeyen": 9,
+  "platform": "linux 6.18.44-fc-v165 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-27T09:14:08.501Z",
+  "sure_sn": 40.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 51,
+    "gecen": 51,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-27/uiuxa247-yeni-normal.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad78983a6ed220d6c",
+  "ham_cikti_sha256": "c76f90225b9846be5eea8251a150e3866ab563ebd8d0ecd73a28f4a02e29358d",
+  "ham_cikti_bayt": 5396
+}
