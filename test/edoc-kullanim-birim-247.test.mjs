@@ -6,7 +6,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { test } from "node:test";
 import { createStore, openDatabase } from "../server/lib/db.mjs";
-import { attemptAtOf, firstMonth, recordUsage, summarizeUsage, usageKindOf, usageRowsOf, usageTransition } from "../server/lib/einvoice/kullanim.mjs";
+import { attemptAtOf, firstMonth, recordUsage, summarizeUsage, usageFromTransitions, usageKindOf, usageRowsOf, usageTransition } from "../server/lib/einvoice/kullanim.mjs";
 import { createLicenseService } from "../server/lib/license.mjs";
 import { LATEST_VERSION, runMigrations } from "../server/lib/migrations.mjs";
 
@@ -32,6 +32,28 @@ test("geçiş kuralı: gönderim kabulü sayılır; belirsizin kesinleşmesi say
   assert.equal(usageTransition({ action: "invoice.e.send-failed", previous: uncertain, status: "error" }), "");
   assert.equal(usageTransition({ action: "invoice.e.draft", previous: { eStatus: "waiting" }, status: "draft" }), "");
   assert.equal(usageTransition({ action: "invoice.e.duplicate", previous: uncertain, status: "none" }), "", "11048 doğrulanamadı");
+  // Mutasyon M6 (Hata / Taslak kabul sayılsın) uçtan uca testlerde yakalanmadı (o yollarda eylem zaten sayılmaz); burada doğrudan denetlenir.
+  for (const status of ["error", "draft", "none", "waiting", "withdrawn"]) {
+    for (const action of ["invoice.e.status", "invoice.e.duplicate", "invoice.e.sent"]) assert.equal(usageTransition({ action, previous: uncertain, status }), "", `${action} → ${status} sayılmaz`);
+  }
+});
+
+test("saf uçtan uca işlev (kâhin karşılaştırması): yazımlar → sayılar; aynı ETTN + ortam ilk yazım; belirsizin ayı gönderim izinden", () => {
+  const uncertain = { eStatus: "none", eAdapter: "edm" };
+  const history = [{ type: "invoice.e.sending", at: "2026-06-30T20:59:00.000Z" }, { type: "invoice.e.send-failed", at: "2026-06-30T20:59:01.000Z", payload: { status: "none", code: "integrator-uncertain" } }];
+  const rows = usageFromTransitions([
+    { ettn: "E1", env: "test", profile: "EARSIVFATURA", action: "invoice.e.sent", previous: { eStatus: "waiting" }, status: "sent", at: "2026-06-15T09:00:00.000Z" },
+    { ettn: "e1", env: "test", profile: "EARSIVFATURA", action: "invoice.e.status", previous: uncertain, status: "sent", at: "2026-07-02T09:00:00.000Z", history },
+    { ettn: "E1", env: "live", profile: "EARSIVFATURA", action: "invoice.e.sent", previous: { eStatus: "waiting" }, status: "sent", at: "2026-07-02T09:00:00.000Z" },
+    { ettn: "E2", env: "test", profile: "TEMELFATURA", action: "invoice.e.status", previous: uncertain, status: "accepted", at: "2026-07-01T09:00:00.000Z", history },
+    { ettn: "E3", env: "test", profile: "ESMM", action: "invoice.e.status", previous: { eStatus: "draft", eAdapter: "edm" }, status: "sent", at: "2026-07-01T09:00:00.000Z" },
+    { ettn: "E4", env: "test", profile: "ESMM", action: "invoice.e.sent", previous: { eStatus: "waiting" }, status: "sent", at: "2026-07-01T09:00:00.000Z" },
+  ]);
+  assert.deepEqual(rows, [
+    { month: "2026-06", env: "test", efatura: 1, earsiv: 1, esmm: 0 },
+    { month: "2026-07", env: "live", efatura: 0, earsiv: 1, esmm: 0 },
+    { month: "2026-07", env: "test", efatura: 0, earsiv: 0, esmm: 1 },
+  ]);
 });
 
 test("gönderim anı: 'EDM'de değil' bilgisinden sonraki İLK gönderim izi", () => {

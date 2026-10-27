@@ -119,6 +119,29 @@ export function summarizeUsage(rows = [], { from = "", to = "" } = {}) {
   return [...map.values()].sort((a, b) => a.month.localeCompare(b.month) || (a.env === b.env ? 0 : a.env === "live" ? -1 : 1));
 }
 
+/**
+ * KÂHİN KARŞILAŞTIRMASI İÇİN SAF UÇTAN UCA İŞLEV (veri tabanı yok): durum yazımları listesi → ay × ortam × tür sayıları. Programın yolu ile aynı adımlar:
+ * usageTransition → (confirmed ise) attemptAtOf(history) → tür / ay → aynı ETTN + ortam ilk yazım kazanır → summarizeUsage.
+ * @param {{ ettn: string, env: "test"|"live", profile: string, action: string, previous: { eStatus?: string, eAdapter?: string }, status: string,
+ *   at: string, history?: { type: string, payload?: object, at: string }[] }[]} transitions yazım sırasıyla (at: yazımın ISO anı; history: o ana kadarki
+ *   belge İşlem Geçmişi, yalnız "confirmed" için okunur)
+ * @returns {{ month: string, env: string, efatura: number, earsiv: number, esmm: number }[]}
+ */
+export function usageFromTransitions(transitions = [], { from = "", to = "" } = {}) {
+  const seen = new Map();
+  for (const item of transitions) {
+    const kind = usageTransition(item);
+    if (!kind) continue;
+    const type = usageKindOf(item.profile);
+    const uuid = String(item.ettn || "").trim().toLowerCase();
+    const month = monthOfLocal((kind === "confirmed" && attemptAtOf(item.history || [])) || item.at);
+    if (!type || !uuid || !USAGE_ENVS.includes(item.env) || !month) continue;
+    const key = `${uuid}|${item.env}`;
+    if (!seen.has(key)) seen.set(key, { month, env: item.env, kind: type });
+  }
+  return summarizeUsage([...seen.values()], { from, to });
+}
+
 /** Bir veri tabanının (şirketin) sayaç satırları, ay × ortam × tür toplamı. db: better-sqlite3 benzeri (prepare) ya da store (all). */
 export function usageRowsOf(db, { from = "" } = {}) {
   const sql = "SELECT month, env, kind, COUNT(*) AS count FROM edoc_usage WHERE month >= ? GROUP BY month, env, kind";
