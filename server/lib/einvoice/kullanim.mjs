@@ -59,9 +59,11 @@ export const monthOf = at => {
  *   "Hata"daki belgenin sonradan görülen kabulü (F2). İkisinde usageDecision izi arar.
  */
 export function usageTransition({ action, previous = {}, status }) {
-  if (!USAGE_ACCEPTED.has(status)) return "";
   const before = previous.eStatus || "none";
   const uncertain = before === "none" && Boolean(previous.eAdapter);
+  // Y2 / S6 (kullanıcı kararı 27.10.2026): belirsiz gönderimde Durum Sorgula "EDM aldı, reddetti" (Hata) → EDM belgeyi aldı, kontör düştü → SAYILIR; ay gönderim izinin ayı.
+  if (action === "invoice.e.status" && uncertain && status === "error") return "confirmed";
+  if (!USAGE_ACCEPTED.has(status)) return "";
   if (action === "invoice.e.sent") return "sent";
   // F2 (kullanıcı kararı 27.10.2026): "Hata"ya düşmüş belgede sonradan EDM kabulü görülürse SAYILIR (EDM belgeyi bir istekte almıştı).
   if (action === "invoice.e.status" && before === "error") return "confirmed-error";
