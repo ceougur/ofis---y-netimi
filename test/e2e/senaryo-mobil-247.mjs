@@ -64,8 +64,9 @@ const tapNav = async name => {
 };
 // Telefon genişliğinde yatay kaydırma yok (rapor tablosu kendi kutusunda kayar; sayfa kaymaz).
 const noOverflow = async label => {
-  const size = await page.evaluate(() => ({ scroll: document.documentElement.scrollWidth, inner: window.innerWidth }));
-  ok(size.scroll <= size.inner, `${label}: yatay taşma yok (${size.scroll} ≤ ${size.inner})`);
+  // isMobile'da düzen görünümü içeriğe göre genişler (innerWidth da büyür); ölçü telefonun kendi genişliği (390).
+  const size = await page.evaluate(() => ({ scroll: document.documentElement.scrollWidth, screen: window.screen.width }));
+  ok(size.scroll <= size.screen, `${label}: yatay taşma yok (${size.scroll} ≤ ${size.screen})`);
 };
 const download = async (target, click) => {
   const [file] = await Promise.all([target.waitForEvent("download", { timeout: 20000 }), click()]);
@@ -144,7 +145,16 @@ await step("T2 giriş → Özet sayıları = masaüstü API'si", async () => {
   const box = await page.$eval(".bottom-nav", nav => { const r = nav.getBoundingClientRect(); return { top: r.top, height: r.height }; });
   ok(box.height < 90 && box.top > 700, `alt menü tek satır, ekranın altında (yükseklik ${Math.round(box.height)})`);
   ok((await text("#company option:checked")) !== "", "şirket seçili");
-  const clipped = await page.$$eval(".metric-value", items => items.filter(item => item.scrollWidth > item.clientWidth + 1).map(item => item.textContent.trim()));
+  // Kesik tutar: metnin dizilmiş genişliği kartın (ve sağdaki simgenin) sınırını aşıyorsa "…" ile kesilmiştir (scrollWidth yüzen simgeyi görmez).
+  const clipped = await page.$$eval(".metric-value", items => items.filter(item => {
+    const range = document.createRange();
+    range.selectNodeContents(item);
+    const textBox = range.getBoundingClientRect();
+    let limit = item.getBoundingClientRect().right;
+    const icon = item.parentElement.querySelector(".metric-icon")?.getBoundingClientRect();
+    if (icon && icon.bottom > textBox.top && icon.top < textBox.bottom) limit = Math.min(limit, icon.left);
+    return textBox.right > limit + 1;
+  }).map(item => item.textContent.trim()));
   ok(clipped.length === 0, `Özet tutarları kesilmeden görünür (${clipped.join(", ") || "—"})`);
   await noOverflow("Özet");
   await shot("02-ozet");
