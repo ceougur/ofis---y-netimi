@@ -1,0 +1,32 @@
+{
+  "ad": "246-paket/kilavuz-pdf-surum",
+  "komut": "node --test test/kilavuz-pdf-surum.test.mjs test/kilavuz-surum.test.mjs",
+  "commit": "53401d5cc682a4434a958012a03915e28ea8299b",
+  "dal": "claude/youthful-euler-fl8ks4",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v153 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-25T21:11:30.728Z",
+  "sure_sn": 0.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-25/246-paket/kilavuz-pdf-surum.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "5b6c8e1b7351e85505e981e332b1fbca2ee700a16aa6381e1c48aa774b16855e",
+  "ham_cikti_bayt": 1283
+}

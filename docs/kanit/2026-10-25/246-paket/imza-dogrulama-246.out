@@ -1,0 +1,11 @@
+verify: {"ok":true,"keyId":"destekofis-2026-1","version":"2.4.6"}
+zip sha esit: true boyut esit: true
+assess 2.4.5 {"ok":true}
+assess 2.4.4 {"ok":true}
+assess 2.4.3 {"ok":true}
+assess 2.1.0 {"ok":true}
+assess 2.4.6 {"ok":false,"code":"NOT_NEWER","reason":"2.4.6 kurulu sürümden (2.4.6) yeni değil."}
+tahrif reddedildi: Güncelleme bildirgesinin imzası doğrulanamadı; güncelleme reddedildi.
+tahrifli zip sha esit: false
+bozuk imza reddedildi: Güncelleme bildirgesinin imzası doğrulanamadı; güncelleme reddedildi.
+imza keyId: destekofis-2026-1

@@ -1,0 +1,10 @@
+CI #883 (pull_request) completed/success  https://github.com/ceougur/ofis---y-netimi/actions/runs/40234485627
+  YEŞİL                  Uçtan uca (Chromium)
+  YEŞİL                  Test (windows-latest, Node 22)
+  YEŞİL                  Test (windows-latest, Node 24)
+  YEŞİL                  Test (ubuntu-latest, Node 24)
+  YEŞİL                  Test (ubuntu-latest, Node 22)
+  YEŞİL                  Doğrulama Kapısı
+  YEŞİL                  Dağıtım paketi
+
+8e4793e: CI YEŞİL (yalnız belge değişti; hüküm 657efe2 koşusundan)
