@@ -179,12 +179,13 @@ export function createBackup(db, backupDir, { label = "", keep = 30, company = n
 }
 
 // Yedekteki defter kopyası (geri yüklemede app.mjs syncUsageOf yalnız BİRLEŞTİRİR: INSERT OR IGNORE). Şirketin canlı dosyasında bu tablo yalnız geri yüklenen yedekten gelir.
+// Tablo adı SQL metinlerinde açık yazılır (kaynak tarayan K6 statik denetimi şablon tablo adını tanımaz). USAGE_BACKUP_TABLE okuma tarafı için.
 export const USAGE_BACKUP_TABLE = "edoc_usage_defter";
 function copyUsageRows(file, rows) {
   const copy = new DatabaseSync(file);
   try {
-    copy.exec(`CREATE TABLE IF NOT EXISTS ${USAGE_BACKUP_TABLE} (company_id TEXT NOT NULL, company_code TEXT NOT NULL DEFAULT '', ettn TEXT NOT NULL, env TEXT NOT NULL, kind TEXT NOT NULL, month TEXT NOT NULL, invoice_id TEXT NOT NULL DEFAULT '', source TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL DEFAULT '', PRIMARY KEY (company_id, ettn, env))`);
-    const insert = copy.prepare(`INSERT OR IGNORE INTO ${USAGE_BACKUP_TABLE} (company_id, company_code, ettn, env, kind, month, invoice_id, source, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`);
+    copy.exec("CREATE TABLE IF NOT EXISTS edoc_usage_defter (company_id TEXT NOT NULL, company_code TEXT NOT NULL DEFAULT '', ettn TEXT NOT NULL, env TEXT NOT NULL, kind TEXT NOT NULL, month TEXT NOT NULL, invoice_id TEXT NOT NULL DEFAULT '', source TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL DEFAULT '', PRIMARY KEY (company_id, ettn, env))");
+    const insert = copy.prepare("INSERT OR IGNORE INTO edoc_usage_defter (company_id, company_code, ettn, env, kind, month, invoice_id, source, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
     copy.exec("BEGIN");
     for (const row of rows) insert.run(String(row.company_id), String(row.company_code || ""), String(row.ettn), row.env, row.kind, row.month, String(row.invoice_id || ""), String(row.source || ""), String(row.created_at || ""));
     copy.exec("COMMIT");
