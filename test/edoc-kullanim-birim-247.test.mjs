@@ -48,6 +48,9 @@ test("gönderim anı (S1): 'EDM'de değil' bilgisinden sonraki İLK gönderim iz
   // 11048 (S3): A belirsiz → "bulunamadı" (gecikmeli EDM kaydı) → B yeniden gönderim 11048 → EDM belgeyi A'da almıştı.
   const dup = [ev("invoice.e.sending", "A"), ev("invoice.e.send-failed", "A2", { status: "none" }), ev("invoice.e.status", "A3", { status: "none", missing: true }), ev("invoice.e.sending", "B")];
   assert.equal(attemptAtOf(dup, { duplicate: true }), "A");
+  // Y3 (F1): açık "bulunamadı" A'yı kapatır; yalnız 11048'den hemen önceki örtük sorgu yok sayılır → B'nin ayı.
+  const y3 = [ev("invoice.e.sending", "A"), ev("invoice.e.send-failed", "A1", { status: "none" }), ev("invoice.e.status", "A2", { status: "none", missing: true }), ev("invoice.e.sending", "B"), ev("invoice.e.send-failed", "B1", { status: "none" }), ev("invoice.e.status", "B2", { status: "none", missing: true }), ev("invoice.e.sending", "C")];
+  assert.equal(attemptAtOf(y3, { duplicate: true }), "B", "Y3: açık bulunamadı ilk izi kapatır");
   assert.equal(attemptAtOf([ev("invoice.e.sending", "B")], { duplicate: true }), "", "öncesinde belirsiz yok: yetim 11048");
 });
 
