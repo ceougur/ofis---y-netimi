@@ -1,0 +1,3 @@
+M23-yedege-yalniz-kendi-satirlari cikis=1 fail=1
+M24-defter-kopyasi-birlesmez cikis=1 fail=2
+BITTI
