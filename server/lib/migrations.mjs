@@ -1388,12 +1388,15 @@ export const MIGRATIONS = [
   },
   {
     version: 37,
-    name: "v2.4.7 e-Belge kullanım sayacı (EDM iş ortaklığı; para dışı)",
-    up(store) {
-      // 2.4.7 E4 (EDM iş ortaklığı B1; kural lib/einvoice/kullanim.mjs): EDM'nin kabul ettiği gönderimlerin kaydı — ETTN + ortam başına BİR satır
-      // (birincil anahtar), ay × tür × ortam sayısı lisans doğrulamasında toplam olarak gider. YALNIZ EKLEYİCİ: yeni tablo, boş kurulur (geriye dönük
-      // doldurma YOK — hak ediş 2.4.7 ile başlar); eski sürüm (2.4.6) tabloyu görmez. Append-only: güncelleme ve silme tetikleyiciyle reddedilir; Şirket
-      // Verisini Sıfırla listelerinde YOK (EDM'nin saydığı gönderim sıfırlamayla geri alınmaz). Para tablosu DEĞİL (Kasa, Banka, cari, Ana Defter okumaz).
+    name: "v2.4.7 e-Belge kullanım sayacının şirket izi (EDM iş ortaklığı; para dışı)",
+    up(store, { now = systemClock } = {}) {
+      // 2.4.7 E4 (EDM iş ortaklığı B1; kural lib/einvoice/kullanim.mjs; kullanıcı kararları S1–S5, 27.10.2026). Sayacın ASLI şirket dosyasının DIŞINDA,
+      // kurulum düzeyindeki kullanım defteridir (lib/einvoice/kullanim-defteri.mjs; S4: Yedekten Geri Yükle ve Şirket Verisini Sıfırla etkilemez). Bu tablo
+      // yalnız İZdir: sayılan gönderim durum yazımıyla AYNI işlemde buraya, işlemden sonra deftere yazılır; deftere yazım düşerse açılışta / kullanım
+      // özetinde izden tamamlanır (defterin birincil anahtarı çift sayımı önler). Şirket + ETTN + ortam başına bir satır. YALNIZ EKLEYİCİ: boş kurulur
+      // (geriye dönük doldurma YOK); eski sürüm (2.4.6) tabloyu görmez. Güncelleme ve silme tetikleyiciyle reddedilir. Para tablosu DEĞİL.
+      // edoc.usage.since: sayacın bu dosyada başladığı an — bundan önceki belirsiz gönderimin sonradan kesinleşmesi sayılmaz (eski APPLICATION_NAME).
+      if (!store.setting("edoc.usage.since", "")) store.setSetting("edoc.usage.since", (typeof now === "function" ? now() : new Date()).toISOString());
       store.exec(`
         CREATE TABLE IF NOT EXISTS edoc_usage (
           ettn TEXT NOT NULL, env TEXT NOT NULL CHECK (env IN ('test', 'live')), kind TEXT NOT NULL CHECK (kind IN ('efatura', 'earsiv', 'esmm')),

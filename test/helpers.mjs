@@ -45,6 +45,8 @@ export async function startTestServer(options = {}) {
     ...(options.outboundTls ? { outboundTls: options.outboundTls } : {}),
     // Şirket sınırı (en fazla 2): 2'den çok şirketi olan eski kurulumu canlandıran testler sınırı yükseltir.
     ...(options.maxCompanies ? { maxCompanies: options.maxCompanies } : {}),
+    // 2.4.7 E4: kullanım defterine yazım kesintisi (row → true: ekleme düşer); yalnız testlerde.
+    ...(options.edocUsageFault ? { edocUsageFault: options.edocUsageFault } : {}),
     // Sahte saat (v2.1.0): sunucunun "bugün"ü ve iş zaman damgaları (config.now). Zaman (Date/sayı/ISO metni; akar) ya da
     // { time, fixed: true } (durur). server.clock.set/advance ile ilerletilir; tarayıcıyla eşleme: installPageClock/moveClock.
     ...(options.now !== undefined ? { now: options.now } : {}),

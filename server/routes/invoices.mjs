@@ -21,7 +21,7 @@ import { readUbl } from "../lib/einvoice/ubl-read.mjs";
 import { UNIT_CODE_KEYS, buildUbl, ublFileName } from "../lib/einvoice/ubl-tr.mjs";
 import { viewXslt } from "../lib/einvoice/gorunum.mjs";
 import { karekodOf } from "../lib/einvoice/karekod.mjs";
-import { ATTEMPT_EVENTS, attemptAtOf, firstMonth, recordUsage, summarizeUsage, usageRowsOf, usageTransition } from "../lib/einvoice/kullanim.mjs";
+import { ATTEMPT_EVENTS, USAGE_SINCE_KEY, journalRowsOf, recordUsage, summarizeUsage, usageDecision, usageTransition, windowMonths } from "../lib/einvoice/kullanim.mjs";
 import { EINVOICE_PROFILES, NOT_SENT_CODES, SEND_DUPLICATE, SEND_INTENT, SEND_OUTCOMES, TRANSMITTED, uncertainWindow, cancelDeadlineText, cancelLateText, cancelWindow, transmissionOf, windowLabel } from "../lib/einvoice/iptal-suresi.mjs";
 import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { bodyHash, createIdempotency } from "../lib/idempotency.mjs";
@@ -171,7 +171,7 @@ const moneyText = (value, currency = "TRY") => `${new Intl.NumberFormat("tr-TR",
 const c2 = value => roundMoney((Number(value) || 0) / 100);
 const toCents = value => Math.round((Number(value) || 0) * 100);
 
-export function registerInvoiceRoutes(router, { store, bank, auth, audit, events, config = {}, period = null, cash = null, trash = null, accounts = () => null, stock = () => null, plans = () => null, cheques = () => null, bankModule = () => null, now: clock = systemClock }) {
+export function registerInvoiceRoutes(router, { store, bank, auth, audit, events, config = {}, period = null, cash = null, trash = null, accounts = () => null, stock = () => null, plans = () => null, cheques = () => null, bankModule = () => null, edocUsage = null, now: clock = systemClock }) {
   // e-Belge bağlantısı kapalıyken (varsayılan; program sahibi açana kadar) her belge kâğıt/bilgi fişidir: e-Fatura,
   // e-Arşiv, XML ve entegratör uçları çalışmaz, ekranda görünmez.
   const edocEnabled = config.edocEnabled === true;
@@ -3625,6 +3625,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   const sending = new Set();
   // e_at ile updated_at aynı damga: portaldaki taslağın eskidiği (belge taslaktan sonra düzenlendi) updated_at > e_at ile anlaşılır.
   const setE = (user, id, { status, adapter = null, message = "" }, action, extra = {}) => {
+    let counted = null;
     store.tx(() => {
       const stamp = now();
       // 2.4.7 E4 (EDM iş ortaklığı): yazımdan ÖNCEKİ durum — kullanım sayacı kabulü (gönderim ya da belirsiz gönderimin kesinleşmesi) ondan anlar.
@@ -3633,18 +3634,21 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (adapter !== null) store.run("UPDATE invoices SET e_status = ?, e_adapter = ?, e_message = ?, e_at = ?, updated_at = ? WHERE id = ?", status, adapter, String(message || "").slice(0, 500), stamp, stamp, id);
       else store.run("UPDATE invoices SET e_status = ?, e_message = ?, e_at = ?, updated_at = ? WHERE id = ?", status, String(message || "").slice(0, 500), stamp, stamp, id);
       audit(user, action, id, { status, ...extra });
-      countUsage(id, previous, status, action, stamp);
+      counted = countUsage(id, previous, status, action, stamp);
     });
+    // S4: işlem bittikten sonra kurulum düzeyindeki kullanım defterine (düşerse iz şirket dosyasında kalır; açılışta / özette tamamlanır).
+    if (counted) edocUsage?.add(counted);
     publish(user, { kind: "invoices", invoiceId: id });
   };
-  // 2.4.7 E4: EDM'nin kabul ettiği gönderim sayacı (kural lib/einvoice/kullanim.mjs). setE'nin işleminde: durum yazımı ile sayaç birlikte yazılır ya da
-  // ikisi de geri alınır. Belirsiz gönderimin sonradan kabulünde ay gönderim izinin anıdır (EDM belgeyi o anda aldı).
+  // 2.4.7 E4: EDM'nin kabul ettiği gönderim sayacı (kural lib/einvoice/kullanim.mjs). setE'nin işleminde: durum yazımı ile şirket dosyasındaki iz birlikte
+  // yazılır ya da ikisi de geri alınır; eklenen iz satırı döner (setE onu işlemden sonra kullanım defterine ekler). Ay: gönderimin ayı (S1).
   function countUsage(id, previous, status, action, stamp) {
-    const kind = usageTransition({ action, previous, status });
-    if (!kind) return;
-    const intentAt = kind === "confirmed" ? attemptAtOf(store.all(`SELECT type, payload_json AS payload, created_at AS at FROM audit_events WHERE entity_id = ? AND type IN (${ATTEMPT_EVENTS.map(() => "?").join(", ")}) ORDER BY rowid`, id, ...ATTEMPT_EVENTS).map(row => ({ ...row, payload: parseJson(row.payload, {}) }))) : "";
+    if (!usageTransition({ action, previous, status })) return null;
+    const history = store.all(`SELECT type, payload_json AS payload, created_at AS at FROM audit_events WHERE entity_id = ? AND type IN (${ATTEMPT_EVENTS.map(() => "?").join(", ")}) ORDER BY rowid`, id, ...ATTEMPT_EVENTS).map(row => ({ ...row, payload: parseJson(row.payload, {}) }));
+    const decision = usageDecision({ action, previous, status, at: stamp, history, since: store.setting(USAGE_SINCE_KEY, "") });
+    if (!decision.count) return null;
     const profile = previous.profile === "KAGIT" ? previous.eProfile : previous.profile;
-    recordUsage(store, { ettn: previous.ettn, env: liveEnv(settings()) ? "live" : "test", profile, at: intentAt || stamp, invoiceId: id, source: action });
+    return recordUsage(store, { ettn: previous.ettn, env: liveEnv(settings()) ? "live" : "test", profile, at: decision.at, invoiceId: id, source: action });
   }
   // Entegratörde bulunmayan belge (Durum Sorgula → EDM "Fatura bulunamadı"): e-Belge durumundan çıkar, yeniden gönderilebilir.
   const clearE = (user, id, message) => {
@@ -4546,9 +4550,13 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // Lisans doğrulamasına giden özet bütün şirketlerin toplamıdır (app.mjs); bu uç yalnız açık şirketinkini verir (denetim ve kâhin karşılaştırması).
   router.get("/api/workspace/invoices-usage", async ({ req, res, url }) => {
     auth.requirePermission(req, "invoices.settings");
-    const months = Math.min(24, Math.max(1, Number.parseInt(url.searchParams.get("months") || "3", 10) || 3));
-    const from = firstMonth(today(), months);
-    ok(res, { from, months: summarizeUsage(usageRowsOf(store, { from }), { from }) });
+    const count = Math.min(24, Math.max(1, Number.parseInt(url.searchParams.get("months") || "3", 10) || 3));
+    const months = windowMonths(today(), count);
+    // Okumadan önce bu şirketin izi deftere aktarılır (kesintide eksik kalan satır tamamlanır); kaç satırın eksik olduğu yanıtta (kesinti testi).
+    const synced = edocUsage ? edocUsage.sync(journalRowsOf(store)) : 0;
+    const rows = edocUsage ? edocUsage.counts({ from: months[0] }) : [];
+    const journal = summarizeUsage(journalRowsOf(store), { months });
+    ok(res, { from: months[0], months: summarizeUsage(rows, { months }).filter(row => row.efatura + row.earsiv + row.esmm > 0), window: summarizeUsage(rows, { months }), journal: journal.filter(row => row.efatura + row.earsiv + row.esmm > 0), synced });
   });
   router.post("/api/workspace/invoices/:id/e-refresh", async ({ req, res, params }) => {
     const user = requireManage(req);
