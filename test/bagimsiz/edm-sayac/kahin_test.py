@@ -742,6 +742,13 @@ class M51(Kahin):
         return super().dogrudan_kabul(o) or o["olay"] == "durum_bulunamadi"
 
 
+@mutasyon("M53-K15-bulunamadi-hep-gecerli", "K15 ters: 'bulunamadı'dan sonraki yeniden gönderime 11048/red gelse de 'bulunamadı' geçerli (ay yeniden gönderim)",
+          lambda p: p["ay"] == "gonderim")
+class M53(Kahin):
+    def etkili_kapanislar(self, denemeler):
+        return [i for i, (_, tip, _) in enumerate(denemeler) if tip == "kapanis"]
+
+
 @mutasyon("M52-Y5-izlerden-yeniden-kurulmaz", "Y5 ters: kaybolan defter şirket dosyalarındaki izlerden yeniden kurulmaz")
 class M52(Kahin):
     def izlerden_kur(self, d):

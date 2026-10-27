@@ -252,11 +252,22 @@ class Kahin:
     def gonderim_ani(self, denemeler, an):
         # K10/K11 (F1, F2, Y3): kabul edilen gönderim = İLK AÇIK iz, yani son "bulunamadı"dan sonraki ilk gönderim isteği (belirsiz,
         # reddedilen ya da 11048 alan yeniden gönderim; V6c). Sonrasında gönderim yoksa ilk belirsiz deneme (V6b).
-        son = max((i for i, (_, tip, _) in enumerate(denemeler) if tip == "kapanis"), default=-1)
+        son = max(self.etkili_kapanislar(denemeler), default=-1)
         adaylar = [x for x, tip, _ in denemeler[son + 1:] if tip in ("belirsiz", "red", "11048")]
         if not adaylar:
             adaylar = [x for x, tip, _ in denemeler if tip == "belirsiz"]
         return adaylar[0] if adaylar else an
+
+    def etkili_kapanislar(self, denemeler):
+        # K15 (KARAR 27.10, V6c "a"): "bulunamadı"dan sonraki ilk yeniden gönderime 11048 ya da red gelirse o "bulunamadı" geçicidir
+        # (EDM belgeyi ilk gönderimde almıştı) → yok sayılır; ay ilk açık izin (ilk gönderimin) ayı olur.
+        etkili = []
+        for i, (_, tip, _) in enumerate(denemeler):
+            if tip == "kapanis":
+                sonraki = next((t for _, t, _ in denemeler[i + 1:] if t in ("belirsiz", "red", "11048")), None)
+                if sonraki not in ("red", "11048"):
+                    etkili.append(i)
+        return etkili
 
     def cikti_turu(self, kayit):
         return kayit["tur"]
