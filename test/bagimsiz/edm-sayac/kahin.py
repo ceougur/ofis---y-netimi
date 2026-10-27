@@ -7,7 +7,9 @@ ve docs/erp/2.4.7-IS-LISTESI.md "Nasıl bozulur?". Programın kodu (server/, cli
 yazıldı (CLAUDE.md ders 5). Yalnız standart kütüphane. Kurallar K1…, varsayımlar V1…, açık sorular S1…: README.md.
 
 Metnin sustuğu yerlerde kâhin KARAR VERMEZ (ders 40/43): her seçenek bir PARAMETREdir ve kabul.json bütün birleşimlerin
-beklenen sayılarını taşır. Varsayılan değerler yalnız komut satırı kolaylığıdır, karar değildir.
+beklenen sayılarını taşır. Kullanıcı 27.10.2026'da S1–S5'i seçti (docs/2.4.7-IS-LISTESI.md "KARARLAR — EDM sayacı"): SECILEN birleşim
+komut satırının varsayılanıdır ve program onunla karşılaştırılır. Aynı günün F1/F2 ve "sayaç defteri yedekte, geri yüklemede yalnız
+birleştirilir" kararları kurallara eklendi (README K10–K12).
 
 Komut satırı:
   python3 -I kahin.py hesapla <olaylar.json> [--referans ISO]… [--param ad=deger]…
@@ -28,19 +30,26 @@ PROFILLER = ("TEMEL", "TICARI")
 BELGE_OLAYLARI = (
     "gonder_kabul", "gonder_red", "gonder_belirsiz", "belirsiz_kesinlesti_kabul", "belirsiz_kesinlesti_red",
     "yeniden_deneme_kabul", "zaten_gonderilmis_11048", "durum_sorgusu", "iptal",
+    "durum_bulunamadi",  # F1 (27.10.2026): Durum Sorgula → EDM "bulunamadı"; önceki açık gönderim izlerini kapatır
     "belge_silindi",  # kâhin uzantısı: Listeden Sil / Silinenler (append-only: sayı değişmez)
 )
-BAKIM_OLAYLARI = ("yedekten_geri_yuklendi", "sirket_sifirlandi")  # kâhin uzantısı (yedek tatbikatı, S4)
+# Kâhin uzantısı bakım olayları (yedek tatbikatı, S4 ve 27.10 sayaç defteri kararı):
+#   yedek_alindi            şirket yedeği alındı; içine sayaç DEFTERİNİN kopyası girer (K12, V15)
+#   yedekten_geri_yuklendi  yedek_zamani'ndaki yedek geri yüklendi; defter yalnız BİRLEŞTİRİLİR (K12)
+#   sirket_sifirlandi       Şirket Verisini Sıfırla (S4: sayacı etkilemez)
+#   sayac_defteri_kayboldu  kurulumda sayaç defteri yok (yeni kurulum / taşıma; kurulum düzeyinde, şirketsiz)
+BAKIM_OLAYLARI = ("yedek_alindi", "yedekten_geri_yuklendi", "sirket_sifirlandi", "sayac_defteri_kayboldu")
 
 # Aynı saniyedeki olayların mantıksal sırası (V8; ders 31: kimlikle değil olay sınıfı → yazım sırası).
 SINIF = {
     "gonder_kabul": 0, "gonder_red": 0, "gonder_belirsiz": 0, "yeniden_deneme_kabul": 0,
-    "zaten_gonderilmis_11048": 1, "durum_sorgusu": 2,
+    "zaten_gonderilmis_11048": 1, "durum_sorgusu": 2, "durum_bulunamadi": 2,
     "belirsiz_kesinlesti_kabul": 3, "belirsiz_kesinlesti_red": 3,
-    "iptal": 4, "belge_silindi": 5, "yedekten_geri_yuklendi": 5, "sirket_sifirlandi": 5,
+    "iptal": 4, "belge_silindi": 5, "yedek_alindi": 5, "yedekten_geri_yuklendi": 5, "sirket_sifirlandi": 5,
+    "sayac_defteri_kayboldu": 5,
 }
 
-# Metnin sustuğu / çelişkili olduğu noktalar (README "Açık sorular"). İlk değer yalnız komut satırı varsayılanıdır.
+# Metnin sustuğu / çelişkili olduğu noktalar (README "Açık sorular"); kullanıcı 27.10.2026'da SECILEN'i seçti.
 PARAMETRELER = {
     "ay": ("kesinlesme", "gonderim"),                    # S1: belirsiz → kabul kesinleşince hangi ay
     "anahtar": ("ettn_ortam", "sirket_ettn_ortam"),       # S2: "aynı ETTN + ortam" şirketler arasında da mı
@@ -48,10 +57,19 @@ PARAMETRELER = {
     "pencere": ("icinde_dahil", "tamamlanan"),            # S5: "son 3 ay" hangi aylar
     "geri_yukleme": ("etkilemez", "geri_alir"),           # S4: yedekten geri yükleme / şirket sıfırlama sayacı geri alır mı
 }
-VARSAYILAN = {ad: secenekler[0] for ad, secenekler in PARAMETRELER.items()}
+SECILEN = {"ay": "gonderim", "anahtar": "sirket_ettn_ortam", "e11048": "kesinlestirir", "pencere": "icinde_dahil",
+           "geri_yukleme": "etkilemez"}  # KARARLAR — EDM sayacı (kullanıcı, 27.10.2026)
+VARSAYILAN = dict(SECILEN)
 
 BELGE_ALANLARI = {"sirket", "ortam", "tur", "ettn", "olay", "zaman", "profil", "not"}
 BAKIM_ALANLARI = {"sirket", "olay", "zaman", "yedek_zamani", "not"}
+BAKIM_GEREKLI = {
+    "yedek_alindi": ("sirket", "olay", "zaman"),
+    "yedekten_geri_yuklendi": ("sirket", "olay", "zaman", "yedek_zamani"),
+    "sirket_sifirlandi": ("sirket", "olay", "zaman"),
+    "sayac_defteri_kayboldu": ("olay", "zaman"),
+}
+BAKIM_IZINLI = {"sayac_defteri_kayboldu": {"olay", "zaman", "not"}}  # kurulum düzeyinde: şirket alanı yok
 
 
 def birlesimler():
@@ -116,8 +134,8 @@ def hazirla(olaylar):
         if olay in BELGE_OLAYLARI:
             izinli, gerekli = BELGE_ALANLARI, ("sirket", "ortam", "tur", "ettn", "olay", "zaman")
         elif olay in BAKIM_OLAYLARI:
-            izinli = BAKIM_ALANLARI
-            gerekli = ("sirket", "olay", "zaman") + (("yedek_zamani",) if olay == "yedekten_geri_yuklendi" else ())
+            izinli = BAKIM_IZINLI.get(olay, BAKIM_ALANLARI)
+            gerekli = BAKIM_GEREKLI[olay]
         else:
             raise ValueError(f"olay {sira}: bilinmeyen olay türü {olay!r}")
         fazla = set(ham) - izinli
@@ -149,11 +167,15 @@ def hazirla(olaylar):
 
 
 class Durum:
-    """Sayacın iç durumu. kayitlar: anahtar → sayılmış belge (append-only); denemeler: anahtar → (an, 'belirsiz'|'red', şirket)."""
+    """Sayacın iç durumu.
+    kayitlar  : sayaç DEFTERİ, anahtar → sayılmış belge (append-only; yalnız defter kaybolursa boşalır, K12)
+    denemeler : gönderim izleri (şirket verisinde), anahtar → [(an, 'belirsiz' | 'kapanis' | 'red', şirket)]
+    yedekler  : (şirket, yedek anı) → o andaki defterin kopyası (K12, V15)"""
 
     def __init__(self):
         self.kayitlar = {}
         self.denemeler = {}
+        self.yedekler = {}
 
 
 class Kahin:
@@ -193,8 +215,13 @@ class Kahin:
     def belirsiz(self, o):
         return o["olay"] == "gonder_belirsiz"
 
+    def kapanis(self, o):
+        # K10 (F1): EDM "bulunamadı" (ve kesin red, V6) önceki açık gönderim izlerini kapatır / geçersiz kılar.
+        return o["olay"] in ("durum_bulunamadi", "belirsiz_kesinlesti_red")
+
     def red(self, o):
-        return o["olay"] in ("gonder_red", "belirsiz_kesinlesti_red")
+        # K11 (F2): yeniden gönderimin KENDİ reddi önceki açık izi kapatmaz; yalnız kayda geçer.
+        return o["olay"] == "gonder_red"
 
     def kesinlesme(self, o):
         # K4 belirsiz gönderimin sonradan kesinleşmesi; S3: 11048 da kesinleştirir mi.
@@ -210,9 +237,10 @@ class Kahin:
         return any(tip == "belirsiz" for _, tip, _ in denemeler)
 
     def gonderim_ani(self, denemeler, an):
-        # V6: kabul edilen deneme = son red'den sonraki ilk belirsiz deneme; yoksa ilk belirsiz deneme.
-        son_red = max((i for i, (_, tip, _) in enumerate(denemeler) if tip == "red"), default=-1)
-        adaylar = [x for x, tip, _ in denemeler[son_red + 1:] if tip == "belirsiz"]
+        # K10/K11 (F1, F2) + V6: kabul edilen deneme = İLK AÇIK iz, yani son kapanıştan ("bulunamadı" / kesin red) sonraki ilk belirsiz
+        # deneme; gonder_red izi kapatmaz. Kapanıştan sonra yeni deneme yoksa ilk belirsiz deneme (V6b).
+        son = max((i for i, (_, tip, _) in enumerate(denemeler) if tip == "kapanis"), default=-1)
+        adaylar = [x for x, tip, _ in denemeler[son + 1:] if tip == "belirsiz"]
         if not adaylar:
             adaylar = [x for x, tip, _ in denemeler if tip == "belirsiz"]
         return adaylar[0] if adaylar else an
@@ -238,11 +266,40 @@ class Kahin:
         for k in list(d.denemeler):
             d.denemeler[k] = [x for x in d.denemeler[k] if not gider(x[2], x[0])]
 
+    def yedek_al(self, d, o):
+        d.yedekler[(o["sirket"], o["_an"])] = dict(d.kayitlar)  # V15: defterin TAMAMININ kopyası
+
+    def defter_kaybet(self, d):
+        d.kayitlar = {}  # sayaç dosyası kurulumda yok; gönderim izleri şirket verisiyle taşınır, onlar kalır
+
+    def birlestir(self, d, yedek, sirket):
+        # K12: yedekteki defter yalnız BİRLEŞTİRİLİR — eksik satır eklenir, var olan değişmez, hiçbir satır silinmez.
+        for k, r in yedek.items():
+            if k not in d.kayitlar:
+                d.kayitlar[k] = r
+
+    def geri_yukle(self, d, o):
+        yedek = d.yedekler.get((o["sirket"], o["_yedek"]))  # 2.4.7 öncesi yedekte defter kopyası yoktur
+        if self.p["geri_yukleme"] == "etkilemez":
+            if yedek is not None:
+                self.birlestir(d, yedek, o["sirket"])
+        elif yedek is not None:  # geri_alir (seçilmedi): şirketin defteri yedektekiyle değişir
+            d.kayitlar = {k: r for k, r in d.kayitlar.items() if r["sirket"] != o["sirket"]}
+            d.kayitlar.update({k: r for k, r in yedek.items() if r["sirket"] == o["sirket"]})
+        else:
+            self.geri_al(d, o["sirket"], o["_yedek"])
+
     def islem(self, d, o):
         t = o["olay"]
         if t in BAKIM_OLAYLARI:
-            if self.p["geri_yukleme"] == "geri_alir":
-                self.geri_al(d, o["sirket"], o["_yedek"] if t == "yedekten_geri_yuklendi" else None)
+            if t == "yedek_alindi":
+                self.yedek_al(d, o)
+            elif t == "sayac_defteri_kayboldu":
+                self.defter_kaybet(d)
+            elif t == "yedekten_geri_yuklendi":
+                self.geri_yukle(d, o)
+            elif self.p["geri_yukleme"] == "geri_alir":  # sirket_sifirlandi
+                self.geri_al(d, o["sirket"], None)
             return
         k = self.anahtar(o)
         if self.dogrudan_kabul(o):
@@ -250,6 +307,8 @@ class Kahin:
                 self.kaydet(d, k, o, self.ay(o["_an"]))
         elif self.belirsiz(o):
             d.denemeler.setdefault(k, []).append((o["_an"], "belirsiz", o["sirket"]))
+        elif self.kapanis(o):
+            d.denemeler.setdefault(k, []).append((o["_an"], "kapanis", o["sirket"]))
         elif self.red(o):
             d.denemeler.setdefault(k, []).append((o["_an"], "red", o["sirket"]))
         elif self.kesinlesme(o):
@@ -258,6 +317,7 @@ class Kahin:
                 an = o["_an"] if self.p["ay"] == "kesinlesme" else self.gonderim_ani(den, o["_an"])
                 self.kaydet(d, k, o, self.ay(an))
         # durum_sorgusu, iptal, belge_silindi ve ("saymaz" seçeneğinde) 11048: sayı ne artar ne azalır (K2, K3; V3).
+        # durum_bulunamadi sayı eklemez; yalnız izleri kapatır (K10).
 
     def _kayitlar(self, hazir, referans=None):
         d = self.yeni_durum()

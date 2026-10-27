@@ -205,7 +205,7 @@ def _d4():
     # Ön koşul: belirsiz → kesinleşme aynı şirkette. Yapay U35'te (001'de belirsiz, 002'de kesinleşme) şirketsiz anahtar ön koşulu
     # şirketler arasında taşır; genel 1, şirket başına 0 + 0 — S2'nin bir sonucu (README), değişmez orada geçerli değildir.
     for s in [x for x in RAST + UC if not x["yapay"]]:
-        sirketler = sorted({o["sirket"] for o in s["olaylar"]})
+        sirketler = sorted({o["sirket"] for o in s["olaylar"] if "sirket" in o})  # sayac_defteri_kayboldu kurulum düzeyinde, şirketsiz
         for p in BIRLESIMLER:
             if any(o["olay"] in kahin.BAKIM_OLAYLARI for o in s["olaylar"]):
                 continue
@@ -281,7 +281,9 @@ def _d7():
             b = Kahin(q).calistir(s["olaylar"], s["referanslar"])
             if not bakimli and a != b:
                 out.append(f"{s['ad']}: bakım yokken geri_yukleme sonucu değiştirdi")
-            if bakimli and any(b["sayilar"].get(x, 0) > n for x, n in a["sayilar"].items()) or set(b["sayilar"]) - set(a["sayilar"]):
+            # Toplam karşılaştırılır, anahtar başına değil: defter kaybından sonra yeniden sayılan satır etkilemez'de yeni ayıyla
+            # kalır (K12: var olan değişmez), geri_alir'de yedekteki eski ayına döner (U46, E6) — ay kayar, toplam artmaz.
+            if bakimli and sum(b["sayilar"].values()) > sum(a["sayilar"].values()):
                 out.append(f"{s['ad']}: geri_alir etkilemez'den fazla saydı")
     return out
 
@@ -335,6 +337,10 @@ _hatali("geri yükleme yedek_zamani eksik", olaylar=[{"sirket": "001", "olay": "
 _hatali("yedek_zamani geri yüklemeden sonra",
         olaylar=[{"sirket": "001", "olay": "yedekten_geri_yuklendi", "zaman": "2026-10-06T10:00:00+03:00", "yedek_zamani": "2026-10-07T10:00:00+03:00"}])
 _hatali("olay listesi dizi değil", olaylar={"olaylar": []})
+_hatali("yedek_alindi şirketsiz", olaylar=[{"olay": "yedek_alindi", "zaman": "2026-10-06T10:00:00+03:00"}])
+_hatali("sayac_defteri_kayboldu şirket alanıyla (kurulum düzeyinde olay)",
+        olaylar=[{"olay": "sayac_defteri_kayboldu", "sirket": "001", "zaman": "2026-10-06T10:00:00+03:00"}])
+_hatali("durum_bulunamadi ETTN'siz", olay="durum_bulunamadi", ettn=None)
 _hatali("geçersiz parametre değeri", parametre={"ay": "fatura_tarihi"})
 
 
@@ -668,6 +674,70 @@ class M42(Kahin):
     def islem(self, d, o):
         self._olay = o["olay"]
         super().islem(d, o)
+
+
+# ---- 27.10.2026 kararları (K10–K12): F1, F2, sayaç defteri yedekte ----
+@mutasyon("M43-F1-bulunamadi-izi-kapatmaz", "F1 ters: EDM 'bulunamadı' önceki gönderim izini kapatmaz (ay ilk denemeden)",
+          lambda p: p["ay"] == "gonderim")
+class M43(Kahin):
+    def kapanis(self, o):
+        return o["olay"] == "belirsiz_kesinlesti_red"
+
+
+@mutasyon("M44-F2-red-sonrasi-kabul-sayilmaz", "F2 ters: yeniden gönderimin reddi önceki belirsizi geçersiz kılar, sonraki kabul sayılmaz")
+class M44(Kahin):
+    def islem(self, d, o):
+        if o["olay"] == "gonder_red":
+            k = self.anahtar(o)
+            d.denemeler[k] = [x for x in d.denemeler.get(k, []) if x[1] != "belirsiz"]
+        super().islem(d, o)
+
+
+@mutasyon("M45-F2-red-izi-kapatir", "F2 ters (ay): yeniden gönderimin reddi önceki izi kapatır (ay red'den sonraki belirsiz)",
+          lambda p: p["ay"] == "gonderim")
+class M45(Kahin):
+    def kapanis(self, o):
+        return super().kapanis(o) or o["olay"] == "gonder_red"
+
+
+@mutasyon("M46-geri-yukleme-defteri-birlestirmez", "yedekteki defter geri yüklemede birleştirilmez (kazanım yok)",
+          lambda p: p["geri_yukleme"] == "etkilemez")
+class M46(Kahin):
+    def birlestir(self, d, yedek, sirket):
+        pass
+
+
+@mutasyon("M47-geri-yukleme-defteri-yedekle-degistirir", "geri yükleme defteri yedektekiyle değiştirir (sonraki satırlar silinir, sayı azalır)",
+          lambda p: p["geri_yukleme"] == "etkilemez")
+class M47(Kahin):
+    def birlestir(self, d, yedek, sirket):
+        d.kayitlar = dict(yedek)
+
+
+@mutasyon("M48-birlestirme-var-olani-ezer", "birleştirme defterde var olan satırı yedektekiyle ezer (ay değişir)",
+          lambda p: p["geri_yukleme"] == "etkilemez")
+class M48(Kahin):
+    def birlestir(self, d, yedek, sirket):
+        d.kayitlar.update(yedek)
+
+
+@mutasyon("M49-birlestirme-yalniz-o-sirket", "birleştirme yalnız geri yüklenen şirketin satırlarını alır (V15 tersi)",
+          lambda p: p["geri_yukleme"] == "etkilemez")
+class M49(Kahin):
+    def birlestir(self, d, yedek, sirket):
+        super().birlestir(d, {k: r for k, r in yedek.items() if r["sirket"] == sirket}, sirket)
+
+
+@mutasyon("M50-defter-kaybi-yok-sayilir", "sayaç defterinin kaybolması yok sayılır (kurulum taşınınca eski satırlar sürer)")
+class M50(Kahin):
+    def defter_kaybet(self, d):
+        pass
+
+
+@mutasyon("M51-bulunamadi-kabul-sayilir", "EDM 'bulunamadı' yanıtı kabul sayılır")
+class M51(Kahin):
+    def dogrudan_kabul(self, o):
+        return super().dogrudan_kabul(o) or o["olay"] == "durum_bulunamadi"
 
 
 def _model_yakalar(cls, p):
