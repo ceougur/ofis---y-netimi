@@ -29,7 +29,7 @@ Bağımsızlık PROGRAMA göredir, kendi içinde değil. Kendi içindeki dişi m
 | `kahin.py` | Model (yalnız standart kütüphane) + komut satırı (`hesapla`, `karsilastir`) |
 | `senaryolar.py` | 47 elle yazılmış uç senaryo (beklenen değerler ELLE) + tohum 1–3 rastgele senaryo üreticisi; `kabul.json`'u yazar |
 | `kabul.json` | 50 senaryo, 3.851 olay; her senaryoda 32 birleşimin beklenen sayıları (aynı sonuç veren birleşimler grup) |
-| `kahin_test.py` | Kâhinin kendi testi (A–E, G) + 52 mutasyon (F); TAP çıktısı + `# tests/pass/fail` özeti |
+| `kahin_test.py` | Kâhinin kendi testi (A–E, G) + 53 mutasyon (F); TAP çıktısı + `# tests/pass/fail` özeti |
 | `kanit/` | `tools/kanit.mjs kos` kayıtları (çıkış kodu, sayılar, ham çıktı, commit); `kanit/<gün>/kirmizi/` bilerek kırmızı kanıt |
 | `program-surucu.mjs`, `fark-analiz.mjs` | Ana oturumun program tarafı (kâhin bunları OKUMAZ) |
 
@@ -38,7 +38,7 @@ Bağımsızlık PROGRAMA göredir, kendi içinde değil. Kendi içindeki dişi m
 ```sh
 python3 -I test/bagimsiz/edm-sayac/senaryolar.py            # kabul.json'u yeniden üretir (model ≠ elle/üretici beklentisi → yazmaz, çıkış 1)
 python3 -I test/bagimsiz/edm-sayac/senaryolar.py --belge 5000 # büyük hacimle yalnız denetim (dosya yazılmaz)
-KANIT_DIR=test/bagimsiz/edm-sayac/kanit node tools/kanit.mjs kos kahin-sayac-y2y5 -- python3 -I test/bagimsiz/edm-sayac/kahin_test.py
+KANIT_DIR=test/bagimsiz/edm-sayac/kanit node tools/kanit.mjs kos kahin-sayac-k15 -- python3 -I test/bagimsiz/edm-sayac/kahin_test.py
 python3 -I test/bagimsiz/edm-sayac/kahin.py hesapla olaylar.json --referans 2026-11-05T10:00:00+03:00
 python3 -I test/bagimsiz/edm-sayac/kahin.py karsilastir test/bagimsiz/edm-sayac/kabul.json program.json   # seçilen birleşimle
 ```
@@ -63,6 +63,7 @@ Python 3.11+ (geliştirmede 3.13). `-I` ile koşar; modüller kendi klasörlerin
 | K12 | KARAR 27.10: "sayaç defterinin kopyası her şirket yedeğine girer; geri yüklemede defter yalnız BİRLEŞTİRİLİR (eksik satırlar eklenir, var olan değişmez/silinmez) — geri yükleme sayacı hiç azaltmaz, taşınan kurulum yedekten defteri geri kazanır" | `yedek_alindi` defterin kopyasını alır; `yedekten_geri_yuklendi` yalnız eksik satırları ekler; `sayac_defteri_kayboldu` defteri boşaltır |
 | K13 | Y2 (KARAR 27.10, "a"): "EDM 'aldım, reddettim' dediği gönderim sayılır, sonra kabul edilen yeniden gönderim yeni sayım AÇMAZ → ay İLK gönderimin ayı" | `belirsiz_kesinlesti_red` bir kesinleşmedir (kabul gibi); ay ilk açık iz; aynı anahtara sonraki kabul eklenmez |
 | K14 | Y5 (KARAR 27.10, "a"): "sayaç dosyası kaybolursa program şirket dosyalarındaki izlerden yeniden kurar (yalnız ekler, çift yok)" | Bkz. "Y5 modeli" aşağıda |
+| K15 | KARAR 27.10 ("a", V6c): "yeniden gönderimden önceki sorguda EDM 'bulunamadı' dedikten sonra yeniden gönderime 11048 ya da red gelirse sayım İLK gönderimin ayına yazılır (EDM belgeyi ilk gönderimde almıştı; aradaki 'bulunamadı' geçici)" | Böyle bir "bulunamadı" geçici sayılır (`etkili_kapanislar`); ay ilk açık iz |
 | — | Y1 (BAŞ MİMAR KARARI, kural değil senaryo): "program belirsiz belgeyi yeniden göndermeden ÖNCE hep EDM'ye sorar" | Senaryolarda belirsizden sonraki her yeniden gönderimden önce `durum_bulunamadi` var; gönderilmemiş belgede sorgu (U44) `programda_uretilemez` |
 | — | S1–S5 (KARARLAR 27.10): gönderimin ayı; şirket + ETTN + ortam; kendi ETTN'li 11048 kesinleşme; geri yükleme / sıfırlama sayacı ETKİLEMEZ (sayaç şirket dosyası dışında); son 3 ay = bu ay + önceki 2, ay başına satır | Seçilen birleşim (yukarıda) |
 | — | Kör nokta: "EDM portalından kesilen belgeler … sayılmaz." | Portal belgesi olay akışında yoktur; modelde olay türü yok |
@@ -78,9 +79,9 @@ Python 3.11+ (geliştirmede 3.13). `-I` ile koşar; modüller kendi klasörlerin
 - **V5** "Yetim" kesinleşme SAYILMAZ: aynı anahtar için olay listesinde önceden bir belirsiz deneme yoksa (2.4.6'da belirsiz kalmış belge,
   başka ortamın belirsizi) kesinleşme isteği eski sürümün "DestekOfis" adıyla gitmiştir (K6). Örnekler: U20, U34.
 - **V6** (kaldırıldı) Kesin redde "iz kapatır" okuması Y2 kararıyla geçersiz oldu: kesin red artık bir sayımdır (K13).
-- **V6c** "Gönderim izi" her gönderim isteğidir: belirsiz, reddedilen (`gonder_red`) ve 11048 alan yeniden gönderim. İlk açık iz, son "bulunamadı"dan
-  sonraki ilk istektir. Y1 ile her yeniden gönderimden önce "bulunamadı" geldiğinden F2'nin "ilk açık izi", reddedilen yeniden gönderimin kendisidir
-  (U40, U43). 11048'li yeniden gönderimin ayı o gönderimdir (Y3 / F1; U15, U42).
+- **V6c** (kararla kapandı → K15) "Gönderim izi" her gönderim isteğidir: belirsiz, reddedilen (`gonder_red`) ve 11048 alan yeniden gönderim. İlk açık iz,
+  son ETKİLİ "bulunamadı"dan sonraki ilk istektir. "Bulunamadı"dan sonraki ilk yeniden gönderime 11048 ya da red gelirse o "bulunamadı" geçicidir, yok
+  sayılır. Ay ilk gönderimin ayı olur (U15, U40, U42, U43).
 - **V6b** "Bulunamadı"dan sonra yeni deneme olmadan EDM kabul gösterirse (geç işlenmiş belge) sayılır (K1); ay bilinen ilk belirsiz denemedir (U44).
   Karar değildir; program ayrışırsa sorulur.
 - **V7** ETTN karşılaştırması büyük/küçük harf ve baş/son boşluk duyarsızdır (ETTN bir UUID'dir). Yalnız U31 buna bağlıdır.
@@ -118,7 +119,6 @@ Python 3.11+ (geliştirmede 3.13). `-I` ile koşar; modüller kendi klasörlerin
 S1–S5 kullanıcıca karara bağlandı (27.10.2026; yukarıdaki seçilen birleşim). Kalanlar karar değil, kâhin okumasıdır; program ayrışırsa kullanıcıya
 sorulacak (ders 43):
 
-- **V6c**: Reddedilen ve 11048 alan yeniden gönderim de "gönderim izi" mi (kâhin: evet; F2 + Y1'de ay reddedilen gönderim)?
 - **V6b**: "Bulunamadı" sonrası yeni deneme olmadan kabul (kâhin: sayılır, ilk belirsizin ayı). Program bu diziyi üretemez (U44, Y4).
 - **V15**: Yedekteki defter kopyası tamamı mı, yalnız o şirketin satırları mı (kâhin: tamamı)?
 - **S6** (kullanıcının EDM'ye sorusu): Reddedilen / iptal edilen belgede kontör düşüyor mu, iade ediliyor mu? Yanıt "iade" ise K1/V3 ve kâhin değişir.
@@ -206,7 +206,7 @@ bilerek yok sayar (K6).
   gönderimler, %5 UTC yazımlı saat, aynı ETTN başka şirkette / öbür ortamda; R1 kronolojik, R2–R3 karışık; 4 referans. Ek: C4 tohum 4, 5.000 belge
   (11.304 olay; dosyaya yazılmaz).
 
-## Mutasyonlar (52; `kahin_test.py` F)
+## Mutasyonlar (53; `kahin_test.py` F)
 
 M01–M42 (26.10): 11048'i say, iptali say, iptal düşürür, durum sorgusunu say, reddi say, belirsizi hemen say, kesin reddi sayma (Y2 ters, M07), kesin kabulü sayma, tekilleme
 yok, yeniden denemeyi ayrıca say, ortam anahtarda yok, ortam çıktıda karışık, şirket anahtarı ters, ay UTC, gece yarısı önceki aya, yıl bir kez okunur,
@@ -218,6 +218,7 @@ belirsiz, test sayılmaz, e-SMM sayılmaz, kesinleşme ön koşulu ortamsız, 11
 Y2/Y5 (27.10, "a"):
 - M07 Y2 ters: kesin red sayım açmaz. Eski M07 "kesin reddi say" Y2 ile doğru davranış oldu ve tersine çevrildi.
 - M52 Y5 ters: kaybolan defter izlerden yeniden kurulmaz.
+- M53 K15 ters: "bulunamadı"dan sonra 11048 ya da red gelse de "bulunamadı" geçerli sayılır (ay yeniden gönderim).
 
 M50 artık yalnız `geri_yukleme=etkilemez`'de uygulanır: `geri_alir`'de defter izlerle birlikte döndüğü için kayıp + yeniden kurma defteri değiştirmez.
 
@@ -253,7 +254,7 @@ Uygulanamayan birleşimler:
   - D7 bakım yoksa geri_yukleme etkisiz; bakımlıda geri_alir toplamı ≤ etkilemez toplamı
   - D8 alt/üst sınır
 - 19 girdi doğrulaması (18 hatalı girdi reddedilir, 1 geçerli girdi kabul edilir).
-- 52 mutasyonun hepsi uygulanabildiği her birleşimde hem kabul.json'ca hem bağımsız beklentilerce yakalandı.
+- 53 mutasyonun hepsi uygulanabildiği her birleşimde hem kabul.json'ca hem bağımsız beklentilerce yakalandı.
 - Komut satırı: `hesapla` ve `karsilastir`.
 - Dersler: 2, 3/4, 5, 6 (D4/D7 değişmez farkları yeniden üretildi, kök nedeni yazıldı), 7 (mutasyon + `kanit/…/kirmizi`), 13/22, 17, 31, 40/43.
 

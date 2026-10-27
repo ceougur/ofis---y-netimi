@@ -201,12 +201,12 @@ uc("U14-belirsiz-sonucsuz", "Belirsiz kalır, üç durum sorgusu sonuç vermez: 
     ol("durum_sorgusu", E(1), t("2026-10-12 11:00:00"))],
    lambda p: {"sayilar": {}}, kurallar=["K3", "V4"])
 
-uc("U15-belirsiz-sonra-11048", "Belirsiz 31.10 → (Y1) sorgu 'bulunamadı' → yeniden gönderimde 11048 (kendi ETTN'i) 01.11: S3; ay yeniden gönderim (F1).",
+uc("U15-belirsiz-sonra-11048", "Belirsiz 31.10 → (Y1) sorgu 'bulunamadı' → yeniden gönderimde 11048 (kendi ETTN'i) 01.11: S3; 'bulunamadı' geçici, ay İLK gönderim (K15).",
    [ol("gonder_belirsiz", E(1), t("2026-10-31 23:00:00")),
     ol("durum_bulunamadi", E(1), t("2026-11-01 08:59:00")),
     ol("zaten_gonderilmis_11048", E(1), t("2026-11-01 09:00:00"))],
-   lambda p: {"sayilar": ({} if p["e11048"] == "saymaz" else {k("2026-11"): 1})},
-   acik_sorular=["S3", "S1"], kurallar=["K3", "K4", "K10"])
+   lambda p: {"sayilar": ({} if p["e11048"] == "saymaz" else {k("2026-10" if p["ay"] == "gonderim" else "2026-11"): 1})},
+   acik_sorular=["S3", "S1"], kurallar=["K3", "K4", "K15"])
 
 uc("U16-iki-belirsiz-sonra-kesinlesme", "Belirsiz 30.09 → (Y1) 'bulunamadı' → yeniden belirsiz 01.10 → kesinleşme 02.11: gönderim anı ikinci belirsiz (F1).",
    [ol("gonder_belirsiz", E(1), t("2026-09-30 23:30:00")),
@@ -427,12 +427,13 @@ uc("U39-tekrarlanan-red", "Üç kez red: sayılmaz.",
     ol("gonder_red", E(1), t("2026-10-03 10:00:00"), tur="esmm")],
    lambda p: {"sayilar": {}}, kurallar=["K1"])
 
-uc("U40-belirsiz-red-sonra-kesinlesme", "F2: belirsiz 30.09 → (Y1) 'bulunamadı' → yeniden gönderim red 01.10 → EDM kabul gösterir 02.10: SAYILIR; ilk açık iz = reddedilen yeniden gönderim (Ekim).",
+uc("U40-belirsiz-red-sonra-kesinlesme", "F2: belirsiz 30.09 → (Y1) 'bulunamadı' → yeniden gönderim red 01.10 → EDM kabul gösterir 02.10: SAYILIR; red 'bulunamadı'yı geçici kılar, ay İLK gönderim (Eylül, K15).",
    [ol("gonder_belirsiz", E(1), t("2026-09-30 22:00:00")),
     ol("durum_bulunamadi", E(1), t("2026-10-01 09:59:00")),
     ol("gonder_red", E(1), t("2026-10-01 10:00:00")),
     ol("belirsiz_kesinlesti_kabul", E(1), t("2026-10-02 10:00:00"))],
-   lambda p: {"sayilar": {k("2026-10"): 1}}, acik_sorular=["S1"], varsayimlar=["V6c"], kurallar=["K4", "K10", "K11"])
+   lambda p: {"sayilar": {k("2026-09" if p["ay"] == "gonderim" else "2026-10"): 1}}, acik_sorular=["S1"],
+   kurallar=["K4", "K11", "K15"])
 
 # ---- 27.10.2026 kararları: F1, F2, sayaç defteri yedekte (K10–K12) ----------------------------------------------------
 uc("U41-F1-bulunamadi-yeniden-belirsiz-kesinlesme",
@@ -452,24 +453,25 @@ uc("U41-F1-bulunamadi-yeniden-belirsiz-kesinlesme",
    referanslar=[t("2026-11-15 10:00:00"), t("2026-12-05 10:00:00")], acik_sorular=["S1"], kurallar=["K4", "K10"])
 
 uc("U42-F1-bulunamadi-yeniden-belirsiz-11048",
-   "F1 + S3 + Y1: belirsiz 30.10 → 'bulunamadı' → yeniden belirsiz 01.11 → (Y1) 'bulunamadı' 02.12 → yeniden gönderimde 11048 02.12: ay son yeniden gönderim (Aralık).",
+   "F1 + S3 + Y1 + K15: belirsiz 30.10 → 'bulunamadı' → yeniden belirsiz 01.11 → (Y1) 'bulunamadı' 02.12 → yeniden gönderimde 11048 02.12: ikinci 'bulunamadı' geçici, ilki geçerli → ay 01.11 gönderimi (Kasım).",
    [ol("gonder_belirsiz", E(1), t("2026-10-30 10:00:00"), tur="esmm"),
     ol("durum_bulunamadi", E(1), t("2026-10-31 10:00:00"), tur="esmm"),
     ol("gonder_belirsiz", E(1), t("2026-11-01 08:00:00"), tur="esmm"),
     ol("durum_bulunamadi", E(1), t("2026-12-02 09:59:00"), tur="esmm"),
     ol("zaten_gonderilmis_11048", E(1), t("2026-12-02 10:00:00"), tur="esmm")],
-   lambda p: {"sayilar": ({} if p["e11048"] == "saymaz" else {k("2026-12", tur="esmm"): 1})},
-   acik_sorular=["S1", "S3"], kurallar=["K10"])
+   lambda p: {"sayilar": ({} if p["e11048"] == "saymaz"
+                          else {k("2026-11" if p["ay"] == "gonderim" else "2026-12", tur="esmm"): 1})},
+   acik_sorular=["S1", "S3"], kurallar=["K10", "K15"])
 
 uc("U43-F2-belirsiz-red-belirsiz-kesinlesme",
-   "F2: belirsiz 30.09 20:00 → (Y1) 'bulunamadı' → yeniden gönderim red 30.09 23:00 → yeniden belirsiz 15.10 → kabul 02.11: red izi kapatmaz, ay ilk açık iz (reddedilen gönderim, Eylül).",
+   "F2 + K15: belirsiz 30.09 20:00 → (Y1) 'bulunamadı' → yeniden gönderim red 30.09 23:00 → yeniden belirsiz 15.10 → kabul 02.11: red 'bulunamadı'yı geçici kılar, ay İLK gönderim (30.09 20:00, Eylül).",
    [ol("gonder_belirsiz", E(1), t("2026-09-30 20:00:00")),
     ol("durum_bulunamadi", E(1), t("2026-09-30 22:30:00")),
     ol("gonder_red", E(1), t("2026-09-30 23:00:00")),
     ol("gonder_belirsiz", E(1), t("2026-10-15 10:00:00")),
     ol("belirsiz_kesinlesti_kabul", E(1), t("2026-11-02 10:00:00"))],
    lambda p: {"sayilar": {k("2026-09" if p["ay"] == "gonderim" else "2026-11"): 1}},
-   acik_sorular=["S1"], varsayimlar=["V6c"], kurallar=["K4", "K10", "K11"])
+   acik_sorular=["S1"], kurallar=["K4", "K11", "K15"])
 
 uc("U44-bulunamadi-sonra-yeni-deneme-olmadan-kabul",
    "Belirsiz 30.09 → 'bulunamadı' 01.10 → yeni gönderim yok → EDM kabul gösterir 05.10 (geç işlenmiş): sayılır (K1), ay ilk belirsiz (V6b, karar değil).",
@@ -673,7 +675,7 @@ def rastgele_senaryo(tohum, belge_sayisi=VARSAYILAN_BELGE):
             adim, kab = [("gonder_belirsiz", t0), ("belirsiz_kesinlesti_red", t1)], [(t1, t0, None)]
         elif ad == "belirsiz_11048":
             t1, t2 = s(), s()
-            adim, kab = [("gonder_belirsiz", t0), ("durum_bulunamadi", t1), ("zaten_gonderilmis_11048", t2)], [(t2, t2, "kesinlestirir")]
+            adim, kab = [("gonder_belirsiz", t0), ("durum_bulunamadi", t1), ("zaten_gonderilmis_11048", t2)], [(t2, t0, "kesinlestirir")]  # K15
         elif ad == "belirsiz_yeniden_kabul":
             t1, t2 = s(), s()
             adim, kab = [("gonder_belirsiz", t0), ("durum_bulunamadi", t1), ("yeniden_deneme_kabul", t2)], [(t2, t2, None)]
@@ -706,15 +708,15 @@ def rastgele_senaryo(tohum, belge_sayisi=VARSAYILAN_BELGE):
         elif ad == "belirsiz_11048_kesin":
             t1, t2, t3 = s(), s(), s()
             adim = [("gonder_belirsiz", t0), ("durum_bulunamadi", t1), ("zaten_gonderilmis_11048", t2), ("belirsiz_kesinlesti_kabul", t3)]
-            kab = [(t2, t2, "kesinlestirir"), (t3, t2, None)]
+            kab = [(t2, t0, "kesinlestirir"), (t3, t0, None)]  # K15: 11048 'bulunamadı'yı geçici kılar
         elif ad == "yalniz_iptal":
             adim, kab = [("iptal", t0)], []
         elif ad == "kabul_silindi":
             adim, kab = [("gonder_kabul", t0), ("belge_silindi", s())], [(t0, t0, None)]
-        elif ad == "belirsiz_red_kesin":  # F2: sayılır, ay ilk açık iz (Y1 sorgusundan sonraki reddedilen gönderim)
+        elif ad == "belirsiz_red_kesin":  # F2: sayılır; K15: red 'bulunamadı'yı geçici kılar → ay ilk gönderim
             t1, t2, t3 = s(), s(), s()
             adim = [("gonder_belirsiz", t0), ("durum_bulunamadi", t1), ("gonder_red", t2), ("belirsiz_kesinlesti_kabul", t3)]
-            kab = [(t3, t2, None)]
+            kab = [(t3, t0, None)]
         elif ad == "f1_bulunamadi_belirsiz_kesin":  # F1: ay 'bulunamadı'dan sonraki gönderim
             t1, t2, t3 = s(), s(), s()
             adim = [("gonder_belirsiz", t0), ("durum_bulunamadi", t1), ("gonder_belirsiz", t2), ("belirsiz_kesinlesti_kabul", t3)]
@@ -723,12 +725,12 @@ def rastgele_senaryo(tohum, belge_sayisi=VARSAYILAN_BELGE):
             t1, t2, t3, t4 = s(), s(), s(), s()
             adim = [("gonder_belirsiz", t0), ("durum_bulunamadi", t1), ("gonder_belirsiz", t2), ("durum_bulunamadi", t3),
                     ("zaten_gonderilmis_11048", t4)]
-            kab = [(t4, t4, "kesinlestirir")]
-        elif ad == "f2_red_belirsiz_kesin":  # F2: gonder_red izi kapatmaz → ilk açık iz (Y1 sorgusundan sonraki reddedilen gönderim)
+            kab = [(t4, t2, "kesinlestirir")]  # K15: ikinci 'bulunamadı' geçici, ilki geçerli → ay t2 gönderimi
+        elif ad == "f2_red_belirsiz_kesin":  # F2 + K15: red 'bulunamadı'yı geçici kılar → ay ilk gönderim
             t1, t2, t3, t4 = s(), s(), s(), s()
             adim = [("gonder_belirsiz", t0), ("durum_bulunamadi", t1), ("gonder_red", t2), ("gonder_belirsiz", t3),
                     ("belirsiz_kesinlesti_kabul", t4)]
-            kab = [(t4, t2, None)]
+            kab = [(t4, t0, None)]
         elif ad == "bulunamadi_iptal":
             adim, kab = [("gonder_belirsiz", t0), ("durum_bulunamadi", s()), ("iptal", s())], []
         else:  # pragma: no cover
