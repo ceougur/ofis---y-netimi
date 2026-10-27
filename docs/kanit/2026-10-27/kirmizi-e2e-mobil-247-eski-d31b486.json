@@ -1,0 +1,98 @@
+{
+  "ad": "kirmizi-e2e-mobil-247-eski-d31b486",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil247-eski-d31b486/test/e2e/senaryo-mobil-247.mjs",
+  "commit": "3f13c71694e31f2c12cc0e70beae0033d8f3d04b",
+  "dal": "is/mobil-arayuz-247",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v165 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-27T06:39:08.767Z",
+  "sure_sn": 304.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 15,
+    "gecen": 2,
+    "basarisiz": 13,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 13 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "adres /mobil/ (/)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "başlık “DestekOfis · Ofis Yönetimi”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "masaüstü ekranı yok",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.waitForSelector: Timeout 30000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.waitForSelector: Timeout 30000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.click: Timeout 30000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.click: Timeout 30000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.click: Timeout 30000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.click: Timeout 30000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.click: Timeout 30000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.click: Timeout 30000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.click: Timeout 30000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.waitForSelector: Timeout 30000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-27/kirmizi-e2e-mobil-247-eski-d31b486.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9be28ceb72f07f49",
+  "ham_cikti_sha256": "fc838bf023707677e6b8366a6732e4eaa7f7117d186ae4be4bdec7ac0c5f42cf",
+  "ham_cikti_bayt": 1620
+}

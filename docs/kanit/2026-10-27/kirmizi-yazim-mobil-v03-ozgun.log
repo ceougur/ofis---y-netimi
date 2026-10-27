@@ -1,0 +1,191 @@
+TAP version 13
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 67.342075
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 5.059248
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.819944
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 4.039808
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    not ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 4.144465
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil247-v03-3f13c71/test/yazim-duzeni.test.mjs:209:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Mobil görünümdeki adlar başlık yazımıyla yazılmalı:
+        client/mobil/index.html (etiket): “Tekrar hoş geldiniz” → “Tekrar Hoş Geldiniz”
+        client/mobil/index.html (etiket): “Kullanıcı adı” → “Kullanıcı Adı”
+        client/mobil/index.html (etiket): “Giriş yap” → “Giriş Yap”
+        client/mobil/index.html (etiket): “Yerel sunucu bağlantısı” → “Yerel Sunucu Bağlantısı”
+        client/mobil/index.html (etiket): “Yetkili kullanıcı” → “Yetkili Kullanıcı”
+        client/mobil/index.html (etiket): “Sunucu bağlı” → “Sunucu Bağlı”
+        client/mobil/app.js (etiket): “← Listeye dön” → “← Listeye Dön”
+        client/mobil/app.js (etiket): “İşlem izni test aşamasında kapalı” → “İşlem İzni Test Aşamasında Kapalı”
+        client/mobil/app.js (etiket): “Cari ekstre PDF” → “Cari Ekstre PDF”
+        client/mobil/app.js (etiket): “Banka hesap kimliği (banka seçildiyse)” → “Banka Hesap Kimliği (banka seçildiyse)”
+        client/mobil/app.js (etiket): “Birim fiyatı” → “Birim Fiyatı”
+        client/mobil/app.js (etiket): “Ödeme hareketi yok” → “Ödeme Hareketi Yok”
+        client/mobil/app.js (etiket): “Tüm cariler” → “Tüm Cariler”
+        client/mobil/app.js (etiket): “Özet hareketler” → “Özet Hareketler”
+        client/mobil/app.js (etiket): “Fatura kalemlerini göster” → “Fatura Kalemlerini Göster”
+        client/mobil/app.js (etiket): “Raporu getir” → “Raporu Getir”
+        client/mobil/app.js (etiket): “← Raporlara dön” → “← Raporlara Dön”
+        client/mobil/app.js (etiket): “Cari seçin” → “Cari Seçin”
+        client/mobil/app.js (etiket): “PDF indir” → “PDF İndir”
+        client/mobil/app.js (etiket): “Excel indir” → “Excel İndir”
+        client/mobil/app.js: “Cari hesaplar” → “Cari Hesaplar”
+        client/mobil/app.js: “Kasa ve banka” → “Kasa ve Banka”
+        client/mobil/app.js: “Stok yönetimi” → “Stok Yönetimi”
+        client/mobil/app.js: “Müşteri raporları” → “Müşteri Raporları”
+        client/mobil/app.js: “Bu yıl” → “Bu Yıl”
+        client/mobil/app.js: “Bu ay” → “Bu Ay”
+        client/mobil/app.js: “Geçen ay” → “Geçen Ay”
+        client/mobil/app.js: “Son 30 gün” → “Son 30 Gün”
+        client/mobil/app.js: “Tüm zamanlar” → “Tüm Zamanlar”
+        client/mobil/app.js: “Tarih aralığı” → “Tarih Aralığı”
+        client/mobil/app.js: “Bakiyesi olanlar” → “Bakiyesi Olanlar”
+        client/mobil/app.js: “Sıfır bakiyeler” → “Sıfır Bakiyeler”
+        client/mobil/app.js: “Cari hesaplar” → “Cari Hesaplar”
+        client/mobil/app.js: “Taksit ve vadeler” → “Taksit ve Vadeler”
+        client/mobil/app.js: “Cari türü” → “Cari Türü”
+        client/mobil/app.js: “Kart durumu” → “Kart Durumu”
+        client/mobil/app.js: “Cari seçimi” → “Cari Seçimi”
+        + actual - expected
+        
+        + [
+        +   'client/mobil/index.html (etiket): “Tekrar hoş geldiniz” → “Tekrar Hoş Geldiniz”',
+        +   'client/mobil/index.html (etiket): “Kullanıcı adı” → “Kullanıcı Adı”',
+        +   'client/mobil/index.html (etiket): “Giriş yap” → “Giriş Yap”',
+        +   'client/mobil/index.html (etiket): “Yerel sunucu bağlantısı” → “Yerel Sunucu Bağlantısı”',
+        +   'client/mobil/index.html (etiket): “Yetkili kullanıcı” → “Yetkili Kullanıcı”',
+        +   'client/mobil/index.html (etiket): “Sunucu bağlı” → “Sunucu Bağlı”',
+        +   'client/mobil/app.js (etiket): “← Listeye dön” → “← Listeye Dön”',
+        +   'client/mobil/app.js (etiket): “İşlem izni test aşamasında kapalı” → “İşlem İzni Test Aşamasında Kapalı”',
+        +   'client/mobil/app.js (etiket): “Cari ekstre PDF” → “Cari Ekstre PDF”',
+        +   'client/mobil/app.js (etiket): “Banka hesap kimliği (banka seçildiyse)” → “Banka Hesap Kimliği (banka seçildiyse)”',
+        +   'client/mobil/app.js (etiket): “Birim fiyatı” → “Birim Fiyatı”',
+        +   'client/mobil/app.js (etiket): “Ödeme hareketi yok” → “Ödeme Hareketi Yok”',
+        +   'client/mobil/app.js (etiket): “Tüm cariler” → “Tüm Cariler”',
+        +   'client/mobil/app.js (etiket): “Özet hareketler” → “Özet Hareketler”',
+        +   'client/mobil/app.js (etiket): “Fatura kalemlerini göster” → “Fatura Kalemlerini Göster”',
+        +   'client/mobil/app.js (etiket): “Raporu getir” → “Raporu Getir”',
+        +   'client/mobil/app.js (etiket): “← Raporlara dön” → “← Raporlara Dön”',
+        +   'client/mobil/app.js (etiket): “Cari seçin” → “Cari Seçin”',
+        +   'client/mobil/app.js (etiket): “PDF indir” → “PDF İndir”',
+        +   'client/mobil/app.js (etiket): “Excel indir” → “Excel İndir”',
+        +   'client/mobil/app.js: “Cari hesaplar” → “Cari Hesaplar”',
+        +   'client/mobil/app.js: “Kasa ve banka” → “Kasa ve Banka”',
+        +   'client/mobil/app.js: “Stok yönetimi” → “Stok Yönetimi”',
+        +   'client/mobil/app.js: “Müşteri raporları” → “Müşteri Raporları”',
+        +   'client/mobil/app.js: “Bu yıl” → “Bu Yıl”',
+        +   'client/mobil/app.js: “Bu ay” → “Bu Ay”',
+        +   'client/mobil/app.js: “Geçen ay” → “Geçen Ay”',
+        +   'client/mobil/app.js: “Son 30 gün” → “Son 30 Gün”',
+        +   'client/mobil/app.js: “Tüm zamanlar” → “Tüm Zamanlar”',
+        +   'client/mobil/app.js: “Tarih aralığı” → “Tarih Aralığı”',
+        +   'client/mobil/app.js: “Bakiyesi olanlar” → “Bakiyesi Olanlar”',
+        +   'client/mobil/app.js: “Sıfır bakiyeler” → “Sıfır Bakiyeler”',
+        +   'client/mobil/app.js: “Cari hesaplar” → “Cari Hesaplar”',
+        +   'client/mobil/app.js: “Taksit ve vadeler” → “Taksit ve Vadeler”',
+        +   'client/mobil/app.js: “Cari türü” → “Cari Türü”',
+        +   'client/mobil/app.js: “Kart durumu” → “Kart Durumu”',
+        +   'client/mobil/app.js: “Cari seçimi” → “Cari Seçimi”'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'client/mobil/index.html (etiket): “Tekrar hoş geldiniz” → “Tekrar Hoş Geldiniz”'
+        1: 'client/mobil/index.html (etiket): “Kullanıcı adı” → “Kullanıcı Adı”'
+        2: 'client/mobil/index.html (etiket): “Giriş yap” → “Giriş Yap”'
+        3: 'client/mobil/index.html (etiket): “Yerel sunucu bağlantısı” → “Yerel Sunucu Bağlantısı”'
+        4: 'client/mobil/index.html (etiket): “Yetkili kullanıcı” → “Yetkili Kullanıcı”'
+        5: 'client/mobil/index.html (etiket): “Sunucu bağlı” → “Sunucu Bağlı”'
+        6: 'client/mobil/app.js (etiket): “← Listeye dön” → “← Listeye Dön”'
+        7: 'client/mobil/app.js (etiket): “İşlem izni test aşamasında kapalı” → “İşlem İzni Test Aşamasında Kapalı”'
+        8: 'client/mobil/app.js (etiket): “Cari ekstre PDF” → “Cari Ekstre PDF”'
+        9: 'client/mobil/app.js (etiket): “Banka hesap kimliği (banka seçildiyse)” → “Banka Hesap Kimliği (banka seçildiyse)”'
+        10: 'client/mobil/app.js (etiket): “Birim fiyatı” → “Birim Fiyatı”'
+        11: 'client/mobil/app.js (etiket): “Ödeme hareketi yok” → “Ödeme Hareketi Yok”'
+        12: 'client/mobil/app.js (etiket): “Tüm cariler” → “Tüm Cariler”'
+        13: 'client/mobil/app.js (etiket): “Özet hareketler” → “Özet Hareketler”'
+        14: 'client/mobil/app.js (etiket): “Fatura kalemlerini göster” → “Fatura Kalemlerini Göster”'
+        15: 'client/mobil/app.js (etiket): “Raporu getir” → “Raporu Getir”'
+        16: 'client/mobil/app.js (etiket): “← Raporlara dön” → “← Raporlara Dön”'
+        17: 'client/mobil/app.js (etiket): “Cari seçin” → “Cari Seçin”'
+        18: 'client/mobil/app.js (etiket): “PDF indir” → “PDF İndir”'
+        19: 'client/mobil/app.js (etiket): “Excel indir” → “Excel İndir”'
+        20: 'client/mobil/app.js: “Cari hesaplar” → “Cari Hesaplar”'
+        21: 'client/mobil/app.js: “Kasa ve banka” → “Kasa ve Banka”'
+        22: 'client/mobil/app.js: “Stok yönetimi” → “Stok Yönetimi”'
+        23: 'client/mobil/app.js: “Müşteri raporları” → “Müşteri Raporları”'
+        24: 'client/mobil/app.js: “Bu yıl” → “Bu Yıl”'
+        25: 'client/mobil/app.js: “Bu ay” → “Bu Ay”'
+        26: 'client/mobil/app.js: “Geçen ay” → “Geçen Ay”'
+        27: 'client/mobil/app.js: “Son 30 gün” → “Son 30 Gün”'
+        28: 'client/mobil/app.js: “Tüm zamanlar” → “Tüm Zamanlar”'
+        29: 'client/mobil/app.js: “Tarih aralığı” → “Tarih Aralığı”'
+        30: 'client/mobil/app.js: “Bakiyesi olanlar” → “Bakiyesi Olanlar”'
+        31: 'client/mobil/app.js: “Sıfır bakiyeler” → “Sıfır Bakiyeler”'
+        32: 'client/mobil/app.js: “Cari hesaplar” → “Cari Hesaplar”'
+        33: 'client/mobil/app.js: “Taksit ve vadeler” → “Taksit ve Vadeler”'
+        34: 'client/mobil/app.js: “Cari türü” → “Cari Türü”'
+        35: 'client/mobil/app.js: “Kart durumu” → “Kart Durumu”'
+        36: 'client/mobil/app.js: “Cari seçimi” → “Cari Seçimi”'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil247-v03-3f13c71/test/yazim-duzeni.test.mjs:221:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 33.623871
+      type: 'test'
+      ...
+    1..6
+not ok 1 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 118.165294
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil247-v03-3f13c71/test/yazim-duzeni.test.mjs:149:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 5
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 193.541739

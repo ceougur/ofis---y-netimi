@@ -1,0 +1,95 @@
+
+> destekofis@2.4.6 test:senaryo-mobil-247
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-mobil-247.mjs
+
+Masaüstü: Kasa 3279.75, Banka 25000, 2 cari, 1 ürün
+
+■ T1 telefon ana adresi açar → mobil görünüm; bilgisayar masaüstünü görür
+  ✓ adres /mobil/ (/mobil/)
+  ✓ başlık “DestekOfis Mobil”
+  ✓ masaüstü ekranı yok
+  ✓ bilgisayar ana adreste kalır
+  ✓ bilgisayarda masaüstü sayfası
+
+■ T2 giriş → Özet sayıları = masaüstü API'si
+  ✓ Nakit Kasa ₺3.279,75 = ₺3.279,75
+  ✓ Kasa beklenen 3.000 − 120,25 + 400 (carinin nakit tahsilatı)
+  ✓ Banka ₺25.000,00 = ₺25.000,00
+  ✓ Cari Kayıtları 2 = 2
+  ✓ Stok Ürünleri 1 = 1
+  ✓ alt menü Özet, Cari, Finans, Stok, Raporlar
+  ✓ alt menü tek satır, ekranın altında (yükseklik 63)
+  ✓ şirket seçili
+  ✓ Özet tutarları kesilmeden görünür (—)
+  ✓ Özet: yatay taşma yok (390 ≤ 390)
+
+■ T3 Cari: liste, arama, cari kartı, Cari Ekstre PDF
+  ✓ 2 cari (2)
+  ✓ Ali bakiyesi ₺850,50Bakiye = ₺850,50
+  ✓ Ali beklenen 1.250,50 − 400
+  ✓ Cari listesi: yatay taşma yok (390 ≤ 390)
+  ✓ arama “Veli” → Veli Toptan
+  ✓ arama temizlenince 2 cari
+  ✓ cari kartı bakiyesi ₺850,50
+  ✓ son hareketler 2 = 2
+  ✓ Cari kartı: yatay taşma yok (390 ≤ 390)
+  ✓ Cari Ekstre PDF indi (Cari-Ekstre.pdf, %PDF)
+  ✓ Listeye Dön
+
+■ T4 Finans: Nakit Kasa, Banka ve hesap satırı = API
+  ✓ Nakit Kasa ₺3.279,75
+  ✓ Banka ₺25.000,00
+  ✓ hesap satırı ₺25.000,00 = ₺25.000,00
+  ✓ Banka beklenen açılış 25.000
+  ✓ Finans: yatay taşma yok (390 ≤ 390)
+
+■ T5 Stok: miktar = API; stok kartı hareketleri
+  ✓ Kurşun Kalem 33 AdetMiktar (API 33; beklenen 40 − 7)
+  ✓ stok kartı 33 Adet
+  ✓ hareketler −7 Adet, +40 Adet
+  ✓ Stok kartı: yatay taşma yok (390 ≤ 390)
+
+■ T6 Raporlar: izinli 10 rapor; Cari Listesi = API; PDF ve Excel; Cari Ekstre cari seçerek
+  ✓ 10 rapor (10: mizan, cari-listesi, cari-ekstre, cari-hareketleri, cari-tahsilat, alacak-yaslandirma, taksit-kartlari, taksit-vadeleri, geciken-taksitler, taksit-tahsilatlari)
+  ✓ fatura / vergi raporları yok
+  ✓ Rapor kataloğu: yatay taşma yok (390 ≤ 390)
+  ✓ rapor satırları API ile aynı (2)
+  ✓ TOPLAM satırı (1)
+  ✓ Cari Listesi raporu: yatay taşma yok (390 ≤ 390)
+  ✓ rapor PDF indi (DestekOfis-cari-listesi.pdf)
+  ✓ rapor Excel indi (DestekOfis-cari-listesi.xlsx)
+  ✓ Cari Ekstre satırları 3 = 3
+  ✓ Cari Ekstre raporu: yatay taşma yok (390 ≤ 390)
+
+■ T7 salt okunur: yazma düğmesi / formu yok; demo metni yok
+  ✓ demo / test onayı metni yok
+  ✓ yazma düğmesi yok (—)
+  ✓ kayıt formu yok
+  ✓ tarayıcıdan yazma isteği 405 (405)
+  ✓ veri tabanında hareket sayısı değişmedi
+
+■ T8 iki şirket: 002 boş; veri girilince Yenile; 001'e dönüş
+  ✓ 002 Nakit Kasa ₺0,00
+  ✓ 002 Cari Kayıtları 0
+  ✓ 002 cari listesi boş ipucu
+  ✓ 002 Yenile → Ayşe Demir
+  ✓ 002 Nakit Kasa ₺500,00 = ₺500,00
+  ✓ 001'e dönüş: Nakit Kasa ₺3.279,75
+  ✓ 001'e dönüş: 2 cari
+
+■ T9 çıkış (üst çubuk) → giriş ekranı; oturum kapandı
+  ✓ giriş ekranı
+  ✓ oturum kapandı (401)
+
+■ T10 yetkisiz kullanıcı (Personel): Kasa / Banka / Raporlar görünmez
+  ✓ Nakit Kasa Yetki Yok
+  ✓ Banka Yetki Yok
+  ✓ Cari Kayıtları 2
+  ✓ şirket seçicide yalnız 001
+  ✓ Finans: Bu işlem için yetkiniz yok. | Bu işlem için yetkiniz yok.
+  ✓ Kasa tutarı gösterilmez
+  ✓ Raporlar: Bu işlem için yetkiniz yok.
+  ✓ rapor listesi yok
+  ✓ sayfa hatası yok (—)
+
+68 geçti, 0 kaldı

@@ -1,0 +1,38 @@
+Masaüstü: Kasa 3279.75, Banka 25000, 2 cari, 1 ürün
+
+■ T1 telefon ana adresi açar → mobil görünüm; bilgisayar masaüstünü görür
+  ✗ adres /mobil/ (/)
+  ✗ başlık “DestekOfis · Ofis Yönetimi”
+  ✗ masaüstü ekranı yok
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 30000ms exceeded.
+
+■ T2 giriş → Özet sayıları = masaüstü API'si
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 30000ms exceeded.
+
+■ T3 Cari: liste, arama, cari kartı, Cari Ekstre PDF
+  ✗ adım yarıda kaldı: page.click: Timeout 30000ms exceeded.
+
+■ T4 Finans: Nakit Kasa, Banka ve hesap satırı = API
+  ✗ adım yarıda kaldı: page.click: Timeout 30000ms exceeded.
+
+■ T5 Stok: miktar = API; stok kartı hareketleri
+  ✗ adım yarıda kaldı: page.click: Timeout 30000ms exceeded.
+
+■ T6 Raporlar: izinli 10 rapor; Cari Listesi = API; PDF ve Excel; Cari Ekstre cari seçerek
+  ✗ adım yarıda kaldı: page.click: Timeout 30000ms exceeded.
+
+■ T7 salt okunur: yazma düğmesi / formu yok; demo metni yok
+  ✓ demo / test onayı metni yok
+  ✗ adım yarıda kaldı: page.click: Timeout 30000ms exceeded.
+
+■ T8 iki şirket: 002 boş; veri girilince Yenile; 001'e dönüş
+  ✗ adım yarıda kaldı: page.click: Timeout 30000ms exceeded.
+
+■ T9 çıkış (üst çubuk) → giriş ekranı; oturum kapandı
+  ✗ adım yarıda kaldı: page.click: Timeout 30000ms exceeded.
+
+■ T10 yetkisiz kullanıcı (Personel): Kasa / Banka / Raporlar görünmez
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 30000ms exceeded.
+  ✓ sayfa hatası yok (—)
+
+2 geçti, 13 kaldı
