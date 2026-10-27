@@ -238,6 +238,10 @@ export function createLicenseService({
   autoTrialDelaysMs = [3_000, 2 * 60_000, 10 * 60_000],
   contactAfterDays = 2,
   onChange = () => {},
+  // 2.4.7 E5 (EDM iş ortaklığı B2): /v1/check gövdesine eklenen kullanım özeti — () => { edoc: [{ month, env, efatura, earsiv, esmm }] } | null
+  // (app.mjs: şirketlerin e-Belge sayaçlarının son 3 ay TOPLAMI; lib/einvoice/kullanim.mjs). Yalnız sayılar: belge içeriği, alıcı, tutar, VKN/TCKN,
+  // belge no, ETTN gitmez (usageBody süzer). Okunamazsa alan eklenmez; lisans doğrulaması kullanım yüzünden ASLA bozulmaz.
+  usage = () => null,
 }) {
   const S = { token: "license.token", local: "license.local", initialized: "license.initialized", machine: "license.machine", contact: "license.contact" };
   const instanceId = () => store.setting("meta.instanceId", "") || "";
@@ -408,6 +412,37 @@ export function createLicenseService({
     return claims;
   }
 
+  // 2.4.7 E5: usage alanı yalnız izin verilen biçimde (ay "YYYY-MM", ortam test/live, üç tür negatif olmayan tam sayı; en çok 12 satır; toplamı sıfır
+  // satır düşer) — başka hiçbir alan geçmez. Biçim dışı ya da boşsa null (alan gönderilmez). usageSummary adıyla dışa da açık (denetim / test).
+  function usageBody() {
+    let raw = null;
+    try {
+      raw = usage();
+    } catch (error) {
+      log.warn?.(`e-Belge kullanım özeti okunamadı: ${error?.message || error}`);
+      return null;
+    }
+    const count = value => (Number.isSafeInteger(value) && value >= 0 ? value : 0);
+    const edoc = (Array.isArray(raw?.edoc) ? raw.edoc : [])
+      .filter(row => row && /^\d{4}-(0[1-9]|1[0-2])$/.test(String(row.month)) && ["test", "live"].includes(row.env))
+      .slice(0, 12)
+      .map(row => ({ month: String(row.month), env: row.env, efatura: count(row.efatura), earsiv: count(row.earsiv), esmm: count(row.esmm) }))
+      .filter(row => row.efatura + row.earsiv + row.esmm > 0);
+    return edoc.length ? { edoc } : null;
+  }
+  // /v1/check: kullanım özetiyle; servis isteği BAD_REQUEST ile reddederse (alanı tanımayan eski / katı sunucu) bir kez özetsiz yinelenir.
+  async function callCheck(body) {
+    const usageNow = usageBody();
+    if (!usageNow) return callService("/v1/check", body);
+    try {
+      return await callService("/v1/check", { ...body, usage: usageNow });
+    } catch (error) {
+      if (error?.code !== "BAD_REQUEST") throw error;
+      log.warn?.("Lisans servisi kullanım özetini kabul etmedi; doğrulama özetsiz yinelendi.");
+      return callService("/v1/check", body);
+    }
+  }
+
   let checking = null;
   async function check({ manual = false, user = null } = {}) {
     if (!token) {
@@ -418,7 +453,7 @@ export function createLicenseService({
     checking = (async () => {
       const at = iso(now());
       try {
-        const payload = await callService("/v1/check", { licenseId: token.licenseId, kind: token.kind });
+        const payload = await callCheck({ licenseId: token.licenseId, kind: token.kind });
         // Operatör bu bilgisayara panelden lisans verdiyse servis farklı numaralı bir LİSANS belirteci döndürür:
         // deneme lisansa, eski lisans yenisine dönüşür (bilgisayar ve imza yine denetlenir). Deneme belirteci ise
         // yalnızca aynı numarayla kabul edilir.
@@ -521,7 +556,7 @@ export function createLicenseService({
     if (office.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(office.email)) throw new HttpError(400, "E-posta adresi geçerli görünmüyor.");
     let payload;
     try {
-      payload = await callService("/v1/check", { licenseId: token.licenseId, kind: token.kind, office });
+      payload = await callCheck({ licenseId: token.licenseId, kind: token.kind, office });
     } catch (error) {
       throw new HttpError(error.code === "NETWORK" || error.code === "SERVICE_RESPONSE" || error.code === "NO_SERVICE" ? 502 : 409, `Bilgiler gönderilemedi: ${error.message}`, { code: error.code });
     }
@@ -671,5 +706,5 @@ export function createLicenseService({
     throw new HttpError(403, `${current.title}. Program salt okunur çalışıyor; bu işlem yapılamaz.`, { code: "LICENSE_READ_ONLY", license: summaryFor(null) });
   }
 
-  return { init, start, stop, status, writable, summary: summaryFor, permissionsFor, assertWritable, check, startTrial, activateKey, applyCode, submitContact, machine: () => ({ ...machine, installCode: formatInstallCode(machine.id) }) };
+  return { init, start, stop, status, writable, summary: summaryFor, permissionsFor, assertWritable, check, startTrial, activateKey, applyCode, submitContact, usageSummary: usageBody, machine: () => ({ ...machine, installCode: formatInstallCode(machine.id) }) };
 }

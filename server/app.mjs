@@ -74,6 +74,8 @@ import { createBackup } from "./lib/backup.mjs";
 import { applyStagedRestore, createCompanyBackups } from "./lib/company-backups.mjs";
 import { resolveDbPath } from "./lib/db-path.mjs";
 import { createReportRunner } from "./lib/report-runner.mjs";
+import { USAGE_MONTHS, firstMonth, summarizeUsage, usageRowsOf } from "./lib/einvoice/kullanim.mjs";
+import { isoDay } from "./lib/plans.mjs";
 
 function ensureInitialAdmin(store, config, log) {
   if (store.get("SELECT id FROM users WHERE username = ? COLLATE NOCASE", config.adminUsername)) return;
@@ -133,6 +135,21 @@ export function createApp(overrides = {}) {
     } finally {
       temp.close();
     }
+  }
+  function edocUsageSummary() {
+    const from = firstMonth(context.period?.today?.() || isoDay(new Date()), USAGE_MONTHS);
+    const rows = [];
+    const seen = new Set();
+    for (const company of companies.list()) {
+      if (!company?.id || seen.has(company.id)) continue;
+      seen.add(company.id);
+      try {
+        rows.push(...(withCompanyDb(company, db => usageRowsOf(db, { from })) || []));
+      } catch (error) {
+        log.warn?.(`e-Belge kullanım sayacı: ${company.code} okunamadı (${error.message})`);
+      }
+    }
+    return { edoc: summarizeUsage(rows, { from }) };
   }
   // Geri yüklenen ya da silinen şirket o sırada açılmaz; istek 503 ile "birkaç saniye sonra" der.
   const busyCompanies = hub ? hub.busyCompanies : new Map();
@@ -235,6 +252,9 @@ export function createApp(overrides = {}) {
       services: config.licenseServices,
       fetchImpl: config.fetchImpl,
       usedBefore: () => profile.usedBefore(),
+      // 2.4.7 E5 (EDM iş ortaklığı): bütün şirketlerin e-Belge kullanım sayacı, son 3 ay toplamı (lib/einvoice/kullanim.mjs). Açık olmayan şirketin
+      // dosyası kısa süreli salt okunur açılır (withCompanyDb); okunamayan şirket atlanır (lisans doğrulamasını bozmaz).
+      usage: () => edocUsageSummary(),
       ...licenseOptions,
     });
     license.init();

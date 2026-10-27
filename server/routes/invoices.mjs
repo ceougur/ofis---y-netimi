@@ -21,6 +21,7 @@ import { readUbl } from "../lib/einvoice/ubl-read.mjs";
 import { UNIT_CODE_KEYS, buildUbl, ublFileName } from "../lib/einvoice/ubl-tr.mjs";
 import { viewXslt } from "../lib/einvoice/gorunum.mjs";
 import { karekodOf } from "../lib/einvoice/karekod.mjs";
+import { ATTEMPT_EVENTS, attemptAtOf, firstMonth, recordUsage, summarizeUsage, usageRowsOf, usageTransition } from "../lib/einvoice/kullanim.mjs";
 import { EINVOICE_PROFILES, NOT_SENT_CODES, SEND_DUPLICATE, SEND_INTENT, SEND_OUTCOMES, TRANSMITTED, uncertainWindow, cancelDeadlineText, cancelLateText, cancelWindow, transmissionOf, windowLabel } from "../lib/einvoice/iptal-suresi.mjs";
 import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { bodyHash, createIdempotency } from "../lib/idempotency.mjs";
@@ -3626,13 +3627,25 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   const setE = (user, id, { status, adapter = null, message = "" }, action, extra = {}) => {
     store.tx(() => {
       const stamp = now();
+      // 2.4.7 E4 (EDM iş ortaklığı): yazımdan ÖNCEKİ durum — kullanım sayacı kabulü (gönderim ya da belirsiz gönderimin kesinleşmesi) ondan anlar.
+      const previous = store.get("SELECT e_status AS eStatus, e_adapter AS eAdapter, ettn, profile, e_profile AS eProfile FROM invoices WHERE id = ?", id) || {};
       // adapter: verilmezse (null) e_adapter değişmez; verilirse (boş metin dahil — gönderim izinin geri alınması) yazılır.
       if (adapter !== null) store.run("UPDATE invoices SET e_status = ?, e_adapter = ?, e_message = ?, e_at = ?, updated_at = ? WHERE id = ?", status, adapter, String(message || "").slice(0, 500), stamp, stamp, id);
       else store.run("UPDATE invoices SET e_status = ?, e_message = ?, e_at = ?, updated_at = ? WHERE id = ?", status, String(message || "").slice(0, 500), stamp, stamp, id);
       audit(user, action, id, { status, ...extra });
+      countUsage(id, previous, status, action, stamp);
     });
     publish(user, { kind: "invoices", invoiceId: id });
   };
+  // 2.4.7 E4: EDM'nin kabul ettiği gönderim sayacı (kural lib/einvoice/kullanim.mjs). setE'nin işleminde: durum yazımı ile sayaç birlikte yazılır ya da
+  // ikisi de geri alınır. Belirsiz gönderimin sonradan kabulünde ay gönderim izinin anıdır (EDM belgeyi o anda aldı).
+  function countUsage(id, previous, status, action, stamp) {
+    const kind = usageTransition({ action, previous, status });
+    if (!kind) return;
+    const intentAt = kind === "confirmed" ? attemptAtOf(store.all(`SELECT type, payload_json AS payload, created_at AS at FROM audit_events WHERE entity_id = ? AND type IN (${ATTEMPT_EVENTS.map(() => "?").join(", ")}) ORDER BY rowid`, id, ...ATTEMPT_EVENTS).map(row => ({ ...row, payload: parseJson(row.payload, {}) }))) : "";
+    const profile = previous.profile === "KAGIT" ? previous.eProfile : previous.profile;
+    recordUsage(store, { ettn: previous.ettn, env: liveEnv(settings()) ? "live" : "test", profile, at: intentAt || stamp, invoiceId: id, source: action });
+  }
   // Entegratörde bulunmayan belge (Durum Sorgula → EDM "Fatura bulunamadı"): e-Belge durumundan çıkar, yeniden gönderilebilir.
   const clearE = (user, id, message) => {
     store.tx(() => {
@@ -4528,6 +4541,14 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     requireEdoc();
     const result = await sendInvoice(user, invoiceRow(params.id).id, { draft: true });
     ok(res, { ...detail(params.id, user), sendResult: result });
+  });
+  // 2.4.7 E4: bu şirketin e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler; ay × ortam × tür). months: son kaç ay (1–24, varsayılan 3).
+  // Lisans doğrulamasına giden özet bütün şirketlerin toplamıdır (app.mjs); bu uç yalnız açık şirketinkini verir (denetim ve kâhin karşılaştırması).
+  router.get("/api/workspace/invoices-usage", async ({ req, res, url }) => {
+    auth.requirePermission(req, "invoices.settings");
+    const months = Math.min(24, Math.max(1, Number.parseInt(url.searchParams.get("months") || "3", 10) || 3));
+    const from = firstMonth(today(), months);
+    ok(res, { from, months: summarizeUsage(usageRowsOf(store, { from }), { from }) });
   });
   router.post("/api/workspace/invoices/:id/e-refresh", async ({ req, res, params }) => {
     const user = requireManage(req);
