@@ -74,7 +74,8 @@ import { createBackup } from "./lib/backup.mjs";
 import { applyStagedRestore, createCompanyBackups } from "./lib/company-backups.mjs";
 import { resolveDbPath } from "./lib/db-path.mjs";
 import { createReportRunner } from "./lib/report-runner.mjs";
-import { USAGE_MONTHS, firstMonth, summarizeUsage, usageRowsOf } from "./lib/einvoice/kullanim.mjs";
+import { USAGE_MONTHS, journalRowsOf, summarizeUsage, windowMonths } from "./lib/einvoice/kullanim.mjs";
+import { openUsageLedger } from "./lib/einvoice/kullanim-defteri.mjs";
 import { isoDay } from "./lib/plans.mjs";
 import { MOBILE_PREFIX, captureResponse, isPhone, resolveMobile, transformMobile } from "./lib/mobile.mjs";
 
@@ -137,20 +138,33 @@ export function createApp(overrides = {}) {
       temp.close();
     }
   }
-  function edocUsageSummary() {
-    const from = firstMonth(context.period?.today?.() || isoDay(new Date()), USAGE_MONTHS);
-    const rows = [];
+  // 2.4.7 E4/E5 (S4): e-Belge kullanım defteri kurulum düzeyinde, ana veri klasöründe (şirket dosyalarının dışında; lib/einvoice/kullanim-defteri.mjs).
+  // Çocuk şirket örnekleri hub'ın defterini kullanır. Bir şirketin izi deftere aktarılır (birincil anahtar çift sayımı önler); okunamayan şirket atlanır.
+  const usageLedger = hub ? hub.usageLedger : openUsageLedger({ dir: config.dataDir, log, fault: overrides.edocUsageFault || null });
+  function syncUsageOf(company) {
+    try {
+      const rows = withCompanyDb(company, db => journalRowsOf(db)) || [];
+      return usageLedger.syncFrom(company.id, company.code, rows);
+    } catch (error) {
+      log.warn?.(`e-Belge kullanım defteri: ${company?.code || company?.id} aktarılamadı (${error.message})`);
+      return 0;
+    }
+  }
+  function syncUsageAll() {
     const seen = new Set();
+    let added = 0;
     for (const company of companies.list()) {
       if (!company?.id || seen.has(company.id)) continue;
       seen.add(company.id);
-      try {
-        rows.push(...(withCompanyDb(company, db => usageRowsOf(db, { from })) || []));
-      } catch (error) {
-        log.warn?.(`e-Belge kullanım sayacı: ${company.code} okunamadı (${error.message})`);
-      }
+      added += syncUsageOf(company);
     }
-    return { edoc: summarizeUsage(rows, { from }) };
+    return added;
+  }
+  // Lisans doğrulamasına giden özet (S5): içinde bulunulan ay + önceki 2 ay, ay × ortam başına satır (sıfırlar dahil), bütün şirketlerin toplamı.
+  function edocUsageSummary() {
+    syncUsageAll();
+    const months = windowMonths(context.period?.today?.() || isoDay(new Date()), USAGE_MONTHS);
+    return { edoc: summarizeUsage(usageLedger.counts({ from: months[0] }), { months }) };
   }
   // Geri yüklenen ya da silinen şirket o sırada açılmaz; istek 503 ile "birkaç saniye sonra" der.
   const busyCompanies = hub ? hub.busyCompanies : new Map();
@@ -163,6 +177,8 @@ export function createApp(overrides = {}) {
     }
   }
   const migration = runMigrations(store, { backupDir: backupDirNow(), keep: config.backupKeep, log, company: companyIdentity(), now: config.now });
+  // 2.4.7 E4 (S4): açılışta bütün şirketlerin izi kullanım defterine aktarılır (önceki çalışmada deftere eklenemeyen satır tamamlanır).
+  if (!hub) syncUsageAll();
   // 2.0.21 öncesinden gelen şirketler (gözden geçirme bulgusu): veri dosyası olan her şirket "açılmış" sayılır; dosyası
   // sonradan kaybolursa sessizce boş veri tabanı açılmaz (2.0.21'deki ilk açılışını beklemeden).
   if (!hub) {
@@ -289,6 +305,19 @@ export function createApp(overrides = {}) {
     money: createMoneyLines(store, { verify: config.gateVerify }),
     // Şirket yedekleri (v2.0.20): bütün şirketler, kendi klasörlerinde.
     backups, backupDir: backupDirNow, withCompanyDb, closeCompany: id => closeCompany(id), busyCompanies, requestRestart,
+    // 2.4.7 E4 (S4): bu şirketin kullanım defteri görünümü (routes/invoices.mjs setE ve invoices-usage ucu).
+    edocUsage: {
+      add: row => usageLedger.add(companyId, selfCompany().code, row),
+      sync: rows => {
+        try {
+          return usageLedger.syncFrom(companyId, selfCompany().code, rows);
+        } catch (error) {
+          log.warn?.(`e-Belge kullanım defteri: ${selfCompany().code} aktarılamadı (${error.message})`);
+          return 0;
+        }
+      },
+      counts: ({ from = "" } = {}) => usageLedger.counts({ from, companyId }),
+    },
   };
   if (stagedRestore) {
     const actor = stagedRestore.by ? { id: stagedRestore.by, display_name: stagedRestore.byName } : null;
@@ -493,7 +522,7 @@ export function createApp(overrides = {}) {
         scheduleBackups: false,
         // Şirketler aynı iş saatini paylaşır (sahte saatte de: hub'ın saati ilerleyince 002'nin de ilerler).
         now: config.now,
-        hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor, withCompanyDb, busyCompanies, backups, requestRestart, closeCompany, events, closeLive },
+        hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor, withCompanyDb, busyCompanies, backups, requestRestart, closeCompany, events, closeLive, usageLedger },
       });
       child.usersStamp = usersFingerprint(store);
       children.set(company.id, child);
@@ -841,6 +870,7 @@ export function createApp(overrides = {}) {
       await analysisRunner.close();
       await reportRunner?.close({ reason });
       for (const child of children.values()) await child.close();
+      if (!hub) usageLedger.close();
       db.close();
     },
   };

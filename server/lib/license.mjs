@@ -412,8 +412,8 @@ export function createLicenseService({
     return claims;
   }
 
-  // 2.4.7 E5: usage alanı yalnız izin verilen biçimde (ay "YYYY-MM", ortam test/live, üç tür negatif olmayan tam sayı; en çok 12 satır; toplamı sıfır
-  // satır düşer) — başka hiçbir alan geçmez. Biçim dışı ya da boşsa null (alan gönderilmez). usageSummary adıyla dışa da açık (denetim / test).
+  // 2.4.7 E5: usage alanı yalnız izin verilen biçimde (ay "YYYY-MM", ortam test/live, üç tür negatif olmayan tam sayı; en çok 12 satır; S5: ay × ortam
+  // başına satır, sıfırlar da gider) — başka hiçbir alan geçmez. Biçim dışı ya da boşsa null (alan gönderilmez). usageSummary adıyla dışa da açık (denetim / test).
   function usageBody() {
     let raw = null;
     try {
@@ -426,8 +426,7 @@ export function createLicenseService({
     const edoc = (Array.isArray(raw?.edoc) ? raw.edoc : [])
       .filter(row => row && /^\d{4}-(0[1-9]|1[0-2])$/.test(String(row.month)) && ["test", "live"].includes(row.env))
       .slice(0, 12)
-      .map(row => ({ month: String(row.month), env: row.env, efatura: count(row.efatura), earsiv: count(row.earsiv), esmm: count(row.esmm) }))
-      .filter(row => row.efatura + row.earsiv + row.esmm > 0);
+      .map(row => ({ month: String(row.month), env: row.env, efatura: count(row.efatura), earsiv: count(row.earsiv), esmm: count(row.esmm) }));
     return edoc.length ? { edoc } : null;
   }
   // /v1/check: kullanım özetiyle; servis isteği BAD_REQUEST ile reddederse (alanı tanımayan eski / katı sunucu) bir kez özetsiz yinelenir.

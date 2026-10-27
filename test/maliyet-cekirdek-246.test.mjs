@@ -121,7 +121,16 @@ describe("2.4.6 Maliyet Hesap Kartı: göç v34 (yalnız ekleyici)", () => {
     const result = runMigrations(store, {});
     assert.ok(result.applied.includes(34));
     assert.ok(LATEST_VERSION >= 34);
-    const added = store.all("SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY name").map(row => row.name).filter(name => !tables.includes(name));
+    // v34'TEN SONRAKİ göçlerin eklediği tablolar (2.4.7 v37 edoc_usage …) bu testin konusu değil: ayrı bir dosyada v34'e kadar ve en son sürüme kadar
+    // göçün tablo farkı çıkarılır; v34'ün eklediği yine YALNIZ maliyet_* olmalıdır.
+    const tablesAt = upTo => {
+      const probe = createStore(new DatabaseSync(":memory:"));
+      for (const migration of MIGRATIONS.filter(item => item.version <= upTo)) probe.tx(() => migration.up(probe, { company: null, now: () => new Date("2026-10-25T07:00:00Z") }));
+      return probe.all("SELECT name FROM sqlite_master WHERE type = 'table'").map(row => row.name);
+    };
+    const at34 = new Set(tablesAt(34));
+    const later = new Set(tablesAt(LATEST_VERSION).filter(name => !at34.has(name)));
+    const added = store.all("SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY name").map(row => row.name).filter(name => !tables.includes(name) && !later.has(name));
     assert.deepEqual(added, ["maliyet_adimlar", "maliyet_basliklar", "maliyet_hucreler", "maliyet_kartlar", "maliyet_satirlar", "maliyet_sekmeler"]);
     for (const name of added) {
       assert.equal(db.prepare("SELECT strict FROM pragma_table_list WHERE name = ?").get(name)?.strict, 1, `${name} STRICT`);

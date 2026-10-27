@@ -29,6 +29,7 @@ const zero = { efatura: 0, earsiv: 0, esmm: 0 };
 describe("2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler)", () => {
   const clock = createClock({ time: "2026-06-30T23:40:00" });
   const faults = [];
+  const ledgerFault = { on: false };
   const licenseBodies = [];
   let reference;
   let edm;
@@ -81,6 +82,7 @@ describe("2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler)",
       esmmEnabled: true,
       fetchImpl,
       now: clock,
+      edocUsageFault: () => ledgerFault.on,
       edocStatusPollMs: [5, 5],
       env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" },
       license: { enforce: false, trustedKeys: trusted, services: ["https://lisans.test/api/lisans"], fetchImpl: licenseFetch, machineId: "0123456789abcdef0123456789abcdef", firstCheckDelayMs: 3_600_000, autoTrial: false },
@@ -238,7 +240,9 @@ describe("2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler)",
     assert.equal(checked.status, 200, JSON.stringify(checked.data));
     assert.equal(licenseBodies.length, 1);
     const body = licenseBodies[0];
+    // S5: içinde bulunulan ay (Temmuz) + önceki 2 ay, ay × ortam başına satır (sıfırlar dahil) = 6 satır.
     const expected = new Map();
+    for (const month of ["2026-05", "2026-06", "2026-07"]) for (const env of ["live", "test"]) expected.set(`${month}|${env}`, { month, env, efatura: 0, earsiv: 0, esmm: 0 });
     for (const row of [...first, ...own]) {
       const key = `${row.month}|${row.env}`;
       const entry = expected.get(key) || { month: row.month, env: row.env, efatura: 0, earsiv: 0, esmm: 0 };
@@ -247,6 +251,7 @@ describe("2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler)",
     }
     const sorted = list => [...list].sort((a, b) => `${a.month}|${a.env}`.localeCompare(`${b.month}|${b.env}`));
     assert.deepEqual(sorted(body.usage.edoc), sorted([...expected.values()]), JSON.stringify(body.usage));
+    assert.equal(body.usage.edoc.length, 6);
     assert.deepEqual(cell(body.usage.edoc, "2026-07", "test"), { ...zero, earsiv: cell(first, "2026-07", "test").earsiv + 1, esmm: cell(first, "2026-07", "test").esmm });
     assert.deepEqual(Object.keys(body.usage), ["edoc"]);
     for (const row of body.usage.edoc) assert.deepEqual(Object.keys(row).sort(), ["earsiv", "efatura", "env", "esmm", "month"]);
@@ -274,6 +279,55 @@ describe("2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler)",
     } finally {
       server.licenseFetch.rejectUsage = false;
     }
+  });
+
+  test("S4 kesinti: kullanım defterine yazım düşer (durum ve şirket izi yazıldı) → okumada izden bir kez tamamlanır; çift sayım yok", async () => {
+    const before = cell(await usage(), "2026-07", "test");
+    ledgerFault.on = true;
+    let sent;
+    try {
+      const doc = (await sale(personId)).data;
+      sent = await send(doc.id);
+    } finally {
+      ledgerFault.on = false;
+    }
+    assert.equal(sent.status, 200, "gönderim kullanıcı için başarılı");
+    const read = (await api.get("/api/workspace/invoices-usage")).data;
+    assert.equal(read.synced, 1, "eksik satır okumada izden tamamlandı");
+    assert.deepEqual(cell(read.months, "2026-07", "test"), { ...before, earsiv: before.earsiv + 1 });
+    assert.deepEqual(cell(read.journal, "2026-07", "test"), cell(read.months, "2026-07", "test"), "şirket izi = defter");
+    const again = (await api.get("/api/workspace/invoices-usage")).data;
+    assert.equal(again.synced, 0, "ikinci aktarma bir şey eklemez");
+    assert.deepEqual(cell(again.months, "2026-07", "test"), { ...before, earsiv: before.earsiv + 1 });
+  });
+
+  test("S4 yedek tatbikatı (002): gönder → yedek → gönder → geri yükle → sayaç değişmedi; sıfırla → sayaç değişmedi; şirket izi geri gider, defter gitmez", async () => {
+    const list = (await api.get("/api/companies")).data;
+    const second = (list.companies || list).find(item => item.code === "002");
+    const q = `?hofCompany=${encodeURIComponent(second.id)}`;
+    const own = async () => (await api.get(`/api/workspace/invoices-usage${q}`)).data;
+    const person = (await api.get(`/api/workspace/accounts${q}`)).data;
+    const personOf = (person.accounts || person.items || person).find?.(item => item.name === PERSON.name)?.id;
+    assert.ok(personOf, JSON.stringify(person).slice(0, 300));
+    const start = cell((await own()).months, "2026-07", "test").earsiv;
+    const a = (await sale(personOf, {}, q)).data;
+    assert.equal((await send(a.id, q)).status, 200);
+    assert.equal(cell((await own()).months, "2026-07", "test").earsiv, start + 1);
+    const backup = await api.post("/api/admin/backups", { scope: "one", companyId: second.id });
+    assert.equal(backup.status, 200, JSON.stringify(backup.data));
+    const name = backup.data.backups.find(item => item.companyId === second.id).name;
+    const b = (await sale(personOf, {}, q)).data;
+    assert.equal((await send(b.id, q)).status, 200);
+    assert.equal(cell((await own()).months, "2026-07", "test").earsiv, start + 2);
+    const restored = await api.post("/api/admin/backups/restore", { name, company: second.id, confirm: second.code, password: ADMIN_PASSWORD });
+    assert.equal(restored.status, 200, JSON.stringify(restored.data));
+    assert.equal(restored.data.restored, true);
+    const after = await own();
+    assert.equal(cell(after.months, "2026-07", "test").earsiv, start + 2, "geri yükleme defteri geri almaz");
+    assert.equal(cell(after.journal, "2026-07", "test").earsiv, start + 1, "şirket izi yedekle birlikte geri gitti (B'nin izi yok)");
+    const reset = await api.post(`/api/companies/${second.id}/reset`, { mode: "movements", confirm: second.code, password: ADMIN_PASSWORD });
+    assert.equal(reset.status, 200, JSON.stringify(reset.data));
+    assert.equal(cell((await own()).months, "2026-07", "test").earsiv, start + 2, "sıfırlama defteri etkilemez");
   });
 
   test("Şirket Verisini Sıfırla (Tümünü) sayacı silmez", async () => {
