@@ -1,0 +1,32 @@
+{
+  "ad": "247-sayac-dar",
+  "komut": "node --test test/edoc-kullanim-birim-247.test.mjs test/edoc-kullanim-247.test.mjs test/edm-uygulama-adi-247.test.mjs test/mobil-247.test.mjs test/yazim-duzeni.test.mjs test/platform-tasinabilirlik.test.mjs test/lisans-servisi-izolasyonu.test.mjs",
+  "commit": "13409deba9a40307e9a23a174284733e422d9a6d",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v165 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-27T09:57:56.681Z",
+  "sure_sn": 3.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 60,
+    "gecen": 60,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-27/247-sayac-dar.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "532ed9174de0a48f53c6410dfd6543979f6c4e71387ffabcfd6ece82b66361d4",
+  "ham_cikti_bayt": 19024
+}
