@@ -73,7 +73,7 @@ export function usageTransition({ action, previous = {}, status }) {
  * Belirsiz gönderimin kesinleştiği yazımda EDM'nin belgeyi ALDIĞI an: belgenin "EDM'de değil" olduğu son kesin bilgiden (EDM reddi / Hata, hiç gitmeyen
  * istek, "entegratörde bulunamadı", numaranın geri bırakılması, önceki kabul) SONRAKİ İLK gönderim izi (invoice.e.sending). SAF işlev.
  * duplicate (11048, S3): 11048'i alan yeniden gönderimin kendi izi sayılmaz (EDM onu reddetti; belgeyi daha önceki bir istekte almıştı) ve aradaki
- * "bulunamadı" yanıtı kapatmaz (11048 onu yalanlar: EDM'nin durum kaydı gecikmişti).
+ * 11048'den HEMEN önceki örtük "bulunamadı" sorgusu kapatmaz (11048 onu yalanlar: EDM'nin durum kaydı gecikmişti); daha önceki açık "bulunamadı" kapatır (Y3).
  * fromError (F2, kullanıcı kararı 27.10.2026): "Hata"daki belgenin sonradan görülen kabulünde ay, EDM "bulunamadı" ile KAPANMAMIŞ ilk gönderim izinin ayı —
  * EDM reddi (Hata) izi kapatmaz (ret yanıtına rağmen EDM belgeyi almış çıktı); "bulunamadı", hiç gitmeyen istek ve numaranın bırakılması kapatır.
  * (F1, kullanıcı kararı: belirsiz → "bulunamadı" → yeniden belirsiz → kesinleşmede ay ikinci gönderimin ayı — "bulunamadı" ilkini kapatır; kural değişmedi.)
@@ -85,6 +85,9 @@ export function attemptAtOf(events = [], { duplicate = false, fromError = false 
   if (duplicate) {
     const last = events.map(event => event.type).lastIndexOf(SEND_INTENT);
     list = last >= 0 ? events.slice(0, last) : events;
+    // Y3 (kullanıcı kararı, F1): yalnız 11048'den hemen önceki örtük "bulunamadı" sorgusu yok sayılır; daha önceki açık "bulunamadı" ilk izi kapatır.
+    const tail = list[list.length - 1];
+    if (tail && tail.type === "invoice.e.status" && (tail.payload || {}).missing === true) list = list.slice(0, -1);
   }
   let open = "";
   for (const event of list) {
@@ -96,7 +99,7 @@ export function attemptAtOf(events = [], { duplicate = false, fromError = false 
     const closed =
       event.type === "invoice.e.sent" ||
       event.type === "invoice.unnumbered" ||
-      (!duplicate && event.type === "invoice.e.status" && payload.missing === true) ||
+      (event.type === "invoice.e.status" && payload.missing === true) ||
       (event.type === "invoice.e.send-failed" && ((!fromError && payload.status === "error") || NOT_SENT_CODES.has(payload.code || "")));
     if (closed) open = "";
   }

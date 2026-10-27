@@ -1,0 +1,343 @@
+TAP version 13
+# Subtest: K6 statik: para tablosuna yazan her yer bank.post içinde ya da izinli listede
+    # Subtest: tarayıcı kendini sınar
+    ok 1 - tarayıcı kendini sınar
+      ---
+      duration_ms: 5.050284
+      type: 'test'
+      ...
+    # Subtest: izinli liste geçerli: her girdinin dosyası, işlevi, türü ve gerekçesi var
+    ok 2 - izinli liste geçerli: her girdinin dosyası, işlevi, türü ve gerekçesi var
+      ---
+      duration_ms: 0.539597
+      type: 'test'
+      ...
+    # Subtest: gerçek kod: liste dışında ham yazım yeri yok; listede eskimiş girdi yok
+    ok 3 - gerçek kod: liste dışında ham yazım yeri yok; listede eskimiş girdi yok
+      ---
+      duration_ms: 739.036859
+      type: 'test'
+      ...
+    # Subtest: 'para-disi' yazıcılar yazdıkları satırı assertWrittenNonMoney ile denetletir, 'yardimci' yazıcılar olayı eventFor ile yazar; 'bag' yalnız para alanı olmayan kolona
+    ok 4 - 'para-disi' yazıcılar yazdıkları satırı assertWrittenNonMoney ile denetletir, 'yardimci' yazıcılar olayı eventFor ile yazar; 'bag' yalnız para alanı olmayan kolona
+      ---
+      duration_ms: 1157.051922
+      type: 'test'
+      ...
+    # Subtest: olay türleri sözlükte (CHECK yerine kod sözlüğü, §3.6)
+    ok 5 - olay türleri sözlükte (CHECK yerine kod sözlüğü, §3.6)
+      ---
+      duration_ms: 0.485933
+      type: 'test'
+      ...
+    # Subtest: cheque_events.kind'e yazılan her değer göçteki CHECK listesinde (plan Aşama 8)
+    ok 6 - cheque_events.kind'e yazılan her değer göçteki CHECK listesinde (plan Aşama 8)
+      ---
+      duration_ms: 33.537598
+      type: 'test'
+      ...
+    1..6
+ok 1 - K6 statik: para tablosuna yazan her yer bank.post içinde ya da izinli listede
+  ---
+  duration_ms: 1937.057828
+  type: 'suite'
+  ...
+# (node:6419) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler)
+    # Subtest: boş veri: sayaç boş; e-Arşiv gönderimi 1 sayılır; Durum Sorgula (2 kez) ve aynı belgeyi yeniden Gönder sayıyı artırmaz
+    ok 1 - boş veri: sayaç boş; e-Arşiv gönderimi 1 sayılır; Durum Sorgula (2 kez) ve aynı belgeyi yeniden Gönder sayıyı artırmaz
+      ---
+      duration_ms: 191.310611
+      type: 'test'
+      ...
+    # Subtest: EDM reddi (Hata) sayılmaz; düzeltip yeniden gönderilen e-Fatura bir kez sayılır
+    ok 2 - EDM reddi (Hata) sayılmaz; düzeltip yeniden gönderilen e-Fatura bir kez sayılır
+      ---
+      duration_ms: 85.919844
+      type: 'test'
+      ...
+    # Subtest: ay sonu: istek EDM'ye 30.06 23:5x'te ulaşıp yanıt koptu (belirsiz, sayılmaz); 01.07'de Durum Sorgula kabulü görür → HAZİRAN'a bir kez
+    ok 3 - ay sonu: istek EDM'ye 30.06 23:5x'te ulaşıp yanıt koptu (belirsiz, sayılmaz); 01.07'de Durum Sorgula kabulü görür → HAZİRAN'a bir kez
+      ---
+      duration_ms: 81.346353
+      type: 'test'
+      ...
+    # Subtest: 11048 kendi ETTN'iyle: belirsiz gönderim → durum 'bulunamadı' gelir → yeniden gönderim 11048 → belge EDM'de bulunur → bir kez sayılır
+    ok 4 - 11048 kendi ETTN'iyle: belirsiz gönderim → durum 'bulunamadı' gelir → yeniden gönderim 11048 → belge EDM'de bulunur → bir kez sayılır
+      ---
+      duration_ms: 129.639973
+      type: 'test'
+      ...
+    # Subtest: iptal sayıyı değiştirmez; portala taslak yükleme ve PORTALDAN gönderim sayılmaz; taslağın programdan gönderimi sayılır
+    ok 5 - iptal sayıyı değiştirmez; portala taslak yükleme ve PORTALDAN gönderim sayılmaz; taslağın programdan gönderimi sayılır
+      ---
+      duration_ms: 283.065648
+      type: 'test'
+      ...
+    # Subtest: e-SMM esmm türünde sayılır
+    ok 6 - e-SMM esmm türünde sayılır
+      ---
+      duration_ms: 42.557062
+      type: 'test'
+      ...
+    # Subtest: canlı ortam ayrı sayılır; test sayıları değişmez
+    ok 7 - canlı ortam ayrı sayılır; test sayıları değişmez
+      ---
+      duration_ms: 70.475736
+      type: 'test'
+      ...
+    # Subtest: ikinci şirket kendi sayacını tutar; lisans doğrulaması (/v1/check) iki şirketin TOPLAMINI gönderir; gövdede ETTN / VKN / belge no yok
+    ok 8 - ikinci şirket kendi sayacını tutar; lisans doğrulaması (/v1/check) iki şirketin TOPLAMINI gönderir; gövdede ETTN / VKN / belge no yok
+      ---
+      duration_ms: 267.154059
+      type: 'test'
+      ...
+    # Subtest: eski / katı lisans sunucusu usage alanını BAD_REQUEST ile reddederse doğrulama özetsiz bir kez yinelenir ve başarılı olur
+    ok 9 - eski / katı lisans sunucusu usage alanını BAD_REQUEST ile reddederse doğrulama özetsiz bir kez yinelenir ve başarılı olur
+      ---
+      duration_ms: 6.817825
+      type: 'test'
+      ...
+    # Subtest: S4 kesinti: kullanım defterine yazım düşer (durum ve şirket izi yazıldı) → okumada izden bir kez tamamlanır; çift sayım yok
+    ok 10 - S4 kesinti: kullanım defterine yazım düşer (durum ve şirket izi yazıldı) → okumada izden bir kez tamamlanır; çift sayım yok
+      ---
+      duration_ms: 57.936808
+      type: 'test'
+      ...
+    # Subtest: S4 yedek tatbikatı (002): gönder → yedek → gönder → geri yükle → sayaç değişmedi; sıfırla → sayaç değişmedi; şirket izi geri gider, defter gitmez
+    ok 11 - S4 yedek tatbikatı (002): gönder → yedek → gönder → geri yükle → sayaç değişmedi; sıfırla → sayaç değişmedi; şirket izi geri gider, defter gitmez
+      ---
+      duration_ms: 426.908403
+      type: 'test'
+      ...
+    # Subtest: F2: EDM reddiyle 'Hata'ya düşen belgede Durum Sorgula sonradan kabul görürse bir kez sayılır (ret anının ayına); ikinci sorgu artırmaz
+    ok 12 - F2: EDM reddiyle 'Hata'ya düşen belgede Durum Sorgula sonradan kabul görürse bir kez sayılır (ret anının ayına); ikinci sorgu artırmaz
+      ---
+      duration_ms: 88.416492
+      type: 'test'
+      ...
+    # Subtest: Şirket Verisini Sıfırla (Tümünü) sayacı silmez
+    ok 13 - Şirket Verisini Sıfırla (Tümünü) sayacı silmez
+      ---
+      duration_ms: 121.19968
+      type: 'test'
+      ...
+    1..13
+ok 2 - 2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler)
+  ---
+  duration_ms: 2427.460006
+  type: 'suite'
+  ...
+# e-Belge kullanım özeti okunamadı: okunamadı
+# (node:6425) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: tür eşlemesi: e-Arşiv / e-SMM / öbür e-Fatura profilleri; kâğıt ve boş sayılmaz
+ok 3 - tür eşlemesi: e-Arşiv / e-SMM / öbür e-Fatura profilleri; kâğıt ve boş sayılmaz
+  ---
+  duration_ms: 1.5897
+  type: 'test'
+  ...
+# Subtest: geçiş sınıfı: gönderim kabulü; belirsizin kesinleşmesi; durum yinelemesi, portal taslağının sonucu, ret ve taslak sayılmaz
+ok 4 - geçiş sınıfı: gönderim kabulü; belirsizin kesinleşmesi; durum yinelemesi, portal taslağının sonucu, ret ve taslak sayılmaz
+  ---
+  duration_ms: 0.52576
+  type: 'test'
+  ...
+# Subtest: gönderim anı (S1): 'EDM'de değil' bilgisinden sonraki İLK gönderim izi; 11048'de yeniden gönderimin kendi izi sayılmaz, 'bulunamadı' kapatmaz
+ok 5 - gönderim anı (S1): 'EDM'de değil' bilgisinden sonraki İLK gönderim izi; 11048'de yeniden gönderimin kendi izi sayılmaz, 'bulunamadı' kapatmaz
+  ---
+  duration_ms: 0.762693
+  type: 'test'
+  ...
+# Subtest: karar: doğrudan kabul anında; kesinleşme gönderim izinin anında; izsiz (yetim) ve sayaçtan önceki iz sayılmaz
+ok 6 - karar: doğrudan kabul anında; kesinleşme gönderim izinin anında; izsiz (yetim) ve sayaçtan önceki iz sayılmaz
+  ---
+  duration_ms: 1.001099
+  type: 'test'
+  ...
+# Subtest: F2 (kullanıcı kararı): 'Hata'daki belgede sonradan görülen kabul sayılır; ay 'bulunamadı' ile kapanmamış ilk iz; F1 değişmez
+ok 7 - F2 (kullanıcı kararı): 'Hata'daki belgede sonradan görülen kabul sayılır; ay 'bulunamadı' ile kapanmamış ilk iz; F1 değişmez
+  ---
+  duration_ms: 0.562835
+  type: 'test'
+  ...
+# Subtest: pencere (S5): içinde bulunulan ay + önceki 2; yıl dönümü; toplayıcı ay × ortam satırı sıfırlarla
+ok 8 - pencere (S5): içinde bulunulan ay + önceki 2; yıl dönümü; toplayıcı ay × ortam satırı sıfırlarla
+  ---
+  duration_ms: 9.155475
+  type: 'test'
+  ...
+# Subtest: saf uçtan uca işlev (kâhin karşılaştırması): S2 şirket + ETTN + ortam ayrı; ilk yazım kazanır; belirsizin ayı gönderim izinden
+ok 9 - saf uçtan uca işlev (kâhin karşılaştırması): S2 şirket + ETTN + ortam ayrı; ilk yazım kazanır; belirsizin ayı gönderim izinden
+  ---
+  duration_ms: 1.093925
+  type: 'test'
+  ...
+# Subtest: v37 göçü: şirket izi boş kurulur, sayaç başlangıcı yazılır; aynı ETTN + ortam bir kez; UPDATE / DELETE reddedilir
+ok 10 - v37 göçü: şirket izi boş kurulur, sayaç başlangıcı yazılır; aynı ETTN + ortam bir kez; UPDATE / DELETE reddedilir
+  ---
+  duration_ms: 211.036888
+  type: 'test'
+  ...
+# Subtest: kullanım defteri (S4): şirket + ETTN + ortam bir kez; aktarma yinelense de çift sayım yok; kesinti satırı düşürür, sonraki aktarma tamamlar; yalnız eklenir
+ok 11 - kullanım defteri (S4): şirket + ETTN + ortam bir kez; aktarma yinelense de çift sayım yok; kesinti satırı düşürür, sonraki aktarma tamamlar; yalnız eklenir
+  ---
+  duration_ms: 15.637862
+  type: 'test'
+  ...
+# Subtest: lisans gövdesi: usage yalnız izin verilen alanlarla, ay × ortam satırı sıfırlar dahil (S5); ek alan / ETTN / VKN süzülür; sağlayıcı hata verirse alan eklenmez
+ok 12 - lisans gövdesi: usage yalnız izin verilen alanlarla, ay × ortam satırı sıfırlar dahil (S5); ek alan / ETTN / VKN süzülür; sağlayıcı hata verirse alan eklenmez
+  ---
+  duration_ms: 167.091061
+  type: 'test'
+  ...
+# (node:6442) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S4: deftere yazım düşer → yeniden açılışta izden tamamlanır; defter ana veri klasöründe ayrı dosya
+ok 13 - S4: deftere yazım düşer → yeniden açılışta izden tamamlanır; defter ana veri klasöründe ayrı dosya
+  ---
+  duration_ms: 823.749665
+  type: 'test'
+  ...
+# (node:6450) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.7 kullanım defteri: yedeğe girer, geri yüklemede yalnız birleşir
+    # Subtest: yedek → yeni kurulum (boş defter) → geri yükle → sayılar geri gelir; aynı yedek iki kez → çift yok
+    ok 1 - yedek → yeni kurulum (boş defter) → geri yükle → sayılar geri gelir; aynı yedek iki kez → çift yok
+      ---
+      duration_ms: 1519.192592
+      type: 'test'
+      ...
+    # Subtest: geri yükleme sayacı azaltmaz: yedekten SONRA gönderilen belge, eski yedek geri yüklenince defterde kalır
+    ok 2 - geri yükleme sayacı azaltmaz: yedekten SONRA gönderilen belge, eski yedek geri yüklenince defterde kalır
+      ---
+      duration_ms: 838.263339
+      type: 'test'
+      ...
+    # Subtest: defterde olup şirket izinde OLMAYAN satır (eski yedek geri yüklendikten sonra) yeni yedeğe girer; yeni kurulum onu da geri kazanır
+    ok 3 - defterde olup şirket izinde OLMAYAN satır (eski yedek geri yüklendikten sonra) yeni yedeğe girer; yeni kurulum onu da geri kazanır
+      ---
+      duration_ms: 571.769488
+      type: 'test'
+      ...
+    # Subtest: V15: 001'in yedeği defterin TAMAMINI taşır (002'nin satırları dahil); yeni kurulumda 001'i geri yüklemek 002'nin satırını da birleştirir
+    ok 4 - V15: 001'in yedeği defterin TAMAMINI taşır (002'nin satırları dahil); yeni kurulumda 001'i geri yüklemek 002'nin satırını da birleştirir
+      ---
+      duration_ms: 991.488134
+      type: 'test'
+      ...
+    # Subtest: v2.4.6'nın GERÇEK koduyla üretilmiş yedek (iz tablosu yok) geri yüklenir; defter değişmez
+    ok 5 - v2.4.6'nın GERÇEK koduyla üretilmiş yedek (iz tablosu yok) geri yüklenir; defter değişmez
+      ---
+      duration_ms: 974.435208
+      type: 'test'
+      ...
+    1..5
+ok 14 - 2.4.7 kullanım defteri: yedeğe girer, geri yüklemede yalnız birleşir
+  ---
+  duration_ms: 4943.813529
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 0.630351
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 149.437809
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 106.466831
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 111.249108
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 243.372022
+      type: 'test'
+      ...
+    1..5
+ok 15 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 612.497976
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 30.041318
+      type: 'test'
+      ...
+    1..1
+ok 16 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 30.22176
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 75.02482
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 6.369048
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.616952
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 4.375788
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 2.361592
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 30.527701
+      type: 'test'
+      ...
+    1..6
+ok 17 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 122.506539
+  type: 'suite'
+  ...
+1..17
+# tests 47
+# suites 6
+# pass 47
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7146.537651

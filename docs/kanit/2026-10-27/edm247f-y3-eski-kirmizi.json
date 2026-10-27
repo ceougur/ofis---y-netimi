@@ -1,0 +1,38 @@
+{
+  "ad": "edm247f-y3-eski-kirmizi",
+  "komut": "node --test /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247y3-eski-e91b6e94/test/edoc-kullanim-birim-247.test.mjs",
+  "commit": "9a8d1e3b3b695816f87226e4c27f0a173133c821",
+  "dal": "is/edm-247-d",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v165 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-27T09:33:46.290Z",
+  "sure_sn": 0.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 10,
+    "gecen": 9,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "gönderim anı (S1): 'EDM'de değil' bilgisinden sonraki İLK gönderim izi; 11048'de yeniden gönderimin kendi izi sayılmaz, 'bulunamadı' kapatmaz",
+      "konum": "test/edoc-kullanim-birim-247.test.mjs:40:1",
+      "hata": "Y3: açık bulunamadı ilk izi kapatır · 'A' !== 'B' (beklenen B, gelen A)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-27/edm247f-y3-eski-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea",
+  "ham_cikti_sha256": "d539b83e6eb9b0137a9237b93c8ab5bbd7747ce9cf150b4b4eea8dff9e563e9e",
+  "ham_cikti_bayt": 4661
+}
