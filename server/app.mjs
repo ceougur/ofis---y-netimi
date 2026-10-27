@@ -76,6 +76,7 @@ import { resolveDbPath } from "./lib/db-path.mjs";
 import { createReportRunner } from "./lib/report-runner.mjs";
 import { USAGE_MONTHS, journalRowsOf, summarizeUsage, windowMonths } from "./lib/einvoice/kullanim.mjs";
 import { openUsageLedger } from "./lib/einvoice/kullanim-defteri.mjs";
+import { USAGE_BACKUP_TABLE } from "./lib/backup.mjs";
 import { isoDay } from "./lib/plans.mjs";
 import { MOBILE_PREFIX, captureResponse, isPhone, resolveMobile, transformMobile } from "./lib/mobile.mjs";
 
@@ -121,7 +122,8 @@ export function createApp(overrides = {}) {
     return { id: company.id, code: company.code, name: company.name };
   };
   const backupDirNow = () => companies.dirsOf(selfCompany()).backupDir;
-  const takeBackup = (label, keep = config.backupKeep) => createBackup(db, backupDirNow(), { label, keep, company: companyIdentity() });
+  // 2.4.7 E4: yedeğe şirketin kullanım defteri satırları da girer (geri yüklemede yalnız birleştirilir).
+  const takeBackup = (label, keep = config.backupKeep) => createBackup(db, backupDirNow(), { label, keep, company: companyIdentity(), usageRows: usageRowsOfSelf() });
   // Bir şirketin veri tabanıyla iş: açık örneğinki, açık değilse kısa süreli salt okunur bağlantı (açıp kapatır; örnek
   // açılmaz, bağlantı sızmaz). Otomatik yedek, Yönetim → Şirketler sayıları ve geri yükleme öncesi yedek bunu kullanır.
   function withCompanyDb(company, fn) {
@@ -141,10 +143,25 @@ export function createApp(overrides = {}) {
   // 2.4.7 E4/E5 (S4): e-Belge kullanım defteri kurulum düzeyinde, ana veri klasöründe (şirket dosyalarının dışında; lib/einvoice/kullanim-defteri.mjs).
   // Çocuk şirket örnekleri hub'ın defterini kullanır. Bir şirketin izi deftere aktarılır (birincil anahtar çift sayımı önler); okunamayan şirket atlanır.
   const usageLedger = hub ? hub.usageLedger : openUsageLedger({ dir: config.dataDir, log, fault: overrides.edocUsageFault || null });
+  function usageRowsOfSelf() {
+    try {
+      return usageLedger.allRows();
+    } catch {
+      return null;
+    }
+  }
+  const backupLedgerRowsOf = db => {
+    try {
+      return db.prepare(`SELECT company_id, company_code, ettn, env, kind, month, invoice_id, source, created_at FROM ${USAGE_BACKUP_TABLE}`).all();
+    } catch {
+      return [];
+    }
+  };
   function syncUsageOf(company) {
     try {
-      const rows = withCompanyDb(company, db => journalRowsOf(db)) || [];
-      return usageLedger.syncFrom(company.id, company.code, rows);
+      const [rows, copy] = withCompanyDb(company, db => [journalRowsOf(db), backupLedgerRowsOf(db)]) || [[], []];
+      // V15: geri yüklenen yedekteki defter kopyası (bütün şirketler) yalnız birleştirilir; sonra şirketin kendi izi.
+      return usageLedger.mergeAll(copy) + usageLedger.syncFrom(company.id, company.code, rows);
     } catch (error) {
       log.warn?.(`e-Belge kullanım defteri: ${company?.code || company?.id} aktarılamadı (${error.message})`);
       return 0;
@@ -168,7 +185,7 @@ export function createApp(overrides = {}) {
   }
   // Geri yüklenen ya da silinen şirket o sırada açılmaz; istek 503 ile "birkaç saniye sonra" der.
   const busyCompanies = hub ? hub.busyCompanies : new Map();
-  const backups = hub ? hub.backups : createCompanyBackups({ registry: companies, dataDir: config.dataDir, keep: config.backupKeep, log, withDb: withCompanyDb, busy: busyCompanies, closeCompany: id => closeCompany(id) });
+  const backups = hub ? hub.backups : createCompanyBackups({ registry: companies, dataDir: config.dataDir, keep: config.backupKeep, log, withDb: withCompanyDb, busy: busyCompanies, closeCompany: id => closeCompany(id), usageRowsFor: () => usageLedger.allRows(), onRestored: company => syncUsageOf(company) });
   if (!hub) {
     try {
       backups.migrate();

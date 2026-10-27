@@ -1,0 +1,32 @@
+{
+  "ad": "edm247e-tam-npm-test",
+  "komut": "npm test",
+  "commit": "23f878461628685bcd07a51a3716db94ce5d66e6",
+  "dal": "is/edm-247-c",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v165 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-27T08:54:13.587Z",
+  "sure_sn": 1799.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3695,
+    "gecen": 3695,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-27/edm247e-tam-npm-test.log.gz",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea",
+  "ham_cikti_sha256": "8b0e5cb2929fdba5ff8035bfa7a248046bdd5377819a2f3f3cd249015ffe9313",
+  "ham_cikti_bayt": 1333472
+}

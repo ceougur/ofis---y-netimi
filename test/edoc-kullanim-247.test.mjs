@@ -330,6 +330,24 @@ describe("2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler)",
     assert.equal(cell((await own()).months, "2026-07", "test").earsiv, start + 2, "sıfırlama defteri etkilemez");
   });
 
+  test("F2: EDM reddiyle 'Hata'ya düşen belgede Durum Sorgula sonradan kabul görürse bir kez sayılır (ret anının ayına); ikinci sorgu artırmaz", async () => {
+    const before = cell(await usage(), "2026-07", "test");
+    const doc = (await sale(personId)).data;
+    faults.push({ op: "SendInvoice", kind: "reject" });
+    assert.notEqual((await send(doc.id)).status, 200);
+    const failed = await card(doc.id);
+    assert.equal(failed.eStatus, "error");
+    assert.deepEqual(cell(await usage(), "2026-07", "test"), before, "ret sayılmaz");
+    // EDM ret yanıtına rağmen belgeyi almış çıktı (durum kaydı kabul diyor).
+    edm.state.statuses.set(failed.ettn, ["SEND - SUCCEED"]);
+    const checked = await refresh(doc.id);
+    assert.equal(checked.status, 200, JSON.stringify(checked.data));
+    assert.ok(["sent", "accepted"].includes(checked.data.eStatus), checked.data.eStatus);
+    assert.deepEqual(cell(await usage(), "2026-07", "test"), { ...before, earsiv: before.earsiv + 1 });
+    assert.equal((await refresh(doc.id)).status, 200);
+    assert.deepEqual(cell(await usage(), "2026-07", "test"), { ...before, earsiv: before.earsiv + 1 });
+  });
+
   test("Şirket Verisini Sıfırla (Tümünü) sayacı silmez", async () => {
     const before = await usage();
     const list = (await api.get("/api/companies")).data;
