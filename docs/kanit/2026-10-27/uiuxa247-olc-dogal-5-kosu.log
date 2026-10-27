@@ -1,0 +1,26 @@
+# CI #887 (91bfd5b8) uiux-a-243 I bölümü — DOĞAL ön koşul ölçümü (HOF_ZORLA=olc yalnız ölçer, hiçbir şeyi değiştirmez)
+# Test dosyası: değişmemiş (f72b4e8'deki uiux-a-243.mjs); 5 sıralı koşu, 27.10.2026, linux 6.18.44 x64, Node v22.22.0, Chromium headless (playwright 1.56.0).
+# Komut (her koşu):
+#   HOF_ZORLA=olc HOF_ZORLA_HEDEF=".hof-stock, .hof-cheques-modal, .hof-rc-hero" \
+#   HOF_ZORLA_ICERIK=".hof-stock-table tbody tr, .hof-cheques-modal .hof-plan-title small, .hof-rc-hero" \
+#   node --disable-warning=ExperimentalWarning --import ./test/e2e/pencere-yaris-zorla.mjs test/e2e/uiux-a-243.mjs
+# Okuma: "icerik-once" = testin beklediği içerik, pencere "is-visible" almadan ÖNCE vardı. Bu aralıkta closeAll (yalnız .is-visible arar)
+# açık pencere görmez. Stok: 5 koşunun 1'inde (30,0 ms). Çek / Senet içeriği eşzamanlı çizilir (5/5 önce, 4–32 ms). Raporlar 2/5 kayıtta önce.
+# Kayıt dışı satırlar (Raporlar 3 koşuda yok): .hof-rc-hero is-visible anında henüz yoktu → pencere hedef sayılmadı.
+koşu 1:[pencere-zorla] olc "Stok": is-visible 30.0 ms sonra; icerik-once
+koşu 1:[pencere-zorla] olc "Çek / Senet": is-visible 4.0 ms sonra; icerik-once
+koşu 1:[pencere-zorla] olc "Raporlar": is-visible 30.5 ms sonra; icerik-once
+koşu 1:✓ uiux-a-243: 51 geçti, 0 kaldı
+koşu 2:[pencere-zorla] olc "Stok": is-visible 8.8 ms sonra; icerik-sonra
+koşu 2:[pencere-zorla] olc "Çek / Senet": is-visible 31.9 ms sonra; icerik-once
+koşu 2:✓ uiux-a-243: 51 geçti, 0 kaldı
+koşu 3:[pencere-zorla] olc "Stok": is-visible 4.2 ms sonra; icerik-sonra
+koşu 3:[pencere-zorla] olc "Çek / Senet": is-visible 4.0 ms sonra; icerik-once
+koşu 3:[pencere-zorla] olc "Raporlar": is-visible 52.5 ms sonra; icerik-once
+koşu 3:✓ uiux-a-243: 51 geçti, 0 kaldı
+koşu 4:[pencere-zorla] olc "Stok": is-visible 4.3 ms sonra; icerik-sonra
+koşu 4:[pencere-zorla] olc "Çek / Senet": is-visible 12.2 ms sonra; icerik-once
+koşu 4:✓ uiux-a-243: 51 geçti, 0 kaldı
+koşu 5:[pencere-zorla] olc "Stok": is-visible 4.3 ms sonra; icerik-sonra
+koşu 5:[pencere-zorla] olc "Çek / Senet": is-visible 4.2 ms sonra; icerik-once
+koşu 5:✓ uiux-a-243: 51 geçti, 0 kaldı
