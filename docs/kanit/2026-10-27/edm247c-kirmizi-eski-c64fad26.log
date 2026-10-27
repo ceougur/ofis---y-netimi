@@ -1,0 +1,281 @@
+TAP version 13
+# (node:30935) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler)
+    # Subtest: boş veri: sayaç boş; e-Arşiv gönderimi 1 sayılır; Durum Sorgula (2 kez) ve aynı belgeyi yeniden Gönder sayıyı artırmaz
+    ok 1 - boş veri: sayaç boş; e-Arşiv gönderimi 1 sayılır; Durum Sorgula (2 kez) ve aynı belgeyi yeniden Gönder sayıyı artırmaz
+      ---
+      duration_ms: 165.98829
+      type: 'test'
+      ...
+    # Subtest: EDM reddi (Hata) sayılmaz; düzeltip yeniden gönderilen e-Fatura bir kez sayılır
+    ok 2 - EDM reddi (Hata) sayılmaz; düzeltip yeniden gönderilen e-Fatura bir kez sayılır
+      ---
+      duration_ms: 113.95883
+      type: 'test'
+      ...
+    # Subtest: ay sonu: istek EDM'ye 30.06 23:5x'te ulaşıp yanıt koptu (belirsiz, sayılmaz); 01.07'de Durum Sorgula kabulü görür → HAZİRAN'a bir kez
+    ok 3 - ay sonu: istek EDM'ye 30.06 23:5x'te ulaşıp yanıt koptu (belirsiz, sayılmaz); 01.07'de Durum Sorgula kabulü görür → HAZİRAN'a bir kez
+      ---
+      duration_ms: 112.201717
+      type: 'test'
+      ...
+    # Subtest: 11048 kendi ETTN'iyle: belirsiz gönderim → durum 'bulunamadı' gelir → yeniden gönderim 11048 → belge EDM'de bulunur → bir kez sayılır
+    ok 4 - 11048 kendi ETTN'iyle: belirsiz gönderim → durum 'bulunamadı' gelir → yeniden gönderim 11048 → belge EDM'de bulunur → bir kez sayılır
+      ---
+      duration_ms: 106.050754
+      type: 'test'
+      ...
+    # Subtest: iptal sayıyı değiştirmez; portala taslak yükleme ve PORTALDAN gönderim sayılmaz; taslağın programdan gönderimi sayılır
+    ok 5 - iptal sayıyı değiştirmez; portala taslak yükleme ve PORTALDAN gönderim sayılmaz; taslağın programdan gönderimi sayılır
+      ---
+      duration_ms: 282.555146
+      type: 'test'
+      ...
+    # Subtest: e-SMM esmm türünde sayılır
+    ok 6 - e-SMM esmm türünde sayılır
+      ---
+      duration_ms: 46.135106
+      type: 'test'
+      ...
+    # Subtest: canlı ortam ayrı sayılır; test sayıları değişmez
+    ok 7 - canlı ortam ayrı sayılır; test sayıları değişmez
+      ---
+      duration_ms: 92.346264
+      type: 'test'
+      ...
+    # Subtest: ikinci şirket kendi sayacını tutar; lisans doğrulaması (/v1/check) iki şirketin TOPLAMINI gönderir; gövdede ETTN / VKN / belge no yok
+    ok 8 - ikinci şirket kendi sayacını tutar; lisans doğrulaması (/v1/check) iki şirketin TOPLAMINI gönderir; gövdede ETTN / VKN / belge no yok
+      ---
+      duration_ms: 311.187295
+      type: 'test'
+      ...
+    # Subtest: eski / katı lisans sunucusu usage alanını BAD_REQUEST ile reddederse doğrulama özetsiz bir kez yinelenir ve başarılı olur
+    ok 9 - eski / katı lisans sunucusu usage alanını BAD_REQUEST ile reddederse doğrulama özetsiz bir kez yinelenir ve başarılı olur
+      ---
+      duration_ms: 6.458573
+      type: 'test'
+      ...
+    # Subtest: S4 kesinti: kullanım defterine yazım düşer (durum ve şirket izi yazıldı) → okumada izden bir kez tamamlanır; çift sayım yok
+    ok 10 - S4 kesinti: kullanım defterine yazım düşer (durum ve şirket izi yazıldı) → okumada izden bir kez tamamlanır; çift sayım yok
+      ---
+      duration_ms: 62.273217
+      type: 'test'
+      ...
+    # Subtest: S4 yedek tatbikatı (002): gönder → yedek → gönder → geri yükle → sayaç değişmedi; sıfırla → sayaç değişmedi; şirket izi geri gider, defter gitmez
+    ok 11 - S4 yedek tatbikatı (002): gönder → yedek → gönder → geri yükle → sayaç değişmedi; sıfırla → sayaç değişmedi; şirket izi geri gider, defter gitmez
+      ---
+      duration_ms: 429.352438
+      type: 'test'
+      ...
+    # Subtest: F2: EDM reddiyle 'Hata'ya düşen belgede Durum Sorgula sonradan kabul görürse bir kez sayılır (ret anının ayına); ikinci sorgu artırmaz
+    not ok 12 - F2: EDM reddiyle 'Hata'ya düşen belgede Durum Sorgula sonradan kabul görürse bir kez sayılır (ret anının ayına); ikinci sorgu artırmaz
+      ---
+      duration_ms: 72.302971
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247c-eski-c64fad26/test/edoc-kullanim-247.test.mjs:333:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   earsiv: 4,
+        -   earsiv: 5,
+            efatura: 0,
+            esmm: 1
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        efatura: 0
+        earsiv: 5
+        esmm: 1
+      actual:
+        efatura: 0
+        earsiv: 4
+        esmm: 1
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247c-eski-c64fad26/test/edoc-kullanim-247.test.mjs:346:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Şirket Verisini Sıfırla (Tümünü) sayacı silmez
+    ok 13 - Şirket Verisini Sıfırla (Tümünü) sayacı silmez
+      ---
+      duration_ms: 109.33513
+      type: 'test'
+      ...
+    1..13
+not ok 1 - 2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler)
+  ---
+  duration_ms: 2447.972877
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247c-eski-c64fad26/test/edoc-kullanim-247.test.mjs:29:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# e-Belge kullanım özeti okunamadı: okunamadı
+# (node:30943) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: tür eşlemesi: e-Arşiv / e-SMM / öbür e-Fatura profilleri; kâğıt ve boş sayılmaz
+ok 2 - tür eşlemesi: e-Arşiv / e-SMM / öbür e-Fatura profilleri; kâğıt ve boş sayılmaz
+  ---
+  duration_ms: 0.996178
+  type: 'test'
+  ...
+# Subtest: geçiş sınıfı: gönderim kabulü; belirsizin kesinleşmesi; durum yinelemesi, portal taslağının sonucu, ret ve taslak sayılmaz
+ok 3 - geçiş sınıfı: gönderim kabulü; belirsizin kesinleşmesi; durum yinelemesi, portal taslağının sonucu, ret ve taslak sayılmaz
+  ---
+  duration_ms: 0.351595
+  type: 'test'
+  ...
+# Subtest: gönderim anı (S1): 'EDM'de değil' bilgisinden sonraki İLK gönderim izi; 11048'de yeniden gönderimin kendi izi sayılmaz, 'bulunamadı' kapatmaz
+ok 4 - gönderim anı (S1): 'EDM'de değil' bilgisinden sonraki İLK gönderim izi; 11048'de yeniden gönderimin kendi izi sayılmaz, 'bulunamadı' kapatmaz
+  ---
+  duration_ms: 0.317711
+  type: 'test'
+  ...
+# Subtest: karar: doğrudan kabul anında; kesinleşme gönderim izinin anında; izsiz (yetim) ve sayaçtan önceki iz sayılmaz
+ok 5 - karar: doğrudan kabul anında; kesinleşme gönderim izinin anında; izsiz (yetim) ve sayaçtan önceki iz sayılmaz
+  ---
+  duration_ms: 0.899971
+  type: 'test'
+  ...
+# Subtest: F2 (kullanıcı kararı): 'Hata'daki belgede sonradan görülen kabul sayılır; ay 'bulunamadı' ile kapanmamış ilk iz; F1 değişmez
+not ok 6 - F2 (kullanıcı kararı): 'Hata'daki belgede sonradan görülen kabul sayılır; ay 'bulunamadı' ile kapanmamış ilk iz; F1 değişmez
+  ---
+  duration_ms: 1.445965
+  type: 'test'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247c-eski-c64fad26/test/edoc-kullanim-birim-247.test.mjs:63:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   at: '',
+    +   count: false,
+    +   reason: 'not-accepted'
+    -   at: 'B',
+    -   count: true,
+    -   reason: 'confirmed-error'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    count: true
+    at: 'B'
+    reason: 'confirmed-error'
+  actual:
+    count: false
+    at: ''
+    reason: 'not-accepted'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247c-eski-c64fad26/test/edoc-kullanim-birim-247.test.mjs:67:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: pencere (S5): içinde bulunulan ay + önceki 2; yıl dönümü; toplayıcı ay × ortam satırı sıfırlarla
+ok 7 - pencere (S5): içinde bulunulan ay + önceki 2; yıl dönümü; toplayıcı ay × ortam satırı sıfırlarla
+  ---
+  duration_ms: 7.221339
+  type: 'test'
+  ...
+# Subtest: saf uçtan uca işlev (kâhin karşılaştırması): S2 şirket + ETTN + ortam ayrı; ilk yazım kazanır; belirsizin ayı gönderim izinden
+ok 8 - saf uçtan uca işlev (kâhin karşılaştırması): S2 şirket + ETTN + ortam ayrı; ilk yazım kazanır; belirsizin ayı gönderim izinden
+  ---
+  duration_ms: 0.72655
+  type: 'test'
+  ...
+# Subtest: v37 göçü: şirket izi boş kurulur, sayaç başlangıcı yazılır; aynı ETTN + ortam bir kez; UPDATE / DELETE reddedilir
+ok 9 - v37 göçü: şirket izi boş kurulur, sayaç başlangıcı yazılır; aynı ETTN + ortam bir kez; UPDATE / DELETE reddedilir
+  ---
+  duration_ms: 184.657238
+  type: 'test'
+  ...
+# Subtest: kullanım defteri (S4): şirket + ETTN + ortam bir kez; aktarma yinelense de çift sayım yok; kesinti satırı düşürür, sonraki aktarma tamamlar; yalnız eklenir
+ok 10 - kullanım defteri (S4): şirket + ETTN + ortam bir kez; aktarma yinelense de çift sayım yok; kesinti satırı düşürür, sonraki aktarma tamamlar; yalnız eklenir
+  ---
+  duration_ms: 13.514091
+  type: 'test'
+  ...
+# Subtest: lisans gövdesi: usage yalnız izin verilen alanlarla, ay × ortam satırı sıfırlar dahil (S5); ek alan / ETTN / VKN süzülür; sağlayıcı hata verirse alan eklenmez
+ok 11 - lisans gövdesi: usage yalnız izin verilen alanlarla, ay × ortam satırı sıfırlar dahil (S5); ek alan / ETTN / VKN süzülür; sağlayıcı hata verirse alan eklenmez
+  ---
+  duration_ms: 138.781745
+  type: 'test'
+  ...
+# (node:30951) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.7 kullanım defteri: yedeğe girer, geri yüklemede yalnız birleşir
+    # Subtest: yedek → yeni kurulum (boş defter) → geri yükle → sayılar geri gelir; aynı yedek iki kez → çift yok
+    ok 1 - yedek → yeni kurulum (boş defter) → geri yükle → sayılar geri gelir; aynı yedek iki kez → çift yok
+      ---
+      duration_ms: 1455.067168
+      type: 'test'
+      ...
+    # Subtest: geri yükleme sayacı azaltmaz: yedekten SONRA gönderilen belge, eski yedek geri yüklenince defterde kalır
+    ok 2 - geri yükleme sayacı azaltmaz: yedekten SONRA gönderilen belge, eski yedek geri yüklenince defterde kalır
+      ---
+      duration_ms: 826.803736
+      type: 'test'
+      ...
+    # Subtest: defterde olup şirket izinde OLMAYAN satır (eski yedek geri yüklendikten sonra) yeni yedeğe girer; yeni kurulum onu da geri kazanır
+    not ok 3 - defterde olup şirket izinde OLMAYAN satır (eski yedek geri yüklendikten sonra) yeni yedeğe girer; yeni kurulum onu da geri kazanır
+      ---
+      duration_ms: 630.716699
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247c-eski-c64fad26/test/edoc-kullanim-yedek-247.test.mjs:134:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yedek defterin 3 satırını taşıdı
+        
+        2 !== 3
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 3
+      actual: 2
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247c-eski-c64fad26/test/edoc-kullanim-yedek-247.test.mjs:154:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: v2.4.6'nın GERÇEK koduyla üretilmiş yedek (iz tablosu yok) geri yüklenir; defter değişmez
+    ok 4 - v2.4.6'nın GERÇEK koduyla üretilmiş yedek (iz tablosu yok) geri yüklenir; defter değişmez # SKIP v2.4.6 etiketi yok (git fetch --tags)
+      ---
+      duration_ms: 0.795154
+      type: 'test'
+      ...
+    1..4
+not ok 12 - 2.4.7 kullanım defteri: yedeğe girer, geri yüklemede yalnız birleşir
+  ---
+  duration_ms: 2945.249912
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247c-eski-c64fad26/test/edoc-kullanim-yedek-247.test.mjs:24:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..12
+# tests 27
+# suites 2
+# pass 23
+# fail 3
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 6600.490556

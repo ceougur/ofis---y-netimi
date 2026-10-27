@@ -131,6 +131,33 @@ describe("2.4.7 kullanım defteri: yedeğe girer, geri yüklemede yalnız birle�
     }
   });
 
+  test("defterde olup şirket izinde OLMAYAN satır (eski yedek geri yüklendikten sonra) yeni yedeğe girer; yeni kurulum onu da geri kazanır", async () => {
+    // "azalmaz" testinin kurulumu: defter 3, şirket izi 2 (yedekten sonraki belgenin izi geri yüklemeyle gitti). Şimdi alınan yedek defterin 3 satırını taşımalı.
+    const dataDir = dirOf("azalmaz");
+    let name;
+    let server = await boot(CURRENT, dataDir);
+    try {
+      const api = await server.login();
+      const read = await usage(api);
+      assert.equal(earsivJune(read.months), 3);
+      assert.equal(earsivJune(read.journal), 2, "ön koşul: iz defterden eksik");
+      name = await backupOf(api);
+    } finally {
+      await server.close();
+    }
+    const fresh = dirOf("tasinan-kurulum");
+    server = await boot(CURRENT, fresh);
+    await server.close();
+    server = await restoreInto(fresh, name);
+    try {
+      const read = await usage(await server.login());
+      assert.equal(earsivJune(read.months), 3, "yedek defterin 3 satırını taşıdı");
+      assert.equal(earsivJune(read.journal), 3, "yedeğin izi defterle tamamlanmıştı");
+    } finally {
+      await server.close();
+    }
+  });
+
   test("v2.4.6'nın GERÇEK koduyla üretilmiş yedek (iz tablosu yok) geri yüklenir; defter değişmez", { skip: !tagsAvailable(["v2.4.6"]) && "v2.4.6 etiketi yok (git fetch --tags)" }, async () => {
     const oldDir = dirOf("v246");
     const old = await bootVersion("v2.4.6", { dataDir: oldDir, backupDir, env: ENV, now: NOW });
