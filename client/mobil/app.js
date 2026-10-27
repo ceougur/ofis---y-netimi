@@ -77,7 +77,7 @@ function renderReportCatalog(){
       return entries.length?`<h2 class="section-sub">${safe(title)}</h2><div class="report-catalog">${entries.map(r=>`<button class="report-choice" data-report-pick="${safe(r.id)}"><strong>${safe(r.title)}</strong><small>${safe(r.description||'')}</small><span class="pill neutral">İncele →</span></button>`).join('')}</div>`:'';
     }).join(''):blank('Bu kullanıcıya tanımlı müşteri raporu yok. Yönetici Finans Raporları yetkisini verebilir.'));
 }
-function reportField(name,title,content){return `<label>${safe(title)}${content}</label>`}
+function reportField(name,title,content,wide=false){return `<label${wide?' class="wide"':''}>${safe(title)}${content}</label>`}
 function reportFilterForm(r){
   const inputs=new Set(r.params||[]);
   const old=state.reportQuery||{};
@@ -91,7 +91,7 @@ function reportFilterForm(r){
   if(inputs.has('side'))form.push(reportField('side','Bakiye',`<select name="side"><option value="">Tümü</option>${[['debtor','Borçlular'],['creditor','Alacaklılar'],['nonzero','Bakiyesi Olanlar'],['zero','Sıfır Bakiyeler'],['overdue','Gecikenler']].map(([v,n])=>`<option value="${v}" ${old.side===v?'selected':''}>${n}</option>`).join('')}</select>`));
   if(inputs.has('planStatus'))form.push(reportField('planStatus','Kart Durumu',`<select name="planStatus">${[['active','Açık'],['closed','Kapalı'],['all','Tümü']].map(([v,n])=>`<option value="${v}" ${old.planStatus===v?'selected':''}>${n}</option>`).join('')}</select>`));
   if(r.accountRequired){
-    form.push(reportField('account','Cari Seçimi',`<input type="search" id="report-account-search" placeholder="Ad ya da cari no (en az 2 harf)" autocomplete="off" value="${safe(state.reportChosenAccount?.name||'')}"><button class="btn" type="button" data-report-search="1">Cari Ara</button><select id="report-account-select" name="account" required><option value="">${state.reportChosenAccount?'Cari Seçin':'Cari Arayın ve Seçin'}</option>${state.reportAccounts.map(a=>`<option value="${safe(a.id)}" ${state.reportChosenAccount?.id===a.id?'selected':''}>${safe(a.name)} ${a.refNo?'· '+safe(a.refNo):''}</option>`).join('')}</select>`));
+    form.push(reportField('account','Cari Seçimi',`<input type="search" id="report-account-search" placeholder="Ad ya da cari no (en az 2 harf)" autocomplete="off" value="${safe(state.reportChosenAccount?.name||'')}"><button class="btn" type="button" data-report-search="1">Cari Ara</button><select id="report-account-select" name="account" required><option value="">${state.reportChosenAccount?'Cari Seçin':'Cari Arayın ve Seçin'}</option>${state.reportAccounts.map(a=>`<option value="${safe(a.id)}" ${state.reportChosenAccount?.id===a.id?'selected':''}>${safe(a.name)} ${a.refNo?'· '+safe(a.refNo):''}</option>`).join('')}</select>`,true));
   }
   if(inputs.has('items'))form.push(reportField('items','Ayrıntı',`<select name="items"><option value="">Özet Hareketler</option><option value="1" ${old.items==='1'?'selected':''}>Fatura Kalemlerini Göster</option></select>`));
   return `<form class="card" id="report-filter-form"><div class="report-filters">${form.join('')}<button class="btn primary" type="submit">Raporu Getir</button></div></form>`;
