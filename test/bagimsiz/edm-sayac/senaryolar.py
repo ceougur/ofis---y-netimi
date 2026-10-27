@@ -423,12 +423,118 @@ uc("U39-tekrarlanan-red", "Üç kez red: sayılmaz.",
     ol("gonder_red", E(1), t("2026-10-03 10:00:00"), tur="esmm")],
    lambda p: {"sayilar": {}}, kurallar=["K1"])
 
-uc("U40-belirsiz-red-sonra-kesinlesme", "Belirsiz 30.09 → yeniden deneme red 01.10 → durum sorgusu kabul 02.10: gönderim anı ilk belirsiz (V6 geri dönüşü).",
+uc("U40-belirsiz-red-sonra-kesinlesme", "F2: belirsiz 30.09 → yeniden gönderim red 01.10 → durum sorgusu kabul 02.10: SAYILIR, ay ilk açık iz (30.09).",
    [ol("gonder_belirsiz", E(1), t("2026-09-30 22:00:00")),
     ol("gonder_red", E(1), t("2026-10-01 10:00:00")),
     ol("belirsiz_kesinlesti_kabul", E(1), t("2026-10-02 10:00:00"))],
    lambda p: {"sayilar": {k("2026-10" if p["ay"] == "kesinlesme" else "2026-09"): 1}},
-   acik_sorular=["S1"], varsayimlar=["V6"], kurallar=["K4"])
+   acik_sorular=["S1"], kurallar=["K4", "K11"])
+
+# ---- 27.10.2026 kararları: F1, F2, sayaç defteri yedekte (K10–K12) ----------------------------------------------------
+uc("U41-F1-bulunamadi-yeniden-belirsiz-kesinlesme",
+   "F1: belirsiz 31.10 → EDM 'bulunamadı' 01.11 → yeniden gönderim yine belirsiz 01.11 → kabul kesinleşir 01.12: ay = 'bulunamadı'dan SONRAKİ gönderim (Kasım).",
+   [ol("gonder_belirsiz", E(1), t("2026-10-31 23:00:00"), profil="TICARI"),
+    ol("durum_bulunamadi", E(1), t("2026-11-01 09:00:00"), profil="TICARI"),
+    ol("gonder_belirsiz", E(1), t("2026-11-01 09:05:00"), profil="TICARI"),
+    ol("belirsiz_kesinlesti_kabul", E(1), t("2026-12-01 10:00:00"), profil="TICARI")],
+   lambda p: {"sayilar": {k("2026-11" if p["ay"] == "gonderim" else "2026-12"): 1}, "usage": {
+       t("2026-11-15 10:00:00"): ({"aylar": ["2026-09", "2026-10", "2026-11"], "aylik": {}} if p["pencere"] == "icinde_dahil"
+                                  else {"aylar": ["2026-08", "2026-09", "2026-10"], "aylik": {}}),
+       t("2026-12-05 10:00:00"): (
+           {"aylar": ["2026-10", "2026-11", "2026-12"], "aylik": {k("2026-11" if p["ay"] == "gonderim" else "2026-12"): 1}}
+           if p["pencere"] == "icinde_dahil" else
+           {"aylar": ["2026-09", "2026-10", "2026-11"], "aylik": {k("2026-11"): 1} if p["ay"] == "gonderim" else {}}),
+   }},
+   referanslar=[t("2026-11-15 10:00:00"), t("2026-12-05 10:00:00")], acik_sorular=["S1"], kurallar=["K4", "K10"])
+
+uc("U42-F1-bulunamadi-yeniden-belirsiz-11048",
+   "F1 + S3: belirsiz 30.10 → 'bulunamadı' 31.10 → yeniden belirsiz 01.11 → yeniden gönderimde 11048 (kendi ETTN'i) 02.12: ay Kasım.",
+   [ol("gonder_belirsiz", E(1), t("2026-10-30 10:00:00"), tur="esmm"),
+    ol("durum_bulunamadi", E(1), t("2026-10-31 10:00:00"), tur="esmm"),
+    ol("gonder_belirsiz", E(1), t("2026-11-01 08:00:00"), tur="esmm"),
+    ol("zaten_gonderilmis_11048", E(1), t("2026-12-02 10:00:00"), tur="esmm")],
+   lambda p: {"sayilar": ({} if p["e11048"] == "saymaz"
+                          else {k("2026-11" if p["ay"] == "gonderim" else "2026-12", tur="esmm"): 1})},
+   acik_sorular=["S1", "S3"], kurallar=["K10"])
+
+uc("U43-F2-belirsiz-red-belirsiz-kesinlesme",
+   "F2: belirsiz 30.09 → yeniden gönderim red 01.10 → yeniden belirsiz 15.10 → kabul 02.11: red izi kapatmaz, ay ilk açık iz (Eylül).",
+   [ol("gonder_belirsiz", E(1), t("2026-09-30 22:00:00")),
+    ol("gonder_red", E(1), t("2026-10-01 10:00:00")),
+    ol("gonder_belirsiz", E(1), t("2026-10-15 10:00:00")),
+    ol("belirsiz_kesinlesti_kabul", E(1), t("2026-11-02 10:00:00"))],
+   lambda p: {"sayilar": {k("2026-09" if p["ay"] == "gonderim" else "2026-11"): 1}},
+   acik_sorular=["S1"], kurallar=["K4", "K11"])
+
+uc("U44-bulunamadi-sonra-yeni-deneme-olmadan-kabul",
+   "Belirsiz 30.09 → 'bulunamadı' 01.10 → yeni gönderim yok → EDM kabul gösterir 05.10 (geç işlenmiş): sayılır (K1), ay ilk belirsiz (V6b, karar değil).",
+   [ol("gonder_belirsiz", E(1), t("2026-09-30 23:00:00")),
+    ol("durum_bulunamadi", E(1), t("2026-10-01 09:00:00")),
+    ol("belirsiz_kesinlesti_kabul", E(1), t("2026-10-05 10:00:00"))],
+   lambda p: {"sayilar": {k("2026-09" if p["ay"] == "gonderim" else "2026-10"): 1}},
+   acik_sorular=["S1"], varsayimlar=["V6b"], kurallar=["K1", "K10"])
+
+uc("U45-bulunamadi-sonra-iptal", "Belirsiz → 'bulunamadı' → Yalnız Programda İptal: sayılmaz (bulunamadı kabul değildir).",
+   [ol("gonder_belirsiz", E(1), t("2026-10-10 10:00:00"), tur="earsiv"),
+    ol("durum_bulunamadi", E(1), t("2026-10-11 10:00:00"), tur="earsiv"),
+    ol("iptal", E(1), t("2026-10-12 10:00:00"), tur="earsiv")],
+   lambda p: {"sayilar": {}}, kurallar=["K1", "K10"])
+
+
+def _u46(p, ref):
+    etk = p["geri_yukleme"] == "etkilemez"
+    if ref == "Ra":    # kayıptan önce: E6 (Eylül), E1, E2, E3 (Ekim)
+        aylik = {k("2026-09", tur="earsiv"): 1, k("2026-10", tur="earsiv"): 3}
+    elif ref == "Rb":  # defter kayboldu; yeni kurulumda E4 ve iptal sonrası yeniden kabul edilen E6 (Ekim)
+        aylik = {k("2026-10", tur="earsiv"): 2}
+    elif ref == "Rc":  # geri yükleme anı: etkilemez → E1, E2 eklendi, E6 (Ekim) değişmedi; geri_alir → şirket defteri = yedek
+        aylik = {k("2026-10", tur="earsiv"): 4} if etk else {k("2026-09", tur="earsiv"): 1, k("2026-10", tur="earsiv"): 2}
+    else:              # Rd: + E5
+        aylik = {k("2026-10", tur="earsiv"): 5} if etk else {k("2026-09", tur="earsiv"): 1, k("2026-10", tur="earsiv"): 3}
+    if p["pencere"] == "icinde_dahil":
+        return {"aylar": ["2026-08", "2026-09", "2026-10"], "aylik": aylik}
+    return {"aylar": ["2026-07", "2026-08", "2026-09"], "aylik": {a: n for a, n in aylik.items() if a.startswith("2026-09")}}
+
+
+_U46_REF = (("Ra", t("2026-10-08 12:00:00")), ("Rb", t("2026-10-10 12:00:00")), ("Rc", t("2026-10-11 09:00:00")),
+            ("Rd", t("2026-10-12 12:00:00")))
+uc("U46-yedekten-defter-kazanimi",
+   "K12: yedek 07.10 18:00'de defterin kopyasını alır; 09.10'da kurulum taşınır, defter kaybolur; geri yükleme yedekteki eksik satırları (E1, E2) "
+   "geri getirir, var olanı (iptal sonrası yeniden kabul edilen E6, Ekim) DEĞİŞTİRMEZ, hiçbir satırı silmez: sayı 2 → 4. Yedekten sonra yazılıp "
+   "defterle kaybolan E3 geri gelmez (bilinen sınır).",
+   [ol("gonder_kabul", E(6), t("2026-09-28 10:00:00"), tur="earsiv"),
+    ol("gonder_kabul", E(1), t("2026-10-05 10:00:00"), tur="earsiv"),
+    ol("gonder_kabul", E(2), t("2026-10-06 10:00:00"), tur="earsiv"),
+    ol("iptal", E(6), t("2026-10-07 09:00:00"), tur="earsiv"),
+    bakim("yedek_alindi", "001", t("2026-10-07 18:00:00")),
+    ol("gonder_kabul", E(3), t("2026-10-08 10:00:00"), tur="earsiv"),
+    {"olay": "sayac_defteri_kayboldu", "zaman": t("2026-10-09 09:00:00")},
+    ol("gonder_kabul", E(4), t("2026-10-10 10:00:00"), tur="earsiv"),
+    ol("gonder_kabul", E(6), t("2026-10-10 11:00:00"), tur="earsiv"),
+    bakim("yedekten_geri_yuklendi", "001", t("2026-10-11 09:00:00"), yedek_zamani=t("2026-10-07 18:00:00")),
+    ol("gonder_kabul", E(5), t("2026-10-12 10:00:00"), tur="earsiv")],
+   lambda p: {"sayilar": ({k("2026-10", tur="earsiv"): 5} if p["geri_yukleme"] == "etkilemez"
+                          else {k("2026-09", tur="earsiv"): 1, k("2026-10", tur="earsiv"): 3}),
+              "usage": {r: _u46(p, ad) for ad, r in _U46_REF}},
+   referanslar=[r for _, r in _U46_REF], acik_sorular=["S4"], kurallar=["K2", "K12"])
+
+uc("U47-yedek-defteri-iki-sirket",
+   "K12 + V15: 001'in yedeği defterin TAMAMINI taşır; defter kaybolunca 001'in yedeği geri yüklenir, 002'nin satırı da geri gelir.",
+   [ol("gonder_kabul", E(1), t("2026-10-05 10:00:00"), sirket="001"),
+    ol("gonder_kabul", E(2), t("2026-10-06 10:00:00"), sirket="002"),
+    bakim("yedek_alindi", "001", t("2026-10-07 18:00:00")),
+    {"olay": "sayac_defteri_kayboldu", "zaman": t("2026-10-09 09:00:00")},
+    bakim("yedekten_geri_yuklendi", "001", t("2026-10-10 09:00:00"), yedek_zamani=t("2026-10-07 18:00:00"))],
+   lambda p: {"sayilar": {k("2026-10"): 2 if p["geri_yukleme"] == "etkilemez" else 1}},
+   acik_sorular=["S4"], varsayimlar=["V15"], kurallar=["K12"])
+
+uc("U48-eski-yedekte-defter-kopyasi-yok",
+   "Defter kaybolduktan sonra 2.4.7 öncesi (defter kopyası olmayan) yedek geri yüklenir: geri gelen satır yok; sonraki kabul sayılır.",
+   [ol("gonder_kabul", E(1), t("2026-10-05 10:00:00")),
+    {"olay": "sayac_defteri_kayboldu", "zaman": t("2026-10-06 09:00:00")},
+    bakim("yedekten_geri_yuklendi", "001", t("2026-10-07 09:00:00"), yedek_zamani=t("2026-09-20 18:00:00")),
+    ol("gonder_kabul", E(2), t("2026-10-08 10:00:00"))],
+   lambda p: {"sayilar": {k("2026-10"): 1}}, kurallar=["K12"])
 
 
 def uc_senaryolar():
@@ -442,9 +548,12 @@ AKISLAR = (  # (ad, ağırlık)
     ("yetim_kesinlesme", 3), ("ilk_11048", 3), ("kabul_iptal_ayni_ettn", 3), ("belirsiz_sonucsuz", 4),
     ("red_araya_girer", 3), ("iki_belirsiz", 3), ("iki_kullanici", 3), ("belirsiz_11048_kesin", 3), ("yalniz_iptal", 2),
     ("kabul_silindi", 3), ("belirsiz_red_kesin", 2),
+    ("f1_bulunamadi_belirsiz_kesin", 4), ("f1_bulunamadi_belirsiz_11048", 3), ("f2_red_belirsiz_kesin", 3),
+    ("bulunamadi_iptal", 2),
 )
 BELIRSIZ_AKISLARI = {"belirsiz_kesin_kabul", "belirsiz_kesin_red", "belirsiz_11048", "belirsiz_yeniden_kabul", "belirsiz_sonucsuz",
-                     "red_araya_girer", "iki_belirsiz", "belirsiz_11048_kesin", "belirsiz_red_kesin"}
+                     "red_araya_girer", "iki_belirsiz", "belirsiz_11048_kesin", "belirsiz_red_kesin", "f1_bulunamadi_belirsiz_kesin",
+                     "f1_bulunamadi_belirsiz_11048", "f2_red_belirsiz_kesin", "bulunamadi_iptal"}
 
 
 def _ay(an):
@@ -577,9 +686,23 @@ def rastgele_senaryo(tohum, belge_sayisi=VARSAYILAN_BELGE):
             adim, kab = [("iptal", t0)], []
         elif ad == "kabul_silindi":
             adim, kab = [("gonder_kabul", t0), ("belge_silindi", s())], [(t0, t0, None)]
-        elif ad == "belirsiz_red_kesin":
+        elif ad == "belirsiz_red_kesin":  # F2: sayılır, ay ilk açık iz
             t1, t2 = s(), s()
             adim, kab = [("gonder_belirsiz", t0), ("gonder_red", t1), ("belirsiz_kesinlesti_kabul", t2)], [(t2, t0, None)]
+        elif ad == "f1_bulunamadi_belirsiz_kesin":  # F1: ay 'bulunamadı'dan sonraki gönderim
+            t1, t2, t3 = s(), s(), s()
+            adim = [("gonder_belirsiz", t0), ("durum_bulunamadi", t1), ("gonder_belirsiz", t2), ("belirsiz_kesinlesti_kabul", t3)]
+            kab = [(t3, t2, None)]
+        elif ad == "f1_bulunamadi_belirsiz_11048":  # F1 + S3
+            t1, t2, t3 = s(), s(), s()
+            adim = [("gonder_belirsiz", t0), ("durum_bulunamadi", t1), ("gonder_belirsiz", t2), ("zaten_gonderilmis_11048", t3)]
+            kab = [(t3, t2, "kesinlestirir")]
+        elif ad == "f2_red_belirsiz_kesin":  # F2: gonder_red izi kapatmaz → ilk açık iz
+            t1, t2, t3 = s(), s(), s()
+            adim = [("gonder_belirsiz", t0), ("gonder_red", t1), ("gonder_belirsiz", t2), ("belirsiz_kesinlesti_kabul", t3)]
+            kab = [(t3, t0, None)]
+        elif ad == "bulunamadi_iptal":
+            adim, kab = [("gonder_belirsiz", t0), ("durum_bulunamadi", s()), ("iptal", s())], []
         else:  # pragma: no cover
             raise AssertionError(ad)
         belge_ekle(sirket, ortam, tur, ek, ettn, adim, kab)
@@ -624,10 +747,10 @@ def rastgele_senaryo(tohum, belge_sayisi=VARSAYILAN_BELGE):
 
     return {
         "ad": f"R{tohum}-rastgele-{belge_sayisi}-belge", "tur": "rastgele", "tohum": tohum,
-        "aciklama": (f"Tohum {tohum}: {belge_sayisi} belge, 20 akış türü, 3 şirket, iki ortam, 14 ay (yıl dönümü dahil), ay sınırına yığılmış "
-                     f"gönderimler, %5 UTC yazımlı saat, aynı ETTN başka şirkette / öbür ortamda; "
+        "aciklama": (f"Tohum {tohum}: {belge_sayisi} belge, {len(AKISLAR)} akış türü (F1/F2 dahil), 3 şirket, iki ortam, 14 ay (yıl dönümü dahil), "
+                     f"ay sınırına yığılmış gönderimler, %5 UTC yazımlı saat, aynı ETTN başka şirkette / öbür ortamda; "
                      + ("kronolojik sıra." if tohum == 1 else "karışık sıra.")),
-        "kurallar": ["K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8"], "acik_sorular": ["S1", "S2", "S3", "S5"], "varsayimlar": [],
+        "kurallar": ["K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "K10", "K11"], "acik_sorular": ["S1", "S2", "S3", "S5"], "varsayimlar": [],
         "yapay": False, "gecmis": gecmis, "referanslar": referanslar, "olaylar": liste, "uretici": uretici,
     }
 
@@ -693,8 +816,10 @@ def kabul_uret(belge_sayisi=VARSAYILAN_BELGE, model=None):
         "aciklama": ("DestekOfis 2.4.7 EDM kabul edilen gönderim sayacı (B1) ve /v1/check usage (B2) — temiz oda kâhini kabul kümesi. "
                      "Programın kodu görülmeden karar metninden üretildi; kurallar/varsayımlar/açık sorular README.md."),
         "kaynak": ["CLAUDE.md: 2.4.7 KAPSAMI — EDM İŞ ORTAKLIĞI", "docs/erp/OTURUM-DEVIR-TESLIM-2.4.7.md §3.3 B1, B2",
-                   "docs/erp/2.4.7-IS-LISTESI.md: Nasıl bozulur?"],
+                   "docs/erp/2.4.7-IS-LISTESI.md: Nasıl bozulur?",
+                   "docs/2.4.7-IS-LISTESI.md: KARARLAR — EDM sayacı (S1–S5) ve AÇIK SORU → KARAR (F1, F2, sayaç defteri yedekte), 27.10.2026"],
         "uretim": f"python3 -I test/bagimsiz/edm-sayac/senaryolar.py (rastgele senaryo başına {belge_sayisi} belge, tohum 1–3)",
+        "secilen_birlesim": kahin.birlesim_adi(kahin.SECILEN),
         "parametreler": {a: list(v) for a, v in kahin.PARAMETRELER.items()},
         "birlesim_bicimi": "ay=…;anahtar=…;e11048=…;pencere=…;geri_yukleme=… (bu sırayla)",
         "senaryolar": cikti,
