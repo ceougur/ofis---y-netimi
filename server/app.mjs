@@ -74,6 +74,7 @@ import { createBackup } from "./lib/backup.mjs";
 import { applyStagedRestore, createCompanyBackups } from "./lib/company-backups.mjs";
 import { resolveDbPath } from "./lib/db-path.mjs";
 import { createReportRunner } from "./lib/report-runner.mjs";
+import { MOBILE_PREFIX, captureResponse, isPhone, resolveMobile, transformMobile } from "./lib/mobile.mjs";
 
 function ensureInitialAdmin(store, config, log) {
   if (store.get("SELECT id FROM users WHERE username = ? COLLATE NOCASE", config.adminUsername)) return;
@@ -377,6 +378,10 @@ export function createApp(overrides = {}) {
   registerGettingStartedRoutes(router, context);
   registerTrpcRoutes(router, context);
 
+  const redirect = (res, location) => {
+    res.writeHead(302, { ...SECURITY_HEADERS, location, "cache-control": "no-store", "content-length": 0 });
+    res.end();
+  };
   async function handle(req, res) {
     const url = new URL(req.url || "/", "http://localhost");
     const pathname = url.pathname;
@@ -393,6 +398,11 @@ export function createApp(overrides = {}) {
         return;
       }
       if (req.method !== "GET" && req.method !== "HEAD") throw new HttpError(405, "Bu yöntem desteklenmiyor.");
+      // Mobil görünüm (2.4.7 M1): /mobil → /mobil/ (sayfanın göreli adresleri); telefon tarayıcısı ana adreste mobil görünüme gider
+      // (?masaustu=1 ile masaüstü). Mobil dosyalar client/mobil/ altında, olağan statik dosya yoluyla.
+      if (pathname === "/mobil") return redirect(res, "/mobil/");
+      if ((pathname === "/" || pathname === "/index.html") && !url.searchParams.has("masaustu") && isPhone(req.headers["user-agent"])) return redirect(res, "/mobil/");
+      if (pathname === "/mobil/" && serveStatic(req, res, "/mobil/index.html")) return;
       if (serveStatic(req, res, pathname)) return;
       if (String(req.headers.accept || "").includes("text/html")) return notFoundPage(res);
       send(res, 404, { ok: false, error: "Sayfa bulunamadı." });
@@ -478,7 +488,38 @@ export function createApp(overrides = {}) {
     }
     return child;
   }
+  // Mobil görünüm (2.4.7 M1; lib/mobile.mjs): /api/mobil/… isteği beyaz listeden programın kendi ucuna çevrilir ve SONRA olağan yoldan
+  // (şirket seçimi, oturum, yetki, istek kaynağı, lisans) geçer; yetki burada tekrar edilmez. Oturum özeti ve rapor kataloğu mobil biçime çevrilir.
+  const dispatchMobile = async (req, res) => {
+    let resolved;
+    try {
+      const url = new URL(req.url || "/", "http://x");
+      resolved = resolveMobile(req.method, url.pathname, url.searchParams);
+    } catch (error) {
+      if (error instanceof HttpError) return send(res, error.status, { ok: false, error: error.message, ...error.extra });
+      throw error;
+    }
+    req.url = resolved.url;
+    if (!resolved.transform) return dispatchApp(req, res);
+    const captured = captureResponse();
+    await dispatchApp(req, captured.res);
+    const raw = captured.body().toString("utf8");
+    let payload = null;
+    try {
+      payload = JSON.parse(raw);
+    } catch {
+      payload = null;
+    }
+    const passHeaders = Object.fromEntries(Object.entries(captured.headers).filter(([name]) => !["content-length", "content-type", "content-encoding"].includes(name)));
+    if (!payload) return send(res, captured.res.statusCode === 200 ? 502 : captured.res.statusCode, { ok: false, error: "Sunucu yanıtı okunamadı." }, passHeaders);
+    if (captured.res.statusCode !== 200 || payload.ok !== true) return send(res, captured.res.statusCode, payload, passHeaders);
+    return send(res, 200, { ok: true, data: transformMobile(resolved.transform, payload.data) }, passHeaders);
+  };
   const dispatch = (req, res) => {
+    if (!hub && String(req.url || "").startsWith(MOBILE_PREFIX)) return dispatchMobile(req, res);
+    return dispatchApp(req, res);
+  };
+  const dispatchApp = (req, res) => {
     if (hub) return scoped(req, res);
     const pathname = (req.url || "/").split("?")[0];
     if (!pathname.startsWith("/api/") || HUB_ONLY.test(pathname)) return scoped(req, res);
