@@ -53,6 +53,12 @@ async function kurulum() {
   });
   await server.app.license.activateKey("DO-ABCDE-FGHJK-MNPQR-STVWX");
   const sync = server.app.mobileSync;
+  // Kurulum yarıda kalırsa (eski kodda mobileSync yok) açılanlar kapanır; yoksa açık sunucu koşuyu asılı bırakır (kırmızının nedeni iletide görünür — ders 38).
+  if (!sync) {
+    await server.close().catch(() => {});
+    await kapi.close();
+    throw new Error("programda mobil özet yükleyicisi (app.mobileSync) yok");
+  }
   const ofis = await sync.ofis();
   const ilkKayit = await sync.kayitGonder();
   const remote = await server.app.listenRemote(0, "127.0.0.1");
