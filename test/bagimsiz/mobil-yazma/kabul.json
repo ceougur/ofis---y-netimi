@@ -277,8 +277,8 @@
   "tarih": ["sunucu_gunu", "form_tarihi"],
   "yollar": ["nakit_havale_pos", "evrak_dahil"]
  },
- "secilen_birlesim": null,
- "secim_notu": "Kullanıcı kararı bekleniyor (README AÇIK SORULAR S1–S8). Karar gelene dek program 'oneri' ile karşılaştırılır ve fark İNCELE sayılır.",
+ "secilen_birlesim": "kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris",
+ "secim_notu": "Kullanıcı kararı S1–S8 (docs/2.4.7-IS-LISTESI.md 'KARARLAR — M5 mobil yazma', 29.10.2026; 5 dk yetkisiyle uygulandı): öneri birleşimi seçildi. Beklentiler değişmedi; yalnız seçim alanı.",
  "senaryolar": [
   {
    "aciklama": "Müşteri A: F1 1.000 (01.10), F2 500 (05.10), F3 700 (10.10). Bağsız nakit 1.200 → en eskiden: F1 0, F2 300, F3 700; bakiye 1.000. İkinci nakit 1.500 → hepsi kapanır, avans 500 (bakiye −500). Yeni F4 300 → avans kapatır (F4 0, bakiye −200). Mobil = masaüstü.",

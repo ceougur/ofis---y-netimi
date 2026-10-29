@@ -79,6 +79,7 @@ import { openUsageLedger } from "./lib/einvoice/kullanim-defteri.mjs";
 import { USAGE_BACKUP_TABLE } from "./lib/backup.mjs";
 import { isoDay } from "./lib/plans.mjs";
 import { MOBILE_PREFIX, captureResponse, isPhone, resolveMobile, transformMobile } from "./lib/mobile.mjs";
+import { dispatchMobileWrite, matchMobileWrite } from "./lib/mobile-write.mjs";
 import { createMobileRemote } from "./lib/mobile-remote.mjs";
 import { registerMobileAdminRoutes } from "./routes/mobile-admin.mjs";
 
@@ -565,6 +566,8 @@ export function createApp(overrides = {}) {
   // Mobil görünüm (2.4.7 M1; lib/mobile.mjs): /api/mobil/… isteği beyaz listeden programın kendi ucuna çevrilir ve SONRA olağan yoldan
   // (şirket seçimi, oturum, yetki, istek kaynağı, lisans) geçer; yetki burada tekrar edilmez. Oturum özeti ve rapor kataloğu mobil biçime çevrilir.
   const dispatchMobile = async (req, res) => {
+    // 2.4.7 M5 (lib/mobile-write.mjs): mobil yazma beyaz listesi → programın mevcut tahsilat / ödeme / taksit / stok girişi ucu (uzak kapı ÖNCE geçti).
+    if (matchMobileWrite(req.method, req.url)) return dispatchMobileWrite(req, res, dispatchApp);
     let resolved;
     try {
       const url = new URL(req.url || "/", "http://x");

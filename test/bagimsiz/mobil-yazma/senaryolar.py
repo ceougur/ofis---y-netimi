@@ -1573,8 +1573,8 @@ def kabul_uret(olay=RASTGELE_OLAY, yaz=True, gunluk=print):
         "cari_model_sha256": _sha256(kahin._CARI_YOL),
         "parametreler": {k: list(v) for k, v in P.items()}, "oneri": kahin.ONERI, "taban_birlesim": ILK, "esdeger_birlesim": ESDEGER,
         "birlesim_bicimi": "kapatilacak=…;yollar=…;taksit=…;onay=…;eksi_stok=…;tarih=…;gec_yeniden=…;stok_yonu=… (bu sırayla)",
-        "secilen_birlesim": None,
-        "secim_notu": "Kullanıcı kararı bekleniyor (README AÇIK SORULAR S1–S8). Karar gelene dek program 'oneri' ile karşılaştırılır ve fark İNCELE sayılır.",
+        "secilen_birlesim": "kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris",
+        "secim_notu": "Kullanıcı kararı S1–S8 (docs/2.4.7-IS-LISTESI.md 'KARARLAR — M5 mobil yazma', 29.10.2026; 5 dk yetkisiyle uygulandı): öneri birleşimi seçildi. Beklentiler değişmedi; yalnız seçim alanı.",
         "senaryolar": kayitlar,
         "goreli_ciftler": [{"ad": g["ad"], "aciklama": g["aciklama"], "kosul": g["kosul"], "masaustu": g["masaustu"], "mobil": g["mobil"]} for g in GORELI],
     }

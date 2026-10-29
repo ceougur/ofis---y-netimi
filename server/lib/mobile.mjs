@@ -6,6 +6,7 @@
 // (2) Raporlar'da yalnız MOBILE_REPORT_IDS (v0.3'ün izinli rapor listesi) ve raporun izinli parametreleri, değerleri doğrulanmış olarak;
 // (3) iki yanıtın mobil biçimi (oturum özeti, rapor kataloğu). Dalga 2'de (uzaktan erişim) dışarıya YALNIZ /mobil/ ve /api/mobil/ açılır.
 import { HttpError } from "./http.mjs";
+import { MOBILE_WRITE_READ_ROUTES, mobileWriteRights } from "./mobile-write.mjs";
 
 // Raporlar sekmesinde görünen raporlar (v0.3 src/gateway.mjs MOBILE_REPORT_IDS ile aynı; 2.4.6 report-center.mjs'teki kimlikler).
 export const MOBILE_REPORT_IDS = Object.freeze([
@@ -97,6 +98,7 @@ const ROUTES = [
   // yönetici, overview.card). Yetki o uçların kendisinde.
   { method: "GET", path: /^\/api\/mobil\/plans$/, target: () => ["/api/workspace/plans", new URLSearchParams({ count: "1" })] },
   { method: "GET", path: /^\/api\/mobil\/overview$/, target: () => "/api/workspace/overview" },
+  ...MOBILE_WRITE_READ_ROUTES, // 2.4.7 M5: yazma formlarının hesap / POS seçicisi (lib/mobile-write.mjs)
 ];
 // Yalnız uzaktan erişim dinleyicisinde (lib/mobile-remote.mjs) anlamlı uçlar: ofis ağında cihaz eşlenmez, giriş cihaza bağlanmaz (olağan oturum).
 const REMOTE_ONLY = new Set(["/api/mobil/eslesme", "/api/mobil/session/challenge"]);
@@ -143,7 +145,7 @@ export function transformMobile(kind, data) {
       office: { name: data?.office?.name || "" },
       companies,
       company: current?.id || "",
-      writesEnabled: false,
+      ...mobileWriteRights(data?.permissions), // 2.4.7 M5: yazma hakları (ekran için; denetim programın ucunda)
     };
   }
   if (kind === "reports") {
