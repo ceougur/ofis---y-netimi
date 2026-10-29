@@ -132,7 +132,7 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
     const anahtarlar = new Map(store.all("SELECT id, enc_key FROM mobile_devices WHERE revoked_at IS NULL AND enc_key IS NOT NULL").map(row => [row.id, row.enc_key]));
     return mobileRemote.gatekeeperSnapshot().devices.map(d => ({ ...d, encKey: anahtarlar.has(d.id) ? JSON.parse(anahtarlar.get(d.id)) : null }));
   };
-  // Kapıcı lisansı en çok 1 saat eski kabul eder (P9): programın belirteci 30 dakikadan eskiyse kayıttan önce lisans servisinden yenilenir (ulaşılamazsa
+  // Kapıcı lisansı en çok 1 saat eski kabul eder (P9): programın belirteci 50 dakikadan eskiyse kayıttan önce lisans servisinden yenilenir (ulaşılamazsa
   // eskisiyle sürer; kapıcı süresi dolunca kendisi kapatır).
   const belirtecYasi = zarf => {
     try {
@@ -144,7 +144,8 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
   async function kayitGonder({ ekCihazlar = [], zorla = false } = {}) {
     await hazirla();
     const ilk = license?.tokenEnvelope?.() || null;
-    if (ilk && belirtecYasi(ilk) >= KAPI_KURALLARI.lisansYenileMs) await license.check?.().catch(() => null);
+    // 50 dk: kapıcının 1 saatlik sınırına 10 dk pay; etkin ofiste saatte en çok bir lisans sorgusu (lisans servisine yük bindirmez).
+    if (ilk && belirtecYasi(ilk) >= KAPI_KURALLARI.lisansTazeMs - 10 * 60_000) await license.check?.().catch(() => null);
     const lisans = license?.tokenEnvelope?.() || null;
     if (!lisans) return { ok: false, code: "lisans-yok", error: "Lisans belirteci yok." };
     const liste = [...cihazlar().map(d => ({ id: d.id, anahtar: d.publicKey })), ...ekCihazlar];

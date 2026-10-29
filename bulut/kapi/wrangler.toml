@@ -1,0 +1,25 @@
+# DestekOfis mobil kapıcı — Cloudflare Worker yapılandırması (2.4.7 M3; docs/mobil/M3-TASARIM.md §5, dağıtım adımları teslim raporunda).
+# GİZLİ DEĞER YOK: KAPI_LISANS_ANAHTARI `wrangler secret put KAPI_LISANS_ANAHTARI` ile verilir (lisans servisinin Vercel ortam değişkeniyle aynı değer).
+# account_id: CLOUDFLARE_ACCOUNT_ID ortam değişkeninden (dosyaya yazılmaz).
+name = "destekofis-kapi"
+main = "kapi.mjs"
+compatibility_date = "2026-10-01"
+workers_dev = false
+
+# kapi. = programın yükleme uçları; m. = karşılama; *.destekofis.net = ofislerin telefon adresi (<ofis>.destekofis.net; DNS kaydını M4 açar, turuncu bulut).
+# Kök ad ve www Vercel'de ve DNS only (gri bulut) olduğundan bu rotaya girmez.
+routes = [
+  { pattern = "kapi.destekofis.net", custom_domain = true },
+  { pattern = "m.destekofis.net", custom_domain = true },
+  { pattern = "*.destekofis.net/*", zone_name = "destekofis.net" },
+]
+
+[[r2_buckets]]
+binding = "OZET"
+bucket_name = "destekofis-ozet"
+
+[vars]
+OFIS_ALANI = "destekofis.net"
+LISANS_URL = "https://destek-ofis.vercel.app/api/lisans"
+# server/lib/license-keys.mjs TRUSTED_LICENSE_KEYS ile aynı (test/kapi-247.test.mjs denetler).
+LISANS_ANAHTARLARI = '{"destekofis-lisans-2026-1":"MCowBQYDK2VwAyEAZRdIMB11WVitpkoOEgCZDF/ULwhcsQ2mUuv9fl8Td7c="}'

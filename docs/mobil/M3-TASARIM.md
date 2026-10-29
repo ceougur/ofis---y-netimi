@@ -6,8 +6,10 @@ başına elle iş YOK; kota dolmaz; Cloudflare Access YOK; mobil herkese, Pro ki
 (özellikle P9, P10); `docs/mobil/M2-TASARIM.md`; bağımsız kâhin `test/bagimsiz/mobil-erisim/`. Para kuralı YOK.
 
 Kod: `server/lib/kapi-protokol.mjs` (ortak, saf WebCrypto), `server/lib/mobile-ozet.mjs` (şifreleme, ofis anahtarı, kapıcı istemcisi),
-`server/lib/mobile-sync.mjs` (özet üretici, tetikler, yükleyici), `bulut/kapi/kapi.mjs` (Worker), `client/mobil/app.js` (telefon; çevrimdışı katman),
-göç v39 (`mobile_devices.enc_key`). Testler: `test/kapi-247.test.mjs`, `test/mobil-ozet-247.test.mjs`, `test/e2e/senaryo-mobil-ozet-247.mjs`, kâhin sürücüsü.
+`server/lib/mobile-sync.mjs` (özet üretici, tetikler, yükleyici, M2 kapısına bağlantı), `bulut/kapi/kapi.mjs` + `wrangler.toml` (Worker),
+`client/mobil/ozet.js` + `ozet.css` (telefon; çevrimdışı katman — `app.js`'te yalnız bağlantı satırları), göç v39 (`mobile_devices.enc_key`). Testler:
+`test/kapi-247.test.mjs`, `test/mobil-ozet-247.test.mjs`, `test/e2e/senaryo-mobil-ozet-247.mjs`, `test/kapi-247-mutasyon.py`, kâhin sürücüsü eki
+`test/bagimsiz/mobil-erisim/m3-surucu.mjs`.
 
 ## 1. Adresler
 
@@ -89,7 +91,8 @@ evrensel sertifikası `*.destekofis.net`'i kapsar (ek ücret yok). `m.` kalır: 
 
 ## 6. Telefon (client/mobil — M1 arayüzünün AYNISI)
 
-- Ayrı kopya yok: sayfa dosyaları programdan, tünel üzerinden gelir; service worker kabuğu önbelleğe alır (kapıcı 503 verince de önbellekten açar).
+- Ayrı kopya ve derleme YOK: sayfa dosyaları programdan (`client/mobil/`), tünel üzerinden gelir; service worker kabuğu önbelleğe alır (kapıcı 503
+  verince de önbellekten açar). Böylece telefon sayfası programla aynı güncellemeyle değişir; Cloudflare'e sayfa yüklenmez (yalnız Worker).
 - Oturum sürerken sunucuya ulaşılamazsa sayfa kendiliğinden son özete geçer; açılışta sunucu yoksa giriş ekranında "Son Özeti Göster". Üstte şerit:
   "Ofis sunucusuna ulaşılamıyor. Son güncelleme: … — bilgiler salt okunurdur"; üst çubukta "Son Güncelleme …". Yenile (↻) önce canlıyı dener.
 - Kayıt yok (mobil zaten salt okunur; M5'e kadar). Raporlar ve PDF/Excel çevrimdışı kapalı (gerekçeli ileti).

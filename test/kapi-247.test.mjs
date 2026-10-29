@@ -423,4 +423,18 @@ describe("M3 kapıcı — yol kuralı programla aynı (M2 lib/mobile-remote.mjs 
   });
 });
 
+describe("M3 kapıcı — dağıtım yapılandırması (bulut/kapi/wrangler.toml)", () => {
+  it("lisans açık anahtarları programınkiyle aynı; gizli değer dosyada yok; R2 bağlaması OZET; ofis alanı destekofis.net", async () => {
+    const { readFileSync } = await import("node:fs");
+    const { TRUSTED_LICENSE_KEYS } = await import("../server/lib/license-keys.mjs");
+    const toml = readFileSync(new URL("../bulut/kapi/wrangler.toml", import.meta.url), "utf8");
+    const keys = JSON.parse(/^LISANS_ANAHTARLARI = '(.+)'$/m.exec(toml)[1]);
+    assert.deepEqual(keys, { ...TRUSTED_LICENSE_KEYS }, "Worker'ın güvendiği lisans anahtarları programınkiyle aynı olmalı");
+    assert.match(toml, /binding = "OZET"/);
+    assert.match(toml, /^OFIS_ALANI = "destekofis\.net"$/m);
+    assert.doesNotMatch(toml, /^KAPI_LISANS_ANAHTARI\s*=/m, "gizli değer dosyaya yazılmaz (wrangler secret put)");
+    assert.doesNotMatch(toml, /account_id\s*=/, "hesap numarası dosyada değil");
+  });
+});
+
 void rastgeleOfis;

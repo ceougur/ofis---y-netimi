@@ -1,0 +1,108 @@
+{
+  "ad": "m3-247-kirmizi-eski-baglantisiz",
+  "komut": "bash /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247/eski-kos.sh",
+  "commit": "bd349a0bc1531bdf593cdca80763e500846616d4",
+  "dal": "worktree-agent-ac46b04d7acbf9624",
+  "kirli": 1,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T07:07:18.624Z",
+  "sure_sn": 3.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 35,
+    "gecen": 23,
+    "basarisiz": 4,
+    "iptal": 8,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 8 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "M3 program: ofis kimliği, eşlemede şifreleme anahtarı, telefon adresi › ofis kimliği DNS etiketi; açılışta kapıcıya kayıt; karekod ofisin telefon adresini taşır; kimlik geri yüklemede canlıdan kalan ayarda",
+      "konum": "test/mobil-ozet-247.test.mjs:117:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "M3 program: ofis kimliği, eşlemede şifreleme anahtarı, telefon adresi › eşleme şifreleme anahtarını (ECDH) saklar ve yanıtta ofisin imza anahtarını verir; gizli bileşenli anahtar reddedilir",
+      "konum": "test/mobil-ozet-247.test.mjs:132:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "M3 program: ofis kimliği, eşlemede şifreleme anahtarı, telefon adresi",
+      "konum": "test/mobil-ozet-247.test.mjs:110:1",
+      "hata": "programda mobil özet yükleyicisi (app.mobileSync) yok"
+    },
+    {
+      "ad": "M3 program: özet kullanıcıya göre süzülür (K23), şifreli, cihaz silinince açılamaz › yönetici: iki şirket, Anlık Durum dahil; saha personeli: yalnız 001'in Cari bölümü — 002 ve yetkisiz bölümler özete HİÇ girmez",
+      "konum": "test/mobil-ozet-247.test.mjs:174:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "M3 program: özet kullanıcıya göre süzülür (K23), şifreli, cihaz silinince açılamaz › buluttaki nesne şifreli: cari adı, şirket adı, tutar düz metin olarak yok; sahanın cihazı yöneticinin bölümünü açamaz",
+      "konum": "test/mobil-ozet-247.test.mjs:189:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "M3 program: özet kullanıcıya göre süzülür (K23), şifreli, cihaz silinince açılamaz › yetki değişikliği HEMEN yansır: 002 erişimi verilince özette 002 görünür, kaldırılınca bir sonraki (otomatik) özette yok",
+      "konum": "test/mobil-ozet-247.test.mjs:198:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "M3 program: özet kullanıcıya göre süzülür (K23), şifreli, cihaz silinince açılamaz › silinen cihaz: kapıcı reddeder; elde kalan eski erişimle yeni özet indirilse bile çözülemez (anahtar yenilendi)",
+      "konum": "test/mobil-ozet-247.test.mjs:210:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "M3 program: özet kullanıcıya göre süzülür (K23), şifreli, cihaz silinince açılamaz",
+      "konum": "test/mobil-ozet-247.test.mjs:148:1",
+      "hata": "programda mobil özet yükleyicisi (app.mobileSync) yok"
+    },
+    {
+      "ad": "M3 program: yükleme tetikleri (Eylül: 15 dk / 10 dk hareketsizlik / günde 20; güvenlik hemen; kapanışta son hâl) › veri: 10 dk hareketsizlikte yüklenir; sürekli değişiklikte en geç 15 dk; iki veri yüklemesi arası ≥ 15 dk; günde en çok 20, İstanbul gün dönümünde sıfırlanır",
+      "konum": "test/mobil-ozet-247.test.mjs:237:3",
+      "hata": "programda mobil özet yükleyicisi (app.mobileSync) yok"
+    },
+    {
+      "ad": "M3 program: yükleme tetikleri (Eylül: 15 dk / 10 dk hareketsizlik / günde 20; güvenlik hemen; kapanışta son hâl) › güvenlik değişikliği 20 sınırını beklemez; program kapanırken bekleyen değişiklik son hâl olarak yüklenir; sonra telefon canlıda 'ofis kapalı', özette son hâl",
+      "konum": "test/mobil-ozet-247.test.mjs:288:3",
+      "hata": "programda mobil özet yükleyicisi (app.mobileSync) yok"
+    },
+    {
+      "ad": "M3 program: kapıcı açıkken uzak istek kapıcının işaretini taşımalı; lisans geçersizse yüklenmez › tünele kapıcıyı atlatıp doğrudan gelen (işaretsiz ya da başka cihazın işaretli) istek reddedilir (remote-kapi)",
+      "konum": "test/mobil-ozet-247.test.mjs:318:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "M3 program: kapıcı açıkken uzak istek kapıcının işaretini taşımalı; lisans geçersizse yüklenmez › lisans engellenince program özet yüklemez; kapıcıya engelli belirteç bildirilir ve telefonun okuması hemen kapanır (K14)",
+      "konum": "test/mobil-ozet-247.test.mjs:328:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "M3 program: kapıcı açıkken uzak istek kapıcının işaretini taşımalı; lisans geçersizse yüklenmez",
+      "konum": "test/mobil-ozet-247.test.mjs:309:1",
+      "hata": "programda mobil özet yükleyicisi (app.mobileSync) yok"
+    },
+    {
+      "ad": "M3: yapılandırma ve kaynak uyumu › kapıcı yalnız üretim girişiyle (mobileKapi) açılır; lisans servisi ortam değişkeniyle değiştirilmişse kapalı kalır (ders 30)",
+      "konum": "test/mobil-ozet-247.test.mjs:340:3",
+      "hata": "createApp varsayılanı kapalı · undefined !== ''"
+    },
+    {
+      "ad": "M3: yapılandırma ve kaynak uyumu › telefon (client/mobil/ozet.js) imza ve şifreleme bağlam metinlerini protokolle aynı kurar",
+      "konum": "test/mobil-ozet-247.test.mjs:349:3",
+      "hata": "ENOENT: no such file or directory, open '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/client/mobil/ozet.js'"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-29/m3-247-kirmizi-eski-baglantisiz.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac46b04d7acbf9624",
+  "ham_cikti_sha256": "f5fec0af389573be92c80cb55b5ad25ff16e25fd55185675cc6630417e0f8f93",
+  "ham_cikti_bayt": 24053
+}
