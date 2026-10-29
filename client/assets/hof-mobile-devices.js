@@ -58,6 +58,7 @@
   }
 
   async function load() {
+    HOF.mobileTunnel?.load();
     try {
       view = await HOF.api("/api/admin/mobile/devices");
       render();

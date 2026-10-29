@@ -70,6 +70,7 @@
     "test:senaryo-mobil-ozet-247": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-mobil-ozet-247.mjs",
     "test:senaryo-mobil-yazma-247": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-mobil-yazma-247.mjs",
     "test:kahin-mobil-yazma": "node --disable-warning=ExperimentalWarning test/bagimsiz/mobil-yazma/program-surucu.mjs",
+    "test:senaryo-mobil-tunel-247": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-mobil-tunel-247.mjs",
     "test:senaryo-kayit-bag-31e": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-kayit-bag-31e.mjs",
     "test:senaryo-pil-karti-245": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-pil-karti-245.mjs",
     "test:senaryo-serit-sira-245": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-serit-sira-245.mjs",

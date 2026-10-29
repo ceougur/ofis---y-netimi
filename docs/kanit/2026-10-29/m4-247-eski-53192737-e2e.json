@@ -1,0 +1,53 @@
+{
+  "ad": "m4-247-eski-53192737-e2e",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/e2e/senaryo-mobil-tunel-247.mjs",
+  "commit": "09175ccd3981b6cb8aaaaa526e7dbfed20a0ba1b",
+  "dal": "worktree-agent-a6890bef3afee1413",
+  "kirli": 1,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T07:03:35.478Z",
+  "sure_sn": 65.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 5,
+    "gecen": 1,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-29/m4-247-eski-53192737-e2e.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6890bef3afee1413",
+  "ham_cikti_sha256": "17e346ac2602056a55b678cb46e51a86dc7cda96170c3ae9bcff079e5f59b8e6",
+  "ham_cikti_bayt": 693
+}

@@ -1,0 +1,15 @@
+
+■ T1 kimse uzaktan bağlanamazken: Uzaktan Bağlantı Kapalı, neden yazılı
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.
+
+■ T2 Uzaktan Bağlanabilir işaretlenir → ofis adresi hazırlanır, durum yine Kapalı
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.
+
+■ T3 Karekod Oluştur → karekod tünel adresini taşır; satır kendiliğinden Bağlı
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.
+
+■ T4 lisans salt okunur → Kapalı (neden: lisans); dönünce Bağlı
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.
+  ✓ sayfa hatası yok (—)
+
+1 geçti, 4 kaldı

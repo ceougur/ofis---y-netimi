@@ -1,0 +1,299 @@
+TAP version 13
+# Subtest: M4 kapıcı tünel bölümü — sahte Cloudflare API
+    # Subtest: ilk açılış tüneli + DNS'i OLUŞTURUR, ikinci açılış YENİDEN KULLANIR (yeni tünel/DNS yok); ad tek düzeyli ve bilgisayar kimliğini göstermez
+    ok 1 - ilk açılış tüneli + DNS'i OLUŞTURUR, ikinci açılış YENİDEN KULLANIR (yeni tünel/DNS yok); ad tek düzeyli ve bilgisayar kimliğini göstermez
+      ---
+      duration_ms: 62.860504
+      type: 'test'
+      ...
+    # Subtest: lisans geçersiz → ret ve Cloudflare'e HİÇ çağrı yok: imzasız/yabancı anahtar, süresi dolmuş, engelli, başlamamış, 8 günden eski, deneme bitmiş
+    ok 2 - lisans geçersiz → ret ve Cloudflare'e HİÇ çağrı yok: imzasız/yabancı anahtar, süresi dolmuş, engelli, başlamamış, 8 günden eski, deneme bitmiş
+      ---
+      duration_ms: 26.573291
+      type: 'test'
+      ...
+    # Subtest: başka ofisin tüneli → ret: istekteki bilgisayar kimliği lisansınkiyle aynı değil (403 tunnel-machine)
+    ok 3 - başka ofisin tüneli → ret: istekteki bilgisayar kimliği lisansınkiyle aynı değil (403 tunnel-machine)
+      ---
+      duration_ms: 14.37224
+      type: 'test'
+      ...
+    # Subtest: sızmış lisans zarfı (internetsiz etkinleştirme kodu) BAŞKA program anahtarıyla tüneli alamaz: 409 tunnel-key; operatör bağı kaldırınca yeni kurulum alır
+    ok 4 - sızmış lisans zarfı (internetsiz etkinleştirme kodu) BAŞKA program anahtarıyla tüneli alamaz: 409 tunnel-key; operatör bağı kaldırınca yeni kurulum alır
+      ---
+      duration_ms: 13.708325
+      type: 'test'
+      ...
+    # Subtest: imza ve zaman: imza bozuk → 401 tunnel-signature; saat 5 dk'dan çok kaymış → 401; biçim → 400
+    ok 5 - imza ve zaman: imza bozuk → 401 tunnel-signature; saat 5 dk'dan çok kaymış → 401; biçim → 400
+      ---
+      duration_ms: 6.679639
+      type: 'test'
+      ...
+    # Subtest: DNS kaydı yanlış hedefte (ör. elle değiştirilmiş) → tünelin adresine düzeltilir (PATCH), yeni kayıt açılmaz
+    ok 6 - DNS kaydı yanlış hedefte (ör. elle değiştirilmiş) → tünelin adresine düzeltilir (PATCH), yeni kayıt açılmaz
+      ---
+      duration_ms: 5.798132
+      type: 'test'
+      ...
+    # Subtest: eşzamanlı ilk başvuru (oluşturma 'ad var' ile düşer) → var olan tünel bulunup kullanılır
+    ok 7 - eşzamanlı ilk başvuru (oluşturma 'ad var' ile düşer) → var olan tünel bulunup kullanılır
+      ---
+      duration_ms: 16.364291
+      type: 'test'
+      ...
+    # Subtest: yanıt ve KV kaydı Cloudflare HESAP belirtecini içermez; programın anahtarı ayarda mühürlü değilse bile ÖZEL anahtar kapıcıya gitmez
+    ok 8 - yanıt ve KV kaydı Cloudflare HESAP belirtecini içermez; programın anahtarı ayarda mühürlü değilse bile ÖZEL anahtar kapıcıya gitmez
+      ---
+      duration_ms: 5.74932
+      type: 'test'
+      ...
+    # Subtest: lisans doğrulayıcı (WebCrypto) program doğrulayıcısıyla aynı zarfı kabul eder; iddia alanları korunur
+    ok 9 - lisans doğrulayıcı (WebCrypto) program doğrulayıcısıyla aynı zarfı kabul eder; iddia alanları korunur
+      ---
+      duration_ms: 1.648929
+      type: 'test'
+      ...
+    1..9
+ok 1 - M4 kapıcı tünel bölümü — sahte Cloudflare API
+  ---
+  duration_ms: 156.243053
+  type: 'suite'
+  ...
+# Subtest: M4 indirici: yalnız özeti kodda sabit dosya çalıştırılabilir yerde durur
+    # Subtest: doğru özet → indirilir, bayt bayt aynı; ikinci çağrı indirmez (özet yeniden denetlenir)
+    ok 1 - doğru özet → indirilir, bayt bayt aynı; ikinci çağrı indirmez (özet yeniden denetlenir)
+      ---
+      duration_ms: 38.949105
+      type: 'test'
+      ...
+    # Subtest: yanlış özet → dosya silinir, TunnelError(hash), çalıştırılabilir dosya YOK
+    ok 2 - yanlış özet → dosya silinir, TunnelError(hash), çalıştırılabilir dosya YOK
+      ---
+      duration_ms: 9.69681
+      type: 'test'
+      ...
+    # Subtest: yarım indirme (bağlantı koptu) → TunnelError(network), .part silinir; sonraki deneme baştan, başarılı
+    ok 3 - yarım indirme (bağlantı koptu) → TunnelError(network), .part silinir; sonraki deneme baştan, başarılı
+      ---
+      duration_ms: 36.943132
+      type: 'test'
+      ...
+    # Subtest: ağ yok / HTTP 500 → TunnelError(network); dosya yok
+    ok 4 - ağ yok / HTTP 500 → TunnelError(network); dosya yok
+      ---
+      duration_ms: 2.558544
+      type: 'test'
+      ...
+    # Subtest: diskte değiştirilmiş dosya çalıştırılmaz: özet tutmaz → silinir, yeniden indirilir
+    ok 5 - diskte değiştirilmiş dosya çalıştırılmaz: özet tutmaz → silinir, yeniden indirilir
+      ---
+      duration_ms: 12.433183
+      type: 'test'
+      ...
+    # Subtest: boyut sınırı: beklenenden büyük yanıt indirilmez (TunnelError size)
+    ok 6 - boyut sınırı: beklenenden büyük yanıt indirilmez (TunnelError size)
+      ---
+      duration_ms: 3.061552
+      type: 'test'
+      ...
+    # Subtest: eski sürüm klasörü (yalnız yıl.ay.yama adlı) temizlenir; başka dosyaya dokunulmaz
+    ok 7 - eski sürüm klasörü (yalnız yıl.ay.yama adlı) temizlenir; başka dosyaya dokunulmaz
+      ---
+      duration_ms: 12.112464
+      type: 'test'
+      ...
+    # Subtest: özet sabitlenmemiş tanım indirilmez bile (TunnelError unpinned; ağ kullanılmaz)
+    ok 8 - özet sabitlenmemiş tanım indirilmez bile (TunnelError unpinned; ağ kullanılmaz)
+      ---
+      duration_ms: 0.691076
+      type: 'test'
+      ...
+    1..8
+ok 2 - M4 indirici: yalnız özeti kodda sabit dosya çalıştırılabilir yerde durur
+  ---
+  duration_ms: 126.180294
+  type: 'suite'
+  ...
+# Subtest: M4 sabit sürüm tanımı (release.mjs)
+    # Subtest: Windows amd64 ve Linux amd64 tanımlı; adres Cloudflare'in kendi yayını ve sürüm sabit; özet ya boş ya 64 onaltılık
+    ok 1 - Windows amd64 ve Linux amd64 tanımlı; adres Cloudflare'in kendi yayını ve sürüm sabit; özet ya boş ya 64 onaltılık
+      ---
+      duration_ms: 0.632329
+      type: 'test'
+      ...
+    # Subtest: assetFor: desteklenmeyen platform → platform; özetsiz → unpinned; özetli → tanım
+    ok 2 - assetFor: desteklenmeyen platform → platform; özetsiz → unpinned; özetli → tanım
+      ---
+      duration_ms: 0.565384
+      type: 'test'
+      ...
+    1..2
+ok 3 - M4 sabit sürüm tanımı (release.mjs)
+  ---
+  duration_ms: 1.5133
+  type: 'suite'
+  ...
+# Subtest: M4 süreç denetçisi
+    # Subtest: başlat → çıktı satırı okunur, belirteç ortam değişkeniyle gider (komut satırında yok); durdur → süreç ve kimlik dosyası gider
+    ok 1 - başlat → çıktı satırı okunur, belirteç ortam değişkeniyle gider (komut satırında yok); durdur → süreç ve kimlik dosyası gider
+      ---
+      duration_ms: 484.386607
+      type: 'test'
+      ...
+    # Subtest: çöken bağlayıcı artan beklemeyle yeniden başlatılır (sabit hızlı döngü yok); durdurunca döngü biter
+    ok 2 - çöken bağlayıcı artan beklemeyle yeniden başlatılır (sabit hızlı döngü yok); durdurunca döngü biter
+      ---
+      duration_ms: 2741.210964
+      type: 'test'
+      ...
+    # Subtest: durdurma süreç AĞACINI kapatır (torun süreç kalmaz)
+    ok 3 - durdurma süreç AĞACINI kapatır (torun süreç kalmaz)
+      ---
+      duration_ms: 1299.278663
+      type: 'test'
+      ...
+    # Subtest: yetim temizliği: program sert öldürüldü (stop çağrılmadı) → sonraki açılış eski bağlayıcıyı kapatır
+    ok 4 - yetim temizliği: program sert öldürüldü (stop çağrılmadı) → sonraki açılış eski bağlayıcıyı kapatır
+      ---
+      duration_ms: 181.885118
+      type: 'test'
+      ...
+    # Subtest: yetim temizliği başka programın sürecine dokunmaz (pid yeniden kullanılmış: komut satırı bizim ikili değil)
+    ok 5 - yetim temizliği başka programın sürecine dokunmaz (pid yeniden kullanılmış: komut satırı bizim ikili değil)
+      ---
+      duration_ms: 304.189242
+      type: 'test'
+      ...
+    1..5
+ok 4 - M4 süreç denetçisi
+  ---
+  duration_ms: 5018.422455
+  type: 'suite'
+  ...
+# Subtest: M4 tünel yapılandırması
+    # Subtest: tek kural: ofis adı → http://127.0.0.1:<uzak port>, Host ofis adı; sonra 404
+    ok 1 - tek kural: ofis adı → http://127.0.0.1:<uzak port>, Host ofis adı; sonra 404
+      ---
+      duration_ms: 1.478431
+      type: 'test'
+      ...
+    # Subtest: ana port (ofis ağı) asla: uzak port ana porta eşitse yapılandırma kurulmaz
+    ok 2 - ana port (ofis ağı) asla: uzak port ana porta eşitse yapılandırma kurulmaz
+      ---
+      duration_ms: 0.853308
+      type: 'test'
+      ...
+    # Subtest: bozuk girdiler reddedilir: ad, tünel kimliği, port
+    ok 3 - bozuk girdiler reddedilir: ad, tünel kimliği, port
+      ---
+      duration_ms: 0.484048
+      type: 'test'
+      ...
+    # Subtest: elle bozulmuş yapılandırma (ek kural, başka hizmet, 0.0.0.0, son kural 404 değil) açılış öncesi denetimde reddedilir
+    ok 4 - elle bozulmuş yapılandırma (ek kural, başka hizmet, 0.0.0.0, son kural 404 değil) açılış öncesi denetimde reddedilir
+      ---
+      duration_ms: 0.338699
+      type: 'test'
+      ...
+    # Subtest: komut satırı: kendiliğinden güncelleme kapalı, belirteç YOK (ortam değişkeninde), ölçüm yalnız yerel döngüde
+    ok 5 - komut satırı: kendiliğinden güncelleme kapalı, belirteç YOK (ortam değişkeninde), ölçüm yalnız yerel döngüde
+      ---
+      duration_ms: 0.250889
+      type: 'test'
+      ...
+    1..5
+ok 5 - M4 tünel yapılandırması
+  ---
+  duration_ms: 4.798972
+  type: 'suite'
+  ...
+# Subtest: M4 tünel yöneticisi — gerçek program, sahte kapıcı ve sahte cloudflared
+    # Subtest: 1. kimse uzaktan bağlanamazken: tünel Kapalı (Eşli cihaz yok), kapıcıya başvurulmaz, süreç yok
+    ok 1 - 1. kimse uzaktan bağlanamazken: tünel Kapalı (Eşli cihaz yok), kapıcıya başvurulmaz, süreç yok
+      ---
+      duration_ms: 404.239694
+      type: 'test'
+      ...
+    # Subtest: 2. Uzaktan Bağlanabilir işaretlenince adres önceden hazırlanır (kapıcıya bir başvuru), süreç YİNE başlamaz
+    ok 2 - 2. Uzaktan Bağlanabilir işaretlenince adres önceden hazırlanır (kapıcıya bir başvuru), süreç YİNE başlamaz
+      ---
+      duration_ms: 353.792659
+      type: 'test'
+      ...
+    # Subtest: 3. karekod oluşturulunca tünel kendiliğinden açılır → Bağlı; yapılandırma YALNIZ uzak dinleyiciye bağlı, ana port asla
+    ok 3 - 3. karekod oluşturulunca tünel kendiliğinden açılır → Bağlı; yapılandırma YALNIZ uzak dinleyiciye bağlı, ana port asla
+      ---
+      duration_ms: 148.472552
+      type: 'test'
+      ...
+    # Subtest: 4. tünelden giren istek uzak kapıdan geçer: /mobil/ açık, programın öbür uçları 404 (remote-path); eşleme çerezi Secure
+    ok 4 - 4. tünelden giren istek uzak kapıdan geçer: /mobil/ açık, programın öbür uçları 404 (remote-path); eşleme çerezi Secure
+      ---
+      duration_ms: 89.722417
+      type: 'test'
+      ...
+    # Subtest: 5. cihaz silinince (bekleyen karekod da yok) tünel kapanır, süreç gider; yeni karekodla yeniden açılır
+    ok 5 - 5. cihaz silinince (bekleyen karekod da yok) tünel kapanır, süreç gider; yeni karekodla yeniden açılır
+      ---
+      duration_ms: 319.197064
+      type: 'test'
+      ...
+    # Subtest: 6. lisans salt okunur olunca tünel kapanır (neden: lisans); lisans dönünce yeniden açılır
+    ok 6 - 6. lisans salt okunur olunca tünel kapanır (neden: lisans); lisans dönünce yeniden açılır
+      ---
+      duration_ms: 262.634534
+      type: 'test'
+      ...
+    # Subtest: 7. bağlayıcı çökerse yeniden başlatılır (Bağlanıyor → Bağlı)
+    ok 7 - 7. bağlayıcı çökerse yeniden başlatılır (Bağlanıyor → Bağlı)
+      ---
+      duration_ms: 1142.862918
+      type: 'test'
+      ...
+    # Subtest: 8. durum ucu yalnız yöneticiye açık; belirteç / yerel port dönmez
+    ok 8 - 8. durum ucu yalnız yöneticiye açık; belirteç / yerel port dönmez
+      ---
+      duration_ms: 118.892443
+      type: 'test'
+      ...
+    # Subtest: 9. program kapanınca bağlayıcı yetim kalmaz (süreç ve kimlik dosyası gider)
+    ok 9 - 9. program kapanınca bağlayıcı yetim kalmaz (süreç ve kimlik dosyası gider)
+      ---
+      duration_ms: 115.810179
+      type: 'test'
+      ...
+    1..9
+ok 6 - M4 tünel yöneticisi — gerçek program, sahte kapıcı ve sahte cloudflared
+  ---
+  duration_ms: 3433.361656
+  type: 'suite'
+  ...
+# Subtest: M4 tünel yöneticisi — doğrulanamayan dosya ve test kurulumu
+    # Subtest: indirilen dosyanın özeti tutmazsa süreç HİÇ başlamaz, kapıcıya başvurulmaz; durum Kapalı + neden
+    ok 1 - indirilen dosyanın özeti tutmazsa süreç HİÇ başlamaz, kapıcıya başvurulmaz; durum Kapalı + neden
+      ---
+      duration_ms: 468.315988
+      type: 'test'
+      ...
+    # Subtest: test kurulumu (lisans adresi yerel döngü, kapıcı adresi verilmemiş) gerçek kapıcıya ASLA gitmez (ders 30): tünel 'bu kurulumda kapalı'
+    ok 2 - test kurulumu (lisans adresi yerel döngü, kapıcı adresi verilmemiş) gerçek kapıcıya ASLA gitmez (ders 30): tünel 'bu kurulumda kapalı'
+      ---
+      duration_ms: 906.184537
+      type: 'test'
+      ...
+    1..2
+ok 7 - M4 tünel yöneticisi — doğrulanamayan dosya ve test kurulumu
+  ---
+  duration_ms: 1374.985233
+  type: 'suite'
+  ...
+1..7
+# tests 40
+# suites 7
+# pass 40
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17807.968864

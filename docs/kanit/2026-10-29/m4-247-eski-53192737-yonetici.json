@@ -1,0 +1,88 @@
+{
+  "ad": "m4-247-eski-53192737-yonetici",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs",
+  "commit": "09175ccd3981b6cb8aaaaa526e7dbfed20a0ba1b",
+  "dal": "worktree-agent-a6890bef3afee1413",
+  "kirli": 1,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T07:03:22.166Z",
+  "sure_sn": 13.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 0,
+    "basarisiz": 11,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 11 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "M4 tünel yöneticisi — gerçek program, sahte kapıcı ve sahte cloudflared › 1. kimse uzaktan bağlanamazken: tünel Kapalı (Eşli cihaz yok), kapıcıya başvurulmaz, süreç yok",
+      "konum": "test/tunel-yonetici-247.test.mjs:84:3",
+      "hata": "tünel durum ucu yanıtı (HTTP 404) — tünel yöneticisi yok mu? · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "M4 tünel yöneticisi — gerçek program, sahte kapıcı ve sahte cloudflared › 2. Uzaktan Bağlanabilir işaretlenince adres önceden hazırlanır (kapıcıya bir başvuru), süreç YİNE başlamaz",
+      "konum": "test/tunel-yonetici-247.test.mjs:94:3",
+      "hata": "kapıcı başvurusu 10000 ms içinde sağlanmadı"
+    },
+    {
+      "ad": "M4 tünel yöneticisi — gerçek program, sahte kapıcı ve sahte cloudflared › 3. karekod oluşturulunca tünel kendiliğinden açılır → Bağlı; yapılandırma YALNIZ uzak dinleyiciye bağlı, ana port asla",
+      "konum": "test/tunel-yonetici-247.test.mjs:106:3",
+      "hata": "testCodeFailure (beklenen true, gelen false)"
+    },
+    {
+      "ad": "M4 tünel yöneticisi — gerçek program, sahte kapıcı ve sahte cloudflared › 4. tünelden giren istek uzak kapıdan geçer: /mobil/ açık, programın öbür uçları 404 (remote-path); eşleme çerezi Secure",
+      "konum": "test/tunel-yonetici-247.test.mjs:129:3",
+      "hata": "Cannot read properties of undefined (reading 'port')"
+    },
+    {
+      "ad": "M4 tünel yöneticisi — gerçek program, sahte kapıcı ve sahte cloudflared › 5. cihaz silinince (bekleyen karekod da yok) tünel kapanır, süreç gider; yeni karekodla yeniden açılır",
+      "konum": "test/tunel-yonetici-247.test.mjs:147:3",
+      "hata": "Cannot read properties of undefined (reading 'pid')"
+    },
+    {
+      "ad": "M4 tünel yöneticisi — gerçek program, sahte kapıcı ve sahte cloudflared › 6. lisans salt okunur olunca tünel kapanır (neden: lisans); lisans dönünce yeniden açılır",
+      "konum": "test/tunel-yonetici-247.test.mjs:162:3",
+      "hata": "Cannot read properties of undefined (reading 'pid')"
+    },
+    {
+      "ad": "M4 tünel yöneticisi — gerçek program, sahte kapıcı ve sahte cloudflared › 7. bağlayıcı çökerse yeniden başlatılır (Bağlanıyor → Bağlı)",
+      "konum": "test/tunel-yonetici-247.test.mjs:176:3",
+      "hata": "Cannot read properties of undefined (reading 'pid')"
+    },
+    {
+      "ad": "M4 tünel yöneticisi — gerçek program, sahte kapıcı ve sahte cloudflared › 8. durum ucu yalnız yöneticiye açık; belirteç / yerel port dönmez",
+      "konum": "test/tunel-yonetici-247.test.mjs:183:3",
+      "hata": "Expected values to be strictly equal: · 404 !== 403 (beklenen 403, gelen 404)"
+    },
+    {
+      "ad": "M4 tünel yöneticisi — gerçek program, sahte kapıcı ve sahte cloudflared › 9. program kapanınca bağlayıcı yetim kalmaz (süreç ve kimlik dosyası gider)",
+      "konum": "test/tunel-yonetici-247.test.mjs:194:3",
+      "hata": "Cannot read properties of undefined (reading 'pid')"
+    },
+    {
+      "ad": "M4 tünel yöneticisi — doğrulanamayan dosya ve test kurulumu › indirilen dosyanın özeti tutmazsa süreç HİÇ başlamaz, kapıcıya başvurulmaz; durum Kapalı + neden",
+      "konum": "test/tunel-yonetici-247.test.mjs:206:3",
+      "hata": "Cannot read properties of undefined (reading 'reason')"
+    },
+    {
+      "ad": "M4 tünel yöneticisi — doğrulanamayan dosya ve test kurulumu › test kurulumu (lisans adresi yerel döngü, kapıcı adresi verilmemiş) gerçek kapıcıya ASLA gitmez (ders 30): tünel 'bu kurulumda kapalı'",
+      "konum": "test/tunel-yonetici-247.test.mjs:242:3",
+      "hata": "Cannot read properties of undefined (reading 'state')"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-29/m4-247-eski-53192737-yonetici.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6890bef3afee1413",
+  "ham_cikti_sha256": "8a579ebe4a9cfb9d669d78bc0f6feaf03cf415bb04cd2ee990f9418f39aa9a67",
+  "ham_cikti_bayt": 13748
+}

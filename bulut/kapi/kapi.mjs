@@ -31,6 +31,7 @@ import {
   trGunu,
   yolSorunu,
 } from "../../server/lib/kapi-protokol.mjs";
+import { TUNEL_YOLU, tunelIstegi } from "./tunel.mjs"; // 2.4.7 M4: ofis tüneli (ayrı dosya)
 
 const HATA = Object.freeze({
   "kapi-istek": [400, "İstek okunamadı."],
@@ -389,6 +390,8 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
   async function fetchHandler(request, env) {
     const url = new URL(request.url);
     try {
+      // 2.4.7 M4: tünel başvurusu (ofis imzası + lisans P9; Cloudflare hesap belirteci yalnız Worker gizlisinde).
+      if (TUNEL_YOLU.test(url.pathname)) return await tunelIstegi(request, env, { now, lisansGorunumu });
       // Program uçları (her adreste; imzalı).
       const program = /^\/v1\/ofis\/([^/]+)\/(kayit|ozet)$/.exec(url.pathname);
       if (program) {
