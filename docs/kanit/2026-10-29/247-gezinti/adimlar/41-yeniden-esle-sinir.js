@@ -1,0 +1,45 @@
+// (a) Hazırlık (API, masaüstü oturumu): ikinci kullanıcı "saha" (personel), Uzaktan Bağlanabilir.
+// (b) 2 eşli cihaz varken İKİ geçerli karekod üret: A (admin, ekrandan) ve B (saha, API). (c) SİLİNEN telefon3 (aynı tarayıcı) A ile yeniden eşlenir → 3/3, giriş.
+// (d) telefon4 B ile eşlemeye çalışır → beklenen RET (sınır eşleme anında da denetlenir; program + kapıcı); DB'de 3 etkin, kapıcıda 3.
+const u = await api("/api/admin/users", "POST", { username: "saha", name: "Saha Personeli", role: "personel", password: "Saha-Personel-2026!", mustChangePassword: false });
+yaz("(a) kullanıcı", u.status);
+const sahaId = (await api("/api/admin/users")).data.data.find(x => x.username === "saha").id;
+yaz("(a) uzaktan izni", (await api(`/api/admin/mobile/access/${sahaId}`, "PUT", { remote: true })).status);
+await desk.reload();
+const row = `[data-mobile-user="${vars.adminId}"]`;
+await desk.waitForSelector(`${row} [data-mobile-code]`, { timeout: 20000 });
+await bekle(800);
+await desk.click(`${row} [data-mobile-code]`);
+const urlA = await vars.karekodOku(desk);
+await desk.keyboard.press("Escape");
+const codeB = await api("/api/admin/mobile/codes", "POST", { userId: sahaId });
+yaz("(b) karekod A", urlA ? "alındı" : "YOK", "karekod B (API)", codeB.status);
+const p3 = phones.telefon3;
+await p3.goto(urlA);
+await p3.reload();
+await p3.waitForSelector("#pair-form:not(.hidden)", { timeout: 20000 });
+await p3.click("#device-name", { clickCount: 3 });
+await typeSlow(p3, "Saha Telefonu (yeniden)");
+await p3.click("#pair-submit");
+await p3.waitForSelector("#login-form:not(.hidden)", { timeout: 20000 });
+await p3.click("#username", { clickCount: 3 });
+await typeSlow(p3, "admin");
+await p3.keyboard.press("Tab");
+await typeSlow(p3, "Gezinti-Yonetici-2026!");
+await p3.click("#login-submit");
+await p3.waitForSelector("#app:not(.hidden) #content .summary-grid", { timeout: 20000 });
+yaz("(c) telefon3 yeniden eşlendi ve girdi:", (await p3.textContent("#top-server-status")).trim(), "etkin cihaz", hub("SELECT COUNT(*) AS n FROM mobile_devices WHERE revoked_at IS NULL")[0].n, "kapıcı", (kapi.meta(ofisId())?.cihazlar || []).length);
+await p3.screenshot({ path: root + "/ekran/41a-yeniden-eslendi.png", fullPage: true });
+const p4 = await newPhone("telefon4");
+await p4.goto(codeB.data.data.url);
+await p4.waitForSelector("#pair-form:not(.hidden)", { timeout: 20000 });
+await p4.click("#device-name", { clickCount: 3 });
+await typeSlow(p4, "Saha Personeli Telefonu");
+const pr = p4.waitForResponse(r => /\/api\/mobil\/eslesme/.test(r.url()), { timeout: 15000 });
+await p4.click("#pair-submit");
+const r = await pr.catch(() => null);
+yaz("(d) 4. cihaz eşleme yanıtı", r ? r.status() : "yok", r ? (await r.text()).slice(0, 250) : "");
+await bekle(1000);
+yaz("(d) 4. cihaz ekranı", await p4.$eval("body", e => e.innerText.replace(/\s+/g, " ").trim().slice(0, 300)));
+await p4.screenshot({ path: root + "/ekran/41b-dorduncu-ret.png", fullPage: true });
+yaz("SON etkin cihaz", hub("SELECT name FROM mobile_devices WHERE revoked_at IS NULL").map(d => d.name), "kapıcı", (kapi.meta(ofisId())?.cihazlar || []).length);

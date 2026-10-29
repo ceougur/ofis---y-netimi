@@ -1,0 +1,18 @@
+2026-10-29T14:23:00.651Z program açıldı http://127.0.0.1:5247 ofis oivymnex2rdpdcrdy lisans licensed
+2026-10-29T14:27:23.996Z program açıldı http://127.0.0.1:5247 ofis oivymnex2rdpdcrdy lisans licensed
+2026-10-29T14:28:03.466Z asılı söz: page.waitForResponse: Timeout 15000ms exceeded while waiting for event "response"
+2026-10-29T14:32:17.817Z asılı söz: page.waitForResponse: Timeout 20000ms exceeded while waiting for event "response"
+2026-10-29T14:39:34.248Z tünel açık pid 12599 port 40115 → http://127.0.0.1:37901
+2026-10-29T14:42:30.034Z asılı söz: route.fetch: getaddrinfo ENOTFOUND oivymnex2rdpdcrdy.destekofis.test
+2026-10-29T14:44:08.077Z asılı söz: route.fetch: getaddrinfo ENOTFOUND oivymnex2rdpdcrdy.destekofis.test
+2026-10-29T14:46:59.758Z asılı söz: page.waitForResponse: Timeout 15000ms exceeded while waiting for event "response"
+2026-10-29T14:51:42.889Z program kapandı
+2026-10-29T14:51:42.896Z tünel kapalı pid 12599 port 40115 → http://127.0.0.1:37901
+2026-10-29T14:52:21.771Z program açıldı http://127.0.0.1:5247 ofis oivymnex2rdpdcrdy lisans licensed
+2026-10-29T14:52:25.035Z tünel açık pid 15177 port 38163 → http://127.0.0.1:39899
+2026-10-29T14:53:34.997Z program kapandı
+2026-10-29T14:53:35.098Z tünel kapalı pid 15177 port 38163 → http://127.0.0.1:39899
+2026-10-29T14:53:36.191Z program açıldı http://127.0.0.1:5247 ofis oivymnex2rdpdcrdy lisans licensed
+2026-10-29T14:53:39.354Z tünel açık pid 15270 port 45631 → http://127.0.0.1:44551
+2026-10-29T14:55:01.289Z tünel kapalı pid 15270 port 45631 → http://127.0.0.1:44551
+2026-10-29T14:55:14.620Z program kapandı

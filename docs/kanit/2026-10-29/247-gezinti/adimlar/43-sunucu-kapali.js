@@ -1,0 +1,37 @@
+// SUNUCU KAPALI: program kapanır (kapanışta son hâl şifreli özet olarak kapıcıya yüklenir; tünel düşer). Telefonda: dokunuş → şerit "Son güncelleme",
+// sayılar SON hâl (Kasa 2.450, Banka 12.000, cari Ayşe Demir 8.750), cari kartında yazma düğmesi YOK + yazma kapalı iletisi; Raporlar kapalı iletisi;
+// sayfa yeniden açılınca giriş ekranında "Son Özeti Göster" → özet.
+const p = phones.telefon1;
+yaz("kapanmadan önce masaüstü", "Kasa", (await api("/api/workspace/cash")).data.data.totals.balance, "cari", (await api("/api/workspace/accounts")).data.data.accounts.map(a => `${a.name} ${a.balance}`));
+await stopProgram();
+yaz("program kapandı; son yükleme", JSON.stringify(app().mobileSync.status().son)?.slice(0, 200));
+await bekle(1500);
+await p.click('.bottom-nav [data-nav="accounts"]');
+await p.waitForSelector("#offline-banner:not(.hidden)", { timeout: 20000 });
+yaz("şerit", (await p.textContent("#offline-banner")).trim(), "üst durum", (await p.textContent("#top-server-status")).trim());
+await p.waitForSelector("#content .list-item", { timeout: 15000 });
+yaz("çevrimdışı cari listesi", await p.$eval("#content", e => e.innerText.replace(/\s+/g, " ").trim().slice(0, 250)));
+await p.click('#content .list-item:has-text("Ayşe Demir")');
+await p.waitForSelector("[data-detail-balance]");
+await bekle(800);
+yaz("çevrimdışı cari kartı", await p.$eval("#content", e => e.innerText.replace(/\s+/g, " ").trim().slice(0, 500)), "yazma düğmesi sayısı", (await p.$$("#content [data-yazma]")).length);
+await p.screenshot({ path: root + "/ekran/43a-tel-cevrimdisi-cari.png", fullPage: true });
+await p.click('.bottom-nav [data-nav="home"]');
+await p.waitForSelector("#content .summary-grid");
+await bekle(600);
+yaz("çevrimdışı Genel Bakış", await p.$eval("#content", e => e.innerText.replace(/\s+/g, " ").trim().slice(0, 700)));
+await p.screenshot({ path: root + "/ekran/43b-tel-cevrimdisi-genel.png", fullPage: true });
+await p.click('.bottom-nav [data-nav="reports"]');
+await bekle(1200);
+yaz("çevrimdışı Raporlar", await p.$eval("#content", e => e.innerText.replace(/\s+/g, " ").trim().slice(0, 200)));
+await p.click('.bottom-nav [data-nav="stock"]');
+await bekle(1200);
+yaz("çevrimdışı Stok", await p.$eval("#content", e => e.innerText.replace(/\s+/g, " ").trim().slice(0, 200)));
+await p.reload();
+await p.waitForFunction(() => { const v = el => el && el.offsetParent !== null; return v(document.querySelector("#offline-open")); }, null, { timeout: 20000 });
+yaz("yeniden açılış: giriş ekranı notu", await p.$eval("#offline-note", e => e.innerText.replace(/\s+/g, " ").trim()).catch(() => "?"));
+await p.screenshot({ path: root + "/ekran/43c-tel-son-ozeti-goster.png", fullPage: true });
+await p.click("#offline-open");
+await p.waitForSelector("#content .summary-grid", { timeout: 15000 });
+await bekle(600);
+yaz("Son Özeti Göster → özet", await p.$eval("#content", e => e.innerText.replace(/\s+/g, " ").trim().slice(0, 300)));

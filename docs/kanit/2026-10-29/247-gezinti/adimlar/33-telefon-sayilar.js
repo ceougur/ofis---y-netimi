@@ -1,0 +1,26 @@
+// Telefon: alt menüden Cari → Ayşe Demir kartı (bakiye) ; Kasa/Banka ; Stok ; Raporlar. Masaüstü API + DB ile karşılaştır.
+const p = phones.telefon1;
+const tap = async name => { await p.click(`.bottom-nav [data-nav="${name}"]`); await p.waitForSelector("#content .spinning", { state: "detached", timeout: 15000 }).catch(() => null); await bekle(600); };
+const navs = await p.$$eval(".bottom-nav [data-nav]", n => n.map(x => `${x.dataset.nav}:${x.textContent.trim()}`));
+yaz("alt menü", navs);
+await tap("accounts");
+yaz("Cari listesi", await p.$eval("#content", e => e.innerText.replace(/\s+/g, " ").trim().slice(0, 300)));
+await p.click('#content .list-item:has-text("Ayşe Demir")');
+await p.waitForSelector("[data-detail-balance]");
+await bekle(800);
+const telBakiye = (await p.textContent("[data-detail-balance]")).trim();
+await p.screenshot({ path: root + "/ekran/33a-tel-cari.png", fullPage: true });
+yaz("telefon cari kartı", await p.$eval("#content", e => e.innerText.replace(/\s+/g, " ").trim().slice(0, 700)));
+const masa = (await api("/api/workspace/accounts")).data.data.accounts.find(a => a.name === "Ayşe Demir");
+yaz("KARŞILAŞTIRMA cari bakiye: telefon", telBakiye, "masaüstü API", masa.balance, "DB", sql("SELECT SUM(CASE WHEN kind='debt' THEN amount ELSE 0 END) - (SELECT COALESCE(SUM(amount),0) FROM plan_entries WHERE kind='in') AS b FROM account_entries")[0].b);
+yaz("yazma düğmeleri", await p.$$eval("#content [data-yazma]", n => n.map(x => x.dataset.yazma)));
+await tap("money");
+await p.screenshot({ path: root + "/ekran/33b-tel-kasa.png", fullPage: true });
+yaz("telefon kasa/banka", await p.$eval("#content", e => e.innerText.replace(/\s+/g, " ").trim().slice(0, 500)));
+yaz("masaüstü kasa", JSON.stringify((await api("/api/workspace/cash")).data.data.totals), "banka", (await api("/api/workspace/bank/accounts")).data.data.accounts.map(a => a.balanceMinor / 100));
+await tap("stock");
+yaz("telefon stok", await p.$eval("#content", e => e.innerText.replace(/\s+/g, " ").trim().slice(0, 300)));
+await tap("reports");
+await bekle(800);
+await p.screenshot({ path: root + "/ekran/33c-tel-raporlar.png", fullPage: true });
+yaz("telefon raporlar", await p.$eval("#content", e => e.innerText.replace(/\s+/g, " ").trim().slice(0, 500)));
