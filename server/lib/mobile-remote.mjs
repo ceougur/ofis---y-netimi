@@ -9,15 +9,17 @@
 // Kayıtlar ortak katmanda (göç v38: mobile_access, mobile_codes, mobile_devices, mobile_sessions); kod, cihaz sırrı ve oturum belirteci yalnız SHA-256
 // karmasıyla saklanır. Süreler config.remoteNow saatiyle (üretimde gerçek saat).
 import { createHash, createPublicKey, randomBytes, randomUUID, timingSafeEqual, verify as verifySignature } from "node:crypto";
-import { HttpError, REMOTE_REQUEST, REMOTE_SESSION, assertSameOrigin, isRemoteRequest, parseCookies, readJson, send } from "./http.mjs";
+import { HttpError, REMOTE_REQUEST, REMOTE_SESSION, assertSameOrigin, isRemoteRequest, readJson, send } from "./http.mjs";
+import { CIHAZ_CEREZI, OTURUM_CEREZI, cerezCakisiyor, cerezOku, cerezSatiri } from "./mobil-cerez.mjs";
 import { DUMMY_HASH, verifyPassword } from "./passwords.mjs";
 import { qrSvg } from "./qr.mjs";
 
 // P1 karekod 5 dk · P7 uzak oturum boşta 15 dk · P8 en çok 12 saat · P11 uzaktan 5 ardışık yanlış parola · P13 kilit 15 dk (kullanıcı kararları 29.10.2026).
 export const MOBILE_RULES = Object.freeze({ codeMinutes: 5, idleMinutes: 15, maxHours: 12, attempts: 5, lockMinutes: 15, challengeSeconds: 120 });
 export const DEFAULT_DEVICE_LIMIT = 3;
-export const DEVICE_COOKIE = "hof_device";
-export const REMOTE_SESSION_COOKIE = "hof_mobil";
+// Çerez adları ve okuma kuralı kapıcıyla ORTAK (lib/mobil-cerez.mjs; bağımsız gözden geçirme B4): `__Host-` önekli, Secure, Path=/, Domain yok.
+export const DEVICE_COOKIE = CIHAZ_CEREZI;
+export const REMOTE_SESSION_COOKIE = OTURUM_CEREZI;
 export const PAIR_PATH = "/api/mobil/eslesme";
 export const CHALLENGE_PATH = "/api/mobil/session/challenge";
 export const REMOTE_LOGIN_PATH = "/api/mobil/session/login";
@@ -55,6 +57,7 @@ export const REMOTE_ERRORS = Object.freeze({
   "remote-password-change": "Parolanızı önce ofisteki bilgisayardan değiştirin; sonra uzaktan girebilirsiniz.",
   "remote-key": "Cihaz anahtarı tanınmadı. Tarayıcınızı güncelleyip karekodu yeniden okutun.",
   "remote-kapi": "Uzak bağlantı kapıcı üzerinden gelmedi; istek reddedildi.",
+  "remote-cookie": "Tarayıcıda bu adres için çakışan oturum bilgisi var. Tarayıcının bu siteye ait kayıtlı verilerini silip karekodu yeniden okutun.",
 });
 const fail = (status, code) => error(status, code, REMOTE_ERRORS[code]);
 
@@ -244,7 +247,7 @@ export function createMobileRemote({ store, license, clock, audit = () => {}, lo
   // ---------- Cihaz ve uzak oturum ----------
   // Cihaz kimliği: HttpOnly çerez "<cihaz kimliği>.<256 bit sır>" (veri tabanında sırrın karması). M3'te kapıcının imzalı işareti buraya eklenir.
   function deviceFromRequest(req) {
-    const raw = parseCookies(req.headers.cookie || "")[DEVICE_COOKIE] || "";
+    const raw = cerezOku(req.headers.cookie, DEVICE_COOKIE).deger;
     if (!raw) return { present: false, device: null };
     const [id, secret] = raw.split(".");
     if (!DEVICE_ID.test(id || "") || !SECRET.test(secret || "")) return { present: true, device: null };
@@ -257,7 +260,7 @@ export function createMobileRemote({ store, license, clock, audit = () => {}, lo
   }
 
   function sessionFor(req, device) {
-    const raw = parseCookies(req.headers.cookie || "")[REMOTE_SESSION_COOKIE] || "";
+    const raw = cerezOku(req.headers.cookie, REMOTE_SESSION_COOKIE).deger;
     if (!raw) return null;
     const hash = sha256(raw);
     const row = store.get("SELECT token_hash, device_id, user_id, created_at, last_seen_at, expires_at FROM mobile_sessions WHERE token_hash = ?", hash);
@@ -277,12 +280,8 @@ export function createMobileRemote({ store, license, clock, audit = () => {}, lo
     return row;
   }
 
-  const cookieFlags = req => {
-    const host = String(req.headers.host || "");
-    const loopback = /^(127\.0\.0\.1|localhost|\[::1\])(:\d+)?$/i.test(host);
-    return `Path=/; HttpOnly; SameSite=Strict${loopback ? "" : "; Secure"}`;
-  };
-  const setCookie = (req, name, value, maxAgeSeconds) => `${name}=${value ? encodeURIComponent(value) : ""}; Max-Age=${maxAgeSeconds}; ${cookieFlags(req)}`;
+  // Her adreste Secure (`__Host-` öneki ister). Yerel testler http://127.0.0.1'de: Chromium/Firefox orayı güvenli bağlam sayar, çerezi tutar (B4 notu).
+  const setCookie = (_req, name, value, maxAgeSeconds) => cerezSatiri(name, value, maxAgeSeconds);
 
   // ---------- Eşleme (telefon; cihaz çerezi gerekmez) ----------
   async function pair(req, res, previous) {
@@ -397,7 +396,7 @@ export function createMobileRemote({ store, license, clock, audit = () => {}, lo
     });
   }
   function logout(req, res) {
-    const raw = parseCookies(req.headers.cookie || "")[REMOTE_SESSION_COOKIE] || "";
+    const raw = cerezOku(req.headers.cookie, REMOTE_SESSION_COOKIE).deger;
     if (raw) store.run("DELETE FROM mobile_sessions WHERE token_hash = ?", sha256(raw));
     send(res, 200, { ok: true, data: true }, { "set-cookie": setCookie(req, REMOTE_SESSION_COOKIE, "", 0) });
   }
@@ -428,6 +427,8 @@ export function createMobileRemote({ store, license, clock, audit = () => {}, lo
     if (gatekeeper?.rejects?.(req)) return reject(req, res, fail(401, "remote-kapi")); // 2.4.7 M3: kapıcı işareti (lib/mobile-sync.mjs)
     // Yerel oturum çerezi uzak dinleyicide yok sayılır (uzak oturum ayrı tabloda; auth.currentUser uzak istekte yalnız REMOTE_SESSION'a bakar).
     if (req.headers.cookie) req.headers.cookie = String(req.headers.cookie).split(";").filter(part => part.split("=")[0].trim() !== "hof_session").join(";");
+    // B4: aynı adlı iki cihaz/oturum çerezi çakışmadır (kapıcı da aynı kuralla 400 verir; ilk ya da son seçilmez).
+    if (cerezCakisiyor(req.headers.cookie)) return reject(req, res, fail(400, "remote-cookie"));
     const raw = String(req.url || "/");
     const path = raw.split("?")[0];
     const method = req.method === "HEAD" ? "GET" : req.method;

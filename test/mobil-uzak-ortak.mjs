@@ -1,5 +1,5 @@
 // 2.4.7 M2 test yardımcısı: uzaktan erişim dinleyicisine (app.listenRemote) giden "telefon". Ham yol gönderir (node:http; fetch "../" ve "%2e%2e"yi
-// normalleştirip sınamayı boşa çıkarırdı), çerezleri (hof_device, hof_mobil) kendisi tutar, cihaz anahtarını Node WebCrypto eşdeğeriyle (ECDSA P-256) üretir
+// normalleştirip sınamayı boşa çıkarırdı), çerezleri (__Host-hof_device, __Host-hof_mobil — lib/mobil-cerez.mjs) kendisi tutar, cihaz anahtarını Node WebCrypto eşdeğeriyle (ECDSA P-256) üretir
 // ve girişte meydan okumayı imzalar. Eski kodda (listenRemote yok) ana dinleyiciye bağlanır: tünelin doğrudan programın portuna bağlandığı saf düzen —
 // kırmızı kanıt (ders 7/38) bu düzende "uzak istek yerel sayıldı / yasak yol açık" iletisini verir.
 import { generateKeyPairSync, sign } from "node:crypto";

@@ -10,9 +10,12 @@
 //      `<ofis>.<OFIS_ALANI>` → `<tünel>.cfargotunnel.com` (proxied: M3 rotası `*.destekofis.net/*` bu adın ÖNÜNDE durur, Worker canlı isteği kapıdan sonra
 //      rota kökenine = tünele iletir) yoksa eklenir, farklıysa düzeltilir; tünel çalıştırma belirteci alınır;
 //   5. yanıt { ok, data: { tunnelId, hostname, publicUrl, token } } — Cloudflare HESAP belirteci (env.CF_API_TOKEN) hiçbir zaman yanıta girmez; kapıcı
-//      tünel kimliğini saklamaz (ad ofis kimliğinden türer; R2'ye yazmaz → M3'ün meta.json koşullu yazımıyla yarış yok).
+//      tünel kimliğini saklamaz (ad ofis kimliğinden türer; ofis kaydına — meta.json — yazmaz → M3'ün koşullu yazımıyla yarış yok).
+//   6. (bağımsız gözden geçirme B3) yalnız makinenin GÜNCEL ofisi tünel alır (bulut/kapi/makine.mjs tek eşleme; değilse 410 kapi-ofis-degisti), makine
+//      başına saatlik başvuru sınırı (429 kapi-hiz); devre dışı kalan eski ofislerin tüneli ve DNS kaydı burada da silinir (ofisTuneliniSil).
 // Yalnız Web standartları (fetch, Request/Response, WebCrypto): Worker'da ve Node 22'de aynı kod; Cloudflare API soyut fetch ile (testte sahte).
 import { KAPI_KURALLARI as K, OFIS_KIMLIGI, ecdsaDogrula, mesaj, sha256Hex } from "../../server/lib/kapi-protokol.mjs";
+import { MakineHatasi, bekleyenleriIsle, metaAnahtari, tunelMakine } from "./makine.mjs";
 
 export const TUNEL_YOLU = /^\/v1\/ofis\/([^/]+)\/tunel$/;
 const CF_API = "https://api.cloudflare.com/client/v4";
@@ -27,6 +30,10 @@ const HATA = Object.freeze({
   "kapi-lisans-dogrulanamadi": [503, "Lisans bir saattir doğrulanamadı; uzaktan erişim geçici olarak kapalı."],
   "kapi-tunel": [502, "Bağlantı hizmeti şu an yanıt vermiyor; birazdan yeniden denenecek."],
   "kapi-tunel-ayar": [500, "Kapıcının bağlantı hizmeti ayarı eksik."],
+  "kapi-ofis-degisti": [410, "Bu ofis kimliği kapandı: aynı lisans yeni bir kurulumla kaydoldu. Uzaktan erişim yeni kurulumdan sürer."],
+  // kapi-ofis-yok yukarıda: makine eşlemesi olmayan eski biçim kayıt da bu kodu alır (program kaydı yenileyip yeniden başvurur).
+  "kapi-hiz": [429, "Çok sık istek; biraz sonra yeniden deneyin."],
+  "kapi-yaris": [409, "Eşzamanlı güncelleme; yeniden deneyin."],
 });
 const json = (status, body) => new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff" } });
 class TunelHatasi extends Error {
@@ -78,7 +85,33 @@ export function createCloudflareTunnels({ accountId, zoneId, apiToken, fetchImpl
       if (found.content === target && found.proxied === true) return found;
       return call("PATCH", `/zones/${zoneId}/dns_records/${found.id}`, { content: target, proxied: true });
     },
+    // B3: devre dışı ofisin tüneli. Bağlı cloudflared varken Cloudflare tüneli silmez → önce bağlantıları temizlenir (başarısızsa da silme denenir).
+    async deleteTunnel(id) {
+      try {
+        await call("DELETE", `/accounts/${accountId}/cfd_tunnel/${id}/connections`);
+      } catch {
+        // bağlantı yoksa ya da temizlenemediyse silme yine denenir (asıl sonuç silmenin yanıtı)
+      }
+      return call("DELETE", `/accounts/${accountId}/cfd_tunnel/${id}`);
+    },
+    async deleteCname(hostname) {
+      const list = await call("GET", `/zones/${zoneId}/dns_records?type=CNAME&name=${encodeURIComponent(hostname)}`);
+      for (const item of (Array.isArray(list) ? list : []).filter(record => record?.name === hostname)) await call("DELETE", `/zones/${zoneId}/dns_records/${item.id}`);
+      return true;
+    },
   };
+}
+
+/** Worker ortamında Cloudflare ayarı varsa API istemcisi, yoksa null (kayıt sırasındaki temizlik yalnız ayar varken; tünel ucu ayarsız 500 verir). */
+export const cloudflareVarsa = env =>
+  env.CF_API_TOKEN && env.CF_ACCOUNT_ID && env.CF_ZONE_ID ? createCloudflareTunnels({ accountId: env.CF_ACCOUNT_ID, zoneId: env.CF_ZONE_ID, apiToken: env.CF_API_TOKEN }) : null;
+
+/** B3: devre dışı ofisin tünelini (destekofis-<ofis>) ve DNS kaydını (<ofis>.<alan>) siler. Dönüş true (bulunamayan zaten silinmiş sayılır). */
+export async function ofisTuneliniSil(cf, ofis, alan) {
+  const tunel = await cf.findTunnel(`destekofis-${ofis}`);
+  if (tunel) await cf.deleteTunnel(tunel.id);
+  await cf.deleteCname(`${ofis}.${String(alan || "destekofis.net").toLowerCase()}`);
+  return true;
 }
 
 const cloudflareOf = env => {
@@ -105,7 +138,7 @@ export async function tunelIstegi(request, env, { now = () => Date.now(), lisans
     if (Number(request.headers.get("content-length") || 0) > GOVDE_AZAMI) at("kapi-istek");
     const metin = new TextDecoder().decode(await request.arrayBuffer());
     if (metin.length > GOVDE_AZAMI) at("kapi-istek");
-    const nesne = await env.OZET.get(`ofis/${ofis}/meta.json`);
+    const nesne = await env.OZET.get(metaAnahtari(ofis));
     if (!nesne) at("kapi-ofis-yok");
     const meta = await nesne.json();
     // M3 ofisImzasi ile aynı: zaman payı, sonra ofis anahtarıyla imza.
@@ -119,6 +152,8 @@ export async function tunelIstegi(request, env, { now = () => Date.now(), lisans
       at("kapi-istek");
     }
     if (govde?.v !== 1 || govde.ofis !== ofis || meta.ofis !== ofis) at("kapi-istek");
+    // B3: devre dışı (aynı makine yeni ofisle kaydoldu) ofis tünel alamaz.
+    if (meta.devreDisi) at("kapi-ofis-degisti");
     if (typeof lisansGorunumu !== "function") at("kapi-tunel-ayar");
     const gorunum = await lisansGorunumu(env, meta);
     if (gorunum?.durum === "dogrulanamadi") at("kapi-lisans-dogrulanamadi");
@@ -126,6 +161,9 @@ export async function tunelIstegi(request, env, { now = () => Date.now(), lisans
 
     const cf = cloudflare || cloudflareOf(env);
     const alan = String(env.OFIS_ALANI || "destekofis.net").toLowerCase();
+    // B3: yalnız makinenin güncel ofisi + makine başına saatlik sınır; sonra makinenin devre dışı eski ofislerinin tüneli ve DNS kaydı silinir.
+    await tunelMakine(env, { makine: meta.makine, ofis, simdi: now() });
+    await bekleyenleriIsle(env, meta.makine, { simdi: now(), temizle: eski => ofisTuneliniSil(cf, eski, alan) });
     const ad = `destekofis-${ofis}`;
     const hostname = `${ofis}.${alan}`;
     let tunel = await cf.findTunnel(ad);
@@ -143,7 +181,7 @@ export async function tunelIstegi(request, env, { now = () => Date.now(), lisans
     if (typeof token !== "string" || !token) at("kapi-tunel");
     return json(200, { ok: true, data: { tunnelId: tunel.id, hostname, publicUrl: `https://${hostname}`, token } });
   } catch (error) {
-    if (error instanceof TunelHatasi) {
+    if (error instanceof TunelHatasi || (error instanceof MakineHatasi && HATA[error.kod])) {
       const [status, mesajMetni] = HATA[error.kod];
       return json(status, { ok: false, code: error.kod, error: mesajMetni, ...(error.ek?.zaman ? { zaman: error.ek.zaman } : {}) });
     }

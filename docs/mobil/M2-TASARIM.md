@@ -19,10 +19,10 @@ göç v38, `client/assets/hof-mobile-devices.js` (Yönetim → Mobil Cihazlar), 
 3. **Telefon** karekodu okur, sayfa açılır; WebCrypto ile **dışa aktarılamaz** ECDSA P-256 anahtar çifti üretir (IndexedDB'de saklanır),
    `POST /api/mobil/eslesme` { kod, cihaz adı, tür, açık anahtar (JWK) }. Sunucu tek işlemde (SQLite, eşzamanlı son yer tek kazanır):
    lisans → kod (var, etkin, süresi dolmamış) → kullanıcının uzak izni → sınır (P3 doluysa REDDET, kod harcanmaz) → cihaz kaydı + kodu
-   kullanıldı yapar; telefona HttpOnly **cihaz çerezi** (`hof_device` = cihaz kimliği + 256 bit sır; veri tabanında karması) verir.
+   kullanıldı yapar; telefona HttpOnly **cihaz çerezi** (`__Host-hof_device` = cihaz kimliği + 256 bit sır; veri tabanında karması; ad, Secure + Path=/ + Domain yok ve okuma kuralı kapıcıyla ortak — lib/mobil-cerez.mjs, bağımsız gözden geçirme B4) verir.
 4. **Giriş**: telefon `GET /api/mobil/session/challenge` ile tek kullanımlık meydan okuma alır, cihaz anahtarıyla imzalar, kullanıcı adı +
    parolayla `POST /api/mobil/session/login`. Sıra: cihaz çerezi → lisans → imza → P6 (yalnız eşlendiği kullanıcı) → kilit (P11–P13) →
-   parola → uzak izin. Başarıda cihaza bağlı **uzak oturum** (`hof_mobil` çerezi; P7 boşta 15 dk, P8 en çok 12 saat).
+   parola → uzak izin. Başarıda cihaza bağlı **uzak oturum** (`__Host-hof_mobil` çerezi; P7 boşta 15 dk, P8 en çok 12 saat).
 5. Sonraki her uzak istek: cihaz → lisans → yol beyaz listesi → (sayfa dosyası) → uzak oturum → mevcut mobil uç (M1 `lib/mobile.mjs`) →
    programın kendi ucu (şirket erişimi `companies.canAccess`, yetki, lisans o uçta; tekrar edilmez).
 

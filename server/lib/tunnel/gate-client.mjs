@@ -19,6 +19,9 @@ const GATE_ERRORS = {
   "kapi-istek": "Kapıcı isteği tanımadı.",
   "kapi-tunel": "Bağlantı hizmeti şu an yanıt vermiyor; birazdan yeniden denenecek.",
   "kapi-tunel-ayar": "Kapıcının bağlantı hizmeti ayarı eksik; destek bilgilendirilmeli.",
+  // Bağımsız gözden geçirme B3: makine → ofis tek eşleme ve hız sınırı.
+  "kapi-ofis-degisti": "Bu lisans başka bir DestekOfis kurulumuyla kaydoldu; uzaktan bağlantı o kurulumdan sürer.",
+  "kapi-hiz": "Kapıcıya çok sık başvuruldu; birazdan yeniden denenecek.",
 };
 
 /**

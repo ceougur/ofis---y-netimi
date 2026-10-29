@@ -11,6 +11,10 @@
 //   5. Ofisin telefon adresi (<ofis>.<OFIS_ALANI>) önünde kapı: canlı bağlantıda her istek önce burada (cihaz → lisans → yol), sonra ofisin tüneline
 //      (M4) gider; programa ofis başına sırla imzalı "x-do-kapi" işareti eklenir. Sunucu kapalıyken /kapi/ozet son özeti verir.
 // Sıra (kâhin V16): cihaz → lisans → (sınır aşımı: P5 gereği yok) → yol → sunucu.
+//   6. (bağımsız gözden geçirme B3) lisans belirtecindeki makine kapıcıda TEK ofise eşlenir (bulut/kapi/makine.mjs): aynı makine yeni ofis kimliğiyle
+//      kaydolursa eskisi devre dışı (cihazları düşer, tüneli + DNS kaydı silinir); kayıt/tünel hız sınırları ve günlük yeni ofis tavanı.
+//   7. (B1, B4) canlı kapıda çerezler programla AYNI kuralla (server/lib/mobil-cerez.mjs; `__Host-` adlar): aynı adlı iki çerez 400; listede olmayan cihaz
+//      çerezi eşleme ve sayfa yollarında "cihazsız" sayılır (iletilmez), silinmiş cihazınki yanıtta silinir; kökenin Domain'li Set-Cookie'si düşürülür.
 //
 // env: OZET (R2 kovası), LISANS_ANAHTARLARI (JSON { keyId: SPKI base64 } — server/lib/license-keys.mjs ile aynı), OFIS_ALANI ("destekofis.net"),
 //      LISANS_URL (lisans servisi tabanı; isteğe bağlı), KAPI_LISANS_ANAHTARI (gizli; lisans servisinin kapıcı ucu için), HIZ (isteğe bağlı rate limit bağlaması).
@@ -31,7 +35,11 @@ import {
   trGunu,
   yolSorunu,
 } from "../../server/lib/kapi-protokol.mjs";
-import { TUNEL_YOLU, tunelIstegi } from "./tunel.mjs"; // 2.4.7 M4: ofis tüneli (ayrı dosya)
+import { CIHAZ_CEREZI, MOBIL_CEREZLERI, OTURUM_CEREZI, cerezCakisiyor, cerezCikar, cerezOku, cerezSilSatirlari, setCookieAdi, setCookieAlanli } from "../../server/lib/mobil-cerez.mjs";
+import { KAPI_HIZ, MakineHatasi, guncelMi, kayitSonrasi, makineKaydi, makineOku, metaAnahtari, ofisiKapat, ozetAnahtari, silinenBirlestir, yeniOfisDenetle, yeniOfisSay } from "./makine.mjs";
+import { TUNEL_YOLU, cloudflareVarsa, ofisTuneliniSil, tunelIstegi } from "./tunel.mjs"; // 2.4.7 M4: ofis tüneli (ayrı dosya)
+
+export { KAPI_HIZ };
 
 const HATA = Object.freeze({
   "kapi-istek": [400, "İstek okunamadı."],
@@ -52,34 +60,47 @@ const HATA = Object.freeze({
   "kapi-yaris": [409, "Eşzamanlı güncelleme; yeniden deneyin."],
   "kapi-hiz": [429, "Çok sık istek; biraz sonra yeniden deneyin."],
   "kapi-gunluk": [429, "Bu ofisin bugünkü yükleme sınırı doldu."],
+  "kapi-cerez": [400, "Tarayıcıda bu adres için çakışan oturum bilgisi var. Tarayıcının bu siteye ait kayıtlı verilerini silip karekodu yeniden okutun."],
+  "kapi-ofis-degisti": [410, "Bu ofis kimliği kapandı: aynı lisans yeni bir kurulumla kaydoldu. Yöneticinizden yeni karekod isteyin."],
 });
 const GUVENLIK = { "x-content-type-options": "nosniff", "cache-control": "no-store", "referrer-policy": "no-referrer" };
 
-const json = (status, body, extra = {}) => new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json; charset=utf-8", ...GUVENLIK, ...extra } });
+// Başlık değeri dizi olabilir (birden çok Set-Cookie).
+function basliklarKur(nesne) {
+  const h = new Headers();
+  for (const [ad, deger] of Object.entries(nesne)) for (const tek of [].concat(deger)) h.append(ad, String(tek));
+  return h;
+}
+const json = (status, body, extra = {}) => new Response(JSON.stringify(body), { status, headers: basliklarKur({ "content-type": "application/json; charset=utf-8", ...GUVENLIK, ...extra }) });
 const hata = (kod, ek = {}, basliklar = {}) => {
   const [status, error] = HATA[kod];
   return json(status, { ok: false, code: kod, error, ...ek }, basliklar);
 };
 class KapiHatasi extends Error {
-  constructor(kod, ek = {}) {
+  constructor(kod, ek = {}, basliklar = {}) {
     super(kod);
     this.kod = kod;
     this.ek = ek;
+    this.basliklar = basliklar;
   }
 }
-const at = (kod, ek) => {
-  throw new KapiHatasi(kod, ek);
+const at = (kod, ek, basliklar) => {
+  throw new KapiHatasi(kod, ek, basliklar);
 };
 
-const metaAnahtari = ofis => `ofis/${ofis}/meta.json`;
-const ozetAnahtari = ofis => `ofis/${ofis}/ozet.json`;
-
-function cerez(request, ad) {
-  for (const parca of String(request.headers.get("cookie") || "").split(";")) {
-    const i = parca.indexOf("=");
-    if (i > 0 && parca.slice(0, i).trim() === ad) return parca.slice(i + 1).trim();
-  }
-  return "";
+/**
+ * Kökenin (ofisin tüneli) yanıtı: Domain öznitelikli Set-Cookie DÜŞÜRÜLÜR (bir ofisin sayfası üst alana / başka ofise çerez koyamasın; program hiçbir
+ * çerezi Domain'li yazmaz — B4). sil: kapıcının ekleyeceği silme satırları; köken aynı adlı çerezi zaten yazıyorsa (ör. eşlemenin yeni cihaz çerezi) eklenmez.
+ */
+function kokenYaniti(yanit, sil = []) {
+  const cerezler = yanit.headers.getSetCookie?.() || [];
+  const kalan = cerezler.filter(satir => !setCookieAlanli(satir));
+  const ekle = sil.filter(satir => !kalan.some(k => setCookieAdi(k) === setCookieAdi(satir)));
+  if (kalan.length === cerezler.length && !ekle.length) return yanit;
+  const h = new Headers(yanit.headers);
+  h.delete("set-cookie");
+  for (const satir of [...kalan, ...ekle]) h.append("set-cookie", satir);
+  return new Response(yanit.body, { status: yanit.status, statusText: yanit.statusText, headers: h });
 }
 
 /**
@@ -89,12 +110,19 @@ function cerez(request, ad) {
  * @param {(request: Request, ofis: string) => Promise<Response>} [o.fetchOrigin] ofisin tüneline iletim (üretimde rota kökeni: fetch(request))
  * @param {typeof fetch} [o.lisansFetch] lisans servisine istek
  * @param {{ match(req): Promise<Response|undefined>, put(req, res): Promise<void> }} [o.onbellek] lisans önbelleği (üretimde caches.default)
+ * @param {object} [o.cloudflare] Cloudflare tünel/DNS istemcisi (testte sahte; yoksa env'deki ayarla, ayar yoksa kayıtta temizlik yapılmaz — B3)
  */
-export function createKapi({ now = () => Date.now(), fetchOrigin = request => fetch(request), lisansFetch = (...a) => fetch(...a), onbellek = null } = {}) {
+export function createKapi({ now = () => Date.now(), fetchOrigin = request => fetch(request), lisansFetch = (...a) => fetch(...a), onbellek = null, cloudflare = null } = {}) {
   const pencere = new Map(); // hız sınırı (isolate içi; HIZ bağlaması yoksa)
   const yenileniyor = new Map(); // ofis → lisans yenileme sözü (aynı anda tek istek)
   const sonDeneme = new Map(); // ofis → son başarısız yenileme anı (servise yük bindirmesin)
   const cache = () => onbellek || globalThis.caches?.default || null;
+  // B3: devre dışı ofisin tüneli + DNS kaydı (Cloudflare ayarı yoksa null → yalnız kapatılır, temizlik makine nesnesinde bekler).
+  const temizleyici = env => {
+    const cf = cloudflare || cloudflareVarsa(env);
+    const alan = String(env.OFIS_ALANI || "destekofis.net").toLowerCase();
+    return cf ? eski => ofisTuneliniSil(cf, eski, alan) : null;
+  };
 
   const guvenilen = env => {
     try {
@@ -233,6 +261,18 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     if (!/^[A-Za-z0-9_-]{43}$/.test(String(govde.sir || ""))) at("kapi-istek");
     const iddia = await lisansDogrula(govde.lisans, guvenilen(env));
     if (!iddia) at("kapi-lisans");
+    // B3: makineyi yalnız YENİ ofis kimliği devralır. Kaydı olan ofis, bu makinenin eşlemesi başka ofisi gösteriyorsa yerini bırakmıştır → 410 (kapatılır);
+    // devre dışı ofis geri gelmez — yalnız eşleme hâlâ bu ofisi gösteriyorsa (yarışta kapanmışsa) onarılır. Ofis başka makineye taşınıyorsa (kayıttaki makine
+    // farklı) o makineyi devralır.
+    if (mevcut) {
+      const esleme = await makineOku(env, iddia.machine);
+      const onarim = esleme?.ofis === ofis;
+      if (mevcut.veri.devreDisi && !onarim) at("kapi-ofis-degisti");
+      if (esleme && !onarim && mevcut.veri.makine === iddia.machine) {
+        await ofisiKapat(env, ofis, iddia.machine, esleme.ofis, now()).catch(() => false);
+        at("kapi-ofis-degisti");
+      }
+    }
     const cihazlar = Array.isArray(govde.cihazlar) ? govde.cihazlar : at("kapi-istek");
     if (cihazlar.length > 100) at("kapi-istek");
     const temiz = [];
@@ -262,14 +302,28 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     else if (eklenen.length && temiz.length > sinir) cihazHatasi = "kapi-sinir";
     // Cihaz EKLEME yalnız lisans geçerliyken ve sınır içinde; silme (listeden çıkan cihaz) her durumda uygulanır (güvenlik: silinen cihaz hemen düşer).
     meta.cihazlar = cihazHatasi ? temiz.filter(c => eskiKimlikler.has(c.id)) : temiz;
+    // B1: listeden çıkan cihazların kimliği (canlı kapı eski çerezini tanıyıp siler; yeni eşlenip kaydı henüz gelmemiş cihazın çerezi silinmez).
+    const guncel = meta.cihazlar.map(c => c.id);
+    meta.silinen = silinenBirlestir([...eskiKimlikler].filter(id => !guncel.includes(id)), eski?.silinen, guncel);
+    // B3: makine → ofis tek eşleme (yeni ofis günlük tavanı, makine başına saatlik kayıt ve günlük ofis değişimi sınırı) ofis kaydından ÖNCE; değişimde
+    // önceki ofis kayıttan sonra kapatılır (kayitSonrasi).
+    if (!mevcut) await yeniOfisDenetle(env, now());
+    await makineKaydi(env, { makine: iddia.machine, ofis, simdi: now() });
+    if (!mevcut) await yeniOfisSay(env, now());
     const yazildi = await env.OZET.put(metaAnahtari(ofis), JSON.stringify(meta), {
       httpMetadata: { contentType: "application/json" },
       ...(mevcut ? { onlyIf: { etagMatches: mevcut.etag } } : {}),
     });
     if (!yazildi) at("kapi-yaris");
     await onbellegeYaz(ofis, lisans);
+    await kayitSonrasi(env, { makine: iddia.machine, ofis, simdi: now(), temizle: temizleyici(env) });
     if (cihazHatasi) at(cihazHatasi, { cihaz: meta.cihazlar.length, sinir });
     return json(200, { ok: true, data: { ofis, cihaz: meta.cihazlar.length, sinir } });
+  }
+
+  // B3: ofis devre dışıysa ya da makinesinin eşlemesi başka ofisi gösteriyorsa (yarışta kapanmamış eski ofis) 410; ikinci durumda ofis kapatılır.
+  async function gunceliIste(env, meta) {
+    if (!(await guncelMi(env, meta, now()))) at("kapi-ofis-degisti");
   }
 
   async function ozetYukle(request, env, ofis, yol) {
@@ -289,6 +343,8 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     // Özetin kendi imzası (telefonun da doğruladığı): kapıcı içini okumaz, yalnız kimin yazdığını ve sırasını denetler.
     if (zarf?.v !== 1 || typeof zarf.govde !== "string" || !(await ecdsaDogrula(meta.anahtar, zarf.govde, zarf.imza || ""))) at("kapi-imza");
     if (govde?.ofis !== ofis || !Number.isSafeInteger(govde.sira)) at("kapi-istek");
+    // B3: yalnız makinenin güncel ofisi özet yükler (devre dışı ya da eşlemesi başka ofise geçmiş → kapatılır, 410).
+    await gunceliIste(env, meta);
     await lisansIste(env, meta);
     const onceki = await env.OZET.head(ozetAnahtari(ofis));
     const oncekiSira = Math.max(meta.sira || 0, Number(onceki?.customMetadata?.sira || 0));
@@ -310,6 +366,7 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     const mevcut = await metaOku(env, ofis);
     if (!mevcut) return json(200, { ok: true, data: { silindi: false } });
     await ofisImzasi(request, `${yol}${url.search}`, "", mevcut.veri.anahtar);
+    if (mevcut.veri.devreDisi) at("kapi-ofis-degisti");
     const sira = Number(url.searchParams.get("sira"));
     const onceki = await env.OZET.head(ozetAnahtari(ofis));
     const oncekiSira = Math.max(mevcut.veri.sira || 0, Number(onceki?.customMetadata?.sira || 0));
@@ -334,7 +391,8 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
 
   async function ozetOku(request, env, ofis) {
     const mevcut = await metaOku(env, ofis);
-    const cihaz = await cihazIste(request, env, mevcut?.veri, "/kapi/ozet");
+    // B3: makinesinin güncel ofisi değilse (devre dışı) cihaz listesi boş sayılır → kapi-cihaz (telefon "eşli değil" ekranına döner).
+    const cihaz = await cihazIste(request, env, (await guncelMi(env, mevcut?.veri, now())) ? mevcut.veri : null, "/kapi/ozet");
     await hizDenetle(env, "ozet", `${ofis}|${cihaz.id}`, K.dakikadaOzet);
     await lisansIste(env, mevcut.veri);
     if (request.method !== "GET" && request.method !== "HEAD") at("kapi-yazma");
@@ -346,43 +404,72 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
   }
 
   // Canlı bağlantı: ofisin tüneline (M4) kapıdan geçen istek. Cihaz kimliği programın HttpOnly cihaz çerezinin kimlik bölümünden (sırrı program doğrular).
+  // Çerezler programla AYNI kuralla okunur (lib/mobil-cerez.mjs): aynı adlı iki cihaz/oturum çerezi → 400 kapi-cerez (B4; ilk ya da son seçilmez).
+  // B1: listede olmayan cihaz çerezi eşleme ve sayfa yollarında "cihazsız" sayılır — iki mobil çerez iletilmez, işaret "-" ile; öbür yollarda 401 kapi-cihaz.
+  // Kimliği bu ofisin silinmiş cihazlarındaysa (ya da biçimi bozuksa) çerez yanıtta silinir (Set-Cookie süresi geçmiş). Hiç görülmemiş kimlik (yeni eşlenip
+  // kaydı kapıcıya henüz ulaşmamış cihaz olabilir) silinmez: silinseydi cihaz programda kayıtlı ama sırrını yitirmiş, yer tutan bir kayıt olarak kalırdı.
   async function vekil(request, env, ofis, url) {
     const mevcut = await metaOku(env, ofis);
     const meta = mevcut?.veri || null;
     const yontem = request.method === "HEAD" ? "GET" : request.method;
     const yolSorgu = `${url.pathname}${url.search}`;
-    const ham = cerez(request, "hof_device");
+    const cerezBasligi = request.headers.get("cookie") || "";
+    if (cerezCakisiyor(cerezBasligi)) at("kapi-cerez");
+    // B3: makinesinin güncel ofisi değilse (devre dışı) cihazları düşmüş sayılır (çerezleri silinir); cihazsız istek 410.
+    const guncel = await guncelMi(env, meta, now());
+    const etkinCihazlar = guncel ? meta.cihazlar || [] : [];
+    const silinenler = [...(meta?.silinen || []), ...(guncel ? [] : (meta?.cihazlar || []).map(c => c.id))];
+    // Cihazsız yalnız eşleme (karekod) ve sayfa dosyaları (eşleme ekranı; veri içermez — M2 BAŞ MİMAR KARARI 9).
+    const eslesme = yontem === "POST" && url.pathname === "/api/mobil/eslesme";
+    const sayfa = yontem === "GET" && url.pathname.startsWith("/mobil/");
+    const ham = cerezOku(cerezBasligi, CIHAZ_CEREZI).deger;
     let cihaz = "-";
+    let cihazsiz = false;
+    let sil = [];
     if (ham) {
-      const id = decodeURIComponent(ham).split(".")[0];
-      if (!CIHAZ_KIMLIGI.test(id) || !(meta?.cihazlar || []).some(c => c.id === id)) at("kapi-cihaz");
-      cihaz = id;
-    } else {
-      // Cihazsız yalnız eşleme (karekod) ve sayfa dosyaları (eşleme ekranı; veri içermez — M2 BAŞ MİMAR KARARI 9).
-      const eslesme = yontem === "POST" && url.pathname === "/api/mobil/eslesme";
-      const sayfa = yontem === "GET" && url.pathname.startsWith("/mobil/");
+      const id = ham.split(".")[0];
+      if (CIHAZ_KIMLIGI.test(id) && etkinCihazlar.some(c => c.id === id)) cihaz = id;
+      else {
+        if (!CIHAZ_KIMLIGI.test(id) || silinenler.includes(id) || meta?.devreDisi) sil = cerezSilSatirlari();
+        if (!eslesme && !sayfa) at("kapi-cihaz", {}, sil.length ? { "set-cookie": sil } : {});
+        cihazsiz = true;
+      }
+    } else if (cerezOku(cerezBasligi, OTURUM_CEREZI).deger) {
+      // Cihaz çerezi olmadan oturum çerezi anlamsızdır (oturum cihaza bağlı); iletilmez.
+      cihazsiz = true;
       if (!eslesme && !sayfa) at("kapi-cihaz");
-    }
-    if (!meta) at("kapi-ofis-yok");
-    await lisansIste(env, meta);
-    if (yolSorunu(yolSorgu)) at("kapi-yol");
-    await hizDenetle(env, "vekil", cihaz !== "-" ? `${ofis}|${cihaz}` : `${ofis}|${request.headers.get("cf-connecting-ip") || "?"}`, K.dakikadaVekil);
-    const ms = now();
-    const isaret = `${ms}.${cihaz}.${await hmac(meta.sir, mesaj.vekil(yontem, yolSorgu, cihaz, ms))}`;
-    const basliklar = new Headers(request.headers);
-    basliklar.delete("x-do-kapi");
-    basliklar.set("x-do-kapi", isaret);
-    const iletilen = new Request(url.toString(), { method: request.method, headers: basliklar, body: yontem === "GET" ? undefined : request.body, redirect: "manual", ...(yontem === "GET" ? {} : { duplex: "half" }) });
-    let yanit;
+    } else if (!eslesme && !sayfa) at("kapi-cihaz");
     try {
-      yanit = await fetchOrigin(iletilen, ofis);
-    } catch {
-      at("kapi-ofis-kapali");
+      if (!meta) at("kapi-ofis-yok");
+      if (!guncel) at("kapi-ofis-degisti");
+      await lisansIste(env, meta);
+      if (yolSorunu(yolSorgu)) at("kapi-yol");
+      await hizDenetle(env, "vekil", cihaz !== "-" ? `${ofis}|${cihaz}` : `${ofis}|${request.headers.get("cf-connecting-ip") || "?"}`, K.dakikadaVekil);
+      const ms = now();
+      const isaret = `${ms}.${cihaz}.${await hmac(meta.sir, mesaj.vekil(yontem, yolSorgu, cihaz, ms))}`;
+      const basliklar = new Headers(request.headers);
+      basliklar.delete("x-do-kapi");
+      basliklar.set("x-do-kapi", isaret);
+      if (cihazsiz) {
+        const kalan = cerezCikar(cerezBasligi, MOBIL_CEREZLERI);
+        if (kalan) basliklar.set("cookie", kalan);
+        else basliklar.delete("cookie");
+      }
+      const iletilen = new Request(url.toString(), { method: request.method, headers: basliklar, body: yontem === "GET" ? undefined : request.body, redirect: "manual", ...(yontem === "GET" ? {} : { duplex: "half" }) });
+      let yanit;
+      try {
+        yanit = await fetchOrigin(iletilen, ofis);
+      } catch {
+        at("kapi-ofis-kapali");
+      }
+      // Tünel kapalıyken Cloudflare 530 (1033) ya da HTML 502/504 verir: ofis kapalı sayılır. Programın kendi JSON yanıtı olduğu gibi geçer.
+      const tur = String(yanit.headers.get("content-type") || "");
+      if (yanit.status === 530 || ((yanit.status === 502 || yanit.status === 504) && !tur.includes("application/json"))) at("kapi-ofis-kapali");
+      return kokenYaniti(yanit, sil);
+    } catch (error) {
+      if (error instanceof KapiHatasi && sil.length) error.basliklar = { ...error.basliklar, "set-cookie": sil };
+      throw error;
     }
-    // Tünel kapalıyken Cloudflare 530 (1033) ya da HTML 502/504 verir: ofis kapalı sayılır. Programın kendi JSON yanıtı olduğu gibi geçer.
-    const tur = String(yanit.headers.get("content-type") || "");
-    if (yanit.status === 530 || ((yanit.status === 502 || yanit.status === 504) && !tur.includes("application/json"))) at("kapi-ofis-kapali");
-    return yanit;
   }
 
   const KARSILAMA = `<!doctype html><html lang="tr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DestekOfis Mobil</title><body style="font-family:system-ui,sans-serif;padding:24px;max-width:520px;margin:auto;color:#102a36"><h1 style="font-size:22px">DestekOfis Mobil</h1><p>Telefonunuzu ofisinizdeki DestekOfis'e bağlamak için yöneticinizin Yönetim → Mobil Cihazlar'da oluşturduğu karekodu okutun.</p><p>Eşlediğiniz cihazda ana ekrandaki DestekOfis simgesinden açın.</p></body></html>`;
@@ -391,7 +478,7 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     const url = new URL(request.url);
     try {
       // 2.4.7 M4: tünel başvurusu (ofis imzası + lisans P9; Cloudflare hesap belirteci yalnız Worker gizlisinde).
-      if (TUNEL_YOLU.test(url.pathname)) return await tunelIstegi(request, env, { now, lisansGorunumu });
+      if (TUNEL_YOLU.test(url.pathname)) return await tunelIstegi(request, env, { now, lisansGorunumu, cloudflare });
       // Program uçları (her adreste; imzalı).
       const program = /^\/v1\/ofis\/([^/]+)\/(kayit|ozet)$/.exec(url.pathname);
       if (program) {
@@ -412,7 +499,8 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
       if (url.pathname.startsWith("/kapi/")) at("kapi-yol");
       return await vekil(request, env, ofis, url);
     } catch (error) {
-      if (error instanceof KapiHatasi) return hata(error.kod, error.ek);
+      if (error instanceof KapiHatasi) return hata(error.kod, error.ek, error.basliklar);
+      if (error instanceof MakineHatasi && HATA[error.kod]) return hata(error.kod, error.ek);
       return json(500, { ok: false, code: "kapi-hata", error: "Kapıcı isteği işleyemedi." });
     }
   }

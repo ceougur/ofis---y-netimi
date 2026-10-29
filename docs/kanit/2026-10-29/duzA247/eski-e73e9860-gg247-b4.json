@@ -1,0 +1,63 @@
+{
+  "ad": "duzA247/eski-e73e9860-gg247-b4",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b4.test.mjs",
+  "commit": "c41b58c71479eab03e0b9c1aff2456acd498cc6b",
+  "dal": "worktree-agent-a4ce03c386642542b",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T13:14:05.349Z",
+  "sure_sn": 1.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 0,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "B4 alt alanlar arası çerez: __Host- adlar, Domain'li Set-Cookie düşer, çakışan çerez reddedilir › kapıcı başka ofisin kökeninden gelen Domain'li Set-Cookie'leri düşürür (Domain'siz kendi çerezi geçer)",
+      "konum": "test/kapi-gg247-b4.test.mjs:51:3",
+      "hata": "kapıcı Domain= öznitelikli çerezi geçirmemeli: [\"hof_device=dev-00000000-0000-0000-0000-000000000000.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA; Domain=destekofis.test; Path=/api/mobil/; Max-Age=34560000; Secure; SameSite=None\",\"hof_device=dev-00000000-0000-0000-0000-000000000000.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA; domain=.destekofis.test; Path=/; Secure\",\"saldirgan_kendi=1; Path=/; Secure; HttpOnly\"] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "B4 alt alanlar arası çerez: __Host- adlar, Domain'li Set-Cookie düşer, çakışan çerez reddedilir › program cihaz ve oturum çerezini __Host- adla, Secure + Path=/ ve Domain'siz yazar (kapıcı üzerinden)",
+      "konum": "test/kapi-gg247-b4.test.mjs:59:3",
+      "hata": "çerez adları __Host- önekli olmalı: hof_device, hof_mobil (beklenen true, gelen false)"
+    },
+    {
+      "ad": "B4 alt alanlar arası çerez: __Host- adlar, Domain'li Set-Cookie düşer, çakışan çerez reddedilir › kurbanın isteğine eski (öneksiz) ad ile atılmış çerez erişimi kesmez — başta da sonda da",
+      "konum": "test/kapi-gg247-b4.test.mjs:77:3",
+      "hata": "kurbanın kendi oturumu bozuldu (sonda): {\"ok\":false,\"error\":\"Uzak bağlantı kapıcı üzerinden gelmedi; istek reddedildi.\",\"code\":\"remote-kapi\"} · 401 !== 200 (beklenen 200, gelen 401)"
+    },
+    {
+      "ad": "B4 alt alanlar arası çerez: __Host- adlar, Domain'li Set-Cookie düşer, çakışan çerez reddedilir › aynı adlı iki cihaz ya da oturum çerezi kapıcıda 400 kapi-cerez (ilk/son seçilmez) — veri ucunda da sayfa yolunda da",
+      "konum": "test/kapi-gg247-b4.test.mjs:86:3",
+      "hata": "cihaz sonda: 401 {\"ok\":false,\"error\":\"Uzak bağlantı kapıcı üzerinden gelmedi; istek reddedildi.\",\"code\":\"remote-kapi\"} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "B4 alt alanlar arası çerez: __Host- adlar, Domain'li Set-Cookie düşer, çakışan çerez reddedilir › program da aynı kural: uzak dinleyiciye (kapıcısız) çakışan çerez 400 remote-cookie; tek çerez geçer",
+      "konum": "test/kapi-gg247-b4.test.mjs:102:3",
+      "hata": "hof_device=dev-736ace7d-27ba-47ec-b2de-149f0525938a.nTfQgiH_…: 401 {\"ok\":false,\"error\":\"Bu cihaz eşli değil ya da eşlemesi kaldırıldı. Yöneticinizden Yönetim → Mobil Cihazlar'da yeni karekod isteyin.\",\"code\":\"remote-device\"} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "B4 alt alanlar arası çerez: __Host- adlar, Domain'li Set-Cookie düşer, çakışan çerez reddedilir › tek ayrıştırma: kapıcı ve program çerezi aynı modülle okur (lib/mobil-cerez.mjs); kapıcıda ayrı çerez çözücü yok",
+      "konum": "test/kapi-gg247-b4.test.mjs:125:3",
+      "hata": "kapıcı ortak çerez modülünü içe aktarmalı (beklenen , gelen |-)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-29/duzA247/eski-e73e9860-gg247-b4.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a4ce03c386642542b",
+  "ham_cikti_sha256": "25652aa00bc61ea652930e3760374e45c6694480c053db534cc710e8c111817b",
+  "ham_cikti_bayt": 35935
+}
