@@ -1,0 +1,56 @@
+
+> destekofis@2.4.6 test:senaryo-mobil-ozet-247
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-mobil-ozet-247.mjs
+
+
+■ Z1 karekod ofisin alt adını taşır; eşleme + giriş kapıcıdan; masaüstünde Bulut Özeti satırı
+  ✓ karekod adresi ofisin alt adı: https://o5hrbhhqgto2nyv6r.destekofis.test/mobil/#eslesme=…
+  ✓ telefon ofisin alt adında
+  ✓ canlı: Sunucu Bağlı
+  ✓ tarayıcının şifreleme anahtarı (ECDH) programda kayıtlı
+  ✓ kapıcı cihazı tanıyor (eşleme hemen bildirildi)
+  ✓ Yönetim kartı: Bulut Özeti: son yükleme 29.10.2026 09:55 (sunucu kapalıyken telefonda bu hâl görünür).
+
+■ Z2 saha ve veli eşlenir; veli'nin cihazı silinir (güvenlik yüklemesi)
+  ✓ 3 / 3 eşli (3)
+  ✓ veli'nin cihazı silindi
+  ✓ kapıcıdan da düştü
+
+■ Z3 yeni cari → program KAPANIR → telefonda dokunuş: son özet (şerit, yeni cari, Raporlar kapalı)
+  ✓ masaüstünde cari girildi
+  ✓ canlıda cari kartında yazma düğmesi var (ön koşul)
+  ✓ kapanışta son hâl yüklendi
+  ✓ şerit: Ofis sunucusuna ulaşılamıyor. Son güncelleme: 29.10.2026 09:55 — bilgiler salt okunurdur; yenilemek için ↻.
+  ✓ üst çubukta Son Güncelleme
+  ✓ kapanmadan önce girilen cari özette görünür
+  ✓ çevrimdışı özette cari kartında yazma düğmesi YOK (sunucu kapalıyken kayıt girilmez)
+  ✓ Raporlar çevrimdışı kapalı (gerekçeli ileti)
+  ✓ Genel Bakış notu sunucu kapalıyken son özeti anlatır
+
+■ Z4 sunucu kapalıyken sayfa yeniden açılır → Son Özeti Göster
+  ✓ giriş ekranında Son Özeti Göster (kabuk önbellekten açıldı)
+  ✓ özet açıldı, şerit görünür
+  ✓ yönetici iki şirketi görür (Şirket 1, İkinci Şirket)
+
+■ Z5 saha: çevrimdışında yalnız 001 ve yalnız Cari; Kasa 'Yetki Yok'
+  ✓ saha yalnız 001 (sirket-001)
+  ✓ Kasa bölümü özette yok → Yetki Yok
+  ✓ 001 carisi görünür, 002'ninki yok
+
+■ Z6 silinen cihaz (veli): ↻ → Cihaz Eşli Değil
+  ✓ ileti: Bu cihaz eşli değil ya da eşlemesi kaldırıldı. Yöneticinizden Yönetim → Mobil Cihazlar'da yeni karekod isteyin.
+
+■ Z7 tarayıcıdaki cihaz anahtarıyla imzalı istek başka ofisin (B) adresinde reddedilir
+  ✓ kendi ofisinde kabul (200)
+  ✓ B ofisinde reddedildi (401 kapi-cihaz)
+  ✓ kapıcıdaki nesne şifreli (düz metin yok)
+
+■ Z8 P9: lisans servisine 1 saattir ulaşılamıyor → ↻ → Lisans doğrulanamadı
+  ✓ ekran: Lisans bir saattir doğrulanamadı; uzaktan erişim geçici olarak kapalı.
+  ✓ canlı kapı da kapalı
+  ✓ sayfa hatası yok
+
+31 geçti, 0 kaldı
+# tests 31
+# pass 31
+# fail 0

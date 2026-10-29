@@ -90,29 +90,34 @@ function tunelIlet(kokenler) {
   return async (request, ofis) => {
     const taban = kokenler.get(ofis);
     if (!taban) throw new TypeError("fetch failed (tünel yok)");
-    const url = new URL(request.url);
-    const hedef = new URL(taban);
-    const basliklar = {};
-    for (const [ad, deger] of request.headers) if (ad !== "set-cookie") basliklar[ad] = deger;
-    basliklar.host = url.host;
-    const govde = request.method === "GET" || request.method === "HEAD" ? null : Buffer.from(await request.arrayBuffer());
-    if (govde) basliklar["content-length"] = String(govde.length);
-    return new Promise((resolve, reject) => {
-      const istek = http.request({ host: hedef.hostname, port: hedef.port, method: request.method, path: `${url.pathname}${url.search}`, headers: basliklar }, yanit => {
-        const parcalar = [];
-        yanit.on("data", parca => parcalar.push(parca));
-        yanit.on("end", () => {
-          const h = new Headers();
-          for (const [ad, deger] of Object.entries(yanit.headers)) for (const tek of [].concat(deger)) h.append(ad, String(tek));
-          const veri = Buffer.concat(parcalar);
-          resolve(new Response(yanit.statusCode === 204 || yanit.statusCode === 304 || request.method === "HEAD" ? null : veri, { status: yanit.statusCode, headers: h }));
-        });
-      });
-      istek.on("error", reject);
-      if (govde) istek.write(govde);
-      istek.end();
-    });
+    return kokeneIlet(request, taban);
   };
+}
+
+/** İsteği verilen tabana (ör. sahte cloudflared'in yerel ucu) Host başlığını koruyarak iletir; uçtan uca testin sahte Cloudflare kenarı da bunu kullanır. */
+export async function kokeneIlet(request, taban) {
+  const url = new URL(request.url);
+  const hedef = new URL(taban);
+  const basliklar = {};
+  for (const [ad, deger] of request.headers) if (ad !== "set-cookie") basliklar[ad] = deger;
+  basliklar.host = url.host;
+  const govde = request.method === "GET" || request.method === "HEAD" ? null : Buffer.from(await request.arrayBuffer());
+  if (govde) basliklar["content-length"] = String(govde.length);
+  return new Promise((resolve, reject) => {
+    const istek = http.request({ host: hedef.hostname, port: hedef.port, method: request.method, path: `${url.pathname}${url.search}`, headers: basliklar }, yanit => {
+      const parcalar = [];
+      yanit.on("data", parca => parcalar.push(parca));
+      yanit.on("end", () => {
+        const h = new Headers();
+        for (const [ad, deger] of Object.entries(yanit.headers)) for (const tek of [].concat(deger)) h.append(ad, String(tek));
+        const veri = Buffer.concat(parcalar);
+        resolve(new Response(yanit.statusCode === 204 || yanit.statusCode === 304 || request.method === "HEAD" ? null : veri, { status: yanit.statusCode, headers: h }));
+      });
+    });
+    istek.on("error", reject);
+    if (govde) istek.write(govde);
+    istek.end();
+  });
 }
 
 /**
@@ -123,8 +128,9 @@ function tunelIlet(kokenler) {
  * @param {string} [o.alan] ofis alanı (varsayılan destekofis.test)
  * @param {boolean} [o.tls] ayrıca https dinleyicisi (Chromium için; kendinden imzalı)
  * @param {object} [o.trustedKeys] lisans açık anahtarları (varsayılan programınkiler)
+ * @param {Function} [o.fetchOrigin] canlı istek iletimi (varsayılan: tunel() ile verilen tabana; uçtan uca testte sahte Cloudflare kenarı)
  */
-export async function startKapi({ now = () => Date.now(), lisansFetch = null, alan = "destekofis.test", tls = false, trustedKeys = TRUSTED_LICENSE_KEYS } = {}) {
+export async function startKapi({ now = () => Date.now(), lisansFetch = null, alan = "destekofis.test", tls = false, trustedKeys = TRUSTED_LICENSE_KEYS, fetchOrigin = null } = {}) {
   const r2 = sahteR2();
   const onbellek = sahteOnbellek();
   const kokenler = new Map();
@@ -132,7 +138,7 @@ export async function startKapi({ now = () => Date.now(), lisansFetch = null, al
   const env = { OZET: r2, LISANS_ANAHTARLARI: JSON.stringify(trustedKeys), OFIS_ALANI: alan, ...(lisansFetch ? { LISANS_URL: "https://lisans.kapi.test/api/lisans", KAPI_LISANS_ANAHTARI: "test-kapi-anahtari" } : {}) };
   const kapi = createKapi({
     now,
-    fetchOrigin: tunelIlet(kokenler),
+    fetchOrigin: fetchOrigin || tunelIlet(kokenler),
     lisansFetch: lisansFetch || (async () => {
       throw new TypeError("lisans servisi yok");
     }),

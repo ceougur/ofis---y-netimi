@@ -58,6 +58,9 @@ export async function startTestServer(options = {}) {
     ...(options.mobileKapiUrl
       ? { mobileKapiUrl: options.mobileKapiUrl, mobileOfficeUrl: options.mobileOfficeUrl || "http://{ofis}.destekofis.test", mobileKapiFetch: options.mobileKapiFetch || ((...args) => globalThis.fetch(...args)), mobileSyncAuto: options.mobileSyncAuto ?? false }
       : {}),
+    // 2.4.7 M4: tünel yöneticisinin test bağlantıları (sahte cloudflared runner, zamanlama, bileşen klasörü; lib/tunnel/attach.mjs). Gate verilmezse gerçek
+    // kapıcı istemcisi mobileKapiUrl'e (yalnız YEREL sahte kapıcı) gider.
+    ...(options.tunnel ? { tunnel: options.tunnel } : {}),
     // Para yazımı denetimi (K6) test kipinde: bank.post dışından para satırı ya da ham düzeltme/silme hata verir (üretimde günlük).
     // Üretim davranışını sınayan testler { moneyStrict: false } verir.
     moneyStrict: options.moneyStrict ?? true,
