@@ -1,0 +1,79 @@
+
+> destekofis@2.4.6 test:kahin-mobil-yazma
+> node --disable-warning=ExperimentalWarning test/bagimsiz/mobil-yazma/program-surucu.mjs --haric E02-es-havale-pos-mobil,E02-es-havale-pos-masaustu
+
+ok 1 - E01-es-nakit-fifo-mobil
+ok 2 - E01-es-nakit-fifo-masaustu
+ok 3 - E03-es-kapatilacak-mobil
+ok 4 - E03-es-kapatilacak-masaustu
+ok 5 - E04-es-odeme-mobil
+ok 6 - E04-es-odeme-masaustu
+ok 7 - E05-es-taksit-mobil
+ok 8 - E05-es-taksit-masaustu
+ok 9 - E06-kesinti-once
+ok 10 - E07-kesinti-sonra
+ok 11 - E08-ayni-kimlik-farkli-govde
+ok 12 - E09-reddedilen-kimlik
+ok 13 - E10-sunucu-kapali
+ok 14 - E11-sunucu-yeniden-kimlik
+ok 15 - E12-cihaz-silindi
+ok 16 - E13-uzak-izin
+ok 17 - E14-lisans
+ok 18 - E15-sirket-yetkisi
+ok 19 - E16-baska-sirket-kimligi
+ok 20 - E17-ayni-anda-ayni-cari
+ok 21 - E18-k8-yaris
+ok 22 - E19-es-stok-mobil
+ok 23 - E19-es-stok-masaustu
+ok 24 - E20-stok-yaris
+ok 25 - E21-gece-yarisi
+ok 26 - E22-gece-yarisi-yeniden
+ok 27 - E23-yil-donumu-kilit
+ok 28 - E24-kimlik-omru
+ok 29 - E25-yedek-geri-yukle
+ok 30 - E26-ayni-adli-cariler
+ok 31 - E27-eski-surum-verisi
+ok 32 - E28-rol-yetkisi
+ok 33 - E29-benzer-islem
+ok 34 - E30-es-kasa-eksi-mobil
+ok 35 - E30-es-kasa-eksi-masaustu
+ok 36 - E31-es-evrak-mobil
+ok 37 - E31-es-evrak-masaustu
+ok 38 - E32a-ayni-gun-sira
+ok 39 - E32b-ayni-gun-sira
+ok 40 - E34-iki-sirket-ayni-kimlik
+ok 41 - E35-iki-kullanici-ayni-kimlik
+ok 42 - E36-cihaz-sil-yarida
+ok 43 - E37-sunucu-kapali-yarida
+ok 44 - E38-sil-ayni-adla-ac
+ok 45 - E39-cift-dokunus-ayni-anda
+ok 46 - E40-es-iade-geri-odeme-mobil
+ok 47 - E40-es-iade-geri-odeme-masaustu
+ok 48 - E41-es-odenmis-kart-avans-mobil
+ok 49 - E41-es-odenmis-kart-avans-masaustu
+ok 50 - R1-rastgele-tohum1
+ok 51 - R2-rastgele-tohum2
+ok 52 - R3-rastgele-tohum3
+1..52
+# tests 52
+# pass 52
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# göreli G1-muhasebe-nakit-odeme: aynı
+# göreli G2-personel-stok: uygulanmaz (koşul {"stok_yonu":"giris_cikis"}; bilgi: aynı)
+# göreli G3-muhasebe-cek: uygulanmaz (koşul {"yollar":"evrak_dahil"}; bilgi: fark)
+#   adim:t1:durum: mobil "ret" · masaüstü "ok"
+#   adim:t1:http: mobil 400 · masaüstü undefined
+#   adim:t1:kod: mobil "mobile-field" · masaüstü undefined
+#   k1:001:cari:A:bakiye: mobil 100000 · masaüstü 70000
+#   k1:001:evrakSayisi: mobil 0 · masaüstü 1
+#   k1:001:fatura:F1:acik: mobil 100000 · masaüstü 70000
+#   k1:001:portfoy: mobil 0 · masaüstü 30000
+#   tani:t1:ileti: mobil "Mobilde ödeme yolu Nakit, Havale / EFT ya da POS / Kredi Kartı olabilir; çek / senet masaüstünden girilir." · masaüstü undefined
+# göreli G4-muhasebe-fazla-avans: aynı
+# HARİÇ E02-es-havale-pos-mobil: --haric ile koşulmadı (bekleyen karar / İNCELE; docs/kanit/2026-10-29/m5-247/OKU-BENI.md)
+# HARİÇ E02-es-havale-pos-masaustu: --haric ile koşulmadı (bekleyen karar / İNCELE; docs/kanit/2026-10-29/m5-247/OKU-BENI.md)
+# göreli çift: 2 aynı, 0 fark, 2 uygulanmaz
+# birleşim: kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris
