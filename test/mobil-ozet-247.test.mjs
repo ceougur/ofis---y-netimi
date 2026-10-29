@@ -219,10 +219,11 @@ describe("M3 program: özet kullanıcıya göre süzülür (K23), şifreli, ciha
 });
 
 describe("M3 program: yükleme tetikleri (Eylül: 15 dk / 10 dk hareketsizlik / günde 20; güvenlik hemen; kapanışta son hâl)", () => {
-  it("yazma türleri: GET ve giriş/çıkış tetiklemez; kullanıcı/rol/şirket erişimi/mobil/lisans/eşleme güvenlik; öbürü veri", () => {
+  it("yazma türleri: GET, giriş/çıkış ve karekod üretimi tetiklemez; kullanıcı/rol/şirket erişimi/mobil/lisans/eşleme güvenlik; öbürü veri", () => {
     assert.equal(yazmaTuru("GET", "/api/workspace/accounts"), null);
     assert.equal(yazmaTuru("POST", "/api/auth/login"), null);
     assert.equal(yazmaTuru("POST", "/api/mobil/session/login"), null);
+    assert.equal(yazmaTuru("POST", "/api/admin/mobile/codes"), null, "karekod üretmek özeti değiştirmez (kâhin: karekod_uret yeniden üretmez)");
     for (const p of ["/api/admin/users/u1", "/api/admin/roles/r", "/api/admin/mobile/devices/d", "/api/companies/access/u1", "/api/companies", "/api/license/check", "/api/mobil/eslesme"]) assert.equal(yazmaTuru("POST", p), "guvenlik", p);
     for (const p of ["/api/workspace/accounts", "/api/workspace/cash", "/api/admin/backups/restore"]) assert.equal(yazmaTuru("POST", p), "veri", p);
   });

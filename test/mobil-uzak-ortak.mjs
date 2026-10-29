@@ -90,10 +90,10 @@ export function createPhone(base, { name = "Test Telefonu", kind = "telefon", ho
       return response;
     },
     // Kapıcıdan özet: cihaz anahtarıyla imzalı istek (mesaj.cihaz); 200'de ofis imzası doğrulanıp bu cihazın anahtarıyla çözülür.
-    async readSummary({ method = "GET", deviceId = phone.deviceId, skewMs = 0, now = Date.now(), office = phone.office } = {}) {
+    async readSummary({ method = "GET", deviceId = phone.deviceId, skewMs = 0, now = Date.now(), office = phone.office, headers = {} } = {}) {
       const ms = now + skewMs;
       const signature = sign("sha256", Buffer.from(mesaj.cihaz(method, "/kapi/ozet", deviceId, ms)), { key: keys.privateKey, dsaEncoding: "ieee-p1363" }).toString("base64url");
-      const response = await phone.request(method, "/kapi/ozet", { headers: { "x-do-cihaz": deviceId, "x-do-zaman": String(ms), "x-do-imza": signature } });
+      const response = await phone.request(method, "/kapi/ozet", { headers: { ...headers, "x-do-cihaz": deviceId, "x-do-zaman": String(ms), "x-do-imza": signature } });
       if (response.status !== 200 || method !== "GET") return response;
       const opened = await ozetCoz(response.text, { ofisAnahtari: office?.anahtar, cihaz: deviceId, sifreGizli: (await encPair()).privateKey });
       return { ...response, summary: opened.govde, veri: opened.veri };

@@ -33,7 +33,8 @@ export const OZET_KURALLARI = Object.freeze({
 // Yazma isteğinin türü: güvenlik (hemen), veri (zamanlı) ya da yok sayılır (giriş/çıkış, mobil oturum).
 export function yazmaTuru(method, pathname) {
   if (method === "GET" || method === "HEAD" || !pathname.startsWith("/api/")) return null;
-  if (/^\/api\/(auth|public|health)(\/|$)/.test(pathname) || /^\/api\/mobil\/session(\/|$)/.test(pathname)) return null;
+  // Karekod üretmek görünen veriyi ve cihaz listesini değiştirmez (eşleme ayrıca tetikler) → yüklemez.
+  if (/^\/api\/(auth|public|health)(\/|$)/.test(pathname) || /^\/api\/mobil\/session(\/|$)/.test(pathname) || /^\/api\/admin\/mobile\/codes(\/|$)/.test(pathname)) return null;
   if (/^\/api\/(admin\/(users|roles|mobile)|companies|license)(\/|$)/.test(pathname) || pathname === "/api/mobil/eslesme") return "guvenlik";
   return "veri";
 }
